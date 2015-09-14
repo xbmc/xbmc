@@ -57,9 +57,23 @@ void CRendererVTB::ReleaseBuffer(int idx)
   buf.hwDec = NULL;
 }
 
-int CRendererVTB::GetImage(YV12Image *image, int source, bool readonly)
+int CRendererVTB::GetImageHook(YV12Image *image, int source, bool readonly)
 {
   return source;
+}
+
+void CRendererVTB::ReorderDrawPoints()
+{
+  CLinuxRendererGLES::ReorderDrawPoints();//call base impl. for rotating the points
+  
+  // cvbuf is flipped in y
+  CPoint tmp;
+  tmp = m_rotatedDestCoords[0];
+  m_rotatedDestCoords[0] = m_rotatedDestCoords[3];
+  m_rotatedDestCoords[3] = tmp;
+  tmp = m_rotatedDestCoords[1];
+  m_rotatedDestCoords[1] = m_rotatedDestCoords[2];
+  m_rotatedDestCoords[2] = tmp;
 }
 
 bool CRendererVTB::Supports(EINTERLACEMETHOD method)
@@ -75,6 +89,15 @@ bool CRendererVTB::Supports(EDEINTERLACEMODE mode)
 EINTERLACEMETHOD CRendererVTB::AutoInterlaceMethod()
 {
   return VS_INTERLACEMETHOD_NONE;
+}
+
+CRenderInfo CRendererVTB::GetRenderInfo()
+{
+  CRenderInfo info;
+  info.formats = m_formats;
+  info.max_buffer_size = NUM_BUFFERS;
+  info.optimal_buffer_size = 2;
+  return info;
 }
 
 bool CRendererVTB::LoadShadersHook()
