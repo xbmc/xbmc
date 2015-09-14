@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#this is the list of binaries we have to sign for beeing able to run un-jailbroken
+#this is the list of binaries we have to sign for being able to run un-jailbroken
 LIST_BINARY_EXTENSIONS="dylib so 0 vis pvr"
 
 export CODESIGN_ALLOCATE=`xcodebuild -find codesign_allocate`
@@ -28,7 +28,7 @@ if [ "${PLATFORM_NAME}" == "iphoneos" ]; then
   codesign -v -f -s "iPhone Developer" --entitlements "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent" "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/"
   
   #if user has set a code_sign_identity different from iPhone Developer we do a real codesign (for deployment on non-jailbroken devices)
-  if ! [ -z "${CODE_SIGN_IDENTITY}" ] && [ "${CODE_SIGN_IDENTITY}" != "iPhone Developer" ] && [ "${CODE_SIGN_IDENTITY}" != "Don't Code Sign"  ]; then
+  if ! [ -z "${CODE_SIGN_IDENTITY}" ] && [ "${CODE_SIGN_IDENTITY}" == "iPhone Developer" ] && [ "${CODE_SIGN_IDENTITY}" != "Don't Code Sign"  ]; then
     echo Doing a full bundle sign using genuine identity "${CODE_SIGN_IDENTITY}"
     for binext in $LIST_BINARY_EXTENSIONS
     do
