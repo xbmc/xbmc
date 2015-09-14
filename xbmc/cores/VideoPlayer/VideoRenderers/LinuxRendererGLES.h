@@ -39,8 +39,6 @@ class CRenderCapture;
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
-class CDVDVideoCodecStageFright;
-class CDVDMediaCodecInfo;
 typedef std::vector<int>     Features;
 
 
@@ -140,7 +138,7 @@ public:
   virtual void         Reset(); /* resets renderer after seek for example */
   virtual void         Flush();
   virtual void         ReorderDrawPoints();
-  virtual void         ReleaseBuffer(int idx);
+  virtual void         ReleaseBuffer(int idx){ };
   virtual void         SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
   virtual bool         IsGuiLayer();
 
@@ -157,11 +155,6 @@ public:
   virtual EINTERLACEMETHOD AutoInterlaceMethod();
 
   virtual CRenderInfo GetRenderInfo();
-
-#if defined(TARGET_ANDROID)
-  // mediaCodec
-  virtual void         AddProcessor(CDVDMediaCodecInfo *mediacodec, int index);
-#endif
 
 protected:
   virtual void Render(DWORD flags, int index);
@@ -192,17 +185,12 @@ protected:
   void DeleteBYPASSTexture(int index);
   bool CreateBYPASSTexture(int index);
 
-  void UploadSurfaceTexture(int index);
-  void DeleteSurfaceTexture(int index);
-  bool CreateSurfaceTexture(int index);
-
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
   void RenderMultiPass(int index, int field);     // multi pass glsl renderer
   void RenderSinglePass(int index, int field);    // single pass glsl renderer
   void RenderSoftware(int index, int field);      // single pass s/w yuv2rgb renderer
-  void RenderSurfaceTexture(int index, int field);// MediaCodec rendering using SurfaceTexture
   
   // hooks for HwDec Renderered
   virtual bool LoadShadersHook() { return false; };
@@ -261,11 +249,6 @@ protected:
     YUVFIELDS fields;
     YV12Image image;
     unsigned  flipindex; /* used to decide if this has been uploaded */
-
-#if defined(TARGET_ANDROID)
-    // mediacodec
-    CDVDMediaCodecInfo *mediacodec;
-#endif
     void *hwDec;
   };
 

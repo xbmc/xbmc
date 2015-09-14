@@ -4,6 +4,7 @@ ifeq (@USE_OPENGL@,1)
 SRCS += RendererVAAPI.cpp
 SRCS += RendererVDPAU.cpp
 SRCS += RendererStagefright.cpp
+SRCS += RendererMediaCodec.cpp
 endif
 
 ifeq (@USE_MMAL@,1)
@@ -15,6 +16,7 @@ SRCS += RendererVTB.cpp
 SRCS += RendererIMX.cpp
 SRCS += RendererOMX.cpp
 SRCS += RendererStagefright.cpp
+SRCS += RendererMediaCodec.cpp
 endif
      
 LIB=HwDecRender.a
