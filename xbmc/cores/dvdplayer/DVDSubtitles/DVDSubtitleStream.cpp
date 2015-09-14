@@ -30,7 +30,6 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 
-using XFILE::auto_buffer;
 
 CDVDSubtitleStream::CDVDSubtitleStream()
 {
@@ -46,19 +45,21 @@ bool CDVDSubtitleStream::Open(const std::string& strFile)
   pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strFile, "");
   if (pInputStream && pInputStream->Open(strFile.c_str(), "", false))
   {
-    if (URIUtils::HasExtension(strFile, ".sub") && IsIncompatible(pInputStream))
+    // prepare buffer
+    size_t totalread = 0;
+    XUTILS::auto_buffer buf(1024);
+
+    if (URIUtils::HasExtension(strFile, ".sub") && IsIncompatible(pInputStream, buf, &totalread))
     {
       CLog::Log(LOGDEBUG, "%s: file %s seems to be a vob sub"
-        "file without an idx file, skipping it", __FUNCTION__, pInputStream->GetFileName().c_str());
+        "file without an idx file, skipping it", __FUNCTION__, CURL::GetRedacted(pInputStream->GetFileName()).c_str());
+      buf.clear();
       delete pInputStream;
       return false;
     }
 
     static const size_t chunksize = 64 * 1024;
-    auto_buffer buf;
 
-    // read content
-    size_t totalread = 0;
     int read;
     do
     {
@@ -106,20 +107,30 @@ bool CDVDSubtitleStream::Open(const std::string& strFile)
   return false;
 }
 
-bool CDVDSubtitleStream::IsIncompatible(CDVDInputStream* pInputStream)
+bool CDVDSubtitleStream::IsIncompatible(CDVDInputStream* pInputStream, XUTILS::auto_buffer& buf, size_t* bytesRead)
 {
   if (!pInputStream)
     return true;
 
-  auto_buffer buf(1024);
   static const uint8_t vobsub[] = { 0x00, 0x00, 0x01, 0xBA };
 
   int read = pInputStream->Read((uint8_t*)buf.get(), buf.size());
+
+  if (read < 0)
+  {
+    return true;
+  }
+  else
+  {
+    *bytesRead = (size_t)read;
+  }
+  
   if (read >= 4)
   {
     if (!std::memcmp(buf.get(), vobsub, 4))
       return true;
   }
+
   return false;
 }
 
