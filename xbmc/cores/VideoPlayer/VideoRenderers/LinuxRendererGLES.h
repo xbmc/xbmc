@@ -130,7 +130,7 @@ public:
 
   virtual void Update();
 
-  bool RenderCapture(CRenderCapture* capture);
+  virtual bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_formatunsigned, unsigned int orientation);
@@ -170,13 +170,10 @@ public:
   // mediaCodec
   virtual void         AddProcessor(CDVDMediaCodecInfo *mediacodec, int index);
 #endif
-#ifdef HAS_IMXVPU
-  virtual void         AddProcessor(CDVDVideoCodecIMXBuffer *codecinfo, int index);
-#endif
 
 protected:
   virtual void Render(DWORD flags, int index);
-  void RenderUpdateVideo(bool clear, DWORD flags = 0, DWORD alpha = 255);
+  virtual void RenderUpdateVideo(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
@@ -214,10 +211,6 @@ protected:
   void DeleteOpenMaxTexture(int index);
   bool CreateOpenMaxTexture(int index);
 
-  void UploadIMXMAPTexture(int index);
-  void DeleteIMXMAPTexture(int index);
-  bool CreateIMXMAPTexture(int index);
-
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
@@ -227,11 +220,11 @@ protected:
   void RenderOpenMax(int index, int field);       // OpenMAX rgb texture
   void RenderEglImage(int index, int field);       // Android OES texture
   void RenderSurfaceTexture(int index, int field);// MediaCodec rendering using SurfaceTexture
-  void RenderIMXMAPTexture(int index, int field); // IMXMAP rendering
   
   // hooks for HwDec Renderered
   virtual bool LoadShadersHook() { return false; };
   virtual bool RenderHook(int idx) { return false; };
+  virtual bool RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha) { return false; };
 
   CFrameBufferObject m_fbo;
 
@@ -294,9 +287,6 @@ protected:
 #if defined(TARGET_ANDROID)
     // mediacodec
     CDVDMediaCodecInfo *mediacodec;
-#endif
-#ifdef HAS_IMXVPU
-    CDVDVideoCodecIMXBuffer *IMXBuffer;
 #endif
     void *hwDec;
   };

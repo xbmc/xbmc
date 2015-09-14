@@ -50,6 +50,9 @@
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
 #include "HWDecRender/RendererVTB.h"
 #endif
+#if defined(HAS_IMXVPU)
+#include "HWDecRender/RendererIMX.h"
+#endif
 #elif defined(HAS_DX)
   #include "WinRenderer.h"
 #elif defined(HAS_SDL)
@@ -640,6 +643,12 @@ void CRenderManager::CreateRenderer()
     {
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
       m_pRenderer = new CRendererVTB;
+#endif
+    }
+    else if (m_format == RENDER_FMT_IMXMAP)
+    {
+#if defined(HAS_IMXVPU)
+      m_pRenderer = new CRendererIMX;
 #endif
     }
     else if (m_format != RENDER_FMT_NONE)
