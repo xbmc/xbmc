@@ -77,11 +77,6 @@ static PFNEGLDESTROYSYNCKHRPROC eglDestroySyncKHR;
 static PFNEGLCLIENTWAITSYNCKHRPROC eglClientWaitSyncKHR;
 #endif
 
-#ifdef HAS_IMXVPU
-#include "windowing/egl/EGLWrapper.h"
-#include "DVDCodecs/Video/DVDVideoCodecIMX.h"
-#endif
-
 #if defined(TARGET_ANDROID)
 #include "DVDCodecs/Video/DVDVideoCodecAndroidMediaCodec.h"
 #endif
@@ -102,9 +97,6 @@ CLinuxRendererGLES::YUVBUFFER::YUVBUFFER()
 #endif
 #if defined(TARGET_ANDROID)
   mediacodec = NULL;
-#endif
-#ifdef HAS_IMXVPU
-  IMXBuffer = NULL;
 #endif
   hwDec = NULL;
 }
@@ -283,10 +275,6 @@ int CLinuxRendererGLES::GetImage(YV12Image *image, int source, bool readonly)
 
 #endif
   if ( m_renderMethod & RENDER_MEDIACODEC )
-  {
-    return source;
-  }
-  if ( m_renderMethod & RENDER_IMXMAP )
   {
     return source;
   }
@@ -562,6 +550,9 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, DWORD flags, DWORD alpha)
 
   if (IsGuiLayer())
     return;
+  
+  if (RenderUpdateVideoHook(clear, flags, alpha))
+    return;
 
   if (m_renderMethod & RENDER_BYPASS)
   {
@@ -573,130 +564,6 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, DWORD flags, DWORD alpha)
 
     return;
   }
-#ifdef TARGET_ANDROID
-  else if (m_renderMethod & RENDER_MEDIACODECSURFACE)
-  {
-    CDVDMediaCodecInfo *mci = m_buffers[m_iYV12RenderBuffer].mediacodec;
-    if (mci)
-    {
-      // this hack is needed to get the 2D mode of a 3D movie going
-      RENDER_STEREO_MODE stereo_mode = g_graphicsContext.GetStereoMode();
-      if (stereo_mode)
-        g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_LEFT);
-
-      ManageDisplay();
-
-      if (stereo_mode)
-        g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_OFF);
-
-      CRect dstRect(m_destRect);
-      CRect srcRect(m_sourceRect);
-      switch (stereo_mode)
-      {
-        case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
-          dstRect.y2 *= 2.0;
-          srcRect.y2 *= 2.0;
-        break;
-
-        case RENDER_STEREO_MODE_SPLIT_VERTICAL:
-          dstRect.x2 *= 2.0;
-          srcRect.x2 *= 2.0;
-        break;
-
-        default:
-        break;
-      }
-
-      mci->RenderUpdate(srcRect, dstRect);
-    }
-  }
-#endif
-#ifdef HAS_IMXVPU
-  else if (m_renderMethod & RENDER_IMXMAP)
-  {
-#if 0
-    static unsigned long long previous = 0;
-    unsigned long long current = XbmcThreads::SystemClockMillis();
-    printf("r->r: %d\n", (int)(current-previous));
-    previous = current;
-#endif
-    CDVDVideoCodecIMXBuffer *buffer = m_buffers[m_iYV12RenderBuffer].IMXBuffer;
-    if (buffer != NULL && buffer->IsValid())
-    {
-      // this hack is needed to get the 2D mode of a 3D movie going
-      RENDER_STEREO_MODE stereo_mode = g_graphicsContext.GetStereoMode();
-      if (stereo_mode)
-        g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_LEFT);
-
-      ManageDisplay();
-
-      if (stereo_mode)
-        g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_OFF);
-
-      CRect dstRect(m_destRect);
-      CRect srcRect(m_sourceRect);
-      switch (stereo_mode)
-      {
-        case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
-          dstRect.y2 *= 2.0;
-          srcRect.y2 *= 2.0;
-        break;
-
-        case RENDER_STEREO_MODE_SPLIT_VERTICAL:
-          dstRect.x2 *= 2.0;
-          srcRect.x2 *= 2.0;
-        break;
-
-        default:
-        break;
-      }
-
-      //CLog::Log(LOGDEBUG, "BLIT RECTS: source x1 %f x2 %f y1 %f y2 %f dest x1 %f x2 %f y1 %f y2 %f", srcRect.x1, srcRect.x2, srcRect.y1, srcRect.y2, dstRect.x1, dstRect.x2, dstRect.y1, dstRect.y2);
-      g_IMXContext.SetBlitRects(srcRect, dstRect);
-
-      bool topFieldFirst = true;
-
-      // Deinterlacing requested
-      if (flags & RENDER_FLAG_FIELDMASK)
-      {
-        if ((buffer->GetFieldType() == VPU_FIELD_BOTTOM)
-        ||  (buffer->GetFieldType() == VPU_FIELD_BT) )
-          topFieldFirst = false;
-
-        if (flags & RENDER_FLAG_FIELD0)
-        {
-          // Double rate first frame
-          g_IMXContext.SetDeInterlacing(true);
-          g_IMXContext.SetDoubleRate(true);
-          g_IMXContext.SetInterpolatedFrame(true);
-        }
-        else if (flags & RENDER_FLAG_FIELD1)
-        {
-          // Double rate second frame
-          g_IMXContext.SetDeInterlacing(true);
-          g_IMXContext.SetDoubleRate(true);
-          g_IMXContext.SetInterpolatedFrame(false);
-        }
-        else
-        {
-          // Fast motion
-          g_IMXContext.SetDeInterlacing(true);
-          g_IMXContext.SetDoubleRate(false);
-        }
-      }
-      // Progressive
-      else
-        g_IMXContext.SetDeInterlacing(false);
-
-      g_IMXContext.BlitAsync(NULL, buffer, topFieldFirst);
-    }
-
-#if 0
-    unsigned long long current2 = XbmcThreads::SystemClockMillis();
-    printf("r: %d  %d\n", m_iYV12RenderBuffer, (int)(current2-current));
-#endif
-  }
-#endif
 }
 
 void CLinuxRendererGLES::FlipPage(int source)
@@ -843,12 +710,6 @@ void CLinuxRendererGLES::LoadShaders(int field)
           m_renderMethod = RENDER_MEDIACODEC;
           break;
         }
-        else if (m_format == RENDER_FMT_IMXMAP)
-        {
-          CLog::Log(LOGNOTICE, "GL: Using IMXMAP render method");
-          m_renderMethod = RENDER_IMXMAP;
-          break;
-        }
         else if (m_format == RENDER_FMT_BYPASS)
         {
           CLog::Log(LOGNOTICE, "GL: Using BYPASS render method");
@@ -898,60 +759,6 @@ void CLinuxRendererGLES::LoadShaders(int field)
   else
     CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
 
-<<<<<<< f39d6eae0c9750db6cb93ada217d785add2d1c99
-  // Now that we now the render method, setup texture function handlers
-  if (m_format == RENDER_FMT_CVBREF)
-  {
-    m_textureUpload = &CLinuxRendererGLES::UploadCVRefTexture;
-    m_textureCreate = &CLinuxRendererGLES::CreateCVRefTexture;
-    m_textureDelete = &CLinuxRendererGLES::DeleteCVRefTexture;
-  }
-  else if (m_format == RENDER_FMT_BYPASS || m_format == RENDER_FMT_MEDIACODECSURFACE)
-  {
-    m_textureUpload = &CLinuxRendererGLES::UploadBYPASSTexture;
-    m_textureCreate = &CLinuxRendererGLES::CreateBYPASSTexture;
-    m_textureDelete = &CLinuxRendererGLES::DeleteBYPASSTexture;
-  }
-  else if (m_format == RENDER_FMT_EGLIMG)
-  {
-    m_textureUpload = &CLinuxRendererGLES::UploadEGLIMGTexture;
-    m_textureCreate = &CLinuxRendererGLES::CreateEGLIMGTexture;
-    m_textureDelete = &CLinuxRendererGLES::DeleteEGLIMGTexture;
-  }
-  else if (m_format == RENDER_FMT_MEDIACODEC)
-  {
-    m_textureUpload = &CLinuxRendererGLES::UploadSurfaceTexture;
-    m_textureCreate = &CLinuxRendererGLES::CreateSurfaceTexture;
-    m_textureDelete = &CLinuxRendererGLES::DeleteSurfaceTexture;
-  }
-  else if (m_format == RENDER_FMT_NV12)
-  {
-    m_textureUpload = &CLinuxRendererGLES::UploadNV12Texture;
-    m_textureCreate = &CLinuxRendererGLES::CreateNV12Texture;
-    m_textureDelete = &CLinuxRendererGLES::DeleteNV12Texture;
-  }
-  else if (m_format == RENDER_FMT_IMXMAP)
-  {
-    m_textureUpload = &CLinuxRendererGLES::UploadIMXMAPTexture;
-    m_textureCreate = &CLinuxRendererGLES::CreateIMXMAPTexture;
-    m_textureDelete = &CLinuxRendererGLES::DeleteIMXMAPTexture;
-  }
-  else if (m_format == RENDER_FMT_OMXEGL)
-  {
-    m_textureUpload = &CLinuxRendererGLES::UploadOpenMaxTexture;
-    m_textureCreate = &CLinuxRendererGLES::CreateOpenMaxTexture;
-    m_textureDelete = &CLinuxRendererGLES::DeleteOpenMaxTexture;
-  }
-   else
-  {
-    // default to YV12 texture handlers
-    m_textureUpload = &CLinuxRendererGLES::UploadYV12Texture;
-    m_textureCreate = &CLinuxRendererGLES::CreateYV12Texture;
-    m_textureDelete = &CLinuxRendererGLES::DeleteYV12Texture;
-  }
-
-=======
->>>>>>> [VideoRendererGLES] - refactor to support derived hw dec renderer - similar to VideoRendererGL (atm only VTB is implemented. All other hw dec renderers are still in VideoRendererGLES and need to be moved into seperate implementations by the platform devs - similar to VideoRendererGL (atm only VTB is implemented. All other hw dec renderers are still in VideoRendererGLES and need to be moved into seperate implementations by the platform devs))
   if (m_oldRenderMethod != m_renderMethod)
   {
     CLog::Log(LOGDEBUG, "CLinuxRendererGLES: Reorder drawpoints due to method change from %i to %i", m_oldRenderMethod, m_renderMethod);
@@ -1031,10 +838,6 @@ void CLinuxRendererGLES::ReleaseBuffer(int idx)
   if ( m_renderMethod & RENDER_MEDIACODECSURFACE )
     SAFE_RELEASE(buf.mediacodec);
 #endif
-#ifdef HAS_IMXVPU
-  if (m_renderMethod & RENDER_IMXMAP)
-    SAFE_RELEASE(buf.IMXBuffer);
-#endif
 }
 
 bool CLinuxRendererGLES::CreateTexture(int index)
@@ -1057,11 +860,6 @@ bool CLinuxRendererGLES::CreateTexture(int index)
   else if (m_format == RENDER_FMT_NV12)
   {
     CreateNV12Texture(index);
-    return true;
-  }
-  else if (m_format == RENDER_FMT_IMXMAP)
-  {
-    CreateIMXMAPTexture(index);
     return true;
   }
   else if (m_format == RENDER_FMT_OMXEGL)
@@ -1097,10 +895,6 @@ void CLinuxRendererGLES::DeleteTexture(int index)
   {
     DeleteNV12Texture(index);
   }
-  else if (m_format == RENDER_FMT_IMXMAP)
-  {
-    DeleteIMXMAPTexture(index);
-  }
   else if (m_format == RENDER_FMT_OMXEGL)
   {
     DeleteOpenMaxTexture(index);
@@ -1133,11 +927,6 @@ bool CLinuxRendererGLES::UploadTexture(int index)
   else if (m_format == RENDER_FMT_NV12)
   {
     UploadNV12Texture(index);
-    return true;
-  }
-  else if (m_format == RENDER_FMT_IMXMAP)
-  {
-    UploadIMXMAPTexture(index);
     return true;
   }
   else if (m_format == RENDER_FMT_OMXEGL)
@@ -1211,11 +1000,6 @@ void CLinuxRendererGLES::Render(DWORD flags, int index)
   else if (m_renderMethod & RENDER_MEDIACODEC)
   {
     RenderSurfaceTexture(index, m_currentField);
-  }
-  else if (m_renderMethod & RENDER_IMXMAP)
-  {
-    RenderIMXMAPTexture(index, m_currentField);
-    VerifyGLState();
   }
   else
   {
@@ -1865,10 +1649,6 @@ void CLinuxRendererGLES::RenderSurfaceTexture(int index, int field)
 #endif
 }
 
-void CLinuxRendererGLES::RenderIMXMAPTexture(int index, int field)
-{
-}
-
 bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 {
   if (!m_bValidated)
@@ -1881,18 +1661,6 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
     capture->EndRender();
     return true;
   }
-
-#ifdef HAS_IMXVPU
-  if (m_renderMethod & RENDER_IMXMAP)
-  {
-    CRect rect(0, 0, capture->GetWidth(), capture->GetHeight());
-    CDVDVideoCodecIMXBuffer *buffer = m_buffers[m_iYV12RenderBuffer].IMXBuffer;
-    capture->BeginRender();
-    g_IMXContext.PushCaptureTask(buffer, &rect);
-    capture->EndRender();
-    return true;
-  }
-#endif
 
   // save current video rect
   CRect saveSize = m_destRect;
@@ -2680,60 +2448,6 @@ void CLinuxRendererGLES::SetTextureFilter(GLenum method)
   }
 }
 
-//********************************************************************************************************
-// IMXMAP creation, deletion, copying + clearing
-//********************************************************************************************************
-void CLinuxRendererGLES::UploadIMXMAPTexture(int index)
-{
-}
-
-void CLinuxRendererGLES::DeleteIMXMAPTexture(int index)
-{
-#ifdef HAS_IMXVPU
-  YUVBUFFER &buf = m_buffers[index];
-  YUVPLANE &plane = buf.fields[0][0];
-
-  if(plane.id && glIsTexture(plane.id))
-    glDeleteTextures(1, &plane.id);
-  plane.id = 0;
-
-  SAFE_RELEASE(buf.IMXBuffer);
-#endif
-}
-
-bool CLinuxRendererGLES::CreateIMXMAPTexture(int index)
-{
-  YV12Image &im     = m_buffers[index].image;
-  YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANE  &plane  = fields[0][0];
-
-  DeleteIMXMAPTexture(index);
-
-  memset(&im    , 0, sizeof(im));
-  memset(&fields, 0, sizeof(fields));
-
-  im.height = m_sourceHeight;
-  im.width  = m_sourceWidth;
-
-  plane.texwidth  = 0; // Must be actual frame width for pseudo-cropping
-  plane.texheight = 0; // Must be actual frame height for pseudo-cropping
-  plane.pixpertex_x = 1;
-  plane.pixpertex_y = 1;
-
-  glEnable(m_textureTarget);
-  glGenTextures(1, &plane.id);
-  VerifyGLState();
-
-  glBindTexture(m_textureTarget, plane.id);
-
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-  glDisable(m_textureTarget);
-  return true;
-}
-
-
 bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
 {
   // Player controls render, let it dictate available render features
@@ -2829,26 +2543,8 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
       return false;
   }
 
-<<<<<<< f39d6eae0c9750db6cb93ada217d785add2d1c99
-  if(m_renderMethod & RENDER_MEDIACODECSURFACE)
-    return false;
-
-  if(m_renderMethod & RENDER_CVREF)
-    return false;
-
-=======
->>>>>>> [VideoRendererGLES] - refactor to support derived hw dec renderer - similar to VideoRendererGL (atm only VTB is implemented. All other hw dec renderers are still in VideoRendererGLES and need to be moved into seperate implementations by the platform devs - similar to VideoRendererGL (atm only VTB is implemented. All other hw dec renderers are still in VideoRendererGLES and need to be moved into seperate implementations by the platform devs))
   if(method == VS_INTERLACEMETHOD_AUTO)
     return true;
-
-  if(m_renderMethod & RENDER_IMXMAP)
-  {
-    if(method == VS_INTERLACEMETHOD_IMX_FASTMOTION
-    || method == VS_INTERLACEMETHOD_IMX_FASTMOTION_DOUBLE)
-      return true;
-    else
-      return false;
-  }
 
 #if !defined(TARGET_ANDROID) && (defined(__i386__) || defined(__x86_64__))
   if(method == VS_INTERLACEMETHOD_DEINTERLACE
@@ -2872,12 +2568,6 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
     Features::iterator itr = std::find(m_scalingMethods.begin(),m_scalingMethods.end(), method);
     return itr != m_scalingMethods.end();
   }
-
-  if(m_renderMethod & RENDER_IMXMAP)
-    return false;
-
-  if (m_renderMethod & RENDER_MEDIACODECSURFACE)
-    return false;
 
   if(method == VS_SCALINGMETHOD_NEAREST
   || method == VS_SCALINGMETHOD_LINEAR)
@@ -2906,18 +2596,6 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
   if(m_renderMethod & RENDER_MEDIACODEC)
     return VS_INTERLACEMETHOD_RENDER_BOB_INVERTED;
 
-<<<<<<< f39d6eae0c9750db6cb93ada217d785add2d1c99
-  if(m_renderMethod & RENDER_MEDIACODECSURFACE)
-    return VS_INTERLACEMETHOD_NONE;
-
-  if(m_renderMethod & RENDER_CVREF)
-    return VS_INTERLACEMETHOD_NONE;
-
-=======
->>>>>>> [VideoRendererGLES] - refactor to support derived hw dec renderer - similar to VideoRendererGL (atm only VTB is implemented. All other hw dec renderers are still in VideoRendererGLES and need to be moved into seperate implementations by the platform devs - similar to VideoRendererGL (atm only VTB is implemented. All other hw dec renderers are still in VideoRendererGLES and need to be moved into seperate implementations by the platform devs))
-  if(m_renderMethod & RENDER_IMXMAP)
-    return VS_INTERLACEMETHOD_IMX_FASTMOTION;
-
 #if !defined(TARGET_ANDROID) && (defined(__i386__) || defined(__x86_64__))
   return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
 #else
@@ -2931,16 +2609,10 @@ CRenderInfo CLinuxRendererGLES::GetRenderInfo()
   info.formats = m_formats;
   info.max_buffer_size = NUM_BUFFERS;
   if(m_format == RENDER_FMT_OMXEGL ||
-     m_format == RENDER_FMT_CVBREF ||
      m_format == RENDER_FMT_EGLIMG ||
      m_format == RENDER_FMT_MEDIACODEC ||
     m_format == RENDER_FMT_MEDIACODECSURFACE)
     info.optimal_buffer_size = 2;
-  else if(m_format == RENDER_FMT_IMXMAP)
-  {
-    // Let the codec control the buffer size
-    info.optimal_buffer_size = info.max_buffer_size;
-  }
   else
     info.optimal_buffer_size = 3;
   return info;
@@ -3007,22 +2679,9 @@ void CLinuxRendererGLES::AddProcessor(CDVDMediaCodecInfo *mediacodec, int index)
 }
 #endif
 
-#ifdef HAS_IMXVPU
-void CLinuxRendererGLES::AddProcessor(CDVDVideoCodecIMXBuffer *buffer, int index)
-{
-  YUVBUFFER &buf = m_buffers[index];
-
-  SAFE_RELEASE(buf.IMXBuffer);
-  buf.IMXBuffer = buffer;
-
-  if (buffer)
-    buffer->Lock();
-}
-#endif
-
 bool CLinuxRendererGLES::IsGuiLayer()
 {
-  if (m_format == RENDER_FMT_BYPASS || m_format == RENDER_FMT_IMXMAP || m_format == RENDER_FMT_MEDIACODECSURFACE)
+  if (m_format == RENDER_FMT_BYPASS)
     return false;
   else
     return true;
