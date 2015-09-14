@@ -3160,13 +3160,7 @@ msgctxt "#744"
 msgid "Files"
 msgstr ""
 
-msgctxt "#745"
-msgid "No scanned information for this view"
-msgstr ""
-
-msgctxt "#746"
-msgid "Please turn off library mode"
-msgstr ""
+#empty strings from id 745 to 746
 
 msgctxt "#747"
 msgid "Error loading image"
@@ -14003,14 +13997,7 @@ msgctxt "#25010"
 msgid "Chapter %u"
 msgstr ""
 
-#empty strings from id 25011 to 29799
-#strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code
-
-#: skin.confluence
-#: skin.retouched
-msgctxt "#29800"
-msgid "Library mode"
-msgstr ""
+#empty strings from id 25011 to 29800
 
 #: unused
 msgctxt "#29801"
