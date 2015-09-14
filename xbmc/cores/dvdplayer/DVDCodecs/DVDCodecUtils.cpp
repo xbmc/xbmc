@@ -270,7 +270,7 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *p
 
         struct SwsContext *ctx = sws_getContext(pSrc->iWidth, pSrc->iHeight, PIX_FMT_YUV420P,
                                                            pPicture->iWidth, pPicture->iHeight, (AVPixelFormat)dstformat,
-                                                           SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
+                                                           SWS_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
         sws_scale(ctx, src, srcStride, 0, pSrc->iHeight, dst, dstStride);
         sws_freeContext(ctx);
       }
