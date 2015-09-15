@@ -1233,6 +1233,16 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         return AddMultiInfo(GUIInfo(ret, 0, offset));
       return ret;
     }
+    else if (cat.name == "listitemabsolute")
+    {
+      int offset = atoi(cat.param().c_str());
+      int ret = TranslateListItem(prop);
+      if (ret)
+        listItemDependent = true;
+      if (offset)
+        return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_ABSOLUTE));
+      return ret;
+    }
     else if (cat.name == "visualisation")
     {
       for (size_t i = 0; i < sizeof(visualisation) / sizeof(infomap); i++)
@@ -1419,6 +1429,11 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       {
         listItemDependent = true;
         return AddMultiInfo(GUIInfo(TranslateListItem(info[2]), id, offset, INFOFLAG_LISTITEM_WRAP));
+      }
+      else if (info[1].name == "listitemabsolute")
+      {
+        listItemDependent = true;
+        return AddMultiInfo(GUIInfo(TranslateListItem(info[2]), id, offset, INFOFLAG_LISTITEM_ABSOLUTE));
       }
     }
     else if (info[0].name == "control")
