@@ -418,6 +418,8 @@ bool Gif::ExtractFrames(unsigned int count)
 
 void Gif::ConstructFrame(GifFrame &frame, const unsigned char* src) const
 {
+  size_t paletteSize = frame.m_palette.size();
+
   for (unsigned int dest_y = frame.m_top, src_y = 0; src_y < frame.m_height; ++dest_y, ++src_y)
   {
     unsigned char *to = frame.m_pImage + (dest_y * m_pitch) + (frame.m_left * sizeof(GifColor));
@@ -425,18 +427,19 @@ void Gif::ConstructFrame(GifFrame &frame, const unsigned char* src) const
     const unsigned char *from = src + (src_y * frame.m_width);
     for (unsigned int src_x = 0; src_x < frame.m_width; ++src_x)
     {
-      GifColor col = frame.m_palette[*from++];
+      unsigned char index = *from++;
+
+      if (index >= paletteSize)
+      {
+        CLog::Log(LOGDEBUG, "Gif::ConstructFrame(): Pixel (%d,%d) has no valid palette entry, skip it", src_x, src_y);
+        continue;
+      }
+
+      GifColor col = frame.m_palette[index];
       if (col.a != 0)
-      {
-        *to++ = col.b;
-        *to++ = col.g;
-        *to++ = col.r;
-        *to++ = col.a;
-      }
-      else
-      {
-        to += 4;
-      }
+        memcpy(to, &col, sizeof(GifColor));
+
+      to += 4;
     }
   }
 }
