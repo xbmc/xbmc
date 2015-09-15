@@ -19,9 +19,9 @@
  */
 
 #include "DVDVideoCodec.h"
-#include "windowing/WindowingFactory.h"
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
+#include "windowing/WindowingFactory.h"
 
 bool CDVDVideoCodec::IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
@@ -37,12 +37,12 @@ bool CDVDVideoCodec::IsSettingVisible(const std::string &condition, const std::s
   bool isIntel = (gpuvendor.compare(0, 5, "intel") == 0);
 
   // nvidia does only need mpeg-4 setting
-  if (isNvidia) 
+  if (isNvidia)
   {
     if (settingId == CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG4)
       return true;
 
-    return false; //will also hide intel settings on nvidia hardware
+    return false; // will also hide intel settings on nvidia hardware
   }
   else if (isIntel) // intel needs vc1, mpeg-2 and mpeg4 setting
   {
@@ -53,7 +53,7 @@ bool CDVDVideoCodec::IsSettingVisible(const std::string &condition, const std::s
     if (settingId == CSettings::SETTING_VIDEOPLAYER_USEVAAPIMPEG2)
       return true;
 
-    return false; //this will also hide nvidia settings on intel hardware
+    return false; // this will also hide nvidia settings on intel hardware
   }
   // if we don't know the hardware we are running on e.g. amd oss vdpau 
   // or fglrx with xvba-driver we show everything
@@ -65,14 +65,19 @@ bool CDVDVideoCodec::IsCodecDisabled(DVDCodecAvailableType* map, unsigned int si
   int index = -1;
   for (unsigned int i = 0; i < size; ++i)
   {
-    if(map[i].codec == id)
+    if (map[i].codec == id)
     {
       index = (int) i;
       break;
     }
   }
-  if(index > -1)
-    return (!CSettings::GetInstance().GetBool(map[index].setting) || !CDVDVideoCodec::IsSettingVisible("unused", "unused", CSettings::GetInstance().GetSetting(map[index].setting), NULL));
+  if (index > -1)
+  {
+    return (!CSettings::GetInstance().GetBool(map[index].setting) ||
+            !CDVDVideoCodec::IsSettingVisible("unused", "unused",
+                                              CSettings::GetInstance().GetSetting(map[index].setting),
+                                              NULL));
+  }
 
-  return false; //don't disable what we don't have
+  return false; // don't disable what we don't have
 }
