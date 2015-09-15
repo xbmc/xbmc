@@ -130,19 +130,19 @@ bool OMXDoProcessing(struct SOmxPlayerState &m_OmxPlayerState, int m_playSpeed, 
     bool audio_fifo_low = false, video_fifo_low = false, audio_fifo_high = false, video_fifo_high = false;
 
     if (m_OmxPlayerState.interlace_method == VS_INTERLACEMETHOD_MAX)
-      m_OmxPlayerState.interlace_method = m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
+      m_OmxPlayerState.interlace_method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
 
     // if deinterlace setting has changed, we should close and open video
     if (m_OmxPlayerState.current_deinterlace != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode ||
        (m_OmxPlayerState.current_deinterlace != VS_DEINTERLACEMODE_OFF &&
-        m_OmxPlayerState.interlace_method != m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod)))
+        m_OmxPlayerState.interlace_method != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod))
     {
       CLog::Log(LOGNOTICE, "%s - Reopen stream due to interlace change (%d,%d,%d,%d)", __FUNCTION__,
         m_OmxPlayerState.current_deinterlace, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode,
-        m_OmxPlayerState.interlace_method, m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod));
+        m_OmxPlayerState.interlace_method, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
 
       m_OmxPlayerState.current_deinterlace = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
-      m_OmxPlayerState.interlace_method    = m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
+      m_OmxPlayerState.interlace_method    = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
       reopen_stream = true;
     }
 
