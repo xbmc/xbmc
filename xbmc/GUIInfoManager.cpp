@@ -1203,44 +1203,24 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         return AddMultiInfo(GUIInfo(CONTAINER_SORT_DIRECTION, order));
       }
     }
-    else if (cat.name == "listitem")
+    else if (cat.name == "listitem" || cat.name == "listitemposition"
+      || cat.name == "listitemnowrap" || cat.name == "listitemabsolute")
     {
       int offset = atoi(cat.param().c_str());
       int ret = TranslateListItem(prop);
       if (ret)
         listItemDependent = true;
       if (offset)
-        return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_WRAP));
-      return ret;
-    }
-    else if (cat.name == "listitemposition")
-    {
-      int offset = atoi(cat.param().c_str());
-      int ret = TranslateListItem(prop);
-      if (ret)
-        listItemDependent = true;
-      if (offset)
-        return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_POSITION));
-      return ret;
-    }
-    else if (cat.name == "listitemnowrap")
-    {
-      int offset = atoi(cat.param().c_str());
-      int ret = TranslateListItem(prop);
-      if (ret)
-        listItemDependent = true;
-      if (offset)
-        return AddMultiInfo(GUIInfo(ret, 0, offset));
-      return ret;
-    }
-    else if (cat.name == "listitemabsolute")
-    {
-      int offset = atoi(cat.param().c_str());
-      int ret = TranslateListItem(prop);
-      if (ret)
-        listItemDependent = true;
-      if (offset)
-        return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_ABSOLUTE));
+      {
+        if (cat.name == "listitem")
+          return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_WRAP));
+        else if (cat.name == "listitemposition")
+          return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_POSITION));
+        else if (cat.name == "listitemabsolute")
+          return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_ABSOLUTE));
+        else if (cat.name == "listitemnowrap")
+          return AddMultiInfo(GUIInfo(ret, 0, offset));
+      }
       return ret;
     }
     else if (cat.name == "visualisation")
