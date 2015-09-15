@@ -386,7 +386,7 @@ bool Gif::ExtractFrames(unsigned int count)
     {
       frame->m_palette.clear();
       ConvertColorTable(frame->m_palette, imageDesc.ColorMap, imageDesc.ColorMap->ColorCount);
-      // TODO save a backup of the palette for frames without a table in case there's no gloabl table.
+      // TODO save a backup of the palette for frames without a table in case there's no global table.
     }
     else if (m_gif->SColorMap)
     {
@@ -455,7 +455,7 @@ bool Gif::PrepareTemplate(const GifFrame &frame)
     memcpy(m_pTemplate, frame.m_pImage, m_imageSize);
     break;
 
-    /* Set area too background color */
+    /* Set area to background color */
   case DISPOSE_BACKGROUND:
   {
     if (!m_hasBackground)
