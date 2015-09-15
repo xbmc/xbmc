@@ -392,6 +392,11 @@ bool Gif::ExtractFrames(unsigned int count)
     {
       frame->m_palette = m_globalPalette;
     }
+    else
+    {
+      CLog::Log(LOGDEBUG, "Gif::ExtractFrames(): No color map found for frame %d", i);
+      continue;
+    }
 
     // fill delay, disposal and transparent color into frame
     if (!GcbToFrame(*frame, i))
