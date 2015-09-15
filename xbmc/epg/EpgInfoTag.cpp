@@ -216,6 +216,21 @@ void CEpgInfoTag::Serialize(CVariant &value) const
   value["isactive"] = IsActive();
   value["wasactive"] = WasActive();
   value["isseries"] = IsSeries();
+  value["islive"] = IsLive();
+  value["isfinal"] = IsFinal();
+  value["ismovie"] = IsMovie();
+  value["isnew"] = IsNew();
+  value["hassubtitles"] = HasSubtitles();
+  value["hassigning"] = HasSigning();
+  value["hasaudiodescription"] = HasAudioDescription();
+  value["iswidescreen"] = IsWidescreen();
+  value["ishd"] = IsHD();
+  value["is3d"] = Is3D();
+  value["is4k"] = Is4K();
+  value["hasmonosound"] = HasMonoSound();
+  value["hasstereosound"] = HasStereoSound();
+  value["hassurroundsound"] = HasSurroundSound();
+  value["flagissplitevent"] = IsSplitEvent();
 }
 
 CDateTime CEpgInfoTag::GetCurrentPlayingTime() const
