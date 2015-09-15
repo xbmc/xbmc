@@ -396,7 +396,7 @@
       "enum": [ "instrument", "style", "mood", "born", "formed",
                 "description", "genre", "died", "disbanded",
                 "yearsactive", "musicbrainzartistid", "fanart",
-                "thumbnail", "compilationartist" ]
+                "thumbnail", "compilationartist", "dateadded" ]
     }
   },
   "Audio.Fields.Album": {
@@ -408,7 +408,7 @@
                 "rating", "year", "musicbrainzalbumid",
                 "musicbrainzalbumartistid", "fanart", "thumbnail",
                 "playcount", "genreid", "artistid", "displayartist",
-                "compilation", "releasetype" ]
+                "compilation", "releasetype", "dateadded" ]
     }
   },
   "Audio.Fields.Song": {
@@ -421,7 +421,7 @@
                 "musicbrainzalbumid", "musicbrainzalbumartistid",
                 "playcount", "fanart", "thumbnail", "file", "albumid",
                 "lastplayed", "disc", "genreid", "artistid", "displayartist",
-                "albumartistid", "albumreleasetype" ]
+                "albumartistid", "albumreleasetype", "dateadded" ]
     }
   },
   "Audio.Album.ReleaseType": {
@@ -432,7 +432,8 @@
   "Audio.Details.Base": {
     "extends": "Media.Details.Base",
     "properties": {
-      "genre": { "$ref": "Array.String" }
+      "genre": { "$ref": "Array.String" },
+      "dateadded": { "type": "string" }
     }
   },
   "Audio.Details.Media": {
@@ -512,7 +513,7 @@
                 "playcount", "writer", "studio", "mpaa", "cast", "country",
                 "imdbnumber", "runtime", "set", "showlink", "streamdetails",
                 "top250", "votes", "fanart", "thumbnail", "file", "sorttitle",
-                "resume", "setid", "dateadded", "tag", "art" ]
+                "resume", "setid", "dateadded", "tag", "art", "userrating" ]
     }
   },
   "Video.Fields.MovieSet": {
@@ -530,7 +531,7 @@
                 "imdbnumber", "premiered", "votes", "lastplayed",
                 "fanart", "thumbnail", "file", "originaltitle",
                 "sorttitle", "episodeguide", "season", "watchedepisodes",
-                "dateadded", "tag", "art" ]
+                "dateadded", "tag", "art", "userrating" ]
     }
   },
   "Video.Fields.Season": {
@@ -549,7 +550,7 @@
                 "productioncode", "season", "episode", "originaltitle",
                 "showtitle", "cast", "streamdetails", "lastplayed", "fanart",
                 "thumbnail", "file", "resume", "tvshowid", "dateadded",
-                "uniqueid", "art", "specialsortseason", "specialsortepisode" ]
+                "uniqueid", "art", "specialsortseason", "specialsortepisode", "userrating" ]
     }
   },
   "Video.Fields.MusicVideo": {
@@ -559,7 +560,7 @@
                 "studio", "year", "plot", "album", "artist",
                 "genre", "track", "streamdetails", "lastplayed",
                 "fanart", "thumbnail", "file", "resume", "dateadded",
-                "tag", "art" ]
+                "tag", "art", "userrating" ]
     }
   },
   "Video.Cast": {
@@ -672,7 +673,8 @@
       "top250": { "type": "integer" },
       "votes": { "type": "string" },
       "setid": { "$ref": "Library.Id" },
-      "tag": { "$ref": "Array.String" }
+      "tag": { "$ref": "Array.String" },
+      "userrating": { "type": "integer" }
     }
   },
   "Video.Details.MovieSet": {
@@ -709,7 +711,8 @@
       "votes": { "type": "string" },
       "episodeguide": { "type": "string" },
       "season": { "type": "integer" },
-      "tag": { "$ref": "Array.String" }
+      "tag": { "$ref": "Array.String" },
+      "userrating": { "type": "integer" }
     }
   },
   "Video.Details.Season": {
@@ -740,7 +743,8 @@
       "cast": { "$ref": "Video.Cast" },
       "tvshowid": { "$ref": "Library.Id" },
       "specialsortseason": { "type": "integer" },
-      "specialsortepisode": { "type": "integer" }
+      "specialsortepisode": { "type": "integer" },
+      "userrating": { "type": "integer" }
     }
   },
   "Video.Details.MusicVideo": {
@@ -753,7 +757,8 @@
       "artist": { "$ref": "Array.String" },
       "genre": { "$ref": "Array.String" },
       "track": { "type": "integer" },
-      "tag": { "$ref": "Array.String" }
+      "tag": { "$ref": "Array.String" },
+      "userrating": { "type": "integer" }
     }
   },
   "PVR.Property.Name": {

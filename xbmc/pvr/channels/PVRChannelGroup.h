@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -21,9 +20,10 @@
  */
 
 #include "FileItem.h"
-#include "PVRChannel.h"
 #include "settings/lib/ISettingCallback.h"
 #include "utils/JobManager.h"
+
+#include "PVRChannel.h"
 
 #include <memory>
 
@@ -271,7 +271,7 @@ namespace PVR
 
     //@}
 
-    virtual void OnSettingChanged(const CSetting *setting);
+    virtual void OnSettingChanged(const CSetting *setting) override;
 
     /*!
      * @brief Get a channel given it's EPG ID.
@@ -314,14 +314,14 @@ namespace PVR
      * @param channel The current channel.
      * @return The channel or NULL if it wasn't found.
      */
-    CFileItemPtr GetByChannelUp(const CFileItem &channel) const;
+    CFileItemPtr GetByChannelUp(const CPVRChannelPtr &channel) const;
 
     /*!
      * @brief Get the previous channel in this group.
      * @param channel The current channel.
      * @return The channel or NULL if it wasn't found.
      */
-    CFileItemPtr GetByChannelDown(const CFileItem &channel) const;
+    CFileItemPtr GetByChannelDown(const CPVRChannelPtr &channel) const;
 
     /*!
      * Get the current members of this group

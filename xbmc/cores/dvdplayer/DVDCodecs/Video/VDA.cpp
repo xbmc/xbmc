@@ -30,7 +30,6 @@ extern "C" {
   #include "libavcodec/vda.h"
 }
 
-using namespace std;
 using namespace VDA;
 
 

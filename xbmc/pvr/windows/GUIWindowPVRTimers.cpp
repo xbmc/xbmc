@@ -18,23 +18,24 @@
  *
  */
 
-#include "GUIWindowPVRTimers.h"
-
 #include "ContextMenuManager.h"
 #include "GUIInfoManager.h"
-#include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "pvr/PVRManager.h"
-#include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
-#include "pvr/timers/PVRTimers.h"
-#include "pvr/addons/PVRClients.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+
+#include "pvr/PVRManager.h"
+#include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
+#include "pvr/timers/PVRTimers.h"
+#include "pvr/addons/PVRClients.h"
+
+#include "GUIWindowPVRTimers.h"
 
 using namespace PVR;
 
@@ -62,7 +63,7 @@ void CGUIWindowPVRTimers::ResetObservers(void)
 std::string CGUIWindowPVRTimers::GetDirectoryPath(void)
 {
   const std::string basePath(
-    CPVRTimersPath(m_bRadio, CSettings::Get().GetBool(CSettings::SETTING_PVRTIMERS_TIMERTYPEFILTER)).GetPath());
+    CPVRTimersPath(m_bRadio, CSettings::GetInstance().GetBool(CSettings::SETTING_PVRTIMERS_TIMERTYPEFILTER)).GetPath());
   return StringUtils::StartsWith(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath() : basePath;
 }
 
@@ -111,7 +112,7 @@ void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &but
   }
 
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
-  CContextMenuManager::Get().AddVisibleItems(pItem, buttons);
+  CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);
 }
 
 bool CGUIWindowPVRTimers::OnAction(const CAction &action)
@@ -152,7 +153,7 @@ bool CGUIWindowPVRTimers::Update(const std::string &strDirectory, bool updateFil
 
 void CGUIWindowPVRTimers::UpdateButtons(void)
 {
-  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNTIMERTYPEFILTER, CSettings::Get().GetBool(CSettings::SETTING_PVRTIMERS_TIMERTYPEFILTER));
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNTIMERTYPEFILTER, CSettings::GetInstance().GetBool(CSettings::SETTING_PVRTIMERS_TIMERTYPEFILTER));
 
   CGUIWindowPVRBase::UpdateButtons();
 
@@ -215,8 +216,8 @@ bool CGUIWindowPVRTimers::OnMessage(CGUIMessage &message)
       }
       else if (message.GetSenderId() == CONTROL_BTNTIMERTYPEFILTER)
       {
-        CSettings::Get().ToggleBool(CSettings::SETTING_PVRTIMERS_TIMERTYPEFILTER);
-        CSettings::Get().Save();
+        CSettings::GetInstance().ToggleBool(CSettings::SETTING_PVRTIMERS_TIMERTYPEFILTER);
+        CSettings::GetInstance().Save();
         Update(GetDirectoryPath());
         bReturn = true;
       }
@@ -293,7 +294,7 @@ bool CGUIWindowPVRTimers::OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON 
 
     bool bDeleteSchedule(false);
     if (ConfirmDeleteTimer(item, bDeleteSchedule))
-      g_PVRTimers->DeleteTimer(*item, false, bDeleteSchedule);
+      CPVRTimers::DeleteTimer(*item, false, bDeleteSchedule);
   }
 
   return bReturn;
@@ -352,7 +353,7 @@ bool CGUIWindowPVRTimers::ActionDeleteTimer(CFileItem *item)
 {
   /* check if the timer tag is valid */
   CPVRTimerInfoTagPtr timerTag = item->GetPVRTimerInfoTag();
-  if (!timerTag || timerTag->m_state == PVR_TIMER_STATE_NEW)
+  if (!timerTag || (timerTag->m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX))
     return false;
 
   bool bDeleteSchedule(false);
@@ -360,7 +361,7 @@ bool CGUIWindowPVRTimers::ActionDeleteTimer(CFileItem *item)
     return false;
 
   /* delete the timer */
-  bool bReturn = g_PVRTimers->DeleteTimer(*item, false, bDeleteSchedule);
+  bool bReturn = CPVRTimers::DeleteTimer(*item, false, bDeleteSchedule);
 
   if (bReturn && (m_vecItems->GetObjectCount() == 0))
   {

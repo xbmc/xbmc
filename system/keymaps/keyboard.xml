@@ -35,6 +35,10 @@
 <!--                                                                                          -->
 <!--  Axis Ids / Analog Controls                                                              -->
 <!--   Coming soon.                                                                           -->
+<!--                                                                                          -->
+<!--  Long presses                                                                            -->
+<!--   A limitation is that if a single press is mapped in a section, a global "longpress"    -->
+<!--   will be ignored. The workaround is to duplicate the long mapping in the section.       -->
 <keymap>
   <global>
     <keyboard>
@@ -52,14 +56,19 @@
       <pageup>PageUp</pageup>
       <pagedown>PageDown</pagedown>
       <return>Select</return>
+      <return mod="longpress">ContextMenu</return>
       <enter>Select</enter>
+      <enter mod="longpress">ContextMenu</enter>
       <backspace>Back</backspace>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
       <key id='65446'>Back</key>
-      <m>ActivateWindow(PlayerControls)</m>
+      <m>Menu</m>
+      <m mod="ctrl">ActivateWindow(PlayerControls)</m>
       <s>ActivateWindow(shutdownmenu)</s>
       <escape>PreviousMenu</escape>
       <i>Info</i>
       <menu>ContextMenu</menu>
+      <menu mod="longpress">Menu</menu>
       <c>ContextMenu</c>
       <space>Pause</space>
       <x>Stop</x>
@@ -156,6 +165,7 @@
       <a mod="ctrl,shift">Notification(MCEKeypress, DVD audio, 3)</a>
       <k mod="ctrl,shift">ReloadKeymaps</k>
       <d mod="ctrl,shift">ToggleDebug</d>
+      <r mod="ctrl,shift">ToggleDirtyRegionVisualization</r>
     </keyboard>
   </global>
   <LoginScreen>
@@ -176,7 +186,7 @@
   </VirtualKeyboard>
   <MyTVChannels>
     <keyboard>
-      <m>Move</m>
+      <m mod="ctrl">Move</m>
     </keyboard>
   </MyTVChannels>
   <MyTVRecordings>
@@ -193,7 +203,7 @@
   </MyTVTimers>
   <MyRadioChannels>
     <keyboard>
-      <m>Move</m>
+      <m mod="ctrl">Move</m>
     </keyboard>
   </MyRadioChannels>
   <MyRadioRecordings>
@@ -257,6 +267,7 @@
       <return>OSD</return>
       <enter>OSD</enter>
       <m>OSD</m>
+      <menu>OSD</menu>
       <i>Info</i>
       <o>CodecInfo</o>
       <z>AspectRatio</z>
@@ -292,11 +303,12 @@
       <i>Back</i>
       <d mod="ctrl">Back</d>
       <m>OSD</m>
+      <menu>OSD</menu>
     </keyboard>
   </FullscreenInfo>
   <PlayerControls>
     <keyboard>
-      <m>Back</m>
+      <m mod="ctrl">Back</m>
     </keyboard>
   </PlayerControls>
   <Visualisation>
@@ -311,6 +323,7 @@
       <return>OSD</return>
       <enter>OSD</enter>
       <m>OSD</m>
+      <menu>OSD</menu>
       <i>Info</i>
       <p>ActivateWindow(VisualisationPresetList)</p>
       <v>Addon.Default.OpenSettings(xbmc.player.musicviz)</v>
@@ -333,6 +346,7 @@
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
       <m>Back</m>
+      <menu>Back</menu>
       <i>Info</i>
       <o>CodecInfo</o>
       <p>ActivateWindow(VisualisationPresetList)</p>
@@ -409,6 +423,7 @@
   <VideoOSD>
     <keyboard>
       <m>Back</m>
+      <menu>Back</menu>
       <g mod="ctrl">Back</g> <!-- MCE Guide button -->
       <i>Info</i>
       <o>CodecInfo</o>
@@ -419,6 +434,7 @@
       <opensquarebracket>BigStepForward</opensquarebracket>
       <closesquarebracket>BigStepBack</closesquarebracket>
       <m>OSD</m>
+      <menu>OSD</menu>
       <i>Info</i>
       <o>CodecInfo</o>
       <z>AspectRatio</z>

@@ -19,10 +19,9 @@
  */
 
 #include "GUIControlGroup.h"
+#include "guiinfo/GUIInfoLabels.h"
 
 #include <cassert>
-
-using namespace std;
 
 CGUIControlGroup::CGUIControlGroup()
 {
@@ -494,7 +493,7 @@ CGUIControl *CGUIControlGroup::GetFocusedControl() const
   if (m_focusedControl)
   {
     // we may have multiple controls with same id - we pick first that has focus
-    pair<LookupMap::const_iterator, LookupMap::const_iterator> range = m_lookup.equal_range(m_focusedControl);
+    std::pair<LookupMap::const_iterator, LookupMap::const_iterator> range = m_lookup.equal_range(m_focusedControl);
     for (LookupMap::const_iterator i = range.first; i != range.second; ++i)
     {
       if (i->second->HasFocus())
@@ -559,10 +558,10 @@ void CGUIControlGroup::AddLookup(CGUIControl *control)
   { // first add all the subitems of this group (if they exist)
     const LookupMap map = ((CGUIControlGroup *)control)->GetLookup();
     for (LookupMap::const_iterator i = map.begin(); i != map.end(); ++i)
-      m_lookup.insert(m_lookup.upper_bound(i->first), make_pair(i->first, i->second));
+      m_lookup.insert(m_lookup.upper_bound(i->first), std::make_pair(i->first, i->second));
   }
   if (control->GetID())
-    m_lookup.insert(m_lookup.upper_bound(control->GetID()), make_pair(control->GetID(), control));
+    m_lookup.insert(m_lookup.upper_bound(control->GetID()), std::make_pair(control->GetID(), control));
   // ensure that our size is what it should be
   if (m_parentControl)
     ((CGUIControlGroup *)m_parentControl)->AddLookup(control);
@@ -631,7 +630,7 @@ bool CGUIControlGroup::InsertControl(CGUIControl *control, const CGUIControl *in
   return false;
 }
 
-void CGUIControlGroup::SaveStates(vector<CControlState> &states)
+void CGUIControlGroup::SaveStates(std::vector<CControlState> &states)
 {
   // save our state, and that of our children
   states.push_back(CControlState(GetID(), m_focusedControl));
@@ -678,7 +677,7 @@ void CGUIControlGroup::ClearAll()
   SetInvalid();
 }
 
-void CGUIControlGroup::GetContainers(vector<CGUIControl *> &containers) const
+void CGUIControlGroup::GetContainers(std::vector<CGUIControl *> &containers) const
 {
   for (ciControls it = m_children.begin();it != m_children.end(); ++it)
   {

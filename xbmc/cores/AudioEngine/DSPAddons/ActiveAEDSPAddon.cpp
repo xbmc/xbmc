@@ -28,7 +28,6 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
-using namespace std;
 using namespace ADDON;
 using namespace ActiveAE;
 
@@ -57,22 +56,22 @@ CActiveAEDSPAddon::~CActiveAEDSPAddon(void)
 void CActiveAEDSPAddon::OnDisabled()
 {
   // restart the ADSP manager if we're disabling a client
-  if (CActiveAEDSP::Get().IsActivated())
-    CActiveAEDSP::Get().Activate(true);
+  if (CActiveAEDSP::GetInstance().IsActivated())
+    CActiveAEDSP::GetInstance().Activate(true);
 }
 
 void CActiveAEDSPAddon::OnEnabled()
 {
   // restart the ADSP manager if we're enabling a client
-  CActiveAEDSP::Get().Activate(true);
+  CActiveAEDSP::GetInstance().Activate(true);
 }
 
 AddonPtr CActiveAEDSPAddon::GetRunningInstance() const
 {
-  if (CActiveAEDSP::Get().IsActivated())
+  if (CActiveAEDSP::GetInstance().IsActivated())
   {
     AddonPtr adspAddon;
-    if (CActiveAEDSP::Get().GetAudioDSPAddon(ID(), adspAddon))
+    if (CActiveAEDSP::GetInstance().GetAudioDSPAddon(ID(), adspAddon))
       return adspAddon;
   }
   return CAddon::GetRunningInstance();
@@ -81,35 +80,35 @@ AddonPtr CActiveAEDSPAddon::GetRunningInstance() const
 void CActiveAEDSPAddon::OnPreInstall()
 {
   // stop the ADSP manager, so running ADSP add-ons are stopped and closed
-  CActiveAEDSP::Get().Deactivate();
+  CActiveAEDSP::GetInstance().Deactivate();
 }
 
 void CActiveAEDSPAddon::OnPostInstall(bool restart, bool update)
 {
   // (re)start the ADSP manager
-  CActiveAEDSP::Get().Activate(true);
+  CActiveAEDSP::GetInstance().Activate(true);
 }
 
 void CActiveAEDSPAddon::OnPreUnInstall()
 {
   // stop the ADSP manager, so running ADSP add-ons are stopped and closed
-  CActiveAEDSP::Get().Deactivate();
+  CActiveAEDSP::GetInstance().Deactivate();
 }
 
 void CActiveAEDSPAddon::OnPostUnInstall()
 {
-  if (CSettings::Get().GetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED))
-    CActiveAEDSP::Get().Activate(true);
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED))
+    CActiveAEDSP::GetInstance().Activate(true);
 }
 
-bool CActiveAEDSPAddon::CanInstall(const std::string &referer)
+bool CActiveAEDSPAddon::CanInstall()
 {
-  if (!CActiveAEDSP::Get().InstallAddonAllowed(ID()))
+  if (!CActiveAEDSP::GetInstance().InstallAddonAllowed(ID()))
   {
-    CActiveAEDSP::Get().MarkAsOutdated(ID(), referer);
+    CActiveAEDSP::GetInstance().MarkAsOutdated(ID());
     return false;
   }
-  return CAddon::CanInstall(referer);
+  return CAddon::CanInstall();
 }
 
 void CActiveAEDSPAddon::ResetProperties(int iClientId /* = AE_DSP_INVALID_ADDON_ID */)
@@ -293,7 +292,7 @@ bool CActiveAEDSPAddon::CheckAPIVersion(void)
 
 bool CActiveAEDSPAddon::GetAddonProperties(void)
 {
-  string strDSPName, strFriendlyName, strAudioDSPVersion;
+  std::string strDSPName, strFriendlyName, strAudioDSPVersion;
   AE_DSP_ADDON_CAPABILITIES addonCapabilities;
 
   /* get the capabilities */
@@ -375,7 +374,7 @@ bool CActiveAEDSPAddon::HaveMenuHooks(AE_DSP_MENUHOOK_CAT cat) const
 {
   if (m_bReadyToUse && m_menuhooks.size() > 0)
   {
-    for (unsigned int i = 0; i < m_menuhooks.size(); i++)
+    for (unsigned int i = 0; i < m_menuhooks.size(); ++i)
     {
       if (m_menuhooks[i].category == cat || m_menuhooks[i].category == AE_DSP_MENUHOOK_ALL)
         return true;
@@ -693,9 +692,9 @@ unsigned int CActiveAEDSPAddon::MasterProcess(const ADDON_HANDLE handle, float *
   return 0;
 }
 
-string CActiveAEDSPAddon::MasterProcessGetStreamInfoString(const ADDON_HANDLE handle)
+std::string CActiveAEDSPAddon::MasterProcessGetStreamInfoString(const ADDON_HANDLE handle)
 {
-  string strReturn;
+  std::string strReturn;
 
   if (!m_bReadyToUse)
     return strReturn;

@@ -56,7 +56,6 @@
 #include "utils/ScreenshotAML.h"
 #endif
 
-using namespace std;
 using namespace XFILE;
 
 CScreenshotSurface::CScreenshotSurface()
@@ -256,12 +255,12 @@ void CScreenShot::TakeScreenshot(const std::string &filename, bool sync)
 void CScreenShot::TakeScreenshot()
 {
   static bool savingScreenshots = false;
-  static vector<std::string> screenShots;
+  static std::vector<std::string> screenShots;
   bool promptUser = false;
   std::string strDir;
 
   // check to see if we have a screenshot folder yet
-  CSettingPath *screenshotSetting = (CSettingPath*)CSettings::Get().GetSetting(CSettings::SETTING_DEBUG_SCREENSHOTPATH);
+  CSettingPath *screenshotSetting = (CSettingPath*)CSettings::GetInstance().GetSetting(CSettings::SETTING_DEBUG_SCREENSHOTPATH);
   if (screenshotSetting != NULL)
   {
     strDir = screenshotSetting->GetValue();

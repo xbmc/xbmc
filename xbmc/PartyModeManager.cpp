@@ -67,9 +67,9 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   if (!strXspPath.empty()) //if a path to a smartplaylist is supplied use it
     partyModePath = strXspPath;
   else if (m_bIsVideo)
-    partyModePath = CProfilesManager::Get().GetUserDataItem("PartyMode-Video.xsp");
+    partyModePath = CProfilesManager::GetInstance().GetUserDataItem("PartyMode-Video.xsp");
   else
-    partyModePath = CProfilesManager::Get().GetUserDataItem("PartyMode.xsp");
+    partyModePath = CProfilesManager::GetInstance().GetUserDataItem("PartyMode.xsp");
 
   playlistLoaded=playlist.Load(partyModePath);
 
@@ -714,6 +714,6 @@ void CPartyModeManager::Announce()
     
     data["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
     data["property"]["partymode"] = m_bEnabled;
-    ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPropertyChanged", data);
+    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPropertyChanged", data);
   }
 }

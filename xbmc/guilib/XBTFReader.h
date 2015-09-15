@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -18,32 +19,31 @@
  *
  */
 
-#ifndef XBTFREADER_H_
-#define XBTFREADER_H_
-
-#include <vector>
-#include <map>
+#include <memory>
 #include <string>
+#include <vector>
+
+#include <stdint.h>
+
 #include "XBTF.h"
 
-class CXBTFReader
+class CXBTFReader : public CXBTFBase
 {
 public:
   CXBTFReader();
+  ~CXBTFReader();
+
+  bool Open(const std::string& path);
   bool IsOpen() const;
-  bool Open(const std::string& fileName);
   void Close();
-  time_t GetLastModificationTimestamp();
-  bool Exists(const std::string& name);
-  CXBTFFile* Find(const std::string& name);
-  bool Load(const CXBTFFrame& frame, unsigned char* buffer);
-  std::vector<CXBTFFile>&  GetFiles();
+
+  time_t GetLastModificationTimestamp() const;
+
+  bool Load(const CXBTFFrame& frame, unsigned char* buffer) const;
 
 private:
-  CXBTF      m_xbtf;
-  std::string m_fileName;
-  FILE*      m_file;
-  std::map<std::string, CXBTFFile> m_filesMap;
+  std::string m_path;
+  FILE* m_file;
 };
 
-#endif
+typedef std::shared_ptr<CXBTFReader> CXBTFReaderPtr;

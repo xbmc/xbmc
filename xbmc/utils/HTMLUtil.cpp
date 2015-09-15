@@ -22,9 +22,7 @@
 #include "utils/StringUtils.h"
 #include <wctype.h>
 
-using namespace std;
 using namespace HTML;
-
 
 CHTMLUtil::CHTMLUtil(void)
 {}

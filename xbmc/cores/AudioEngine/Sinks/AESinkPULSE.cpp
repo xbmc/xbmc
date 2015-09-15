@@ -25,8 +25,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "Application.h"
 
-using namespace std;
-
 static const char *ContextStateToString(pa_context_state s)
 {
   switch (s)
@@ -374,8 +372,8 @@ static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eo
   {
     CAEDeviceInfo device;
     bool valid = true;
-    device.m_deviceName = string(i->name);
-    device.m_displayName = string(i->description);
+    device.m_deviceName = std::string(i->name);
+    device.m_displayName = std::string(i->description);
     if (i->active_port && i->active_port->description)
       device.m_displayNameExtra = std::string((i->active_port->description)).append(" (PULSEAUDIO)");
     else
@@ -446,6 +444,7 @@ CAESinkPULSE::CAESinkPULSE()
   m_Context = NULL;
   m_IsStreamPaused = false;
   m_volume_needs_update = false;
+  m_periodSize = 0;
   pa_cvolume_init(&m_Volume);
 }
 
@@ -466,6 +465,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   m_Channels = 0;
   m_Stream = NULL;
   m_Context = NULL;
+  m_periodSize = 0;
 
   if (!SetupContext(NULL, &m_Context, &m_MainLoop))
   {
@@ -645,6 +645,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   {
     unsigned int packetSize = a->minreq;
     m_BufferSize = a->tlength;
+    m_periodSize = a->minreq;
 
     format.m_frames = packetSize / frameSize;
   }
@@ -692,6 +693,7 @@ void CAESinkPULSE::Deinitialize()
   CSingleLock lock(m_sec);
   m_IsAllocated = false;
   m_passthrough = false;
+  m_periodSize = 0;
 
   if (m_Stream)
     Drain();
@@ -769,8 +771,8 @@ unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsig
   unsigned int available = frames * m_format.m_frameSize;
   unsigned int length = 0;
   void *buffer = data[0]+offset*m_format.m_frameSize;
-  // revisit me after Gotham - should use a callback for the write function
-  while ((length = pa_stream_writable_size(m_Stream)) == 0)
+  // care a bit for fragmentation
+  while ((length = pa_stream_writable_size(m_Stream)) < m_periodSize)
     pa_threaded_mainloop_wait(m_MainLoop);
 
   length =  std::min((unsigned int)length, available);
@@ -783,8 +785,9 @@ unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsig
     CLog::Log(LOGERROR, "CPulseAudioDirectSound::AddPackets - pa_stream_write failed\n");
     return 0;
   }
+  unsigned int res = (unsigned int)(length / m_format.m_frameSize);
 
-  return (unsigned int)(length / m_format.m_frameSize);
+  return res;
 }
 
 void CAESinkPULSE::Drain()

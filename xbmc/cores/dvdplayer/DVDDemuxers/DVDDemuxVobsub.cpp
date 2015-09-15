@@ -29,8 +29,6 @@
 
 #include <string.h>
 
-using namespace std;
-
 CDVDDemuxVobsub::CDVDDemuxVobsub()
 {
 }
@@ -44,16 +42,16 @@ CDVDDemuxVobsub::~CDVDDemuxVobsub()
   m_Streams.clear();
 }
 
-bool CDVDDemuxVobsub::Open(const string& filename, int source, const string& subfilename)
+bool CDVDDemuxVobsub::Open(const std::string& filename, int source, const std::string& subfilename)
 {
   m_Filename = filename;
   m_source = source;
 
-  unique_ptr<CDVDSubtitleStream> pStream(new CDVDSubtitleStream());
+  std::unique_ptr<CDVDSubtitleStream> pStream(new CDVDSubtitleStream());
   if(!pStream->Open(filename))
     return false;
 
-  string vobsub = subfilename;
+  std::string vobsub = subfilename;
   if ( vobsub == "")
   {
     vobsub = filename;
@@ -147,7 +145,7 @@ bool CDVDDemuxVobsub::SeekTime(int time, bool backwords, double* startpts)
 
 DemuxPacket* CDVDDemuxVobsub::Read()
 {
-  vector<STimestamp>::iterator current;
+  std::vector<STimestamp>::iterator current;
   do {
     if(m_Timestamp == m_Timestamps.end())
       return NULL;
@@ -195,7 +193,7 @@ bool CDVDDemuxVobsub::ParseDelay(SState& state, char* line)
 
 bool CDVDDemuxVobsub::ParseId(SState& state, char* line)
 {
-  unique_ptr<CStream> stream(new CStream(this));
+  std::unique_ptr<CStream> stream(new CStream(this));
 
   while(*line == ' ') line++;
   strncpy(stream->language, line, 2);

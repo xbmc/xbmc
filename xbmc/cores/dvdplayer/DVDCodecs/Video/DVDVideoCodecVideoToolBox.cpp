@@ -1063,7 +1063,7 @@ CDVDVideoCodecVideoToolBox::~CDVDVideoCodecVideoToolBox()
 
 bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  if (CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX) && !hints.software)
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX) && !hints.software)
   {
     int width  = hints.width;
     int height = hints.height;

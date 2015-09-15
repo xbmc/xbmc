@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -20,11 +19,12 @@
  *
  */
 
-#include <vector>
-
 #include "FileItem.h"
-#include "PVRChannelGroup.h"
 #include "threads/CriticalSection.h"
+
+#include "PVRChannelGroup.h"
+
+#include <vector>
 
 namespace PVR
 {

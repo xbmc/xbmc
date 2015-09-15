@@ -37,7 +37,7 @@ protected:
   virtual void FreeSettingsControls();
 
   // implementation of ISettingControlCreator
-  virtual ISettingControl* CreateControl(const std::string &controlType);
+  virtual ISettingControl* CreateControl(const std::string &controlType) const override;
 
   CSettingsManager *m_settingsManager;
 };

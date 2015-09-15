@@ -30,10 +30,10 @@
 #define DLL_PATH_CPLUFF        "libcpluff-@ARCH@.so"
 #define DLL_PATH_IMAGELIB      "libImageLib-@ARCH@.so"
 #define DLL_PATH_LIBEXIF       "libexif-@ARCH@.so"
-#define DLL_PATH_MEDIAINFO     "libmediainfo-@ARCH@.so"
 
 #define DLL_PATH_LIBRTMP       "@RTMP_SONAME@"
 #define DLL_PATH_LIBNFS        "@NFS_SONAME@"
+#define DLL_PATH_LIBGIF        "@GIF_SONAME@"
 #define DLL_PATH_LIBPLIST      "@PLIST_SONAME@"
 #define DLL_PATH_LIBSHAIRPLAY  "@SHAIRPLAY_SONAME@"
 #define DLL_PATH_LIBCEC        "@LIBCEC_SONAME@"
@@ -47,10 +47,6 @@
 #define DLL_PATH_LIBDVDNAV     "libdvdnav-@ARCH@.so"
 #define DLL_PATH_LIBMPEG2      "@MPEG2_SONAME@"
 #define DLL_PATH_LIBSTAGEFRIGHTICS    "libXBMCvcodec_stagefrightICS-@ARCH@.so"
-
-/* cdrip */
-#define DLL_PATH_OGG           "@OGG_SONAME@"
-#define DLL_PATH_VORBIS        "@VORBIS_SONAME@"
 
 /* libbluray */
 #define DLL_PATH_LIBBLURAY     "@BLURAY_SONAME@"

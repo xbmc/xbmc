@@ -171,23 +171,23 @@ std::string CAEFactory::GetDefaultDevice(bool passthrough)
 bool CAEFactory::SupportsRaw(AEDataFormat format, int samplerate)
 {
   // check if passthrough is enabled
-  if (!CSettings::Get().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH))
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH))
     return false;
 
   // fixed config disabled passthrough
-  if (CSettings::Get().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) == AE_CONFIG_FIXED)
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) == AE_CONFIG_FIXED)
     return false;
 
   // check if the format is enabled in settings
-  if (format == AE_FMT_AC3 && !CSettings::Get().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH))
+  if (format == AE_FMT_AC3 && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH))
     return false;
-  if (format == AE_FMT_DTS && !CSettings::Get().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH))
+  if (format == AE_FMT_DTS && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH))
     return false;
-  if (format == AE_FMT_EAC3 && !CSettings::Get().GetBool(CSettings::SETTING_AUDIOOUTPUT_EAC3PASSTHROUGH))
+  if (format == AE_FMT_EAC3 && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_EAC3PASSTHROUGH))
     return false;
-  if (format == AE_FMT_TRUEHD && !CSettings::Get().GetBool(CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH))
+  if (format == AE_FMT_TRUEHD && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH))
     return false;
-  if (format == AE_FMT_DTSHD && !CSettings::Get().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH))
+  if (format == AE_FMT_DTSHD && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH))
     return false;
 
   if(AE)

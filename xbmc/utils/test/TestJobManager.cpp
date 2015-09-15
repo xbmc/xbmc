@@ -31,17 +31,17 @@ protected:
   TestJobManager()
   {
     /* TODO
-    CSettingsCategory* net = CSettings::Get().AddCategory(4, "network", 798);
-    CSettings::Get().AddBool(net, CSettings::SETTING_NETWORK_USEHTTPPROXY, 708, false);
-    CSettings::Get().AddString(net, CSettings::SETTING_NETWORK_HTTPPROXYSERVER, 706, "",
+    CSettingsCategory* net = CSettings::GetInstance().AddCategory(4, "network", 798);
+    CSettings::GetInstance().AddBool(net, CSettings::SETTING_NETWORK_USEHTTPPROXY, 708, false);
+    CSettings::GetInstance().AddString(net, CSettings::SETTING_NETWORK_HTTPPROXYSERVER, 706, "",
                             EDIT_CONTROL_INPUT);
-    CSettings::Get().AddString(net, CSettings::SETTING_NETWORK_HTTPPROXYPORT, 730, "8080",
+    CSettings::GetInstance().AddString(net, CSettings::SETTING_NETWORK_HTTPPROXYPORT, 730, "8080",
                             EDIT_CONTROL_NUMBER_INPUT, false, 707);
-    CSettings::Get().AddString(net, CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME, 1048, "",
+    CSettings::GetInstance().AddString(net, CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME, 1048, "",
                             EDIT_CONTROL_INPUT);
-    CSettings::Get().AddString(net, CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD, 733, "",
+    CSettings::GetInstance().AddString(net, CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD, 733, "",
                             EDIT_CONTROL_HIDDEN_INPUT,true,733);
-    CSettings::Get().AddInt(net, CSettings::SETTING_NETWORK_BANDWIDTH, 14041, 0, 0, 512, 100*1024,
+    CSettings::GetInstance().AddInt(net, CSettings::SETTING_NETWORK_BANDWIDTH, 14041, 0, 0, 512, 100*1024,
                          SPIN_CONTROL_INT_PLUS, 14048, 351);
     */
   }
@@ -51,7 +51,7 @@ protected:
     /* Always cancel jobs test completion */
     CJobManager::GetInstance().CancelJobs();
     CJobManager::GetInstance().Restart();
-    CSettings::Get().Unload();
+    CSettings::GetInstance().Unload();
   }
 };
 

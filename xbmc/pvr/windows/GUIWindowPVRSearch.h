@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -20,8 +19,8 @@
  *
  */
 
-#include "GUIWindowPVRBase.h"
 #include "epg/EpgSearchFilter.h"
+#include "GUIWindowPVRBase.h"
 
 namespace PVR
 {
@@ -43,6 +42,7 @@ namespace PVR
   private:
     bool OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
 

@@ -24,7 +24,6 @@
 #include "guilib/GUIControl.h"
 #include "guilib/GUIListItemLayout.h"
 #include "guilib/IGUIContainer.h"
-#include "threads/SystemClock.h"
 
 namespace EPG
 {
@@ -229,7 +228,5 @@ namespace EPG
     float m_channelScrollOffset;
 
     CCriticalSection m_critSection;
-
-    XbmcThreads::EndTime m_nextUpdateTimeout;
   };
 }

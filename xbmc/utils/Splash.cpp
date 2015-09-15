@@ -38,7 +38,7 @@ CSplash::~CSplash()
   delete m_image;
 }
 
-CSplash& CSplash::Get()
+CSplash& CSplash::GetInstance()
 {
   static CSplash instance;
   return instance;

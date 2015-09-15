@@ -28,7 +28,6 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
-using namespace std;
 using namespace dbiplus;
 using namespace ActiveAE;
 using namespace ADDON;
@@ -91,12 +90,12 @@ void CActiveAEDSPDatabase::CreateTables()
 
   // disable all Audio DSP add-on when started the first time
   ADDON::VECADDONS addons;
-  if (CAddonMgr::Get().GetAddons(ADDON_ADSPDLL, addons, true))
+  if (CAddonMgr::GetInstance().GetAddons(ADDON_ADSPDLL, addons, true))
     CLog::Log(LOGERROR, "Audio DSP - %s - failed to get add-ons from the add-on manager", __FUNCTION__);
   else
   {
-    for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
-      CAddonMgr::Get().DisableAddon(it->get()->ID());
+    for (IVECADDONS it = addons.begin(); it != addons.end(); ++it)
+      CAddonMgr::GetInstance().DisableAddon(it->get()->ID());
   }
 }
 
@@ -172,11 +171,11 @@ bool CActiveAEDSPDatabase::DeleteMode(const CActiveAEDSPMode &mode)
   return DeleteValues("modes", filter);
 }
 
-bool CActiveAEDSPDatabase::PersistModes(vector<CActiveAEDSPModePtr> &modes, int modeType)
+bool CActiveAEDSPDatabase::PersistModes(std::vector<CActiveAEDSPModePtr> &modes, int modeType)
 {
   bool bReturn(true);
 
-  for (unsigned int iModePtr = 0; iModePtr < modes.size(); iModePtr++)
+  for (unsigned int iModePtr = 0; iModePtr < modes.size(); ++iModePtr)
   {
     CActiveAEDSPModePtr member = modes.at(iModePtr);
     if (!member->IsInternal() && (member->IsChanged() || member->IsNew()))
@@ -211,7 +210,7 @@ bool CActiveAEDSPDatabase::AddUpdateMode(CActiveAEDSPMode &mode)
 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    string strSQL = PrepareSQL("SELECT * FROM modes WHERE modes.iAddonId=%i AND modes.iAddonModeNumber=%i AND modes.iType=%i", mode.AddonID(), mode.AddonModeNumber(), mode.ModeType());
+    std::string strSQL = PrepareSQL("SELECT * FROM modes WHERE modes.iAddonId=%i AND modes.iAddonModeNumber=%i AND modes.iType=%i", mode.AddonID(), mode.AddonModeNumber(), mode.ModeType());
 
     m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() > 0)
@@ -296,7 +295,7 @@ bool CActiveAEDSPDatabase::AddUpdateMode(CActiveAEDSPMode &mode)
 
 int CActiveAEDSPDatabase::GetModeId(const CActiveAEDSPMode &mode)
 {
-  string id = GetSingleValue(PrepareSQL("SELECT * from modes WHERE modes.iAddonId=%i and modes.iAddonModeNumber=%i and modes.iType=%i", mode.AddonID(), mode.AddonModeNumber(), mode.ModeType()));
+  std::string id = GetSingleValue(PrepareSQL("SELECT * from modes WHERE modes.iAddonId=%i and modes.iAddonModeNumber=%i and modes.iType=%i", mode.AddonID(), mode.AddonModeNumber(), mode.ModeType()));
   if (id.empty())
     return -1;
   return strtol(id.c_str(), NULL, 10);
@@ -306,7 +305,7 @@ int CActiveAEDSPDatabase::GetModes(AE_DSP_MODELIST &results, int modeType)
 {
   int iReturn(0);
 
-  string strQuery=PrepareSQL("SELECT * FROM modes WHERE modes.iType=%i ORDER BY iPosition", modeType);
+  std::string strQuery=PrepareSQL("SELECT * FROM modes WHERE modes.iType=%i ORDER BY iPosition", modeType);
 
   m_pDS->query( strQuery.c_str() );
   if (m_pDS->num_rows() > 0)
@@ -338,7 +337,7 @@ int CActiveAEDSPDatabase::GetModes(AE_DSP_MODELIST &results, int modeType)
         CLog::Log(LOGDEBUG, "Audio DSP - %s - mode '%s' loaded from the database", __FUNCTION__, mode->m_strModeName.c_str());
 #endif
         AE_DSP_ADDON addon;
-        if (CActiveAEDSP::Get().GetAudioDSPAddon(mode->m_iAddonId, addon))
+        if (CActiveAEDSP::GetInstance().GetAudioDSPAddon(mode->m_iAddonId, addon))
           results.push_back(AE_DSP_MODEPAIR(mode, addon));
 
         m_pDS->next();
@@ -370,7 +369,7 @@ bool CActiveAEDSPDatabase::DeleteActiveDSPSettings()
 
 bool CActiveAEDSPDatabase::DeleteActiveDSPSettings(const CFileItem &item)
 {
-  string strPath, strFileName;
+  std::string strPath, strFileName;
   URIUtils::Split(item.GetPath(), strPath, strFileName);
   return ExecuteQuery(PrepareSQL("DELETE FROM settings WHERE settings.strPath='%s' and settings.strFileName='%s'", strPath.c_str() , strFileName.c_str()));
 }
@@ -381,9 +380,9 @@ bool CActiveAEDSPDatabase::GetActiveDSPSettings(const CFileItem &item, CAudioSet
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    string strPath, strFileName;
+    std::string strPath, strFileName;
     URIUtils::Split(item.GetPath(), strPath, strFileName);
-    string strSQL=PrepareSQL("SELECT * FROM settings WHERE settings.strPath='%s' and settings.strFileName='%s'", strPath.c_str() , strFileName.c_str());
+    std::string strSQL=PrepareSQL("SELECT * FROM settings WHERE settings.strPath='%s' and settings.strFileName='%s'", strPath.c_str() , strFileName.c_str());
 
     m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() > 0)
@@ -416,9 +415,9 @@ void CActiveAEDSPDatabase::SetActiveDSPSettings(const CFileItem &item, const CAu
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    string strPath, strFileName;
+    std::string strPath, strFileName;
     URIUtils::Split(item.GetPath(), strPath, strFileName);
-    string strSQL = StringUtils::Format("select * from settings WHERE settings.strPath='%s' and settings.strFileName='%s'", strPath.c_str() , strFileName.c_str());
+    std::string strSQL = StringUtils::Format("select * from settings WHERE settings.strPath='%s' and settings.strFileName='%s'", strPath.c_str() , strFileName.c_str());
     m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() > 0)
     {
@@ -474,7 +473,7 @@ void CActiveAEDSPDatabase::EraseActiveDSPSettings()
   ExecuteQuery(PrepareSQL("DELETE from settings"));
 }
 
-void CActiveAEDSPDatabase::SplitPath(const string& strFileNameAndPath, string& strPath, string& strFileName)
+void CActiveAEDSPDatabase::SplitPath(const std::string& strFileNameAndPath, std::string& strPath, std::string& strFileName)
 {
   if (URIUtils::IsStack(strFileNameAndPath) || StringUtils::StartsWithNoCase(strFileNameAndPath, "rar://") || StringUtils::StartsWithNoCase(strFileNameAndPath, "zip://"))
   {
@@ -500,7 +499,7 @@ bool CActiveAEDSPDatabase::DeleteAddons()
   return DeleteValues("addons");
 }
 
-bool CActiveAEDSPDatabase::Delete(const string &strAddonUid)
+bool CActiveAEDSPDatabase::Delete(const std::string &strAddonUid)
 {
   /* invalid addon uid */
   if (strAddonUid.empty())
@@ -515,10 +514,10 @@ bool CActiveAEDSPDatabase::Delete(const string &strAddonUid)
   return DeleteValues("addons", filter);
 }
 
-int CActiveAEDSPDatabase::GetAudioDSPAddonId(const string &strAddonUid)
+int CActiveAEDSPDatabase::GetAudioDSPAddonId(const std::string &strAddonUid)
 {
-  string strWhereClause = PrepareSQL("sUid = '%s'", strAddonUid.c_str());
-  string strValue = GetSingleValue("addons", "idAddon", strWhereClause);
+  std::string strWhereClause = PrepareSQL("sUid = '%s'", strAddonUid.c_str());
+  std::string strValue = GetSingleValue("addons", "idAddon", strWhereClause);
 
   if (strValue.empty())
     return -1;
@@ -526,7 +525,7 @@ int CActiveAEDSPDatabase::GetAudioDSPAddonId(const string &strAddonUid)
   return strtol(strValue.c_str(), NULL, 10);
 }
 
-int CActiveAEDSPDatabase::Persist(const AddonPtr addon)
+int CActiveAEDSPDatabase::Persist(const AddonPtr& addon)
 {
   int iReturn(-1);
 
@@ -537,7 +536,7 @@ int CActiveAEDSPDatabase::Persist(const AddonPtr addon)
     return iReturn;
   }
 
-  string strQuery = PrepareSQL("REPLACE INTO addons (sName, sUid) VALUES ('%s', '%s');",
+  std::string strQuery = PrepareSQL("REPLACE INTO addons (sName, sUid) VALUES ('%s', '%s');",
       addon->Name().c_str(), addon->ID().c_str());
 
   if (ExecuteQuery(strQuery))

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<defaultcontrol always="true">50</defaultcontrol>
+	<menucontrol>9000</menucontrol>
 	<allowoverlay>no</allowoverlay>
 	<views>50</views>
 	<controls>
@@ -95,7 +96,7 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>left</align>
 						<aligny>center</aligny>
-						<label>$INFO[ListItem.Label]</label>
+						<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
 					</control>
 					<control type="label">
 						<left>225</left>
@@ -112,19 +113,18 @@
 					<control type="image">
 						<left>730</left>
 						<top>14</top>
-						<width>20</width>
-						<height>16</height>
-						<texture>$INFO[ListItem.Overlay]</texture>
-						<aspectratio>keep</aspectratio>
-						<visible>!ListItem.IsResumable</visible>
-					</control>
-					<control type="image">
-						<left>730</left>
-						<top>14</top>
 						<width>16</width>
 						<height>16</height>
 						<texture>OverlayWatching.png</texture>
 						<visible>ListItem.IsResumable</visible>
+					</control>
+					<control type="image">
+						<left>730</left>
+						<top>14</top>
+						<width>20</width>
+						<height>16</height>
+						<texture>$INFO[ListItem.Overlay]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 				</itemlayout>
 				<focusedlayout height="40" width="760">
@@ -172,7 +172,7 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>left</align>
 						<aligny>center</aligny>
-						<label>$INFO[ListItem.Label]</label>
+						<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
 					</control>
 					<control type="label">
 						<left>225</left>
@@ -189,19 +189,18 @@
 					<control type="image">
 						<left>730</left>
 						<top>14</top>
-						<width>20</width>
-						<height>16</height>
-						<texture>$INFO[ListItem.Overlay]</texture>
-						<aspectratio>keep</aspectratio>
-						<visible>!ListItem.IsResumable</visible>
-					</control>
-					<control type="image">
-						<left>730</left>
-						<top>14</top>
 						<width>16</width>
 						<height>16</height>
 						<texture>OverlayWatching.png</texture>
 						<visible>ListItem.IsResumable</visible>
+					</control>
+					<control type="image">
+						<left>730</left>
+						<top>14</top>
+						<width>20</width>
+						<height>16</height>
+						<texture>$INFO[ListItem.Overlay]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 				</focusedlayout>
 			</control>
@@ -254,7 +253,7 @@
 					<top>230</top>
 					<width>290</width>
 					<height>25</height>
-					<label>$INFO[Container(50).ListItem.Title]</label>
+					<label>$INFO[Container(50).ListItem.Title]$INFO[ListItem.EpisodeName, (,)]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font13</font>

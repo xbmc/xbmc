@@ -22,7 +22,6 @@
 #include "input/MouseStat.h"
 #include "input/InputManager.h"
 #include "windowing/WindowingFactory.h"
-#include <climits>
 #define ID_POINTER 10
 
 CGUIWindowPointer::CGUIWindowPointer(void)
@@ -32,7 +31,7 @@ CGUIWindowPointer::CGUIWindowPointer(void)
   m_loadType = LOAD_ON_GUI_INIT;
   m_needsScaling = false;
   m_active = false;
-  m_renderOrder = INT_MAX - 1;
+  m_renderOrder = RENDER_ORDER_WINDOW_POINTER;
 }
 
 CGUIWindowPointer::~CGUIWindowPointer(void)
@@ -59,7 +58,7 @@ void CGUIWindowPointer::UpdateVisibility()
 {
   if(g_Windowing.HasCursor())
   {
-    if (CInputManager::Get().IsMouseActive())
+    if (CInputManager::GetInstance().IsMouseActive())
       Open();
     else
       Close();
@@ -76,19 +75,19 @@ void CGUIWindowPointer::OnWindowLoaded()
   CGUIWindow::OnWindowLoaded();
   DynamicResourceAlloc(false);
   m_pointer = 0;
-  m_renderOrder = INT_MAX - 1;
+  m_renderOrder = RENDER_ORDER_WINDOW_POINTER;
 }
 
 void CGUIWindowPointer::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  bool active = CInputManager::Get().IsMouseActive();
+  bool active = CInputManager::GetInstance().IsMouseActive();
   if (active != m_active)
   {
     MarkDirtyRegion();
     m_active = active;
   }
-  MousePosition pos = CInputManager::Get().GetMousePosition();
+  MousePosition pos = CInputManager::GetInstance().GetMousePosition();
   SetPosition((float)pos.x, (float)pos.y);
-  SetPointer(CInputManager::Get().GetMouseState());
+  SetPointer(CInputManager::GetInstance().GetMouseState());
   return CGUIWindow::Process(currentTime, dirtyregions);
 }

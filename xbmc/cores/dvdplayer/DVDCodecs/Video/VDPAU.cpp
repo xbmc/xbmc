@@ -66,6 +66,9 @@ CDecoder::Desc decoder_profiles[] = {
 {"VC1_MAIN",     VDP_DECODER_PROFILE_VC1_MAIN},
 {"VC1_ADVANCED", VDP_DECODER_PROFILE_VC1_ADVANCED},
 {"MPEG4_PART2_ASP", VDP_DECODER_PROFILE_MPEG4_PART2_ASP},
+#ifdef VDP_DECODER_PROFILE_HEVC_MAIN
+{"HEVC_MAIN", VDP_DECODER_PROFILE_HEVC_MAIN},
+#endif
 };
 const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(CDecoder::Desc);
 
@@ -844,6 +847,12 @@ void CDecoder::ReadFormatOf( AVCodecID codec
       vdp_decoder_profile = VDP_DECODER_PROFILE_H264_HIGH;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
+#ifdef VDP_DECODER_PROFILE_HEVC_MAIN
+    case AV_CODEC_ID_HEVC:
+      vdp_decoder_profile = VDP_DECODER_PROFILE_HEVC_MAIN;
+      vdp_chroma_type     = VDP_CHROMA_TYPE_420;
+      break;
+#endif
     case AV_CODEC_ID_WMV3:
       vdp_decoder_profile = VDP_DECODER_PROFILE_VC1_MAIN;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
@@ -882,11 +891,17 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
 
   ReadFormatOf(avctx->codec_id, vdp_decoder_profile, m_vdpauConfig.vdpChromaType);
 
-  if(avctx->codec_id == AV_CODEC_ID_H264)
+  if (avctx->codec_id == AV_CODEC_ID_H264)
   {
     m_vdpauConfig.maxReferences = ref_frames;
     if (m_vdpauConfig.maxReferences > 16) m_vdpauConfig.maxReferences = 16;
     if (m_vdpauConfig.maxReferences < 5)  m_vdpauConfig.maxReferences = 5;
+  }
+  else if (avctx->codec_id == AV_CODEC_ID_HEVC)
+  {
+    // The DPB works quite differently in hevc and there isn't  a per-file max
+    // reference number, so we force the maximum number (source: upstream ffmpeg)
+    m_vdpauConfig.maxReferences = 16;
   }
   else
     m_vdpauConfig.maxReferences = 2;
@@ -1715,30 +1730,30 @@ void CMixer::CheckFeatures()
     SetHWUpscaling();
     m_Upscale = m_config.upscale;
   }
-  if (m_Brightness != CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness ||
-      m_Contrast   != CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast ||
+  if (m_Brightness != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness ||
+      m_Contrast   != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast ||
       m_ColorMatrix != m_mixerInput[1].DVDPic.color_matrix)
   {
     SetColor();
-    m_Brightness = CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness;
-    m_Contrast = CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast;
+    m_Brightness = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness;
+    m_Contrast = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast;
     m_ColorMatrix = m_mixerInput[1].DVDPic.color_matrix;
   }
-  if (m_NoiseReduction != CMediaSettings::Get().GetCurrentVideoSettings().m_NoiseReduction)
+  if (m_NoiseReduction != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_NoiseReduction)
   {
-    m_NoiseReduction = CMediaSettings::Get().GetCurrentVideoSettings().m_NoiseReduction;
+    m_NoiseReduction = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_NoiseReduction;
     SetNoiseReduction();
   }
-  if (m_Sharpness != CMediaSettings::Get().GetCurrentVideoSettings().m_Sharpness)
+  if (m_Sharpness != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Sharpness)
   {
-    m_Sharpness = CMediaSettings::Get().GetCurrentVideoSettings().m_Sharpness;
+    m_Sharpness = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Sharpness;
     SetSharpness();
   }
-  if (m_DeintMode != CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode ||
-      m_Deint     != CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod)
+  if (m_DeintMode != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode ||
+      m_Deint     != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod)
   {
-    m_DeintMode = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
-    m_Deint     = CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod;
+    m_DeintMode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
+    m_Deint     = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
     SetDeinterlacing();
   }
 }
@@ -1867,10 +1882,10 @@ void CMixer::SetColor()
 {
   VdpStatus vdp_st;
 
-  if (m_Brightness != CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness)
-    m_Procamp.brightness = (float)((CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness)-50) / 100;
-  if (m_Contrast != CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast)
-    m_Procamp.contrast = (float)((CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast)+50) / 100;
+  if (m_Brightness != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness)
+    m_Procamp.brightness = (float)((CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness)-50) / 100;
+  if (m_Contrast != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast)
+    m_Procamp.contrast = (float)((CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast)+50) / 100;
 
   VdpColorStandard colorStandard;
   switch(m_mixerInput[1].DVDPic.color_matrix)
@@ -1896,7 +1911,7 @@ void CMixer::SetColor()
   }
 
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_CSC_MATRIX };
-  if (CSettings::Get().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
   {
     float studioCSC[3][4];
     GenerateStudioCSCMatrix(colorStandard, studioCSC);
@@ -1925,7 +1940,7 @@ void CMixer::SetNoiseReduction()
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_NOISE_REDUCTION_LEVEL };
   VdpStatus vdp_st;
 
-  if (!CMediaSettings::Get().GetCurrentVideoSettings().m_NoiseReduction)
+  if (!CMediaSettings::GetInstance().GetCurrentVideoSettings().m_NoiseReduction)
   {
     VdpBool enabled[]= {0};
     vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
@@ -1935,8 +1950,8 @@ void CMixer::SetNoiseReduction()
   VdpBool enabled[]={1};
   vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
   CheckStatus(vdp_st, __LINE__);
-  void* nr[] = { &CMediaSettings::Get().GetCurrentVideoSettings().m_NoiseReduction };
-  CLog::Log(LOGNOTICE,"Setting Noise Reduction to %f",CMediaSettings::Get().GetCurrentVideoSettings().m_NoiseReduction);
+  void* nr[] = { &CMediaSettings::GetInstance().GetCurrentVideoSettings().m_NoiseReduction };
+  CLog::Log(LOGNOTICE,"Setting Noise Reduction to %f",CMediaSettings::GetInstance().GetCurrentVideoSettings().m_NoiseReduction);
   vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, nr);
   CheckStatus(vdp_st, __LINE__);
 }
@@ -1950,7 +1965,7 @@ void CMixer::SetSharpness()
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_SHARPNESS_LEVEL };
   VdpStatus vdp_st;
 
-  if (!CMediaSettings::Get().GetCurrentVideoSettings().m_Sharpness)
+  if (!CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Sharpness)
   {
     VdpBool enabled[]={0};
     vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
@@ -1960,15 +1975,15 @@ void CMixer::SetSharpness()
   VdpBool enabled[]={1};
   vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
   CheckStatus(vdp_st, __LINE__);
-  void* sh[] = { &CMediaSettings::Get().GetCurrentVideoSettings().m_Sharpness };
-  CLog::Log(LOGNOTICE,"Setting Sharpness to %f",CMediaSettings::Get().GetCurrentVideoSettings().m_Sharpness);
+  void* sh[] = { &CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Sharpness };
+  CLog::Log(LOGNOTICE,"Setting Sharpness to %f",CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Sharpness);
   vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, sh);
   CheckStatus(vdp_st, __LINE__);
 }
 
 EINTERLACEMETHOD CMixer::GetDeinterlacingMethod(bool log /* = false */)
 {
-  EINTERLACEMETHOD method = CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod;
+  EINTERLACEMETHOD method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
   if (method == VS_INTERLACEMETHOD_AUTO)
   {
     int deint = -1;
@@ -2002,7 +2017,7 @@ void CMixer::SetDeinterlacing()
   if (m_videoMixer == VDP_INVALID_HANDLE)
     return;
 
-  EDEINTERLACEMODE   mode = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
+  EDEINTERLACEMODE   mode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
   EINTERLACEMETHOD method = GetDeinterlacingMethod(true);
 
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL,
@@ -2049,7 +2064,7 @@ void CMixer::SetDeinterlacing()
 
   SetDeintSkipChroma();
 
-  m_config.useInteropYuv = !CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER);
+  m_config.useInteropYuv = !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER);
 }
 
 void CMixer::SetDeintSkipChroma()
@@ -2243,7 +2258,7 @@ void CMixer::Init()
   m_vdpError = false;
 
   m_config.upscale = g_advancedSettings.m_videoVDPAUScaling;
-  m_config.useInteropYuv = !CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER);
+  m_config.useInteropYuv = !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER);
 
   CreateVdpauMixer();
 }
@@ -2303,7 +2318,7 @@ void CMixer::InitCycle()
 
   m_config.stats->SetCanSkipDeint(false);
 
-  EDEINTERLACEMODE   mode = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
+  EDEINTERLACEMODE   mode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
   EINTERLACEMETHOD method = GetDeinterlacingMethod();
   bool interlaced = m_mixerInput[1].DVDPic.iFlags & DVP_FLAG_INTERLACED;
   m_SeenInterlaceFlag |= interlaced;
@@ -2363,7 +2378,7 @@ void CMixer::InitCycle()
                                         DVP_FLAG_REPEAT_TOP_FIELD |
                                         DVP_FLAG_INTERLACED);
 
-      CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod = VS_INTERLACEMETHOD_AUTO;
+      CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod = VS_INTERLACEMETHOD_AUTO;
     }
   }
   else

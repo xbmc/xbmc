@@ -31,11 +31,11 @@ class TiXmlNode;
 class CProfilesManager : public ISettingsHandler
 {
 public:
-  static CProfilesManager& Get();
+  static CProfilesManager& GetInstance();
 
-  virtual void OnSettingsLoaded();
-  virtual void OnSettingsSaved();
-  virtual void OnSettingsCleared();
+  virtual void OnSettingsLoaded() override;
+  virtual void OnSettingsSaved() const override;
+  virtual void OnSettingsCleared() override;
 
   bool Load();
   /*! \brief Load the user profile information from disk
@@ -46,7 +46,7 @@ public:
     */
   bool Load(const std::string &file);
 
-  bool Save();
+  bool Save() const;
   /*! \brief Save the user profile information to disk
     Saves the list of profiles to the profiles.xml file.
     \param file XML file to save.

@@ -47,7 +47,6 @@
 #include "addons/AddonManager.h"
 #include "addons/AudioEncoder.h"
 
-using namespace std;
 using namespace ADDON;
 using namespace XFILE;
 using namespace MUSIC_INFO;
@@ -88,7 +87,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
 
   AddJob(new CCDDARipJob(pItem->GetPath(),strFile,
                          *pItem->GetMusicInfoTag(),
-                         CSettings::Get().GetInt(CSettings::SETTING_AUDIOCDS_ENCODER)));
+                         CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOCDS_ENCODER)));
 
   return true;
 }
@@ -113,7 +112,7 @@ bool CCDDARipper::RipCD()
   {
     CFileItemPtr pItem = vecItems[i];
     CMusicInfoTagLoaderFactory factory;
-    unique_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(*pItem));
+    std::unique_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(*pItem));
     if (NULL != pLoader.get())
     {
       pLoader->Load(pItem->GetPath(), *pItem->GetMusicInfoTag()); // get tag from file
@@ -140,11 +139,11 @@ bool CCDDARipper::RipCD()
     if (item->GetPath().find(".cdda") == std::string::npos)
       continue;
 
-    bool eject = CSettings::Get().GetBool(CSettings::SETTING_AUDIOCDS_EJECTONRIP) && 
+    bool eject = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOCDS_EJECTONRIP) && 
                  i == vecItems.Size()-1;
     AddJob(new CCDDARipJob(item->GetPath(),strFile,
                            *item->GetMusicInfoTag(),
-                           CSettings::Get().GetInt(CSettings::SETTING_AUDIOCDS_ENCODER), eject));
+                           CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOCDS_ENCODER), eject));
   }
 
   return true;
@@ -152,7 +151,7 @@ bool CCDDARipper::RipCD()
 
 bool CCDDARipper::CreateAlbumDir(const MUSIC_INFO::CMusicInfoTag& infoTag, std::string& strDirectory, int& legalType)
 {
-  CSettingPath *recordingpathSetting = (CSettingPath*)CSettings::Get().GetSetting(CSettings::SETTING_AUDIOCDS_RECORDINGPATH);
+  CSettingPath *recordingpathSetting = (CSettingPath*)CSettings::GetInstance().GetSetting(CSettings::SETTING_AUDIOCDS_RECORDINGPATH);
   if (recordingpathSetting != NULL)
   {
     strDirectory = recordingpathSetting->GetValue();
@@ -210,7 +209,7 @@ std::string CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTa
   // use audiocds.trackpathformat setting to format
   // directory name where CD tracks will be stored,
   // use only format part ending at the last '/'
-  strAlbumDir = CSettings::Get().GetString(CSettings::SETTING_AUDIOCDS_TRACKPATHFORMAT);
+  strAlbumDir = CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOCDS_TRACKPATHFORMAT);
   size_t pos = strAlbumDir.find_last_of("/\\");
   if (pos == std::string::npos)
     return ""; // no directory
@@ -277,7 +276,7 @@ std::string CCDDARipper::GetTrackName(CFileItem *item)
 
   // get track file name format from audiocds.trackpathformat setting,
   // use only format part starting from the last '/'
-  std::string strFormat = CSettings::Get().GetString(CSettings::SETTING_AUDIOCDS_TRACKPATHFORMAT);
+  std::string strFormat = CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOCDS_TRACKPATHFORMAT);
   size_t pos = strFormat.find_last_of("/\\");
   if (pos != std::string::npos)
     strFormat.erase(0, pos+1);
@@ -291,7 +290,7 @@ std::string CCDDARipper::GetTrackName(CFileItem *item)
     track = StringUtils::Format("%s%02i", "Track-", trackNumber);
 
   AddonPtr addon;
-  CAddonMgr::Get().GetAddon(CSettings::Get().GetString(CSettings::SETTING_AUDIOCDS_ENCODER), addon);
+  CAddonMgr::GetInstance().GetAddon(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOCDS_ENCODER), addon);
   if (addon)
   {
     std::shared_ptr<CAudioEncoder> enc = std::static_pointer_cast<CAudioEncoder>(addon);
@@ -309,7 +308,7 @@ void CCDDARipper::OnJobComplete(unsigned int jobID, bool success, CJob* job)
     {
       std::string dir = URIUtils::GetDirectory(((CCDDARipJob*)job)->GetOutput());
       bool unimportant;
-      int source = CUtil::GetMatchingSource(dir, *CMediaSourceSettings::Get().CMediaSourceSettings::GetSources("music"), unimportant);
+      int source = CUtil::GetMatchingSource(dir, *CMediaSourceSettings::GetInstance().CMediaSourceSettings::GetSources("music"), unimportant);
 
       CMusicDatabase database;
       database.Open();

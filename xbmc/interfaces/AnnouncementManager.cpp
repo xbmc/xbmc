@@ -33,7 +33,6 @@
 
 #define LOOKUP_PROPERTY "database-lookup"
 
-using namespace std;
 using namespace ANNOUNCEMENT;
 
 CAnnouncementManager::CAnnouncementManager()
@@ -44,7 +43,7 @@ CAnnouncementManager::~CAnnouncementManager()
   Deinitialize();
 }
 
-CAnnouncementManager& CAnnouncementManager::Get()
+CAnnouncementManager& CAnnouncementManager::GetInstance()
 {
   static CAnnouncementManager s_instance;
   return s_instance;

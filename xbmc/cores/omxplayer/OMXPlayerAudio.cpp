@@ -495,6 +495,7 @@ void OMXPlayerAudio::Flush()
 {
   m_flush = true;
   m_messageQueue.Flush();
+  m_messageQueue.Flush(CDVDMsg::GENERAL_EOF);
   m_messageQueue.Put( new CDVDMsg(CDVDMsg::GENERAL_FLUSH), 1);
 }
 

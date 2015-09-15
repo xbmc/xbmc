@@ -34,7 +34,6 @@
 #include "Album.h"
 #include "MusicThumbLoader.h"
 
-using namespace std;
 using namespace XFILE;
 using namespace MUSIC_INFO;
 
@@ -107,14 +106,15 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
 
   CLog::Log(LOGDEBUG, "Loading additional tag info for file %s", path.c_str());
 
-  // we load up the actual tag for this file
-  unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(*pItem));
+  // we load up the actual tag for this file in order to
+  // fetch the lyrics and add it to the current music info tag
+  CFileItem tempItem(path, false);
+  std::unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(tempItem));
   if (NULL != pLoader.get())
   {
     CMusicInfoTag tag;
     pLoader->Load(path, tag);
-    // then we set the fields from the file tags to the item
-    pItem->SetProperty("lyrics", tag.GetLyrics());
+    pItem->GetMusicInfoTag()->SetLyrics(tag.GetLyrics());
     pItem->SetProperty("hasfullmusictag", "true");
     return true;
   }
@@ -190,11 +190,11 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
             pItem->SetArt("thumb", song.strThumb);
         }
       }
-      else if (CSettings::Get().GetBool(CSettings::SETTING_MUSICFILES_USETAGS) || pItem->IsCDDA())
+      else if (CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICFILES_USETAGS) || pItem->IsCDDA())
       { // Nothing found, load tag from file,
         // always try to load cddb info
         // get correct tag parser
-        unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(*pItem));
+        std::unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(*pItem));
         if (NULL != pLoader.get())
           // get tag
           pLoader->Load(pItem->GetPath(), *pItem->GetMusicInfoTag());

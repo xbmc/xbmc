@@ -31,10 +31,10 @@ public:
   CSettingPath(const std::string &id, const CSettingPath &setting);
   virtual ~CSettingPath() { }
 
-  virtual CSetting* Clone(const std::string &id) const;
+  virtual CSetting* Clone(const std::string &id) const override;
 
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false);
-  virtual bool SetValue(const std::string &value);
+  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  virtual bool SetValue(const std::string &value) override;
 
   bool Writable() const { return m_writable; }
   void SetWritable(bool writable) { m_writable = writable; }

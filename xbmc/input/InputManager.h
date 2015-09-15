@@ -53,7 +53,7 @@ private:
 public:
   /*! \brief static method to get the current instance of the class. Creates a new instance the first time it's called.
   */
-  static CInputManager& Get();
+  static CInputManager& GetInstance();
 
   /*! \brief decode an input event from remote controls.
 
@@ -223,7 +223,7 @@ public:
    */
   int ExecuteBuiltin(const std::string& execute, const std::vector<std::string>& params);
 
-  virtual void OnSettingChanged(const CSetting *setting);
+  virtual void OnSettingChanged(const CSetting *setting) override;
 
 private:
 
@@ -255,6 +255,7 @@ private:
 
   CKeyboardStat m_Keyboard;
   CMouseStat m_Mouse;
+  CKey m_LastKey;
 
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   CRemoteControl m_RemoteControl;

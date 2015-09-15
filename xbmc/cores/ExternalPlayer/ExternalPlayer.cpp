@@ -411,8 +411,8 @@ BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
   si.wShowWindow = m_hideconsole ? SW_HIDE : SW_SHOW;
 
   std::wstring WstrPath, WstrSwitches;
-  g_charsetConverter.utf8ToW(strPath, WstrPath);
-  g_charsetConverter.utf8ToW(strSwitches, WstrSwitches);
+  g_charsetConverter.utf8ToW(strPath, WstrPath, false);
+  g_charsetConverter.utf8ToW(strSwitches, WstrSwitches, false);
 
   if (m_bAbortRequest) return false;
 
@@ -461,13 +461,13 @@ BOOL CExternalPlayer::ExecuteAppLinux(const char* strSwitches)
 {
   CLog::Log(LOGNOTICE, "%s: %s", __FUNCTION__, strSwitches);
 
-  bool remoteUsed = CInputManager::Get().IsRemoteControlEnabled();
-  CInputManager::Get().DisableRemoteControl();
+  bool remoteUsed = CInputManager::GetInstance().IsRemoteControlEnabled();
+  CInputManager::GetInstance().DisableRemoteControl();
 
   int ret = system(strSwitches);
 
   if (remoteUsed)
-    CInputManager::Get().EnableRemoteControl();
+    CInputManager::GetInstance().EnableRemoteControl();
 
   if (ret != 0)
   {

@@ -1351,7 +1351,8 @@
       { "name": "fanart", "$ref": "Optional.String" },
       { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
-      { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null }
+      { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null },
+      { "name": "userrating", "$ref": "Optional.Integer" }
     ],
     "returns": "string"
   },
@@ -1391,7 +1392,8 @@
       { "name": "thumbnail", "$ref": "Optional.String" },
       { "name": "fanart", "$ref": "Optional.String" },
       { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
-      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null }
+      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
+      { "name": "userrating", "$ref": "Optional.Integer" }
     ],
     "returns": "string"
   },
@@ -1430,7 +1432,8 @@
       { "name": "thumbnail", "$ref": "Optional.String" },
       { "name": "fanart", "$ref": "Optional.String" },
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
-      { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null }
+      { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null },
+      { "name": "userrating", "$ref": "Optional.Integer" }
     ],
     "returns": "string"
   },
@@ -1457,7 +1460,57 @@
       { "name": "fanart", "$ref": "Optional.String" },
       { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
-      { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null }
+      { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null },
+      { "name": "userrating", "$ref": "Optional.Integer" }
+    ],
+    "returns": "string"
+  },
+  "VideoLibrary.RefreshMovie": {
+    "type": "method",
+    "description": "Refresh the given movie in the library",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      { "name": "movieid", "$ref": "Library.Id", "required": true },
+      { "name": "ignorenfo", "type": "boolean", "required": false, "default": false, "description": "Whether or not to ignore a local NFO if present." },
+	  { "name": "title", "type": "string", "required": "false", "default": "", "description": "Title to use for searching (instead of determining it from the item's filename/path)." }
+    ],
+    "returns": "string"
+  },
+  "VideoLibrary.RefreshTVShow": {
+    "type": "method",
+    "description": "Refresh the given tv show in the library",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      { "name": "tvshowid", "$ref": "Library.Id", "required": true },
+      { "name": "ignorenfo", "type": "boolean", "required": false, "default": false, "description": "Whether or not to ignore a local NFO if present." },
+      { "name": "refreshepisodes", "type": "boolean", "required": false, "default": false, "description": "Whether or not to refresh all episodes belonging to the TV show." },
+	  { "name": "title", "type": "string", "required": "false", "default": "", "description": "Title to use for searching (instead of determining it from the item's filename/path)." }
+    ],
+    "returns": "string"
+  },
+  "VideoLibrary.RefreshEpisode": {
+    "type": "method",
+    "description": "Refresh the given episode in the library",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      { "name": "episodeid", "$ref": "Library.Id", "required": true },
+      { "name": "ignorenfo", "type": "boolean", "required": false, "default": false, "description": "Whether or not to ignore a local NFO if present." },
+	  { "name": "title", "type": "string", "required": "false", "default": "", "description": "Title to use for searching (instead of determining it from the item's filename/path)." }
+    ],
+    "returns": "string"
+  },
+  "VideoLibrary.RefreshMusicVideo": {
+    "type": "method",
+    "description": "Refresh the given music video in the library",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      { "name": "musicvideoid", "$ref": "Library.Id", "required": true },
+      { "name": "ignorenfo", "type": "boolean", "required": false, "default": false, "description": "Whether or not to ignore a local NFO if present." },
+	  { "name": "title", "type": "string", "required": "false", "default": "", "description": "Title to use for searching (instead of determining it from the item's filename/path)." }
     ],
     "returns": "string"
   },

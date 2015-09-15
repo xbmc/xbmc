@@ -34,7 +34,6 @@
 #include "URL.h"
 
 using namespace XFILE;
-using namespace std;
 
 CPictureThumbLoader::CPictureThumbLoader() : CThumbLoader(), CJobQueue(true, 1, CJob::PRIORITY_LOW_PAUSABLE)
 {
@@ -68,7 +67,7 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
 
   if (pItem->HasArt("thumb") && m_regenerateThumbs)
   {
-    CTextureCache::Get().ClearCachedImage(pItem->GetArt("thumb"));
+    CTextureCache::GetInstance().ClearCachedImage(pItem->GetArt("thumb"));
     if (m_textureDatabase->Open())
     {
       m_textureDatabase->ClearTextureForPath(pItem->GetPath(), "thumb");
@@ -88,11 +87,11 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
     if (!loader.FillThumb(*pItem))
     {
       std::string thumbURL = CVideoThumbLoader::GetEmbeddedThumbURL(*pItem);
-      if (CTextureCache::Get().HasCachedImage(thumbURL))
+      if (CTextureCache::GetInstance().HasCachedImage(thumbURL))
       {
         thumb = thumbURL;
       }
-      else if (CSettings::Get().GetBool("myvideos.extractthumb") && CSettings::Get().GetBool("myvideos.extractflags"))
+      else if (CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) && CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
       {
         CFileItem item(*pItem);
         CThumbExtractor* extract = new CThumbExtractor(item, pItem->GetPath(), true, thumbURL);
@@ -107,7 +106,7 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
   }
   if (!thumb.empty())
   {
-    CTextureCache::Get().BackgroundCacheImage(thumb);
+    CTextureCache::GetInstance().BackgroundCacheImage(thumb);
     pItem->SetArt("thumb", thumb);
   }
   pItem->FillInDefaultIcon();
@@ -145,7 +144,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     if (CFile::Exists(strTBN))
     {
       db.SetTextureForPath(pItem->GetPath(), "thumb", strTBN);
-      CTextureCache::Get().BackgroundCacheImage(strTBN);
+      CTextureCache::GetInstance().BackgroundCacheImage(strTBN);
       pItem->SetArt("thumb", strTBN);
       return;
     }
@@ -172,7 +171,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     if (CFile::Exists(thumb))
     {
       db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
-      CTextureCache::Get().BackgroundCacheImage(thumb);
+      CTextureCache::GetInstance().BackgroundCacheImage(thumb);
       pItem->SetArt("thumb", thumb);
       return;
     }
@@ -226,14 +225,14 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
         items.Sort(SortByLabel, SortOrderAscending);
         std::string thumb = CTextureUtils::GetWrappedThumbURL(items[0]->GetPath());
         db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
-        CTextureCache::Get().BackgroundCacheImage(thumb);
+        CTextureCache::GetInstance().BackgroundCacheImage(thumb);
         pItem->SetArt("thumb", thumb);
       }
       else
       {
         // ok, now we've got the files to get the thumbs from, lets create it...
         // we basically load the 4 images and combine them
-        vector<string> files;
+        std::vector<std::string> files;
         for (int thumb = 0; thumb < 4; thumb++)
           files.push_back(items[thumb]->GetPath());
         std::string thumb = CTextureUtils::GetWrappedImageURL(pItem->GetPath(), "picturefolder");
@@ -244,7 +243,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
           details.file = relativeCacheFile;
           details.width = g_advancedSettings.GetThumbSize();
           details.height = g_advancedSettings.GetThumbSize();
-          CTextureCache::Get().AddCachedTexture(thumb, details);
+          CTextureCache::GetInstance().AddCachedTexture(thumb, details);
           db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
           pItem->SetArt("thumb", CTextureCache::GetCachedPath(relativeCacheFile));
         }

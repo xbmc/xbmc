@@ -94,11 +94,11 @@ bool CWinSystemX11::DestroyWindowSystem()
   {
     XOutput out;
     XMode mode;
-    out.name = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput;
-    mode.w   = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).iWidth;
-    mode.h   = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).iHeight;
-    mode.hz  = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).fRefreshRate;
-    mode.id  = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strId;
+    out.name = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).strOutput;
+    mode.w   = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).iWidth;
+    mode.h   = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).iHeight;
+    mode.hz  = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).fRefreshRate;
+    mode.id  = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).strId;
     g_xrandr.SetMode(out, mode);
   }
 
@@ -188,7 +188,7 @@ bool CWinSystemX11::DestroyWindow()
 
 bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
-  m_userOutput = CSettings::Get().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
+  m_userOutput = CSettings::GetInstance().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   XOutput *out = NULL;
   if (m_userOutput.compare("Default") != 0)
   {
@@ -247,11 +247,11 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   }
   else
   {
-    out.name = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput;
-    mode.w   = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).iWidth;
-    mode.h   = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).iHeight;
-    mode.hz  = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).fRefreshRate;
-    mode.id  = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strId;
+    out.name = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).strOutput;
+    mode.w   = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).iWidth;
+    mode.h   = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).iHeight;
+    mode.hz  = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).fRefreshRate;
+    mode.id  = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).strId;
   }
  
   XMode   currmode = g_xrandr.GetCurrentMode(out.name);
@@ -320,8 +320,8 @@ void CWinSystemX11::UpdateResolutions()
   int numScreens = XScreenCount(m_dpy);
   g_xrandr.SetNumScreens(numScreens);
 
-  bool switchOnOff = CSettings::Get().GetBool(CSettings::SETTING_VIDEOSCREEN_BLANKDISPLAYS);
-  m_userOutput = CSettings::Get().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
+  bool switchOnOff = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_BLANKDISPLAYS);
+  m_userOutput = CSettings::GetInstance().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   if (m_userOutput.compare("Default") == 0)
     switchOnOff = false;
 
@@ -366,11 +366,11 @@ void CWinSystemX11::UpdateResolutions()
       mode = g_xrandr.GetPreferredMode(m_userOutput);
     m_bIsRotated = out->isRotated;
     if (!m_bIsRotated)
-      UpdateDesktopResolution(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP), 0, mode.w, mode.h, mode.hz);
+      UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), 0, mode.w, mode.h, mode.hz);
     else
-      UpdateDesktopResolution(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP), 0, mode.h, mode.w, mode.hz);
-    CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strId     = mode.id;
-    CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput = m_userOutput;
+      UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), 0, mode.h, mode.w, mode.hz);
+    CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).strId     = mode.id;
+    CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).strOutput = m_userOutput;
   }
   else
   {
@@ -378,11 +378,11 @@ void CWinSystemX11::UpdateResolutions()
     m_nScreen = DefaultScreen(m_dpy);
     int w = DisplayWidth(m_dpy, m_nScreen);
     int h = DisplayHeight(m_dpy, m_nScreen);
-    UpdateDesktopResolution(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP), 0, w, h, 0.0);
+    UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), 0, w, h, 0.0);
   }
 
   // erase previous stored modes
-  CDisplaySettings::Get().ClearCustomResolutions();
+  CDisplaySettings::GetInstance().ClearCustomResolutions();
 
   CLog::Log(LOGINFO, "Available videomodes (xrandr):");
 
@@ -433,10 +433,10 @@ void CWinSystemX11::UpdateResolutions()
         res.dwFlags = 0;
 
       g_graphicsContext.ResetOverscan(res);
-      CDisplaySettings::Get().AddResolutionInfo(res);
+      CDisplaySettings::GetInstance().AddResolutionInfo(res);
     }
   }
-  CDisplaySettings::Get().ApplyCalibrations();
+  CDisplaySettings::GetInstance().ApplyCalibrations();
 }
 
 bool CWinSystemX11::HasCalibration(const RESOLUTION_INFO &resInfo)
@@ -905,10 +905,10 @@ void CWinSystemX11::RecreateWindow()
   RESOLUTION_INFO res;
   unsigned int i;
   bool found(false);
-  for (i = RES_DESKTOP; i < CDisplaySettings::Get().ResolutionInfoSize(); ++i)
+  for (i = RES_DESKTOP; i < CDisplaySettings::GetInstance().ResolutionInfoSize(); ++i)
   {
-    res = CDisplaySettings::Get().GetResolutionInfo(i);
-    if (StringUtils::EqualsNoCase(CDisplaySettings::Get().GetResolutionInfo(i).strId, mode.id))
+    res = CDisplaySettings::GetInstance().GetResolutionInfo(i);
+    if (StringUtils::EqualsNoCase(CDisplaySettings::GetInstance().GetResolutionInfo(i).strId, mode.id))
     {
       found = true;
       break;
@@ -980,7 +980,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
 
   if (!m_mainWindow)
   {
-    CInputManager::Get().SetMouseActive(false);
+    CInputManager::GetInstance().SetMouseActive(false);
   }
 
   if (m_mainWindow && ((m_bFullScreen != fullscreen) || m_currentOutput.compare(output) != 0 || m_windowDirty))
@@ -1010,7 +1010,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       }
     }
 
-    CInputManager::Get().SetMouseActive(false);
+    CInputManager::GetInstance().SetMouseActive(false);
     OnLostDevice();
     DestroyWindow();
     m_windowDirty = true;

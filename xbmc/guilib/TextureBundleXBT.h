@@ -44,6 +44,8 @@ public:
   int LoadAnim(const std::string& Filename, CBaseTexture*** ppTextures,
                 int &width, int &height, int& nLoops, int** ppDelays);
 
+  static uint8_t* UnpackFrame(const CXBTFReader& reader, const CXBTFFrame& frame);
+
 private:
   bool OpenBundle();
   bool ConvertFrameToTexture(const std::string& name, CXBTFFrame& frame, CBaseTexture** ppTexture);
@@ -51,7 +53,8 @@ private:
   time_t m_TimeStamp;
 
   bool m_themeBundle;
-  CXBTFReader m_XBTFReader;
+  std::string m_path;
+  CXBTFReaderPtr m_XBTFReader;
 };
 
 

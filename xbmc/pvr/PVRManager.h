@@ -19,17 +19,18 @@
  *
  */
 
-#include <map>
-
+#include "FileItem.h"
 #include "addons/include/xbmc_pvr_types.h"
+#include "interfaces/IAnnouncer.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
 #include "utils/JobManager.h"
 #include "utils/Observer.h"
-#include "interfaces/IAnnouncer.h"
+
 #include "pvr/recordings/PVRRecording.h"
-#include "FileItem.h"
+
+#include <map>
 
 class CGUIDialogProgressBarHandle;
 class CStopWatch;
@@ -81,7 +82,7 @@ namespace PVR
     CONTINUE_LAST_CHANNEL_IN_FOREGROUND
   };
 
-  #define g_PVRManager       CPVRManager::Get()
+  #define g_PVRManager       CPVRManager::GetInstance()
   #define g_PVRChannelGroups g_PVRManager.ChannelGroups()
   #define g_PVRTimers        g_PVRManager.Timers()
   #define g_PVRRecordings    g_PVRManager.Recordings()
@@ -117,10 +118,10 @@ namespace PVR
      * @brief Get the instance of the PVRManager.
      * @return The PVRManager instance.
      */
-    static CPVRManager &Get(void);
+    static CPVRManager &GetInstance();
 
-    virtual void OnSettingChanged(const CSetting *setting);
-    virtual void OnSettingAction(const CSetting *setting);
+    virtual void OnSettingChanged(const CSetting *setting) override;
+    virtual void OnSettingAction(const CSetting *setting) override;
 
     /*!
      * @brief Get the channel groups container.
@@ -182,9 +183,8 @@ namespace PVR
     /*!
      * @brief Mark an add-on as outdated so it will be upgrade when it's possible again
      * @param strAddonId The add-on to mark as outdated
-     * @param strReferer The referer to use when downloading
      */
-    void MarkAsOutdated(const std::string& strAddonId, const std::string& strReferer);
+    void MarkAsOutdated(const std::string& strAddonId);
 
     /*!
      * @return True when updated, false when the pvr manager failed to load after the attempt
@@ -679,7 +679,7 @@ namespace PVR
     CCriticalSection                m_managerStateMutex;
     ManagerState                    m_managerState;
     CStopWatch                     *m_parentalTimer;
-    std::map<std::string, std::string> m_outdatedAddons;
+    std::vector<std::string>        m_outdatedAddons;
     static int                      m_pvrWindowIds[10];
   };
 

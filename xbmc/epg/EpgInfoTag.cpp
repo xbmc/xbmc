@@ -51,7 +51,7 @@ CEpgInfoTag::CEpgInfoTag(void) :
     m_iSeriesNumber(0),
     m_iEpisodeNumber(0),
     m_iEpisodePart(0),
-    m_iUniqueBroadcastID(-1),
+    m_iUniqueBroadcastID(0),
     m_iYear(0),
     m_epg(NULL)
 {
@@ -67,7 +67,7 @@ CEpgInfoTag::CEpgInfoTag(CEpg *epg, PVR::CPVRChannelPtr pvrChannel, const std::s
     m_iSeriesNumber(0),
     m_iEpisodeNumber(0),
     m_iEpisodePart(0),
-    m_iUniqueBroadcastID(-1),
+    m_iUniqueBroadcastID(0),
     m_iYear(0),
     m_strIconPath(strIconPath),
     m_epg(epg),
@@ -86,7 +86,7 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
     m_iSeriesNumber(0),
     m_iEpisodeNumber(0),
     m_iEpisodePart(0),
-    m_iUniqueBroadcastID(-1),
+    m_iUniqueBroadcastID(0),
     m_epg(NULL)
 {
   m_startTime = (data.startTime + g_advancedSettings.m_iPVRTimeCorrection);
@@ -289,12 +289,12 @@ CEpgInfoTagPtr CEpgInfoTag::GetPreviousEvent(void) const
   return GetTable()->GetPreviousEvent(*this);
 }
 
-void CEpgInfoTag::SetUniqueBroadcastID(int iUniqueBroadcastID)
+void CEpgInfoTag::SetUniqueBroadcastID(unsigned int iUniqueBroadcastID)
 {
   m_iUniqueBroadcastID = iUniqueBroadcastID;
 }
 
-int CEpgInfoTag::UniqueBroadcastID(void) const
+unsigned int CEpgInfoTag::UniqueBroadcastID(void) const
 {
   return m_iUniqueBroadcastID;
 }
@@ -354,7 +354,7 @@ std::string CEpgInfoTag::Title(bool bOverrideParental /* = false */) const
 
   if (!bOverrideParental && bParentalLocked)
     strTitle = g_localizeStrings.Get(19266); // parental locked
-  else if (m_strTitle.empty() && !CSettings::Get().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
+  else if (m_strTitle.empty() && !CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
     strTitle = g_localizeStrings.Get(19055); // no information available
   else
     strTitle = m_strTitle;

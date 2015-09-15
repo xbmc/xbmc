@@ -149,7 +149,7 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
     if (!thumb.empty())
     {
       bool needsRecaching;
-      std::string cachedThumb(CTextureCache::Get().CheckCachedImage(thumb, false, needsRecaching));
+      std::string cachedThumb(CTextureCache::GetInstance().CheckCachedImage(thumb, false, needsRecaching));
       LOG("thumb: %s, %s", thumb.c_str(), cachedThumb.c_str());
       if (!cachedThumb.empty())
       {
@@ -214,12 +214,12 @@ public:
   {
     if (NULL==g_announceReceiver) {
       g_announceReceiver = new AnnounceReceiver();
-      ANNOUNCEMENT::CAnnouncementManager::Get().AddAnnouncer(g_announceReceiver);
+      ANNOUNCEMENT::CAnnouncementManager::GetInstance().AddAnnouncer(g_announceReceiver);
     }
   }
   static void dealloc()
   {
-    ANNOUNCEMENT::CAnnouncementManager::Get().RemoveAnnouncer(g_announceReceiver);
+    ANNOUNCEMENT::CAnnouncementManager::GetInstance().RemoveAnnouncer(g_announceReceiver);
     delete g_announceReceiver;
   }
 private:
@@ -385,6 +385,19 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   return NO;
 }
 //--------------------------------------------------------------
+- (void)addSwipeGesture:(UISwipeGestureRecognizerDirection)direction numTouches : (NSUInteger)numTouches
+{
+  UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc]
+                                          initWithTarget:self action:@selector(handleSwipe:)];
+
+  swipe.delaysTouchesBegan = NO;
+  swipe.numberOfTouchesRequired = numTouches;
+  swipe.direction = direction;
+  swipe.delegate = self;
+  [m_glView addGestureRecognizer:swipe];
+  [swipe release];
+}
+//--------------------------------------------------------------
 - (void)createGestureRecognizers 
 {
   //1 finger single tab
@@ -419,61 +432,42 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   [m_glView addGestureRecognizer:singleFingerSingleLongTap];
   [singleFingerSingleLongTap release];
 
-  //double finger swipe left for backspace ... i like this fast backspace feature ;)
-  UISwipeGestureRecognizer *swipeLeft2 = [[UISwipeGestureRecognizer alloc]
-                                            initWithTarget:self action:@selector(handleSwipe:)];
+  //triple finger swipe left
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionLeft numTouches:3];
 
-  swipeLeft2.delaysTouchesBegan = NO;
-  swipeLeft2.numberOfTouchesRequired = 2;
-  swipeLeft2.direction = UISwipeGestureRecognizerDirectionLeft;
-  swipeLeft2.delegate = self;
-  [m_glView addGestureRecognizer:swipeLeft2];
-  [swipeLeft2 release];
+  //double finger swipe left for backspace ... i like this fast backspace feature ;)
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionLeft numTouches:2];
 
   //single finger swipe left
-  UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc]
-                                          initWithTarget:self action:@selector(handleSwipe:)];
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionLeft numTouches:1];
 
-  swipeLeft.delaysTouchesBegan = NO;
-  swipeLeft.numberOfTouchesRequired = 1;
-  swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
-  swipeLeft.delegate = self;
-  [m_glView addGestureRecognizer:swipeLeft];
-  [swipeLeft release];
-  
+  //triple finger swipe right
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionRight numTouches:3];
+
+  //double finger swipe right
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionRight numTouches:2];
+
   //single finger swipe right
-  UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc]
-                                         initWithTarget:self action:@selector(handleSwipe:)];
-  
-  swipeRight.delaysTouchesBegan = NO;
-  swipeRight.numberOfTouchesRequired = 1;
-  swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
-  swipeRight.delegate = self;
-  [m_glView addGestureRecognizer:swipeRight];
-  [swipeRight release];
-  
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionRight numTouches:1];
+
+  //triple finger swipe up
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionUp numTouches:3];
+
+  //double finger swipe up
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionUp numTouches:2];
+
   //single finger swipe up
-  UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc]
-                                         initWithTarget:self action:@selector(handleSwipe:)];
-  
-  swipeUp.delaysTouchesBegan = NO;
-  swipeUp.numberOfTouchesRequired = 1;
-  swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
-  swipeUp.delegate = self;
-  [m_glView addGestureRecognizer:swipeUp];
-  [swipeUp release];
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionUp numTouches:1];
+
+  //triple finger swipe down
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionDown numTouches:3];
+
+  //double finger swipe down
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionDown numTouches:2];
 
   //single finger swipe down
-  UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc]
-                                         initWithTarget:self action:@selector(handleSwipe:)];
-  
-  swipeDown.delaysTouchesBegan = NO;
-  swipeDown.numberOfTouchesRequired = 1;
-  swipeDown.direction = UISwipeGestureRecognizerDirectionDown;
-  swipeDown.delegate = self;
-  [m_glView addGestureRecognizer:swipeDown];
-  [swipeDown release];
-  
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionDown numTouches:1];
+
   //for pan gestures with one finger
   UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]
     initWithTarget:self action:@selector(handlePan:)];
@@ -523,7 +517,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     CGPoint point = [touch locationInView:m_glView];
     point.x *= screenScale;
     point.y *= screenScale;
-    CGenericTouchActionHandler::Get().OnSingleTouchStart(point.x, point.y);
+    CGenericTouchActionHandler::GetInstance().OnSingleTouchStart(point.x, point.y);
   }
 }
 //--------------------------------------------------------------
@@ -538,14 +532,14 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     switch(sender.state)
     {
       case UIGestureRecognizerStateBegan:
-        CGenericTouchActionHandler::Get().OnTouchGestureStart(point.x, point.y);
+        CGenericTouchActionHandler::GetInstance().OnTouchGestureStart(point.x, point.y);
         break;
       case UIGestureRecognizerStateChanged:
-        CGenericTouchActionHandler::Get().OnZoomPinch(point.x, point.y, [sender scale]);
+        CGenericTouchActionHandler::GetInstance().OnZoomPinch(point.x, point.y, [sender scale]);
         break;
       case UIGestureRecognizerStateEnded:
       case UIGestureRecognizerStateCancelled:
-        CGenericTouchActionHandler::Get().OnTouchGestureEnd(point.x, point.y, 0, 0, 0, 0);
+        CGenericTouchActionHandler::GetInstance().OnTouchGestureEnd(point.x, point.y, 0, 0, 0, 0);
         break;
       default:
         break;
@@ -564,13 +558,13 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     switch(sender.state)
     {
       case UIGestureRecognizerStateBegan:
-        CGenericTouchActionHandler::Get().OnTouchGestureStart(point.x, point.y);
+        CGenericTouchActionHandler::GetInstance().OnTouchGestureStart(point.x, point.y);
         break;
       case UIGestureRecognizerStateChanged:
-        CGenericTouchActionHandler::Get().OnRotate(point.x, point.y, RADIANS_TO_DEGREES([sender rotation]));
+        CGenericTouchActionHandler::GetInstance().OnRotate(point.x, point.y, RADIANS_TO_DEGREES([sender rotation]));
         break;
       case UIGestureRecognizerStateEnded:
-        CGenericTouchActionHandler::Get().OnTouchGestureEnd(point.x, point.y, 0, 0, 0, 0);
+        CGenericTouchActionHandler::GetInstance().OnTouchGestureEnd(point.x, point.y, 0, 0, 0, 0);
         break;
       default:
         break;
@@ -616,11 +610,11 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
       {
         if( !touchBeginSignaled )
         {
-          CGenericTouchActionHandler::Get().OnTouchGestureStart((float)point.x, (float)point.y);
+          CGenericTouchActionHandler::GetInstance().OnTouchGestureStart((float)point.x, (float)point.y);
           touchBeginSignaled = true;
         }
 
-        CGenericTouchActionHandler::Get().OnTouchGesturePan((float)point.x, (float)point.y,
+        CGenericTouchActionHandler::GetInstance().OnTouchGesturePan((float)point.x, (float)point.y,
                                                             (float)xMovement, (float)yMovement, 
                                                             (float)velocity.x, (float)velocity.y);
         lastGesturePoint = point;
@@ -630,7 +624,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     if( touchBeginSignaled && ([sender state] == UIGestureRecognizerStateEnded || [sender state] == UIGestureRecognizerStateCancelled))
     {
       //signal end of pan - this will start inertial scrolling with deacceleration in CApplication
-      CGenericTouchActionHandler::Get().OnTouchGestureEnd((float)lastGesturePoint.x, (float)lastGesturePoint.y,
+      CGenericTouchActionHandler::GetInstance().OnTouchGestureEnd((float)lastGesturePoint.x, (float)lastGesturePoint.y,
                                                              (float)0.0, (float)0.0, 
                                                              (float)velocity.x, (float)velocity.y);
 
@@ -667,7 +661,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
           direction = TouchMoveDirectionDown;
           break;
       }
-      CGenericTouchActionHandler::Get().OnSwipe(direction,
+      CGenericTouchActionHandler::GetInstance().OnSwipe(direction,
                                                 0.0, 0.0,
                                                 point.x, point.y, 0, 0,
                                                 [sender numberOfTouches]);
@@ -685,7 +679,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     point.x *= screenScale;
     point.y *= screenScale;
     //NSLog(@"%s singleTap", __PRETTY_FUNCTION__);
-    CGenericTouchActionHandler::Get().OnTap((float)point.x, (float)point.y, [sender numberOfTouches]);
+    CGenericTouchActionHandler::GetInstance().OnTap((float)point.x, (float)point.y, [sender numberOfTouches]);
   }
 }
 //--------------------------------------------------------------
@@ -697,7 +691,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     point.x *= screenScale;
     point.y *= screenScale;
     //NSLog(@"%s toubleTap", __PRETTY_FUNCTION__);
-    CGenericTouchActionHandler::Get().OnTap((float)point.x, (float)point.y, [sender numberOfTouches]);
+    CGenericTouchActionHandler::GetInstance().OnTap((float)point.x, (float)point.y, [sender numberOfTouches]);
   }
 }
 //--------------------------------------------------------------
@@ -713,17 +707,17 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     {
       lastGesturePoint = point;
       // mark the control
-      //CGenericTouchActionHandler::Get().OnSingleTouchStart((float)point.x, (float)point.y);
+      //CGenericTouchActionHandler::GetInstance().OnSingleTouchStart((float)point.x, (float)point.y);
     }
 
     if (sender.state == UIGestureRecognizerStateEnded)
     {
-      CGenericTouchActionHandler::Get().OnSingleTouchMove((float)point.x, (float)point.y, point.x - lastGesturePoint.x, point.y - lastGesturePoint.y, 0, 0);
+      CGenericTouchActionHandler::GetInstance().OnSingleTouchMove((float)point.x, (float)point.y, point.x - lastGesturePoint.x, point.y - lastGesturePoint.y, 0, 0);
     }
     
     if (sender.state == UIGestureRecognizerStateEnded)
     {	
-      CGenericTouchActionHandler::Get().OnLongPress((float)point.x, (float)point.y);
+      CGenericTouchActionHandler::GetInstance().OnLongPress((float)point.x, (float)point.y);
     }
   }
 }
@@ -1023,36 +1017,36 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     switch (receivedEvent.subtype)
     {
       case UIEventSubtypeRemoteControlTogglePlayPause:
-        CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAYPAUSE)));
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAYPAUSE)));
         break;
       case UIEventSubtypeRemoteControlPlay:
-	    CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
+	    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
         break;
       case UIEventSubtypeRemoteControlPause:
         // ACTION_PAUSE sometimes cause unpause, use MediaPauseIfPlaying to make sure pause only
-        CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
         break;
       case UIEventSubtypeRemoteControlNextTrack:
-	    CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_NEXT_ITEM)));
+	    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_NEXT_ITEM)));
         break;
       case UIEventSubtypeRemoteControlPreviousTrack:
-	    CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PREV_ITEM)));
+	    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PREV_ITEM)));
         break;
       case UIEventSubtypeRemoteControlBeginSeekingForward:
         // use 4X speed forward.
-		CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_FORWARD)));
-		CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_FORWARD)));
+		CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_FORWARD)));
+		CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_FORWARD)));
         break;
       case UIEventSubtypeRemoteControlBeginSeekingBackward:
         // use 4X speed rewind.
-		CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_REWIND)));
-		CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_REWIND)));
+		CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_REWIND)));
+		CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_REWIND)));
         break;
       case UIEventSubtypeRemoteControlEndSeekingForward:
       case UIEventSubtypeRemoteControlEndSeekingBackward:
         // restore to normal playback speed.
         if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
-		  CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
+		  CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
         break;
       default:
         LOG(@"unhandled subtype: %d", receivedEvent.subtype);
@@ -1068,7 +1062,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
   {
     m_isPlayingBeforeInactive = YES;
-    CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
   }
   g_Windowing.OnAppFocusChange(false);
 }
@@ -1080,7 +1074,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   // when we come back, restore playing if we were.
   if (m_isPlayingBeforeInactive)
   {
-    CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_UNPAUSE);
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_UNPAUSE);
     m_isPlayingBeforeInactive = NO;
   }
 }
@@ -1092,7 +1086,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   if (g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPaused())
   {
     m_isPlayingBeforeInactive = YES;
-    CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
   }
   // check whether we need disable network auto suspend.
   [self rescheduleNetworkAutoSuspend];

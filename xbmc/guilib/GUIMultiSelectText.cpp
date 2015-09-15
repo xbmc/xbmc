@@ -24,8 +24,6 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
-using namespace std;
-
 CGUIMultiSelectTextControl::CSelectableString::CSelectableString(CGUIFont *font, const std::string &text, bool selectable, const std::string &clickAction)
  : m_text(font, false)
  , m_clickAction(clickAction)
@@ -413,11 +411,11 @@ void CGUIMultiSelectTextControl::SetFocus(bool focus)
 }
 
 // overrides to allow anims to translate down to the focus image
-void CGUIMultiSelectTextControl::SetAnimations(const vector<CAnimation> &animations)
+void CGUIMultiSelectTextControl::SetAnimations(const std::vector<CAnimation> &animations)
 {
   // send any focus animations down to the focus image only
   m_animations.clear();
-  vector<CAnimation> focusAnims;
+  std::vector<CAnimation> focusAnims;
   for (unsigned int i = 0; i < animations.size(); i++)
   {
     const CAnimation &anim = animations[i];

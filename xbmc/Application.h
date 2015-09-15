@@ -393,14 +393,14 @@ public:
   void UnregisterActionListener(IActionListener *listener);
 
 protected:
-  virtual bool OnSettingsSaving() const;
+  virtual bool OnSettingsSaving() const override;
 
-  virtual bool Load(const TiXmlNode *settings);
-  virtual bool Save(TiXmlNode *settings) const;
+  virtual bool Load(const TiXmlNode *settings) override;
+  virtual bool Save(TiXmlNode *settings) const override;
 
-  virtual void OnSettingChanged(const CSetting *setting);
-  virtual void OnSettingAction(const CSetting *setting);
-  virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode);
+  virtual void OnSettingChanged(const CSetting *setting) override;
+  virtual void OnSettingAction(const CSetting *setting) override;
+  virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
 
   bool LoadSkin(const std::string& skinID);
   bool LoadSkin(const std::shared_ptr<ADDON::CSkinInfo>& skin);
@@ -413,6 +413,7 @@ protected:
   bool NotifyActionListeners(const CAction &action) const;
 
   bool m_skinReverting;
+  std::string m_skinReloadSettingIgnore;
 
   bool m_loggingIn;
 
@@ -493,6 +494,10 @@ protected:
   bool InitDirectoriesOSX();
   bool InitDirectoriesWin32();
   void CreateUserDirs();
+
+  /*! \brief Helper method to determine how to handle TMSG_SHUTDOWN
+  */
+  void HandleShutdownMessage();
 
   CInertialScrollingHandler *m_pInertialScrollingHandler;
   CNetwork    *m_network;

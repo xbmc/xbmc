@@ -53,9 +53,9 @@ JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /
     g_application.ResetSystemIdleTimer();
     g_audioManager.PlayActionSound(actionID);
     if (waitResult)
-      CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(actionID)));
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(actionID)));
     else
-      CApplicationMessenger::Get().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(actionID)));
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(actionID)));
   }
   return ACK;
 }
@@ -63,7 +63,7 @@ JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /
 JSONRPC_STATUS CInputOperations::activateWindow(int windowID)
 {
   if(!handleScreenSaver())
-    CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTIVATE_WINDOW, windowID, 0);
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTIVATE_WINDOW, windowID, 0);
 
   return ACK;
 }
@@ -80,7 +80,7 @@ JSONRPC_STATUS CInputOperations::SendText(const std::string &method, ITransportL
   CGUIMessage msg(GUI_MSG_SET_TEXT, 0, window->GetFocusedControlID());
   msg.SetLabel(parameterObject["text"].asString());
   msg.SetParam1(parameterObject["done"].asBoolean() ? 1 : 0);
-  CApplicationMessenger::Get().SendGUIMessage(msg, window->GetID());
+  CApplicationMessenger::GetInstance().SendGUIMessage(msg, window->GetID());
 
   return ACK;
 }

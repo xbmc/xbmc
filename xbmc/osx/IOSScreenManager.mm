@@ -290,7 +290,7 @@ static CEvent screenChangeEvent;
   //change back to internal screen
   if([[UIScreen screens] count] == 1 && _screenIdx != 0)
   {
-    RESOLUTION_INFO res = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP);//internal screen default res
+    RESOLUTION_INFO res = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);//internal screen default res
     g_Windowing.SetFullScreen(true, res, false);
   }
 }

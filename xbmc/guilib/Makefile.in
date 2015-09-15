@@ -1,5 +1,4 @@
-SRCS  = AnimatedGif.cpp
-SRCS += DDSImage.cpp
+SRCS = DDSImage.cpp
 SRCS += DirectXGraphics.cpp
 SRCS += DirtyRegionSolvers.cpp
 SRCS += DirtyRegionTracker.cpp
@@ -77,6 +76,10 @@ SRCS += TextureManager.cpp
 SRCS += VisibleEffect.cpp
 SRCS += XBTF.cpp
 SRCS += XBTFReader.cpp
+
+ifeq (@USE_LIBGIF@,1)
+SRCS += Gif.cpp
+endif
 
 ifeq (@USE_OPENGL@,1)
 SRCS += TextureGL.cpp

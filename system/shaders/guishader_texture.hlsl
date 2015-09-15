@@ -24,7 +24,7 @@ Texture2D texMain : register(t0);
 
 float4 PS(PS_INPUT input) : SV_TARGET
 {
-  return input.color * texMain.Sample(LinearSampler, input.tex);
+  return adjustColorRange(input.color * texMain.Sample(LinearSampler, input.tex));
 }
 
 

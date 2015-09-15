@@ -22,7 +22,6 @@
 #include "guilib/LocalizeStrings.h"
 
 using namespace PERIPHERALS;
-using namespace std;
 
 CPeripheralNIC::CPeripheralNIC(const PeripheralScanResult& scanResult) :
   CPeripheral(scanResult)

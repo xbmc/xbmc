@@ -32,8 +32,8 @@
 
 #include <cassert>
 #include <algorithm>
+#include <memory>
 
-using namespace AUTOPTR;
 using namespace XFILE;
 
 #define READ_CACHE_CHUNK_SIZE (64*1024)
@@ -97,40 +97,25 @@ private:
 };
 
 
-CFileCache::CFileCache(bool useDoubleCache)
+CFileCache::CFileCache(const unsigned int flags)
   : CThread("FileCache")
+  , m_pCache(NULL)
+  , m_bDeleteCache(true)
   , m_seekPossible(0)
+  , m_nSeekResult(0)
+  , m_seekPos(0)
+  , m_readPos(0)
+  , m_writePos(0)
   , m_chunkSize(0)
   , m_writeRate(0)
   , m_writeRateActual(0)
   , m_cacheFull(false)
   , m_fileSize(0)
+  , m_flags(flags)
 {
-   m_bDeleteCache = true;
-   m_nSeekResult = 0;
-   m_seekPos = 0;
-   m_readPos = 0;
-   m_writePos = 0;
-   if (g_advancedSettings.m_cacheMemBufferSize == 0)
-     m_pCache = new CSimpleFileCache();
-   else
-   {
-     size_t front = g_advancedSettings.m_cacheMemBufferSize;
-     size_t back = std::max<size_t>( g_advancedSettings.m_cacheMemBufferSize / 4, 1024 * 1024);
-     if (useDoubleCache)
-     {
-       front = front / 2;
-       back = back / 2;
-     }
-     m_pCache = new CCircularCache(front, back);
-   }
-   if (useDoubleCache)
-   {
-     m_pCache = new CDoubleCache(m_pCache);
-   }
 }
 
-CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache)
+CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache /* = true */)
   : CThread("FileCacheStrategy")
   , m_seekPossible(0)
   , m_chunkSize(0)
@@ -156,7 +141,7 @@ CFileCache::~CFileCache()
   m_pCache = NULL;
 }
 
-void CFileCache::SetCacheStrategy(CCacheStrategy *pCache, bool bDeleteCache)
+void CFileCache::SetCacheStrategy(CCacheStrategy *pCache, bool bDeleteCache /* = true */)
 {
   if (m_bDeleteCache && m_pCache)
     delete m_pCache;
@@ -178,21 +163,7 @@ bool CFileCache::Open(const CURL& url)
 
   CLog::Log(LOGDEBUG,"CFileCache::Open - opening <%s> using cache", url.GetFileName().c_str());
 
-  if (!m_pCache)
-  {
-    CLog::Log(LOGERROR,"CFileCache::Open - no cache strategy defined");
-    return false;
-  }
-
   m_sourcePath = url.Get();
-
-  // open cache strategy
-  if (m_pCache->Open() != CACHE_RC_OK)
-  {
-    CLog::Log(LOGERROR,"CFileCache::Open - failed to open cache");
-    Close();
-    return false;
-  }
 
   // opening the source file.
   if (!m_source.Open(m_sourcePath, READ_NO_CACHE | READ_TRUNCATED | READ_CHUNKED))
@@ -209,6 +180,53 @@ bool CFileCache::Open(const CURL& url)
   m_chunkSize = CFile::GetChunkSize(m_source.GetChunkSize(), READ_CACHE_CHUNK_SIZE);
   m_fileSize = m_source.GetLength();
 
+  if (!m_pCache)
+  {
+    if (g_advancedSettings.m_cacheMemBufferSize == 0)
+    {
+      // Use cache on disk
+      m_pCache = new CSimpleFileCache();
+    }
+    else
+    {
+      size_t cacheSize;
+      if (m_fileSize > 0 && m_fileSize < g_advancedSettings.m_cacheMemBufferSize && !(m_flags & READ_AUDIO_VIDEO))
+      {
+        // NOTE: We don't need to take into account READ_MULTI_STREAM here as it's only used for audio/video
+        cacheSize = m_fileSize;
+      }
+      else
+      {
+        cacheSize = g_advancedSettings.m_cacheMemBufferSize;
+      }
+
+      size_t back = cacheSize / 4;
+      size_t front = cacheSize - back;
+      
+      if (m_flags & READ_MULTI_STREAM)
+      {
+        // READ_MULTI_STREAM requires double buffering, so use half the amount of memory for each buffer
+        front /= 2;
+        back /= 2;
+      }
+      m_pCache = new CCircularCache(front, back);
+    }
+
+    if (m_flags & READ_MULTI_STREAM)
+    {
+      // If READ_MULTI_STREAM flag is set: Double buffering is required
+      m_pCache = new CDoubleCache(m_pCache);
+    }
+  }
+
+  // open cache strategy
+  if (!m_pCache || m_pCache->Open() != CACHE_RC_OK)
+  {
+    CLog::Log(LOGERROR,"CFileCache::Open - failed to open cache");
+    Close();
+    return false;
+  }
+  
   m_readPos = 0;
   m_writePos = 0;
   m_writeRate = 1024 * 1024;
@@ -231,7 +249,7 @@ void CFileCache::Process()
   }
 
   // create our read buffer
-  auto_aptr<char> buffer(new char[m_chunkSize]);
+  std::unique_ptr<char[]> buffer(new char[m_chunkSize]);
   if (buffer.get() == NULL)
   {
     CLog::Log(LOGERROR, "%s - failed to allocate read buffer", __FUNCTION__);

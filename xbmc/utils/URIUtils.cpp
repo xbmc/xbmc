@@ -34,7 +34,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-using namespace std;
 using namespace XFILE;
 
 bool URIUtils::IsInPath(const std::string &uri, const std::string &baseURI)
@@ -60,7 +59,7 @@ std::string URIUtils::GetExtension(const std::string& strFileName)
   }
 
   size_t period = strFileName.find_last_of("./\\");
-  if (period == string::npos || strFileName[period] != '.')
+  if (period == std::string::npos || strFileName[period] != '.')
     return std::string();
 
   return strFileName.substr(period);
@@ -75,7 +74,7 @@ bool URIUtils::HasExtension(const std::string& strFileName)
   }
 
   size_t iPeriod = strFileName.find_last_of("./\\");
-  return iPeriod != string::npos && strFileName[iPeriod] == '.';
+  return iPeriod != std::string::npos && strFileName[iPeriod] == '.';
 }
 
 bool URIUtils::HasExtension(const CURL& url, const std::string& strExtensions)
@@ -129,7 +128,7 @@ void URIUtils::RemoveExtension(std::string& strFileName)
   }
 
   size_t period = strFileName.find_last_of("./\\");
-  if (period != string::npos && strFileName[period] == '.')
+  if (period != std::string::npos && strFileName[period] == '.')
   {
     std::string strExtension = strFileName.substr(period);
     StringUtils::ToLower(strExtension);
@@ -230,7 +229,7 @@ std::vector<std::string> URIUtils::SplitPath(const std::string& strPath)
   std::string sep(1, url.GetDirectorySeparator());
 
   // split the filename portion of the URL up into separate dirs
-  vector<string> dirs = StringUtils::Split(url.GetFileName(), sep);
+  std::vector<std::string> dirs = StringUtils::Split(url.GetFileName(), sep);
   
   // we start with the root path
   std::string dir = url.GetWithoutFilename();
@@ -249,7 +248,7 @@ void URIUtils::GetCommonPath(std::string& strParent, const std::string& strPath)
 {
   // find the common path of parent and path
   unsigned int j = 1;
-  while (j <= min(strParent.size(), strPath.size()) && strnicmp(strParent.c_str(), strPath.c_str(), j) == 0)
+  while (j <= std::min(strParent.size(), strPath.size()) && strnicmp(strParent.c_str(), strPath.c_str(), j) == 0)
     j++;
   strParent.erase(j - 1);
   // they should at least share a / at the end, though for things such as path/cd1 and path/cd2 there won't be
@@ -266,7 +265,8 @@ bool URIUtils::HasParentInHostname(const CURL& url)
       || url.IsProtocol("rar")
       || url.IsProtocol("apk")
       || url.IsProtocol("bluray")
-      || url.IsProtocol("udf");
+      || url.IsProtocol("udf")
+      || url.IsProtocol("xbt");
 }
 
 bool URIUtils::HasEncodedHostname(const CURL& url)
@@ -425,8 +425,8 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
 
 std::string URLEncodePath(const std::string& strPath)
 {
-  vector<string> segments = StringUtils::Split(strPath, "/");
-  for (vector<string>::iterator i = segments.begin(); i != segments.end(); ++i)
+  std::vector<std::string> segments = StringUtils::Split(strPath, "/");
+  for (std::vector<std::string>::iterator i = segments.begin(); i != segments.end(); ++i)
     *i = CURL::Encode(*i);
 
   return StringUtils::Join(segments, "/");
@@ -434,8 +434,8 @@ std::string URLEncodePath(const std::string& strPath)
 
 std::string URLDecodePath(const std::string& strPath)
 {
-  vector<string> segments = StringUtils::Split(strPath, "/");
-  for (vector<string>::iterator i = segments.begin(); i != segments.end(); ++i)
+  std::vector<std::string> segments = StringUtils::Split(strPath, "/");
+  for (std::vector<std::string>::iterator i = segments.begin(); i != segments.end(); ++i)
     *i = CURL::Decode(*i);
 
   return StringUtils::Join(segments, "/");
@@ -548,7 +548,7 @@ bool URIUtils::IsRemote(const std::string& strFile)
 
   if(IsMultiPath(strFile))
   { // virtual paths need to be checked separately
-    vector<std::string> paths;
+    std::vector<std::string> paths;
     if (CMultiPathDirectory::GetPaths(strFile, paths))
     {
       for (unsigned int i = 0; i < paths.size(); i++)
@@ -632,7 +632,7 @@ bool URIUtils::IsHostOnLAN(const std::string& host, bool offLineCheck)
 
   // assume a hostname without dot's
   // is local (smb netbios hostnames)
-  if(host.find('.') == string::npos)
+  if(host.find('.') == std::string::npos)
     return true;
 
   uint32_t address = ntohl(inet_addr(host.c_str()));
@@ -1145,10 +1145,10 @@ std::string URIUtils::CanonicalizePath(const std::string& path, const char slash
     return path;
 
   const std::string slashStr(1, slashCharacter);
-  vector<std::string> pathVec, resultVec;
+  std::vector<std::string> pathVec, resultVec;
   StringUtils::Tokenize(path, pathVec, slashStr);
 
-  for (vector<std::string>::const_iterator it = pathVec.begin(); it != pathVec.end(); ++it)
+  for (std::vector<std::string>::const_iterator it = pathVec.begin(); it != pathVec.end(); ++it)
   {
     if (*it == ".")
     { /* skip - do nothing */ }
@@ -1208,11 +1208,11 @@ std::string URIUtils::GetDirectory(const std::string &strFilePath)
   // Keeps the final slash at end and possible |option=foo options.
 
   size_t iPosSlash = strFilePath.find_last_of("/\\");
-  if (iPosSlash == string::npos)
+  if (iPosSlash == std::string::npos)
     return ""; // No slash, so no path (ignore any options)
 
   size_t iPosBar = strFilePath.rfind('|');
-  if (iPosBar == string::npos)
+  if (iPosBar == std::string::npos)
     return strFilePath.substr(0, iPosSlash + 1); // Only path
 
   return strFilePath.substr(0, iPosSlash + 1) + strFilePath.substr(iPosBar); // Path + options
@@ -1241,7 +1241,7 @@ CURL URIUtils::CreateArchivePath(const std::string& type,
   return url;
 }
 
-string URIUtils::GetRealPath(const string &path)
+std::string URIUtils::GetRealPath(const std::string &path)
 {
   if (path.empty())
     return path;
@@ -1260,11 +1260,11 @@ std::string URIUtils::resolvePath(const std::string &path)
 
   size_t posSlash = path.find('/');
   size_t posBackslash = path.find('\\');
-  string delim = posSlash < posBackslash ? "/" : "\\";
-  vector<string> parts = StringUtils::Split(path, delim);
-  vector<string> realParts;
+  std::string delim = posSlash < posBackslash ? "/" : "\\";
+  std::vector<std::string> parts = StringUtils::Split(path, delim);
+  std::vector<std::string> realParts;
 
-  for (vector<string>::const_iterator part = parts.begin(); part != parts.end(); ++part)
+  for (std::vector<std::string>::const_iterator part = parts.begin(); part != parts.end(); ++part)
   {
     if (part->empty() || part->compare(".") == 0)
       continue;
@@ -1307,11 +1307,11 @@ bool URIUtils::UpdateUrlEncoding(std::string &strFilename)
   // if this is a stack:// URL we need to work with its filename
   if (URIUtils::IsStack(strFilename))
   {
-    vector<string> files;
+    std::vector<std::string> files;
     if (!CStackDirectory::GetPaths(strFilename, files))
       return false;
 
-    for (vector<string>::iterator file = files.begin(); file != files.end(); ++file)
+    for (std::vector<std::string>::iterator file = files.begin(); file != files.end(); ++file)
       UpdateUrlEncoding(*file);
 
     std::string stackPath;

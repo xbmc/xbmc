@@ -18,195 +18,210 @@
  *
  */
 
-#include <sys/stat.h>
-#include "XBTFReader.h"
-#include "utils/EndianSwap.h"
-#include "utils/CharsetConverter.h"
+#include <inttypes.h>
 #include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+
+#include "XBTFReader.h"
+#include "guilib/XBTF.h"
+#include "utils/EndianSwap.h"
+
 #ifdef TARGET_WINDOWS
-#include "FileSystem/SpecialProtocol.h"
+#include "filesystem/SpecialProtocol.h"
+#include "utils/CharsetConverter.h"
+#include "win32/PlatformDefs.h"
 #endif
 
-#include <string.h>
-#include "PlatformDefs.h"
-
-#define READ_STR(str, size, file) \
-  if (1 != fread(str, size, 1, file)) \
+static bool ReadString(FILE* file, char* str, size_t max_length)
+{
+  if (file == nullptr || str == nullptr || max_length <= 0)
     return false;
 
-#define READ_U32(i, file) \
-  if (1 != fread(&i, 4, 1, file)) \
-    return false; \
-  i = Endian_SwapLE32(i);
+  return (fread(str, max_length, 1, file) == 1);
+}
 
-#define READ_U64(i, file) \
-  if (1 != fread(&i, 8, 1, file)) \
-    return false; \
-  i = Endian_SwapLE64(i);
+static bool ReadUInt32(FILE* file, uint32_t& value)
+{
+  if (file == nullptr)
+    return false;
+
+  if (fread(&value, sizeof(uint32_t), 1, file) != 1)
+    return false;
+
+  value = Endian_SwapLE32(value);
+  return true;
+}
+
+static bool ReadUInt64(FILE* file, uint64_t& value)
+{
+  if (file == nullptr)
+    return false;
+
+  if (fread(&value, sizeof(uint64_t), 1, file) != 1)
+    return false;
+
+  value = Endian_SwapLE64(value);
+  return true;
+}
 
 CXBTFReader::CXBTFReader()
+  : CXBTFBase(),
+    m_path(),
+    m_file(nullptr)
+{ }
+
+CXBTFReader::~CXBTFReader()
 {
-  m_file = NULL;
+  Close();
+}
+
+bool CXBTFReader::Open(const std::string& path)
+{
+  if (path.empty())
+    return false;
+
+  m_path = path;
+
+#ifdef TARGET_WINDOWS
+  std::wstring strPathW;
+  g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(m_path), strPathW, false);
+  m_file = _wfopen(strPathW.c_str(), L"rb");
+#else
+  m_file = fopen(m_path.c_str(), "rb");
+#endif
+  if (m_file == nullptr)
+    return false;
+
+  // read the magic word
+  char magic[4];
+  if (!ReadString(m_file, magic, sizeof(magic)))
+    return false;
+
+  if (strncmp(XBTF_MAGIC.c_str(), magic, sizeof(magic)) != 0)
+    return false;
+
+  // read the version
+  char version[1];
+  if (!ReadString(m_file, version, sizeof(version)))
+    return false;
+
+  if (strncmp(XBTF_VERSION.c_str(), version, sizeof(version)) != 0)
+    return false;
+
+  unsigned int nofFiles;
+  if (!ReadUInt32(m_file, nofFiles))
+    return false;
+
+  for (uint32_t i = 0; i < nofFiles; i++)
+  {
+    CXBTFFile xbtfFile;
+    uint32_t u32;
+    uint64_t u64;
+
+    char path[CXBTFFile::MaximumPathLength];
+    memset(path, 0, sizeof(path));
+    if (!ReadString(m_file, path, sizeof(path)))
+      return false;
+    xbtfFile.SetPath(path);
+
+    if (!ReadUInt32(m_file, u32))
+      return false;
+    xbtfFile.SetLoop(u32);
+
+    unsigned int nofFrames;
+    if (!ReadUInt32(m_file, nofFrames))
+      return false;
+
+    for (uint32_t j = 0; j < nofFrames; j++)
+    {
+      CXBTFFrame frame;
+
+      if (!ReadUInt32(m_file, u32))
+        return false;
+      frame.SetWidth(u32);
+
+      if (!ReadUInt32(m_file, u32))
+        return false;
+      frame.SetHeight(u32);
+
+      if (!ReadUInt32(m_file, u32))
+        return false;
+      frame.SetFormat(u32);
+
+      if (!ReadUInt64(m_file, u64))
+        return false;
+      frame.SetPackedSize(u64);
+
+      if (!ReadUInt64(m_file, u64))
+        return false;
+      frame.SetUnpackedSize(u64);
+
+      if (!ReadUInt32(m_file, u32))
+        return false;
+      frame.SetDuration(u32);
+
+      if (!ReadUInt64(m_file, u64))
+        return false;
+      frame.SetOffset(u64);
+
+      xbtfFile.GetFrames().push_back(frame);
+    }
+
+    AddFile(xbtfFile);
+  }
+
+  // Sanity check
+  uint64_t pos = static_cast<uint64_t>(ftell(m_file));
+  if (pos != GetHeaderSize())
+    return false;
+
+  return true;
 }
 
 bool CXBTFReader::IsOpen() const
 {
-  return m_file != NULL;
-}
-
-bool CXBTFReader::Open(const std::string& fileName)
-{
-  m_fileName = fileName;
-
-#ifdef TARGET_WINDOWS
-  std::wstring strPathW;
-  g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(m_fileName), strPathW, false);
-  m_file = _wfopen(strPathW.c_str(), L"rb");
-#else
-  m_file = fopen(m_fileName.c_str(), "rb");
-#endif
-  if (m_file == NULL)
-  {
-    return false;
-  }
-
-  char magic[4];
-  READ_STR(magic, 4, m_file);
-
-  if (strncmp(magic, XBTF_MAGIC, sizeof(magic)) != 0)
-  {
-    return false;
-  }
-
-  char version[1];
-  READ_STR(version, 1, m_file);
-
-  if (strncmp(version, XBTF_VERSION, sizeof(version)) != 0)
-  {
-    return false;
-  }
-
-  unsigned int nofFiles;
-  READ_U32(nofFiles, m_file);
-  for (unsigned int i = 0; i < nofFiles; i++)
-  {
-    CXBTFFile file;
-    unsigned int u32;
-    uint64_t u64;
-
-    READ_STR(file.GetPath(), 256, m_file);
-    READ_U32(u32, m_file);
-    file.SetLoop(u32);
-
-    unsigned int nofFrames;
-    READ_U32(nofFrames, m_file);
-
-    for (unsigned int j = 0; j < nofFrames; j++)
-    {
-      CXBTFFrame frame;
-
-      READ_U32(u32, m_file);
-      frame.SetWidth(u32);
-      READ_U32(u32, m_file);
-      frame.SetHeight(u32);
-      READ_U32(u32, m_file);
-      frame.SetFormat(u32);
-      READ_U64(u64, m_file);
-      frame.SetPackedSize(u64);
-      READ_U64(u64, m_file);
-      frame.SetUnpackedSize(u64);
-      READ_U32(u32, m_file);
-      frame.SetDuration(u32);
-      READ_U64(u64, m_file);
-      frame.SetOffset(u64);
-
-      file.GetFrames().push_back(frame);
-    }
-
-    m_xbtf.GetFiles().push_back(file);
-
-    m_filesMap[file.GetPath()] = file;
-  }
-
-  // Sanity check
-  int64_t pos = ftell(m_file);
-  if (pos != (int64_t)m_xbtf.GetHeaderSize())
-  {
-    printf("Expected header size (%" PRId64") != actual size (%" PRId64")\n", m_xbtf.GetHeaderSize(), pos);
-    return false;
-  }
-
-  return true;
+  return m_file != nullptr;
 }
 
 void CXBTFReader::Close()
 {
-  if (m_file)
+  if (m_file != nullptr)
   {
     fclose(m_file);
-    m_file = NULL;
+    m_file = nullptr;
   }
 
-  m_xbtf.GetFiles().clear();
-  m_filesMap.clear();
+  m_path.clear();
+  m_files.clear();
 }
 
-time_t CXBTFReader::GetLastModificationTimestamp()
+time_t CXBTFReader::GetLastModificationTimestamp() const
 {
-  if (!m_file)
-  {
+  if (m_file == nullptr)
     return 0;
-  }
 
   struct stat fileStat;
   if (fstat(fileno(m_file), &fileStat) == -1)
-  {
     return 0;
-  }
 
   return fileStat.st_mtime;
 }
 
-bool CXBTFReader::Exists(const std::string& name)
+bool CXBTFReader::Load(const CXBTFFrame& frame, unsigned char* buffer) const
 {
-  return Find(name) != NULL;
-}
-
-CXBTFFile* CXBTFReader::Find(const std::string& name)
-{
-  std::map<std::string, CXBTFFile>::iterator iter = m_filesMap.find(name);
-  if (iter == m_filesMap.end())
-  {
-    return NULL;
-  }
-
-  return &(iter->second);
-}
-
-bool CXBTFReader::Load(const CXBTFFrame& frame, unsigned char* buffer)
-{
-  if (!m_file)
-  {
+  if (m_file == nullptr)
     return false;
-  }
+
 #if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
-    if (fseeko(m_file, (off_t)frame.GetOffset(), SEEK_SET) == -1)
+  if (fseeko(m_file, static_cast<off_t>(frame.GetOffset()), SEEK_SET) == -1)
 #else
-    if (fseeko64(m_file, (off_t)frame.GetOffset(), SEEK_SET) == -1)
+  if (fseeko64(m_file, static_cast<off_t>(frame.GetOffset()), SEEK_SET) == -1)
 #endif
-  {
     return false;
-  }
 
-  if (fread(buffer, 1, (size_t)frame.GetPackedSize(), m_file) != frame.GetPackedSize())
-  {
+  if (fread(buffer, 1, static_cast<size_t>(frame.GetPackedSize()), m_file) != frame.GetPackedSize())
     return false;
-  }
 
   return true;
-}
-
-std::vector<CXBTFFile>& CXBTFReader::GetFiles()
-{
-  return m_xbtf.GetFiles();
 }

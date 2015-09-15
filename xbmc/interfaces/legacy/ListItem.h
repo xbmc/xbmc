@@ -52,6 +52,15 @@ namespace XBMCAddon
     // If it's a list of items then the items can be either a String or a Tuple.
     typedef Dictionary<InfoLabelValue> InfoLabelDict;
 
+    /**
+     * ListItem([label, label2, iconImage, thumbnailImage, path])\n
+     * \n
+     * label : [opt] string
+     * label2 : [opt] string
+     * iconImage : Deprecated. Use setArt
+     * thumbnailImage : Deprecated. Use setArt
+     * path : [opt] string
+     */
     class ListItem : public AddonClass
     {
     public:
@@ -115,22 +124,12 @@ namespace XBMCAddon
       void setLabel2(const String& label);
 
       /**
-       * setIconImage(icon) -- Sets the listitem's icon image.\n
-       * \n
-       * icon            : string - image filename.\n
-       * \n
-       * example:
-       *   - self.list.getSelectedItem().setIconImage('emailread.png')
+       *  Deprecated. Use setArt
        */
       void setIconImage(const String& iconImage);
 
       /**
-       * setThumbnailImage(thumbFilename) -- Sets the listitem's thumbnail image.\n
-       * \n
-       * thumb           : string - image filename.\n
-       * \n
-       * example:
-       *   - self.list.getSelectedItem().setThumbnailImage('emailread.png')
+       * Deprecated. Use setArt
        */
       void setThumbnailImage(const String& thumbFilename);
 
@@ -147,6 +146,7 @@ namespace XBMCAddon
        *     - clearart      : string - image filename
        *     - clearlogo     : string - image filename
        *     - landscape     : string - image filename
+       *     - icon          : string - image filename
        *
        * example:
        *   - self.list.getSelectedItem().setArt({ 'poster': 'poster.png', 'banner' : 'banner.png' })
@@ -196,6 +196,7 @@ namespace XBMCAddon
        *     - top250        : integer (192)
        *     - tracknumber   : integer (3)
        *     - rating        : float (6.4) - range is 0..10
+       *     - userrating    : integer (9) - range is 1..10
        *     - watched       : depreciated - use playcount instead
        *     - playcount     : integer (2) - number of times this item has been played
        *     - overlay       : integer (2) - range is 0..8.  See GUIListItem.h for values
@@ -341,9 +342,19 @@ namespace XBMCAddon
        * \n
        * mimetype           : string or unicode - mimetype.\n
        * \n
-       * *If known prehand, this can avoid xbmc doing HEAD requests to http servers to figure out file type.\n
+       * If known prehand, this can (but does not have to) avoid HEAD requests
+       * being sent to HTTP servers to figure out file type.\n
        */
       void setMimeType(const String& mimetype);
+
+      /**
+       * setContentLookup(enable) -- Enable or disable content lookup for item.
+       *
+       * If disabled, HEAD requests to e.g determine mime type will not be sent.
+       *
+       * enable : bool
+       */
+      void setContentLookup(bool enable);
 
       /**
        * setSubtitles() -- Sets subtitles for this listitem.\n

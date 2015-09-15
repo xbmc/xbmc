@@ -139,8 +139,10 @@ namespace XBMCAddon
         {
           std::string artName = it->first;
           StringUtils::ToLower(artName);
-          const std::string artFilename(it->second.c_str());
-          item->SetArt(artName, artFilename);
+          if (artName == "icon")
+            item->SetIconImage(it->second);
+          else
+            item->SetArt(artName, it->second);
         }
       }
     }
@@ -234,6 +236,12 @@ namespace XBMCAddon
       item->SetMimeType(mimetype);
     }
 
+    void ListItem::setContentLookup(bool enable)
+    {
+      LOCKGUI;
+      item->SetContentLookup(enable);
+    }
+
     String ListItem::getdescription()
     {
       return item->GetLabel();
@@ -290,6 +298,8 @@ namespace XBMCAddon
             item->m_iprogramCount = strtol(value.c_str(), NULL, 10);
           else if (key == "rating")
             item->GetVideoInfoTag()->m_fRating = (float)strtod(value.c_str(), NULL);
+          else if (key == "userrating")
+            item->GetVideoInfoTag()->m_iUserRating = strtol(value.c_str(), NULL, 10);
           else if (key == "size")
             item->m_dwSize = (int64_t)strtoll(value.c_str(), NULL, 10);
           else if (key == "watched") // backward compat - do we need it?

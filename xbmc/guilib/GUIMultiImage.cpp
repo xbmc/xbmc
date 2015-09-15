@@ -30,7 +30,6 @@
 #include "WindowIDs.h"
 #include "utils/StringUtils.h"
 
-using namespace std;
 using namespace XFILE;
 
 CGUIMultiImage::CGUIMultiImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int timePerImage, unsigned int fadeTime, bool randomized, bool loop, unsigned int timeToPauseAtEnd)
@@ -229,7 +228,7 @@ void CGUIMultiImage::LoadDirectory()
    3. Bundled folder
    */
   CFileItem item(m_currentPath, false);
-  if (item.IsPicture() || CTextureCache::Get().HasCachedImage(m_currentPath))
+  if (item.IsPicture() || CTextureCache::GetInstance().HasCachedImage(m_currentPath))
     m_files.push_back(m_currentPath);
   else // bundled folder?
     g_TextureManager.GetBundledTexturesFromPath(m_currentPath, m_files);

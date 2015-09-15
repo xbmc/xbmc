@@ -3,7 +3,9 @@
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<onunload condition="Container(9000).Hasfocus(10) | Container(9000).Hasfocus(11) | ControlGroup(9010).HasFocus | ControlGroup(9016).HasFocus | ControlGroup(9017).HasFocus">SetProperty(VideosDirectLink,True)</onunload>
+	<onunload condition="ControlGroup(9011).HasFocus">SetProperty(MusicDirectLink,True)</onunload>
 	<onunload condition="Control.HasFocus(9000) + Container(9000).Hasfocus(2)">ClearProperty(VideosDirectLink)</onunload>
+	<onunload condition="Control.HasFocus(9000) + Container(9000).Hasfocus(3)">ClearProperty(MusicDirectLink)</onunload>
 	<controls>
 		<include>CommonBackground</include>
 		<control type="image">
@@ -669,12 +671,27 @@
 						<alttexturefocus>OSDPlayFO.png</alttexturefocus>
 						<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
 						<onleft>603</onleft>
-						<onright>606</onright>
+						<onright>605</onright>
 						<onup>9003</onup>
 						<ondown>9000</ondown>
 						<onclick>PlayerControl(Play)</onclick>
 						<enable>Player.PauseEnabled</enable>
 						<animation effect="fade" start="100" end="30" time="75" condition="!Player.PauseEnabled">Conditional</animation>
+					</control>
+					<control type="button" id="605">
+						<left>130</left>
+						<top>2</top>
+						<width>30</width>
+						<height>30</height>
+						<label>-</label>
+						<texturefocus>OSDRadioRDSFO.png</texturefocus>
+						<texturenofocus>OSDRadioRDSNF.png</texturenofocus>
+						<onleft>604</onleft>
+						<onright>606</onright>
+						<onup>9003</onup>
+						<ondown>9000</ondown>
+						<onclick>ActivateWindow(PVRRadioRDSInfo)</onclick>
+						<visible>RDS.HasRadiotextPlus</visible>
 					</control>
 					<control type="button" id="606">
 						<left>160</left>
@@ -684,7 +701,7 @@
 						<label>-</label>
 						<texturefocus>OSDRecordOffFO.png</texturefocus>
 						<texturenofocus>OSDRecordOffNF.png</texturenofocus>
-						<onleft>604</onleft>
+						<onleft>605</onleft>
 						<onright>607</onright>
 						<onup>9003</onup>
 						<ondown>9000</ondown>
@@ -959,7 +976,8 @@
 					</item>
 					<item id="3">
 						<label>31956</label>
-						<onclick>ActivateWindow(Music)</onclick>
+						<onclick condition="StringCompare(Window.Property(MusicDirectLink),True)">ActivateWindow(Music)</onclick>
+						<onclick condition="!StringCompare(Window.Property(MusicDirectLink),True)">ActivateWindow(Music,root)</onclick>
 						<icon>-</icon>
 						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoMusicButton)</visible>
@@ -1209,7 +1227,7 @@
 			<description>Date label</description>
 			<right>20</right>
 			<top>35</top>
-			<width>200</width>
+			<width>300</width>
 			<height>15</height>
 			<align>right</align>
 			<aligny>center</aligny>

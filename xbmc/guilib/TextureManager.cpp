@@ -20,7 +20,9 @@
 
 #include "TextureManager.h"
 #include "Texture.h"
-#include "AnimatedGif.h"
+#if defined(HAS_GIFLIB)
+#include "guilib/Gif.h"
+#endif//HAS_GIFLIB
 #include "GraphicContext.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -39,9 +41,6 @@
 #if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
 #include "windowing/WindowingFactory.h" // for g_Windowing in CGUITextureManager::FreeUnusedTextures
 #endif
-
-using namespace std;
-
 
 /************************************************************************/
 /*                                                                      */
@@ -92,7 +91,7 @@ void CTextureArray::Add(CBaseTexture *texture, int delay)
     return;
 
   m_textures.push_back(texture);
-  m_delays.push_back(delay ? delay * 2 : 100);
+  m_delays.push_back(delay);
 
   m_texWidth = texture->GetTextureWidth();
   m_texHeight = texture->GetTextureHeight();
@@ -105,7 +104,7 @@ void CTextureArray::Set(CBaseTexture *texture, int width, int height)
   m_width = width;
   m_height = height;
   m_orientation = texture ? texture->GetOrientation() : 0;
-  Add(texture, 100);
+  Add(texture, 2);
 }
 
 void CTextureArray::Free()
@@ -325,7 +324,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
 
   if (StringUtils::EndsWithNoCase(strPath, ".gif"))
   {
-    CTextureMap* pMap;
+    CTextureMap* pMap = nullptr;
 
     if (bundle >= 0)
     {
@@ -352,42 +351,34 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
     }
     else
     {
-      CAnimatedGifSet AnimatedGifSet;
-      int iImages = AnimatedGifSet.LoadGIF(strPath.c_str());
-      if (iImages == 0)
+#if defined(HAS_GIFLIB)
+      Gif gif;
+      if(!gif.LoadGif(strPath.c_str()))
       {
         if (StringUtils::StartsWith(strPath, g_SkinInfo->Path()))
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
         return emptyTexture;
       }
-      int iWidth = AnimatedGifSet.FrameWidth;
-      int iHeight = AnimatedGifSet.FrameHeight;
 
-      // fixup our palette
-      COLOR *palette = AnimatedGifSet.m_vecimg[0]->Palette;
-      // set the alpha values to fully opaque
-      for (int i = 0; i < 256; i++)
-        palette[i].x = 0xff;
-      // and set the transparent colour
-      if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
-        palette[AnimatedGifSet.m_vecimg[0]->Transparent].x = 0;
+      pMap = new CTextureMap(strTextureName, gif.Width(), gif.Height(), gif.GetNumLoops());
 
-      pMap = new CTextureMap(strTextureName, iWidth, iHeight, AnimatedGifSet.nLoops);
-
-      for (int iImage = 0; iImage < iImages; iImage++)
+      for (auto frame : gif.GetFrames())
       {
         CTexture *glTexture = new CTexture();
         if (glTexture)
         {
-          CAnimatedGif* pImage = AnimatedGifSet.m_vecimg[iImage];
-          glTexture->LoadPaletted(pImage->Width, pImage->Height, pImage->BytesPerRow, XB_FMT_A8R8G8B8, (unsigned char *)pImage->Raster, palette);
-          pMap->Add(glTexture, pImage->Delay);
+          glTexture->LoadFromMemory(gif.Width(), gif.Height(), gif.GetPitch(), XB_FMT_A8R8G8B8, false, frame->m_pImage);
+          pMap->Add(glTexture, frame->m_delay);
         }
-      } // of for (int iImage=0; iImage < iImages; iImage++)
+      }
+#endif//HAS_GIFLIB
     }
 
-    m_vecTextures.push_back(pMap);
-    return pMap->GetTexture();
+    if (pMap)
+    {
+      m_vecTextures.push_back(pMap);
+      return pMap->GetTexture();
+    }
   } // of if (strPath.Right(4).ToLower()==".gif")
 
   CBaseTexture *pTexture = NULL;
@@ -443,7 +434,7 @@ void CGUITextureManager::ReleaseTexture(const std::string& strTextureName, bool 
       {
         //CLog::Log(LOGINFO, "  cleanup:%s", strTextureName.c_str());
         // add to our textures to free
-        m_unusedTextures.push_back(make_pair(pMap, immediately ? 0 : XbmcThreads::SystemClockMillis()));
+        m_unusedTextures.push_back(std::make_pair(pMap, immediately ? 0 : XbmcThreads::SystemClockMillis()));
         i = m_vecTextures.erase(i);
       }
       return;
@@ -568,7 +559,7 @@ void CGUITextureManager::AddTexturePath(const std::string &texturePath)
 void CGUITextureManager::RemoveTexturePath(const std::string &texturePath)
 {
   CSingleLock lock(m_section);
-  for (vector<std::string>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
+  for (std::vector<std::string>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
   {
     if (*it == texturePath)
     {
@@ -585,7 +576,7 @@ std::string CGUITextureManager::GetTexturePath(const std::string &textureName, b
   else
   { // texture doesn't include the full path, so check all fallbacks
     CSingleLock lock(m_section);
-    for (vector<std::string>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
+    for (std::vector<std::string>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
     {
       std::string path = URIUtils::AddFileToFolder(it->c_str(), "media");
       path = URIUtils::AddFileToFolder(path, textureName);

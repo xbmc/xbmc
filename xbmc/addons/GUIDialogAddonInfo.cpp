@@ -40,7 +40,7 @@
 #include "utils/Variant.h"
 #include "addons/AddonInstaller.h"
 #include "Util.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 
 #include <utility>
 
@@ -52,7 +52,6 @@
 #define CONTROL_BTN_ROLLBACK        11
 #define CONTROL_BTN_SELECT          12
 
-using namespace std;
 using namespace ADDON;
 using namespace XFILE;
 
@@ -92,7 +91,7 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       {
         if (m_localAddon)
         {
-          if (m_localAddon->Type() == ADDON_ADSPDLL && ActiveAE::CActiveAEDSP::Get().IsProcessing())
+          if (m_localAddon->Type() == ADDON_ADSPDLL && ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
           {
             CGUIDialogOK::ShowAndGetInput(24137, 0, 24138, 0);
             return true;
@@ -119,7 +118,7 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       {
         if (m_localAddon)
         {
-          if (m_localAddon->Type() == ADDON_ADSPDLL && ActiveAE::CActiveAEDSP::Get().IsProcessing())
+          if (m_localAddon->Type() == ADDON_ADSPDLL && ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
           {
             CGUIDialogOK::ShowAndGetInput(24137, 0, 24138, 0);
             return true;
@@ -179,7 +178,7 @@ void CGUIDialogAddonInfo::UpdateControls()
   if (isInstalled)
     GrabRollbackVersions();
 
-  bool canDisable = isInstalled && CAddonMgr::Get().CanAddonBeDisabled(m_localAddon->ID());
+  bool canDisable = isInstalled && CAddonMgr::GetInstance().CanAddonBeDisabled(m_localAddon->ID());
   bool canInstall = !isInstalled && m_item->GetProperty("Addon.Broken").empty();
   bool isRepo = (isInstalled && m_localAddon->Type() == ADDON_REPOSITORY) || (m_addon && m_addon->Type() == ADDON_REPOSITORY);
 
@@ -198,14 +197,16 @@ void CGUIDialogAddonInfo::UpdateControls()
 
 void CGUIDialogAddonInfo::OnUpdate()
 {
-  std::string referer = StringUtils::Format("Referer=%s-%s.zip",m_localAddon->ID().c_str(),m_localAddon->Version().asString().c_str());
-  CAddonInstaller::Get().Install(m_addon->ID(), true, referer); // force install
+  CAddonInstaller::GetInstance().InstallOrUpdate(m_addon->ID());
   Close();
 }
 
 void CGUIDialogAddonInfo::OnInstall()
 {
-  CAddonInstaller::Get().Install(m_addon->ID());
+  if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
+    return;
+
+  CAddonInstaller::GetInstance().InstallOrUpdate(m_addon->ID());
   Close();
 }
 
@@ -215,7 +216,7 @@ void CGUIDialogAddonInfo::OnLaunch()
     return;
 
   Close();
-  CBuiltins::Execute("RunAddon(" + m_localAddon->ID() + ")");
+  CBuiltins::GetInstance().Execute("RunAddon(" + m_localAddon->ID() + ")");
 }
 
 bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
@@ -224,8 +225,8 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
     return false;
 
   VECADDONS addons;
-  vector<string> deps;
-  CAddonMgr::Get().GetAllAddons(addons);
+  std::vector<std::string> deps;
+  CAddonMgr::GetInstance().GetAllAddons(addons);
   for (VECADDONS::const_iterator it  = addons.begin();
        it != addons.end();++it)
   {
@@ -236,8 +237,8 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
 
   if (!deps.empty())
   {
-    string line0 = StringUtils::Format(g_localizeStrings.Get(24046).c_str(), m_localAddon->Name().c_str());
-    string line1 = StringUtils::Join(deps, ", ");
+    std::string line0 = StringUtils::Format(g_localizeStrings.Get(24046).c_str(), m_localAddon->Name().c_str());
+    std::string line1 = StringUtils::Join(deps, ", ");
     CGUIDialogOK::ShowAndGetInput(CVariant{heading}, CVariant{std::move(line0)}, CVariant{std::move(line1)}, CVariant{line2});
     return true;
   }
@@ -261,7 +262,7 @@ void CGUIDialogAddonInfo::OnUninstall()
     return;
 
   CJobManager::GetInstance().AddJob(new CAddonUnInstallJob(m_localAddon),
-                                    &CAddonInstaller::Get());
+                                    &CAddonInstaller::GetInstance());
   Close();
 }
 
@@ -277,9 +278,9 @@ void CGUIDialogAddonInfo::OnEnable(bool enable)
     return;
 
   if (enable)
-    CAddonMgr::Get().EnableAddon(m_localAddon->ID());
+    CAddonMgr::GetInstance().EnableAddon(m_localAddon->ID());
   else
-    CAddonMgr::Get().DisableAddon(m_localAddon->ID());
+    CAddonMgr::GetInstance().DisableAddon(m_localAddon->ID());
   SetItem(m_item);
   UpdateControls();
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
@@ -356,8 +357,8 @@ void CGUIDialogAddonInfo::OnRollback()
     // needed as cpluff won't downgrade
     if (!m_localAddon->IsType(ADDON_SERVICE))
       //we will handle this for service addons in CAddonInstallJob::OnPostInstall
-      CAddonMgr::Get().UnregisterAddon(m_localAddon->ID());
-    CAddonInstaller::Get().InstallFromZip(path);
+      CAddonMgr::GetInstance().UnregisterAddon(m_localAddon->ID());
+    CAddonInstaller::GetInstance().InstallFromZip(path);
     database.RemoveAddonFromBlacklist(m_localAddon->ID(),m_rollbackVersions[choice]);
     Close();
   }
@@ -383,7 +384,7 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
   // grab the local addon, if it's available
   m_localAddon.reset();
   m_addon.reset();
-  if (CAddonMgr::Get().GetAddon(item->GetProperty("Addon.ID").asString(), m_localAddon)) // sets m_localAddon if installed regardless of enabled state
+  if (CAddonMgr::GetInstance().GetAddon(item->GetProperty("Addon.ID").asString(), m_localAddon)) // sets m_localAddon if installed regardless of enabled state
     m_item->SetProperty("Addon.Enabled", "true");
   else
     m_item->SetProperty("Addon.Enabled", "false");
@@ -399,9 +400,9 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
     database.Open();
     VECADDONS addons;
     if (m_addon)
-      database.GetRepository(m_addon->ID(), addons);
+      database.GetRepositoryContent(m_addon->ID(), addons);
     else if (m_localAddon) // sanity
-      database.GetRepository(m_localAddon->ID(), addons);
+      database.GetRepositoryContent(m_localAddon->ID(), addons);
     int tot=0;
     for (int i = ADDON_UNKNOWN+1;i<ADDON_MAX;++i)
     {

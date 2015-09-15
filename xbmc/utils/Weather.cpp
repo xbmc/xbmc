@@ -44,7 +44,6 @@
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "addons/GUIDialogAddonSettings.h"
 
-using namespace std;
 using namespace ADDON;
 using namespace XFILE;
 
@@ -76,7 +75,7 @@ bool CWeatherJob::DoWork()
     return false;
 
   AddonPtr addon;
-  if (!ADDON::CAddonMgr::Get().GetAddon(CSettings::Get().GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER))
+  if (!ADDON::CAddonMgr::GetInstance().GetAddon(CSettings::GetInstance().GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER))
     return false;
 
   // initialize our sys.argv variables
@@ -90,11 +89,11 @@ bool CWeatherJob::DoWork()
   CLog::Log(LOGINFO, "WEATHER: Downloading weather");
   // call our script, passing the areacode
   int scriptId = -1;
-  if ((scriptId = CScriptInvocationManager::Get().ExecuteAsync(argv[0], addon, argv)) >= 0)
+  if ((scriptId = CScriptInvocationManager::GetInstance().ExecuteAsync(argv[0], addon, argv)) >= 0)
   {
     while (true)
     {
-      if (!CScriptInvocationManager::Get().IsRunning(scriptId))
+      if (!CScriptInvocationManager::GetInstance().IsRunning(scriptId))
         break;
       Sleep(100);
     }
@@ -136,8 +135,8 @@ void CWeatherJob::LocalizeOverviewToken(std::string &token)
 
 void CWeatherJob::LocalizeOverview(std::string &str)
 {
-  vector<string> words = StringUtils::Split(str, " ");
-  for (vector<string>::iterator i = words.begin(); i != words.end(); ++i)
+  std::vector<std::string> words = StringUtils::Split(str, " ");
+  for (std::vector<std::string>::iterator i = words.begin(); i != words.end(); ++i)
     LocalizeOverviewToken(*i);
   str = StringUtils::Join(words, " ");
 }
@@ -152,7 +151,7 @@ void CWeatherJob::LoadLocalizedToken()
 {
   // We load the english strings in to get our tokens
   std::string language = LANGUAGE_DEFAULT;
-  CSettingString* languageSetting = static_cast<CSettingString*>(CSettings::Get().GetSetting(CSettings::SETTING_LOCALE_LANGUAGE));
+  CSettingString* languageSetting = static_cast<CSettingString*>(CSettings::GetInstance().GetSetting(CSettings::SETTING_LOCALE_LANGUAGE));
   if (languageSetting != NULL)
     language = languageSetting->GetDefault();
 
@@ -371,8 +370,8 @@ const day_forecast &CWeather::GetForecast(int day) const
  */
 void CWeather::SetArea(int iLocation)
 {
-  CSettings::Get().SetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION, iLocation);
-  CSettings::Get().Save();
+  CSettings::GetInstance().SetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION, iLocation);
+  CSettings::GetInstance().Save();
 }
 
 /*!
@@ -381,7 +380,7 @@ void CWeather::SetArea(int iLocation)
  */
 int CWeather::GetArea() const
 {
-  return CSettings::Get().GetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION);
+  return CSettings::GetInstance().GetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION);
 }
 
 CJob *CWeather::GetJob() const
@@ -419,7 +418,7 @@ void CWeather::OnSettingAction(const CSetting *setting)
   if (settingId == CSettings::SETTING_WEATHER_ADDONSETTINGS)
   {
     AddonPtr addon;
-    if (CAddonMgr::Get().GetAddon(CSettings::Get().GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER) && addon != NULL)
+    if (CAddonMgr::GetInstance().GetAddon(CSettings::GetInstance().GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER) && addon != NULL)
     { // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
       Refresh();

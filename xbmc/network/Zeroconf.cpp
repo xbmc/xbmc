@@ -114,9 +114,9 @@ bool CZeroconf::Start()
   CSingleLock lock(*mp_crit_sec);
   if(!IsZCdaemonRunning())
   {
-    CSettings::Get().SetBool(CSettings::SETTING_SERVICES_ZEROCONF, false);
-    if (CSettings::Get().GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
-      CSettings::Get().SetBool(CSettings::SETTING_SERVICES_AIRPLAY, false);
+    CSettings::GetInstance().SetBool(CSettings::SETTING_SERVICES_ZEROCONF, false);
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
+      CSettings::GetInstance().SetBool(CSettings::SETTING_SERVICES_AIRPLAY, false);
     return false;
   }
   if(m_started)

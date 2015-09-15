@@ -61,15 +61,18 @@
 			</RegExp>
 			<!--MBID - release group-->
 			<RegExp input="$$1" output="\1" dest="4">
-				<expression>&lt;release-group type=&quot;[^&quot;]*&quot; id=&quot;([^&quot;]*)&quot;</expression>
+				<expression>&lt;release-group\stype=&quot;[^&quot;]*&quot;\sid=&quot;([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="4+">
+				<expression>&lt;release-group\sid=&quot;([^&quot;]*)&quot;\stype=&quot;[^&quot;]*&quot;</expression>
 			</RegExp>
 			<!--Album title-->
 			<RegExp input="$$1" output="\1" dest="7">
-				<expression trim="1">&lt;release id=&quot;[^&quot;]*&quot;&gt;&lt;title&gt;([^&lt;]*)&lt;</expression>
+				<expression trim="1">&lt;release\sid=&quot;[^&quot;]*&quot;&gt;&lt;title&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
 			<!--Artist name-->
 			<RegExp input="$$1" output="\1" dest="8">
-				<expression trim="1">&lt;release id=&quot;[^&quot;]*&quot;&gt;&lt;title&gt;[^&lt;]*&lt;.*?&lt;artist id=&quot;[^&quot;]*&quot;&gt;&lt;name&gt;([^&lt;]*)&lt;</expression>
+				<expression trim="1">&lt;release\sid=&quot;[^&quot;]*&quot;&gt;&lt;title&gt;[^&lt;]*&lt;.*?&lt;artist\sid=&quot;[^&quot;]*&quot;&gt;&lt;name&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
 			<RegExp input="$$3" output="&lt;chain function=&quot;GetMBAlbumTitleByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5">
 				<expression noclean="1">(.+)</expression>
@@ -95,9 +98,6 @@
 			<RegExp input="$INFO[albumreviewsource]" output="&lt;chain function=&quot;GetTADBAlbumReviewByMBID&quot;&gt;$$4&lt;/chain&gt;" dest="5+">
 				<expression>TheAudioDb.com</expression>
 			</RegExp>
-			<RegExp input="$INFO[albumreviewsource]" output="&lt;url function=&quot;GetAmazonDEAlbumReview&quot;&gt;http://musicbrainz.org/ws/2/release-group/$$4?inc=url-rels&lt;/url&gt;" dest="5+">
-				<expression>amazon.de</expression>
-			</RegExp>
 			<RegExp input="$INFO[albumratingsource]" output="&lt;chain function=&quot;GetMBAlbumRatingByMBID&quot;&gt;$$3&lt;/chain&gt;" dest="5+">
 				<expression>MusicBrainz</expression>
 			</RegExp>
@@ -122,14 +122,14 @@
 			<RegExp input="$INFO[albumthemessource]" output="&lt;url function=&quot;GetAMGAlbumThemes&quot; cache=&quot;mb-$$4-rg.xml&quot;&gt;http://musicbrainz.org/ws/2/release-group/$$4?inc=url-rels&lt;/url&gt;" dest="5+">
 				<expression>allmusic.com</expression>
 			</RegExp>
-			<RegExp conditional="fanarttvalbumthumbs" input="$$1" output="&lt;chain function=&quot;GetFanartTvAlbumThumbsByMBID&quot;&gt;$$4&lt;/chain&gt;" dest="5+">
-				<expression noclean="1" />
+			<RegExp conditional="fanarttvalbumthumbs" input="$$4" output="&lt;chain function=&quot;GetFanartTvAlbumThumbsByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
+				<expression noclean="1">(.+)</expression>
 			</RegExp>
-			<RegExp conditional="tadbalbumthumbs" input="$$1" output="&lt;chain function=&quot;GetTADBAlbumThumbsByMBID&quot;&gt;$$4&lt;/chain&gt;" dest="5+">
-				<expression noclean="1" />
+			<RegExp conditional="tadbalbumthumbs" input="$$4" output="&lt;chain function=&quot;GetTADBAlbumThumbsByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
+				<expression noclean="1">(.+)</expression>
 			</RegExp>
-			<RegExp conditional="allmusicalbumthumbs" input="$$1" output="&lt;url function=&quot;GetAMGAlbumThumbs&quot; cache=&quot;mb-$$4-rg.xml&quot;&gt;http://musicbrainz.org/ws/2/release-group/$$4?inc=url-rels&lt;/url&gt;" dest="5+">
-				<expression noclean="1" />
+			<RegExp conditional="allmusicalbumthumbs" input="$$4" output="&lt;url function=&quot;GetAMGAlbumThumbs&quot; cache=&quot;mb-\1-rg.xml&quot;&gt;http://musicbrainz.org/ws/2/release-group/\1?inc=url-rels&lt;/url&gt;" dest="5+">
+				<expression noclean="1">(.+)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -188,14 +188,5 @@
 			<expression noclean="1" />
 		</RegExp>
 	</GetAMGAlbumThumbs>
-
-	<GetAmazonDEAlbumReview dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;chain function=&quot;GetAmazonDEAlbumReviewByASIN&quot;&gt;\1&lt;/chain&gt;" dest="2">
-				<expression noclean="1">http://www.amazon.de/gp/product/([^&lt;]*)</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</GetAmazonDEAlbumReview>
 
 </scraper>

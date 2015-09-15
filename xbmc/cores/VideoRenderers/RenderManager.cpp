@@ -270,7 +270,7 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     if( flags & CONF_FLAGS_FULLSCREEN )
     {
       lock.Leave();
-      CApplicationMessenger::Get().PostMsg(TMSG_SWITCHTOFULLSCREEN);
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
       lock.Enter();
     }
     lock2.Enter();
@@ -503,7 +503,7 @@ bool CXBMCRenderManager::Flush()
   else
   {
     m_flushEvent.Reset();
-    CApplicationMessenger::Get().PostMsg(TMSG_RENDERER_FLUSH);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_RENDERER_FLUSH);
     if (!m_flushEvent.WaitMSec(1000))
     {
       CLog::Log(LOGERROR, "%s - timed out waiting for renderer to flush", __FUNCTION__);
@@ -685,8 +685,8 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
 
     EPRESENTMETHOD presentmethod;
 
-    EDEINTERLACEMODE deinterlacemode = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
-    EINTERLACEMETHOD interlacemethod = AutoInterlaceMethodInternal(CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod);
+    EDEINTERLACEMODE deinterlacemode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
+    EINTERLACEMETHOD interlacemethod = AutoInterlaceMethodInternal(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
 
     if(g_advancedSettings.m_videoDisableBackgroundDeinterlace && !g_graphicsContext.IsFullScreenVideo())
       deinterlacemode = VS_DEINTERLACEMODE_OFF;
@@ -776,7 +776,7 @@ float CXBMCRenderManager::GetMaximumFPS()
 {
   float fps;
 
-  if (CSettings::Get().GetInt(CSettings::SETTING_VIDEOSCREEN_VSYNC) != VSYNC_DISABLED)
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOSCREEN_VSYNC) != VSYNC_DISABLED)
   {
     fps = (float)g_VideoReferenceClock.GetRefreshRate();
     if (fps <= 0) fps = g_graphicsContext.GetFPS();
@@ -990,10 +990,6 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
        || pic.format == RENDER_FMT_UYVY422)
   {
     CDVDCodecUtils::CopyYUV422PackedPicture(&image, &pic);
-  }
-  else if(pic.format == RENDER_FMT_DXVA)
-  {
-    CDVDCodecUtils::CopyDXVA2Picture(&image, &pic);
   }
 #ifdef HAVE_LIBVDPAU
   else if(pic.format == RENDER_FMT_VDPAU

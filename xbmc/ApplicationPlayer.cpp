@@ -86,7 +86,7 @@ void CApplicationPlayer::CreatePlayer(PLAYERCOREID newCore, IPlayerCallback& cal
   if (!m_pPlayer)
   {
     m_eCurrentPlayer = newCore;
-    m_pPlayer.reset(CPlayerCoreFactory::Get().CreatePlayer(newCore, callback));
+    m_pPlayer.reset(CPlayerCoreFactory::GetInstance().CreatePlayer(newCore, callback));
   }
 }
 
@@ -171,6 +171,12 @@ int CApplicationPlayer::GetPreferredPlaylist() const
   return PLAYLIST_NONE;
 }
 
+bool CApplicationPlayer::HasRDS() const
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  return (player && player->HasRDS());
+}
+
 bool CApplicationPlayer::IsPaused() const
 {
   std::shared_ptr<IPlayer> player = GetInternal();
@@ -196,6 +202,11 @@ bool CApplicationPlayer::IsPlayingAudio() const
 bool CApplicationPlayer::IsPlayingVideo() const
 {
   return (IsPlaying() && HasVideo());
+}
+
+bool CApplicationPlayer::IsPlayingRDS() const
+{
+  return (IsPlaying() && HasRDS());
 }
 
 void CApplicationPlayer::Pause()
@@ -406,6 +417,15 @@ TextCacheStruct_t* CApplicationPlayer::GetTeletextCache()
     return NULL;
 }
 
+std::string CApplicationPlayer::GetRadioText(unsigned int line)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->GetRadioText(line);
+  else
+    return "";
+}
+
 int64_t CApplicationPlayer::GetTotalTime() const
 {
   std::shared_ptr<IPlayer> player = GetInternal();
@@ -524,7 +544,7 @@ void CApplicationPlayer::SetAudioStream(int iStream)
     player->SetAudioStream(iStream);
     m_iAudioStream = iStream;
     m_audioStreamUpdate.Set(1000);
-    CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream = iStream;
+    CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioStream = iStream;
   }
 }
 
@@ -543,7 +563,7 @@ void CApplicationPlayer::SetSubtitle(int iStream)
     player->SetSubtitle(iStream);
     m_iSubtitleStream = iStream;
     m_subtitleStreamUpdate.Set(1000);
-    CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = iStream;
+    CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleStream = iStream;
   }
 }
 
@@ -553,8 +573,8 @@ void CApplicationPlayer::SetSubtitleVisible(bool bVisible)
   if (player)
   {
     player->SetSubtitleVisible(bVisible);
-    CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = bVisible;
-    CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = player->GetSubtitle();
+    CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleOn = bVisible;
+    CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleStream = player->GetSubtitle();
   }
 }
 

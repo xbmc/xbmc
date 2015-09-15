@@ -34,7 +34,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDependency.h"
 #include "settings/lib/SettingsManager.h"
@@ -114,7 +114,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
           std::string content = m_vecItems->Get(iSelected)->GetPath().substr(14);
           OnCancel();
           Close();
-          CBuiltins::Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.metadata.scraper." + content + ",return)");
+          CBuiltins::GetInstance().Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.metadata.scraper." + content + ",return)");
           return true;
         }
 
@@ -460,12 +460,12 @@ void CGUIDialogContentSettings::FillContentTypes(CONTENT_TYPE content)
   // grab all scrapers which support this content-type
   VECADDONS addons;
   TYPE type = ADDON::ScraperTypeFromContent(content);
-  if (!CAddonMgr::Get().GetAddons(type, addons))
+  if (!CAddonMgr::GetInstance().GetAddons(type, addons))
     return;
 
   AddonPtr addon;
   std::string defaultID;
-  if (CAddonMgr::Get().GetDefault(type, addon))
+  if (CAddonMgr::GetInstance().GetDefault(type, addon))
     defaultID = addon->ID();
 
   for (IVECADDONS it = addons.begin(); it != addons.end(); ++it)
@@ -506,7 +506,7 @@ void CGUIDialogContentSettings::FillScraperList()
   else
   {
     AddonPtr scraperAddon;
-    CAddonMgr::Get().GetDefault(ADDON::ScraperTypeFromContent(m_content), scraperAddon);
+    CAddonMgr::GetInstance().GetDefault(ADDON::ScraperTypeFromContent(m_content), scraperAddon);
     m_scraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
   }
 

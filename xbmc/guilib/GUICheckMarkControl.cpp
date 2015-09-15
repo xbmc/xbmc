@@ -22,8 +22,6 @@
 #include "GUIFontManager.h"
 #include "input/Key.h"
 
-using namespace std;
-
 CGUICheckMarkControl::CGUICheckMarkControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureCheckMark, const CTextureInfo& textureCheckMarkNF, float checkWidth, float checkHeight, const CLabelInfo &labelInfo)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_imgCheckMark(posX, posY, checkWidth, checkHeight, textureCheckMark)
@@ -170,7 +168,7 @@ EVENT_RESULT CGUICheckMarkControl::OnMouseEvent(const CPoint &point, const CMous
   return EVENT_RESULT_UNHANDLED;
 }
 
-void CGUICheckMarkControl::SetLabel(const string &label)
+void CGUICheckMarkControl::SetLabel(const std::string &label)
 {
   if (m_strLabel != label)
   {
@@ -179,7 +177,7 @@ void CGUICheckMarkControl::SetLabel(const string &label)
   }
 }
 
-void CGUICheckMarkControl::PythonSetLabel(const std::string &strFont, const string &strText, color_t textColor)
+void CGUICheckMarkControl::PythonSetLabel(const std::string &strFont, const std::string &strText, color_t textColor)
 {
   m_label.GetLabelInfo().font = g_fontManager.GetFont(strFont);
   m_label.GetLabelInfo().textColor = textColor;

@@ -40,7 +40,7 @@
 
 class IDispResource;
 
-class CWinSystemX11 : public CWinSystemBase, public ISettingCallback
+class CWinSystemX11 : public CWinSystemBase
 {
 public:
   CWinSystemX11();

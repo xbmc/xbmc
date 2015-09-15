@@ -19,20 +19,20 @@
  */
 
 #include "FileItem.h"
-#include "settings/Settings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
+#include "epg/EpgContainer.h"
+#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
-#include "PVRTimers.h"
 #include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "epg/EpgContainer.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+
+#include "PVRTimers.h"
 
 #include <assert.h>
 #include <cstdlib>
@@ -254,7 +254,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
 
     NotifyObservers(bAddedOrDeleted ? ObservableMessageTimersReset : ObservableMessageTimers);
 
-    if (CSettings::Get().GetBool(CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS))
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS))
     {
       /* queue notifications */
       for (unsigned int iNotificationPtr = 0; iNotificationPtr < timerNotifications.size(); iNotificationPtr++)
@@ -493,7 +493,7 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannelPtr &channel, bool bDele
         if (bDeleteActiveItem && bDeleteRepeatingItem && bChannelsMatch)
         {
           CLog::Log(LOGDEBUG,"PVRTimers - %s - deleted timer %d on client %d", __FUNCTION__, (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
-          bReturn = (*timerIt)->DeleteFromClient(true, false) || bReturn;
+          bReturn = (*timerIt)->DeleteFromClient(true) || bReturn;
           SetChanged();
         }
       }
@@ -521,7 +521,7 @@ bool CPVRTimers::InstantTimer(const CPVRChannelPtr &channel)
   {
     newTimer.reset(new CPVRTimerInfoTag);
     /* set the timer data */
-    newTimer->m_iClientIndex      = -1;
+    newTimer->m_iClientIndex      = PVR_TIMER_NO_CLIENT_INDEX;
     newTimer->m_strTitle          = channel->ChannelName();
     newTimer->m_strSummary        = g_localizeStrings.Get(19056);
     newTimer->m_iChannelNumber    = channel->ChannelNumber();
@@ -542,7 +542,7 @@ bool CPVRTimers::InstantTimer(const CPVRChannelPtr &channel)
   newTimer->SetStartFromUTC(startTime);
   newTimer->m_iMarginStart = 0; /* set the start margin to 0 for instant timers */
 
-  int iDuration = CSettings::Get().GetInt(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
+  int iDuration = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
   CDateTime endTime = CDateTime::GetUTCDateTime() + CDateTimeSpan(0, 0, iDuration ? iDuration : 120, 0);
   newTimer->SetEndFromUTC(endTime);
 
@@ -588,11 +588,22 @@ bool CPVRTimers::DeleteTimer(const CFileItem &item, bool bForce /* = false */, b
     return false;
   }
 
-  const CPVRTimerInfoTagPtr tag = item.GetPVRTimerInfoTag();
+  CPVRTimerInfoTagPtr tag = item.GetPVRTimerInfoTag();
   if (!tag)
     return false;
 
-  return tag->DeleteFromClient(bForce, bDeleteSchedule);
+  if (bDeleteSchedule)
+  {
+    /* delete the repeating timer that scheduled this timer. */
+    tag = g_PVRTimers->GetByClient(tag->m_iClientId, tag->GetTimerScheduleId());
+    if (!tag)
+    {
+      CLog::Log(LOGERROR, "PVRTimers - %s - unable to obtain parent timer for given timer", __FUNCTION__);
+      return false;
+    }
+  }
+
+  return tag->DeleteFromClient(bForce);
 }
 
 bool CPVRTimers::RenameTimer(CFileItem &item, const std::string &strNewName)
@@ -636,7 +647,7 @@ CPVRTimerInfoTagPtr CPVRTimers::GetByClient(int iClientId, unsigned int iClientT
     for (VecTimerInfoTag::const_iterator timerIt = it->second->begin(); timerIt != it->second->end(); ++timerIt)
     {
       if ((*timerIt)->m_iClientId == iClientId &&
-          (*timerIt)->m_iClientIndex == iClientTimerId)
+          (*timerIt)->m_iClientIndex == static_cast<int>(iClientTimerId))
         return *timerIt;
     }
   }
@@ -702,10 +713,10 @@ void CPVRTimers::Notify(const Observable &obs, const ObservableMessage msg)
 
 CDateTime CPVRTimers::GetNextEventTime(void) const
 {
-  const bool dailywakup = CSettings::Get().GetBool(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUP);
+  const bool dailywakup = CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUP);
   const CDateTime now = CDateTime::GetUTCDateTime();
-  const CDateTimeSpan prewakeup(0, 0, CSettings::Get().GetInt(CSettings::SETTING_PVRPOWERMANAGEMENT_PREWAKEUP), 0);
-  const CDateTimeSpan idle(0, 0, CSettings::Get().GetInt(CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME), 0);
+  const CDateTimeSpan prewakeup(0, 0, CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPOWERMANAGEMENT_PREWAKEUP), 0);
+  const CDateTimeSpan idle(0, 0, CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME), 0);
 
   CDateTime wakeuptime;
 
@@ -724,7 +735,7 @@ CDateTime CPVRTimers::GetNextEventTime(void) const
   if (dailywakup)
   {
     CDateTime dailywakeuptime;
-    dailywakeuptime.SetFromDBTime(CSettings::Get().GetString(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME));
+    dailywakeuptime.SetFromDBTime(CSettings::GetInstance().GetString(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME));
     dailywakeuptime = dailywakeuptime.GetAsUTCDateTime();
 
     dailywakeuptime.SetDateTime(

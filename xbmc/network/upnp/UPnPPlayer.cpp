@@ -35,13 +35,15 @@
 #include "video/VideoThumbLoader.h"
 #include "music/MusicThumbLoader.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "Application.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "dialogs/GUIDialogYesNo.h"
 
 using namespace KODI::MESSAGING;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.player")
 
@@ -529,7 +531,7 @@ void CUPnPPlayer::DoAudioWork()
       m_current_meta = (const char*)meta;
       CFileItemPtr item = GetFileItem(uri, meta);
       g_application.CurrentFileItem() = *item;
-      CApplicationMessenger::Get().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 0, -1, static_cast<void*>(new CFileItem(*item)));
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 0, -1, static_cast<void*>(new CFileItem(*item)));
     }
 
     NPT_CHECK_LABEL(m_delegate->m_transport->GetStateVariableValue("TransportState", data), failed);
@@ -605,10 +607,9 @@ bool CUPnPPlayer::OnAction(const CAction &action)
     case ACTION_STOP:
       if(IsPlaying())
       {
-        if(CGUIDialogYesNo::ShowAndGetInput(CVariant{37022}, CVariant{37023})) /* stop on remote system */
-          m_stopremote = true;
-        else
-          m_stopremote = false;
+        //stop on remote system
+        m_stopremote = HELPERS::ShowYesNoDialogText(CVariant{37022}, CVariant{37023}) == DialogResponse::YES;
+        
         return false; /* let normal code handle the action */
       }
     default:

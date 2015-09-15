@@ -33,7 +33,7 @@ CGUIDialogTeletext::CGUIDialogTeletext()
     : CGUIDialog(WINDOW_DIALOG_OSD_TELETEXT, "")
 {
   m_pTxtTexture = NULL;
-  m_renderOrder = INT_MAX - 3;
+  m_renderOrder = RENDER_ORDER_DIALOG_TELETEXT;
 }
 
 CGUIDialogTeletext::~CGUIDialogTeletext()
@@ -177,7 +177,7 @@ void CGUIDialogTeletext::SetCoordinates()
   top = g_graphicsContext.ScaleFinalYCoord(0, 0);
   bottom = g_graphicsContext.ScaleFinalYCoord(0, (float)m_coordsRes.iHeight);
 
-  if (CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_TELETEXTSCALE))
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_TELETEXTSCALE))
   {
     /* Fixed aspect ratio to 4:3 for teletext */
     float width = right - left;

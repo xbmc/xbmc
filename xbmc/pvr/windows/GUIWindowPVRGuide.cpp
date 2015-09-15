@@ -18,20 +18,23 @@
  *
  */
 
-#include "GUIWindowPVRGuide.h"
-
 #include "ContextMenuManager.h"
 #include "GUIUserMessages.h"
-#include "input/Key.h"
-#include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "epg/EpgContainer.h"
+#include "input/Key.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+
+#include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/timers/PVRTimers.h"
+
+#include "GUIWindowPVRGuide.h"
+
+#define MAX_UPDATE_FREQUENCY 3000 // limit to maximum one update/refresh in x milliseconds
 
 using namespace PVR;
 using namespace EPG;
@@ -118,7 +121,7 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
     buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
 
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
-  CContextMenuManager::Get().AddVisibleItems(pItem, buttons);
+  CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);
 }
 
 void CGUIWindowPVRGuide::UpdateSelectedItemPath()
@@ -204,7 +207,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
           {
             case ACTION_SELECT_ITEM:
             case ACTION_MOUSE_LEFT_CLICK:
-              switch(CSettings::Get().GetInt(CSettings::SETTING_EPG_SELECTACTION))
+              switch(CSettings::GetInstance().GetInt(CSettings::SETTING_EPG_SELECTACTION))
               {
                 case EPG_SELECT_ACTION_CONTEXT_MENU:
                   OnPopupMenu(iItem);
@@ -261,6 +264,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
     {
       // let's set the view mode first before update
       CGUIWindowPVRBase::OnMessage(message);
+      m_nextUpdateTimeout.SetExpired();
       Refresh(true);
       bReturn = true;
       break;
@@ -273,9 +277,12 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
         case ObservableMessageEpgContainer:
         {
           m_bUpdateRequired = true;
-          /* update the current window if the EPG timeline view is visible */
-          if (IsActive() && m_viewControl.GetCurrentControl() == GUIDE_VIEW_TIMELINE)
+          // do not allow more than MAX_UPDATE_FREQUENCY updates
+          if (IsActive() && m_nextUpdateTimeout.IsTimePast())
+          {
             Refresh(true);
+            m_nextUpdateTimeout.Set(MAX_UPDATE_FREQUENCY);
+          }
           bReturn = true;
           break;
         }

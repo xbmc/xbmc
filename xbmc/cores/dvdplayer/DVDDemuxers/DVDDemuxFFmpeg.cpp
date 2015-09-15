@@ -439,6 +439,16 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
 
   if (m_streaminfo)
   {
+    for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+    {
+      AVStream *st = m_pFormatContext->streams[i];
+      if (st->codec->codec_type == AVMEDIA_TYPE_AUDIO && st->codec->codec_id == AV_CODEC_ID_DTS)
+      {
+        AVCodec* pCodec = avcodec_find_decoder_by_name("libdcadec");
+        if (pCodec)
+          st->codec->codec = pCodec;
+      }
+    }
     /* to speed up dvd switches, only analyse very short */
     if(m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
       av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
@@ -1209,7 +1219,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case AVMEDIA_TYPE_SUBTITLE:
       {
-        if (pStream->codec->codec_id == AV_CODEC_ID_DVB_TELETEXT && CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_TELETEXTENABLED))
+        if (pStream->codec->codec_id == AV_CODEC_ID_DVB_TELETEXT && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_TELETEXTENABLED))
         {
           CDemuxStreamTeletext* st = new CDemuxStreamTeletext();
           stream = st;
@@ -1287,7 +1297,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
     if (langTag)
       strncpy(stream->language, langTag->value, 3);
 
-    if( pStream->codec->extradata && pStream->codec->extradata_size > 0 )
+    if( stream->type != STREAM_NONE && pStream->codec->extradata && pStream->codec->extradata_size > 0 )
     {
       stream->ExtraSize = pStream->codec->extradata_size;
       stream->ExtraData = new uint8_t[pStream->codec->extradata_size];

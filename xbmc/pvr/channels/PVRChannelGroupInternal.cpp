@@ -18,18 +18,19 @@
  *
  */
 
-#include "PVRChannelGroupInternal.h"
-
 #include "dialogs/GUIDialogOK.h"
+#include "epg/EpgContainer.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
-#include "epg/EpgContainer.h"
-#include "pvr/timers/PVRTimers.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/timers/PVRTimers.h"
+
+#include "PVRChannelGroupInternal.h"
+#include "PVRChannelGroupsContainer.h"
 
 #include <assert.h>
 
@@ -341,7 +342,7 @@ bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
 
   if (HasChangedChannels())
   {
-    g_EpgContainer.PersistTables();
+    g_EpgContainer.MarkTablesForPersist();
     return Persist();
   }
 

@@ -47,6 +47,7 @@ CEpgContainer::CEpgContainer(void) :
   m_bIsInitialising = true;
   m_iNextEpgId = 0;
   m_bPreventUpdates = false;
+  m_bMarkForPersist = false;
   m_updateEvent.Reset();
   m_bStarted = false;
   m_bLoaded = false;
@@ -64,7 +65,7 @@ CEpgContainer::~CEpgContainer(void)
   Unload();
 }
 
-CEpgContainer &CEpgContainer::Get(void)
+CEpgContainer &CEpgContainer::GetInstance()
 {
   static CEpgContainer epgInstance;
   return epgInstance;
@@ -169,11 +170,9 @@ void CEpgContainer::Start(bool bAsync)
   }
 
   LoadFromDB();
+
   if (g_PVRManager.IsStarted())
-  {
-    g_PVRManager.TriggerEpgsCreate();
     g_PVRManager.Recordings()->UpdateEpgTags();
-  }
 
   CSingleLock lock(m_critSection);
   if (!m_bStop)
@@ -184,6 +183,8 @@ void CEpgContainer::Start(bool bAsync)
     SetPriority(-1);
 
     m_bStarted = true;
+
+    g_PVRManager.TriggerEpgsCreate();
 
     CLog::Log(LOGNOTICE, "%s - EPG thread started", __FUNCTION__);
   }
@@ -254,6 +255,14 @@ void CEpgContainer::LoadFromDB(void)
   }
 
   m_bLoaded = bLoaded;
+}
+
+bool CEpgContainer::MarkTablesForPersist(void)
+{
+  /* Set m_bMarkForPersist to persist tables on the next Process() run but only
+  if epg.ignoredbforclient is set, otherwise persistAll does already persisting. */
+  CSingleLock lock(m_critSection);
+  return m_bMarkForPersist = CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
 }
 
 bool CEpgContainer::PersistTables(void)
@@ -346,6 +355,13 @@ void CEpgContainer::Process(void)
     if (!m_bStop)
       CheckPlayingEvents();
 
+    /* Check if PVR requests an update of Epg Channels */
+    if (m_bMarkForPersist)
+    {
+      PersistTables();
+      m_bMarkForPersist = false;
+    }
+
     /* check for changes that need to be saved every 60 seconds */
     if (iNow - iLastSave > 60)
     {
@@ -367,7 +383,7 @@ CEpg *CEpgContainer::GetById(int iEpgId) const
   return epgEntry != m_epgs.end() ? epgEntry->second : NULL;
 }
 
-CEpgInfoTagPtr CEpgContainer::GetTagById(int iBroadcastId) const
+CEpgInfoTagPtr CEpgContainer::GetTagById(unsigned int iBroadcastId) const
 {
   CEpgInfoTagPtr retval;
   CSingleLock lock(m_critSection);
@@ -452,9 +468,9 @@ CEpg *CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
 
 bool CEpgContainer::LoadSettings(void)
 {
-  m_bIgnoreDbForClient = CSettings::Get().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
-  m_iUpdateTime        = CSettings::Get().GetInt (CSettings::SETTING_EPG_EPGUPDATE) * 60;
-  m_iDisplayTime       = CSettings::Get().GetInt (CSettings::SETTING_EPG_DAYSTODISPLAY) * 24 * 60 * 60;
+  m_bIgnoreDbForClient = CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
+  m_iUpdateTime        = CSettings::GetInstance().GetInt (CSettings::SETTING_EPG_EPGUPDATE) * 60;
+  m_iDisplayTime       = CSettings::GetInstance().GetInt (CSettings::SETTING_EPG_DAYSTODISPLAY) * 24 * 60 * 60;
 
   return true;
 }
@@ -539,7 +555,7 @@ bool CEpgContainer::InterruptUpdate(void) const
   bReturn = g_application.m_bStop || m_bStop || m_bPreventUpdates;
 
   return bReturn ||
-    (CSettings::Get().GetBool(CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV) &&
+    (CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV) &&
      g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying());
 }
 

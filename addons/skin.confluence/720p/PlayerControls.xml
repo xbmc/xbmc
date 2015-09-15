@@ -4,7 +4,6 @@
 	<include>dialogeffect</include>
 	<visible>Player.HasMedia + Window.IsActive(PlayerControls) + !Window.IsActive(FullscreenVideo) + !Window.IsActive(Visualisation)</visible>
 	<coordinates>
-		<system>1</system>
 		<left>390</left>
 		<top>250</top>
 	</coordinates>
@@ -369,13 +368,28 @@
 				<texturefocus>OSDRecordOffFO.png</texturefocus>
 				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
 				<onleft>705</onleft>
-				<onright>701</onright>
+				<onright>707</onright>
 				<onup>300</onup>
 				<ondown>200</ondown>
 				<onclick>PlayerControl(record)</onclick>
 				<enable>Player.CanRecord</enable>
 				<animation effect="fade" start="100" end="30" time="75" condition="!Player.CanRecord">Conditional</animation>
 				<visible>VideoPlayer.Content(LiveTV)</visible>
+			</control>
+			<control type="button" id="707">
+				<left>400</left>
+				<top>0</top>
+				<width>40</width>
+				<height>40</height>
+				<label>-</label>
+				<texturefocus>OSDRadioRDSFO.png</texturefocus>
+				<texturenofocus>OSDRadioRDSNF.png</texturenofocus>
+				<onleft>706</onleft>
+				<onright>701</onright>
+				<onup>300</onup>
+				<ondown>200</ondown>
+				<onclick>ActivateWindow(PVRRadioRDSInfo)</onclick>
+				<visible>VideoPlayer.Content(LiveTV) + RDS.HasRadiotextPlus</visible>
 			</control>
 		</control>
 		<control type="image">

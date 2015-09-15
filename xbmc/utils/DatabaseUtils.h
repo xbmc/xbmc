@@ -126,6 +126,7 @@ typedef enum {
   FieldDisbanded,
   FieldDied,
   FieldStereoMode,
+  FieldUserRating,
   FieldMax
 } Field;
 

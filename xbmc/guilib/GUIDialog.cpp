@@ -34,7 +34,7 @@ CGUIDialog::CGUIDialog(int id, const std::string &xmlFile, DialogModalityType mo
 {
   m_modalityType = modalityType;
   m_wasRunning = false;
-  m_renderOrder = 1;
+  m_renderOrder = RENDER_ORDER_DIALOG;
   m_autoClosing = false;
   m_showStartTime = 0;
   m_showDuration = 0;
@@ -208,7 +208,7 @@ void CGUIDialog::Open()
   {
     // make sure graphics lock is not held
     CSingleExit leaveIt(g_graphicsContext);
-    CApplicationMessenger::Get().SendMsg(TMSG_GUI_DIALOG_OPEN, -1, -1, static_cast<void*>(this));
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_DIALOG_OPEN, -1, -1, static_cast<void*>(this));
   }
   else
     Open_Internal();
@@ -225,7 +225,7 @@ void CGUIDialog::Render()
 void CGUIDialog::SetDefaults()
 {
   CGUIWindow::SetDefaults();
-  m_renderOrder = 1;
+  m_renderOrder = RENDER_ORDER_DIALOG;
 }
 
 void CGUIDialog::SetAutoClose(unsigned int timeoutMs)

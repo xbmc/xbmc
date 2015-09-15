@@ -28,7 +28,6 @@
 #include "guilib/WindowIDs.h"
 #include <vector>
 
-using namespace std;
 using namespace JSONRPC;
 using namespace XFILE;
 
@@ -37,9 +36,9 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const std::string &method, I
   CFileItemList favourites;
   CFavouritesDirectory::Load(favourites);
   
-  string type = !parameterObject["type"].isNull() ? parameterObject["type"].asString() : "";
+  std::string type = !parameterObject["type"].isNull() ? parameterObject["type"].asString() : "";
 
-  set<string> fields;
+  std::set<std::string> fields;
   if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
   {
     for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array(); field != parameterObject["properties"].end_array(); field++)
@@ -52,7 +51,7 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const std::string &method, I
     CFileItemPtr item = favourites.Get(i);
 
     std::string function;
-    vector<string> parameters;
+    std::vector<std::string> parameters;
     CUtil::SplitExecFunction(item->GetPath(), function, parameters);
     if (parameters.size() == 0)
       continue;
@@ -106,7 +105,7 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const std::string &method, I
 
 JSONRPC_STATUS CFavouritesOperations::AddFavourite(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  string type = parameterObject["type"].asString();
+  std::string type = parameterObject["type"].asString();
 
   if (type.compare("unknown") == 0)
     return InvalidParams;
@@ -129,8 +128,8 @@ JSONRPC_STATUS CFavouritesOperations::AddFavourite(const std::string &method, IT
     return InvalidParams;
   }
 
-  string title = parameterObject["title"].asString();
-  string path = parameterObject["path"].asString();
+  std::string title = parameterObject["title"].asString();
+  std::string path = parameterObject["path"].asString();
 
   CFileItem item;
   int contextWindow = 0;

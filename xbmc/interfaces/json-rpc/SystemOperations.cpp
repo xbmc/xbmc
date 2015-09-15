@@ -20,7 +20,7 @@
 
 #include "SystemOperations.h"
 #include "messaging/ApplicationMessenger.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "utils/Variant.h"
 #include "powermanagement/PowerManager.h"
 
@@ -48,14 +48,14 @@ JSONRPC_STATUS CSystemOperations::GetProperties(const std::string &method, ITran
 
 JSONRPC_STATUS CSystemOperations::EjectOpticalDrive(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  return CBuiltins::Execute("EjectTray") == 0 ? ACK : FailedToExecute;
+  return CBuiltins::GetInstance().Execute("EjectTray") == 0 ? ACK : FailedToExecute;
 }
 
 JSONRPC_STATUS CSystemOperations::Shutdown(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   if (g_powerManager.CanPowerdown())
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_POWERDOWN);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_POWERDOWN);
     return ACK;
   }
   else
@@ -66,7 +66,7 @@ JSONRPC_STATUS CSystemOperations::Suspend(const std::string &method, ITransportL
 {
   if (g_powerManager.CanSuspend())
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_SUSPEND);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_SUSPEND);
     return ACK;
   }
   else
@@ -77,7 +77,7 @@ JSONRPC_STATUS CSystemOperations::Hibernate(const std::string &method, ITranspor
 {
   if (g_powerManager.CanHibernate())
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_HIBERNATE);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_HIBERNATE);
     return ACK;
   }
   else
@@ -88,7 +88,7 @@ JSONRPC_STATUS CSystemOperations::Reboot(const std::string &method, ITransportLa
 {
   if (g_powerManager.CanReboot())
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_RESTART);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_RESTART);
     return ACK;
   }
   else

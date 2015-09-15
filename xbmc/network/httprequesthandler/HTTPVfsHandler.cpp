@@ -54,7 +54,7 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
         VECSOURCES *sources = NULL;
         for (unsigned int index = 0; index < size && !accessible; index++)
         {
-          sources = CMediaSourceSettings::Get().GetSources(sourceTypes[index]);
+          sources = CMediaSourceSettings::GetInstance().GetSources(sourceTypes[index]);
           if (sources == NULL)
             continue;
 

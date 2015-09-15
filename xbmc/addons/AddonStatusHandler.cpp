@@ -49,7 +49,7 @@ CCriticalSection CAddonStatusHandler::m_critSection;
 CAddonStatusHandler::CAddonStatusHandler(const std::string &addonID, ADDON_STATUS status, std::string message, bool sameThread)
   : CThread(("AddonStatus " + addonID).c_str())
 {
-  if (!CAddonMgr::Get().GetAddon(addonID, m_addon))
+  if (!CAddonMgr::GetInstance().GetAddon(addonID, m_addon))
     return;
 
   CLog::Log(LOGINFO, "Called Add-on status handler for '%u' of clientName:%s, clientID:%s (same Thread=%s)", status, m_addon->Name().c_str(), m_addon->ID().c_str(), sameThread ? "yes" : "no");
@@ -92,7 +92,7 @@ void CAddonStatusHandler::Process()
   {
     if (m_addon->Type() == ADDON_PVRDLL)
     {
-      if (!CSettings::Get().GetBool(CSettings::SETTING_PVRMANAGER_HIDECONNECTIONLOSTWARNING))
+      if (!CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMANAGER_HIDECONNECTIONLOSTWARNING))
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, m_addon->Name().c_str(), g_localizeStrings.Get(36030)); // connection lost
       // TODO handle disconnects after the add-on's been initialised
     }
@@ -107,7 +107,7 @@ void CAddonStatusHandler::Process()
       pDialog->Open();
 
       if (pDialog->IsConfirmed())
-        CAddonMgr::Get().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, false);
+        CAddonMgr::GetInstance().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, false);
     }
   }
   /* Request to restart the AddOn and data structures need updated */
@@ -120,7 +120,7 @@ void CAddonStatusHandler::Process()
     pDialog->SetLine(1, CVariant{24074});
     pDialog->Open();
 
-    CAddonMgr::Get().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
+    CAddonMgr::GetInstance().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
   }
   /* Some required settings are missing/invalid */
   else if ((m_status == ADDON_STATUS_NEED_SETTINGS) || (m_status == ADDON_STATUS_NEED_SAVEDSETTINGS))
@@ -143,7 +143,7 @@ void CAddonStatusHandler::Process()
     {
       //todo doesn't dialogaddonsettings save these automatically? should do
       m_addon->SaveSettings();
-      CAddonMgr::Get().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
+      CAddonMgr::GetInstance().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
     }
   }
   /* A unknown event has occurred */

@@ -55,7 +55,6 @@ static const bdaddr_t bt_bdaddr_local = {{0, 0, 0, 0xff, 0xff, 0xff}};
 
 using namespace JSONRPC;
 using namespace ANNOUNCEMENT;
-//using namespace std; On VS2010, bind conflicts with std::bind
 
 #define RECEIVEBUFFER 1024
 
@@ -257,7 +256,7 @@ bool CTCPServer::Initialize()
 
   if (started)
   {
-    CAnnouncementManager::Get().AddAnnouncer(this);
+    CAnnouncementManager::GetInstance().AddAnnouncer(this);
     CLog::Log(LOGINFO, "JSONRPC Server: Successfully initialized");
     return true;
   }
@@ -479,7 +478,7 @@ void CTCPServer::Deinitialize()
   m_sdpd = NULL;
 #endif
 
-  CAnnouncementManager::Get().RemoveAnnouncer(this);
+  CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
 }
 
 CTCPServer::CTCPClient::CTCPClient()

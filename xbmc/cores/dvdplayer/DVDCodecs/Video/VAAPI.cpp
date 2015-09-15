@@ -564,6 +564,15 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum P
       }
       break;
     }
+#if VA_CHECK_VERSION(0,38,0)
+    case AV_CODEC_ID_HEVC:
+    {
+      profile = VAProfileHEVCMain;
+      if (!m_vaapiConfig.context->SupportsProfile(profile))
+        return false;
+      break;
+    }
+#endif
     case AV_CODEC_ID_WMV3:
       profile = VAProfileVC1Main;
       if (!m_vaapiConfig.context->SupportsProfile(profile))
@@ -586,7 +595,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum P
     return false;
   }
 
-  if(avctx->codec_id == AV_CODEC_ID_H264)
+  if (avctx->codec_id == AV_CODEC_ID_H264)
   {
     m_vaapiConfig.maxReferences = avctx->refs;
     if (m_vaapiConfig.maxReferences > 16)
@@ -594,6 +603,8 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum P
     if (m_vaapiConfig.maxReferences < 5)
       m_vaapiConfig.maxReferences = 5;
   }
+  else if (avctx->codec_id == AV_CODEC_ID_HEVC)
+    m_vaapiConfig.maxReferences = 16;
   else
     m_vaapiConfig.maxReferences = 2;
 
@@ -1853,8 +1864,8 @@ void COutput::InitCycle()
 
   m_config.stats->SetCanSkipDeint(false);
 
-  EDEINTERLACEMODE mode = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
-  EINTERLACEMETHOD method = CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod;
+  EDEINTERLACEMODE mode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
+  EINTERLACEMETHOD method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
   bool interlaced = m_currentPicture.DVDPic.iFlags & DVP_FLAG_INTERLACED;
 
   if (!(flags & DVD_CODEC_CTRL_NO_POSTPROC) &&
@@ -1922,7 +1933,7 @@ void COutput::InitCycle()
     if (!m_pp)
     {
       m_config.stats->SetVpp(false);
-      if (!CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
+      if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
         m_pp = new CFFmpegPostproc();
       else
         m_pp = new CSkipPostproc();
@@ -3290,7 +3301,7 @@ bool CFFmpegPostproc::Compatible(EINTERLACEMETHOD method)
   else if (method == VS_INTERLACEMETHOD_RENDER_BOB)
     return true;
   else if (method == VS_INTERLACEMETHOD_NONE &&
-           !CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
+           !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
     return true;
 
   return false;

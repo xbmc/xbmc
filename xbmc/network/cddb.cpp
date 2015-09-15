@@ -42,13 +42,12 @@
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
 
+#include <memory>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 
-using namespace std;
 using namespace MEDIA_DETECT;
-using namespace AUTOPTR;
 using namespace CDDB;
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -134,7 +133,7 @@ bool Xcddb::closeSocket()
 //-------------------------------------------------------------------------------------------------------------------
 bool Xcddb::Send( const void *buffer, int bytes )
 {
-  auto_aptr<char> tmp_buffer (new char[bytes + 10]);
+  std::unique_ptr<char[]> tmp_buffer(new char[bytes + 10]);
   strcpy(tmp_buffer.get(), (const char*)buffer);
   tmp_buffer.get()[bytes] = '.';
   tmp_buffer.get()[bytes + 1] = 0x0d;
@@ -160,12 +159,12 @@ bool Xcddb::Send( const char *buffer)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-string Xcddb::Recv(bool wait4point)
+std::string Xcddb::Recv(bool wait4point)
 {
   char tmpbuffer[1];
   char prevChar;
   int counter = 0;
-  string str_buffer;
+  std::string str_buffer;
 
 
   //##########################################################
@@ -396,7 +395,7 @@ void Xcddb::addTitle(const char *buffer)
   }
 
   // track artist" / "track title
-  vector<string> values = StringUtils::Split(value, " / ");
+  std::vector<std::string> values = StringUtils::Split(value, " / ");
   if (values.size() > 1)
   {
     g_charsetConverter.unknownToUTF8(values[0]);
@@ -414,7 +413,7 @@ void Xcddb::addTitle(const char *buffer)
 //-------------------------------------------------------------------------------------------------------------------
 const std::string& Xcddb::getInexactCommand(int select) const
 {
-  typedef map<int, std::string>::const_iterator iter;
+  typedef std::map<int, std::string>::const_iterator iter;
   iter i = m_mapInexact_cddb_command_list.find(select);
   if (i == m_mapInexact_cddb_command_list.end())
     return m_strNull;
@@ -424,7 +423,7 @@ const std::string& Xcddb::getInexactCommand(int select) const
 //-------------------------------------------------------------------------------------------------------------------
 const std::string& Xcddb::getInexactArtist(int select) const
 {
-  typedef map<int, std::string>::const_iterator iter;
+  typedef std::map<int, std::string>::const_iterator iter;
   iter i = m_mapInexact_artist_list.find(select);
   if (i == m_mapInexact_artist_list.end())
     return m_strNull;
@@ -434,7 +433,7 @@ const std::string& Xcddb::getInexactArtist(int select) const
 //-------------------------------------------------------------------------------------------------------------------
 const std::string& Xcddb::getInexactTitle(int select) const
 {
-  typedef map<int, std::string>::const_iterator iter;
+  typedef std::map<int, std::string>::const_iterator iter;
   iter i = m_mapInexact_title_list.find(select);
   if (i == m_mapInexact_title_list.end())
     return m_strNull;
@@ -444,7 +443,7 @@ const std::string& Xcddb::getInexactTitle(int select) const
 //-------------------------------------------------------------------------------------------------------------------
 const std::string& Xcddb::getTrackArtist(int track) const
 {
-  typedef map<int, std::string>::const_iterator iter;
+  typedef std::map<int, std::string>::const_iterator iter;
   iter i = m_mapArtists.find(track);
   if (i == m_mapArtists.end())
     return m_strNull;
@@ -454,7 +453,7 @@ const std::string& Xcddb::getTrackArtist(int track) const
 //-------------------------------------------------------------------------------------------------------------------
 const std::string& Xcddb::getTrackTitle(int track) const
 {
-  typedef map<int, std::string>::const_iterator iter;
+  typedef std::map<int, std::string>::const_iterator iter;
   iter i = m_mapTitles.find(track);
   if (i == m_mapTitles.end())
     return m_strNull;
@@ -619,7 +618,7 @@ void Xcddb::addExtended(const char *buffer)
 //-------------------------------------------------------------------------------------------------------------------
 const std::string& Xcddb::getTrackExtended(int track) const
 {
-  typedef map<int, std::string>::const_iterator iter;
+  typedef std::map<int, std::string>::const_iterator iter;
   iter i = m_mapExtended_track.find(track);
   if (i == m_mapExtended_track.end())
     return m_strNull;

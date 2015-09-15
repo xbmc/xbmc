@@ -24,8 +24,6 @@
 #include "GUILargeTextureManager.h"
 #include "utils/MathUtils.h"
 
-using namespace std;
-
 CTextureInfo::CTextureInfo()
 {
   orientation = 0;
@@ -75,9 +73,7 @@ CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float heig
   m_diffuseScaleV = 1.0f;
 
   // anim gifs
-  m_currentFrame = 0;
-  m_frameCounter = (unsigned int) -1;
-  m_currentLoop = 0;
+  ResetAnimState();
 
   m_allocateDynamically = false;
   m_isAllocated = NO;
@@ -114,9 +110,7 @@ CGUITextureBase::CGUITextureBase(const CGUITextureBase &right) :
   m_diffuseScaleU = 1.0f;
   m_diffuseScaleV = 1.0f;
 
-  m_currentFrame = 0;
-  m_frameCounter = (unsigned int) -1;
-  m_currentLoop = 0;
+  ResetAnimState();
 
   m_isAllocated = NO;
   m_invalid = true;
@@ -138,9 +132,7 @@ bool CGUITextureBase::AllocateOnDemand()
     if (m_allocateDynamically && IsAllocated())
       FreeResources();
     // reset animated textures (animgifs)
-    m_currentLoop = 0;
-    m_currentFrame = 0;
-    m_frameCounter = 0;
+    ResetAnimState();
   }
 
   return false;
@@ -153,7 +145,7 @@ bool CGUITextureBase::Process(unsigned int currentTime)
   changed |= AllocateOnDemand();
 
   if (m_texture.size() > 1)
-    changed |= UpdateAnimFrame();
+    changed |= UpdateAnimFrame(currentTime);
 
   if (m_invalid)
     changed |= CalculateSize();
@@ -296,9 +288,7 @@ bool CGUITextureBase::AllocResources()
     return false; // already have our texture
 
   // reset our animstate
-  m_frameCounter = 0;
-  m_currentFrame = 0;
-  m_currentLoop = 0;
+  ResetAnimState();
 
   bool changed = false;
   bool useLarge = m_info.useLarge || !g_TextureManager.CanLoad(m_info.filename);
@@ -470,8 +460,8 @@ void CGUITextureBase::FreeResources(bool immediately /* = false */)
 
   m_texture.Reset();
 
-  m_currentFrame = 0;
-  m_currentLoop = 0;
+  ResetAnimState();
+
   m_texCoordsScaleU = 1.0f;
   m_texCoordsScaleV = 1.0f;
 
@@ -491,38 +481,45 @@ void CGUITextureBase::SetInvalid()
   m_invalid = true;
 }
 
-bool CGUITextureBase::UpdateAnimFrame()
+bool CGUITextureBase::UpdateAnimFrame(unsigned int currentTime)
 {
   bool changed = false;
-
-  m_frameCounter++;
   unsigned int delay = m_texture.m_delays[m_currentFrame];
-  if (!delay) delay = 100;
-  if (m_frameCounter * 40 >= delay)
+
+  if (m_lasttime == 0)
   {
-    m_frameCounter = 0;
-    if (m_currentFrame + 1 >= m_texture.size())
+    m_lasttime = currentTime;
+  }
+  else
+  {
+    if ((currentTime - m_lasttime) >= delay)
     {
-      if (m_texture.m_loops > 0)
+      if (m_currentFrame + 1 >= m_texture.size())
       {
-        if (m_currentLoop + 1 < m_texture.m_loops)
+        if (m_texture.m_loops > 0)
         {
-          m_currentLoop++;
+          if (m_currentLoop + 1 < m_texture.m_loops)
+          {
+            m_currentLoop++;
+            m_currentFrame = 0;
+            m_lasttime = currentTime;
+            changed = true;
+          }
+        }
+        else
+        {
+          // 0 == loop forever
           m_currentFrame = 0;
+          m_lasttime = currentTime;
           changed = true;
         }
       }
       else
       {
-        // 0 == loop forever
-        m_currentFrame = 0;
+        m_currentFrame++;
+        m_lasttime = currentTime;
         changed = true;
       }
-    }
-    else
-    {
-      m_currentFrame++;
-      changed = true;
     }
   }
 
@@ -591,6 +588,13 @@ void CGUITextureBase::OrientateTexture(CRect &rect, float width, float height, i
     rect.x2 = rect.y2 * width/height;
     rect.y2 = temp * height/width;
   }
+}
+
+void CGUITextureBase::ResetAnimState()
+{
+  m_lasttime = 0;
+  m_currentFrame = 0;
+  m_currentLoop = 0;
 }
 
 bool CGUITextureBase::SetWidth(float width)

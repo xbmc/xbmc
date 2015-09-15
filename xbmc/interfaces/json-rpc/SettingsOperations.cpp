@@ -31,7 +31,6 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
-using namespace std;
 using namespace JSONRPC;
 
 JSONRPC_STATUS CSettingsOperations::GetSections(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
@@ -42,8 +41,8 @@ JSONRPC_STATUS CSettingsOperations::GetSections(const std::string &method, ITran
   result["sections"] = CVariant(CVariant::VariantTypeArray);
 
   // apply the level filter
-  vector<CSettingSection*> allSections = CSettings::Get().GetSections();
-  for (vector<CSettingSection*>::const_iterator itSection = allSections.begin(); itSection != allSections.end(); ++itSection)
+  std::vector<CSettingSection*> allSections = CSettings::GetInstance().GetSections();
+  for (std::vector<CSettingSection*>::const_iterator itSection = allSections.begin(); itSection != allSections.end(); ++itSection)
   {
     SettingCategoryList categories = (*itSection)->GetCategories(level);
     if (categories.empty())
@@ -78,21 +77,21 @@ JSONRPC_STATUS CSettingsOperations::GetCategories(const std::string &method, ITr
   std::string strSection = parameterObject["section"].asString();
   bool listSettings = !parameterObject["properties"].empty() && parameterObject["properties"][0].asString() == "settings";
 
-  vector<CSettingSection*> sections;
+  std::vector<CSettingSection*> sections;
   if (!strSection.empty())
   {
-    CSettingSection *section = CSettings::Get().GetSection(strSection);
+    CSettingSection *section = CSettings::GetInstance().GetSection(strSection);
     if (section == NULL)
       return InvalidParams;
 
     sections.push_back(section);
   }
   else
-    sections = CSettings::Get().GetSections();
+    sections = CSettings::GetInstance().GetSections();
 
   result["categories"] = CVariant(CVariant::VariantTypeArray);
 
-  for (vector<CSettingSection*>::const_iterator itSection = sections.begin(); itSection != sections.end(); ++itSection)
+  for (std::vector<CSettingSection*>::const_iterator itSection = sections.begin(); itSection != sections.end(); ++itSection)
   {
     SettingCategoryList categories = (*itSection)->GetCategories(level);
     for (SettingCategoryList::const_iterator itCategory = categories.begin(); itCategory != categories.end(); ++itCategory)
@@ -142,29 +141,29 @@ JSONRPC_STATUS CSettingsOperations::GetSettings(const std::string &method, ITran
   SettingLevel level = (SettingLevel)ParseSettingLevel(parameterObject["level"].asString());
   const CVariant &filter = parameterObject["filter"];
   bool doFilter = filter.isObject() && filter.isMember("section") && filter.isMember("category");
-  string strSection, strCategory;
+  std::string strSection, strCategory;
   if (doFilter)
   {
     strSection = filter["section"].asString();
     strCategory = filter["category"].asString();
   }
  
-  vector<CSettingSection*> sections;
+  std::vector<CSettingSection*> sections;
 
   if (doFilter)
   {
-    CSettingSection *section = CSettings::Get().GetSection(strSection);
+    CSettingSection *section = CSettings::GetInstance().GetSection(strSection);
     if (section == NULL)
       return InvalidParams;
 
     sections.push_back(section);
   }
   else
-    sections = CSettings::Get().GetSections();
+    sections = CSettings::GetInstance().GetSections();
 
   result["settings"] = CVariant(CVariant::VariantTypeArray);
 
-  for (vector<CSettingSection*>::const_iterator itSection = sections.begin(); itSection != sections.end(); ++itSection)
+  for (std::vector<CSettingSection*>::const_iterator itSection = sections.begin(); itSection != sections.end(); ++itSection)
   {
     SettingCategoryList categories = (*itSection)->GetCategories(level);
     bool found = !doFilter;
@@ -204,9 +203,9 @@ JSONRPC_STATUS CSettingsOperations::GetSettings(const std::string &method, ITran
 
 JSONRPC_STATUS CSettingsOperations::GetSettingValue(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  string settingId = parameterObject["setting"].asString();
+  std::string settingId = parameterObject["setting"].asString();
 
-  CSetting* setting = CSettings::Get().GetSetting(settingId);
+  CSetting* setting = CSettings::GetInstance().GetSetting(settingId);
   if (setting == NULL ||
       !setting->IsVisible())
     return InvalidParams;
@@ -232,7 +231,7 @@ JSONRPC_STATUS CSettingsOperations::GetSettingValue(const std::string &method, I
 
   case SettingTypeList:
   {
-    SerializeSettingListValues(CSettings::Get().GetList(settingId), value);
+    SerializeSettingListValues(CSettings::GetInstance().GetList(settingId), value);
     break;
   }
 
@@ -249,10 +248,10 @@ JSONRPC_STATUS CSettingsOperations::GetSettingValue(const std::string &method, I
 
 JSONRPC_STATUS CSettingsOperations::SetSettingValue(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  string settingId = parameterObject["setting"].asString();
+  std::string settingId = parameterObject["setting"].asString();
   CVariant value = parameterObject["value"];
 
-  CSetting* setting = CSettings::Get().GetSetting(settingId);
+  CSetting* setting = CSettings::GetInstance().GetSetting(settingId);
   if (setting == NULL ||
       !setting->IsVisible())
     return InvalidParams;
@@ -296,7 +295,7 @@ JSONRPC_STATUS CSettingsOperations::SetSettingValue(const std::string &method, I
     for (CVariant::const_iterator_array itValue = value.begin_array(); itValue != value.end_array(); ++itValue)
       values.push_back(*itValue);
 
-    result = CSettings::Get().SetList(settingId, values);
+    result = CSettings::GetInstance().SetList(settingId, values);
     break;
   }
 
@@ -311,9 +310,9 @@ JSONRPC_STATUS CSettingsOperations::SetSettingValue(const std::string &method, I
 
 JSONRPC_STATUS CSettingsOperations::ResetSettingValue(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  string settingId = parameterObject["setting"].asString();
+  std::string settingId = parameterObject["setting"].asString();
 
-  CSetting* setting = CSettings::Get().GetSetting(settingId);
+  CSetting* setting = CSettings::GetInstance().GetSetting(settingId);
   if (setting == NULL ||
       !setting->IsVisible())
     return InvalidParams;
@@ -645,9 +644,6 @@ bool CSettingsOperations::SerializeSettingControl(const ISettingControl* control
   if (type == "spinner")
   {
     const CSettingControlSpinner* spinner = static_cast<const CSettingControlSpinner*>(control);
-    if (spinner == NULL)
-      return false;
-
     if (spinner->GetFormatLabel() >= 0)
       obj["formatlabel"] = g_localizeStrings.Get(spinner->GetFormatLabel());
     else if (!spinner->GetFormatString().empty() && spinner->GetFormatString() != "%i")
@@ -658,9 +654,6 @@ bool CSettingsOperations::SerializeSettingControl(const ISettingControl* control
   else if (type == "edit")
   {
     const CSettingControlEdit* edit = static_cast<const CSettingControlEdit*>(control);
-    if (edit == NULL)
-      return false;
-
     obj["hidden"] = edit->IsHidden();
     obj["verifynewvalue"] = edit->VerifyNewValue();
     if (edit->GetHeading() >= 0)
@@ -669,18 +662,12 @@ bool CSettingsOperations::SerializeSettingControl(const ISettingControl* control
   else if (type == "button")
   {
     const CSettingControlButton* button = static_cast<const CSettingControlButton*>(control);
-    if (button == NULL)
-      return false;
-
     if (button->GetHeading() >= 0)
       obj["heading"] = g_localizeStrings.Get(button->GetHeading());
   }
   else if (type == "list")
   {
     const CSettingControlList* list = static_cast<const CSettingControlList*>(control);
-    if (list == NULL)
-      return false;
-
     if (list->GetHeading() >= 0)
       obj["heading"] = g_localizeStrings.Get(list->GetHeading());
     obj["multiselect"] = list->CanMultiSelect();
@@ -688,9 +675,6 @@ bool CSettingsOperations::SerializeSettingControl(const ISettingControl* control
   else if (type == "slider")
   {
     const CSettingControlSlider* slider = static_cast<const CSettingControlSlider*>(control);
-    if (slider == NULL)
-      return false;
-
     if (slider->GetHeading() >= 0)
       obj["heading"] = g_localizeStrings.Get(slider->GetHeading());
     obj["popup"] = slider->UsePopup();
@@ -702,9 +686,6 @@ bool CSettingsOperations::SerializeSettingControl(const ISettingControl* control
   else if (type == "range")
   {
     const CSettingControlRange* range = static_cast<const CSettingControlRange*>(control);
-    if (range == NULL)
-      return false;
-
     if (range->GetFormatLabel() >= 0)
       obj["formatlabel"] = g_localizeStrings.Get(range->GetFormatLabel());
     else

@@ -174,6 +174,7 @@ public:
   int m_iSpecialSortEpisode;
   int m_iTrack;
   float m_fRating;
+  int m_iUserRating;
   float m_fEpBookmark;
   int m_iBookmarkId;
   int m_iIdShow;

@@ -25,7 +25,6 @@
 #include "input/InputManager.h"
 
 using namespace PERIPHERALS;
-using namespace std;
 
 volatile long CPeripheralImon::m_lCountOfImonsConflictWithDInput = 0;
 
@@ -100,10 +99,10 @@ void CPeripheralImon::ActionOnImonConflict(bool deviceInserted /*= true*/)
   if (deviceInserted || m_lCountOfImonsConflictWithDInput == 0)
   {
 #if defined(TARGET_WINDOWS) && defined (HAS_SDL_JOYSTICK)
-    bool enableJoystickNow = !deviceInserted && CSettings::Get().GetBool(CSettings::SETTING_INPUT_ENABLEJOYSTICK);
+    bool enableJoystickNow = !deviceInserted && CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_ENABLEJOYSTICK);
     CLog::Log(LOGNOTICE, "Problematic iMON hardware %s. Joystick usage: %s", (deviceInserted ? "detected" : "was removed"),
         (enableJoystickNow) ? "enabled." : "disabled." );
-    CInputManager::Get().SetEnabledJoystick(enableJoystickNow);
+    CInputManager::GetInstance().SetEnabledJoystick(enableJoystickNow);
 #endif
   }
 }

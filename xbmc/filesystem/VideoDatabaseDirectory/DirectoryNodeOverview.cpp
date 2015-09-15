@@ -25,8 +25,6 @@
 #include "guilib/LocalizeStrings.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
-using namespace std;
-
 
 Node OverviewChildren[] = {
                             { NODE_TYPE_MOVIES_OVERVIEW,            "movies",                   342 },
@@ -67,35 +65,35 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
   bool hasMovies = database.HasContent(VIDEODB_CONTENT_MOVIES);
   bool hasTvShows = database.HasContent(VIDEODB_CONTENT_TVSHOWS);
   bool hasMusicVideos = database.HasContent(VIDEODB_CONTENT_MUSICVIDEOS);
-  vector<pair<const char*, int> > vec;
+  std::vector<std::pair<const char*, int> > vec;
   if (hasMovies)
   {
-    if (CSettings::Get().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN))
-      vec.push_back(make_pair("movies/titles", 342));
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN))
+      vec.push_back(std::make_pair("movies/titles", 342));
     else
-      vec.push_back(make_pair("movies", 342));   // Movies
+      vec.push_back(std::make_pair("movies", 342));   // Movies
   }
   if (hasTvShows)
   {
-    if (CSettings::Get().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN))
-      vec.push_back(make_pair("tvshows/titles", 20343));
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN))
+      vec.push_back(std::make_pair("tvshows/titles", 20343));
     else
-      vec.push_back(make_pair("tvshows", 20343)); // TV Shows
+      vec.push_back(std::make_pair("tvshows", 20343)); // TV Shows
   }
   if (hasMusicVideos)
   {
-    if (CSettings::Get().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN))
-      vec.push_back(make_pair("musicvideos/titles", 20389));
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN))
+      vec.push_back(std::make_pair("musicvideos/titles", 20389));
     else
-      vec.push_back(make_pair("musicvideos", 20389)); // Music Videos
+      vec.push_back(std::make_pair("musicvideos", 20389)); // Music Videos
   }
   {
     if (hasMovies)
-      vec.push_back(make_pair("recentlyaddedmovies", 20386));  // Recently Added Movies
+      vec.push_back(std::make_pair("recentlyaddedmovies", 20386));  // Recently Added Movies
     if (hasTvShows)
-      vec.push_back(make_pair("recentlyaddedepisodes", 20387)); // Recently Added Episodes
+      vec.push_back(std::make_pair("recentlyaddedepisodes", 20387)); // Recently Added Episodes
     if (hasMusicVideos)
-      vec.push_back(make_pair("recentlyaddedmusicvideos", 20390)); // Recently Added Music Videos
+      vec.push_back(std::make_pair("recentlyaddedmusicvideos", 20390)); // Recently Added Music Videos
   }
   std::string path = BuildPath();
   for (unsigned int i = 0; i < vec.size(); ++i)

@@ -1,7 +1,8 @@
 KODI ADDONS
 ===========
 This directory contains the cmake-based buildsystem for addons. It looks into
-the "addons" sub-directory and parses all *.txt files recursively. Each addon
+the directory pointed to by the ADDONS_DEFINITION_DIR option (which defaults to
+the "addons" sub-directory) and parses all *.txt files recursively. Each addon
 must have its own <addon-id>.txt file in a separate sub-directory which must
 follow one of the defined format:
   <addon-id> <git-url> <git-revision>
@@ -22,13 +23,26 @@ are:
   * platforms.txt: List of platforms to build an addon for (or "all"). It is
     also supported to specify negated platforms with a leading exclamation mark
     (i), e.g. "!windows".
-    Available platforms are: linux, windows, darwin, ios, android, rbpi
+    Available platforms are: linux, windows, osx, ios, android, rbpi, freebsd
+
+ATTENTION: If no addon definitions could be found the buildsystem assumes that
+           the bootstrapping of the addon definition repositories hasn't been
+           performed yet and automatically executes the addon bootstrapping
+           buildsystem located in the "bootstrap" sub-directory with the default
+           settings (i.e. all addons from all pre-defined addon definition
+           repositories are bootstrapped into the directory pointed to by the
+           ADDONS_DEFINITION_DIR option).
 
 The buildsystem uses the following variables (which can be passed into it when
 executing cmake with the -D<variable-name>=<value> option) to e.g. access
 specific paths:
-  * ADDONS_TO_BUILD is a quoted, space delimited list of <addon-id>s that
-    you want to build (default is "all").
+  * ADDONS_TO_BUILD has two variations, which are tested in order:
+     - a quoted, space delimited list of <addon-id>s that
+       you want to build (default is "all").
+     - a regular expression that every <addon-id> is matched against
+       e.g.: ADDONS_TO_BUILD=pvr.* to build all pvr addons
+  * ADDONS_DEFINITION_DIR points to the directory containing the definitions
+    for the addons to be built.
   * ADDON_SRC_PREFIX can be used to override the addon repository location.
     It must point to the locally available parent directory of the addon(s) to build
     <addon-id> will be appended to this path automatically

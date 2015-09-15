@@ -233,6 +233,7 @@ KeyMap keyMap[] = {
   { KEY_COMPOSE       , XBMCK_LSUPER      },
   { KEY_STOP          , XBMCK_MEDIA_STOP  },
   { KEY_HELP          , XBMCK_HELP        },
+  { KEY_MENU          , XBMCK_MENU        },
   { KEY_CLOSECD       , XBMCK_EJECT       },
   { KEY_EJECTCD       , XBMCK_EJECT       },
   { KEY_EJECTCLOSECD  , XBMCK_EJECT       },

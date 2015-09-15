@@ -754,19 +754,19 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
   else if( url2.IsProtocol("http")
        ||  url2.IsProtocol("https"))
   {
-    if (CSettings::Get().GetBool(CSettings::SETTING_NETWORK_USEHTTPPROXY)
-        && !CSettings::Get().GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER).empty()
-        && CSettings::Get().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT) > 0
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_NETWORK_USEHTTPPROXY)
+        && !CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER).empty()
+        && CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT) > 0
         && m_proxy.empty())
     {
-      m_proxy = CSettings::Get().GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER);
-      m_proxy += StringUtils::Format(":%d", CSettings::Get().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT));
-      if (CSettings::Get().GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME).length() > 0 && m_proxyuserpass.empty())
+      m_proxy = CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER);
+      m_proxy += StringUtils::Format(":%d", CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT));
+      if (CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME).length() > 0 && m_proxyuserpass.empty())
       {
-        m_proxyuserpass = CSettings::Get().GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME);
-        m_proxyuserpass += ":" + CSettings::Get().GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD);
+        m_proxyuserpass = CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME);
+        m_proxyuserpass += ":" + CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD);
       }
-      m_proxytype = (ProxyType)CSettings::Get().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYTYPE);
+      m_proxytype = (ProxyType)CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYTYPE);
       CLog::Log(LOGDEBUG, "Using proxy %s, type %d", m_proxy.c_str(), proxyType2CUrlProxyType[m_proxytype]);
     }
 
@@ -940,6 +940,12 @@ void CCurlFile::Reset()
 
 bool CCurlFile::Open(const CURL& url)
 {
+  if (!g_curlInterface.IsLoaded())
+  {
+    CLog::Log(LOGERROR, "CurlFile::Open: curl interface not loaded");
+    return false;
+  }
+
   m_opened = true;
   m_seekable = true;
 
@@ -1528,8 +1534,9 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
                   msg->data.result == CURLE_RECV_ERROR)        &&
                   !m_bFirstLoop)
               CURLresult = msg->data.result;
-            else if ( (msg->data.result == CURLE_HTTP_RANGE_ERROR     ||
-                       httpCode == 416 /* = Requested Range Not Satisfiable */) &&
+            else if ( (msg->data.result == CURLE_HTTP_RANGE_ERROR              ||
+                       httpCode == 416 /* = Requested Range Not Satisfiable */ ||
+                       httpCode == 406 /* = Not Acceptable (fixes issues with non compliant HDHomerun servers */) &&
                        m_bFirstLoop                                   &&
                        m_filePos == 0                                 &&
                        m_sendRange)

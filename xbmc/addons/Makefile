@@ -11,7 +11,7 @@ SRCS=Addon.cpp \
      AddonStatusHandler.cpp \
      AddonVersion.cpp \
      AudioEncoder.cpp \
-     ContextItemAddon.cpp \
+     ContextMenuAddon.cpp \
      AudioDecoder.cpp \
      GUIDialogAddonInfo.cpp \
      GUIDialogAddonSettings.cpp \
@@ -21,6 +21,7 @@ SRCS=Addon.cpp \
      LanguageResource.cpp \
      PluginSource.cpp \
      Repository.cpp \
+     RepositoryUpdater.cpp \
      Scraper.cpp \
      ScreenSaver.cpp \
      Service.cpp \

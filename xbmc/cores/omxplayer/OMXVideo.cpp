@@ -252,7 +252,7 @@ bool COMXVideo::PortSettingsChanged()
 
   if(m_deinterlace)
   {
-    EINTERLACEMETHOD interlace_method = g_renderManager.AutoInterlaceMethod(CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod);
+    EINTERLACEMETHOD interlace_method = g_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
     bool advanced_deinterlace = (interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED || interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF) &&
         port_image.format.video.nFrameWidth * port_image.format.video.nFrameHeight <= 576 * 720;
     bool half_framerate = interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF || interlace_method == VS_INTERLACEMETHOD_MMAL_BOB_HALF;
@@ -582,7 +582,7 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, EDEINTERLACEMODE de
   }
 
   // request portsettingschanged on refresh rate change
-  if (CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_ALWAYS)
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_ALWAYS)
   {
     notifications.nIndex = OMX_IndexParamPortDefinition;
     omx_err = m_omx_decoder.SetParameter((OMX_INDEXTYPE)OMX_IndexConfigRequestCallback, &notifications);
@@ -758,6 +758,19 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts)
 
   if (demuxer_content && demuxer_bytes > 0)
   {
+    OMX_U32 nFlags = 0;
+
+    if(m_setStartTime)
+    {
+      nFlags |= OMX_BUFFERFLAG_STARTTIME;
+      CLog::Log(LOGDEBUG, "OMXVideo::Decode VDec : setStartTime %f\n", (pts == DVD_NOPTS_VALUE ? 0.0 : pts) / DVD_TIME_BASE);
+      m_setStartTime = false;
+    }
+    if (pts == DVD_NOPTS_VALUE && dts == DVD_NOPTS_VALUE)
+      nFlags |= OMX_BUFFERFLAG_TIME_UNKNOWN;
+    else if (pts == DVD_NOPTS_VALUE)
+      nFlags |= OMX_BUFFERFLAG_TIME_IS_DTS;
+
     while(demuxer_bytes)
     {
       // 500ms timeout
@@ -768,21 +781,9 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts)
         return false;
       }
 
-      omx_buffer->nFlags = 0;
+      omx_buffer->nFlags = nFlags;
       omx_buffer->nOffset = 0;
       omx_buffer->nTimeStamp = ToOMXTime((uint64_t)(pts != DVD_NOPTS_VALUE ? pts : dts != DVD_NOPTS_VALUE ? dts : 0));
-
-      if(m_setStartTime)
-      {
-        omx_buffer->nFlags |= OMX_BUFFERFLAG_STARTTIME;
-        CLog::Log(LOGDEBUG, "OMXVideo::Decode VDec : setStartTime %f\n", (pts == DVD_NOPTS_VALUE ? 0.0 : pts) / DVD_TIME_BASE);
-        m_setStartTime = false;
-      }
-      else if (pts == DVD_NOPTS_VALUE && dts == DVD_NOPTS_VALUE)
-        omx_buffer->nFlags |= OMX_BUFFERFLAG_TIME_UNKNOWN;
-      else if (pts == DVD_NOPTS_VALUE)
-        omx_buffer->nFlags |= OMX_BUFFERFLAG_TIME_IS_DTS;
-
       omx_buffer->nFilledLen = std::min((OMX_U32)demuxer_bytes, omx_buffer->nAllocLen);
       memcpy(omx_buffer->pBuffer, demuxer_content, omx_buffer->nFilledLen);
 

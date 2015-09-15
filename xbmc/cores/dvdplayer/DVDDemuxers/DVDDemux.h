@@ -52,7 +52,8 @@ enum StreamType
   STREAM_VIDEO,   // video stream
   STREAM_DATA,    // data stream
   STREAM_SUBTITLE,// subtitle stream
-  STREAM_TELETEXT // Teletext data stream
+  STREAM_TELETEXT, // Teletext data stream
+  STREAM_RADIO_RDS // Radio RDS data stream
 };
 
 enum StreamSource {
@@ -223,6 +224,16 @@ public:
   virtual void GetStreamInfo(std::string& strInfo);
 };
 
+class CDemuxStreamRadioRDS : public CDemuxStream
+{
+public:
+  CDemuxStreamRadioRDS() : CDemuxStream()
+  {
+    type = STREAM_RADIO_RDS;
+  }
+  virtual void GetStreamInfo(std::string& strInfo);
+};
+
 class CDVDDemux
 {
 public:
@@ -333,6 +344,11 @@ public:
   int GetNrOfTeletextStreams();
 
   /*
+   * return nr of rds streams, 0 if none
+   */
+  const int GetNrOfRadioRDSStreams();
+
+  /*
    * return the audio stream, or NULL if it does not exist
    */
   CDemuxStreamAudio* GetStreamFromAudioId(int iAudioIndex);
@@ -351,6 +367,11 @@ public:
    * return the teletext stream, or NULL if it does not exist
    */
   CDemuxStreamTeletext* GetStreamFromTeletextId(int iTeletextIndex);
+
+  /*
+   * return the rds stream, or NULL if it does not exist
+   */
+  const CDemuxStreamRadioRDS* GetStreamFromRadioRDSId(int iRadioRDSIndex);
 
   /*
    * return a user-presentable codec name of the given stream

@@ -1,0 +1,25 @@
+SRCS  = AddonBuiltins.cpp
+SRCS += ApplicationBuiltins.cpp
+SRCS += Builtins.cpp
+SRCS += CECBuiltins.cpp
+SRCS += GUIBuiltins.cpp
+SRCS += GUIContainerBuiltins.cpp
+SRCS += GUIControlBuiltins.cpp
+SRCS += LibraryBuiltins.cpp
+SRCS += OpticalBuiltins.cpp
+SRCS += PictureBuiltins.cpp
+SRCS += PlayerBuiltins.cpp
+SRCS += ProfileBuiltins.cpp
+SRCS += PVRBuiltins.cpp
+SRCS += SkinBuiltins.cpp
+SRCS += SystemBuiltins.cpp
+SRCS += WeatherBuiltins.cpp
+
+ifeq (@USE_ANDROID@,1)
+SRCS += AndroidBuiltins.cpp
+endif
+
+LIB=builtins.a
+
+include ../../../Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

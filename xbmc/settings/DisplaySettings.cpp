@@ -27,11 +27,12 @@
 #include <float.h>
 
 #include "DisplaySettings.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/gui3d.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -41,6 +42,10 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "windowing/WindowingFactory.h"
+
+using namespace KODI::MESSAGING;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 // 0.1 second increments
 #define MAX_REFRESH_CHANGE_DELAY 200
@@ -89,7 +94,7 @@ CDisplaySettings::CDisplaySettings()
 CDisplaySettings::~CDisplaySettings()
 { }
 
-CDisplaySettings& CDisplaySettings::Get()
+CDisplaySettings& CDisplaySettings::GetInstance()
 {
   static CDisplaySettings sDisplaySettings;
   return sDisplaySettings;
@@ -241,7 +246,7 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
     }
 
     std::string screenmode = GetStringFromResolution(newRes);
-    CSettings::Get().SetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE, screenmode);
+    CSettings::GetInstance().SetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE, screenmode);
   }
   if (settingId == CSettings::SETTING_VIDEOSCREEN_SCREENMODE)
   {
@@ -257,8 +262,8 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
     {
       if (!m_resolutionChangeAborted)
       {
-        bool cancelled = false;
-        if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{13110}, CVariant{13111}, cancelled, CVariant{""}, CVariant{""}, 10000))
+        if (HELPERS::ShowYesNoDialogText(CVariant{13110}, CVariant{13111}, CVariant{""}, CVariant{""}, 10000) !=
+          DialogResponse::YES)
         {
           m_resolutionChangeAborted = true;
           return false;
@@ -278,8 +283,8 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
 
     if (!m_resolutionChangeAborted)
     {
-      bool cancelled = false;
-      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{13110}, CVariant{13111}, cancelled, CVariant{""}, CVariant{""}, 10000))
+      if (HELPERS::ShowYesNoDialogText(CVariant{13110}, CVariant{13111}, CVariant{""}, CVariant{""}, 10000) !=
+        DialogResponse::YES)
       {
         m_resolutionChangeAborted = true;
         return false;
@@ -331,19 +336,19 @@ bool CDisplaySettings::OnSettingUpdate(CSetting* &setting, const char *oldSettin
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_PREFEREDSTEREOSCOPICMODE)
   {
     CSettingInt *stereomodeSetting = (CSettingInt*)setting;
-    STEREOSCOPIC_PLAYBACK_MODE playbackMode = (STEREOSCOPIC_PLAYBACK_MODE) CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE);
+    STEREOSCOPIC_PLAYBACK_MODE playbackMode = (STEREOSCOPIC_PLAYBACK_MODE) CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE);
     if (stereomodeSetting->GetValue() == RENDER_STEREO_MODE_OFF)
     {
       // if preferred playback mode was OFF, update playback mode to ignore
       if (playbackMode == STEREOSCOPIC_PLAYBACK_MODE_PREFERRED)
-        CSettings::Get().SetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE, STEREOSCOPIC_PLAYBACK_MODE_IGNORE);
+        CSettings::GetInstance().SetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE, STEREOSCOPIC_PLAYBACK_MODE_IGNORE);
       return stereomodeSetting->SetValue(RENDER_STEREO_MODE_AUTO);
     }
     else if (stereomodeSetting->GetValue() == RENDER_STEREO_MODE_MONO)
     {
       // if preferred playback mode was MONO, update playback mode
       if (playbackMode == STEREOSCOPIC_PLAYBACK_MODE_PREFERRED)
-        CSettings::Get().SetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE, STEREOSCOPIC_PLAYBACK_MODE_MONO);
+        CSettings::GetInstance().SetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE, STEREOSCOPIC_PLAYBACK_MODE_MONO);
       return stereomodeSetting->SetValue(RENDER_STEREO_MODE_AUTO);
     }
   }
@@ -359,7 +364,7 @@ void CDisplaySettings::SetCurrentResolution(RESOLUTION resolution, bool save /* 
   if (save)
   {
     std::string mode = GetStringFromResolution(resolution);
-    CSettings::Get().SetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE, mode.c_str());
+    CSettings::GetInstance().SetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE, mode.c_str());
   }
 
   if (resolution != m_currentResolution)
@@ -371,7 +376,7 @@ void CDisplaySettings::SetCurrentResolution(RESOLUTION resolution, bool save /* 
 
 RESOLUTION CDisplaySettings::GetDisplayResolution() const
 {
-  return GetResolutionFromString(CSettings::Get().GetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE));
+  return GetResolutionFromString(CSettings::GetInstance().GetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE));
 }
 
 const RESOLUTION_INFO& CDisplaySettings::GetResolutionInfo(size_t index) const
@@ -579,8 +584,8 @@ RESOLUTION CDisplaySettings::GetResolutionFromString(const std::string &strResol
       flags |= D3DPRESENTFLAG_MODE3DTB;
 
     std::map<RESOLUTION, RESOLUTION_INFO> resolutionInfos;
-    for (size_t resolution = RES_DESKTOP; resolution < CDisplaySettings::Get().ResolutionInfoSize(); resolution++)
-      resolutionInfos.insert(std::make_pair((RESOLUTION)resolution, CDisplaySettings::Get().GetResolutionInfo(resolution)));
+    for (size_t resolution = RES_DESKTOP; resolution < CDisplaySettings::GetInstance().ResolutionInfoSize(); resolution++)
+      resolutionInfos.insert(std::make_pair((RESOLUTION)resolution, CDisplaySettings::GetInstance().GetResolutionInfo(resolution)));
 
     return FindBestMatchingResolution(resolutionInfos, screen, width, height, refresh, flags);
   }
@@ -593,9 +598,9 @@ std::string CDisplaySettings::GetStringFromResolution(RESOLUTION resolution, flo
   if (resolution == RES_WINDOW)
     return "WINDOW";
 
-  if (resolution >= RES_DESKTOP && resolution < (RESOLUTION)CDisplaySettings::Get().ResolutionInfoSize())
+  if (resolution >= RES_DESKTOP && resolution < (RESOLUTION)CDisplaySettings::GetInstance().ResolutionInfoSize())
   {
-    const RESOLUTION_INFO &info = CDisplaySettings::Get().GetResolutionInfo(resolution);
+    const RESOLUTION_INFO &info = CDisplaySettings::GetInstance().GetResolutionInfo(resolution);
     // also handle RES_DESKTOP resolutions with non-default refresh rates
     if (resolution != RES_DESKTOP || (refreshrate > 0.0f && refreshrate != info.fRefreshRate))
     {
@@ -610,13 +615,13 @@ std::string CDisplaySettings::GetStringFromResolution(RESOLUTION resolution, flo
 
 RESOLUTION CDisplaySettings::GetResolutionForScreen()
 {
-  DisplayMode mode = CSettings::Get().GetInt(CSettings::SETTING_VIDEOSCREEN_SCREEN);
+  DisplayMode mode = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOSCREEN_SCREEN);
   if (mode == DM_WINDOWED)
     return RES_WINDOW;
 
   for (int idx=0; idx < g_Windowing.GetNumScreens(); idx++)
   {
-    if (CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP + idx).iScreen == mode)
+    if (CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP + idx).iScreen == mode)
       return (RESOLUTION)(RES_DESKTOP + idx);
   }
 
@@ -634,7 +639,7 @@ void CDisplaySettings::SettingOptionsRefreshChangeDelaysFiller(const CSetting *s
 void CDisplaySettings::SettingOptionsRefreshRatesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   // get the proper resolution
-  RESOLUTION res = CDisplaySettings::Get().GetDisplayResolution();
+  RESOLUTION res = CDisplaySettings::GetInstance().GetDisplayResolution();
   if (res < RES_WINDOW)
     return;
 
@@ -646,7 +651,7 @@ void CDisplaySettings::SettingOptionsRefreshRatesFiller(const CSetting *setting,
     return;
   }
 
-  RESOLUTION_INFO resInfo = CDisplaySettings::Get().GetResolutionInfo(res);
+  RESOLUTION_INFO resInfo = CDisplaySettings::GetInstance().GetResolutionInfo(res);
   // The only meaningful parts of res here are iScreen, iScreenWidth, iScreenHeight
   std::vector<REFRESHRATE> refreshrates = g_Windowing.RefreshRates(resInfo.iScreen, resInfo.iScreenWidth, resInfo.iScreenHeight, resInfo.dwFlags);
 
@@ -665,8 +670,8 @@ void CDisplaySettings::SettingOptionsRefreshRatesFiller(const CSetting *setting,
 
 void CDisplaySettings::SettingOptionsResolutionsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
-  RESOLUTION res = CDisplaySettings::Get().GetDisplayResolution();
-  RESOLUTION_INFO info = CDisplaySettings::Get().GetResolutionInfo(res);
+  RESOLUTION res = CDisplaySettings::GetInstance().GetDisplayResolution();
+  RESOLUTION_INFO info = CDisplaySettings::GetInstance().GetResolutionInfo(res);
   if (res == RES_WINDOW)
   {
     current = res;
@@ -683,7 +688,7 @@ void CDisplaySettings::SettingOptionsResolutionsFiller(const CSetting *setting, 
                             ModeFlagsToString(resolution->flags, false).c_str()),
                             resolution->ResInfo_Index));
 
-      resolutionInfos.insert(std::make_pair((RESOLUTION)resolution->ResInfo_Index, CDisplaySettings::Get().GetResolutionInfo(resolution->ResInfo_Index)));
+      resolutionInfos.insert(std::make_pair((RESOLUTION)resolution->ResInfo_Index, CDisplaySettings::GetInstance().GetResolutionInfo(resolution->ResInfo_Index)));
     }
 
     current = FindBestMatchingResolution(resolutionInfos, info.iScreen,
@@ -703,21 +708,21 @@ void CDisplaySettings::SettingOptionsScreensFiller(const CSetting *setting, std:
 
   for (int idx = 0; idx < g_Windowing.GetNumScreens(); idx++)
   {
-    int screen = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP + idx).iScreen;
+    int screen = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP + idx).iScreen;
 #if defined(TARGET_DARWIN_OSX)
-    if (!CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP + idx).strOutput.empty())
-      list.push_back(std::make_pair(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP + idx).strOutput, screen));
+    if (!CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP + idx).strOutput.empty())
+      list.push_back(std::make_pair(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP + idx).strOutput, screen));
     else
 #endif
     list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(241).c_str(), screen + 1), screen));
   }
 
-  RESOLUTION res = CDisplaySettings::Get().GetDisplayResolution();
+  RESOLUTION res = CDisplaySettings::GetInstance().GetDisplayResolution();
   if (res == RES_WINDOW)
     current = DM_WINDOWED;
   else
   {
-    RESOLUTION_INFO resInfo = CDisplaySettings::Get().GetResolutionInfo(res);
+    RESOLUTION_INFO resInfo = CDisplaySettings::GetInstance().GetResolutionInfo(res);
     current = resInfo.iScreen;
   }
 #endif
@@ -740,20 +745,20 @@ void CDisplaySettings::SettingOptionsStereoscopicModesFiller(const CSetting *set
   {
     RENDER_STEREO_MODE mode = (RENDER_STEREO_MODE) i;
     if (g_Windowing.SupportsStereo(mode))
-      list.push_back(std::make_pair(CStereoscopicsManager::Get().GetLabelForStereoMode(mode), mode));
+      list.push_back(std::make_pair(CStereoscopicsManager::GetInstance().GetLabelForStereoMode(mode), mode));
   }
 }
 
 void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
-  list.push_back(std::make_pair(CStereoscopicsManager::Get().GetLabelForStereoMode(RENDER_STEREO_MODE_AUTO), RENDER_STEREO_MODE_AUTO)); // option for autodetect
+  list.push_back(std::make_pair(CStereoscopicsManager::GetInstance().GetLabelForStereoMode(RENDER_STEREO_MODE_AUTO), RENDER_STEREO_MODE_AUTO)); // option for autodetect
   // don't add "off" to the list of preferred modes as this doesn't make sense
   for (int i = RENDER_STEREO_MODE_OFF +1; i < RENDER_STEREO_MODE_COUNT; i++)
   {
     RENDER_STEREO_MODE mode = (RENDER_STEREO_MODE) i;
     // also skip "mono" mode which is no real stereoscopic mode
     if (mode != RENDER_STEREO_MODE_MONO && g_Windowing.SupportsStereo(mode))
-      list.push_back(std::make_pair(CStereoscopicsManager::Get().GetLabelForStereoMode(mode), mode));
+      list.push_back(std::make_pair(CStereoscopicsManager::GetInstance().GetLabelForStereoMode(mode), mode));
   }
 }
 
@@ -762,11 +767,11 @@ void CDisplaySettings::SettingOptionsMonitorsFiller(const CSetting *setting, std
 #if defined(HAS_GLX)
   std::vector<std::string> monitors;
   g_Windowing.GetConnectedOutputs(&monitors);
-  std::string currentMonitor = CSettings::Get().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
+  std::string currentMonitor = CSettings::GetInstance().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   for (unsigned int i=0; i<monitors.size(); ++i)
   {
     if(currentMonitor.compare("Default") != 0 &&
-       StringUtils::EqualsNoCase(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput, monitors[i]))
+       StringUtils::EqualsNoCase(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).strOutput, monitors[i]))
     {
       current = monitors[i];
     }

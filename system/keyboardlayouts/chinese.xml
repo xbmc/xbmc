@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+Please use English language names instead.
+Default font lacks support for all characters
+-->
+<keyboardlayouts>
+  <layout language="Chinese" layout="BasePY" codingtable="BasePY">
+    <keyboard>
+      <row>0123456789</row>
+      <row>qwertyuiop</row>
+      <row>asdfghjkl</row>
+      <row>zxcvbnm</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>0123456789</row>
+      <row>QWERTYUIOP</row>
+      <row>ASDFGHJKL</row>
+      <row>ZXCVBNM</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+    </keyboard>
+  </layout>
+  <layout language="Chinese" layout="BaiduPY" codingtable="BaiduPY"
+    apiurl="http://olime.baidu.com/py?input=%s&inputtype=py&bg=%d&ed=%d&result=hanzi&resultcoding=unicode&ch_en=0&clientinfo=web">
+    <keyboard>
+      <row>0123456789</row>
+      <row>qwertyuiop</row>
+      <row>asdfghjkl</row>
+      <row>zxcvbnm</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>0123456789</row>
+      <row>QWERTYUIOP</row>
+      <row>ASDFGHJKL</row>
+      <row>ZXCVBNM</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+    </keyboard>
+  </layout>
+</keyboardlayouts>

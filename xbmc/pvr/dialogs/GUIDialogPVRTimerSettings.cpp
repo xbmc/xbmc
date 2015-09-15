@@ -18,24 +18,25 @@
  *
  */
 
-#include "GUIDialogPVRTimerSettings.h"
-
 #include "FileItem.h"
 #include "addons/include/xbmc_pvr_types.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/timers/PVRTimerInfoTag.h"
-#include "pvr/timers/PVRTimerType.h"
 #include "settings/SettingUtils.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClient.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
+#include "pvr/timers/PVRTimerType.h"
+
+#include "GUIDialogPVRTimerSettings.h"
 
 using namespace PVR;
 
@@ -45,7 +46,8 @@ using namespace PVR;
 #define SETTING_TMR_EPGSEARCH     "timer.epgsearch"
 #define SETTING_TMR_FULLTEXT      "timer.fulltext"
 #define SETTING_TMR_CHANNEL       "timer.channel"
-#define SETTING_TMR_ANYTIME       "timer.anytime"
+#define SETTING_TMR_START_ANYTIME "timer.startanytime"
+#define SETTING_TMR_END_ANYTIME   "timer.endanytime"
 #define SETTING_TMR_START_DAY     "timer.startday"
 #define SETTING_TMR_END_DAY       "timer.endday"
 #define SETTING_TMR_BEGIN         "timer.begin"
@@ -57,13 +59,15 @@ using namespace PVR;
 #define SETTING_TMR_END_POST      "timer.endmargin"
 #define SETTING_TMR_PRIORITY      "timer.priority"
 #define SETTING_TMR_LIFETIME      "timer.lifetime"
+#define SETTING_TMR_MAX_REC       "timer.maxrecordings"
 #define SETTING_TMR_DIR           "timer.directory"
 #define SETTING_TMR_REC_GROUP     "timer.recgroup"
 
 #define TYPE_DEP_VISIBI_COND_ID_POSTFIX     "visibi.typedep"
 #define TYPE_DEP_ENABLE_COND_ID_POSTFIX     "enable.typedep"
 #define CHANNEL_DEP_VISIBI_COND_ID_POSTFIX  "visibi.channeldep"
-#define ANYTIME_DEP_ENABLE_COND_ID_POSTFIX  "enable.anytimedep"
+#define START_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX  "visibi.startanytimedep"
+#define END_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX    "visibi.endanytimedep"
 
 #define ENTRY_ANY_CHANNEL (-1)
 
@@ -72,15 +76,16 @@ CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings() :
   m_bIsRadio(false),
   m_bIsNewTimer(true),
   m_bTimerActive(false),
-  m_bStartAnytime(true),
-  m_bEndAnytime(true),
   m_bFullTextEpgSearch(true),
+  m_bStartAnyTime(false),
+  m_bEndAnyTime(false),
   m_iWeekdays(PVR_WEEKDAY_NONE),
   m_iPreventDupEpisodes(0),
   m_iMarginStart(0),
   m_iMarginEnd(0),
   m_iPriority(0),
   m_iLifetime(0),
+  m_iMaxRecordings(0),
   m_iRecordingGroup(0)
 {
   m_loadType = LOAD_EVERY_TIME;
@@ -109,15 +114,14 @@ void CGUIDialogPVRTimerSettings::SetTimer(CFileItem *item)
   // Copy data we need from tag. Do not modify the tag itself until Save()!
   m_timerType     = m_timerInfoTag->GetTimerType();
   m_bIsRadio      = m_timerInfoTag->m_bIsRadio;
-  m_bIsNewTimer   = m_timerInfoTag->m_state == PVR_TIMER_STATE_NEW;
-  m_bStartAnytime = m_bIsNewTimer || m_timerInfoTag->IsStartAtAnyTime();
-  m_bEndAnytime   = m_bIsNewTimer || m_timerInfoTag->IsEndAtAnyTime();
+  m_bIsNewTimer   = m_timerInfoTag->m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX;
   m_bTimerActive  = m_bIsNewTimer || m_timerInfoTag->IsActive();
+  m_bStartAnyTime = m_bIsNewTimer || m_timerInfoTag->m_bStartAnyTime;
+  m_bEndAnyTime   = m_bIsNewTimer || m_timerInfoTag->m_bEndAnyTime;
   m_strTitle      = m_timerInfoTag->m_strTitle;
 
-  const CDateTime now(CDateTime::GetCurrentDateTime());
-  m_startLocalTime    = m_timerInfoTag->IsStartAtAnyTime() ? now : m_timerInfoTag->StartAsLocalTime();
-  m_endLocalTime      = m_timerInfoTag->IsEndAtAnyTime()   ? now : m_timerInfoTag->EndAsLocalTime();
+  m_startLocalTime    = m_timerInfoTag->StartAsLocalTime();
+  m_endLocalTime      = m_timerInfoTag->EndAsLocalTime();
   m_timerStartTimeStr = m_startLocalTime.GetAsLocalizedTime("", false);
   m_timerEndTimeStr   = m_endLocalTime.GetAsLocalizedTime("", false);
   m_firstDayLocalTime = m_timerInfoTag->FirstDayAsLocalTime();
@@ -138,6 +142,7 @@ void CGUIDialogPVRTimerSettings::SetTimer(CFileItem *item)
   m_iMarginEnd          = m_timerInfoTag->m_iMarginEnd;
   m_iPriority           = m_timerInfoTag->m_iPriority;
   m_iLifetime           = m_timerInfoTag->m_iLifetime;
+  m_iMaxRecordings      = m_timerInfoTag->m_iMaxRecordings;
   m_strDirectory        = m_timerInfoTag->m_strDirectory;
   m_iRecordingGroup     = m_timerInfoTag->m_iRecordingGroup;
 
@@ -272,38 +277,43 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   if (m_iWeekdays & PVR_WEEKDAY_SUNDAY)
     weekdaysPreselect.push_back(PVR_WEEKDAY_SUNDAY);
 
-  setting = AddList(group, SETTING_TMR_WEEKDAYS, 19079, 0, weekdaysPreselect, WeekdaysFiller, 19079, 1);
+  setting = AddList(group, SETTING_TMR_WEEKDAYS, 19079, 0, weekdaysPreselect, WeekdaysFiller, 19079, 1, -1, true, -1, WeekdaysValueFormatter);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_WEEKDAYS);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_WEEKDAYS);
 
-  // "Any time" (only for repeating timers)
-  setting = AddToggle(group, SETTING_TMR_ANYTIME, 810, 0, m_bStartAnytime);
-  AddTypeDependentVisibilityCondition(setting, SETTING_TMR_ANYTIME);
-  AddTypeDependentEnableCondition(setting, SETTING_TMR_ANYTIME);
+  // "Start any time" (only for repeating timers)
+  setting = AddToggle(group, SETTING_TMR_START_ANYTIME, 810, 0, m_bStartAnyTime);
+  AddTypeDependentVisibilityCondition(setting, SETTING_TMR_START_ANYTIME);
+  AddTypeDependentEnableCondition(setting, SETTING_TMR_START_ANYTIME);
 
   // Start day (day + month + year only, no hours, minutes)
   setting = AddSpinner(group, SETTING_TMR_START_DAY, 19128, 0, GetDateAsIndex(m_startLocalTime), DaysFiller);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_START_DAY);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_START_DAY);
-  AddAnytimeDependentVisibilityCondition(setting, SETTING_TMR_START_DAY);
+  AddStartAnytimeDependentVisibilityCondition(setting, SETTING_TMR_START_DAY);
 
   // Start time (hours + minutes only, no day, month, year)
   setting = AddButton(group, SETTING_TMR_BEGIN, 19126, 0);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_BEGIN);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_BEGIN);
-  AddAnytimeDependentVisibilityCondition(setting, SETTING_TMR_BEGIN);
+  AddStartAnytimeDependentVisibilityCondition(setting, SETTING_TMR_BEGIN);
+
+  // "End any time" (only for repeating timers)
+  setting = AddToggle(group, SETTING_TMR_END_ANYTIME, 817, 0, m_bEndAnyTime);
+  AddTypeDependentVisibilityCondition(setting, SETTING_TMR_END_ANYTIME);
+  AddTypeDependentEnableCondition(setting, SETTING_TMR_END_ANYTIME);
 
   // End day (day + month + year only, no hours, minutes)
   setting = AddSpinner(group, SETTING_TMR_END_DAY, 19129, 0, GetDateAsIndex(m_endLocalTime), DaysFiller);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_END_DAY);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_END_DAY);
-  AddAnytimeDependentVisibilityCondition(setting, SETTING_TMR_END_DAY);
+  AddEndAnytimeDependentVisibilityCondition(setting, SETTING_TMR_END_DAY);
 
   // End time (hours + minutes only, no day, month, year)
   setting = AddButton(group, SETTING_TMR_END, 19127, 0);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_END);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_END);
-  AddAnytimeDependentVisibilityCondition(setting, SETTING_TMR_END);
+  AddEndAnytimeDependentVisibilityCondition(setting, SETTING_TMR_END);
 
   // First day (only for repeating timers)
   setting = AddSpinner(group, SETTING_TMR_FIRST_DAY, 19084, 0, GetDateAsIndex(m_firstDayLocalTime), DaysFiller);
@@ -316,11 +326,11 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   AddTypeDependentEnableCondition(setting, SETTING_TMR_NEW_EPISODES);
 
   // Pre and post record time
-  setting = AddSpinner(group, SETTING_TMR_BEGIN_PRE, 813, 0, 0, m_iMarginStart, 1, 60, 14044);
+  setting = AddSpinner(group, SETTING_TMR_BEGIN_PRE, 813, 0, m_iMarginStart, 0, 1, 60, 14044);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_BEGIN_PRE);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_BEGIN_PRE);
 
-  setting = AddSpinner(group, SETTING_TMR_END_POST,  814, 0, 0, m_iMarginEnd,   1, 60, 14044);
+  setting = AddSpinner(group, SETTING_TMR_END_POST,  814, 0, m_iMarginEnd,   0, 1, 60, 14044);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_END_POST);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_END_POST);
 
@@ -334,6 +344,11 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_LIFETIME);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_LIFETIME);
 
+  // MaxRecordings
+  setting = AddList(group, SETTING_TMR_MAX_REC, 818, 0, m_iMaxRecordings, MaxRecordingsFiller, 818);
+  AddTypeDependentVisibilityCondition(setting, SETTING_TMR_MAX_REC);
+  AddTypeDependentEnableCondition(setting, SETTING_TMR_MAX_REC);
+
   // Recording folder
   setting = AddEdit(group, SETTING_TMR_DIR, 19076, 0, m_strDirectory, true, false, 19104);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_DIR);
@@ -343,6 +358,29 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   setting = AddList(group, SETTING_TMR_REC_GROUP, 811, 0, m_iRecordingGroup, RecordingGroupFiller, 811);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_REC_GROUP);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_REC_GROUP);
+}
+
+int CGUIDialogPVRTimerSettings::GetWeekdaysFromSetting(const CSetting *setting)
+{
+  const CSettingList *settingList = static_cast<const CSettingList*>(setting);
+  if (settingList->GetElementType() != SettingTypeInteger)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::GetWeekdaysFromSetting - wrong weekdays element type");
+    return 0;
+  }
+  int weekdays = 0;
+  std::vector<CVariant> list = CSettingUtils::GetList(settingList);
+  for (const auto &value : list)
+  {
+    if (!value.isInteger())
+    {
+      CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::GetWeekdaysFromSetting - wrong weekdays value type");
+      return 0;
+    }
+    weekdays += static_cast<int>(value.asInteger());
+  }
+
+  return weekdays;
 }
 
 void CGUIDialogPVRTimerSettings::OnSettingChanged(const CSetting *setting)
@@ -404,28 +442,15 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const CSetting *setting)
   }
   else if (settingId == SETTING_TMR_WEEKDAYS)
   {
-    const CSettingList *settingList = static_cast<const CSettingList*>(setting);
-    if (settingList->GetElementType() != SettingTypeInteger)
-    {
-      CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::OnSettingChanged - wrong weekdays element type");
-      return;
-    }
-    int weekdays = 0;
-    std::vector<CVariant> list = CSettingUtils::GetList(settingList);
-    for (const auto &value : list)
-    {
-      if (!value.isInteger())
-      {
-        CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::OnSettingChanged - wrong weekdays value type");
-        return;
-      }
-      weekdays += static_cast<int>(value.asInteger());
-    }
-    m_iWeekdays = weekdays;
+    m_iWeekdays = GetWeekdaysFromSetting(setting);
   }
-  else if (settingId == SETTING_TMR_ANYTIME)
+  else if (settingId == SETTING_TMR_START_ANYTIME)
   {
-    m_bStartAnytime = m_bEndAnytime = static_cast<const CSettingBool*>(setting)->GetValue();
+    m_bStartAnyTime = static_cast<const CSettingBool*>(setting)->GetValue();
+  }
+  else if (settingId == SETTING_TMR_END_ANYTIME)
+  {
+    m_bEndAnyTime = static_cast<const CSettingBool*>(setting)->GetValue();
   }
   else if (settingId == SETTING_TMR_START_DAY)
   {
@@ -458,6 +483,10 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const CSetting *setting)
   else if (settingId == SETTING_TMR_LIFETIME)
   {
     m_iLifetime = static_cast<const CSettingInt*>(setting)->GetValue();
+  }
+  else if (settingId == SETTING_TMR_MAX_REC)
+  {
+    m_iMaxRecordings = static_cast<const CSettingInt*>(setting)->GetValue();
   }
   else if (settingId == SETTING_TMR_DIR)
   {
@@ -541,28 +570,21 @@ void CGUIDialogPVRTimerSettings::Save()
     m_timerInfoTag->m_iClientId         = m_timerType->GetClientId();
   }
 
+  if (m_timerType->SupportsStartAnyTime() && m_timerType->IsEpgBased()) // Start anytime toggle is displayed
+    m_timerInfoTag->m_bStartAnyTime = m_bStartAnyTime;
+  else
+    m_bStartAnyTime = false; // Assume start time change needs checking for
+  if (m_timerType->SupportsEndAnyTime() && m_timerType->IsEpgBased()) // End anytime toggle is displayed
+    m_timerInfoTag->m_bEndAnyTime = m_bEndAnyTime;
+  else
+    m_bEndAnyTime = false; // Assume end time change needs checking for
   // Begin and end time
-  bool bStartSet(false);
-  bool bEndSet(false);
-  if ((m_bStartAnytime || m_bEndAnytime) && m_timerType->IsRepeatingEpgBased())
-  {
-    if (m_bStartAnytime)
-    {
-      m_timerInfoTag->SetStartAtAnyTime();
-      bStartSet = true;
-    }
-    if (m_bEndAnytime)
-    {
-      m_timerInfoTag->SetEndAtAnyTime();
-      bEndSet = true;
-    }
-  }
-
   const CDateTime now(CDateTime::GetCurrentDateTime());
-  if (!bStartSet || !bEndSet)
+  if (!m_bStartAnyTime && !m_bEndAnyTime)
   {
-    if (m_timerType->SupportsStartEndTime() && // has start/end clock entry
-        m_timerType->IsRepeating())            // but no start/end day spinners
+    if (m_timerType->SupportsStartTime() &&    // has start clock entry
+        m_timerType->SupportsEndTime() &&      // and end clock entry
+        m_timerType->IsRepeating())            // but no associated start/end day spinners
     {
       if (m_endLocalTime < m_startLocalTime)   // And the end clock is earlier than the start clock
       {
@@ -589,13 +611,13 @@ void CGUIDialogPVRTimerSettings::Save()
     {
       CLog::Log(LOGWARNING, "CGUIDialogPVRTimerSettings::Save - Specified recording end time < start time: expect errors!");
     }
-
-    if (!bStartSet)
-      m_timerInfoTag->SetStartFromLocalTime(m_startLocalTime);
-
-    if (!bEndSet)
-      m_timerInfoTag->SetEndFromLocalTime(m_endLocalTime);
+    m_timerInfoTag->SetStartFromLocalTime(m_startLocalTime);
+    m_timerInfoTag->SetEndFromLocalTime(m_endLocalTime);
   }
+  else if (!m_bStartAnyTime)
+    m_timerInfoTag->SetStartFromLocalTime(m_startLocalTime);
+  else if (!m_bEndAnyTime)
+    m_timerInfoTag->SetEndFromLocalTime(m_endLocalTime);
 
   // Days of week (only for repeating timers)
   if (m_timerType->IsRepeating())
@@ -619,6 +641,9 @@ void CGUIDialogPVRTimerSettings::Save()
   // Lifetime
   m_timerInfoTag->m_iLifetime = m_iLifetime;
 
+  // MaxRecordings
+  m_timerInfoTag->m_iMaxRecordings = m_iMaxRecordings;
+
   // Recording folder
   m_timerInfoTag->m_strDirectory = m_strDirectory;
 
@@ -639,28 +664,15 @@ void CGUIDialogPVRTimerSettings::SetButtonLabels()
   BaseSettingControlPtr settingControl = GetSettingControl(SETTING_TMR_BEGIN);
   if (settingControl != NULL && settingControl->GetControl() != NULL)
   {
-    if (!m_bIsNewTimer && m_bStartAnytime)
-      SET_CONTROL_LABEL2(settingControl->GetID(), g_localizeStrings.Get(19161)); // "any time"
-    else
-      SET_CONTROL_LABEL2(settingControl->GetID(), m_timerStartTimeStr);
+    SET_CONTROL_LABEL2(settingControl->GetID(), m_timerStartTimeStr);
   }
 
   // timer end time
   settingControl = GetSettingControl(SETTING_TMR_END);
   if (settingControl != NULL && settingControl->GetControl() != NULL)
   {
-    if (!m_bIsNewTimer && m_bEndAnytime)
-      SET_CONTROL_LABEL2(settingControl->GetID(), g_localizeStrings.Get(19161)); // "any time"
-    else
-      SET_CONTROL_LABEL2(settingControl->GetID(), m_timerEndTimeStr);
+    SET_CONTROL_LABEL2(settingControl->GetID(), m_timerEndTimeStr);
   }
-
-  // weekdays
-  settingControl = GetSettingControl(SETTING_TMR_WEEKDAYS);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
-    SET_CONTROL_LABEL2(settingControl->GetID(),
-                       CPVRTimerInfoTag::GetWeekdaysString(
-                        m_iWeekdays, m_timerType->IsEpgBased(), true));
 }
 
 void CGUIDialogPVRTimerSettings::AddCondition(
@@ -721,8 +733,12 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
       if (type->IsReadOnly())
         continue;
 
-      // For new timers, skip one time epg-based types. Those cannot be created using this dialog (yet).
-      if (type->IsOnetimeEpgBased())
+      // Drop TimerTypes that require EPGInfo, if none is populated
+      if (type->RequiresEpgTagOnCreate() && !m_timerInfoTag->HasEpgInfoTag())
+        continue;
+
+      // Drop TimerTypes that forbid EPGInfo, if it is populated
+      if (type->ForbidsEpgTagOnCreate() && m_timerInfoTag->HasEpgInfoTag())
         continue;
     }
 
@@ -922,6 +938,20 @@ void CGUIDialogPVRTimerSettings::LifetimesFiller(
     CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::LifetimesFiller - No dialog");
 }
 
+void CGUIDialogPVRTimerSettings::MaxRecordingsFiller(
+  const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+{
+  CGUIDialogPVRTimerSettings *pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  if (pThis)
+  {
+    list.clear();
+    pThis->m_timerType->GetMaxRecordingsValues(list);
+    current = pThis->m_iMaxRecordings;
+  }
+  else
+    CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::MaxRecordingsFiller - No dialog");
+}
+
 void CGUIDialogPVRTimerSettings::RecordingGroupFiller(
   const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
@@ -934,6 +964,11 @@ void CGUIDialogPVRTimerSettings::RecordingGroupFiller(
   }
   else
     CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::RecordingGroupFiller - No dialog");
+}
+
+std::string CGUIDialogPVRTimerSettings::WeekdaysValueFormatter(const CSetting *setting)
+{
+  return CPVRTimerInfoTag::GetWeekdaysString(GetWeekdaysFromSetting(setting), true, true);
 }
 
 void CGUIDialogPVRTimerSettings::AddTypeDependentEnableCondition(CSetting *setting, const std::string &identifier)
@@ -1037,14 +1072,18 @@ bool CGUIDialogPVRTimerSettings::TypeSupportsCondition(const std::string &condit
       return entry->second->SupportsEnableDisable();
     else if (cond == SETTING_TMR_CHANNEL)
       return entry->second->SupportsChannels();
-    else if (cond == SETTING_TMR_ANYTIME)
-      return entry->second->IsRepeatingEpgBased();
-    else if (cond == SETTING_TMR_START_DAY ||
-             cond == SETTING_TMR_END_DAY)
-      return entry->second->SupportsStartEndTime() && !entry->second->IsRepeating();
-    else if ((cond == SETTING_TMR_BEGIN) ||
-             (cond == SETTING_TMR_END))
-      return entry->second->SupportsStartEndTime();
+    else if (cond == SETTING_TMR_START_ANYTIME)
+      return entry->second->SupportsStartAnyTime() && entry->second->IsEpgBased();
+    else if (cond == SETTING_TMR_END_ANYTIME)
+      return entry->second->SupportsEndAnyTime() && entry->second->IsEpgBased();
+    else if (cond == SETTING_TMR_START_DAY)
+      return entry->second->SupportsStartTime() && entry->second->IsOnetime();
+    else if (cond == SETTING_TMR_END_DAY)
+      return entry->second->SupportsEndTime() && entry->second->IsOnetime();
+    else if (cond == SETTING_TMR_BEGIN)
+      return entry->second->SupportsStartTime();
+    else if (cond == SETTING_TMR_END)
+      return entry->second->SupportsEndTime();
     else if (cond == SETTING_TMR_WEEKDAYS)
       return entry->second->SupportsWeekdays();
     else if (cond == SETTING_TMR_FIRST_DAY)
@@ -1058,6 +1097,8 @@ bool CGUIDialogPVRTimerSettings::TypeSupportsCondition(const std::string &condit
       return entry->second->SupportsPriority();
     else if (cond == SETTING_TMR_LIFETIME)
       return entry->second->SupportsLifetime();
+    else if (cond == SETTING_TMR_MAX_REC)
+      return entry->second->SupportsMaxRecordings();
     else if (cond == SETTING_TMR_DIR)
       return entry->second->SupportsRecordingFolders();
     else if (cond == SETTING_TMR_REC_GROUP)
@@ -1072,15 +1113,15 @@ bool CGUIDialogPVRTimerSettings::TypeSupportsCondition(const std::string &condit
   return false;
 }
 
-void CGUIDialogPVRTimerSettings::AddAnytimeDependentVisibilityCondition(CSetting *setting, const std::string &identifier)
+void CGUIDialogPVRTimerSettings::AddStartAnytimeDependentVisibilityCondition(CSetting *setting, const std::string &identifier)
 {
   // Show or hide setting depending on value of setting "any time"
   std::string id(identifier);
-  id.append(ANYTIME_DEP_ENABLE_COND_ID_POSTFIX);
-  AddCondition(setting, id, AnytimeSetCondition, SettingDependencyTypeVisible, SETTING_TMR_ANYTIME);
+  id.append(START_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX);
+  AddCondition(setting, id, StartAnytimeSetCondition, SettingDependencyTypeVisible, SETTING_TMR_START_ANYTIME);
 }
 
-bool CGUIDialogPVRTimerSettings::AnytimeSetCondition(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
+bool CGUIDialogPVRTimerSettings::StartAnytimeSetCondition(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   if (setting == NULL)
     return false;
@@ -1095,16 +1136,61 @@ bool CGUIDialogPVRTimerSettings::AnytimeSetCondition(const std::string &conditio
   if (!StringUtils::EqualsNoCase(value, "true"))
     return false;
 
-  // "any time" setting is only relevant for repeating epg-based timers.
-  if (!pThis->m_timerType->IsRepeatingEpgBased())
+  // "any time" setting is only relevant for epg-based timers.
+  if (!pThis->m_timerType->IsEpgBased())
+    return true;
+
+  // If 'Start anytime' option isn't supported, don't hide start time
+  if (!pThis->m_timerType->SupportsStartAnyTime())
     return true;
 
   std::string cond(condition);
-  cond.erase(cond.find(ANYTIME_DEP_ENABLE_COND_ID_POSTFIX));
+  cond.erase(cond.find(START_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX));
 
   if ((cond == SETTING_TMR_START_DAY) ||
-      (cond == SETTING_TMR_END_DAY)   ||
-      (cond == SETTING_TMR_BEGIN)     ||
+      (cond == SETTING_TMR_BEGIN))
+  {
+    bool bAnytime = static_cast<const CSettingBool*>(setting)->GetValue();
+    return !bAnytime;
+  }
+  return false;
+}
+
+void CGUIDialogPVRTimerSettings::AddEndAnytimeDependentVisibilityCondition(CSetting *setting, const std::string &identifier)
+{
+  // Show or hide setting depending on value of setting "any time"
+  std::string id(identifier);
+  id.append(END_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX);
+  AddCondition(setting, id, EndAnytimeSetCondition, SettingDependencyTypeVisible, SETTING_TMR_END_ANYTIME);
+}
+
+bool CGUIDialogPVRTimerSettings::EndAnytimeSetCondition(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
+{
+  if (setting == NULL)
+    return false;
+
+  CGUIDialogPVRTimerSettings *pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  if (pThis == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::AnytimeSetCondition - No dialog");
+    return false;
+  }
+
+  if (!StringUtils::EqualsNoCase(value, "true"))
+    return false;
+
+  // "any time" setting is only relevant for epg-based timers.
+  if (!pThis->m_timerType->IsEpgBased())
+    return true;
+
+  // If 'End anytime' option isn't supported, don't hide end time
+  if (!pThis->m_timerType->SupportsEndAnyTime())
+    return true;
+
+  std::string cond(condition);
+  cond.erase(cond.find(END_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX));
+
+  if ((cond == SETTING_TMR_END_DAY)   ||
       (cond == SETTING_TMR_END))
   {
     bool bAnytime = static_cast<const CSettingBool*>(setting)->GetValue();

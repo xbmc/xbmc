@@ -24,6 +24,8 @@
 #include "utils/URIUtils.h"
 #include "DDSImage.h"
 #include "filesystem/File.h"
+#include "filesystem/ResourceFile.h"
+#include "filesystem/XbtFile.h"
 #if defined(TARGET_DARWIN_IOS)
 #include <ImageIO/ImageIO.h>
 #include "filesystem/File.h"
@@ -173,7 +175,7 @@ void CBaseTexture::ClampToEdge()
   }
 }
 
-CBaseTexture *CBaseTexture::LoadFromFile(const std::string& texturePath, unsigned int idealWidth, unsigned int idealHeight, bool autoRotate, bool requirePixels, const std::string& strMimeType)
+CBaseTexture *CBaseTexture::LoadFromFile(const std::string& texturePath, unsigned int idealWidth, unsigned int idealHeight, bool requirePixels, const std::string& strMimeType)
 {
 #if defined(TARGET_ANDROID)
   CURL url(texturePath);
@@ -201,7 +203,7 @@ CBaseTexture *CBaseTexture::LoadFromFile(const std::string& texturePath, unsigne
   }
 #endif
   CTexture *texture = new CTexture();
-  if (texture->LoadFromFileInternal(texturePath, idealWidth, idealHeight, autoRotate, requirePixels, strMimeType))
+  if (texture->LoadFromFileInternal(texturePath, idealWidth, idealHeight, requirePixels, strMimeType))
     return texture;
   delete texture;
   return NULL;
@@ -216,7 +218,7 @@ CBaseTexture *CBaseTexture::LoadFromFileInMemory(unsigned char *buffer, size_t b
   return NULL;
 }
 
-bool CBaseTexture::LoadFromFileInternal(const std::string& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool autoRotate, bool requirePixels, const std::string& strMimeType)
+bool CBaseTexture::LoadFromFileInternal(const std::string& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool requirePixels, const std::string& strMimeType)
 {
   if (URIUtils::HasExtension(texturePath, ".dds"))
   { // special case for DDS images
@@ -239,6 +241,26 @@ bool CBaseTexture::LoadFromFileInternal(const std::string& texturePath, unsigned
   if (file.LoadFile(texturePath, buf) <= 0)
     return false;
 
+  CURL url(texturePath);
+  // make sure resource:// paths are properly resolved
+  if (url.IsProtocol("resource"))
+  {
+    std::string translatedPath;
+    if (XFILE::CResourceFile::TranslatePath(url, translatedPath))
+      url.Parse(translatedPath);
+  }
+
+  // handle xbt:// paths differently because it allows loading the texture directly from memory
+  if (url.IsProtocol("xbt"))
+  {
+    XFILE::CXbtFile xbtFile;
+    if (!xbtFile.Open(url))
+      return false;
+
+    return LoadFromMemory(xbtFile.GetImageWidth(), xbtFile.GetImageHeight(), 0, xbtFile.GetImageFormat(),
+                          xbtFile.HasImageAlpha(), reinterpret_cast<unsigned char*>(buf.get()));
+  }
+
   IImage* pImage;
 
   if(strMimeType.empty())
@@ -246,7 +268,7 @@ bool CBaseTexture::LoadFromFileInternal(const std::string& texturePath, unsigned
   else
     pImage = ImageFactory::CreateLoaderFromMimeType(strMimeType);
 
-  if (!LoadIImage(pImage, (unsigned char *)buf.get(), buf.size(), width, height, autoRotate))
+  if (!LoadIImage(pImage, (unsigned char *)buf.get(), buf.size(), width, height))
   {
     delete pImage;
     pImage = ImageFactory::CreateFallbackLoader(texturePath);
@@ -285,7 +307,7 @@ bool CBaseTexture::LoadFromFileInMem(unsigned char* buffer, size_t size, const s
   return true;
 }
 
-bool CBaseTexture::LoadIImage(IImage *pImage, unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height, bool autoRotate)
+bool CBaseTexture::LoadIImage(IImage *pImage, unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height)
 {
   if(pImage != NULL && pImage->LoadImageFromMemory(buffer, bufSize, width, height))
   {
@@ -294,7 +316,7 @@ bool CBaseTexture::LoadIImage(IImage *pImage, unsigned char* buffer, unsigned in
       Allocate(pImage->Width(), pImage->Height(), XB_FMT_A8R8G8B8);
       if (pImage->Decode(m_pixels, GetPitch(), XB_FMT_A8R8G8B8))
       {
-        if (autoRotate && pImage->Orientation())
+        if (pImage->Orientation())
           m_orientation = pImage->Orientation() - 1;
         m_hasAlpha = pImage->hasAlpha();
         m_originalWidth = pImage->originalWidth();

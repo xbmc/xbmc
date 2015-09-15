@@ -71,7 +71,6 @@ private:
     virtual bool OnFileCallback(void* pContext, int ipercent, float avgSpeed);
 
     bool ExecuteOperation(CFileOperationJob *base, double &current, double opWeight);
-    void Debug();
 
   private:
     FileAction m_action;

@@ -19,7 +19,7 @@
  */
 #include "AutorunMediaJob.h"
 #include "Application.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -56,7 +56,7 @@ bool CAutorunMediaJob::DoWork()
   if (selection >= 0)
   {
     std::string strAction = StringUtils::Format("ActivateWindow(%s, %s)", GetWindowString(selection), m_path.c_str());
-    CBuiltins::Execute(strAction);
+    CBuiltins::GetInstance().Execute(strAction);
   }
 
   return true;

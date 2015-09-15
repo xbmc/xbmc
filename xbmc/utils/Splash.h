@@ -27,7 +27,7 @@ class CGUIImage;
 class CSplash
 {
 public:
-  static CSplash& Get();
+  static CSplash& GetInstance();
 
   void Show();
 

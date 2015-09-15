@@ -25,13 +25,11 @@
 
 // CDDA audio demuxer based on AirTunes audio Demuxer.
 
-using namespace std;
-
 class CDemuxStreamAudioCDDA
   : public CDemuxStreamAudio
 {
 public:
-  void GetStreamInfo(string& strInfo)
+  void GetStreamInfo(std::string& strInfo)
   {
     strInfo = "pcm";
   }

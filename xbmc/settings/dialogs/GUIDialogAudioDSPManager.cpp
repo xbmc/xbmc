@@ -49,7 +49,6 @@
 #define LIST_POST_PROCESS                       3
 #define LIST_OUTPUT_RESAMPLE                    4
 
-using namespace std;
 using namespace ActiveAE;
 
 typedef struct
@@ -143,7 +142,7 @@ bool CGUIDialogAudioDSPManager::OnActionMove(const CAction &action)
           iLines  = m_activeItems[m_iCurrentType]->Size() - 1;
         }
 
-        string strNumber;
+        std::string strNumber;
         for (unsigned int iLine = 0; iLine < iLines; iLine++)
         {
           unsigned int iNewSelect = bMoveUp ? m_iSelected[LIST_ACTIVE] - 1 : m_iSelected[LIST_ACTIVE] + 1;
@@ -411,7 +410,7 @@ bool CGUIDialogAudioDSPManager::OnMessage(CGUIMessage& message)
           CGUIListItemPtr modeListItem = modeListPtr->GetListItem(0); // get current selected list item
           if (modeListItem)
           {
-            string currentModeString = modeListItem->GetProperty("currentMode").asString();
+            std::string currentModeString = modeListItem->GetProperty("currentMode").asString();
             int newModeType = helper_TranslateModeType(currentModeString);
 
             if (m_iCurrentType != newModeType)
@@ -560,7 +559,7 @@ bool CGUIDialogAudioDSPManager::OnContextButton(int itemNumber, CONTEXT_BUTTON b
     * Open audio dsp addon mode help text dialog
     */
     AE_DSP_ADDON addon;
-    if (CActiveAEDSP::Get().GetAudioDSPAddon((int)pItem->GetProperty("AddonId").asInteger(), addon))
+    if (CActiveAEDSP::GetInstance().GetAudioDSPAddon((int)pItem->GetProperty("AddonId").asInteger(), addon))
     {
       CGUIDialogTextViewer* pDlgInfo = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
       pDlgInfo->SetHeading(g_localizeStrings.Get(15062) + " - " + pItem->GetProperty("Name").asString());
@@ -656,7 +655,7 @@ bool CGUIDialogAudioDSPManager::OnContextButton(int itemNumber, CONTEXT_BUTTON b
     if (hookId > 0)
     {
       AE_DSP_ADDON addon;
-      if (CActiveAEDSP::Get().GetAudioDSPAddon((int)pItem->GetProperty("AddonId").asInteger(), addon))
+      if (CActiveAEDSP::GetInstance().GetAudioDSPAddon((int)pItem->GetProperty("AddonId").asInteger(), addon))
       {
         AE_DSP_MENUHOOK       hook;
         AE_DSP_MENUHOOK_DATA  hookData;
@@ -793,7 +792,7 @@ void CGUIDialogAudioDSPManager::SaveList(void)
   /* persist all modes */
   if (UpdateDatabase(pDlgBusy))
   {
-    CActiveAEDSP::Get().TriggerModeUpdate();
+    CActiveAEDSP::GetInstance().TriggerModeUpdate();
 
     m_bContainsChanges = false;
     SetItemsUnchanged();
@@ -914,7 +913,7 @@ void CGUIDialogAudioDSPManager::SetItemsUnchanged()
 void CGUIDialogAudioDSPManager::Renumber(void)
 {
   int iNextModeNumber(0);
-  string strNumber;
+  std::string strNumber;
   CFileItemPtr pItem;
 
   for (int iModePtr = 0; iModePtr < m_activeItems[m_iCurrentType]->Size(); iModePtr++)
@@ -933,7 +932,7 @@ void CGUIDialogAudioDSPManager::helper_LogError(const char *function)
   CLog::Log(LOGERROR, "DSP Manager - %s - GUI value error", function);
 }
 
-int CGUIDialogAudioDSPManager::helper_TranslateModeType(string ModeString)
+int CGUIDialogAudioDSPManager::helper_TranslateModeType(std::string ModeString)
 {
   int iType = AE_DSP_MODE_TYPE_UNDEFINED;
   for (unsigned int ii = 0; ii < ARRAY_SIZE(dsp_mode_types) && iType == AE_DSP_MODE_TYPE_UNDEFINED; ii++)
@@ -959,21 +958,21 @@ CFileItem *CGUIDialogAudioDSPManager::helper_CreateModeListItem(CActiveAEDSPMode
   // start to get Addon and Mode properties
   const int AddonID = ModePointer->AddonID();
 
-  string addonName;
-  if (!CActiveAEDSP::Get().GetAudioDSPAddonName(AddonID, addonName))
+  std::string addonName;
+  if (!CActiveAEDSP::GetInstance().GetAudioDSPAddonName(AddonID, addonName))
   {
     return pItem;
   }
 
   AE_DSP_ADDON addon;
-  if (!CActiveAEDSP::Get().GetAudioDSPAddon(AddonID, addon))
+  if (!CActiveAEDSP::GetInstance().GetAudioDSPAddon(AddonID, addon))
   {
     return pItem;
   }
 
-  string modeName = addon->GetString(ModePointer->ModeName());
+  std::string modeName = addon->GetString(ModePointer->ModeName());
 
-  string description;
+  std::string description;
   if (ModePointer->ModeDescription() > -1)
   {
     description = addon->GetString(ModePointer->ModeDescription());
@@ -996,7 +995,7 @@ CFileItem *CGUIDialogAudioDSPManager::helper_CreateModeListItem(CActiveAEDSPMode
       (*ContinuesNo)++;
     }
 
-    string str = StringUtils::Format("%i:%i:%i:%s",
+    std::string str = StringUtils::Format("%i:%i:%i:%s",
                                       number,
                                       AddonID,
                                       ModePointer->AddonModeNumber(),
@@ -1025,7 +1024,7 @@ CFileItem *CGUIDialogAudioDSPManager::helper_CreateModeListItem(CActiveAEDSPMode
   return pItem;
 }
 
-int CGUIDialogAudioDSPManager::helper_GetDialogId(CActiveAEDSPModePtr &ModePointer, AE_DSP_MENUHOOK_CAT &MenuHook, AE_DSP_ADDON &Addon, string AddonName)
+int CGUIDialogAudioDSPManager::helper_GetDialogId(CActiveAEDSPModePtr &ModePointer, AE_DSP_MENUHOOK_CAT &MenuHook, AE_DSP_ADDON &Addon, std::string AddonName)
 {
   int dialogId = 0;
 
@@ -1034,7 +1033,7 @@ int CGUIDialogAudioDSPManager::helper_GetDialogId(CActiveAEDSPModePtr &ModePoint
     AE_DSP_MENUHOOKS hooks;
 
     // Find first general settings dialog about mode
-    if (CActiveAEDSP::Get().GetMenuHooks(ModePointer->AddonID(), AE_DSP_MENUHOOK_SETTING, hooks))
+    if (CActiveAEDSP::GetInstance().GetMenuHooks(ModePointer->AddonID(), AE_DSP_MENUHOOK_SETTING, hooks))
     {
       for (unsigned int i = 0; i < hooks.size() && dialogId == 0; i++)
       {
@@ -1046,7 +1045,7 @@ int CGUIDialogAudioDSPManager::helper_GetDialogId(CActiveAEDSPModePtr &ModePoint
     }
 
     // If nothing was present, check for playback settings
-    if (dialogId == 0 && CActiveAEDSP::Get().GetMenuHooks(ModePointer->AddonID(), MenuHook, hooks))
+    if (dialogId == 0 && CActiveAEDSP::GetInstance().GetMenuHooks(ModePointer->AddonID(), MenuHook, hooks))
     {
       for (unsigned int i = 0; i < hooks.size() && (dialogId == 0 || dialogId != -1); i++)
       {

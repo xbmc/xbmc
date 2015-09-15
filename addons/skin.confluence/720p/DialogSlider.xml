@@ -4,7 +4,6 @@
 	<animation effect="slide" start="0,-80" end="0,0" time="75">WindowOpen</animation>
 	<animation effect="slide" start="0,0" end="0,-80" time="75">WindowClose</animation>
 	<coordinates>
-		<system>1</system>
 		<left>405</left>
 		<top>0</top>
 	</coordinates>

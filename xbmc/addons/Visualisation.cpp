@@ -35,7 +35,6 @@
 #include "filesystem/SpecialProtocol.h"
 #endif
 
-using namespace std;
 using namespace MUSIC_INFO;
 using namespace ADDON;
 
@@ -97,7 +96,7 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
       return false;
     }
 
-    GetPresets();
+    m_hasPresets = GetPresets();
 
     if (GetSubModules())
       m_pInfo->submodule = strdup(CSpecialProtocol::TranslatePath(m_submodules.front()).c_str());
@@ -263,13 +262,13 @@ void CVisualisation::OnAudioData(const float* pAudioData, int iAudioDataLength)
     return;
 
   // Save our audio data in the buffers
-  unique_ptr<CAudioBuffer> pBuffer ( new CAudioBuffer(AUDIO_BUFFER_SIZE) );
+  std::unique_ptr<CAudioBuffer> pBuffer ( new CAudioBuffer(iAudioDataLength) );
   pBuffer->Set(pAudioData, iAudioDataLength);
   m_vecBuffers.push_back( pBuffer.release() );
 
   if ( (int)m_vecBuffers.size() < m_iNumBuffers) return ;
 
-  unique_ptr<CAudioBuffer> ptrAudioBuffer ( m_vecBuffers.front() );
+  std::unique_ptr<CAudioBuffer> ptrAudioBuffer ( m_vecBuffers.front() );
   m_vecBuffers.pop_front();
   // Fourier transform the data if the vis wants it...
   if (m_bWantsFreq)
@@ -282,11 +281,11 @@ void CVisualisation::OnAudioData(const float* pAudioData, int iAudioDataLength)
     m_transform->calc(psAudioData, m_fFreq);
 
     // Transfer data to our visualisation
-    AudioData(psAudioData, AUDIO_BUFFER_SIZE, m_fFreq, AUDIO_BUFFER_SIZE/2); // half due to complex-conjugate
+    AudioData(psAudioData, iAudioDataLength, m_fFreq, AUDIO_BUFFER_SIZE/2); // half due to complex-conjugate
   }
   else
   { // Transfer data to our visualisation
-    AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, NULL, 0);
+    AudioData(ptrAudioBuffer->Get(), iAudioDataLength, NULL, 0);
   }
   return ;
 }

@@ -18,24 +18,25 @@
  *
  */
 
-#include "GUIDialogPVRChannelsOSD.h"
 #include "Application.h"
-#include "messaging/ApplicationMessenger.h"
 #include "FileItem.h"
+#include "GUIInfoManager.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "epg/EpgContainer.h"
+#include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "guilib/LocalizeStrings.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "GUIDialogPVRGuideInfo.h"
-#include "view/ViewState.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
-#include "GUIInfoManager.h"
 #include "utils/StringUtils.h"
+#include "view/ViewState.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/windows/GUIWindowPVRBase.h"
-#include "epg/EpgContainer.h"
+
+#include "GUIDialogPVRChannelsOSD.h"
+#include "GUIDialogPVRGuideInfo.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -261,10 +262,10 @@ void CGUIDialogPVRChannelsOSD::Clear()
 
 void CGUIDialogPVRChannelsOSD::CloseOrSelect(unsigned int iItem)
 {
-  if (CSettings::Get().GetBool(CSettings::SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH))
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH))
   {
-    if (CSettings::Get().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO) > 0)
-      g_PVRManager.ShowPlayerInfo(CSettings::Get().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
+    if (CSettings::GetInstance().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO) > 0)
+      g_PVRManager.ShowPlayerInfo(CSettings::GetInstance().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
     Close();
   }
   else
@@ -297,7 +298,7 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
     }
   }
   else
-    CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*pItem)));
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*pItem)));
 
   m_group = GetPlayingGroup();
 
@@ -361,7 +362,7 @@ CGUIControl *CGUIDialogPVRChannelsOSD::GetFirstFocusableControl(int id)
 void CGUIDialogPVRChannelsOSD::Notify(const Observable &obs, const ObservableMessage msg)
 {
   CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
-  CApplicationMessenger::Get().SendGUIMessage(m);
+  CApplicationMessenger::GetInstance().SendGUIMessage(m);
 }
 
 void CGUIDialogPVRChannelsOSD::SaveSelectedItemPath(int iGroupID)

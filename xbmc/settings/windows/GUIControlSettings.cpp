@@ -371,18 +371,17 @@ bool CGUIControlListSetting::OnClick()
   
   dialog->Reset();
   dialog->SetHeading(CVariant{g_localizeStrings.Get(m_pSetting->GetLabel())});
-  dialog->SetItems(&options);
+  dialog->SetItems(options);
   dialog->SetMultiSelection(control->CanMultiSelect());
   dialog->Open();
 
   if (!dialog->IsConfirmed())
     return false;
 
-  const CFileItemList &items = dialog->GetSelectedItems();
   std::vector<CVariant> values;
-  for (int index = 0; index < items.Size(); index++)
+  for (int i : dialog->GetSelectedItems())
   {
-    const CFileItemPtr item = items[index];
+    const CFileItemPtr item = options.Get(i);
     if (item == NULL || !item->HasProperty("value"))
       return false;
 
@@ -428,21 +427,30 @@ void CGUIControlListSetting::Update(bool updateDisplayOnly /* = false */)
   CGUIControlBaseSetting::Update();
   
   CFileItemList options;
+  const CSettingControlList *control = static_cast<const CSettingControlList*>(m_pSetting->GetControl());
   bool optionsValid = GetItems(m_pSetting, options);
-  if (optionsValid && !static_cast<const CSettingControlList*>(m_pSetting->GetControl())->HideValue())
+  std::string label2;
+  if (optionsValid && !control->HideValue())
   {
-    std::vector<std::string> labels;
-    for (int index = 0; index < options.Size(); index++)
-    {
-      const CFileItemPtr pItem = options.Get(index);
-      if (pItem->IsSelected())
-        labels.push_back(pItem->GetLabel());
-    }
+    SettingControlListValueFormatter formatter = control->GetFormatter();
+    if (formatter)
+      label2 = formatter(m_pSetting);
 
-    m_pButton->SetLabel2(StringUtils::Join(labels, ", "));
+    if (label2.empty())
+    {
+      std::vector<std::string> labels;
+      for (int index = 0; index < options.Size(); index++)
+      {
+        const CFileItemPtr pItem = options.Get(index);
+        if (pItem->IsSelected())
+          labels.push_back(pItem->GetLabel());
+      }
+
+      label2 = StringUtils::Join(labels, ", ");
+    }
   }
-  else
-    m_pButton->SetLabel2(StringUtils::Empty);
+
+  m_pButton->SetLabel2(label2);
 
   // disable the control if it has less than two items
   if (!m_pButton->IsDisabled() && options.Size() <= 1)
@@ -600,7 +608,7 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
       if (controlFormat == "addon")
       {
         ADDON::AddonPtr addon;
-        if (ADDON::CAddonMgr::Get().GetAddon(strValue, addon))
+        if (ADDON::CAddonMgr::GetInstance().GetAddon(strValue, addon))
           strText = addon->Name();
         if (strText.empty())
           strText = g_localizeStrings.Get(231); // None
@@ -666,7 +674,7 @@ bool CGUIControlButtonSetting::GetPath(CSettingPath *pathSetting)
   const std::vector<std::string>& sources = pathSetting->GetSources();
   for (const auto& source : sources)
   {
-    VECSOURCES *sources = CMediaSourceSettings::Get().GetSources(source);
+    VECSOURCES *sources = CMediaSourceSettings::GetInstance().GetSources(source);
     if (sources != NULL)
       shares.insert(shares.end(), sources->begin(), sources->end());
   }

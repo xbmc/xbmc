@@ -47,7 +47,7 @@ namespace XBMCAddon
                           bool isFolder = false, int totalItems = 0);
 
     /**
-     * addDirectoryItems(handle, items [,totalItems]) -- Callback function to pass directory contents back to XBMC as a list.
+     * addDirectoryItems(handle, items [,totalItems]) -- Callback function to pass directory contents back to Kodi as a list.
      *  - Returns a bool for successful completion.
      * 
      * handle      : integer - handle the plugin was started with.\n
@@ -65,7 +65,7 @@ namespace XBMCAddon
                            int totalItems = 0);
 
     /**
-     * endOfDirectory(handle[, succeeded, updateListing, cacheToDisc]) -- Callback function to tell XBMC that the end of the directory listing in a virtualPythonFolder module is reached.
+     * endOfDirectory(handle[, succeeded, updateListing, cacheToDisc]) -- Callback function to tell Kodi that the end of the directory listing in a virtualPythonFolder module is reached.
      * 
      * handle           : integer - handle the plugin was started with.\n
      * succeeded        : [opt] bool - True=script completed successfully(Default)/False=Script did not.\n
@@ -79,7 +79,7 @@ namespace XBMCAddon
                         bool cacheToDisc = true);
 
     /**
-     * setResolvedUrl(handle, succeeded, listitem) -- Callback function to tell XBMC that the file plugin has been resolved to a url
+     * setResolvedUrl(handle, succeeded, listitem) -- Callback function to tell Kodi that the file plugin has been resolved to a url
      * 
      * handle           : integer - handle the plugin was started with.\n
      * succeeded        : bool - True=script completed successfully/False=Script did not.\n
@@ -91,10 +91,10 @@ namespace XBMCAddon
     void setResolvedUrl(int handle, bool succeeded, const XBMCAddon::xbmcgui::ListItem* listitem);
 
     /**
-     * addSortMethod(handle, sortMethod, label2Mask) -- Adds a sorting method for the media list.
+     * addSortMethod(handle, sortMethod [,label2Mask]) -- Adds a sorting method for the media list.
      * 
      * handle      : integer - handle the plugin was started with.\n
-     * sortMethod  : integer - number for sortmethod see SortFileItem.h.\n
+     * sortMethod  : integer - see available sort methods at the bottom (or see SortFileItem.h).\n
      * label2Mask  : [opt] string - the label mask to use for the second label.  Defaults to '%D'
      *               - applies to:
      *                           - SORT_METHOD_NONE, SORT_METHOD_UNSORTED, SORT_METHOD_VIDEO_TITLE,
@@ -103,9 +103,10 @@ namespace XBMCAddon
      *                           - SORT_METHOD_LABEL_IGNORE_THE, SORT_METHOD_VIDEO_SORT_TITLE,
      *                           - SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, SORT_METHOD_FULLPATH,
      *                           - SORT_METHOD_LABEL_IGNORE_FOLDERS, SORT_METHOD_CHANNEL
-     * 
+     *  *Note: to add multiple sort methods just call the method multiple times.
+     *
      * example:
-     *   - xbmcplugin.addSortMethod(int(sys.argv[1]), 1)
+     *   - xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORTMETHOD_DATEADDED)
      */
     void addSortMethod(int handle, int sortMethod, const String& label2Mask = emptyString);
 
@@ -230,5 +231,6 @@ namespace XBMCAddon
     SWIG_CONSTANT(int,SORT_METHOD_PLAYCOUNT);
     SWIG_CONSTANT(int,SORT_METHOD_CHANNEL);
     SWIG_CONSTANT(int,SORT_METHOD_DATE_TAKEN);
+    SWIG_CONSTANT(int,SORT_METHOD_VIDEO_USER_RATING);
   }
 }

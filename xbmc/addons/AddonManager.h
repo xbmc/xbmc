@@ -71,7 +71,7 @@ namespace ADDON
   class CAddonMgr : public Observable
   {
   public:
-    static CAddonMgr &Get();
+    static CAddonMgr &GetInstance();
     bool ReInit() { DeInit(); return Init(); }
     bool Init();
     void DeInit();
@@ -149,7 +149,7 @@ namespace ADDON
     bool CanAddonBeInstalled(const AddonPtr& addon);
 
     /* libcpluff */
-    std::string GetExtValue(cp_cfg_element_t *base, const char *path);
+    std::string GetExtValue(cp_cfg_element_t *base, const char *path) const;
 
     /*! \brief Retrieve an element from a given configuration element
      \param base the base configuration element.
@@ -177,6 +177,10 @@ namespace ADDON
     bool GetExtList(cp_cfg_element_t *base, const char *path, std::vector<std::string> &result) const;
 
     const cp_extension_t *GetExtension(const cp_plugin_info_t *props, const char *extension) const;
+
+    /*! \brief Retrieves the platform-specific library name from the given configuration element
+     */
+    std::string GetPlatformLibraryName(cp_cfg_element_t *base) const;
 
     /*! \brief Load the addon in the given path
      This loads the addon using c-pluff which parses the addon descriptor file.

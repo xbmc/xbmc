@@ -41,7 +41,6 @@
 #include <iterator>
 #include "utils/log.h"
 
-using namespace std;
 using namespace RenderManager;
 
 class CPulldownCorrection
@@ -220,8 +219,8 @@ void CDVDPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   m_bFpsInvalid = (hint.fpsrate == 0 || hint.fpsscale == 0);
 
   m_pullupCorrection.ResetVFRDetection();
-  m_bCalcFrameRate = CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) ||
-                     CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF;
+  m_bCalcFrameRate = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) ||
+                     CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF;
   ResetFrameRateCalc();
 
   m_iDroppedRequest = 0;
@@ -547,8 +546,8 @@ void CDVDPlayerVideo::Process()
       m_pVideoCodec->SetDropState(bRequestDrop);
 
       // ask codec to do deinterlacing if possible
-      EDEINTERLACEMODE mDeintMode = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
-      EINTERLACEMETHOD mInt       = g_renderManager.AutoInterlaceMethod(CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod);
+      EDEINTERLACEMODE mDeintMode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
+      EINTERLACEMETHOD mInt       = g_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
 
       unsigned int     mFilters = 0;
 
@@ -681,7 +680,7 @@ void CDVDPlayerVideo::Process()
               }
             }
 
-            if (CMediaSettings::Get().GetCurrentVideoSettings().m_PostProcess)
+            if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_PostProcess)
             {
               if (!sPostProcessType.empty())
                 sPostProcessType += ",";
@@ -940,14 +939,14 @@ std::string CDVDPlayerVideo::GetStereoMode()
 {
   std::string  stereo_mode;
 
-  switch(CMediaSettings::Get().GetCurrentVideoSettings().m_StereoMode)
+  switch(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_StereoMode)
   {
     case RENDER_STEREO_MODE_SPLIT_VERTICAL:   stereo_mode = "left_right"; break;
     case RENDER_STEREO_MODE_SPLIT_HORIZONTAL: stereo_mode = "top_bottom"; break;
     default:                                  stereo_mode = m_hints.stereo_mode; break;
   }
 
-  if(CMediaSettings::Get().GetCurrentVideoSettings().m_StereoInvert)
+  if(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_StereoInvert)
     stereo_mode = GetStereoModeInvert(stereo_mode);
   return stereo_mode;
 }
@@ -968,7 +967,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 #ifdef HAS_VIDEO_PLAYBACK
   double config_framerate = m_bFpsInvalid ? 0.0 : m_fFrameRate;
   double render_framerate = g_graphicsContext.GetFPS();
-  if (CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_OFF)
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_OFF)
     render_framerate = config_framerate;
   bool changerefresh = !m_bFpsInvalid &&
                        (m_output.framerate == 0.0 || fmod(m_output.framerate, config_framerate) != 0.0) &&
@@ -1156,7 +1155,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 
   // timestamp when we think next picture should be displayed based on current duration
   m_FlipTimeStamp  = iCurrentClock;
-  m_FlipTimeStamp += max(0.0, iSleepTime);
+  m_FlipTimeStamp += std::max(0.0, iSleepTime);
   m_FlipTimePts    = pts;
 
   if ((pPicture->iFlags & DVP_FLAG_DROPPED))
@@ -1218,10 +1217,10 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 std::string CDVDPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "fr:"     << fixed << setprecision(3) << m_fFrameRate;
-  s << ", vq:"   << setw(2) << min(99,GetLevel()) << "%";
+  s << "fr:"     << std::fixed << std::setprecision(3) << m_fFrameRate;
+  s << ", vq:"   << std::setw(2) << std::min(99,GetLevel()) << "%";
   s << ", dc:"   << m_codecname;
-  s << ", Mb/s:" << fixed << setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
+  s << ", Mb/s:" << std::fixed << std::setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
   s << ", drop:" << m_iDroppedFrames;
   s << ", skip:" << g_renderManager.GetSkippedFrames();
 
@@ -1246,7 +1245,7 @@ void CDVDPlayerVideo::ResetFrameRateCalc()
   m_iFrameRateLength = 1;
   m_iFrameRateErr    = 0;
 
-  m_bAllowDrop       = (!m_bCalcFrameRate && CMediaSettings::Get().GetCurrentVideoSettings().m_ScalingMethod != VS_SCALINGMETHOD_AUTO) ||
+  m_bAllowDrop       = (!m_bCalcFrameRate && CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod != VS_SCALINGMETHOD_AUTO) ||
                         g_advancedSettings.m_videoFpsDetect == 0;
 }
 
@@ -1264,7 +1263,7 @@ double CDVDPlayerVideo::GetCurrentPts()
     return DVD_NOPTS_VALUE;
   else if (m_speed == DVD_PLAYSPEED_NORMAL)
   {
-    iRenderPts -= max(0.0, DVD_SEC_TO_TIME(iSleepTime));
+    iRenderPts -= std::max(0.0, DVD_SEC_TO_TIME(iSleepTime));
 
     if (iRenderPts < 0)
       iRenderPts = 0;
@@ -1282,7 +1281,7 @@ void CDVDPlayerVideo::CalcFrameRate()
 
   //only calculate the framerate if sync playback to display is on, adjust refreshrate is on,
   //or scaling method is set to auto
-  if (!m_bCalcFrameRate && CMediaSettings::Get().GetCurrentVideoSettings().m_ScalingMethod != VS_SCALINGMETHOD_AUTO)
+  if (!m_bCalcFrameRate && CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod != VS_SCALINGMETHOD_AUTO)
   {
     ResetFrameRateCalc();
     return;

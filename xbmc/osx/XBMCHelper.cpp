@@ -98,7 +98,7 @@ bool XBMCHelper::OnSettingChanging(const CSetting *setting)
     return false;
 
   const std::string &settingId = setting->GetId();
-  if (settingId == "input.appleremotemode")
+  if (settingId == CSettings::SETTING_INPUT_APPLEREMOTEMODE)
   {
     int remoteMode = ((CSettingInt*)setting)->GetValue();
 
@@ -106,7 +106,7 @@ bool XBMCHelper::OnSettingChanging(const CSetting *setting)
     if (remoteMode != APPLE_REMOTE_DISABLED)
     {
       // if starting the event server fails, we have to revert the change
-      if (!CSettings::Get().SetBool("services.esenabled", true))
+      if (!CSettings::GetInstance().SetBool("services.esenabled", true))
         return false;
     }
 
@@ -132,7 +132,7 @@ bool XBMCHelper::OnSettingChanging(const CSetting *setting)
     }
   }
 
-  if (settingId == "input.appleremotealwayson")
+  if (settingId == CSettings::SETTING_INPUT_APPLEREMOTEALWAYSON)
   {
     HandleLaunchAgent();
   }
@@ -175,9 +175,9 @@ void XBMCHelper::Configure()
 
   // Read the new configuration.
   m_errorStarting = false;
-  m_mode = CSettings::Get().GetInt("input.appleremotemode");
-  m_sequenceDelay = CSettings::Get().GetInt("input.appleremotesequencetime");
-  m_port = CSettings::Get().GetInt("services.esport");
+  m_mode = CSettings::GetInstance().GetInt(CSettings::SETTING_INPUT_APPLEREMOTEMODE);
+  m_sequenceDelay = CSettings::GetInstance().GetInt(CSettings::SETTING_INPUT_APPLEREMOTESEQUENCETIME);
+  m_port = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_ESPORT);
 
 
   // Don't let it enable if sofa control or remote buddy is around.
@@ -188,7 +188,7 @@ void XBMCHelper::Configure()
       m_errorStarting = true;
 
     m_mode = APPLE_REMOTE_DISABLED;
-    CSettings::Get().SetInt("input.appleremotemode", APPLE_REMOTE_DISABLED);
+    CSettings::GetInstance().SetInt(CSettings::SETTING_INPUT_APPLEREMOTEMODE, APPLE_REMOTE_DISABLED);
   }
 
   // New configuration.
@@ -263,7 +263,7 @@ void XBMCHelper::Configure()
 void XBMCHelper::HandleLaunchAgent()
 {
   int oldAlwaysOn = m_alwaysOn;
-  m_alwaysOn = CSettings::Get().GetBool("input.appleremotealwayson");
+  m_alwaysOn = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLEREMOTEALWAYSON);
 
   // Installation/uninstallation.
   if (oldAlwaysOn == false && m_alwaysOn == true)

@@ -44,8 +44,6 @@
 #define CONTROL_CANCEL          19
 #define CONTROL_BROWSE          20
 
-using namespace std;
-
 CGUIDialogSmartPlaylistRule::CGUIDialogSmartPlaylistRule(void)
     : CGUIDialog(WINDOW_DIALOG_SMART_PLAYLIST_RULE, "SmartPlaylistRule.xml")
 {
@@ -298,10 +296,10 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   {
     VECSOURCES sources;
     if (m_type == "songs" || m_type == "mixed")
-      sources = *CMediaSourceSettings::Get().GetSources("music");
+      sources = *CMediaSourceSettings::GetInstance().GetSources("music");
     if (CSmartPlaylist::IsVideoType(m_type))
     {
-      VECSOURCES sources2 = *CMediaSourceSettings::Get().GetSources("video");
+      VECSOURCES sources2 = *CMediaSourceSettings::GetInstance().GetSources("video");
       sources.insert(sources.end(),sources2.begin(),sources2.end());
     }
     g_mediaManager.GetLocalDrives(sources);
@@ -341,11 +339,11 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
 
   // sort the items
-  items.Sort(SortByLabel, SortOrderAscending, CSettings::Get().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+  items.Sort(SortByLabel, SortOrderAscending, CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
 
   CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   pDialog->Reset();
-  pDialog->SetItems(&items);
+  pDialog->SetItems(items);
   std::string strHeading = StringUtils::Format(g_localizeStrings.Get(13401).c_str(), g_localizeStrings.Get(iLabel).c_str());
   pDialog->SetHeading(CVariant{std::move(strHeading)});
   pDialog->SetMultiSelection(m_rule.m_field != FieldPlaylist && m_rule.m_field != FieldVirtualFolder);
@@ -356,10 +354,9 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   pDialog->Open();
   if (pDialog->IsConfirmed())
   {
-    const CFileItemList &items = pDialog->GetSelectedItems();
     m_rule.m_parameter.clear();
-    for (int index = 0; index < items.Size(); index++)
-      m_rule.m_parameter.push_back(items[index]->GetLabel());
+    for (int i : pDialog->GetSelectedItems())
+      m_rule.m_parameter.push_back(items.Get(i)->GetLabel());
 
     UpdateButtons();
   }
@@ -392,7 +389,7 @@ void CGUIDialogSmartPlaylistRule::OnOperator()
 
 std::pair<std::string, int> OperatorLabel(CDatabaseQueryRule::SEARCH_OPERATOR op)
 {
-  return make_pair(CSmartPlaylistRule::GetLocalizedOperator(op), op);
+  return std::make_pair(CSmartPlaylistRule::GetLocalizedOperator(op), op);
 }
 
 void CGUIDialogSmartPlaylistRule::UpdateButtons()
@@ -502,9 +499,9 @@ void CGUIDialogSmartPlaylistRule::OnInitWindow()
 
   // add the fields to the field spincontrol
   std::vector< std::pair<std::string, int> > labels;
-  vector<Field> fields = CSmartPlaylistRule::GetFields(m_type);
+  std::vector<Field> fields = CSmartPlaylistRule::GetFields(m_type);
   for (unsigned int i = 0; i < fields.size(); i++)
-    labels.push_back(make_pair(CSmartPlaylistRule::GetLocalizedField(fields[i]), fields[i]));
+    labels.push_back(std::make_pair(CSmartPlaylistRule::GetLocalizedField(fields[i]), fields[i]));
 
   SET_CONTROL_LABELS(CONTROL_FIELD, 0, &labels);
 

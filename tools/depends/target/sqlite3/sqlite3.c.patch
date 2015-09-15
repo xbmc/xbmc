@@ -1,0 +1,28 @@
+diff --git a/sqlite3.c b/sqlite3.c
+index 1344938..c437252 100644
+--- a/sqlite3.c
++++ b/sqlite3.c
+@@ -30750,7 +30750,11 @@ static void unixRemapfile(
+     pNew = osMremap(pOrig, nReuse, nNew, MREMAP_MAYMOVE);
+     zErr = "mremap";
+ #else
++#if defined(MAP_POPULATE)
++    pNew = osMmap(pReq, nNew-nReuse, flags, MAP_SHARED | MAP_POPULATE, h, nReuse);
++#else
+     pNew = osMmap(pReq, nNew-nReuse, flags, MAP_SHARED, h, nReuse);
++#endif
+     if( pNew!=MAP_FAILED ){
+       if( pNew!=pReq ){
+         osMunmap(pNew, nNew - nReuse);
+@@ -30769,7 +30773,11 @@ static void unixRemapfile(
+ 
+   /* If pNew is still NULL, try to create an entirely new mapping. */
+   if( pNew==0 ){
++#if defined(MAP_POPULATE)
++    pNew = osMmap(0, nNew, flags, MAP_SHARED | MAP_POPULATE, h, 0);
++#else
+     pNew = osMmap(0, nNew, flags, MAP_SHARED, h, 0);
++#endif
+   }
+ 
+   if( pNew==MAP_FAILED ){

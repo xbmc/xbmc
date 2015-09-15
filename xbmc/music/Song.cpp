@@ -24,7 +24,6 @@
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 
-using namespace std;
 using namespace MUSIC_INFO;
 
 CSong::CSong(CFileItem& item)
@@ -35,6 +34,8 @@ CSong::CSong(CFileItem& item)
   strTitle = tag.GetTitle();
   genre = tag.GetGenre();
   artist = tag.GetArtist();
+  std::vector<std::string> musicBrainArtistHints = tag.GetMusicBrainzArtistHints();
+  strArtistDesc = tag.GetArtistDesc();
   if (!tag.GetMusicBrainzArtistID().empty())
   { // have musicbrainz artist info, so use it
     for (size_t i = 0; i < tag.GetMusicBrainzArtistID().size(); i++)
@@ -42,10 +43,13 @@ CSong::CSong(CFileItem& item)
       std::string artistId = tag.GetMusicBrainzArtistID()[i];
       std::string artistName;
       /*
-       We try and get the corresponding artist name from the album artist tag.
+       We try and get the corresponding artist name from the hints list.
+       If the hints list is missing or the wrong length, it will try the artist list.
        We match on the same index, and if that fails just use the first name we have.
        */
-      if (!artist.empty())
+      if (i < musicBrainArtistHints.size())
+        artistName = musicBrainArtistHints[i];
+      else if (!artist.empty())
         artistName = (i < artist.size()) ? artist[i] : artist[0];
       if (artistName.empty())
         artistName = artistId;
@@ -56,7 +60,7 @@ CSong::CSong(CFileItem& item)
   }
   else
   { // no musicbrainz info, so fill in directly
-    for (vector<string>::const_iterator it = tag.GetArtist().begin(); it != tag.GetArtist().end(); ++it)
+    for (std::vector<std::string>::const_iterator it = tag.GetArtist().begin(); it != tag.GetArtist().end(); ++it)
     {
       std::string strJoinPhrase = (it == --tag.GetArtist().end() ? "" : g_advancedSettings.m_musicItemSeparator);
       CArtistCredit artistCredit(*it, "", strJoinPhrase);

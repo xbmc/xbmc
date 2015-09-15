@@ -1,1 +1,0 @@
-pvr.vbox https://github.com/kodi-pvr/pvr.vbox master

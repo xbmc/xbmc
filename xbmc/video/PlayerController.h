@@ -33,7 +33,7 @@
 class CPlayerController : public ISliderCallback, public IActionListener
 {
 public:
-  static CPlayerController& Get();
+  static CPlayerController& GetInstance();
 
   /*! \brief Perform a player control action if appropriate.
   \param action the action to perform.

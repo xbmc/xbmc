@@ -49,7 +49,6 @@
 #include "utils/Base64.h"
 #include "settings/AdvancedSettings.h"
 
-using namespace std;
 using namespace TagLib;
 using namespace MUSIC_INFO;
 
@@ -80,9 +79,9 @@ CTagLoaderTagLib::~CTagLoaderTagLib()
   
 }
 
-static const vector<string> StringListToVectorString(const StringList& stringList)
+static const std::vector<std::string> StringListToVectorString(const StringList& stringList)
 {
-  vector<string> values;
+  std::vector<std::string> values;
   for (StringList::ConstIterator it = stringList.begin(); it != stringList.end(); ++it)
     values.push_back(it->to8Bit(true));
   return values;
@@ -382,12 +381,10 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
   ReplayGain replayGainInfo;
 
   ID3v2::AttachedPictureFrame *pictures[3] = {};
-  bool artistsTagFound = false;
   const ID3v2::FrameListMap& frameListMap = id3v2->frameListMap();
   for (ID3v2::FrameListMap::ConstIterator it = frameListMap.begin(); it != frameListMap.end(); ++it)
   {
-    // If the ARTISTS tag has been set the information in that tag should be prefered compared to TPE1
-    if      (it->first == "TPE1" && ! artistsTagFound )  SetArtist(tag, GetID3v2StringList(it->second));
+    if      (it->first == "TPE1")   SetArtist(tag, GetID3v2StringList(it->second));
     else if (it->first == "TALB")   tag.SetAlbum(it->second.front()->toString().to8Bit(true));
     else if (it->first == "TPE2")   SetAlbumArtist(tag, GetID3v2StringList(it->second));
     else if (it->first == "TIT2")   tag.SetTitle(it->second.front()->toString().to8Bit(true));
@@ -446,18 +443,21 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
           replayGainInfo.ParsePeak(ReplayGain::TRACK, stringList.front().toCString(true));
         else if (desc == "REPLAYGAIN_ALBUM_PEAK")
           replayGainInfo.ParsePeak(ReplayGain::ALBUM, stringList.front().toCString(true));
-        else if (desc == "ALBUMARTIST")
+        else if (desc == "ALBUMARTIST" || desc == "ALBUM ARTIST")
           SetAlbumArtist(tag, StringListToVectorString(stringList));
-        else if (desc == "ALBUM ARTIST")
-          SetAlbumArtist(tag, StringListToVectorString(stringList));
-        else if (desc == "ARTISTS" ) 
+        else if (desc == "ARTISTS")
         {
-          artistsTagFound = true;
-          // id3v2.3 uses / as the separator in the field
           if (id3v2->header()->majorVersion() < 4)
-            SetArtist(tag,StringListToVectorString(TagLib::StringList::split(stringList.front(), TagLib::String("/"))));
-          else 
-            SetArtist(tag,StringListToVectorString(stringList));
+            tag.SetMusicBrainzArtistHints(StringListToVectorString(TagLib::StringList::split(stringList.front(), TagLib::String("/"))));
+          else
+            tag.SetMusicBrainzArtistHints(StringListToVectorString(stringList));
+        }
+        else if (desc == "ALBUMARTISTS" || desc == "ALBUM ARTISTS")
+        {
+          if (id3v2->header()->majorVersion() < 4)
+            tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(TagLib::StringList::split(stringList.front(), TagLib::String("/"))));
+          else
+            tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(stringList));
         }
         else if (desc == "MOOD")
           tag.SetMood(stringList.front().to8Bit(true));
@@ -519,7 +519,7 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
   for (int i = 0; i < 3; ++i)
     if (pictures[i])
     {
-      string      mime =             pictures[i]->mimeType().to8Bit(true);
+      std::string  mime =            pictures[i]->mimeType().to8Bit(true);
       TagLib::uint size =            pictures[i]->picture().size();
       tag.SetCoverArtInfo(size, mime);
       if (art)
@@ -539,19 +539,17 @@ bool CTagLoaderTagLib::ParseAPETag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTa
     return false;
 
   ReplayGain replayGainInfo;
-  bool artistsTagFound = false;
   const APE::ItemListMap itemListMap = ape->itemListMap();
   for (APE::ItemListMap::ConstIterator it = itemListMap.begin(); it != itemListMap.end(); ++it)
   {
-    if (it->first == "ARTIST" && ! artistsTagFound)
+    if (it->first == "ARTIST")
       SetArtist(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "ARTISTS")
-    {
-      artistsTagFound = true;
-      SetArtist(tag, StringListToVectorString(it->second.toStringList()));
-    }
-    else if (it->first == "ALBUM ARTIST" || it->first == "ALBUMARTIST")
+      tag.SetMusicBrainzArtistHints(StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "ALBUMARTIST" || it->first == "ALBUM ARTIST")
       SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "ALBUMARTISTS" || it->first == "ALBUM ARTISTS")
+      tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(it->second.toStringList()));
     else if (it->first == "ALBUM")
       tag.SetAlbum(it->second.toString().to8Bit(true));
     else if (it->first == "TITLE")
@@ -607,22 +605,18 @@ bool CTagLoaderTagLib::ParseXiphComment(Ogg::XiphComment *xiph, EmbeddedArt *art
 
   FLAC::Picture pictures[3];
   ReplayGain replayGainInfo;
-  bool artistsTagFound = false;
 
   const Ogg::FieldListMap& fieldListMap = xiph->fieldListMap();
   for (Ogg::FieldListMap::ConstIterator it = fieldListMap.begin(); it != fieldListMap.end(); ++it)
   {
-    if (it->first == "ARTIST" && ! artistsTagFound )
+    if (it->first == "ARTIST")
       SetArtist(tag, StringListToVectorString(it->second));
     else if (it->first == "ARTISTS")
-    {
-      SetArtist(tag, StringListToVectorString(it->second));
-      artistsTagFound = true;
-    }
-    else if (it->first == "ALBUMARTIST")
+      tag.SetMusicBrainzArtistHints(StringListToVectorString(it->second));
+    else if (it->first == "ALBUMARTIST" || it->first == "ALBUM ARTIST")
       SetAlbumArtist(tag, StringListToVectorString(it->second));
-    else if (it->first == "ALBUM ARTIST")
-      SetAlbumArtist(tag, StringListToVectorString(it->second));
+    else if (it->first == "ALBUMARTISTS" || it->first == "ALBUM ARTISTS")
+      tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(it->second));
     else if (it->first == "ALBUM")
       tag.SetAlbum(it->second.front().to8Bit(true));
     else if (it->first == "TITLE")
@@ -712,7 +706,7 @@ bool CTagLoaderTagLib::ParseXiphComment(Ogg::XiphComment *xiph, EmbeddedArt *art
   for (int i = 0; i < 3; ++i)
     if (pictures[i].data().size())
     {
-      string      mime =             pictures[i].mimeType().toCString();
+      std::string mime = pictures[i].mimeType().toCString();
       if (mime.compare(0, 6, "image/") != 0)
         continue;
       TagLib::uint size =            pictures[i].data().size();
@@ -740,10 +734,14 @@ bool CTagLoaderTagLib::ParseMP4Tag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTa
       tag.SetTitle(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "\251ART")
       SetArtist(tag, StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "----:com.apple.iTunes:ARTISTS")
+      tag.SetMusicBrainzArtistHints(StringListToVectorString(it->second.toStringList()));
     else if (it->first == "\251alb")
       tag.SetAlbum(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "aART")
       SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "----:com.apple.iTunes:ALBUMARTISTS")
+      tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(it->second.toStringList()));
     else if (it->first == "\251gen")
       SetGenre(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "\251cmt")
@@ -779,7 +777,7 @@ bool CTagLoaderTagLib::ParseMP4Tag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTa
       MP4::CoverArtList coverArtList = it->second.toCoverArtList();
       for (MP4::CoverArtList::ConstIterator pt = coverArtList.begin(); pt != coverArtList.end(); ++pt)
       {
-        string mime;
+        std::string mime;
         switch (pt->format())
         {
           case MP4::CoverArt::PNG:
@@ -856,23 +854,23 @@ void CTagLoaderTagLib::SetFlacArt(FLAC::File *flacFile, EmbeddedArt *art, CMusic
   }
 }
 
-const vector<string> CTagLoaderTagLib::GetASFStringList(const List<ASF::Attribute>& list)
+const std::vector<std::string> CTagLoaderTagLib::GetASFStringList(const List<ASF::Attribute>& list)
 {
-  vector<string> values;
+  std::vector<std::string> values;
   for (List<ASF::Attribute>::ConstIterator at = list.begin(); at != list.end(); ++at)
     values.push_back(at->toString().to8Bit(true));
   return values;
 }
 
-const vector<string> CTagLoaderTagLib::GetID3v2StringList(const ID3v2::FrameList& frameList) const
+const std::vector<std::string> CTagLoaderTagLib::GetID3v2StringList(const ID3v2::FrameList& frameList) const
 {
   const ID3v2::TextIdentificationFrame *frame = dynamic_cast<ID3v2::TextIdentificationFrame *>(frameList.front());
   if (frame)
     return StringListToVectorString(frame->fieldList());
-  return vector<string>();
+  return std::vector<std::string>();
 }
 
-void CTagLoaderTagLib::SetArtist(CMusicInfoTag &tag, const vector<string> &values)
+void CTagLoaderTagLib::SetArtist(CMusicInfoTag &tag, const std::vector<std::string> &values)
 {
   if (values.size() == 1)
     tag.SetArtist(values[0]);
@@ -900,7 +898,7 @@ const std::vector<std::string> CTagLoaderTagLib::SplitMBID(const std::vector<std
   return ret;
 }
 
-void CTagLoaderTagLib::SetAlbumArtist(CMusicInfoTag &tag, const vector<string> &values)
+void CTagLoaderTagLib::SetAlbumArtist(CMusicInfoTag &tag, const std::vector<std::string> &values)
 {
   if (values.size() == 1)
     tag.SetAlbumArtist(values[0]);
@@ -908,16 +906,16 @@ void CTagLoaderTagLib::SetAlbumArtist(CMusicInfoTag &tag, const vector<string> &
     tag.SetAlbumArtist(values);
 }
 
-void CTagLoaderTagLib::SetGenre(CMusicInfoTag &tag, const vector<string> &values)
+void CTagLoaderTagLib::SetGenre(CMusicInfoTag &tag, const std::vector<std::string> &values)
 {
   /*
    TagLib doesn't resolve ID3v1 genre numbers in the case were only
    a number is specified, thus this workaround.
    */
-  vector<string> genres;
-  for (vector<string>::const_iterator i = values.begin(); i != values.end(); ++i)
+  std::vector<std::string> genres;
+  for (std::vector<std::string>::const_iterator i = values.begin(); i != values.end(); ++i)
   {
-    string genre = *i;
+    std::string genre = *i;
     if (StringUtils::IsNaturalNumber(genre))
     {
       int number = strtol(i->c_str(), NULL, 10);

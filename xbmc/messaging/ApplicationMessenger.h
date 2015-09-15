@@ -91,7 +91,7 @@
 #define TMSG_LOADPROFILE                  TMSG_MASK_APPLICATION + 27
 #define TMSG_VIDEORESIZE                  TMSG_MASK_APPLICATION + 28
 
-#define TMSG_SETAUDIODSPSTATE             TMSG_MASK_AUDIO_DSP   + 30
+#define TMSG_SETAUDIODSPSTATE             TMSG_MASK_AUDIO_DSP   + 0
 
 #define TMSG_GUI_INFOLABEL                TMSG_MASK_GUIINFOMANAGER + 0
 #define TMSG_GUI_INFOBOOL                 TMSG_MASK_GUIINFOMANAGER + 1
@@ -112,6 +112,28 @@
 #define TMSG_GUI_ACTION                   TMSG_MASK_WINDOWMANAGER + 5
 #define TMSG_GUI_ADDON_DIALOG             TMSG_MASK_WINDOWMANAGER + 6
 #define TMSG_GUI_MESSAGE                  TMSG_MASK_WINDOWMANAGER + 7
+
+/*!
+  \def TMSG_GUI_DIALOG_YESNO
+  \brief Message sent through CApplicationMessenger to open a yes/no dialog box
+
+  There's two ways to send this message, a short and concise way and a more
+  flexible way allowing more customization.
+
+  Option 1:
+  CApplicationMessenger::Get().SendMsg(TMSG_GUI_DIALOG_YESNO, 123, 456);
+  123: This is the string id for the heading
+  456: This is the string id for the text
+
+  Option 2:
+  \a HELPERS::DialogYesNoMessage options.
+  Fill in options
+  CApplicationMessenger::Get().SendMsg(TMSG_GUI_DIALOG_YESNO, -1, -1, static_cast<void*>(&options));
+
+  \returns -1 for cancelled, 0 for No and 1 for Yes
+  \sa HELPERS::DialogYesNoMessage
+*/
+#define TMSG_GUI_DIALOG_YESNO             TMSG_MASK_WINDOWMANAGER + 8
 
 
 #define TMSG_CALLBACK                     800
@@ -151,14 +173,14 @@ public:
    \brief The only way through which the global instance of the CApplicationMessenger should be accessed.
    \return the global instance.
    */
-  static CApplicationMessenger& Get();
+  static CApplicationMessenger& GetInstance();
 
   void Cleanup();
   // if a message has to be send to the gui, use MSG_TYPE_WINDOW instead
-  void SendMsg(uint32_t messageId);
-  void SendMsg(uint32_t messageId, int param1, int param2 = -1, void* payload = nullptr);
-  void SendMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam);
-  void SendMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam, std::vector<std::string> params);
+  int SendMsg(uint32_t messageId);
+  int SendMsg(uint32_t messageId, int param1, int param2 = -1, void* payload = nullptr);
+  int SendMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam);
+  int SendMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam, std::vector<std::string> params);
 
   void PostMsg(uint32_t messageId);
   void PostMsg(uint32_t messageId, int param1, int param2 = -1, void* payload = nullptr);
@@ -185,7 +207,7 @@ private:
   CApplicationMessenger const& operator=(CApplicationMessenger const&) = delete;
   ~CApplicationMessenger();
 
-  void SendMsg(ThreadMessage&& msg, bool wait);
+  int SendMsg(ThreadMessage&& msg, bool wait);
   void ProcessMessage(ThreadMessage *pMsg);
 
   std::queue<ThreadMessage*> m_vecMessages;

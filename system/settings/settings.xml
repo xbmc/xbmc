@@ -29,7 +29,7 @@
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
-          <control type="spinner" format="string" delayed="true" />
+          <control type="list" format="string" />
         </setting>
         <setting id="lookandfeel.skincolors" type="string" parent="lookandfeel.skin" label="14078" help="36106">
           <level>1</level>
@@ -40,7 +40,7 @@
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
-          <control type="spinner" format="string" delayed="true" />
+          <control type="list" format="string" />
         </setting>
         <setting id="lookandfeel.font" type="string" parent="lookandfeel.skin" label="13303" help="36107">
           <level>1</level>
@@ -51,7 +51,7 @@
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
-          <control type="spinner" format="string" delayed="true" />
+          <control type="list" format="string" />
         </setting>
         <setting id="lookandfeel.skinzoom" type="integer" parent="lookandfeel.skin" label="20109" help="36108">
           <level>2</level>
@@ -79,19 +79,32 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
-        <setting id="lookandfeel.soundskin" type="string" label="15108" help="36110">
+        <setting id="lookandfeel.soundskin" type="addon" label="15108" help="36110">
           <level>0</level>
           <default>resource.uisounds.confluence</default>
           <constraints>
-            <options>skinsounds</options>
+            <addontype>kodi.resource.uisounds</addontype>
+            <allowempty>true</allowempty>
+          </constraints>
+          <updates>
+            <update type="change" />
+          </updates>
+          <control type="button" format="addon">
+            <show more="true" details="true">installed</show>
+          </control>
+        </setting>
+        <setting id="lookandfeel.stereostrength" type="integer" label="36550" help="36551">
+          <level>2</level>
+          <default>5</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>1</step>
+            <maximum>10</maximum>
           </constraints>
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
-          <updates>
-            <update type="change" />
-          </updates>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
       </group>
       <group id="2">
@@ -228,7 +241,7 @@
           <dependencies>
             <dependency type="update" setting="locale.country" />
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
       </group>
       <group id="4">
@@ -497,7 +510,7 @@
           <level>1</level>
           <default>original</default>
           <constraints>
-            <options>streamlanguages</options>
+            <options>audiostreamlanguages</options>
           </constraints>
           <control type="list" format="string" />
         </setting>
@@ -863,7 +876,7 @@
           <level>1</level>
           <default>original</default>
           <constraints>
-            <options>streamlanguages</options>
+            <options>subtitlestreamlanguages</options>
           </constraints>
           <control type="list" format="string" />
         </setting>
@@ -979,7 +992,7 @@
           <level>1</level>
           <default>English</default>
           <constraints>
-            <options>streamlanguages</options>
+            <options>subtitledownloadlanguages</options>
             <delimiter>,</delimiter>
             <minimumitems>1</minimumitems>
           </constraints>
@@ -1070,6 +1083,18 @@
         </setting>
       </group>
       <group id="2">
+        <setting id="bluray.playerregion" type="integer" label="14121" help="38017">
+          <level>1</level>
+          <default>1</default> <!-- region A -->
+          <constraints>
+            <options>
+              <option label="14122">1</option> <!-- region A -->
+              <option label="14123">2</option> <!-- region B -->
+              <option label="14124">4</option> <!-- region C -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
         <setting id="disc.playback" type="integer" label="14102" help="37031">
           <level>1</level>
           <default>0</default> <!-- default -->
@@ -1372,6 +1397,42 @@
             </options>
           </constraints>
           <control type="spinner" format="string" />
+        </setting>
+      </group>
+      <group id="4">
+        <setting id="pvrplayback.enableradiords" type="boolean" label="29980" help="29981">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="pvrplayback.trafficadvisory" type="boolean" label="29982" help="29983">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+          <dependencies>
+            <dependency type="enable" setting="pvrplayback.enableradiords">true</dependency>
+          </dependencies>
+        </setting>
+        <setting id="pvrplayback.trafficadvisoryvolume" type="integer" label="29984" help="29985">
+          <level>2</level>
+          <default>10</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>1</step>
+            <maximum>20</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14050</formatlabel>
+          </control>
+          <dependencies>
+            <dependency type="enable" setting="pvrplayback.enableradiords">true</dependency>
+            <dependency type="enable" setting="pvrplayback.trafficadvisory">true</dependency>
+          </dependencies>
+        </setting>
+        <setting id="pvrplayback.sendrdstrafficmsg" type="boolean" label="29986" help="29987">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
         </setting>
       </group>
     </category>
@@ -1774,7 +1835,7 @@
       <group id="5">
         <setting id="musicplayer.visualisation" type="addon" label="250" help="36273">
           <level>0</level>
-          <default>visualization.glspectrum</default>
+          <default>visualization.spectrum</default>
           <constraints>
             <addontype>xbmc.player.musicviz</addontype>
             <allowempty>true</allowempty>
@@ -2024,17 +2085,7 @@
   <section id="pictures" label="1" help="36304">
     <category id="pictures" label="14081" help="36305">
       <group id="1">
-        <setting id="pictures.usetags" type="boolean" label="14082" help="36306">
-          <level>0</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="pictures.generatethumbs" type="boolean" label="13360" help="36307">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="pictures.useexifrotation" type="boolean" label="20184" help="36308">
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
@@ -2615,6 +2666,22 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="audiooutput.supportdtshdcpudecoding" type="boolean" label="38019" help="38020">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+          <dependencies>
+            <dependency type="enable">
+            <or>
+              <condition setting="audiooutput.passthrough" operator="is">false</condition>
+              <and>
+                <condition setting="audiooutput.dtshdpassthrough" operator="is">false</condition>
+                <condition setting="audiooutput.dtspassthrough" operator="is">false</condition>
+              </and>
+            </or>
+            </dependency>
+          </dependencies>
+        </setting>
       </group>
       <group id="2">
         <setting id="audiooutput.dspaddonsenabled" type="boolean" label="36441" help="36438">
@@ -2934,8 +3001,32 @@
         </setting>
       </group>
     </category>
-    <category id="debug" label="14092" help="36391">
+    <category id="logging" label="14092" help="36391">
       <group id="1">
+        <setting id="eventlog.enabled" type="boolean" label="14112" help="36460">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="eventlog.enablednotifications" type="boolean" parent="eventlog.enabled" label="14113" help="36461">
+          <level>1</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="eventlog.enabled" operator="is">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="eventlog.show" type="action" label="14114" help="36431">
+          <level>1</level>
+          <dependencies>
+            <dependency type="enable" setting="eventlog.enabled" operator="is">true</dependency>
+          </dependencies>
+          <control type="button" format="action">
+            <hidevalue>true</hidevalue>
+          </control>
+        </setting>
+      </group>
+      <group id="2">
         <setting id="debug.showloginfo" type="boolean" label="20191" help="36392">
           <level>1</level>
           <default>false</default>

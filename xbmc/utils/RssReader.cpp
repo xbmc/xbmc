@@ -40,7 +40,6 @@
 #define RSS_COLOR_HEADLINE  1
 #define RSS_COLOR_CHANNEL   2
 
-using namespace std;
 using namespace XFILE;
 
 //////////////////////////////////////////////////////////////////////
@@ -66,7 +65,7 @@ CRssReader::~CRssReader()
     delete m_vecTimeStamps[i];
 }
 
-void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, const vector<int> &times, int spacesBetweenFeeds, bool rtl)
+void CRssReader::Create(IRssObserver* aObserver, const std::vector<std::string>& aUrls, const std::vector<int> &times, int spacesBetweenFeeds, bool rtl)
 {
   CSingleLock lock(m_critical);
 
@@ -257,9 +256,9 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
   HTML::CHTMLUtil html;
 
   TiXmlElement * itemNode = channelXmlNode->FirstChildElement("item");
-  map <std::string, std::wstring> mTagElements;
-  typedef pair <std::string, std::wstring> StrPair;
-  list <std::string>::iterator i;
+  std::map<std::string, std::wstring> mTagElements;
+  typedef std::pair<std::string, std::wstring> StrPair;
+  std::list<std::string>::iterator i;
 
   // Add the title tag in if we didn't pass any tags in at all
   // Represents default behaviour before configurability
@@ -303,7 +302,7 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
     int rsscolour = RSS_COLOR_HEADLINE;
     for (i = m_tagSet.begin(); i != m_tagSet.end(); ++i)
     {
-      map <std::string, std::wstring>::iterator j = mTagElements.find(*i);
+      std::map<std::string, std::wstring>::iterator j = mTagElements.find(*i);
 
       if (j == mTagElements.end())
         continue;
