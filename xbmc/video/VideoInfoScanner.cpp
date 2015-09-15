@@ -52,6 +52,7 @@
 #include "TextureCache.h"
 #include "GUIUserMessages.h"
 #include "URL.h"
+#include "music/tags/TagLoaderTagLib.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -597,10 +598,20 @@ namespace VIDEO
     // handle .nfo files
     if (useLocal)
       result = CheckForNFOFile(pItem, bDirNames, info2, scrUrl);
-    if (result == CNfoFile::FULL_NFO)
+    if (pItem->IsType(".mp4"))
     {
-      pItem->GetVideoInfoTag()->Reset();
-      m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
+      CTagLoaderTagLib loader;
+      loader.Load(pItem->GetPath(), *pItem->GetVideoInfoTag());
+    }
+    if (result == CNfoFile::FULL_NFO ||
+       ( pItem->HasVideoInfoTag() &&
+        !pItem->GetVideoInfoTag()->m_strTitle.empty()))
+    {
+      if (result == CNfoFile::FULL_NFO)
+      {
+        pItem->GetVideoInfoTag()->Reset();
+        m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
+      }
 
       if (AddVideo(pItem, info2->Content(), bDirNames, true) < 0)
         return INFO_ERROR;
@@ -860,6 +871,12 @@ namespace VIDEO
       // Discard all exclude files defined by regExExcludes
       if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps))
         continue;
+
+      if (items[i]->IsType(".mp4"))
+      {
+        CTagLoaderTagLib loader;
+        loader.Load(items[i]->GetPath(), *items[i]->GetVideoInfoTag());
+      }
 
       /*
        * Check if the media source has already set the season and episode or original air date in

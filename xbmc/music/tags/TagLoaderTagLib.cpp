@@ -48,6 +48,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/Base64.h"
 #include "settings/AdvancedSettings.h"
+#include "video/VideoInfoTag.h"
 
 using namespace TagLib;
 using namespace MUSIC_INFO;
@@ -251,6 +252,45 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
   if (!tag.GetTitle().empty() || !tag.GetArtist().empty() || !tag.GetAlbum().empty())
     tag.SetLoaded();
   tag.SetURL(strFileName);
+
+  delete file;
+  delete stream;
+  
+  return true;
+}
+
+bool CTagLoaderTagLib::Load(const CStdString& strFileName, CVideoInfoTag& tag)
+{  
+  CStdString strExtension = URIUtils::GetExtension(strFileName);
+  StringUtils::ToLower(strExtension);
+  StringUtils::TrimLeft(strExtension, ".");
+
+  TagLibVFSStream*           stream = new TagLibVFSStream(strFileName, true);
+  if (!stream)
+  {
+    CLog::Log(LOGERROR, "could not create TagLib VFS stream for: %s", strFileName.c_str());
+    return false;
+  }
+  
+  TagLib::File*              file = NULL;
+  TagLib::MP4::File*         mp4File = NULL;
+
+  if (strExtension == "mp4")
+    file = mp4File = new MP4::File(stream);
+
+  if (file && !file->isOpen())
+  {
+    delete file;
+    delete stream;
+    CLog::Log(LOGDEBUG, "file could not be opened for tag reading");
+    return false;
+  }
+  if (!file)
+    return true;
+
+  MP4::Tag *mp4 = NULL;
+  mp4 = mp4File->tag();
+  ParseMP4Tag(mp4, tag);
 
   delete file;
   delete stream;
@@ -800,6 +840,33 @@ bool CTagLoaderTagLib::ParseMP4Tag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTa
   }
 
   tag.SetReplayGain(replayGainInfo);
+  return true;
+}
+
+bool CTagLoaderTagLib::ParseMP4Tag(MP4::Tag *mp4, CVideoInfoTag& tag)
+{
+  if (!mp4)
+    return false;
+
+  MP4::ItemListMap& itemListMap = mp4->itemListMap();
+  for (MP4::ItemListMap::ConstIterator it = itemListMap.begin(); it != itemListMap.end(); ++it)
+  {
+    if (it->first == "\251nam")
+      tag.m_strTitle = it->second.toStringList().front().to8Bit(true);
+    else if (it->first == "\251vsh")
+      tag.m_strShowTitle = it->second.toStringList().front().to8Bit(true);
+    else if (it->first == "\251gen")
+      tag.m_genre = StringListToVectorString(it->second.toStringList());
+    else if (it->first == "\251cmt")
+      tag.m_strPlot = it->second.toStringList().front().to8Bit(true);
+    else if (it->first == "\251desc")
+      tag.m_strPlotOutline = it->second.toStringList().front().to8Bit(true);
+    else if (it->first == "tvsn")
+      tag.m_iSeason = it->second.toIntPair().first;
+    else if (it->first == "tves")
+      tag.m_iEpisode = it->second.toIntPair().first;
+  }
+
   return true;
 }
 
