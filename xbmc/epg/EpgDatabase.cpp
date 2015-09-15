@@ -79,7 +79,8 @@ void CEpgDatabase::CreateTables(void)
         "iSeriesId       integer, "
         "iEpisodeId      integer, "
         "iEpisodePart    integer, "
-        "sEpisodeName    varchar(128)"
+        "sEpisodeName    varchar(128), "
+        "iFlags          integer"
       ")"
   );
   CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'lastepgscan'", __FUNCTION__);
@@ -113,6 +114,11 @@ void CEpgDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE epgtags ADD sWriter varchar(255);");
     m_pDS->exec("ALTER TABLE epgtags ADD iYear integer;");
     m_pDS->exec("ALTER TABLE epgtags ADD sIMDBNumber varchar(50);");
+  }
+
+  if (iVersion < 11)
+  {
+    m_pDS->exec("ALTER TABLE epgtags ADD iFlags integer;");
   }
 }
 
@@ -252,6 +258,7 @@ int CEpgDatabase::Get(CEpg &epg)
         newTag->m_strEpisodeName     = m_pDS->fv("sEpisodeName").get_asString().c_str();
         newTag->m_iSeriesNumber      = m_pDS->fv("iSeriesId").get_asInt();
         newTag->m_strIconPath        = m_pDS->fv("sIconPath").get_asString().c_str();
+        newTag->m_iFlags             = m_pDS->fv("iFlags").get_asInt();
 
         epg.AddEntry(*newTag);
         ++iReturn;
@@ -358,14 +365,14 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
     strQuery = PrepareSQL("REPLACE INTO epgtags (idEpg, iStartTime, "
         "iEndTime, sTitle, sPlotOutline, sPlot, sOriginalTitle, sCast, sDirector, sWriter, iYear, sIMDBNumber, "
         "sIconPath, iGenreType, iGenreSubType, sGenre, iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
-        "iEpisodeId, iEpisodePart, sEpisodeName, iBroadcastUid) "
-        "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i);",
+        "iEpisodeId, iEpisodePart, sEpisodeName, iFlags, iBroadcastUid) "
+        "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i, %i);",
         tag.EpgID(), iStartTime, iEndTime,
         tag.Title(true).c_str(), tag.PlotOutline(true).c_str(), tag.Plot(true).c_str(),
         tag.OriginalTitle(true).c_str(), tag.Cast().c_str(), tag.Director().c_str(), tag.Writer().c_str(), tag.Year(), tag.IMDBNumber().c_str(),
         tag.Icon().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
         iFirstAired, tag.ParentalRating(), tag.StarRating(), tag.Notify(),
-        tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
+        tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(), tag.Flags(),
         tag.UniqueBroadcastID());
   }
   else
@@ -373,14 +380,14 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
     strQuery = PrepareSQL("REPLACE INTO epgtags (idEpg, iStartTime, "
         "iEndTime, sTitle, sPlotOutline, sPlot, sOriginalTitle, sCast, sDirector, sWriter, iYear, sIMDBNumber, "
         "sIconPath, iGenreType, iGenreSubType, sGenre, iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
-        "iEpisodeId, iEpisodePart, sEpisodeName, iBroadcastUid, idBroadcast) "
-        "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i, %i);",
+        "iEpisodeId, iEpisodePart, sEpisodeName, iFlags, iBroadcastUid, idBroadcast) "
+        "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i, %i, %i);",
         tag.EpgID(), iStartTime, iEndTime,
         tag.Title(true).c_str(), tag.PlotOutline(true).c_str(), tag.Plot(true).c_str(),
         tag.OriginalTitle(true).c_str(), tag.Cast().c_str(), tag.Director().c_str(), tag.Writer().c_str(), tag.Year(), tag.IMDBNumber().c_str(),
         tag.Icon().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
         iFirstAired, tag.ParentalRating(), tag.StarRating(), tag.Notify(),
-        tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
+        tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(), tag.Flags(),
         tag.UniqueBroadcastID(), iBroadcastId);
   }
 
