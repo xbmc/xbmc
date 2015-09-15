@@ -349,10 +349,7 @@ bool CEventServer::ExecuteNextAction()
       case AT_BUTTON:
         {
           int actionID;
-          std::vector<std::string> parameters;
-          std::string function;
-          CUtil::SplitExecFunction(actionEvent.actionName, function, parameters);
-          CButtonTranslator::TranslateActionString(function.c_str(), actionID);
+          CButtonTranslator::TranslateActionString(actionEvent.actionName.c_str(), actionID);
           CAction action(actionID, 1.0f, 0.0f, actionEvent.actionName);
           g_audioManager.PlayActionSound(action);
           g_application.OnAction(action);
