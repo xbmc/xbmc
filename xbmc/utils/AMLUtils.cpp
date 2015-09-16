@@ -302,6 +302,18 @@ int aml_axis_value(AML_DISPLAY_AXIS_PARAM param)
   return value[param];
 }
 
+bool aml_IsHdmiConnected()
+{
+  int hpd_state;
+  SysfsUtils::GetInt("/sys/class/amhdmitx/amhdmitx0/hpd_state", hpd_state);
+  if (hpd_state == 2);
+  {
+    return 1;
+  }
+
+  return 0;
+}
+
 bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
 {
   if (!res)
@@ -327,6 +339,42 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->iScreenWidth = aml_axis_value(AML_DISPLAY_AXIS_PARAM_WIDTH);
     res->iScreenHeight= aml_axis_value(AML_DISPLAY_AXIS_PARAM_HEIGHT);
     res->fRefreshRate = 60;
+    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+  }
+  else if ((StringUtils::EqualsNoCase(fromMode, "480cvbs")) || (StringUtils::EqualsNoCase(fromMode, "480i")))
+  {
+    res->iWidth = 720;
+    res->iHeight= 480;
+    res->iScreenWidth = 720;
+    res->iScreenHeight= 480;
+    res->fRefreshRate = 60;
+    res->dwFlags = D3DPRESENTFLAG_INTERLACED;
+  }
+  else if ((StringUtils::EqualsNoCase(fromMode, "576cvbs")) || (StringUtils::EqualsNoCase(fromMode, "576i")))
+  {
+    res->iWidth = 720;
+    res->iHeight= 576;
+    res->iScreenWidth = 720;
+    res->iScreenHeight= 576;
+    res->fRefreshRate = 50;
+    res->dwFlags = D3DPRESENTFLAG_INTERLACED;
+  }
+  else if (StringUtils::EqualsNoCase(fromMode, "480p"))
+  {
+    res->iWidth = 720;
+    res->iHeight= 480;
+    res->iScreenWidth = 720;
+    res->iScreenHeight= 480;
+    res->fRefreshRate = 60;
+    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+  }
+  else if (StringUtils::EqualsNoCase(fromMode, "576p"))
+  {
+    res->iWidth = 720;
+    res->iHeight= 576;
+    res->iScreenWidth = 720;
+    res->iScreenHeight= 576;
+    res->fRefreshRate = 50;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
   else if (StringUtils::EqualsNoCase(fromMode, "720p"))
