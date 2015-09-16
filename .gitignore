@@ -293,6 +293,7 @@ lib/cpluff/stamp-h1
 /project/cmake/addons/*.error
 /project/cmake/addons/.failure
 /project/cmake/addons/.success
+/project/cmake/addons/addons
 /project/cmake/addons/build
 /project/cmake/addons/depends/build
 /project/cmake/addons/output
