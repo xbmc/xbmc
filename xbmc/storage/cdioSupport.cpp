@@ -200,8 +200,8 @@ char* CLibcdio::GetDeviceFileName()
 {
   CSingleLock lock(*this);
 
-  // if we don't have a DVD device initially present (Darwin or a USB DVD drive), 
-  // we have to keep checking in case one appears.
+  // If We don't have a DVD device initially present (Darwin or a USB DVD drive), 
+  // We have to keep checking in case one appears.
   if (s_defaultDevice && strlen(s_defaultDevice) == 0)
   {
     free(s_defaultDevice);
@@ -651,7 +651,7 @@ void CCdIoSupport::GetCdTextInfo(xbmc_cdtext_t &xcdt, int trackNum)
     if (cdtext_get_const(pcdtext, (cdtext_field_t)i, trackNum))
       xcdt[(cdtext_field_t)i] = cdtext_field2str((cdtext_field_t)i);
 #else
-  // same ids used in libcdio and for our structure + the ids are consecutive make this copy loop safe.
+  // Same ids used in libcdio and for our structure + the ids are consecutive make this copy loop safe.
   for (int i = 0; i < MAX_CDTEXT_FIELDS; i++)
     if (pcdtext->field[i])
       xcdt[(cdtext_field_t)i] = pcdtext->field[(cdtext_field_t)i];
@@ -734,11 +734,11 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
       m_nFs = FS_NO_DATA;
       int temp1 = ::cdio_get_track_lba(cdio, i) - CDIO_PREGAP_SECTORS;
       int temp2 = ::cdio_get_track_lba(cdio, i + 1) - CDIO_PREGAP_SECTORS;
-      // the length is the address of the second track minus the address of the first track
-      temp2 -= temp1;    // temp2 now has length of track1 in frames
+      // The length is the address of the second track minus the address of the first track
+      temp2 -= temp1;                  // temp2 now has length of track1 in frames
       ti.nMins = temp2 / (60 * 75);    // calculate the number of minutes
-      temp2 %= 60 * 75;    // calculate the left-over frames
-      ti.nSecs = temp2 / 75;    // calculate the number of seconds
+      temp2 %= 60 * 75;                // calculate the left-over frames
+      ti.nSecs = temp2 / 75;           // calculate the number of seconds
       if ( -1 == m_nFirstAudio)
         m_nFirstAudio = i;
 
@@ -784,7 +784,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
   CLog::Log(LOGINFO, "CD Analysis Report");
   CLog::Log(LOGINFO, STRONG);
 
-  /* try to find out what sort of CD we have */
+  /* Try to find out what sort of CD we have */
   if (0 == m_nNumData)
   {
     /* no data track, may be a "real" audio CD or hidden track CD */
@@ -809,7 +809,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
   }
   else
   {
-    /* we have data track(s) */
+    /* We have data track(s) */
     for (j = 2, i = m_nFirstData; i <= m_nNumTracks; i++)
     {
       msf_t msf;
@@ -843,11 +843,11 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
 
       m_nStartTrack = (i == 1) ? 0 : ::cdio_msf_to_lsn(&msf);
 
-      /* save the start of the data area */
+      /* Save the start of the data area */
       if (i == m_nFirstData)
         m_nDataStart = m_nStartTrack;
 
-      /* skip tracks which belong to the current walked session */
+      /* Skip tracks which belong to the current walked session */
       if (m_nStartTrack < m_nDataStart + m_nIsofsSize)
         continue;
 
@@ -865,7 +865,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
 
       if (i > 1)
       {
-        /* track is beyond last session -> new session found */
+        /* Track is beyond last session -> new session found */
         m_nMsOffset = m_nStartTrack;
 
         CLog::Log(LOGINFO, "Session #%d starts at track %2i, LSN: %6i,"
@@ -914,11 +914,11 @@ UINT CCdIoSupport::MsfSeconds(msf_t *msf)
 }
 
 
-// Compute the CDDB disk ID for an Audio disk.  This is a funny checksum
-// consisting of the concatenation of 3 things:
-//    the sum of the decimal digits of sizes of all tracks,
-//    the total length of the disk, and
-//    the number of tracks.
+// Compute the CDDB disk ID for an Audio disk.
+// This is a funny checksum consisting of the concatenation of 3 things:
+//    The sum of the decimal digits of sizes of all tracks,
+//    The total length of the disk, and
+//    The number of tracks.
 
 uint32_t CCdIoSupport::CddbDiscId()
 {
