@@ -466,6 +466,8 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
       else
         items.SetContent("");
     }
+    else if (URIUtils::PathEquals(items.GetPath(), "special://videoplaylists/"))
+      items.SetContent("playlists");
     else if (!items.IsVirtualDirectoryRoot())
     { // load info from the database
       std::string label;
