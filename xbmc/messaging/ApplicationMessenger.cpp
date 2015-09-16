@@ -123,7 +123,7 @@ int CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
   
   CSingleLock lock (m_critSection);
 
-  if (msg->dwMessage & TMSG_MASK_WINDOWMANAGER)
+  if (msg->dwMessage == TMSG_GUI_MESSAGE || msg->dwMessage == TMSG_GUI_DIALOG_YESNO)
     m_vecWindowMessages.push(msg);
   else
     m_vecMessages.push(msg);
