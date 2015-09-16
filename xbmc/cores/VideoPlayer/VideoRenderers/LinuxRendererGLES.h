@@ -197,7 +197,6 @@ protected:
   virtual bool RenderHook(int idx) { return false; };
   virtual bool RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha) { return false; };
   virtual int  GetImageHook(YV12Image *image, int source = AUTOSOURCE, bool readonly = false) { return NOSOURCE; }
-  virtual void AddSupportedHwRenderFormats() { };
 
   CFrameBufferObject m_fbo;
 
