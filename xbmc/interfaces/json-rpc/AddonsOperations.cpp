@@ -144,6 +144,11 @@ JSONRPC_STATUS CAddonsOperations::GetAddonDetails(const std::string &method, ITr
 JSONRPC_STATUS CAddonsOperations::SetAddonEnabled(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string id = parameterObject["addonid"].asString();
+  AddonPtr addon;
+  if (!CAddonMgr::GetInstance().GetAddon(id, addon, ADDON::ADDON_UNKNOWN, false) || addon == nullptr ||
+    addon->Type() <= ADDON_UNKNOWN || addon->Type() >= ADDON_MAX)
+    return InvalidParams;
+
   bool disabled = false;
   if (parameterObject["enabled"].isBoolean())
     disabled = !parameterObject["enabled"].asBoolean();
