@@ -341,8 +341,8 @@ bool CProcessorHD::OpenProcessor()
   cs.Usage         = 0;                                          // 0 - Playback, 1 - Processing
   cs.RGB_Range     = 0;                                          // 0 - Full (0-255), 1 - Limited (16-235)
   cs.YCbCr_Matrix  = m_flags & CONF_FLAGS_YUVCOEF_BT709 ? 1 : 0; // 0 - BT.601, 1 - BT.709
-  cs.YCbCr_xvYCC   = m_flags & CONF_FLAGS_YUV_FULLRANGE ? 1 : 0; // 0 - Conventional YCbCr, 1 - xvYCC
-  cs.Nominal_Range = 0;                                          // 2 - Full luminance range [0-255], 1 - Studio luminance range [16-235], 0 - driver defaults
+  cs.YCbCr_xvYCC   = 1;                                          // 0 - Conventional YCbCr, 1 - xvYCC
+  cs.Nominal_Range = m_flags & CONF_FLAGS_YUV_FULLRANGE ? 2 : 1; // 2 - Full luminance range [0-255], 1 - Studio luminance range [16-235], 0 - driver defaults
   m_pVideoContext->VideoProcessorSetStreamColorSpace(m_pVideoProcessor, DEFAULT_STREAM_INDEX, &cs);
 
   // Output background color (black)
@@ -698,10 +698,10 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11Vi
   // Output color space
   D3D11_VIDEO_PROCESSOR_COLOR_SPACE colorSpace = {};
   colorSpace.Usage         = 0;  // 0 - playback, 1 - video processing
-  colorSpace.RGB_Range     = g_Windowing.UseLimitedColor() ? 1 : 0;  // 0 - 0-255, 1 - 16-235
+  colorSpace.RGB_Range     = 0;  // 0 - 0-255, 1 - 16-235
   colorSpace.YCbCr_Matrix  = 1;  // 0 - BT.601, 1 = BT.709
   colorSpace.YCbCr_xvYCC   = 1;  // 0 - Conventional YCbCr, 1 - xvYCC
-  colorSpace.Nominal_Range = 0;  // 2 - 0-255, 1 = 16-235, 0 - undefined
+  colorSpace.Nominal_Range = g_Windowing.UseLimitedColor() ? 1 : 2;  // 2 - 0-255, 1 = 16-235, 0 - undefined
 
   m_pVideoContext->VideoProcessorSetOutputColorSpace(m_pVideoProcessor, &colorSpace);
 
