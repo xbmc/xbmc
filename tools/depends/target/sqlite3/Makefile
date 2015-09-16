@@ -30,7 +30,10 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p0 < ../fix-32bits-on-64bits.patch
 endif
+# seems MAP_POPULATE is broken on aarch64
+ifneq ($(OS),android)
 	cd $(PLATFORM); patch -p1 < ../sqlite3.c.patch
+endif
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
