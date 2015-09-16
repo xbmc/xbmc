@@ -4397,13 +4397,13 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
         std::string strRatingAndVotes;
         if (m_currentFile->GetVideoInfoTag()->m_fRating > 0.f)
         {
-          if (m_currentFile->GetVideoInfoTag()->m_strVotes.empty())
+          if (m_currentFile->GetVideoInfoTag()->m_iVotes == 0)
             strRatingAndVotes = StringUtils::Format("%.1f",
                                                     m_currentFile->GetVideoInfoTag()->m_fRating);
           else
-            strRatingAndVotes = StringUtils::Format("%.1f (%s %s)",
+            strRatingAndVotes = StringUtils::Format("%.1f (%i %s)",
                                                     m_currentFile->GetVideoInfoTag()->m_fRating,
-                                                    m_currentFile->GetVideoInfoTag()->m_strVotes.c_str(),
+                                                    m_currentFile->GetVideoInfoTag()->m_iVotes,
                                                     g_localizeStrings.Get(20350).c_str());
         }
         return strRatingAndVotes;
@@ -4417,7 +4417,7 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
       return strUserRating;
     }
     case VIDEOPLAYER_VOTES:
-      return m_currentFile->GetVideoInfoTag()->m_strVotes;
+      return StringUtils::Format("%i", m_currentFile->GetVideoInfoTag()->m_iVotes);
     case VIDEOPLAYER_YEAR:
       {
         std::string strYear;
@@ -5211,13 +5211,13 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
       {
         std::string strRatingAndVotes;
-        if (item->GetVideoInfoTag()->m_strVotes.empty())
+        if (item->GetVideoInfoTag()->m_iVotes == 0)
           strRatingAndVotes = StringUtils::Format("%.1f",
                                                   item->GetVideoInfoTag()->m_fRating);
         else
-          strRatingAndVotes = StringUtils::Format("%.1f (%s %s)",
+          strRatingAndVotes = StringUtils::Format("%.1f (%i %s)",
                                                   item->GetVideoInfoTag()->m_fRating,
-                                                  item->GetVideoInfoTag()->m_strVotes.c_str(),
+                                                  item->GetVideoInfoTag()->m_iVotes,
                                                   g_localizeStrings.Get(20350).c_str());
         return strRatingAndVotes;
       }
@@ -5233,7 +5233,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     break;
   case LISTITEM_VOTES:
     if (item->HasVideoInfoTag())
-      return item->GetVideoInfoTag()->m_strVotes;
+      return StringUtils::Format("%i", item->GetVideoInfoTag()->m_iVotes);
     break;
   case LISTITEM_PROGRAM_COUNT:
     {

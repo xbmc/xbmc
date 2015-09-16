@@ -84,7 +84,7 @@ namespace XBMCAddon
 
     String InfoTagVideo::getVotes()
     {
-      return infoTag->m_strVotes;
+      return StringUtils::Format("%i", infoTag->m_iVotes);
     }
 
     String InfoTagVideo::getCast()

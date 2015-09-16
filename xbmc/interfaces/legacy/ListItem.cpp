@@ -389,7 +389,7 @@ namespace XBMCAddon
           else if (key == "album")
             item->GetVideoInfoTag()->m_strAlbum = value;
           else if (key == "votes")
-            item->GetVideoInfoTag()->m_strVotes = value;
+            item->GetVideoInfoTag()->m_iVotes = StringUtils::ReturnDigits(value);
           else if (key == "trailer")
             item->GetVideoInfoTag()->m_strTrailer = value;
           else if (key == "date")
