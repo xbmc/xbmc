@@ -372,10 +372,10 @@ void CAEFactory::RegisterAudioCallback(IAudioCallback* pCallback)
     AE->RegisterAudioCallback(pCallback);
 }
 
-void CAEFactory::UnregisterAudioCallback()
+void CAEFactory::UnregisterAudioCallback(IAudioCallback* pCallback)
 {
   if (AE)
-    AE->UnregisterAudioCallback();
+    AE->UnregisterAudioCallback(pCallback);
 }
 
 bool CAEFactory::IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
