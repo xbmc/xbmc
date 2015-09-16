@@ -227,7 +227,6 @@ CActiveAE::CActiveAE() :
   m_aeMuted = false;
   m_mode = MODE_PCM;
   m_encoder = NULL;
-  m_audioCallback = NULL;
   m_vizInitialized = false;
   m_sinkHasVolume = false;
   m_aeGUISoundForce = false;
@@ -1247,7 +1246,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         m_discardBufferPools.push_back(m_vizBuffersInput);
         m_vizBuffersInput = NULL;
       }
-      if (!m_vizBuffers && m_audioCallback)
+      if (!m_vizBuffers && !m_audioCallback.empty())
       {
         AEAudioFormat vizFormat = m_internalFormat;
         vizFormat.m_channelLayout = AE_CH_LAYOUT_2_0;
@@ -2095,12 +2094,13 @@ bool CActiveAE::RunStages()
         // viz
         {
           CSingleLock lock(m_vizLock);
-          if (m_audioCallback && !m_streams.empty())
+          if (!m_audioCallback.empty() && !m_streams.empty())
           {
             if (!m_vizInitialized || !m_vizBuffers)
             {
               Configure();
-              m_audioCallback->OnInitialize(2, m_vizBuffers->m_format.m_sampleRate, 32);
+              for (auto& it : m_audioCallback)
+                it->OnInitialize(2, m_vizBuffers->m_format.m_sampleRate, 32);
               m_vizInitialized = true;
             }
 
@@ -2132,7 +2132,8 @@ bool CActiveAE::RunStages()
               else
               {
                 int samples = buf->pkt->nb_samples;
-                m_audioCallback->OnAudioData((float*)(buf->pkt->data[0]), samples);
+                for (auto& it : m_audioCallback)
+                  it->OnAudioData((float*)(buf->pkt->data[0]), samples);
                 buf->Return();
                 m_vizBuffers->m_outputSamples.pop_front();
               }
@@ -3228,12 +3229,14 @@ void CActiveAE::SetStreamFade(CActiveAEStream *stream, float from, float target,
 void CActiveAE::RegisterAudioCallback(IAudioCallback* pCallback)
 {
   CSingleLock lock(m_vizLock);
-  m_audioCallback = pCallback;
+  m_audioCallback.push_back(pCallback);
   m_vizInitialized = false;
 }
 
-void CActiveAE::UnregisterAudioCallback()
+void CActiveAE::UnregisterAudioCallback(IAudioCallback* pCallback)
 {
   CSingleLock lock(m_vizLock);
-  m_audioCallback = NULL;
+  auto it = std::find(m_audioCallback.begin(), m_audioCallback.end(), pCallback);
+  if (it != m_audioCallback.end())
+    m_audioCallback.erase(it);
 }

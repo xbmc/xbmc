@@ -260,7 +260,7 @@ public:
   virtual AEAudioFormat GetCurrentSinkFormat();
 
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
-  virtual void UnregisterAudioCallback();
+  virtual void UnregisterAudioCallback(IAudioCallback* pCallback);
 
   virtual void OnLostDevice();
   virtual void OnResetDevice();
@@ -379,7 +379,7 @@ protected:
   bool m_sinkHasVolume;
 
   // viz
-  IAudioCallback *m_audioCallback;
+  std::vector<IAudioCallback*> m_audioCallback;
   bool m_vizInitialized;
   CCriticalSection m_vizLock;
 

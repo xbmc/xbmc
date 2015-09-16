@@ -73,7 +73,7 @@ public:
   static void DeviceChange();
 
   static void RegisterAudioCallback(IAudioCallback* pCallback);
-  static void UnregisterAudioCallback();
+  static void UnregisterAudioCallback(IAudioCallback* pCallback);
 
 private:
   static IAE *AE;

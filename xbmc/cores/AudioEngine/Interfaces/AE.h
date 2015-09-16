@@ -228,7 +228,7 @@ public:
 
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) {}
 
-  virtual void UnregisterAudioCallback() {}
+  virtual void UnregisterAudioCallback(IAudioCallback* pCallback) {}
 
   /**
    * Returns true if AudioEngine supports specified quality level
