@@ -62,11 +62,6 @@
   #include "LinuxRenderer.h"
 #endif
 
-// stagefright can be either gl or gles (arm & x86)
-#if defined(HAS_LIBSTAGEFRIGHT)
-#include "HWDecRender/RendererStagefright.h"
-#endif
-
 #if defined(TARGET_ANDROID)
 #include "HWDecRender/RendererMediaCodec.h"
 #endif
@@ -648,16 +643,10 @@ void CRenderManager::CreateRenderer()
 {
   if (!m_pRenderer)
   {
-#if defined(HAS_LIBSTAGEFRIGHT) || defined (TARGET_ANDROID)
     if (m_format == RENDER_FMT_MEDIACODEC)
+#if defined (TARGET_ANDROID)
     {
       m_pRenderer = new CRendererMediaCodec;
-    }
-    else if (m_format == RENDER_FMT_EGLIMG)
-    {
-#if defined(HAS_LIBSTAGEFRIGHT)
-      m_pRenderer = new CRendererStagefright
-#endif
     }
 #elif defined(HAS_MMAL)
     m_pRenderer = new CMMALRenderer
