@@ -239,11 +239,6 @@ int CRendererMediaCodec::GetImageHook(YV12Image *image, int source, bool readonl
   return source;
 }
 
-void CRendererMediaCodec::AddSupportedHwRenderFormats()
-{
-  m_formats.push_back(RENDER_FMT_MEDIACODEC);
-}
-
 bool CRendererMediaCodec::CreateTexture(int index)
 {
   YV12Image &im     = m_buffers[index].image;

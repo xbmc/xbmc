@@ -549,9 +549,6 @@ void CLinuxRendererGLES::PreInit()
   m_formats.push_back(RENDER_FMT_YUV420P);
   m_formats.push_back(RENDER_FMT_NV12);
   m_formats.push_back(RENDER_FMT_BYPASS);
-  
-  //add formats from hw decoder renderers if we are one of those...
-  AddSupportedHwRenderFormats();
 
   // setup the background colour
   m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;

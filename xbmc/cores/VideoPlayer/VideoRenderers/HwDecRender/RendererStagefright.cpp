@@ -218,11 +218,6 @@ int CRendererStagefright::GetImageHook(YV12Image *image, int source, bool readon
   return source;
 }
 
-void CRendererStagefright::AddSupportedHwRenderFormats()
-{
-  m_formats.push_back(RENDER_FMT_EGLIMG);
-}
-
 bool CRendererStagefright::CreateTexture(int index)
 {
   YV12Image &im     = m_buffers[index].image;

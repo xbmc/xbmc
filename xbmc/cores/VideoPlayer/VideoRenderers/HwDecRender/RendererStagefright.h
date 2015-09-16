@@ -64,7 +64,6 @@ protected:
   virtual bool LoadShadersHook();
   virtual bool RenderHook(int index);
   virtual int  GetImageHook(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
-  virtual void AddSupportedHwRenderFormats();
 };
 
 #endif

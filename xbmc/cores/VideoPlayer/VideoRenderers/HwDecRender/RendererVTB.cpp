@@ -183,11 +183,6 @@ bool CRendererVTB::RenderHook(int index)
   return true;
 }
 
-void CRendererVTB::AddSupportedHwRenderFormats()
-{
-  m_formats.push_back(RENDER_FMT_CVBREF);
-}
-
 bool CRendererVTB::CreateTexture(int index)
 {
   YV12Image &im     = m_buffers[index].image;
