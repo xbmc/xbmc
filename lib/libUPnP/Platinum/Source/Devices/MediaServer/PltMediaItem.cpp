@@ -258,7 +258,7 @@ PLT_MediaObject::Reset()
 
     m_XbmcInfo.date_added = "";
     m_XbmcInfo.rating = 0.0f;
-    m_XbmcInfo.votes = "";
+    m_XbmcInfo.votes = 0;
     m_XbmcInfo.artwork.Clear();
     m_XbmcInfo.unique_identifier = "";
     m_XbmcInfo.countries.Clear();
@@ -590,9 +590,9 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
     }
 
     // xbmc votes
-    if (mask & PLT_FILTER_MASK_XBMC_VOTES && !m_XbmcInfo.votes.IsEmpty()) {
+    if (mask & PLT_FILTER_MASK_XBMC_VOTES && m_XbmcInfo.votes != 0) {
         didl += "<xbmc:votes>";
-        PLT_Didl::AppendXmlEscape(didl, m_XbmcInfo.votes);
+        didl += NPT_String::Format("%i", m_XbmcInfo.votes);
         didl += "</xbmc:votes>";
     }
 
@@ -841,7 +841,10 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     if (NPT_FAILED(str.ToFloat(floatValue))) floatValue = 0.0;
     m_XbmcInfo.rating = floatValue;
 
-    PLT_XmlHelper::GetChildText(entry, "votes", m_XbmcInfo.votes, didl_namespace_xbmc, 256);
+    PLT_XmlHelper::GetChildText(entry, "votes", str, didl_namespace_xbmc, 256);
+    NPT_Int32 intValue;
+    if (NPT_FAILED(str.ToInteger(intValue))) intValue = 0;
+    m_XbmcInfo.votes = intValue;
 
     children.Clear();
     PLT_XmlHelper::GetChildren(entry, children, "artwork", didl_namespace_xbmc);
