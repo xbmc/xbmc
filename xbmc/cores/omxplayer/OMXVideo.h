@@ -42,6 +42,14 @@
 
 typedef void (*ResolutionUpdateCallBackFn)(void *ctx, uint32_t width, uint32_t height, float framerate, float display_aspect);
 
+struct ResolutionUpdateInfo {
+  uint32_t width;
+  uint32_t height;
+  float framerate;
+  float display_aspect;
+  bool changed;
+};
+
 class COMXVideo
 {
 public:
@@ -51,7 +59,7 @@ public:
   // Required overrides
   bool SendDecoderConfig();
   bool Open(CDVDStreamInfo &hints, OMXClock *clock, EDEINTERLACEMODE deinterlace = VS_DEINTERLACEMODE_OFF, bool hdmi_clock_sync = false);
-  bool PortSettingsChanged();
+  bool PortSettingsChanged(ResolutionUpdateInfo &resinfo);
   void RegisterResolutionUpdateCallBack(void *ctx, ResolutionUpdateCallBackFn callback) { m_res_ctx = ctx; m_res_callback = callback; }
   void Close(void);
   unsigned int GetFreeSpace();
