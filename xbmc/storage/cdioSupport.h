@@ -24,9 +24,6 @@
 //
 // by Bobbin007 in 2003
 //  CD-Text support by Mog - Oct 2004
-//
-//
-//
 
 #pragma once
 
@@ -46,48 +43,46 @@ namespace MEDIA_DETECT
 #define STRONG "__________________________________\n"
 //#define NORMAL ""
 
-#define FS_NO_DATA              0   /* audio only */
-#define FS_HIGH_SIERRA   1
-#define FS_ISO_9660    2
-#define FS_INTERACTIVE   3
-#define FS_HFS     4
-#define FS_UFS     5
-#define FS_EXT2     6
+#define FS_NO_DATA              0  /* audio only */
+#define FS_HIGH_SIERRA          1
+#define FS_ISO_9660             2
+#define FS_INTERACTIVE          3
+#define FS_HFS                  4
+#define FS_UFS                  5
+#define FS_EXT2                 6
 #define FS_ISO_HFS              7  /* both hfs & isofs filesystem */
 #define FS_ISO_9660_INTERACTIVE 8  /* both CD-RTOS and isofs filesystem */
-#define FS_3DO     9
-#define FS_UDFX     10
-#define FS_UDF     11
-#define FS_ISO_UDF   12
-#define FS_UNKNOWN    15
-#define FS_MASK     15
+#define FS_3DO                  9
+#define FS_UDF                 11
+#define FS_ISO_UDF             12
+#define FS_UNKNOWN             15
+#define FS_MASK                15
 
-#define XA      16
-#define MULTISESSION   32
-#define PHOTO_CD    64
-#define HIDDEN_TRACK   128
-#define CDTV     256
-#define BOOTABLE    512
-#define VIDEOCDI    1024
-#define ROCKRIDGE    2048
-#define JOLIET     4096
-#define CVD      8192   /* Choiji Video CD */
+#define XA                     16
+#define MULTISESSION           32
+#define PHOTO_CD               64
+#define HIDDEN_TRACK          128
+#define CDTV                  256
+#define BOOTABLE              512
+#define VIDEOCDI             1024
+#define ROCKRIDGE            2048
+#define JOLIET               4096
+#define CVD                  8192 /* Choiji Video CD */
 
-#define IS_ISOFS    0
-#define IS_CD_I     1
-#define IS_CDTV     2
+#define IS_ISOFS      0
+#define IS_CD_I       1
+#define IS_CDTV       2
 #define IS_CD_RTOS    3
-#define IS_HS     4
-#define IS_BRIDGE    5
-#define IS_XA     6
-#define IS_PHOTO_CD    7
-#define IS_EXT2     8
-#define IS_UFS     9
-#define IS_BOOTABLE    10
-#define IS_VIDEO_CD    11 /* Video CD */
-#define IS_CVD     12 /* Chinese Video CD - slightly incompatible with SVCD */
-#define IS_UDFX     13
-#define IS_UDF     14
+#define IS_HS         4
+#define IS_BRIDGE     5
+#define IS_XA         6
+#define IS_PHOTO_CD   7
+#define IS_EXT2       8
+#define IS_UFS        9
+#define IS_BOOTABLE  10
+#define IS_VIDEO_CD  11  /* Video CD */
+#define IS_CVD       12  /* Chinese Video CD - slightly incompatible with SVCD */
+#define IS_UDF       14
 
 typedef struct signature
 {
@@ -102,14 +97,14 @@ typedef std::map<cdtext_field_t, std::string> xbmc_cdtext_t;
 
 typedef struct TRACKINFO
 {
-  int nfsInfo;  // Information of the Tracks Filesystem
-  int nJolietLevel; // Jouliet Level
-  int ms_offset;  // Multisession Offset
-  int isofs_size;  // Size of the ISO9660 Filesystem
-  int nFrames;  // Can be used for cddb query
-  int nMins;   // minutes playtime part of Track
-  int nSecs;   // seconds playtime part of Track
-  xbmc_cdtext_t cdtext; //  CD-Text for this track
+  int nfsInfo;          // Information of the Tracks Filesystem
+  int nJolietLevel;     // Jouliet Level
+  int ms_offset;        // Multisession Offset
+  int isofs_size;       // Size of the ISO9660 Filesystem
+  int nFrames;          // Can be used for cddb query
+  int nMins;            // minutes playtime part of Track
+  int nSecs;            // seconds playtime part of Track
+  xbmc_cdtext_t cdtext; // CD-Text for this track
 }
 trackinfo;
 
@@ -235,14 +230,14 @@ public:
 
 private:
   int m_nFirstData;        /* # of first data track */
-  int m_nNumData;               /* # of data tracks */
-  int m_nFirstAudio;      /* # of first audio track */
-  int m_nNumAudio;             /* # of audio tracks */
+  int m_nNumData;          /* # of data tracks */
+  int m_nFirstAudio;       /* # of first audio track */
+  int m_nNumAudio;         /* # of audio tracks */
   int m_nNumTrack;
   int m_nFirstTrack;
   trackinfo m_ti[100];
   uint32_t m_ulCddbDiscId;
-  int m_nLength;   // Disclength can be used for cddb query, also see trackinfo.nFrames
+  int m_nLength;           // Disclength can be used for cddb query, also see trackinfo.nFrames
   bool m_bHasCDDBInfo;
   std::string m_strDiscLabel;
   xbmc_cdtext_t m_cdtext;  //  CD-Text for this disc
@@ -317,12 +312,12 @@ protected:
 private:
   char buffer[7][CDIO_CD_FRAMESIZE_RAW];  /* for CD-Data */
   static signature_t sigs[17];
-  int i, j;                                                           /* index */
-  int m_nStartTrack;                                   /* first sector of track */
-  int m_nIsofsSize;                                      /* size of session */
+  int i, j;                               /* index */
+  int m_nStartTrack;                      /* first sector of track */
+  int m_nIsofsSize;                       /* size of session */
   int m_nJolietLevel;
-  int m_nMsOffset;                /* multisession offset found by track-walking */
-  int m_nDataStart;                                       /* start of data area */
+  int m_nMsOffset;                        /* multisession offset found by track-walking */
+  int m_nDataStart;                       /* start of data area */
   int m_nFs;
   int m_nUDFVerMinor;
   int m_nUDFVerMajor;
@@ -334,9 +329,9 @@ private:
   std::string m_strDiscLabel;
 
   int m_nFirstData;        /* # of first data track */
-  int m_nNumData;                /* # of data tracks */
-  int m_nFirstAudio;      /* # of first audio track */
-  int m_nNumAudio;              /* # of audio tracks */
+  int m_nNumData;          /* # of data tracks */
+  int m_nFirstAudio;       /* # of first audio track */
+  int m_nNumAudio;         /* # of audio tracks */
 
   std::shared_ptr<CLibcdio> m_cdio;
 };
