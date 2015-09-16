@@ -49,6 +49,12 @@ public:
   void OnInfo(CFileItem *pItem, bool bShowInfo = false);
 
   void DoScan(const std::string &strPath);
+
+  /*! \brief Prompt the user if he wants to scan the newly added folder.
+  If he accepts the music scanner will add this path to the library
+  \param path the path to scan
+  */
+  static void OnNewMusicDirectoryAdded(const std::string & path);
 protected:
   virtual void OnInitWindow();
   /*!
