@@ -413,18 +413,18 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 //--------------------------------------------------------------
 - (void)createGestureRecognizers 
 {
-  //1 finger single tab
+  //1 finger single tap
   [self addTapGesture:1];
 
-  //2 finger single tab - right mouse
-  //single finger double tab delays single finger single tab - so we
+  //2 finger single tap - right mouse
+  //single finger double tap delays single finger single tap - so we
   //go for 2 fingers here - so single finger single tap is instant
   [self addTapGesture:2];
 
-  //3 finger single tab
+  //3 finger single tap
   [self addTapGesture:3];
 
-  //1 finger single long tab - right mouse - alernative
+  //1 finger single long tap - right mouse - alernative
   UILongPressGestureRecognizer *singleFingerSingleLongTap = [[UILongPressGestureRecognizer alloc]
     initWithTarget:self action:@selector(handleSingleFingerSingleLongTap:)];  
 
