@@ -43,10 +43,11 @@
 #if defined(TARGET_DARWIN_OSX)
 #include "HwDecRender/RendererVDA.h"
 #endif
-#elif defined(HAS_MMAL)
-  #include "HwDecRender/MMALRenderer.h"
 #elif HAS_GLES == 2
   #include "LinuxRendererGLES.h"
+#if defined(HAS_MMAL)
+#include "HwDecRender/MMALRenderer.h"
+#endif
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
 #include "HWDecRender/RendererVTB.h"
 #endif
@@ -144,7 +145,7 @@ static std::string GetRenderFormatName(ERenderFormat format)
 
 CRenderManager::CRenderManager() : m_overlays(this)
 {
-  m_pRenderer = NULL;
+  m_pRenderer = nullptr;
   m_renderState = STATE_UNCONFIGURED;
 
   m_presentstep = PRESENT_IDLE;
@@ -643,40 +644,6 @@ void CRenderManager::CreateRenderer()
 {
   if (!m_pRenderer)
   {
-    if (m_format == RENDER_FMT_MEDIACODEC)
-#if defined (TARGET_ANDROID)
-    {
-      m_pRenderer = new CRendererMediaCodec;
-    }
-#elif defined(HAS_MMAL)
-    m_pRenderer = new CMMALRenderer
-#elif HAS_GLES == 2
-    if (m_format == RENDER_FMT_CVBREF)
-    {
-#if defined(HAVE_VIDEOTOOLBOXDECODER)
-      m_pRenderer = new CRendererVTB;
-#endif
-    }
-    else if (m_format == RENDER_FMT_IMXMAP)
-    {
-#if defined(HAS_IMXVPU)
-      m_pRenderer = new CRendererIMX;
-#endif
-    }
-    else if (m_format == RENDER_FMT_OMXEGL)
-    {
-#if defined(HAVE_LIBOPENMAX)
-      m_pRenderer = new CRendererOMX;
-#endif
-    }
-    else if (m_format != RENDER_FMT_NONE)
-    {
-      m_pRenderer = new CLinuxRendererGLES;
-    }
-#elif defined(HAS_DX)
-    m_pRenderer = new CWinRenderer();
-#endif
-#if defined(HAS_GL)
     if (m_format == RENDER_FMT_VAAPI || m_format == RENDER_FMT_VAAPINV12)
     {
 #if defined(HAVE_LIBVA)
@@ -693,15 +660,58 @@ void CRenderManager::CreateRenderer()
     {
 #if defined(TARGET_DARWIN_OSX)
       m_pRenderer = new CRendererVDA;
+#elif defined(HAVE_VIDEOTOOLBOXDECODER)
+      m_pRenderer = new CRendererVTB;
+#endif
+    }
+    else if (m_format == RENDER_FMT_MEDIACODEC)
+    {
+#if defined(TARGET_ANDROID)
+      m_pRenderer = new CRendererMediaCodec;
+#endif
+    }
+    else if (m_format == RENDER_FMT_MMAL)
+    {
+#if defined(HAS_MMAL)
+      m_pRenderer = new CMMALRenderer;
+#endif
+    }
+    else if (m_format == RENDER_FMT_IMXMAP)
+    {
+#if defined(HAS_IMXVPU)
+      m_pRenderer = new CRendererIMX;
+#endif
+    }
+    else if (m_format == RENDER_FMT_OMXEGL)
+    {
+#if defined(HAVE_LIBOPENMAX)
+      m_pRenderer = new CRendererOMX;
+#endif
+    }
+    else if (m_format == RENDER_FMT_DXVA)
+    {
+#if defined(HAS_DX)
+      m_pRenderer = new CWinRenderer();
 #endif
     }
     else if (m_format != RENDER_FMT_NONE)
     {
+#if defined(HAS_GL)
       m_pRenderer = new CLinuxRendererGL;
+#elif HAS_GLES == 2
+      m_pRenderer = new CLinuxRendererGLES;
+#elif defined(HAS_DX)
+      m_pRenderer = new CWinRenderer();
+#endif
     }
+#if defined(HAS_MMAL)
+    if (!m_pRenderer)
+      m_pRenderer = new CMMALRenderer;
 #endif
     if (m_pRenderer)
       m_pRenderer->PreInit();
+    else
+      CLog::Log(LOGERROR, "RenderManager::CreateRenderer: failed to create renderer");
   }
 }
 
