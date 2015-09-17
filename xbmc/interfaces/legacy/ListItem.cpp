@@ -408,7 +408,7 @@ namespace XBMCAddon
             item->GetVideoInfoTag()->m_dateAdded.SetFromDBDateTime(value.c_str());
           else if (key == "mediatype")
           {
-            if (MediaTypes::IsValidMediaType(value))
+            if (CMediaTypes::IsValidMediaType(value))
               item->GetVideoInfoTag()->m_type = value;
             else
               CLog::Log(LOGWARNING, "Invalid media type \"%s\"", value.c_str());
