@@ -63,7 +63,7 @@ while (@ARGV) {
         $force_thumb = 1;
     } elsif ($opt eq "-arch") {
         $arch = shift;
-        die "unknown arch: '$arch'\n" if not exists $comments{$arch};
+        die "unknown arch: '$arch'\n" if not exists $canonical_arch{$arch};
     } elsif ($opt eq "-as-type") {
         $as_type = shift;
         die "unknown as type: '$as_type'\n" if $as_type !~ /^((apple-)?(gas|clang)|armasm)$/;
@@ -429,7 +429,7 @@ sub parse_line {
 
 sub handle_set {
     my $line = $_[0];
-    if ($line =~ /\.set\s+(.*),\s*(.*)/) {
+    if ($line =~ /\.(?:set|equ)\s+(\S*)\s*,\s*(.*)/) {
         $symbols{$1} = eval_expr($2);
         return 1;
     }
@@ -874,7 +874,7 @@ sub handle_serialized_line {
             # Don't interpret e.g. bic as b<cc> with ic as conditional code
             if ($cond !~ /|$arm_cond_codes/) {
                 # Not actually a branch
-            } elsif ($target =~ /(\d+)([bf])/) {
+            } elsif ($target =~ /^(\d+)([bf])$/) {
                 # The target is a local label
                 $line = handle_local_label($line, $1, $2);
                 $line =~ s/\b$instr\b/$&.w/ if $width eq "";
@@ -888,12 +888,12 @@ sub handle_serialized_line {
         }
 
         # ALIGN in armasm syntax is the actual number of bytes
-        if ($line =~ /\.align\s+(\d+)/) {
+        if ($line =~ /\.(?:p2)?align\s+(\d+)/) {
             my $align = 1 << $1;
-            $line =~ s/\.align\s(\d+)/ALIGN $align/;
+            $line =~ s/\.(?:p2)?align\s(\d+)/ALIGN $align/;
         }
         # Convert gas style [r0, :128] into armasm [r0@128] alignment specification
-        $line =~ s/\[([^\[]+),\s*:(\d+)\]/[$1\@$2]/g;
+        $line =~ s/\[([^\[,]+),?\s*:(\d+)\]/[$1\@$2]/g;
 
         # armasm treats logical values {TRUE} and {FALSE} separately from
         # numeric values - logical operators and values can't be intermixed
@@ -930,7 +930,7 @@ sub handle_serialized_line {
         # Misc bugs/deficiencies:
         # armasm seems unable to parse e.g. "vmov s0, s1" without a type
         # qualifier, thus add .f32.
-        $line =~ s/^(\s+(?:vmov|vadd))(\s+s)/$1.f32$2/;
+        $line =~ s/^(\s+(?:vmov|vadd))(\s+s\d+\s*,\s*s\d+)/$1.f32$2/;
         # armasm is unable to parse &0x - add spacing
         $line =~ s/&0x/& 0x/g;
     }
@@ -939,16 +939,17 @@ sub handle_serialized_line {
         # Convert register post indexing to a separate add instruction.
         # This converts e.g. "ldr r0, [r1], r2" into "ldr r0, [r1]",
         # "add r1, r1, r2".
-        $line =~ s/(ldr|str)\s+(\w+),\s*\[(\w+)\],\s*(\w+)/$1 $2, [$3]\n\tadd $3, $3, $4/g;
+        $line =~ s/((?:ldr|str)[bh]?)\s+(\w+),\s*\[(\w+)\],\s*(\w+)/$1 $2, [$3]\n\tadd $3, $3, $4/g;
 
         # Convert "mov pc, lr" into "bx lr", since the former only works
         # for switching from arm to thumb (and only in armv7), but not
         # from thumb to arm.
         s/mov\s*pc\s*,\s*lr/bx lr/g;
 
-        # Convert stmdb/ldmia with only one register into a plain str/ldr with post-increment/decrement
-        $line =~ s/stmdb\s+sp!\s*,\s*\{([^,-]+)\}/str $1, [sp, #-4]!/g;
-        $line =~ s/ldmia\s+sp!\s*,\s*\{([^,-]+)\}/ldr $1, [sp], #4/g;
+        # Convert stmdb/ldmia/stmfd/ldmfd/ldm with only one register into a plain str/ldr with post-increment/decrement.
+        # Wide thumb2 encoding requires at least two registers in register list while all other encodings support one register too.
+        $line =~ s/stm(?:db|fd)\s+sp!\s*,\s*\{([^,-]+)\}/str $1, [sp, #-4]!/g;
+        $line =~ s/ldm(?:ia|fd)?\s+sp!\s*,\s*\{([^,-]+)\}/ldr $1, [sp], #4/g;
 
         $line =~ s/\.arm/.thumb/x;
     }
@@ -978,6 +979,9 @@ sub handle_serialized_line {
         $line =~ s/\.int/.long/x;
         $line =~ s/\.float/.single/x;
     }
+    if ($as_type eq "apple-gas") {
+        $line =~ s/vmrs\s+APSR_nzcv/fmrx r15/x;
+    }
     if ($as_type eq "armasm") {
         $line =~ s/\.global/EXPORT/x;
         $line =~ s/\.int/dcd/x;
@@ -986,11 +990,15 @@ sub handle_serialized_line {
         $line =~ s/\.word/dcd/x;
         $line =~ s/\.short/dcw/x;
         $line =~ s/\.byte/dcb/x;
+        $line =~ s/\.quad/dcq/x;
+        $line =~ s/\.ascii/dcb/x;
+        $line =~ s/\.asciz(.*)$/dcb\1,0/x;
         $line =~ s/\.thumb/THUMB/x;
         $line =~ s/\.arm/ARM/x;
         # The alignment in AREA is the power of two, just as .align in gas
-        $line =~ s/\.text/AREA |.text|, CODE, READONLY, ALIGN=2, CODEALIGN/;
+        $line =~ s/\.text/AREA |.text|, CODE, READONLY, ALIGN=4, CODEALIGN/;
         $line =~ s/(\s*)(.*)\.rodata/$1AREA |.rodata|, DATA, READONLY, ALIGN=5/;
+        $line =~ s/\.data/AREA |.data|, DATA, ALIGN=5/;
 
         $line =~ s/fmxr/vmsr/;
         $line =~ s/fmrx/vmrs/;
