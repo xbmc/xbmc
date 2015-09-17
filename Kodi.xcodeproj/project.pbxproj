@@ -327,6 +327,9 @@
 		7C1A85661520522500C63311 /* TextureCacheJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A85631520522500C63311 /* TextureCacheJob.cpp */; };
 		7C1D682915A7D2FD00658B65 /* DatabaseManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1D682715A7D2FD00658B65 /* DatabaseManager.cpp */; };
 		7C1F6EBB13ECCFA7001726AB /* LibraryDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1F6EB913ECCFA7001726AB /* LibraryDirectory.cpp */; };
+		7C226E3E1BA5F61C00185CE0 /* AddonCallbacksAudioEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C226E3C1BA5F61C00185CE0 /* AddonCallbacksAudioEngine.cpp */; };
+		7C226E3F1BA5F61D00185CE0 /* AddonCallbacksAudioEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C226E3C1BA5F61C00185CE0 /* AddonCallbacksAudioEngine.cpp */; };
+		7C226E401BA5F61D00185CE0 /* AddonCallbacksAudioEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C226E3C1BA5F61C00185CE0 /* AddonCallbacksAudioEngine.cpp */; };
 		7C26126C182068660086E04D /* SettingsOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C26126A182068660086E04D /* SettingsOperations.cpp */; };
 		7C26126D182068660086E04D /* SettingsOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C26126A182068660086E04D /* SettingsOperations.cpp */; };
 		7C26126E182068660086E04D /* SettingsOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C26126A182068660086E04D /* SettingsOperations.cpp */; };
@@ -3797,6 +3800,8 @@
 		7C1D682815A7D2FD00658B65 /* DatabaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseManager.h; sourceTree = "<group>"; };
 		7C1F6EB913ECCFA7001726AB /* LibraryDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LibraryDirectory.cpp; sourceTree = "<group>"; };
 		7C1F6EBA13ECCFA7001726AB /* LibraryDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryDirectory.h; sourceTree = "<group>"; };
+		7C226E3C1BA5F61C00185CE0 /* AddonCallbacksAudioEngine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonCallbacksAudioEngine.cpp; sourceTree = "<group>"; };
+		7C226E3D1BA5F61C00185CE0 /* AddonCallbacksAudioEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonCallbacksAudioEngine.h; sourceTree = "<group>"; };
 		7C26126A182068660086E04D /* SettingsOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingsOperations.cpp; sourceTree = "<group>"; };
 		7C26126B182068660086E04D /* SettingsOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsOperations.h; sourceTree = "<group>"; };
 		7C26126F1825B6340086E04D /* DatabaseQuery.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DatabaseQuery.cpp; sourceTree = "<group>"; };
@@ -6043,6 +6048,8 @@
 		18B49FF01152BEEB001AF8A6 /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				7C226E3C1BA5F61C00185CE0 /* AddonCallbacksAudioEngine.cpp */,
+				7C226E3D1BA5F61C00185CE0 /* AddonCallbacksAudioEngine.h */,
 				7C973CE31B50378E0002A874 /* AddonCallbacksAudioDSP.cpp */,
 				7C973CE41B50378E0002A874 /* AddonCallbacksAudioDSP.h */,
 				18B49FF11152BFA5001AF8A6 /* Addon.cpp */,
@@ -11264,6 +11271,7 @@
 				F56352AA16E5402100D21BAD /* GUIDialogContentSettings.cpp in Sources */,
 				F56352BB16E5403400D21BAD /* GUIWindowSettings.cpp in Sources */,
 				F56352BC16E5403400D21BAD /* GUIWindowSettingsCategory.cpp in Sources */,
+				7C226E3E1BA5F61C00185CE0 /* AddonCallbacksAudioEngine.cpp in Sources */,
 				F56352BE16E5403400D21BAD /* GUIWindowSettingsScreenCalibration.cpp in Sources */,
 				F56352BF16E5403400D21BAD /* GUIWindowTestPattern.cpp in Sources */,
 				F56352C816E5436900D21BAD /* AppParamParser.cpp in Sources */,
@@ -11845,6 +11853,7 @@
 				DF0E4AD11AD5984600A75430 /* PVRRadioRDSInfoTag.cpp in Sources */,
 				DFF0F26D17528350002DA3A4 /* ZeroconfDirectory.cpp in Sources */,
 				DFF0F26E17528350002DA3A4 /* ZipDirectory.cpp in Sources */,
+				7C226E401BA5F61D00185CE0 /* AddonCallbacksAudioEngine.cpp in Sources */,
 				DFF0F26F17528350002DA3A4 /* ZipFile.cpp in Sources */,
 				DFF0F27017528350002DA3A4 /* ZipManager.cpp in Sources */,
 				DFF0F27217528350002DA3A4 /* cximage.cpp in Sources */,
@@ -13598,6 +13607,7 @@
 				7CCDA819192756250074CF51 /* NptSockets.cpp in Sources */,
 				7CCDA822192756250074CF51 /* NptStreams.cpp in Sources */,
 				7CCDA82B192756250074CF51 /* NptStrings.cpp in Sources */,
+				7C226E3F1BA5F61D00185CE0 /* AddonCallbacksAudioEngine.cpp in Sources */,
 				7CCDA834192756250074CF51 /* NptSystem.cpp in Sources */,
 				7CCDA83D192756250074CF51 /* NptThreads.cpp in Sources */,
 				7CCDA846192756250074CF51 /* NptTime.cpp in Sources */,
