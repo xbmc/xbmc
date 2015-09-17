@@ -227,8 +227,8 @@ int CLinuxRendererGLES::GetImage(YV12Image *image, int source, bool readonly)
   if( source == AUTOSOURCE )
    source = NextYV12Texture();
 
- 
-  if ((int hwSource = GetImageHook(image, source, readonly)) != NOSOURCE)
+  int hwSource = GetImageHook(image, source, readonly);
+  if (hwSource != NOSOURCE)
   {
     return hwSource;
   }
