@@ -27,6 +27,6 @@ technique11 TEST_T
 {
   pass P0
   {
-    SetPixelShader( CompileShader( ps_4_0_level_9_3, TEST() ) );
+    SetPixelShader( CompileShader( ps_4_0_level_9_1, TEST() ) );
   }
 };
