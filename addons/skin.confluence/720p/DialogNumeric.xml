@@ -3,30 +3,43 @@
 	<defaultcontrol always="true">21</defaultcontrol>
 	<include>dialogeffect</include>
 	<coordinates>
-		<left>510</left>
-		<top>115</top>
+		<left>420</left>
+		<top>175</top>
 	</coordinates>
 	<controls>
 		<control type="image">
 			<left>0</left>
 			<top>0</top>
-			<width>260</width>
-			<height>490</height>
+			<width>380</width>
+			<height>430</height>
 			<texture border="40">DialogBack.png</texture>
 		</control>
 		<control type="image">
 			<description>Dialog Header image</description>
 			<left>40</left>
-			<top>16</top>
-			<width>180</width>
-			<height>40</height>
+			<top>18</top>
+			<width>300</width>
+			<height>50</height>
 			<texture>dialogheader.png</texture>
+		</control>
+		<control type="button">
+			<description>Close Window button</description>
+			<left>290</left>
+			<top>15</top>
+			<width>64</width>
+			<height>32</height>
+			<label>-</label>
+			<font>-</font>
+			<onclick>PreviousMenu</onclick>
+			<texturefocus>DialogCloseButton-focus.png</texturefocus>
+			<texturenofocus>DialogCloseButton.png</texturenofocus>
+			<visible>system.getbool(input.enablemouse)</visible>
 		</control>
 		<control type="label" id="1">
 			<description>dialog Heading</description>
 			<left>20</left>
-			<top>20</top>
-			<width>220</width>
+			<top>28</top>
+			<width>340</width>
 			<height>35</height>
 			<font>font12_title</font>
 			<textcolor>selected</textcolor>
@@ -38,7 +51,7 @@
 		<control type="image">
 			<left>30</left>
 			<top>70</top>
-			<width>200</width>
+			<width>320</width>
 			<height>50</height>
 			<aspectratio>stretch</aspectratio>
 			<texture border="20">KeyboardEditArea.png</texture>
@@ -47,7 +60,7 @@
 			<description>Edit Text</description>
 			<left>35</left>
 			<top>70</top>
-			<width>190</width>
+			<width>310</width>
 			<height>50</height>
 			<font>font13</font>
 			<textcolor>selected</textcolor>
@@ -58,13 +71,13 @@
 		<control type="image">
 			<left>40</left>
 			<top>120</top>
-			<width>180</width>
+			<width>300</width>
 			<height>30</height>
 			<aspectratio>stretch</aspectratio>
 			<texture>dialogheader.png</texture>
 		</control>
 		<control type="group">
-			<left>40</left>
+			<left>55</left>
 			<top>155</top>
 			<control type="button" id="11">
 				<description>1 button</description>
@@ -79,9 +92,9 @@
 				<texturefocus border="25,25,5,5">KeyboardCornerTop.png</texturefocus>
 				<label>12311</label>
 				<focusedcolor>black</focusedcolor>
-				<onleft>13</onleft>
+				<onleft>23</onleft>
 				<onright>12</onright>
-				<onup>21</onup>
+				<onup>20</onup>
 				<ondown>14</ondown>
 			</control>
 			<control type="button" id="12">
@@ -99,7 +112,7 @@
 				<focusedcolor>black</focusedcolor>
 				<onleft>11</onleft>
 				<onright>13</onright>
-				<onup>21</onup>
+				<onup>10</onup>
 				<ondown>15</ondown>
 			</control>
 			<control type="button" id="13">
@@ -111,14 +124,41 @@
 				<font>font13</font>
 				<align>center</align>
 				<aligny>center</aligny>
-				<texturenofocus flipx="true" border="5,25,25,5">KeyboardCornerTopNF.png</texturenofocus>
-				<texturefocus flipx="true" border="5,25,25,5">KeyboardCornerTop.png</texturefocus>
+				<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
+				<texturefocus border="5">KeyboardKey.png</texturefocus>
 				<label>12313</label>
 				<focusedcolor>black</focusedcolor>
 				<onleft>12</onleft>
-				<onright>11</onright>
-				<onup>23</onup>
+				<onright>23</onright>
+				<onup>22</onup>
 				<ondown>16</ondown>
+			</control>
+			<control type="button" id="23">
+				<description>Backspace button</description>
+				<left>180</left>
+				<top>0</top>
+				<width>90</width>
+				<height>120</height>
+				<font>font12</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus flipx="true" border="5,25,25,5">KeyboardCornerTopNF.png</texturenofocus>
+				<texturefocus flipx="true" border="5,25,25,5">KeyboardCornerTop.png</texturefocus>
+				<textwidth>120</textwidth>
+				<label>-</label>
+				<focusedcolor>black</focusedcolor>
+				<onleft>13</onleft>
+				<onright>11</onright>
+				<onup>21</onup>
+				<ondown>21</ondown>
+			</control>
+			<control type="image">
+				<description>Backspace icon</description>
+				<left>210</left>
+				<top>45</top>
+				<width>30</width>
+				<height>30</height>
+				<texture>KeyboardBackKey.png</texture>
 			</control>
 			<control type="button" id="14">
 				<description>4 button</description>
@@ -133,7 +173,7 @@
 				<texturefocus border="5">KeyboardKey.png</texturefocus>
 				<label>12314</label>
 				<focusedcolor>black</focusedcolor>
-				<onleft>16</onleft>
+				<onleft>23</onleft>
 				<onright>15</onright>
 				<onup>11</onup>
 				<ondown>17</ondown>
@@ -170,7 +210,7 @@
 				<label>12316</label>
 				<focusedcolor>black</focusedcolor>
 				<onleft>15</onleft>
-				<onright>14</onright>
+				<onright>23</onright>
 				<onup>13</onup>
 				<ondown>19</ondown>
 			</control>
@@ -187,7 +227,7 @@
 				<texturefocus border="5">KeyboardKey.png</texturefocus>
 				<label>12317</label>
 				<focusedcolor>black</focusedcolor>
-				<onleft>19</onleft>
+				<onleft>21</onleft>
 				<onright>18</onright>
 				<onup>14</onup>
 				<ondown>20</ondown>
@@ -224,9 +264,36 @@
 				<label>12319</label>
 				<focusedcolor>black</focusedcolor>
 				<onleft>18</onleft>
-				<onright>17</onright>
+				<onright>21</onright>
 				<onup>16</onup>
 				<ondown>22</ondown>
+			</control>
+			<control type="button" id="21">
+				<description>Done button</description>
+				<left>180</left>
+				<top>120</top>
+				<width>90</width>
+				<height>120</height>
+				<font>font12</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus flipx="true" border="25,5,5,25">KeyboardCornerBottomNF.png</texturenofocus>
+				<texturefocus flipx="true" border="5,5,25,25">KeyboardCornerBottom.png</texturefocus>
+				<textwidth>120</textwidth>
+				<label>-</label>
+				<focusedcolor>black</focusedcolor>
+				<onleft>19</onleft>
+				<onright>17</onright>
+				<onup>23</onup>
+				<ondown>23</ondown>
+			</control>
+			<control type="image">
+				<description>Done icon</description>
+				<left>210</left>
+				<top>165</top>
+				<width>30</width>
+				<height>30</height>
+				<texture>KeyboardDoneKey.png</texture>
 			</control>
 			<control type="button" id="20">
 				<description>prev button</description>
@@ -239,12 +306,12 @@
 				<focusedcolor>black</focusedcolor>
 				<align>center</align>
 				<aligny>center</aligny>
-				<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
-				<texturefocus border="5">KeyboardKey.png</texturefocus>
-				<onleft>22</onleft>
+				<texturenofocus border="5,25,25,5">KeyboardCornerBottomNF.png</texturenofocus>
+				<texturefocus border="5,25,25,5">KeyboardCornerBottom.png</texturefocus>
+				<onleft>21</onleft>
 				<onright>10</onright>
 				<onup>17</onup>
-				<ondown>21</ondown>
+				<ondown>11</ondown>
 			</control>
 			<control type="button" id="10">
 				<description>0 button</description>
@@ -262,7 +329,7 @@
 				<onleft>20</onleft>
 				<onright>22</onright>
 				<onup>18</onup>
-				<ondown>21</ondown>
+				<ondown>12</ondown>
 			</control>
 			<control type="button" id="22">
 				<description>next button</description>
@@ -278,55 +345,9 @@
 				<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
 				<texturefocus border="5">KeyboardKey.png</texturefocus>
 				<onleft>10</onleft>
-				<onright>20</onright>
-				<onup>19</onup>
-				<ondown>23</ondown>
-			</control>
-			<control type="button" id="21">
-				<description>Done button</description>
-				<left>0</left>
-				<top>240</top>
-				<width>90</width>
-				<height>60</height>
-				<font>font12</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<texturenofocus border="5,25,25,5">KeyboardCornerBottomNF.png</texturenofocus>
-				<texturefocus border="5,25,25,5">KeyboardCornerBottom.png</texturefocus>
-				<textwidth>120</textwidth>
-				<label>186</label>
-				<focusedcolor>black</focusedcolor>
-				<onleft>23</onleft>
-				<onright>23</onright>
-				<onup>20</onup>
-				<ondown>11</ondown>
-			</control>
-			<control type="button" id="23">
-				<description>Backspace button</description>
-				<left>90</left>
-				<top>240</top>
-				<width>90</width>
-				<height>60</height>
-				<font>font12</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<texturenofocus flipx="true" border="25,5,5,25">KeyboardCornerBottomNF.png</texturenofocus>
-				<texturefocus flipx="true" border="5,5,25,25">KeyboardCornerBottom.png</texturefocus>
-				<textwidth>120</textwidth>
-				<label>-</label>
-				<focusedcolor>black</focusedcolor>
-				<onleft>21</onleft>
 				<onright>21</onright>
-				<onup>22</onup>
+				<onup>19</onup>
 				<ondown>13</ondown>
-			</control>
-			<control type="image">
-				<description>Backspace button</description>
-				<left>123</left>
-				<top>258</top>
-				<width>24</width>
-				<height>24</height>
-				<texture>KeyboardBackKey.png</texture>
 			</control>
 		</control>
 	</controls>
