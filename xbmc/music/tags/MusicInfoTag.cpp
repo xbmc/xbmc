@@ -608,7 +608,6 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SetAlbumReleaseType(album.releaseType);
   SetDateAdded(album.dateAdded);
   SetPlayCount(album.iTimesPlayed);
-  SetCompilation(album.bCompilation);
   SetDatabaseId(album.idAlbum, MediaTypeAlbum);
 
   SetLoaded();
@@ -635,7 +634,6 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetReleaseDate(stTime);
   SetTrackNumber(song.iTrack);
   SetDuration(song.iDuration);
-  SetPlayCount(song.iTimesPlayed);
   SetMood(song.strMood);
   SetCompilation(song.bCompilation);
   SetAlbumId(song.idAlbum);
