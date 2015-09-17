@@ -100,6 +100,11 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
   // Don't need to look in the last 18 bytes (ECDREC_SIZE-4)
   // But as we need to do overlapping between blocks (3 bytes),
   // we start the search at ECDREC_SIZE-1 from the end of file
+  if (fileSize < ECDREC_SIZE - 1)
+  {
+    CLog::Log(LOGERROR, "ZipManager: Invalid zip file length: %lld", fileSize);
+    return false;
+  }
   int searchSize = (int) std::min(static_cast<int64_t>(65557), fileSize-ECDREC_SIZE+1);
   int blockSize = (int) std::min(1024, searchSize);
   int nbBlock = searchSize / blockSize;
