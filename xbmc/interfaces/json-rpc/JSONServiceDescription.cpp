@@ -1425,7 +1425,7 @@ bool CJSONServiceDescription::prepareDescription(std::string &description, CVari
 
   if (description.at(0) != '{')
   {
-    description = StringUtils::Format("{%s}", description.c_str());
+    description = StringUtils::Format("{{{:s}}}", description);
   }
 
   descriptionObject = CJSONVariantParser::Parse((const unsigned char *)description.c_str(), description.size());
