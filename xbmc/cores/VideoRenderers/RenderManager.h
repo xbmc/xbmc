@@ -186,7 +186,7 @@ public:
    * Can be called by player for lateness detection. This is done best by
    * looking at the end of the queue.
    */
-  bool GetStats(double &sleeptime, double &pts, int &bufferLevel);
+  bool GetStats(double &sleeptime, double &pts, int &queued, int &discard);
 
   /**
    * Video player call this on flush in oder to discard any queued frames
