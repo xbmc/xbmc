@@ -259,6 +259,8 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
     return false;
 
+  CLog::Log(LOGDEBUG, "CAddonInstaller: installing from zip '%s'", CURL::GetRedacted(path).c_str());
+
   // grab the descriptive XML document from the zip, and read it in
   CFileItemList items;
   // BUG: some zip files return a single item (root folder) that we think is stored, so we don't use the zip:// protocol
