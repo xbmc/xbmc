@@ -29,6 +29,7 @@
 #include "settings/MediaSettings.h"
 #include "windowing/WindowingFactory.h"
 #include "osx/DarwinUtils.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
 
 CRendererIMX::CRendererIMX()
 {
@@ -43,7 +44,8 @@ CRendererIMX::~CRendererIMX()
 bool CRendererIMX::RenderCapture(CRenderCapture* capture)
 {
   CRect rect(0, 0, capture->GetWidth(), capture->GetHeight());
-  CDVDVideoCodecIMXBuffer *buffer = m_buffers[m_iYV12RenderBuffer].IMXBuffer;
+
+  CDVDVideoCodecIMXBuffer *buffer = static_cast<CDVDVideoCodecIMXBuffer*>(m_buffers[m_iYV12RenderBuffer].hwDec);
   capture->BeginRender();
   g_IMXContext.PushCaptureTask(buffer, &rect);
   capture->EndRender();
@@ -53,8 +55,9 @@ bool CRendererIMX::RenderCapture(CRenderCapture* capture)
 void CRendererIMX::AddVideoPictureHW(DVDVideoPicture &picture, int index)
 {
   YUVBUFFER &buf = m_buffers[index];
+  CDVDVideoCodecIMXBuffer *buffer = static_cast<CDVDVideoCodecIMXBuffer*>(buf.hwDec);
 
-  SAFE_RELEASE(buf.hwDec);
+  SAFE_RELEASE(buffer);
   buf.hwDec = picture.IMXBuffer;
 
   if (picture.IMXBuffer)
@@ -63,8 +66,8 @@ void CRendererIMX::AddVideoPictureHW(DVDVideoPicture &picture, int index)
 
 void CRendererIMX::ReleaseBuffer(int idx)
 {
-  YUVBUFFER &buf = m_buffers[idx];
-  SAFE_RELEASE(buf.hwDec);
+  CDVDVideoCodecIMXBuffer *buffer =  static_cast<CDVDVideoCodecIMXBuffer*>(m_buffers[idx].hwDec);
+  SAFE_RELEASE(buffer);
 }
 
 int CRendererIMX::GetImageHook(YV12Image *image, int source, bool readonly)
@@ -135,7 +138,7 @@ bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
   printf("r->r: %d\n", (int)(current-previous));
   previous = current;
 #endif
-  CDVDVideoCodecIMXBuffer *buffer = m_buffers[m_iYV12RenderBuffer].IMXBuffer;
+  CDVDVideoCodecIMXBuffer *buffer = static_cast<CDVDVideoCodecIMXBuffer*>(m_buffers[m_iYV12RenderBuffer].hwDec);
   if (buffer != NULL && buffer->IsValid())
   {
     // this hack is needed to get the 2D mode of a 3D movie going
@@ -220,7 +223,7 @@ bool CRendererIMX::CreateTexture(int index)
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANE  &plane  = fields[0][0];
 
-  DeleteIMXMAPTexture(index);
+  DeleteTexture(index);
 
   memset(&im    , 0, sizeof(im));
   memset(&fields, 0, sizeof(fields));
@@ -250,12 +253,13 @@ void CRendererIMX::DeleteTexture(int index)
 {
   YUVBUFFER &buf = m_buffers[index];
   YUVPLANE &plane = buf.fields[0][0];
+  CDVDVideoCodecIMXBuffer* buffer = static_cast<CDVDVideoCodecIMXBuffer*>(buf.hwDec);
 
   if(plane.id && glIsTexture(plane.id))
     glDeleteTextures(1, &plane.id);
   plane.id = 0;
 
-  SAFE_RELEASE(buf.IMXBuffer);
+  SAFE_RELEASE(buffer);
 }
 
 bool CRendererIMX::UploadTexture(int index)

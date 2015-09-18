@@ -52,7 +52,7 @@
 #include "HWDecRender/RendererVTB.h"
 #endif
 #if defined(HAS_IMXVPU)
-#include "HWDecRender/RendererIMX.h"
+#include "HwDecRender/RendererIMX.h"
 #endif
 #if defined(HAVE_LIBOPENMAX)
 #include "HWDecRender/RendererOMX.h"
