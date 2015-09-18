@@ -166,14 +166,31 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
   infoSongs = source.infoSongs;
 }
 
-std::string CAlbum::GetArtistString() const
-{
-  return StringUtils::Join(artist, g_advancedSettings.m_musicItemSeparator);
-}
-
 std::string CAlbum::GetGenreString() const
 {
   return StringUtils::Join(genre, g_advancedSettings.m_musicItemSeparator);
+}
+
+const std::vector<std::string> CAlbum::GetAlbumArtist() const
+{
+  //Get artist names as vector from artist credits
+  std::vector<std::string> albumartists;
+  for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
+  {
+    albumartists.push_back(artistCredit->GetArtist());
+  }
+  return albumartists;
+}
+
+const std::vector<std::string> CAlbum::GetMusicBrainzAlbumArtistID() const
+{
+  //Get artist MusicBrainz IDs as vector from artist credits
+  std::vector<std::string> muisicBrainzID;
+  for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
+  {
+    muisicBrainzID.push_back(artistCredit->GetMusicBrainzArtistID());
+  }
+  return muisicBrainzID;
 }
 
 std::string CAlbum::GetReleaseType() const

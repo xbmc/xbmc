@@ -582,6 +582,7 @@ void CMusicInfoTag::SetArtist(const CArtist& artist)
   SetArtist(artist.strArtist);
   SetAlbumArtist(artist.strArtist);
   SetMusicBrainzArtistID({ artist.strMusicBrainzArtistID });
+  SetMusicBrainzAlbumArtistID({ artist.strMusicBrainzArtistID });
   SetGenre(artist.genre);
   SetMood(StringUtils::Join(artist.moods, g_advancedSettings.m_musicItemSeparator));
   SetDateAdded(artist.dateAdded);
@@ -592,11 +593,16 @@ void CMusicInfoTag::SetArtist(const CArtist& artist)
 
 void CMusicInfoTag::SetAlbum(const CAlbum& album)
 {
-  SetArtist(album.artist);
+  //Set all artist infomation from album artist credits and artist description
+  SetArtistDesc(album.strArtistDesc);
+  SetArtist(album.GetAlbumArtist());
+  SetMusicBrainzArtistID(album.GetMusicBrainzAlbumArtistID());
+  SetAlbumArtistDesc(album.strArtistDesc);
+  SetAlbumArtist(album.GetAlbumArtist());
+  SetMusicBrainzAlbumArtistID(album.GetMusicBrainzAlbumArtistID());
   SetAlbumId(album.idAlbum);
   SetAlbum(album.strAlbum);
   SetTitle(album.strAlbum);
-  SetAlbumArtist(album.artist);
   SetMusicBrainzAlbumID(album.strMusicBrainzAlbumID);
   SetGenre(album.genre);
   SetMood(StringUtils::Join(album.moods, g_advancedSettings.m_musicItemSeparator));
@@ -617,9 +623,12 @@ void CMusicInfoTag::SetSong(const CSong& song)
 {
   SetTitle(song.strTitle);
   SetGenre(song.genre);
-  SetArtist(song.artist);
+  //Set all artist infomation from song artist credits and artist description
+  SetArtistDesc(song.strArtistDesc);
+  SetArtist(song.GetArtist());
+  SetMusicBrainzArtistID(song.GetMusicBrainzArtistID());
   SetAlbum(song.strAlbum);
-  SetAlbumArtist(song.albumArtist);
+  SetAlbumArtist(song.albumArtist); //Only have album artist in song as vector, no desc or MBID
   SetMusicBrainzTrackID(song.strMusicBrainzTrackID);
   SetComment(song.strComment);
   SetCueSheet(song.strCueSheet);

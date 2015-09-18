@@ -72,6 +72,16 @@ public:
     return false;
   }
 
+  /*! \brief Get artist names from the vector of artistcredits objects
+  \return artist names as a vector of strings
+  */
+  const std::vector<std::string> GetArtist() const;
+  
+  /*! \brief Get artist MusicBrainz IDs from the vector of artistcredits objects
+  \return artist MusicBrainz IDs as a vector of strings
+  */
+  const std::vector<std::string> GetMusicBrainzArtistID() const;
+
   /*! \brief whether this song has art associated with it
    Tests both the strThumb and embeddedArt members.
    */
