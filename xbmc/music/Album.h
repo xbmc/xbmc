@@ -70,7 +70,15 @@ public:
     releaseType = Album;
   }
 
-  std::string GetArtistString() const;
+  /*! \brief Get album artist names from the vector of artistcredits objects
+  \return album artist names as a vector of strings
+  */
+  const std::vector<std::string> GetAlbumArtist() const;
+  
+  /*! \brief Get album artist MusicBrainz IDs from the vector of artistcredits objects
+  \return album artist MusicBrainz IDs as a vector of strings
+  */
+  const std::vector<std::string> GetMusicBrainzAlbumArtistID() const;
   std::string GetGenreString() const;
 
   typedef enum ReleaseType {
