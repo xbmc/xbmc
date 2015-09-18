@@ -5162,7 +5162,8 @@ bool CVideoDatabase::GetSetsByWhere(const std::string& strBaseDir, const Filter 
       return false;
 
     CFileItemList sets;
-    if (!GroupUtils::Group(GroupBySet, strBaseDir, items, sets))
+    GroupAttribute groupingAttributes = ignoreSingleMovieSets ? GroupAttributeIgnoreSingleItems : GroupAttributeNone;
+    if (!GroupUtils::Group(GroupBySet, strBaseDir, items, sets, groupingAttributes))
       return false;
 
     items.ClearItems();
@@ -5960,7 +5961,7 @@ bool CVideoDatabase::GetItems(const std::string &strBaseDir, VIDEODB_CONTENT_TYP
   else if (StringUtils::EqualsNoCase(itemType, "studios"))
     return GetStudiosNav(strBaseDir, items, mediaType, filter);
   else if (StringUtils::EqualsNoCase(itemType, "sets"))
-    return GetSetsNav(strBaseDir, items, mediaType, filter);
+    return GetSetsNav(strBaseDir, items, mediaType, filter, !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPSINGLEITEMSETS));
   else if (StringUtils::EqualsNoCase(itemType, "countries"))
     return GetCountriesNav(strBaseDir, items, mediaType, filter);
   else if (StringUtils::EqualsNoCase(itemType, "tags"))
