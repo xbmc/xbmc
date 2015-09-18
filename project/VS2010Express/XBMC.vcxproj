@@ -184,6 +184,7 @@
     <ClCompile Include="..\..\xbmc\addons\AddonCallbacks.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAddon.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAudioDSP.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAudioEngine.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonCallbacksCodec.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonCallbacksGUI.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonCallbacksPVR.cpp" />
@@ -888,6 +889,7 @@
     <ClCompile Include="..\..\xbmc\TextureDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\DatabaseManager.cpp" />
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAudioDSP.h" />
+    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAudioEngine.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacksCodec.h" />
     <ClInclude Include="..\..\xbmc\addons\AudioDecoder.h" />
     <ClInclude Include="..\..\xbmc\addons\ContextMenuAddon.h" />
@@ -908,6 +910,7 @@
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\DSPAddons\ActiveAEDSPDatabase.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\DSPAddons\ActiveAEDSPMode.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\DSPAddons\ActiveAEDSPProcess.h" />
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEStreamData.h" />
     <ClInclude Include="..\..\xbmc\cores\DataCacheCore.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEFactory.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEResampleFactory.h" />
