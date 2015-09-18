@@ -370,6 +370,9 @@
     <Filter Include="interfaces\builtins">
       <UniqueIdentifier>{248ffbc4-43f5-4aaf-b259-2dd4f840fcef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="contrib\cppformat">
+      <UniqueIdentifier>{d60b8d87-672a-4500-99fe-a66861305cb6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -3257,6 +3260,12 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAudioEngine.cpp">
       <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\contrib\cppformat\format.cc">
+      <Filter>contrib\cppformat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\contrib\cppformat\posix.cc">
+      <Filter>contrib\cppformat</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6321,6 +6330,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\ScopeGuard.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\contrib\cppformat\format.h">
+      <Filter>contrib\cppformat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\contrib\cppformat\posix.h">
+      <Filter>contrib\cppformat</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
