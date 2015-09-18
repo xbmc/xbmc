@@ -75,6 +75,7 @@ public:
 
   
   bool isInteger() const;
+  bool isSignedInteger() const;
   bool isUnsignedInteger() const;
   bool isBoolean() const;
   bool isString() const;
