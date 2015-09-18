@@ -1630,18 +1630,17 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
 
   bool bPreviousPlayingState=false;
   bool bPreviousRenderingState=false;
-  if (g_application.m_pPlayer->IsPlayingVideo())
+  if (m_pPlayer->IsPlayingVideo())
   {
-    bPreviousPlayingState = !g_application.m_pPlayer->IsPausedPlayback();
+    bPreviousPlayingState = !m_pPlayer->IsPausedPlayback();
     if (bPreviousPlayingState)
-      g_application.m_pPlayer->Pause();
-#ifdef HAS_VIDEO_PLAYBACK
+      m_pPlayer->Pause();
+    m_pPlayer->FlushRenderer();
     if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
     {
       g_windowManager.ActivateWindow(WINDOW_HOME);
       bPreviousRenderingState = true;
     }
-#endif
   }
   // close the music and video overlays (they're re-opened automatically later)
   CSingleLock lock(g_graphicsContext);
@@ -1731,10 +1730,10 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
     }
   }
 
-  if (g_application.m_pPlayer->IsPlayingVideo())
+  if (m_pPlayer->IsPlayingVideo())
   {
     if (bPreviousPlayingState)
-      g_application.m_pPlayer->Pause();
+      m_pPlayer->Pause();
     if (bPreviousRenderingState)
       g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
   }
