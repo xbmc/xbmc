@@ -1108,10 +1108,10 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   if (m_speed < 0)
   {
     double sleepTime, renderPts;
-    int bufferLevel;
+    int queued, discard;
     double inputPts = m_droppingStats.m_lastPts;
-    g_renderManager.GetStats(sleepTime, renderPts, bufferLevel);
-    if (pts_org > renderPts || bufferLevel > 0)
+    g_renderManager.GetStats(sleepTime, renderPts, queued, discard);
+    if (pts_org > renderPts || queued > 0)
     {
       if (inputPts >= renderPts)
       {
@@ -1130,8 +1130,9 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   else if (m_speed > DVD_PLAYSPEED_NORMAL)
   {
     double sleepTime, renderPts;
-    int bufferLevel;
-    g_renderManager.GetStats(sleepTime, renderPts, bufferLevel);
+    int bufferLevel, queued, discard;
+    g_renderManager.GetStats(sleepTime, renderPts, queued, discard);
+    bufferLevel = queued + discard;
 
     // estimate the time it will take for the next frame to get rendered
     // drop the frame if it's late in regard to this estimation
@@ -1252,10 +1253,10 @@ void CDVDPlayerVideo::ResetFrameRateCalc()
 double CDVDPlayerVideo::GetCurrentPts()
 {
   double iSleepTime, iRenderPts;
-  int iBufferLevel;
+  int queued, discard;
 
   // get render stats
-  g_renderManager.GetStats(iSleepTime, iRenderPts, iBufferLevel);
+  g_renderManager.GetStats(iSleepTime, iRenderPts, queued, discard);
 
   if (iRenderPts == DVD_NOPTS_VALUE)
     return DVD_NOPTS_VALUE;
@@ -1365,6 +1366,7 @@ int CDVDPlayerVideo::CalcDropRequirement(double pts, bool updateOnly)
   bool   bNewFrame;
   int    iDroppedPics = -1;
   int    iBufferLevel;
+  int    queued, discard;
 
   m_droppingStats.m_lastPts = pts;
 
@@ -1375,7 +1377,8 @@ int CDVDPlayerVideo::CalcDropRequirement(double pts, bool updateOnly)
     iDecoderPts = pts;
 
   // get render stats
-  g_renderManager.GetStats(iSleepTime, iRenderPts, iBufferLevel);
+  g_renderManager.GetStats(iSleepTime, iRenderPts, queued, discard);
+  iBufferLevel = queued + discard;
 
   if (iBufferLevel < 0)
     result |= EOS_BUFFER_LEVEL;
