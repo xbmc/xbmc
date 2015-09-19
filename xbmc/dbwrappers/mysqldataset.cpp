@@ -1597,7 +1597,7 @@ void MysqlDataset::open(const std::string &sql) {
 void MysqlDataset::open() {
   if (select_sql.size())
   {
-    query(select_sql.c_str());
+    query(select_sql);
   }
   else
   {
