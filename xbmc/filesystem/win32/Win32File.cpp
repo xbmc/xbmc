@@ -465,6 +465,12 @@ int CWin32File::Stat(const CURL& url, struct __stat64* statData)
     return -1;
 
   std::wstring pathnameW(CWIN32Util::ConvertPathToWin32Form(url));
+  if (pathnameW.empty())
+  {
+    errno = ENOENT;
+    return -1;
+  }
+
   if (pathnameW.length() <= 6) // 6 is length of "\\?\x:"
     return -1; // pathnameW is empty or points to device ("\\?\x:"), on win32 stat() for devices is not supported
 
