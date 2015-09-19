@@ -22,22 +22,22 @@
 /*
  * DESCRIPTION:
  *
- * CPVRRecordingInfoTag is part of the XBMC PVR system to support recording entrys,
+ * CPVRRecordingInfoTag is part of the Kodi PVR system to support recording entrys,
  * stored on a other Backend like VDR or MythTV.
  *
  * The recording information tag holds data about name, length, recording time
  * and so on of recorded stream stored on the backend.
  *
  * The filename string is used to by the PVRManager and passed to DVDPlayer
- * to stream data from the backend to XBMC.
+ * to stream data from the backend to Kodi.
  *
  * It is a also CVideoInfoTag and some of his variables must be set!
  *
  */
 
+#include "XBDateTime.h"
 #include "addons/include/xbmc_pvr_types.h"
 #include "video/VideoInfoTag.h"
-#include "XBDateTime.h"
 
 #define PVR_RECORDING_BASE_PATH     "recordings"
 #define PVR_RECORDING_DELETED_PATH  "deleted"
@@ -209,7 +209,7 @@ namespace PVR
     /*!
      * @return Broadcast id of the EPG event associated with this recording
      */
-    int EpgEvent(void) const { return m_iEpgEventId; }
+    unsigned int EpgEvent(void) const { return m_iEpgEventId; }
 
     /*!
      * @return Get the channel on which this recording is/was running
@@ -230,10 +230,10 @@ namespace PVR
     std::string EpisodeName(void) const { return m_strShowTitle; };
 
   private:
-    CDateTime m_recordingTime; /*!< start time of the recording */
-    bool      m_bGotMetaData;
-    bool      m_bIsDeleted;    /*!< set if entry is a deleted recording which can be undelete */
-    int       m_iEpgEventId;   /*!< epg broadcast id associated with this recording */
+    CDateTime    m_recordingTime; /*!< start time of the recording */
+    bool         m_bGotMetaData;
+    bool         m_bIsDeleted;    /*!< set if entry is a deleted recording which can be undelete */
+    unsigned int m_iEpgEventId;   /*!< epg broadcast id associated with this recording */
 
     void UpdatePath(void);
     void DisplayError(PVR_ERROR err) const;

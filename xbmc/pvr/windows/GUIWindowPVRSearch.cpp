@@ -18,19 +18,20 @@
  *
  */
 
-#include "GUIWindowPVRSearch.h"
-
 #include "ContextMenuManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "epg/EpgContainer.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
+#include "utils/Variant.h"
+
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
-#include "epg/EpgContainer.h"
-#include "pvr/addons/PVRClients.h"
-#include "utils/Variant.h"
+
+#include "GUIWindowPVRSearch.h"
 
 using namespace PVR;
 using namespace EPG;

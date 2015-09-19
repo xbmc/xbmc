@@ -42,7 +42,6 @@ void CPictureInfoLoader::OnLoaderStart()
   m_mapFileItems->SetFastLookup(true);
 
   m_tagReads = 0;
-  m_loadTags = CSettings::GetInstance().GetBool(CSettings::SETTING_PICTURES_USETAGS);
 
   if (m_pProgressCallback)
     m_pProgressCallback->SetProgressMax(m_pVecItems->GetFileCount());
@@ -87,11 +86,8 @@ bool CPictureInfoLoader::LoadItemLookup(CFileItem* pItem)
   if (pItem->HasPictureInfoTag())
     return false;
 
-  if (m_loadTags)
-  { // Nothing found, load tag from file
-    pItem->GetPictureInfoTag()->Load(pItem->GetPath());
-    m_tagReads++;
-  }
+  pItem->GetPictureInfoTag()->Load(pItem->GetPath());
+  m_tagReads++;
 
   return true;
 }

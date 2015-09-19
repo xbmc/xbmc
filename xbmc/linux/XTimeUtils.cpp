@@ -88,7 +88,7 @@ BOOL FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileT
   FileTimeToTimeT(lpFileTime, &ft);
   localtime_r(&ft, &tm_ft);
 
-  l.QuadPart += tm_ft.tm_gmtoff * 10000000;
+  l.QuadPart += (ULONGLONG)tm_ft.tm_gmtoff * 10000000;
 
   lpLocalFileTime->dwLowDateTime = l.u.LowPart;
   lpLocalFileTime->dwHighDateTime = l.u.HighPart;

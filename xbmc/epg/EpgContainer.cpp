@@ -383,7 +383,7 @@ CEpg *CEpgContainer::GetById(int iEpgId) const
   return epgEntry != m_epgs.end() ? epgEntry->second : NULL;
 }
 
-CEpgInfoTagPtr CEpgContainer::GetTagById(int iBroadcastId) const
+CEpgInfoTagPtr CEpgContainer::GetTagById(unsigned int iBroadcastId) const
 {
   CEpgInfoTagPtr retval;
   CSingleLock lock(m_critSection);

@@ -958,7 +958,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
 
   pDialog->Reset();
   pDialog->SetHeading(CVariant{20324});
-  pDialog->SetItems(&parts);
+  pDialog->SetItems(parts);
   pDialog->Open();
 
   if (!pDialog->IsConfirmed())
@@ -1459,7 +1459,8 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
        (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS) || (StringUtils::EqualsNoCase(group, "sets") && mixed)))
     {
       CFileItemList groupedItems;
-      if (GroupUtils::Group(GroupBySet, m_strFilterPath, items, groupedItems, GroupAttributeIgnoreSingleItems))
+      GroupAttribute groupAttributes = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPSINGLEITEMSETS) ? GroupAttributeNone : GroupAttributeIgnoreSingleItems;
+      if (GroupUtils::GroupAndMix(GroupBySet, m_strFilterPath, items, groupedItems, groupAttributes))
       {
         items.ClearItems();
         items.Append(groupedItems);
@@ -1520,7 +1521,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   CFileItemList items;
   if (!CDirectory::GetDirectory("videodb://movies/genres/", items))
     return;
-  pSelect->SetItems(&items);
+  pSelect->SetItems(items);
   pSelect->EnableButton(true, 531); // New Genre
   pSelect->Open();
   std::string strGenre;

@@ -18,9 +18,11 @@
  *
  */
 
-#include "GUIWindowPVRChannels.h"
 
 #include "ContextMenuManager.h"
+#include "GUIInfoManager.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
+#include "epg/EpgContainer.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -28,18 +30,18 @@
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "GUIInfoManager.h"
-#include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/dialogs/GUIDialogPVRGroupManager.h"
-#include "pvr/dialogs/GUIDialogPVRChannelManager.h"
-#include "pvr/addons/PVRClients.h"
-#include "pvr/timers/PVRTimers.h"
-#include "epg/EpgContainer.h"
+#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "threads/SingleLock.h"
-#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
+
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/dialogs/GUIDialogPVRChannelManager.h"
+#include "pvr/dialogs/GUIDialogPVRGroupManager.h"
+#include "pvr/timers/PVRTimers.h"
+
+#include "GUIWindowPVRChannels.h"
 
 using namespace PVR;
 using namespace EPG;

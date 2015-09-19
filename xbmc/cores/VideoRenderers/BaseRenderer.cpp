@@ -20,6 +20,7 @@
 
 #include "system.h"
 
+#include <cstdlib> // std::abs(int) prototype
 #include <algorithm>
 #include "BaseRenderer.h"
 #include "settings/DisplaySettings.h"
@@ -244,10 +245,19 @@ void CBaseRenderer::FindResolutionFromFpsMatch(float fps, float& weight)
 RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RESOLUTION current, float& weight)
 {
   RESOLUTION_INFO curr = g_graphicsContext.GetResInfo(current);
+  RESOLUTION orig_res  = CDisplaySettings::GetInstance().GetCurrentResolution();
+
+  if (orig_res <= RES_DESKTOP)
+    orig_res = RES_DESKTOP;
+
+  RESOLUTION_INFO orig = g_graphicsContext.GetResInfo(orig_res);
 
   float fRefreshRate = fps;
 
   float last_diff = fRefreshRate;
+
+  int curr_diff = std::abs((int) m_sourceWidth - curr.iScreenWidth);
+  int loop_diff = 0;
 
   // Find closest refresh rate
   for (size_t i = (int)RES_DESKTOP; i < CDisplaySettings::GetInstance().ResolutionInfoSize(); i++)
@@ -261,7 +271,24 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
     ||  info.iScreen       != curr.iScreen
     ||  (info.dwFlags & D3DPRESENTFLAG_MODEMASK) != (curr.dwFlags & D3DPRESENTFLAG_MODEMASK)
     ||  info.fRefreshRate < (fRefreshRate * multiplier / 1.001) - 0.001)
-      continue;
+    {
+      // evaluate all higher modes and evalute them
+      // concerning dimension and refreshrate weight
+      // skip lower resolutions
+      if (((int) m_sourceWidth < orig.iScreenWidth) // orig res large enough
+      || (info.iScreenWidth < orig.iScreenWidth) // new res is smaller
+      || (info.dwFlags & D3DPRESENTFLAG_MODEMASK) != (curr.dwFlags & D3DPRESENTFLAG_MODEMASK)) // don't switch to interlaced modes
+      {
+        continue;
+      }
+    }
+
+    // Allow switching to larger resolution:
+    // e.g. if m_sourceWidth == 3840 and we have a 3840 mode - use this one
+    // if it has a matching fps mode, which is evaluated below
+
+    loop_diff = std::abs((int) m_sourceWidth - info.iScreenWidth);
+    curr_diff = std::abs((int) m_sourceWidth - curr.iScreenWidth);
 
     // For 3D choose the closest refresh rate 
     if(CONF_FLAGS_STEREO_MODE_MASK(m_iFlags))
@@ -282,12 +309,30 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
       int c_weight = MathUtils::round_int(RefreshWeight(curr.fRefreshRate, fRefreshRate * multiplier) * 1000.0);
       int i_weight = MathUtils::round_int(RefreshWeight(info.fRefreshRate, fRefreshRate * multiplier) * 1000.0);
 
+      RESOLUTION current_bak = current;
+      RESOLUTION_INFO curr_bak = curr;
+
       // Closer the better, prefer higher refresh rate if the same
       if ((i_weight <  c_weight)
       ||  (i_weight == c_weight && info.fRefreshRate > curr.fRefreshRate))
       {
         current = (RESOLUTION)i;
         curr    = info;
+      }
+      // use case 1080p50 vs 3840x2160@25 for 3840@25 content
+      // prefer the higher resolution of 3840
+      if (i_weight == c_weight && (loop_diff < curr_diff))
+      {
+        current = (RESOLUTION)i;
+        curr    = info;
+      }
+      // same as above but iterating with 3840@25 set and overwritten
+      // by e.g. 1080@50 - restore backup in that case
+      // to give priority to the better matching width
+      if (i_weight == c_weight && (loop_diff > curr_diff))
+      {
+        current = current_bak;
+        curr    = curr_bak;
       }
     }
   }

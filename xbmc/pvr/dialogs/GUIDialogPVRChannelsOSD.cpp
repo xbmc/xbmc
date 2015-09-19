@@ -18,24 +18,25 @@
  *
  */
 
-#include "GUIDialogPVRChannelsOSD.h"
 #include "Application.h"
-#include "messaging/ApplicationMessenger.h"
 #include "FileItem.h"
+#include "GUIInfoManager.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "epg/EpgContainer.h"
+#include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "guilib/LocalizeStrings.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "GUIDialogPVRGuideInfo.h"
-#include "view/ViewState.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
-#include "GUIInfoManager.h"
 #include "utils/StringUtils.h"
+#include "view/ViewState.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/windows/GUIWindowPVRBase.h"
-#include "epg/EpgContainer.h"
+
+#include "GUIDialogPVRChannelsOSD.h"
+#include "GUIDialogPVRGuideInfo.h"
 
 using namespace PVR;
 using namespace EPG;

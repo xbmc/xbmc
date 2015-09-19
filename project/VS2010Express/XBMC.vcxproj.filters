@@ -1264,9 +1264,6 @@
     <ClCompile Include="..\..\xbmc\music\windows\GUIWindowMusicPlaylistEditor.cpp">
       <Filter>music\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\windows\GUIWindowMusicSongs.cpp">
-      <Filter>music\windows</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\music\windows\GUIWindowVisualisation.cpp">
       <Filter>music\windows</Filter>
     </ClCompile>
@@ -1436,9 +1433,6 @@
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\AsyncFileCopy.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\AutoPtrHandle.cpp">
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\BitstreamStats.cpp">
@@ -3472,6 +3466,9 @@
     <ClCompile Include="..\..\xbmc\interfaces\builtins\WeatherBuiltins.cpp">
       <Filter>interfaces\builtins</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAudioEngine.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4475,9 +4472,6 @@
     <ClInclude Include="..\..\xbmc\music\windows\GUIWindowMusicPlaylistEditor.h">
       <Filter>music\windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\windows\GUIWindowMusicSongs.h">
-      <Filter>music\windows</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\music\windows\GUIWindowVisualisation.h">
       <Filter>music\windows</Filter>
     </ClInclude>
@@ -4662,9 +4656,6 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\AsyncFileCopy.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\utils\AutoPtrHandle.h">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\BitstreamStats.h">
@@ -6771,6 +6762,15 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\builtins\WeatherBuiltins.h">
       <Filter>interfaces\builtins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAudioEngine.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEStreamData.h">
+      <Filter>cores\AudioEngine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\ScopeGuard.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -19,20 +19,20 @@
  */
 
 #include "FileItem.h"
-#include "settings/Settings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
+#include "epg/EpgContainer.h"
+#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
-#include "PVRTimers.h"
 #include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "epg/EpgContainer.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+
+#include "PVRTimers.h"
 
 #include <assert.h>
 #include <cstdlib>
@@ -493,7 +493,7 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannelPtr &channel, bool bDele
         if (bDeleteActiveItem && bDeleteRepeatingItem && bChannelsMatch)
         {
           CLog::Log(LOGDEBUG,"PVRTimers - %s - deleted timer %d on client %d", __FUNCTION__, (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
-          bReturn = (*timerIt)->DeleteFromClient(true, false) || bReturn;
+          bReturn = (*timerIt)->DeleteFromClient(true) || bReturn;
           SetChanged();
         }
       }
@@ -521,7 +521,7 @@ bool CPVRTimers::InstantTimer(const CPVRChannelPtr &channel)
   {
     newTimer.reset(new CPVRTimerInfoTag);
     /* set the timer data */
-    newTimer->m_iClientIndex      = -1;
+    newTimer->m_iClientIndex      = PVR_TIMER_NO_CLIENT_INDEX;
     newTimer->m_strTitle          = channel->ChannelName();
     newTimer->m_strSummary        = g_localizeStrings.Get(19056);
     newTimer->m_iChannelNumber    = channel->ChannelNumber();
@@ -588,11 +588,22 @@ bool CPVRTimers::DeleteTimer(const CFileItem &item, bool bForce /* = false */, b
     return false;
   }
 
-  const CPVRTimerInfoTagPtr tag = item.GetPVRTimerInfoTag();
+  CPVRTimerInfoTagPtr tag = item.GetPVRTimerInfoTag();
   if (!tag)
     return false;
 
-  return tag->DeleteFromClient(bForce, bDeleteSchedule);
+  if (bDeleteSchedule)
+  {
+    /* delete the repeating timer that scheduled this timer. */
+    tag = g_PVRTimers->GetByClient(tag->m_iClientId, tag->GetTimerScheduleId());
+    if (!tag)
+    {
+      CLog::Log(LOGERROR, "PVRTimers - %s - unable to obtain parent timer for given timer", __FUNCTION__);
+      return false;
+    }
+  }
+
+  return tag->DeleteFromClient(bForce);
 }
 
 bool CPVRTimers::RenameTimer(CFileItem &item, const std::string &strNewName)

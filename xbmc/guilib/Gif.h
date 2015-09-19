@@ -92,8 +92,6 @@ private:
   DllLibGif m_dll;
   std::string m_filename;
   GifFileType* m_gif;
-  bool m_hasBackground;
-  GifColor m_backColor;
   std::vector<GifColor> m_globalPalette;
   unsigned char* m_pTemplate;
   int m_isAnimated;
@@ -107,7 +105,7 @@ private:
   static void ConvertColorTable(std::vector<GifColor> &dest, ColorMapObject* src, unsigned int size);
   bool GcbToFrame(GifFrame &frame, unsigned int imgIdx);
   bool ExtractFrames(unsigned int count);
-  void SetFrameAreaToBack(unsigned char* dest, const GifFrame &frame);
+  void ClearFrameAreaToTransparency(unsigned char* dest, const GifFrame &frame);
   void ConstructFrame(GifFrame &frame, const unsigned char* src) const;
   bool PrepareTemplate(const GifFrame &frame);
   void Release();

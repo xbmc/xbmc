@@ -145,6 +145,8 @@ config.log
 /lib/addons/library.xbmc.codec/project/VS2010Express/Debug
 /lib/addons/library.xbmc.pvr/project/VS2010Express/Release
 /lib/addons/library.xbmc.pvr/project/VS2010Express/Debug
+/lib/addons/library.kodi.audioengine/project/VS2010Express/Release/
+/lib/addons/library.kodi.audioengine/project/VS2010Express/Debug/
 
 # /lib/cpluff/
 /lib/cpluff/ABOUT-NLS
@@ -530,6 +532,7 @@ lib/cpluff/stamp-h1
 
 # /xbmc/interfaces/
 /xbmc/interfaces/Makefile
+/xbmc/interfaces/builtins/Makefile
 /xbmc/interfaces/json-rpc/ServiceDescription.h
 /xbmc/interfaces/python/Makefile
 /xbmc/interfaces/python/generated/
@@ -544,6 +547,7 @@ lib/cpluff/stamp-h1
 
 # /xbmc/messaging/
 /xbmc/messaging/Makefile
+/xbmc/messaging/helpers/Makefile
 
 # /xbmc/music/
 /xbmc/music/karaoke/Makefile
@@ -825,6 +829,8 @@ xbmc/main/posix/Makefile
 /addons/library.kodi.guilib/libKODI_guilib.lib
 /addons/library.xbmc.pvr/libXBMC_pvr.dll
 /addons/library.xbmc.pvr/libXBMC_pvr.lib
+/addons/library.kodi.audioengine/libKODI_audioengine.dll
+/addons/library.kodi.audioengine/libKODI_audioengine.lib
 
 /pvr-addons
 /adsp-addons

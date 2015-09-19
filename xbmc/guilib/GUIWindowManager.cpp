@@ -42,7 +42,6 @@
 #include "windows/GUIWindowFileManager.h"
 #include "settings/windows/GUIWindowSettingsCategory.h"
 #include "music/windows/GUIWindowMusicPlaylist.h"
-#include "music/windows/GUIWindowMusicSongs.h"
 #include "music/windows/GUIWindowMusicNav.h"
 #include "music/windows/GUIWindowMusicPlaylistEditor.h"
 #include "video/windows/GUIWindowVideoPlaylist.h"
@@ -273,7 +272,6 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogSubtitles);
 
   Add(new CGUIWindowMusicPlayList);
-  Add(new CGUIWindowMusicSongs);
   Add(new CGUIWindowMusicNav);
   Add(new CGUIWindowMusicPlaylistEditor);
 
@@ -773,12 +771,9 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector
 {
   // translate virtual windows
   // virtual music window which returns the last open music window (aka the music start window)
-  if (iWindowID == WINDOW_MUSIC)
-  {
-    iWindowID = CSettings::GetInstance().GetInt(CSettings::SETTING_MYMUSIC_STARTWINDOW);
-    // ensure the music virtual window only returns music files and music library windows
-    if (iWindowID != WINDOW_MUSIC_NAV)
-      iWindowID = WINDOW_MUSIC_FILES;
+  if (iWindowID == WINDOW_MUSIC || iWindowID == WINDOW_MUSIC_FILES)
+  { // backward compatibility for pre-something
+    iWindowID = WINDOW_MUSIC_NAV;
   }
   // virtual video window which returns the last open video window (aka the video start window)
   if (iWindowID == WINDOW_VIDEOS || iWindowID == WINDOW_VIDEO_FILES)

@@ -18,23 +18,24 @@
  *
  */
 
-#include "GUIWindowPVRTimers.h"
-
 #include "ContextMenuManager.h"
 #include "GUIInfoManager.h"
-#include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "pvr/PVRManager.h"
-#include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
-#include "pvr/timers/PVRTimers.h"
-#include "pvr/addons/PVRClients.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+
+#include "pvr/PVRManager.h"
+#include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
+#include "pvr/timers/PVRTimers.h"
+#include "pvr/addons/PVRClients.h"
+
+#include "GUIWindowPVRTimers.h"
 
 using namespace PVR;
 
@@ -293,7 +294,7 @@ bool CGUIWindowPVRTimers::OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON 
 
     bool bDeleteSchedule(false);
     if (ConfirmDeleteTimer(item, bDeleteSchedule))
-      g_PVRTimers->DeleteTimer(*item, false, bDeleteSchedule);
+      CPVRTimers::DeleteTimer(*item, false, bDeleteSchedule);
   }
 
   return bReturn;
@@ -352,7 +353,7 @@ bool CGUIWindowPVRTimers::ActionDeleteTimer(CFileItem *item)
 {
   /* check if the timer tag is valid */
   CPVRTimerInfoTagPtr timerTag = item->GetPVRTimerInfoTag();
-  if (!timerTag || (timerTag->m_iClientIndex == -1))
+  if (!timerTag || (timerTag->m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX))
     return false;
 
   bool bDeleteSchedule(false);
@@ -360,7 +361,7 @@ bool CGUIWindowPVRTimers::ActionDeleteTimer(CFileItem *item)
     return false;
 
   /* delete the timer */
-  bool bReturn = g_PVRTimers->DeleteTimer(*item, false, bDeleteSchedule);
+  bool bReturn = CPVRTimers::DeleteTimer(*item, false, bDeleteSchedule);
 
   if (bReturn && (m_vecItems->GetObjectCount() == 0))
   {

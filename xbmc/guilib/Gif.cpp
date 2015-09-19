@@ -74,13 +74,11 @@ Gif::Gif() :
   m_numFrames(0),
   m_filename(""),
   m_gif(nullptr),
-  m_hasBackground(false),
   m_pTemplate(nullptr),
   m_isAnimated(-1)
 {
   if (!m_dll.Load())
     CLog::Log(LOGERROR, "Gif::Gif(): Could not load giflib");
-  memset(&m_backColor, 0, sizeof(m_backColor));
   m_gifFile = new XFILE::CFile();
 }
 
@@ -285,16 +283,6 @@ void Gif::InitTemplateAndColormap()
   {
     m_globalPalette.clear();
     ConvertColorTable(m_globalPalette, m_gif->SColorMap, m_gif->SColorMap->ColorCount);
-
-    // draw the canvas
-    m_backColor = m_globalPalette[m_gif->SBackGroundColor];
-    m_hasBackground = true;
-
-    for (unsigned int i = 0; i < m_height * m_width; ++i)
-    {
-      unsigned char *dest = m_pTemplate + (i *sizeof(GifColor));
-      memcpy(dest, &m_backColor, sizeof(GifColor));
-    }
   }
   else
     m_globalPalette.clear();
@@ -386,11 +374,16 @@ bool Gif::ExtractFrames(unsigned int count)
     {
       frame->m_palette.clear();
       ConvertColorTable(frame->m_palette, imageDesc.ColorMap, imageDesc.ColorMap->ColorCount);
-      // TODO save a backup of the palette for frames without a table in case there's no gloabl table.
+      // TODO save a backup of the palette for frames without a table in case there's no global table.
     }
     else if (m_gif->SColorMap)
     {
       frame->m_palette = m_globalPalette;
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "Gif::ExtractFrames(): No color map found for frame %d", i);
+      continue;
     }
 
     // fill delay, disposal and transparent color into frame
@@ -413,6 +406,8 @@ bool Gif::ExtractFrames(unsigned int count)
 
 void Gif::ConstructFrame(GifFrame &frame, const unsigned char* src) const
 {
+  size_t paletteSize = frame.m_palette.size();
+
   for (unsigned int dest_y = frame.m_top, src_y = 0; src_y < frame.m_height; ++dest_y, ++src_y)
   {
     unsigned char *to = frame.m_pImage + (dest_y * m_pitch) + (frame.m_left * sizeof(GifColor));
@@ -420,18 +415,19 @@ void Gif::ConstructFrame(GifFrame &frame, const unsigned char* src) const
     const unsigned char *from = src + (src_y * frame.m_width);
     for (unsigned int src_x = 0; src_x < frame.m_width; ++src_x)
     {
-      GifColor col = frame.m_palette[*from++];
+      unsigned char index = *from++;
+
+      if (index >= paletteSize)
+      {
+        CLog::Log(LOGDEBUG, "Gif::ConstructFrame(): Pixel (%d,%d) has no valid palette entry, skip it", src_x, src_y);
+        continue;
+      }
+
+      GifColor col = frame.m_palette[index];
       if (col.a != 0)
-      {
-        *to++ = col.b;
-        *to++ = col.g;
-        *to++ = col.r;
-        *to++ = col.a;
-      }
-      else
-      {
-        to += 4;
-      }
+        memcpy(to, &col, sizeof(GifColor));
+
+      to += 4;
     }
   }
 }
@@ -447,15 +443,14 @@ bool Gif::PrepareTemplate(const GifFrame &frame)
     memcpy(m_pTemplate, frame.m_pImage, m_imageSize);
     break;
 
-    /* Set area too background color */
+    /*
+       Clear the frame's area to transparency.
+       The disposal names is misleading. Do not restore to the background color because
+       this part of the specification is ignored by all browsers/image viewers.
+    */
   case DISPOSE_BACKGROUND:
   {
-    if (!m_hasBackground)
-    {
-      CLog::Log(LOGDEBUG, "Gif::PrepareTemplate(): Disposal method DISPOSE_BACKGROUND encountered, but the gif has no background.");
-      return false;
-    }
-    SetFrameAreaToBack(m_pTemplate, frame);
+    ClearFrameAreaToTransparency(m_pTemplate, frame);
     break;
   }
   /* Restore to previous content */
@@ -488,15 +483,15 @@ bool Gif::PrepareTemplate(const GifFrame &frame)
   return true;
 }
 
-void Gif::SetFrameAreaToBack(unsigned char* dest, const GifFrame &frame)
+void Gif::ClearFrameAreaToTransparency(unsigned char* dest, const GifFrame &frame)
 {
   for (unsigned int dest_y = frame.m_top, src_y = 0; src_y < frame.m_height; ++dest_y, ++src_y)
   {
     unsigned char *to = dest + (dest_y * m_pitch) + (frame.m_left * sizeof(GifColor));
     for (unsigned int src_x = 0; src_x < frame.m_width; ++src_x)
     {
-      memcpy(to, &m_backColor, sizeof(m_backColor));
-      to += 4;
+      to += 3;
+      *to++ = 0;
     }
   }
 }

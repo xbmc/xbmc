@@ -649,9 +649,9 @@ bool CApplication::Create()
   CSettings::GetInstance().SetLoaded();
 
   CLog::Log(LOGINFO, "creating subdirectories");
-  CLog::Log(LOGINFO, "userdata folder: %s", CProfilesManager::GetInstance().GetProfileUserDataFolder().c_str());
-  CLog::Log(LOGINFO, "recording folder: %s", CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH).c_str());
-  CLog::Log(LOGINFO, "screenshots folder: %s", CSettings::GetInstance().GetString(CSettings::SETTING_DEBUG_SCREENSHOTPATH).c_str());
+  CLog::Log(LOGINFO, "userdata folder: %s", CURL::GetRedacted(CProfilesManager::GetInstance().GetProfileUserDataFolder()).c_str());
+  CLog::Log(LOGINFO, "recording folder: %s", CURL::GetRedacted(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH)).c_str());
+  CLog::Log(LOGINFO, "screenshots folder: %s", CURL::GetRedacted(CSettings::GetInstance().GetString(CSettings::SETTING_DEBUG_SCREENSHOTPATH)).c_str());
   CDirectory::Create(CProfilesManager::GetInstance().GetUserDataFolder());
   CDirectory::Create(CProfilesManager::GetInstance().GetProfileUserDataFolder());
   CProfilesManager::GetInstance().CreateProfileFolders();
@@ -672,9 +672,6 @@ bool CApplication::Create()
     CLog::Log(LOGFATAL, "CApplication::Create: Failed to start the AudioEngine");
     return false;
   }
-
-  // start AudioDSP engine with a blocking message
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON);
 
   // restore AE's previous volume state
   SetHardwareVolume(m_volumeLevel);
@@ -1223,7 +1220,7 @@ bool CApplication::Initialize()
       uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
 
       CStereoscopicsManager::GetInstance().Initialize();
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON); // send a blocking message to active AudioDSP engine
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON, ACTIVE_AE_DSP_SYNC_ACTIVATE); // send a blocking message to active AudioDSP engine
     }
 
   }
@@ -1448,7 +1445,7 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     {
       if (((CSettingBool *) setting)->GetValue())
       {
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON);
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON, ACTIVE_AE_DSP_SYNC_ACTIVATE);
         CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_RESTART); // send non blocking media restart message
       }
       else

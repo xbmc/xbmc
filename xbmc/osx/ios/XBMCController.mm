@@ -385,32 +385,46 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   return NO;
 }
 //--------------------------------------------------------------
+- (void)addSwipeGesture:(UISwipeGestureRecognizerDirection)direction numTouches : (NSUInteger)numTouches
+{
+  UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc]
+                                          initWithTarget:self action:@selector(handleSwipe:)];
+
+  swipe.delaysTouchesBegan = NO;
+  swipe.numberOfTouchesRequired = numTouches;
+  swipe.direction = direction;
+  swipe.delegate = self;
+  [m_glView addGestureRecognizer:swipe];
+  [swipe release];
+}
+//--------------------------------------------------------------
+- (void)addTapGesture:(NSUInteger)numTouches
+{
+  UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
+                                                   initWithTarget:self action:@selector(handleTap:)];
+
+  tapGesture.delaysTouchesBegan = NO;
+  tapGesture.numberOfTapsRequired = 1;
+  tapGesture.numberOfTouchesRequired = numTouches;
+
+  [m_glView addGestureRecognizer:tapGesture];
+  [tapGesture release];
+}
+//--------------------------------------------------------------
 - (void)createGestureRecognizers 
 {
-  //1 finger single tab
-  UITapGestureRecognizer *singleFingerSingleTap = [[UITapGestureRecognizer alloc]
-                                                   initWithTarget:self action:@selector(handleSingleFingerSingleTap:)];
+  //1 finger single tap
+  [self addTapGesture:1];
 
-  singleFingerSingleTap.delaysTouchesBegan = NO;
-  singleFingerSingleTap.numberOfTapsRequired = 1;
-  singleFingerSingleTap.numberOfTouchesRequired = 1;
-
-  [m_glView addGestureRecognizer:singleFingerSingleTap];
-  [singleFingerSingleTap release];
-
-  //2 finger single tab - right mouse
-  //single finger double tab delays single finger single tab - so we
+  //2 finger single tap - right mouse
+  //single finger double tap delays single finger single tap - so we
   //go for 2 fingers here - so single finger single tap is instant
-  UITapGestureRecognizer *doubleFingerSingleTap = [[UITapGestureRecognizer alloc]
-    initWithTarget:self action:@selector(handleDoubleFingerSingleTap:)];  
+  [self addTapGesture:2];
 
-  doubleFingerSingleTap.delaysTouchesBegan = NO;
-  doubleFingerSingleTap.numberOfTapsRequired = 1;
-  doubleFingerSingleTap.numberOfTouchesRequired = 2;
-  [m_glView addGestureRecognizer:doubleFingerSingleTap];
-  [doubleFingerSingleTap release];
+  //3 finger single tap
+  [self addTapGesture:3];
 
-  //1 finger single long tab - right mouse - alernative
+  //1 finger single long tap - right mouse - alernative
   UILongPressGestureRecognizer *singleFingerSingleLongTap = [[UILongPressGestureRecognizer alloc]
     initWithTarget:self action:@selector(handleSingleFingerSingleLongTap:)];  
 
@@ -419,61 +433,42 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   [m_glView addGestureRecognizer:singleFingerSingleLongTap];
   [singleFingerSingleLongTap release];
 
-  //double finger swipe left for backspace ... i like this fast backspace feature ;)
-  UISwipeGestureRecognizer *swipeLeft2 = [[UISwipeGestureRecognizer alloc]
-                                            initWithTarget:self action:@selector(handleSwipe:)];
+  //triple finger swipe left
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionLeft numTouches:3];
 
-  swipeLeft2.delaysTouchesBegan = NO;
-  swipeLeft2.numberOfTouchesRequired = 2;
-  swipeLeft2.direction = UISwipeGestureRecognizerDirectionLeft;
-  swipeLeft2.delegate = self;
-  [m_glView addGestureRecognizer:swipeLeft2];
-  [swipeLeft2 release];
+  //double finger swipe left for backspace ... i like this fast backspace feature ;)
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionLeft numTouches:2];
 
   //single finger swipe left
-  UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc]
-                                          initWithTarget:self action:@selector(handleSwipe:)];
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionLeft numTouches:1];
 
-  swipeLeft.delaysTouchesBegan = NO;
-  swipeLeft.numberOfTouchesRequired = 1;
-  swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
-  swipeLeft.delegate = self;
-  [m_glView addGestureRecognizer:swipeLeft];
-  [swipeLeft release];
-  
+  //triple finger swipe right
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionRight numTouches:3];
+
+  //double finger swipe right
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionRight numTouches:2];
+
   //single finger swipe right
-  UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc]
-                                         initWithTarget:self action:@selector(handleSwipe:)];
-  
-  swipeRight.delaysTouchesBegan = NO;
-  swipeRight.numberOfTouchesRequired = 1;
-  swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
-  swipeRight.delegate = self;
-  [m_glView addGestureRecognizer:swipeRight];
-  [swipeRight release];
-  
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionRight numTouches:1];
+
+  //triple finger swipe up
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionUp numTouches:3];
+
+  //double finger swipe up
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionUp numTouches:2];
+
   //single finger swipe up
-  UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc]
-                                         initWithTarget:self action:@selector(handleSwipe:)];
-  
-  swipeUp.delaysTouchesBegan = NO;
-  swipeUp.numberOfTouchesRequired = 1;
-  swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
-  swipeUp.delegate = self;
-  [m_glView addGestureRecognizer:swipeUp];
-  [swipeUp release];
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionUp numTouches:1];
+
+  //triple finger swipe down
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionDown numTouches:3];
+
+  //double finger swipe down
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionDown numTouches:2];
 
   //single finger swipe down
-  UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc]
-                                         initWithTarget:self action:@selector(handleSwipe:)];
-  
-  swipeDown.delaysTouchesBegan = NO;
-  swipeDown.numberOfTouchesRequired = 1;
-  swipeDown.direction = UISwipeGestureRecognizerDirectionDown;
-  swipeDown.delegate = self;
-  [m_glView addGestureRecognizer:swipeDown];
-  [swipeDown release];
-  
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionDown numTouches:1];
+
   //for pan gestures with one finger
   UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]
     initWithTarget:self action:@selector(handlePan:)];
@@ -675,28 +670,16 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   }
 }
 //--------------------------------------------------------------
-- (IBAction)handleSingleFingerSingleTap:(UIGestureRecognizer *)sender 
+- (IBAction)handleTap:(UIGestureRecognizer *)sender
 {
   //Allow the tap gesture during init
   //(for allowing the user to tap away any messagboxes during init)
-  if( [m_glView isReadyToRun] )
+  if( ([m_glView isReadyToRun] && [sender numberOfTouches] == 1) || [m_glView isXBMCAlive])
   {
     CGPoint point = [sender locationOfTouch:0 inView:m_glView];
     point.x *= screenScale;
     point.y *= screenScale;
     //NSLog(@"%s singleTap", __PRETTY_FUNCTION__);
-    CGenericTouchActionHandler::GetInstance().OnTap((float)point.x, (float)point.y, [sender numberOfTouches]);
-  }
-}
-//--------------------------------------------------------------
-- (IBAction)handleDoubleFingerSingleTap:(UIGestureRecognizer *)sender
-{
-  if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
-  {
-    CGPoint point = [sender locationOfTouch:0 inView:m_glView];
-    point.x *= screenScale;
-    point.y *= screenScale;
-    //NSLog(@"%s toubleTap", __PRETTY_FUNCTION__);
     CGenericTouchActionHandler::GetInstance().OnTap((float)point.x, (float)point.y, [sender numberOfTouches]);
   }
 }

@@ -18,8 +18,9 @@
  *
  */
 
-#include "GUIDialogPVRRecordingInfo.h"
 #include "FileItem.h"
+
+#include "GUIDialogPVRRecordingInfo.h"
 
 using namespace PVR;
 

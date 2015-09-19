@@ -18,24 +18,25 @@
  *
  */
 
-#include "GUIDialogPVRTimerSettings.h"
-
 #include "FileItem.h"
 #include "addons/include/xbmc_pvr_types.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/timers/PVRTimerInfoTag.h"
-#include "pvr/timers/PVRTimerType.h"
 #include "settings/SettingUtils.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClient.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
+#include "pvr/timers/PVRTimerType.h"
+
+#include "GUIDialogPVRTimerSettings.h"
 
 using namespace PVR;
 
@@ -113,7 +114,7 @@ void CGUIDialogPVRTimerSettings::SetTimer(CFileItem *item)
   // Copy data we need from tag. Do not modify the tag itself until Save()!
   m_timerType     = m_timerInfoTag->GetTimerType();
   m_bIsRadio      = m_timerInfoTag->m_bIsRadio;
-  m_bIsNewTimer   = m_timerInfoTag->m_iClientIndex == -1;
+  m_bIsNewTimer   = m_timerInfoTag->m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX;
   m_bTimerActive  = m_bIsNewTimer || m_timerInfoTag->IsActive();
   m_bStartAnyTime = m_bIsNewTimer || m_timerInfoTag->m_bStartAnyTime;
   m_bEndAnyTime   = m_bIsNewTimer || m_timerInfoTag->m_bEndAnyTime;

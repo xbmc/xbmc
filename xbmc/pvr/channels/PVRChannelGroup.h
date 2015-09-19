@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -21,9 +20,10 @@
  */
 
 #include "FileItem.h"
-#include "PVRChannel.h"
 #include "settings/lib/ISettingCallback.h"
 #include "utils/JobManager.h"
+
+#include "PVRChannel.h"
 
 #include <memory>
 

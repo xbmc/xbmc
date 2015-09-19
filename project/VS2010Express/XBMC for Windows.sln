@@ -67,6 +67,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Effects11", "..\..\lib\win3
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libKODI_adsp", "..\..\lib\addons\library.kodi.adsp\project\VS2010Express\libKODI_adsp.vcxproj", "{44F93C4D-85DD-4452-99BB-F1D196174024}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libKODI_audioengine", "..\..\lib\addons\library.kodi.audioengine\project\VS2010Express\libKODI_audioengine.vcxproj", "{6B96FD7D-26EE-415B-8858-27757A0B1273}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Testsuite|Win32 = Debug Testsuite|Win32
@@ -244,6 +246,12 @@ Global
 		{44F93C4D-85DD-4452-99BB-F1D196174024}.Debug|Win32.Build.0 = Debug|Win32
 		{44F93C4D-85DD-4452-99BB-F1D196174024}.Release|Win32.ActiveCfg = Release|Win32
 		{44F93C4D-85DD-4452-99BB-F1D196174024}.Release|Win32.Build.0 = Release|Win32
+		{6B96FD7D-26EE-415B-8858-27757A0B1273}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{6B96FD7D-26EE-415B-8858-27757A0B1273}.Debug Testsuite|Win32.Build.0 = Debug|Win32
+		{6B96FD7D-26EE-415B-8858-27757A0B1273}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6B96FD7D-26EE-415B-8858-27757A0B1273}.Debug|Win32.Build.0 = Debug|Win32
+		{6B96FD7D-26EE-415B-8858-27757A0B1273}.Release|Win32.ActiveCfg = Release|Win32
+		{6B96FD7D-26EE-415B-8858-27757A0B1273}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

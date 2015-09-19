@@ -24,7 +24,7 @@
 /*
  * The RDS decoder bases partly on the source of the VDR radio plugin.
  * http://www.egal-vdr.de/plugins/
- * and reworked a bit with references from SPB 490, IEC62106 
+ * and reworked a bit with references from SPB 490, IEC62106
  * and several other documents.
  *
  * A lot more information is sendet which is currently unused and partly
@@ -321,7 +321,7 @@ enum {
 };
 
 /* page 71, Annex D, table D.1 in the standard and Annex N */
-const char *piCountryCodes_A[15][7]=
+static const char *piCountryCodes_A[15][7]=
 {
   // 0   1    2    3    4    5    6
   {"US","__","AI","BO","GT","__","__"}, // 1
@@ -341,7 +341,7 @@ const char *piCountryCodes_A[15][7]=
   {"__","GL","BS","GY","__","VG","PM"}  // F
 };
 
-const char *piCountryCodes_D[15][7]=
+static const char *piCountryCodes_D[15][7]=
 {
   // 0   1    2    3    4    5    6
   {"CM","NA","SL","__","__","__","__"}, // 1
@@ -361,7 +361,7 @@ const char *piCountryCodes_D[15][7]=
   {"MW","NG","__","__","__","__","__"}  // F
 };
 
-const char *piCountryCodes_E[15][7]=
+static const char *piCountryCodes_E[15][7]=
 {
   // 0   1    2    3    4    5    6
   {"DE","GR","MA","__","MD","__","__"},
@@ -381,7 +381,7 @@ const char *piCountryCodes_E[15][7]=
   {"EG","FR","NO","BY","BA","__","__"}  // F
 };
 
-const char *piCountryCodes_F[15][7]=
+static const char *piCountryCodes_F[15][7]=
 {
   // 0   1    2    3    4    5    6
   {"AU","KI","KW","LA","__","__","__"}, // 1
@@ -402,7 +402,7 @@ const char *piCountryCodes_F[15][7]=
 };
 
 /* see page 84, Annex J in the standard */
-const std::string piRDSLanguageCodes[128]=
+static const std::string piRDSLanguageCodes[128]=
 {
   // 0      1      2      3      4      5      6      7      8      9      A      B      C      D      E      F
   "___", "alb", "bre", "cat", "hrv", "wel", "cze", "dan", "ger", "eng", "spa", "epo", "est", "baq", "fae", "fre", // 0
@@ -418,23 +418,23 @@ const std::string piRDSLanguageCodes[128]=
 /* ----------------------------------------------------------------------------------------------------------- */
 
 #define EntityChars 56
-const char *entitystr[EntityChars]  = { "&apos;",   "&amp;",    "&quot;",  "&gt",      "&lt",      "&copy;",   "&times;", "&nbsp;",
-                                        "&Auml;",   "&auml;",   "&Ouml;",  "&ouml;",   "&Uuml;",   "&uuml;",   "&szlig;", "&deg;",
-                                        "&Agrave;", "&Aacute;", "&Acirc;", "&Atilde;", "&agrave;", "&aacute;", "&acirc;", "&atilde;",
-                                        "&Egrave;", "&Eacute;", "&Ecirc;", "&Euml;",   "&egrave;", "&eacute;", "&ecirc;", "&euml;",
-                                        "&Igrave;", "&Iacute;", "&Icirc;", "&Iuml;",   "&igrave;", "&iacute;", "&icirc;", "&iuml;",
-                                        "&Ograve;", "&Oacute;", "&Ocirc;", "&Otilde;", "&ograve;", "&oacute;", "&ocirc;", "&otilde;",
-                                        "&Ugrave;", "&Uacute;", "&Ucirc;", "&Ntilde;", "&ugrave;", "&uacute;", "&ucirc;", "&ntilde;" };
-const char *entitychar[EntityChars] = { "'",        "&",        "\"",      ">",        "<",         "c",        "*",      " ",
-                                        "Ä",        "ä",        "Ö",       "ö",        "Ü",         "ü",        "ß",      "°",
-                                        "À",        "Á",        "Â",       "Ã",        "à",         "á",        "â",      "ã",
-                                        "È",        "É",        "Ê",       "Ë",        "è",         "é",        "ê",      "ë",
-                                        "Ì",        "Í",        "Î",       "Ï",        "ì",         "í",        "î",      "ï",
-                                        "Ò",        "Ó",        "Ô",       "Õ",        "ò",         "ó",        "ô",      "õ",
-                                        "Ù",        "Ú",        "Û",       "Ñ",        "ù",         "ú",        "û",      "ñ" };
+static const char *entitystr[EntityChars]  = { "&apos;",   "&amp;",    "&quot;",  "&gt",      "&lt",      "&copy;",   "&times;", "&nbsp;",
+                                               "&Auml;",   "&auml;",   "&Ouml;",  "&ouml;",   "&Uuml;",   "&uuml;",   "&szlig;", "&deg;",
+                                               "&Agrave;", "&Aacute;", "&Acirc;", "&Atilde;", "&agrave;", "&aacute;", "&acirc;", "&atilde;",
+                                               "&Egrave;", "&Eacute;", "&Ecirc;", "&Euml;",   "&egrave;", "&eacute;", "&ecirc;", "&euml;",
+                                               "&Igrave;", "&Iacute;", "&Icirc;", "&Iuml;",   "&igrave;", "&iacute;", "&icirc;", "&iuml;",
+                                               "&Ograve;", "&Oacute;", "&Ocirc;", "&Otilde;", "&ograve;", "&oacute;", "&ocirc;", "&otilde;",
+                                               "&Ugrave;", "&Uacute;", "&Ucirc;", "&Ntilde;", "&ugrave;", "&uacute;", "&ucirc;", "&ntilde;" };
+static const char *entitychar[EntityChars] = { "'",        "&",        "\"",      ">",        "<",         "c",        "*",      " ",
+                                               "Ä",        "ä",        "Ö",       "ö",        "Ü",         "ü",        "ß",      "°",
+                                               "À",        "Á",        "Â",       "Ã",        "à",         "á",        "â",      "ã",
+                                               "È",        "É",        "Ê",       "Ë",        "è",         "é",        "ê",      "ë",
+                                               "Ì",        "Í",        "Î",       "Ï",        "ì",         "í",        "î",      "ï",
+                                               "Ò",        "Ó",        "Ô",       "Õ",        "ò",         "ó",        "ô",      "õ",
+                                               "Ù",        "Ú",        "Û",       "Ñ",        "ù",         "ú",        "û",      "ñ" };
 
 // RDS-Chartranslation: 0x80..0xff
-unsigned char sRDSAddChar[128] =
+static unsigned char sRDSAddChar[128] =
 {
   0xe1, 0xe0, 0xe9, 0xe8, 0xed, 0xec, 0xf3, 0xf2,
   0xfa, 0xf9, 0xd1, 0xc7, 0x8c, 0xdf, 0x8e, 0x8f,
@@ -454,7 +454,7 @@ unsigned char sRDSAddChar[128] =
   0xfe, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff
 };
 
-char *rds_entitychar(char *text)
+static char *rds_entitychar(char *text)
 {
   int i = 0, l, lof, lre, space;
   char *temp;
@@ -481,23 +481,25 @@ char *rds_entitychar(char *text)
         memmove(text+lof+1+lre, "       ", l-1);
     }
     else
-      i++;
+      ++i;
   }
 
   return text;
 }
 
-unsigned short crc16_ccitt(const unsigned char *daten, int len, bool skipfirst)
+static unsigned short crc16_ccitt(const unsigned char *data, int len, bool skipfirst)
 {
   // CRC16-CCITT: x^16 + x^12 + x^5 + 1
   // with start 0xffff and result invers
-  register unsigned short crc = 0xffff;
+  unsigned short crc = 0xffff;
 
-  if (skipfirst) daten++;
+  if (skipfirst)
+    ++data;
+
   while (len--)
   {
     crc = (crc >> 8) | (crc << 8);
-    crc ^= *daten++;
+    crc ^= *data++;
     crc ^= (crc & 0xff) >> 4;
     crc ^= (crc << 8) << 4;
     crc ^= ((crc & 0xff) << 4) << 1;
@@ -583,7 +585,7 @@ void CDVDRadioRDSData::ResetRDSCache()
 
   m_PS_Present = false;
   m_PS_Index = 0;
-  for (int i = 0; i < PS_TEXT_ENTRIES; i++)
+  for (int i = 0; i < PS_TEXT_ENTRIES; ++i)
   {
     memset(m_PS_Text[i], 0x20, 8);
     m_PS_Text[i][8] = 0;
@@ -608,7 +610,7 @@ void CDVDRadioRDSData::ResetRDSCache()
   m_RT_MaxSize = 4;
   m_RT_NewItem = false;
   m_RT_Index = 0;
-  for (int i = 0; i < 5; i++)
+  for (int i = 0; i < 5; ++i)
     memset(m_RT_Text[i], 0, RT_MEL);
   m_RT.clear();
 
@@ -714,12 +716,12 @@ std::string CDVDRadioRDSData::GetRadioText(unsigned int line)
   {
     std::string temp = "";
     int ind = (m_PS_Index == 0) ? 11 : m_PS_Index - 1;
-    for (int i = ind+1; i < PS_TEXT_ENTRIES; i++)
+    for (int i = ind+1; i < PS_TEXT_ENTRIES; ++i)
     {
       temp += m_PS_Text[i];
       temp += ' ';
     }
-    for (int i = 0; i <= ind; i++)
+    for (int i = 0; i <= ind; ++i)
     {
       temp += m_PS_Text[i];
       temp += ' ';
@@ -744,7 +746,7 @@ void CDVDRadioRDSData::SetRadioStyle(std::string genre)
 
 void CDVDRadioRDSData::ProcessUECP(const unsigned char *data, unsigned int len)
 {
-  for (unsigned int i = 0; i < len; i++)
+  for (unsigned int i = 0; i < len; ++i)
   {
     if (data[i] == UECP_DATA_START)                               //!< Start
     {
@@ -882,13 +884,13 @@ unsigned int CDVDRadioRDSData::DecodePS(uint8_t *msgElement)
 {
   uint8_t *text = msgElement+3;
 
-  for (int i = 0; i < 8; i++)
+  for (int i = 0; i < 8; ++i)
   {
     if (text[i] <= 0xfe)
       m_PS_Text[m_PS_Index][i] = (text[i] >= 0x80) ? sRDSAddChar[text[i]-0x80] : text[i]; //!< additional rds-character, see RBDS-Standard, Annex E
   }
 
-  m_PS_Index++;
+  ++m_PS_Index;
   if (m_PS_Index >= PS_TEXT_ENTRIES)
     m_PS_Index = 0;
 
@@ -1048,7 +1050,7 @@ unsigned int CDVDRadioRDSData::DecodePTYN(uint8_t *msgElement)
   // decode Text
   uint8_t *text = msgElement+3;
 
-  for (int i = 0; i < 8; i++)
+  for (int i = 0; i < 8; ++i)
   {
     if (text[i] <= 0xfe)
       m_PTYN[i] = (text[i] >= 0x80) ? sRDSAddChar[text[i]-0x80] : text[i];
@@ -1096,7 +1098,7 @@ unsigned int CDVDRadioRDSData::DecodeRT(uint8_t *msgElement, unsigned int len)
   {
     m_RT.clear();
     m_RT_Index = 0;
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 5; ++i)
       memset(m_RT_Text[i], 0, RT_MEL);
   }
   else
@@ -1108,7 +1110,7 @@ unsigned int CDVDRadioRDSData::DecodeRT(uint8_t *msgElement, unsigned int len)
     //! byte 4 = RT-Status bitcodet (0=AB-flagcontrol, 1-4=Transmission-Number, 5+6=Buffer-Config, ingnored, always 0x01 ?)
     char temptext[RT_MEL];
     memset(temptext, 0x0, RT_MEL);
-    for (unsigned int i = 1, ii = 0; i < msgLength; i++)
+    for (unsigned int i = 1, ii = 0; i < msgLength; ++i)
     {
       if (msgElement[UECP_ME_DATA+i] <= 0xfe) // additional rds-character, see RBDS-Standard, Annex E
         temptext[ii++] = (msgElement[UECP_ME_DATA+i] >= 0x80) ? sRDSAddChar[msgElement[UECP_ME_DATA+i]-0x80] : msgElement[UECP_ME_DATA+i];
@@ -1118,7 +1120,7 @@ unsigned int CDVDRadioRDSData::DecodeRT(uint8_t *msgElement, unsigned int len)
 
     // check repeats
     bool repeat = false;
-    for (int ind = 0; ind < m_RT_MaxSize; ind++)
+    for (int ind = 0; ind < m_RT_MaxSize; ++ind)
     {
       if (memcmp(m_RT_Text[ind], temptext, RT_MEL) == 0)
         repeat = true;
@@ -1135,7 +1137,7 @@ unsigned int CDVDRadioRDSData::DecodeRT(uint8_t *msgElement, unsigned int len)
       if ((int)m_RT.size() > m_RT_MaxSize)
         m_RT.pop_back();
 
-      m_RT_Index++;
+      ++m_RT_Index;
       if (m_RT_Index >= m_RT_MaxSize)
         m_RT_Index = 0;
     }
@@ -1253,7 +1255,7 @@ unsigned int CDVDRadioRDSData::DecodeRTPlus(uint8_t *msgElement, unsigned int le
   // save info
   MUSIC_INFO::CMusicInfoTag *currentMusic = g_application.CurrentFileItem().GetMusicInfoTag();
 
-  for (int i = 0; i < 2; i++)
+  for (int i = 0; i < 2; ++i)
   {
     if (rtp_start[i]+rtp_len[i]+1 >= RT_MEL)  // length-error
     {
@@ -1636,8 +1638,8 @@ unsigned int CDVDRadioRDSData::DecodeSlowLabelingCodes(uint8_t *msgElement)
         CLog::Log(LOGERROR, "Radio RDS - %s - invalid language code %i", __FUNCTION__, slowLabellingCode);
       break;
 
-    case VARCODE_TMC_IDENT:      // TMC identification
-    case VARCODE_PAGING_IDENT:      // Paging identification
+    case VARCODE_TMC_IDENT:           // TMC identification
+    case VARCODE_PAGING_IDENT:        // Paging identification
     case VARCODE_OWN_BROADCASTER:
     case VARCODE_EWS_CHANNEL_IDENT:
     default:

@@ -21,7 +21,8 @@
 
 #include "guilib/GUIDialog.h"
 #include "view/GUIViewControl.h"
-#include "../channels/PVRChannelGroup.h"
+
+#include "pvr/channels/PVRChannelGroup.h"
 
 class CFileItemList;
 

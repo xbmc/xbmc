@@ -178,28 +178,17 @@ int CGUIDialogSelect::Add(const std::string& strLabel)
   return m_vecList->Size() - 1;
 }
 
-void CGUIDialogSelect::Add(const CFileItemList& items)
+int CGUIDialogSelect::Add(const CFileItem& item)
 {
-  for (int i=0;i<items.Size();++i)
-  {
-    CFileItemPtr item = items[i];
-    Add(item.get());
-  }
-}
-
-int CGUIDialogSelect::Add(const CFileItem* pItem)
-{
-  CFileItemPtr item(new CFileItem(*pItem));
-  m_vecList->Add(item);
+  m_vecList->Add(CFileItemPtr(new CFileItem(item)));
   return m_vecList->Size() - 1;
 }
 
-void CGUIDialogSelect::SetItems(CFileItemList* pList)
+void CGUIDialogSelect::SetItems(const CFileItemList& pList)
 {
   // need to make internal copy of list to be sure dialog is owner of it
   m_vecList->Clear();
-  if (pList)
-    m_vecList->Copy(*pList);
+  m_vecList->Copy(pList);
 }
 
 int CGUIDialogSelect::GetSelectedLabel() const

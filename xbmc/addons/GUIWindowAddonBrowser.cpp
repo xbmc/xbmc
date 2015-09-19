@@ -603,7 +603,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
         item->Select(true);
     }
   }
-  dialog->SetItems(&items);
+  dialog->SetItems(items);
   dialog->SetMultiSelection(multipleSelection);
   dialog->Open();
 

@@ -27,7 +27,6 @@
 #include "FileItem.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
-#include "utils/AutoPtrHandle.h"
 #ifdef HAS_DS_PLAYER
 #include "DSPlayer.h"
 #endif
@@ -38,8 +37,6 @@
 #include "utils/XMLUtils.h"
 
 #define PLAYERCOREFACTORY_XML "playercorefactory.xml"
-
-using namespace AUTOPTR;
 
 CPlayerCoreFactory::CPlayerCoreFactory()
 { }

@@ -33,6 +33,7 @@
 
 #define ACTIVE_AE_DSP_STATE_ON  0
 #define ACTIVE_AE_DSP_STATE_OFF 1
+#define ACTIVE_AE_DSP_SYNC_ACTIVATE  0
 #define ACTIVE_AE_DSP_ASYNC_ACTIVATE  1
 
 extern "C" {
@@ -76,7 +77,7 @@ namespace ActiveAE
      * @brief Stop the ActiveAEDSP and destroy all objects it created.
      */
     virtual ~CActiveAEDSP();
-    //@{
+
     /*!
      * @brief Get the instance of the ActiveAEDSP.
      * @return The ActiveAEDSP instance.

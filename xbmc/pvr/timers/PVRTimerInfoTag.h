@@ -196,7 +196,7 @@ namespace PVR
 
     /* Client control functions */
     bool AddToClient() const;
-    bool DeleteFromClient(bool bForce = false, bool bDeleteSchedule = false) const;
+    bool DeleteFromClient(bool bForce = false) const;
     bool RenameOnClient(const std::string &strNewName);
     bool UpdateOnClient();
 
@@ -227,7 +227,7 @@ namespace PVR
     std::string           m_strSummary;          /*!< @brief summary string with the time to show inside a GUI list */
     PVR_TIMER_STATE       m_state;               /*!< @brief the state of this timer */
     int                   m_iClientId;           /*!< @brief ID of the backend */
-    int                   m_iClientIndex;        /*!< @brief index number of the tag, given by the backend, -1 for new */
+    unsigned int          m_iClientIndex;        /*!< @brief index number of the tag, given by the backend, PVR_TIMER_NO_CLIENT_INDEX for new */
     unsigned int          m_iParentClientIndex;  /*!< @brief for timers scheduled by repeated timers, the index number of the parent, given by the backend, PVR_TIMER_NO_PARENT for no parent */
     int                   m_iClientChannelUid;   /*!< @brief channel uid */
     bool                  m_bStartAnyTime;       /*!< @brief Ignore start date and time clock. Record at 'Any Time' */

@@ -582,7 +582,7 @@ CVariant &CVariant::operator=(const CVariant &rhs)
     m_data.integer = rhs.m_data.integer;
     break;
   case VariantTypeUnsignedInteger:
-    m_data.integer = rhs.m_data.unsignedinteger;
+    m_data.unsignedinteger = rhs.m_data.unsignedinteger;
     break;
   case VariantTypeBoolean:
     m_data.boolean = rhs.m_data.boolean;

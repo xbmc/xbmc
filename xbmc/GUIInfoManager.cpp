@@ -1359,11 +1359,8 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     else if (cat.name == "rds")
     {
       if (prop.name == "getline")
-      {
-        std::string cat = prop.param(0);
-        StringUtils::ToLower(cat);
-        return AddMultiInfo(GUIInfo(RDS_GET_RADIOTEXT_LINE, atoi(cat.c_str())));
-      }
+        return AddMultiInfo(GUIInfo(RDS_GET_RADIOTEXT_LINE, atoi(prop.param(0).c_str())));
+
       for (size_t i = 0; i < sizeof(rds) / sizeof(infomap); i++)
       {
         if (prop.name == rds[i].str)
@@ -1806,7 +1803,8 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VIDEOPLAYER_AUDIO_CHANNELS:
     if(g_application.m_pPlayer->IsPlaying())
     {
-      strLabel = StringUtils::Format("%i", m_audioInfo.channels);
+      if (m_audioInfo.channels > 0)
+        strLabel = StringUtils::Format("%i", m_audioInfo.channels);
     }
     break;
   case VIDEOPLAYER_AUDIO_LANG:
@@ -3950,7 +3948,7 @@ std::string CGUIInfoManager::GetRadioRDSLabel(int item)
 
   case RDS_ALBUM_TRACKNUMBER:
     {
-      if (!tag.GetAlbumTrackNumber() > 0)
+      if (tag.GetAlbumTrackNumber() > 0)
         return StringUtils::Format("%i", tag.GetAlbumTrackNumber());
       break;
     }
@@ -4373,6 +4371,14 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
         if (tag && !tag->IsRadio())
           return g_PVRManager.GetPlayingTVGroupName();
       }
+    }
+  }
+  else if (m_currentFile->HasPVRRecordingInfoTag())
+  {
+    switch (item)
+    {
+    case VIDEOPLAYER_PLOT:
+      return m_currentFile->GetPVRRecordingInfoTag()->m_strPlot;
     }
   }
   else if (m_currentFile->HasVideoInfoTag())
@@ -5559,7 +5565,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     {
       std::string strResult;
       int iChannels = item->GetVideoInfoTag()->m_streamDetails.GetAudioChannels();
-      if (iChannels > -1)
+      if (iChannels > 0)
         strResult = StringUtils::Format("%i", iChannels);
       return strResult;
     }

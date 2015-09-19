@@ -93,6 +93,7 @@ public:
   static const std::string SETTING_VIDEOLIBRARY_TVSHOWSINCLUDEALLSEASONSANDSPECIALS;
   static const std::string SETTING_VIDEOLIBRARY_SHOWALLITEMS;
   static const std::string SETTING_VIDEOLIBRARY_GROUPMOVIESETS;
+  static const std::string SETTING_VIDEOLIBRARY_GROUPSINGLEITEMSETS;
   static const std::string SETTING_VIDEOLIBRARY_UPDATEONSTARTUP;
   static const std::string SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE;
   static const std::string SETTING_VIDEOLIBRARY_CLEANUP;
@@ -261,9 +262,7 @@ public:
   static const std::string SETTING_MYMUSIC_STARTWINDOW;
   static const std::string SETTING_MYMUSIC_SONGTHUMBINVIS;
   static const std::string SETTING_MYMUSIC_DEFAULTLIBVIEW;
-  static const std::string SETTING_PICTURES_USETAGS;
   static const std::string SETTING_PICTURES_GENERATETHUMBS;
-  static const std::string SETTING_PICTURES_USEEXIFROTATION;
   static const std::string SETTING_PICTURES_SHOWVIDEOS;
   static const std::string SETTING_PICTURES_DISPLAYRESOLUTION;
   static const std::string SETTING_SLIDESHOW_STAYTIME;
