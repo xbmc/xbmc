@@ -181,7 +181,7 @@ void COverlayText::Render(OVERLAY::SRenderState &state)
   float width_max = (float) res.Overscan.right - res.Overscan.left;
 
   if (m_subalign == SUBTITLE_ALIGN_MANUAL
-  ||  m_subalign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE
+  ||  m_subalign == SUBTITLE_ALIGN_TOP_OUTSIDE
   ||  m_subalign == SUBTITLE_ALIGN_BOTTOM_INSIDE)
     y -= m_height;
 
