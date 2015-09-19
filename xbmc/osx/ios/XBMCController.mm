@@ -398,32 +398,33 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   [swipe release];
 }
 //--------------------------------------------------------------
+- (void)addTapGesture:(NSUInteger)numTouches
+{
+  UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
+                                                   initWithTarget:self action:@selector(handleTap:)];
+
+  tapGesture.delaysTouchesBegan = NO;
+  tapGesture.numberOfTapsRequired = 1;
+  tapGesture.numberOfTouchesRequired = numTouches;
+
+  [m_glView addGestureRecognizer:tapGesture];
+  [tapGesture release];
+}
+//--------------------------------------------------------------
 - (void)createGestureRecognizers 
 {
-  //1 finger single tab
-  UITapGestureRecognizer *singleFingerSingleTap = [[UITapGestureRecognizer alloc]
-                                                   initWithTarget:self action:@selector(handleSingleFingerSingleTap:)];
+  //1 finger single tap
+  [self addTapGesture:1];
 
-  singleFingerSingleTap.delaysTouchesBegan = NO;
-  singleFingerSingleTap.numberOfTapsRequired = 1;
-  singleFingerSingleTap.numberOfTouchesRequired = 1;
-
-  [m_glView addGestureRecognizer:singleFingerSingleTap];
-  [singleFingerSingleTap release];
-
-  //2 finger single tab - right mouse
-  //single finger double tab delays single finger single tab - so we
+  //2 finger single tap - right mouse
+  //single finger double tap delays single finger single tap - so we
   //go for 2 fingers here - so single finger single tap is instant
-  UITapGestureRecognizer *doubleFingerSingleTap = [[UITapGestureRecognizer alloc]
-    initWithTarget:self action:@selector(handleDoubleFingerSingleTap:)];  
+  [self addTapGesture:2];
 
-  doubleFingerSingleTap.delaysTouchesBegan = NO;
-  doubleFingerSingleTap.numberOfTapsRequired = 1;
-  doubleFingerSingleTap.numberOfTouchesRequired = 2;
-  [m_glView addGestureRecognizer:doubleFingerSingleTap];
-  [doubleFingerSingleTap release];
+  //3 finger single tap
+  [self addTapGesture:3];
 
-  //1 finger single long tab - right mouse - alernative
+  //1 finger single long tap - right mouse - alernative
   UILongPressGestureRecognizer *singleFingerSingleLongTap = [[UILongPressGestureRecognizer alloc]
     initWithTarget:self action:@selector(handleSingleFingerSingleLongTap:)];  
 
@@ -669,28 +670,16 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   }
 }
 //--------------------------------------------------------------
-- (IBAction)handleSingleFingerSingleTap:(UIGestureRecognizer *)sender 
+- (IBAction)handleTap:(UIGestureRecognizer *)sender
 {
   //Allow the tap gesture during init
   //(for allowing the user to tap away any messagboxes during init)
-  if( [m_glView isReadyToRun] )
+  if( ([m_glView isReadyToRun] && [sender numberOfTouches] == 1) || [m_glView isXBMCAlive])
   {
     CGPoint point = [sender locationOfTouch:0 inView:m_glView];
     point.x *= screenScale;
     point.y *= screenScale;
     //NSLog(@"%s singleTap", __PRETTY_FUNCTION__);
-    CGenericTouchActionHandler::GetInstance().OnTap((float)point.x, (float)point.y, [sender numberOfTouches]);
-  }
-}
-//--------------------------------------------------------------
-- (IBAction)handleDoubleFingerSingleTap:(UIGestureRecognizer *)sender
-{
-  if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
-  {
-    CGPoint point = [sender locationOfTouch:0 inView:m_glView];
-    point.x *= screenScale;
-    point.y *= screenScale;
-    //NSLog(@"%s toubleTap", __PRETTY_FUNCTION__);
     CGenericTouchActionHandler::GetInstance().OnTap((float)point.x, (float)point.y, [sender numberOfTouches]);
   }
 }
