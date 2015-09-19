@@ -1865,13 +1865,6 @@
             <heading>16016</heading>
           </control>
         </setting>
-        <setting id="musicfiles.trackformatright" type="string" label="13387" help="36276">
-          <level>2</level>
-          <default>%D</default>
-          <control type="edit" format="string">
-            <heading>16016</heading>
-          </control>
-        </setting>
         <setting id="musicfiles.nowplayingtrackformat" type="string" label="13307" help="36277">
           <level>4</level>
           <default></default>
@@ -1882,27 +1875,7 @@
             <heading>16016</heading>
           </control>
         </setting>
-        <setting id="musicfiles.nowplayingtrackformatright" type="string" label="13387" help="36278">
-          <level>4</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="edit" format="string">
-            <heading>16016</heading>
-          </control>
-        </setting>
         <setting id="musicfiles.librarytrackformat" type="string" label="13307" help="36279">
-          <level>4</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="edit" format="string">
-            <heading>16016</heading>
-          </control>
-        </setting>
-        <setting id="musicfiles.librarytrackformatright" type="string" label="13387" help="36280">
           <level>4</level>
           <default></default>
           <constraints>

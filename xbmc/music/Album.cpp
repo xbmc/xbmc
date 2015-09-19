@@ -109,6 +109,7 @@ CAlbum::CAlbum(const CFileItem& item)
   bCompilation = tag.GetCompilation();
   iTimesPlayed = 0;
   dateAdded.Reset();
+  lastPlayed.Reset();
   releaseType = tag.GetAlbumReleaseType();
 }
 
@@ -206,6 +207,11 @@ void CAlbum::SetReleaseType(const std::string& strReleaseType)
 void CAlbum::SetDateAdded(const std::string& strDateAdded)
 {
   dateAdded.SetFromDBDateTime(strDateAdded);
+}
+
+void CAlbum::SetLastPlayed(const std::string& strLastPlayed)
+{
+  lastPlayed.SetFromDBDateTime(strLastPlayed);
 }
 
 std::string CAlbum::ReleaseTypeToString(CAlbum::ReleaseType releaseType)
