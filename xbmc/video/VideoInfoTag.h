@@ -106,7 +106,6 @@ public:
   void SetTitle(std::string title);
   void SetSortTitle(std::string sortTitle);
   void SetPictureURL(CScraperUrl &pictureURL);
-  void SetVotes(std::string votes);
   void SetArtist(std::vector<std::string> artist);
   void SetSet(std::string set);
   void SetTags(std::vector<std::string> tags);
@@ -179,6 +178,7 @@ public:
   int m_iBookmarkId;
   int m_iIdShow;
   int m_iIdSeason;
+  int m_iVotes;
   CFanart m_fanart;
   CStreamDetails m_streamDetails;
   CBookmark m_resumePoint;

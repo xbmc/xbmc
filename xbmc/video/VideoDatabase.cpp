@@ -125,7 +125,7 @@ void CVideoDatabase::CreateTables()
   for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
     columns += StringUtils::Format(",c%02d text", i);
 
-  columns += ", idSet integer, userrating integer)";
+  columns += ", idSet integer, userrating integer, votes integer)";
   m_pDS->exec(columns.c_str());
 
   CLog::Log(LOGINFO, "create actor table");
@@ -146,7 +146,7 @@ void CVideoDatabase::CreateTables()
   for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
     columns += StringUtils::Format(",c%02d text", i);
 
-  columns += ", userrating integer)";
+  columns += ", userrating integer, votes integer)";
   m_pDS->exec(columns.c_str());
 
   CLog::Log(LOGINFO, "create episode table");
@@ -161,7 +161,7 @@ void CVideoDatabase::CreateTables()
 
     columns += column;
   }
-  columns += ", idShow integer, userrating integer)";
+  columns += ", idShow integer, userrating integer, votes integer)";
   m_pDS->exec(columns.c_str());
 
   CLog::Log(LOGINFO, "create tvshowlinkpath table");
@@ -2110,6 +2110,10 @@ int CVideoDatabase::SetDetailsForMovie(const std::string& strFilenameAndPath, co
       sql += PrepareSQL(", userrating = %i", details.m_iUserRating);
     else
       sql += ", userrating = NULL";
+    if (details.m_iVotes >= 0)
+      sql += PrepareSQL(", votes = %i", details.m_iVotes);
+    else
+      sql += ", votes = NULL";
     sql += PrepareSQL(" where idMovie=%i", idMovie);
     m_pDS->exec(sql.c_str());
     CommitTransaction();
@@ -2330,6 +2334,10 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, const CVideoInfoTag &d
     sql += PrepareSQL(", userrating = %i", details.m_iUserRating);
   else
     sql += ", userrating = NULL";  
+  if (details.m_iVotes >= 0)
+    sql += PrepareSQL(", votes = %i", details.m_iVotes);
+  else
+    sql += ", votes = NULL";
   sql += PrepareSQL(" WHERE idShow=%i", idTvShow);
   if (ExecuteQuery(sql))
   {
@@ -2444,6 +2452,10 @@ int CVideoDatabase::SetDetailsForEpisode(const std::string& strFilenameAndPath, 
       sql += PrepareSQL(", userrating = %i", details.m_iUserRating);
     else
       sql += ", userrating = NULL";
+    if (details.m_iVotes >= 0)
+      sql += PrepareSQL(", votes = %i", details.m_iVotes);
+    else
+      sql += ", votes = NULL";
     sql += PrepareSQL(" where idEpisode=%i", idEpisode);
     m_pDS->exec(sql.c_str());
     CommitTransaction();
@@ -3490,6 +3502,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   details.m_resumePoint.totalTimeInSeconds = record->at(VIDEODB_DETAILS_MOVIE_TOTAL_TIME).get_asInt();
   details.m_resumePoint.type = CBookmark::RESUME;
   details.m_iUserRating = record->at(VIDEODB_DETAILS_MOVIE_USER_RATING).get_asInt();
+  details.m_iVotes = record->at(VIDEODB_DETAILS_MOVIE_VOTES).get_asInt();
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
   if (getDetails)
@@ -3549,6 +3562,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   if (details.m_premiered.IsValid())
     details.m_iYear = details.m_premiered.GetYear();
   details.m_iUserRating = record->at(VIDEODB_DETAILS_TVSHOW_USER_RATING).get_asInt();
+  details.m_iVotes = record->at(VIDEODB_DETAILS_TVSHOW_VOTES).get_asInt();
 
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
@@ -3612,6 +3626,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
   details.m_resumePoint.totalTimeInSeconds = record->at(VIDEODB_DETAILS_EPISODE_TOTAL_TIME).get_asInt();
   details.m_resumePoint.type = CBookmark::RESUME;
   details.m_iUserRating = record->at(VIDEODB_DETAILS_EPISODE_USER_RATING).get_asInt();
+  details.m_iVotes = record->at(VIDEODB_DETAILS_EPISODE_VOTES).get_asInt();
 
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
@@ -4602,11 +4617,46 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE tvshow ADD userrating integer");
     m_pDS->exec("ALTER TABLE musicvideo ADD userrating integer");
   }
+
+  if (iVersion < 97)
+  {
+    m_pDS->exec("ALTER TABLE movie ADD votes integer");
+    m_pDS->exec("ALTER TABLE episode ADD votes integer");
+    m_pDS->exec("ALTER TABLE tvshow ADD votes integer");
+    m_pDS->exec("ALTER TABLE musicvideo ADD votes integer");
+
+    std::string sql = PrepareSQL("select idMovie,c%02d from movie", VIDEODB_ID_VOTES);
+    m_pDS->query(sql);
+    while (!m_pDS->eof())
+    {
+      m_pDS2->exec(PrepareSQL("UPDATE movie SET votes=%i WHERE idMovie=%i", StringUtils::ReturnDigits(m_pDS->fv(1).get_asString()), m_pDS->fv(0).get_asInt()));
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    sql = PrepareSQL("select idShow,c%02d from tvshow", VIDEODB_ID_TV_VOTES);
+    m_pDS->query(sql);
+    while (!m_pDS->eof())
+    {
+      m_pDS2->exec(PrepareSQL("UPDATE tvshow SET votes=%i WHERE idShow=%i", StringUtils::ReturnDigits(m_pDS->fv(1).get_asString()), m_pDS->fv(0).get_asInt()));
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    sql = PrepareSQL("select idEpisode,c%02d from episode", VIDEODB_ID_EPISODE_VOTES);
+    m_pDS->query(sql);
+    while (!m_pDS->eof())
+    {
+      m_pDS2->exec(PrepareSQL("UPDATE episode SET votes=%i WHERE idEpisode=%i", StringUtils::ReturnDigits(m_pDS->fv(1).get_asString()), m_pDS->fv(0).get_asInt()));
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 96;
+  return 97;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)

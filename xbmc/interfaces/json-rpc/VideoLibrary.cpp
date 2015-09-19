@@ -1134,7 +1134,7 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "premiered"))
     SetFromDBDate(parameterObject["premiered"], details.m_premiered);
   if (ParameterNotNull(parameterObject, "votes"))
-    details.SetVotes(parameterObject["votes"].asString());
+    details.m_iVotes = StringUtils::ReturnDigits(parameterObject["votes"].asString());
   if (ParameterNotNull(parameterObject, "lastplayed"))
     SetFromDBDateTime(parameterObject["lastplayed"], details.m_lastPlayed);
   if (ParameterNotNull(parameterObject, "firstaired"))

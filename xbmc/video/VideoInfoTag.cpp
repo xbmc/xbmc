@@ -47,7 +47,6 @@ void CVideoInfoTag::Reset()
   m_strShowTitle.clear();
   m_strOriginalTitle.clear();
   m_strSortTitle.clear();
-  m_strVotes.clear();
   m_cast.clear();
   m_strSet.clear();
   m_iSetId = -1;
@@ -69,6 +68,7 @@ void CVideoInfoTag::Reset()
   m_iYear = 0;
   m_iSeason = -1;
   m_iEpisode = -1;
+  m_iVotes = 0;
   m_strUniqueId.clear();
   m_iSpecialSortSeason = -1;
   m_iSpecialSortEpisode = -1;
@@ -130,7 +130,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     XMLUtils::SetInt(movie, "track", m_iTrack);
     XMLUtils::SetString(movie, "album", m_strAlbum);
   }
-  XMLUtils::SetString(movie, "votes", m_strVotes);
+  XMLUtils::SetInt(movie, "votes", m_iVotes);
   XMLUtils::SetString(movie, "outline", m_strPlotOutline);
   XMLUtils::SetString(movie, "plot", m_strPlot);
   XMLUtils::SetString(movie, "tagline", m_strTagLine);
@@ -273,7 +273,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_fanart.m_xml;
     ar << m_strTitle;
     ar << m_strSortTitle;
-    ar << m_strVotes;
+    ar << m_iVotes;
     ar << m_studio;
     ar << m_strTrailer;
     ar << (int)m_cast.size();
@@ -345,7 +345,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_fanart.m_xml;
     ar >> m_strTitle;
     ar >> m_strSortTitle;
-    ar >> m_strVotes;
+    ar >> m_iVotes;
     ar >> m_studio;
     ar >> m_strTrailer;
     int iCastSize;
@@ -424,7 +424,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["plotoutline"] = m_strPlotOutline;
   value["plot"] = m_strPlot;
   value["title"] = m_strTitle;
-  value["votes"] = m_strVotes;
+  value["votes"] = StringUtils::Format("%i", m_iVotes);
   value["studio"] = m_studio;
   value["trailer"] = m_strTrailer;
   value["cast"] = CVariant(CVariant::VariantTypeArray);
@@ -502,7 +502,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
       sortable[FieldTitle] = title;
     break;
   }
-  case FieldVotes:                    sortable[FieldVotes] = m_strVotes; break;
+  case FieldVotes:                    sortable[FieldVotes] = m_iVotes; break;
   case FieldStudio:                   sortable[FieldStudio] = m_studio; break;
   case FieldTrailer:                  sortable[FieldTrailer] = m_strTrailer; break;
   case FieldSet:                      sortable[FieldSet] = m_strSet; break;
@@ -619,7 +619,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     m_iSpecialSortEpisode = 0x1000; // should be more than any realistic episode number
   }
   if (XMLUtils::GetString(movie, "votes", value))
-    SetVotes(value);
+    m_iVotes = StringUtils::ReturnDigits(value);
 
   if (XMLUtils::GetString(movie, "outline", value))
     SetPlotOutline(value);
@@ -970,11 +970,6 @@ void CVideoInfoTag::SetSortTitle(std::string sortTitle)
 void CVideoInfoTag::SetPictureURL(CScraperUrl &pictureURL)
 {
   m_strPictureURL = pictureURL;
-}
-
-void CVideoInfoTag::SetVotes(std::string votes)
-{
-  m_strVotes = Trim(std::move(votes));
 }
 
 void CVideoInfoTag::SetArtist(std::vector<std::string> artist)

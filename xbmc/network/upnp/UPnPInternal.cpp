@@ -315,7 +315,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
 
     object.m_XbmcInfo.date_added = tag.m_dateAdded.GetAsW3CDate().c_str();
     object.m_XbmcInfo.rating = tag.m_fRating;
-    object.m_XbmcInfo.votes = tag.m_strVotes.c_str();
+    object.m_XbmcInfo.votes = tag.m_iVotes;
     object.m_XbmcInfo.unique_identifier = tag.m_strIMDBNumber.c_str();
     for (const auto& country : tag.m_country)
       object.m_XbmcInfo.countries.Add(country.c_str());
@@ -827,7 +827,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
 
     tag.m_dateAdded.SetFromW3CDate((const char*)object.m_XbmcInfo.date_added);
     tag.m_fRating = object.m_XbmcInfo.rating;
-    tag.m_strVotes = object.m_XbmcInfo.votes;
+    tag.m_iVotes = object.m_XbmcInfo.votes;
     tag.m_strIMDBNumber = object.m_XbmcInfo.unique_identifier;
     for (unsigned int index = 0; index < object.m_XbmcInfo.countries.GetItemCount(); index++)
       tag.m_country.push_back(object.m_XbmcInfo.countries.GetItem(index)->GetChars());

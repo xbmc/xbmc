@@ -444,7 +444,7 @@ TEST(TestDatabaseUtils, GetField_MediaTypeMovie)
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
-  refstr = StringUtils::Format("movie_view.c%02d", VIDEODB_ID_VOTES);
+  refstr = "movie_view.votes";
   varstr = DatabaseUtils::GetField(FieldVotes, MediaTypeMovie,
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
@@ -581,7 +581,7 @@ TEST(TestDatabaseUtils, GetField_MediaTypeTvShow)
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
-  refstr = StringUtils::Format("tvshow_view.c%02d", VIDEODB_ID_TV_VOTES);
+  refstr = "tvshow_view.c%02d.votes";
   varstr = DatabaseUtils::GetField(FieldVotes, MediaTypeTvShow,
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
@@ -671,7 +671,7 @@ TEST(TestDatabaseUtils, GetField_MediaTypeEpisode)
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
-  refstr = StringUtils::Format("episode_view.c%02d", VIDEODB_ID_EPISODE_VOTES);
+  refstr = "episode_view.votes";
   varstr = DatabaseUtils::GetField(FieldVotes, MediaTypeEpisode,
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
@@ -1045,10 +1045,6 @@ TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeMovie)
   varindex = DatabaseUtils::GetFieldIndex(FieldTagline, MediaTypeMovie);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = VIDEODB_ID_VOTES + 2;
-  varindex = DatabaseUtils::GetFieldIndex(FieldVotes, MediaTypeMovie);
-  EXPECT_EQ(refindex, varindex);
-
   refindex = VIDEODB_ID_RATING + 2;
   varindex = DatabaseUtils::GetFieldIndex(FieldRating, MediaTypeMovie);
   EXPECT_EQ(refindex, varindex);
@@ -1117,6 +1113,10 @@ TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeMovie)
   varindex = DatabaseUtils::GetFieldIndex(FieldUserRating, MediaTypeMovie);
   EXPECT_EQ(refindex, varindex);
 
+  refindex = VIDEODB_DETAILS_MOVIE_VOTES;
+  varindex = DatabaseUtils::GetFieldIndex(FieldVotes, MediaTypeMovie);
+  EXPECT_EQ(refindex, varindex);
+
   refindex = -1;
   varindex = DatabaseUtils::GetFieldIndex(FieldRandom, MediaTypeMovie);
   EXPECT_EQ(refindex, varindex);
@@ -1144,10 +1144,6 @@ TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeTvShow)
 
   refindex = VIDEODB_ID_TV_STATUS + 1;
   varindex = DatabaseUtils::GetFieldIndex(FieldTvShowStatus, MediaTypeTvShow);
-  EXPECT_EQ(refindex, varindex);
-
-  refindex = VIDEODB_ID_TV_VOTES + 1;
-  varindex = DatabaseUtils::GetFieldIndex(FieldVotes, MediaTypeTvShow);
   EXPECT_EQ(refindex, varindex);
 
   refindex = VIDEODB_ID_TV_RATING + 1;
@@ -1194,6 +1190,10 @@ TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeTvShow)
   varindex = DatabaseUtils::GetFieldIndex(FieldUserRating, MediaTypeTvShow);
   EXPECT_EQ(refindex, varindex);
 
+  refindex = VIDEODB_DETAILS_TVSHOW_VOTES;
+  varindex = DatabaseUtils::GetFieldIndex(FieldVotes, MediaTypeTvShow);
+  EXPECT_EQ(refindex, varindex);
+
   refindex = -1;
   varindex = DatabaseUtils::GetFieldIndex(FieldRandom, MediaTypeTvShow);
   EXPECT_EQ(refindex, varindex);
@@ -1213,10 +1213,6 @@ TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeEpisode)
 
   refindex = VIDEODB_ID_EPISODE_PLOT + 2;
   varindex = DatabaseUtils::GetFieldIndex(FieldPlot, MediaTypeEpisode);
-  EXPECT_EQ(refindex, varindex);
-
-  refindex = VIDEODB_ID_EPISODE_VOTES + 2;
-  varindex = DatabaseUtils::GetFieldIndex(FieldVotes, MediaTypeEpisode);
   EXPECT_EQ(refindex, varindex);
 
   refindex = VIDEODB_ID_EPISODE_RATING + 2;
