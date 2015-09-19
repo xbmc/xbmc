@@ -172,11 +172,12 @@ bool CRepository::Parse(const DirInfo& dir, VECADDONS &result)
     file = url.Get();
   }
 
+  VECADDONS addons;
   CXBMCTinyXML doc;
   if (doc.LoadFile(file) && doc.RootElement() &&
-      CAddonMgr::GetInstance().AddonsFromRepoXML(doc.RootElement(), result))
+      CAddonMgr::GetInstance().AddonsFromRepoXML(doc.RootElement(), addons))
   {
-    for (IVECADDONS i = result.begin(); i != result.end(); ++i)
+    for (IVECADDONS i = addons.begin(); i != addons.end(); ++i)
     {
       AddonPtr addon = *i;
       if (dir.zipped)
@@ -195,6 +196,7 @@ bool CRepository::Parse(const DirInfo& dir, VECADDONS &result)
         SET_IF_NOT_EMPTY(addon->Props().changelog,URIUtils::AddFileToFolder(dir.datadir,addon->ID()+"/changelog.txt"))
         SET_IF_NOT_EMPTY(addon->Props().fanart,URIUtils::AddFileToFolder(dir.datadir,addon->ID()+"/fanart.jpg"))
       }
+      result.push_back(addon);
     }
     return true;
   }
@@ -204,20 +206,6 @@ bool CRepository::Parse(const DirInfo& dir, VECADDONS &result)
 
 CRepositoryUpdateJob::CRepositoryUpdateJob(const RepositoryPtr& repo) : m_repo(repo) {}
 
-void MergeAddons(std::map<std::string, AddonPtr> &addons, const VECADDONS &new_addons)
-{
-  for (VECADDONS::const_iterator it = new_addons.begin(); it != new_addons.end(); ++it)
-  {
-    std::map<std::string, AddonPtr>::iterator existing = addons.find((*it)->ID());
-    if (existing != addons.end())
-    { // already got it - replace if we have a newer version
-      if (existing->second->Version() < (*it)->Version())
-        existing->second = *it;
-    }
-    else
-      addons.insert(make_pair((*it)->ID(), *it));
-  }
-}
 
 bool CRepositoryUpdateJob::DoWork()
 {
@@ -349,25 +337,18 @@ CRepositoryUpdateJob::FetchStatus CRepositoryUpdateJob::FetchIfChanged(const std
   if (oldChecksum == checksum && !oldChecksum.empty())
     return STATUS_NOT_MODIFIED;
 
-  std::map<std::string, AddonPtr> uniqueAddons;
   for (auto it = m_repo->m_dirs.cbegin(); it != m_repo->m_dirs.cend(); ++it)
   {
     if (ShouldCancel(m_repo->m_dirs.size() + std::distance(m_repo->m_dirs.cbegin(), it), total))
       return STATUS_ERROR;
 
-    VECADDONS addons;
     if (!CRepository::Parse(*it, addons))
     {
       CLog::Log(LOGERROR, "CRepositoryUpdateJob[%s] failed to read or parse "
           "directory '%s'", m_repo->ID().c_str(), it->info.c_str());
       return STATUS_ERROR;
     }
-    MergeAddons(uniqueAddons, addons);
   }
-
-
-  for (const auto& kv : uniqueAddons)
-    addons.push_back(kv.second);
 
   SetProgress(total, total);
   return STATUS_OK;
