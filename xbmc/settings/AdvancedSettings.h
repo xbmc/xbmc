@@ -272,7 +272,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_bMusicLibraryAllItemsOnBottom;
     bool m_bMusicLibraryCleanOnUpdate;
     std::string m_strMusicLibraryAlbumFormat;
-    std::string m_strMusicLibraryAlbumFormatRight;
     bool m_prioritiseAPEv2tags;
     std::string m_musicItemSeparator;
     std::string m_videoItemSeparator;

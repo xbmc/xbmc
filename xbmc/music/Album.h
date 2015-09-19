@@ -37,7 +37,7 @@ class CAlbum
 {
 public:
   CAlbum(const CFileItem& item);
-  CAlbum() { idAlbum = 0; iRating = 0; iYear = 0; iTimesPlayed = 0; dateAdded.Reset(); releaseType = Album; };
+  CAlbum() { idAlbum = 0; iRating = 0; iYear = 0; iTimesPlayed = 0; dateAdded.Reset(); lastPlayed.Reset(); releaseType = Album; };
   bool operator<(const CAlbum &a) const;
   void MergeScrapedAlbum(const CAlbum& album, bool override = true);
 
@@ -64,6 +64,7 @@ public:
     bCompilation = false;
     iTimesPlayed = 0;
     dateAdded.Reset();
+    lastPlayed.Reset();
     songs.clear();
     infoSongs.clear();
     releaseType = Album;
@@ -94,6 +95,7 @@ public:
   std::string GetReleaseType() const;
   void SetReleaseType(const std::string& strReleaseType);
   void SetDateAdded(const std::string& strDateAdded);
+  void SetLastPlayed(const std::string& strLastPlayed);
 
   static std::string ReleaseTypeToString(ReleaseType releaseType);
   static ReleaseType ReleaseTypeFromString(const std::string& strReleaseType);
@@ -129,6 +131,7 @@ public:
   bool bCompilation;
   int iTimesPlayed;
   CDateTime dateAdded;
+  CDateTime lastPlayed;
   VECSONGS songs;     ///< Local songs
   VECSONGS infoSongs; ///< Scraped songs
   ReleaseType releaseType;
