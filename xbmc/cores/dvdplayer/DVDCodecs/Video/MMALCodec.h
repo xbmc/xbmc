@@ -33,6 +33,7 @@
 #include "threads/Event.h"
 #include "xbmc/settings/VideoSettings.h"
 
+#include <atomic>
 #include <queue>
 #include <semaphore.h>
 #include <memory>
@@ -58,7 +59,7 @@ public:
   CMMALVideoBuffer* Acquire();
   long              Release();
   CMMALVideo *m_omv;
-  long m_refs;
+  std::atomic<long> m_refs;
 private:
 };
 

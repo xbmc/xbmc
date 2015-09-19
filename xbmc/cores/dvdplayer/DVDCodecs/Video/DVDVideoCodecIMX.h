@@ -27,6 +27,7 @@
 #include "DVDVideoCodec.h"
 #include "DVDStreamInfo.h"
 
+#include <atomic>
 #include <vector>
 #include <linux/ipu.h>
 #include <linux/mxcfb.h>
@@ -82,7 +83,7 @@ public:
   int          iFormat;
 
 protected:
-  long         m_iRefs;
+  std::atomic<long> m_iRefs;
 };
 
 

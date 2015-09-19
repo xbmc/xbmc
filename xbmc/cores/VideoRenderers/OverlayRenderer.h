@@ -24,6 +24,7 @@
 #include "threads/CriticalSection.h"
 #include "BaseRenderer.h"
 
+#include <atomic>
 #include <vector>
 
 class CDVDOverlay;
@@ -76,7 +77,7 @@ namespace OVERLAY {
     float m_height;
 
   protected:
-    long m_references;
+    std::atomic<long> m_references;
   };
 
   class COverlayMainThread

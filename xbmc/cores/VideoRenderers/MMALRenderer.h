@@ -20,6 +20,8 @@
  *
  */
 
+#include <atomic>
+
 #include "guilib/GraphicContext.h"
 #include "RenderFlags.h"
 #include "RenderFormats.h"
@@ -52,7 +54,7 @@ public:
   long Release();
   MMAL_BUFFER_HEADER_T *mmal_buffer;
 protected:
-  long m_refs;
+  std::atomic<long> m_refs;
 };
 
 class CMMALRenderer : public CBaseRenderer
