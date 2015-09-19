@@ -237,12 +237,6 @@ public:
   static const std::string SETTING_MUSICPLAYER_CROSSFADEALBUMTRACKS;
   static const std::string SETTING_MUSICPLAYER_VISUALISATION;
   static const std::string SETTING_MUSICFILES_USETAGS;
-  static const std::string SETTING_MUSICFILES_TRACKFORMAT;
-  static const std::string SETTING_MUSICFILES_TRACKFORMATRIGHT;
-  static const std::string SETTING_MUSICFILES_NOWPLAYINGTRACKFORMAT;
-  static const std::string SETTING_MUSICFILES_NOWPLAYINGTRACKFORMATRIGHT;
-  static const std::string SETTING_MUSICFILES_LIBRARYTRACKFORMAT;
-  static const std::string SETTING_MUSICFILES_LIBRARYTRACKFORMATRIGHT;
   static const std::string SETTING_MUSICFILES_FINDREMOTETHUMBS;
   static const std::string SETTING_AUDIOCDS_AUTOACTION;
   static const std::string SETTING_AUDIOCDS_USECDDB;
