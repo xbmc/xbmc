@@ -19,7 +19,7 @@ AC_ARG_ENABLE([static],
 
 
 PKG_CHECK_MODULES([PNG], [libpng],
-  [INCLUDES="$PNG_CFLAGS"; LIBS="$LIBS $(pkg-config --silence-errors --static --libs libpng)"],
+  [INCLUDES="$PNG_CFLAGS"; LIBS="$LIBS $(${PKG_CONFIG} --silence-errors --static --libs libpng)"],
   AC_MSG_ERROR("libpng not found"))
 
 AC_CHECK_HEADER([gif_lib.h],, AC_MSG_ERROR("gif_lib.h not found"))
