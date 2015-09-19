@@ -21,6 +21,10 @@
 #ifdef HAS_DX
 
 #include "WinVideoFilter.h"
+#include "windowing/WindowingFactory.h"
+#include "../../../../utils/log.h"
+#include "../../../../FileSystem/File.h"
+#include <map>
 #include "ConvolutionKernels.h"
 #include <DirectXPackedVector.h>
 #include "FileSystem/File.h"

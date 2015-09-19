@@ -34,7 +34,7 @@ typedef struct ass_image ASS_Image;
 namespace OVERLAY {
 
   class COverlayQuadsDX
-    : public COverlayMainThread
+    : public COverlay
   {
   public:
     COverlayQuadsDX(ASS_Image* images, int width, int height);
@@ -49,7 +49,7 @@ namespace OVERLAY {
   };
 
   class COverlayImageDX
-    : public COverlayMainThread
+    : public COverlay
   {
   public:
     COverlayImageDX(CDVDOverlayImage* o);

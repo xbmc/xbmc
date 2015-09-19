@@ -352,7 +352,7 @@ void CWinRenderer::Update()
   ManageDisplay();
 }
 
-void CWinRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
+void CWinRenderer::RenderUpdate(bool clear, unsigned int flags, unsigned int alpha)
 {
   if (clear)
     g_graphicsContext.Clear(m_clearColour);
@@ -397,7 +397,7 @@ void CWinRenderer::FlipPage(int source)
   return;
 }
 
-unsigned int CWinRenderer::PreInit()
+void CWinRenderer::PreInit()
 {
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
@@ -440,7 +440,6 @@ unsigned int CWinRenderer::PreInit()
     m_formats.push_back(RENDER_FMT_YUYV422);
     m_formats.push_back(RENDER_FMT_UYVY422);
   }
-  return 0;
 }
 
 void CWinRenderer::UnInit()
