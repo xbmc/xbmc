@@ -12545,7 +12545,22 @@ msgctxt "#21477"
 msgid "Just \"Specials\""
 msgstr ""
 
-#empty strings from id 21478 to 21601
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#21478"
+msgid "Open"
+msgstr ""
+
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#21479"
+msgid "Run"
+msgstr ""
+
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#21480"
+msgid "Use"
+msgstr ""
+
+#empty strings from id 21481 to 21601
 
 #: xbmc/Util.cpp
 msgctxt "#21602"
