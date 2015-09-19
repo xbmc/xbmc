@@ -20,6 +20,7 @@
 
 #include "VisibleEffect.h"
 #include "GUIInfoManager.h"
+#include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 #include "addons/Skin.h" // for the effect time adjustments
 #include "utils/StringUtils.h"
@@ -613,6 +614,22 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
   if (!node || !node->FirstChild())
     return;
 
+  int64_t tracked = WINDOW_INVALID;
+  auto track = XMLUtils::GetAttribute(node, "track");
+  if (!track.empty())
+  {
+    //We store the window ID in the upper 32 bits and the control ID in the
+    //lower 32, makes for easy lookup of window+control pairs.
+    auto colon = track.find(":");
+    if (colon != std::string::npos)
+    {
+      tracked = static_cast<int64_t>(atoi(track.substr(0, colon).c_str())) << 32;
+      tracked |= static_cast<int64_t>(atoi(track.substr(colon+1).c_str()));
+    }
+    else
+      tracked = static_cast<int64_t>(atoi(track.c_str())) << 32;
+  }
+
   // conditions and reversibility
   const char *condition = node->Attribute("condition");
   if (condition)
@@ -677,6 +694,9 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
     total   = std::max(total, (*i)->GetLength());
   }
   m_length = total - m_delay;
+
+  if ((tracked >> 32) != WINDOW_INVALID)
+    g_windowManager.TrackMessageForWindow(m_type, context, tracked);
 }
 
 void CAnimation::AddEffect(const std::string &type, const TiXmlElement *node, const CRect &rect)

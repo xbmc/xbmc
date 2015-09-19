@@ -59,7 +59,7 @@ public:
 
   virtual bool IsAnimating(ANIMATION_TYPE anim);
   virtual bool HasAnimation(ANIMATION_TYPE anim);
-  virtual void QueueAnimation(ANIMATION_TYPE anim);
+  virtual bool QueueAnimation(ANIMATION_TYPE anim);
   virtual void ResetAnimation(ANIMATION_TYPE anim);
   virtual void ResetAnimations();
 

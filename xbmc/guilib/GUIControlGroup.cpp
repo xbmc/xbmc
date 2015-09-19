@@ -20,6 +20,7 @@
 
 #include "GUIControlGroup.h"
 #include "guiinfo/GUIInfoLabels.h"
+#include "guilib/GUIWindowManager.h"
 
 #include <cassert>
 
@@ -312,15 +313,24 @@ void CGUIControlGroup::SetInitialVisibility()
     (*it)->SetInitialVisibility();
 }
 
-void CGUIControlGroup::QueueAnimation(ANIMATION_TYPE animType)
+bool CGUIControlGroup::QueueAnimation(ANIMATION_TYPE animType)
 {
+  auto id = GetID();
+  if (id == 0)
+    id = GetParentID();
+
   CGUIControl::QueueAnimation(animType);
+  g_windowManager.NotifyTrackers(CGUIMessage(GUI_MSG_NOTIFY_TRACKER, id, m_focusedControl, animType));
   // send window level animations to our children as well
   if (animType == ANIM_TYPE_WINDOW_OPEN || animType == ANIM_TYPE_WINDOW_CLOSE)
   {
-    for (iControls it = m_children.begin(); it != m_children.end(); ++it)
-      (*it)->QueueAnimation(animType);
+    for (auto it : m_children)
+    { 
+      if (it->QueueAnimation(animType))
+        g_windowManager.NotifyTrackers(CGUIMessage(GUI_MSG_NOTIFY_TRACKER, id, it->GetID(), animType));
+    }
   }
+  return true;
 }
 
 void CGUIControlGroup::ResetAnimation(ANIMATION_TYPE animType)

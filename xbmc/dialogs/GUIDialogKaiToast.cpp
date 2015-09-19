@@ -50,13 +50,48 @@ bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
     {
       CGUIDialog::OnMessage(message);
       ResetTimer();
-      return true;
+
+      Notification toast;
+      {
+        CSingleLock lock(m_critical);
+        toast = m_notifications.front();
+        m_notifications.pop();
+      }
+
+      m_toastDisplayTime = toast.displayTime;
+      m_toastMessageTime = toast.messageTime;
+
+      CSingleLock lock2(g_graphicsContext);
+
+      if (!Initialize())
+        return false;
+
+      SET_CONTROL_LABEL(POPUP_CAPTION_TEXT, toast.caption);
+
+      SET_CONTROL_LABEL(POPUP_NOTIFICATION_BUTTON, toast.description);
+
+      // set the appropriate icon
+      {
+        std::string icon = toast.imagefile;
+        if (icon.empty())
+        {
+          if (toast.eType == Warning)
+            icon = "DefaultIconWarning.png";
+          else if (toast.eType == Error)
+            icon = "DefaultIconError.png";
+          else
+            icon = "DefaultIconInfo.png";
+        }
+        SET_CONTROL_FILENAME(POPUP_ICON, icon);
+      }
+
+      //  Play the window specific init sound for each notification queued
+      SetSound(toast.withSound);
     }
     break;
 
-  case GUI_MSG_WINDOW_DEINIT:
-    {
-    }
+  case GUI_MSG_NOTIFY_TRACKER:
+    QueueAnimation(static_cast<ANIMATION_TYPE>(message.GetParam1()));
     break;
   }
   return CGUIDialog::OnMessage(message);
@@ -93,52 +128,11 @@ void CGUIDialogKaiToast::AddToQueue(const std::string& aImageFile, const eMessag
   m_notifications.push(toast);
 }
 
-bool CGUIDialogKaiToast::DoWork()
+bool CGUIDialogKaiToast::HasWork()
 {
   CSingleLock lock(m_critical);
 
-  if (!m_notifications.empty() &&
-      CTimeUtils::GetFrameTime() - m_timer > m_toastMessageTime)
-  {
-    Notification toast = m_notifications.front();
-    m_notifications.pop();
-    lock.Leave();
-
-    m_toastDisplayTime = toast.displayTime;
-    m_toastMessageTime = toast.messageTime;
-
-    CSingleLock lock2(g_graphicsContext);
-
-    if(!Initialize())
-      return false;
-
-    SET_CONTROL_LABEL(POPUP_CAPTION_TEXT, toast.caption);
-
-    SET_CONTROL_LABEL(POPUP_NOTIFICATION_BUTTON, toast.description);
-
-    // set the appropriate icon
-    {
-      std::string icon = toast.imagefile;
-      if (icon.empty())
-      {
-        if (toast.eType == Warning)
-          icon = "DefaultIconWarning.png";
-        else if (toast.eType == Error)
-          icon = "DefaultIconError.png";
-        else
-          icon = "DefaultIconInfo.png";
-      }
-      SET_CONTROL_FILENAME(POPUP_ICON, icon);
-    }
-
-    //  Play the window specific init sound for each notification queued
-    SetSound(toast.withSound);
-
-    ResetTimer();
-    return true;
-  }
-
-  return false;
+  return !m_notifications.empty();
 }
 
 

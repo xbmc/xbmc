@@ -877,6 +877,16 @@ bool CGUIWindow::CheckAnimation(ANIMATION_TYPE animType)
   return true;
 }
 
+bool CGUIWindow::QueueAnimation(ANIMATION_TYPE animType)
+{
+  if (CGUIControl::QueueAnimation(animType))
+  {
+    g_windowManager.NotifyTrackers(CGUIMessage(GUI_MSG_NOTIFY_TRACKER, GetID(), 0, animType));
+    return true;
+  }
+  return false;
+}
+
 bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
 {
   if (!m_animationsEnabled)

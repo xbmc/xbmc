@@ -51,7 +51,7 @@ public:
   static void QueueNotification(eMessageType eType, const std::string& aCaption, const std::string& aDescription, unsigned int displayTime = TOAST_DISPLAY_TIME, bool withSound = true, unsigned int messageTime = TOAST_MESSAGE_TIME);
   static void QueueNotification(const std::string& aCaption, const std::string& aDescription);
   static void QueueNotification(const std::string& aImageFile, const std::string& aCaption, const std::string& aDescription, unsigned int displayTime = TOAST_DISPLAY_TIME, bool withSound = true, unsigned int messageTime = TOAST_MESSAGE_TIME);
-  bool DoWork();
+  static bool HasWork();
 
   virtual bool OnMessage(CGUIMessage& message);
   virtual void FrameMove();

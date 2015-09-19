@@ -180,6 +180,12 @@ public:
   bool IsPythonWindow(int id) const { return (id >= WINDOW_PYTHON_START && id <= WINDOW_PYTHON_END); };
   void ShowOverlay(CGUIWindow::OVERLAY_STATE state);
   void GetActiveModelessWindows(std::vector<int> &ids);
+
+  void TrackMessageForWindow(int message, int tracker, int64_t tracked);
+  void UnTrackMessageForWindow(int message, int tracker, int64_t tracked);
+  std::vector<int> GetTrackersForMessage(int message, int64_t tracked) const;
+  void NotifyTrackers(CGUIMessage message);
+
 #ifdef _DEBUG
   void DumpTextureUse();
 #endif
@@ -195,6 +201,8 @@ private:
   CGUIWindow *GetTopMostDialog() const;
 
   friend class KODI::MESSAGING::CApplicationMessenger;
+
+
   
   /*! \brief Activate the given window.
    *
@@ -221,6 +229,7 @@ private:
   std::list < std::pair<CGUIMessage*,int> > m_vecThreadMessages;
   CCriticalSection m_critSection;
   std::vector <IMsgTargetCallback*> m_vecMsgTargets;
+
 
   bool m_bShowOverlay;
   int  m_iNested;
@@ -253,6 +262,8 @@ private:
     CGUIWindow *m_window;
   };
   mutable CGUIWindowManagerIdCache m_idCache;
+
+  std::map<int, std::map<int64_t, std::vector<int>>> m_TrackedMessages;
 };
 
 /*!
