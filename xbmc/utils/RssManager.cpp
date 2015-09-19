@@ -19,6 +19,9 @@
  */
 
 #include "RssManager.h"
+
+#include <utility>
+
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "filesystem/File.h"

@@ -19,13 +19,13 @@
  *
  */
 
+#include <memory>
+#include <utility>
+
 #include "FileItem.h"
+#include "PVRChannel.h"
 #include "settings/lib/ISettingCallback.h"
 #include "utils/JobManager.h"
-
-#include "PVRChannel.h"
-
-#include <memory>
 
 namespace EPG
 {

@@ -22,11 +22,13 @@
 \brief
 */
 #pragma once
-#include "dbwrappers/Database.h"
-#include "Album.h"
+#include <utility>
+
 #include "addons/Scraper.h"
-#include "utils/SortUtils.h"
+#include "Album.h"
+#include "dbwrappers/Database.h"
 #include "MusicDbUrl.h"
+#include "utils/SortUtils.h"
 
 class CArtist;
 class CFileItem;

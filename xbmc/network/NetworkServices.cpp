@@ -19,17 +19,27 @@
  */
 
 #include "NetworkServices.h"
+
+#include <utility>
+
 #include "Application.h"
-#include "messaging/ApplicationMessenger.h"
-#include "messaging/helpers/DialogHelper.h"
-#ifdef TARGET_LINUX
-#include "Util.h"
-#endif
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
 #include "guilib/LocalizeStrings.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "network/Network.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/lib/Setting.h"
+#include "settings/Settings.h"
+#include "utils/log.h"
+#include "utils/RssManager.h"
+#include "utils/SystemInfo.h"
+#include "utils/Variant.h"
 
+#ifdef TARGET_LINUX
+#include "Util.h"
+#endif
 #ifdef HAS_AIRPLAY
 #include "network/AirPlayServer.h"
 #endif // HAS_AIRPLAY
@@ -75,14 +85,6 @@
 #if defined(TARGET_DARWIN_OSX)
 #include "osx/XBMCHelper.h"
 #endif
-
-#include "settings/AdvancedSettings.h"
-#include "settings/lib/Setting.h"
-#include "settings/Settings.h"
-#include "utils/log.h"
-#include "utils/RssManager.h"
-#include "utils/SystemInfo.h"
-#include "utils/Variant.h"
 
 using namespace KODI::MESSAGING;
 #ifdef HAS_JSONRPC

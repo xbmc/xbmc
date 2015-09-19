@@ -19,13 +19,14 @@
  *
  */
 
-#include "FileItem.h"
+#include <memory>
+#include <utility>
+
 #include "addons/include/xbmc_pvr_types.h"
+#include "FileItem.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
 #include "utils/Observer.h"
-
-#include <memory>
 
 #define PVR_INVALID_CHANNEL_UID -1
 

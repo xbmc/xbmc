@@ -19,20 +19,23 @@
  */
 
 #include "RSSDirectory.h"
-#include "FileItem.h"
+
+#include <climits>
+#include <utility>
+
 #include "CurlFile.h"
+#include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "threads/SingleLock.h"
+#include "URL.h"
+#include "utils/HTMLUtil.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
-#include "utils/HTMLUtil.h"
-#include "utils/StringUtils.h"
 #include "video/VideoInfoTag.h"
-#include "utils/log.h"
-#include "URL.h"
-#include "climits"
-#include "threads/SingleLock.h"
 
 using namespace XFILE;
 using namespace MUSIC_INFO;

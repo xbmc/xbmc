@@ -20,28 +20,29 @@
  *
  */
 
+#include <utility>
+
 #include "cores/IPlayer.h"
-#include "threads/Thread.h"
-
-#include "IDVDPlayer.h"
-
-#include "DVDMessageQueue.h"
 #include "DVDClock.h"
-#include "DVDPlayerVideo.h"
+#include "DVDMessageQueue.h"
+#include "DVDPlayerRadioRDS.h"
 #include "DVDPlayerSubtitle.h"
 #include "DVDPlayerTeletext.h"
-#include "DVDPlayerRadioRDS.h"
-
+#include "DVDPlayerVideo.h"
 #include "Edl.h"
 #include "FileItem.h"
-#include "utils/StreamDetails.h"
+#include "IDVDPlayer.h"
+#include "system.h"
 #include "threads/SystemClock.h"
+#include "threads/Thread.h"
+#include "utils/StreamDetails.h"
 
 #ifdef HAS_OMXPLAYER
 #include "OMXCore.h"
 #include "OMXClock.h"
 #include "linux/RBP.h"
 #else
+
 
 // dummy class to avoid ifdefs where calls are made
 class OMXClock

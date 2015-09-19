@@ -19,10 +19,12 @@
  *
  */
 
-#include "dbwrappers/Database.h"
-#include "addons/Addon.h"
-#include "FileItem.h"
 #include <string>
+#include <vector>
+
+#include "addons/Addon.h"
+#include "dbwrappers/Database.h"
+#include "FileItem.h"
 
 class CAddonDatabase : public CDatabase
 {

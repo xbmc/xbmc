@@ -18,17 +18,17 @@
  *
  */
 
-#include "system.h"
-#include "GUIUserMessages.h"
-#include "dialogs/GUIDialogOK.h"
 #include "GUIWindowWeather.h"
-#include "utils/Weather.h"
-#include "utils/URIUtils.h"
-#include "utils/Variant.h"
-#ifdef HAS_PYTHON
-#endif
+
+#include <utility>
+
+#include "dialogs/GUIDialogOK.h"
+#include "GUIUserMessages.h"
 #include "LangInfo.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/Variant.h"
+#include "utils/Weather.h"
 
 using namespace ADDON;
 

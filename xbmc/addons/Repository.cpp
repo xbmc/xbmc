@@ -18,29 +18,32 @@
  *
  */
 
-#include <iterator>
 #include "Repository.h"
-#include "events/EventLog.h"
-#include "events/AddonManagementEvent.h"
+
+#include <iterator>
+#include <utility>
+
 #include "addons/AddonDatabase.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/RepositoryUpdater.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "filesystem/File.h"
+#include "dialogs/GUIDialogYesNo.h"
+#include "events/AddonManagementEvent.h"
+#include "events/EventLog.h"
+#include "FileItem.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
-#include "utils/log.h"
+#include "TextureDatabase.h"
+#include "URL.h"
 #include "utils/JobManager.h"
+#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XBMCTinyXML.h"
-#include "FileItem.h"
-#include "TextureDatabase.h"
-#include "URL.h"
 
 using namespace XFILE;
 using namespace ADDON;

@@ -18,12 +18,13 @@
  *
  */
 
+#include "KeyboardLayoutManager.h"
+
 #include <algorithm>
 
-#include "KeyboardLayoutManager.h"
 #include "FileItem.h"
-#include "URL.h"
 #include "filesystem/Directory.h"
+#include "URL.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 

@@ -24,6 +24,8 @@
 #include "network/WebServer.h"
 #include "utils/StringUtils.h"
 
+#include <utility>
+
 IHTTPRequestHandler::IHTTPRequestHandler()
   : m_request(),
     m_response(),

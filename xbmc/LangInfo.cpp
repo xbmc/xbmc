@@ -19,32 +19,31 @@
  */
 
 #include "LangInfo.h"
-#include "Application.h"
-#include "messaging/ApplicationMessenger.h"
-#include "FileItem.h"
-#include "Util.h"
+
+#include <algorithm>
+
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/LanguageResource.h"
 #include "addons/RepositoryUpdater.h"
+#include "Application.h"
+#include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
+#include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
+#include "Util.h"
 #include "utils/CharsetConverter.h"
-#include "utils/log.h"
 #include "utils/LangCodeExpander.h"
+#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Weather.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 
-#include <algorithm>
-#include <locale>
-#include <utility>
-#include <set>
 
 using namespace PVR;
 using namespace KODI::MESSAGING;

@@ -19,6 +19,8 @@
  *
  */
 
+#include <utility>
+
 #include "ActiveAEDSPAddon.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"

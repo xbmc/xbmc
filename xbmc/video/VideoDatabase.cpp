@@ -22,57 +22,57 @@
   #include "config.h"
 #endif
 
-#include "messaging/ApplicationMessenger.h"
-#include "threads/SystemClock.h"
 #include "VideoDatabase.h"
-#include "video/windows/GUIWindowVideoBase.h"
+
+#include <algorithm>
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "addons/AddonManager.h"
-#include "GUIInfoManager.h"
-#include "Util.h"
-#include "utils/URIUtils.h"
-#include "utils/XMLUtils.h"
-#include "GUIPassword.h"
-#include "filesystem/StackDirectory.h"
-#include "filesystem/MultiPathDirectory.h"
-#include "VideoInfoScanner.h"
-#include "guilib/GUIWindowManager.h"
-#include "filesystem/Directory.h"
-#include "filesystem/File.h"
+#include "Application.h"
+#include "dbwrappers/dataset.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
-#include "dialogs/GUIDialogProgress.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "FileItem.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "filesystem/MultiPathDirectory.h"
+#include "filesystem/StackDirectory.h"
+#include "guiinfo/GUIInfoLabels.h"
+#include "GUIInfoManager.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "GUIPassword.h"
+#include "interfaces/AnnouncementManager.h"
+#include "messaging/ApplicationMessenger.h"
+#include "playlists/SmartPlayList.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "storage/MediaManager.h"
-#include "utils/StringUtils.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/FileUtils.h"
-#include "utils/log.h"
 #include "TextureCache.h"
-#include "interfaces/AnnouncementManager.h"
-#include "dbwrappers/dataset.h"
-#include "utils/LabelFormatter.h"
-#include "XBDateTime.h"
+#include "threads/SystemClock.h"
 #include "URL.h"
-#include "video/VideoDbUrl.h"
-#include "playlists/SmartPlayList.h"
+#include "Util.h"
+#include "utils/FileUtils.h"
 #include "utils/GroupUtils.h"
+#include "utils/LabelFormatter.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "Application.h"
-#include "guiinfo/GUIInfoLabels.h"
-
-#include <algorithm>
-#include <map>
-#include <memory>
-#include <string>
-#include <utility>
-#include <vector>
+#include "utils/XMLUtils.h"
+#include "video/VideoDbUrl.h"
+#include "video/windows/GUIWindowVideoBase.h"
+#include "VideoInfoScanner.h"
+#include "XBDateTime.h"
 
 using namespace dbiplus;
 using namespace XFILE;

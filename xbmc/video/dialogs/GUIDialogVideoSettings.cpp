@@ -18,23 +18,27 @@
  *
  */
 
-#include "system.h"
 #include "GUIDialogVideoSettings.h"
-#include "GUIPassword.h"
+
+#include <utility>
+
 #include "addons/Skin.h"
+#include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIWindowManager.h"
+#include "GUIPassword.h"
+#include "profiles/ProfilesManager.h"
+#include "settings/lib/Setting.h"
+#include "settings/lib/SettingsManager.h"
+#include "settings/MediaSettings.h"
+#include "settings/Settings.h"
+#include "system.h"
+#include "utils/log.h"
+#include "utils/Variant.h"
+#include "video/VideoDatabase.h"
+
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
-#include "dialogs/GUIDialogYesNo.h"
-#include "guilib/GUIWindowManager.h"
-#include "profiles/ProfilesManager.h"
-#include "settings/MediaSettings.h"
-#include "settings/Settings.h"
-#include "settings/lib/Setting.h"
-#include "settings/lib/SettingsManager.h"
-#include "utils/log.h"
-#include "video/VideoDatabase.h"
-#include "utils/Variant.h"
 
 #define SETTING_VIDEO_VIEW_MODE           "video.viewmode"
 #define SETTING_VIDEO_ZOOM                "video.zoom"

@@ -19,9 +19,12 @@
  */
 
 #include "GUIDialogPeripheralSettings.h"
-#include "FileItem.h"
+
+#include <utility>
+
 #include "addons/Skin.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "FileItem.h"
 #include "peripherals/Peripherals.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingSection.h"

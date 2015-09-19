@@ -18,11 +18,14 @@
  *
  */
 
-#include "video/VideoDatabase.h"
 #include "DirectoryNodeOverview.h"
-#include "settings/Settings.h"
+
+#include <utility>
+
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
+#include "settings/Settings.h"
+#include "video/VideoDatabase.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 

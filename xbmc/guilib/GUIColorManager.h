@@ -33,9 +33,9 @@
  \brief
  */
 
+#include <stdint.h>
 #include <map>
 #include <string>
-#include <stdint.h>
 
 class CXBMCTinyXML;
 
