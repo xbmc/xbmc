@@ -125,11 +125,17 @@ COverlayText::COverlayText(CDVDOverlayText * src)
   }
   else
   {
-    m_align  = ALIGN_VIDEO;
+    if(m_subalign == SUBTITLE_ALIGN_TOP_INSIDE ||
+       m_subalign == SUBTITLE_ALIGN_TOP_OUTSIDE)
+      m_align  = ALIGN_VIDEO;
+    else
+      m_align = ALIGN_SCREEN;
+
     m_pos    = POSITION_RELATIVE;
     m_x      = 0.5f;
-    if(m_subalign == SUBTITLE_ALIGN_TOP_INSIDE
-    || m_subalign == SUBTITLE_ALIGN_TOP_OUTSIDE)
+
+    if(m_subalign == SUBTITLE_ALIGN_TOP_INSIDE ||
+       m_subalign == SUBTITLE_ALIGN_TOP_OUTSIDE)
       m_y    = 0.0f;
     else
       m_y    = 1.0f;
