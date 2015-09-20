@@ -161,7 +161,7 @@ void CVideoDatabase::CreateTables()
 
     columns += column;
   }
-  columns += ", idShow integer, userrating integer)";
+  columns += ", idShow integer, userrating integer, idSeason integer)";
   m_pDS->exec(columns);
 
   CLog::Log(LOGINFO, "create tvshowlinkpath table");
@@ -348,22 +348,21 @@ void CVideoDatabase::CreateViews()
                                       "  tvshow.c%02d AS premiered,"
                                       "  tvshow.c%02d AS mpaa,"
                                       "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
-                                      "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
-                                      "  seasons.idSeason AS idSeason "
+                                      "  bookmark.totalTimeInSeconds AS totalTimeInSeconds "
                                       "FROM episode"
                                       "  JOIN files ON"
                                       "    files.idFile=episode.idFile"
                                       "  JOIN tvshow ON"
                                       "    tvshow.idShow=episode.idShow"
-                                      "  LEFT JOIN seasons ON"
-                                      "    seasons.idShow=episode.idShow AND seasons.season=episode.c%02d"
+                                      "  JOIN seasons ON"
+                                      "    seasons.idSeason=episode.idSeason"
                                       "  JOIN path ON"
                                       "    files.idPath=path.idPath"
                                       "  LEFT JOIN bookmark ON"
                                       "    bookmark.idFile=episode.idFile AND bookmark.type=1",
                                       VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_GENRE,
                                       VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED,
-                                      VIDEODB_ID_TV_MPAA, VIDEODB_ID_EPISODE_SEASON);
+                                      VIDEODB_ID_TV_MPAA);
   m_pDS->exec(episodeview);
 
   CLog::Log(LOGINFO, "create tvshowcounts");
@@ -2459,13 +2458,18 @@ int CVideoDatabase::SetDetailsForEpisode(const std::string& strFilenameAndPath, 
     }
 
     // ensure we have this season already added
-    AddSeason(idShow, details.m_iSeason);
+    int idSeason = AddSeason(idShow, details.m_iSeason);
 
     SetArtForItem(idEpisode, MediaTypeEpisode, artwork);
 
     if (details.m_iEpisode != -1 && details.m_iSeason != -1)
     { // query DB for any episodes matching idShow, Season and Episode
-      std::string strSQL = PrepareSQL("SELECT files.playCount, files.lastPlayed FROM episode INNER JOIN files ON files.idFile=episode.idFile WHERE episode.c%02d=%i AND episode.c%02d=%i AND episode.idShow=%i AND episode.idEpisode!=%i AND files.playCount > 0", VIDEODB_ID_EPISODE_SEASON, details.m_iSeason, VIDEODB_ID_EPISODE_EPISODE, details.m_iEpisode, idShow, idEpisode);
+      std::string strSQL = PrepareSQL("SELECT files.playCount, files.lastPlayed "
+                                      "FROM episode INNER JOIN files ON files.idFile=episode.idFile "
+                                      "WHERE episode.c%02d=%i AND episode.c%02d=%i AND episode.idShow=%i "
+                                      "AND episode.idEpisode!=%i AND files.playCount > 0", 
+                                      VIDEODB_ID_EPISODE_SEASON, details.m_iSeason, VIDEODB_ID_EPISODE_EPISODE,
+                                      details.m_iEpisode, idShow, idEpisode);
       m_pDS->query(strSQL);
 
       if (!m_pDS->eof())
@@ -2490,6 +2494,7 @@ int CVideoDatabase::SetDetailsForEpisode(const std::string& strFilenameAndPath, 
       sql += PrepareSQL(", userrating = %i", details.m_iUserRating);
     else
       sql += ", userrating = NULL";
+    sql += PrepareSQL(", idSeason = %i", idSeason);
     sql += PrepareSQL(" where idEpisode=%i", idEpisode);
     m_pDS->exec(sql);
     CommitTransaction();
@@ -4655,11 +4660,31 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 98)
     m_pDS->exec("ALTER TABLE seasons ADD name text");
+
+  if (iVersion < 99)
+  {
+    // Add idSeason to episode table, so we don't have to join via idShow and season in the future
+    m_pDS->exec("ALTER TABLE episode ADD idSeason integer");
+
+    m_pDS->query("SELECT idSeason, idShow, season FROM seasons");
+    while (!m_pDS->eof())
+    {
+      m_pDS2->exec(PrepareSQL("UPDATE episode "
+        "SET idSeason = %d "
+        "WHERE "
+        "episode.idShow = %d AND "
+        "episode.c%02d = %d",
+        m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asInt(), 
+        VIDEODB_ID_EPISODE_SEASON, m_pDS->fv(2).get_asInt()));
+
+      m_pDS->next();
+    }
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 98;
+  return 99;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
