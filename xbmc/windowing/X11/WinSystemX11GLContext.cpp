@@ -112,7 +112,7 @@ bool CWinSystemX11GLContext::SetWindow(int width, int height, bool fullscreen, c
     CSingleLock lock(m_resourceSection);
     // tell any shared resources
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
-      (*i)->OnResetDevice();
+      (*i)->OnResetDisplay();
   }
   return true;
 }

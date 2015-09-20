@@ -580,8 +580,8 @@ public:
                     const VdpPictureInfo *info, uint32_t buffers_used,
                     const VdpBitstreamBuffer *buffers);
 
-  virtual void OnLostDevice();
-  virtual void OnResetDevice();
+  virtual void OnLostDisplay();
+  virtual void OnResetDisplay();
 
 protected:
   void SetWidthHeight(int width, int height);
