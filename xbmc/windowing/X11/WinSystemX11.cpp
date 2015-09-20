@@ -616,7 +616,7 @@ void CWinSystemX11::OnLostDevice()
 
   { CSingleLock lock(m_resourceSection);
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
-      (*i)->OnLostDevice();
+      (*i)->OnLostDisplay();
   }
 
   CWinEventsX11Imp::SetXRRFailSafeTimer(3000);

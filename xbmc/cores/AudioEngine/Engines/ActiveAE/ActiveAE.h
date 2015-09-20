@@ -262,8 +262,8 @@ public:
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnregisterAudioCallback(IAudioCallback* pCallback);
 
-  virtual void OnLostDevice();
-  virtual void OnResetDevice();
+  virtual void OnLostDisplay();
+  virtual void OnResetDisplay();
   virtual void OnAppFocusChange(bool focus);
 
 protected:

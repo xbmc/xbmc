@@ -36,8 +36,8 @@ public:
   virtual void Run(volatile bool& stop);
   virtual void Cleanup();
   virtual float GetFps();
-  virtual void OnLostDevice();
-  virtual void OnResetDevice();
+  virtual void OnLostDisplay();
+  virtual void OnResetDisplay();
 
 private:
   int  (*m_glXWaitVideoSyncSGI) (int, int, unsigned int*);

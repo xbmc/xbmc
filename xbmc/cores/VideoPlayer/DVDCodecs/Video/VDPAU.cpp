@@ -679,7 +679,7 @@ void CDecoder::SetWidthHeight(int width, int height)
     CLog::Log(LOGDEBUG, "CVDPAU::SetWidthHeight Setting OutWidth: %i OutHeight: %i", m_vdpauConfig.outWidth, m_vdpauConfig.outHeight);
 }
 
-void CDecoder::OnLostDevice()
+void CDecoder::OnLostDisplay()
 {
   CLog::Log(LOGNOTICE,"CVDPAU::OnLostDevice event");
 
@@ -698,7 +698,7 @@ void CDecoder::OnLostDevice()
   g_graphicsContext.restore(count);
 }
 
-void CDecoder::OnResetDevice()
+void CDecoder::OnResetDisplay()
 {
   CLog::Log(LOGNOTICE,"CVDPAU::OnResetDevice event");
 
