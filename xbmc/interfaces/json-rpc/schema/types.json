@@ -519,7 +519,7 @@
   "Video.Fields.MovieSet": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "enum": [ "title", "playcount", "fanart", "thumbnail", "art" ]
+      "enum": [ "title", "playcount", "fanart", "thumbnail", "art", "plot" ]
     }
   },
   "Video.Fields.TVShow": {
@@ -680,7 +680,8 @@
   "Video.Details.MovieSet": {
     "extends": "Video.Details.Media",
     "properties": {
-      "setid": { "$ref": "Library.Id", "required": true }
+      "setid": { "$ref": "Library.Id", "required": true },
+      "plot": { "type": "string" }
     }
   },
   "Video.Details.MovieSet.Extended": {
