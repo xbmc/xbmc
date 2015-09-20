@@ -2156,7 +2156,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const std::string& strBaseDir, 
     if (!strBaseDir.empty() && !baseUrl.FromString(strBaseDir))
       return false;
 
-    std::string strSQL = StringUtils::Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idAlbum in (select distinct albumview.idAlbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed IS NOT NULL order by song.lastplayed desc limit %i)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
+    std::string strSQL = StringUtils::Format("SELECT songview.*, albumview.* FROM songview JOIN albumview ON (songview.idAlbum = albumview.idAlbum) JOIN (SELECT DISTINCT album.idAlbum FROM album JOIN song ON album.idAlbum = song.idAlbum WHERE song.lastplayed IS NOT NULL ORDER BY song.lastplayed DESC LIMIT %i) AS _albumlimit ON (albumview.idAlbum = _albumlimit.idAlbum)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
     CLog::Log(LOGDEBUG,"GetRecentlyPlayedAlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL)) return false;
 
