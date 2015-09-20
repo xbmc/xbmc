@@ -919,7 +919,7 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     return EOS_ABORT;
   }
 
-  int    result  = 0;
+  int result = 0;
 
   //correct any pattern in the timestamps
   if (picture.format != RENDER_FMT_BYPASS)
@@ -966,12 +966,16 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     iFrameSleep = 0;
   }
 
-  if( m_started == false )
+  if (m_started == false)
     iSleepTime = 0.0;
-  else if( m_stalled || m_pClock->GetMaster() == MASTER_CLOCK_VIDEO)
+  else if (m_stalled || m_pClock->GetMaster() == MASTER_CLOCK_VIDEO)
     iSleepTime = iFrameSleep;
   else
     iSleepTime = iClockSleep;
+
+  // limit sleep time to 500ms
+  if (iSleepTime > DVD_MSEC_TO_TIME(500))
+    iSleepTime = DVD_MSEC_TO_TIME(500);
 
   if (m_speed < 0)
   {
