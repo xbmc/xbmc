@@ -104,6 +104,11 @@ namespace PVR
      */
     bool HasEpgInfoTag() const;
 
+    /*!
+     * @return True if this timer has corresponding epg info tag with series attributes, false otherwise
+     */
+    bool HasSeriesEpgInfoTag() const;
+
     int ChannelNumber(void) const;
     std::string ChannelName(void) const;
     std::string ChannelIcon(void) const;

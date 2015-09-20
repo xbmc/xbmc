@@ -736,6 +736,10 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
       if (type->RequiresEpgTagOnCreate() && !m_timerInfoTag->HasEpgInfoTag())
         continue;
 
+      // Drop TimerTypes without 'Series' EPG attributes if none are set
+      if (type->RequiresEpgSeriesOnCreate() && !m_timerInfoTag->HasSeriesEpgInfoTag())
+        continue;
+
       // Drop TimerTypes that forbid EPGInfo, if it is populated
       if (type->ForbidsEpgTagOnCreate() && m_timerInfoTag->HasEpgInfoTag())
         continue;
