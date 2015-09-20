@@ -22,16 +22,14 @@
 \file TextureManager.h
 \brief
 */
+#pragma once
 
-#ifndef GUILIB_TEXTUREMANAGER_H
-#define GUILIB_TEXTUREMANAGER_H
-
-#include <vector>
 #include <list>
+#include <vector>
+#include <utility>
+
 #include "TextureBundle.h"
 #include "threads/CriticalSection.h"
-
-#pragma once
 
 /************************************************************************/
 /*                                                                      */
@@ -142,4 +140,3 @@ protected:
  \brief
  */
 extern CGUITextureManager g_TextureManager;
-#endif

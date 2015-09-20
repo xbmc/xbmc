@@ -61,6 +61,10 @@
 /* Set EPGTAG.iGenreType to EPG_GENRE_USE_STRING to transfer genre strings to XBMC */
 #define EPG_GENRE_USE_STRING                          0x100
 
+/* EPG_TAG.iFlags values */
+const unsigned int EPG_TAG_FLAG_UNDEFINED =           0x00000000; /*!< @brief nothing special to say about this entry */
+const unsigned int EPG_TAG_FLAG_IS_SERIES =           0x00000001; /*!< @brief this EPG entry is part of a series */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -94,6 +98,7 @@ extern "C" {
     int           iEpisodeNumber;      /*!< @brief (optional) episode number */
     int           iEpisodePartNumber;  /*!< @brief (optional) episode part number */
     const char *  strEpisodeName;      /*!< @brief (optional) episode name */
+    unsigned int  iFlags;              /*!< @brief (optional) bit field of independent flags associated with the EPG entry */
   } ATTRIBUTE_PACKED EPG_TAG;
 
 #ifdef __cplusplus

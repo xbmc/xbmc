@@ -22,9 +22,10 @@
 #include "pvr/channels/PVRChannel.h" // PVR_INVALID_CHANNEL_UID
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
-#include <memory>
-#include <vector>
 #include <map>
+#include <memory>
+#include <utility>
+#include <vector>
 
 class CFileItem;
 class CSetting;

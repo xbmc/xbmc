@@ -706,7 +706,7 @@ void SqliteDataset::open(const std::string &sql) {
 
 void SqliteDataset::open() {
   if (select_sql.size()) {
-    query(select_sql.c_str()); 
+    query(select_sql); 
   }
   else {
     ds_state = dsInactive;

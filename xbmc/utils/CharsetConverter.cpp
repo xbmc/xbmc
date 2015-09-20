@@ -19,20 +19,23 @@
  */
 
 #include "CharsetConverter.h"
-#include "utils/StringUtils.h"
+
+#include <cerrno>
+#include <algorithm>
+
+#include <iconv.h>
 #include <fribidi/fribidi.h>
-#include "LangInfo.h"
+
 #include "guilib/LocalizeStrings.h"
+#include "LangInfo.h"
+#include "log.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
+#include "system.h"
 #include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
 #include "utils/Utf8Utils.h"
-#include "log.h"
 #include "utils/StdString.h"
-
-#include <errno.h>
-#include <iconv.h>
-#include <algorithm>
 
 #if !defined(TARGET_WINDOWS) && defined(HAVE_CONFIG_H)
   #include "config.h"

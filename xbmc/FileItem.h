@@ -24,17 +24,18 @@
  *
  */
 
+#include <memory>
+#include <utility>
+#include <vector>
+
 #include "guilib/GUIListItem.h"
+#include "GUIPassword.h"
+#include "threads/CriticalSection.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
-#include "XBDateTime.h"
 #include "utils/SortUtils.h"
-#include "GUIPassword.h"
-#include "threads/CriticalSection.h"
-
-#include <vector>
-#include <memory>
+#include "XBDateTime.h"
 
 namespace MUSIC_INFO
 {

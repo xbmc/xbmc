@@ -33,6 +33,7 @@
 #ifdef HAS_DVD_DRIVE
 
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace XFILE

@@ -403,6 +403,11 @@ namespace EPG
      */
     bool Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId = true);
 
+    /*!
+     * @brief status function to extract IsSeries boolean from EPG iFlags bitfield
+     */
+    bool IsSeries() const { return (m_iFlags & EPG_TAG_FLAG_IS_SERIES) > 0; }
+
   private:
 
     /*!
@@ -421,6 +426,11 @@ namespace EPG
      * @brief Get current time, taking timeshifting into account.
      */
     CDateTime GetCurrentPlayingTime(void) const;
+
+    /*!
+     *  @brief Return the m_iFlags as an unsigned int bitfield (for database use).
+     */
+    unsigned int Flags() const { return m_iFlags; }
 
     bool                     m_bNotify;            /*!< notify on start */
 
@@ -453,6 +463,8 @@ namespace EPG
     PVR::CPVRTimerInfoTagPtr m_timer;
 
     CEpg *                   m_epg;                /*!< the schedule that this event belongs to */
+
+    unsigned int             m_iFlags;             /*!< the flags applicable to this EPG entry */
 
     CCriticalSection         m_critSection;
     PVR::CPVRChannelPtr      m_pvrChannel;

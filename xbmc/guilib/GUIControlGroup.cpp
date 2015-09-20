@@ -19,12 +19,14 @@
  */
 
 #include "GUIControlGroup.h"
-#include "guiinfo/GUIInfoLabels.h"
 
 #include <cassert>
+#include <utility>
 #ifdef HAS_DS_PLAYER
 #include "MadvrCallback.h"
 #endif
+
+#include "guiinfo/GUIInfoLabels.h"
 
 CGUIControlGroup::CGUIControlGroup()
 {

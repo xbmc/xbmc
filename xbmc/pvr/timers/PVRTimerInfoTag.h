@@ -37,12 +37,13 @@
  * number of the tag reported by the PVR backend and can not be played!
  */
 
-#include "XBDateTime.h"
-#include "addons/include/xbmc_pvr_types.h"
-#include "utils/ISerializable.h"
-#include "pvr/timers/PVRTimerType.h"
-
 #include <memory>
+
+#include "addons/include/xbmc_pvr_types.h"
+#include "pvr/timers/PVRTimerType.h"
+#include "threads/CriticalSection.h"
+#include "utils/ISerializable.h"
+#include "XBDateTime.h"
 
 class CFileItem;
 class CVariant;
@@ -102,6 +103,11 @@ namespace PVR
      * @return True if this timer has a corresponding epg info tag, false otherwise
      */
     bool HasEpgInfoTag() const;
+
+    /*!
+     * @return True if this timer has corresponding epg info tag with series attributes, false otherwise
+     */
+    bool HasSeriesEpgInfoTag() const;
 
     int ChannelNumber(void) const;
     std::string ChannelName(void) const;

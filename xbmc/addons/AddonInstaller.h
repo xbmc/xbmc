@@ -19,11 +19,13 @@
  *
  */
 
-#include "utils/FileOperationJob.h"
+#include <utility>
+
 #include "addons/Addon.h"
 #include "addons/Repository.h"
-#include "utils/Stopwatch.h"
 #include "threads/Event.h"
+#include "utils/FileOperationJob.h"
+#include "utils/Stopwatch.h"
 
 class CAddonDatabase;
 
@@ -69,6 +71,9 @@ public:
    */
   bool InstallFromZip(const std::string &path);
 
+   /*! Install an addon with a specific version and repository */
+  void Install(const std::string& addonId, const ADDON::AddonVersion& version, const std::string& repoId);
+
   /*! \brief Check whether dependencies of an addon exist or are installable.
   Iterates through the addon's dependencies, checking they're installed or installable.
   Each dependency must also satisfies CheckDependencies in turn.
@@ -98,6 +103,12 @@ public:
 
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
   void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
+
+  /*! \brief Get the repository which hosts the most recent version of add-on
+   *  \param addon The add-on to find the repository for
+   *  \param repo [out] The hosting repository
+   */
+  static bool GetRepoForAddon(const std::string& addonId, ADDON::RepositoryPtr& repo);
 
   class CDownloadJob
   {
@@ -149,15 +160,9 @@ private:
 class CAddonInstallJob : public CFileOperationJob
 {
 public:
-  CAddonInstallJob(const ADDON::AddonPtr &addon, const std::string &hash = "");
+  CAddonInstallJob(const ADDON::AddonPtr &addon, const ADDON::AddonPtr &repo, const std::string &hash = "");
 
   virtual bool DoWork();
-
-  /*! \brief Find which repository hosts an add-on
-   *  \param addon The add-on to find the repository for
-   *  \return The hosting repository
-   */
-  static ADDON::AddonPtr GetRepoForAddon(const ADDON::AddonPtr& addon);
 
   /*! \brief Find the add-on and itshash for the given add-on ID
    *  \param addonID ID of the add-on to find
@@ -165,7 +170,7 @@ public:
    *  \param hash Hash of the add-on
    *  \return True if the add-on and its hash were found, false otherwise.
    */
-  static bool GetAddonWithHash(const std::string& addonID, ADDON::AddonPtr& addon, std::string& hash);
+  static bool GetAddonWithHash(const std::string& addonID, const std::string &repoID, ADDON::AddonPtr& addon, std::string& hash);
 
 private:
   void OnPreInstall();
@@ -188,6 +193,7 @@ private:
   void ReportInstallError(const std::string& addonID, const std::string& fileName, const std::string& message = "");
 
   ADDON::AddonPtr m_addon;
+  ADDON::AddonPtr m_repo;
   std::string m_hash;
   bool m_update;
 };

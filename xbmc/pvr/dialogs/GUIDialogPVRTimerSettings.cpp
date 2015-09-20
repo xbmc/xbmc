@@ -18,25 +18,24 @@
  *
  */
 
-#include "FileItem.h"
+#include "GUIDialogPVRTimerSettings.h"
+
 #include "addons/include/xbmc_pvr_types.h"
 #include "dialogs/GUIDialogNumeric.h"
+#include "FileItem.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "settings/SettingUtils.h"
+#include "pvr/addons/PVRClient.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/PVRManager.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
+#include "pvr/timers/PVRTimerType.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
+#include "settings/SettingUtils.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-
-#include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClient.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/timers/PVRTimerInfoTag.h"
-#include "pvr/timers/PVRTimerType.h"
-
-#include "GUIDialogPVRTimerSettings.h"
 
 using namespace PVR;
 
@@ -735,6 +734,10 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
 
       // Drop TimerTypes that require EPGInfo, if none is populated
       if (type->RequiresEpgTagOnCreate() && !m_timerInfoTag->HasEpgInfoTag())
+        continue;
+
+      // Drop TimerTypes without 'Series' EPG attributes if none are set
+      if (type->RequiresEpgSeriesOnCreate() && !m_timerInfoTag->HasSeriesEpgInfoTag())
         continue;
 
       // Drop TimerTypes that forbid EPGInfo, if it is populated

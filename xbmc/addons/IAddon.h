@@ -18,12 +18,14 @@
 *  <http://www.gnu.org/licenses/>.
 *
 */
-#include <memory>
+
+#include <stdint.h>
 
 #include <map>
+#include <memory>
 #include <set>
 #include <string>
-#include <stdint.h>
+#include <utility>
 
 class TiXmlElement;
 

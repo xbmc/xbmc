@@ -17,47 +17,51 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include <memory>
+
 #include "AddonManager.h"
+
+#include <memory>
+#include <utility>
+
 #include "Addon.h"
-#include "AudioEncoder.h"
-#include "AudioDecoder.h"
-#include "ContextMenuManager.h"
-#include "DllLibCPluff.h"
 #include "addons/ImageResource.h"
 #include "addons/LanguageResource.h"
 #include "addons/UISoundsResource.h"
-#include "events/EventLog.h"
+#include "addons/Webinterface.h"
+#include "AudioDecoder.h"
+#include "AudioEncoder.h"
+#include "ContextMenuAddon.h"
+#include "ContextMenuManager.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
+#include "DllAudioDSP.h"
+#include "DllLibCPluff.h"
 #include "events/AddonManagementEvent.h"
-#include "utils/StringUtils.h"
-#include "utils/JobManager.h"
-#include "threads/SingleLock.h"
+#include "events/EventLog.h"
 #include "LangInfo.h"
+#include "PluginSource.h"
+#include "Repository.h"
+#include "Scraper.h"
+#include "Service.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "Skin.h"
+#include "system.h"
+#include "threads/SingleLock.h"
+#include "Util.h"
+#include "utils/JobManager.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
+
 #ifdef HAS_VISUALISATION
 #include "Visualisation.h"
 #endif
 #ifdef HAS_SCREENSAVER
 #include "ScreenSaver.h"
 #endif
-#include "DllAudioDSP.h"
-#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #ifdef HAS_PVRCLIENTS
 #include "pvr/addons/PVRClient.h"
 #endif
-//#ifdef HAS_SCRAPERS
-#include "Scraper.h"
-//#endif
-#include "PluginSource.h"
-#include "Repository.h"
-#include "Skin.h"
-#include "Service.h"
-#include "ContextMenuAddon.h"
-#include "Util.h"
-#include "addons/Webinterface.h"
 
 using namespace XFILE;
 
@@ -594,28 +598,37 @@ bool CAddonMgr::SetDefault(const TYPE &type, const std::string &addonID)
   switch (type)
   {
   case ADDON_VIZ:
-    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION, addonID);
     break;
   case ADDON_SCREENSAVER:
-    CSettings::GetInstance().SetString(CSettings::SETTING_SCREENSAVER_MODE,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_SCREENSAVER_MODE, addonID);
     break;
   case ADDON_SCRAPER_ALBUMS:
-    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER, addonID);
     break;
   case ADDON_SCRAPER_ARTISTS:
-    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER, addonID);
     break;
   case ADDON_SCRAPER_MOVIES:
-    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_MOVIESDEFAULT,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_MOVIESDEFAULT, addonID);
     break;
   case ADDON_SCRAPER_MUSICVIDEOS:
-    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT, addonID);
     break;
   case ADDON_SCRAPER_TVSHOWS:
-    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT, addonID);
     break;
   case ADDON_RESOURCE_LANGUAGE:
     CSettings::GetInstance().SetString(CSettings::SETTING_LOCALE_LANGUAGE, addonID);
+    break;
+  case ADDON_SCRIPT_WEATHER:
+     CSettings::GetInstance().SetString(CSettings::SETTING_WEATHER_ADDON, addonID);
+    break;
+  case ADDON_SKIN:
+    CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, addonID);
+    break;
+  case ADDON_RESOURCE_UISOUNDS:
+    CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN, addonID);
     break;
   default:
     return false;

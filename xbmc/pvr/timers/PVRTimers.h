@@ -19,13 +19,18 @@
  *
  */
 
-#include "XBDateTime.h"
-#include "addons/include/xbmc_pvr_types.h"
-#include "utils/Observer.h"
+#include <map>
+#include <memory>
 
+#include "addons/include/xbmc_pvr_types.h"
 #include "PVRTimerInfoTag.h"
+#include "utils/Observer.h"
+#include "XBDateTime.h"
 
 class CFileItem;
+class CFileItemList;
+typedef std::shared_ptr<CFileItem> CFileItemPtr;
+
 namespace EPG
 {
   class CEpgInfoTag;

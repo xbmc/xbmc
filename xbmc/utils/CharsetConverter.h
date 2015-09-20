@@ -21,13 +21,14 @@
  *
  */
 
+#include <string>
+#include <utility>
+#include <vector>
+
 #include "settings/lib/ISettingCallback.h"
 #include "utils/GlobalsHandling.h"
 #include "utils/uXstrings.h"
 #include "utils/StdString.h"
-
-#include <string>
-#include <vector>
 
 class CSetting;
 

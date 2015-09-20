@@ -20,9 +20,11 @@
  *
  */
 
-#include <string>
 #include <map>
+#include <string>
+#include <utility>
 #include <vector>
+
 #include "utils/Job.h"
 
 class CCriticalSection;

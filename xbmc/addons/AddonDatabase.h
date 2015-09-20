@@ -19,10 +19,12 @@
  *
  */
 
-#include "dbwrappers/Database.h"
-#include "addons/Addon.h"
-#include "FileItem.h"
 #include <string>
+#include <vector>
+
+#include "addons/Addon.h"
+#include "dbwrappers/Database.h"
+#include "FileItem.h"
 
 class CAddonDatabase : public CDatabase
 {
@@ -34,20 +36,21 @@ public:
   int GetAddonId(const ADDON::AddonPtr& item);
   int AddAddon(const ADDON::AddonPtr& item, int idRepo);
   bool GetAddon(const std::string& addonID, ADDON::AddonPtr& addon);
+
+  /*! \brief Get an addon with a specific version and repository. */
+  bool GetAddon(const std::string& addonID, const ADDON::AddonVersion& version, const std::string& repoId, ADDON::AddonPtr& addon);
+
   bool GetAddons(ADDON::VECADDONS& addons, const ADDON::TYPE &type = ADDON::ADDON_UNKNOWN);
 
   /*! Get the addon IDs that has been set to disabled */
   bool GetDisabled(std::vector<std::string>& addons);
 
+  bool GetAvailableVersions(const std::string& addonId,
+      std::vector<std::pair<ADDON::AddonVersion, std::string>>& versionsInfo);
+
   /*! \brief grab the (largest) add-on version for an add-on */
   ADDON::AddonVersion GetAddonVersion(const std::string &id);
 
-  /*! \brief Grab the repository from which a given addon came
-   \param addonID - the id of the addon in question
-   \param repo [out] - the id of the repository
-   \return true if a repo was found, false otherwise.
-   */
-  bool GetRepoForAddon(const std::string& addonID, std::string& repo);
   int AddRepository(const std::string& id, const ADDON::VECADDONS& addons, const std::string& checksum, const ADDON::AddonVersion& version);
   void DeleteRepository(const std::string& id);
   void DeleteRepository(int id);
@@ -113,8 +116,10 @@ public:
    \sa BreakAddon */
   std::string IsAddonBroken(const std::string &addonID);
 
+  bool BlacklistAddon(const std::string& addonID);
   bool BlacklistAddon(const std::string& addonID, const std::string& version);
   bool IsAddonBlacklisted(const std::string& addonID, const std::string& version);
+  bool RemoveAddonFromBlacklist(const std::string& addonID);
   bool RemoveAddonFromBlacklist(const std::string& addonID,
                                 const std::string& version);
 

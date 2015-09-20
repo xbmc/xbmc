@@ -20,8 +20,9 @@
  */
 
 #include <memory>
-#include <vector>
 #include <string>
+#include <utility>
+#include <vector>
 
 struct PVR_TIMER_TYPE;
 
@@ -162,7 +163,14 @@ namespace PVR
      * @brief Check whether this timer type requires epg tag info to be present.
      * @return True if new instances require EPG info, false otherwise.
      */
-    bool RequiresEpgTagOnCreate() const { return (m_iAttributes & PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE) > 0; }
+    bool RequiresEpgTagOnCreate() const { return (m_iAttributes & (PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
+                                                                   PVR_TIMER_TYPE_REQUIRES_EPG_SERIES_ON_CREATE)) > 0; }
+
+    /*!
+     * @brief Check whether this timer type requires epg tag info including series attributes to be present.
+     * @return True if new instances require an EPG tag with series attributes, false otherwise.
+     */
+    bool RequiresEpgSeriesOnCreate() const { return (m_iAttributes & PVR_TIMER_TYPE_REQUIRES_EPG_SERIES_ON_CREATE) > 0; }
 
     /*!
      * @brief Check whether this type supports the "enabling/disabling" of timers of its type.
