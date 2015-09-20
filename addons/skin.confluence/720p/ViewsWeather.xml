@@ -405,7 +405,7 @@
 		<item>
 			<label>[B]$INFO[Window.Property(Daily.$PARAM[item_id].ShortDay)][/B][CR][COLOR=grey2]$INFO[Window.Property(Daily.$PARAM[item_id].ShortDate)][/COLOR]</label>
 			<label2>$INFO[Window.Property(Daily.$PARAM[item_id].HighTemperature),[COLOR=grey2]$LOCALIZE[419] :[/COLOR][B] ,[/B]]  $INFO[Window.Property(Daily.$PARAM[item_id].LowTemperature),[COLOR=grey2]$LOCALIZE[418] :[/COLOR][B] ,[/B]][CR]$INFO[Window.Property(Daily.$PARAM[item_id].Precipitation),[COLOR=grey2]$LOCALIZE[33022] :[/COLOR][B] ,[/B]][CR]$INFO[Window.Property(Daily.$PARAM[item_id].Cloudiness),[COLOR=grey2]$LOCALIZE[387] :[/COLOR][B] ,[/B]]</label2>
-			<thumb>$INFO[Window.Property(Daily.$PARAM[item_id].OutlookIcon)]</thumb>
+			<thumb>resource://resource.images.weathericons.default/$INFO[Window.Property(Daily.$PARAM[item_id].OutlookIcon)]</thumb>
 			<icon>$INFO[Window.Property(Daily.$PARAM[item_id].Outlook),[COLOR=grey2]$LOCALIZE[33030]: [/COLOR]][CR][COLOR=grey2]$LOCALIZE[383]: [/COLOR]$INFO[Window.Property(Daily.$PARAM[item_id].WindSpeed)] $INFO[Window.Property(Daily.$PARAM[item_id].WindDirection)]</icon>
 			<onclick>noop</onclick>
 			<visible>Weather.IsFetched + !IsEmpty(Window.Property(Daily.$PARAM[item_id].Outlook)) + !IsEmpty(Window.Property(Daily.IsFetched))</visible>
@@ -415,7 +415,7 @@
 		<item>
 			<label>[B]$INFO[Window.Property(Hourly.$PARAM[item_id].Time)][/B][CR][COLOR=grey2]$INFO[Window.Property(Hourly.$PARAM[item_id].ShortDate)][/COLOR]</label>
 			<label2>$INFO[Window.Property(Hourly.$PARAM[item_id].Temperature),[COLOR=grey2]$LOCALIZE[401] :[/COLOR][B] ,[/B]]  $INFO[Window.Property(Hourly.$PARAM[item_id].FeelsLike),[COLOR=grey2]$LOCALIZE[402] :[/COLOR][B] ,[/B]][CR]$INFO[Window.Property(Hourly.$PARAM[item_id].Humidity),[COLOR=grey2]$LOCALIZE[406] :[/COLOR][B] ,[/B]][CR]$INFO[Window.Property(Hourly.$PARAM[item_id].Precipitation),[COLOR=grey2]$LOCALIZE[1448] :[/COLOR][B] ,[/B]]</label2>
-			<thumb>$INFO[Window.Property(Hourly.$PARAM[item_id].OutlookIcon)]</thumb>
+			<thumb>resource://resource.images.weathericons.default/$INFO[Window.Property(Hourly.$PARAM[item_id].OutlookIcon)]</thumb>
 			<icon>$INFO[Window.Property(Hourly.$PARAM[item_id].Outlook),[COLOR=grey2]$LOCALIZE[33030]: [/COLOR]][CR][COLOR=grey2]$LOCALIZE[383]: [/COLOR]$INFO[Window.Property(Hourly.$PARAM[item_id].WindSpeed)] $INFO[Window.Property(Hourly.$PARAM[item_id].WindDirection)]</icon>
 			<onclick>noop</onclick>
 			<visible>Weather.IsFetched + !IsEmpty(Window.Property(Hourly.$PARAM[item_id].Outlook)) + !IsEmpty(Window.Property(Hourly.IsFetched))</visible>
@@ -482,7 +482,7 @@
 						<width>120</width>
 						<height>110</height>
 						<aspectratio>keep</aspectratio>
-						<texture>$INFO[Window.Property(36Hour.1.OutlookIcon)]</texture>
+						<texture>resource://resource.images.weathericons.default/$INFO[Window.Property(36Hour.1.OutlookIcon)]</texture>
 					</control>
 					<control type="label">
 						<left>120</left>
@@ -547,7 +547,7 @@
 						<width>120</width>
 						<height>110</height>
 						<aspectratio>keep</aspectratio>
-						<texture>$INFO[Window.Property(36Hour.2.OutlookIcon)]</texture>
+						<texture>resource://resource.images.weathericons.default/$INFO[Window.Property(36Hour.2.OutlookIcon)]</texture>
 					</control>
 					<control type="label">
 						<left>120</left>
@@ -612,7 +612,7 @@
 						<width>120</width>
 						<height>110</height>
 						<aspectratio>keep</aspectratio>
-						<texture>$INFO[Window.Property(36Hour.3.OutlookIcon)]</texture>
+						<texture>resource://resource.images.weathericons.default/$INFO[Window.Property(36Hour.3.OutlookIcon)]</texture>
 					</control>
 					<control type="label">
 						<left>120</left>
@@ -704,7 +704,7 @@
 						<width>130</width>
 						<height>160</height>
 						<aspectratio>keep</aspectratio>
-						<texture>$INFO[Window.Property(Weekend.1.OutlookIcon)]</texture>
+						<texture>resource://resource.images.weathericons.default/$INFO[Window.Property(Weekend.1.OutlookIcon)]</texture>
 					</control>
 					<control type="label">
 						<left>140</left>
@@ -791,7 +791,7 @@
 						<width>130</width>
 						<height>160</height>
 						<aspectratio>keep</aspectratio>
-						<texture>$INFO[Window.Property(Weekend.2.OutlookIcon)]</texture>
+						<texture>resource://resource.images.weathericons.default/$INFO[Window.Property(Weekend.2.OutlookIcon)]</texture>
 					</control>
 					<control type="label">
 						<left>140</left>
