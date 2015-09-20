@@ -611,7 +611,7 @@ CVariant &CVariant::operator=(const CVariant &rhs)
 
 CVariant& CVariant::operator=(CVariant&& rhs)
 {
-  if (this == &rhs)
+  if (m_type == VariantTypeConstNull || this == &rhs)
     return *this;
 
   //Make sure that if we're moved into we don't leak any pointers
