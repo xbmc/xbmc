@@ -217,7 +217,7 @@ bool CRepositoryUpdateJob::DoWork()
   database.Open();
 
   std::string oldChecksum;
-  if (!database.GetRepoChecksum(m_repo->ID(), oldChecksum))
+  if (database.GetRepoChecksum(m_repo->ID(), oldChecksum) == -1)
     oldChecksum = "";
 
   std::string newChecksum;
