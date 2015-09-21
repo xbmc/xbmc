@@ -126,11 +126,11 @@ CVideoPlayerAudio::~CVideoPlayerAudio()
   // CloseStream(true);
 }
 
-bool CVideoPlayerAudio::OpenStream( CDVDStreamInfo &hints )
+bool CVideoPlayerAudio::OpenStream(CDVDStreamInfo &hints)
 {
   CLog::Log(LOGNOTICE, "Finding audio codec for: %i", hints.codec);
   CDVDAudioCodec* codec = CDVDFactoryCodec::CreateAudioCodec(hints);
-  if( !codec )
+  if(!codec)
   {
     CLog::Log(LOGERROR, "Unsupported audio codec");
     return false;
@@ -148,7 +148,7 @@ bool CVideoPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   return true;
 }
 
-void CVideoPlayerAudio::OpenStream( CDVDStreamInfo &hints, CDVDAudioCodec* codec )
+void CVideoPlayerAudio::OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec)
 {
   SAFE_DELETE(m_pAudioCodec);
   m_pAudioCodec = codec;
@@ -532,6 +532,10 @@ void CVideoPlayerAudio::Process()
 
     packetadded = false;
 
+    // demuxer reads metatags that influence channel layout
+    if (m_streaminfo.codec == AV_CODEC_ID_FLAC && m_streaminfo.channellayout)
+      audioframe.channel_layout = CAEUtil::GetAEChannelLayout(m_streaminfo.channellayout);
+    
     // we have succesfully decoded an audio frame, setup renderer to match
     if (!m_dvdAudio.IsValidFormat(audioframe))
     {
