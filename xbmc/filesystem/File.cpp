@@ -1051,7 +1051,8 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
   std::ios_base::openmode mode)
 {
   // calculate relative offset
-  off_type pos  = m_file->GetPosition() - (egptr() - gptr());
+  off_type aheadbytes  = (egptr() - gptr());
+  off_type pos  = m_file->GetPosition() - aheadbytes;
   off_type offset2;
   if(way == std::ios_base::cur)
     offset2 = offset;
@@ -1080,7 +1081,7 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
 
   int64_t position = -1;
   if(way == std::ios_base::cur)
-    position = m_file->Seek(offset, SEEK_CUR);
+    position = m_file->Seek(offset - aheadbytes, SEEK_CUR);
   else if(way == std::ios_base::end)
     position = m_file->Seek(offset, SEEK_END);
   else
