@@ -293,9 +293,6 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
-  ChooseBestResolution(fps);
-  m_destWidth = g_graphicsContext.GetResInfo(m_resolution).iWidth;
-  m_destHeight = g_graphicsContext.GetResInfo(m_resolution).iHeight;
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
   ManageDisplay();
 
@@ -535,10 +532,6 @@ void CMMALRenderer::PreInit()
   UnInit();
 
   m_iFlags = 0;
-
-  m_resolution = CDisplaySettings::GetInstance().GetCurrentResolution();
-  if ( m_resolution == RES_WINDOW )
-    m_resolution = RES_DESKTOP;
 
   CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
 
