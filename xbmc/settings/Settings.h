@@ -294,7 +294,7 @@ public:
   static const std::string SETTING_SERVICES_AIRPLAYVOLUMECONTROL;
   static const std::string SETTING_SERVICES_USEAIRPLAYPASSWORD;
   static const std::string SETTING_SERVICES_AIRPLAYPASSWORD;
-  static const std::string SETTING_SERVICES_AIRPLAYIOS8COMPAT;
+  static const std::string SETTING_SERVICES_AIRPLAYVIDEOSUPPORT;
   static const std::string SETTING_SMB_WINSSERVER;
   static const std::string SETTING_SMB_WORKGROUP;
   static const std::string SETTING_VIDEOSCREEN_MONITOR;

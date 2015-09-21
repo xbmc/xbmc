@@ -337,7 +337,7 @@ const std::string CSettings::SETTING_SERVICES_AIRPLAY = "services.airplay";
 const std::string CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL = "services.airplayvolumecontrol";
 const std::string CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD = "services.useairplaypassword";
 const std::string CSettings::SETTING_SERVICES_AIRPLAYPASSWORD = "services.airplaypassword";
-const std::string CSettings::SETTING_SERVICES_AIRPLAYIOS8COMPAT = "services.airplayios8compat";
+const std::string CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT = "services.airplayvideosupport";
 const std::string CSettings::SETTING_SMB_WINSSERVER = "smb.winsserver";
 const std::string CSettings::SETTING_SMB_WORKGROUP = "smb.workgroup";
 const std::string CSettings::SETTING_VIDEOSCREEN_MONITOR = "videoscreen.monitor";
@@ -1145,6 +1145,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_SERVICES_ZEROCONF);
   settingSet.insert(CSettings::SETTING_SERVICES_AIRPLAY);
   settingSet.insert(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL);
+  settingSet.insert(CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT);
   settingSet.insert(CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD);
   settingSet.insert(CSettings::SETTING_SERVICES_AIRPLAYPASSWORD);
   settingSet.insert(CSettings::SETTING_SERVICES_UPNPSERVER);
