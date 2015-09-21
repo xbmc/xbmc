@@ -178,10 +178,12 @@ void CRepositoryUpdater::ScheduleUpdate()
   if (!CAddonMgr::GetInstance().HasAddons(ADDON_REPOSITORY))
     return;
 
-  auto next = std::max(CDateTime::GetCurrentDateTime(), LastUpdated() + interval);
+  auto prev = LastUpdated();
+  auto next = std::max(CDateTime::GetCurrentDateTime(), prev + interval);
   int delta = std::max(1, (next - CDateTime::GetCurrentDateTime()).GetSecondsTotal() * 1000);
 
-  CLog::Log(LOGDEBUG,"CRepositoryUpdater: next update at %s", next.GetAsLocalizedDateTime().c_str());
+  CLog::Log(LOGDEBUG,"CRepositoryUpdater: previous update at %s, next at %s",
+      prev.GetAsLocalizedDateTime().c_str(), next.GetAsLocalizedDateTime().c_str());
 
   if (!m_timer.Start(delta))
     CLog::Log(LOGERROR,"CRepositoryUpdater: failed to start timer");
