@@ -55,7 +55,6 @@ CGUIWindow::CGUIWindow(int id, const std::string &xmlFile)
   SetID(id);
   SetProperty("xmlfile", xmlFile);
   m_lastControlID = 0;
-  m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
   m_isDialog = false;
   m_needsScaling = true;
   m_windowLoaded = false;
@@ -268,12 +267,6 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
         }
         pControl = pControl->NextSiblingElement();
       }
-    }
-    else if (strValue == "allowoverlay")
-    {
-      bool overlay = false;
-      if (XMLUtils::GetBoolean(pRootElement, "allowoverlay", overlay))
-        m_overlayState = overlay ? OVERLAY_STATE_SHOWN : OVERLAY_STATE_HIDDEN;
     }
 
     pChild = pChild->NextSiblingElement();
@@ -555,7 +548,6 @@ void CGUIWindow::OnInitWindow()
   RestoreControlStates();
   SetInitialVisibility();
   QueueAnimation(ANIM_TYPE_WINDOW_OPEN);
-  g_windowManager.ShowOverlay(m_overlayState);
 
   if (!m_manualRunActions)
   {
@@ -1004,7 +996,6 @@ void CGUIWindow::SetDefaults()
   m_defaultAlways = false;
   m_defaultControl = 0;
   m_posX = m_posY = m_width = m_height = 0;
-  m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
   m_previousWindow = WINDOW_INVALID;
   m_animations.clear();
   m_origins.clear();

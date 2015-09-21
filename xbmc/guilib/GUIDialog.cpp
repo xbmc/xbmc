@@ -91,10 +91,6 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      CGUIWindow *pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
-      if (pWindow)
-        g_windowManager.ShowOverlay(pWindow->GetOverlayState());
-
       CGUIWindow::OnMessage(message);
       return true;
     }

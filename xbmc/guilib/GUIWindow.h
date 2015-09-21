@@ -164,10 +164,6 @@ public:
                                                    // versions of UpdateVisibility, and are deemed visible if they're in
                                                    // the window manager's active list.
 
-  enum OVERLAY_STATE { OVERLAY_STATE_PARENT_WINDOW=0, OVERLAY_STATE_SHOWN, OVERLAY_STATE_HIDDEN };
-
-  OVERLAY_STATE GetOverlayState() const { return m_overlayState; };
-
   virtual bool IsAnimating(ANIMATION_TYPE animType);
   void DisableAnimations();
 
@@ -241,7 +237,6 @@ protected:
   void LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup, const CRect &rect);
 
   std::vector<int> m_idRange;
-  OVERLAY_STATE m_overlayState;
   RESOLUTION_INFO m_coordsRes; // resolution that the window coordinates are in.
   bool m_needsScaling;
   bool m_windowLoaded;  // true if the window's xml file has been loaded

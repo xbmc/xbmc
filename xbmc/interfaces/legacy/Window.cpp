@@ -455,20 +455,6 @@ namespace XBMCAddon
       XBMC_TRACE;
       switch (message.GetMessage())
       {
-      case GUI_MSG_WINDOW_DEINIT:
-        {
-          g_windowManager.ShowOverlay(ref(window)->OVERLAY_STATE_SHOWN);
-        }
-        break;
-
-      case GUI_MSG_WINDOW_INIT:
-        {
-          ref(window)->OnMessage(message);
-          g_windowManager.ShowOverlay(ref(window)->OVERLAY_STATE_HIDDEN);
-          return true;
-        }
-        break;
-
       case GUI_MSG_CLICKED:
         {
           int iControl=message.GetSenderId();
