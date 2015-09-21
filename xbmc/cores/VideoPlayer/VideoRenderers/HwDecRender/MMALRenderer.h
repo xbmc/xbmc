@@ -109,8 +109,6 @@ protected:
   bool                 m_bConfigured;
   bool                 m_bMMALConfigured;
   unsigned int         m_extended_format;
-  unsigned int         m_destWidth;
-  unsigned int         m_destHeight;
   int                  m_neededBuffers;
 
   CRect                     m_src_rect;
