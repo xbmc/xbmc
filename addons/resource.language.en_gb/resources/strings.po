@@ -11933,7 +11933,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20470"
-msgid "Group single movies into sets"
+msgid "Use movie sets for single movies"
 msgstr ""
 
 #empty strings from id 20471 to 21329
@@ -15755,7 +15755,7 @@ msgstr ""
 #. Description of setting "Videos -> Library -> Group movies in sets" with label #20458
 #: system/settings/settings.xml
 msgctxt "#36145"
-msgid "Group movies into \"Movie sets\" when browsing the movie library."
+msgid "When enabled, movies belonging to a \"Movie set\" are grouped together under one entry for the set in the movie library, this entry can then be opened to display the individual movies. When disabled, each movie will have it's own entry in the movie library even if it belongs to a set."
 msgstr ""
 
 #. Description of setting "Videos -> Library -> Update library on startup" with label #22000
@@ -15826,10 +15826,10 @@ msgctxt "#36156"
 msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Group single movies into sets" with label #20470
+#. Description of setting "Videos -> Library -> Use movie sets for single movies" with label #20470
 #: system/settings/settings.xml
 msgctxt "#36157"
-msgid "When scanned into the library a movie may be identified as forming part of a \"Movie set\". With this setting enabled you may get movie sets displayed that contain only a single movie. If it is disabled only movie sets with multiple movies will be displayed."
+msgid "When enabled, a \"Movie set\" entry is used even if the movie library contains only a single movie from that set. When disabled, a \"Movie set\" entry is used only if the movie library contains more than one movie from that set."
 msgstr ""
 
 #. Description of setting "Videos -> Playback -> Allow hardware acceleration (DXVA2)" with label #13427
