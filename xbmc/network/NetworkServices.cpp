@@ -263,6 +263,22 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
         return false;
     }
   }
+  else if (settingId == CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT)
+  {
+    if (((CSettingBool*)setting)->GetValue())
+    {
+      if (!StartAirPlayServer())
+      {
+        CGUIDialogOK::ShowAndGetInput(CVariant{1273}, CVariant{33100});
+        return false;
+      }
+    }
+    else
+    {
+      if (!StopAirPlayServer(true))
+        return false;
+    }
+  }
   else if (settingId == CSettings::SETTING_SERVICES_AIRPLAYPASSWORD ||
            settingId == CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD)
   {
@@ -554,6 +570,9 @@ bool CNetworkServices::StopWebserver()
 
 bool CNetworkServices::StartAirPlayServer()
 {
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT))
+    return true;
+
 #ifdef HAS_AIRPLAY
   if (!g_application.getNetwork().IsAvailable() || !CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
     return false;
