@@ -2179,12 +2179,8 @@ CGUIAddonWindowDialog::~CGUIAddonWindowDialog(void)
 bool CGUIAddonWindowDialog::OnMessage(CGUIMessage &message)
 {
   if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
-  {
-    CGUIWindow *pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
-    if (pWindow)
-      g_windowManager.ShowOverlay(pWindow->GetOverlayState());
     return CGUIWindow::OnMessage(message);
-  }
+  
   return CGUIAddonWindow::OnMessage(message);
 }
 
