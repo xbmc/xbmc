@@ -71,6 +71,7 @@ void CDVDStreamInfo::Clear()
   blockalign = 0;
   bitrate    = 0;
   bitspersample = 0;
+  channellayout = 0;
 
   orientation = 0;
 }
@@ -115,7 +116,9 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
   ||  samplerate    != right.samplerate
   ||  blockalign    != right.blockalign
   ||  bitrate       != right.bitrate
-  ||  bitspersample != right.bitspersample ) return false;
+  ||  bitspersample != right.bitspersample
+  ||  channellayout != right.channellayout)
+    return false;
 
   // SUBTITLE
 
@@ -181,6 +184,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   blockalign    = right.blockalign;
   bitrate       = right.bitrate;
   bitspersample = right.bitspersample;
+  channellayout = right.channellayout;
 
   // SUBTITLE
 }
@@ -213,6 +217,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     blockalign    = stream->iBlockAlign;
     bitrate       = stream->iBitRate;
     bitspersample = stream->iBitsPerSample;
+    channellayout = stream->iChannelLayout;
   }
   else if(  right.type == STREAM_VIDEO )
   {

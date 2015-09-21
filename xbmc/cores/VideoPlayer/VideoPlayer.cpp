@@ -3442,13 +3442,13 @@ bool CVideoPlayer::OpenStreamPlayer(CCurrentStream& current, CDVDStreamInfo& hin
   if(player == NULL)
     return false;
 
-  if(current.id    < 0
-  || current.hint != hint)
+  if(current.id < 0 ||
+     current.hint != hint)
   {
     if (hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_H264)
       SAFE_DELETE(m_pCCDemuxer);
 
-    if (!player->OpenStream( hint ))
+    if (!player->OpenStream(hint))
       return false;
   }
   else if (reset)

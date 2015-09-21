@@ -188,6 +188,7 @@ public:
     iBlockAlign = 0;
     iBitRate = 0;
     iBitsPerSample = 0;
+    iChannelLayout = 0;
     type = STREAM_AUDIO;
   }
 
@@ -200,6 +201,7 @@ public:
   int iBlockAlign;
   int iBitRate;
   int iBitsPerSample;
+  uint64_t iChannelLayout;
 };
 
 class CDemuxStreamSubtitle : public CDemuxStream

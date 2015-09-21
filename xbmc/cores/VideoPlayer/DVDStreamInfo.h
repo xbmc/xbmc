@@ -80,6 +80,7 @@ public:
   int bitrate;
   int blockalign;
   int bitspersample;
+  uint64_t channellayout;
 
   // SUBTITLE
 
