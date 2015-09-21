@@ -462,11 +462,14 @@ int CAddonDatabase::AddRepository(const std::string& id, const VECADDONS& addons
     if (idRepo > -1)
       DeleteRepository(idRepo);
 
+    if (!SetLastChecked(id, version, CDateTime::GetCurrentDateTime().GetAsDBDateTime()))
+      return -1;
+
     BeginTransaction();
 
-    CDateTime time = CDateTime::GetCurrentDateTime();
-    sql = PrepareSQL("insert into repo (id,addonID,checksum,lastcheck,version) values (NULL,'%s','%s','%s','%s')",
-                     id.c_str(), checksum.c_str(), time.GetAsDBDateTime().c_str(), version.asString().c_str());
+    sql = PrepareSQL("UPDATE repo SET checksum='%s', version='%s' WHERE addonID='%s'",
+        checksum.c_str(), version.asString().c_str(), id.c_str());
+
     m_pDS->exec(sql);
     idRepo = (int)m_pDS->lastinsertid();
     for (unsigned int i=0;i<addons.size();++i)
@@ -539,10 +542,17 @@ bool CAddonDatabase::SetLastChecked(const std::string& id,
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    std::string sql = PrepareSQL("UPDATE repo SET lastcheck='%s', version='%s' WHERE addonID='%s'",
-                                 time.c_str(), version.asString().c_str(), id.c_str());
-    m_pDS->exec(sql);
+    std::string sql = PrepareSQL("SELECT * FROM repo WHERE addonID='%s'", id.c_str());
+    m_pDS->query(sql);
 
+    if (m_pDS->eof())
+      sql = PrepareSQL("INSERT INTO repo (id, addonID, lastcheck, version) "
+          "VALUES (NULL, '%s', '%s', '%s')", id.c_str(), time.c_str(), version.asString().c_str());
+    else
+      sql = PrepareSQL("UPDATE repo SET lastcheck='%s', version='%s' WHERE addonID='%s'",
+          time.c_str(), version.asString().c_str(), id.c_str());
+
+    m_pDS->exec(sql);
     return true;
   }
   catch (...)
