@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include
 
 # lib name, version
 LIBNAME=shairplay
-VERSION=0f41ade
+VERSION=498bc5b
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
