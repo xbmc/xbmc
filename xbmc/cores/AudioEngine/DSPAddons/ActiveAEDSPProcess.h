@@ -260,7 +260,7 @@ namespace ActiveAE
       AE_DSP_BASETYPE GetBaseType(AE_DSP_STREAM_PROPERTIES *props);
       bool RecheckProcessArray(unsigned int inputFrames);
       bool ReallocProcessArray(unsigned int requestSize);
-      void CalculateCPUUsage(unsigned int iTime);
+      void CalculateCPUUsage(uint64_t iTime);
       void SetFFMpegDSPProcessorArray(float *array_ffmpeg[2][AE_DSP_CH_MAX], float **array_in, float **array_out);
     //@}
     //@{

@@ -1119,7 +1119,7 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
   CSingleLock lock(m_restartSection);
 
   bool needDSPAddonsReinit  = m_forceInit;
-  unsigned int iTime        = XbmcThreads::SystemClockMillis() * 10000;
+  uint64_t iTime            = static_cast<uint64_t>(XbmcThreads::SystemClockMillis()) * 10000;
   int64_t hostFrequency     = CurrentHostFrequency();
   unsigned int frames       = in->pkt->nb_samples;
 
@@ -1247,7 +1247,7 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
     ClearArray(m_processArray[1], m_processArraySize);
 
     m_forceInit         = false;
-    m_iLastProcessTime  = XbmcThreads::SystemClockMillis() * 10000;
+    m_iLastProcessTime  = static_cast<uint64_t>(XbmcThreads::SystemClockMillis()) * 10000;
     m_iLastProcessUsage = 0;
     m_fLastProcessUsage = 0.0f;
 
@@ -1504,7 +1504,7 @@ bool CActiveAEDSPProcess::ReallocProcessArray(unsigned int requestSize)
 }
 
 // in this function the usage for each adsp-mode in percent is calculated
-void CActiveAEDSPProcess::CalculateCPUUsage(unsigned int iTime)
+void CActiveAEDSPProcess::CalculateCPUUsage(uint64_t iTime)
 {
   int64_t iUsage = CThread::GetCurrentThread()->GetAbsoluteUsage();
 
