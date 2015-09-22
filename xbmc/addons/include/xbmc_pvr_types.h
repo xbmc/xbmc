@@ -453,13 +453,16 @@ extern "C" {
     time_t recordingTime;                                 /*!< @brief (optional) start time of the recording */
     int    iDuration;                                     /*!< @brief (optional) duration of the recording in seconds */
     int    iPriority;                                     /*!< @brief (optional) priority of this recording (from 0 - 100) */
-    int    iLifetime;                                     /*!< @brief (optional) life time in days of this recording */
+    int    iLifetime;                                     /*!< @brief (optional) remaining life time in days of this recording before being auto-deleted by the backend. See also bExpiresNever and bExpiresWithin24Hrs */
     int    iGenreType;                                    /*!< @brief (optional) genre type */
     int    iGenreSubType;                                 /*!< @brief (optional) genre sub type */
     int    iPlayCount;                                    /*!< @brief (optional) play count of this recording on the client */
     int    iLastPlayedPosition;                           /*!< @brief (optional) last played position of this recording on the client */
     bool   bIsDeleted;                                    /*!< @brief (optional) shows this recording is deleted and can be undelete */
     unsigned int iEpgEventId;                             /*!< @brief (optional) EPG event id associated with this recording */
+    bool   bRecordingInProgress;                          /*!< @brief (optional) this recording is currently in progress */
+    bool   bExpiresNever;                                 /*!< @brief (optional) the backend will never expire (and auto-delete) this recording. Should not be set at the same time as bExpiresWithin24Hrs. When set the value of iLifetime is ignored. */
+    bool   bExpiresWithin24Hrs;                           /*!< @brief (optional) the backend will expire (and auto-delete) this recording within 24 hours. For values larger than 24 hours set iLifetime > 0. Should not be set at the same time as bExpiresNever. */
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
   /*!
