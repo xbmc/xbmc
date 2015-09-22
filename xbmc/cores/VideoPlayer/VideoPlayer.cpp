@@ -49,6 +49,7 @@
 
 #include "DVDDemuxers/DVDDemuxCC.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "xbmc/utils/PerformanceSample.h"
 #else
@@ -79,6 +80,8 @@
 #include "cores/omxplayer/OMXHelper.h"
 #endif
 #include "VideoPlayerAudio.h"
+#include "windowing/WindowingFactory.h"
+#include "DVDCodecs/DVDCodecUtils.h"
 
 using namespace PVR;
 using namespace KODI::MESSAGING;
@@ -627,52 +630,57 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
 #endif
 
   CreatePlayers();
+
+  m_displayLost = false;
+  g_Windowing.Register(this);
 }
 
 CVideoPlayer::~CVideoPlayer()
 {
+  g_Windowing.Unregister(this);
+
   CloseFile();
   DestroyPlayers();
 }
 
 bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
-    CLog::Log(LOGNOTICE, "VideoPlayer: Opening: %s", CURL::GetRedacted(file.GetPath()).c_str());
+  CLog::Log(LOGNOTICE, "VideoPlayer: Opening: %s", CURL::GetRedacted(file.GetPath()).c_str());
 
-    // if playing a file close it first
-    // this has to be changed so we won't have to close it.
-    if(IsRunning())
-      CloseFile();
+  // if playing a file close it first
+  // this has to be changed so we won't have to close it.
+  if(IsRunning())
+    CloseFile();
 
-    m_bAbortRequest = false;
-    SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
+  m_bAbortRequest = false;
+  SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
 
-    m_State.Clear();
-    memset(&m_SpeedState, 0, sizeof(m_SpeedState));
-    m_UpdateApplication = 0;
-    m_offset_pts = 0;
-    m_CurrentAudio.lastdts = DVD_NOPTS_VALUE;
-    m_CurrentVideo.lastdts = DVD_NOPTS_VALUE;
+  m_State.Clear();
+  memset(&m_SpeedState, 0, sizeof(m_SpeedState));
+  m_UpdateApplication = 0;
+  m_offset_pts = 0;
+  m_CurrentAudio.lastdts = DVD_NOPTS_VALUE;
+  m_CurrentVideo.lastdts = DVD_NOPTS_VALUE;
 
-    m_PlayerOptions = options;
-    m_item     = file;
-    m_mimetype  = file.GetMimeType();
-    m_filename = file.GetPath();
+  m_PlayerOptions = options;
+  m_item     = file;
+  m_mimetype  = file.GetMimeType();
+  m_filename = file.GetPath();
 
-    m_ready.Reset();
+  m_ready.Reset();
 
-    m_renderManager.PreInit();
+  m_renderManager.PreInit();
 
-    Create();
+  Create();
 
-    // wait for the ready event
-    CGUIDialogBusy::WaitOnEvent(m_ready, g_advancedSettings.m_videoBusyDialogDelay_ms, false);
+  // wait for the ready event
+  CGUIDialogBusy::WaitOnEvent(m_ready, g_advancedSettings.m_videoBusyDialogDelay_ms, false);
 
-    // Playback might have been stopped due to some error
-    if (m_bStop || m_bAbortRequest)
-      return false;
+  // Playback might have been stopped due to some error
+  if (m_bStop || m_bAbortRequest)
+    return false;
 
-    return true;
+  return true;
 }
 
 bool CVideoPlayer::CloseFile(bool reopen)
@@ -1262,6 +1270,17 @@ void CVideoPlayer::Process()
         m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true, true, true));
     }
 #endif
+
+    // check display lost
+    {
+      CSingleLock lock(m_StateSection);
+      if (m_displayLost)
+      {
+        Sleep(50);
+        continue;
+      }
+    }
+
     // handle messages send to this thread, like seek or demuxer reset requests
     HandleMessages();
 
@@ -3511,6 +3530,17 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
   if(hint.flags & AV_DISPOSITION_ATTACHED_PIC)
     return false;
 
+  // set desired refresh rate
+  if (m_PlayerOptions.fullscreen && g_graphicsContext.IsFullScreenRoot() &&
+      hint.fpsrate != 0 && hint.fpsscale != 0)
+  {
+    if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
+    {
+      float framerate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * hint.fpsscale / hint.fpsrate);
+      m_renderManager.TriggerUpdateResolution(framerate, hint.width, RenderManager::GetStereoModeFlags(hint.stereo_mode));
+    }
+  }
+
   if(!OpenStreamPlayer(m_CurrentVideo, hint, reset))
     return false;
 
@@ -4865,4 +4895,19 @@ void CVideoPlayer::RenderCaptureRelease(CRenderCapture* capture)
 std::string CVideoPlayer::GetRenderVSyncState()
 {
   return m_renderManager.GetVSyncState();
+}
+
+// IDispResource interface
+void CVideoPlayer::OnLostDisplay()
+{
+  CLog::Log(LOGNOTICE, "VideoPlayer: OnLostDisplay received");
+  CSingleLock lock(m_StateSection);
+  m_displayLost = true;
+}
+
+void CVideoPlayer::OnResetDisplay()
+{
+  CLog::Log(LOGNOTICE, "VideoPlayer: OnResetDisplay received");
+  CSingleLock lock(m_StateSection);
+  m_displayLost = false;
 }

@@ -37,6 +37,7 @@
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
 #include "utils/StreamDetails.h"
+#include "guilib/DispResource.h"
 
 #ifdef HAS_OMXPLAYER
 #include "OMXCore.h"
@@ -214,7 +215,7 @@ public:
 #define VideoPlayer_TELETEXT 4
 #define VideoPlayer_RDS      5
 
-class CVideoPlayer : public IPlayer, public CThread, public IVideoPlayer
+class CVideoPlayer : public IPlayer, public CThread, public IVideoPlayer, public IDispResource
 {
 public:
   CVideoPlayer(IPlayerCallback& callback);
@@ -317,6 +318,10 @@ public:
   virtual void RenderCaptureRelease(CRenderCapture* capture);
 
   virtual std::string GetRenderVSyncState();
+
+  // IDispResource interface
+  virtual void OnLostDisplay();
+  virtual void OnResetDisplay();
 
   enum ECacheState
   { CACHESTATE_DONE = 0
@@ -588,6 +593,8 @@ protected:
   bool m_HasAudio;
 
   bool m_DemuxerPausePending;
+
+  bool m_displayLost;
 
   // omxplayer variables
   struct SOmxPlayerState m_OmxPlayerState;

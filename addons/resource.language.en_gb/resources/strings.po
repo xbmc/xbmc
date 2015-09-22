@@ -6673,7 +6673,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13550"
-msgid "Pause during refresh rate change"
+msgid "Delay after change of refresh rate"
 msgstr ""
 
 msgctxt "#13551"
@@ -15921,10 +15921,10 @@ msgctxt "#36164"
 msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Pause during refresh rate change" with label #13550
+#. Description of setting "System -> Videooutput -> Delay after change of refresh rate #13550
 #: system/settings/settings.xml
 msgctxt "#36165"
-msgid "Pause for a small amount of time during a refresh rate change."
+msgid "Delay of reset event after a change of refresh rate"
 msgstr ""
 
 #. Description of setting "Videos -> Playback -> Sync playback to display" with label #13510

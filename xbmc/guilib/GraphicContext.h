@@ -23,9 +23,6 @@
 \brief
 */
 
-#ifndef GUILIB_GRAPHICCONTEXT_H
-#define GUILIB_GRAPHICCONTEXT_H
-
 #pragma once
 
 #ifdef __GNUC__
@@ -298,4 +295,3 @@ private:
 
 XBMC_GLOBAL_REF(CGraphicContext,g_graphicsContext);
 #define g_graphicsContext XBMC_GLOBAL_USE(CGraphicContext)
-#endif

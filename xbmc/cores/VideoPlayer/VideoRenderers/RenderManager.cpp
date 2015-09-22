@@ -151,7 +151,7 @@ CRenderManager::CRenderManager() : m_overlays(this)
   m_presentstep = PRESENT_IDLE;
   m_rendermethod = 0;
   m_presentsource = 0;
-  m_bReconfigured = false;
+  m_bTriggerUpdateResolution = false;
   m_hasCaptures = false;
   m_displayLatency = 0.0f;
   m_presentcorr = 0.0;
@@ -399,7 +399,7 @@ bool CRenderManager::Configure()
 
     m_bRenderGUI = true;
     m_waitForBufferCount = 0;
-    m_bReconfigured = true;
+    m_bTriggerUpdateResolution = true;
     m_presentstep = PRESENT_IDLE;
     m_presentpts = DVD_NOPTS_VALUE;
     m_sleeptime = 1.0;
@@ -963,10 +963,6 @@ RESOLUTION CRenderManager::GetResolution()
   if (m_renderState == STATE_UNCONFIGURED)
     return res;
 
-#if defined(TARGET_DARWIN_IOS)
-  return res;
-#endif
-
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
     res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, CONF_FLAGS_STEREO_MODE_MASK(m_flags));
 
@@ -1124,18 +1120,29 @@ void CRenderManager::UpdateDisplayLatency()
 
 void CRenderManager::UpdateResolution()
 {
-  if (m_bReconfigured)
+  if (m_bTriggerUpdateResolution)
   {
     CRetakeLock<CExclusiveLock> lock(m_sharedSection);
     if (g_graphicsContext.IsFullScreenVideo() && g_graphicsContext.IsFullScreenRoot())
     {
-      RESOLUTION res = GetResolution();
-      g_graphicsContext.SetVideoResolution(res);
-      UpdateDisplayLatency();
+      if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
+      {
+        RESOLUTION res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, CONF_FLAGS_STEREO_MODE_MASK(m_flags));
+        g_graphicsContext.SetVideoResolution(res);
+        UpdateDisplayLatency();
+      }
     }
-    m_bReconfigured = false;
+    m_bTriggerUpdateResolution = false;
     g_dataCacheCore.SignalVideoInfoChange();
   }
+}
+
+void CRenderManager::TriggerUpdateResolution(float fps, int width, int flags)
+{
+  m_fps = fps;
+  m_width = width;
+  m_flags = flags;
+  m_bTriggerUpdateResolution = true;
 }
 
 // Get renderer info, can be called before configure

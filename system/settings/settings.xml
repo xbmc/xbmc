@@ -574,17 +574,6 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
-        <setting id="videoplayer.pauseafterrefreshchange" type="integer" parent="videoplayer.adjustrefreshrate" label="13550" help="36165">
-          <level>2</level>
-          <default>0</default>
-          <constraints>
-            <options>refreshchangedelays</options>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.adjustrefreshrate" operator="!is">0</dependency> <!-- ADJUST_REFRESHRATE_OFF -->
-          </dependencies>
-          <control type="spinner" format="string" />
-        </setting>
         <setting id="videoplayer.usedisplayasclock" type="boolean" label="13510" help="36166">
           <level>2</level>
           <default>false</default>
@@ -2389,6 +2378,14 @@
             <dependency type="enable" on="property" name="IsFullscreen" />
           </dependencies>
           <control type="toggle" />
+        </setting>
+        <setting id="videoscreen.delayrefreshchange" type="integer" parent="videoscreen.screen" label="13550" help="36165">
+          <level>2</level>
+          <default>0</default>
+          <constraints>
+            <options>refreshchangedelays</options>
+          </constraints>
+          <control type="spinner" format="string" />
         </setting>
       </group>
       <group id="2">
