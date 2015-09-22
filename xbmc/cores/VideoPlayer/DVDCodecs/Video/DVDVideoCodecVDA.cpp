@@ -554,11 +554,11 @@ void CDVDVideoCodecVDA::DisplayQueuePop(void)
 
 void CDVDVideoCodecVDA::UYVY422_to_YUV420P(uint8_t *yuv422_ptr, int yuv422_stride, DVDVideoPicture *picture)
 {
-  // convert PIX_FMT_UYVY422 to PIX_FMT_YUV420P.
+  // convert AV_PIX_FMT_UYVY422 to AV_PIX_FMT_YUV420P.
   struct SwsContext *swcontext = sws_getContext(
-    m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_UYVY422, 
-    m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_YUV420P, 
-    SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
+    m_videobuffer.iWidth, m_videobuffer.iHeight, AV_PIX_FMT_UYVY422,
+    m_videobuffer.iWidth, m_videobuffer.iHeight, AV_PIX_FMT_YUV420P,
+    SWS_FAST_BILINEAR, NULL, NULL, NULL);
   if (swcontext)
   {
     uint8_t  *src[] = { yuv422_ptr, 0, 0, 0 };
@@ -574,11 +574,11 @@ void CDVDVideoCodecVDA::UYVY422_to_YUV420P(uint8_t *yuv422_ptr, int yuv422_strid
 
 void CDVDVideoCodecVDA::BGRA_to_YUV420P(uint8_t *bgra_ptr, int bgra_stride, DVDVideoPicture *picture)
 {
-  // convert PIX_FMT_BGRA to PIX_FMT_YUV420P.
+  // convert AV_PIX_FMT_BGRA to AV_PIX_FMT_YUV420P.
   struct SwsContext *swcontext = sws_getContext(
-    m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_BGRA, 
-    m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_YUV420P, 
-    SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
+    m_videobuffer.iWidth, m_videobuffer.iHeight, AV_PIX_FMT_BGRA,
+    m_videobuffer.iWidth, m_videobuffer.iHeight, AV_PIX_FMT_YUV420P,
+    SWS_FAST_BILINEAR, NULL, NULL, NULL);
   if (swcontext)
   {
     uint8_t  *src[] = { bgra_ptr, 0, 0, 0 };

@@ -886,7 +886,7 @@ static bool CheckCompatibility(AVCodecContext *avctx)
   return true;
 }
 
-bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum PixelFormat fmt, unsigned int surfaces)
+bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixelFormat fmt, unsigned int surfaces)
 {
   if (!CheckCompatibility(avctx))
     return false;
@@ -1135,9 +1135,9 @@ bool CDecoder::OpenDecoder()
   return true;
 }
 
-bool CDecoder::Supports(enum PixelFormat fmt)
+bool CDecoder::Supports(enum AVPixelFormat fmt)
 {
-  if(fmt == PIX_FMT_DXVA2_VLD)
+  if(fmt == AV_PIX_FMT_DXVA2_VLD)
     return true;
   return false;
 }

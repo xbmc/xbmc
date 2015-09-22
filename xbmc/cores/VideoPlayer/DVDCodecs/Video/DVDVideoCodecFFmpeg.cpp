@@ -77,8 +77,8 @@ enum DecoderState
   STATE_SW_MULTI
 };
 
-enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
-                                                , const PixelFormat * fmt )
+enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
+                                                , const AVPixelFormat * fmt )
 {
   CDVDVideoCodecFFmpeg* ctx  = (CDVDVideoCodecFFmpeg*)avctx->opaque;
 
@@ -104,8 +104,8 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
     avctx->hwaccel_context = 0;
   }
 
-  const PixelFormat * cur = fmt;
-  while(*cur != PIX_FMT_NONE)
+  const AVPixelFormat * cur = fmt;
+  while(*cur != AV_PIX_FMT_NONE)
   {
 #ifdef HAVE_LIBVDPAU
     if(VDPAU::CDecoder::IsVDPAUFormat(*cur) && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAU))
@@ -137,7 +137,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
 #endif
 #ifdef HAVE_LIBVA
     // mpeg4 vaapi decoding is disabled
-    if(*cur == PIX_FMT_VAAPI_VLD && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVAAPI))
+    if(*cur == AV_PIX_FMT_VAAPI_VLD && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVAAPI))
     {
       VAAPI::CDecoder* dec = new VAAPI::CDecoder();
       if(dec->Open(avctx, ctx->m_pCodecContext, *cur, ctx->m_uSurfacesCount) == true)
@@ -214,11 +214,11 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   for(std::vector<ERenderFormat>::iterator it = options.m_formats.begin(); it != options.m_formats.end(); ++it)
   {
-    m_formats.push_back((PixelFormat)CDVDCodecUtils::PixfmtFromEFormat(*it));
+    m_formats.push_back((AVPixelFormat)CDVDCodecUtils::PixfmtFromEFormat(*it));
     if(*it == RENDER_FMT_YUV420P)
-      m_formats.push_back(PIX_FMT_YUVJ420P);
+      m_formats.push_back(AV_PIX_FMT_YUVJ420P);
   }
-  m_formats.push_back(PIX_FMT_NONE); /* always add none to get a terminated list in ffmpeg world */
+  m_formats.push_back(AV_PIX_FMT_NONE); /* always add none to get a terminated list in ffmpeg world */
 
   pCodec = avcodec_find_decoder(hints.codec);
 
@@ -658,7 +658,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->color_transfer = m_pCodecContext->color_trc;
   pDvdVideoPicture->color_matrix = m_pCodecContext->colorspace;
   if(m_pCodecContext->color_range == AVCOL_RANGE_JPEG
-  || m_pCodecContext->pix_fmt     == PIX_FMT_YUVJ420P)
+  || m_pCodecContext->pix_fmt     == AV_PIX_FMT_YUVJ420P)
     pDvdVideoPicture->color_range = 1;
   else
     pDvdVideoPicture->color_range = 0;
@@ -741,8 +741,8 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iFlags |= pDvdVideoPicture->data[0] ? 0 : DVP_FLAG_DROPPED;
   pDvdVideoPicture->extended_format = 0;
 
-  PixelFormat pix_fmt;
-  pix_fmt = (PixelFormat)m_pFrame->format;
+  AVPixelFormat pix_fmt;
+  pix_fmt = (AVPixelFormat)m_pFrame->format;
 
   pDvdVideoPicture->format = CDVDCodecUtils::EFormatFromPixfmt(pix_fmt);
   return true;

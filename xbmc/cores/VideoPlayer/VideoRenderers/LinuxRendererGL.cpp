@@ -2451,7 +2451,7 @@ void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsign
   }
   else if (m_format == RENDER_FMT_NV12)
   {
-    srcFormat = PIX_FMT_NV12;
+    srcFormat = AV_PIX_FMT_NV12;
     for (int i = 0; i < 2; i++)
     {
       src[i]       = im->plane[i];
@@ -2460,13 +2460,13 @@ void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsign
   }
   else if (m_format == RENDER_FMT_YUYV422)
   {
-    srcFormat    = PIX_FMT_YUYV422;
+    srcFormat    = AV_PIX_FMT_YUYV422;
     src[0]       = im->plane[0];
     srcStride[0] = im->stride[0];
   }
   else if (m_format == RENDER_FMT_UYVY422)
   {
-    srcFormat    = PIX_FMT_UYVY422;
+    srcFormat    = AV_PIX_FMT_UYVY422;
     src[0]       = im->plane[0];
     srcStride[0] = im->stride[0];
   }
@@ -2484,8 +2484,8 @@ void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsign
 
   m_context = sws_getCachedContext(m_context,
                                                  im->width, im->height, (AVPixelFormat)srcFormat,
-                                                 im->width, im->height, (AVPixelFormat)PIX_FMT_BGRA,
-                                                 SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
+                                                 im->width, im->height, (AVPixelFormat)AV_PIX_FMT_BGRA,
+                                                 SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
   uint8_t *dst[]       = { m_rgbBuffer, 0, 0, 0 };
   int      dstStride[] = { (int)m_sourceWidth * 4, 0, 0, 0 };
@@ -2514,7 +2514,7 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
 
   if (m_format == RENDER_FMT_YUV420P)
   {
-    srcFormat = PIX_FMT_YUV420P;
+    srcFormat = AV_PIX_FMT_YUV420P;
     for (int i = 0; i < 3; i++)
     {
       srcTop[i]       = im->plane[i];
@@ -2525,7 +2525,7 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
   }
   else if (m_format == RENDER_FMT_NV12)
   {
-    srcFormat = PIX_FMT_NV12;
+    srcFormat = AV_PIX_FMT_NV12;
     for (int i = 0; i < 2; i++)
     {
       srcTop[i]       = im->plane[i];
@@ -2536,7 +2536,7 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
   }
   else if (m_format == RENDER_FMT_YUYV422)
   {
-    srcFormat       = PIX_FMT_YUYV422;
+    srcFormat       = AV_PIX_FMT_YUYV422;
     srcTop[0]       = im->plane[0];
     srcStrideTop[0] = im->stride[0] * 2;
     srcBot[0]       = im->plane[0] + im->stride[0];
@@ -2544,7 +2544,7 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
   }
   else if (m_format == RENDER_FMT_UYVY422)
   {
-    srcFormat       = PIX_FMT_UYVY422;
+    srcFormat       = AV_PIX_FMT_UYVY422;
     srcTop[0]       = im->plane[0];
     srcStrideTop[0] = im->stride[0] * 2;
     srcBot[0]       = im->plane[0] + im->stride[0];
@@ -2564,8 +2564,8 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
 
   m_context = sws_getCachedContext(m_context,
                                                  im->width, im->height >> 1, (AVPixelFormat)srcFormat,
-                                                 im->width, im->height >> 1, (AVPixelFormat)PIX_FMT_BGRA,
-                                                 SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
+                                                 im->width, im->height >> 1, (AVPixelFormat)AV_PIX_FMT_BGRA,
+                                                 SWS_FAST_BILINEAR, NULL, NULL, NULL);
   uint8_t *dstTop[]    = { m_rgbBuffer, 0, 0, 0 };
   uint8_t *dstBot[]    = { m_rgbBuffer + m_sourceWidth * m_sourceHeight * 2, 0, 0, 0 };
   int      dstStride[] = { (int)m_sourceWidth * 4, 0, 0, 0 };

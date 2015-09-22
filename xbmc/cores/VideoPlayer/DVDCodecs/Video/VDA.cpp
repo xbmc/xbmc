@@ -186,7 +186,7 @@ void CDecoder::Close()
   m_bitstream = NULL;
 }
 
-bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum PixelFormat fmt, unsigned int surfaces)
+bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixelFormat fmt, unsigned int surfaces)
 {
   Close();
 
