@@ -164,8 +164,7 @@ void CWinDsRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   CSingleLock lock(g_graphicsContext);
 
-  if (!CMadvrCallback::Get()->UsingMadvr() || !g_graphicsContext.IsFullScreenVideo())
-    ManageDisplay();
+  ManageDisplay();
 
   Render(flags);
 }

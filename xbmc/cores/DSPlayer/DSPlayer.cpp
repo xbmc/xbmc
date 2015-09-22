@@ -728,7 +728,6 @@ LRESULT CALLBACK CDSPlayer::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
     return(0);
   case WM_SIZE:
     SetWindowPos(hWnd, 0, 0, 0, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
-    g_renderManager.Update();
     return(0);
   }
   return DefWindowProc(hWnd, uMsg, wParam, lParam);
