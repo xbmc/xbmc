@@ -94,16 +94,16 @@ CWinRenderer::~CWinRenderer()
   UnInit();
 }
 
-static enum PixelFormat PixelFormatFromFormat(ERenderFormat format)
+static enum AVPixelFormat PixelFormatFromFormat(ERenderFormat format)
 {
-  if (format == RENDER_FMT_DXVA)      return PIX_FMT_NV12;
-  if (format == RENDER_FMT_YUV420P)   return PIX_FMT_YUV420P;
-  if (format == RENDER_FMT_YUV420P10) return PIX_FMT_YUV420P10;
-  if (format == RENDER_FMT_YUV420P16) return PIX_FMT_YUV420P16;
-  if (format == RENDER_FMT_NV12)      return PIX_FMT_NV12;
-  if (format == RENDER_FMT_UYVY422)   return PIX_FMT_UYVY422;
-  if (format == RENDER_FMT_YUYV422)   return PIX_FMT_YUYV422;
-  return PIX_FMT_NONE;
+  if (format == RENDER_FMT_DXVA)      return AV_PIX_FMT_NV12;
+  if (format == RENDER_FMT_YUV420P)   return AV_PIX_FMT_YUV420P;
+  if (format == RENDER_FMT_YUV420P10) return AV_PIX_FMT_YUV420P10;
+  if (format == RENDER_FMT_YUV420P16) return AV_PIX_FMT_YUV420P16;
+  if (format == RENDER_FMT_NV12)      return AV_PIX_FMT_NV12;
+  if (format == RENDER_FMT_UYVY422)   return AV_PIX_FMT_UYVY422;
+  if (format == RENDER_FMT_YUYV422)   return AV_PIX_FMT_YUYV422;
+  return AV_PIX_FMT_NONE;
 }
 
 void CWinRenderer::ManageTextures()
@@ -724,13 +724,13 @@ void CWinRenderer::Render(DWORD flags)
 
 void CWinRenderer::RenderSW()
 {
-  enum PixelFormat format = PixelFormatFromFormat(m_format);
+  enum AVPixelFormat format = PixelFormatFromFormat(m_format);
 
   // 1. convert yuv to rgb
   m_sw_scale_ctx = sws_getCachedContext(m_sw_scale_ctx,
                                         m_sourceWidth, m_sourceHeight, format,
-                                        m_sourceWidth, m_sourceHeight, PIX_FMT_BGRA,
-                                        SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
+                                        m_sourceWidth, m_sourceHeight, AV_PIX_FMT_BGRA,
+                                        SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
   YUVBuffer* buf = (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer];
 

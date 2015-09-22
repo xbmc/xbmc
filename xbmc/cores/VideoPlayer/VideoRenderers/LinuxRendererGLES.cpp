@@ -1288,8 +1288,8 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
 #endif
     {
       m_sw_context = sws_getCachedContext(m_sw_context,
-        im->width, im->height, PIX_FMT_YUV420P,
-        im->width, im->height, PIX_FMT_RGBA,
+        im->width, im->height, AV_PIX_FMT_YUV420P,
+        im->width, im->height, AV_PIX_FMT_RGBA,
         SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
       uint8_t *src[]  = { im->plane[0], im->plane[1], im->plane[2], 0 };

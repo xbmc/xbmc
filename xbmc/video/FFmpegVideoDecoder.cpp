@@ -252,7 +252,7 @@ bool FFmpegVideoDecoder::nextFrame( CBaseTexture * texture )
       return false;
 
     // Due to a bug in swsscale we need to allocate one extra line of data
-    if ( avpicture_alloc( m_pFrameRGB, PIX_FMT_RGB32, m_frameRGBwidth, m_frameRGBheight + 1 ) < 0 )
+    if ( avpicture_alloc( m_pFrameRGB, AV_PIX_FMT_RGB32, m_frameRGBwidth, m_frameRGBheight + 1 ) < 0 )
       return false;
   }
 
@@ -287,7 +287,7 @@ bool FFmpegVideoDecoder::nextFrame( CBaseTexture * texture )
 
   // We got the video frame, render it into the picture buffer
   struct SwsContext * context = sws_getContext( m_pCodecCtx->width, m_pCodecCtx->height, m_pCodecCtx->pix_fmt,
-                           m_frameRGBwidth, m_frameRGBheight, PIX_FMT_RGB32, SWS_FAST_BILINEAR, NULL, NULL, NULL );
+                           m_frameRGBwidth, m_frameRGBheight, AV_PIX_FMT_RGB32, SWS_FAST_BILINEAR, NULL, NULL, NULL );
 
   sws_scale( context, m_pFrame->data, m_pFrame->linesize, 0, m_pCodecCtx->height,
                                                                      m_pFrameRGB->data, m_pFrameRGB->linesize );

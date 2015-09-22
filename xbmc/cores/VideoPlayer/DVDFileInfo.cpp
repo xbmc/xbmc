@@ -277,7 +277,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
 
             uint8_t *pOutBuf = new uint8_t[nWidth * nHeight * 4];
             struct SwsContext *context = sws_getContext(picture.iWidth, picture.iHeight,
-                  PIX_FMT_YUV420P, nWidth, nHeight, PIX_FMT_BGRA, SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
+                  AV_PIX_FMT_YUV420P, nWidth, nHeight, AV_PIX_FMT_BGRA, SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
             if (context)
             {

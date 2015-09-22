@@ -39,7 +39,7 @@ extern "C" {
 #include "libswscale/swscale.h"
 }
 
-// allocate a new picture (PIX_FMT_YUV420P)
+// allocate a new picture (AV_PIX_FMT_YUV420P)
 DVDVideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)
 {
   DVDVideoPicture* pPicture = new DVDVideoPicture;
@@ -264,13 +264,13 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *p
 
         int dstformat;
         if (format == RENDER_FMT_UYVY422)
-          dstformat = PIX_FMT_UYVY422;
+          dstformat = AV_PIX_FMT_UYVY422;
         else
-          dstformat = PIX_FMT_YUYV422;
+          dstformat = AV_PIX_FMT_YUYV422;
 
-        struct SwsContext *ctx = sws_getContext(pSrc->iWidth, pSrc->iHeight, PIX_FMT_YUV420P,
+        struct SwsContext *ctx = sws_getContext(pSrc->iWidth, pSrc->iHeight, AV_PIX_FMT_YUV420P,
                                                            pPicture->iWidth, pPicture->iHeight, (AVPixelFormat)dstformat,
-                                                           SWS_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
+                                                           SWS_BILINEAR, NULL, NULL, NULL);
         sws_scale(ctx, src, srcStride, 0, pSrc->iHeight, dst, dstStride);
         sws_freeContext(ctx);
       }
@@ -403,25 +403,25 @@ double CDVDCodecUtils::NormalizeFrameduration(double frameduration, bool *match)
 }
 
 struct EFormatMap {
-  PixelFormat   pix_fmt;
+  AVPixelFormat   pix_fmt;
   ERenderFormat format;
 };
 
 static const EFormatMap g_format_map[] = {
-   { PIX_FMT_YUV420P,     RENDER_FMT_YUV420P    }
-,  { PIX_FMT_YUVJ420P,    RENDER_FMT_YUV420P    }
-,  { PIX_FMT_YUV420P10,   RENDER_FMT_YUV420P10  }
-,  { PIX_FMT_YUV420P16,   RENDER_FMT_YUV420P16  }
-,  { PIX_FMT_UYVY422,     RENDER_FMT_UYVY422    }
-,  { PIX_FMT_YUYV422,     RENDER_FMT_YUYV422    }
-,  { PIX_FMT_VAAPI_VLD,   RENDER_FMT_VAAPI      }
-,  { PIX_FMT_DXVA2_VLD,   RENDER_FMT_DXVA       }
-,  { PIX_FMT_NONE     ,   RENDER_FMT_NONE       }
+   { AV_PIX_FMT_YUV420P,     RENDER_FMT_YUV420P    }
+,  { AV_PIX_FMT_YUVJ420P,    RENDER_FMT_YUV420P    }
+,  { AV_PIX_FMT_YUV420P10,   RENDER_FMT_YUV420P10  }
+,  { AV_PIX_FMT_YUV420P16,   RENDER_FMT_YUV420P16  }
+,  { AV_PIX_FMT_UYVY422,     RENDER_FMT_UYVY422    }
+,  { AV_PIX_FMT_YUYV422,     RENDER_FMT_YUYV422    }
+,  { AV_PIX_FMT_VAAPI_VLD,   RENDER_FMT_VAAPI      }
+,  { AV_PIX_FMT_DXVA2_VLD,   RENDER_FMT_DXVA       }
+,  { AV_PIX_FMT_NONE     ,   RENDER_FMT_NONE       }
 };
 
 ERenderFormat CDVDCodecUtils::EFormatFromPixfmt(int fmt)
 {
-  for(const EFormatMap *p = g_format_map; p->pix_fmt != PIX_FMT_NONE; ++p)
+  for(const EFormatMap *p = g_format_map; p->pix_fmt != AV_PIX_FMT_NONE; ++p)
   {
     if(p->pix_fmt == fmt)
       return p->format;
@@ -431,10 +431,10 @@ ERenderFormat CDVDCodecUtils::EFormatFromPixfmt(int fmt)
 
 int CDVDCodecUtils::PixfmtFromEFormat(ERenderFormat fmt)
 {
-  for(const EFormatMap *p = g_format_map; p->pix_fmt != PIX_FMT_NONE; ++p)
+  for(const EFormatMap *p = g_format_map; p->pix_fmt != AV_PIX_FMT_NONE; ++p)
   {
     if(p->format == fmt)
       return p->pix_fmt;
   }
-  return PIX_FMT_NONE;
+  return AV_PIX_FMT_NONE;
 }
