@@ -862,8 +862,7 @@ bool CAddonUnInstallJob::DoWork()
 
   //TODO: looks broken. it just calls the repo with the most recent version, not the owner
   RepositoryPtr repoPtr;
-  if (!CAddonInstaller::GetRepoForAddon(m_addon->ID(), repoPtr))
-    return false;
+  CAddonInstaller::GetRepoForAddon(m_addon->ID(), repoPtr);
   if (repoPtr != NULL && !repoPtr->Props().libname.empty())
   {
     CFileItemList dummy;
