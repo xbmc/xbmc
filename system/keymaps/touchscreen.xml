@@ -11,31 +11,10 @@
       <swipe direction="right">SwipeRight</swipe>
       <swipe direction="up">SwipeUp</swipe>
       <swipe direction="down">SwipeDown</swipe>
+      <swipe direction="up" pointers="3">SwitchPlayer</swipe>
+      <swipe direction="down" pointers="3">ActivateWindow(PlayerControls)</swipe>
     </touch>
   </global>
-  <FullScreenVideo>
-    <touch>
-      <swipe direction="left">StepBack</swipe>
-      <swipe direction="right">StepForward</swipe>
-      <swipe direction="up">ChapterOrBigStepForward</swipe>
-      <swipe direction="down">ChapterOrBigStepBack</swipe>
-      <swipe direction="left" pointers="2">Seek(-7)</swipe>
-    </touch>
-  </FullScreenVideo>
-  <Visualisation>
-    <touch>
-      <swipe direction="left">StepBack</swipe>
-      <swipe direction="right">StepForward</swipe>
-      <swipe direction="up">SkipNext</swipe>
-      <swipe direction="down">SkipPrevious</swipe>
-    </touch>
-  </Visualisation>
-  <SlideShow>
-    <touch>
-      <zoom>ZoomGesture</zoom>
-      <rotate>RotateGesture</rotate>
-    </touch>
-  </SlideShow>
   <MyFiles>
     <touch>
       <tap>Select</tap>
@@ -43,6 +22,46 @@
       <swipe direction="right">Highlight</swipe>
     </touch>
   </MyFiles>
+  <FullScreenVideo>
+    <touch>
+      <swipe direction="left">StepBack</swipe>
+      <swipe direction="right">StepForward</swipe>
+      <swipe direction="up">ChapterOrBigStepForward</swipe>
+      <swipe direction="down">ChapterOrBigStepBack</swipe>
+      <swipe direction="left" pointers="2">Seek(-7)</swipe>
+      <swipe direction="up" pointers="2">SkipNext</swipe>
+      <swipe direction="down" pointers="2">SkipPrevious</swipe>
+      <tap pointers="2">Playlist</tap>
+      <tap pointers="3">PlayPause</tap>
+    </touch>
+  </FullScreenVideo>
+  <PlayerControls>
+    <touch>
+      <swipe direction="down" pointers="3">Back</swipe>
+    </touch>
+  </PlayerControls>
+  <Visualisation>
+    <touch>
+      <swipe direction="left">StepBack</swipe>
+      <swipe direction="right">StepForward</swipe>
+      <swipe direction="up">SkipNext</swipe>
+      <swipe direction="down">SkipPrevious</swipe>
+      <swipe direction="up" pointers="2">SkipNext</swipe>
+      <swipe direction="down" pointers="2">SkipPrevious</swipe>
+      <tap pointers="2">Playlist</tap>
+      <tap pointers="3">PlayPause</tap>
+    </touch>
+  </Visualisation>
+  <SlideShow>
+    <touch>
+      <zoom>ZoomGesture</zoom>
+      <rotate>RotateGesture</rotate>
+      <swipe direction="right" pointers="2">PreviousPicture</swipe> <!-- right/left are flipped here to make picture flipping feel more natural on touch screens. Two pointers are used in order to avoid conflicting with the panning gesture on zoomed-in images. -->
+      <swipe direction="left" pointers="2">NextPicture</swipe>
+      <tap pointers="2">Pause</tap>
+      <tap pointers="3">Info</tap>
+    </touch>
+  </SlideShow>
   <ScreenCalibration>
     <touch>
       <swipe direction="up">Up</swipe>
@@ -52,4 +71,33 @@
       <tap pointers="1">NextCalibration</tap>
     </touch>
   </ScreenCalibration>
+  <VideoMenu>
+    <touch>
+      <swipe direction="up" pointers="2">SkipNext</swipe>
+      <swipe direction="down" pointers="2">SkipPrevious</swipe>
+    </touch>
+  </VideoMenu>
+  <ContextMenu>
+    <touch>
+      <swipe direction="left" pointers="3">Back</swipe> <!-- backs out of "switch player" -->
+      <swipe direction="right" pointers="3">Back</swipe>
+    </touch>
+  </ContextMenu>
+  <PictureInfo>
+    <touch>
+      <tap pointers="3">Back</tap>
+    </touch>
+  </PictureInfo>
+  <FullScreenLiveTV>
+    <touch>
+      <swipe direction="up">Up</swipe>
+      <swipe direction="down">Down</swipe>
+    </touch>
+  </FullScreenLiveTV>
+  <FullScreenRadio>
+    <touch>
+      <swipe direction="up">ChannelUp</swipe>
+      <swipe direction="down">ChannelDown</swipe>
+    </touch>
+  </FullScreenRadio>
 </keymap>
