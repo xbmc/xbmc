@@ -1638,7 +1638,7 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket *pkt)
 
   // for video we need a decoder to get desired information into codec context
   if (st->codec->codec_type == AVMEDIA_TYPE_VIDEO && st->codec->extradata &&
-      (!st->codec->width || st->codec->pix_fmt == PIX_FMT_NONE))
+      (!st->codec->width || st->codec->pix_fmt == AV_PIX_FMT_NONE))
   {
     // open a decoder, it will be cleared down by ffmpeg on closing the stream
     if (!st->codec->codec)
@@ -1695,7 +1695,7 @@ bool CDVDDemuxFFmpeg::IsVideoReady()
       st = m_pFormatContext->streams[idx];
       if (st->codec->codec_type == AVMEDIA_TYPE_VIDEO)
       {
-        if (st->codec->width && st->codec->pix_fmt != PIX_FMT_NONE)
+        if (st->codec->width && st->codec->pix_fmt != AV_PIX_FMT_NONE)
           return true;
         hasVideo = true;
       }
@@ -1708,7 +1708,7 @@ bool CDVDDemuxFFmpeg::IsVideoReady()
       st = m_pFormatContext->streams[i];
       if (st->codec->codec_type == AVMEDIA_TYPE_VIDEO)
       {
-        if (st->codec->width && st->codec->pix_fmt != PIX_FMT_NONE)
+        if (st->codec->width && st->codec->pix_fmt != AV_PIX_FMT_NONE)
           return true;
         hasVideo = true;
       }

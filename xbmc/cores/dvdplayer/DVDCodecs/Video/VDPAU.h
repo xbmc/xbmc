@@ -556,7 +556,7 @@ public:
   CDecoder();
   virtual ~CDecoder();
 
-  virtual bool Open      (AVCodecContext* avctx, AVCodecContext* mainctx, const enum PixelFormat, unsigned int surfaces = 0);
+  virtual bool Open      (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces = 0);
   virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
   virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
   virtual void Reset();
@@ -571,7 +571,7 @@ public:
   bool Supports(VdpVideoMixerFeature feature);
   bool Supports(EINTERLACEMETHOD method);
   EINTERLACEMETHOD AutoInterlaceMethod();
-  static bool IsVDPAUFormat(PixelFormat fmt);
+  static bool IsVDPAUFormat(AVPixelFormat fmt);
 
   static void FFReleaseBuffer(void *opaque, uint8_t *data);
   static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);

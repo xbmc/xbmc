@@ -342,9 +342,9 @@ bool CPicture::ScaleImage(uint8_t *in_pixels, unsigned int in_width, unsigned in
                           uint8_t *out_pixels, unsigned int out_width, unsigned int out_height, unsigned int out_pitch,
                           CPictureScalingAlgorithm::Algorithm scalingAlgorithm /* = CPictureScalingAlgorithm::NoAlgorithm */)
 {
-  struct SwsContext *context = sws_getContext(in_width, in_height, PIX_FMT_BGRA,
-                                                         out_width, out_height, PIX_FMT_BGRA,
-                                                         CPictureScalingAlgorithm::ToSwscale(scalingAlgorithm) | SwScaleCPUFlags(), NULL, NULL, NULL);
+  struct SwsContext *context = sws_getContext(in_width, in_height, AV_PIX_FMT_BGRA,
+                                                         out_width, out_height, AV_PIX_FMT_BGRA,
+                                                         CPictureScalingAlgorithm::ToSwscale(scalingAlgorithm), NULL, NULL, NULL);
 
   uint8_t *src[] = { in_pixels, 0, 0, 0 };
   int     srcStride[] = { (int)in_pitch, 0, 0, 0 };
