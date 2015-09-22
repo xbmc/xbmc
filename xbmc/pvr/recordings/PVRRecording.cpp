@@ -112,6 +112,9 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strFanartPath                  = recording.strFanartPath;
   m_bIsDeleted                     = recording.bIsDeleted;
   m_iEpgEventId                    = recording.iEpgEventId;
+  m_bRecordingInProgress           = recording.bRecordingInProgress;
+  m_bExpiresNever                  = recording.bExpiresNever;
+  m_bExpiresWithin24Hrs            = recording.bExpiresWithin24Hrs;
 }
 
 bool CPVRRecording::operator ==(const CPVRRecording& right) const
@@ -139,7 +142,10 @@ bool CPVRRecording::operator ==(const CPVRRecording& right) const
        m_strFanartPath      == right.m_strFanartPath &&
        m_iRecordingId       == right.m_iRecordingId &&
        m_bIsDeleted         == right.m_bIsDeleted &&
-       m_iEpgEventId        == right.m_iEpgEventId);
+       m_iEpgEventId        == right.m_iEpgEventId &&
+       m_bRecordingInProgress == right.m_bRecordingInProgress &&
+       m_bExpiresNever        == right.m_bExpiresNever &&
+       m_bExpiresWithin24Hrs  == right.m_bExpiresWithin24Hrs);
 }
 
 bool CPVRRecording::operator !=(const CPVRRecording& right) const
@@ -162,6 +168,9 @@ void CPVRRecording::Serialize(CVariant& value) const
   value["recordingid"] = m_iRecordingId;
   value["deleted"] = m_bIsDeleted;
   value["epgevent"] = m_iEpgEventId;
+  value["recordinginprogress"] = m_bRecordingInProgress;
+  value["expiresnever"] = m_bExpiresNever;
+  value["expireswithin24hrs"] = m_bExpiresWithin24Hrs;
 
   if (!value.isMember("art"))
     value["art"] = CVariant(CVariant::VariantTypeObject);
@@ -190,6 +199,9 @@ void CPVRRecording::Reset(void)
   m_iEpgEventId        = 0;
   m_iSeason            = -1;
   m_iEpisode           = -1;
+  m_bRecordingInProgress = false;
+  m_bExpiresNever        = false;
+  m_bExpiresWithin24Hrs  = false;
 
   m_recordingTime.Reset();
   CVideoInfoTag::Reset();
@@ -361,6 +373,9 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   m_strFanartPath     = tag.m_strFanartPath;
   m_bIsDeleted        = tag.m_bIsDeleted;
   m_iEpgEventId       = tag.m_iEpgEventId;
+  m_bRecordingInProgress = tag.m_bRecordingInProgress;
+  m_bExpiresNever        = tag.m_bExpiresNever;
+  m_bExpiresWithin24Hrs  = tag.m_bExpiresWithin24Hrs;
 
   if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId))
     m_playCount       = tag.m_playCount;
@@ -473,14 +488,4 @@ CPVRChannelPtr CPVRRecording::Channel(void) const
       return epgTag->ChannelTag();
   }
   return CPVRChannelPtr();
-}
-
-bool CPVRRecording::IsBeingRecorded(void) const
-{
-  if (m_iEpgEventId)
-  {
-    EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(m_iEpgEventId);
-    return epgTag ? epgTag->HasRecording() : false;
-  }
-  return false;
 }
