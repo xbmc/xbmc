@@ -60,6 +60,7 @@ private:
 #ifdef TARGET_POSIX
   int m_OpenConnections;
   unsigned int m_IdleTimeout;
+  static bool IsFirstInit;
 #endif
 };
 

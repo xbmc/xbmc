@@ -20,6 +20,7 @@
 #include "system.h"
 #ifdef TARGET_DARWIN_OSX
 #include "osx/CocoaInterface.h"
+#include "osx/DarwinUtils.h"
 #include "DVDVideoCodec.h"
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "utils/log.h"
@@ -161,6 +162,8 @@ bool CDecoder::Create(AVCodecContext *avctx)
   CFRelease(config_info);
   CFRelease(io_surface_properties);
   CFRelease(cv_pix_fmt);
+  if (CDarwinUtils::DeviceHasLeakyVDA())
+    CFRelease(cv_pix_fmt);
   CFRelease(buffer_attributes);
 
   if(status != kVDADecoderNoErr)
