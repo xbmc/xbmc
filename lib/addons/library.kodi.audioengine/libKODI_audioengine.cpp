@@ -73,7 +73,7 @@ DLLEXPORT CAddonAEStream* AudioEngine_make_stream(void *hdl, void *cb, AEDataFor
   AEStreamHandle *streamHandle = ((CB_AudioEngineLib*)cb)->MakeStream(DataFormat, SampleRate, EncodedSampleRate, Channels, Options);
   if (!streamHandle)
   {
-    fprintf(stderr, "%s-ERROR: AudioEngine_make_stream can't MakeStrean failed!\n", LIBRARY_NAME);
+    fprintf(stderr, "%s-ERROR: AudioEngine_make_stream MakeStream failed!\n", LIBRARY_NAME);
     return NULL;
   }
 
