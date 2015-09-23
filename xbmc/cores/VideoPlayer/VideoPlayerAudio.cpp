@@ -129,7 +129,8 @@ CVideoPlayerAudio::~CVideoPlayerAudio()
 bool CVideoPlayerAudio::OpenStream(CDVDStreamInfo &hints)
 {
   CLog::Log(LOGNOTICE, "Finding audio codec for: %i", hints.codec);
-  CDVDAudioCodec* codec = CDVDFactoryCodec::CreateAudioCodec(hints);
+  bool allowpassthrough = !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK);
+  CDVDAudioCodec* codec = CDVDFactoryCodec::CreateAudioCodec(hints, allowpassthrough);
   if(!codec)
   {
     CLog::Log(LOGERROR, "Unsupported audio codec");
@@ -723,7 +724,8 @@ void CVideoPlayerAudio::WaitForBuffers()
 bool CVideoPlayerAudio::SwitchCodecIfNeeded()
 {
   CLog::Log(LOGDEBUG, "CVideoPlayerAudio: Sample rate changed, checking for passthrough");
-  CDVDAudioCodec *codec = CDVDFactoryCodec::CreateAudioCodec(m_streaminfo);
+  bool allowpassthrough = !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK);
+  CDVDAudioCodec *codec = CDVDFactoryCodec::CreateAudioCodec(m_streaminfo, allowpassthrough);
   if (!codec || codec->NeedPassthrough() == m_pAudioCodec->NeedPassthrough()) {
     // passthrough state has not changed
     delete codec;

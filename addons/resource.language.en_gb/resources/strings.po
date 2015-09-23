@@ -15930,7 +15930,7 @@ msgstr ""
 #. Description of setting "Videos -> Playback -> Sync playback to display" with label #13510
 #: system/settings/settings.xml
 msgctxt "#36166"
-msgid "Synchronise the video to the refresh rate of the monitor."
+msgid "Synchronise video and audio to the refresh rate of the monitor. VideoPlayer won't use passthrough audio in this case because resampling may be required."
 msgstr ""
 
 #. Description of setting "Appearance -> International -> Time format" with label #14107
