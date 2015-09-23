@@ -15,7 +15,7 @@
      <osdname>(i) LAV Splitter Source</osdname>
      <guid>{B98D13E7-55DB-4385-A33D-09FD1BA26338}</guid>
     </filter>
-    <filter name="lavsplitter_internal" type="source">
+    <filter name="lavsplitter_internal" type="splitter">
      <path>LAVFilters/LAVSplitter.ax</path>
      <osdname>(i) LAV Splitter</osdname>
      <guid>{171252A0-8820-4AFE-9DF8-5C92B2D66B04}</guid>
