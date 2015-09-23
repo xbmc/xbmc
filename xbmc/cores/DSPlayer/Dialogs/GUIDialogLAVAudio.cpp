@@ -67,6 +67,7 @@
 #define LAVAUDIO_AUTOSYNCAV        "lavaudio.autosyncav"
 #define LAVAUDIO_EXPANDMONO        "lavaudio.expandmono"
 #define LAVAUDIO_EXPAND61          "lavaudio.expand61"
+#define LAVAUDIO_51LEGACY          "lavaudio.51legacy"
 #define LAVAUDIO_OUTSTANDARD       "lavaudio.outstandard"
 #define LAVAUDIO_MIXINGENABLED     "lavaudio.mixingenabled"
 #define LAVAUDIO_MIXINGLAYOUT      "lavaudio.mixinglayout"
@@ -230,6 +231,7 @@ void CGUIDialogLAVAudio::InitializeSettings()
   AddToggle(groupOptions, LAVAUDIO_OUTSTANDARD, 81010, 0, LavSettings.audio_bOutputStandardLayout);
   AddToggle(groupOptions, LAVAUDIO_EXPANDMONO, 81011, 0, LavSettings.audio_bExpandMono);
   AddToggle(groupOptions, LAVAUDIO_EXPAND61, 81012, 0, LavSettings.audio_bExpand61);
+  AddToggle(groupOptions, LAVAUDIO_51LEGACY, 81031, 0, LavSettings.audio_b51Legacy);
 
   //DRC
   AddToggle(groupDRC, LAVAUDIO_DRCENABLED, 81001, 0, LavSettings.audio_bDRCEnabled);
@@ -301,6 +303,8 @@ void CGUIDialogLAVAudio::OnSettingChanged(const CSetting *setting)
     LavSettings.audio_bExpandMono = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVAUDIO_EXPAND61)
     LavSettings.audio_bExpand61 = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+  if (settingId == LAVAUDIO_51LEGACY)
+    LavSettings.audio_b51Legacy = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVAUDIO_OUTSTANDARD)
     LavSettings.audio_bOutputStandardLayout = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVAUDIO_MIXINGENABLED)

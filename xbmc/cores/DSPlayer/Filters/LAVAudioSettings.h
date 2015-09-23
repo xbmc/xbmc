@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2010-2014 Hendrik Leppkes
+ *      Copyright (C) 2010-2015 Hendrik Leppkes
  *      http://www.1f0.de
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -58,7 +58,7 @@ typedef enum LAVAudioCodec {
   Codec_ATRAC,
 
   Codec_AudioNB            // Number of entries (do not use when dynamically linking)
-};
+} LAVAudioCodec;
 
 // Bitstreaming Codecs supported in LAV Audio
 typedef enum LAVBitstreamCodec {
@@ -69,7 +69,7 @@ typedef enum LAVBitstreamCodec {
   Bitstream_DTSHD,
 
   Bitstream_NB        // Number of entries (do not use when dynamically linking)
-};
+} LAVBitstreamCodec;
 
 
 // Supported Sample Formats in LAV Audio
@@ -83,7 +83,7 @@ typedef enum LAVAudioSampleFormat {
   SampleFormat_Bitstream,
 
   SampleFormat_NB     // Number of entries (do not use when dynamically linking)
-};
+} LAVAudioSampleFormat;
 
 typedef enum LAVAudioMixingMode {
   MatrixEncoding_None,
@@ -91,7 +91,7 @@ typedef enum LAVAudioMixingMode {
   MatrixEncoding_DPLII,
 
   MatrixEncoding_NB
-};
+} LAVAudioMixingMode;
 
 // LAV Audio configuration interface
 [uuid("4158A22B-6553-45D0-8069-24716F8FF171")]
@@ -190,6 +190,10 @@ interface ILAVAudioSettings : public IUnknown
   // This option is NOT persistent
   STDMETHOD(SetSuppressFormatChanges)(BOOL bEnabled) = 0;
   STDMETHOD_(BOOL, GetSuppressFormatChanges)() = 0;
+
+  // Use 5.1 legacy layout (using back channels instead of side)
+  STDMETHOD_(BOOL, GetOutput51LegacyLayout)() = 0;
+  STDMETHOD(SetOutput51LegacyLayout)(BOOL b51Legacy) = 0;
 };
 
 // LAV Audio Status Interface

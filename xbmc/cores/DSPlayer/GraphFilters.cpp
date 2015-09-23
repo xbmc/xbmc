@@ -266,6 +266,7 @@ bool CGraphFilters::GetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
     LavSettings.audio_bExpandMono = pLAVFSettings->GetExpandMono();
     LavSettings.audio_bExpand61 = pLAVFSettings->GetExpand61();
     LavSettings.audio_bOutputStandardLayout = pLAVFSettings->GetOutputStandardLayout();
+    LavSettings.audio_b51Legacy = pLAVFSettings->GetOutput51LegacyLayout();
     LavSettings.audio_bMixingEnabled = pLAVFSettings->GetMixingEnabled();
     LavSettings.audio_dwMixingLayout = pLAVFSettings->GetMixingLayout();
     LavSettings.audio_dwMixingFlags = pLAVFSettings->GetMixingFlags();
@@ -322,6 +323,7 @@ bool CGraphFilters::GetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
     LavSettings.splitter_bImpairedAudio = pLAVFSettings->GetUseAudioForHearingVisuallyImpaired();
     LavSettings.splitter_bPreferHighQualityAudio = pLAVFSettings->GetPreferHighQualityAudioStreams();
     LavSettings.splitter_dwQueueMaxSize = pLAVFSettings->GetMaxQueueMemSize();
+    LavSettings.splitter_dwQueueMaxPacketsSize = pLAVFSettings->GetMaxQueueSize();
     LavSettings.splitter_dwNetworkAnalysisDuration = pLAVFSettings->GetNetworkStreamAnalysisDuration();
   }
 
@@ -379,6 +381,7 @@ bool CGraphFilters::SetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
     pLAVFSettings->SetExpandMono(LavSettings.audio_bExpandMono);
     pLAVFSettings->SetExpand61(LavSettings.audio_bExpand61);
     pLAVFSettings->SetOutputStandardLayout(LavSettings.audio_bOutputStandardLayout);
+    pLAVFSettings->SetOutput51LegacyLayout(LavSettings.audio_b51Legacy);
     pLAVFSettings->SetMixingEnabled(LavSettings.audio_bMixingEnabled);
     pLAVFSettings->SetMixingLayout(LavSettings.audio_dwMixingLayout);
     pLAVFSettings->SetMixingFlags(LavSettings.audio_dwMixingFlags);
@@ -423,6 +426,7 @@ bool CGraphFilters::SetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
     pLAVFSettings->SetUseAudioForHearingVisuallyImpaired(LavSettings.splitter_bImpairedAudio);
     pLAVFSettings->SetPreferHighQualityAudioStreams(LavSettings.splitter_bPreferHighQualityAudio);
     pLAVFSettings->SetMaxQueueMemSize(LavSettings.splitter_dwQueueMaxSize);
+    pLAVFSettings->SetMaxQueueSize(LavSettings.splitter_dwQueueMaxPacketsSize);
     pLAVFSettings->SetNetworkStreamAnalysisDuration(LavSettings.splitter_dwNetworkAnalysisDuration);
   }
   return true;

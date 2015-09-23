@@ -19312,6 +19312,10 @@ msgctxt "#81030"
 msgid "Dolby Pro Logic II"
 msgstr ""
 
+msgctxt "#81031"
+msgid "Use Legacy 5.1 channel layout"
+msgstr ""
+
 msgctxt "#82001"
 msgid "Preferred audio language"
 msgstr ""

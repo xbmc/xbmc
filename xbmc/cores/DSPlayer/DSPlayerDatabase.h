@@ -74,11 +74,12 @@ public:
 
 protected:
   virtual void CreateTables();
+  virtual void UpdateTables(int version);
   virtual void CreateAnalytics();
 
   virtual int GetMinSchemaVersion() const { return 5; };
   virtual int GetExportVersion() const { return 1; };
-  virtual int GetSchemaVersion() const { return 5; };
+  virtual int GetSchemaVersion() const { return 6; };
   const char *GetBaseDBName() const { return "DSPlayer"; };
 
 };

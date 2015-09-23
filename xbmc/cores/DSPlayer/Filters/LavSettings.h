@@ -62,6 +62,7 @@ public:
   BOOL audio_bExpandMono;
   BOOL audio_bExpand61;
   BOOL audio_bOutputStandardLayout;
+  BOOL audio_b51Legacy;
   BOOL audio_bAllowRawSPDIF;
   BOOL audio_bSampleFormats[SampleFormat_NB];
   BOOL audio_bSampleConvertDither;
@@ -89,6 +90,7 @@ public:
   BOOL splitter_bImpairedAudio;
   BOOL splitter_bPreferHighQualityAudio;
   DWORD splitter_dwQueueMaxSize;
+  DWORD splitter_dwQueueMaxPacketsSize;
   DWORD splitter_dwNetworkAnalysisDuration;
 
 private:

@@ -107,7 +107,7 @@ void CDSPlayerDatabase::CreateTables()
   strSQL = "CREATE TABLE lavaudioSettings (id integer, bTrayIcon integer, bDRCEnabled integer, iDRCLevel integer, ";
   for (int i = 0; i < Bitstream_NB; ++i)
     strSQL += PrepareSQL("bBitstream%i integer, ", i);
-  strSQL += "bDTSHDFraming integer, bAutoAVSync integer, bExpandMono integer, bExpand61 integer, bOutputStandardLayout integer, bAllowRawSPDIF integer, ";
+  strSQL += "bDTSHDFraming integer, bAutoAVSync integer, bExpandMono integer, bExpand61 integer, bOutputStandardLayout integer, b51Legacy integer, bAllowRawSPDIF integer, ";
   for (int i = 0; i < SampleFormat_NB; ++i)
     strSQL += PrepareSQL("bSampleFormats%i integer, ", i);
   strSQL += "bSampleConvertDither integer, bAudioDelayEnabled integer, iAudioDelay integer, bMixingEnabled integer, dwMixingLayout integer, dwMixingFlags integer, dwMixingMode integer, "
@@ -118,7 +118,7 @@ void CDSPlayerDatabase::CreateTables()
   m_pDS->exec(strSQL);
 
   strSQL = "CREATE TABLE lavsplitterSettings (id integer, bTrayIcon integer, prefAudioLangs txt, prefSubLangs txt, subtitleAdvanced txt, subtitleMode integer, bPGSForcedStream integer, bPGSOnlyForced integer, "
-    "iVC1Mode integer, bSubstreams integer, bMatroskaExternalSegments integer, bStreamSwitchRemoveAudio integer, bImpairedAudio integer, bPreferHighQualityAudio integer, dwQueueMaxSize integer, dwNetworkAnalysisDuration integer"
+    "iVC1Mode integer, bSubstreams integer, bMatroskaExternalSegments integer, bStreamSwitchRemoveAudio integer, bImpairedAudio integer, bPreferHighQualityAudio integer, dwQueueMaxSize integer, dwQueueMaxPacketsSize integer, dwNetworkAnalysisDuration integer"
     ")\n";
 
   CLog::Log(LOGINFO, "create lavsplitter setting table");
@@ -133,6 +133,27 @@ void CDSPlayerDatabase::CreateAnalytics()
   m_pDS->exec("CREATE INDEX idxLavVideo ON lavvideoSettings(id)");
   m_pDS->exec("CREATE INDEX idxLavAudio ON lavaudioSettings (id)");
   m_pDS->exec("CREATE INDEX idxlavSplitter ON lavsplitterSettings (id)");
+}
+
+void CDSPlayerDatabase::UpdateTables(int version)
+{
+  if (version < 6)
+  {
+    m_pDS->exec("ALTER TABLE lavaudioSettings ADD b51Legacy integer");
+    m_pDS->query("SELECT * FROM lavaudioSettings WHERE id = 0");
+    if (m_pDS->num_rows() > 0)
+    {
+      m_pDS->close();
+      m_pDS->exec("UPDATE lavaudioSettings SET b51Legacy=0");
+    }
+    m_pDS->exec("ALTER TABLE lavsplitterSettings ADD dwQueueMaxPacketsSize integer");
+    m_pDS->query("SELECT * FROM lavsplitterSettings WHERE id = 0");
+    if (m_pDS->num_rows() > 0)
+    {
+      m_pDS->close();
+      m_pDS->exec("UPDATE lavsplitterSettings SET dwQueueMaxPacketsSize=350");
+    }
+  }
 }
 
 bool CDSPlayerDatabase::GetResumeEdition(const CStdString& strFilenameAndPath, CEdition &edition)
@@ -485,6 +506,7 @@ bool CDSPlayerDatabase::GetLAVAudioSettings(CLavSettings &settings)
       settings.audio_bExpandMono = m_pDS->fv("bExpandMono").get_asInt();
       settings.audio_bExpand61 = m_pDS->fv("bExpand61").get_asInt();
       settings.audio_bOutputStandardLayout = m_pDS->fv("bOutputStandardLayout").get_asInt();
+      settings.audio_b51Legacy = m_pDS->fv("b51Legacy").get_asInt();
       settings.audio_bAllowRawSPDIF = m_pDS->fv("bAllowRawSPDIF").get_asInt();
       for (int i = 0; i < SampleFormat_NB; ++i)
         settings.audio_bSampleFormats[i] = m_pDS->fv(PrepareSQL("bSampleFormats%i", i).c_str()).get_asInt();
@@ -542,6 +564,7 @@ bool CDSPlayerDatabase::GetLAVSplitterSettings(CLavSettings &settings)
       settings.splitter_bImpairedAudio = m_pDS->fv("bImpairedAudio").get_asInt();
       settings.splitter_bPreferHighQualityAudio = m_pDS->fv("bPreferHighQualityAudio").get_asInt();
       settings.splitter_dwQueueMaxSize = m_pDS->fv("dwQueueMaxSize").get_asInt();
+      settings.splitter_dwQueueMaxPacketsSize = m_pDS->fv("dwQueueMaxPacketsSize").get_asInt();
       settings.splitter_dwNetworkAnalysisDuration = m_pDS->fv("dwNetworkAnalysisDuration").get_asInt();
 
       m_pDS->close();
@@ -663,6 +686,7 @@ void CDSPlayerDatabase::SetLAVAudioSettings(CLavSettings &settings)
       strSQL += PrepareSQL("bExpandMono=%i, ", settings.audio_bExpandMono);
       strSQL += PrepareSQL("bExpand61=%i, ", settings.audio_bExpand61);
       strSQL += PrepareSQL("bOutputStandardLayout=%i, ", settings.audio_bOutputStandardLayout);
+      strSQL += PrepareSQL("b51Legacy=%i, ", settings.audio_b51Legacy);
       strSQL += PrepareSQL("bAllowRawSPDIF=%i, ", settings.audio_bAllowRawSPDIF);
       for (int i = 0; i < SampleFormat_NB; ++i)
         strSQL += PrepareSQL("bSampleFormats%i=%i, ", i, settings.audio_bSampleFormats[i]);
@@ -687,7 +711,7 @@ void CDSPlayerDatabase::SetLAVAudioSettings(CLavSettings &settings)
       strSQL = "INSERT INTO lavaudioSettings (id, bTrayIcon, bDRCEnabled, iDRCLevel, ";
       for (int i = 0; i < Bitstream_NB; ++i)
         strSQL += PrepareSQL("bBitstream%i, ", i);
-      strSQL += "bDTSHDFraming, bAutoAVSync, bExpandMono, bExpand61, bOutputStandardLayout, bAllowRawSPDIF, ";
+      strSQL += "bDTSHDFraming, bAutoAVSync, bExpandMono, bExpand61, bOutputStandardLayout, b51Legacy, bAllowRawSPDIF, ";
       for (int i = 0; i < SampleFormat_NB; ++i)
         strSQL += PrepareSQL("bSampleFormats%i, ", i);
       strSQL += "bSampleConvertDither, bAudioDelayEnabled, iAudioDelay, bMixingEnabled, dwMixingLayout, dwMixingFlags, dwMixingMode, "
@@ -704,6 +728,7 @@ void CDSPlayerDatabase::SetLAVAudioSettings(CLavSettings &settings)
       strSQL += PrepareSQL("%i, ", settings.audio_bExpandMono);
       strSQL += PrepareSQL("%i, ", settings.audio_bExpand61);
       strSQL += PrepareSQL("%i, ", settings.audio_bOutputStandardLayout);
+      strSQL += PrepareSQL("%i, ", settings.audio_b51Legacy);
       strSQL += PrepareSQL("%i, ", settings.audio_bAllowRawSPDIF);
       for (int i = 0; i < SampleFormat_NB; ++i)
         strSQL += PrepareSQL("%i, ", i, settings.audio_bSampleFormats[i]);
@@ -761,6 +786,7 @@ void CDSPlayerDatabase::SetLAVSplitterSettings(CLavSettings &settings)
       strSQL += PrepareSQL("bImpairedAudio=%i, ", settings.splitter_bImpairedAudio);
       strSQL += PrepareSQL("bPreferHighQualityAudio=%i, ", settings.splitter_bPreferHighQualityAudio);
       strSQL += PrepareSQL("dwQueueMaxSize=%i, ", settings.splitter_dwQueueMaxSize);
+      strSQL += PrepareSQL("dwQueueMaxPacketsSize=%i, ", settings.splitter_dwQueueMaxPacketsSize);
       strSQL += PrepareSQL("dwNetworkAnalysisDuration=%i ", settings.splitter_dwNetworkAnalysisDuration);
 
       strSQL += "where id=0";
@@ -772,7 +798,7 @@ void CDSPlayerDatabase::SetLAVSplitterSettings(CLavSettings &settings)
       m_pDS->close();
 
       strSQL = "INSERT INTO lavsplitterSettings (id, bTrayIcon, prefAudioLangs, prefSubLangs, subtitleAdvanced, subtitleMode, bPGSForcedStream, bPGSOnlyForced, "
-        "iVC1Mode, bSubstreams, bMatroskaExternalSegments, bStreamSwitchRemoveAudio, bImpairedAudio, bPreferHighQualityAudio, dwQueueMaxSize, dwNetworkAnalysisDuration"
+        "iVC1Mode, bSubstreams, bMatroskaExternalSegments, bStreamSwitchRemoveAudio, bImpairedAudio, bPreferHighQualityAudio, dwQueueMaxSize, dwQueueMaxPacketsSize, dwNetworkAnalysisDuration"
         ") VALUES (0, ";
 
       strSQL += PrepareSQL("%i, ", settings.splitter_bTrayIcon);
@@ -792,6 +818,7 @@ void CDSPlayerDatabase::SetLAVSplitterSettings(CLavSettings &settings)
       strSQL += PrepareSQL("%i, ", settings.splitter_bImpairedAudio);
       strSQL += PrepareSQL("%i, ", settings.splitter_bPreferHighQualityAudio);
       strSQL += PrepareSQL("%i, ", settings.splitter_dwQueueMaxSize);
+      strSQL += PrepareSQL("%i, ", settings.splitter_dwQueueMaxPacketsSize);
       strSQL += PrepareSQL("%i ", settings.splitter_dwNetworkAnalysisDuration);
       strSQL += ")";
 

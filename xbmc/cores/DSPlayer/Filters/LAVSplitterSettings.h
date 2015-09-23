@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2010-2014 Hendrik Leppkes
+ *      Copyright (C) 2010-2015 Hendrik Leppkes
  *      http://www.1f0.de
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -184,4 +184,10 @@ interface ILAVFSettings : public IUnknown
 
   // Get the duration (in ms) of analysis for network streams (to find the streams and codec parameters)
   STDMETHOD_(DWORD, GetNetworkStreamAnalysisDuration)() = 0;
+
+  // Set the maximum queue size, in number of packets
+  STDMETHOD(SetMaxQueueSize)(DWORD dwMaxSize) = 0;
+
+  // Get the maximum queue size, in number of packets
+  STDMETHOD_(DWORD, GetMaxQueueSize)() = 0;
 };

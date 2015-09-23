@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2010-2014 Hendrik Leppkes
+ *      Copyright (C) 2010-2015 Hendrik Leppkes
  *      http://www.1f0.de
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -89,7 +89,7 @@ typedef enum LAVVideoCodec {
   Codec_VP7,
 
   Codec_VideoNB            // Number of entries (do not use when dynamically linking)
-};
+} LAVVideoCodec;
 
 // Codecs with hardware acceleration
 typedef enum LAVVideoHWCodec {
@@ -101,7 +101,7 @@ typedef enum LAVVideoHWCodec {
   HWCodec_HEVC,
 
   HWCodec_NB    = HWCodec_HEVC + 1
-};
+} LAVVideoHWCodec;
 
 // Flags for HW Resolution support
 #define LAVHWResFlag_SD      0x0001
@@ -116,20 +116,20 @@ typedef enum LAVHWAccel {
   HWAccel_DXVA2,
   HWAccel_DXVA2CopyBack = HWAccel_DXVA2,
   HWAccel_DXVA2Native
-};
+} LAVHWAccel;
 
 // Deinterlace algorithms offered by the hardware decoders
 typedef enum LAVHWDeintModes {
   HWDeintMode_Weave,
   HWDeintMode_BOB, // Deprecated
   HWDeintMode_Hardware
-};
+} LAVHWDeintModes;
 
 // Software deinterlacing algorithms
 typedef enum LAVSWDeintModes {
   SWDeintMode_None,
   SWDeintMode_YADIF
-};
+} LAVSWDeintModes;
 
 // Deinterlacing processing mode
 typedef enum LAVDeintMode {
@@ -137,7 +137,7 @@ typedef enum LAVDeintMode {
   DeintMode_Aggressive,
   DeintMode_Force,
   DeintMode_Disable
-};
+} LAVDeintMode;
 
 // Type of deinterlacing to perform
 // - FramePerField re-constructs one frame from every field, resulting in 50/60 fps.
@@ -146,14 +146,14 @@ typedef enum LAVDeintMode {
 typedef enum LAVDeintOutput {
   DeintOutput_FramePerField,
   DeintOutput_FramePer2Field
-};
+} LAVDeintOutput;
 
 // Control the field order of the deinterlacer
 typedef enum LAVDeintFieldOrder {
   DeintFieldOrder_Auto,
   DeintFieldOrder_TopFieldFirst,
   DeintFieldOrder_BottomFieldFirst,
-};
+} LAVDeintFieldOrder;
 
 // Supported output pixel formats
 typedef enum LAVOutPixFmts {
