@@ -231,6 +231,13 @@ void CDSPlayer::ShowEditionDlg(bool playStart)
     }
   }
 
+  // Start madVR render
+  if (CMadvrCallback::Get()->UsingMadvr())
+  {
+    PostMessage(new CDSMsgBool(CDSMsg::PLAYER_PLAY, true), false);
+    PostMessage(new CDSMsgBool(CDSMsg::PLAYER_PAUSE, true), false);
+  }
+
   CGUIDialogSelect *dialog = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
 
   bool listAllTitles = false;
