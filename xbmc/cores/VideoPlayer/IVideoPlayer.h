@@ -110,8 +110,6 @@ public:
   virtual double GetCurrentPts() = 0;
   virtual bool IsStalled() const = 0;
   virtual bool IsPassthrough() const = 0;
-  virtual double GetDelay() = 0;
-  virtual double GetCacheTotal() = 0;
   virtual float GetDynamicRangeAmplification() const = 0;
   virtual bool IsEOS() = 0;
 };

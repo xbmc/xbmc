@@ -94,8 +94,7 @@ public:
   bool IsStalled() const                            { return m_stalled;  }
   bool IsEOS()                                      { return false; }
   bool IsPassthrough() const;
-  double GetDelay() { return 0.0; }
-  double GetCacheTotal() { return 0.0; }
+
 protected:
 
   virtual void OnStartup();
