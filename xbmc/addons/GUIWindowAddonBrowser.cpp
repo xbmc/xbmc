@@ -168,6 +168,10 @@ void CGUIWindowAddonBrowser::SetProperties()
   auto lastUpdated = CRepositoryUpdater::GetInstance().LastUpdated();
   SetProperty("Updated", lastUpdated.IsValid() ?
     lastUpdated.GetAsLocalizedDateTime() : g_localizeStrings.Get(21337));
+
+  VECADDONS updates;
+  CAddonMgr::GetInstance().GetAllOutdatedAddons(updates);
+  SetProperty("availableupdates", updates.size());
 }
 
 void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber, CContextButtons& buttons)
