@@ -3039,8 +3039,6 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
   {
     if (m_omxplayer_mode)
     {
-      double dDelay = m_VideoPlayerAudio->GetDelay();
-
       double apts = m_VideoPlayerAudio->GetCurrentPts();
       double vpts = m_VideoPlayerVideo->GetCurrentPts();
       double dDiff = 0;
@@ -3062,8 +3060,7 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
           strBuf += StringUtils::Format(" %d sec", DVD_TIME_TO_SEC(m_StateInput.cache_delay));
       }
 
-      strGeneralInfo = StringUtils::Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s af:%d%% vf:%d%% amp:% 5.2f )"
-          , dDelay
+      strGeneralInfo = StringUtils::Format("C( a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s af:%d%% vf:%d%% amp:% 5.2f )"
           , dDiff
           , strEDL.c_str()
           , (int)(CThread::GetRelativeUsage()*100)
