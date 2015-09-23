@@ -131,7 +131,6 @@ void CmadVRAllocatorPresenter::SetResolution()
     && g_graphicsContext.IsFullScreenRoot())
   {
     RESOLUTION bestRes = g_renderManager.m_pRenderer->ChooseBestMadvrResolution(fps);
-    CDSPlayer::SetDsWndVisible(true);
     g_graphicsContext.SetVideoResolution(bestRes);
   }
   else
