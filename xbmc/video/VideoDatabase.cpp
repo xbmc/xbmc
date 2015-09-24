@@ -8122,11 +8122,13 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
     }
 
     CLog::Log(LOGDEBUG, "%s: Cleaning paths that don't exist and have content set...", __FUNCTION__);
-    sql = "SELECT path.idPath, path.strPath, path.idParentPath FROM path "
-            "WHERE NOT ((strContent IS NULL OR strContent = '') "
-                   "AND (strSettings IS NULL OR strSettings = '') "
-                   "AND (strHash IS NULL OR strHash = '') "
-                   "AND (exclude IS NULL OR exclude != 1))";
+    sql = "SELECT path.idPath, path.strPath, path.idParentPath, path2.strPath AS strParentPath "
+            "FROM path "
+            "LEFT JOIN path AS path2 ON path2.idPath = path.idParentPath "
+            "WHERE NOT ((path.strContent IS NULL OR path.strContent = '') "
+                   "AND (path.strSettings IS NULL OR path.strSettings = '') "
+                   "AND (path.strHash IS NULL OR path.strHash = '') "
+                   "AND (path.exclude IS NULL OR path.exclude != 1))";
     m_pDS->query(sql);
     std::string strIds;
     while (!m_pDS->eof())
@@ -8134,10 +8136,14 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       std::map<int, bool>::const_iterator pathsDeleteDecision = pathsDeleteDecisions.find(m_pDS->fv(0).get_asInt());
       // Check if we have a decision for the parent path
       std::map<int, bool>::const_iterator pathsDeleteDecisionByParent = pathsDeleteDecisions.find(m_pDS->fv(2).get_asInt());
-      if (((pathsDeleteDecision != pathsDeleteDecisions.end() && pathsDeleteDecision->second) ||
-           (pathsDeleteDecision == pathsDeleteDecisions.end() && !CDirectory::Exists(m_pDS->fv(1).get_asString(), false))) &&
-          ((pathsDeleteDecisionByParent != pathsDeleteDecisions.end() && pathsDeleteDecisionByParent->second) ||
-           (pathsDeleteDecisionByParent == pathsDeleteDecisions.end())))
+      bool hasDecision = pathsDeleteDecision != pathsDeleteDecisions.end();
+      bool hasDecisionForParent = pathsDeleteDecisionByParent != pathsDeleteDecisions.end();
+      std::string parentPath = m_pDS->fv(3).get_asString();
+
+      if (((hasDecision && pathsDeleteDecision->second) ||
+           (!hasDecision && !CDirectory::Exists(m_pDS->fv(1).get_asString(), false))) &&
+          ((hasDecisionForParent && (pathsDeleteDecisionByParent->second || (!parentPath.empty() && CDirectory::Exists(parentPath, false)))) ||
+           !hasDecisionForParent))
         strIds += m_pDS->fv(0).get_asString() + ",";
 
       m_pDS->next();
