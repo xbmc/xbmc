@@ -59,6 +59,7 @@ CWinSystemX11::CWinSystemX11() : CWinSystemBase()
   m_bIgnoreNextFocusMessage = false;
   m_invisibleCursor = 0;
   m_bIsInternalXrr = false;
+  m_delayDispReset = false;
 
   XSetErrorHandler(XErrorHandler);
 }
@@ -244,6 +245,12 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
         OnLostDevice();
         m_bIsInternalXrr = true;
         g_xrandr.SetMode(out, mode);
+        int delay = CSettings::GetInstance().GetInt("videoscreen.delayrefreshchange");
+        if (delay > 0)
+        {
+          m_delayDispReset = true;
+          m_dispResetTimer.Set(delay * 100);
+        }
         return true;
       }
     }

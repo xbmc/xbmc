@@ -23,6 +23,7 @@
 #include "windowing/WinSystem.h"
 #include "utils/Stopwatch.h"
 #include "threads/CriticalSection.h"
+#include "threads/SystemClock.h"
 #include "settings/lib/ISettingCallback.h"
 #include "X11/Xlib.h"
 #include "X11/Xutil.h"
@@ -85,6 +86,8 @@ protected:
   bool m_bIgnoreNextFocusMessage;
   CCriticalSection m_resourceSection;
   std::vector<IDispResource*>  m_resources;
+  bool m_delayDispReset;
+  XbmcThreads::EndTime m_dispResetTimer;
   std::string m_currentOutput;
   std::string m_userOutput;
   bool m_windowDirty;
