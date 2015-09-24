@@ -158,7 +158,7 @@ protected:
   color_t m_color;
 
   Character *m_char;                 // our characters
-  Character *m_charquick[256*7];     // ascii chars (4 styles) here
+  Character *m_charquick[256*7];     // ascii chars (7 styles) here
   int m_maxChars;                    // size of character array (can be incremented)
   int m_numChars;                    // the current number of cached characters
 
