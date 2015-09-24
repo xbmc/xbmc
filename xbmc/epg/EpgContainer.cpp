@@ -175,9 +175,6 @@ void CEpgContainer::Start(bool bAsync)
 
   LoadFromDB();
 
-  if (g_PVRManager.IsStarted())
-    g_PVRManager.Recordings()->UpdateEpgTags();
-
   CSingleLock lock(m_critSection);
   if (!m_bStop)
   {
@@ -618,8 +615,6 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       m_updateEvent.Set();
     }
 
-    g_PVRManager.Recordings()->UpdateEpgTags();
-
     if (bShowProgress && !bOnlyPending)
       CloseProgressDialog();
 
@@ -675,6 +670,9 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   }
   else
   {
+    if (g_PVRManager.IsStarted())
+      g_PVRManager.Recordings()->UpdateEpgTags();
+
     CSingleLock lock(m_critSection);
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
     m_iNextEpgUpdate += g_advancedSettings.m_iEpgUpdateCheckInterval;
