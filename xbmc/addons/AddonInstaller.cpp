@@ -199,7 +199,7 @@ bool CAddonInstaller::InstallOrUpdate(const std::string &addonID, bool backgroun
   if (!CAddonInstallJob::GetAddonWithHash(addonID, repo->ID(), addon, hash))
     return false;
 
-  return DoInstall(addon, hash, background, modal);
+  return DoInstall(addon, repo, hash, background, modal);
 }
 
 void CAddonInstaller::Install(const std::string& addonId, const AddonVersion& version, const std::string& repoId)
@@ -218,18 +218,15 @@ void CAddonInstaller::Install(const std::string& addonId, const AddonVersion& ve
     return;
 
   std::string hash = std::static_pointer_cast<CRepository>(repo)->GetAddonHash(addon);
-  DoInstall(addon, hash, true, false);
+  DoInstall(addon, std::static_pointer_cast<CRepository>(repo), hash, true, false);
 }
 
-bool CAddonInstaller::DoInstall(const AddonPtr &addon, const std::string &hash /* = "" */, bool background /* = true */, bool modal /* = false */)
+bool CAddonInstaller::DoInstall(const AddonPtr &addon, const RepositoryPtr& repo,
+    const std::string &hash /* = "" */, bool background /* = true */, bool modal /* = false */)
 {
   // check whether we already have the addon installing
   CSingleLock lock(m_critSection);
   if (m_downloadJobs.find(addon->ID()) != m_downloadJobs.end())
-    return false;
-
-  RepositoryPtr repo;
-  if (!CAddonInstaller::GetRepoForAddon(addon->ID(), repo))
     return false;
 
   CAddonInstallJob* installJob = new CAddonInstallJob(addon, repo, hash);
@@ -287,7 +284,7 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
     addon->Props().icon = URIUtils::AddFileToFolder(items[0]->GetPath(), "icon.png");
 
     // install the addon
-    return DoInstall(addon);
+    return DoInstall(addon, RepositoryPtr());
   }
 
   CEventLog::GetInstance().AddWithNotification(
@@ -865,8 +862,7 @@ bool CAddonUnInstallJob::DoWork()
 
   //TODO: looks broken. it just calls the repo with the most recent version, not the owner
   RepositoryPtr repoPtr;
-  if (!CAddonInstaller::GetRepoForAddon(m_addon->ID(), repoPtr))
-    return false;
+  CAddonInstaller::GetRepoForAddon(m_addon->ID(), repoPtr);
   if (repoPtr != NULL && !repoPtr->Props().libname.empty())
   {
     CFileItemList dummy;

@@ -473,12 +473,8 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
-      {
-        CGUIWindow *pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
-        if (pWindow)
-          g_windowManager.ShowOverlay(pWindow->GetOverlayState());
         return A(CGUIWindow::OnMessage(message));
-      }
+
       return WindowXML::OnMessage(message);
     }
 

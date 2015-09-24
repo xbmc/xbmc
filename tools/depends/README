@@ -29,3 +29,27 @@ Linux:
   Native toolchain
     ./configure --with-toolchain=/usr --prefix=/opt/xbmc-deps --host=x86_64-linux-gnu
 
+
+Details:
+  We build a native tools for platforms that do not have the native tools we need. OSX is
+  the largest builder of native tools as there is not much present. No cmake, no autotools, etc.
+
+  Cross compiling is a real pain is the rear :) Generally there are three forms,
+    autotools (configure/make), cmake driven, and hand crafted makefile. In term
+    of usage, 90 percent are autotools, followed by cmake and hand crafted makefiles.
+    Some libs need patching, most do not. Lib versions are picked for a reason, be prepared
+    for robust testing if you go bumping libs. Never commit bumps unless you have also done
+    a complete distclean nuke of EVERYTHING and rebuild from scratch on ALL platforms.
+    Epic fail if this is not tested.
+
+  1) autotool driven tend to be simple PROVIDED the authors followed proper autotool format.
+     Try with $(CONFIGURE) 1st, if problem, try adding $(AUTORECONF) -vif before the
+     $(CONFIGURE). Some are do silly things and only a config.site can correct the errors.
+     So watch for this in the config.site.in. config.site rules and this is the only way
+     to handle bad autotool behavior.
+
+  2) cmake driven tend to be simple, setup cmake flags right and go. On rare cases, you might
+     need to diddle the native cmake setup.
+
+  3) hand crafted Makefiles typically require manual sed tweeks or patching.
+

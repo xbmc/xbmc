@@ -399,10 +399,14 @@ void CWinSystemX11::UpdateResolutions()
                 mode.id.c_str(), mode.name.c_str(), mode.hz, mode.w, mode.h);
       RESOLUTION_INFO res;
       res.iScreen = 0; // not used by X11
+      res.dwFlags = 0;
       res.iWidth  = mode.w;
       res.iHeight = mode.h;
       res.iScreenWidth  = mode.w;
       res.iScreenHeight = mode.h;
+      if (mode.IsInterlaced())
+        res.dwFlags |= D3DPRESENTFLAG_INTERLACED;
+
       if (!m_bIsRotated)
       {
         res.iWidth  = mode.w;
@@ -426,11 +430,6 @@ void CWinSystemX11::UpdateResolutions()
       res.iSubtitles   = (int)(0.965*mode.h);
       res.fRefreshRate = mode.hz;
       res.bFullScreen  = true;
-
-      if (mode.h > 0 && ((float)mode.w / (float)mode.h >= 1.59))
-        res.dwFlags = D3DPRESENTFLAG_WIDESCREEN;
-      else
-        res.dwFlags = 0;
 
       g_graphicsContext.ResetOverscan(res);
       CDisplaySettings::GetInstance().AddResolutionInfo(res);

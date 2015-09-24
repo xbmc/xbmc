@@ -196,16 +196,16 @@ namespace PythonBindings
       PyObject *tracebackModule = PyImport_ImportModule("traceback");
       if (tracebackModule != NULL)
       {
-        char format_exception[] = "format_exception";
-        char zeros[] = "000";
-        PyObject *tbList = PyObject_CallMethod(tracebackModule, format_exception, zeros, exc_type, exc_value == NULL ? Py_None : exc_value, exc_traceback == NULL ? Py_None : exc_traceback);
+        char method[] = "format_exception";
+        char format[] = "OOO";
+        PyObject *tbList = PyObject_CallMethod(tracebackModule, method, format, exc_type, exc_value == NULL ? Py_None : exc_value, exc_traceback == NULL ? Py_None : exc_traceback);
 
         if (tbList)
         {
           PyObject *emptyString = PyString_FromString("");
-          char join[] = "join";
-          char zero[] = "O";
-          PyObject *strRetval = PyObject_CallMethod(emptyString, join, zero, tbList);
+          char method[] = "join";
+          char format[] = "O";
+          PyObject *strRetval = PyObject_CallMethod(emptyString, method, format, tbList);
           Py_DECREF(emptyString);
 
           if (strRetval)
