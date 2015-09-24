@@ -28,10 +28,8 @@
 int64_t CDVDClock::m_systemOffset;
 int64_t CDVDClock::m_systemFrequency;
 CCriticalSection CDVDClock::m_systemsection;
-CDVDClock *CDVDClock::m_playerclock = NULL;
 
 CDVDClock::CDVDClock()
-  :  m_master(MASTER_CLOCK_NONE)
 {
   CSingleLock lock(m_systemsection);
   CheckSystemClock();
@@ -46,14 +44,10 @@ CDVDClock::CDVDClock()
   m_speedAdjust = 0;
 
   m_startClock = 0;
-
-  m_playerclock = this;
 }
 
 CDVDClock::~CDVDClock()
 {
-  CSingleLock lock(m_systemsection);
-  m_playerclock = NULL;
 }
 
 // Returns the current absolute clock in units of DVD_TIME_BASE (usually microseconds).
@@ -94,12 +88,6 @@ double CDVDClock::WaitAbsoluteClock(double target)
   systemtarget = g_VideoReferenceClock.Wait(systemtarget);
   systemtarget -= offset;
   return (double)systemtarget / freq * DVD_TIME_BASE;
-}
-
-CDVDClock* CDVDClock::GetMasterClock()
-{
-  CSingleLock lock(m_systemsection);
-  return m_playerclock;
 }
 
 double CDVDClock::GetClock(bool interpolated /*= true*/)
@@ -285,26 +273,6 @@ double CDVDClock::SystemToPlaying(int64_t system)
     current = system;
 
   return DVD_TIME_BASE * (double)(current - m_startClock + m_systemAdjust) / m_systemUsed + m_iDisc;
-}
-
-EMasterClock CDVDClock::GetMaster()
-{
-  CSharedLock lock(m_critSection);
-  return m_master;
-}
-
-void CDVDClock::SetMaster(EMasterClock master)
-{
-  CExclusiveLock lock(m_critSection);
-
-  if(m_master != master)
-  {
-    /* if we switched from video ref clock, we need to normalize speed */
-    if(m_master == MASTER_CLOCK_AUDIO_VIDEOREF)
-      g_VideoReferenceClock.SetSpeed(1.0);
-  }
-
-  m_master = master;
 }
 
 double CDVDClock::GetClockSpeed()

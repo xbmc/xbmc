@@ -589,7 +589,8 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
       m_CurrentRadioRDS(STREAM_RADIO_RDS, VideoPlayer_RDS),
       m_messenger("player"),
       m_ready(true),
-      m_DemuxerPausePending(false)
+      m_DemuxerPausePending(false),
+      m_renderManager(m_clock)
 {
   m_players_created = false;
   m_pDemuxer = NULL;
@@ -2010,14 +2011,11 @@ bool CVideoPlayer::CheckPlayerInit(CCurrentStream& current)
     {
       if (current.player == VideoPlayer_AUDIO)
       {
-        setclock = (m_clock.GetMaster() == MASTER_CLOCK_AUDIO)
-                   || (m_clock.GetMaster() == MASTER_CLOCK_AUDIO_VIDEOREF)
-                   || !m_CurrentVideo.inited;
+        setclock = !m_CurrentVideo.inited;
       }
       else if (current.player == VideoPlayer_VIDEO)
       {
-        setclock = (m_clock.GetMaster() == MASTER_CLOCK_VIDEO)
-                   || !m_CurrentAudio.inited;
+        setclock = !m_CurrentAudio.inited;
       }
     }
     else
@@ -3432,8 +3430,6 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int iStream, int source, 
     current.lastdts = DVD_NOPTS_VALUE;
     if(stream)
       current.changes = stream->changes;
-
-    UpdateClockMaster();
   }
   else
   {
@@ -3631,34 +3627,7 @@ bool CVideoPlayer::CloseStream(CCurrentStream& current, bool bWaitForBuffers)
     player->CloseStream(bWaitForBuffers);
 
   current.Clear();
-  UpdateClockMaster();
   return true;
-}
-
-void CVideoPlayer::UpdateClockMaster()
-{
-  EMasterClock clock;
-  if(m_CurrentAudio.id >= 0)
-  {
-    if(m_CurrentVideo.id >= 0 && g_VideoReferenceClock.GetRefreshRate() > 0)
-      clock = MASTER_CLOCK_AUDIO_VIDEOREF;
-    else
-      clock = MASTER_CLOCK_AUDIO;
-  }
-  else if(m_CurrentVideo.id >= 0)
-    clock = MASTER_CLOCK_VIDEO;
-  else
-    clock = MASTER_CLOCK_NONE;
-
-  if (m_clock.GetMaster() != clock)
-  {
-    /* the new clock should be somewhat in sync with old */
-    if (clock == MASTER_CLOCK_AUDIO
-    ||  clock == MASTER_CLOCK_AUDIO_VIDEOREF)
-      SynchronizePlayers(SYNCSOURCE_AUDIO);
-
-    m_clock.SetMaster(clock);
-  }
 }
 
 void CVideoPlayer::FlushBuffers(bool queued, double pts, bool accurate, bool sync)
@@ -4666,8 +4635,6 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   }
   else
     state.cache_bytes = 0;
-
-  UpdateClockMaster();
 
   state.timestamp = CDVDClock::GetAbsoluteClock();
 

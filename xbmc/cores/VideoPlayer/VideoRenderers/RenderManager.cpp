@@ -143,7 +143,7 @@ static std::string GetRenderFormatName(ERenderFormat format)
   return "UNKNOWN";
 }
 
-CRenderManager::CRenderManager() : m_overlays(this)
+CRenderManager::CRenderManager(CDVDClock &clock) : m_overlays(this), m_dvdClock(clock)
 {
   m_pRenderer = nullptr;
   m_renderState = STATE_UNCONFIGURED;
@@ -215,8 +215,7 @@ void CRenderManager::WaitPresentTime(double presenttime)
     return;
   }
 
-  CDVDClock *dvdclock = CDVDClock::GetMasterClock();
-  if(dvdclock != NULL && dvdclock->GetSpeedAdjust() != 0.0)
+  if(m_dvdClock.GetSpeedAdjust() != 0.0)
   {
     CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
     m_presenterr = 0;
