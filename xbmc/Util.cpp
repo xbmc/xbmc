@@ -205,8 +205,8 @@ void CUtil::CleanString(const std::string& strFileName,
                         bool bRemoveExtension /* = false */,
                         bool bCleanChars /* = true */)
 {
-  CStdString strReTitle;
-  CStdString strReYear;
+  std::string strReTitle;
+  std::string strReYear;
 
   strTitleAndYear = strFileName;
 

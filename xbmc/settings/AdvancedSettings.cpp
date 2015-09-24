@@ -438,7 +438,7 @@ bool CAdvancedSettings::Load()
 void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 {
   CXBMCTinyXML advancedXML;
-  CStdString cleanDateTimeRegExp;
+  std::string cleanDateTimeRegExp;
   if (!CFile::Exists(file))
   {
     CLog::Log(LOGNOTICE, "No settings file to load (%s)", file.c_str());
