@@ -167,17 +167,7 @@ void CDSPropertyPage::Process()
   CAUUID pPages;
   if (SUCCEEDED(m_pBF->QueryInterface(IID_ISpecifyPropertyPages, (void **)&pProp)))
   {
-
     pProp->GetPages(&pPages);
-
-    hr = OleCreatePropertyFrame(g_Windowing.GetHwnd(), 0, 0, GetFilterName(m_pBF).c_str(),
-      1, (LPUNKNOWN *)&m_pBF, pPages.cElems,
-      pPages.pElems, 0, 0, 0);
-
-    if (SUCCEEDED(hr))
-      return;
-
-    CLog::Log(LOGERROR, "%s Failed to show property page (result: 0x%X). Trying a custom way", __FUNCTION__, hr);
 
     OLEPropertyFrame *opf;
     PROPPAGEINFO pPageInfo;
@@ -265,6 +255,15 @@ void CDSPropertyPage::Process()
     CoTaskMemFree(pPages.pElems);
     if (wasfullscreen)
       SendMessage(g_Windowing.GetHwnd(), WM_SYSKEYDOWN, VK_RETURN, 0);
+  }
+
+  if (FAILED(hr))
+  {
+    CLog::Log(LOGERROR, "%s Failed to show property page (result: 0x%X). Trying a normal way", __FUNCTION__, hr);
+
+    hr = OleCreatePropertyFrame(g_Windowing.GetHwnd(), 0, 0, GetFilterName(m_pBF).c_str(),
+      1, (LPUNKNOWN *)&m_pBF, pPages.cElems,
+      pPages.pElems, 0, 0, 0);
   }
 }
 
