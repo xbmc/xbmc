@@ -169,6 +169,18 @@ bool CGraphFilters::IsInternalFilter(IBaseFilter *pBF)
   return false;
 }
 
+LAVFILTERS_TYPE CGraphFilters::GetInternalType(IBaseFilter *pBF)
+{
+  if (Video.pBF == pBF && Video.internalLav)
+    return LAVVIDEO;
+  if (Audio.pBF == pBF && Audio.internalLav)
+    return LAVAUDIO;
+  if ((Source.pBF == pBF && Source.internalLav) || (Splitter.pBF == pBF && Splitter.internalLav))
+    return LAVSPLITTER;
+
+  return NULLFILTER;
+}
+
 void CGraphFilters::SetupLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
 {
   if (type != LAVVIDEO && type != LAVAUDIO && type != LAVSPLITTER)
@@ -364,6 +376,10 @@ bool CGraphFilters::SetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
     pLAVFSettings->SetHWAccelDeintMode((LAVHWDeintModes)LavSettings.video_dwHWDeintMode);
     pLAVFSettings->SetHWAccelDeintOutput((LAVDeintOutput)LavSettings.video_dwHWDeintOutput);
     pLAVFSettings->SetHWAccelDeintHQ(LavSettings.video_bHWDeintHQ);
+
+    // Custom interface
+    if (Com::SmartQIPtr<ILAVVideoSettingsDSPlayerCustom> pLAVFSettingsDSPlayerCustom = pLAVFSettings)
+      pLAVFSettingsDSPlayerCustom->SetPropertyPageCallback(PropertyPageCallback);
   }
   if (type == LAVAUDIO)
   {
@@ -402,6 +418,10 @@ bool CGraphFilters::SetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
     pLAVFSettings->SetFormatConfiguration(Codec_WMA2, TRUE);
     pLAVFSettings->SetFormatConfiguration(Codec_WMAPRO, TRUE);
     pLAVFSettings->SetFormatConfiguration(Codec_WMALL, TRUE);
+
+    // Custom interface
+    if (Com::SmartQIPtr<ILAVAudioSettingsDSPlayerCustom> pLAVFSettingsDSPlayerCustom = pLAVFSettings)
+      pLAVFSettingsDSPlayerCustom->SetPropertyPageCallback(PropertyPageCallback);
   }
   if (type == LAVSPLITTER)
   {
@@ -428,6 +448,10 @@ bool CGraphFilters::SetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
     pLAVFSettings->SetMaxQueueMemSize(LavSettings.splitter_dwQueueMaxSize);
     pLAVFSettings->SetMaxQueueSize(LavSettings.splitter_dwQueueMaxPacketsSize);
     pLAVFSettings->SetNetworkStreamAnalysisDuration(LavSettings.splitter_dwNetworkAnalysisDuration);
+
+    // Custom interface
+    if (Com::SmartQIPtr<ILAVFSettingsDSPlayerCustom> pLAVFSettingsDSPlayerCustom = pLAVFSettings)
+      pLAVFSettingsDSPlayerCustom->SetPropertyPageCallback(PropertyPageCallback);
   }
   return true;
 }
@@ -493,6 +517,15 @@ void CGraphFilters::EraseLavSetting(LAVFILTERS_TYPE type)
 
     dsdbs.Close();
   }
+}
+
+HRESULT CGraphFilters::PropertyPageCallback(IUnknown* pBF)
+{
+  LAVFILTERS_TYPE type = CGraphFilters::Get()->GetInternalType((IBaseFilter *)pBF);
+  if (type != NULLFILTER)
+    CGraphFilters::Get()->ShowLavFiltersPage(type, true);
+
+  return S_OK;
 }
 
 bool CGraphFilters::IsRegisteredFilter(const std::string filter)

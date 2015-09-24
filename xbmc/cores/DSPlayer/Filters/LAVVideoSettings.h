@@ -23,6 +23,10 @@
 DEFINE_GUID(IID_ILAVVideoSettings, 
 0xfa40d6e9, 0x4d38, 0x4761, 0xad, 0xd2, 0x71, 0xa9, 0xec, 0x5f, 0xd3, 0x2f);
 
+// {9fe4aa9f-2ba9-4ea9-b8de-6f01e1ab54e5}
+DEFINE_GUID(IID_ILAVVideoSettingsDSPlayerCustom, 
+0x9fe4aa9f, 0x2ba9, 0x4ea9, 0xb8, 0xde, 0x6f, 0x01, 0xe1, 0xab, 0x54, 0xe5);
+
 // {1CC2385F-36FA-41B1-9942-5024CE0235DC}
 DEFINE_GUID(IID_ILAVVideoStatus,
 0x1cc2385f, 0x36fa, 0x41b1, 0x99, 0x42, 0x50, 0x24, 0xce, 0x2, 0x35, 0xdc);
@@ -362,6 +366,13 @@ interface ILAVVideoSettings : public IUnknown
   // Must be called before an input is connected to LAV Video, and the setting is non-persistent
   // NOTE: For CUVID, the index defines the index of the CUDA capable device, while for DXVA2, the list includes all D3D9 devices
   STDMETHOD(SetGPUDeviceIndex)(DWORD dwDevice) = 0;
+};
+
+[uuid("9fe4aa9f-2ba9-4ea9-b8de-6f01e1ab54e5")]
+interface ILAVVideoSettingsDSPlayerCustom : public IUnknown
+{
+  // Set a custom callback function to handle the property page
+  STDMETHOD(SetPropertyPageCallback)(HRESULT(*fpPropPageCallback)(IUnknown* pFilter)) = 0;
 };
 
 // LAV Video status interface

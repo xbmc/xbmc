@@ -25,6 +25,10 @@
 DEFINE_GUID(IID_ILAVFSettings, 
 0x774a919d, 0xea95, 0x4a87, 0x8a, 0x1e, 0xf4, 0x8a, 0xbe, 0x84, 0x99, 0xc7);
 
+// {594222d3-0b8e-48aa-ae60-41969a993008}
+DEFINE_GUID(IID_ILAVFSettingsDSPlayerCustom, 
+0x594222d3, 0x0b8e, 0x48aa, 0xae, 0x60, 0x41, 0x96, 0x9a, 0x99, 0x30, 0x08);
+
 typedef enum LAVSubtitleMode {
   LAVSubtitleMode_NoSubs,
   LAVSubtitleMode_ForcedOnly,
@@ -190,4 +194,11 @@ interface ILAVFSettings : public IUnknown
 
   // Get the maximum queue size, in number of packets
   STDMETHOD_(DWORD, GetMaxQueueSize)() = 0;
+};
+
+[uuid("594222d3-0b8e-48aa-ae60-41969a993008")]
+interface ILAVFSettingsDSPlayerCustom : public IUnknown
+{
+  // Set a custom callback function to handle the property page
+  STDMETHOD(SetPropertyPageCallback)(HRESULT(*fpPropPageCallback)(IUnknown* pFilter)) = 0;
 };

@@ -23,6 +23,10 @@
 DEFINE_GUID(IID_ILAVAudioSettings, 
 0x4158a22b, 0x6553, 0x45d0, 0x80, 0x69, 0x24, 0x71, 0x6f, 0x8f, 0xf1, 0x71);
 
+// {2d0a37bb-5645-46f8-8cc4-48de2a963ae6}
+DEFINE_GUID(IID_ILAVAudioSettingsDSPlayerCustom, 
+0x2d0a37bb, 0x5645, 0x46f8, 0x8c, 0xc4, 0x48, 0xde, 0x2a, 0x96, 0x3a, 0xe6);
+
 // {A668B8F2-BA87-4F63-9D41-768F7DE9C50E}
 DEFINE_GUID(IID_ILAVAudioStatus,
 0xa668b8f2, 0xba87, 0x4f63, 0x9d, 0x41, 0x76, 0x8f, 0x7d, 0xe9, 0xc5, 0xe);
@@ -194,6 +198,13 @@ interface ILAVAudioSettings : public IUnknown
   // Use 5.1 legacy layout (using back channels instead of side)
   STDMETHOD_(BOOL, GetOutput51LegacyLayout)() = 0;
   STDMETHOD(SetOutput51LegacyLayout)(BOOL b51Legacy) = 0;
+};
+
+[uuid("2d0a37bb-5645-46f8-8cc4-48de2a963ae6")]
+interface ILAVAudioSettingsDSPlayerCustom : public IUnknown
+{
+  // Set a custom callback function to handle the property page
+  STDMETHOD(SetPropertyPageCallback)(HRESULT(*fpPropPageCallback)(IUnknown* pFilter)) = 0;
 };
 
 // LAV Audio Status Interface

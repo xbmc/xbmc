@@ -197,6 +197,7 @@ public:
   void CreateInternalFilter(LAVFILTERS_TYPE type, IBaseFilter **ppBF);
   void GetCurrentFilter(LAVFILTERS_TYPE type, IBaseFilter **ppBF);
   bool IsInternalFilter(IBaseFilter *pBF);
+  LAVFILTERS_TYPE GetInternalType(IBaseFilter *pBF);
   void SetupLavSettings(LAVFILTERS_TYPE type, IBaseFilter *pBF);
   bool SetLavInternal(LAVFILTERS_TYPE type, IBaseFilter *pBF);
   bool GetLavSettings(LAVFILTERS_TYPE type, IBaseFilter *pBF);
@@ -204,6 +205,7 @@ public:
   bool LoadLavSettings(LAVFILTERS_TYPE type);
   bool SaveLavSettings(LAVFILTERS_TYPE type);
   void EraseLavSetting(LAVFILTERS_TYPE type);
+  static HRESULT PropertyPageCallback(IUnknown* pBF);
   bool IsRegisteredFilter(const std::string filter);
 
   bool HasSubFilter() { return m_hsubfilter; }
