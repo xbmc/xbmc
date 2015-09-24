@@ -26,6 +26,8 @@
 #include "windowing/XBMC_events.h"
 #include "input/XBMC_keyboard.h"
 #include "threads/SingleLock.h"
+#include "input/touch/ITouchInputHandler.h"
+#include "input/touch/generic/IGenericTouchGestureDetector.h"
 
 struct KeymapEntry
 {
@@ -60,6 +62,8 @@ private:
   XBMCMod UpdateModifiers(XBMC_Event& devt);
   bool GetKeymapEntry(KeymapEntry& entry);
   int KeyboardGetSymbol(unsigned short value);
+  bool mtAbsEvent(const struct input_event& levt);
+  bool mtSynEvent(const struct input_event& levt);
 
   int m_fd;
   int m_vt_fd;
@@ -81,6 +85,10 @@ private:
   bool m_bSkipNonKeyEvents;
   bool m_bUnplugged;
   std::deque<XBMC_Event> m_equeue;
+  int m_mt_currentSlot;
+  int m_mt_x[TOUCH_MAX_POINTERS];
+  int m_mt_y[TOUCH_MAX_POINTERS];
+  TouchInput m_mt_event[TOUCH_MAX_POINTERS];
 };
 
 class CLinuxInputDevices
