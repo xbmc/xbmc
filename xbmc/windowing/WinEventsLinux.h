@@ -31,6 +31,7 @@ public:
   CWinEventsLinux();
   bool MessagePump();
   size_t GetQueueSize();
+  void MessagePush(XBMC_Event *ev);
   void RefreshDevices();
   void Notify(const Observable &obs, const ObservableMessage msg)
   {
