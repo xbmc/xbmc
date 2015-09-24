@@ -603,12 +603,6 @@ void CVideoPlayerAudio::SetSyncType(bool passthrough)
 
   m_pClock->SetMaxSpeedAdjust(maxspeedadjust);
 
-  if (m_pClock->GetMaster() == MASTER_CLOCK_AUDIO)
-    m_synctype = SYNC_DISCON;
-
-  if(m_synctype == SYNC_DISCON && m_pClock->GetMaster() != MASTER_CLOCK_AUDIO)
-    m_synctype = SYNC_SKIPDUP;
-
   if (m_synctype != m_prevsynctype)
   {
     const char *synctypes[] = {"clock feedback", "skip/duplicate", "resample", "invalid"};

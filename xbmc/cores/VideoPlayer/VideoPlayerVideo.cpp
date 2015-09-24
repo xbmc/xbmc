@@ -968,7 +968,7 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 
   if (m_started == false)
     iSleepTime = 0.0;
-  else if (m_stalled || m_pClock->GetMaster() == MASTER_CLOCK_VIDEO)
+  else if (m_stalled)
     iSleepTime = iFrameSleep;
   else
     iSleepTime = iClockSleep;
@@ -1015,15 +1015,6 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       m_droppingStats.AddOutputDropGain(pts, 1/m_fFrameRate);
       return result | EOS_DROPPED;
     }
-  }
-
-  // sync clock if we are master
-  if(m_pClock->GetMaster() == MASTER_CLOCK_VIDEO)
-  {
-    m_pClock->Update( iPlayingClock + iClockSleep - iFrameSleep
-                    , iCurrentClock
-                    , DVD_MSEC_TO_TIME(10)
-                    , "CVideoPlayerVideo::OutputPicture");
   }
 
   // timestamp when we think next picture should be displayed based on current duration

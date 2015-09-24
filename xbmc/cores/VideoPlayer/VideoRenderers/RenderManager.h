@@ -32,6 +32,7 @@
 #include <deque>
 #include "PlatformDefs.h"
 #include "threads/Event.h"
+#include "DVDClock.h"
 
 class CRenderCapture;
 
@@ -51,7 +52,7 @@ class CLinuxRendererGLES;
 class CRenderManager
 {
 public:
-  CRenderManager();
+  CRenderManager(CDVDClock &clock);
   ~CRenderManager();
 
   // Functions called from render thread
@@ -246,6 +247,7 @@ protected:
   CCriticalSection m_presentlock;
   CEvent m_flushEvent;
   double m_clock_framefinish;
+  CDVDClock &m_dvdClock;
 
   void RenderCapture(CRenderCapture* capture);
   void RemoveCapture(CRenderCapture* capture);
