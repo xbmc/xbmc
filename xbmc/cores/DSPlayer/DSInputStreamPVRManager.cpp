@@ -182,12 +182,13 @@ bool CDSInputStreamPVRManager::Open(const CFileItem& file)
 
 bool  CDSInputStreamPVRManager::PrepareForChannelSwitch(const CPVRChannelPtr &channel)
 {
+  bool bReturnVal = true;
   // Workaround for MediaPortal addon, running in ffmpeg mode.
   if (m_pPVRBackend && m_pPVRBackend->GetBackendName().find("MediaPortal TV-server") != std::string::npos)
   {
     // Opened new channel manually.
     // This will prevent from SwitchChannel() method to fail.
-    g_PVRClients->GetStreamURL(channel);
+    bReturnVal = !((g_PVRClients->GetStreamURL(channel)).empty());
 
     // Clear StreamURL field of CurrentChannel 
     // that's used in CPVRClients::SwitchChannel()
@@ -198,7 +199,7 @@ bool  CDSInputStreamPVRManager::PrepareForChannelSwitch(const CPVRChannelPtr &ch
     channel->SetStreamURL("");
   }
 
-  return true;
+  return bReturnVal;
 }
 
 bool CDSInputStreamPVRManager::PerformChannelSwitch()
@@ -266,9 +267,8 @@ bool CDSInputStreamPVRManager::SelectChannel(const CPVRChannelPtr &channel)
     CFileItem item(channel);
     bResult = Open(item);
   }
-  else if (m_pLiveTV)
+  else if (m_pLiveTV && PrepareForChannelSwitch(channel))
   {
-    PrepareForChannelSwitch(channel);
     bResult = m_pLiveTV->SelectChannel(channel->ChannelNumber());
     if (bResult)
       bResult = PerformChannelSwitch();
@@ -295,9 +295,8 @@ bool CDSInputStreamPVRManager::NextChannel(bool preview /* = false */)
     if (item.get())
       bResult = Open(*item.get());
   }
-  else if (m_pLiveTV)
+  else if (m_pLiveTV && PrepareForChannelSwitch(item->GetPVRChannelInfoTag()))
   {
-    PrepareForChannelSwitch(item->GetPVRChannelInfoTag());
     bResult = m_pLiveTV->NextChannel(preview);
     if (bResult)
       bResult = PerformChannelSwitch();
@@ -324,9 +323,8 @@ bool CDSInputStreamPVRManager::PrevChannel(bool preview/* = false*/)
     if (item.get())
       bResult = Open(*item.get());
   }
-  else if (m_pLiveTV)
+  else if (m_pLiveTV && PrepareForChannelSwitch(item->GetPVRChannelInfoTag()))
   {
-    PrepareForChannelSwitch(item->GetPVRChannelInfoTag());
     bResult = m_pLiveTV->PrevChannel(preview);
     if (bResult)
       bResult = PerformChannelSwitch();
@@ -353,9 +351,8 @@ bool CDSInputStreamPVRManager::SelectChannelByNumber(unsigned int iChannelNumber
     if (item.get())
       bResult = Open(*item.get());
   }
-  else if (m_pLiveTV)
+  else if (m_pLiveTV && PrepareForChannelSwitch(item->GetPVRChannelInfoTag()))
   {
-    PrepareForChannelSwitch(item->GetPVRChannelInfoTag());
     bResult = m_pLiveTV->SelectChannel(iChannelNumber);
     if (bResult)
       bResult = PerformChannelSwitch();
