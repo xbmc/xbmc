@@ -106,7 +106,7 @@ static int ExportLibrary(const std::vector<std::string>& params)
       thumbs = StringUtils::EqualsNoCase(params[2], "true");
     else
     {
-      HELPERS::DialogResponse result = HELPERS::ShowYesNoDialogText(CVariant{iHeading}, CVariant{20430}, CVariant{20428}, CVariant{20429});
+      HELPERS::DialogResponse result = HELPERS::ShowYesNoDialogText(CVariant{iHeading}, CVariant{20430}); 
       cancelled = result == HELPERS::DialogResponse::CANCELLED;
       thumbs = result == HELPERS::DialogResponse::YES;
     }
@@ -147,7 +147,7 @@ static int ExportLibrary(const std::vector<std::string>& params)
 
   if (params.size() > 2)
     path=params[2];
-  if (singleFile || !path.empty() ||
+  if (singleFile && !path.empty() ||
       CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661),
                                                  path, true))
   {
