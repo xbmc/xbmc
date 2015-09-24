@@ -132,7 +132,7 @@ void CGraphFilters::CreateInternalFilter(LAVFILTERS_TYPE type, IBaseFilter **ppB
   if (type == LAVAUDIO)
     filterName = "lavaudio_internal";
   if (type == LAVSPLITTER)
-    filterName = "lavsplitter_internal";
+    filterName = "lavsource_internal";
   if (type == XYSUBFILTER)
     IsRegisteredFilter(XYSUBFILTER_FILTERSTR) ? filterName = "xysubfilter" : filterName = "xysubfilter_internal";
 
