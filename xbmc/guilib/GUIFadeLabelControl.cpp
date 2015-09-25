@@ -82,10 +82,8 @@ void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &d
   if (m_currentLabel >= m_infoLabels.size() )
     m_currentLabel = 0;
 
-  bool dirty = false;
   if (m_textLayout.Update(GetLabel()))
   { // changed label - update our suffix based on length of available text
-    dirty = true;
     float width, height;
     m_textLayout.GetTextExtent(width, height);
     float spaceWidth = m_label.font->GetCharWidth(L' ');
@@ -105,7 +103,6 @@ void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &d
     m_scrollInfo.Reset();
     m_fadeAnim.QueueAnimation(ANIM_PROCESS_REVERSE);
     m_lastLabel = m_currentLabel;
-    dirty = true;
   }
 
   if (m_infoLabels.size() > 1 || !m_shortText)
@@ -122,13 +119,16 @@ void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &d
     }
     else if (m_scrollInfo.pixelPos > m_scrollInfo.m_textWidth)
       moveToNextLabel = true;
-    
+
+    if(m_scrollInfo.pixelSpeed || m_fadeAnim.GetState() == ANIM_STATE_IN_PROCESS)
+      MarkDirtyRegion();
+
     // apply the fading animation
     TransformMatrix matrix;
     m_fadeAnim.Animate(currentTime, true);
     m_fadeAnim.RenderAnimation(matrix);
     m_fadeMatrix = g_graphicsContext.AddTransform(matrix);
-    
+
     if (m_fadeAnim.GetState() == ANIM_STATE_APPLIED)
       m_fadeAnim.ResetAnimation();
     
@@ -142,21 +142,16 @@ void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &d
           m_currentLabel = 0;
         m_scrollInfo.Reset();
         m_fadeAnim.QueueAnimation(ANIM_PROCESS_REVERSE);
-        dirty = true;
       }
     }
 
     if (m_scroll)
     {
-      if (m_textLayout.UpdateScrollinfo(m_scrollInfo))
-        dirty = true;
+      m_textLayout.UpdateScrollinfo(m_scrollInfo);
     }
 
     g_graphicsContext.RemoveTransform();
   }
-
-  if (dirty)
-    MarkDirtyRegion();
 
   CGUIControl::Process(currentTime, dirtyregions);
 }
