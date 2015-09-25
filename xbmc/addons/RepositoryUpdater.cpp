@@ -118,7 +118,7 @@ void CRepositoryUpdater::CheckForUpdates(const ADDON::RepositoryPtr& repo, bool 
     m_doneEvent.Reset();
     if (showProgress)
       SetProgressIndicator(job);
-    CJobManager::GetInstance().AddJob(job, this);
+    CJobManager::GetInstance().AddJob(job, this, CJob::PRIORITY_LOW_PAUSABLE);
   }
   else
   {
