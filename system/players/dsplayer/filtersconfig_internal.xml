@@ -25,10 +25,6 @@
      <osdname>(i) XySubFilter</osdname>
      <guid>{2DFCB782-EC20-4A7C-B530-4577ADB33F21}</guid>
     </filter>
-    <filter name="xysubfilter" type="subs">
-     <osdname>(i) XySubFilter</osdname>
-     <guid>{2DFCB782-EC20-4A7C-B530-4577ADB33F21}</guid>
-    </filter>
     <filter name="tsreader_internal" type="source">
       <path>TsReader/TsReader.ax</path>
       <guid>{B9559486-E1BB-45D3-A2A2-9A7AFE49B23F}</guid>

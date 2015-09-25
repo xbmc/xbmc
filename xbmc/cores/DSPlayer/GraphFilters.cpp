@@ -134,7 +134,7 @@ void CGraphFilters::CreateInternalFilter(LAVFILTERS_TYPE type, IBaseFilter **ppB
   if (type == LAVSPLITTER)
     filterName = "lavsource_internal";
   if (type == XYSUBFILTER)
-    IsRegisteredFilter(XYSUBFILTER_FILTERSTR) ? filterName = "xysubfilter" : filterName = "xysubfilter_internal";
+    filterName = "xysubfilter_internal";
 
   CFGLoader *pLoader = new CFGLoader();
   pLoader->LoadConfig();
