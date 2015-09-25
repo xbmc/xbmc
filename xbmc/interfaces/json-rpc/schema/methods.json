@@ -1356,7 +1356,8 @@
       { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
       { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null },
-      { "name": "userrating", "$ref": "Optional.Integer" }
+      { "name": "userrating", "$ref": "Optional.Integer" },
+      { "name": "ratings", "$ref": "Video.Ratings" }
     ],
     "returns": "string"
   },
@@ -1397,7 +1398,8 @@
       { "name": "fanart", "$ref": "Optional.String" },
       { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
-      { "name": "userrating", "$ref": "Optional.Integer" }
+      { "name": "userrating", "$ref": "Optional.Integer" },
+      { "name": "ratings", "$ref": "Video.Ratings" }
     ],
     "returns": "string"
   },
@@ -1438,7 +1440,8 @@
       { "name": "fanart", "$ref": "Optional.String" },
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
       { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null },
-      { "name": "userrating", "$ref": "Optional.Integer" }
+      { "name": "userrating", "$ref": "Optional.Integer" },
+      { "name": "ratings", "$ref": "Video.Ratings" }
     ],
     "returns": "string"
   },

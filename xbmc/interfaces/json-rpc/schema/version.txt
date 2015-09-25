@@ -1,1 +1,5 @@
+<<<<<<< 84714e8427407d2df84c82e42a72ed635d4097ce
 7.0.3
+=======
+7.1.0
+>>>>>>> add support for multiple ratings
