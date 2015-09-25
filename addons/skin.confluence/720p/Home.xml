@@ -9,6 +9,7 @@
 	<controls>
 		<include>CommonBackground</include>
 		<control type="image">
+			<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 			<left>0</left>
 			<top>90r</top>
 			<width>1280</width>
