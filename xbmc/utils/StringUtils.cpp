@@ -512,6 +512,17 @@ std::string& StringUtils::TrimRight(std::string &str, const char* const chars)
   return str;
 }
 
+int StringUtils::ReturnDigits(const std::string& str)
+{
+  std::stringstream ss;
+  for (const auto& character : str)
+  {
+    if (isdigit(character))
+      ss << character;
+  }
+  return atoi(ss.str().c_str());
+}
+
 std::string& StringUtils::RemoveDuplicatedSpacesAndTabs(std::string& str)
 {
   std::string::iterator it = str.begin();

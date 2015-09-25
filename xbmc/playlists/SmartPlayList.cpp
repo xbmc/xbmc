@@ -76,7 +76,7 @@ static const translateField fields[] = {
   { "inprogress",        FieldInProgress,              CDatabaseQueryRule::BOOLEAN_FIELD,  NULL,                                 false, 575 },
   { "rating",            FieldRating,                  CDatabaseQueryRule::NUMERIC_FIELD,  CSmartPlaylistRule::ValidateRating,   false, 563 },
   { "userrating",        FieldUserRating,              CDatabaseQueryRule::NUMERIC_FIELD,  CSmartPlaylistRule::ValidateMyRating, false, 38018 },
-  { "votes",             FieldVotes,                   CDatabaseQueryRule::TEXT_FIELD,     StringValidation::IsPositiveInteger,  false, 205 },
+  { "votes",             FieldVotes,                   CDatabaseQueryRule::NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 205 },
   { "top250",            FieldTop250,                  CDatabaseQueryRule::NUMERIC_FIELD,  NULL,                                 false, 13409 },
   { "mpaarating",        FieldMPAA,                    CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 20074 },
   { "dateadded",         FieldDateAdded,               CDatabaseQueryRule::DATE_FIELD,     NULL,                                 false, 570 },
