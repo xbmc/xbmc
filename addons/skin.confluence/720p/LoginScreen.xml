@@ -11,6 +11,7 @@
 		<control type="group">
 			<include>Window_OpenClose_Animation</include>
 			<control type="image">
+				<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 				<left>0</left>
 				<top>100r</top>
 				<width>1280</width>
@@ -37,6 +38,7 @@
 				<texture border="10">ContentPanel.png</texture>
 			</control>
 			<control type="image">
+				<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 				<left>265</left>
 				<top>652</top>
 				<width>750</width>

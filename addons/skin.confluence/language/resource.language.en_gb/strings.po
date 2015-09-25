@@ -713,3 +713,7 @@ msgstr ""
 msgctxt "#31960"
 msgid "RADIO"
 msgstr ""
+
+msgctxt "#31961"
+msgid "Hide border on the bottom of the screen"
+msgstr ""

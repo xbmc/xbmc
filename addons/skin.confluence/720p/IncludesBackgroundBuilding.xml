@@ -72,6 +72,7 @@
 	</include>
 	<include name="ContentPanelBackgrounds">
 		<control type="image">
+			<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 			<left>0</left>
 			<top>100r</top>
 			<width>1280</width>
@@ -93,6 +94,7 @@
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
+					<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 					<left>50</left>
 					<top>652</top>
 					<width>750</width>
@@ -111,6 +113,7 @@
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
+					<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 					<left>50</left>
 					<top>652</top>
 					<width>640</width>
@@ -125,6 +128,7 @@
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
+					<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 					<left>700</left>
 					<top>652</top>
 					<width>530</width>
@@ -143,6 +147,7 @@
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
+					<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 					<left>50</left>
 					<top>652</top>
 					<width>840</width>
@@ -157,6 +162,7 @@
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
+					<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 					<left>900</left>
 					<top>652</top>
 					<width>330</width>
@@ -175,6 +181,7 @@
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
+					<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 					<left>50</left>
 					<top>652</top>
 					<width>1180</width>
@@ -193,6 +200,7 @@
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
+					<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 					<left>50</left>
 					<top>652</top>
 					<width>640</width>
@@ -207,6 +215,7 @@
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
+					<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 					<left>700</left>
 					<top>652</top>
 					<width>550</width>
@@ -225,6 +234,7 @@
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
+					<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 					<left>75</left>
 					<top>652</top>
 					<width>1130</width>
@@ -243,6 +253,7 @@
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
+					<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 					<left>50</left>
 					<top>652</top>
 					<width>490</width>
@@ -257,6 +268,7 @@
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
+					<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 					<left>550</left>
 					<top>652</top>
 					<width>680</width>
@@ -275,6 +287,7 @@
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
+					<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 					<left>50</left>
 					<top>652</top>
 					<width>400</width>
@@ -289,6 +302,7 @@
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
+					<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 					<left>460</left>
 					<top>652</top>
 					<width>770</width>

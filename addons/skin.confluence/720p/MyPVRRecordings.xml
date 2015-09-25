@@ -7,6 +7,7 @@
 	<controls>
 		<include>CommonBackground</include>
 		<control type="image">
+			<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 			<left>0</left>
 			<top>100r</top>
 			<width>1280</width>
@@ -28,6 +29,7 @@
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
+					<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 					<left>50</left>
 					<top>652</top>
 					<width>840</width>
@@ -42,6 +44,7 @@
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 				<control type="image">
+					<visible>!Skin.HasSetting(HideFloorBorder)</visible>
 					<left>900</left>
 					<top>652</top>
 					<width>330</width>
