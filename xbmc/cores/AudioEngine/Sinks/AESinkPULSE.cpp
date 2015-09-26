@@ -22,6 +22,7 @@
 #include "AESinkPULSE.h"
 #include "utils/log.h"
 #include "Util.h"
+#include "utils/TimeUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "Application.h"
 
@@ -441,6 +442,8 @@ CAESinkPULSE::CAESinkPULSE()
   m_MainLoop = NULL;
   m_BytesPerSecond = 0;
   m_BufferSize = 0;
+  m_filled_bytes = 0;
+  m_lastPackageStamp = 0;
   m_Channels = 0;
   m_Stream = NULL;
   m_Context = NULL;
@@ -464,6 +467,8 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   m_passthrough = false;
   m_BytesPerSecond = 0;
   m_BufferSize = 0;
+  m_filled_bytes = 0;
+  m_lastPackageStamp = 0;
   m_Channels = 0;
   m_Stream = NULL;
   m_Context = NULL;
@@ -692,6 +697,8 @@ void CAESinkPULSE::Deinitialize()
   m_IsAllocated = false;
   m_passthrough = false;
   m_periodSize = 0;
+  m_filled_bytes = 0;
+  m_lastPackageStamp = 0;
 
   if (m_Stream)
     Drain();
@@ -728,25 +735,24 @@ void CAESinkPULSE::GetDelay(AEDelayStatus& status)
     status.SetDelay(0);
     return;
   }
-  int error = 0;
-  pa_usec_t latency = (pa_usec_t) -1;
+
   pa_threaded_mainloop_lock(m_MainLoop);
-  if ((error = pa_stream_get_latency(m_Stream, &latency, NULL)) < 0)
-  {
-    if (error == -PA_ERR_NODATA)
-    {
-      WaitForOperation(pa_stream_update_timing_info(m_Stream, NULL,NULL), m_MainLoop, "Update Timing Information");
-      if ((error = pa_stream_get_latency(m_Stream, &latency, NULL)) < 0)
-      {
-        CLog::Log(LOGDEBUG, "GetDelay - Failed to get Latency %d", error); 
-      }
-    }
-  }
-  if (error < 0 )
-    latency = (pa_usec_t) 0;
+  const pa_timing_info* pti = pa_stream_get_timing_info(m_Stream);
+  // only incorporate local sink delay + internal PA transport delay
+  double sink_delay = (pti->configured_sink_usec / 1000000.0);
+  double transport_delay = pti->transport_usec / 1000000.0;
+
+  uint64_t diff = CurrentHostCounter() - m_lastPackageStamp;
+  unsigned int bytes_played = (unsigned int) ((double) diff * (double) m_BytesPerSecond  / (double) CurrentHostFrequency() + 0.5);
+
+  int buffer_delay = m_filled_bytes - bytes_played;
+  if (buffer_delay < 0)
+    buffer_delay = 0;
 
   pa_threaded_mainloop_unlock(m_MainLoop);
-  status.SetDelay(latency / 1000000.0);
+
+  double delay = buffer_delay / (double) m_BytesPerSecond + sink_delay + transport_delay;
+  status.SetDelay(delay);
 }
 
 double CAESinkPULSE::GetCacheTotal()
@@ -773,6 +779,7 @@ unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsig
   while ((length = pa_stream_writable_size(m_Stream)) < m_periodSize)
     pa_threaded_mainloop_wait(m_MainLoop);
 
+  unsigned int free = length;
   length =  std::min((unsigned int)length, available);
 
   int error = pa_stream_write(m_Stream, buffer, length, NULL, 0, PA_SEEK_RELATIVE);
@@ -783,6 +790,8 @@ unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsig
     CLog::Log(LOGERROR, "CPulseAudioDirectSound::AddPackets - pa_stream_write failed\n");
     return 0;
   }
+  m_lastPackageStamp = CurrentHostCounter();
+  m_filled_bytes = m_BufferSize - (free - length);
   unsigned int res = (unsigned int)(length / m_format.m_frameSize);
 
   return res;
