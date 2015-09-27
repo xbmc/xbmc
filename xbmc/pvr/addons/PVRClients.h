@@ -305,6 +305,12 @@ namespace PVR
     bool IsPlayingRecording(void) const;
 
     /*!
+     * @return True if a recording in progress is playing, false otherwise.
+     * This is only determined on playback start.
+     */
+    bool IsPlayingRecordingInProgress(void) const;
+
+    /*!
      * @brief Open a stream from the given recording.
      * @param tag The recording to start playing.
      * @return True if the stream was opened successfully, false otherwise.
@@ -738,6 +744,7 @@ namespace PVR
     int                   m_playingClientId;          /*!< the ID of the client that is currently playing */
     bool                  m_bIsPlayingLiveTV;
     bool                  m_bIsPlayingRecording;
+    bool                  m_bIsRecordingInProgress;   /*!< true when we are playing a recording that is still in progress */
     DWORD                 m_scanStart;                /*!< scan start time to check for non present streams */
     std::string           m_strPlayingClientName;     /*!< the name client that is currenty playing a stream or an empty string if nothing is playing */
     ADDON::VECADDONS      m_addons;

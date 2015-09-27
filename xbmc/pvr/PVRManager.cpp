@@ -1620,6 +1620,11 @@ bool CPVRManager::IsPlayingRecording(void) const
   return IsStarted() && m_addons && m_addons->IsPlayingRecording();
 }
 
+bool CPVRManager::IsPlayingRecordingInProgress(void) const
+{
+  return IsStarted() && m_addons && m_addons->IsPlayingRecordingInProgress();
+}
+
 bool CPVRManager::IsRunningChannelScan(void) const
 {
   return IsStarted() && m_addons && m_addons->IsRunningChannelScan();

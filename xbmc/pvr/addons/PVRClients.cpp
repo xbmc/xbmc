@@ -56,6 +56,7 @@ CPVRClients::CPVRClients(void) :
     m_playingClientId(-EINVAL),
     m_bIsPlayingLiveTV(false),
     m_bIsPlayingRecording(false),
+    m_bIsRecordingInProgress(false),
     m_scanStart(0),
     m_bNoAddonWarningDisplayed(false),
     m_bRestartManagerOnAddonDisabled(false)
@@ -1568,6 +1569,15 @@ bool CPVRClients::OpenStream(const CPVRRecordingPtr &channel)
       client->OpenStream(channel))
   {
     CSingleLock lock(m_critSection);
+
+    CDateTime endTime = channel->RecordingTimeAsLocalTime() +
+        CDateTimeSpan(0, 0, channel->GetDuration() / 60, channel->GetDuration() % 60);
+
+    m_bIsRecordingInProgress = (endTime > CDateTime::GetCurrentDateTime());
+
+    if (m_bIsRecordingInProgress)
+      CLog::Log(LOGNOTICE, "PVRClients - %s - recording is still in progress, end time = %s", __FUNCTION__, endTime.GetAsDBDateTime().c_str());
+
     m_playingClientId = channel->m_iClientId;
     m_bIsPlayingRecording = true;
     m_strPlayingClientName = client->GetFriendlyName();
@@ -1665,6 +1675,12 @@ bool CPVRClients::IsPlayingRecording(void) const
 {
   CSingleLock lock(m_critSection);
   return m_bIsPlayingRecording;
+}
+
+bool CPVRClients::IsPlayingRecordingInProgress(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_bIsPlayingRecording && m_bIsRecordingInProgress;
 }
 
 bool CPVRClients::IsReadingLiveStream(void) const
