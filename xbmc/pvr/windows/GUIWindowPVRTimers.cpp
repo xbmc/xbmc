@@ -86,8 +86,7 @@ void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &but
 
     buttons.Add(CONTEXT_BUTTON_FIND, 19003);            /* Find similar program */
 
-    if (pItem->GetPVRTimerInfoTag()->HasTimerType() &&
-        !pItem->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
+    if (pItem->GetPVRTimerInfoTag()->HasTimerType())
     {
       if (pItem->GetPVRTimerInfoTag()->GetTimerType()->SupportsEnableDisable())
       {
@@ -97,12 +96,15 @@ void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &but
           buttons.Add(CONTEXT_BUTTON_ACTIVATE, 844);    /* deactivate timer */
       }
 
-      buttons.Add(CONTEXT_BUTTON_DELETE, 117);          /* delete */
-      buttons.Add(CONTEXT_BUTTON_EDIT, 19057);          /* edit timer */
+      if (!pItem->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
+      {
+        buttons.Add(CONTEXT_BUTTON_DELETE, 117);          /* delete */
+        buttons.Add(CONTEXT_BUTTON_EDIT, 19057);          /* edit timer */
 
-      // As epg-based timers will get it's title from the epg tag, they should not be renamable.
-      if (pItem->GetPVRTimerInfoTag()->IsManual())
-        buttons.Add(CONTEXT_BUTTON_RENAME, 118);        /* rename */
+        // As epg-based timers will get it's title from the epg tag, they should not be renamable.
+        if (pItem->GetPVRTimerInfoTag()->IsManual())
+          buttons.Add(CONTEXT_BUTTON_RENAME, 118);        /* rename */
+      }
     }
 
     buttons.Add(CONTEXT_BUTTON_ADD, 19056);             /* new timer */
