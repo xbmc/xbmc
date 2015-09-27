@@ -104,7 +104,7 @@ bool CAddonCallbacksAudioEngine::AudioEngine_GetCurrentSinkFormat(void *AddonDat
   }
 
   SinkFormat->m_channelCount = AESinkFormat.m_channelLayout.Count();
-  for (int ch = 0; ch < SinkFormat->m_channelCount; ch++)
+  for (unsigned int ch = 0; ch < SinkFormat->m_channelCount; ch++)
   {
     SinkFormat->m_channels[ch] = AESinkFormat.m_channelLayout[ch];
   }
