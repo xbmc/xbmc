@@ -245,7 +245,7 @@ std::string ByRating(SortAttribute attributes, const SortItem &values)
 
 std::string ByUserRating(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("%d %s", values.at(FieldUserRating).asInteger(), ByLabel(attributes, values).c_str());
+  return StringUtils::Format("%d %s", static_cast<int>(values.at(FieldUserRating).asInteger()), ByLabel(attributes, values).c_str());
 }
 
 std::string ByVotes(SortAttribute attributes, const SortItem &values)
