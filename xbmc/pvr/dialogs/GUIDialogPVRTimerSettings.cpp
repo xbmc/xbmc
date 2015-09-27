@@ -1026,6 +1026,13 @@ bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string &condit
       return false;
   }
 
+  /* Always enable enable/disable, if supported by the timer type. */
+  if (pThis->m_timerType->SupportsEnableDisable())
+  {
+    if (cond == SETTING_TMR_ACTIVE)
+      return true;
+  }
+
   // Let the PVR client decide...
   int idx = static_cast<const CSettingInt*>(setting)->GetValue();
   const auto entry = pThis->m_typeEntries.find(idx);
