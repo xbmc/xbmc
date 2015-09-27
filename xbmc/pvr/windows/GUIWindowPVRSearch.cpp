@@ -150,20 +150,19 @@ bool CGUIWindowPVRSearch::OnContextButton(const CFileItem &item, CONTEXT_BUTTON 
 
 void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
 {
-  items.Clear();
-
-  CFileItemPtr item(new CFileItem("pvr://guide/searchresults/search/", true));
-  item->SetLabel(g_localizeStrings.Get(19140));
-  item->SetLabelPreformated(true);
-  item->SetSpecialSort(SortSpecialOnTop);
-  items.Add(item);
+  bool bAddSpecialSearchItem = items.IsEmpty();
 
   if (m_bSearchConfirmed)
   {
+    m_bSearchConfirmed = false;
+
+    items.Clear();
+    bAddSpecialSearchItem = true;
+
     CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (dlgProgress)
     {
-      dlgProgress->SetHeading(CVariant{194});
+      dlgProgress->SetHeading(CVariant{194}); // "Searching..."
       dlgProgress->SetText(CVariant{m_searchfilter.m_strSearchTerm});
       dlgProgress->Open();
       dlgProgress->Progress();
@@ -176,10 +175,17 @@ void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
       dlgProgress->Close();
 
     if (items.IsEmpty())
-    {
-      CGUIDialogOK::ShowAndGetInput(CVariant{194}, CVariant{284});
-      m_bSearchConfirmed = false;
-    }
+      CGUIDialogOK::ShowAndGetInput(CVariant{194},  // "Searching..."
+                                    CVariant{284}); // "No results found"
+  }
+
+  if (bAddSpecialSearchItem)
+  {
+    CFileItemPtr item(new CFileItem("pvr://guide/searchresults/search/", true));
+    item->SetLabel(g_localizeStrings.Get(19140)); // "Search..."
+    item->SetLabelPreformated(true);
+    item->SetSpecialSort(SortSpecialOnTop);
+    items.Add(item);
   }
 }
 
