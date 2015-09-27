@@ -1,74 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<include name="PVRHeader">
-		<control type="image">
-			<description>Section header image</description>
-			<left>20</left>
-			<top>3</top>
-			<width>35</width>
-			<height>35</height>
-			<aspectratio>keep</aspectratio>
-			<texture>icon_video.png</texture>
-		</control>
-		<control type="grouplist">
-			<left>65</left>
-			<top>5</top>
-			<width>1000</width>
-			<height>30</height>
-			<orientation>horizontal</orientation>
-			<align>left</align>
-			<itemgap>5</itemgap>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<label>$LOCALIZE[19020]</label>
-				<visible>IsEmpty(Window.Property(IsRadio))</visible>
+		<control type="group">
+			<control type="image">
+				<description>Section header image</description>
+				<left>20</left>
+				<top>3</top>
+				<width>35</width>
+				<height>35</height>
+				<aspectratio>keep</aspectratio>
+				<texture>icon_video.png</texture>
 			</control>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<label>$LOCALIZE[19021]</label>
-				<visible>!IsEmpty(Window.Property(IsRadio))</visible>
+			<control type="grouplist">
+				<left>65</left>
+				<top>5</top>
+				<width>1000</width>
+				<height>30</height>
+				<orientation>horizontal</orientation>
+				<align>left</align>
+				<itemgap>5</itemgap>
+				<control type="label">
+					<include>WindowTitleCommons</include>
+					<label>$LOCALIZE[19020]</label>
+					<visible>IsEmpty(Window.Property(IsRadio))</visible>
+				</control>
+				<control type="label">
+					<include>WindowTitleCommons</include>
+					<label>$LOCALIZE[19021]</label>
+					<visible>!IsEmpty(Window.Property(IsRadio))</visible>
+				</control>
+				<control type="label">
+					<include>WindowTitleCommons</include>
+					<label>[COLOR=blue] - [/COLOR]$LOCALIZE[19019]</label>
+					<visible>Window.IsActive(TVChannels) | Window.IsActive(RadioChannels)</visible>
+				</control>
+				<control type="label">
+					<include>WindowTitleCommons</include>
+					<label>[COLOR=blue] - [/COLOR]$LOCALIZE[22020]</label>
+					<visible>Window.IsActive(TVGuide) | Window.IsActive(RadioGuide)</visible>
+				</control>
+				<control type="label">
+					<include>WindowTitleCommons</include>
+					<label>[COLOR=blue] - [/COLOR]$LOCALIZE[19017]</label>
+					<visible>Window.IsActive(TVRecordings) | Window.IsActive(RadioRecordings)</visible>
+				</control>
+				<control type="label">
+					<include>WindowTitleCommons</include>
+					<label>[COLOR=blue] - [/COLOR]$LOCALIZE[19040]</label>
+					<visible>Window.IsActive(TVTimers) | Window.IsActive(RadioTimers)</visible>
+				</control>
+				<control type="label">
+					<include>WindowTitleCommons</include>
+					<label>[COLOR=blue] - [/COLOR]$LOCALIZE[137]</label>
+					<visible>Window.IsActive(TVSearch) | Window.IsActive(RadioSearch)</visible>
+				</control>
+				<control type="label">
+					<include>WindowTitleCommons</include>
+					<label>$INFO[Control.GetLabel(29),[COLOR=blue] - [/COLOR]]</label>
+				</control>
+				<control type="label">
+					<include>WindowTitleCommons</include>
+					<label>$INFO[Control.GetLabel(30),[COLOR=blue] - [/COLOR]]</label>
+				</control>
 			</control>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<label>[COLOR=blue] - [/COLOR]$LOCALIZE[19019]</label>
-				<visible>Window.IsActive(TVChannels) | Window.IsActive(RadioChannels)</visible>
+			<control type="label" id="29">
+				<description>Empty so we can pass the values up one level</description>
+				<visible>False</visible>
 			</control>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<label>[COLOR=blue] - [/COLOR]$LOCALIZE[22020]</label>
-				<visible>Window.IsActive(TVGuide) | Window.IsActive(RadioGuide)</visible>
+			<control type="label" id="30">
+				<description>Empty so we can pass the values up one level</description>
+				<visible>False</visible>
 			</control>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<label>[COLOR=blue] - [/COLOR]$LOCALIZE[19017]</label>
-				<visible>Window.IsActive(TVRecordings) | Window.IsActive(RadioRecordings)</visible>
-			</control>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<label>[COLOR=blue] - [/COLOR]$LOCALIZE[19040]</label>
-				<visible>Window.IsActive(TVTimers) | Window.IsActive(RadioTimers)</visible>
-			</control>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<label>[COLOR=blue] - [/COLOR]$LOCALIZE[137]</label>
-				<visible>Window.IsActive(TVSearch) | Window.IsActive(RadioSearch)</visible>
-			</control>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<label>$INFO[Control.GetLabel(29),[COLOR=blue] - [/COLOR]]</label>
-			</control>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<label>$INFO[Control.GetLabel(30),[COLOR=blue] - [/COLOR]]</label>
-			</control>
-		</control>
-		<control type="label" id="29">
-			<description>Empty so we can pass the values up one level</description>
-			<visible>False</visible>
-		</control>
-		<control type="label" id="30">
-			<description>Empty so we can pass the values up one level</description>
-			<visible>False</visible>
+			<include>Clock</include>
 		</control>
 	</include>
 	<include name="PVRSideBlade">
