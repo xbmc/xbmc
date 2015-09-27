@@ -119,7 +119,7 @@ namespace EPG
      * @param obs The observable that sent the update.
      * @param msg The update message.
      */
-    virtual void Notify(const Observable &obs, const ObservableMessage msg);
+    virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
 
     virtual void OnSettingChanged(const CSetting *setting) override;
 
@@ -283,7 +283,7 @@ namespace EPG
     /*!
      * @brief EPG update thread
      */
-    virtual void Process(void);
+    virtual void Process(void) override;
 
     /*!
      * @brief Load all tables from the database

@@ -71,19 +71,19 @@ public:
   virtual ~CGUIDialogSettingsBase();
 
   // specializations of CGUIControl
-  virtual bool OnMessage(CGUIMessage &message);
-  virtual bool OnAction(const CAction &action);
-  virtual bool OnBack(int actionID);
-  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+  virtual bool OnMessage(CGUIMessage &message) override;
+  virtual bool OnAction(const CAction &action) override;
+  virtual bool OnBack(int actionID) override;
+  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
 
   virtual bool IsConfirmed() const { return m_confirmed; }
 
 protected:
   // specializations of CGUIWindow
-  virtual void OnInitWindow();
+  virtual void OnInitWindow() override;
 
   // implementations of ITimerCallback
-  virtual void OnTimeout();
+  virtual void OnTimeout() override;
 
   // implementations of ISettingCallback
   virtual void OnSettingChanged(const CSetting *setting) override;

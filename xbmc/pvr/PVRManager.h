@@ -112,7 +112,7 @@ namespace PVR
      */
     virtual ~CPVRManager(void);
 
-    virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
+    virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
 
     /*!
      * @brief Get the instance of the PVRManager.
@@ -584,7 +584,7 @@ namespace PVR
     /*!
      * @brief PVR update and control thread.
      */
-    virtual void Process(void);
+    virtual void Process(void) override;
 
   private:
     /*!

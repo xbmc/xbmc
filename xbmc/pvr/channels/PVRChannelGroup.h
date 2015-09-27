@@ -379,7 +379,7 @@ namespace PVR
      */
     void ResetChannelNumberCache(void);
 
-    void OnJobComplete(unsigned int jobID, bool success, CJob* job) {}
+    void OnJobComplete(unsigned int jobID, bool success, CJob* job) override {}
 
     /*!
      * @brief Get all EPG tables and apply a filter.

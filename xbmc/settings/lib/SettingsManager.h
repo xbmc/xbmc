@@ -100,7 +100,7 @@ public:
    returns to the uninitialized state. Any registered callbacks or
    implementations stay registered.
    */
-  void Clear();
+  void Clear() override;
 
   /*!
   \brief Loads the setting being represented by the given XML node with the
