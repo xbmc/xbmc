@@ -82,6 +82,7 @@ CGUIIncludes::CGUIIncludes()
   m_constantNodes.insert("timeperimage");
   m_constantNodes.insert("fadetime");
   m_constantNodes.insert("pauseatend");
+  m_constantNodes.insert("depth");
 }
 
 CGUIIncludes::~CGUIIncludes()
