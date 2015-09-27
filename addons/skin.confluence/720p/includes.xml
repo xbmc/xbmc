@@ -14,8 +14,30 @@
 	<include file="IncludesHomeMenuItems.xml" />
 	<include file="IncludesPVR.xml" />
 	<include file="IncludesBackgroundBuilding.xml" />
+	<!-- CONSTANTS -->
 	<constant name="FanartCrossfadeTime">500</constant>
 	<constant name="IconCrossfadeTime">400</constant>
+	<constant name="DepthDialog">0.50</constant>
+	<constant name="DepthDialog+">0.52</constant>
+	<constant name="DepthDialog-">0.48</constant>
+	<constant name="DepthMax">0.54</constant>
+	<constant name="DepthOSD">0.40</constant>
+	<constant name="DepthOSD+">0.44</constant>
+	<constant name="DepthOSD-">0.36</constant>
+	<constant name="DepthOSDPopout">0.48</constant>
+	<constant name="DepthContent">0</constant>
+	<constant name="DepthContent+">0.08</constant>
+	<constant name="DepthContent-">-0.08</constant>
+	<constant name="DepthContentPopout">0.15</constant>
+	<constant name="DepthMenu">0.08</constant>
+	<constant name="DepthMenu+">0.14</constant>
+	<constant name="DepthMenu-">0.00</constant>
+	<constant name="DepthHeader">0.08</constant>
+	<constant name="DepthFooter">0.08</constant>
+	<constant name="DepthBackground">-0.80</constant>
+	<constant name="DepthFloor">-0.20</constant>
+	<constant name="DepthSideBlade">0.15</constant>
+	<!-- VARIABLES -->
 	<variable name="MediaInfoOverlayVar">
 		<value condition="ListItem.IsCollection">flagging/video/Set.png</value>
 		<value condition="!ListItem.IsStereoscopic">$INFO[ListItem.VideoResolution,flagging/lists/,.png]</value>
@@ -86,6 +108,7 @@
 		<value condition="!IsEmpty(Window.Property(IsRadio))">$LOCALIZE[19199] - $LOCALIZE[19024]</value>
 		<value>$LOCALIZE[19199] - $LOCALIZE[19023]</value>
 	</variable>
+	<!-- INCLUDES -->
 	<include name="AlbumInfoPanel">
 		<control type="panel" id="50">
 			<left>$PARAM[panel-left]</left>
@@ -305,6 +328,7 @@
 		<pulseonselect>false</pulseonselect>
 	</include>
 	<include name="SideBladeLeft">
+		<depth>DepthSideBlade</depth>
 		<animation effect="slide" start="0,0" end="250,0" time="300" tween="quadratic" easing="out" condition="[ControlGroup(9000).HasFocus | Control.HasFocus(9001) | Control.HasFocus(8999)] + ![Window.IsActive(PVRGuideInfo) | Window.IsActive(PVRRadioRDSInfo)]">Conditional</animation>
 		<animation effect="slide" start="0,0" end="-300,0" time="300" tween="quadratic" easing="out" condition="ControlGroup(9000).HasFocus | Control.HasFocus(9001)">WindowClose</animation>
 		<animation effect="slide" start="0,0" end="-50,0" time="225" tween="quadratic" easing="out" condition="![ControlGroup(9000).HasFocus | Control.HasFocus(9001)]">WindowClose</animation>
@@ -331,9 +355,9 @@
 			<texturenofocus>HasSub.png</texturenofocus>
 		</control>
 		<control type="image">
-			<left>0</left>
+			<left>-20</left>
 			<top>0</top>
-			<width>260</width>
+			<width>280</width>
 			<height>720</height>
 			<texture border="0,0,10,0">MediaBladeSub.png</texture>
 		</control>
@@ -1071,6 +1095,7 @@
 	</include>
 	<include name="ScrollOffsetLabel">
 		<control type="group">
+			<depth>DepthSideBlade</depth>
 			<visible>Container.Scrolling + [StringCompare(Container.SortMethod,$LOCALIZE[551]) | StringCompare(Container.SortMethod,$LOCALIZE[561]) | StringCompare(Container.SortMethod,$LOCALIZE[558]) | StringCompare(Container.SortMethod,$LOCALIZE[557]) | StringCompare(Container.SortMethod,$LOCALIZE[556])]</visible>
 			<animation effect="slide" start="0,0" end="0,-60" time="75">Visible</animation>
 			<animation effect="slide" start="0,-60" end="0,0" delay="300" time="75">Hidden</animation>
@@ -1397,6 +1422,7 @@
 		<animation effect="fade" time="200">WindowClose</animation>
 	</include>
 	<include name="dialogeffect">
+		<depth>DepthDialog</depth>
 		<animation effect="fade" time="200">WindowOpen</animation>
 		<animation effect="fade" time="200">WindowClose</animation>
 	</include>
@@ -1420,6 +1446,7 @@
 		<param name="ShowLabel2" default="False" />
 		<definition>
 			<control type="group">
+				<depth>DepthHeader</depth>
 				<control type="image">
 					<description>Section header image</description>
 					<left>20</left>
@@ -1455,5 +1482,10 @@
 				<include>Clock</include>
 			</control>
 		</definition>
+	</include>
+	<include name="BackgroundDimensions">
+		<width>1280</width>
+		<height>720</height>
+		<animation effect="zoom" center="auto" end="101,101" time="0" condition="IntegerGreaterThan(System.StereoscopicMode,0)">conditional</animation>
 	</include>
 </includes>

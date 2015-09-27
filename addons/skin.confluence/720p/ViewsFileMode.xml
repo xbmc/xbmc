@@ -201,6 +201,7 @@
 				<visible>Control.IsVisible(50)</visible>
 			</control>
 			<control type="group">
+				<depth>DepthContent-</depth>
 				<left>850</left>
 				<top>100</top>
 				<visible>Control.IsVisible(50)</visible>

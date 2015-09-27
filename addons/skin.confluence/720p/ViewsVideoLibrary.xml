@@ -42,6 +42,7 @@
 				</itemlayout>
 				<focusedlayout height="310" width="218">
 					<control type="image">
+						<depth>DepthContentPopout</depth>
 						<left>-2</left>
 						<top>36</top>
 						<width>222</width>
@@ -54,6 +55,7 @@
 						<animation reversible="false" effect="zoom" end="-2,36,222,318" start="-28,0,284,390" time="150">unfocus</animation>
 					</control>
 					<control type="image">
+						<depth>DepthContentPopout</depth>
 						<left>6</left>
 						<top>44</top>
 						<width>170</width>
@@ -64,6 +66,7 @@
 						<animation reversible="false" effect="zoom" end="6,44,170,180" start="-24,4,240,250" time="150">unfocus</animation>
 					</control>
 					<control type="image">
+						<depth>DepthContentPopout</depth>
 						<left>185</left>
 						<top>310</top>
 						<width>35</width>
@@ -309,6 +312,7 @@
 			<left>0</left>
 			<top>460</top>
 			<control type="fixedlist" id="508">
+				<depth>DepthContent-</depth>
 				<visible>Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Sets)</visible>
 				<hitrect x="0" y="-10" w="1280" h="190" />
 				<left>-20</left>
@@ -361,6 +365,7 @@
 				</itemlayout>
 				<focusedlayout height="310" width="120">
 					<control type="image">
+						<depth>DepthContentPopout</depth>
 						<left>-2</left>
 						<top>16</top>
 						<width>128</width>
@@ -374,6 +379,7 @@
 						<animation reversible="false" effect="zoom" end="-2,16,128,168" start="-12,-10,148,198" time="150">unfocus</animation>
 					</control>
 					<control type="image">
+						<depth>DepthContentPopout</depth>
 						<left>2</left>
 						<top>180</top>
 						<width>120</width>
@@ -385,6 +391,7 @@
 						<texture background="true" flipy="true" diffuse="diffuse_mirror2.png">$VAR[PosterThumb]</texture>
 					</control>
 					<control type="image">
+						<depth>DepthContentPopout</depth>
 						<left>90</left>
 						<top>150</top>
 						<width>35</width>
@@ -403,6 +410,7 @@
 				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="60">
+				<depth>DepthContent</depth>
 				<left>310</left>
 				<top>185</top>
 				<width>660</width>

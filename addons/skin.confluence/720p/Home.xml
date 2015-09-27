@@ -8,28 +8,20 @@
 	<controls>
 		<include>CommonBackground</include>
 		<control type="image">
-			<left>0</left>
-			<top>90r</top>
-			<width>1280</width>
+			<depth>DepthFloor</depth>
+			<left>-20</left>
+			<top></top>
+			<bottom>0</bottom>
+			<width>1320</width>
 			<height>90</height>
 			<texture>floor.png</texture>
-			<animation effect="fade" time="200" condition="Window.Previous(Home)">WindowOpen</animation>
-			<animation effect="fade" time="200" condition="Window.Next(Home)">WindowClose</animation>
-		</control>
-		<control type="image">
-			<description>LOGO</description>
-			<left>10</left>
-			<top>5</top>
-			<width>120</width>
-			<height>49</height>
-			<aspectratio aligny="top" align="left">keep</aspectratio>
-			<texture>kodi-logo.png</texture>
-			<include>VisibleFadeEffect</include>
-			<include>Window_OpenClose_Animation</include>
-			<visible>!Skin.HasSetting(homepageWeatherinfo)</visible>
+			<animation effect="rotatex" end="45" time="0" center="620,0" condition="true">Conditional</animation>
+			<animation effect="slide" time="200" condition="Window.Previous(Home)">WindowOpen</animation>
+			<animation effect="slide" time="200" condition="Window.Next(Home)">WindowClose</animation>
 		</control>
 		<!-- Music Info -->
 		<control type="group">
+			<depth>DepthMenu</depth>
 			<left>0</left>
 			<top>60</top>
 			<visible>Player.HasAudio + !Skin.HasSetting(homepageMusicinfo) + IsEmpty(Window(videolibrary).Property(PlayingBackgroundMedia))</visible>
@@ -88,6 +80,7 @@
 		</control>
 		<!-- LiveTV Info -->
 		<control type="group">
+			<depth>DepthMenu</depth>
 			<left>490r</left>
 			<top>70</top>
 			<visible>Container(9000).HasFocus(12) + [PVR.IsRecording | PVR.HasNonRecordingTimer]</visible>
@@ -232,6 +225,7 @@
 		</control>
 		<!-- Video Info -->
 		<control type="group">
+			<depth>DepthMenu</depth>
 			<left>0</left>
 			<top>50</top>
 			<visible>Player.HasVideo + !Skin.HasSetting(homepageVideoinfo) + IsEmpty(Window(videolibrary).Property(PlayingBackgroundMedia))</visible>
@@ -455,6 +449,7 @@
 			<visible>false</visible>
 		</control>
 		<control type="group">
+			<depth>DepthMenu-</depth>
 			<description>Controls for currently playing media</description>
 			<left>545r</left>
 			<top>370</top>
@@ -739,6 +734,7 @@
 			</control>
 		</control>
 		<control type="group">
+			<depth>DepthMenu</depth>
 			<top>400</top>
 			<animation type="WindowOpen" reversible="false">
 				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="225" />
@@ -749,6 +745,7 @@
 				<effect type="fade" start="100" end="0" time="225" />
 			</animation>
 			<control type="group" id="9001">
+				<depth>DepthMenu-</depth>
 				<left>0</left>
 				<top>70</top>
 				<onup>9000</onup>
@@ -1005,21 +1002,22 @@
 				</content>
 			</control>
 			<control type="image">
-				<left>0</left>
+				<left>-10</left>
 				<top>6</top>
-				<width>128</width>
+				<width>138</width>
 				<height>63</height>
 				<texture>SideFade.png</texture>
 			</control>
 			<control type="image">
 				<left>128r</left>
 				<top>6</top>
-				<width>128</width>
+				<width>138</width>
 				<height>63</height>
 				<texture flipx="true">SideFade.png</texture>
 			</control>
 		</control>
 		<control type="group" id="9002">
+			<depth>DepthMenu</depth>
 			<onup>9001</onup>
 			<ondown>20</ondown>
 			<control type="fixedlist" id="700">
@@ -1072,6 +1070,7 @@
 			</control>
 		</control>
 		<control type="group">
+			<depth>DepthMenu-</depth>
 			<left>0</left>
 			<top>33r</top>
 			<visible>system.getbool(lookandfeel.enablerssfeeds)</visible>
@@ -1098,6 +1097,7 @@
 			</control>
 		</control>
 		<control type="group" id="10">
+			<depth>DepthFooter</depth>
 			<left>20</left>
 			<top>55r</top>
 			<include>Window_OpenClose_Animation</include>
@@ -1153,89 +1153,104 @@
 			</control>
 		</control>
 		<control type="group">
-			<left>20</left>
-			<top>0</top>
-			<visible>Skin.HasSetting(homepageWeatherinfo) + !IsEmpty(Weather.Plugin)</visible>
-			<include>Window_OpenClose_Animation</include>
+			<depth>DepthHeader</depth>
 			<control type="image">
-				<description>Weather image</description>
-				<left>0</left>
-				<top>0</top>
-				<width>60</width>
-				<height>60</height>
-				<aspectratio>keep</aspectratio>
-				<texture>$INFO[Weather.Conditions]</texture>
-			</control>
-			<control type="label">
-				<description>Location label</description>
-				<left>65</left>
+				<description>LOGO</description>
+				<left>10</left>
 				<top>5</top>
-				<width>500</width>
+				<width>120</width>
+				<height>49</height>
+				<aspectratio aligny="top" align="left">keep</aspectratio>
+				<texture>kodi-logo.png</texture>
+				<include>VisibleFadeEffect</include>
+				<include>Window_OpenClose_Animation</include>
+				<visible>!Skin.HasSetting(homepageWeatherinfo)</visible>
+			</control>
+			<control type="group">
+				<left>20</left>
+				<top>0</top>
+				<visible>Skin.HasSetting(homepageWeatherinfo) + !IsEmpty(Weather.Plugin)</visible>
+				<include>Window_OpenClose_Animation</include>
+				<control type="image">
+					<description>Weather image</description>
+					<left>0</left>
+					<top>0</top>
+					<width>60</width>
+					<height>60</height>
+					<aspectratio>keep</aspectratio>
+					<texture>$INFO[Weather.Conditions]</texture>
+				</control>
+				<control type="label">
+					<description>Location label</description>
+					<left>65</left>
+					<top>5</top>
+					<width>500</width>
+					<height>15</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font10</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<label>$INFO[Window(Weather).Property(Location)]</label>
+				</control>
+				<control type="grouplist">
+					<left>65</left>
+					<top>20</top>
+					<width>1000</width>
+					<height>30</height>
+					<orientation>horizontal</orientation>
+					<align>left</align>
+					<itemgap>0</itemgap>
+					<control type="label">
+						<description>Temp label</description>
+						<width min="0" max="300">auto</width>
+						<height>30</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<font>font28_title</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<label>[B]$INFO[Window(Weather).Property(Current.Temperature)][/B]</label>
+					</control>
+					<control type="label">
+						<description>Temp Units</description>
+						<width min="0" max="100">auto</width>
+						<height>22</height>
+						<font>font10</font>
+						<aligny>center</aligny>
+						<label>$INFO[System.TemperatureUnits]</label>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<visible>!IsEmpty(Window(Weather).Property(Current.Temperature))</visible>
+					</control>
+					<control type="label">
+						<description>Conditions Label</description>
+						<width>500</width>
+						<height>22</height>
+						<font>font10</font>
+						<aligny>center</aligny>
+						<label>$INFO[Window(Weather).Property(Current.Condition),  ]</label>
+						<textcolor>grey2</textcolor>
+						<shadowcolor>black</shadowcolor>
+					</control>
+				</control>
+			</control>
+			<include>Clock</include>
+			<control type="label">
+				<description>Date label</description>
+				<right>20</right>
+				<top>35</top>
+				<width>300</width>
 				<height>15</height>
-				<align>left</align>
+				<align>right</align>
 				<aligny>center</aligny>
 				<font>font10</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
-				<label>$INFO[Window(Weather).Property(Location)]</label>
+				<label>$INFO[System.Date]</label>
+				<include>Window_OpenClose_Animation</include>
+				<animation effect="slide" start="0,0" end="-40,0" time="75" condition="Window.IsVisible(Mutebug)">conditional</animation>
 			</control>
-			<control type="grouplist">
-				<left>65</left>
-				<top>20</top>
-				<width>1000</width>
-				<height>30</height>
-				<orientation>horizontal</orientation>
-				<align>left</align>
-				<itemgap>0</itemgap>
-				<control type="label">
-					<description>Temp label</description>
-					<width min="0" max="300">auto</width>
-					<height>30</height>
-					<align>left</align>
-					<aligny>center</aligny>
-					<font>font28_title</font>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-					<label>[B]$INFO[Window(Weather).Property(Current.Temperature)][/B]</label>
-				</control>
-				<control type="label">
-					<description>Temp Units</description>
-					<width min="0" max="100">auto</width>
-					<height>22</height>
-					<font>font10</font>
-					<aligny>center</aligny>
-					<label>$INFO[System.TemperatureUnits]</label>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-					<visible>!IsEmpty(Window(Weather).Property(Current.Temperature))</visible>
-				</control>
-				<control type="label">
-					<description>Conditions Label</description>
-					<width>500</width>
-					<height>22</height>
-					<font>font10</font>
-					<aligny>center</aligny>
-					<label>$INFO[Window(Weather).Property(Current.Condition),  ]</label>
-					<textcolor>grey2</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-			</control>
-		</control>
-		<include>Clock</include>
-		<control type="label">
-			<description>Date label</description>
-			<right>20</right>
-			<top>35</top>
-			<width>300</width>
-			<height>15</height>
-			<align>right</align>
-			<aligny>center</aligny>
-			<font>font10</font>
-			<textcolor>white</textcolor>
-			<shadowcolor>black</shadowcolor>
-			<label>$INFO[System.Date]</label>
-			<include>Window_OpenClose_Animation</include>
-			<animation effect="slide" start="0,0" end="-40,0" time="75" condition="Window.IsVisible(Mutebug)">conditional</animation>
 		</control>
 	</controls>
 </window>

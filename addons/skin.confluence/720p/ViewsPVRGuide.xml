@@ -671,6 +671,7 @@
 				</control>
 			</control>
 			<control type="label">
+				<depth>DepthFooter</depth>
 				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
 				<right>40</right>
@@ -1049,6 +1050,7 @@
 				</control>
 			</control>
 			<control type="label">
+				<depth>DepthFooter</depth>
 				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
 				<right>40</right>
@@ -1374,6 +1376,7 @@
 				</control>
 			</control>
 			<control type="label">
+				<depth>DepthFooter</depth>
 				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
 				<right>40</right>

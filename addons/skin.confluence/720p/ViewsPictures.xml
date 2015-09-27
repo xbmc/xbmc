@@ -7,6 +7,7 @@
 			<left>0</left>
 			<top>440</top>
 			<control type="wraplist" id="510">
+				<depth>DepthContent+</depth>
 				<left>-25</left>
 				<top>5</top>
 				<width>1330</width>
@@ -44,6 +45,7 @@
 				</itemlayout>
 				<focusedlayout height="200" width="190">
 					<control type="image">
+						<depth>DepthContentPopout</depth>
 						<left>15</left>
 						<top>40</top>
 						<width>160</width>
@@ -57,6 +59,7 @@
 						<animation reversible="false" effect="zoom" end="15,40,160,160" start="-10,-5,210,210" time="150">unfocus</animation>
 					</control>
 					<control type="image">
+						<depth>DepthContentPopout</depth>
 						<left>25</left>
 						<top>50</top>
 						<width>140</width>

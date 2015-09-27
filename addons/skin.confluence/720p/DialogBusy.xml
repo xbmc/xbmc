@@ -8,6 +8,7 @@
 	</coordinates>
 	<controls>
 		<control type="group">
+			<depth>DepthDialog+</depth>
 			<left>1070</left>
 			<top>640</top>
 			<control type="image">

@@ -16,6 +16,7 @@
 			<top>0</top>
 			<width>1280</width>
 			<height>720</height>
+			<aspectratio>scale</aspectratio>
 			<texture background="true">$INFO[Player.Art(fanart)]</texture>
 			<colordiffuse>AAFFFFFF</colordiffuse>
 			<visible>!IsEmpty(Player.Art(fanart)) + !Skin.HasSetting(HideVisualizationFanart)</visible>
@@ -23,12 +24,13 @@
 		</control>
 		<!-- media infos -->
 		<control type="group">
+			<depth>DepthOSD</depth>
 			<animation effect="fade" time="150">VisibleChange</animation>
 			<visible>[Player.ShowInfo | Window.IsActive(MusicOSD)] + ![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(PVRRadioRDSInfo) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>
 			<control type="image">
-				<left>0</left>
+				<left>-20</left>
 				<top>-150</top>
-				<width>1280</width>
+				<width>1320</width>
 				<height>256</height>
 				<texture flipy="true" border="1">HomeNowPlayingBack.png</texture>
 			</control>
@@ -76,13 +78,14 @@
 				<animation effect="slide" start="0,0" end="-70,0" time="0" condition="Window.IsVisible(MusicOSD)">conditional</animation>
 			</control>
 			<control type="image">
-				<left>0</left>
+				<left>-20</left>
 				<top>230r</top>
-				<width>1280</width>
+				<width>1320</width>
 				<height>230</height>
 				<texture border="1">HomeNowPlayingBack.png</texture>
 			</control>
 			<control type="image">
+				<depth>DepthOSDPopout</depth>
 				<description>cover image</description>
 				<left>20</left>
 				<top>250r</top>
@@ -287,6 +290,7 @@
 		</control>
 		<!-- codec & viz infos -->
 		<control type="group" id="0">
+			<depth>DepthOSD+</depth>
 			<left>0</left>
 			<top>50</top>
 			<visible>Player.ShowCodec + ![Window.IsVisible(script-cu-lrclyrics-main.xml) | Window.IsVisible(VisualisationSettings) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(PVRRadioRDSInfo) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>

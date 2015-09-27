@@ -6,6 +6,7 @@
 		<top>75</top>
 	</coordinates>
 	<include>dialogeffect</include>
+	<depth>DepthDialog+</depth>
 	<controls>
 		<control type="group">
 			<animation effect="slide" start="0,0" end="0,46" time="0" condition="[Control.IsVisible(3) + !IntegerGreaterThan(Container(3).NumItems,4)] | [Control.IsVisible(6) + !IntegerGreaterThan(Container(6).NumItems,2)]">Conditional</animation>
