@@ -492,7 +492,7 @@ bool CGUIWindowPVRGuide::OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUT
   if ((button == CONTEXT_BUTTON_START_RECORD) ||
       (button == CONTEXT_BUTTON_ADVANCED_RECORD))
   {
-    StartRecordFile(item, button == CONTEXT_BUTTON_ADVANCED_RECORD);
+    AddTimer(item, button == CONTEXT_BUTTON_ADVANCED_RECORD);
     bReturn = true;
   }
 
