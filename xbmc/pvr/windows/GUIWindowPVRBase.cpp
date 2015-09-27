@@ -448,7 +448,7 @@ bool CGUIWindowPVRBase::ShowTimerSettings(CFileItem *item)
   return pDlgInfo->IsConfirmed();
 }
 
-bool CGUIWindowPVRBase::StartRecordFile(CFileItem *item, bool bAdvanced)
+bool CGUIWindowPVRBase::AddTimer(CFileItem *item, bool bAdvanced)
 {
   if (!item->HasEPGInfoTag())
     return false;
