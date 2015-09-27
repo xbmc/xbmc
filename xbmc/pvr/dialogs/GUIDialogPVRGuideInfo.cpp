@@ -67,17 +67,13 @@ bool CGUIDialogPVRGuideInfo::ActionStartTimer(const CEpgInfoTagPtr &tag)
   if (!channel || !g_PVRManager.CheckParentalLock(channel))
     return false;
 
-  // prompt user for confirmation of channel record
-  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{264} /* "Record" */, CVariant{tag->Title()}))
-  {
-    Close();
+  Close();
 
-    CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTag::CreateFromEpg(tag);
-    if (newTimer)
-      bReturn = CPVRTimers::AddTimer(newTimer);
-    else
-      bReturn = false;
-  }
+  CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTag::CreateFromEpg(tag);
+  if (newTimer)
+    bReturn = CPVRTimers::AddTimer(newTimer);
+  else
+    bReturn = false;
 
   return bReturn;
 }
