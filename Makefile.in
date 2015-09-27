@@ -29,6 +29,7 @@ DVDPLAYER_ARCHIVES=xbmc/cores/dvdplayer/DVDPlayer.a \
 DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/addons/addons.a \
                    xbmc/cdrip/cdrip.a \
+                   xbmc/contrib/cppformat/cppformat.a \
                    xbmc/contrib/kissfft/kissfft.a \
                    xbmc/cores/AudioEngine/audioengine.a \
                    xbmc/cores/DllLoader/dllloader.a \

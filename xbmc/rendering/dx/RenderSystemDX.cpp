@@ -36,6 +36,7 @@
 #include "utils/log.h"
 #include "win32/WIN32Util.h"
 #include "win32/dxerr.h"
+#include "utils/CharsetConverter.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -628,7 +629,8 @@ bool CRenderSystemDX::CreateDevice()
     CLog::Log(LOGDEBUG, "%s - on adapter %S (VendorId: %#x DeviceId: %#x) with feature level %#x.", __FUNCTION__, 
                         m_adapterDesc.Description, m_adapterDesc.VendorId, m_adapterDesc.DeviceId, m_featureLevel);
 
-    m_RenderRenderer = StringUtils::Format("%S", m_adapterDesc.Description);
+    std::wstring renderer = StringUtils::Format(L"%S", m_adapterDesc.Description);
+    g_charsetConverter.wToUTF8(renderer, m_RenderRenderer);
     IDXGIFactory2* dxgiFactory2 = nullptr;
     m_dxgiFactory->QueryInterface(__uuidof(IDXGIFactory2), reinterpret_cast<void**>(&dxgiFactory2));
     m_RenderVersion = StringUtils::Format("DirectX %s (FL %d.%d)", 
@@ -1548,7 +1550,10 @@ std::string CRenderSystemDX::GetErrorDescription(HRESULT hr)
   DXGetErrorDescription(hr, buff, 1024);
   std::wstring error(DXGetErrorString(hr));
   std::wstring descr(buff);
-  return StringUtils::Format("%X - %ls (%ls)", hr, error.c_str(), descr.c_str());
+  std::wstring errMsgW = StringUtils::Format(L"%X - %s (%s)", hr, error.c_str(), descr.c_str());
+  std::string errMsg;
+  g_charsetConverter.wToUTF8(errMsgW, errMsg);
+  return errMsg;
 }
 
 void CRenderSystemDX::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view)

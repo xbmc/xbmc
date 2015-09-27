@@ -215,6 +215,8 @@
     <ClCompile Include="..\..\xbmc\CompileInfo.cpp" />
     <ClCompile Include="..\..\xbmc\ContextMenuItem.cpp" />
     <ClCompile Include="..\..\xbmc\ContextMenuManager.cpp" />
+    <ClCompile Include="..\..\xbmc\contrib\cppformat\format.cc" />
+    <ClCompile Include="..\..\xbmc\contrib\cppformat\posix.cc" />
     <ClCompile Include="..\..\xbmc\contrib\kissfft\kiss_fft.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
@@ -902,6 +904,8 @@
     <ClInclude Include="..\..\xbmc\ApplicationPlayer.h" />
     <ClInclude Include="..\..\xbmc\AppParamParser.h" />
     <ClInclude Include="..\..\xbmc\CompileInfo.h" />
+    <ClInclude Include="..\..\xbmc\contrib\cppformat\format.h" />
+    <ClInclude Include="..\..\xbmc\contrib\cppformat\posix.h" />
     <ClInclude Include="..\..\xbmc\contrib\kissfft\kiss_fft.h" />
     <ClInclude Include="..\..\xbmc\contrib\kissfft\kiss_fftr.h" />
     <ClInclude Include="..\..\xbmc\contrib\kissfft\_kiss_fft_guts.h" />

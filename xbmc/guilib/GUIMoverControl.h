@@ -41,10 +41,6 @@
 #define DIRECTION_LEFT 3
 #define DIRECTION_RIGHT 4
 
-// normal alignment is TOP LEFT 0 = topleft, 1 = topright
-#define ALIGN_RIGHT   1
-#define ALIGN_BOTTOM  2
-
 /*!
  \ingroup controls
  \brief
