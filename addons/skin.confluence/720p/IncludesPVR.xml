@@ -2,6 +2,7 @@
 <includes>
 	<include name="PVRHeader">
 		<control type="group">
+			<depth>DepthHeader</depth>
 			<control type="image">
 				<description>Section header image</description>
 				<left>20</left>
