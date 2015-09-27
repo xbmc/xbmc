@@ -251,6 +251,9 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
     if (!XMLUtils::GetFloat(pElement, "adaptivesharpenstrength", m_defaultMadvrSettings.m_adaptiveSharpenStrength))
       m_defaultMadvrSettings.m_adaptiveSharpenStrength = MADVR_DEFAULT_ADAPTIVESHARPENSTRENGTH;
 
+    if (!XMLUtils::GetInt(pElement, "nosmallscaling", m_defaultMadvrSettings.m_noSmallScaling))
+      m_defaultMadvrSettings.m_noSmallScaling = -1;
+
     XMLUtils::GetBoolean(pElement, "upreffinesharp", m_defaultMadvrSettings.m_UpRefFineSharp);
     if (!XMLUtils::GetFloat(pElement, "upreffinesharpstrength", m_defaultMadvrSettings.m_UpRefFineSharpStrength))
       m_defaultMadvrSettings.m_UpRefFineSharpStrength = MADVR_DEFAULT_UPFINESHARPSTRENGTH;
@@ -426,6 +429,8 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetFloat(pNode, "lumasharpenradius", m_defaultMadvrSettings.m_lumaSharpenRadius);
   XMLUtils::SetBoolean(pNode, "adpativesharpen", m_defaultMadvrSettings.m_adaptiveSharpen);
   XMLUtils::SetFloat(pNode, "adpativesharpenstrength", m_defaultMadvrSettings.m_adaptiveSharpenStrength);
+
+  XMLUtils::SetInt(pNode, "nosmallscaling", m_defaultMadvrSettings.m_noSmallScaling);
 
   XMLUtils::SetBoolean(pNode, "upreffinesharp", m_defaultMadvrSettings.m_UpRefFineSharp);
   XMLUtils::SetFloat(pNode, "upreffinesharpstrength", m_defaultMadvrSettings.m_UpRefFineSharpStrength);

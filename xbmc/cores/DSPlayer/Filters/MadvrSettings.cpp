@@ -85,6 +85,8 @@ CMadvrSettings::CMadvrSettings()
   m_adaptiveSharpen = false;
   m_adaptiveSharpenStrength = MADVR_DEFAULT_ADAPTIVESHARPENSTRENGTH;
 
+  m_noSmallScaling = -1;
+
   m_UpRefFineSharp = false;
   m_UpRefFineSharpStrength = MADVR_DEFAULT_UPFINESHARPSTRENGTH;
   m_UpRefLumaSharpen = false;
@@ -151,6 +153,8 @@ bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
   if (m_lumaSharpenRadius != right.m_lumaSharpenRadius) return true;
   if (m_adaptiveSharpen != right.m_adaptiveSharpen) return true;
   if (m_adaptiveSharpenStrength != right.m_adaptiveSharpenStrength) return true;
+
+  if (m_noSmallScaling != right.m_noSmallScaling) return true;
 
   if (m_UpRefFineSharp != right.m_UpRefFineSharp) return true;
   if (m_UpRefFineSharpStrength != right.m_UpRefFineSharpStrength) return true;

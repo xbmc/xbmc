@@ -85,6 +85,8 @@ public:
   bool m_adaptiveSharpen;
   float m_adaptiveSharpenStrength;
 
+  int m_noSmallScaling;
+
   bool m_UpRefFineSharp;
   float m_UpRefFineSharpStrength;
   bool m_UpRefLumaSharpen;

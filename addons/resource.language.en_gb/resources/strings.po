@@ -18908,6 +18908,42 @@ msgctxt "#70207"
 msgid "Deinterlace only pixels in the frame center"
 msgstr ""
 
+msgctxt "#70208"
+msgid "Disable scaling if image size changes by only"
+msgstr ""
+
+msgctxt "#70209"
+msgid "1 lines or less"
+msgstr ""
+
+msgctxt "#70210"
+msgid "2 lines or less"
+msgstr ""
+
+msgctxt "#70211"
+msgid "3 lines or less"
+msgstr ""
+
+msgctxt "#70212"
+msgid "5 lines or less"
+msgstr ""
+
+msgctxt "#70213"
+msgid "7 lines or less"
+msgstr ""
+
+msgctxt "#70214"
+msgid "10 lines or less"
+msgstr ""
+
+msgctxt "#70215"
+msgid "15 lines or less"
+msgstr ""
+
+msgctxt "#70216"
+msgid "25 lines or less"
+msgstr ""
+
 msgctxt "#70300"
 msgid "Smooth motion"
 msgstr ""

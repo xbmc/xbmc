@@ -206,6 +206,12 @@ void CMadvrCallback::SetDeintActive(std::string path, int iValue)
     m_pSettingCallback->SetDeintActive(path, iValue);
 }
 
+void CMadvrCallback::SetNoSmallScaling(std::string path, int iValue)
+{
+  if (m_pSettingCallback)
+    m_pSettingCallback->SetNoSmallScaling(path, iValue);
+}
+
 void CMadvrCallback::SetSmoothmotion(std::string path, int iValue) 
 {
   if (m_pSettingCallback)

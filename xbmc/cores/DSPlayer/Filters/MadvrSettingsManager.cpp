@@ -321,6 +321,24 @@ void CMadvrSettingsManager::GetDeintActive(std::string path, int* iValue)
   *iValue = result;
 }
 
+void CMadvrSettingsManager::GetNoSmallScaling(std::string path, int* iValue)
+{
+  std::string stEnabled = "noSmallScaling";
+  std::string strMode = "noSmallScalingValue";
+
+  bool bValue;
+  int result = -1;
+
+  GetBool(stEnabled, &bValue);
+  if (bValue)
+  {
+    GetInt(strMode, iValue);
+    result = *iValue;
+  };
+
+  *iValue = result;
+}
+
 void CMadvrSettingsManager::GetSmoothmotion(std::string path, int* iValue)
 {
   std::string stEnabled = "smoothMotionEnabled";
@@ -413,6 +431,16 @@ void CMadvrSettingsManager::SetDeintActive(std::string path, int iValue)
 
   SetBool(strAuto, (iValue > -1));
   SetBool(strIfDoubt, (iValue != MADVR_DEFAULT_DEINTACTIVE));
+}
+
+void CMadvrSettingsManager::SetNoSmallScaling(std::string path, int iValue)
+{
+  std::string stEnabled = "noSmallScaling";
+  std::string strMode = "noSmallScalingValue";
+
+  SetBool(stEnabled, (iValue > -1));
+  if (iValue > -1)
+    SetInt(strMode, iValue);
 }
 
 void CMadvrSettingsManager::SetSmoothmotion(std::string path, int iValue)
@@ -556,7 +584,7 @@ void CMadvrSettingsManager::RestoreSettings()
   CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
 
   // Create dummy DSPlayer Profile
-  CreateProfile("processing", "deinterlacing|artifactRemoval|enhancements", DSGROUP, DSPROFILE);
+  CreateProfile("processing", "deinterlacing|artifactRemoval|enhancements|zoomControl", DSGROUP, DSPROFILE);
   CreateProfile("scalingParent", "chromaUp|lumaUp|lumaDown|imageDoubling|upRefine", DSGROUP, DSPROFILE);
   CreateProfile("rendering", "smoothMotion|dithering", DSGROUP, DSPROFILE);
 
@@ -605,6 +633,8 @@ void CMadvrSettingsManager::RestoreSettings()
   SetBool("adaptiveSharpen", madvrSettings.m_adaptiveSharpen);
   SetFloat("adaptiveSharpenStrength", madvrSettings.m_adaptiveSharpenStrength, 10);
 
+  SetNoSmallScaling("", madvrSettings.m_noSmallScaling);
+
   SetBool("upRefFineSharp", madvrSettings.m_UpRefFineSharp);
   SetFloat("upRefFineSharpStrength", madvrSettings.m_UpRefFineSharpStrength, 10);
   SetBool("upRefLumaSharpen", madvrSettings.m_UpRefLumaSharpen);
@@ -646,6 +676,8 @@ void CMadvrSettingsManager::LoadSettings(MADVR_LOAD_TYPE type)
     GetFloat("lumaSharpenRadius", &madvrSettings.m_lumaSharpenRadius, 10);
     GetBool("adaptiveSharpen", &madvrSettings.m_adaptiveSharpen);
     GetFloat("adaptiveSharpenStrength", &madvrSettings.m_adaptiveSharpenStrength, 10);
+
+    GetNoSmallScaling("", &madvrSettings.m_noSmallScaling);
 
     GetDithering("", &madvrSettings.m_dithering);
     GetBool("coloredDither", &madvrSettings.m_ditheringColoredNoise);
@@ -725,6 +757,9 @@ std::vector<CMadvrSettingsList*>* CMadvrSettingsManager::GetSettingsVector(MADVR
   case MADVR_LIST_DEINTACTIVE:
     vec = &m_settingsDeintActive;
     break;
+  case MADVR_LIST_NOSMALLSCALING:
+    vec = &m_settingsNoSmallScaling;
+    break;
   case MADVR_LIST_SMOOTHMOTION:
     vec = &m_settingsSmoothMotion;
     break;
@@ -785,7 +820,6 @@ std::string CMadvrSettingsManager::GetSettingsName(MADVR_SETTINGS_LIST type, int
 
   return result;
 }
-
 
 void CMadvrSettingsManager::AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry)
 {
@@ -923,6 +957,16 @@ void CMadvrSettingsManager::InitSettings()
   // Deint Active
   AddSettingsList(MADVR_LIST_DEINTACTIVE, "ifdoubt_active", 70205, 0 );
   AddSettingsList(MADVR_LIST_DEINTACTIVE, "ifdoubt_deactive", 70206, 1);
+
+  // No Small Scaling
+  AddSettingsList(MADVR_LIST_NOSMALLSCALING, "1lines", 70209, 1);
+  AddSettingsList(MADVR_LIST_NOSMALLSCALING, "2lines", 70210, 2);
+  AddSettingsList(MADVR_LIST_NOSMALLSCALING, "3lines", 70211, 3);
+  AddSettingsList(MADVR_LIST_NOSMALLSCALING, "5lines", 70212, 5);
+  AddSettingsList(MADVR_LIST_NOSMALLSCALING, "7lines", 70213, 7);
+  AddSettingsList(MADVR_LIST_NOSMALLSCALING, "10lines", 70214, 10);
+  AddSettingsList(MADVR_LIST_NOSMALLSCALING, "15lines", 70215, 15);
+  AddSettingsList(MADVR_LIST_NOSMALLSCALING, "25lines", 70216, 25);
 
   // Smoothmotion
   AddSettingsList(MADVR_LIST_SMOOTHMOTION, "avoidJudder", 70301, 0 );

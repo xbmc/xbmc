@@ -96,6 +96,7 @@
 #define SET_IMAGE_ADAPTIVESHARPEN              "madvr.adaptivesharpen"
 #define SET_IMAGE_ADAPTIVESHARPEN_STRENGTH     "madvr.adaptivesharpenstrength"
 
+#define SETTING_MADVR_NOSMALLSCALING           "madvr.nosmallscaling"
 #endif
 
 #define SETTING_VIDEO_STEREOSCOPICMODE    "video.stereoscopicmode"
@@ -227,6 +228,11 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
   {
     madvrSettings.m_adaptiveSharpenStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
     CMadvrCallback::Get()->SetFloat("adaptiveSharpenStrength", madvrSettings.m_adaptiveSharpenStrength, 10);
+  }
+  else if (settingId == SETTING_MADVR_NOSMALLSCALING)
+  {
+    madvrSettings.m_noSmallScaling = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+    CMadvrCallback::Get()->SetNoSmallScaling("", madvrSettings.m_noSmallScaling);
   }
   else if (settingId == VIDEO_SETTINGS_DS_STATS)
   {
@@ -776,6 +782,13 @@ void CGUIDialogVideoSettings::InitializeSettings()
       AddSlider(groupMadvrSharp, SET_IMAGE_LUMASHARPEN_RADIUS, 70129, 0, madvrSettings.m_lumaSharpenRadius, "%1.1f", 0.0f, 0.1f, 6.0f, 70119, usePopup);
       AddToggle(groupMadvrSharp, SET_IMAGE_ADAPTIVESHARPEN, 70120, 0, madvrSettings.m_adaptiveSharpen);
       AddSlider(groupMadvrSharp, SET_IMAGE_ADAPTIVESHARPEN_STRENGTH, 70122, 0, madvrSettings.m_adaptiveSharpenStrength, "%1.1f", 0.0f, 0.1f, 1.5f, 70120, usePopup);
+
+      // MADVR NOSMALLSCALING
+      entries.clear();
+      entries.push_back(make_pair(70117, -1));
+      CMadvrCallback::Get()->AddEntry(MADVR_LIST_NOSMALLSCALING, &entries);
+
+      AddList(groupMadvrScale, SETTING_MADVR_NOSMALLSCALING, 70208, 0, static_cast<int>(madvrSettings.m_noSmallScaling), entries, 70208);
 
       // MADVR SCALING
       AddButton(groupMadvrScale, SETTING_MADVR_SCALING, 70000, 0);

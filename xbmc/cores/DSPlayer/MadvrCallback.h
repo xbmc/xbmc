@@ -77,6 +77,7 @@ enum MADVR_SETTINGS_LIST
   MADVR_LIST_DEINTFORCE,
   MADVR_LIST_DEINTACTIVE,
   MADVR_LIST_SMOOTHMOTION,
+  MADVR_LIST_NOSMALLSCALING,
   MADVR_LIST_DITHERING,
   MADVR_LIST_DEBAND,
   MADVR_LIST_DEBAND_LEVEL,
@@ -143,6 +144,7 @@ public:
   virtual void SetFloat(std::string path, float fValue, int iConv = 100){};
   virtual void SetDoubling(std::string path, int iValue){};
   virtual void SetDeintActive(std::string path, int iValue){};
+  virtual void SetNoSmallScaling(std::string path, int iValue){};
   virtual void SetSmoothmotion(std::string path, int iValue){};
   virtual void SetDithering(std::string path, int iValue){};
   virtual std::string GetSettingsName(MADVR_SETTINGS_LIST type, int iValue){ return ""; };
@@ -186,6 +188,7 @@ public:
   virtual void SetFloat(std::string path, float fValue, int iConv = 100);
   virtual void SetDoubling(std::string path, int iValue);
   virtual void SetDeintActive(std::string path, int iValue);
+  virtual void SetNoSmallScaling(std::string path, int iValue);
   virtual void SetSmoothmotion(std::string path, int iValue);
   virtual void SetDithering(std::string path, int iValue);
   virtual std::string GetSettingsName(MADVR_SETTINGS_LIST type, int iValue);
