@@ -121,15 +121,21 @@ bool CGUIWindowPVRSearch::OnContextButton(const CFileItem &item, CONTEXT_BUTTON 
         m_searchfilter.m_strSearchTerm = "\"" + item.GetEPGInfoTag()->Title() + "\"";
       else if (item.IsPVRChannel())
       {
-        CEpgInfoTagPtr tag(item.GetPVRChannelInfoTag()->GetEPGNow());
+        const CEpgInfoTagPtr tag(item.GetPVRChannelInfoTag()->GetEPGNow());
         if (tag)
           m_searchfilter.m_strSearchTerm = "\"" + tag->Title() + "\"";
       }
       else if (item.IsUsablePVRRecording())
         m_searchfilter.m_strSearchTerm = "\"" + item.GetPVRRecordingInfoTag()->m_strTitle + "\"";
       else if (item.IsPVRTimer())
-        m_searchfilter.m_strSearchTerm = "\"" + item.GetPVRTimerInfoTag()->m_strTitle + "\"";
-
+      {
+        const CPVRTimerInfoTagPtr info(item.GetPVRTimerInfoTag());
+        const CEpgInfoTagPtr tag(info->GetEpgInfoTag());
+        if (tag)
+          m_searchfilter.m_strSearchTerm = "\"" + tag->Title() + "\"";
+        else
+          m_searchfilter.m_strSearchTerm = "\"" + info->m_strTitle + "\"";
+      }
       m_bSearchConfirmed = true;
       Refresh(true);
       bReturn = true;
