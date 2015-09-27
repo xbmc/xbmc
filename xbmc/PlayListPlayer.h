@@ -51,7 +51,7 @@ class CPlayListPlayer : public IMsgTargetCallback,
 public:
   CPlayListPlayer(void);
   virtual ~CPlayListPlayer(void);
-  virtual bool OnMessage(CGUIMessage &message);
+  virtual bool OnMessage(CGUIMessage &message) override;
 
   virtual int GetMessageMask() override;
   virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;

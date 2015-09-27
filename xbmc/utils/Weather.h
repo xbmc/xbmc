@@ -156,10 +156,10 @@ public:
   void SetArea(int iLocation);
   int GetArea() const;
 protected:
-  virtual CJob *GetJob() const;
-  virtual std::string TranslateInfo(int info) const;
-  virtual std::string BusyInfo(int info) const;
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  virtual CJob *GetJob() const override;
+  virtual std::string TranslateInfo(int info) const override;
+  virtual std::string BusyInfo(int info) const override;
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 
   virtual void OnSettingChanged(const CSetting *setting) override;
   virtual void OnSettingAction(const CSetting *setting) override;
