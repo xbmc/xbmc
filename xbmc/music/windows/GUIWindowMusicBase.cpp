@@ -1207,8 +1207,8 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const std::string &pa
       // really, this may not be enough as it is to reliably update this item.  eg think of various artists albums
       // that aren't tagged as such (and aren't yet scanned).  But we probably can't do anything better than this
       // in that case
-      if (album.strAlbum == tag->GetAlbum() && (album.artist == tag->GetAlbumArtist() ||
-                                                album.artist == tag->GetArtist()))
+      if (album.strAlbum == tag->GetAlbum() && (album.GetAlbumArtist() == tag->GetAlbumArtist() ||
+                                                album.GetAlbumArtist() == tag->GetArtist()))
       {
         g_infoManager.SetCurrentAlbumThumb(albumThumb);
       }

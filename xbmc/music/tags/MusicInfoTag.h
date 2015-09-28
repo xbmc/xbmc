@@ -50,7 +50,7 @@ public:
   const std::string& GetTitle() const;
   const std::string& GetURL() const;
   const std::vector<std::string>& GetArtist() const;
-  const std::string& GetArtistDesc() const;
+  const std::string GetArtistString() const;
   const std::string& GetAlbum() const;
   int GetAlbumId() const;
   const std::vector<std::string>& GetAlbumArtist() const;

@@ -188,9 +188,14 @@ const std::vector<std::string>& CMusicInfoTag::GetArtist() const
   return m_artist;
 }
 
-const std::string& CMusicInfoTag::GetArtistDesc() const
+const std::string CMusicInfoTag::GetArtistString() const
 {
-  return m_strArtistDesc;
+  if (!m_strArtistDesc.empty())
+    return m_strArtistDesc;
+  else if (!m_artist.empty())
+    return StringUtils::Join(m_artist, g_advancedSettings.m_musicItemSeparator);
+  else
+    return std::string();
 }
 
 const std::string& CMusicInfoTag::GetAlbum() const
@@ -323,16 +328,23 @@ void CMusicInfoTag::SetArtist(const std::string& strArtist)
 {
   if (!strArtist.empty())
   {
-    SetArtist(StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator));
     SetArtistDesc(strArtist);
+    SetArtist(StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator));
   }
   else
+  {
+    m_strArtistDesc.clear();
     m_artist.clear();
+  }
 }
 
 void CMusicInfoTag::SetArtist(const std::vector<std::string>& artists)
 {
   m_artist = artists;
+  if (m_strArtistDesc.empty()) 
+  { 
+    SetArtistDesc(StringUtils::Join(artists, g_advancedSettings.m_musicItemSeparator));
+  }
 }
 
 void CMusicInfoTag::SetArtistDesc(const std::string& strArtistDesc)
@@ -594,10 +606,10 @@ void CMusicInfoTag::SetArtist(const CArtist& artist)
 void CMusicInfoTag::SetAlbum(const CAlbum& album)
 {
   //Set all artist infomation from album artist credits and artist description
-  SetArtistDesc(album.strArtistDesc);
+  SetArtistDesc(album.GetAlbumArtistString());
   SetArtist(album.GetAlbumArtist());
   SetMusicBrainzArtistID(album.GetMusicBrainzAlbumArtistID());
-  SetAlbumArtistDesc(album.strArtistDesc);
+  SetAlbumArtistDesc(album.GetAlbumArtistString());
   SetAlbumArtist(album.GetAlbumArtist());
   SetMusicBrainzAlbumArtistID(album.GetMusicBrainzAlbumArtistID());
   SetAlbumId(album.idAlbum);
@@ -623,12 +635,20 @@ void CMusicInfoTag::SetSong(const CSong& song)
 {
   SetTitle(song.strTitle);
   SetGenre(song.genre);
-  //Set all artist infomation from song artist credits and artist description
-  SetArtistDesc(song.strArtistDesc);
-  SetArtist(song.GetArtist());
-  SetMusicBrainzArtistID(song.GetMusicBrainzArtistID());
+  /* Set all artist infomation from song artist credits and artist description.
+     During processing e.g. Cue Sheets, song may only have artist description string 
+     rather than a fully populated artist credits vector.
+  */
+  if (!song.HasArtistCredits())
+    SetArtist(song.GetArtistString()); //Sets both artist description string and artist vector from string
+  else
+  {
+    SetArtistDesc(song.GetArtistString());
+    SetArtist(song.GetArtist());
+    SetMusicBrainzArtistID(song.GetMusicBrainzArtistID());
+  }
   SetAlbum(song.strAlbum);
-  SetAlbumArtist(song.albumArtist); //Only have album artist in song as vector, no desc or MBID
+  SetAlbumArtist(song.GetAlbumArtist()); //Only have album artist in song as vector, no desc or MBID
   SetMusicBrainzTrackID(song.strMusicBrainzTrackID);
   SetComment(song.strComment);
   SetCueSheet(song.strCueSheet);
