@@ -50,7 +50,7 @@ bool CEventsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       hostname = hostname.substr(0, hostname.size() - 1);
     }
 
-    EventLevel level = EventLevelFromString(hostname);
+    EventLevel level = CEventLog::GetInstance().EventLevelFromString(hostname);
 
     // get the events of the specified level(s)
     events = log.Get(level, includeHigherLevels);
@@ -73,7 +73,7 @@ CFileItemPtr CEventsDirectory::EventToFileItem(const EventPtr& eventItem)
     item->SetIconImage(eventItem->GetIcon());
 
   item->SetProperty(PROPERTY_EVENT_IDENTIFIER, eventItem->GetIdentifier());
-  item->SetProperty(PROPERTY_EVENT_LEVEL, EventLevelToString(eventItem->GetLevel()));
+  item->SetProperty(PROPERTY_EVENT_LEVEL, CEventLog::GetInstance().EventLevelToString(eventItem->GetLevel()));
   item->SetProperty(PROPERTY_EVENT_DESCRIPTION, eventItem->GetDescription());
 
   return item;

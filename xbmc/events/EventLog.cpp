@@ -34,6 +34,39 @@
 std::map<int, std::unique_ptr<CEventLog> > CEventLog::s_eventLogs;
 CCriticalSection CEventLog::s_critical;
 
+std::string CEventLog::EventLevelToString(EventLevel level)
+{
+  switch (level)
+  {
+  case EventLevelBasic:
+    return "basic";
+
+  case EventLevelWarning:
+    return "warning";
+
+  case EventLevelError:
+    return "error";
+
+  case EventLevelInformation:
+  default:
+    break;
+  }
+
+  return "information";
+}
+
+EventLevel CEventLog::EventLevelFromString(const std::string& level)
+{
+  if (level == "basic")
+    return EventLevelBasic;
+  if (level == "warning")
+    return EventLevelWarning;
+  if (level == "error")
+    return EventLevelError;
+
+  return EventLevelInformation;
+}
+
 CEventLog& CEventLog::GetInstance()
 {
   int currentProfileId = CProfilesManager::GetInstance().GetCurrentProfileId();
