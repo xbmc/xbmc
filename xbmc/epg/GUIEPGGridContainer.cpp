@@ -977,7 +977,7 @@ void CGUIEPGGridContainer::UpdateItems(CFileItemList *items)
     {
       CFileItemPtr item = m_gridIndex[row][block].item;
 
-      if (item != m_gridIndex[row][block+1].item)
+      if ((item != m_gridIndex[row][block+1].item) || (!item && block == m_blocks - 1))
       {
         if (!item)
         {
