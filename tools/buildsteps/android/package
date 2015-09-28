@@ -18,4 +18,4 @@ if [ -f *.obb ]
 then
   mv *.obb $UPLOAD_FILENAME.obb
 fi
-mv tools/android/packaging/Kodi.symbols*.tar.bz2 $ANDROID_DEV_ROOT/debug-symbols/
+mv tools/android/packaging/Kodi.symbols*.tar.bz2 $WORKSPACE/
