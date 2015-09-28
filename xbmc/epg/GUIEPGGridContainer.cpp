@@ -982,6 +982,7 @@ void CGUIEPGGridContainer::UpdateItems(CFileItemList *items)
         if (!item)
         {
           CEpgInfoTagPtr gapTag(CEpgInfoTag::CreateDefaultTag());
+          gapTag->SetPVRChannel(m_channelItems[row]->GetPVRChannelInfoTag());
           CFileItemPtr gapItem(new CFileItem(gapTag));
           for (int i = block ; i > block - itemSize; i--)
           {
@@ -1486,6 +1487,19 @@ int CGUIEPGGridContainer::GetSelectedItem() const
 const int CGUIEPGGridContainer::GetSelectedChannel() const
 {
   return m_channelCursor + m_channelOffset;
+}
+
+CFileItemPtr CGUIEPGGridContainer::GetSelectedChannelItem() const
+{
+  CFileItemPtr item;
+
+  if (!m_gridIndex.empty() &&
+      !m_epgItemsPtr.empty() &&
+      m_channelCursor + m_channelOffset < m_channels &&
+      m_blockCursor + m_blockOffset < m_blocks)
+    item = m_gridIndex[m_channelCursor + m_channelOffset][m_blockCursor + m_blockOffset].item;
+
+  return item;
 }
 
 CEpgInfoTagPtr CGUIEPGGridContainer::GetSelectedEpgInfoTag() const

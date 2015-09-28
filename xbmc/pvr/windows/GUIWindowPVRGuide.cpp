@@ -250,6 +250,31 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
               break;
           }
         }
+        else if (iItem == -1)
+        {
+          /* process actions */
+          switch (message.GetParam1())
+          {
+            case ACTION_SELECT_ITEM:
+            case ACTION_MOUSE_LEFT_CLICK:
+            case ACTION_PLAY:
+            {
+              // EPG "gap" selected => switch to associated channel.
+              CGUIEPGGridContainer *epgGridContainer =
+                dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
+              if (epgGridContainer)
+              {
+                CFileItemPtr item(epgGridContainer->GetSelectedChannelItem());
+                if (item)
+                {
+                  ActionPlayEpg(item.get(), false);
+                  bReturn = true;
+                }
+              }
+              break;
+            }
+          }
+        }
       }
       else if (message.GetSenderId() == CONTROL_BTNVIEWASICONS)
       {
