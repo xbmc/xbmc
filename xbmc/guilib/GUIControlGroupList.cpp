@@ -81,15 +81,17 @@ void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &d
       g_graphicsContext.SetOrigin(m_posX + pos - m_scroller.GetValue(), m_posY);
     control->DoProcess(currentTime, dirtyregions);
 
-    if (IsControlOnScreen(pos, control))
-    {
-      if (control->HasFocus())
-        m_focusedPosition = index;
-      index++;
-    }
-
     if (control->IsVisible())
+    {
+      if (IsControlOnScreen(pos, control))
+      {
+        if (control->HasFocus())
+          m_focusedPosition = index;
+        index++;
+      }
+
       pos += Size(control) + m_itemGap;
+    }
     g_graphicsContext.RestoreOrigin();
   }
   CGUIControl::Process(currentTime, dirtyregions);
