@@ -173,8 +173,8 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
       value = StringUtils::Format("%02.2i", music->GetDiscNumber());
     break;
   case 'A':
-    if (music && music->GetArtist().size())
-      value = StringUtils::Join(music->GetArtist(), g_advancedSettings.m_musicItemSeparator);
+    if (music && music->GetArtistString().size())
+      value = music->GetArtistString(); 
     if (movie && movie->m_artist.size())
       value = StringUtils::Join(movie->m_artist, g_advancedSettings.m_videoItemSeparator);
     break;
