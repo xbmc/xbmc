@@ -408,6 +408,13 @@ void CGUITextLayout::ParseText(const std::wstring &text, uint32_t defaultStyle, 
          (!on && (currentStyle & FONT_STYLE_CAPITALIZE)))  // or matching start point
         newStyle = FONT_STYLE_CAPITALIZE;
     }
+    else if (text.compare(pos, 6, L"LIGHT]") == 0)
+    {
+      pos += 6;
+      if ((on && text.find(L"[/LIGHT]", pos) != std::string::npos) ||
+         (!on && (currentStyle & FONT_STYLE_LIGHT)))
+        newStyle = FONT_STYLE_LIGHT;
+    }
     else if (text.compare(pos, 3, L"CR]") == 0 && on)
     {
       newLine = true;

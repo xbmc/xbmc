@@ -601,7 +601,7 @@ unsigned int CGUIFontTTFBase::GetTextureLineHeight() const
 CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(character_t chr)
 {
   wchar_t letter = (wchar_t)(chr & 0xffff);
-  character_t style = (chr & 0x3000000) >> 24;
+  character_t style = (chr & 0x7000000) >> 24;
 
   // ignore linebreaks
   if (letter == L'\r')
@@ -701,6 +701,9 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
   // and italics if applicable
   if (style & FONT_STYLE_ITALICS)
     ObliqueGlyph(m_face->glyph);
+  // and light if applicable
+  if (style & FONT_STYLE_LIGHT)
+    LightenGlyph(m_face->glyph);
   // grab the glyph
   if (FT_Get_Glyph(m_face->glyph, &glyph))
   {
@@ -997,4 +1000,36 @@ void CGUIFontTTFBase::EmboldenGlyph(FT_GlyphSlot slot)
   slot->metrics.vertAdvance  += dy;
 }
 
+// Lighten code - original taken from freetype2 (ftsynth.c)  
+void CGUIFontTTFBase::LightenGlyph(FT_GlyphSlot slot)
+{
+  if (slot->format != FT_GLYPH_FORMAT_OUTLINE)
+    return;
+
+  /* some reasonable strength */
+  FT_Pos strength = FT_MulFix(m_face->units_per_EM,
+                              m_face->size->metrics.y_scale) / -48;
+
+  FT_BBox bbox_before, bbox_after;
+  FT_Outline_Get_CBox(&slot->outline, &bbox_before);
+  FT_Outline_Embolden(&slot->outline, strength);  // ignore error  
+  FT_Outline_Get_CBox(&slot->outline, &bbox_after);
+
+  FT_Pos dx = bbox_after.xMax - bbox_before.xMax;
+  FT_Pos dy = bbox_after.yMax - bbox_before.yMax;
+
+  if (slot->advance.x)
+    slot->advance.x += dx;
+
+  if (slot->advance.y)
+    slot->advance.y += dy;
+
+  slot->metrics.width += dx;
+  slot->metrics.height += dy;
+  slot->metrics.horiBearingY += dy;
+  slot->metrics.horiAdvance += dx;
+  slot->metrics.vertBearingX -= dx / 2;
+  slot->metrics.vertBearingY += dy;
+  slot->metrics.vertAdvance += dy;
+}
 
