@@ -387,7 +387,7 @@ void CGUIWindowPVRGuide::GetViewTimelineItems(CFileItemList &items)
 
     m_cachedTimeline->Clear();
     m_cachedChannelGroup = group;
-    m_cachedChannelGroup->GetEPGAll(*m_cachedTimeline);
+    m_cachedChannelGroup->GetEPGAll(*m_cachedTimeline, true);
   }
 
   items.Clear();
