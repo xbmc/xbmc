@@ -57,6 +57,9 @@ public:
 
   bool Execute(const std::string& eventIdentifier);
 
+  std::string EventLevelToString(EventLevel level);
+  EventLevel EventLevelFromString(const std::string& level);
+
   void ShowFullEventLog(EventLevel level = EventLevelBasic, bool includeHigherLevels = true);
 
 protected:

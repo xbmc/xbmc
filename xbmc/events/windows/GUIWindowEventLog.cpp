@@ -238,7 +238,7 @@ bool CGUIWindowEventLog::GetDirectory(const std::string &strDirectory, CFileItem
     if (!item->HasProperty(PROPERTY_EVENT_LEVEL))
       continue;
 
-    EventLevel level = EventLevelFromString(item->GetProperty(PROPERTY_EVENT_LEVEL).asString());
+    EventLevel level = CEventLog::GetInstance().EventLevelFromString(item->GetProperty(PROPERTY_EVENT_LEVEL).asString());
     if (level == currentLevel ||
       (level > currentLevel && showHigherLevels))
       filteredItems.Add(item);
