@@ -145,6 +145,7 @@ config.log
 /lib/addons/library.xbmc.codec/project/VS2010Express/Debug
 /lib/addons/library.xbmc.pvr/project/VS2010Express/Release
 /lib/addons/library.xbmc.pvr/project/VS2010Express/Debug
+/lib/addons/library.kodi.audioengine/Makefile
 /lib/addons/library.kodi.audioengine/project/VS2010Express/Release/
 /lib/addons/library.kodi.audioengine/project/VS2010Express/Debug/
 
