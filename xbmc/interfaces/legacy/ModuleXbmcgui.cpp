@@ -34,12 +34,12 @@ namespace XBMCAddon
   {
     void lock()
     {
-      CLog::Log(LOGWARNING,"'xbmcgui.lock()' is depreciated and serves no purpose anymore, it will be removed in future releases");
+      CLog::Log(LOGWARNING,"'xbmcgui.lock()' is deprecated and serves no purpose anymore, it will be removed in future releases");
     }
 
     void unlock()
     {
-      CLog::Log(LOGWARNING,"'xbmcgui.unlock()' is depreciated and serves no purpose anymore, it will be removed in future releases");
+      CLog::Log(LOGWARNING,"'xbmcgui.unlock()' is deprecated and serves no purpose anymore, it will be removed in future releases");
     }
 
     long getCurrentWindowId()
