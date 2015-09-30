@@ -74,7 +74,7 @@ void CAddonDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE broken (id integer primary key, addonID text, reason text)\n");
 
   CLog::Log(LOGINFO, "create blacklist table");
-  m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text, version text)\n");
+  m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text)\n");
 
   CLog::Log(LOGINFO, "create package table");
   m_pDS->exec("CREATE TABLE package (id integer primary key, addonID text, filename text, hash text)\n");
@@ -115,6 +115,13 @@ void CAddonDatabase::UpdateTables(int version)
   if (version < 19)
   {
     m_pDS->exec("CREATE TABLE system (id integer primary key, addonID text)\n");
+  }
+  if (version < 20)
+  {
+    m_pDS->exec("CREATE TABLE tmp (id INTEGER PRIMARY KEY, addonID TEXT)");
+    m_pDS->exec("INSERT INTO tmp (addonID) SELECT addonID FROM blacklist GROUP BY addonID");
+    m_pDS->exec("DROP TABLE blacklist");
+    m_pDS->exec("ALTER TABLE tmp RENAME TO blacklist");
   }
 }
 
@@ -805,57 +812,36 @@ bool CAddonDatabase::HasDisabledAddons()
 
 bool CAddonDatabase::BlacklistAddon(const std::string& addonID)
 {
-  return BlacklistAddon(addonID, "");
-}
-
-bool CAddonDatabase::BlacklistAddon(const std::string& addonID,
-                                    const std::string& version)
-{
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    std::string sql = PrepareSQL("INSERT OR REPLACE INTO blacklist(id, addonID, version) "
-        "VALUES(NULL, '%s', '%s')", addonID.c_str(), version.c_str());
+    std::string sql = PrepareSQL("INSERT INTO blacklist(id, addonID) VALUES(NULL, '%s')", addonID.c_str());
     m_pDS->exec(sql);
-
     return true;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed on addon '%s' for version '%s'", __FUNCTION__, addonID.c_str(),version.c_str());
+    CLog::Log(LOGERROR, "%s failed on addon '%s'", __FUNCTION__, addonID.c_str());
   }
   return false;
 }
 
-bool CAddonDatabase::IsAddonBlacklisted(const std::string& addonID,
-                                        const std::string& version)
-{
-  std::string where = PrepareSQL("addonID='%s' and (version='%s' OR version='')",addonID.c_str(),version.c_str());
-  return !GetSingleValue("blacklist","addonID",where).empty();
-}
-
 bool CAddonDatabase::RemoveAddonFromBlacklist(const std::string& addonID)
-{
-  return RemoveAddonFromBlacklist(addonID, "");
-}
-
-bool CAddonDatabase::RemoveAddonFromBlacklist(const std::string& addonID,
-                                              const std::string& version)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    std::string sql = PrepareSQL("delete from blacklist where addonID='%s' and version='%s'",addonID.c_str(),version.c_str());
+    std::string sql = PrepareSQL("DELETE FROM blacklist WHERE addonID='%s'", addonID.c_str());
     m_pDS->exec(sql);
     return true;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed on addon '%s' for version '%s'", __FUNCTION__, addonID.c_str(),version.c_str());
+    CLog::Log(LOGERROR, "%s failed on addon '%s'", __FUNCTION__, addonID.c_str());
   }
   return false;
 }

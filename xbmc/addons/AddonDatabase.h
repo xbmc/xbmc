@@ -117,11 +117,7 @@ public:
   std::string IsAddonBroken(const std::string &addonID);
 
   bool BlacklistAddon(const std::string& addonID);
-  bool BlacklistAddon(const std::string& addonID, const std::string& version);
-  bool IsAddonBlacklisted(const std::string& addonID, const std::string& version);
   bool RemoveAddonFromBlacklist(const std::string& addonID);
-  bool RemoveAddonFromBlacklist(const std::string& addonID,
-                                const std::string& version);
   bool GetBlacklisted(std::vector<std::string>& addons);
 
   /*! \brief Store an addon's package filename and that file's hash for future verification
@@ -166,7 +162,7 @@ protected:
   virtual void CreateAnalytics();
   virtual void UpdateTables(int version);
   virtual int GetMinSchemaVersion() const { return 15; }
-  virtual int GetSchemaVersion() const { return 19; }
+  virtual int GetSchemaVersion() const { return 20; }
   const char *GetBaseDBName() const { return "Addons"; }
 
   bool GetAddon(int id, ADDON::AddonPtr& addon);
