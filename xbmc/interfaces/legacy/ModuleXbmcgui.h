@@ -25,21 +25,12 @@ namespace XBMCAddon
   namespace xbmcgui
   {
     /**
-     * lock() -- Lock the gui until xbmcgui.unlock() is called.\n
-     * \n
-     * *Note, This will improve performance when doing a lot of gui manipulation at once.\n
-     *        The main program (xbmc itself) will freeze until xbmcgui.unlock() is called.\n
-     * 
-     * example:
-     *   - xbmcgui.lock()
+     * lock() -- deprecated and serves no purpose anymore.
      */
     void lock();
 
     /**
-     * unlock() -- Unlock the gui from a lock() call.
-     * 
-     * example:
-     *   - xbmcgui.unlock()
+     * unlock() -- deprecated and serves no purpose anymore.
      */
     void unlock();
 
