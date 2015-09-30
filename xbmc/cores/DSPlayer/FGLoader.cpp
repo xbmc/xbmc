@@ -641,6 +641,8 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
       f.internalLav = true;
       CGraphFilters::Get()->SetupLavSettings(LAVAUDIO, f.pBF);
     }
+    if (filterName == "xysubfilter_internal")
+      f.internalLav = true;
 
     g_charsetConverter.wToUTF8(filter->GetName(), f.osdname);
     if (filter->GetType() == CFGFilter::INTERNAL)

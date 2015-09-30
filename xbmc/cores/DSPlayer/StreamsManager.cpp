@@ -633,6 +633,13 @@ void CStreamsManager::LoadStreams()
       m_pIDirectVobSub->put_LoadSettings(1, true, false, true);
       m_InitialSubsDelay = GetSubTitleDelay();
 
+      Com::SmartQIPtr<IDSPlayerCustom> pDPlayerCustom;
+      hr = m_pSubs->QueryInterface(__uuidof(pDPlayerCustom), (void **)&pDPlayerCustom);
+      if (SUCCEEDED(hr))
+      {
+        pDPlayerCustom->SetPropertyPageCallback(CGraphFilters::PropertyPageCallback);
+      }
+
       SubInterface(ADD_EXTERNAL_SUB);
     }
   }

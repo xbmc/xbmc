@@ -121,6 +121,9 @@ void CGraphFilters::GetCurrentFilter(LAVFILTERS_TYPE type, IBaseFilter **ppBF)
   if (type == LAVSPLITTER && Source.pBF && Source.internalLav)
     m_pBF = Source.pBF;
 
+  if (type == XYSUBFILTER && Subs.pBF && Subs.internalLav)
+    m_pBF = Subs.pBF;
+
   *ppBF = m_pBF;
 }
 
@@ -177,6 +180,8 @@ LAVFILTERS_TYPE CGraphFilters::GetInternalType(IBaseFilter *pBF)
     return LAVAUDIO;
   if ((Source.pBF == pBF && Source.internalLav) || (Splitter.pBF == pBF && Splitter.internalLav))
     return LAVSPLITTER;
+  if ((Subs.pBF == pBF && Subs.internalLav))
+    return XYSUBFILTER;
 
   return NULLFILTER;
 }
