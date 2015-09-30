@@ -99,7 +99,7 @@ public:
    */
   bool HasJob(const std::string& ID) const;
 
-  void InstallUpdates();
+  void InstallUpdates(bool includeBlacklisted = false);
 
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
   void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);

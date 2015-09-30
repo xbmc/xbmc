@@ -223,7 +223,7 @@ class UpdateAddons : public IRunnable
 {
   virtual void Run()
   {
-    CAddonInstaller::GetInstance().InstallUpdates();
+    CAddonInstaller::GetInstance().InstallUpdates(true);
   }
 };
 
