@@ -50,7 +50,6 @@ public:
     GENERAL_RESET,                  // reset codecs for new data
     GENERAL_STREAMCHANGE,           //
     GENERAL_SYNCHRONIZE,            //
-    GENERAL_DELAY,                  //
     GENERAL_GUI_ACTION,             // gui action of some sort
     GENERAL_EOF,                    // eof of stream
 
@@ -132,14 +131,6 @@ private:
 ////// GENERAL_ Messages
 //////
 ////////////////////////////////////////////////////////////////////////////////
-
-class CDVDMsgGeneralResync : public CDVDMsg
-{
-public:
-  CDVDMsgGeneralResync(double timestamp, bool clock) : CDVDMsg(GENERAL_RESYNC)  { m_timestamp = timestamp; m_clock = clock; }
-  double m_timestamp;
-  bool m_clock;
-};
 
 #define SYNCSOURCE_AUDIO  0x00000001
 #define SYNCSOURCE_VIDEO  0x00000002

@@ -107,21 +107,24 @@ namespace PVR
 class CCurrentStream
 {
 public:
-  int              id;     // demuxerid of current playing stream
-  int              source;
-  double           dts;    // last dts from demuxer, used to find disncontinuities
-  double           dur;    // last frame expected duration
-  double           dts_state; // when did we last send a playback state update
-  CDVDStreamInfo   hint;   // stream hints, used to notice stream changes
-  void*            stream; // pointer or integer, identifying stream playing. if it changes stream changed
-  int              changes; // remembered counter from stream to track codec changes
-  bool             inited;
-  bool             started; // has the player started
+  int id;     // demuxerid of current playing stream
+  int source;
+  double dts;    // last dts from demuxer, used to find disncontinuities
+  double dur;    // last frame expected duration
+  double dts_state; // when did we last send a playback state update
+  CDVDStreamInfo hint;   // stream hints, used to notice stream changes
+  void* stream; // pointer or integer, identifying stream playing. if it changes stream changed
+  int changes; // remembered counter from stream to track codec changes
+  bool inited;
+  IDVDStreamPlayer::ESyncState syncState;
+  double starttime;
+  double cachetime;
+  double cachetotal;
   const StreamType type;
-  const int        player;
+  const int player;
   // stuff to handle starting after seek
-  double   startpts;
-  double   lastdts;
+  double startpts;
+  double lastdts;
 
   CCurrentStream(StreamType t, int i)
     : type(t)
@@ -132,17 +135,18 @@ public:
 
   void Clear()
   {
-    id     = -1;
+    id = -1;
     source = STREAM_SOURCE_NONE;
-    dts    = DVD_NOPTS_VALUE;
+    dts = DVD_NOPTS_VALUE;
     dts_state = DVD_NOPTS_VALUE;
-    dur    = DVD_NOPTS_VALUE;
+    dur = DVD_NOPTS_VALUE;
     hint.Clear();
     stream = NULL;
     changes = 0;
     inited = false;
-    started = false;
-    startpts  = DVD_NOPTS_VALUE;
+    syncState = IDVDStreamPlayer::SYNC_STARTING;
+    starttime = DVD_NOPTS_VALUE;
+    startpts = DVD_NOPTS_VALUE;
     lastdts = DVD_NOPTS_VALUE;
   }
 
@@ -207,13 +211,6 @@ public:
   void             Update  (SelectionStream& s);
   void             Update  (CDVDInputStream* input, CDVDDemux* demuxer, std::string filename2 = "");
 };
-
-
-#define VideoPlayer_AUDIO    1
-#define VideoPlayer_VIDEO    2
-#define VideoPlayer_SUBTITLE 3
-#define VideoPlayer_TELETEXT 4
-#define VideoPlayer_RDS      5
 
 class CVideoPlayer : public IPlayer, public CThread, public IVideoPlayer, public IDispResource
 {
@@ -326,13 +323,12 @@ public:
   enum ECacheState
   { CACHESTATE_DONE = 0
   , CACHESTATE_FULL     // player is filling up the demux queue
-  , CACHESTATE_PVR      // player is waiting for some data in each buffer
   , CACHESTATE_INIT     // player is waiting for first packet of each stream
   , CACHESTATE_PLAY     // player is waiting for players to not be stalled
   , CACHESTATE_FLUSH    // temporary state player will choose startup between init or full
   };
 
-  virtual bool IsCaching() const { return m_caching == CACHESTATE_FULL || m_caching == CACHESTATE_PVR; }
+  virtual bool IsCaching() const { return m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_PLAY; }
   virtual int GetCacheLevel() const ;
 
   virtual int OnDVDNavResult(void* pData, int iMessage);
@@ -391,7 +387,6 @@ protected:
 
 
   void FlushBuffers(bool queued, double pts = DVD_NOPTS_VALUE, bool accurate = true, bool sync = true);
-  void TriggerResync();
 
   void HandleMessages();
   void HandlePlaySpeed();
@@ -421,7 +416,7 @@ protected:
 
   void UpdateApplication(double timeout);
   void UpdatePlayState(double timeout);
-  void UpdateClockMaster();
+
   double m_UpdateApplication;
 
   bool m_players_created;
@@ -490,13 +485,6 @@ protected:
     int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
   } m_dvd;
 
-  enum ETimeSource
-  {
-    ETIMESOURCE_CLOCK,
-    ETIMESOURCE_INPUT,
-    ETIMESOURCE_MENU,
-  };
-
   friend class CVideoPlayerVideo;
   friend class CVideoPlayerAudio;
 #ifdef HAS_OMXPLAYER
@@ -504,65 +492,9 @@ protected:
   friend class OMXPlayerAudio;
 #endif
 
-  struct SPlayerState
-  {
-    SPlayerState() { Clear(); }
-    void Clear()
-    {
-      player        = 0;
-      timestamp     = 0;
-      time          = 0;
-      disptime      = 0;
-      time_total    = 0;
-      time_offset   = 0;
-      time_src      = ETIMESOURCE_CLOCK;
-      dts           = DVD_NOPTS_VALUE;
-      player_state  = "";
-      chapter       = 0;
-      chapters.clear();
-      canrecord     = false;
-      recording     = false;
-      canpause      = false;
-      canseek       = false;
-      demux_video   = "";
-      demux_audio   = "";
-      cache_bytes   = 0;
-      cache_level   = 0.0;
-      cache_delay   = 0.0;
-      cache_offset  = 0.0;
-    }
-
-    int    player;            // source of this data
-
-    double timestamp;         // last time of update
-    double time_offset;       // difference between time and pts
-
-    double time;              // current playback time
-    double disptime;          // current time of frame on screen
-    double time_total;        // total playback time
-    ETimeSource time_src;     // current time source
-    double dts;               // last known dts
-
-    std::string player_state;  // full player state
-
-    int         chapter;      		   // current chapter
-    std::vector<std::pair<std::string, int64_t>> chapters; // name and position for chapters
-
-    bool canrecord;           // can input stream record
-    bool recording;           // are we currently recording
-
-    bool canpause;            // pvr: can pause the current playing item
-    bool canseek;             // pvr: can seek in the current playing item
-
-    std::string demux_video;
-    std::string demux_audio;
-
-    int64_t cache_bytes;   // number of bytes current's cached
-    double  cache_level;   // current estimated required cache level
-    double  cache_delay;   // time until cache is expected to reach estimated level
-    double  cache_offset;  // percentage of file ahead of current position
-  } m_State, m_StateInput;
+  SPlayerState m_State, m_StateInput;
   CCriticalSection m_StateSection;
+  XbmcThreads::EndTime m_syncTimer;
 
   CEvent m_ready;
 

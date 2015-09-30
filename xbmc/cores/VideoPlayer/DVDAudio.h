@@ -56,12 +56,12 @@ public:
   double GetPlayingPts();
   double GetCacheTime();  // returns total amount of data cached in audio output at this time
   double GetCacheTotal(); // returns total amount the audio device can buffer
+  double GetDelay(); // returns the time it takes to play a packet if we add one at this time
   double GetSyncError();
   void SetSyncErrorCorrection(double correction);
   double GetResampleRatio();
   void SetResampleMode(int mode);
   void Flush();
-  void Finish();
   void Drain();
 
   void SetSpeed(int iSpeed);
@@ -72,8 +72,6 @@ public:
   IAEStream *m_pAudioStream;
 
 protected:
-
-  double GetDelay(); // returns the time it takes to play a packet if we add one at this time
 
   double m_playingPts;
   double m_timeOfPts;
