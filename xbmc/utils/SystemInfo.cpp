@@ -991,7 +991,7 @@ const std::string& CSysInfo::GetKernelCpuFamily(void)
     if (uname(&un) == 0)
     {
       std::string machine(un.machine);
-      if (machine.compare(0, 3, "arm", 3) == 0)
+      if (machine.compare(0, 3, "arm", 3) == 0 || machine == "aarch64")
         kernelCpuFamily = "ARM";
       else if (machine.compare(0, 4, "mips", 4) == 0)
         kernelCpuFamily = "MIPS";
