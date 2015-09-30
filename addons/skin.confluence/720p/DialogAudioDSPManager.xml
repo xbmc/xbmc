@@ -3,7 +3,6 @@
 	<zorder>1</zorder>
 	<defaultcontrol>9000</defaultcontrol>
 	<include>dialogeffect</include>
-	<allowoverlay>no</allowoverlay>
 	<coordinates>
 		<left>40</left>
 		<top>40</top>

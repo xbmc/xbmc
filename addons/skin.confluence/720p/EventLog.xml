@@ -2,7 +2,6 @@
 <window>
 	<defaultcontrol always="true">570</defaultcontrol>
 	<menucontrol>9000</menucontrol>
-	<allowoverlay>no</allowoverlay>
 	<onload condition="!Skin.HasSetting(FirstTimeRun)">ActivateWindow(1112)</onload>
 	<views>570</views>
 	<controls>
