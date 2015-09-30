@@ -138,8 +138,7 @@ static void SetUpdateAvailProperties(CFileItemList &items)
       const AddonVersion installedVersion = AddonVersion(items[i]->GetProperty("Addon.Version").asString());
       AddonPtr repoAddon;
       database.GetAddon(addonId, repoAddon);
-      if (repoAddon && repoAddon->Version() > installedVersion &&
-          !database.IsAddonBlacklisted(addonId, repoAddon->Version().asString()))
+      if (repoAddon && repoAddon->Version() > installedVersion)
       {
         items[i]->SetProperty("Addon.Status", g_localizeStrings.Get(24068));
         items[i]->SetProperty("Addon.UpdateAvail", true);
