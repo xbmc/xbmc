@@ -2,7 +2,6 @@
 <window>
 	<defaultcontrol always="true">6</defaultcontrol>
 	<menucontrol>9000</menucontrol>
-	<allowoverlay>no</allowoverlay>
 	<controls>
 		<include>CommonBackground</include>
 		<control type="group">

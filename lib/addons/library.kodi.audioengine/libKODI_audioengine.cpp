@@ -64,10 +64,16 @@ DLLEXPORT void AudioEngine_unregister_me(void *hdl, void* cb)
 // ---------------------------------------------
 DLLEXPORT CAddonAEStream* AudioEngine_make_stream(void *hdl, void *cb, AEDataFormat DataFormat, unsigned int SampleRate, unsigned int EncodedSampleRate, enum AEChannel *Channels, unsigned int Options)
 {
-  AEStreamHandle *streamHandle = ((CB_AudioEngineLib*)cb)->MakeStream(DataFormat, SampleRate, EncodedSampleRate, Channels, Options);
-  if (!hdl || !cb || !streamHandle)
+  if (!hdl || !cb)
   {
-    fprintf(stderr, "%s-ERROR: AudioEngine_make_stream can't MakeStrean failed!\n", LIBRARY_NAME);
+    fprintf(stderr, "%s-ERROR: AudioEngine_register_me is called with NULL handle !!!\n", LIBRARY_NAME);
+    return NULL;
+  }
+
+  AEStreamHandle *streamHandle = ((CB_AudioEngineLib*)cb)->MakeStream(DataFormat, SampleRate, EncodedSampleRate, Channels, Options);
+  if (!streamHandle)
+  {
+    fprintf(stderr, "%s-ERROR: AudioEngine_make_stream MakeStream failed!\n", LIBRARY_NAME);
     return NULL;
   }
 

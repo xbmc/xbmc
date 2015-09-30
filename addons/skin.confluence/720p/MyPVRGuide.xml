@@ -2,7 +2,6 @@
 <window>
 	<defaultcontrol always="true">10</defaultcontrol>
 	<menucontrol>9000</menucontrol>
-	<allowoverlay>no</allowoverlay>
 	<views>10,11,12,13</views>
 	<controls>
 		<include>CommonBackground</include>
