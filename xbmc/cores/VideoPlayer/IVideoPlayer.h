@@ -22,11 +22,92 @@
 
 #include "DVDStreamInfo.h"
 #include "DVDMessageQueue.h"
+#include "DVDClock.h"
+
+#define VideoPlayer_AUDIO    1
+#define VideoPlayer_VIDEO    2
+#define VideoPlayer_SUBTITLE 3
+#define VideoPlayer_TELETEXT 4
+#define VideoPlayer_RDS      5
+
+enum ETimeSource
+{
+  ETIMESOURCE_CLOCK,
+  ETIMESOURCE_INPUT,
+  ETIMESOURCE_MENU,
+};
 
 template <typename T> class CRectGen;
 typedef CRectGen<float>  CRect;
 
 class DVDNavResult;
+
+struct SPlayerState
+{
+  SPlayerState() { Clear(); }
+  void Clear()
+  {
+    player        = 0;
+    timestamp     = 0;
+    time          = 0;
+    disptime      = 0;
+    time_total    = 0;
+    time_offset   = 0;
+    time_src      = ETIMESOURCE_CLOCK;
+    dts           = DVD_NOPTS_VALUE;
+    player_state  = "";
+    chapter       = 0;
+    chapters.clear();
+    canrecord     = false;
+    recording     = false;
+    canpause      = false;
+    canseek       = false;
+    demux_video   = "";
+    demux_audio   = "";
+    cache_bytes   = 0;
+    cache_level   = 0.0;
+    cache_delay   = 0.0;
+    cache_offset  = 0.0;
+  }
+
+  int    player;            // source of this data
+
+  double timestamp;         // last time of update
+  double time_offset;       // difference between time and pts
+
+  double time;              // current playback time
+  double disptime;          // current time of frame on screen
+  double time_total;        // total playback time
+  ETimeSource time_src;     // current time source
+  double dts;               // last known dts
+
+  std::string player_state;  // full player state
+
+  int         chapter;                   // current chapter
+  std::vector<std::pair<std::string, int64_t>> chapters; // name and position for chapters
+
+  bool canrecord;           // can input stream record
+  bool recording;           // are we currently recording
+
+  bool canpause;            // pvr: can pause the current playing item
+  bool canseek;             // pvr: can seek in the current playing item
+
+  std::string demux_video;
+  std::string demux_audio;
+
+  int64_t cache_bytes;   // number of bytes current's cached
+  double  cache_level;   // current estimated required cache level
+  double  cache_delay;   // time until cache is expected to reach estimated level
+  double  cache_offset;  // percentage of file ahead of current position
+};
+
+struct SStartMsg
+{
+  double timestamp;
+  int player;
+  double cachetime;
+  double cachetotal;
+};
 
 class IVideoPlayer
 {
@@ -46,6 +127,13 @@ public:
   virtual bool IsInited() const = 0;
   virtual bool AcceptsData() const = 0;
   virtual bool IsStalled() const = 0;
+
+  enum ESyncState
+  {
+    SYNC_STARTING,
+    SYNC_WAITSYNC,
+    SYNC_INSYNC
+  };
 };
 
 class CDVDVideoCodec;
@@ -58,7 +146,7 @@ public:
   virtual bool OpenStream(CDVDStreamInfo &hint) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
   virtual bool StepFrame() = 0;
-  virtual void Flush() = 0;
+  virtual void Flush(bool sync) = 0;
   virtual void WaitForBuffers() = 0;
   virtual bool AcceptsData() const = 0;
   virtual bool HasData() const = 0;
@@ -94,7 +182,7 @@ public:
   virtual bool OpenStream(CDVDStreamInfo &hints) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
   virtual void SetSpeed(int speed) = 0;
-  virtual void Flush() = 0;
+  virtual void Flush(bool sync) = 0;
   virtual void WaitForBuffers() = 0;
   virtual bool AcceptsData() const = 0;
   virtual bool HasData() const = 0;

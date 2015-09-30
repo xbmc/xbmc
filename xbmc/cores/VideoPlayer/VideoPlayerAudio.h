@@ -63,7 +63,7 @@ public:
   void CloseStream(bool bWaitForBuffers);
 
   void SetSpeed(int speed);
-  void Flush();
+  void Flush(bool sync);
 
   // waits until all available data has been rendered
   void WaitForBuffers();
@@ -160,10 +160,10 @@ protected:
   CDVDAudioCodec* m_pAudioCodec; // audio codec
   BitstreamStats m_audioStats;
 
-  int     m_speed;
-  bool    m_stalled;
-  bool    m_started;
-  bool    m_silence;
+  int m_speed;
+  bool m_stalled;
+  bool m_silence;
+  IDVDStreamPlayer::ESyncState m_syncState;
 
   bool OutputPacket(DVDAudioFrame &audioframe);
 

@@ -67,7 +67,7 @@ public:
   void CloseStream(bool bWaitForBuffers);
 
   bool StepFrame();
-  void Flush();
+  void Flush(bool sync);
 
   // waits until all available data has been rendered
   // just waiting for packetqueue should be enough for video
@@ -165,7 +165,7 @@ protected:
   int m_speed;
 
   bool m_stalled;
-  bool m_started;
+  IDVDStreamPlayer::ESyncState m_syncState;
   std::string m_codecname;
 
   BitstreamStats m_videoStats;

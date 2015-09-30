@@ -536,9 +536,9 @@ float CActiveAEBufferPoolResample::GetDelay()
   std::deque<CSampleBuffer*>::iterator itBuf;
 
   if (m_procSample)
-    delay += m_procSample->pkt->nb_samples / m_procSample->pkt->config.sample_rate;
+    delay += (float)m_procSample->pkt->nb_samples / m_procSample->pkt->config.sample_rate;
   if (m_dspSample)
-    delay += m_dspSample->pkt->nb_samples / m_dspSample->pkt->config.sample_rate;
+    delay += (float)m_dspSample->pkt->nb_samples / m_dspSample->pkt->config.sample_rate;
 
   for(itBuf=m_inputSamples.begin(); itBuf!=m_inputSamples.end(); ++itBuf)
   {

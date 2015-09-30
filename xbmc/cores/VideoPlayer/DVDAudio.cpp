@@ -61,7 +61,7 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool ne
   // if passthrough isset do something else
   CSingleLock lock(m_critSection);
   unsigned int options = needresampler && !audioframe.passthrough ? AESTREAM_FORCE_RESAMPLE : 0;
-  options |= AESTREAM_AUTOSTART;
+  options |= AESTREAM_PAUSED;
 
   m_pAudioStream = CAEFactory::MakeStream(
     audioframe.data_format,
@@ -163,16 +163,8 @@ unsigned int CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   return total - frames;
 }
 
-void CDVDAudio::Finish()
-{
-  CSingleLock lock (m_critSection);
-  if (!m_pAudioStream)
-    return;
-}
-
 void CDVDAudio::Drain()
 {
-  Finish();
   CSingleLock lock (m_critSection);
   if (m_pAudioStream)
     m_pAudioStream->Drain(true);
@@ -181,7 +173,8 @@ void CDVDAudio::Drain()
 void CDVDAudio::SetVolume(float volume)
 {
   CSingleLock lock (m_critSection);
-  if (m_pAudioStream) m_pAudioStream->SetVolume(volume);
+  if (m_pAudioStream)
+    m_pAudioStream->SetVolume(volume);
 }
 
 void CDVDAudio::SetDynamicRangeCompression(long drc)
@@ -205,13 +198,16 @@ void CDVDAudio::Pause()
   CSingleLock lock (m_critSection);
   if (m_pAudioStream)
     m_pAudioStream->Pause();
+  CLog::Log(LOGDEBUG,"CDVDAudio::Pause - pausing audio stream");
   m_playingPts = DVD_NOPTS_VALUE;
 }
 
 void CDVDAudio::Resume()
 {
-  CSingleLock lock (m_critSection);
-  if (m_pAudioStream) m_pAudioStream->Resume();
+  CSingleLock lock(m_critSection);
+  if (m_pAudioStream)
+    m_pAudioStream->Resume();
+  CLog::Log(LOGDEBUG,"CDVDAudio::Resume - resume audio stream");
 }
 
 double CDVDAudio::GetDelay()
