@@ -1355,7 +1355,16 @@ std::string CSysInfo::GetBuildTargetPlatformVersionDecoded(void)
 
   return StringUtils::Format("version %d.%d-CURRENT", major, minor);
 #elif defined(TARGET_ANDROID)
-  return "API level " XSTR_MACRO(__ANDROID_API__);
+  static const char* const andrVersions[] =
+  {"1.0.0", "1.1.0", "1.5.0", "1.6.0", "2.0.0", "2.0.1", "2.1.0", "2.2.0", "2.3.0", "2.3.3", 
+   "3.0.0", "3.1.0", "3.2.0", "4.0.0", "4.0.3", "4.1.0", "4.2.0", "4.3.0", "4.4.0", "4.4.0W",
+   "5.0.0", "5.1.0", "6.0.0"};
+
+  if (__ANDROID_API__ > sizeof(andrVersions)/sizeof(andrVersions[0]) ||
+      __ANDROID_API__ < 1)
+    return "API level " XSTR_MACRO(__ANDROID_API__);
+
+  return andrVersions[__ANDROID_API__ - 1];
 #elif defined(TARGET_LINUX)
   return StringUtils::Format("version %d.%d.%d", (LINUX_VERSION_CODE >> 16) & 0xFF , (LINUX_VERSION_CODE >> 8) & 0xFF, LINUX_VERSION_CODE & 0xFF);
 #elif defined(TARGET_WINDOWS)
