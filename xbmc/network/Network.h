@@ -123,7 +123,7 @@ public:
    bool HasInterfaceForIP(unsigned long address);
 
    // Return true if there's at least one defined network interface
-   bool IsAvailable(bool wait = false);
+   bool IsAvailable(void);
 
    // Return true if there's at least one interface which is connected
    bool IsConnected(void);
