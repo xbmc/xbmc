@@ -1881,6 +1881,11 @@ void CVideoPlayer::HandlePlaySpeed()
       {
         clock = m_CurrentVideo.starttime - m_CurrentVideo.cachetotal;
       }
+      if (m_omxplayer_mode)
+      {
+        CLog::Log(LOGDEBUG, "%s::%s player started RESET", "CVideoPlayer", __FUNCTION__);
+        m_OmxPlayerState.av_clock.OMXReset(m_CurrentVideo.id >= 0, m_playSpeed != DVD_PLAYSPEED_NORMAL && m_playSpeed != DVD_PLAYSPEED_PAUSE ? false: (m_CurrentAudio.id >= 0));
+      }
       m_clock.Discontinuity(clock);
       m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_INSYNC;
       m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_INSYNC;
@@ -2677,20 +2682,6 @@ void CVideoPlayer::HandleMessages()
           m_CurrentVideo.starttime = msg.timestamp;
         }
         CLog::Log(LOGDEBUG, "CVideoPlayer::HandleMessages - player started %d", msg.player);
-
-        if (m_omxplayer_mode)
-        {
-          if ((msg.player == VideoPlayer_AUDIO || msg.player == VideoPlayer_VIDEO) &&
-             ((m_playSpeed != DVD_PLAYSPEED_PAUSE && m_playSpeed != DVD_PLAYSPEED_NORMAL) || !m_HasAudio ||
-               m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_INSYNC) &&
-              (!m_HasVideo || m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_INSYNC))
-          {
-            CLog::Log(LOGDEBUG, "%s::%s player started RESET", "CVideoPlayer", __FUNCTION__);
-            m_OmxPlayerState.av_clock.OMXReset(m_HasVideo, m_playSpeed != DVD_PLAYSPEED_NORMAL && m_playSpeed != DVD_PLAYSPEED_PAUSE ? false:m_HasAudio);
-          }
-          CLog::Log(LOGDEBUG, "%s::%s player started %d (s:%d a:%d v:%d)", "CVideoPlayer", __FUNCTION__, msg.player, m_playSpeed,
-                    m_CurrentAudio.syncState, m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_INSYNC);
-        }
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_DISPLAYTIME))
       {

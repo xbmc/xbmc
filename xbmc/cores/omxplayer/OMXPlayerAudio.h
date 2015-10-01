@@ -58,6 +58,7 @@ protected:
 
   bool                      m_stalled;
   bool                      m_started;
+  bool                      m_sync;
 
   BitstreamStats            m_audioStats;
 
@@ -87,9 +88,8 @@ public:
   void WaitForBuffers();
   void CloseStream(bool bWaitForBuffers);
   bool CodecChange();
-  bool Decode(DemuxPacket *pkt, bool bDropPacket);
-  void Flush();
-  bool AddPacket(DemuxPacket *pkt);
+  bool Decode(DemuxPacket *pkt, bool bDropPacket, bool bTrickPlay);
+  void Flush(bool sync);
   AEDataFormat GetDataFormat(CDVDStreamInfo hints);
   bool IsPassthrough() const;
   bool OpenDecoder();

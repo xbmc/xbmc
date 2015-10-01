@@ -55,7 +55,7 @@ public:
   void Close(void);
   unsigned int GetFreeSpace();
   unsigned int GetSize();
-  int  Decode(uint8_t *pData, int iSize, double dts, double pts);
+  int  Decode(uint8_t *pData, int iSize, double dts, double pts, bool &settings_changed);
   void Reset(void);
   void SetDropState(bool bDrop);
   std::string GetDecoderName() { return m_video_codec_name; };
