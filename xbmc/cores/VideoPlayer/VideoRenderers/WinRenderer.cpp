@@ -407,7 +407,7 @@ void CWinRenderer::PreInit()
     m_resolution = RES_DESKTOP;
 
   // setup the background colour
-  m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
+  m_clearColour = g_Windowing.UseLimitedColor() ? (16 * 0x010101) : 0;
 
   m_formats.clear();
   m_formats.push_back(RENDER_FMT_YUV420P);
