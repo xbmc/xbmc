@@ -57,7 +57,6 @@ void CRendererIMX::AddVideoPictureHW(DVDVideoPicture &picture, int index)
   YUVBUFFER &buf = m_buffers[index];
   CDVDVideoCodecIMXBuffer *buffer = static_cast<CDVDVideoCodecIMXBuffer*>(buf.hwDec);
 
-  SAFE_RELEASE(buffer);
   buf.hwDec = picture.IMXBuffer;
 
   if (picture.IMXBuffer)
@@ -68,6 +67,7 @@ void CRendererIMX::ReleaseBuffer(int idx)
 {
   CDVDVideoCodecIMXBuffer *buffer =  static_cast<CDVDVideoCodecIMXBuffer*>(m_buffers[idx].hwDec);
   SAFE_RELEASE(buffer);
+  m_buffers[idx].hwDec = NULL;
 }
 
 int CRendererIMX::GetImageHook(YV12Image *image, int source, bool readonly)
@@ -223,6 +223,12 @@ bool CRendererIMX::CreateTexture(int index)
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANE  &plane  = fields[0][0];
 
+  /* Lock buffer to maintain proper ref count */
+  YUVBUFFER &buf = m_buffers[index];
+  CDVDVideoCodecIMXBuffer* buffer = static_cast<CDVDVideoCodecIMXBuffer*>(buf.hwDec);
+  if (buffer)
+    buffer->Lock();
+
   DeleteTexture(index);
 
   memset(&im    , 0, sizeof(im));
@@ -266,5 +272,5 @@ bool CRendererIMX::UploadTexture(int index)
 {
   return true;// nothing todo for IMX
 }
-
 #endif
+
