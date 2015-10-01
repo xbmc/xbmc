@@ -52,28 +52,6 @@ CGraphFilters::~CGraphFilters()
     CSettings::GetInstance().SetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN, false);
     m_isKodiRealFS = false;
   }
-
-  // Store into DSPlayer DB changes made for internal lavfilters directly from the trayicon
-  if (Video.pBF && Video.internalLav)
-  {
-    GetLavSettings(LAVVIDEO, Video.pBF);
-    SaveLavSettings(LAVVIDEO);
-  }
-  if (Audio.pBF && Audio.internalLav)
-  {
-    GetLavSettings(LAVAUDIO, Audio.pBF);
-    SaveLavSettings(LAVAUDIO);
-  }
-  if (Source.pBF && Source.internalLav)
-  {
-    GetLavSettings(LAVSPLITTER, Source.pBF);
-    SaveLavSettings(LAVSPLITTER);
-  }
-  if (Splitter.pBF && Splitter.internalLav)
-  {
-    GetLavSettings(LAVSPLITTER, Splitter.pBF);
-    SaveLavSettings(LAVSPLITTER);
-  }
 }
 
 CGraphFilters* CGraphFilters::Get()
@@ -81,12 +59,12 @@ CGraphFilters* CGraphFilters::Get()
   return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CGraphFilters());
 }
 
-void CGraphFilters::ShowLavFiltersPage(LAVFILTERS_TYPE type, bool showPropertyPage)
+void CGraphFilters::ShowInternalPPage(LAVFILTERS_TYPE type, bool showPropertyPage)
 {
   m_pBF = NULL;
 
   // If there is a playback don't recreate the filter to show the GUI/Property page
-  GetCurrentFilter(type, &m_pBF);
+  GetInternalFilter(type, &m_pBF);
 
   if (m_pBF == NULL)
     CreateInternalFilter(type, &m_pBF);
@@ -107,24 +85,25 @@ void CGraphFilters::ShowLavFiltersPage(LAVFILTERS_TYPE type, bool showPropertyPa
   }
 }
 
-void CGraphFilters::GetCurrentFilter(LAVFILTERS_TYPE type, IBaseFilter **ppBF)
+bool CGraphFilters::ShowOSDPPage(IBaseFilter *pBF)
 {
-  if (type == LAVVIDEO && Video.pBF && Video.internalLav)
-    m_pBF = Video.pBF;
+  if (Video.pBF == pBF && Video.internalFilter)
+  {
+    g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVVIDEO);
+    return true;
+  }
+  if (Audio.pBF == pBF && Audio.internalFilter)
+  {
+    g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVAUDIO);
+    return true;
+  }
+  if ((Source.pBF == pBF && Source.internalFilter) || (Splitter.pBF == pBF && Splitter.internalFilter))
+  {
+    g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVSPLITTER);
+    return true;
+  }
 
-  if (type == LAVAUDIO && Audio.pBF && Audio.internalLav)
-    m_pBF = Audio.pBF;
-
-  if (type == LAVSPLITTER && Splitter.pBF && Splitter.internalLav)
-    m_pBF = Splitter.pBF;
-
-  if (type == LAVSPLITTER && Source.pBF && Source.internalLav)
-    m_pBF = Source.pBF;
-
-  if (type == XYSUBFILTER && Subs.pBF && Subs.internalLav)
-    m_pBF = Subs.pBF;
-
-  *ppBF = m_pBF;
+  return false;
 }
 
 void CGraphFilters::CreateInternalFilter(LAVFILTERS_TYPE type, IBaseFilter **ppBF)
@@ -152,38 +131,38 @@ void CGraphFilters::CreateInternalFilter(LAVFILTERS_TYPE type, IBaseFilter **ppB
   SetupLavSettings(type, *ppBF);
 }
 
-bool CGraphFilters::IsInternalFilter(IBaseFilter *pBF)
+void CGraphFilters::GetInternalFilter(LAVFILTERS_TYPE type, IBaseFilter **ppBF)
 {
-  if (Video.pBF == pBF && Video.internalLav)
-  {
-    g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVVIDEO);
-    return true;
-  }
-  if (Audio.pBF == pBF && Audio.internalLav)
-  {
-    g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVAUDIO);
-    return true;
-  }
-  if ((Source.pBF == pBF && Source.internalLav) || (Splitter.pBF == pBF && Splitter.internalLav))
-  {
-    g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVSPLITTER);
-    return true;
-  }
-  return false;
+  *ppBF = NULL;
+
+  if (type == LAVVIDEO && Video.pBF && Video.internalFilter)
+    *ppBF = Video.pBF;
+
+  if (type == LAVAUDIO && Audio.pBF && Audio.internalFilter)
+    *ppBF = Audio.pBF;
+
+  if (type == LAVSPLITTER && Splitter.pBF && Splitter.internalFilter)
+    *ppBF = Splitter.pBF;
+
+  if (type == LAVSPLITTER && Source.pBF && Source.internalFilter)
+    *ppBF = Source.pBF;
+
+  if (type == XYSUBFILTER && Subs.pBF && Subs.internalFilter)
+    *ppBF = Subs.pBF;
 }
 
 LAVFILTERS_TYPE CGraphFilters::GetInternalType(IBaseFilter *pBF)
 {
-  if (Video.pBF == pBF && Video.internalLav)
+  if (Video.pBF == pBF && Video.internalFilter)
     return LAVVIDEO;
-  if (Audio.pBF == pBF && Audio.internalLav)
+  if (Audio.pBF == pBF && Audio.internalFilter)
     return LAVAUDIO;
-  if ((Source.pBF == pBF && Source.internalLav) || (Splitter.pBF == pBF && Splitter.internalLav))
+  if ((Source.pBF == pBF && Source.internalFilter) || (Splitter.pBF == pBF && Splitter.internalFilter))
     return LAVSPLITTER;
-  if ((Subs.pBF == pBF && Subs.internalLav))
+  if ((Subs.pBF == pBF && Subs.internalFilter))
     return XYSUBFILTER;
 
-  return NULLFILTER;
+  return NOINTERNAL;
 }
 
 void CGraphFilters::SetupLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
@@ -215,13 +194,13 @@ bool CGraphFilters::SetLavInternal(LAVFILTERS_TYPE type, IBaseFilter *pBF)
 
   if (type == LAVVIDEO)
   {
-    Com::SmartQIPtr<ILAVVideoSettings> pLAVFSettings = pBF;
-    pLAVFSettings->SetRuntimeConfig(TRUE);
+    Com::SmartQIPtr<ILAVVideoSettings> pLAVVideoSettings = pBF;
+    pLAVVideoSettings->SetRuntimeConfig(TRUE);
   }
   else if (type == LAVAUDIO)
   {
-    Com::SmartQIPtr<ILAVAudioSettings> pLAVFSettings = pBF;
-    pLAVFSettings->SetRuntimeConfig(TRUE);
+    Com::SmartQIPtr<ILAVAudioSettings> pLAVAudioSettings = pBF;
+    pLAVAudioSettings->SetRuntimeConfig(TRUE);
   }
   else if (type == LAVSPLITTER)
   {
@@ -239,109 +218,109 @@ bool CGraphFilters::GetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
 
   if (type == LAVVIDEO)
   {
-    Com::SmartQIPtr<ILAVVideoSettings> pLAVFSettings = pBF;
+    Com::SmartQIPtr<ILAVVideoSettings> pLAVVideoSettings = pBF;
 
-    CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
+    CLavSettings &lavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
-    if (!pLAVFSettings)
+    if (!pLAVVideoSettings)
       return false;
 
-    LavSettings.video_bTrayIcon = pLAVFSettings->GetTrayIcon();
-    LavSettings.video_dwStreamAR = pLAVFSettings->GetStreamAR();
-    LavSettings.video_dwNumThreads = pLAVFSettings->GetNumThreads();
-    LavSettings.video_dwDeintFieldOrder = pLAVFSettings->GetDeintFieldOrder();
-    LavSettings.video_deintMode = pLAVFSettings->GetDeinterlacingMode();
-    LavSettings.video_dwRGBRange = pLAVFSettings->GetRGBOutputRange();
-    LavSettings.video_dwSWDeintMode = pLAVFSettings->GetSWDeintMode();
-    LavSettings.video_dwSWDeintOutput = pLAVFSettings->GetSWDeintOutput();
-    LavSettings.video_dwDitherMode = pLAVFSettings->GetDitherMode();
+    lavSettings.video_bTrayIcon = pLAVVideoSettings->GetTrayIcon();
+    lavSettings.video_dwStreamAR = pLAVVideoSettings->GetStreamAR();
+    lavSettings.video_dwNumThreads = pLAVVideoSettings->GetNumThreads();
+    lavSettings.video_dwDeintFieldOrder = pLAVVideoSettings->GetDeintFieldOrder();
+    lavSettings.video_deintMode = pLAVVideoSettings->GetDeinterlacingMode();
+    lavSettings.video_dwRGBRange = pLAVVideoSettings->GetRGBOutputRange();
+    lavSettings.video_dwSWDeintMode = pLAVVideoSettings->GetSWDeintMode();
+    lavSettings.video_dwSWDeintOutput = pLAVVideoSettings->GetSWDeintOutput();
+    lavSettings.video_dwDitherMode = pLAVVideoSettings->GetDitherMode();
     for (int i = 0; i < LAVOutPixFmt_NB; ++i) {
-      LavSettings.video_bPixFmts[i] = pLAVFSettings->GetPixelFormat((LAVOutPixFmts)i);
+      lavSettings.video_bPixFmts[i] = pLAVVideoSettings->GetPixelFormat((LAVOutPixFmts)i);
     }
-    LavSettings.video_dwHWAccel = pLAVFSettings->GetHWAccel();
+    lavSettings.video_dwHWAccel = pLAVVideoSettings->GetHWAccel();
     for (int i = 0; i < HWCodec_NB; ++i) {
-      LavSettings.video_bHWFormats[i] = pLAVFSettings->GetHWAccelCodec((LAVVideoHWCodec)i);
+      lavSettings.video_bHWFormats[i] = pLAVVideoSettings->GetHWAccelCodec((LAVVideoHWCodec)i);
     }
-    LavSettings.video_dwHWAccelResFlags = pLAVFSettings->GetHWAccelResolutionFlags();
-    LavSettings.video_dwHWDeintMode = pLAVFSettings->GetHWAccelDeintMode();
-    LavSettings.video_dwHWDeintOutput = pLAVFSettings->GetHWAccelDeintOutput();
-    LavSettings.video_bHWDeintHQ = pLAVFSettings->GetHWAccelDeintHQ();
+    lavSettings.video_dwHWAccelResFlags = pLAVVideoSettings->GetHWAccelResolutionFlags();
+    lavSettings.video_dwHWDeintMode = pLAVVideoSettings->GetHWAccelDeintMode();
+    lavSettings.video_dwHWDeintOutput = pLAVVideoSettings->GetHWAccelDeintOutput();
+    lavSettings.video_bHWDeintHQ = pLAVVideoSettings->GetHWAccelDeintHQ();
   } 
   if (type == LAVAUDIO)
   {
-    Com::SmartQIPtr<ILAVAudioSettings> pLAVFSettings = pBF;
+    Com::SmartQIPtr<ILAVAudioSettings> pLAVAudioSettings = pBF;
 
-    CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
+    CLavSettings &lavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
-    if (!pLAVFSettings)
+    if (!pLAVAudioSettings)
       return false;
 
-    LavSettings.audio_bTrayIcon = pLAVFSettings->GetTrayIcon();
-    pLAVFSettings->GetDRC(&LavSettings.audio_bDRCEnabled, &LavSettings.audio_iDRCLevel);
-    LavSettings.audio_bDTSHDFraming = pLAVFSettings->GetDTSHDFraming();
-    LavSettings.audio_bAutoAVSync = pLAVFSettings->GetAutoAVSync();
-    LavSettings.audio_bExpandMono = pLAVFSettings->GetExpandMono();
-    LavSettings.audio_bExpand61 = pLAVFSettings->GetExpand61();
-    LavSettings.audio_bOutputStandardLayout = pLAVFSettings->GetOutputStandardLayout();
-    LavSettings.audio_b51Legacy = pLAVFSettings->GetOutput51LegacyLayout();
-    LavSettings.audio_bMixingEnabled = pLAVFSettings->GetMixingEnabled();
-    LavSettings.audio_dwMixingLayout = pLAVFSettings->GetMixingLayout();
-    LavSettings.audio_dwMixingFlags = pLAVFSettings->GetMixingFlags();
-    LavSettings.audio_dwMixingMode = pLAVFSettings->GetMixingMode();
-    pLAVFSettings->GetMixingLevels(&LavSettings.audio_dwMixingCenterLevel, &LavSettings.audio_dwMixingSurroundLevel, &LavSettings.audio_dwMixingLFELevel);
-    //pLAVFSettings->GetAudioDelay(&LavSettings.audio_bAudioDelayEnabled, &LavSettings.audio_iAudioDelay);
+    lavSettings.audio_bTrayIcon = pLAVAudioSettings->GetTrayIcon();
+    pLAVAudioSettings->GetDRC(&lavSettings.audio_bDRCEnabled, &lavSettings.audio_iDRCLevel);
+    lavSettings.audio_bDTSHDFraming = pLAVAudioSettings->GetDTSHDFraming();
+    lavSettings.audio_bAutoAVSync = pLAVAudioSettings->GetAutoAVSync();
+    lavSettings.audio_bExpandMono = pLAVAudioSettings->GetExpandMono();
+    lavSettings.audio_bExpand61 = pLAVAudioSettings->GetExpand61();
+    lavSettings.audio_bOutputStandardLayout = pLAVAudioSettings->GetOutputStandardLayout();
+    lavSettings.audio_b51Legacy = pLAVAudioSettings->GetOutput51LegacyLayout();
+    lavSettings.audio_bMixingEnabled = pLAVAudioSettings->GetMixingEnabled();
+    lavSettings.audio_dwMixingLayout = pLAVAudioSettings->GetMixingLayout();
+    lavSettings.audio_dwMixingFlags = pLAVAudioSettings->GetMixingFlags();
+    lavSettings.audio_dwMixingMode = pLAVAudioSettings->GetMixingMode();
+    pLAVAudioSettings->GetMixingLevels(&lavSettings.audio_dwMixingCenterLevel, &lavSettings.audio_dwMixingSurroundLevel, &lavSettings.audio_dwMixingLFELevel);
+    //pLAVAudioSettings->GetAudioDelay(&lavSettings.audio_bAudioDelayEnabled, &lavSettings.audio_iAudioDelay);
 
     for (int i = 0; i < Bitstream_NB; ++i) {
-      LavSettings.audio_bBitstream[i] = pLAVFSettings->GetBitstreamConfig((LAVBitstreamCodec)i);
+      lavSettings.audio_bBitstream[i] = pLAVAudioSettings->GetBitstreamConfig((LAVBitstreamCodec)i);
     }
     for (int i = 0; i < SampleFormat_Bitstream; ++i) {
-      LavSettings.audio_bSampleFormats[i] = pLAVFSettings->GetSampleFormat((LAVAudioSampleFormat)i);
+      lavSettings.audio_bSampleFormats[i] = pLAVAudioSettings->GetSampleFormat((LAVAudioSampleFormat)i);
     }
-    LavSettings.audio_bSampleConvertDither = pLAVFSettings->GetSampleConvertDithering();
+    lavSettings.audio_bSampleConvertDither = pLAVAudioSettings->GetSampleConvertDithering();
   }
   if (type == LAVSPLITTER)
   {
     Com::SmartQIPtr<ILAVFSettings> pLAVFSettings = pBF;
 
-    CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
+    CLavSettings &lavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
     if (!pLAVFSettings)
       return false;
 
-    LavSettings.splitter_bTrayIcon = pLAVFSettings->GetTrayIcon();
+    lavSettings.splitter_bTrayIcon = pLAVFSettings->GetTrayIcon();
 
     HRESULT hr;
     LPWSTR lpwstr = nullptr;
     hr = pLAVFSettings->GetPreferredLanguages(&lpwstr);
     if (SUCCEEDED(hr) && lpwstr) {
-      LavSettings.splitter_prefAudioLangs = lpwstr;
+      lavSettings.splitter_prefAudioLangs = lpwstr;
       CoTaskMemFree(lpwstr);
     }
     lpwstr = nullptr;
     hr = pLAVFSettings->GetPreferredSubtitleLanguages(&lpwstr);
     if (SUCCEEDED(hr) && lpwstr) {
-      LavSettings.splitter_prefSubLangs = lpwstr;
+      lavSettings.splitter_prefSubLangs = lpwstr;
       CoTaskMemFree(lpwstr);
     }
     lpwstr = nullptr;
     hr = pLAVFSettings->GetAdvancedSubtitleConfig(&lpwstr);
     if (SUCCEEDED(hr) && lpwstr) {
-      LavSettings.splitter_subtitleAdvanced = lpwstr;
+      lavSettings.splitter_subtitleAdvanced = lpwstr;
       CoTaskMemFree(lpwstr);
     }
 
-    LavSettings.splitter_subtitleMode = pLAVFSettings->GetSubtitleMode();
-    LavSettings.splitter_bPGSForcedStream = pLAVFSettings->GetPGSForcedStream();
-    LavSettings.splitter_bPGSOnlyForced = pLAVFSettings->GetPGSOnlyForced();
-    LavSettings.splitter_iVC1Mode = pLAVFSettings->GetVC1TimestampMode();
-    LavSettings.splitter_bSubstreams = pLAVFSettings->GetSubstreamsEnabled();
-    LavSettings.splitter_bMatroskaExternalSegments = pLAVFSettings->GetLoadMatroskaExternalSegments();
-    LavSettings.splitter_bStreamSwitchRemoveAudio = pLAVFSettings->GetStreamSwitchRemoveAudio();
-    LavSettings.splitter_bImpairedAudio = pLAVFSettings->GetUseAudioForHearingVisuallyImpaired();
-    LavSettings.splitter_bPreferHighQualityAudio = pLAVFSettings->GetPreferHighQualityAudioStreams();
-    LavSettings.splitter_dwQueueMaxSize = pLAVFSettings->GetMaxQueueMemSize();
-    LavSettings.splitter_dwQueueMaxPacketsSize = pLAVFSettings->GetMaxQueueSize();
-    LavSettings.splitter_dwNetworkAnalysisDuration = pLAVFSettings->GetNetworkStreamAnalysisDuration();
+    lavSettings.splitter_subtitleMode = pLAVFSettings->GetSubtitleMode();
+    lavSettings.splitter_bPGSForcedStream = pLAVFSettings->GetPGSForcedStream();
+    lavSettings.splitter_bPGSOnlyForced = pLAVFSettings->GetPGSOnlyForced();
+    lavSettings.splitter_iVC1Mode = pLAVFSettings->GetVC1TimestampMode();
+    lavSettings.splitter_bSubstreams = pLAVFSettings->GetSubstreamsEnabled();
+    lavSettings.splitter_bMatroskaExternalSegments = pLAVFSettings->GetLoadMatroskaExternalSegments();
+    lavSettings.splitter_bStreamSwitchRemoveAudio = pLAVFSettings->GetStreamSwitchRemoveAudio();
+    lavSettings.splitter_bImpairedAudio = pLAVFSettings->GetUseAudioForHearingVisuallyImpaired();
+    lavSettings.splitter_bPreferHighQualityAudio = pLAVFSettings->GetPreferHighQualityAudioStreams();
+    lavSettings.splitter_dwQueueMaxSize = pLAVFSettings->GetMaxQueueMemSize();
+    lavSettings.splitter_dwQueueMaxPacketsSize = pLAVFSettings->GetMaxQueueSize();
+    lavSettings.splitter_dwNetworkAnalysisDuration = pLAVFSettings->GetNetworkStreamAnalysisDuration();
   }
 
   return true;
@@ -354,105 +333,105 @@ bool CGraphFilters::SetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
 
   if (type == LAVVIDEO)
   {
-    Com::SmartQIPtr<ILAVVideoSettings> pLAVFSettings = pBF;
+    Com::SmartQIPtr<ILAVVideoSettings> pLAVVideoSettings = pBF;
 
-    CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
+    CLavSettings &lavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
-    if (!pLAVFSettings)
+    if (!pLAVVideoSettings)
       return false;
 
-    pLAVFSettings->SetTrayIcon(LavSettings.video_bTrayIcon);
-    pLAVFSettings->SetStreamAR(LavSettings.video_dwStreamAR);
-    pLAVFSettings->SetNumThreads(LavSettings.video_dwNumThreads);
-    pLAVFSettings->SetDeintFieldOrder((LAVDeintFieldOrder)LavSettings.video_dwDeintFieldOrder);
-    pLAVFSettings->SetDeinterlacingMode(LavSettings.video_deintMode);
-    pLAVFSettings->SetRGBOutputRange(LavSettings.video_dwRGBRange);
-    pLAVFSettings->SetSWDeintMode((LAVSWDeintModes)LavSettings.video_dwSWDeintMode);
-    pLAVFSettings->SetSWDeintOutput((LAVDeintOutput)LavSettings.video_dwSWDeintOutput);
-    pLAVFSettings->SetDitherMode((LAVDitherMode)LavSettings.video_dwDitherMode);
+    pLAVVideoSettings->SetTrayIcon(lavSettings.video_bTrayIcon);
+    pLAVVideoSettings->SetStreamAR(lavSettings.video_dwStreamAR);
+    pLAVVideoSettings->SetNumThreads(lavSettings.video_dwNumThreads);
+    pLAVVideoSettings->SetDeintFieldOrder((LAVDeintFieldOrder)lavSettings.video_dwDeintFieldOrder);
+    pLAVVideoSettings->SetDeinterlacingMode(lavSettings.video_deintMode);
+    pLAVVideoSettings->SetRGBOutputRange(lavSettings.video_dwRGBRange);
+    pLAVVideoSettings->SetSWDeintMode((LAVSWDeintModes)lavSettings.video_dwSWDeintMode);
+    pLAVVideoSettings->SetSWDeintOutput((LAVDeintOutput)lavSettings.video_dwSWDeintOutput);
+    pLAVVideoSettings->SetDitherMode((LAVDitherMode)lavSettings.video_dwDitherMode);
     for (int i = 0; i < LAVOutPixFmt_NB; ++i) {
-      pLAVFSettings->SetPixelFormat((LAVOutPixFmts)i, LavSettings.video_bPixFmts[i]);
+      pLAVVideoSettings->SetPixelFormat((LAVOutPixFmts)i, lavSettings.video_bPixFmts[i]);
     }
-    pLAVFSettings->SetHWAccel((LAVHWAccel)LavSettings.video_dwHWAccel);
+    pLAVVideoSettings->SetHWAccel((LAVHWAccel)lavSettings.video_dwHWAccel);
     for (int i = 0; i < HWCodec_NB; ++i) {
-      pLAVFSettings->SetHWAccelCodec((LAVVideoHWCodec)i, LavSettings.video_bHWFormats[i]);
+      pLAVVideoSettings->SetHWAccelCodec((LAVVideoHWCodec)i, lavSettings.video_bHWFormats[i]);
     }
-    pLAVFSettings->SetHWAccelResolutionFlags(LavSettings.video_dwHWAccelResFlags);
-    pLAVFSettings->SetHWAccelDeintMode((LAVHWDeintModes)LavSettings.video_dwHWDeintMode);
-    pLAVFSettings->SetHWAccelDeintOutput((LAVDeintOutput)LavSettings.video_dwHWDeintOutput);
-    pLAVFSettings->SetHWAccelDeintHQ(LavSettings.video_bHWDeintHQ);
+    pLAVVideoSettings->SetHWAccelResolutionFlags(lavSettings.video_dwHWAccelResFlags);
+    pLAVVideoSettings->SetHWAccelDeintMode((LAVHWDeintModes)lavSettings.video_dwHWDeintMode);
+    pLAVVideoSettings->SetHWAccelDeintOutput((LAVDeintOutput)lavSettings.video_dwHWDeintOutput);
+    pLAVVideoSettings->SetHWAccelDeintHQ(lavSettings.video_bHWDeintHQ);
 
     // Custom interface
-    if (Com::SmartQIPtr<ILAVVideoSettingsDSPlayerCustom> pLAVFSettingsDSPlayerCustom = pLAVFSettings)
+    if (Com::SmartQIPtr<ILAVVideoSettingsDSPlayerCustom> pLAVFSettingsDSPlayerCustom = pLAVVideoSettings)
       pLAVFSettingsDSPlayerCustom->SetPropertyPageCallback(PropertyPageCallback);
   }
   if (type == LAVAUDIO)
   {
-    Com::SmartQIPtr<ILAVAudioSettings> pLAVFSettings = pBF;
+    Com::SmartQIPtr<ILAVAudioSettings> pLAVAudioSettings = pBF;
 
-    CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
+    CLavSettings &lavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
-    if (!pLAVFSettings)
+    if (!pLAVAudioSettings)
       return false;
 
-    pLAVFSettings->SetTrayIcon(LavSettings.audio_bTrayIcon);
-    pLAVFSettings->SetDRC(LavSettings.audio_bDRCEnabled, LavSettings.audio_iDRCLevel);
-    pLAVFSettings->SetDTSHDFraming(LavSettings.audio_bDTSHDFraming);
-    pLAVFSettings->SetAutoAVSync(LavSettings.audio_bAutoAVSync);
-    pLAVFSettings->SetExpandMono(LavSettings.audio_bExpandMono);
-    pLAVFSettings->SetExpand61(LavSettings.audio_bExpand61);
-    pLAVFSettings->SetOutputStandardLayout(LavSettings.audio_bOutputStandardLayout);
-    pLAVFSettings->SetOutput51LegacyLayout(LavSettings.audio_b51Legacy);
-    pLAVFSettings->SetMixingEnabled(LavSettings.audio_bMixingEnabled);
-    pLAVFSettings->SetMixingLayout(LavSettings.audio_dwMixingLayout);
-    pLAVFSettings->SetMixingFlags(LavSettings.audio_dwMixingFlags);
-    pLAVFSettings->SetMixingMode((LAVAudioMixingMode)LavSettings.audio_dwMixingMode);
-    pLAVFSettings->SetMixingLevels(LavSettings.audio_dwMixingCenterLevel, LavSettings.audio_dwMixingSurroundLevel, LavSettings.audio_dwMixingLFELevel);
-    //pLAVFSettings->SetAudioDelay(LavSettings.audio_bAudioDelayEnabled, LavSettings.audio_iAudioDelay);
+    pLAVAudioSettings->SetTrayIcon(lavSettings.audio_bTrayIcon);
+    pLAVAudioSettings->SetDRC(lavSettings.audio_bDRCEnabled, lavSettings.audio_iDRCLevel);
+    pLAVAudioSettings->SetDTSHDFraming(lavSettings.audio_bDTSHDFraming);
+    pLAVAudioSettings->SetAutoAVSync(lavSettings.audio_bAutoAVSync);
+    pLAVAudioSettings->SetExpandMono(lavSettings.audio_bExpandMono);
+    pLAVAudioSettings->SetExpand61(lavSettings.audio_bExpand61);
+    pLAVAudioSettings->SetOutputStandardLayout(lavSettings.audio_bOutputStandardLayout);
+    pLAVAudioSettings->SetOutput51LegacyLayout(lavSettings.audio_b51Legacy);
+    pLAVAudioSettings->SetMixingEnabled(lavSettings.audio_bMixingEnabled);
+    pLAVAudioSettings->SetMixingLayout(lavSettings.audio_dwMixingLayout);
+    pLAVAudioSettings->SetMixingFlags(lavSettings.audio_dwMixingFlags);
+    pLAVAudioSettings->SetMixingMode((LAVAudioMixingMode)lavSettings.audio_dwMixingMode);
+    pLAVAudioSettings->SetMixingLevels(lavSettings.audio_dwMixingCenterLevel, lavSettings.audio_dwMixingSurroundLevel, lavSettings.audio_dwMixingLFELevel);
+    //pLAVAudioSettings->SetAudioDelay(lavSettings.audio_bAudioDelayEnabled, lavSettings.audio_iAudioDelay);
     for (int i = 0; i < Bitstream_NB; ++i) {
-      pLAVFSettings->SetBitstreamConfig((LAVBitstreamCodec)i, LavSettings.audio_bBitstream[i]);
+      pLAVAudioSettings->SetBitstreamConfig((LAVBitstreamCodec)i, lavSettings.audio_bBitstream[i]);
     }
     for (int i = 0; i < SampleFormat_Bitstream; ++i) {
-      pLAVFSettings->SetSampleFormat((LAVAudioSampleFormat)i, LavSettings.audio_bSampleFormats[i]);
+      pLAVAudioSettings->SetSampleFormat((LAVAudioSampleFormat)i, lavSettings.audio_bSampleFormats[i]);
     }
-    pLAVFSettings->SetSampleConvertDithering(LavSettings.audio_bSampleConvertDither);
+    pLAVAudioSettings->SetSampleConvertDithering(lavSettings.audio_bSampleConvertDither);
 
     // The internal LAV Audio Decoder will not be registered to handle WMA formats
     // since the system decoder is preferred. However we can still enable those
     // formats internally so that they are used in low-merit mode.
-    pLAVFSettings->SetFormatConfiguration(Codec_WMA2, TRUE);
-    pLAVFSettings->SetFormatConfiguration(Codec_WMAPRO, TRUE);
-    pLAVFSettings->SetFormatConfiguration(Codec_WMALL, TRUE);
+    pLAVAudioSettings->SetFormatConfiguration(Codec_WMA2, TRUE);
+    pLAVAudioSettings->SetFormatConfiguration(Codec_WMAPRO, TRUE);
+    pLAVAudioSettings->SetFormatConfiguration(Codec_WMALL, TRUE);
 
     // Custom interface
-    if (Com::SmartQIPtr<ILAVAudioSettingsDSPlayerCustom> pLAVFSettingsDSPlayerCustom = pLAVFSettings)
+    if (Com::SmartQIPtr<ILAVAudioSettingsDSPlayerCustom> pLAVFSettingsDSPlayerCustom = pLAVAudioSettings)
       pLAVFSettingsDSPlayerCustom->SetPropertyPageCallback(PropertyPageCallback);
   }
   if (type == LAVSPLITTER)
   {
     Com::SmartQIPtr<ILAVFSettings> pLAVFSettings = pBF;
 
-    CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
+    CLavSettings &lavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
     if (!pLAVFSettings)
       return false;
 
-    pLAVFSettings->SetTrayIcon(LavSettings.splitter_bTrayIcon);
-    pLAVFSettings->SetPreferredLanguages(LavSettings.splitter_prefAudioLangs.c_str());
-    pLAVFSettings->SetPreferredSubtitleLanguages(LavSettings.splitter_prefSubLangs.c_str());
-    pLAVFSettings->SetAdvancedSubtitleConfig(LavSettings.splitter_subtitleAdvanced.c_str());
-    pLAVFSettings->SetSubtitleMode(LavSettings.splitter_subtitleMode);
-    pLAVFSettings->SetPGSForcedStream(LavSettings.splitter_bPGSForcedStream);
-    pLAVFSettings->SetPGSOnlyForced(LavSettings.splitter_bPGSOnlyForced);
-    pLAVFSettings->SetVC1TimestampMode(LavSettings.splitter_iVC1Mode);
-    pLAVFSettings->SetSubstreamsEnabled(LavSettings.splitter_bSubstreams);
-    pLAVFSettings->SetLoadMatroskaExternalSegments(LavSettings.splitter_bMatroskaExternalSegments);
-    pLAVFSettings->SetStreamSwitchRemoveAudio(LavSettings.splitter_bStreamSwitchRemoveAudio);
-    pLAVFSettings->SetUseAudioForHearingVisuallyImpaired(LavSettings.splitter_bImpairedAudio);
-    pLAVFSettings->SetPreferHighQualityAudioStreams(LavSettings.splitter_bPreferHighQualityAudio);
-    pLAVFSettings->SetMaxQueueMemSize(LavSettings.splitter_dwQueueMaxSize);
-    pLAVFSettings->SetMaxQueueSize(LavSettings.splitter_dwQueueMaxPacketsSize);
-    pLAVFSettings->SetNetworkStreamAnalysisDuration(LavSettings.splitter_dwNetworkAnalysisDuration);
+    pLAVFSettings->SetTrayIcon(lavSettings.splitter_bTrayIcon);
+    pLAVFSettings->SetPreferredLanguages(lavSettings.splitter_prefAudioLangs.c_str());
+    pLAVFSettings->SetPreferredSubtitleLanguages(lavSettings.splitter_prefSubLangs.c_str());
+    pLAVFSettings->SetAdvancedSubtitleConfig(lavSettings.splitter_subtitleAdvanced.c_str());
+    pLAVFSettings->SetSubtitleMode(lavSettings.splitter_subtitleMode);
+    pLAVFSettings->SetPGSForcedStream(lavSettings.splitter_bPGSForcedStream);
+    pLAVFSettings->SetPGSOnlyForced(lavSettings.splitter_bPGSOnlyForced);
+    pLAVFSettings->SetVC1TimestampMode(lavSettings.splitter_iVC1Mode);
+    pLAVFSettings->SetSubstreamsEnabled(lavSettings.splitter_bSubstreams);
+    pLAVFSettings->SetLoadMatroskaExternalSegments(lavSettings.splitter_bMatroskaExternalSegments);
+    pLAVFSettings->SetStreamSwitchRemoveAudio(lavSettings.splitter_bStreamSwitchRemoveAudio);
+    pLAVFSettings->SetUseAudioForHearingVisuallyImpaired(lavSettings.splitter_bImpairedAudio);
+    pLAVFSettings->SetPreferHighQualityAudioStreams(lavSettings.splitter_bPreferHighQualityAudio);
+    pLAVFSettings->SetMaxQueueMemSize(lavSettings.splitter_dwQueueMaxSize);
+    pLAVFSettings->SetMaxQueueSize(lavSettings.splitter_dwQueueMaxPacketsSize);
+    pLAVFSettings->SetNetworkStreamAnalysisDuration(lavSettings.splitter_dwNetworkAnalysisDuration);
 
     // Custom interface
     if (Com::SmartQIPtr<ILAVFSettingsDSPlayerCustom> pLAVFSettingsDSPlayerCustom = pLAVFSettings)
@@ -526,9 +505,8 @@ void CGraphFilters::EraseLavSetting(LAVFILTERS_TYPE type)
 
 HRESULT CGraphFilters::PropertyPageCallback(IUnknown* pBF)
 {
-  LAVFILTERS_TYPE type = CGraphFilters::Get()->GetInternalType((IBaseFilter *)pBF);
-  if (type != NULLFILTER)
-    CGraphFilters::Get()->ShowLavFiltersPage(type, true);
+  CDSPropertyPage *pDSPropertyPage = DNew CDSPropertyPage((IBaseFilter *)pBF);
+  pDSPropertyPage->Initialize();
 
   return S_OK;
 }

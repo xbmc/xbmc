@@ -179,25 +179,25 @@ void CGUIDialogLAVSplitter::InitializeSettings()
 
   // Get settings from the current running filter
   IBaseFilter *pBF;
-  CGraphFilters::Get()->GetCurrentFilter(LAVSPLITTER, &pBF);
+  CGraphFilters::Get()->GetInternalFilter(LAVSPLITTER, &pBF);
   CGraphFilters::Get()->GetLavSettings(LAVSPLITTER, pBF);
 
   StaticIntegerSettingOptions entries;
-  CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
+  CLavSettings &lavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
   // BUTTON
   AddButton(groupProperty, LAVSPLITTER_PROPERTYPAGE, 80013, 0);
 
   // TRAYICON
-  AddToggle(group, LAVSPLITTER_TRAYICON, 80001, 0, LavSettings.splitter_bTrayIcon);
+  AddToggle(group, LAVSPLITTER_TRAYICON, 80001, 0, lavSettings.splitter_bTrayIcon);
 
   // PREFLANG
   std::string str;
-  g_charsetConverter.wToUTF8(LavSettings.splitter_prefAudioLangs, str, false);
+  g_charsetConverter.wToUTF8(lavSettings.splitter_prefAudioLangs, str, false);
   AddEdit(groupPreflang, LAVSPLITTER_PREFAUDIOLANG, 82001, 0, str, true);
-  g_charsetConverter.wToUTF8(LavSettings.splitter_prefSubLangs , str, false);
+  g_charsetConverter.wToUTF8(lavSettings.splitter_prefSubLangs , str, false);
   AddEdit(groupPreflang, LAVSPLITTER_PREFSUBLANG, 82002, 0, str, true);
-  g_charsetConverter.wToUTF8(LavSettings.splitter_subtitleAdvanced, str, false);
+  g_charsetConverter.wToUTF8(lavSettings.splitter_subtitleAdvanced, str, false);
   AddEdit(groupPreflang, LAVSPLITTER_PREFSUBADVANCED, 82016, 0, str, true);
 
   //SUBMODE
@@ -206,21 +206,21 @@ void CGUIDialogLAVSplitter::InitializeSettings()
   entries.push_back(make_pair(82005, 1));
   entries.push_back(make_pair(82006, 2));
   entries.push_back(make_pair(82007, 3));
-  AddList(groupSubmode, LAVSPLITTER_SUBMODE, 82003, 0, LavSettings.splitter_subtitleMode, entries, 82003);
+  AddList(groupSubmode, LAVSPLITTER_SUBMODE, 82003, 0, lavSettings.splitter_subtitleMode, entries, 82003);
 
   //BLURAYSUB
-  AddToggle(groupBluraysub, LAVSPLITTER_PGSFORCEDSTREAM, 82008, 0, LavSettings.splitter_bPGSForcedStream);
-  AddToggle(groupBluraysub, LAVSPLITTER_PGSONLYFORCED, 82009, 0, LavSettings.splitter_bPGSOnlyForced);
+  AddToggle(groupBluraysub, LAVSPLITTER_PGSFORCEDSTREAM, 82008, 0, lavSettings.splitter_bPGSForcedStream);
+  AddToggle(groupBluraysub, LAVSPLITTER_PGSONLYFORCED, 82009, 0, lavSettings.splitter_bPGSOnlyForced);
 
   //FORMAT
-  AddToggle(groupFormat, LAVSPLITTER_IVC1MODE, 82010, 0, LavSettings.splitter_iVC1Mode);
-  AddToggle(groupFormat, LAVSPLITTER_MATROSKAEXTERNAL, 82011, 0, LavSettings.splitter_bMatroskaExternalSegments);
+  AddToggle(groupFormat, LAVSPLITTER_IVC1MODE, 82010, 0, lavSettings.splitter_iVC1Mode);
+  AddToggle(groupFormat, LAVSPLITTER_MATROSKAEXTERNAL, 82011, 0, lavSettings.splitter_bMatroskaExternalSegments);
 
   //DEMUXER
-  AddToggle(groupDemuxer, LAVSPLITTER_SUBSTREAM, 82012, 0, LavSettings.splitter_bSubstreams);
-  AddToggle(groupDemuxer, LAVSPLITTER_REMAUDIOSTREAM, 82013, 0, LavSettings.splitter_bStreamSwitchRemoveAudio);
-  AddToggle(groupDemuxer, LAVSPLITTER_PREFHQAUDIO, 82014, 0, LavSettings.splitter_bPreferHighQualityAudio);
-  AddToggle(groupDemuxer, LAVSPLITTER_IMPAIREDAUDIO, 82015, 0, LavSettings.splitter_bImpairedAudio);
+  AddToggle(groupDemuxer, LAVSPLITTER_SUBSTREAM, 82012, 0, lavSettings.splitter_bSubstreams);
+  AddToggle(groupDemuxer, LAVSPLITTER_REMAUDIOSTREAM, 82013, 0, lavSettings.splitter_bStreamSwitchRemoveAudio);
+  AddToggle(groupDemuxer, LAVSPLITTER_PREFHQAUDIO, 82014, 0, lavSettings.splitter_bPreferHighQualityAudio);
+  AddToggle(groupDemuxer, LAVSPLITTER_IMPAIREDAUDIO, 82015, 0, lavSettings.splitter_bImpairedAudio);
 
   // BUTTON RESET
   if (!g_application.m_pPlayer->IsPlayingVideo())
@@ -232,7 +232,7 @@ void CGUIDialogLAVSplitter::OnSettingChanged(const CSetting *setting)
   if (setting == NULL)
     return;
 
-  CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
+  CLavSettings &lavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
   const std::string &settingId = setting->GetId();
@@ -240,46 +240,46 @@ void CGUIDialogLAVSplitter::OnSettingChanged(const CSetting *setting)
   std::wstring strW;
 
   if (settingId == LAVSPLITTER_TRAYICON)
-    LavSettings.splitter_bTrayIcon = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.splitter_bTrayIcon = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVSPLITTER_PREFAUDIOLANG)
   { 
     g_charsetConverter.utf8ToW(static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue()), strW, false);
-    LavSettings.splitter_prefAudioLangs = strW;
+    lavSettings.splitter_prefAudioLangs = strW;
   }
   if (settingId == LAVSPLITTER_PREFSUBLANG)
   {
     g_charsetConverter.utf8ToW(static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue()), strW, false);
-    LavSettings.splitter_prefSubLangs = strW;
+    lavSettings.splitter_prefSubLangs = strW;
   }
   if (settingId == LAVSPLITTER_PREFSUBADVANCED)
   {
     g_charsetConverter.utf8ToW(static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue()), strW, false);
-    LavSettings.splitter_subtitleAdvanced = strW;
+    lavSettings.splitter_subtitleAdvanced = strW;
   }
   if (settingId == LAVSPLITTER_SUBMODE)
-    LavSettings.splitter_subtitleMode = (LAVSubtitleMode)static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+    lavSettings.splitter_subtitleMode = (LAVSubtitleMode)static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
   if (settingId == LAVSPLITTER_PGSFORCEDSTREAM)
-    LavSettings.splitter_bPGSForcedStream = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.splitter_bPGSForcedStream = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVSPLITTER_PGSONLYFORCED)
-    LavSettings.splitter_bPGSOnlyForced = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.splitter_bPGSOnlyForced = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVSPLITTER_IVC1MODE)
-    LavSettings.splitter_iVC1Mode = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.splitter_iVC1Mode = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVSPLITTER_MATROSKAEXTERNAL)
-    LavSettings.splitter_bMatroskaExternalSegments = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.splitter_bMatroskaExternalSegments = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVSPLITTER_SUBSTREAM)
-    LavSettings.splitter_bSubstreams = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.splitter_bSubstreams = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVSPLITTER_REMAUDIOSTREAM)
-    LavSettings.splitter_bStreamSwitchRemoveAudio = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.splitter_bStreamSwitchRemoveAudio = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVSPLITTER_PREFHQAUDIO)
-    LavSettings.splitter_bPreferHighQualityAudio = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.splitter_bPreferHighQualityAudio = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVSPLITTER_IMPAIREDAUDIO)
-    LavSettings.splitter_bImpairedAudio = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.splitter_bImpairedAudio = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
 
   HideUnused();
 
   // Get current running filter
   IBaseFilter *pBF;
-  CGraphFilters::Get()->GetCurrentFilter(LAVSPLITTER, &pBF);
+  CGraphFilters::Get()->GetInternalFilter(LAVSPLITTER, &pBF);
 
   // Set settings changes into the running rilter
   CGraphFilters::Get()->SetLavSettings(LAVSPLITTER, pBF);
@@ -298,7 +298,7 @@ void CGUIDialogLAVSplitter::OnSettingAction(const CSetting *setting)
 
   if (settingId == LAVSPLITTER_PROPERTYPAGE)
   {
-    CGraphFilters::Get()->ShowLavFiltersPage(LAVSPLITTER, true);
+    CGraphFilters::Get()->ShowInternalPPage(LAVSPLITTER, true);
     this->Close();
   }
 

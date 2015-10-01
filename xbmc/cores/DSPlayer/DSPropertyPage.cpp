@@ -60,18 +60,8 @@ LONG GdiGetCharDimensions(HDC hdc, LPTEXTMETRICW lptm, LONG *height)
 CDSPropertyPage::CDSPropertyPage(IBaseFilter* pBF, LAVFILTERS_TYPE type)
   : m_pBF(pBF), m_type(type), CThread("CDSPropertyPage thread")
 {
-  if (m_type != NULLFILTER)
-    return;
-
-  if (CGraphFilters::Get()->Splitter.pBF == pBF && CGraphFilters::Get()->Splitter.internalLav)
-    m_type = LAVSPLITTER;
-
-  if (CGraphFilters::Get()->Video.pBF == pBF && CGraphFilters::Get()->Video.internalLav)
-    m_type = LAVVIDEO;
-
-  if (CGraphFilters::Get()->Audio.pBF == pBF && CGraphFilters::Get()->Audio.internalLav)
-    m_type = LAVAUDIO;
-
+  if (m_type == NOINTERNAL)
+    m_type = CGraphFilters::Get()->GetInternalType(pBF);
 }
 
 CDSPropertyPage::~CDSPropertyPage()
@@ -169,6 +159,18 @@ void CDSPropertyPage::Process()
   {
     pProp->GetPages(&pPages);
 
+    if (m_type == NOINTERNAL)
+    {
+      hr = OleCreatePropertyFrame(g_Windowing.GetHwnd(), 0, 0, GetFilterName(m_pBF).c_str(),
+        1, (LPUNKNOWN *)&m_pBF, pPages.cElems,
+        pPages.pElems, 0, 0, 0);
+
+      if (SUCCEEDED(hr))
+        return;
+
+      CLog::Log(LOGERROR, "%s Failed to show property page (result: 0x%X). Trying a custom way", __FUNCTION__, hr);
+    }
+
     OLEPropertyFrame *opf;
     PROPPAGEINFO pPageInfo;
     PROPSHEETHEADER propSheet;
@@ -255,15 +257,6 @@ void CDSPropertyPage::Process()
     CoTaskMemFree(pPages.pElems);
     if (wasfullscreen)
       SendMessage(g_Windowing.GetHwnd(), WM_SYSKEYDOWN, VK_RETURN, 0);
-  }
-
-  if (FAILED(hr))
-  {
-    CLog::Log(LOGERROR, "%s Failed to show property page (result: 0x%X). Trying a normal way", __FUNCTION__, hr);
-
-    hr = OleCreatePropertyFrame(g_Windowing.GetHwnd(), 0, 0, GetFilterName(m_pBF).c_str(),
-      1, (LPUNKNOWN *)&m_pBF, pPages.cElems,
-      pPages.pElems, 0, 0, 0);
   }
 }
 

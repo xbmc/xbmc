@@ -57,7 +57,7 @@ struct SFilterInfos
     osdname = "";
     guid = GUID_NULL;
     isinternal = false;
-    internalLav = false;
+    internalFilter = false;
     pData = NULL;
   }
 
@@ -73,7 +73,7 @@ struct SFilterInfos
   CStdString osdname; ///< OSD Name of the filter
   GUID guid; ///< GUID of the filter
   bool isinternal; ///<  Releasing is not done the same way for internal filters
-  bool internalLav = false;
+  bool internalFilter = false;
   void *pData; ///< If the filter is internal, there may be some additionnal data
 };
 
@@ -118,7 +118,7 @@ enum LAVFILTERS_TYPE
   LAVVIDEO,
   LAVAUDIO,
   XYSUBFILTER,
-  NULLFILTER
+  NOINTERNAL
 };
 
 enum FILTERSMAN_TYPE
@@ -193,10 +193,10 @@ public:
   void SetCurrentRenderer(DIRECTSHOW_RENDERER renderer) { m_CurrentRenderer = renderer; }
 
   // Internal Filters
-  void ShowLavFiltersPage(LAVFILTERS_TYPE type, bool showPropertyPage);
+  void ShowInternalPPage(LAVFILTERS_TYPE type, bool showPropertyPage);
+  bool ShowOSDPPage(IBaseFilter *pBF);
   void CreateInternalFilter(LAVFILTERS_TYPE type, IBaseFilter **ppBF);
-  void GetCurrentFilter(LAVFILTERS_TYPE type, IBaseFilter **ppBF);
-  bool IsInternalFilter(IBaseFilter *pBF);
+  void GetInternalFilter(LAVFILTERS_TYPE type, IBaseFilter **ppBF);
   LAVFILTERS_TYPE GetInternalType(IBaseFilter *pBF);
   void SetupLavSettings(LAVFILTERS_TYPE type, IBaseFilter *pBF);
   bool SetLavInternal(LAVFILTERS_TYPE type, IBaseFilter *pBF);
@@ -226,6 +226,6 @@ private:
   bool m_hsubfilter;
   bool m_isDVD;
   bool m_UsingDXVADecoder;
-  Com::SmartPtr<IBaseFilter> m_pBF;
+  IBaseFilter* m_pBF = NULL;
   DIRECTSHOW_RENDERER m_CurrentRenderer;
 };

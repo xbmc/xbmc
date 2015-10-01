@@ -628,21 +628,21 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
     // Setup InternalFilters settings
     if (filterName == "lavsplitter_internal" || filterName == "lavsource_internal")
     {
-      f.internalLav = true;
+      f.internalFilter = true;
       CGraphFilters::Get()->SetupLavSettings(LAVSPLITTER, f.pBF);
     }
     if (filterName == "lavvideo_internal")
     {
-      f.internalLav = true;
+      f.internalFilter = true;
       CGraphFilters::Get()->SetupLavSettings(LAVVIDEO, f.pBF);
     }
     if (filterName == "lavaudio_internal")
     {
-      f.internalLav = true;
+      f.internalFilter = true;
       CGraphFilters::Get()->SetupLavSettings(LAVAUDIO, f.pBF);
     }
     if (filterName == "xysubfilter_internal")
-      f.internalLav = true;
+      f.internalFilter = true;
 
     g_charsetConverter.wToUTF8(filter->GetName(), f.osdname);
     if (filter->GetType() == CFGFilter::INTERNAL)

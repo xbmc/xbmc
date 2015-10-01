@@ -388,7 +388,7 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
     g_charsetConverter.utf8ToW(pDlg->GetSelectedLabelText(), strNameW);
     if (SUCCEEDED(g_dsGraph->pFilterGraph->FindFilterByName(strNameW, &pBF)))
     {
-      if (!CGraphFilters::Get()->IsInternalFilter(pBF))
+      if (!CGraphFilters::Get()->ShowOSDPPage(pBF))
       {
         //Showing the property page for this filter
         m_pDSPropertyPage = new CDSPropertyPage(pBF);

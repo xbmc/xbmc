@@ -105,7 +105,7 @@ struct OLEPropertyFrame {
 class CDSPropertyPage : public CThread
 {
 public:
-  CDSPropertyPage(IBaseFilter* pBF, LAVFILTERS_TYPE type = NULLFILTER);
+  CDSPropertyPage(IBaseFilter* pBF, LAVFILTERS_TYPE type = NOINTERNAL);
   virtual ~CDSPropertyPage();
 
   virtual bool Initialize();

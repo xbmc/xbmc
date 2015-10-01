@@ -206,39 +206,39 @@ void CGUIDialogLAVAudio::InitializeSettings()
 
   // Get settings from the current running filter
   IBaseFilter *pBF;
-  CGraphFilters::Get()->GetCurrentFilter(LAVAUDIO, &pBF);
+  CGraphFilters::Get()->GetInternalFilter(LAVAUDIO, &pBF);
   CGraphFilters::Get()->GetLavSettings(LAVAUDIO, pBF);
 
   StaticIntegerSettingOptions entries;
-  CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
+  CLavSettings &lavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
   // BUTTON
   AddButton(groupProperty, LAVAUDIO_PROPERTYPAGE, 80013, 0);
 
   // TRAYICON
-  AddToggle(group, LAVAUDIO_TRAYICON, 80001, 0, LavSettings.audio_bTrayIcon);
+  AddToggle(group, LAVAUDIO_TRAYICON, 80001, 0, lavSettings.audio_bTrayIcon);
 
   // BITSTREAM
-  AddToggle(groupBitstream, LAVAUDIO_BITSTREAM_AC3, 81003, 0, LavSettings.audio_bBitstream[0]);
-  AddToggle(groupBitstream, LAVAUDIO_BITSTREAM_EAC3, 81004, 0, LavSettings.audio_bBitstream[1]);
-  AddToggle(groupBitstream, LAVAUDIO_BITSTREAM_TRUEHD, 81005, 0, LavSettings.audio_bBitstream[2]);
-  AddToggle(groupBitstream, LAVAUDIO_BITSTREAM_DTS, 81006, 0, LavSettings.audio_bBitstream[3]);
-  AddToggle(groupBitstream, LAVAUDIO_BITSTREAM_DTSHD, 81007, 0, LavSettings.audio_bBitstream[4]);
-  AddToggle(groupBitstream, LAVAUDIO_DTSHDFRAMING, 81008, 0, LavSettings.audio_bDTSHDFraming);
+  AddToggle(groupBitstream, LAVAUDIO_BITSTREAM_AC3, 81003, 0, lavSettings.audio_bBitstream[0]);
+  AddToggle(groupBitstream, LAVAUDIO_BITSTREAM_EAC3, 81004, 0, lavSettings.audio_bBitstream[1]);
+  AddToggle(groupBitstream, LAVAUDIO_BITSTREAM_TRUEHD, 81005, 0, lavSettings.audio_bBitstream[2]);
+  AddToggle(groupBitstream, LAVAUDIO_BITSTREAM_DTS, 81006, 0, lavSettings.audio_bBitstream[3]);
+  AddToggle(groupBitstream, LAVAUDIO_BITSTREAM_DTSHD, 81007, 0, lavSettings.audio_bBitstream[4]);
+  AddToggle(groupBitstream, LAVAUDIO_DTSHDFRAMING, 81008, 0, lavSettings.audio_bDTSHDFraming);
 
   // OPTIONS
-  AddToggle(groupOptions, LAVAUDIO_AUTOSYNCAV, 81009, 0, LavSettings.audio_bAutoAVSync);
-  AddToggle(groupOptions, LAVAUDIO_OUTSTANDARD, 81010, 0, LavSettings.audio_bOutputStandardLayout);
-  AddToggle(groupOptions, LAVAUDIO_EXPANDMONO, 81011, 0, LavSettings.audio_bExpandMono);
-  AddToggle(groupOptions, LAVAUDIO_EXPAND61, 81012, 0, LavSettings.audio_bExpand61);
-  AddToggle(groupOptions, LAVAUDIO_51LEGACY, 81031, 0, LavSettings.audio_b51Legacy);
+  AddToggle(groupOptions, LAVAUDIO_AUTOSYNCAV, 81009, 0, lavSettings.audio_bAutoAVSync);
+  AddToggle(groupOptions, LAVAUDIO_OUTSTANDARD, 81010, 0, lavSettings.audio_bOutputStandardLayout);
+  AddToggle(groupOptions, LAVAUDIO_EXPANDMONO, 81011, 0, lavSettings.audio_bExpandMono);
+  AddToggle(groupOptions, LAVAUDIO_EXPAND61, 81012, 0, lavSettings.audio_bExpand61);
+  AddToggle(groupOptions, LAVAUDIO_51LEGACY, 81031, 0, lavSettings.audio_b51Legacy);
 
   //DRC
-  AddToggle(groupDRC, LAVAUDIO_DRCENABLED, 81001, 0, LavSettings.audio_bDRCEnabled);
-  AddSlider(groupDRC, LAVAUDIO_DRCLEVEL, 81002, 0, LavSettings.audio_iDRCLevel, "%i%%", 0, 1, 100);
+  AddToggle(groupDRC, LAVAUDIO_DRCENABLED, 81001, 0, lavSettings.audio_bDRCEnabled);
+  AddSlider(groupDRC, LAVAUDIO_DRCLEVEL, 81002, 0, lavSettings.audio_iDRCLevel, "%i%%", 0, 1, 100);
 
   // MIXER
-  AddToggle(groupMixer, LAVAUDIO_MIXINGENABLED, 81013, 0, LavSettings.audio_bMixingEnabled);
+  AddToggle(groupMixer, LAVAUDIO_MIXINGENABLED, 81013, 0, lavSettings.audio_bMixingEnabled);
   entries.clear();
   entries.push_back(make_pair(81015, 4));
   entries.push_back(make_pair(81016, 3));
@@ -246,13 +246,13 @@ void CGUIDialogLAVAudio::InitializeSettings()
   entries.push_back(make_pair(81018, 63));
   entries.push_back(make_pair(81019, 1807));
   entries.push_back(make_pair(81020, 1599));
-  AddList(groupMixer, LAVAUDIO_MIXINGLAYOUT, 81014, 0, LavSettings.audio_dwMixingLayout, entries, 81014);
-  AddSlider(groupMixer, LAVAUDIO_MIXINGCENTER, 81021, 0, DWToFloat(LavSettings.audio_dwMixingCenterLevel), "%1.2f", 0.0f, 0.01f, 1.00f);
-  AddSlider(groupMixer, LAVAUDIO_MIXINGSURROUND, 81022, 0, DWToFloat(LavSettings.audio_dwMixingSurroundLevel), "%1.2f", 0.0f, 0.01f, 1.00f);
-  AddSlider(groupMixer, LAVAUDIO_MIXINGLFE, 81023, 0, DWToFloat(LavSettings.audio_dwMixingLFELevel), "%1.2f", 0.0f, 0.01f, 1.00f);
+  AddList(groupMixer, LAVAUDIO_MIXINGLAYOUT, 81014, 0, lavSettings.audio_dwMixingLayout, entries, 81014);
+  AddSlider(groupMixer, LAVAUDIO_MIXINGCENTER, 81021, 0, DWToFloat(lavSettings.audio_dwMixingCenterLevel), "%1.2f", 0.0f, 0.01f, 1.00f);
+  AddSlider(groupMixer, LAVAUDIO_MIXINGSURROUND, 81022, 0, DWToFloat(lavSettings.audio_dwMixingSurroundLevel), "%1.2f", 0.0f, 0.01f, 1.00f);
+  AddSlider(groupMixer, LAVAUDIO_MIXINGLFE, 81023, 0, DWToFloat(lavSettings.audio_dwMixingLFELevel), "%1.2f", 0.0f, 0.01f, 1.00f);
 
   // SETTINGS
-  FlagsToBool(LavSettings.audio_dwMixingFlags);
+  FlagsToBool(lavSettings.audio_dwMixingFlags);
   AddToggle(groupSettings, LAVAUDIO_MIXING_DONTMIX, 81024, 0, m_dontMix);
   AddToggle(groupSettings, LAVAUDIO_MIXING_NORMALIZE, 81025, 0, m_normalize);
   AddToggle(groupSettings, LAVAUDIO_MIXING_CLIP, 81026, 0, m_clip);
@@ -262,7 +262,7 @@ void CGUIDialogLAVAudio::InitializeSettings()
   entries.push_back(make_pair(81028, 0));
   entries.push_back(make_pair(81029, 1));
   entries.push_back(make_pair(81030, 2));
-  AddList(groupEncoding, LAVAUDIO_MIXINGMODE, 81027, 0, LavSettings.audio_dwMixingMode, entries, 81027);
+  AddList(groupEncoding, LAVAUDIO_MIXINGMODE, 81027, 0, lavSettings.audio_dwMixingMode, entries, 81027);
 
   // BUTTON RESET
   if (!g_application.m_pPlayer->IsPlayingVideo())
@@ -274,43 +274,43 @@ void CGUIDialogLAVAudio::OnSettingChanged(const CSetting *setting)
   if (setting == NULL)
     return;
 
-  CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
+  CLavSettings &lavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
   const std::string &settingId = setting->GetId();
 
   if (settingId == LAVAUDIO_TRAYICON)
-    LavSettings.audio_bTrayIcon = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.audio_bTrayIcon = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVAUDIO_DRCENABLED)
-    LavSettings.audio_bDRCEnabled = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.audio_bDRCEnabled = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVAUDIO_DRCLEVEL)
-    LavSettings.audio_iDRCLevel = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+    lavSettings.audio_iDRCLevel = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
   if (settingId == LAVAUDIO_BITSTREAM_AC3)
-    LavSettings.audio_bBitstream[0] = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.audio_bBitstream[0] = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVAUDIO_BITSTREAM_EAC3)
-    LavSettings.audio_bBitstream[1] = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.audio_bBitstream[1] = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVAUDIO_BITSTREAM_TRUEHD)
-    LavSettings.audio_bBitstream[2] = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.audio_bBitstream[2] = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVAUDIO_BITSTREAM_DTS)
-    LavSettings.audio_bBitstream[3] = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.audio_bBitstream[3] = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVAUDIO_BITSTREAM_DTSHD)
-    LavSettings.audio_bBitstream[4] = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.audio_bBitstream[4] = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVAUDIO_DTSHDFRAMING)
-    LavSettings.audio_bDTSHDFraming = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.audio_bDTSHDFraming = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVAUDIO_AUTOSYNCAV)
-    LavSettings.audio_bAutoAVSync = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.audio_bAutoAVSync = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVAUDIO_EXPANDMONO)
-    LavSettings.audio_bExpandMono = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.audio_bExpandMono = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVAUDIO_EXPAND61)
-    LavSettings.audio_bExpand61 = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.audio_bExpand61 = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVAUDIO_51LEGACY)
-    LavSettings.audio_b51Legacy = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.audio_b51Legacy = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVAUDIO_OUTSTANDARD)
-    LavSettings.audio_bOutputStandardLayout = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.audio_bOutputStandardLayout = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVAUDIO_MIXINGENABLED)
-    LavSettings.audio_bMixingEnabled = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
+    lavSettings.audio_bMixingEnabled = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVAUDIO_MIXINGLAYOUT)
-    LavSettings.audio_dwMixingLayout = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+    lavSettings.audio_dwMixingLayout = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
   if (settingId == LAVAUDIO_MIXING_DONTMIX)
     m_dontMix = static_cast<bool>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVAUDIO_MIXING_NORMALIZE)
@@ -318,21 +318,21 @@ void CGUIDialogLAVAudio::OnSettingChanged(const CSetting *setting)
   if (settingId == LAVAUDIO_MIXING_CLIP)
     m_clip = static_cast<bool>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVAUDIO_MIXING_DONTMIX || settingId == LAVAUDIO_MIXING_NORMALIZE || settingId == LAVAUDIO_MIXING_CLIP)
-    LavSettings.audio_dwMixingFlags = BoolToFlags();
+    lavSettings.audio_dwMixingFlags = BoolToFlags();
   if (settingId == LAVAUDIO_MIXINGMODE)
-    LavSettings.audio_dwMixingMode = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+    lavSettings.audio_dwMixingMode = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
   if (settingId == LAVAUDIO_MIXINGCENTER)
-    LavSettings.audio_dwMixingCenterLevel = FloatToDw(static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue()));
+    lavSettings.audio_dwMixingCenterLevel = FloatToDw(static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue()));
   if (settingId == LAVAUDIO_MIXINGSURROUND)
-    LavSettings.audio_dwMixingSurroundLevel = FloatToDw(static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue()));
+    lavSettings.audio_dwMixingSurroundLevel = FloatToDw(static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue()));
   if (settingId == LAVAUDIO_MIXINGLFE)
-    LavSettings.audio_dwMixingLFELevel = FloatToDw(static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue()));
+    lavSettings.audio_dwMixingLFELevel = FloatToDw(static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue()));
 
   HideUnused();
 
   // Get current running filter
   IBaseFilter *pBF;
-  CGraphFilters::Get()->GetCurrentFilter(LAVAUDIO, &pBF);
+  CGraphFilters::Get()->GetInternalFilter(LAVAUDIO, &pBF);
 
   // Set settings changes into the running rilter
   CGraphFilters::Get()->SetLavSettings(LAVAUDIO, pBF);
@@ -351,7 +351,7 @@ void CGUIDialogLAVAudio::OnSettingAction(const CSetting *setting)
 
   if (settingId == LAVAUDIO_PROPERTYPAGE)
   {
-    CGraphFilters::Get()->ShowLavFiltersPage(LAVAUDIO, true);
+    CGraphFilters::Get()->ShowInternalPPage(LAVAUDIO, true);
     this->Close();
   }
 
