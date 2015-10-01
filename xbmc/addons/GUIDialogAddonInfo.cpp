@@ -198,8 +198,6 @@ static bool CompareVersion(const std::pair<AddonVersion, std::string>& lhs, cons
 
 void CGUIDialogAddonInfo::OnUpdate()
 {
-  Close();
-
   if (!m_localAddon)
     return;
 
@@ -266,6 +264,8 @@ void CGUIDialogAddonInfo::OnUpdate()
   dialog->Open();
   if (dialog->IsConfirmed())
   {
+    Close();
+
     auto selected = versions.at(dialog->GetSelectedLabel());
 
     //add or remove from blacklist to toggle auto updating. if downgrading
