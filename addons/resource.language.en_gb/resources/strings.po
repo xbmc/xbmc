@@ -19381,7 +19381,7 @@ msgid "Advanced"
 msgstr ""
 
 msgctxt "#82008"
-msgid "Bluray (PGS) enable automatic forced subtitle"
+msgid "BluRay (PGS) enable automatic forced subtitle"
 msgstr ""
 
 msgctxt "#82009"
