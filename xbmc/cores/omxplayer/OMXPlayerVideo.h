@@ -55,6 +55,7 @@ protected:
   int                       m_speed;
   bool                      m_stalled;
   bool                      m_started;
+  bool                      m_sync;
   bool                      m_flush;
   std::string               m_codecname;
   double                    m_iSubtitleDelay;
@@ -100,7 +101,7 @@ public:
   void CloseStream(bool bWaitForBuffers);
   void Output(double pts, bool bDropPacket);
   bool StepFrame();
-  void Flush();
+  void Flush(bool sync);
   bool OpenDecoder();
   int  GetDecoderBufferSize();
   int  GetDecoderFreeSpace();

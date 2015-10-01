@@ -1098,13 +1098,7 @@ bool COMXAudio::ApplyVolume(void)
 }
 
 //***********************************************************************************************
-unsigned int COMXAudio::AddPackets(const void* data, unsigned int len)
-{
-  return AddPackets(data, len, 0, 0, 0);
-}
-
-//***********************************************************************************************
-unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dts, double pts, unsigned int frame_size)
+unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dts, double pts, unsigned int frame_size, bool &settings_changed)
 {
   CSingleLock lock (m_critSection);
 
@@ -1240,6 +1234,7 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
   m_submitted += (float)demuxer_samples / m_SampleRate;
   if (m_amplification != 1.0)
     UpdateAttenuation();
+  settings_changed = m_settings_changed;
   return len;
 }
 
