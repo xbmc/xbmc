@@ -204,7 +204,7 @@ bool CAddonInstaller::InstallOrUpdate(const std::string &addonID, bool backgroun
 
 void CAddonInstaller::Install(const std::string& addonId, const AddonVersion& version, const std::string& repoId)
 {
-  CLog::Log(LOGDEBUG, "CAddonInstaller: intalling '%s' version '%s' from repository '%s'",
+  CLog::Log(LOGDEBUG, "CAddonInstaller: installing '%s' version '%s' from repository '%s'",
       addonId.c_str(), version.asString().c_str(), repoId.c_str());
 
   AddonPtr addon;
