@@ -61,17 +61,12 @@ CGraphFilters* CGraphFilters::Get()
 
 void CGraphFilters::ShowInternalPPage(LAVFILTERS_TYPE type, bool showPropertyPage)
 {
-  m_pBF = NULL;
-
-  // If there is a playback don't recreate the filter to show the GUI/Property page
-  GetInternalFilter(type, &m_pBF);
-
-  if (m_pBF == NULL)
-    CreateInternalFilter(type, &m_pBF);
+  IBaseFilter *pBF;
+  GetInternalFilter(type, &pBF);
 
   if (showPropertyPage)
   {
-    CDSPropertyPage *pDSPropertyPage = DNew CDSPropertyPage(m_pBF, type);
+    CDSPropertyPage *pDSPropertyPage = DNew CDSPropertyPage(pBF, type);
     pDSPropertyPage->Initialize();
   }
   else

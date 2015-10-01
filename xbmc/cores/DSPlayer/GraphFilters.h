@@ -226,6 +226,5 @@ private:
   bool m_hsubfilter;
   bool m_isDVD;
   bool m_UsingDXVADecoder;
-  IBaseFilter* m_pBF = NULL;
   DIRECTSHOW_RENDERER m_CurrentRenderer;
 };

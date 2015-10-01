@@ -135,6 +135,16 @@ static INT_PTR CALLBACK prop_sheet_proc(HWND hwnd, UINT msg, WPARAM wparam,
 
 void CDSPropertyPage::Process()
 {
+  // if the filter is null try to create internal filter;
+  Com::SmartPtr<IBaseFilter> pBF;
+  if (m_pBF == NULL && m_type != NOINTERNAL)
+  {
+    CGraphFilters::Get()->CreateInternalFilter(m_type, &pBF);
+    m_pBF = pBF;
+  }
+  if (m_pBF == NULL)
+    return;
+
   bool wasfullscreen = false;
   if (g_Windowing.IsFullScreen() && !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
   {
@@ -258,15 +268,18 @@ void CDSPropertyPage::Process()
     if (wasfullscreen)
       SendMessage(g_Windowing.GetHwnd(), WM_SYSKEYDOWN, VK_RETURN, 0);
   }
+
+  // if internal filter save lavsettings
+  if (m_type == LAVVIDEO || m_type == LAVAUDIO || m_type == LAVSPLITTER)
+  {
+    CGraphFilters::Get()->GetLavSettings(m_type, m_pBF);
+    CGraphFilters::Get()->SaveLavSettings(m_type);
+  }
 }
 
 void CDSPropertyPage::OnExit()
 {
-  if (m_type != LAVVIDEO && m_type !=LAVAUDIO && m_type != LAVSPLITTER)
-    return;
 
-  CGraphFilters::Get()->GetLavSettings(m_type, m_pBF);
-  CGraphFilters::Get()->SaveLavSettings(m_type);
 }
 
 
