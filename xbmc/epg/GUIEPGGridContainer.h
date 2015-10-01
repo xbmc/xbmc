@@ -67,6 +67,7 @@ namespace EPG
     virtual int GetSelectedItem() const;
     const int GetSelectedChannel() const;
     void SetSelectedChannel(int channelIndex);
+    CFileItemPtr GetSelectedChannelItem() const;
     PVR::CPVRChannelPtr GetChannel(int iIndex);
     void SetSelectedBlock(int blockIndex);
     virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
