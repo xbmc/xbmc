@@ -785,7 +785,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
 
       // MADVR NOSMALLSCALING
       entries.clear();
-      entries.push_back(make_pair(70117, -1));
+      entries.push_back(std::make_pair(70117, -1));
       CMadvrCallback::Get()->AddEntry(MADVR_LIST_NOSMALLSCALING, &entries);
 
       AddList(groupMadvrScale, SETTING_MADVR_NOSMALLSCALING, 70208, 0, static_cast<int>(madvrSettings.m_noSmallScaling), entries, 70208);
