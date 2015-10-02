@@ -2447,7 +2447,7 @@ bool COutput::DestroyEGLContext()
   if (m_eglContext)
   {
     glFinish();
-    eglMakeCurrent(m_eglContext, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+    //eglMakeCurrent(m_eglContext, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
     eglDestroyContext(m_eglDisplay, m_eglContext);
   }
   m_eglContext = EGL_NO_CONTEXT;
