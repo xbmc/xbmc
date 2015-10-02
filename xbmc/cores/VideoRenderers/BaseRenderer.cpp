@@ -58,8 +58,16 @@ CBaseRenderer::CBaseRenderer()
 
   m_RenderUpdateCallBackFn = NULL;
   m_RenderUpdateCallBackCtx = NULL;
+  m_RenderCaptureCallBackFn = NULL;
+  m_RenderCaptureCallBackCtx = NULL;
   m_RenderFeaturesCallBackFn = NULL;
   m_RenderFeaturesCallBackCtx = NULL;
+  m_DeinterlaceMethodsCallBackFn = NULL;
+  m_DeinterlaceMethodsCallBackCtx = NULL;
+  m_RenderLockCallBackFn = NULL;
+  m_RenderLockCallBackCtx = NULL;
+  m_RenderReleaseCallBackFn = NULL;
+  m_RenderReleaseCallBackCtx = NULL;
 }
 
 CBaseRenderer::~CBaseRenderer()
@@ -72,10 +80,34 @@ void CBaseRenderer::RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCa
   m_RenderUpdateCallBackCtx = ctx;
 }
 
+void CBaseRenderer::RegisterRenderCaptureCallBack(const void *ctx, RenderCaptureCallBackFn fn)
+{
+  m_RenderCaptureCallBackFn = fn;
+  m_RenderCaptureCallBackCtx = ctx;
+}
+
 void CBaseRenderer::RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn)
 {
   m_RenderFeaturesCallBackFn = fn;
   m_RenderFeaturesCallBackCtx = ctx;
+}
+
+void CBaseRenderer::RegisterDeinterlaceMethodsCallBack(const void *ctx, DeinterlaceMethodsCallBackFn fn)
+{
+  m_DeinterlaceMethodsCallBackFn = fn;
+  m_DeinterlaceMethodsCallBackCtx = ctx;
+}
+
+void CBaseRenderer::RegisterRenderLockCallBack(const void *ctx, RenderLockCallBackFn fn)
+{
+  m_RenderLockCallBackFn = fn;
+  m_RenderLockCallBackCtx = ctx;
+}
+
+void CBaseRenderer::RegisterRenderReleaseCallBack(const void *ctx, RenderReleaseCallBackFn fn)
+{
+  m_RenderReleaseCallBackFn = fn;
+  m_RenderReleaseCallBackCtx = ctx;
 }
 
 void CBaseRenderer::ChooseBestResolution(float fps)

@@ -458,9 +458,6 @@ void CWinSystemEGL::SetVSyncImpl(bool enable)
     m_iVSyncMode = 0;
     CLog::Log(LOGERROR, "%s,Could not set egl vsync", __FUNCTION__);
   }
-#ifdef HAS_IMXVPU
-  g_IMXContext.SetVSync(enable);
-#endif
 }
 
 void CWinSystemEGL::ShowOSMouse(bool show)

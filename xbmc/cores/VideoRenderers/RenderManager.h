@@ -170,7 +170,11 @@ public:
   CSharedSection& GetSection() { return m_sharedSection; };
 
   void RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn);
+  void RegisterRenderCaptureCallBack(const void *ctx, RenderCaptureCallBackFn fn);
   void RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn);
+  void RegisterDeinterlaceMethodsCallBack(const void *ctx, DeinterlaceMethodsCallBackFn fn);
+  void RegisterRenderLockCallBack(const void *ctx, RenderLockCallBackFn fn);
+  void RegisterRenderReleaseCallBack(const void *ctx, RenderReleaseCallBackFn fn);
 
   /**
    * If player uses buffering it has to wait for a buffer before it calls

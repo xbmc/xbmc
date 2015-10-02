@@ -21,6 +21,8 @@
 #include "DVDVideoCodecIMX.h"
 
 #include "settings/AdvancedSettings.h"
+#include "cores/VideoRenderers/RenderManager.h"
+#include "cores/VideoRenderers/RenderFlags.h"
 #include "threads/SingleLock.h"
 #include "threads/Atomics.h"
 #include "utils/log.h"
@@ -591,6 +593,13 @@ bool CDVDVideoCodecIMX::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     return false;
   }
 
+  g_renderManager.RegisterRenderUpdateCallBack((const void*)this, RenderUpdateCallBack);
+  g_renderManager.RegisterRenderCaptureCallBack((const void*)this, RenderCaptureCallBack);
+  g_renderManager.RegisterRenderFeaturesCallBack((const void*)this, RenderFeaturesCallBack);
+  g_renderManager.RegisterDeinterlaceMethodsCallBack((const void*)this, DeinterlaceMethodsCallBack);
+  g_renderManager.RegisterRenderLockCallBack((const void*)this, RenderLockCallBack);
+  g_renderManager.RegisterRenderReleaseCallBack((const void*)this, RenderReleaseCallBack);
+
   return true;
 }
 
@@ -603,6 +612,13 @@ void CDVDVideoCodecIMX::Dispose()
     m_dump = NULL;
   }
 #endif
+
+  g_renderManager.RegisterRenderUpdateCallBack((const void*)NULL, NULL);
+  g_renderManager.RegisterRenderCaptureCallBack((const void*)NULL, NULL);
+  g_renderManager.RegisterRenderFeaturesCallBack((const void*)NULL, NULL);
+  g_renderManager.RegisterDeinterlaceMethodsCallBack((const void*)NULL, NULL);
+  g_renderManager.RegisterRenderLockCallBack((const void*)NULL, NULL);
+  g_renderManager.RegisterRenderReleaseCallBack((const void*)NULL, NULL);
 
   g_IMXContext.Clear();
 
@@ -1056,7 +1072,8 @@ bool CDVDVideoCodecIMX::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
 {
   if (pDvdVideoPicture)
   {
-    SAFE_RELEASE(pDvdVideoPicture->IMXBuffer);
+    CDVDVideoCodecIMXBuffer* buf = (CDVDVideoCodecIMXBuffer*)(pDvdVideoPicture->render_ctx);
+    SAFE_RELEASE(buf);
   }
 
   return true;
@@ -1104,7 +1121,7 @@ bool CDVDVideoCodecIMX::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   else
     pDvdVideoPicture->iFlags &= ~DVP_FLAG_TOP_FIELD_FIRST;
 
-  pDvdVideoPicture->format = RENDER_FMT_IMXMAP;
+  pDvdVideoPicture->format = RENDER_FMT_BYPASS;
   pDvdVideoPicture->iWidth = m_frameInfo.pExtInfo->FrmCropRect.nRight - m_frameInfo.pExtInfo->FrmCropRect.nLeft;
   pDvdVideoPicture->iHeight = m_frameInfo.pExtInfo->FrmCropRect.nBottom - m_frameInfo.pExtInfo->FrmCropRect.nTop;
 
@@ -1115,7 +1132,7 @@ bool CDVDVideoCodecIMX::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->pts = m_currentBuffer->GetPts();
   pDvdVideoPicture->dts = m_currentBuffer->GetDts();
 
-  pDvdVideoPicture->IMXBuffer = m_currentBuffer;
+  pDvdVideoPicture->render_ctx = m_currentBuffer;
   m_currentBuffer = NULL;
 
   return true;
@@ -1565,7 +1582,7 @@ bool CIMXContext::BlitAsync(CIMXBuffer *source_p, CIMXBuffer *source, bool topBo
   return PushTask(ipu);
 }
 
-bool CIMXContext::PushCaptureTask(CIMXBuffer *source, CRect *dest)
+bool CIMXContext::PushCaptureTask(CIMXBuffer *source, const CRect *dest)
 {
   IPUTask ipu;
   m_CaptureDone = false;
@@ -1765,7 +1782,7 @@ void CIMXContext::WaitCapture()
 }
 
 void CIMXContext::PrepareTask(IPUTask &ipu, CIMXBuffer *source_p, CIMXBuffer *source,
-                              bool topBottomFields, CRect *dest)
+                              bool topBottomFields, const CRect *dest)
 {
   Configure();
   // Fill with zeros
@@ -2140,4 +2157,96 @@ void CIMXContext::Process()
   }
 
   return;
+}
+
+/**********************************/
+
+void CDVDVideoCodecIMX::RenderFeaturesCallBack(const void *ctx, Features &renderFeatures)
+{
+  renderFeatures.push_back(RENDERFEATURE_ZOOM);
+  renderFeatures.push_back(RENDERFEATURE_STRETCH);
+  renderFeatures.push_back(RENDERFEATURE_PIXEL_RATIO);
+}
+
+void CDVDVideoCodecIMX::DeinterlaceMethodsCallBack(const void *ctx, Features &deinterlaceMethods)
+{
+  deinterlaceMethods.push_back(VS_INTERLACEMETHOD_IMX_FASTMOTION);
+  deinterlaceMethods.push_back(VS_INTERLACEMETHOD_IMX_FASTMOTION_DOUBLE);
+}
+
+void CDVDVideoCodecIMX::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect, DWORD flags, const void* render_ctx)
+{
+#if 0
+    static unsigned long long previous = 0;
+    unsigned long long current = XbmcThreads::SystemClockMillis();
+    printf("r->r: %d\n", (int)(current-previous));
+    previous = current;
+#endif
+    CDVDVideoCodecIMXBuffer *buffer = (CDVDVideoCodecIMXBuffer*)render_ctx;
+    if (buffer != NULL && buffer->IsValid())
+    {
+      g_IMXContext.SetBlitRects(SrcRect, DestRect);
+
+      bool topFieldFirst = true;
+
+      // Deinterlacing requested
+      if (flags & RENDER_FLAG_FIELDMASK)
+      {
+        if ((buffer->GetFieldType() == VPU_FIELD_BOTTOM)
+        ||  (buffer->GetFieldType() == VPU_FIELD_BT) )
+          topFieldFirst = false;
+
+        if (flags & RENDER_FLAG_FIELD0)
+        {
+          // Double rate first frame
+          g_IMXContext.SetDeInterlacing(true);
+          g_IMXContext.SetDoubleRate(true);
+          g_IMXContext.SetInterpolatedFrame(true);
+        }
+        else if (flags & RENDER_FLAG_FIELD1)
+        {
+          // Double rate second frame
+          g_IMXContext.SetDeInterlacing(true);
+          g_IMXContext.SetDoubleRate(true);
+          g_IMXContext.SetInterpolatedFrame(false);
+        }
+        else
+        {
+          // Fast motion
+          g_IMXContext.SetDeInterlacing(true);
+          g_IMXContext.SetDoubleRate(false);
+        }
+      }
+      // Progressive
+      else
+        g_IMXContext.SetDeInterlacing(false);
+
+      g_IMXContext.BlitAsync(NULL, buffer, topFieldFirst);
+    }
+
+#if 0
+    unsigned long long current2 = XbmcThreads::SystemClockMillis();
+    printf("r: %d  %d\n", m_iYV12RenderBuffer, (int)(current2-current));
+#endif
+}
+
+void CDVDVideoCodecIMX::RenderCaptureCallBack(const void *ctx, const CRect &SrcRect, const void *render_ctx)
+{
+  CDVDVideoCodecIMXBuffer *buffer = (CDVDVideoCodecIMXBuffer*)render_ctx;
+  if (buffer)
+    g_IMXContext.PushCaptureTask(buffer, &SrcRect);
+}
+
+void CDVDVideoCodecIMX::RenderLockCallBack(const void *ctx, const void* render_ctx)
+{
+  CDVDVideoCodecIMXBuffer *buffer = (CDVDVideoCodecIMXBuffer*)render_ctx;
+  if (buffer)
+    buffer->Lock();
+}
+
+void CDVDVideoCodecIMX::RenderReleaseCallBack(const void *ctx, const void* render_ctx)
+{
+  CDVDVideoCodecIMXBuffer *buffer = (CDVDVideoCodecIMXBuffer*)render_ctx;
+  if (buffer)
+    buffer->Release();
 }
