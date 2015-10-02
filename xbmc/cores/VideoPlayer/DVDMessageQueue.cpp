@@ -30,7 +30,6 @@ CDVDMessageQueue::CDVDMessageQueue(const std::string &owner) : m_hEvent(true), m
   m_bAbortRequest = false;
   m_bInitialized  = false;
   m_bCaching      = false;
-  m_bEmptied      = true;
 
   m_TimeBack      = DVD_NOPTS_VALUE;
   m_TimeFront     = DVD_NOPTS_VALUE;
@@ -48,7 +47,6 @@ void CDVDMessageQueue::Init()
 {
   m_iDataSize     = 0;
   m_bAbortRequest = false;
-  m_bEmptied      = true;
   m_bInitialized  = true;
   m_TimeBack      = DVD_NOPTS_VALUE;
   m_TimeFront     = DVD_NOPTS_VALUE;
@@ -71,7 +69,6 @@ void CDVDMessageQueue::Flush(CDVDMsg::Message type)
     m_iDataSize = 0;
     m_TimeBack  = DVD_NOPTS_VALUE;
     m_TimeFront = DVD_NOPTS_VALUE;
-    m_bEmptied = true;
   }
 }
 
@@ -157,14 +154,6 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
     return MSGQ_NOT_INITIALIZED;
   }
 
-  if(m_list.empty() && m_bEmptied == false && priority == 0 && m_owner != "teletext" && m_owner != "rds")
-  {
-#if !defined(TARGET_RASPBERRY_PI)
-    CLog::Log(LOGWARNING, "CDVDMessageQueue(%s)::Get - asked for new data packet, with nothing available", m_owner.c_str());
-#endif
-    m_bEmptied = true;
-  }
-
   while (!m_bAbortRequest)
   {
     if(!m_list.empty() && m_list.back().priority >= priority && !m_bCaching)
@@ -183,9 +172,6 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
           else if(packet->pts != DVD_NOPTS_VALUE)
             m_TimeBack = packet->pts;
         }
-
-        if(m_bEmptied && m_iDataSize > 0)
-          m_bEmptied = false;
       }
 
       *pMsg = item.message->Acquire();

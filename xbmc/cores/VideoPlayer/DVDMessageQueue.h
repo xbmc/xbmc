@@ -138,7 +138,6 @@ private:
   double m_TimeSize;
 
   int m_iMaxDataSize;
-  bool m_bEmptied;
   std::string m_owner;
 
   typedef std::list<DVDMessageListItem> SList;
