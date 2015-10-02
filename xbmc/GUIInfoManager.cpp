@@ -4221,22 +4221,7 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
   if (!g_application.m_pPlayer->IsPlaying())
     return "";
 
-  if (item == VIDEOPLAYER_TITLE)
-  {
-    if(g_application.m_pPlayer->IsPlayingVideo())
-       return GetLabel(PLAYER_TITLE);
-  }
-  else if (item == VIDEOPLAYER_PLAYLISTLEN)
-  {
-    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
-      return GetPlaylistLabel(PLAYLIST_LENGTH);
-  }
-  else if (item == VIDEOPLAYER_PLAYLISTPOS)
-  {
-    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
-      return GetPlaylistLabel(PLAYLIST_POSITION);
-  }
-  else if (m_currentFile->HasPVRChannelInfoTag())
+  if (m_currentFile->HasPVRChannelInfoTag())
   {
     CPVRChannelPtr tag(m_currentFile->GetPVRChannelInfoTag());
     CEpgInfoTagPtr epgTag;
@@ -4510,6 +4495,22 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
       }
     }
   }
+  else if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
+  {
+    switch (item)
+    {
+    case VIDEOPLAYER_PLAYLISTLEN:
+      return GetPlaylistLabel(PLAYLIST_LENGTH);
+    case VIDEOPLAYER_PLAYLISTPOS:
+      return GetPlaylistLabel(PLAYLIST_POSITION);
+    default:
+      break;
+    }
+  }
+  
+  if (item == VIDEOPLAYER_TITLE)
+    return GetLabel(PLAYER_TITLE);
+
   return "";
 }
 

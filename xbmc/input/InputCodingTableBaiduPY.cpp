@@ -31,7 +31,10 @@
 
 CInputCodingTableBaiduPY::CInputCodingTableBaiduPY(const std::string& strUrl) :
   CThread("BaiduPYApi"),
-  m_messageCounter{ 0 }
+  m_messageCounter{ 0 },
+  m_api_begin{ 0 },
+  m_api_end{ 20 },
+  m_api_nomore{ false }
 {
   m_url = strUrl;
   m_codechars = "abcdefghijklmnopqrstuvwxyz";
