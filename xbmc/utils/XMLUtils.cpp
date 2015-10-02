@@ -60,6 +60,15 @@ bool XMLUtils::GetLong(const TiXmlNode* pRootNode, const char* strTag, long& lLo
   return true;
 }
 
+
+bool XMLUtils::GetUInt64(const TiXmlNode* pRootNode, const char* strTag, uint64_t& value)
+{
+  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
+  if (!pNode || !pNode->FirstChild()) return false;
+  std::stringstream(pNode->FirstChild()->Value()) >> value;
+  return true;
+}
+
 bool XMLUtils::GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );

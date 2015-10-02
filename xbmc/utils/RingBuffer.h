@@ -20,19 +20,20 @@
  */
 
 #include "threads/CriticalSection.h"
+#include <sstream>
 
 class CRingBuffer
 {
   CCriticalSection m_critSection;
   char *m_buffer;
-  unsigned int m_size;
-  unsigned int m_readPtr;
-  unsigned int m_writePtr;
+  uint64_t m_size;
+  uint64_t m_readPtr;
+  uint64_t m_writePtr;
   unsigned int m_fillCount;
 public:
   CRingBuffer();
   ~CRingBuffer();
-  bool Create(unsigned int size);
+  bool Create(uint64_t size);
   void Destroy();
   void Clear();
   bool ReadData(char *buf, unsigned int size);
@@ -43,9 +44,9 @@ public:
   bool Append(CRingBuffer &rBuf);
   bool Copy(CRingBuffer &rBuf);
   char *getBuffer();
-  unsigned int getSize();
-  unsigned int getReadPtr() const;
-  unsigned int getWritePtr();
+  uint64_t getSize();
+  uint64_t getReadPtr() const;
+  uint64_t getWritePtr();
   unsigned int getMaxReadSize();
   unsigned int getMaxWriteSize();
 };

@@ -354,7 +354,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int  m_guiDirtyRegionNoFlipTimeout;
     unsigned int m_addonPackageFolderSize;
 
-    unsigned int m_cacheMemBufferSize;
+    uint64_t m_cacheMemBufferSize;
     unsigned int m_networkBufferMode;
     float m_readBufferFactor;
 

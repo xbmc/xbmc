@@ -26,7 +26,7 @@
 
 using namespace XFILE;
 
-CCircularCache::CCircularCache(size_t front, size_t back)
+CCircularCache::CCircularCache(uint64_t front, uint64_t back)
  : CCacheStrategy()
  , m_beg(0)
  , m_end(0)
@@ -79,12 +79,12 @@ size_t CCircularCache::GetMaxWriteSize(const size_t& iRequestSize)
 {
   CSingleLock lock(m_sync);
 
-  size_t back  = (size_t)(m_cur - m_beg); // Backbuffer size
-  size_t front = (size_t)(m_end - m_cur); // Frontbuffer size
-  size_t limit = m_size - std::min(back, m_size_back) - front;
+  uint64_t back  = (uint64_t)(m_cur - m_beg); // Backbuffer size
+  uint64_t front = (uint64_t)(m_end - m_cur); // Frontbuffer size
+  uint64_t limit = m_size - std::min(back, m_size_back) - front;
 
   // Never return more than limit and size requested by caller
-  return std::min(iRequestSize, limit);
+  return std::min((uint64_t)iRequestSize, limit);
 }
 
 /**
@@ -111,12 +111,12 @@ int CCircularCache::WriteToCache(const char *buf, size_t len)
   CSingleLock lock(m_sync);
 
   // where are we in the buffer
-  size_t pos   = m_end % m_size;
-  size_t back  = (size_t)(m_cur - m_beg);
-  size_t front = (size_t)(m_end - m_cur);
+  uint64_t pos   = m_end % m_size;
+  uint64_t back  = (uint64_t)(m_cur - m_beg);
+  uint64_t front = (uint64_t)(m_end - m_cur);
 
-  size_t limit = m_size - std::min(back, m_size_back) - front;
-  size_t wrap  = m_size - pos;
+  uint64_t limit = m_size - std::min(back, m_size_back) - front;
+  uint64_t wrap  = m_size - pos;
 
   // limit by max forward size
   if(len > limit)

@@ -192,7 +192,7 @@ bool CFileCache::Open(const CURL& url)
     }
     else
     {
-      size_t cacheSize;
+      uint64_t cacheSize;
       if (m_fileSize > 0 && m_fileSize < g_advancedSettings.m_cacheMemBufferSize && !(m_flags & READ_AUDIO_VIDEO))
       {
         // NOTE: We don't need to take into account READ_MULTI_STREAM here as it's only used for audio/video
@@ -203,8 +203,8 @@ bool CFileCache::Open(const CURL& url)
         cacheSize = g_advancedSettings.m_cacheMemBufferSize;
       }
 
-      size_t back = cacheSize / 4;
-      size_t front = cacheSize - back;
+      uint64_t back = cacheSize / 4;
+      uint64_t front = cacheSize - back;
       
       if (m_flags & READ_MULTI_STREAM)
       {

@@ -30,7 +30,7 @@ namespace XFILE {
 class CCircularCache : public CCacheStrategy
 {
 public:
-    CCircularCache(size_t front, size_t back);
+    CCircularCache(uint64_t front, uint64_t back);
     virtual ~CCircularCache();
 
     virtual int Open() ;
@@ -54,8 +54,8 @@ protected:
     int64_t           m_end;       /**< index in file (not buffer) of end of valid data */
     int64_t           m_cur;       /**< current reading index in file */
     uint8_t          *m_buf;       /**< buffer holding data */
-    size_t            m_size;      /**< size of data buffer used (m_buf) */
-    size_t            m_size_back; /**< guaranteed size of back buffer (actual size can be smaller, or larger if front buffer doesn't need it) */
+    uint64_t            m_size;      /**< size of data buffer used (m_buf) */
+    uint64_t            m_size_back; /**< guaranteed size of back buffer (actual size can be smaller, or larger if front buffer doesn't need it) */
     CCriticalSection  m_sync;
     CEvent            m_written;
 #ifdef TARGET_WINDOWS

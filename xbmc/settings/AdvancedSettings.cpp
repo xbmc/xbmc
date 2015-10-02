@@ -755,7 +755,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pElement, "curllowspeedtime", m_curllowspeedtime, 1, 1000);
     XMLUtils::GetInt(pElement, "curlretries", m_curlretries, 0, 10);
     XMLUtils::GetBoolean(pElement,"disableipv6", m_curlDisableIPV6);
-    XMLUtils::GetUInt(pElement, "cachemembuffersize", m_cacheMemBufferSize);
+    XMLUtils::GetUInt64(pElement, "cachemembuffersize", m_cacheMemBufferSize);
     XMLUtils::GetUInt(pElement, "buffermode", m_networkBufferMode, 0, 3);
     XMLUtils::GetFloat(pElement, "readbufferfactor", m_readBufferFactor);
   }
