@@ -147,9 +147,9 @@ public:
   static std::string GetUsedCompilerNameAndVer(void);
 
 protected:
-  virtual CJob *GetJob() const;
-  virtual std::string TranslateInfo(int info) const;
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  virtual CJob *GetJob() const override;
+  virtual std::string TranslateInfo(int info) const override;
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 
 private:
   CSysData m_info;

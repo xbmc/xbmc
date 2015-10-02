@@ -173,14 +173,14 @@ namespace ActiveAE
      * @param bDataChanged True if the addon's data changed, false otherwise (unused).
      * @return True if the audio dsp addon was found and restarted, false otherwise.
      */
-    virtual bool RequestRestart(ADDON::AddonPtr addon, bool bDataChanged);
+    virtual bool RequestRestart(ADDON::AddonPtr addon, bool bDataChanged) override;
 
     /*!
      * @brief Remove a single audio dsp add-on.
      * @param addon The add-on to remove.
      * @return True if it was found and removed, false otherwise.
      */
-    virtual bool RequestRemoval(ADDON::AddonPtr addon);
+    virtual bool RequestRemoval(ADDON::AddonPtr addon) override;
 
     /*!
      * @brief Checks whether an add-on is loaded
@@ -202,7 +202,7 @@ namespace ActiveAE
      * @param obs
      * @param msg The observed message type
      */
-    void Notify(const Observable &obs, const ObservableMessage msg);
+    void Notify(const Observable &obs, const ObservableMessage msg) override;
 
     /*!
      * @return The amount of enabled audio dsp addons.
@@ -404,7 +404,7 @@ namespace ActiveAE
     /*!
      * @brief Thread to which updates the backend information
      */
-    virtual void Process(void);
+    virtual void Process(void) override;
 
   private:
     /*!

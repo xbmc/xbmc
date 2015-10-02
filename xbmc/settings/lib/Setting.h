@@ -111,7 +111,7 @@ public:
   void SetCallback(ISettingCallback *callback) { m_callback = callback; }
 
   // overrides of ISetting
-  virtual bool IsVisible() const;
+  virtual bool IsVisible() const override;
 
 protected:
   // implementation of ISettingCallback
