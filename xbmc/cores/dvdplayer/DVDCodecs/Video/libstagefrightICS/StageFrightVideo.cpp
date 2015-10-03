@@ -62,6 +62,82 @@ static int64_t pts_dtoi(double pts)
   return (int64_t)(pts);
 }
 
+#if defined(HAS_LIBACTSCODEC)
+
+enum {
+  kKeyActVideoPrivateData        = 'actv',
+};
+
+typedef struct tVideoParam
+ {
+    unsigned int  uiFOURCCCompressed;
+    unsigned int  fltFrameRate;
+    unsigned int  fltBitRate;
+    unsigned int  iWidthSource;
+    unsigned int  iHeightSource;
+    unsigned int  iPostFilterLevel;
+    unsigned char *pSequenceHeader;
+    unsigned int  uipSequenceHeaderLength;
+    unsigned int  bHostDeinterlace;
+} WMV_VIDEOPARAM;
+
+        	
+#define FOURCC_TAG(a, b, c, d)  ((a)|(b)<<8|(c)<<16|(d)<<24)
+#define TAG_WVC1     FOURCC_TAG('W','V','C','1')
+#define TAG_WMV3     FOURCC_TAG('W','M','V','3')
+#define TAG_WMV2     FOURCC_TAG('W','M','V','2')
+#define TAG_WMV1     FOURCC_TAG('W','M','V','1')
+
+    typedef struct{
+			unsigned int header_type;
+			unsigned int block_len;
+			unsigned int packet_offset;
+			unsigned int packet_ts;
+			unsigned int reserved1;
+			unsigned int reserved2;
+			unsigned char stream_end_flag;
+			unsigned char parser_format;
+			unsigned char seek_reset_flag;
+			unsigned char reserved_byte2;
+		}packet_header_t;
+
+
+static const unsigned char scan[2][64] = 
+{
+	{ /* Zig-Zag scan pattern  */
+		0, 1, 8, 16, 9, 2, 3, 10, 17, 
+		24, 32, 25, 18, 11, 4, 5, 12, 
+		19, 26, 33, 40, 48, 41, 34, 27, 
+		20, 13, 6, 7, 14, 21, 28, 35, 
+		42, 49, 56, 57, 50, 43, 36, 29, 
+		22, 15, 23, 30, 37, 44, 51, 58, 
+		59, 52, 45, 38, 31, 39, 46, 53, 
+		60, 61, 54, 47, 55, 62, 63
+	} , 
+	{ /* Alternate scan pattern */
+		0, 8, 16, 24, 1, 9, 2, 10,
+		17, 25, 32, 40, 48, 56, 57, 49, 
+		41, 33, 26, 18, 3, 11, 4, 12, 
+		19, 27, 34, 42, 50, 58, 35, 43, 
+		51, 59, 20, 28, 5, 13, 6, 14, 
+		21, 29, 36, 44, 52, 60, 37, 45,
+		53, 61, 22, 30, 7, 15, 23, 31,
+		38, 46, 54, 62, 39, 47, 55, 63
+	}
+};
+
+static const unsigned char default_intra_quantizer_matrix[64] = 
+{
+	8, 16, 19, 22, 26, 27, 29, 34, 
+	16, 16, 22, 24, 27, 29, 34, 37, 
+	19, 22, 26, 27, 29, 34, 34, 38, 
+	22, 22, 26, 27, 29, 34, 37, 40, 
+	22, 26, 27, 29, 32, 35, 40, 48, 
+	26, 27, 29, 32, 35, 40, 48, 58, 
+	26, 27, 29, 34, 38, 46, 56, 69, 
+	27, 29, 35, 38, 46, 56, 69, 83
+};
+#endif
 /***********************************************************/
 
 class CStageFrightMediaSource : public MediaSource
@@ -385,6 +461,459 @@ CStageFrightVideo::~CStageFrightVideo()
   delete p;
 }
 
+#if defined(HAS_LIBACTSCODEC)
+
+bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
+{
+#if defined(DEBUG_VERBOSE)
+  CLog::Log(LOGDEBUG, "%s::Open\n", CLASSNAME);
+#endif
+
+  CSingleLock lock(g_graphicsContext);
+  int ii;
+
+  // stagefright crashes with null size. Trap this...
+  if (!hints.width || !hints.height)
+  {
+    CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"null size, cannot handle");
+    return false;
+  }
+  p->width     = hints.width;
+  p->height    = hints.height;
+
+  if (p->m_g_advancedSettings->m_stagefrightConfig.useSwRenderer)
+    p->quirks |= QuirkSWRender;
+
+  p->meta = new MetaData;
+  if (p->meta == NULL)
+  {
+    CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"cannot allocate MetaData");
+    return false;
+  }
+
+  const char* mimetype;
+  switch (hints.codec)
+  {
+  case AV_CODEC_ID_HEVC:
+    if (p->m_g_advancedSettings->m_stagefrightConfig.useHEVCcodec == 0)
+      return false;
+    mimetype = "video/hevc";
+    break;
+  case CODEC_ID_H264:
+    if (p->m_g_advancedSettings->m_stagefrightConfig.useAVCcodec == 0)
+      return false;
+    mimetype = "video/avc";
+    if ( *(char*)hints.extradata == 1 )
+      p->meta->setData(kKeyAVCC, kTypeAVCC, hints.extradata, hints.extrasize);
+    break;
+  case CODEC_ID_MPEG4:
+    if (p->m_g_advancedSettings->m_stagefrightConfig.useMP4codec == 0)
+      return false;
+    mimetype = "video/mp4v-es";
+    break;
+  case CODEC_ID_MPEG2VIDEO:
+    if (p->m_g_advancedSettings->m_stagefrightConfig.useMPEG2codec == 0)
+      return false;
+    mimetype = "video/mpeg2";
+   {
+    unsigned char init_buf_mpeg[284];
+    unsigned char intra_quantizer_matrix[64];
+    unsigned char non_intra_quantizer_matrix[64];
+    unsigned char chroma_intra_quantizer_matrix[64];
+    unsigned char chroma_non_intra_quantizer_matrix[64];
+    unsigned char *buf = (unsigned char *)hints.extradata;
+    unsigned int extra_num = 0;
+    unsigned int Bfr = 0;        
+    int i = 0;
+    unsigned int temp = 0;
+    
+    
+    
+    memset(init_buf_mpeg,0,284);     		
+    packet_header_t *ph = (packet_header_t*)init_buf_mpeg;       
+    ph->header_type = 0x200;
+    ph->reserved1 = p->width;
+    ph->reserved2 = p->height;
+    ph->block_len = 256;
+    ph->parser_format = 1;  //mpeg2
+    ph->reserved_byte2 = 1;
+    ph->seek_reset_flag = 0;
+    
+    Bfr = (*buf)<<24| (*(buf + 1))<<16|(*(buf + 2))<<8|(*(buf + 3));
+		while((extra_num < (hints.extrasize - 3))&&((Bfr == 0x000001B3)||(Bfr == 0x000001B5)) )
+		{    
+		    unsigned int bfr_tmp;
+		    
+		    CLog::Log(LOGNOTICE," -- Bfr : %x  --   extra_num : %d",Bfr,extra_num);
+		    if(Bfr == 0x000001B3)
+		    {
+				    extra_num = extra_num + 8;
+				    for (i = 0; i < 64; i++)
+					  {
+							intra_quantizer_matrix[i] = chroma_intra_quantizer_matrix[i] = default_intra_quantizer_matrix[i];
+							non_intra_quantizer_matrix[i] = chroma_non_intra_quantizer_matrix[i] = 16;
+					  }
+				    
+				    bfr_tmp = *(buf + extra_num)<<24| (*(buf + extra_num + 1))<<16|(*(buf + extra_num + 2))<<8|(*(buf + extra_num + 3));
+				    CLog::Log(LOGNOTICE," -- bfr_tmp : %x  -444-   extra_num : %d",bfr_tmp,extra_num);
+				    extra_num = extra_num + 4;
+				    if(bfr_tmp & 0x02)
+				    {
+				    	CLog::Log(LOGNOTICE," ----  intra_quantizer_matrix");				    					    	
+				    	for (i = 0; i < 64; i++)
+						  {						  	
+						  	temp = (bfr_tmp &0x01) << 7;
+								bfr_tmp = *(buf + extra_num);
+								extra_num++;
+								temp |= bfr_tmp &0xFE;
+								intra_quantizer_matrix[scan[0][i]] = temp;						  	
+						  	//intra_quantizer_matrix[scan[0][i]] = (*((uint8_t *)((uint8_t *)hints.extradata + i + extra_num)))&0xFE;			
+						  }
+						  //extra_num = extra_num + 64;
+					  }
+					  CLog::Log(LOGNOTICE," ----  middle :  %d     %x",extra_num,Bfr);
+					  if(bfr_tmp &0x01)
+					  {		
+					  	CLog::Log(LOGNOTICE," ----  non_intra_quantizer_matrix");
+					  	for (i = 0; i < 64; i++)
+						  {	
+					    	non_intra_quantizer_matrix[scan[0][i]] = *(buf + i + extra_num);
+					    }
+					    extra_num = extra_num + 64;
+				  	}
+				  	
+				    for (i = 0; i < 64; i++)
+				    {
+				     	init_buf_mpeg[28 + i] = intra_quantizer_matrix[i];
+				     	init_buf_mpeg[28 + i + 64] = non_intra_quantizer_matrix[i];
+				     	init_buf_mpeg[28 + i + 128] = chroma_intra_quantizer_matrix[i];
+				     	init_buf_mpeg[28 + i + 192] = chroma_non_intra_quantizer_matrix[i];
+				    }
+				}
+				
+				CLog::Log(LOGNOTICE," -- Bfr : %x  --22   extra_num : %d",Bfr,extra_num);
+				if(Bfr == 0x000001B5)
+				{										
+					
+					extra_num = extra_num + 4;
+					
+					bfr_tmp = (*buf + extra_num)<<24| (*(buf + extra_num + 1))<<16|(*(buf + extra_num + 2))<<8|(*(buf + extra_num + 3));
+					CLog::Log(LOGNOTICE," -- bfr_tmp : %x  -444-   extra_num : %d",bfr_tmp,extra_num);
+					extra_num = extra_num + 4;
+					if (((Bfr &0xf0000000) >> 28) == 1)
+					{					
+					ph->seek_reset_flag = (bfr_tmp >> 19) &0x01;
+					}
+				
+				}	
+				CLog::Log(LOGNOTICE," -- Bfr : %x  -- 33  extra_num : %d",Bfr,extra_num);
+				Bfr = (*(buf + extra_num))<<24| (*(buf + extra_num + 1))<<16|(*(buf + extra_num + 2))<<8|(*(buf + extra_num + 3));
+				extra_num++;
+    } 
+    
+    
+     for (i = 0; i < 284; i++)
+     {
+     	CLog::Log(LOGNOTICE," -- init buf  :%d- --- %x  ----",i,init_buf_mpeg[i]);
+     }
+     //p->meta->setPointer(kKeyActVDPrv, init_buf_mpeg);
+      p->meta->setData(kKeyActVideoPrivateData, 0,(const void *)init_buf_mpeg,256);	
+   }
+    
+    
+    break;
+  case CODEC_ID_VP3:
+  case CODEC_ID_VP6:
+  case CODEC_ID_VP6F:
+      if (p->m_g_advancedSettings->m_stagefrightConfig.useVPXcodec == 0)
+        return false;
+      mimetype = "video/vp6";
+      break;
+  case CODEC_ID_VP8:
+    if (p->m_g_advancedSettings->m_stagefrightConfig.useVPXcodec == 0)
+      return false;
+    mimetype = "video/x-vnd.on2.vp8";
+    break;
+  case AV_CODEC_ID_VP9:
+	  mimetype = "video/x-vnd.on2.vp9";
+	  break;
+  case CODEC_ID_H263:
+   	//CLog::Log(LOGNOTICE,"----- 22 h263 codec----");
+    mimetype = "video/3gpp";
+    break;      
+  case CODEC_ID_MSMPEG4V3:  
+    mimetype = "video/div3";
+    int int_buf_mpeg4v3[4];
+    int_buf_mpeg4v3[2] = p->width;
+    int_buf_mpeg4v3[3] = p->height;
+    CLog::Log(LOGNOTICE,"----22_test-  mpeg4v3 codec---- %d  %d",int_buf_mpeg4v3[2],int_buf_mpeg4v3[3]);
+    p->meta->setData(kKeyActVideoPrivateData, 0,(const void *)int_buf_mpeg4v3,16);		
+    //CLog::Log(LOGNOTICE,"----22-  mpeg4v3 codec----");
+    //return false;
+    break;  
+	case CODEC_ID_FLV1:  
+    mimetype = "video/flv1";
+    //CLog::Log(LOGNOTICE,"----22-  flv1 codec----");
+    //return false;
+    break; 		
+	case CODEC_ID_RV30:
+  case CODEC_ID_RV40:
+  	mimetype = "video/rv";
+  	unsigned char int_buf[80];
+  	unsigned char *pBuf;   	
+  	unsigned int len;
+  	unsigned int ulMOFTag;  	
+  	unsigned int ulSubMOFTag; 	
+		unsigned short  usWidth;		
+  	unsigned short  usheight;	  	
+	 	unsigned short  usBitCount;
+		unsigned short  usPadWidth;
+		unsigned short  usPadHeight;
+		unsigned int ufFramesPerSecond; 
+
+		pBuf = (unsigned char*)int_buf;
+		len = 26 +	hints.extrasize;
+		ulMOFTag = 0x5649444F;
+		
+		if(hints.codec == AV_CODEC_ID_RV30)
+  	{
+  		ulSubMOFTag = 0x52563330;
+  		//CLog::Log(LOGNOTICE,"  ----  AV_CODEC_ID_RV30 ---- ");   
+  	}
+  	else  
+		{
+			ulSubMOFTag = 0x52563430;
+			//CLog::Log(LOGNOTICE," ----  AV_CODEC_ID_RV40 ---- ");   
+		}
+		usWidth	= p->width;
+  	usheight = p->height; 	
+	 	usBitCount = 0;
+		usPadWidth = 0;
+		usPadHeight = 0;
+		ufFramesPerSecond = 0; 
+		
+		memset(int_buf,0,80);
+		
+		pBuf = pBuf + 4;
+		memcpy(pBuf,(unsigned char *)(&len),4);
+		pBuf = pBuf + 24;
+		memcpy(pBuf,(unsigned char *)(&len),4);
+		
+		pBuf+=4;
+		memcpy(pBuf,(unsigned char *)(&ulMOFTag),4);
+		pBuf+=4;
+		memcpy(pBuf,(unsigned char *)(&ulSubMOFTag),4);
+		pBuf+=4;
+	
+		memcpy(pBuf,(unsigned char *)(&usWidth),2);
+		pBuf+=2;
+		memcpy(pBuf,(unsigned char *)(&usheight),2);
+		pBuf+=2;
+		memcpy(pBuf,(unsigned char *)(&usBitCount),2);
+		pBuf+=2;
+		memcpy(pBuf,(unsigned char *)(&usPadWidth),2);
+		pBuf+=2;
+		memcpy(pBuf,(unsigned char *)(&usPadHeight),2);
+		pBuf+=2;
+		memcpy(pBuf,(unsigned char *)(&ufFramesPerSecond),4);
+		pBuf+=4;
+		
+		if (hints.extrasize > 0)
+   		 {
+        	 memcpy(pBuf, hints.extradata, hints.extrasize);
+   		}    
+		
+		p->meta->setData(kKeyActVideoPrivateData, 0,(const void *)int_buf,hints.extrasize + 54);		  
+    break;
+  case AV_CODEC_ID_CAVS:
+	  mimetype = "video/avs";
+	  break;
+  case CODEC_ID_VC1:
+  case CODEC_ID_WMV3:
+  case AV_CODEC_ID_WMV2:    	  
+    if (p->m_g_advancedSettings->m_stagefrightConfig.useVC1codec == 0)
+      return false;
+    mimetype = "video/vc1";
+    
+/////////////////////////////////////////////////////////
+/*
+     WMV_VIDEOPARAM
+     SequenceHeader
+*/
+   {
+         #define WMV_EXTRASIZE 256  
+         unsigned char wmv_init_buf[WMV_EXTRASIZE + (9*4)];   	
+         unsigned char *pp;
+		
+		if (hints.extrasize > WMV_EXTRASIZE)
+			return false;
+
+		WMV_VIDEOPARAM *wmv_buf;
+		wmv_buf = reinterpret_cast<WMV_VIDEOPARAM *>(wmv_init_buf);
+	   	if (hints.codec == CODEC_ID_VC1)
+		   wmv_buf->uiFOURCCCompressed = TAG_WVC1;
+		else if (hints.codec == CODEC_ID_WMV3)
+		   wmv_buf->uiFOURCCCompressed = TAG_WMV3;		
+		else{
+		   wmv_buf->uiFOURCCCompressed = TAG_WMV2;
+		   mimetype = "video/wmv8";
+		}
+		   
+		wmv_buf->iWidthSource  = hints.width;
+		wmv_buf->iHeightSource = hints.height;
+		wmv_buf->pSequenceHeader = wmv_init_buf + sizeof(WMV_VIDEOPARAM);
+		memcpy(wmv_buf->pSequenceHeader, hints.extradata, hints.extrasize);
+		wmv_buf->uipSequenceHeaderLength = hints.extrasize;
+	        p->meta->setData(kKeyActVideoPrivateData, 0, wmv_init_buf, sizeof(WMV_VIDEOPARAM) + hints.extrasize);
+
+   } 			
+    break; 
+  case AV_CODEC_ID_WMV1:
+   {
+		WMV_VIDEOPARAM wmv_param;
+		memset(&wmv_param, 0, sizeof(WMV_VIDEOPARAM));
+		wmv_param.uiFOURCCCompressed = TAG_WMV1;
+		wmv_param.iWidthSource  = hints.width;
+		wmv_param.iHeightSource = hints.height;
+	        p->meta->setData(kKeyActVideoPrivateData, 0, &wmv_param, sizeof(WMV_VIDEOPARAM));
+
+   }
+      mimetype = "video/wmv8";
+      break;    	  
+  default:
+    return false;
+    break;
+  }
+
+  p->meta->setCString(kKeyMIMEType, mimetype);
+  p->meta->setInt32(kKeyWidth, p->width);
+  p->meta->setInt32(kKeyHeight, p->height);
+
+  android::ProcessState::self()->startThreadPool();
+
+  p->source    = new CStageFrightMediaSource(p, p->meta);
+  p->client    = new OMXClient;
+
+  if (p->source == NULL || p->client == NULL)
+  {
+    p->meta = NULL;
+    p->source = NULL;
+    p->decoder = NULL;
+    CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"Cannot obtain source / client");
+    return false;
+  }
+
+  if (p->client->connect() !=  OK)
+  {
+    p->meta = NULL;
+    p->source = NULL;
+    delete p->client;
+    p->client = NULL;
+    CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"Cannot connect OMX client");
+    return false;
+  }
+
+  if ((p->quirks & QuirkSWRender) == 0)
+    if (!p->InitSurfaceTexture())
+    {
+      p->meta = NULL;
+      p->source = NULL;
+      delete p->client;
+      p->client = NULL;
+      CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"Cannot allocate texture");
+      return false;
+    }
+
+	CLog::Log(LOGNOTICE,"--- OMXCodec::Create ");
+
+  p->decoder  = OMXCodec::Create(p->client->interface(), p->meta,
+                                         false, p->source, NULL,
+                                         OMXCodec::kHardwareCodecsOnly | (p->quirks & QuirkSWRender ? OMXCodec::kClientNeedsFramebuffer : 0),
+                                         p->mVideoNativeWindow
+                                         );
+
+  if (!(p->decoder != NULL && p->decoder->start() ==  OK))
+  {
+    if(p->decoder != NULL)       
+    		CLog::Log(LOGNOTICE,"--- START  -  is not NULL ");
+    else
+    	  CLog::Log(LOGNOTICE,"--- START  -  is NULL "); 			
+    	
+    p->meta = NULL;
+    p->source = NULL;
+    p->decoder = NULL;
+    CLog::Log(LOGNOTICE,"--- START  -  ERROR");
+    return false;
+  }
+
+  sp<MetaData> outFormat = p->decoder->getFormat();
+
+  if (!outFormat->findInt32(kKeyWidth, &p->width) || !outFormat->findInt32(kKeyHeight, &p->height)
+        || !outFormat->findInt32(kKeyColorFormat, &p->videoColorFormat))
+  {
+    p->meta = NULL;
+    p->source = NULL;
+    p->decoder = NULL;
+     CLog::Log(LOGNOTICE,"--- find key  -  ERROR");
+    return false;
+  }
+
+  const char *component;
+  if (outFormat->findCString(kKeyDecoderComponent, &component))
+  {
+    CLog::Log(LOGDEBUG, "%s::%s - component: %s\n", CLASSNAME, __func__, component);
+
+    //Blacklist
+    if (!strncmp(component, "OMX.google", 10))
+    {
+      // On some platforms, software decoders are returned anyway
+      CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"Blacklisted component (software)");
+      return false;
+    }
+    else if (!strncmp(component, "OMX.Nvidia.mp4.decode", 21) && p->m_g_advancedSettings->m_stagefrightConfig.useMP4codec != 1)
+    {
+      // Has issues with some XVID encoded MP4. Only fails after actual decoding starts...
+      CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"Blacklisted component (MP4)");
+      return false;
+    }
+  }
+
+  int32_t cropLeft, cropTop, cropRight, cropBottom;
+  cropLeft = cropTop = cropRight = cropBottom = 0;
+  if (!outFormat->findRect(kKeyCropRect, &cropLeft, &cropTop, &cropRight, &cropBottom))
+  {
+    p->x = 0;
+    p->y = 0;
+  }
+  else
+  {
+    p->x = cropLeft;
+    p->y = cropTop;
+    p->width = cropRight - cropLeft + 1;
+    p->height = cropBottom - cropTop + 1;
+  }
+
+  if (!outFormat->findInt32(kKeyStride, &p->videoStride))
+    p->videoStride = p->width;
+  if (!outFormat->findInt32(kKeySliceHeight, &p->videoSliceHeight))
+    p->videoSliceHeight = p->height;
+
+  for (int i=0; i<INBUFCOUNT; ++i)
+  {
+    p->inbuf[i] = new MediaBuffer(300000);
+    p->inbuf[i]->setObserver(p);
+  }
+
+  p->decode_thread = new CStageFrightDecodeThread(p);
+  p->decode_thread->Create(true /*autodelete*/);
+
+#if defined(DEBUG_VERBOSE)
+  CLog::Log(LOGDEBUG, ">>> format col:%d, w:%d, h:%d, sw:%d, sh:%d, ctl:%d,%d; cbr:%d,%d\n", p->videoColorFormat, p->width, p->height, p->videoStride, p->videoSliceHeight, cropTop, cropLeft, cropBottom, cropRight);
+#endif
+
+  return true;
+}
+#else
 bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
 {
 #if defined(DEBUG_VERBOSE)
@@ -579,6 +1108,8 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
 
   return true;
 }
+#endif
+
 
 /*** Decode ***/
 int  CStageFrightVideo::Decode(uint8_t *pData, int iSize, double dts, double pts)

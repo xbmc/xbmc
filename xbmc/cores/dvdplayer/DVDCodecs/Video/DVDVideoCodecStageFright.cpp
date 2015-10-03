@@ -122,6 +122,38 @@ bool CDVDVideoCodecStageFright::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
       case CODEC_ID_VC1:
         m_pFormatName = "stf-wmv";
         break;
+#if defined(HAS_LIBACTSCODEC)
+      case AV_CODEC_ID_VP9:
+        m_pFormatName = "stf-vpx";
+       break;         
+      case CODEC_ID_WMV1:
+      case CODEC_ID_WMV2:
+        m_pFormatName = "stf-wmv";
+        break;
+      case CODEC_ID_H263:
+		m_pFormatName = "stf-h263";
+		CLog::Log(LOGINFO, "--------h263---------");
+		break;
+      case CODEC_ID_MSMPEG4V3:  
+        m_pFormatName = "stf-mpeg4v3";
+      	CLog::Log(LOGNOTICE,"-----  mpeg4v3 codec----");
+        break;
+      case CODEC_ID_FLV1:  
+        m_pFormatName = "stf-flv1";
+      	CLog::Log(LOGNOTICE,"-----  flv1 codec----");
+        break;
+      case CODEC_ID_RV30:
+      case CODEC_ID_RV40:    
+        m_pFormatName = "stf-rv";
+      	CLog::Log(LOGNOTICE,"-----  rv34 codec----");
+        break;
+	  case AV_CODEC_ID_AVS:
+	  case AV_CODEC_ID_CAVS:
+		  m_pFormatName = "stf-avs";
+		  CLog::Log(LOGINFO, "--------xyf avs---------");
+		  CLog::Log(LOGINFO, "avs(%d), cavs(%d)", AV_CODEC_ID_AVS, AV_CODEC_ID_CAVS);
+		  break;
+#endif		  
       default:
         return false;
         break;
