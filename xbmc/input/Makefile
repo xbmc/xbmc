@@ -3,6 +3,7 @@ SRCS=ButtonTranslator.cpp \
      InputCodingTableBaiduPY.cpp \
      InputCodingTableBasePY.cpp \
      InputCodingTableFactory.cpp \
+     InputCodingTableKorean.cpp \
      KeyboardLayout.cpp \
      KeyboardLayoutManager.cpp \
      KeyboardStat.cpp \
