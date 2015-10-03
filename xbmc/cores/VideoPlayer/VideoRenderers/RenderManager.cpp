@@ -697,7 +697,9 @@ void CRenderManager::CreateRenderer()
     }
     else if (m_format != RENDER_FMT_NONE)
     {
-#if defined(HAS_GL)
+#if defined(HAS_MMAL)
+      m_pRenderer = new CMMALRenderer;
+#elif defined(HAS_GL)
       m_pRenderer = new CLinuxRendererGL;
 #elif HAS_GLES == 2
       m_pRenderer = new CLinuxRendererGLES;
