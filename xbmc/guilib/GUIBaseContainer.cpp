@@ -1319,5 +1319,16 @@ void CGUIBaseContainer::OnFocus()
   if (m_listProvider && m_listProvider->AlwaysFocusDefaultItem())
     SelectItem(m_listProvider->GetDefaultItem());
 
+  if (m_focusActions.HasAnyActions())
+    m_focusActions.ExecuteActions(GetID(), GetParentID());
+
   CGUIControl::OnFocus();
+}
+
+void CGUIBaseContainer::OnUnFocus()
+{
+  if (m_unfocusActions.HasAnyActions())
+    m_unfocusActions.ExecuteActions(GetID(), GetParentID());
+
+  CGUIControl::OnUnFocus();
 }

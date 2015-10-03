@@ -92,6 +92,8 @@ public:
   void SetRenderOffset(const CPoint &offset);
 
   void SetClickActions(const CGUIAction& clickActions) { m_clickActions = clickActions; };
+  void SetFocusActions(const CGUIAction& focusActions) { m_focusActions = focusActions; };
+  void SetUnFocusActions(const CGUIAction& unfocusActions) { m_unfocusActions = unfocusActions; };
 
   void SetAutoScrolling(const TiXmlNode *node);
   void ResetAutoScrolling();
@@ -126,6 +128,7 @@ protected:
   virtual int GetCurrentPage() const;
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point) const;
   virtual void OnFocus();
+  virtual void OnUnFocus();
   void UpdateListProvider(bool forceRefresh = false);
 
   int ScrollCorrectionRange() const;
@@ -219,6 +222,8 @@ private:
   CStopWatch m_pageChangeTimer;
 
   CGUIAction m_clickActions;
+  CGUIAction m_focusActions;
+  CGUIAction m_unfocusActions;
 
   // letter match searching
   CStopWatch m_matchTimer;
