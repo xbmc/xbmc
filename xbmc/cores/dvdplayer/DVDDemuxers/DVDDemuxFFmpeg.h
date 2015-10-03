@@ -143,6 +143,7 @@ protected:
   std::string ConvertCodecToInternalStereoMode(const std::string &mode, const StereoModeConversionMap *conversionMap);
 
   void GetL16Parameters(int &channels, int &samplerate);
+  double SelectAspect(AVStream* st, bool& forced);
 
   CCriticalSection m_critSection;
   std::map<int, CDemuxStream*> m_streams;
