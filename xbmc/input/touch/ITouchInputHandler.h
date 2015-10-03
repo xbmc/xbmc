@@ -28,6 +28,7 @@
  * \brief Touch input event
  */
 typedef enum {
+  TouchInputUnchanged = 0,
   TouchInputAbort,
   TouchInputDown,
   TouchInputUp,
