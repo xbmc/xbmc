@@ -41,11 +41,10 @@ private:
 
   std::string m_url;
   std::string m_code;
+  int m_messageCounter;
   int m_api_begin; // baidu api begin num
   int m_api_end;   // baidu api end num
   bool m_api_nomore;
-
-  int m_messageCounter;
 
   std::deque<std::string> m_work;
   std::map<int, std::vector<std::wstring>> m_responses;
