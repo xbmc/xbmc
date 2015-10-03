@@ -34,16 +34,17 @@ CInputCodingTableBaiduPY::CInputCodingTableBaiduPY(const std::string& strUrl) :
   m_messageCounter{ 0 },
   m_api_begin{ 0 },
   m_api_end{ 20 },
-  m_api_nomore{ false }
+  m_api_nomore{ false },
+  m_initialized{ false }
 {
   m_url = strUrl;
   m_codechars = "abcdefghijklmnopqrstuvwxyz";
   m_code = "";
-  Create();
 }
 
 void CInputCodingTableBaiduPY::Process()
 {
+  m_initialized = true;
   while (!m_bStop) //Make sure we don't exit the thread
   {
     AbortableWait(m_Event, -1); //Wait for work to appear
@@ -119,6 +120,25 @@ std::vector<std::wstring> CInputCodingTableBaiduPY::GetResponse(int response)
   auto words = m_responses.at(response);
   m_responses.erase(response);
   return words;
+}
+
+void CInputCodingTableBaiduPY::Initialize()
+{
+  CSingleLock lock(m_CS);
+  if (!IsRunning())
+    Create();
+}
+
+void CInputCodingTableBaiduPY::Deinitialize()
+{
+  m_Event.Set();
+  StopThread(true);
+  m_initialized = false;
+}
+
+bool CInputCodingTableBaiduPY::IsInitialized() const
+{
+  return m_initialized;
 }
 
 bool CInputCodingTableBaiduPY::GetWordListPage(const std::string& strCode, bool isFirstPage)

@@ -438,6 +438,8 @@ void CGUIDialogKeyboardGeneric::UpdateButtons()
     m_currentLayout = 0;
   CKeyboardLayout layout = m_layouts.empty() ? CKeyboardLayout() : m_layouts[m_currentLayout];
   m_codingtable = layout.GetCodingTable();
+  if (m_codingtable && !m_codingtable->IsInitialized())
+    m_codingtable->Initialize();
 
   bool bShowWordList = false;
   if (m_codingtable)
@@ -494,6 +496,12 @@ void CGUIDialogKeyboardGeneric::UpdateButtons()
 
 void CGUIDialogKeyboardGeneric::OnDeinitWindow(int nextWindowID)
 {
+  for (auto& layout : m_layouts)
+  {
+    auto codingTable = layout.GetCodingTable();
+    if (codingTable && codingTable->IsInitialized())
+      codingTable->Deinitialize();
+  }
   // call base class
   CGUIDialog::OnDeinitWindow(nextWindowID);
   // reset the heading (we don't always have this)

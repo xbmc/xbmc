@@ -62,11 +62,9 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
   private:
     void OnClickButton(int iButtonControl);
     void UpdateButtons();
-    char GetCharacter(int iButton);
     void Character(const std::string &ch);
     void Backspace();
     void SetEditText(const std::string& text);
-    void SendSearchMessage();
     float GetStringWidth(const std::wstring& utf16);
     void ChangeWordList(int direct);  // direct: 0 - first page, 1 - next page, -1 - prev page
     void ShowWordList(int which); // which: 0 - current page, 1 - next page, -1 -prev page
