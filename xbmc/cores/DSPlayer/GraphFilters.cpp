@@ -61,8 +61,17 @@ CGraphFilters* CGraphFilters::Get()
 
 void CGraphFilters::ShowInternalPPage(LAVFILTERS_TYPE type, bool showPropertyPage)
 {
+  m_pBF = NULL;
+
   IBaseFilter *pBF;
   GetInternalFilter(type, &pBF);
+
+  // If there is not a playback create a filter to show propertypage
+  if (pBF == NULL)
+  {
+    CreateInternalFilter(type, &m_pBF);
+    pBF = m_pBF;
+  }
 
   if (showPropertyPage)
   {
@@ -128,7 +137,7 @@ void CGraphFilters::CreateInternalFilter(LAVFILTERS_TYPE type, IBaseFilter **ppB
 
 void CGraphFilters::GetInternalFilter(LAVFILTERS_TYPE type, IBaseFilter **ppBF)
 {
-  *ppBF = NULL;
+  *ppBF = m_pBF;
 
   if (type == LAVVIDEO && Video.pBF && Video.internalFilter)
     *ppBF = Video.pBF;

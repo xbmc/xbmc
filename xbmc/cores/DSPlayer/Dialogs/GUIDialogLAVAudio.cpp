@@ -334,7 +334,7 @@ void CGUIDialogLAVAudio::OnSettingChanged(const CSetting *setting)
   IBaseFilter *pBF;
   CGraphFilters::Get()->GetInternalFilter(LAVAUDIO, &pBF);
 
-  // Set settings changes into the running rilter
+  // Set settings changes into the running filter
   CGraphFilters::Get()->SetLavSettings(LAVAUDIO, pBF);
 
   // Save new settings into DSPlayer DB

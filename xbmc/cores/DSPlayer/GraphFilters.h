@@ -226,5 +226,6 @@ private:
   bool m_hsubfilter;
   bool m_isDVD;
   bool m_UsingDXVADecoder;
+  Com::SmartPtr<IBaseFilter> m_pBF;
   DIRECTSHOW_RENDERER m_CurrentRenderer;
 };

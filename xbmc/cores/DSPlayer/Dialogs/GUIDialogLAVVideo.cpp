@@ -286,7 +286,7 @@ void CGUIDialogLAVVideo::OnSettingChanged(const CSetting *setting)
   IBaseFilter *pBF;
   CGraphFilters::Get()->GetInternalFilter(LAVVIDEO, &pBF);
 
-  // Set settings changes into the running rilter
+  // Set settings changes into the running filter
   CGraphFilters::Get()->SetLavSettings(LAVVIDEO, pBF);
 
   // Save new settings into DSPlayer DB

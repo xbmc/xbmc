@@ -281,7 +281,7 @@ void CGUIDialogLAVSplitter::OnSettingChanged(const CSetting *setting)
   IBaseFilter *pBF;
   CGraphFilters::Get()->GetInternalFilter(LAVSPLITTER, &pBF);
 
-  // Set settings changes into the running rilter
+  // Set settings changes into the running filter
   CGraphFilters::Get()->SetLavSettings(LAVSPLITTER, pBF);
 
   // Save new settings into DSPlayer DB
