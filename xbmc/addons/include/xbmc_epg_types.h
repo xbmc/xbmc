@@ -65,6 +65,13 @@
 const unsigned int EPG_TAG_FLAG_UNDEFINED =           0x00000000; /*!< @brief nothing special to say about this entry */
 const unsigned int EPG_TAG_FLAG_IS_SERIES =           0x00000001; /*!< @brief this EPG entry is part of a series */
 
+/* Special EPG_TAG.iUniqueBroadcastId value */
+
+/*!
+ * @brief special EPG_TAG.iUniqueBroadcastId value to indicate that a tag has not a valid EPG event uid.
+ */
+const unsigned int EPG_TAG_INVALID_UID = 0;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -73,7 +80,7 @@ extern "C" {
    * @brief Representation of an EPG event.
    */
   typedef struct EPG_TAG {
-    unsigned int  iUniqueBroadcastId;  /*!< @brief (required) identifier for this event */
+    unsigned int  iUniqueBroadcastId;  /*!< @brief (required) identifier for this event. Valid uids must be greater than EPG_TAG_INVALID_UID. */
     const char *  strTitle;            /*!< @brief (required) this event's title */
     unsigned int  iChannelNumber;      /*!< @brief (required) the number of the channel this event occurs on */
     time_t        startTime;           /*!< @brief (required) start time in UTC */
