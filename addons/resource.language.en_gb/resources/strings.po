@@ -4088,7 +4088,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#1268"
-msgid "iOS 8 compatibility mode"
+msgid "Enable AirPlay Video and Picture support"
 msgstr ""
 
 msgctxt "#1269"
@@ -17689,7 +17689,7 @@ msgstr ""
 #. Description of setting "Services -> AirPlay -> iOS 8 compatibility mode" with label #1268
 #: system/settings/settings.xml
 msgctxt "#36549"
-msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting this application as a valid target try switching this off. This option requires a restart to take effect!"
+msgid "Enables support for receving videos and pictures via AirPlay. This needs to be disabled when using iOS 9 or later clients to restore music streaming via AirPlay. Videos and Pictures are only supported for iOS clients using iOS 8.x and older."
 msgstr ""
 
 #. Name of a setting
