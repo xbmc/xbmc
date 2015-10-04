@@ -13395,10 +13395,7 @@ msgctxt "#24047"
 msgid "This add-on can't be uninstalled"
 msgstr ""
 
-#: skin.confluence
-msgctxt "#24048"
-msgid "Rollback"
-msgstr ""
+#empty string with id 24048
 
 #: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24049"
@@ -13636,14 +13633,11 @@ msgctxt "#24093"
 msgid "Checking %s..."
 msgstr ""
 
-#: xbmc/addons/guidialogaddoninfo.cpp
-msgctxt "#24094"
-msgid "(current)"
-msgstr ""
+#empty string with id 24094
 
-#: xbmc/addons/guidialogaddoninfo.cpp
+#: xbmc/addons/GUIDialogAddonInfo.cpp
 msgctxt "#24095"
-msgid "(blacklisted)"
+msgid "Local package cache"
 msgstr ""
 
 #: xbmc/addons/Repository.cpp
