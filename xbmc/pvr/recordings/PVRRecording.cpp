@@ -187,7 +187,7 @@ void CPVRRecording::Reset(void)
   m_bGotMetaData       = false;
   m_iRecordingId       = 0;
   m_bIsDeleted         = false;
-  m_iEpgEventId        = 0;
+  m_iEpgEventId        = EPG_TAG_INVALID_UID;
   m_iSeason            = -1;
   m_iEpisode           = -1;
 
@@ -431,7 +431,7 @@ void CPVRRecording::CopyClientInfo(CVideoInfoTag *target) const
 
 CPVRChannelPtr CPVRRecording::Channel(void) const
 {
-  if (m_iEpgEventId)
+  if (m_iEpgEventId != EPG_TAG_INVALID_UID)
   {
     EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(m_iEpgEventId);
     if (epgTag)
@@ -442,7 +442,7 @@ CPVRChannelPtr CPVRRecording::Channel(void) const
 
 bool CPVRRecording::IsBeingRecorded(void) const
 {
-  if (m_iEpgEventId)
+  if (m_iEpgEventId != EPG_TAG_INVALID_UID)
   {
     EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(m_iEpgEventId);
     return epgTag ? epgTag->HasRecording() : false;

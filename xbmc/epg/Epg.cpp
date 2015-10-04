@@ -864,7 +864,7 @@ std::vector<CEpgInfoTagPtr> CEpg::GetAllEventsWithBroadcastId() const
   events.reserve(m_tags.size());
   for (const auto &infoTag : m_tags)
   {
-    if (infoTag.second->UniqueBroadcastID())
+    if (infoTag.second->UniqueBroadcastID() != EPG_TAG_INVALID_UID)
       events.push_back(infoTag.second);
   }
   return events;

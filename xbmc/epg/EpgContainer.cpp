@@ -399,10 +399,15 @@ CEpgPtr CEpgContainer::GetById(int iEpgId) const
 CEpgInfoTagPtr CEpgContainer::GetTagById(unsigned int iBroadcastId) const
 {
   CEpgInfoTagPtr retval;
+
+  if (iBroadcastId == EPG_TAG_INVALID_UID)
+    return retval;
+
   CSingleLock lock(m_critSection);
   const auto &infoTag = m_epgEvents.find(iBroadcastId);
   if (infoTag != m_epgEvents.end())
     retval = infoTag->second;
+
   return retval;
 }
 

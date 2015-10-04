@@ -51,7 +51,7 @@ CEpgInfoTag::CEpgInfoTag(void) :
     m_iSeriesNumber(0),
     m_iEpisodeNumber(0),
     m_iEpisodePart(0),
-    m_iUniqueBroadcastID(0),
+    m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
     m_iYear(0),
     m_epg(NULL),
     m_iFlags(EPG_TAG_FLAG_UNDEFINED)
@@ -68,7 +68,7 @@ CEpgInfoTag::CEpgInfoTag(CEpg *epg, PVR::CPVRChannelPtr pvrChannel, const std::s
     m_iSeriesNumber(0),
     m_iEpisodeNumber(0),
     m_iEpisodePart(0),
-    m_iUniqueBroadcastID(0),
+    m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
     m_iYear(0),
     m_strIconPath(strIconPath),
     m_epg(epg),
@@ -88,7 +88,7 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
     m_iSeriesNumber(0),
     m_iEpisodeNumber(0),
     m_iEpisodePart(0),
-    m_iUniqueBroadcastID(0),
+    m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
     m_epg(NULL)
 {
   m_startTime = (data.startTime + g_advancedSettings.m_iPVRTimeCorrection);

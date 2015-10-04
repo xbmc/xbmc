@@ -203,7 +203,7 @@ namespace PVR
     bool IsDeleted() const { return m_bIsDeleted; }
 
     /*!
-     * @return Broadcast id of the EPG event associated with this recording
+     * @return Broadcast id of the EPG event associated with this recording or EPG_TAG_INVALID_UID
      */
     unsigned int EpgEvent(void) const { return m_iEpgEventId; }
 
