@@ -258,6 +258,9 @@
 		39BD2AD81B845D40004A5A15 /* DialogHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39BD2AD71B845D40004A5A15 /* DialogHelper.cpp */; };
 		39BD2AD91B845D40004A5A15 /* DialogHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39BD2AD71B845D40004A5A15 /* DialogHelper.cpp */; };
 		39BD2ADA1B845D40004A5A15 /* DialogHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39BD2AD71B845D40004A5A15 /* DialogHelper.cpp */; };
+		39C38CCA1BBFF1EE000F59F5 /* InputCodingTableKorean.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39C38CC81BBFF1EE000F59F5 /* InputCodingTableKorean.cpp */; settings = {ASSET_TAGS = (); }; };
+		39C38CCB1BBFF1EE000F59F5 /* InputCodingTableKorean.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39C38CC81BBFF1EE000F59F5 /* InputCodingTableKorean.cpp */; settings = {ASSET_TAGS = (); }; };
+		39C38CCC1BBFF1EE000F59F5 /* InputCodingTableKorean.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39C38CC81BBFF1EE000F59F5 /* InputCodingTableKorean.cpp */; settings = {ASSET_TAGS = (); }; };
 		4260D5C71B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */; };
 		4260D5C81B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */; };
 		4260D5C91B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */; };
@@ -3708,6 +3711,8 @@
 		39B4F36F1B96F845009B2D88 /* RepositoryUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RepositoryUpdater.h; sourceTree = "<group>"; };
 		39BD2AD61B845D40004A5A15 /* DialogHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DialogHelper.h; path = helpers/DialogHelper.h; sourceTree = "<group>"; };
 		39BD2AD71B845D40004A5A15 /* DialogHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DialogHelper.cpp; path = helpers/DialogHelper.cpp; sourceTree = "<group>"; };
+		39C38CC81BBFF1EE000F59F5 /* InputCodingTableKorean.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputCodingTableKorean.cpp; sourceTree = "<group>"; };
+		39C38CC91BBFF1EE000F59F5 /* InputCodingTableKorean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputCodingTableKorean.h; sourceTree = "<group>"; };
 		4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowSplash.cpp; sourceTree = "<group>"; };
 		4260D5C61B67BB8F003F6F2D /* GUIWindowSplash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowSplash.h; sourceTree = "<group>"; };
 		42DAC16B1A6E780C0066B4C8 /* IActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IActionListener.h; sourceTree = "<group>"; };
@@ -6384,6 +6389,8 @@
 				B179BD681AD8EA7B00EA8D49 /* InputCodingTableBasePY.h */,
 				B179BD691AD8EA7B00EA8D49 /* InputCodingTableFactory.cpp */,
 				B179BD6A1AD8EA7B00EA8D49 /* InputCodingTableFactory.h */,
+				39C38CC81BBFF1EE000F59F5 /* InputCodingTableKorean.cpp */,
+				39C38CC91BBFF1EE000F59F5 /* InputCodingTableKorean.h */,
 				DF14CF7C1A77782E00396CC9 /* InputManager.cpp */,
 				DF14CF7D1A77782E00396CC9 /* InputManager.h */,
 				395C29BA1A94733100EBC7AD /* Key.cpp */,
@@ -11300,6 +11307,7 @@
 				820023DB171A28A300667D1C /* OSXTextInputResponder.mm in Sources */,
 				DF529BAE1741697B00523FB4 /* Environment.cpp in Sources */,
 				DFE4095B17417FDF00473BD9 /* LegacyPathTranslation.cpp in Sources */,
+				39C38CCA1BBFF1EE000F59F5 /* InputCodingTableKorean.cpp in Sources */,
 				0E3036EC1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */,
 				7C8E02461BA35D0B0072E8B2 /* SystemBuiltins.cpp in Sources */,
 				551C3A45175A12010051AAAD /* VDA.cpp in Sources */,
@@ -11588,6 +11596,7 @@
 				DFF0F14B17528350002DA3A4 /* emu_dummy.cpp in Sources */,
 				DFF0F14C17528350002DA3A4 /* emu_kernel32.cpp in Sources */,
 				DFF0F14D17528350002DA3A4 /* emu_msvcrt.cpp in Sources */,
+				39C38CCC1BBFF1EE000F59F5 /* InputCodingTableKorean.cpp in Sources */,
 				DFF0F14E17528350002DA3A4 /* coff.cpp in Sources */,
 				DFF0F14F17528350002DA3A4 /* dll.cpp in Sources */,
 				DFF0F15017528350002DA3A4 /* dll_tracker.cpp in Sources */,
@@ -13214,6 +13223,7 @@
 				E49913FD174E5FB000741B6D /* GUIDialogPVRGroupManager.cpp in Sources */,
 				E49913FE174E5FB000741B6D /* GUIDialogPVRGuideInfo.cpp in Sources */,
 				E49913FF174E5FB000741B6D /* GUIDialogPVRGuideOSD.cpp in Sources */,
+				39C38CCB1BBFF1EE000F59F5 /* InputCodingTableKorean.cpp in Sources */,
 				E4991400174E5FB000741B6D /* GUIDialogPVRGuideSearch.cpp in Sources */,
 				E4991401174E5FB000741B6D /* GUIDialogPVRRecordingInfo.cpp in Sources */,
 				E4991402174E5FB000741B6D /* GUIDialogPVRTimerSettings.cpp in Sources */,

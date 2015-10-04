@@ -250,6 +250,31 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
               break;
           }
         }
+        else if (iItem == -1)
+        {
+          /* process actions */
+          switch (message.GetParam1())
+          {
+            case ACTION_SELECT_ITEM:
+            case ACTION_MOUSE_LEFT_CLICK:
+            case ACTION_PLAY:
+            {
+              // EPG "gap" selected => switch to associated channel.
+              CGUIEPGGridContainer *epgGridContainer =
+                dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
+              if (epgGridContainer)
+              {
+                CFileItemPtr item(epgGridContainer->GetSelectedChannelItem());
+                if (item)
+                {
+                  ActionPlayEpg(item.get(), false);
+                  bReturn = true;
+                }
+              }
+              break;
+            }
+          }
+        }
       }
       else if (message.GetSenderId() == CONTROL_BTNVIEWASICONS)
       {
@@ -387,7 +412,7 @@ void CGUIWindowPVRGuide::GetViewTimelineItems(CFileItemList &items)
 
     m_cachedTimeline->Clear();
     m_cachedChannelGroup = group;
-    m_cachedChannelGroup->GetEPGAll(*m_cachedTimeline);
+    m_cachedChannelGroup->GetEPGAll(*m_cachedTimeline, true);
   }
 
   items.Clear();
@@ -492,7 +517,7 @@ bool CGUIWindowPVRGuide::OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUT
   if ((button == CONTEXT_BUTTON_START_RECORD) ||
       (button == CONTEXT_BUTTON_ADVANCED_RECORD))
   {
-    StartRecordFile(item, button == CONTEXT_BUTTON_ADVANCED_RECORD);
+    AddTimer(item, button == CONTEXT_BUTTON_ADVANCED_RECORD);
     bReturn = true;
   }
 

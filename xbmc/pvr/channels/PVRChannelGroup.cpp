@@ -1094,21 +1094,36 @@ int CPVRChannelGroup::GetEPGNowOrNext(CFileItemList &results, bool bGetNext) con
   return results.Size() - iInitialSize;
 }
 
-int CPVRChannelGroup::GetEPGAll(CFileItemList &results) const
+int CPVRChannelGroup::GetEPGAll(CFileItemList &results, bool bIncludeChannelsWithoutEPG /* = false */) const
 {
   int iInitialSize = results.Size();
   CEpg* epg;
+  CEpgInfoTagPtr epgTag;
   CPVRChannelPtr channel;
   CSingleLock lock(m_critSection);
 
   for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::const_iterator it = m_sortedMembers.begin(); it != m_sortedMembers.end(); ++it)
   {
     channel = (*it).channel;
-    if (!channel->IsHidden() && (epg = channel->GetEPG()) != NULL)
+    if (!channel->IsHidden())
     {
-      // XXX channel pointers aren't set in some occasions. this works around the issue, but is not very nice
-      epg->SetChannel(channel);
-      epg->Get(results);
+      int iAdded = 0;
+
+      epg = channel->GetEPG();
+      if (epg != NULL)
+      {
+        // XXX channel pointers aren't set in some occasions. this works around the issue, but is not very nice
+        epg->SetChannel(channel);
+        iAdded = epg->Get(results);
+      }
+
+      if (bIncludeChannelsWithoutEPG && iAdded == 0)
+      {
+        // Add dummy EPG tag associated with this channel
+        epgTag = CEpgInfoTag::CreateDefaultTag();
+        epgTag->SetPVRChannel(channel);
+        results.Add(CFileItemPtr(new CFileItem(epgTag)));
+      }
     }
   }
 

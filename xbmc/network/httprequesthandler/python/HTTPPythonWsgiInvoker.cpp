@@ -394,8 +394,6 @@ void CHTTPPythonWsgiInvoker::addWsgiEnvironment(HTTPPythonRequest* request, void
     return;
 
   PyObject* pyEnviron = reinterpret_cast<PyObject*>(environ);
-  if (pyEnviron == NULL)
-    return;
 
   // WSGI-defined variables
   {

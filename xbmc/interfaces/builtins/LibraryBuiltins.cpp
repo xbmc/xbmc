@@ -147,7 +147,7 @@ static int ExportLibrary(const std::vector<std::string>& params)
 
   if (params.size() > 2)
     path=params[2];
-  if (singleFile && !path.empty() ||
+  if ((singleFile && !path.empty()) ||
       CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661),
                                                  path, true))
   {

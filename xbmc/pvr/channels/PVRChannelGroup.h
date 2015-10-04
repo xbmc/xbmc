@@ -379,7 +379,7 @@ namespace PVR
      */
     void ResetChannelNumberCache(void);
 
-    void OnJobComplete(unsigned int jobID, bool success, CJob* job) {}
+    void OnJobComplete(unsigned int jobID, bool success, CJob* job) override {}
 
     /*!
      * @brief Get all EPG tables and apply a filter.
@@ -392,9 +392,10 @@ namespace PVR
     /*!
      * @brief Get all EPG tables.
      * @param results The fileitem list to store the results in.
+     * @param bIncludeChannelsWithoutEPG, for channels without EPG data, put an empty EPG tag associated with the channel into results
      * @return The amount of entries that were added.
      */
-    int GetEPGAll(CFileItemList &results) const;
+    int GetEPGAll(CFileItemList &results, bool bIncludeChannelsWithoutEPG = false) const;
 
     /*!
      * @brief Get all entries that are active now.

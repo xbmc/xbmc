@@ -579,6 +579,7 @@
     <ClCompile Include="..\..\xbmc\GUIPassword.cpp" />
     <ClCompile Include="..\..\xbmc\input\ButtonTranslator.cpp" />
     <ClCompile Include="..\..\xbmc\input\InertialScrollingHandler.cpp" />
+    <ClCompile Include="..\..\xbmc\input\InputCodingTableKorean.cpp" />
     <ClCompile Include="..\..\xbmc\input\InputManager.cpp" />
     <ClCompile Include="..\..\xbmc\input\Key.cpp" />
     <ClCompile Include="..\..\xbmc\input\InputCodingTableBaiduPY.cpp" />
@@ -1127,6 +1128,7 @@
     <ClInclude Include="..\..\xbmc\guilib\imagefactory.h" />
     <ClInclude Include="..\..\xbmc\guilib\ISliderCallback.h" />
     <ClInclude Include="..\..\xbmc\IFileItemListModifier.h" />
+    <ClInclude Include="..\..\xbmc\input\InputCodingTableKorean.h" />
     <ClInclude Include="..\..\xbmc\input\InputManager.h" />
     <ClInclude Include="..\..\xbmc\input\Key.h" />
     <ClInclude Include="..\..\xbmc\input\KeyboardLayoutManager.h" />

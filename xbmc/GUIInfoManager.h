@@ -107,7 +107,7 @@ public:
   virtual ~CGUIInfoManager(void);
 
   void Clear();
-  virtual bool OnMessage(CGUIMessage &message);
+  virtual bool OnMessage(CGUIMessage &message) override;
 
   virtual int GetMessageMask() override;
   virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;

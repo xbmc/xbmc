@@ -61,6 +61,8 @@
       <enter mod="longpress">ContextMenu</enter>
       <backspace>Back</backspace>
       <backspace mod="longpress">ActivateWindow(Home)</backspace>
+      <browser_back>Back</browser_back>
+      <browser_back mod="longpress">ActivateWindow(Home)</browser_back>
       <key id='65446'>Back</key>
       <m>Menu</m>
       <m mod="ctrl">ActivateWindow(PlayerControls)</m>
@@ -181,7 +183,22 @@
   </Home>
   <VirtualKeyboard>
     <keyboard>
+      <left>Left</left>
+      <right>Right</right>
+      <up>Up</up>
+      <down>Down</down>
+      <return>Select</return>
+      <enter>Select</enter>
+      <return mod="longpress">Enter</return>
+      <enter mod="longpress">Enter</enter>
+      <left mod="longpress">Backspace</left>
+      <right mod="longpress">Number0</right> <!-- first entry creates a space -->
+      <up mod="longpress">Shift</up>
+      <down mod="longpress">Symbols</down>
       <backspace>Backspace</backspace>
+      <browser_back>Backspace</browser_back>
+      <backspace mod="longpress">PreviousMenu</backspace>
+      <browser_back mod="longpress">PreviousMenu</browser_back>
     </keyboard>
   </VirtualKeyboard>
   <MyTVChannels>
@@ -261,11 +278,16 @@
       <period>StepForward</period>
       <comma>StepBack</comma>
       <backspace>Fullscreen</backspace>
-      <quote>Seek(-7)</quote><!-- Replaces smallstepback -->
+      <backspace mod="longpress">Stop</backspace>
+      <browser_back>Fullscreen</browser_back>
+      <browser_back mod="longpress">Stop</browser_back>
+      <quote>Seek(-7)</quote> <!-- Replaces smallstepback -->
       <opensquarebracket>BigStepForward</opensquarebracket>
       <closesquarebracket>BigStepBack</closesquarebracket>
       <return>OSD</return>
       <enter>OSD</enter>
+      <return mod="longpress">PlayPause</return>
+      <enter mod="longpress">PlayPause</enter>
       <m>OSD</m>
       <menu>OSD</menu>
       <i>Info</i>
@@ -320,6 +342,9 @@
       <pageup>IncreaseRating</pageup>
       <pagedown>DecreaseRating</pagedown>
       <backspace>Fullscreen</backspace>
+      <backspace mod="longpress">Stop</backspace>
+      <browser_back>Fullscreen</browser_back>
+      <browser_back mod="longpress">Stop</browser_back>
       <return>OSD</return>
       <enter>OSD</enter>
       <m>OSD</m>
@@ -532,6 +557,7 @@
   <Favourites>
     <keyboard>
       <backspace>Close</backspace>
+      <browser_back>Close</browser_back>
       <u>MoveItemUp</u>
       <d>MoveItemDown</d>
     </keyboard>
@@ -539,6 +565,7 @@
   <NumericInput>
     <keyboard>
       <backspace>Close</backspace>
+      <browser_back>Close</browser_back>
     </keyboard>
   </NumericInput>
   <FullscreenLiveTV>
@@ -547,6 +574,10 @@
       <right>StepForward</right>
       <up>Up</up>
       <down>Down</down>
+      <return>OSD</return>
+      <enter>OSD</enter>
+      <return mod="longpress">ActivateWindow(PVROSDChannels)</return>
+      <enter mod="longpress">ActivateWindow(PVROSDChannels)</enter>
       <pageup>ChannelUp</pageup>
       <pagedown>ChannelDown</pagedown>
     </keyboard>
@@ -557,6 +588,10 @@
       <right>StepForward</right>
       <up>Up</up>
       <down>Down</down>
+      <return>OSD</return>
+      <enter>OSD</enter>
+      <return mod="longpress">ActivateWindow(PVROSDChannels)</return>
+      <enter mod="longpress">ActivateWindow(PVROSDChannels)</enter>
       <pageup>ChannelUp</pageup>
       <pagedown>ChannelDown</pagedown>
     </keyboard>
@@ -565,6 +600,7 @@
     <keyboard>
       <backspace>Close</backspace>
       <escape>Close</escape>
+      <browser_back>Close</browser_back>
       <c>Close</c>
     </keyboard>
   </PVROSDChannels>
@@ -572,11 +608,13 @@
     <keyboard>
       <backspace>Close</backspace>
       <escape>Close</escape>
+      <browser_back>Close</browser_back>
     </keyboard>
   </PVROSDGuide>
   <MyTVSettings>
     <keyboard>
       <backspace>PreviousMenu</backspace>
+      <browser_back>PreviousMenu</browser_back>
     </keyboard>
   </MyTVSettings>
   <FileBrowser>

@@ -43,7 +43,7 @@ public:
   static void SettingOptionsSeekStepsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
   
   virtual void OnSettingChanged(const CSetting *setting) override;
-  virtual bool OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action) override;
 
   void Seek(bool forward, float amount, float duration = 0, bool analogSeek = false, SeekType type = SEEK_TYPE_VIDEO);
   void SeekSeconds(int seconds);

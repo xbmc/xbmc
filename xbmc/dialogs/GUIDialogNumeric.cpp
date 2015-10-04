@@ -141,6 +141,8 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
       OnBackSpace(); // backspace
     else if (action.GetUnicode() == 27)
       OnCancel(); // escape
+    else if (action.GetUnicode() == 46)
+      OnNext(); // '.'
     else if (action.GetUnicode() >= 48 && action.GetUnicode() < 58)  // number
       OnNumber(action.GetUnicode() - 48);
   }
@@ -434,6 +436,7 @@ void CGUIDialogNumeric::SetMode(INPUT_MODE mode, const std::string &initial)
   }
   else if (m_mode == INPUT_IP_ADDRESS)
   {
+    m_lastblock = 3;
     auto blocks = StringUtils::Split(initial, '.');
     if (blocks.size() != 4)
       return;
