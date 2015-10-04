@@ -160,6 +160,27 @@ void CSong::Clear()
   bCompilation = false;
   embeddedArt.clear();
 }
+const std::vector<std::string> CSong::GetArtist() const
+{
+  //Get artist names as vector from artist credits
+  std::vector<std::string> songartists;
+  for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
+  {
+    songartists.push_back(artistCredit->GetArtist());
+  }
+  return songartists;
+}
+
+const std::vector<std::string> CSong::GetMusicBrainzArtistID() const
+{
+  //Get artist MusicBrainz IDs as vector from artist credits
+  std::vector<std::string> muisicBrainzID;
+  for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
+  {
+    muisicBrainzID.push_back(artistCredit->GetMusicBrainzArtistID());
+  }
+  return muisicBrainzID;
+}
 
 bool CSong::HasArt() const
 {
