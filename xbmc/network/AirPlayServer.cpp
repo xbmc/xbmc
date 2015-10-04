@@ -987,7 +987,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
 
       // allow starting the player paused in ios8 mode (needed by camera roll app)
-      if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_AIRPLAYIOS8COMPAT) && !startPlayback)
+      if (!startPlayback)
       {
         CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
         g_application.m_pPlayer->SeekPercentage(position * 100.0f);

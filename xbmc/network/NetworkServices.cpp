@@ -594,18 +594,11 @@ bool CNetworkServices::StartAirPlayServer()
   txt.push_back(std::make_pair("model", "Xbmc,1"));
   txt.push_back(std::make_pair("srcvers", AIRPLAY_SERVER_VERSION_STR));
 
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_AIRPLAYIOS8COMPAT))
-  {
-    // for ios8 clients we need to announce mirroring support
-    // else we won't get video urls anymore.
-    // We also announce photo caching support (as it seems faster and
-    // we have implemented it anyways). 
-    txt.push_back(std::make_pair("features", "0x20F7"));
-  }
-  else
-  {
-    txt.push_back(std::make_pair("features", "0x77"));
-  }
+  // for ios8 clients we need to announce mirroring support
+  // else we won't get video urls anymore.
+  // We also announce photo caching support (as it seems faster and
+  // we have implemented it anyways).
+  txt.push_back(std::make_pair("features", "0x20F7"));
 
   CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", CSysInfo::GetDeviceName(), g_advancedSettings.m_airPlayPort, txt);
 #endif // HAS_ZEROCONF
