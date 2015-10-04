@@ -56,6 +56,7 @@ CGUIDialogMusicInfo::CGUIDialogMusicInfo(void)
     , m_albumItem(new CFileItem)
 {
   m_bRefresh = false;
+  m_hasUpdatedThumb = false;
   m_albumSongs = new CFileItemList;
   m_loadType = KEEP_IN_MEMORY;
 }
@@ -304,6 +305,12 @@ void CGUIDialogMusicInfo::Update()
     pImageControl->SetFileName(m_albumItem->GetArt("thumb"));
   }
 
+  if (m_hasUpdatedThumb)
+  {
+    CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+    g_windowManager.SendMessage(reload);
+  }
+
   // disable the GetThumb button if the user isn't allowed it
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser);
 }
@@ -438,10 +445,6 @@ void CGUIDialogMusicInfo::OnGetThumb()
   m_albumItem->SetArt("thumb", newThumb);
   m_hasUpdatedThumb = true;
 
-  // tell our GUI to completely reload all controls (as some of them
-  // are likely to have had this image in use so will need refreshing)
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  g_windowManager.SendMessage(msg);
   // Update our screen
   Update();
 }
@@ -537,10 +540,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
 
   m_albumItem->SetArt("fanart", result);
   m_hasUpdatedThumb = true;
-  // tell our GUI to completely reload all controls (as some of them
-  // are likely to have had this image in use so will need refreshing)
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  g_windowManager.SendMessage(msg);
+
   // Update our screen
   Update();
 }
