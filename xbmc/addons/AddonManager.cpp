@@ -345,6 +345,10 @@ bool CAddonMgr::Init()
   m_database.GetDisabled(disabled);
   m_disabled.insert(disabled.begin(), disabled.end());
 
+  std::vector<std::string> blacklisted;
+  m_database.GetBlacklisted(blacklisted);
+  m_updateBlacklist.insert(blacklisted.begin(), blacklisted.end());
+
   VECADDONS repos;
   if (GetAddons(ADDON_REPOSITORY, repos))
   {
@@ -670,6 +674,28 @@ void CAddonMgr::UnregisterAddon(const std::string& ID)
     lock.Leave();
     NotifyObservers(ObservableMessageAddons);
   }
+}
+
+bool CAddonMgr::RemoveFromUpdateBlacklist(const std::string& id)
+{
+  CSingleLock lock(m_critSection);
+  if (!IsBlacklisted(id))
+    return true;
+  return m_database.RemoveAddonFromBlacklist(id) && m_updateBlacklist.erase(id) > 0;
+}
+
+bool CAddonMgr::AddToUpdateBlacklist(const std::string& id)
+{
+  CSingleLock lock(m_critSection);
+  if (IsBlacklisted(id))
+    return true;
+  return m_database.BlacklistAddon(id) && m_updateBlacklist.insert(id).second;
+}
+
+bool CAddonMgr::IsBlacklisted(const std::string& id) const
+{
+  CSingleLock lock(m_critSection);
+  return m_updateBlacklist.find(id) != m_updateBlacklist.end();
 }
 
 bool CAddonMgr::DisableAddon(const std::string& id)

@@ -747,6 +747,30 @@ bool CAddonDatabase::GetDisabled(std::vector<std::string>& addons)
   return false;
 }
 
+bool CAddonDatabase::GetBlacklisted(std::vector<std::string>& addons)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    std::string sql = PrepareSQL("SELECT addonID FROM blacklist");
+    m_pDS->query(sql);
+    while (!m_pDS->eof())
+    {
+      addons.push_back(m_pDS->fv(0).get_asString());
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
 bool CAddonDatabase::IsSystemPVRAddonEnabled(const std::string &addonID)
 {
   std::string strWhereClause = PrepareSQL("addonID = '%s'", addonID.c_str());

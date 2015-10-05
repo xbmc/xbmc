@@ -148,6 +148,10 @@ namespace ADDON
     */
     bool CanAddonBeInstalled(const AddonPtr& addon);
 
+    bool AddToUpdateBlacklist(const std::string& id);
+    bool RemoveFromUpdateBlacklist(const std::string& id);
+    bool IsBlacklisted(const std::string& id) const;
+
     /* libcpluff */
     std::string GetExtValue(cp_cfg_element_t *base, const char *path) const;
 
@@ -248,6 +252,7 @@ namespace ADDON
     virtual ~CAddonMgr();
 
     std::set<std::string> m_disabled;
+    std::set<std::string> m_updateBlacklist;
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     CCriticalSection m_critSection;
     CAddonDatabase m_database;

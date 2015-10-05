@@ -122,6 +122,7 @@ public:
   bool RemoveAddonFromBlacklist(const std::string& addonID);
   bool RemoveAddonFromBlacklist(const std::string& addonID,
                                 const std::string& version);
+  bool GetBlacklisted(std::vector<std::string>& addons);
 
   /*! \brief Store an addon's package filename and that file's hash for future verification
       \param  addonID         id of the addon we're adding a package for
