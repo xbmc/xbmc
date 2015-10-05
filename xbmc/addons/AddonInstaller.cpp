@@ -426,14 +426,14 @@ void CAddonInstaller::PrunePackageCache()
 
 void CAddonInstaller::InstallUpdates(bool includeBlacklisted /* = false */)
 {
-  VECADDONS addons;
-  if (CAddonMgr::GetInstance().GetAllOutdatedAddons(addons, true))
+  VECADDONS addons = CAddonMgr::GetInstance().GetOutdated();
+  if (addons.empty())
+    return;
+
+  for (const auto& addon : addons)
   {
-    for (const auto& addon : addons)
-    {
-      if (includeBlacklisted || !CAddonMgr::GetInstance().IsBlacklisted(addon->ID()))
-        CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID());
-    }
+    if (includeBlacklisted || !CAddonMgr::GetInstance().IsBlacklisted(addon->ID()))
+      CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID());
   }
 }
 
