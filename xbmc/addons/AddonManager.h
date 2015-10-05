@@ -97,12 +97,10 @@ namespace ADDON
     void AddToUpdateableAddons(AddonPtr &pAddon);
     void RemoveFromUpdateableAddons(AddonPtr &pAddon);    
     bool ReloadSettings(const std::string &id);
-    /*! \brief Get all addons with available updates
-     \param addons List to fill with all outdated addons
-     \param getLocalVersion Whether to get the local addon version or the addon verion from the repository
-     \return True if there are outdated addons otherwise false
-     */
-    bool GetAllOutdatedAddons(VECADDONS &addons, bool getLocalVersion = false);
+
+    /*! \brief Get addons with available updates */
+    VECADDONS GetOutdated();
+
     /*! \brief Checks if there is any addon with available updates
      \return True if there are outdated addons otherwise false
      */

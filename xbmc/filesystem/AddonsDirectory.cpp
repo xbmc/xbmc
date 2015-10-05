@@ -330,8 +330,7 @@ static bool HaveOrphaned()
 
 static void OutdatedAddons(const CURL& path, CFileItemList &items)
 {
-  VECADDONS addons;
-  CAddonMgr::GetInstance().GetAllOutdatedAddons(addons);
+  VECADDONS addons = CAddonMgr::GetInstance().GetOutdated();
   CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(24043));
 
   if (items.Size() > 1)
