@@ -271,9 +271,9 @@ void CGUIDialogAddonInfo::OnUpdate()
     //add or remove from blacklist to toggle auto updating. if downgrading
     //turn off, if upgrading to latest turn it back on
     if (selected.first < m_localAddon->Version())
-      database.BlacklistAddon(m_localAddon->ID());
-    if (selected.first == versions.at(0).first)
-      database.RemoveAddonFromBlacklist(m_localAddon->ID());
+      CAddonMgr::GetInstance().AddToUpdateBlacklist(m_localAddon->ID());
+    else if (selected.first == versions.at(0).first)
+      CAddonMgr::GetInstance().RemoveFromUpdateBlacklist(m_localAddon->ID());
 
     if (selected.second == LOCAL_CACHE)
       CAddonInstaller::GetInstance().InstallFromZip(StringUtils::Format("special://home/addons/packages/%s-%s.zip",
