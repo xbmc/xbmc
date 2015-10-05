@@ -520,7 +520,8 @@ void CRenderManager::FrameFinish()
   /* wait for this present to be valid */
   SPresent& m = m_Queue[m_presentsource];
 
-  if(g_graphicsContext.IsFullScreenVideo())
+  if(g_graphicsContext.IsFullScreenVideo() &&
+     (m_presentstep == PRESENT_FRAME || m_presentstep == PRESENT_FRAME2))
   {
     CSingleExit lock(g_graphicsContext);
     WaitPresentTime(m.timestamp);
@@ -634,6 +635,7 @@ bool CRenderManager::Flush()
   m_discard.clear();
   m_free.clear();
   m_presentsource = 0;
+  m_presentstep = PRESENT_IDLE;
   for (int i = 1; i < m_QueueSize; i++)
     m_free.push_back(i);
 
