@@ -25,6 +25,7 @@
 #ifdef HAS_DS_PLAYER
 
 #include "StreamsManager.h"
+#include "filesystem/SpecialProtocol.h"
 #include "utils/StreamDetails.h"
 #include "filesystem/SpecialProtocol.h"
 #include "DVDSubtitles/DVDFactorySubtitle.h"
@@ -841,6 +842,9 @@ int CStreamsManager::AddSubtitle(const std::string& subFilePath)
   std::string subFile;
 
   subFile = CDSFile::SmbToUncPath(subFilePath);
+
+  if (StringUtils::StartsWithNoCase(subFile, "special://"))
+    subFile = CSpecialProtocol::TranslatePath(subFile);
 
   g_charsetConverter.utf8ToW(subFile, subFileW);
 
