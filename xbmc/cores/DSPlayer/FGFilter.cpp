@@ -484,20 +484,8 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
 
       if (Com::SmartQIPtr<IVideoWindow> pVW = pCAP)
         pVW->put_Owner((OAHWND)CDSPlayer::GetDShWnd());
-
-      // Go out from Kodi exclusive fullscreen mode if needed
-      if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
-      {
-        CMadvrCallback::Get()->SetInitMadvr(true);
-        CSettings::GetInstance().SetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN, true);
-        CGraphFilters::Get()->SetKodiRealFS(true);
-        CMadvrCallback::Get()->SetInitMadvr(false);
-      }
-      else 
-      {
-        CGraphFilters::Get()->SetKodiRealFS(false);
-      }
     }
+
     CLog::Log(LOGDEBUG, "%s Allocator presenter successfully created", __FUNCTION__);
   }
   

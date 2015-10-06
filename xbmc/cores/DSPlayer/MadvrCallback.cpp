@@ -33,7 +33,6 @@ CMadvrCallback::CMadvrCallback()
   m_pSettingCallback = NULL;
   m_pPaintCallback = NULL;
   m_renderOnMadvr = false;
-  m_isInitMadvr = false;
   ResetRenderCount();
   m_currentVideoLayer = RENDER_LAYER_UNDER;
 }

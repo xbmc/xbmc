@@ -200,8 +200,6 @@ public:
   void Register(IMadvrPaintCallback* pPaintCallback) { m_pPaintCallback = pPaintCallback; }
   bool UsingMadvr();
   bool ReadyMadvr();
-  bool IsInitMadvr() { return m_isInitMadvr; };
-  void SetInitMadvr(bool b) { m_isInitMadvr = b; }
   bool GetRenderOnMadvr() { return m_renderOnMadvr; }
   void SetRenderOnMadvr(bool b) { m_renderOnMadvr = b; }
   void SetCurrentVideoLayer(MADVR_RENDER_LAYER layer) { m_currentVideoLayer = layer; }
@@ -217,7 +215,6 @@ private:
   IMadvrAllocatorCallback* m_pAllocatorCallback;
   IMadvrSettingCallback* m_pSettingCallback;
   IMadvrPaintCallback* m_pPaintCallback;
-  bool m_isInitMadvr;
   bool m_renderOnMadvr;
   int m_renderUnderCount;
   int m_renderOverCount;

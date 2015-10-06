@@ -402,7 +402,11 @@ bool CDSPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   }
 
   if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
+  {
     g_Windowing.SetWindowedForMadvr();
+    CGraphFilters::Get()->SetKodiRealFS(true);
+    CSettings::GetInstance().SetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN, true);
+  }
 
   CLog::Log(LOGNOTICE, "%s - DSPlayer: Opening: %s", __FUNCTION__, file.GetPath().c_str());
 

@@ -115,8 +115,6 @@ void CmadVRAllocatorPresenter::SetResolution()
   ULONGLONG frameRate;
   float fps;
 
-  CMadvrCallback::Get()->SetInitMadvr(true);
-
   // Set the context in FullScreenVideo
   g_graphicsContext.SetFullScreenVideo(true);
 
@@ -136,8 +134,6 @@ void CmadVRAllocatorPresenter::SetResolution()
   }
   else
     m_updateDisplayLatencyForMadvr = true;
-
-  CMadvrCallback::Get()->SetInitMadvr(false);
 }
 
 void CmadVRAllocatorPresenter::ExclusiveCallback(LPVOID context, int event)
