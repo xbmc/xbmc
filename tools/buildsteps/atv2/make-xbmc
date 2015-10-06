@@ -1,9 +1,0 @@
-WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
-XBMC_PLATFORM_DIR=atv2
-. $WORKSPACE/tools/buildsteps/defaultenv
-
-cd $WORKSPACE;make -j$BUILDTHREADS xcode_depends
-cd $WORKSPACE;xcodebuild -project Kodi.xcodeproj -target Kodi-ATV2 -configuration $Configuration build \
-  ONLY_ACTIVE_ARCH=YES ARCHS=armv7 VALID_ARCHS=armv7 \
-  SDKROOT=iphoneos$SDK_VERSION XBMC_DEPENDS_ROOT=$XBMC_DEPENDS_ROOT CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
- 

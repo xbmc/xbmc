@@ -26,7 +26,6 @@ else
 endif
 
 ifeq ($(OS),ios)
-  DEPENDS += Backrow
   EXCLUDED_DEPENDS = libcec libusb
 endif
 
