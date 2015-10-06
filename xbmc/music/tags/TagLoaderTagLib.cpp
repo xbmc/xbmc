@@ -384,6 +384,10 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
   const ID3v2::FrameListMap& frameListMap = id3v2->frameListMap();
   for (ID3v2::FrameListMap::ConstIterator it = frameListMap.begin(); it != frameListMap.end(); ++it)
   {
+    // It is possible that the taglist is empty. In that case no useable values can be extracted.
+    // and we should skip the tag.
+    if (it->second.isEmpty()) continue;
+
     if      (it->first == "TPE1")   SetArtist(tag, GetID3v2StringList(it->second));
     else if (it->first == "TALB")   tag.SetAlbum(it->second.front()->toString().to8Bit(true));
     else if (it->first == "TPE2")   SetAlbumArtist(tag, GetID3v2StringList(it->second));
