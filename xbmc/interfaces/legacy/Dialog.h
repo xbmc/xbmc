@@ -105,7 +105,7 @@ namespace XBMCAddon
        *   - dialog = xbmcgui.Dialog()
        *   - ret = dialog.multiselect("Choose something", ["Foo", "Bar", "Baz"])
        */
-      std::vector<int>* multiselect(const String& heading, const std::vector<String>& options, int autoclose=0);
+      std::unique_ptr<std::vector<int> > multiselect(const String& heading, const std::vector<String>& options, int autoclose=0);
 
       /**
        * ok(heading, line1[, line2, line3]) -- Show a dialog 'OK'.\n
