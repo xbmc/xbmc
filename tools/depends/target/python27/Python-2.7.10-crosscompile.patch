@@ -1,0 +1,147 @@
+--- Makefile.pre.in.orig	2015-05-23 18:09:16.000000000 +0200
++++ Makefile.pre.in	2015-10-10 12:29:21.988926069 +0200
+@@ -234,6 +234,7 @@
+ ##########################################################################
+ # Parser
+ PGEN=		Parser/pgen$(EXE)
++PGEN_FOR_BUILD=$(NATIVE_PGEN)
+ 
+ PSRCS=		\
+ 		Parser/acceler.c \
+@@ -472,9 +473,9 @@
+ 	    *\ -s*|s*) quiet="-q";; \
+ 	    *) quiet="";; \
+ 	esac; \
+-	$(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \
++	$(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)'    \
+ 		_TCLTK_INCLUDES='$(TCLTK_INCLUDES)' _TCLTK_LIBS='$(TCLTK_LIBS)' \
+-		$(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build
++		PYTHONXCPREFIX='$(DESTDIR)$(prefix)' $(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build
+ 
+ # Build static library
+ # avoid long command lines, same as LIBRARY_OBJS
+@@ -611,7 +612,7 @@
+ $(GRAMMAR_H): $(GRAMMAR_INPUT) $(PGENSRCS)
+ 		@$(MKDIR_P) Include
+ 		$(MAKE) $(PGEN)
+-		$(PGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
++		$(PGEN_FOR_BUILD) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
+ $(GRAMMAR_C): $(GRAMMAR_H) $(GRAMMAR_INPUT) $(PGENSRCS)
+ 		$(MAKE) $(GRAMMAR_H)
+ 		touch $(GRAMMAR_C)
+@@ -1042,12 +1043,12 @@
+ 		$(INSTALL_DATA) $(srcdir)/Modules/xxmodule.c \
+ 			$(DESTDIR)$(LIBDEST)/distutils/tests ; \
+ 	fi
+-	PYTHONPATH=$(DESTDIR)$(LIBDEST)  $(RUNSHARED) \
++	-PYTHONPATH=$(DESTDIR)$(LIBDEST)  $(RUNSHARED) \
+ 		$(PYTHON_FOR_BUILD) -Wi -tt $(DESTDIR)$(LIBDEST)/compileall.py \
+ 		-d $(LIBDEST) -f \
+ 		-x 'bad_coding|badsyntax|site-packages|lib2to3/tests/data' \
+ 		$(DESTDIR)$(LIBDEST)
+-	PYTHONPATH=$(DESTDIR)$(LIBDEST) $(RUNSHARED) \
++	-PYTHONPATH=$(DESTDIR)$(LIBDEST) $(RUNSHARED) \
+ 		$(PYTHON_FOR_BUILD) -Wi -tt -O $(DESTDIR)$(LIBDEST)/compileall.py \
+ 		-d $(LIBDEST) -f \
+ 		-x 'bad_coding|badsyntax|site-packages|lib2to3/tests/data' \
+@@ -1175,11 +1176,13 @@
+ # Install the dynamically loadable modules
+ # This goes into $(exec_prefix)
+ sharedinstall: sharedmods
++	CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \
+ 	$(RUNSHARED) $(PYTHON_FOR_BUILD) $(srcdir)/setup.py install \
++		--skip-build \
+ 	   	--prefix=$(prefix) \
+-		--install-scripts=$(BINDIR) \
+-		--install-platlib=$(DESTSHARED) \
+-		--root=$(DESTDIR)/
++		--install-scripts=$(DESTDIR)$(BINDIR) \
++		--install-platlib=$(DESTDIR)$(DESTSHARED) \
++		--root=/
+ 	-rm $(DESTDIR)$(DESTSHARED)/_sysconfigdata.py*
+ 
+ # Here are a couple of targets for MacOSX again, to install a full
+--- setup.py.orig	2015-05-23 18:09:25.000000000 +0200
++++ setup.py	2015-10-10 12:29:22.000925764 +0200
+@@ -17,7 +17,7 @@
+ from distutils.command.install_lib import install_lib
+ from distutils.spawn import find_executable
+ 
+-cross_compiling = "_PYTHON_HOST_PLATFORM" in os.environ
++cross_compiling = ("_PYTHON_HOST_PLATFORM" in os.environ) or ('CROSS_COMPILE_TARGET' in os.environ)
+ 
+ def get_platform():
+     # cross build
+@@ -162,6 +162,7 @@
+ 
+     def build_extensions(self):
+ 
++        return
+         # Detect which modules should be compiled
+         missing = self.detect_modules()
+ 
+@@ -326,6 +327,9 @@
+ 
+         # Don't try to load extensions for cross builds
+         if cross_compiling:
++            self.announce(
++                 'WARNING: skipping import check for cross-compiled: "%s"' %
++                 ext.name)
+             return
+ 
+         try:
+@@ -480,7 +484,7 @@
+                     for directory in reversed(options.dirs):
+                         add_dir_to_list(dir_list, directory)
+ 
+-        if os.path.normpath(sys.prefix) != '/usr' \
++        if os.path.normpath(sys.prefix) != '/usr' and not cross_compiling \
+                 and not sysconfig.get_config_var('PYTHONFRAMEWORK'):
+             # OSX note: Don't add LIBDIR and INCLUDEDIR to building a framework
+             # (PYTHONFRAMEWORK is set) to avoid # linking problems when
+@@ -556,6 +560,11 @@
+         if host_platform in ['darwin', 'beos']:
+             math_libs = []
+ 
++        # Insert libraries and headers from embedded root file system (RFS)
++        #if 'CROSS_COMPILE_TARGET' in os.environ:
++        #    lib_dirs += [os.environ['RFS'] + '/usr/lib']
++        #    inc_dirs += [os.environ['RFS'] + '/usr/include']
++
+         # XXX Omitted modules: gl, pure, dl, SGI-specific modules
+ 
+         #
+@@ -2028,8 +2037,13 @@
+ 
+                 # Pass empty CFLAGS because we'll just append the resulting
+                 # CFLAGS to Python's; -g or -O2 is to be avoided.
+-                cmd = "cd %s && env CFLAGS='' '%s/configure' %s" \
+-                      % (ffi_builddir, ffi_srcdir, " ".join(config_args))
++                if cross_compiling:
++                    cmd = "cd %s && env CFLAGS='' '%s/configure' --host=%s --build=%s %s" \
++                          % (ffi_builddir, ffi_srcdir, os.environ.get('HOSTARCH'),
++                             os.environ.get('BUILDARCH'), " ".join(config_args))
++                else:
++                    cmd = "cd %s && env CFLAGS='' '%s/configure' %s" \
++                          % (ffi_builddir, ffi_srcdir, " ".join(config_args))
+ 
+                 res = os.system(cmd)
+                 if res or not os.path.exists(ffi_configfile):
+--- configure.ac.orig	2015-10-10 13:10:34.139980182 +0200
++++ configure.ac	2015-10-10 13:11:00.715341145 +0200
+@@ -325,7 +325,6 @@
+ 	*)
+ 		# for now, limit cross builds to known configurations
+ 		MACHDEP="unknown"
+-		AC_MSG_ERROR([cross build not supported for $host])
+ 	esac
+ 	ac_sys_release=
+     else
+@@ -371,7 +370,6 @@
+ 	*)
+ 		# for now, limit cross builds to known configurations
+ 		MACHDEP="unknown"
+-		AC_MSG_ERROR([cross build not supported for $host])
+ 	esac
+ 	_PYTHON_HOST_PLATFORM="$MACHDEP${_host_cpu:+-$_host_cpu}"
+ fi
