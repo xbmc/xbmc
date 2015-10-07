@@ -23,6 +23,7 @@
 #include "TextureManager.h"
 #include "GUILargeTextureManager.h"
 #include "utils/MathUtils.h"
+#include "utils/StringUtils.h"
 
 CTextureInfo::CTextureInfo()
 {
@@ -657,6 +658,14 @@ bool CGUITextureBase::SetFileName(const std::string& filename)
   // filenames mid-animation
   FreeResources();
   m_info.filename = filename;
+
+  // disable large loader and cache for gifs
+  if (StringUtils::EndsWithNoCase(m_info.filename, ".gif"))
+  {
+    m_info.useLarge = false;
+    SetUseCache(false);
+  }
+
   // Don't allocate resources here as this is done at render time
   return true;
 }
