@@ -1,0 +1,18 @@
+--- Modules/_testcapimodule.c.orig	2015-10-07 16:50:38.751087989 +0200
++++ Modules/_testcapimodule.c	2015-10-07 16:50:59.119088070 +0200
+@@ -8,8 +8,14 @@
+ #include "Python.h"
+ #include <float.h>
+ #include "structmember.h"
+-#include "datetime.h"
+ #include "marshal.h"
++#ifdef Py_BUILD_CORE
++#undef Py_BUILD_CORE
++#include "datetime.h"
++#define Py_BUILD_CORE
++#else
++#include "datetime.h"
++#endif
+ 
+ #ifdef WITH_THREAD
+ #include "pythread.h"
