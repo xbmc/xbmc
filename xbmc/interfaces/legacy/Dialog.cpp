@@ -107,7 +107,7 @@ namespace XBMCAddon
     }
 
 
-    std::vector<int>* Dialog::multiselect(const String& heading,
+    std::unique_ptr<std::vector<int>> Dialog::multiselect(const String& heading,
         const std::vector<String>& options, int autoclose)
     {
       DelayedCallGuard dcguard(languageHook);
@@ -128,9 +128,9 @@ namespace XBMCAddon
       pDialog->Open();
 
       if (pDialog->IsConfirmed())
-        return new std::vector<int>(pDialog->GetSelectedItems());
+        return std::unique_ptr<std::vector<int>>(new std::vector<int>(pDialog->GetSelectedItems()));
       else
-        return nullptr;
+        return std::unique_ptr<std::vector<int>>();
     }
 
     bool Dialog::ok(const String& heading, const String& line1, 
