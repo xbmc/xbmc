@@ -405,7 +405,7 @@ void CAdvancedSettings::Initialize()
     std::string logDir = getenv("HOME");
     #if defined(TARGET_DARWIN_OSX)
     logDir += "/Library/Logs/";
-    #else // ios/atv2
+    #else // ios
     logDir += "/" + std::string(CDarwinUtils::GetAppRootFolder()) + "/";
     #endif
     m_logFolder = logDir;

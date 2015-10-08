@@ -115,7 +115,6 @@ public:
   static std::string GetBuildDate();
 
   bool HasInternet();
-  bool IsAppleTV2();
   bool HasVideoToolBoxDecoder();
   bool IsAeroDisabled();
   bool HasHW3DInterlaced();

@@ -545,11 +545,6 @@ static void EnumerateDevices(AEDeviceInfoList &list)
   device.m_deviceName = "default";
   device.m_displayName = "Default";
   device.m_displayNameExtra = "";
-#if defined(TARGET_DARWIN_IOS_ATV2)
-  device.m_deviceType = AE_DEVTYPE_IEC958;
-  device.m_dataFormats.push_back(AE_FMT_AC3);
-  device.m_dataFormats.push_back(AE_FMT_DTS);
-#else
   // TODO screen changing on ios needs to call
   // devices changed once this is available in activae
   if (g_Windowing.GetCurrentScreen() > 0)
@@ -560,7 +555,6 @@ static void EnumerateDevices(AEDeviceInfoList &list)
   }
   else
     device.m_deviceType = AE_DEVTYPE_PCM;
-#endif
 
   // add channel info
   CAEChannelInfo channel_info;
@@ -580,9 +574,7 @@ static void EnumerateDevices(AEDeviceInfoList &list)
   device.m_dataFormats.push_back(AE_FMT_S16LE);
   //device.m_dataFormats.push_back(AE_FMT_S24LE3);
   //device.m_dataFormats.push_back(AE_FMT_S32LE);
-  // AE_FMT_FLOAT is 3% slower on atv2
-  // then S16LE - so leave it out for now
-  //device.m_dataFormats.push_back(AE_FMT_FLOAT);
+  device.m_dataFormats.push_back(AE_FMT_FLOAT);
 
   CLog::Log(LOGDEBUG, "EnumerateDevices:Device(%s)" , device.m_deviceName.c_str());
 
@@ -624,13 +616,9 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
 
   AudioStreamBasicDescription audioFormat = {};
 
-  // AE_FMT_FLOAT is 3% slower on atv2
-  // then S16LE - so leave it out for now
-  // just leave the code commented in here
-  // as it might come handy at some point maybe ...
-  //if (format.m_dataFormat == AE_FMT_FLOAT)
-  //  audioFormat.mFormatFlags    |= kLinearPCMFormatFlagIsFloat;
-  //else// this will be selected when AE wants AC3 or DTS or anything other then float
+  if (format.m_dataFormat == AE_FMT_FLOAT)
+    audioFormat.mFormatFlags    |= kLinearPCMFormatFlagIsFloat;
+  else// this will be selected when AE wants AC3 or DTS or anything other then float
   {
     audioFormat.mFormatFlags    |= kLinearPCMFormatFlagIsSignedInteger;
     if (AE_IS_RAW(format.m_dataFormat))

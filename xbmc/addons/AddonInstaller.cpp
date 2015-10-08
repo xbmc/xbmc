@@ -204,7 +204,7 @@ bool CAddonInstaller::InstallOrUpdate(const std::string &addonID, bool backgroun
 
 void CAddonInstaller::Install(const std::string& addonId, const AddonVersion& version, const std::string& repoId)
 {
-  CLog::Log(LOGDEBUG, "CAddonInstaller: intalling '%s' version '%s' from repository '%s'",
+  CLog::Log(LOGDEBUG, "CAddonInstaller: installing '%s' version '%s' from repository '%s'",
       addonId.c_str(), version.asString().c_str(), repoId.c_str());
 
   AddonPtr addon;
@@ -258,6 +258,8 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
 {
   if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
     return false;
+
+  CLog::Log(LOGDEBUG, "CAddonInstaller: installing from zip '%s'", CURL::GetRedacted(path).c_str());
 
   // grab the descriptive XML document from the zip, and read it in
   CFileItemList items;

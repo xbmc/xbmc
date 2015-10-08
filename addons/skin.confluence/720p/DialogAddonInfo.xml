@@ -321,14 +321,6 @@
 					<align>center</align>
 					<font>font12_title</font>
 				</control>
-				<control type="button" id="11">
-					<description>Rollback button</description>
-					<width>220</width>
-					<height>43</height>
-					<label>24048</label>
-					<align>center</align>
-					<font>font12_title</font>
-				</control>
 				<control type="button" id="10">
 					<description>Changelog button</description>
 					<width>220</width>
