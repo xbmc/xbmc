@@ -107,7 +107,7 @@ HRESULT CFilterCoreFactory::GetSourceFilter(const CFileItem& pFileItem, CStdStri
   {
     if (pFileItem.IsInternetStream())
     {
-      filter = "internal_urlsource";
+      filter = "lavsource_internal";
       return S_OK;
     }
     return E_FAIL;
