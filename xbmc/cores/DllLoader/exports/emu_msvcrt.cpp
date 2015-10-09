@@ -140,7 +140,7 @@ extern "C" void __stdcall init_emu_environ()
   if (!CUtil::GetFrameworksPath(true).empty())
   {
     // using external python, it's build looking for xxx/lib/python2.6
-    // so point it to frameworks which is where python2.6 is located
+    // so point it to frameworks which is where python2.7 is located
     dll_putenv(std::string("PYTHONPATH=" +
       CSpecialProtocol::TranslatePath("special://frameworks")).c_str());
     dll_putenv(std::string("PYTHONHOME=" +
@@ -162,7 +162,7 @@ extern "C" void __stdcall init_emu_environ()
 
 #if defined(TARGET_ANDROID)
   std::string apkPath = getenv("XBMC_ANDROID_APK");
-  apkPath += "/assets/python2.6";
+  apkPath += "/assets/python2.7";
   dll_putenv(std::string("PYTHONHOME=" + apkPath).c_str());
   dll_putenv("PYTHONOPTIMIZE=");
   dll_putenv("PYTHONNOUSERSITE=1");
