@@ -73,11 +73,12 @@ bool CDVDInputStreamFFmpeg::Open(const char* strFile, const std::string& content
   m_can_seek  = true;
   m_aborted   = false;
 
-  if(strnicmp(strFile, "udp://", 6) == 0
-  || strnicmp(strFile, "rtp://", 6) == 0)
+  if(strnicmp(strFile, "udp://", 6) == 0 ||
+     strnicmp(strFile, "rtp://", 6) == 0)
   {
     m_can_pause = false;
-    m_can_seek  = false;
+    m_can_seek = false;
+    m_realtime = true;
   }
 
   if(strnicmp(strFile, "tcp://", 6) == 0)
