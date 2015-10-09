@@ -34,12 +34,8 @@
 #include <iomanip>
 #include <math.h>
 
-/* for sync-based resampling */
-#define PROPORTIONAL 20.0
-#define PROPREF       0.01
-#define PROPDIVMIN    2.0
-#define PROPDIVMAX   40.0
-#define INTEGRAL    200.0
+// allow audio for slow and fast speeds (but not rewind/fastforward)
+#define ALLOW_AUDIO(speed) ((speed) > 5*DVD_PLAYSPEED_NORMAL/10 && (speed) <= 15*DVD_PLAYSPEED_NORMAL/10)
 
 void CPTSInputQueue::Add(int64_t bytes, double pts)
 {
@@ -312,7 +308,7 @@ int CVideoPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
     int priority = 1;
     //Do we want a new audio frame?
     if (m_syncState == IDVDStreamPlayer::SYNC_STARTING ||              /* when not started */
-        m_speed == DVD_PLAYSPEED_NORMAL || /* when playing normally */
+        ALLOW_AUDIO(m_speed) || /* when playing normally */
         m_speed <  DVD_PLAYSPEED_PAUSE  || /* when rewinding */
        (m_speed >  DVD_PLAYSPEED_NORMAL && m_audioClock < m_pClock->GetClock())) /* when behind clock in ff */
       priority = 0;
@@ -322,7 +318,7 @@ int CVideoPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
 
     // consider stream stalled if queue is empty
     // we can't sync audio to clock with an empty queue
-    if (m_speed == DVD_PLAYSPEED_NORMAL)
+    if (ALLOW_AUDIO(m_speed))
     {
       timeout = 0;
     }
@@ -401,7 +397,7 @@ int CVideoPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
     {
       double speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
 
-      if (speed == DVD_PLAYSPEED_NORMAL)
+      if (ALLOW_AUDIO(speed))
       {
         if (speed != m_speed)
         {
@@ -477,7 +473,7 @@ void CVideoPlayerAudio::Process()
     int result = DecodeFrame(audioframe);
 
     //Drop when not playing normally
-    if(m_speed != DVD_PLAYSPEED_NORMAL && m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
+    if (!ALLOW_AUDIO(m_speed) && m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
     {
       result |= DECODE_FLAG_DROP;
     }
@@ -493,7 +489,7 @@ void CVideoPlayerAudio::Process()
     if (result & DECODE_FLAG_TIMEOUT)
     {
       // Flush as the audio output may keep looping if we don't
-      if (m_speed == DVD_PLAYSPEED_NORMAL && !m_stalled && m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
+      if (ALLOW_AUDIO(m_speed) && !m_stalled && m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
       {
         m_dvdAudio.Drain();
         m_dvdAudio.Flush();

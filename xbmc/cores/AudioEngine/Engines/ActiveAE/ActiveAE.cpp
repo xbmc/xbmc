@@ -2256,7 +2256,12 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   double error;
   double threshold = 100;
   if (stream->m_resampleMode)
-    threshold *= 2;
+  {
+    if (stream->m_pClock && stream->m_pClock->GetClockSpeed() > 1.1)
+      threshold *= 10;
+    else
+      threshold *= 2;
+  }
 
   bool newerror = stream->m_syncError.Get(error, stream->m_syncClock ? 100 : 1000);
 

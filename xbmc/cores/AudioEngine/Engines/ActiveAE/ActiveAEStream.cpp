@@ -200,16 +200,11 @@ double CActiveAEStream::CalcResampleRatio(double error)
   if (fabs(error) > 1000)
     m_resampleIntegral = 0;
   else if (fabs(error) > 5)
-    m_resampleIntegral += error / 1000 / 200;
+    m_resampleIntegral += error / 1000 / 50;
 
   double proportional = 0.0;
 
-  double proportionaldiv = 0.02 * fabs(error / 1000);
-  if (proportionaldiv < 2.0)
-    proportionaldiv = 2.0;
-  else if (proportionaldiv > 40.0)
-    proportionaldiv = 40.0;
-
+  double proportionaldiv = 2.0;
   proportional = error / 1000 / proportionaldiv;
 
   double clockspeed = 1.0;

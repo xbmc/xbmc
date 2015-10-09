@@ -277,5 +277,6 @@ double CDVDClock::SystemToPlaying(int64_t system)
 
 double CDVDClock::GetClockSpeed()
 {
-  return g_VideoReferenceClock.GetSpeed();
+  double speed = (double)m_systemFrequency / m_systemUsed;
+  return g_VideoReferenceClock.GetSpeed() * speed;
 }
