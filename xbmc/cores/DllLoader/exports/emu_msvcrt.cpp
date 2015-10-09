@@ -139,7 +139,7 @@ extern "C" void __stdcall init_emu_environ()
   // check if we are running as real xbmc.app or just binary
   if (!CUtil::GetFrameworksPath(true).empty())
   {
-    // using external python, it's build looking for xxx/lib/python2.6
+    // using external python, it's build looking for xxx/lib/python2.7
     // so point it to frameworks which is where python2.7 is located
     dll_putenv(std::string("PYTHONPATH=" +
       CSpecialProtocol::TranslatePath("special://frameworks")).c_str());
