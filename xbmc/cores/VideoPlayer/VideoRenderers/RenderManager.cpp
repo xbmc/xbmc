@@ -64,7 +64,7 @@
 #endif
 
 #if defined(TARGET_ANDROID)
-#include "HWDecRender/RendererMediaCodec.h"
+#include "HwDecRender/RendererMediaCodec.h"
 #endif
 
 #include "RenderCapture.h"

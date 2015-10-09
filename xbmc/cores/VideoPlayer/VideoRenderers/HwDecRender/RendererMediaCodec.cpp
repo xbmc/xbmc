@@ -92,8 +92,10 @@ void CRendererMediaCodec::ReleaseBuffer(int idx)
   {
     // The media buffer has been queued to the SurfaceView but we didn't render it
     // We have to do to the updateTexImage or it will get stuck
-    ((CDVDMediaCodecInfo *)buf.hwDec)->UpdateTexImage();
-    SAFE_RELEASE(buf.hwDec);
+    CDVDMediaCodecInfo *mci = static_cast<CDVDMediaCodecInfo *>(buf.hwDec);
+    mci->UpdateTexImage();
+    SAFE_RELEASE(mci);
+    buf.hwDec = NULL;
   }
 }
 
@@ -134,23 +136,23 @@ bool CRendererMediaCodec::RenderHook(int index)
   #endif
 
   YUVPLANE &plane = m_buffers[index].fields[0][0];
-  YUVPLANE &planef = m_buffers[index].fields[field][0];
+  YUVPLANE &planef = m_buffers[index].fields[index][0];
 
   glDisable(GL_DEPTH_TEST);
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_EXTERNAL_OES, plane.id);
 
-  if (field != FIELD_FULL)
+  if (index != FIELD_FULL)
   {
     g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA_BOB_OES);
     GLint   fieldLoc = g_Windowing.GUIShaderGetField();
     GLint   stepLoc = g_Windowing.GUIShaderGetStep();
 
     // Y is inverted, so invert fields
-    if     (field == FIELD_TOP)
+    if     (index == FIELD_TOP)
       glUniform1i(fieldLoc, 0);
-    else if(field == FIELD_BOT)
+    else if(index == FIELD_BOT)
       glUniform1i(fieldLoc, 1);
     glUniform1f(stepLoc, 1.0f / (float)plane.texheight);
   }
@@ -188,7 +190,7 @@ bool CRendererMediaCodec::RenderHook(int index)
   }
 
   // Set texture coordinates (MediaCodec is flipped in y)
-  if (field == FIELD_FULL)
+  if (index == FIELD_FULL)
   {
     tex[0][0] = tex[3][0] = plane.rect.x1;
     tex[0][1] = tex[1][1] = plane.rect.y2;
@@ -272,7 +274,9 @@ bool CRendererMediaCodec::CreateTexture(int index)
 
 void CRendererMediaCodec::DeleteTexture(int index)
 {
-  SAFE_RELEASE(m_buffers[index].hwDec);
+  CDVDMediaCodecInfo *mci = static_cast<CDVDMediaCodecInfo *>(m_buffers[index].hwDec);
+  SAFE_RELEASE(mci);
+  m_buffers[index].hwDec = NULL;
 }
 
 bool CRendererMediaCodec::UploadTexture(int index)
@@ -286,13 +290,15 @@ bool CRendererMediaCodec::UploadTexture(int index)
 
   if (buf.hwDec)
   {
+    CDVDMediaCodecInfo *mci = static_cast<CDVDMediaCodecInfo *>(buf.hwDec);
 #ifdef DEBUG_VERBOSE
-    mindex = ((CDVDMediaCodecInfo *)buf.hwDec)->GetIndex();
+    mindex = (mci->GetIndex();
 #endif
-    buf.fields[0][0].id = ((CDVDMediaCodecInfo *)buf.hwDec)->GetTextureID();
-    ((CDVDMediaCodecInfo *)buf.hwDec)->UpdateTexImage();
-    ((CDVDMediaCodecInfo *)buf.hwDec)->GetTransformMatrix(m_textureMatrix);
-    SAFE_RELEASE(buf.hwDec);
+    buf.fields[0][0].id = mci->GetTextureID();
+    mci->UpdateTexImage();
+    mci->GetTransformMatrix(m_textureMatrix);
+    SAFE_RELEASE(mci);
+    buf.hwDec = NULL;
   }
 
   CalculateTextureSourceRects(index, 1);
