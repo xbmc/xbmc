@@ -616,10 +616,10 @@ case $host in
      use_cpu=cortex-a8
      ARCH="arm-osx"
      use_arch="arm"
-     PYTHON_VERSION="2.6"
-     PYTHON_LDFLAGS="-L${prefix}/lib -lpython2.6"
-     PYTHON_CPPFLAGS="-I${prefix}/include/python2.6"
-     PYTHON_SITE_PKG="${prefix}/lib/python2.6/site-packages"
+     PYTHON_VERSION="2.7"
+     PYTHON_LDFLAGS="-L${prefix}/lib -lpython2.7"
+     PYTHON_CPPFLAGS="-I${prefix}/include/python2.7"
+     PYTHON_SITE_PKG="${prefix}/lib/python2.7/site-packages"
      PYTHON_NOVERSIONCHECK="no-check"
      DEPENDS_ROOT_FOR_XCODE=$(echo ${prefix%/*})
      AC_SUBST([DEPENDS_ROOT_FOR_XCODE])

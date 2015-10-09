@@ -32,7 +32,7 @@ EXECUTABLE_SUFFIX = .bin
 XBMC_DEPENDS = $(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target
 INSTALL_PATH = $(HOME)/Library/Bundles
 
-USER_HEADER_SEARCH_PATHS = $(inherited) $XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6
+USER_HEADER_SEARCH_PATHS = $(inherited) $XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.7
 
 GCC_INLINES_ARE_PRIVATE_EXTERN = NO
 GCC_SYMBOLS_PRIVATE_EXTERN = NO

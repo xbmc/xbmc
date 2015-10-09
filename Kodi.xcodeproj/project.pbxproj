@@ -11314,7 +11314,7 @@
 					$XBMC_DEPENDS/include/libcec,
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
-					$XBMC_DEPENDS/include/python2.6,
+					$XBMC_DEPENDS/include/python2.7,
 					$XBMC_DEPENDS/include/libxml2,
 				);
 				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
@@ -11373,7 +11373,7 @@
 					$XBMC_DEPENDS/include/libcec,
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
-					$XBMC_DEPENDS/include/python2.6,
+					$XBMC_DEPENDS/include/python2.7,
 					$XBMC_DEPENDS/include/libxml2,
 				);
 				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
@@ -11480,7 +11480,7 @@
 					$XBMC_DEPENDS/include/libcec,
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
-					$XBMC_DEPENDS/include/python2.6,
+					$XBMC_DEPENDS/include/python2.7,
 					$XBMC_DEPENDS/include/libxml2,
 				);
 				INFOPLIST_FILE = "$SRCROOT/xbmc/osx/ios/XBMCIOS-Info.plist";
@@ -11521,7 +11521,7 @@
 					$XBMC_DEPENDS/include/libcec,
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
-					$XBMC_DEPENDS/include/python2.6,
+					$XBMC_DEPENDS/include/python2.7,
 					$XBMC_DEPENDS/include/libxml2,
 				);
 				INFOPLIST_FILE = "xbmc/osx/ios/XBMCIOS-Info.plist";
