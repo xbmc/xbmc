@@ -228,6 +228,7 @@ void CDVDAudio::Flush()
   if (m_pAudioStream)
   {
     m_pAudioStream->Flush();
+    CLog::Log(LOGDEBUG,"CDVDAudio::Flush - flush audio stream");
   }
   m_playingPts = DVD_NOPTS_VALUE;
   m_syncError = 0.0;
