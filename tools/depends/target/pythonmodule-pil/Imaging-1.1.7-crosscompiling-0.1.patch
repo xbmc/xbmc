@@ -1,17 +1,16 @@
-diff -Naur Imaging-1.1.7/setup.py Imaging-1.1.7.patch/setup.py
---- Imaging-1.1.7/setup.py	2011-04-17 09:31:07.000000000 +0200
-+++ Imaging-1.1.7.patch/setup.py	2011-04-17 09:54:20.880047886 +0200
+--- Imaging-1.1.7/setup.py      2011-04-17 09:31:07.000000000 +0200
++++ Imaging-1.1.7.patch/setup.py        2011-04-17 09:54:20.880047886 +0200
 @@ -147,7 +147,6 @@
              add_directory(library_dirs, "/opt/local/lib")
              add_directory(include_dirs, "/opt/local/include")
- 
+
 -        add_directory(library_dirs, "/usr/local/lib")
          # FIXME: check /opt/stuff directories here?
- 
+
          prefix = sysconfig.get_config_var("prefix")
 @@ -199,22 +198,6 @@
              add_directory(include_dirs, include_root)
- 
+
          #
 -        # add standard directories
 -
@@ -31,4 +30,35 @@ diff -Naur Imaging-1.1.7/setup.py Imaging-1.1.7.patch/setup.py
 -        #
          # insert new dirs *before* default libs, to avoid conflicts
          # between Python PYD stub libs and real libraries
+
+
+--- a/setup.py.orig	2015-10-10 09:52:19.488633670 +0200
++++ b/setup.py	2015-10-10 09:55:31.183384584 +0200
+@@ -127,6 +127,15 @@
  
+         add_directory(include_dirs, "libImaging")
+ 
++        compiler = os.environ.get('CC')
++        args = {}
++        # unfortunately, distutils doesn't let us provide separate C and C++
++        # compilers
++        if compiler is not None:
++            (ccshared,cflags) = sysconfig.get_config_vars('CCSHARED','CFLAGS')
++            args['compiler_so'] = compiler + ' ' + ccshared + ' ' + cflags
++        self.compiler.set_executables(**args)
++
+         #
+         # add platform directories
+ 
+@@ -149,9 +158,10 @@
+ 
+         # FIXME: check /opt/stuff directories here?
+ 
+-        prefix = sysconfig.get_config_var("prefix")
++        prefix = os.environ.get('PYTHONXCPREFIX')
+         if prefix:
+             add_directory(library_dirs, os.path.join(prefix, "lib"))
++            add_directory(include_dirs, os.path.join(prefix, "include/python2.7"))
+             add_directory(include_dirs, os.path.join(prefix, "include"))
+ 
+         #
