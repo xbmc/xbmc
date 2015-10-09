@@ -275,13 +275,6 @@ bool CGUIScrollBar::UpdateBarSize()
   return changed;
 }
 
-bool CGUIScrollBar::HitTest(const CPoint &point) const
-{
-  if (m_guiBackground.HitTest(point)) return true;
-  if (m_guiBarNoFocus.HitTest(point)) return true;
-  return false;
-}
-
 void CGUIScrollBar::SetFromPosition(const CPoint &point)
 {
   float fPercent;
