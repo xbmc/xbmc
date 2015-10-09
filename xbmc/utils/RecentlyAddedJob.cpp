@@ -232,7 +232,7 @@ bool CRecentlyAddedJob::UpdateMusic()
         }
       }
 
-      strRating = StringUtils::Format("%c", item->GetMusicInfoTag()->GetRating());
+      strRating = StringUtils::Format("%c", item->GetMusicInfoTag()->GetUserrating());
       
       home->SetProperty("LatestSong." + value + ".Title"   , item->GetMusicInfoTag()->GetTitle());
       home->SetProperty("LatestSong." + value + ".Year"    , item->GetMusicInfoTag()->GetYear());

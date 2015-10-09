@@ -73,7 +73,7 @@ CSong::CSong(CFileItem& item)
   strComment = tag.GetComment();
   strCueSheet = tag.GetCueSheet();
   strMood = tag.GetMood();
-  rating = tag.GetRating();
+  rating = tag.GetUserrating();
   iYear = stTime.wYear;
   iTrack = tag.GetTrackAndDiscNumber();
   iDuration = tag.GetDuration();

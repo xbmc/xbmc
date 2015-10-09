@@ -191,7 +191,7 @@ public:
   bool GetSongsByPath(const std::string& strPath, MAPSONGS& songs, bool bAppendToMap = false);
   bool Search(const std::string& search, CFileItemList &items);
   bool RemoveSongsFromPath(const std::string &path, MAPSONGS& songs, bool exact=true);
-  bool SetSongRating(const std::string &filePath, char rating);
+  bool SetSongUserrating(const std::string &filePath, char rating);
   int  GetSongByArtistAndAlbumAndTitle(const std::string& strArtist, const std::string& strAlbum, const std::string& strTitle);
 
   /////////////////////////////////////////////////
@@ -537,7 +537,7 @@ private:
     song_iStartOffset,
     song_iEndOffset,
     song_lastplayed,
-    song_rating,
+    song_userrating,
     song_comment,
     song_idAlbum,
     song_strAlbum,

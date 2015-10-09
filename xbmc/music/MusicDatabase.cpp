@@ -1689,7 +1689,7 @@ CSong CMusicDatabase::GetSongFromDataset(const dbiplus::sql_record* const record
   song.iStartOffset = record->at(offset + song_iStartOffset).get_asInt();
   song.iEndOffset = record->at(offset + song_iEndOffset).get_asInt();
   song.strMusicBrainzTrackID = record->at(offset + song_strMusicBrainzTrackID).get_asString();
-  song.rating = record->at(offset + song_rating).get_asChar();
+  song.rating = record->at(offset + song_userrating).get_asChar();
   song.strComment = record->at(offset + song_comment).get_asString();
   song.strMood = record->at(offset + song_mood).get_asString();
   song.iKaraokeNumber = record->at(offset + song_iKarNumber).get_asInt();
@@ -1728,7 +1728,7 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   item->SetProperty("item_start", item->m_lStartOffset);
   item->m_lEndOffset = record->at(song_iEndOffset).get_asInt();
   item->GetMusicInfoTag()->SetMusicBrainzTrackID(record->at(song_strMusicBrainzTrackID).get_asString());
-  item->GetMusicInfoTag()->SetRating(record->at(song_rating).get_asChar());
+  item->GetMusicInfoTag()->SetUserrating(record->at(song_userrating).get_asChar());
   item->GetMusicInfoTag()->SetComment(record->at(song_comment).get_asString());
   item->GetMusicInfoTag()->SetMood(record->at(song_mood).get_asString());
   item->GetMusicInfoTag()->SetPlayCount(record->at(song_iTimesPlayed).get_asInt());
@@ -4450,7 +4450,7 @@ bool CMusicDatabase::GetPaths(std::set<std::string> &paths)
   return false;
 }
 
-bool CMusicDatabase::SetSongRating(const std::string &filePath, char rating)
+bool CMusicDatabase::SetSongUserrating(const std::string &filePath, char rating)
 {
   try
   {

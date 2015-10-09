@@ -274,7 +274,7 @@ const std::string &CMusicInfoTag::GetCueSheet() const
   return m_cuesheet;
 }
 
-char CMusicInfoTag::GetRating() const
+char CMusicInfoTag::GetUserrating() const
 {
   return m_rating;
 }
@@ -463,7 +463,7 @@ void CMusicInfoTag::SetLyrics(const std::string& lyrics)
   m_strLyrics = lyrics;
 }
 
-void CMusicInfoTag::SetRating(char rating)
+void CMusicInfoTag::SetUserrating(char rating)
 {
   m_rating = rating;
 }
@@ -628,7 +628,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SetMusicBrainzAlbumID(album.strMusicBrainzAlbumID);
   SetGenre(album.genre);
   SetMood(StringUtils::Join(album.moods, g_advancedSettings.m_musicItemSeparator));
-  SetRating('0' + album.iRating);
+  SetUserrating('0' + album.iRating);
   SetCompilation(album.bCompilation);
   SYSTEMTIME stTime;
   stTime.wYear = album.iYear;
@@ -667,7 +667,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetLastPlayed(song.lastPlayed);
   SetDateAdded(song.dateAdded);
   SetCoverArtInfo(song.embeddedArt.size, song.embeddedArt.mime);
-  SetRating(song.rating);
+  SetUserrating(song.rating);
   SetURL(song.strFileName);
   SYSTEMTIME stTime;
   stTime.wYear = song.iYear;

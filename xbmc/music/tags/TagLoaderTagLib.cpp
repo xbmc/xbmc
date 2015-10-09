@@ -503,8 +503,8 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
         
         // @xbmc.org ratings trump others (of course)
         if      (popFrame->email() == "ratings@xbmc.org")
-          tag.SetRating(popFrame->rating() / 51 + '0');
-        else if (tag.GetRating() == '0')
+          tag.SetUserrating(popFrame->rating() / 51 + '0');
+        else if (tag.GetUserrating() == '0')
         {
           if (popFrame->email() != "Windows Media Player 9 Series" &&
               popFrame->email() != "Banshee" &&
@@ -512,7 +512,7 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
               popFrame->email() != "quodlibet@lists.sacredchao.net" &&
               popFrame->email() != "rating@winamp.com")
             CLog::Log(LOGDEBUG, "unrecognized ratings schema detected: %s", popFrame->email().toCString(true));
-          tag.SetRating(POPMtoXBMC(popFrame->rating()));
+          tag.SetUserrating(POPMtoXBMC(popFrame->rating()));
         }
       }
     else if (g_advancedSettings.m_logLevel == LOG_LEVEL_MAX)
@@ -674,7 +674,7 @@ bool CTagLoaderTagLib::ParseXiphComment(Ogg::XiphComment *xiph, EmbeddedArt *art
       // So, that's what we'll support for now.
       int iRating = it->second.front().toInt();
       if (iRating > 0 && iRating <= 100)
-        tag.SetRating((iRating / 20) + '0');
+        tag.SetUserrating((iRating / 20) + '0');
     }
     else if (it->first == "METADATA_BLOCK_PICTURE")
     {

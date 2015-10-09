@@ -56,7 +56,7 @@ public:
     song_iStartOffset = CMusicDatabase::song_iStartOffset;
     song_iEndOffset = CMusicDatabase::song_iEndOffset;
     song_lastplayed = CMusicDatabase::song_lastplayed;
-    song_rating = CMusicDatabase::song_rating;
+    song_userrating = CMusicDatabase::song_userrating;
     song_comment = CMusicDatabase::song_comment;
     song_strAlbum = CMusicDatabase::song_strAlbum;
     song_strPath = CMusicDatabase::song_strPath;
@@ -88,7 +88,7 @@ public:
   int song_iStartOffset;
   int song_iEndOffset;
   int song_lastplayed;
-  int song_rating;
+  int song_userrating;
   int song_comment;
   int song_strAlbum;
   int song_strPath;
@@ -911,7 +911,7 @@ TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeSong)
   varindex = DatabaseUtils::GetFieldIndex(FieldLastPlayed, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = a.song_rating;
+  refindex = a.song_userrating;
   varindex = DatabaseUtils::GetFieldIndex(FieldRating, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 

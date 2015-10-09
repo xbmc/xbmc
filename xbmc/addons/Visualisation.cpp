@@ -225,7 +225,7 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
         track.discNumber  = tag->GetDiscNumber();
         track.duration    = tag->GetDuration();
         track.year        = tag->GetYear();
-        track.rating      = tag->GetRating();
+        track.rating      = tag->GetUserrating();
 
         return m_pStruct->OnAction(action, &track);
       }
