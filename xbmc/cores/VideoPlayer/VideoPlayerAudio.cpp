@@ -491,8 +491,6 @@ void CVideoPlayerAudio::Process()
       // Flush as the audio output may keep looping if we don't
       if (ALLOW_AUDIO(m_speed) && !m_stalled && m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
       {
-        m_dvdAudio.Drain();
-        m_dvdAudio.Flush();
         m_stalled = true;
       }
 
