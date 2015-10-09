@@ -5198,9 +5198,9 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       std::string rating;
       if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
         rating = StringUtils::Format("%.1f", item->GetVideoInfoTag()->m_fRating);
-      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > '0')
+      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetUserrating() > '0')
       { // song rating.  Images will probably be better than numbers for this in the long run
-        rating.assign(1, item->GetMusicInfoTag()->GetRating());
+        rating.assign(1, item->GetMusicInfoTag()->GetUserrating());
       }
       return rating;
     }
@@ -5813,7 +5813,7 @@ std::string CGUIInfoManager::GetItemImage(const CFileItem *item, int info, std::
     {
       if (item->HasMusicInfoTag())
       {
-        return StringUtils::Format("songrating%c.png", item->GetMusicInfoTag()->GetRating());
+        return StringUtils::Format("songrating%c.png", item->GetMusicInfoTag()->GetUserrating());
       }
     }
     break;
@@ -5826,7 +5826,7 @@ std::string CGUIInfoManager::GetItemImage(const CFileItem *item, int info, std::
       }
       else if (item->HasMusicInfoTag())
       { // song rating.
-        rating = StringUtils::Format("rating%c.png", item->GetMusicInfoTag()->GetRating());
+        rating = StringUtils::Format("rating%c.png", item->GetMusicInfoTag()->GetUserrating());
       }
       return rating;
     }
