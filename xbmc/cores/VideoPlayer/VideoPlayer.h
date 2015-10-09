@@ -291,7 +291,6 @@ public:
   virtual std::string GetPlayingTitle();
 
   virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel);
-  virtual bool CachePVRStream(void) const;
 
   virtual void FrameMove();
   virtual void FrameWait(int ms);

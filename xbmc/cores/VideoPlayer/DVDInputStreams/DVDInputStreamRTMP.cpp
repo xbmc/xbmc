@@ -169,6 +169,7 @@ bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content, 
   {
     m_canSeek = false;
     m_canPause = false;
+    m_realtime = true;
   }
   CLog::Log(LOGDEBUG, "RTMP canseek: %s", m_canSeek ? "true" : "false");
 

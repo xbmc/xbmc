@@ -182,6 +182,10 @@ public:
 
   bool ContentLookup() { return m_contentLookup; }
 
+  bool IsRealtime() { return m_realtime; }
+
+  void SetRealtime(bool realtime) { m_realtime = realtime; }
+
 protected:
   DVDStreamType m_streamType;
   std::string m_strFileName;
@@ -190,4 +194,5 @@ protected:
   std::string m_content;
   CFileItem m_item;
   bool m_contentLookup;
+  bool m_realtime;
 };
