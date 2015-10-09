@@ -125,7 +125,7 @@ public:
   void SetAlbum(std::string album);
   void SetShowLink(std::vector<std::string> showLink);
   void SetUniqueId(std::string uniqueId);
-
+  void SetNamedSeasons(std::map<int, std::string> namedSeasons);
 
   std::string m_basePath; // the base path of the video, for folder-based lookups
   int m_parentPathID;      // the parent path id where the base path of the video lies
@@ -164,6 +164,7 @@ public:
   std::string m_strAlbum;
   CDateTime m_lastPlayed;
   std::vector<std::string> m_showLink;
+  std::map<int, std::string> m_namedSeasons;
   int m_playCount;
   int m_iTop250;
   int m_iYear;
