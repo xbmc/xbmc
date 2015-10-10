@@ -6498,10 +6498,7 @@ msgctxt "#13435"
 msgid "Enable HQ scalers for scaling above"
 msgstr ""
 
-#: xbmc/settings/GUISettings.cpp
-msgctxt "#13436"
-msgid "Allow hardware acceleration - libstagefright"
-msgstr ""
+#empty string with id 13436
 
 #: system/settings/settings.xml
 msgctxt "#13437"

@@ -86,7 +86,6 @@ enum RenderMethod
   RENDER_OMXEGL = 0x040,
   RENDER_CVREF  = 0x080,
   RENDER_BYPASS = 0x100,
-  RENDER_EGLIMG = 0x200,
   RENDER_MEDIACODEC = 0x400,
   RENDER_MEDIACODECSURFACE = 0x800,
   RENDER_IMXMAP = 0x1000
@@ -193,9 +192,9 @@ protected:
   void RenderSoftware(int index, int field);      // single pass s/w yuv2rgb renderer
   
   // hooks for HwDec Renderered
-  virtual bool LoadShadersHook() { return false; };
-  virtual bool RenderHook(int idx) { return false; };
-  virtual bool RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha) { return false; };
+  virtual bool LoadShadersHook() { return false; }
+  virtual bool RenderHook(int idx) { return false; }
+  virtual bool RenderUpdateVideoHook(const CRect &srcRect, const CRect &dstRect, bool clear, DWORD flags, DWORD alpha) { return false; }
   virtual int  GetImageHook(YV12Image *image, int source = AUTOSOURCE, bool readonly = false) { return NOSOURCE; }
 
   CFrameBufferObject m_fbo;
