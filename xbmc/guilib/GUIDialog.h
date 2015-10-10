@@ -51,7 +51,7 @@ public:
   virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
 
-  void Open();
+  void Open(const std::string &param = "");
   
   virtual bool OnBack(int actionID);
 
@@ -71,8 +71,8 @@ protected:
   virtual void OnWindowLoaded();
   virtual void UpdateVisibility();
 
-  virtual void Open_Internal();
-  virtual void Open_Internal(bool bProcessRenderLoop);
+  virtual void Open_Internal(const std::string &param = "");
+  virtual void Open_Internal(bool bProcessRenderLoop, const std::string &param = "");
   virtual void OnDeinitWindow(int nextWindowID);
 
   bool m_wasRunning; ///< \brief true if we were running during the last DoProcess()

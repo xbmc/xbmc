@@ -157,12 +157,12 @@ void CGUIDialog::UpdateVisibility()
   }
 }
 
-void CGUIDialog::Open_Internal()
+void CGUIDialog::Open_Internal(const std::string &param /* = "" */)
 {
-  CGUIDialog::Open_Internal(m_modalityType != DialogModalityType::MODELESS);
+  CGUIDialog::Open_Internal(m_modalityType != DialogModalityType::MODELESS, param);
 }
 
-void CGUIDialog::Open_Internal(bool bProcessRenderLoop)
+void CGUIDialog::Open_Internal(bool bProcessRenderLoop, const std::string &param /* = "" */)
 {
   // Lock graphic context here as it is sometimes called from non rendering threads
   // maybe we should have a critical section per window instead??
@@ -181,6 +181,7 @@ void CGUIDialog::Open_Internal(bool bProcessRenderLoop)
 
   // active this window
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0);
+  msg.SetStringParam(param);
   OnMessage(msg);
 
   // process render loop
@@ -198,16 +199,16 @@ void CGUIDialog::Open_Internal(bool bProcessRenderLoop)
   }
 }
 
-void CGUIDialog::Open()
+void CGUIDialog::Open(const std::string &param /* = "" */)
 {
   if (!g_application.IsCurrentThread())
   {
     // make sure graphics lock is not held
     CSingleExit leaveIt(g_graphicsContext);
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_DIALOG_OPEN, -1, -1, static_cast<void*>(this));
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_DIALOG_OPEN, -1, -1, static_cast<void*>(this), param);
   }
   else
-    Open_Internal();
+    Open_Internal(param);
 }
 
 void CGUIDialog::Render()
