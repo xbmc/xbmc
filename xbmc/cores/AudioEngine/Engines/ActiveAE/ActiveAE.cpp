@@ -2327,7 +2327,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
         else
           framesToSkip = 0;
       }
-      int bytesToSkip = framesToSkip*buf->pkt->bytes_per_sample/buf->pkt->planes;
+      int bytesToSkip = framesToSkip*buf->pkt->bytes_per_sample;
       for(int i=0; i<buf->pkt->planes; i++)
       {
         memmove(buf->pkt->data[i], buf->pkt->data[i]+bytesToSkip, buf->pkt->linesize - bytesToSkip);
