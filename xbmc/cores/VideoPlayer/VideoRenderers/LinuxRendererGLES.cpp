@@ -187,8 +187,6 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
 
   m_iLastRenderBuffer = -1;
 
-  m_RenderUpdateCallBackFn = NULL;
-  m_RenderUpdateCallBackCtx = NULL;
   if ((m_format == RENDER_FMT_BYPASS) && g_application.GetCurrentPlayer())
   {
     m_renderFeatures.clear();
@@ -196,13 +194,6 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
     m_deinterlaceModes.clear();
     m_deinterlaceMethods.clear();
 
-    if (m_RenderFeaturesCallBackFn)
-    {
-      (*m_RenderFeaturesCallBackFn)(m_RenderFeaturesCallBackCtx, m_renderFeatures);
-      // after setting up m_renderFeatures, we are done with the callback
-      m_RenderFeaturesCallBackFn = NULL;
-      m_RenderFeaturesCallBackCtx = NULL;
-    }
     g_application.m_pPlayer->GetRenderFeatures(m_renderFeatures);
     g_application.m_pPlayer->GetDeinterlaceMethods(m_deinterlaceMethods);
     g_application.m_pPlayer->GetDeinterlaceModes(m_deinterlaceModes);
@@ -510,11 +501,6 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, DWORD flags, DWORD alpha)
   if (m_renderMethod & RENDER_BYPASS)
   {
     ManageDisplay();
-    // if running bypass, then the player might need the src/dst rects
-    // for sizing video playback on a layer other than the gles layer.
-    if (m_RenderUpdateCallBackFn)
-      (*m_RenderUpdateCallBackFn)(m_RenderUpdateCallBackCtx, m_sourceRect, m_destRect);
-
     return;
   }
 }
@@ -726,10 +712,6 @@ void CLinuxRendererGLES::UnInit()
   m_bValidated = false;
   m_bImageReady = false;
   m_bConfigured = false;
-  m_RenderUpdateCallBackFn = NULL;
-  m_RenderUpdateCallBackCtx = NULL;
-  m_RenderFeaturesCallBackFn = NULL;
-  m_RenderFeaturesCallBackCtx = NULL;
 }
 
 inline void CLinuxRendererGLES::ReorderDrawPoints()

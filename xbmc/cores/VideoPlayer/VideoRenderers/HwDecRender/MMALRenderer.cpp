@@ -288,9 +288,6 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
 
   CLog::Log(LOGDEBUG, "%s::%s - %dx%d->%dx%d@%.2f flags:%x format:%d ext:%x orient:%d", CLASSNAME, __func__, width, height, d_width, d_height, fps, flags, format, extended_format, orientation);
 
-  m_RenderUpdateCallBackFn = NULL;
-  m_RenderUpdateCallBackCtx = NULL;
-
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
@@ -451,11 +448,6 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (g_graphicsContext.GetStereoMode())
     g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_OFF);
 
-  // if running bypass, then the player might need the src/dst rects
-  // for sizing video playback on a layer other than the gles layer.
-  if (m_RenderUpdateCallBackFn)
-    (*m_RenderUpdateCallBackFn)(m_RenderUpdateCallBackCtx, m_sourceRect, m_destRect);
-
   if (m_format == RENDER_FMT_BYPASS)
   {
 #if defined(MMAL_DEBUG_VERBOSE)
@@ -584,9 +576,6 @@ void CMMALRenderer::UnInitMMAL()
     mmal_component_release(m_vout);
     m_vout = NULL;
   }
-
-  m_RenderUpdateCallBackFn = NULL;
-  m_RenderUpdateCallBackCtx = NULL;
 
   m_src_rect.SetRect(0, 0, 0, 0);
   m_dst_rect.SetRect(0, 0, 0, 0);
