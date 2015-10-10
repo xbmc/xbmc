@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="HomePlaylist4">
+		<param name="limit">10</param>
+		<definition>
+			<control type="group">
+				<left>160</left>
+				<top>50</top>
+				<visible>Library.HasContent($PARAM[sourceContent])</visible>
+				<visible>Container(9000).Hasfocus($PARAM[controlID])</visible>
+				<include>VisibleFadeEffect</include>
+				<control type="label">
+					<description>Title label</description>
+					<left>240</left>
+					<top>220</top>
+					<height>20</height>
+					<width>480</width>
+					<label>$PARAM[label]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font12_title</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="list" id="$PARAM[ID]">
+					<animation effect="slide" start="0,0" end="120,0" time="0" condition="StringCompare(Container($PARAM[ID]).NumItems,3)">conditional</animation>
+					<animation effect="slide" start="0,0" end="240,0" time="0" condition="StringCompare(Container($PARAM[ID]).NumItems,2)">conditional</animation>
+					<animation effect="slide" start="0,0" end="360,0" time="0" condition="StringCompare(Container($PARAM[ID]).NumItems,1)">conditional</animation>
+					<left>0</left>
+					<top>0</top>
+					<width>960</width>
+					<height>240</height>
+					<onleft>$PARAM[ID]</onleft>
+					<onright>$PARAM[ID]</onright>
+					<onup>20</onup>
+					<ondown condition="System.HasAddon(script.globalsearch)">608</ondown>
+					<ondown condition="!System.HasAddon(script.globalsearch)">603</ondown>
+					<viewtype label="535">list</viewtype>
+					<pagecontrol>-</pagecontrol>
+					<scrolltime>200</scrolltime>
+					<orientation>Horizontal</orientation>
+					<itemlayout height="220" width="240">
+						<control type="image">
+							<description>background</description>
+							<left>0</left>
+							<top>0</top>
+							<width>240</width>
+							<height>220</height>
+							<texture border="15">RecentAddedBack.png</texture>
+						</control>
+						<control type="image">
+							<left>10</left>
+							<top>10</top>
+							<width>220</width>
+							<height>155</height>
+							<texture background="true">$INFO[ListItem.Icon]</texture>
+							<aspectratio>keep</aspectratio>
+							<bordertexture border="5">button-nofocus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<visible>!isEmpty(ListItem.Icon)</visible>
+						</control>
+						<control type="image">
+							<left>10</left>
+							<top>10</top>
+							<width>220</width>
+							<height>155</height>
+							<texture background="true">$PARAM[defaultIcon]</texture>
+							<aspectratio>keep</aspectratio>
+							<bordertexture border="5">button-nofocus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<visible>isEmpty(ListItem.Icon)</visible>
+						</control>
+						<control type="label">
+							<left>20</left>
+							<top>168</top>
+							<width>200</width>
+							<height>20</height>
+							<font>font10</font>
+							<textcolor>grey2</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.TVShowTitle]</label>
+							<visible>StringCompare(ListItem.DBTYPE,episode)</visible>
+						</control>
+						<control type="label">
+							<left>20</left>
+							<top>168</top>
+							<width>200</width>
+							<height>20</height>
+							<font>font10</font>
+							<textcolor>grey2</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Album]</label>
+							<visible>isEmpty(ListItem.DBTYPE)</visible>
+						</control>
+						<control type="label">
+							<left>20</left>
+							<top>168</top>
+							<width>200</width>
+							<height>20</height>
+							<font>font10</font>
+							<textcolor>grey2</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label2]</label>
+							<visible>![isEmpty(ListItem.DBTYPE) | StringCompare(ListItem.DBTYPE,episode)]</visible>
+						</control>
+						<control type="label">
+							<left>20</left>
+							<top>185</top>
+							<width>200</width>
+							<height>20</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+					</itemlayout>
+					<focusedlayout height="220" width="240">
+						<control type="image">
+							<description>background</description>
+							<left>0</left>
+							<top>0</top>
+							<width>240</width>
+							<height>220</height>
+							<texture border="15">RecentAddedBack.png</texture>
+						</control>
+						<control type="image">
+							<left>10</left>
+							<top>10</top>
+							<width>220</width>
+							<height>155</height>
+							<texture background="true">$INFO[ListItem.Icon]</texture>
+							<aspectratio>keep</aspectratio>
+							<bordertexture border="5">folder-focus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<visible>Control.HasFocus($PARAM[ID]) + !isEmpty(ListItem.Icon)</visible>
+						</control>
+						<control type="image">
+							<left>10</left>
+							<top>10</top>
+							<width>220</width>
+							<height>155</height>
+							<texture>$INFO[ListItem.Icon]</texture>
+							<aspectratio>keep</aspectratio>
+							<bordertexture border="5">button-nofocus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<visible>!Control.HasFocus($PARAM[ID]) + !isEmpty(ListItem.Icon)</visible>
+						</control>
+						<control type="image">
+							<left>10</left>
+							<top>10</top>
+							<width>220</width>
+							<height>155</height>
+							<texture background="true">$PARAM[defaultIcon]</texture>
+							<aspectratio>keep</aspectratio>
+							<bordertexture border="5">folder-focus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<visible>Control.HasFocus($PARAM[ID]) + isEmpty(ListItem.Icon)</visible>
+						</control>
+						<control type="image">
+							<left>10</left>
+							<top>10</top>
+							<width>220</width>
+							<height>155</height>
+							<texture>$PARAM[defaultIcon]</texture>
+							<aspectratio>keep</aspectratio>
+							<bordertexture border="5">button-nofocus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<visible>!Control.HasFocus($PARAM[ID]) + isEmpty(ListItem.Icon)</visible>
+						</control>
+						<control type="label">
+							<left>20</left>
+							<top>168</top>
+							<width>200</width>
+							<height>20</height>
+							<font>font10</font>
+							<textcolor>grey2</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.TVShowTitle]</label>
+							<visible>StringCompare(ListItem.DBTYPE,episode)</visible>
+						</control>
+						<control type="label">
+							<left>20</left>
+							<top>168</top>
+							<width>200</width>
+							<height>20</height>
+							<font>font10</font>
+							<textcolor>grey2</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Album]</label>
+							<visible>isEmpty(ListItem.DBTYPE)</visible>
+						</control>
+						<control type="label">
+							<left>20</left>
+							<top>168</top>
+							<width>200</width>
+							<height>20</height>
+							<font>font10</font>
+							<textcolor>grey2</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label2]</label>
+							<visible>![isEmpty(ListItem.DBTYPE) | StringCompare(ListItem.DBTYPE,episode)]</visible>
+						</control>
+						<control type="label">
+							<left>20</left>
+							<top>185</top>
+							<width>200</width>
+							<height>20</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<visible>!Control.HasFocus($PARAM[ID])</visible>
+						</control>
+						<control type="label">
+							<left>20</left>
+							<top>185</top>
+							<width>200</width>
+							<height>20</height>
+							<font>font12</font>
+							<textcolor>blue</textcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<visible>Control.HasFocus($PARAM[ID])</visible>
+						</control>
+					</focusedlayout>
+					<content limit="$PARAM[limit]">$PARAM[content]</content>
+				</control>
+				<control type="button">
+					<description>left Arrow</description>
+					<left>-40</left>
+					<top>90</top>
+					<width>30</width>
+					<height>40</height>
+					<texturefocus>arrow-big-left.png</texturefocus>
+					<texturenofocus>arrow-big-left.png</texturenofocus>
+					<onclick>Control.Move($PARAM[ID],-1)</onclick>
+					<visible>Control.HasFocus($PARAM[ID]) + Container($PARAM[ID]).HasPrevious</visible>
+					<include>VisibleFadeEffect</include>
+				</control>
+				<control type="button">
+					<description>right Arrow</description>
+					<left>970</left>
+					<top>90</top>
+					<width>30</width>
+					<height>40</height>
+					<texturefocus>arrow-big-right.png</texturefocus>
+					<texturenofocus>arrow-big-right.png</texturenofocus>
+					<onclick>Control.Move($PARAM[ID],1)</onclick>
+					<visible>Control.HasFocus($PARAM[ID]) + Container($PARAM[ID]).HasNext</visible>
+					<include>VisibleFadeEffect</include>
+				</control>
+			</control>
+		</definition>
+	</include>
+	<include name="HomePlaylist5">
+		<param name="limit">10</param>
+		<definition>
+			<control type="group">
+				<left>190</left>
+				<top>50</top>
+				<visible>Library.HasContent($PARAM[sourceContent])</visible>
+				<visible>Container(9000).Hasfocus($PARAM[controlID])</visible>
+				<include>VisibleFadeEffect</include>
+				<control type="label">
+					<description>Title label</description>
+					<left>180</left>
+					<top>220</top>
+					<height>20</height>
+					<width>540</width>
+					<label>$PARAM[label]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font12_title</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="list" id="$PARAM[ID]">
+					<animation effect="slide" start="0,0" end="90,0"  time="0" condition="StringCompare(Container($PARAM[ID]).NumItems,4)">conditional</animation>
+					<animation effect="slide" start="0,0" end="180,0" time="0" condition="StringCompare(Container($PARAM[ID]).NumItems,3)">conditional</animation>
+					<animation effect="slide" start="0,0" end="270,0" time="0" condition="StringCompare(Container($PARAM[ID]).NumItems,2)">conditional</animation>
+					<animation effect="slide" start="0,0" end="360,0" time="0" condition="StringCompare(Container($PARAM[ID]).NumItems,1)">conditional</animation>
+					<left>0</left>
+					<top>0</top>
+					<width>900</width>
+					<height>220</height>
+					<onleft>$PARAM[ID]</onleft>
+					<onright>$PARAM[ID]</onright>
+					<onup>20</onup>
+					<ondown condition="System.HasAddon(script.globalsearch)">608</ondown>
+					<ondown condition="!System.HasAddon(script.globalsearch)">603</ondown>
+					<viewtype label="535">list</viewtype>
+					<pagecontrol>-</pagecontrol>
+					<scrolltime>200</scrolltime>
+					<orientation>Horizontal</orientation>
+					<itemlayout height="220" width="180">
+						<control type="image">
+							<description>background</description>
+							<left>0</left>
+							<top>0</top>
+							<width>180</width>
+							<height>220</height>
+							<texture border="15">RecentAddedBack.png</texture>
+						</control>
+						<control type="image">
+							<left>10</left>
+							<top>10</top>
+							<width>160</width>
+							<height>170</height>
+							<texture background="true">$INFO[ListItem.Icon]</texture>
+							<aspectratio>keep</aspectratio>
+							<bordertexture border="5">button-nofocus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<visible>!isEmpty(ListItem.Icon)</visible>
+						</control>
+						<control type="image">
+							<left>10</left>
+							<top>10</top>
+							<width>160</width>
+							<height>170</height>
+							<texture background="true">$PARAM[defaultIcon]</texture>
+							<aspectratio>keep</aspectratio>
+							<bordertexture border="5">button-nofocus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<visible>isEmpty(ListItem.Icon)</visible>
+						</control>
+						<control type="label">
+							<left>15</left>
+							<top>185</top>
+							<width>150</width>
+							<height>20</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+					</itemlayout>
+					<focusedlayout height="220" width="180">
+						<control type="image">
+							<description>background</description>
+							<left>0</left>
+							<top>0</top>
+							<width>180</width>
+							<height>220</height>
+							<texture border="15">RecentAddedBack.png</texture>
+						</control>
+						<control type="image">
+							<left>10</left>
+							<top>10</top>
+							<width>160</width>
+							<height>170</height>
+							<texture background="true">$INFO[ListItem.Icon]</texture>
+							<aspectratio>keep</aspectratio>
+							<bordertexture border="5">folder-focus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<visible>Control.HasFocus($PARAM[ID]) + !isEmpty(ListItem.Icon)</visible>
+						</control>
+						<control type="image">
+							<left>10</left>
+							<top>10</top>
+							<width>160</width>
+							<height>170</height>
+							<texture>$INFO[ListItem.Icon]</texture>
+							<aspectratio>keep</aspectratio>
+							<bordertexture border="5">button-nofocus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<visible>!Control.HasFocus($PARAM[ID]) + !isEmpty(ListItem.Icon)</visible>
+						</control>
+						<control type="image">
+							<left>10</left>
+							<top>10</top>
+							<width>160</width>
+							<height>170</height>
+							<texture background="true">$PARAM[defaultIcon]</texture>
+							<aspectratio>keep</aspectratio>
+							<bordertexture border="5">folder-focus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<visible>Control.HasFocus($PARAM[ID]) + isEmpty(ListItem.Icon)</visible>
+						</control>
+						<control type="image">
+							<left>10</left>
+							<top>10</top>
+							<width>160</width>
+							<height>170</height>
+							<texture>$PARAM[defaultIcon]</texture>
+							<aspectratio>keep</aspectratio>
+							<bordertexture border="5">button-nofocus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<visible>!Control.HasFocus($PARAM[ID]) + isEmpty(ListItem.Icon)</visible>
+						</control>
+						<control type="label">
+							<left>15</left>
+							<top>185</top>
+							<width>150</width>
+							<height>20</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<visible>!Control.HasFocus($PARAM[ID])</visible>
+						</control>
+						<control type="label">
+							<left>15</left>
+							<top>185</top>
+							<width>150</width>
+							<height>20</height>
+							<font>font12</font>
+							<textcolor>blue</textcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<visible>Control.HasFocus($PARAM[ID])</visible>
+						</control>
+					</focusedlayout>
+					<content limit="$PARAM[limit]">$PARAM[content]</content>
+				</control>
+				<control type="button">
+					<description>left Arrow</description>
+					<left>-40</left>
+					<top>90</top>
+					<width>30</width>
+					<height>40</height>
+					<texturefocus>arrow-big-left.png</texturefocus>
+					<texturenofocus>arrow-big-left.png</texturenofocus>
+					<onclick>Control.Move($PARAM[ID],-1)</onclick>
+					<visible>Control.HasFocus($PARAM[ID]) + Container($PARAM[ID]).HasPrevious</visible>
+					<include>VisibleFadeEffect</include>
+				</control>
+				<control type="button">
+					<description>right Arrow</description>
+					<left>910</left>
+					<top>90</top>
+					<width>30</width>
+					<height>40</height>
+					<texturefocus>arrow-big-right.png</texturefocus>
+					<texturenofocus>arrow-big-right.png</texturenofocus>
+					<onclick>Control.Move($PARAM[ID],1)</onclick>
+					<visible>Control.HasFocus($PARAM[ID]) + Container($PARAM[ID]).HasNext</visible>
+					<include>VisibleFadeEffect</include>
+				</control>
+			</control>
+		</definition>
+	</include>
+</includes>
