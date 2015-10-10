@@ -43,37 +43,35 @@
 #include <taglib/xiphcomment.h>
 #include <taglib/mp4tag.h>
 #include "ImusicInfoTagLoader.h"
+#include "MusicInfoTag.h"
 
-namespace MUSIC_INFO
-{
-  class CMusicInfoTag;
-  class EmbeddedArt;
-};
+#include <vector>
+#include <string>
+using namespace TagLib;
+using namespace MUSIC_INFO;
 
-class CTagLoaderTagLib : public MUSIC_INFO::IMusicInfoTagLoader
+class CTagLoaderTagLib : public IMusicInfoTagLoader
 {
 public:
   CTagLoaderTagLib();
   virtual ~CTagLoaderTagLib();
-  virtual bool                   Load(const std::string& strFileName, MUSIC_INFO::CMusicInfoTag& tag, MUSIC_INFO::EmbeddedArt *art = NULL);
+  virtual bool                   Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL);
+  bool                           Load(const std::string& strFileName, CMusicInfoTag& tag, const std::string& fallbackFileExtension, EmbeddedArt *art = NULL);
 
-  bool                           Load(const std::string& strFileName, MUSIC_INFO::CMusicInfoTag& tag, const std::string& fallbackFileExtension, MUSIC_INFO::EmbeddedArt *art = NULL);
+  // Helper methods
+  static void SetArtist(CMusicInfoTag &tag, const std::vector<std::string> &values);
+  static void SetAlbumArtist(CMusicInfoTag &tag, const std::vector<std::string> &values);
+  static void SetGenre(CMusicInfoTag &tag, const std::vector<std::string> &values);
+  static const std::vector<std::string> SplitMBID(const std::vector<std::string> &values);
+  static char POPMtoXBMC(int popm);
 
-  const std::vector<std::string> SplitMBID(const std::vector<std::string> &values);
 private:
   bool                           Open(const std::string& strFileName, bool readOnly);
-  const std::vector<std::string> GetASFStringList(const TagLib::List<TagLib::ASF::Attribute>& list);
-  const std::vector<std::string> GetID3v2StringList(const TagLib::ID3v2::FrameList& frameList) const;
+  void                           SetFlacArt(TagLib::FLAC::File *flacFile, EmbeddedArt *art, CMusicInfoTag &tag);
+};
 
-  bool                           ParseAPETag(TagLib::APE::Tag *ape, MUSIC_INFO::EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& tag);
-  bool                           ParseASF(TagLib::ASF::Tag *asf, MUSIC_INFO::EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& tag);
-  bool                           ParseID3v1Tag(TagLib::ID3v1::Tag *id3v1, MUSIC_INFO::EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& tag);
-  bool                           ParseID3v2Tag(TagLib::ID3v2::Tag *id3v2, MUSIC_INFO::EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& tag);
-  bool                           ParseXiphComment(TagLib::Ogg::XiphComment *id3v2, MUSIC_INFO::EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& tag);
-  bool                           ParseMP4Tag(TagLib::MP4::Tag *mp4, MUSIC_INFO::EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& tag);
-  bool                           ParseGenericTag(TagLib::Tag *generic, MUSIC_INFO::EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& tag);
-  void                           SetFlacArt(TagLib::FLAC::File *flacFile, MUSIC_INFO::EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag &tag);
-  void                           SetArtist(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
-  void                           SetAlbumArtist(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
-  void                           SetGenre(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
+template<typename T>
+class TagParser {
+ public:
+   static bool ParseTag(T *tag, EmbeddedArt *art, CMusicInfoTag& infoTag);
 };
