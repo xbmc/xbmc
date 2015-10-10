@@ -88,8 +88,8 @@ config.log
 /build-aux/ltmain.sh
 /autotools
 /BUILD
-/xbmc.log
-/xbmc.old.log
+/kodi.log
+/kodi.old.log
 /Makefile.depend
 /config.status
 /configure
