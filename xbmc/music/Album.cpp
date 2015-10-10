@@ -54,21 +54,19 @@ CAlbum::CAlbum(const CFileItem& item)
   artist = tag.GetAlbumArtist();
   std::vector<std::string> musicBrainAlbumArtistHints = tag.GetMusicBrainzAlbumArtistHints();
   strArtistDesc = tag.GetAlbumArtistDesc();
-
+  size_t artistsize = (tag.GetMusicBrainzAlbumArtistID().size() > artist.size()) ? tag.GetMusicBrainzAlbumArtistID().size() : artist.size();
   if (!tag.GetMusicBrainzAlbumArtistID().empty())
   { // have musicbrainz artist info, so use it
     for (size_t i = 0; i < tag.GetMusicBrainzAlbumArtistID().size(); i++)
     {
       std::string artistId = tag.GetMusicBrainzAlbumArtistID()[i];
       std::string artistName;
-
       /*
          We try and get the mbrainzid <-> name matching from the hints and match on the same index.
          If not found, we try and use the mbrainz <-> name matching from the artists fields
          If still not found, try and use the same index of the albumartist field.
          If still not found, use the mbrainzid and hope we later on can update that entry
          */
-
       if (i < musicBrainAlbumArtistHints.size())
         artistName = musicBrainAlbumArtistHints[i];
       else if (!tag.GetMusicBrainzArtistID().empty() && !tag.GetArtist().empty())
@@ -91,19 +89,17 @@ CAlbum::CAlbum(const CFileItem& item)
       if (artistName.empty())
         artistName = artistId;
 
-      std::string strJoinPhrase = (i == tag.GetMusicBrainzAlbumArtistID().size()-1) ? "" : g_advancedSettings.m_musicItemSeparator;
+      std::string strJoinPhrase = (i == artistsize - 1) ? "" : g_advancedSettings.m_musicItemSeparator;
       CArtistCredit artistCredit(artistName, tag.GetMusicBrainzAlbumArtistID()[i], strJoinPhrase);
       artistCredits.push_back(artistCredit);
     }
   }
-  else
-  { // no musicbrainz info, so fill in directly
-    for (std::vector<std::string>::const_iterator it = tag.GetAlbumArtist().begin(); it != tag.GetAlbumArtist().end(); ++it)
-    {
-      std::string strJoinPhrase = (it == --tag.GetAlbumArtist().end() ? "" : g_advancedSettings.m_musicItemSeparator);
-      CArtistCredit artistCredit(*it, "", strJoinPhrase);
-      artistCredits.push_back(artistCredit);
-    }
+  //Fill in directly those artists with no matching Musicbrainz ID
+  for (size_t i = artistCredits.size(); i < artist.size(); i++)
+  {
+    std::string strJoinPhrase = (i == artist.size() - 1) ? "" : g_advancedSettings.m_musicItemSeparator;
+    CArtistCredit artistCredit(artist[i], "", strJoinPhrase);
+    artistCredits.push_back(artistCredit);
   }
   iYear = stTime.wYear;
   bCompilation = tag.GetCompilation();
