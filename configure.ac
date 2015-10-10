@@ -513,7 +513,7 @@ AC_ARG_ENABLE([breakpad],
 
 AC_ARG_ENABLE([codec],
   [AS_HELP_STRING([--enable-codec],
-  [enable additional codecs from a list of comma separated names, (default is none, choices are amcodec, libstagefright and imxvpu)])],
+  [enable additional codecs from a list of comma separated names, (default is none, choices are amcodec and imxvpu)])],
   [add_codecs=$enableval],
   [add_codecs=no])
 
@@ -1878,9 +1878,6 @@ for codecs in `echo $add_codecs | sed 's/,/ /g'`; do
         AC_CHECK_HEADER([amcodec/codec_error.h],, AC_MSG_ERROR($missing_headers))
         XB_ADD_CODEC([LIBAMCODEC], [amcodec], [$codecs])
         ;;
-    *libstagefright*)
-        XB_ADD_CODEC([LIBSTAGEFRIGHT], [libstagefright], [$codecs])
-        ;;
     *imxvpu*)
       AC_CHECK_HEADER([imx-mm/vpu/vpu_wrapper.h],, AC_MSG_ERROR($missing_headers))
       AC_CHECK_LIB([vpu], main, LIBS="$LIBS -lfslvpuwrap -lvpu -lg2d", AC_MSG_ERROR($missing_library))
@@ -2452,10 +2449,6 @@ fi
 
 if test "$use_touch_skin" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES addons/skin.re-touched/media/Makefile"
-fi
-
-if test "$use_codec_libstagefright" = "yes"; then
-OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/VideoPlayer/DVDCodecs/Video/libstagefrightICS/Makefile"
 fi
 
 if test "$use_sse4" = "yes"; then

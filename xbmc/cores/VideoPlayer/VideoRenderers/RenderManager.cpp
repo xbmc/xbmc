@@ -133,7 +133,6 @@ static std::string GetRenderFormatName(ERenderFormat format)
     case RENDER_FMT_VAAPINV12: return "VAAPI_NV12";
     case RENDER_FMT_OMXEGL:    return "OMXEGL";
     case RENDER_FMT_CVBREF:    return "BGRA";
-    case RENDER_FMT_EGLIMG:    return "EGLIMG";
     case RENDER_FMT_BYPASS:    return "BYPASS";
     case RENDER_FMT_MEDIACODEC:return "MEDIACODEC";
     case RENDER_FMT_IMXMAP:    return "IMXMAP";
@@ -1192,7 +1191,6 @@ int CRenderManager::AddVideoPicture(DVDVideoPicture& pic)
        || pic.format == RENDER_FMT_CVBREF
        || pic.format == RENDER_FMT_VAAPI
        || pic.format == RENDER_FMT_VAAPINV12
-       || pic.format == RENDER_FMT_EGLIMG
        || pic.format == RENDER_FMT_MEDIACODEC
        || pic.format == RENDER_FMT_IMXMAP
        || pic.format == RENDER_FMT_MMAL)

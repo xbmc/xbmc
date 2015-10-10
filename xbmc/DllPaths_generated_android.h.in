@@ -46,7 +46,6 @@
 #define DLL_PATH_LIBASS        "@ASS_SONAME@"
 #define DLL_PATH_LIBDVDNAV     "libdvdnav-@ARCH@.so"
 #define DLL_PATH_LIBMPEG2      "@MPEG2_SONAME@"
-#define DLL_PATH_LIBSTAGEFRIGHTICS    "libXBMCvcodec_stagefrightICS-@ARCH@.so"
 
 /* libbluray */
 #define DLL_PATH_LIBBLURAY     "@BLURAY_SONAME@"

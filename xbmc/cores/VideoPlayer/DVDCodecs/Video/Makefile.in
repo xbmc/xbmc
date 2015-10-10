@@ -33,9 +33,6 @@ endif
 ifeq (@USE_ANDROID@,1)
 SRCS += DVDVideoCodecAndroidMediaCodec.cpp
 endif
-ifeq (@USE_LIBSTAGEFRIGHT@,1)
-SRCS += DVDVideoCodecStageFright.cpp
-endif
 
 ifeq (@USE_MMAL@,1)
 SRCS += MMALCodec.cpp

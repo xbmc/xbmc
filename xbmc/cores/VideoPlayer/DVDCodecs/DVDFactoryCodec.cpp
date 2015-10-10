@@ -41,7 +41,6 @@
 #include "Video/DVDVideoCodecIMX.h"
 #endif
 #include "Video/MMALCodec.h"
-#include "Video/DVDVideoCodecStageFright.h"
 #if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
 #include "Video/DVDVideoCodecAmlogic.h"
@@ -168,11 +167,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
   hwSupport += "OpenMax:yes ";
 #elif defined(TARGET_POSIX)
   hwSupport += "OpenMax:no ";
-#endif
-#if defined(HAS_LIBSTAGEFRIGHT)
-  hwSupport += "libstagefright:yes ";
-#elif defined(_LINUX)
-  hwSupport += "libstagefright:no ";
 #endif
 #if defined(HAVE_LIBVDPAU) && defined(TARGET_POSIX)
   hwSupport += "VDPAU:yes ";
@@ -323,27 +317,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
       }
     }
 #endif
-
-#if defined(HAS_LIBSTAGEFRIGHT)
-    if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USESTAGEFRIGHT))
-    {
-      switch(hint.codec)
-      {
-        case AV_CODEC_ID_MPEG4:
-        case AV_CODEC_ID_MSMPEG4V2:
-        case AV_CODEC_ID_MSMPEG4V3:
-        case AV_CODEC_ID_MPEG1VIDEO:
-        case AV_CODEC_ID_MPEG2VIDEO:
-          // Avoid h/w decoder for SD; Those files might use features
-          // not supported and can easily be soft-decoded
-          if (hint.width <= 800)
-            break;
-        default:
-          if ( (pCodec = OpenCodec(new CDVDVideoCodecStageFright(), hint, options)) ) return pCodec;
-      }
-    }
-#endif
-
 
   // try to decide if we want to try halfres decoding
 #if !defined(TARGET_POSIX) && !defined(TARGET_WINDOWS)
