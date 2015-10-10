@@ -1484,9 +1484,10 @@ std::string CFileItem::GetOpticalMediaPath() const
   {
     dvdPath = URIUtils::AddFileToFolder(GetPath(), "VIDEO_TS");
     path = URIUtils::AddFileToFolder(dvdPath, "VIDEO_TS.IFO");
-    dvdPath.clear();
-    if (CFile::Exists(path))
+    if (CDirectory::Exists(dvdPath) && CFile::Exists(path))
       dvdPath = path;
+    else
+      dvdPath.clear();
   }
 #ifdef HAVE_LIBBLURAY
   if (dvdPath.empty())
@@ -1498,9 +1499,10 @@ std::string CFileItem::GetOpticalMediaPath() const
     {
       dvdPath = URIUtils::AddFileToFolder(GetPath(), "BDMV");
       path = URIUtils::AddFileToFolder(dvdPath, "index.bdmv");
-      dvdPath.clear();
-      if (CFile::Exists(path))
-        dvdPath = path;
+      if (CDirectory::Exists(dvdPath) && CFile::Exists(path))
+	dvdPath = path;
+      else
+	dvdPath.clear();
     }
   }
 #endif
