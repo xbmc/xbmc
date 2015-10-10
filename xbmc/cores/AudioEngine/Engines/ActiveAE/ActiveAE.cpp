@@ -1058,10 +1058,10 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::VOLUME, &m_volume, sizeof(float));
 
     // limit buffer size in case of sink returns large buffer
-    unsigned int buffertime = m_sinkFormat.m_frames / m_sinkFormat.m_sampleRate;
+    double buffertime = (double)m_sinkFormat.m_frames / m_sinkFormat.m_sampleRate;
     if (buffertime > MAX_BUFFER_TIME)
     {
-      CLog::Log(LOGWARNING, "ActiveAE::%s - sink returned large buffer of %d ms, reducing to %d ms", __FUNCTION__, buffertime, (int)(MAX_BUFFER_TIME*1000));
+      CLog::Log(LOGWARNING, "ActiveAE::%s - sink returned large buffer of %d ms, reducing to %d ms", __FUNCTION__, (int)(buffertime * 1000), (int)(MAX_BUFFER_TIME*1000));
       m_sinkFormat.m_frames = MAX_BUFFER_TIME * m_sinkFormat.m_sampleRate;
     }
   }
