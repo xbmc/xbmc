@@ -155,10 +155,6 @@ public:
    */
   void DiscardBuffer();
 
-  // TODO: trash those
-  void RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn);
-  void RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn);
-
 protected:
 
   void PresentSingle(bool clear, DWORD flags, DWORD alpha);

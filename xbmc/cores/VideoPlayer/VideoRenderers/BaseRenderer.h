@@ -67,9 +67,6 @@ enum RenderMethods
   RENDER_OVERLAYS        = 99   // to retain compatibility
 };
 
-typedef void (*RenderUpdateCallBackFn)(const void *ctx, const CRect &SrcRect, const CRect &DestRect);
-typedef void (*RenderFeaturesCallBackFn)(const void *ctx, std::vector<int> &renderFeatures);
-
 struct DVDVideoPicture;
 class CRenderCapture;
 
@@ -121,9 +118,6 @@ public:
   void GetVideoRect(CRect &source, CRect &dest, CRect &view);
   float GetAspectRatio() const;
 
-  virtual void RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn);
-  virtual void RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn);
-
   static void SettingOptionsRenderMethodsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
 protected:
@@ -157,10 +151,4 @@ protected:
   // rendering flags
   unsigned m_iFlags;
   ERenderFormat m_format;
-
-  const void* m_RenderUpdateCallBackCtx;
-  RenderUpdateCallBackFn m_RenderUpdateCallBackFn;
-
-  const void* m_RenderFeaturesCallBackCtx;
-  RenderFeaturesCallBackFn m_RenderFeaturesCallBackFn;
 };

@@ -987,18 +987,6 @@ float CRenderManager::GetMaximumFPS()
   return fps;
 }
 
-void CRenderManager::RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn)
-{
-  if (m_pRenderer)
-    m_pRenderer->RegisterRenderUpdateCallBack(ctx, fn);
-}
-
-void CRenderManager::RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn)
-{
-  if (m_pRenderer)
-    m_pRenderer->RegisterRenderFeaturesCallBack(ctx, fn);
-}
-
 void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 {
   CSharedLock lock(m_sharedSection);

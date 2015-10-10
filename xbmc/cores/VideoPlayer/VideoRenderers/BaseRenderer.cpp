@@ -54,27 +54,10 @@ CBaseRenderer::CBaseRenderer()
     m_savedRotatedDestCoords[i].x = 0;
     m_savedRotatedDestCoords[i].y = 0;    
   }
-
-  m_RenderUpdateCallBackFn = NULL;
-  m_RenderUpdateCallBackCtx = NULL;
-  m_RenderFeaturesCallBackFn = NULL;
-  m_RenderFeaturesCallBackCtx = NULL;
 }
 
 CBaseRenderer::~CBaseRenderer()
 {
-}
-
-void CBaseRenderer::RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn)
-{
-  m_RenderUpdateCallBackFn = fn;
-  m_RenderUpdateCallBackCtx = ctx;
-}
-
-void CBaseRenderer::RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn)
-{
-  m_RenderFeaturesCallBackFn = fn;
-  m_RenderFeaturesCallBackCtx = ctx;
 }
 
 float CBaseRenderer::GetAspectRatio() const
