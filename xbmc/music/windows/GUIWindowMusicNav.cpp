@@ -287,6 +287,10 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
       OnRetrieveMusicInfo(items);
   }
 
+  //Navigating music files so default content to "songs" unless in sources folder.
+  //This content allows view type to include media info so that file tag data can be displayed
+  if (!URIUtils::IsSourcesPath(strDirectory))
+    items.SetContent("songs");
   // update our content in the info manager
   if (StringUtils::StartsWithNoCase(strDirectory, "videodb://") || items.IsVideoDb())
   {
