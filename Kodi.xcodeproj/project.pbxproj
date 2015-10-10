@@ -2689,6 +2689,7 @@
 		39C38CC91BBFF1EE000F59F5 /* InputCodingTableKorean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputCodingTableKorean.h; sourceTree = "<group>"; };
 		39C38CDF1BCD600E000F59F5 /* FFmpegImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FFmpegImage.cpp; sourceTree = "<group>"; };
 		39C38CE01BCD600E000F59F5 /* FFmpegImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFmpegImage.h; sourceTree = "<group>"; };
+		39C38CCD1BC93A8A000F59F5 /* Random.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Random.h; sourceTree = "<group>"; };
 		4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowSplash.cpp; sourceTree = "<group>"; };
 		4260D5C61B67BB8F003F6F2D /* GUIWindowSplash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowSplash.h; sourceTree = "<group>"; };
 		42DAC16B1A6E780C0066B4C8 /* IActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IActionListener.h; sourceTree = "<group>"; };
@@ -8748,6 +8749,7 @@
 				F5ED908D15538E2300842059 /* POUtils.h */,
 				399442591A8DD8D0006C39E9 /* ProgressJob.cpp */,
 				3994425A1A8DD8D0006C39E9 /* ProgressJob.h */,
+				39C38CCD1BC93A8A000F59F5 /* Random.h */,
 				18ACF84113596C9B00B67371 /* RecentlyAddedJob.cpp */,
 				18ACF84213596C9B00B67371 /* RecentlyAddedJob.h */,
 				E38E1E730D25F9FD00618676 /* RegExp.cpp */,

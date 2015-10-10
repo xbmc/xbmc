@@ -28,6 +28,7 @@
 #include "input/Key.h"
 #include "TextureCache.h"
 #include "WindowIDs.h"
+#include "utils/Random.h"
 #include "utils/StringUtils.h"
 
 using namespace XFILE;
@@ -249,7 +250,7 @@ void CGUIMultiImage::OnDirectoryLoaded()
 {
   // Randomize or sort our images if necessary
   if (m_randomized)
-    random_shuffle(m_files.begin(), m_files.end());
+    KODI::UTILS::RandomShuffle(m_files.begin(), m_files.end());
   else
     sort(m_files.begin(), m_files.end());
 
