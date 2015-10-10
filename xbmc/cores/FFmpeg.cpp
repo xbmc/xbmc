@@ -87,7 +87,9 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 
   AVClass* avc= ptr ? *(AVClass**)ptr : NULL;
 
-  if(level >= AV_LOG_DEBUG &&
+  if((level == AV_LOG_DEBUG ||
+      level == AV_LOG_WARNING ||
+      level == AV_LOG_VERBOSE) &&
      !g_advancedSettings.CanLogComponent(LOGFFMPEG))
     return;
   else if(g_advancedSettings.m_logLevel <= LOG_LEVEL_NORMAL)
@@ -99,6 +101,8 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
     case AV_LOG_INFO   : type = LOGINFO;    break;
     case AV_LOG_ERROR  : type = LOGERROR;   break;
     case AV_LOG_DEBUG  :
+    case AV_LOG_WARNING:
+    case AV_LOG_VERBOSE:
     default            : type = LOGDEBUG;   break;
   }
 
