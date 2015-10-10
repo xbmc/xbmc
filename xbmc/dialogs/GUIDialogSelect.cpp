@@ -312,15 +312,14 @@ void CGUIDialogSelect::OnInitWindow()
 {
   m_viewControl.SetItems(*m_vecList);
   m_selectedItems.clear();
-  if (!m_selectedItem)
+  for(int i = 0 ; i < m_vecList->Size(); i++)
   {
-    for(int i = 0 ; i < m_vecList->Size(); i++)
+    auto item = m_vecList->Get(i);
+    if (item->IsSelected())
     {
-      if (m_vecList->Get(i)->IsSelected())
-      {
-        m_selectedItem = m_vecList->Get(i);
-        break;
-      }
+      m_selectedItems.push_back(i);
+      if (m_selectedItem == nullptr)
+        m_selectedItem = item;
     }
   }
   m_viewControl.SetCurrentView(m_useDetails ? CONTROL_DETAILS : CONTROL_LIST);
