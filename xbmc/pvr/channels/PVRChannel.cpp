@@ -731,6 +731,12 @@ bool CPVRChannel::IsChanged() const
   return m_bChanged;
 }
 
+void CPVRChannel::Persisted()
+{
+  CSingleLock lock(m_critSection);
+  m_bChanged = false;
+}
+
 int CPVRChannel::UniqueID(void) const
 {
   return m_iUniqueId;
