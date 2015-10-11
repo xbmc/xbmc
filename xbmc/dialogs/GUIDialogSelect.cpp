@@ -55,7 +55,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      CGUIDialog::OnMessage(message);
+      CGUIDialogBoxBase::OnMessage(message);
       m_viewControl.Clear();
 
       m_bButtonEnabled = false;
@@ -88,7 +88,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
     {
       m_bButtonPressed = false;
       m_bConfirmed = false;
-      CGUIDialog::OnMessage(message);
+      CGUIDialogBoxBase::OnMessage(message);
       return true;
     }
     break;
@@ -148,7 +148,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
     break;
   }
 
-  return CGUIDialog::OnMessage(message);
+  return CGUIDialogBoxBase::OnMessage(message);
 }
 
 bool CGUIDialogSelect::OnBack(int actionID)
@@ -156,7 +156,7 @@ bool CGUIDialogSelect::OnBack(int actionID)
   m_selectedItem = nullptr;
   m_selectedItems.clear();
   m_bConfirmed = false;
-  return CGUIDialog::OnBack(actionID);
+  return CGUIDialogBoxBase::OnBack(actionID);
 }
 
 void CGUIDialogSelect::Reset()
@@ -340,7 +340,7 @@ void CGUIDialogSelect::OnInitWindow()
 
 void CGUIDialogSelect::OnWindowUnload()
 {
-  CGUIDialog::OnWindowUnload();
+  CGUIDialogBoxBase::OnWindowUnload();
   m_viewControl.Reset();
 }
 
