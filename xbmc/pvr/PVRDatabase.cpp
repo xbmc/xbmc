@@ -562,7 +562,13 @@ bool CPVRDatabase::PersistChannels(CPVRChannelGroup &group)
   for (PVR_CHANNEL_GROUP_MEMBERS::iterator it = group.m_members.begin(); it != group.m_members.end(); ++it)
   {
     if (it->second.channel->IsChanged() || it->second.channel->IsNew())
-      bReturn &= Persist(*it->second.channel);
+    {
+      if (Persist(*it->second.channel))
+      {
+        it->second.channel->Persisted();
+        bReturn = true;
+      }
+    }
   }
 
   bReturn &= CommitInsertQueries();
