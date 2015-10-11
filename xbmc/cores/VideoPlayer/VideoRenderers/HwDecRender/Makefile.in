@@ -16,7 +16,11 @@ SRCS += RendererIMX.cpp
 SRCS += RendererOMX.cpp
 SRCS += RendererMediaCodec.cpp
 endif
-     
+
+ifeq (@USE_LIBAMCODEC@,1)
+SRCS += RendererAML.cpp
+endif
+
 LIB=HwDecRender.a
 
 include ../../../../../Makefile.include

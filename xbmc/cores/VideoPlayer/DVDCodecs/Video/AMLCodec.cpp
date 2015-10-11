@@ -1619,9 +1619,6 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
 
   Create();
 
-  g_renderManager.RegisterRenderUpdateCallBack((const void*)this, RenderUpdateCallBack);
-  g_renderManager.RegisterRenderFeaturesCallBack((const void*)this, RenderFeaturesCallBack);
-
   m_display_rect = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight);
 
   std::string strScaler;
@@ -1652,9 +1649,6 @@ void CAMLCodec::CloseDecoder()
 {
   CLog::Log(LOGDEBUG, "CAMLCodec::CloseDecoder");
   StopThread();
-
-  g_renderManager.RegisterRenderUpdateCallBack((const void*)NULL, NULL);
-  g_renderManager.RegisterRenderFeaturesCallBack((const void*)NULL, NULL);
 
   // never leave vcodec ff/rw or paused.
   if (m_speed != DVD_PLAYSPEED_NORMAL)
@@ -1723,11 +1717,6 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
 {
   if (!m_opened)
     return VC_BUFFER;
-
-  // grr, m_RenderUpdateCallBackFn in g_renderManager is NULL'ed during
-  // g_renderManager.Configure call by player, which happens after the codec
-  // OpenDecoder call. So we need to restore it but it does not seem to stick :)
-  g_renderManager.RegisterRenderUpdateCallBack((const void*)this, RenderUpdateCallBack);
 
   if (pData)
   {
@@ -1972,7 +1961,8 @@ void CAMLCodec::Process()
 
         double app_pts = GetPlayerPtsSeconds();
         // add in audio delay/display latency contribution
-        double offset  = g_renderManager.GetDisplayLatency() - CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay;
+        // FIXME: Replace Video latency?
+        double offset  = 0 - CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay;
         // correct video pts by user set delay and rendering delay
         app_pts += offset;
 
@@ -2008,12 +1998,7 @@ void CAMLCodec::Process()
 
 double CAMLCodec::GetPlayerPtsSeconds()
 {
-  double clock_pts = 0.0;
-  CDVDClock *playerclock = CDVDClock::GetMasterClock();
-  if (playerclock)
-    clock_pts = playerclock->GetClock() / DVD_TIME_BASE;
-
-  return clock_pts;
+  return CDVDClock::GetAbsoluteClock() / DVD_TIME_BASE;
 }
 
 void CAMLCodec::SetVideoPtsSeconds(const double pts)
@@ -2071,17 +2056,6 @@ void CAMLCodec::SetVideoSaturation(const int saturation)
   SysfsUtils::SetInt("/sys/class/video/saturation", saturation);
 }
 
-void CAMLCodec::GetRenderFeatures(Features &renderFeatures)
-{
-  renderFeatures.push_back(RENDERFEATURE_ZOOM);
-  renderFeatures.push_back(RENDERFEATURE_CONTRAST);
-  renderFeatures.push_back(RENDERFEATURE_BRIGHTNESS);
-  renderFeatures.push_back(RENDERFEATURE_STRETCH);
-  renderFeatures.push_back(RENDERFEATURE_PIXEL_RATIO);
-  renderFeatures.push_back(RENDERFEATURE_ROTATION);
-  return;
-}
-
 void CAMLCodec::SetVideo3dMode(const int mode3d)
 {
   CLog::Log(LOGDEBUG, "CAMLCodec::SetVideo3dMode:mode3d(0x%x)", mode3d);
@@ -2102,13 +2076,6 @@ std::string CAMLCodec::GetStereoMode()
   if(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_StereoInvert)
     stereo_mode = RenderManager::GetStereoModeInvert(stereo_mode);
   return stereo_mode;
-}
-
-void CAMLCodec::RenderFeaturesCallBack(const void *ctx, Features &renderFeatures)
-{
-  CAMLCodec *codec = (CAMLCodec*)ctx;
-  if (codec)
-    codec->GetRenderFeatures(renderFeatures);
 }
 
 void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
@@ -2295,10 +2262,4 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   // we only get called once gui has changed to something
   // that would show video playback, so show it.
   ShowMainVideo(true);
-}
-
-void CAMLCodec::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect)
-{
-  CAMLCodec *codec = (CAMLCodec*)ctx;
-  codec->SetVideoRect(SrcRect, DestRect);
 }

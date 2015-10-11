@@ -42,6 +42,7 @@ enum ERenderFormat {
   RENDER_FMT_MEDIACODECSURFACE,
   RENDER_FMT_IMXMAP,
   RENDER_FMT_MMAL,
+  RENDER_FMT_AML,
 };
 
 struct CRenderInfo
