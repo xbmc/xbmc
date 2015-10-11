@@ -34,10 +34,10 @@ public:
   virtual void Initialize() override;
   virtual void Deinitialize() override;
   virtual bool IsInitialized() const override;
-  virtual bool GetWordListPage(const std::string& strCode, bool isFirstPage);
-  virtual void Process();
+  virtual bool GetWordListPage(const std::string& strCode, bool isFirstPage) override;
+  virtual void Process() override;
 
-  virtual std::vector<std::wstring> GetResponse(int response);
+  virtual std::vector<std::wstring> GetResponse(int response) override;
 private:
   std::wstring UnicodeToWString(const std::string& unicode);
   void HandleResponse(const std::string& strCode, const std::string& response);
