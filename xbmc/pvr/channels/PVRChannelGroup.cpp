@@ -489,11 +489,11 @@ CFileItemPtr CPVRChannelGroup::GetByChannelNumber(unsigned int iChannelNumber, u
   CFileItemPtr retval;
   CSingleLock lock(m_critSection);
 
-  for (PVR_CHANNEL_GROUP_MEMBERS::const_iterator it = m_members.begin(); !retval && it != m_members.end(); ++it)
+  for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::const_iterator it = m_sortedMembers.begin(); !retval && it != m_sortedMembers.end(); ++it)
   {
-    if (it->second.iChannelNumber == iChannelNumber &&
-        (iSubChannelNumber == 0 || iSubChannelNumber == it->second.iSubChannelNumber))
-      retval = CFileItemPtr(new CFileItem(it->second.channel));
+    if ((*it).iChannelNumber == iChannelNumber &&
+        (iSubChannelNumber == 0 || iSubChannelNumber == (*it).iSubChannelNumber))
+      retval = CFileItemPtr(new CFileItem((*it).channel));
   }
 
   if (!retval)
