@@ -1450,6 +1450,7 @@ void CGUIWindowMusicBase::OnRemoveSource(int iItem)
     database.RemoveSongsFromPath(m_vecItems->Get(iItem)->GetPath(), songs, false);
     database.CleanupOrphanedItems();
     g_infoManager.ResetLibraryBools();
+    m_vecItems->RemoveDiscCache(GetID());
   }
 }
 
