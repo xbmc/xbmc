@@ -56,7 +56,6 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       CGUIDialogBoxBase::OnMessage(message);
-      m_viewControl.Clear();
 
       m_bButtonEnabled = false;
       m_useDetails = false;
@@ -335,6 +334,13 @@ void CGUIDialogSelect::OnInitWindow()
 
   // if nothing is selected, focus first item
   m_viewControl.SetSelectedItem(std::max(GetSelectedLabel(), 0));
+}
+
+void CGUIDialogSelect::OnDeinitWindow(int nextWindowID)
+{
+  m_viewControl.Clear();
+
+  CGUIDialogBoxBase::OnDeinitWindow(nextWindowID);
 }
 
 void CGUIDialogSelect::OnWindowUnload()
