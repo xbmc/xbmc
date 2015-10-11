@@ -6,6 +6,7 @@
 		<top>230</top>
 	</coordinates>
 	<include>dialogeffect</include>
+	<depth>DepthDialog+</depth>
 	<controls>
 		<include name="DialogBackgroundCommons">
 			<param name="DialogBackgroundWidth" value="610" />

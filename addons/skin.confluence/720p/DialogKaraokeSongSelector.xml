@@ -4,6 +4,7 @@
 	<animation effect="slide" start="0,0" end="0,-40" delay="300" time="75">WindowClose</animation>
 	<controls>
 		<control type="group">
+			<depth>DepthDialog-</depth>
 			<left>100</left>
 			<top>0</top>
 			<control type="image">

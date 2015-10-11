@@ -16,38 +16,18 @@
 			<!-- view id = 506 -->
 			<include>MusicInfoListView</include>
 		</control>
-		<include>CommonPageCount</include>
-		<include>CommonNowPlaying</include>
+		<control type="group">
+			<depth>DepthFooter</depth>
+			<include>CommonPageCount</include>
+			<include>CommonNowPlaying</include>
+		</control>
 		<include>MainWindowMouseButtons</include>
 		<include>BehindDialogFadeOut</include>
 		<include>ScrollOffsetLabel</include>
-		<control type="image">
-			<description>Section header image</description>
-			<left>20</left>
-			<top>3</top>
-			<width>35</width>
-			<height>35</height>
-			<aspectratio>keep</aspectratio>
-			<texture>icon_music.png</texture>
-		</control>
-		<control type="grouplist">
-			<left>65</left>
-			<top>5</top>
-			<width>1000</width>
-			<height>30</height>
-			<orientation>horizontal</orientation>
-			<align>left</align>
-			<itemgap>5</itemgap>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<label>$LOCALIZE[10517]</label>
-			</control>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<label>[COLOR=blue] - [/COLOR]$INFO[Container.FolderName]</label>
-				<visible>!IsEmpty(Container.FolderName)</visible>
-			</control>
-		</control>
+		<include name="CommonWindowHeader">
+			<param name="Icon" value="icon_music" />
+			<param name="Label" value="$LOCALIZE[10517]" />
+		</include>
 		<control type="group">
 			<left>-250</left>
 			<include>SideBladeLeft</include>
@@ -113,6 +93,5 @@
 				<include>CommonNowPlaying_Controls</include>
 			</control>
 		</control>
-		<include>Clock</include>
 	</controls>
 </window>
