@@ -1734,13 +1734,12 @@ bool CVideoPlayer::GetCachingTimes(double& level, double& delay, double& offset)
 
 void CVideoPlayer::HandlePlaySpeed()
 {
-  ECacheState caching = m_caching;
   bool isInMenu = IsInMenu();
 
-  if (isInMenu && caching != CACHESTATE_DONE)
-    caching = CACHESTATE_DONE;
+  if (isInMenu && m_caching != CACHESTATE_DONE)
+    SetCaching(CACHESTATE_DONE);
 
-  if (caching == CACHESTATE_FULL)
+  if (m_caching == CACHESTATE_FULL)
   {
     double level, delay, offset;
     if (GetCachingTimes(level, delay, offset))
@@ -1748,26 +1747,26 @@ void CVideoPlayer::HandlePlaySpeed()
       if (level < 0.0)
       {
         CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(21454), g_localizeStrings.Get(21455));
-        caching = CACHESTATE_INIT;
+        SetCaching(CACHESTATE_INIT);
       }
       if (level >= 1.0)
-        caching = CACHESTATE_INIT;
+        SetCaching(CACHESTATE_INIT);
     }
     else
     {
       if ((!m_VideoPlayerAudio->AcceptsData() && m_CurrentAudio.id >= 0) ||
           (!m_VideoPlayerVideo->AcceptsData() && m_CurrentVideo.id >= 0))
-        caching = CACHESTATE_INIT;
+        SetCaching(CACHESTATE_INIT);
     }
   }
 
-  if (caching == CACHESTATE_INIT)
+  if (m_caching == CACHESTATE_INIT)
   {
     // if all enabled streams have been inited we are done
     if ((m_CurrentVideo.id >= 0 || m_CurrentAudio.id >= 0) &&
         (m_CurrentVideo.id < 0 || m_CurrentVideo.syncState != IDVDStreamPlayer::SYNC_STARTING) &&
         (m_CurrentAudio.id < 0 || m_CurrentAudio.syncState != IDVDStreamPlayer::SYNC_STARTING))
-      caching = CACHESTATE_PLAY;
+      SetCaching(CACHESTATE_PLAY);
 
     // handle situation that we get no data on one stream
     if (m_CurrentAudio.id >= 0 && m_CurrentVideo.id >= 0)
@@ -1775,20 +1774,20 @@ void CVideoPlayer::HandlePlaySpeed()
       if ((!m_VideoPlayerAudio->AcceptsData() && m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_STARTING) ||
           (!m_VideoPlayerVideo->AcceptsData() && m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_STARTING))
       {
-        caching = CACHESTATE_DONE;
+        SetCaching(CACHESTATE_DONE);
       }
     }
   }
 
-  if (caching == CACHESTATE_PLAY)
+  if (m_caching == CACHESTATE_PLAY)
   {
     // if all enabled streams have started playing we are done
     if ((m_CurrentVideo.id < 0 || !m_VideoPlayerVideo->IsStalled()) &&
         (m_CurrentAudio.id < 0 || !m_VideoPlayerAudio->IsStalled()))
-      caching = CACHESTATE_DONE;
+      SetCaching(CACHESTATE_DONE);
   }
 
-  if (caching == CACHESTATE_DONE)
+  if (m_caching == CACHESTATE_DONE)
   {
     if (m_playSpeed == DVD_PLAYSPEED_NORMAL && !isInMenu && m_syncTimer.IsTimePast())
     {
@@ -1811,7 +1810,7 @@ void CVideoPlayer::HandlePlaySpeed()
           if (m_VideoPlayerAudio->GetLevel() <= 50 &&
               m_VideoPlayerVideo->GetLevel() <= 50)
           {
-            caching = CACHESTATE_FULL;
+            SetCaching(CACHESTATE_FULL);
           }
           else if (m_CurrentAudio.id >= 0 && m_CurrentAudio.inited &&
                    m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_INSYNC &&
@@ -1845,9 +1844,6 @@ void CVideoPlayer::HandlePlaySpeed()
       }
     }
   }
-
-  if (m_caching != caching)
-    SetCaching(caching);
 
   // sync streams to clock
   if ((m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC) ||
@@ -2736,8 +2732,8 @@ void CVideoPlayer::SetCaching(ECacheState state)
     return;
 
   CLog::Log(LOGDEBUG, "CVideoPlayer::SetCaching - caching state %d", state);
-  if(state == CACHESTATE_FULL ||
-     state == CACHESTATE_INIT)
+  if (state == CACHESTATE_FULL ||
+      state == CACHESTATE_INIT)
   {
     m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
 
@@ -2751,8 +2747,8 @@ void CVideoPlayer::SetCaching(ECacheState state)
       m_pInputStream->ResetScanTimeout((unsigned int) CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPLAYBACK_SCANTIME) * 1000);
   }
 
-  if(state == CACHESTATE_PLAY
-  ||(state == CACHESTATE_DONE && m_caching != CACHESTATE_PLAY))
+  if (state == CACHESTATE_PLAY ||
+     (state == CACHESTATE_DONE && m_caching != CACHESTATE_PLAY))
   {
     m_clock.SetSpeed(m_playSpeed);
     m_VideoPlayerAudio->SetSpeed(m_playSpeed);
