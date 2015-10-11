@@ -1001,7 +1001,9 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     if (button == CONTEXT_BUTTON_REMOVE_SOURCE && !item->IsPlugin()
         && !item->IsLiveTV() &&!item->IsRSS() && !URIUtils::IsUPnP(item->GetPath()))
     {
-      OnUnAssignContent(item->GetPath(), 20375, 20340);
+      // if the source has been properly removed, remove the cached source list because the list has changed
+      if (OnUnAssignContent(item->GetPath(), 20375, 20340))
+        m_vecItems->RemoveDiscCache(GetID());
     }
     Refresh();
     return true;
