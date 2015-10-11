@@ -184,12 +184,13 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
 
   m_videobuffer.dts = DVD_NOPTS_VALUE;
   m_videobuffer.pts = DVD_NOPTS_VALUE;
-  m_videobuffer.format = RENDER_FMT_BYPASS;
+  m_videobuffer.format = RENDER_FMT_AML;
   m_videobuffer.color_range  = 0;
   m_videobuffer.color_matrix = 4;
   m_videobuffer.iFlags  = DVP_FLAG_ALLOCATED;
   m_videobuffer.iWidth  = m_hints.width;
   m_videobuffer.iHeight = m_hints.height;
+  m_videobuffer.amlcodec = m_Codec;
 
   m_videobuffer.iDisplayWidth  = m_videobuffer.iWidth;
   m_videobuffer.iDisplayHeight = m_videobuffer.iHeight;
