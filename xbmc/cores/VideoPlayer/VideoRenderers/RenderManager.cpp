@@ -54,6 +54,9 @@
 #if defined(HAS_IMXVPU)
 #include "HwDecRender/RendererIMX.h"
 #endif
+#if defined(HAS_LIBAMCODEC)
+#include "HwDecRender/RendererAML.h"
+#endif
 #if defined(HAVE_LIBOPENMAX)
 #include "HWDecRender/RendererOMX.h"
 #endif
@@ -137,6 +140,7 @@ static std::string GetRenderFormatName(ERenderFormat format)
     case RENDER_FMT_MEDIACODEC:return "MEDIACODEC";
     case RENDER_FMT_IMXMAP:    return "IMXMAP";
     case RENDER_FMT_MMAL:      return "MMAL";
+    case RENDER_FMT_AML:       return "AMLCODEC";
     case RENDER_FMT_NONE:      return "NONE";
   }
   return "UNKNOWN";
@@ -692,6 +696,12 @@ void CRenderManager::CreateRenderer()
     {
 #if defined(HAS_DX)
       m_pRenderer = new CWinRenderer();
+#endif
+    }
+    else if (m_format == RENDER_FMT_AML)
+    {
+#if defined(HAS_LIBAMCODEC)
+      m_pRenderer = new CRendererAML;
 #endif
     }
     else if (m_format != RENDER_FMT_NONE)
