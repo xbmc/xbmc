@@ -3534,15 +3534,6 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
   PlayBackRet iResult;
   if (m_pPlayer->HasPlayer())
   {
-    /* When playing video pause any low priority jobs, they will be unpaused  when playback stops.
-     * This should speed up player startup for files on internet filesystems (eg. webdav) and
-     * increase performance on low powered systems (Atom/ARM).
-     */
-    if (item.IsVideo())
-    {
-      CJobManager::GetInstance().PauseJobs();
-    }
-
     // don't hold graphicscontext here since player
     // may wait on another thread, that requires gfx
     CSingleExit ex(g_graphicsContext);
@@ -4611,7 +4602,7 @@ void CApplication::ProcessSlow()
 
   // Temporarely pause pausable jobs when viewing video/picture
   int currentWindow = g_windowManager.GetActiveWindow();
-  if (CurrentFileItem().IsVideo() || CurrentFileItem().IsPicture() || currentWindow == WINDOW_FULLSCREEN_VIDEO || currentWindow == WINDOW_SLIDESHOW)
+  if (m_bPlaybackStarting || currentWindow == WINDOW_FULLSCREEN_VIDEO || currentWindow == WINDOW_SLIDESHOW)
   {
     CJobManager::GetInstance().PauseJobs();
   }
