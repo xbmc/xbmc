@@ -335,7 +335,7 @@ static void OutdatedAddons(const CURL& path, CFileItemList &items)
 
   if (items.Size() > 1)
   {
-    CFileItemPtr item(new CFileItem("addons://update_all/", true));
+    CFileItemPtr item(new CFileItem("addons://update_all/", false));
     item->SetLabel(g_localizeStrings.Get(24122));
     item->SetSpecialSort(SortSpecialOnTop);
     items.Add(item);
