@@ -244,11 +244,8 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
   }
   if (item->GetPath() == "addons://update_all/")
   {
-    // fire off a threaded update of all addons
     UpdateAddons updater;
-    if (CGUIDialogBusy::Wait(&updater))
-      return Update("addons://downloading/");
-    return true;
+    return CGUIDialogBusy::Wait(&updater);
   }
   if (!item->m_bIsFolder)
   {
