@@ -108,7 +108,7 @@ if(PACKAGE_ZIP)
   endif()
   list(APPEND BUILD_ARGS -DPACKAGE_DIR=${PACKAGE_DIR})
 
-  MESSAGE(STATUS "ZIP packaging enabled (destination: ${PACKAGE_DIR}})")
+  MESSAGE(STATUS "ZIP packaging enabled (destination: ${PACKAGE_DIR})")
 endif()
 
 if(CMAKE_TOOLCHAIN_FILE)
