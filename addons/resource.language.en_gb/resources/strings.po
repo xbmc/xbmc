@@ -9526,13 +9526,7 @@ msgctxt "#19254"
 msgid "Guide update failed for channel"
 msgstr ""
 
-msgctxt "#19255"
-msgid "Start recording"
-msgstr ""
-
-msgctxt "#19256"
-msgid "Stop recording"
-msgstr ""
+#empty strings from id 19255 to 19256
 
 msgctxt "#19257"
 msgid "Lock channel"

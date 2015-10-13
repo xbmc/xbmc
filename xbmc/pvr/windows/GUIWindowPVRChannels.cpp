@@ -82,7 +82,7 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
 
   buttons.Add(CONTEXT_BUTTON_INFO, 19047);                                          /* channel info */
   buttons.Add(CONTEXT_BUTTON_FIND, 19003);                                          /* find similar program */
-  buttons.Add(CONTEXT_BUTTON_RECORD_ITEM, channel->IsRecording() ? 19256 : 19255);  /* start/stop recording on channel */
+  buttons.Add(CONTEXT_BUTTON_RECORD_ITEM, !channel->IsRecording() ? 264 : 19059);   /* record / stop recording */
 
   if (g_PVRClients->HasMenuHooks(pItem->GetPVRChannelInfoTag()->ClientID(), PVR_MENUHOOK_CHANNEL))
     buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);                                  /* PVR client specific action */
