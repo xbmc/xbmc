@@ -245,10 +245,7 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
   if (!match || !match->HasPVRTimerInfoTag())
   {
     /* no timer present on this tag */
-    if (tag->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
-      SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 264);    // Record
-    else
-      SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 19061);  // Add timer
+    SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 264);      // Record
   }
   else
   {
