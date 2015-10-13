@@ -39,6 +39,8 @@
 #include "video/windows/GUIWindowVideoBase.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecording.h"
+#include "music/tags/MusicInfoTag.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 #ifdef HAS_DVD_DRIVE
 #include "Autorun.h"
@@ -375,6 +377,7 @@ static int PlayMedia(const std::vector<std::string>& params)
   // ask if we need to check guisettings to resume
   bool askToResume = true;
   int playOffset = 0;
+  bool noWatched = false;
   for (unsigned int i = 1 ; i < params.size() ; i++)
   {
     if (StringUtils::EqualsNoCase(params[i], "isdir"))
@@ -396,6 +399,8 @@ static int PlayMedia(const std::vector<std::string>& params)
       playOffset = atoi(params[i].substr(11).c_str()) - 1;
       item.SetProperty("playlist_starting_track", playOffset);
     }
+    else if (StringUtils::EqualsNoCase(params[i], "nowatched"))
+      noWatched = true;
   }
 
   if (!item.m_bIsFolder && item.IsPlugin())
@@ -430,19 +435,27 @@ static int PlayMedia(const std::vector<std::string>& params)
       items.Sort(SortByLabel, SortOrderAscending);
 
     int playlist = containsVideo? PLAYLIST_VIDEO : PLAYLIST_MUSIC;;
-    if (containsMusic && containsVideo) //mixed content found in the folder
+    if ((containsMusic && containsVideo) || noWatched) // only needed on mixed content or unwanted watched/played content
     {
-      for (int i = items.Size() - 1; i >= 0; i--) //remove music entries
+      for (int i = items.Size() - 1; i >= 0; i--)
       {
-        if (!items[i]->IsVideo())
+        CFileItemPtr item = items[i];
+        if ((containsMusic && containsVideo && !item->IsVideo()) ||                                         // remove music, if mixed content
+            (containsVideo && noWatched && item->IsVideo() && item->GetVideoInfoTag()->m_playCount > 0) ||  // remove watched videos
+            (containsMusic && noWatched && item->IsAudio() && item->GetMusicInfoTag()->GetPlayCount() > 0)) // remove played music
           items.Remove(i);
       }
     }
 
-    g_playlistPlayer.ClearPlaylist(playlist);
-    g_playlistPlayer.Add(playlist, items);
-    g_playlistPlayer.SetCurrentPlaylist(playlist);
-    g_playlistPlayer.Play(playOffset);
+    if (items.IsEmpty())
+      CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(16003), g_localizeStrings.Get(2080));
+    else
+    {
+      g_playlistPlayer.ClearPlaylist(playlist);
+      g_playlistPlayer.Add(playlist, items);
+      g_playlistPlayer.SetCurrentPlaylist(playlist);
+      g_playlistPlayer.Play(playOffset);
+    }
   }
   else
   {
