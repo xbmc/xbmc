@@ -21,6 +21,7 @@
 #include "imagefactory.h"
 #include "guilib/JpegIO.h"
 #include "guilib/cximage.h"
+#include "guilib/FFmpegImage.h"
 #include "utils/Mime.h"
 #if defined(HAS_GIFLIB)
 #include "guilib/Gif.h"
@@ -48,6 +49,9 @@ IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
   else if (strMimeType == "image/gif")
     return new Gif();
 #endif//HAS_GIFLIB
+
+  if (strMimeType == "image/webp")
+    return new CFFmpegImage();
 
   return new CXImage(strMimeType);
 }
