@@ -434,6 +434,8 @@
     <ClCompile Include="..\..\xbmc\filesystem\ZipFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ZipManager.cpp" />
     <ClCompile Include="..\..\xbmc\GUIInfoManager.cpp" />
+    <ClCompile Include="..\..\xbmc\guiinfo\FileItemInfoProvider.cpp" />
+    <ClCompile Include="..\..\xbmc\guiinfo\RadioRDSInfoProvider.cpp" />
     <ClCompile Include="..\..\xbmc\GUILargeTextureManager.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\cximage.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\D3DResource.cpp" />
@@ -984,7 +986,9 @@
     <ClInclude Include="..\..\xbmc\filesystem\XbtDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\XbtFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\XbtManager.h" />
+    <ClInclude Include="..\..\xbmc\guiinfo\FileItemInfoProvider.h" />
     <ClInclude Include="..\..\xbmc\guiinfo\GUIInfoLabels.h" />
+    <ClInclude Include="..\..\xbmc\guiinfo\RadioRDSInfoProvider.h" />
     <ClInclude Include="..\..\xbmc\guilib\cximage.h" />
     <ClInclude Include="..\..\xbmc\guilib\Gif.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboard.h" />
