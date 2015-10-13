@@ -82,6 +82,19 @@ macro (build_addon target prefix libs)
     # Pack files together to create an archive
     INSTALL(DIRECTORY ${target} DESTINATION ./ COMPONENT ${target}-${${prefix}_VERSION} PATTERN "addon.xml.in" EXCLUDE)
     IF(WIN32)
+      if(NOT CPACK_PACKAGE_DIRECTORY)
+        # determine the temporary path
+        file(TO_CMAKE_PATH "$ENV{TEMP}" WIN32_TEMP_PATH)
+        string(LENGTH "${WIN32_TEMP_PATH}" WIN32_TEMP_PATH_LENGTH)
+        string(LENGTH "${PROJECT_BINARY_DIR}" PROJECT_BINARY_DIR_LENGTH)
+
+        # check if the temporary path is shorter than the default packaging directory path
+        if(WIN32_TEMP_PATH_LENGTH GREATER 0 AND WIN32_TEMP_PATH_LENGTH LESS PROJECT_BINARY_DIR_LENGTH)
+          # set the directory used by CPack for packaging to the temp directory
+          set(CPACK_PACKAGE_DIRECTORY ${WIN32_TEMP_PATH})
+        endif()
+      endif()
+
       # in case of a VC++ project the installation location contains a $(Configuration) VS variable
       # we replace it with ${CMAKE_BUILD_TYPE} (which doesn't cover the case when the build configuration
       # is changed within Visual Studio)
