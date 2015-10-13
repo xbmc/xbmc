@@ -508,7 +508,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
       {
         m_dlgProgress->SetHeading(CVariant{185});
         m_dlgProgress->SetLine(0, CVariant{pItem->GetMusicInfoTag()->GetAlbum()});
-        m_dlgProgress->SetLine(1, CVariant{StringUtils::Join(pItem->GetMusicInfoTag()->GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator)});
+        m_dlgProgress->SetLine(1, CVariant{pItem->GetMusicInfoTag()->GetAlbumArtistString()});
         m_dlgProgress->SetLine(2, CVariant{""});
         m_dlgProgress->Open();
       }

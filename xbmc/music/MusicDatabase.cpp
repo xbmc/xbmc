@@ -781,7 +781,7 @@ int CMusicDatabase::UpdateSong(int idSong, const CSong &song)
                     song.strComment,
                     song.strMood,
                     song.strThumb,
-                    StringUtils::Join(song.GetArtist(), g_advancedSettings.m_musicItemSeparator), // NOTE: Don't call this function internally!!!
+                    song.GetArtistString(), // NOTE: Don't call this function internally!!!
                     song.genre,
                     song.iTrack,
                     song.iDuration,
@@ -5381,7 +5381,7 @@ void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album
   item.SetProperty("album_style_array", album.styles);
   item.SetProperty("album_type", album.strType);
   item.SetProperty("album_label", album.strLabel);
-  item.SetProperty("album_artist", StringUtils::Join(album.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator));
+  item.SetProperty("album_artist", album.GetAlbumArtistString());
   item.SetProperty("album_artist_array", album.GetAlbumArtist());
   item.SetProperty("album_genre", StringUtils::Join(album.genre, g_advancedSettings.m_musicItemSeparator));
   item.SetProperty("album_genre_array", album.genre);

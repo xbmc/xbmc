@@ -213,9 +213,14 @@ const std::vector<std::string>& CMusicInfoTag::GetAlbumArtist() const
   return m_albumArtist;
 }
 
-const std::string& CMusicInfoTag::GetAlbumArtistDesc() const
+const std::string CMusicInfoTag::GetAlbumArtistString() const
 {
+  if (!m_strAlbumArtistDesc.empty())
     return m_strAlbumArtistDesc;
+  if (!m_albumArtist.empty())
+    return StringUtils::Join(m_albumArtist, g_advancedSettings.m_musicItemSeparator);
+  else
+    return std::string();
 }
 
 
@@ -366,16 +371,21 @@ void CMusicInfoTag::SetAlbumArtist(const std::string& strAlbumArtist)
 {
   if (!strAlbumArtist.empty())
   {
-    SetAlbumArtist(StringUtils::Split(strAlbumArtist, g_advancedSettings.m_musicItemSeparator));
     SetAlbumArtistDesc(strAlbumArtist);
+    SetAlbumArtist(StringUtils::Split(strAlbumArtist, g_advancedSettings.m_musicItemSeparator));
   }
   else
+  {
+    m_strAlbumArtistDesc.clear();
     m_albumArtist.clear();
+  }
 }
 
 void CMusicInfoTag::SetAlbumArtist(const std::vector<std::string>& albumArtists)
 {
   m_albumArtist = albumArtists;
+  if (m_strAlbumArtistDesc.empty()) 
+    SetAlbumArtistDesc(StringUtils::Join(albumArtists, g_advancedSettings.m_musicItemSeparator));
 }
 
 void CMusicInfoTag::SetAlbumArtistDesc(const std::string& strAlbumArtistDesc)
@@ -684,14 +694,8 @@ void CMusicInfoTag::Serialize(CVariant& value) const
     value["artist"] = m_artist[0];
   else
     value["artist"] = m_artist;
-  if (!m_strArtistDesc.empty())
-    value["displayartist"] = m_strArtistDesc;
-  else
-    value["displayartist"] = StringUtils::Join(m_artist, g_advancedSettings.m_musicItemSeparator);
-  if (!m_strAlbumArtistDesc.empty())
-    value["displayalbumartist"] = m_strAlbumArtistDesc;
-  else
-    value["displayalbumartist"] = StringUtils::Join(m_albumArtist, g_advancedSettings.m_musicItemSeparator);
+  value["displayartist"] = GetArtistString();
+  value["displayalbumartist"] = GetAlbumArtistString();
   value["album"] = m_strAlbum;
   value["albumartist"] = m_albumArtist;
   value["genre"] = m_genre;

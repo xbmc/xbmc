@@ -1042,7 +1042,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
   if (m_handle)
   {
     m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20321).c_str(), info->Name().c_str()));
-    m_handle->SetText(StringUtils::Join(album.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator) + " - " + album.strAlbum);
+    m_handle->SetText(album.GetAlbumArtistString() + " - " + album.strAlbum);
   }
 
   // clear our scraper cache
@@ -1103,7 +1103,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
 
   if (!scraper.GetAlbumCount())
   {
-    scraper.FindAlbumInfo(album.strAlbum, StringUtils::Join(album.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator));
+    scraper.FindAlbumInfo(album.strAlbum, album.GetAlbumArtistString());
 
     while (!scraper.Completed())
     {
@@ -1142,8 +1142,8 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
           double relevance = info.GetRelevance();
           if (relevance < 0)
             relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album.strAlbum, 
-                        StringUtils::Join(info.GetAlbum().GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator),
-                        StringUtils::Join(album.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator));
+                        info.GetAlbum().GetAlbumArtistString(),
+                        album.GetAlbumArtistString());
 
           // if we're doing auto-selection (ie querying all albums at once, then allow 95->100% for perfect matches)
           // otherwise, perfect matches only
@@ -1182,7 +1182,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
             if (strNewAlbum == "")
               return INFO_CANCELLED;
 
-            std::string strNewArtist = StringUtils::Join(album.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator);
+            std::string strNewArtist = album.GetAlbumArtistString();
             if (!CGUIKeyboardFactory::ShowAndGetInput(strNewArtist, CVariant{g_localizeStrings.Get(16025)}, false))
               return INFO_CANCELLED;
 
