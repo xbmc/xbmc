@@ -84,8 +84,8 @@ CAlbum::CAlbum(const CFileItem& item)
         }
       }
 
-      if (artistName.empty() && tag.GetMusicBrainzAlbumArtistID().size() == tag.GetArtist().size())
-        artistName = tag.GetArtist()[i];
+      if (artistName.empty() && tag.GetMusicBrainzAlbumArtistID().size() == tag.GetAlbumArtist().size())
+        artistName = tag.GetAlbumArtist()[i];
 
       if (artistName.empty())
         artistName = artistId;
