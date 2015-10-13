@@ -219,9 +219,9 @@ std::string CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTa
   // replace %A with album artist name
   if (strAlbumDir.find("%A") != std::string::npos)
   {
-    std::string strAlbumArtist = StringUtils::Join(infoTag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator);
+    std::string strAlbumArtist = infoTag.GetAlbumArtistString();
     if (strAlbumArtist.empty())
-      strAlbumArtist = StringUtils::Join(infoTag.GetArtist(), g_advancedSettings.m_musicItemSeparator);
+      strAlbumArtist = infoTag.GetArtistString();
     if (strAlbumArtist.empty())
       strAlbumArtist = "Unknown Artist";
     else

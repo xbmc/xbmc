@@ -90,7 +90,7 @@ bool CCDDARipJob::DoWork()
 
   int iTrack = atoi(m_input.substr(13, m_input.size() - 13 - 5).c_str());
   std::string strLine0 = StringUtils::Format("%02i. %s - %s", iTrack,
-                                            StringUtils::Join(m_tag.GetArtist(), g_advancedSettings.m_musicItemSeparator).c_str(),
+                                            m_tag.GetArtistString().c_str(),
                                             m_tag.GetTitle().c_str());
   handle->SetText(strLine0);
 
