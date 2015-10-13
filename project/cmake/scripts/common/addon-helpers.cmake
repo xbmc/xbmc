@@ -15,9 +15,8 @@ macro(add_cpack_workaround target version ext)
   endif()
 
   add_custom_command(TARGET addon-package PRE_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E rename ${CMAKE_BINARY_DIR}/addon-${target}-${version}.${ext} ${CMAKE_BINARY_DIR}/${target}-${version}.${ext}
                      COMMAND ${CMAKE_COMMAND} -E make_directory ${PACKAGE_DIR}
-                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${target}-${version}.${ext} ${PACKAGE_DIR})
+                     COMMAND ${CMAKE_COMMAND} -E copy ${CPACK_PACKAGE_DIRECTORY}/addon-${target}-${version}.${ext} ${PACKAGE_DIR}/${target}-${version}.${ext})
 endmacro()
 
 # Grab the version from a given add-on's addon.xml
