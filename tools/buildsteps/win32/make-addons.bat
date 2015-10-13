@@ -29,7 +29,12 @@ call "%VS120COMNTOOLS%..\..\VC\bin\vcvars32.bat"
 SET WORKDIR=%WORKSPACE%
 
 IF "%WORKDIR%" == "" (
-  SET WORKDIR=%CD%\..\..\..
+  rem resolve the relative path
+  SETLOCAL EnableDelayedExpansion
+  PUSHD ..\..\..
+  SET WORKDIR=!CD!
+  POPD
+  SETLOCAL DisableDelayedExpansion
 )
 
 rem setup some paths that we need later
