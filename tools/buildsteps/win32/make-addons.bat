@@ -58,11 +58,13 @@ DEL /F %ADDONS_FAILURE_FILE% > NUL 2>&1
 IF %clean% == true (
   rem remove the build directory if it exists
   IF EXIST "%ADDONS_BUILD_PATH%" (
+    ECHO Cleaning build directory...
     RMDIR "%ADDONS_BUILD_PATH%" /S /Q > NUL
   )
 
   rem remove the build directory if it exists
   IF EXIST "%ADDON_DEPENDS_PATH%" (
+    ECHO Cleaning dependencies...
     RMDIR "%ADDON_DEPENDS_PATH%" /S /Q > NUL
   )
 
