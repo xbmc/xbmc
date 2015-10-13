@@ -4709,7 +4709,7 @@ std::string CMusicDatabase::GetItemById(const std::string &itemType, int id)
   return "";
 }
 
-void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, bool images, bool overwrite)
+void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFile, bool images, bool overwrite)
 {
   int iFailCount = 0;
   CGUIDialogProgress *progress=NULL;
@@ -4752,7 +4752,7 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
     TiXmlDeclaration decl("1.0", "UTF-8", "yes");
     xmlDoc.InsertEndChild(decl);
     TiXmlNode *pMain = NULL;
-    if (singleFiles)
+    if (!singleFile)
       pMain = &xmlDoc;
     else
     {
@@ -4766,7 +4766,7 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
       std::string strPath;
       GetAlbumPath(*albumId, strPath);
       album.Save(pMain, "album", strPath);
-      if (singleFiles)
+      if (!singleFile)
       {
         if (!CDirectory::Exists(strPath))
           CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, strPath.c_str());
@@ -4833,14 +4833,14 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
       artist.Save(pMain, "artist", strPath);
 
       std::map<std::string, std::string> artwork;
-      if (GetArtForItem(artist.idArtist, MediaTypeArtist, artwork) && !singleFiles)
+      if (GetArtForItem(artist.idArtist, MediaTypeArtist, artwork) && singleFile)
       { // append to the XML
         TiXmlElement additionalNode("art");
         for (std::map<std::string, std::string>::const_iterator i = artwork.begin(); i != artwork.end(); ++i)
           XMLUtils::SetString(&additionalNode, i->first.c_str(), i->second);
         pMain->LastChild()->InsertEndChild(additionalNode);
       }
-      if (singleFiles)
+      if (!singleFile)
       {
         if (!CDirectory::Exists(strPath))
           CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, strPath.c_str());
@@ -4890,7 +4890,7 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
     xmlDoc.SaveFile(xmlFile);
 
     CVariant data;
-    if (!singleFiles)
+    if (singleFile)
     {
       data["file"] = xmlFile;
       if (iFailCount > 0)
