@@ -34,6 +34,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "filesystem/Directory.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 
 using namespace MUSIC_INFO;
 using namespace JSONRPC;
@@ -460,8 +461,14 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const std::string &method, ITransp
 
   if (ParameterNotNull(parameterObject, "title"))
     album.strAlbum = parameterObject["title"].asString();
+  // Artist names, along with MusicbrainzAlbumArtistID needs to update artist credits
+  // As temp fix just set the album artist description string
   if (ParameterNotNull(parameterObject, "artist"))
-    CopyStringArray(parameterObject["artist"], album.artist);
+  {
+    std::vector<std::string> artist;
+    CopyStringArray(parameterObject["artist"], artist);
+    album.strArtistDesc = StringUtils::Join(artist, g_advancedSettings.m_musicItemSeparator);
+  }
   if (ParameterNotNull(parameterObject, "description"))
     album.strReview = parameterObject["description"].asString();
   if (ParameterNotNull(parameterObject, "genre"))
@@ -502,16 +509,25 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const std::string &method, ITranspo
 
   if (ParameterNotNull(parameterObject, "title"))
     song.strTitle = parameterObject["title"].asString();
+  // Artist names, along with MusicbrainzArtistID needs to update artist credits
+  // As temp fix just set the artist description string
   if (ParameterNotNull(parameterObject, "artist"))
-    CopyStringArray(parameterObject["artist"], song.artist);
-  if (ParameterNotNull(parameterObject, "albumartist"))
-    CopyStringArray(parameterObject["albumartist"], song.albumArtist);
+  {
+    std::vector<std::string> artist;
+    CopyStringArray(parameterObject["artist"], artist);
+    song.strArtistDesc = StringUtils::Join(artist, g_advancedSettings.m_musicItemSeparator);
+  }
+  //Albumartist not part of song, belongs to album so not changed as a song detail??
+  //if (ParameterNotNull(parameterObject, "albumartist"))
+  //  CopyStringArray(parameterObject["albumartist"], song.albumArtist);
+  // song_genre table needs updating too when genre string changes. This needs fixing too.
   if (ParameterNotNull(parameterObject, "genre"))
     CopyStringArray(parameterObject["genre"], song.genre);
   if (ParameterNotNull(parameterObject, "year"))
     song.iYear = (int)parameterObject["year"].asInteger();
   if (ParameterNotNull(parameterObject, "rating"))
     song.rating = '0' + (char)parameterObject["rating"].asInteger();
+  //Album title is not part of song, it belongs to album so not changed as a song detail??
   if (ParameterNotNull(parameterObject, "album"))
     song.strAlbum = parameterObject["album"].asString();
   if (ParameterNotNull(parameterObject, "track"))
@@ -529,6 +545,9 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const std::string &method, ITranspo
   if (ParameterNotNull(parameterObject, "lastplayed"))
     song.lastPlayed.SetFromDBDateTime(parameterObject["lastplayed"].asString());
 
+  // This overlay of UpdateSong needs to be deprecated.
+  // Also need to update artist credits and propagate changes
+  // to song_artist and song_genre tables.
   if (musicdatabase.UpdateSong(id, song) <= 0)
     return InternalError;
 

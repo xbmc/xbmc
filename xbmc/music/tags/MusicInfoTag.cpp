@@ -188,9 +188,14 @@ const std::vector<std::string>& CMusicInfoTag::GetArtist() const
   return m_artist;
 }
 
-const std::string& CMusicInfoTag::GetArtistDesc() const
+const std::string CMusicInfoTag::GetArtistString() const
 {
-  return m_strArtistDesc;
+  if (!m_strArtistDesc.empty())
+    return m_strArtistDesc;
+  else if (!m_artist.empty())
+    return StringUtils::Join(m_artist, g_advancedSettings.m_musicItemSeparator);
+  else
+    return std::string();
 }
 
 const std::string& CMusicInfoTag::GetAlbum() const
@@ -208,9 +213,14 @@ const std::vector<std::string>& CMusicInfoTag::GetAlbumArtist() const
   return m_albumArtist;
 }
 
-const std::string& CMusicInfoTag::GetAlbumArtistDesc() const
+const std::string CMusicInfoTag::GetAlbumArtistString() const
 {
+  if (!m_strAlbumArtistDesc.empty())
     return m_strAlbumArtistDesc;
+  if (!m_albumArtist.empty())
+    return StringUtils::Join(m_albumArtist, g_advancedSettings.m_musicItemSeparator);
+  else
+    return std::string();
 }
 
 
@@ -323,16 +333,23 @@ void CMusicInfoTag::SetArtist(const std::string& strArtist)
 {
   if (!strArtist.empty())
   {
-    SetArtist(StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator));
     SetArtistDesc(strArtist);
+    SetArtist(StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator));
   }
   else
+  {
+    m_strArtistDesc.clear();
     m_artist.clear();
+  }
 }
 
 void CMusicInfoTag::SetArtist(const std::vector<std::string>& artists)
 {
   m_artist = artists;
+  if (m_strArtistDesc.empty()) 
+  { 
+    SetArtistDesc(StringUtils::Join(artists, g_advancedSettings.m_musicItemSeparator));
+  }
 }
 
 void CMusicInfoTag::SetArtistDesc(const std::string& strArtistDesc)
@@ -354,16 +371,21 @@ void CMusicInfoTag::SetAlbumArtist(const std::string& strAlbumArtist)
 {
   if (!strAlbumArtist.empty())
   {
-    SetAlbumArtist(StringUtils::Split(strAlbumArtist, g_advancedSettings.m_musicItemSeparator));
     SetAlbumArtistDesc(strAlbumArtist);
+    SetAlbumArtist(StringUtils::Split(strAlbumArtist, g_advancedSettings.m_musicItemSeparator));
   }
   else
+  {
+    m_strAlbumArtistDesc.clear();
     m_albumArtist.clear();
+  }
 }
 
 void CMusicInfoTag::SetAlbumArtist(const std::vector<std::string>& albumArtists)
 {
   m_albumArtist = albumArtists;
+  if (m_strAlbumArtistDesc.empty()) 
+    SetAlbumArtistDesc(StringUtils::Join(albumArtists, g_advancedSettings.m_musicItemSeparator));
 }
 
 void CMusicInfoTag::SetAlbumArtistDesc(const std::string& strAlbumArtistDesc)
@@ -594,10 +616,10 @@ void CMusicInfoTag::SetArtist(const CArtist& artist)
 void CMusicInfoTag::SetAlbum(const CAlbum& album)
 {
   //Set all artist infomation from album artist credits and artist description
-  SetArtistDesc(album.strArtistDesc);
+  SetArtistDesc(album.GetAlbumArtistString());
   SetArtist(album.GetAlbumArtist());
   SetMusicBrainzArtistID(album.GetMusicBrainzAlbumArtistID());
-  SetAlbumArtistDesc(album.strArtistDesc);
+  SetAlbumArtistDesc(album.GetAlbumArtistString());
   SetAlbumArtist(album.GetAlbumArtist());
   SetMusicBrainzAlbumArtistID(album.GetMusicBrainzAlbumArtistID());
   SetAlbumId(album.idAlbum);
@@ -623,12 +645,20 @@ void CMusicInfoTag::SetSong(const CSong& song)
 {
   SetTitle(song.strTitle);
   SetGenre(song.genre);
-  //Set all artist infomation from song artist credits and artist description
-  SetArtistDesc(song.strArtistDesc);
-  SetArtist(song.GetArtist());
-  SetMusicBrainzArtistID(song.GetMusicBrainzArtistID());
+  /* Set all artist infomation from song artist credits and artist description.
+     During processing e.g. Cue Sheets, song may only have artist description string 
+     rather than a fully populated artist credits vector.
+  */
+  if (!song.HasArtistCredits())
+    SetArtist(song.GetArtistString()); //Sets both artist description string and artist vector from string
+  else
+  {
+    SetArtistDesc(song.GetArtistString());
+    SetArtist(song.GetArtist());
+    SetMusicBrainzArtistID(song.GetMusicBrainzArtistID());
+  }
   SetAlbum(song.strAlbum);
-  SetAlbumArtist(song.albumArtist); //Only have album artist in song as vector, no desc or MBID
+  SetAlbumArtist(song.GetAlbumArtist()); //Only have album artist in song as vector, no desc or MBID
   SetMusicBrainzTrackID(song.strMusicBrainzTrackID);
   SetComment(song.strComment);
   SetCueSheet(song.strCueSheet);
@@ -664,14 +694,8 @@ void CMusicInfoTag::Serialize(CVariant& value) const
     value["artist"] = m_artist[0];
   else
     value["artist"] = m_artist;
-  if (!m_strArtistDesc.empty())
-    value["displayartist"] = m_strArtistDesc;
-  else
-    value["displayartist"] = StringUtils::Join(m_artist, g_advancedSettings.m_musicItemSeparator);
-  if (!m_strAlbumArtistDesc.empty())
-    value["displayalbumartist"] = m_strAlbumArtistDesc;
-  else
-    value["displayalbumartist"] = StringUtils::Join(m_albumArtist, g_advancedSettings.m_musicItemSeparator);
+  value["displayartist"] = GetArtistString();
+  value["displayalbumartist"] = GetAlbumArtistString();
   value["album"] = m_strAlbum;
   value["albumartist"] = m_albumArtist;
   value["genre"] = m_genre;
