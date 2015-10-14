@@ -3,6 +3,7 @@
 	<defaultcontrol always="true">100</defaultcontrol>
 	<onload condition="!MusicPlayer.Content(LiveTV)">SetFocus(602)</onload>
 	<include>dialogeffect</include>
+	<depth>DepthOSD</depth>
 	<coordinates>
 		<left>0</left>
 		<top>0</top>
@@ -29,6 +30,7 @@
 			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(PVRRadioRDSInfo) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>
 		</control>
 		<control type="slider" id="87">
+			<depth>DepthOSD+</depth>
 			<description>Seek Slider</description>
 			<left>430</left>
 			<top>82r</top>

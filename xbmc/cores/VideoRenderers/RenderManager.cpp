@@ -1206,7 +1206,7 @@ void CXBMCRenderManager::PrepareNextRender()
   if (m_queued.empty())
   {
 #ifdef HAS_DS_PLAYER
-    if (!g_application.GetCurrentPlayer() == PCID_DSPLAYER)
+    if (g_application.GetCurrentPlayer() != PCID_DSPLAYER)
 #endif
     CLog::Log(LOGERROR, "CRenderManager::PrepareNextRender - asked to prepare with nothing available");
 

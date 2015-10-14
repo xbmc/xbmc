@@ -2,6 +2,7 @@
 <window>
 	<defaultcontrol always="true">21</defaultcontrol>
 	<include>dialogeffect</include>
+	<depth>DepthDialog+</depth>
 	<coordinates>
 		<left>420</left>
 		<top>175</top>

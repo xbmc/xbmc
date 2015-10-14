@@ -3,13 +3,14 @@
 	<defaultcontrol always="true">29</defaultcontrol>
 	<controls>
 		<control type="group">
+			<depth>DepthSideBlade</depth>
 			<visible>!Window.IsVisible(FileBrowser)</visible>
 			<animation effect="slide" start="1150,0" end="0,0" time="300" tween="quadratic" easing="out">WindowOpen</animation>
 			<animation effect="slide" start="0,0" end="1150,0" time="300" tween="quadratic" easing="out">WindowClose</animation>
 			<control type="image">
 				<left>50</left>
 				<top>0</top>
-				<width>1230</width>
+				<width>1250</width>
 				<height>720</height>
 				<texture border="15,0,0,0" flipx="true">MediaBladeSub.png</texture>
 			</control>
@@ -479,7 +480,10 @@
 				</control>
 			</control>
 		</control>
-		<include>Clock</include>
+		<control type="group">
+			<depth>DepthSideBlade</depth>
+			<include>Clock</include>
+		</control>
 		<control type="label" id="20">
 			<description>Fake Label used to pass on name label</description>
 			<visible>false</visible>

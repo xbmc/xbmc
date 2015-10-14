@@ -271,7 +271,7 @@ bool CGUIFontTTFDX::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, 
   FT_Bitmap bitmap = bitGlyph->bitmap;
 
   ID3D11DeviceContext* pContext = g_Windowing.GetImmediateContext();
-  if (m_speedupTexture)
+  if (m_speedupTexture && pContext)
   {
     CD3D11_BOX dstBox(x1, y1, 0, x2, y2, 1);
     pContext->UpdateSubresource(m_speedupTexture->Get(), 0, &dstBox, bitmap.buffer, bitmap.pitch, 0);

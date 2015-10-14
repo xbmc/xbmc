@@ -23,9 +23,9 @@ fi
 
 if [ -d $XBMCPREFIX ]
 then
-  [ -O $XBMCPREFIX ] || SUDO="sudo"
+  [ -O $XBMCPREFIX ] || { command -v sudo >/dev/null 2>&1 && SUDO="sudo"; }
 else
-  [ -w $(dirname $XBMCPREFIX) ] || SUDO="sudo"
+  [ -w $(dirname $XBMCPREFIX) ] || { command -v sudo >/dev/null 2>&1 && SUDO="sudo"; }
 fi
 
 if [ -z "$KODI_MIRROR" ]

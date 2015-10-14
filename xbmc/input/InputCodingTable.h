@@ -30,6 +30,24 @@ public:
   virtual int GetType() { return TYPE_WORD_LIST; }
 
   virtual ~IInputCodingTable() {}
+  /*! \brief Called for the active keyboard layout when it's loaded, stick any initialization here
+
+      This won't be needed for most implementations so we don't set it =0 but provide a default
+      implementation.
+  */
+  virtual void Initialize() {}
+
+  /*! \brief Called for the active keyboard layout when it's unloaded, stick any cleanup here
+
+      This won't be needed for most implementations so we don't set it =0 but provide a default
+      implementation.
+  */
+  virtual void Deinitialize() {}
+
+  /*! \brief Can be overridden if initialization is expensive to avoid calling initialize more than needed
+      \return true if initialization has beeen done and was successful, false otherwise.
+  */
+  virtual bool IsInitialized() const { return true; }
   virtual bool GetWordListPage(const std::string& strCode, bool isFirstPage) = 0;
   virtual std::vector<std::wstring> GetResponse(int response) = 0;
   const std::string& GetCodeChars() const { return m_codechars; }

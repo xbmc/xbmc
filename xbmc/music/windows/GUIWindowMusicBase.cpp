@@ -905,7 +905,6 @@ void CGUIWindowMusicBase::GetNonContextButtons(CContextButtons &buttons)
     buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
   if (ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
     buttons.Add(CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS, 15047);
-  buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);
 }
 
 bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -986,10 +985,6 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS:
     g_windowManager.ActivateWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
-    return true;
-
-  case CONTEXT_BUTTON_SETTINGS:
-    g_windowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
     return true;
 
   case CONTEXT_BUTTON_RIP_CD:
@@ -1455,6 +1450,7 @@ void CGUIWindowMusicBase::OnRemoveSource(int iItem)
     database.RemoveSongsFromPath(m_vecItems->Get(iItem)->GetPath(), songs, false);
     database.CleanupOrphanedItems();
     g_infoManager.ResetLibraryBools();
+    m_vecItems->RemoveDiscCache(GetID());
   }
 }
 

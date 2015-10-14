@@ -42,7 +42,7 @@ IF %clean% == true (
 
   rem clean the addons definition path if it exists
   IF EXIST "%ADDONS_DEFINITION_PATH%" (
-    RMDIR "%ADDONS_DEFINITION_PATH%" /S /Q > NULL
+    RMDIR "%ADDONS_DEFINITION_PATH%" /S /Q > NUL
   )
 
   GOTO END

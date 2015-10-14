@@ -4,12 +4,13 @@
 	<controls>
 		<!-- media infos -->
 		<control type="group" id="1">
+			<depth>DepthOSD</depth>
 			<visible>[Player.ShowInfo | Window.IsActive(VideoOSD)] + ![Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(SliderDialog)]</visible>
 			<animation effect="fade" time="150">VisibleChange</animation>
 			<control type="image" id="1">
-				<left>0</left>
+				<left>-20</left>
 				<top>-150</top>
-				<width>1280</width>
+				<width>1320</width>
 				<height>256</height>
 				<texture flipy="true" border="1">HomeNowPlayingBack.png</texture>
 			</control>
@@ -57,13 +58,14 @@
 				<animation effect="slide" start="0,0" end="-70,0" time="0" condition="Window.IsVisible(VideoOSD)">conditional</animation>
 			</control>
 			<control type="image" id="1">
-				<left>0</left>
+				<left>-20</left>
 				<top>230r</top>
-				<width>1280</width>
+				<width>1320</width>
 				<height>230</height>
 				<texture border="1">HomeNowPlayingBack.png</texture>
 			</control>
 			<control type="image" id="1">
+				<depth>DepthOSDPopout</depth>
 				<description>cover image</description>
 				<left>20</left>
 				<top>260r</top>
@@ -76,6 +78,7 @@
 				<visible>![VideoPlayer.Content(Movies) | VideoPlayer.Content(LiveTV)]</visible>
 			</control>
 			<control type="image" id="1">
+				<depth>DepthOSDPopout</depth>
 				<description>Movie cover image</description>
 				<left>20</left>
 				<top>350r</top>
@@ -88,6 +91,7 @@
 				<visible>VideoPlayer.Content(Movies)</visible>
 			</control>
 			<control type="image" id="1">
+				<depth>DepthOSDPopout</depth>
 				<description>PIcon image</description>
 				<left>20</left>
 				<top>200r</top>
@@ -391,6 +395,7 @@
 		</control>
 		<!-- codec info -->
 		<control type="group" id="0">
+			<depth>DepthOSD+</depth>
 			<left>0</left>
 			<top>20</top>
 			<animation effect="fade" time="150">VisibleChange</animation>
@@ -437,6 +442,7 @@
 			</control>
 		</control>
 		<control type="group">
+			<depth>DepthOSD+</depth>
 			<visible>Player.ShowCodec + VideoPlayer.Content(LiveTV) + system.getbool(pvrplayback.signalquality)</visible>
 			<top>185</top>
 			<control type="image">
