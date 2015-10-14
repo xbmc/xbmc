@@ -259,15 +259,26 @@
 				<onclick>PlayerControl(Random)</onclick>
 			</control>
 			<control type="image" id="2300">
-				<width>160</width>
+				<width>215</width>
 				<height>55</height>
 				<texture>-</texture>
-				<visible>!MusicPlayer.Content(LiveTV)</visible>
+				<visible>!MusicPlayer.Content(LiveTV) + Player.CanRecord</visible>
 			</control>
 			<control type="image" id="2400">
 				<width>215</width>
 				<texture>-</texture>
 				<visible>MusicPlayer.Content(LiveTV)</visible>
+			</control>
+			<control type="image" id="2500">
+				<width>270</width>
+				<height>55</height>
+				<texture>-</texture>
+				<visible>!MusicPlayer.Content(LiveTV) + !Player.CanRecord + !system.getbool(audiooutput.dspaddonsenabled)</visible>
+			</control>
+			<control type="image" id="2600">
+				<width>215</width>
+				<texture>-</texture>
+				<visible>system.getbool(audiooutput.dspaddonsenabled)</visible>
 			</control>
 			<control type="button" id="700">
 				<visible>system.getbool(audiooutput.dspaddonsenabled)</visible>
@@ -332,8 +343,7 @@
 				<texturefocus>OSDRecordOffFO.png</texturefocus>
 				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
 				<onclick>PlayerControl(record)</onclick>
-				<enable>Player.CanRecord</enable>
-				<animation effect="fade" start="100" end="50" time="75" condition="!Player.CanRecord">Conditional</animation>
+				<visible>Player.CanRecord</visible>
 			</control>
 		</control>
 	</controls>
