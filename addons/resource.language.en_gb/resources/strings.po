@@ -1164,6 +1164,11 @@ msgctxt "#263"
 msgid "Allow remote control via HTTP"
 msgstr ""
 
+#. Label of a context menu entry to start/schedule a recording
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
 msgctxt "#264"
 msgid "Record"
 msgstr ""
@@ -3603,12 +3608,7 @@ msgctxt "#840"
 msgid "Do you only want to delete this timer or also the repeating timer that has scheduled it?"
 msgstr ""
 
-#. Label of a context menu entry to create a new recording timer with advanced configuration options
-#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
-#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
-msgctxt "#841"
-msgid "Add custom timer"
-msgstr ""
+#empty string with id 841
 
 #. Label of the option to switch between hierarchical and flat timer view (in confluence sideblade).
 #: skin.confluence
@@ -8655,6 +8655,9 @@ msgctxt "#19060"
 msgid "Delete timer"
 msgstr ""
 
+#. Label of a context menu entry to open the timer settings dialog
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
 msgctxt "#19061"
 msgid "Add timer"
 msgstr ""
@@ -9523,13 +9526,7 @@ msgctxt "#19254"
 msgid "Guide update failed for channel"
 msgstr ""
 
-msgctxt "#19255"
-msgid "Start recording"
-msgstr ""
-
-msgctxt "#19256"
-msgid "Stop recording"
-msgstr ""
+#empty strings from id 19255 to 19256
 
 msgctxt "#19257"
 msgid "Lock channel"
