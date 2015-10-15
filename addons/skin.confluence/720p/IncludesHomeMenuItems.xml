@@ -198,7 +198,13 @@
 			<label>130</label>
 			<onclick>ActivateWindow(SystemInfo)</onclick>
 		</control>
-		<control type="image" id="90126">
+		<control type="button" id="90126">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>14111</label>
+			<onclick>ActivateWindow(EventLog,events://,return)</onclick>
+			<visible>system.getbool(eventlog.enabled)</visible>
+		</control>
+		<control type="image" id="90127">
 			<width>35</width>
 			<height>35</height>
 			<texture border="0,0,0,3">HomeSubEnd.png</texture>
