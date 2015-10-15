@@ -702,9 +702,12 @@ bool CWinSystemX11::RefreshGlxContext(bool force)
       return false;
     }
 
-    EGLConfig eglConfig = getEGLConfig(m_eglDisplay, vInfo);
+    if(m_eglConfig == EGL_NO_CONFIG)
+    {
+      m_eglConfig = getEGLConfig(m_eglDisplay, vInfo);
+    }
 
-    if (eglConfig == EGL_NO_CONFIG)
+    if (m_eglConfig == EGL_NO_CONFIG)
     {
       CLog::Log(LOGERROR, "failed to get eglconfig for visual id\n");
       return false;
@@ -724,7 +727,7 @@ bool CWinSystemX11::RefreshGlxContext(bool force)
       EGL_CONTEXT_CLIENT_VERSION, 2,
       EGL_NONE
     };
-    m_eglContext = eglCreateContext(m_eglDisplay, eglConfig, EGL_NO_CONTEXT, contextAttributes);
+    m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig, EGL_NO_CONTEXT, contextAttributes);
     if (m_eglContext == EGL_NO_CONTEXT)
     {
       CLog::Log(LOGERROR, "failed to create EGL context\n");
@@ -1079,9 +1082,10 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
     if (!eglChooseConfig(m_eglDisplay, att, &eglConfig, 1, &numConfigs) || numConfigs == 0) {
       CLog::Log(LOGERROR, "Failed to choose a config %d\n", eglGetError());
     }
+    m_eglConfig=eglConfig;
 
     XVisualInfo x11_visual_info_template;
-    if (!eglGetConfigAttrib(m_eglDisplay, eglConfig, EGL_NATIVE_VISUAL_ID, (EGLint*)&x11_visual_info_template.visualid)) {
+    if (!eglGetConfigAttrib(m_eglDisplay, m_eglConfig, EGL_NATIVE_VISUAL_ID, (EGLint*)&x11_visual_info_template.visualid)) {
       CLog::Log(LOGERROR, "Failed to query native visual id\n");
     }
     int num_visuals;
@@ -1146,7 +1150,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
     changeSize = true;
 
 #if defined(HAS_EGL)
-    m_eglSurface = eglCreateWindowSurface(m_eglDisplay, eglConfig, m_glWindow, NULL);
+    m_eglSurface = eglCreateWindowSurface(m_eglDisplay, m_eglConfig, m_glWindow, NULL);
     if (m_eglSurface == EGL_NO_SURFACE)
     {
       CLog::Log(LOGERROR, "failed to create egl window surface\n");
