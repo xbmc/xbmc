@@ -142,6 +142,10 @@ bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSi
   }
 
   AVPacket pkt;
+  av_init_packet(&pkt);
+  pkt.data = nullptr;
+  pkt.size = 0;
+
   av_read_frame(fctx, &pkt);
   int frame_decoded;
   int ret = avcodec_decode_video2(codec_ctx, frame, &frame_decoded, &pkt);
@@ -174,6 +178,7 @@ bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSi
   else
     CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not decode a frame");
 
+  av_frame_free(&frame);
   av_free_packet(&pkt);
   avcodec_close(codec_ctx);
   avformat_close_input(&fctx);
