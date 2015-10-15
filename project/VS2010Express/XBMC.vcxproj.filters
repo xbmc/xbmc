@@ -3197,8 +3197,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryRefreshingJob.cpp">
       <Filter>video\jobs</Filter>
-    <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderFFmpeg.cpp">
-      <Filter>music\tags</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\Gif.cpp">
       <Filter>guilib</Filter>
@@ -3262,6 +3260,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\input\InputCodingTableKorean.cpp">
       <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderFFmpeg.cpp">
+      <Filter>music\tags</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6260,8 +6261,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\win32\memcpy_sse2.h">
       <Filter>utils\win32</Filter>
-    <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTagLoaderFFmpeg.h">
-      <Filter>music\tags</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\Gif.h">
       <Filter>guilib</Filter>
@@ -6331,6 +6330,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\InputCodingTableKorean.h">
       <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTagLoaderFFmpeg.h">
+      <Filter>music\tags</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
