@@ -309,8 +309,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
           AddSortMethod(SortByPlaycount, 567, LABEL_MASKS("%T", "%V"));  // Title, Playcount | empty, empty
 
         std::string strTrackLeft=CSettings::Get().GetString("musicfiles.trackformat");
-        std::string strTrackRight=CSettings::Get().GetString("musicfiles.trackformatright");
-        AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined | empty, empty
+        AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(strTrackLeft, "%N"));  // Userdefined, Tracknumber | empty, empty
 
         const CViewState *viewState = CViewStateSettings::Get().Get("videonavmusicvideos");
         SetSortMethod(viewState->m_sortDescription);
@@ -521,8 +520,7 @@ CGUIViewStateVideoMusicVideos::CGUIViewStateVideoMusicVideos(const CFileItemList
     AddSortMethod(SortByPlaycount, 567, LABEL_MASKS("%T", "%V"));  // Title, Playcount | empty, empty
   
   std::string strTrackLeft=CSettings::Get().GetString("musicfiles.trackformat");
-  std::string strTrackRight=CSettings::Get().GetString("musicfiles.trackformatright");
-  AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined | empty, empty
+  AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(strTrackLeft, "%N"));  // Userdefined, Tracknumber | empty, empty
 
   const CViewState *viewState = CViewStateSettings::Get().Get("videonavmusicvideos");
   if (items.IsSmartPlayList() || items.IsLibraryFolder())

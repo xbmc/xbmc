@@ -346,9 +346,8 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const s
     case SORT_METHOD_PLAYLIST_ORDER:
       {
         std::string strTrackLeft=CSettings::Get().GetString("musicfiles.trackformat");
-        std::string strTrackRight=CSettings::Get().GetString("musicfiles.trackformatright");
 
-        dir->m_listItems->AddSortMethod(SortByPlaylistOrder, 559, LABEL_MASKS(strTrackLeft, strTrackRight));
+        dir->m_listItems->AddSortMethod(SortByPlaylistOrder, 559, LABEL_MASKS(strTrackLeft, "%D"));
         break;
       }
     case SORT_METHOD_EPISODE:

@@ -450,10 +450,8 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
     std::string strTrackLeft=CSettings::Get().GetString("musicfiles.nowplayingtrackformat");
     if (strTrackLeft.empty())
       strTrackLeft = CSettings::Get().GetString("musicfiles.trackformat");
-    std::string strTrackRight=CSettings::Get().GetString("musicfiles.nowplayingtrackformatright");
-    if (strTrackRight.empty())
-      strTrackRight = CSettings::Get().GetString("musicfiles.trackformatright");
-    CLabelFormatter formatter(strTrackLeft, strTrackRight);
+
+    CLabelFormatter formatter(strTrackLeft, "%D");
     formatter.FormatLabels(pItem);
   } // if (pItem->m_musicInfoTag.Loaded())
   else

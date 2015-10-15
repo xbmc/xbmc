@@ -694,7 +694,6 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("musiclibrary.export");
   settingSet.insert("musiclibrary.import");
   settingSet.insert("musicfiles.trackformat");
-  settingSet.insert("musicfiles.trackformatright");
   settingSet.insert("videolibrary.flattentvshows");
   settingSet.insert("videolibrary.removeduplicates");
   settingSet.insert("videolibrary.groupmoviesets");

@@ -66,20 +66,6 @@ VECSOURCES& CGUIViewStateWindowMusic::GetSources()
 
 CGUIViewStateMusicSearch::CGUIViewStateMusicSearch(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
 {
-  std::string strTrackLeft=CSettings::Get().GetString("musicfiles.librarytrackformat");
-  if (strTrackLeft.empty())
-    strTrackLeft = CSettings::Get().GetString("musicfiles.trackformat");
-  std::string strTrackRight=CSettings::Get().GetString("musicfiles.librarytrackformatright");
-  if (strTrackRight.empty())
-    strTrackRight = CSettings::Get().GetString("musicfiles.trackformatright");
-
-  std::string strAlbumLeft = g_advancedSettings.m_strMusicLibraryAlbumFormat;
-  if (strAlbumLeft.empty())
-    strAlbumLeft = "%B"; // album
-  std::string strAlbumRight = g_advancedSettings.m_strMusicLibraryAlbumFormatRight;
-  if (strAlbumRight.empty())
-    strAlbumRight = "%A"; // artist
-
   SortAttribute sortAttribute = SortAttributeNone;
   if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
     sortAttribute = SortAttributeIgnoreArticle;
@@ -107,9 +93,6 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
   std::string strTrackLeft=CSettings::Get().GetString("musicfiles.librarytrackformat");
   if (strTrackLeft.empty())
     strTrackLeft = CSettings::Get().GetString("musicfiles.trackformat");
-  std::string strTrackRight=CSettings::Get().GetString("musicfiles.librarytrackformatright");
-  if (strTrackRight.empty())
-    strTrackRight = CSettings::Get().GetString("musicfiles.trackformatright");
 
   std::string strAlbumLeft = g_advancedSettings.m_strMusicLibraryAlbumFormat;
   if (strAlbumLeft.empty())
@@ -206,7 +189,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     break;
   case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
     {
-      AddSortMethod(SortByNone, 552, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined | empty, empty
+      AddSortMethod(SortByNone, 552, LABEL_MASKS(strTrackLeft, "%a"));  // Userdefined, DateAdded | empty, empty
       SetSortMethod(SortByNone);
 
       SetViewAsControl(CViewStateSettings::Get().Get("musicnavsongs")->m_viewMode);
@@ -226,7 +209,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     break;
   case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
     {
-      AddSortMethod(SortByNone, 568, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined | empty, empty
+      AddSortMethod(SortByNone, 568, LABEL_MASKS(strTrackLeft, "%p"));  // Userdefined, Last played | empty, empty
       SetSortMethod(SortByNone);
 
       SetViewAsControl(CViewStateSettings::Get().Get("musicnavalbums")->m_viewMode);
@@ -247,7 +230,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     {
       AddSortMethod(SortByArtist, sortAttribute, 557, LABEL_MASKS("%A - %T", "%D"));  // Artist, Title, Duration| empty, empty
       AddSortMethod(SortByTitle, sortAttribute, 556, LABEL_MASKS("%T - %A", "%D"));  // Title, Artist, Duration| empty, empty
-      AddSortMethod(SortByLabel, sortAttribute, 551, LABEL_MASKS(strTrackLeft, strTrackRight));
+      AddSortMethod(SortByLabel, sortAttribute, 551, LABEL_MASKS(strTrackLeft, "%D"));
       AddSortMethod(SortByTime, 180, LABEL_MASKS("%T - %A", "%D"));  // Titel, Artist, Duration| empty, empty
       AddSortMethod(SortByRating, 563, LABEL_MASKS("%T - %A", "%R"));  // Title - Artist, Rating
 
@@ -262,11 +245,11 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
   case NODE_TYPE_YEAR_SONG:
   case NODE_TYPE_SONG:
     {
-      AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined| empty, empty
+      AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(strTrackLeft, "%N"));  // Userdefined, Tracknumber | empty, empty
       AddSortMethod(SortByTitle, sortAttribute, 556, LABEL_MASKS("%T - %A", "%D"));  // Title, Artist, Duration| empty, empty
       AddSortMethod(SortByAlbum, sortAttribute, 558, LABEL_MASKS("%B - %T - %A", "%D"));  // Album, Title, Artist, Duration| empty, empty
       AddSortMethod(SortByArtist, sortAttribute, 557, LABEL_MASKS("%A - %T", "%D"));  // Artist, Title, Duration| empty, empty
-      AddSortMethod(SortByLabel, sortAttribute, 551, LABEL_MASKS(strTrackLeft, strTrackRight));
+      AddSortMethod(SortByLabel, sortAttribute, 551, LABEL_MASKS(strTrackLeft, "%D"));
       AddSortMethod(SortByTime, 180, LABEL_MASKS("%T - %A", "%D"));  // Titel, Artist, Duration| empty, empty
       AddSortMethod(SortByRating, 563, LABEL_MASKS("%T - %A", "%R"));  // Title - Artist, Rating
       AddSortMethod(SortByYear, 562, LABEL_MASKS("%T - %A", "%Y")); // Title, Artist, Year
@@ -348,16 +331,15 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
   if (items.GetContent() == "songs" || items.GetContent() == "mixed") 
   {
     std::string strTrackLeft=CSettings::Get().GetString("musicfiles.trackformat");
-    std::string strTrackRight=CSettings::Get().GetString("musicfiles.trackformatright");
 
-    AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined| empty, empty
+    AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(strTrackLeft, "%N"));  // Userdefined, Tracknumber | empty, empty
     AddSortMethod(SortByTitle, sortAttribute, 556, LABEL_MASKS("%T - %A", "%D"));  // Title, Artist, Duration| empty, empty
     AddSortMethod(SortByAlbum, sortAttribute, 558, LABEL_MASKS("%B - %T - %A", "%D"));  // Album, Titel, Artist, Duration| empty, empty
     AddSortMethod(SortByArtist, sortAttribute, 557, LABEL_MASKS("%A - %T", "%D"));  // Artist, Titel, Duration| empty, empty
-    AddSortMethod(SortByLabel, sortAttribute, 551, LABEL_MASKS(strTrackLeft, strTrackRight));
+    AddSortMethod(SortByLabel, sortAttribute, 551, LABEL_MASKS(strTrackLeft, "%D"));
     AddSortMethod(SortByTime, 180, LABEL_MASKS("%T - %A", "%D"));  // Titel, Artist, Duration| empty, empty
     AddSortMethod(SortByRating, 563, LABEL_MASKS("%T - %A", "%R"));  // Titel, Artist, Rating| empty, empty
-    AddPlaylistOrder(items, LABEL_MASKS(strTrackLeft, strTrackRight));
+    AddPlaylistOrder(items, LABEL_MASKS(strTrackLeft, "%D"));
 
     SetViewAsControl(CViewStateSettings::Get().Get("musicnavsongs")->m_viewMode);
   } 
@@ -401,14 +383,13 @@ CGUIViewStateMusicPlaylist::CGUIViewStateMusicPlaylist(const CFileItemList& item
     sortAttribute = SortAttributeIgnoreArticle;
   
   std::string strTrackLeft=CSettings::Get().GetString("musicfiles.trackformat");
-  std::string strTrackRight=CSettings::Get().GetString("musicfiles.trackformatright");
 
-  AddSortMethod(SortByPlaylistOrder, 559, LABEL_MASKS(strTrackLeft, strTrackRight));
-  AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined| empty, empty
+  AddSortMethod(SortByPlaylistOrder, 559, LABEL_MASKS(strTrackLeft, "%D"));
+  AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(strTrackLeft, "%N"));  // Userdefined, Tracknumber
   AddSortMethod(SortByTitle, sortAttribute, 556, LABEL_MASKS("%T - %A", "%D"));  // Title, Artist, Duration| empty, empty
   AddSortMethod(SortByAlbum, sortAttribute, 558, LABEL_MASKS("%B - %T - %A", "%D"));  // Album, Titel, Artist, Duration| empty, empty
   AddSortMethod(SortByArtist, sortAttribute, 557, LABEL_MASKS("%A - %T", "%D"));  // Artist, Titel, Duration| empty, empty
-  AddSortMethod(SortByLabel, sortAttribute, 551, LABEL_MASKS(strTrackLeft, strTrackRight));
+  AddSortMethod(SortByLabel, sortAttribute, 551, LABEL_MASKS(strTrackLeft, "%D"));
   AddSortMethod(SortByTime, 180, LABEL_MASKS("%T - %A", "%D"));  // Titel, Artist, Duration| empty, empty
   AddSortMethod(SortByRating, 563, LABEL_MASKS("%T - %A", "%R"));  // Titel, Artist, Rating| empty, empty
 
@@ -454,8 +435,7 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
         AddSortMethod(SortByAlbum, sortAttribute, 558, LABEL_MASKS("%B - %T", "%Y"));
         
         std::string strTrackLeft=CSettings::Get().GetString("musicfiles.trackformat");
-        std::string strTrackRight=CSettings::Get().GetString("musicfiles.trackformatright");
-        AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined| empty, empty
+        AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(strTrackLeft, "%N"));  // Userdefined, Tracknumber| empty, empty
       }
       else
       {
@@ -536,14 +516,13 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
   else
   {
     std::string strTrackLeft=CSettings::Get().GetString("musicfiles.trackformat");
-    std::string strTrackRight=CSettings::Get().GetString("musicfiles.trackformatright");
 
-    AddSortMethod(SortByLabel, 551, LABEL_MASKS(strTrackLeft, strTrackRight, "%L", ""),  // Userdefined, Userdefined | FolderName, empty
+    AddSortMethod(SortByLabel, 551, LABEL_MASKS(strTrackLeft, "%D", "%L", ""),  // Userdefined, Duration | FolderName, empty
       CSettings::Get().GetBool("filelists.ignorethewhensorting") ? SortAttributeIgnoreArticle : SortAttributeNone);
     AddSortMethod(SortBySize, 553, LABEL_MASKS(strTrackLeft, "%I", "%L", "%I"));  // Userdefined, Size | FolderName, Size
     AddSortMethod(SortByBitrate, 623, LABEL_MASKS(strTrackLeft, "%X", "%L", "%X"));  // Userdefined, Bitrate | FolderName, Bitrate  
     AddSortMethod(SortByDate, 552, LABEL_MASKS(strTrackLeft, "%J", "%L", "%J"));  // Userdefined, Date | FolderName, Date
-    AddSortMethod(SortByFile, 561, LABEL_MASKS(strTrackLeft, strTrackRight, "%L", ""));  // Userdefined, Userdefined | FolderName, empty
+    AddSortMethod(SortByFile, 561, LABEL_MASKS(strTrackLeft, "%D", "%L", ""));  // Userdefined, Duration | FolderName, empty
     AddSortMethod(SortByListeners, 20455,LABEL_MASKS(strTrackLeft, "%W", "%L", "%W"));
     
     const CViewState *viewState = CViewStateSettings::Get().Get("musicfiles");
@@ -571,11 +550,8 @@ CGUIViewStateWindowMusicPlaylist::CGUIViewStateWindowMusicPlaylist(const CFileIt
   std::string strTrackLeft=CSettings::Get().GetString("musicfiles.nowplayingtrackformat");
   if (strTrackLeft.empty())
     strTrackLeft = CSettings::Get().GetString("musicfiles.trackformat");
-  std::string strTrackRight=CSettings::Get().GetString("musicfiles.nowplayingtrackformatright");
-  if (strTrackRight.empty())
-    strTrackRight = CSettings::Get().GetString("musicfiles.trackformatright");
 
-  AddSortMethod(SortByNone, 551, LABEL_MASKS(strTrackLeft, strTrackRight, "%L", ""));  // Userdefined, Userdefined | FolderName, empty
+  AddSortMethod(SortByNone, 551, LABEL_MASKS(strTrackLeft, "%D", "%L", ""));  // Userdefined, Duration | FolderName, empty
   SetSortMethod(SortByNone);
 
   SetViewAsControl(DEFAULT_VIEW_LIST);
