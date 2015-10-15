@@ -155,7 +155,7 @@ void CGUIButtonControl::ProcessText(unsigned int currentTime)
   if (m_minWidth && m_width != renderWidth)
   {
     CRect rect(m_posX, m_posY, renderWidth, m_height);
-    SetHitRect(rect);
+    SetHitRect(rect, m_hitColor);
   }
 
   // render the second label if it exists
