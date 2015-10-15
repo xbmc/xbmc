@@ -687,9 +687,12 @@ bool CWinSystemOSX::DestroyWindowSystem()
 
 bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
-  m_nWidth  = res.iWidth;
-  m_nHeight = res.iHeight;
-  m_bFullScreen = fullScreen;
+  // force initial window creation to be windowed, if fullscreen, it will switch to it below
+  // fixes the white screen of death if starting fullscreen and switching to windowed.
+  RESOLUTION_INFO resInfo = CDisplaySettings::GetInstance().GetResolutionInfo(RES_WINDOW);
+  m_nWidth  = resInfo.iWidth;
+  m_nHeight = resInfo.iHeight;
+  m_bFullScreen = false;
 
   SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   8);
   SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
@@ -749,7 +752,7 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   // get screen refreshrate - this is needed
   // when we startup in windowed mode and don't run through SetFullScreen
   int dummy;
-  m_lastDisplayNr = res.iScreen;
+  m_lastDisplayNr = resInfo.iScreen;
   GetScreenResolution(&dummy, &dummy, &m_refreshRate, GetCurrentScreen());
 
   return true;
