@@ -80,6 +80,7 @@ typedef enum {
   FieldInProgress,
   FieldRating,
   FieldComment,
+  FieldRole,
   FieldDateAdded,
   FieldTvShowTitle,
   FieldPlot,

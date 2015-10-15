@@ -50,6 +50,7 @@ namespace dbiplus
 #define ERROR_REORG_SONGS   319
 #define ERROR_REORG_ARTIST   321
 #define ERROR_REORG_GENRE   323
+#define ERROR_REORG_ROLE   324
 #define ERROR_REORG_PATH   325
 #define ERROR_REORG_ALBUM   327
 #define ERROR_WRITING_CHANGES  329
@@ -115,7 +116,7 @@ public:
    \param strComment [in] the ids of the added songs
    \param strMood [in] the mood of the added song
    \param strThumb [in] the ids of the added songs
-   \param artistString [in] the assembled artist string, denormalized from CONCAT(strArtist||strJoinPhrase)
+   \param artistString [in] the assembled artist string
    \param genres [in] a vector of genres to which this song belongs
    \param iTrack [in] the track number and disc number of the song
    \param iDuration [in] the duration of the song
@@ -163,7 +164,7 @@ public:
    \param strComment [in] the ids of the added songs
    \param strMood [in] the mood of the added song
    \param strThumb [in] the ids of the added songs
-   \param artistString [in] the full artist string, denormalized from CONCAT(song_artist.strArtist || song_artist.strJoinPhrase)
+   \param artistString [in] the full artist string
    \param genres [in] a vector of genres to which this song belongs
    \param iTrack [in] the track number and disc number of the song
    \param iDuration [in] the duration of the song
@@ -299,14 +300,19 @@ public:
   /////////////////////////////////////////////////
   // Link tables
   /////////////////////////////////////////////////
-  bool AddAlbumArtist(int idArtist, int idAlbum, std::string strArtist, std::string joinPhrase, bool featured, int iOrder);
-  bool GetAlbumsByArtist(int idArtist, bool includeFeatured, std::vector<int>& albums);
+  bool AddAlbumArtist(int idArtist, int idAlbum, std::string strArtist, int iOrder);
+  bool GetAlbumsByArtist(int idArtist, std::vector<int>& albums);
   bool GetArtistsByAlbum(int idAlbum, CFileItem* item);
   bool DeleteAlbumArtistsByAlbum(int idAlbum);
 
-  bool AddSongArtist(int idArtist, int idSong, std::string strArtist, std::string joinPhrase, bool featured, int iOrder);
-  bool GetSongsByArtist(int idArtist, bool includeFeatured, std::vector<int>& songs);
-  bool GetArtistsBySong(int idSong, bool includeFeatured, std::vector<int>& artists);
+  int AddRole(const std::string &strRole);
+  bool AddSongArtist(int idArtist, int idSong, const std::string& strRole, const std::string& strArtist, int iOrder);
+  bool AddSongArtist(int idArtist, int idSong, int idRole, const std::string& strArtist, int iOrder);
+  int  AddSongContributor(int idSong, const std::string& strRole, const std::string& strArtist);
+  void AddSongContributors(int idSong, const VECMUSICROLES& contributors);
+  int GetRoleByName(const std::string& strRole);
+  bool GetSongsByArtist(int idArtist, std::vector<int>& songs);
+  bool GetArtistsBySong(int idSong, std::vector<int>& artists);
   bool DeleteSongArtistsBySong(int idSong);
 
   bool AddSongGenre(int idGenre, int idSong, int iOrder);
@@ -340,6 +346,9 @@ public:
   int  GetCompilationAlbumsCount();
 
   int GetSinglesCount();
+
+  int GetArtistCountForRole(int role);
+  int GetArtistCountForRole(const std::string& strRole);
   
   /*! \brief Increment the playcount of an item
    Increments the playcount and updates the last played date
@@ -353,6 +362,7 @@ public:
   /////////////////////////////////////////////////
   bool GetGenresNav(const std::string& strBaseDir, CFileItemList& items, const Filter &filter = Filter(), bool countOnly = false);
   bool GetYearsNav(const std::string& strBaseDir, CFileItemList& items, const Filter &filter = Filter());
+  bool GetRolesNav(const std::string& strBaseDir, CFileItemList& items, const Filter &filter = Filter());
   bool GetArtistsNav(const std::string& strBaseDir, CFileItemList& items, bool albumArtistsOnly = false, int idGenre = -1, int idAlbum = -1, int idSong = -1, const Filter &filter = Filter(), const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
   bool GetCommonNav(const std::string &strBaseDir, const std::string &table, const std::string &labelField, CFileItemList &items, const Filter &filter /* = Filter() */, bool countOnly /* = false */);
   bool GetAlbumTypesNav(const std::string &strBaseDir, CFileItemList &items, const Filter &filter = Filter(), bool countOnly = false);
@@ -495,6 +505,7 @@ private:
   CAlbum GetAlbumFromDataset(dbiplus::Dataset* pDS, int offset = 0, bool imageURL = false);
   CAlbum GetAlbumFromDataset(const dbiplus::sql_record* const record, int offset = 0, bool imageURL = false);
   CArtistCredit GetArtistCreditFromDataset(const dbiplus::sql_record* const record, int offset = 0);
+  CMusicRole GetArtistRoleFromDataset(const dbiplus::sql_record* const record, int offset = 0);
   /*! \brief Updates the dateAdded field in the song table for the file
   with the given songId and the given path based on the files modification date
   \param songId id of the song in the song table
@@ -511,6 +522,7 @@ private:
   bool CleanupAlbums();
   bool CleanupArtists();
   bool CleanupGenres();
+  bool CleanupRoles();
   virtual void UpdateTables(int version);
   bool SearchArtists(const std::string& search, CFileItemList &artists);
   bool SearchAlbums(const std::string& search, CFileItemList &albums);
@@ -582,10 +594,10 @@ private:
     // used for GetAlbum to get the cascaded album/song artist credits
     artistCredit_idEntity = 0,  // can be idSong or idAlbum depending on context
     artistCredit_idArtist,
+    artistCredit_idRole,
+    artistCredit_strRole,
     artistCredit_strArtist,
     artistCredit_strMusicBrainzArtistID,
-    artistCredit_bFeatured,
-    artistCredit_strJoinPhrase,
     artistCredit_iOrder,
     artistCredit_enumCount
   } ArtistCreditFields;

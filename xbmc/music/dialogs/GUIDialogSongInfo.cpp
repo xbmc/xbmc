@@ -195,7 +195,7 @@ void CGUIDialogSongInfo::SetSong(CFileItem *item)
   {
     std::vector<int> artists;
     CVariant artistthumbs;
-    db.GetArtistsBySong(item->GetMusicInfoTag()->GetDatabaseId(), true, artists);
+    db.GetArtistsBySong(item->GetMusicInfoTag()->GetDatabaseId(), artists);
     for (std::vector<int>::const_iterator artistId = artists.begin(); artistId != artists.end(); ++artistId)
     {
       std::string thumb = db.GetArtForItem(*artistId, MediaTypeArtist, "thumb");

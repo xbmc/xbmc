@@ -30,6 +30,7 @@ class CVariant;
 #include "ReplayGain.h"
 #include "XBDateTime.h"
 #include "music/Album.h"
+#include "music/Artist.h"
 #include "music/EmbeddedArt.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
@@ -111,7 +112,7 @@ public:
   void SetLoaded(bool bOnOff = true);
   void SetArtist(const CArtist& artist);
   void SetAlbum(const CAlbum& album);
-  void SetSong(const CSong& song);
+  void SetSong(const CSong& song);  
   void SetMusicBrainzTrackID(const std::string& strTrackID);
   void SetMusicBrainzArtistID(const std::vector<std::string>& musicBrainzArtistId);
   void SetMusicBrainzArtistHints(const std::vector<std::string>& musicBrainzArtistHints);
@@ -154,12 +155,23 @@ public:
    \param genre genre to add.
    */
   void AppendGenre(const std::string &genre);
+  
+  void AddArtistRole(const std::string& Role, const std::string& strArtist);
+  void AddArtistRole(const std::string& Role, const std::vector<std::string>& artists);
+  void AppendArtistRole(const CMusicRole& ArtistRole);
+  const std::string GetArtistStringForRole(const std::string& strRole) const;
+  const std::string GetContributorsText() const;
+  const std::string GetContributorsAndRolesText() const;
+  const VECMUSICROLES &GetContributors() const;
+  void SetContributors(const VECMUSICROLES& contributors);
+  bool HasContributors() const { return !m_musicRoles.empty(); }
 
   virtual void Archive(CArchive& ar);
   virtual void Serialize(CVariant& ar) const;
   virtual void ToSortable(SortItem& sortable, Field field) const;
 
   void Clear();
+
 protected:
   /*! \brief Trim whitespace off the given string
    \param value string to trim
@@ -182,6 +194,7 @@ protected:
   std::vector<std::string> m_musicBrainzAlbumArtistID;
   std::vector<std::string> m_musicBrainzAlbumArtistHints;
   std::string m_strMusicBrainzTRMID;
+  VECMUSICROLES m_musicRoles; //Artists contributing to the recording and role (from tags other than ARTIST or ALBUMARTIST)
   std::string m_strComment;
   std::string m_strMood;
   std::string m_strLyrics;
