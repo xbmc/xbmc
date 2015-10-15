@@ -71,6 +71,7 @@ namespace PVR
     virtual void ResetObservers(void) {};
     virtual void Notify(const Observable &obs, const ObservableMessage msg);
     virtual void SetInvalid();
+    virtual bool CanBeActivated() const;
 
     static std::string GetSelectedItemPath(bool bRadio);
     static void SetSelectedItemPath(bool bRadio, const std::string &path);
