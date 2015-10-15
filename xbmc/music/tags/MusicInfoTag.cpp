@@ -637,6 +637,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SetDateAdded(album.dateAdded);
   SetPlayCount(album.iTimesPlayed);
   SetDatabaseId(album.idAlbum, MediaTypeAlbum);
+  SetLastPlayed(album.lastPlayed);
 
   SetLoaded();
 }
