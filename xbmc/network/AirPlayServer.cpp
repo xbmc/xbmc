@@ -987,7 +987,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
 
       // allow starting the player paused in ios8 mode (needed by camera roll app)
-      if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_AIRPLAYIOS8COMPAT) && !startPlayback)
+      if (!startPlayback)
       {
         CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
         g_application.m_pPlayer->SeekPercentage(position * 100.0f);
@@ -1047,7 +1047,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       }
       else //if we are not playing and get the stop request - we just wanna stop picture streaming
       {
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PREVIOUS_MENU)));
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1, static_cast<void*>(new CAction(ACTION_STOP)));
       }
     }
     ClearPhotoAssetCache();
