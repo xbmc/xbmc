@@ -223,6 +223,8 @@
 		39BD2AD91B845D40004A5A15 /* DialogHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39BD2AD71B845D40004A5A15 /* DialogHelper.cpp */; };
 		39C38CCA1BBFF1EE000F59F5 /* InputCodingTableKorean.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39C38CC81BBFF1EE000F59F5 /* InputCodingTableKorean.cpp */; };
 		39C38CCB1BBFF1EE000F59F5 /* InputCodingTableKorean.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39C38CC81BBFF1EE000F59F5 /* InputCodingTableKorean.cpp */; };
+		39C38CE11BCD600E000F59F5 /* FFmpegImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39C38CDF1BCD600E000F59F5 /* FFmpegImage.cpp */; settings = {ASSET_TAGS = (); }; };
+		39C38CE21BCD600E000F59F5 /* FFmpegImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39C38CDF1BCD600E000F59F5 /* FFmpegImage.cpp */; settings = {ASSET_TAGS = (); }; };
 		4260D5C71B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */; };
 		4260D5C81B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */; };
 		42DAC16E1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
@@ -2620,6 +2622,8 @@
 		39BD2AD71B845D40004A5A15 /* DialogHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DialogHelper.cpp; path = helpers/DialogHelper.cpp; sourceTree = "<group>"; };
 		39C38CC81BBFF1EE000F59F5 /* InputCodingTableKorean.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputCodingTableKorean.cpp; sourceTree = "<group>"; };
 		39C38CC91BBFF1EE000F59F5 /* InputCodingTableKorean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputCodingTableKorean.h; sourceTree = "<group>"; };
+		39C38CDF1BCD600E000F59F5 /* FFmpegImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FFmpegImage.cpp; sourceTree = "<group>"; };
+		39C38CE01BCD600E000F59F5 /* FFmpegImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFmpegImage.h; sourceTree = "<group>"; };
 		4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowSplash.cpp; sourceTree = "<group>"; };
 		4260D5C61B67BB8F003F6F2D /* GUIWindowSplash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowSplash.h; sourceTree = "<group>"; };
 		42DAC16B1A6E780C0066B4C8 /* IActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IActionListener.h; sourceTree = "<group>"; };
@@ -5007,6 +5011,8 @@
 				F558F27D13ABD57400631E12 /* DirtyRegionTracker.cpp */,
 				F558F27E13ABD57400631E12 /* DirtyRegionTracker.h */,
 				DF2863B419918B07008994AB /* DllLibGif.h */,
+				39C38CDF1BCD600E000F59F5 /* FFmpegImage.cpp */,
+				39C38CE01BCD600E000F59F5 /* FFmpegImage.h */,
 				18B7C7591294222E009E7A26 /* FrameBufferObject.cpp */,
 				18B7C6FB1294222D009E7A26 /* FrameBufferObject.h */,
 				18B7C6FC1294222D009E7A26 /* Geometry.h */,
@@ -10071,6 +10077,7 @@
 				7C140998183224B8009F9411 /* SettingDependency.cpp in Sources */,
 				7C14099B183224B8009F9411 /* SettingRequirement.cpp in Sources */,
 				7C14099E183224B8009F9411 /* SettingSection.cpp in Sources */,
+				39C38CE11BCD600E000F59F5 /* FFmpegImage.cpp in Sources */,
 				7C1409A1183224B8009F9411 /* SettingsManager.cpp in Sources */,
 				7C1409A4183224B8009F9411 /* SettingUpdate.cpp in Sources */,
 				DF0ABB73183A94A30018445D /* Utf8Utils.cpp in Sources */,
@@ -10908,6 +10915,7 @@
 				E4991421174E603C00741B6D /* MediaSettings.cpp in Sources */,
 				E4991422174E603C00741B6D /* MediaSourceSettings.cpp in Sources */,
 				E4991424174E603C00741B6D /* SettingAddon.cpp in Sources */,
+				39C38CE21BCD600E000F59F5 /* FFmpegImage.cpp in Sources */,
 				E4991427174E603C00741B6D /* SettingControl.cpp in Sources */,
 				E4991429174E603C00741B6D /* SettingPath.cpp in Sources */,
 				E499142A174E603C00741B6D /* Settings.cpp in Sources */,

@@ -3263,6 +3263,9 @@
     <ClCompile Include="..\..\xbmc\input\InputCodingTableKorean.cpp">
       <Filter>input</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\FFmpegImage.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6331,6 +6334,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\InputCodingTableKorean.h">
       <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\FFmpegImage.h">
+      <Filter>guilib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

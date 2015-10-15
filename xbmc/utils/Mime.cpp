@@ -450,6 +450,7 @@ std::map<std::string, std::string> fillMimeTypes()
   mimeTypes.insert(std::pair<std::string, std::string>("wb1",       "application/x-qpro"));
   mimeTypes.insert(std::pair<std::string, std::string>("wbmp",      "image/vnd.wap.wbmp"));
   mimeTypes.insert(std::pair<std::string, std::string>("web",       "application/vnd.xara"));
+  mimeTypes.insert(std::pair<std::string, std::string>("webp",      "image/webp"));
   mimeTypes.insert(std::pair<std::string, std::string>("wiz",       "application/msword"));
   mimeTypes.insert(std::pair<std::string, std::string>("wk1",       "application/x-123"));
   mimeTypes.insert(std::pair<std::string, std::string>("wma",       "audio/x-ms-wma"));
