@@ -3,6 +3,7 @@ SRCS += DirectXGraphics.cpp
 SRCS += DirtyRegionSolvers.cpp
 SRCS += DirtyRegionTracker.cpp
 SRCS += cximage.cpp
+SRCS += FFmpegImage.cpp
 SRCS += FrameBufferObject.cpp
 SRCS += GraphicContext.cpp
 SRCS += GUIAction.cpp

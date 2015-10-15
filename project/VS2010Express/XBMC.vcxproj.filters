@@ -3231,6 +3231,9 @@
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\VideoShaders\YUV2RGBShader.cpp">
       <Filter>cores\VideoPlayer\VideoRenderers\VideoShaders</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\FFmpegImage.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6267,6 +6270,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\VideoShaders\YUV2RGBShader.h">
       <Filter>cores\VideoPlayer\VideoRenderers\VideoShaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\FFmpegImage.h">
+      <Filter>guilib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
