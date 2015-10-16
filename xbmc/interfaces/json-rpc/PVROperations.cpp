@@ -161,8 +161,8 @@ JSONRPC_STATUS CPVROperations::GetBroadcasts(const std::string &method, ITranspo
   if (channel == NULL)
     return InvalidParams;
 
-  CEpg *channelEpg = channel->GetEPG();
-  if (channelEpg == NULL)
+  auto channelEpg = channel->GetEPG();
+  if (!channelEpg)
     return InternalError;
 
   CFileItemList programFull;
