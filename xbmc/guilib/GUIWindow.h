@@ -153,6 +153,7 @@ public:
   virtual bool IsSoundEnabled() const { return true; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return CFileItemPtr(); };
   virtual int GetViewContainerID() const { return 0; };
+  virtual bool CanBeActivated() const { return true; };
   virtual bool IsActive() const;
   void SetCoordsRes(const RESOLUTION_INFO &res) { m_coordsRes = res; };
   const RESOLUTION_INFO &GetCoordsRes() const { return m_coordsRes; };

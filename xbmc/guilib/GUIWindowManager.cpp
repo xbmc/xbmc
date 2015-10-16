@@ -773,6 +773,10 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector
     CLog::Log(LOGERROR, "Unable to locate window with id %d.  Check skin files", iWindowID - WINDOW_HOME);
     return ;
   }
+  else if (!pNewWindow->CanBeActivated())
+  {
+    return;
+  }
   else if (pNewWindow->IsDialog())
   { // if we have a dialog, we do a DoModal() rather than activate the window
     if (!pNewWindow->IsDialogRunning())
