@@ -24,6 +24,7 @@
 #include "utils/log.h"
 #include "GUIWindowManager.h"
 #include "GUIControlProfiler.h"
+#include "GUITexture.h"
 #include "input/MouseStat.h"
 #include "input/InputManager.h"
 #include "input/Key.h"
@@ -185,7 +186,15 @@ void CGUIControl::DoRender()
       g_graphicsContext.SetStereoFactor(m_stereo);
 
     GUIPROFILER_RENDER_BEGIN(this);
+
+    if (m_hitColor != 0xFFFFFFFF)
+    {
+      color_t color = g_graphicsContext.MergeAlpha(m_hitColor);
+      CGUITexture::DrawQuad(g_graphicsContext.generateAABB(m_hitRect), color);
+    }
+
     Render();
+
     GUIPROFILER_RENDER_END(this);
 
     if (hasStereo)
@@ -908,9 +917,10 @@ void CGUIControl::SaveStates(std::vector<CControlState> &states)
   // empty for now - do nothing with the majority of controls
 }
 
-void CGUIControl::SetHitRect(const CRect &rect)
+void CGUIControl::SetHitRect(const CRect &rect, const CGUIInfoColor &color)
 {
   m_hitRect = rect;
+  m_hitColor = color;
 }
 
 void CGUIControl::SetCamera(const CPoint &camera)
