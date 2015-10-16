@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<defaultcontrol always="true">10</defaultcontrol>
+	<defaultcontrol always="true">12</defaultcontrol>
 	<coordinates>
 		<left>185</left>
 		<top>105</top>
@@ -201,34 +201,6 @@
 						<aspectratio align="left">keep</aspectratio>
 						<texture>LeftRating/$INFO[ListItem.StarRating]</texture>
 					</control>
-					<control type="button" id="14">
-						<description>Decrease Rating</description>
-						<left>160</left>
-						<top>5</top>
-						<width>33</width>
-						<height>22</height>
-						<onclick>DecreaseRating</onclick>
-						<texturenofocus>scroll-down-2.png</texturenofocus>
-						<texturefocus>scroll-down-focus-2.png</texturefocus>
-						<onleft>15</onleft>
-						<onright>15</onright>
-						<ondown>9000</ondown>
-						<onup>9000</onup>
-					</control>
-					<control type="button" id="15">
-						<description>Increase Rating</description>
-						<left>193</left>
-						<top>5</top>
-						<width>33</width>
-						<height>22</height>
-						<onclick>IncreaseRating</onclick>
-						<texturenofocus>scroll-up-2.png</texturenofocus>
-						<texturefocus>scroll-up-focus-2.png</texturefocus>
-						<onleft>14</onleft>
-						<onright>14</onright>
-						<ondown>9000</ondown>
-						<onup>9000</onup>
-					</control>
 				</control>
 				<control type="label">
 					<description>Comment Title</description>
@@ -254,53 +226,23 @@
 				</control>
 			</control>
 			<control type="group" id="9000">
-				<left>40</left>
+				<left>140</left>
 				<top>445</top>
-				<control type="button" id="10">
-					<description>Ok button</description>
-					<left>0</left>
-					<top>0</top>
-					<width>200</width>
-					<height>40</height>
-					<label>186</label>
-					<font>font12_title</font>
-					<align>center</align>
-					<onleft>13</onleft>
-					<onright>11</onright>
-					<onup>14</onup>
-					<ondown>14</ondown>
-				</control>
-				<control type="button" id="11">
-					<description>Cancel button</description>
-					<left>210</left>
-					<top>0</top>
-					<width>200</width>
-					<height>40</height>
-					<label>222</label>
-					<font>font12_title</font>
-					<align>center</align>
-					<onleft>10</onleft>
-					<onright>12</onright>
-					<onup>14</onup>
-					<ondown>14</ondown>
-				</control>
 				<control type="button" id="12">
 					<description>Album Info button</description>
-					<left>420</left>
+					<left>0</left>
 					<top>0</top>
 					<width>200</width>
 					<height>40</height>
 					<label>10523</label>
 					<font>font12_title</font>
 					<align>center</align>
-					<onleft>11</onleft>
+					<onleft>7</onleft>
 					<onright>13</onright>
-					<onup>14</onup>
-					<ondown>14</ondown>
 				</control>
 				<control type="button" id="13">
 					<description>Get Thumb button</description>
-					<left>630</left>
+					<left>210</left>
 					<top>0</top>
 					<width>200</width>
 					<height>40</height>
@@ -308,9 +250,19 @@
 					<font>font12_title</font>
 					<align>center</align>
 					<onleft>12</onleft>
-					<onright>10</onright>
-					<onup>14</onup>
-					<ondown>14</ondown>
+					<onright>7</onright>
+				</control>
+				<control type="button" id="7">
+					<description>Set my rating</description>
+					<left>420</left>
+					<top>0</top>
+					<width>200</width>
+					<height>40</height>
+					<label>38023</label>
+					<font>font12_title</font>
+					<align>center</align>
+					<onleft>13</onleft>
+					<onright>12</onright>
 				</control>
 			</control>
 		</control>
