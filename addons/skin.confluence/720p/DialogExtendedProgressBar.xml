@@ -5,7 +5,7 @@
 	<animation effect="slide" start="0,0" end="0,-70" delay="300" time="75">WindowClose</animation>
 	<controls>
 		<control type="group">
-			<depth>DepthDialog+</depth>
+			<depth>DepthHeader</depth>
 			<left>720</left>
 			<top>0</top>
 			<animation effect="slide" end="0,-80" time="150" condition="Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)">conditional</animation>

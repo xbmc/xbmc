@@ -4,6 +4,7 @@
 		<left>0</left>
 		<top>0</top>
 	</coordinates>
+	<depth>DepthDialog</depth>
 	<controls>
 		<control type="group" id="100">
 			<include>VisibleFadeEffect</include>

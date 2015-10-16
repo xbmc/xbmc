@@ -1767,6 +1767,7 @@
 					<include>VideoTypeHackFlaggingConditions</include>
 				</control>
 				<control type="image">
+					<depth>DepthContent+</depth>
 					<left>560</left>
 					<top>140</top>
 					<width>180</width>
@@ -1816,6 +1817,7 @@
 					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 				</control>
 				<control type="image">
+					<depth>DepthContent+</depth>
 					<left>560</left>
 					<top>140</top>
 					<width>180</width>
@@ -1865,6 +1867,7 @@
 					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 				</control>
 				<control type="image">
+					<depth>DepthContent+</depth>
 					<left>560</left>
 					<top>140</top>
 					<width>180</width>
@@ -1929,6 +1932,7 @@
 					<include>VideoTypeHackFlaggingConditions</include>
 				</control>
 				<control type="image">
+					<depth>DepthContent+</depth>
 					<left>420</left>
 					<top>140</top>
 					<width>330</width>
