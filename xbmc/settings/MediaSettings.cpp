@@ -253,6 +253,8 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
 
     if (!XMLUtils::GetInt(pElement, "nosmallscaling", m_defaultMadvrSettings.m_noSmallScaling))
       m_defaultMadvrSettings.m_noSmallScaling = -1;
+    if (!XMLUtils::GetInt(pElement, "movesubs", m_defaultMadvrSettings.m_moveSubs))
+      m_defaultMadvrSettings.m_moveSubs = 0;
 
     XMLUtils::GetBoolean(pElement, "upreffinesharp", m_defaultMadvrSettings.m_UpRefFineSharp);
     if (!XMLUtils::GetFloat(pElement, "upreffinesharpstrength", m_defaultMadvrSettings.m_UpRefFineSharpStrength))
@@ -270,10 +272,12 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
     XMLUtils::GetBoolean(pElement, "superres", m_defaultMadvrSettings.m_superRes);
     if (!XMLUtils::GetFloat(pElement, "superresstrength", m_defaultMadvrSettings.m_superResStrength))
       m_defaultMadvrSettings.m_superResStrength = MADVR_DEFAULT_SUPERRESSTRENGTH;
+    if (!XMLUtils::GetFloat(pElement, "superressharpness", m_defaultMadvrSettings.m_superResSharpness))
+      m_defaultMadvrSettings.m_superResSharpness = MADVR_DEFAULT_SUPERRESSHARPNESS;
     if (!XMLUtils::GetFloat(pElement, "superresradius", m_defaultMadvrSettings.m_superResRadius))
       m_defaultMadvrSettings.m_superResRadius = MADVR_DEFAULT_SUPERRESRADIUS;
 
-    XMLUtils::GetBoolean(pElement, "refineonce", m_defaultMadvrSettings.m_refineOnce);
+    XMLUtils::GetBoolean(pElement, "superreslinear", m_defaultMadvrSettings.m_superResLinear);
     XMLUtils::GetBoolean(pElement, "superresfirst", m_defaultMadvrSettings.m_superResFirst);
   }
 #endif
@@ -431,6 +435,7 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetFloat(pNode, "adpativesharpenstrength", m_defaultMadvrSettings.m_adaptiveSharpenStrength);
 
   XMLUtils::SetInt(pNode, "nosmallscaling", m_defaultMadvrSettings.m_noSmallScaling);
+  XMLUtils::SetInt(pNode, "movesubs", m_defaultMadvrSettings.m_moveSubs);
 
   XMLUtils::SetBoolean(pNode, "upreffinesharp", m_defaultMadvrSettings.m_UpRefFineSharp);
   XMLUtils::SetFloat(pNode, "upreffinesharpstrength", m_defaultMadvrSettings.m_UpRefFineSharpStrength);
@@ -442,8 +447,10 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetFloat(pNode, "uprefadpativesharpenstrength", m_defaultMadvrSettings.m_UpRefAdaptiveSharpenStrength);
   XMLUtils::SetBoolean(pNode, "superres", m_defaultMadvrSettings.m_superRes);
   XMLUtils::SetFloat(pNode, "superresstrength", m_defaultMadvrSettings.m_superResStrength);
+  XMLUtils::SetFloat(pNode, "superressharpness", m_defaultMadvrSettings.m_superResSharpness);
   XMLUtils::SetFloat(pNode, "superresradius", m_defaultMadvrSettings.m_superResRadius);
 
+  XMLUtils::SetBoolean(pNode, "superreslinear", m_defaultMadvrSettings.m_superResLinear);
   XMLUtils::SetBoolean(pNode, "refineonce", !m_defaultMadvrSettings.m_refineOnce);
   XMLUtils::SetBoolean(pNode, "superresfirst", m_defaultMadvrSettings.m_superResFirst);
   

@@ -321,19 +321,32 @@ void CMadvrSettingsManager::GetDeintActive(std::string path, int* iValue)
   *iValue = result;
 }
 
-void CMadvrSettingsManager::GetNoSmallScaling(std::string path, int* iValue)
+void CMadvrSettingsManager::GetBoolValue(std::string path, std::string sValue, int* iValue)
 {
-  std::string stEnabled = "noSmallScaling";
-  std::string strMode = "noSmallScalingValue";
-
   bool bValue;
   int result = -1;
 
-  GetBool(stEnabled, &bValue);
+  GetBool(path, &bValue);
   if (bValue)
   {
-    GetInt(strMode, iValue);
+    GetInt(sValue, iValue);
     result = *iValue;
+  };
+
+  *iValue = result;
+}
+
+void CMadvrSettingsManager::GetMultiBool(std::string path, std::string sValue, int* iValue)
+{
+  bool bValue;
+  bool bValue2;
+  int result = -1;
+
+  GetBool(path, &bValue);
+  if (bValue)
+  {
+    GetBool(sValue, &bValue2);
+    bValue2 ? result = 1 : result = 0;
   };
 
   *iValue = result;
@@ -433,14 +446,18 @@ void CMadvrSettingsManager::SetDeintActive(std::string path, int iValue)
   SetBool(strIfDoubt, (iValue != MADVR_DEFAULT_DEINTACTIVE));
 }
 
-void CMadvrSettingsManager::SetNoSmallScaling(std::string path, int iValue)
+void CMadvrSettingsManager::SetBoolValue(std::string path, std::string sValue, int iValue)
 {
-  std::string stEnabled = "noSmallScaling";
-  std::string strMode = "noSmallScalingValue";
-
-  SetBool(stEnabled, (iValue > -1));
+  SetBool(path, (iValue > -1));
   if (iValue > -1)
-    SetInt(strMode, iValue);
+    SetInt(sValue, iValue);
+}
+
+void CMadvrSettingsManager::SetMultiBool(std::string path, std::string sValue, int iValue)
+{
+  SetBool(path, (iValue > -1));
+  if (iValue > -1)
+    SetBool(sValue, (iValue == 1));
 }
 
 void CMadvrSettingsManager::SetSmoothmotion(std::string path, int iValue)
@@ -633,7 +650,8 @@ void CMadvrSettingsManager::RestoreSettings()
   SetBool("adaptiveSharpen", madvrSettings.m_adaptiveSharpen);
   SetFloat("adaptiveSharpenStrength", madvrSettings.m_adaptiveSharpenStrength, 10);
 
-  SetNoSmallScaling("", madvrSettings.m_noSmallScaling);
+  SetBoolValue("noSmallScaling","noSmallScalingValue", madvrSettings.m_noSmallScaling);
+  SetMultiBool("moveSubs", "moveSubsUp", madvrSettings.m_moveSubs);
 
   SetBool("upRefFineSharp", madvrSettings.m_UpRefFineSharp);
   SetFloat("upRefFineSharpStrength", madvrSettings.m_UpRefFineSharpStrength, 10);
@@ -646,7 +664,9 @@ void CMadvrSettingsManager::RestoreSettings()
 
   SetBool("superRes", madvrSettings.m_superRes);
   SetFloat("superResStrength", madvrSettings.m_superResStrength, 1);
+  SetFloat("superResSharpness", madvrSettings.m_superResSharpness, 1);
   SetFloat("superResRadius", madvrSettings.m_superResRadius);
+  SetBool("superResLinear", madvrSettings.m_superResLinear);
 
   SetBool("refineOnce", !madvrSettings.m_refineOnce);
   SetBool("superResFirst", madvrSettings.m_superResFirst);
@@ -677,7 +697,8 @@ void CMadvrSettingsManager::LoadSettings(MADVR_LOAD_TYPE type)
     GetBool("adaptiveSharpen", &madvrSettings.m_adaptiveSharpen);
     GetFloat("adaptiveSharpenStrength", &madvrSettings.m_adaptiveSharpenStrength, 10);
 
-    GetNoSmallScaling("", &madvrSettings.m_noSmallScaling);
+    GetBoolValue("noSmallScaling", "noSmallScalingValue", &madvrSettings.m_noSmallScaling);
+    GetMultiBool("moveSubs", "moveSubsUp", &madvrSettings.m_moveSubs);
 
     GetDithering("", &madvrSettings.m_dithering);
     GetBool("coloredDither", &madvrSettings.m_ditheringColoredNoise);
@@ -720,7 +741,9 @@ void CMadvrSettingsManager::LoadSettings(MADVR_LOAD_TYPE type)
 
     GetBool("superRes", &madvrSettings.m_superRes);
     GetFloat("superResStrength", &madvrSettings.m_superResStrength, 1);
+    GetFloat("superResSharpness", &madvrSettings.m_superResSharpness, 1);
     GetFloat("superResRadius", &madvrSettings.m_superResRadius);
+    GetBool("superResLinear", &madvrSettings.m_superResLinear);
 
     GetBool("refineOnce", &madvrSettings.m_refineOnce);
     madvrSettings.m_refineOnce = !madvrSettings.m_refineOnce;
@@ -759,6 +782,9 @@ std::vector<CMadvrSettingsList*>* CMadvrSettingsManager::GetSettingsVector(MADVR
     break;
   case MADVR_LIST_NOSMALLSCALING:
     vec = &m_settingsNoSmallScaling;
+    break;
+  case MADVR_LIST_MOVESUBS:
+    vec = &m_settingsMoveSubs;
     break;
   case MADVR_LIST_SMOOTHMOTION:
     vec = &m_settingsSmoothMotion;
@@ -967,6 +993,10 @@ void CMadvrSettingsManager::InitSettings()
   AddSettingsList(MADVR_LIST_NOSMALLSCALING, "10lines", 70214, 10);
   AddSettingsList(MADVR_LIST_NOSMALLSCALING, "15lines", 70215, 15);
   AddSettingsList(MADVR_LIST_NOSMALLSCALING, "25lines", 70216, 25);
+
+  // MoveSubs
+  AddSettingsList(MADVR_LIST_MOVESUBS, "bottom", 70218, 0);
+  AddSettingsList(MADVR_LIST_MOVESUBS, "up", 70219, 1);
 
   // Smoothmotion
   AddSettingsList(MADVR_LIST_SMOOTHMOTION, "avoidJudder", 70301, 0 );

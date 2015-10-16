@@ -79,7 +79,7 @@ protected:
 
   virtual int GetMinSchemaVersion() const { return 5; };
   virtual int GetExportVersion() const { return 1; };
-  virtual int GetSchemaVersion() const { return 6; };
+  virtual int GetSchemaVersion() const;
   const char *GetBaseDBName() const { return "DSPlayer"; };
 
 };

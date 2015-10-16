@@ -89,7 +89,9 @@
 #define SET_IMAGE_UPADAPTIVESHARPEN_STRENGTH   "madvr.upadaptivesharpenstrength"
 #define SET_IMAGE_SUPER_RES                    "madvr.superres"
 #define SET_IMAGE_SUPER_RES_STRENGTH           "madvr.superresstrength"
+#define SET_IMAGE_SUPER_RES_SHARPNESS          "madvr.superressharpness"
 #define SET_IMAGE_SUPER_RES_RADIUS             "madvr.superresradius"
+#define SET_IMAGE_SUPER_RES_LINEAR             "madvr.superreslinear"
 
 #define SET_IMAGE_REFINE_ONCE                  "madvr.refineonce"
 #define SET_IMAGE_SUPER_RES_FIRST              "madvr.superresfirst"
@@ -256,7 +258,9 @@ void CGUIDialogMadvrScaling::InitializeSettings()
   AddSlider(groupMadvrUpSharp, SET_IMAGE_UPADAPTIVESHARPEN_STRENGTH, 70122, 0, madvrSettings.m_UpRefAdaptiveSharpenStrength, "%1.1f", 0.0f, 0.1f, 1.5f, 70125, usePopup);
   AddToggle(groupMadvrUpSharp, SET_IMAGE_SUPER_RES, 70121, 0, madvrSettings.m_superRes);
   AddSlider(groupMadvrUpSharp, SET_IMAGE_SUPER_RES_STRENGTH, 70122, 0, madvrSettings.m_superResStrength, "%1.0f", 0.0f, 1.0f, 4.0f, 70121, usePopup);
+  AddSlider(groupMadvrUpSharp, SET_IMAGE_SUPER_RES_SHARPNESS, 70132, 0, madvrSettings.m_superResSharpness, "%1.0f", 0.0f, 1.0f, 4.0f, 70121, usePopup);
   AddSlider(groupMadvrUpSharp, SET_IMAGE_SUPER_RES_RADIUS, 70129, 0, madvrSettings.m_superResRadius, "%1.2f", 0.0f, 0.01f, 1.0f, 70121, usePopup);
+  AddToggle(groupMadvrUpSharp, SET_IMAGE_SUPER_RES_LINEAR, 70133, 0, madvrSettings.m_superResLinear);
   AddToggle(groupMadvrUpSharp, SET_IMAGE_SUPER_RES_FIRST, 70127, 0, madvrSettings.m_superResFirst);
 
   AddToggle(groupMadvrUpSharp, SET_IMAGE_REFINE_ONCE, 70126, 0, madvrSettings.m_refineOnce);
@@ -416,10 +420,20 @@ void CGUIDialogMadvrScaling::OnSettingChanged(const CSetting *setting)
     madvrSettings.m_superResStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
     CMadvrCallback::Get()->SetFloat("superResStrength", madvrSettings.m_superResStrength,1);
   }
+  else if (settingId == SET_IMAGE_SUPER_RES_SHARPNESS)
+  {
+    madvrSettings.m_superResSharpness = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
+    CMadvrCallback::Get()->SetFloat("superResSharpness", madvrSettings.m_superResSharpness, 1);
+  }
   else if (settingId == SET_IMAGE_SUPER_RES_RADIUS)
   {
     madvrSettings.m_superResRadius = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
     CMadvrCallback::Get()->SetFloat("superResRadius", madvrSettings.m_superResRadius);
+  }
+  else if (settingId == SET_IMAGE_SUPER_RES_LINEAR)
+  {
+    madvrSettings.m_superResLinear = static_cast<const CSettingBool*>(setting)->GetValue();
+    CMadvrCallback::Get()->SetBool("superResLinear", madvrSettings.m_superResLinear);
   }
   else if (settingId == SET_IMAGE_SUPER_RES_FIRST)
   {
@@ -521,7 +535,9 @@ void CGUIDialogMadvrScaling::HideUnused()
   setting = m_settingsManager->GetSetting(SET_IMAGE_SUPER_RES);
   bValue = static_cast<const CSettingBool*>(setting)->GetValue();
   SetVisible(SET_IMAGE_SUPER_RES_STRENGTH, bValue);
+  SetVisible(SET_IMAGE_SUPER_RES_SHARPNESS, bValue);
   SetVisible(SET_IMAGE_SUPER_RES_RADIUS, bValue);
+  SetVisible(SET_IMAGE_SUPER_RES_LINEAR, bValue);
   SetVisible(SET_IMAGE_SUPER_RES_FIRST, bValue);
   setting = m_settingsManager->GetSetting(SET_IMAGE_UPFINESHARP);
   bValue1 = static_cast<const CSettingBool*>(setting)->GetValue();

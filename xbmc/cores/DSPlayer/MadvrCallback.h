@@ -56,6 +56,7 @@ const float MADVR_DEFAULT_UPLUMASHARPENCLAMP = 0.035f;
 const float MADVR_DEFAULT_UPLUMASHARPENRADIUS = 1.0f;
 const float MADVR_DEFAULT_UPADAPTIVESHARPENSTRENGTH = 0.5f;
 const float MADVR_DEFAULT_SUPERRESSTRENGTH = 1.0f;
+const float MADVR_DEFAULT_SUPERRESSHARPNESS = 2.0f;
 const float MADVR_DEFAULT_SUPERRESRADIUS = 0.66f;
 
 
@@ -78,6 +79,7 @@ enum MADVR_SETTINGS_LIST
   MADVR_LIST_DEINTACTIVE,
   MADVR_LIST_SMOOTHMOTION,
   MADVR_LIST_NOSMALLSCALING,
+  MADVR_LIST_MOVESUBS,
   MADVR_LIST_DITHERING,
   MADVR_LIST_DEBAND,
   MADVR_LIST_DEBAND_LEVEL,
@@ -144,7 +146,8 @@ public:
   virtual void SetFloat(std::string path, float fValue, int iConv = 100){};
   virtual void SetDoubling(std::string path, int iValue){};
   virtual void SetDeintActive(std::string path, int iValue){};
-  virtual void SetNoSmallScaling(std::string path, int iValue){};
+  virtual void SetBoolValue(std::string path, std::string sValue, int iValue){};
+  virtual void SetMultiBool(std::string path, std::string sValue, int iValue){};
   virtual void SetSmoothmotion(std::string path, int iValue){};
   virtual void SetDithering(std::string path, int iValue){};
   virtual std::string GetSettingsName(MADVR_SETTINGS_LIST type, int iValue){ return ""; };
@@ -188,7 +191,8 @@ public:
   virtual void SetFloat(std::string path, float fValue, int iConv = 100);
   virtual void SetDoubling(std::string path, int iValue);
   virtual void SetDeintActive(std::string path, int iValue);
-  virtual void SetNoSmallScaling(std::string path, int iValue);
+  virtual void SetBoolValue(std::string path, std::string sValue, int iValue);
+  virtual void SetMultiBool(std::string path, std::string sValue, int iValue);
   virtual void SetSmoothmotion(std::string path, int iValue);
   virtual void SetDithering(std::string path, int iValue);
   virtual std::string GetSettingsName(MADVR_SETTINGS_LIST type, int iValue);

@@ -37,6 +37,8 @@ public:
   int m_Resolution;
   std::string m_TvShowName;
 
+  // Scaling
+
   int m_ChromaUpscaling;
   bool m_ChromaAntiRing;
   bool m_ChromaSuperRes;
@@ -62,6 +64,8 @@ public:
   int m_ImageQuadrupleLumaFactor;
   int m_ImageQuadrupleChromaFactor;
 
+  // Processing
+
   int m_deintactive;
   int m_deintforce;
   bool m_deintlookpixels;
@@ -85,7 +89,12 @@ public:
   bool m_adaptiveSharpen;
   float m_adaptiveSharpenStrength;
 
+  // Zoom Control
+
   int m_noSmallScaling;
+  int m_moveSubs;
+
+  // Upscale Refinement
 
   bool m_UpRefFineSharp;
   float m_UpRefFineSharpStrength;
@@ -97,7 +106,9 @@ public:
   float m_UpRefAdaptiveSharpenStrength;
   bool m_superRes;
   float m_superResStrength;
+  float m_superResSharpness;
   float m_superResRadius;
+  bool m_superResLinear;
 
   bool m_refineOnce;
   bool m_superResFirst;

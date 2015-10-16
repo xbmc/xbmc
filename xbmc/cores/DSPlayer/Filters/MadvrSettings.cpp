@@ -86,6 +86,7 @@ CMadvrSettings::CMadvrSettings()
   m_adaptiveSharpenStrength = MADVR_DEFAULT_ADAPTIVESHARPENSTRENGTH;
 
   m_noSmallScaling = -1;
+  m_moveSubs = 0;
 
   m_UpRefFineSharp = false;
   m_UpRefFineSharpStrength = MADVR_DEFAULT_UPFINESHARPSTRENGTH;
@@ -97,7 +98,9 @@ CMadvrSettings::CMadvrSettings()
   m_UpRefAdaptiveSharpenStrength = MADVR_DEFAULT_UPADAPTIVESHARPENSTRENGTH;
   m_superRes = false;
   m_superResStrength = MADVR_DEFAULT_SUPERRESSTRENGTH;
+  m_superResSharpness = MADVR_DEFAULT_SUPERRESSHARPNESS;
   m_superResRadius = MADVR_DEFAULT_SUPERRESRADIUS;
+  m_superResLinear = false;
 
 
   m_refineOnce = false;
@@ -155,6 +158,7 @@ bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
   if (m_adaptiveSharpenStrength != right.m_adaptiveSharpenStrength) return true;
 
   if (m_noSmallScaling != right.m_noSmallScaling) return true;
+  if (m_moveSubs != right.m_moveSubs) return true;
 
   if (m_UpRefFineSharp != right.m_UpRefFineSharp) return true;
   if (m_UpRefFineSharpStrength != right.m_UpRefFineSharpStrength) return true;
@@ -166,6 +170,7 @@ bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
   if (m_UpRefAdaptiveSharpenStrength != right.m_UpRefAdaptiveSharpenStrength) return true;
   if (m_superRes != right.m_superRes) return true;
   if (m_superResStrength != right.m_superResStrength) return true;
+  if (m_superResSharpness != right.m_superResSharpness) return true;
   if (m_superResRadius != right.m_superResRadius) return true;
 
   if (m_refineOnce != right.m_refineOnce) return true;

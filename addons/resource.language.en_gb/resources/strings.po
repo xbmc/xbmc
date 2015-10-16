@@ -18866,6 +18866,14 @@ msgctxt "#70131"
 msgid "- softness"
 msgstr ""
 
+msgctxt "#70132"
+msgid "- sharpness"
+msgstr ""
+
+msgctxt "#70133"
+msgid "- use linear light"
+msgstr ""
+
 msgctxt "#70200"
 msgid "Deinterlace auto-activation"
 msgstr ""
@@ -18936,6 +18944,18 @@ msgstr ""
 
 msgctxt "#70216"
 msgid "25 lines or less"
+msgstr ""
+
+msgctxt "#70217"
+msgid "Move subtitles"
+msgstr ""
+
+msgctxt "#70218"
+msgid "to bottom of the screen/window"
+msgstr ""
+
+msgctxt "#70219"
+msgid "into active area"
 msgstr ""
 
 msgctxt "#70300"

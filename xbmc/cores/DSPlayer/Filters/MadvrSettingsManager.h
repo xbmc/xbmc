@@ -67,7 +67,8 @@ public:
   virtual void SetFloat(std::string path, float fValue, int iConv = 100);
   virtual void SetDoubling(std::string path, int iValue);
   virtual void SetDeintActive(std::string path, int iValue);
-  virtual void SetNoSmallScaling(std::string path, int iValue);
+  virtual void SetBoolValue(std::string path, std::string sValue, int iValue);
+  virtual void SetMultiBool(std::string path, std::string sValue, int iValue);
   virtual void SetSmoothmotion(std::string path, int iValue);
   virtual void SetDithering(std::string path, int iValue);
   virtual std::string GetSettingsName(MADVR_SETTINGS_LIST type, int iValue);
@@ -95,7 +96,8 @@ private:
   void GetFloat(std::string path, float* fValue, int iConv = 100);
   void GetDoubling(std::string path, int* iValue);
   void GetDeintActive(std::string path, int* iValue);
-  void GetNoSmallScaling(std::string path, int* iValue);
+  void GetBoolValue(std::string path, std::string sValue, int* iValue);
+  void GetMultiBool(std::string path, std::string sValue, int* iValue);
   void GetSmoothmotion(std::string path, int* iValue);
   void GetDithering(std::string path, int* iValue);
   bool IsProfileActive(std::string path, std::string profile);
@@ -120,6 +122,7 @@ private:
   std::vector<CMadvrSettingsList* > m_settingsDeintForce;
   std::vector<CMadvrSettingsList* > m_settingsDeintActive;
   std::vector<CMadvrSettingsList* > m_settingsNoSmallScaling;
+  std::vector<CMadvrSettingsList* > m_settingsMoveSubs;
   std::vector<CMadvrSettingsList* > m_settingsSmoothMotion;
   std::vector<CMadvrSettingsList* > m_settingsDithering;
   std::vector<CMadvrSettingsList* > m_settingsDeband;

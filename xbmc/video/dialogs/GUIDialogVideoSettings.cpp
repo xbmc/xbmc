@@ -97,6 +97,7 @@
 #define SET_IMAGE_ADAPTIVESHARPEN_STRENGTH     "madvr.adaptivesharpenstrength"
 
 #define SETTING_MADVR_NOSMALLSCALING           "madvr.nosmallscaling"
+#define SETTING_MADVR_MOVESUBS                 "madvr.movesubs"
 #endif
 
 #define SETTING_VIDEO_STEREOSCOPICMODE    "video.stereoscopicmode"
@@ -232,7 +233,12 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
   else if (settingId == SETTING_MADVR_NOSMALLSCALING)
   {
     madvrSettings.m_noSmallScaling = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetNoSmallScaling("", madvrSettings.m_noSmallScaling);
+    CMadvrCallback::Get()->SetBoolValue("noSmallScaling", "noSmallScalingValue", madvrSettings.m_noSmallScaling);
+  }
+  else if (settingId == SETTING_MADVR_MOVESUBS)
+  {
+    madvrSettings.m_moveSubs = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+    CMadvrCallback::Get()->SetMultiBool("moveSubs", "moveSubsUp", madvrSettings.m_moveSubs);
   }
   else if (settingId == VIDEO_SETTINGS_DS_STATS)
   {
@@ -792,6 +798,13 @@ void CGUIDialogVideoSettings::InitializeSettings()
 
       // MADVR SCALING
       AddButton(groupMadvrScale, SETTING_MADVR_SCALING, 70000, 0);
+
+      // MADVR MOVESUBS
+      entries.clear();
+      entries.push_back(make_pair(70117, -1));
+      CMadvrCallback::Get()->AddEntry(MADVR_LIST_MOVESUBS, &entries);
+
+      AddList(groupMadvrRendering, SETTING_MADVR_MOVESUBS, 70217, 0, static_cast<int>(madvrSettings.m_moveSubs), entries, 70217);
 
       // MADVR SMOOTHMOTION
       entries.clear();
