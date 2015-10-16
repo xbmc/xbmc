@@ -3985,6 +3985,13 @@ void CApplication::LoadVideoSettings(const CFileItem& item)
   if (dsdbs.Open())
   {
     CFileItem item = CurrentFileItem();
+
+    if (CSettings::Get().GetBool("myvideos.extractflags") && item.HasVideoInfoTag() && !item.GetVideoInfoTag()->HasStreamDetails())
+    {
+      CLog::Log(LOGDEBUG, "%s - trying to extract filestream details from video file %s", __FUNCTION__, item.GetPath().c_str());
+      CDVDFileInfo::GetFileStreamDetails(&item);
+    }
+
     CStreamDetails streamDetails = item.GetVideoInfoTag()->m_streamDetails;
     int res = streamDetails.VideoDimsToResolution(streamDetails.GetVideoWidth(), streamDetails.GetVideoHeight());
     std::string tvShowName = item.GetVideoInfoTag()->m_strShowTitle;
