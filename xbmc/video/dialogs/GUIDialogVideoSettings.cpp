@@ -363,7 +363,8 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
 
     BeginEnumFilters(g_dsGraph->pFilterGraph, pEF, pBF)
     {
-      if ((pBF == CGraphFilters::Get()->AudioRenderer.pBF && CGraphFilters::Get()->AudioRenderer.guid != CLSID_ReClock) || pBF == CGraphFilters::Get()->VideoRenderer.pBF)
+      if ((pBF == CGraphFilters::Get()->AudioRenderer.pBF && CGraphFilters::Get()->AudioRenderer.guid != CLSID_ReClock && CGraphFilters::Get()->AudioRenderer.guid != CLSID_SANEAR)
+        || pBF == CGraphFilters::Get()->VideoRenderer.pBF)
         continue;
 
       Com::SmartQIPtr<ISpecifyPropertyPages> pProp = pBF;

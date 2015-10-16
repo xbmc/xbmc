@@ -118,7 +118,7 @@ HRESULT CFGManager2::RenderFileXbmc(const CFileItem& pFileItem)
   CGraphFilters::Get()->SetHasSubFilter(false);
   BeginEnumFilters(g_dsGraph->pFilterGraph, pEF, pBF)
   {
-    if ((pBF == CGraphFilters::Get()->AudioRenderer.pBF && CGraphFilters::Get()->AudioRenderer.guid != CLSID_ReClock) || pBF == CGraphFilters::Get()->VideoRenderer.pBF)
+    if (pBF == CGraphFilters::Get()->AudioRenderer.pBF || pBF == CGraphFilters::Get()->VideoRenderer.pBF)
       continue;
 
     hr = pBF->QueryInterface(__uuidof(pSub), (void **)&pSub);

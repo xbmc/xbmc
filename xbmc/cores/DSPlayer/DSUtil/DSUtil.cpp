@@ -682,7 +682,7 @@ bool IsAudioWaveRenderer(IBaseFilter* pBF)
 	memcpy(&clsid, &GUID_NULL, sizeof(clsid));
 	pBF->GetClassID(&clsid);
 
-	return (clsid == CLSID_DSoundRender || clsid == CLSID_AudioRender || clsid == CLSID_ReClock
+  return (clsid == CLSID_DSoundRender || clsid == CLSID_AudioRender || clsid == CLSID_ReClock || clsid == CLSID_SANEAR
 		|| clsid == __uuidof(CNullAudioRenderer) || clsid == __uuidof(CNullUAudioRenderer));
 }
 
