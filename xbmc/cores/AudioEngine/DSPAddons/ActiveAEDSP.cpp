@@ -86,42 +86,6 @@ CActiveAEDSP &CActiveAEDSP::GetInstance()
 }
 //@}
 
-/*! @name message handling methods */
-//@{
-void CActiveAEDSP::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
-{
-  switch(pMsg->dwMessage)
-  {
-    case TMSG_SETAUDIODSPSTATE:
-      if(pMsg->param1 == ACTIVE_AE_DSP_STATE_ON)
-      {
-        if(pMsg->param2 == ACTIVE_AE_DSP_ASYNC_ACTIVATE)
-        {
-          Activate(true);
-        }
-        else
-        {
-          Activate();
-        }
-      }
-      else if(pMsg->param1 == ACTIVE_AE_DSP_STATE_OFF)
-      {
-        Deactivate();
-      }
-    break;
-
-    default:
-      CLog::Log(LOGERROR, "CActiveAEDSP received a invalid message! Nothing is processed.");
-    break;
-  }
-}
-
-int CActiveAEDSP::GetMessageMask()
-{
-  return TMSG_MASK_AUDIO_DSP;
-}
-//@}
-
 /*! @name initialization and configuration methods */
 //@{
 class CActiveAEDSPStartJob : public CJob
