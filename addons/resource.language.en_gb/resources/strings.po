@@ -2474,6 +2474,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#563"
 msgid "Rating"
 msgstr ""
@@ -18102,7 +18103,7 @@ msgstr ""
 #. Used for the viewstate selection
 #: xbmc/video/GUIViewStateVideo.xml
 msgctxt "#38018"
-msgid "User rating"
+msgid "My rating"
 msgstr ""
 
 #. Setting #38019 "Settings -> System -> Audio output -> Support 8 channel DTS-HD audio decoding"
@@ -18115,4 +18116,15 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#38020"
 msgid "Enables decoding of high quality DTS-HD audio streams. Note: This increases CPU load and is only available when DTS and DTS-HD audio passthrough are disabled."
+msgstr ""
+
+#. Used for the viewstate selection
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+msgctxt "#38022"
+msgid "No rating"
+msgstr ""
+
+#. Used in Confluence
+msgctxt "#38023"
+msgid "Set my rating"
 msgstr ""

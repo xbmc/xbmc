@@ -507,7 +507,7 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldStartOffset) return CMusicDatabase::song_iStartOffset;
     else if (field == FieldEndOffset) return CMusicDatabase::song_iEndOffset;
     else if (field == FieldLastPlayed) return CMusicDatabase::song_lastplayed;
-    else if (field == FieldRating) return CMusicDatabase::song_rating;
+    else if (field == FieldRating) return CMusicDatabase::song_userrating;
     else if (field == FieldComment) return CMusicDatabase::song_comment;
     else if (field == FieldMoods) return CMusicDatabase::song_mood;
     else if (field == FieldAlbum) return CMusicDatabase::song_strAlbum;
