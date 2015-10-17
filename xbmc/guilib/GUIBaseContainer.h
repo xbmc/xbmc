@@ -91,6 +91,8 @@ public:
    */
   void SetRenderOffset(const CPoint &offset);
 
+  void SetClickActions(const CGUIAction& clickActions) { m_clickActions = clickActions; };
+
   void SetAutoScrolling(const TiXmlNode *node);
   void ResetAutoScrolling();
   void UpdateAutoScrolling(unsigned int currentTime);
@@ -215,6 +217,8 @@ private:
   CStopWatch m_scrollTimer;
   CStopWatch m_lastScrollStartTimer;
   CStopWatch m_pageChangeTimer;
+
+  CGUIAction m_clickActions;
 
   // letter match searching
   CStopWatch m_matchTimer;
