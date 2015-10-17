@@ -59,6 +59,7 @@ private:
   void OnSettings();
   void OnChangeLog();
   void OnSelect();
+  void OnToggleAutoUpdates();
 
   /*! Returns true if current addon can be opened (i.e is a plugin)*/
   bool CanOpen() const;

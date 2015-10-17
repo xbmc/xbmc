@@ -11988,7 +11988,12 @@ msgctxt "#21339"
 msgid "Version %s"
 msgstr ""
 
-#empty strings from id 21340 to 21358
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#21340"
+msgid "Auto-update"
+msgstr ""
+
+#empty strings from id 21341 to 21358
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
 msgctxt "#21359"
