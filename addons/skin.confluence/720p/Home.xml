@@ -24,7 +24,7 @@
 			<depth>DepthMenu</depth>
 			<left>0</left>
 			<top>60</top>
-			<visible>Player.HasAudio + !Skin.HasSetting(homepageMusicinfo) + IsEmpty(Window(videolibrary).Property(PlayingBackgroundMedia))</visible>
+			<visible>Player.HasAudio + !Skin.HasSetting(homepageMusicinfo)</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
 			<control type="image">
@@ -228,7 +228,7 @@
 			<depth>DepthMenu</depth>
 			<left>0</left>
 			<top>50</top>
-			<visible>Player.HasVideo + !Skin.HasSetting(homepageVideoinfo) + IsEmpty(Window(videolibrary).Property(PlayingBackgroundMedia))</visible>
+			<visible>Player.HasVideo + !Skin.HasSetting(homepageVideoinfo)</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
 			<control type="group">
@@ -462,7 +462,6 @@
 				<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="225" />
 				<effect type="fade" start="100" end="0" time="225" />
 			</animation>
-			<visible>IsEmpty(Window(videolibrary).Property(PlayingBackgroundMedia))</visible>
 			<control type="image">
 				<description>Background End image</description>
 				<left>0</left>
