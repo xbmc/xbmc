@@ -402,6 +402,7 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
   m_lastScanTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
   m_bUpdateLastScanTime = true;
 
+  SetChanged(true);
   NotifyObservers(ObservableMessageEpg);
 
   return true;
@@ -863,4 +864,17 @@ bool CEpg::IsValid(void) const
   if (ScraperName() == "client")
     return m_pvrChannel != NULL;
   return true;
+}
+
+std::vector<CEpgInfoTagPtr> CEpg::GetAllEventsWithBroadcastId() const
+{
+  CSingleLock lock(m_critSection);
+  std::vector<CEpgInfoTagPtr> events;
+  events.reserve(m_tags.size());
+  for (const auto &infoTag : m_tags)
+  {
+    if (infoTag.second->UniqueBroadcastID())
+      events.push_back(infoTag.second);
+  }
+  return events;
 }
