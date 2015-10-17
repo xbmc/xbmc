@@ -455,11 +455,14 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
   {
     int result;
     if(pData)
+    {
       result = m_pHardware->Check(m_pCodecContext);
+      result &= ~VC_NOBUFFER;
+    }
     else
       result = m_pHardware->Decode(m_pCodecContext, NULL);
 
-    if(result)
+    if (result)
       return result;
   }
 

@@ -602,7 +602,6 @@ void CVideoPlayerVideo::Process()
         // check for a new picture
         if (iDecoderState & VC_PICTURE)
         {
-
           // try to retrieve the picture (should never fail!), unless there is a demuxer bug ofcours
           m_pVideoCodec->ClearPicture(&picture);
           if (m_pVideoCodec->GetPicture(&picture))

@@ -751,7 +751,7 @@ void CDecoder::FFReleaseBuffer(uint8_t *data)
 int CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
 {
   int result = Check(avctx);
-  if (result)
+  if (result && result != VC_NOBUFFER)
     return result;
 
   CSingleLock lock(m_DecoderSection);
