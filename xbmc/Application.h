@@ -283,7 +283,7 @@ public:
   void UpdateLibraries();
   void CheckMusicPlaylist();
 
-  bool ExecuteXBMCAction(std::string action);
+  bool ExecuteXBMCAction(std::string action, const CGUIListItemPtr &item = NULL);
 
   static bool OnEvent(XBMC_Event& newEvent);
 
