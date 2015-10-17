@@ -1012,13 +1012,6 @@
 						<include>ButtonInfoDialogsCommonValues</include>
 						<label>38023</label>
 					</control>
-					<control type="button" id="100">
-						<description>Fetch TvTunes stuff</description>
-						<include>ButtonInfoDialogsCommonValues</include>
-						<label>31127</label>
-						<onclick>RunScript(script.tvtunes,mode=solo)</onclick>
-						<visible>Skin.HasSetting(ActivateTvTunes) + System.HasAddon(script.tvtunes) + [Container.Content(TVShows) | Container.Content(movies) | Container.Content(musicvideos)] + IsEmpty(Window(movieinformation).Property("TvTunes_HideVideoInfoButton"))</visible>
-					</control>
 				</control>
 			</control>
 		</control>
