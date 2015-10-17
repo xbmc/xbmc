@@ -116,6 +116,7 @@ bool CGUIListContainer::OnMessage(CGUIMessage& message)
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)
     {
       SetCursor(0);
+      SetOffset(0);
     }
   }
   return CGUIBaseContainer::OnMessage(message);
