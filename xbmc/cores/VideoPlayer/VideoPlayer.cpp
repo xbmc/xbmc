@@ -3655,8 +3655,11 @@ void CVideoPlayer::FlushBuffers(bool queued, double pts, bool accurate, bool syn
 
       // we should now wait for init cache
       SetCaching(CACHESTATE_FLUSH);
-      m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_STARTING;
-      m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_STARTING;
+      if (sync)
+      {
+        m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_STARTING;
+        m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_STARTING;
+      }
     }
 
     if(pts != DVD_NOPTS_VALUE && sync)
