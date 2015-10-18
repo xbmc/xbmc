@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=sqlite
-VERSION=3080600
+VERSION=3090200
 SOURCE=$(LIBNAME)-autoconf-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
