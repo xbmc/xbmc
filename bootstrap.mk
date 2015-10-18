@@ -28,7 +28,7 @@ lib/libdvd/libdvdnav/configure: lib/libdvd/libdvdread/configure
 	autoreconf -vif $(@D)
 	-@rm -rf $(@D)/autom4te.cache
 
-configure: configure.ac
+$(srcdir)/configure: $(srcdir)/configure.ac
 	autoreconf -vif $(@D)
 	-@rm -rf $(@D)/autom4te.cache
 	@test -n "$$BOOTSTRAP_STANDALONE" || ( echo "Configuration is stale. You should almost certainly reconfigure" && false )
