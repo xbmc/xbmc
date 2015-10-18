@@ -10,9 +10,9 @@ all: $(TARGET)
 
 $(TARGET): $(IMAGES)
 ifeq (@ARCH@,arm)
-	@TEXTUREPACKER@ -use_none -input . -output $(TARGET)
+	@TEXTUREPACKER@ -dupecheck -use_none -input . -output $(TARGET)
 else
-	@TEXTUREPACKER@ -input . -output $(TARGET)
+	@TEXTUREPACKER@ -dupecheck -input . -output $(TARGET)
 
 endif
 
