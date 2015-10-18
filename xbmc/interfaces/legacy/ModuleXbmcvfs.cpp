@@ -24,6 +24,7 @@
 #include "filesystem/Directory.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
+#include "URL.h"
 #include "Util.h"
 
 namespace XBMCAddon
@@ -100,6 +101,11 @@ namespace XBMCAddon
         {
           URIUtils::RemoveSlashAtEnd(itemPath);
           std::string strFileName = URIUtils::GetFileName(itemPath);
+          if (strFileName.empty())
+          {
+            CURL url(itemPath);
+            strFileName = url.GetHostName();
+          }
           ret.first().push_back(strFileName);
         }
         else // file
