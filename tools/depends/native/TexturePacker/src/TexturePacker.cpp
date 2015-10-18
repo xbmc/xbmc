@@ -286,7 +286,7 @@ void Usage()
   puts("  -help            Show this screen.");
   puts("  -input <dir>     Input directory. Default: current dir");
   puts("  -output <dir>    Output directory/filename. Default: Textures.xpr");
-  puts("  -dupecheck       Enable duplicate file detection. Reduces output file size. Default: on");
+  puts("  -dupecheck       Enable duplicate file detection. Reduces output file size. Default: off");
   puts("  -use_lzo         Use lz0 packing.     Default: on");
   puts("  -use_dxt         Use DXT compression. Default: on");
   puts("  -use_none        Use No  compression. Default: off");
