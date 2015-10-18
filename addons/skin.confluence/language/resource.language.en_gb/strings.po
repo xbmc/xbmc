@@ -267,13 +267,7 @@ msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr ""
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr ""
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr ""
+#empty strings from id 31126 to 31127
 
 msgctxt "#31128"
 msgid "Lyrics"

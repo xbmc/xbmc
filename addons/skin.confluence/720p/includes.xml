@@ -312,7 +312,7 @@
 	</include>
 	<include name="CommonNowPlaying">
 		<control type="group">
-			<visible>Player.HasMedia + !SubString(Window(videolibrary).Property(TvTunesIsAlive),TRUE)</visible>
+			<visible>Player.HasMedia</visible>
 			<include>VisibleFadeEffect</include>
 			<animation effect="fade" time="200" condition="Window.Previous(Home)">WindowOpen</animation>
 			<animation effect="fade" time="200" condition="Window.Next(Home)">WindowClose</animation>

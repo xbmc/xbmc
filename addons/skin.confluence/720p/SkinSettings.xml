@@ -284,30 +284,6 @@
 						<onclick>Skin.ToggleSetting(HideFilenameFlagging)</onclick>
 						<selected>Skin.HasSetting(HideFilenameFlagging)</selected>
 					</control>
-					<control type="label" id="104">
-						<width>750</width>
-						<height>45</height>
-						<font>font13_title</font>
-						<label>20343</label>
-						<textcolor>blue</textcolor>
-						<shadowcolor>black</shadowcolor>
-						<align>left</align>
-						<aligny>center</aligny>
-						<visible>System.HasAddon(script.tvtunes)</visible>
-					</control>
-					<control type="radiobutton" id="115">
-						<width>750</width>
-						<height>40</height>
-						<font>font13</font>
-						<label>31126</label>
-						<textcolor>grey2</textcolor>
-						<focusedcolor>white</focusedcolor>
-						<texturefocus>MenuItemFO.png</texturefocus>
-						<texturenofocus>MenuItemNF.png</texturenofocus>
-						<onclick>Skin.ToggleSetting(ActivateTvTunes)</onclick>
-						<selected>Skin.HasSetting(ActivateTvTunes)</selected>
-						<visible>System.HasAddon(script.tvtunes)</visible>
-					</control>
 					<control type="label" id="106">
 						<width>750</width>
 						<height>45</height>
