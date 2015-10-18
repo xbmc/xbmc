@@ -274,7 +274,7 @@ bool CBaseTexture::LoadFromFileInternal(const std::string& texturePath, unsigned
     pImage = ImageFactory::CreateFallbackLoader(texturePath);
     if (!LoadIImage(pImage, (unsigned char *)buf.get(), buf.size(), width, height))
     {
-      CLog::Log(LOGDEBUG, "%s - Load of %s failed.", __FUNCTION__, texturePath.c_str());
+      CLog::Log(LOGDEBUG, "%s - Load of %s failed.", __FUNCTION__, CURL::GetRedacted(texturePath).c_str());
       delete pImage;
       return false;
     }
