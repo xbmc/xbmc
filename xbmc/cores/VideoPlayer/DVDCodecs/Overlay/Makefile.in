@@ -10,6 +10,6 @@ SRCS += contrib/cc_decoder708.cpp
 
 LIB = Overlay.a
 
-include @abs_top_srcdir@/Makefile.include
+include ../../../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 

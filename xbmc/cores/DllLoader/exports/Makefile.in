@@ -7,7 +7,7 @@ LIB = exports.a
 
 CLEAN_FILES = wrapper.def
 
-include @abs_top_srcdir@/Makefile.include
+include ../../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 
 wrapper.o : wrapper.c
