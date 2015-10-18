@@ -27,6 +27,8 @@
 #include <CoreVideo/CoreVideo.h>
 #include <CoreMedia/CoreMedia.h>
 
+class DllVideoToolBoxInterface;
+
 // tracks a frame in and output queue in display order
 typedef struct frame_queue {
   double              dts;
@@ -45,6 +47,8 @@ public:
   CDVDVideoCodecVideoToolBox();
   virtual ~CDVDVideoCodecVideoToolBox();
 
+  static DllVideoToolBoxInterface *GetDllImpl() { return m_pLibVTB; }
+
   // Required overrides
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose(void);
@@ -56,6 +60,7 @@ public:
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
 
 protected:
+  bool HandleDyLoad();
   void DisplayQueuePop(void);
   void CreateVTSession(int width, int height, CMFormatDescriptionRef fmt_desc);
   void DestroyVTSession(void);
@@ -78,6 +83,7 @@ protected:
 
   bool              m_convert_bytestream;
   bool              m_convert_3byteTo4byteNALSize;
+  static DllVideoToolBoxInterface *m_pLibVTB;//the framework
 };
 
 #endif
