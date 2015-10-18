@@ -235,10 +235,10 @@ STDMETHODIMP_(ULONG) CDXVADecoderWrapper::AddRef(void)
 
 STDMETHODIMP_(ULONG) CDXVADecoderWrapper::Release(void)
 {
-  AtomicDecrement(&m_refs);
-  assert(m_refs >= 0);
-  if (m_refs == 0) delete this;
-  return m_refs;
+  long refs = AtomicDecrement(&m_refs);
+  assert(refs >= 0);
+  if (refs == 0) delete this;
+  return refs;
 };
 
 STDMETHODIMP CDXVADecoderWrapper::GetBuffer(UINT BufferType, void **ppBuffer, UINT *pBufferSize)
