@@ -17,4 +17,4 @@ endif
 	
 LIB = osx.a
 
-include @abs_top_srcdir@/Makefile.include
+include ../../Makefile.include

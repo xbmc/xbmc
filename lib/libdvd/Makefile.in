@@ -78,5 +78,5 @@ libdvdnav/obj/libdvdnav.a: libdvdnav;
 libdvdnav: compile
 	$(MAKE) -C $@
 
-include @abs_top_srcdir@/Makefile.include
+include ../../Makefile.include
 

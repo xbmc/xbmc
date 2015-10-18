@@ -51,7 +51,7 @@ CompileInfo.cpp: ../version.txt CompileInfo.cpp.in GitRevision
 GitRevision:
 	$(MAKE) -f gen-compileinfo.mk GitRevision
 
-include @abs_top_srcdir@/Makefile.include
+include ../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 
 
