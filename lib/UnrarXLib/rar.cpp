@@ -1,9 +1,8 @@
 #include "rar.hpp"
 #include "UnrarX.hpp"
-#include "guilib/GUIWindowManager.h"
 #include "filesystem/File.h"
-
 #include "smallfn.cpp"
+#include <memory>
 
 using namespace std;
 
