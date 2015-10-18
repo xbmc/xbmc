@@ -1482,8 +1482,8 @@
           <default>0</default>
           <constraints>
             <minimum>0</minimum>
-            <step>1</step>
-            <maximum>60</maximum>
+            <step>15</step>
+            <maximum>180</maximum>
           </constraints>
           <control type="spinner" format="string">
             <formatlabel>14044</formatlabel>
@@ -1494,8 +1494,8 @@
           <default>0</default>
           <constraints>
             <minimum>0</minimum>
-            <step>1</step>
-            <maximum>60</maximum>
+            <step>15</step>
+            <maximum>180</maximum>
           </constraints>
           <control type="spinner" format="string">
             <formatlabel>14044</formatlabel>
