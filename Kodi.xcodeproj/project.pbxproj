@@ -4612,6 +4612,7 @@
 		DFBB4307178B574E006CC20A /* AddonCallbacksCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonCallbacksCodec.h; sourceTree = "<group>"; };
 		DFBB4317178B5E6F006CC20A /* CompileInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CompileInfo.cpp; sourceTree = "<group>"; };
 		DFBB4318178B5E6F006CC20A /* CompileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompileInfo.h; sourceTree = "<group>"; };
+		DFBD336A1BD531CB001A8FEE /* DllVideoToolBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllVideoToolBox.h; sourceTree = "<group>"; };
 		DFBE803D15F7D72100D7D102 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		DFC6F4AD1AFF7CB10039A7FA /* _kiss_fft_guts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _kiss_fft_guts.h; sourceTree = "<group>"; };
 		DFC6F4AF1AFF7CB10039A7FA /* kiss_fft.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = kiss_fft.c; sourceTree = "<group>"; };
@@ -8458,6 +8459,7 @@
 			children = (
 				E38E15430D25F9F900618676 /* libmpeg2 */,
 				E38E153B0D25F9F900618676 /* DllLibMpeg2.h */,
+				DFBD336A1BD531CB001A8FEE /* DllVideoToolBox.h */,
 				F597B05A18A804E0005AADAE /* DVDVideoCodec.cpp */,
 				E38E153C0D25F9F900618676 /* DVDVideoCodec.h */,
 				E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */,
