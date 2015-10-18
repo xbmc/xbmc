@@ -470,6 +470,14 @@ bool CDarwinUtils::IsIosSandboxed(void)
       {
         ret = 1;
       }
+
+      // since ios8 the sandbox filesystem has moved to container approach
+      // we are also sandboxed if this is our bundle path
+      if (strlen("/var/mobile/Containers/Bundle/") < path_size &&
+        strncmp(given_path, "/var/mobile/Containers/Bundle/", strlen("/var/mobile/Containers/Bundle/")) == 0)
+      {
+        ret = 1;
+      }
     }
   }
   return ret == 1;
