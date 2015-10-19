@@ -63,6 +63,7 @@
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfilesManager.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRSettings.h"
 #include "pvr/windows/GUIWindowPVRGuide.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
@@ -592,6 +593,7 @@ void CSettings::Uninitialize()
 #endif // defined(TARGET_LINUX)
   m_settingsManager->UnregisterSettingOptionsFiller("verticalsyncs");
   m_settingsManager->UnregisterSettingOptionsFiller("keyboardlayouts");
+  m_settingsManager->UnregisterSettingOptionsFiller("pvrrecordmargins");
 
   // unregister ISettingCallback implementations
   m_settingsManager->UnregisterCallback(&CEventLog::GetInstance());
@@ -959,6 +961,7 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("verticalsyncs", CDisplaySettings::SettingOptionsVerticalSyncsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("keyboardlayouts", CKeyboardLayoutManager::SettingOptionsKeyboardLayoutsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("loggingcomponents", CAdvancedSettings::SettingOptionsLoggingComponentsFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("pvrrecordmargins", PVR::CPVRSettings::MarginTimeFiller);
 }
 
 void CSettings::InitializeConditions()
