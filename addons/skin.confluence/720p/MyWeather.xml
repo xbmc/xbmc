@@ -577,12 +577,6 @@
 					<onclick>Skin.ToggleSetting(ShowWeatherFanart)</onclick>
 					<selected>!Skin.HasSetting(ShowWeatherFanart)</selected>
 				</control>
-				<control type="button" id="251">
-					<include>ButtonCommonValues</include>
-					<label>31317</label>
-					<onclick>Skin.SetPath(WeatherFanartDir)</onclick>
-					<enable>Skin.HasSetting(ShowWeatherFanart)</enable>
-				</control>
 				<include>CommonNowPlaying_Controls</include>
 			</control>
 		</control>
