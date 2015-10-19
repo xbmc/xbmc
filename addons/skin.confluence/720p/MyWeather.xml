@@ -9,12 +9,12 @@
 			<depth>DepthBackground</depth>
 			<include>BackgroundDimensions</include>
 			<aspectratio>scale</aspectratio>
-			<imagepath background="true">$INFO[Skin.String(WeatherFanartDir)]$INFO[Window(Weather).Property(Current.FanartCode)]</imagepath>
+			<imagepath background="true">resource://resource.images.weatherfanart.multi/$INFO[Window(Weather).Property(Current.FanartCode)]</imagepath>
 			<timeperimage>10000</timeperimage>
 			<randomize>true</randomize>
 			<fadetime>1000</fadetime>
 			<include>VisibleFadeEffect</include>
-			<visible>Skin.HasSetting(ShowWeatherFanart) + !IsEmpty(Skin.String(WeatherFanartDir))</visible>
+			<visible>System.HasAddon(resource.images.weatherfanart.multi)</visible>
 			<animation effect="fade" time="150">WindowClose</animation>
 		</control>
 		<include name="CommonWindowHeader">
@@ -559,19 +559,6 @@
 					<onclick>ActivateWindow(MyWeatherSettings)</onclick>
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
-				</control>
-				<control type="radiobutton" id="250">
-					<description>Fanart Toggle</description>
-					<include>ButtonCommonValues</include>
-					<label>31307</label>
-					<onclick>Skin.ToggleSetting(ShowWeatherFanart)</onclick>
-					<selected>!Skin.HasSetting(ShowWeatherFanart)</selected>
-				</control>
-				<control type="button" id="251">
-					<include>ButtonCommonValues</include>
-					<label>31317</label>
-					<onclick>Skin.SetPath(WeatherFanartDir)</onclick>
-					<enable>Skin.HasSetting(ShowWeatherFanart)</enable>
 				</control>
 				<include>CommonNowPlaying_Controls</include>
 			</control>
