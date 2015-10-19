@@ -108,7 +108,6 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
     for (const auto &epgEntry : m_epgs)
     {
       epgEntry.second->UnregisterObserver(this);
-      delete epgEntry.second;
     }
     m_epgs.clear();
     m_iNextEpgUpdate  = 0;
@@ -285,7 +284,7 @@ bool CEpgContainer::PersistAll(void)
 
   for (EPGMAP::const_iterator it = copy.begin(); it != copy.end() && !m_bStop; ++it)
   {
-    CEpg *epg = it->second;
+    CEpgPtr epg = it->second;
     if (epg && epg->NeedsSave())
     {
       bReturn &= epg->Persist();
@@ -331,10 +330,10 @@ void CEpgContainer::Process(void)
 
       // get the channel
       CPVRChannelPtr channel = g_PVRChannelGroups->GetByUniqueID(request.channelID, request.clientID);
-      CEpg* epg(NULL);
+      CEpgPtr epg;
 
       // get the EPG for the channel
-      if (!channel || (epg = channel->GetEPG()) == NULL)
+      if (!channel || !(epg = channel->GetEPG()))
       {
         CLog::Log(LOGERROR, "PVR - %s - invalid channel or channel doesn't have an EPG", __FUNCTION__);
         continue;
@@ -376,7 +375,7 @@ void CEpgContainer::Process(void)
   }
 }
 
-CEpg *CEpgContainer::GetById(int iEpgId) const
+CEpgPtr CEpgContainer::GetById(int iEpgId) const
 {
   if (iEpgId < 0)
     return NULL;
@@ -395,7 +394,7 @@ CEpgInfoTagPtr CEpgContainer::GetTagById(unsigned int iBroadcastId) const
   return retval;
 }
 
-CEpg *CEpgContainer::GetByChannel(const CPVRChannel &channel) const
+CEpgPtr CEpgContainer::GetByChannel(const CPVRChannel &channel) const
 {
   CSingleLock lock(m_critSection);
   for (const auto &epgEntry : m_epgs)
@@ -410,7 +409,7 @@ CEpg *CEpgContainer::GetByChannel(const CPVRChannel &channel) const
 void CEpgContainer::InsertFromDatabase(int iEpgID, const std::string &strName, const std::string &strScraperName)
 {
   // table might already have been created when pvr channels were loaded
-  CEpg* epg = GetById(iEpgID);
+  CEpgPtr epg = GetById(iEpgID);
   if (epg)
   {
     if (epg->Name() != strName || epg->ScraperName() != strScraperName)
@@ -423,7 +422,7 @@ void CEpgContainer::InsertFromDatabase(int iEpgID, const std::string &strName, c
   else
   {
     // create a new epg table
-    epg = new CEpg(iEpgID, strName, strScraperName, true);
+    epg.reset(new CEpg(iEpgID, strName, strScraperName, true));
     if (epg)
     {
       m_epgs.insert(std::make_pair(iEpgID, epg));
@@ -433,7 +432,7 @@ void CEpgContainer::InsertFromDatabase(int iEpgID, const std::string &strName, c
   }
 }
 
-CEpg *CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
+CEpgPtr CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
 {
   if (!channel)
     return NULL;
@@ -441,14 +440,14 @@ CEpg *CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
   WaitForUpdateFinish(true);
   LoadFromDB();
 
-  CEpg *epg(NULL);
+  CEpgPtr epg;
   if (channel->EpgID() > 0)
     epg = GetById(channel->EpgID());
 
   if (!epg)
   {
     channel->SetEpgID(NextEpgId());
-    epg = new CEpg(channel, false);
+    epg.reset(new CEpg(channel, false));
 
     CSingleLock lock(m_critSection);
     m_epgs.insert(std::make_pair((unsigned int)epg->EpgID(), epg));
@@ -514,7 +513,6 @@ bool CEpgContainer::DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase /* = fal
     m_database.Delete(*epgEntry->second);
 
   epgEntry->second->UnregisterObserver(this);
-  delete epgEntry->second;
   m_epgs.erase(epgEntry);
 
   return true;
@@ -622,10 +620,9 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
     return false;
   }
 
-  std::vector<CEpg*> invalidTables;
+  std::vector<CEpgPtr> invalidTables;
 
   /* load or update all EPG tables */
-  CEpg *epg;
   unsigned int iCounter(0);
   for (const auto &epgEntry : m_epgs)
   {
@@ -635,7 +632,7 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       break;
     }
 
-    epg = epgEntry.second;
+    CEpgPtr epg = epgEntry.second;
     if (!epg)
       continue;
 
@@ -660,7 +657,7 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       invalidTables.push_back(epg);
   }
 
-  for (std::vector<CEpg*>::iterator it = invalidTables.begin(); it != invalidTables.end(); ++it)
+  for (auto it = invalidTables.begin(); it != invalidTables.end(); ++it)
     DeleteEpg(**it, true);
 
   if (bInterrupted)
