@@ -87,6 +87,11 @@ public:
   */
   const std::string GetAlbumArtistString() const;
 
+  /*! \brief Get album artist IDs (for json rpc) from the vector of artistcredits objects
+  \return album artist IDs as a vector of integers
+  */
+  const std::vector<int> GetArtistIDArray() const;
+
   typedef enum ReleaseType {
     Album = 0,
     Single
