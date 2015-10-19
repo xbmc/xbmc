@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2015 Team Kodi
+ *      http://kodi.tv
  *      Some code borrowed from Dmitry Moskalchuk.
  *
  * Copyright (c) 2011-2012 Dmitry Moskalchuk <dm@crystax.net>.
