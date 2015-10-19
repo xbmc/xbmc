@@ -31,7 +31,7 @@ public:
   CGUIWindowPrograms(void);
   virtual ~CGUIWindowPrograms(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnInfo(int iItem);
+  virtual void OnItemInfo(int iItem);
 protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};
   virtual bool Update(const std::string& strDirectory, bool updateFilterPath = true);

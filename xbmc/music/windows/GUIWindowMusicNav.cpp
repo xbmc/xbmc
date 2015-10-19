@@ -650,7 +650,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         if (pWindow)
         {
           ADDON::ScraperPtr info;
-          pWindow->OnInfo(item.get(),info);
+          pWindow->OnItemInfo(item.get(),info);
           Refresh();
         }
       }
@@ -658,7 +658,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
 
   case CONTEXT_BUTTON_INFO_ALL:
-    OnInfoAll(itemNumber);
+    OnItemInfoAll(itemNumber);
     return true;
 
   case CONTEXT_BUTTON_SET_DEFAULT:
@@ -751,7 +751,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         m_musicdatabase.SetScraperForPath(path,scraper);
         if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20442}, CVariant{20443}))
         {
-          OnInfoAll(itemNumber,true,true);
+          OnItemInfoAll(itemNumber,true,true);
         }
 
       }

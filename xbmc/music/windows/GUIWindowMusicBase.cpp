@@ -238,7 +238,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         }
         else if (iAction == ACTION_SHOW_INFO)
         {
-          OnInfo(iItem);
+          OnItemInfo(iItem);
         }
         else if (iAction == ACTION_DELETE_ITEM)
         {
@@ -311,7 +311,7 @@ bool CGUIWindowMusicBase::OnAction(const CAction &action)
   return CGUIMediaWindow::OnAction(action);
 }
 
-void CGUIWindowMusicBase::OnInfoAll(int iItem, bool bCurrent /* = false */, bool refresh /* = false */)
+void CGUIWindowMusicBase::OnItemInfoAll(int iItem, bool bCurrent /* = false */, bool refresh /* = false */)
 {
   CMusicDatabaseDirectory dir;
   std::string strPath = m_vecItems->GetPath();
@@ -328,7 +328,7 @@ void CGUIWindowMusicBase::OnInfoAll(int iItem, bool bCurrent /* = false */, bool
 
 /// \brief Retrieves music info for albums from allmusic.com and displays them in CGUIDialogMusicInfo
 /// \param iItem Item in list/thumb control
-void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
+void CGUIWindowMusicBase::OnItemInfo(int iItem, bool bShowInfo)
 {
   if ( iItem < 0 || iItem >= m_vecItems->Size() )
     return;
@@ -347,10 +347,10 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
     return;
   }
 
-  OnInfo(item.get(), bShowInfo);
+  OnItemInfo(item.get(), bShowInfo);
 }
 
-void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
+void CGUIWindowMusicBase::OnItemInfo(CFileItem *pItem, bool bShowInfo)
 {
   if ((pItem->IsMusicDb() && !pItem->HasMusicInfoTag()) || pItem->IsParentFolder() ||
        URIUtils::IsSpecial(pItem->GetPath()) || StringUtils::StartsWithNoCase(pItem->GetPath(), "musicsearch://"))
@@ -929,7 +929,7 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_INFO:
-    OnInfo(itemNumber);
+    OnItemInfo(itemNumber);
     return true;
 
   case CONTEXT_BUTTON_SONG_INFO:
