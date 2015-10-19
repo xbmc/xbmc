@@ -139,6 +139,8 @@
 		1D638128161E211E003603ED /* PeripheralImon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1D638126161E211E003603ED /* PeripheralImon.cpp */; };
 		1DAFDB7C16DFDCA7007F8C68 /* PeripheralBusCEC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1DAFDB7A16DFDCA7007F8C68 /* PeripheralBusCEC.cpp */; };
 		1DE0443515828F4B005DDB4D /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1DE0443315828F4B005DDB4D /* Exception.cpp */; };
+		2A7B2BDC1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; settings = {ASSET_TAGS = (); }; };
+		2A7B2BDD1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; settings = {ASSET_TAGS = (); }; };
 		2F4564D51970129A00396109 /* GUIFontCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F4564D31970129A00396109 /* GUIFontCache.cpp */; };
 		2F4564D61970129A00396109 /* GUIFontCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F4564D31970129A00396109 /* GUIFontCache.cpp */; };
 		32C631281423A90F00F18420 /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32C631261423A90F00F18420 /* JpegIO.cpp */; };
@@ -2513,6 +2515,8 @@
 		1DAFDB7B16DFDCA7007F8C68 /* PeripheralBusCEC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusCEC.h; sourceTree = "<group>"; };
 		1DE0443315828F4B005DDB4D /* Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Exception.cpp; path = commons/Exception.cpp; sourceTree = "<group>"; };
 		1DE0443415828F4B005DDB4D /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exception.h; path = commons/Exception.h; sourceTree = "<group>"; };
+		2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRSettings.cpp; sourceTree = "<group>"; };
+		2A7B2BDE1BD6F18B00044BCD /* PVRSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRSettings.h; sourceTree = "<group>"; };
 		2F4564D31970129A00396109 /* GUIFontCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIFontCache.cpp; sourceTree = "<group>"; };
 		2F4564D41970129A00396109 /* GUIFontCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIFontCache.h; sourceTree = "<group>"; };
 		32C631261423A90F00F18420 /* JpegIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JpegIO.cpp; sourceTree = "<group>"; };
@@ -6644,6 +6648,8 @@
 				C848289E156CFCD8005A996F /* PVRGUIInfo.h */,
 				C848289F156CFCD8005A996F /* PVRManager.cpp */,
 				C84828A0156CFCD8005A996F /* PVRManager.h */,
+				2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */,
+				2A7B2BDE1BD6F18B00044BCD /* PVRSettings.h */,
 			);
 			path = pvr;
 			sourceTree = "<group>";
@@ -9472,6 +9478,7 @@
 				E3A4780A0D29029A00F3C3A6 /* GUIDialogCache.cpp in Sources */,
 				395C29ED1A98A16300EBC7AD /* HTTPPythonInvoker.cpp in Sources */,
 				E3A4781A0D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp in Sources */,
+				2A7B2BDC1BD6F16600044BCD /* PVRSettings.cpp in Sources */,
 				395897151AAD94F00033D27C /* KeyboardLayoutManager.cpp in Sources */,
 				E36578880D3AA7B40033CC1C /* DVDPlayerCodec.cpp in Sources */,
 				E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */,
@@ -10720,6 +10727,7 @@
 				E499135D174E5EBE00741B6D /* XBMCOperations.cpp in Sources */,
 				E499135E174E5EEF00741B6D /* AddonModuleXbmc.cpp in Sources */,
 				E499135F174E5EEF00741B6D /* AddonModuleXbmcaddon.cpp in Sources */,
+				2A7B2BDD1BD6F16600044BCD /* PVRSettings.cpp in Sources */,
 				E4991360174E5EEF00741B6D /* AddonModuleXbmcgui.cpp in Sources */,
 				E4991361174E5EEF00741B6D /* AddonModuleXbmcplugin.cpp in Sources */,
 				E4991362174E5EEF00741B6D /* AddonModuleXbmcvfs.cpp in Sources */,
