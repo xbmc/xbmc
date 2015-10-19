@@ -706,9 +706,9 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["loaded"] = m_bLoaded;
   value["year"] = m_dwReleaseDate.wYear;
   value["musicbrainztrackid"] = m_strMusicBrainzTrackID;
-  value["musicbrainzartistid"] = StringUtils::Join(m_musicBrainzArtistID, " / ");
+  value["musicbrainzartistid"] = m_musicBrainzArtistID;
   value["musicbrainzalbumid"] = m_strMusicBrainzAlbumID;
-  value["musicbrainzalbumartistid"] = StringUtils::Join(m_musicBrainzAlbumArtistID, " / ");
+  value["musicbrainzalbumartistid"] = m_musicBrainzAlbumArtistID; 
   value["musicbrainztrmid"] = m_strMusicBrainzTRMID;
   value["comment"] = m_strComment;
   value["mood"] = m_strMood;
@@ -738,9 +738,9 @@ void CMusicInfoTag::ToSortable(SortItem& sortable, Field field) const
       sortable[FieldTitle] = title;
     break;
   }
-  case FieldArtist:      sortable[FieldArtist] = m_artist; break;
+  case FieldArtist:      sortable[FieldArtist] = m_strArtistDesc; break;
   case FieldAlbum:       sortable[FieldAlbum] = m_strAlbum; break;
-  case FieldAlbumArtist: sortable[FieldAlbumArtist] = m_albumArtist; break;
+  case FieldAlbumArtist: sortable[FieldAlbumArtist] = m_strAlbumArtistDesc; break;
   case FieldGenre:       sortable[FieldGenre] = m_genre; break;
   case FieldTime:        sortable[FieldTime] = m_iDuration; break;
   case FieldTrackNumber: sortable[FieldTrackNumber] = m_iTrack; break;
