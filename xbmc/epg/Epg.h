@@ -204,16 +204,6 @@ namespace EPG
      * @return The found tag or an empty tag if it wasn't found.
      */
     CEpgInfoTagPtr GetTag(const CDateTime &beginTime) const;
-    /*!
-     * @brief Get the infotag with the given ID.
-     *
-     * Get the infotag with the given ID.
-     * If it wasn't found, try finding the event with the given start time
-     *
-     * @param uniqueID The unique ID of the event to find.
-     * @return The found tag or an empty tag if it wasn't found.
-     */
-    CEpgInfoTagPtr GetTag(unsigned int uniqueID) const;
 
     /*!
      * @brief Update an entry in this EPG.

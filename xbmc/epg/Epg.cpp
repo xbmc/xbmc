@@ -264,17 +264,6 @@ CEpgInfoTagPtr CEpg::GetTag(const CDateTime &StartTime) const
   return CEpgInfoTagPtr();
 }
 
-CEpgInfoTagPtr CEpg::GetTag(unsigned int uniqueID) const
-{
-  CEpgInfoTagPtr retval;
-  CSingleLock lock(m_critSection);
-  for (std::map<CDateTime, CEpgInfoTagPtr>::const_iterator it = m_tags.begin(); !retval && it != m_tags.end(); ++it)
-    if (it->second->UniqueBroadcastID() == uniqueID)
-      retval = it->second;
-
-  return retval;
-}
-
 CEpgInfoTagPtr CEpg::GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime) const
 {
   CSingleLock lock(m_critSection);
