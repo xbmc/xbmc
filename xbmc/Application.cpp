@@ -453,7 +453,6 @@ bool CApplication::Create()
   CApplicationMessenger::GetInstance().RegisterReceiver(this);
   CApplicationMessenger::GetInstance().RegisterReceiver(&g_playlistPlayer);
   CApplicationMessenger::GetInstance().RegisterReceiver(&g_infoManager);
-  CApplicationMessenger::GetInstance().RegisterReceiver(&g_AEDSPManager);
 
   for (int i = RES_HDTV_1080i; i <= RES_PAL60_16x9; i++)
   {
@@ -2587,6 +2586,13 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
       StartPVRManager();
     else
       StopPVRManager();
+    break;
+
+  case TMSG_SETAUDIODSPSTATE:
+    if(pMsg->param1 == ACTIVE_AE_DSP_STATE_ON)
+      ActiveAE::CActiveAEDSP::GetInstance().Activate(pMsg->param2 == ACTIVE_AE_DSP_ASYNC_ACTIVATE);
+    else if(pMsg->param1 == ACTIVE_AE_DSP_STATE_OFF)
+      ActiveAE::CActiveAEDSP::GetInstance().Deactivate();
     break;
 
   case TMSG_START_ANDROID_ACTIVITY:
