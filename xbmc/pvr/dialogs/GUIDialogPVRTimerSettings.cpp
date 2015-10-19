@@ -28,6 +28,7 @@
 #include "pvr/addons/PVRClient.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRSettings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimerType.h"
 #include "settings/lib/Setting.h"
@@ -325,11 +326,11 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   AddTypeDependentEnableCondition(setting, SETTING_TMR_NEW_EPISODES);
 
   // Pre and post record time
-  setting = AddSpinner(group, SETTING_TMR_BEGIN_PRE, 813, 0, m_iMarginStart, 0, 1, 60, 14044);
+  setting = AddList(group, SETTING_TMR_BEGIN_PRE, 813, 0, m_iMarginStart, MarginTimeFiller, 813);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_BEGIN_PRE);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_BEGIN_PRE);
 
-  setting = AddSpinner(group, SETTING_TMR_END_POST,  814, 0, m_iMarginEnd,   0, 1, 60, 14044);
+  setting = AddList(group, SETTING_TMR_END_POST,  814, 0, m_iMarginEnd, MarginTimeFiller, 814);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_END_POST);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_END_POST);
 
@@ -967,6 +968,48 @@ void CGUIDialogPVRTimerSettings::RecordingGroupFiller(
   }
   else
     CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::RecordingGroupFiller - No dialog");
+}
+
+void CGUIDialogPVRTimerSettings::MarginTimeFiller(
+  const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+{
+  CGUIDialogPVRTimerSettings *pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  if (pThis)
+  {
+    list.clear();
+
+    // Get global settings values
+    CPVRSettings::MarginTimeFiller(setting, list, current, data);
+
+    if (setting->GetId() == SETTING_TMR_BEGIN_PRE)
+      current = pThis->m_iMarginStart;
+    else
+      current = pThis->m_iMarginEnd;
+
+    bool bInsertValue = true;
+    auto it = list.begin();
+    while (it != list.end())
+    {
+      if (it->second == current)
+      {
+        bInsertValue = false;
+        break; // value already in list
+      }
+
+      if (it->second > current)
+        break;
+
+      ++it;
+    }
+
+    if (bInsertValue)
+    {
+      // PVR backend supplied value is not in the list of predefined values. Insert it.
+      list.insert(it, std::make_pair(StringUtils::Format(g_localizeStrings.Get(14044).c_str(), current) /* %i min */, current));
+    }
+  }
+  else
+    CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::MarginTimeFiller - No dialog");
 }
 
 std::string CGUIDialogPVRTimerSettings::WeekdaysValueFormatter(const CSetting *setting)

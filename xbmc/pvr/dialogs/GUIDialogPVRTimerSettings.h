@@ -88,6 +88,8 @@ namespace PVR
       const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
     static void RecordingGroupFiller(
       const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+    static void MarginTimeFiller(
+      const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
     static std::string WeekdaysValueFormatter(const CSetting *setting);
 
