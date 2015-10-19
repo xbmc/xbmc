@@ -1047,7 +1047,6 @@
 		DFF0EBC41752820F002DA3A4 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFF0EB8717528174002DA3A4 /* CoreGraphics.framework */; };
 		DFF0EC531752821B002DA3A4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFF0EB8D17528174002DA3A4 /* Foundation.framework */; };
 		DFF0EC891752822E002DA3A4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFF0EB9517528174002DA3A4 /* UIKit.framework */; };
-		DFF0EC8C17528283002DA3A4 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFF0EC8B17528283002DA3A4 /* VideoToolbox.framework */; };
 		DFF0ECA7175282AD002DA3A4 /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DA51396C31B00863BBA /* SlingboxLib.a */; };
 		DFF0F0EF17528350002DA3A4 /* archive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1CE60D25F9FC00618676 /* archive.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
 		DFF0F0F017528350002DA3A4 /* arcread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1CE80D25F9FC00618676 /* arcread.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
@@ -4672,7 +4671,6 @@
 		DFF0EB8717528174002DA3A4 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		DFF0EB8D17528174002DA3A4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		DFF0EB9517528174002DA3A4 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		DFF0EC8B17528283002DA3A4 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/PrivateFrameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		DFF0ECA8175282EA002DA3A4 /* README.ios */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.ios; path = docs/README.ios; sourceTree = "<group>"; };
 		DFF0F4911752838E002DA3A4 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		DFF0F4921752838E002DA3A4 /* substrate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = substrate.h; sourceTree = "<group>"; };
@@ -5835,7 +5833,6 @@
 				E49910F9174E561D00741B6D /* libiconv.dylib in Frameworks */,
 				E4991581174E681600741B6D /* SlingboxLib.a in Frameworks */,
 				DFF0EBB7175281E1002DA3A4 /* CoreAudio.framework in Frameworks */,
-				DFF0EC8C17528283002DA3A4 /* VideoToolbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7998,7 +7995,6 @@
 				DFF0EB8717528174002DA3A4 /* CoreGraphics.framework */,
 				DFF0EB8D17528174002DA3A4 /* Foundation.framework */,
 				DFF0EB9517528174002DA3A4 /* UIKit.framework */,
-				DFF0EC8B17528283002DA3A4 /* VideoToolbox.framework */,
 			);
 			name = ATV2;
 			sourceTree = "<group>";
