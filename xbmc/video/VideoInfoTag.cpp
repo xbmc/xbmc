@@ -1145,6 +1145,15 @@ void CVideoInfoTag::SetNamedSeasons(std::map<int, std::string> namedSeasons)
   m_namedSeasons = std::move(namedSeasons);
 }
 
+void CVideoInfoTag::SetUserrating(int userrating)
+{
+  //This value needs to be between 0-10 - 0 will unset the userrating
+  userrating = std::max(userrating, 0);
+  userrating = std::min(userrating, 10);
+
+  m_iUserRating = userrating;
+}
+
 std::string CVideoInfoTag::Trim(std::string &&value)
 {
   return StringUtils::Trim(value);

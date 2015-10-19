@@ -37,7 +37,7 @@ class CAlbum
 {
 public:
   CAlbum(const CFileItem& item);
-  CAlbum() { idAlbum = 0; iRating = 0; iYear = 0; iTimesPlayed = 0; dateAdded.Reset(); releaseType = Album; };
+  CAlbum() { idAlbum = 0; iRating = 0; iYear = 0; iTimesPlayed = 0; dateAdded.Reset(); lastPlayed.Reset(); releaseType = Album; };
   bool operator<(const CAlbum &a) const;
   void MergeScrapedAlbum(const CAlbum& album, bool override = true);
 
@@ -46,7 +46,6 @@ public:
     idAlbum = -1;
     strAlbum.clear();
     strMusicBrainzAlbumID.clear();
-    artist.clear();
     artistCredits.clear();
     strArtistDesc.clear();
     genre.clear();
@@ -65,6 +64,7 @@ public:
     bCompilation = false;
     iTimesPlayed = 0;
     dateAdded.Reset();
+    lastPlayed.Reset();
     songs.clear();
     infoSongs.clear();
     releaseType = Album;
@@ -81,6 +81,12 @@ public:
   const std::vector<std::string> GetMusicBrainzAlbumArtistID() const;
   std::string GetGenreString() const;
 
+  /*! \brief Get album artist names from the artist decription string (if it exists)
+             or concatenated from the vector of artistcredits objects
+  \return album artist names as a single string
+  */
+  const std::string GetAlbumArtistString() const;
+
   typedef enum ReleaseType {
     Album = 0,
     Single
@@ -89,6 +95,7 @@ public:
   std::string GetReleaseType() const;
   void SetReleaseType(const std::string& strReleaseType);
   void SetDateAdded(const std::string& strDateAdded);
+  void SetLastPlayed(const std::string& strLastPlayed);
 
   static std::string ReleaseTypeToString(ReleaseType releaseType);
   static ReleaseType ReleaseTypeFromString(const std::string& strReleaseType);
@@ -106,7 +113,6 @@ public:
   long idAlbum;
   std::string strAlbum;
   std::string strMusicBrainzAlbumID;
-  std::vector<std::string> artist;
   std::string strArtistDesc;
   VECARTISTCREDITS artistCredits;
   std::vector<std::string> genre;
@@ -125,6 +131,7 @@ public:
   bool bCompilation;
   int iTimesPlayed;
   CDateTime dateAdded;
+  CDateTime lastPlayed;
   VECSONGS songs;     ///< Local songs
   VECSONGS infoSongs; ///< Scraped songs
   ReleaseType releaseType;

@@ -56,6 +56,7 @@ protected:
   virtual CGUIControl *GetFirstFocusableControl(int id);
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
+  virtual void OnDeinitWindow(int nextWindowID);
   virtual void OnWindowUnload();
   void SetupButton();
 

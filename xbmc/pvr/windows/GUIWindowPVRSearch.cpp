@@ -54,11 +54,8 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
     {
       if (!pItem->GetEPGInfoTag()->HasTimer())
       {
-        if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
-          buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);   /* record */
-
-        buttons.Add(CONTEXT_BUTTON_START_RECORD, 19061);   /* add timer */
-        buttons.Add(CONTEXT_BUTTON_ADVANCED_RECORD, 841);  /* add custom timer */
+        buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);      /* record */
+        buttons.Add(CONTEXT_BUTTON_ADVANCED_RECORD, 19061); /* add timer */
       }
       else
       {
@@ -156,7 +153,6 @@ void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
   {
     m_bSearchConfirmed = false;
 
-    items.Clear();
     bAddSpecialSearchItem = true;
 
     CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);

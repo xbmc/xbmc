@@ -191,7 +191,7 @@ public:
   bool GetSongsByPath(const std::string& strPath, MAPSONGS& songs, bool bAppendToMap = false);
   bool Search(const std::string& search, CFileItemList &items);
   bool RemoveSongsFromPath(const std::string &path, MAPSONGS& songs, bool exact=true);
-  bool SetSongRating(const std::string &filePath, char rating);
+  bool SetSongUserrating(const std::string &filePath, char rating);
   int  GetSongByArtistAndAlbumAndTitle(const std::string& strArtist, const std::string& strAlbum, const std::string& strTitle);
 
   /////////////////////////////////////////////////
@@ -397,7 +397,7 @@ public:
   /////////////////////////////////////////////////
   // XML
   /////////////////////////////////////////////////
-  void ExportToXML(const std::string &xmlFile, bool singleFiles = false, bool images=false, bool overwrite=false);
+  void ExportToXML(const std::string &xmlFile, bool singleFile = false, bool images=false, bool overwrite=false);
   void ImportFromXML(const std::string &xmlFile);
 
   /////////////////////////////////////////////////
@@ -537,7 +537,7 @@ private:
     song_iStartOffset,
     song_iEndOffset,
     song_lastplayed,
-    song_rating,
+    song_userrating,
     song_comment,
     song_idAlbum,
     song_strAlbum,
@@ -575,6 +575,7 @@ private:
     album_iTimesPlayed,
     album_strReleaseType,
     album_dtDateAdded,
+    album_dtLastPlayed,
     album_enumCount // end of the enum, do not add past here
   } AlbumFields;
 

@@ -735,6 +735,7 @@
     <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderCDDA.cpp" />
     <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderFactory.cpp" />
+    <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderFFmpeg.cpp" />
     <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderShn.cpp" />
     <ClCompile Include="..\..\xbmc\music\tags\ReplayGain.cpp" />
     <ClCompile Include="..\..\xbmc\music\tags\TagLibVFSStream.cpp" />
@@ -1227,6 +1228,7 @@
     <ClInclude Include="..\..\xbmc\music\CueInfoLoader.h" />
     <ClInclude Include="..\..\xbmc\music\EmbeddedArt.h" />
     <ClInclude Include="..\..\xbmc\music\karaoke\karaokevideobackground.h" />
+    <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTagLoaderFFmpeg.h" />
     <ClInclude Include="..\..\xbmc\music\tags\ReplayGain.h" />
     <ClInclude Include="..\..\xbmc\network\dacp\dacp.h" />
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPFileHandler.h" />

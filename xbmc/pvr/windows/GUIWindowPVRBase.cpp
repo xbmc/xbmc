@@ -303,6 +303,12 @@ void CGUIWindowPVRBase::SetInvalid()
   }
 }
 
+bool CGUIWindowPVRBase::CanBeActivated() const
+{
+  // No activation if PVR is not enabled.
+  return CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMANAGER_ENABLED);
+}
+
 bool CGUIWindowPVRBase::OpenGroupSelectionDialog(void)
 {
   CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);

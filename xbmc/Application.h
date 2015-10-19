@@ -24,6 +24,7 @@
 #include "XBApplicationEx.h"
 
 #include "guilib/IMsgTargetCallback.h"
+#include "guilib/Resolution.h"
 #include "utils/GlobalsHandling.h"
 #include "messaging/IMessageTarget.h"
 
@@ -144,7 +145,7 @@ public:
   virtual bool Cleanup() override;
 
   bool CreateGUI();
-  bool InitWindow();
+  bool InitWindow(RESOLUTION res = RES_INVALID);
   bool DestroyWindow();
   void StartServices();
   void StopServices();
@@ -282,7 +283,7 @@ public:
   void UpdateLibraries();
   void CheckMusicPlaylist();
 
-  bool ExecuteXBMCAction(std::string action);
+  bool ExecuteXBMCAction(std::string action, const CGUIListItemPtr &item = NULL);
 
   static bool OnEvent(XBMC_Event& newEvent);
 

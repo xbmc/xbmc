@@ -178,9 +178,9 @@
 					</control>
 					<control type="list" id="49">
 						<left>290</left>
-						<top>20</top>
+						<top>-4</top>
 						<width>740</width>
-						<height>330</height>
+						<height>390</height>
 						<onleft>49</onleft>
 						<onright>49</onright>
 						<onup>9000</onup>
@@ -292,6 +292,12 @@
 								<visible>!IsEmpty(ListItem.Duration)</visible>
 							</item>
 							<item>
+								<label>$LOCALIZE[38018]:</label>
+								<label2>$INFO[ListItem.Userrating]</label2>
+								<onclick>noop</onclick>
+								<visible>!IsEmpty(ListItem.Userrating)</visible>
+							</item>
+							<item>
 								<label>$LOCALIZE[563]:</label>
 								<label2>$INFO[ListItem.RatingAndVotes]</label2>
 								<onclick>noop</onclick>
@@ -325,7 +331,7 @@
 					</control>
 					<control type="image">
 						<left>290</left>
-						<top>370</top>
+						<top>382</top>
 						<width>740</width>
 						<height>4</height>
 						<aspectratio>stretch</aspectratio>
@@ -454,6 +460,12 @@
 								<visible>!IsEmpty(ListItem.Year)</visible>
 							</item>
 							<item>
+								<label>$LOCALIZE[38018]:</label>
+								<label2>$INFO[ListItem.Userrating]</label2>
+								<onclick>noop</onclick>
+								<visible>!IsEmpty(ListItem.Userrating)</visible>
+							</item>
+							<item>
 								<label>$LOCALIZE[563]:</label>
 								<label2>$INFO[ListItem.RatingAndVotes]</label2>
 								<onclick>noop</onclick>
@@ -503,9 +515,9 @@
 					</control>
 					<control type="list" id="49">
 						<left>390</left>
-						<top>20</top>
+						<top>0</top>
 						<width>640</width>
-						<height>330</height>
+						<height>360</height>
 						<onleft>49</onleft>
 						<onright>49</onright>
 						<onup>9000</onup>
@@ -627,6 +639,12 @@
 								<label2>$INFO[ListItem.Duration] $LOCALIZE[12391]</label2>
 								<onclick>noop</onclick>
 								<visible>!IsEmpty(ListItem.Duration)</visible>
+							</item>
+							<item>
+								<label>$LOCALIZE[38018]:</label>
+								<label2>$INFO[ListItem.Userrating]</label2>
+								<onclick>noop</onclick>
+								<visible>!IsEmpty(ListItem.Userrating)</visible>
 							</item>
 							<item>
 								<label>$LOCALIZE[563]:</label>
@@ -786,6 +804,12 @@
 								<label2>$INFO[ListItem.Duration] $LOCALIZE[12391]</label2>
 								<onclick>noop</onclick>
 								<visible>!IsEmpty(ListItem.Duration)</visible>
+							</item>
+							<item>
+								<label>$LOCALIZE[38018]:</label>
+								<label2>$INFO[ListItem.Userrating]</label2>
+								<onclick>noop</onclick>
+								<visible>!IsEmpty(ListItem.Userrating)</visible>
 							</item>
 							<item>
 								<label>$LOCALIZE[15311]</label>
@@ -983,12 +1007,10 @@
 						<onclick>PlayMedia($INFO[ListItem.Trailer],1)</onclick>
 						<visible>!IsEmpty(ListItem.Trailer) + Skin.HasSetting(WindowedTrailer)</visible>
 					</control>
-					<control type="button" id="100">
-						<description>Fetch TvTunes stuff</description>
+					<control type="button" id="7">
+						<description>Set my rating</description>
 						<include>ButtonInfoDialogsCommonValues</include>
-						<label>31127</label>
-						<onclick>RunScript(script.tvtunes,mode=solo)</onclick>
-						<visible>Skin.HasSetting(ActivateTvTunes) + System.HasAddon(script.tvtunes) + [Container.Content(TVShows) | Container.Content(movies) | Container.Content(musicvideos)] + IsEmpty(Window(movieinformation).Property("TvTunes_HideVideoInfoButton"))</visible>
+						<label>38023</label>
 					</control>
 				</control>
 			</control>

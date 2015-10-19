@@ -238,11 +238,8 @@ public:
   static const std::string SETTING_MUSICPLAYER_VISUALISATION;
   static const std::string SETTING_MUSICFILES_USETAGS;
   static const std::string SETTING_MUSICFILES_TRACKFORMAT;
-  static const std::string SETTING_MUSICFILES_TRACKFORMATRIGHT;
   static const std::string SETTING_MUSICFILES_NOWPLAYINGTRACKFORMAT;
-  static const std::string SETTING_MUSICFILES_NOWPLAYINGTRACKFORMATRIGHT;
   static const std::string SETTING_MUSICFILES_LIBRARYTRACKFORMAT;
-  static const std::string SETTING_MUSICFILES_LIBRARYTRACKFORMATRIGHT;
   static const std::string SETTING_MUSICFILES_FINDREMOTETHUMBS;
   static const std::string SETTING_AUDIOCDS_AUTOACTION;
   static const std::string SETTING_AUDIOCDS_USECDDB;
@@ -294,7 +291,7 @@ public:
   static const std::string SETTING_SERVICES_AIRPLAYVOLUMECONTROL;
   static const std::string SETTING_SERVICES_USEAIRPLAYPASSWORD;
   static const std::string SETTING_SERVICES_AIRPLAYPASSWORD;
-  static const std::string SETTING_SERVICES_AIRPLAYIOS8COMPAT;
+  static const std::string SETTING_SERVICES_AIRPLAYVIDEOSUPPORT;
   static const std::string SETTING_SMB_WINSSERVER;
   static const std::string SETTING_SMB_WORKGROUP;
   static const std::string SETTING_VIDEOSCREEN_MONITOR;

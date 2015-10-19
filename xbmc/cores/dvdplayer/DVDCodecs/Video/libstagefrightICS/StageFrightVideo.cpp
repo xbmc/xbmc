@@ -449,11 +449,20 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
       return false;
     mimetype = "video/x-vnd.on2.vp8";
     break;
-  case CODEC_ID_VC1:
-  case CODEC_ID_WMV3:
+  case AV_CODEC_ID_VP9:
+    if (p->m_g_advancedSettings->m_stagefrightConfig.useVPXcodec == 0)
+      return false;
+    mimetype = "video/x-vnd.on2.vp9";
+    break;
+  case AV_CODEC_ID_WMV3:
     if (p->m_g_advancedSettings->m_stagefrightConfig.useVC1codec == 0)
       return false;
-    mimetype = "video/vc1";
+    mimetype = "video/x-ms-wmv";
+    break;
+  case AV_CODEC_ID_VC1:
+    if (p->m_g_advancedSettings->m_stagefrightConfig.useVC1codec == 0)
+      return false;
+    mimetype = "video/wvc1";
     break;
   default:
     return false;

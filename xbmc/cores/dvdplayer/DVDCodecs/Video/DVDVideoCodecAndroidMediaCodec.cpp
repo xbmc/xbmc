@@ -349,6 +349,10 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       m_mime = "video/x-vnd.on2.vp8";
       m_formatname = "amc-vpX";
       break;
+    case AV_CODEC_ID_VP9:
+      m_mime = "video/x-vnd.on2.vp9";
+      m_formatname = "amc-vp9";
+      break;
     case AV_CODEC_ID_AVS:
     case AV_CODEC_ID_CAVS:
     case AV_CODEC_ID_H264:
@@ -384,12 +388,62 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         }
       }
       break;
-    case AV_CODEC_ID_VC1:
     case AV_CODEC_ID_WMV3:
+      if (m_hints.extrasize == 4 || m_hints.extrasize == 5)
+      {
+        // Convert to SMPTE 421M-2006 Annex-L
+        static char annexL_hdr1[] = {0x8e, 0x01, 0x00, 0xc5, 0x04, 0x00, 0x00, 0x00};
+        static char annexL_hdr2[] = {0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+        free(m_hints.extradata);
+        m_hints.extrasize = 36;
+        m_hints.extradata = malloc(m_hints.extrasize);
+
+        unsigned int offset = 0;
+        char buf[4];
+        memcpy(m_hints.extradata, annexL_hdr1, sizeof(annexL_hdr1));
+        offset += sizeof(annexL_hdr1);
+        memcpy(&((char *)(m_hints.extradata))[offset], hints.extradata, 4);
+        offset += 4;
+        BS_WL32(buf, hints.height);
+        memcpy(&((char *)(m_hints.extradata))[offset], buf, 4);
+        offset += 4;
+        BS_WL32(buf, hints.width);
+        memcpy(&((char *)(m_hints.extradata))[offset], buf, 4);
+        offset += 4;
+        memcpy(&((char *)(m_hints.extradata))[offset], annexL_hdr2, sizeof(annexL_hdr2));
+      }
+
+      m_mime = "video/x-ms-wmv";
+      m_formatname = "amc-wmv";
+      break;
+    case AV_CODEC_ID_VC1:
+    {
+      if (m_hints.extrasize < 16)
+        return false;
+
+      // Reduce extradata to first SEQ header
+      unsigned int seq_offset = 0;
+      for (; seq_offset <= m_hints.extrasize-4; ++seq_offset)
+      {
+        char *ptr = &((char*)m_hints.extradata)[seq_offset];
+        if (ptr[0] == 0x00 && ptr[1] == 0x00 && ptr[2] == 0x01 && ptr[3] == 0x0f)
+          break;
+      }
+      if (seq_offset > m_hints.extrasize-4)
+        return false;
+
+      if (seq_offset)
+      {
+        free(m_hints.extradata);
+        m_hints.extrasize -= seq_offset;
+        m_hints.extradata = malloc(m_hints.extrasize);
+        memcpy(m_hints.extradata, &((char *)(hints.extradata))[seq_offset], m_hints.extrasize);
+      }
+
       m_mime = "video/wvc1";
-      //m_mime = "video/wmv9";
       m_formatname = "amc-vc1";
       break;
+    }
     default:
       CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: Unknown hints.codec(%d)", hints.codec);
       return false;
@@ -616,9 +670,34 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
         iSize = size;
       }
       // fetch a pointer to the ByteBuffer backing store
-      void *dst_ptr = xbmc_jnienv()->GetDirectBufferAddress(m_input[index].get_raw());
+      uint8_t *dst_ptr = (uint8_t*)xbmc_jnienv()->GetDirectBufferAddress(m_input[index].get_raw());
       if (dst_ptr)
-        memcpy(dst_ptr, pData, iSize);
+      {
+        // Codec specifics
+        switch(m_hints.codec)
+        {
+          case AV_CODEC_ID_VC1:
+          {
+            if (pData[0] == 0x00 && pData[1] == 0x00 && pData[2] == 0x01 && pData[3] == 0x0d)
+              memcpy(dst_ptr, pData, iSize);
+            else
+            {
+              dst_ptr[0] = 0x00;
+              dst_ptr[1] = 0x00;
+              dst_ptr[2] = 0x01;
+              dst_ptr[3] = 0x0d;
+              memcpy(dst_ptr+4, pData, iSize);
+              iSize += 4;
+            }
+
+            break;
+          }
+
+          default:
+            memcpy(dst_ptr, pData, iSize);
+            break;
+        }
+      }
 
       // Translate from dvdplayer dts/pts to MediaCodec pts,
       // pts WILL get re-ordered by MediaCodec if needed.

@@ -50,11 +50,11 @@ public:
   const std::string& GetTitle() const;
   const std::string& GetURL() const;
   const std::vector<std::string>& GetArtist() const;
-  const std::string& GetArtistDesc() const;
+  const std::string GetArtistString() const;
   const std::string& GetAlbum() const;
   int GetAlbumId() const;
   const std::vector<std::string>& GetAlbumArtist() const;
-  const std::string& GetAlbumArtistDesc() const;
+  const std::string GetAlbumArtistString() const;
   const std::vector<std::string>& GetGenre() const;
   int GetTrackNumber() const;
   int GetDiscNumber() const;
@@ -80,7 +80,7 @@ public:
   const CDateTime& GetLastPlayed() const;
   const CDateTime& GetDateAdded() const;
   bool  GetCompilation() const;
-  char  GetRating() const;
+  char  GetUserrating() const;
   int  GetListeners() const;
   int  GetPlayCount() const;
   const EmbeddedArtInfo &GetCoverArtInfo() const;
@@ -121,7 +121,7 @@ public:
   void SetMood(const std::string& mood);
   void SetLyrics(const std::string& lyrics);
   void SetCueSheet(const std::string& cueSheet);
-  void SetRating(char rating);
+  void SetUserrating(char rating);
   void SetListeners(int listeners);
   void SetPlayCount(int playcount);
   void SetLastPlayed(const std::string& strLastPlayed);

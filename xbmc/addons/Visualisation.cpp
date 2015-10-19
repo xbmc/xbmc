@@ -209,8 +209,8 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
       if ( action == VIS_ACTION_UPDATE_TRACK && param )
       {
         const CMusicInfoTag* tag = (const CMusicInfoTag*)param;
-        std::string artist(StringUtils::Join(tag->GetArtist(), g_advancedSettings.m_musicItemSeparator));
-        std::string albumArtist(StringUtils::Join(tag->GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator));
+        std::string artist(tag->GetArtistString());
+        std::string albumArtist(tag->GetAlbumArtistString());
         std::string genre(StringUtils::Join(tag->GetGenre(), g_advancedSettings.m_musicItemSeparator));
         
         VisTrack track;
@@ -225,7 +225,7 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
         track.discNumber  = tag->GetDiscNumber();
         track.duration    = tag->GetDuration();
         track.year        = tag->GetYear();
-        track.rating      = tag->GetRating();
+        track.rating      = tag->GetUserrating();
 
         return m_pStruct->OnAction(action, &track);
       }

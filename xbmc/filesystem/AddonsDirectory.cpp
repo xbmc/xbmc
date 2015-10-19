@@ -138,8 +138,7 @@ static void SetUpdateAvailProperties(CFileItemList &items)
       const AddonVersion installedVersion = AddonVersion(items[i]->GetProperty("Addon.Version").asString());
       AddonPtr repoAddon;
       database.GetAddon(addonId, repoAddon);
-      if (repoAddon && repoAddon->Version() > installedVersion &&
-          !database.IsAddonBlacklisted(addonId, repoAddon->Version().asString()))
+      if (repoAddon && repoAddon->Version() > installedVersion)
       {
         items[i]->SetProperty("Addon.Status", g_localizeStrings.Get(24068));
         items[i]->SetProperty("Addon.UpdateAvail", true);
@@ -331,13 +330,12 @@ static bool HaveOrphaned()
 
 static void OutdatedAddons(const CURL& path, CFileItemList &items)
 {
-  VECADDONS addons;
-  CAddonMgr::GetInstance().GetAllOutdatedAddons(addons);
+  VECADDONS addons = CAddonMgr::GetInstance().GetOutdated();
   CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(24043));
 
   if (items.Size() > 1)
   {
-    CFileItemPtr item(new CFileItem("addons://update_all/", true));
+    CFileItemPtr item(new CFileItem("addons://update_all/", false));
     item->SetLabel(g_localizeStrings.Get(24122));
     item->SetSpecialSort(SortSpecialOnTop);
     items.Add(item);

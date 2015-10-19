@@ -98,11 +98,8 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
   }
   else if (pItem->HasEPGInfoTag() && pItem->GetEPGInfoTag()->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
   {
-    if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
-      buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);   /* record */
-
-    buttons.Add(CONTEXT_BUTTON_START_RECORD, 19061);   /* add timer */
-    buttons.Add(CONTEXT_BUTTON_ADVANCED_RECORD, 841);  /* add custom timer */
+    buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);      /* record */
+    buttons.Add(CONTEXT_BUTTON_ADVANCED_RECORD, 19061); /* add timer */
   }
 
   buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* epg info */

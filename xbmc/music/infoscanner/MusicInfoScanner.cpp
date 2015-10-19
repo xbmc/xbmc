@@ -194,7 +194,7 @@ void CMusicInfoScanner::Process()
         if (m_handle)
         {
           float percentage = (float) std::distance(it, m_pathsToScan.end()) / m_pathsToScan.size();
-          m_handle->SetText(StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator) + " - " + album.strAlbum);
+          m_handle->SetText(album.GetAlbumArtistString() + " - " + album.strAlbum);
           m_handle->SetPercentage(percentage);
         }
 
@@ -641,13 +641,13 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
 
       // get primary artist
       std::string primary;
-      if (!song->albumArtist.empty())
+      if (!song->GetAlbumArtist().empty())
       {
-        primary = song->albumArtist[0];
+        primary = song->GetAlbumArtist()[0];
         hasAlbumArtist = true;
       }
-      else if (!song->artist.empty())
-        primary = song->artist[0];
+      else if (!song->artistCredits.empty())
+        primary = song->artistCredits.begin()->GetArtist();
 
       // add to the artist map
       artists[primary].push_back(&(*song));
@@ -680,7 +680,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       std::vector<std::string> va; va.push_back(various);
       for (VECSONGS::iterator song = songs.begin(); song != songs.end(); ++song)
       {
-        song->albumArtist = va;
+        song->SetAlbumArtist(va);
         artists[various].push_back(&(*song));
       }
     }
@@ -693,11 +693,11 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
     {
       // find the common artist for these songs
       std::vector<CSong *> &artistSongs = j->second;
-      std::vector<std::string> common = artistSongs.front()->albumArtist.empty() ? artistSongs.front()->artist : artistSongs.front()->albumArtist;
+      std::vector<std::string> common = artistSongs.front()->GetAlbumArtist().empty() ? artistSongs.front()->GetArtist() : artistSongs.front()->GetAlbumArtist();
       for (std::vector<CSong *>::iterator k = artistSongs.begin() + 1; k != artistSongs.end(); ++k)
       {
         unsigned int match = 0;
-        std::vector<std::string> &compare = (*k)->albumArtist.empty() ? (*k)->artist : (*k)->albumArtist;
+        std::vector<std::string> compare = (*k)->GetAlbumArtist().empty() ? (*k)->GetArtist() : (*k)->GetAlbumArtist();
         for (; match < common.size() && match < compare.size(); match++)
         {
           if (compare[match] != common[match])
@@ -712,7 +712,6 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
        */
       CAlbum album;
       album.strAlbum = songsByAlbumName->first;
-      album.artist = common;
       for (std::vector<std::string>::iterator it = common.begin(); it != common.end(); ++it)
       {
         std::string strJoinPhrase = (it == --common.end() ? "" : g_advancedSettings.m_musicItemSeparator);
@@ -722,8 +721,8 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       album.bCompilation = compilation;
       for (std::vector<CSong *>::iterator k = artistSongs.begin(); k != artistSongs.end(); ++k)
       {
-        if ((*k)->albumArtist.empty())
-          (*k)->albumArtist = common;
+        if ((*k)->GetAlbumArtist().empty())
+          (*k)->SetAlbumArtist(common);
         // TODO: in future we may wish to union up the genres, for now we assume they're the same
         album.genre = (*k)->genre;
         //       in addition, we may want to use year as discriminating for albums
@@ -970,11 +969,11 @@ loop:
       if (!CGUIKeyboardFactory::ShowAndGetInput(album.strAlbum, CVariant{g_localizeStrings.Get(16011)}, false))
         return INFO_CANCELLED;
 
-      std::string strTempArtist(StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
+      std::string strTempArtist(album.GetAlbumArtistString());
       if (!CGUIKeyboardFactory::ShowAndGetInput(strTempArtist, CVariant{g_localizeStrings.Get(16025)}, false))
         return INFO_CANCELLED;
 
-      album.artist = StringUtils::Split(strTempArtist, g_advancedSettings.m_musicItemSeparator);
+      album.strArtistDesc = strTempArtist;
       goto loop;
     }
     else
@@ -1043,7 +1042,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
   if (m_handle)
   {
     m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20321).c_str(), info->Name().c_str()));
-    m_handle->SetText(StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator) + " - " + album.strAlbum);
+    m_handle->SetText(album.GetAlbumArtistString() + " - " + album.strAlbum);
   }
 
   // clear our scraper cache
@@ -1104,7 +1103,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
 
   if (!scraper.GetAlbumCount())
   {
-    scraper.FindAlbumInfo(album.strAlbum, StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
+    scraper.FindAlbumInfo(album.strAlbum, album.GetAlbumArtistString());
 
     while (!scraper.Completed())
     {
@@ -1142,7 +1141,9 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
           CMusicAlbumInfo& info = scraper.GetAlbum(i);
           double relevance = info.GetRelevance();
           if (relevance < 0)
-            relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album.strAlbum, StringUtils::Join(info.GetAlbum().artist, g_advancedSettings.m_musicItemSeparator), StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
+            relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album.strAlbum, 
+                        info.GetAlbum().GetAlbumArtistString(),
+                        album.GetAlbumArtistString());
 
           // if we're doing auto-selection (ie querying all albums at once, then allow 95->100% for perfect matches)
           // otherwise, perfect matches only
@@ -1181,7 +1182,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
             if (strNewAlbum == "")
               return INFO_CANCELLED;
 
-            std::string strNewArtist = StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator);
+            std::string strNewArtist = album.GetAlbumArtistString();
             if (!CGUIKeyboardFactory::ShowAndGetInput(strNewArtist, CVariant{g_localizeStrings.Get(16025)}, false))
               return INFO_CANCELLED;
 
@@ -1191,7 +1192,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
 
             CAlbum newAlbum = album;
             newAlbum.strAlbum = strNewAlbum;
-            newAlbum.artist = StringUtils::Split(strNewArtist, g_advancedSettings.m_musicItemSeparator);
+            newAlbum.strArtistDesc = strNewArtist;
 
             return DownloadAlbumInfo(newAlbum, info, albumInfo, pDialog);
           }
@@ -1205,8 +1206,8 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
         if (relevance < 0)
           relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum,
                                             album.strAlbum,
-                                            StringUtils::Join(info.GetAlbum().artist, g_advancedSettings.m_musicItemSeparator),
-                                            StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
+                                            info.GetAlbum().GetAlbumArtistString(),
+                                            album.GetAlbumArtistString());
         if (relevance < THRESHOLD)
           return INFO_NOT_FOUND;
 

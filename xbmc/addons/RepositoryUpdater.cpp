@@ -63,8 +63,8 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
 
     if (CSettings::GetInstance().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == AUTO_UPDATES_NOTIFY)
     {
-      VECADDONS hasUpdate;
-      if (CAddonMgr::GetInstance().GetAllOutdatedAddons(hasUpdate) && !hasUpdate.empty())
+      VECADDONS hasUpdate = CAddonMgr::GetInstance().GetOutdated();
+      if (!hasUpdate.empty())
       {
         if (hasUpdate.size() == 1)
           CGUIDialogKaiToast::QueueNotification(

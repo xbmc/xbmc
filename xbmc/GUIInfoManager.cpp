@@ -2399,12 +2399,12 @@ INFO::InfoPtr CGUIInfoManager::Register(const std::string &expression, int conte
   return m_bools.back();
 }
 
-bool CGUIInfoManager::EvaluateBool(const std::string &expression, int contextWindow)
+bool CGUIInfoManager::EvaluateBool(const std::string &expression, int contextWindow /* = 0 */, const CGUIListItemPtr &item /* = NULL */)
 {
   bool result = false;
   INFO::InfoPtr info = Register(expression, contextWindow);
   if (info)
-    result = info->Get();
+    result = info->Get(item.get());
   return result;
 }
 
@@ -4135,10 +4135,10 @@ std::string CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
     if (tag.GetAlbum().size()) { return tag.GetAlbum(); }
     break;
   case MUSICPLAYER_ARTIST:
-    if (tag.GetArtist().size()) { return StringUtils::Join(tag.GetArtist(), g_advancedSettings.m_musicItemSeparator); }
+    if (tag.GetArtist().size()) { return tag.GetArtistString(); }
     break;
   case MUSICPLAYER_ALBUM_ARTIST:
-    if (tag.GetAlbumArtist().size()) { return StringUtils::Join(tag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator); }
+    if (tag.GetAlbumArtist().size()) { return tag.GetAlbumArtistString(); }
     break;
   case MUSICPLAYER_YEAR:
     if (tag.GetYear()) { return tag.GetYearString(); }
@@ -5084,11 +5084,11 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (item->HasVideoInfoTag())
       return StringUtils::Join(item->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator);
     if (item->HasMusicInfoTag())
-      return StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
+      return item->GetMusicInfoTag()->GetArtistString();
     break;
   case LISTITEM_ALBUM_ARTIST:
     if (item->HasMusicInfoTag())
-      return StringUtils::Join(item->GetMusicInfoTag()->GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator);
+      return item->GetMusicInfoTag()->GetAlbumArtistString();
     break;
   case LISTITEM_DIRECTOR:
     if (item->HasPVRChannelInfoTag())
@@ -5217,9 +5217,9 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       std::string rating;
       if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
         rating = StringUtils::Format("%.1f", item->GetVideoInfoTag()->m_fRating);
-      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > '0')
+      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetUserrating() > '0')
       { // song rating.  Images will probably be better than numbers for this in the long run
-        rating.assign(1, item->GetMusicInfoTag()->GetRating());
+        rating.assign(1, item->GetMusicInfoTag()->GetUserrating());
       }
       return rating;
     }
@@ -5840,7 +5840,7 @@ std::string CGUIInfoManager::GetItemImage(const CFileItem *item, int info, std::
     {
       if (item->HasMusicInfoTag())
       {
-        return StringUtils::Format("songrating%c.png", item->GetMusicInfoTag()->GetRating());
+        return StringUtils::Format("songrating%c.png", item->GetMusicInfoTag()->GetUserrating());
       }
     }
     break;
@@ -5853,7 +5853,7 @@ std::string CGUIInfoManager::GetItemImage(const CFileItem *item, int info, std::
       }
       else if (item->HasMusicInfoTag())
       { // song rating.
-        rating = StringUtils::Format("rating%c.png", item->GetMusicInfoTag()->GetRating());
+        rating = StringUtils::Format("rating%c.png", item->GetMusicInfoTag()->GetUserrating());
       }
       return rating;
     }

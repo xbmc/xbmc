@@ -173,8 +173,8 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
       value = StringUtils::Format("%02.2i", music->GetDiscNumber());
     break;
   case 'A':
-    if (music && music->GetArtist().size())
-      value = StringUtils::Join(music->GetArtist(), g_advancedSettings.m_musicItemSeparator);
+    if (music && music->GetArtistString().size())
+      value = music->GetArtistString(); 
     if (movie && movie->m_artist.size())
       value = StringUtils::Join(movie->m_artist, g_advancedSettings.m_videoItemSeparator);
     break;
@@ -250,8 +250,8 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
       value = item->m_dateTime.GetAsLocalizedTime("", false);
     break;
   case 'R': // rating
-    if (music && music->GetRating() != '0')
-      value.assign(1, music->GetRating());
+    if (music && music->GetUserrating() != '0')
+      value.assign(1, music->GetUserrating());
     else if (movie && movie->m_fRating != 0.f)
       value = StringUtils::Format("%.1f", movie->m_fRating);
     break;
@@ -330,6 +330,8 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
   case 'p': // Last played
     if (movie && movie->m_lastPlayed.IsValid())
       value = movie->m_lastPlayed.GetAsLocalizedDate();
+    if (music && music->GetLastPlayed().IsValid())
+      value = music->GetLastPlayed().GetAsLocalizedDate();
     break;
   case 'r': // userrating
     if (movie && movie->m_iUserRating != 0)
@@ -437,7 +439,7 @@ void CLabelFormatter::FillMusicMaskContent(const char mask, const std::string &v
     tag->SetDuration(StringUtils::TimeStringToSeconds(value));
     break;
   case 'R': // rating
-    tag->SetRating(value[0]);
+    tag->SetUserrating(value[0]);
     break;
   }
 }

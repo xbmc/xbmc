@@ -837,25 +837,17 @@ bool CApplication::CreateGUI()
   return true;
 }
 
-bool CApplication::InitWindow()
+bool CApplication::InitWindow(RESOLUTION res)
 {
-#ifdef TARGET_DARWIN_OSX
-  // force initial window creation to be windowed, if fullscreen, it will switch to it below
-  // fixes the white screen of death if starting fullscreen and switching to windowed.
-  bool bFullScreen = false;
-  if (!g_Windowing.CreateNewWindow(CSysInfo::GetAppName(), bFullScreen, CDisplaySettings::GetInstance().GetResolutionInfo(RES_WINDOW), OnEvent))
+  if (res == RES_INVALID)
+    res = CDisplaySettings::GetInstance().GetCurrentResolution();
+
+  bool bFullScreen = res != RES_WINDOW;
+  if (!g_Windowing.CreateNewWindow(CSysInfo::GetAppName(), bFullScreen, CDisplaySettings::GetInstance().GetResolutionInfo(res), OnEvent))
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
     return false;
   }
-#else
-  bool bFullScreen = CDisplaySettings::GetInstance().GetCurrentResolution() != RES_WINDOW;
-  if (!g_Windowing.CreateNewWindow(CSysInfo::GetAppName(), bFullScreen, CDisplaySettings::GetInstance().GetCurrentResolutionInfo(), OnEvent))
-  {
-    CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
-    return false;
-  }
-#endif
 
   if (!g_Windowing.InitRenderSystem())
   {
@@ -863,7 +855,7 @@ bool CApplication::InitWindow()
     return false;
   }
   // set GUI res and force the clear of the screen
-  g_graphicsContext.SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution());
+  g_graphicsContext.SetVideoResolution(res);
   return true;
 }
 
@@ -2253,16 +2245,16 @@ bool CApplication::OnAction(const CAction &action)
     if (tag)
     {
       *m_itemCurrentFile->GetMusicInfoTag() = *tag;
-      char rating = tag->GetRating();
+      char rating = tag->GetUserrating();
       bool needsUpdate(false);
       if (rating > '0' && action.GetID() == ACTION_DECREASE_RATING)
       {
-        m_itemCurrentFile->GetMusicInfoTag()->SetRating(rating - 1);
+        m_itemCurrentFile->GetMusicInfoTag()->SetUserrating(rating - 1);
         needsUpdate = true;
       }
       else if (rating < '5' && action.GetID() == ACTION_INCREASE_RATING)
       {
-        m_itemCurrentFile->GetMusicInfoTag()->SetRating(rating + 1);
+        m_itemCurrentFile->GetMusicInfoTag()->SetUserrating(rating + 1);
         needsUpdate = true;
       }
       if (needsUpdate)
@@ -2270,7 +2262,7 @@ bool CApplication::OnAction(const CAction &action)
         CMusicDatabase db;
         if (db.Open())      // OpenForWrite() ?
         {
-          db.SetSongRating(m_itemCurrentFile->GetPath(), m_itemCurrentFile->GetMusicInfoTag()->GetRating());
+          db.SetSongUserrating(m_itemCurrentFile->GetPath(), m_itemCurrentFile->GetMusicInfoTag()->GetUserrating());
           db.Close();
         }
         // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
@@ -2613,8 +2605,10 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   }
   break;
 
+#ifdef TARGET_ANDROID
   case TMSG_DISPLAY_SETUP:
-    *static_cast<bool*>(pMsg->lpVoid) = InitWindow();
+    // We might come from a refresh rate switch destroying the native window; use the context resolution
+    *static_cast<bool*>(pMsg->lpVoid) = InitWindow(g_graphicsContext.GetVideoResolution());
     SetRenderGUI(true);
     break;
 
@@ -2622,6 +2616,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     *static_cast<bool*>(pMsg->lpVoid) = DestroyWindow();
     SetRenderGUI(false);
     break;
+#endif
 
   case TMSG_SETPVRMANAGERSTATE:
     if (pMsg->param1 != 0)
@@ -4566,20 +4561,23 @@ bool CApplication::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_EXECUTE:
     if (message.GetNumStringParams())
-      return ExecuteXBMCAction(message.GetStringParam());
+      return ExecuteXBMCAction(message.GetStringParam(), message.GetItem());
     break;
   }
   return false;
 }
 
-bool CApplication::ExecuteXBMCAction(std::string actionStr)
+bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPtr &item /* = NULL */)
 {
   // see if it is a user set string
 
   //We don't know if there is unsecure information in this yet, so we
   //postpone any logging
   const std::string in_actionStr(actionStr);
-  actionStr = CGUIInfoLabel::GetLabel(actionStr);
+  if (item)
+    actionStr = CGUIInfoLabel::GetItemLabel(actionStr, item.get());
+  else
+    actionStr = CGUIInfoLabel::GetLabel(actionStr);
 
   // user has asked for something to be executed
   if (CBuiltins::GetInstance().HasCommand(actionStr))

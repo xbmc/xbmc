@@ -286,11 +286,8 @@ const std::string CSettings::SETTING_MUSICPLAYER_CROSSFADEALBUMTRACKS = "musicpl
 const std::string CSettings::SETTING_MUSICPLAYER_VISUALISATION = "musicplayer.visualisation";
 const std::string CSettings::SETTING_MUSICFILES_USETAGS = "musicfiles.usetags";
 const std::string CSettings::SETTING_MUSICFILES_TRACKFORMAT = "musicfiles.trackformat";
-const std::string CSettings::SETTING_MUSICFILES_TRACKFORMATRIGHT = "musicfiles.trackformatright";
 const std::string CSettings::SETTING_MUSICFILES_NOWPLAYINGTRACKFORMAT = "musicfiles.nowplayingtrackformat";
-const std::string CSettings::SETTING_MUSICFILES_NOWPLAYINGTRACKFORMATRIGHT = "musicfiles.nowplayingtrackformatright";
 const std::string CSettings::SETTING_MUSICFILES_LIBRARYTRACKFORMAT = "musicfiles.librarytrackformat";
-const std::string CSettings::SETTING_MUSICFILES_LIBRARYTRACKFORMATRIGHT = "musicfiles.librarytrackformatright";
 const std::string CSettings::SETTING_MUSICFILES_FINDREMOTETHUMBS = "musicfiles.findremotethumbs";
 const std::string CSettings::SETTING_AUDIOCDS_AUTOACTION = "audiocds.autoaction";
 const std::string CSettings::SETTING_AUDIOCDS_USECDDB = "audiocds.usecddb";
@@ -342,7 +339,7 @@ const std::string CSettings::SETTING_SERVICES_AIRPLAY = "services.airplay";
 const std::string CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL = "services.airplayvolumecontrol";
 const std::string CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD = "services.useairplaypassword";
 const std::string CSettings::SETTING_SERVICES_AIRPLAYPASSWORD = "services.airplaypassword";
-const std::string CSettings::SETTING_SERVICES_AIRPLAYIOS8COMPAT = "services.airplayios8compat";
+const std::string CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT = "services.airplayvideosupport";
 const std::string CSettings::SETTING_SMB_WINSSERVER = "smb.winsserver";
 const std::string CSettings::SETTING_SMB_WORKGROUP = "smb.workgroup";
 const std::string CSettings::SETTING_VIDEOSCREEN_MONITOR = "videoscreen.monitor";
@@ -1069,7 +1066,6 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_MUSICLIBRARY_EXPORT);
   settingSet.insert(CSettings::SETTING_MUSICLIBRARY_IMPORT);
   settingSet.insert(CSettings::SETTING_MUSICFILES_TRACKFORMAT);
-  settingSet.insert(CSettings::SETTING_MUSICFILES_TRACKFORMATRIGHT);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_FLATTENTVSHOWS);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_REMOVE_DUPLICATES);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS);
@@ -1188,6 +1184,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_SERVICES_ZEROCONF);
   settingSet.insert(CSettings::SETTING_SERVICES_AIRPLAY);
   settingSet.insert(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL);
+  settingSet.insert(CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT);
   settingSet.insert(CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD);
   settingSet.insert(CSettings::SETTING_SERVICES_AIRPLAYPASSWORD);
   settingSet.insert(CSettings::SETTING_SERVICES_UPNPSERVER);

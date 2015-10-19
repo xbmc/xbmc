@@ -148,11 +148,11 @@ void CGUIDialogMusicInfo::SetAlbum(const CAlbum& album, const std::string &path)
   SetSongs(m_album.infoSongs);
   *m_albumItem = CFileItem(path, true);
   m_albumItem->GetMusicInfoTag()->SetAlbum(m_album.strAlbum);
-  m_albumItem->GetMusicInfoTag()->SetAlbumArtist(StringUtils::Join(m_album.artist, g_advancedSettings.m_musicItemSeparator));
-  m_albumItem->GetMusicInfoTag()->SetArtist(m_album.artist);
+  m_albumItem->GetMusicInfoTag()->SetAlbumArtist(m_album.GetAlbumArtist());
+  m_albumItem->GetMusicInfoTag()->SetArtist(m_album.GetAlbumArtist());
   m_albumItem->GetMusicInfoTag()->SetYear(m_album.iYear);
   m_albumItem->GetMusicInfoTag()->SetLoaded(true);
-  m_albumItem->GetMusicInfoTag()->SetRating('0' + m_album.iRating);
+  m_albumItem->GetMusicInfoTag()->SetUserrating('0' + m_album.iRating);
   m_albumItem->GetMusicInfoTag()->SetGenre(m_album.genre);
   m_albumItem->GetMusicInfoTag()->SetDatabaseId(m_album.idAlbum, MediaTypeAlbum);
   CMusicDatabase::SetPropertiesFromAlbum(*m_albumItem,m_album);
@@ -161,7 +161,7 @@ void CGUIDialogMusicInfo::SetAlbum(const CAlbum& album, const std::string &path)
   loader.LoadItem(m_albumItem.get());
 
   // set the artist thumb, fanart
-  if (!m_album.artist.empty())
+  if (!m_album.GetAlbumArtist().empty())
   {
     CMusicDatabase db;
     db.Open();

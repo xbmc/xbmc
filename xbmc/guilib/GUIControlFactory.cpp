@@ -760,6 +760,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CLabelInfo labelInfo;
   CLabelInfo spinInfo;
 
+  CGUIInfoColor hitColor(0xFFFFFFFF);
   CGUIInfoColor textColor3;
   CGUIInfoColor headlineColor;
 
@@ -821,6 +822,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   hitRect.SetRect(posX, posY, posX + width, posY + height);
   GetHitRect(pControlNode, hitRect);
+
+  GetInfoColor(pControlNode, "hitrectcolor", hitColor, parentID);
 
   GetActions(pControlNode, "onup",    actions[ACTION_MOVE_UP]);
   GetActions(pControlNode, "ondown",  actions[ACTION_MOVE_DOWN]);
@@ -1370,6 +1373,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       ((CGUIListContainer *)control)->SetPageControl(pageControl);
       ((CGUIListContainer *)control)->SetRenderOffset(offset);
       ((CGUIListContainer *)control)->SetAutoScrolling(pControlNode);
+      ((CGUIListContainer *)control)->SetClickActions(clickActions);
+      ((CGUIListContainer *)control)->SetFocusActions(focusActions);
+      ((CGUIListContainer *)control)->SetUnFocusActions(unfocusActions);
     }
     break;
   case CGUIControl::GUICONTAINER_WRAPLIST:
@@ -1384,6 +1390,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       ((CGUIWrappingListContainer *)control)->SetPageControl(pageControl);
       ((CGUIWrappingListContainer *)control)->SetRenderOffset(offset);
       ((CGUIWrappingListContainer *)control)->SetAutoScrolling(pControlNode);
+      ((CGUIWrappingListContainer *)control)->SetClickActions(clickActions);
+      ((CGUIWrappingListContainer *)control)->SetFocusActions(focusActions);
+      ((CGUIWrappingListContainer *)control)->SetUnFocusActions(unfocusActions);
     }
     break;
   case CGUIControl::GUICONTAINER_EPGGRID:
@@ -1406,6 +1415,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       ((CGUIFixedListContainer *)control)->SetPageControl(pageControl);
       ((CGUIFixedListContainer *)control)->SetRenderOffset(offset);
       ((CGUIFixedListContainer *)control)->SetAutoScrolling(pControlNode);
+      ((CGUIFixedListContainer *)control)->SetClickActions(clickActions);
+      ((CGUIFixedListContainer *)control)->SetFocusActions(focusActions);
+      ((CGUIFixedListContainer *)control)->SetUnFocusActions(unfocusActions);
     }
     break;
   case CGUIControl::GUICONTAINER_PANEL:
@@ -1420,6 +1432,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       ((CGUIPanelContainer *)control)->SetPageControl(pageControl);
       ((CGUIPanelContainer *)control)->SetRenderOffset(offset);
       ((CGUIPanelContainer *)control)->SetAutoScrolling(pControlNode);
+      ((CGUIPanelContainer *)control)->SetClickActions(clickActions);
+      ((CGUIPanelContainer *)control)->SetFocusActions(focusActions);
+      ((CGUIPanelContainer *)control)->SetUnFocusActions(unfocusActions);
     }
     break;
   case CGUIControl::GUICONTROL_TEXTBOX:
@@ -1485,7 +1500,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   // things that apply to all controls
   if (control)
   {
-    control->SetHitRect(hitRect);
+    control->SetHitRect(hitRect, hitColor);
     control->SetVisibleCondition(visibleCondition, allowHiddenFocus);
     control->SetEnableCondition(enableCondition);
     control->SetAnimations(animations);

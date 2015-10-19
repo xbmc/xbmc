@@ -263,6 +263,22 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
         return false;
     }
   }
+  else if (settingId == CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT)
+  {
+    if (((CSettingBool*)setting)->GetValue())
+    {
+      if (!StartAirPlayServer())
+      {
+        CGUIDialogOK::ShowAndGetInput(CVariant{1273}, CVariant{33100});
+        return false;
+      }
+    }
+    else
+    {
+      if (!StopAirPlayServer(true))
+        return false;
+    }
+  }
   else if (settingId == CSettings::SETTING_SERVICES_AIRPLAYPASSWORD ||
            settingId == CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD)
   {
@@ -496,7 +512,6 @@ bool CNetworkServices::StartWebserver()
   if (IsWebserverRunning())
     return true;
 
-  CLog::Log(LOGNOTICE, "Webserver: Starting...");
   if (!m_webserver.Start(webPort, CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_WEBSERVERUSERNAME), CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_WEBSERVERPASSWORD)))
     return false;
 
@@ -530,14 +545,12 @@ bool CNetworkServices::StopWebserver()
   if (!IsWebserverRunning())
     return true;
 
-  CLog::Log(LOGNOTICE, "Webserver: Stopping...");
   if (!m_webserver.Stop() || m_webserver.IsStarted())
   {
     CLog::Log(LOGWARNING, "Webserver: Failed to stop.");
     return false;
   }
   
-  CLog::Log(LOGNOTICE, "Webserver: Stopped...");
 #ifdef HAS_ZEROCONF
 #ifdef HAS_WEB_INTERFACE
   CZeroconf::GetInstance()->RemoveService("servers.webserver");
@@ -554,6 +567,9 @@ bool CNetworkServices::StopWebserver()
 
 bool CNetworkServices::StartAirPlayServer()
 {
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT))
+    return true;
+
 #ifdef HAS_AIRPLAY
   if (!g_application.getNetwork().IsAvailable() || !CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
     return false;
@@ -575,18 +591,11 @@ bool CNetworkServices::StartAirPlayServer()
   txt.push_back(std::make_pair("model", "Xbmc,1"));
   txt.push_back(std::make_pair("srcvers", AIRPLAY_SERVER_VERSION_STR));
 
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_AIRPLAYIOS8COMPAT))
-  {
-    // for ios8 clients we need to announce mirroring support
-    // else we won't get video urls anymore.
-    // We also announce photo caching support (as it seems faster and
-    // we have implemented it anyways). 
-    txt.push_back(std::make_pair("features", "0x20F7"));
-  }
-  else
-  {
-    txt.push_back(std::make_pair("features", "0x77"));
-  }
+  // for ios8 clients we need to announce mirroring support
+  // else we won't get video urls anymore.
+  // We also announce photo caching support (as it seems faster and
+  // we have implemented it anyways).
+  txt.push_back(std::make_pair("features", "0x20F7"));
 
   CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", CSysInfo::GetDeviceName(), g_advancedSettings.m_airPlayPort, txt);
 #endif // HAS_ZEROCONF
@@ -726,7 +735,6 @@ bool CNetworkServices::StartEventServer()
     return false;
   }
 
-  CLog::Log(LOGNOTICE, "ES: Starting event server");
   server->StartServer();
 
   return true;
