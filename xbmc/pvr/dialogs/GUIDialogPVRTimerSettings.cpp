@@ -62,6 +62,9 @@ using namespace PVR;
 #define SETTING_TMR_DIR           "timer.directory"
 #define SETTING_TMR_REC_GROUP     "timer.recgroup"
 
+#define MARGIN_SPINNER_STEP 15
+#define MARGIN_SPINNER_MAX 180
+
 #define TYPE_DEP_VISIBI_COND_ID_POSTFIX     "visibi.typedep"
 #define TYPE_DEP_ENABLE_COND_ID_POSTFIX     "enable.typedep"
 #define CHANNEL_DEP_VISIBI_COND_ID_POSTFIX  "visibi.channeldep"
@@ -325,11 +328,11 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   AddTypeDependentEnableCondition(setting, SETTING_TMR_NEW_EPISODES);
 
   // Pre and post record time
-  setting = AddSpinner(group, SETTING_TMR_BEGIN_PRE, 813, 0, m_iMarginStart, 0, 1, 60, 14044);
+  setting = AddSpinner(group, SETTING_TMR_BEGIN_PRE, 813, 0, m_iMarginStart, 0, MARGIN_SPINNER_STEP, MARGIN_SPINNER_MAX, 14044);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_BEGIN_PRE);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_BEGIN_PRE);
 
-  setting = AddSpinner(group, SETTING_TMR_END_POST,  814, 0, m_iMarginEnd,   0, 1, 60, 14044);
+  setting = AddSpinner(group, SETTING_TMR_END_POST,  814, 0, m_iMarginEnd,   0, MARGIN_SPINNER_STEP, MARGIN_SPINNER_MAX, 14044);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_END_POST);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_END_POST);
 
