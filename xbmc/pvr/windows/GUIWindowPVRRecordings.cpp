@@ -119,17 +119,17 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
   bool isDeletedRecording = false;
 
   if (ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
-    buttons.Add(CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS, 15047);  /* if something is played and dsp is active, allow settings selection */
+    buttons.Add(CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS, 15047);  /* Audio DSP settings */
 
   if (pItem->HasPVRRecordingInfoTag())
   {
     isDeletedRecording = pItem->GetPVRRecordingInfoTag()->IsDeleted();
 
-    buttons.Add(CONTEXT_BUTTON_INFO, 19053);      /* Get Information of this recording */
+    buttons.Add(CONTEXT_BUTTON_INFO, 19053);        /* Recording Information */
     if (!isDeletedRecording)
     {
-      buttons.Add(CONTEXT_BUTTON_FIND, 19003);      /* Find similar program */
-      buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); /* Play this recording */
+      buttons.Add(CONTEXT_BUTTON_FIND, 19003);      /* Find similar */
+      buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); /* Start from beginning */
       std::string resumeString = GetResumeString(*pItem);
       if (!resumeString.empty())
       {
@@ -138,8 +138,8 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
     }
     else
     {
-      buttons.Add(CONTEXT_BUTTON_UNDELETE, 19290);    /* Undelete this recording */
-      buttons.Add(CONTEXT_BUTTON_DELETE, 19291);      /* Delete this permanently */
+      buttons.Add(CONTEXT_BUTTON_UNDELETE, 19290);      /* Undelete */
+      buttons.Add(CONTEXT_BUTTON_DELETE, 19291);        /* Delete permanently */
       if (m_vecItems->GetObjectCount() > 1)
         buttons.Add(CONTEXT_BUTTON_DELETE_ALL, 19292);  /* Delete all permanently */
     }
@@ -148,21 +148,21 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
   {
     if (pItem->m_bIsFolder)
     {
-      // Have both options for folders since we don't know whether all childs are watched/unwatched
-      buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); /* Mark as UnWatched */
-      buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   /* Mark as Watched */
+      // Have both options for folders since we don't know whether all children are watched/unwatched
+      buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); /* Mark as unwatched */
+      buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   /* Mark as watched */
     }
     if (pItem->HasPVRRecordingInfoTag())
     {
       if (pItem->GetPVRRecordingInfoTag()->m_playCount > 0)
-        buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); /* Mark as UnWatched */
+        buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); /* Mark as unwatched */
       else
-        buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   /* Mark as Watched */
+        buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   /* Mark as watched */
 
-      buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename this recording */
+      buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename */
     }
 
-    buttons.Add(CONTEXT_BUTTON_DELETE, 117);
+    buttons.Add(CONTEXT_BUTTON_DELETE, 117);        /* Delete */
   }
 
   if (pItem->HasPVRRecordingInfoTag())

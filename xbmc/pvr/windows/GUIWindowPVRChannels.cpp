@@ -78,11 +78,11 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
   CPVRChannelPtr channel(pItem->GetPVRChannelInfoTag());
 
   if (ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
-    buttons.Add(CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS, 15047);                        /* if something is played and dsp is active, allow settings selection */
+    buttons.Add(CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS, 15047);                        /* Audio DSP settings */
 
-  buttons.Add(CONTEXT_BUTTON_INFO, 19047);                                          /* channel info */
-  buttons.Add(CONTEXT_BUTTON_FIND, 19003);                                          /* find similar program */
-  buttons.Add(CONTEXT_BUTTON_RECORD_ITEM, !channel->IsRecording() ? 264 : 19059);   /* record / stop recording */
+  buttons.Add(CONTEXT_BUTTON_INFO, 19047);                                          /* Programme information */
+  buttons.Add(CONTEXT_BUTTON_FIND, 19003);                                          /* Find similar */
+  buttons.Add(CONTEXT_BUTTON_RECORD_ITEM, !channel->IsRecording() ? 264 : 19059);   /* Record / Stop recording */
 
   if (g_PVRClients->HasMenuHooks(pItem->GetPVRChannelInfoTag()->ClientID(), PVR_MENUHOOK_CHANNEL))
     buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);                                  /* PVR client specific action */
@@ -90,7 +90,7 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
   // Add parent buttons before the Manage button
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
 
-  buttons.Add(CONTEXT_BUTTON_EDIT, 16106);                                          /* "Manage" submenu */
+  buttons.Add(CONTEXT_BUTTON_EDIT, 16106);                                          /* Manage... */
 
   CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);
 }
