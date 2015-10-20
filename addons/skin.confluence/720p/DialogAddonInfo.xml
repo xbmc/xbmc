@@ -297,6 +297,14 @@
 					<align>center</align>
 					<font>font12_title</font>
 				</control>
+				<control type="radiobutton" id="13">
+					<description>Auto-update button</description>
+					<width>220</width>
+					<height>43</height>
+					<label>21340</label>
+					<align>center</align>
+					<font>font12_title</font>
+				</control>
 				<control type="button" id="12">
 					<description>Launch Addon button</description>
 					<width>220</width>
