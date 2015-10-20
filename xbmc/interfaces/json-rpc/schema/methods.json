@@ -1300,6 +1300,25 @@
       }
     }
   },
+  "VideoLibrary.GetInProgressTvShows": {
+    "type": "method",
+    "description": "Retrieve all in progress tvshows",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "properties", "$ref": "Video.Fields.TVShow" },
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "tvshows": { "type": "array",
+          "items": { "$ref": "Video.Details.TVShow" }
+        }
+      }
+    }
+  },
   "VideoLibrary.GetGenres": {
     "type": "method",
     "description": "Retrieve all genres",
