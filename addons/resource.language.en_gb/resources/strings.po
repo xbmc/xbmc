@@ -8661,8 +8661,10 @@ msgctxt "#19056"
 msgid "New timer"
 msgstr ""
 
+#. Label for a context menu entry to open timer settings dialog
+#: xbmc/pvr/windows/GUIWindowPVRTimers.cpp
 msgctxt "#19057"
-msgid "Edit timer"
+msgid "Edit settings"
 msgstr ""
 
 msgctxt "#19058"
