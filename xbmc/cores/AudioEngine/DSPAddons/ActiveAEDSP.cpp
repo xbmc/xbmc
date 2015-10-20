@@ -110,10 +110,10 @@ void CActiveAEDSP::Activate(bool bAsync /* = false */)
     return;
   }
 
-  CSingleLock lock(m_critSection);
-
   /* first stop and remove any audio dsp add-on's */
   Deactivate();
+
+  CSingleLock lock(m_critSection);
 
   CLog::Log(LOGNOTICE, "ActiveAE DSP - starting");
 
@@ -178,16 +178,22 @@ void CActiveAEDSP::TriggerModeUpdate(bool bAsync /* = true */)
 
 void CActiveAEDSP::Deactivate(void)
 {
-  CSingleLock lock(m_critSection);
-
   /* check whether the audio dsp is loaded */
   if (!m_isActive)
     return;
 
+  /* stop thread */
+  StopThread();
+
+  CSingleLock lock(m_critSection);
+
   CLog::Log(LOGNOTICE, "ActiveAE DSP - stopping");
 
-  /* stop thread */
-  StopThread(false);
+  /* destroy all addons */
+  for (AE_DSP_ADDONMAP_ITR itr = m_addonMap.begin(); itr != m_addonMap.end(); ++itr)
+    itr->second->Destroy();
+
+  m_addonMap.clear();
 
   /* unload all data */
   Cleanup();
@@ -195,12 +201,6 @@ void CActiveAEDSP::Deactivate(void)
   /* close database */
   if (m_databaseDSP.IsOpen())
     m_databaseDSP.Close();
-
-  /* destroy all addons */
-  for (AE_DSP_ADDONMAP_ITR itr = m_addonMap.begin(); itr != m_addonMap.end(); ++itr)
-    itr->second->Destroy();
-
-  m_addonMap.clear();
 }
 
 void CActiveAEDSP::Cleanup(void)
@@ -776,8 +776,10 @@ void CActiveAEDSP::Process(void)
       else if (!m_noAddonWarningDisplayed)
         ShowDialogNoAddonsEnabled();
     }
-
-    Sleep(1000);
+    else
+    {
+      Sleep(1000);
+    }
   }
 
   m_isActive = false;
