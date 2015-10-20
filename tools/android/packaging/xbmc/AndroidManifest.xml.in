@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
 
+    <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
     <uses-feature android:name="android.hardware.screen.landscape" android:required="true" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen.multitouch" android:required="false" />
