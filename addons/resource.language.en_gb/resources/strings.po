@@ -2614,11 +2614,13 @@ msgctxt "#592"
 msgid "One"
 msgstr ""
 
+#. Label used for buttons and select options as a reference to match all items or ocurrences.
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 #: xbmc/PlayListPlayer.cpp
 #: xbmc/profiles/dialogs/GUIDialogLockSettings.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideSearch.cpp
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
 msgctxt "#593"
 msgid "All"
 msgstr ""
@@ -3492,7 +3494,7 @@ msgstr ""
 msgctxt "#817"
 msgid "End any time"
 
-# Label of "MaxRecordings" list in the PVR timer setting dialog
+#. Label of "MaxRecordings" list in the PVR timer setting dialog
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#818"
 msgid "Max recordings"
@@ -3609,7 +3611,11 @@ msgctxt "#840"
 msgid "Do you only want to delete this timer or also the repeating timer that has scheduled it?"
 msgstr ""
 
-#empty string with id 841
+#. Label for No button in a dialog when a user wants to delete a timer that was scheduled by a repeating timer
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
+msgctxt "#841"
+msgid "Only this"
+msgstr ""
 
 #. Label of the option to switch between hierarchical and flat timer view (in confluence sideblade).
 #: skin.confluence

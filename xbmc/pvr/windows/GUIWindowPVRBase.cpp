@@ -825,7 +825,10 @@ bool CGUIWindowPVRBase::ConfirmDeleteTimer(CFileItem *item, bool &bDeleteSchedul
                         CVariant{840}, // "Do you only want to delete this timer or also the repeating timer that has scheduled it?"
                         CVariant{""},
                         CVariant{item->GetPVRTimerInfoTag()->Title()},
-                        bCancel);
+                        bCancel,
+                        CVariant{841}, // "Only this"
+                        CVariant{593}, // "All"
+                        0); // no autoclose
     bConfirmed = !bCancel;
   }
   else
