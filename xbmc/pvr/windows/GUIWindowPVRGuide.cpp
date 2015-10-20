@@ -82,34 +82,34 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
     return;
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
-  buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);         /* switch channel */
+  buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);         /* Switch channel */
 
   if (pItem->HasEPGInfoTag() && pItem->GetEPGInfoTag()->HasRecording())
-    buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 19687);      /* play recording */
+    buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 19687);      /* Play recording */
 
   CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem.get());
   if (timer && timer->HasPVRTimerInfoTag())
   {
     if (timer->GetPVRTimerInfoTag()->IsRecording())
-      buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);  /* stop recording */
+      buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);  /* Stop recording */
     else if (timer->GetPVRTimerInfoTag()->HasTimerType() &&
              !timer->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
-      buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060);  /* delete timer */
+      buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060);  /* Delete timer */
   }
   else if (pItem->HasEPGInfoTag() && pItem->GetEPGInfoTag()->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
   {
-    buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);      /* record */
-    buttons.Add(CONTEXT_BUTTON_ADVANCED_RECORD, 19061); /* add timer */
+    buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);      /* Record */
+    buttons.Add(CONTEXT_BUTTON_ADVANCED_RECORD, 19061); /* Add timer */
   }
 
-  buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* epg info */
-  buttons.Add(CONTEXT_BUTTON_FIND, 19003);              /* find similar program */
+  buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* Programme information */
+  buttons.Add(CONTEXT_BUTTON_FIND, 19003);              /* Find similar */
 
   if (m_viewControl.GetCurrentControl() == GUIDE_VIEW_TIMELINE)
   {
-    buttons.Add(CONTEXT_BUTTON_BEGIN, 19063);           /* go to begin */
-    buttons.Add(CONTEXT_BUTTON_NOW, 19070);             /* go to now */
-    buttons.Add(CONTEXT_BUTTON_END, 19064);             /* go to end */
+    buttons.Add(CONTEXT_BUTTON_BEGIN, 19063);           /* Go to begin */
+    buttons.Add(CONTEXT_BUTTON_NOW, 19070);             /* Go to now */
+    buttons.Add(CONTEXT_BUTTON_END, 19064);             /* Go to end */
   }
 
   if (pItem->HasEPGInfoTag() &&

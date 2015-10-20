@@ -54,24 +54,24 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
     {
       if (!pItem->GetEPGInfoTag()->HasTimer())
       {
-        buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);      /* record */
-        buttons.Add(CONTEXT_BUTTON_ADVANCED_RECORD, 19061); /* add timer */
+        buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);      /* Record */
+        buttons.Add(CONTEXT_BUTTON_ADVANCED_RECORD, 19061); /* Add timer */
       }
       else
       {
         if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
-          buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059); /* stop recording */
+          buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059); /* Stop recording */
         else if (pItem->GetEPGInfoTag()->Timer()->HasTimerType())
         {
           if (!pItem->GetEPGInfoTag()->Timer()->GetTimerType()->IsReadOnly())
-            buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060); /* delete timer */
+            buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060); /* Delete timer */
         }
       }
     }
     if (pItem->GetEPGInfoTag()->HasRecording())
       buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19687);       /* Play recording */
 
-    buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* Epg info button */
+    buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* Programme information */
     if (pItem->GetEPGInfoTag()->HasPVRChannel() &&
         g_PVRClients->HasMenuHooks(pItem->GetEPGInfoTag()->ChannelTag()->ClientID(), PVR_MENUHOOK_EPG))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */

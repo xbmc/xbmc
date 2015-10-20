@@ -77,37 +77,37 @@ void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &but
      file item with the name "Add timer..." is present */
   if (URIUtils::PathEquals(pItem->GetPath(), CPVRTimersPath::PATH_ADDTIMER))
   {
-    buttons.Add(CONTEXT_BUTTON_ADD, 19056);             /* new timer */
+    buttons.Add(CONTEXT_BUTTON_ADD, 19056);             /* New timer */
   }
   else
   {
     if (pItem->GetPVRTimerInfoTag()->GetEpgInfoTag())
-      buttons.Add(CONTEXT_BUTTON_INFO, 19047);          /* epg info */
+      buttons.Add(CONTEXT_BUTTON_INFO, 19047);          /* Programme information */
 
-    buttons.Add(CONTEXT_BUTTON_FIND, 19003);            /* Find similar program */
+    buttons.Add(CONTEXT_BUTTON_FIND, 19003);            /* Find similar */
 
     if (pItem->GetPVRTimerInfoTag()->HasTimerType())
     {
       if (pItem->GetPVRTimerInfoTag()->GetTimerType()->SupportsEnableDisable())
       {
         if (pItem->GetPVRTimerInfoTag()->m_state == PVR_TIMER_STATE_DISABLED)
-          buttons.Add(CONTEXT_BUTTON_ACTIVATE, 843);    /* activate timer */
+          buttons.Add(CONTEXT_BUTTON_ACTIVATE, 843);    /* Activate */
         else
-          buttons.Add(CONTEXT_BUTTON_ACTIVATE, 844);    /* deactivate timer */
+          buttons.Add(CONTEXT_BUTTON_ACTIVATE, 844);    /* Deactivate */
       }
 
       if (!pItem->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
       {
-        buttons.Add(CONTEXT_BUTTON_DELETE, 117);          /* delete */
-        buttons.Add(CONTEXT_BUTTON_EDIT, 19057);          /* edit timer */
+        buttons.Add(CONTEXT_BUTTON_DELETE, 117);        /* Delete */
+        buttons.Add(CONTEXT_BUTTON_EDIT, 19057);        /* Settings */
 
         // As epg-based timers will get it's title from the epg tag, they should not be renamable.
         if (pItem->GetPVRTimerInfoTag()->IsManual())
-          buttons.Add(CONTEXT_BUTTON_RENAME, 118);        /* rename */
+          buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename */
       }
     }
 
-    buttons.Add(CONTEXT_BUTTON_ADD, 19056);             /* new timer */
+    buttons.Add(CONTEXT_BUTTON_ADD, 19056);             /* New timer */
 
     if (g_PVRClients->HasMenuHooks(pItem->GetPVRTimerInfoTag()->m_iClientId, PVR_MENUHOOK_TIMER))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);    /* PVR client specific action */
