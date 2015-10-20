@@ -99,7 +99,7 @@ void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &but
       if (!pItem->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
       {
         buttons.Add(CONTEXT_BUTTON_DELETE, 117);        /* Delete */
-        buttons.Add(CONTEXT_BUTTON_EDIT, 19057);        /* Settings */
+        buttons.Add(CONTEXT_BUTTON_EDIT, 19057);        /* Edit settings */
 
         // As epg-based timers will get it's title from the epg tag, they should not be renamable.
         if (pItem->GetPVRTimerInfoTag()->IsManual())
