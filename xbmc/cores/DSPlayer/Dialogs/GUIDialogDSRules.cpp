@@ -245,6 +245,7 @@ void CGUIDialogDSRules::InitializeSettings()
     m_dsmanager->InitConfig(m_ruleList, EDITATTR, "rules.name", 60002, "name");
     m_dsmanager->InitConfig(m_ruleList, EDITATTR, "rules.filetypes", 60003, "filetypes");
     m_dsmanager->InitConfig(m_ruleList, EDITATTR, "rules.filename", 60004, "filename");
+    m_dsmanager->InitConfig(m_ruleList, EDITATTR, "rules.videocodec", 60020, "videocodec");
     m_dsmanager->InitConfig(m_ruleList, EDITATTR, "rules.protocols", 60005, "protocols");
     m_dsmanager->InitConfig(m_ruleList, BOOLATTR, "rules.url", 60006, "url");
 

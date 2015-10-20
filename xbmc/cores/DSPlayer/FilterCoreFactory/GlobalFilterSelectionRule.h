@@ -32,6 +32,8 @@
 #include "filesystem/DllLibCurl.h"
 #include "utils/RegExp.h"
 #include "URL.h"
+#include "video/VideoInfoTag.h"
+#include "utils/StreamDetails.h"
 
 class CGlobalFilterSelectionRule
 {
@@ -63,6 +65,21 @@ public:
 
     if (m_fileTypes.empty() && m_fileName.empty() && m_Protocols.empty())
       return false;
+
+    if (m_bStreamDetails && (!pFileItem.HasVideoInfoTag()))
+      return false;
+
+    if (m_bStreamDetails)
+    {
+      if (!pFileItem.GetVideoInfoTag()->HasStreamDetails())
+      {
+        CLog::Log(LOGDEBUG, "%s: %s, no StreamDetails", __FUNCTION__, m_name.c_str());
+        return false;
+      }
+      CStreamDetails streamDetails = pFileItem.GetVideoInfoTag()->m_streamDetails;
+
+      if (CompileRegExp(m_videoCodec, regExp) && !MatchesRegExp(streamDetails.GetVideoCodec(), regExp)) return false;
+    }
 
     if (!checkUrl && m_url > 0) return false;
     if (checkUrl && pFileItem.IsInternetStream() && m_url < 1) return false;
@@ -115,10 +132,12 @@ public:
 
 private:
   int        m_url;
+  bool       m_bStreamDetails;
   CStdString m_name;
   CStdString m_fileName;
   CStdString m_fileTypes;
   CStdString m_Protocols;
+  CStdString m_videoCodec;
   CFilterSelectionRule * m_pSource;
   CFilterSelectionRule * m_pSplitter;
   CFilterSelectionRule * m_pVideo;
@@ -156,6 +175,8 @@ private:
     m_fileTypes = pRule->Attribute("filetypes");
     m_fileName = pRule->Attribute("filename");
     m_Protocols = pRule->Attribute("protocols");
+    m_videoCodec = pRule->Attribute("videocodec");
+    m_bStreamDetails = m_videoCodec.length() > 0;
 
     // Source rules
     m_pSource = new CFilterSelectionRule(pRule->FirstChildElement("source"), "source");
