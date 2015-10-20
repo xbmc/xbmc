@@ -3981,7 +3981,7 @@ void CApplication::LoadVideoSettings(const CFileItem& item)
   {
     CFileItem item = CurrentFileItem();
 
-    if (CSettings::Get().GetBool("myvideos.extractflags") && item.HasVideoInfoTag() && !item.GetVideoInfoTag()->HasStreamDetails())
+    if (CSettings::GetInstance().GetBool("myvideos.extractflags") && item.HasVideoInfoTag() && !item.GetVideoInfoTag()->HasStreamDetails())
     {
       CLog::Log(LOGDEBUG, "%s - trying to extract filestream details from video file %s", __FUNCTION__, item.GetPath().c_str());
       CDVDFileInfo::GetFileStreamDetails(&item);

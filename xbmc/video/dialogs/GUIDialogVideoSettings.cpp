@@ -802,7 +802,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
 
       // MADVR MOVESUBS
       entries.clear();
-      entries.push_back(make_pair(70117, -1));
+      entries.push_back(std::make_pair(70117, -1));
       CMadvrCallback::Get()->AddEntry(MADVR_LIST_MOVESUBS, &entries);
 
       AddList(groupMadvrRendering, SETTING_MADVR_MOVESUBS, 70217, 0, static_cast<int>(madvrSettings.m_moveSubs), entries, 70217);
