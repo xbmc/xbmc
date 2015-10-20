@@ -204,16 +204,6 @@ namespace EPG
      * @return The found tag or an empty tag if it wasn't found.
      */
     CEpgInfoTagPtr GetTag(const CDateTime &beginTime) const;
-    /*!
-     * @brief Get the infotag with the given ID.
-     *
-     * Get the infotag with the given ID.
-     * If it wasn't found, try finding the event with the given start time
-     *
-     * @param uniqueID The unique ID of the event to find.
-     * @return The found tag or an empty tag if it wasn't found.
-     */
-    CEpgInfoTagPtr GetTag(unsigned int uniqueID) const;
 
     /*!
      * @brief Update an entry in this EPG.
@@ -309,6 +299,13 @@ namespace EPG
      * @return True when this EPG is valid and can be updated, false otherwise.
      */
     bool IsValid(void) const;
+
+    /*!
+     * @brief Get all events with a valid broadcast Id
+     * @return the table of events
+     */
+    std::vector<CEpgInfoTagPtr> GetAllEventsWithBroadcastId() const;
+
   protected:
     CEpg(void);
 

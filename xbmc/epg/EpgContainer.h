@@ -292,6 +292,13 @@ namespace EPG
 
     void InsertFromDatabase(int iEpgID, const std::string &strName, const std::string &strScraperName);
 
+    /*!
+     * @brief Update map of epg events
+     */
+    void UpdateEpgEvents();
+
+    void CleanupEpgEvents(const CEpgPtr& epg);
+
     CEpgDatabase m_database;           /*!< the EPG database */
 
     /** @name Configuration */
@@ -323,5 +330,9 @@ namespace EPG
 
     std::list<SUpdateRequest> m_updateRequests; /*!< list of update requests triggered by addon*/
     CCriticalSection m_updateRequestsLock;      /*!< protect update requests*/
+
+    std::map<unsigned int, CEpgInfoTagPtr> m_epgEvents; /*!< map of EPG events by unique broadcast Id*/
+    std::map<unsigned int, CDateTime> m_epgScans;       /*!< map of last scan time by EPG Id*/
+    CDateTime m_lastEpgEventPurge;                      /*!< when the last purge has been processed*/
   };
 }
