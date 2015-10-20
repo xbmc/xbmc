@@ -21,6 +21,7 @@
 #include "Song.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/Variant.h"
+#include "utils/StringUtils.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 
@@ -167,6 +168,11 @@ const std::vector<std::string> CSong::GetArtist() const
   {
     songartists.push_back(artistCredit->GetArtist());
   }
+  //When artist credits have not been populated attempt to build an artist vector from the descrpition string
+  //This is a tempory fix, in the longer term other areas should query the song_artist table and populate
+  //artist credits. Note that splitting the string may not give the same artists as held in the song_artist table
+  if (songartists.empty() && !strArtistDesc.empty())
+    songartists = StringUtils::Split(strArtistDesc, g_advancedSettings.m_musicItemSeparator);
   return songartists;
 }
 
