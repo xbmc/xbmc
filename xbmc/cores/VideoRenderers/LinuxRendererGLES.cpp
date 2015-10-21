@@ -594,6 +594,44 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, DWORD flags, DWORD alpha)
 
     return;
   }
+#ifdef TARGET_ANDROID
+  else if (m_renderMethod & RENDER_MEDIACODECSURFACE)
+  {
+    CDVDMediaCodecInfo *mci = m_buffers[m_iYV12RenderBuffer].mediacodec;
+    if (mci)
+    {
+      // this hack is needed to get the 2D mode of a 3D movie going
+      RENDER_STEREO_MODE stereo_mode = g_graphicsContext.GetStereoMode();
+      if (stereo_mode)
+        g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_LEFT);
+
+      ManageDisplay();
+
+      if (stereo_mode)
+        g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_OFF);
+
+      CRect dstRect(m_destRect);
+      CRect srcRect(m_sourceRect);
+      switch (stereo_mode)
+      {
+        case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
+          dstRect.y2 *= 2.0;
+          srcRect.y2 *= 2.0;
+        break;
+
+        case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+          dstRect.x2 *= 2.0;
+          srcRect.x2 *= 2.0;
+        break;
+
+        default:
+        break;
+      }
+
+      mci->RenderUpdate(srcRect, dstRect);
+    }
+  }
+#endif
 #ifdef HAS_IMXVPU
   else if (m_renderMethod & RENDER_IMXMAP)
   {
@@ -722,6 +760,7 @@ unsigned int CLinuxRendererGLES::PreInit()
 #endif
 #if defined(TARGET_ANDROID)
   m_formats.push_back(RENDER_FMT_MEDIACODEC);
+  m_formats.push_back(RENDER_FMT_MEDIACODECSURFACE);
 #endif
 #ifdef HAS_IMXVPU
   m_formats.push_back(RENDER_FMT_IMXMAP);
@@ -828,6 +867,12 @@ void CLinuxRendererGLES::LoadShaders(int field)
         m_renderMethod = RENDER_MEDIACODEC;
         break;
       }
+      else if (m_format == RENDER_FMT_MEDIACODECSURFACE)
+      {
+        CLog::Log(LOGNOTICE, "GL: Using MediaCodec (Surface) render method");
+        m_renderMethod = RENDER_MEDIACODECSURFACE;
+        break;
+      }
       else if (m_format == RENDER_FMT_IMXMAP)
       {
         CLog::Log(LOGNOTICE, "GL: Using IMXMAP render method");
@@ -902,7 +947,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
     m_textureCreate = &CLinuxRendererGLES::CreateCVRefTexture;
     m_textureDelete = &CLinuxRendererGLES::DeleteCVRefTexture;
   }
-  else if (m_format == RENDER_FMT_BYPASS)
+  else if (m_format == RENDER_FMT_BYPASS || m_format == RENDER_FMT_MEDIACODECSURFACE)
   {
     m_textureUpload = &CLinuxRendererGLES::UploadBYPASSTexture;
     m_textureCreate = &CLinuxRendererGLES::CreateBYPASSTexture;
@@ -1043,6 +1088,8 @@ void CLinuxRendererGLES::ReleaseBuffer(int idx)
       SAFE_RELEASE(buf.mediacodec);
     }
   }
+  if ( m_renderMethod & RENDER_MEDIACODECSURFACE )
+    SAFE_RELEASE(buf.mediacodec);
 #endif
 #ifdef HAS_IMXVPU
   if (m_renderMethod & RENDER_IMXMAP)
@@ -1053,7 +1100,7 @@ void CLinuxRendererGLES::ReleaseBuffer(int idx)
 void CLinuxRendererGLES::Render(DWORD flags, int index)
 {
   // If rendered directly by the hardware
-  if (m_renderMethod & RENDER_BYPASS)
+  if (m_renderMethod & RENDER_BYPASS || m_renderMethod & RENDER_MEDIACODECSURFACE)
     return;
 
   // obtain current field, if interlaced
@@ -1836,7 +1883,7 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
     return false;
 
   // If rendered directly by the hardware
-  if (m_renderMethod & RENDER_BYPASS)
+  if (m_renderMethod & RENDER_BYPASS || m_renderMethod & RENDER_MEDIACODECSURFACE)
   {
     capture->BeginRender();
     capture->EndRender();
@@ -2926,6 +2973,9 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
       return false;
   }
 
+  if(m_renderMethod & RENDER_MEDIACODECSURFACE)
+    return false;
+
   if(m_renderMethod & RENDER_CVREF)
     return false;
 
@@ -2967,6 +3017,9 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
   if(m_renderMethod & RENDER_IMXMAP)
     return false;
 
+  if (m_renderMethod & RENDER_MEDIACODECSURFACE)
+    return false;
+
   if(method == VS_SCALINGMETHOD_NEAREST
   || method == VS_SCALINGMETHOD_LINEAR)
     return true;
@@ -2994,6 +3047,9 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
   if(m_renderMethod & RENDER_MEDIACODEC)
     return VS_INTERLACEMETHOD_RENDER_BOB_INVERTED;
 
+  if(m_renderMethod & RENDER_MEDIACODECSURFACE)
+    return VS_INTERLACEMETHOD_NONE;
+
   if(m_renderMethod & RENDER_CVREF)
     return VS_INTERLACEMETHOD_NONE;
 
@@ -3015,7 +3071,8 @@ CRenderInfo CLinuxRendererGLES::GetRenderInfo()
   if(m_format == RENDER_FMT_OMXEGL ||
      m_format == RENDER_FMT_CVBREF ||
      m_format == RENDER_FMT_EGLIMG ||
-     m_format == RENDER_FMT_MEDIACODEC)
+     m_format == RENDER_FMT_MEDIACODEC ||
+    m_format == RENDER_FMT_MEDIACODECSURFACE)
     info.optimal_buffer_size = 2;
   else if(m_format == RENDER_FMT_IMXMAP)
   {
@@ -3114,7 +3171,7 @@ void CLinuxRendererGLES::AddProcessor(CDVDVideoCodecIMXBuffer *buffer, int index
 
 bool CLinuxRendererGLES::IsGuiLayer()
 {
-  if (m_format == RENDER_FMT_BYPASS || m_format == RENDER_FMT_IMXMAP)
+  if (m_format == RENDER_FMT_BYPASS || m_format == RENDER_FMT_IMXMAP || m_format == RENDER_FMT_MEDIACODECSURFACE)
     return false;
   else
     return true;

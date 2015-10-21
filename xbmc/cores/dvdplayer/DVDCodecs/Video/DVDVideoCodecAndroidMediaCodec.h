@@ -28,6 +28,8 @@
 #include "DVDStreamInfo.h"
 #include "threads/Thread.h"
 #include "threads/SingleLock.h"
+#include "android/jni/Surface.h"
+#include "guilib/Geometry.h"
 
 class CJNISurface;
 class CJNISurfaceTexture;
@@ -66,6 +68,7 @@ public:
   int                 GetTextureID() const;
   void                GetTransformMatrix(float *textureMatrix);
   void                UpdateTexImage();
+  void                RenderUpdate(const CRect &SrcRect, const CRect &DestRect);
 
 private:
   // private because we are reference counted
@@ -88,7 +91,7 @@ private:
 class CDVDVideoCodecAndroidMediaCodec : public CDVDVideoCodec
 {
 public:
-  CDVDVideoCodecAndroidMediaCodec();
+  CDVDVideoCodecAndroidMediaCodec(bool surface_render = false);
   virtual ~CDVDVideoCodecAndroidMediaCodec();
 
   // required overrides
@@ -101,7 +104,7 @@ public:
   virtual void    SetDropState(bool bDrop);
   virtual int     GetDataSize(void);
   virtual double  GetTimeSize(void);
-  virtual const char* GetName(void) { return m_formatname; }
+  virtual const char* GetName(void) { return m_formatname.c_str(); }
   virtual unsigned GetAllowedReferences();
 
 protected:
@@ -119,12 +122,13 @@ protected:
   std::string     m_mime;
   std::string     m_codecname;
   int             m_colorFormat;
-  const char     *m_formatname;
+  std::string     m_formatname;
   bool            m_opened;
   bool            m_drop;
 
   CJNISurface    *m_surface;
   unsigned int    m_textureId;
+  CJNISurface     m_videosurface;
   // we need these as shared_ptr because CDVDVideoCodecAndroidMediaCodec
   // will get deleted before CLinuxRendererGLES is shut down and
   // CLinuxRendererGLES refs them via CDVDMediaCodecInfo.
@@ -141,6 +145,7 @@ protected:
   DVDVideoPicture m_videobuffer;
 
   bool            m_render_sw;
+  bool            m_render_surface;
   int             m_src_offset[4];
   int             m_src_stride[4];
 };

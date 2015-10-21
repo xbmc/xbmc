@@ -41,6 +41,10 @@ void CJNISurface::PopulateStaticFields()
   ROTATION_270= get_static_field<int>(clazz, "ROTATION_270");
 }
 
+CJNISurface::CJNISurface()
+  : CJNIBase(CJNISurface::m_classname)
+{
+}
 
 CJNISurface::CJNISurface(const CJNISurfaceTexture &surfaceTexture) : CJNIBase(m_classname)
 {

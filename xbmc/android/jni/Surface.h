@@ -25,6 +25,7 @@ class CJNISurfaceTexture;
 class CJNISurface : public CJNIBase
 {
 public:
+  CJNISurface();
   CJNISurface(const CJNISurfaceTexture &surfaceTexture);
   CJNISurface(const jni::jhobject &object) : CJNIBase(object) {};
   ~CJNISurface() {};
