@@ -18479,6 +18479,11 @@ msgctxt "#60023"
 msgid "- Stage"
 msgstr ""
 
+msgctxt "#60024"
+msgid "Priority order"
+msgstr ""
+
+
 msgctxt "#61001"
 msgid "Save changes?"
 msgstr ""

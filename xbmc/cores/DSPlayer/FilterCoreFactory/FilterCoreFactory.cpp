@@ -81,10 +81,18 @@ HRESULT CFilterCoreFactory::LoadFiltersConfiguration(TiXmlElement* pConfig)
 
 CGlobalFilterSelectionRule* CFilterCoreFactory::GetGlobalFilterSelectionRule(const CFileItem& pFileItem, bool checkUrl /*= false*/)
 {
+  if (CGraphFilters::Get()->GetSelectedRule() != -1)
+    return m_selecRules[CGraphFilters::Get()->GetSelectedRule()];
+
+  std::sort(m_selecRules.begin(), m_selecRules.end(), compare_by_word);
+
   for (ULONG i = 0; i < m_selecRules.size(); i++)
   {
     if (m_selecRules[i]->Match(pFileItem, checkUrl))
+    {
+      CGraphFilters::Get()->SetSelectedRule(i);
       return m_selecRules[i];
+    }
   }
 
   return NULL;

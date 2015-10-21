@@ -192,6 +192,11 @@ public:
   void SetIsDVD(bool val) { m_isDVD = val; }
   void SetCurrentRenderer(DIRECTSHOW_RENDERER renderer) { m_CurrentRenderer = renderer; }
 
+  int GetSelectedRule() { return m_selectedRule; }
+  void SetSelectedRule(int iValue) { m_selectedRule = iValue; }
+  std::string GetDefaultRulePriority() { return m_defaultRulePriority; }
+  void SetDefaultRulePriority(std::string sValue) { m_defaultRulePriority = sValue; }
+
   // Internal Filters
   void ShowInternalPPage(LAVFILTERS_TYPE type, bool showPropertyPage);
   bool ShowOSDPPage(IBaseFilter *pBF);
@@ -226,6 +231,8 @@ private:
   bool m_hsubfilter;
   bool m_isDVD;
   bool m_UsingDXVADecoder;
+  std::string m_defaultRulePriority;
+  int m_selectedRule;
   Com::SmartPtr<IBaseFilter> m_pBF;
   DIRECTSHOW_RENDERER m_CurrentRenderer;
 };

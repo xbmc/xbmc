@@ -94,4 +94,13 @@ private:
   static CGlobalFilterSelectionRule* GetGlobalFilterSelectionRule(const CFileItem& pFileItem, bool checkUrl = false);
 
   static std::vector<CGlobalFilterSelectionRule *> m_selecRules;
+
+  static bool compare_by_word(CGlobalFilterSelectionRule* lhs, CGlobalFilterSelectionRule* rhs)
+  {
+    CStdString strLine1 = lhs->GetPriority();
+    CStdString strLine2 = rhs->GetPriority();
+    StringUtils::ToLower(strLine1);
+    StringUtils::ToLower(strLine2);
+    return strcmp(strLine1.c_str(), strLine2.c_str()) < 0;
+  }
 };

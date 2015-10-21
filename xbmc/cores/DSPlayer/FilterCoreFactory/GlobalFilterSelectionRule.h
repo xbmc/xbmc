@@ -63,22 +63,21 @@ public:
     CURL url(pFileItem.GetPath());
     CRegExp regExp;
 
-    if (m_fileTypes.empty() && m_fileName.empty() && m_Protocols.empty())
+    if (m_fileTypes.empty() && m_fileName.empty() && m_Protocols.empty() && m_videoCodec.empty())
+    {
+      CLog::Log(LOGDEBUG, "%s: no Rule parameters", __FUNCTION__);
       return false;
+    }
 
-    if (m_bStreamDetails && (!pFileItem.HasVideoInfoTag()))
-      return false;
-
+    CStreamDetails streamDetails;
     if (m_bStreamDetails)
     {
-      if (!pFileItem.GetVideoInfoTag()->HasStreamDetails())
+      if (!pFileItem.HasVideoInfoTag() || !pFileItem.GetVideoInfoTag()->HasStreamDetails())
       {
         CLog::Log(LOGDEBUG, "%s: %s, no StreamDetails", __FUNCTION__, m_name.c_str());
         return false;
       }
-      CStreamDetails streamDetails = pFileItem.GetVideoInfoTag()->m_streamDetails;
-
-      if (CompileRegExp(m_videoCodec, regExp) && !MatchesRegExp(streamDetails.GetVideoCodec(), regExp)) return false;
+      streamDetails = pFileItem.GetVideoInfoTag()->m_streamDetails;
     }
 
     if (!checkUrl && m_url > 0) return false;
@@ -86,6 +85,7 @@ public:
     if (CompileRegExp(m_fileTypes, regExp) && !MatchesRegExp(url.GetFileType(), regExp)) return false;
     if (CompileRegExp(m_fileName, regExp) && !MatchesRegExp(pFileItem.GetPath(), regExp)) return false;
     if (CompileRegExp(m_Protocols, regExp) && !MatchesRegExp(url.GetProtocol(), regExp)) return false;
+    if (CompileRegExp(m_videoCodec, regExp) && !MatchesRegExp(streamDetails.GetVideoCodec(), regExp)) return false;
 
     return true;
   }
@@ -130,6 +130,11 @@ public:
     m_pShaders->GetShaders(item, shaders, shadersStages, dxva);
   }
 
+  CStdString GetPriority()
+  {
+    return m_priority;
+  }
+
 private:
   int        m_url;
   bool       m_bStreamDetails;
@@ -138,6 +143,7 @@ private:
   CStdString m_fileTypes;
   CStdString m_Protocols;
   CStdString m_videoCodec;
+  CStdString m_priority;
   CFilterSelectionRule * m_pSource;
   CFilterSelectionRule * m_pSplitter;
   CFilterSelectionRule * m_pVideo;
@@ -177,6 +183,10 @@ private:
     m_Protocols = pRule->Attribute("protocols");
     m_videoCodec = pRule->Attribute("videocodec");
     m_bStreamDetails = m_videoCodec.length() > 0;
+
+    m_priority = pRule->Attribute("priority");
+    if (m_priority.length() <= 0)
+      m_priority = CGraphFilters::Get()->GetDefaultRulePriority();
 
     // Source rules
     m_pSource = new CFilterSelectionRule(pRule->FirstChildElement("source"), "source");

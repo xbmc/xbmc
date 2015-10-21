@@ -319,6 +319,17 @@ void CGUIDialogDSManager::BoolOptionFiller(const CSetting *setting, std::vector<
   list.push_back(std::make_pair("false", "false"));
 }
 
+void CGUIDialogDSManager::PriorityOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+{
+  list.push_back(std::make_pair("", "[null]"));
+
+  for (unsigned int i = 0; i < 10; i++)
+  {
+    CStdString sValue;
+    sValue.Format("%i",i);
+    list.push_back(std::make_pair(sValue, sValue));
+  }
+}
 
 TiXmlElement* CGUIDialogDSManager::KeepSelectedNode(TiXmlElement* pNode, CStdString subNodeName)
 {

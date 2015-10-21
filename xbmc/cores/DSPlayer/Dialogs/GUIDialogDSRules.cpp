@@ -243,6 +243,7 @@ void CGUIDialogDSRules::InitializeSettings()
   {
     // RULE
     m_dsmanager->InitConfig(m_ruleList, EDITATTR, "rules.name", 60002, "name");
+    m_dsmanager->InitConfig(m_ruleList, SPINNERATTR, "rules.priority", 60024, "priority", "", m_dsmanager->PriorityOptionFiller);
     m_dsmanager->InitConfig(m_ruleList, EDITATTR, "rules.filetypes", 60003, "filetypes");
     m_dsmanager->InitConfig(m_ruleList, EDITATTR, "rules.filename", 60004, "filename");
     m_dsmanager->InitConfig(m_ruleList, EDITATTR, "rules.videocodec", 60020, "videocodec");
@@ -308,7 +309,7 @@ void CGUIDialogDSRules::InitializeSettings()
       std::vector<DSConfigList *>::iterator it;
       for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
       {
-        if ((*it)->m_configType == EDITATTR)
+        if ((*it)->m_configType == EDITATTR || (*it)->m_configType == SPINNERATTR)
           (*it)->m_value = pRule->Attribute((*it)->m_attr.c_str());
 
         if ((*it)->m_configType == BOOLATTR)
@@ -382,6 +383,9 @@ void CGUIDialogDSRules::InitializeSettings()
 
       AddEdit(groupTmp, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value.c_str(), true);
     }
+    if ((*it)->m_configType == SPINNERATTR)
+      AddList(groupName, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value, (*it)->m_filler, (*it)->m_label);
+
     if ((*it)->m_configType == SPINNERATTRSHADER)
       AddSpinner(groupExtra, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value, (*it)->m_filler);
 
@@ -472,6 +476,9 @@ void CGUIDialogDSRules::OnSettingAction(const CSetting *setting)
       if ((*it)->m_configType == EDITATTR && (*it)->m_value != "")
         pRule.SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
 
+      if ((*it)->m_configType == SPINNERATTR && (*it)->m_value != "[null]")
+        pRule.SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
+
       if ((*it)->m_configType == BOOLATTR && (*it)->m_value != "false")
         pRule.SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
 
@@ -544,13 +551,11 @@ int CGUIDialogDSRules::ShowDSRulesList()
   if (!pRules)
     return -1;
 
-  CStdString strName;
-  CStdString strfileName;
-  CStdString strfileTypes;
-  CStdString strProtocols;
   CStdString strRule;
-  int selected;
+  int selectedId = -1;
+  int selected = -1;
   int count = 0;
+  int id = 0;
 
   CGUIDialogSelect *pDlg = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   if (!pDlg)
@@ -559,50 +564,72 @@ int CGUIDialogDSRules::ShowDSRulesList()
   pDlg->SetHeading(60001);
 
   TiXmlElement *pRule = pRules->FirstChildElement("rule");
+  std::vector<CRules *> rules;
   while (pRule)
   {
-    strName = pRule->Attribute("name");
-    strfileTypes = pRule->Attribute("filetypes");
-    strfileName = pRule->Attribute("filename");
-    strProtocols = pRule->Attribute("protocols");
+    CRules *rule = new CRules();
 
-    if (strfileTypes != "")
-      strfileTypes.Format("Filetypes=%s", strfileTypes);
-    if (strfileName != "")
-      strfileName.Format("Filename=%s", strfileName);
-    if (strProtocols != "")
-      strProtocols.Format("Protocols=%s", strProtocols);
+    rule->strName = pRule->Attribute("name");
+    rule->strfileTypes = pRule->Attribute("filetypes");
+    rule->strfileName = pRule->Attribute("filename");
+    rule->strVideoCodec = pRule->Attribute("videocodec");
+    rule->strProtocols = pRule->Attribute("protocols");
+    rule->strPriority = pRule->Attribute("priority");
+    if (rule->strPriority.length() <= 0)
+      rule->strPriority = "0";
 
-    if (strName != "")
-      strRule = strName;
+    rule->id = id;
+    rules.push_back(rule);
+
+    pRule = pRule->NextSiblingElement("rule");
+    id++;
+  }
+  std::sort(rules.begin(), rules.end(), compare_by_word);
+  
+  for (unsigned int i = 0; i < rules.size(); i++)
+  {
+
+    if (rules[i]->strfileTypes != "")
+      rules[i]->strfileTypes.Format("Filetypes=%s", rules[i]->strfileTypes);
+    if (rules[i]->strfileName != "")
+      rules[i]->strfileName.Format("Filename=%s", rules[i]->strfileName);
+    if (rules[i]->strVideoCodec != "")
+      rules[i]->strVideoCodec.Format("Videocodec=%s", rules[i]->strVideoCodec);
+    if (rules[i]->strProtocols != "")
+      rules[i]->strProtocols.Format("Protocols=%s", rules[i]->strProtocols);
+
+    if (rules[i]->strName != "")
+      strRule = rules[i]->strName;
     else
     {
-      strRule.Format("%s %s %s", strfileTypes, strfileName, strProtocols);
+      strRule.Format("%s %s %s %s", rules[i]->strfileTypes, rules[i]->strfileName, rules[i]->strVideoCodec, rules[i]->strProtocols);
       strRule.Trim();
+    }
+
+    if (rules[i]->strPriority != "")
+    {
+      strRule.Format("%s (%s)", strRule, rules[i]->strPriority);
     }
 
     strRule.Format("Rule:   %s", strRule);
     pDlg->Add(strRule);
     count++;
-    pRule = pRule->NextSiblingElement("rule");
   }
 
   pDlg->Add(g_localizeStrings.Get(60014).c_str());
-
   pDlg->Open();
+
   selected = pDlg->GetSelectedLabel();
+  if (selected > -1 && selected < rules.size()) 
+    selectedId = rules[selected]->id;
 
   Get()->m_dsmanager->SetisNew(selected == count);
 
-  Get()->m_dsmanager->SetConfigIndex(selected);
+  Get()->m_dsmanager->SetConfigIndex(selectedId);
 
   if (selected > -1) g_windowManager.ActivateWindow(WINDOW_DIALOG_DSRULES);
 
   return selected;
 }
-
-
-
-
 
 

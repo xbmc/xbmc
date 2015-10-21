@@ -27,6 +27,18 @@
 #include "utils/stdstring.h"
 #include "GUIDialogDSManager.h"
 
+class CRules
+{
+public:
+  CStdString strName;
+  CStdString strfileName;
+  CStdString strfileTypes;
+  CStdString strVideoCodec;
+  CStdString strProtocols;
+  CStdString strPriority;
+  CStdString strRule;
+  int id;
+};
 
 class CGUIDialogDSRules : public CGUIDialogSettingsManualBase
 {
@@ -73,4 +85,14 @@ protected:
 
   bool isEdited;
   bool m_allowchange;
+
+private:
+  static bool compare_by_word(CRules* lhs, CRules* rhs)
+  {
+    CStdString strLine1 = lhs->strPriority;
+    CStdString strLine2 = rhs->strPriority;
+    StringUtils::ToLower(strLine1);
+    StringUtils::ToLower(strLine2);
+    return strcmp(strLine1.c_str(), strLine2.c_str()) < 0;
+  }
 };
