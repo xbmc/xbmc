@@ -19257,7 +19257,7 @@ msgid "Untouched (as input)"
 msgstr ""
 
 msgctxt "#81001"
-msgid "Dynamic rance compression (AC3, EAC3)"
+msgid "Dynamic range compression (AC3, EAC3)"
 msgstr ""
 
 msgctxt "#81002"
