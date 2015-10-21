@@ -19,12 +19,14 @@
  */
 #include "system.h"
 
-#if defined(HAVE_X11)
+#if defined(HAVE_X11) && defined(HAS_GL)
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
 #include "WinSystemX11GLContext.h"
+#include "GLContextGLX.h"
+#include "GLContextEGL.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "guilib/GraphicContext.h"
@@ -32,8 +34,6 @@
 #include "threads/SingleLock.h"
 #include <vector>
 #include "Application.h"
-#include "GLContextEGL.h"
-#include "GLContextGLX.h"
 
 CWinSystemX11GLContext::CWinSystemX11GLContext()
 {
@@ -61,6 +61,36 @@ bool CWinSystemX11GLContext::IsExtSupported(const char* extension)
     return CRenderSystemGL::IsExtSupported(extension);
 
   return m_pGLContext->IsExtSupported(extension);
+}
+
+GLXWindow CWinSystemX11GLContext::GetWindow() const
+{
+  return static_cast<CGLContextGLX*>(m_pGLContext)->m_glxWindow;
+}
+
+GLXContext CWinSystemX11GLContext::GetGlxContext() const
+{
+  return static_cast<CGLContextGLX*>(m_pGLContext)->m_glxContext;
+}
+
+EGLDisplay CWinSystemX11GLContext::GetEGLDisplay() const
+{
+  return static_cast<CGLContextEGL*>(m_pGLContext)->m_eglDisplay;
+}
+
+EGLSurface CWinSystemX11GLContext::GetEGLSurface() const
+{
+  return static_cast<CGLContextEGL*>(m_pGLContext)->m_eglSurface;
+}
+
+EGLContext CWinSystemX11GLContext::GetEGLContext() const
+{
+  return static_cast<CGLContextEGL*>(m_pGLContext)->m_eglContext;
+}
+
+EGLConfig CWinSystemX11GLContext::GetEGLConfig() const
+{
+  return static_cast<CGLContextEGL*>(m_pGLContext)->m_eglConfig;
 }
 
 bool CWinSystemX11GLContext::SetWindow(int width, int height, bool fullscreen, const std::string &output, int *winstate)

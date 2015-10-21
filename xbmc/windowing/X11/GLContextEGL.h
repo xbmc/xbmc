@@ -36,6 +36,11 @@ public:
   virtual bool SwapBuffers(const CDirtyRegionList& dirty, int &mode);
   virtual void QueryExtensions();
   virtual bool IsExtSupported(const char* extension);
+  XVisualInfo* GetVisual();
+  EGLDisplay m_eglDisplay;
+  EGLSurface m_eglSurface;
+  EGLContext m_eglContext;
+  EGLConfig m_eglConfig;
 protected:
   bool IsSuitableVisual(XVisualInfo *vInfo);
   EGLConfig getEGLConfig(EGLDisplay eglDisplay, XVisualInfo *vInfo);
