@@ -160,7 +160,6 @@
 #endif
 #define HAS_GL
 #ifdef HAVE_X11
-#define HAS_GLX
 #define HAS_X11_WIN_EVENTS
 #endif
 #ifdef HAVE_SDL
@@ -187,6 +186,13 @@
 
 #ifdef HAVE_LIBSSH
 #define HAS_FILESYSTEM_SFTP
+#endif
+
+#if defined(HAVE_X11)
+#define HAS_EGL
+#if !defined(HAVE_LIBGLESV2)
+#define HAS_GLX
+#endif
 #endif
 
 /****************************************
@@ -230,9 +236,7 @@
 #undef HAS_LIRC
 #endif
 
-// EGL detected. Dont use GLX!
 #ifdef HAVE_LIBEGL
-#undef HAS_GLX
 #define HAS_EGL
 #endif
 

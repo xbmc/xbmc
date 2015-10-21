@@ -20,7 +20,7 @@
 
 #include "system_gl.h"
 
-#if defined(HAVE_X11)
+#if defined(HAVE_X11) && defined(HAS_GL)
 
 #include <GL/glx.h>
 #include "GLContextGLX.h"
@@ -29,6 +29,8 @@
 CGLContextGLX::CGLContextGLX(Display *dpy) : CGLContext(dpy)
 {
   m_extPrefix = "GLX_";
+  m_glxWindow = 0;
+  m_glxContext = 0;
 }
 
 bool CGLContextGLX::Refresh(bool force, int screen, Window glWindow, bool &newContext)
