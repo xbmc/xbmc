@@ -15,9 +15,8 @@ macro(add_cpack_workaround target version ext)
   endif()
 
   add_custom_command(TARGET addon-package PRE_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E rename ${CMAKE_BINARY_DIR}/addon-${target}-${version}.${ext} ${CMAKE_BINARY_DIR}/${target}-${version}.${ext}
                      COMMAND ${CMAKE_COMMAND} -E make_directory ${PACKAGE_DIR}
-                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${target}-${version}.${ext} ${PACKAGE_DIR})
+                     COMMAND ${CMAKE_COMMAND} -E copy ${CPACK_PACKAGE_DIRECTORY}/addon-${target}-${version}.${ext} ${PACKAGE_DIR}/${target}-${version}.${ext})
 endmacro()
 
 # Grab the version from a given add-on's addon.xml
@@ -83,6 +82,19 @@ macro (build_addon target prefix libs)
     # Pack files together to create an archive
     INSTALL(DIRECTORY ${target} DESTINATION ./ COMPONENT ${target}-${${prefix}_VERSION} PATTERN "addon.xml.in" EXCLUDE)
     IF(WIN32)
+      if(NOT CPACK_PACKAGE_DIRECTORY)
+        # determine the temporary path
+        file(TO_CMAKE_PATH "$ENV{TEMP}" WIN32_TEMP_PATH)
+        string(LENGTH "${WIN32_TEMP_PATH}" WIN32_TEMP_PATH_LENGTH)
+        string(LENGTH "${PROJECT_BINARY_DIR}" PROJECT_BINARY_DIR_LENGTH)
+
+        # check if the temporary path is shorter than the default packaging directory path
+        if(WIN32_TEMP_PATH_LENGTH GREATER 0 AND WIN32_TEMP_PATH_LENGTH LESS PROJECT_BINARY_DIR_LENGTH)
+          # set the directory used by CPack for packaging to the temp directory
+          set(CPACK_PACKAGE_DIRECTORY ${WIN32_TEMP_PATH})
+        endif()
+      endif()
+
       # in case of a VC++ project the installation location contains a $(Configuration) VS variable
       # we replace it with ${CMAKE_BUILD_TYPE} (which doesn't cover the case when the build configuration
       # is changed within Visual Studio)
