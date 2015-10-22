@@ -293,14 +293,6 @@ const std::string CSettings::SETTING_AUDIOCDS_TRACKPATHFORMAT = "audiocds.trackp
 const std::string CSettings::SETTING_AUDIOCDS_ENCODER = "audiocds.encoder";
 const std::string CSettings::SETTING_AUDIOCDS_SETTINGS = "audiocds.settings";
 const std::string CSettings::SETTING_AUDIOCDS_EJECTONRIP = "audiocds.ejectonrip";
-const std::string CSettings::SETTING_KARAOKE_ENABLED = "karaoke.enabled";
-const std::string CSettings::SETTING_KARAOKE_AUTOPOPUPSELECTOR = "karaoke.autopopupselector";
-const std::string CSettings::SETTING_KARAOKE_FONT = "karaoke.font";
-const std::string CSettings::SETTING_KARAOKE_FONTHEIGHT = "karaoke.fontheight";
-const std::string CSettings::SETTING_KARAOKE_FONTCOLORS = "karaoke.fontcolors";
-const std::string CSettings::SETTING_KARAOKE_CHARSET = "karaoke.charset";
-const std::string CSettings::SETTING_KARAOKE_EXPORT = "karaoke.export";
-const std::string CSettings::SETTING_KARAOKE_IMPORTCSV = "karaoke.importcsv";
 const std::string CSettings::SETTING_MYMUSIC_STARTWINDOW = "mymusic.startwindow";
 const std::string CSettings::SETTING_MYMUSIC_SONGTHUMBINVIS = "mymusic.songthumbinvis";
 const std::string CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW = "mymusic.defaultlibview";
@@ -1026,8 +1018,6 @@ void CSettings::InitializeISettingCallbacks()
   m_settingsManager->RegisterCallback(&g_advancedSettings, settingSet);
 
   settingSet.clear();
-  settingSet.insert(CSettings::SETTING_KARAOKE_EXPORT);
-  settingSet.insert(CSettings::SETTING_KARAOKE_IMPORTCSV);
   settingSet.insert(CSettings::SETTING_MUSICLIBRARY_CLEANUP);
   settingSet.insert(CSettings::SETTING_MUSICLIBRARY_EXPORT);
   settingSet.insert(CSettings::SETTING_MUSICLIBRARY_IMPORT);
@@ -1108,7 +1098,6 @@ void CSettings::InitializeISettingCallbacks()
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_SUBTITLES_CHARSET);
-  settingSet.insert(CSettings::SETTING_KARAOKE_CHARSET);
   settingSet.insert(CSettings::SETTING_LOCALE_CHARSET);
   m_settingsManager->RegisterCallback(&g_charsetConverter, settingSet);
 

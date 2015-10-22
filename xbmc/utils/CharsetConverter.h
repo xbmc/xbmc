@@ -168,7 +168,6 @@ public:
 private:
   static void resetUserCharset(void);
   static void resetSubtitleCharset(void);
-  static void resetKaraokeCharset(void);
 
   static const int m_Utf8CharMinSize, m_Utf8CharMaxSize;
   class CInnerConverter;

@@ -418,9 +418,7 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr ""
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr ""
+#empty string with id 31321"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -524,7 +522,7 @@ msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set v
 msgstr ""
 
 msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
 msgstr ""
 
 msgctxt "#31403"
