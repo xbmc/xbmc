@@ -164,7 +164,7 @@ public:
   bool IsVisibleFromSkin() const { return m_visibleFromSkinCondition; };
   virtual bool IsDisabled() const;
   virtual void SetPosition(float posX, float posY);
-  virtual void SetHitRect(const CRect &rect, const CGUIInfoColor &color);
+  virtual void SetHitRect(const CRect &rect, const color_t &color);
   virtual void SetCamera(const CPoint &camera);
   virtual void SetStereoFactor(const float &factor);
   bool SetColorDiffuse(const CGUIInfoColor &color);
@@ -327,7 +327,7 @@ protected:
   float m_height;
   float m_width;
   CRect m_hitRect;
-  CGUIInfoColor m_hitColor;
+  color_t m_hitColor;
   CGUIInfoColor m_diffuseColor;
   int m_controlID;
   int m_parentID;
