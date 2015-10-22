@@ -483,7 +483,7 @@
 				<texturefocus border="25,5,25,5">SubMenuBack-MiddleFO.png</texturefocus>
 				<texturenofocus border="25,5,25,5">SubMenuBack-MiddleNF.png</texturenofocus>
 				<onclick>StereoModeToMono</onclick>
-				<selected>StringCompare(System.StereoscopicMode,8)</selected>
+				<selected>StringCompare(System.StereoscopicMode,9)</selected>
 				<pulseonselect>false</pulseonselect>
 			</control>
 			<control type="image" id="549">
