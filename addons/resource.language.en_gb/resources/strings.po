@@ -8383,12 +8383,11 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr ""
 
-#. Label of the button / context menu entry to find similar programs in the PVR EPG data
+#. Label of a button / context menu entry to find similar programs (matching a given epg event)
 #: skin.confluence
 #: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
 #: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
 #: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
-#: xbmc/pvr/windows/GUIWindowPVRTimers.cpp
 msgctxt "#19003"
 msgid "Find similar"
 msgstr ""
@@ -8657,15 +8656,15 @@ msgctxt "#19055"
 msgid "No information available"
 msgstr ""
 
+#. Label for a new timer
+#: xbmc/pvr/timers/PVRTimers.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#19056"
 msgid "New timer"
 msgstr ""
 
-#. Label for a context menu entry to open timer settings dialog
-#: xbmc/pvr/windows/GUIWindowPVRTimers.cpp
-msgctxt "#19057"
-msgid "Edit settings"
-msgstr ""
+# empty string with id 19057
 
 msgctxt "#19058"
 msgid "Timer enabled"
@@ -12435,8 +12434,9 @@ msgctxt "#21449"
 msgid "Remote control sends keyboard presses"
 msgstr ""
 
-#. Label of setting "Appearance -> Skin -> Edit"
+#. Label for controls used to edit something (e.g. setting "Appearance -> Skin -> Edit" or a context menu entry to open timer settings dialog)
 #: system/settings/settings.xml
+#: xbmc/pvr/windows/GUIWindowPVRTimers.cpp
 msgctxt "#21450"
 msgid "Edit"
 msgstr ""
