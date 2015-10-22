@@ -20,6 +20,155 @@
 
 #include "gtest/gtest.h"
 #include "music/tags/TagLoaderTagLib.h"
+#include "music/tags/MusicInfoTag.h"
+#include <taglib/tpropertymap.h>
+#include <taglib/id3v1tag.h>
+#include <taglib/id3v2tag.h>
+#include <taglib/apetag.h>
+#include <taglib/xiphcomment.h>
+#include <taglib/id3v1genres.h>
+
+using namespace TagLib;
+using namespace MUSIC_INFO;
+
+template <typename T>
+class TestTagParser : public ::testing::Test, public CTagLoaderTagLib {
+   public:
+     T value_;
+
+     virtual void SetUp() {
+       // Configure a basic tag..
+       value_.setTitle ("title");
+       value_.setArtist ("artist");
+       value_.setAlbum ("album");
+       value_.setComment("comment");
+       value_.setGenre("Jazz");
+       value_.setYear (1985);
+       value_.setTrack (2);
+     }
+};
+
+
+typedef ::testing::Types<ID3v2::Tag, ID3v1::Tag, ASF::Tag, APE::Tag, Ogg::XiphComment, MP4::Tag> TagTypes;
+TYPED_TEST_CASE(TestTagParser, TagTypes);
+
+TYPED_TEST(TestTagParser, ParsesBasicTag) {
+  // Create a basic tag
+  TypeParam *tg  = &this->value_;
+  CMusicInfoTag tag;
+  EXPECT_TRUE(CTagLoaderTagLib::ParseTag<TypeParam>(tg, NULL, tag));
+
+  EXPECT_EQ(1985, tag.GetYear());
+  EXPECT_EQ(2, tag.GetTrackNumber());
+  EXPECT_EQ(1u, tag.GetArtist().size());
+  if (tag.GetArtist().size() > 0) EXPECT_EQ("artist", tag.GetArtist().front());
+  EXPECT_EQ("album", tag.GetAlbum());
+  EXPECT_EQ("comment", tag.GetComment());
+  EXPECT_EQ(1u, tag.GetGenre().size());
+  if (tag.GetGenre().size() > 0) EXPECT_EQ("Jazz", tag.GetGenre().front());
+  EXPECT_EQ("title", tag.GetTitle());
+}
+
+
+TYPED_TEST(TestTagParser, HandleNullTag) {
+  // A Null tag should not parse, and not break us either
+  CMusicInfoTag tag;
+  EXPECT_FALSE(CTagLoaderTagLib::ParseTag<TypeParam>(NULL, NULL, tag));
+}
+
+template<typename T, size_t N>
+T * end(T (&ra)[N]) {
+      return ra + N;
+}
+
+const char *tags[] = { "APIC", "ASPI", "COMM", "COMR", "ENCR", "EQU2",
+  "ETCO", "GEOB", "GRID", "LINK", "MCDI", "MLLT", "OWNE", "PRIV", "PCNT",
+  "POPM", "POSS", "RBUF", "RVA2", "RVRB", "SEEK", "SIGN", "SYLT",
+  "SYTC", "TALB", "TBPM", "TCOM", "TCON", "TCOP", "TDEN", "TDLY", "TDOR",
+  "TDRC", "TDRL", "TDTG", "TENC", "TEXT", "TFLT", "TIPL", "TIT1", "TIT2",
+  "TIT3", "TKEY", "TLAN", "TLEN", "TMCL", "TMED", "TMOO", "TOAL", "TOFN",
+  "TOLY", "TOPE", "TOWN", "TPE1", "TPE2", "TPE3", "TPE4", "TPOS", "TPRO",
+  "TPUB", "TRCK", "TRSN", "TRSO", "TSOA", "TSOP", "TSOT", "TSRC", "TSSE",
+  "TSST", "TXXX", "UFID", "USER", "USLT", "WCOM", "WCOP", "WOAF", "WOAR",
+  "WOAS", "WORS", "WPAY", "WPUB", "WXXX",  "ARTIST", "ARTISTS",
+  "ALBUMARTIST" , "ALBUM ARTIST", "ALBUMARTISTS" , "ALBUM ARTISTS", "ALBUM",
+  "TITLE", "TRACKNUMBER" "TRACK", "DISCNUMBER" "DISC", "YEAR", "GENRE",
+  "COMMENT", "CUESHEET", "ENCODEDBY", "COMPILATION", "LYRICS",
+  "REPLAYGAIN_TRACK_GAIN", "REPLAYGAIN_ALBUM_GAIN", "REPLAYGAIN_TRACK_PEAK",
+  "REPLAYGAIN_ALBUM_PEAK", "MUSICBRAINZ_ARTISTID",
+  "MUSICBRAINZ_ALBUMARTISTID", "RATING", "MUSICBRAINZ_ALBUMARTIST",
+  "MUSICBRAINZ_ALBUMID", "MUSICBRAINZ_TRACKID", "METADATA_BLOCK_PICTURE",
+  "COVERART"
+};
+
+
+// This test exposes a bug in taglib library (#671) so for now we will not run it for all tag types
+typedef ::testing::Types<ID3v2::Tag, ID3v1::Tag, ASF::Tag, APE::Tag, Ogg::XiphComment> EmptyPropertiesTagTypes;
+template <typename T>
+class EmptyTagParser : public ::testing::Test, public CTagLoaderTagLib {
+  public:
+    T value_;
+};
+TYPED_TEST_CASE(EmptyTagParser, EmptyPropertiesTagTypes);
+
+TYPED_TEST(EmptyTagParser, EmptyProperties) {
+  TypeParam *tg  = &this->value_;
+  CMusicInfoTag tag;
+  PropertyMap props;
+  int tagcount = end(tags) - tags;
+  for(int i = 0; i < tagcount; i++) {
+    props.insert(tags[i], StringList());
+  }
+
+  // Even though all the properties are empty, we shouldn't
+  // crash
+  EXPECT_TRUE(CTagLoaderTagLib::ParseTag<TypeParam>(tg, NULL, tag));
+}
+
+
+
+TYPED_TEST(TestTagParser, FooProperties) {
+  TypeParam *tg  = &this->value_;
+  CMusicInfoTag tag;
+  PropertyMap props;
+  int tagcount = end(tags) - tags;
+  for(int i = 0; i < tagcount; i++) {
+    props.insert(tags[i], String("foo"));
+  }
+  tg->setProperties(props);
+
+  EXPECT_TRUE(CTagLoaderTagLib::ParseTag<TypeParam>(tg, NULL, tag));
+  EXPECT_EQ(0, tag.GetYear());
+  EXPECT_EQ(0, tag.GetTrackNumber());
+  EXPECT_EQ(1u, tag.GetArtist().size());
+  if (tag.GetArtist().size() > 0) EXPECT_EQ("foo", tag.GetArtist().front());
+  EXPECT_EQ("foo", tag.GetAlbum());
+  EXPECT_EQ("foo", tag.GetComment());
+  if (tag.GetGenre().size() > 0) EXPECT_EQ("foo", tag.GetGenre().front());
+  EXPECT_EQ("foo", tag.GetTitle());
+}
+
+class TestCTagLoaderTagLib : public ::testing::Test, public CTagLoaderTagLib {};
+TEST_F(TestCTagLoaderTagLib, SetGenre)
+{
+  CMusicInfoTag tag, tag2;
+  const char *genre_nr[] = {"0", "2", "4"};
+  const char *names[] = { "Jazz", "Funk", "Ska" };
+  std::vector<std::string> genres(genre_nr, end(genre_nr));
+  std::vector<std::string> named_genre(names, end(names));
+
+  CTagLoaderTagLib::SetGenre(tag, genres);
+  EXPECT_EQ(3u, tag.GetGenre().size());
+  EXPECT_EQ("Blues", tag.GetGenre()[0]);
+  EXPECT_EQ("Country", tag.GetGenre()[1]);
+  EXPECT_EQ("Disco", tag.GetGenre()[2]);
+
+  CTagLoaderTagLib::SetGenre(tag2, named_genre);
+  EXPECT_EQ(3u, tag2.GetGenre().size());
+  for(int i = 0; i < 3; i++)
+    EXPECT_EQ(names[i], tag2.GetGenre()[i]);
+
+}
 
 TEST(TestTagLoaderTagLib, SplitMBID)
 {
