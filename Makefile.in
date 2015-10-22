@@ -1,4 +1,6 @@
-include bootstrap.mk
+srcdir = @srcdir@
+
+include $(srcdir)/bootstrap.mk
 
 null :=
 space := ${null} ${null}
@@ -421,7 +423,7 @@ $(NWAOBJSXBMC) $(DIRECTORY_ARCHIVES) $(MAINOBJS): force
 	@$(MAKE) $(if $(V),,-s) -C $(@D)
 
 # Binary Addon bindings
-include xbmc/addons/addon-bindings.mk
+include $(srcdir)/xbmc/addons/addon-bindings.mk
 
 lib@APP_NAME_LC@.so: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS)
 ifeq ($(findstring osx,@ARCH@), osx)

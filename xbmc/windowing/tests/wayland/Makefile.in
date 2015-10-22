@@ -25,7 +25,7 @@ endif
 
 CLEAN_FILES += $(WAYLAND_TEST_MODULE_PROTOCOL_GENERATED_SRCS) xbmc-wayland-test-extension.so
 
-include @abs_top_srcdir@/Makefile.include
+include ../../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(patsubst %.h,%.P,$(SRCS))))
 
 ifneq (,@WAYLAND_SCANNER@)

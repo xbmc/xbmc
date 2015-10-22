@@ -13,6 +13,6 @@ LIB = omxplayer.a
 @abs_top_srcdir@/system/advancedsettings.xml: $(LIB)
 	cp -f omxplayer_advancedsettings.xml $@
 
-include @abs_top_srcdir@/Makefile.include
+include ../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 

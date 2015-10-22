@@ -122,5 +122,5 @@ endif
 
 LIB = filesystem.a
 
-include @abs_top_srcdir@/Makefile.include
+include ../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
