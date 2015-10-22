@@ -26,9 +26,6 @@ endif
 
 # define specifying the native GUID implementation to use
 GUID_PLATFORM_DEFINE=GUID_LIBUUID
-ifeq ($(OS),android)
-	GUID_PLATFORM_DEFINE=GUID_ANDROID
-endif
 ifeq ($(OS),osx)
 	GUID_PLATFORM_DEFINE=GUID_CFUUID
 endif
