@@ -170,6 +170,8 @@ bool CTagLoaderTagLib::ParseTag(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
   if (tag.GetArtist().empty())
     tag.SetArtist(asf->artist().toCString(true));
 
+  if (asf->comment() != String::null)
+    tag.SetComment(asf->comment().toCString(true));
   tag.SetReplayGain(replayGainInfo);
   tag.SetLoaded(true);
   return true;
@@ -220,6 +222,10 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, MUSIC_INFO::EmbeddedArt *art,
   const ID3v2::FrameListMap& frameListMap = id3v2->frameListMap();
   for (ID3v2::FrameListMap::ConstIterator it = frameListMap.begin(); it != frameListMap.end(); ++it)
   {
+    // It is possible that the taglist is empty. In that case no useable values can be extracted.
+    // and we should skip the tag.
+    if (it->second.isEmpty()) continue;
+
     if      (it->first == "TPE1")   SetArtist(tag, GetID3v2StringList(it->second));
     else if (it->first == "TALB")   tag.SetAlbum(it->second.front()->toString().to8Bit(true));
     else if (it->first == "TPE2")   SetAlbumArtist(tag, GetID3v2StringList(it->second));
@@ -261,6 +267,7 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, MUSIC_INFO::EmbeddedArt *art,
 
         // First field is the same as the description
         StringList stringList = frame->fieldList();
+        if (stringList.size() == 1) continue;
         stringList.erase(stringList.begin());
         String desc = frame->description().upper();
         if      (desc == "MUSICBRAINZ ARTIST ID")
@@ -554,6 +561,9 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
 
       break;
     }
+
+  if (xiph->comment() != String::null)
+    tag.SetComment(xiph->comment().toCString(true));
 
   tag.SetReplayGain(replayGainInfo);
   return true;
@@ -942,4 +952,3 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
 
   return true;
 }
-

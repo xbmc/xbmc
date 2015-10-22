@@ -102,7 +102,8 @@ const char *tags[] = { "APIC", "ASPI", "COMM", "COMR", "ENCR", "EQU2",
 };
 
 
-// This test exposes a bug in taglib library (#671) so for now we will not run it for all tag types
+// This test exposes a bug in taglib library (#670) so for now we will not run it for all tag types
+// See https://github.com/taglib/taglib/issues/670 for details.
 typedef ::testing::Types<ID3v2::Tag, ID3v1::Tag, ASF::Tag, APE::Tag, Ogg::XiphComment> EmptyPropertiesTagTypes;
 template <typename T>
 class EmptyTagParser : public ::testing::Test, public CTagLoaderTagLib {
