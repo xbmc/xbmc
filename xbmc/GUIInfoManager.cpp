@@ -2183,13 +2183,13 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case SYSTEM_STEREOSCOPIC_MODE:
   case SYSTEM_STEREOSCOPIC_MODE_STRING:
     {
-      int stereoMode = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE);
+      RENDER_STEREO_MODE stereoMode = CStereoscopicsManager::GetInstance().GetStereoMode();
       if (info == SYSTEM_STEREOSCOPIC_MODE)
-        strLabel = StringUtils::Format("%i", stereoMode);
+        strLabel = StringUtils::Format("%i", static_cast<int>(stereoMode));
       else if (info == SYSTEM_STEREOSCOPIC_MODE_STRING)
       {
-        strLabel = CStereoscopicsManager::GetInstance().ConvertGuiStereoModeToString((RENDER_STEREO_MODE) stereoMode);
-        CLog::Log(LOGDEBUG, "stereoMode=%i strLabel=%s", stereoMode, strLabel.c_str());
+        strLabel = CStereoscopicsManager::GetInstance().ConvertGuiStereoModeToString(stereoMode);
+        CLog::Log(LOGDEBUG, "stereoMode=%i strLabel=%s", stereoMode, strLabel.c_str()); // XXX
       }
     }
     break;
