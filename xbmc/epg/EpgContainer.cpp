@@ -829,13 +829,15 @@ void CEpgContainer::UpdateEpgEvents()
   if (!m_lastEpgEventPurge.IsValid() || m_lastEpgEventPurge < (now - CDateTimeSpan(1,0,0,0)))
   {
     CDateTime purgeTime = now - CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0);
-    for (auto event = m_epgEvents.begin(); event != m_epgEvents.end(); ++event)
+    for (auto event = m_epgEvents.begin(); event != m_epgEvents.end();)
     {
       if (event->second->EndAsUTC() < purgeTime)
       {
-        m_epgEvents.erase(event);
+        event = m_epgEvents.erase(event);
         ++count;
       }
+      else
+        ++event;
     }
     m_lastEpgEventPurge = now;
     CLog::Log(LOGDEBUG, "EPGContainer - %s - %d item(s) purged", __FUNCTION__, count);
