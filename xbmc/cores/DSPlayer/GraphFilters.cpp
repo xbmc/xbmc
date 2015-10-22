@@ -44,7 +44,6 @@ m_isDVD(false), m_UsingDXVADecoder(false), m_CurrentRenderer(DIRECTSHOW_RENDERER
 {
   m_isKodiRealFS = false;
   m_defaultRulePriority = "0";
-  m_selectedRule = -1;
 }
 
 CGraphFilters::~CGraphFilters()
