@@ -73,18 +73,10 @@ void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &but
     return;
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
-  /* Check for a empty file item list, means only a
-     file item with the name "Add timer..." is present */
-  if (URIUtils::PathEquals(pItem->GetPath(), CPVRTimersPath::PATH_ADDTIMER))
-  {
-    buttons.Add(CONTEXT_BUTTON_ADD, 19056);             /* New timer */
-  }
-  else
+  if (!URIUtils::PathEquals(pItem->GetPath(), CPVRTimersPath::PATH_ADDTIMER))
   {
     if (pItem->GetPVRTimerInfoTag()->GetEpgInfoTag())
       buttons.Add(CONTEXT_BUTTON_INFO, 19047);          /* Programme information */
-
-    buttons.Add(CONTEXT_BUTTON_FIND, 19003);            /* Find similar */
 
     if (pItem->GetPVRTimerInfoTag()->HasTimerType())
     {
@@ -99,15 +91,13 @@ void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &but
       if (!pItem->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
       {
         buttons.Add(CONTEXT_BUTTON_DELETE, 117);        /* Delete */
-        buttons.Add(CONTEXT_BUTTON_EDIT, 19057);        /* Edit settings */
+        buttons.Add(CONTEXT_BUTTON_EDIT, 21450);        /* Edit */
 
         // As epg-based timers will get it's title from the epg tag, they should not be renamable.
         if (pItem->GetPVRTimerInfoTag()->IsManual())
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename */
       }
     }
-
-    buttons.Add(CONTEXT_BUTTON_ADD, 19056);             /* New timer */
 
     if (g_PVRClients->HasMenuHooks(pItem->GetPVRTimerInfoTag()->m_iClientId, PVR_MENUHOOK_TIMER))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);    /* PVR client specific action */
