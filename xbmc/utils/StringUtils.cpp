@@ -1081,11 +1081,7 @@ void StringUtils::WordToDigits(std::string &word)
 
 std::string StringUtils::CreateUUID()
 {
-#if !defined(TARGET_ANDROID)
   static GuidGenerator guidGenerator;
-#else
-  static GuidGenerator guidGenerator(xbmc_jnienv());
-#endif
   auto guid = guidGenerator.newGuid();
 
   std::stringstream strGuid; strGuid << guid;
