@@ -756,7 +756,6 @@ msgid "%s has been successfully started."
 msgstr ""
 
 #: xbmc/media/MediaTypes.cpp
-#: xbmc/music/karaoke/GUIDialogKaraokeSongSelector.cpp
 msgctxt "#179"
 msgid "Song"
 msgstr ""
@@ -5808,7 +5807,6 @@ msgid "Last loaded profile:"
 msgstr ""
 
 #: xbmc/addons/GUIDialogAddonInfo.cpp
-#: xbmc/music/karaoke/GUIDialogKaraokeSongSelector.cpp
 #: xbmc/peripherals/devices/Peripheral.cpp
 #: xbmc/peripherals/bus/PeripheralBus.cpp
 msgctxt "#13205"
@@ -6073,10 +6071,7 @@ msgctxt "#13322"
 msgid "Right only"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#13323"
-msgid "Enable karaoke support"
-msgstr ""
+#empty string with id 13323
 
 msgctxt "#13324"
 msgid "Background transparency"
@@ -6090,10 +6085,7 @@ msgctxt "#13326"
 msgid "A/V delay"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#13327"
-msgid "Karaoke"
-msgstr ""
+#empty string with id 13327
 
 msgctxt "#13328"
 msgid "%s not found"
@@ -13055,7 +13047,6 @@ msgid "Direct3D version:"
 msgstr ""
 
 #empty strings from id 22025 to 22029
-#strings 22030 thru 22060 reserved for karaoke
 
 #: system/settings/settings.xml
 msgctxt "#22030"
@@ -13077,51 +13068,7 @@ msgctxt "#22033"
 msgid "Charset"
 msgstr ""
 
-msgctxt "#22034"
-msgid "Export karaoke titles as HTML"
-msgstr ""
-
-msgctxt "#22035"
-msgid "Export karaoke titles as CSV"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#22036"
-msgid "Import karaoke titles..."
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#22037"
-msgid "Show song selector automatically"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#22038"
-msgid "Export karaoke titles..."
-msgstr ""
-
-msgctxt "#22039"
-msgid "Enter song number"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#22040"
-msgid "white / green"
-msgstr ""
-
-msgctxt "#22041"
-msgid "white / red"
-msgstr ""
-
-msgctxt "#22042"
-msgid "white / blue"
-msgstr ""
-
-msgctxt "#22043"
-msgid "black / white"
-msgstr ""
-
-#empty strings from id 22044 to 22078
+#empty strings from id 22034 to 22078
 
 #: system/settings/settings.xml
 msgctxt "#22079"
@@ -16599,59 +16546,7 @@ msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr ""
 
-#. Description of settings category "Music -> Karaoke" with label #13327
-#: system/settings/settings.xml
-msgctxt "#36292"
-msgid "This category contains the settings for how karaoke is handled."
-msgstr ""
-
-#. Description of setting "Music -> Karaoke -> Enable karaoke support" with label #13323
-#: system/settings/settings.xml
-msgctxt "#36293"
-msgid "When playing any music file, look for a matching .cdg file and display its graphics."
-msgstr ""
-
-#. Description of setting "Music -> Karaoke -> Show song selector automatically" with label #22037
-#: system/settings/settings.xml
-msgctxt "#36294"
-msgid "Show song selection dialogue once the last song in the queue has been played."
-msgstr ""
-
-#. Description of setting "Music -> Karaoke -> Font" with label #22030
-#: system/settings/settings.xml
-msgctxt "#36295"
-msgid "Select the font type used during karaoke."
-msgstr ""
-
-#. Description of setting "Music -> Karaoke -> Size" with label #22031
-#: system/settings/settings.xml
-msgctxt "#36296"
-msgid "Select the size of the font used during karaoke."
-msgstr ""
-
-#. Description of setting "Music -> Karaoke -> Colours" with label #22032
-#: system/settings/settings.xml
-msgctxt "#36297"
-msgid "Select the font colour used during karaoke."
-msgstr ""
-
-#. Description of setting "Music -> Karaoke -> Charset" with label #22033
-#: system/settings/settings.xml
-msgctxt "#36298"
-msgid "Select the character set used during karaoke."
-msgstr ""
-
-#. Description of setting "Music -> Karaoke -> Export karaoke titles..." with label #22038
-#: system/settings/settings.xml
-msgctxt "#36299"
-msgid "Export the karaoke numbered songs to HTML or CSV files."
-msgstr ""
-
-#. Description of setting "Music -> Karaoke -> Import karaoke titles..." with label #22036
-#: system/settings/settings.xml
-msgctxt "#36300"
-msgid "Import the karaoke numbered songs from HTML or CSV files."
-msgstr ""
+#empty strings from id 36292 to 36300
 
 #: system/settings/settings.xml
 msgctxt "#36301"

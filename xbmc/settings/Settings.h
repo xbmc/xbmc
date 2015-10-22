@@ -249,14 +249,6 @@ public:
   static const std::string SETTING_AUDIOCDS_ENCODER;
   static const std::string SETTING_AUDIOCDS_SETTINGS;
   static const std::string SETTING_AUDIOCDS_EJECTONRIP;
-  static const std::string SETTING_KARAOKE_ENABLED;
-  static const std::string SETTING_KARAOKE_AUTOPOPUPSELECTOR;
-  static const std::string SETTING_KARAOKE_FONT;
-  static const std::string SETTING_KARAOKE_FONTHEIGHT;
-  static const std::string SETTING_KARAOKE_FONTCOLORS;
-  static const std::string SETTING_KARAOKE_CHARSET;
-  static const std::string SETTING_KARAOKE_EXPORT;
-  static const std::string SETTING_KARAOKE_IMPORTCSV;
   static const std::string SETTING_MYMUSIC_STARTWINDOW;
   static const std::string SETTING_MYMUSIC_SONGTHUMBINVIS;
   static const std::string SETTING_MYMUSIC_DEFAULTLIBVIEW;

@@ -112,9 +112,6 @@
     <Filter Include="windowing">
       <UniqueIdentifier>{dbf79aa0-53a6-4bec-855b-e8d2cbb73689}</UniqueIdentifier>
     </Filter>
-    <Filter Include="music\karaoke">
-      <UniqueIdentifier>{9d2be696-b6dd-4be1-aa8c-260816b48c12}</UniqueIdentifier>
-    </Filter>
     <Filter Include="cdrip">
       <UniqueIdentifier>{d0d6c121-8cef-4bf9-aba5-bff57ae46e26}</UniqueIdentifier>
     </Filter>
@@ -804,39 +801,6 @@
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
-    <ClCompile Include="..\..\xbmc\music\karaoke\GUIDialogKaraokeSongSelector.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\GUIWindowKaraokeLyrics.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokelyrics.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokelyricscdg.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokelyricsfactory.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokelyricsmanager.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokelyricstext.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokelyricstextkar.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokelyricstextlrc.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokelyricstextustar.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokewindowbackground.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\music\Album.cpp">
       <Filter>music</Filter>
     </ClCompile>
@@ -2300,9 +2264,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\DatabaseUtils.cpp">
       <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokevideobackground.cpp">
-      <Filter>music\karaoke</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\EndianSwap.cpp">
       <Filter>utils</Filter>
@@ -3790,42 +3751,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIDialog.h">
       <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\cdgdata.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\GUIDialogKaraokeSongSelector.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\GUIWindowKaraokeLyrics.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokelyrics.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokelyricscdg.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokelyricsfactory.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokelyricsmanager.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokelyricstext.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokelyricstextkar.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokelyricstextlrc.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokelyricstextustar.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokewindowbackground.h">
-      <Filter>music\karaoke</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\Album.h">
       <Filter>music</Filter>
@@ -5649,9 +5574,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\cximage.h">
       <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokevideobackground.h">
-      <Filter>music\karaoke</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\FFmpegVideoDecoder.h">
       <Filter>video</Filter>

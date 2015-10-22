@@ -331,16 +331,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_bVirtualShares;
     bool m_bAllowDeferredRendering;
 
-    float m_karaokeSyncDelayCDG; // seems like different delay is needed for CDG and MP3s
-    float m_karaokeSyncDelayLRC;
-    bool m_karaokeChangeGenreForKaraokeSongs;
-    bool m_karaokeKeepDelay; // store user-changed song delay in the database
-    int m_karaokeStartIndex; // auto-assign numbering start from this value
-    bool m_karaokeAlwaysEmptyOnCdgs; // always have empty background on CDG files
-    bool m_karaokeUseSongSpecificBackground; // use song-specific video or image if available instead of default
-    std::string m_karaokeDefaultBackgroundType; // empty string or "vis", "image" or "video"
-    std::string m_karaokeDefaultBackgroundFilePath; // only for "image" or "video" types above
-
     std::string m_cpuTempCmd;
     std::string m_gpuTempCmd;
 
