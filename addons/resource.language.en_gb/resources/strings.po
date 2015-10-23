@@ -17034,7 +17034,7 @@ msgstr ""
 #. Description of setting "System -> Audio output -> DTS capable receiver" with label #254
 #: system/settings/settings.xml
 msgctxt "#36366"
-msgid "Select this option if your receiver is capable of decoding DTS streams."
+msgid "Select this option if your receiver is capable of decoding DTS streams. Note: Enabling this will disable \"Support 8 channel DTS-HD audio decoding\" option"
 msgstr ""
 
 #: system/settings/darwin_osx.xml
@@ -17057,7 +17057,7 @@ msgstr ""
 #. Description of setting "System -> Audio output -> DTS-HD capable receiver" with label #347
 #: system/settings/settings.xml
 msgctxt "#36370"
-msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
+msgid "Select this option if your receiver is capable of decoding DTS-HD streams. Note: Enabling this will disable \"Support 8 channel DTS-HD audio decoding\" option"
 msgstr ""
 
 #. Description of setting "System -> Audio output -> Audio output device" with label #545
