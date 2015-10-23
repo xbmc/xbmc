@@ -30,6 +30,7 @@
 #include "input/Key.h"
 
 CGUIControl::CGUIControl() :
+  m_hitColor(0xffffffff),
   m_diffuseColor(0xffffffff)
 {
   m_hasProcessed = false;
@@ -57,6 +58,7 @@ CGUIControl::CGUIControl() :
 
 CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, float width, float height)
 : m_hitRect(posX, posY, posX + width, posY + height),
+  m_hitColor(0xffffffff),
   m_diffuseColor(0xffffffff)
 {
   m_posX = posX;
@@ -187,7 +189,7 @@ void CGUIControl::DoRender()
 
     GUIPROFILER_RENDER_BEGIN(this);
 
-    if (m_hitColor != 0xFFFFFFFF)
+    if (m_hitColor != 0xffffffff)
     {
       color_t color = g_graphicsContext.MergeAlpha(m_hitColor);
       CGUITexture::DrawQuad(g_graphicsContext.generateAABB(m_hitRect), color);
@@ -937,7 +939,7 @@ void CGUIControl::SaveStates(std::vector<CControlState> &states)
   // empty for now - do nothing with the majority of controls
 }
 
-void CGUIControl::SetHitRect(const CRect &rect, const CGUIInfoColor &color)
+void CGUIControl::SetHitRect(const CRect &rect, const color_t &color)
 {
   m_hitRect = rect;
   m_hitColor = color;
