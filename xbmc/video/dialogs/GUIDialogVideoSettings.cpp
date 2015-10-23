@@ -172,7 +172,7 @@ void CGUIDialogVideoSettings::Save()
     return;
 
   // prompt user if they are sure
-  if (CGUIDialogYesNo::ShowAndGetInput(CVariant(12376), CVariant(12377)))
+  if (CGUIDialogYesNo::ShowAndGetInput(CVariant(12376), CVariant(12375)))
   { // reset the settings
     CVideoDatabase db;
     if (!db.Open())

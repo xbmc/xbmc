@@ -5287,7 +5287,12 @@ msgctxt "#12373"
 msgid "Settings & file manager"
 msgstr ""
 
-#empty strings from id 12374 to 12375
+#empty strings with id 12374
+
+#: xbmc\video\dialogs\GUIDialogVideoSettings.cpp
+msgctxt "#12375"
+msgid "The selected values will be saved as default for all media, and affect how they are played back. Are you sure?"
+msgstr ""
 
 #: xbmc\settings\dialogs\GUIDialogAudioDSPSettings.cpp
 #: xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.cpp
@@ -5296,10 +5301,10 @@ msgctxt "#12376"
 msgid "Set as default for all media"
 msgstr ""
 
+#: xbmc\settings\dialogs\GUIDialogAudioDSPSettings.cpp
 #: xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.cpp
-#: xbmc\video\dialogs\GUIDialogVideoSettings.cpp
 msgctxt "#12377"
-msgid "This will reset any previously saved values. Are you sure?"
+msgid "The selected values will be saved as default for all media. Are you sure?"
 msgstr ""
 
 #: system/settings/settings.xml
