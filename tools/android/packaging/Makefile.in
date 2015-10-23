@@ -88,6 +88,8 @@ shared:
 	find `pwd`/assets/system/keymaps/ -depth -name "joystick*.xml" ! -name "joystick.xml" -exec rm {} \;
 	mv -f `pwd`/assets/system/keymaps/joystick.xml.sample `pwd`/assets/system/keymaps/joystick.xml
 	cd `pwd`/assets/addons; rm -rf $(EXCLUDED_ADDONS)
+	mkdir -p assets/system/certs
+	cp $(XBMCROOT)/tools/depends/target/openssl/cacert.pem assets/system/certs
 
 sharedapk: shared | xbmc/assets
 	cp -rfp assets/* ./xbmc/assets
