@@ -815,7 +815,6 @@ void CWinRenderer::RenderPS()
 void CWinRenderer::Stage1()
 {
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
-  g_Windowing.ResetScissors();
 
   // Store current render target and depth view.
   ID3D11RenderTargetView *oldRT = nullptr; ID3D11DepthStencilView* oldDS = nullptr;
@@ -846,13 +845,10 @@ void CWinRenderer::Stage1()
     // Switch the render target to the temporary destination
     pContext->OMSetRenderTargets(1, &newRT, nullptr);
 
-    CRect srcRect(0.0f, 0.0f, static_cast<float>(m_sourceWidth), static_cast<float>(m_sourceHeight));
-
-    m_colorShader->Render(srcRect, srcRect,
+    m_colorShader->Render(m_sourceRect, m_sourceRect,
                           CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast,
                           CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness,
                           m_iFlags, (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
-
     // Restore our view port.
     g_Windowing.RestoreViewPort();
   }
@@ -865,41 +861,14 @@ void CWinRenderer::Stage1()
 
 void CWinRenderer::Stage2()
 {
-  g_Windowing.ResetScissors();
-
-  CRect sourceRect;
-
-  // fixup stereo+dxva+hq scaling issue
-  if (m_renderMethod == RENDER_DXVA)
-  {
-    sourceRect.y1 = 0.0f;
-    sourceRect.y2 = static_cast<float>(m_sourceHeight);
-    sourceRect.x1 = 0.0f;
-    sourceRect.x2 = static_cast<float>(m_sourceWidth);
-  }
-  else
-    sourceRect = m_sourceRect;
-
-  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight, sourceRect, g_graphicsContext.StereoCorrection(m_destRect));
+  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight, m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect));
 }
 
 void CWinRenderer::RenderProcessor(DWORD flags)
 {
   CSingleLock lock(g_graphicsContext);
-  CRect destRect;
-
-  if (m_bUseHQScaler)
-  {
-    destRect.y1 = 0.0f;
-    destRect.y2 = static_cast<float>(m_sourceHeight);
-    destRect.x1 = 0.0f;
-    destRect.x2 = static_cast<float>(m_sourceWidth);
-  }
-  else
-    destRect = g_graphicsContext.StereoCorrection(m_destRect);
-
+  CRect destRect = m_bUseHQScaler ? m_sourceRect : g_graphicsContext.StereoCorrection(m_destRect);
   DXVABuffer *image = (DXVABuffer*)m_VideoBuffers[m_iYV12RenderBuffer];
-
   if (!image->pic)
     return;
 
@@ -911,14 +880,17 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     || true /* workaround for some GPUs */)
   {
     target = m_IntermediateTarget.Get();
-    //target->AddRef(); // uncomment when workaround removed
+    target->AddRef();
   }
   else // dead code.
   {
     ID3D11RenderTargetView* rtv = nullptr;
     g_Windowing.Get3D11Context()->OMGetRenderTargets(1, &rtv, nullptr);
-    rtv->GetResource(&target);
-    rtv->Release();
+    if (rtv)
+    {
+      rtv->GetResource(&target);
+      rtv->Release();
+    }
   }
 
   int past = 0;
@@ -964,7 +936,6 @@ void CWinRenderer::RenderProcessor(DWORD flags)
   }
 
   m_processor->Render(m_sourceRect, destRect, target, views, flags, image->frameIdx);
-  //target->Release(); // uncomment when workaround removed
   
   if (m_bUseHQScaler)
   {
@@ -979,6 +950,7 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     CRect tu = { destRect.x1 / m_destWidth, destRect.y1 / m_destHeight, destRect.x2 / m_destWidth, destRect.y2 / m_destHeight };
     CD3DTexture::DrawQuad(m_destRect, 0, &m_IntermediateTarget, &tu, SHADER_METHOD_RENDER_TEXTURE_NOBLEND);
   }
+  SAFE_RELEASE(target);
 }
 
 bool CWinRenderer::RenderCapture(CRenderCapture* capture)
