@@ -108,7 +108,7 @@ static CEvent screenChangeEvent;
     {
       // portrait on external screen means its landscape for xbmc
 #if __IPHONE_8_0
-      if (CDarwinUtils::GetIOSVersion() >= 8.0)
+      if (CDarwinUtils::GetIOSVersion() >= 8.0 && CDarwinUtils::GetIOSVersion() < 9.0)
         [g_xbmcController activateScreen:newScreen withOrientation:UIInterfaceOrientationLandscapeLeft];// will attach the screen to xbmc mainwindow
       else
 #endif

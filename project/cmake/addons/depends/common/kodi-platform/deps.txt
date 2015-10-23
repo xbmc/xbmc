@@ -1,3 +1,2 @@
-kodi
 tinyxml
 platform

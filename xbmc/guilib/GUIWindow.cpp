@@ -440,6 +440,8 @@ bool CGUIWindow::OnAction(const CAction &action)
     case ACTION_NAV_BACK:
     case ACTION_PREVIOUS_MENU:
       return OnBack(action.GetID());
+    case ACTION_SHOW_INFO:
+      return OnInfo(action.GetID());
     case ACTION_MENU:
       if (m_menuControlID > 0)
       {
@@ -967,7 +969,7 @@ bool CGUIWindow::OnMove(int fromControl, int moveAction)
   while (control)
   { // grab the next control direction
     moveHistory.push_back(nextControl);
-    CGUIAction action = control->GetNavigateAction(moveAction);
+    CGUIAction action = control->GetAction(moveAction);
     action.ExecuteActions(nextControl, GetParentID());
     nextControl = action.GetNavigation();
     if (!nextControl) // 0 isn't valid control id

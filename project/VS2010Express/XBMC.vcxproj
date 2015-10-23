@@ -862,6 +862,7 @@
     <ClCompile Include="..\..\xbmc\pvr\PVRDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\PVRGUIInfo.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\PVRManager.cpp" />
+    <ClCompile Include="..\..\xbmc\pvr\PVRSettings.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\recordings\PVRRecording.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\recordings\PVRRecordings.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\timers\PVRTimerInfoTag.cpp" />
@@ -1247,6 +1248,7 @@
     <ClInclude Include="..\..\xbmc\profiles\Profile.h" />
     <ClInclude Include="..\..\xbmc\profiles\ProfilesManager.h" />
     <ClInclude Include="..\..\xbmc\profiles\windows\GUIWindowSettingsProfile.h" />
+    <ClInclude Include="..\..\xbmc\pvr\PVRSettings.h" />
     <ClInclude Include="..\..\xbmc\pvr\timers\PVRTimerType.h" />
     <ClInclude Include="..\..\xbmc\settings\AudioDSPSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogAudioDSPManager.h" />

@@ -178,6 +178,11 @@ const std::vector<std::string> CAlbum::GetAlbumArtist() const
   {
     albumartists.push_back(artistCredit->GetArtist());
   }
+  //When artist credits have not been populated attempt to build an artist vector from the descrpition string
+  //This is a tempory fix, in the longer term other areas should query the album_artist table and populate
+  //artist credits. Note that splitting the string may not give the same artists as held in the album_artist table
+  if (albumartists.empty() && !strArtistDesc.empty())
+    albumartists = StringUtils::Split(strArtistDesc, g_advancedSettings.m_musicItemSeparator);
   return albumartists;
 }
 

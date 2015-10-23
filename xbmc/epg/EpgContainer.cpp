@@ -108,8 +108,9 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
     for (const auto &epgEntry : m_epgs)
     {
       epgEntry.second->UnregisterObserver(this);
-      delete epgEntry.second;
     }
+    m_epgEvents.clear();
+    m_epgScans.clear();
     m_epgs.clear();
     m_iNextEpgUpdate  = 0;
     m_bStarted = false;
@@ -208,6 +209,8 @@ bool CEpgContainer::Stop(void)
 
 void CEpgContainer::Notify(const Observable &obs, const ObservableMessage msg)
 {
+  if (msg == ObservableMessageEpg)
+    UpdateEpgEvents();
   SetChanged();
   NotifyObservers(msg);
 }
@@ -285,7 +288,7 @@ bool CEpgContainer::PersistAll(void)
 
   for (EPGMAP::const_iterator it = copy.begin(); it != copy.end() && !m_bStop; ++it)
   {
-    CEpg *epg = it->second;
+    CEpgPtr epg = it->second;
     if (epg && epg->NeedsSave())
     {
       bReturn &= epg->Persist();
@@ -331,10 +334,10 @@ void CEpgContainer::Process(void)
 
       // get the channel
       CPVRChannelPtr channel = g_PVRChannelGroups->GetByUniqueID(request.channelID, request.clientID);
-      CEpg* epg(NULL);
+      CEpgPtr epg;
 
       // get the EPG for the channel
-      if (!channel || (epg = channel->GetEPG()) == NULL)
+      if (!channel || !(epg = channel->GetEPG()))
       {
         CLog::Log(LOGERROR, "PVR - %s - invalid channel or channel doesn't have an EPG", __FUNCTION__);
         continue;
@@ -376,7 +379,7 @@ void CEpgContainer::Process(void)
   }
 }
 
-CEpg *CEpgContainer::GetById(int iEpgId) const
+CEpgPtr CEpgContainer::GetById(int iEpgId) const
 {
   if (iEpgId < 0)
     return NULL;
@@ -390,12 +393,13 @@ CEpgInfoTagPtr CEpgContainer::GetTagById(unsigned int iBroadcastId) const
 {
   CEpgInfoTagPtr retval;
   CSingleLock lock(m_critSection);
-  for (EPGMAP::const_iterator it = m_epgs.begin(); !retval && it != m_epgs.end(); ++it)
-    retval = it->second->GetTag(iBroadcastId);
+  const auto &infoTag = m_epgEvents.find(iBroadcastId);
+  if (infoTag != m_epgEvents.end())
+    retval = infoTag->second;
   return retval;
 }
 
-CEpg *CEpgContainer::GetByChannel(const CPVRChannel &channel) const
+CEpgPtr CEpgContainer::GetByChannel(const CPVRChannel &channel) const
 {
   CSingleLock lock(m_critSection);
   for (const auto &epgEntry : m_epgs)
@@ -410,7 +414,7 @@ CEpg *CEpgContainer::GetByChannel(const CPVRChannel &channel) const
 void CEpgContainer::InsertFromDatabase(int iEpgID, const std::string &strName, const std::string &strScraperName)
 {
   // table might already have been created when pvr channels were loaded
-  CEpg* epg = GetById(iEpgID);
+  CEpgPtr epg = GetById(iEpgID);
   if (epg)
   {
     if (epg->Name() != strName || epg->ScraperName() != strScraperName)
@@ -423,7 +427,7 @@ void CEpgContainer::InsertFromDatabase(int iEpgID, const std::string &strName, c
   else
   {
     // create a new epg table
-    epg = new CEpg(iEpgID, strName, strScraperName, true);
+    epg.reset(new CEpg(iEpgID, strName, strScraperName, true));
     if (epg)
     {
       m_epgs.insert(std::make_pair(iEpgID, epg));
@@ -433,7 +437,7 @@ void CEpgContainer::InsertFromDatabase(int iEpgID, const std::string &strName, c
   }
 }
 
-CEpg *CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
+CEpgPtr CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
 {
   if (!channel)
     return NULL;
@@ -441,14 +445,14 @@ CEpg *CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
   WaitForUpdateFinish(true);
   LoadFromDB();
 
-  CEpg *epg(NULL);
+  CEpgPtr epg;
   if (channel->EpgID() > 0)
     epg = GetById(channel->EpgID());
 
   if (!epg)
   {
     channel->SetEpgID(NextEpgId());
-    epg = new CEpg(channel, false);
+    epg.reset(new CEpg(channel, false));
 
     CSingleLock lock(m_critSection);
     m_epgs.insert(std::make_pair((unsigned int)epg->EpgID(), epg));
@@ -514,7 +518,7 @@ bool CEpgContainer::DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase /* = fal
     m_database.Delete(*epgEntry->second);
 
   epgEntry->second->UnregisterObserver(this);
-  delete epgEntry->second;
+  CleanupEpgEvents(epgEntry->second);
   m_epgs.erase(epgEntry);
 
   return true;
@@ -622,10 +626,9 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
     return false;
   }
 
-  std::vector<CEpg*> invalidTables;
+  std::vector<CEpgPtr> invalidTables;
 
   /* load or update all EPG tables */
-  CEpg *epg;
   unsigned int iCounter(0);
   for (const auto &epgEntry : m_epgs)
   {
@@ -635,7 +638,7 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       break;
     }
 
-    epg = epgEntry.second;
+    CEpgPtr epg = epgEntry.second;
     if (!epg)
       continue;
 
@@ -660,7 +663,7 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       invalidTables.push_back(epg);
   }
 
-  for (std::vector<CEpg*>::iterator it = invalidTables.begin(); it != invalidTables.end(); ++it)
+  for (auto it = invalidTables.begin(); it != invalidTables.end(); ++it)
     DeleteEpg(**it, true);
 
   if (bInterrupted)
@@ -813,4 +816,70 @@ void CEpgContainer::UpdateRequest(int clientID, unsigned int channelID)
   request.clientID = clientID;
   request.channelID = channelID;
   m_updateRequests.push_back(request);
+}
+
+void CEpgContainer::UpdateEpgEvents()
+{
+  CLog::Log(LOGDEBUG, "EPGContainer - %s", __FUNCTION__);
+  CSingleLock lock(m_critSection);
+  CDateTime now = CDateTime::GetUTCDateTime();
+  int count = 0;
+
+  // Purge old events from the map with daily frequency and in according with EPG setting 'LingerTime'
+  if (!m_lastEpgEventPurge.IsValid() || m_lastEpgEventPurge < (now - CDateTimeSpan(1,0,0,0)))
+  {
+    CDateTime purgeTime = now - CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0);
+    for (auto event = m_epgEvents.begin(); event != m_epgEvents.end();)
+    {
+      if (event->second->EndAsUTC() < purgeTime)
+      {
+        event = m_epgEvents.erase(event);
+        ++count;
+      }
+      else
+        ++event;
+    }
+    m_lastEpgEventPurge = now;
+    CLog::Log(LOGDEBUG, "EPGContainer - %s - %d item(s) purged", __FUNCTION__, count);
+  }
+
+  // Fill updated entries
+  count = 0;
+  for (const auto &epgEntry : m_epgs)
+  {
+    if (!epgEntry.second->IsValid())
+      continue;
+
+    int epgId = epgEntry.second->EpgID();
+    CDateTime epgScanTime = epgEntry.second->GetLastScanTime();
+
+    const auto &scan = m_epgScans.find(epgId);
+    if (scan != m_epgScans.end() && scan->second == epgScanTime)
+      continue;
+
+    if (scan == m_epgScans.end())
+      m_epgScans.insert(std::make_pair(epgId, epgScanTime));
+    else
+      scan->second = epgScanTime;
+
+    auto events = epgEntry.second->GetAllEventsWithBroadcastId();
+    for (const auto &infoTag : events)
+    {
+      m_epgEvents[infoTag->UniqueBroadcastID()] = infoTag;
+      ++count;
+    }
+  }
+  CLog::Log(LOGDEBUG, "EPGContainer - %s - %d item(s) updated", __FUNCTION__, count);
+}
+
+void CEpgContainer::CleanupEpgEvents(const CEpgPtr& epg)
+{
+  CSingleLock lock(m_critSection);
+  if (epg)
+  {
+    m_epgScans.erase(epg->EpgID());
+    auto events = epg->GetAllEventsWithBroadcastId();
+    for (const auto &infoTag : events)
+      m_epgEvents.erase(infoTag->UniqueBroadcastID());
+  }
 }

@@ -264,17 +264,6 @@ CEpgInfoTagPtr CEpg::GetTag(const CDateTime &StartTime) const
   return CEpgInfoTagPtr();
 }
 
-CEpgInfoTagPtr CEpg::GetTag(unsigned int uniqueID) const
-{
-  CEpgInfoTagPtr retval;
-  CSingleLock lock(m_critSection);
-  for (std::map<CDateTime, CEpgInfoTagPtr>::const_iterator it = m_tags.begin(); !retval && it != m_tags.end(); ++it)
-    if (it->second->UniqueBroadcastID() == uniqueID)
-      retval = it->second;
-
-  return retval;
-}
-
 CEpgInfoTagPtr CEpg::GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime) const
 {
   CSingleLock lock(m_critSection);
@@ -402,6 +391,7 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
   m_lastScanTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
   m_bUpdateLastScanTime = true;
 
+  SetChanged(true);
   NotifyObservers(ObservableMessageEpg);
 
   return true;
@@ -863,4 +853,17 @@ bool CEpg::IsValid(void) const
   if (ScraperName() == "client")
     return m_pvrChannel != NULL;
   return true;
+}
+
+std::vector<CEpgInfoTagPtr> CEpg::GetAllEventsWithBroadcastId() const
+{
+  CSingleLock lock(m_critSection);
+  std::vector<CEpgInfoTagPtr> events;
+  events.reserve(m_tags.size());
+  for (const auto &infoTag : m_tags)
+  {
+    if (infoTag.second->UniqueBroadcastID())
+      events.push_back(infoTag.second);
+  }
+  return events;
 }

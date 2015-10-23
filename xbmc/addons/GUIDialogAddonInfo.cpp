@@ -35,6 +35,7 @@
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
+#include "settings/Settings.h"
 #include "utils/JobManager.h"
 #include "utils/FileOperationJob.h"
 #include "utils/StringUtils.h"
@@ -52,6 +53,7 @@
 #define CONTROL_BTN_SETTINGS         9
 #define CONTROL_BTN_CHANGELOG       10
 #define CONTROL_BTN_SELECT          12
+#define CONTROL_BTN_AUTOUPDATE      13
 
 using namespace ADDON;
 using namespace XFILE;
@@ -139,6 +141,11 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
         OnChangeLog();
         return true;
       }
+      else if (iControl == CONTROL_BTN_AUTOUPDATE)
+      {
+        OnToggleAutoUpdates();
+        return true;
+      }
     }
     break;
 default:
@@ -180,6 +187,12 @@ void CGUIDialogAddonInfo::UpdateControls()
   SET_CONTROL_LABEL(CONTROL_BTN_ENABLE, isEnabled ? 24021 : 24022);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_UPDATE, isInstalled);
+
+  bool autoUpdatesOn = CSettings::GetInstance().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == AUTO_UPDATES_ON;
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_AUTOUPDATE, isInstalled && autoUpdatesOn);
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_AUTOUPDATE, isInstalled && autoUpdatesOn &&
+      !CAddonMgr::GetInstance().IsBlacklisted(m_localAddon->ID()));
+  SET_CONTROL_LABEL(CONTROL_BTN_AUTOUPDATE, 21340);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SELECT, isEnabled && (CanOpen() ||
       CanRun() || (CanUse() && !m_localAddon->IsInUse())));
@@ -268,18 +281,28 @@ void CGUIDialogAddonInfo::OnUpdate()
 
     auto selected = versions.at(dialog->GetSelectedLabel());
 
-    //add or remove from blacklist to toggle auto updating. if downgrading
-    //turn off, if upgrading to latest turn it back on
+    //turn auto updating off if downgrading
     if (selected.first < m_localAddon->Version())
       CAddonMgr::GetInstance().AddToUpdateBlacklist(m_localAddon->ID());
-    else if (selected.first == versions.at(0).first)
-      CAddonMgr::GetInstance().RemoveFromUpdateBlacklist(m_localAddon->ID());
 
     if (selected.second == LOCAL_CACHE)
       CAddonInstaller::GetInstance().InstallFromZip(StringUtils::Format("special://home/addons/packages/%s-%s.zip",
           m_localAddon->ID().c_str(), selected.first.asString().c_str()));
     else
       CAddonInstaller::GetInstance().Install(m_addon->ID(), selected.first, selected.second);
+  }
+}
+
+void CGUIDialogAddonInfo::OnToggleAutoUpdates()
+{
+  CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), CONTROL_BTN_AUTOUPDATE);
+  if (OnMessage(msg))
+  {
+    bool selected = msg.GetParam1() == 1;
+    if (selected)
+      CAddonMgr::GetInstance().RemoveFromUpdateBlacklist(m_localAddon->ID());
+    else
+      CAddonMgr::GetInstance().AddToUpdateBlacklist(m_localAddon->ID());
   }
 }
 

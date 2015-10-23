@@ -23,7 +23,12 @@ call "%VS120COMNTOOLS%..\..\VC\bin\vcvars32.bat"
 SET WORKDIR=%WORKSPACE%
 
 IF "%WORKDIR%" == "" (
-  SET WORKDIR=%CD%\..\..\..
+  rem resolve the relative path
+  SETLOCAL EnableDelayedExpansion
+  PUSHD ..\..\..
+  SET WORKDIR=!CD!
+  POPD
+  SETLOCAL DisableDelayedExpansion
 )
 
 rem setup some paths that we need later
@@ -37,11 +42,13 @@ SET ADDONS_DEFINITION_PATH=%ADDONS_PATH%\addons
 IF %clean% == true (
   rem remove the build directory if it exists
   IF EXIST "%BOOTSTRAP_BUILD_PATH%" (
+    ECHO Cleaning build directory...
     RMDIR "%BOOTSTRAP_BUILD_PATH%" /S /Q > NUL
   )
 
   rem clean the addons definition path if it exists
   IF EXIST "%ADDONS_DEFINITION_PATH%" (
+    ECHO Cleaning bootstrapped addons...
     RMDIR "%ADDONS_DEFINITION_PATH%" /S /Q > NUL
   )
 

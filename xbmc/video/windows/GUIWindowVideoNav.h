@@ -58,7 +58,7 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
 
-  virtual void OnInfo(CFileItem* pItem, ADDON::ScraperPtr &info);
+  virtual void OnItemInfo(CFileItem* pItem, ADDON::ScraperPtr &info);
 
   /*! \brief Load video information from the database for these items (public static version)
    Useful for grabbing information for file listings, from watched status to full metadata

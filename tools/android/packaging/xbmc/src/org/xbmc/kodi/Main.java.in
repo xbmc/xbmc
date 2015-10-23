@@ -6,24 +6,64 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Surface;
+import android.widget.RelativeLayout;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Handler;
+import org.xbmc.@APP_NAME_LC@.XBMCVideoView;
 
-public class Main extends NativeActivity 
+public class Main extends NativeActivity
 {
+  private static final String TAG = "@APP_NAME_LC@";
+
   private XBMCSettingsContentObserver mSettingsContentObserver;
-  private View thisView;
+  private XBMCVideoView mVideoView = null;
+  private RelativeLayout mVideoLayout = null;
+  private View thisView = null;
   private Handler handler = new Handler();
 
   native void _onNewIntent(Intent intent);
 
-  public Main() 
+  public Main()
   {
     super();
   }
 
+  public Surface getVideoViewSurface()
+  {
+    return mVideoView.getSurface();
+  }
+
+  public void setVideoViewSurfaceRect(final int left, final int top, final int right, final int bottom)
+  {
+    runOnUiThread(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        android.widget.RelativeLayout.LayoutParams mp = new android.widget.RelativeLayout.LayoutParams(mVideoView.getLayoutParams());
+        mp.setMargins(left, top, mVideoLayout.getWidth() - right, mVideoLayout.getHeight() - bottom);
+        mVideoView.setLayoutParams(mp);
+        mVideoView.requestLayout();
+      }
+    });
+  }
+
+  public void clearVideoView()
+  {
+    runOnUiThread(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        mVideoView.clearSurface();
+      }
+    });
+  }
+
   @Override
-  public void onCreate(Bundle savedInstanceState) 
+  public void onCreate(Bundle savedInstanceState)
   {
     // The dynamic linker on droid is a mess.
     // Depending on version, it might not be able to properly resolve
@@ -36,8 +76,15 @@ public class Main extends NativeActivity
     System.loadLibrary("@APP_NAME_LC@");
 
     super.onCreate(savedInstanceState);
+    getWindow().setFormat(PixelFormat.TRANSPARENT);
+
+    setContentView(R.layout.activity_main);
+    mVideoView = (XBMCVideoView)findViewById(R.id.VideoView1);
+    mVideoView.getHolder().setFormat(PixelFormat.TRANSPARENT);
+    mVideoLayout = (RelativeLayout) findViewById(R.id.VideoLayout);
+
     setVolumeControlStream(AudioManager.STREAM_MUSIC);
-      
+
     mSettingsContentObserver = new XBMCSettingsContentObserver(this, new Handler());
     getApplicationContext().getContentResolver().registerContentObserver(android.provider.Settings.System.CONTENT_URI, true, mSettingsContentObserver );
 

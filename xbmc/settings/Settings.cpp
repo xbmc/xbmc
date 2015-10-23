@@ -63,6 +63,7 @@
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfilesManager.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRSettings.h"
 #include "pvr/windows/GUIWindowPVRGuide.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
@@ -165,6 +166,7 @@ const std::string CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD = "videoplayer.ren
 const std::string CSettings::SETTING_VIDEOPLAYER_HQSCALERS = "videoplayer.hqscalers";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEAMCODEC = "videoplayer.useamcodec";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC = "videoplayer.usemediacodec";
+const std::string CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE = "videoplayer.usemediacodecsurface";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEVDPAU = "videoplayer.usevdpau";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER = "videoplayer.usevdpaumixer";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG2 = "videoplayer.usevdpaumpeg2";
@@ -625,6 +627,7 @@ void CSettings::Uninitialize()
 #endif // defined(TARGET_LINUX)
   m_settingsManager->UnregisterSettingOptionsFiller("verticalsyncs");
   m_settingsManager->UnregisterSettingOptionsFiller("keyboardlayouts");
+  m_settingsManager->UnregisterSettingOptionsFiller("pvrrecordmargins");
 
   // unregister ISettingCallback implementations
   m_settingsManager->UnregisterCallback(&CEventLog::GetInstance());
@@ -997,6 +1000,7 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("verticalsyncs", CDisplaySettings::SettingOptionsVerticalSyncsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("keyboardlayouts", CKeyboardLayoutManager::SettingOptionsKeyboardLayoutsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("loggingcomponents", CAdvancedSettings::SettingOptionsLoggingComponentsFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("pvrrecordmargins", PVR::CPVRSettings::MarginTimeFiller);
 }
 
 void CSettings::InitializeConditions()
@@ -1142,6 +1146,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_TESTPATTERN);
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEAMCODEC);
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC);
+  settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE);
   m_settingsManager->RegisterCallback(&g_application, settingSet);
 
   settingSet.clear();

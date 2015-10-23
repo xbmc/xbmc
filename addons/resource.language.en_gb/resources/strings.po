@@ -1164,7 +1164,7 @@ msgctxt "#263"
 msgid "Allow remote control via HTTP"
 msgstr ""
 
-#. Label of a context menu entry to start/schedule a recording
+#. Label for a context menu entry to start/schedule a recording
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
 #: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
@@ -2614,11 +2614,13 @@ msgctxt "#592"
 msgid "One"
 msgstr ""
 
+#. Label used for buttons and select options as a reference to match all items or ocurrences.
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 #: xbmc/PlayListPlayer.cpp
 #: xbmc/profiles/dialogs/GUIDialogLockSettings.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideSearch.cpp
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
 msgctxt "#593"
 msgid "All"
 msgstr ""
@@ -3492,7 +3494,7 @@ msgstr ""
 msgctxt "#817"
 msgid "End any time"
 
-# Label of "MaxRecordings" list in the PVR timer setting dialog
+#. Label of "MaxRecordings" list in the PVR timer setting dialog
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#818"
 msgid "Max recordings"
@@ -3609,7 +3611,11 @@ msgctxt "#840"
 msgid "Do you only want to delete this timer or also the repeating timer that has scheduled it?"
 msgstr ""
 
-#empty string with id 841
+#. Label for No button in a dialog when a user wants to delete a timer that was scheduled by a repeating timer
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
+msgctxt "#841"
+msgid "Only this"
+msgstr ""
 
 #. Label of the option to switch between hierarchical and flat timer view (in confluence sideblade).
 #: skin.confluence
@@ -3617,13 +3623,13 @@ msgctxt "#842"
 msgid "Group timers"
 msgstr ""
 
-#. Label of a context menu entry to activate a currently inactive timer
+#. Label for a context menu entry to activate a currently inactive timer
 #: xbmc/pvr/windows/GUIWindowPVRTimers.cpp
 msgctxt "#843"
 msgid "Activate"
 msgstr ""
 
-#. Label of a context menu entry to deactivate a currently active timer
+#. Label for a context menu entry to deactivate a currently active timer
 #: xbmc/pvr/windows/GUIWindowPVRTimers.cpp
 msgctxt "#844"
 msgid "Deactivate"
@@ -5009,9 +5015,11 @@ msgstr ""
 
 #empty strings from id 12012 to 12020
 
-#: xbmc\Autorun.cpp
-#: xbmc\pvr\windows\GUIWindowPVRRecordings.cpp
-#: xbmc\video\windows\GUIWindowVideoBase.cpp
+#. Label of various controls for starting playback from the beginning
+#: xbmc/Autorun.cpp
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
+#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#12021"
 msgid "Start from beginning"
 msgstr ""
@@ -6522,7 +6530,10 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration - MediaCodec"
 msgstr ""
 
-#empty string with id 13440
+#: system/settings/settings.xml
+msgctxt "#13440"
+msgid "Allow hardware acceleration - MediaCodec (Surface)"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13441"
@@ -7521,8 +7532,11 @@ msgstr ""
 
 #empty strings from id 15043 to 15046
 
+#. Label for a context menu entry and dialog button to open audio DSP settings dialog
 #: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
+#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
+#: xbmc/addons/skin.confluence/720p/MusicOSD.xml
 msgctxt "#15047"
 msgid "Audio DSP settings"
 msgstr ""
@@ -8065,6 +8079,7 @@ msgctxt "#16102"
 msgid "Watched"
 msgstr ""
 
+#. Label for a context menu entry to mark an item as watched
 #: xbmc/music/windows/GUIWindowMusicNav.cpp
 #: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
@@ -8073,6 +8088,7 @@ msgctxt "#16103"
 msgid "Mark as watched"
 msgstr ""
 
+#. Label for a context menu entry to mark an item as unwatched
 #: xbmc/music/windows/GUIWindowMusicNav.cpp
 #: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
@@ -8087,6 +8103,7 @@ msgctxt "#16105"
 msgid "Edit title"
 msgstr ""
 
+#. Label for a context menu entry that opens a submenu with further actions for the selected item
 #: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
 #: xbmc/video/windows/GUIWindowVideoNav.cpp
 msgctxt "#16106"
@@ -8598,6 +8615,11 @@ msgctxt "#19046"
 msgid "New channel"
 msgstr ""
 
+#. Label for a context menu entry to open an EPG event information dialog
+#: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
+#: xbmc/pvr/windows/GUIWindowPVRtimers.cpp
 msgctxt "#19047"
 msgid "Programme information"
 msgstr ""
@@ -8622,6 +8644,8 @@ msgctxt "#19052"
 msgid "Move channel to:"
 msgstr ""
 
+#. Label for a context menu entry to open recording info dialog
+#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
 msgctxt "#19053"
 msgid "Recording information"
 msgstr ""
@@ -8640,8 +8664,10 @@ msgctxt "#19056"
 msgid "New timer"
 msgstr ""
 
+#. Label for a context menu entry to open timer settings dialog
+#: xbmc/pvr/windows/GUIWindowPVRTimers.cpp
 msgctxt "#19057"
-msgid "Edit timer"
+msgid "Edit settings"
 msgstr ""
 
 msgctxt "#19058"
@@ -8652,11 +8678,15 @@ msgctxt "#19059"
 msgid "Stop recording"
 msgstr ""
 
+#. Label for a context menu entry to delete a timer associated with an epg event and for a button to delete a timer in epg event info dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
 msgctxt "#19060"
 msgid "Delete timer"
 msgstr ""
 
-#. Label of a context menu entry to open the timer settings dialog
+#. Label for a context menu entry to open the timer settings dialog
 #: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
 #: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
 msgctxt "#19061"
@@ -9342,6 +9372,8 @@ msgctxt "#19210"
 msgid "Client"
 msgstr ""
 
+#. Heading of a channel delete confirmation dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
 msgctxt "#19211"
 msgid "Delete channel"
 msgstr ""
@@ -9701,7 +9733,7 @@ msgctxt "#19289"
 msgid "Hide group"
 msgstr ""
 
-#. Used on recordings context menu
+#. Label for a context menu entry of a recording to undelete a deleted recording
 #: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
 msgctxt "#19290"
 msgid "Undelete"
@@ -10207,7 +10239,11 @@ msgstr ""
 
 #empty string with id 19686
 
+#: Label for a context menu entries, dialog heading, button to start playing a recording
 #: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
+#: xbmc/addons/skin.confluence/720p/DialogPVRInfo.xml
 msgctxt "#19687"
 msgid "Play recording"
 msgstr ""
@@ -11988,7 +12024,12 @@ msgctxt "#21339"
 msgid "Version %s"
 msgstr ""
 
-#empty strings from id 21340 to 21358
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#21340"
+msgid "Auto-update"
+msgstr ""
+
+#empty strings from id 21341 to 21358
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
 msgctxt "#21359"
@@ -12328,6 +12369,7 @@ msgctxt "#21434"
 msgid "Find items where"
 msgstr ""
 
+#: addons/skin.confluence/720p/SmartPlaylistEditor.xml
 msgctxt "#21435"
 msgid "Edit"
 msgstr ""
@@ -12396,6 +12438,7 @@ msgctxt "#21449"
 msgid "Remote control sends keyboard presses"
 msgstr ""
 
+#. Label of setting "Appearance -> Skin -> Edit"
 #: system/settings/settings.xml
 msgctxt "#21450"
 msgid "Edit"
@@ -16991,7 +17034,7 @@ msgstr ""
 #. Description of setting "System -> Audio output -> DTS capable receiver" with label #254
 #: system/settings/settings.xml
 msgctxt "#36366"
-msgid "Select this option if your receiver is capable of decoding DTS streams."
+msgid "Select this option if your receiver is capable of decoding DTS streams. Note: Enabling this will disable \"Support 8 channel DTS-HD audio decoding\" option"
 msgstr ""
 
 #: system/settings/darwin_osx.xml
@@ -17014,7 +17057,7 @@ msgstr ""
 #. Description of setting "System -> Audio output -> DTS-HD capable receiver" with label #347
 #: system/settings/settings.xml
 msgctxt "#36370"
-msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
+msgid "Select this option if your receiver is capable of decoding DTS-HD streams. Note: Enabling this will disable \"Support 8 channel DTS-HD audio decoding\" option"
 msgstr ""
 
 #. Description of setting "System -> Audio output -> Audio output device" with label #545

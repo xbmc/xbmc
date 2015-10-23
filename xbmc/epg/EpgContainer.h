@@ -123,7 +123,7 @@ namespace EPG
 
     virtual void OnSettingChanged(const CSetting *setting) override;
 
-    CEpg *CreateChannelEpg(PVR::CPVRChannelPtr channel);
+    CEpgPtr CreateChannelEpg(PVR::CPVRChannelPtr channel);
 
     /*!
      * @brief Get all EPG tables and apply a filter.
@@ -157,7 +157,7 @@ namespace EPG
      * @param iEpgId The database ID of the table.
      * @return The table or NULL if it wasn't found.
      */
-    virtual CEpg *GetById(int iEpgId) const;
+    virtual CEpgPtr GetById(int iEpgId) const;
 
     /*!
      * @brief Get the EPG event with the given event id
@@ -171,7 +171,7 @@ namespace EPG
      * @param channel The channel to get the EPG table for.
      * @return The table or NULL if it wasn't found.
      */
-    virtual CEpg *GetByChannel(const PVR::CPVRChannel &channel) const;
+    virtual CEpgPtr GetByChannel(const PVR::CPVRChannel &channel) const;
 
     /*!
      * @brief Notify EPG table observers when the currently active tag changed.
@@ -292,6 +292,13 @@ namespace EPG
 
     void InsertFromDatabase(int iEpgID, const std::string &strName, const std::string &strScraperName);
 
+    /*!
+     * @brief Update map of epg events
+     */
+    void UpdateEpgEvents();
+
+    void CleanupEpgEvents(const CEpgPtr& epg);
+
     CEpgDatabase m_database;           /*!< the EPG database */
 
     /** @name Configuration */
@@ -323,5 +330,9 @@ namespace EPG
 
     std::list<SUpdateRequest> m_updateRequests; /*!< list of update requests triggered by addon*/
     CCriticalSection m_updateRequestsLock;      /*!< protect update requests*/
+
+    std::map<unsigned int, CEpgInfoTagPtr> m_epgEvents; /*!< map of EPG events by unique broadcast Id*/
+    std::map<unsigned int, CDateTime> m_epgScans;       /*!< map of last scan time by EPG Id*/
+    CDateTime m_lastEpgEventPurge;                      /*!< when the last purge has been processed*/
   };
 }
