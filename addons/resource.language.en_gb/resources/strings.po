@@ -6530,7 +6530,10 @@ msgctxt "#13439"
 msgid "Allow hardware acceleration - MediaCodec"
 msgstr ""
 
-#empty string with id 13440
+#: system/settings/settings.xml
+msgctxt "#13440"
+msgid "Allow hardware acceleration - MediaCodec (Surface)"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13441"
