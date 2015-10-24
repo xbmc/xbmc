@@ -287,10 +287,6 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
       OnRetrieveMusicInfo(items);
   }
 
-  //Navigating music files so default content to "songs" unless in sources folder.
-  //This content allows view type to include media info so that file tag data can be displayed
-  if (!URIUtils::IsSourcesPath(strDirectory))
-    items.SetContent("songs");
   // update our content in the info manager
   if (StringUtils::StartsWithNoCase(strDirectory, "videodb://") || items.IsVideoDb())
   {
@@ -315,6 +311,8 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
       items.SetContent("albums");
     else if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_TAGS)
       items.SetContent("tags");
+    else
+      items.SetContent("");
   }
   else if (StringUtils::StartsWithNoCase(strDirectory, "musicdb://") || items.IsMusicDb())
   {
@@ -342,12 +340,15 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
       items.SetContent("genres");
     else if (node == NODE_TYPE_YEAR)
       items.SetContent("years");
+    else
+      items.SetContent("");
   }
   else if (URIUtils::PathEquals(strDirectory, "special://musicplaylists/"))
     items.SetContent("playlists");
   else if (URIUtils::PathEquals(strDirectory, "plugin://music/"))
     items.SetContent("plugins");
-  else if (items.IsPlayList())
+  else if (items.IsPlayList() || 
+          (!items.IsSourcesPath() && !items.IsVirtualDirectoryRoot() && !items.IsLibraryFolder()))
     items.SetContent("songs");
 
   return bResult;
