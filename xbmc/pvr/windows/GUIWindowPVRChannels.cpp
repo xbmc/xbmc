@@ -80,8 +80,12 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
   if (ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
     buttons.Add(CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS, 15047);                        /* Audio DSP settings */
 
-  buttons.Add(CONTEXT_BUTTON_INFO, 19047);                                          /* Programme information */
-  buttons.Add(CONTEXT_BUTTON_FIND, 19003);                                          /* Find similar */
+  if (channel->GetEPGNow())
+  {
+    buttons.Add(CONTEXT_BUTTON_INFO, 19047);                                        /* Programme information */
+    buttons.Add(CONTEXT_BUTTON_FIND, 19003);                                        /* Find similar */
+  }
+
   buttons.Add(CONTEXT_BUTTON_RECORD_ITEM, !channel->IsRecording() ? 264 : 19059);   /* Record / Stop recording */
 
   if (g_PVRClients->HasMenuHooks(pItem->GetPVRChannelInfoTag()->ClientID(), PVR_MENUHOOK_CHANNEL))
