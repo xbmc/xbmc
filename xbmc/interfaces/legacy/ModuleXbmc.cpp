@@ -420,6 +420,13 @@ namespace XBMCAddon
           result = g_langInfo.GetDateFormat(false);
           StringUtils::Replace(result, "MM", "%m");
           StringUtils::Replace(result, "DD", "%d");
+#ifdef TARGET_WINDOWS
+          StringUtils::Replace(result, "M", "%#m");
+          StringUtils::Replace(result, "D", "%#d");
+#else
+          StringUtils::Replace(result, "M", "%-m");
+          StringUtils::Replace(result, "D", "%-d");
+#endif
           StringUtils::Replace(result, "YYYY", "%Y");
         }
       else if (strcmpi(id, "tempunit") == 0)
