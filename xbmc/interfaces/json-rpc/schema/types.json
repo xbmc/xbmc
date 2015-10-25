@@ -782,6 +782,41 @@
       { "type": "string", "enum": [ "alltv", "allradio" ], "required": true }
     ]
   },
+  "PVR.Fields.Broadcast": {
+    "extends": "Item.Fields.Base",
+    "items": { "type": "string",
+      "enum": [ "title", "plot", "plotoutline", "starttime",
+                "endtime", "runtime", "progress", "progresspercentage",
+                "genre", "episodename", "episodenum", "episodepart",
+                "firstaired", "hastimer", "isactive", "parentalrating",
+                "wasactive", "thumbnail", "rating" ]
+    }
+  },
+  "PVR.Details.Broadcast": {
+    "extends": "Item.Details.Base",
+    "properties": {
+      "broadcastid": { "$ref": "Library.Id", "required": true },
+      "title": { "type": "string" },
+      "plot": { "type": "string" },
+      "plotoutline": { "type": "string" },
+      "starttime": { "type": "string" },
+      "endtime": { "type": "string" },
+      "runtime": { "type": "integer" },
+      "progress": { "type": "integer" },
+      "progresspercentage": { "type": "number" },
+      "genre": { "type": "string" },
+      "episodename": { "type": "string" },
+      "episodenum": { "type": "integer" },
+      "episodepart": { "type": "integer" },
+      "firstaired": { "type": "string" },
+      "hastimer": { "type": "boolean" },
+      "isactive": { "type": "boolean" },
+      "parentalrating": { "type": "integer" },
+      "wasactive": { "type": "boolean" },
+      "thumbnail": { "type": "string" },
+      "rating": { "type": "integer" }
+    }
+  },
   "PVR.Fields.Channel": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
@@ -816,41 +851,6 @@
       "channels": { "type": "array",
         "items": { "$ref": "PVR.Details.Channel" }
       }
-    }
-  },
-  "PVR.Fields.Broadcast": {
-    "extends": "Item.Fields.Base",
-    "items": { "type": "string",
-      "enum": [ "title", "plot", "plotoutline", "starttime",
-                "endtime", "runtime", "progress", "progresspercentage",
-                "genre", "episodename", "episodenum", "episodepart",
-                "firstaired", "hastimer", "isactive", "parentalrating",
-                "wasactive", "thumbnail", "rating" ]
-    }
-  },
-  "PVR.Details.Broadcast": {
-    "extends": "Item.Details.Base",
-    "properties": {
-      "broadcastid": { "$ref": "Library.Id", "required": true },
-      "title": { "type": "string" },
-      "plot": { "type": "string" },
-      "plotoutline": { "type": "string" },
-      "starttime": { "type": "string" },
-      "endtime": { "type": "string" },
-      "runtime": { "type": "integer" },
-      "progress": { "type": "integer" },
-      "progresspercentage": { "type": "number" },
-      "genre": { "type": "string" },
-      "episodename": { "type": "string" },
-      "episodenum": { "type": "integer" },
-      "episodepart": { "type": "integer" },
-      "firstaired": { "type": "string" },
-      "hastimer": { "type": "boolean" },
-      "isactive": { "type": "boolean" },
-      "parentalrating": { "type": "integer" },
-      "wasactive": { "type": "boolean" },
-      "thumbnail": { "type": "string" },
-      "rating": { "type": "integer" }
     }
   },
   "PVR.TimerState": {
@@ -1369,6 +1369,13 @@
       "enabled": { "type": "boolean" }
     }
   },
+  "GUI.Stereoscopy.Mode": {
+    "type": "object",
+    "properties": {
+      "mode": { "type": "string", "required": true, "enum": [ "off", "split_vertical", "split_horizontal", "row_interleaved", "hardware_based", "anaglyph_cyan_red", "anaglyph_green_magenta", "anaglyph_yellow_blue", "monoscopic" ] },
+      "label": { "type": "string", "required": true }
+    }
+  },
   "GUI.Property.Name": {
     "type": "string",
     "enum": [ "currentwindow", "currentcontrol", "skin", "fullscreen", "stereoscopicmode" ]
@@ -1395,13 +1402,6 @@
       },
       "fullscreen": { "type": "boolean" },
       "stereoscopicmode": { "$ref": "GUI.Stereoscopy.Mode" }
-    }
-  },
-  "GUI.Stereoscopy.Mode": {
-    "type": "object",
-    "properties": {
-      "mode": { "type": "string", "required": true, "enum": [ "off", "split_vertical", "split_horizontal", "row_interleaved", "hardware_based", "anaglyph_cyan_red", "anaglyph_green_magenta", "anaglyph_yellow_blue", "monoscopic" ] },
-      "label": { "type": "string", "required": true }
     }
   },
   "System.Property.Name": {
