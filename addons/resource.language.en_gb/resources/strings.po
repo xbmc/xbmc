@@ -11961,7 +11961,12 @@ msgctxt "#20470"
 msgid "Use movie sets for single movies"
 msgstr ""
 
-#empty strings from id 20471 to 21329
+#: system/settings/settings.xml
+msgctxt "#20471"
+msgid "Show empty TV shows"
+msgstr ""
+
+#empty strings from id 20472 to 21329
 #up to 21329 is reserved for the video db !! !
 
 #: system/settings/settings.xml
@@ -15844,7 +15849,11 @@ msgctxt "#36162"
 msgid "Enable VideoToolbox hardware decoding of video files."
 msgstr ""
 
-#empty string with id 36163
+#. Description of setting "Videos -> Library -> Show empty TV shows" with label #20471
+#: system/settings/settings.xml
+msgctxt "#36163"
+msgid "Show TV shows with no episodes when browsing the video library."
+msgstr ""
 
 #. Description of setting "Videos -> Playback -> Adjust display refresh rate" with label #170
 #: system/settings/settings.xml
