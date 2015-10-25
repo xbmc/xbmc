@@ -5224,8 +5224,10 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_USER_RATING:
     {
       std::string strUserRating;
-      if (item->GetVideoInfoTag()->m_iUserRating > 0)
+      if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iUserRating > 0)
         strUserRating = StringUtils::Format("%i", item->GetVideoInfoTag()->m_iUserRating);
+      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetUserrating() > '0')
+        strUserRating.assign(1, item->GetMusicInfoTag()->GetUserrating());
       return strUserRating;
     }
     break;
