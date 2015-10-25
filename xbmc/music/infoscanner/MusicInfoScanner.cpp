@@ -587,7 +587,6 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       {
         song.iTimesPlayed = it->second.iTimesPlayed;
         song.lastPlayed = it->second.lastPlayed;
-        song.iKaraokeNumber = it->second.iKaraokeNumber;
         if (song.rating == '0')    song.rating = it->second.rating;
         if (song.strThumb.empty()) song.strThumb = it->second.strThumb;
       }
