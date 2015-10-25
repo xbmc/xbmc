@@ -96,6 +96,7 @@ public:
   static const std::string SETTING_VIDEOLIBRARY_GROUPSINGLEITEMSETS;
   static const std::string SETTING_VIDEOLIBRARY_UPDATEONSTARTUP;
   static const std::string SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE;
+  static const std::string SETTING_VIDEOLIBRARY_IMPORTALL;
   static const std::string SETTING_VIDEOLIBRARY_CLEANUP;
   static const std::string SETTING_VIDEOLIBRARY_EXPORT;
   static const std::string SETTING_VIDEOLIBRARY_IMPORT;
