@@ -251,6 +251,11 @@ namespace PVR
     bool IsEmpty() const;
 
     bool IsChanged() const;
+
+    /*!
+     * @brief reset changed flag after persist
+     */
+    void Persisted();
     //@}
 
     /*! @name Client related channel methods
