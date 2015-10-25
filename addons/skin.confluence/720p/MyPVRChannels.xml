@@ -82,6 +82,19 @@
 				<height>400</height>
 				<texture border="5">button-nofocus.png</texture>
 			</control>
+			<control type="button" id="61">
+				<left>-1</left>
+				<top>-1</top>
+				<width>692</width>
+				<height>402</height>
+				<texturefocus border="3">VideoWindowFO.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<font>-</font>
+				<pulseonselect>no</pulseonselect>
+				<onleft>70</onleft>
+				<onclick>Fullscreen</onclick>
+				<visible>Player.HasVideo</visible>
+			</control>
 			<control type="image">
 				<left>5</left>
 				<top>5</top>
