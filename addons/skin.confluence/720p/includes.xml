@@ -38,6 +38,39 @@
 	<constant name="DepthFloor">-0.20</constant>
 	<constant name="DepthSideBlade">0.15</constant>
 	<!-- VARIABLES -->
+	<variable name="MovieWidgetLabel">
+		<value condition="StringCompare(Skin.String(MovieWidget),RecentlyAddedMovies)">$LOCALIZE[20386]</value>
+		<value condition="StringCompare(Skin.String(MovieWidget),InProgressMovies)">$LOCALIZE[31962]</value>
+		<value condition="StringCompare(Skin.String(MovieWidget),RandomMovies)">$LOCALIZE[31963]</value>
+		<value>None</value>
+	</variable>
+	<variable name="TVShowWidgetLabel">
+		<value condition="StringCompare(Skin.String(TVShowWidget),RecentlyAddedEpisodes)">$LOCALIZE[20387]</value>
+		<value condition="StringCompare(Skin.String(TVShowWidget),InProgressShows)">$LOCALIZE[626]</value>
+		<value condition="StringCompare(Skin.String(TVShowWidget),RandomEpisodes)">$LOCALIZE[31964]</value>
+		<value>None</value>
+	</variable>
+	<variable name="MusicWidgetLabel">
+		<value condition="StringCompare(Skin.String(MusicWidget),RecentlyAddedAlbums)">$LOCALIZE[359]</value>
+		<value condition="StringCompare(Skin.String(MusicWidget),MostPlayedAlbums)">$LOCALIZE[31965]</value>
+		<value condition="StringCompare(Skin.String(MusicWidget),RandomAlbums)">$LOCALIZE[31966]</value>
+		<value>None</value>
+	</variable>
+	<variable name="MovieWidgetContent">
+		<value condition="StringCompare(Skin.String(MovieWidget),RecentlyAddedMovies)">special://skin/playlists/recent_movies.xsp</value>
+		<value condition="StringCompare(Skin.String(MovieWidget),InProgressMovies)">special://skin/playlists/inprogress_movies.xsp</value>
+		<value condition="StringCompare(Skin.String(MovieWidget),RandomMovies)">special://skin/playlists/random_movies.xsp</value>
+	</variable>
+	<variable name="TVShowWidgetContent">
+		<value condition="StringCompare(Skin.String(TVShowWidget),RecentlyAddedEpisodes)">special://skin/playlists/recent_episodes.xsp</value>
+		<value condition="StringCompare(Skin.String(TVShowWidget),InProgressShows)">special://skin/playlists/inprogress_tvshows.xsp</value>
+		<value condition="StringCompare(Skin.String(TVShowWidget),RandomEpisodes)">special://skin/playlists/random_episodes.xsp</value>
+	</variable>
+	<variable name="MusicWidgetContent">
+		<value condition="StringCompare(Skin.String(MusicWidget),RecentlyAddedAlbums)">special://skin/playlists/recent_albums.xsp</value>
+		<value condition="StringCompare(Skin.String(MusicWidget),MostPlayedAlbums)">special://skin/playlists/mostplayed_albums.xsp</value>
+		<value condition="StringCompare(Skin.String(MusicWidget),RandomAlbums)">special://skin/playlists/random_albums.xsp</value>
+	</variable>
 	<variable name="MediaInfoOverlayVar">
 		<value condition="ListItem.IsCollection">flagging/video/Set.png</value>
 		<value condition="!ListItem.IsStereoscopic">$INFO[ListItem.VideoResolution,flagging/lists/,.png]</value>

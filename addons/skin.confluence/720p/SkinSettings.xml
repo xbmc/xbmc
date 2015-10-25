@@ -388,29 +388,61 @@
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 						<visible>!IsEmpty(Weather.Plugin)</visible>
 					</control>
-					<control type="radiobutton" id="205">
-						<description>Show Recently added Video info</description>
+					<control type="label" id="210">
+						<width>750</width>
+						<height>45</height>
+						<font>font13_title</font>
+						<label>31961</label>
+						<textcolor>blue</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+					</control>
+					<control type="button" id="211">
+						<description>Cycle Movie widgets</description>
 						<width>750</width>
 						<height>40</height>
 						<font>font13</font>
 						<textcolor>grey2</textcolor>
 						<focusedcolor>white</focusedcolor>
-						<label>31117</label>
-						<onclick>Skin.ToggleSetting(HomepageHideRecentlyAddedVideo)</onclick>
-						<selected>!Skin.HasSetting(HomepageHideRecentlyAddedVideo)</selected>
+						<label>$LOCALIZE[342] -</label>
+						<label2>$VAR[MovieWidgetLabel]</label2>
+						<onclick condition="IsEmpty(Skin.String(MovieWidget))">Skin.SetString(MovieWidget,RecentlyAddedMovies)</onclick>
+						<onclick condition="StringCompare(Skin.String(MovieWidget),RecentlyAddedMovies)">Skin.SetString(MovieWidget,InProgressMovies)</onclick>
+						<onclick condition="StringCompare(Skin.String(MovieWidget),InProgressMovies)">Skin.SetString(MovieWidget,RandomMovies)</onclick>
+						<onclick condition="StringCompare(Skin.String(MovieWidget),RandomMovies)">Skin.Reset(MovieWidget)</onclick>
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
-					<control type="radiobutton" id="206">
-						<description>Show Recently added info</description>
+					<control type="button" id="212">
+						<description>Cycle TV widgets</description>
 						<width>750</width>
 						<height>40</height>
 						<font>font13</font>
 						<textcolor>grey2</textcolor>
 						<focusedcolor>white</focusedcolor>
-						<label>31116</label>
-						<onclick>Skin.ToggleSetting(HomepageHideRecentlyAddedAlbums)</onclick>
-						<selected>!Skin.HasSetting(HomepageHideRecentlyAddedAlbums)</selected>
+						<label>$LOCALIZE[20343] -</label>
+						<label2>$VAR[TVShowWidgetLabel]</label2>
+						<onclick condition="IsEmpty(Skin.String(TVShowWidget))">Skin.SetString(TVShowWidget,RecentlyAddedEpisodes)</onclick>
+						<onclick condition="StringCompare(Skin.String(TVShowWidget),RecentlyAddedEpisodes)">Skin.SetString(TVShowWidget,InProgressShows)</onclick>
+						<onclick condition="StringCompare(Skin.String(TVShowWidget),InProgressShows)">Skin.SetString(TVShowWidget,RandomEpisodes)</onclick>
+						<onclick condition="StringCompare(Skin.String(TVShowWidget),RandomEpisodes)">Skin.Reset(TVShowWidget)</onclick>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+					</control>
+					<control type="button" id="213">
+						<description>Cycle music widgets</description>
+						<width>750</width>
+						<height>40</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<label>$LOCALIZE[2] -</label>
+						<label2>$VAR[MusicWidgetLabel]</label2>
+						<onclick condition="IsEmpty(Skin.String(MusicWidget))">Skin.SetString(MusicWidget,RecentlyAddedAlbums)</onclick>
+						<onclick condition="StringCompare(Skin.String(MusicWidget),RecentlyAddedAlbums)">Skin.SetString(MusicWidget,MostPlayedAlbums)</onclick>
+						<onclick condition="StringCompare(Skin.String(MusicWidget),MostPlayedAlbums)">Skin.SetString(MusicWidget,RandomAlbums)</onclick>
+						<onclick condition="StringCompare(Skin.String(MusicWidget),RandomAlbums)">Skin.Reset(MusicWidget)</onclick>
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
