@@ -7,7 +7,7 @@
 	<include>dialogeffect</include>
 	<controls>
 		<control type="group">
-			<depth>DepthOSDPopout</depth>
+			<depth>DepthSideBlade</depth>
 			<control type="image">
 				<description>background image</description>
 				<left>0</left>
