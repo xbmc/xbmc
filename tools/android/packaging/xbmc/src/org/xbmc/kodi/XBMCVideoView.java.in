@@ -46,6 +46,9 @@ public class XBMCVideoView extends SurfaceView implements
    */
   public void clearSurface()
   {
+    if (!mHasHolder)
+      return;
+
     // Have to go EGL to allow reuse of surface
 
     final int EGL_OPENGL_ES2_BIT = 4;
