@@ -20,25 +20,18 @@
  */
 
 #include "JNIBase.h"
-#include "PackageItemInfo.h"
+#include "List.h"
 
-class CJNIApplicationInfo : public CJNIPackageItemInfo
+class CJNIDrawable;
+
+class CJNIResources : public CJNIBase
 {
 public:
-  CJNIApplicationInfo(const jni::jhobject &object);
-  ~CJNIApplicationInfo(){};
+  CJNIResources(const jni::jhobject &object) : CJNIBase(object) {};
+  ~CJNIResources() {};
 
-  std::string sourceDir;
-  std::string publicSourceDir;
-  std::string dataDir;
-  std::string nativeLibraryDir;
-  std::string packageName;
-  int         uid; 
-  int         targetSdkVersion;
-  bool        enabled;
+  CJNIDrawable      getDrawableForDensity(int id, int density);
 
 private:
-  CJNIApplicationInfo();
+  CJNIResources();
 };
-
-typedef std::vector<CJNIApplicationInfo> CJNIApplicationInfos;
