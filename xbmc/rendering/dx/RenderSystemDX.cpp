@@ -1248,9 +1248,7 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
     if (m_stereoView == RENDER_STEREO_VIEW_RIGHT)
     {
       // execute command's queue
-      if ( m_stereoMode != RENDER_STEREO_MODE_SPLIT_HORIZONTAL
-        && m_stereoMode != RENDER_STEREO_MODE_SPLIT_VERTICAL)
-        FinishCommandList();
+      FinishCommandList();
 
       // do not clear RT for anaglyph modes
       if ( m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA
