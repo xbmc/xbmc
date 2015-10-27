@@ -244,6 +244,7 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   m_interlaced = false;
   m_adapter = D3DADAPTER_DEFAULT;
   m_kodiGuiDirtyAlgo = g_advancedSettings.m_guiAlgorithmDirtyRegions;
+  m_activeVideoRect.SetRect(0, 0, 0, 0);
 
   if (FAILED(hr))
   {
@@ -2240,6 +2241,8 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
         }
       }
 #endif
+      if (g_graphicsContext.IsFullScreenVideo())
+        m_activeVideoRect.SetRect(rDstVid.left, rDstVid.top, rDstVid.right, rDstVid.bottom);
 
       if (rSrcVid.Size() != rDstVid.Size())
       {

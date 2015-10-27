@@ -55,6 +55,7 @@ CmadVRAllocatorPresenter::CmadVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdS
   m_updateDisplayLatencyForMadvr = false;
   m_kodiGuiDirtyAlgo = g_advancedSettings.m_guiAlgorithmDirtyRegions;
   m_pMadvrShared = DNew CMadvrSharedRender();
+  m_activeVideoRect.SetRect(0, 0, 0, 0);
   m_madvrRect.SetRect(0, 0, 0, 0);
   
   if (FAILED(hr)) {
@@ -195,6 +196,9 @@ STDMETHODIMP CmadVRAllocatorPresenter::ClearBackground(LPCSTR name, REFERENCE_TI
 
 STDMETHODIMP CmadVRAllocatorPresenter::RenderOsd(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect)
 {
+  if (g_graphicsContext.IsFullScreenVideo())
+    m_activeVideoRect.SetRect(activeVideoRect->left, activeVideoRect->top, activeVideoRect->right, activeVideoRect->bottom);
+
   return m_pMadvrShared->Render(RENDER_LAYER_OVER);
 }
 
@@ -358,6 +362,7 @@ STDMETHODIMP CmadVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   mi.cbSize = sizeof(MONITORINFO);
   if (GetMonitorInfo(MonitorFromWindow(m_hWnd, MONITOR_DEFAULTTONEAREST), &mi)) {
     m_ScreenSize.SetSize(mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top);
+    m_activeVideoRect.SetRect(0, 0, m_ScreenSize.cx, m_ScreenSize.cy);
   }
 
   return S_OK;

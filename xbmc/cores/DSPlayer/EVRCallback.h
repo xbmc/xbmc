@@ -42,6 +42,7 @@ class IEvrAllocatorCallback
 {
 public:
   virtual ~IEvrAllocatorCallback() {};
+  virtual CRect GetActiveVideoRect(){ CRect activeVideoRect(0, 0, 0, 0); return activeVideoRect; };
 };
 
 class IEvrPaintCallback
@@ -69,6 +70,7 @@ public:
   }
   
   // IEvrAllocatorCallback
+  virtual CRect GetActiveVideoRect();
 
   // IEvrPaintCallback
   virtual void RenderToUnderTexture();

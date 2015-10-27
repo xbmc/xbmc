@@ -145,6 +145,7 @@ public:
   virtual void SetResolution();
   virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret);
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect);
+  virtual CRect GetActiveVideoRect() { return m_activeVideoRect; };
   virtual CRect GetMadvrRect() { return m_madvrRect; };
 
 private:
@@ -162,6 +163,7 @@ private:
   bool m_updateDisplayLatencyForMadvr;
   CMadvrSharedRender *m_pMadvrShared;
   CMadvrSettingsManager *m_pSettingsManager;
+  CRect m_activeVideoRect;
   CRect m_madvrRect;
 };
 

@@ -63,6 +63,7 @@
           </constraints>
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
+            <dependency type="enable" setting="dsplayer.definedsarea" operator="is">false</dependency>
           </dependencies>
           <control type="spinner" format="string">
             <formatlabel>14047</formatlabel>
@@ -1397,7 +1398,7 @@
             <maximum>300</maximum>
           </constraints>
           <control type="spinner" format="integer" />
-	</setting>
+        </setting>
       </group>
       <group id="4">
         <setting id="dsplayer.exsubtitlelanguage" type="string" label="55085" help="36120">
@@ -1422,6 +1423,80 @@
           <level>0</level>
           <default>false</default>
           <control type="toggle" />
+        </setting>
+      </group>
+      <group id="5">
+        <setting id="dsplayer.osdintoactivearea" type="boolean" label="55091" help="">
+          <level>0</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible" setting="dsplayer.videorenderer" operator="is">madVR</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="dsplayer.definedsarea" type="boolean" label="55086" help="">
+          <level>0</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible" setting="dsplayer.videorenderer" operator="is">madVR</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="dsplayer.dsarealeft" type="integer" parent="dsplayer.definedsarea" label="55087" help="">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>1</step>
+            <maximum>300</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="dsplayer.videorenderer" operator="is">madVR</dependency>
+            <dependency type="enable" setting="dsplayer.definedsarea" operator="is">true</dependency>
+          </dependencies>
+          <control type="spinner" format="integer" />
+        </setting>
+        <setting id="dsplayer.dsareatop" type="integer" parent="dsplayer.definedsarea" label="55088" help="">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>1</step>
+            <maximum>300</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="dsplayer.videorenderer" operator="is">madVR</dependency>
+            <dependency type="enable" setting="dsplayer.definedsarea" operator="is">true</dependency>
+          </dependencies>
+          <control type="spinner" format="integer" />
+        </setting>
+        <setting id="dsplayer.dsarearight" type="integer" parent="dsplayer.definedsarea" label="55089" help="">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>1</step>
+            <maximum>300</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="dsplayer.videorenderer" operator="is">madVR</dependency>
+            <dependency type="enable" setting="dsplayer.definedsarea" operator="is">true</dependency>
+          </dependencies>
+          <control type="spinner" format="integer" />
+        </setting>
+        <setting id="dsplayer.dsareabottom" type="integer" parent="dsplayer.definedsarea" label="55090" help="">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>1</step>
+            <maximum>300</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="dsplayer.videorenderer" operator="is">madVR</dependency>
+            <dependency type="enable" setting="dsplayer.definedsarea" operator="is">true</dependency>
+          </dependencies>
+          <control type="spinner" format="integer" />
         </setting>
       </group>
     </category>

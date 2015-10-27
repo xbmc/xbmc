@@ -563,20 +563,20 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
   else if (settingId == CSettings::SETTING_VIDEOLIBRARY_EXPORT)
     CBuiltins::GetInstance().Execute("exportlibrary(video)");
 #ifdef HAS_DS_PLAYER
-  else if (settingId == "dsplayer.rules")
+  else if (settingId == CSettings::SETTING_DSPLAYER_RULES)
     CGUIDialogDSRules::ShowDSRulesList();
-  else if (settingId == "dsplayer.lavsplitter")
-    CGraphFilters::Get()->ShowInternalPPage(LAVSPLITTER, false);
-  else if (settingId == "dsplayer.lavvideo")
-    CGraphFilters::Get()->ShowInternalPPage(LAVVIDEO, false);
-  else if (settingId == "dsplayer.lavaudio")
-    CGraphFilters::Get()->ShowInternalPPage(LAVAUDIO, false);
-  else if (settingId == "dsplayer.xysubfilter")
-    CGraphFilters::Get()->ShowInternalPPage(XYSUBFILTER, true);
-  else if (settingId == "dsplayer.filters")
+  else if (settingId == CSettings::SETTING_DSPLAYER_FILTERS)
     CGUIDialogDSFilters::ShowDSFiltersList();
-  else if (settingId == "dsplayer.playercore")
+  else if (settingId == CSettings::SETTING_DSPLAYER_PLAYCORE)
     CGUIDialogDSPlayercoreFactory::ShowDSPlayercoreFactory();
+  else if (settingId == CSettings::SETTING_DSPLAYER_LAVSPLITTER)
+    CGraphFilters::Get()->ShowInternalPPage(LAVSPLITTER, false);
+  else if (settingId == CSettings::SETTING_DSPLAYER_LAVVIDEO)
+    CGraphFilters::Get()->ShowInternalPPage(LAVVIDEO, false);
+  else if (settingId == CSettings::SETTING_DSPLAYER_LAVAUDIO)
+    CGraphFilters::Get()->ShowInternalPPage(LAVAUDIO, false);
+  else if (settingId == CSettings::SETTING_DSPLAYER_XYSUBFILTER)
+    CGraphFilters::Get()->ShowInternalPPage(XYSUBFILTER, true);
 #endif
   else if (settingId == CSettings::SETTING_VIDEOLIBRARY_IMPORT)
   {

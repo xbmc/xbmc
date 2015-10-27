@@ -18334,6 +18334,30 @@ msgctxt "#55085"
 msgid "Preferred external subtitle language"
 msgstr ""
 
+msgctxt "#55086"
+msgid "Define visible screen area"
+msgstr ""
+
+msgctxt "#55087"
+msgid "Left"
+msgstr ""
+
+msgctxt "#55088"
+msgid "Top"
+msgstr ""
+
+msgctxt "#55089"
+msgid "Right"
+msgstr ""
+
+msgctxt "#55090"
+msgid "Bottom"
+msgstr ""
+
+msgctxt "#55091"
+msgid "Move OSD into active video area"
+msgstr ""
+
 msgctxt "#60001"
 msgid "Media rules"
 msgstr ""

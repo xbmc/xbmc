@@ -34,6 +34,7 @@
 #include "video/VideoReferenceClock.h"
 #ifdef HAS_DS_PLAYER
 #include "MadvrCallback.h"
+#include "EVRCallback.h"
 #endif
 
 using namespace KODI::MESSAGING;
@@ -64,6 +65,9 @@ CGraphicContext::CGraphicContext(void) :
   , m_stereoMode(RENDER_STEREO_MODE_OFF)
   , m_nextStereoMode(RENDER_STEREO_MODE_OFF)
 {
+#ifdef HAS_DS_PLAYER
+  m_oldDsActiveArea.SetRect(0, 0, 0, 0);
+#endif
 }
 
 CGraphicContext::~CGraphicContext(void)
@@ -776,6 +780,10 @@ void CGraphicContext::SetResInfo(RESOLUTION res, const RESOLUTION_INFO& info)
 
 void CGraphicContext::GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, float &scaleY, TransformMatrix *matrix /* = NULL */)
 {
+#ifdef HAS_DS_PLAYER
+  CRect activeRect(0, 0, 0, 0);
+#endif
+
   if (m_Resolution != RES_INVALID)
   {
     // calculate necessary scalings
@@ -789,6 +797,38 @@ void CGraphicContext::GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, f
 
     if(!g_guiSkinzoom) // lookup gui setting if we didn't have it already
       g_guiSkinzoom = (CSettingInt*)CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKINZOOM);
+
+#ifdef HAS_DS_PLAYER
+    int iLeft, iTop, iRight, iBottom;
+    iLeft = CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_DSAREALEFT);
+    iTop = CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_DSAREATOP);
+    iRight = CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_DSAREARIGHT);
+    iBottom = CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_DSAREABOTTOM);
+
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_DEFINEDSAREA) && (iLeft > 0 || iTop > 0 || iRight > 0 || iBottom > 0))
+    {
+      g_guiSkinzoom = 0;
+      fToPosX = fToPosX + iLeft;
+      fToPosY = fToPosY + iTop;
+      fToWidth = fToWidth - iRight - iLeft;
+      fToHeight = fToHeight - iBottom - iTop;
+    }
+
+    if ((g_application.m_pPlayer->GetCurrentPlayer() == PCID_DSPLAYER)
+      && CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_OSDINTOACTIVEAREA))
+    {
+      g_guiSkinzoom = 0;
+      CMadvrCallback::Get()->ReadyMadvr() ? activeRect = CMadvrCallback::Get()->GetActiveVideoRect() : activeRect = CEvrCallback::Get()->GetActiveVideoRect();
+
+      if (activeRect.x2 - activeRect.x1 > 0 || activeRect.y2 - activeRect.y1 > 0)
+      {
+        fToPosX = activeRect.x1;
+        fToPosY = activeRect.y1;
+        fToWidth = activeRect.x2 - fToPosX;
+        fToHeight = activeRect.y2 - fToPosY;
+      }
+    }
+#endif
 
     float fZoom = 1.0f;
     if(g_guiSkinzoom)
@@ -819,6 +859,16 @@ void CGraphicContext::GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, f
     if (matrix)
       matrix->Reset();
   }
+
+#ifdef HAS_DS_PLAYER
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_OSDINTOACTIVEAREA)
+    && (m_oldDsActiveArea != activeRect))
+  {
+    m_oldDsActiveArea = activeRect;
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
+    g_windowManager.SendThreadMessage(msg);
+  }
+#endif
 }
 
 void CGraphicContext::SetScalingResolution(const RESOLUTION_INFO &res, bool needsScaling)

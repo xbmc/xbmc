@@ -90,6 +90,16 @@ bool CEvrCallback::ReadyEvr()
 
 // IEvrAllocatorCallback
 
+CRect  CEvrCallback::GetActiveVideoRect()
+{
+  CRect activeVideoRect(0, 0, 0, 0);
+
+  if (UsingEvr())
+    activeVideoRect = m_pAllocatorCallback->GetActiveVideoRect();
+
+  return activeVideoRect;
+}
+
 // IEvrPaintCallback
 void CEvrCallback::RenderToUnderTexture()
 {

@@ -69,8 +69,8 @@ public:
 class CDX9AllocatorPresenter
   : public ISubPicAllocatorPresenterImpl,
   public ID3DResource,
-  public IPaintCallback
-
+  public IPaintCallback,
+  public IEvrAllocatorCallback
 {
 public:
   CCritSec        m_VMR9AlphaBitmapLock;
@@ -261,6 +261,8 @@ protected:
   int                                   m_adapter;
   int                                   m_kodiGuiDirtyAlgo;
 
+  CRect                                 m_activeVideoRect;
+
   virtual HRESULT                       CreateDevice(CStdString &_Error);
   virtual HRESULT                       AllocSurfaces(D3DFORMAT Format = D3DFMT_A8R8G8B8);
   virtual void                          DeleteSurfaces();
@@ -364,6 +366,9 @@ public:
   virtual void                        OnPaint(CRect destRect);
   virtual void                        OnAfterPresent();
   virtual void                        OnReset();
+
+  // IEvrAllocatorCallback
+  virtual CRect GetActiveVideoRect() { return m_activeVideoRect; };
 
   static bool                         bPaintAll;
 };

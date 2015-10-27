@@ -366,6 +366,13 @@ public:
   static const std::string SETTING_GENERAL_ADDONBROKENFILTER;
 
 #ifdef HAS_DS_PLAYER
+  static const std::string CSettings::SETTING_DSPLAYER_RULES;
+  static const std::string CSettings::SETTING_DSPLAYER_FILTERS;
+  static const std::string CSettings::SETTING_DSPLAYER_PLAYCORE;
+  static const std::string CSettings::SETTING_DSPLAYER_LAVSPLITTER;
+  static const std::string CSettings::SETTING_DSPLAYER_LAVVIDEO;
+  static const std::string CSettings::SETTING_DSPLAYER_LAVAUDIO;
+  static const std::string CSettings::SETTING_DSPLAYER_XYSUBFILTER;
   static const std::string CSettings::SETTING_DSPLAYER_DEFAULTVIDEOPLAYER;
   static const std::string CSettings::SETTING_DSPLAYER_AUTOFILTERSETTINGS;
   static const std::string CSettings::SETTING_DSPLAYER_CHANGEREFRESHWITH;
@@ -384,6 +391,12 @@ public:
   static const std::string CSettings::SETTING_DSPLAYER_AUDIORENDERER;
   static const std::string CSettings::SETTING_DSPLAYER_FILTERSMANAGEMENT;
   static const std::string CSettings::SETTING_DSPLAYER_EXSUBTITLELANGUAGE;
+  static const std::string CSettings::SETTING_DSPLAYER_OSDINTOACTIVEAREA;
+  static const std::string CSettings::SETTING_DSPLAYER_DEFINEDSAREA;
+  static const std::string CSettings::SETTING_DSPLAYER_DSAREALEFT;
+  static const std::string CSettings::SETTING_DSPLAYER_DSAREARIGHT;
+  static const std::string CSettings::SETTING_DSPLAYER_DSAREATOP;
+  static const std::string CSettings::SETTING_DSPLAYER_DSAREABOTTOM;
 #endif
 
 

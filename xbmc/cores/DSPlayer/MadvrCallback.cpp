@@ -184,6 +184,16 @@ CRect CMadvrCallback::GetMadvrRect()
   return madvrRect;
 }
 
+CRect CMadvrCallback::GetActiveVideoRect()
+{
+  CRect activeVideoRect(0, 0, 0, 0);
+
+  if (UsingMadvr())
+    activeVideoRect = m_pAllocatorCallback->GetActiveVideoRect();
+
+  return activeVideoRect;
+}
+
 // IMadvrPaintCallback
 void CMadvrCallback::RenderToUnderTexture()
 {
