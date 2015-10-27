@@ -413,6 +413,7 @@
 			<depth>DepthOSD+</depth>
 			<visible>videoplayer.isstereoscopic + ![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)] + [Control.HasFocus(255) | ControlGroup(500).HasFocus | Control.HasFocus(520)]</visible>
 			<animation effect="fade" time="150">VisibleChange</animation>
+			<animation effect="slide" start="0,0" end="55,0" time="0" condition="![VideoPlayer.HasMenu | VideoPlayer.Content(LiveTV)]">Conditional</animation>
 			<animation effect="slide" start="0,0" end="55,0" time="0" condition="VideoPlayer.Content(LiveTV)">Conditional</animation>
 			<right>200</right>
 			<bottom>45</bottom>
