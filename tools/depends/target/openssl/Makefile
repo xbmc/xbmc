@@ -3,14 +3,14 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=openssl
-VERSION=1.0.1j
+VERSION=1.0.2d
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
-CONFIGURE=MACHINE=$(PLATFORM) ./config shared zlib --openssldir=$(PREFIX) --with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib no-asm
+CONFIGURE=MACHINE=$(PLATFORM) ./config shared zlib --openssldir=$(PREFIX) --with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib
 ifeq ($(OS), android)
-  CONFIGURE=./Configure shared zlib --openssldir=$(PREFIX) --with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib no-asm linux-generic32
+  CONFIGURE=./Configure shared zlib --openssldir=$(PREFIX) --with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib linux-generic32
 endif
 ifeq ($(OS), ios)
   # No darwin-arm-cc so use darwin-i386-cc and patch files after configure
@@ -18,9 +18,9 @@ ifeq ($(OS), ios)
 endif
 ifeq ($(OS), osx)
   ifeq ($(CPU),x86_64)
-    CONFIGURE=./Configure darwin64-$(CPU)-cc zlib no-asm no-krb5 shared --openssldir=$(PREFIX)
+    CONFIGURE=./Configure darwin64-$(CPU)-cc zlib no-krb5 shared --openssldir=$(PREFIX)
   else
-    CONFIGURE=./Configure darwin-$(CPU)-cc zlib no-asm no-krb5 shared --openssldir=$(PREFIX)
+    CONFIGURE=./Configure darwin-$(CPU)-cc zlib no-krb5 shared --openssldir=$(PREFIX)
   endif
 endif
 LIBDYLIB=$(PLATFORM)/libssl.a
@@ -49,7 +49,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	fi
 
 $(LIBDYLIB): $(PLATFORM)
-	$(MAKE) -j 1 -C $(PLATFORM)
+	$(MAKE) -C $(PLATFORM)
 	touch $@
 
 .installed-$(PLATFORM): $(LIBDYLIB)
