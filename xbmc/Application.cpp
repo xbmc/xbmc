@@ -1581,15 +1581,9 @@ bool CApplication::Load(const TiXmlNode *settings)
   const TiXmlElement *audioElement = settings->FirstChildElement("audio");
   if (audioElement != NULL)
   {
-#ifndef TARGET_ANDROID
     XMLUtils::GetBoolean(audioElement, "mute", m_muted);
     if (!XMLUtils::GetFloat(audioElement, "fvolumelevel", m_volumeLevel, VOLUME_MINIMUM, VOLUME_MAXIMUM))
       m_volumeLevel = VOLUME_MAXIMUM;
-#else
-    // Use system volume settings
-    m_volumeLevel = CXBMCApp::GetSystemVolume();
-    m_muted = (m_volumeLevel == 0);
-#endif
   }
 
   return true;
