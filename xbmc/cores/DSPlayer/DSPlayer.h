@@ -199,7 +199,7 @@ public:
 
   virtual int  GetChapterCount() { CSingleLock lock(m_StateSection); return CChaptersManager::Get()->GetChapterCount(); }
   virtual int  GetChapter() { CSingleLock lock(m_StateSection); return CChaptersManager::Get()->GetChapter(); }
-  virtual void GetChapterName(CStdString& strChapterName) { CSingleLock lock(m_StateSection); CChaptersManager::Get()->GetChapterName(strChapterName); }
+  virtual void GetChapterName(std::string& strChapterName, int chapterIdx=-1) { CSingleLock lock(m_StateSection); CChaptersManager::Get()->GetChapterName(strChapterName);}
   virtual int64_t GetChapterPos(int chapterIdx = -1) { return CChaptersManager::Get()->GetChapterPos(chapterIdx); }
   virtual int  SeekChapter(int iChapter) { return CChaptersManager::Get()->SeekChapter(iChapter); }
 

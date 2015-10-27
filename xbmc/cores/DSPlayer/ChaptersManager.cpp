@@ -84,7 +84,7 @@ int CChaptersManager::GetChapterPos(int iChapter)
     return 0;
 }
 
-void CChaptersManager::GetChapterName(CStdString& strChapterName)
+void CChaptersManager::GetChapterName(std::string& strChapterName)
 {
   CSingleLock lock(m_lock);
   if (m_currentChapter == -1)
