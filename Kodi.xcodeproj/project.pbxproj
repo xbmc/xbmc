@@ -139,8 +139,9 @@
 		1D638128161E211E003603ED /* PeripheralImon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1D638126161E211E003603ED /* PeripheralImon.cpp */; };
 		1DAFDB7C16DFDCA7007F8C68 /* PeripheralBusCEC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1DAFDB7A16DFDCA7007F8C68 /* PeripheralBusCEC.cpp */; };
 		1DE0443515828F4B005DDB4D /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1DE0443315828F4B005DDB4D /* Exception.cpp */; };
-		2A7B2BDC1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; settings = {ASSET_TAGS = (); }; };
-		2A7B2BDD1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; settings = {ASSET_TAGS = (); }; };
+		2A1A5A6C1BDEAA6D0084702D /* NOTE in Resources */ = {isa = PBXBuildFile; fileRef = 2A1A5A5D1BDEAA6D0084702D /* NOTE */; };
+		2A7B2BDC1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; };
+		2A7B2BDD1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; };
 		2F4564D51970129A00396109 /* GUIFontCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F4564D31970129A00396109 /* GUIFontCache.cpp */; };
 		2F4564D61970129A00396109 /* GUIFontCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F4564D31970129A00396109 /* GUIFontCache.cpp */; };
 		32C631281423A90F00F18420 /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32C631261423A90F00F18420 /* JpegIO.cpp */; };
@@ -284,8 +285,8 @@
 		7C2612711825B6340086E04D /* DatabaseQuery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C26126F1825B6340086E04D /* DatabaseQuery.cpp */; };
 		7C2612721825B6340086E04D /* DatabaseQuery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C26126F1825B6340086E04D /* DatabaseQuery.cpp */; };
 		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
-		7C3018311BCC2DE200B1FE6F /* MusicInfoTagLoaderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C30182F1BCC2DE200B1FE6F /* MusicInfoTagLoaderFFmpeg.cpp */; settings = {ASSET_TAGS = (); }; };
-		7C3018321BCC2DE200B1FE6F /* MusicInfoTagLoaderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C30182F1BCC2DE200B1FE6F /* MusicInfoTagLoaderFFmpeg.cpp */; settings = {ASSET_TAGS = (); }; };
+		7C3018311BCC2DE200B1FE6F /* MusicInfoTagLoaderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C30182F1BCC2DE200B1FE6F /* MusicInfoTagLoaderFFmpeg.cpp */; };
+		7C3018321BCC2DE200B1FE6F /* MusicInfoTagLoaderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C30182F1BCC2DE200B1FE6F /* MusicInfoTagLoaderFFmpeg.cpp */; };
 		7C4458BD161E203800A905F6 /* Screenshot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4458BB161E203800A905F6 /* Screenshot.cpp */; };
 		7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
 		7C4705AE12EF584C00369E51 /* AddonInstaller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4705AC12EF584C00369E51 /* AddonInstaller.cpp */; };
@@ -2491,6 +2492,26 @@
 		1DAFDB7B16DFDCA7007F8C68 /* PeripheralBusCEC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusCEC.h; sourceTree = "<group>"; };
 		1DE0443315828F4B005DDB4D /* Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Exception.cpp; path = commons/Exception.cpp; sourceTree = "<group>"; };
 		1DE0443415828F4B005DDB4D /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exception.h; path = commons/Exception.h; sourceTree = "<group>"; };
+		2A1A5A581BDEAA6D0084702D /* kodi_adsp_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodi_adsp_dll.h; sourceTree = "<group>"; };
+		2A1A5A591BDEAA6D0084702D /* kodi_adsp_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodi_adsp_types.h; sourceTree = "<group>"; };
+		2A1A5A5A1BDEAA6D0084702D /* kodi_audiodec_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodi_audiodec_dll.h; sourceTree = "<group>"; };
+		2A1A5A5B1BDEAA6D0084702D /* kodi_audiodec_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodi_audiodec_types.h; sourceTree = "<group>"; };
+		2A1A5A5C1BDEAA6D0084702D /* kodi_audioengine_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodi_audioengine_types.h; sourceTree = "<group>"; };
+		2A1A5A5D1BDEAA6D0084702D /* NOTE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NOTE; sourceTree = "<group>"; };
+		2A1A5A5E1BDEAA6D0084702D /* xbmc_addon_cpp_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_addon_cpp_dll.h; sourceTree = "<group>"; };
+		2A1A5A5F1BDEAA6D0084702D /* xbmc_addon_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_addon_dll.h; sourceTree = "<group>"; };
+		2A1A5A601BDEAA6D0084702D /* xbmc_addon_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_addon_types.h; sourceTree = "<group>"; };
+		2A1A5A611BDEAA6D0084702D /* xbmc_audioenc_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_audioenc_dll.h; sourceTree = "<group>"; };
+		2A1A5A621BDEAA6D0084702D /* xbmc_audioenc_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_audioenc_types.h; sourceTree = "<group>"; };
+		2A1A5A631BDEAA6D0084702D /* xbmc_codec_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_codec_types.h; sourceTree = "<group>"; };
+		2A1A5A641BDEAA6D0084702D /* xbmc_epg_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_epg_types.h; sourceTree = "<group>"; };
+		2A1A5A651BDEAA6D0084702D /* xbmc_pvr_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_pvr_dll.h; sourceTree = "<group>"; };
+		2A1A5A661BDEAA6D0084702D /* xbmc_pvr_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_pvr_types.h; sourceTree = "<group>"; };
+		2A1A5A671BDEAA6D0084702D /* xbmc_scr_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_scr_dll.h; sourceTree = "<group>"; };
+		2A1A5A681BDEAA6D0084702D /* xbmc_scr_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_scr_types.h; sourceTree = "<group>"; };
+		2A1A5A691BDEAA6D0084702D /* xbmc_stream_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xbmc_stream_utils.hpp; sourceTree = "<group>"; };
+		2A1A5A6A1BDEAA6D0084702D /* xbmc_vis_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_vis_dll.h; sourceTree = "<group>"; };
+		2A1A5A6B1BDEAA6D0084702D /* xbmc_vis_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_vis_types.h; sourceTree = "<group>"; };
 		2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRSettings.cpp; sourceTree = "<group>"; };
 		2A7B2BDE1BD6F18B00044BCD /* PVRSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRSettings.h; sourceTree = "<group>"; };
 		2F4564D31970129A00396109 /* GUIFontCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIFontCache.cpp; sourceTree = "<group>"; };
@@ -4874,6 +4895,7 @@
 		18B49FF01152BEEB001AF8A6 /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				2A1A5A571BDEAA6D0084702D /* include */,
 				7C226E3C1BA5F61C00185CE0 /* AddonCallbacksAudioEngine.cpp */,
 				7C226E3D1BA5F61C00185CE0 /* AddonCallbacksAudioEngine.h */,
 				7C973CE31B50378E0002A874 /* AddonCallbacksAudioDSP.cpp */,
@@ -5286,6 +5308,33 @@
 				1DAFDB7B16DFDCA7007F8C68 /* PeripheralBusCEC.h */,
 			);
 			path = virtual;
+			sourceTree = "<group>";
+		};
+		2A1A5A571BDEAA6D0084702D /* include */ = {
+			isa = PBXGroup;
+			children = (
+				2A1A5A581BDEAA6D0084702D /* kodi_adsp_dll.h */,
+				2A1A5A591BDEAA6D0084702D /* kodi_adsp_types.h */,
+				2A1A5A5A1BDEAA6D0084702D /* kodi_audiodec_dll.h */,
+				2A1A5A5B1BDEAA6D0084702D /* kodi_audiodec_types.h */,
+				2A1A5A5C1BDEAA6D0084702D /* kodi_audioengine_types.h */,
+				2A1A5A5D1BDEAA6D0084702D /* NOTE */,
+				2A1A5A5E1BDEAA6D0084702D /* xbmc_addon_cpp_dll.h */,
+				2A1A5A5F1BDEAA6D0084702D /* xbmc_addon_dll.h */,
+				2A1A5A601BDEAA6D0084702D /* xbmc_addon_types.h */,
+				2A1A5A611BDEAA6D0084702D /* xbmc_audioenc_dll.h */,
+				2A1A5A621BDEAA6D0084702D /* xbmc_audioenc_types.h */,
+				2A1A5A631BDEAA6D0084702D /* xbmc_codec_types.h */,
+				2A1A5A641BDEAA6D0084702D /* xbmc_epg_types.h */,
+				2A1A5A651BDEAA6D0084702D /* xbmc_pvr_dll.h */,
+				2A1A5A661BDEAA6D0084702D /* xbmc_pvr_types.h */,
+				2A1A5A671BDEAA6D0084702D /* xbmc_scr_dll.h */,
+				2A1A5A681BDEAA6D0084702D /* xbmc_scr_types.h */,
+				2A1A5A691BDEAA6D0084702D /* xbmc_stream_utils.hpp */,
+				2A1A5A6A1BDEAA6D0084702D /* xbmc_vis_dll.h */,
+				2A1A5A6B1BDEAA6D0084702D /* xbmc_vis_types.h */,
+			);
+			path = include;
 			sourceTree = "<group>";
 		};
 		38F4E56013CCCB3B00664821 /* platform */ = {
@@ -8871,6 +8920,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E49910B5174D0E2A00741B6D /* Default-568h@2x.png in Resources */,
+				2A1A5A6C1BDEAA6D0084702D /* NOTE in Resources */,
 				E49910B6174D0E2A00741B6D /* InfoPlist.strings in Resources */,
 				DFFA440119104C1300C3923B /* AppIcon29x29.png in Resources */,
 				DFFA440219104C1300C3923B /* AppIcon29x29@2x.png in Resources */,
