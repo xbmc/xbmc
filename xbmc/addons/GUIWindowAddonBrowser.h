@@ -36,7 +36,7 @@ public:
 
   /*! \brief Popup a selection dialog with a list of addons of the given type
    \param type the type of addon wanted
-   \param addonID [out] the addon ID of the selected item
+   \param addonID [in/out] the addon ID of the (pre) selected item
    \param showNone whether there should be a "None" item in the list (defaults to false)
    \param showDetails whether to show details of the addons or not
    \param showInstalled whether installed addons should be in the list
@@ -48,7 +48,7 @@ public:
   static int SelectAddonID(const std::vector<ADDON::TYPE> &types, std::string &addonID, bool showNone = false, bool showDetails = true, bool showInstalled = true, bool showInstallable = false, bool showMore = true);
   /*! \brief Popup a selection dialog with a list of addons of the given type
    \param type the type of addon wanted
-   \param addonIDs [out] array of selected addon IDs
+   \param addonIDs [in/out] array of (pre) selected addon IDs
    \param showNone whether there should be a "None" item in the list (defaults to false)
    \param showDetails whether to show details of the addons or not
    \param multipleSelection allow selection of multiple addons, if set to true showNone will automaticly switch to false

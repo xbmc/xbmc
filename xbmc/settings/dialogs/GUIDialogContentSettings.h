@@ -80,13 +80,18 @@ protected:
   virtual void InitializeSettings();
 
 private:
-  void FillContentTypes();
-  void FillContentTypes(CONTENT_TYPE content);
-  void FillScraperList();
-
   bool m_needsSaving;
+  /*!
+  * @brief The currently selected content type
+  */
   CONTENT_TYPE m_content;
+  /*!
+  * @brief The selected content type at dialog creation
+  */
   CONTENT_TYPE m_originalContent;
+  /*!
+  * @brief The currently selected scraper
+  */
   ADDON::ScraperPtr m_scraper;
 
   bool m_showScanSettings;
@@ -96,7 +101,5 @@ private:
   bool m_exclude;
   bool m_noUpdating;
   
-  std::map<CONTENT_TYPE, ADDON::VECADDONS> m_scrapers;
-  std::map<CONTENT_TYPE, ADDON::AddonPtr> m_lastSelected;
   CFileItemList* m_vecItems;
 };
