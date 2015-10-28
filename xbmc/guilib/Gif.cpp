@@ -367,7 +367,7 @@ bool Gif::ExtractFrames(unsigned int count)
     {
       CLog::Log(LOGDEBUG, "Gif::ExtractFrames(): Illegal frame dimensions: width: %d, height: %d, left: %d, top: %d instead of (%d,%d)",
         frame->m_width, frame->m_height, frame->m_left, frame->m_top, m_width, m_height);
-      return false;
+      continue;
     }
 
     if (imageDesc.ColorMap)
