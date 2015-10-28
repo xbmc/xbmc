@@ -400,4 +400,5 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void setExtraLogLevel(const std::vector<CVariant> &components);
 };
 
-XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);
+XBMC_GLOBAL_REF(CAdvancedSettings,g_advancedSettings);
+#define g_advancedSettings XBMC_GLOBAL_USE(CAdvancedSettings)
