@@ -89,6 +89,12 @@ void CPVRGUIInfo::ResetProperties(void)
   m_bHasTVChannels              = false;
   m_bHasRadioChannels           = false;
   m_bIsTimeshifting             = false;
+  m_iTimeshiftStartTime         = time_t(0);
+  m_iTimeshiftEndTime           = time_t(0);
+  m_iTimeshiftPlayTime          = time_t(0);
+  m_strTimeshiftStartTime.clear();
+  m_strTimeshiftEndTime.clear();
+  m_strTimeshiftPlayTime.clear();
 
   ResetPlayingTag();
   ClearQualityInfo(m_qualityInfo);
