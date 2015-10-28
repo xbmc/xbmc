@@ -13,6 +13,8 @@ testMain
 *.kdev4
 # gedit
 *~
+# CLion
+/.idea
 
 # generated files etc
 config.cache
