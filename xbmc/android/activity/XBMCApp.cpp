@@ -182,6 +182,9 @@ void CXBMCApp::onPause()
   android_printf("%s: ", __PRETTY_FUNCTION__);
 
   unregisterReceiver(*this);
+  
+  if (g_application.m_pPlayer->IsPlayingVideo())
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
 
 #if defined(HAS_LIBAMCODEC)
   if (aml_permissions())
@@ -410,8 +413,6 @@ void CXBMCApp::run()
 void CXBMCApp::XBMC_Pause(bool pause)
 {
   android_printf("XBMC_Pause(%s)", pause ? "true" : "false");
-  if (pause && g_application.m_pPlayer->IsPlayingVideo())
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
 }
 
 void CXBMCApp::XBMC_Stop()
