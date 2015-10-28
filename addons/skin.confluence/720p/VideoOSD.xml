@@ -177,7 +177,7 @@
 				<visible>VideoPlayer.HasMenu + !VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="image" id="2300">
-				<width>165</width>
+				<width>160</width>
 				<texture>-</texture>
 				<visible>VideoPlayer.Content(LiveTV)</visible>
 			</control>
@@ -294,6 +294,7 @@
 			<animation effect="slide" start="0,0" end="0,80" time="0" condition="![VideoPlayer.HasSubtitles + VideoPlayer.SubtitlesEnabled]">Conditional</animation>
 			<animation effect="slide" start="0,0" end="0,40" time="0" condition="!VideoPlayer.HasSubtitles">Conditional</animation>
 			<animation effect="slide" start="0,0" end="55,0" time="0" condition="![VideoPlayer.HasMenu | VideoPlayer.Content(LiveTV)]">Conditional</animation>
+			<animation effect="slide" start="0,0" end="55,0" time="0" condition="!VideoPlayer.HasMenu + VideoPlayer.Content(LiveTV)">Conditional</animation>
 			<right>145</right>
 			<bottom>45</bottom>
 			<width>256</width>
