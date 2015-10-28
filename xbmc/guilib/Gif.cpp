@@ -363,7 +363,8 @@ bool Gif::ExtractFrames(unsigned int count)
     frame->m_left = imageDesc.Left;
 
     if (frame->m_top + frame->m_height > m_height || frame->m_left + frame->m_width > m_width
-      || !frame->m_width || !frame->m_height)
+      || !frame->m_width || !frame->m_height
+      || frame->m_width > m_width || frame->m_height > m_height)
     {
       CLog::Log(LOGDEBUG, "Gif::ExtractFrames(): Illegal frame dimensions: width: %d, height: %d, left: %d, top: %d instead of (%d,%d)",
         frame->m_width, frame->m_height, frame->m_left, frame->m_top, m_width, m_height);
