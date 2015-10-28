@@ -13,7 +13,7 @@ TOC
 1. Introduction
 -----------------------------------------------------------------------------
 
-We currently recommend Ubuntu "Precise Pangolin" (12.04) 64Bit. This is what our continuous
+We currently recommend Ubuntu "Trusty Tahr" (14.04) 64Bit. This is what our continuous
 integration system "jenkins" is using.
 Additionally, building from OSX Snow Leopard or Mavericks (others on your own risk ;) ) is working (see 3.1).
 
