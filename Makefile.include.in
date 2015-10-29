@@ -1,5 +1,5 @@
 AR=@AR@
-ARFLAGS=crus
+ARFLAGS=crs
 RM=rm -rf
 SHELL=@SHELL@
 ARCH=@ARCH@
