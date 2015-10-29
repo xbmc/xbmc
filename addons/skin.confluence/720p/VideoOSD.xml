@@ -177,7 +177,7 @@
 				<visible>VideoPlayer.HasMenu + !VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="image" id="2300">
-				<width>165</width>
+				<width>160</width>
 				<texture>-</texture>
 				<visible>VideoPlayer.Content(LiveTV)</visible>
 			</control>
@@ -294,6 +294,7 @@
 			<animation effect="slide" start="0,0" end="0,80" time="0" condition="![VideoPlayer.HasSubtitles + VideoPlayer.SubtitlesEnabled]">Conditional</animation>
 			<animation effect="slide" start="0,0" end="0,40" time="0" condition="!VideoPlayer.HasSubtitles">Conditional</animation>
 			<animation effect="slide" start="0,0" end="55,0" time="0" condition="![VideoPlayer.HasMenu | VideoPlayer.Content(LiveTV)]">Conditional</animation>
+			<animation effect="slide" start="0,0" end="55,0" time="0" condition="!VideoPlayer.HasMenu + VideoPlayer.Content(LiveTV)">Conditional</animation>
 			<right>145</right>
 			<bottom>45</bottom>
 			<width>256</width>
@@ -413,6 +414,7 @@
 			<depth>DepthOSD+</depth>
 			<visible>videoplayer.isstereoscopic + ![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)] + [Control.HasFocus(255) | ControlGroup(500).HasFocus | Control.HasFocus(520)]</visible>
 			<animation effect="fade" time="150">VisibleChange</animation>
+			<animation effect="slide" start="0,0" end="55,0" time="0" condition="![VideoPlayer.HasMenu | VideoPlayer.Content(LiveTV)]">Conditional</animation>
 			<animation effect="slide" start="0,0" end="55,0" time="0" condition="VideoPlayer.Content(LiveTV)">Conditional</animation>
 			<right>200</right>
 			<bottom>45</bottom>
