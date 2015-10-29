@@ -472,6 +472,13 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   }
 
   if (m_render_surface)
+  {
+    m_videosurface = CXBMCApp::get()->getVideoViewSurface();
+    if (!m_videosurface)
+      return false;
+  }
+
+  if (m_render_surface)
     m_formatname += "(S)";
 
   // CJNIMediaCodec::createDecoderByXXX doesn't handle errors nicely,
@@ -917,8 +924,6 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
   }
 
   InitSurfaceTexture();
-  if (m_render_surface)
-    m_videosurface = CXBMCApp::get()->getVideoViewSurface();
 
   // configure and start the codec.
   // use the MediaFormat that we have setup.
