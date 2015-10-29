@@ -296,6 +296,6 @@ private:
  \brief
  */
 
-XBMC_GLOBAL(CGraphicContext,g_graphicsContext);
-
+XBMC_GLOBAL_REF(CGraphicContext,g_graphicsContext);
+#define g_graphicsContext XBMC_GLOBAL_USE(CGraphicContext)
 #endif
