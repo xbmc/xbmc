@@ -38,7 +38,7 @@
         "import " MODULE "\n" \
         "xbmc.abortRequested = False\n" \
         "class xbmcout:\n" \
-        "  def __init__(self, loglevel=" MODULE ".LOGNOTICE):\n" \
+        "  def __init__(self, loglevel=" MODULE ".LOGDEBUG):\n" \
         "    self.ll=loglevel\n" \
         "  def write(self, data):\n" \
         "    " MODULE ".log(data,self.ll)\n" \
