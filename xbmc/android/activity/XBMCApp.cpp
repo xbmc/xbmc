@@ -255,7 +255,7 @@ void CXBMCApp::onCreateWindow(ANativeWindow* window)
 void CXBMCApp::onResizeWindow()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
-  m_window=NULL;
+  m_window = NULL;
   m_windowCreated.Reset();
   // no need to do anything because we are fixed in fullscreen landscape mode
 }
@@ -268,6 +268,7 @@ void CXBMCApp::onDestroyWindow()
   if (!m_exiting)
   {
     XBMC_DestroyDisplay();
+    m_window = NULL;
     XBMC_Pause(true);
   }
 }
