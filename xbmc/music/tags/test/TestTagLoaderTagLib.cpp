@@ -35,17 +35,6 @@ template <typename T>
 class TestTagParser : public ::testing::Test, public CTagLoaderTagLib {
    public:
      T value_;
-
-     virtual void SetUp() {
-       // Configure a basic tag..
-       value_.setTitle ("title");
-       value_.setArtist ("artist");
-       value_.setAlbum ("album");
-       value_.setComment("comment");
-       value_.setGenre("Jazz");
-       value_.setYear (1985);
-       value_.setTrack (2);
-     }
 };
 
 
@@ -55,6 +44,15 @@ TYPED_TEST_CASE(TestTagParser, TagTypes);
 TYPED_TEST(TestTagParser, ParsesBasicTag) {
   // Create a basic tag
   TypeParam *tg  = &this->value_;
+  // Configure a basic tag..
+  tg->setTitle ("title");
+  tg->setArtist ("artist");
+  tg->setAlbum ("album");
+  tg->setComment("comment");
+  tg->setGenre("Jazz");
+  tg->setYear (1985);
+  tg->setTrack (2);
+
   CMusicInfoTag tag;
   EXPECT_TRUE(CTagLoaderTagLib::ParseTag<TypeParam>(tg, NULL, tag));
 
