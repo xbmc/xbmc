@@ -89,6 +89,7 @@ public:
   static const ANativeWindow** GetNativeWindow(int timeout);
   static int SetBuffersGeometry(int width, int height, int format);
   static int android_printf(const char *format, ...);
+  static void BringToFront();
   
   static int GetBatteryLevel();
   static bool EnableWakeLock(bool on);
