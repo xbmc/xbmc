@@ -28,7 +28,7 @@
 
 using namespace XFILE;
 
-CDVDInputStreamStack::CDVDInputStreamStack() : CDVDInputStream(DVDSTREAM_TYPE_FILE)
+CDVDInputStreamStack::CDVDInputStreamStack(CFileItem& fileitem) : CDVDInputStream(DVDSTREAM_TYPE_FILE, fileitem)
 {
   m_eof = true;
   m_pos = 0;
@@ -45,15 +45,15 @@ bool CDVDInputStreamStack::IsEOF()
   return m_eof;
 }
 
-bool CDVDInputStreamStack::Open(const char* path, const std::string& content, bool contentLookup)
+bool CDVDInputStreamStack::Open()
 {
-  if (!CDVDInputStream::Open(path, content, contentLookup))
+  if (!CDVDInputStream::Open())
     return false;
 
   CStackDirectory dir;
   CFileItemList   items;
 
-  const CURL pathToUrl(path);
+  const CURL pathToUrl(m_item.GetPath());
   if(!dir.GetDirectory(pathToUrl, items))
   {
     CLog::Log(LOGERROR, "CDVDInputStreamStack::Open - failed to get list of stacked items");

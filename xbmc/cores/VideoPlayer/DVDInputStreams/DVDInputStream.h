@@ -147,17 +147,17 @@ public:
     NEXTSTREAM_RETRY,
   };
 
-  CDVDInputStream(DVDStreamType m_streamType);
+  CDVDInputStream(DVDStreamType m_streamType, CFileItem& fileitem);
   virtual ~CDVDInputStream();
-  virtual bool Open(const char* strFileName, const std::string& content, bool contentLookup);
-  virtual void Close() = 0;
+  virtual bool Open();
+  virtual void Close();
   virtual int Read(uint8_t* buf, int buf_size) = 0;
   virtual int64_t Seek(int64_t offset, int whence) = 0;
   virtual bool Pause(double dTime) = 0;
   virtual int64_t GetLength() = 0;
   virtual std::string& GetContent() { return m_content; };
-  virtual std::string& GetFileName() { return m_strFileName; }
-  virtual CURL &GetURL() { return m_url; }
+  virtual std::string GetFileName();
+  virtual CURL GetURL();
   virtual ENextStream NextStream() { return NEXTSTREAM_NONE; }
   virtual void Abort() {}
   virtual int GetBlockSize() { return 0; }
@@ -178,8 +178,6 @@ public:
   virtual bool IsEOF() = 0;
   virtual BitstreamStats GetBitstreamStats() const { return m_stats; }
 
-  void SetFileItem(const CFileItem& item);
-
   bool ContentLookup() { return m_contentLookup; }
 
   bool IsRealtime() { return m_realtime; }
@@ -188,8 +186,6 @@ public:
 
 protected:
   DVDStreamType m_streamType;
-  std::string m_strFileName;
-  CURL m_url;
   BitstreamStats m_stats;
   std::string m_content;
   CFileItem m_item;

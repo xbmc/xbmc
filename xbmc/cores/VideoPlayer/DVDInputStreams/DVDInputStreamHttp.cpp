@@ -24,7 +24,7 @@
 
 using namespace XFILE;
 
-CDVDInputStreamHttp::CDVDInputStreamHttp() : CDVDInputStream(DVDSTREAM_TYPE_HTTP)
+CDVDInputStreamHttp::CDVDInputStreamHttp(CFileItem& fileitem) : CDVDInputStream(DVDSTREAM_TYPE_HTTP, fileitem)
 {
   m_pFile = NULL;
   m_eof = true;
@@ -50,14 +50,16 @@ bool CDVDInputStreamHttp::IsEOF()
   return true;
 }
 
-bool CDVDInputStreamHttp::Open(const char* strFile, const std::string& content, bool contentLookup)
+bool CDVDInputStreamHttp::Open()
 {
-  if (!CDVDInputStream::Open(strFile, content, contentLookup)) return false;
+  if (!CDVDInputStream::Open())
+    return false;
 
   m_pFile = new CCurlFile();
-  if (!m_pFile) return false;
+  if (!m_pFile)
+    return false;
 
-  std::string filename = strFile;
+  std::string filename = m_item.GetPath();
 
   // shout protocol is same thing as http, but curl doesn't know what it is
   if( filename.substr(0, 8) == "shout://" )

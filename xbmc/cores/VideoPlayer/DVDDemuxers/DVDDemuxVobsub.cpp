@@ -59,8 +59,11 @@ bool CDVDDemuxVobsub::Open(const std::string& filename, int source, const std::s
     vobsub += ".sub";
   }
 
-  m_Input.reset(CDVDFactoryInputStream::CreateInputStream(NULL, vobsub, ""));
-  if(!m_Input.get() || !m_Input->Open(vobsub.c_str(), "video/x-vobsub", false))
+  CFileItem item(vobsub, false);
+  item.SetMimeType("video/x-vobsub");
+  item.SetContentLookup(false);
+  m_Input.reset(CDVDFactoryInputStream::CreateInputStream(NULL, item));
+  if(!m_Input.get() || !m_Input->Open())
     return false;
 
   m_Demuxer.reset(new CDVDDemuxFFmpeg());

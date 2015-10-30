@@ -38,7 +38,8 @@
 #define HOLDMODE_SKIP 2 /* set by inputstream user, when they wish to skip the held mode */
 #define HOLDMODE_DATA 3 /* set after hold mode has been exited, and action that inited it has been executed */
 
-CDVDInputStreamNavigator::CDVDInputStreamNavigator(IVideoPlayer* player) : CDVDInputStream(DVDSTREAM_TYPE_DVD)
+CDVDInputStreamNavigator::CDVDInputStreamNavigator(IVideoPlayer* player, CFileItem& fileitem)
+  : CDVDInputStream(DVDSTREAM_TYPE_DVD, fileitem)
 {
   m_dvdnav = 0;
   m_pVideoPlayer = player;
@@ -63,9 +64,10 @@ CDVDInputStreamNavigator::~CDVDInputStreamNavigator()
   Close();
 }
 
-bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& content, bool contentLookup)
+bool CDVDInputStreamNavigator::Open()
 {
-  if (!CDVDInputStream::Open(strFile, "video/x-dvd-mpeg", contentLookup))
+  m_item.SetMimeType("video/x-dvd-mpeg");
+  if (!CDVDInputStream::Open())
     return false;
 
   // load libdvdnav.dll
@@ -78,7 +80,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   // libdvdcss fails if the file path contains VIDEO_TS.IFO or VIDEO_TS/VIDEO_TS.IFO
   // libdvdnav is still able to play without, so strip them.
 
-  std::string path = strFile;
+  std::string path = m_item.GetPath();
   if(URIUtils::GetFileName(path) == "VIDEO_TS.IFO")
     path = URIUtils::GetParentPath(path);
   URIUtils::RemoveSlashAtEnd(path);

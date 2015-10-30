@@ -27,7 +27,7 @@
 
 using namespace XFILE;
 
-CDVDInputStreamFile::CDVDInputStreamFile() : CDVDInputStream(DVDSTREAM_TYPE_FILE)
+CDVDInputStreamFile::CDVDInputStreamFile(CFileItem& fileitem) : CDVDInputStream(DVDSTREAM_TYPE_FILE, fileitem)
 {
   m_pFile = NULL;
   m_eof = true;
@@ -43,9 +43,9 @@ bool CDVDInputStreamFile::IsEOF()
   return !m_pFile || m_eof;
 }
 
-bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content, bool contentLookup)
+bool CDVDInputStreamFile::Open()
 {
-  if (!CDVDInputStream::Open(strFile, content, contentLookup))
+  if (!CDVDInputStream::Open())
     return false;
 
   m_pFile = new CFile();
@@ -55,7 +55,7 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content, 
   unsigned int flags = READ_TRUNCATED | READ_BITRATE | READ_CHUNKED;
   
   // If this file is audio and/or video (= not a subtitle) flag to caller
-  if (!CFileItem(strFile).IsSubtitle())
+  if (!m_item.IsSubtitle())
     flags |= READ_AUDIO_VIDEO;
 
   /*
@@ -65,11 +65,11 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content, 
    * 2) Only buffer true internet filesystems (streams) (http, etc.)
    * 3) No buffer
    */
-  if (!URIUtils::IsOnDVD(strFile) && !URIUtils::IsBluray(strFile)) // Never cache these
+  if (!URIUtils::IsOnDVD(m_item.GetPath()) && !URIUtils::IsBluray(m_item.GetPath())) // Never cache these
   {
     if (g_advancedSettings.m_networkBufferMode == 0 || g_advancedSettings.m_networkBufferMode == 2)
     {
-      if (URIUtils::IsInternetStream(CURL(strFile), (g_advancedSettings.m_networkBufferMode == 0) ) )
+      if (URIUtils::IsInternetStream(CURL(m_item.GetPath()), (g_advancedSettings.m_networkBufferMode == 0) ) )
         flags |= READ_CACHED;
     }
     else if (g_advancedSettings.m_networkBufferMode == 1)
@@ -81,6 +81,8 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content, 
   if (!(flags & READ_CACHED))
     flags |= READ_NO_CACHE; // Make sure CFile honors our no-cache hint
 
+  std::string content = m_item.GetMimeType();
+
   if (content == "video/mp4" ||
       content == "video/x-msvideo" ||
       content == "video/avi" ||
@@ -89,7 +91,7 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content, 
     flags |= READ_MULTI_STREAM;
 
   // open file in binary mode
-  if (!m_pFile->Open(strFile, flags))
+  if (!m_pFile->Open(m_item.GetPath(), flags))
   {
     delete m_pFile;
     m_pFile = NULL;

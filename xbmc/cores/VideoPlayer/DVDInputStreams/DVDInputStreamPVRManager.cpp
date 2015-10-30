@@ -38,7 +38,8 @@ using namespace PVR;
  * Description: Class constructor, initialize member variables
  *              public class is CDVDInputStream
  */
-CDVDInputStreamPVRManager::CDVDInputStreamPVRManager(IVideoPlayer* pPlayer) : CDVDInputStream(DVDSTREAM_TYPE_PVRMANAGER)
+CDVDInputStreamPVRManager::CDVDInputStreamPVRManager(IVideoPlayer* pPlayer, CFileItem& fileitem)
+  : CDVDInputStream(DVDSTREAM_TYPE_PVRMANAGER, fileitem)
 {
   m_pPlayer         = pPlayer;
   m_pFile           = NULL;
@@ -74,7 +75,7 @@ bool CDVDInputStreamPVRManager::IsEOF()
     return !m_pFile || m_eof;
 }
 
-bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& content, bool contentLookup)
+bool CDVDInputStreamPVRManager::Open()
 {
   /* Open PVR File for both cases, to have access to ILiveTVInterface and
    * IRecordable
@@ -83,8 +84,10 @@ bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& con
   m_pLiveTV     = ((CPVRFile*)m_pFile)->GetLiveTV();
   m_pRecordable = ((CPVRFile*)m_pFile)->GetRecordable();
 
-  CURL url(strFile);
-  if (!CDVDInputStream::Open(strFile, content, contentLookup)) return false;
+  if (!CDVDInputStream::Open())
+    return false;
+
+  CURL url(m_item.GetPath());
   if (!m_pFile->Open(url))
   {
     delete m_pFile;
@@ -105,19 +108,18 @@ bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& con
    * for the right protocol stream handler and swap every call to this input stream
    * handler.
    */
-  std::string transFile = XFILE::CPVRFile::TranslatePVRFilename(strFile);
+  std::string transFile = XFILE::CPVRFile::TranslatePVRFilename(m_item.GetPath());
   if(transFile.substr(0, 6) != "pvr://")
   {
-    m_pOtherStream = CDVDFactoryInputStream::CreateInputStream(m_pPlayer, transFile, content);
+    m_item.SetPath(transFile);
+    m_pOtherStream = CDVDFactoryInputStream::CreateInputStream(m_pPlayer, m_item);
     if (!m_pOtherStream)
     {
       CLog::Log(LOGERROR, "CDVDInputStreamPVRManager::Open - unable to create input stream for [%s]", transFile.c_str());
       return false;
     }
-    else
-      m_pOtherStream->SetFileItem(m_item);
 
-    if (!m_pOtherStream->Open(transFile.c_str(), content, contentLookup))
+    if (!m_pOtherStream->Open())
     {
       CLog::Log(LOGERROR, "CDVDInputStreamPVRManager::Open - error opening [%s]", transFile.c_str());
       delete m_pFile;
@@ -131,8 +133,6 @@ bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& con
   }
 
   ResetScanTimeout((unsigned int) CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPLAYBACK_SCANTIME) * 1000);
-  m_content = content;
-  m_contentLookup = contentLookup;
   CLog::Log(LOGDEBUG, "CDVDInputStreamPVRManager::Open - stream opened: %s", transFile.c_str());
 
   return true;
@@ -374,7 +374,8 @@ bool CDVDInputStreamPVRManager::CloseAndOpen(const char* strFile)
 {
   Close();
 
-  if (Open(strFile, m_content, m_contentLookup))
+  m_item.SetPath(strFile);
+  if (Open())
   {
     return true;
   }

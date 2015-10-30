@@ -25,9 +25,9 @@
 class CDVDInputStreamMemory : public CDVDInputStream
 {
 public:
-  CDVDInputStreamMemory();
+  CDVDInputStreamMemory(CFileItem &fileitem);
   virtual ~CDVDInputStreamMemory();
-  virtual bool Open(const char* strFile, const std::string& content, bool contentLookup);
+  virtual bool Open();
   virtual void Close();
   virtual int Read(uint8_t* buf, int buf_size);
   virtual int64_t Seek(int64_t offset, int whence);

@@ -42,8 +42,10 @@ CDVDSubtitleStream::~CDVDSubtitleStream()
 bool CDVDSubtitleStream::Open(const std::string& strFile)
 {
   CDVDInputStream* pInputStream;
-  pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strFile, "");
-  if (pInputStream && pInputStream->Open(strFile.c_str(), "", false))
+  CFileItem item(strFile, false);
+  item.SetContentLookup(false);
+  pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
+  if (pInputStream && pInputStream->Open())
   {
     // prepare buffer
     size_t totalread = 0;

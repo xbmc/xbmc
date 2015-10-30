@@ -62,8 +62,8 @@ extern "C"
   }
 }
 
-CDVDInputStreamRTMP::CDVDInputStreamRTMP()
-  : CDVDInputStream(DVDSTREAM_TYPE_RTMP)
+CDVDInputStreamRTMP::CDVDInputStreamRTMP(CFileItem &fileitem)
+  : CDVDInputStream(DVDSTREAM_TYPE_RTMP, fileitem)
   , m_canSeek(true)
   , m_canPause(true)
 {
@@ -134,7 +134,7 @@ static const struct {
  { NULL }
 };
 
-bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content, bool contentLookup)
+bool CDVDInputStreamRTMP::Open()
 {
   if (m_sStreamPlaying)
   {
@@ -142,14 +142,15 @@ bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content, 
     m_sStreamPlaying = NULL;
   }
 
-  if (!m_rtmp || !CDVDInputStream::Open(strFile, "video/x-flv", contentLookup))
+  m_item.SetMimeType("video/x-flv");
+  if (!m_rtmp || !CDVDInputStream::Open())
     return false;
 
   CSingleLock lock(m_RTMPSection);
 
   // libRTMP can and will alter strFile, so take a copy of it
-  m_sStreamPlaying = (char*)calloc(strlen(strFile)+1,sizeof(char));
-  strcpy(m_sStreamPlaying,strFile);
+  m_sStreamPlaying = (char*)calloc(strlen(m_item.GetPath().c_str())+1,sizeof(char));
+  strcpy(m_sStreamPlaying, m_item.GetPath().c_str());
 
   if (!m_libRTMP.SetupURL(m_rtmp, m_sStreamPlaying))
     return false;
@@ -163,7 +164,7 @@ bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content, 
    * "rtmp://flashserver:1935/ondemand/thefile swfUrl=http://flashserver/player.swf swfVfy=1 live=1"
    * details: https://rtmpdump.mplayerhq.hu/librtmp.3.html
    */
-  std::string url = strFile;
+  std::string url = m_item.GetPath();
   size_t iPosBlank = url.find(' ');
   if (iPosBlank != std::string::npos && (url.find("live=true") != std::string::npos || url.find("live=1") != std::string::npos))
   {
