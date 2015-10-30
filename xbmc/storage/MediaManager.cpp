@@ -543,8 +543,9 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
   CLog::Log(LOGDEBUG, "GetDiskUniqueId: Trying to retrieve ID for path %s", pathVideoTS.c_str());
 
 
-  CDVDInputStreamNavigator dvdNavigator(NULL);
-  dvdNavigator.Open(pathVideoTS.c_str(), "", true);
+  CFileItem item(pathVideoTS, false);
+  CDVDInputStreamNavigator dvdNavigator(NULL, item);
+  dvdNavigator.Open();
   std::string labelString;
   dvdNavigator.GetDVDTitleString(labelString);
   std::string serialString;

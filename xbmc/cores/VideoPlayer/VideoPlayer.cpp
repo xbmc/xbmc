@@ -664,9 +664,7 @@ bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options
   m_CurrentVideo.lastdts = DVD_NOPTS_VALUE;
 
   m_PlayerOptions = options;
-  m_item     = file;
-  m_mimetype  = file.GetMimeType();
-  m_filename = file.GetPath();
+  m_item = file;
 
   m_ready.Reset();
 
@@ -745,25 +743,23 @@ bool CVideoPlayer::OpenInputStream()
   CLog::Log(LOGNOTICE, "Creating InputStream");
 
   // correct the filename if needed
-  std::string filename(m_filename);
-  if (URIUtils::IsProtocol(filename, "dvd")
-  ||  StringUtils::EqualsNoCase(filename, "iso9660://video_ts/video_ts.ifo"))
+  std::string filename(m_item.GetPath());
+  if (URIUtils::IsProtocol(filename, "dvd") ||
+      StringUtils::EqualsNoCase(filename, "iso9660://video_ts/video_ts.ifo"))
   {
-    m_filename = g_mediaManager.TranslateDevicePath("");
+    m_item.SetPath(g_mediaManager.TranslateDevicePath(""));
   }
 
-  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_mimetype, m_item.ContentLookup());
+  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_item);
   if(m_pInputStream == NULL)
   {
-    CLog::Log(LOGERROR, "CVideoPlayer::OpenInputStream - unable to create input stream for [%s]", m_filename.c_str());
+    CLog::Log(LOGERROR, "CVideoPlayer::OpenInputStream - unable to create input stream for [%s]", m_item.GetPath().c_str());
     return false;
   }
-  else
-    m_pInputStream->SetFileItem(m_item);
 
-  if (!m_pInputStream->Open(m_filename.c_str(), m_mimetype, m_item.ContentLookup()))
+  if (!m_pInputStream->Open())
   {
-    CLog::Log(LOGERROR, "CVideoPlayer::OpenInputStream - error opening [%s]", m_filename.c_str());
+    CLog::Log(LOGERROR, "CVideoPlayer::OpenInputStream - error opening [%s]", m_item.GetPath().c_str());
     return false;
   }
 
@@ -774,7 +770,7 @@ bool CVideoPlayer::OpenInputStream()
   {
     // find any available external subtitles
     std::vector<std::string> filenames;
-    CUtil::ScanForExternalSubtitles( m_filename, filenames );
+    CUtil::ScanForExternalSubtitles(m_item.GetPath(), filenames);
 
     // load any subtitles from file item
     std::string key("subtitle:1");
@@ -1184,7 +1180,7 @@ void CVideoPlayer::Process()
   if (m_CurrentVideo.id >= 0 && m_CurrentVideo.hint.fpsrate > 0 && m_CurrentVideo.hint.fpsscale > 0)
   {
     float fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
-    m_Edl.ReadEditDecisionLists(m_filename, fFramesPerSecond, m_CurrentVideo.hint.height);
+    m_Edl.ReadEditDecisionLists(m_item.GetPath(), fFramesPerSecond, m_CurrentVideo.hint.height);
   }
 
   /*
@@ -3470,7 +3466,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
     hint.stills = true;
 
   if (hint.stereo_mode.empty())
-    hint.stereo_mode = CStereoscopicsManager::GetInstance().DetectStereoModeByString(m_filename);
+    hint.stereo_mode = CStereoscopicsManager::GetInstance().DetectStereoModeByString(m_item.GetPath());
 
   if(hint.flags & AV_DISPOSITION_ATTACHED_PIC)
     return false;
@@ -4369,7 +4365,7 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
     m_SelectionStreams.Update(NULL, &v, vobsubfile);
 
     ExternalStreamInfo info;
-    CUtil::GetExternalStreamDetailsFromFilename(m_filename, vobsubfile, info);
+    CUtil::GetExternalStreamDetailsFromFilename(m_item.GetPath(), vobsubfile, info);
 
     for (int i = 0; i < v.GetNrOfSubtitleStreams(); ++i)
     {
@@ -4401,7 +4397,7 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
   s.id       = 0;
   s.filename = filename;
   ExternalStreamInfo info;
-  CUtil::GetExternalStreamDetailsFromFilename(m_filename, filename, info);
+  CUtil::GetExternalStreamDetailsFromFilename(m_item.GetPath(), filename, info);
   s.name = info.name;
   s.language = info.language;
   if (static_cast<CDemuxStream::EFlags>(info.flag) != CDemuxStream::FLAG_NONE)
@@ -4618,7 +4614,7 @@ bool CVideoPlayer::GetStreamDetails(CStreamDetails &details)
     std::vector<CStreamDetailSubtitle> extSubDetails;
     for (unsigned int i = 0; i < subs.size(); i++)
     {
-      if (subs[i].filename == m_filename)
+      if (subs[i].filename == m_item.GetPath())
         continue;
 
       CStreamDetailSubtitle p;

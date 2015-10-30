@@ -80,7 +80,9 @@ bool VideoPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
   if (urlFile.IsProtocol("shout") )
     strFileToOpen.replace(0, 8, "http://");
 
-  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strFileToOpen, m_strContentType);
+  CFileItem fileitem(urlFile, false);
+  fileitem.SetMimeType(m_strContentType);
+  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, fileitem);
   if (!m_pInputStream)
   {
     CLog::Log(LOGERROR, "%s: Error creating input stream for %s", __FUNCTION__, strFileToOpen.c_str());
@@ -89,7 +91,7 @@ bool VideoPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
 
   // TODO:
   // convey CFileItem::ContentLookup() into Open()
-  if (!m_pInputStream->Open(strFileToOpen.c_str(), m_strContentType, true))
+  if (!m_pInputStream->Open())
   {
     CLog::Log(LOGERROR, "%s: Error opening file %s", __FUNCTION__, strFileToOpen.c_str());
     if (m_pInputStream)

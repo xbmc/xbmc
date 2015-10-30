@@ -20,7 +20,7 @@
 
 #include "DVDInputStreamMemory.h"
 
-CDVDInputStreamMemory::CDVDInputStreamMemory() : CDVDInputStream(DVDSTREAM_TYPE_MEMORY)
+CDVDInputStreamMemory::CDVDInputStreamMemory(CFileItem& fileitem) : CDVDInputStream(DVDSTREAM_TYPE_MEMORY, fileitem)
 {
   m_pData = NULL;
   m_iDataSize = 0;
@@ -40,9 +40,10 @@ bool CDVDInputStreamMemory::IsEOF()
   return false;
 }
 
-bool CDVDInputStreamMemory::Open(const char* strFile, const std::string& content, bool contentLookup)
+bool CDVDInputStreamMemory::Open()
 {
-  if (!CDVDInputStream::Open(strFile, content, contentLookup)) return false;
+  if (!CDVDInputStream::Open())
+    return false;
 
   return true;
 }

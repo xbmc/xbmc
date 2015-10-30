@@ -21,6 +21,7 @@
  */
 
 #include <string>
+#include "FileItem.h"
 
 class CDVDInputStream;
 class IVideoPlayer;
@@ -28,5 +29,5 @@ class IVideoPlayer;
 class CDVDFactoryInputStream
 {
 public:
-  static CDVDInputStream* CreateInputStream(IVideoPlayer* pPlayer, const std::string& file, const std::string& content, bool contentlookup = true);
+  static CDVDInputStream* CreateInputStream(IVideoPlayer* pPlayer, CFileItem fileitem);
 };
