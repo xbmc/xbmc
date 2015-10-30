@@ -97,8 +97,8 @@ bool CEGLNativeTypeAndroid::GetNativeWindow(XBNativeWindowType **nativeWindow) c
 {
   if (!nativeWindow)
     return false;
-  *nativeWindow = (XBNativeWindowType*) CXBMCApp::GetNativeWindow(30000);
-  return (*nativeWindow != NULL);
+  *nativeWindow = (XBNativeWindowType*) CXBMCApp::GetNativeWindow(2000);
+  return (*nativeWindow != NULL && **nativeWindow != NULL);
 }
 
 bool CEGLNativeTypeAndroid::DestroyNativeDisplay()
