@@ -315,10 +315,6 @@ void CYUV2RGBShader::Render(CRect sourceRect, CRect destRect,
                     contrast, brightness, flags);
   SetShaderParameters(YUVbuf);
   Execute(nullptr, 4);
-
-  // we changed view port, so we need to restore our real viewport.
-  g_Windowing.RestoreViewPort();
-
 }
 
 CYUV2RGBShader::~CYUV2RGBShader()
@@ -391,32 +387,9 @@ void CYUV2RGBShader::SetShaderParameters(YUVBuffer* YUVbuf)
     m_effect.SetTexture("g_VTexture", YUVbuf->planes[2].texture);
   m_effect.SetFloatArray("g_StepXY", m_texSteps, ARRAY_SIZE(m_texSteps));
 
-  // we need to set view port to the full size of current render target
-  ID3D11RenderTargetView* rtView = nullptr;
-  g_Windowing.Get3D11Context()->OMGetRenderTargets(1, &rtView, nullptr);
-
-  // get dimention of render target
-  ID3D11Resource* rtResource = nullptr;
-  rtView->GetResource(&rtResource);
-  ID3D11Texture2D* rtTexture = nullptr;
-  HRESULT hr = rtResource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&rtTexture));
-
-  float viewPortWidth = 0.0f, viewPortHeight = 0.0f;
-
-  if (S_OK == hr && rtTexture)
-  {
-    D3D11_TEXTURE2D_DESC rtDescr = {};
-    rtTexture->GetDesc(&rtDescr);
-    viewPortWidth = static_cast<float>(rtDescr.Width);
-    viewPortHeight = static_cast<float>(rtDescr.Height);
-  }
-
-  SAFE_RELEASE(rtTexture);
-  SAFE_RELEASE(rtResource);
-  SAFE_RELEASE(rtView);
-
-  D3D11_VIEWPORT viewPort = { 0.0f, 0.0f, viewPortWidth, viewPortHeight, 0.0, 1.0f };
-  g_Windowing.Get3D11Context()->RSSetViewports(1, &viewPort);
+  UINT numPorts = 1;
+  D3D11_VIEWPORT viewPort;
+  g_Windowing.Get3D11Context()->RSGetViewports(&numPorts, &viewPort);
   m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);
 }
 
