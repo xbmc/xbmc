@@ -15,7 +15,8 @@ DEPENDS = \
 	python27 libshairplay \
 	libplist libcec libbluray boost tinyxml dummy-libxbmc \
 	libamplayer libssh taglib libusb libnfs \
-	pythonmodule-pil libxslt ffmpeg platform crossguid libdcadec giflib
+	pythonmodule-pil pythonmodule-setuptools \
+	libxslt ffmpeg platform crossguid libdcadec giflib
 
 FFMPEG_DEPENDS = gnutls libdcadec
 
@@ -94,7 +95,8 @@ libpng: $(ZLIB)
 openssl: $(ZLIB)
 gnutls: nettle $(ZLIB)
 nettle: gmp
-pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng freetype2 python27
+pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng freetype2 python27 pythonmodule-setuptools
+pythonmodule-setuptools: python27
 libsdl2: $(LINUX_SYSTEM_LIBS)
 libxslt: libgcrypt
 ffmpeg: $(ICONV) $(ZLIB) bzip2 libvorbis $(FFMPEG_DEPENDS)
