@@ -751,10 +751,7 @@ OMX_ERRORTYPE COpenMaxVideo::AllocOMXOutputBuffers(void)
     callbackData.callback = &CallbackAllocOMXEGLTextures;
     callbackData.userptr = (void *)this;
 
-    tMsg.dwMessage = TMSG_CALLBACK;
-    tMsg.lpVoid = (void*)&callbackData;
-
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_CALLBACK, -1, -1 static_cast<void*>(&callbackData));
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_CALLBACK, -1, -1, static_cast<void*>(&callbackData));
 
     omx_err = OMX_ErrorNone;
   }
@@ -1227,7 +1224,7 @@ void OpenMaxVideoBuffer::ReleaseTexture()
     deleteInfo->callback.userptr = (void *)deleteInfo;
 
     // HACK, this should be synchronous, but it's not possible since Stop blocks the GUI thread.
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_CALLBACK, -1, -1 static_cast<void*>(deleteInfo));
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_CALLBACK, -1, -1, static_cast<void*>(deleteInfo));
   }
 
 }
