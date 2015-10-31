@@ -20,8 +20,9 @@
  */
 
 #include "JNIBase.h"
+#include "PackageItemInfo.h"
 
-class CJNIApplicationInfo : public CJNIBase
+class CJNIApplicationInfo : public CJNIPackageItemInfo
 {
 public:
   CJNIApplicationInfo(const jni::jhobject &object);

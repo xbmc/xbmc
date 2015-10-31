@@ -760,7 +760,10 @@ bool CGUIWindowVideoBase::OnItemInfo(int iItem)
 
   OnItemInfo(item.get(), scraper);
 
-  return true;
+  // Return whether or not we have information to display.
+  // Note: This will cause the default select action to start
+  // playback in case it's set to "Show information".
+  return item->HasVideoInfoTag();
 }
 
 void CGUIWindowVideoBase::OnRestartItem(int iItem)

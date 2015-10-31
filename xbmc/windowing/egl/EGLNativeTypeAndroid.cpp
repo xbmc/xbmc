@@ -97,8 +97,8 @@ bool CEGLNativeTypeAndroid::GetNativeWindow(XBNativeWindowType **nativeWindow) c
 {
   if (!nativeWindow)
     return false;
-  *nativeWindow = (XBNativeWindowType*) CXBMCApp::GetNativeWindow(30000);
-  return (*nativeWindow != NULL);
+  *nativeWindow = (XBNativeWindowType*) CXBMCApp::GetNativeWindow(2000);
+  return (*nativeWindow != NULL && **nativeWindow != NULL);
 }
 
 bool CEGLNativeTypeAndroid::DestroyNativeDisplay()
@@ -117,7 +117,7 @@ static float currentRefreshRate()
   if (window)
   {
     float preferredRate = window.getAttributes().getpreferredRefreshRate();
-    if (preferredRate > 20.0 && preferredRate < 61.0)
+    if (preferredRate > 20.0 && preferredRate < 70.0)
     {
       CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: Preferred refresh rate: %f", preferredRate);
       return preferredRate;
@@ -128,7 +128,7 @@ static float currentRefreshRate()
       if (display)
       {
         float reportedRate = display.getRefreshRate();
-        if (reportedRate > 20.0 && reportedRate < 61.0)
+        if (reportedRate > 20.0 && reportedRate < 70.0)
         {
           CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: Current display refresh rate: %f", reportedRate);
           return reportedRate;

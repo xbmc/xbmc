@@ -493,6 +493,11 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="videolibrary.showemptytvshows" type="boolean" label="20471" help="36163">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="2">
         <setting id="videolibrary.updateonstartup" type="boolean" label="22000" help="36146">
@@ -2231,94 +2236,6 @@
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
-        </setting>
-      </group>
-    </category>
-    <category id="karaoke" label="13327" help="36292">
-      <requirement>HAS_KARAOKE</requirement>
-      <group id="1">
-        <setting id="karaoke.enabled" type="boolean" label="13323" help="36293">
-          <level>2</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="karaoke.autopopupselector" type="boolean" label="22037" help="36294">
-          <level>2</level>
-          <default>false</default>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-      </group>
-      <group id="2">
-        <setting id="karaoke.font" type="string" label="22030" help="36295">
-          <level>2</level>
-          <default>arial.ttf</default>
-          <constraints>
-            <options>fonts</options>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-          </dependencies>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="karaoke.fontheight" type="integer" parent="karaoke.font" label="22031" help="36296">
-          <level>2</level>
-          <default>36</default>
-          <constraints>
-            <minimum>16</minimum>
-            <step>2</step>
-            <maximum>74</maximum>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-            <dependency type="update" setting="karaoke.font" />
-          </dependencies>
-          <control type="spinner" format="string" />
-        </setting>
-        <setting id="karaoke.fontcolors" type="integer" parent="karaoke.font" label="22032" help="36297">
-          <level>2</level>
-          <default>0</default> <!-- white/green -->
-          <constraints>
-            <options>
-              <option label="22040">0</option> <!-- white/green -->
-              <option label="22041">1</option> <!-- white/red -->
-              <option label="22042">2</option> <!-- white/blue -->
-              <option label="22043">3</option> <!-- black/white -->
-            </options>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-          </dependencies>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="karaoke.charset" type="string" parent="karaoke.font" label="22033" help="36298">
-          <level>2</level>
-          <default>DEFAULT</default>
-          <constraints>
-            <options>charsets</options>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-          </dependencies>
-          <control type="list" format="string" />
-        </setting>
-      </group>
-      <group id="3">
-        <setting id="karaoke.export" type="action" label="22038" help="36299">
-          <level>2</level>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-          </dependencies>
-          <control type="button" format="action" />
-        </setting>
-        <setting id="karaoke.importcsv" type="action" label="22036" help="36300">
-          <level>2</level>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-          </dependencies>
-          <control type="button" format="action" />
         </setting>
       </group>
     </category>

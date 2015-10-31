@@ -35,7 +35,8 @@ ifeq ($(OS),osx)
 endif
 
 ifeq ($(OS),android)
-  DEPENDS += mdnsresponder android-sources-ics google-breakpad
+  DEPENDS += mdnsresponder android-sources-ics google-breakpad libuuid
+  CROSSGUID_DEPS = libuuid
 endif
 
 DEPENDS := $(filter-out $(EXCLUDED_DEPENDS),$(DEPENDS))
@@ -63,6 +64,7 @@ ifeq ($(OS),linux)
   endif
   DEPENDS += alsa-lib
   ALSA_LIB = alsa-lib
+  CROSSGUID_DEPS = libuuid
 endif
 
 .PHONY: $(DEPENDS)
@@ -97,9 +99,7 @@ libsdl2: $(LINUX_SYSTEM_LIBS)
 libxslt: libgcrypt
 ffmpeg: $(ICONV) $(ZLIB) bzip2 libvorbis $(FFMPEG_DEPENDS)
 libcec: platform
-ifeq ($(OS),linux)
-crossguid: libuuid
-endif
+crossguid: $(CROSSGUID_DEPS)
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@

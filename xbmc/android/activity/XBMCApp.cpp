@@ -65,8 +65,6 @@
 #include "android/jni/System.h"
 #include "android/jni/ApplicationInfo.h"
 #include "android/jni/StatFs.h"
-#include "android/jni/BitmapDrawable.h"
-#include "android/jni/Bitmap.h"
 #include "android/jni/CharSequence.h"
 #include "android/jni/URI.h"
 #include "android/jni/Cursor.h"
@@ -184,6 +182,9 @@ void CXBMCApp::onPause()
   android_printf("%s: ", __PRETTY_FUNCTION__);
 
   unregisterReceiver(*this);
+  
+  if (g_application.m_pPlayer->IsPlayingVideo())
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
 
 #if defined(HAS_LIBAMCODEC)
   if (aml_permissions())
@@ -254,7 +255,7 @@ void CXBMCApp::onCreateWindow(ANativeWindow* window)
 void CXBMCApp::onResizeWindow()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
-  m_window=NULL;
+  m_window = NULL;
   m_windowCreated.Reset();
   // no need to do anything because we are fixed in fullscreen landscape mode
 }
@@ -267,6 +268,7 @@ void CXBMCApp::onDestroyWindow()
   if (!m_exiting)
   {
     XBMC_DestroyDisplay();
+    m_window = NULL;
     XBMC_Pause(true);
   }
 }
@@ -412,9 +414,6 @@ void CXBMCApp::run()
 void CXBMCApp::XBMC_Pause(bool pause)
 {
   android_printf("XBMC_Pause(%s)", pause ? "true" : "false");
-  // Only send the PAUSE action if we are pausing XBMC and video is currently playing
-  if (pause && g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPaused())
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
 }
 
 void CXBMCApp::XBMC_Stop()
@@ -531,49 +530,22 @@ std::vector<androidPackage> CXBMCApp::GetApplications()
     CJNIList<CJNIApplicationInfo> packageList = GetPackageManager().getInstalledApplications(CJNIPackageManager::GET_ACTIVITIES);
     int numPackages = packageList.size();
     for (int i = 0; i < numPackages; i++)
-    {
-      androidPackage newPackage;
-      newPackage.packageName = packageList.get(i).packageName;
-      newPackage.packageLabel = GetPackageManager().getApplicationLabel(packageList.get(i)).toString();
-      CJNIIntent intent = GetPackageManager().getLaunchIntentForPackage(newPackage.packageName);
+    {            
+      CJNIIntent intent = GetPackageManager().getLaunchIntentForPackage(packageList.get(i).packageName);
       if (!intent && CJNIBuild::SDK_INT >= 21)
-        intent = GetPackageManager().getLeanbackLaunchIntentForPackage(newPackage.packageName);
+        intent = GetPackageManager().getLeanbackLaunchIntentForPackage(packageList.get(i).packageName);
       if (!intent)
         continue;
 
+      androidPackage newPackage;
+      newPackage.packageName = packageList.get(i).packageName;
+      newPackage.packageLabel = GetPackageManager().getApplicationLabel(packageList.get(i)).toString();
+      newPackage.icon = packageList.get(i).icon;
       m_applications.push_back(newPackage);
     }
   }
 
   return m_applications;
-}
-
-bool CXBMCApp::GetIconSize(const string &packageName, int *width, int *height)
-{
-  JNIEnv* env = xbmc_jnienv();
-  AndroidBitmapInfo info;
-  CJNIBitmapDrawable drawable = (CJNIBitmapDrawable)GetPackageManager().getApplicationIcon(packageName);
-  CJNIBitmap icon(drawable.getBitmap());
-  AndroidBitmap_getInfo(env, icon.get_raw(), &info);
-  *width = info.width;
-  *height = info.height;
-  return true;
-}
-
-bool CXBMCApp::GetIcon(const string &packageName, void* buffer, unsigned int bufSize)
-{
-  void *bitmapBuf = NULL;
-  JNIEnv* env = xbmc_jnienv();
-  CJNIBitmapDrawable drawable = (CJNIBitmapDrawable)GetPackageManager().getApplicationIcon(packageName);
-  CJNIBitmap bitmap(drawable.getBitmap());
-  AndroidBitmap_lockPixels(env, bitmap.get_raw(), &bitmapBuf);
-  if (bitmapBuf)
-  {
-    memcpy(buffer, bitmapBuf, bufSize);
-    AndroidBitmap_unlockPixels(env, bitmap.get_raw());
-    return true;
-  }
-  return false;
 }
 
 bool CXBMCApp::HasLaunchIntent(const string &package)
@@ -783,8 +755,10 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
 
 void CXBMCApp::onVolumeChanged(int volume)
 {
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(
-                                       new CAction(ACTION_VOLUME_SET, static_cast<float>(volume))));
+  // System volume was used; Reset Kodi volume to 100% if it'not, already
+  if (g_application.GetVolume(false) != 1.0)
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(
+                                                 new CAction(ACTION_VOLUME_SET, static_cast<float>(CXBMCApp::GetMaxSystemVolume()))));
 }
 
 void CXBMCApp::onAudioFocusChange(int focusChange)

@@ -99,6 +99,7 @@ public:
   static const std::string SETTING_VIDEOLIBRARY_CLEANUP;
   static const std::string SETTING_VIDEOLIBRARY_EXPORT;
   static const std::string SETTING_VIDEOLIBRARY_IMPORT;
+  static const std::string SETTING_VIDEOLIBRARY_SHOWEMPTYTVSHOWS;
   static const std::string SETTING_LOCALE_AUDIOLANGUAGE;
   static const std::string SETTING_VIDEOPLAYER_PREFERDEFAULTFLAG;
   static const std::string SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM;
@@ -249,14 +250,6 @@ public:
   static const std::string SETTING_AUDIOCDS_ENCODER;
   static const std::string SETTING_AUDIOCDS_SETTINGS;
   static const std::string SETTING_AUDIOCDS_EJECTONRIP;
-  static const std::string SETTING_KARAOKE_ENABLED;
-  static const std::string SETTING_KARAOKE_AUTOPOPUPSELECTOR;
-  static const std::string SETTING_KARAOKE_FONT;
-  static const std::string SETTING_KARAOKE_FONTHEIGHT;
-  static const std::string SETTING_KARAOKE_FONTCOLORS;
-  static const std::string SETTING_KARAOKE_CHARSET;
-  static const std::string SETTING_KARAOKE_EXPORT;
-  static const std::string SETTING_KARAOKE_IMPORTCSV;
   static const std::string SETTING_MYMUSIC_STARTWINDOW;
   static const std::string SETTING_MYMUSIC_SONGTHUMBINVIS;
   static const std::string SETTING_MYMUSIC_DEFAULTLIBVIEW;

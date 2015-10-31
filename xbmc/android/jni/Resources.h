@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2013 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,19 +19,19 @@
  *
  */
 
-#include "guilib/GUIDialog.h"
+#include "JNIBase.h"
+#include "List.h"
 
-class CGUIWindowScreensaverDim :
-      public CGUIDialog
+class CJNIDrawable;
+
+class CJNIResources : public CJNIBase
 {
 public:
-  CGUIWindowScreensaverDim();
-  virtual ~CGUIWindowScreensaverDim();
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void Render();
-protected:
-  virtual void UpdateVisibility();
+  CJNIResources(const jni::jhobject &object) : CJNIBase(object) {};
+  ~CJNIResources() {};
+
+  CJNIDrawable      getDrawableForDensity(int id, int density);
+
 private:
-  float m_dimLevel;
-  float m_newDimLevel;
+  CJNIResources();
 };

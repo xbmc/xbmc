@@ -365,8 +365,6 @@ static const ActionMapping windows[] =
     { "pictureinfo"              , WINDOW_DIALOG_PICTURE_INFO },
     { "accesspoints"             , WINDOW_DIALOG_ACCESS_POINTS },
     { "fullscreeninfo"           , WINDOW_DIALOG_FULLSCREEN_INFO },
-    { "karaokeselector"          , WINDOW_DIALOG_KARAOKE_SONGSELECT },
-    { "karaokelargeselector"     , WINDOW_DIALOG_KARAOKE_SELECTOR },
     { "sliderdialog"             , WINDOW_DIALOG_SLIDER },
     { "addoninformation"         , WINDOW_DIALOG_ADDON_INFO },
     { "subtitlesearch"           , WINDOW_DIALOG_SUBTITLES },
@@ -393,7 +391,6 @@ static const ActionMapping windows[] =
         {"dsplayerlavaudio"         , WINDOW_DIALOG_LAVAUDIO},
         {"dsplayerlavsplitter"      , WINDOW_DIALOG_LAVSPLITTER},
 #endif
-    { "karaoke"                  , WINDOW_KARAOKELYRICS },
     { "weather"                  , WINDOW_WEATHER },
     { "screensaver"              , WINDOW_SCREENSAVER },
     { "videoosd"                 , WINDOW_DIALOG_VIDEO_OSD },

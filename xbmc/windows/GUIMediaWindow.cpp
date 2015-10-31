@@ -1021,9 +1021,6 @@ bool CGUIMediaWindow::OnClick(int iItem)
       return true;
     }
 
-    // If karaoke song is being played AND popup autoselector is enabled, the playlist should not be added
-    bool do_not_add_karaoke = CSettings::GetInstance().GetBool(CSettings::SETTING_KARAOKE_ENABLED) &&
-      CSettings::GetInstance().GetBool(CSettings::SETTING_KARAOKE_AUTOPOPUPSELECTOR) && pItem->IsKaraoke();
     bool autoplay = m_guiState.get() && m_guiState->AutoPlayNextItem();
 
     if (m_vecItems->IsPlugin())
@@ -1043,7 +1040,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
 
     if (autoplay && !g_partyModeManager.IsEnabled() && 
-        !pItem->IsPlayList() && !do_not_add_karaoke)
+        !pItem->IsPlayList())
     {
       return OnPlayAndQueueMedia(pItem);
     }

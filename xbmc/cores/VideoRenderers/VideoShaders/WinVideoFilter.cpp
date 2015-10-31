@@ -20,16 +20,17 @@
 
 #ifdef HAS_DX
 
-#include <DirectXPackedVector.h>
 #include "WinVideoFilter.h"
-#include "windowing/WindowingFactory.h"
-#include "../../../utils/log.h"
-#include "../../../FileSystem/File.h"
-#include <map>
 #include "ConvolutionKernels.h"
-#include "YUV2RGBShader.h"
-#include "win32/WIN32Util.h"
+#include <DirectXPackedVector.h>
+#include "FileSystem/File.h"
+#include "guilib/GraphicContext.h"
 #include "Util.h"
+#include "utils/log.h"
+#include "win32/WIN32Util.h"
+#include "windowing/WindowingFactory.h"
+#include "YUV2RGBShader.h"
+#include <map>
 
 using namespace DirectX::PackedVector;
 
@@ -844,48 +845,57 @@ void CConvolutionShaderSeparable::SetShaderParameters(CD3DTexture &sourceTexture
 
 void CConvolutionShaderSeparable::SetStepParams(UINT iPass)
 {
-  float viewPortWidth = 0.0f, viewPortHeight = 0.0f;
+  CD3D11_VIEWPORT viewPort(.0f, .0f, .0f, .0f);
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
 
   if (iPass == 0)
   {
     // store old RT
     pContext->OMGetRenderTargets(1, &m_oldRenderTarget, nullptr);
-    viewPortWidth = (float)m_IntermediateTarget.GetWidth();
-    viewPortHeight = (float)m_IntermediateTarget.GetHeight();
-
     // setting new RT
     ID3D11RenderTargetView* newRT = m_IntermediateTarget.GetRenderTarget();
     pContext->OMSetRenderTargets(1, &newRT, nullptr);
+    // new viewport
+    viewPort = CD3D11_VIEWPORT(0.0f, 0.0f, 
+                               static_cast<float>(m_IntermediateTarget.GetWidth()), 
+                               static_cast<float>(m_IntermediateTarget.GetHeight()));
+    // reset scissor
+    g_Windowing.ResetScissors();
   }
   else if (iPass == 1)
   {
-    // get dimention of old render target
-    ID3D11Resource* rtResource = nullptr;
-    m_oldRenderTarget->GetResource(&rtResource);
-    ID3D11Texture2D* rtTexture = nullptr;
-    HRESULT hr = rtResource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&rtTexture));
-
-    if (S_OK == hr && rtTexture)
+    if (m_oldRenderTarget)
     {
-      D3D11_TEXTURE2D_DESC rtDescr = {};
-      rtTexture->GetDesc(&rtDescr);
-      viewPortWidth = static_cast<float>(rtDescr.Width);
-      viewPortHeight = static_cast<float>(rtDescr.Height);
+      // get dimention of old render target
+      ID3D11Resource* rtResource = nullptr;
+      m_oldRenderTarget->GetResource(&rtResource);
+      ID3D11Texture2D* rtTexture = nullptr;
+      if (SUCCEEDED(rtResource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&rtTexture))))
+      {
+        D3D11_TEXTURE2D_DESC rtDescr = {};
+        rtTexture->GetDesc(&rtDescr);
+        viewPort = CD3D11_VIEWPORT(0.0f, 0.0f,
+                                   static_cast<float>(rtDescr.Width),
+                                   static_cast<float>(rtDescr.Height));
+      }
+      SAFE_RELEASE(rtTexture);
+      SAFE_RELEASE(rtResource);
     }
-
-    SAFE_RELEASE(rtTexture);
-    SAFE_RELEASE(rtResource);
-
+    else
+    {
+      // current RT is null so try to restore viewport
+      CRect winViewPort;
+      g_Windowing.GetViewPort(winViewPort);
+      viewPort = CD3D11_VIEWPORT(winViewPort.x1, winViewPort.y1, winViewPort.Width(), winViewPort.Height());
+    }
     pContext->OMSetRenderTargets(1, &m_oldRenderTarget, nullptr);
     SAFE_RELEASE(m_oldRenderTarget);
-
     // at the second pass m_IntermediateTarget is a source of data
     m_effect.SetTexture("g_Texture", m_IntermediateTarget);
+    // restore scissor
+    g_Windowing.SetScissors(g_graphicsContext.StereoCorrection(g_graphicsContext.GetScissors()));
   }
-
-  // setting view port to the full size of the current render target
-  CD3D11_VIEWPORT viewPort(0.0f, 0.0f, viewPortWidth, viewPortHeight);
+  // seting view port
   pContext->RSSetViewports(1, &viewPort);
   // pass viewport dimention to the shaders
   m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);

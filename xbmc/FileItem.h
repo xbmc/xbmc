@@ -178,7 +178,6 @@ public:
    */
   bool IsAudio() const;
 
-  bool IsKaraoke() const;
   bool IsCUESheet() const;
   bool IsInternetStream(const bool bStrictCheck = false) const;
   bool IsPlayList() const;

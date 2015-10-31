@@ -24,6 +24,8 @@
 #if defined(TARGET_ANDROID)
 #include "IFile.h"
 #include "URL.h"
+#include "string.h"
+
 namespace XFILE
 {
 class CFileAndroidApp : public IFile
@@ -37,25 +39,24 @@ public:
   virtual int Stat(const CURL& url, struct __stat64* buffer);
 
   /*! \brief Return 32bit rgba raw bitmap. */
-  virtual ssize_t Read(void* lpBuf, size_t uiBufSize);
+  virtual ssize_t Read(void* lpBuf, size_t uiBufSize) {return 0;}
   virtual void Close();
-  virtual int64_t GetLength();
-  virtual int64_t Seek(int64_t, int) {return -1;};
-  virtual int64_t GetPosition() {return 0;};
+  virtual int64_t GetLength()  {return 0;}
+  virtual int64_t Seek(int64_t, int) {return -1;}
+  virtual int64_t GetPosition() {return 0;}
   virtual int GetChunkSize();
   virtual int IoControl(EIoControl request, void* param);
 
-  /*! \brief Only valid after GetLength() has been called, usually by Open(). */
-  unsigned int GetIconWidth();
-  /*! \brief Only valid after GetLength() has been called, usually by Open(). */
-  unsigned int GetIconHeight();
+  virtual unsigned int ReadIcon(unsigned char **lpBuf, unsigned int* width, unsigned int* height);
 
 protected:
   bool IsValidFile(const CURL& url);
 
 private:
   CURL              m_url;
-  std::string       m_appname;
+  std::string       m_packageName;
+  std::string       m_packageLabel;
+  int               m_icon;
   int               m_iconWidth;
   int               m_iconHeight;
 };

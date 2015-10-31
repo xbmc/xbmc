@@ -57,7 +57,6 @@
 #include "utils/RegExp.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
-#include "music/karaoke/karaokelyricsfactory.h"
 #include "utils/Mime.h"
 
 #include <assert.h>
@@ -812,14 +811,6 @@ bool CFileItem::IsAudio() const
   }
 
   return URIUtils::HasExtension(m_strPath, g_advancedSettings.GetMusicExtensions());
-}
-
-bool CFileItem::IsKaraoke() const
-{
-  if (!IsAudio())
-    return false;
-
-  return CKaraokeLyricsFactory::HasLyrics( m_strPath );
 }
 
 bool CFileItem::IsPicture() const

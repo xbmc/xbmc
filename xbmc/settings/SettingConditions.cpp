@@ -213,9 +213,6 @@ void CSettingConditions::Initialize()
 #if HAS_GLES == 2
   m_simpleConditions.insert("has_glesv2");
 #endif
-#ifdef HAS_KARAOKE
-  m_simpleConditions.insert("has_karaoke");
-#endif
 #ifdef HAS_SDL_JOYSTICK
   m_simpleConditions.insert("has_sdl_joystick");
 #endif

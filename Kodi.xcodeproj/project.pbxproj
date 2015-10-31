@@ -139,8 +139,9 @@
 		1D638128161E211E003603ED /* PeripheralImon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1D638126161E211E003603ED /* PeripheralImon.cpp */; };
 		1DAFDB7C16DFDCA7007F8C68 /* PeripheralBusCEC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1DAFDB7A16DFDCA7007F8C68 /* PeripheralBusCEC.cpp */; };
 		1DE0443515828F4B005DDB4D /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1DE0443315828F4B005DDB4D /* Exception.cpp */; };
-		2A7B2BDC1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; settings = {ASSET_TAGS = (); }; };
-		2A7B2BDD1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; settings = {ASSET_TAGS = (); }; };
+		2A1A5A6C1BDEAA6D0084702D /* NOTE in Resources */ = {isa = PBXBuildFile; fileRef = 2A1A5A5D1BDEAA6D0084702D /* NOTE */; };
+		2A7B2BDC1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; };
+		2A7B2BDD1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; };
 		2F4564D51970129A00396109 /* GUIFontCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F4564D31970129A00396109 /* GUIFontCache.cpp */; };
 		2F4564D61970129A00396109 /* GUIFontCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F4564D31970129A00396109 /* GUIFontCache.cpp */; };
 		32C631281423A90F00F18420 /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32C631261423A90F00F18420 /* JpegIO.cpp */; };
@@ -284,8 +285,8 @@
 		7C2612711825B6340086E04D /* DatabaseQuery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C26126F1825B6340086E04D /* DatabaseQuery.cpp */; };
 		7C2612721825B6340086E04D /* DatabaseQuery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C26126F1825B6340086E04D /* DatabaseQuery.cpp */; };
 		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
-		7C3018311BCC2DE200B1FE6F /* MusicInfoTagLoaderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C30182F1BCC2DE200B1FE6F /* MusicInfoTagLoaderFFmpeg.cpp */; settings = {ASSET_TAGS = (); }; };
-		7C3018321BCC2DE200B1FE6F /* MusicInfoTagLoaderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C30182F1BCC2DE200B1FE6F /* MusicInfoTagLoaderFFmpeg.cpp */; settings = {ASSET_TAGS = (); }; };
+		7C3018311BCC2DE200B1FE6F /* MusicInfoTagLoaderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C30182F1BCC2DE200B1FE6F /* MusicInfoTagLoaderFFmpeg.cpp */; };
+		7C3018321BCC2DE200B1FE6F /* MusicInfoTagLoaderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C30182F1BCC2DE200B1FE6F /* MusicInfoTagLoaderFFmpeg.cpp */; };
 		7C4458BD161E203800A905F6 /* Screenshot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4458BB161E203800A905F6 /* Screenshot.cpp */; };
 		7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
 		7C4705AE12EF584C00369E51 /* AddonInstaller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4705AC12EF584C00369E51 /* AddonInstaller.cpp */; };
@@ -583,7 +584,6 @@
 		7CCDACCB19275D790074CF51 /* NptAppleLogConfig.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7CCDACC019275D790074CF51 /* NptAppleLogConfig.mm */; };
 		7CCF7FC9106A0DF500992676 /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */; };
 		7CDAE9050FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */; };
-		7CDAEA7D1001CD6E0040B25F /* karaokelyricstextustar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */; };
 		7CEBD8A80F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */; };
 		7CEE2E5B13D6B71E000ABF2A /* TimeSmoother.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEE2E5913D6B71E000ABF2A /* TimeSmoother.cpp */; };
 		7CEE587D1B5A3FFB007C2B5A /* AudioDSPSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEE587C1B5A3FFB007C2B5A /* AudioDSPSettings.cpp */; };
@@ -681,7 +681,6 @@
 		DF02BA621A910623006DCA16 /* VideoSyncIos.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF02BA601A910623006DCA16 /* VideoSyncIos.cpp */; };
 		DF02BA661A91065F006DCA16 /* VideoSyncOsx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF02BA641A91065F006DCA16 /* VideoSyncOsx.cpp */; };
 		DF033D381946612400BFC82E /* AEDeviceEnumerationOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF033D361946612400BFC82E /* AEDeviceEnumerationOSX.cpp */; };
-		DF07252E168734D7008DCAAD /* karaokevideobackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF07252C168734D7008DCAAD /* karaokevideobackground.cpp */; };
 		DF072534168734ED008DCAAD /* FFmpegVideoDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF072532168734ED008DCAAD /* FFmpegVideoDecoder.cpp */; };
 		DF0ABB73183A94A30018445D /* Utf8Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0ABB71183A94A30018445D /* Utf8Utils.cpp */; };
 		DF0ABB74183A94A30018445D /* Utf8Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0ABB71183A94A30018445D /* Utf8Utils.cpp */; };
@@ -1727,18 +1726,6 @@
 		E4991379174E5F0E00741B6D /* MusicArtistInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29E80DA72486001F0C9D /* MusicArtistInfo.cpp */; };
 		E499137A174E5F0E00741B6D /* MusicInfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D930D25F9FD00618676 /* MusicInfoScanner.cpp */; };
 		E499137B174E5F0E00741B6D /* MusicInfoScraper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E670D25F9FD00618676 /* MusicInfoScraper.cpp */; };
-		E499137C174E5F0E00741B6D /* GUIDialogKaraokeSongSelector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51D00F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp */; };
-		E499137D174E5F0E00741B6D /* GUIWindowKaraokeLyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */; };
-		E499137E174E5F0E00741B6D /* karaokelyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51D60F1E785700D46E3C /* karaokelyrics.cpp */; };
-		E499137F174E5F0E00741B6D /* karaokelyricscdg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51D40F1E784800D46E3C /* karaokelyricscdg.cpp */; };
-		E4991380174E5F0E00741B6D /* karaokelyricsfactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E20F1E787700D46E3C /* karaokelyricsfactory.cpp */; };
-		E4991381174E5F0E00741B6D /* karaokelyricsmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E10F1E787700D46E3C /* karaokelyricsmanager.cpp */; };
-		E4991382174E5F0E00741B6D /* karaokelyricstext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E40F1E787700D46E3C /* karaokelyricstext.cpp */; };
-		E4991383174E5F0E00741B6D /* karaokelyricstextkar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51DE0F1E787700D46E3C /* karaokelyricstextkar.cpp */; };
-		E4991384174E5F0E00741B6D /* karaokelyricstextlrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E30F1E787700D46E3C /* karaokelyricstextlrc.cpp */; };
-		E4991385174E5F0E00741B6D /* karaokelyricstextustar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */; };
-		E4991386174E5F0E00741B6D /* karaokevideobackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF07252C168734D7008DCAAD /* karaokevideobackground.cpp */; };
-		E4991387174E5F0E00741B6D /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */; };
 		E4991388174E5F0E00741B6D /* MusicInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C85E129423A7009E7A26 /* MusicInfoTag.cpp */; };
 		E499138A174E5F0E00741B6D /* MusicInfoTagLoaderCDDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C866129423A7009E7A26 /* MusicInfoTagLoaderCDDA.cpp */; };
 		E499138B174E5F0E00741B6D /* MusicInfoTagLoaderDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C868129423A7009E7A26 /* MusicInfoTagLoaderDatabase.cpp */; };
@@ -2101,14 +2088,6 @@
 		F548786D0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */; };
 		F5487B4C0FE6F02700E506FD /* StreamDetails.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5487B4B0FE6F02700E506FD /* StreamDetails.cpp */; };
 		F54BCC5F1439345300F86B0F /* HotKeyController.m in Sources */ = {isa = PBXBuildFile; fileRef = F54BCC5E1439345300F86B0F /* HotKeyController.m */; };
-		F54C51D20F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51D00F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp */; };
-		F54C51D50F1E784800D46E3C /* karaokelyricscdg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51D40F1E784800D46E3C /* karaokelyricscdg.cpp */; };
-		F54C51D80F1E785700D46E3C /* karaokelyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51D60F1E785700D46E3C /* karaokelyrics.cpp */; };
-		F54C51E50F1E787700D46E3C /* karaokelyricstextkar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51DE0F1E787700D46E3C /* karaokelyricstextkar.cpp */; };
-		F54C51E60F1E787700D46E3C /* karaokelyricsmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E10F1E787700D46E3C /* karaokelyricsmanager.cpp */; };
-		F54C51E70F1E787700D46E3C /* karaokelyricsfactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E20F1E787700D46E3C /* karaokelyricsfactory.cpp */; };
-		F54C51E80F1E787700D46E3C /* karaokelyricstextlrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E30F1E787700D46E3C /* karaokelyricstextlrc.cpp */; };
-		F54C51E90F1E787700D46E3C /* karaokelyricstext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E40F1E787700D46E3C /* karaokelyricstext.cpp */; };
 		F558F25613ABCF7800631E12 /* WinEventsOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = F558F25513ABCF7800631E12 /* WinEventsOSX.mm */; };
 		F558F27B13ABD56600631E12 /* DirtyRegionSolvers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F27913ABD56600631E12 /* DirtyRegionSolvers.cpp */; };
 		F558F27F13ABD57400631E12 /* DirtyRegionTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F27D13ABD57400631E12 /* DirtyRegionTracker.cpp */; };
@@ -2124,7 +2103,6 @@
 		F56352C816E5436900D21BAD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56352C616E5436900D21BAD /* AppParamParser.cpp */; };
 		F56353BF16E9BB3500D21BAD /* BitstreamConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56353BD16E9BB3500D21BAD /* BitstreamConverter.cpp */; };
 		F56579AF13060D1E0085ED7F /* RenderCapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56579AD13060D1E0085ED7F /* RenderCapture.cpp */; };
-		F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */; };
 		F57A1D1E1329B15300498CC7 /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F57A1D1D1329B15300498CC7 /* AutoPool.mm */; };
 		F57B6F801071B8B500079ACB /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57B6F7E1071B8B500079ACB /* JobManager.cpp */; };
 		F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */; };
@@ -2147,7 +2125,6 @@
 		F5A9D3091097C9370050490F /* AliasShortcutUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */; };
 		F5AACA680FB3DE2D00DBB77C /* GUIDialogSelect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA670FB3DE2D00DBB77C /* GUIDialogSelect.cpp */; };
 		F5AACA970FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */; };
-		F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */; };
 		F5AE409C13415D9E0004BD79 /* AudioLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408013415D9E0004BD79 /* AudioLibrary.cpp */; };
 		F5AE409F13415D9E0004BD79 /* FileItemHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408613415D9E0004BD79 /* FileItemHandler.cpp */; };
 		F5AE40A013415D9E0004BD79 /* FileOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408813415D9E0004BD79 /* FileOperations.cpp */; };
@@ -2515,6 +2492,26 @@
 		1DAFDB7B16DFDCA7007F8C68 /* PeripheralBusCEC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusCEC.h; sourceTree = "<group>"; };
 		1DE0443315828F4B005DDB4D /* Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Exception.cpp; path = commons/Exception.cpp; sourceTree = "<group>"; };
 		1DE0443415828F4B005DDB4D /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exception.h; path = commons/Exception.h; sourceTree = "<group>"; };
+		2A1A5A581BDEAA6D0084702D /* kodi_adsp_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodi_adsp_dll.h; sourceTree = "<group>"; };
+		2A1A5A591BDEAA6D0084702D /* kodi_adsp_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodi_adsp_types.h; sourceTree = "<group>"; };
+		2A1A5A5A1BDEAA6D0084702D /* kodi_audiodec_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodi_audiodec_dll.h; sourceTree = "<group>"; };
+		2A1A5A5B1BDEAA6D0084702D /* kodi_audiodec_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodi_audiodec_types.h; sourceTree = "<group>"; };
+		2A1A5A5C1BDEAA6D0084702D /* kodi_audioengine_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodi_audioengine_types.h; sourceTree = "<group>"; };
+		2A1A5A5D1BDEAA6D0084702D /* NOTE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NOTE; sourceTree = "<group>"; };
+		2A1A5A5E1BDEAA6D0084702D /* xbmc_addon_cpp_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_addon_cpp_dll.h; sourceTree = "<group>"; };
+		2A1A5A5F1BDEAA6D0084702D /* xbmc_addon_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_addon_dll.h; sourceTree = "<group>"; };
+		2A1A5A601BDEAA6D0084702D /* xbmc_addon_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_addon_types.h; sourceTree = "<group>"; };
+		2A1A5A611BDEAA6D0084702D /* xbmc_audioenc_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_audioenc_dll.h; sourceTree = "<group>"; };
+		2A1A5A621BDEAA6D0084702D /* xbmc_audioenc_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_audioenc_types.h; sourceTree = "<group>"; };
+		2A1A5A631BDEAA6D0084702D /* xbmc_codec_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_codec_types.h; sourceTree = "<group>"; };
+		2A1A5A641BDEAA6D0084702D /* xbmc_epg_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_epg_types.h; sourceTree = "<group>"; };
+		2A1A5A651BDEAA6D0084702D /* xbmc_pvr_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_pvr_dll.h; sourceTree = "<group>"; };
+		2A1A5A661BDEAA6D0084702D /* xbmc_pvr_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_pvr_types.h; sourceTree = "<group>"; };
+		2A1A5A671BDEAA6D0084702D /* xbmc_scr_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_scr_dll.h; sourceTree = "<group>"; };
+		2A1A5A681BDEAA6D0084702D /* xbmc_scr_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_scr_types.h; sourceTree = "<group>"; };
+		2A1A5A691BDEAA6D0084702D /* xbmc_stream_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xbmc_stream_utils.hpp; sourceTree = "<group>"; };
+		2A1A5A6A1BDEAA6D0084702D /* xbmc_vis_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_vis_dll.h; sourceTree = "<group>"; };
+		2A1A5A6B1BDEAA6D0084702D /* xbmc_vis_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_vis_types.h; sourceTree = "<group>"; };
 		2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRSettings.cpp; sourceTree = "<group>"; };
 		2A7B2BDE1BD6F18B00044BCD /* PVRSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRSettings.h; sourceTree = "<group>"; };
 		2F4564D31970129A00396109 /* GUIFontCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIFontCache.cpp; sourceTree = "<group>"; };
@@ -3223,8 +3220,6 @@
 		7CCF7FC8106A0DF500992676 /* TimeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeUtils.h; sourceTree = "<group>"; };
 		7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDTSCorrection.cpp; sourceTree = "<group>"; };
 		7CDAE9040FFCA3520040B25F /* DVDTSCorrection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDTSCorrection.h; sourceTree = "<group>"; };
-		7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokelyricstextustar.cpp; sourceTree = "<group>"; };
-		7CDAEA7C1001CD6E0040B25F /* karaokelyricstextustar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokelyricstextustar.h; sourceTree = "<group>"; };
 		7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpecialProtocolDirectory.cpp; sourceTree = "<group>"; };
 		7CEBD8A70F33A0D800CAF6AD /* SpecialProtocolDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecialProtocolDirectory.h; sourceTree = "<group>"; };
 		7CEE2E5913D6B71E000ABF2A /* TimeSmoother.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeSmoother.cpp; sourceTree = "<group>"; };
@@ -3403,8 +3398,6 @@
 		DF02BA651A91065F006DCA16 /* VideoSyncOsx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoSyncOsx.h; path = videosync/VideoSyncOsx.h; sourceTree = "<group>"; };
 		DF033D361946612400BFC82E /* AEDeviceEnumerationOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AEDeviceEnumerationOSX.cpp; path = Sinks/osx/AEDeviceEnumerationOSX.cpp; sourceTree = "<group>"; };
 		DF033D371946612400BFC82E /* AEDeviceEnumerationOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AEDeviceEnumerationOSX.h; path = Sinks/osx/AEDeviceEnumerationOSX.h; sourceTree = "<group>"; };
-		DF07252C168734D7008DCAAD /* karaokevideobackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokevideobackground.cpp; sourceTree = "<group>"; };
-		DF07252D168734D7008DCAAD /* karaokevideobackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokevideobackground.h; sourceTree = "<group>"; };
 		DF072532168734ED008DCAAD /* FFmpegVideoDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FFmpegVideoDecoder.cpp; sourceTree = "<group>"; };
 		DF072533168734ED008DCAAD /* FFmpegVideoDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFmpegVideoDecoder.h; sourceTree = "<group>"; };
 		DF0ABB71183A94A30018445D /* Utf8Utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Utf8Utils.cpp; sourceTree = "<group>"; };
@@ -4629,22 +4622,6 @@
 		F5487B4B0FE6F02700E506FD /* StreamDetails.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamDetails.cpp; sourceTree = "<group>"; };
 		F54BCC5D1439345300F86B0F /* HotKeyController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotKeyController.h; sourceTree = "<group>"; };
 		F54BCC5E1439345300F86B0F /* HotKeyController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotKeyController.m; sourceTree = "<group>"; };
-		F54C51D00F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogKaraokeSongSelector.cpp; sourceTree = "<group>"; };
-		F54C51D10F1E783200D46E3C /* GUIDialogKaraokeSongSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogKaraokeSongSelector.h; sourceTree = "<group>"; };
-		F54C51D30F1E784800D46E3C /* karaokelyricscdg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokelyricscdg.h; sourceTree = "<group>"; };
-		F54C51D40F1E784800D46E3C /* karaokelyricscdg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokelyricscdg.cpp; sourceTree = "<group>"; };
-		F54C51D60F1E785700D46E3C /* karaokelyrics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokelyrics.cpp; sourceTree = "<group>"; };
-		F54C51D70F1E785700D46E3C /* karaokelyrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokelyrics.h; sourceTree = "<group>"; };
-		F54C51DB0F1E787700D46E3C /* karaokelyricsmanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokelyricsmanager.h; sourceTree = "<group>"; };
-		F54C51DC0F1E787700D46E3C /* karaokelyricsfactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokelyricsfactory.h; sourceTree = "<group>"; };
-		F54C51DD0F1E787700D46E3C /* karaokelyricstext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokelyricstext.h; sourceTree = "<group>"; };
-		F54C51DE0F1E787700D46E3C /* karaokelyricstextkar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokelyricstextkar.cpp; sourceTree = "<group>"; };
-		F54C51DF0F1E787700D46E3C /* karaokelyricstextkar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokelyricstextkar.h; sourceTree = "<group>"; };
-		F54C51E00F1E787700D46E3C /* karaokelyricstextlrc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokelyricstextlrc.h; sourceTree = "<group>"; };
-		F54C51E10F1E787700D46E3C /* karaokelyricsmanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokelyricsmanager.cpp; sourceTree = "<group>"; };
-		F54C51E20F1E787700D46E3C /* karaokelyricsfactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokelyricsfactory.cpp; sourceTree = "<group>"; };
-		F54C51E30F1E787700D46E3C /* karaokelyricstextlrc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokelyricstextlrc.cpp; sourceTree = "<group>"; };
-		F54C51E40F1E787700D46E3C /* karaokelyricstext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokelyricstext.cpp; sourceTree = "<group>"; };
 		F558F25413ABCF7800631E12 /* WinEventsOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinEventsOSX.h; sourceTree = "<group>"; };
 		F558F25513ABCF7800631E12 /* WinEventsOSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WinEventsOSX.mm; sourceTree = "<group>"; };
 		F558F27813ABD56600631E12 /* DirtyRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirtyRegion.h; sourceTree = "<group>"; };
@@ -4674,8 +4651,6 @@
 		F56353BE16E9BB3500D21BAD /* BitstreamConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitstreamConverter.h; sourceTree = "<group>"; };
 		F56579AD13060D1E0085ED7F /* RenderCapture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderCapture.cpp; sourceTree = "<group>"; };
 		F56579AE13060D1E0085ED7F /* RenderCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderCapture.h; sourceTree = "<group>"; };
-		F56A08490F4A18FB003F9F87 /* karaokewindowbackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokewindowbackground.h; sourceTree = "<group>"; };
-		F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokewindowbackground.cpp; sourceTree = "<group>"; };
 		F57A1D1C1329B15300498CC7 /* AutoPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoPool.h; sourceTree = "<group>"; };
 		F57A1D1D1329B15300498CC7 /* AutoPool.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AutoPool.mm; sourceTree = "<group>"; };
 		F57B6F7E1071B8B500079ACB /* JobManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JobManager.cpp; sourceTree = "<group>"; };
@@ -4714,8 +4689,6 @@
 		F5AACA670FB3DE2D00DBB77C /* GUIDialogSelect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSelect.cpp; sourceTree = "<group>"; };
 		F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSlider.cpp; sourceTree = "<group>"; };
 		F5AACA960FB3E2B800DBB77C /* GUIDialogSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSlider.h; sourceTree = "<group>"; };
-		F5AD1EA60F488A1A0065EB5D /* GUIWindowKaraokeLyrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowKaraokeLyrics.h; sourceTree = "<group>"; };
-		F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowKaraokeLyrics.cpp; sourceTree = "<group>"; };
 		F5AE408013415D9E0004BD79 /* AudioLibrary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioLibrary.cpp; sourceTree = "<group>"; };
 		F5AE408113415D9E0004BD79 /* AudioLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioLibrary.h; sourceTree = "<group>"; };
 		F5AE408613415D9E0004BD79 /* FileItemHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileItemHandler.cpp; sourceTree = "<group>"; };
@@ -4922,6 +4895,7 @@
 		18B49FF01152BEEB001AF8A6 /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				2A1A5A571BDEAA6D0084702D /* include */,
 				7C226E3C1BA5F61C00185CE0 /* AddonCallbacksAudioEngine.cpp */,
 				7C226E3D1BA5F61C00185CE0 /* AddonCallbacksAudioEngine.h */,
 				7C973CE31B50378E0002A874 /* AddonCallbacksAudioDSP.cpp */,
@@ -5197,7 +5171,6 @@
 			children = (
 				431376A812D640B500680C15 /* dialogs */,
 				431376CC12D6421A00680C15 /* infoscanner */,
-				431376D412D6427900680C15 /* karaoke */,
 				18B7C854129423A7009E7A26 /* tags */,
 				431376DC12D6430600680C15 /* windows */,
 				E36C29DC0DA72429001F0C9D /* Album.cpp */,
@@ -5335,6 +5308,33 @@
 				1DAFDB7B16DFDCA7007F8C68 /* PeripheralBusCEC.h */,
 			);
 			path = virtual;
+			sourceTree = "<group>";
+		};
+		2A1A5A571BDEAA6D0084702D /* include */ = {
+			isa = PBXGroup;
+			children = (
+				2A1A5A581BDEAA6D0084702D /* kodi_adsp_dll.h */,
+				2A1A5A591BDEAA6D0084702D /* kodi_adsp_types.h */,
+				2A1A5A5A1BDEAA6D0084702D /* kodi_audiodec_dll.h */,
+				2A1A5A5B1BDEAA6D0084702D /* kodi_audiodec_types.h */,
+				2A1A5A5C1BDEAA6D0084702D /* kodi_audioengine_types.h */,
+				2A1A5A5D1BDEAA6D0084702D /* NOTE */,
+				2A1A5A5E1BDEAA6D0084702D /* xbmc_addon_cpp_dll.h */,
+				2A1A5A5F1BDEAA6D0084702D /* xbmc_addon_dll.h */,
+				2A1A5A601BDEAA6D0084702D /* xbmc_addon_types.h */,
+				2A1A5A611BDEAA6D0084702D /* xbmc_audioenc_dll.h */,
+				2A1A5A621BDEAA6D0084702D /* xbmc_audioenc_types.h */,
+				2A1A5A631BDEAA6D0084702D /* xbmc_codec_types.h */,
+				2A1A5A641BDEAA6D0084702D /* xbmc_epg_types.h */,
+				2A1A5A651BDEAA6D0084702D /* xbmc_pvr_dll.h */,
+				2A1A5A661BDEAA6D0084702D /* xbmc_pvr_types.h */,
+				2A1A5A671BDEAA6D0084702D /* xbmc_scr_dll.h */,
+				2A1A5A681BDEAA6D0084702D /* xbmc_scr_types.h */,
+				2A1A5A691BDEAA6D0084702D /* xbmc_stream_utils.hpp */,
+				2A1A5A6A1BDEAA6D0084702D /* xbmc_vis_dll.h */,
+				2A1A5A6B1BDEAA6D0084702D /* xbmc_vis_types.h */,
+			);
+			path = include;
 			sourceTree = "<group>";
 		};
 		38F4E56013CCCB3B00664821 /* platform */ = {
@@ -5515,37 +5515,6 @@
 				E38E1E680D25F9FD00618676 /* MusicInfoScraper.h */,
 			);
 			path = infoscanner;
-			sourceTree = "<group>";
-		};
-		431376D412D6427900680C15 /* karaoke */ = {
-			isa = PBXGroup;
-			children = (
-				F54C51D00F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp */,
-				F54C51D10F1E783200D46E3C /* GUIDialogKaraokeSongSelector.h */,
-				F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */,
-				F5AD1EA60F488A1A0065EB5D /* GUIWindowKaraokeLyrics.h */,
-				F54C51D60F1E785700D46E3C /* karaokelyrics.cpp */,
-				F54C51D70F1E785700D46E3C /* karaokelyrics.h */,
-				F54C51D40F1E784800D46E3C /* karaokelyricscdg.cpp */,
-				F54C51D30F1E784800D46E3C /* karaokelyricscdg.h */,
-				F54C51E20F1E787700D46E3C /* karaokelyricsfactory.cpp */,
-				F54C51DC0F1E787700D46E3C /* karaokelyricsfactory.h */,
-				F54C51E10F1E787700D46E3C /* karaokelyricsmanager.cpp */,
-				F54C51DB0F1E787700D46E3C /* karaokelyricsmanager.h */,
-				F54C51E40F1E787700D46E3C /* karaokelyricstext.cpp */,
-				F54C51DD0F1E787700D46E3C /* karaokelyricstext.h */,
-				F54C51DE0F1E787700D46E3C /* karaokelyricstextkar.cpp */,
-				F54C51DF0F1E787700D46E3C /* karaokelyricstextkar.h */,
-				F54C51E30F1E787700D46E3C /* karaokelyricstextlrc.cpp */,
-				F54C51E00F1E787700D46E3C /* karaokelyricstextlrc.h */,
-				7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */,
-				7CDAEA7C1001CD6E0040B25F /* karaokelyricstextustar.h */,
-				DF07252C168734D7008DCAAD /* karaokevideobackground.cpp */,
-				DF07252D168734D7008DCAAD /* karaokevideobackground.h */,
-				F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */,
-				F56A08490F4A18FB003F9F87 /* karaokewindowbackground.h */,
-			);
-			path = karaoke;
 			sourceTree = "<group>";
 		};
 		431376DC12D6430600680C15 /* windows */ = {
@@ -8951,6 +8920,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E49910B5174D0E2A00741B6D /* Default-568h@2x.png in Resources */,
+				2A1A5A6C1BDEAA6D0084702D /* NOTE in Resources */,
 				E49910B6174D0E2A00741B6D /* InfoPlist.strings in Resources */,
 				DFFA440119104C1300C3923B /* AppIcon29x29.png in Resources */,
 				DFFA440219104C1300C3923B /* AppIcon29x29@2x.png in Resources */,
@@ -9520,20 +9490,10 @@
 				F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */,
 				397877D51AAAF87700F98A45 /* Speed.cpp in Sources */,
 				7C8E02341BA35D0B0072E8B2 /* OpticalBuiltins.cpp in Sources */,
-				F54C51D20F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp in Sources */,
 				DF29BCF71B5D911800904347 /* MediaLibraryEvent.cpp in Sources */,
 				2F4564D51970129A00396109 /* GUIFontCache.cpp in Sources */,
-				F54C51D50F1E784800D46E3C /* karaokelyricscdg.cpp in Sources */,
-				F54C51D80F1E785700D46E3C /* karaokelyrics.cpp in Sources */,
-				F54C51E50F1E787700D46E3C /* karaokelyricstextkar.cpp in Sources */,
-				F54C51E60F1E787700D46E3C /* karaokelyricsmanager.cpp in Sources */,
-				F54C51E70F1E787700D46E3C /* karaokelyricsfactory.cpp in Sources */,
-				F54C51E80F1E787700D46E3C /* karaokelyricstextlrc.cpp in Sources */,
-				F54C51E90F1E787700D46E3C /* karaokelyricstext.cpp in Sources */,
 				7CEBD8A80F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp in Sources */,
 				7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */,
-				F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */,
-				F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */,
 				F51CEEEF0F5C5D20004F4602 /* OSXGNUReplacements.c in Sources */,
 				F5EA02260F6DA990005C2EC5 /* CocoaPowerSyscall.cpp in Sources */,
 				F5EA02270F6DA9A5005C2EC5 /* PowerManager.cpp in Sources */,
@@ -9551,7 +9511,6 @@
 				7CDAE9050FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */,
 				E4DC97540FFE5BA8008E0C07 /* SAPDirectory.cpp in Sources */,
 				E4DC97550FFE5BA8008E0C07 /* SAPFile.cpp in Sources */,
-				7CDAEA7D1001CD6E0040B25F /* karaokelyricstextustar.cpp in Sources */,
 				F5D8D732102BB3B1004A11AB /* OverlayRendererGL.cpp in Sources */,
 				F5D8D733102BB3B1004A11AB /* OverlayRenderer.cpp in Sources */,
 				E49ACD8C100745C400A86ECD /* ZeroconfDirectory.cpp in Sources */,
@@ -9993,7 +9952,6 @@
 				F5EDC48C1651A6F900B852D8 /* GroupUtils.cpp in Sources */,
 				7C7CEAF1165629530059C9EB /* AELimiter.cpp in Sources */,
 				DFB02DEA16629DBA00F37752 /* PyContext.cpp in Sources */,
-				DF07252E168734D7008DCAAD /* karaokevideobackground.cpp in Sources */,
 				DF072534168734ED008DCAAD /* FFmpegVideoDecoder.cpp in Sources */,
 				7C8E02221BA35D0B0072E8B2 /* Builtins.cpp in Sources */,
 				395F6DE21A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */,
@@ -10756,20 +10714,8 @@
 				E4991379174E5F0E00741B6D /* MusicArtistInfo.cpp in Sources */,
 				E499137A174E5F0E00741B6D /* MusicInfoScanner.cpp in Sources */,
 				E499137B174E5F0E00741B6D /* MusicInfoScraper.cpp in Sources */,
-				E499137C174E5F0E00741B6D /* GUIDialogKaraokeSongSelector.cpp in Sources */,
-				E499137D174E5F0E00741B6D /* GUIWindowKaraokeLyrics.cpp in Sources */,
-				E499137E174E5F0E00741B6D /* karaokelyrics.cpp in Sources */,
 				7C8E022C1BA35D0B0072E8B2 /* GUIContainerBuiltins.cpp in Sources */,
 				DF54F8041B6580C8000FCBA4 /* ContextMenuAddon.cpp in Sources */,
-				E499137F174E5F0E00741B6D /* karaokelyricscdg.cpp in Sources */,
-				E4991380174E5F0E00741B6D /* karaokelyricsfactory.cpp in Sources */,
-				E4991381174E5F0E00741B6D /* karaokelyricsmanager.cpp in Sources */,
-				E4991382174E5F0E00741B6D /* karaokelyricstext.cpp in Sources */,
-				E4991383174E5F0E00741B6D /* karaokelyricstextkar.cpp in Sources */,
-				E4991384174E5F0E00741B6D /* karaokelyricstextlrc.cpp in Sources */,
-				E4991385174E5F0E00741B6D /* karaokelyricstextustar.cpp in Sources */,
-				E4991386174E5F0E00741B6D /* karaokevideobackground.cpp in Sources */,
-				E4991387174E5F0E00741B6D /* karaokewindowbackground.cpp in Sources */,
 				E4991388174E5F0E00741B6D /* MusicInfoTag.cpp in Sources */,
 				E499138A174E5F0E00741B6D /* MusicInfoTagLoaderCDDA.cpp in Sources */,
 				E499138B174E5F0E00741B6D /* MusicInfoTagLoaderDatabase.cpp in Sources */,

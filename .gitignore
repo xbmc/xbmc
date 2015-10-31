@@ -13,6 +13,8 @@ testMain
 *.kdev4
 # gedit
 *~
+# CLion
+/.idea
 
 # generated files etc
 config.cache
@@ -406,14 +408,16 @@ lib/cpluff/stamp-h1
 /skin/Confluence/BUILD
 
 #/tools/android
-/tools/android/packaging/xbmc/AndroidManifest.xml
 /tools/android/packaging/Makefile
+/tools/android/packaging/xbmc/activity_main.xml
+/tools/android/packaging/xbmc/AndroidManifest.xml
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/Main.java
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/Splash.java
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCBroadcastReceiver.java
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCOnAudioFocusChangeListener.java
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCOnFrameAvailableListener.java
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCSettingsContentObserver.java
+/tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCVideoView.java
 /tools/android/packaging/xbmc/strings.xml
 
 #/tools/depends
@@ -550,9 +554,6 @@ lib/cpluff/stamp-h1
 # /xbmc/messaging/
 /xbmc/messaging/Makefile
 /xbmc/messaging/helpers/Makefile
-
-# /xbmc/music/
-/xbmc/music/karaoke/Makefile
 
 # /xbmc/network/
 /xbmc/network/Makefile

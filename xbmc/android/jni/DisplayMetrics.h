@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2013 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,19 +19,24 @@
  *
  */
 
-#include "guilib/GUIDialog.h"
+#include "JNIBase.h"
 
-class CGUIWindowScreensaverDim :
-      public CGUIDialog
+class CJNIDisplayMetrics
 {
 public:
-  CGUIWindowScreensaverDim();
-  virtual ~CGUIWindowScreensaverDim();
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void Render();
-protected:
-  virtual void UpdateVisibility();
+  static int 	DENSITY_DEFAULT;
+  static int 	DENSITY_HIGH;
+  static int 	DENSITY_LOW;
+  static int 	DENSITY_MEDIUM;
+  static int 	DENSITY_TV;
+  static int 	DENSITY_XHIGH;
+  static int 	DENSITY_XXHIGH;
+  static int 	DENSITY_XXXHIGH;
+
+  static void PopulateStaticFields();
+
 private:
-  float m_dimLevel;
-  float m_newDimLevel;
+  CJNIDisplayMetrics();
+  ~CJNIDisplayMetrics() {};
+  static const char *m_classname;
 };
