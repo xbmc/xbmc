@@ -372,6 +372,10 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, MUSIC_INFO::EmbeddedArt *art,
       break;
     }
 
+
+  if (id3v2->comment() != String::null)
+    tag.SetComment(id3v2->comment().toCString(true));
+
   tag.SetReplayGain(replayGainInfo);
   return true;
 }
