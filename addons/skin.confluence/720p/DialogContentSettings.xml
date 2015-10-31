@@ -42,7 +42,7 @@
 				<font>font13</font>
 			</control>
 			<control type="button" id="21">
-				<description>Information Provider List</description>
+				<description>Information Provider Button</description>
 				<left>30</left>
 				<top>145</top>
 				<width>740</width>
