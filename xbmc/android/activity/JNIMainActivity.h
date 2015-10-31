@@ -36,6 +36,8 @@ public:
 
   static void _callNative(JNIEnv *env, jobject context, jlong funcAddr, jlong variantAddr);
   static void runNativeOnUiThread(void (*callback)(CVariant *), CVariant *variant);
+  static void registerMediaButtonEventReceiver();
+  static void unregisterMediaButtonEventReceiver();
 
   CJNISurface getVideoViewSurface();
   void clearVideoView();
