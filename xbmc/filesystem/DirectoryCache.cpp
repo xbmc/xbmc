@@ -28,6 +28,9 @@
 
 #include <algorithm>
 
+// Maximum number of directories to keep in our cache
+#define MAX_CACHED_DIRS 50
+
 using namespace XFILE;
 
 CDirectoryCache::CDir::CDir(DIR_CACHE_TYPE cacheType)
@@ -232,7 +235,6 @@ void CDirectoryCache::ClearCache(std::set<std::string>& dirs)
 void CDirectoryCache::CheckIfFull()
 {
   CSingleLock lock (m_cs);
-  static const unsigned int max_cached_dirs = 10;
 
   // find the last accessed folder, and remove if the number of cached folders is too many
   iCache lastAccessed = m_cache.end();
@@ -247,7 +249,7 @@ void CDirectoryCache::CheckIfFull()
       numCached++;
     }
   }
-  if (lastAccessed != m_cache.end() && numCached >= max_cached_dirs)
+  if (lastAccessed != m_cache.end() && numCached >= MAX_CACHED_DIRS)
     Delete(lastAccessed);
 }
 
