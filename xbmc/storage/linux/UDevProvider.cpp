@@ -254,7 +254,7 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
       else if (mountpoint)
         label = URIUtils::GetFileName(mountpoint);
 
-      if (!strcmp(action, "add") && !strcmp(devtype, "partition"))
+      if (mountpoint && (!strcmp(action, "add") && !strcmp(devtype, "partition")))
       {
         CLog::Log(LOGNOTICE, "UDev: Added %s", mountpoint);
         if (callback)
@@ -263,7 +263,6 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
       }
       if (!strcmp(action, "remove") && !strcmp(devtype, "partition"))
       {
-        CLog::Log(LOGNOTICE, "UDev: Removed %s", mountpoint);
         if (callback)
           callback->OnStorageSafelyRemoved(label);
         changed = true;
