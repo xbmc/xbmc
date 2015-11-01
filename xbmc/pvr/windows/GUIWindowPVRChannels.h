@@ -47,7 +47,8 @@ namespace PVR
     bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonManage(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonUpdateEpg(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonRecord(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
 
     void ShowChannelManager();
     void ShowGroupManager(void);

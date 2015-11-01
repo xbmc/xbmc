@@ -3646,7 +3646,19 @@ msgctxt "#846"
 msgid "Are you sure you want to delete this timer?"
 msgstr ""
 
-#empty strings from id 847 to 849
+#. Message in a dialog when a user wants to delete a non-repeating timer
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
+msgctxt "#847"
+msgid "Confirm stop recording"
+msgstr ""
+
+#. Message in a dialog when a user wants to delete a non-repeating timer
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
+msgctxt "#848"
+msgid "Are you sure you want to stop this recording?"
+msgstr ""
+
+#empty string with id 849
 
 msgctxt "#850"
 msgid "Invalid port number entered"

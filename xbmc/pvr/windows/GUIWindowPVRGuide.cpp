@@ -87,16 +87,15 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
   if (pItem->HasEPGInfoTag() && pItem->GetEPGInfoTag()->HasRecording())
     buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 19687);      /* Play recording */
 
-  CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem.get());
-  if (timer && timer->HasPVRTimerInfoTag())
+  if (pItem->GetEPGInfoTag()->HasTimer())
   {
-    if (timer->GetPVRTimerInfoTag()->IsRecording())
-      buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);  /* Stop recording */
-    else if (timer->GetPVRTimerInfoTag()->HasTimerType() &&
-             !timer->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
-      buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060);  /* Delete timer */
+    if (pItem->GetEPGInfoTag()->Timer()->IsRecording())
+      buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);   /* Stop recording */
+    else if (pItem->GetEPGInfoTag()->Timer()->HasTimerType() &&
+             !pItem->GetEPGInfoTag()->Timer()->GetTimerType()->IsReadOnly())
+      buttons.Add(CONTEXT_BUTTON_DELETE_TIMER, 19060);  /* Delete timer */
   }
-  else if (pItem->HasEPGInfoTag() && pItem->GetEPGInfoTag()->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
+  else if (pItem->GetEPGInfoTag()->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
   {
     buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);      /* Record */
     buttons.Add(CONTEXT_BUTTON_ADD_TIMER, 19061);       /* Add timer */
@@ -334,6 +333,7 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       OnContextButtonInfo(pItem.get(), button) ||
       OnContextButtonStartRecord(pItem.get(), button) ||
       OnContextButtonStopRecord(pItem.get(), button) ||
+      OnContextButtonDeleteTimer(pItem.get(), button) ||
       OnContextButtonBegin(pItem.get(), button) ||
       OnContextButtonEnd(pItem.get(), button) ||
       OnContextButtonNow(pItem.get(), button) ||
@@ -528,6 +528,19 @@ bool CGUIWindowPVRGuide::OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTT
   if (button == CONTEXT_BUTTON_STOP_RECORD)
   {
     StopRecordFile(item);
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CGUIWindowPVRGuide::OnContextButtonDeleteTimer(CFileItem *item, CONTEXT_BUTTON button)
+{
+  bool bReturn = false;
+
+  if (button == CONTEXT_BUTTON_DELETE_TIMER)
+  {
+    DeleteTimer(item);
     bReturn = true;
   }
 

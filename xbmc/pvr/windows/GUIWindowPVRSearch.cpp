@@ -50,23 +50,20 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
 
   if (pItem->HasEPGInfoTag())
   {
-    if (pItem->GetEPGInfoTag()->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
+    buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* Programme information */
+
+    if (pItem->GetEPGInfoTag()->HasTimer())
     {
-      if (!pItem->GetEPGInfoTag()->HasTimer())
-      {
-        buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);    /* Record */
-        buttons.Add(CONTEXT_BUTTON_ADD_TIMER, 19061);     /* Add timer */
-      }
-      else
-      {
-        if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
-          buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059); /* Stop recording */
-        else if (pItem->GetEPGInfoTag()->Timer()->HasTimerType())
-        {
-          if (!pItem->GetEPGInfoTag()->Timer()->GetTimerType()->IsReadOnly())
-            buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060); /* Delete timer */
-        }
-      }
+      if (pItem->GetEPGInfoTag()->Timer()->IsRecording())
+        buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);   /* Stop recording */
+      else if (pItem->GetEPGInfoTag()->Timer()->HasTimerType() &&
+               !pItem->GetEPGInfoTag()->Timer()->GetTimerType()->IsReadOnly())
+        buttons.Add(CONTEXT_BUTTON_DELETE_TIMER, 19060);  /* Delete timer */
+    }
+    else if (pItem->GetEPGInfoTag()->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
+    {
+      buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);      /* Record */
+      buttons.Add(CONTEXT_BUTTON_ADD_TIMER, 19061);       /* Add timer */
     }
     if (pItem->GetEPGInfoTag()->HasRecording())
       buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19687);       /* Play recording */
@@ -97,8 +94,9 @@ bool CGUIWindowPVRSearch::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   return OnContextButtonClear(pItem.get(), button) ||
       OnContextButtonInfo(pItem.get(), button) ||
-      OnContextButtonStopRecord(pItem.get(), button) ||
       OnContextButtonStartRecord(pItem.get(), button) ||
+      OnContextButtonStopRecord(pItem.get(), button) ||
+      OnContextButtonDeleteTimer(pItem.get(), button) ||
       OnContextButtonPlay(pItem.get(), button) ||
       CGUIWindowPVRBase::OnContextButton(itemNumber, button);
 }
@@ -294,6 +292,19 @@ bool CGUIWindowPVRSearch::OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUT
   if (button == CONTEXT_BUTTON_STOP_RECORD)
   {
     StopRecordFile(item);
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CGUIWindowPVRSearch::OnContextButtonDeleteTimer(CFileItem *item, CONTEXT_BUTTON button)
+{
+  bool bReturn = false;
+
+  if (button == CONTEXT_BUTTON_DELETE_TIMER)
+  {
+    DeleteTimer(item);
     bReturn = true;
   }
 
