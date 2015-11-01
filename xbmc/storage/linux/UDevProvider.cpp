@@ -254,14 +254,15 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
       else if (mountpoint)
         label = URIUtils::GetFileName(mountpoint);
 
-      if (mountpoint && (!strcmp(action, "add") && !strcmp(devtype, "partition")))
+      const char *fs_usage = udev_device_get_property_value(dev, "ID_FS_USAGE");
+      if (mountpoint && strcmp(action, "add") == 0 && (fs_usage && strcmp(fs_usage, "filesystem") == 0))
       {
         CLog::Log(LOGNOTICE, "UDev: Added %s", mountpoint);
         if (callback)
           callback->OnStorageAdded(label, mountpoint);
         changed = true;
       }
-      if (!strcmp(action, "remove") && !strcmp(devtype, "partition"))
+      if (strcmp(action, "remove") == 0 && (fs_usage && strcmp(fs_usage, "filesystem") == 0))
       {
         if (callback)
           callback->OnStorageSafelyRemoved(label);
