@@ -132,9 +132,7 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
       buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); /* Start from beginning */
       std::string resumeString = GetResumeString(*pItem);
       if (!resumeString.empty())
-      {
         buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
-      }
     }
     else
     {

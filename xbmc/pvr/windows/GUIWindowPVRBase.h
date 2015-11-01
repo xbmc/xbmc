@@ -76,16 +76,10 @@ namespace PVR
     static std::string GetSelectedItemPath(bool bRadio);
     static void SetSelectedItemPath(bool bRadio, const std::string &path);
 
-    /*!
-     * @brief Open a dialog to confirm timer delete.
-     * @param item the timer to delete.
-     * @param bDeleteSchedule in: ignored
-     *                        out, for one shot timer scheduled by a repeating timer: true to also delete the
-     *                             repeating timer that has scheduled this timer, false to only delete the one shot timer.
-     *                        out, for one shot timer not scheduled by a repeating timer: ignored
-     * @return true, to proceed with delete, false otherwise.
-     */
-    static bool ConfirmDeleteTimer(CFileItem *item, bool &bDeleteSchedule);
+    static bool ShowTimerSettings(CFileItem *item);
+    static bool AddTimer(CFileItem *item, bool bAdvanced);
+    static bool DeleteTimer(CFileItem *item);
+    static bool StopRecordFile(CFileItem *item);
 
   protected:
     CGUIWindowPVRBase(bool bRadio, int id, const std::string &xmlFile);
@@ -102,9 +96,6 @@ namespace PVR
 
     virtual bool PlayRecording(CFileItem *item, bool bPlayMinimized = false, bool bCheckResume = true);
     virtual bool PlayFile(CFileItem *item, bool bPlayMinimized = false, bool bCheckResume = true);
-    virtual bool ShowTimerSettings(CFileItem *item);
-    virtual bool AddTimer(CFileItem *item, bool bAdvanced = false);
-    virtual bool StopRecordFile(CFileItem *item);
     virtual void ShowEPGInfo(CFileItem *item);
     virtual void ShowRecordingInfo(CFileItem *item);
     virtual bool UpdateEpgForChannel(CFileItem *item);
@@ -118,6 +109,26 @@ namespace PVR
     bool m_bRadio;
 
   private:
+    /*!
+     * @brief Open a dialog to confirm timer delete.
+     * @param item the timer to delete.
+     * @param bDeleteSchedule in: ignored
+     *                        out, for one shot timer scheduled by a repeating timer: true to also delete the
+     *                             repeating timer that has scheduled this timer, false to only delete the one shot timer.
+     *                        out, for one shot timer not scheduled by a repeating timer: ignored
+     * @return true, to proceed with delete, false otherwise.
+     */
+    static bool ConfirmDeleteTimer(CFileItem *item, bool &bDeleteSchedule);
+
+    /*!
+     * @brief Open a dialog to confirm stop recording.
+     * @param item the recording to stop (actually the timer to delete).
+     * @return true, to proceed with delete, false otherwise.
+     */
+    static bool ConfirmStopRecording(CFileItem *item);
+
+    static bool DeleteTimer(CFileItem *item, bool bIsRecording);
+
     CPVRChannelGroupPtr m_group;
     XbmcThreads::EndTime m_refreshTimeout;
   };
