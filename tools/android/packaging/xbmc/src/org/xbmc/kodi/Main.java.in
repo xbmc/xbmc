@@ -65,14 +65,12 @@ public class Main extends NativeActivity
   
   public void registerMediaButtonEventReceiver()
   {
-    Log.d(TAG, "registerMediaButtonEventReceiver");
     AudioManager manager = (AudioManager) getSystemService(AUDIO_SERVICE);
     manager.registerMediaButtonEventReceiver(new ComponentName(getPackageName(), XBMCBroadcastReceiver.class.getName()));
   }
 
   public void unregisterMediaButtonEventReceiver()
   {
-    Log.d(TAG, "unregisterMediaButtonEventReceiver");
     AudioManager manager = (AudioManager) getSystemService(AUDIO_SERVICE);
     manager.unregisterMediaButtonEventReceiver(new ComponentName(getPackageName(), XBMCBroadcastReceiver.class.getName()));
   }

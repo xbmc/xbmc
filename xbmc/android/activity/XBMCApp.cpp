@@ -499,6 +499,7 @@ int CXBMCApp::GetDPI()
 void CXBMCApp::OnPlayBackStarted()
 {
   AcquireAudioFocus();
+  registerMediaButtonEventReceiver();
 }
 
 void CXBMCApp::OnPlayBackPaused()
@@ -513,11 +514,13 @@ void CXBMCApp::OnPlayBackResumed()
 
 void CXBMCApp::OnPlayBackStopped()
 {
+  unregisterMediaButtonEventReceiver();
   ReleaseAudioFocus();
 }
 
 void CXBMCApp::OnPlayBackEnded()
 {
+  unregisterMediaButtonEventReceiver();
   ReleaseAudioFocus();
 }
 
