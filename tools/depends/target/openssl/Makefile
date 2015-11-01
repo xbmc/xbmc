@@ -18,9 +18,9 @@ ifeq ($(OS), ios)
 endif
 ifeq ($(OS), osx)
   ifeq ($(CPU),x86_64)
-    CONFIGURE=./Configure darwin64-$(CPU)-cc zlib no-krb5 shared --openssldir=$(PREFIX)
+    CONFIGURE=./Configure darwin64-$(CPU)-cc zlib no-asm no-krb5 shared --openssldir=$(PREFIX)
   else
-    CONFIGURE=./Configure darwin-$(CPU)-cc zlib no-krb5 shared --openssldir=$(PREFIX)
+    CONFIGURE=./Configure darwin-$(CPU)-cc zlib no-asm no-krb5 shared --openssldir=$(PREFIX)
   endif
 endif
 LIBDYLIB=$(PLATFORM)/libssl.a
