@@ -12598,7 +12598,12 @@ msgctxt "#21480"
 msgid "Use"
 msgstr ""
 
-#empty strings from id 21481 to 21601
+#: xbmc/playlist/SmartPlayList.cpp
+msgctxt "#21481"
+msgid "Audio Track Count"
+msgstr ""
+
+#empty strings from id 21482 to 21601
 
 #: xbmc/Util.cpp
 msgctxt "#21602"
