@@ -455,7 +455,8 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
 
 void PAPlayer::UpdateStreamInfoPlayNextAtFrame(StreamInfo *si, unsigned int crossFadingTime)
 {
-  if (si)
+  // if no crossfading or cue sheet, wait for eof
+  if (si && (crossFadingTime || si->m_endOffset))
   {
     int64_t streamTotalTime = si->m_decoder.TotalTime();
     if (si->m_endOffset)
