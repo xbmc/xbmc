@@ -60,6 +60,7 @@ typedef enum {
   FieldRandom,
   FieldDateTaken,
   FieldAudioCount,
+  FieldSubtitleCount,
 
   // fields retrievable from the database
   FieldId,

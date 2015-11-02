@@ -103,7 +103,8 @@ static const translateField fields[] = {
   { "audiochannels",     FieldAudioChannels,           CDatabaseQueryRule::NUMERIC_FIELD,  NULL,                                 false, 21444 },
   { "audiocodec",        FieldAudioCodec,              CDatabaseQueryRule::TEXTIN_FIELD,   NULL,                                 false, 21446 },
   { "audiolanguage",     FieldAudioLanguage,           CDatabaseQueryRule::TEXTIN_FIELD,   NULL,                                 false, 21447 },
-  { "audiocount",        FieldAudioCount,              CDatabaseQueryRule::NUMERIC_FIELD,  NULL,                                 false, 21481 }, 
+  { "audiocount",        FieldAudioCount,              CDatabaseQueryRule::NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 21481 }, 
+  { "subtitlecount",     FieldSubtitleCount,           CDatabaseQueryRule::NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 21482 },
   { "subtitlelanguage",  FieldSubtitleLanguage,        CDatabaseQueryRule::TEXTIN_FIELD,   NULL,                                 false, 21448 },
   { "random",            FieldRandom,                  CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 590 },
   { "playlist",          FieldPlaylist,                CDatabaseQueryRule::PLAYLIST_FIELD, NULL,                                 true,  559 },
@@ -432,6 +433,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldVideoResolution);
     fields.push_back(FieldAudioChannels);
     fields.push_back(FieldAudioCount);
+    fields.push_back(FieldSubtitleCount);
     fields.push_back(FieldVideoCodec);
     fields.push_back(FieldAudioCodec);
     fields.push_back(FieldAudioLanguage);
@@ -853,7 +855,9 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
   else if (m_field == FieldVideoAspectRatio)
     query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND fVideoAspect " + parameter + ")";
   else if (m_field == FieldAudioCount)
-    query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND streamdetails.iStreamType=1 GROUP BY streamdetails.idFile HAVING COUNT(streamdetails.iStreamType) " + parameter + ")";
+    query = db.PrepareSQL(negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND streamdetails.iStreamtype = %i GROUP BY streamdetails.idFile HAVING COUNT(streamdetails.iStreamType) " + parameter + ")",CStreamDetail::AUDIO);
+  else if (m_field == FieldSubtitleCount)
+    query = db.PrepareSQL(negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND streamdetails.iStreamType = %i GROUP BY streamdetails.idFile HAVING COUNT(streamdetails.iStreamType) " + parameter + ")",CStreamDetail::SUBTITLE);
   if (m_field == FieldPlaycount && strType != "songs" && strType != "albums" && strType != "tvshows")
   { // playcount IS stored as NULL OR number IN video db
     if ((m_operator == OPERATOR_EQUALS && param == "0") ||
