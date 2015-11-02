@@ -934,11 +934,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
   }
 
-  if (pItem->m_bIsFolder
-#ifdef HAS_DS_PLAYER
-	  && pItem->m_lStartOffset != STARTOFFSET_RESUME
-#endif
-	  )
+  if (pItem->m_bIsFolder)
   {
     if ( pItem->m_bIsShareOrDrive )
     {
@@ -1288,16 +1284,11 @@ void CGUIMediaWindow::SetHistoryForPath(const std::string& strDirectory)
 // This function is called by OnClick()
 bool CGUIMediaWindow::OnPlayMedia(int iItem)
 {
-	CFileItemPtr pItem = m_vecItems->Get(iItem);
-	return OnPlayMedia(pItem);
-}
-
-bool CGUIMediaWindow::OnPlayMedia(const CFileItemPtr &pItem)
-{  
-// Reset Playlistplayer, playback started now does
+  // Reset Playlistplayer, playback started now does
   // not use the playlistplayer.
   g_playlistPlayer.Reset();
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
+  CFileItemPtr pItem=m_vecItems->Get(iItem);
 
   CLog::Log(LOGDEBUG, "%s %s", __FUNCTION__, CURL::GetRedacted(pItem->GetPath()).c_str());
 
