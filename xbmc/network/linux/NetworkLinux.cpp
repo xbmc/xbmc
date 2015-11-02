@@ -434,14 +434,18 @@ bool CNetworkLinux::queryInterfaceList()
    struct ifaddrs *cur;
    for(cur = list; cur != NULL; cur = cur->ifa_next)
    {
-     if(cur->ifa_addr->sa_family != AF_INET
-     && cur->ifa_addr->sa_family != AF_INET6)
+     if(!cur->ifa_addr ||
+        (cur->ifa_addr->sa_family != AF_INET &&
+         cur->ifa_addr->sa_family != AF_INET6))
        continue;
 
      // Add the interface.
      std::string addr = CNetwork::GetIpStr(cur->ifa_addr);
      std::string mask = CNetwork::GetIpStr(cur->ifa_netmask);
      std::string name = cur->ifa_name;
+
+     if(addr.empty() || mask.empty())
+       continue;
 
      CNetworkInterfaceLinux *iface = Exists(addr, mask, name);
      if (iface)
