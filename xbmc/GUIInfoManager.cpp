@@ -4828,22 +4828,6 @@ void CGUIInfoManager::UpdateFPS()
   }
 }
 
-#ifdef HAS_DS_PLAYER
-std::string CGUIInfoManager::GetAudioStreamName(int iStream)
-{
-	SPlayerAudioStreamInfo audio;
-	g_application.m_pPlayer->GetAudioStreamInfo(iStream, audio);
-	return audio.name;
-}
-
-std::string CGUIInfoManager::GetSubtitleName(int iStream)
-{
-	SPlayerSubtitleStreamInfo subs;
-	g_application.m_pPlayer->GetSubtitleStreamInfo(iStream, subs);
-	return subs.name;
-}
-#endif
-
 void CGUIInfoManager::UpdateAVInfo()
 {
   if(g_application.m_pPlayer->IsPlaying())
@@ -5468,14 +5452,6 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (item->IsPicture() && (!item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
       return item->GetPath();
     break;
-#ifdef HAS_DS_PLAYER
-  case LISTITEM_ITEM_TYPE:
-	  if (item->m_itemType == CFileItem::ITEM_TYPE_BD)
-		  return "bd";
-	  else if (item->m_itemType == CFileItem::ITEM_TYPE_DVD)
-		  return "dvd";
-	  break;
-#endif
   case LISTITEM_STUDIO:
     if (item->HasVideoInfoTag())
       return StringUtils::Join(item->GetVideoInfoTag()->m_studio, g_advancedSettings.m_videoItemSeparator);

@@ -185,11 +185,6 @@ public:
   float GetSeekPercent() const;
   std::string GetCurrentPlayTimeRemaining(TIME_FORMAT format) const;
 
-#ifdef HAS_DS_PLAYER
-  std::string GetAudioStreamName(int iStream);
-  std::string GetSubtitleName(int iStream);
-#endif
-
   bool GetDisplayAfterSeek();
   void SetDisplayAfterSeek(unsigned int timeOut = 2500, int seekOffset = 0);
   void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
