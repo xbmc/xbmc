@@ -268,6 +268,23 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
           callback->OnStorageSafelyRemoved(label);
         changed = true;
       }
+      if (strcmp(action, "change") == 0)
+      {
+        if (mountpoint)
+        {
+          CLog::Log(LOGNOTICE, "UDev: Changed / Added %s", mountpoint);
+          if (callback)
+            callback->OnStorageAdded(label, mountpoint);
+          changed = true;
+        }
+        const char *eject_request = udev_device_get_property_value(dev, "DISK_EJECT_REQUEST");
+        if (eject_request && strcmp(eject_request, "1") == 0)
+        {
+          if (callback)
+            callback->OnStorageSafelyRemoved(label);
+          changed = true;
+        }
+      }
     }
     udev_device_unref(dev);
   }
