@@ -1409,7 +1409,7 @@
           <level>0</level>
           <default>original</default>
           <constraints>
-            <options>streamlanguages</options>
+            <options>subtitlestreamlanguages</options>
           </constraints>
           <control type="list" format="string" />
         </setting>
