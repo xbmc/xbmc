@@ -3963,7 +3963,7 @@ void CApplication::LoadVideoSettings(const CFileItem& item)
     }
 
     CStreamDetails streamDetails = item.GetVideoInfoTag()->m_streamDetails;
-    int res = streamDetails.VideoDimsToResolution(streamDetails.GetVideoWidth(), streamDetails.GetVideoHeight());
+    int res = CMadvrCallback::Get()->VideoDimsToResolution(streamDetails.GetVideoWidth(), streamDetails.GetVideoHeight());
     std::string tvShowName = item.GetVideoInfoTag()->m_strShowTitle;
 
     CLog::Log(LOGDEBUG, "Loading madvr settings for %s with resolution id: %i", item.GetPath().c_str(), res);

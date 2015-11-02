@@ -138,7 +138,6 @@ public:
   std::string GetStereoMode(int idx = 0) const;
 #ifdef HAS_DS_PLAYER
   std::string GetVideoFourcc(int idx = 0) const;
-  int VideoDimsToResolution(int iWidth, int iHeight);
 #endif
 
   std::string GetAudioCodec(int idx = 0) const;

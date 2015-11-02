@@ -210,6 +210,7 @@ public:
   void IncRenderCount();
   void ResetRenderCount();
   bool GuiVisible(MADVR_RENDER_LAYER layer = RENDER_LAYER_ALL);
+  int VideoDimsToResolution(int iWidth, int iHeight);
 
 private:
   CMadvrCallback();

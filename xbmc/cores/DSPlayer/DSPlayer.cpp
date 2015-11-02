@@ -1105,7 +1105,7 @@ void CDSPlayer::SetMadvrResolution()
     return;
 
   CStreamDetails streamDetails;
-  int res = streamDetails.VideoDimsToResolution(GetPictureWidth(), GetPictureHeight());
+  int res = CMadvrCallback::Get()->VideoDimsToResolution(GetPictureWidth(), GetPictureHeight());
   std::string str = g_application.CurrentFileItem().GetVideoInfoTag()->m_strShowTitle;
 
   CMediaSettings::GetInstance().GetCurrentMadvrSettings().m_Resolution = res;

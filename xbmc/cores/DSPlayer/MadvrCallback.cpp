@@ -81,6 +81,48 @@ bool CMadvrCallback::GuiVisible(MADVR_RENDER_LAYER layer)
   return result;
 }
 
+int CMadvrCallback::VideoDimsToResolution(int iWidth, int iHeight)
+{
+  int res = 0;
+  int madvr_res = -1;
+
+  if (iWidth == 0 || iHeight == 0)
+    res = 0;
+  else if (iWidth <= 720 && iHeight <= 480)
+    res = 480;
+  // 720x576 (PAL) (768 when rescaled for square pixels)
+  else if (iWidth <= 768 && iHeight <= 576)
+    res = 576;
+  // 960x540 (sometimes 544 which is multiple of 16)
+  else if (iWidth <= 960 && iHeight <= 544)
+    res = 540;
+  // 1280x720
+  else if (iWidth <= 1280 && iHeight <= 720)
+    res = 720;
+  // 1920x1080
+  else if (iWidth <= 1920 && iHeight <= 1080)
+    res = 1080;
+  // 4K
+  else if (iWidth * iHeight >= 6000000)
+    res = 2160;
+  else
+    res = 0;
+
+  if (res == 480 || res == 540 || res == 576)
+    madvr_res = MADVR_RES_SD;
+
+  if (res == 720)
+    madvr_res = MADVR_RES_720;
+
+  if (res == 1080)
+    madvr_res = MADVR_RES_1080;
+
+  if (res == 2160)
+    madvr_res = MADVR_RES_2160;
+
+  return madvr_res;
+}
+
 bool CMadvrCallback::UsingMadvr()
 {
   return (m_pAllocatorCallback != NULL);
