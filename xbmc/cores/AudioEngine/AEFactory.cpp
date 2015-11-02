@@ -27,6 +27,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
+#include "utils/SystemInfo.h"
 
 IAE* CAEFactory::AE = NULL;
 static float  g_fVolume = 1.0f;
@@ -178,6 +179,15 @@ bool CAEFactory::SupportsRaw(AEDataFormat format, int samplerate)
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) == AE_CONFIG_FIXED)
     return false;
 
+#if defined(HAS_LIBRKCODEC)
+  if (g_sysinfo.GetCPUHardware().find("rk3368") != std::string::npos)
+  {
+    if(AE)
+      return AE->SupportsRaw(format, samplerate);
+
+    return false;
+  }
+#endif
   // check if the format is enabled in settings
   if (format == AE_FMT_AC3 && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH))
     return false;

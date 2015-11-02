@@ -30,6 +30,7 @@
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/DataCacheCore.h"
+#include "utils/SystemInfo.h"
 
 #include <sstream>
 #include <iomanip>
@@ -570,7 +571,14 @@ void CDVDPlayerAudio::Process()
     }
 
     // Zero out the frame data if we are supposed to silence the audio
-    if (m_silence || m_syncclock)
+    bool bIsPassthrough = false;
+#if defined(HAS_LIBRKCODEC)
+    if (g_sysinfo.GetCPUHardware().find("rk3368") == std::string::npos)
+    {
+      bIsPassthrough = IsPassthrough();
+    }
+#endif
+    if ((m_silence || m_syncclock) && (!bIsPassthrough))
     {
       int size = audioframe.nb_frames * audioframe.framesize / audioframe.planes;
       for (unsigned int i=0; i<audioframe.planes; i++)
@@ -764,7 +772,12 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
     // below a given threshold. the constants are aligned with known
     // durations: DTS = 11ms, AC3 = 32ms
     // during this stage audio is muted
+#if defined(HAS_LIBRKCODEC)
+    // here in passthrough  mode, skip & duplicate sync may cause power amplifier confuse; by rk :)
+    if ((error > DVD_MSEC_TO_TIME(10) && !IsPassthrough()) || (error > DVD_MSEC_TO_TIME(400)))
+#else
     if (error > DVD_MSEC_TO_TIME(10))
+#endif
     {
       unsigned int nb_frames = audioframe.nb_frames;
       double duration = audioframe.duration;
@@ -791,7 +804,11 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
 
       m_dvdAudio.AddPackets(audioframe);
     }
+#if defined(HAS_LIBRKCODEC)
+    else if ((error < -DVD_MSEC_TO_TIME(32) && !IsPassthrough()) || (error < -DVD_MSEC_TO_TIME(200)))
+#else
     else if (error < -DVD_MSEC_TO_TIME(32))
+#endif
     {
       m_dvdAudio.SetPlayingPts(audioframe.pts);
       CLog::Log(LOGNOTICE,"CDVDPlayerAudio::OutputPacket skipping a packets of duration %d",

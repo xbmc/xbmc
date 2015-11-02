@@ -21,7 +21,10 @@
 #include "DVDAudioCodecPassthrough.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDStreamInfo.h"
-
+#if defined(HAS_LIBRKCODEC)
+#include "../Video/DVDVideoCodecRK.h"
+#endif
+#include "utils/SystemInfo.h"
 #include <algorithm>
 
 #include "cores/AudioEngine/AEFactory.h"
@@ -45,6 +48,19 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
   bool bSupportsTrueHDOut = CAEFactory::SupportsRaw(AE_FMT_TRUEHD, 192000);
   bool bSupportsDTSHDOut  = CAEFactory::SupportsRaw(AE_FMT_DTSHD, 192000);
 
+#if defined(HAS_LIBRKCODEC)
+  if (g_sysinfo.GetCPUHardware().find("rk3368") != std::string::npos)
+  {
+    /* only get the dts core from the parser if we don't support dtsHD,*/
+    /* add by rockchip if is spdif dts-hd get core to dts*/
+    if (rk_get_audio_setting() == MEDIA_AUDIO_SPDIF)
+    {
+      bSupportsDTSHDOut = false;
+      bSupportsTrueHDOut = false;
+      bSupportsEAC3Out = false;
+    }
+  }
+#endif
   /* only get the dts core from the parser if we don't support dtsHD */
   m_info.SetCoreOnly(!bSupportsDTSHDOut);
   m_bufferSize = 0;

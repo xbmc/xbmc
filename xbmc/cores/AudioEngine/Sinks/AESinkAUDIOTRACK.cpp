@@ -31,6 +31,10 @@
 #include "android/jni/AudioFormat.h"
 #include "android/jni/AudioManager.h"
 #include "android/jni/AudioTrack.h"
+#include "utils/SystemInfo.h"
+#if defined(HAS_LIBRKCODEC)
+#include "DVDCodecs/Video/DVDVideoCodecRK.h"
+#endif
 
 using namespace jni;
 
@@ -74,6 +78,12 @@ static const AEChannel KnownChannels[] = { AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_L
 
 static bool Has71Support()
 {
+#if defined(HAS_LIBRKCODEC)
+  if (g_sysinfo.GetCPUHardware().find("rk3368") != std::string::npos)
+  {
+    return true;
+  }
+#endif
   /* Android 5.0 introduced side channels */
   return CJNIAudioManager::GetSDKVersion() >= 21;
 }
@@ -138,8 +148,13 @@ static CAEChannelInfo AUDIOTRACKChannelMaskToAEChannelMap(int atMask)
 
 static int AEChannelMapToAUDIOTRACKChannelMask(CAEChannelInfo info)
 {
-  if (info[0] == AE_CH_RAW)
-    return CJNIAudioFormat::CHANNEL_OUT_STEREO;
+#if defined(HAS_LIBRKCODEC)
+  if (g_sysinfo.GetCPUHardware().find("rk3368") == std::string::npos)
+  {
+    if (info[0] == AE_CH_RAW)
+      return CJNIAudioFormat::CHANNEL_OUT_STEREO;
+  }
+#endif
 #ifdef LIMIT_TO_STEREO_AND_5POINT1_AND_7POINT1
   if (info.Count() > 6 && Has71Support())
     return CJNIAudioFormat::CHANNEL_OUT_5POINT1
@@ -222,9 +237,23 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     aml_set_audio_passthrough(m_passthrough);
 #endif
 
+#if defined(HAS_LIBRKCODEC)
+  if (g_sysinfo.GetCPUHardware().find("rk3368") != std::string::npos)
+  {
+    rk_set_audio_passthrough(m_passthrough);
+  }
+#endif
+
   int atChannelMask = AEChannelMapToAUDIOTRACKChannelMask(m_format.m_channelLayout);
 
+#if defined(HAS_LIBRKCODEC)
+  if (g_sysinfo.GetCPUHardware().find("rk3368") == std::string::npos)
+  {
+    m_format.m_sampleRate     = CJNIAudioTrack::getNativeOutputSampleRate(CJNIAudioManager::STREAM_MUSIC);
+  }
+#else
   m_format.m_sampleRate     = CJNIAudioTrack::getNativeOutputSampleRate(CJNIAudioManager::STREAM_MUSIC);
+#endif
   m_format.m_dataFormat     = AE_FMT_S16LE;
 
   while (!m_at_jni)
@@ -313,7 +342,17 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   uint32_t head_pos = (uint32_t)m_at_jni->getPlaybackHeadPosition();
 
   double delay = (double)(m_frames_written - head_pos) / m_format.m_sampleRate;
-
+#if defined(HAS_LIBRKCODEC)
+  if (g_sysinfo.GetCPUHardware().find("rk3368") != std::string::npos)
+  {
+    // delay may may be a transient error so a threshold here
+    if (delay > 0.4)
+      delay = 0.4;
+    // use for rk 23.976 & 59.94 sync
+    double adjust_delay = (double)rk_get_adjust_latency() / DVD_TIME_BASE;
+    delay += adjust_delay;
+  }
+#endif
   status.SetDelay(delay);
 }
 
@@ -413,6 +452,14 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_dataFormats.push_back(AE_FMT_S16LE);
   m_info.m_dataFormats.push_back(AE_FMT_AC3);
   m_info.m_dataFormats.push_back(AE_FMT_DTS);
+#if defined(HAS_LIBRKCODEC)
+  if (g_sysinfo.GetCPUHardware().find("rk3368") != std::string::npos)
+  {
+    m_info.m_dataFormats.push_back(AE_FMT_EAC3);
+    m_info.m_dataFormats.push_back(AE_FMT_TRUEHD);
+    m_info.m_dataFormats.push_back(AE_FMT_DTSHD);
+  }
+#endif
 #if 0 //defined(__ARM_NEON__)
   if (g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON)
     m_info.m_dataFormats.push_back(AE_FMT_FLOAT);
