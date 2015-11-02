@@ -4132,10 +4132,10 @@ std::string CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
     if (tag.GetAlbum().size()) { return tag.GetAlbum(); }
     break;
   case MUSICPLAYER_ARTIST:
-    if (tag.GetArtist().size()) { return tag.GetArtistString(); }
+    if (tag.GetArtistString().size()) { return tag.GetArtistString(); }
     break;
   case MUSICPLAYER_ALBUM_ARTIST:
-    if (tag.GetAlbumArtist().size()) { return tag.GetAlbumArtistString(); }
+    if (tag.GetAlbumArtistString().size()) { return tag.GetAlbumArtistString(); }
     break;
   case MUSICPLAYER_YEAR:
     if (tag.GetYear()) { return tag.GetYearString(); }
