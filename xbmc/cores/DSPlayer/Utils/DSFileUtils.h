@@ -34,4 +34,16 @@ public:
   static bool Exists(const std::string& strFileName, long* errCode = NULL);
 };
 
+class CDSCharsetConverter
+{
+public:
+  static int getCharsetIdByName(const std::string& charsetName);
+};
+
+class CDSTimeUtils
+{
+public:
+  static int64_t GetPerfCounter();
+};
+
 #endif

@@ -376,6 +376,7 @@ public:
   void SetTimePerFrame(REFERENCE_TIME iTimePerFrame);
 
   void SelectBestSubtitle();
+
 private:
   void DisconnectCurrentSubtitlePins(void);
   IPin *GetFirstSubtitlePin(void);

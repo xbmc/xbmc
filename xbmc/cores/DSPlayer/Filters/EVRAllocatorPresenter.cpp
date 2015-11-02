@@ -38,6 +38,7 @@
 #include "Application.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
+#include "utils/DSFileUtils.h"
 
 #if (0)    // Set to 1 to activate EVR traces
 #define TRACE_EVR(x)    CLog::Log(0,x)
@@ -1186,9 +1187,9 @@ bool CEVRAllocatorPresenter::GetImageFromMixer()
     pSample->GetUINT32(GUID_SURFACE_INDEX, &dwSurface);
 
     {
-      llClockBefore = CTimeUtils::GetPerfCounter();
+      llClockBefore = CDSTimeUtils::GetPerfCounter();
       hr = m_pMixer->ProcessOutput(0, 1, &Buffer, &dwStatus);
-      llClockAfter = CTimeUtils::GetPerfCounter();
+      llClockAfter = CDSTimeUtils::GetPerfCounter();
     }
     if (FAILED(hr))
     {
@@ -1957,7 +1958,7 @@ void CEVRAllocatorPresenter::RenderThread()
   int NextSleepTime = 1;
   while (!bQuit)
   {
-    int64_t  llPerf = CTimeUtils::GetPerfCounter();
+    int64_t  llPerf = CDSTimeUtils::GetPerfCounter();
     if (!g_dsSettings.pRendererSettings->vSyncAccurate && NextSleepTime == 0)
       NextSleepTime = 1;
     dwObject = WaitForMultipleObjects(countof(hEvts), hEvts, FALSE, std::max(NextSleepTime < 0 ? 1 : NextSleepTime, 0));
@@ -1998,7 +1999,7 @@ void CEVRAllocatorPresenter::RenderThread()
 
       {
         Com::SmartPtr<IMFSample>    pMFSample;
-        int64_t  llPerf = CTimeUtils::GetPerfCounter();
+        int64_t  llPerf = CDSTimeUtils::GetPerfCounter();
         int                         nSamplesLeft = 0;
         if (SUCCEEDED(GetScheduledSample(&pMFSample, nSamplesLeft)))
         {
@@ -2041,7 +2042,7 @@ void CEVRAllocatorPresenter::RenderThread()
           }
           else if ((m_nRenderState == Started))
           {
-            int64_t CurrentCounter = CTimeUtils::GetPerfCounter();
+            int64_t CurrentCounter = CDSTimeUtils::GetPerfCounter();
             // Calculate wake up timer
             if (!m_bSignaledStarvation)
             {

@@ -1474,7 +1474,7 @@ void CSubtitleManager::Initialize()
     break;
   }
 
-  style.charSet = g_charsetConverter.getCharsetIdByName(g_langInfo.GetSubtitleCharSet());
+  style.charSet = CDSCharsetConverter::getCharsetIdByName(g_langInfo.GetSubtitleCharSet());
 
   style.borderStyle = CSettings::GetInstance().GetInt("subtitles.border");
   style.shadowDepthX = style.shadowDepthY = CSettings::GetInstance().GetInt("subtitles.shadowdepth");

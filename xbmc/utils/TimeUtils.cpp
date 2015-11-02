@@ -22,9 +22,6 @@
 #include "XBDateTime.h"
 #include "threads/SystemClock.h"
 #include "guilib/GraphicContext.h"
-#ifdef HAS_DS_PLAYER
-#include "Streams.h"
-#endif
 
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
@@ -125,23 +122,3 @@ CDateTime CTimeUtils::GetLocalTime(time_t time)
 
   return result;
 }
-
-#ifdef HAS_DS_PLAYER
-int64_t CTimeUtils::GetPerfCounter()
-{
-  LARGE_INTEGER i64Ticks100ns;
-  LARGE_INTEGER llPerfFrequency;
-
-  QueryPerformanceFrequency (&llPerfFrequency);
-  if (llPerfFrequency.QuadPart != 0)
-  {
-    QueryPerformanceCounter (&i64Ticks100ns);
-    return llMulDiv(i64Ticks100ns.QuadPart, 10000000, llPerfFrequency.QuadPart, 0);
-  }
-  else
-  {
-    // ms to 100ns units
-    return timeGetTime() * 10000; 
-  }
-}
-#endif
