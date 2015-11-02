@@ -58,6 +58,5 @@ protected:
    \param[in] db Already open video database to be used for interaction
    \return True if the process succeeded, false otherwise
    */
-
   virtual bool Work(CVideoDatabase &db) = 0;
 };
