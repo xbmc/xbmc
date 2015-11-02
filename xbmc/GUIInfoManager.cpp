@@ -619,9 +619,6 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "dateadded",        LISTITEM_DATE_ADDED },
                                   { "dbtype",           LISTITEM_DBTYPE },
                                   { "dbid",             LISTITEM_DBID },
-#ifdef HAS_DS_PLAYER
-								  { "itemtype", LISTITEM_ITEM_TYPE },
-#endif
                                   { "stereoscopicmode", LISTITEM_STEREOSCOPIC_MODE },
                                   { "isstereoscopic",   LISTITEM_IS_STEREOSCOPIC },
                                   { "imdbnumber",       LISTITEM_IMDBNUMBER },

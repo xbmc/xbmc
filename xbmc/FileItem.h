@@ -74,9 +74,6 @@ typedef std::shared_ptr<CCueDocument> CCueDocumentPtr;
 
 /* special startoffset used to indicate that we wish to resume */
 #define STARTOFFSET_RESUME (-1)
-#ifdef HAS_DS_PLAYER
-#define STARTOFFSET_BEGIN  (STARTOFFSET_RESUME - 1)
-#endif
 
 class CMediaSource;
 
@@ -497,13 +494,6 @@ public:
   std::string m_strLockCode;
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;
-#ifdef HAS_DS_PLAYER
-  enum ItemType {
-	  ITEM_TYPE_NONE = 0,
-	  ITEM_TYPE_BD,
-	  ITEM_TYPE_DVD
-  } m_itemType;
-#endif
 
   void SetCueDocument(const CCueDocumentPtr& cuePtr);
   void LoadEmbeddedCue();

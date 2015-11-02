@@ -403,9 +403,6 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_specialSort = item.m_specialSort;
   m_bIsAlbum = item.m_bIsAlbum;
   m_doContentLookup = item.m_doContentLookup;
-#ifdef HAS_DS_PLAYER
-  m_itemType = item.m_itemType;
-#endif
   return *this;
 }
 
@@ -449,9 +446,6 @@ void CFileItem::Reset()
   m_dateTime.Reset();
   m_strLockCode.clear();
   m_mimetype.clear();
-#ifdef HAS_DS_PLAYER
-  m_itemType = ITEM_TYPE_NONE;
-#endif
   delete m_musicInfoTag;
   m_musicInfoTag=NULL;
   delete m_videoInfoTag;
@@ -493,9 +487,6 @@ void CFileItem::Archive(CArchive& ar)
     ar << m_iLockMode;
     ar << m_strLockCode;
     ar << m_iBadPwdCount;
-#ifdef HAS_DS_PLAYER
-	ar << m_itemType;
-#endif
 
     ar << m_bCanQueue;
     ar << m_mimetype;
@@ -553,10 +544,6 @@ void CFileItem::Archive(CArchive& ar)
     m_iLockMode = (LockType)temp;
     ar >> m_strLockCode;
     ar >> m_iBadPwdCount;
-#ifdef HAS_DS_PLAYER
-	ar >> temp;
-	m_itemType = (ItemType)temp;
-#endif
 
     ar >> m_bCanQueue;
     ar >> m_mimetype;
@@ -1443,12 +1430,7 @@ void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
     m_strPath = video.m_strFileNameAndPath;
     m_bIsFolder = false;
   }
-#ifdef HAS_DS_PLAYER
-  if (IsBDFile())
-  {
-	  m_itemType = CFileItem::ITEM_TYPE_BD;
-  }
-#endif  
+  
   *GetVideoInfoTag() = video;
   if (video.m_iSeason == 0)
     SetProperty("isspecial", "true");
