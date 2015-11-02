@@ -24,6 +24,7 @@
 
 #define FLOFSIZE 4
 #define SUBTITLE_CACHESIZE 50
+#define TELETEXT_PAGE_SIZE (40 * 25)
 
 #define number2char(c) ((c) + (((c) <= 9) ? '0' : ('A' - 10)))
 
@@ -393,8 +394,8 @@ typedef struct
 {
   bool Valid;
   long Timestamp;
-  unsigned char  PageChar[40 * 25];
-  TextPageAttr_t PageAtrb[40 * 25];
+  unsigned char  PageChar[TELETEXT_PAGE_SIZE];
+  TextPageAttr_t PageAtrb[TELETEXT_PAGE_SIZE];
 } TextSubtitleCache_t;
 
 /* main data structure */

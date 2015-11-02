@@ -272,8 +272,8 @@ static void DumpSystemInfo(const SYSTEM_INFO* si)
 {
   CLog::Log(LOGDEBUG, "  Processor architecture %d\n", si->wProcessorArchitecture);
   CLog::Log(LOGDEBUG, "  Page size: %d\n", si->dwPageSize);
-  CLog::Log(LOGDEBUG, "  Minimum app address: %d\n", si->lpMinimumApplicationAddress);
-  CLog::Log(LOGDEBUG, "  Maximum app address: %d\n", si->lpMaximumApplicationAddress);
+  CLog::Log(LOGDEBUG, "  Minimum app address: %p\n", si->lpMinimumApplicationAddress);
+  CLog::Log(LOGDEBUG, "  Maximum app address: %p\n", si->lpMaximumApplicationAddress);
   CLog::Log(LOGDEBUG, "  Active processor mask: 0x%x\n", si->dwActiveProcessorMask);
   CLog::Log(LOGDEBUG, "  Number of processors: %d\n", si->dwNumberOfProcessors);
   CLog::Log(LOGDEBUG, "  Processor type: 0x%x\n", si->dwProcessorType);
