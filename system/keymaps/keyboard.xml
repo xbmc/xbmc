@@ -72,6 +72,7 @@
       <menu>ContextMenu</menu>
       <menu mod="longpress">Menu</menu>
       <c>ContextMenu</c>
+      <c mod="longpress">Menu</c>
       <space>Pause</space>
       <x>Stop</x>
       <period>SkipNext</period>
@@ -179,6 +180,7 @@
     <keyboard>
       <i>info</i>
       <end mod="ctrl">ShutDown()</end>
+      <backspace mod="longpress">ActivateWindow(ShutdownMenu)</backspace>
     </keyboard>
   </Home>
   <VirtualKeyboard>
@@ -189,38 +191,39 @@
       <down>Down</down>
       <return>Select</return>
       <enter>Select</enter>
-      <return mod="longpress">Enter</return>
-      <enter mod="longpress">Enter</enter>
       <left mod="longpress">Backspace</left>
       <right mod="longpress">Number0</right> <!-- first entry creates a space -->
       <up mod="longpress">Shift</up>
       <down mod="longpress">Symbols</down>
       <backspace>Backspace</backspace>
       <browser_back>Backspace</browser_back>
-      <backspace mod="longpress">PreviousMenu</backspace>
       <browser_back mod="longpress">PreviousMenu</browser_back>
     </keyboard>
   </VirtualKeyboard>
   <MyTVChannels>
     <keyboard>
       <m mod="ctrl">Move</m>
+      <h>PreviousMenu</h>
     </keyboard>
   </MyTVChannels>
   <MyTVRecordings>
     <keyboard>
       <delete>Delete</delete>
       <r>Rename</r>
+      <k>PreviousMenu</k>
     </keyboard>
   </MyTVRecordings>
   <MyTVTimers>
     <keyboard>
       <delete>Delete</delete>
       <r>Rename</r>
+      <b>PreviousMenu</b>
     </keyboard>
   </MyTVTimers>
   <MyRadioChannels>
     <keyboard>
       <m mod="ctrl">Move</m>
+      <j>PreviousMenu</j>
     </keyboard>
   </MyRadioChannels>
   <MyRadioRecordings>
@@ -235,12 +238,18 @@
       <r>Rename</r>
     </keyboard>
   </MyRadioTimers>
+  <TVGuide>
+    <keyboard>
+      <e>PreviousMenu</e>
+    </keyboard>
+  </TVGuide>
   <MyFiles>
     <keyboard>
       <space>Highlight</space>
       <delete>Delete</delete>
       <m>Move</m>
       <r>Rename</r>
+      <play_pause mod="longpress">Highlight</play_pause>
     </keyboard>
   </MyFiles>
   <MyMusicPlaylist>
