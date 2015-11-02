@@ -4,7 +4,7 @@
 	<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
 	<coordinates>
 		<left>860</left>
-		<top>640</top>
+		<top>655</top>
 	</coordinates>
 	<controls>
 		<control type="group">
