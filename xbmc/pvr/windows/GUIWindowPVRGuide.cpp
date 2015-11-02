@@ -83,9 +83,8 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
   buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);         /* Switch channel */
-
-  if (pItem->HasEPGInfoTag() && pItem->GetEPGInfoTag()->HasRecording())
-    buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 19687);      /* Play recording */
+  buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* Programme information */
+  buttons.Add(CONTEXT_BUTTON_FIND, 19003);              /* Find similar */
 
   if (pItem->GetEPGInfoTag()->HasTimer())
   {
@@ -101,8 +100,8 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
     buttons.Add(CONTEXT_BUTTON_ADD_TIMER, 19061);       /* Add timer */
   }
 
-  buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* Programme information */
-  buttons.Add(CONTEXT_BUTTON_FIND, 19003);              /* Find similar */
+  if (pItem->GetEPGInfoTag()->HasRecording())
+    buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 19687);      /* Play recording */
 
   if (m_viewControl.GetCurrentControl() == GUIDE_VIEW_TIMELINE)
   {
@@ -111,8 +110,7 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
     buttons.Add(CONTEXT_BUTTON_END, 19064);             /* Go to end */
   }
 
-  if (pItem->HasEPGInfoTag() &&
-      pItem->GetEPGInfoTag()->HasPVRChannel() &&
+  if (pItem->GetEPGInfoTag()->HasPVRChannel() &&
       g_PVRClients->HasMenuHooks(pItem->GetEPGInfoTag()->ChannelTag()->ClientID(), PVR_MENUHOOK_EPG))
     buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
 
