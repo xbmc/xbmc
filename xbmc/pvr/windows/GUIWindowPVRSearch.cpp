@@ -48,6 +48,8 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
     return;
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
+  buttons.Add(CONTEXT_BUTTON_CLEAR, 19232);               /* Clear search results */
+
   if (pItem->HasEPGInfoTag())
   {
     buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* Programme information */
@@ -65,16 +67,14 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
       buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);      /* Record */
       buttons.Add(CONTEXT_BUTTON_ADD_TIMER, 19061);       /* Add timer */
     }
+
     if (pItem->GetEPGInfoTag()->HasRecording())
       buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19687);       /* Play recording */
 
-    buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* Programme information */
     if (pItem->GetEPGInfoTag()->HasPVRChannel() &&
         g_PVRClients->HasMenuHooks(pItem->GetEPGInfoTag()->ChannelTag()->ClientID(), PVR_MENUHOOK_EPG))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
   }
-
-  buttons.Add(CONTEXT_BUTTON_CLEAR, 19232);             /* Clear search results */
 
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
   CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);
