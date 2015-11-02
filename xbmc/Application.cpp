@@ -1515,6 +1515,20 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
     }
   }
 #endif
+
+#if defined(HAS_LIBRKCODEC)
+  else if (settingId == CSettings::SETTING_VIDEOPLAYER_USERKCODEC)
+  {
+    // Do not permit rockchip codec to be used on non-rk platforms.
+    // The setting will be hidden but the default value is true,
+    // so change it to false.
+    if (g_sysinfo.GetCPUHardware().find("rk3368") == std::string::npos)
+    {
+      CSettingBool *userkcodec = (CSettingBool*)setting;
+      return userkcodec->SetValue(false);
+    }
+  }
+#endif
 #if defined(TARGET_ANDROID)
   if (settingId == CSettings::SETTING_VIDEOPLAYER_USESTAGEFRIGHT)
   {

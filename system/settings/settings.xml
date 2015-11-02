@@ -692,6 +692,15 @@
           </updates>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.userkcodec" type="boolean" label="38030" help="38031">
+          <requirement>HAVE_RKCODEC</requirement>
+          <level>2</level>
+          <default>true</default>
+          <updates>
+            <update type="change" />
+          </updates>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.usevdpau" type="boolean" label="13425" help="36155">
           <requirement>HAVE_LIBVDPAU</requirement>
           <level>2</level>

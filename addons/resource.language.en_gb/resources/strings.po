@@ -18119,3 +18119,14 @@ msgstr ""
 msgctxt "#38020"
 msgid "Enables decoding of high quality DTS-HD audio streams. Note: This increases CPU load and is only available when DTS and DTS-HD audio passthrough are disabled."
 msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#38030"
+msgid "Allow hardware acceleration - RockchipCodec"
+msgstr
+
+#. Description of setting "Videos -> Playback -> Allow hardware acceleration (RockchipCodec)" with label #38030
+#: system/settings/settings.xml
+msgctxt "#38031"
+msgid "Enable hardware video decode using Rockchip decoder."
+msgstr ""

@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.ACCESS_SURFACE_FLINGER" />
 
     <uses-feature android:name="android.hardware.screen.landscape" android:required="true" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />

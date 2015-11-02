@@ -254,6 +254,10 @@ void CSettingConditions::Initialize()
   if (aml_present())
     m_simpleConditions.insert("have_amcodec");
 #endif
+#ifdef HAS_LIBRKCODEC
+  if (g_sysinfo.GetCPUHardware().find("rk3368") != std::string::npos)
+    m_simpleConditions.insert("have_rkcodec");
+#endif
 #ifdef TARGET_DARWIN_OSX
   if (CDarwinUtils::IsSnowLeopard())
     m_simpleConditions.insert("osxissnowleopard");

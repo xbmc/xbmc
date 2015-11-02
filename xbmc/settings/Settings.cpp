@@ -159,6 +159,7 @@ const std::string CSettings::SETTING_VIDEOPLAYER_QUITSTEREOMODEONSTOP = "videopl
 const std::string CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD = "videoplayer.rendermethod";
 const std::string CSettings::SETTING_VIDEOPLAYER_HQSCALERS = "videoplayer.hqscalers";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEAMCODEC = "videoplayer.useamcodec";
+const std::string CSettings::SETTING_VIDEOPLAYER_USERKCODEC = "videoplayer.userkcodec";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC = "videoplayer.usemediacodec";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEVDPAU = "videoplayer.usevdpau";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER = "videoplayer.usevdpaumixer";
@@ -1098,6 +1099,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION);
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_TESTPATTERN);
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEAMCODEC);
+  settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USERKCODEC);
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC);
   m_settingsManager->RegisterCallback(&g_application, settingSet);
 

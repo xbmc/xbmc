@@ -29,6 +29,10 @@ SRCS += DVDVideoCodecAmlogic.cpp
 INCLUDES += -I$(prefix)/include/amcodec
 INCLUDES += -I$(prefix)/include/amplayer
 endif
+ifeq (@USE_LIBRKCODEC@,1)
+SRCS += DVDVideoCodecRK.cpp
+SRCS += RKCodec.cpp
+endif
 
 ifeq (@USE_ANDROID@,1)
 SRCS += DVDVideoCodecAndroidMediaCodec.cpp

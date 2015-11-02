@@ -355,6 +355,14 @@ void CDVDPlayerVideo::Process()
 
     if (pMsg->IsType(CDVDMsg::GENERAL_SYNCHRONIZE))
     {
+#if defined(HAS_LIBRKCODEC)
+      if(CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USERKCODEC))
+      {
+        m_packets.clear();
+        if(m_pVideoCodec)
+          m_pVideoCodec->Reset();
+      }
+#endif
       if(((CDVDMsgGeneralSynchronize*)pMsg)->Wait(100, SYNCSOURCE_VIDEO))
       {
         CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_SYNCHRONIZE");

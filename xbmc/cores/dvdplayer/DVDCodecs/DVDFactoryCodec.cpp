@@ -50,6 +50,9 @@
 #include "Video/DVDVideoCodecAndroidMediaCodec.h"
 #include "android/activity/AndroidFeatures.h"
 #endif
+#if defined(HAS_LIBRKCODEC)
+#include "Video/DVDVideoCodecRK.h"
+#endif
 #include "Audio/DVDAudioCodecFFmpeg.h"
 #include "Audio/DVDAudioCodecPassthrough.h"
 #include "Overlay/DVDOverlayCodecSSA.h"
@@ -154,6 +157,11 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #elif defined(TARGET_DARWIN)
   hwSupport += "VideoToolBoxDecoder:no ";
 #endif
+#if defined(HAS_LIBRKCODEC)
+       hwSupport += "RKCodec:yes ";
+#else
+       hwSupport += "RKCodec:no ";
+#endif
 #if defined(HAS_LIBAMCODEC)
   hwSupport += "AMCodec:yes ";
 #else
@@ -201,6 +209,12 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #endif
   CLog::Log(LOGDEBUG, "CDVDFactoryCodec: compiled in hardware support: %s", hwSupport.c_str());
 
+#if defined(HAS_LIBRKCODEC)
+  if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USERKCODEC))
+  {
+    if((pCodec = OpenCodec(new CDVDVideoCodecRK(), hint, options))) return pCodec;
+  }
+#endif
   if (hint.stills && (hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_MPEG1VIDEO))
   {
      // If dvd is an mpeg2 and hint.stills

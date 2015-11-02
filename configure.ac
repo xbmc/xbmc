@@ -1870,6 +1870,10 @@ for codecs in `echo $add_codecs | sed 's/,/ /g'`; do
         AC_CHECK_HEADER([amcodec/codec_error.h],, AC_MSG_ERROR($missing_headers))
         XB_ADD_CODEC([LIBAMCODEC], [amcodec], [$codecs])
         ;;
+
+    *rkcodec*)
+        XB_ADD_CODEC([LIBRKCODEC], [rkcodec], [$codecs])
+        ;;
     *libstagefright*)
         XB_ADD_CODEC([LIBSTAGEFRIGHT], [libstagefright], [$codecs])
         ;;
