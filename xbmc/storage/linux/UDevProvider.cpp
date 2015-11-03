@@ -254,19 +254,39 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
       else if (mountpoint)
         label = URIUtils::GetFileName(mountpoint);
 
-      if (!strcmp(action, "add") && !strcmp(devtype, "partition"))
+      const char *fs_usage = udev_device_get_property_value(dev, "ID_FS_USAGE");
+      if (strcmp(action, "add") == 0 && (fs_usage && strcmp(fs_usage, "filesystem") == 0))
       {
         CLog::Log(LOGNOTICE, "UDev: Added %s", mountpoint);
         if (callback)
           callback->OnStorageAdded(label, mountpoint);
         changed = true;
       }
-      if (!strcmp(action, "remove") && !strcmp(devtype, "partition"))
+      if (strcmp(action, "remove") == 0 && (fs_usage && strcmp(fs_usage, "filesystem") == 0))
       {
         CLog::Log(LOGNOTICE, "UDev: Removed %s", mountpoint);
         if (callback)
           callback->OnStorageSafelyRemoved(label);
         changed = true;
+      }
+      if (strcmp(action, "change") == 0 && strcmp(devtype, "disk") == 0)
+      {
+        const char *media_change = udev_device_get_property_value(dev, "DISK_MEDIA_CHANGE");
+        const char *eject_request = udev_device_get_property_value(dev, "DISK_EJECT_REQUEST");
+        if (media_change && strcmp(media_change, "1") == 0)
+        {
+          CLog::Log(LOGNOTICE, "UDev: Changed / Added %s", mountpoint);
+          if (callback)
+            callback->OnStorageAdded(label, mountpoint);
+          changed = true;
+        }
+        if (eject_request && strcmp(eject_request, "1") == 0)
+        {
+          CLog::Log(LOGNOTICE, "UDev: Changed / Removed %s", mountpoint);
+          if (callback)
+            callback->OnStorageSafelyRemoved(label);
+          changed = true;
+        }
       }
     }
     udev_device_unref(dev);
