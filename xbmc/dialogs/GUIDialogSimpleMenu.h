@@ -29,6 +29,4 @@ public:
   /*! \brief Show dialog allowing selection of wanted playback item */
   static bool ShowPlaySelection(CFileItem& item);
   static bool ShowPlaySelection(CFileItem& item, const std::string& directory);
-private:
-  static int GetDefaultPlayer(const CFileItem &item);
 };
