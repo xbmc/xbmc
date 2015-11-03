@@ -52,6 +52,7 @@ public:
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
   virtual void SetMinWidth(float minWidth);
+  virtual void SetLabel(const std::string& label);
   void SetAltLabel(const std::string& label);
   virtual std::string GetDescription() const;
   void SetToggleSelect(const std::string &toggleSelect);
