@@ -149,6 +149,12 @@ bool CGUIToggleButtonControl::UpdateColors()
   return changed;
 }
 
+void CGUIToggleButtonControl::SetLabel(const std::string &label)
+{
+  CGUIButtonControl::SetLabel(label);
+  m_selectButton.SetLabel(label);
+}
+
 void CGUIToggleButtonControl::SetAltLabel(const std::string &label)
 {
   if (label.size())
