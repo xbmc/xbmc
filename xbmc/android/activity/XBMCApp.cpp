@@ -157,6 +157,12 @@ void CXBMCApp::onResume()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
 
+  // Some intent filters MUST be registered in code rather than through the manifest
+  CJNIIntentFilter intentFilter;
+  intentFilter.addAction("android.intent.action.BATTERY_CHANGED");
+  intentFilter.addAction("android.intent.action.SCREEN_ON");
+  registerReceiver(*this, intentFilter);
+
   if (!g_application.IsInScreenSaver())
     EnableWakeLock(true);
   else
