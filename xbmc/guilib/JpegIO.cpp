@@ -340,7 +340,7 @@ bool CJpegIO::Read(unsigned char* buffer, unsigned int bufSize, unsigned int min
   }
 }
 
-bool CJpegIO::Decode(unsigned char* const pixels, unsigned int pitch, unsigned int format)
+bool CJpegIO::Decode(unsigned char* const pixels, unsigned int width, unsigned int height, unsigned int pitch, unsigned int format)
 {
   unsigned char *dst = (unsigned char*)pixels;
 
@@ -416,7 +416,7 @@ bool CJpegIO::CreateThumbnailFromMemory(unsigned char* buffer, unsigned int bufS
   pitch = Width() * 3;
   sourceBuf = new unsigned char [Height() * pitch];
 
-  if (!Decode(sourceBuf,pitch,XB_FMT_RGB8))
+  if (!Decode(sourceBuf, Width(), Height(),pitch,XB_FMT_RGB8))
   {
     delete [] sourceBuf;
     return false;

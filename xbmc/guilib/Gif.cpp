@@ -535,7 +535,7 @@ bool Gif::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsig
   return true;
 }
 
-bool Gif::Decode(unsigned char* const pixels, unsigned int pitch, unsigned int format)
+bool Gif::Decode(unsigned char* const pixels, unsigned int width, unsigned int height, unsigned int pitch, unsigned int format)
 {
   if (m_width == 0 || m_height == 0
     || !m_dll.IsLoaded() || !m_gif
