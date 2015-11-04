@@ -542,6 +542,9 @@ bool Gif::Decode(unsigned char* const pixels, unsigned int pitch, unsigned int f
     || format != XB_FMT_A8R8G8B8 || !m_numFrames)
     return false;
 
+  if (m_frames.empty() || !m_frames[0]->m_pImage)
+    return false;
+
   const unsigned char *src = m_frames[0]->m_pImage;
   unsigned char* dst = pixels;
 
