@@ -160,7 +160,23 @@ namespace PVR
      * @param strName The friendly name of the client or an empty string when it wasn't found.
      * @return True if the client was found, false otherwise.
      */
-    bool GetClientName(int iClientId, std::string &strName) const;
+    bool GetClientFriendlyName(int iClientId, std::string &strName) const;
+
+    /*!
+     * @brief Get the addon name for the client with the given id.
+     * @param iClientId The id of the client.
+     * @param strName The addon name of the client or an empty string when it wasn't found.
+     * @return True if the client was found, false otherwise.
+     */
+    bool GetClientAddonName(int iClientId, std::string &strName) const;
+
+    /*!
+     * @brief Get the addon icon for the client with the given id.
+     * @param iClientId The id of the client.
+     * @param strIcon The path to the addon icon of the client or an empty string when it wasn't found.
+     * @return True if the client was found, false otherwise.
+     */
+    bool GetClientAddonIcon(int iClientId, std::string &strIcon) const;
 
     /*!
      * @brief Returns properties about all connected clients
