@@ -30,6 +30,7 @@
 using namespace XFILE;
 
 CSplash::CSplash()
+  : m_image(nullptr)
 {
 }
 
