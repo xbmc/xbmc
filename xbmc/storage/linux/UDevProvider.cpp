@@ -243,7 +243,6 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
       return false;
 
     const char *action  = udev_device_get_action(dev);
-    const char *devtype = udev_device_get_devtype(dev);
     if (action)
     {
       std::string label;
