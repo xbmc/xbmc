@@ -1291,9 +1291,6 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
       }
     }
 
-    // set ffmpeg type
-    stream->orig_type = pStream->codec->codec_type;
-
     // generic stuff
     if (pStream->duration != (int64_t)AV_NOPTS_VALUE)
       stream->iDuration = (int)((pStream->duration / AV_TIME_BASE) & 0xFFFFFFFF);
@@ -1560,9 +1557,9 @@ bool CDVDDemuxFFmpeg::IsProgramChange()
   {
     int idx = m_pFormatContext->programs[m_program]->stream_index[i];
     CDemuxStream *stream = GetStreamInternal(idx);
-    if(!stream)
+    if (!stream)
       return true;
-    if(m_pFormatContext->streams[idx]->codec->codec_type != stream->orig_type)
+    if (m_pFormatContext->streams[idx]->codec->codec_id != stream->codec)
       return true;
   }
   return false;
