@@ -548,17 +548,23 @@ bool Gif::Decode(unsigned char* const pixels, unsigned int width, unsigned int h
   const unsigned char *src = m_frames[0]->m_pImage;
   unsigned char* dst = pixels;
 
-  if (pitch == m_pitch)
+  unsigned int copyHeight = std::min(m_height, height);
+  unsigned int copyPitch = std::min(m_pitch, pitch);
+
+  if (pitch == m_pitch && copyHeight == m_height)
+  {
     memcpy(dst, src, m_imageSize);
+  }
   else
   {
-    for (unsigned int y = 0; y < m_height; y++)
+    for (unsigned int y = 0; y < copyHeight; y++)
     {
-      memcpy(dst, src, m_pitch);
+      memcpy(dst, src, copyPitch);
       src += m_pitch;
       dst += pitch;
     }
   }
+
   return true;
 }
 
