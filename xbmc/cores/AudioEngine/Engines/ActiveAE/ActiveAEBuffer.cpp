@@ -160,6 +160,7 @@ CActiveAEBufferPoolResample::CActiveAEBufferPoolResample(AEAudioFormat inputForm
   m_bypassDSP = false;
   m_changeResampler = false;
   m_changeDSP = false;
+  m_lastSamplePts = 0;
 }
 
 CActiveAEBufferPoolResample::~CActiveAEBufferPoolResample()
