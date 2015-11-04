@@ -65,7 +65,7 @@ bool CXImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, u
   return true;
 }
 
-bool CXImage::Decode(unsigned char* const pixels, unsigned int pitch, unsigned int format)
+bool CXImage::Decode(unsigned char* const pixels, unsigned int width, unsigned int height, unsigned int pitch, unsigned int format)
 {
   if (m_image.width == 0 || m_image.height == 0 || !m_dll.IsLoaded())
     return false;
