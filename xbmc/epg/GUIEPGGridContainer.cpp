@@ -594,6 +594,7 @@ void CGUIEPGGridContainer::RenderProgressIndicator()
 {
   if (g_graphicsContext.SetClipRegion(m_rulerPosX, m_rulerPosY, m_gridWidth, m_height))
   {
+    m_guiProgressIndicatorTexture.SetDiffuseColor(m_diffuseColor);
     m_guiProgressIndicatorTexture.Render();
     g_graphicsContext.RestoreClipRegion();
   }
