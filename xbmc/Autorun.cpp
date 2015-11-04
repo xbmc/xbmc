@@ -277,7 +277,8 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
                 ecount++;
                 asize = asize + items[j]->m_dwSize;
               }
-            asize = asize / ecount;
+            if (ecount > 0)
+              asize = asize / ecount;
             // Put largest files in alphabetical order to top of new list.
             for (int j = 0; j < items.Size(); j++)
               if (items[j]->m_dwSize >= asize)
