@@ -46,6 +46,8 @@ bool aml_permissions();
 bool aml_hw3d_present();
 bool aml_wired_present();
 bool aml_support_hevc();
+bool aml_support_hevc_4k2k();
+bool aml_support_h264_4k2k();
 enum AML_DEVICE_TYPE aml_get_device_type();
 void aml_cpufreq_min(bool limit);
 void aml_cpufreq_max(bool limit);
