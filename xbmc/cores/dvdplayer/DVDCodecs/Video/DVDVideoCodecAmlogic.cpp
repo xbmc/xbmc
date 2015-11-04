@@ -90,7 +90,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       m_pFormatName = "am-mpeg2";
       break;
     case AV_CODEC_ID_H264:
-      if ((aml_get_device_type() != AML_DEVICE_TYPE_M8 && aml_get_device_type() != AML_DEVICE_TYPE_M8M2) && ((m_hints.width > 1920) || (m_hints.height > 1088)))
+      if ((!aml_support_h264_4k2k()) && ((m_hints.width > 1920) || (m_hints.height > 1088)))
       {
         // 4K is supported only on Amlogic S802/S812 chip
         return false;
@@ -144,8 +144,8 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       m_pFormatName = "am-avs";
       break;
     case AV_CODEC_ID_HEVC:
-      if ((aml_get_device_type() == AML_DEVICE_TYPE_M8B) || (aml_get_device_type() == AML_DEVICE_TYPE_M8M2)) {
-        if ((aml_get_device_type() == AML_DEVICE_TYPE_M8B) && ((m_hints.width > 1920) || (m_hints.height > 1088)))
+      if (aml_support_hevc()) {
+        if (!aml_support_hevc_4k2k() && ((m_hints.width > 1920) || (m_hints.height > 1088)))
         {
           // 4K HEVC is supported only on Amlogic S812 chip
           return false;
