@@ -78,6 +78,8 @@ public:
     // privates:
     m_averageFrameTime = 1000.f / fabs((float)defaultSpeed);
     m_lastFrameTime = 0;
+    m_textWidth = 0;
+    m_totalWidth = 0;
     m_widthValid = false;
   }
   float GetPixelsPerFrame();
