@@ -392,6 +392,8 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
   m_bUpdateLastScanTime = true;
 
   SetChanged(true);
+  lock.Leave();
+
   NotifyObservers(ObservableMessageEpg);
 
   return true;
