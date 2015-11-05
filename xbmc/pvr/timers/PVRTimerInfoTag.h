@@ -181,11 +181,6 @@ namespace PVR
     void SetMarginEnd(unsigned int iMinutes) { m_iMarginEnd = iMinutes; }
 
     /*!
-     * @brief Show a notification for this timer in the UI
-     */
-    void QueueNotification(void) const;
-
-    /*!
      * @brief Get the text for the notification.
      * @param strText The notification.
      */
