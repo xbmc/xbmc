@@ -389,6 +389,12 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
   {
     switch (m_props.type)
     {
+      case ADDON_PVRDLL:
+      case ADDON_ADSPDLL:
+      case ADDON_AUDIOENCODER:
+      case ADDON_AUDIODECODER:
+      case ADDON_VIZ:
+      case ADDON_SCREENSAVER:
       case ADDON_SCRIPT:
       case ADDON_SCRIPT_LIBRARY:
       case ADDON_SCRIPT_LYRICS:
@@ -406,26 +412,29 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
       case ADDON_SERVICE:
       case ADDON_REPOSITORY:
       case ADDON_CONTEXT_ITEM:
-        {
-          std::string temp = CAddonMgr::GetInstance().GetExtValue(extension->configuration, "@library");
-          m_strLibName = temp;
-        }
-        break;
-      case ADDON_ADSPDLL:
-      case ADDON_AUDIODECODER:
-      case ADDON_AUDIOENCODER:
-      case ADDON_PVRDLL:
-      case ADDON_SCREENSAVER:
-      case ADDON_VIZ:
-        {
-          // if library attribute isn't present, look for a system-dependent one
-          if (m_strLibName.empty())
-            m_strLibName = CAddonMgr::GetInstance().GetPlatformLibraryName(extension->configuration);
-        }
+        m_strLibName = CAddonMgr::GetInstance().GetExtValue(extension->configuration, "@library");
         break;
       default:
         m_strLibName.clear();
         break;
+    }
+
+    // if library attribute isn't present, look for a system-dependent one
+    if (m_strLibName.empty())
+    {
+      switch (m_props.type)
+      {
+        case ADDON_ADSPDLL:
+        case ADDON_AUDIODECODER:
+        case ADDON_AUDIOENCODER:
+        case ADDON_PVRDLL:
+        case ADDON_VIZ:
+        case ADDON_SCREENSAVER:
+          m_strLibName = CAddonMgr::GetInstance().GetPlatformLibraryName(extension->configuration);
+          break;
+        default:
+          break;
+      }
     }
   }
 }
