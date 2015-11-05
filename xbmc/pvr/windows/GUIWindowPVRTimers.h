@@ -49,7 +49,6 @@ namespace PVR
   private:
     bool ActionDeleteTimer(CFileItem *item);
     bool ActionShowTimer(CFileItem *item);
-    bool ShowTimerSettings(CFileItem *item);
     bool ShowNewTimerDialog(void);
 
     bool OnContextButtonActivate(CFileItem *item, CONTEXT_BUTTON button);
