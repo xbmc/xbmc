@@ -714,7 +714,7 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
         {
           case AV_CODEC_ID_VC1:
           {
-            if (pData[0] == 0x00 && pData[1] == 0x00 && pData[2] == 0x01 && pData[3] == 0x0d)
+            if (iSize >= 4 && pData[0] == 0x00 && pData[1] == 0x00 && pData[2] == 0x01 && (pData[3] == 0x0d || pData[3] == 0x0f))
               memcpy(dst_ptr, pData, iSize);
             else
             {
