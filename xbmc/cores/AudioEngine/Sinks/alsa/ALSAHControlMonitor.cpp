@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2014 Team Kodi
- *      http://xbmc.org
+ *      Copyright (C) 2014-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "system.h"
 #ifdef HAS_ALSA
 
@@ -82,7 +83,7 @@ void CALSAHControlMonitor::Clear()
 
 void CALSAHControlMonitor::Start()
 {
-  assert(m_fdMonitorIds.size() == 0);
+  assert(m_fdMonitorIds.empty());
 
   std::vector<struct pollfd> pollfds;
   std::vector<CFDEventMonitor::MonitoredFD> monitoredFDs;
