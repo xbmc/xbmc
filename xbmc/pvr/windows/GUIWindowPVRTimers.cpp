@@ -302,7 +302,7 @@ bool CGUIWindowPVRTimers::OnContextButtonEdit(CFileItem *item, CONTEXT_BUTTON bu
     if (!item->HasPVRTimerInfoTag())
       return bReturn;
 
-    if (ShowTimerSettings(item))
+    if (ShowTimerSettings(item) && !item->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
       g_PVRTimers->UpdateTimer(*item);
   }
 
@@ -381,7 +381,7 @@ bool CGUIWindowPVRTimers::ActionShowTimer(CFileItem *item)
   }
   else
   {
-    if (ShowTimerSettings(item))
+    if (ShowTimerSettings(item) && !item->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
     {
       /* Update timer on pvr backend */
       bReturn = g_PVRTimers->UpdateTimer(*item);
