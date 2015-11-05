@@ -1,0 +1,55 @@
+--- include/libssh/pki_priv.h	2015-11-05 09:39:40.011875890 +0100
++++ include/libssh/pki_priv.h	2015-11-05 09:39:34.151849945 +0100
+@@ -29,7 +29,7 @@
+ #define ECDSA_HEADER_END "-----END EC PRIVATE KEY-----"
+ 
+ #define ssh_pki_log(...) \
+-    _ssh_pki_log(__FUNCTION__, __VA_ARGS__)
++    _ssh_pki_log(__extension__ __FUNCTION__, __VA_ARGS__)
+ void _ssh_pki_log(const char *function,
+                   const char *format, ...) PRINTF_ATTRIBUTE(2, 3);
+ 
+--- include/libssh/priv.h	2015-11-05 09:39:40.011875890 +0100
++++ include/libssh/priv.h	2015-11-05 09:41:01.272239916 +0100
+@@ -179,7 +179,7 @@
+                       const char *function,
+                       const char *buffer);
+ #define SSH_LOG(priority, ...) \
+-    _ssh_log(priority, __FUNCTION__, __VA_ARGS__)
++    _ssh_log(priority, __extension__ __FUNCTION__, __VA_ARGS__)
+ 
+ /* LEGACY */
+ void ssh_log_common(struct ssh_common_struct *common,
+@@ -197,18 +197,18 @@
+ };
+ 
+ #define ssh_set_error(error, code, ...) \
+-    _ssh_set_error(error, code, __FUNCTION__, __VA_ARGS__)
++    _ssh_set_error(error, code, __extension__ __FUNCTION__, __VA_ARGS__)
+ void _ssh_set_error(void *error,
+                     int code,
+                     const char *function,
+                     const char *descr, ...) PRINTF_ATTRIBUTE(4, 5);
+ 
+ #define ssh_set_error_oom(error) \
+-    _ssh_set_error_oom(error, __FUNCTION__)
++    _ssh_set_error_oom(error, __extension__ __FUNCTION__)
+ void _ssh_set_error_oom(void *error, const char *function);
+ 
+ #define ssh_set_error_invalid(error) \
+-    _ssh_set_error_invalid(error, __FUNCTION__)
++    _ssh_set_error_invalid(error, __extension__ __FUNCTION__)
+ void _ssh_set_error_invalid(void *error, const char *function);
+ 
+ 
+--- src/auth.c	2014-12-27 11:30:13.000000000 +0100
++++ src/auth.c	2015-11-05 09:42:41.732698584 +0100
+@@ -1548,7 +1548,7 @@
+          * This should not happen
+          */
+         rc = SSH_AUTH_ERROR;
+-        ssh_set_error(session,SSH_FATAL,"Invalid state in %s", __FUNCTION__);
++        ssh_set_error(session,SSH_FATAL,"Invalid state in %s", __extension__ __FUNCTION__);
+     }
+     return rc;
+ }
