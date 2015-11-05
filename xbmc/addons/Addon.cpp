@@ -419,6 +419,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
       case ADDON_VIZ:
         {
           // if library attribute isn't present, look for a system-dependent one
+          m_strLibName = CAddonMgr::GetInstance().GetExtValue(extension->configuration, "@library");
           if (m_strLibName.empty())
             m_strLibName = CAddonMgr::GetInstance().GetPlatformLibraryName(extension->configuration);
         }
