@@ -711,7 +711,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["musicbrainzalbumartistid"] = m_musicBrainzAlbumArtistID; 
   value["musicbrainztrmid"] = m_strMusicBrainzTRMID;
   value["comment"] = m_strComment;
-  value["mood"] = m_strMood;
+  value["mood"] = StringUtils::Split(m_strMood, g_advancedSettings.m_musicItemSeparator);
   value["rating"] = (int)(m_rating - '0');
   value["playcount"] = m_iTimesPlayed;
   value["lastplayed"] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::Empty;
