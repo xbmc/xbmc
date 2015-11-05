@@ -43,7 +43,7 @@ public:
    \param format The format of the output buffer (JpegIO only)
    \return true if the image data could be decoded to the output buffer
    */
-  virtual bool Decode(unsigned char* const pixels, unsigned int pitch, unsigned int format)=0;
+  virtual bool Decode(unsigned char* const pixels, unsigned int width, unsigned int height, unsigned int pitch, unsigned int format)=0;
   /*!
    \brief Encodes an thumbnail from raw bits of given memory location
    \remarks Caller need to call ReleaseThumbnailBuffer() afterwards to free the output buffer

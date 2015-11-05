@@ -363,11 +363,12 @@ bool Gif::ExtractFrames(unsigned int count)
     frame->m_left = imageDesc.Left;
 
     if (frame->m_top + frame->m_height > m_height || frame->m_left + frame->m_width > m_width
-      || !frame->m_width || !frame->m_height)
+      || !frame->m_width || !frame->m_height
+      || frame->m_width > m_width || frame->m_height > m_height)
     {
       CLog::Log(LOGDEBUG, "Gif::ExtractFrames(): Illegal frame dimensions: width: %d, height: %d, left: %d, top: %d instead of (%d,%d)",
         frame->m_width, frame->m_height, frame->m_left, frame->m_top, m_width, m_height);
-      return false;
+      continue;
     }
 
     if (imageDesc.ColorMap)
@@ -534,27 +535,36 @@ bool Gif::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsig
   return true;
 }
 
-bool Gif::Decode(unsigned char* const pixels, unsigned int pitch, unsigned int format)
+bool Gif::Decode(unsigned char* const pixels, unsigned int width, unsigned int height, unsigned int pitch, unsigned int format)
 {
   if (m_width == 0 || m_height == 0
     || !m_dll.IsLoaded() || !m_gif
     || format != XB_FMT_A8R8G8B8 || !m_numFrames)
     return false;
 
+  if (m_frames.empty() || !m_frames[0]->m_pImage)
+    return false;
+
   const unsigned char *src = m_frames[0]->m_pImage;
   unsigned char* dst = pixels;
 
-  if (pitch == m_pitch)
+  unsigned int copyHeight = std::min(m_height, height);
+  unsigned int copyPitch = std::min(m_pitch, pitch);
+
+  if (pitch == m_pitch && copyHeight == m_height)
+  {
     memcpy(dst, src, m_imageSize);
+  }
   else
   {
-    for (unsigned int y = 0; y < m_height; y++)
+    for (unsigned int y = 0; y < copyHeight; y++)
     {
-      memcpy(dst, src, m_pitch);
+      memcpy(dst, src, copyPitch);
       src += m_pitch;
       dst += pitch;
     }
   }
+
   return true;
 }
 
