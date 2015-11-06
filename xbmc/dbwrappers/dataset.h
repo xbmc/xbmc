@@ -1,3 +1,5 @@
+#pragma once
+
 /**********************************************************************
  * Copyright (c) 2002, Leo Seib, Hannover
  *
@@ -25,10 +27,6 @@
  * THE SOFTWARE.
  *
  **********************************************************************/
-
-
-#ifndef _DATASET_H
-#define _DATASET_H
 
 #include <cstdio>
 #include <string>
@@ -509,4 +507,4 @@ public:
 };
 
 }
-#endif
+

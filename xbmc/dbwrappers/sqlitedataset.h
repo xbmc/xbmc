@@ -1,3 +1,5 @@
+#pragma once
+
 /**********************************************************************
  * Copyright (c) 2004, Leo Seib, Hannover
  *
@@ -25,9 +27,6 @@
  * THE SOFTWARE.
  *
  **********************************************************************/
-
-#ifndef _SQLITEDATASET_H
-#define _SQLITEDATASET_H
 
 #include <stdio.h>
 #include "dataset.h"
@@ -174,4 +173,4 @@ or insert() operations default = false) */
   virtual bool dropIndex(const char *table, const char *index);
 };
 } //namespace
-#endif
+

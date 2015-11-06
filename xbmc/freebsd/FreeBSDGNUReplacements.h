@@ -1,3 +1,5 @@
+#pragma once
+
 /*-
  * Copyright (c) 2009 David Schultz <das@FreeBSD.org>
  * All rights reserved.
@@ -23,8 +25,6 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-#ifndef __FREEBSDGNUREPLACEMENTS_H__
-#define __FREEBSDGNUREPLACEMENTS_H__
 
 #include <sys/param.h>
 #include <string.h>
@@ -47,4 +47,3 @@ int strverscmp(const char *s1, const char *s2);
 }
 #endif /* __cplusplus */
 
-#endif

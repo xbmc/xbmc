@@ -1,5 +1,4 @@
-#ifndef __XBMC_ADDON_CPP_H__
-#define __XBMC_ADDON_CPP_H__
+#pragma once
 
 /*
  *      Copyright (C) 2005-2015 Team Kodi
@@ -188,4 +187,3 @@ public:
   }
 };
 
-#endif
