@@ -2559,7 +2559,7 @@ bool CMusicDatabase::CleanupSongsByIds(const std::string &strSongIds)
         URIUtils::RemoveSlashAtEnd(strFileName);
       }
 
-      if (!CFile::Exists(strFileName))
+      if (!CFile::Exists(strFileName, false))
       { // file no longer exists, so add to deletion list
         songsToDelete.push_back(m_pDS->fv("song.idSong").get_asString());
       }

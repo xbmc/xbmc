@@ -2854,7 +2854,7 @@ TextPageinfo_t* CTeletextDecoder::DecodePage(bool showl25,             // 1=deco
         PageAtrb[i] = atr;
 
       /* decode parity/hamming */
-      for (unsigned int i = 40; i < sizeof(PageChar); i++)
+      for (unsigned int i = 40; i < TELETEXT_PAGE_SIZE; i++)
       {
         PageAtrb[i] = atr;
         p = PageChar + i;

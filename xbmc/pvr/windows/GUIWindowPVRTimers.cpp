@@ -302,7 +302,7 @@ bool CGUIWindowPVRTimers::OnContextButtonEdit(CFileItem *item, CONTEXT_BUTTON bu
     if (!item->HasPVRTimerInfoTag())
       return bReturn;
 
-    if (ShowTimerSettings(item))
+    if (ShowTimerSettings(item) && !item->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
       g_PVRTimers->UpdateTimer(*item);
   }
 
@@ -381,7 +381,7 @@ bool CGUIWindowPVRTimers::ActionShowTimer(CFileItem *item)
   }
   else
   {
-    if (ShowTimerSettings(item))
+    if (ShowTimerSettings(item) && !item->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
     {
       /* Update timer on pvr backend */
       bReturn = g_PVRTimers->UpdateTimer(*item);
@@ -407,29 +407,4 @@ bool CGUIWindowPVRTimers::ShowNewTimerDialog(void)
   delete newItem;
 
   return bReturn;
-}
-
-bool CGUIWindowPVRTimers::ShowTimerSettings(CFileItem *item)
-{
-  /* Check item is TV timer information tag */
-  if (!item->IsPVRTimer())
-  {
-    CLog::Log(LOGERROR, "CGUIWindowPVRTimers: Can't open timer settings dialog, no timer info tag!");
-    return false;
-  }
-
-  /* Load timer settings dialog */
-  CGUIDialogPVRTimerSettings* pDlgInfo = (CGUIDialogPVRTimerSettings*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_TIMER_SETTING);
-
-  if (!pDlgInfo)
-    return false;
-
-  /* inform dialog about the file item */
-  pDlgInfo->SetTimer(item);
-
-  /* Open dialog window */
-  pDlgInfo->Open();
-
-  /* Get modify flag from window and return it to caller */
-  return pDlgInfo->IsConfirmed();
 }

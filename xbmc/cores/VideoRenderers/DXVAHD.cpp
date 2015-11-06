@@ -176,7 +176,7 @@ bool CProcessorHD::InitProcessor()
     m_bStereoEnabled = true;
 
   if (0 != (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_LEGACY))
-    CLog::Log(LOGWARNING, "%s - The video driver does not support full video processing capabilities.", __FUNCTION__, m_vcaps.RateConversionCapsCount);
+    CLog::Log(LOGWARNING, "%s - The video driver does not support full video processing capabilities.", __FUNCTION__);
 
   m_max_back_refs = 0;
   m_max_fwd_refs = 0;

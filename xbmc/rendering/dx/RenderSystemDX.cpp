@@ -158,7 +158,7 @@ void CRenderSystemDX::SetMonitor(HMONITOR monitor)
         {
           pAdapter->GetDesc(&m_adapterDesc);
 
-          CLog::Log(LOGDEBUG, __FUNCTION__" - Selected %S adapter. ", m_adapterDesc.Description, outputDesc.DeviceName);
+          CLog::Log(LOGDEBUG, __FUNCTION__" - Selected %S adapter. ", m_adapterDesc.Description);
 
           SAFE_RELEASE(m_adapter);
           m_adapter = pAdapter;

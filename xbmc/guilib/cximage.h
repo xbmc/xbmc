@@ -29,7 +29,7 @@ public:
   ~CXImage();
 
   virtual bool LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height);
-  virtual bool Decode(unsigned char* const pixels, unsigned int pitch, unsigned int format);
+  virtual bool Decode(unsigned char* const pixels, unsigned int width, unsigned int height, unsigned int pitch, unsigned int format);
   virtual bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const std::string& destFile, 
                                           unsigned char* &bufferout, unsigned int &bufferoutSize);
   virtual void ReleaseThumbnailBuffer();

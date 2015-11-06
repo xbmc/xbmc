@@ -1494,9 +1494,8 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
   if (setting == NULL)
     return false;
 
-  const std::string &settingId = setting->GetId();
 #if defined(HAS_LIBAMCODEC)
-  if (settingId == CSettings::SETTING_VIDEOPLAYER_USEAMCODEC)
+  if (setting->GetId() == CSettings::SETTING_VIDEOPLAYER_USEAMCODEC)
   {
     // Do not permit amcodec to be used on non-aml platforms.
     // The setting will be hidden but the default value is true,
@@ -1509,14 +1508,14 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
   }
 #endif
 #if defined(TARGET_ANDROID)
-  if (settingId == CSettings::SETTING_VIDEOPLAYER_USESTAGEFRIGHT)
+  if (setting->GetId() == CSettings::SETTING_VIDEOPLAYER_USESTAGEFRIGHT)
   {
     CSettingBool *usestagefright = (CSettingBool*)setting;
     return usestagefright->SetValue(false);
   }
 #endif
 #if defined(TARGET_DARWIN_OSX)
-  if (settingId == CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE)
+  if (setting->GetId() == CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE)
   {
     CSettingString *audioDevice = (CSettingString*)setting;
     // Gotham and older didn't enumerate audio devices per stream on osx

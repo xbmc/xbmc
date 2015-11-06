@@ -5514,17 +5514,17 @@ msgstr ""
 
 #: xbmc\storage\MediaManager.cpp
 msgctxt "#13021"
-msgid "Mounted removable hard drive"
+msgid "Mounted removable storage device"
 msgstr ""
 
 #: xbmc\storage\MediaManager.cpp
 msgctxt "#13022"
-msgid "Unsafe device removal"
+msgid "Unsafe storage device removal"
 msgstr ""
 
 #: xbmc\storage\MediaManager.cpp
 msgctxt "#13023"
-msgid "Successfully removed device"
+msgid "Successfully removed storage device"
 msgstr ""
 
 msgctxt "#13024"
