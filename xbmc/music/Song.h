@@ -88,6 +88,11 @@ public:
   */
   const std::string GetArtistString() const;
 
+  /*! \brief Get song artist IDs (for json rpc) from the vector of artistcredits objects
+  \return album artist IDs as a vector of integers
+  */
+  const std::vector<int> GetArtistIDArray() const;
+
   /*! \brief Get album artist names associated with song from tag data
    Note for initial album processing only, normalised album artist data belongs to album 
    and is stored in album artist credits

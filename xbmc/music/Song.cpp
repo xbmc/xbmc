@@ -162,11 +162,6 @@ const std::vector<std::string> CSong::GetArtist() const
   {
     songartists.push_back(artistCredit->GetArtist());
   }
-  //When artist credits have not been populated attempt to build an artist vector from the descrpition string
-  //This is a tempory fix, in the longer term other areas should query the song_artist table and populate
-  //artist credits. Note that splitting the string may not give the same artists as held in the song_artist table
-  if (songartists.empty() && !strArtistDesc.empty())
-    songartists = StringUtils::Split(strArtistDesc, g_advancedSettings.m_musicItemSeparator);
   return songartists;
 }
 
@@ -191,6 +186,15 @@ const std::string CSong::GetArtistString() const
   for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
     artistString += artistCredit->GetArtist() + artistCredit->GetJoinPhrase();
   return artistString;
+}
+
+const std::vector<int> CSong::GetArtistIDArray() const
+{
+  // Get song artist IDs for json rpc
+  std::vector<int> artistids;
+  for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
+    artistids.push_back(artistCredit->GetArtistId());
+  return artistids;
 }
 
 bool CSong::HasArt() const
