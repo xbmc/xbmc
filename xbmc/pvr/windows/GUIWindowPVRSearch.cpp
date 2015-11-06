@@ -217,7 +217,7 @@ bool CGUIWindowPVRSearch::OnMessage(CGUIMessage &message)
             return true;
 
           case ACTION_RECORD:
-            ActionRecord(pItem.get());
+            ActionToggleTimer(pItem.get());
             return true;
         }
       }
