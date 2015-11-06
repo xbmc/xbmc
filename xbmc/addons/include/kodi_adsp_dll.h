@@ -1,5 +1,7 @@
+#pragma once
+
 /*
- *      Copyright (C) 2005-2015 Team KODI
+ *      Copyright (C) 2005-2015 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,18 +15,15 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with KODI; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#ifndef __KODI_AUDIODSP_H__
-#define __KODI_AUDIODSP_H__
-
 /*!
  * @file kodi_adsp_dll.h
  * @section sec1 Basic audio dsp addon interface description
- * @author Team KODI
+ * @author Team Kodi
  * @date 10. May 2014
  * @version 0.1.5
  *
@@ -563,4 +562,3 @@ extern "C"
   };
 };
 
-#endif // __KODI_AUDIODSP_H__

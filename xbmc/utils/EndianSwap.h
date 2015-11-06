@@ -1,6 +1,8 @@
+#pragma once
+
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,15 +15,12 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
  /* Endian_SwapXX functions taken from SDL (SDL_endian.h) */
-
-#ifndef __ENDIAN_SWAP_H__
-#define __ENDIAN_SWAP_H__
 
 /* Include config.h to define (or not) WORDS_BIGENDIAN
    File created by configure */
@@ -105,4 +104,3 @@ void Endian_Swap16_buf(uint16_t *dst, uint16_t *src, int w);
 }
 #endif
 
-#endif  /* __ENDIAN_SWAP_H__ */
