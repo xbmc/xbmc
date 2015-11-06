@@ -311,7 +311,7 @@ bool CBaseTexture::LoadIImage(IImage *pImage, unsigned char* buffer, unsigned in
     if (pImage->Width() > 0 && pImage->Height() > 0)
     {
       Allocate(pImage->Width(), pImage->Height(), XB_FMT_A8R8G8B8);
-      if (pImage->Decode(m_pixels, GetWidth(), GetRows(), GetPitch(), XB_FMT_A8R8G8B8))
+      if (pImage->Decode(m_pixels, GetTextureWidth(), GetRows(), GetPitch(), XB_FMT_A8R8G8B8))
       {
         if (pImage->Orientation())
           m_orientation = pImage->Orientation() - 1;
