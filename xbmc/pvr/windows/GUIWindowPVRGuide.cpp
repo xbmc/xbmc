@@ -220,7 +220,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_RECORD:
-                  ActionRecord(pItem.get());
+                  ActionToggleTimer(pItem.get());
                   bReturn = true;
                   break;
               }
@@ -234,7 +234,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
               bReturn = true;
               break;
             case ACTION_RECORD:
-              ActionRecord(pItem.get());
+              ActionToggleTimer(pItem.get());
               bReturn = true;
               break;
             case ACTION_CONTEXT_MENU:
