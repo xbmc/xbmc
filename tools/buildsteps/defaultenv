@@ -21,12 +21,6 @@ case $XBMC_PLATFORM_DIR in
     DEFAULT_CONFIGURATION="Debug"
     ;;
 
-  osx32)
-    DEFAULT_SDK_VERSION=10.10
-    DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
-    DEFAULT_CONFIGURATION="Debug"
-    ;;
-
   osx64)
     DEFAULT_SDK_VERSION=10.10
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
