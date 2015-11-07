@@ -86,6 +86,8 @@ bool CWinDsRenderer::Configure(unsigned int width, unsigned int height, unsigned
 
 void CWinDsRenderer::Reset()
 {
+  if (m_paintCallback)
+    m_paintCallback->OnReset();
 }
 
 void CWinDsRenderer::Update()

@@ -358,6 +358,9 @@
     <Filter Include="cores\DSPlayer\Dialogs">
       <UniqueIdentifier>{58a4c04d-f658-4d4e-a4d4-dd2fd900a301}</UniqueIdentifier>
     </Filter>
+    <Filter Include="cores\DSPlayer\PVR">
+      <UniqueIdentifier>{8ac06bad-d1c3-4388-bdaf-01384aa9ace1}</UniqueIdentifier>
+    </Filter>
     <Filter Include="video\jobs">
       <UniqueIdentifier>{f413004c-1ab9-42ce-bb1a-0636e5286a00}</UniqueIdentifier>
     </Filter>
@@ -375,9 +378,6 @@
     </Filter>
     <Filter Include="shaders">
       <UniqueIdentifier>{9fe3f6e1-16d1-4437-b859-1b183adcef22}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="cores\DSPlayer\PVR">
-      <UniqueIdentifier>{8ac06bad-d1c3-4388-bdaf-01384aa9ace1}</UniqueIdentifier>
     </Filter>
     <Filter Include="guiinfo">
       <UniqueIdentifier>{bc76faa4-e05e-4f08-b332-a91d7bc3207f}</UniqueIdentifier>
@@ -3084,6 +3084,51 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrScaling.cpp">
       <Filter>cores\DSPlayer\Dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\MadvrCallback.cpp">
+      <Filter>cores\DSPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSharedRender.cpp">
+      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\DSFileUtils.cpp">
+      <Filter>cores\DSPlayer\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSettingsManager.cpp">
+      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\LavSettings.cpp">
+      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVVideo.cpp">
+      <Filter>cores\DSPlayer\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVAudio.cpp">
+      <Filter>cores\DSPlayer\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVSplitter.cpp">
+      <Filter>cores\DSPlayer\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\PVR\DSArgusTV.cpp">
+      <Filter>cores\DSPlayer\PVR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\PVR\DSMediaPortal.cpp">
+      <Filter>cores\DSPlayer\PVR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\PVR\DSPVRBackend.cpp">
+      <Filter>cores\DSPlayer\PVR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\PVR\DSSocket.cpp">
+      <Filter>cores\DSPlayer\PVR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\uri.cpp">
+      <Filter>cores\DSPlayer\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\EVRCallback.cpp">
+      <Filter>cores\DSPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\EvrSharedRender.cpp">
+      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\OverrideDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -3256,15 +3301,6 @@
     <ClCompile Include="..\..\xbmc\contrib\kissfft\kiss_fftr.c">
       <Filter>contrib\kissfft</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\MadvrCallback.cpp">
-      <Filter>cores\DSPlayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSharedRender.cpp">
-      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\DSFileUtils.cpp">
-      <Filter>cores\DSPlayer\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\timers\PVRTimerType.cpp">
       <Filter>pvr\timers</Filter>
     </ClCompile>
@@ -3339,36 +3375,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryRefreshingJob.cpp">
       <Filter>video\jobs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSettingsManager.cpp">
-      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\LavSettings.cpp">
-      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVVideo.cpp">
-      <Filter>cores\DSPlayer\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVAudio.cpp">
-      <Filter>cores\DSPlayer\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVSplitter.cpp">
-      <Filter>cores\DSPlayer\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\PVR\DSArgusTV.cpp">
-      <Filter>cores\DSPlayer\PVR</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\PVR\DSMediaPortal.cpp">
-      <Filter>cores\DSPlayer\PVR</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\PVR\DSPVRBackend.cpp">
-      <Filter>cores\DSPlayer\PVR</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\PVR\DSSocket.cpp">
-      <Filter>cores\DSPlayer\PVR</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\uri.cpp">
-      <Filter>cores\DSPlayer\Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\Gif.cpp">
       <Filter>guilib</Filter>
@@ -6328,6 +6334,51 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrScaling.h">
       <Filter>cores\DSPlayer\Dialogs</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\MadvrCallback.h">
+      <Filter>cores\DSPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSharedRender.h">
+      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\DSFileUtils.h">
+      <Filter>cores\DSPlayer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSettingsManager.h">
+      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\LavSettings.h">
+      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\LAVVideoSettings.h">
+      <Filter>cores\DSPlayer\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\LAVSplitterSettings.h">
+      <Filter>cores\DSPlayer\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVVideo.h">
+      <Filter>cores\DSPlayer\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVAudio.h">
+      <Filter>cores\DSPlayer\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVSplitter.h">
+      <Filter>cores\DSPlayer\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\PVR\DSArgusTV.h">
+      <Filter>cores\DSPlayer\PVR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\PVR\DSMediaPortal.h">
+      <Filter>cores\DSPlayer\PVR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\PVR\DSPVRBackend.h">
+      <Filter>cores\DSPlayer\PVR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\PVR\DSSocket.h">
+      <Filter>cores\DSPlayer\PVR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\uri.h">
+      <Filter>cores\DSPlayer\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\win32\crts_caller.h">
       <Filter>win32</Filter>
     </ClInclude>
@@ -6487,15 +6538,6 @@
     <ClInclude Include="..\..\xbmc\contrib\kissfft\kiss_fftr.h">
       <Filter>contrib\kissfft</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\MadvrCallback.h">
-      <Filter>cores\DSPlayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSharedRender.h">
-      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\DSFileUtils.h">
-      <Filter>cores\DSPlayer\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\timers\PVRTimerType.h">
       <Filter>pvr\timers</Filter>
     </ClInclude>
@@ -6601,42 +6643,6 @@
     <ClInclude Include="..\..\xbmc\utils\win32\memcpy_sse2.h">
       <Filter>utils\win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSettingsManager.h">
-      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\LavSettings.h">
-      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\LAVVideoSettings.h">
-      <Filter>cores\DSPlayer\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\LAVSplitterSettings.h">
-      <Filter>cores\DSPlayer\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVVideo.h">
-      <Filter>cores\DSPlayer\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVAudio.h">
-      <Filter>cores\DSPlayer\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVSplitter.h">
-      <Filter>cores\DSPlayer\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\PVR\DSArgusTV.h">
-      <Filter>cores\DSPlayer\PVR</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\PVR\DSMediaPortal.h">
-      <Filter>cores\DSPlayer\PVR</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\PVR\DSPVRBackend.h">
-      <Filter>cores\DSPlayer\PVR</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\PVR\DSSocket.h">
-      <Filter>cores\DSPlayer\PVR</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\uri.h">
-      <Filter>cores\DSPlayer\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\Gif.h">
       <Filter>guilib</Filter>
     </ClInclude>
@@ -6711,6 +6717,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\PVRSettings.h">
       <Filter>pvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\EVRCallback.h">
+      <Filter>cores\DSPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\EvrSharedRender.h">
+      <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

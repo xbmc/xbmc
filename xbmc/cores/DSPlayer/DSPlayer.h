@@ -254,12 +254,34 @@ public:
   //madVR Window
   static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
   static HWND m_hWnd;
+  static CRect winRect;
   bool InitMadvrWindow(HWND &hWnd);
   void DeInitMadvrWindow();
   CStdString m_className;
   HINSTANCE m_hInstance; 
   bool m_isMadvr;
   
+  static void PostGraphMessage(CDSMsg *msg, bool wait = true)
+  {
+    if (!m_threadID)
+    {
+      msg->Release();
+      return;
+    }
+
+    if (wait)
+      msg->Acquire();
+
+    CLog::Log(LOGDEBUG, "%s Message posted : %d on thread 0x%X", __FUNCTION__, msg->GetMessageType(), m_threadID);
+    PostThreadMessage(CDSGraphThread::m_threadID, WM_GRAPHMESSAGE, msg->GetMessageType(), (LPARAM)msg);
+
+    if (wait)
+    {
+      msg->Wait();
+      msg->Release();
+    }
+  }
+
   static void PostMessage(CDSMsg *msg, bool wait = true)
   {
     if (!m_threadID)

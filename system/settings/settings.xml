@@ -1290,9 +1290,6 @@
               <option label="55083">2</option> <!-- system filters ds merits -->
             </options>
           </constraints>
-          <dependencies>
-            <dependency type="visible" setting="dsplayer.videorenderer" operator="is">madVR</dependency>
-          </dependencies>
           <control type="list" format="string" />
         </setting>
         <setting id="dsplayer.rules" type="action" parent="dsplayer.filtersmanagement" label="60001" help="90019">

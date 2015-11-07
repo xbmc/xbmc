@@ -266,6 +266,7 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSPlayer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSPlayerDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSPropertyPage.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\EVRCallback.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\ExternalPixelShader.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\FGFilter.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\FGLoader.cpp" />
@@ -278,6 +279,7 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DX9AllocatorPresenter.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\EvrSharedRender.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\LavSettings.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\madVRAllocatorPresenter.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSettings.cpp" />
@@ -1003,6 +1005,7 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSPlayer.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSPlayerDatabase.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSPropertyPage.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\EVRCallback.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\ExternalPixelShader.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\FGFilter.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\FGLoader.h" />
@@ -1016,6 +1019,7 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DX9AllocatorPresenter.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\EvrSharedRender.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\LavSettings.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\LAVSplitterSettings.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\LAVVideoSettings.h" />

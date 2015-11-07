@@ -219,6 +219,12 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   , m_hEvtQuit(NULL)
   , m_bscShader("contrast_brightness.psh", "ps_2_0")
 {
+
+
+  CEvrCallback::Get()->Register((IEvrAllocatorCallback*)this);
+  CEvrCallback::Get()->Register((IEvrPaintCallback*)this);
+  m_pEvrShared = DNew CEvrSharedRender();
+  m_firstBoot = false;
   g_Windowing.Register(this);
   g_renderManager.PreInit(RENDERER_DSHOW);
 
@@ -300,6 +306,8 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
 
 CDX9AllocatorPresenter::~CDX9AllocatorPresenter()
 {
+  CEvrCallback::Destroy();
+  SAFE_DELETE(m_pEvrShared);
   g_Windowing.Unregister(this);
   g_renderManager.UnregisterCallback();
   g_renderManager.UnInit();
@@ -809,6 +817,9 @@ HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)
   m_pD3D = g_Windowing.Get3DObject();
   */
 
+  InitD3D9(CDSPlayer::m_hWnd);
+  m_pEvrShared->CreateTextures(g_Windowing.Get3D11Device(), (IDirect3DDevice9Ex*)m_pD3DDev, m_ScreenSize.cx, m_ScreenSize.cy);
+
   m_pResizerPixelShader[0] = 0;
   m_pResizerPixelShader[1] = 0;
   m_pResizerPixelShader[2] = 0;
@@ -897,6 +908,90 @@ HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)
   return S_OK;
 }
 
+BOOL CDX9AllocatorPresenter::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT RenderTargetFormat)
+{
+  // Verify that the depth format exists
+  if (!IsSurfaceFormatOk(DepthFormat, D3DUSAGE_DEPTHSTENCIL))
+    return false;
+
+  // Verify that the depth format is compatible
+  HRESULT hr = m_pD3D->CheckDepthStencilMatch(D3DADAPTER_DEFAULT,
+    D3DDEVTYPE_HAL,
+    m_D3DPP.BackBufferFormat,
+    RenderTargetFormat,
+    DepthFormat);
+
+  return SUCCEEDED(hr);
+}
+
+bool CDX9AllocatorPresenter::IsSurfaceFormatOk(D3DFORMAT surfFormat, DWORD usage)
+{
+  // Verify the compatibility
+  HRESULT hr = m_pD3D->CheckDeviceFormat(D3DADAPTER_DEFAULT,
+    D3DDEVTYPE_HAL,
+    m_D3DPP.BackBufferFormat,
+    usage,
+    D3DRTYPE_SURFACE,
+    surfFormat);
+
+  return (SUCCEEDED(hr)) ? true : false;
+}
+
+HRESULT CDX9AllocatorPresenter::InitD3D9(HWND hWnd)
+{
+  HRESULT hr;
+  Direct3DCreate9Ex(D3D_SDK_VERSION, &m_pD3D);
+  if (!m_pD3D)
+  {
+    return E_FAIL;
+  }
+
+  MONITORINFO mi;
+  mi.cbSize = sizeof(MONITORINFO);
+  if (GetMonitorInfo(MonitorFromWindow(m_hWnd, MONITOR_DEFAULTTONEAREST), &mi)) {
+    m_ScreenSize.SetSize(mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top);
+  }
+
+  ZeroMemory(&m_D3DPP, sizeof(m_D3DPP));
+  m_D3DPP.Windowed = TRUE;
+  m_D3DPP.SwapEffect = D3DSWAPEFFECT_COPY;
+  m_D3DPP.BackBufferCount = 1;
+  m_D3DPP.BackBufferWidth = CDSPlayer::winRect.x2 - CDSPlayer::winRect.x1;
+  m_D3DPP.BackBufferHeight = CDSPlayer::winRect.y2 - CDSPlayer::winRect.y1;
+  m_D3DPP.Flags = D3DPRESENTFLAG_VIDEO;
+  m_D3DPP.hDeviceWindow = hWnd;
+  m_D3DPP.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+  m_D3DPP.FullScreen_RefreshRateInHz = 0;
+  bool bHighColorResolution = g_dsSettings.isEVR && ((CEVRRendererSettings *)g_dsSettings.pRendererSettings)->highColorResolution;
+  m_D3DPP.BackBufferFormat = (bHighColorResolution) ? D3DFMT_A2R10G10B10 : D3DFMT_X8R8G8B8;
+  m_D3DPP.MultiSampleType = D3DMULTISAMPLE_NONE;
+  m_D3DPP.MultiSampleQuality = 0;
+
+  D3DFORMAT zFormat = D3DFMT_D16;
+  if (IsDepthFormatOk(D3DFMT_D32, m_D3DPP.BackBufferFormat))           zFormat = D3DFMT_D32;
+  else if (IsDepthFormatOk(D3DFMT_D24S8, m_D3DPP.BackBufferFormat))    zFormat = D3DFMT_D24S8;
+  else if (IsDepthFormatOk(D3DFMT_D24X4S4, m_D3DPP.BackBufferFormat))  zFormat = D3DFMT_D24X4S4;
+  else if (IsDepthFormatOk(D3DFMT_D24X8, m_D3DPP.BackBufferFormat))    zFormat = D3DFMT_D24X8;
+  else if (IsDepthFormatOk(D3DFMT_D16, m_D3DPP.BackBufferFormat))      zFormat = D3DFMT_D16;
+  else if (IsDepthFormatOk(D3DFMT_D15S1, m_D3DPP.BackBufferFormat))    zFormat = D3DFMT_D15S1;
+
+  m_D3DPP.EnableAutoDepthStencil = TRUE;
+  m_D3DPP.AutoDepthStencilFormat = zFormat;
+
+  hr = m_pD3D->CreateDeviceEx(
+    D3DADAPTER_DEFAULT,
+    D3DDEVTYPE_HAL,
+    NULL,
+    D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED,
+    &m_D3DPP,
+    NULL,
+    (IDirect3DDevice9Ex**)&m_pD3DDev);
+
+  CGraphFilters::Get()->SetD3DDevice(m_pD3DDev);
+
+  return hr;
+}
+
 HRESULT CDX9AllocatorPresenter::AllocSurfaces(D3DFORMAT Format)
 {
   CAutoLock cAutoLock(this);
@@ -930,11 +1025,12 @@ HRESULT CDX9AllocatorPresenter::AllocSurfaces(D3DFORMAT Format)
         return hr;
     }
 
-    // Rendering target
-    uint32_t height = 0, width = 0;
+
     //todo dx11
-    //g_Windowing.GetBackbufferSize(width, height);
-    if (FAILED(hr = m_pD3DDev->CreateTexture(width, height, 1, D3DUSAGE_RENDERTARGET, Format,
+    //g_Windowing.GetBackbufferSize(width, height);    
+
+    // Rendering target
+    if (FAILED(hr = m_pD3DDev->CreateTexture(m_ScreenSize.cx, m_ScreenSize.cy, 1, D3DUSAGE_RENDERTARGET, Format,
       D3DPOOL_DEFAULT, &m_pVideoTexture[m_nNbDXSurface + 2], NULL)))
       return hr;
 
@@ -2296,12 +2392,14 @@ void CDX9AllocatorPresenter::DrawText(const RECT &rc, const CStdString &strText,
 void CDX9AllocatorPresenter::DrawStats()
 {
   int bDetailedStats = 2;
+  
   switch (g_dsSettings.pRendererSettings->displayStats)
   {
   case 1: bDetailedStats = 2; break;
   case 2: bDetailedStats = 1; break;
   case 3: bDetailedStats = 0; break;
   }
+  
 
   int64_t    llMaxJitter = m_MaxJitter;
   int64_t    llMinJitter = m_MinJitter;
@@ -2717,17 +2815,57 @@ void CDX9AllocatorPresenter::OnResetDevice()
   AfterDeviceReset();
 }
 
+void CDX9AllocatorPresenter::OnReset()
+{
+  ResetRenderParam();
+}
+
+HRESULT CDX9AllocatorPresenter::ResetRenderParam()
+{
+  HRESULT hr = S_OK;
+
+  m_winRectNew = CDSPlayer::winRect;
+
+  if (m_winRectNew != m_winRectOld)
+  {
+
+    m_D3DPP.BackBufferWidth = m_winRectNew.x2 - m_winRectNew.x1;
+    m_D3DPP.BackBufferHeight = m_winRectNew.y2 - m_winRectNew.y1;
+
+    hr = m_pD3DDev->Reset(&m_D3DPP);
+     
+    m_winRectOld = m_winRectNew;
+  }
+
+  return hr;
+}
+
 void CDX9AllocatorPresenter::OnPaint(CRect destRect)
 {
+  if (!m_firstBoot)
+  {
+    CDSPlayer::SetDsWndVisible(true);
+    CEvrCallback::Get()->SetRenderOnEvr(true);
+    m_firstBoot = true;
+  }
 
   m_VideoRect.bottom = (long)destRect.y2;
   m_VideoRect.top = (long)destRect.y1;
   m_VideoRect.left = (long)destRect.x1;
   m_VideoRect.right = (long)destRect.x2;
 
+  m_pD3DDev->BeginScene();
+  m_pD3DDev->Clear(0, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
+  m_pEvrShared->Render(EVR_LAYER_UNDER);
+
   //Need to be true for vsync
   Paint(bPaintAll);
   bPaintAll = true;
+
+  m_pEvrShared->Render(EVR_LAYER_OVER);
+
+  m_pD3DDev->EndScene();
+  m_pD3DDev->Present(NULL, NULL, NULL, NULL);
 }
 
 void CDX9AllocatorPresenter::OnAfterPresent()

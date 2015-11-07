@@ -29,6 +29,7 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/Log.h"
 #include "DSUtil/SmartPtr.h"
+#include "GraphFilters.h"
 
 CPixelShaderCompiler::CPixelShaderCompiler(bool fStaySilent)
   : m_pD3DXCompileShader(NULL)
@@ -98,10 +99,10 @@ HRESULT CPixelShaderCompiler::CompileShader(
   if (ppPixelShader)
   {
     //todo dx11
-    /*
-    if (!g_Windowing.Get3DDevice()) return E_FAIL;
-    hr = g_Windowing.Get3DDevice()->CreatePixelShader((DWORD*)pShader->GetBufferPointer(), ppPixelShader);
-    */
+    
+    if (!CGraphFilters::Get()->GetD3DDevice()) return E_FAIL;
+    hr = CGraphFilters::Get()->GetD3DDevice()->CreatePixelShader((DWORD*)pShader->GetBufferPointer(), ppPixelShader);
+    
     if (FAILED(hr)) return hr;
   }
 

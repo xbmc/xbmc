@@ -40,7 +40,7 @@
 #include "utils/log.h"
 
 #if (0)    // Set to 1 to activate EVR traces
-#define TRACE_EVR    CLog::DebugLog
+#define TRACE_EVR(x)    CLog::Log(0,x)
 #else
 #define TRACE_EVR
 #endif
@@ -1135,7 +1135,7 @@ HRESULT CEVRAllocatorPresenter::RenegotiateMediaType()
   {
     // Step 3. Adjust the mixer's type to match our requirements.
     pType = ValidMixerTypes[i];
-    TRACE_EVR("EVR: Trying mixer output type: %ws\n", GetMediaTypeFormatDesc(pType));
+    //TRACE_EVR("EVR: Trying mixer output type: %s\n", GetMediaTypeFormatDesc(pType));
 
     // Step 5. Try to set the media type on ourselves.
     hr = SetMediaType(pType);

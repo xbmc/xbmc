@@ -695,8 +695,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       return(0);
     case WM_SIZE:
 #ifdef HAS_DS_PLAYER
-      if (CMadvrCallback::Get()->UsingMadvr())
-        PostMessage(CDSPlayer::GetDShWnd(), uMsg, wParam, lParam);
+      PostMessage(CDSPlayer::GetDShWnd(), uMsg, wParam, lParam);
 #endif
       newEvent.type = XBMC_VIDEORESIZE;
       newEvent.resize.w = GET_X_LPARAM(lParam);

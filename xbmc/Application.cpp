@@ -155,6 +155,7 @@
 #include "addons/GUIDialogAddonSettings.h"
 #ifdef HAS_DS_PLAYER
 #include "MadvrCallback.h"
+#include "EvrCallback.h"
 #include "DSPlayerDatabase.h"
 #endif
 
@@ -1989,6 +1990,7 @@ void CApplication::Render()
 
 #ifdef HAS_DS_PLAYER
   CMadvrCallback::Get()->RenderToUnderTexture();
+  CEvrCallback::Get()->RenderToUnderTexture();
 #endif
   CDirtyRegionList dirtyRegions;
 
@@ -2024,6 +2026,7 @@ void CApplication::Render()
 
   g_Windowing.EndRender();
 #ifdef HAS_DS_PLAYER
+  CEvrCallback::Get()->EndRender();
   CMadvrCallback::Get()->EndRender();
 #endif
 
@@ -2062,7 +2065,7 @@ void CApplication::Render()
   }
 
 #ifdef HAS_DS_PLAYER   
-  if (!CMadvrCallback::Get()->ReadyMadvr())
+  if (!CMadvrCallback::Get()->ReadyMadvr() && !CEvrCallback::Get()->ReadyEvr())
 #endif
   if (flip)
     g_graphicsContext.Flip(dirtyRegions);

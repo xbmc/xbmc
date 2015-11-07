@@ -24,6 +24,7 @@
 #include <utility>
 #ifdef HAS_DS_PLAYER
 #include "MadvrCallback.h"
+#include "EVRCallback.h"
 #endif
 
 #include "guiinfo/GUIInfoLabels.h"
@@ -133,7 +134,10 @@ void CGUIControlGroup::Render()
 #ifdef HAS_DS_PLAYER
     {
       if (control->GetControlType() == GUICONTROL_VIDEO && control->IsVisible())
+      {
         CMadvrCallback::Get()->RenderToOverTexture();
+        CEvrCallback::Get()->RenderToOverTexture();
+      }
 
       control->DoRender();
     }

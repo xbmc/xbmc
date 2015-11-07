@@ -27,6 +27,7 @@
 #include "utils/log.h"
 #ifdef HAS_DS_PLAYER
 #include "MadvrCallback.h"
+#include "EvrCallback.h"
 #endif
 
 // stuff for freetype
@@ -71,6 +72,7 @@ bool CGUIFontTTFDX::FirstBegin()
 #ifdef HAS_DS_PLAYER
   // Render count to detect when the GUI it's active or deactive (useful for madVR latency mode)
     CMadvrCallback::Get()->IncRenderCount();
+    CEvrCallback::Get()->IncRenderCount();
 #endif
 
   CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();

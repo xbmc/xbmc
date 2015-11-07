@@ -74,6 +74,7 @@ CGUIDialogBoxBase *CDSPlayer::errorWindow = NULL;
 ThreadIdentifier CDSPlayer::m_threadID = 0;
 ThreadIdentifier CDSGraphThread::m_threadID = 0;
 HWND CDSPlayer::m_hWnd = 0;
+CRect CDSPlayer::winRect;
 
 CDSPlayer::CDSPlayer(IPlayerCallback& callback)
   : IPlayer(callback),
@@ -86,11 +87,11 @@ CDSPlayer::CDSPlayer(IPlayerCallback& callback)
   m_HasVideo = false;
   m_HasAudio = false;
   m_isMadvr = (CSettings::GetInstance().GetString(CSettings::SETTING_DSPLAYER_VIDEORENDERER) == "madVR");
-  if (m_isMadvr)
-  { 
+  //if (m_isMadvr)
+  //{ 
     if (InitMadvrWindow(m_hWnd))
       CLog::Log(LOGDEBUG, "%s : Create DSPlayer window for madVR - hWnd: %i", __FUNCTION__, m_hWnd);
-  }
+  //}
 
   /* Suspend AE temporarily so exclusive or hog-mode sinks */
   /* don't block DSPlayer access to audio device  */
@@ -130,7 +131,7 @@ CDSPlayer::~CDSPlayer()
 
   CoUninitialize();
 
-  if (m_isMadvr)
+  //if (m_isMadvr)
    DeInitMadvrWindow();
 
   SAFE_DELETE(g_dsGraph);
@@ -1257,6 +1258,26 @@ void CDSGraphThread::HandleMessages()
   MSG msg;
   while (GetMessage(&msg, NULL, 0, 0) != 0)
   {
+    if (msg.message == WM_GRAPHMESSAGE)
+    {
+      CDSMsg* pMsg = reinterpret_cast<CDSMsg *>(msg.lParam);
+
+      if (CDSPlayer::PlayerState == DSPLAYER_CLOSED || CDSPlayer::PlayerState == DSPLAYER_LOADING)
+      {
+        pMsg->Set();
+        pMsg->Release();
+        break;
+      }
+
+      if (pMsg->IsType(CDSMsg::RESET_DEVICE))
+      {
+        g_renderManager.Reset();
+      }
+      pMsg->Set();
+      pMsg->Release();
+      break;
+    }
+
     TranslateMessage(&msg);
     DispatchMessage(&msg);
   }

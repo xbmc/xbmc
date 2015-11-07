@@ -36,6 +36,9 @@
 #include "utils/log.h"
 #include "win32/WIN32Util.h"
 #include "win32/dxerr.h"
+#ifdef HAS_DS_PLAYER
+#include "DSPlayer.h"
+#endif
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -763,6 +766,10 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   m_resizeInProgress = true;
 
   CLog::Log(LOGDEBUG, "%s - (Re)Create window size (%dx%d) dependent resources.", __FUNCTION__, m_nBackBufferWidth, m_nBackBufferHeight);
+#ifdef HAS_DS_PLAYER
+  CDSPlayer::winRect.SetRect(0, 0, m_nBackBufferWidth, m_nBackBufferHeight);
+  CDSPlayer::PostGraphMessage(new CDSMsg(CDSMsg::RESET_DEVICE), false);
+#endif
 
   bool bRestoreRTView = false;
   {

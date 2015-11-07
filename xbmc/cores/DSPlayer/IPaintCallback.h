@@ -33,6 +33,7 @@ public:
   virtual ~IPaintCallback() {};
 
   virtual void OnPaint(CRect destRect) = 0;
+  virtual void OnReset() = 0;
   virtual void OnAfterPresent() = 0;
 };
 
