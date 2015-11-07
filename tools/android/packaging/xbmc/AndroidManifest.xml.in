@@ -85,9 +85,7 @@
 
         <receiver android:name=".XBMCBroadcastReceiver" >
             <intent-filter>
-                <action android:name="android.intent.action.BATTERY_CHANGED" />
                 <action android:name="android.intent.action.DREAMING_STOPPED" />
-                <action android:name="android.intent.action.SCREEN_ON" />
                 <action android:name="android.intent.action.HEADSET_PLUG" />
                 <action android:name="android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED" />
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
