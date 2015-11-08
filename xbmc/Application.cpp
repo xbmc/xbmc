@@ -1944,6 +1944,10 @@ void CApplication::Render()
         else if (lowfps)
           singleFrameTime = 200;  // 5 fps, <=200 ms latency to wake up
       }
+      if (m_bScreenSave==true)  // Limit fps to 1 when screensaver is active. Reduce CPU load a lot - for 24/7 devices (Rpi etc.)
+      {
+				singleFrameTime = 1000;
+	  	}
 
     }
   }
