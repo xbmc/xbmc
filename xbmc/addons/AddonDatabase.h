@@ -82,25 +82,11 @@ public:
    \sa IsAddonDisabled, HasDisabledAddons */
   bool DisableAddon(const std::string &addonID, bool disable = true);
 
-  /*! \brief Checks if an addon is in the database.
-   \param addonID id of the addon to be checked
-   \return true if addon is in database, false if addon is not in database yet */
-  bool HasAddon(const std::string &addonID);
-  
   /*! \brief Check whether an addon has been disabled via DisableAddon.
    \param addonID id of the addon to check
    \return true if the addon is disabled, false otherwise
    \sa DisableAddon, HasDisabledAddons */
   bool IsAddonDisabled(const std::string &addonID);
-
-  /*! \brief Check whether we have disabled addons.
-   \return true if we have disabled addons, false otherwise
-   \sa DisableAddon, IsAddonDisabled */
-  bool HasDisabledAddons();
-
-  /*! @deprecated only here to allow clean upgrades from earlier pvr versions
-   */
-  bool IsSystemPVRAddonEnabled(const std::string &addonID);
 
   /*! \brief Mark an addon as broken
    Sets a flag that this addon has been marked as broken in the repository.

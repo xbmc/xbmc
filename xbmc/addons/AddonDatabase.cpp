@@ -689,14 +689,6 @@ bool CAddonDatabase::BreakAddon(const std::string &addonID, const std::string& r
                                    addonID.c_str(), reason.c_str()));
 }
 
-bool CAddonDatabase::HasAddon(const std::string &addonID)
-{
-  std::string strWhereClause = PrepareSQL("addonID = '%s'", addonID.c_str());
-  std::string strHasAddon = GetSingleValue("addon", "id", strWhereClause);
-  
-  return !strHasAddon.empty();
-}
-
 bool CAddonDatabase::IsAddonDisabled(const std::string &addonID)
 {
   try
@@ -765,36 +757,9 @@ bool CAddonDatabase::GetBlacklisted(std::vector<std::string>& addons)
   return false;
 }
 
-bool CAddonDatabase::IsSystemPVRAddonEnabled(const std::string &addonID)
-{
-  std::string strWhereClause = PrepareSQL("addonID = '%s'", addonID.c_str());
-  std::string strEnabled = GetSingleValue("pvrenabled", "id", strWhereClause);
-
-  return !strEnabled.empty();
-}
-
 std::string CAddonDatabase::IsAddonBroken(const std::string &addonID)
 {
   return GetSingleValue(PrepareSQL("SELECT reason FROM broken WHERE addonID='%s'", addonID.c_str()));
-}
-
-bool CAddonDatabase::HasDisabledAddons()
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    m_pDS->query("select count(id) from disabled");
-    bool ret = !m_pDS->eof() && m_pDS->fv(0).get_asInt() > 0; // have rows -> have disabled addons
-    m_pDS->close();
-    return ret;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
-  return false;
 }
 
 bool CAddonDatabase::BlacklistAddon(const std::string& addonID)
