@@ -268,6 +268,7 @@ void CAddonMgr::UnregisterAddonMgrCallback(TYPE type)
 
 bool CAddonMgr::Init()
 {
+  CSingleLock lock(m_critSection);
   m_cpluff = new DllLibCPluff;
   m_cpluff->Load();
 
