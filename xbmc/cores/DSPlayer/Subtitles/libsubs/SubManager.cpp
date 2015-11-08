@@ -262,7 +262,7 @@ HRESULT CSubManager::InsertPassThruFilter(IGraphBuilder* pGB)
         continue;
       
       Com::SmartQIPtr<IBaseFilter> pTPTF = new CTextPassThruFilter(this);
-      CStdStringW name = L"XBMC Subtitles Pass Thru";
+      CStdStringW name = L"Kodi Subtitles Pass Thru";
       if(FAILED(pGB->AddFilter(pTPTF, name)))
         continue;
 
@@ -275,7 +275,7 @@ HRESULT CSubManager::InsertPassThruFilter(IGraphBuilder* pGB)
           break;
         }
         Com::SmartQIPtr<IBaseFilter> pNTR = new CNullTextRenderer(NULL, &hr);
-        name = L"XBMC Null Renderer";
+        name = L"Kodi Null Renderer";
         if (FAILED(hr) || FAILED(pGB->AddFilter(pNTR, name)))
           break;
 

@@ -87,11 +87,9 @@ CDSPlayer::CDSPlayer(IPlayerCallback& callback)
   m_HasVideo = false;
   m_HasAudio = false;
   m_isMadvr = (CSettings::GetInstance().GetString(CSettings::SETTING_DSPLAYER_VIDEORENDERER) == "madVR");
-  //if (m_isMadvr)
-  //{ 
-    if (InitMadvrWindow(m_hWnd))
-      CLog::Log(LOGDEBUG, "%s : Create DSPlayer window for madVR - hWnd: %i", __FUNCTION__, m_hWnd);
-  //}
+
+  if (InitMadvrWindow(m_hWnd))
+    CLog::Log(LOGDEBUG, "%s : Create DSPlayer window - hWnd: %i", __FUNCTION__, m_hWnd);
 
   /* Suspend AE temporarily so exclusive or hog-mode sinks */
   /* don't block DSPlayer access to audio device  */
@@ -131,8 +129,7 @@ CDSPlayer::~CDSPlayer()
 
   CoUninitialize();
 
-  //if (m_isMadvr)
-   DeInitMadvrWindow();
+  DeInitMadvrWindow();
 
   SAFE_DELETE(g_dsGraph);
   SAFE_DELETE(g_pPVRStream);
