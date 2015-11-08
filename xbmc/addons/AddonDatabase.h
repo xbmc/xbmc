@@ -48,8 +48,8 @@ public:
   bool GetAvailableVersions(const std::string& addonId,
       std::vector<std::pair<ADDON::AddonVersion, std::string>>& versionsInfo);
 
-  /*! \brief grab the (largest) add-on version for an add-on */
-  ADDON::AddonVersion GetAddonVersion(const std::string &id);
+  /*! Get the most recent version for an add-on and the repo id it belongs to*/
+  std::pair<ADDON::AddonVersion, std::string> GetAddonVersion(const std::string &id);
 
   int AddRepository(const std::string& id, const ADDON::VECADDONS& addons, const std::string& checksum, const ADDON::AddonVersion& version);
   void DeleteRepository(const std::string& id);

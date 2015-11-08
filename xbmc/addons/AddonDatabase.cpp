@@ -20,6 +20,7 @@
 
 #include "AddonDatabase.h"
 
+#include <algorithm>
 #include <utility>
 
 #include "addons/AddonManager.h"
@@ -179,37 +180,23 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
   return -1;
 }
 
-AddonVersion CAddonDatabase::GetAddonVersion(const std::string &id)
+std::pair<AddonVersion, std::string> CAddonDatabase::GetAddonVersion(const std::string &id)
 {
-  AddonVersion maxversion("0.0.0");
+  auto empty = std::make_pair(AddonVersion("0.0.0"), "");
   try
   {
-    if (NULL == m_pDB.get()) return maxversion;
-    if (NULL == m_pDS2.get()) return maxversion;
+    if (NULL == m_pDB.get()) return empty;
+    if (NULL == m_pDS2.get()) return empty;
 
-    // there may be multiple addons with this id (eg from different repositories) in the database,
-    // so we want to retrieve the latest version.  Order by version won't work as the database
-    // won't know that 1.10 > 1.2, so grab them all and order outside
-    std::string sql = PrepareSQL("select version from addon where addonID='%s'",id.c_str());
-    m_pDS2->query(sql);
-
-    if (m_pDS2->eof())
-      return maxversion;
-
-    while (!m_pDS2->eof())
-    {
-      AddonVersion version(m_pDS2->fv(0).get_asString());
-      if (version > maxversion)
-        maxversion = version;
-      m_pDS2->next();
-    }
-    return maxversion;
+    std::vector<std::pair<ADDON::AddonVersion, std::string>> versions;
+    if (GetAvailableVersions(id, versions) && versions.size() > 0)
+      return *std::max_element(versions.begin(), versions.end());
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, id.c_str());
   }
-  return maxversion;
+  return empty;
 }
 
 bool CAddonDatabase::GetAvailableVersions(const std::string& addonId,
