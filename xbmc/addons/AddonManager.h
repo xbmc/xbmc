@@ -112,6 +112,9 @@ namespace ADDON
     void FindAddons();
     void UnregisterAddon(const std::string& ID);
 
+    /*! Hook for clearing internal state after uninstall. */
+    void OnPostUnInstall(const std::string& id);
+
     /*! \brief Disable an addon. Returns true on success, false on failure. */
     bool DisableAddon(const std::string& ID);
 

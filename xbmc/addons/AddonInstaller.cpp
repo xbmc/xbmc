@@ -896,6 +896,9 @@ bool CAddonUnInstallJob::DoWork()
     addon = m_addon;
   CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24144)));
 
+  CAddonMgr::GetInstance().OnPostUnInstall(m_addon->ID());
+  database.OnPostUnInstall(m_addon->ID());
+
   ADDON::OnPostUnInstall(m_addon);
   return true;
 }
