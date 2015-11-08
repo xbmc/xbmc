@@ -269,8 +269,8 @@ bool CRepositoryUpdateJob::DoWork()
       //We have a newer verison locally
       continue;
 
-    if (database.GetAddonVersion(addon->ID()) > addon->Version())
-      //Newer verison in db (ie. in a different repo)
+    if (database.GetAddonVersion(addon->ID()).first > addon->Version())
+      //Newer version in db (ie. in a different repo)
       continue;
 
     bool depsMet = CAddonInstaller::GetInstance().CheckDependencies(addon);
