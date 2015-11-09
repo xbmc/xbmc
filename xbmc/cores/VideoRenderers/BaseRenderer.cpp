@@ -566,7 +566,7 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
     m_oldRenderOrientation = m_renderOrientation;
   }
 #ifdef HAS_DS_PLAYER
-  if (CMadvrCallback::Get()->UsingMadvr())
+  if (CMadvrCallback::Get()->UsingMadvr() && CMadvrCallback::Get()->GetMadvrRect() != m_destRect)
     CDSPlayer::PostMessage(new CDSMsg(CDSMsg::MADVR_SET_WINDOW_POS), false);
 #endif
 }

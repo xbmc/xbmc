@@ -120,6 +120,7 @@ public:
   virtual void SetResolution(){};
   virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret) { return false; };
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect) {};
+  virtual CRect GetMadvrRect(){ CRect madvrRect(0, 0, 0, 0); return madvrRect; };
 };
 
 class IMadvrPaintCallback
@@ -175,6 +176,7 @@ public:
   virtual void SetResolution();
   virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret);
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect);
+  virtual CRect GetMadvrRect();
 
   // IMadvrPaintCallback
   virtual void RenderToUnderTexture();

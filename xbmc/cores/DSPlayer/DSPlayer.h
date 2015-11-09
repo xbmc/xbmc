@@ -293,8 +293,7 @@ public:
     if (wait)
       msg->Acquire();
 
-    if (msg->GetMessageType() != CDSMsg::MADVR_SET_WINDOW_POS)
-      CLog::Log(LOGDEBUG, "%s Message posted : %d on thread 0x%X", __FUNCTION__, msg->GetMessageType(), m_threadID);
+    CLog::Log(LOGDEBUG, "%s Message posted : %d on thread 0x%X", __FUNCTION__, msg->GetMessageType(), m_threadID);
     PostThreadMessage(m_threadID, WM_GRAPHMESSAGE, msg->GetMessageType(), (LPARAM)msg);
 
     if (wait)

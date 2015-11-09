@@ -174,6 +174,16 @@ void CMadvrCallback::SetMadvrPosition(CRect wndRect, CRect videoRect)
     m_pAllocatorCallback->SetMadvrPosition(wndRect, videoRect);
 }
 
+CRect CMadvrCallback::GetMadvrRect()
+{
+  CRect madvrRect(0, 0, 0, 0);
+
+  if (UsingMadvr())
+    madvrRect = m_pAllocatorCallback->GetMadvrRect();
+
+  return madvrRect;
+}
+
 // IMadvrPaintCallback
 void CMadvrCallback::RenderToUnderTexture()
 {

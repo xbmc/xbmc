@@ -55,6 +55,7 @@ CmadVRAllocatorPresenter::CmadVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdS
   m_updateDisplayLatencyForMadvr = false;
   m_kodiGuiDirtyAlgo = g_advancedSettings.m_guiAlgorithmDirtyRegions;
   m_pMadvrShared = DNew CMadvrSharedRender();
+  m_madvrRect.SetRect(0, 0, 0, 0);
   
   if (FAILED(hr)) {
     _Error += L"ISubPicAllocatorPresenterImpl failed\n";
@@ -364,10 +365,10 @@ STDMETHODIMP CmadVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
 
 void CmadVRAllocatorPresenter::SetMadvrPosition(CRect wndRect, CRect videoRect)
 {
-
   Com::SmartRect wndR(wndRect.x1, wndRect.y1, wndRect.x2, wndRect.y2);
   Com::SmartRect videoR(videoRect.x1, videoRect.y1, videoRect.x2, videoRect.y2);
   SetPosition(wndR, videoR);
+  m_madvrRect = videoRect;
   //CLog::Log(0, "wndR x1: %g   y1: %g   x2: %g   y2: %g - videoR x1: %g   y1: %g   x2: %g   y2: %g", wndRect.x1, wndRect.y1, wndRect.x2, wndRect.y2, videoRect.x1, videoRect.y1, videoRect.x2, videoRect.y2);
 }
 
