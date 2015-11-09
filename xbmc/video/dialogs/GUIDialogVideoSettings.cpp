@@ -407,6 +407,7 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
 
 }
 
+#ifdef HAS_DS_PLAYER
 void CGUIDialogVideoSettings::SaveChoice()
 {
   CGUIDialogSelect *pDlg = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -492,6 +493,8 @@ void CGUIDialogVideoSettings::SaveChoice()
     }
   }
 }
+#endif
+
 void CGUIDialogVideoSettings::Save()
 {
   if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
@@ -634,65 +637,64 @@ void CGUIDialogVideoSettings::InitializeSettings()
   {
 #endif 
 
-    if (g_renderManager.Supports(VS_DEINTERLACEMODE_OFF))
-      entries.push_back(std::make_pair(16039, VS_DEINTERLACEMODE_OFF));
-    if (g_renderManager.Supports(VS_DEINTERLACEMODE_AUTO))
-      entries.push_back(std::make_pair(16040, VS_DEINTERLACEMODE_AUTO));
-    if (g_renderManager.Supports(VS_DEINTERLACEMODE_FORCE))
-      entries.push_back(std::make_pair(16041, VS_DEINTERLACEMODE_FORCE));
-    if (!entries.empty())
-      AddSpinner(groupVideo, SETTING_VIDEO_DEINTERLACEMODE, 16037, 0, static_cast<int>(videoSettings.m_DeinterlaceMode), entries);
+  if (g_renderManager.Supports(VS_DEINTERLACEMODE_OFF))
+    entries.push_back(std::make_pair(16039, VS_DEINTERLACEMODE_OFF));
+  if (g_renderManager.Supports(VS_DEINTERLACEMODE_AUTO))
+    entries.push_back(std::make_pair(16040, VS_DEINTERLACEMODE_AUTO));
+  if (g_renderManager.Supports(VS_DEINTERLACEMODE_FORCE))
+    entries.push_back(std::make_pair(16041, VS_DEINTERLACEMODE_FORCE));
+  if (!entries.empty())
+    AddSpinner(groupVideo, SETTING_VIDEO_DEINTERLACEMODE, 16037, 0, static_cast<int>(videoSettings.m_DeinterlaceMode), entries);
 
-    entries.clear();
-    entries.push_back(std::make_pair(16019, VS_INTERLACEMETHOD_AUTO));
-    entries.push_back(std::make_pair(20131, VS_INTERLACEMETHOD_RENDER_BLEND));
-    entries.push_back(std::make_pair(20130, VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED));
-    entries.push_back(std::make_pair(20129, VS_INTERLACEMETHOD_RENDER_WEAVE));
-    entries.push_back(std::make_pair(16022, VS_INTERLACEMETHOD_RENDER_BOB_INVERTED));
-    entries.push_back(std::make_pair(16021, VS_INTERLACEMETHOD_RENDER_BOB));
-    entries.push_back(std::make_pair(16020, VS_INTERLACEMETHOD_DEINTERLACE));
-    entries.push_back(std::make_pair(16036, VS_INTERLACEMETHOD_DEINTERLACE_HALF));
-    entries.push_back(std::make_pair(16324, VS_INTERLACEMETHOD_SW_BLEND));
-    entries.push_back(std::make_pair(16314, VS_INTERLACEMETHOD_INVERSE_TELECINE));
-    entries.push_back(std::make_pair(16311, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL));
-    entries.push_back(std::make_pair(16310, VS_INTERLACEMETHOD_VDPAU_TEMPORAL));
-    entries.push_back(std::make_pair(16325, VS_INTERLACEMETHOD_VDPAU_BOB));
-    entries.push_back(std::make_pair(16318, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF));
-    entries.push_back(std::make_pair(16317, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF));
-    entries.push_back(std::make_pair(16314, VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE));
-    entries.push_back(std::make_pair(16320, VS_INTERLACEMETHOD_DXVA_BOB));
-    entries.push_back(std::make_pair(16321, VS_INTERLACEMETHOD_DXVA_BEST));
-    entries.push_back(std::make_pair(16325, VS_INTERLACEMETHOD_AUTO_ION));
-    entries.push_back(std::make_pair(16327, VS_INTERLACEMETHOD_VAAPI_BOB));
-    entries.push_back(std::make_pair(16328, VS_INTERLACEMETHOD_VAAPI_MADI));
-    entries.push_back(std::make_pair(16329, VS_INTERLACEMETHOD_VAAPI_MACI));
-    entries.push_back(std::make_pair(16330, VS_INTERLACEMETHOD_MMAL_ADVANCED));
-    entries.push_back(std::make_pair(16331, VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF));
-    entries.push_back(std::make_pair(16332, VS_INTERLACEMETHOD_MMAL_BOB));
-    entries.push_back(std::make_pair(16333, VS_INTERLACEMETHOD_MMAL_BOB_HALF));
-    entries.push_back(std::make_pair(16334, VS_INTERLACEMETHOD_IMX_FASTMOTION));
-    entries.push_back(std::make_pair(16335, VS_INTERLACEMETHOD_IMX_FASTMOTION_DOUBLE));
+  entries.clear();
+  entries.push_back(std::make_pair(16019, VS_INTERLACEMETHOD_AUTO));
+  entries.push_back(std::make_pair(20131, VS_INTERLACEMETHOD_RENDER_BLEND));
+  entries.push_back(std::make_pair(20130, VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED));
+  entries.push_back(std::make_pair(20129, VS_INTERLACEMETHOD_RENDER_WEAVE));
+  entries.push_back(std::make_pair(16022, VS_INTERLACEMETHOD_RENDER_BOB_INVERTED));
+  entries.push_back(std::make_pair(16021, VS_INTERLACEMETHOD_RENDER_BOB));
+  entries.push_back(std::make_pair(16020, VS_INTERLACEMETHOD_DEINTERLACE));
+  entries.push_back(std::make_pair(16036, VS_INTERLACEMETHOD_DEINTERLACE_HALF));
+  entries.push_back(std::make_pair(16324, VS_INTERLACEMETHOD_SW_BLEND));
+  entries.push_back(std::make_pair(16314, VS_INTERLACEMETHOD_INVERSE_TELECINE));
+  entries.push_back(std::make_pair(16311, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL));
+  entries.push_back(std::make_pair(16310, VS_INTERLACEMETHOD_VDPAU_TEMPORAL));
+  entries.push_back(std::make_pair(16325, VS_INTERLACEMETHOD_VDPAU_BOB));
+  entries.push_back(std::make_pair(16318, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF));
+  entries.push_back(std::make_pair(16317, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF));
+  entries.push_back(std::make_pair(16314, VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE));
+  entries.push_back(std::make_pair(16320, VS_INTERLACEMETHOD_DXVA_BOB));
+  entries.push_back(std::make_pair(16321, VS_INTERLACEMETHOD_DXVA_BEST));
+  entries.push_back(std::make_pair(16325, VS_INTERLACEMETHOD_AUTO_ION));
+  entries.push_back(std::make_pair(16327, VS_INTERLACEMETHOD_VAAPI_BOB));
+  entries.push_back(std::make_pair(16328, VS_INTERLACEMETHOD_VAAPI_MADI));
+  entries.push_back(std::make_pair(16329, VS_INTERLACEMETHOD_VAAPI_MACI));
+  entries.push_back(std::make_pair(16330, VS_INTERLACEMETHOD_MMAL_ADVANCED));
+  entries.push_back(std::make_pair(16331, VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF));
+  entries.push_back(std::make_pair(16332, VS_INTERLACEMETHOD_MMAL_BOB));
+  entries.push_back(std::make_pair(16333, VS_INTERLACEMETHOD_MMAL_BOB_HALF));
+  entries.push_back(std::make_pair(16334, VS_INTERLACEMETHOD_IMX_FASTMOTION));
+  entries.push_back(std::make_pair(16335, VS_INTERLACEMETHOD_IMX_FASTMOTION_DOUBLE));
+   /* remove unsupported methods */
+  for (StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
+  {
+    if (g_renderManager.Supports((EINTERLACEMETHOD)it->second))
+      ++it;
+    else
+      it = entries.erase(it);
+  }
 
-    /* remove unsupported methods */
-    for (StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
-    {
-      if (g_renderManager.Supports((EINTERLACEMETHOD)it->second))
-        ++it;
-      else
-        it = entries.erase(it);
-    }
+  if (!entries.empty())
+  {
+    CSettingInt *settingInterlaceMethod = AddSpinner(groupVideo, SETTING_VIDEO_INTERLACEMETHOD, 16038, 0, static_cast<int>(videoSettings.m_InterlaceMethod), entries);
 
-    if (!entries.empty())
-    {
-      CSettingInt *settingInterlaceMethod = AddSpinner(groupVideo, SETTING_VIDEO_INTERLACEMETHOD, 16038, 0, static_cast<int>(videoSettings.m_InterlaceMethod), entries);
-
-      CSettingDependency dependencyDeinterlaceModeOff(SettingDependencyTypeEnable, m_settingsManager);
-      dependencyDeinterlaceModeOff.And()
-        ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_DEINTERLACEMODE, "0", SettingDependencyOperatorEquals, true, m_settingsManager)));
-      SettingDependencies depsDeinterlaceModeOff;
-      depsDeinterlaceModeOff.push_back(dependencyDeinterlaceModeOff);
-      settingInterlaceMethod->SetDependencies(depsDeinterlaceModeOff);
-    }
+    CSettingDependency dependencyDeinterlaceModeOff(SettingDependencyTypeEnable, m_settingsManager);
+    dependencyDeinterlaceModeOff.And()
+      ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_DEINTERLACEMODE, "0", SettingDependencyOperatorEquals, true, m_settingsManager)));
+    SettingDependencies depsDeinterlaceModeOff;
+    depsDeinterlaceModeOff.push_back(dependencyDeinterlaceModeOff);
+    settingInterlaceMethod->SetDependencies(depsDeinterlaceModeOff);
+  }
 
 #ifdef HAS_DS_PLAYER
   }
@@ -700,35 +702,34 @@ void CGUIDialogVideoSettings::InitializeSettings()
   {
 #endif
 
-    entries.clear();
-    entries.push_back(std::make_pair(16301, VS_SCALINGMETHOD_NEAREST));
-    entries.push_back(std::make_pair(16302, VS_SCALINGMETHOD_LINEAR));
-    entries.push_back(std::make_pair(16303, VS_SCALINGMETHOD_CUBIC ));
-    entries.push_back(std::make_pair(16304, VS_SCALINGMETHOD_LANCZOS2));
-    entries.push_back(std::make_pair(16323, VS_SCALINGMETHOD_SPLINE36_FAST));
-    entries.push_back(std::make_pair(16315, VS_SCALINGMETHOD_LANCZOS3_FAST));
-    entries.push_back(std::make_pair(16322, VS_SCALINGMETHOD_SPLINE36));
-    entries.push_back(std::make_pair(16305, VS_SCALINGMETHOD_LANCZOS3));
-    entries.push_back(std::make_pair(16306, VS_SCALINGMETHOD_SINC8));
-    // entries.push_back(std::make_pair(?????, VS_SCALINGMETHOD_NEDI));
-    entries.push_back(std::make_pair(16307, VS_SCALINGMETHOD_BICUBIC_SOFTWARE));
-    entries.push_back(std::make_pair(16308, VS_SCALINGMETHOD_LANCZOS_SOFTWARE));
-    entries.push_back(std::make_pair(16309, VS_SCALINGMETHOD_SINC_SOFTWARE));
-    entries.push_back(std::make_pair(13120, VS_SCALINGMETHOD_VDPAU_HARDWARE));
-    entries.push_back(std::make_pair(16319, VS_SCALINGMETHOD_DXVA_HARDWARE));
-    entries.push_back(std::make_pair(16316, VS_SCALINGMETHOD_AUTO));
+  entries.clear();
+  entries.push_back(std::make_pair(16301, VS_SCALINGMETHOD_NEAREST));
+  entries.push_back(std::make_pair(16302, VS_SCALINGMETHOD_LINEAR));
+  entries.push_back(std::make_pair(16303, VS_SCALINGMETHOD_CUBIC ));
+  entries.push_back(std::make_pair(16304, VS_SCALINGMETHOD_LANCZOS2));
+  entries.push_back(std::make_pair(16323, VS_SCALINGMETHOD_SPLINE36_FAST));
+  entries.push_back(std::make_pair(16315, VS_SCALINGMETHOD_LANCZOS3_FAST));
+  entries.push_back(std::make_pair(16322, VS_SCALINGMETHOD_SPLINE36));
+  entries.push_back(std::make_pair(16305, VS_SCALINGMETHOD_LANCZOS3));
+  entries.push_back(std::make_pair(16306, VS_SCALINGMETHOD_SINC8));
+  // entries.push_back(std::make_pair(?????, VS_SCALINGMETHOD_NEDI));
+  entries.push_back(std::make_pair(16307, VS_SCALINGMETHOD_BICUBIC_SOFTWARE));
+  entries.push_back(std::make_pair(16308, VS_SCALINGMETHOD_LANCZOS_SOFTWARE));
+  entries.push_back(std::make_pair(16309, VS_SCALINGMETHOD_SINC_SOFTWARE));
+  entries.push_back(std::make_pair(13120, VS_SCALINGMETHOD_VDPAU_HARDWARE));
+  entries.push_back(std::make_pair(16319, VS_SCALINGMETHOD_DXVA_HARDWARE));
+  entries.push_back(std::make_pair(16316, VS_SCALINGMETHOD_AUTO));
 
-    /* remove unsupported methods */
-    for(StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
-    {
-      if (g_renderManager.Supports((ESCALINGMETHOD)it->second))
-        ++it;
-      else
-        it = entries.erase(it);
-    }
+  /* remove unsupported methods */
+  for(StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
+  {
+    if (g_renderManager.Supports((ESCALINGMETHOD)it->second))
+      ++it;
+    else
+      it = entries.erase(it);
+  }
 
-    AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300, 0, static_cast<int>(videoSettings.m_ScalingMethod), entries);
-
+  AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300, 0, static_cast<int>(videoSettings.m_ScalingMethod), entries);
 #ifdef HAS_DS_PLAYER
   }
   else if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
