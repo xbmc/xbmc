@@ -28,7 +28,7 @@
 #include "RenderFormats.h"
 #include "RenderCapture.h"
 #ifdef HAS_DS_PLAYER
-#include "WinBaseRenderer.h"
+#include "cores/DSPlayer/VideoRenderers/WinBaseRenderer.h"
 #endif
 #include "settings/VideoSettings.h"
 

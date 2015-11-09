@@ -406,6 +406,9 @@
     <Filter Include="interfaces\builtins">
       <UniqueIdentifier>{248ffbc4-43f5-4aaf-b259-2dd4f840fcef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="cores\DSPlayer\VideoRenderers">
+      <UniqueIdentifier>{5373d778-6387-484b-baf7-1eaa96f41a6f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -3050,9 +3053,6 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterSelectionRule.cpp">
       <Filter>cores\DSPlayer\FilterCoreFactory</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\WinDsRenderer.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\video\FFmpegVideoDecoder.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSInputStreamPVRManager.cpp">
       <Filter>cores\DSPlayer</Filter>
@@ -3444,6 +3444,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\PVRSettings.cpp">
       <Filter>pvr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\VideoRenderers\WinDsRenderer.cpp">
+      <Filter>cores\DSPlayer\VideoRenderers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6284,13 +6287,6 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\GlobalFilterSelectionRule.h">
       <Filter>cores\DSPlayer\FilterCoreFactory</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\WinBaseRenderer.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\WinDsRenderer.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokevideobackground.h" />
     <ClInclude Include="..\..\xbmc\video\FFmpegVideoDecoder.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSInputStreamPVRManager.h">
       <Filter>cores\DSPlayer</Filter>
@@ -6723,6 +6719,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\EvrSharedRender.h">
       <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\VideoRenderers\WinBaseRenderer.h">
+      <Filter>cores\DSPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\VideoRenderers\WinDsRenderer.h">
+      <Filter>cores\DSPlayer\VideoRenderers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

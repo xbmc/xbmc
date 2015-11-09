@@ -310,6 +310,7 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\IPinHook.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\MacrovisionKicker.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\uri.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\VideoRenderers\WinDsRenderer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\contrib\cc_decoder.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
@@ -328,7 +329,6 @@
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererGUI.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\WinDsRenderer.cpp" />
     <ClCompile Include="..\..\xbmc\CueDocument.cpp" />
     <ClCompile Include="..\..\xbmc\DbUrl.cpp" />
     <ClCompile Include="..\..\xbmc\dbwrappers\Database.cpp" />
@@ -1067,6 +1067,8 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\MacrovisionKicker.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\SmartList.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\uri.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\VideoRenderers\WinBaseRenderer.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\VideoRenderers\WinDsRenderer.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\contrib\cc_decoder.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\contrib\cc_decoder708.h" />
@@ -1074,8 +1076,6 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxCC.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxCDDA.h" />
     <ClInclude Include="..\..\xbmc\cores\FFmpeg.h" />
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\WinBaseRenderer.h" />
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\WinDsRenderer.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererGUI.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKeyboardGeneric.h" />
     <ClInclude Include="..\..\xbmc\DbUrl.h" />

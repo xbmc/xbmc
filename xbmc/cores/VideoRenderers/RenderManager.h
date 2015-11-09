@@ -31,7 +31,7 @@
 #include <deque>
 #include "PlatformDefs.h"
 #ifdef HAS_DS_PLAYER
-#include "WinDsRenderer.h"
+#include "../DSPlayer/VideoRenderers/WinDsRenderer.h"
 #include "../Dsplayer/IPaintCallback.h"
 #endif
 #include "threads/Event.h"

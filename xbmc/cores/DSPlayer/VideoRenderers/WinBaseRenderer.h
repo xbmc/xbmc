@@ -29,11 +29,11 @@
 
 
 #include "guilib/GraphicContext.h"
-#include "RenderFlags.h"
-#include "BaseRenderer.h"
+#include "../../Videorenderers/RenderFlags.h"
+#include "../../Videorenderers/BaseRenderer.h"
 #include "guilib/D3DResource.h"
 #include "settings/VideoSettings.h"
-#include "RenderCapture.h"
+#include "../../Videorenderers/RenderCapture.h"
 
 class CBaseTexture;
 
