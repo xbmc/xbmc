@@ -318,6 +318,8 @@ bool CBaseTexture::LoadIImage(IImage *pImage, unsigned char* buffer, unsigned in
         m_hasAlpha = pImage->hasAlpha();
         m_originalWidth = pImage->originalWidth();
         m_originalHeight = pImage->originalHeight();
+        m_imageWidth = pImage->Width();
+        m_imageHeight = pImage->Height();
         ClampToEdge();
         return true;
       }
