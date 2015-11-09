@@ -118,9 +118,6 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
 
   bool isDeletedRecording = false;
 
-  if (ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
-    buttons.Add(CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS, 15047);  /* Audio DSP settings */
-
   if (pItem->HasPVRRecordingInfoTag())
   {
     isDeletedRecording = pItem->GetPVRRecordingInfoTag()->IsDeleted();
@@ -132,9 +129,7 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
       buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); /* Start from beginning */
       std::string resumeString = GetResumeString(*pItem);
       if (!resumeString.empty())
-      {
         buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
-      }
     }
     else
     {
@@ -165,11 +160,13 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
     buttons.Add(CONTEXT_BUTTON_DELETE, 117);        /* Delete */
   }
 
+  if (ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
+    buttons.Add(CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS, 15047);  /* Audio DSP settings */
+
   if (pItem->HasPVRRecordingInfoTag())
   {
-    if (!isDeletedRecording && g_PVRClients->HasMenuHooks(pItem->GetPVRRecordingInfoTag()->m_iClientId, PVR_MENUHOOK_RECORDING))
-      buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
-    else if (isDeletedRecording && g_PVRClients->HasMenuHooks(pItem->GetPVRRecordingInfoTag()->m_iClientId, PVR_MENUHOOK_DELETED_RECORDING))
+    if ((!isDeletedRecording && g_PVRClients->HasMenuHooks(pItem->GetPVRRecordingInfoTag()->m_iClientId, PVR_MENUHOOK_RECORDING)) ||
+        (isDeletedRecording && g_PVRClients->HasMenuHooks(pItem->GetPVRRecordingInfoTag()->m_iClientId, PVR_MENUHOOK_DELETED_RECORDING)))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
   }
 

@@ -90,12 +90,16 @@ void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &but
 
       if (!pItem->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
       {
-        buttons.Add(CONTEXT_BUTTON_DELETE, 117);        /* Delete */
         buttons.Add(CONTEXT_BUTTON_EDIT, 21450);        /* Edit */
 
         // As epg-based timers will get it's title from the epg tag, they should not be renamable.
         if (pItem->GetPVRTimerInfoTag()->IsManual())
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename */
+
+        if (pItem->GetPVRTimerInfoTag()->IsRecording())
+          buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059); /* Stop recording */
+        else
+          buttons.Add(CONTEXT_BUTTON_DELETE, 117);        /* Delete */
       }
     }
 
@@ -132,6 +136,7 @@ bool CGUIWindowPVRTimers::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   return OnContextButtonActivate(pItem.get(), button) ||
       OnContextButtonAdd(pItem.get(), button) ||
       OnContextButtonDelete(pItem.get(), button) ||
+      OnContextButtonStopRecord(pItem.get(), button) ||
       OnContextButtonEdit(pItem.get(), button) ||
       OnContextButtonRename(pItem.get(), button) ||
       OnContextButtonInfo(pItem.get(), button) ||
@@ -279,14 +284,21 @@ bool CGUIWindowPVRTimers::OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON 
 
   if (button == CONTEXT_BUTTON_DELETE)
   {
+    DeleteTimer(item);
     bReturn = true;
+  }
 
-    if (!item->HasPVRTimerInfoTag())
-      return bReturn;
+  return bReturn;
+}
 
-    bool bDeleteSchedule(false);
-    if (ConfirmDeleteTimer(item, bDeleteSchedule))
-      CPVRTimers::DeleteTimer(*item, false, bDeleteSchedule);
+bool CGUIWindowPVRTimers::OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button)
+{
+  bool bReturn = false;
+
+  if (button == CONTEXT_BUTTON_STOP_RECORD)
+  {
+    StopRecordFile(item);
+    bReturn = true;
   }
 
   return bReturn;
@@ -343,17 +355,7 @@ bool CGUIWindowPVRTimers::OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON bu
 
 bool CGUIWindowPVRTimers::ActionDeleteTimer(CFileItem *item)
 {
-  /* check if the timer tag is valid */
-  CPVRTimerInfoTagPtr timerTag = item->GetPVRTimerInfoTag();
-  if (!timerTag || (timerTag->m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX))
-    return false;
-
-  bool bDeleteSchedule(false);
-  if (!ConfirmDeleteTimer(item, bDeleteSchedule))
-    return false;
-
-  /* delete the timer */
-  bool bReturn = CPVRTimers::DeleteTimer(*item, false, bDeleteSchedule);
+  bool bReturn = DeleteTimer(item);
 
   if (bReturn && (m_vecItems->GetObjectCount() == 0))
   {
