@@ -360,7 +360,7 @@ int CStreamsManager::GetEdition()
   return -1;
 }
 
-void CStreamsManager::GetEditionInfo(int iEdition, CStdString &strEditionName, REFERENCE_TIME *prt)
+void CStreamsManager::GetEditionInfo(int iEdition, std::string &strEditionName, REFERENCE_TIME *prt)
 {
   if (m_editionStreams.size() == 0)
     return;

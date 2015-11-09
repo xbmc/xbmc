@@ -670,7 +670,7 @@ int CApplicationPlayer::GetEdition()
     return -1;
 }
 
-void CApplicationPlayer::GetEditionInfo(int iEdition, CStdString &strEditionName, REFERENCE_TIME *prt)
+void CApplicationPlayer::GetEditionInfo(int iEdition, std::string &strEditionName, REFERENCE_TIME *prt)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)

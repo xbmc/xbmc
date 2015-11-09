@@ -35,7 +35,6 @@
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Utf8Utils.h"
-#include "utils/StdString.h"
 
 #if !defined(TARGET_WINDOWS) && defined(HAVE_CONFIG_H)
   #include "config.h"
@@ -628,16 +627,18 @@ std::string CCharsetConverter::getCharsetNameByLabel(const std::string& charsetL
   return "";
 }
 
-int CCharsetConverter::getCharsetIdByName(const CStdString& charsetName)
+#ifdef HAS_DS_PLAYER
+int CCharsetConverter::getCharsetIdByName(const std::string& charsetName)
 {
 	for(SCharsetMapping *c = g_charsets; c->charset; c++)
 	{
-		if (charsetName.Equals(c->charset))
+    if (StringUtils::EqualsNoCase(charsetName,c->charset))
 			return c->win_id;
 	}
 
 	return 1;
 }
+#endif
 
 void CCharsetConverter::reset(void)
 {

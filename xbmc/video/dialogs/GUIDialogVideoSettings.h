@@ -49,7 +49,7 @@ private:
 #ifdef HAS_DS_PLAYER
   void SaveChoice();
   void HideUnused();
-  void SetVisible(CStdString id, bool visible);
+  void SetVisible(std::string id, bool visible);
   virtual void OnInitWindow();
   CDSPropertyPage* m_pDSPropertyPage;
   bool m_allowchange;

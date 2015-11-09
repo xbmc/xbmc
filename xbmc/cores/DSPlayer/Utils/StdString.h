@@ -4282,6 +4282,7 @@ private:
 
 // ...and some shorter names for the space-efficient
 
+/*
 #define WUSysMsg          WUSysMessage
 #define WUSysMsgA          WUSysMessageA
 #define WUSysMsgW          WUSysMessageW
@@ -4291,7 +4292,7 @@ private:
 #define WULastErrMsg()        WUSysMessage(::GetLastError())
 #define WULastErrMsgA()        WUSysMessageA(::GetLastError())
 #define WULastErrMsgW()        WUSysMessageW(::GetLastError())
-
+*/
 
 // -----------------------------------------------------------------------------
 // FUNCTIONAL COMPARATORS:

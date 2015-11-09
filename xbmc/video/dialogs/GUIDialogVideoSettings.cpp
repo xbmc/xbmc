@@ -359,7 +359,7 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
       if (!pDlg)
         return;
     
-    CStdString filterName;
+    std::string filterName;
 
     BeginEnumFilters(g_dsGraph->pFilterGraph, pEF, pBF)
     {
@@ -389,11 +389,11 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
     pDlg->Open();
 
     IBaseFilter *pBF = NULL;
-    CStdStringW strNameW;
+    std::wstring strNameW;
 
     //todo jarvis
     g_charsetConverter.utf8ToW(pDlg->GetSelectedLabelText(), strNameW);
-    if (SUCCEEDED(g_dsGraph->pFilterGraph->FindFilterByName(strNameW, &pBF)))
+    if (SUCCEEDED(g_dsGraph->pFilterGraph->FindFilterByName(strNameW.c_str(), &pBF)))
     {
       if (!CGraphFilters::Get()->ShowOSDPPage(pBF))
       {
@@ -946,7 +946,7 @@ void CGUIDialogVideoSettings::HideUnused()
   m_allowchange = true;
 }
 
-void CGUIDialogVideoSettings::SetVisible(CStdString id, bool visible)
+void CGUIDialogVideoSettings::SetVisible(std::string id, bool visible)
 {
   CSetting *setting = m_settingsManager->GetSetting(id);
   if (setting->IsVisible() && visible)

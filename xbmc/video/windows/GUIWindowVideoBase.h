@@ -46,7 +46,7 @@ public:
 
   void PlayMovie(const CFileItem *item);
 #ifdef HAS_DS_PLAYER
-  static void GetResumeItemOffset(const CFileItem *item, int& startoffset, int& partNumber, CStdString& strEdition);
+  static void GetResumeItemOffset(const CFileItem *item, int& startoffset, int& partNumber, std::string& strEdition);
 #else
   static void GetResumeItemOffset(const CFileItem *item, int& startoffset, int& partNumber);
 #endif
@@ -151,6 +151,6 @@ protected:
   static int GetDefaultPlayer(const CFileItemPtr &item);
   bool IsLaunchBD(const CFileItemPtr &item);
   bool LaunchBD(const CFileItemPtr &item);
-  const CStdString GetBDPath(const CFileItemPtr &item);
+  const std::string GetBDPath(const CFileItemPtr &item);
 #endif
 };

@@ -23,7 +23,6 @@
 #include <vector>
 
 #ifdef HAS_DS_PLAYER
-#include "utils/StdString.h"
 #include "DSPlayerDatabase.h"
 #endif
 

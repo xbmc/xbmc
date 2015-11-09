@@ -217,7 +217,7 @@ public:
 
   int  GetEditionsCount();
   int  GetEdition();
-  void GetEditionInfo(int iEdition, CStdString &strEditionName, REFERENCE_TIME *prt);
+  void GetEditionInfo(int iEdition, std::string &strEditionName, REFERENCE_TIME *prt);
   void SetEdition(int iEdition);
   bool IsMatroskaEditions(){ return m_mkveditions; };
 

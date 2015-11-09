@@ -33,7 +33,6 @@
 #ifdef HAS_DS_PLAYER
 #include "Application.h"
 #include "DSPlayerDatabase.h"
-#include "utils/StdString.h"
 #endif
 #include "utils/Variant.h"
 

@@ -25,9 +25,6 @@
 #include "IPlayerCallback.h"
 #include "guilib/Geometry.h"
 #include <string>
-#ifdef HAS_DS_PLAYER
-#include "utils/StdString.h"
-#endif
 
 #define CURRENT_STREAM -1
 
@@ -189,7 +186,7 @@ public:
 #ifdef HAS_DS_PLAYER
   virtual int  GetEditionsCount()      { return 0; }
   virtual int  GetEdition()            { return -1; }
-  virtual void GetEditionInfo(int iEdition, CStdString &strEditionName, REFERENCE_TIME *prt){};
+  virtual void GetEditionInfo(int iEdition, std::string &strEditionName, REFERENCE_TIME *prt){};
   virtual void SetEdition(int iEdition){};
   virtual bool IsMatroskaEditions()    { return false; }
   virtual void ShowEditionDlg(bool playStart){};

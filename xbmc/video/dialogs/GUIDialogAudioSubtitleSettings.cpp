@@ -632,7 +632,7 @@ void CGUIDialogAudioSubtitleSettings::ShowAudioSelector()
 
   for (int i = 0; i < count; ++i)
   {
-    CStdString strName;
+    std::string strName;
     strName = g_infoManager.GetAudioStreamName(i);
     if (strName.length() == 0)
       strName = "Unnamed";
@@ -674,7 +674,7 @@ void CGUIDialogAudioSubtitleSettings::ShowSubsSelector()
 
   for (int i = 0; i < count; ++i)
   {
-    CStdString strName;
+    std::string strName;
 
     strName = g_infoManager.GetSubtitleName(i);
     if (strName.length() == 0)

@@ -1251,16 +1251,17 @@ extern "C"
     return 0;
   }
 
+#ifdef HAS_DS_PLAYER
   FILE* dll_wfopen(const wchar_t* wfilename, const wchar_t* wmode)
   {
-	  CStdStringA filename;
-	  CStdStringA mode;
+	  std::string filename;
+	  std::string mode;
 
 	  g_charsetConverter.wToUTF8(wfilename, filename);
 	  g_charsetConverter.wToUTF8(wmode, mode);
-	  return dll_fopen(filename, mode);
+	  return dll_fopen(filename.c_str(), mode.c_str());
   }
-
+#endif
 
   int dll_putc(int c, FILE *stream)
   {

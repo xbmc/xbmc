@@ -66,7 +66,6 @@
 
 #ifdef HAS_DS_PLAYER
 #include "DSPlayerDatabase.h"
-#include "utils/StdString.h"
 #include "filesystem/File.h"
 #endif
 using namespace XFILE;
@@ -568,7 +567,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
 }
 
 #ifdef HAS_DS_PLAYER
-void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int& startoffset, int& partNumber, CStdString& strEdition)
+void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int& startoffset, int& partNumber, std::string& strEdition)
 #else
 void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int& startoffset, int& partNumber)
 #endif
@@ -622,7 +621,7 @@ bool CGUIWindowVideoBase::HasResumeItemOffset(const CFileItem *item)
 {
   int startoffset = 0, partNumber = 0;
 #ifdef HAS_DS_PLAYER
-  CStdString editionString;
+  std::string editionString;
   GetResumeItemOffset(item, startoffset, partNumber, editionString);
 #else
   GetResumeItemOffset(item, startoffset, partNumber);
@@ -776,7 +775,7 @@ std::string CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
   std::string resumeString;
   int startOffset = 0, startPart = 0;
 #ifdef HAS_DS_PLAYER
-  CStdString editionString;
+  std::string editionString;
   GetResumeItemOffset(&item, startOffset, startPart, editionString);
 #else
   GetResumeItemOffset(&item, startOffset, startPart);
@@ -790,7 +789,7 @@ std::string CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
       resumeString += " (" + partString + ")";
     }
 #ifdef HAS_DS_PLAYER
-	else if (!editionString.IsEmpty())
+	else if (!editionString.empty())
 	{
 		resumeString += " [";
 		resumeString += editionString;
@@ -859,8 +858,8 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
   if (pItem && !pItem->GetProperty("pluginreplacecontextitems").asBoolean())
   {
     CFileItem item(*pItem);
-    CStdString path = GetBDPath(pItem);
-    if (!path.IsEmpty())
+    std::string path = GetBDPath(pItem);
+    if (!path.empty())
     {
       item.SetPath(path);
     }
@@ -985,7 +984,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
         int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
         if (value == SELECT_ACTION_RESUME) {
 #ifdef HAS_DS_PLAYER
-          CStdString editionString;
+          std::string editionString;
           GetResumeItemOffset(parts[selectedFile - 1].get(), stack->m_lStartOffset, stack->m_lStartPartNumber, editionString);
 #else
           GetResumeItemOffset(parts[selectedFile].get(), stack->m_lStartOffset, stack->m_lStartPartNumber);
@@ -1807,15 +1806,15 @@ bool CGUIWindowVideoBase::IsLaunchBD(const CFileItemPtr &item)
 	return (g_application.m_eForcedNextPlayer == EPC_DSPLAYER || (GetDefaultPlayer(item) == EPC_DSPLAYER && g_application.m_eForcedNextPlayer == EPC_NONE)) && CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_BDAUTOLOADINDEX);
 }
 
-const CStdString CGUIWindowVideoBase::GetBDPath(const CFileItemPtr &item)
+const std::string CGUIWindowVideoBase::GetBDPath(const CFileItemPtr &item)
 {
-  CStdString ext = URIUtils::GetExtension(item->GetPath());
-  ext.ToLower();
+  std::string ext = URIUtils::GetExtension(item->GetPath());
+  StringUtils::ToLower(ext);
   if (ext == ".iso" || ext == ".img")
     return item->GetPath();
 
-  CStdString strPath;
-  CStdString strFilename;
+  std::string strPath;
+  std::string strFilename;
   if (item->IsVideoDb() && item->HasVideoInfoTag())
     strPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
   else if (item->IsBDFile())
@@ -1835,7 +1834,7 @@ bool CGUIWindowVideoBase::LaunchBD(const CFileItemPtr &item)
 {
 	if (IsLaunchBD(item))
 	{
-		CStdString strPath = GetBDPath(item);
+		std::string strPath = GetBDPath(item);
 		if (!strPath.IsEmpty())
 		{
 			CFileItemPtr movieItem(new CFileItem(*item));

@@ -23,9 +23,6 @@
 #include "ISerializable.h"
 #include <string>
 #include <vector>
-#ifdef HAS_DS_PLAYER
-#include "utils/StdString.h"
-#endif
 
 class CStreamDetails;
 class CVariant;
@@ -140,7 +137,7 @@ public:
   void SetVideoDuration(int idx, const int duration);
   std::string GetStereoMode(int idx = 0) const;
 #ifdef HAS_DS_PLAYER
-  CStdString GetVideoFourcc(int idx = 0) const;
+  std::string GetVideoFourcc(int idx = 0) const;
   int VideoDimsToResolution(int iWidth, int iHeight);
 #endif
 

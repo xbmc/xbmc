@@ -114,15 +114,17 @@ extern "C"
     return dll_close(fd);
   }
 
+#ifdef HAS_DS_PLAYER
   FILE* track_wfopen(const wchar_t* swFileName, const wchar_t* wmode)
   {
-	  CStdStringA filename;
-	  CStdStringA mode;
+	  std::string filename;
+	  std::string mode;
 
 	  g_charsetConverter.wToUTF8(swFileName, filename);
 	  g_charsetConverter.wToUTF8(wmode, mode);
-	  return track_fopen(filename, mode);
+	  return track_fopen(filename.c_str(), mode.c_str());
   }
+#endif
 
   FILE* track_fopen(const char* sFileName, const char* mode)
   {

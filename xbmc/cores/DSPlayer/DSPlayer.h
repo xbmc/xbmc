@@ -169,7 +169,7 @@ public:
   {
     return (CStreamsManager::Get()) ? CStreamsManager::Get()->GetEdition() : 0;
   }
-  virtual void GetEditionInfo(int iEdition, CStdString &strEditionName, REFERENCE_TIME *prt) {
+  virtual void GetEditionInfo(int iEdition, std::string &strEditionName, REFERENCE_TIME *prt) {
     if (CStreamsManager::Get())
       CStreamsManager::Get()->GetEditionInfo(iEdition, strEditionName, prt);
   };

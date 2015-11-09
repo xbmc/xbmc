@@ -27,6 +27,7 @@
 #include "utils/Archive.h"
 #ifdef HAS_DS_PLAYER
 #include "MadvrCallback.h"
+#include "StringUtils.h"
 #endif
 
 const float VIDEOASPECT_EPSILON = 0.025f;
@@ -386,14 +387,14 @@ std::string CStreamDetails::GetVideoCodec(int idx) const
 }
 
 #ifdef HAS_DS_PLAYER
-CStdString CStreamDetails::GetVideoFourcc(int idx) const
+std::string CStreamDetails::GetVideoFourcc(int idx) const
 {
   CStreamDetailVideo *item = (CStreamDetailVideo *)GetNthStream(CStreamDetail::VIDEO, idx);
   if (item)
   {
-    CStdString fourcc = "";
+    std::string fourcc = "";
     int iFourcc = item->m_iFourcc;
-    fourcc.Format("%c%c%c%c", iFourcc >> 24 & 0xff, iFourcc >> 16 & 0xff, iFourcc >> 8 & 0xff, iFourcc & 0xff);
+    fourcc = StringUtils::Format("%c%c%c%c", iFourcc >> 24 & 0xff, iFourcc >> 16 & 0xff, iFourcc >> 8 & 0xff, iFourcc & 0xff);
     return fourcc;
   }
   else

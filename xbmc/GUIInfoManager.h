@@ -186,8 +186,8 @@ public:
   std::string GetCurrentPlayTimeRemaining(TIME_FORMAT format) const;
 
 #ifdef HAS_DS_PLAYER
-  CStdString GetAudioStreamName(int iStream);
-  CStdString GetSubtitleName(int iStream);
+  std::string GetAudioStreamName(int iStream);
+  std::string GetSubtitleName(int iStream);
 #endif
 
   bool GetDisplayAfterSeek();

@@ -23,7 +23,6 @@
 #include <memory>
 #include "threads/SystemClock.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
-#include "utils/StdString.h"
 
 typedef enum
 {
@@ -160,7 +159,7 @@ public:
 #ifdef HAS_DS_PLAYER
   int  GetEditionsCount();
   int  GetEdition();
-  void GetEditionInfo(int iEdition, CStdString &strEditionName, REFERENCE_TIME *prt);
+  void GetEditionInfo(int iEdition, std::string &strEditionName, REFERENCE_TIME *prt);
   void SetEdition(int iEdition);
   bool IsMatroskaEditions();
   void ShowEditionDlg(bool playStart);
