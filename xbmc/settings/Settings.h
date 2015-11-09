@@ -372,7 +372,7 @@ public:
   static const std::string CSettings::SETTING_DSPLAYER_TVSHOWSELECTITEM;
   static const std::string CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI;
   static const std::string CSettings::SETTING_DSPLAYER_DELAYMADVRPLAYBACK;
-  static const std::string CSettings::SETTING_DSPLAYER_MADVREXCLUSIVEMODE;
+  static const std::string CSettings::SETTING_DSPLAYER_EXCLUSIVEMODE;
   static const std::string CSettings::SETTING_DSPLAYER_EXITMADVRFULLSCREEN;
   static const std::string CSettings::SETTING_DSPLAYER_MINTITLELENGTH;
   static const std::string CSettings::SETTING_DSPLAYER_SHOWBDTITLECHOICE;

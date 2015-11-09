@@ -168,7 +168,7 @@ void CmadVRAllocatorPresenter::ConfigureMadvr()
   if (Com::SmartQIPtr<IMadVRExclusiveModeCallback> pEXL = m_pDXR)
     pEXL->Register(m_exclusiveCallback, this);
 
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_MADVREXCLUSIVEMODE))
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_EXCLUSIVEMODE))
   {
       m_pSettingsManager->SetBool("exclusiveDelay", true);
       m_pSettingsManager->SetBool("enableExclusive", true);

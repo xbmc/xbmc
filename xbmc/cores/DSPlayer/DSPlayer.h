@@ -254,7 +254,6 @@ public:
   //madVR Window
   static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
   static HWND m_hWnd;
-  static CRect winRect;
   bool InitMadvrWindow(HWND &hWnd);
   void DeInitMadvrWindow();
   CStdString m_className;

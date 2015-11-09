@@ -99,6 +99,8 @@ public:
   void                    SetAlphaBlendEnable(bool enable);
 #ifdef HAS_DS_PLAYER
   void                    SetWindowedForMadvr();
+  void                    GetParamsForDSPlayer(bool &useWindowedDX, unsigned int &nBackBufferWidth, unsigned int &nBackBufferHeight, bool &bVSync, float &refreshRate, bool &interlaced);
+  bool                    m_UseWindowedDX_DSPlayer;
 #endif
 
   /*!

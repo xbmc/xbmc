@@ -74,7 +74,6 @@ CGUIDialogBoxBase *CDSPlayer::errorWindow = NULL;
 ThreadIdentifier CDSPlayer::m_threadID = 0;
 ThreadIdentifier CDSGraphThread::m_threadID = 0;
 HWND CDSPlayer::m_hWnd = 0;
-CRect CDSPlayer::winRect;
 
 CDSPlayer::CDSPlayer(IPlayerCallback& callback)
   : IPlayer(callback),

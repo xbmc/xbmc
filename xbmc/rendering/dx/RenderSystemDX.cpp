@@ -328,6 +328,16 @@ void CRenderSystemDX::SetWindowedForMadvr()
     return;
   }
 }
+
+void CRenderSystemDX::GetParamsForDSPlayer(bool &useWindowedDX, unsigned int &nBackBufferWidth, unsigned int &nBackBufferHeight, bool &bVSync, float &refreshRate, bool &interlaced)
+{
+  useWindowedDX = m_UseWindowedDX_DSPlayer;
+  nBackBufferWidth = m_nBackBufferWidth;
+  nBackBufferHeight = m_nBackBufferHeight;
+  bVSync = m_bVSync;
+  refreshRate = m_refreshRate;
+  interlaced = m_interlaced;
+}
 #endif
 
 void CRenderSystemDX::SetFullScreenInternal()
@@ -766,10 +776,6 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   m_resizeInProgress = true;
 
   CLog::Log(LOGDEBUG, "%s - (Re)Create window size (%dx%d) dependent resources.", __FUNCTION__, m_nBackBufferWidth, m_nBackBufferHeight);
-#ifdef HAS_DS_PLAYER
-  CDSPlayer::winRect.SetRect(0, 0, m_nBackBufferWidth, m_nBackBufferHeight);
-  CDSPlayer::PostGraphMessage(new CDSMsg(CDSMsg::RESET_DEVICE), false);
-#endif
 
   bool bRestoreRTView = false;
   {
@@ -983,6 +989,10 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
 
   m_resizeInProgress = false;
   m_bResizeRequred = false;
+
+#ifdef HAS_DS_PLAYER
+  CDSPlayer::PostGraphMessage(new CDSMsg(CDSMsg::RESET_DEVICE), true);
+#endif
 
   return true;
 }

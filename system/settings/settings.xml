@@ -1253,12 +1253,9 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="dsplayer.madvrexclusivemode" parent="dsplayer.videorenderer" type="boolean" label="55063" help="90005">
+        <setting id="dsplayer.exclusivemode" parent="dsplayer.videorenderer" type="boolean" label="55063" help="90005">
           <level>0</level>
           <default>false</default>
-          <dependencies>
-            <dependency type="visible" setting="dsplayer.videorenderer" operator="is">madVR</dependency>
-          </dependencies>
           <control type="toggle" />
         </setting>
         <setting id="dsplayer.exitmadvrfullscreen" parent="dsplayer.videorenderer" type="boolean" label="55074" help="90006">

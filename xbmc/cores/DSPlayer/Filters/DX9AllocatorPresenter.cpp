@@ -232,6 +232,16 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   g_renderManager.RegisterCallback(this);
   m_bIsFullscreen = g_dsSettings.IsD3DFullscreen();
 
+  m_hDeviceWnd = CDSPlayer::m_hWnd;
+  m_devType = D3DDEVTYPE_HAL;
+  m_useWindowedDX = true;
+  m_nBackBufferWidth = 0;
+  m_nBackBufferHeight = 0;
+  m_bVSync = false;
+  m_fRefreshRate = 0;
+  m_interlaced = false;
+  m_adapter = D3DADAPTER_DEFAULT;
+
   if (FAILED(hr))
   {
     _Error += L"ISubPicAllocatorPresenterImpl failed\n";
@@ -818,7 +828,7 @@ HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)
   m_pD3D = g_Windowing.Get3DObject();
   */
 
-  InitD3D9(CDSPlayer::m_hWnd);
+  HRESULT hr =InitD3D9(CDSPlayer::m_hWnd);
   m_pEvrShared->CreateTextures(g_Windowing.Get3D11Device(), (IDirect3DDevice9Ex*)m_pD3DDev, m_ScreenSize.cx, m_ScreenSize.cy);
 
   m_pResizerPixelShader[0] = 0;
@@ -827,7 +837,6 @@ HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)
   m_pResizerPixelShader[3] = 0;
 
   D3DDISPLAYMODE d3ddm;
-  HRESULT hr = S_OK;
   if (FAILED(m_pD3D->GetAdapterDisplayMode(GetAdapter(m_pD3D), &d3ddm)))
   {
     _Error += L"GetAdapterDisplayMode failed\n";
@@ -836,7 +845,6 @@ HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)
 
   m_RefreshRate = d3ddm.RefreshRate;
   m_DisplayType = d3ddm.Format;
-  m_ScreenSize.SetSize(d3ddm.Width, d3ddm.Height);
 
   D3DPRESENT_PARAMETERS pp;
   ZeroMemory(&pp, sizeof(pp));
@@ -938,6 +946,77 @@ bool CDX9AllocatorPresenter::IsSurfaceFormatOk(D3DFORMAT surfFormat, DWORD usage
   return (SUCCEEDED(hr)) ? true : false;
 }
 
+void CDX9AllocatorPresenter::SetMonitor(HMONITOR monitor)
+{
+  if (!m_pD3D)
+    return;
+
+  // find the appropriate screen
+  for (unsigned int adapter = 0; adapter < m_pD3D->GetAdapterCount(); adapter++)
+  {
+    HMONITOR hMonitor = m_pD3D->GetAdapterMonitor(adapter);
+    if (hMonitor == monitor && adapter != m_adapter)
+    {
+      m_adapter = adapter;
+      break;
+    }
+  }
+}
+
+void CDX9AllocatorPresenter::BuildPresentParameters()
+{
+  g_Windowing.GetParamsForDSPlayer(m_useWindowedDX, m_nBackBufferWidth, m_nBackBufferHeight, m_bVSync, m_fRefreshRate, m_interlaced);
+
+  if (m_hDeviceWnd != NULL)
+  {
+    HMONITOR hMonitor = MonitorFromWindow(m_hDeviceWnd, MONITOR_DEFAULTTONULL);
+    if (hMonitor)
+      SetMonitor(hMonitor);
+  }
+
+  ZeroMemory(&m_D3DPP, sizeof(D3DPRESENT_PARAMETERS));
+  m_D3DPP.Windowed = m_useWindowedDX;
+  m_D3DPP.SwapEffect = D3DSWAPEFFECT_FLIP;
+  if (m_useWindowedDX)
+    m_D3DPP.BackBufferCount = 1;
+  else
+    m_D3DPP.BackBufferCount = 3;
+
+  m_D3DPP.hDeviceWindow = m_hDeviceWnd;
+  m_D3DPP.BackBufferWidth = m_nBackBufferWidth;
+  m_D3DPP.BackBufferHeight = m_nBackBufferHeight;
+  m_D3DPP.Flags = D3DPRESENTFLAG_VIDEO;
+  m_D3DPP.SwapEffect = (m_useWindowedDX) ? D3DSWAPEFFECT_COPY : D3DSWAPEFFECT_DISCARD;
+  if (m_useWindowedDX)
+    m_D3DPP.PresentationInterval =  D3DPRESENT_INTERVAL_IMMEDIATE;
+  else
+    m_D3DPP.PresentationInterval = (m_bVSync | g_dsSettings.pRendererSettings->vSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
+  m_D3DPP.FullScreen_RefreshRateInHz = (m_useWindowedDX) ? 0 : (int)m_fRefreshRate;
+  bool bHighColorResolution = g_dsSettings.isEVR && ((CEVRRendererSettings *)g_dsSettings.pRendererSettings)->highColorResolution;
+  m_D3DPP.BackBufferFormat = (bHighColorResolution) ? D3DFMT_A2R10G10B10 : D3DFMT_X8R8G8B8;
+  m_D3DPP.MultiSampleType = D3DMULTISAMPLE_NONE;
+  m_D3DPP.MultiSampleQuality = 0;
+
+  D3DFORMAT zFormat = D3DFMT_D16;
+  if (IsDepthFormatOk(D3DFMT_D32, m_D3DPP.BackBufferFormat))           zFormat = D3DFMT_D32;
+  else if (IsDepthFormatOk(D3DFMT_D24S8, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D24S8;
+  else if (IsDepthFormatOk(D3DFMT_D24X4S4, m_D3DPP.BackBufferFormat))       zFormat = D3DFMT_D24X4S4;
+  else if (IsDepthFormatOk(D3DFMT_D24X8, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D24X8;
+  else if (IsDepthFormatOk(D3DFMT_D16, m_D3DPP.BackBufferFormat))           zFormat = D3DFMT_D16;
+  else if (IsDepthFormatOk(D3DFMT_D15S1, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D15S1;
+
+  m_D3DPP.EnableAutoDepthStencil = TRUE;
+  m_D3DPP.AutoDepthStencilFormat = zFormat;
+
+  ZeroMemory(&m_D3DDMEX, sizeof(D3DDISPLAYMODEEX));
+  m_D3DDMEX.Size = sizeof(D3DDISPLAYMODEEX);
+  m_D3DDMEX.Width = m_D3DPP.BackBufferWidth;
+  m_D3DDMEX.Height = m_D3DPP.BackBufferHeight;
+  m_D3DDMEX.RefreshRate = m_D3DPP.FullScreen_RefreshRateInHz;
+  m_D3DDMEX.Format = m_D3DPP.BackBufferFormat;
+  m_D3DDMEX.ScanLineOrdering = m_interlaced ? D3DSCANLINEORDERING_INTERLACED : D3DSCANLINEORDERING_PROGRESSIVE;
+}
+
 HRESULT CDX9AllocatorPresenter::InitD3D9(HWND hWnd)
 {
   HRESULT hr;
@@ -953,39 +1032,41 @@ HRESULT CDX9AllocatorPresenter::InitD3D9(HWND hWnd)
     m_ScreenSize.SetSize(mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top);
   }
 
-  ZeroMemory(&m_D3DPP, sizeof(m_D3DPP));
-  m_D3DPP.Windowed = TRUE;
-  m_D3DPP.SwapEffect = D3DSWAPEFFECT_COPY;
-  m_D3DPP.BackBufferCount = 1;
-  m_D3DPP.BackBufferWidth = CDSPlayer::winRect.x2 - CDSPlayer::winRect.x1;
-  m_D3DPP.BackBufferHeight = CDSPlayer::winRect.y2 - CDSPlayer::winRect.y1;
-  m_D3DPP.Flags = D3DPRESENTFLAG_VIDEO;
-  m_D3DPP.hDeviceWindow = hWnd;
-  m_D3DPP.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
-  m_D3DPP.FullScreen_RefreshRateInHz = 0;
-  bool bHighColorResolution = g_dsSettings.isEVR && ((CEVRRendererSettings *)g_dsSettings.pRendererSettings)->highColorResolution;
-  m_D3DPP.BackBufferFormat = (bHighColorResolution) ? D3DFMT_A2R10G10B10 : D3DFMT_X8R8G8B8;
-  m_D3DPP.MultiSampleType = D3DMULTISAMPLE_NONE;
-  m_D3DPP.MultiSampleQuality = 0;
+  if (m_hDeviceWnd == NULL)
+    return false;
 
-  D3DFORMAT zFormat = D3DFMT_D16;
-  if (IsDepthFormatOk(D3DFMT_D32, m_D3DPP.BackBufferFormat))           zFormat = D3DFMT_D32;
-  else if (IsDepthFormatOk(D3DFMT_D24S8, m_D3DPP.BackBufferFormat))    zFormat = D3DFMT_D24S8;
-  else if (IsDepthFormatOk(D3DFMT_D24X4S4, m_D3DPP.BackBufferFormat))  zFormat = D3DFMT_D24X4S4;
-  else if (IsDepthFormatOk(D3DFMT_D24X8, m_D3DPP.BackBufferFormat))    zFormat = D3DFMT_D24X8;
-  else if (IsDepthFormatOk(D3DFMT_D16, m_D3DPP.BackBufferFormat))      zFormat = D3DFMT_D16;
-  else if (IsDepthFormatOk(D3DFMT_D15S1, m_D3DPP.BackBufferFormat))    zFormat = D3DFMT_D15S1;
+  CLog::Log(LOGDEBUG, __FUNCTION__" on adapter %d", m_adapter);
 
-  m_D3DPP.EnableAutoDepthStencil = TRUE;
-  m_D3DPP.AutoDepthStencilFormat = zFormat;
+  BuildPresentParameters();
+
+  D3DCAPS9 caps;
+  memset(&caps, 0, sizeof(caps));
+  m_pD3D->GetDeviceCaps(m_adapter, m_devType, &caps);
+
+  DWORD VertexProcessingFlags = 0;
+  if (caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT)
+  {
+    /* Activate when the state management of the fixed pipeline is in order,
+    to get a bit more performance
+    if (caps.DevCaps & D3DDEVCAPS_PUREDEVICE)
+    VertexProcessingFlags = D3DCREATE_PUREDEVICE;
+    */
+    VertexProcessingFlags = D3DCREATE_HARDWARE_VERTEXPROCESSING;
+    CLog::Log(LOGDEBUG, __FUNCTION__" - using hardware vertex processing");
+  }
+  else
+  {
+    VertexProcessingFlags = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
+    CLog::Log(LOGDEBUG, __FUNCTION__" - using software vertex processing");
+  }
 
   hr = m_pD3D->CreateDeviceEx(
-    D3DADAPTER_DEFAULT,
-    D3DDEVTYPE_HAL,
+    m_adapter,
+    m_devType,
     NULL,
     D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED,
     &m_D3DPP,
-    NULL,
+    m_D3DPP.Windowed ? NULL : &m_D3DDMEX,
     (IDirect3DDevice9Ex**)&m_pD3DDev);
 
   CGraphFilters::Get()->SetD3DDevice(m_pD3DDev);
@@ -2823,20 +2904,9 @@ void CDX9AllocatorPresenter::OnReset()
 
 HRESULT CDX9AllocatorPresenter::ResetRenderParam()
 {
-  HRESULT hr = S_OK;
-
-  m_winRectNew = CDSPlayer::winRect;
-
-  if (m_winRectNew != m_winRectOld)
-  {
-
-    m_D3DPP.BackBufferWidth = m_winRectNew.x2 - m_winRectNew.x1;
-    m_D3DPP.BackBufferHeight = m_winRectNew.y2 - m_winRectNew.y1;
-
-    hr = m_pD3DDev->Reset(&m_D3DPP);
+  BuildPresentParameters();
      
-    m_winRectOld = m_winRectNew;
-  }
+  HRESULT hr = ((IDirect3DDevice9Ex*)m_pD3DDev)->ResetEx(&m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX);
 
   return hr;
 }

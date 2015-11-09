@@ -39,6 +39,9 @@ CWinSystemWin32DX::~CWinSystemWin32DX()
 
 bool CWinSystemWin32DX::UseWindowedDX(bool fullScreen)
 {
+#ifdef HAS_DS_PLAYER
+  CRenderSystemDX::m_UseWindowedDX_DSPlayer = (!CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_EXCLUSIVEMODE) || !fullScreen);
+#endif
   return (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN) || !fullScreen);
 }
 

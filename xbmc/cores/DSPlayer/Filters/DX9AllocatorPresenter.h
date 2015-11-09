@@ -241,14 +241,24 @@ protected:
   //D3D9Device
 
   HRESULT                               InitD3D9(HWND hwnd);
+  void                                  BuildPresentParameters();
   HRESULT                               ResetRenderParam();
+  void                                  SetMonitor(HMONITOR monitor);
   BOOL                                  IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT RenderTargetFormat);
   bool                                  IsSurfaceFormatOk(D3DFORMAT surfFormat, DWORD usage);
-  CRect                                 m_winRectNew;
-  CRect                                 m_winRectOld;
+  D3DDEVTYPE                            m_devType;
   D3DPRESENT_PARAMETERS		              m_D3DPP;
+  D3DDISPLAYMODEEX                      m_D3DDMEX;
   CEvrSharedRender*                     m_pEvrShared;
   bool                                  m_firstBoot;
+  bool                                  m_useWindowedDX;
+  HWND                                  m_hDeviceWnd;
+  unsigned int                          m_nBackBufferWidth;
+  unsigned int                          m_nBackBufferHeight;
+  bool                                  m_bVSync;
+  float                                 m_fRefreshRate;
+  bool                                  m_interlaced;
+  int                                   m_adapter;
 
   virtual HRESULT                       CreateDevice(CStdString &_Error);
   virtual HRESULT                       AllocSurfaces(D3DFORMAT Format = D3DFMT_A8R8G8B8);
