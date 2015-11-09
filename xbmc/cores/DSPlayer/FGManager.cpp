@@ -53,7 +53,7 @@
 #include "FileSystem/SpecialProtocol.h"
 
 //XML CONFIG HEADERS
-#include "tinyXML/tinyxml.h"
+#include "libs/tinyXML/tinyxml.h"
 #include "utils/XMLUtils.h"
 #include "dialogs/GUIDialogOK.h"
 #include "guilib/GUIWindowManager.h"

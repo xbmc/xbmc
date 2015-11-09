@@ -33,7 +33,7 @@
 
 #include "streams.h"
 #include <list>
-#include "tinyXML/tinyxml.h"
+#include "libs/tinyXML/tinyxml.h"
 #include "utils/StdString.h"
 
 class CFGFilter

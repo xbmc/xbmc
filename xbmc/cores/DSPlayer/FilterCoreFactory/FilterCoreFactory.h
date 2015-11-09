@@ -26,7 +26,7 @@
 #endif
 
 #include "FilterSelectionRule.h"
-#include "tinyXML\tinyxml.h"
+#include "libs/tinyXML/tinyxml.h"
 #include "globalfilterselectionrule.h"
 #include "dialogs/GUIDialogOK.h"
 #include "guilib/GUIWindowManager.h"

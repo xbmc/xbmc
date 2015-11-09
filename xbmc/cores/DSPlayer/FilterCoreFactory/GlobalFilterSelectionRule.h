@@ -25,7 +25,7 @@
 #error DSPlayer's header file included without HAS_DS_PLAYER defined
 #endif
 
-#include "tinyXML\tinyxml.h"
+#include "libs/tinyXML/tinyxml.h"
 #include "utils/log.h"
 #include "FilterSelectionRule.h"
 #include "ShadersSelectionRule.h"
