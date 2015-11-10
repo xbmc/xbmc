@@ -259,6 +259,7 @@ protected:
   float                                 m_fRefreshRate;
   bool                                  m_interlaced;
   int                                   m_adapter;
+  int                                   m_kodiGuiDirtyAlgo;
 
   virtual HRESULT                       CreateDevice(CStdString &_Error);
   virtual HRESULT                       AllocSurfaces(D3DFORMAT Format = D3DFMT_A8R8G8B8);

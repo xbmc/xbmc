@@ -42,6 +42,8 @@
 #include "settings/MediaSettings.h"
 #include "DSPlayer.h"
 #include "utils/DSFileUtils.h"
+#include "guilib/IDirtyRegionSolver.h"
+#include "settings/AdvancedSettings.h"
 
 #ifndef TRACE
 #define TRACE(x)
@@ -225,7 +227,7 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   CEvrCallback::Get()->Register((IEvrAllocatorCallback*)this);
   CEvrCallback::Get()->Register((IEvrPaintCallback*)this);
   m_pEvrShared = DNew CEvrSharedRender();
-  m_firstBoot = false;
+  m_firstBoot = true;
   g_Windowing.Register(this);
   g_renderManager.PreInit(RENDERER_DSHOW);
 
@@ -241,6 +243,7 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   m_fRefreshRate = 0;
   m_interlaced = false;
   m_adapter = D3DADAPTER_DEFAULT;
+  m_kodiGuiDirtyAlgo = g_advancedSettings.m_guiAlgorithmDirtyRegions;
 
   if (FAILED(hr))
   {
@@ -334,6 +337,7 @@ CDX9AllocatorPresenter::~CDX9AllocatorPresenter()
   m_pLine = NULL;
   m_pD3DDev = NULL;
   m_pD3D = NULL;
+  g_advancedSettings.m_guiAlgorithmDirtyRegions = m_kodiGuiDirtyAlgo;
 
   if (m_hD3D9)
   {
@@ -2913,11 +2917,12 @@ HRESULT CDX9AllocatorPresenter::ResetRenderParam()
 
 void CDX9AllocatorPresenter::OnPaint(CRect destRect)
 {
-  if (!m_firstBoot)
+  if (m_firstBoot)
   {
     CDSPlayer::SetDsWndVisible(true);
     CEvrCallback::Get()->SetRenderOnEvr(true);
-    m_firstBoot = true;
+    g_advancedSettings.m_guiAlgorithmDirtyRegions = DIRTYREGION_SOLVER_FILL_VIEWPORT_ALWAYS;
+    m_firstBoot = false;
   }
 
   m_VideoRect.bottom = (long)destRect.y2;

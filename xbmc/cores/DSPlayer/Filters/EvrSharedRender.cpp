@@ -215,14 +215,17 @@ void CEvrSharedRender::RenderToOverTexture()
 
 void CEvrSharedRender::EndRender()
 {
+  m_bGuiVisible = CEvrCallback::Get()->GuiVisible();
+  m_bGuiVisibleOver = CEvrCallback::Get()->GuiVisible(EVR_LAYER_OVER);
+
+  if (!m_bGuiVisibleOver && !g_graphicsContext.IsFullScreenVideo())
+    g_renderManager.Render(true, 0, 255);
+
   // Force to complete the rendering on Kodi device
   g_Windowing.FinishCommandList();
   ForceComplete();
 
   g_renderManager.OnAfterPresent(); // We need to do some stuff after Present
-
-  m_bGuiVisible = CEvrCallback::Get()->GuiVisible();
-  m_bGuiVisibleOver = CEvrCallback::Get()->GuiVisible(EVR_LAYER_OVER);
 }
 
 HRESULT CEvrSharedRender::RenderTexture(EVR_RENDER_LAYER layer)
