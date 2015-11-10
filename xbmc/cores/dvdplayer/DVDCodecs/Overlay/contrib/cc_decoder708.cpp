@@ -990,6 +990,25 @@ void process_service_block (cc708_service_decoder *decoder, unsigned char *data,
   }
 }
 
+bool check_current_packet_complete (cc708_service_decoder *decoders)
+{
+  int len = decoders[0].parent->m_current_packet[0] & 0x3F; // 6 least significants bits
+  if (decoders[0].parent->m_current_packet_length == 0)
+    return false;
+
+  if (len==0) // This is well defined in EIA-708; no magic.
+    len=128;
+  else
+    len=len*2;
+
+  // Note that len here is the length including the header
+  if (decoders[0].parent->m_current_packet_length == len) // Is this possible?
+  {
+    return true;
+  }
+  return false;
+}
+
 void process_current_packet (cc708_service_decoder *decoders)
 {
   int seq = (decoders[0].parent->m_current_packet[0] & 0xC0) >> 6; // Two most significants bits
@@ -1077,8 +1096,13 @@ void decode_708 (const unsigned char *data, int datalength, cc708_service_decode
         decode_cc(decoders[0].parent->m_cc608decoder, (uint8_t*)data+i, 3);
       break;
     case 2:
-      if (cc_valid==0) // This ends the previous packet
-        process_current_packet(decoders);
+      if (cc_valid==0) // This ends the previous packet if complete
+      {
+        if (check_current_packet_complete(decoders))
+        {
+          process_current_packet(decoders);
+        }
+      }
       else
       {
         if (decoders[0].parent->m_current_packet_length < 254)
