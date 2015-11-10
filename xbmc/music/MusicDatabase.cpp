@@ -5307,7 +5307,7 @@ void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
         CAlbum importedAlbum;
         importedAlbum.Load(entry);
         strTitle = importedAlbum.strAlbum;
-        int idAlbum = GetAlbumByName(importedAlbum.strAlbum, importedAlbum.GetAlbumArtist());
+        int idAlbum = GetAlbumByName(importedAlbum.strAlbum, importedAlbum.GetAlbumArtistString());
         if (idAlbum > -1)
         {
           CAlbum album;
@@ -5399,7 +5399,7 @@ void CMusicDatabase::SetPropertiesForFileItem(CFileItem& item)
   int idAlbum = item.GetMusicInfoTag()->GetAlbumId();
   if (idAlbum <= 0)
     idAlbum = GetAlbumByName(item.GetMusicInfoTag()->GetAlbum(),
-                             item.GetMusicInfoTag()->GetArtist());
+                             item.GetMusicInfoTag()->GetArtistString());
   if (idAlbum > -1)
   {
     CAlbum album;

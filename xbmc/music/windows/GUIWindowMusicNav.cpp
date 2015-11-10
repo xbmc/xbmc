@@ -549,16 +549,16 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         // 4. specific per album
         buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20195);
       }
-      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetArtist().size() > 0)
+      if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetArtistString().empty())
       {
         CVideoDatabase database;
         database.Open();
         if (database.GetMatchingMusicVideo(item->GetMusicInfoTag()->GetArtistString()) > -1)
           buttons.Add(CONTEXT_BUTTON_GO_TO_ARTIST, 20400);
       }
-      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetArtist().size() > 0 &&
-        item->GetMusicInfoTag()->GetAlbum().size() > 0 &&
-        item->GetMusicInfoTag()->GetTitle().size() > 0)
+      if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetArtistString().empty() &&
+         !item->GetMusicInfoTag()->GetAlbum().empty() &&
+         !item->GetMusicInfoTag()->GetTitle().empty())
       {
         CVideoDatabase database;
         database.Open();
