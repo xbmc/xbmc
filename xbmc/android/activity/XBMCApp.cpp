@@ -157,6 +157,12 @@ void CXBMCApp::onResume()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
 
+  // Some intent filters MUST be registered in code rather than through the manifest
+  CJNIIntentFilter intentFilter;
+  intentFilter.addAction("android.intent.action.BATTERY_CHANGED");
+  intentFilter.addAction("android.intent.action.SCREEN_ON");
+  registerReceiver(*this, intentFilter);
+
   if (!g_application.IsInScreenSaver())
     EnableWakeLock(true);
   else
@@ -500,6 +506,7 @@ void CXBMCApp::OnPlayBackStarted()
 {
   AcquireAudioFocus();
   registerMediaButtonEventReceiver();
+  CAndroidKey::SetHandleMediaKeys(true);
 }
 
 void CXBMCApp::OnPlayBackPaused()
@@ -514,12 +521,14 @@ void CXBMCApp::OnPlayBackResumed()
 
 void CXBMCApp::OnPlayBackStopped()
 {
+  CAndroidKey::SetHandleMediaKeys(false);
   unregisterMediaButtonEventReceiver();
   ReleaseAudioFocus();
 }
 
 void CXBMCApp::OnPlayBackEnded()
 {
+  CAndroidKey::SetHandleMediaKeys(false);
   unregisterMediaButtonEventReceiver();
   ReleaseAudioFocus();
 }

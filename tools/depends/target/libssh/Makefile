@@ -23,6 +23,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../ntohl.patch
 	cd $(PLATFORM); patch -p0 < ../md5.patch
 	cd $(PLATFORM); patch -p1 < ../darwin.patch
+	cd $(PLATFORM); patch -p0 < ../fix-gcc-5-compile.patch
 	sed -ie "s|-fstack-protector|-fno-stack-protector|" "$(PLATFORM)/cmake/Modules/DefineCompilerFlags.cmake"
 	sed -ie "s|add_subdirectory(examples)||" "$(PLATFORM)/CMakeLists.txt"
 	cd $(PLATFORM)/build; $(CMAKE) -DWITH_STATIC_LIB=1 -DWITH_EXAMPLES=0 -DTHREADS_PTHREAD_ARG=0 -DWITH_GSSAPI=0 VERBOSE=1 ..

@@ -311,6 +311,9 @@ void CGUIDialogAddonInfo::OnInstall()
   if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
     return;
 
+  if (!m_addon)
+    return;
+
   CAddonInstaller::GetInstance().InstallOrUpdate(m_addon->ID());
   Close();
 }

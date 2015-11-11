@@ -1006,36 +1006,36 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     switch (receivedEvent.subtype)
     {
       case UIEventSubtypeRemoteControlTogglePlayPause:
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAYPAUSE)));
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAYPAUSE)));
         break;
       case UIEventSubtypeRemoteControlPlay:
-	    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
+	    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
         break;
       case UIEventSubtypeRemoteControlPause:
         // ACTION_PAUSE sometimes cause unpause, use MediaPauseIfPlaying to make sure pause only
         CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
         break;
       case UIEventSubtypeRemoteControlNextTrack:
-	    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_NEXT_ITEM)));
+	    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_NEXT_ITEM)));
         break;
       case UIEventSubtypeRemoteControlPreviousTrack:
-	    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PREV_ITEM)));
+	    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PREV_ITEM)));
         break;
       case UIEventSubtypeRemoteControlBeginSeekingForward:
         // use 4X speed forward.
-		CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_FORWARD)));
-		CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_FORWARD)));
+		CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_FORWARD)));
+		CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_FORWARD)));
         break;
       case UIEventSubtypeRemoteControlBeginSeekingBackward:
         // use 4X speed rewind.
-		CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_REWIND)));
-		CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_REWIND)));
+		CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_REWIND)));
+		CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_REWIND)));
         break;
       case UIEventSubtypeRemoteControlEndSeekingForward:
       case UIEventSubtypeRemoteControlEndSeekingBackward:
         // restore to normal playback speed.
         if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
-		  CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
+		  CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
         break;
       default:
         LOG(@"unhandled subtype: %d", receivedEvent.subtype);

@@ -18,38 +18,40 @@
  *
  */
 
-#include "system.h"
-#include "Application.h"
-#include "messaging/ApplicationMessenger.h"
 #include "GUIWindowLoginScreen.h"
-#include "profiles/Profile.h"
-#include "profiles/ProfilesManager.h"
-#include "profiles/dialogs/GUIDialogProfileSettings.h"
-#include "dialogs/GUIDialogContextMenu.h"
+
+#include "system.h"
+
+#include "Application.h"
+#include "ContextMenuManager.h"
+#include "FileItem.h"
 #include "GUIPassword.h"
+#include "addons/AddonManager.h"
+#include "addons/Skin.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
+#include "dialogs/GUIDialogContextMenu.h"
+#include "dialogs/GUIDialogOK.h"
+#include "guilib/GUIMessage.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "guilib/StereoscopicsManager.h"
+#include "input/Key.h"
+#include "interfaces/builtins/Builtins.h"
 #ifdef HAS_JSONRPC
 #include "interfaces/json-rpc/JSONRPC.h"
 #endif
-#include "interfaces/builtins/Builtins.h"
-#include "utils/log.h"
-#include "utils/Weather.h"
-#include "utils/StringUtils.h"
-#include "utils/Variant.h"
+#include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
-#include "addons/Skin.h"
-#include "guilib/GUIMessage.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/StereoscopicsManager.h"
-#include "dialogs/GUIDialogOK.h"
-#include "settings/Settings.h"
-#include "FileItem.h"
-#include "input/Key.h"
-#include "guilib/LocalizeStrings.h"
-#include "addons/AddonManager.h"
-#include "view/ViewState.h"
+#include "profiles/Profile.h"
+#include "profiles/ProfilesManager.h"
+#include "profiles/dialogs/GUIDialogProfileSettings.h"
 #include "pvr/PVRManager.h"
-#include "ContextMenuManager.h"
-#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
+#include "settings/Settings.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
+#include "utils/Weather.h"
+#include "utils/Variant.h"
+#include "view/ViewState.h"
 
 using namespace KODI::MESSAGING;
 
@@ -58,7 +60,7 @@ using namespace KODI::MESSAGING;
 #define CONTROL_LABEL_SELECTED_PROFILE  3
 
 CGUIWindowLoginScreen::CGUIWindowLoginScreen(void)
-: CGUIWindow(WINDOW_LOGIN_SCREEN, "LoginScreen.xml")
+  : CGUIWindow(WINDOW_LOGIN_SCREEN, "LoginScreen.xml")
 {
   watch.StartZero();
   m_vecItems = new CFileItemList;
@@ -251,7 +253,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   // Edit the profile after checking if the correct master lock password was given.
   if (choice == 1 && g_passwordManager.IsMasterLockUnlocked(true))
     CGUIDialogProfileSettings::ShowForProfile(m_viewControl.GetSelectedItem());
-  
+
   //NOTE: this can potentially (de)select the wrong item if the filelisting has changed because of an action above.
   if (iItem < (int)CProfilesManager::GetInstance().GetNumberOfProfiles())
     m_vecItems->Get(iItem)->Select(bSelect);
@@ -321,7 +323,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   JSONRPC::CJSONRPC::Initialize();
 #endif
 
-  // start services which should run on login 
+  // start services which should run on login
   ADDON::CAddonMgr::GetInstance().StartServices(false);
 
   // start PVR related services
