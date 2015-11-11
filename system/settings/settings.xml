@@ -1429,17 +1429,11 @@
         <setting id="dsplayer.osdintoactivearea" type="boolean" label="55091" help="">
           <level>0</level>
           <default>false</default>
-          <dependencies>
-            <dependency type="visible" setting="dsplayer.videorenderer" operator="is">madVR</dependency>
-          </dependencies>
           <control type="toggle" />
         </setting>
         <setting id="dsplayer.definedsarea" type="boolean" label="55086" help="">
           <level>0</level>
           <default>false</default>
-          <dependencies>
-            <dependency type="visible" setting="dsplayer.videorenderer" operator="is">madVR</dependency>
-          </dependencies>
           <control type="toggle" />
         </setting>
         <setting id="dsplayer.dsarealeft" type="integer" parent="dsplayer.definedsarea" label="55087" help="">
@@ -1451,7 +1445,6 @@
             <maximum>300</maximum>
           </constraints>
           <dependencies>
-            <dependency type="visible" setting="dsplayer.videorenderer" operator="is">madVR</dependency>
             <dependency type="enable" setting="dsplayer.definedsarea" operator="is">true</dependency>
           </dependencies>
           <control type="spinner" format="integer" />
@@ -1465,7 +1458,6 @@
             <maximum>300</maximum>
           </constraints>
           <dependencies>
-            <dependency type="visible" setting="dsplayer.videorenderer" operator="is">madVR</dependency>
             <dependency type="enable" setting="dsplayer.definedsarea" operator="is">true</dependency>
           </dependencies>
           <control type="spinner" format="integer" />
@@ -1479,7 +1471,6 @@
             <maximum>300</maximum>
           </constraints>
           <dependencies>
-            <dependency type="visible" setting="dsplayer.videorenderer" operator="is">madVR</dependency>
             <dependency type="enable" setting="dsplayer.definedsarea" operator="is">true</dependency>
           </dependencies>
           <control type="spinner" format="integer" />
@@ -1493,7 +1484,6 @@
             <maximum>300</maximum>
           </constraints>
           <dependencies>
-            <dependency type="visible" setting="dsplayer.videorenderer" operator="is">madVR</dependency>
             <dependency type="enable" setting="dsplayer.definedsarea" operator="is">true</dependency>
           </dependencies>
           <control type="spinner" format="integer" />
