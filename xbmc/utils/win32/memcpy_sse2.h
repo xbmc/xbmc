@@ -77,37 +77,49 @@ inline void convert_yuv420_nv12(uint8_t *const src[], const int srcStride[], int
     uint8_t * u = src[1] + line * srcStride[1];
     uint8_t * v = src[2] + line * srcStride[2];
     uint8_t * d = dst[1] + line * dstStride[1];
-    for (i = 0; i < (chromaWidth - 31); i += 32)
+    // if memory is not aligned use memcpy
+    if (((size_t)(u) | (size_t)(v) | (size_t)(d)) & 0xF)
     {
-      xmm0 = _mm_load_si128((__m128i*)(v + i));
-      xmm1 = _mm_load_si128((__m128i*)(u + i));
-      xmm2 = _mm_load_si128((__m128i*)(v + i + 16));
-      xmm3 = _mm_load_si128((__m128i*)(u + i + 16));
-
-      xmm4 = xmm0;
-      xmm0 = _mm_unpacklo_epi8(xmm1, xmm0);
-      xmm4 = _mm_unpackhi_epi8(xmm1, xmm4);
-
-      xmm1 = xmm2;
-      xmm2 = _mm_unpacklo_epi8(xmm3, xmm2);
-      xmm1 = _mm_unpackhi_epi8(xmm3, xmm1);
-
-      _mm_stream_si128((__m128i *)(d + (i << 1) + 0), xmm0);
-      _mm_stream_si128((__m128i *)(d + (i << 1) + 16), xmm4);
-      _mm_stream_si128((__m128i *)(d + (i << 1) + 32), xmm2);
-      _mm_stream_si128((__m128i *)(d + (i << 1) + 48), xmm1);
+      for (i = 0; i < chromaWidth; ++i)
+      {
+        *d++ = *u++;
+        *d++ = *v++;
+      }
     }
-    for (; i < chromaWidth; i += 16)
+    else
     {
-      xmm0 = _mm_load_si128((__m128i*)(v + i));
-      xmm1 = _mm_load_si128((__m128i*)(u + i));
+      for (i = 0; i < (chromaWidth - 31); i += 32)
+      {
+        xmm0 = _mm_load_si128((__m128i*)(v + i));
+        xmm1 = _mm_load_si128((__m128i*)(u + i));
+        xmm2 = _mm_load_si128((__m128i*)(v + i + 16));
+        xmm3 = _mm_load_si128((__m128i*)(u + i + 16));
 
-      xmm2 = xmm0;
-      xmm0 = _mm_unpacklo_epi8(xmm1, xmm0);
-      xmm2 = _mm_unpackhi_epi8(xmm1, xmm2);
+        xmm4 = xmm0;
+        xmm0 = _mm_unpacklo_epi8(xmm1, xmm0);
+        xmm4 = _mm_unpackhi_epi8(xmm1, xmm4);
 
-      _mm_stream_si128((__m128i *)(d + (i << 1) + 0), xmm0);
-      _mm_stream_si128((__m128i *)(d + (i << 1) + 16), xmm2);
+        xmm1 = xmm2;
+        xmm2 = _mm_unpacklo_epi8(xmm3, xmm2);
+        xmm1 = _mm_unpackhi_epi8(xmm3, xmm1);
+
+        _mm_stream_si128((__m128i *)(d + (i << 1) + 0), xmm0);
+        _mm_stream_si128((__m128i *)(d + (i << 1) + 16), xmm4);
+        _mm_stream_si128((__m128i *)(d + (i << 1) + 32), xmm2);
+        _mm_stream_si128((__m128i *)(d + (i << 1) + 48), xmm1);
+      }
+      for (; i < chromaWidth; i += 16)
+      {
+        xmm0 = _mm_load_si128((__m128i*)(v + i));
+        xmm1 = _mm_load_si128((__m128i*)(u + i));
+
+        xmm2 = xmm0;
+        xmm0 = _mm_unpacklo_epi8(xmm1, xmm0);
+        xmm2 = _mm_unpackhi_epi8(xmm1, xmm2);
+
+        _mm_stream_si128((__m128i *)(d + (i << 1) + 0), xmm0);
+        _mm_stream_si128((__m128i *)(d + (i << 1) + 16), xmm2);
+      }
     }
   }
 }
