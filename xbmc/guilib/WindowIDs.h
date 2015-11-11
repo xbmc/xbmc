@@ -114,6 +114,7 @@
 #define WINDOW_DIALOG_LAVVIDEO            10704
 #define WINDOW_DIALOG_LAVAUDIO            10705
 #define WINDOW_DIALOG_LAVSPLITTER         10706
+#define WINDOW_DIALOG_MADVRZOOM           10707
 #endif
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501

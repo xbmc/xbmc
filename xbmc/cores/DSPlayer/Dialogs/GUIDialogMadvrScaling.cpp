@@ -128,7 +128,7 @@ void CGUIDialogMadvrScaling::SetupView()
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) == KODIGUI_LOAD_MADVR)
   {
     std::string profile;
-    CMadvrCallback::Get()->GetProfileActiveName(&profile);
+    CMadvrCallback::Get()->GetProfileActiveName("scalingParent",&profile);
     if (profile != "")
     {
       CStdString sHeading;

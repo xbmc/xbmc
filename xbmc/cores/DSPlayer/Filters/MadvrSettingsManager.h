@@ -60,7 +60,7 @@ public:
   // IMadvrSettingCallback
   virtual void LoadSettings(MADVR_LOAD_TYPE type);
   virtual void RestoreSettings();
-  virtual void GetProfileActiveName(std::string *profile);
+  virtual void GetProfileActiveName(std::string path, std::string *profile);
   virtual void SetStr(std::string path, std::string str);
   virtual void SetBool(std::string path, bool bValue);
   virtual void SetInt(std::string path, int iValue);
@@ -71,6 +71,8 @@ public:
   virtual void SetMultiBool(std::string path, std::string sValue, int iValue);
   virtual void SetSmoothmotion(std::string path, int iValue);
   virtual void SetDithering(std::string path, int iValue);
+  virtual void SetQuickArChange(std::string path, int iValue);
+  virtual void SetCleanBorders(std::string path, int iValue);
   virtual std::string GetSettingsName(MADVR_SETTINGS_LIST type, int iValue);
   virtual void AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry);
   virtual void UpdateImageDouble();
@@ -100,6 +102,8 @@ private:
   void GetMultiBool(std::string path, std::string sValue, int* iValue);
   void GetSmoothmotion(std::string path, int* iValue);
   void GetDithering(std::string path, int* iValue);
+  void GetQuickArChange(std::string path, int* iValue);
+  void GetCleanBorders(std::string path, int* iValue);
   bool IsProfileActive(std::string path, std::string profile);
   void CreateProfile(std::string path, std::string pageList, std::string profileGroup, std::string profile);
   void ActivateProfile(std::string path, std::string profile);
@@ -123,6 +127,12 @@ private:
   std::vector<CMadvrSettingsList* > m_settingsDeintActive;
   std::vector<CMadvrSettingsList* > m_settingsNoSmallScaling;
   std::vector<CMadvrSettingsList* > m_settingsMoveSubs;
+  std::vector<CMadvrSettingsList* > m_settingsArChange;
+  std::vector<CMadvrSettingsList* > m_settingsQuickArChange;
+  std::vector<CMadvrSettingsList* > m_settingsShiftImage;
+  std::vector<CMadvrSettingsList* > m_settingsDontCropSubs;
+  std::vector<CMadvrSettingsList* > m_settingsCleanBorders;
+  std::vector<CMadvrSettingsList* > m_settingsReduceBigBars;
   std::vector<CMadvrSettingsList* > m_settingsSmoothMotion;
   std::vector<CMadvrSettingsList* > m_settingsDithering;
   std::vector<CMadvrSettingsList* > m_settingsDeband;

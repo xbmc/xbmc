@@ -80,6 +80,12 @@ enum MADVR_SETTINGS_LIST
   MADVR_LIST_SMOOTHMOTION,
   MADVR_LIST_NOSMALLSCALING,
   MADVR_LIST_MOVESUBS,
+  MADVR_LIST_ARCHANGE,
+  MADVR_LIST_QUICKARCHANGE,
+  MADVR_LIST_SHIFTIMAGE,
+  MADVR_LIST_DONTCROPSUBS,
+  MADVR_LIST_CLEANBORDERS,
+  MADVR_LIST_REDUCEBIGBARS,
   MADVR_LIST_DITHERING,
   MADVR_LIST_DEBAND,
   MADVR_LIST_DEBAND_LEVEL,
@@ -89,7 +95,8 @@ enum MADVR_SETTINGS_LIST
 enum MADVR_LOAD_TYPE
 {
   MADVR_LOAD_PROCESSING,
-  MADVR_LOAD_SCALING
+  MADVR_LOAD_SCALING,
+  MADVR_LOAD_ZOOM
 };
 
 enum MADVR_GUI_SETTINGS
@@ -140,7 +147,7 @@ public:
 
   virtual void LoadSettings(MADVR_LOAD_TYPE type){};
   virtual void RestoreSettings(){};
-  virtual void GetProfileActiveName(std::string *profile){};
+  virtual void GetProfileActiveName(std::string path, std::string *profile){};
   virtual void SetStr(std::string path, std::string str){};
   virtual void SetBool(std::string path, bool bValue){};
   virtual void SetInt(std::string path, int iValue){};
@@ -151,6 +158,8 @@ public:
   virtual void SetMultiBool(std::string path, std::string sValue, int iValue){};
   virtual void SetSmoothmotion(std::string path, int iValue){};
   virtual void SetDithering(std::string path, int iValue){};
+  virtual void SetQuickArChange(std::string path, int iValue){};
+  virtual void SetCleanBorders(std::string path, int iValue){};
   virtual std::string GetSettingsName(MADVR_SETTINGS_LIST type, int iValue){ return ""; };
   virtual void AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry){};
   virtual void UpdateImageDouble(){};
@@ -186,7 +195,7 @@ public:
   // IMadvrSettingCallback
   virtual void LoadSettings(MADVR_LOAD_TYPE type);
   virtual void RestoreSettings();
-  virtual void GetProfileActiveName(std::string *profile);
+  virtual void GetProfileActiveName(std::string path, std::string *profile);
   virtual void SetStr(std::string path, std::string str);
   virtual void SetBool(std::string path, bool bValue);
   virtual void SetInt(std::string path, int iValue);
@@ -197,6 +206,8 @@ public:
   virtual void SetMultiBool(std::string path, std::string sValue, int iValue);
   virtual void SetSmoothmotion(std::string path, int iValue);
   virtual void SetDithering(std::string path, int iValue);
+  virtual void SetQuickArChange(std::string path, int iValue);
+  virtual void SetCleanBorders(std::string path, int iValue);
   virtual std::string GetSettingsName(MADVR_SETTINGS_LIST type, int iValue);
   virtual void AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry);
   virtual void UpdateImageDouble();

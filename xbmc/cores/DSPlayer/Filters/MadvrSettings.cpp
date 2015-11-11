@@ -87,6 +87,15 @@ CMadvrSettings::CMadvrSettings()
 
   m_noSmallScaling = -1;
   m_moveSubs = 0;
+  m_detectBars = false;
+  m_arChange = -1;
+  m_quickArChange = -1;
+  m_shiftImage = -1;
+  m_dontCropSubs = -1;
+  m_cleanBorders = -1;
+  m_reduceBigBars = -1;
+  m_cropSmallBars = false;
+  m_cropBars = false;
 
   m_UpRefFineSharp = false;
   m_UpRefFineSharpStrength = MADVR_DEFAULT_UPFINESHARPSTRENGTH;
@@ -159,6 +168,15 @@ bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
 
   if (m_noSmallScaling != right.m_noSmallScaling) return true;
   if (m_moveSubs != right.m_moveSubs) return true;
+  if (m_detectBars != right.m_detectBars) return true;
+  if (m_arChange != right.m_arChange) return true;
+  if (m_quickArChange != right.m_quickArChange) return true;
+  if (m_shiftImage != right.m_shiftImage) return true;
+  if (m_dontCropSubs != right.m_dontCropSubs) return true;
+  if (m_cleanBorders != right.m_cleanBorders) return true;
+  if (m_reduceBigBars != right.m_reduceBigBars) return true;
+  if (m_cropSmallBars != right.m_cropSmallBars) return true;
+  if (m_cropBars != right.m_cropBars) return true;
 
   if (m_UpRefFineSharp != right.m_UpRefFineSharp) return true;
   if (m_UpRefFineSharpStrength != right.m_UpRefFineSharpStrength) return true;

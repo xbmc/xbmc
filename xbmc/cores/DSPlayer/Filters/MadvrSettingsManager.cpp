@@ -390,6 +390,60 @@ void CMadvrSettingsManager::GetDithering(std::string path, int* iValue)
   *iValue = result;
 }
 
+void CMadvrSettingsManager::GetQuickArChange(std::string path, int *iValue)
+{
+  int result = -1;
+
+  std::string strArChange = "arChange";
+  std::string strQuickArChange = "quickArChange";
+  std::string strArChangeZoom = "quickArChangeZoom";
+  std::string strArChangeDelayValue = "quickArChangeDelayValue";
+  std::string strArChangeZoomValue = "quickArChangeZoomValue";
+
+  bool bArChange;
+  bool bQuickArChange;
+  bool bQuickZoom;
+
+  GetBool(strArChange, &bArChange);
+  GetBool(strQuickArChange, &bQuickArChange);
+  GetBool(strArChangeZoom, &bQuickZoom);
+
+  if (bQuickArChange && bQuickZoom && !bArChange)
+    GetInt(strArChangeZoomValue, &result);
+
+  if (bQuickArChange && !bQuickZoom && !bArChange)
+    GetInt(strArChangeDelayValue, &result);
+
+  *iValue = result;
+}
+
+void CMadvrSettingsManager::GetCleanBorders(std::string path, int *iValue)
+{
+  int result = -1;
+
+  std::string strCleanImageBorders = "cleanImageBorders";
+  std::string strCleanBarsBorders = "cleanBarsBorders";
+  std::string strCleanImageBordersValue = "cleanImageBordersValue";
+  std::string strCleanBarsBordersValue = "cleanBarsBordersValue";
+
+  bool bCleanImageBorders;
+  bool bCleanBarsBorders;
+
+  GetBool(strCleanImageBorders, &bCleanImageBorders);
+  GetBool(strCleanBarsBorders, &bCleanBarsBorders);
+
+  if (bCleanImageBorders)
+  {
+    GetInt(strCleanImageBordersValue, &result);
+    *iValue = *iValue + 10;
+  }
+
+  if (bCleanBarsBorders)
+    GetInt(strCleanBarsBordersValue, &result);
+
+  *iValue = result;
+}
+
 void CMadvrSettingsManager::SetStr(std::string path, std::string str)
 {
   std::wstring pathW;
@@ -480,6 +534,48 @@ void CMadvrSettingsManager::SetDithering(std::string path, int iValue)
     SetStr(strMode, GetSettingsName(MADVR_LIST_DITHERING, iValue));
 }
 
+void CMadvrSettingsManager::SetQuickArChange(std::string path, int iValue)
+{
+  std::string strQuickArChange = "quickArChange";
+  std::string strArChangeZoom = "quickArChangeZoom";
+  std::string strArChangeDelayValue = "quickArChangeDelayValue";
+  std::string strArChangeZoomValue = "quickArChangeZoomValue";
+  std::string sValue;
+
+  bool bQuickZoom = (iValue == 0 || iValue == 25 || iValue == 50 || iValue == 75 || iValue == 100);
+
+  SetBool(strQuickArChange, (iValue > -1));
+  if (iValue > -1)
+  {   
+    SetBool(strArChangeZoom, bQuickZoom);
+    bQuickZoom ? sValue = strArChangeZoomValue : sValue = strArChangeDelayValue;
+    SetInt(sValue, iValue);
+  }
+}
+
+void CMadvrSettingsManager::SetCleanBorders(std::string path, int iValue)
+{
+  std::string strCleanImageBorders = "cleanImageBorders";
+  std::string strCleanBarsBorders = "cleanBarsBorders";
+  std::string strCleanImageBordersValue = "cleanImageBordersValue";
+  std::string strCleanBarsBordersValue = "cleanBarsBordersValue";
+
+  bool bCleanImageBorders = (iValue > 10);
+  bool bCleanBarsBorders = (iValue > -1) && (iValue < 10);
+
+  SetBool(strCleanImageBorders, bCleanImageBorders);
+  SetBool(strCleanBarsBorders, bCleanBarsBorders);
+
+  if (bCleanImageBorders)
+  {
+    iValue = iValue - 10;
+    SetInt(strCleanImageBordersValue, iValue);
+  }
+
+  if (bCleanBarsBorders);
+    SetInt(strCleanBarsBordersValue, iValue);
+}
+
 bool CMadvrSettingsManager::IsProfileActive(std::string path, std::string profile)
 {
   bool result = false;
@@ -496,11 +592,10 @@ bool CMadvrSettingsManager::IsProfileActive(std::string path, std::string profil
   return result;
 }
 
-void CMadvrSettingsManager::GetProfileActiveName(std::string *profile)
+void CMadvrSettingsManager::GetProfileActiveName(std::string path, std::string *profile)
 {
   std::vector<std::string> vecProfileGroups;
   std::vector<std::string> vecProfileName;
-  std::string path = "scalingParent";
   std::string result = "";
 
   EnumGroups(path, &vecProfileGroups);
@@ -650,8 +745,17 @@ void CMadvrSettingsManager::RestoreSettings()
   SetBool("adaptiveSharpen", madvrSettings.m_adaptiveSharpen);
   SetFloat("adaptiveSharpenStrength", madvrSettings.m_adaptiveSharpenStrength, 10);
 
-  SetBoolValue("noSmallScaling","noSmallScalingValue", madvrSettings.m_noSmallScaling);
+  SetBoolValue("noSmallScaling", "noSmallScalingValue", madvrSettings.m_noSmallScaling);
   SetMultiBool("moveSubs", "moveSubsUp", madvrSettings.m_moveSubs);
+  SetBool("detectBars", madvrSettings.m_detectBars);
+  SetBoolValue("arChange", "arChangeValue", madvrSettings.m_arChange);
+  SetQuickArChange("", madvrSettings.m_quickArChange);
+  SetMultiBool("shiftImage", "shiftImageUp", madvrSettings.m_shiftImage);
+  SetBoolValue("dontCropSubs", "dontCropSubsValue", madvrSettings.m_dontCropSubs);
+  SetCleanBorders("", madvrSettings.m_cleanBorders);
+  SetBoolValue("reduceBigBars", "reduceBigBarsValues", madvrSettings.m_reduceBigBars);
+  SetBool("cropSmallBars", madvrSettings.m_cropSmallBars);
+  SetBool("cropBars", madvrSettings.m_cropBars);
 
   SetBool("upRefFineSharp", madvrSettings.m_UpRefFineSharp);
   SetFloat("upRefFineSharpStrength", madvrSettings.m_UpRefFineSharpStrength, 10);
@@ -697,13 +801,25 @@ void CMadvrSettingsManager::LoadSettings(MADVR_LOAD_TYPE type)
     GetBool("adaptiveSharpen", &madvrSettings.m_adaptiveSharpen);
     GetFloat("adaptiveSharpenStrength", &madvrSettings.m_adaptiveSharpenStrength, 10);
 
-    GetBoolValue("noSmallScaling", "noSmallScalingValue", &madvrSettings.m_noSmallScaling);
-    GetMultiBool("moveSubs", "moveSubsUp", &madvrSettings.m_moveSubs);
-
     GetDithering("", &madvrSettings.m_dithering);
     GetBool("coloredDither", &madvrSettings.m_ditheringColoredNoise);
     GetBool("dynamicDither", &madvrSettings.m_ditheringEveryFrame);
     GetSmoothmotion("", &madvrSettings.m_smoothMotion);
+  }
+
+  if (type == MADVR_LOAD_ZOOM)
+  {
+    GetBoolValue("noSmallScaling", "noSmallScalingValue", &madvrSettings.m_noSmallScaling);
+    GetMultiBool("moveSubs", "moveSubsUp", &madvrSettings.m_moveSubs);
+    GetBool("detectBars", &madvrSettings.m_detectBars);
+    GetBoolValue("arChange", "arChangeValue", &madvrSettings.m_arChange);
+    GetQuickArChange("", &madvrSettings.m_quickArChange);
+    GetMultiBool("shiftImage", "shiftImageUp", &madvrSettings.m_shiftImage);
+    GetBoolValue("dontCropSubs", "dontCropSubsValue", &madvrSettings.m_dontCropSubs);
+    GetCleanBorders("", &madvrSettings.m_cleanBorders);
+    GetBoolValue("reduceBigBars", "reduceBigBarsValue", &madvrSettings.m_reduceBigBars);
+    GetBool("cropSmallBars", &madvrSettings.m_cropSmallBars);
+    GetBool("cropBars", &madvrSettings.m_cropBars);
   }
 
   if (type == MADVR_LOAD_SCALING)
@@ -785,6 +901,24 @@ std::vector<CMadvrSettingsList*>* CMadvrSettingsManager::GetSettingsVector(MADVR
     break;
   case MADVR_LIST_MOVESUBS:
     vec = &m_settingsMoveSubs;
+    break;
+  case MADVR_LIST_ARCHANGE:
+    vec = &m_settingsArChange;
+    break;
+  case MADVR_LIST_QUICKARCHANGE:
+    vec = &m_settingsQuickArChange;
+    break;
+  case MADVR_LIST_SHIFTIMAGE:
+    vec = &m_settingsShiftImage;
+    break;
+  case MADVR_LIST_DONTCROPSUBS:
+    vec = &m_settingsDontCropSubs;
+    break;
+  case MADVR_LIST_CLEANBORDERS:
+    vec = &m_settingsCleanBorders;
+    break;
+  case MADVR_LIST_REDUCEBIGBARS:
+    vec = &m_settingsReduceBigBars;
     break;
   case MADVR_LIST_SMOOTHMOTION:
     vec = &m_settingsSmoothMotion;
@@ -997,6 +1131,58 @@ void CMadvrSettingsManager::InitSettings()
   // MoveSubs
   AddSettingsList(MADVR_LIST_MOVESUBS, "bottom", 70218, 0);
   AddSettingsList(MADVR_LIST_MOVESUBS, "up", 70219, 1);
+
+  // ArChange
+  AddSettingsList(MADVR_LIST_ARCHANGE, "0%", 70222, 0);
+  AddSettingsList(MADVR_LIST_ARCHANGE, "25%", 70223, 25);
+  AddSettingsList(MADVR_LIST_ARCHANGE, "50%", 70224, 50);
+  AddSettingsList(MADVR_LIST_ARCHANGE, "75%", 70225, 75);
+  AddSettingsList(MADVR_LIST_ARCHANGE, "100%", 70226, 100);
+
+  // QuickArChange
+  AddSettingsList(MADVR_LIST_QUICKARCHANGE, "2 sec", 70228, 2);
+  AddSettingsList(MADVR_LIST_QUICKARCHANGE, "5 sec", 70229, 5);
+  AddSettingsList(MADVR_LIST_QUICKARCHANGE, "15 sec", 70230, 15);
+  AddSettingsList(MADVR_LIST_QUICKARCHANGE, "45 sec", 70231, 45);
+  AddSettingsList(MADVR_LIST_QUICKARCHANGE, "0%", 70222, 0);
+  AddSettingsList(MADVR_LIST_QUICKARCHANGE, "25%", 70223, 25);
+  AddSettingsList(MADVR_LIST_QUICKARCHANGE, "50%", 70224, 50);
+  AddSettingsList(MADVR_LIST_QUICKARCHANGE, "75%", 70225, 75);
+  AddSettingsList(MADVR_LIST_QUICKARCHANGE, "100%", 70226, 100);
+
+  // ShiftImage
+  AddSettingsList(MADVR_LIST_SHIFTIMAGE, "top", 70233, 1);
+  AddSettingsList(MADVR_LIST_SHIFTIMAGE, "bottom", 70234, 0);
+
+  // DontCropSubs
+  AddSettingsList(MADVR_LIST_DONTCROPSUBS, "5 sec", 70236, 5);
+  AddSettingsList(MADVR_LIST_DONTCROPSUBS, "15 sec", 70237, 15);
+  AddSettingsList(MADVR_LIST_DONTCROPSUBS, "45 sec", 70238, 45);
+  AddSettingsList(MADVR_LIST_DONTCROPSUBS, "3 min", 70239, 180);
+  AddSettingsList(MADVR_LIST_DONTCROPSUBS, "10 min", 70240, 600);
+  AddSettingsList(MADVR_LIST_DONTCROPSUBS, "30 min", 70241, 1800);
+  AddSettingsList(MADVR_LIST_DONTCROPSUBS, "90 min", 70242, 5400);
+  AddSettingsList(MADVR_LIST_DONTCROPSUBS, "forever", 70243, 0);
+
+  // CleanBorders
+  AddSettingsList(MADVR_LIST_CLEANBORDERS, "1 line black bar", 70245, 1);
+  AddSettingsList(MADVR_LIST_CLEANBORDERS, "2 line black bar", 70246, 2);
+  AddSettingsList(MADVR_LIST_CLEANBORDERS, "3 line black bar", 70247, 3);
+  AddSettingsList(MADVR_LIST_CLEANBORDERS, "4 line black bar", 70248, 4);
+  AddSettingsList(MADVR_LIST_CLEANBORDERS, "5 line black bar", 70249, 5);
+  AddSettingsList(MADVR_LIST_CLEANBORDERS, "7 line black bar", 70250, 7);
+  AddSettingsList(MADVR_LIST_CLEANBORDERS, "1 line image", 70251, 11);
+  AddSettingsList(MADVR_LIST_CLEANBORDERS, "2 line image", 70252, 12);
+  AddSettingsList(MADVR_LIST_CLEANBORDERS, "3 line image", 70253, 13);
+  AddSettingsList(MADVR_LIST_CLEANBORDERS, "4 line image", 70254, 14);
+  AddSettingsList(MADVR_LIST_CLEANBORDERS, "5 line image", 70255, 15);
+  AddSettingsList(MADVR_LIST_CLEANBORDERS, "7 line image", 70256, 17);
+
+  // Reduce Big Bars
+  AddSettingsList(MADVR_LIST_REDUCEBIGBARS, "25%", 70258, 25);
+  AddSettingsList(MADVR_LIST_REDUCEBIGBARS, "50%", 70259, 50);
+  AddSettingsList(MADVR_LIST_REDUCEBIGBARS, "75%", 70260, 75);
+  AddSettingsList(MADVR_LIST_REDUCEBIGBARS, "100%", 70261, 100);
 
   // Smoothmotion
   AddSettingsList(MADVR_LIST_SMOOTHMOTION, "avoidJudder", 70301, 0 );

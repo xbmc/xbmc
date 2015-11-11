@@ -93,6 +93,15 @@ public:
 
   int m_noSmallScaling;
   int m_moveSubs;
+  bool m_detectBars;
+  int m_arChange;
+  int m_quickArChange;
+  int m_shiftImage;
+  int m_dontCropSubs;
+  int m_cleanBorders;
+  int m_reduceBigBars;
+  bool m_cropSmallBars;
+  bool m_cropBars;
 
   // Upscale Refinement
 

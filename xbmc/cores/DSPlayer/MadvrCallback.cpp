@@ -216,10 +216,10 @@ void CMadvrCallback::LoadSettings(MADVR_LOAD_TYPE type)
     m_pSettingCallback->LoadSettings(type);
 }
 
-void CMadvrCallback::GetProfileActiveName(std::string *profile)
+void CMadvrCallback::GetProfileActiveName(std::string path, std::string *profile)
 {
   if (m_pSettingCallback)
-    m_pSettingCallback->GetProfileActiveName(profile);
+    m_pSettingCallback->GetProfileActiveName(path, profile);
 }
 
 void CMadvrCallback::SetStr(std::string path, std::string sValue) 
@@ -280,6 +280,19 @@ void CMadvrCallback::SetDithering(std::string path, int iValue)
   if (m_pSettingCallback)
     m_pSettingCallback->SetDithering(path, iValue);
 }
+
+void CMadvrCallback::SetQuickArChange(std::string path, int iValue)
+{
+  if (m_pSettingCallback)
+    m_pSettingCallback->SetQuickArChange(path, iValue);
+}
+
+void CMadvrCallback::SetCleanBorders(std::string path, int iValue)
+{
+  if (m_pSettingCallback)
+    m_pSettingCallback->SetCleanBorders(path, iValue);
+}
+
 
 std::string CMadvrCallback::GetSettingsName(MADVR_SETTINGS_LIST type, int iValue)
 {

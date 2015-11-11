@@ -3448,6 +3448,9 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\VideoRenderers\WinDsRenderer.cpp">
       <Filter>cores\DSPlayer\VideoRenderers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrZoom.cpp">
+      <Filter>cores\DSPlayer\Dialogs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6725,6 +6728,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\VideoRenderers\WinDsRenderer.h">
       <Filter>cores\DSPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrZoom.h">
+      <Filter>cores\DSPlayer\Dialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

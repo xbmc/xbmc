@@ -151,6 +151,7 @@
 #include "cores/DSPlayer/Dialogs/GUIDialogLAVAudio.h"
 #include "cores/DSPlayer/Dialogs/GUIDialogLAVSplitter.h"
 #include "cores/DSPlayer/Dialogs/GUIDIalogMadvrScaling.h"
+#include "cores/DSPlayer/Dialogs/GUIDIalogMadvrZoom.h"
 #endif
 
 using namespace std;
@@ -232,6 +233,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogLAVAudio);
   Add(new CGUIDialogLAVSplitter);
   Add(new CGUIDialogMadvrScaling);
+  Add(new CGUIDialogMadvrZoom);
 #endif
   Add(new CGUIDialogVideoBookmarks);
   // Don't add the filebrowser dialog - it's created and added when it's needed
@@ -348,6 +350,7 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_DIALOG_DSFILTERS);
     Delete(WINDOW_DIALOG_DSPLAYERCORE);
     Delete(WINDOW_DIALOG_MADVR);
+    Delete(WINDOW_DIALOG_MADVRZOOM);
     Delete(WINDOW_DIALOG_LAVVIDEO);
     Delete(WINDOW_DIALOG_LAVAUDIO);
     Delete(WINDOW_DIALOG_LAVSPLITTER);
@@ -1055,11 +1058,13 @@ void CGUIWindowManager::RenderPass() const
       if ((*it)->GetID() == WINDOW_DIALOG_VIDEO_OSD_SETTINGS)
       {
         CGUIDialog* pDialogMadvr = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MADVR);
+        CGUIDialog* pDialogMadvrZoom = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MADVRZOOM);
         CGUIDialog* pDialogLAVVideo = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_LAVVIDEO);
         CGUIDialog* pDialogLAVAudio = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_LAVAUDIO);
         CGUIDialog* pDialogLAVSplitter = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_LAVSPLITTER);
 
         if ((pDialogMadvr && pDialogMadvr->IsDialogRunning())
+          || (pDialogMadvrZoom && pDialogMadvrZoom->IsDialogRunning())
           || (pDialogLAVVideo && pDialogLAVVideo->IsDialogRunning())
           || (pDialogLAVAudio && pDialogLAVAudio->IsDialogRunning())
           || (pDialogLAVSplitter && pDialogLAVSplitter->IsDialogRunning()))

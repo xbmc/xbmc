@@ -255,6 +255,22 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
       m_defaultMadvrSettings.m_noSmallScaling = -1;
     if (!XMLUtils::GetInt(pElement, "movesubs", m_defaultMadvrSettings.m_moveSubs))
       m_defaultMadvrSettings.m_moveSubs = 0;
+    XMLUtils::GetBoolean(pElement, "detectbars", m_defaultMadvrSettings.m_detectBars);
+    if (!XMLUtils::GetInt(pElement, "archange", m_defaultMadvrSettings.m_arChange))
+      m_defaultMadvrSettings.m_arChange = -1;
+    if (!XMLUtils::GetInt(pElement, "quickarchange", m_defaultMadvrSettings.m_quickArChange))
+      m_defaultMadvrSettings.m_quickArChange = -1;
+    if (!XMLUtils::GetInt(pElement, "shiftimage", m_defaultMadvrSettings.m_shiftImage))
+      m_defaultMadvrSettings.m_shiftImage = -1;
+    if (!XMLUtils::GetInt(pElement, "dontcropsubs", m_defaultMadvrSettings.m_dontCropSubs))
+      m_defaultMadvrSettings.m_dontCropSubs = -1;
+    if (!XMLUtils::GetInt(pElement, "cleanborders", m_defaultMadvrSettings.m_cleanBorders))
+      m_defaultMadvrSettings.m_cleanBorders = -1;
+    if (!XMLUtils::GetInt(pElement, "reducebigbars", m_defaultMadvrSettings.m_reduceBigBars))
+      m_defaultMadvrSettings.m_reduceBigBars = -1;
+    XMLUtils::GetBoolean(pElement, "cropsmallbars", m_defaultMadvrSettings.m_cropSmallBars);
+    XMLUtils::GetBoolean(pElement, "cropbars", m_defaultMadvrSettings.m_cropBars);
+
 
     XMLUtils::GetBoolean(pElement, "upreffinesharp", m_defaultMadvrSettings.m_UpRefFineSharp);
     if (!XMLUtils::GetFloat(pElement, "upreffinesharpstrength", m_defaultMadvrSettings.m_UpRefFineSharpStrength))
@@ -436,6 +452,15 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
 
   XMLUtils::SetInt(pNode, "nosmallscaling", m_defaultMadvrSettings.m_noSmallScaling);
   XMLUtils::SetInt(pNode, "movesubs", m_defaultMadvrSettings.m_moveSubs);
+  XMLUtils::SetBoolean(pNode, "detectbars", m_defaultMadvrSettings.m_detectBars);
+  XMLUtils::SetInt(pNode, "archange", m_defaultMadvrSettings.m_arChange);
+  XMLUtils::SetInt(pNode, "quickarchange", m_defaultMadvrSettings.m_quickArChange);
+  XMLUtils::SetInt(pNode, "shiftimage", m_defaultMadvrSettings.m_shiftImage);
+  XMLUtils::SetInt(pNode, "dontcropsubs", m_defaultMadvrSettings.m_dontCropSubs);
+  XMLUtils::SetInt(pNode, "cleanborders", m_defaultMadvrSettings.m_cleanBorders);
+  XMLUtils::SetInt(pNode, "reducebigbars", m_defaultMadvrSettings.m_reduceBigBars);
+  XMLUtils::SetBoolean(pNode, "cropsmallbars", m_defaultMadvrSettings.m_cropSmallBars);
+  XMLUtils::SetBoolean(pNode, "cropbars", m_defaultMadvrSettings.m_cropBars);
 
   XMLUtils::SetBoolean(pNode, "upreffinesharp", m_defaultMadvrSettings.m_UpRefFineSharp);
   XMLUtils::SetFloat(pNode, "upreffinesharpstrength", m_defaultMadvrSettings.m_UpRefFineSharpStrength);

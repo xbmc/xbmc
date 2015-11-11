@@ -39,6 +39,7 @@
 #include "cores/DSPlayer/Filters/RendererSettings.h"
 #include "cores/DSPlayer/dsgraph.h"
 #include "cores/DSPlayer/Dialogs/GUIDIalogMadvrScaling.h"
+#include "cores/DSPlayer/Dialogs/GUIDIalogMadvrZoom.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "DSUtil/DSUtil.h"
 #include "utils/CharsetConverter.h"
@@ -74,6 +75,7 @@
 #define VIDEO_SETTINGS_DS_FILTERS         "video.dsfilters"
 
 #define SETTING_MADVR_SCALING             "madvr.scaling"
+#define SETTING_MADVR_ZOOM                "madvr.zoom"
 #define SETTING_MADVR_DEINT_ACTIVE        "madvr.deintactive"
 #define SETTING_MADVR_DEINT_FORCE         "madvr.deintforcefilm"
 #define SETTING_MADVR_DEINT_LOOKPIXELS    "madvr.deintlookpixels"
@@ -230,16 +232,6 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
     madvrSettings.m_adaptiveSharpenStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
     CMadvrCallback::Get()->SetFloat("adaptiveSharpenStrength", madvrSettings.m_adaptiveSharpenStrength, 10);
   }
-  else if (settingId == SETTING_MADVR_NOSMALLSCALING)
-  {
-    madvrSettings.m_noSmallScaling = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetBoolValue("noSmallScaling", "noSmallScalingValue", madvrSettings.m_noSmallScaling);
-  }
-  else if (settingId == SETTING_MADVR_MOVESUBS)
-  {
-    madvrSettings.m_moveSubs = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetMultiBool("moveSubs", "moveSubsUp", madvrSettings.m_moveSubs);
-  }
   else if (settingId == VIDEO_SETTINGS_DS_STATS)
   {
     m_dsStats = static_cast<DS_STATS>(static_cast<const CSettingInt*>(setting)->GetValue());
@@ -352,7 +344,8 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
 #ifdef HAS_DS_PLAYER
   else if (settingId == SETTING_MADVR_SCALING)
     g_windowManager.ActivateWindow(WINDOW_DIALOG_MADVR);
-
+  else if (settingId == SETTING_MADVR_ZOOM)
+    g_windowManager.ActivateWindow(WINDOW_DIALOG_MADVRZOOM);
   else if (settingId == VIDEO_SETTINGS_DS_FILTERS)
   {
     CGUIDialogSelect *pDlg = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -569,8 +562,8 @@ void CGUIDialogVideoSettings::InitializeSettings()
     CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
     return;
   }
-  CSettingGroup *groupMadvrScale = AddGroup(category);
-  if (groupMadvrScale == NULL)
+  CSettingGroup *groupMadvrSubMenu = AddGroup(category);
+  if (groupMadvrSubMenu == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
     return;
@@ -791,22 +784,11 @@ void CGUIDialogVideoSettings::InitializeSettings()
       AddToggle(groupMadvrSharp, SET_IMAGE_ADAPTIVESHARPEN, 70120, 0, madvrSettings.m_adaptiveSharpen);
       AddSlider(groupMadvrSharp, SET_IMAGE_ADAPTIVESHARPEN_STRENGTH, 70122, 0, madvrSettings.m_adaptiveSharpenStrength, "%1.1f", 0.0f, 0.1f, 1.5f, 70120, usePopup);
 
-      // MADVR NOSMALLSCALING
-      entries.clear();
-      entries.push_back(std::make_pair(70117, -1));
-      CMadvrCallback::Get()->AddEntry(MADVR_LIST_NOSMALLSCALING, &entries);
-
-      AddList(groupMadvrScale, SETTING_MADVR_NOSMALLSCALING, 70208, 0, static_cast<int>(madvrSettings.m_noSmallScaling), entries, 70208);
+      // MADVR ZOOM
+      AddButton(groupMadvrSubMenu, SETTING_MADVR_ZOOM, 70264, 0);
 
       // MADVR SCALING
-      AddButton(groupMadvrScale, SETTING_MADVR_SCALING, 70000, 0);
-
-      // MADVR MOVESUBS
-      entries.clear();
-      entries.push_back(std::make_pair(70117, -1));
-      CMadvrCallback::Get()->AddEntry(MADVR_LIST_MOVESUBS, &entries);
-
-      AddList(groupMadvrRendering, SETTING_MADVR_MOVESUBS, 70217, 0, static_cast<int>(madvrSettings.m_moveSubs), entries, 70217);
+      AddButton(groupMadvrSubMenu, SETTING_MADVR_SCALING, 70000, 0);
 
       // MADVR SMOOTHMOTION
       entries.clear();

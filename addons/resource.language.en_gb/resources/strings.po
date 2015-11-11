@@ -18919,6 +18919,185 @@ msgctxt "#70219"
 msgid "into active area"
 msgstr ""
 
+msgctxt "#70220"
+msgid "Auto detect hard coded black bars"
+msgstr ""
+
+msgctxt "#70221"
+msgid "If black bars change"
+msgstr ""
+
+msgctxt "#70222"
+msgid "doesn't lose any image content"
+msgstr ""
+
+msgctxt "#70223"
+msgid "reduces black bar size by 25%"
+msgstr ""
+
+msgctxt "#70224"
+msgid "reduces black bar size by 50%"
+msgstr ""
+
+msgctxt "#70225"
+msgid "reduces black bar size by 75%"
+msgstr ""
+
+msgctxt "#70226"
+msgid "doesn't show any black bars"
+msgstr ""
+
+msgctxt "#70227"
+msgid "If black bars change quickly"
+msgstr ""
+
+msgctxt "#70228"
+msgid "don't switch more than once every 2 secs"
+msgstr ""
+
+msgctxt "#70229"
+msgid "don't switch more than once every 5 secs"
+msgstr ""
+
+msgctxt "#70230"
+msgid "don't switch more than once every 15 secs"
+msgstr ""
+
+msgctxt "#70231"
+msgid "don't switch more than once every 45 secs"
+msgstr ""
+
+msgctxt "#70232"
+msgid "Always shift the image"
+msgstr ""
+
+msgctxt "#70233"
+msgid "to the top of the screen"
+msgstr ""
+
+msgctxt "#70234"
+msgid "to the bottom of the screen"
+msgstr ""
+
+msgctxt "#70235"
+msgid "Keep bars with subs visible"
+msgstr ""
+
+msgctxt "#70236"
+msgid "for 5 seconds"
+msgstr ""
+
+msgctxt "#70237"
+msgid "for 15 seconds"
+msgstr ""
+
+msgctxt "#70238"
+msgid "for 45 seconds"
+msgstr ""
+
+msgctxt "#70239"
+msgid "for 3 minutes"
+msgstr ""
+
+msgctxt "#70240"
+msgid "for 10 minutes"
+msgstr ""
+
+msgctxt "#70241"
+msgid "for 30 minutes"
+msgstr ""
+
+msgctxt "#70242"
+msgid "for 90 minutes"
+msgstr ""
+
+msgctxt "#70243"
+msgid "forever"
+msgstr ""
+
+msgctxt "#70244"
+msgid "Cleanup image borders by cropping"
+msgstr ""
+
+msgctxt "#70245"
+msgid "1 line from the all black bars borders"
+msgstr ""
+
+msgctxt "#70246"
+msgid "2 lines from the all black bars borders"
+msgstr ""
+
+msgctxt "#70247"
+msgid "3 lines from the all black bars borders"
+msgstr ""
+
+msgctxt "#70248"
+msgid "4 lines from the all black bars borders"
+msgstr ""
+
+msgctxt "#70249"
+msgid "5 lines from the all black bars borders"
+msgstr ""
+
+msgctxt "#70250"
+msgid "7 lines from the all black bars borders"
+msgstr ""
+
+msgctxt "#70251"
+msgid "1 line from the all 4 image borders"
+msgstr ""
+
+msgctxt "#70252"
+msgid "2 lines from the all 4 image borders"
+msgstr ""
+
+msgctxt "#70253"
+msgid "3 lines from the all 4 image borders"
+msgstr ""
+
+msgctxt "#70254"
+msgid "4 lines from the all 4 image borders"
+msgstr ""
+
+msgctxt "#70255"
+msgid "5 lines from the all 4 image borders"
+msgstr ""
+
+msgctxt "#70256"
+msgid "7 lines from the all 4 image borders"
+
+msgctxt "#70257"
+msgid "If there are big black bars"
+msgstr ""
+
+msgctxt "#70258"
+msgid "reduce bar size by 25%"
+msgstr ""
+
+msgctxt "#70259"
+msgid "reduce bar size by 50%"
+msgstr ""
+
+msgctxt "#70260"
+msgid "reduce bar size by 75%"
+msgstr ""
+
+msgctxt "#70261"
+msgid "reduce bar size completely"
+msgstr ""
+
+msgctxt "#70262"
+msgid "Zoom small back bars away"
+msgstr ""
+
+msgctxt "#70263"
+msgid "Crop Black Bars"
+msgstr ""
+
+msgctxt "#70264"
+msgid "Zoom Control..."
+msgstr ""
+
 msgctxt "#70300"
 msgid "Smooth motion"
 msgstr ""

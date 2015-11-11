@@ -261,6 +261,7 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVSplitter.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVVideo.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrScaling.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrZoom.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSGraph.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSInputStreamPVRManager.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSPlayer.cpp" />
@@ -999,6 +1000,7 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVSplitter.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVVideo.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrScaling.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrZoom.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSGraph.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSInputStreamPVRManager.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSMessage.h" />
