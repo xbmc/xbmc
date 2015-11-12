@@ -473,7 +473,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               if (type != ADDON_UNKNOWN)
                 types.push_back(type);
             }
-            if (types.size() > 0)
+            if (!types.empty())
             {
               const char *strMultiselect = setting->Attribute("multiselect");
               bool multiSelect = strMultiselect && strcmpi(strMultiselect, "true") == 0;

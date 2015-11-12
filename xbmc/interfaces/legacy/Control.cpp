@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -1305,7 +1305,7 @@ namespace XBMCAddon
       long pos = -1;
 
       // send message
-      if ((vecItems.size() > 0) && pGUIControl)
+      if (!vecItems.empty() && pGUIControl)
       {
         pGUIControl->OnMessage(msg);
         pos = msg.GetParam1();
@@ -1324,7 +1324,7 @@ namespace XBMCAddon
       AddonClass::Ref<ListItem> pListItem = NULL;
 
       // send message
-      if ((vecItems.size() > 0) && pGUIControl)
+      if (!vecItems.empty() && pGUIControl)
       {
         pGUIControl->OnMessage(msg);
         if (msg.GetParam1() >= 0 && (size_t)msg.GetParam1() < vecItems.size())

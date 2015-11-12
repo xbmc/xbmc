@@ -2038,7 +2038,7 @@ void CFileItemList::Archive(CArchive& ar)
     CFileItem::Archive(ar);
 
     int i = 0;
-    if (m_items.size() > 0 && m_items[0]->IsParentFolder())
+    if (!m_items.empty() && m_items[0]->IsParentFolder())
       i = 1;
 
     ar << (int)(m_items.size() - i);

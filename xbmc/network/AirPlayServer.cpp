@@ -2,7 +2,7 @@
  * Many concepts and protocol specification in this code are taken
  * from Airplayer. https://github.com/PascalW/Airplayer
  *
- *      http://xbmc.org
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -283,7 +283,7 @@ void CAirPlayServer::AnnounceToClients(int state)
   
     // Send event status per reverse http socket (play, loading, paused)
     // if we have a reverse header and a reverse socket
-    if (reverseHeader.size() > 0 && m_reverseSockets.find(it->m_sessionId) != m_reverseSockets.end())
+    if (!reverseHeader.empty() && m_reverseSockets.find(it->m_sessionId) != m_reverseSockets.end())
     {
       //search the reverse socket to this sessionid
       response = StringUtils::Format("POST /event HTTP/1.1\r\n");
@@ -292,7 +292,7 @@ void CAirPlayServer::AnnounceToClients(int state)
     }
     response += "\r\n";
   
-    if (reverseBody.size() > 0)
+    if (!reverseBody.empty())
     {
       response += reverseBody;
     }
@@ -533,14 +533,14 @@ void CAirPlayServer::CTCPClient::PushBuffer(CAirPlayServer *host, const char *bu
     char *date = asctime(gmtime(&ltime)); //Fri, 17 Dec 2010 11:18:01 GMT;
     date[strlen(date) - 1] = '\0'; // remove \n
     response = StringUtils::Format("HTTP/1.1 %d %s\nDate: %s\r\n", status, statusMsg.c_str(), date);
-    if (responseHeader.size() > 0)
+    if (!responseHeader.empty())
     {
       response += responseHeader;
     }
 
     response = StringUtils::Format("%sContent-Length: %ld\r\n\r\n", response.c_str(), responseBody.size());
 
-    if (responseBody.size() > 0)
+    if (!responseBody.empty())
     {
       response += responseBody;
     }

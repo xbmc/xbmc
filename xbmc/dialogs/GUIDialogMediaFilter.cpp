@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2012-2014 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2012-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -437,7 +437,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
     else if (filter.controlType == "list")
     {
       std::vector<std::string> values;
-      if (filter.rule != NULL && filter.rule->m_parameter.size() > 0)
+      if (filter.rule != NULL && !filter.rule->m_parameter.empty())
       {
         values = StringUtils::Split(filter.rule->GetParameter(), DATABASEQUERY_RULE_VALUE_SEPARATOR);
         if (values.size() == 1 && values.at(0).empty())
