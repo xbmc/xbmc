@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -777,7 +777,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     // handle any protocol options
     std::map<std::string, std::string> options;
     url2.GetProtocolOptions(options);
-    if (options.size() > 0)
+    if (!options.empty())
     {
       // set xbmc headers
       for (std::map<std::string,std::string>::const_iterator it = options.begin(); it != options.end(); ++it)
@@ -900,7 +900,7 @@ bool CCurlFile::Download(const std::string& strURL, const std::string& strFileNa
     return false;
   }
   ssize_t written = 0;
-  if (strData.size() > 0)
+  if (!strData.empty())
     written = file.Write(strData.c_str(), strData.size());
 
   if (pdwSize != NULL)
@@ -979,7 +979,7 @@ bool CCurlFile::Open(const CURL& url)
   // since we can't know the stream size up front if we're gzipped/deflated
   // flag the stream with an unknown file size rather than the compressed
   // file size.
-  if (m_contentencoding.size() > 0)
+  if (!m_contentencoding.empty())
     m_state->m_fileSize = 0;
 
   // check if this stream is a shoutcast stream. sometimes checking the protocol line is not enough so examine other headers as well.

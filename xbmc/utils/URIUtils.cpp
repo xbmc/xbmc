@@ -362,7 +362,7 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
   }
   else if (strFile.empty())
   {
-    if (url.GetHostName().size() > 0)
+    if (!url.GetHostName().empty())
     {
       // we have an share with only server or workgroup name
       // set hostname to "" and return true to get back to root

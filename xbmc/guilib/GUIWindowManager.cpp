@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2015 Team XBMC
+ *      Copyright (C) 2005-2015 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -1062,7 +1062,7 @@ bool CGUIWindowManager::Render()
   }
   else if (g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_FILL_VIEWPORT_ON_CHANGE)
   {
-    if (dirtyRegions.size() > 0)
+    if (!dirtyRegions.empty())
     {
       RenderPass();
       hasRendered = true;
@@ -1235,7 +1235,7 @@ bool CGUIWindowManager::HasModalDialog(const std::vector<DialogModalityType>& ty
         (*it)->IsModalDialog() &&
         !(*it)->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
     {
-      if (types.size() > 0)
+      if (!types.empty())
       {
         CGUIDialog *dialog = static_cast<CGUIDialog*>(*it);
         for (const auto &type : types)

@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -778,7 +778,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
     // like the album fanart. This has to be done after we've added the album so
     // we have the artist IDs to update, but before we call UpdateDatabaseArtistInfo.
     if (albums.size() == 1 &&
-        album->artistCredits.size() > 0 &&
+        !album->artistCredits.empty() &&
         !StringUtils::EqualsNoCase(album->artistCredits[0].GetArtist(), "various artists") &&
         !StringUtils::EqualsNoCase(album->artistCredits[0].GetArtist(), "various"))
     {
