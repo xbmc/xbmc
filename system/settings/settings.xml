@@ -1264,7 +1264,7 @@
           <default>false</default>
           <dependencies>
             <dependency type="visible" setting="dsplayer.videorenderer" operator="is">madVR</dependency>
-            <dependency type="enable" setting="dsplayer.madvrexclusivemode" operator="is">true</dependency>
+            <dependency type="enable" setting="dsplayer.exclusivemode" operator="is">true</dependency>
           </dependencies>
           <control type="toggle" />
         </setting>
