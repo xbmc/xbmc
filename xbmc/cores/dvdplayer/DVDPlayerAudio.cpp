@@ -570,7 +570,7 @@ void CDVDPlayerAudio::Process()
     }
 
     // Zero out the frame data if we are supposed to silence the audio
-    if (m_silence || m_syncclock)
+    if (m_silence || (m_syncclock && !AE_IS_RAW_RAW(audioframe.data_format)))
     {
       int size = audioframe.nb_frames * audioframe.framesize / audioframe.planes;
       for (unsigned int i=0; i<audioframe.planes; i++)
@@ -766,36 +766,59 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
     // during this stage audio is muted
     if (error > DVD_MSEC_TO_TIME(10))
     {
-      unsigned int nb_frames = audioframe.nb_frames;
-      double duration = audioframe.duration;
-
-      // reduce large packets for better sync, i.e. FLAC can have 96ms packets
-      // 32ms because I know this works good for AC3
-      if (audioframe.duration > DVD_MSEC_TO_TIME(32) && audioframe.sample_rate)
+      if (AE_IS_RAW_RAW(audioframe.data_format))
       {
-        audioframe.nb_frames = 0.032 * audioframe.sample_rate;
-        audioframe.duration = ((double)audioframe.nb_frames * DVD_TIME_BASE) / audioframe.sample_rate;
-      }
+        double correction = int(std::min(DVD_MSEC_TO_TIME(100), error) / audioframe.duration) * audioframe.duration;
 
-      int dups = std::min(DVD_MSEC_TO_TIME(100), error) / audioframe.duration;
-      if (dups > 0)
-        CLog::Log(LOGNOTICE,"CDVDPlayerAudio::OutputPacket duplicate %d packets of duration %d",
-                  dups, DVD_TIME_TO_MSEC(audioframe.duration));
-      for (int i = 0; i < dups; i++)
-      {
+        // Force clock sync to audio
+        CLog::Log(LOGNOTICE,"CDVDPlayerAudio::OutputPacket forcing clock sync for passthrough - dup error(%f), clock(%f), correction(%f)", error, clock, correction);
+        m_pClock->Update(clock+correction, absolute, 0.0, "CDVDPlayerAudio::OutputPacket");
         m_dvdAudio.AddPackets(audioframe);
       }
+      else
+      {
+        unsigned int nb_frames = audioframe.nb_frames;
+        double duration = audioframe.duration;
 
-      audioframe.nb_frames = nb_frames;
-      audioframe.duration = duration;
+        // reduce large packets for better sync, i.e. FLAC can have 96ms packets
+        // 32ms because I know this works good for AC3
+        if (audioframe.duration > DVD_MSEC_TO_TIME(32) && audioframe.sample_rate)
+        {
+          audioframe.nb_frames = 0.032 * audioframe.sample_rate;
+          audioframe.duration = ((double)audioframe.nb_frames * DVD_TIME_BASE) / audioframe.sample_rate;
+        }
 
-      m_dvdAudio.AddPackets(audioframe);
+        int dups = std::min(DVD_MSEC_TO_TIME(100), error) / audioframe.duration;
+        if (dups > 0)
+          CLog::Log(LOGNOTICE,"CDVDPlayerAudio::OutputPacket duplicate %d packets of duration %d",
+                    dups, DVD_TIME_TO_MSEC(audioframe.duration));
+        for (int i = 0; i < dups; i++)
+        {
+          m_dvdAudio.AddPackets(audioframe);
+        }
+
+        audioframe.nb_frames = nb_frames;
+        audioframe.duration = duration;
+
+        m_dvdAudio.AddPackets(audioframe);
+      }
     }
     else if (error < -DVD_MSEC_TO_TIME(32))
     {
-      m_dvdAudio.SetPlayingPts(audioframe.pts);
-      CLog::Log(LOGNOTICE,"CDVDPlayerAudio::OutputPacket skipping a packets of duration %d",
-                DVD_TIME_TO_MSEC(audioframe.duration));
+      if (AE_IS_RAW_RAW(audioframe.data_format))
+      {
+        double correction = audioframe.duration;
+        // Force clock sync to audio
+        CLog::Log(LOGNOTICE,"CDVDPlayerAudio::OutputPacket forcing clock sync for passthrough - skip error(%f), clock(%f), correction(%f)", error, clock, correction);
+        m_pClock->Update(clock-correction, absolute, 0.0, "CDVDPlayerAudio::OutputPacket");
+        m_dvdAudio.AddPackets(audioframe);
+      }
+      else
+      {
+        m_dvdAudio.SetPlayingPts(audioframe.pts);
+        CLog::Log(LOGNOTICE,"CDVDPlayerAudio::OutputPacket skipping a packets of duration %d",
+                  DVD_TIME_TO_MSEC(audioframe.duration));
+      }
     }
     else
     {

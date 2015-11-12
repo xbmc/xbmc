@@ -25,6 +25,12 @@
 using namespace jni;
 
 int CJNIAudioFormat::ENCODING_PCM_16BIT = 0x00000002;
+int CJNIAudioFormat::ENCODING_PCM_FLOAT = 0x00000004;
+int CJNIAudioFormat::ENCODING_AC3       = -1;
+int CJNIAudioFormat::ENCODING_E_AC3     = -1;
+int CJNIAudioFormat::ENCODING_DTS       = -1;
+int CJNIAudioFormat::ENCODING_DTS_HD    = -1;
+int CJNIAudioFormat::ENCODING_DOLBY_TRUEHD    = -1;
 
 int CJNIAudioFormat::CHANNEL_OUT_STEREO  = 0x0000000c;
 int CJNIAudioFormat::CHANNEL_OUT_5POINT1 = 0x000000fc;
@@ -42,6 +48,15 @@ int CJNIAudioFormat::CHANNEL_OUT_BACK_CENTER           = 0x00000400;
 int CJNIAudioFormat::CHANNEL_OUT_BACK_RIGHT            = 0x00000080;
 
 int CJNIAudioFormat::CHANNEL_INVALID                   = 0x00000000;
+
+void CJNIAudioFormat::GetStaticValue(jhclass& c, int& field, char* value)
+{
+  jfieldID id = get_static_field_id<jclass>(c, value, "I");
+  if (id != NULL)
+    field = get_static_field<int>(c, value);
+  else
+    xbmc_jnienv()->ExceptionClear();
+}
 
 void CJNIAudioFormat::PopulateStaticFields()
 {
@@ -64,10 +79,20 @@ void CJNIAudioFormat::PopulateStaticFields()
       CJNIAudioFormat::CHANNEL_OUT_BACK_CENTER = get_static_field<int>(c, "CHANNEL_OUT_BACK_CENTER");
       CJNIAudioFormat::CHANNEL_OUT_BACK_RIGHT = get_static_field<int>(c, "CHANNEL_OUT_BACK_RIGHT");
       CJNIAudioFormat::CHANNEL_INVALID = get_static_field<int>(c, "CHANNEL_INVALID");
+
       if (sdk >= 21)
       {
         CJNIAudioFormat::CHANNEL_OUT_SIDE_LEFT = get_static_field<int>(c, "CHANNEL_OUT_SIDE_LEFT");
         CJNIAudioFormat::CHANNEL_OUT_SIDE_RIGHT = get_static_field<int>(c, "CHANNEL_OUT_SIDE_RIGHT");
+
+        CJNIAudioFormat::ENCODING_PCM_FLOAT = get_static_field<int>(c, "ENCODING_PCM_FLOAT");
+
+        GetStaticValue(c, CJNIAudioFormat::ENCODING_AC3, "ENCODING_AC3");
+        GetStaticValue(c, CJNIAudioFormat::ENCODING_E_AC3, "ENCODING_E_AC3");
+        GetStaticValue(c, CJNIAudioFormat::ENCODING_DTS, "ENCODING_DTS");
+        GetStaticValue(c, CJNIAudioFormat::ENCODING_DTS_HD, "ENCODING_DTS_HD");
+        GetStaticValue(c, CJNIAudioFormat::ENCODING_DOLBY_TRUEHD, "ENCODING_DOLBY_TRUEHD");
+
       }
     }
   }
