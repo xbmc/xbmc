@@ -237,19 +237,24 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
     if (!XMLUtils::GetInt(pElement, "debandfadelevel", m_defaultMadvrSettings.m_debandFadeLevel))
       m_defaultMadvrSettings.m_debandFadeLevel = MADVR_DEFAULT_DEBAND_FADELEVEL;
 
-    XMLUtils::GetBoolean(pElement, "finesharp", m_defaultMadvrSettings.m_fineSharp);
-    if (!XMLUtils::GetFloat(pElement, "finesharpstrength", m_defaultMadvrSettings.m_fineSharpStrength))
-      m_defaultMadvrSettings.m_fineSharpStrength = MADVR_DEFAULT_FINESHARPSTRENGTH;
+    XMLUtils::GetBoolean(pElement, "sharpenedges", m_defaultMadvrSettings.m_sharpenEdges);
+    if (!XMLUtils::GetFloat(pElement, "sharpenedgesstrength", m_defaultMadvrSettings.m_sharpenEdgesStrength))
+      m_defaultMadvrSettings.m_sharpenEdgesStrength = MADVR_DEFAULT_SHARPENEDGES;
+    XMLUtils::GetBoolean(pElement, "crispenedges", m_defaultMadvrSettings.m_crispenEdges);
+    if (!XMLUtils::GetFloat(pElement, "crispenedgesstrength", m_defaultMadvrSettings.m_crispenEdgesStrength))
+      m_defaultMadvrSettings.m_crispenEdgesStrength = MADVR_DEFAULT_CRISPENEDGES;
+    XMLUtils::GetBoolean(pElement, "thinedges", m_defaultMadvrSettings.m_thinEdges);
+    if (!XMLUtils::GetFloat(pElement, "thinedgesstrength", m_defaultMadvrSettings.m_thinEdgesStrength))
+      m_defaultMadvrSettings.m_thinEdgesStrength = MADVR_DEFAULT_THINEDGES;
+    XMLUtils::GetBoolean(pElement, "enhancedetail", m_defaultMadvrSettings.m_enhanceDetail);
+    if (!XMLUtils::GetFloat(pElement, "enhancedetailstrength", m_defaultMadvrSettings.m_enhanceDetailStrength))
+      m_defaultMadvrSettings.m_enhanceDetailStrength = MADVR_DEFAULT_ENHANCEDETAIL;
     XMLUtils::GetBoolean(pElement, "lumasharpen", m_defaultMadvrSettings.m_lumaSharpen);
     if (!XMLUtils::GetFloat(pElement, "lumasharpenstrength", m_defaultMadvrSettings.m_lumaSharpenStrength))
-      m_defaultMadvrSettings.m_lumaSharpenStrength = MADVR_DEFAULT_LUMASHARPENSTRENGTH;
-    if (!XMLUtils::GetFloat(pElement, "lumasharpenclamp", m_defaultMadvrSettings.m_lumaSharpenClamp))
-      m_defaultMadvrSettings.m_lumaSharpenClamp = MADVR_DEFAULT_LUMASHARPENCLAMP;
-    if (!XMLUtils::GetFloat(pElement, "lumasharpenradius", m_defaultMadvrSettings.m_lumaSharpenRadius))
-      m_defaultMadvrSettings.m_lumaSharpenRadius = MADVR_DEFAULT_LUMASHARPENRADIUS;
+      m_defaultMadvrSettings.m_lumaSharpenStrength = MADVR_DEFAULT_LUMASHARPEN;
     XMLUtils::GetBoolean(pElement, "adaptivesharpen", m_defaultMadvrSettings.m_adaptiveSharpen);
     if (!XMLUtils::GetFloat(pElement, "adaptivesharpenstrength", m_defaultMadvrSettings.m_adaptiveSharpenStrength))
-      m_defaultMadvrSettings.m_adaptiveSharpenStrength = MADVR_DEFAULT_ADAPTIVESHARPENSTRENGTH;
+      m_defaultMadvrSettings.m_adaptiveSharpenStrength = MADVR_DEFAULT_ADAPTIVESHARPEN;
 
     if (!XMLUtils::GetInt(pElement, "nosmallscaling", m_defaultMadvrSettings.m_noSmallScaling))
       m_defaultMadvrSettings.m_noSmallScaling = -1;
@@ -271,30 +276,29 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
     XMLUtils::GetBoolean(pElement, "cropsmallbars", m_defaultMadvrSettings.m_cropSmallBars);
     XMLUtils::GetBoolean(pElement, "cropbars", m_defaultMadvrSettings.m_cropBars);
 
-
-    XMLUtils::GetBoolean(pElement, "upreffinesharp", m_defaultMadvrSettings.m_UpRefFineSharp);
-    if (!XMLUtils::GetFloat(pElement, "upreffinesharpstrength", m_defaultMadvrSettings.m_UpRefFineSharpStrength))
-      m_defaultMadvrSettings.m_UpRefFineSharpStrength = MADVR_DEFAULT_UPFINESHARPSTRENGTH;
+    XMLUtils::GetBoolean(pElement, "uprefsharpenedges", m_defaultMadvrSettings.m_UpRefSharpenEdges);
+    if (!XMLUtils::GetFloat(pElement, "uprefsharpenedgesstrength", m_defaultMadvrSettings.m_UpRefSharpenEdgesStrength))
+      m_defaultMadvrSettings.m_UpRefSharpenEdgesStrength = MADVR_DEFAULT_UPSHARPENEDGES;
+    XMLUtils::GetBoolean(pElement, "uprefcrispenedges", m_defaultMadvrSettings.m_UpRefCrispenEdges);
+    if (!XMLUtils::GetFloat(pElement, "uprefcrispenedgesstrength", m_defaultMadvrSettings.m_UpRefCrispenEdgesStrength))
+      m_defaultMadvrSettings.m_UpRefCrispenEdgesStrength = MADVR_DEFAULT_UPCRISPENEDGES;
+    XMLUtils::GetBoolean(pElement, "uprefthinedges", m_defaultMadvrSettings.m_UpRefThinEdges);
+    if (!XMLUtils::GetFloat(pElement, "upthinedgesstrength", m_defaultMadvrSettings.m_UpRefThinEdgesStrength))
+      m_defaultMadvrSettings.m_UpRefThinEdgesStrength = MADVR_DEFAULT_UPTHINEDGES;
+    XMLUtils::GetBoolean(pElement, "uprefenhancedetail", m_defaultMadvrSettings.m_UpRefEnhanceDetail);
+    if (!XMLUtils::GetFloat(pElement, "uprefenhancedetailstrength", m_defaultMadvrSettings.m_UpRefEnhanceDetailStrength))
+      m_defaultMadvrSettings.m_UpRefEnhanceDetailStrength = MADVR_DEFAULT_UPENHANCEDETAIL;
     XMLUtils::GetBoolean(pElement, "upreflumasharpen", m_defaultMadvrSettings.m_UpRefLumaSharpen);
     if (!XMLUtils::GetFloat(pElement, "upreflumasharpenstrength", m_defaultMadvrSettings.m_UpRefLumaSharpenStrength))
-      m_defaultMadvrSettings.m_UpRefLumaSharpenStrength = MADVR_DEFAULT_UPLUMASHARPENSTRENGTH;
-    if (!XMLUtils::GetFloat(pElement, "upreflumasharpenclamp", m_defaultMadvrSettings.m_UpRefLumaSharpenClamp))
-      m_defaultMadvrSettings.m_UpRefLumaSharpenClamp = MADVR_DEFAULT_UPLUMASHARPENCLAMP;
-    if (!XMLUtils::GetFloat(pElement, "upreflumasharpenradius", m_defaultMadvrSettings.m_UpRefLumaSharpenRadius))
-      m_defaultMadvrSettings.m_UpRefLumaSharpenRadius = MADVR_DEFAULT_UPLUMASHARPENRADIUS;
+      m_defaultMadvrSettings.m_UpRefLumaSharpenStrength = MADVR_DEFAULT_UPLUMASHARPEN;
     XMLUtils::GetBoolean(pElement, "uprefadaptivesharpen", m_defaultMadvrSettings.m_UpRefAdaptiveSharpen);
     if (!XMLUtils::GetFloat(pElement, "uprefadaptivesharpenstrength", m_defaultMadvrSettings.m_UpRefAdaptiveSharpenStrength))
-      m_defaultMadvrSettings.m_UpRefAdaptiveSharpenStrength = MADVR_DEFAULT_UPADAPTIVESHARPENSTRENGTH;
+      m_defaultMadvrSettings.m_UpRefAdaptiveSharpenStrength = MADVR_DEFAULT_UPADAPTIVESHARPEN;
     XMLUtils::GetBoolean(pElement, "superres", m_defaultMadvrSettings.m_superRes);
     if (!XMLUtils::GetFloat(pElement, "superresstrength", m_defaultMadvrSettings.m_superResStrength))
-      m_defaultMadvrSettings.m_superResStrength = MADVR_DEFAULT_SUPERRESSTRENGTH;
-    if (!XMLUtils::GetFloat(pElement, "superressharpness", m_defaultMadvrSettings.m_superResSharpness))
-      m_defaultMadvrSettings.m_superResSharpness = MADVR_DEFAULT_SUPERRESSHARPNESS;
-    if (!XMLUtils::GetFloat(pElement, "superresradius", m_defaultMadvrSettings.m_superResRadius))
-      m_defaultMadvrSettings.m_superResRadius = MADVR_DEFAULT_SUPERRESRADIUS;
-
+      m_defaultMadvrSettings.m_superResStrength = MADVR_DEFAULT_SUPERRES;
     XMLUtils::GetBoolean(pElement, "superreslinear", m_defaultMadvrSettings.m_superResLinear);
-    XMLUtils::GetBoolean(pElement, "superresfirst", m_defaultMadvrSettings.m_superResFirst);
+
   }
 #endif
   // mymusic settings
@@ -441,12 +445,16 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetInt(pNode, "debandlevel", m_defaultMadvrSettings.m_debandLevel);
   XMLUtils::SetInt(pNode, "debandfadelevel", m_defaultMadvrSettings.m_debandFadeLevel);
 
-  XMLUtils::SetBoolean(pNode, "finesharp", m_defaultMadvrSettings.m_fineSharp);
-  XMLUtils::SetFloat(pNode, "finesharpstrength", m_defaultMadvrSettings.m_fineSharpStrength);
+  XMLUtils::SetBoolean(pNode, "sharpenedges", m_defaultMadvrSettings.m_sharpenEdges);
+  XMLUtils::SetFloat(pNode, "sharpenedgesstrength", m_defaultMadvrSettings.m_sharpenEdgesStrength);
+  XMLUtils::SetBoolean(pNode, "crispenedges", m_defaultMadvrSettings.m_crispenEdges);
+  XMLUtils::SetFloat(pNode, "crispenedgesstrength", m_defaultMadvrSettings.m_crispenEdgesStrength);
+  XMLUtils::SetBoolean(pNode, "thinedges", m_defaultMadvrSettings.m_thinEdges);
+  XMLUtils::SetFloat(pNode, "thinedgesstrength", m_defaultMadvrSettings.m_thinEdgesStrength);
+  XMLUtils::SetBoolean(pNode, "enhancedetail", m_defaultMadvrSettings.m_enhanceDetail);
+  XMLUtils::SetFloat(pNode, "enhancedetailstrength", m_defaultMadvrSettings.m_enhanceDetailStrength);
   XMLUtils::SetBoolean(pNode, "lumasharpen", m_defaultMadvrSettings.m_lumaSharpen);
   XMLUtils::SetFloat(pNode, "lumasharpenstrength", m_defaultMadvrSettings.m_lumaSharpenStrength);
-  XMLUtils::SetFloat(pNode, "lumasharpenclamp", m_defaultMadvrSettings.m_lumaSharpenClamp);
-  XMLUtils::SetFloat(pNode, "lumasharpenradius", m_defaultMadvrSettings.m_lumaSharpenRadius);
   XMLUtils::SetBoolean(pNode, "adpativesharpen", m_defaultMadvrSettings.m_adaptiveSharpen);
   XMLUtils::SetFloat(pNode, "adpativesharpenstrength", m_defaultMadvrSettings.m_adaptiveSharpenStrength);
 
@@ -462,23 +470,23 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetBoolean(pNode, "cropsmallbars", m_defaultMadvrSettings.m_cropSmallBars);
   XMLUtils::SetBoolean(pNode, "cropbars", m_defaultMadvrSettings.m_cropBars);
 
-  XMLUtils::SetBoolean(pNode, "upreffinesharp", m_defaultMadvrSettings.m_UpRefFineSharp);
-  XMLUtils::SetFloat(pNode, "upreffinesharpstrength", m_defaultMadvrSettings.m_UpRefFineSharpStrength);
+  XMLUtils::SetBoolean(pNode, "uprefsharpenedges", m_defaultMadvrSettings.m_UpRefSharpenEdges);
+  XMLUtils::SetFloat(pNode, "uprefsharpenedgesstrength", m_defaultMadvrSettings.m_UpRefSharpenEdgesStrength);
+  XMLUtils::SetBoolean(pNode, "uprefcrispenedges", m_defaultMadvrSettings.m_UpRefCrispenEdges);
+  XMLUtils::SetFloat(pNode, "uprefcrispenedgesstrength", m_defaultMadvrSettings.m_UpRefCrispenEdgesStrength);
+  XMLUtils::SetBoolean(pNode, "uprefthinedges", m_defaultMadvrSettings.m_UpRefThinEdges);
+  XMLUtils::SetFloat(pNode, "uprefthinedgesstrength", m_defaultMadvrSettings.m_UpRefThinEdgesStrength);
+  XMLUtils::SetBoolean(pNode, "uprefenhancedetail", m_defaultMadvrSettings.m_UpRefEnhanceDetail);
+  XMLUtils::SetFloat(pNode, "uprefenhancedetailstrength", m_defaultMadvrSettings.m_UpRefEnhanceDetailStrength);
   XMLUtils::SetBoolean(pNode, "upreflumasharpen", m_defaultMadvrSettings.m_UpRefLumaSharpen);
   XMLUtils::SetFloat(pNode, "upreflumasharpenstrength", m_defaultMadvrSettings.m_UpRefLumaSharpenStrength);
-  XMLUtils::SetFloat(pNode, "upreflumasharpenclamp", m_defaultMadvrSettings.m_UpRefLumaSharpenClamp);
-  XMLUtils::SetFloat(pNode, "upreflumasharpenradius", m_defaultMadvrSettings.m_UpRefLumaSharpenRadius);
   XMLUtils::SetBoolean(pNode, "uprefadpativesharpen", m_defaultMadvrSettings.m_UpRefAdaptiveSharpen);
   XMLUtils::SetFloat(pNode, "uprefadpativesharpenstrength", m_defaultMadvrSettings.m_UpRefAdaptiveSharpenStrength);
   XMLUtils::SetBoolean(pNode, "superres", m_defaultMadvrSettings.m_superRes);
   XMLUtils::SetFloat(pNode, "superresstrength", m_defaultMadvrSettings.m_superResStrength);
-  XMLUtils::SetFloat(pNode, "superressharpness", m_defaultMadvrSettings.m_superResSharpness);
-  XMLUtils::SetFloat(pNode, "superresradius", m_defaultMadvrSettings.m_superResRadius);
-
   XMLUtils::SetBoolean(pNode, "superreslinear", m_defaultMadvrSettings.m_superResLinear);
+
   XMLUtils::SetBoolean(pNode, "refineonce", !m_defaultMadvrSettings.m_refineOnce);
-  XMLUtils::SetBoolean(pNode, "superresfirst", m_defaultMadvrSettings.m_superResFirst);
-  
 #endif
 
   // mymusic

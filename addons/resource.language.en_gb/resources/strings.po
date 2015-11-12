@@ -18871,6 +18871,38 @@ msgctxt "#70133"
 msgid "- use linear light"
 msgstr ""
 
+msgctxt "#70134"
+msgid "Sharpen Edges (image enhancement)"
+msgstr ""
+
+msgctxt "#70135"
+msgid "Crispen Edges (image enhancement)"
+msgstr ""
+
+msgctxt "#70136"
+msgid "Thin Edges (image enhancement)"
+msgstr ""
+
+msgctxt "#70137"
+msgid "Enhace Detail (image enhancement)"
+msgstr ""
+
+msgctxt "#70138"
+msgid "Sharpen Edges (up refinement)"
+msgstr ""
+
+msgctxt "#70139"
+msgid "Crispen Edges (up refinement)"
+msgstr ""
+
+msgctxt "#70140"
+msgid "Thin Edges (up refinement)"
+msgstr ""
+
+msgctxt "#70141"
+msgid "Enhance Detail (up refinement)"
+msgstr ""
+
 msgctxt "#70200"
 msgid "Deinterlace auto-activation"
 msgstr ""

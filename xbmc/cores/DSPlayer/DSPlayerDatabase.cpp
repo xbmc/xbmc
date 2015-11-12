@@ -73,10 +73,12 @@ void CDSPlayerDatabase::CreateTables()
     "DeintActive integer, DeintForce interger, DeintLookPixels bool, "
     "SmoothMotion integer, Dithering integer, DitheringColoredNoise bool, DitheringEveryFrame bool, "
     "Deband bool, DebandLevel integer, DebandFadeLevel integer, "
-    "FineSharp bool, FineSharpStrength float, LumaSharpen bool, LumaSharpenStrength float, LumaSharpenClamp float, LumaSharpenRadius float, AdaptiveSharpen bool, AdaptiveSharpenStrength float, "
+    "SharpenEdges bool, SharpenEdgesStrength float, CrispenEdges bool, CrispenEdgesStrength float, ThinEdges bool, ThinEdgesStrength float, EnhanceDetail bool, EnhanceDetailStrength float, "
+    "UpRefSharpenEdges bool, UpRefSharpenEdgesStrength float, UpRefCrispenEdges bool, UpRefCrispenEdgesStrength float, UpRefThinEdges bool, UpRefThinEdgesStrength float, UpRefEnhanceDetail bool, UpRefEnhanceDetailStrength float, "
+    "LumaSharpen bool, LumaSharpenStrength float, AdaptiveSharpen bool, AdaptiveSharpenStrength float, "
     "NoSmallScaling integer, MoveSubs integer, DetectBars bool, ArChange integer, QuickArChange interger, ShiftImage integer, DontCropSubs integer, CleanBorders integer, ReduceBigBars integer, CropSmallBars bool, CropBars bool, "
-    "UpRefFineSharp bool, UpRefFineSharpStrength float, UpRefLumaSharpen bool, UpRefLumaSharpenStrength float, UpRefLumaSharpenClamp float, UpRefLumaSharpenRadius float, UpRefAdaptiveSharpen bool, UpRefAdaptiveSharpenStrength float, SuperRes bool, SuperResStrength float, SuperResSharpness float, SuperResRadius float, "
-    "SuperResLinear bool, RefineOnce bool, SuperResFirst bool"
+    "UpRefLumaSharpen bool, UpRefLumaSharpenStrength float, UpRefAdaptiveSharpen bool, UpRefAdaptiveSharpenStrength float, SuperRes bool, SuperResStrength float, "
+    "SuperResLinear bool, RefineOnce bool"
     ")\n");
 
   CLog::Log(LOGINFO, "create madvr resolution for resolution table");
@@ -87,10 +89,12 @@ void CDSPlayerDatabase::CreateTables()
     "DeintActive integer, DeintForce interger, DeintLookPixels bool, "
     "SmoothMotion integer, Dithering integer, DitheringColoredNoise bool, DitheringEveryFrame bool, "
     "Deband bool, DebandLevel integer, DebandFadeLevel integer, "
-    "FineSharp bool, FineSharpStrength float, LumaSharpen bool, LumaSharpenStrength float, LumaSharpenClamp float, LumaSharpenRadius float, AdaptiveSharpen bool, AdaptiveSharpenStrength float, "
+    "SharpenEdges bool, SharpenEdgesStrength float, CrispenEdges bool, CrispenEdgesStrength float, ThinEdges bool, ThinEdgesStrength float, EnhanceDetail bool, EnhanceDetailStrength float, "
+    "UpRefSharpenEdges bool, UpRefSharpenEdgesStrength float, UpRefCrispenEdges bool, UpRefCrispenEdgesStrength float, UpRefThinEdges bool, UpRefThinEdgesStrength float, UpRefEnhanceDetail bool, UpRefEnhanceDetailStrength float, "
+    "LumaSharpen bool, LumaSharpenStrength float, AdaptiveSharpen bool, AdaptiveSharpenStrength float, "
     "NoSmallScaling integer, MoveSubs integer, DetectBars bool, ArChange integer, QuickArChange interger, ShiftImage integer, DontCropSubs integer, CleanBorders integer, ReduceBigBars integer, CropSmallBars bool, CropBars bool, "
-    "UpRefFineSharp bool, UpRefFineSharpStrength float, UpRefLumaSharpen bool, UpRefLumaSharpenStrength float, UpRefLumaSharpenClamp float, UpRefLumaSharpenRadius float, UpRefAdaptiveSharpen bool, UpRefAdaptiveSharpenStrength float, SuperRes bool, SuperResStrength float, SuperResSharpness float, SuperResRadius float, "
-    "SuperResLinear bool, RefineOnce bool, SuperResFirst bool"
+    "UpRefLumaSharpen bool, UpRefLumaSharpenStrength float, UpRefAdaptiveSharpen bool, UpRefAdaptiveSharpenStrength float, SuperRes bool, SuperResStrength float, "
+    "SuperResLinear bool, RefineOnce bool"
     ")\n");
 
   CStdString strSQL = "CREATE TABLE lavvideoSettings (id integer, bTrayIcon integer, dwStreamAR integer, dwNumThreads integer, ";
@@ -198,6 +202,7 @@ void CDSPlayerDatabase::UpdateTables(int version)
   }
   if (version < 8)
   {
+    //zoom control
     m_pDS->exec("ALTER TABLE madvrSettings ADD DetectBars bool");
     m_pDS->exec("ALTER TABLE madvrSettings ADD ArChange integer");
     m_pDS->exec("ALTER TABLE madvrSettings ADD QuickArChange integer");
@@ -208,13 +213,65 @@ void CDSPlayerDatabase::UpdateTables(int version)
     m_pDS->exec("ALTER TABLE madvrSettings ADD CropSmallBars bool");
     m_pDS->exec("ALTER TABLE madvrSettings ADD CropBars bool");
 
+    //sharp
+    m_pDS->exec("CREATE TABLE madvrSettings_new ( file text, Resolution integer, TvShowName txt, "
+      "ChromaUpscaling integer, ChromaAntiRing bool, ChromaSuperRes bool, ChromaSuperResPasses integer, ChromaSuperResStrength float, ChromaSuperResSoftness float, ImageUpscaling integer, ImageUpAntiRing bool, ImageUpLinear bool, ImageDownscaling integer, ImageDownAntiRing bool, ImageDownLinear bool, "
+      "ImageDoubleLuma integer, ImageDoubleChroma integer, ImageQuadrupleLuma integer, ImageQuadrupleChroma integer, "
+      "ImageDoubleLumaFactor integer, ImageDoubleChromaFactor integer, ImageQuadrupleLumaFactor integer, ImageQuadrupleChromaFactor integer, "
+      "DeintActive integer, DeintForce interger, DeintLookPixels bool, "
+      "SmoothMotion integer, Dithering integer, DitheringColoredNoise bool, DitheringEveryFrame bool, "
+      "Deband bool, DebandLevel integer, DebandFadeLevel integer, "
+      "SharpenEdges bool, SharpenEdgesStrength float, CrispenEdges bool, CrispenEdgesStrength float, ThinEdges bool, ThinEdgesStrength float, EnhanceDetail bool, EnhanceDetailStrength float, "
+      "UpRefSharpenEdges bool, UpRefSharpenEdgesStrength float, UpRefCrispenEdges bool, UpRefCrispenEdgesStrength float, UpRefThinEdges bool, UpRefThinEdgesStrength float, UpRefEnhanceDetail bool, UpRefEnhanceDetailStrength float, "
+      "LumaSharpen bool, LumaSharpenStrength float, AdaptiveSharpen bool, AdaptiveSharpenStrength float, "
+      "NoSmallScaling integer, MoveSubs integer, DetectBars bool, ArChange integer, QuickArChange interger, ShiftImage integer, DontCropSubs integer, CleanBorders integer, ReduceBigBars integer, CropSmallBars bool, CropBars bool, "
+      "UpRefLumaSharpen bool, UpRefLumaSharpenStrength float, UpRefAdaptiveSharpen bool, UpRefAdaptiveSharpenStrength float, SuperRes bool, SuperResStrength float, "
+      "SuperResLinear bool, RefineOnce bool"
+      ")\n");
+
+    m_pDS->exec("INSERT INTO madvrSettings_new (file, Resolution, TvShowName, "
+      "ChromaUpscaling, ChromaAntiRing, ChromaSuperRes, ChromaSuperResPasses, ChromaSuperResStrength, ChromaSuperResSoftness, "
+      "ImageUpscaling, ImageUpAntiRing, ImageUpLinear, "
+      "ImageDownscaling, ImageDownAntiRing, ImageDownLinear, "
+      "ImageDoubleLuma, ImageDoubleChroma, ImageQuadrupleLuma, ImageQuadrupleChroma, "
+      "ImageDoubleLumaFactor, ImageDoubleChromaFactor, ImageQuadrupleLumaFactor, ImageQuadrupleChromaFactor, "
+      "DeintActive, DeintForce, DeintLookPixels, "
+      "SmoothMotion, Dithering, DitheringColoredNoise, DitheringEveryFrame, "
+      "Deband, DebandLevel, DebandFadeLevel, "
+      "LumaSharpen, LumaSharpenStrength, AdaptiveSharpen, AdaptiveSharpenStrength, "
+      "NoSmallScaling, MoveSubs, DetectBars, ArChange, QuickArChange, ShiftImage, DontCropSubs, CleanBorders, ReduceBigBars, CropSmallBars, CropBars, "
+      "UpRefLumaSharpen, UpRefLumaSharpenStrength, UpRefAdaptiveSharpen, UpRefAdaptiveSharpenStrength, SuperRes, SuperResStrength, "
+      "SuperResLinear, RefineOnce"
+      ") SELECT " 
+      "file, Resolution, TvShowName, "
+      "ChromaUpscaling, ChromaAntiRing, ChromaSuperRes, ChromaSuperResPasses, ChromaSuperResStrength, ChromaSuperResSoftness, "
+      "ImageUpscaling, ImageUpAntiRing, ImageUpLinear, "
+      "ImageDownscaling, ImageDownAntiRing, ImageDownLinear, "
+      "ImageDoubleLuma, ImageDoubleChroma, ImageQuadrupleLuma, ImageQuadrupleChroma, "
+      "ImageDoubleLumaFactor, ImageDoubleChromaFactor, ImageQuadrupleLumaFactor, ImageQuadrupleChromaFactor, "
+      "DeintActive, DeintForce, DeintLookPixels, "
+      "SmoothMotion, Dithering, DitheringColoredNoise, DitheringEveryFrame, "
+      "Deband, DebandLevel, DebandFadeLevel, "
+      "LumaSharpen, LumaSharpenStrength, AdaptiveSharpen, AdaptiveSharpenStrength, "
+      "NoSmallScaling, MoveSubs, DetectBars, ArChange, QuickArChange, ShiftImage, DontCropSubs, CleanBorders, ReduceBigBars, CropSmallBars, CropBars, "
+      "UpRefLumaSharpen, UpRefLumaSharpenStrength, UpRefAdaptiveSharpen, UpRefAdaptiveSharpenStrength, SuperRes, SuperResStrength, "
+      "SuperResLinear, RefineOnce "
+      "FROM madvrSettings" );
+
+    m_pDS->exec("DROP TABLE madvrSettings");
+    m_pDS->exec("ALTER TABLE madvrSettings_new RENAME TO madvrSettings");
+
     m_pDS->query("SELECT * FROM madvrSettings");
     if (m_pDS->num_rows() > 0)
     {
       m_pDS->close();
-      m_pDS->exec("UPDATE madvrSettings SET DetectBars=0, ArChange=-1, QuickArChange=-1, ShiftImage=-1, DontCropSubs=-1, CleanBorders=-1, ReduceBigBars=-1, CropSmallBars=0, CropBars=0");
+      m_pDS->exec("UPDATE madvrSettings SET DetectBars=0, ArChange=-1, QuickArChange=-1, ShiftImage=-1, DontCropSubs=-1, CleanBorders=-1, ReduceBigBars=-1, CropSmallBars=0, CropBars=0, "
+        "SharpenEdges=0, SharpenEdgesStrength=1.0, CrispenEdges=0, CrispenEdgesStrength=1.0, ThinEdges=0, ThinEdgesStrength=1.0, EnhanceDetail=0, EnhanceDetailStrength=1.0, "
+        "UpRefSharpenEdges=0, UpRefSharpenEdgesStrength=1.0, UpRefCrispenEdges=0, UpRefCrispenEdgesStrength=1.0, UpRefThinEdges=0, UpRefThinEdgesStrength=1.0, UpRefEnhanceDetail=0, UpRefEnhanceDetailStrength=1.0"
+        );
     }
 
+    //zoom control
     m_pDS->exec("ALTER TABLE madvrDefResSettings ADD DetectBars bool");
     m_pDS->exec("ALTER TABLE madvrDefResSettings ADD ArChange integer");
     m_pDS->exec("ALTER TABLE madvrDefResSettings ADD QuickArChange integer");
@@ -225,11 +282,62 @@ void CDSPlayerDatabase::UpdateTables(int version)
     m_pDS->exec("ALTER TABLE madvrDefResSettings ADD CropSmallBars bool");
     m_pDS->exec("ALTER TABLE madvrDefResSettings ADD CropBars bool");
 
+    //sharp
+    m_pDS->exec("CREATE TABLE madvrDefResSettings_new ( Resolution integer, ResolutionInternal integer, TvShowName txt, "
+      "ChromaUpscaling integer, ChromaAntiRing bool, ChromaSuperRes bool, ChromaSuperResPasses integer, ChromaSuperResStrength float, ChromaSuperResSoftness float, ImageUpscaling integer, ImageUpAntiRing bool, ImageUpLinear bool, ImageDownscaling integer, ImageDownAntiRing bool, ImageDownLinear bool, "
+      "ImageDoubleLuma integer, ImageDoubleChroma integer, ImageQuadrupleLuma integer, ImageQuadrupleChroma integer, "
+      "ImageDoubleLumaFactor integer, ImageDoubleChromaFactor integer, ImageQuadrupleLumaFactor integer, ImageQuadrupleChromaFactor integer, "
+      "DeintActive integer, DeintForce interger, DeintLookPixels bool, "
+      "SmoothMotion integer, Dithering integer, DitheringColoredNoise bool, DitheringEveryFrame bool, "
+      "Deband bool, DebandLevel integer, DebandFadeLevel integer, "
+      "SharpenEdges bool, SharpenEdgesStrength float, CrispenEdges bool, CrispenEdgesStrength float, ThinEdges bool, ThinEdgesStrength float, EnhanceDetail bool, EnhanceDetailStrength float, "
+      "UpRefSharpenEdges bool, UpRefSharpenEdgesStrength float, UpRefCrispenEdges bool, UpRefCrispenEdgesStrength float, UpRefThinEdges bool, UpRefThinEdgesStrength float, UpRefEnhanceDetail bool, UpRefEnhanceDetailStrength float, "
+      "LumaSharpen bool, LumaSharpenStrength float, AdaptiveSharpen bool, AdaptiveSharpenStrength float, "
+      "NoSmallScaling integer, MoveSubs integer, DetectBars bool, ArChange integer, QuickArChange interger, ShiftImage integer, DontCropSubs integer, CleanBorders integer, ReduceBigBars integer, CropSmallBars bool, CropBars bool, "
+      "UpRefLumaSharpen bool, UpRefLumaSharpenStrength float, UpRefAdaptiveSharpen bool, UpRefAdaptiveSharpenStrength float, SuperRes bool, SuperResStrength float, "
+      "SuperResLinear bool, RefineOnce bool"
+      ")\n");
+
+    m_pDS->exec("INSERT INTO madvrDefResSettings_new (Resolution, ResolutionInternal, TvShowName, "
+      "ChromaUpscaling, ChromaAntiRing, ChromaSuperRes, ChromaSuperResPasses, ChromaSuperResStrength, ChromaSuperResSoftness, "
+      "ImageUpscaling, ImageUpAntiRing, ImageUpLinear, "
+      "ImageDownscaling, ImageDownAntiRing, ImageDownLinear, "
+      "ImageDoubleLuma, ImageDoubleChroma, ImageQuadrupleLuma, ImageQuadrupleChroma, "
+      "ImageDoubleLumaFactor, ImageDoubleChromaFactor, ImageQuadrupleLumaFactor, ImageQuadrupleChromaFactor, "
+      "DeintActive, DeintForce, DeintLookPixels, "
+      "SmoothMotion, Dithering, DitheringColoredNoise, DitheringEveryFrame, "
+      "Deband, DebandLevel, DebandFadeLevel, "
+      "LumaSharpen, LumaSharpenStrength, AdaptiveSharpen, AdaptiveSharpenStrength, "
+      "NoSmallScaling, MoveSubs, DetectBars, ArChange, QuickArChange, ShiftImage, DontCropSubs, CleanBorders, ReduceBigBars, CropSmallBars, CropBars, "
+      "UpRefLumaSharpen, UpRefLumaSharpenStrength, UpRefAdaptiveSharpen, UpRefAdaptiveSharpenStrength, SuperRes, SuperResStrength, "
+      "SuperResLinear, RefineOnce"
+      ") SELECT "
+      "Resolution, ResolutionInternal, TvShowName, "
+      "ChromaUpscaling, ChromaAntiRing, ChromaSuperRes, ChromaSuperResPasses, ChromaSuperResStrength, ChromaSuperResSoftness, "
+      "ImageUpscaling, ImageUpAntiRing, ImageUpLinear, "
+      "ImageDownscaling, ImageDownAntiRing, ImageDownLinear, "
+      "ImageDoubleLuma, ImageDoubleChroma, ImageQuadrupleLuma, ImageQuadrupleChroma, "
+      "ImageDoubleLumaFactor, ImageDoubleChromaFactor, ImageQuadrupleLumaFactor, ImageQuadrupleChromaFactor, "
+      "DeintActive, DeintForce, DeintLookPixels, "
+      "SmoothMotion, Dithering, DitheringColoredNoise, DitheringEveryFrame, "
+      "Deband, DebandLevel, DebandFadeLevel, "
+      "LumaSharpen, LumaSharpenStrength, AdaptiveSharpen, AdaptiveSharpenStrength, "
+      "NoSmallScaling, MoveSubs, DetectBars, ArChange, QuickArChange, ShiftImage, DontCropSubs, CleanBorders, ReduceBigBars, CropSmallBars, CropBars, "
+      "UpRefLumaSharpen, UpRefLumaSharpenStrength, UpRefAdaptiveSharpen, UpRefAdaptiveSharpenStrength, SuperRes, SuperResStrength, "
+      "SuperResLinear, RefineOnce "
+      "FROM madvrDefResSettings" );
+
+    m_pDS->exec("DROP TABLE madvrDefResSettings");
+    m_pDS->exec("ALTER TABLE madvrDefResSettings_new RENAME TO madvrDefResSettings");
+
     m_pDS->query("SELECT * FROM madvrDefResSettings");
     if (m_pDS->num_rows() > 0)
     {
       m_pDS->close();
-      m_pDS->exec("UPDATE madvrDefResSettings SET DetectBars=0, ArChange=-1, QuickArChange=-1, ShiftImage=-1, DontCropSubs=-1, CleanBorders=-1, ReduceBigBars=-1, CropSmallBars=0, CropBars=0");
+      m_pDS->exec("UPDATE madvrDefResSettings SET DetectBars=0, ArChange=-1, QuickArChange=-1, ShiftImage=-1, DontCropSubs=-1, CleanBorders=-1, ReduceBigBars=-1, CropSmallBars=0, CropBars=0, "
+        "SharpenEdges=0, SharpenEdgesStrength=1.0, CrispenEdges=0, CrispenEdgesStrength=1.0, ThinEdges=0, ThinEdgesStrength=1.0, EnhanceDetail=0, EnhanceDetailStrength=1.0, "
+        "UpRefSharpenEdges=0, UpRefSharpenEdgesStrength=1.0, UpRefCrispenEdges=0, UpRefCrispenEdgesStrength=1.0, UpRefThinEdges=0, UpRefThinEdgesStrength=1.0, UpRefEnhanceDetail=0, UpRefEnhanceDetailStrength=1.0"
+        );
     }
   }
 }
@@ -393,12 +501,16 @@ bool CDSPlayerDatabase::GetDefResMadvrSettings(int resolution, std::string tvSho
       settings.m_debandLevel = m_pDS->fv("DebandLevel").get_asInt();
       settings.m_debandFadeLevel = m_pDS->fv("DebandFadeLevel").get_asInt();
 
-      settings.m_fineSharp = m_pDS->fv("FineSharp").get_asBool();
-      settings.m_fineSharpStrength = m_pDS->fv("FineSharpStrength").get_asFloat();
+      settings.m_sharpenEdges = m_pDS->fv("SharpenEdges").get_asBool();
+      settings.m_sharpenEdgesStrength = m_pDS->fv("SharpenEdgesStrength").get_asFloat();
+      settings.m_crispenEdges = m_pDS->fv("CrispenEdges").get_asBool();
+      settings.m_crispenEdgesStrength = m_pDS->fv("CrispenEdgesStrength").get_asFloat();
+      settings.m_thinEdges = m_pDS->fv("ThinEdges").get_asBool();
+      settings.m_thinEdgesStrength = m_pDS->fv("ThinEdgesStrength").get_asFloat();
+      settings.m_enhanceDetail = m_pDS->fv("EnhanceDetail").get_asBool();
+      settings.m_enhanceDetailStrength = m_pDS->fv("EnhanceDetailStrength").get_asFloat();
       settings.m_lumaSharpen = m_pDS->fv("LumaSharpen").get_asBool();
       settings.m_lumaSharpenStrength = m_pDS->fv("LumaSharpenStrength").get_asFloat();
-      settings.m_lumaSharpenClamp = m_pDS->fv("LumaSharpenClamp").get_asFloat();
-      settings.m_lumaSharpenRadius = m_pDS->fv("LumaSharpenRadius").get_asFloat();
       settings.m_adaptiveSharpen = m_pDS->fv("AdaptiveSharpen").get_asBool();
       settings.m_adaptiveSharpenStrength = m_pDS->fv("AdaptiveSharpenStrength").get_asFloat();
 
@@ -414,22 +526,23 @@ bool CDSPlayerDatabase::GetDefResMadvrSettings(int resolution, std::string tvSho
       settings.m_cropSmallBars = m_pDS->fv("CropSmallBars").get_asBool();
       settings.m_cropBars = m_pDS->fv("CropBars").get_asBool();
 
-      settings.m_UpRefFineSharp = m_pDS->fv("UpRefFineSharp").get_asBool();
-      settings.m_UpRefFineSharpStrength = m_pDS->fv("UpRefFineSharpStrength").get_asFloat();
+      settings.m_UpRefSharpenEdges = m_pDS->fv("UpRefSharpenEdges").get_asBool();
+      settings.m_UpRefSharpenEdgesStrength = m_pDS->fv("UpRefSharpenEdgesStrength").get_asFloat();
+      settings.m_UpRefCrispenEdges = m_pDS->fv("UpRefCrispenEdges").get_asBool();
+      settings.m_UpRefCrispenEdgesStrength = m_pDS->fv("UpRefCrispenEdgesStrength").get_asFloat();
+      settings.m_UpRefThinEdges = m_pDS->fv("UpRefThinEdges").get_asBool();
+      settings.m_UpRefThinEdgesStrength = m_pDS->fv("UpRefThinEdgesStrength").get_asFloat();
+      settings.m_UpRefEnhanceDetail = m_pDS->fv("UpRefEnhanceDetail").get_asBool();
+      settings.m_UpRefEnhanceDetailStrength = m_pDS->fv("UpRefEnhanceDetailStrength").get_asFloat();
       settings.m_UpRefLumaSharpen = m_pDS->fv("UpRefLumaSharpen").get_asBool();
       settings.m_UpRefLumaSharpenStrength = m_pDS->fv("UpRefLumaSharpenStrength").get_asFloat();
-      settings.m_UpRefLumaSharpenClamp = m_pDS->fv("UpRefLumaSharpenClamp").get_asFloat();
-      settings.m_UpRefLumaSharpenRadius = m_pDS->fv("UpRefLumaSharpenRadius").get_asFloat();
       settings.m_UpRefAdaptiveSharpen = m_pDS->fv("UpRefAdaptiveSharpen").get_asBool();
       settings.m_UpRefAdaptiveSharpenStrength = m_pDS->fv("UpRefAdaptiveSharpenStrength").get_asFloat();
       settings.m_superRes = m_pDS->fv("SuperRes").get_asBool();
       settings.m_superResStrength = m_pDS->fv("SuperResStrength").get_asFloat();
-      settings.m_superResSharpness = m_pDS->fv("SuperResSharpness").get_asFloat();
-      settings.m_superResRadius = m_pDS->fv("SuperResRadius").get_asFloat();
 
       settings.m_superResLinear = m_pDS->fv("SuperResLinear").get_asBool();
       settings.m_refineOnce = m_pDS->fv("RefineOnce").get_asBool();
-      settings.m_superResFirst = m_pDS->fv("SuperResFirst").get_asBool();
 
       m_pDS->close();
       return true;
@@ -495,12 +608,16 @@ bool CDSPlayerDatabase::GetVideoSettings(const CStdString &strFilenameAndPath, C
       settings.m_debandLevel = m_pDS->fv("DebandLevel").get_asInt();
       settings.m_debandFadeLevel = m_pDS->fv("DebandFadeLevel").get_asInt();
 
-      settings.m_fineSharp = m_pDS->fv("FineSharp").get_asBool();
-      settings.m_fineSharpStrength = m_pDS->fv("FineSharpStrength").get_asFloat();
+      settings.m_sharpenEdges = m_pDS->fv("SharpenEdges").get_asBool();
+      settings.m_sharpenEdgesStrength = m_pDS->fv("SharpenEdgesStrength").get_asFloat();
+      settings.m_crispenEdges = m_pDS->fv("CrispenEdges").get_asBool();
+      settings.m_crispenEdgesStrength = m_pDS->fv("CrispenEdgesStrength").get_asFloat();
+      settings.m_thinEdges = m_pDS->fv("ThinEdges").get_asBool();
+      settings.m_thinEdgesStrength = m_pDS->fv("ThinEdgesStrength").get_asFloat();
+      settings.m_enhanceDetail = m_pDS->fv("EnhanceDetail").get_asBool();
+      settings.m_enhanceDetailStrength = m_pDS->fv("EnhanceDetailStrength").get_asFloat();
       settings.m_lumaSharpen = m_pDS->fv("LumaSharpen").get_asBool();
       settings.m_lumaSharpenStrength = m_pDS->fv("LumaSharpenStrength").get_asFloat();
-      settings.m_lumaSharpenClamp = m_pDS->fv("LumaSharpenClamp").get_asFloat();
-      settings.m_lumaSharpenRadius = m_pDS->fv("LumaSharpenRadius").get_asFloat();
       settings.m_adaptiveSharpen = m_pDS->fv("AdaptiveSharpen").get_asBool();
       settings.m_adaptiveSharpenStrength = m_pDS->fv("AdaptiveSharpenStrength").get_asFloat();
 
@@ -516,22 +633,23 @@ bool CDSPlayerDatabase::GetVideoSettings(const CStdString &strFilenameAndPath, C
       settings.m_cropSmallBars = m_pDS->fv("CropSmallBars").get_asBool();
       settings.m_cropBars = m_pDS->fv("CropBars").get_asBool();
 
-      settings.m_UpRefFineSharp = m_pDS->fv("UpRefFineSharp").get_asBool();
-      settings.m_UpRefFineSharpStrength = m_pDS->fv("UpRefFineSharpStrength").get_asFloat();
+      settings.m_UpRefSharpenEdges = m_pDS->fv("UpRefSharpenEdges").get_asBool();
+      settings.m_UpRefSharpenEdgesStrength = m_pDS->fv("UpRefSharpenEdgesStrength").get_asFloat();
+      settings.m_UpRefCrispenEdges = m_pDS->fv("UpRefCrispenEdges").get_asBool();
+      settings.m_UpRefCrispenEdgesStrength = m_pDS->fv("UpRefCrispenEdgesStrength").get_asFloat();
+      settings.m_UpRefThinEdges = m_pDS->fv("UpRefThinEdges").get_asBool();
+      settings.m_UpRefThinEdgesStrength = m_pDS->fv("UpRefThinEdgesStrength").get_asFloat();
+      settings.m_UpRefEnhanceDetail = m_pDS->fv("UpRefEnhanceDetail").get_asBool();
+      settings.m_UpRefEnhanceDetailStrength = m_pDS->fv("UpRefEnhanceDetailStrength").get_asFloat();
       settings.m_UpRefLumaSharpen = m_pDS->fv("UpRefLumaSharpen").get_asBool();
       settings.m_UpRefLumaSharpenStrength = m_pDS->fv("UpRefLumaSharpenStrength").get_asFloat();
-      settings.m_UpRefLumaSharpenClamp = m_pDS->fv("UpRefLumaSharpenClamp").get_asFloat();
-      settings.m_UpRefLumaSharpenRadius = m_pDS->fv("UpRefLumaSharpenRadius").get_asFloat();
       settings.m_UpRefAdaptiveSharpen = m_pDS->fv("UpRefAdaptiveSharpen").get_asBool();
       settings.m_UpRefAdaptiveSharpenStrength = m_pDS->fv("UpRefAdaptiveSharpenStrength").get_asFloat();
       settings.m_superRes = m_pDS->fv("SuperRes").get_asBool();
       settings.m_superResStrength = m_pDS->fv("SuperResStrength").get_asFloat();
-      settings.m_superResSharpness = m_pDS->fv("SuperResSharpness").get_asFloat();
-      settings.m_superResRadius = m_pDS->fv("SuperResRadius").get_asFloat();
 
       settings.m_superResLinear = m_pDS->fv("SuperResLinear").get_asBool();
       settings.m_refineOnce = m_pDS->fv("RefineOnce").get_asBool();
-      settings.m_superResFirst = m_pDS->fv("SuperResFirst").get_asBool();
 
       m_pDS->close();
       return true;
@@ -962,10 +1080,12 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
         "DeintActive=%i, DeintForce=%i, DeintLookPixels=%i, "
         "SmoothMotion=%i, Dithering=%i, DitheringColoredNoise=%i, DitheringEveryFrame=%i, "
         "Deband=%i, DebandLevel=%i, DebandFadeLevel=%i, "
-        "FineSharp=%i, FineSharpStrength=%f, LumaSharpen=%i, LumaSharpenStrength=%f, LumaSharpenClamp=%f, LumaSharpenRadius=%f, AdaptiveSharpen=%i, AdaptiveSharpenStrength=%f, "
+        "SharpenEdges=%i, SharpenEdgesStrength=%f, CrispenEdges=%i, CrispenEdgesStrength=%f, ThinEdges=%i, ThinEdgesStrength=%f, EnhanceDetail=%i, EnhanceDetailStrength=%f, "
+        "UpRefSharpenEdges=%i, UpRefSharpenEdgesStrength=%f, UpRefCrispenEdges=%i, UpRefCrispenEdgesStrength=%f, UpRefThinEdges=%i, UpRefThinEdgesStrength=%f, UpRefEnhanceDetail=%i, UpRefEnhanceDetailStrength=%f, "
+        "LumaSharpen=%i, LumaSharpenStrength=%f, AdaptiveSharpen=%i, AdaptiveSharpenStrength=%f, "
         "NoSmallScaling=%i, MoveSubs=%i, DetectBars=%i, ArChange=%i, QuickArChange=%i, ShiftImage=%i, DontCropSubs=%i, CleanBorders=%i, ReduceBigBars=%i, CropSmallBars=%i, CropBars=%i, "
-        "UpRefFineSharp=%i, UpRefFineSharpStrength=%f, UpRefLumaSharpen=%i, UpRefLumaSharpenStrength=%f, UpRefLumaSharpenClamp=%f, UpRefLumaSharpenRadius=%f, UpRefAdaptiveSharpen=%i, UpRefAdaptiveSharpenStrength=%f, SuperRes=%i, SuperResStrength=%f, SuperResSharpness=%f, SuperResRadius=%f, "
-        "SuperResLinear=%i, RefineOnce=%i, SuperResFirst=%i "
+        "UpRefLumaSharpen=%i, UpRefLumaSharpenStrength=%f, UpRefAdaptiveSharpen=%i, UpRefAdaptiveSharpenStrength=%f, SuperRes=%i, SuperResStrength=%f,"
+        "SuperResLinear=%i, RefineOnce=%i "
         "where file='%s'",
         setting.m_Resolution, setting.m_TvShowName.c_str(),
         setting.m_ChromaUpscaling,setting.m_ChromaAntiRing,setting.m_ChromaSuperRes,setting.m_ChromaSuperResPasses,setting.m_ChromaSuperResStrength,setting.m_ChromaSuperResSoftness,
@@ -976,10 +1096,12 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
         setting.m_deintactive, setting.m_deintforce, setting.m_deintlookpixels,
         setting.m_smoothMotion, setting.m_dithering, setting.m_ditheringColoredNoise, setting.m_ditheringEveryFrame,
         setting.m_deband, setting.m_debandLevel, setting.m_debandFadeLevel, 
-        setting.m_fineSharp, setting.m_fineSharpStrength, setting.m_lumaSharpen, setting.m_lumaSharpenStrength, setting.m_lumaSharpenClamp, setting.m_lumaSharpenRadius, setting.m_adaptiveSharpen, setting.m_adaptiveSharpenStrength,
+        setting.m_sharpenEdges, setting.m_sharpenEdgesStrength, setting.m_crispenEdges, setting.m_crispenEdgesStrength, setting.m_thinEdges, setting.m_thinEdgesStrength, setting.m_enhanceDetail, setting.m_enhanceDetailStrength,
+        setting.m_UpRefSharpenEdges, setting.m_UpRefSharpenEdgesStrength, setting.m_UpRefCrispenEdges, setting.m_UpRefCrispenEdgesStrength, setting.m_UpRefThinEdges, setting.m_UpRefThinEdgesStrength, setting.m_UpRefEnhanceDetail, setting.m_UpRefEnhanceDetailStrength,
+        setting.m_lumaSharpen, setting.m_lumaSharpenStrength, setting.m_adaptiveSharpen, setting.m_adaptiveSharpenStrength,
         setting.m_noSmallScaling, setting.m_moveSubs, setting.m_detectBars, setting.m_arChange, setting.m_quickArChange, setting.m_shiftImage, setting.m_dontCropSubs, setting.m_cleanBorders, setting.m_reduceBigBars, setting.m_cropSmallBars, setting.m_cropBars,  
-        setting.m_UpRefFineSharp, setting.m_UpRefFineSharpStrength, setting.m_UpRefLumaSharpen, setting.m_UpRefLumaSharpenStrength, setting.m_UpRefLumaSharpenClamp, setting.m_UpRefLumaSharpenRadius, setting.m_UpRefAdaptiveSharpen, setting.m_UpRefAdaptiveSharpenStrength, setting.m_superRes, setting.m_superResStrength, setting.m_superResSharpness, setting.m_superResRadius,
-        setting.m_superResLinear, setting.m_refineOnce, setting.m_superResFirst,
+        setting.m_UpRefLumaSharpen, setting.m_UpRefLumaSharpenStrength, setting.m_UpRefAdaptiveSharpen, setting.m_UpRefAdaptiveSharpenStrength, setting.m_superRes, setting.m_superResStrength,
+        setting.m_superResLinear, setting.m_refineOnce,
         strFilenameAndPath.c_str());
       m_pDS->exec(strSQL.c_str());
       return;   
@@ -996,12 +1118,28 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
         "DeintActive, DeintForce, DeintLookPixels, "
         "SmoothMotion, Dithering, DitheringColoredNoise, DitheringEveryFrame, "
         "Deband, DebandLevel, DebandFadeLevel, "
-        "FineSharp, FineSharpStrength, LumaSharpen, LumaSharpenStrength, LumaSharpenClamp, LumaSharpenRadius, AdaptiveSharpen, AdaptiveSharpenStrength, "
+        "SharpenEdges, SharpenEdgesStrength, CrispenEdges, CrispenEdgesStrength, ThinEdges, ThinEdgesStrength, EnhanceDetail, EnhanceDetailStrength, "
+        "UpRefSharpenEdges, UpRefSharpenEdgesStrength, UpRefCrispenEdges, UpRefCrispenEdgesStrength, UpRefThinEdges, UpRefThinEdgesStrength, UpRefEnhanceDetail, UpRefEnhanceDetailStrength, "
+        "LumaSharpen, LumaSharpenStrength, AdaptiveSharpen, AdaptiveSharpenStrength, "
         "NoSmallScaling, MoveSubs, DetectBars, ArChange, QuickArChange, ShiftImage, DontCropSubs, CleanBorders, ReduceBigBars, CropSmallBars, CropBars, "
-        "UpRefFineSharp, UpRefFineSharpStrength, UpRefLumaSharpen, UpRefLumaSharpenStrength, UpRefLumaSharpenClamp, UpRefLumaSharpenRadius, UpRefAdaptiveSharpen, UpRefAdaptiveSharpenStrength, SuperRes, SuperResStrength, SuperResSharpness, SuperResRadius, "
-        "SuperResLinear, RefineOnce, SuperResFirst"
+        "UpRefLumaSharpen, UpRefLumaSharpenStrength, UpRefAdaptiveSharpen, UpRefAdaptiveSharpenStrength, SuperRes, SuperResStrength, "
+        "SuperResLinear, RefineOnce"
         ") VALUES ";
-      strSQL += PrepareSQL("('%s',%i,'%s',%i,%i,%i,%i,%f,%f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%f,%i,%f,%f,%f,%i,%f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%f,%i,%f,%f,%f,%i,%f,%i,%f,%f,%f,%i,%i,%i)",
+      strSQL += PrepareSQL("('%s',%i,'%s',"
+        "%i,%i,%i,%i,%f,%f,"
+        "%i,%i,%i,"
+        "%i,%i,%i,"
+        "%i,%i,%i,%i,"
+        "%i,%i,%i,%i,"
+        "%i,%i,%i,"
+        "%i,%i,%i,%i,"
+        "%i,%i,%i,"
+        "%i,%f,%i,%f,%i,%f,%i,%f,"
+        "%i,%f,%i,%f,%i,%f,%i,%f,"
+        "%i,%f,%i,%f,"
+        "%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,"
+        "%i,%f,%i,%f,%i,%f,"
+        "%i,%i)",
         strFilenameAndPath.c_str(), setting.m_Resolution, setting.m_TvShowName.c_str(), setting.m_ChromaUpscaling, setting.m_ChromaAntiRing, setting.m_ChromaSuperRes, setting.m_ChromaSuperResPasses, setting.m_ChromaSuperResStrength, setting.m_ChromaSuperResSoftness,
         setting.m_ImageUpscaling, setting.m_ImageUpAntiRing, setting.m_ImageUpLinear,
         setting.m_ImageDownscaling, setting.m_ImageDownAntiRing, setting.m_ImageDownLinear,
@@ -1010,10 +1148,12 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
         setting.m_deintactive, setting.m_deintforce, setting.m_deintlookpixels,
         setting.m_smoothMotion, setting.m_dithering, setting.m_ditheringColoredNoise, setting.m_ditheringEveryFrame,
         setting.m_deband, setting.m_debandLevel, setting.m_debandFadeLevel,
-        setting.m_fineSharp, setting.m_fineSharpStrength, setting.m_lumaSharpen, setting.m_lumaSharpenStrength, setting.m_lumaSharpenClamp, setting.m_lumaSharpenRadius, setting.m_adaptiveSharpen, setting.m_adaptiveSharpenStrength,
+        setting.m_sharpenEdges, setting.m_sharpenEdgesStrength, setting.m_crispenEdges, setting.m_crispenEdgesStrength, setting.m_thinEdges, setting.m_thinEdgesStrength, setting.m_enhanceDetail, setting.m_enhanceDetailStrength,
+        setting.m_UpRefSharpenEdges, setting.m_UpRefSharpenEdgesStrength, setting.m_UpRefCrispenEdges, setting.m_UpRefCrispenEdgesStrength, setting.m_UpRefThinEdges, setting.m_UpRefThinEdgesStrength, setting.m_UpRefEnhanceDetail, setting.m_UpRefEnhanceDetailStrength,
+        setting.m_lumaSharpen, setting.m_lumaSharpenStrength, setting.m_adaptiveSharpen, setting.m_adaptiveSharpenStrength,
         setting.m_noSmallScaling, setting.m_moveSubs, setting.m_detectBars, setting.m_arChange, setting.m_quickArChange, setting.m_shiftImage, setting.m_dontCropSubs, setting.m_cleanBorders, setting.m_reduceBigBars, setting.m_cropSmallBars, setting.m_cropBars,
-        setting.m_UpRefFineSharp, setting.m_UpRefFineSharpStrength, setting.m_UpRefLumaSharpen, setting.m_UpRefLumaSharpenStrength, setting.m_UpRefLumaSharpenClamp, setting.m_UpRefLumaSharpenRadius, setting.m_UpRefAdaptiveSharpen, setting.m_UpRefAdaptiveSharpenStrength, setting.m_superRes, setting.m_superResStrength, setting.m_superResSharpness, setting.m_superResRadius,
-        setting.m_superResLinear, setting.m_refineOnce, setting.m_superResFirst
+        setting.m_UpRefLumaSharpen, setting.m_UpRefLumaSharpenStrength, setting.m_UpRefAdaptiveSharpen, setting.m_UpRefAdaptiveSharpenStrength, setting.m_superRes, setting.m_superResStrength,
+        setting.m_superResLinear, setting.m_refineOnce
         );
       m_pDS->exec(strSQL.c_str());
     }
@@ -1152,10 +1292,12 @@ void CDSPlayerDatabase::CreateVideoSettings(int resolution, int resolutionIntern
         "DeintActive=%i, DeintForce=%i, DeintLookPixels=%i, "
         "SmoothMotion=%i, Dithering=%i, DitheringColoredNoise=%i, DitheringEveryFrame=%i, "
         "Deband=%i, DebandLevel=%i, DebandFadeLevel=%i, "
-        "FineSharp=%i, FineSharpStrength=%f, LumaSharpen=%i, LumaSharpenStrength=%f, LumaSharpenClamp=%f, LumaSharpenRadius=%f, AdaptiveSharpen=%i, AdaptiveSharpenStrength=%f, "
+        "SharpenEdges=%i, SharpenEdgesStrength=%f, CrispenEdges=%i, CrispenEdgesStrength=%f, ThinEdges=%i, ThinEdgesStrength=%f, EnhanceDetail=%i, EnhanceDetailStrength=%f, "
+        "UpRefSharpenEdges=%i, UpRefSharpenEdgesStrength=%f, UpRefCrispenEdges=%i, UpRefCrispenEdgesStrength=%f, UpRefThinEdges=%i, UpRefThinEdgesStrength=%f, UpRefEnhanceDetail=%i, UpRefEnhanceDetailStrength=%f, "
+        "LumaSharpen=%i, LumaSharpenStrength=%f, AdaptiveSharpen=%i, AdaptiveSharpenStrength=%f, "
         "NoSmallScaling=%i, MoveSubs=%i, DetectBars=%i, ArChange=%i, QuickArChange=%i, ShiftImage=%i, DontCropSubs=%i, CleanBorders=%i, ReduceBigBars=%i, CropSmallBars=%i, CropBars=%i, "
-        "UpRefFineSharp=%i, UpRefFineSharpStrength=%f, UpRefLumaSharpen=%i, UpRefLumaSharpenStrength=%f, UpRefLumaSharpenClamp=%f, UpRefLumaSharpenRadius=%f, UpRefAdaptiveSharpen=%i, UpRefAdaptiveSharpenStrength=%f, SuperRes=%i, SuperResStrength=%f, SuperResSharpness=%f, SuperResRadius=%f, "
-        "SuperResLinear=%i, RefineOnce=%i, SuperResFirst=%i ",
+        "UpRefLumaSharpen=%i, UpRefLumaSharpenStrength=%f, UpRefAdaptiveSharpen=%i, UpRefAdaptiveSharpenStrength=%f, SuperRes=%i, SuperResStrength=%f,"
+        "SuperResLinear=%i, RefineOnce=%i ",
         setting.m_ChromaUpscaling, setting.m_ChromaAntiRing, setting.m_ChromaSuperRes, setting.m_ChromaSuperResPasses, setting.m_ChromaSuperResStrength, setting.m_ChromaSuperResSoftness,
         setting.m_ImageUpscaling, setting.m_ImageUpAntiRing, setting.m_ImageUpLinear,
         setting.m_ImageDownscaling, setting.m_ImageDownAntiRing, setting.m_ImageDownLinear,
@@ -1164,10 +1306,12 @@ void CDSPlayerDatabase::CreateVideoSettings(int resolution, int resolutionIntern
         setting.m_deintactive, setting.m_deintforce, setting.m_deintlookpixels,
         setting.m_smoothMotion, setting.m_dithering, setting.m_ditheringColoredNoise, setting.m_ditheringEveryFrame,
         setting.m_deband, setting.m_debandLevel, setting.m_debandFadeLevel,
-        setting.m_fineSharp, setting.m_fineSharpStrength, setting.m_lumaSharpen, setting.m_lumaSharpenStrength, setting.m_lumaSharpenClamp, setting.m_lumaSharpenRadius, setting.m_adaptiveSharpen, setting.m_adaptiveSharpenStrength,
+        setting.m_sharpenEdges, setting.m_sharpenEdgesStrength, setting.m_crispenEdges, setting.m_crispenEdgesStrength, setting.m_thinEdges, setting.m_thinEdgesStrength, setting.m_enhanceDetail, setting.m_enhanceDetailStrength,
+        setting.m_UpRefSharpenEdges, setting.m_UpRefSharpenEdgesStrength, setting.m_UpRefCrispenEdges, setting.m_UpRefCrispenEdgesStrength, setting.m_UpRefThinEdges, setting.m_UpRefThinEdgesStrength, setting.m_UpRefEnhanceDetail, setting.m_UpRefEnhanceDetailStrength,
+        setting.m_lumaSharpen, setting.m_lumaSharpenStrength, setting.m_adaptiveSharpen, setting.m_adaptiveSharpenStrength,
         setting.m_noSmallScaling, setting.m_moveSubs, setting.m_detectBars, setting.m_arChange, setting.m_quickArChange, setting.m_shiftImage, setting.m_dontCropSubs, setting.m_cleanBorders, setting.m_reduceBigBars, setting.m_cropSmallBars, setting.m_cropBars,
-        setting.m_UpRefFineSharp, setting.m_UpRefFineSharpStrength, setting.m_UpRefLumaSharpen, setting.m_UpRefLumaSharpenStrength, setting.m_UpRefLumaSharpenClamp, setting.m_UpRefLumaSharpenRadius, setting.m_UpRefAdaptiveSharpen, setting.m_UpRefAdaptiveSharpenStrength, setting.m_superRes, setting.m_superResStrength, setting.m_superResSharpness, setting.m_superResRadius,
-        setting.m_superResLinear, setting.m_refineOnce, setting.m_superResFirst
+        setting.m_UpRefLumaSharpen, setting.m_UpRefLumaSharpenStrength, setting.m_UpRefAdaptiveSharpen, setting.m_UpRefAdaptiveSharpenStrength, setting.m_superRes, setting.m_superResStrength,
+        setting.m_superResLinear, setting.m_refineOnce
         );
       
       strSQL += strWhere;
@@ -1186,13 +1330,30 @@ void CDSPlayerDatabase::CreateVideoSettings(int resolution, int resolutionIntern
         "DeintActive, DeintForce, DeintLookPixels, "
         "SmoothMotion, Dithering, DitheringColoredNoise, DitheringEveryFrame, "
         "Deband, DebandLevel, DebandFadeLevel, "
-        "FineSharp, FineSharpStrength, LumaSharpen, LumaSharpenStrength, LumaSharpenClamp, LumaSharpenRadius, AdaptiveSharpen, AdaptiveSharpenStrength, "
+        "SharpenEdges, SharpenEdgesStrength, CrispenEdges, CrispenEdgesStrength, ThinEdges, ThinEdgesStrength, EnhanceDetail, EnhanceDetailStrength, "
+        "UpRefSharpenEdges, UpRefSharpenEdgesStrength, UpRefCrispenEdges, UpRefCrispenEdgesStrength, UpRefThinEdges, UpRefThinEdgesStrength, UpRefEnhanceDetail, UpRefEnhanceDetailStrength, "
+        "LumaSharpen, LumaSharpenStrength, AdaptiveSharpen, AdaptiveSharpenStrength, "
         "NoSmallScaling, MoveSubs, DetectBars, ArChange, QuickArChange, ShiftImage, DontCropSubs, CleanBorders, ReduceBigBars, CropSmallBars, CropBars, "
-        "UpRefFineSharp, UpRefFineSharpStrength, UpRefLumaSharpen, UpRefLumaSharpenStrength, UpRefLumaSharpenClamp, UpRefLumaSharpenRadius, UpRefAdaptiveSharpen, UpRefAdaptiveSharpenStrength, SuperRes, SuperResStrength, SuperResSharpness, SuperResRadius, "
-        "SuperResLinear, RefineOnce, SuperResFirst"
-        ") VALUES ";
-      strSQL += PrepareSQL("(%i,%i,'%s',%i,%i,%i,%i,%f,%f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%f,%i,%f,%f,%f,%i,%f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%f,%i,%f,%f,%f,%i,%f,%i,%f,%f,%f,%i,%i,%i)",
-        resolution, resolutionInternal, tvShowName.c_str(), setting.m_ChromaUpscaling, setting.m_ChromaAntiRing, setting.m_ChromaSuperRes, setting.m_ChromaSuperResPasses, setting.m_ChromaSuperResStrength, setting.m_ChromaSuperResSoftness,
+        "UpRefLumaSharpen, UpRefLumaSharpenStrength, UpRefAdaptiveSharpen, UpRefAdaptiveSharpenStrength, SuperRes, SuperResStrength, "
+        "SuperResLinear, RefineOnce"
+        ") VALUES ";    
+      strSQL += PrepareSQL("(%i,%i,'%s',"   
+        "%i,%i,%i,%i,%f,%f,"
+        "%i,%i,%i,"
+        "%i,%i,%i,"
+        "%i,%i,%i,%i,"
+        "%i,%i,%i,%i,"
+        "%i,%i,%i,"
+        "%i,%i,%i,%i,"
+        "%i,%i,%i,"
+        "%i,%f,%i,%f,%i,%f,%i,%f,"
+        "%i,%f,%i,%f,%i,%f,%i,%f,"
+        "%i,%f,%i,%f,"
+        "%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,"
+        "%i,%f,%i,%f,%i,%f,"
+        "%i,%i)",
+        resolution, resolutionInternal, tvShowName.c_str(), 
+        setting.m_ChromaUpscaling, setting.m_ChromaAntiRing, setting.m_ChromaSuperRes, setting.m_ChromaSuperResPasses, setting.m_ChromaSuperResStrength, setting.m_ChromaSuperResSoftness,
         setting.m_ImageUpscaling, setting.m_ImageUpAntiRing, setting.m_ImageUpLinear,
         setting.m_ImageDownscaling, setting.m_ImageDownAntiRing, setting.m_ImageDownLinear,
         setting.m_ImageDoubleLuma, setting.m_ImageDoubleChroma, setting.m_ImageQuadrupleLuma, setting.m_ImageQuadrupleChroma,
@@ -1200,10 +1361,12 @@ void CDSPlayerDatabase::CreateVideoSettings(int resolution, int resolutionIntern
         setting.m_deintactive, setting.m_deintforce, setting.m_deintlookpixels,
         setting.m_smoothMotion, setting.m_dithering, setting.m_ditheringColoredNoise, setting.m_ditheringEveryFrame,
         setting.m_deband, setting.m_debandLevel, setting.m_debandFadeLevel,
-        setting.m_fineSharp, setting.m_fineSharpStrength, setting.m_lumaSharpen, setting.m_lumaSharpenStrength, setting.m_lumaSharpenClamp, setting.m_lumaSharpenRadius, setting.m_adaptiveSharpen, setting.m_adaptiveSharpenStrength,
+        setting.m_sharpenEdges, setting.m_sharpenEdgesStrength, setting.m_crispenEdges, setting.m_crispenEdgesStrength, setting.m_thinEdges, setting.m_thinEdgesStrength, setting.m_enhanceDetail, setting.m_enhanceDetailStrength,
+        setting.m_UpRefSharpenEdges, setting.m_UpRefSharpenEdgesStrength, setting.m_UpRefCrispenEdges, setting.m_UpRefCrispenEdgesStrength, setting.m_UpRefThinEdges, setting.m_UpRefThinEdgesStrength, setting.m_UpRefEnhanceDetail, setting.m_UpRefEnhanceDetailStrength,
+        setting.m_lumaSharpen, setting.m_lumaSharpenStrength, setting.m_adaptiveSharpen, setting.m_adaptiveSharpenStrength,
         setting.m_noSmallScaling, setting.m_moveSubs, setting.m_detectBars, setting.m_arChange, setting.m_quickArChange, setting.m_shiftImage, setting.m_dontCropSubs, setting.m_cleanBorders, setting.m_reduceBigBars, setting.m_cropSmallBars, setting.m_cropBars,
-        setting.m_UpRefFineSharp, setting.m_UpRefFineSharpStrength, setting.m_UpRefLumaSharpen, setting.m_UpRefLumaSharpenStrength, setting.m_UpRefLumaSharpenClamp, setting.m_UpRefLumaSharpenRadius, setting.m_UpRefAdaptiveSharpen, setting.m_UpRefAdaptiveSharpenStrength, setting.m_superRes, setting.m_superResStrength, setting.m_superResSharpness, setting.m_superResRadius,
-        setting.m_superResLinear, setting.m_refineOnce, setting.m_superResFirst
+        setting.m_UpRefLumaSharpen, setting.m_UpRefLumaSharpenStrength, setting.m_UpRefAdaptiveSharpen, setting.m_UpRefAdaptiveSharpenStrength, setting.m_superRes, setting.m_superResStrength,
+        setting.m_superResLinear, setting.m_refineOnce
         );
       m_pDS->exec(strSQL.c_str());
     }

@@ -76,14 +76,18 @@ CMadvrSettings::CMadvrSettings()
   m_debandLevel = MADVR_DEFAULT_DEBAND_LEVEL;
   m_debandFadeLevel = MADVR_DEFAULT_DEBAND_FADELEVEL;
 
-  m_fineSharp = false;
-  m_fineSharpStrength = MADVR_DEFAULT_FINESHARPSTRENGTH;
+  m_sharpenEdges = false;
+  m_sharpenEdgesStrength = MADVR_DEFAULT_SHARPENEDGES;
+  m_crispenEdges = false;
+  m_crispenEdgesStrength = MADVR_DEFAULT_CRISPENEDGES;
+  m_thinEdges = false;
+  m_thinEdgesStrength = MADVR_DEFAULT_THINEDGES;
+  m_enhanceDetail = false;
+  m_enhanceDetailStrength = MADVR_DEFAULT_ENHANCEDETAIL;
   m_lumaSharpen = false;
-  m_lumaSharpenStrength = MADVR_DEFAULT_LUMASHARPENSTRENGTH;
-  m_lumaSharpenClamp = MADVR_DEFAULT_LUMASHARPENCLAMP;
-  m_lumaSharpenRadius = MADVR_DEFAULT_LUMASHARPENRADIUS;
+  m_lumaSharpenStrength = MADVR_DEFAULT_LUMASHARPEN;
   m_adaptiveSharpen = false;
-  m_adaptiveSharpenStrength = MADVR_DEFAULT_ADAPTIVESHARPENSTRENGTH;
+  m_adaptiveSharpenStrength = MADVR_DEFAULT_ADAPTIVESHARPEN;
 
   m_noSmallScaling = -1;
   m_moveSubs = 0;
@@ -97,23 +101,24 @@ CMadvrSettings::CMadvrSettings()
   m_cropSmallBars = false;
   m_cropBars = false;
 
-  m_UpRefFineSharp = false;
-  m_UpRefFineSharpStrength = MADVR_DEFAULT_UPFINESHARPSTRENGTH;
+
+  m_UpRefSharpenEdges = false;
+  m_UpRefSharpenEdgesStrength = MADVR_DEFAULT_UPSHARPENEDGES;
+  m_UpRefCrispenEdges = false;
+  m_UpRefCrispenEdgesStrength = MADVR_DEFAULT_UPCRISPENEDGES;
+  m_UpRefThinEdges = false;
+  m_UpRefThinEdgesStrength = MADVR_DEFAULT_UPTHINEDGES;
+  m_UpRefEnhanceDetail = false;
+  m_UpRefEnhanceDetailStrength = MADVR_DEFAULT_UPENHANCEDETAIL;
   m_UpRefLumaSharpen = false;
-  m_UpRefLumaSharpenStrength = MADVR_DEFAULT_UPLUMASHARPENSTRENGTH;
-  m_UpRefLumaSharpenClamp = MADVR_DEFAULT_UPLUMASHARPENCLAMP;
-  m_UpRefLumaSharpenRadius = MADVR_DEFAULT_UPLUMASHARPENRADIUS;
+  m_UpRefLumaSharpenStrength = MADVR_DEFAULT_UPLUMASHARPEN;
   m_UpRefAdaptiveSharpen = false;
-  m_UpRefAdaptiveSharpenStrength = MADVR_DEFAULT_UPADAPTIVESHARPENSTRENGTH;
+  m_UpRefAdaptiveSharpenStrength = MADVR_DEFAULT_UPADAPTIVESHARPEN;
   m_superRes = false;
-  m_superResStrength = MADVR_DEFAULT_SUPERRESSTRENGTH;
-  m_superResSharpness = MADVR_DEFAULT_SUPERRESSHARPNESS;
-  m_superResRadius = MADVR_DEFAULT_SUPERRESRADIUS;
+  m_superResStrength = MADVR_DEFAULT_SUPERRES;
   m_superResLinear = false;
 
-
   m_refineOnce = false;
-  m_superResFirst = false;
 }
 
 bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
@@ -157,12 +162,16 @@ bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
   if (m_debandLevel != right.m_debandLevel) return true;
   if (m_debandFadeLevel != right.m_debandFadeLevel) return true;
 
-  if (m_fineSharp != right.m_fineSharp) return true;
-  if (m_fineSharpStrength != right.m_fineSharpStrength) return true;
+  if (m_sharpenEdges != right.m_sharpenEdges) return true;
+  if (m_sharpenEdgesStrength != right.m_sharpenEdgesStrength) return true;
+  if (m_crispenEdges != right.m_crispenEdges) return true;
+  if (m_crispenEdgesStrength != right.m_crispenEdgesStrength) return true;
+  if (m_thinEdges != right.m_thinEdges) return true;
+  if (m_thinEdgesStrength != right.m_thinEdgesStrength) return true;
+  if (m_enhanceDetail != right.m_enhanceDetail) return true;
+  if (m_enhanceDetailStrength != right.m_enhanceDetailStrength) return true;
   if (m_lumaSharpen != right.m_lumaSharpen) return true;
   if (m_lumaSharpenStrength != right.m_lumaSharpenStrength) return true;
-  if (m_lumaSharpenClamp != right.m_lumaSharpenClamp) return true;
-  if (m_lumaSharpenRadius != right.m_lumaSharpenRadius) return true;
   if (m_adaptiveSharpen != right.m_adaptiveSharpen) return true;
   if (m_adaptiveSharpenStrength != right.m_adaptiveSharpenStrength) return true;
 
@@ -178,21 +187,23 @@ bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
   if (m_cropSmallBars != right.m_cropSmallBars) return true;
   if (m_cropBars != right.m_cropBars) return true;
 
-  if (m_UpRefFineSharp != right.m_UpRefFineSharp) return true;
-  if (m_UpRefFineSharpStrength != right.m_UpRefFineSharpStrength) return true;
+  if (m_UpRefSharpenEdges != right.m_UpRefSharpenEdges) return true;
+  if (m_UpRefSharpenEdgesStrength != right.m_UpRefSharpenEdgesStrength) return true;
+  if (m_UpRefCrispenEdges != right.m_UpRefCrispenEdges) return true;
+  if (m_UpRefCrispenEdgesStrength != right.m_UpRefCrispenEdgesStrength) return true;
+  if (m_UpRefThinEdges != right.m_UpRefThinEdges) return true;
+  if (m_UpRefThinEdgesStrength != right.m_UpRefThinEdgesStrength) return true;
+  if (m_UpRefEnhanceDetail != right.m_UpRefEnhanceDetail) return true;
+  if (m_UpRefEnhanceDetailStrength != right.m_UpRefEnhanceDetailStrength) return true;
   if (m_UpRefLumaSharpen != right.m_UpRefLumaSharpen) return true;
   if (m_UpRefLumaSharpenStrength != right.m_UpRefLumaSharpenStrength) return true;
-  if (m_UpRefLumaSharpenClamp != right.m_UpRefLumaSharpenClamp) return true;
-  if (m_UpRefLumaSharpenRadius != right.m_UpRefLumaSharpenRadius) return true;
   if (m_UpRefAdaptiveSharpen != right.m_UpRefAdaptiveSharpen) return true;
   if (m_UpRefAdaptiveSharpenStrength != right.m_UpRefAdaptiveSharpenStrength) return true;
   if (m_superRes != right.m_superRes) return true;
   if (m_superResStrength != right.m_superResStrength) return true;
-  if (m_superResSharpness != right.m_superResSharpness) return true;
-  if (m_superResRadius != right.m_superResRadius) return true;
 
   if (m_refineOnce != right.m_refineOnce) return true;
-  if (m_superResFirst != right.m_superResFirst) return true;
+
 
   return false;
 }

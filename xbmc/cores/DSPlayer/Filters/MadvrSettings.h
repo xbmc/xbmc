@@ -80,12 +80,17 @@ public:
   int m_debandLevel;
   int m_debandFadeLevel;
 
-  bool m_fineSharp;
-  float m_fineSharpStrength;
+  bool m_sharpenEdges;
+  float m_sharpenEdgesStrength;
+  bool m_crispenEdges;
+  float m_crispenEdgesStrength;
+  bool m_thinEdges;
+  float m_thinEdgesStrength;
+  bool m_enhanceDetail;
+  float m_enhanceDetailStrength;
+
   bool m_lumaSharpen;
   float m_lumaSharpenStrength;
-  float m_lumaSharpenClamp;
-  float m_lumaSharpenRadius;
   bool m_adaptiveSharpen;
   float m_adaptiveSharpenStrength;
 
@@ -105,22 +110,24 @@ public:
 
   // Upscale Refinement
 
-  bool m_UpRefFineSharp;
-  float m_UpRefFineSharpStrength;
+  bool m_UpRefSharpenEdges;
+  float m_UpRefSharpenEdgesStrength;
+  bool m_UpRefCrispenEdges;
+  float m_UpRefCrispenEdgesStrength;
+  bool m_UpRefThinEdges;
+  float m_UpRefThinEdgesStrength;
+  bool m_UpRefEnhanceDetail;
+  float m_UpRefEnhanceDetailStrength;
+
   bool m_UpRefLumaSharpen;
   float m_UpRefLumaSharpenStrength;
-  float m_UpRefLumaSharpenClamp;
-  float m_UpRefLumaSharpenRadius;
   bool m_UpRefAdaptiveSharpen;
   float m_UpRefAdaptiveSharpenStrength;
   bool m_superRes;
   float m_superResStrength;
-  float m_superResSharpness;
-  float m_superResRadius;
   bool m_superResLinear;
 
   bool m_refineOnce;
-  bool m_superResFirst;
 
 private:
 };

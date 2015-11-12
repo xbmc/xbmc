@@ -736,12 +736,17 @@ void CMadvrSettingsManager::RestoreSettings()
   SetBool("dynamicDither", madvrSettings.m_ditheringEveryFrame);
   SetSmoothmotion("", madvrSettings.m_smoothMotion);
 
-  SetBool("fineSharp", madvrSettings.m_fineSharp);
-  SetFloat("fineSharpStrength", madvrSettings.m_fineSharpStrength, 10);
+  SetBool("sharpenEdges", madvrSettings.m_sharpenEdges);
+  SetFloat("sharpenEdgeStrength", madvrSettings.m_sharpenEdgesStrength, 10);
+  SetBool("crispenEdges", madvrSettings.m_crispenEdges);
+  SetFloat("crispenEdgesStrength", madvrSettings.m_crispenEdgesStrength, 10);
+  SetBool("thinEdges", madvrSettings.m_thinEdges);
+  SetFloat("thinEdgesStrength", madvrSettings.m_thinEdgesStrength, 10);
+  SetBool("enhanceDetail", madvrSettings.m_enhanceDetail);
+  SetFloat("enhanceDetailStrength", madvrSettings.m_enhanceDetailStrength, 10);
+
   SetBool("lumaSharpen", madvrSettings.m_lumaSharpen);
   SetFloat("lumaSharpenStrength", madvrSettings.m_lumaSharpenStrength);
-  SetFloat("lumaSharpenClamp", madvrSettings.m_lumaSharpenClamp,1000);
-  SetFloat("lumaSharpenRadius", madvrSettings.m_lumaSharpenRadius,10);
   SetBool("adaptiveSharpen", madvrSettings.m_adaptiveSharpen);
   SetFloat("adaptiveSharpenStrength", madvrSettings.m_adaptiveSharpenStrength, 10);
 
@@ -757,23 +762,25 @@ void CMadvrSettingsManager::RestoreSettings()
   SetBool("cropSmallBars", madvrSettings.m_cropSmallBars);
   SetBool("cropBars", madvrSettings.m_cropBars);
 
-  SetBool("upRefFineSharp", madvrSettings.m_UpRefFineSharp);
-  SetFloat("upRefFineSharpStrength", madvrSettings.m_UpRefFineSharpStrength, 10);
+  SetBool("upRefSharpenEdges", madvrSettings.m_UpRefSharpenEdges);
+  SetFloat("upRefSharpenEdgeStrength", madvrSettings.m_UpRefSharpenEdgesStrength, 10);
+  SetBool("upRefCrispenEdges", madvrSettings.m_UpRefCrispenEdges);
+  SetFloat("upRefCrispenEdgesStrength", madvrSettings.m_UpRefCrispenEdgesStrength, 10);
+  SetBool("upRefThinEdges", madvrSettings.m_UpRefThinEdges);
+  SetFloat("upRefThinEdgesStrength", madvrSettings.m_UpRefThinEdgesStrength, 10);
+  SetBool("upRefEnhanceDetail", madvrSettings.m_UpRefEnhanceDetail);
+  SetFloat("upREfenhanceDetailStrength", madvrSettings.m_UpRefEnhanceDetailStrength, 10);
+
   SetBool("upRefLumaSharpen", madvrSettings.m_UpRefLumaSharpen);
   SetFloat("upRefLumaSharpenStrength", madvrSettings.m_UpRefLumaSharpenStrength);
-  SetFloat("upRefLumaSharpenClamp", madvrSettings.m_UpRefLumaSharpenClamp,1000);
-  SetFloat("upRefLumaSharpenRadius", madvrSettings.m_UpRefLumaSharpenRadius,10);
   SetBool("upRefAdaptiveSharpen", madvrSettings.m_UpRefAdaptiveSharpen);
   SetFloat("upRefAdaptiveSharpenStrength", madvrSettings.m_UpRefAdaptiveSharpenStrength, 10);
 
   SetBool("superRes", madvrSettings.m_superRes);
   SetFloat("superResStrength", madvrSettings.m_superResStrength, 1);
-  SetFloat("superResSharpness", madvrSettings.m_superResSharpness, 1);
-  SetFloat("superResRadius", madvrSettings.m_superResRadius);
   SetBool("superResLinear", madvrSettings.m_superResLinear);
 
   SetBool("refineOnce", !madvrSettings.m_refineOnce);
-  SetBool("superResFirst", madvrSettings.m_superResFirst);
 }
 
 void CMadvrSettingsManager::LoadSettings(MADVR_LOAD_TYPE type)
@@ -792,12 +799,17 @@ void CMadvrSettingsManager::LoadSettings(MADVR_LOAD_TYPE type)
     GetInt("debandLevel", &madvrSettings.m_debandLevel);
     GetInt("debandFadeLevel", &madvrSettings.m_debandFadeLevel);
 
-    GetBool("fineSharp", &madvrSettings.m_fineSharp);
-    GetFloat("fineSharpStrength", &madvrSettings.m_fineSharpStrength, 10);
+    GetBool("sharpenEdges", &madvrSettings.m_sharpenEdges);
+    GetFloat("sharpenEdgeStrength", &madvrSettings.m_sharpenEdgesStrength, 10);
+    GetBool("crispenEdges", &madvrSettings.m_crispenEdges);
+    GetFloat("crispenEdgesStrength", &madvrSettings.m_crispenEdgesStrength, 10);
+    GetBool("thinEdges", &madvrSettings.m_thinEdges);
+    GetFloat("thinEdgesStrength", &madvrSettings.m_thinEdgesStrength, 10);
+    GetBool("enhanceDetail", &madvrSettings.m_enhanceDetail);
+    GetFloat("enhanceDetailStrength", &madvrSettings.m_enhanceDetailStrength, 10);
+
     GetBool("lumaSharpen", &madvrSettings.m_lumaSharpen);
     GetFloat("lumaSharpenStrength", &madvrSettings.m_lumaSharpenStrength);
-    GetFloat("lumaSharpenClamp", &madvrSettings.m_lumaSharpenClamp, 1000);
-    GetFloat("lumaSharpenRadius", &madvrSettings.m_lumaSharpenRadius, 10);
     GetBool("adaptiveSharpen", &madvrSettings.m_adaptiveSharpen);
     GetFloat("adaptiveSharpenStrength", &madvrSettings.m_adaptiveSharpenStrength, 10);
 
@@ -846,24 +858,26 @@ void CMadvrSettingsManager::LoadSettings(MADVR_LOAD_TYPE type)
     GetDoubling("QC", &madvrSettings.m_ImageQuadrupleChroma);
     GetStr("nnediQCScalingFactor", &madvrSettings.m_ImageQuadrupleChromaFactor,MADVR_LIST_QUADRUPLEFACTOR);
 
-    GetBool("upRefFineSharp", &madvrSettings.m_UpRefFineSharp);
-    GetFloat("upRefFineSharpStrength", &madvrSettings.m_UpRefFineSharpStrength, 10);
+    GetBool("upRefSharpenEdges", &madvrSettings.m_UpRefSharpenEdges);
+    GetFloat("upRefSharpenEdgeStrength", &madvrSettings.m_UpRefSharpenEdgesStrength, 10);
+    GetBool("upRefCrispenEdges", &madvrSettings.m_UpRefCrispenEdges);
+    GetFloat("upRefCrispenEdgesStrength", &madvrSettings.m_UpRefCrispenEdgesStrength, 10);
+    GetBool("upRefThinEdges", &madvrSettings.m_UpRefThinEdges);
+    GetFloat("upRefThinEdgesStrength", &madvrSettings.m_UpRefThinEdgesStrength, 10);
+    GetBool("upRefEnhanceDetail", &madvrSettings.m_UpRefEnhanceDetail);
+    GetFloat("upREfenhanceDetailStrength", &madvrSettings.m_UpRefEnhanceDetailStrength, 10);
+
     GetBool("upRefLumaSharpen", &madvrSettings.m_UpRefLumaSharpen);
     GetFloat("upRefLumaSharpenStrength", &madvrSettings.m_UpRefLumaSharpenStrength);
-    GetFloat("upRefLumaSharpenClamp", &madvrSettings.m_UpRefLumaSharpenClamp,1000);
-    GetFloat("upRefLumaSharpenRadius", &madvrSettings.m_UpRefLumaSharpenRadius,10);
     GetBool("upRefAdaptiveSharpen", &madvrSettings.m_UpRefAdaptiveSharpen);
     GetFloat("upRefAdaptiveSharpenStrength", &madvrSettings.m_UpRefAdaptiveSharpenStrength, 10);
 
     GetBool("superRes", &madvrSettings.m_superRes);
     GetFloat("superResStrength", &madvrSettings.m_superResStrength, 1);
-    GetFloat("superResSharpness", &madvrSettings.m_superResSharpness, 1);
-    GetFloat("superResRadius", &madvrSettings.m_superResRadius);
     GetBool("superResLinear", &madvrSettings.m_superResLinear);
 
     GetBool("refineOnce", &madvrSettings.m_refineOnce);
     madvrSettings.m_refineOnce = !madvrSettings.m_refineOnce;
-    GetBool("superResFirst", &madvrSettings.m_superResFirst);
   }
 }
 
