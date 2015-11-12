@@ -38,21 +38,22 @@ unsigned int CAEUtil::m_seed = (unsigned int)(CurrentHostCounter() / 1000.0f);
   MEMALIGN(16, __m128i CAEUtil::m_sseSeed) = _mm_set_epi32(CAEUtil::m_seed, CAEUtil::m_seed+1, CAEUtil::m_seed, CAEUtil::m_seed+1);
 #endif
 
-void   AEDelayStatus::SetDelay(double d)
+void AEDelayStatus::SetDelay(double d)
 {
   delay = d;
-  tick  = CurrentHostCounter();
+  maxcorrection = d;
+  tick = CurrentHostCounter();
 }
 
 double AEDelayStatus::GetDelay()
 {
-  double d = delay;
-  if(tick)
-    d -= (double)(CurrentHostCounter() - tick) / CurrentHostFrequency();
-  if(d < 0)
-    return 0.0;
-  else
-    return d;
+  double d = 0;
+  if (tick)
+    d = (double)(CurrentHostCounter() - tick) / CurrentHostFrequency();
+  if (d > maxcorrection)
+    d = maxcorrection;
+
+  return delay - d;
 }
 
 CAEChannelInfo CAEUtil::GuessChLayout(const unsigned int channels)
