@@ -273,17 +273,28 @@ void CGUIDialogMadvrZoom::HideUnused()
   m_allowchange = false;
 
   int iValue;
+  bool bValue;
   CSetting *setting;
 
   // HIDE / SHOW
   setting = m_settingsManager->GetSetting(SET_ZOOM_ARCHANGE);
   iValue = static_cast<const CSettingInt*>(setting)->GetValue();
-  SetEnabled(SET_ZOOM_QUICKARCHANGE, (iValue == -1));
+  setting = m_settingsManager->GetSetting(SET_ZOOM_DETECTBARS);
+  bValue = static_cast<const CSettingBool*>(setting)->GetValue();
+  SetEnabled(SET_ZOOM_ARCHANGE, bValue);
+
+  SetEnabled(SET_ZOOM_QUICKARCHANGE, bValue && (iValue == -1), (iValue != -1 && bValue));
+  SetEnabled(SET_ZOOM_SHIFTIMAGE, bValue);
+  SetEnabled(SET_ZOOM_DONTCROPSUBS, bValue);
+  SetEnabled(SET_ZOOM_CLEANBORDERS, bValue);
+  SetEnabled(SET_ZOOM_REDUCEBIGBARS, bValue);
+  SetEnabled(SET_ZOOM_CROPSMALLBARS, bValue);
+  SetEnabled(SET_ZOOM_CROPBARS, bValue);
 
   m_allowchange = true;
 }
 
-void CGUIDialogMadvrZoom::SetEnabled(CStdString id, bool bEnabled)
+void CGUIDialogMadvrZoom::SetEnabled(CStdString id, bool bEnabled, bool bReset)
 {
   CSetting *setting = m_settingsManager->GetSetting(id);
   if (setting->IsEnabled() && bEnabled)
@@ -291,5 +302,7 @@ void CGUIDialogMadvrZoom::SetEnabled(CStdString id, bool bEnabled)
 
   setting->SetVisible(true);
   setting->SetEnabled(bEnabled);
-  m_settingsManager->SetInt(id, -1);
+  
+  if (bReset)
+    m_settingsManager->SetInt(id, -1);
 }

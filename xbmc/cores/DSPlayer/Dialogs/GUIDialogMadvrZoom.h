@@ -46,7 +46,7 @@ protected:
   virtual void Save() {};
 
   void HideUnused();
-  void SetEnabled(CStdString id, bool bEnabled);
+  void SetEnabled(CStdString id, bool bEnabled, bool bReset = false);
 
   bool m_allowchange;
 
