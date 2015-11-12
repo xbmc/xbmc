@@ -51,6 +51,7 @@
 #include "android/activity/AndroidFeatures.h"
 #endif
 #include "Audio/DVDAudioCodecFFmpeg.h"
+#include "Audio/DVDAudioCodecPassthroughRaw.h"
 #include "Audio/DVDAudioCodecPassthrough.h"
 #include "Overlay/DVDOverlayCodecSSA.h"
 #include "Overlay/DVDOverlayCodecText.h"
@@ -362,6 +363,8 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint)
   CDVDCodecOptions options;
 
   // try passthrough first
+  pCodec = OpenCodec( new CDVDAudioCodecPassthroughRaw(), hint, options );
+  if( pCodec ) return pCodec;
   pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
   if( pCodec ) return pCodec;
 

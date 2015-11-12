@@ -45,6 +45,7 @@ public:
   virtual double       GetCacheTotal   ();
   virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset);
   virtual void         Drain           ();
+  virtual bool         WantsIEC61937   ();
   static void          EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 
 protected:
@@ -54,13 +55,18 @@ private:
   jni::CJNIAudioTrack  *m_at_jni;
   // m_frames_written must wrap at UINT32_MAX
   uint32_t              m_frames_written;
+  uint32_t              m_lastHeadPosition;
+  uint32_t              m_ptOffset;
 
   static CAEDeviceInfo m_info;
   AEAudioFormat      m_format;
   double             m_volume;
-  volatile int       m_min_frames;
   int16_t           *m_alignedS16;
   unsigned int       m_sink_frameSize;
+  unsigned int       m_sink_sampleRate;
   bool               m_passthrough;
   double             m_audiotrackbuffer_sec;
+  int                m_encoding;
+
+  unsigned int       m_silenceframes;
 };
