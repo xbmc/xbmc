@@ -917,3 +917,10 @@ bool CAddonDatabase::IsSystemAddonRegistered(const std::string &addonID)
   }
   return false;
 }
+
+void CAddonDatabase::OnPostUnInstall(const std::string& addonId)
+{
+  DisableAddon(addonId, false);
+  RemoveAddonFromBlacklist(addonId);
+  DeleteRepository(addonId);
+}
