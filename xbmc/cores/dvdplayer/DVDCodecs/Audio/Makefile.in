@@ -4,6 +4,7 @@ CXXFLAGS+=-DHAVE_MMX
 
 SRCS  = DVDAudioCodecFFmpeg.cpp
 SRCS += DVDAudioCodecPassthrough.cpp
+SRCS += DVDAudioCodecPassthroughRaw.cpp
 
 LIB=Audio.a
 

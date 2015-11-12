@@ -22,7 +22,7 @@
 #include "AEChannelInfo.h"
 
 #define AE_IS_RAW(x) ((x) >= AE_FMT_AAC && (x) < AE_FMT_U8P)
-#define AE_IS_RAW_HD(x) ((x) >= AE_FMT_EAC3 && (x) < AE_FMT_U8P)
+#define AE_IS_RAW_HD(x) (((x) >= AE_FMT_EAC3 && (x) <= AE_FMT_DTSHD) || ((x) >= AE_FMT_EAC3_RAW && (x) <= AE_FMT_DTSHD_RAW))
 #define AE_IS_PLANAR(x) ((x) >= AE_FMT_U8P && (x) <= AE_FMT_FLOATP)
 
 /**

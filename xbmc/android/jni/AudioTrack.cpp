@@ -25,6 +25,8 @@ using namespace jni;
 
 int CJNIAudioTrack::MODE_STREAM       = 0x00000001;
 int CJNIAudioTrack::PLAYSTATE_PLAYING = 0x00000003;
+int CJNIAudioTrack::PLAYSTATE_STOPPED = 0x00000001;
+int CJNIAudioTrack::PLAYSTATE_PAUSED  = 0x00000002;
 
 void CJNIAudioTrack::PopulateStaticFields()
 {
@@ -32,6 +34,8 @@ void CJNIAudioTrack::PopulateStaticFields()
   {
     jhclass c = find_class("android/media/AudioTrack");
     CJNIAudioTrack::PLAYSTATE_PLAYING = get_static_field<int>(c, "PLAYSTATE_PLAYING");
+    CJNIAudioTrack::PLAYSTATE_STOPPED = get_static_field<int>(c, "PLAYSTATE_STOPPED");
+    CJNIAudioTrack::PLAYSTATE_PAUSED = get_static_field<int>(c, "PLAYSTATE_PAUSED");
     if (CJNIBase::GetSDKVersion() >= 5)
       CJNIAudioTrack::MODE_STREAM = get_static_field<int>(c, "MODE_STREAM");
   }

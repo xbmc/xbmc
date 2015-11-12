@@ -132,6 +132,12 @@ const unsigned int CAEUtil::DataFormatToBits(const enum AEDataFormat dataFormat)
     16,                  /* DTS-HD */
     32,                  /* LPCM   */
 
+     8,                  /* AC3_RAW    */
+     8,                  /* DTS_RAW    */
+     8,                  /* EAC3_RAW   */
+     8,                  /* TRUEHD_RAW */
+     8,                  /* DTS-HD_RAW */
+
      8,                  /* U8P    */
     16,                  /* S16NEP */
     32,                  /* S32NEP */
@@ -201,6 +207,13 @@ const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
     "AE_FMT_TRUEHD",
     "AE_FMT_DTSHD",
     "AE_FMT_LPCM",
+
+    /* Raw Bitstream formats */
+    "AE_FMT_AC3_RAW",
+    "AE_FMT_DTS_RAW",
+    "AE_FMT_EAC3_RAW",
+    "AE_FMT_TRUEHD_RAW",
+    "AE_FMT_DTSHD_RAW",
 
     /* planar formats */
     "AE_FMT_U8P",

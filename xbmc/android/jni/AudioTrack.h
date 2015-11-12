@@ -44,7 +44,9 @@ class CJNIAudioTrack : public CJNIBase
 
     static int  MODE_STREAM;
     static int  PLAYSTATE_PLAYING;
-    
+    static int  PLAYSTATE_STOPPED;
+    static int  PLAYSTATE_PAUSED;
+
     static void PopulateStaticFields();
     static int  getMinBufferSize(int sampleRateInHz, int channelConfig, int audioFormat);
     static int  getNativeOutputSampleRate(int streamType);
