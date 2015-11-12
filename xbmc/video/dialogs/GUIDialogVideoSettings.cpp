@@ -575,12 +575,6 @@ void CGUIDialogVideoSettings::InitializeSettings()
     CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
     return;
   }
-  CSettingGroup *groupFilters = AddGroup(category);
-  if (groupFilters == NULL)
-  {
-    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
-    return;
-  }
   CSettingGroup *groupMadvrProcessing = AddGroup(category);
   if (groupMadvrProcessing == NULL)
   {
@@ -601,6 +595,12 @@ void CGUIDialogVideoSettings::InitializeSettings()
   }
   CSettingGroup *groupMadvrRendering = AddGroup(category);
   if (groupMadvrRendering == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
+  CSettingGroup *groupFilters = AddGroup(category);
+  if (groupFilters == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
     return;
