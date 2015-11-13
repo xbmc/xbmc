@@ -22,6 +22,7 @@
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "threads/CriticalSection.h"
+#include <set>
 
 class AERingBuffer;
 namespace jni
@@ -59,6 +60,7 @@ private:
   uint32_t              m_ptOffset;
 
   static CAEDeviceInfo m_info;
+  static std::set<unsigned int>       m_sink_sampleRates;
   AEAudioFormat      m_format;
   double             m_volume;
   int16_t           *m_alignedS16;

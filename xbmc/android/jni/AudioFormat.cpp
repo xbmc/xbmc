@@ -25,6 +25,7 @@
 using namespace jni;
 
 int CJNIAudioFormat::ENCODING_PCM_16BIT = 0x00000002;
+int CJNIAudioFormat::ENCODING_PCM_FLOAT = 0x00000004;
 int CJNIAudioFormat::ENCODING_AC3       = 0x00000005;
 int CJNIAudioFormat::ENCODING_E_AC3     = 0x00000006;
 int CJNIAudioFormat::ENCODING_DTS       = 0x00000007;
@@ -75,6 +76,7 @@ void CJNIAudioFormat::PopulateStaticFields()
         CJNIAudioFormat::CHANNEL_OUT_SIDE_LEFT = get_static_field<int>(c, "CHANNEL_OUT_SIDE_LEFT");
         CJNIAudioFormat::CHANNEL_OUT_SIDE_RIGHT = get_static_field<int>(c, "CHANNEL_OUT_SIDE_RIGHT");
 
+        CJNIAudioFormat::ENCODING_PCM_FLOAT = get_static_field<int>(c, "ENCODING_PCM_FLOAT");
         CJNIAudioFormat::ENCODING_AC3 = get_static_field<int>(c, "ENCODING_AC3");
         CJNIAudioFormat::ENCODING_E_AC3 = get_static_field<int>(c, "ENCODING_E_AC3");
 
