@@ -900,8 +900,10 @@
       { "name": "style", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
       { "name": "type", "$ref": "Optional.String" },
       { "name": "albumlabel", "$ref": "Optional.String" },
-      { "name": "rating", "$ref": "Optional.Integer" },
-      { "name": "year", "$ref": "Optional.Integer" }
+      { "name": "rating", "$ref": "Optional.Number" },
+      { "name": "year", "$ref": "Optional.Integer" },
+      { "name": "userrating", "$ref": "Optional.Integer" },
+      { "name": "votes", "$ref": "Optional.Integer" }
     ],
     "returns": "string"
   },
@@ -917,7 +919,7 @@
       { "name": "albumartist", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
       { "name": "genre", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
       { "name": "year", "$ref": "Optional.Integer" },
-      { "name": "rating", "$ref": "Optional.Integer" },
+      { "name": "rating", "$ref": "Optional.Number" },
       { "name": "album", "$ref": "Optional.String" },
       { "name": "track", "$ref": "Optional.Integer" },
       { "name": "disc", "$ref": "Optional.Integer" },
@@ -928,7 +930,9 @@
       { "name": "musicbrainzalbumid", "$ref": "Optional.String" },
       { "name": "musicbrainzalbumartistid", "$ref": "Optional.String" },
       { "name": "playcount", "$ref": "Optional.Integer" },
-      { "name": "lastplayed", "$ref": "Optional.String" }
+      { "name": "lastplayed", "$ref": "Optional.String" },
+      { "name": "userrating", "$ref": "Optional.Integer" },
+      { "name": "votes", "$ref": "Optional.Integer" }
     ],
     "returns": "string"
   },
@@ -1461,6 +1465,7 @@
       { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
       { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null },
+      { "name": "rating", "$ref": "Optional.Number" },
       { "name": "userrating", "$ref": "Optional.Integer" }
     ],
     "returns": "string"

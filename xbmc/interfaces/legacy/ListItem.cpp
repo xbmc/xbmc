@@ -451,7 +451,9 @@ namespace XBMCAddon
           else if (key == "title")
             item->GetMusicInfoTag()->SetTitle(value);
           else if (key == "rating")
-            item->GetMusicInfoTag()->SetUserrating(value[0]);
+            item->GetMusicInfoTag()->SetRating((float)strtod(value.c_str(), NULL));
+          else if (key == "userrating")
+            item->GetMusicInfoTag()->SetUserrating(strtol(value.c_str(), NULL, 10));
           else if (key == "lyrics")
             item->GetMusicInfoTag()->SetLyrics(value);
           else if (key == "lastplayed")

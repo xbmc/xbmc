@@ -170,7 +170,7 @@
 							<width>100</width>
 							<height>35</height>
 							<aspectratio align="center">keep</aspectratio>
-							<texture fallback="LeftRating/rating0.png">$INFO[Player.StarRating,LeftRating/]</texture>
+							<texture fallback="LeftRating/rating0.png">$INFO[ListItem.UserRating,LeftRating/rating,.png]</texture>
 						</control>
 					</control>
 				</control>
@@ -236,7 +236,7 @@
 							<width>100</width>
 							<height>35</height>
 							<aspectratio align="center">keep</aspectratio>
-							<texture fallback="LeftRating/rating0.png">$INFO[Player.StarRating,LeftRating/]</texture>
+							<texture fallback="LeftRating/rating0.png">$INFO[ListItem.UserRating,LeftRating/rating,.png]</texture>
 						</control>
 					</control>
 				</control>

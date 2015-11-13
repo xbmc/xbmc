@@ -215,14 +215,13 @@
 					<font>font13</font>
 					<textcolor>white</textcolor>
 				</control>
-				<control type="image">
+				<control type="label">
 					<description>Rating value</description>
 					<left>80</left>
 					<top>535</top>
 					<width>150</width>
 					<height>30</height>
-					<aspectratio>keep</aspectratio>
-					<texture>$INFO[ListItem.StarRating,CenterRating/]</texture>
+					<label>$INFO[ListItem.Userrating]</label>
 				</control>
 			</control>
 		</control>
@@ -459,14 +458,13 @@
 					<scrollout>false</scrollout>
 					<pauseatend>2000</pauseatend>
 				</control>
-				<control type="image">
+				<control type="label">
 					<description>Rating value</description>
 					<left>100</left>
 					<top>95</top>
 					<width>160</width>
 					<height>32</height>
-					<aspectratio>keep</aspectratio>
-					<texture>$INFO[ListItem.StarRating,LeftRating/]</texture>
+					<label>$INFO[ListItem.Userrating]</label>
 				</control>
 				<control type="textbox">
 					<description>Description Value for Album</description>

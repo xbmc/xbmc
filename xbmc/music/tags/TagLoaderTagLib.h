@@ -63,7 +63,7 @@ protected:
   static void SetArtist(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
   static void SetAlbumArtist(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
   static void SetGenre(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
-  static char POPMtoXBMC(int popm);
+  static int POPMtoXBMC(int popm);
 
 template<typename T>
    static bool ParseTag(T *tag, MUSIC_INFO::EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& infoTag);
