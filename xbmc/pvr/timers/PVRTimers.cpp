@@ -306,7 +306,7 @@ CFileItemPtr CPVRTimers::GetNextActiveTimer(void) const
     for (VecTimerInfoTag::const_iterator timerIt = it->second->begin(); timerIt != it->second->end(); ++timerIt)
     {
       CPVRTimerInfoTagPtr current = *timerIt;
-      if (current->IsActive() && !current->IsRecording() && !current->IsRepeating())
+      if (current->IsActive() && !current->IsRecording() && !current->IsRepeating() && !current->IsBroken())
       {
         CFileItemPtr fileItem(new CFileItem(current));
         return fileItem;
