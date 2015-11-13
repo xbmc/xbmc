@@ -43,7 +43,9 @@ public:
     album_strReview = CMusicDatabase::album_strReview;
     album_strLabel = CMusicDatabase::album_strLabel;
     album_strType = CMusicDatabase::album_strType;
-    album_iRating = CMusicDatabase::album_iRating;
+    album_fRating = CMusicDatabase::album_fRating;
+    album_iVotes = CMusicDatabase::album_iVotes;
+    album_iUserrating = CMusicDatabase::album_iUserrating;
     album_dtDateAdded = CMusicDatabase::album_dtDateAdded;
 
     song_idSong = CMusicDatabase::song_idSong;
@@ -56,6 +58,8 @@ public:
     song_iStartOffset = CMusicDatabase::song_iStartOffset;
     song_iEndOffset = CMusicDatabase::song_iEndOffset;
     song_lastplayed = CMusicDatabase::song_lastplayed;
+    song_rating = CMusicDatabase::song_rating;
+    song_votes = CMusicDatabase::song_votes;
     song_userrating = CMusicDatabase::song_userrating;
     song_comment = CMusicDatabase::song_comment;
     song_strAlbum = CMusicDatabase::song_strAlbum;
@@ -75,7 +79,9 @@ public:
   int album_strReview;
   int album_strLabel;
   int album_strType;
-  int album_iRating;
+  int album_fRating;
+  int album_iVotes;
+  int album_iUserrating;
   int album_dtDateAdded;
 
   int song_idSong;
@@ -88,6 +94,8 @@ public:
   int song_iStartOffset;
   int song_iEndOffset;
   int song_lastplayed;
+  int song_rating;
+  int song_votes;
   int song_userrating;
   int song_comment;
   int song_strAlbum;
@@ -174,8 +182,18 @@ TEST(TestDatabaseUtils, GetField_MediaTypeAlbum)
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
-  refstr = "albumview.iRating";
+  refstr = "albumview.fRating";
   varstr = DatabaseUtils::GetField(FieldRating, MediaTypeAlbum,
+                                   DatabaseQueryPartSelect);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+
+  refstr = "albumview.iVotes";
+  varstr = DatabaseUtils::GetField(FieldVotes, MediaTypeAlbum,
+                                   DatabaseQueryPartSelect);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+
+  refstr = "albumview.iUserrating";
+  varstr = DatabaseUtils::GetField(FieldUserRating, MediaTypeAlbum,
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
@@ -255,6 +273,16 @@ TEST(TestDatabaseUtils, GetField_MediaTypeSong)
 
   refstr = "songview.rating";
   varstr = DatabaseUtils::GetField(FieldRating, MediaTypeSong,
+                                   DatabaseQueryPartSelect);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+
+  refstr = "songview.votes";
+  varstr = DatabaseUtils::GetField(FieldVotes, MediaTypeSong,
+                                   DatabaseQueryPartSelect);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+
+  refstr = "songview.userrating";
+  varstr = DatabaseUtils::GetField(FieldUserRating, MediaTypeSong,
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
@@ -853,7 +881,7 @@ TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeAlbum)
   varindex = DatabaseUtils::GetFieldIndex(FieldAlbumType, MediaTypeAlbum);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = a.album_iRating;
+  refindex = a.album_fRating;
   varindex = DatabaseUtils::GetFieldIndex(FieldRating, MediaTypeAlbum);
   EXPECT_EQ(refindex, varindex);
 
@@ -911,8 +939,16 @@ TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeSong)
   varindex = DatabaseUtils::GetFieldIndex(FieldLastPlayed, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = a.song_userrating;
+  refindex = a.song_rating;
   varindex = DatabaseUtils::GetFieldIndex(FieldRating, MediaTypeSong);
+  EXPECT_EQ(refindex, varindex);
+
+  refindex = a.song_votes;
+  varindex = DatabaseUtils::GetFieldIndex(FieldVotes, MediaTypeSong);
+  EXPECT_EQ(refindex, varindex);
+
+  refindex = a.song_userrating;
+  varindex = DatabaseUtils::GetFieldIndex(FieldUserRating, MediaTypeSong);
   EXPECT_EQ(refindex, varindex);
 
   refindex = a.song_comment;

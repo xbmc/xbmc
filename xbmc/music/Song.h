@@ -137,7 +137,9 @@ public:
   std::string strComment;
   std::string strMood;
   std::string strCueSheet;
-  char rating;
+  float rating;
+  int userrating;
+  int votes;
   int iTrack;
   int iDuration;
   int iYear;

@@ -126,7 +126,9 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_iDuration = tag.m_iDuration;
   m_iTrack = tag.m_iTrack;
   m_bLoaded = tag.m_bLoaded;
-  m_rating = tag.m_rating;
+  m_Rating = tag.m_Rating;
+  m_Userrating = tag.m_Userrating;
+  m_Votes = tag.m_Votes;
   m_listeners = tag.m_listeners;
   m_iTimesPlayed = tag.m_iTimesPlayed;
   m_iDbId = tag.m_iDbId;
@@ -276,9 +278,19 @@ const std::string &CMusicInfoTag::GetCueSheet() const
   return m_cuesheet;
 }
 
-char CMusicInfoTag::GetUserrating() const
+float CMusicInfoTag::GetRating() const
 {
-  return m_rating;
+  return m_Rating;
+}
+
+int CMusicInfoTag::GetUserrating() const
+{
+  return m_Userrating;
+}
+
+int CMusicInfoTag::GetVotes() const
+{
+  return m_Votes;
 }
 
 int CMusicInfoTag::GetListeners() const
@@ -465,9 +477,27 @@ void CMusicInfoTag::SetLyrics(const std::string& lyrics)
   m_strLyrics = lyrics;
 }
 
-void CMusicInfoTag::SetUserrating(char rating)
+void CMusicInfoTag::SetRating(float rating)
 {
-  m_rating = rating;
+  //This value needs to be between 0-10 - 0 will unset the rating
+  rating = std::max(rating, 0.f);
+  rating = std::min(rating, 10.f);
+
+  m_Rating = rating;
+}
+
+void CMusicInfoTag::SetVotes(int votes)
+{
+  m_Votes = votes;
+}
+
+void CMusicInfoTag::SetUserrating(int rating)
+{
+  //This value needs to be between 0-10 - 0 will unset the userrating
+  rating = std::max(rating, 0);
+  rating = std::min(rating, 10);
+
+  m_Userrating = rating;
 }
 
 void CMusicInfoTag::SetListeners(int listeners)
@@ -630,7 +660,9 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SetMusicBrainzAlbumID(album.strMusicBrainzAlbumID);
   SetGenre(album.genre);
   SetMood(StringUtils::Join(album.moods, g_advancedSettings.m_musicItemSeparator));
-  SetUserrating('0' + album.iRating);
+  SetRating(album.fRating);
+  SetUserrating(album.iUserrating);
+  SetVotes(album.iVotes);
   SetCompilation(album.bCompilation);
   SYSTEMTIME stTime;
   stTime.wYear = album.iYear;
@@ -670,6 +702,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetDateAdded(song.dateAdded);
   SetCoverArtInfo(song.embeddedArt.size, song.embeddedArt.mime);
   SetUserrating(song.rating);
+  SetVotes(song.votes);
   SetURL(song.strFileName);
   SYSTEMTIME stTime;
   stTime.wYear = song.iYear;
@@ -714,7 +747,9 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["musicbrainztrmid"] = m_strMusicBrainzTRMID;
   value["comment"] = m_strComment;
   value["mood"] = StringUtils::Split(m_strMood, g_advancedSettings.m_musicItemSeparator);
-  value["rating"] = (int)(m_rating - '0');
+  value["rating"] = m_Rating;
+  value["userrating"] = m_Userrating;
+  value["votes"] = m_Votes;
   value["playcount"] = m_iTimesPlayed;
   value["lastplayed"] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::Empty;
   value["dateadded"] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::Empty;
@@ -749,7 +784,9 @@ void CMusicInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldYear:        sortable[FieldYear] = m_dwReleaseDate.wYear; break;
   case FieldComment:     sortable[FieldComment] = m_strComment; break;
   case FieldMoods:       sortable[FieldMoods] = m_strMood; break;
-  case FieldRating:      sortable[FieldRating] = (float)(m_rating - '0'); break;
+  case FieldRating:      sortable[FieldRating] = m_Rating; break;
+  case FieldUserRating:  sortable[FieldUserRating] = m_Userrating; break;
+  case FieldVotes:       sortable[FieldVotes] = m_Votes; break;
   case FieldPlaycount:   sortable[FieldPlaycount] = m_iTimesPlayed; break;
   case FieldLastPlayed:  sortable[FieldLastPlayed] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::Empty; break;
   case FieldDateAdded:   sortable[FieldDateAdded] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::Empty; break;
@@ -784,7 +821,9 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_dateAdded;
     ar << m_strComment;
     ar << m_strMood;
-    ar << m_rating;
+    ar << m_Rating;
+    ar << m_Userrating;
+    ar << m_Votes;
     ar << m_iTimesPlayed;
     ar << m_iAlbumId;
     ar << m_iDbId;
@@ -819,7 +858,9 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_dateAdded;
     ar >> m_strComment;
     ar >> m_strMood;
-    ar >> m_rating;
+    ar << m_Rating;
+    ar >> m_Userrating;
+    ar >> m_Votes;
     ar >> m_iTimesPlayed;
     ar >> m_iAlbumId;
     ar >> m_iDbId;
@@ -858,7 +899,6 @@ void CMusicInfoTag::Clear()
   m_strComment.clear();
   m_strMood.clear();
   m_cuesheet.clear();
-  m_rating = '0';
   m_iDbId = -1;
   m_type.clear();
   m_iTimesPlayed = 0;
@@ -868,6 +908,9 @@ void CMusicInfoTag::Clear()
   m_replayGain = ReplayGain();
   m_albumReleaseType = CAlbum::Album;
   m_listeners = 0;
+  m_Rating = 0;
+  m_Userrating = 0;
+  m_Votes = 0;
 }
 
 void CMusicInfoTag::AppendArtist(const std::string &artist)

@@ -105,7 +105,7 @@
     "properties": {
       "method": { "type": "string", "default": "none",
         "enum": [ "none", "label", "date", "size", "file", "path", "drivetype", "title", "track", "time", "artist",
-                  "album", "albumtype", "genre", "country", "year", "rating", "votes", "top250", "programcount",
+                  "album", "albumtype", "genre", "country", "year", "rating", "userrating", "votes", "top250", "programcount",
                   "playlist", "episode", "season", "totalepisodes", "watchedepisodes", "tvshowstatus", "tvshowtitle",
                   "sorttitle", "productioncode", "mpaa", "studio", "dateadded", "lastplayed", "playcount", "listeners",
                   "bitrate", "random" ]
@@ -405,7 +405,7 @@
       "description": "Requesting the genreid and/or artistid field will result in increased response times",
       "enum": [ "title", "description", "artist", "genre",
                 "theme", "mood", "style", "type", "albumlabel",
-                "rating", "year", "musicbrainzalbumid",
+                "rating", "votes", "userrating","year", "musicbrainzalbumid",
                 "musicbrainzalbumartistid", "fanart", "thumbnail",
                 "playcount", "genreid", "artistid", "displayartist",
                 "compilation", "releasetype", "dateadded" ]
@@ -416,7 +416,7 @@
     "items": { "type": "string",
       "description": "Requesting the genreid, artistid and/or albumartistid field will result in increased response times",
       "enum": [ "title", "artist", "albumartist", "genre", "year",
-                "rating", "album", "track", "duration", "comment",
+                "rating", "votes", "userrating", "album", "track", "duration", "comment",
                 "lyrics", "musicbrainztrackid", "musicbrainzartistid",
                 "musicbrainzalbumid", "musicbrainzalbumartistid",
                 "playcount", "fanart", "thumbnail", "file", "albumid",
@@ -442,7 +442,9 @@
       "title": { "type": "string" },
       "artist": { "$ref": "Array.String" },
       "year": { "type": "integer" },
-      "rating": { "type": "integer" },
+      "rating": { "type": "number" },
+      "votes": { "type": "integer" },
+      "userrating": { "type": "integer" },
       "musicbrainzalbumid": { "type": "string" },
       "musicbrainzalbumartistid": { "type": "string" },
       "genreid": { "$ref": "Array.Integer" },
@@ -561,7 +563,7 @@
                 "studio", "year", "plot", "album", "artist",
                 "genre", "track", "streamdetails", "lastplayed",
                 "fanart", "thumbnail", "file", "resume", "dateadded",
-                "tag", "art", "userrating" ]
+                "tag", "art", "rating", "userrating" ]
     }
   },
   "Video.Cast": {
@@ -761,6 +763,7 @@
       "genre": { "$ref": "Array.String" },
       "track": { "type": "integer" },
       "tag": { "$ref": "Array.String" },
+      "rating": { "type": "number" }
       "userrating": { "type": "integer" }
     }
   },

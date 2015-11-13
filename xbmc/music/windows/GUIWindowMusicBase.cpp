@@ -539,9 +539,10 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
         continue;
       }
       else if (pDlgAlbumInfo->HasUpdatedThumb())
-      {
         UpdateThumb(album, album.strPath);
-      }
+      else if (pDlgAlbumInfo->NeedsUpdate())
+        Refresh(true); // update our file list
+
     }
     break;
   }

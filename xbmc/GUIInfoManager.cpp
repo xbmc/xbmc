@@ -214,7 +214,6 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   { "chapter",          PLAYER_CHAPTER },
                                   { "chaptercount",     PLAYER_CHAPTERCOUNT },
                                   { "chaptername",      PLAYER_CHAPTERNAME },
-                                  { "starrating",       PLAYER_STAR_RATING },
                                   { "folderpath",       PLAYER_PATH },
                                   { "filenameandpath",  PLAYER_FILEPATH },
                                   { "filename",         PLAYER_FILENAME },
@@ -349,6 +348,9 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "codec",            MUSICPLAYER_CODEC },
                                   { "discnumber",       MUSICPLAYER_DISC_NUMBER },
                                   { "rating",           MUSICPLAYER_RATING },
+                                  { "ratingandvotes",   MUSICPLAYER_RATING_AND_VOTES },
+                                  { "userrating",       MUSICPLAYER_USER_RATING },
+                                  { "votes",            MUSICPLAYER_VOTES },
                                   { "comment",          MUSICPLAYER_COMMENT },
                                   { "lyrics",           MUSICPLAYER_LYRICS },
                                   { "playlistplaying",  MUSICPLAYER_PLAYLISTPLAYING },
@@ -574,7 +576,6 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "tagline",          LISTITEM_TAGLINE },
                                   { "top250",           LISTITEM_TOP250 },
                                   { "trailer",          LISTITEM_TRAILER },
-                                  { "starrating",       LISTITEM_STAR_RATING },
                                   { "sortletter",       LISTITEM_SORT_LETTER },
                                   { "videocodec",       LISTITEM_VIDEO_CODEC },
                                   { "videoresolution",  LISTITEM_VIDEO_RESOLUTION },
@@ -1708,6 +1709,8 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case MUSICPLAYER_CODEC:
   case MUSICPLAYER_DISC_NUMBER:
   case MUSICPLAYER_RATING:
+  case MUSICPLAYER_RATING_AND_VOTES:
+  case MUSICPLAYER_USER_RATING:
   case MUSICPLAYER_COMMENT:
   case MUSICPLAYER_LYRICS:
   case MUSICPLAYER_CHANNEL_NAME:
@@ -3668,16 +3671,6 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
       *fallback = "DefaultAlbumCover.png";
     return m_currentFile->HasArt("thumb") ? m_currentFile->GetArt("thumb") : "DefaultAlbumCover.png";
   }
-  else if (info == MUSICPLAYER_RATING)
-  {
-    if (!g_application.m_pPlayer->IsPlayingAudio()) return "";
-    return GetItemImage(m_currentFile, LISTITEM_RATING);
-  }
-  else if (info == PLAYER_STAR_RATING)
-  {
-    if (!g_application.m_pPlayer->IsPlaying()) return "";
-    return GetItemImage(m_currentFile, LISTITEM_STAR_RATING);
-  }
   else if (info == VIDEOPLAYER_COVER)
   {
     if (!g_application.m_pPlayer->IsPlayingVideo()) return "";
@@ -3688,7 +3681,7 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
     else return m_currentMovieThumb;
   }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
-          info == LISTITEM_OVERLAY || info == LISTITEM_RATING || info == LISTITEM_STAR_RATING)
+          info == LISTITEM_OVERLAY)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
     if (window)
@@ -4159,6 +4152,25 @@ std::string CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
     return GetItemLabel(item, LISTITEM_DISC_NUMBER);
   case MUSICPLAYER_RATING:
     return GetItemLabel(item, LISTITEM_RATING);
+  case MUSICPLAYER_RATING_AND_VOTES:
+  {
+    std::string strRatingAndVotes;
+    if (m_currentFile->GetMusicInfoTag()->GetRating() > 0.f)
+    {
+      if (m_currentFile->GetMusicInfoTag()->GetRating() > 0)
+        strRatingAndVotes = StringUtils::Format("%.1f",
+          m_currentFile->GetMusicInfoTag()->GetRating());
+      else
+        strRatingAndVotes = StringUtils::Format("%.1f (%i %s)",
+          m_currentFile->GetMusicInfoTag()->GetRating(),
+          m_currentFile->GetMusicInfoTag()->GetVotes(),
+          g_localizeStrings.Get(20350).c_str());
+    }
+    return strRatingAndVotes;
+  }
+  break;
+  case MUSICPLAYER_USER_RATING:
+    return GetItemLabel(item, LISTITEM_USER_RATING);
   case MUSICPLAYER_COMMENT:
     return GetItemLabel(item, LISTITEM_COMMENT);
   case MUSICPLAYER_DURATION:
@@ -5198,15 +5210,13 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       std::string rating;
       if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
         rating = StringUtils::Format("%.1f", item->GetVideoInfoTag()->m_fRating);
-      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetUserrating() > '0')
-      { // song rating.  Images will probably be better than numbers for this in the long run
-        rating.assign(1, item->GetMusicInfoTag()->GetUserrating());
-      }
+      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > 0.f) // song rating
+        rating = StringUtils::Format("%.1f", item->GetMusicInfoTag()->GetRating());
       return rating;
     }
   case LISTITEM_RATING_AND_VOTES:
     {
-      if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
+      if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // video rating & votes
       {
         std::string strRatingAndVotes;
         if (item->GetVideoInfoTag()->m_strVotes.empty())
@@ -5219,6 +5229,18 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
                                                   g_localizeStrings.Get(20350).c_str());
         return strRatingAndVotes;
       }
+      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > 0.f) // music rating & votes
+      {
+        std::string strRatingAndVotes;
+        if (item->GetMusicInfoTag()->GetVotes() <= 0)
+          strRatingAndVotes = StringUtils::Format("%.1f", item->GetMusicInfoTag()->GetRating());
+        else
+          strRatingAndVotes = StringUtils::Format("%.1f (%i %s)",
+            item->GetMusicInfoTag()->GetRating(),
+            item->GetMusicInfoTag()->GetVotes(),
+            g_localizeStrings.Get(20350).c_str());
+        return strRatingAndVotes;
+      }
     }
     break;
   case LISTITEM_USER_RATING:
@@ -5226,14 +5248,16 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       std::string strUserRating;
       if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iUserRating > 0)
         strUserRating = StringUtils::Format("%i", item->GetVideoInfoTag()->m_iUserRating);
-      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetUserrating() > '0')
-        strUserRating.assign(1, item->GetMusicInfoTag()->GetUserrating());
+      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetUserrating() > 0)
+        strUserRating = StringUtils::Format("%i", item->GetMusicInfoTag()->GetUserrating());
       return strUserRating;
     }
     break;
   case LISTITEM_VOTES:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strVotes;
+    else if (item->HasMusicInfoTag())
+      return StringUtils::Format("%i", item->GetMusicInfoTag()->GetVotes());
     break;
   case LISTITEM_PROGRAM_COUNT:
     {
@@ -5808,32 +5832,6 @@ std::string CGUIInfoManager::GetItemImage(const CFileItem *item, int info, std::
 {
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
     return GetSkinVariableString(info, true, item);
-
-  switch (info)
-  {
-  case LISTITEM_RATING:  // old song rating format
-    {
-      if (item->HasMusicInfoTag())
-      {
-        return StringUtils::Format("songrating%c.png", item->GetMusicInfoTag()->GetUserrating());
-      }
-    }
-    break;
-  case LISTITEM_STAR_RATING:
-    {
-      std::string rating;
-      if (item->HasVideoInfoTag())
-      { // rating for videos is assumed 0..10, so convert to 0..5
-        rating = StringUtils::Format("rating%ld.png", (long)((item->GetVideoInfoTag()->m_fRating * 0.5f) + 0.5f));
-      }
-      else if (item->HasMusicInfoTag())
-      { // song rating.
-        rating = StringUtils::Format("rating%c.png", item->GetMusicInfoTag()->GetUserrating());
-      }
-      return rating;
-    }
-    break;
-  }  /* switch (info) */
 
   return GetItemLabel(item, info, fallback);
 }

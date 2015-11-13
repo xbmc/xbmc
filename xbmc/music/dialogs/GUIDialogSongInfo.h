@@ -42,11 +42,11 @@ protected:
   virtual void OnInitWindow();
   bool DownloadThumbnail(const std::string &thumbFile);
   void OnGetThumb();
-  void SetUserrating(char rating);
+  void SetUserrating(int userrating);
   void OnSetUserrating();
 
   CFileItemPtr m_song;
-  char m_startUserrating;
+  int m_startUserrating;
   bool m_cancelled;
   bool m_needsUpdate;
   long m_albumId;

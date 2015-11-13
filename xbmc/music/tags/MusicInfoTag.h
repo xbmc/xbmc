@@ -80,9 +80,11 @@ public:
   const CDateTime& GetLastPlayed() const;
   const CDateTime& GetDateAdded() const;
   bool  GetCompilation() const;
-  char  GetUserrating() const;
-  int  GetListeners() const;
-  int  GetPlayCount() const;
+  float GetRating() const;
+  int GetUserrating() const;
+  int GetVotes() const;
+  int GetListeners() const;
+  int GetPlayCount() const;
   const EmbeddedArtInfo &GetCoverArtInfo() const;
   const ReplayGain& GetReplayGain() const;
   CAlbum::ReleaseType GetAlbumReleaseType() const;
@@ -121,7 +123,9 @@ public:
   void SetMood(const std::string& mood);
   void SetLyrics(const std::string& lyrics);
   void SetCueSheet(const std::string& cueSheet);
-  void SetUserrating(char rating);
+  void SetRating(float rating);
+  void SetUserrating(int rating);
+  void SetVotes(int votes);
   void SetListeners(int listeners);
   void SetPlayCount(int playcount);
   void SetLastPlayed(const std::string& strLastPlayed);
@@ -190,7 +194,9 @@ protected:
   int m_iDbId;
   MediaType m_type; ///< item type "song", "album", "artist"
   bool m_bLoaded;
-  char m_rating;
+  float m_Rating;
+  int m_Userrating;
+  int m_Votes;
   int m_listeners;
   int m_iTimesPlayed;
   int m_iAlbumId;

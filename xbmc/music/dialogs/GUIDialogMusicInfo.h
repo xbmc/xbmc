@@ -39,7 +39,8 @@ public:
   virtual bool OnAction(const CAction &action);
   void SetAlbum(const CAlbum& album, const std::string &path);
   void SetArtist(const CArtist& artist, const std::string &path);
-  bool NeedRefresh() const;
+  bool NeedRefresh() const { return m_bRefresh; };
+  bool NeedsUpdate() const { return m_needsUpdate; };
   bool HasUpdatedThumb() const { return m_hasUpdatedThumb; };
 
   virtual bool HasListItems() const { return true; };
@@ -55,11 +56,15 @@ protected:
   void SetSongs(const VECSONGS &songs);
   void SetDiscography();
   void OnSearch(const CFileItem* pItem);
+  void OnSetUserrating();
+  void SetUserrating(int userrating);
 
   CAlbum m_album;
   CArtist m_artist;
+  int m_startUserrating;
   bool m_bViewReview;
   bool m_bRefresh;
+  bool m_needsUpdate;
   bool m_hasUpdatedThumb;
   bool m_bArtistInfo;
   CFileItemPtr   m_albumItem;

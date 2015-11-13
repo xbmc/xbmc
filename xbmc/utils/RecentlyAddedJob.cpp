@@ -273,7 +273,7 @@ bool CRecentlyAddedJob::UpdateMusic()
       home->SetProperty("LatestAlbum." + value + ".Title"   , album.strAlbum);
       home->SetProperty("LatestAlbum." + value + ".Year"    , album.iYear);
       home->SetProperty("LatestAlbum." + value + ".Artist"  , album.GetAlbumArtistString());
-      home->SetProperty("LatestAlbum." + value + ".Rating"  , album.iRating);
+      home->SetProperty("LatestAlbum." + value + ".Rating"  , album.fRating);
       home->SetProperty("LatestAlbum." + value + ".Path"    , strDBpath);
       home->SetProperty("LatestAlbum." + value + ".Thumb"   , strThumb);
       home->SetProperty("LatestAlbum." + value + ".Fanart"  , strFanart);
