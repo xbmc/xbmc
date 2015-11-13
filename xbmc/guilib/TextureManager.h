@@ -83,6 +83,8 @@ public:
   uint32_t GetMemoryUsage() const;
   void Flush();
   bool IsEmpty() const;
+  void SetHeight(int height);
+  void SetWidth(int height);
 protected:
   void FreeTexture();
 

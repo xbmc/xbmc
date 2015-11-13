@@ -199,6 +199,16 @@ void CTextureMap::FreeTexture()
   m_texture.Free();
 }
 
+void CTextureMap::SetHeight(int height)
+{
+  m_texture.m_height = (int) height;
+}
+
+void CTextureMap::SetWidth(int height)
+{
+  m_texture.m_width = height;
+}
+
 bool CTextureMap::IsEmpty() const
 {
   return m_texture.m_textures.size() == 0;
@@ -343,11 +353,18 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
         return emptyTexture;
       }
 
+      unsigned int maxWidth = 0;
+      unsigned int maxHeight = 0;
       pMap = new CTextureMap(strTextureName, width, height, nLoops);
       for (int iImage = 0; iImage < nImages; ++iImage)
       {
         pMap->Add(pTextures[iImage], Delay[iImage]);
+        maxWidth = std::max(maxWidth, pTextures[iImage]->GetWidth());
+        maxHeight = std::max(maxHeight, pTextures[iImage]->GetHeight());
       }
+
+      pMap->SetWidth((int)maxWidth);
+      pMap->SetHeight((int)maxHeight);
 
       delete [] pTextures;
       delete [] Delay;
@@ -363,6 +380,8 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
         return emptyTexture;
       }
 
+      unsigned int maxWidth = 0;
+      unsigned int maxHeight = 0;
       pMap = new CTextureMap(strTextureName, gif.Width(), gif.Height(), gif.GetNumLoops());
 
       for (auto frame : gif.GetFrames())
@@ -372,8 +391,14 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
         {
           glTexture->LoadFromMemory(gif.Width(), gif.Height(), gif.GetPitch(), XB_FMT_A8R8G8B8, false, frame->m_pImage);
           pMap->Add(glTexture, frame->m_delay);
+          maxWidth = std::max(maxWidth, glTexture->GetWidth());
+          maxHeight = std::max(maxHeight, glTexture->GetHeight());
         }
       }
+
+      pMap->SetWidth((int)maxWidth);
+      pMap->SetHeight((int)maxHeight);
+
 #endif//HAS_GIFLIB
     }
 
