@@ -458,14 +458,17 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
 
 
   START_PERFORMANCE_COUNTER
-    if (FAILED(CFilterCoreFactory::GetSubsFilter(pFileItem, filter, CGraphFilters::Get()->IsUsingDXVADecoder()))
-      || (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_FILTERSMANAGEMENT) == INTERNALFILTERS && CSettings::GetInstance().GetString(CSettings::SETTING_DSPLAYER_VIDEORENDERER) == "EVR")
-      )
+    if (FAILED(CFilterCoreFactory::GetSubsFilter(pFileItem, filter, CGraphFilters::Get()->IsUsingDXVADecoder())))
     {
       CGraphFilters::Get()->SetHasSubFilter(false);
     }
     else 
     {
+      if (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_FILTERSMANAGEMENT) == INTERNALFILTERS 
+        && CSettings::GetInstance().GetString(CSettings::SETTING_DSPLAYER_VIDEORENDERER) == "EVR"
+        && filter == "xysubfilter_internal")
+        filter = "xyvsfilter_internal";
+
       if (FAILED(InsertFilter(filter, CGraphFilters::Get()->Subs)))
         return E_FAIL;
       CGraphFilters::Get()->SetHasSubFilter(true);
@@ -645,7 +648,7 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
       f.internalFilter = true;
       CGraphFilters::Get()->SetupLavSettings(LAVAUDIO, f.pBF);
     }
-    if (filterName == "xysubfilter_internal")
+    if (filterName == "xysubfilter_internal" || filterName == "xyvsfilter_internal")
       f.internalFilter = true;
 
     g_charsetConverter.wToUTF8(filter->GetName(), f.osdname);

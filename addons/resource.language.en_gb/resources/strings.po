@@ -19742,6 +19742,10 @@ msgctxt "#90025"
 msgid "This category contains settings governing how DSPlayer is configured."
 msgstr ""
 
+msgctxt "#90026"
+msgid "Configure the Internal filter Xy-VSFilter."
+msgstr ""
+
 msgctxt "#909001"
 msgid "Rus"
 msgstr ""

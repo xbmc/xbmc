@@ -373,6 +373,7 @@ public:
   static const std::string CSettings::SETTING_DSPLAYER_LAVVIDEO;
   static const std::string CSettings::SETTING_DSPLAYER_LAVAUDIO;
   static const std::string CSettings::SETTING_DSPLAYER_XYSUBFILTER;
+  static const std::string CSettings::SETTING_DSPLAYER_XYVSFILTER;
   static const std::string CSettings::SETTING_DSPLAYER_DEFAULTVIDEOPLAYER;
   static const std::string CSettings::SETTING_DSPLAYER_AUTOFILTERSETTINGS;
   static const std::string CSettings::SETTING_DSPLAYER_CHANGEREFRESHWITH;

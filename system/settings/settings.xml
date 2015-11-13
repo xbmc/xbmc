@@ -1333,6 +1333,14 @@
           </dependencies>
           <control type="button" format="action" />
         </setting>
+        <setting id="dsplayer.xyvsfilter" type="action" parent="dsplayer.filtersmanagement" label="55080" help="90026">
+          <level>0</level>
+          <dependencies>
+            <dependency type="visible" setting="dsplayer.filtersmanagement" operator="is">0</dependency>
+            <dependency type="visible" setting="dsplayer.videorenderer" operator="is">EVR</dependency>
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
         <setting id="dsplayer.extrafilter0" type="string" parent="dsplayer.filtersmanagement" label="55084" help="90018">
           <level>0</level>
           <default>[null]</default>

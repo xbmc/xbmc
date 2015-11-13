@@ -583,7 +583,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
     CGraphFilters::Get()->ShowInternalPPage(LAVVIDEO, false);
   else if (settingId == CSettings::SETTING_DSPLAYER_LAVAUDIO)
     CGraphFilters::Get()->ShowInternalPPage(LAVAUDIO, false);
-  else if (settingId == CSettings::SETTING_DSPLAYER_XYSUBFILTER)
+  else if (settingId == CSettings::SETTING_DSPLAYER_XYSUBFILTER || settingId == CSettings::SETTING_DSPLAYER_XYVSFILTER)
     CGraphFilters::Get()->ShowInternalPPage(XYSUBFILTER, true);
 #endif
   else if (settingId == CSettings::SETTING_VIDEOLIBRARY_IMPORT)

@@ -415,7 +415,6 @@ const std::string CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER = "general.addon
 const std::string CSettings::SETTING_GENERAL_ADDONBROKENFILTER = "general.addonbrokenfilter";
 
 #ifdef HAS_DS_PLAYER
-
 const std::string CSettings::SETTING_DSPLAYER_RULES = "dsplayer.rules";
 const std::string CSettings::SETTING_DSPLAYER_FILTERS = "dsplayer.filters";
 const std::string CSettings::SETTING_DSPLAYER_PLAYCORE = "dsplayer.playercore";
@@ -423,6 +422,7 @@ const std::string CSettings::SETTING_DSPLAYER_LAVSPLITTER = "dsplayer.lavsplitte
 const std::string CSettings::SETTING_DSPLAYER_LAVVIDEO = "dsplayer.lavvideo";
 const std::string CSettings::SETTING_DSPLAYER_LAVAUDIO = "dsplayer.lavaudio";
 const std::string CSettings::SETTING_DSPLAYER_XYSUBFILTER = "dsplayer.xysubfilter";
+const std::string CSettings::SETTING_DSPLAYER_XYVSFILTER = "dsplayer.xyvsfilter";
 const std::string CSettings::SETTING_DSPLAYER_DEFAULTVIDEOPLAYER = "dsplayer.defaultvideoplayer";
 const std::string CSettings::SETTING_DSPLAYER_AUTOFILTERSETTINGS = "dsplayer.autofiltersettings";
 const std::string CSettings::SETTING_DSPLAYER_CHANGEREFRESHWITH = "videoplayer.changerefreshwith";
@@ -448,10 +448,7 @@ const std::string CSettings::SETTING_DSPLAYER_DSAREALEFT = "dsplayer.dsarealeft"
 const std::string CSettings::SETTING_DSPLAYER_DSAREARIGHT = "dsplayer.dsarearight";
 const std::string CSettings::SETTING_DSPLAYER_DSAREATOP = "dsplayer.dsareatop";
 const std::string CSettings::SETTING_DSPLAYER_DSAREABOTTOM = "dsplayer.dsareabottom";
-
 #endif
-
-//todo dsplayer
 
 CSettings::CSettings()
   : m_initialized(false)
@@ -1091,6 +1088,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_DSPLAYER_LAVVIDEO);
   settingSet.insert(CSettings::SETTING_DSPLAYER_LAVAUDIO);
   settingSet.insert(CSettings::SETTING_DSPLAYER_XYSUBFILTER);
+  settingSet.insert(CSettings::SETTING_DSPLAYER_XYVSFILTER);
 #endif
   m_settingsManager->RegisterCallback(&CMediaSettings::GetInstance(), settingSet);
 

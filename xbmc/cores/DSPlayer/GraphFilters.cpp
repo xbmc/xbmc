@@ -122,7 +122,7 @@ void CGraphFilters::CreateInternalFilter(LAVFILTERS_TYPE type, IBaseFilter **ppB
   if (type == LAVSPLITTER)
     filterName = "lavsource_internal";
   if (type == XYSUBFILTER)
-    filterName = "xysubfilter_internal";
+    CSettings::GetInstance().GetString(CSettings::SETTING_DSPLAYER_VIDEORENDERER) == "EVR" ? filterName = "xyvsfilter_internal" : filterName = "xysubfilter_internal";
 
   CFGLoader *pLoader = new CFGLoader();
   pLoader->LoadConfig();
