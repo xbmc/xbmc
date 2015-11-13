@@ -309,9 +309,12 @@ void CDVDMediaCodecInfo::RenderUpdate(const CRect &SrcRect, const CRect &DestRec
   {
     CXBMCApp::get()->setVideoViewSurfaceRect(DestRect.x1, DestRect.y1, DestRect.x2, DestRect.y2);
     cur_rect = DestRect;
+    
+    // setVideoViewSurfaceRect is async, so skip rendering this frame
+    ReleaseOutputBuffer(false);
   }
-
-  ReleaseOutputBuffer(true);
+  else
+    ReleaseOutputBuffer(true);
 }
 
 
