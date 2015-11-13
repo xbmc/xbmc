@@ -33,9 +33,9 @@ static enum AEChannel OutputMaps[2][9] = {
   {AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_NULL}
 };
 
-#define AC3_DIVISOR (1536 * 1000)
-#define DTS_DIVISOR (512 * 1000)
-#define TRUEHD_DIVISOR (960 * 1000)
+#define AC3_DIVISOR 1536
+#define DTS_DIVISOR 512
+#define TRUEHD_DIVISOR 960
 #define CONSTANT_BUFFER_SIZE_DTSHD 16384
 #define CONSTANT_BUFFER_SIZE_TRUEHD 61440
 
@@ -99,19 +99,19 @@ void CDVDAudioCodecPassthroughRaw::GetData(DVDAudioFrame &frame)
     case AE_FMT_AC3_RAW:
     case AE_FMT_EAC3_RAW:
     {
-      m_sampleRate = unscaledbitrate / AC3_DIVISOR * 1000;
+      m_sampleRate = (unscaledbitrate + AC3_DIVISOR/2)  / AC3_DIVISOR;
       break;
     }
     case AE_FMT_TRUEHD_RAW:
     {
-      m_sampleRate = unscaledbitrate / TRUEHD_DIVISOR * 1000;
+        m_sampleRate = (unscaledbitrate + TRUEHD_DIVISOR/2) / TRUEHD_DIVISOR;
       break;
     }
 
     case AE_FMT_DTS_RAW:
     case AE_FMT_DTSHD_RAW:
     {
-      m_sampleRate = unscaledbitrate / DTS_DIVISOR * 1000;
+        m_sampleRate = (unscaledbitrate + DTS_DIVISOR/2) / DTS_DIVISOR;
       break;
     }
 
