@@ -146,7 +146,7 @@ CRect CDSRendererCallback::GetActiveVideoRect()
 {
   CRect activeVideoRect(0, 0, 0, 0);
 
-  if (UsingDS())
+  if (ReadyDS())
     activeVideoRect = m_pAllocatorCallback->GetActiveVideoRect();
 
   return activeVideoRect;
