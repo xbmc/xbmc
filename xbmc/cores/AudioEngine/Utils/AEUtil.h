@@ -64,14 +64,16 @@ struct AEDelayStatus
 {
   AEDelayStatus()
   : delay(0.0)
+  , maxcorrection(0.0)
   , tick(0)
   {}
 
   void   SetDelay(double d);
   double GetDelay();
 
-  double       delay;   /*!< delay in sink currently */
-  int64_t      tick;    /*!< timestamp when delay was calculated */
+  double delay;  // delay in sink currently
+  double maxcorrection; // time correction must not be greater than sink delay
+  int64_t tick;  // timestamp when delay was calculated
 };
 
 /**
