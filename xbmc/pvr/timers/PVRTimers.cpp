@@ -362,7 +362,7 @@ std::vector<CFileItemPtr> CPVRTimers::GetActiveRecordings(void) const
     for (VecTimerInfoTag::const_iterator timerIt = it->second->begin(); timerIt != it->second->end(); ++timerIt)
     {
       CPVRTimerInfoTagPtr current = *timerIt;
-      if (current->IsRecording())
+      if (current->IsRecording() && !current->IsRepeating())
       {
         CFileItemPtr fileItem(new CFileItem(current));
         tags.push_back(fileItem);
