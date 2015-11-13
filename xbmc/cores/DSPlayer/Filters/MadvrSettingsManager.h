@@ -24,7 +24,7 @@
 #pragma once
 
 #include "AllocatorCommon.h"
-#include "MadvrCallback.h"
+#include "DSRendererCallback.h"
 #include "MadvrSettings.h"
 
 

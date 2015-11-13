@@ -39,7 +39,7 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "input/Key.h"
-#include "MadvrCallback.h"
+#include "DSRendererCallback.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
@@ -91,7 +91,7 @@ void CGUIDialogMadvrZoom::SetupView()
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) == KODIGUI_LOAD_MADVR)
   {
     std::string profile;
-    CMadvrCallback::Get()->GetProfileActiveName("processing", &profile);
+    CDSRendererCallback::Get()->GetProfileActiveName("processing", &profile);
     if (profile != "")
     {
       CStdString sHeading;
@@ -130,18 +130,18 @@ void CGUIDialogMadvrZoom::InitializeSettings()
 
   StaticIntegerSettingOptions entries, entriesDoubleFactor, entriesQuadrupleFactor;
   CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
-  CMadvrCallback::Get()->LoadSettings(MADVR_LOAD_ZOOM);
+  CDSRendererCallback::Get()->LoadSettings(MADVR_LOAD_ZOOM);
 
   // NOSMALLSCALING
   entries.clear();
   entries.push_back(std::make_pair(70117, -1));
-  CMadvrCallback::Get()->AddEntry(MADVR_LIST_NOSMALLSCALING, &entries);
+  CDSRendererCallback::Get()->AddEntry(MADVR_LIST_NOSMALLSCALING, &entries);
   AddList(groupMadvrZoomArea, SET_ZOOM_NOSMALLSCALING, 70208, 0, static_cast<int>(madvrSettings.m_noSmallScaling), entries, 70208);
 
   // MOVESUBS
   entries.clear();
   entries.push_back(std::make_pair(70117, -1));
-  CMadvrCallback::Get()->AddEntry(MADVR_LIST_MOVESUBS, &entries);
+  CDSRendererCallback::Get()->AddEntry(MADVR_LIST_MOVESUBS, &entries);
   AddList(groupMadvrZoomArea, SET_ZOOM_MOVESUBS, 70217, 0, static_cast<int>(madvrSettings.m_moveSubs), entries, 70217);
 
   // AUTO DETECT BARS
@@ -150,37 +150,37 @@ void CGUIDialogMadvrZoom::InitializeSettings()
   // ARCHANGE
   entries.clear();
   entries.push_back(std::make_pair(70117, -1));
-  CMadvrCallback::Get()->AddEntry(MADVR_LIST_ARCHANGE, &entries);
+  CDSRendererCallback::Get()->AddEntry(MADVR_LIST_ARCHANGE, &entries);
   AddList(groupMadvrZoomControl, SET_ZOOM_ARCHANGE, 70221, 0, static_cast<int>(madvrSettings.m_arChange), entries, 70221);
 
   // QUICK ARCHANGE
   entries.clear();
   entries.push_back(std::make_pair(70117, -1));
-  CMadvrCallback::Get()->AddEntry(MADVR_LIST_QUICKARCHANGE, &entries);
+  CDSRendererCallback::Get()->AddEntry(MADVR_LIST_QUICKARCHANGE, &entries);
   AddList(groupMadvrZoomControl, SET_ZOOM_QUICKARCHANGE, 70227, 0, static_cast<int>(madvrSettings.m_quickArChange), entries, 70227);
 
   // SHIFTIMAGE
   entries.clear();
   entries.push_back(std::make_pair(70117, -1));
-  CMadvrCallback::Get()->AddEntry(MADVR_LIST_SHIFTIMAGE, &entries);
+  CDSRendererCallback::Get()->AddEntry(MADVR_LIST_SHIFTIMAGE, &entries);
   AddList(groupMadvrZoomControl, SET_ZOOM_SHIFTIMAGE, 70232, 0, static_cast<int>(madvrSettings.m_shiftImage), entries, 70232);
 
   // DONT CROP SUBS
   entries.clear();
   entries.push_back(std::make_pair(70117, -1));
-  CMadvrCallback::Get()->AddEntry(MADVR_LIST_DONTCROPSUBS, &entries);
+  CDSRendererCallback::Get()->AddEntry(MADVR_LIST_DONTCROPSUBS, &entries);
   AddList(groupMadvrZoomControl, SET_ZOOM_DONTCROPSUBS, 70235, 0, static_cast<int>(madvrSettings.m_dontCropSubs), entries, 70235);
 
   // CLEAN IMAGE BORDERS
   entries.clear();
   entries.push_back(std::make_pair(70117, -1));
-  CMadvrCallback::Get()->AddEntry(MADVR_LIST_CLEANBORDERS, &entries);
+  CDSRendererCallback::Get()->AddEntry(MADVR_LIST_CLEANBORDERS, &entries);
   AddList(groupMadvrZoomControl, SET_ZOOM_CLEANBORDERS, 70244, 0, static_cast<int>(madvrSettings.m_cleanBorders), entries, 70244);
 
   // REDUCE BIG BARS
   entries.clear();
   entries.push_back(std::make_pair(70117, -1));
-  CMadvrCallback::Get()->AddEntry(MADVR_LIST_REDUCEBIGBARS, &entries);
+  CDSRendererCallback::Get()->AddEntry(MADVR_LIST_REDUCEBIGBARS, &entries);
   AddList(groupMadvrZoomControl, SET_ZOOM_REDUCEBIGBARS, 70257, 0, static_cast<int>(madvrSettings.m_reduceBigBars), entries, 70257);
 
   // CROP SMALL BARS
@@ -204,57 +204,57 @@ void CGUIDialogMadvrZoom::OnSettingChanged(const CSetting *setting)
   if (settingId == SET_ZOOM_NOSMALLSCALING)
   {
     madvrSettings.m_noSmallScaling = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetBoolValue("noSmallScaling", "noSmallScalingValue", madvrSettings.m_noSmallScaling);
+    CDSRendererCallback::Get()->SetBoolValue("noSmallScaling", "noSmallScalingValue", madvrSettings.m_noSmallScaling);
   }
   else if (settingId == SET_ZOOM_MOVESUBS)
   {
     madvrSettings.m_moveSubs = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetMultiBool("moveSubs", "moveSubsUp", madvrSettings.m_moveSubs);
+    CDSRendererCallback::Get()->SetMultiBool("moveSubs", "moveSubsUp", madvrSettings.m_moveSubs);
   }
   else if (settingId == SET_ZOOM_DETECTBARS)
   {
     madvrSettings.m_detectBars = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("detectBars", madvrSettings.m_detectBars);
+    CDSRendererCallback::Get()->SetBool("detectBars", madvrSettings.m_detectBars);
   }
   else if (settingId == SET_ZOOM_ARCHANGE)
   {
     madvrSettings.m_arChange = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetBoolValue("arChange", "arChangeValue", madvrSettings.m_arChange);
+    CDSRendererCallback::Get()->SetBoolValue("arChange", "arChangeValue", madvrSettings.m_arChange);
   }
   else if (settingId == SET_ZOOM_QUICKARCHANGE)
   {
     madvrSettings.m_quickArChange = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetQuickArChange("", madvrSettings.m_quickArChange);
+    CDSRendererCallback::Get()->SetQuickArChange("", madvrSettings.m_quickArChange);
   }
   else if (settingId == SET_ZOOM_SHIFTIMAGE)
   {
     madvrSettings.m_shiftImage = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetMultiBool("shiftImage", "shiftImageUp", madvrSettings.m_shiftImage);
+    CDSRendererCallback::Get()->SetMultiBool("shiftImage", "shiftImageUp", madvrSettings.m_shiftImage);
   }
   else if (settingId == SET_ZOOM_DONTCROPSUBS)
   {
     madvrSettings.m_dontCropSubs = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetBoolValue("dontCropSubs", "dontCropSubsValue", madvrSettings.m_dontCropSubs);
+    CDSRendererCallback::Get()->SetBoolValue("dontCropSubs", "dontCropSubsValue", madvrSettings.m_dontCropSubs);
   }
   else if (settingId == SET_ZOOM_CLEANBORDERS)
   {
     madvrSettings.m_cleanBorders = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetCleanBorders("", madvrSettings.m_cleanBorders);
+    CDSRendererCallback::Get()->SetCleanBorders("", madvrSettings.m_cleanBorders);
   }
   else if (settingId == SET_ZOOM_REDUCEBIGBARS)
   {
     madvrSettings.m_reduceBigBars = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetBoolValue("reduceBigBars", "reduceBigBarsValues", madvrSettings.m_reduceBigBars);
+    CDSRendererCallback::Get()->SetBoolValue("reduceBigBars", "reduceBigBarsValues", madvrSettings.m_reduceBigBars);
   }
   else if (settingId == SET_ZOOM_CROPSMALLBARS)
   {
     madvrSettings.m_cropSmallBars = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("cropSmallBars", madvrSettings.m_cropSmallBars);
+    CDSRendererCallback::Get()->SetBool("cropSmallBars", madvrSettings.m_cropSmallBars);
   }
   else if (settingId == SET_ZOOM_CROPBARS)
   {
     madvrSettings.m_cropBars = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("cropBars", madvrSettings.m_cropBars);
+    CDSRendererCallback::Get()->SetBool("cropBars", madvrSettings.m_cropBars);
   }
   HideUnused();
 }

@@ -350,17 +350,17 @@ HRESULT CFGLoader::InsertVideoRenderer()
 
   if (videoRender == "EVR")
   { 
-    CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_EVR);
+    CDSRendererCallback::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_EVR);
     m_pFGF = new CFGFilterVideoRenderer(CLSID_EVRAllocatorPresenter, L"Kodi EVR");
   }
   if (videoRender == "VMR9")
   { 
-    CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_VMR9);
+    CDSRendererCallback::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_VMR9);
     m_pFGF = new CFGFilterVideoRenderer(CLSID_VMR9AllocatorPresenter, L"Kodi VMR9");
   }
   if (videoRender == "madVR")
   {
-    CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_MADVR);
+    CDSRendererCallback::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_MADVR);
     m_pFGF = new CFGFilterVideoRenderer(CLSID_madVRAllocatorPresenter, L"Kodi madVR");
   }
 

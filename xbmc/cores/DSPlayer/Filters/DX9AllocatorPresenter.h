@@ -70,7 +70,7 @@ class CDX9AllocatorPresenter
   : public ISubPicAllocatorPresenterImpl,
   public ID3DResource,
   public IPaintCallback,
-  public IEvrAllocatorCallback
+  public IDSRendererAllocatorCallback
 {
 public:
   CCritSec        m_VMR9AlphaBitmapLock;

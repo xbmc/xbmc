@@ -24,13 +24,13 @@
 
 #include "AllocatorCommon.h"
 #include "mvrInterfaces.h"
-#include "MadvrCallback.h"
+#include "DSRendererCallback.h"
 #include "MadvrSharedRender.h"
 #include "MadvrSettingsManager.h"
 
 class CmadVRAllocatorPresenter
   : public ISubPicAllocatorPresenterImpl,
-  public IMadvrAllocatorCallback
+  public IDSRendererAllocatorCallback
 {
   class COsdRenderCallback : public CUnknown, public IOsdRenderCallback, public CCritSec
   {
@@ -138,7 +138,7 @@ public:
   STDMETHODIMP GetDIB(BYTE* lpDib, DWORD* size);
   STDMETHODIMP SetPixelShader(LPCSTR pSrcData, LPCSTR pTarget);
 
-  // IMadvrAllocatorCallback
+  // IDSRendererAllocatorCallback
   virtual bool IsEnteringExclusive(){ return m_isEnteringExclusive; }
   virtual void EnableExclusive(bool bEnable);
   virtual void SetMadvrPixelShader();

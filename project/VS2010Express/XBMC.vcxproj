@@ -267,7 +267,7 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSPlayer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSPlayerDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSPropertyPage.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\EVRCallback.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSRendererCallback.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\ExternalPixelShader.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\FGFilter.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\FGLoader.cpp" />
@@ -291,7 +291,6 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileReader.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\GraphFilters.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\MadvrCallback.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\PixelShaderList.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\PVR\DSArgusTV.cpp" />
@@ -1007,7 +1006,7 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSPlayer.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSPlayerDatabase.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSPropertyPage.h" />
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\EVRCallback.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSRendererCallback.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\ExternalPixelShader.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\FGFilter.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\FGLoader.h" />
@@ -1046,7 +1045,6 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\GraphFilters.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\IPaintCallback.h" />
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\MadvrCallback.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\moreuuids.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderList.h" />

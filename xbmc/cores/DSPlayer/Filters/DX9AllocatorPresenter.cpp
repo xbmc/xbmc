@@ -224,8 +224,8 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
 {
 
 
-  CEvrCallback::Get()->Register((IEvrAllocatorCallback*)this);
-  CEvrCallback::Get()->Register((IEvrPaintCallback*)this);
+  CDSRendererCallback::Get()->Register((IDSRendererAllocatorCallback*)this);
+  CDSRendererCallback::Get()->Register((IDSRendererPaintCallback*)this);
   m_pEvrShared = DNew CEvrSharedRender();
   m_firstBoot = true;
   g_Windowing.Register(this);
@@ -321,7 +321,7 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
 
 CDX9AllocatorPresenter::~CDX9AllocatorPresenter()
 {
-  CEvrCallback::Destroy();
+  CDSRendererCallback::Destroy();
   SAFE_DELETE(m_pEvrShared);
   g_Windowing.Unregister(this);
   g_renderManager.UnregisterCallback();
@@ -2923,7 +2923,7 @@ void CDX9AllocatorPresenter::OnPaint(CRect destRect)
   if (m_firstBoot)
   {
     CDSPlayer::SetDsWndVisible(true);
-    CEvrCallback::Get()->SetRenderOnEvr(true);
+    CDSRendererCallback::Get()->SetRenderOnDS(true);
     g_advancedSettings.m_guiAlgorithmDirtyRegions = DIRTYREGION_SOLVER_FILL_VIEWPORT_ALWAYS;
     m_firstBoot = false;
   }
@@ -2935,13 +2935,13 @@ void CDX9AllocatorPresenter::OnPaint(CRect destRect)
 
   m_pD3DDev->BeginScene();
   m_pD3DDev->Clear(0, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
-  m_pEvrShared->Render(EVR_LAYER_UNDER);
+  m_pEvrShared->Render(RENDER_LAYER_UNDER);
 
   //Need to be true for vsync
   Paint(bPaintAll);
   bPaintAll = true;
 
-  m_pEvrShared->Render(EVR_LAYER_OVER);
+  m_pEvrShared->Render(RENDER_LAYER_OVER);
 
   m_pD3DDev->EndScene();
   m_pD3DDev->Present(NULL, NULL, NULL, NULL);

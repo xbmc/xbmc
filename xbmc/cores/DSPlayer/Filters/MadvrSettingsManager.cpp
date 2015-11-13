@@ -33,7 +33,7 @@ const std::string CMadvrSettingsManager::DSGROUP = "DSPlayer Profile Group";
 CMadvrSettingsManager::CMadvrSettingsManager(IUnknown* pUnk)
 {
   m_pDXR = pUnk;
-  CMadvrCallback::Get()->Register(this);
+  CDSRendererCallback::Get()->Register(this);
   InitSettings();
 }
 

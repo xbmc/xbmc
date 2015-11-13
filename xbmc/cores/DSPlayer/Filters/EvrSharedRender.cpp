@@ -120,7 +120,7 @@ HRESULT CEvrSharedRender::CreateTextures(ID3D11Device* pD3DDeviceKodi, IDirect3D
   m_dwWidth = width;
   m_dwHeight = height;
 
-  CEvrCallback::Get()->Register(this);
+  CDSRendererCallback::Get()->Register(this);
 
   // Create VertexBuffer
   if (FAILED(hr = m_pD3DDeviceEvr->CreateVertexBuffer(sizeof(VID_FRAME_VERTEX) * 4, D3DUSAGE_WRITEONLY, D3DFVF_VID_FRAME_VERTEX, D3DPOOL_DEFAULT, &m_pEvrVertexBuffer, NULL)))
@@ -141,9 +141,9 @@ HRESULT CEvrSharedRender::CreateTextures(ID3D11Device* pD3DDeviceKodi, IDirect3D
   return hr;
 }
 
-HRESULT CEvrSharedRender::Render(EVR_RENDER_LAYER layer)
+HRESULT CEvrSharedRender::Render(DS_RENDER_LAYER layer)
 {
-  if (!CEvrCallback::Get()->GetRenderOnEvr() || (g_graphicsContext.IsFullScreenVideo() && layer == EVR_LAYER_UNDER))
+  if (!CDSRendererCallback::Get()->GetRenderOnDS() || (g_graphicsContext.IsFullScreenVideo() && layer == RENDER_LAYER_UNDER))
     return S_FALSE;
 
   // Render the GUI on EVR
@@ -152,16 +152,16 @@ HRESULT CEvrSharedRender::Render(EVR_RENDER_LAYER layer)
   return S_OK;
 }
 
-HRESULT CEvrSharedRender::RenderEvr(EVR_RENDER_LAYER layer)
+HRESULT CEvrSharedRender::RenderEvr(DS_RENDER_LAYER layer)
 {
   HRESULT hr = E_UNEXPECTED;
 
   // If the over layer it's empty skip the rendering of the under layer and drawn everything over EVR
-  if (layer == EVR_LAYER_UNDER && !m_bGuiVisibleOver)
+  if (layer == RENDER_LAYER_UNDER && !m_bGuiVisibleOver)
     return hr;
 
-  if (layer == EVR_LAYER_OVER)
-    m_bGuiVisibleOver ? layer = EVR_LAYER_OVER : layer = EVR_LAYER_UNDER;
+  if (layer == RENDER_LAYER_OVER)
+    m_bGuiVisibleOver ? layer = RENDER_LAYER_OVER : layer = RENDER_LAYER_UNDER;
 
   // Store EVR States
   if (FAILED(hr = StoreEvrDeviceState()))
@@ -188,8 +188,8 @@ HRESULT CEvrSharedRender::RenderEvr(EVR_RENDER_LAYER layer)
 
 void CEvrSharedRender::RenderToUnderTexture()
 {
-  CEvrCallback::Get()->SetCurrentVideoLayer(EVR_LAYER_UNDER);
-  CEvrCallback::Get()->ResetRenderCount();
+  CDSRendererCallback::Get()->SetCurrentVideoLayer(RENDER_LAYER_UNDER);
+  CDSRendererCallback::Get()->ResetRenderCount();
 
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
   ID3D11RenderTargetView* pSurface11;
@@ -202,7 +202,7 @@ void CEvrSharedRender::RenderToUnderTexture()
 
 void CEvrSharedRender::RenderToOverTexture()
 {
-  CEvrCallback::Get()->SetCurrentVideoLayer(EVR_LAYER_OVER);
+  CDSRendererCallback::Get()->SetCurrentVideoLayer(RENDER_LAYER_OVER);
 
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
   ID3D11RenderTargetView* pSurface11;
@@ -215,8 +215,8 @@ void CEvrSharedRender::RenderToOverTexture()
 
 void CEvrSharedRender::EndRender()
 {
-  m_bGuiVisible = CEvrCallback::Get()->GuiVisible();
-  m_bGuiVisibleOver = CEvrCallback::Get()->GuiVisible(EVR_LAYER_OVER);
+  m_bGuiVisible = CDSRendererCallback::Get()->GuiVisible();
+  m_bGuiVisibleOver = CDSRendererCallback::Get()->GuiVisible(RENDER_LAYER_OVER);
 
   if (!m_bGuiVisibleOver && !g_graphicsContext.IsFullScreenVideo())
     g_renderManager.Render(true, 0, 255);
@@ -228,11 +228,11 @@ void CEvrSharedRender::EndRender()
   g_renderManager.OnAfterPresent(); // We need to do some stuff after Present
 }
 
-HRESULT CEvrSharedRender::RenderTexture(EVR_RENDER_LAYER layer)
+HRESULT CEvrSharedRender::RenderTexture(DS_RENDER_LAYER layer)
 {
   IDirect3DTexture9* pTexture9;
 
-  layer == EVR_LAYER_UNDER ? pTexture9 = m_pEvrUnderTexture : pTexture9 = m_pEvrOverTexture;
+  layer == RENDER_LAYER_UNDER ? pTexture9 = m_pEvrUnderTexture : pTexture9 = m_pEvrOverTexture;
 
   HRESULT hr = m_pD3DDeviceEvr->SetStreamSource(0, m_pEvrVertexBuffer, 0, sizeof(VID_FRAME_VERTEX));
   if (FAILED(hr))

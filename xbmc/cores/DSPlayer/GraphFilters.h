@@ -128,16 +128,6 @@ enum FILTERSMAN_TYPE
   DSMERITS,
 };
 
-
-/*MADVR*/
-enum DIRECTSHOW_RENDERER
-{
-  DIRECTSHOW_RENDERER_VMR9 = 1,
-  DIRECTSHOW_RENDERER_EVR = 2,
-  DIRECTSHOW_RENDERER_MADVR = 3,
-  DIRECTSHOW_RENDERER_UNDEF = 4
-};
-
 /** @brief Centralize graph filters management
 
   Our graph can contains Sources, Splitters, Audio renderers, Audio decoders, Video decoders and Extras filters. This singleton class centralize all the data related to these filters.
@@ -179,9 +169,6 @@ public:
    */
   SDVDFilters DVD;
 
-  /// @return The current renderer type (EVR or VMR9)
-  DIRECTSHOW_RENDERER GetCurrentRenderer() { return m_CurrentRenderer; }
-
   /// @return True if using DXVA, false otherwise
   bool IsUsingDXVADecoder() { return m_UsingDXVADecoder; }
 
@@ -190,7 +177,6 @@ public:
 
   void SetIsUsingDXVADecoder(bool val) { m_UsingDXVADecoder = val; }
   void SetIsDVD(bool val) { m_isDVD = val; }
-  void SetCurrentRenderer(DIRECTSHOW_RENDERER renderer) { m_CurrentRenderer = renderer; }
 
   std::string GetDefaultRulePriority() { return m_defaultRulePriority; }
   void SetDefaultRulePriority(std::string sValue) { m_defaultRulePriority = sValue; }
@@ -233,6 +219,5 @@ private:
   bool m_UsingDXVADecoder;
   std::string m_defaultRulePriority;
   Com::SmartPtr<IBaseFilter> m_pBF;
-  DIRECTSHOW_RENDERER m_CurrentRenderer;
   IDirect3DDevice9 * m_pD3DDevice;
 };

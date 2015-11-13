@@ -51,7 +51,7 @@
 
 #ifdef HAS_DS_PLAYER
 #include "DSPlayer.h"
-#include "MadvrCallback.h"
+#include "DSRendererCallback.h"
 #endif
 
 #ifdef TARGET_WINDOWS
@@ -827,7 +827,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
   }
 #ifdef HAS_DS_PLAYER
   LRESULT ret = 0;
-  return (CMadvrCallback::Get()->ParentWindowProc(hWnd, uMsg, &wParam, &lParam, &ret)) ? ret : DefWindowProc(hWnd, uMsg, wParam, lParam);
+  return (CDSRendererCallback::Get()->ParentWindowProc(hWnd, uMsg, &wParam, &lParam, &ret)) ? ret : DefWindowProc(hWnd, uMsg, wParam, lParam);
 #else
   return(DefWindowProc(hWnd, uMsg, wParam, lParam));
 #endif

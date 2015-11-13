@@ -90,7 +90,7 @@ CmadVRAllocatorPresenter::~CmadVRAllocatorPresenter()
   g_advancedSettings.m_guiAlgorithmDirtyRegions = m_kodiGuiDirtyAlgo;
   
   // the order is important here
-  CMadvrCallback::Destroy();
+  CDSRendererCallback::Destroy();
   SAFE_DELETE(m_pMadvrShared);
   m_pSubPicQueue = nullptr;
   m_pAllocator = nullptr;
@@ -290,7 +290,7 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
 
     // Begin Render Kodi 
     CDSPlayer::SetDsWndVisible(true);
-    CMadvrCallback::Get()->SetRenderOnMadvr(true);
+    CDSRendererCallback::Get()->SetRenderOnDS(true);
 
     // Update Display Latency for madVR (sets differents delay for each refresh as configured in advancedsettings)
     if (m_updateDisplayLatencyForMadvr)
@@ -354,7 +354,7 @@ STDMETHODIMP CmadVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   // Configure initial Madvr Settings
   ConfigureMadvr();
 
-  CMadvrCallback::Get()->Register(this);
+  CDSRendererCallback::Get()->Register(this);
 
   (*ppRenderer = (IUnknown*)(INonDelegatingUnknown*)(this))->AddRef();
 

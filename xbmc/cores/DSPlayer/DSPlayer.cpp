@@ -62,7 +62,7 @@
 #include "cores/DSPlayer/dsgraph.h"
 #include "settings/MediaSettings.h"
 #include "settings/DisplaySettings.h"
-#include "MadvrCallback.h"
+#include "DSRendererCallback.h"
 
 using namespace PVR;
 using namespace std;
@@ -228,12 +228,8 @@ void CDSPlayer::ShowEditionDlg(bool playStart)
     }
   }
 
-  // Start madVR render
-  if (CMadvrCallback::Get()->UsingMadvr())
-  {
-    PostMessage(new CDSMsgBool(CDSMsg::PLAYER_PLAY, true), false);
-    PostMessage(new CDSMsgBool(CDSMsg::PLAYER_PAUSE, true), false);
-  }
+  PostMessage(new CDSMsgBool(CDSMsg::PLAYER_PLAY, true), false);
+  PostMessage(new CDSMsgBool(CDSMsg::PLAYER_PAUSE, true), false);
 
   CGUIDialogSelect *dialog = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
 
@@ -360,7 +356,7 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
       m_HasAudio = true;
 
       // Madvr Settings
-      if (CMadvrCallback::Get()->UsingMadvr())
+      if (CDSRendererCallback::Get()->UsingDS())
         SetMadvrResolution();
 
       if (CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_SHOWBDTITLECHOICE))
@@ -1103,7 +1099,7 @@ void CDSPlayer::SetMadvrResolution()
     return;
 
   CStreamDetails streamDetails;
-  int res = CMadvrCallback::Get()->VideoDimsToResolution(GetPictureWidth(), GetPictureHeight());
+  int res = CDSRendererCallback::Get()->VideoDimsToResolution(GetPictureWidth(), GetPictureHeight());
   std::string str = g_application.CurrentFileItem().GetVideoInfoTag()->m_strShowTitle;
 
   CMediaSettings::GetInstance().GetCurrentMadvrSettings().m_Resolution = res;

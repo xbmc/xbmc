@@ -33,8 +33,7 @@
 #include "GUIWindowManager.h"
 #include "video/VideoReferenceClock.h"
 #ifdef HAS_DS_PLAYER
-#include "MadvrCallback.h"
-#include "EVRCallback.h"
+#include "DSRendererCallback.h"
 #endif
 
 using namespace KODI::MESSAGING;
@@ -414,7 +413,7 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
     //pause the player during the refreshrate change
     int delay = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_PAUSEAFTERREFRESHCHANGE);
 #ifdef HAS_DS_PLAYER
-    if (delay > 0 && CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF && g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPausedPlayback() && !CMadvrCallback::Get()->UsingMadvr())
+    if (delay > 0 && CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF && g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPausedPlayback() && !CDSRendererCallback::Get()->UsingDS(DIRECTSHOW_RENDERER_MADVR))
 #else
     if (delay > 0 && CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF && g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPausedPlayback())
 #endif
@@ -818,7 +817,7 @@ void CGraphicContext::GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, f
       && CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_OSDINTOACTIVEAREA))
     {
       g_guiSkinzoom = 0;
-      CMadvrCallback::Get()->ReadyMadvr() ? activeRect = CMadvrCallback::Get()->GetActiveVideoRect() : activeRect = CEvrCallback::Get()->GetActiveVideoRect();
+      activeRect = CDSRendererCallback::Get()->GetActiveVideoRect();
 
       if (activeRect.x2 - activeRect.x1 > 0 || activeRect.y2 - activeRect.y1 > 0)
       {

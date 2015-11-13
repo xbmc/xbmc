@@ -54,7 +54,7 @@
 #include "utils/timeutils.h"
 #include "utils/ipinhook.h"
 #include "DSInputStreamPVRManager.h"
-#include "MadvrCallback.h"
+#include "DSRendererCallback.h"
 
 enum
 {
@@ -135,9 +135,9 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   }
 
   // if needed set resolution to match fps then set pixelshader & settings for madVR
-  CMadvrCallback::Get()->SetResolution();
-  CMadvrCallback::Get()->SetMadvrPixelShader();
-  CMadvrCallback::Get()->RestoreSettings();
+  CDSRendererCallback::Get()->SetResolution();
+  CDSRendererCallback::Get()->SetMadvrPixelShader();
+  CDSRendererCallback::Get()->RestoreSettings();
 
   //TODO Ti-Ben
   //with the vmr9 we need to add AM_DVD_SWDEC_PREFER  AM_DVD_VMR9_ONLY on the ivmr9config prefs
@@ -178,7 +178,7 @@ void CDSGraph::CloseFile()
 
   if (m_pGraphBuilder)
   {
-    CMadvrCallback::Get()->SetRenderOnMadvr(false);
+    CDSRendererCallback::Get()->SetRenderOnDS(false);
 
     if (m_pAMOpenProgress)
       m_pAMOpenProgress->AbortOperation();
@@ -210,7 +210,7 @@ void CDSGraph::CloseFile()
     CGraphFilters::Get()->DVD.Clear();
 
     if (CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_EXITMADVRFULLSCREEN))
-      CMadvrCallback::Get()->EnableExclusive(false);
+      CDSRendererCallback::Get()->EnableExclusive(false);
 
     pFilterGraph.Release();
 
@@ -282,7 +282,7 @@ void CDSGraph::UpdateTime()
   // Duration time may increase during playback of in-progress recordings
   UpdateTotalTime();
 
-  if ((CGraphFilters::Get()->VideoRenderer.pQualProp) && m_iCurrentFrameRefreshCycle <= 0 && !CMadvrCallback::Get()->UsingMadvr())
+  if ((CGraphFilters::Get()->VideoRenderer.pQualProp) && m_iCurrentFrameRefreshCycle <= 0 && !CDSRendererCallback::Get()->UsingDS(DIRECTSHOW_RENDERER_MADVR))
   {
     //this is too slow if we are doing it on every UpdateTime
     int avgRate;
@@ -346,7 +346,7 @@ void CDSGraph::UpdateMadvrWindowPosition()
 {
   CRect srcRect, destRect, viewRect;
   g_renderManager.GetVideoRect(srcRect, destRect, viewRect);
-  CMadvrCallback::Get()->SetMadvrPosition(viewRect, destRect);
+  CDSRendererCallback::Get()->SetMadvrPosition(viewRect, destRect);
 }
 
 void CDSGraph::UpdateWindowPosition()
@@ -889,7 +889,7 @@ CStdString CDSGraph::GetVideoInfo()
     videoInfo += m_pStrCurrentFrameRate.c_str();
 
   CStdString strDXVA;
-  if (!CMadvrCallback::Get()->UsingMadvr())
+  if (!CDSRendererCallback::Get()->UsingDS(DIRECTSHOW_RENDERER_MADVR))
     strDXVA = GetDXVADecoderDescription();
 
   if (!strDXVA.empty())

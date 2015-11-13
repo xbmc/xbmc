@@ -35,7 +35,7 @@
 #include "settings/AdvancedSettings.h"
 #include "cores/VideoRenderers/RenderFlags.h"
 #ifdef HAS_DS_PLAYER
-#include "MadvrCallback.h"
+#include "DSRendererCallback.h"
 #include "Application.h"
 #include "DSPlayer.h"
 #endif
@@ -566,7 +566,7 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
     m_oldRenderOrientation = m_renderOrientation;
   }
 #ifdef HAS_DS_PLAYER
-  if (CMadvrCallback::Get()->UsingMadvr() && CMadvrCallback::Get()->GetMadvrRect() != m_destRect)
+  if (CDSRendererCallback::Get()->UsingDS(DIRECTSHOW_RENDERER_MADVR) && CDSRendererCallback::Get()->GetMadvrRect() != m_destRect)
     CDSPlayer::PostMessage(new CDSMsg(CDSMsg::MADVR_SET_WINDOW_POS), false);
 #endif
 }

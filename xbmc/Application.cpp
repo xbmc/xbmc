@@ -154,8 +154,7 @@
 #include "dialogs/GUIDialogSimpleMenu.h"
 #include "addons/GUIDialogAddonSettings.h"
 #ifdef HAS_DS_PLAYER
-#include "MadvrCallback.h"
-#include "EvrCallback.h"
+#include "DSRendererCallback.h"
 #include "DSPlayerDatabase.h"
 #endif
 
@@ -1999,8 +1998,7 @@ void CApplication::Render()
     return;
 
 #ifdef HAS_DS_PLAYER
-  CMadvrCallback::Get()->RenderToUnderTexture();
-  CEvrCallback::Get()->RenderToUnderTexture();
+  CDSRendererCallback::Get()->RenderToUnderTexture();
 #endif
   CDirtyRegionList dirtyRegions;
 
@@ -2036,8 +2034,7 @@ void CApplication::Render()
 
   g_Windowing.EndRender();
 #ifdef HAS_DS_PLAYER
-  CEvrCallback::Get()->EndRender();
-  CMadvrCallback::Get()->EndRender();
+  CDSRendererCallback::Get()->EndRender();
 #endif
 
   // reset our info cache - we do this at the end of Render so that it is
@@ -2075,13 +2072,13 @@ void CApplication::Render()
   }
 
 #ifdef HAS_DS_PLAYER   
-  if (!CMadvrCallback::Get()->ReadyMadvr() && !CEvrCallback::Get()->ReadyEvr())
+  if (!CDSRendererCallback::Get()->ReadyDS())
 #endif
   if (flip)
     g_graphicsContext.Flip(dirtyRegions);
 
 #ifdef HAS_DS_PLAYER    
-  if (!CMadvrCallback::Get()->ReadyMadvr())
+  if (!CDSRendererCallback::Get()->ReadyDS())
 #endif
   if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
   {
@@ -3973,7 +3970,7 @@ void CApplication::LoadVideoSettings(const CFileItem& item)
     }
 
     CStreamDetails streamDetails = item.GetVideoInfoTag()->m_streamDetails;
-    int res = CMadvrCallback::Get()->VideoDimsToResolution(streamDetails.GetVideoWidth(), streamDetails.GetVideoHeight());
+    int res = CDSRendererCallback::Get()->VideoDimsToResolution(streamDetails.GetVideoWidth(), streamDetails.GetVideoHeight());
     std::string tvShowName = item.GetVideoInfoTag()->m_strShowTitle;
 
     CLog::Log(LOGDEBUG, "Loading madvr settings for %s with resolution id: %i", item.GetPath().c_str(), res);

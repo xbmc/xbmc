@@ -45,7 +45,7 @@
 #include "utils/CharsetConverter.h"
 #include "guilib/LocalizeStrings.h"
 #include "application.h"
-#include "MadvrCallback.h"
+#include "DSRendererCallback.h"
 #include "DSPlayerDatabase.h"
 #endif
 
@@ -150,112 +150,112 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
   else if (settingId == SETTING_MADVR_DEINT_ACTIVE)
   { 
     madvrSettings.m_deintactive = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetDeintActive("", madvrSettings.m_deintactive);
+    CDSRendererCallback::Get()->SetDeintActive("", madvrSettings.m_deintactive);
   }
   else if (settingId == SETTING_MADVR_DEINT_FORCE)
   {
     madvrSettings.m_deintforce = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetStr("contentType", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_DEINTFORCE, madvrSettings.m_deintforce));
+    CDSRendererCallback::Get()->SetStr("contentType", CDSRendererCallback::Get()->GetSettingsName(MADVR_LIST_DEINTFORCE, madvrSettings.m_deintforce));
   }
   else if (settingId == SETTING_MADVR_DEINT_LOOKPIXELS)
   {
     madvrSettings.m_deintlookpixels = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("scanPartialFrame", madvrSettings.m_deintlookpixels);
+    CDSRendererCallback::Get()->SetBool("scanPartialFrame", madvrSettings.m_deintlookpixels);
   }
   else if (settingId == SETTING_MADVR_SMOOTHMOTION)
   {
     madvrSettings.m_smoothMotion = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetSmoothmotion("", madvrSettings.m_smoothMotion);
+    CDSRendererCallback::Get()->SetSmoothmotion("", madvrSettings.m_smoothMotion);
   }
   else if (settingId == SETTING_MADVR_DITHERING)
   {
     madvrSettings.m_dithering = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetDithering("", madvrSettings.m_dithering);
+    CDSRendererCallback::Get()->SetDithering("", madvrSettings.m_dithering);
   }
   else if (settingId == SETTING_MADVR_DITHERINGCOLORED)
   {
     madvrSettings.m_ditheringColoredNoise = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("coloredDither", madvrSettings.m_ditheringColoredNoise);
+    CDSRendererCallback::Get()->SetBool("coloredDither", madvrSettings.m_ditheringColoredNoise);
   }
   else if (settingId == SETTING_MADVR_DITHERINGEVERYFRAME)
   {
     madvrSettings.m_ditheringEveryFrame = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("dynamicDither", madvrSettings.m_ditheringEveryFrame);
+    CDSRendererCallback::Get()->SetBool("dynamicDither", madvrSettings.m_ditheringEveryFrame);
   }
   else if (settingId == SETTING_MADVR_DEBAND)
   {
     madvrSettings.m_deband = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("debandActive", madvrSettings.m_deband);
+    CDSRendererCallback::Get()->SetBool("debandActive", madvrSettings.m_deband);
   }
   else if (settingId == SETTING_MADVR_DEBANDLEVEL)
   {
     madvrSettings.m_debandLevel = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetInt("debandLevel", madvrSettings.m_debandLevel);
+    CDSRendererCallback::Get()->SetInt("debandLevel", madvrSettings.m_debandLevel);
   }
   else if (settingId == SETTING_MADVR_DEBANDFADELEVEL)
   {
     madvrSettings.m_debandFadeLevel = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetInt("debandFadeLevel", madvrSettings.m_debandFadeLevel);
+    CDSRendererCallback::Get()->SetInt("debandFadeLevel", madvrSettings.m_debandFadeLevel);
   }
   else if (settingId == SET_IMAGE_SHARPENEDGES)
   {
     madvrSettings.m_sharpenEdges = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("sharpenEdges", madvrSettings.m_sharpenEdges);
+    CDSRendererCallback::Get()->SetBool("sharpenEdges", madvrSettings.m_sharpenEdges);
   }
   else if (settingId == SET_IMAGE_SHARPENEDGES_STRENGTH)
   {
     madvrSettings.m_sharpenEdgesStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("sharpenEdgesStrength", madvrSettings.m_sharpenEdgesStrength, 10);
+    CDSRendererCallback::Get()->SetFloat("sharpenEdgesStrength", madvrSettings.m_sharpenEdgesStrength, 10);
   }
   else if (settingId == SET_IMAGE_CRISPENEDGES)
   {
     madvrSettings.m_crispenEdges = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("crispenEdges", madvrSettings.m_crispenEdges);
+    CDSRendererCallback::Get()->SetBool("crispenEdges", madvrSettings.m_crispenEdges);
   }
   else if (settingId == SET_IMAGE_CRISPENEDGES_STRENGTH)
   {
     madvrSettings.m_crispenEdgesStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("crispenEdgesStrength", madvrSettings.m_crispenEdgesStrength, 10);
+    CDSRendererCallback::Get()->SetFloat("crispenEdgesStrength", madvrSettings.m_crispenEdgesStrength, 10);
   }
   else if (settingId == SET_IMAGE_THINEDGES)
   {
     madvrSettings.m_thinEdges = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("thinEdges", madvrSettings.m_thinEdges);
+    CDSRendererCallback::Get()->SetBool("thinEdges", madvrSettings.m_thinEdges);
   }
   else if (settingId == SET_IMAGE_THINEDGES_STRENGTH)
   {
     madvrSettings.m_thinEdgesStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("thinEdgesStrength", madvrSettings.m_thinEdgesStrength, 10);
+    CDSRendererCallback::Get()->SetFloat("thinEdgesStrength", madvrSettings.m_thinEdgesStrength, 10);
   }
   else if (settingId == SET_IMAGE_ENHANCEDETAIL)
   {
     madvrSettings.m_enhanceDetail = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("enhanceDetail", madvrSettings.m_enhanceDetail);
+    CDSRendererCallback::Get()->SetBool("enhanceDetail", madvrSettings.m_enhanceDetail);
   }
   else if (settingId == SET_IMAGE_ENHANCEDETAIL_STRENGTH)
   {
     madvrSettings.m_enhanceDetailStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("enhanceDetailStrength", madvrSettings.m_enhanceDetailStrength, 10);
+    CDSRendererCallback::Get()->SetFloat("enhanceDetailStrength", madvrSettings.m_enhanceDetailStrength, 10);
   }
   else if (settingId == SET_IMAGE_LUMASHARPEN)
   {
     madvrSettings.m_lumaSharpen = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("lumaSharpen", madvrSettings.m_lumaSharpen);
+    CDSRendererCallback::Get()->SetBool("lumaSharpen", madvrSettings.m_lumaSharpen);
   }
   else if (settingId == SET_IMAGE_LUMASHARPEN_STRENGTH)
   {
     madvrSettings.m_lumaSharpenStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("lumaSharpenStrength", madvrSettings.m_lumaSharpenStrength);
+    CDSRendererCallback::Get()->SetFloat("lumaSharpenStrength", madvrSettings.m_lumaSharpenStrength);
   }
   else if (settingId == SET_IMAGE_ADAPTIVESHARPEN)
   {
     madvrSettings.m_adaptiveSharpen = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("adaptiveSharpen", madvrSettings.m_adaptiveSharpen);
+    CDSRendererCallback::Get()->SetBool("adaptiveSharpen", madvrSettings.m_adaptiveSharpen);
   }
   else if (settingId == SET_IMAGE_ADAPTIVESHARPEN_STRENGTH)
   {
     madvrSettings.m_adaptiveSharpenStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("adaptiveSharpenStrength", madvrSettings.m_adaptiveSharpenStrength, 10);
+    CDSRendererCallback::Get()->SetFloat("adaptiveSharpenStrength", madvrSettings.m_adaptiveSharpenStrength, 10);
   }
   else if (settingId == VIDEO_SETTINGS_DS_STATS)
   {
@@ -558,7 +558,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
 {
   CGUIDialogSettingsManualBase::InitializeSettings();
 
-  m_isMadvr = CMadvrCallback::Get()->UsingMadvr() && (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) > KODIGUI_NEVER);
+  m_isMadvr = CDSRendererCallback::Get()->UsingDS(DIRECTSHOW_RENDERER_MADVR) && (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) > KODIGUI_NEVER);
 
   CSettingCategory *category = AddCategory("audiosubtitlesettings", -1);
   if (category == NULL)
@@ -636,7 +636,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
   CVideoSettings &videoSettings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
 #ifdef HAS_DS_PLAYER
   CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
-  CMadvrCallback::Get()->LoadSettings(MADVR_LOAD_PROCESSING);
+  CDSRendererCallback::Get()->LoadSettings(MADVR_LOAD_PROCESSING);
 #endif
 
   StaticIntegerSettingOptions entries;
@@ -772,12 +772,12 @@ void CGUIDialogVideoSettings::InitializeSettings()
       // MADVR DEINT
       entries.clear();
       entries.push_back(std::make_pair(70117, -1));
-      CMadvrCallback::Get()->AddEntry(MADVR_LIST_DEINTACTIVE, &entries);
+      CDSRendererCallback::Get()->AddEntry(MADVR_LIST_DEINTACTIVE, &entries);
 
       AddList(groupMadvrProcessing, SETTING_MADVR_DEINT_ACTIVE, 70200, 0, static_cast<int>(madvrSettings.m_deintactive), entries,70200);
 
       entries.clear();
-      CMadvrCallback::Get()->AddEntry(MADVR_LIST_DEINTFORCE, &entries);
+      CDSRendererCallback::Get()->AddEntry(MADVR_LIST_DEINTFORCE, &entries);
 
       AddList(groupMadvrProcessing, SETTING_MADVR_DEINT_FORCE, 70201, 0, static_cast<int>(madvrSettings.m_deintforce), entries, 70201);
       AddToggle(groupMadvrProcessing, SETTING_MADVR_DEINT_LOOKPIXELS, 70207, 0, madvrSettings.m_deintlookpixels);
@@ -785,7 +785,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
       // MADVR DEBAND
       AddToggle(groupMadvrProcessing, SETTING_MADVR_DEBAND, 70500, 0, madvrSettings.m_deband);
       entries.clear();
-      CMadvrCallback::Get()->AddEntry(MADVR_LIST_DEBAND, &entries);
+      CDSRendererCallback::Get()->AddEntry(MADVR_LIST_DEBAND, &entries);
 
       AddList(groupMadvrProcessing, SETTING_MADVR_DEBANDLEVEL, 70501, 0, static_cast<int>(madvrSettings.m_debandLevel), entries, 70501);
       AddList(groupMadvrProcessing, SETTING_MADVR_DEBANDFADELEVEL, 70502, 0, static_cast<int>(madvrSettings.m_debandFadeLevel), entries, 70502);
@@ -814,14 +814,14 @@ void CGUIDialogVideoSettings::InitializeSettings()
       // MADVR SMOOTHMOTION
       entries.clear();
       entries.push_back(std::make_pair(70117, -1));
-      CMadvrCallback::Get()->AddEntry(MADVR_LIST_SMOOTHMOTION, &entries);
+      CDSRendererCallback::Get()->AddEntry(MADVR_LIST_SMOOTHMOTION, &entries);
 
       AddList(groupMadvrRendering, SETTING_MADVR_SMOOTHMOTION, 70300, 0, static_cast<int>(madvrSettings.m_smoothMotion), entries,70300);
 
       // MADVR DITHERING
       entries.clear();
       entries.push_back(std::make_pair(70117, -1));
-      CMadvrCallback::Get()->AddEntry(MADVR_LIST_DITHERING, &entries);
+      CDSRendererCallback::Get()->AddEntry(MADVR_LIST_DITHERING, &entries);
 
       AddList(groupMadvrRendering, SETTING_MADVR_DITHERING, 70400, 0, static_cast<int>(madvrSettings.m_dithering), entries, 70400);
 
@@ -885,7 +885,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
 void CGUIDialogVideoSettings::OnInitWindow()
 {
   CGUIDialogSettingsManualBase::OnInitWindow();
-  m_isMadvr = CMadvrCallback::Get()->UsingMadvr() && (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) > KODIGUI_NEVER);
+  m_isMadvr = CDSRendererCallback::Get()->UsingDS(DIRECTSHOW_RENDERER_MADVR) && (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) > KODIGUI_NEVER);
 
   HideUnused();
 }
@@ -921,7 +921,7 @@ void CGUIDialogVideoSettings::HideUnused()
   {
     m_settingsManager->SetInt(SETTING_MADVR_DEBANDFADELEVEL, iValueA);
     madvrSettings.m_debandFadeLevel = iValueA;
-    CMadvrCallback::Get()->SetInt("debandFadeLevel", iValueA);
+    CDSRendererCallback::Get()->SetInt("debandFadeLevel", iValueA);
   }
 
   // SHARP VISIBILITY

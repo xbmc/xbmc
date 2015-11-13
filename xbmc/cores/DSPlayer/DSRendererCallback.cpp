@@ -22,48 +22,49 @@
 
 #ifdef HAS_DS_PLAYER
 
-#include "MadvrCallback.h"
+#include "DSRendererCallback.h"
 #include "cores/DSPlayer/Filters/MadvrSettingsManager.h"
 
-CMadvrCallback *CMadvrCallback::m_pSingleton = NULL;
+CDSRendererCallback *CDSRendererCallback::m_pSingleton = NULL;
 
-CMadvrCallback::CMadvrCallback()
+CDSRendererCallback::CDSRendererCallback()
 {
+  m_CurrentRenderer = DIRECTSHOW_RENDERER_UNDEF;
   m_pAllocatorCallback = NULL;  
   m_pSettingCallback = NULL;
   m_pPaintCallback = NULL;
-  m_renderOnMadvr = false;
+  m_renderOnDs = false;
   ResetRenderCount();
   m_currentVideoLayer = RENDER_LAYER_UNDER;
 }
 
-CMadvrCallback::~CMadvrCallback()
+CDSRendererCallback::~CDSRendererCallback()
 {
   m_pAllocatorCallback = NULL;
   m_pSettingCallback = NULL;
   m_pPaintCallback = NULL;
 }
 
-CMadvrCallback* CMadvrCallback::Get()
+CDSRendererCallback* CDSRendererCallback::Get()
 {
-  return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CMadvrCallback());
+  return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CDSRendererCallback());
 }
 
-void CMadvrCallback::IncRenderCount()
+void CDSRendererCallback::IncRenderCount()
 { 
-  if (!ReadyMadvr())
+  if (!ReadyDS())
     return;
 
   m_currentVideoLayer == RENDER_LAYER_UNDER ? m_renderUnderCount += 1 : m_renderOverCount += 1;
 }
 
-void CMadvrCallback::ResetRenderCount()
+void CDSRendererCallback::ResetRenderCount()
 {
   m_renderUnderCount = 0;  
   m_renderOverCount = 0;
 }
 
-bool CMadvrCallback::GuiVisible(MADVR_RENDER_LAYER layer)
+bool CDSRendererCallback::GuiVisible(DS_RENDER_LAYER layer)
 {
   bool result = false;
   switch (layer)
@@ -81,7 +82,7 @@ bool CMadvrCallback::GuiVisible(MADVR_RENDER_LAYER layer)
   return result;
 }
 
-int CMadvrCallback::VideoDimsToResolution(int iWidth, int iHeight)
+int CDSRendererCallback::VideoDimsToResolution(int iWidth, int iHeight)
 {
   int res = 0;
   int madvr_res = -1;
@@ -123,188 +124,195 @@ int CMadvrCallback::VideoDimsToResolution(int iWidth, int iHeight)
   return madvr_res;
 }
 
-bool CMadvrCallback::UsingMadvr()
+bool CDSRendererCallback::UsingDS(DIRECTSHOW_RENDERER renderer)
 {
-  return (m_pAllocatorCallback != NULL);
+  if (renderer == DIRECTSHOW_RENDERER_UNDEF)
+    renderer = m_CurrentRenderer;
+
+  return (m_pAllocatorCallback != NULL && m_CurrentRenderer == renderer);
 }
 
-bool CMadvrCallback::ReadyMadvr()
+bool CDSRendererCallback::ReadyDS(DIRECTSHOW_RENDERER renderer)
 {
-  return (m_pAllocatorCallback != NULL && m_renderOnMadvr);
+  if (renderer == DIRECTSHOW_RENDERER_UNDEF)
+    renderer = m_CurrentRenderer;
+
+  return (m_pAllocatorCallback != NULL && m_renderOnDs && m_CurrentRenderer == renderer);
 }
 
-// IMadvrAllocatorCallback
-bool CMadvrCallback::IsEnteringExclusive()
-{ 
-  if (UsingMadvr())
-    return m_pAllocatorCallback->IsEnteringExclusive();
+// IDSRendererAllocatorCallback
 
-  return false;
-}
-
-void CMadvrCallback::EnableExclusive(bool bEnable)
-{
-  if (UsingMadvr())
-    m_pAllocatorCallback->EnableExclusive(bEnable);
-}
-
-void CMadvrCallback::SetMadvrPixelShader()
-{
-  if (UsingMadvr())
-    m_pAllocatorCallback->SetMadvrPixelShader();
-}
-
-void CMadvrCallback::SetResolution()
-{
-  if (UsingMadvr())
-    m_pAllocatorCallback->SetResolution();
-}
-
-bool CMadvrCallback::ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret) 
-{ 
-  if (UsingMadvr())
-    return m_pAllocatorCallback->ParentWindowProc(hWnd,uMsg,wParam,lParam,ret);
-
-  return false; 
-}
-
-void CMadvrCallback::SetMadvrPosition(CRect wndRect, CRect videoRect) 
-{
-  if (UsingMadvr())
-    m_pAllocatorCallback->SetMadvrPosition(wndRect, videoRect);
-}
-
-CRect CMadvrCallback::GetMadvrRect()
-{
-  CRect madvrRect(0, 0, 0, 0);
-
-  if (UsingMadvr())
-    madvrRect = m_pAllocatorCallback->GetMadvrRect();
-
-  return madvrRect;
-}
-
-CRect CMadvrCallback::GetActiveVideoRect()
+CRect CDSRendererCallback::GetActiveVideoRect()
 {
   CRect activeVideoRect(0, 0, 0, 0);
 
-  if (UsingMadvr())
+  if (UsingDS())
     activeVideoRect = m_pAllocatorCallback->GetActiveVideoRect();
 
   return activeVideoRect;
 }
 
-// IMadvrPaintCallback
-void CMadvrCallback::RenderToUnderTexture()
+bool CDSRendererCallback::IsEnteringExclusive()
+{ 
+  if (UsingDS(DIRECTSHOW_RENDERER_MADVR))
+    return m_pAllocatorCallback->IsEnteringExclusive();
+
+  return false;
+}
+
+void CDSRendererCallback::EnableExclusive(bool bEnable)
 {
-  if (m_pPaintCallback && ReadyMadvr())
+  if (UsingDS(DIRECTSHOW_RENDERER_MADVR))
+    m_pAllocatorCallback->EnableExclusive(bEnable);
+}
+
+void CDSRendererCallback::SetMadvrPixelShader()
+{
+  if (UsingDS(DIRECTSHOW_RENDERER_MADVR))
+    m_pAllocatorCallback->SetMadvrPixelShader();
+}
+
+void CDSRendererCallback::SetResolution()
+{
+  if (UsingDS(DIRECTSHOW_RENDERER_MADVR))
+    m_pAllocatorCallback->SetResolution();
+}
+
+bool CDSRendererCallback::ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret) 
+{ 
+  if (UsingDS(DIRECTSHOW_RENDERER_MADVR))
+    return m_pAllocatorCallback->ParentWindowProc(hWnd,uMsg,wParam,lParam,ret);
+
+  return false; 
+}
+
+void CDSRendererCallback::SetMadvrPosition(CRect wndRect, CRect videoRect) 
+{
+  if (UsingDS(DIRECTSHOW_RENDERER_MADVR))
+    m_pAllocatorCallback->SetMadvrPosition(wndRect, videoRect);
+}
+
+CRect CDSRendererCallback::GetMadvrRect()
+{
+  CRect madvrRect(0, 0, 0, 0);
+
+  if (UsingDS(DIRECTSHOW_RENDERER_MADVR))
+    madvrRect = m_pAllocatorCallback->GetMadvrRect();
+
+  return madvrRect;
+}
+
+// IDSRendererPaintCallback
+void CDSRendererCallback::RenderToUnderTexture()
+{
+  if (m_pPaintCallback && ReadyDS())
     m_pPaintCallback->RenderToUnderTexture();
 }
 
-void CMadvrCallback::RenderToOverTexture()
+void CDSRendererCallback::RenderToOverTexture()
 {
-  if (m_pPaintCallback && ReadyMadvr())
+  if (m_pPaintCallback && ReadyDS())
     m_pPaintCallback->RenderToOverTexture();
 }
 
-void CMadvrCallback::EndRender()
+void CDSRendererCallback::EndRender()
 {
-  if (m_pPaintCallback && ReadyMadvr())
+  if (m_pPaintCallback && ReadyDS())
     m_pPaintCallback->EndRender();
 }
 
 // IMadvrSettingCallback
-void CMadvrCallback::RestoreSettings()
+void CDSRendererCallback::RestoreSettings()
 {
   if (m_pSettingCallback)
     m_pSettingCallback->RestoreSettings();
 }
 
-void CMadvrCallback::LoadSettings(MADVR_LOAD_TYPE type)
+void CDSRendererCallback::LoadSettings(MADVR_LOAD_TYPE type)
 {
   if (m_pSettingCallback)
     m_pSettingCallback->LoadSettings(type);
 }
 
-void CMadvrCallback::GetProfileActiveName(std::string path, std::string *profile)
+void CDSRendererCallback::GetProfileActiveName(std::string path, std::string *profile)
 {
   if (m_pSettingCallback)
     m_pSettingCallback->GetProfileActiveName(path, profile);
 }
 
-void CMadvrCallback::SetStr(std::string path, std::string sValue) 
+void CDSRendererCallback::SetStr(std::string path, std::string sValue) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetStr(path, sValue);
 }
 
-void CMadvrCallback::SetBool(std::string path, bool bValue) 
+void CDSRendererCallback::SetBool(std::string path, bool bValue) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetBool(path, bValue);
 };
-void CMadvrCallback::SetInt(std::string path, int iValue) 
+void CDSRendererCallback::SetInt(std::string path, int iValue) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetInt(path, iValue);
 }
 
-void CMadvrCallback::SetFloat(std::string path, float fValue, int iConv) 
+void CDSRendererCallback::SetFloat(std::string path, float fValue, int iConv) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetFloat(path, fValue, iConv);
 }
 
-void CMadvrCallback::SetDoubling(std::string path, int iValue) 
+void CDSRendererCallback::SetDoubling(std::string path, int iValue) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetDoubling(path, iValue);
 }
 
-void CMadvrCallback::SetDeintActive(std::string path, int iValue) 
+void CDSRendererCallback::SetDeintActive(std::string path, int iValue) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetDeintActive(path, iValue);
 }
 
-void CMadvrCallback::SetBoolValue(std::string path, std::string sValue, int iValue)
+void CDSRendererCallback::SetBoolValue(std::string path, std::string sValue, int iValue)
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetBoolValue(path, sValue, iValue);
 }
 
-void CMadvrCallback::SetMultiBool(std::string path, std::string sValue, int iValue)
+void CDSRendererCallback::SetMultiBool(std::string path, std::string sValue, int iValue)
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetMultiBool(path, sValue, iValue);
 }
 
-void CMadvrCallback::SetSmoothmotion(std::string path, int iValue) 
+void CDSRendererCallback::SetSmoothmotion(std::string path, int iValue) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetSmoothmotion(path, iValue);
 }
 
-void CMadvrCallback::SetDithering(std::string path, int iValue) 
+void CDSRendererCallback::SetDithering(std::string path, int iValue) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetDithering(path, iValue);
 }
 
-void CMadvrCallback::SetQuickArChange(std::string path, int iValue)
+void CDSRendererCallback::SetQuickArChange(std::string path, int iValue)
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetQuickArChange(path, iValue);
 }
 
-void CMadvrCallback::SetCleanBorders(std::string path, int iValue)
+void CDSRendererCallback::SetCleanBorders(std::string path, int iValue)
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetCleanBorders(path, iValue);
 }
 
 
-std::string CMadvrCallback::GetSettingsName(MADVR_SETTINGS_LIST type, int iValue)
+std::string CDSRendererCallback::GetSettingsName(MADVR_SETTINGS_LIST type, int iValue)
 {
   if (m_pSettingCallback)
     return m_pSettingCallback->GetSettingsName(type, iValue);
@@ -312,13 +320,13 @@ std::string CMadvrCallback::GetSettingsName(MADVR_SETTINGS_LIST type, int iValue
   return "";
 }
 
-void CMadvrCallback::AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry)
+void CDSRendererCallback::AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry)
 {
   if (m_pSettingCallback)
     m_pSettingCallback->AddEntry(type, entry);
 }
 
-void CMadvrCallback::UpdateImageDouble()
+void CDSRendererCallback::UpdateImageDouble()
 {
   if (m_pSettingCallback)
     m_pSettingCallback->UpdateImageDouble();

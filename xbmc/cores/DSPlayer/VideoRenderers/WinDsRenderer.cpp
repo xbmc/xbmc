@@ -37,7 +37,7 @@
 #include "IPaintCallback.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
-#include "MadvrCallback.h"
+#include "DSRendererCallback.h"
 
 CWinDsRenderer::CWinDsRenderer():
   m_bConfigured(false), m_paintCallback(NULL)

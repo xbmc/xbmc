@@ -39,7 +39,7 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "input/Key.h"
-#include "MadvrCallback.h"
+#include "DSRendererCallback.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
@@ -130,7 +130,7 @@ void CGUIDialogMadvrScaling::SetupView()
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) == KODIGUI_LOAD_MADVR)
   {
     std::string profile;
-    CMadvrCallback::Get()->GetProfileActiveName("scalingParent",&profile);
+    CDSRendererCallback::Get()->GetProfileActiveName("scalingParent",&profile);
     if (profile != "")
     {
       CStdString sHeading;
@@ -193,11 +193,11 @@ void CGUIDialogMadvrScaling::InitializeSettings()
 
   StaticIntegerSettingOptions entries, entriesDoubleFactor, entriesQuadrupleFactor;
   CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
-  CMadvrCallback::Get()->LoadSettings(MADVR_LOAD_SCALING);
+  CDSRendererCallback::Get()->LoadSettings(MADVR_LOAD_SCALING);
 
   //MADVR CHROMA UPSCALING
   entries.clear();
-  CMadvrCallback::Get()->AddEntry(MADVR_LIST_CHROMAUP, &entries);
+  CDSRendererCallback::Get()->AddEntry(MADVR_LIST_CHROMAUP, &entries);
 
   AddList(groupMadvrChromaScaling, SET_CHROMA_UPSCALING, 70028, 0, static_cast<int>(madvrSettings.m_ChromaUpscaling), entries, 70028);
   AddToggle(groupMadvrChromaScaling, SET_CHROMA_ANTIRING, 70031, 0, madvrSettings.m_ChromaAntiRing);
@@ -208,7 +208,7 @@ void CGUIDialogMadvrScaling::InitializeSettings()
 
   //MADVR IMAGE UPSCALING
   entries.clear();
-  CMadvrCallback::Get()->AddEntry(MADVR_LIST_LUMAUP, &entries);
+  CDSRendererCallback::Get()->AddEntry(MADVR_LIST_LUMAUP, &entries);
 
   AddList(groupMadvrUpScaling, SET_IMAGE_UPSCALING, 70029, 0, static_cast<int>(madvrSettings.m_ImageUpscaling), entries, 70029);
   AddToggle(groupMadvrUpScaling, SET_IMAGE_UP_ANTIRING, 70031, 0, madvrSettings.m_ImageUpAntiRing);
@@ -216,7 +216,7 @@ void CGUIDialogMadvrScaling::InitializeSettings()
 
   //MADVR IMAGE DOWNSCALING
   entries.clear();
-  CMadvrCallback::Get()->AddEntry(MADVR_LIST_LUMADOWN, &entries);
+  CDSRendererCallback::Get()->AddEntry(MADVR_LIST_LUMADOWN, &entries);
 
   AddList(groupMadvrDownScaling, SET_IMAGE_DOWNSCALING, 70030, 0, static_cast<int>(madvrSettings.m_ImageDownscaling), entries, 70030);
   AddToggle(groupMadvrDownScaling, SET_IMAGE_DOWN_ANTIRING, 70031, 0, madvrSettings.m_ImageDownAntiRing);
@@ -225,13 +225,13 @@ void CGUIDialogMadvrScaling::InitializeSettings()
   // MADVR IMAGE DOUBLING / QUADRUPLING
   entries.clear();
   entries.push_back(make_pair(70117, -1));
-  CMadvrCallback::Get()->AddEntry(MADVR_LIST_DOUBLEQUALITY, &entries);
+  CDSRendererCallback::Get()->AddEntry(MADVR_LIST_DOUBLEQUALITY, &entries);
 
   entriesDoubleFactor.clear();
-  CMadvrCallback::Get()->AddEntry(MADVR_LIST_DOUBLEFACTOR, &entriesDoubleFactor);
+  CDSRendererCallback::Get()->AddEntry(MADVR_LIST_DOUBLEFACTOR, &entriesDoubleFactor);
 
   entriesQuadrupleFactor.clear();
-  CMadvrCallback::Get()->AddEntry(MADVR_LIST_QUADRUPLEFACTOR, &entriesQuadrupleFactor);
+  CDSRendererCallback::Get()->AddEntry(MADVR_LIST_QUADRUPLEFACTOR, &entriesQuadrupleFactor);
 
   AddList(groupMadvrDoubling, SET_IMAGE_DOUBLE_LUMA, 70100, 0, static_cast<int>(madvrSettings.m_ImageDoubleLuma), entries, 70100);
   AddList(groupMadvrDoubling, SET_IMAGE_DOUBLE_LUMA_FACTOR, 70116, 0, static_cast<int>(madvrSettings.m_ImageDoubleLumaFactor), entriesDoubleFactor, 70116);
@@ -284,62 +284,62 @@ void CGUIDialogMadvrScaling::OnSettingChanged(const CSetting *setting)
   if (settingId == SET_CHROMA_UPSCALING)
   {
     madvrSettings.m_ChromaUpscaling = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetStr("chromaUp", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_CHROMAUP, madvrSettings.m_ChromaUpscaling));
+    CDSRendererCallback::Get()->SetStr("chromaUp", CDSRendererCallback::Get()->GetSettingsName(MADVR_LIST_CHROMAUP, madvrSettings.m_ChromaUpscaling));
   }
   else if (settingId == SET_CHROMA_ANTIRING)
   {
     madvrSettings.m_ChromaAntiRing = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("chromaAntiRinging", madvrSettings.m_ChromaAntiRing);
+    CDSRendererCallback::Get()->SetBool("chromaAntiRinging", madvrSettings.m_ChromaAntiRing);
   }
   else if (settingId == SET_CHROMA_SUPER_RES)
   {
     madvrSettings.m_ChromaSuperRes = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("superChromaRes", madvrSettings.m_ChromaSuperRes);
+    CDSRendererCallback::Get()->SetBool("superChromaRes", madvrSettings.m_ChromaSuperRes);
   }
   else if (settingId == SET_CHROMA_SUPER_RES_PASSES)
   {
     madvrSettings.m_ChromaSuperResPasses = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetInt("superChromaResPasses", madvrSettings.m_ChromaSuperResPasses);
+    CDSRendererCallback::Get()->SetInt("superChromaResPasses", madvrSettings.m_ChromaSuperResPasses);
   }
   else if (settingId == SET_CHROMA_SUPER_RES_STRENGTH)
   {
     madvrSettings.m_ChromaSuperResStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("superChromaResStrength", madvrSettings.m_ChromaSuperResStrength);
+    CDSRendererCallback::Get()->SetFloat("superChromaResStrength", madvrSettings.m_ChromaSuperResStrength);
   }
   else if (settingId == SET_CHROMA_SUPER_RES_SOFTNESS)
   {
     madvrSettings.m_ChromaSuperResSoftness = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("superChromaResSoftness", madvrSettings.m_ChromaSuperResSoftness);
+    CDSRendererCallback::Get()->SetFloat("superChromaResSoftness", madvrSettings.m_ChromaSuperResSoftness);
   }
   else if (settingId == SET_IMAGE_UPSCALING)
   {
     madvrSettings.m_ImageUpscaling = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetStr("lumaUp", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_LUMAUP, madvrSettings.m_ImageUpscaling));
+    CDSRendererCallback::Get()->SetStr("lumaUp", CDSRendererCallback::Get()->GetSettingsName(MADVR_LIST_LUMAUP, madvrSettings.m_ImageUpscaling));
   }
   else if (settingId == SET_IMAGE_UP_ANTIRING)
   {
     madvrSettings.m_ImageUpAntiRing = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("lumaUpAntiRinging", madvrSettings.m_ImageUpAntiRing);
+    CDSRendererCallback::Get()->SetBool("lumaUpAntiRinging", madvrSettings.m_ImageUpAntiRing);
   }
   else if (settingId == SET_IMAGE_UP_LINEAR)
   {
     madvrSettings.m_ImageUpLinear = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("lumaUpLinear", madvrSettings.m_ImageUpLinear);
+    CDSRendererCallback::Get()->SetBool("lumaUpLinear", madvrSettings.m_ImageUpLinear);
   }
   else if (settingId == SET_IMAGE_DOWNSCALING)
   {
     madvrSettings.m_ImageDownscaling = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetStr("lumaDown", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_LUMADOWN, madvrSettings.m_ImageDownscaling));
+    CDSRendererCallback::Get()->SetStr("lumaDown", CDSRendererCallback::Get()->GetSettingsName(MADVR_LIST_LUMADOWN, madvrSettings.m_ImageDownscaling));
   }
   else if (settingId == SET_IMAGE_DOWN_ANTIRING)
   {
     madvrSettings.m_ImageDownAntiRing = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("lumaDownAntiRinging", madvrSettings.m_ImageDownAntiRing);
+    CDSRendererCallback::Get()->SetBool("lumaDownAntiRinging", madvrSettings.m_ImageDownAntiRing);
   }
   else if (settingId == SET_IMAGE_DOWN_LINEAR)
   {
     madvrSettings.m_ImageDownLinear = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("lumaDownLinear", madvrSettings.m_ImageDownLinear);
+    CDSRendererCallback::Get()->SetBool("lumaDownLinear", madvrSettings.m_ImageDownLinear);
   }
   else if (settingId == SET_IMAGE_DOUBLE_LUMA)
   {
@@ -376,83 +376,83 @@ void CGUIDialogMadvrScaling::OnSettingChanged(const CSetting *setting)
   else if (settingId == SET_IMAGE_UPSHARPENEDGES)
   {
     madvrSettings.m_UpRefSharpenEdges = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("upRefSharpenEdges", madvrSettings.m_UpRefSharpenEdges);
+    CDSRendererCallback::Get()->SetBool("upRefSharpenEdges", madvrSettings.m_UpRefSharpenEdges);
   }
   else if (settingId == SET_IMAGE_UPSHARPENEDGES_STRENGTH)
   {
     madvrSettings.m_UpRefSharpenEdgesStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("upRefSharpenEdgesStrength", madvrSettings.m_UpRefSharpenEdgesStrength, 10);
+    CDSRendererCallback::Get()->SetFloat("upRefSharpenEdgesStrength", madvrSettings.m_UpRefSharpenEdgesStrength, 10);
   }
   else if (settingId == SET_IMAGE_UPCRISPENEDGES)
   {
     madvrSettings.m_UpRefCrispenEdges = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("upRefCrispenEdges", madvrSettings.m_UpRefCrispenEdges);
+    CDSRendererCallback::Get()->SetBool("upRefCrispenEdges", madvrSettings.m_UpRefCrispenEdges);
   }
   else if (settingId == SET_IMAGE_UPCRISPENEDGES_STRENGTH)
   {
     madvrSettings.m_UpRefCrispenEdgesStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("upRefCrispenEdgesStrength", madvrSettings.m_UpRefCrispenEdgesStrength, 10);
+    CDSRendererCallback::Get()->SetFloat("upRefCrispenEdgesStrength", madvrSettings.m_UpRefCrispenEdgesStrength, 10);
   }
   else if (settingId == SET_IMAGE_UPTHINEDGES)
   {
     madvrSettings.m_UpRefThinEdges = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("upRefThinEdges", madvrSettings.m_UpRefThinEdges);
+    CDSRendererCallback::Get()->SetBool("upRefThinEdges", madvrSettings.m_UpRefThinEdges);
   }
   else if (settingId == SET_IMAGE_UPTHINEDGES_STRENGTH)
   {
     madvrSettings.m_UpRefThinEdgesStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("upRefThinEdgesStrength", madvrSettings.m_UpRefThinEdgesStrength, 10);
+    CDSRendererCallback::Get()->SetFloat("upRefThinEdgesStrength", madvrSettings.m_UpRefThinEdgesStrength, 10);
   }
   else if (settingId == SET_IMAGE_UPENHANCEDETAIL)
   {
     madvrSettings.m_UpRefEnhanceDetail = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("upRefEnhanceDetail", madvrSettings.m_UpRefEnhanceDetail);
+    CDSRendererCallback::Get()->SetBool("upRefEnhanceDetail", madvrSettings.m_UpRefEnhanceDetail);
   }
   else if (settingId == SET_IMAGE_UPENHANCEDETAIL_STRENGTH)
   {
     madvrSettings.m_UpRefEnhanceDetailStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("upRefEnhanceDetailStrength", madvrSettings.m_UpRefEnhanceDetailStrength, 10);
+    CDSRendererCallback::Get()->SetFloat("upRefEnhanceDetailStrength", madvrSettings.m_UpRefEnhanceDetailStrength, 10);
   }
   else if (settingId == SET_IMAGE_UPLUMASHARPEN)
   {
     madvrSettings.m_UpRefLumaSharpen = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("upRefLumaSharpen", madvrSettings.m_UpRefLumaSharpen);
+    CDSRendererCallback::Get()->SetBool("upRefLumaSharpen", madvrSettings.m_UpRefLumaSharpen);
   }
   else if (settingId == SET_IMAGE_UPLUMASHARPEN_STRENGTH)
   {
     madvrSettings.m_UpRefLumaSharpenStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("upRefLumaSharpenStrength", madvrSettings.m_UpRefLumaSharpenStrength);
+    CDSRendererCallback::Get()->SetFloat("upRefLumaSharpenStrength", madvrSettings.m_UpRefLumaSharpenStrength);
   }
   else if (settingId == SET_IMAGE_UPADAPTIVESHARPEN)
   {
     madvrSettings.m_UpRefAdaptiveSharpen = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("upRefAdaptiveSharpen", madvrSettings.m_UpRefAdaptiveSharpen);
+    CDSRendererCallback::Get()->SetBool("upRefAdaptiveSharpen", madvrSettings.m_UpRefAdaptiveSharpen);
   }
   else if (settingId == SET_IMAGE_UPADAPTIVESHARPEN_STRENGTH)
   {
     madvrSettings.m_UpRefAdaptiveSharpenStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("UpRefAdaptiveSharpenStrength", madvrSettings.m_UpRefAdaptiveSharpenStrength, 10);
+    CDSRendererCallback::Get()->SetFloat("UpRefAdaptiveSharpenStrength", madvrSettings.m_UpRefAdaptiveSharpenStrength, 10);
   }
 
   else if (settingId == SET_IMAGE_SUPER_RES)
   {
     madvrSettings.m_superRes = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("superRes", madvrSettings.m_superRes);
+    CDSRendererCallback::Get()->SetBool("superRes", madvrSettings.m_superRes);
   }
   else if (settingId == SET_IMAGE_SUPER_RES_STRENGTH)
   {
     madvrSettings.m_superResStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("superResStrength", madvrSettings.m_superResStrength,1);
+    CDSRendererCallback::Get()->SetFloat("superResStrength", madvrSettings.m_superResStrength,1);
   }
   else if (settingId == SET_IMAGE_SUPER_RES_LINEAR)
   {
     madvrSettings.m_superResLinear = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("superResLinear", madvrSettings.m_superResLinear);
+    CDSRendererCallback::Get()->SetBool("superResLinear", madvrSettings.m_superResLinear);
   }
   else if (settingId == SET_IMAGE_REFINE_ONCE)
   {
     madvrSettings.m_refineOnce = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("refineOnce", !madvrSettings.m_refineOnce);
+    CDSRendererCallback::Get()->SetBool("refineOnce", !madvrSettings.m_refineOnce);
   }
   HideUnused();
 }
@@ -491,7 +491,7 @@ void CGUIDialogMadvrScaling::HideUnused()
   SetVisible(SET_CHROMA_SUPER_RES_SOFTNESS, bValue);
 
   // UPDATE IMAGE DOUBLE
-  CMadvrCallback::Get()->UpdateImageDouble();
+  CDSRendererCallback::Get()->UpdateImageDouble();
   CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
 
   int iDoubleLuma = madvrSettings.m_ImageDoubleLuma;

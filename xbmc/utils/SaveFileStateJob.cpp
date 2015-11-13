@@ -38,7 +38,7 @@
 #ifdef HAS_DS_PLAYER
 #include "DSPlayerDatabase.h"
 #include "settings/Settings.h"
-#include "MadvrCallback.h"
+#include "DSRendererCallback.h"
 #endif
 
 bool CSaveFileStateJob::DoWork()

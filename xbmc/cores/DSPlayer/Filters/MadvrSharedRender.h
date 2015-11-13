@@ -21,7 +21,7 @@
  *
  */
 
-#include "MadvrCallback.h"
+#include "DSRendererCallback.h"
 #include "threads/Event.h"
 
 enum SHAREDRENDER_STATE
@@ -40,28 +40,28 @@ public:
   SHAREDRENDER_STATE m_renderState;
 };
 
-class CMadvrSharedRender: public IMadvrPaintCallback
+class CMadvrSharedRender: public IDSRendererPaintCallback
 {
 
 public:
   CMadvrSharedRender();
   virtual ~CMadvrSharedRender();
 
-  // IMadvrPaintCallback
+  // IDSRendererPaintCallback
   virtual void RenderToUnderTexture();
   virtual void RenderToOverTexture();
   virtual void EndRender();
   
   HRESULT CreateTextures(ID3D11Device* pD3DDeviceKodi, IDirect3DDevice9Ex* pD3DDeviceMadVR, int width, int height);
-  HRESULT Render(MADVR_RENDER_LAYER layer);  
+  HRESULT Render(DS_RENDER_LAYER layer);  
 
 private:
   HRESULT CreateSharedResource(IDirect3DTexture9** ppTexture9, ID3D11Texture2D** ppTexture11);
   HRESULT CreateFakeStaging(ID3D11Texture2D** ppTexture);
   HRESULT ForceComplete();
   
-  HRESULT RenderMadvr(MADVR_RENDER_LAYER layer);  
-  HRESULT RenderTexture(MADVR_RENDER_LAYER layer);
+  HRESULT RenderMadvr(DS_RENDER_LAYER layer);  
+  HRESULT RenderTexture(DS_RENDER_LAYER layer);
   HRESULT SetupVertex();
   HRESULT StoreMadDeviceState();
   HRESULT SetupMadDeviceState();

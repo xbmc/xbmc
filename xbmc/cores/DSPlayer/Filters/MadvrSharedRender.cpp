@@ -138,7 +138,7 @@ HRESULT CMadvrSharedRender::CreateTextures(ID3D11Device* pD3DDeviceKodi, IDirect
   m_dwWidth = width;
   m_dwHeight = height;
 
-  CMadvrCallback::Get()->Register(this);
+  CDSRendererCallback::Get()->Register(this);
 
   // Create VertexBuffer
   if (FAILED(hr = m_pD3DDeviceMadVR->CreateVertexBuffer(sizeof(VID_FRAME_VERTEX) * 4, D3DUSAGE_WRITEONLY, D3DFVF_VID_FRAME_VERTEX, D3DPOOL_DEFAULT, &m_pMadvrVertexBuffer, NULL)))
@@ -159,12 +159,12 @@ HRESULT CMadvrSharedRender::CreateTextures(ID3D11Device* pD3DDeviceKodi, IDirect
   return hr;
 }
 
-HRESULT CMadvrSharedRender::Render(MADVR_RENDER_LAYER layer)
+HRESULT CMadvrSharedRender::Render(DS_RENDER_LAYER layer)
 {
   // Lock madVR thread while kodi rendering
   CAutoLock lock(&m_madvrLock);
 
-  if (!CMadvrCallback::Get()->GetRenderOnMadvr() || (g_graphicsContext.IsFullScreenVideo() && layer == RENDER_LAYER_UNDER))
+  if (!CDSRendererCallback::Get()->GetRenderOnDS() || (g_graphicsContext.IsFullScreenVideo() && layer == RENDER_LAYER_UNDER))
     return CALLBACK_INFO_DISPLAY;
 
   // Render the GUI on madVR
@@ -178,7 +178,7 @@ HRESULT CMadvrSharedRender::Render(MADVR_RENDER_LAYER layer)
   return (m_bGuiVisible) ? CALLBACK_USER_INTERFACE : CALLBACK_INFO_DISPLAY;
 }
 
-HRESULT CMadvrSharedRender::RenderMadvr(MADVR_RENDER_LAYER layer)
+HRESULT CMadvrSharedRender::RenderMadvr(DS_RENDER_LAYER layer)
 {
   HRESULT hr = E_UNEXPECTED;
 
@@ -222,8 +222,8 @@ void CMadvrSharedRender::RenderToUnderTexture()
     CAutoLock lock(&m_madvrLock);
     m_madvrLock.Lock();
 
-    CMadvrCallback::Get()->SetCurrentVideoLayer(RENDER_LAYER_UNDER);
-    CMadvrCallback::Get()->ResetRenderCount();
+    CDSRendererCallback::Get()->SetCurrentVideoLayer(RENDER_LAYER_UNDER);
+    CDSRendererCallback::Get()->ResetRenderCount();
 
     ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
     ID3D11RenderTargetView* pSurface11;
@@ -237,7 +237,7 @@ void CMadvrSharedRender::RenderToUnderTexture()
 
 void CMadvrSharedRender::RenderToOverTexture()
 {
-  CMadvrCallback::Get()->SetCurrentVideoLayer(RENDER_LAYER_OVER);
+  CDSRendererCallback::Get()->SetCurrentVideoLayer(RENDER_LAYER_OVER);
 
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
   ID3D11RenderTargetView* pSurface11;
@@ -254,14 +254,14 @@ void CMadvrSharedRender::EndRender()
   g_Windowing.FinishCommandList();
   ForceComplete();
 
-  m_bGuiVisible = CMadvrCallback::Get()->GuiVisible();
-  m_bGuiVisibleOver = CMadvrCallback::Get()->GuiVisible(RENDER_LAYER_OVER);
+  m_bGuiVisible = CDSRendererCallback::Get()->GuiVisible();
+  m_bGuiVisibleOver = CDSRendererCallback::Get()->GuiVisible(RENDER_LAYER_OVER);
 
   // Unlock madVR rendering
   m_madvrLock.Unlock();
 }
 
-HRESULT CMadvrSharedRender::RenderTexture(MADVR_RENDER_LAYER layer)
+HRESULT CMadvrSharedRender::RenderTexture(DS_RENDER_LAYER layer)
 {
   IDirect3DTexture9* pTexture9;
 

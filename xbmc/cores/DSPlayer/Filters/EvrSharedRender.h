@@ -21,10 +21,10 @@
  *
  */
 
-#include "EvrCallback.h"
+#include "DSRendererCallback.h"
 #include "threads/Event.h"
 
-class CEvrSharedRender: public IEvrPaintCallback
+class CEvrSharedRender: public IDSRendererPaintCallback
 {
 
 public:
@@ -37,15 +37,15 @@ public:
   virtual void EndRender();
   
   HRESULT CreateTextures(ID3D11Device* pD3DDeviceKodi, IDirect3DDevice9Ex* pD3DDeviceEvr, int width, int height);
-  HRESULT Render(EVR_RENDER_LAYER layer);  
+  HRESULT Render(DS_RENDER_LAYER layer);  
 
 private:
   HRESULT CreateSharedResource(IDirect3DTexture9** ppTexture9, ID3D11Texture2D** ppTexture11);
   HRESULT CreateFakeStaging(ID3D11Texture2D** ppTexture);
   HRESULT ForceComplete();
   
-  HRESULT RenderEvr(EVR_RENDER_LAYER layer);  
-  HRESULT RenderTexture(EVR_RENDER_LAYER layer);
+  HRESULT RenderEvr(DS_RENDER_LAYER layer);  
+  HRESULT RenderTexture(DS_RENDER_LAYER layer);
   HRESULT SetupVertex();
   HRESULT StoreEvrDeviceState();
   HRESULT SetupEvrDeviceState();

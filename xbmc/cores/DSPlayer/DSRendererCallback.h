@@ -60,7 +60,7 @@ const float MADVR_DEFAULT_UPLUMASHARPEN = 0.65f;
 const float MADVR_DEFAULT_UPADAPTIVESHARPEN = 0.5f;
 const float MADVR_DEFAULT_SUPERRES = 1.0f;
 
-enum MADVR_RENDER_LAYER
+enum DS_RENDER_LAYER
 {
   RENDER_LAYER_ALL,
   RENDER_LAYER_UNDER,
@@ -116,25 +116,33 @@ enum MADVR_RES_SETTINGS
   MADVR_RES_EPISODES
 };
 
-class IMadvrAllocatorCallback
+enum DIRECTSHOW_RENDERER
+{
+  DIRECTSHOW_RENDERER_VMR9 = 1,
+  DIRECTSHOW_RENDERER_EVR = 2,
+  DIRECTSHOW_RENDERER_MADVR = 3,
+  DIRECTSHOW_RENDERER_UNDEF = 4
+};
+
+class IDSRendererAllocatorCallback
 {
 public:
-  virtual ~IMadvrAllocatorCallback() {};
+  virtual ~IDSRendererAllocatorCallback() {};
 
+  virtual CRect GetActiveVideoRect(){ CRect activeVideoRect(0, 0, 0, 0); return activeVideoRect; };
   virtual bool IsEnteringExclusive(){ return false; };
   virtual void EnableExclusive(bool bEnable){};
   virtual void SetMadvrPixelShader(){};
   virtual void SetResolution(){};
   virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret) { return false; };
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect) {};
-  virtual CRect GetActiveVideoRect(){ CRect activeVideoRect(0, 0, 0, 0); return activeVideoRect; };
   virtual CRect GetMadvrRect(){ CRect madvrRect(0, 0, 0, 0); return madvrRect; };
 };
 
-class IMadvrPaintCallback
+class IDSRendererPaintCallback
 {
 public:
-  virtual ~IMadvrPaintCallback() {};
+  virtual ~IDSRendererPaintCallback() {};
 
   virtual void RenderToUnderTexture(){};
   virtual void RenderToOverTexture(){};
@@ -166,12 +174,12 @@ public:
   virtual void UpdateImageDouble(){};
 };
 
-class CMadvrCallback : public IMadvrAllocatorCallback, public IMadvrSettingCallback, public IMadvrPaintCallback
+class CDSRendererCallback : public IDSRendererAllocatorCallback, public IDSRendererPaintCallback, public IMadvrSettingCallback
 {
 public:
 
   /// Retrieve singleton instance
-  static CMadvrCallback* Get();
+  static CDSRendererCallback* Get();
   /// Destroy singleton instance
   static void Destroy()
   {
@@ -179,17 +187,19 @@ public:
     m_pSingleton = NULL;
   }
   
-  // IMadvrAllocatorCallback
+  // IDSRendererAllocatorCallback
+  virtual CRect GetActiveVideoRect();
+  
+  // IDSRendererAllocatorCallback (madVR)
   virtual bool IsEnteringExclusive();
   virtual void EnableExclusive(bool bEnable);
   virtual void SetMadvrPixelShader();
   virtual void SetResolution();
   virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret);
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect);
-  virtual CRect GetActiveVideoRect();
   virtual CRect GetMadvrRect();
 
-  // IMadvrPaintCallback
+  // IDSRendererPaintCallback
   virtual void RenderToUnderTexture();
   virtual void RenderToOverTexture();
   virtual void EndRender();
@@ -214,29 +224,32 @@ public:
   virtual void AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry);
   virtual void UpdateImageDouble();
 
-  void Register(IMadvrAllocatorCallback* pAllocatorCallback) { m_pAllocatorCallback = pAllocatorCallback; }
+  void Register(IDSRendererAllocatorCallback* pAllocatorCallback) { m_pAllocatorCallback = pAllocatorCallback; }
   void Register(IMadvrSettingCallback* pSettingCallback) { m_pSettingCallback = pSettingCallback; }
-  void Register(IMadvrPaintCallback* pPaintCallback) { m_pPaintCallback = pPaintCallback; }
-  bool UsingMadvr();
-  bool ReadyMadvr();
-  bool GetRenderOnMadvr() { return m_renderOnMadvr; }
-  void SetRenderOnMadvr(bool b) { m_renderOnMadvr = b; }
-  void SetCurrentVideoLayer(MADVR_RENDER_LAYER layer) { m_currentVideoLayer = layer; }
+  void Register(IDSRendererPaintCallback* pPaintCallback) { m_pPaintCallback = pPaintCallback; }
+  bool UsingDS(DIRECTSHOW_RENDERER renderer = DIRECTSHOW_RENDERER_UNDEF);
+  bool ReadyDS(DIRECTSHOW_RENDERER renderer = DIRECTSHOW_RENDERER_UNDEF);
+  bool GetRenderOnDS() { return m_renderOnDs; }
+  void SetRenderOnDS(bool b) { m_renderOnDs = b; }
+  void SetCurrentVideoLayer(DS_RENDER_LAYER layer) { m_currentVideoLayer = layer; }
   void IncRenderCount();
   void ResetRenderCount();
-  bool GuiVisible(MADVR_RENDER_LAYER layer = RENDER_LAYER_ALL);
+  bool GuiVisible(DS_RENDER_LAYER layer = RENDER_LAYER_ALL);
   int VideoDimsToResolution(int iWidth, int iHeight);
+  DIRECTSHOW_RENDERER GetCurrentRenderer() { return m_CurrentRenderer; }
+  void SetCurrentRenderer(DIRECTSHOW_RENDERER renderer) { m_CurrentRenderer = renderer; }
 
 private:
-  CMadvrCallback();
-  ~CMadvrCallback();
+  CDSRendererCallback();
+  ~CDSRendererCallback();
 
-  static CMadvrCallback* m_pSingleton;
-  IMadvrAllocatorCallback* m_pAllocatorCallback;
+  static CDSRendererCallback* m_pSingleton;
+  IDSRendererAllocatorCallback* m_pAllocatorCallback;
   IMadvrSettingCallback* m_pSettingCallback;
-  IMadvrPaintCallback* m_pPaintCallback;
-  bool m_renderOnMadvr;
+  IDSRendererPaintCallback* m_pPaintCallback;
+  bool m_renderOnDs;
   int m_renderUnderCount;
   int m_renderOverCount;
-  MADVR_RENDER_LAYER m_currentVideoLayer;
+  DS_RENDER_LAYER m_currentVideoLayer;
+  DIRECTSHOW_RENDERER m_CurrentRenderer;
 };

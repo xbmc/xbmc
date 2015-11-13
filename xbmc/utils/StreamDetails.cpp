@@ -26,7 +26,7 @@
 #include "utils/LangCodeExpander.h"
 #include "utils/Archive.h"
 #ifdef HAS_DS_PLAYER
-#include "MadvrCallback.h"
+#include "DSRendererCallback.h"
 #include "StringUtils.h"
 #endif
 

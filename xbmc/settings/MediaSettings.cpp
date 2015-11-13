@@ -48,7 +48,7 @@
 #include "cores/DSPlayer/Dialogs/GUIDialogDSRules.h"
 #include "cores/DSPlayer/Dialogs/GUIDialogDSFilters.h"
 #include "cores/DSPlayer/Dialogs/GUIDialogDSPlayercoreFactory.h"
-#include "MadvrCallback.h"
+#include "DSRendererCallback.h"
 #include "GraphFilters.h"
 #endif
 using namespace KODI::MESSAGING;
