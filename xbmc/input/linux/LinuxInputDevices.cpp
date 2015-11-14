@@ -43,6 +43,10 @@ typedef unsigned long kernel_ulong_t;
 
 #include <linux/input.h>
 
+#if defined(HAVE_LIBUDEV)
+#include <libudev.h>
+#endif
+
 #ifndef EV_CNT
 #define EV_CNT (EV_MAX+1)
 #define KEY_CNT (KEY_MAX+1)
@@ -1081,6 +1085,73 @@ bool CLinuxInputDevice::IsUnplugged()
   return m_bUnplugged;
 }
 
+/*
+ * this function is not powerful because it reinitializes a new udev search each
+ * time it would be nicer to call this only one time + one time at each hotplug
+ * but it is already very fast, so, let's keep it simple and non intrusive
+ */
+bool CLinuxInputDevices::IsUdevJoystick(const char *devpath)
+{
+#if defined(HAVE_LIBUDEV)
+  struct udev *udev;
+  struct udev_enumerate *enumerate;
+  struct udev_list_entry *devices, *dev_list_entry;
+  struct udev_device *dev;
+  const char *path;
+  const char *devfoundpath;
+
+  udev = udev_new();
+  if (!udev)
+    return false; // can't create udev
+
+  enumerate = udev_enumerate_new(udev);
+  if (enumerate == NULL)
+  {
+    udev_unref(udev);
+    return false;
+  }
+
+  if (udev_enumerate_add_match_subsystem(enumerate, "input") == 0)
+  {
+    if (udev_enumerate_add_match_property(enumerate, "ID_INPUT_JOYSTICK", "1") == 0)
+    {
+      if (udev_enumerate_scan_devices(enumerate) >= 0)
+      {
+        devices = udev_enumerate_get_list_entry(enumerate);
+
+        udev_list_entry_foreach(dev_list_entry, devices)
+        {
+          path = udev_list_entry_get_name(dev_list_entry);
+          dev = udev_device_new_from_syspath(udev, path);
+          if (dev != NULL)
+          {
+            devfoundpath = udev_device_get_devnode(dev);
+            if (devfoundpath != NULL)
+            {
+              // found (finally !)
+              //printf("=> %s\n", devfoundpath);
+              if (strcmp(devfoundpath, devpath) == 0)
+              {
+                udev_device_unref(dev);
+                udev_enumerate_unref(enumerate);
+                udev_unref(udev);
+                return true;
+              }
+            }
+            udev_device_unref(dev);
+          }
+        }
+      }
+    }
+  }
+
+  udev_enumerate_unref(enumerate);
+  udev_unref(udev);
+#endif
+
+  return false;
+}
+
 bool CLinuxInputDevices::CheckDevice(const char *device)
 {
   int fd;
@@ -1094,6 +1165,13 @@ bool CLinuxInputDevices::CheckDevice(const char *device)
   fd = open(device, O_RDWR);
   if (fd < 0)
     return false;
+
+  // let others handle joysticks
+  if (IsUdevJoystick(device))
+  {
+    close(fd);
+    return false;
+  }
 
   if (ioctl(fd, EVIOCGRAB, 1) && errno != EINVAL)
   {
