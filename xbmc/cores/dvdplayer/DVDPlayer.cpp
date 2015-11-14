@@ -898,9 +898,7 @@ void CDVDPlayer::OpenDefaultStreams(bool reset)
     if(OpenStream(m_CurrentSubtitle, it->id, it->source))
     {
       valid = true;
-      if(!psp.relevant(*it))
-        visible = false;
-      else if(it->flags & CDemuxStream::FLAG_FORCED)
+      if (it->flags & CDemuxStream::FLAG_FORCED)
         visible = true;
     }
   }
