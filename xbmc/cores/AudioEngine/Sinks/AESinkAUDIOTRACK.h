@@ -40,6 +40,7 @@ public:
 
   virtual bool Initialize(AEAudioFormat &format, std::string &device);
   virtual void Deinitialize();
+  bool IsInitialized();
 
   virtual void         GetDelay        (AEDelayStatus& status);
   virtual double       GetLatency      ();
