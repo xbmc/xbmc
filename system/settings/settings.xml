@@ -1456,7 +1456,7 @@
             <maximum>300</maximum>
           </constraints>
           <dependencies>
-            <dependency type="enable" setting="dsplayer.definedsarea" operator="is">true</dependency>
+            <dependency type="visible" setting="dsplayer.definedsarea" operator="is">true</dependency>
           </dependencies>
           <control type="spinner" format="integer" />
         </setting>
@@ -1469,7 +1469,7 @@
             <maximum>300</maximum>
           </constraints>
           <dependencies>
-            <dependency type="enable" setting="dsplayer.definedsarea" operator="is">true</dependency>
+            <dependency type="visible" setting="dsplayer.definedsarea" operator="is">true</dependency>
           </dependencies>
           <control type="spinner" format="integer" />
         </setting>
@@ -1482,7 +1482,7 @@
             <maximum>300</maximum>
           </constraints>
           <dependencies>
-            <dependency type="enable" setting="dsplayer.definedsarea" operator="is">true</dependency>
+            <dependency type="visible" setting="dsplayer.definedsarea" operator="is">true</dependency>
           </dependencies>
           <control type="spinner" format="integer" />
         </setting>
@@ -1495,7 +1495,7 @@
             <maximum>300</maximum>
           </constraints>
           <dependencies>
-            <dependency type="enable" setting="dsplayer.definedsarea" operator="is">true</dependency>
+            <dependency type="visible" setting="dsplayer.definedsarea" operator="is">true</dependency>
           </dependencies>
           <control type="spinner" format="integer" />
         </setting>
