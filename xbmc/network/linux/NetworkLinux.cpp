@@ -128,7 +128,7 @@ bool CNetworkInterfaceLinux::IsWireless()
 
 bool CNetworkInterfaceLinux::IsEnabled()
 {
-   return (!IsRemoved() && m_interfaceFlags & IFF_UP);
+   return true;
 }
 
 bool CNetworkInterfaceLinux::IsConnected()
@@ -437,6 +437,9 @@ bool CNetworkLinux::queryInterfaceList()
      if(!cur->ifa_addr ||
         (cur->ifa_addr->sa_family != AF_INET &&
          cur->ifa_addr->sa_family != AF_INET6))
+       continue;
+
+     if(!(cur->ifa_flags & IFF_UP))
        continue;
 
      // Add the interface.
