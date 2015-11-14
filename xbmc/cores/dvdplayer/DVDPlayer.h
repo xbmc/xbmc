@@ -230,7 +230,8 @@ public:
   virtual bool CanSeek();
   virtual void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride);
   virtual bool SeekScene(bool bPlus = true);
-  virtual void SeekPercentage(float iPercent);
+  virtual void SeekPercentage(float fPercent);
+  virtual bool SeekPercentageRelative(float fPercent);
   virtual float GetPercentage();
   virtual float GetCachePercentage();
 

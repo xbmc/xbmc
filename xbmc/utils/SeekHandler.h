@@ -47,6 +47,8 @@ public:
 
   void Seek(bool forward, float amount, float duration = 0, bool analogSeek = false, SeekType type = SEEK_TYPE_VIDEO);
   void SeekSeconds(int seconds);
+  void SeekPercentage(float percent);
+  bool SeekChapter(int offset) const;
   void Process();
   void Reset();
   void Configure();

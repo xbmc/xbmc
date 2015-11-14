@@ -146,7 +146,13 @@ public:
   virtual bool CanSeek() {return true;}
   virtual void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) = 0;
   virtual bool SeekScene(bool bPlus = true) {return false;}
-  virtual void SeekPercentage(float fPercent = 0){}
+  virtual void SeekPercentage(float fPercent = 0) {}
+  /*
+   \brief seek relative to current time in percent, returns false if not implemented by player
+   \param fPercent The percent to seek. A positive value will seek forward, a negative backward.
+   \return True if the player supports relative seeking by percent, otherwise false
+   */
+  virtual bool SeekPercentageRelative(float fPercent = 0) { return false; }
   virtual float GetPercentage(){ return 0;}
   virtual float GetCachePercentage(){ return 0;}
   virtual void SetMute(bool bOnOff){}

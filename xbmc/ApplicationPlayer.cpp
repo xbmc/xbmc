@@ -250,6 +250,22 @@ void CApplicationPlayer::SeekPercentage(float fPercent)
     player->SeekPercentage(fPercent);
 }
 
+void CApplicationPlayer::SeekPercentageRelative(float fPercent)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+  {
+    // use relative seeking if implemented by player
+    if (!player->SeekPercentageRelative(fPercent))
+    {
+      int64_t iTotalTime = GetTotalTime();
+      if (!iTotalTime)
+        return;
+      player->SeekTime((int64_t)(iTotalTime * (GetPercentage()+fPercent) / 100));
+    }
+  }
+}
+
 bool CApplicationPlayer::IsPassthrough() const
 {
   std::shared_ptr<IPlayer> player = GetInternal();

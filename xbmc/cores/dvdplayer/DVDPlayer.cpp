@@ -3114,14 +3114,25 @@ void CDVDPlayer::GetGeneralInfo(std::string& strGeneralInfo)
   }
 }
 
-void CDVDPlayer::SeekPercentage(float iPercent)
+void CDVDPlayer::SeekPercentage(float fPercent)
 {
   int64_t iTotalTime = GetTotalTimeInMsec();
 
   if (!iTotalTime)
     return;
 
-  SeekTime((int64_t)(iTotalTime * iPercent / 100));
+  SeekTime((int64_t)(iTotalTime * fPercent / 100));
+}
+
+bool CDVDPlayer::SeekPercentageRelative(float fPercent)
+{
+  int64_t iTotalTime = GetTotalTimeInMsec();
+
+  if (!iTotalTime)
+    return true;
+
+  SeekTime((int64_t)(iTotalTime * (GetPercentage()+fPercent) / 100));
+  return true;
 }
 
 float CDVDPlayer::GetPercentage()

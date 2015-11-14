@@ -147,7 +147,7 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
   {
     //100% over 1 second.
     float speed = 100.0f;
-    if( duration )
+    if (duration)
       speed *= duration;
     else
       speed /= g_graphicsContext.GetFPS();
@@ -182,7 +182,6 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
 
 void CSeekHandler::SeekSeconds(int seconds)
 {
-  // abort if we do not have a play time or already perform a seek
   if (seconds == 0)
     return;
 
@@ -193,6 +192,36 @@ void CSeekHandler::SeekSeconds(int seconds)
   g_application.m_pPlayer->SeekTimeRelative(static_cast<int64_t>(seconds * 1000));
 
   Reset();
+}
+
+void CSeekHandler::SeekPercentage(float percent)
+{
+  if (percent == 0)
+    return;
+
+  CSingleLock lock(m_critSection);
+  double totalTime = g_application.GetTotalTime();
+  if (totalTime < 0)
+    totalTime = 0;
+  m_seekSize = (totalTime * (g_application.m_pPlayer->GetPercentage() + percent) / 100);
+
+  // perform relative seek
+  g_application.m_pPlayer->SeekPercentageRelative(percent);
+
+  Reset();
+}
+
+bool CSeekHandler::SeekChapter(int offset) const
+{
+  int chapter = g_application.m_pPlayer->GetChapter();
+  if (chapter > 0)
+  {
+    int seekChapter = chapter + offset;
+    if (seekChapter > 0 && seekChapter <= g_application.m_pPlayer->GetChapterCount())
+      g_application.m_pPlayer->SeekChapter(seekChapter);
+    return true;
+  }
+  return false;
 }
 
 int CSeekHandler::GetSeekSize() const
@@ -268,13 +297,29 @@ bool CSeekHandler::OnAction(const CAction &action)
     case ACTION_BIG_STEP_BACK:
     case ACTION_CHAPTER_OR_BIG_STEP_BACK:
     {
-      g_application.m_pPlayer->Seek(false, true, action.GetID() == ACTION_CHAPTER_OR_BIG_STEP_BACK);
+      if (action.GetID() == ACTION_CHAPTER_OR_BIG_STEP_BACK &&
+          SeekChapter(-1))
+        return true;
+
+      if (g_advancedSettings.m_videoUseTimeSeeking)
+        SeekSeconds(g_advancedSettings.m_videoTimeSeekBackwardBig);
+      else
+        SeekPercentage(g_advancedSettings.m_videoPercentSeekBackwardBig);
+
       return true;
     }
     case ACTION_BIG_STEP_FORWARD:
     case ACTION_CHAPTER_OR_BIG_STEP_FORWARD:
     {
-      g_application.m_pPlayer->Seek(true, true, action.GetID() == ACTION_CHAPTER_OR_BIG_STEP_FORWARD);
+      if (action.GetID() == ACTION_CHAPTER_OR_BIG_STEP_FORWARD &&
+          SeekChapter(1))
+        return true;
+
+      if (g_advancedSettings.m_videoUseTimeSeeking)
+        SeekSeconds(g_advancedSettings.m_videoTimeSeekForwardBig);
+      else
+        SeekPercentage(g_advancedSettings.m_videoPercentSeekForwardBig);
+
       return true;
     }
     case ACTION_NEXT_SCENE:
