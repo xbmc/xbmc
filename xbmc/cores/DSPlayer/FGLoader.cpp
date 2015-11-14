@@ -224,7 +224,8 @@ HRESULT CFGLoader::InsertSourceFilter(CFileItem& pFileItem, const CStdString& fi
   }
 
   bool isSplitterToo = IsSplitter(infos.pBF);
-  if (pFileItem.GetVideoInfoTag()->m_streamDetails.GetVideoStreamCount() == 1 && pFileItem.GetVideoInfoTag()->m_streamDetails.GetAudioStreamCount() == 0)
+  if ((pFileItem.GetVideoInfoTag()->m_streamDetails.GetVideoStreamCount() == 1 && pFileItem.GetVideoInfoTag()->m_streamDetails.GetAudioStreamCount() == 0) 
+    || (GetCLSID(infos.pBF) == CLSID_LAVSplitterSource))
     isSplitterToo = true;
 
   if (isSplitterToo)
