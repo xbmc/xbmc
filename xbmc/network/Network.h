@@ -174,7 +174,7 @@ public:
    bool HasInterfaceForIP(unsigned long address);
 
    // Return true if there's at least one defined network interface
-   bool IsAvailable(void);
+   bool IsAvailable(bool wait = false);
 
    // Return true if there's at least one interface which is connected
    bool IsConnected(void);
