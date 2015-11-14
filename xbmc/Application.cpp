@@ -3994,6 +3994,14 @@ void CApplication::LoadVideoSettings(const CFileItem& item)
 void CApplication::StopPlaying()
 {
   int iWin = g_windowManager.GetActiveWindow();
+#ifdef HAS_DS_PLAYER
+  if (m_pPlayer->GetCurrentPlayer() == PCID_DSPLAYER && m_pPlayer->IsPlaying() && !CDSRendererCallback::Get()->ReadyDS())
+  {
+    CDSRendererCallback::Get()->SetStop(true);
+    return;
+  }
+#endif
+
   if ( m_pPlayer->IsPlaying() )
   {
 

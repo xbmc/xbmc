@@ -34,6 +34,7 @@ CDSRendererCallback::CDSRendererCallback()
   m_pSettingCallback = NULL;
   m_pPaintCallback = NULL;
   m_renderOnDs = false;
+  m_bStop = false;
   ResetRenderCount();
   m_currentVideoLayer = RENDER_LAYER_UNDER;
 }

@@ -411,6 +411,13 @@ HRESULT CDSGraph::HandleGraphEvent()
   while ((CDSPlayer::PlayerState != DSPLAYER_CLOSING && CDSPlayer::PlayerState != DSPLAYER_CLOSED)
     && SUCCEEDED(m_pMediaEvent->GetEvent(&evCode, &evParam1, &evParam2, 0)))
   {
+    if (CDSRendererCallback::Get()->ReadyDS() && CDSRendererCallback::Get()->GetStop())
+    {
+      CLog::Log(LOGDEBUG, "%s Playback stopped at start", __FUNCTION__);
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+      break;
+    }
+
     switch (evCode)
     {
     case EC_STEP_COMPLETE:

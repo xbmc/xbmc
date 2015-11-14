@@ -238,6 +238,8 @@ public:
   int VideoDimsToResolution(int iWidth, int iHeight);
   DIRECTSHOW_RENDERER GetCurrentRenderer() { return m_CurrentRenderer; }
   void SetCurrentRenderer(DIRECTSHOW_RENDERER renderer) { m_CurrentRenderer = renderer; }
+  bool GetStop(){ return m_bStop; }
+  void SetStop(bool bStop){ m_bStop = bStop; }
 
 private:
   CDSRendererCallback();
@@ -248,6 +250,7 @@ private:
   IMadvrSettingCallback* m_pSettingCallback;
   IDSRendererPaintCallback* m_pPaintCallback;
   bool m_renderOnDs;
+  bool m_bStop;
   int m_renderUnderCount;
   int m_renderOverCount;
   DS_RENDER_LAYER m_currentVideoLayer;
