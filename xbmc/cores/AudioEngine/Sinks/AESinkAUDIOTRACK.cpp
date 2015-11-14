@@ -193,7 +193,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   m_volume      = -1;
   m_silenceframes = 0;
 
-  CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize requested: sampleRate %u; format: %s", format.m_sampleRate, CAEUtil::DataFormatToStr(format.m_dataFormat));
+  CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize requested: sampleRate %u; format: %s; channels: %d", format.m_sampleRate, CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_channelLayout.Count());
 
   int stream = CJNIAudioManager::STREAM_MUSIC;
 
@@ -301,27 +301,29 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
                                                  atChannelMask, m_encoding,
                                                  min_buffer_size);
 
-    CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize returned: m_sampleRate %u; format:%s; min_buffer_size %u; m_frames %u; m_frameSize %u", m_format.m_sampleRate, CAEUtil::DataFormatToStr(m_format.m_dataFormat), min_buffer_size, m_format.m_frames, m_format.m_frameSize);
-
-    if (!m_at_jni)
+    if (!IsInitialized())
     {
-      if (atChannelMask != CJNIAudioFormat::CHANNEL_OUT_STEREO &&
-          atChannelMask != CJNIAudioFormat::CHANNEL_OUT_5POINT1)
+      if (!m_passthrough)
       {
-        atChannelMask = CJNIAudioFormat::CHANNEL_OUT_5POINT1;
-        CLog::Log(LOGDEBUG, "AESinkAUDIOTRACK - Retrying multichannel playback with a 5.1 layout");
+        if (atChannelMask != CJNIAudioFormat::CHANNEL_OUT_STEREO &&
+            atChannelMask != CJNIAudioFormat::CHANNEL_OUT_5POINT1)
+        {
+          atChannelMask = CJNIAudioFormat::CHANNEL_OUT_5POINT1;
+          CLog::Log(LOGDEBUG, "AESinkAUDIOTRACK - Retrying multichannel playback with a 5.1 layout");
+          continue;
+        }
+        else if (atChannelMask != CJNIAudioFormat::CHANNEL_OUT_STEREO)
+        {
+          atChannelMask = CJNIAudioFormat::CHANNEL_OUT_STEREO;
+          CLog::Log(LOGDEBUG, "AESinkAUDIOTRACK - Retrying with a stereo layout");
+          continue;
+        }
       }
-      else if (atChannelMask != CJNIAudioFormat::CHANNEL_OUT_STEREO)
-      {
-        atChannelMask = CJNIAudioFormat::CHANNEL_OUT_STEREO;
-        CLog::Log(LOGDEBUG, "AESinkAUDIOTRACK - Retrying with a stereo layout");
-      }
-      else
-      {
-        CLog::Log(LOGERROR, "AESinkAUDIOTRACK - Unable to create AudioTrack");
-        return false;
-      }
+      CLog::Log(LOGERROR, "AESinkAUDIOTRACK - Unable to create AudioTrack");
+      Deinitialize();
+      return false;
     }
+    CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize returned: m_sampleRate %u; format:%s; min_buffer_size %u; m_frames %u; m_frameSize %u; channels: %d", m_format.m_sampleRate, CAEUtil::DataFormatToStr(m_format.m_dataFormat), min_buffer_size, m_format.m_frames, m_format.m_frameSize, m_format.m_channelLayout.Count());
   }
 
   format                    = m_format;
@@ -338,6 +340,9 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 
 void CAESinkAUDIOTRACK::Deinitialize()
 {
+#ifdef DEBUG_VERBOSE
+  CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Deinitialize");
+#endif
   // Restore volume
   if (m_volume != -1)
     CXBMCApp::SetSystemVolume(m_volume);
@@ -345,16 +350,24 @@ void CAESinkAUDIOTRACK::Deinitialize()
   if (!m_at_jni)
     return;
 
-  m_at_jni->stop();
-  m_at_jni->flush();
+  if (IsInitialized())
+  {
+    m_at_jni->stop();
+    m_at_jni->flush();
+  }
   m_at_jni->release();
-  
+
   m_frames_written = 0;
   m_lastHeadPosition = 0;
   m_ptOffset = 0;
 
   delete m_at_jni;
   m_at_jni = NULL;
+}
+
+bool CAESinkAUDIOTRACK::IsInitialized()
+{
+  return (m_at_jni && m_at_jni->getState() == CJNIAudioTrack::STATE_INITIALIZED);
 }
 
 void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
@@ -405,7 +418,7 @@ double CAESinkAUDIOTRACK::GetCacheTotal()
 // when it returns ActiveAESink will take the next buffer out of a queue
 unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
 {
-  if (!m_at_jni)
+  if (!IsInitialized())
     return INT_MAX;
 
   uint8_t *buffer = data[0]+offset*m_format.m_frameSize;
@@ -444,6 +457,11 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
     written = m_at_jni->write((char*)out_buf, 0, size);
     if (written == size || size == 1)
       written = frames * m_sink_frameSize;     // Be sure to report to AE everything has been written
+    else if (written < 0)
+    {
+      CLog::Log(LOGERROR, "CAESinkAUDIOTRACK::AddPackets write returned error:  %d", written);
+      return INT_MAX;
+    }
     else
     {
       CLog::Log(LOGWARNING, "CAESinkAUDIOTRACK::AddPackets incomplete write:  %d vs. %d", written, size);

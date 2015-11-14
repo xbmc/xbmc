@@ -40,10 +40,12 @@ class CJNIAudioTrack : public CJNIBase
     void  flush();
     void  release();
     int   write(char* audioData, int offsetInBytes, int sizeInBytes);
+    int   getState();
     int   getPlayState();
     int   getPlaybackHeadPosition();
 
     static int  MODE_STREAM;
+    static int  STATE_INITIALIZED;
     static int  PLAYSTATE_PLAYING;
     static int  PLAYSTATE_STOPPED;
     static int  PLAYSTATE_PAUSED;
