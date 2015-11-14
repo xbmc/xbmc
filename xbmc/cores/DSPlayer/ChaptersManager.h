@@ -71,7 +71,7 @@ public:
   /** Retrive current chapter's name
    * @param[out] strChapterName The chapter's name
    */
-  void GetChapterName(std::string& strChapterName);
+  void GetChapterName(std::string& strChapterName, int chapterIdx);
   /** Sync the current chapter with the media file */
   void UpdateChapters(int64_t current_time);
   /** Seek to the specified chapter

@@ -84,12 +84,16 @@ int CChaptersManager::GetChapterPos(int iChapter)
     return 0;
 }
 
-void CChaptersManager::GetChapterName(std::string& strChapterName)
+void CChaptersManager::GetChapterName(std::string& strChapterName, int chapterIdx)
 {
   CSingleLock lock(m_lock);
   if (m_currentChapter == -1)
     return;
-  strChapterName = m_chapters[m_currentChapter]->name;
+
+  if (chapterIdx == -1)
+    chapterIdx = m_currentChapter;
+
+  strChapterName = m_chapters[chapterIdx]->name;
 }
 
 void CChaptersManager::UpdateChapters(int64_t current_time)
