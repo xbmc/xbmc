@@ -737,7 +737,7 @@ void CMadvrSettingsManager::RestoreSettings()
   SetSmoothmotion("", madvrSettings.m_smoothMotion);
 
   SetBool("sharpenEdges", madvrSettings.m_sharpenEdges);
-  SetFloat("sharpenEdgeStrength", madvrSettings.m_sharpenEdgesStrength, 10);
+  SetFloat("sharpenEdgesStrength", madvrSettings.m_sharpenEdgesStrength, 10);
   SetBool("crispenEdges", madvrSettings.m_crispenEdges);
   SetFloat("crispenEdgesStrength", madvrSettings.m_crispenEdgesStrength, 10);
   SetBool("thinEdges", madvrSettings.m_thinEdges);
@@ -763,7 +763,7 @@ void CMadvrSettingsManager::RestoreSettings()
   SetBool("cropBars", madvrSettings.m_cropBars);
 
   SetBool("upRefSharpenEdges", madvrSettings.m_UpRefSharpenEdges);
-  SetFloat("upRefSharpenEdgeStrength", madvrSettings.m_UpRefSharpenEdgesStrength, 10);
+  SetFloat("upRefSharpenEdgesStrength", madvrSettings.m_UpRefSharpenEdgesStrength, 10);
   SetBool("upRefCrispenEdges", madvrSettings.m_UpRefCrispenEdges);
   SetFloat("upRefCrispenEdgesStrength", madvrSettings.m_UpRefCrispenEdgesStrength, 10);
   SetBool("upRefThinEdges", madvrSettings.m_UpRefThinEdges);
@@ -800,7 +800,7 @@ void CMadvrSettingsManager::LoadSettings(MADVR_LOAD_TYPE type)
     GetInt("debandFadeLevel", &madvrSettings.m_debandFadeLevel);
 
     GetBool("sharpenEdges", &madvrSettings.m_sharpenEdges);
-    GetFloat("sharpenEdgeStrength", &madvrSettings.m_sharpenEdgesStrength, 10);
+    GetFloat("sharpenEdgesStrength", &madvrSettings.m_sharpenEdgesStrength, 10);
     GetBool("crispenEdges", &madvrSettings.m_crispenEdges);
     GetFloat("crispenEdgesStrength", &madvrSettings.m_crispenEdgesStrength, 10);
     GetBool("thinEdges", &madvrSettings.m_thinEdges);
@@ -859,7 +859,7 @@ void CMadvrSettingsManager::LoadSettings(MADVR_LOAD_TYPE type)
     GetStr("nnediQCScalingFactor", &madvrSettings.m_ImageQuadrupleChromaFactor,MADVR_LIST_QUADRUPLEFACTOR);
 
     GetBool("upRefSharpenEdges", &madvrSettings.m_UpRefSharpenEdges);
-    GetFloat("upRefSharpenEdgeStrength", &madvrSettings.m_UpRefSharpenEdgesStrength, 10);
+    GetFloat("upRefSharpenEdgesStrength", &madvrSettings.m_UpRefSharpenEdgesStrength, 10);
     GetBool("upRefCrispenEdges", &madvrSettings.m_UpRefCrispenEdges);
     GetFloat("upRefCrispenEdgesStrength", &madvrSettings.m_UpRefCrispenEdgesStrength, 10);
     GetBool("upRefThinEdges", &madvrSettings.m_UpRefThinEdges);
