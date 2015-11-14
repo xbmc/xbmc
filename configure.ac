@@ -649,7 +649,6 @@ case $host in
      target_platform=target_linux
      ARCH="arm"
      use_arch="arm"
-     use_joystick=no
      use_neon=yes
      use_gles=yes
      use_gl=no
@@ -1279,6 +1278,14 @@ fi
   else
     AC_MSG_RESULT($sdl_joystick_not_found)
   fi
+fi
+
+if test "x$use_sdl" != "xyes" -a "x$use_joystick" != "xno" ; then
+    PKG_CHECK_MODULES([SDL2],   [sdl2],
+      [AC_DEFINE([SDL_VERSION],[2],["SDL major version"])
+       INCLUDES="$INCLUDES $SDL2_CFLAGS"; LIBS="$LIBS $SDL2_LIBS";]
+    )
+    # don't set HAVE_SDL here, while in kodi, it means more than just SDL and HAVE_JOYSTICK implies SDL
 fi
 
 XB_FIND_SONAME([ASS],         [ass])

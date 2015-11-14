@@ -1103,6 +1103,23 @@ bool CLinuxInputDevices::CheckDevice(const char *device)
   if (fd < 0)
     return false;
 
+  // let others handle joysticks
+  unsigned long evbit[NBITS(EV_MAX)] = { 0 };
+  unsigned long keybit[NBITS(KEY_MAX)] = { 0 };
+  unsigned long absbit[NBITS(ABS_MAX)] = { 0 };
+
+  if (!((ioctl(fd, EVIOCGBIT(0, sizeof(evbit)), evbit) < 0) ||
+	(ioctl(fd, EVIOCGBIT(EV_KEY, sizeof(keybit)), keybit) < 0) ||
+	(ioctl(fd, EVIOCGBIT(EV_ABS, sizeof(absbit)), absbit) < 0))) {
+    if (test_bit(EV_KEY, evbit) && test_bit(EV_ABS, evbit) &&
+	test_bit(ABS_X, absbit) && test_bit(ABS_Y, absbit)) {
+      CLog::Log(LOGNOTICE, "Avoiding joystick as normal input device - %s\n", device);
+      close(fd);
+      return false;
+    }
+  }
+  //
+
   if (ioctl(fd, EVIOCGRAB, 1) && errno != EINVAL)
   {
     close(fd);
