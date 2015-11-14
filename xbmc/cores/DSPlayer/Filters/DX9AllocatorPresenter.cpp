@@ -972,6 +972,9 @@ void CDX9AllocatorPresenter::BuildPresentParameters()
 {
   g_Windowing.GetParamsForDSPlayer(m_useWindowedDX, m_nBackBufferWidth, m_nBackBufferHeight, m_bVSync, m_fRefreshRate, m_interlaced);
 
+  // todo fullscreen exclusive mode
+  m_useWindowedDX = true;
+
   if (m_hDeviceWnd != NULL)
   {
     HMONITOR hMonitor = MonitorFromWindow(m_hDeviceWnd, MONITOR_DEFAULTTONULL);
