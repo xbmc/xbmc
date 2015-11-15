@@ -26,7 +26,6 @@
 #include <forward_list>
 #include <cstdio>
 #include "network/Network.h"
-#include "threads/Thread.h"
 
 class CNetworkLinux;
 class CNetworkLinuxUpdateThread;
@@ -90,7 +89,6 @@ private:
 
 class CNetworkLinux : public CNetwork
 {
-   friend class CNetworkLinuxUpdateThread;
    friend class CNetworkInterfaceLinux;
 
 public:
@@ -112,6 +110,7 @@ public:
    virtual std::vector<std::string> GetNameServers(void);
    virtual void SetNameServers(const std::vector<std::string>& nameServers);
 
+   bool ForceRereadInterfaces() { return queryInterfaceList(); }
 private:
    CNetworkInterfaceLinux *Exists(const std::string &addr, const std::string &mask, const std::string &name);
    void InterfacesClear(void);
@@ -123,21 +122,9 @@ private:
    std::forward_list<CNetworkInterface*> m_interfaces;
    int m_sock;
 
-   CNetworkLinuxUpdateThread      *m_updThread;
-
    static bool IsRemoved(const CNetworkInterface *i) { return ((CNetworkInterfaceLinux*)i)->IsRemoved(); }
-};
-
-class CNetworkLinuxUpdateThread : public CThread
-{
-public:
-   CNetworkLinuxUpdateThread(CNetworkLinux *owner);
-   virtual ~CNetworkLinuxUpdateThread(void) {};
-
-protected:
-   void Process(void);
-   CNetworkLinux *m_owner;
 };
 
 #endif
 
+void WatcherProcess(void *caller);

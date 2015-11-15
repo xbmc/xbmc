@@ -152,8 +152,10 @@ CNetwork::CNetwork() :
 CNetwork::~CNetwork()
 {
   m_bStop = true;
+  m_updThread->StopThread(false);
   m_signalNetworkChange.Set();
   CApplicationMessenger::GetInstance().PostMsg(TMSG_NETWORKMESSAGE, SERVICES_DOWN, 0);
+  m_updThread->StopThread(true);
 }
 
 std::string CNetwork::GetIpStr(const struct sockaddr *sa)

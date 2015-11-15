@@ -22,6 +22,7 @@
  
 #include <string>
 #include <vector>
+#include <forward_list>
 #include "network/Network.h"
 #include "Iphlpapi.h"
 #include "utils/stopwatch.h"
@@ -70,7 +71,7 @@ public:
    virtual ~CNetworkWin32(void);
 
    // Return the list of interfaces
-   virtual std::vector<CNetworkInterface*>& GetInterfaceList(void);
+   virtual std::forward_list<CNetworkInterface*>& GetInterfaceList(void);
 
    // Ping remote host
    virtual bool PingHostImpl(const std::string &target, unsigned int timeout_ms = 2000);
@@ -81,11 +82,12 @@ public:
 
    friend class CNetworkInterfaceWin32;
 
+   bool ForceRereadInterfaces() { queryInterfaceList(); return true; }
 private:
    int GetSocket() { return m_sock; }
    void queryInterfaceList();
    void CleanInterfaceList();
-   std::vector<CNetworkInterface*> m_interfaces;
+   std::forward_list<CNetworkInterface*> m_interfaces;
    int m_sock;
    CStopWatch m_netrefreshTimer;
 };

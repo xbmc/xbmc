@@ -26,6 +26,8 @@
 #include "system.h"
 #include "threads/Event.h"
 #include "threads/CriticalSection.h"
+#include "threads/Thread.h"
+#include "Application.h"
 
 #include "settings/lib/ISettingCallback.h"
 #include <sys/socket.h>
@@ -107,6 +109,22 @@ public:
 
 class CNetwork
 {
+public:
+  class CNetworkUpdater : public CThread
+  {
+  public:
+    CNetworkUpdater(void (*watcher)(void *caller)) : CThread("NetConfUpdater"), m_watcher(watcher) {}
+    virtual ~CNetworkUpdater(void) {};
+
+    volatile bool *Stopping() { return &m_bStop; }
+
+  protected:
+    void Process() { m_watcher(this); }
+
+  private:
+    void (*m_watcher)(void *caller);
+  };
+
 public:
   enum EMESSAGE
   {
@@ -359,6 +377,15 @@ public:
    // Waits for the first network interface to become available
    void WaitForNet();
 
+   /*!
+    \brief Registers function as platform. network settings change watcher. Changes on net ifaces
+           should be reported by sending message TMSG_NETWORKMESSAGE (CNetwork::NETWORK_CHANGED).
+    */
+   void RegisterWatcher(void (*watcher)(void *caller)) { m_updThread = new CNetworkUpdater(watcher); m_updThread->Create(false); }
+   CNetworkUpdater *m_updThread;
+
+   virtual bool ForceRereadInterfaces() = 0;
+
 protected:
    CCriticalSection m_lockInterfaces;
 
@@ -366,6 +393,7 @@ private:
    CEvent  m_signalNetworkChange;
    bool    m_bStop;
 };
+
 
 #ifdef HAS_LINUX_NETWORK
 #include "linux/NetworkLinux.h"

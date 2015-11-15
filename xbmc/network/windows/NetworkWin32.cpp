@@ -29,6 +29,8 @@
 #include "utils/StringUtils.h"
 #include "platform/win32/WIN32Util.h"
 
+#include "xbmc/messaging/ApplicationMessenger.h"
+
 // undefine if you want to build without the wlan stuff
 // might be needed for VS2003
 #define HAS_WIN32_WLAN_API
@@ -38,6 +40,7 @@
 #pragma comment (lib,"Wlanapi.lib")
 #endif
 
+using namespace KODI::MESSAGING;
 
 CNetworkInterfaceWin32::CNetworkInterfaceWin32(CNetworkWin32* network, const IP_ADAPTER_INFO& adapter) :
    m_adaptername(adapter.Description)
@@ -150,28 +153,23 @@ std::string CNetworkInterfaceWin32::GetCurrentDefaultGateway(void)
 CNetworkWin32::CNetworkWin32(void)
 {
   queryInterfaceList();
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_NETWORKMESSAGE, CNetwork::SERVICES_UP, 0);
 }
 
 CNetworkWin32::~CNetworkWin32(void)
 {
-  CleanInterfaceList();
   m_netrefreshTimer.Stop();
+  CleanInterfaceList();
 }
 
 void CNetworkWin32::CleanInterfaceList()
 {
   CSingleLock lock (m_lockInterfaces);
-
-  std::vector<CNetworkInterface*>::iterator it = m_interfaces.begin();
-  while(it != m_interfaces.end())
-  {
-    CNetworkInterface* nInt = *it;
-    delete nInt;
-    it = m_interfaces.erase(it);
-  }
+  auto it = m_interfaces.before_begin();
+  m_interfaces.erase_after(it, m_interfaces.end());
 }
 
-std::vector<CNetworkInterface*>& CNetworkWin32::GetInterfaceList(void)
+std::forward_list<CNetworkInterface*>& CNetworkWin32::GetInterfaceList(void)
 {
   CSingleLock lock (m_lockInterfaces);
   if(m_netrefreshTimer.GetElapsedSeconds() >= 5.0f)
@@ -187,6 +185,7 @@ void CNetworkWin32::queryInterfaceList()
 
   PIP_ADAPTER_INFO adapterInfo;
   PIP_ADAPTER_INFO adapter = NULL;
+  auto             pos     = m_interfaces.before_begin();
 
   ULONG ulOutBufLen = sizeof (IP_ADAPTER_INFO);
 
@@ -207,7 +206,8 @@ void CNetworkWin32::queryInterfaceList()
     adapter = adapterInfo;
     while (adapter)
     {
-      m_interfaces.push_back(new CNetworkInterfaceWin32(this, *adapter));
+      m_interfaces.insert_after(pos, new CNetworkInterfaceWin32(this, *adapter));
+      ++pos;
       adapter = adapter->Next;
     }
   }
@@ -268,7 +268,7 @@ bool CNetworkWin32::PingHostImpl(const std::string &target, unsigned int timeout
 
   SetLastError(ERROR_SUCCESS);
 
-  DWORD dwRetVal = IcmpSendEcho(hIcmpFile, ntohl(sa.sin_addr), SendData, sizeof(SendData),
+  DWORD dwRetVal = IcmpSendEcho(hIcmpFile, (unsigned long)sa.sin_addr.s_addr, SendData, sizeof(SendData),
                                 NULL, ReplyBuffer, sizeof(ReplyBuffer), timeout_ms);
 
   DWORD lastErr = GetLastError();
