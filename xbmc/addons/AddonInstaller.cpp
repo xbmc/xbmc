@@ -625,10 +625,8 @@ bool CAddonInstallJob::DoWork()
 
   ADDON::OnPostInstall(m_addon, m_update, IsModal());
 
-  //Clear addon from the disabled table
-  CAddonDatabase database;
-  database.Open();
-  database.DisableAddon(m_addon->ID(), false);
+  //Enable it if it was previously disabled
+  CAddonMgr::GetInstance().EnableAddon(m_addon->ID());
 
   // and we're done!
   MarkFinished();
@@ -895,6 +893,9 @@ bool CAddonUnInstallJob::DoWork()
   if (!database.Open() || !database.GetAddon(m_addon->ID(), addon) || addon == NULL)
     addon = m_addon;
   CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24144)));
+
+  CAddonMgr::GetInstance().OnPostUnInstall(m_addon->ID());
+  database.OnPostUnInstall(m_addon->ID());
 
   ADDON::OnPostUnInstall(m_addon);
   return true;

@@ -157,6 +157,9 @@ public:
   */
   bool IsSystemAddonRegistered(const std::string &addonID);
 
+  /*! Clear internal fields that shouldn't be kept around indefinitely */
+  void OnPostUnInstall(const std::string& addonId);
+
 protected:
   virtual void CreateTables();
   virtual void CreateAnalytics();

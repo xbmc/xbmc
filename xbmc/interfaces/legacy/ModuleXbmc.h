@@ -50,7 +50,7 @@ namespace XBMCAddon
      *           See pydocs for valid values for level.\n
      *           
      *           example:
-     *             - xbmc.log(msg='This is a test string.', level=xbmc.LOGDEBUG));
+     *             - xbmc.log(msg='This is a test string.', level=xbmc.LOGDEBUG);
      */
     void log(const char* msg, int level = lLOGNOTICE);
 
