@@ -934,7 +934,7 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
 #if defined(TARGET_FREEBSD)
         || *platform == "freebsd"
 #endif
-        )
+        || *platform == "rbpi")
 #elif defined(TARGET_WINDOWS) && defined(HAS_DX)
       if (*platform == "windx" || *platform == "windows")
 #elif defined(TARGET_DARWIN_OSX)
