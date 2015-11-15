@@ -224,8 +224,7 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
 {
 
 
-  CDSRendererCallback::Get()->Register((IDSRendererAllocatorCallback*)this);
-  CDSRendererCallback::Get()->Register((IDSRendererPaintCallback*)this);
+  CDSRendererCallback::Get()->Register(this);
   m_pEvrShared = DNew CEvrSharedRender();
   m_firstBoot = true;
   g_Windowing.Register(this);
