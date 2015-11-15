@@ -19,6 +19,7 @@
  */
 
 #include <cstdlib>
+#include <algorithm>
 
 #include "xbmc/messaging/ApplicationMessenger.h"
 #include <poll.h>
