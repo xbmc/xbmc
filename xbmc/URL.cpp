@@ -787,7 +787,7 @@ std::string CURL::Encode(const std::string& strURLData)
     if (StringUtils::isasciialphanum(kar) || kar == '-' || kar == '.' || kar == '_' || kar == '!' || kar == '(' || kar == ')')
       strResult.push_back(kar);
     else
-      strResult += StringUtils::Format("%%%02.2x", (unsigned int)((unsigned char)kar)); // TODO: Change to "%%%02.2X" after Gotham
+      strResult += StringUtils::Format("%%%2.2X", (unsigned int)((unsigned char)kar));
   }
 
   return strResult;

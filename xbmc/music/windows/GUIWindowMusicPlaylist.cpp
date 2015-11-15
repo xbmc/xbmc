@@ -470,7 +470,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
       // No music info and it's not CDDA so we'll just show the filename
       std::string str;
       str = CUtil::GetTitleFromPath(pItem->GetPath());
-      str = StringUtils::Format("%02.2i. %s ", pItem->m_iprogramCount, str.c_str());
+      str = StringUtils::Format("%2.2i. %s ", pItem->m_iprogramCount, str.c_str());
       pItem->SetLabel(str);
     }
   }
