@@ -1,31 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.xbmc.org"
 		name="Kodi Add-on repository"
-		version="2.2.32"
+		version="2.3.0"
 		provider-name="XBMC Foundation">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
   </requires>
 	<extension point="xbmc.addon.repository"
 		name="Official XBMC.org Add-on Repository">
-		<dir minversion="13.0.0">
-			<info compressed="true">http://mirrors.kodi.tv/addons/gotham/addons.xml</info>
-			<checksum>http://mirrors.kodi.tv/addons/gotham/addons.xml.md5</checksum>
-			<datadir zip="true">http://mirrors.kodi.tv/addons/gotham</datadir>
-			<hashes>true</hashes>
-		</dir>
-		<dir minversion="14.0.0">
-			<info compressed="true">http://mirrors.kodi.tv/addons/helix/addons.xml</info>
-			<checksum>http://mirrors.kodi.tv/addons/helix/addons.xml.md5</checksum>
-			<datadir zip="true">http://mirrors.kodi.tv/addons/helix</datadir>
-			<hashes>true</hashes>
-		</dir>
-		<dir minversion="15.0.0">
-			<info compressed="true">http://mirrors.kodi.tv/addons/isengard/addons.xml</info>
-			<checksum>http://mirrors.kodi.tv/addons/isengard/addons.xml.md5</checksum>
-			<datadir zip="true">http://mirrors.kodi.tv/addons/isengard</datadir>
-			<hashes>true</hashes>
-		</dir>
 		<dir minversion="15.9.0">
 			<info compressed="true">http://mirrors.kodi.tv/addons/jarvis/addons.xml</info>
 			<checksum>http://mirrors.kodi.tv/addons/jarvis/addons.xml.md5</checksum>
