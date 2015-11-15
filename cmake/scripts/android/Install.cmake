@@ -31,6 +31,8 @@ file(WRITE ${CMAKE_BINARY_DIR}/tools/depends/Makefile.include
 
 set(package_files strings.xml
                   activity_main.xml
+                  colors.xml
+                  searchable.xml
                   AndroidManifest.xml
                   src/org/xbmc/kodi/XBMCOnAudioFocusChangeListener.java
                   src/org/xbmc/kodi/XBMCInputDeviceListener.java
