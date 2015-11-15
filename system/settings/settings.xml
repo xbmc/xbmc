@@ -1458,7 +1458,9 @@
           <dependencies>
             <dependency type="visible" setting="dsplayer.definedsarea" operator="is">true</dependency>
           </dependencies>
-          <control type="spinner" format="integer" />
+          <control type="spinner" format="string">
+            <formatlabel>55092</formatlabel>
+          </control>
         </setting>
         <setting id="dsplayer.dsareatop" type="integer" parent="dsplayer.definedsarea" label="55088" help="">
           <level>0</level>
@@ -1471,7 +1473,9 @@
           <dependencies>
             <dependency type="visible" setting="dsplayer.definedsarea" operator="is">true</dependency>
           </dependencies>
-          <control type="spinner" format="integer" />
+          <control type="spinner" format="string">
+            <formatlabel>55092</formatlabel>
+          </control>
         </setting>
         <setting id="dsplayer.dsarearight" type="integer" parent="dsplayer.definedsarea" label="55089" help="">
           <level>0</level>
@@ -1484,7 +1488,9 @@
           <dependencies>
             <dependency type="visible" setting="dsplayer.definedsarea" operator="is">true</dependency>
           </dependencies>
-          <control type="spinner" format="integer" />
+          <control type="spinner" format="string">
+            <formatlabel>55092</formatlabel>
+          </control>
         </setting>
         <setting id="dsplayer.dsareabottom" type="integer" parent="dsplayer.definedsarea" label="55090" help="">
           <level>0</level>
@@ -1497,7 +1503,9 @@
           <dependencies>
             <dependency type="visible" setting="dsplayer.definedsarea" operator="is">true</dependency>
           </dependencies>
-          <control type="spinner" format="integer" />
+          <control type="spinner" format="string">
+            <formatlabel>55092</formatlabel>
+          </control>
         </setting>
       </group>
     </category>

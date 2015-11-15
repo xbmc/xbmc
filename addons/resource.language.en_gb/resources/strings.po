@@ -18370,6 +18370,10 @@ msgctxt "#55091"
 msgid "Move OSD into active video area"
 msgstr ""
 
+msgctxt "#55092"
+msgid "%i px"
+msgstr ""
+
 msgctxt "#60001"
 msgid "Media rules"
 msgstr ""
