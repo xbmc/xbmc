@@ -923,6 +923,21 @@ void CGUIDialogPVRTimerSettings::PrioritiesFiller(
     list.clear();
     pThis->m_timerType->GetPriorityValues(list);
     current = pThis->m_iPriority;
+
+    auto it = list.begin();
+    while (it != list.end())
+    {
+      if (it->second == current)
+        break; // value already in list
+
+      ++it;
+    }
+
+    if (it == list.end())
+    {
+      // PVR backend supplied value is not in the list of predefined values. Insert it.
+      list.insert(it, std::make_pair(StringUtils::Format("%d", current), current));
+    }
   }
   else
     CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::PrioritiesFiller - No dialog");
@@ -937,6 +952,21 @@ void CGUIDialogPVRTimerSettings::LifetimesFiller(
     list.clear();
     pThis->m_timerType->GetLifetimeValues(list);
     current = pThis->m_iLifetime;
+
+    auto it = list.begin();
+    while (it != list.end())
+    {
+      if (it->second == current)
+        break; // value already in list
+
+      ++it;
+    }
+
+    if (it == list.end())
+    {
+      // PVR backend supplied value is not in the list of predefined values. Insert it.
+      list.insert(it, std::make_pair(StringUtils::Format(g_localizeStrings.Get(17999).c_str(), current) /* %i days */, current));
+    }
   }
   else
     CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::LifetimesFiller - No dialog");
@@ -951,6 +981,21 @@ void CGUIDialogPVRTimerSettings::MaxRecordingsFiller(
     list.clear();
     pThis->m_timerType->GetMaxRecordingsValues(list);
     current = pThis->m_iMaxRecordings;
+
+    auto it = list.begin();
+    while (it != list.end())
+    {
+      if (it->second == current)
+        break; // value already in list
+
+      ++it;
+    }
+
+    if (it == list.end())
+    {
+      // PVR backend supplied value is not in the list of predefined values. Insert it.
+      list.insert(it, std::make_pair(StringUtils::Format("%d", current), current));
+    }
   }
   else
     CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::MaxRecordingsFiller - No dialog");
