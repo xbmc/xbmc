@@ -107,7 +107,7 @@ public:
   
   static int GetBatteryLevel();
   static bool EnableWakeLock(bool on);
-  static bool HasFocus();
+  static bool HasFocus() { return m_hasFocus; }
   static bool IsHeadsetPlugged();
 
   static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());

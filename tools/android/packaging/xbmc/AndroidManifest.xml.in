@@ -93,6 +93,31 @@
             </intent-filter>
         </receiver>
 
+        <provider
+            android:name=".XBMCImageContentProvider"
+            android:authorities="@APP_PACKAGE@.image"
+            android:exported="true" />
+
+        <provider
+            android:name=".XBMCMediaContentProvider"
+            android:authorities="@APP_PACKAGE@.media"
+            android:exported="true" />
+
+        <activity android:name=".XBMCSearchableActivity" >
+             <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.google.android.gms.actions.SEARCH_ACTION"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+                <meta-data android:name="android.app.searchable"
+                   android:resource="@xml/searchable"/>
+        </activity>
+
     </application>
 
 </manifest><!-- END_INCLUDE(manifest) -->

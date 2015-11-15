@@ -34,15 +34,21 @@ set(package_files strings.xml
                   colors.xml
                   searchable.xml
                   AndroidManifest.xml
-                  src/org/xbmc/kodi/XBMCOnAudioFocusChangeListener.java
-                  src/org/xbmc/kodi/XBMCInputDeviceListener.java
                   src/org/xbmc/kodi/Main.java
-                  src/org/xbmc/kodi/XBMCSettingsContentObserver.java
+                  src/org/xbmc/kodi/Splash.java
+                  src/org/xbmc/kodi/XBMCBroadcastReceiver.java
+                  src/org/xbmc/kodi/XBMCImageContentProvider.java
+                  src/org/xbmc/kodi/XBMCInputDeviceListener.java
+                  src/org/xbmc/kodi/XBMCJsonRPC.java
+                  src/org/xbmc/kodi/XBMCMediaContentProvider.java
+                  src/org/xbmc/kodi/XBMCOnAudioFocusChangeListener.java
                   src/org/xbmc/kodi/XBMCOnFrameAvailableListener.java
+                  src/org/xbmc/kodi/XBMCRecommendationBuilder.java
+                  src/org/xbmc/kodi/XBMCSearchableActivity.java
+                  src/org/xbmc/kodi/XBMCSettingsContentObserver.java
                   src/org/xbmc/kodi/XBMCProperties.java
                   src/org/xbmc/kodi/XBMCVideoView.java
-                  src/org/xbmc/kodi/Splash.java
-                  src/org/xbmc/kodi/XBMCBroadcastReceiver.java)
+                  )
 foreach(file IN LISTS package_files)
   configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/xbmc/${file}.in
                  ${CMAKE_BINARY_DIR}/tools/android/packaging/xbmc/${file} @ONLY)

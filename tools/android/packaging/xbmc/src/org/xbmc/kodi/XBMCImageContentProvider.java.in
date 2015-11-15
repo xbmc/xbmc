@@ -1,0 +1,167 @@
+package @APP_PACKAGE@;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import android.content.ContentProvider;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.ParcelFileDescriptor;
+import android.util.Log;
+
+/**
+ * Provides a background image for Recommendations for a RecommendationCardView.
+ * 
+ * The card view changed to require a content provider be created. It requests
+ * items via the openFile(Uri uri) method. This is an example of how to retrieve
+ * an image from a web site and provide a ParcelFileDescriptor back that
+ * contains the contents.
+ * 
+ * This is based on code from the following stackoverflow description on how to
+ * populate a ParcelFileDescriptor from any input stream.
+ * 
+ * http://stackoverflow.com/a/14734310/1950264
+ * 
+ * You still need to setup a ContentProvider entry and Authority in the
+ * AndroidManifest.xml
+ * 
+ * See
+ * http://developer.android.com/reference/android/content/ContentProvider.html
+ * 
+ */
+public class XBMCImageContentProvider extends ContentProvider
+{
+  private static String TAG = "@APP_NAME@";
+  
+  public static String AUTHORITY = "@APP_PACKAGE@";
+  public static String AUTHORITY_IMAGE = AUTHORITY + ".image";
+ 
+  @Override
+  public boolean onCreate()
+  {
+    return true;
+  }
+
+  public static Uri GetImageUri(String surl)
+  {
+    Uri.Builder builder = new Uri.Builder();
+    builder.scheme("content")
+    .authority(AUTHORITY_IMAGE)
+    .fragment(surl);
+    
+    Uri out = builder.build();
+    // Log.d(TAG, "GetImageUri: in:" + surl + " out:" + out.toString());
+    return out;    
+  }
+  
+  @Override
+  public ParcelFileDescriptor openFile(Uri uri, String mode)
+      throws FileNotFoundException
+  {
+    // Log.d(TAG, "openFile: " + uri.toString());
+    
+    ParcelFileDescriptor[] pipe = null;
+
+    try
+    {
+      String decodedUrl = uri.getFragment();
+      // Log.d(TAG, "  decodedUrl: " + decodedUrl);
+      if (decodedUrl == null)
+      {
+        throw new FileNotFoundException("Uri is null");
+      }
+      pipe = ParcelFileDescriptor.createPipe();
+
+      URL url = new URL(decodedUrl);
+      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+      String auth = XBMCProperties.getJsonAuthorization();
+      if (!auth.isEmpty())
+        connection.setRequestProperty("Authorization", auth);
+      connection.setDoInput(true);
+      connection.connect();
+
+      new TransferThread(connection.getInputStream(),
+          new ParcelFileDescriptor.AutoCloseOutputStream(pipe[1])).start();
+    } 
+    catch (IOException e)
+    {
+      Log.e(getClass().getSimpleName(), "Exception opening pipe", e);
+      throw new FileNotFoundException("Could not open pipe for: "
+          + uri.toString());
+    }
+
+    return (pipe[0]);
+  }
+
+  @Override
+  public Cursor query(Uri uri, String[] projection, String selection,
+      String[] selectionArgs, String sortOrder)
+  {
+    return null;
+  }
+
+  @Override
+  public String getType(Uri uri)
+  {
+    return "image/*";
+  }
+
+  @Override
+  public Uri insert(Uri uri, ContentValues values)
+  {
+    return null;
+  }
+
+  @Override
+  public int delete(Uri uri, String selection, String[] selectionArgs)
+  {
+    return 0;
+  }
+
+  @Override
+  public int update(Uri uri, ContentValues values, String selection,
+      String[] selectionArgs)
+  {
+    return 0;
+  }
+
+  static class TransferThread extends Thread
+  {
+    InputStream in;
+    OutputStream out;
+
+    TransferThread(InputStream in, OutputStream out)
+    {
+      this.in = in;
+      this.out = out;
+    }
+
+    @Override
+    public void run()
+    {
+      byte[] buf = new byte[8192];
+      int len;
+
+      try
+      {
+        while ((len = in.read(buf)) > 0)
+        {
+          out.write(buf, 0, len);
+        }
+
+        in.close();
+        out.flush();
+        out.close();
+      } 
+      catch (IOException e)
+      {
+        Log.e(getClass().getSimpleName(), "Exception transferring file", e);
+      }
+    }
+  }
+
+}

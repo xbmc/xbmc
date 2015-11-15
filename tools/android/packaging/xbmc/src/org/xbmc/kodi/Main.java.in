@@ -24,12 +24,31 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   private XBMCSettingsContentObserver mSettingsContentObserver;
   private XBMCInputDeviceListener mInputDeviceListener;
   private XBMCVideoView mVideoView = null;
+  private XBMCJsonRPC mJsonRPC = null;
   private RelativeLayout mVideoLayout = null;
   private View thisView = null;
   private Handler handler = new Handler();
+  private Intent mNewIntent = null;
 
   native void _onNewIntent(Intent intent);
   native void _doFrame(long frameTimeNanos);
+
+  private Runnable leanbackUpdateRunnable = new Runnable()
+  {
+    @Override
+    public void run()
+    {
+      Log.d(TAG, "Updating recommendations");
+      new Thread()
+      {
+        public void run()
+        {
+          mJsonRPC.updateLeanback(Main.this);
+        }
+      }.start();
+      handler.postDelayed(this, 60*60*1000);
+    }
+  };
 
   public Main()
   {
@@ -114,13 +133,15 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
 
     setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-    mSettingsContentObserver = new XBMCSettingsContentObserver(this, new Handler());
+    mSettingsContentObserver = new XBMCSettingsContentObserver(this, handler);
     getApplicationContext().getContentResolver().registerContentObserver(android.provider.Settings.System.CONTENT_URI, true, mSettingsContentObserver );
+
+    mJsonRPC = new XBMCJsonRPC();
 
     // register the InputDeviceListener implementation
     mInputDeviceListener = new XBMCInputDeviceListener();
     InputManager manager = (InputManager) getSystemService(INPUT_SERVICE);
-    manager.registerInputDeviceListener(mInputDeviceListener, new Handler());
+    manager.registerInputDeviceListener(mInputDeviceListener, handler);
 
     thisView = getWindow().getDecorView();
     thisView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener()
@@ -159,11 +180,8 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   protected void onNewIntent(Intent intent)
   {
     super.onNewIntent(intent);
-    try {
-      _onNewIntent(intent);
-    } catch (UnsatisfiedLinkError e) {
-      Log.e("Main", "Native not registered");
-    }
+    // Delay until after Resume
+    mNewIntent = intent;
   }
 
   @Override
@@ -194,6 +212,32 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
               | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
               | View.SYSTEM_UI_FLAG_FULLSCREEN
               | API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
+
+    if (getPackageManager().hasSystemFeature("android.software.leanback"))
+    {
+      // Leanback
+      handler.removeCallbacks(leanbackUpdateRunnable);
+      handler.postDelayed(leanbackUpdateRunnable, 10*1000);
+    }
+
+    // New intent ?
+    if (mNewIntent != null)
+    {
+      handler.postDelayed(new Runnable()
+      {
+        @Override
+        public void run()
+        {
+          try {
+            _onNewIntent(mNewIntent);
+          } catch (UnsatisfiedLinkError e) {
+            Log.e("Main", "Native not registered");
+          } finally {
+            mNewIntent = null;
+          }
+        }
+      }, 500);
     }
   }
 
