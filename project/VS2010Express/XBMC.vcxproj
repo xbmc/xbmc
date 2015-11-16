@@ -278,6 +278,7 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\AllocatorCommon.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\asyncio.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\BaseSharedRender.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DX9AllocatorPresenter.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\EvrSharedRender.cpp" />
@@ -1018,6 +1019,7 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\AllocatorCommon.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\asyncio.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\BaseSharedRender.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DX9AllocatorPresenter.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\EvrSharedRender.h" />
