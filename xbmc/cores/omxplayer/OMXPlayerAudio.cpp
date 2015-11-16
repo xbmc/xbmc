@@ -34,7 +34,7 @@
 #include "utils/BitstreamStats.h"
 
 #include "DVDDemuxers/DVDDemuxUtils.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "utils/MathUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -529,27 +529,37 @@ bool OMXPlayerAudio::IsPassthrough() const
 
 AEDataFormat OMXPlayerAudio::GetDataFormat(CDVDStreamInfo hints)
 {
+  AEDataFormat passthroughFormat = AE_FMT_INVALID;
   AEDataFormat dataFormat = AE_FMT_S16NE;
+  CAEStreamInfo info;
+  if (hints.codec == AV_CODEC_ID_AC3)
+  {
+    info.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
+    info.m_sampleRate = hints.samplerate;
+    passthroughFormat = AE_FMT_AC3;
+  }
+  else if (hints.codec == AV_CODEC_ID_EAC3)
+  {
+    info.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
+    info.m_sampleRate = hints.samplerate * 4;
+    passthroughFormat = AE_FMT_EAC3;
+  }
+  if (hints.codec == AV_CODEC_ID_DTS)
+  {
+    info.m_type = CAEStreamInfo::STREAM_TYPE_DTS_1024;
+    info.m_sampleRate = hints.samplerate;
+    passthroughFormat = AE_FMT_DTS;
+  }
 
   m_passthrough = false;
   m_hw_decode   = false;
 
   /* check our audio capabilties */
 
-  /* pathrought is overriding hw decode*/
-  if(hints.codec == AV_CODEC_ID_AC3 && CAEFactory::SupportsRaw(AE_FMT_AC3, hints.samplerate))
+  /* passthrough is overriding hw decode*/
+  if (info.m_type != CAEStreamInfo::STREAM_TYPE_NULL && CAEFactory::SupportsRaw(info))
   {
-    dataFormat = AE_FMT_AC3;
-    m_passthrough = true;
-  }
-  if(hints.codec == AV_CODEC_ID_EAC3 && CAEFactory::SupportsRaw(AE_FMT_AC3, hints.samplerate * 4))
-  {
-    dataFormat = AE_FMT_EAC3;
-    m_passthrough = true;
-  }
-  if(hints.codec == AV_CODEC_ID_DTS && CAEFactory::SupportsRaw(AE_FMT_DTS, hints.samplerate))
-  {
-    dataFormat = AE_FMT_DTS;
+    dataFormat = passthroughFormat;
     m_passthrough = true;
   }
 
