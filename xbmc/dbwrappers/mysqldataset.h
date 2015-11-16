@@ -85,6 +85,7 @@ public:
 
   bool in_transaction() {return _in_transaction;};
   int query_with_reconnect(const char* query);
+  void configure_connection();
 
 private:
 
