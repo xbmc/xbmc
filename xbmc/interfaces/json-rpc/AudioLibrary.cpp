@@ -173,7 +173,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const std::string &method, ITransportLay
   for (unsigned int index = 0; index < albums.size(); index++)
   {
     CMusicDbUrl itemUrl = musicUrl;
-    std::string path = StringUtils::Format("%i/", albums[index].idAlbum);
+    std::string path = StringUtils::Format("%li/", albums[index].idAlbum);
     itemUrl.AppendPath(path);
 
     CFileItemPtr pItem;
