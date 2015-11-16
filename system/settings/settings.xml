@@ -1658,7 +1658,7 @@
       <group id="2">
         <setting id="musiclibrary.downloadinfo" type="boolean" label="20192" help="36256">
           <level>0</level>
-          <default>false</default>
+          <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="musiclibrary.albumsscraper" type="addon" label="20193" help="36257">
