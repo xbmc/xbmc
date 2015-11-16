@@ -103,7 +103,7 @@ public:
       dlsym(m_libKODI_audioengine, "AudioEngine_unregister_me");
     if (AudioEngine_unregister_me == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    AudioEngine_MakeStream = (CAddonAEStream* (*)(void*, void*, AEDataFormat, unsigned int, unsigned int, enum AEChannel*, unsigned int))
+    AudioEngine_MakeStream = (CAddonAEStream* (*)(void*, void*, AudioEngineFormat, unsigned int))
       dlsym(m_libKODI_audioengine, "AudioEngine_make_stream");
     if (AudioEngine_MakeStream == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
@@ -123,14 +123,13 @@ public:
    * Creates and returns a new handle to an IAEStream in the format specified, this function should never fail
    * @param DataFormat The data format the incoming audio will be in (eg, AE_FMT_S16LE)
    * @param SampleRate The sample rate of the audio data (eg, 48000)
-   * @prarm EncodedSampleRate The sample rate of the encoded audio data if AE_IS_RAW(dataFormat)
    * @param ChannelLayout The order of the channels in the audio data
    * @param Options A bit field of stream options (see: enum AEStreamOptions)
    * @return a new Handle to an IAEStream that will accept data in the requested format
    */
-  CAddonAEStream* MakeStream(AEDataFormat DataFormat, unsigned int SampleRate, unsigned int EncodedSampleRate, CAEChannelInfo &ChannelLayout, unsigned int Options = 0)
+  CAddonAEStream* MakeStream(AudioEngineFormat Format, unsigned int Options = 0)
   {
-    return AudioEngine_MakeStream(m_Handle, m_Callbacks, DataFormat, SampleRate, EncodedSampleRate, ChannelLayout.m_channels, Options);
+    return AudioEngine_MakeStream(m_Handle, m_Callbacks, Format, Options);
   }
 
   /**
@@ -159,7 +158,7 @@ public:
 protected:
   void* (*AudioEngine_register_me)(void*);
   void (*AudioEngine_unregister_me)(void*, void*);
-  CAddonAEStream* (*AudioEngine_MakeStream)(void*, void*, AEDataFormat, unsigned int, unsigned int, enum AEChannel*, unsigned int);
+  CAddonAEStream* (*AudioEngine_MakeStream)(void*, void*, AudioEngineFormat, unsigned int);
   bool (*AudioEngine_GetCurrentSinkFormat)(void*, void*, AudioEngineFormat *SinkFormat);
   void (*AudioEngine_FreeStream)(CAddonAEStream*);
 

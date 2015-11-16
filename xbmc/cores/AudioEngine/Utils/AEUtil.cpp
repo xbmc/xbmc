@@ -123,7 +123,8 @@ const unsigned int CAEUtil::DataFormatToBits(const enum AEDataFormat dataFormat)
     
     sizeof(double) << 3, /* DOUBLE */
     sizeof(float ) << 3, /* FLOAT  */
-    
+
+     8,                  /* RAW    */
     16,                  /* AAC    */
     16,                  /* AC3    */
     16,                  /* DTS    */
@@ -603,6 +604,8 @@ AVSampleFormat CAEUtil::GetAVSampleFormat(AEDataFormat format)
   else if (format == AE_FMT_S24NE3P) return AV_SAMPLE_FMT_S32P;
   else if (format == AE_FMT_FLOATP)  return AV_SAMPLE_FMT_FLTP;
   else if (format == AE_FMT_DOUBLEP) return AV_SAMPLE_FMT_DBLP;
+
+  else if (format == AE_FMT_RAW) return AV_SAMPLE_FMT_U8;
 
   if (AE_IS_PLANAR(format))
     return AV_SAMPLE_FMT_FLTP;

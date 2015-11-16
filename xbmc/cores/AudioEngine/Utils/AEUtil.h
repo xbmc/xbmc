@@ -55,8 +55,7 @@ extern "C" {
 // AV sync options
 enum AVSync
 {
-  SYNC_DISCON   = 0,
-  SYNC_SKIPDUP,
+  SYNC_DISCON = 0,
   SYNC_RESAMPLE
 };
 

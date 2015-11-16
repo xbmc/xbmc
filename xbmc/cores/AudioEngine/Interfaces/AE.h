@@ -37,6 +37,7 @@ class IAESound;
 class IAEPacketizer;
 class IAudioCallback;
 class IAEClockCallback;
+class CAEStreamInfo;
 
 /* sound options */
 #define AE_SOUND_OFF    0 /* disable sounds */
@@ -152,14 +153,11 @@ public:
 
   /**
    * Creates and returns a new IAEStream in the format specified, this function should never fail
-   * @param dataFormat The data format the incoming audio will be in (eg, AE_FMT_S16LE)
-   * @param sampleRate The sample rate of the audio data (eg, 48000)
-   * @prarm encodedSampleRate The sample rate of the encoded audio data if AE_IS_RAW(dataFormat)
-   * @param channelLayout The order of the channels in the audio data
+   * @param audioFormat
    * @param options A bit field of stream options (see: enum AEStreamOptions)
    * @return a new IAEStream that will accept data in the requested format
    */
-  virtual IAEStream *MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int encodedSampleRate, CAEChannelInfo& channelLayout, unsigned int options = 0, IAEClockCallback *clock = NULL) = 0;
+  virtual IAEStream *MakeStream(AEAudioFormat &audioFormat, unsigned int options = 0, IAEClockCallback *clock = NULL) = 0;
 
   /**
    * This method will remove the specifyed stream from the engine.
@@ -206,7 +204,7 @@ public:
    * @see CAEPackIEC61937::CAEPackIEC61937()
    * @returns true if the AudioEngine is capable of RAW output
    */
-  virtual bool SupportsRaw(AEDataFormat format, int samplerate) { return false; }
+  virtual bool SupportsRaw(AEAudioFormat &format) { return false; }
 
    /**
    * Returns true if the AudioEngine supports drain mode which is not streaming silence when idle

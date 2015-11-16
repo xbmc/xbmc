@@ -45,12 +45,22 @@ VideoPlayerCodec::VideoPlayerCodec()
   m_bInited = false;
   m_pResampler = NULL;
   m_needConvert = false;
-  m_srcFrameSize = 0;
+  m_channels = 0;
 }
 
 VideoPlayerCodec::~VideoPlayerCodec()
 {
   DeInit();
+}
+
+AEAudioFormat VideoPlayerCodec::GetFormat()
+{
+  AEAudioFormat format;
+  if (m_pAudioCodec)
+  {
+    format = m_pAudioCodec->GetFormat();
+  }
+  return format;
 }
 
 void VideoPlayerCodec::SetContentType(const std::string &strContent)
@@ -178,20 +188,18 @@ bool VideoPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
   // we have to decode initial data in order to get channels/samplerate
   // for sanity - we read no more than 10 packets
   int nErrors = 0;
-  for (int nPacket=0; nPacket < 10 && (m_Channels == 0 || m_SampleRate == 0); nPacket++)
+  for (int nPacket=0; nPacket < 10 && (m_channels == 0 || m_format.m_sampleRate == 0); nPacket++)
   {
     BYTE dummy[256];
     int nSize = 256;
     if (ReadPCM(dummy, nSize, &nSize) == READ_ERROR)
       ++nErrors;
 
-    m_DataFormat    = m_pAudioCodec->GetDataFormat();
-    m_BitsPerSample = CAEUtil::DataFormatToBits(m_DataFormat);
-    m_SampleRate = m_pAudioCodec->GetSampleRate();
-    m_EncodedSampleRate = m_pAudioCodec->GetEncodedSampleRate();
-    m_Channels = m_pAudioCodec->GetChannels();
-    m_ChannelInfo = m_pAudioCodec->GetChannelMap();
-    m_BitsPerCodedSample = static_cast<CDemuxStreamAudio*>(pStream)->iBitsPerSample;
+    m_srcFormat = m_pAudioCodec->GetFormat();
+    m_format = m_srcFormat;
+    m_channels = m_srcFormat.m_channelLayout.Count();
+    m_bitsPerSample = CAEUtil::DataFormatToBits(m_srcFormat.m_dataFormat);
+    m_bitsPerCodedSample = static_cast<CDemuxStreamAudio*>(pStream)->iBitsPerSample;
   }
   if (nErrors >= 10)
   {
@@ -216,47 +224,50 @@ bool VideoPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
     }
   }
 
-  if (m_Channels == 0) // no data - just guess and hope for the best
-    m_Channels = 2;
+  if (m_channels == 0) // no data - just guess and hope for the best
+  {
+    m_srcFormat.m_channelLayout = CAEChannelInfo(AE_CH_LAYOUT_2_0);
+    m_channels = m_srcFormat.m_channelLayout.Count();
+  }
 
-  if (m_SampleRate == 0)
-    m_SampleRate = 44100;
+  if (m_srcFormat.m_sampleRate == 0)
+    m_srcFormat.m_sampleRate = 44100;
 
   m_TotalTime = m_pDemuxer->GetStreamLength();
-  m_Bitrate = m_pAudioCodec->GetBitRate();
-  if (!m_Bitrate && m_TotalTime)
+  m_bitRate = m_pAudioCodec->GetBitRate();
+  if (!m_bitRate && m_TotalTime)
   {
-    m_Bitrate = (int)(((m_pInputStream->GetLength()*1000) / m_TotalTime) * 8);
+    m_bitRate = (int)(((m_pInputStream->GetLength()*1000) / m_TotalTime) * 8);
   }
-  m_pDemuxer->GetStreamCodecName(m_nAudioStream,m_CodecName);
+  m_pDemuxer->GetStreamCodecName(m_nAudioStream, m_CodecName);
 
   m_needConvert = false;
-  if (NeedConvert(m_DataFormat))
+  if (NeedConvert(m_srcFormat.m_dataFormat))
   {
     m_needConvert = true;
     m_pResampler = ActiveAE::CAEResampleFactory::Create();
-    m_pResampler->Init(CAEUtil::GetAVChannelLayout(m_ChannelInfo),
-                       m_ChannelInfo.Count(),
-                       m_SampleRate,
+    m_pResampler->Init(CAEUtil::GetAVChannelLayout(m_srcFormat.m_channelLayout),
+                       m_channels,
+                       m_srcFormat.m_sampleRate,
                        CAEUtil::GetAVSampleFormat(AE_FMT_FLOAT),
                        CAEUtil::DataFormatToUsedBits(AE_FMT_FLOAT),
                        CAEUtil::DataFormatToDitherBits(AE_FMT_FLOAT),
-                       CAEUtil::GetAVChannelLayout(m_ChannelInfo),
-                       m_ChannelInfo.Count(),
-                       m_SampleRate,
-                       CAEUtil::GetAVSampleFormat(m_DataFormat),
-                       CAEUtil::DataFormatToUsedBits(m_DataFormat),
-                       CAEUtil::DataFormatToDitherBits(m_DataFormat),
+                       CAEUtil::GetAVChannelLayout(m_srcFormat.m_channelLayout),
+                       m_channels,
+                       m_srcFormat.m_sampleRate,
+                       CAEUtil::GetAVSampleFormat(m_srcFormat.m_dataFormat),
+                       CAEUtil::DataFormatToUsedBits(m_srcFormat.m_dataFormat),
+                       CAEUtil::DataFormatToDitherBits(m_srcFormat.m_dataFormat),
                        false,
                        false,
                        NULL,
                        AE_QUALITY_UNKNOWN,
                        false);
-    m_planes = AE_IS_PLANAR(m_DataFormat) ? m_ChannelInfo.Count() : 1;
-    m_srcFormat = m_DataFormat;
-    m_srcFrameSize = (CAEUtil::DataFormatToBits(m_DataFormat)>>3) * m_ChannelInfo.Count();
-    m_DataFormat = AE_FMT_FLOAT;
-    m_BitsPerSample = CAEUtil::DataFormatToBits(m_DataFormat);
+
+    m_planes = AE_IS_PLANAR(m_srcFormat.m_dataFormat) ? m_channels : 1;
+    m_format = m_srcFormat;
+    m_format.m_dataFormat = AE_FMT_FLOAT;
+    m_bitsPerSample = CAEUtil::DataFormatToBits(m_format.m_dataFormat);
   }
 
   m_strFileName = strFile;
@@ -294,12 +305,10 @@ void VideoPlayerCodec::DeInit()
 
   // cleanup format information
   m_TotalTime = 0;
-  m_SampleRate = 0;
-  m_EncodedSampleRate = 0;
-  m_BitsPerSample = 0;
-  m_DataFormat = AE_FMT_INVALID;
-  m_Channels = 0;
-  m_Bitrate = 0;
+  m_bitsPerSample = 0;
+  m_bitRate = 0;
+  m_channels = 0;
+  m_format.m_dataFormat = AE_FMT_INVALID;
 
   m_audioPos = 0;
   m_nDecodedLen = 0;
@@ -340,12 +349,12 @@ int VideoPlayerCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     *actualsize = nLen;
     if (m_needConvert)
     {
-      int samples = *actualsize / (m_BitsPerSample>>3);
-      int frames = samples / m_Channels;
+      int samples = *actualsize / (m_bitsPerSample>>3);
+      int frames = samples / m_channels;
       m_pResampler->Resample(&pBuffer, frames, m_audioPlanes, frames, 1.0);
       for (int i=0; i<m_planes; i++)
       {
-        m_audioPlanes[i] += frames*m_srcFrameSize/m_planes;
+        m_audioPlanes[i] += frames*m_srcFormat.m_frameSize/m_planes;
       }
     }
     else
@@ -405,19 +414,19 @@ int VideoPlayerCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   // scale decoded bytes to destination format
   m_nDecodedLen = m_pAudioCodec->GetData(m_audioPlanes);
   if (m_needConvert)
-    m_nDecodedLen *= (m_BitsPerSample>>3) / (m_srcFrameSize / m_Channels);
+    m_nDecodedLen *= (m_bitsPerSample>>3) / (m_srcFormat.m_frameSize / m_channels);
 
   *actualsize = (m_nDecodedLen <= size) ? m_nDecodedLen : size;
   if (*actualsize > 0)
   {
     if (m_needConvert)
     {
-      int samples = *actualsize / (m_BitsPerSample>>3);
-      int frames = samples / m_Channels;
+      int samples = *actualsize / (m_bitsPerSample>>3);
+      int frames = samples / m_channels;
       m_pResampler->Resample(&pBuffer, frames, m_audioPlanes, frames, 1.0);
       for (int i=0; i<m_planes; i++)
       {
-        m_audioPlanes[i] += frames*m_srcFrameSize/m_planes;
+        m_audioPlanes[i] += frames*m_srcFormat.m_frameSize/m_planes;
       }
     }
     else
@@ -427,6 +436,58 @@ int VideoPlayerCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     }
     m_nDecodedLen -= *actualsize;
   }
+
+  return READ_SUCCESS;
+}
+
+int VideoPlayerCodec::ReadRaw(uint8_t **pBuffer, int *bufferSize)
+{
+  m_nDecodedLen = 0;
+
+  // VideoPlayer returns a read error on a single invalid packet, while
+  // in paplayer READ_ERROR is a fatal error.
+  // Therefore skip over invalid packets here.
+  int decodeLen = -1;
+  for (int tries = 0; decodeLen < 0 && tries < 2; ++tries)
+  {
+    if (m_pPacket && m_audioPos >= m_pPacket->iSize)
+    {
+      CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
+      m_audioPos = 0;
+      m_pPacket = NULL;
+    }
+
+    if (m_pPacket == NULL)
+    {
+      do
+      {
+        m_pPacket = m_pDemuxer->Read();
+      } while (m_pPacket && m_pPacket->iStreamId != m_nAudioStream);
+
+      if (!m_pPacket)
+      {
+        return READ_EOF;
+      }
+      m_audioPos = 0;
+    }
+
+    decodeLen = m_pAudioCodec->Decode(m_pPacket->pData + m_audioPos, m_pPacket->iSize - m_audioPos);
+
+    if (decodeLen < 0)
+      m_audioPos = m_pPacket->iSize; // skip packet
+  }
+
+  if (decodeLen < 0)
+  {
+    CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
+    m_pPacket = NULL;
+    m_audioPos = 0;
+    return READ_ERROR;
+  }
+
+  m_audioPos += decodeLen;
+
+  *bufferSize = m_pAudioCodec->GetData(pBuffer);
 
   return READ_SUCCESS;
 }

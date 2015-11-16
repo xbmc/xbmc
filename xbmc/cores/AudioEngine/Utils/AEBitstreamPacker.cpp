@@ -24,6 +24,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>
+#include "utils/log.h"
 
 #define BURST_HEADER_SIZE       8
 #define TRUEHD_FRAME_OFFSET     2560
@@ -53,7 +54,7 @@ CAEBitstreamPacker::~CAEBitstreamPacker()
 
 void CAEBitstreamPacker::Pack(CAEStreamInfo &info, uint8_t* data, int size)
 {
-  switch (info.GetDataType())
+  switch (info.m_type)
   {
     case CAEStreamInfo::STREAM_TYPE_TRUEHD:
       PackTrueHD(info, data, size);
@@ -63,28 +64,29 @@ void CAEBitstreamPacker::Pack(CAEStreamInfo &info, uint8_t* data, int size)
       PackDTSHD (info, data, size);
       break;
 
+    case CAEStreamInfo::STREAM_TYPE_AC3:
+      m_dataSize = CAEPackIEC61937::PackAC3(data, size, m_packedBuffer);
+      break;
+
     case CAEStreamInfo::STREAM_TYPE_EAC3:
       PackEAC3 (info, data, size);
       break;
 
     case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
     case CAEStreamInfo::STREAM_TYPE_DTS_512:
-      m_dataSize = CAEPackIEC61937::PackDTS_512(data, size, m_packedBuffer, info.IsLittleEndian());
+      m_dataSize = CAEPackIEC61937::PackDTS_512(data, size, m_packedBuffer, info.m_dataIsLE);
       break;
 
     case CAEStreamInfo::STREAM_TYPE_DTS_1024:
-      m_dataSize = CAEPackIEC61937::PackDTS_1024(data, size, m_packedBuffer, info.IsLittleEndian());
+      m_dataSize = CAEPackIEC61937::PackDTS_1024(data, size, m_packedBuffer, info.m_dataIsLE);
       break;
 
     case CAEStreamInfo::STREAM_TYPE_DTS_2048:
-      m_dataSize = CAEPackIEC61937::PackDTS_2048(data, size, m_packedBuffer, info.IsLittleEndian());
+      m_dataSize = CAEPackIEC61937::PackDTS_2048(data, size, m_packedBuffer, info.m_dataIsLE);
       break;
 
     default:
-      /* pack the data into an IEC61937 frame */
-      CAEPackIEC61937::PackFunc pack = info.GetPackFunc();
-      if (pack)
-        m_dataSize = pack(data, size, m_packedBuffer);
+      CLog::Log(LOGERROR, "CAEBitstreamPacker::Pack - no pack function");
   }
 }
 
@@ -158,12 +160,12 @@ void CAEBitstreamPacker::PackDTSHD(CAEStreamInfo &info, uint8_t* data, int size)
   m_dtsHD[sizeof(dtshd_start_code) + 1] = ((uint16_t)size & 0x00FF);
   memcpy(m_dtsHD + sizeof(dtshd_start_code) + 2, data, size);
 
-  m_dataSize = CAEPackIEC61937::PackDTSHD(m_dtsHD, dataSize, m_packedBuffer, info.GetDTSPeriod());
+  m_dataSize = CAEPackIEC61937::PackDTSHD(m_dtsHD, dataSize, m_packedBuffer, info.m_dtsPeriod);
 }
 
 void CAEBitstreamPacker::PackEAC3(CAEStreamInfo &info, uint8_t* data, int size)
 {
-  unsigned int framesPerBurst = info.GetEAC3BlocksDiv();
+  unsigned int framesPerBurst = info.m_repeat;
 
   if (m_eac3FramesPerBurst != framesPerBurst)
   {
@@ -201,4 +203,39 @@ void CAEBitstreamPacker::PackEAC3(CAEStreamInfo &info, uint8_t* data, int size)
       m_eac3FramesCount = 0;
     }
   }
+}
+
+unsigned int CAEBitstreamPacker::GetOutputRate(CAEStreamInfo &info)
+{
+  unsigned int rate;
+  switch (info.m_type)
+  {
+    case CAEStreamInfo::STREAM_TYPE_AC3:
+      rate = info.m_sampleRate;
+      break;
+    case CAEStreamInfo::STREAM_TYPE_EAC3:
+      rate = info.m_sampleRate * 4;
+      break;
+    case CAEStreamInfo::STREAM_TYPE_TRUEHD:
+      if (info.m_sampleRate == 48000 ||
+          info.m_sampleRate == 96000 ||
+          info.m_sampleRate == 192000)
+        rate = 192000;
+      else
+        rate = 176400;
+      break;
+    case CAEStreamInfo::STREAM_TYPE_DTS_512:
+    case CAEStreamInfo::STREAM_TYPE_DTS_1024:
+    case CAEStreamInfo::STREAM_TYPE_DTS_2048:
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
+      rate = info.m_sampleRate;
+      break;
+    case CAEStreamInfo::STREAM_TYPE_DTSHD:
+      rate = 192000;
+      break;
+    default:
+      rate = 48000;
+      break;
+  }
+  return rate;
 }

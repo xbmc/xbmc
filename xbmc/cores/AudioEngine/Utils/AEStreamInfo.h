@@ -33,6 +33,10 @@ extern "C" {
 class CAEStreamInfo
 {
 public:
+  CAEStreamInfo();
+  double GetDuration();
+  bool operator==(const CAEStreamInfo& info) const;
+
   enum DataType
   {
     STREAM_TYPE_NULL,
@@ -46,59 +50,60 @@ public:
     STREAM_TYPE_MLP,
     STREAM_TYPE_TRUEHD
   };
+  DataType m_type;
+  unsigned int m_sampleRate;
+  unsigned int m_channels;
+  bool m_dataIsLE;
+  unsigned int m_dtsPeriod;
+  unsigned int m_repeat;
+};
 
-  CAEStreamInfo();
-  ~CAEStreamInfo();
+class CAEStreamParser
+{
+public:
+
+  CAEStreamParser();
+  ~CAEStreamParser();
 
   int AddData(uint8_t *data, unsigned int size, uint8_t **buffer = NULL, unsigned int *bufferSize = 0);
 
-  void                      SetCoreOnly      (bool value) { m_coreOnly = value; }
-  unsigned int              IsValid          () { return m_hasSync       ; }
-  unsigned int              GetSampleRate    () { return m_sampleRate    ; }
-  unsigned int              GetOutputRate    () { return m_outputRate    ; }
-  unsigned int              GetOutputChannels() { return m_outputChannels; }
-  CAEChannelInfo            GetChannelMap    () { return m_channelMap    ; }
-  unsigned int              GetChannels      () { return m_channels      ; }
-  unsigned int              GetFrameSize     () { return m_fsize         ; }
-  unsigned int              GetDTSBlocks     () { return m_dtsBlocks     ; }
-  unsigned int              GetDTSPeriod     () { return m_dtsPeriod     ; }
-  unsigned int              GetEAC3BlocksDiv () { return m_repeat        ; }
-  enum DataType             GetDataType      () { return m_dataType      ; }
-  bool                      IsLittleEndian   () { return m_dataIsLE      ; }
-  CAEPackIEC61937::PackFunc GetPackFunc      () { return m_packFunc      ; }
-  unsigned int              GetBufferSize    () { return m_bufferSize    ; }
+  void SetCoreOnly(bool value) { m_coreOnly = value; }
+  unsigned int IsValid() { return m_hasSync; }
+  unsigned int GetSampleRate() { return m_info.m_sampleRate; }
+  unsigned int GetChannels() { return m_info.m_channels; }
+  unsigned int GetFrameSize() { return m_fsize; }
+  // unsigned int GetDTSBlocks() { return m_dtsBlocks; }
+  unsigned int GetDTSPeriod() { return m_info.m_dtsPeriod; }
+  unsigned int GetEAC3BlocksDiv() { return m_info.m_repeat; }
+  enum CAEStreamInfo::DataType GetDataType() { return m_info.m_type; }
+  bool IsLittleEndian() { return m_info.m_dataIsLE; }
+  unsigned int GetBufferSize() { return m_bufferSize; }
+  CAEStreamInfo& GetStreamInfo() { return m_info; }
+
 private:
-  uint8_t      m_buffer[MAX_IEC61937_PACKET];
+  uint8_t m_buffer[MAX_IEC61937_PACKET];
   unsigned int m_bufferSize;
   unsigned int m_skipBytes;
 
-  typedef unsigned int (CAEStreamInfo::*ParseFunc)(uint8_t *data, unsigned int size);
+  typedef unsigned int (CAEStreamParser::*ParseFunc)(uint8_t *data, unsigned int size);
 
-  bool                      m_coreOnly;
-  unsigned int              m_needBytes;
-  ParseFunc                 m_syncFunc;
-  bool                      m_hasSync;
-  unsigned int              m_sampleRate;       /* the actual sample rate */
-  unsigned int              m_outputRate;       /* the output sample rate */
-  unsigned int              m_outputChannels;   /* the output channel count */
-  CAEChannelInfo            m_channelMap;
-  unsigned int              m_channels;         /* the actual number of channels in the stream */
-  unsigned int              m_coreSize;         /* core size for dtsHD */
-  unsigned int              m_dtsBlocks;
-  unsigned int              m_dtsPeriod;        /* used for dtsHD */
-  unsigned int              m_fsize;
-  unsigned int              m_fsizeMain;        /* used for EAC3 substreams */
-  unsigned int              m_repeat;
-  int                       m_substreams;       /* used for TrueHD  */
-  AVCRC                     m_crcTrueHD[1024];  /* TrueHD crc table */
-  DataType                  m_dataType;
-  bool                      m_dataIsLE;
-  CAEPackIEC61937::PackFunc m_packFunc;
+  CAEStreamInfo m_info;
+  bool m_coreOnly;
+  unsigned int m_needBytes;
+  ParseFunc m_syncFunc;
+  bool m_hasSync;
+
+  unsigned int m_coreSize;         /* core size for dtsHD */
+  unsigned int m_dtsBlocks;
+  unsigned int m_fsize;
+  unsigned int m_fsizeMain;        /* used for EAC3 substreams */
+  int m_substreams;       /* used for TrueHD  */
+  AVCRC m_crcTrueHD[1024];  /* TrueHD crc table */
 
   void GetPacket(uint8_t **buffer, unsigned int *bufferSize);
   unsigned int DetectType(uint8_t *data, unsigned int size);
-  unsigned int SyncAC3   (uint8_t *data, unsigned int size);
-  unsigned int SyncDTS   (uint8_t *data, unsigned int size);
+  unsigned int SyncAC3(uint8_t *data, unsigned int size);
+  unsigned int SyncDTS(uint8_t *data, unsigned int size);
   unsigned int SyncTrueHD(uint8_t *data, unsigned int size);
 
   static unsigned int GetTrueHDChannels(const uint16_t chanmap);

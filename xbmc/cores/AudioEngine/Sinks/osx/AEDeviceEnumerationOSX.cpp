@@ -216,6 +216,7 @@ CADeviceList AEDeviceEnumerationOSX::GetDeviceInfoList() const
     deviceInfo.m_sampleRates = getSampleRateListForStream(streamIdx);
     deviceInfo.m_dataFormats = getFormatListForStream(streamIdx);
     deviceInfo.m_deviceType = m_caStreamInfos[streamIdx].deviceType;
+    deviceInfo.m_wantsIECPassthrough = true;
     
     CoreAudioDataSourceList sourceList;
     // if this enumerator contains multiple devices with more then 1 source we add :source suffixes to the

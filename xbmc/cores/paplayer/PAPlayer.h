@@ -95,33 +95,31 @@ protected:
   virtual void OnExit();
 
 private:
-  typedef struct {
-    CAudioDecoder     m_decoder;             /* the stream decoder */
-    int64_t           m_startOffset;         /* the stream start offset */
-    int64_t           m_endOffset;           /* the stream end offset */
-    CAEChannelInfo    m_channelInfo;         /* channel layout information */
-    unsigned int      m_sampleRate;          /* sample rate of the stream */
-    unsigned int      m_encodedSampleRate;   /* the encoded sample rate of raw streams */
-    enum AEDataFormat m_dataFormat;          /* data format of the samples */
-    unsigned int      m_bytesPerSample;      /* number of bytes per audio sample */
-    unsigned int      m_bytesPerFrame;       /* number of bytes per audio frame */
+  typedef struct
+  {
+    CAudioDecoder m_decoder;             /* the stream decoder */
+    int64_t m_startOffset;               /* the stream start offset */
+    int64_t m_endOffset;                 /* the stream end offset */
+    AEAudioFormat m_audioFormat;
+    unsigned int m_bytesPerSample;       /* number of bytes per audio sample */
+    unsigned int m_bytesPerFrame;        /* number of bytes per audio frame */
 
-    bool              m_started;             /* if playback of this stream has been started */
-    bool              m_finishing;           /* if this stream is finishing */
-    int               m_framesSent;          /* number of frames sent to the stream */
-    int               m_prepareNextAtFrame;  /* when to prepare the next stream */
-    bool              m_prepareTriggered;    /* if the next stream has been prepared */
-    int               m_playNextAtFrame;     /* when to start playing the next stream */
-    bool              m_playNextTriggered;   /* if this stream has started the next one */
-    bool              m_fadeOutTriggered;    /* if the stream has been told to fade out */
-    int               m_seekNextAtFrame;     /* the FF/RR sample to seek at */
-    int               m_seekFrame;           /* the exact position to seek too, -1 for none */
+    bool m_started;                      /* if playback of this stream has been started */
+    bool m_finishing;                    /* if this stream is finishing */
+    int m_framesSent;                    /* number of frames sent to the stream */
+    int m_prepareNextAtFrame;            /* when to prepare the next stream */
+    bool m_prepareTriggered;             /* if the next stream has been prepared */
+    int m_playNextAtFrame;               /* when to start playing the next stream */
+    bool m_playNextTriggered;            /* if this stream has started the next one */
+    bool m_fadeOutTriggered;             /* if the stream has been told to fade out */
+    int m_seekNextAtFrame;               /* the FF/RR sample to seek at */
+    int m_seekFrame;                     /* the exact position to seek too, -1 for none */
 
-    IAEStream*        m_stream;              /* the playback stream */
-    float             m_volume;              /* the initial volume level to set the stream to on creation */
+    IAEStream* m_stream;                 /* the playback stream */
+    float m_volume;                      /* the initial volume level to set the stream to on creation */
 
-    bool              m_isSlaved;            /* true if the stream has been slaved to another */
-    bool              m_waitOnDrain;         /* wait for stream being drained in AE */
+    bool m_isSlaved;                     /* true if the stream has been slaved to another */
+    bool m_waitOnDrain;                  /* wait for stream being drained in AE */
   } StreamInfo;
 
   typedef std::list<StreamInfo*> StreamList;

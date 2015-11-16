@@ -402,7 +402,7 @@ typedef struct CB_ADSPLib
 // ---------------------------------------
 // libKODI_audioengine definitions
 // ---------------------------------------
-typedef AEStreamHandle* (*AudioEngine_MakeStream)(AEDataFormat DataFormat, unsigned int SampleRate, unsigned int EncodedSampleRate, enum AEChannel *ChannelLayout, unsigned int Options);
+typedef AEStreamHandle* (*AudioEngine_MakeStream)(AudioEngineFormat Format, unsigned int Options);
 typedef void            (*AudioEngine_FreeStream)(AEStreamHandle *stream);
 typedef bool            (*AudioEngine_GetCurrentSinkFormat)(void *addonData, AudioEngineFormat *SinkFormat);
 
@@ -426,7 +426,6 @@ typedef void                    (*AudioEngine_Stream_SetAmplification)(void *add
 typedef const unsigned int      (*AudioEngine_Stream_GetFrameSize)(void *addonData, AEStreamHandle *handle);
 typedef const unsigned int      (*AudioEngine_Stream_GetChannelCount)(void *addonData, AEStreamHandle *handle);
 typedef const unsigned int      (*AudioEngine_Stream_GetSampleRate)(void *addonData, AEStreamHandle *handle);
-typedef const unsigned int      (*AudioEngine_Stream_GetEncodedSampleRate)(void *addonData, AEStreamHandle *handle);
 typedef const AEDataFormat      (*AudioEngine_Stream_GetDataFormat)(void *addonData, AEStreamHandle *handle);
 typedef double                  (*AudioEngine_Stream_GetResampleRatio)(void *addonData, AEStreamHandle *handle);
 typedef void                    (*AudioEngine_Stream_SetResampleRatio)(void *addonData, AEStreamHandle *handle, double Ratio);
@@ -458,7 +457,6 @@ typedef struct CB_AudioEngineLib
   AudioEngine_Stream_GetFrameSize           AEStream_GetFrameSize;
   AudioEngine_Stream_GetChannelCount        AEStream_GetChannelCount;
   AudioEngine_Stream_GetSampleRate          AEStream_GetSampleRate;
-  AudioEngine_Stream_GetEncodedSampleRate   AEStream_GetEncodedSampleRate;
   AudioEngine_Stream_GetDataFormat          AEStream_GetDataFormat;
   AudioEngine_Stream_GetResampleRatio       AEStream_GetResampleRatio;
   AudioEngine_Stream_SetResampleRatio       AEStream_SetResampleRatio;

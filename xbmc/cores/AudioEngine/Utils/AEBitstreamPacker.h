@@ -31,14 +31,15 @@ public:
   CAEBitstreamPacker();
   ~CAEBitstreamPacker();
 
-  void         Pack(CAEStreamInfo &info, uint8_t* data, int size);
-  uint8_t*     GetBuffer();
-  unsigned int GetSize  ();
+  void Pack(CAEStreamInfo &info, uint8_t* data, int size);
+  uint8_t* GetBuffer();
+  unsigned int GetSize();
+  static unsigned int GetOutputRate(CAEStreamInfo &info);
 
 private:
   void PackTrueHD(CAEStreamInfo &info, uint8_t* data, int size);
-  void PackDTSHD (CAEStreamInfo &info, uint8_t* data, int size);
-  void PackEAC3  (CAEStreamInfo &info, uint8_t* data, int size);
+  void PackDTSHD(CAEStreamInfo &info, uint8_t* data, int size);
+  void PackEAC3(CAEStreamInfo &info, uint8_t* data, int size);
 
   /* we keep the trueHD and dtsHD buffers seperate so that we can handle a fast stream switch */
   uint8_t      *m_trueHD;

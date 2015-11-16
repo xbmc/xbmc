@@ -46,8 +46,7 @@ bool CAESinkNULL::Initialize(AEAudioFormat &format, std::string &device)
   // setup for a 250ms sink feed from SoftAE 
   format.m_dataFormat    = AE_IS_RAW(format.m_dataFormat) ? AE_FMT_S16NE : AE_FMT_FLOAT;
   format.m_frames        = format.m_sampleRate / 1000 * 250;
-  format.m_frameSamples  = format.m_channelLayout.Count();
-  format.m_frameSize     = format.m_frameSamples * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3);
+  format.m_frameSize     = format.m_channelLayout.Count() * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3);
   m_format = format;
 
   // setup a pretend 500ms internal buffer

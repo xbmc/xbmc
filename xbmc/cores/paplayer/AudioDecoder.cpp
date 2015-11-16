@@ -42,6 +42,7 @@ CAudioDecoder::CAudioDecoder()
   memset(&m_pcmInputBuffer, 0, INPUT_SIZE * sizeof(BYTE));
   memset(&m_inputBuffer, 0, INPUT_SAMPLES * sizeof(float));
 
+  m_rawBufferSize = 0;
 }
 
 CAudioDecoder::~CAudioDecoder()
@@ -90,17 +91,17 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
     Destroy();
     return false;
   }
-  unsigned int blockSize = (m_codec->m_BitsPerSample >> 3) * m_codec->GetChannelInfo().Count();
+  unsigned int blockSize = (m_codec->m_bitsPerSample >> 3) * m_codec->m_format.m_channelLayout.Count();
 
   if (blockSize == 0)
   {
     CLog::Log(LOGERROR, "CAudioDecoder: Codec provided invalid parameters (%d-bit, %u channels)",
-              m_codec->m_BitsPerSample, m_codec->GetChannelInfo().Count());
+              m_codec->m_bitsPerSample, GetFormat().m_channelLayout.Count());
     return false;
   }
 
   /* allocate the pcmBuffer for 2 seconds of audio */
-  m_pcmBuffer.Create(2 * blockSize * m_codec->m_SampleRate);
+  m_pcmBuffer.Create(2 * blockSize * m_codec->m_format.m_sampleRate);
 
   if (file.HasMusicInfoTag())
   {
@@ -132,23 +133,23 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
 
   m_status = STATUS_QUEUING;
 
+  m_rawBufferSize = 0;
+
   return true;
 }
 
-void CAudioDecoder::GetDataFormat(CAEChannelInfo *channelInfo, unsigned int *samplerate, unsigned int *encodedSampleRate, enum AEDataFormat *dataFormat)
+AEAudioFormat CAudioDecoder::GetFormat()
 {
+  AEAudioFormat format;
   if (!m_codec)
-    return;
-
-  if (channelInfo      ) *channelInfo       = m_codec->GetChannelInfo();
-  if (samplerate       ) *samplerate        = m_codec->m_SampleRate;
-  if (encodedSampleRate) *encodedSampleRate = m_codec->m_EncodedSampleRate;
-  if (dataFormat       ) *dataFormat        = m_codec->m_DataFormat;
+    return format;
+  return m_codec->m_format;
 }
 
 int64_t CAudioDecoder::Seek(int64_t time)
 {
   m_pcmBuffer.Clear();
+  m_rawBufferSize = 0;
   if (!m_codec)
     return 0;
   if (time < 0) time = 0;
@@ -173,15 +174,25 @@ unsigned int CAudioDecoder::GetDataSize()
 {
   if (m_status == STATUS_QUEUING || m_status == STATUS_NO_FILE)
     return 0;
-  // check for end of file and end of buffer
-  if (m_status == STATUS_ENDING && m_pcmBuffer.getMaxReadSize() < PACKET_SIZE)
-    m_status = STATUS_ENDED;
-  return std::min(m_pcmBuffer.getMaxReadSize() / (m_codec->m_BitsPerSample >> 3), (unsigned int)OUTPUT_SAMPLES);
+
+  if (m_codec->m_format.m_dataFormat != AE_FMT_RAW)
+  {
+    // check for end of file and end of buffer
+    if (m_status == STATUS_ENDING && m_pcmBuffer.getMaxReadSize() < PACKET_SIZE)
+      m_status = STATUS_ENDED;
+    return std::min(m_pcmBuffer.getMaxReadSize() / (m_codec->m_bitsPerSample >> 3), (unsigned int)OUTPUT_SAMPLES);
+  }
+  else
+  {
+    if (m_status == STATUS_ENDING)
+      m_status = STATUS_ENDED;
+    return m_rawBufferSize;
+  }
 }
 
 void *CAudioDecoder::GetData(unsigned int samples)
 {
-  unsigned int size  = samples * (m_codec->m_BitsPerSample >> 3);
+  unsigned int size  = samples * (m_codec->m_bitsPerSample >> 3);
   if (size > sizeof(m_outputBuffer))
   {
     CLog::Log(LOGERROR, "CAudioDecoder::GetData - More data was requested then we have space to buffer!");
@@ -206,6 +217,17 @@ void *CAudioDecoder::GetData(unsigned int samples)
   return NULL;
 }
 
+uint8_t *CAudioDecoder::GetRawData(int &size)
+{
+  if (m_rawBufferSize)
+  {
+    size = m_rawBufferSize;
+    m_rawBufferSize = 0;
+    return m_rawBuffer;
+  }
+  return nullptr;
+}
+
 int CAudioDecoder::ReadSamples(int numsamples)
 {
   if (m_status == STATUS_NO_FILE || m_status == STATUS_ENDING || m_status == STATUS_ENDED)
@@ -218,49 +240,81 @@ int CAudioDecoder::ReadSamples(int numsamples)
   // grab a lock to ensure the codec is created at this point.
   CSingleLock lock(m_critSection);
 
-  // Read in more data
-  int maxsize = std::min<int>(INPUT_SAMPLES, m_pcmBuffer.getMaxWriteSize() / (m_codec->m_BitsPerSample >> 3));
-  numsamples = std::min<int>(numsamples, maxsize);
-  numsamples -= (numsamples % m_codec->GetChannelInfo().Count());  // make sure it's divisible by our number of channels
-  if ( numsamples )
+  if (m_codec->m_format.m_dataFormat != AE_FMT_RAW)
   {
-    int readSize = 0;
-    int result = m_codec->ReadPCM(m_pcmInputBuffer, numsamples * (m_codec->m_BitsPerSample >> 3), &readSize);
-
-    if (result != READ_ERROR && readSize)
+    // Read in more data
+    int maxsize = std::min<int>(INPUT_SAMPLES, m_pcmBuffer.getMaxWriteSize() / (m_codec->m_bitsPerSample >> 3));
+    numsamples = std::min<int>(numsamples, maxsize);
+    numsamples -= (numsamples % GetFormat().m_channelLayout.Count());  // make sure it's divisible by our number of channels
+    if (numsamples)
     {
-      // move it into our buffer
-      m_pcmBuffer.WriteData((char *)m_pcmInputBuffer, readSize);
+      int readSize = 0;
+      int result = m_codec->ReadPCM(m_pcmInputBuffer, numsamples * (m_codec->m_bitsPerSample >> 3), &readSize);
 
-      // update status
-      if (m_status == STATUS_QUEUING && m_pcmBuffer.getMaxReadSize() > m_pcmBuffer.getSize() * 0.9)
+      if (result != READ_ERROR && readSize)
       {
-        CLog::Log(LOGINFO, "AudioDecoder: File is queued");
-        m_status = STATUS_QUEUED;
+        // move it into our buffer
+        m_pcmBuffer.WriteData((char *)m_pcmInputBuffer, readSize);
+
+        // update status
+        if (m_status == STATUS_QUEUING && m_pcmBuffer.getMaxReadSize() > m_pcmBuffer.getSize() * 0.9)
+        {
+          CLog::Log(LOGINFO, "AudioDecoder: File is queued");
+          m_status = STATUS_QUEUED;
+        }
+
+        if (result == READ_EOF) // EOF reached
+        {
+          // setup ending if we're within set time of the end (currently just EOF)
+          m_eof = true;
+          if (m_status < STATUS_ENDING)
+            m_status = STATUS_ENDING;
+        }
+
+        return RET_SUCCESS;
       }
-
-      if (result == READ_EOF) // EOF reached
+      if (result == READ_ERROR)
       {
-        // setup ending if we're within set time of the end (currently just EOF)
+        // error decoding, lets finish up and get out
+        CLog::Log(LOGERROR, "CAudioDecoder: Error while decoding %i", result);
+        return RET_ERROR;
+      }
+      if (result == READ_EOF)
+      {
         m_eof = true;
+        // setup ending if we're within set time of the end (currently just EOF)
         if (m_status < STATUS_ENDING)
           m_status = STATUS_ENDING;
       }
-
-      return RET_SUCCESS;
     }
-    if (result == READ_ERROR)
+  }
+  else
+  {
+    if (m_rawBufferSize == 0)
     {
-      // error decoding, lets finish up and get out
-      CLog::Log(LOGERROR, "CAudioDecoder: Error while decoding %i", result);
-      return RET_ERROR;
-    }
-    if (result == READ_EOF)
-    {
-      m_eof = true;
-      // setup ending if we're within set time of the end (currently just EOF)
-      if (m_status < STATUS_ENDING)
-        m_status = STATUS_ENDING;
+      int result = m_codec->ReadRaw(&m_rawBuffer, &m_rawBufferSize);
+      if (result == READ_SUCCESS && m_rawBufferSize)
+      {
+        // TODO, trash this useless ringbuffer
+        if (m_status == STATUS_QUEUING)
+        {
+          m_status = STATUS_QUEUED;
+        }
+        return RET_SUCCESS;
+      }
+      else if (result == READ_ERROR)
+      {
+        // error decoding, lets finish up and get out
+        CLog::Log(LOGERROR, "CAudioDecoder: Error while decoding %i", result);
+        return RET_ERROR;
+      }
+      else if (result == READ_EOF)
+      {
+        m_eof = true;
+        // setup ending if we're within set time of the end (currently just EOF)
+        if (m_status < STATUS_ENDING)
+          m_status = STATUS_ENDING;
+      }
     }
   }
   return RET_SLEEP; // nothing to do
