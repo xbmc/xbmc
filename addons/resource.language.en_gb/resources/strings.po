@@ -1344,6 +1344,8 @@ msgstr ""
 #: system/peripherals.xml
 #: xbmc/filesystem/AddonsDirectory.cpp
 #: system/settings/settings.xml
+#. Label of active/inactive radiobutton in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#305"
 msgid "Enabled"
 msgstr ""
@@ -3527,23 +3529,11 @@ msgstr ""
 
 #empty string with id 824
 
-#. Representation of PVR timer state "disabled"
-#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
-msgctxt "#825"
-msgid "Inactive"
-msgstr ""
+#empty string with id 825
 
-#. Notification text to announce that a timer was activated
-#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
-msgctxt "#826"
-msgid "Timer activated"
-msgstr ""
+#empty string with id 826
 
-#. Notification text to announce that a timer was deactivated
-#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
-msgctxt "#827"
-msgid "Timer deactivated"
-msgstr ""
+#empty string with id 827
 
 #. Text for notification that a repeating timer has been deleted
 #: xbmc/pvr/timers/PVRTimers.cpp
@@ -5630,6 +5620,7 @@ msgstr ""
 
 #: xbmc/peripherals/bus/PeripheralBus.cpp
 #: system/settings/settings.xml
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#13106"
 msgid "Disabled"
 msgstr ""
@@ -8671,8 +8662,14 @@ msgctxt "#19056"
 msgid "New timer"
 msgstr ""
 
-# empty string with id 19057
+#. Notification text to announce that a timer was disabled
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#19057"
+msgid "Timer disabled"
+msgstr ""
 
+#. Notification text to announce that a timer was enabled
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19058"
 msgid "Timer enabled"
 msgstr ""
@@ -8753,8 +8750,7 @@ msgctxt "#19073"
 msgid "Delay channel switch"
 msgstr ""
 
-#. Label of active/inactive radiobutton in PVR timer settings dialog
-#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+#: addons/skin.confluence/720p/DialogPVRChannelManager.xml
 msgctxt "#19074"
 msgid "Active"
 msgstr ""
