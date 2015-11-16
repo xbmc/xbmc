@@ -2078,7 +2078,7 @@ void CApplication::Render()
     g_graphicsContext.Flip(dirtyRegions);
 
 #ifdef HAS_DS_PLAYER    
-  if (!CDSRendererCallback::Get()->ReadyDS(DIRECTSHOW_RENDERER_MADVR))
+  if (!CDSRendererCallback::Get()->UsingDS(DIRECTSHOW_RENDERER_MADVR))
 #endif
   if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
   {
