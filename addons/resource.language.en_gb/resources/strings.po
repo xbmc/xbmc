@@ -18374,6 +18374,14 @@ msgctxt "#55092"
 msgid "%i px"
 msgstr ""
 
+msgctxt "#55093"
+msgid "Copy from active video area"
+msgstr ""
+
+msgctxt "#55094"
+msgid "Reset to default values"
+msgstr ""
+
 msgctxt "#60001"
 msgid "Media rules"
 msgstr ""

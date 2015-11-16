@@ -24,6 +24,8 @@
 
 #include "DSRendererCallback.h"
 #include "cores/DSPlayer/Filters/MadvrSettingsManager.h"
+#include "guilib/GraphicContext.h"
+#include "settings/Settings.h"
 
 CDSRendererCallback *CDSRendererCallback::m_pSingleton = NULL;
 
@@ -41,6 +43,11 @@ CDSRendererCallback::CDSRendererCallback()
 
 CDSRendererCallback::~CDSRendererCallback()
 {
+  CRect activeVideoRect(0,0,0,0);
+  if (m_pAllocatorCallback)
+    activeVideoRect = m_pAllocatorCallback->GetActiveVideoRect();
+  SetVisibleScreenArea(activeVideoRect);
+
   m_pAllocatorCallback = NULL;
   m_pSettingCallback = NULL;
   m_pPaintCallback = NULL;
@@ -139,6 +146,19 @@ bool CDSRendererCallback::ReadyDS(DIRECTSHOW_RENDERER renderer)
     renderer = m_CurrentRenderer;
 
   return (m_pAllocatorCallback != NULL && m_renderOnDs && m_CurrentRenderer == renderer);
+}
+
+void CDSRendererCallback::SetVisibleScreenArea(CRect activeVideoRect)
+{
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_OSDINTOACTIVEAREA)
+    && CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_COPYACTIVERECT))
+  {
+    CRect wndRect = g_graphicsContext.GetViewWindow();
+    CSettings::GetInstance().SetInt(CSettings::SETTING_DSPLAYER_DSAREALEFT, activeVideoRect.x1 - wndRect.x1);
+    CSettings::GetInstance().SetInt(CSettings::SETTING_DSPLAYER_DSAREARIGHT, wndRect.x2 - activeVideoRect.x2);
+    CSettings::GetInstance().SetInt(CSettings::SETTING_DSPLAYER_DSAREATOP, activeVideoRect.y1 - wndRect.y1);
+    CSettings::GetInstance().SetInt(CSettings::SETTING_DSPLAYER_DSAREABOTTOM, wndRect.y2 - activeVideoRect.y2);
+  }
 }
 
 // IDSRendererAllocatorCallback

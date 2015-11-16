@@ -813,7 +813,8 @@ void CGraphicContext::GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, f
       fToHeight = fToHeight - iBottom - iTop;
     }
 
-    if ((g_application.m_pPlayer->GetCurrentPlayer() == PCID_DSPLAYER)
+    if ((g_application.m_pPlayer->IsPlaying()
+      && g_application.m_pPlayer->GetCurrentPlayer() == PCID_DSPLAYER)
       && CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_OSDINTOACTIVEAREA))
     {
       g_guiSkinzoom = 0;

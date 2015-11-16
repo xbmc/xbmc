@@ -441,13 +441,14 @@ const std::string CSettings::SETTING_DSPLAYER_VIDEORENDERER = "dsplayer.videoren
 const std::string CSettings::SETTING_DSPLAYER_AUDIORENDERER = "dsplayer.audiorenderer";
 const std::string CSettings::SETTING_DSPLAYER_FILTERSMANAGEMENT = "dsplayer.filtersmanagement";
 const std::string CSettings::SETTING_DSPLAYER_EXSUBTITLELANGUAGE = "dsplayer.exsubtitlelanguage";
-
 const std::string CSettings::SETTING_DSPLAYER_OSDINTOACTIVEAREA = "dsplayer.osdintoactivearea";
 const std::string CSettings::SETTING_DSPLAYER_DEFINEDSAREA = "dsplayer.definedsarea";
 const std::string CSettings::SETTING_DSPLAYER_DSAREALEFT = "dsplayer.dsarealeft";
 const std::string CSettings::SETTING_DSPLAYER_DSAREARIGHT = "dsplayer.dsarearight";
 const std::string CSettings::SETTING_DSPLAYER_DSAREATOP = "dsplayer.dsareatop";
 const std::string CSettings::SETTING_DSPLAYER_DSAREABOTTOM = "dsplayer.dsareabottom";
+const std::string CSettings::SETTING_DSPLAYER_COPYACTIVERECT = "dsplayer.copyactiverect";
+const std::string CSettings::SETTING_DSPLAYER_DSAREARESET = "dsplayer.dsareareset";
 #endif
 
 CSettings::CSettings()
@@ -1089,6 +1090,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_DSPLAYER_LAVAUDIO);
   settingSet.insert(CSettings::SETTING_DSPLAYER_XYSUBFILTER);
   settingSet.insert(CSettings::SETTING_DSPLAYER_XYVSFILTER);
+  settingSet.insert(CSettings::SETTING_DSPLAYER_DSAREARESET);
 #endif
   m_settingsManager->RegisterCallback(&CMediaSettings::GetInstance(), settingSet);
 

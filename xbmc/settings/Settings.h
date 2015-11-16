@@ -398,6 +398,8 @@ public:
   static const std::string CSettings::SETTING_DSPLAYER_DSAREARIGHT;
   static const std::string CSettings::SETTING_DSPLAYER_DSAREATOP;
   static const std::string CSettings::SETTING_DSPLAYER_DSAREABOTTOM;
+  static const std::string CSettings::SETTING_DSPLAYER_COPYACTIVERECT;
+  static const std::string CSettings::SETTING_DSPLAYER_DSAREARESET;
 #endif
 
 

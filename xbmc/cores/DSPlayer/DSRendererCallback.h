@@ -240,6 +240,7 @@ public:
   void SetCurrentRenderer(DIRECTSHOW_RENDERER renderer) { m_CurrentRenderer = renderer; }
   bool GetStop(){ return m_bStop; }
   void SetStop(bool bStop){ m_bStop = bStop; }
+  void SetVisibleScreenArea(CRect activeVideoRect);
 
 private:
   CDSRendererCallback();

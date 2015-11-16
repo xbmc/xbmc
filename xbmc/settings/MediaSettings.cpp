@@ -585,6 +585,13 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
     CGraphFilters::Get()->ShowInternalPPage(LAVAUDIO, false);
   else if (settingId == CSettings::SETTING_DSPLAYER_XYSUBFILTER || settingId == CSettings::SETTING_DSPLAYER_XYVSFILTER)
     CGraphFilters::Get()->ShowInternalPPage(XYSUBFILTER, true);
+  else if (settingId == CSettings::SETTING_DSPLAYER_DSAREARESET)
+  {
+    CSettings::GetInstance().SetInt(CSettings::SETTING_DSPLAYER_DSAREALEFT, 0);
+    CSettings::GetInstance().SetInt(CSettings::SETTING_DSPLAYER_DSAREARIGHT, 0);
+    CSettings::GetInstance().SetInt(CSettings::SETTING_DSPLAYER_DSAREATOP, 0);
+    CSettings::GetInstance().SetInt(CSettings::SETTING_DSPLAYER_DSAREABOTTOM, 0);
+  }
 #endif
   else if (settingId == CSettings::SETTING_VIDEOLIBRARY_IMPORT)
   {
