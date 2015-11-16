@@ -174,7 +174,7 @@ enum AML_DEVICE_TYPE aml_get_device_type()
         aml_device_type = AML_DEVICE_TYPE_M8M2;
       else
         aml_device_type = AML_DEVICE_TYPE_M8;
-    } else if (cpu_hardware.find("Meson8B") != std::string::npos)
+    } else if ((cpu_hardware.find("Meson8B") != std::string::npos) || (cpu_hardware.find("ODROIDC") != std::string::npos))
       aml_device_type = AML_DEVICE_TYPE_M8B;
     else
       aml_device_type = AML_DEVICE_TYPE_UNKNOWN;
