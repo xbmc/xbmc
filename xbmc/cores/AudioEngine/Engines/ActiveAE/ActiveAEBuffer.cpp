@@ -72,8 +72,13 @@ void CSampleBuffer::Return()
 CActiveAEBufferPool::CActiveAEBufferPool(AEAudioFormat format)
 {
   m_format = format;
-  if (AE_IS_RAW(m_format.m_dataFormat))
-    m_format.m_dataFormat = AE_FMT_S16NE;
+  if (m_format.m_dataFormat == AE_FMT_RAW)
+  {
+    m_format.m_frameSize = 1;
+    m_format.m_frames = 61440;
+    m_format.m_channelLayout.Reset();
+    m_format.m_channelLayout += AE_CH_FC;
+  }
 }
 
 CActiveAEBufferPool::~CActiveAEBufferPool()
@@ -119,6 +124,10 @@ bool CActiveAEBufferPool::Create(unsigned int totaltime)
 
   unsigned int time = 0;
   unsigned int buffertime = (m_format.m_frames*1000) / m_format.m_sampleRate;
+  if (m_format.m_dataFormat == AE_FMT_RAW)
+  {
+    buffertime = m_format.m_streamInfo.GetDuration();
+  }
   unsigned int n = 0;
   while (time < totaltime || n < 5)
   {
@@ -141,8 +150,13 @@ CActiveAEBufferPoolResample::CActiveAEBufferPoolResample(AEAudioFormat inputForm
   : CActiveAEBufferPool(outputFormat)
 {
   m_inputFormat = inputFormat;
-  if (AE_IS_RAW(m_inputFormat.m_dataFormat))
-    m_inputFormat.m_dataFormat = AE_FMT_S16NE;
+  if (m_inputFormat.m_dataFormat == AE_FMT_RAW)
+  {
+    m_format.m_frameSize = 1;
+    m_format.m_frames = 61440;
+    m_inputFormat.m_channelLayout.Reset();
+    m_inputFormat.m_channelLayout += AE_CH_FC;
+  }
   m_resampler = NULL;
   m_fillPackets = false;
   m_drain = false;

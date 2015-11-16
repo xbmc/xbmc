@@ -133,7 +133,6 @@ public:
   virtual const unsigned int GetChannelCount() const;
   
   virtual const unsigned int GetSampleRate() const ;
-  virtual const unsigned int GetEncodedSampleRate() const;
   virtual const enum AEDataFormat GetDataFormat() const;
   
   virtual double GetResampleRatio();

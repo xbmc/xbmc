@@ -103,20 +103,27 @@ CAESinkALSA::~CAESinkALSA()
   Deinitialize();
 }
 
-inline CAEChannelInfo CAESinkALSA::GetChannelLayoutRaw(AEDataFormat dataFormat)
+inline CAEChannelInfo CAESinkALSA::GetChannelLayoutRaw(const AEAudioFormat& format)
 {
   unsigned int count = 0;
 
-  if (dataFormat == AE_FMT_AC3 ||
-      dataFormat == AE_FMT_DTS ||
-      dataFormat == AE_FMT_EAC3)
+  switch (format.m_streamInfo.m_type)
   {
-    count = 2;
-  }
-  else if (dataFormat == AE_FMT_TRUEHD ||
-           dataFormat == AE_FMT_DTSHD)
-  {
-    count = 8;
+    case CAEStreamInfo::STREAM_TYPE_DTSHD:
+    case CAEStreamInfo::STREAM_TYPE_TRUEHD:
+      count = 8;
+      break;
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
+    case CAEStreamInfo::STREAM_TYPE_DTS_512:
+    case CAEStreamInfo::STREAM_TYPE_DTS_1024:
+    case CAEStreamInfo::STREAM_TYPE_DTS_2048:
+    case CAEStreamInfo::STREAM_TYPE_AC3:
+    case CAEStreamInfo::STREAM_TYPE_EAC3:
+      count = 2;
+      break;
+    default:
+      count = 0;
+      break;
   }
 
   CAEChannelInfo info;
@@ -131,8 +138,8 @@ inline CAEChannelInfo CAESinkALSA::GetChannelLayoutLegacy(const AEAudioFormat& f
   enum AEChannel* channelMap = LegacyALSAChannelMap;
   unsigned int count = 0;
 
-  if (AE_IS_RAW(format.m_dataFormat))
-    return GetChannelLayoutRaw(format.m_dataFormat);
+  if (format.m_dataFormat == AE_FMT_RAW)
+    return GetChannelLayoutRaw(format);
 
   // According to CEA-861-D only RL and RR are known. In case of a format having SL and SR channels
   // but no BR BL channels, we use the wide map in order to open only the num of channels really
@@ -167,9 +174,9 @@ inline CAEChannelInfo CAESinkALSA::GetChannelLayout(const AEAudioFormat& format,
   CAEChannelInfo info;
   std::string alsaMapStr("none");
 
-  if (AE_IS_RAW(format.m_dataFormat))
+  if (format.m_dataFormat == AE_FMT_RAW)
   {
-    info = GetChannelLayoutRaw(format.m_dataFormat);
+    info = GetChannelLayoutRaw(format);
   }
   else
   {
@@ -514,7 +521,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   inconfig.channels = GetChannelLayoutLegacy(format, 2, 8).Count();
 
   /* if we are raw, correct the data format */
-  if (AE_IS_RAW(format.m_dataFormat))
+  if (format.m_dataFormat == AE_FMT_RAW)
   {
     inconfig.format   = AE_FMT_S16NE;
     m_passthrough     = true;
@@ -611,7 +618,6 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   format.m_sampleRate = outconfig.sampleRate;
   format.m_frames = outconfig.periodSize;
   format.m_frameSize = outconfig.frameSize;
-  format.m_frameSamples = outconfig.periodSize * outconfig.channels;
   format.m_dataFormat = outconfig.format;
 
   m_format              = format;
@@ -622,7 +628,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
 
 snd_pcm_format_t CAESinkALSA::AEFormatToALSAFormat(const enum AEDataFormat format)
 {
-  if (AE_IS_RAW(format))
+  if (format == AE_FMT_RAW)
     return SND_PCM_FORMAT_S16;
 
   switch (format)
@@ -691,7 +697,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
     CLog::Log(LOGINFO, "CAESinkALSA::InitializeHW - Your hardware does not support %s, trying other formats", CAEUtil::DataFormatToStr(outconfig.format));
     for (enum AEDataFormat i = AE_FMT_MAX; i > AE_FMT_INVALID; i = (enum AEDataFormat)((int)i - 1))
     {
-      if (AE_IS_RAW(i) || i == AE_FMT_MAX)
+      if (i == AE_FMT_RAW || i == AE_FMT_MAX)
         continue;
 
       if (m_passthrough && i != AE_FMT_S16BE && i != AE_FMT_S16LE)
@@ -1418,8 +1424,12 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
         info.m_displayNameExtra += ' ';
       info.m_displayNameExtra += "S/PDIF";
 
-      info.m_dataFormats.push_back(AE_FMT_AC3);
-      info.m_dataFormats.push_back(AE_FMT_DTS);
+      info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+      info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+      info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+      info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+      info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+      info.m_dataFormats.push_back(AE_FMT_RAW);
     }
     else if (info.m_displayNameExtra.empty())
     {
@@ -1526,7 +1536,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
   /* detect the PCM sample formats that are available */
   for (enum AEDataFormat i = AE_FMT_MAX; i > AE_FMT_INVALID; i = (enum AEDataFormat)((int)i - 1))
   {
-    if (AE_IS_RAW(i) || i == AE_FMT_MAX)
+    if (i == AE_FMT_RAW || i == AE_FMT_MAX)
       continue;
     snd_pcm_format_t fmt = AEFormatToALSAFormat(i);
     if (fmt == SND_PCM_FORMAT_UNKNOWN)
@@ -1543,7 +1553,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
     AEDataFormatList::iterator it;
     for (enum AEDataFormat i = AE_FMT_MAX; i > AE_FMT_INVALID; i = (enum AEDataFormat)((int)i - 1))
     {
-      if (!AE_IS_RAW(i))
+      if (i != AE_FMT_RAW)
         continue;
       it = find(info.m_dataFormats.begin(), info.m_dataFormats.end(), i);
       if (it == info.m_dataFormats.end())
@@ -1554,6 +1564,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
   }
 
   snd_pcm_close(pcmhandle);
+  info.m_wantsIECPassthrough = true;
   list.push_back(info);
 }
 

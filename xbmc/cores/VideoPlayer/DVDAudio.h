@@ -80,9 +80,8 @@ protected:
   double m_resampleRatio;
   CCriticalSection m_critSection;
 
-  int m_iBitrate;
+  unsigned int m_sampeRate;
   int m_iBitsPerSample;
-  double m_SecondsPerByte;
   bool m_bPassthrough;
   CAEChannelInfo m_channelLayout;
   bool m_bPaused;

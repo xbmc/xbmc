@@ -173,7 +173,7 @@ struct MsgStreamFFmpegInfo
 class CEngineStats
 {
 public:
-  void Reset(unsigned int sampleRate);
+  void Reset(unsigned int sampleRate, bool pcm);
   void UpdateSinkDelay(const AEDelayStatus& status, int samples, int64_t pts, int clockId = 0);
   void AddSamples(int samples, std::list<CActiveAEStream*> &streams);
   void GetDelay(AEDelayStatus& status);
@@ -204,6 +204,7 @@ protected:
   bool m_suspended;
   bool m_hasDSP;
   AEAudioFormat m_sinkFormat;
+  bool m_pcmOutput;
   CCriticalSection m_lock;
 };
 
@@ -237,7 +238,7 @@ public:
   virtual void  SetSoundMode(const int mode);
 
   /* returns a new stream for data in the specified format */
-  virtual IAEStream *MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int encodedSampleRate, CAEChannelInfo& channelLayout, unsigned int options = 0, IAEClockCallback *clock = NULL);
+  virtual IAEStream *MakeStream(AEAudioFormat &audioFormat, unsigned int options = 0, IAEClockCallback *clock = NULL);
   virtual bool FreeStream(IAEStream *stream);
 
   /* returns a new sound object */
@@ -248,7 +249,7 @@ public:
 
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
   virtual std::string GetDefaultDevice(bool passthrough);
-  virtual bool SupportsRaw(AEDataFormat format, int samplerate);
+  virtual bool SupportsRaw(AEAudioFormat &format);
   virtual bool SupportsSilenceTimeout();
   virtual bool HasStereoAudioChannelCount();
   virtual bool HasHDAudioChannelCount();

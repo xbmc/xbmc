@@ -37,32 +37,36 @@ public:
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();
   virtual int Decode(uint8_t* pData, int iSize);
+  virtual void GetData(DVDAudioFrame &frame);
   virtual int GetData(uint8_t** dst);
   virtual void Reset();
-  virtual int GetChannels();
-  virtual CAEChannelInfo GetChannelMap();
-  virtual int GetSampleRate();
-  virtual enum AEDataFormat GetDataFormat();
+  virtual AEAudioFormat GetFormat() { return m_format; }
   virtual const char* GetName() { return "FFmpeg"; }
-  virtual int GetBitRate();
   virtual enum AVMatrixEncoding GetMatrixEncoding();
   virtual enum AVAudioServiceType GetAudioServiceType();
   virtual int GetProfile();
 
 protected:
-  AVCodecContext*       m_pCodecContext;
-  enum AVSampleFormat   m_iSampleFormat;
-  CAEChannelInfo        m_channelLayout;
+  enum AEDataFormat GetDataFormat();
+  int GetSampleRate();
+  int GetChannels();
+  CAEChannelInfo GetChannelMap();
+  int GetBitRate();
+
+  AEAudioFormat m_format;
+  AVCodecContext* m_pCodecContext;
+  enum AVSampleFormat m_iSampleFormat;
+  CAEChannelInfo m_channelLayout;
   enum AVMatrixEncoding m_matrixEncoding;
 
   AVFrame* m_pFrame1;
   int m_gotFrame;
 
   bool m_bOpenedCodec;
-  int      m_channels;
+  int m_channels;
   uint64_t m_layout;
 
   void BuildChannelMap();
-  void ConvertToFloat();  
+  void ConvertToFloat();
 };
 

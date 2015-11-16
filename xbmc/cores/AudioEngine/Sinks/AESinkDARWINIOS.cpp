@@ -575,6 +575,7 @@ static void EnumerateDevices(AEDeviceInfoList &list)
   //device.m_dataFormats.push_back(AE_FMT_S24LE3);
   //device.m_dataFormats.push_back(AE_FMT_S32LE);
   device.m_dataFormats.push_back(AE_FMT_FLOAT);
+  device.m_wantsIECPassthrough = true;
 
   CLog::Log(LOGDEBUG, "EnumerateDevices:Device(%s)" , device.m_deviceName.c_str());
 

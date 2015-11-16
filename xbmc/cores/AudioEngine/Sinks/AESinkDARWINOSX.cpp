@@ -273,7 +273,6 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   /* TODO: Should we use the virtual format to determine our data format? */
   format.m_frameSize     = format.m_channelLayout.Count() * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3);
   format.m_frames        = m_device.GetBufferSize();
-  format.m_frameSamples  = format.m_frames * format.m_channelLayout.Count();
 
   m_frameSizePerPlane = format.m_frameSize / m_planes;
   m_framesPerSecond   = format.m_sampleRate;

@@ -899,6 +899,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     deviceInfo.m_channels         = deviceChannels;
 
     /* Store the device info */
+    deviceInfo.m_wantsIECPassthrough = true;
     deviceInfoList.push_back(deviceInfo);
 
     if(pDevice->GetId(&pwszID) == S_OK)
@@ -908,6 +909,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
         deviceInfo.m_deviceName = std::string("default");
         deviceInfo.m_displayName = std::string("default");
         deviceInfo.m_displayNameExtra = std::string("");
+        deviceInfo.m_wantsIECPassthrough = true;
         deviceInfoList.push_back(deviceInfo);
       }
       CoTaskMemFree(pwszID);
