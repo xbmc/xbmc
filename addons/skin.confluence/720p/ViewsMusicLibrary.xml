@@ -216,12 +216,30 @@
 					<textcolor>white</textcolor>
 				</control>
 				<control type="label">
-					<description>Rating value</description>
-					<left>80</left>
-					<top>535</top>
-					<width>150</width>
-					<height>30</height>
-					<label>$INFO[ListItem.Userrating]</label>
+					<description>Rating txt</description>
+					<left>10</left>
+					<top>530</top>
+					<width>290</width>
+					<height>25</height>
+					<label>$INFO[ListItem.Rating,[COLOR=blue]$LOCALIZE[563]: [/COLOR]]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>white</textcolor>
+					<visible>Container.Content(Albums)</visible>
+				</control>
+				<control type="label">
+					<description>UserRating txt</description>
+					<left>10</left>
+					<top>530</top>
+					<width>290</width>
+					<height>25</height>
+					<label>$INFO[ListItem.UserRating,[COLOR=blue]$LOCALIZE[38018]: [/COLOR]]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>white</textcolor>
+					<visible>Container.Content(Songs)</visible>
 				</control>
 			</control>
 		</control>
