@@ -21,8 +21,9 @@
 #include "CompileInfo.h"
 #include "threads/Thread.h"
 #include "threads/platform/win/Win32Exception.h"
-#include "utils/CPUInfo.h"
 #include "xbmc.h"
+#include "utils/CPUInfo.h"
+#include "utils/Environment.h"
 
 #include <dbghelp.h>
 #include <shellapi.h>
@@ -44,6 +45,9 @@ LONG WINAPI CreateMiniDump(EXCEPTION_POINTERS* pEp)
 //-----------------------------------------------------------------------------
 INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
 {
+  // this fixes crash if OPENSSL_CONF is set to existed openssl.cfg  
+  // need to set it as soon as possible  
+  CEnvironment::unsetenv("OPENSSL_CONF");
 
   // Initializes CreateMiniDump to handle exceptions.
   char ver[100];
