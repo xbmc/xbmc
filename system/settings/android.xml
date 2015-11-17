@@ -8,6 +8,13 @@
     </category>
   </section>
   <section id="videos">
+    <category id="videoplayer">
+      <group id="3">
+        <setting id="videoplayer.usedisplayasclock">
+          <visible>false</visible>
+        </setting>
+      </group>
+    </category>
     <category id="videoacceleration">
       <group id="3">
         <setting id="videoplayer.usestagefright" type="boolean" label="13436" help="36260">
