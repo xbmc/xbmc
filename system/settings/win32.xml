@@ -7,15 +7,6 @@
       </group>
     </category>
   </section>
-  <section id="videos">
-    <category id="videoplayer">
-      <group id="3">
-        <setting id="videoplayer.usedisplayasclock">
-          <requirement negated="true">HAS_GL</requirement>
-        </setting>
-      </group>
-    </category>
-  </section>
   <section id="services">
     <category id="zeroconf">
       <group id="1">
