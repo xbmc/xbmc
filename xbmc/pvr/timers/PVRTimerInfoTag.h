@@ -206,6 +206,7 @@ namespace PVR
     std::string GetDeletedNotificationText() const;
 
     const std::string& Title(void) const;
+    const std::string& Subtitle(void) const;
     const std::string& Summary(void) const;
     const std::string& Path(void) const;
 
@@ -236,6 +237,7 @@ namespace PVR
     unsigned int GetTimerScheduleId() const { return m_iParentClientIndex; }
 
     std::string           m_strTitle;            /*!< @brief name of this timer */
+    std::string           m_strSubtitle;         /*!< @brief subtitle of this timer */
     std::string           m_strEpgSearchString;  /*!< @brief a epg data match string for repeating epg-based timers. Format is backend-dependent, for example regexp */
     bool                  m_bFullTextEpgSearch;  /*!< @brief indicates whether only epg episode title can be matched by the pvr backend or "more" (backend-dependent") data. */
     std::string           m_strDirectory;        /*!< @brief directory where the recording must be stored */

@@ -219,9 +219,8 @@ namespace PVR
 
     /*!
      * @return True while the recording is running
-     * @note Only works if the recording has an EPG id provided by the add-on
      */
-    bool IsBeingRecorded(void) const;
+    bool IsBeingRecorded(void) const { return m_bRecordingInProgress; };
 
     /*!
      * @brief Retrieve the recording Episode Name
@@ -229,11 +228,25 @@ namespace PVR
      */
     std::string EpisodeName(void) const { return m_strShowTitle; };
 
+    /*!
+     * @return True if this recording will be kept forever by the backend,
+     * false if it will eventually be auto-deleted by the backend storage policy
+     */
+    bool ExpiresNever(void) const { return m_bExpiresNever; };
+
+    /*!
+     * @return True if this recording will expire shortly (precise criteria defined by backend/client)
+     */
+    bool ExpiresWithin24Hrs(void) const { return m_bExpiresWithin24Hrs; };
+
   private:
     CDateTime    m_recordingTime; /*!< start time of the recording */
     bool         m_bGotMetaData;
     bool         m_bIsDeleted;    /*!< set if entry is a deleted recording which can be undelete */
     unsigned int m_iEpgEventId;   /*!< epg broadcast id associated with this recording */
+    bool         m_bRecordingInProgress; /*!< this recording is currently in progress */
+    bool         m_bExpiresNever; /*!< this recording will never expire and be auto-deleted by the backend */
+    bool         m_bExpiresWithin24Hrs;  /*!< this recording will expire and be auto-deleted by the backend within 24 hrs*/
 
     void UpdatePath(void);
     void DisplayError(PVR_ERROR err) const;

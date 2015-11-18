@@ -408,6 +408,81 @@ namespace EPG
      */
     bool IsSeries() const { return (m_iFlags & EPG_TAG_FLAG_IS_SERIES) > 0; }
 
+    /*!
+     * @brief status function to extract IsLive boolean from EPG iFlags bitfield
+     */
+    bool IsLive(void) const { return (m_iFlags & EPG_TAG_FLAG_IS_LIVE) > 0; }
+
+    /*!
+     * @brief status function to extract IsFinal  boolean from EPG iFlags bitfield
+     */
+    bool IsFinal(void) const { return (m_iFlags & EPG_TAG_FLAG_IS_FINAL) > 0; }
+
+    /*!
+     * @brief status function to extract IsMovie boolean from EPG iFlags bitfield
+     */
+    bool IsMovie(void) const { return (m_iFlags & EPG_TAG_FLAG_IS_MOVIE) > 0; }
+
+    /*!
+     * @brief status function to extract IsNew boolean from EPG iFlags bitfield
+     */
+    bool IsNew(void) const { return (m_iFlags & EPG_TAG_FLAG_IS_NEW) > 0; }
+
+    /*!
+     * @brief status function to extract HasSubtitles boolean from EPG iFlags bitfield
+     */
+    bool HasSubtitles(void) const { return (m_iFlags & EPG_TAG_FLAG_HAS_SUBTITLES) > 0; }
+
+    /*!
+     * @brief status function to extract HasSigning boolean from EPG iFlags bitfield
+     */
+    bool HasSigning(void) const { return (m_iFlags & EPG_TAG_FLAG_HAS_SIGNING) > 0; }
+
+    /*!
+     * @brief status function to extract HasAudioDescription boolean from EPG iFlags bitfield
+     */
+    bool HasAudioDescription(void) const { return (m_iFlags & EPG_TAG_FLAG_HAS_AUDIO_DESC) > 0; }
+
+    /*!
+     * @brief status function to extract IsWidescreen boolean from EPG iFlags bitfield
+     */
+    bool IsWidescreen(void) const { return (m_iFlags & EPG_TAG_FLAG_IS_WIDESCREEN) > 0; }
+
+    /*!
+     * @brief status function to extract IsHD boolean from EPG iFlags bitfield
+     */
+    bool IsHD(void) const { return (m_iFlags & EPG_TAG_FLAG_IS_HD) > 0; }
+
+    /*!
+     * @brief status function to extract Is3D boolean from EPG iFlags bitfield
+     */
+    bool Is3D(void) const { return (m_iFlags & EPG_TAG_FLAG_IS_3D) > 0; }
+
+    /*!
+     * @brief status function to extract Is4K boolean from EPG iFlags bitfield
+     */
+    bool Is4K(void) const { return (m_iFlags & EPG_TAG_FLAG_IS_4K) > 0; }
+
+    /*!
+     * @brief status function to extract HasMonoSound boolean from EPG iFlags bitfield
+     */
+    bool HasMonoSound(void) const { return (m_iFlags & EPG_TAG_FLAG_HAS_MONO_SOUND) > 0; }
+
+    /*!
+     * @brief status function to extract HasStereoSound boolean from EPG iFlags bitfield
+     */
+    bool HasStereoSound(void) const { return (m_iFlags & EPG_TAG_FLAG_HAS_STEREO_SOUND) > 0; }
+
+    /*!
+     * @brief status function to extract HasSurroundSound boolean from EPG iFlags bitfield
+     */
+    bool HasSurroundSound(void) const { return (m_iFlags & EPG_TAG_FLAG_HAS_SURROUND_SOUND) > 0; }
+
+    /*!
+     * @brief status function to extract IsSplitEvent boolean from EPG iFlags bitfield
+     */
+    bool IsSplitEvent(void) const { return (m_iFlags & EPG_TAG_FLAG_IS_SPLIT_EVENT) > 0; }
+
   private:
 
     /*!

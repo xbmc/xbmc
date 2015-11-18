@@ -624,7 +624,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "imdbnumber",       LISTITEM_IMDBNUMBER },
                                   { "episodename",      LISTITEM_EPISODENAME },
                                   { "timertype",        LISTITEM_TIMERTYPE },
-                                  { "epgeventtitle",    LISTITEM_EPG_EVENT_TITLE }};
+                                  { "epgeventtitle",    LISTITEM_EPG_EVENT_TITLE },
+                                  { "timersubtitle",    LISTITEM_TIMER_SUBTITLE }};
 
 const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
                                   { "preset",           VISUALISATION_PRESET },
@@ -5792,6 +5793,12 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         return item->GetPVRTimerInfoTag()->GetEpgInfoTag()->EpisodeName();
       if (item->HasPVRRecordingInfoTag())
         return item->GetPVRRecordingInfoTag()->EpisodeName();
+      break;
+    }
+  case LISTITEM_TIMER_SUBTITLE:
+    {
+      if (item->HasPVRTimerInfoTag())
+        return item->GetPVRTimerInfoTag()->Subtitle();
       break;
     }
   case LISTITEM_TIMERTYPE:
