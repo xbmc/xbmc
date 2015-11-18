@@ -110,7 +110,7 @@ class CDXVAContext
 {
 public:
   static bool EnsureContext(CDXVAContext **ctx, CDecoder *decoder);
-  bool GetInputAndTarget(int codec, GUID &inGuid, DXGI_FORMAT &outFormat);
+  bool GetInputAndTarget(int codec, bool bHighBitdepth, GUID &inGuid, DXGI_FORMAT &outFormat);
   bool GetConfig(const D3D11_VIDEO_DECODER_DESC *format, D3D11_VIDEO_DECODER_CONFIG &config);
   bool CreateSurfaces(D3D11_VIDEO_DECODER_DESC format, unsigned int count, unsigned int alignment, ID3D11VideoDecoderOutputView **surfaces);
   bool CreateDecoder(D3D11_VIDEO_DECODER_DESC *format, const D3D11_VIDEO_DECODER_CONFIG *config, CDXVADecoderWrapper **decoder);
