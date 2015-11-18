@@ -22,9 +22,11 @@
 #include "WinEventsWin32.h"
 #include "resource.h"
 #include "guilib/gui3d.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
+#include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
 #include "utils/SystemInfo.h"
@@ -542,6 +544,9 @@ bool CWinSystemWin32::ChangeResolution(RESOLUTION_INFO res, bool forceChange /*=
       else
         CLog::Log(LOGERROR, "%s : ChangeDisplaySettingsEx failed with %d", __FUNCTION__, rc);
     }
+    
+    if (bResChanged) 
+      ResolutionChanged();
 
     return bResChanged;
   }
@@ -780,6 +785,45 @@ bool CWinSystemWin32::Show(bool raise)
     SetFocus(m_hWnd);
   }
   return true;
+}
+
+void CWinSystemWin32::Register(IDispResource *resource)
+{
+  CSingleLock lock(m_resourceSection);
+  m_resources.push_back(resource);
+}
+
+void CWinSystemWin32::Unregister(IDispResource* resource)
+{
+  CSingleLock lock(m_resourceSection);
+  std::vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
+  if (i != m_resources.end())
+    m_resources.erase(i);
+}
+
+void CWinSystemWin32::OnDisplayLost()
+{
+  CLog::Log(LOGDEBUG, "%s - notify display change event", __FUNCTION__);
+
+  // make sure renderer has no invalid references
+  KODI::MESSAGING::CApplicationMessenger::GetInstance().SendMsg(TMSG_RENDERER_FLUSH);
+
+  {
+    CSingleLock lock(m_resourceSection);
+    for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
+      (*i)->OnLostDisplay();
+  }
+}
+
+void CWinSystemWin32::ResolutionChanged()
+{
+  OnDisplayLost();
+  int delay = CSettings::GetInstance().GetInt("videoscreen.delayrefreshchange");
+  if (delay > 0)
+  {
+    m_delayDispReset = true;
+    m_dispResetTimer.Set(delay * 100);
+  }
 }
 
 #endif

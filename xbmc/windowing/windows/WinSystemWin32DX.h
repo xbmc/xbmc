@@ -42,8 +42,29 @@ public:
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual bool WindowedMode() { return CRenderSystemDX::m_useWindowedDX; }
   virtual void NotifyAppFocusChange(bool bGaining);
+  virtual bool PresentRender(const CDirtyRegionList &dirty);
 
   std::string GetClipboardText(void);
+
+  /*!
+   \brief Register as a dependent of the DirectX Render System
+   Resources should call this on construction if they're dependent on the Render System
+   for survival. Any resources that registers will get callbacks on loss and reset of
+   device. In addition, callbacks for destruction and creation of the device are also called,
+   where any resources dependent on the DirectX device should be destroyed and recreated.
+   \sa Unregister, ID3DResource
+  */
+  void Register(ID3DResource *resource);
+
+  /*!
+   \brief Unregister as a dependent of the DirectX Render System
+   Resources should call this on destruction if they're a dependent on the Render System
+   \sa Register, ID3DResource
+  */
+  void Unregister(ID3DResource *resource);
+
+  virtual void Register(IDispResource *resource);
+  virtual void Unregister(IDispResource *resource);
 
 protected:
   virtual void UpdateMonitor();

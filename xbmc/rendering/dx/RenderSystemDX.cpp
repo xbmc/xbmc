@@ -389,7 +389,11 @@ void CRenderSystemDX::SetFullScreenInternal()
 
       // resize window (in windowed mode) or monitor resolution (in fullscreen mode) to required mode
       hr = m_pSwapChain->ResizeTarget(&matchedMode);
-      m_bResizeRequred = S_OK == hr;
+      if (S_OK == hr && !m_bResizeRequred)
+      {
+        m_bResizeRequred = true;
+        ResolutionChanged();
+      }
 
       if (FAILED(hr))
         CLog::Log(LOGERROR, "%s - Failed to switch output mode: %s", __FUNCTION__, GetErrorDescription(hr).c_str());
@@ -830,6 +834,10 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
 
         Sleep(100);
       }
+
+      // when transition from/to stereo mode trigger display reset event
+      if (bNeedRecreate)
+        ResolutionChanged();
     }
     else
     {
@@ -1099,7 +1107,7 @@ bool CRenderSystemDX::PresentRenderImpl(const CDirtyRegionList &dirty)
 {
   HRESULT hr;
 
-  if (!m_bRenderCreated)
+  if (!m_bRenderCreated || m_resizeInProgress)
     return false;
 
   if (m_nDeviceStatus != S_OK)
@@ -1297,16 +1305,6 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
 bool CRenderSystemDX::IsExtSupported(const char* extension)
 {
   return false;
-}
-
-bool CRenderSystemDX::PresentRender(const CDirtyRegionList &dirty)
-{
-  if (!m_bRenderCreated || m_resizeInProgress)
-    return false;
-
-  bool result = PresentRenderImpl(dirty);
-
-  return result;
 }
 
 void CRenderSystemDX::SetVSync(bool enable)
