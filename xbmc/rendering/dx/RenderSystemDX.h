@@ -49,41 +49,31 @@ public:
   virtual bool InitRenderSystem();
   virtual bool DestroyRenderSystem();
   virtual bool ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate);
-
   virtual bool BeginRender();
   virtual bool EndRender();
-  virtual bool PresentRender(const CDirtyRegionList &dirty);
   virtual bool ClearBuffers(color_t color);
   virtual bool IsExtSupported(const char* extension);
   virtual bool IsFormatSupport(DXGI_FORMAT format, unsigned int usage);
-
   virtual void SetVSync(bool vsync);
-
   virtual void SetViewPort(CRect& viewPort);
   virtual void GetViewPort(CRect& viewPort);
   virtual void RestoreViewPort();
-
   virtual CRect ClipRectToScissorRect(const CRect &rect);
   virtual bool ScissorsCanEffectClipping();
   virtual void SetScissors(const CRect &rect);
   virtual void ResetScissors();
-
   virtual void CaptureStateBlock();
   virtual void ApplyStateBlock();
-
   virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.f);
-
   virtual void ApplyHardwareTransform(const TransformMatrix &matrix);
   virtual void RestoreHardwareTransform();
   virtual void SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view);
   virtual bool SupportsStereo(RENDER_STEREO_MODE mode) const;
   virtual bool TestRender();
-
-  void         GetDisplayMode(DXGI_MODE_DESC *mode, bool useCached = false);
-  IDXGIOutput* GetCurrentOutput(void) { return m_pOutput; }
-
   virtual void Project(float &x, float &y, float &z);
 
+  IDXGIOutput* GetCurrentOutput(void) { return m_pOutput; }
+  void GetDisplayMode(DXGI_MODE_DESC *mode, bool useCached = false);
   void FinishCommandList(bool bExecute = true);
   void FlushGPU();
 
@@ -97,24 +87,6 @@ public:
   bool                    Interlaced()         { return m_interlaced; }
   int                     GetBackbufferCount() const { return 2; }
   void                    SetAlphaBlendEnable(bool enable);
-
-  /*!
-   \brief Register as a dependent of the DirectX Render System
-   Resources should call this on construction if they're dependent on the Render System
-   for survival. Any resources that registers will get callbacks on loss and reset of
-   device, where resources that are in the D3DPOOL_DEFAULT pool should be handled.
-   In addition, callbacks for destruction and creation of the device are also called,
-   where any resources dependent on the DirectX device should be destroyed and recreated.
-   \sa Unregister, ID3DResource
-  */
-  void Register(ID3DResource *resource);
-
-  /*!
-   \brief Unregister as a dependent of the DirectX Render System
-   Resources should call this on destruction if they're a dependent on the Render System
-   \sa Register, ID3DResource
-  */
-  void Unregister(ID3DResource *resource);
 
   static std::string GetErrorDescription(HRESULT hr);
 
@@ -137,7 +109,10 @@ protected:
   void SetFullScreenInternal();
   void GetClosestDisplayModeToCurrent(IDXGIOutput* output, DXGI_MODE_DESC* outCurrentDisplayMode, bool useCached = false);
   void CheckInterlasedStereoView(void);
+  void Register(ID3DResource *resource);
+  void Unregister(ID3DResource *resource);
 
+  virtual void ResolutionChanged() {};
   virtual void UpdateMonitor() {};
 
   // our adapter could change as we go
@@ -145,7 +120,6 @@ protected:
   bool                        m_needNewViews;
   bool                        m_resizeInProgress;
   unsigned int                m_screenHeight;
-
   HWND                        m_hFocusWnd;
   HWND                        m_hDeviceWnd;
   unsigned int                m_nBackBufferWidth;
@@ -157,12 +131,9 @@ protected:
   int64_t                     m_systemFreq;
   D3D11_USAGE                 m_defaultD3DUsage;
   bool                        m_useWindowedDX;
-
   CCriticalSection            m_resourceSection;
   std::vector<ID3DResource*>  m_resources;
-
   bool                        m_inScene; ///< True if we're in a BeginScene()/EndScene() block
-
   D3D_DRIVER_TYPE             m_driverType;
   D3D_FEATURE_LEVEL           m_featureLevel;
   IDXGIFactory1*              m_dxgiFactory;
@@ -172,7 +143,6 @@ protected:
   IDXGIOutput*                m_pOutput;
   ID3D11DeviceContext*        m_pContext;
   ID3D11DeviceContext*        m_pImdContext;
-
   IDXGISwapChain*             m_pSwapChain;
   IDXGISwapChain1*            m_pSwapChain1;
   ID3D11RenderTargetView*     m_pRenderTargetView;
@@ -180,7 +150,6 @@ protected:
   ID3D11DepthStencilView*     m_depthStencilView;
   D3D11_VIEWPORT              m_viewPort;
   CRect                       m_scissor;
-
   CGUIShaderDX*               m_pGUIShader;
   ID3D11BlendState*           m_BlendEnableState;
   ID3D11BlendState*           m_BlendDisableState;
@@ -189,14 +158,12 @@ protected:
   ID3D11RasterizerState*      m_RSScissorEnable;
   bool                        m_ScissorsEnabled;
   DXGI_ADAPTER_DESC           m_adapterDesc;
-
   // stereo interlaced/checkerboard intermediate target
   ID3D11Texture2D*            m_pTextureRight;
   ID3D11RenderTargetView*     m_pRenderTargetViewRight;
   ID3D11ShaderResourceView*   m_pShaderResourceViewRight;
   bool                        m_bResizeRequred;
   bool                        m_bHWStereoEnabled;
-
   // improve get current mode
   DXGI_MODE_DESC              m_cachedMode;
 #ifdef _DEBUG

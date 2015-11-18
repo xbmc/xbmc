@@ -21,6 +21,9 @@
 #ifndef WINDOW_SYSTEM_WIN32_H
 #define WINDOW_SYSTEM_WIN32_H
 
+#include "guilib/DispResource.h"
+#include "threads/CriticalSection.h"
+#include "threads/SystemClock.h"
 #include "windowing/WinSystem.h"
 #include <string>
 
@@ -177,6 +180,11 @@ protected:
    */
   void AddResolution(const RESOLUTION_INFO &res);
 
+  virtual void Register(IDispResource *resource);
+  virtual void Unregister(IDispResource *resource);
+  void OnDisplayLost();
+  virtual void ResolutionChanged();
+
   HWND m_hWnd;
   std::vector<HWND> m_hBlankWindows;
   HDC m_hDC;
@@ -186,6 +194,11 @@ protected:
   int m_nPrimary;
   bool m_ValidWindowedPosition;
   bool m_IsAlteringWindow;
+
+  CCriticalSection m_resourceSection;
+  std::vector<IDispResource*> m_resources;
+  bool m_delayDispReset;
+  XbmcThreads::EndTime m_dispResetTimer;
 };
 
 extern HWND g_hWnd;

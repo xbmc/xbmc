@@ -6262,6 +6262,9 @@
     <ClInclude Include="..\..\xbmc\pvr\PVRSettings.h">
       <Filter>pvr</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\DispResource.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">

@@ -20,8 +20,9 @@
 
 
 #include "WinSystemWin32DX.h"
-#include "settings/Settings.h"
 #include "guilib/gui3d.h"
+#include "settings/Settings.h"
+#include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
 
 #ifdef HAS_DX
@@ -35,6 +36,20 @@ CWinSystemWin32DX::CWinSystemWin32DX()
 CWinSystemWin32DX::~CWinSystemWin32DX()
 {
 
+}
+
+bool CWinSystemWin32DX::PresentRender(const CDirtyRegionList& dirty)
+{
+  bool result = PresentRenderImpl(dirty);
+  if (m_delayDispReset && m_dispResetTimer.IsTimePast())
+  {
+    m_delayDispReset = false;
+    CSingleLock lock(CWinSystemWin32::m_resourceSection);
+    // tell any shared resources
+    for (auto i = CWinSystemWin32::m_resources.begin(); i != CWinSystemWin32::m_resources.end(); ++i)
+      (*i)->OnResetDisplay();
+  }
+  return result;
 }
 
 bool CWinSystemWin32DX::UseWindowedDX(bool fullScreen)
@@ -174,6 +189,26 @@ void CWinSystemWin32DX::NotifyAppFocusChange(bool bGaining)
     if (!bGaining)
       ShowWindow(m_hWnd, SW_SHOWMINIMIZED);
   }
+}
+
+void CWinSystemWin32DX::Register(ID3DResource *resource)
+{
+  CRenderSystemDX::Register(resource);
+}
+
+void CWinSystemWin32DX::Unregister(ID3DResource *resource)
+{
+  CRenderSystemDX::Unregister(resource);
+}
+
+void CWinSystemWin32DX::Register(IDispResource *resource)
+{
+  CWinSystemWin32::Register(resource);
+}
+
+void CWinSystemWin32DX::Unregister(IDispResource *resource)
+{
+  CWinSystemWin32::Unregister(resource);
 }
 
 #endif
