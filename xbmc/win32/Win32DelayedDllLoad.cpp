@@ -19,80 +19,35 @@
  */
 
 #include <DelayImp.h>
-#include "filesystem/SpecialProtocol.h"
 #include "Application.h"
 #include "utils/StringUtils.h"
+
+static const std::string dlls[] = {
+  "ssh.dll",
+  "sqlite3.dll",
+  "dnssd.dll",
+  "libxslt.dll",
+  "avcodec-56.dll",
+  "avfilter-5.dll",
+  "avformat-56.dll",
+  "avutil-54.dll",
+  "postproc-53.dll",
+  "swresample-1.dll",
+  "swscale-3.dll"
+};
 
 FARPROC WINAPI delayHookNotifyFunc (unsigned dliNotify, PDelayLoadInfo pdli)
 {
   switch (dliNotify)
   {
     case dliNotePreLoadLibrary:
-      if (stricmp(pdli->szDll, "ssh.dll") == 0)
+      for (size_t i = 0; i < ARRAYSIZE(dlls); ++i)
       {
-        std::string strDll = CSpecialProtocol::TranslatePath("special://xbmcbin/system/ssh.dll");
-        HMODULE hMod = LoadLibraryEx(strDll.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH);
-        return (FARPROC)hMod;
-      }
-      if (stricmp(pdli->szDll, "sqlite3.dll") == 0)
-      {
-        std::string strDll = CSpecialProtocol::TranslatePath("special://xbmcbin/system/sqlite3.dll");
-        HMODULE hMod = LoadLibraryEx(strDll.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH);
-        return (FARPROC)hMod;
-      }
-      if (stricmp(pdli->szDll, "dnssd.dll") == 0)
-      {
-        std::string strDll = CSpecialProtocol::TranslatePath("special://xbmcbin/system/dnssd.dll");
-        HMODULE hMod = LoadLibraryEx(strDll.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH);
-        return (FARPROC)hMod;
-      }
-      if (stricmp(pdli->szDll, "libxslt.dll") == 0)
-      {
-        std::string strDll = CSpecialProtocol::TranslatePath("special://xbmcbin/system/libxslt.dll");
-        HMODULE hMod = LoadLibraryEx(strDll.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH);
-        return (FARPROC)hMod;
-      }
-      if (stricmp(pdli->szDll, "avcodec-56.dll") == 0)
-      {
-        std::string strDll = CSpecialProtocol::TranslatePath("special://xbmcbin/system/players/VideoPlayer/avcodec-56.dll");
-        HMODULE hMod = LoadLibraryEx(strDll.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH);
-        return (FARPROC)hMod;
-      }
-      if (stricmp(pdli->szDll, "avfilter-5.dll") == 0)
-      {
-        std::string strDll = CSpecialProtocol::TranslatePath("special://xbmcbin/system/players/VideoPlayer/avfilter-5.dll");
-        HMODULE hMod = LoadLibraryEx(strDll.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH);
-        return (FARPROC)hMod;
-      }
-      if (stricmp(pdli->szDll, "avformat-56.dll") == 0)
-      {
-        std::string strDll = CSpecialProtocol::TranslatePath("special://xbmcbin/system/players/VideoPlayer/avformat-56.dll");
-        HMODULE hMod = LoadLibraryEx(strDll.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH);
-        return (FARPROC)hMod;
-      }
-      if (stricmp(pdli->szDll, "avutil-54.dll") == 0)
-      {
-        std::string strDll = CSpecialProtocol::TranslatePath("special://xbmcbin/system/players/VideoPlayer/avutil-54.dll");
-        HMODULE hMod = LoadLibraryEx(strDll.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH);
-        return (FARPROC)hMod;
-      }
-      if (stricmp(pdli->szDll, "postproc-53.dll") == 0)
-      {
-        std::string strDll = CSpecialProtocol::TranslatePath("special://xbmcbin/system/players/VideoPlayer/postproc-53.dll");
-        HMODULE hMod = LoadLibraryEx(strDll.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH);
-        return (FARPROC)hMod;
-      }
-      if (stricmp(pdli->szDll, "swresample-1.dll") == 0)
-      {
-        std::string strDll = CSpecialProtocol::TranslatePath("special://xbmcbin/system/players/VideoPlayer/swresample-1.dll");
-        HMODULE hMod = LoadLibraryEx(strDll.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH);
-        return (FARPROC)hMod;
-      }
-      if (stricmp(pdli->szDll, "swscale-3.dll") == 0)
-      {
-        std::string strDll = CSpecialProtocol::TranslatePath("special://xbmcbin/system/players/VideoPlayer/swscale-3.dll");
-        HMODULE hMod = LoadLibraryEx(strDll.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH);
-        return (FARPROC)hMod;
+        if (stricmp(pdli->szDll, dlls[i].c_str()) == 0)
+        {
+          HMODULE hMod = LoadLibraryEx(pdli->szDll, 0, LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
+          return (FARPROC)hMod;
+        }
       }
       break;
   }
