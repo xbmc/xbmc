@@ -222,9 +222,7 @@ void CPVRTimerType::InitMaxRecordingsValues(const PVR_TIMER_TYPE &type)
       if (strDescr.size() == 0)
       {
         // No description given by addon. Create one from value.
-        strDescr = StringUtils::Format("%s %d",
-                                       g_localizeStrings.Get(817).c_str(), // Max Recordings
-                                       type.maxRecordings[i].iValue);
+        strDescr = StringUtils::Format("%d", type.maxRecordings[i].iValue);
       }
       m_maxRecordingsValues.push_back(std::make_pair(strDescr, type.maxRecordings[i].iValue));
     }
