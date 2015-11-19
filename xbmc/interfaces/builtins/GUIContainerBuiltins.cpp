@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2015 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ static int Refresh(const std::vector<std::string>& params)
 { // NOTE: These messages require a media window, thus they're sent to the current activewindow.
   //       This shouldn't stop a dialog intercepting it though.
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 1); // 1 to reset the history
-  message.SetStringParam(params[0]);
+  message.SetStringParam(!params.empty() ? params[0] : "");
   g_windowManager.SendMessage(message);
 
   return 0;
@@ -126,7 +126,7 @@ CBuiltins::CommandMap CGUIContainerBuiltins::GetOperations() const
            {"container.nextviewmode",       {"Move to the next view type (and refresh the listing)", 0, ChangeViewMode<1>}},
            {"container.previoussortmethod", {"Change to the previous sort method", 0, ChangeSortMethod<-1>}},
            {"container.previousviewmode",   {"Move to the previous view type (and refresh the listing)", 0, ChangeViewMode<-1>}},
-           {"container.refresh",            {"Refresh current listing", 1, Refresh}},
+           {"container.refresh",            {"Refresh current listing", 0, Refresh}},
            {"container.setsortdirection",   {"Toggle the sort direction", 0, ToggleSortDirection}},
            {"container.setsortmethod",      {"Change to the specified sort method", 1, SetSortMethod}},
            {"container.setviewmode",        {"Move to the view with the given id", 1, SetViewMode}},
