@@ -368,6 +368,7 @@ public:
   /////////////////////////////////////////////////
   bool SetScraperForPath(const std::string& strPath, const ADDON::ScraperPtr& info);
   bool GetScraperForPath(const std::string& strPath, ADDON::ScraperPtr& info, const ADDON::TYPE &type);
+  bool GetScraperForPath(const std::string & strPath, ADDON::ScraperPtr & info, const ADDON::TYPE & type, CONTENT_TYPE & content);
   
   /*! \brief Check whether a given scraper is in use.
    \param scraperID the scraper to check for.
@@ -457,6 +458,12 @@ public:
    \sa GetArtForItem
    */
   std::string GetArtistArtForItem(int mediaId, const std::string &mediaType, const std::string &artType);
+
+  /*! \brief Converts a Vfs to an absolute path
+  \param the path that will be translated for e.g. musicdb://albums/1
+  \return the absolute path for e.g. on windows E:/Music
+  */
+  std::string TranslateVfsToPath(std::string path);
 
 protected:
   std::map<std::string, int> m_artistCache;

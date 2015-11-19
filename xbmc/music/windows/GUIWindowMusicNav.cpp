@@ -24,7 +24,6 @@
 #include "utils/URIUtils.h"
 #include "PlayListPlayer.h"
 #include "GUIPassword.h"
-#include "settings/dialogs/GUIDialogContentSettings.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "PartyModeManager.h"
@@ -533,19 +532,13 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         if (!CSettings::GetInstance().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW).empty())
           buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
       }
-      NODE_TYPE childtype = dir.GetDirectoryChildType(item->GetPath());
-      if (childtype == NODE_TYPE_ALBUM ||
-          childtype == NODE_TYPE_ARTIST ||
-          nodetype == NODE_TYPE_GENRE ||
-          nodetype == NODE_TYPE_ALBUM ||
+      if (nodetype == NODE_TYPE_ALBUM ||
           nodetype == NODE_TYPE_ALBUM_RECENTLY_ADDED ||
           nodetype == NODE_TYPE_ALBUM_COMPILATIONS)
       {
         // we allow the user to set content for
-        // 1. general artist and album nodes
-        // 2. specific per genre
-        // 3. specific per artist
-        // 4. specific per album
+        // 1. specific per artist
+        // 2. specific per album
         buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20195);
       }
       if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetArtistString().empty())
@@ -716,47 +709,6 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
     Refresh();
     return true;
-
-  case CONTEXT_BUTTON_SET_CONTENT:
-    {
-      ADDON::ScraperPtr scraper;
-      std::string path(item->GetPath());
-      CQueryParams params;
-      CDirectoryNode::GetDatabaseInfo(item->GetPath(), params);
-      CONTENT_TYPE content = CONTENT_ALBUMS;
-      if (params.GetAlbumId() != -1)
-        path = StringUtils::Format("musicdb://albums/%li/",params.GetAlbumId());
-      else if (params.GetArtistId() != -1)
-      {
-        path = StringUtils::Format("musicdb://artists/%li/",params.GetArtistId());
-        content = CONTENT_ARTISTS;
-      }
-
-      if (m_vecItems->IsPath("musicdb://genres/") || item->IsPath("musicdb://artists/"))
-      {
-        content = CONTENT_ARTISTS;
-      }
-
-      if (!m_musicdatabase.GetScraperForPath(path, scraper, ADDON::ScraperTypeFromContent(content)))
-      {
-        ADDON::AddonPtr defaultScraper;
-        if (ADDON::CAddonMgr::GetInstance().GetDefault(ADDON::ScraperTypeFromContent(content), defaultScraper))
-        {
-          scraper = std::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone());
-        }
-      }
-
-      if (CGUIDialogContentSettings::Show(scraper, content))
-      {
-        m_musicdatabase.SetScraperForPath(path,scraper);
-        if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20442}, CVariant{20443}))
-        {
-          OnItemInfoAll(itemNumber,true,true);
-        }
-
-      }
-      return true;
-    }
 
   default:
     break;

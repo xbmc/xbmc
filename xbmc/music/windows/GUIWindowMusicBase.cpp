@@ -48,6 +48,7 @@
 #include "filesystem/File.h"
 #include "profiles/ProfilesManager.h"
 #include "storage/MediaManager.h"
+#include "settings/dialogs/GUIDialogContentSettings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -924,6 +925,11 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   switch (button)
   {
+  case CONTEXT_BUTTON_SET_CONTENT:
+  {
+    OnAssignContent(item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().empty() ? item->GetMusicInfoTag()->GetURL() : static_cast<const std::string&>(item->GetPath()));
+    return true;
+  }
   case CONTEXT_BUTTON_QUEUE_ITEM:
     OnQueueItem(itemNumber);
     return true;
@@ -1459,3 +1465,40 @@ void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
   if (!items.IsMusicDb())
     RetrieveMusicInfo();
 }
+
+void CGUIWindowMusicBase::OnAssignContent(const std::string &path)
+{ 
+  bool bScan = false;
+
+  //Set this to CONTENT_ALBUMS if we're not sure which content we're having - the user will be able to choose the correct
+  CONTENT_TYPE content = CONTENT_ALBUMS;
+  if (StringUtils::StartsWithNoCase(path, "musicdb://artists/"))
+    content = CONTENT_ARTISTS;
+
+
+  CMusicDatabase db;
+  db.Open();
+  // try to translate the path to an absolute, if it isn't a vfs this will just return the same path
+  std::string translatedPath(db.TranslateVfsToPath(path));
+
+  ADDON::ScraperPtr scraper;
+  CONTENT_TYPE scraperContent = CONTENT_NONE; // Gets overwritten anyway
+  db.GetScraperForPath(translatedPath, scraper, ADDON::ScraperTypeFromContent(content), scraperContent);
+
+  // if scraperContent is still None, there is something wrong, lets try to lookup the scraper for the parent dir
+  if (scraperContent == CONTENT_NONE)
+    db.GetScraperForPath(URIUtils::GetParentPath(translatedPath), scraper, ADDON::ScraperTypeFromContent(content), scraperContent);
+  
+  if (CGUIDialogContentSettings::Show(scraper, scraperContent))
+  {
+    // This won't ask you to clean/delete your content, when you change the scraper to none, might ne nice in the future
+    if (CGUIDialogYesNo::ShowAndGetInput(CVariant{ 20442 }, CVariant{ 20443 }))
+      bScan = true;
+
+    db.SetScraperForPath(translatedPath, scraper);
+  }
+
+  if (bScan)
+    g_application.StartMusicScan(translatedPath, true);
+}
+

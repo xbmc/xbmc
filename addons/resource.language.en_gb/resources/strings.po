@@ -11843,11 +11843,13 @@ msgid "Remote fanart"
 msgstr ""
 
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
 msgctxt "#20442"
 msgid "Change content"
 msgstr ""
 
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
 msgctxt "#20443"
 msgid "Do you want to refresh information for all items within this path?"
 msgstr ""
