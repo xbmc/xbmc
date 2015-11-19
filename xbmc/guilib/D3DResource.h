@@ -122,6 +122,7 @@ public:
   UINT GetWidth()  const { return m_width; }
   UINT GetHeight() const { return m_height; }
   DXGI_FORMAT GetFormat() const { return m_format; }
+  void GenerateMipmaps();
 
   // static methods
   static void DrawQuad(const CPoint points[4], color_t color, CD3DTexture *texture, const CRect *texCoords,

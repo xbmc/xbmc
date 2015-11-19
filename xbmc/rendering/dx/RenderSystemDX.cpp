@@ -675,9 +675,15 @@ bool CRenderSystemDX::CreateDevice()
   // Second, no wrap sampler modes for textures are allowed - we are using clamp everywhere
   // At feature levels 10_0, 10_1 and 11_0, the display device unconditionally supports the use of 2D textures with dimensions that are not powers of two.
   // so, setup caps NPOT
-  m_renderCaps |= RENDER_CAPS_NPOT;
+  m_renderCaps |= m_featureLevel > D3D_FEATURE_LEVEL_9_3 ? RENDER_CAPS_NPOT : 0;
   if ((m_renderCaps & RENDER_CAPS_DXT) != 0)
-    m_renderCaps |= RENDER_CAPS_DXT_NPOT;
+  {
+    if (m_featureLevel > D3D_FEATURE_LEVEL_9_3 ||
+      (!IsFormatSupport(DXGI_FORMAT_BC1_UNORM, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN)
+      && !IsFormatSupport(DXGI_FORMAT_BC2_UNORM, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN)
+      && !IsFormatSupport(DXGI_FORMAT_BC3_UNORM, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN)))
+      m_renderCaps |= RENDER_CAPS_DXT_NPOT;
+  }
 
   // Temporary - allow limiting the caps to debug a texture problem
   if (g_advancedSettings.m_RestrictCapsMask != 0)

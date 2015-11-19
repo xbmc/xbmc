@@ -118,6 +118,10 @@ void CSlideShowPic::SetTexture_Internal(int iSlideNumber, CBaseTexture* pTexture
   m_pImage = pTexture;
   m_fWidth = (float)pTexture->GetWidth();
   m_fHeight = (float)pTexture->GetHeight();
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_SLIDESHOW_HIGHQUALITYDOWNSCALING))
+  { // activate mipmapping when high quality downscaling is 'on'
+    pTexture->SetMipmapping();
+  }
   // reset our counter
   m_iCounter = 0;
   // initialize our transistion effect

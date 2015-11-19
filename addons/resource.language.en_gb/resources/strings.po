@@ -18880,7 +18880,19 @@ msgctxt "#36618"
 msgid "Add-ons will be given access to personal data stored on this device. By allowing, you agree that you are solely responsible for any loss of data, unwanted behaviour, or damage to your device. Proceed?"
 msgstr ""
 
-#empty strings from id 36619 to 36899
+#. Label of a setting, allow the user to specifiy high quality downscaling of pictures
+#: system/settings/settings.xml
+msgctxt "#36619"
+msgid "High quality downscaling"
+msgstr ""
+
+#. Description of setting "Pictures -> Slideshow -> High Quality Downscaling" with label #36619
+#: system/settings/settings.xml
+msgctxt "#36620"
+msgid "Enable high quality downscaling of pictures (uses more memory and has moderate performance impact)."
+msgstr ""
+
+#empty strings from id 36621 to 36899
 
 #: xbmc/media/MediaType.cpp
 msgctxt "#36900"

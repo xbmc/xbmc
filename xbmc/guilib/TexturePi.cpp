@@ -93,6 +93,10 @@ void CPiTexture::LoadToGPU()
     // Bind the texture object
     glBindTexture(GL_TEXTURE_2D, m_texture);
 
+    if (IsMipmapped()) {
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+      glGenerateMipmap(GL_TEXTURE_2D);
+    }
     m_loadedToGPU = true;
     return;
   }
