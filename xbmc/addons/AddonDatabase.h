@@ -48,8 +48,8 @@ public:
   bool GetAvailableVersions(const std::string& addonId,
       std::vector<std::pair<ADDON::AddonVersion, std::string>>& versionsInfo);
 
-  /*! \brief grab the (largest) add-on version for an add-on */
-  ADDON::AddonVersion GetAddonVersion(const std::string &id);
+  /*! Get the most recent version for an add-on and the repo id it belongs to*/
+  std::pair<ADDON::AddonVersion, std::string> GetAddonVersion(const std::string &id);
 
   int AddRepository(const std::string& id, const ADDON::VECADDONS& addons, const std::string& checksum, const ADDON::AddonVersion& version);
   void DeleteRepository(const std::string& id);
@@ -82,25 +82,11 @@ public:
    \sa IsAddonDisabled, HasDisabledAddons */
   bool DisableAddon(const std::string &addonID, bool disable = true);
 
-  /*! \brief Checks if an addon is in the database.
-   \param addonID id of the addon to be checked
-   \return true if addon is in database, false if addon is not in database yet */
-  bool HasAddon(const std::string &addonID);
-  
   /*! \brief Check whether an addon has been disabled via DisableAddon.
    \param addonID id of the addon to check
    \return true if the addon is disabled, false otherwise
    \sa DisableAddon, HasDisabledAddons */
   bool IsAddonDisabled(const std::string &addonID);
-
-  /*! \brief Check whether we have disabled addons.
-   \return true if we have disabled addons, false otherwise
-   \sa DisableAddon, IsAddonDisabled */
-  bool HasDisabledAddons();
-
-  /*! @deprecated only here to allow clean upgrades from earlier pvr versions
-   */
-  bool IsSystemPVRAddonEnabled(const std::string &addonID);
 
   /*! \brief Mark an addon as broken
    Sets a flag that this addon has been marked as broken in the repository.

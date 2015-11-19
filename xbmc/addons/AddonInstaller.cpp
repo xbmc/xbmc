@@ -443,11 +443,9 @@ bool CAddonInstaller::GetRepoForAddon(const std::string& addonId, RepositoryPtr&
   if (!database.Open())
     return false;
 
-  std::vector<std::pair<ADDON::AddonVersion, std::string>> versions;
-  if (!database.GetAvailableVersions(addonId, versions) || versions.empty())
+  auto repoId = database.GetAddonVersion(addonId).second;
+  if (repoId.empty())
     return false;
-
-  auto repoId = std::min_element(versions.begin(), versions.end())->second;
 
   AddonPtr tmp;
   if (!CAddonMgr::GetInstance().GetAddon(repoId, tmp, ADDON_REPOSITORY))

@@ -461,10 +461,7 @@ VECADDONS CAddonMgr::GetOutdated()
   CSingleLock lock(m_critSection);
   auto isUpdated = [&](const AddonPtr& addon)
   {
-    AddonPtr repoVersion;
-    if (!m_database.GetAddon(addon->ID(), repoVersion))
-      return true;
-    return addon->Version() >= repoVersion->Version();
+    return addon->Version() >= m_database.GetAddonVersion(addon->ID()).first;
   };
 
   VECADDONS addons;

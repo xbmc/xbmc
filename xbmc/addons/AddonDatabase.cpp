@@ -20,6 +20,7 @@
 
 #include "AddonDatabase.h"
 
+#include <algorithm>
 #include <utility>
 
 #include "addons/AddonManager.h"
@@ -179,37 +180,23 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
   return -1;
 }
 
-AddonVersion CAddonDatabase::GetAddonVersion(const std::string &id)
+std::pair<AddonVersion, std::string> CAddonDatabase::GetAddonVersion(const std::string &id)
 {
-  AddonVersion maxversion("0.0.0");
+  auto empty = std::make_pair(AddonVersion("0.0.0"), "");
   try
   {
-    if (NULL == m_pDB.get()) return maxversion;
-    if (NULL == m_pDS2.get()) return maxversion;
+    if (NULL == m_pDB.get()) return empty;
+    if (NULL == m_pDS2.get()) return empty;
 
-    // there may be multiple addons with this id (eg from different repositories) in the database,
-    // so we want to retrieve the latest version.  Order by version won't work as the database
-    // won't know that 1.10 > 1.2, so grab them all and order outside
-    std::string sql = PrepareSQL("select version from addon where addonID='%s'",id.c_str());
-    m_pDS2->query(sql);
-
-    if (m_pDS2->eof())
-      return maxversion;
-
-    while (!m_pDS2->eof())
-    {
-      AddonVersion version(m_pDS2->fv(0).get_asString());
-      if (version > maxversion)
-        maxversion = version;
-      m_pDS2->next();
-    }
-    return maxversion;
+    std::vector<std::pair<ADDON::AddonVersion, std::string>> versions;
+    if (GetAvailableVersions(id, versions) && versions.size() > 0)
+      return *std::max_element(versions.begin(), versions.end());
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, id.c_str());
   }
-  return maxversion;
+  return empty;
 }
 
 bool CAddonDatabase::GetAvailableVersions(const std::string& addonId,
@@ -702,14 +689,6 @@ bool CAddonDatabase::BreakAddon(const std::string &addonID, const std::string& r
                                    addonID.c_str(), reason.c_str()));
 }
 
-bool CAddonDatabase::HasAddon(const std::string &addonID)
-{
-  std::string strWhereClause = PrepareSQL("addonID = '%s'", addonID.c_str());
-  std::string strHasAddon = GetSingleValue("addon", "id", strWhereClause);
-  
-  return !strHasAddon.empty();
-}
-
 bool CAddonDatabase::IsAddonDisabled(const std::string &addonID)
 {
   try
@@ -778,36 +757,9 @@ bool CAddonDatabase::GetBlacklisted(std::vector<std::string>& addons)
   return false;
 }
 
-bool CAddonDatabase::IsSystemPVRAddonEnabled(const std::string &addonID)
-{
-  std::string strWhereClause = PrepareSQL("addonID = '%s'", addonID.c_str());
-  std::string strEnabled = GetSingleValue("pvrenabled", "id", strWhereClause);
-
-  return !strEnabled.empty();
-}
-
 std::string CAddonDatabase::IsAddonBroken(const std::string &addonID)
 {
   return GetSingleValue(PrepareSQL("SELECT reason FROM broken WHERE addonID='%s'", addonID.c_str()));
-}
-
-bool CAddonDatabase::HasDisabledAddons()
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    m_pDS->query("select count(id) from disabled");
-    bool ret = !m_pDS->eof() && m_pDS->fv(0).get_asInt() > 0; // have rows -> have disabled addons
-    m_pDS->close();
-    return ret;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
-  return false;
 }
 
 bool CAddonDatabase::BlacklistAddon(const std::string& addonID)
