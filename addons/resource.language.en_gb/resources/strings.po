@@ -14460,7 +14460,7 @@ msgstr ""
 
 #. Program style name
 #: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
-msgctxt "#29960"
+msgctxt "#29970"
 msgid "Alarm Test"
 msgstr ""
 
