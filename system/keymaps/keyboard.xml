@@ -304,6 +304,7 @@
       <i>Info</i>
       <o>CodecInfo</o>
       <z>AspectRatio</z>
+      <zoom>AspectRatio</zoom>
       <t>ShowSubtitles</t>
       <t mod="ctrl">SubtitleAlign</t>
       <l>NextSubtitle</l>
@@ -474,6 +475,7 @@
       <i>Info</i>
       <o>CodecInfo</o>
       <z>AspectRatio</z>
+      <zoom>AspectRatio</zoom>
       <t>ShowSubtitles</t>
       <l>NextSubtitle</l>
       <a>AudioDelay</a>
