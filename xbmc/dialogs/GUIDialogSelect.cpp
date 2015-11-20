@@ -29,6 +29,7 @@
 #define CONTROL_NUMBEROFFILES 2
 #define CONTROL_BUTTON        5
 #define CONTROL_DETAILS       6
+#define CONTROL_CANCEL_BUTTON 7
 
 CGUIDialogSelect::CGUIDialogSelect(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_SELECT, "DialogSelect.xml")
@@ -126,6 +127,12 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
           m_bConfirmed = true;
         Close();
       }
+      else if (iControl == CONTROL_CANCEL_BUTTON)
+      {
+        m_selectedItem = nullptr;
+        m_bConfirmed = false;
+        Close();
+      }
     }
     break;
   case GUI_MSG_SETFOCUS:
@@ -136,6 +143,11 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
           m_viewControl.HasControl(message.GetControlId()))
       {
         SET_CONTROL_FOCUS(CONTROL_BUTTON, 0);
+        return true;
+      }
+      if (m_vecList->IsEmpty() && m_viewControl.HasControl(message.GetControlId()))
+      {
+        SET_CONTROL_FOCUS(CONTROL_CANCEL_BUTTON, 0);
         return true;
       }
       if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
@@ -328,6 +340,9 @@ void CGUIDialogSelect::OnInitWindow()
   
   if (m_multiSelection)
     EnableButton(true, 186);
+
+  SET_CONTROL_VISIBLE(CONTROL_CANCEL_BUTTON);
+  SET_CONTROL_LABEL(CONTROL_CANCEL_BUTTON, g_localizeStrings.Get(222));
 
   SetupButton();
   CGUIDialogBoxBase::OnInitWindow();
