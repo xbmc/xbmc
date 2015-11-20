@@ -258,6 +258,10 @@ KeyMap keyMap[] = {
   { KEY_ZOOM          , XBMCK_ZOOM        },
   { KEY_TEXT          , XBMCK_TEXT        },
   { KEY_FAVORITES     , XBMCK_FAVORITES   },
+  { KEY_RED           , XBMCK_RED         },
+  { KEY_GREEN         , XBMCK_GREEN       },
+  { KEY_YELLOW        , XBMCK_YELLOW      },
+  { KEY_BLUE          , XBMCK_BLUE        },
   // The Little Black Box Remote Additions
   { 384               , XBMCK_LEFT        }, // Red
   { 378               , XBMCK_RIGHT       }, // Green
