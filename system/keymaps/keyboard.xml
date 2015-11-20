@@ -116,6 +116,11 @@
       <j>ActivateWindow(RadioChannels)</j>
       <k>ActivateWindow(TVRecordings)</k>
       <b>ActivateWindow(TVTimers)</b>
+      <!-- PVR -->
+      <red>ActivateWindow(TVChannels)</red>
+      <green>ActivateWindow(MyVideos)</green>
+      <yellow>ActivateWindow(MyMusic)</yellow>
+      <blue>ActivateWindow(MyPictures)</blue>
       <!-- Multimedia keyboard keys -->
       <browser_back>Back</browser_back>
       <browser_forward/>
@@ -214,6 +219,10 @@
       <delete>Delete</delete>
       <r>Rename</r>
       <k>PreviousMenu</k>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
     </keyboard>
   </MyTVRecordings>
   <MyTVTimers>
@@ -221,6 +230,10 @@
       <delete>Delete</delete>
       <r>Rename</r>
       <b>PreviousMenu</b>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
     </keyboard>
   </MyTVTimers>
   <MyRadioChannels>
@@ -233,12 +246,20 @@
     <keyboard>
       <delete>Delete</delete>
       <r>Rename</r>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
     </keyboard>
   </MyRadioRecordings>
   <MyRadioTimers>
     <keyboard>
       <delete>Delete</delete>
       <r>Rename</r>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
     </keyboard>
   </MyRadioTimers>
   <TVGuide>
@@ -572,6 +593,10 @@
     <keyboard>
       <v>Back</v>
       <text>Back</text>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
     </keyboard>
   </Teletext>
   <Favourites>
@@ -660,9 +685,13 @@
   <Addon>
     <keyboard>
       <f1>Red</f1>
+      <red>Red</red>
       <f2>Green</f2>
+      <green>Green</green>
       <f3>Yellow</f3>
+      <yellow>Yellow</yellow>
       <f4>Blue</f4>
+      <blue>Blue</blue>
     </keyboard>
   </Addon>
 </keymap>
