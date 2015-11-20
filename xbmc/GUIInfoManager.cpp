@@ -4883,7 +4883,7 @@ void CGUIInfoManager::UpdateAVInfo()
       SPlayerVideoStreamInfo video;
       SPlayerAudioStreamInfo audio;
 
-      g_application.m_pPlayer->GetVideoStreamInfo(video);
+      g_application.m_pPlayer->GetVideoStreamInfo(CURRENT_STREAM, video);
       g_application.m_pPlayer->GetAudioStreamInfo(CURRENT_STREAM, audio);
 
       m_videoInfo = video;
