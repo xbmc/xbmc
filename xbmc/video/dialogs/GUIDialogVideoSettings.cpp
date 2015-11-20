@@ -36,6 +36,7 @@
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
 #include "Application.h"
+#include "utils/LangCodeExpander.h"
 
 #define SETTING_VIDEO_VIEW_MODE           "video.viewmode"
 #define SETTING_VIDEO_ZOOM                "video.zoom"
@@ -59,6 +60,7 @@
 
 #define SETTING_VIDEO_MAKE_DEFAULT        "video.save"
 #define SETTING_VIDEO_CALIBRATION         "video.calibration"
+#define SETTING_VIDEO_STREAM              "video.stream"
 
 CGUIDialogVideoSettings::CGUIDialogVideoSettings()
     : CGUIDialogSettingsManualBase(WINDOW_DIALOG_VIDEO_OSD_SETTINGS, "VideoOSDSettings.xml"),
@@ -85,6 +87,16 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
   else if (settingId == SETTING_VIDEO_SCALINGMETHOD)
     videoSettings.m_ScalingMethod = static_cast<ESCALINGMETHOD>(static_cast<const CSettingInt*>(setting)->GetValue());
 #ifdef HAS_VIDEO_PLAYBACK
+  else if (settingId == SETTING_VIDEO_STREAM)
+  {
+    m_videoStream = static_cast<const CSettingInt*>(setting)->GetValue();
+    // only change the video stream if a different one has been asked for
+    if (g_application.m_pPlayer->GetVideoStream() != m_videoStream)
+    {
+      videoSettings.m_VideoStream = m_videoStream;
+      g_application.m_pPlayer->SetVideoStream(m_videoStream);    // Set the video stream to the one selected
+    }
+  }
   else if (settingId == SETTING_VIDEO_VIEW_MODE)
   {
     videoSettings.m_ViewMode = static_cast<const CSettingInt*>(setting)->GetValue();
@@ -203,6 +215,12 @@ void CGUIDialogVideoSettings::InitializeSettings()
   }
 
   // get all necessary setting groups
+  CSettingGroup *groupVideoStream = AddGroup(category);
+  if (groupVideoStream == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
   CSettingGroup *groupVideo = AddGroup(category);
   if (groupVideo == NULL)
   {
@@ -323,6 +341,8 @@ void CGUIDialogVideoSettings::InitializeSettings()
   AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300, 0, static_cast<int>(videoSettings.m_ScalingMethod), entries);
 
 #ifdef HAS_VIDEO_PLAYBACK
+  AddVideoStreams(groupVideoStream, SETTING_VIDEO_STREAM);
+
   if (g_application.m_pPlayer->Supports(RENDERFEATURE_STRETCH) || g_application.m_pPlayer->Supports(RENDERFEATURE_PIXEL_RATIO))
   {
     entries.clear();
@@ -364,3 +384,53 @@ void CGUIDialogVideoSettings::InitializeSettings()
   AddButton(groupSaveAsDefault, SETTING_VIDEO_MAKE_DEFAULT, 12376, 0);
   AddButton(groupSaveAsDefault, SETTING_VIDEO_CALIBRATION, 214, 0);
 }
+
+void CGUIDialogVideoSettings::AddVideoStreams(CSettingGroup *group, const std::string &settingId)
+{
+  if (group == NULL || settingId.empty())
+    return;
+
+  m_videoStream = g_application.m_pPlayer->GetVideoStream();
+  if (m_videoStream < 0)
+    m_videoStream = 0;
+
+  AddList(group, settingId, 38026, 0, m_videoStream, VideoStreamsOptionFiller, 38026);
+}
+
+void CGUIDialogVideoSettings::VideoStreamsOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+{
+  int videoStreamCount = g_application.m_pPlayer->GetVideoStreamCount();
+
+  // cycle through each video stream and add it to our list control
+  for (int i = 0; i < videoStreamCount; ++i)
+  {
+    std::string strItem;
+    std::string strLanguage;
+
+    SPlayerVideoStreamInfo info;
+    g_application.m_pPlayer->GetVideoStreamInfo(i, info);
+
+    if (!g_LangCodeExpander.Lookup(info.language, strLanguage))
+      strLanguage = g_localizeStrings.Get(13205); // Unknown
+
+    if (info.name.empty())
+      strItem = strLanguage;
+    else
+      strItem = StringUtils::Format("%s - %s", strLanguage.c_str(), info.name.c_str());
+
+    if (info.videoCodecName.empty())
+      strItem += StringUtils::Format(" (%ix%i)", info.width, info.height);
+    else
+      strItem += StringUtils::Format(" (%s, %ix%i)", info.videoCodecName.c_str(), info.width, info.height);
+
+    strItem += StringUtils::Format(" (%i/%i)", i + 1, videoStreamCount);
+    list.push_back(make_pair(strItem, i));
+  }
+
+  if (list.empty())
+  {
+    list.push_back(make_pair(g_localizeStrings.Get(231), -1));
+    current = -1;
+  }
+}
+

@@ -196,7 +196,7 @@ public:
   CCriticalSection m_section;
 
   int              IndexOf (StreamType type, int source, int id) const;
-  int              IndexOf (StreamType type, CVideoPlayer& p) const;
+  int              IndexOf (StreamType type, const CVideoPlayer& p) const;
   int              Count   (StreamType type) const { return IndexOf(type, STREAM_SOURCE_NONE, -1) + 1; }
   int              CountSource(StreamType type, StreamSource source) const;
   SelectionStream& Get     (StreamType type, int index);
@@ -265,6 +265,11 @@ public:
   virtual int GetAudioStream();
   virtual void SetAudioStream(int iStream);
 
+  virtual int GetVideoStream() const override;
+  virtual int GetVideoStreamCount() const override;
+  virtual void GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info) override;
+  virtual void SetVideoStream(int iStream);
+
   virtual TextCacheStruct_t* GetTeletextCache();
   virtual void LoadPage(int p, int sp, unsigned char* buffer);
 
@@ -286,7 +291,6 @@ public:
   virtual bool HasMenu();
 
   virtual int GetSourceBitrate();
-  virtual void GetVideoStreamInfo(SPlayerVideoStreamInfo &info);
   virtual bool GetStreamDetails(CStreamDetails &details);
   virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
   virtual void UpdateStreamInfos();
