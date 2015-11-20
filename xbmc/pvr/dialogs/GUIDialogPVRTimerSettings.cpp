@@ -237,7 +237,7 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   AddTypeDependentEnableCondition(setting, SETTING_TMR_TYPE);
 
   // Timer enabled/disabled
-  setting = AddToggle(group, SETTING_TMR_ACTIVE, 19074, 0, m_bTimerActive);
+  setting = AddToggle(group, SETTING_TMR_ACTIVE, 305, 0, m_bTimerActive);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_ACTIVE);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_ACTIVE);
 
