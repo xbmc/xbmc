@@ -151,6 +151,7 @@
       <f mod="ctrl">SkipNext</f>          <!-- Skip -->
       <b mod="ctrl">SkipPrevious</b>      <!-- Replay -->
       <d mod="ctrl">Info</d>              <!-- MCE Details -->
+      <r mod="ctrl">Record</r>            <!-- Record -->
       <f10>VolumeUp</f10>                 <!-- MCE Vol up -->
       <f9>VolumeDown</f9>                 <!-- MCE Vol down -->
       <f8>Mute</f8>                       <!-- MCE mute -->
