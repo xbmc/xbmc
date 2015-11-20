@@ -129,6 +129,7 @@
       <browser_search/>
       <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
       <favorites>ActivateWindow(Favourites)</favorites>
+      <config>ActivateWindow(Settings)</config>
       <browser_home>ActivateWindow(Home)</browser_home>
       <homepage>ActivateWindow(Home)</homepage>
       <volume_mute>Mute</volume_mute>
