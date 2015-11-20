@@ -290,6 +290,12 @@ public:
   virtual void SetAudioStream(int iStream){};
   virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info){};
 
+  virtual int GetVideoStreamCount() { return 0; }
+  virtual int GetVideoStream() { return -1; }
+  virtual void SetVideoStream(int iStream) {}
+  virtual void GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info) {}
+
+
   virtual TextCacheStruct_t* GetTeletextCache() { return NULL; };
   virtual void LoadPage(int p, int sp, unsigned char* buffer) {};
 
@@ -336,7 +342,6 @@ public:
    its not available in the underlaying decoder (airtunes for example)
    */
   virtual void SetTotalTime(int64_t time) { }
-  virtual void GetVideoStreamInfo(SPlayerVideoStreamInfo &info){};
   virtual int GetSourceBitrate(){ return 0;}
   virtual bool GetStreamDetails(CStreamDetails &details){ return false;}
   virtual void ToFFRW(int iSpeed = 0){};

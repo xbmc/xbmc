@@ -510,7 +510,39 @@ namespace XBMCAddon
         if(iStream < streamCount)
           g_application.m_pPlayer->SetAudioStream(iStream);
       }
-    }  
+    }
+
+    std::vector<String> Player::getAvailableVideoStreams()
+    {
+      if (g_application.m_pPlayer->HasPlayer())
+      {
+        int streamCount = g_application.m_pPlayer->GetVideoStreamCount();
+        std::vector<String> ret(streamCount);
+        for (int iStream = 0; iStream < streamCount; iStream++)
+        {
+          SPlayerVideoStreamInfo info;
+          g_application.m_pPlayer->GetVideoStreamInfo(iStream, info);
+
+          if (info.language.length() > 0)
+            ret[iStream] = info.language;
+          else
+            ret[iStream] = info.name;
+        }
+        return ret;
+      }
+
+      return std::vector<String>();
+    }
+
+    void Player::setVideoStream(int iStream)
+    {
+      if (g_application.m_pPlayer->HasPlayer())
+      {
+        int streamCount = g_application.m_pPlayer->GetVideoStreamCount();
+        if (iStream < streamCount)
+          g_application.m_pPlayer->SetVideoStream(iStream);
+      }
+    }
   }
 }
 

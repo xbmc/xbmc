@@ -56,11 +56,13 @@ protected:
   bool SupportsSubtitleFeature(int feature);
 
   void AddAudioStreams(CSettingGroup *group, const std::string &settingId);
+  void AddVideoStreams(CSettingGroup * group, const std::string & settingId);
   void AddSubtitleStreams(CSettingGroup *group, const std::string &settingId);
 
   static bool IsPlayingPassthrough(const std::string &condition, const std::string &value, const CSetting *setting, void *data);
 
   static void AudioStreamsOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+  static void VideoStreamsOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
   static void SubtitleStreamsOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
   
   static std::string SettingFormatterDelay(const CSettingControlSlider *control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum);
@@ -72,6 +74,8 @@ protected:
   int m_subtitleStream;
   bool m_subtitleVisible;
   bool m_dspEnabled;
+
+  int m_videoStream;
 
   typedef std::vector<int> Features;
   Features m_audioCaps;

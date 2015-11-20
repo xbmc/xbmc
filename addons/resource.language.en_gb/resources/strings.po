@@ -2090,7 +2090,11 @@ msgctxt "#470"
 msgid "Credits"
 msgstr ""
 
-#empty strings from id 471 to 473
+msgctxt "#471"
+msgid "Video stream"
+msgstr ""
+
+#empty strings from id 472 to 473
 
 msgctxt "#474"
 msgid "Off"

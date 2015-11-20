@@ -57,6 +57,7 @@ public:
     // player core related messages (cVideoPlayer.cpp)
 
     PLAYER_SET_AUDIOSTREAM,         //
+    PLAYER_SET_VIDEOSTREAM,         //
     PLAYER_SET_SUBTITLESTREAM,      //
     PLAYER_SET_SUBTITLESTREAM_VISIBLE, //
     PLAYER_SET_STATE,               // restore the VideoPlayer to a certain state
@@ -181,6 +182,15 @@ class CDVDMsgPlayerSetAudioStream : public CDVDMsg
 public:
   CDVDMsgPlayerSetAudioStream(int streamId) : CDVDMsg(PLAYER_SET_AUDIOSTREAM) { m_streamId = streamId; }
   int GetStreamId()                     { return m_streamId; }
+private:
+  int m_streamId;
+};
+
+class CDVDMsgPlayerSetVideoStream : public CDVDMsg
+{
+public:
+  CDVDMsgPlayerSetVideoStream(int streamId) : CDVDMsg(PLAYER_SET_VIDEOSTREAM) { m_streamId = streamId; }
+  int GetStreamId() { return m_streamId; }
 private:
   int m_streamId;
 };
