@@ -380,7 +380,7 @@ int CPVRTimers::AmountActiveRecordings(void) const
 
   for (MapTags::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
     for (VecTimerInfoTag::const_iterator timerIt = it->second->begin(); timerIt != it->second->end(); ++timerIt)
-      if ((*timerIt)->IsRecording())
+      if ((*timerIt)->IsRecording() && !(*timerIt)->IsRepeating())
         ++iReturn;
 
   return iReturn;
