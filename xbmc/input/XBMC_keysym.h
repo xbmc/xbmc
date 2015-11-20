@@ -227,6 +227,7 @@ typedef enum {
   XBMCK_ZOOM        = 0x14b,
   XBMCK_TEXT        = 0x14c,
   XBMCK_FAVORITES   = 0x14d,
+  XBMCK_HOMEPAGE    = 0x14e,
 
   // Add any other keys here
 
