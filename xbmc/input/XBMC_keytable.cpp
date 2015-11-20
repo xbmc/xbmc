@@ -239,6 +239,7 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { XBMCK_YELLOW,                 0,    0, XBMCVK_YELLOW,        "yellow" }
 , { XBMCK_BLUE,                   0,    0, XBMCVK_BLUE,          "blue" }
 , { XBMCK_ZOOM,                   0,    0, XBMCVK_ZOOM,          "zoom" }
+, { XBMCK_TEXT,                   0,    0, XBMCVK_TEXT,          "text" }
 };
 
 static int XBMCKeyTableSize = sizeof(XBMCKeyTable)/sizeof(XBMCKEYTABLE);
