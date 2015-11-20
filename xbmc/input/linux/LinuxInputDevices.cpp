@@ -265,6 +265,7 @@ KeyMap keyMap[] = {
   { KEY_HOMEPAGE      , XBMCK_HOMEPAGE    },
   { KEY_MAIL          , XBMCK_LAUNCH_MAIL },
   { KEY_SEARCH        , XBMCK_BROWSER_SEARCH},
+  { KEY_FILE          , XBMCK_LAUNCH_FILE_BROWSER},
   // The Little Black Box Remote Additions
   { 384               , XBMCK_LEFT        }, // Red
   { 378               , XBMCK_RIGHT       }, // Green
