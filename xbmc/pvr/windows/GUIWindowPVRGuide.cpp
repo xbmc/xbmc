@@ -86,22 +86,30 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
   buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* Programme information */
   buttons.Add(CONTEXT_BUTTON_FIND, 19003);              /* Find similar */
 
-  if (pItem->GetEPGInfoTag()->HasTimer())
+  CEpgInfoTagPtr epg(pItem->GetEPGInfoTag());
+  if (epg)
   {
-    if (pItem->GetEPGInfoTag()->Timer()->IsRecording())
-      buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);   /* Stop recording */
-    else if (pItem->GetEPGInfoTag()->Timer()->HasTimerType() &&
-             !pItem->GetEPGInfoTag()->Timer()->GetTimerType()->IsReadOnly())
-      buttons.Add(CONTEXT_BUTTON_DELETE_TIMER, 19060);  /* Delete timer */
-  }
-  else if (pItem->GetEPGInfoTag()->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
-  {
-    buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);      /* Record */
-    buttons.Add(CONTEXT_BUTTON_ADD_TIMER, 19061);       /* Add timer */
-  }
+    CPVRTimerInfoTagPtr timer(epg->Timer());
+    if (timer)
+    {
+      if (timer->IsRecording())
+        buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);   /* Stop recording */
+      else
+      {
+        CPVRTimerTypePtr timerType(timer->GetTimerType());
+        if (timerType && !timerType->IsReadOnly())
+          buttons.Add(CONTEXT_BUTTON_DELETE_TIMER, 19060);  /* Delete timer */
+      }
+    }
+    else if (epg->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
+    {
+      buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);      /* Record */
+      buttons.Add(CONTEXT_BUTTON_ADD_TIMER, 19061);       /* Add timer */
+    }
 
-  if (pItem->GetEPGInfoTag()->HasRecording())
-    buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 19687);      /* Play recording */
+    if (epg->HasRecording())
+      buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 19687);      /* Play recording */
+  }
 
   if (m_viewControl.GetCurrentControl() == GUIDE_VIEW_TIMELINE)
   {
@@ -110,9 +118,12 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
     buttons.Add(CONTEXT_BUTTON_END, 19064);             /* Go to end */
   }
 
-  if (pItem->GetEPGInfoTag()->HasPVRChannel() &&
-      g_PVRClients->HasMenuHooks(pItem->GetEPGInfoTag()->ChannelTag()->ClientID(), PVR_MENUHOOK_EPG))
-    buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
+  if (epg)
+  {
+    CPVRChannelPtr channel(epg->ChannelTag());
+    if (channel && g_PVRClients->HasMenuHooks(channel->ClientID(), PVR_MENUHOOK_EPG))
+      buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
+  }
 
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
   CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);

@@ -75,36 +75,41 @@ void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &but
 
   if (!URIUtils::PathEquals(pItem->GetPath(), CPVRTimersPath::PATH_ADDTIMER))
   {
-    if (pItem->GetPVRTimerInfoTag()->GetEpgInfoTag())
-      buttons.Add(CONTEXT_BUTTON_INFO, 19047);          /* Programme information */
-
-    if (pItem->GetPVRTimerInfoTag()->HasTimerType())
+    CPVRTimerInfoTagPtr timer(pItem->GetPVRTimerInfoTag());
+    if (timer)
     {
-      if (pItem->GetPVRTimerInfoTag()->GetTimerType()->SupportsEnableDisable())
+      if (timer->HasEpgInfoTag())
+        buttons.Add(CONTEXT_BUTTON_INFO, 19047);          /* Programme information */
+
+      CPVRTimerTypePtr timerType(timer->GetTimerType());
+      if (timerType)
       {
-        if (pItem->GetPVRTimerInfoTag()->m_state == PVR_TIMER_STATE_DISABLED)
-          buttons.Add(CONTEXT_BUTTON_ACTIVATE, 843);    /* Activate */
-        else
-          buttons.Add(CONTEXT_BUTTON_ACTIVATE, 844);    /* Deactivate */
+        if (timerType->SupportsEnableDisable())
+        {
+          if (timer->m_state == PVR_TIMER_STATE_DISABLED)
+            buttons.Add(CONTEXT_BUTTON_ACTIVATE, 843);    /* Activate */
+          else
+            buttons.Add(CONTEXT_BUTTON_ACTIVATE, 844);    /* Deactivate */
+        }
+
+        if (!timerType->IsReadOnly())
+        {
+          buttons.Add(CONTEXT_BUTTON_EDIT, 21450);        /* Edit */
+
+          // As epg-based timers will get it's title from the epg tag, they should not be renamable.
+          if (timer->IsManual())
+            buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename */
+
+          if (timer->IsRecording())
+            buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059); /* Stop recording */
+          else
+            buttons.Add(CONTEXT_BUTTON_DELETE, 117);        /* Delete */
+        }
       }
 
-      if (!pItem->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
-      {
-        buttons.Add(CONTEXT_BUTTON_EDIT, 21450);        /* Edit */
-
-        // As epg-based timers will get it's title from the epg tag, they should not be renamable.
-        if (pItem->GetPVRTimerInfoTag()->IsManual())
-          buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename */
-
-        if (pItem->GetPVRTimerInfoTag()->IsRecording())
-          buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059); /* Stop recording */
-        else
-          buttons.Add(CONTEXT_BUTTON_DELETE, 117);        /* Delete */
-      }
+      if (g_PVRClients->HasMenuHooks(timer->m_iClientId, PVR_MENUHOOK_TIMER))
+        buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);    /* PVR client specific action */
     }
-
-    if (g_PVRClients->HasMenuHooks(pItem->GetPVRTimerInfoTag()->m_iClientId, PVR_MENUHOOK_TIMER))
-      buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);    /* PVR client specific action */
   }
 
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
