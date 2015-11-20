@@ -97,7 +97,7 @@
 				<height>460</height>
 				<onup>3</onup>
 				<ondown>3</ondown>
-				<onleft>99</onleft>
+				<onleft>7</onleft>
 				<onright>61</onright>
 				<pagecontrol>61</pagecontrol>
 				<scrolltime>200</scrolltime>
@@ -162,7 +162,7 @@
 				<height>460</height>
 				<onup>6</onup>
 				<ondown>6</ondown>
-				<onleft>99</onleft>
+				<onleft>7</onleft>
 				<onright>61</onright>
 				<pagecontrol>61</pagecontrol>
 				<scrolltime>200</scrolltime>
@@ -310,16 +310,15 @@
 						<focusedcolor>white</focusedcolor>
 						<align>center</align>
 					</control>
-					<control type="button" id="99">
+					<control type="button" id="7">
 						<description>Cancel button</description>
 						<width>200</width>
 						<height>40</height>
-						<label>222</label>
+						<label>-</label>
 						<font>font12_title</font>
 						<textcolor>white</textcolor>
 						<focusedcolor>white</focusedcolor>
 						<align>center</align>
-						<onclick>Dialog.Close(selectdialog)</onclick>
 					</control>
 				</control>
 			</control>
