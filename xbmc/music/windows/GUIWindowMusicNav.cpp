@@ -753,8 +753,8 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         {
           OnItemInfoAll(itemNumber,true,true);
         }
-
       }
+
       return true;
     }
 
