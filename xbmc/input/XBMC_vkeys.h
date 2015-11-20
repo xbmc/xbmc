@@ -218,6 +218,7 @@ typedef enum {
   XBMCVK_BLUE           = 0xE6,
   XBMCVK_ZOOM           = 0xE7,
   XBMCVK_TEXT           = 0xE8,
+  XBMCVK_FAVORITES      = 0xE9,
 
   XBMCVK_LAST           = 0xFF
 } XBMCVKey;

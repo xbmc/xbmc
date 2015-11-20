@@ -123,6 +123,7 @@
       <browser_stop/>
       <browser_search/>
       <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
+      <favorites>ActivateWindow(Favourites)</favorites>
       <browser_home>ActivateWindow(Home)</browser_home>
       <volume_mute>Mute</volume_mute>
       <volume_down>VolumeDown</volume_down>
