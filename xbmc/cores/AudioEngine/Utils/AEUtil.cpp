@@ -165,6 +165,34 @@ const unsigned int CAEUtil::DataFormatToDitherBits(const enum AEDataFormat dataF
     return 0;
 }
 
+const char* CAEUtil::StreamTypeToStr(const enum CAEStreamInfo::DataType dataType)
+{
+  switch (dataType)
+  {
+    case CAEStreamInfo::STREAM_TYPE_AC3:
+      return "STREAM_TYPE_AC3";
+    case CAEStreamInfo::STREAM_TYPE_DTSHD:
+      return "STREAM_TYPE_DTSHD";
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
+      return "STREAM_TYPE_DTSHD_CORE";
+    case CAEStreamInfo::STREAM_TYPE_DTS_1024:
+      return "STREAM_TYPE_DTS_1024";
+    case CAEStreamInfo::STREAM_TYPE_DTS_2048:
+      return "STREAM_TYPE_DTS_2048";
+    case CAEStreamInfo::STREAM_TYPE_DTS_512:
+      return "STREAM_TYPE_DTS_512";
+    case CAEStreamInfo::STREAM_TYPE_EAC3:
+      return "STREAM_TYPE_EAC3";
+    case CAEStreamInfo::STREAM_TYPE_MLP:
+      return "STREAM_TYPE_MLP";
+    case CAEStreamInfo::STREAM_TYPE_TRUEHD:
+      return "STREAM_TYPE_TRUEHD";
+
+    default:
+      return "STREAM_TYPE_NULL";
+  }
+}
+
 const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
 {
   if (dataFormat < 0 || dataFormat >= AE_FMT_MAX)

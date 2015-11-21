@@ -151,6 +151,7 @@ public:
   static const unsigned int      DataFormatToUsedBits (const enum AEDataFormat dataFormat);
   static const unsigned int      DataFormatToDitherBits(const enum AEDataFormat dataFormat);
   static const char*             DataFormatToStr   (const enum AEDataFormat dataFormat);
+  static const char* StreamTypeToStr(const enum CAEStreamInfo::DataType dataType);
 
   /*! \brief convert a volume percentage (as a proportion) to a dB gain
    We assume a dB range of 60dB, i.e. assume that 0% volume corresponds
