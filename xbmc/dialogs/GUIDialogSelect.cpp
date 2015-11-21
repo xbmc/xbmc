@@ -195,12 +195,12 @@ void CGUIDialogSelect::SetItems(const CFileItemList& pList)
   m_vecList->Copy(pList);
 }
 
-int CGUIDialogSelect::GetSelectedLabel() const
+int CGUIDialogSelect::GetSelectedItem() const
 {
   return m_selectedItems.size() > 0 ? m_selectedItems[0] : -1;
 }
 
-const CFileItemPtr CGUIDialogSelect::GetSelectedItem() const
+const CFileItemPtr CGUIDialogSelect::GetSelectedFileItem() const
 {
   if (m_selectedItem)
     return m_selectedItem;
@@ -331,7 +331,7 @@ void CGUIDialogSelect::OnInitWindow()
   CGUIDialogBoxBase::OnInitWindow();
 
   // if nothing is selected, select first item
-  m_viewControl.SetSelectedItem(std::max(GetSelectedLabel(), 0));
+  m_viewControl.SetSelectedItem(std::max(GetSelectedItem(), 0));
 }
 
 void CGUIDialogSelect::OnDeinitWindow(int nextWindowID)

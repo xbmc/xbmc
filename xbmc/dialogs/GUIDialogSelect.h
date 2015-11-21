@@ -38,8 +38,8 @@ public:
   int  Add(const std::string& strLabel);
   int  Add(const CFileItem& item);
   void SetItems(const CFileItemList& items);
-  int GetSelectedLabel() const;
-  const CFileItemPtr GetSelectedItem() const;
+  const CFileItemPtr GetSelectedFileItem() const;
+  int GetSelectedItem() const;
   const std::vector<int>& GetSelectedItems() const;
   void EnableButton(bool enable, int label);
   bool IsButtonPressed();

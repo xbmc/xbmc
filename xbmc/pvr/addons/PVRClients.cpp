@@ -669,7 +669,7 @@ PVR_ERROR CPVRClients::DeleteAllRecordingsFromTrash()
         pDialog->Add(itrClients->second->GetBackendName());
     }
     pDialog->Open();
-    selection = pDialog->GetSelectedLabel();
+    selection = pDialog->GetSelectedItem();
   }
 
   if (selection == 0)
@@ -911,7 +911,7 @@ void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CF
       }
       pDialog->Open();
 
-      int selection = pDialog->GetSelectedLabel();
+      int selection = pDialog->GetSelectedItem();
       if (selection >= 0)
       {
         itrClients = clients.begin();
@@ -944,7 +944,7 @@ void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CF
     if (hookIDs.size() > 1)
     {
       pDialog->Open();
-      selection = pDialog->GetSelectedLabel();
+      selection = pDialog->GetSelectedItem();
     }
     if (selection >= 0)
       client->CallMenuHook(hooks->at(hookIDs.at(selection)), item);
@@ -992,7 +992,7 @@ void CPVRClients::StartChannelScan(void)
 
     pDialog->Open();
 
-    int selection = pDialog->GetSelectedLabel();
+    int selection = pDialog->GetSelectedItem();
     if (selection >= 0)
       scanClient = possibleScanClients[selection];
   }

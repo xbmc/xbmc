@@ -927,7 +927,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
   if (!pDialog->IsConfirmed())
     return false;
 
-  int selectedFile = pDialog->GetSelectedLabel();
+  int selectedFile = pDialog->GetSelectedItem();
   if (selectedFile >= 0)
   {
     // ISO stack
@@ -1471,7 +1471,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   pSelect->EnableButton(true, 531); // New Genre
   pSelect->Open();
   std::string strGenre;
-  int iSelected = pSelect->GetSelectedLabel();
+  int iSelected = pSelect->GetSelectedItem();
   if (iSelected >= 0)
     strGenre = items[iSelected]->GetLabel();
   else if (!pSelect->IsButtonPressed())
@@ -1544,7 +1544,7 @@ void CGUIWindowVideoBase::OnSearch()
 
     pDlgSelect->Open();
 
-    int iItem = pDlgSelect->GetSelectedLabel();
+    int iItem = pDlgSelect->GetSelectedItem();
     if (iItem < 0)
       return;
 
