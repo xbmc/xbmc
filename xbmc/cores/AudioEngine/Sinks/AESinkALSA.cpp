@@ -1548,19 +1548,18 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
 
   if (info.m_deviceType == AE_DEVTYPE_HDMI)
   {
-    // regarding data formats we don't trust ELD
-    // push all passthrough formats to the list
-    AEDataFormatList::iterator it;
-    for (enum AEDataFormat i = AE_FMT_MAX; i > AE_FMT_INVALID; i = (enum AEDataFormat)((int)i - 1))
-    {
-      if (i != AE_FMT_RAW)
-        continue;
-      it = find(info.m_dataFormats.begin(), info.m_dataFormats.end(), i);
-      if (it == info.m_dataFormats.end())
-      {
-        info.m_dataFormats.push_back(i);
-      }
-    }
+    // we don't trust ELD information and push back our supported formats explicitely
+    info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+    info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+    info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+    info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+    info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+    info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+    info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+    info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
+
+    // indicate that we can do AE_FMT_RAW
+    info.m_dataFormats.push_back(AE_FMT_RAW);
   }
 
   snd_pcm_close(pcmhandle);
