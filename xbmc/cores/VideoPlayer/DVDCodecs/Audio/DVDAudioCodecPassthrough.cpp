@@ -46,18 +46,22 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
   {
     case AV_CODEC_ID_AC3:
       format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
+      format.m_streamInfo.m_sampleRate = hints.samplerate;
       break;
 
     case AV_CODEC_ID_EAC3:
       format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
+      format.m_streamInfo.m_sampleRate = hints.samplerate;
       break;
 
     case AV_CODEC_ID_DTS:
       format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD;
+      format.m_streamInfo.m_sampleRate = hints.samplerate;
       break;
 
     case AV_CODEC_ID_TRUEHD:
       format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_TRUEHD;
+      format.m_streamInfo.m_sampleRate = hints.samplerate;
       break;
 
     default:
