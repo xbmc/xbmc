@@ -141,7 +141,6 @@ AEAudioFormat getAC3AEFormat()
   srcFormat.m_encodedRate = 48000;
   srcFormat.m_channelLayout = AE_CH_LAYOUT_2_0;
   srcFormat.m_frames = 0;
-  srcFormat.m_frameSamples = 0;
   srcFormat.m_frameSize = 0;
   return srcFormat;
 }
@@ -154,7 +153,6 @@ AEAudioFormat getStereo22050AEFormat()
   srcFormat.m_encodedRate = 0;
   srcFormat.m_channelLayout = AE_CH_LAYOUT_2_0;
   srcFormat.m_frames = 0;
-  srcFormat.m_frameSamples = 0;
   srcFormat.m_frameSize = 0;
   return srcFormat;
 }
@@ -167,7 +165,6 @@ AEAudioFormat getStereo48000AEFormat()
   srcFormat.m_encodedRate = 0;
   srcFormat.m_channelLayout = AE_CH_LAYOUT_2_0;
   srcFormat.m_frames = 0;
-  srcFormat.m_frameSamples = 0;
   srcFormat.m_frameSize = 0;
   return srcFormat;
 }
@@ -180,7 +177,6 @@ AEAudioFormat getLPCM96000AEFormat()
   srcFormat.m_encodedRate = 0;
   srcFormat.m_channelLayout = AE_CH_LAYOUT_5_1;
   srcFormat.m_frames = 0;
-  srcFormat.m_frameSamples = 0;
   srcFormat.m_frameSize = 0;
   return srcFormat;
 }

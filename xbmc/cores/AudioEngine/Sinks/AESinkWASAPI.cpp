@@ -310,7 +310,6 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
   m_pAudioClient->GetBufferSize(&m_uiBufferLen);
 
   format.m_frames       = m_uiBufferLen;
-  format.m_frameSamples = format.m_frames * format.m_channelLayout.Count();
   m_format              = format;
   sinkRetFormat         = format.m_dataFormat;
 

@@ -213,7 +213,6 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
   format.m_frameSize     = sample_size * channels;
   format.m_sampleRate    = std::max(8000U, std::min(192000U, format.m_sampleRate));
   format.m_frames        = format.m_sampleRate * AUDIO_PLAYBUFFER / NUM_OMX_BUFFERS;
-  format.m_frameSamples  = format.m_frames * channels;
 
   SetAudioProps(m_passthrough, GetChannelMap(format.m_channelLayout, m_passthrough));
 

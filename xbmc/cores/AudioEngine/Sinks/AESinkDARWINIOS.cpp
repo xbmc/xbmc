@@ -673,7 +673,6 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   m_audioSink->open(audioFormat);
 
   format.m_frames = m_audioSink->chunkSize();
-  format.m_frameSamples = format.m_frames * audioFormat.mChannelsPerFrame;
   // reset to the realised samplerate
   format.m_sampleRate = m_audioSink->getRealisedSampleRate();
   m_format = format;
