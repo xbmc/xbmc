@@ -222,6 +222,8 @@ const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
     "AE_FMT_DOUBLE",
     "AE_FMT_FLOAT",
     
+    "AE_FMT_RAW",
+
     /* for passthrough streams and the like */
     "AE_FMT_AAC",
     "AE_FMT_AC3",
