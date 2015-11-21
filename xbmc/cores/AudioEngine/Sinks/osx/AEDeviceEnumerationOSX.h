@@ -179,6 +179,7 @@ private:
 
   bool              hasSampleRate(const AESampleRateList &list, const unsigned int samplerate) const;
   bool              hasDataFormat(const AEDataFormatList &list, const enum AEDataFormat format) const;
+  bool              hasDataType(const AEDataTypeList &list, CAEStreamInfo::DataType type) const;
 
   /*!
   * @brief Converts a CA format description to a list of AEFormat desciptions (as one format can result
@@ -190,6 +191,8 @@ private:
   * @return The list of converted AE formats.
   */
   AEDataFormatList  caFormatToAE(const AudioStreamBasicDescription &formatDesc, bool isDigital) const;
+  AEDataTypeList caFormatToAEType(const AudioStreamBasicDescription &formatDesc, bool isDigital) const;
+
 
   /*!
   * @brief Convet a CA channel label to an AE channel.
@@ -206,6 +209,8 @@ private:
   * @return - the list of AE formats in that stream.
   */
   AEDataFormatList  getFormatListForStream(UInt32 streamIdx) const;
+
+  AEDataTypeList  getTypeListForStream(UInt32 streamIdx) const;
 
   /*!
   * @brief Returns the AE channelinfo/channel map for the CA stream at the given index
