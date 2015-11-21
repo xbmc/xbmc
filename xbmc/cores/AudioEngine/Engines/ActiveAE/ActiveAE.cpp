@@ -1056,7 +1056,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   ApplySettingsToFormat(m_sinkRequestFormat, m_settings, (int*)&m_mode);
   m_extKeepConfig = 0;
 
-  std::string device = AE_IS_RAW(m_sinkRequestFormat.m_dataFormat) ? m_settings.passthoughdevice : m_settings.device;
+  std::string device = (m_sinkRequestFormat.m_dataFormat == AE_FMT_RAW) ? m_settings.passthoughdevice : m_settings.device;
   std::string driver;
   CAESinkFactory::ParseDevice(device, driver);
   if ((!CompareFormat(m_sinkRequestFormat, m_sinkFormat) && !CompareFormat(m_sinkRequestFormat, oldSinkRequestFormat)) ||
@@ -1212,7 +1212,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     std::list<CActiveAEStream*>::iterator it;
     for(it=m_streams.begin(); it!=m_streams.end(); ++it)
     {
-      isRaw = AE_IS_RAW((*it)->m_format.m_dataFormat);
+      isRaw = ((*it)->m_format.m_dataFormat == AE_FMT_RAW);
 
       if (!(*it)->m_inputBuffers)
       {
@@ -1256,7 +1256,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     m_stats.AddSamples(0, m_streams);
 
     // buffers for viz
-    if (!AE_IS_RAW(inputFormat.m_dataFormat))
+    if (!(inputFormat.m_dataFormat == AE_FMT_RAW))
     {
       if (initSink && m_vizBuffers)
       {
@@ -1331,13 +1331,13 @@ CActiveAEStream* CActiveAE::CreateStream(MsgStreamNew *streamMsg)
   std::list<CActiveAEStream*>::iterator it;
   for(it = m_streams.begin(); it != m_streams.end(); ++it)
   {
-    if((*it)->IsDrained())
+    if ((*it)->IsDrained())
       continue;
-    if(AE_IS_RAW((*it)->m_format.m_dataFormat))
+    if ((*it)->m_format.m_dataFormat == AE_FMT_RAW)
       hasRawStream = true;
     hasStream = true;
   }
-  if (hasRawStream || (hasStream && AE_IS_RAW(streamMsg->format.m_dataFormat)))
+  if (hasRawStream || (hasStream && (streamMsg->format.m_dataFormat == AE_FMT_RAW)))
   {
     return NULL;
   }
@@ -1552,16 +1552,8 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
     *mode = MODE_PCM;
 
   // raw pass through
-  if (AE_IS_RAW(format.m_dataFormat))
+  if (format.m_dataFormat == AE_FMT_RAW)
   {
-    if ((format.m_dataFormat == AE_FMT_AC3 && !settings.ac3passthrough) ||
-        (format.m_dataFormat == AE_FMT_EAC3 && !settings.eac3passthrough) ||
-        (format.m_dataFormat == AE_FMT_TRUEHD && !settings.truehdpassthrough) ||
-        (format.m_dataFormat == AE_FMT_DTS && !settings.dtspassthrough) ||
-        (format.m_dataFormat == AE_FMT_DTSHD && !settings.dtshdpassthrough))
-    {
-      CLog::Log(LOGERROR, "CActiveAE::ApplySettingsToFormat - input audio format is wrong");
-    }
     if (mode)
       *mode = MODE_RAW;
   }
@@ -1683,7 +1675,7 @@ bool CActiveAE::NeedReconfigureSink()
   AEAudioFormat newFormat = GetInputFormat();
   ApplySettingsToFormat(newFormat, m_settings);
 
-  std::string device = AE_IS_RAW(newFormat.m_dataFormat) ? m_settings.passthoughdevice : m_settings.device;
+  std::string device = (newFormat.m_dataFormat == AE_FMT_RAW) ? m_settings.passthoughdevice : m_settings.device;
   std::string driver;
   CAESinkFactory::ParseDevice(device, driver);
 
@@ -1700,8 +1692,8 @@ bool CActiveAE::InitSink()
   SinkConfig config;
   config.format = m_sinkRequestFormat;
   config.stats = &m_stats;
-  config.device = AE_IS_RAW(m_sinkRequestFormat.m_dataFormat) ? &m_settings.passthoughdevice :
-                                                                &m_settings.device;
+  config.device = (m_sinkRequestFormat.m_dataFormat == AE_FMT_RAW) ? &m_settings.passthoughdevice :
+                                                                     &m_settings.device;
 
   // send message to sink
   Message *reply;

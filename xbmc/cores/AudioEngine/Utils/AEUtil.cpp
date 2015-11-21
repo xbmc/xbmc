@@ -125,13 +125,6 @@ const unsigned int CAEUtil::DataFormatToBits(const enum AEDataFormat dataFormat)
     sizeof(float ) << 3, /* FLOAT  */
 
      8,                  /* RAW    */
-    16,                  /* AAC    */
-    16,                  /* AC3    */
-    16,                  /* DTS    */
-    16,                  /* EAC3   */
-    16,                  /* TRUEHD */
-    16,                  /* DTS-HD */
-    32,                  /* LPCM   */
 
      8,                  /* U8P    */
     16,                  /* S16NEP */
@@ -223,15 +216,6 @@ const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
     "AE_FMT_FLOAT",
     
     "AE_FMT_RAW",
-
-    /* for passthrough streams and the like */
-    "AE_FMT_AAC",
-    "AE_FMT_AC3",
-    "AE_FMT_DTS",
-    "AE_FMT_EAC3",
-    "AE_FMT_TRUEHD",
-    "AE_FMT_DTSHD",
-    "AE_FMT_LPCM",
 
     /* planar formats */
     "AE_FMT_U8P",
@@ -555,9 +539,9 @@ bool CAEUtil::S16NeedsByteSwap(AEDataFormat in, AEDataFormat out)
     AE_FMT_S16LE;
 #endif
 
-  if (in == AE_FMT_S16NE || AE_IS_RAW(in))
+  if (in == AE_FMT_S16NE || (in == AE_FMT_RAW))
     in = nativeFormat;
-  if (out == AE_FMT_S16NE || AE_IS_RAW(out))
+  if (out == AE_FMT_S16NE || (out == AE_FMT_RAW))
     out = nativeFormat;
 
   return in != out;

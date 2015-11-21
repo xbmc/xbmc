@@ -496,7 +496,7 @@ void CActiveAEStream::SetFFmpegInfo(int profile, enum AVMatrixEncoding matrix_en
 
 void CActiveAEStream::FadeVolume(float from, float target, unsigned int time)
 {
-  if (time == 0 || AE_IS_RAW(m_format.m_dataFormat))
+  if (time == 0 || (m_format.m_dataFormat == AE_FMT_RAW))
     return;
 
   m_streamFading = true;
