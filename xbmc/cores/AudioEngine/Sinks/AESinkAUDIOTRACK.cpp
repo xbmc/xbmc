@@ -265,8 +265,6 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   }
 
   m_format.m_frames         = m_min_frames / 2;
-
-  m_format.m_frameSamples   = m_format.m_frames * m_format.m_channelLayout.Count();
   format                    = m_format;
 
   // Force volume to 100% for passthrough

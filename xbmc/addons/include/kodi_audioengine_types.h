@@ -106,11 +106,6 @@ extern "C" {
     unsigned int m_frames;
 
     /**
-     * The number of samples in one frame
-     */
-    unsigned int m_frameSamples;
-
-    /**
      * The size of one frame in bytes
      */
     unsigned int m_frameSize;
@@ -121,7 +116,6 @@ extern "C" {
       m_sampleRate = 0;
       m_encodedRate = 0;
       m_frames = 0;
-      m_frameSamples = 0;
       m_frameSize = 0;
       m_channelCount = 0;
 
@@ -142,7 +136,6 @@ extern "C" {
           m_sampleRate    != fmt->m_sampleRate    ||
           m_encodedRate   != fmt->m_encodedRate   ||
           m_frames        != fmt->m_frames        ||
-          m_frameSamples  != fmt->m_frameSamples  ||
           m_frameSize     != fmt->m_frameSize     ||
           m_channelCount  != fmt->m_channelCount)
       {

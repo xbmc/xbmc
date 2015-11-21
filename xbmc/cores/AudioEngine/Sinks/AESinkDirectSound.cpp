@@ -280,7 +280,6 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   format.m_channelLayout = m_channelLayout;
   m_encodedFormat = format.m_dataFormat;
   format.m_frames = uiFrameCount;
-  format.m_frameSamples = format.m_frames * format.m_channelLayout.Count();
   format.m_frameSize = (AE_IS_RAW(format.m_dataFormat) ? wfxex.Format.wBitsPerSample >> 3 : sizeof(float)) * format.m_channelLayout.Count();
   format.m_dataFormat = AE_IS_RAW(format.m_dataFormat) ? AE_FMT_S16NE : AE_FMT_FLOAT;
 
@@ -307,7 +306,6 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   CLog::Log(LOGDEBUG, "  Channel Layout  : %s", ((std::string)format.m_channelLayout).c_str());
   CLog::Log(LOGDEBUG, "  Channel Mask    : %d", wfxex.dwChannelMask);
   CLog::Log(LOGDEBUG, "  Frames          : %d", format.m_frames);
-  CLog::Log(LOGDEBUG, "  Frame Samples   : %d", format.m_frameSamples);
   CLog::Log(LOGDEBUG, "  Frame Size      : %d", format.m_frameSize);
 
   return true;
