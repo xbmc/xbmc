@@ -215,6 +215,7 @@ CADeviceList AEDeviceEnumerationOSX::GetDeviceInfoList() const
     deviceInfo.m_channels = getChannelInfoForStream(streamIdx);
     deviceInfo.m_sampleRates = getSampleRateListForStream(streamIdx);
     deviceInfo.m_dataFormats = getFormatListForStream(streamIdx);
+    deviceInfo.m_streamTypes = getTypeListForStream(streamIdx);
     deviceInfo.m_deviceType = m_caStreamInfos[streamIdx].deviceType;
     deviceInfo.m_wantsIECPassthrough = true;
     
@@ -267,6 +268,16 @@ bool AEDeviceEnumerationOSX::hasDataFormat(const AEDataFormatList &list, const e
   return false;
 }
 
+bool AEDeviceEnumerationOSX::hasDataType(const AEDataTypeList &list, CAEStreamInfo::DataType type) const
+{
+  for (size_t i = 0; i < list.size(); ++i)
+  {
+    if (list[i] == type)
+      return true;
+  }
+  return false;
+}
+
 AEDataFormatList AEDeviceEnumerationOSX::getFormatListForStream(UInt32 streamIdx) const
 {
   AEDataFormatList returnDataFormatList;
@@ -286,6 +297,27 @@ AEDataFormatList AEDeviceEnumerationOSX::getFormatListForStream(UInt32 streamIdx
     }
   }
   return returnDataFormatList;
+}
+
+AEDataTypeList AEDeviceEnumerationOSX::getTypeListForStream(UInt32 streamIdx) const
+{
+  AEDataTypeList returnDataTypeList;
+  if (streamIdx >= m_caStreamInfos.size())
+    return returnDataTypeList;
+
+  // check the streams
+  const StreamFormatList &formatList = m_caStreamInfos[streamIdx].formatList;
+  for(UInt32 formatIdx = 0; formatIdx < formatList.size(); formatIdx++)
+  {
+    AudioStreamBasicDescription formatDesc = formatList[formatIdx].mFormat;
+    AEDataTypeList aeTypeList = caFormatToAEType(formatDesc, m_caStreamInfos[streamIdx].isDigital);
+    for (UInt32 typeListIdx = 0; typeListIdx < aeTypeList.size(); typeListIdx++)
+    {
+      if (!hasDataType(returnDataTypeList, aeTypeList[typeListIdx]))
+        returnDataTypeList.push_back(aeTypeList[typeListIdx]);
+    }
+  }
+  return returnDataTypeList;
 }
 
 CAEChannelInfo AEDeviceEnumerationOSX::getChannelInfoForStream(UInt32 streamIdx) const
@@ -315,8 +347,6 @@ AEDataFormatList AEDeviceEnumerationOSX::caFormatToAE(const AudioStreamBasicDesc
   {
     case kAudioFormatAC3:
     case kAudioFormat60958AC3:
-      formatList.push_back(AE_FMT_AC3);
-      formatList.push_back(AE_FMT_DTS);
       break;
     default:
       switch(formatDesc.mBitsPerChannel)
@@ -326,19 +356,6 @@ AEDataFormatList AEDeviceEnumerationOSX::caFormatToAE(const AudioStreamBasicDesc
           formatList.push_back(AE_FMT_S16BE);
         else
         {
-          /* Passthrough is possible with a 2ch digital output */
-          if (formatDesc.mChannelsPerFrame == 2 && isDigital)
-          {
-            if (formatDesc.mSampleRate == 48000)
-            {
-              formatList.push_back(AE_FMT_AC3);
-              formatList.push_back(AE_FMT_DTS);
-            }
-            else if (formatDesc.mSampleRate == 192000)
-            {
-              formatList.push_back(AE_FMT_EAC3);
-            }
-          }
           formatList.push_back(AE_FMT_S16LE);
         }
         break;
@@ -363,6 +380,52 @@ AEDataFormatList AEDeviceEnumerationOSX::caFormatToAE(const AudioStreamBasicDesc
       break;
   }
   return formatList;
+}
+
+AEDataTypeList AEDeviceEnumerationOSX::caFormatToAEType(const AudioStreamBasicDescription &formatDesc, bool isDigital) const
+{
+  AEDataTypeList typeList;
+  // add stream format info
+  switch (formatDesc.mFormatID)
+  {
+    case kAudioFormatAC3:
+    case kAudioFormat60958AC3:
+      typeList.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+      typeList.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+      typeList.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+      typeList.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+      typeList.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+      break;
+    default:
+      switch(formatDesc.mBitsPerChannel)
+    {
+      case 16:
+        if (formatDesc.mFormatFlags & kAudioFormatFlagIsBigEndian)
+          ;
+        else
+        {
+          /* Passthrough is possible with a 2ch digital output */
+          if (formatDesc.mChannelsPerFrame == 2 && isDigital)
+          {
+            if (formatDesc.mSampleRate == 48000)
+            {
+              typeList.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+              typeList.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+              typeList.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+              typeList.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+              typeList.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+            }
+            else if (formatDesc.mSampleRate == 192000)
+            {
+              typeList.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+            }
+          }
+        }
+        break;
+    }
+      break;
+  }
+  return typeList;
 }
 
 AESampleRateList AEDeviceEnumerationOSX::getSampleRateListForStream(UInt32 streamIdx) const
@@ -451,8 +514,11 @@ float AEDeviceEnumerationOSX::scoreSampleRate(Float64 destinationRate, unsigned 
 float AEDeviceEnumerationOSX::ScoreFormat(const AudioStreamBasicDescription &formatDesc, const AEAudioFormat &format) const
 {
   float score = 0;
-  if (format.m_dataFormat == AE_FMT_AC3 ||
-      format.m_dataFormat == AE_FMT_DTS)
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_AC3 ||
+      format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTS_512 ||
+      format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTS_1024 ||
+      format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTS_2048 ||
+      format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_CORE)
   {
     if (formatDesc.mFormatID == kAudioFormat60958AC3 ||
         formatDesc.mFormatID == 'IAC3' ||
@@ -467,9 +533,12 @@ float AEDeviceEnumerationOSX::ScoreFormat(const AudioStreamBasicDescription &for
       }
     }
   }
-  if (format.m_dataFormat == AE_FMT_AC3 ||
-      format.m_dataFormat == AE_FMT_DTS ||
-      format.m_dataFormat == AE_FMT_EAC3)
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_AC3 ||
+      format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_EAC3 ||
+      format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTS_512 ||
+      format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTS_1024 ||
+      format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTS_2048 ||
+      format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_CORE)
   { // we should be able to bistreaming in PCM if the samplerate, bitdepth and channels match
     if (formatDesc.mSampleRate       == format.m_sampleRate                            &&
         formatDesc.mBitsPerChannel   == CAEUtil::DataFormatToBits(format.m_dataFormat) &&
