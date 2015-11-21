@@ -3081,7 +3081,7 @@ void CMusicDatabase::DeleteCDDBInfo()
       return ;
     }
 
-    std::string strSelectedAlbum = pDlg->GetSelectedLabelText();
+    std::string strSelectedAlbum = pDlg->GetSelectedItem()->GetLabel();
     std::map<ULONG, std::string>::iterator it;
     for (it = mapCDDBIds.begin();it != mapCDDBIds.end();++it)
     {
