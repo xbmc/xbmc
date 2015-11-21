@@ -409,7 +409,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
       si->m_prepareNextAtFrame = (int)((streamTotalTime - TIME_TO_CACHE_NEXT_FILE - m_defaultCrossfadeMS) * si->m_audioFormat.m_sampleRate / 1000.0f);
   }
 
-  if (m_currentStream && (AE_IS_RAW(m_currentStream->m_audioFormat.m_dataFormat) || AE_IS_RAW(si->m_audioFormat.m_dataFormat)))
+  if (m_currentStream && ((m_currentStream->m_audioFormat.m_dataFormat == AE_FMT_RAW) || (si->m_audioFormat.m_dataFormat == AE_FMT_RAW)))
   {
     m_currentStream->m_prepareTriggered = false;
     m_currentStream->m_waitOnDrain = true;

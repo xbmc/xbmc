@@ -757,7 +757,7 @@ void CActiveAESink::OpenSink()
   // into this variable
   std::string device = m_device;
   std::string driver;
-  bool passthrough = AE_IS_RAW(m_requestedFormat.m_dataFormat);
+  bool passthrough = (m_requestedFormat.m_dataFormat == AE_FMT_RAW);
 
   CAESinkFactory::ParseDevice(device, driver);
   if (driver.empty() && m_sink)
@@ -967,7 +967,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
 
 void CActiveAESink::SwapInit(CSampleBuffer* samples)
 {
-  if (AE_IS_RAW(m_requestedFormat.m_dataFormat) && CAEUtil::S16NeedsByteSwap(AE_FMT_S16NE, m_sinkFormat.m_dataFormat))
+  if ((m_requestedFormat.m_dataFormat == AE_FMT_RAW) && CAEUtil::S16NeedsByteSwap(AE_FMT_S16NE, m_sinkFormat.m_dataFormat))
   {
     m_swapState = NEED_BYTESWAP;
   }

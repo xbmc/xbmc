@@ -105,16 +105,8 @@ enum AEDataFormat
   AE_FMT_DOUBLE,
   AE_FMT_FLOAT,
 
-  // Bitstream formats
+  // Bitstream
   AE_FMT_RAW,
-  // IEC packed
-  AE_FMT_AAC,
-  AE_FMT_AC3,
-  AE_FMT_DTS,
-  AE_FMT_EAC3,
-  AE_FMT_TRUEHD,
-  AE_FMT_DTSHD,
-  AE_FMT_LPCM,
 
   /* planar formats */
   AE_FMT_U8P,

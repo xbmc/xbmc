@@ -504,7 +504,7 @@ bool VideoPlayerCodec::CanSeek()
 
 bool VideoPlayerCodec::NeedConvert(AEDataFormat fmt)
 {
-  if (AE_IS_RAW(fmt))
+  if (fmt == AE_FMT_RAW)
     return false;
 
   switch(fmt)
