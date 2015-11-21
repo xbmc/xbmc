@@ -116,6 +116,11 @@
       <j>ActivateWindow(RadioChannels)</j>
       <k>ActivateWindow(TVRecordings)</k>
       <b>ActivateWindow(TVTimers)</b>
+      <!-- PVR -->
+      <red>ActivateWindow(TVChannels)</red>
+      <green>ActivateWindow(MyVideos)</green>
+      <yellow>ActivateWindow(MyMusic)</yellow>
+      <blue>ActivateWindow(MyPictures)</blue>
       <!-- Multimedia keyboard keys -->
       <browser_back>Back</browser_back>
       <browser_forward/>
@@ -123,7 +128,10 @@
       <browser_stop/>
       <browser_search/>
       <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
+      <favorites>ActivateWindow(Favourites)</favorites>
+      <config>ActivateWindow(Settings)</config>
       <browser_home>ActivateWindow(Home)</browser_home>
+      <homepage>ActivateWindow(Home)</homepage>
       <volume_mute>Mute</volume_mute>
       <volume_down>VolumeDown</volume_down>
       <volume_up>VolumeUp</volume_up>
@@ -151,6 +159,8 @@
       <f mod="ctrl">SkipNext</f>          <!-- Skip -->
       <b mod="ctrl">SkipPrevious</b>      <!-- Replay -->
       <d mod="ctrl">Info</d>              <!-- MCE Details -->
+      <r mod="ctrl">Record</r>            <!-- Record -->
+      <f4 mod="alt">PreviousMenu</f4>     <!-- Exit -->
       <f10>VolumeUp</f10>                 <!-- MCE Vol up -->
       <f9>VolumeDown</f9>                 <!-- MCE Vol down -->
       <f8>Mute</f8>                       <!-- MCE mute -->
@@ -211,6 +221,10 @@
       <delete>Delete</delete>
       <r>Rename</r>
       <k>PreviousMenu</k>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
     </keyboard>
   </MyTVRecordings>
   <MyTVTimers>
@@ -218,6 +232,10 @@
       <delete>Delete</delete>
       <r>Rename</r>
       <b>PreviousMenu</b>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
     </keyboard>
   </MyTVTimers>
   <MyRadioChannels>
@@ -230,12 +248,20 @@
     <keyboard>
       <delete>Delete</delete>
       <r>Rename</r>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
     </keyboard>
   </MyRadioRecordings>
   <MyRadioTimers>
     <keyboard>
       <delete>Delete</delete>
       <r>Rename</r>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
     </keyboard>
   </MyRadioTimers>
   <TVGuide>
@@ -302,6 +328,7 @@
       <i>Info</i>
       <o>CodecInfo</o>
       <z>AspectRatio</z>
+      <zoom>AspectRatio</zoom>
       <t>ShowSubtitles</t>
       <t mod="ctrl">SubtitleAlign</t>
       <l>NextSubtitle</l>
@@ -313,6 +340,7 @@
       <escape>Fullscreen</escape>
       <c>Playlist</c>
       <v>ActivateWindow(Teletext)</v>
+      <text>ActivateWindow(Teletext)</text>
       <up mod="ctrl">SubtitleShiftUp</up>
       <down mod="ctrl">SubtitleShiftDown</down>
       <pageup>SkipNext</pageup>
@@ -361,6 +389,7 @@
       <i>Info</i>
       <p>ActivateWindow(VisualisationPresetList)</p>
       <v>Addon.Default.OpenSettings(xbmc.player.musicviz)</v>
+      <text>Addon.Default.OpenSettings(xbmc.player.musicviz)</text>
       <n>ActivateWindow(MusicPlaylist)</n>
       <left>StepBack</left>
       <right>StepForward</right>
@@ -385,6 +414,7 @@
       <o>CodecInfo</o>
       <p>ActivateWindow(VisualisationPresetList)</p>
       <v>Addon.Default.OpenSettings(xbmc.player.musicviz)</v>
+      <text>Addon.Default.OpenSettings(xbmc.player.musicviz)</text>
       <n>ActivateWindow(MusicPlaylist)</n>
     </keyboard>
   </MusicOSD>
@@ -399,6 +429,7 @@
       <o>CodecInfo</o>
       <p>ActivateWindow(VisualisationPresetList)</p>
       <v>Back</v>
+      <text>Back</text>
       <n>ActivateWindow(MusicPlaylist)</n>
     </keyboard>
   </VisualisationSettings>
@@ -413,6 +444,7 @@
       <o>CodecInfo</o>
       <p>Back</p>
       <v>Back</v>
+      <text>Back</text>
       <n>ActivateWindow(MusicPlaylist)</n>
     </keyboard>
   </VisualisationPresetList>
@@ -472,6 +504,7 @@
       <i>Info</i>
       <o>CodecInfo</o>
       <z>AspectRatio</z>
+      <zoom>AspectRatio</zoom>
       <t>ShowSubtitles</t>
       <l>NextSubtitle</l>
       <a>AudioDelay</a>
@@ -561,6 +594,11 @@
   <Teletext>
     <keyboard>
       <v>Back</v>
+      <text>Back</text>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
     </keyboard>
   </Teletext>
   <Favourites>
@@ -649,9 +687,13 @@
   <Addon>
     <keyboard>
       <f1>Red</f1>
+      <red>Red</red>
       <f2>Green</f2>
+      <green>Green</green>
       <f3>Yellow</f3>
+      <yellow>Yellow</yellow>
       <f4>Blue</f4>
+      <blue>Blue</blue>
     </keyboard>
   </Addon>
 </keymap>

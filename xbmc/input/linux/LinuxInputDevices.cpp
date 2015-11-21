@@ -255,13 +255,24 @@ KeyMap keyMap[] = {
   { KEY_PRINT         , XBMCK_PRINT       },
   { KEY_QUESTION      , XBMCK_HELP        },
   { KEY_BACK          , XBMCK_BACKSPACE   },
+  { KEY_ZOOM          , XBMCK_ZOOM        },
+  { KEY_TEXT          , XBMCK_TEXT        },
+  { KEY_FAVORITES     , XBMCK_FAVORITES   },
+  { KEY_RED           , XBMCK_RED         },
+  { KEY_GREEN         , XBMCK_GREEN       },
+  { KEY_YELLOW        , XBMCK_YELLOW      },
+  { KEY_BLUE          , XBMCK_BLUE        },
+  { KEY_HOMEPAGE      , XBMCK_HOMEPAGE    },
+  { KEY_MAIL          , XBMCK_LAUNCH_MAIL },
+  { KEY_SEARCH        , XBMCK_BROWSER_SEARCH},
+  { KEY_FILE          , XBMCK_LAUNCH_FILE_BROWSER},
+  { KEY_SELECT        , XBMCK_RETURN      },
+  { KEY_CONFIG        , XBMCK_CONFIG      },
   // The Little Black Box Remote Additions
   { 384               , XBMCK_LEFT        }, // Red
   { 378               , XBMCK_RIGHT       }, // Green
   { 381               , XBMCK_UP          }, // Yellow
   { 366               , XBMCK_DOWN        }, // Blue
-  // Rii i7 Home button / wetek openelec remote (code 172)
-  { KEY_HOMEPAGE      , XBMCK_HOME        },
 };
 
 typedef enum
