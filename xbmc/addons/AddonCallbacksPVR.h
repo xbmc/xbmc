@@ -156,6 +156,16 @@ public:
    */
   static DemuxPacket* PVRAllocateDemuxPacket(void* addonData, int iDataSize = 0);
 
+  /*!
+   * @brief Notify a state change for a PVR backend connection
+   * @param addonData A pointer to the add-on.
+   * @param strConnectionString The connection string reported by the backend that can be displayed in the UI.
+   * @param newState The new state.
+   * @param strMessage A localized addon-defined string representing the new state, that can be displayed
+   *        in the UI or NULL if the Kodi-defined default string for the new state shall be displayed.
+   */
+  static void PVRConnectionStateChange(void* addonData, const char* strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage);
+
 private:
   static PVR::CPVRClient* GetPVRClient(void* addonData);
 

@@ -162,6 +162,7 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_menuhooks.clear();
   m_timertypes.clear();
   m_bReadyToUse           = false;
+  m_connectionState       = PVR_CONNECTION_STATE_UNKNOWN;
   m_iClientId             = iClientId;
   m_strBackendVersion     = DEFAULT_INFO_STRING_VALUE;
   m_strConnectionString   = DEFAULT_INFO_STRING_VALUE;
@@ -235,6 +236,20 @@ void CPVRClient::ReCreate(void)
 bool CPVRClient::ReadyToUse(void) const
 {
   return m_bReadyToUse;
+}
+
+void CPVRClient::SetConnectionState(PVR_CONNECTION_STATE state)
+{
+  if (m_connectionState != state)
+  {
+    m_connectionState = state;
+
+    if (state == PVR_CONNECTION_STATE_CONNECTED)
+    {
+      CLog::Log(LOGDEBUG, "PVRClient - %s - refetching addon properties", __FUNCTION__);
+      GetAddonProperties();
+    }
+  }
 }
 
 int CPVRClient::GetID(void) const

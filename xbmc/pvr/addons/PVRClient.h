@@ -102,9 +102,21 @@ namespace PVR
     void ReCreate(void);
 
     /*!
-     * @return True if this instance is initialised, false otherwise.
+     * @return True if this instance is initialised (ADDON_Create returned true), false otherwise.
      */
     bool ReadyToUse(void) const;
+
+    /*!
+     * @brief Gets the backend connection state.
+     * @return the backend connection state.
+     */
+    PVR_CONNECTION_STATE GetConnectionState(void) const { return m_connectionState; }
+
+    /*!
+     * @brief Sets the backend connection state.
+     * @param state the new backend connection state.
+     */
+    void SetConnectionState(PVR_CONNECTION_STATE state);
 
     /*!
      * @return The ID of this instance.
@@ -670,7 +682,8 @@ namespace PVR
     bool LogError(const PVR_ERROR error, const char *strMethod) const;
     void LogException(const std::exception &e, const char *strFunctionName) const;
 
-    bool                   m_bReadyToUse;          /*!< true if this add-on is connected to the backend, false otherwise */
+    bool                   m_bReadyToUse;          /*!< true if this add-on is initialised (ADDON_Create returned true), false otherwise */
+    PVR_CONNECTION_STATE   m_connectionState;      /*!< the backend connection state */
     PVR_MENUHOOKS          m_menuhooks;            /*!< the menu hooks for this add-on */
     CPVRTimerTypes         m_timertypes;           /*!< timer types supported by this backend */
     int                    m_iClientId;            /*!< database ID of the client */

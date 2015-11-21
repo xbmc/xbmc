@@ -164,6 +164,14 @@ DLLEXPORT DemuxPacket* PVR_allocate_demux_packet(void *hdl, void* cb, int iDataS
   return ((CB_PVRLib*)cb)->AllocateDemuxPacket(((AddonCB*)hdl)->addonData, iDataSize);
 }
 
+DLLEXPORT void PVR_connection_state_change(void *hdl, void* cb, const char *strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage)
+{
+  if (cb == NULL)
+    return;
+
+  ((CB_PVRLib*)cb)->ConnectionStateChange(((AddonCB*)hdl)->addonData, strConnectionString, newState, strMessage);
+}
+
 DLLEXPORT void PVR_transfer_channel_group(void *hdl, void* cb, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group)
 {
   if (cb == NULL)

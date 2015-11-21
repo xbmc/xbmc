@@ -487,6 +487,8 @@ typedef void (*PVRTransferChannelGroupMember)(void *addonData, const ADDON_HANDL
 typedef void (*PVRFreeDemuxPacket)(void *addonData, DemuxPacket* pPacket);
 typedef DemuxPacket* (*PVRAllocateDemuxPacket)(void *addonData, int iDataSize);
 
+typedef void (*PVRConnectionStateChange)(void* addonData, const char* strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage);
+
 typedef struct CB_PVRLib
 {
   PVRTransferEpgEntry           TransferEpgEntry;
@@ -504,6 +506,7 @@ typedef struct CB_PVRLib
   PVRAllocateDemuxPacket        AllocateDemuxPacket;
   PVRTransferChannelGroup       TransferChannelGroup;
   PVRTransferChannelGroupMember TransferChannelGroupMember;
+  PVRConnectionStateChange      ConnectionStateChange;
 
 } CB_PVRLib;
 

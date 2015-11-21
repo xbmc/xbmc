@@ -154,6 +154,10 @@ public:
     if (PVR_allocate_demux_packet == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 #endif
 
+    PVR_connection_state_change = (void (*)(void* HANDLE, void* CB, const char *strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage))
+      dlsym(m_libXBMC_pvr, "PVR_connection_state_change");
+    if (PVR_connection_state_change == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
     m_Callbacks = PVR_register_me(m_Handle);
     return m_Callbacks != NULL;
   }
@@ -300,6 +304,18 @@ public:
   }
 #endif
 
+  /*!
+   * @brief Notify a state change for a PVR backend connection
+   * @param strConnectionString The connection string reported by the backend that can be displayed in the UI.
+   * @param newState The new state.
+   * @param strMessage A localized addon-defined string representing the new state, that can be displayed
+   *        in the UI or NULL if the Kodi-defined default string for the new state shall be displayed.
+   */
+  void ConnectionStateChange(const char *strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage)
+  {
+    return PVR_connection_state_change(m_Handle, m_Callbacks, strConnectionString, newState, strMessage);
+  }
+
 protected:
   void* (*PVR_register_me)(void*);
   void (*PVR_unregister_me)(void*, void*);
@@ -320,6 +336,7 @@ protected:
   void (*PVR_free_demux_packet)(void*, void*, DemuxPacket*);
   DemuxPacket* (*PVR_allocate_demux_packet)(void*, void*, int);
 #endif
+  void (*PVR_connection_state_change)(void*, void*, const char*, PVR_CONNECTION_STATE, const char*);
 
 private:
   void* m_libXBMC_pvr;
