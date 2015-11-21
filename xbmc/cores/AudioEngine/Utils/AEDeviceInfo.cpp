@@ -49,6 +49,17 @@ CAEDeviceInfo::operator std::string()
   }
   ss << '\n';
 
+  ss << "m_streamTypes     : ";
+  for (AEDataTypeList::iterator itt = m_streamTypes.begin(); itt != m_streamTypes.end(); ++itt)
+  {
+    if (itt != m_streamTypes.begin())
+      ss << ',';
+    ss << CAEUtil::StreamTypeToStr(*itt);
+  }
+  if (m_streamTypes.empty())
+    ss << "No passthrough capabilities";
+  ss << '\n';
+
   return ss.str();
 }
 
