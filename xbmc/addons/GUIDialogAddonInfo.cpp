@@ -246,6 +246,12 @@ void CGUIDialogAddonInfo::OnUpdate()
     }
   }
 
+  if (versions.empty())
+  {
+    CGUIDialogOK::ShowAndGetInput(CVariant{21341}, CVariant{21342});
+    return;
+  }
+
   auto* dialog = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
   dialog->Reset();
   dialog->SetHeading(CVariant{21338});

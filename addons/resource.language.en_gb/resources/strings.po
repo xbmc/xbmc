@@ -12039,7 +12039,17 @@ msgctxt "#21340"
 msgid "Auto-update"
 msgstr ""
 
-#empty strings from id 21341 to 21358
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#21341"
+msgid "No updates available"
+msgstr ""
+
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#21342"
+msgid "There are currently no updates available for this add-on."
+msgstr ""
+
+#empty strings from id 21343 to 21358
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
 msgctxt "#21359"
