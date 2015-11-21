@@ -242,7 +242,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeByUserChoice(const std::s
 
   pDlgSelect->Open();
 
-  int iItem = pDlgSelect->GetSelectedLabel();
+  int iItem = pDlgSelect->GetSelectedItem();
   if (iItem > -1 && pDlgSelect->IsConfirmed())
     mode = (RENDER_STEREO_MODE) selectableModes[iItem];
   else
@@ -578,7 +578,7 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
 
       if(pDlgSelect->IsConfirmed())
       {
-        int iItem = pDlgSelect->GetSelectedLabel();
+        int iItem = pDlgSelect->GetSelectedItem();
         if      (iItem == idx_preferred) mode = preferred;
         else if (iItem == idx_mono)      mode = RENDER_STEREO_MODE_MONO;
         else if (iItem == idx_playing)   mode = RENDER_STEREO_MODE_AUTO;

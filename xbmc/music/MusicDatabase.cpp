@@ -2991,7 +2991,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
         pDlgSelect->Open();
 
         // Has the user selected a match...
-        int iSelectedCD = pDlgSelect->GetSelectedLabel();
+        int iSelectedCD = pDlgSelect->GetSelectedItem();
         if (iSelectedCD >= 0)
         {
           // ...query cddb for the inexact match
@@ -3074,14 +3074,14 @@ void CMusicDatabase::DeleteCDDBInfo()
     pDlg->Open();
 
     // and wait till user selects one
-    int iSelectedAlbum = pDlg->GetSelectedLabel();
+    int iSelectedAlbum = pDlg->GetSelectedItem();
     if (iSelectedAlbum < 0)
     {
       mapCDDBIds.erase(mapCDDBIds.begin(), mapCDDBIds.end());
       return ;
     }
 
-    std::string strSelectedAlbum = pDlg->GetSelectedItem()->GetLabel();
+    std::string strSelectedAlbum = pDlg->GetSelectedFileItem()->GetLabel();
     std::map<ULONG, std::string>::iterator it;
     for (it = mapCDDBIds.begin();it != mapCDDBIds.end();++it)
     {

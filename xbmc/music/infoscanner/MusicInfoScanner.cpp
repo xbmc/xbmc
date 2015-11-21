@@ -1171,7 +1171,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
           pDlg->Open();
 
           // and wait till user selects one
-          if (pDlg->GetSelectedLabel() < 0)
+          if (pDlg->GetSelectedItem() < 0)
           { // none chosen
             if (!pDlg->IsButtonPressed())
               return INFO_CANCELLED;
@@ -1197,7 +1197,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
 
             return DownloadAlbumInfo(newAlbum, info, albumInfo, pDialog);
           }
-          iSelectedAlbum = pDlg->GetSelectedItem()->m_idepth;
+          iSelectedAlbum = pDlg->GetSelectedFileItem()->m_idepth;
         }
       }
       else
@@ -1367,7 +1367,7 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, const ADDO
           pDlg->Open();
 
           // and wait till user selects one
-          if (pDlg->GetSelectedLabel() < 0)
+          if (pDlg->GetSelectedItem() < 0)
           { // none chosen
             if (!pDlg->IsButtonPressed())
               return INFO_CANCELLED;
@@ -1387,7 +1387,7 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, const ADDO
             newArtist.strArtist = strNewArtist;
             return DownloadArtistInfo(newArtist, info, artistInfo, pDialog);
           }
-          iSelectedArtist = pDlg->GetSelectedItem()->m_idepth;
+          iSelectedArtist = pDlg->GetSelectedFileItem()->m_idepth;
         }
       }
     }

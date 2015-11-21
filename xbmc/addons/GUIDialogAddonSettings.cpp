@@ -337,7 +337,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
                 pDlg->SetSelected(i); // FIXME: the SetSelected() does not select "i", it always defaults to the first position
             }
             pDlg->Open();
-            int iSelected = pDlg->GetSelectedLabel();
+            int iSelected = pDlg->GetSelectedItem();
             if (iSelected >= 0)
             {
               if (setting->Attribute("lvalues"))

@@ -1908,7 +1908,7 @@ int CAddonCallbacksGUI::Dialog_Select(const char *heading, const char *entries[]
     pDialog->SetSelected(selected);
 
   pDialog->Open();
-  return pDialog->GetSelectedLabel();
+  return pDialog->GetSelectedItem();
 }
 //@}
 
