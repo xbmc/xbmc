@@ -192,6 +192,7 @@ int SqliteDatabase::setErr(int err_code, const char * qry){
     break;
   default : error = "Undefined SQLite error";
   }
+  error = "[" + db + "] " + error;
   error += "\nQuery: ";
   error += qry;
   error += "\n";
