@@ -75,7 +75,7 @@ public:
 
   void Process();
 
-  void SetCodingType(AEDataFormat dataFormat);
+  void SetCodingType(AEAudioFormat format);
 
   static void PrintChannels(OMX_AUDIO_CHANNELTYPE eChannelMapping[]);
   void PrintPCM(OMX_AUDIO_PARAM_PCMMODETYPE *pcm, std::string direction);
