@@ -516,9 +516,11 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         item->m_bIsFolder && !item->IsVideoDb())
       {
         ADDON::ScraperPtr info;
-        m_musicdatabase.GetScraperForPath(item->GetPath(), info, ADDON::ADDON_SCRAPER_ARTISTS);
-        if (info && info->Supports(CONTENT_ARTISTS))
-          buttons.Add(CONTEXT_BUTTON_INFO_ALL, 21884);
+        if(m_musicdatabase.GetScraperForPath(item->GetPath(), info, ADDON::ADDON_SCRAPER_ARTISTS))
+        {
+          if (info && info->Supports(CONTENT_ARTISTS))
+            buttons.Add(CONTEXT_BUTTON_INFO_ALL, 21884);
+        }
       }
 
       //Set default or clear default
