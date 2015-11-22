@@ -543,7 +543,6 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   m_Passthrough = bUsePassthrough;
 
   m_InputChannels = channelMap.Count();
-  m_format = format;
 
   if(m_InputChannels == 0)
     return false;
@@ -716,8 +715,8 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   else
     SetAudioProps(m_Passthrough, 0);
 
-  m_SampleRate    = m_format.m_sampleRate;
-  m_BitsPerSample = CAEUtil::DataFormatToBits(m_format.m_dataFormat);
+  m_SampleRate    = format.m_sampleRate;
+  m_BitsPerSample = CAEUtil::DataFormatToBits(format.m_dataFormat);
   m_BytesPerSec   = m_SampleRate * 2 << rounded_up_channels_shift[m_InputChannels];
   m_BufferLen     = m_BytesPerSec * AUDIO_BUFFER_SECONDS;
   m_InputBytesPerSec = m_SampleRate * m_BitsPerSample * m_InputChannels >> 3;
@@ -733,7 +732,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   m_wave_header.Format.nBlockAlign          = m_InputChannels * (m_BitsPerSample >> 3);
   // 0x8000 is custom format interpreted by GPU as WAVE_FORMAT_IEEE_FLOAT_PLANAR
   m_wave_header.Format.wFormatTag           = m_BitsPerSample == 32 ? 0x8000 : WAVE_FORMAT_PCM;
-  m_wave_header.Format.nSamplesPerSec       = m_format.m_sampleRate;
+  m_wave_header.Format.nSamplesPerSec       = format.m_sampleRate;
   m_wave_header.Format.nAvgBytesPerSec      = m_BytesPerSec;
   m_wave_header.Format.wBitsPerSample       = m_BitsPerSample;
   m_wave_header.Samples.wValidBitsPerSample = m_BitsPerSample;
@@ -748,7 +747,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   m_pcm_input.nBitPerSample         = m_BitsPerSample;
   m_pcm_input.ePCMMode              = OMX_AUDIO_PCMModeLinear;
   m_pcm_input.nChannels             = m_InputChannels;
-  m_pcm_input.nSamplingRate         = m_format.m_sampleRate;
+  m_pcm_input.nSamplingRate         = format.m_sampleRate;
 
   if(!m_omx_decoder.Initialize("OMX.broadcom.audio_decode", OMX_IndexParamAudioInit))
     return false;
