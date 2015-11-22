@@ -26,6 +26,7 @@
 CPictureInfoLoader::CPictureInfoLoader()
 {
   m_mapFileItems = new CFileItemList;
+  m_tagReads = 0;
 }
 
 CPictureInfoLoader::~CPictureInfoLoader()
