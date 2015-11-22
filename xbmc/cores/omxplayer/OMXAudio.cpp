@@ -555,7 +555,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   if(!m_av_clock)
     return false;
 
-  SetCodingType(format.m_dataFormat);
+  SetCodingType(format);
 
   if (m_Passthrough || CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "PI:HDMI")
     m_output = AESINKPI_HDMI;
@@ -716,7 +716,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
     SetAudioProps(m_Passthrough, 0);
 
   m_SampleRate    = format.m_sampleRate;
-  m_BitsPerSample = CAEUtil::DataFormatToBits(format.m_dataFormat);
+  m_BitsPerSample = m_Passthrough ? 16 : CAEUtil::DataFormatToBits(format.m_dataFormat);
   m_BytesPerSec   = m_SampleRate * 2 << rounded_up_channels_shift[m_InputChannels];
   m_BufferLen     = m_BytesPerSec * AUDIO_BUFFER_SECONDS;
   m_InputBytesPerSec = m_SampleRate * m_BitsPerSample * m_InputChannels >> 3;
@@ -1441,16 +1441,20 @@ void COMXAudio::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
     return ;
 }
 
-void COMXAudio::SetCodingType(AEDataFormat dataFormat)
+void COMXAudio::SetCodingType(AEAudioFormat format)
 {
-  switch(dataFormat)
+  CAEStreamInfo::DataType type = m_Passthrough ? format.m_streamInfo.m_type : CAEStreamInfo::STREAM_TYPE_NULL;
+  switch(type)
   {
-    case AE_FMT_DTS:
+    case CAEStreamInfo::STREAM_TYPE_DTS_512:
+    case CAEStreamInfo::STREAM_TYPE_DTS_1024:
+    case CAEStreamInfo::STREAM_TYPE_DTS_2048:
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
       CLog::Log(LOGDEBUG, "COMXAudio::SetCodingType OMX_AUDIO_CodingDTS\n");
       m_eEncoding = OMX_AUDIO_CodingDTS;
       break;
-    case AE_FMT_AC3:
-    case AE_FMT_EAC3:
+    case CAEStreamInfo::STREAM_TYPE_AC3:
+    case CAEStreamInfo::STREAM_TYPE_EAC3:
       CLog::Log(LOGDEBUG, "COMXAudio::SetCodingType OMX_AUDIO_CodingDDP\n");
       m_eEncoding = OMX_AUDIO_CodingDDP;
       break;

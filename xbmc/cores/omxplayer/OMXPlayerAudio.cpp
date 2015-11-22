@@ -138,7 +138,7 @@ void OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
   m_started         = false;
   m_flush           = false;
   m_stalled         = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
-  m_format.m_dataFormat    = GetDataFormat(m_hints);
+  m_format = GetDataFormat(m_hints);
   m_format.m_sampleRate    = 0;
   m_format.m_channelLayout = 0;
 
@@ -227,7 +227,7 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket, bool bTrickPlay)
   {
     settings_changed = true;
   }
-  else if(!OMX_IS_RAW(m_format.m_dataFormat) && !bDropPacket)
+  else if(m_format.m_dataFormat != AE_FMT_RAW && !bDropPacket)
   {
     double dts = pkt->dts, pts=pkt->pts;
     while(!m_bStop && data_len > 0)
@@ -523,49 +523,54 @@ bool OMXPlayerAudio::IsPassthrough() const
   return m_passthrough;
 }
 
-AEDataFormat OMXPlayerAudio::GetDataFormat(CDVDStreamInfo hints)
+AEAudioFormat OMXPlayerAudio::GetDataFormat(CDVDStreamInfo hints)
 {
-  AEDataFormat passthroughFormat = AE_FMT_INVALID;
-  AEDataFormat dataFormat = AE_FMT_S16NE;
-  CAEStreamInfo info;
-  if (hints.codec == AV_CODEC_ID_AC3)
+  AEAudioFormat format;
+  format.m_dataFormat = AE_FMT_RAW;
+  format.m_sampleRate = hints.samplerate;
+  switch (hints.codec)
   {
-    info.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
-    info.m_sampleRate = hints.samplerate;
-    passthroughFormat = AE_FMT_AC3;
-  }
-  else if (hints.codec == AV_CODEC_ID_EAC3)
-  {
-    info.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
-    info.m_sampleRate = hints.samplerate * 4;
-    passthroughFormat = AE_FMT_EAC3;
-  }
-  if (hints.codec == AV_CODEC_ID_DTS)
-  {
-    info.m_type = CAEStreamInfo::STREAM_TYPE_DTS_1024;
-    info.m_sampleRate = hints.samplerate;
-    passthroughFormat = AE_FMT_DTS;
+    case AV_CODEC_ID_AC3:
+      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
+      format.m_streamInfo.m_sampleRate = hints.samplerate;
+      break;
+
+    case AV_CODEC_ID_EAC3:
+      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
+      format.m_streamInfo.m_sampleRate = hints.samplerate * 4;
+      break;
+
+    case AV_CODEC_ID_DTS:
+      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD;
+      format.m_streamInfo.m_sampleRate = hints.samplerate;
+      break;
+
+    case AV_CODEC_ID_TRUEHD:
+      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_TRUEHD;
+      format.m_streamInfo.m_sampleRate = hints.samplerate;
+      break;
+
+    default:
+      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_NULL;
   }
 
-  m_passthrough = false;
+  m_passthrough = CAEFactory::SupportsRaw(format);
 
-  /* check our audio capabilties */
-
-  if (info.m_type != CAEStreamInfo::STREAM_TYPE_NULL && CAEFactory::SupportsRaw(info))
+  if (!m_passthrough && hints.codec == AV_CODEC_ID_DTS)
   {
-    dataFormat = passthroughFormat;
-    m_passthrough = true;
+    format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD_CORE;
+    m_passthrough = CAEFactory::SupportsRaw(format);
   }
 
   if(!m_passthrough)
   {
     if (m_pAudioCodec && m_pAudioCodec->GetBitsPerSample() == 16)
-      dataFormat = AE_FMT_S16NE;
+      format.m_dataFormat = AE_FMT_S16NE;
     else
-      dataFormat = AE_FMT_FLOAT;
+      format.m_dataFormat = AE_FMT_FLOAT;
   }
 
-  return dataFormat;
+  return format;
 }
 
 bool OMXPlayerAudio::OpenDecoder()
@@ -579,9 +584,7 @@ bool OMXPlayerAudio::OpenDecoder()
   }
 
   /* setup audi format for audio render */
-  m_format.m_sampleRate    = m_hints.samplerate;
-  /* GetDataFormat is setting up evrything */
-  m_format.m_dataFormat = GetDataFormat(m_hints);
+  m_format = GetDataFormat(m_hints);
 
   CAEChannelInfo channelMap;
   if (m_pAudioCodec && !m_passthrough)

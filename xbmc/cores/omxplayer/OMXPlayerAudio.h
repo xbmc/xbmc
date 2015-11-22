@@ -88,7 +88,7 @@ public:
   bool CodecChange();
   bool Decode(DemuxPacket *pkt, bool bDropPacket, bool bTrickPlay);
   void Flush(bool sync);
-  AEDataFormat GetDataFormat(CDVDStreamInfo hints);
+  AEAudioFormat GetDataFormat(CDVDStreamInfo hints);
   bool IsPassthrough() const;
   bool OpenDecoder();
   void CloseDecoder();
