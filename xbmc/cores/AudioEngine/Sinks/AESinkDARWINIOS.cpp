@@ -550,8 +550,12 @@ static void EnumerateDevices(AEDeviceInfoList &list)
   if (g_Windowing.GetCurrentScreen() > 0)
   {
     device.m_deviceType = AE_DEVTYPE_IEC958; //allow passthrough for tvout
-    device.m_dataFormats.push_back(AE_FMT_AC3);
-    device.m_dataFormats.push_back(AE_FMT_DTS);
+    device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+    device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+    device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+    device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+    device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+    device.m_dataFormats.push_back(AE_FMT_RAW);
   }
   else
     device.m_deviceType = AE_DEVTYPE_PCM;
@@ -622,7 +626,7 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   else// this will be selected when AE wants AC3 or DTS or anything other then float
   {
     audioFormat.mFormatFlags    |= kLinearPCMFormatFlagIsSignedInteger;
-    if (AE_IS_RAW(format.m_dataFormat))
+    if (format.m_dataFormat == AE_FMT_RAW)
       forceRaw = true;
     format.m_dataFormat = AE_FMT_S16LE;
   }
