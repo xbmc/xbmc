@@ -119,6 +119,7 @@ void CPVRChannel::Serialize(CVariant& value) const
   value["locked"] = m_bIsLocked;
   value["icon"] = m_strIconPath;
   value["channel"]  = m_strChannelName;
+  value["uniqueid"]  = m_iUniqueId;
   CDateTime lastPlayed(m_iLastWatched);
   value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDate() : "";
   value["channelnumber"] = m_iCachedChannelNumber;
