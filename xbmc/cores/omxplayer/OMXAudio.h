@@ -45,13 +45,6 @@ extern "C" {
 #define AUDIO_BUFFER_SECONDS 3
 #define VIS_PACKET_SIZE 512
 
-#define OMX_IS_RAW(x)       \
-(                           \
-  (x) == AE_FMT_AC3   ||    \
-  (x) == AE_FMT_EAC3  ||    \
-  (x) == AE_FMT_DTS         \
-)
-
 class COMXAudio
 {
 public:
@@ -60,7 +53,7 @@ public:
   float GetCacheTime();
   float GetCacheTotal();
   COMXAudio();
-  bool Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo &hints, CAEChannelInfo channelMap, bool bUsePassthrough, bool bUseHWDecode);
+  bool Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo &hints, CAEChannelInfo channelMap, bool bUsePassthrough);
   bool PortSettingsChanged();
   ~COMXAudio();
 
@@ -83,7 +76,6 @@ public:
   void Process();
 
   void SetCodingType(AEDataFormat dataFormat);
-  static bool CanHWDecode(AVCodecID codec);
 
   static void PrintChannels(OMX_AUDIO_CHANNELTYPE eChannelMapping[]);
   void PrintPCM(OMX_AUDIO_PARAM_PCMMODETYPE *pcm, std::string direction);
@@ -99,7 +91,6 @@ private:
   bool          m_Mute;
   long          m_drc;
   bool          m_Passthrough;
-  bool          m_HWDecode;
   unsigned int  m_BytesPerSec;
   unsigned int  m_InputBytesPerSec;
   unsigned int  m_BufferLen;

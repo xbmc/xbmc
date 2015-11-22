@@ -48,8 +48,6 @@ protected:
   COMXAudio                 m_omxAudio;
   std::string               m_codec_name;
   bool                      m_passthrough;
-  bool                      m_use_hw_decode;
-  bool                      m_hw_decode;
   AEAudioFormat             m_format;
   COMXAudioCodecOMX         *m_pAudioCodec;
   int                       m_speed;

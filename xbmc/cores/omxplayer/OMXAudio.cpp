@@ -66,7 +66,6 @@ COMXAudio::COMXAudio() :
   m_Mute            (false  ),
   m_drc             (0      ),
   m_Passthrough     (false  ),
-  m_HWDecode        (false  ),
   m_BytesPerSec     (0      ),
   m_InputBytesPerSec(0      ),
   m_BufferLen       (0      ),
@@ -534,14 +533,13 @@ static uint32_t GetChannelMap(const CAEChannelInfo &channelLayout, bool passthro
   return channel_map;
 }
 
-bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo &hints, CAEChannelInfo channelMap, bool bUsePassthrough, bool bUseHWDecode)
+bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo &hints, CAEChannelInfo channelMap, bool bUsePassthrough)
 {
   CSingleLock lock (m_critSection);
   OMX_ERRORTYPE omx_err;
 
   Deinitialize();
 
-  m_HWDecode    = bUseHWDecode;
   m_Passthrough = bUsePassthrough;
 
   m_InputChannels = channelMap.Count();
@@ -558,16 +556,6 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   if(!m_av_clock)
     return false;
 
-  /* passthrough overwrites hw decode */
-  if(m_Passthrough)
-  {
-    m_HWDecode = false;
-  }
-  else if(m_HWDecode)
-  {
-    /* check again if we are capable to hw decode the format */
-    m_HWDecode = CanHWDecode(hints.codec);
-  }
   SetCodingType(format.m_dataFormat);
 
   if (m_Passthrough || CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "PI:HDMI")
@@ -875,35 +863,6 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
       return false;
     }
   } 
-  else if(m_HWDecode)
-  {
-    // send decoder config
-    if(m_extrasize > 0 && m_extradata != NULL)
-    {
-      OMX_BUFFERHEADERTYPE *omx_buffer = m_omx_decoder.GetInputBuffer();
-  
-      if(omx_buffer == NULL)
-      {
-        CLog::Log(LOGERROR, "%s::%s - buffer error 0x%08x", CLASSNAME, __func__, omx_err);
-        return false;
-      }
-  
-      omx_buffer->nOffset = 0;
-      omx_buffer->nFilledLen = std::min((OMX_U32)m_extrasize, omx_buffer->nAllocLen);
-
-      memset((unsigned char *)omx_buffer->pBuffer, 0x0, omx_buffer->nAllocLen);
-      memcpy((unsigned char *)omx_buffer->pBuffer, m_extradata, omx_buffer->nFilledLen);
-      omx_buffer->nFlags = OMX_BUFFERFLAG_CODECCONFIG | OMX_BUFFERFLAG_ENDOFFRAME;
-  
-      omx_err = m_omx_decoder.EmptyThisBuffer(omx_buffer);
-      if (omx_err != OMX_ErrorNone)
-      {
-        CLog::Log(LOGERROR, "%s::%s - OMX_EmptyThisBuffer() failed with result(0x%x)\n", CLASSNAME, __func__, omx_err);
-        m_omx_decoder.DecoderEmptyBufferDone(m_omx_decoder.GetComponent(), omx_buffer);
-        return false;
-      }
-    }
-  }
 
   /* return on decoder error so m_Initialized stays false */
   if(m_omx_decoder.BadState())
@@ -921,8 +880,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   CLog::Log(LOGDEBUG, "COMXAudio::Initialize Input bps %d samplerate %d channels %d buffer size %d bytes per second %d",
       (int)m_pcm_input.nBitPerSample, (int)m_pcm_input.nSamplingRate, (int)m_pcm_input.nChannels, m_BufferLen, m_InputBytesPerSec);
   PrintPCM(&m_pcm_input, std::string("input"));
-  CLog::Log(LOGDEBUG, "COMXAudio::Initialize device passthrough %d hwdecode %d",
-     m_Passthrough, m_HWDecode);
+  CLog::Log(LOGDEBUG, "COMXAudio::Initialize device passthrough %d", m_Passthrough);
 
   return true;
 }
@@ -975,7 +933,6 @@ bool COMXAudio::Deinitialize()
   m_av_clock  = NULL;
 
   m_Initialized = false;
-  m_HWDecode    = false;
 
   if(m_extradata)
     free(m_extradata);
@@ -1108,7 +1065,7 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
     return len;
   }
 
-  unsigned pitch = (m_Passthrough || m_HWDecode) ? 1:(m_BitsPerSample >> 3) * m_InputChannels;
+  unsigned pitch = m_Passthrough ? 1:(m_BitsPerSample >> 3) * m_InputChannels;
   unsigned int demuxer_samples = len / pitch;
   unsigned int demuxer_samples_sent = 0;
   uint8_t *demuxer_content = (uint8_t *)data;
@@ -1142,7 +1099,7 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
     omx_buffer->nFilledLen = samples * pitch;
 
     unsigned int frames = frame_size ? len/frame_size:0;
-    if ((samples < demuxer_samples || frames > 1) && m_BitsPerSample==32 && !(m_Passthrough || m_HWDecode))
+    if ((samples < demuxer_samples || frames > 1) && m_BitsPerSample==32 && !m_Passthrough)
     {
       const unsigned int sample_pitch   = m_BitsPerSample >> 3;
       const unsigned int frame_samples  = frame_size / pitch;
@@ -1488,7 +1445,7 @@ void COMXAudio::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
 void COMXAudio::SetCodingType(AEDataFormat dataFormat)
 {
   switch(dataFormat)
-  { 
+  {
     case AE_FMT_DTS:
       CLog::Log(LOGDEBUG, "COMXAudio::SetCodingType OMX_AUDIO_CodingDTS\n");
       m_eEncoding = OMX_AUDIO_CodingDTS;
@@ -1502,30 +1459,7 @@ void COMXAudio::SetCodingType(AEDataFormat dataFormat)
       CLog::Log(LOGDEBUG, "COMXAudio::SetCodingType OMX_AUDIO_CodingPCM\n");
       m_eEncoding = OMX_AUDIO_CodingPCM;
       break;
-  } 
-}
-
-bool COMXAudio::CanHWDecode(AVCodecID codec)
-{
-  bool ret = false;
-  switch(codec)
-  { 
-    case AV_CODEC_ID_DTS:
-      CLog::Log(LOGDEBUG, "COMXAudio::CanHWDecode OMX_AUDIO_CodingDTS\n");
-      ret = true;
-      break;
-    case AV_CODEC_ID_AC3:
-    case AV_CODEC_ID_EAC3:
-      CLog::Log(LOGDEBUG, "COMXAudio::CanHWDecode OMX_AUDIO_CodingDDP\n");
-      ret = true;
-      break;
-    default:
-      CLog::Log(LOGDEBUG, "COMXAudio::CanHWDecode OMX_AUDIO_CodingPCM\n");
-      ret = false;
-      break;
-  } 
-
-  return ret;
+  }
 }
 
 void COMXAudio::PrintChannels(OMX_AUDIO_CHANNELTYPE eChannelMapping[])
