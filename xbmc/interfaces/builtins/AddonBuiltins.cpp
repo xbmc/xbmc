@@ -23,6 +23,7 @@
 #include <memory>
 
 #include "addons/AddonManager.h"
+#include "addons/AddonInstaller.h"
 #include "addons/GUIDialogAddonSettings.h"
 #include "addons/GUIWindowAddonBrowser.h"
 #include "addons/PluginSource.h"
@@ -42,6 +43,20 @@
 #endif
 
 using namespace ADDON;
+
+/*! \brief Install an addon.
+ *  \param params The parameters.
+ *  \details params[0] = add-on id.
+ */
+static int InstallAddon(const std::vector<std::string>& params)
+{
+  const std::string& addonid = params[0];
+
+  AddonPtr addon;
+  CAddonInstaller::GetInstance().InstallModal(addonid, addon);
+
+  return 0;
+}
 
 /*! \brief Run a plugin.
  *  \param params The parameters.
@@ -298,6 +313,7 @@ CBuiltins::CommandMap CAddonBuiltins::GetOperations() const
            {"addon.default.opensettings", {"Open a settings dialog for the default addon of the given type", 1, OpenDefaultSettings}},
            {"addon.default.set",          {"Open a select dialog to allow choosing the default addon of the given type", 1, SetDefaultAddon}},
            {"addon.opensettings",         {"Open a settings dialog for the addon of the given id", 1, AddonSettings}},
+           {"installaddon",               {"Install the specified plugin/script", 1, InstallAddon}},
            {"runaddon",                   {"Run the specified plugin/script", 1, RunAddon}},
 #ifdef TARGET_DARWIN
            {"runapplescript",             {"Run the specified AppleScript command", 1, RunScript<true>}},
