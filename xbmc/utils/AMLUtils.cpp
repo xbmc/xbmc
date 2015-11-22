@@ -159,23 +159,34 @@ enum AML_DEVICE_TYPE aml_get_device_type()
   static enum AML_DEVICE_TYPE aml_device_type = AML_DEVICE_TYPE_UNINIT;
   if (aml_device_type == AML_DEVICE_TYPE_UNINIT)
   {
+    std::string cpu_model = g_cpuInfo.getCPUModel();
     std::string cpu_hardware = g_cpuInfo.getCPUHardware();
 
-    if (cpu_hardware.find("MESON-M1") != std::string::npos)
-      aml_device_type = AML_DEVICE_TYPE_M1;
-    else if (cpu_hardware.find("MESON-M3") != std::string::npos
-          || cpu_hardware.find("MESON3")   != std::string::npos)
-      aml_device_type = AML_DEVICE_TYPE_M3;
-    else if (cpu_hardware.find("Meson6") != std::string::npos)
-      aml_device_type = AML_DEVICE_TYPE_M6;
-    else if ((cpu_hardware.find("Meson8") != std::string::npos) && (cpu_hardware.find("Meson8B") == std::string::npos))
+    if (!StringUtils::StartsWithNoCase(cpu_model, "aarch64"))
     {
-      if (aml_support_hevc())
-        aml_device_type = AML_DEVICE_TYPE_M8M2;
+      if (cpu_hardware.find("MESON-M1") != std::string::npos)
+        aml_device_type = AML_DEVICE_TYPE_M1;
+      else if (cpu_hardware.find("MESON-M3") != std::string::npos
+            || cpu_hardware.find("MESON3")   != std::string::npos)
+        aml_device_type = AML_DEVICE_TYPE_M3;
+      else if (cpu_hardware.find("Meson6") != std::string::npos)
+        aml_device_type = AML_DEVICE_TYPE_M6;
+      else if ((cpu_hardware.find("Meson8") != std::string::npos) && (cpu_hardware.find("Meson8B") == std::string::npos))
+      {
+        if (aml_support_hevc())
+          aml_device_type = AML_DEVICE_TYPE_M8M2;
+        else
+          aml_device_type = AML_DEVICE_TYPE_M8;
+      } else if (cpu_hardware.find("Meson8B") != std::string::npos)
+        aml_device_type = AML_DEVICE_TYPE_M8B;
       else
-        aml_device_type = AML_DEVICE_TYPE_M8;
-    } else if (cpu_hardware.find("Meson8B") != std::string::npos)
-      aml_device_type = AML_DEVICE_TYPE_M8B;
+        aml_device_type = AML_DEVICE_TYPE_UNKNOWN;
+    }
+  }
+  else
+  {
+    if (StringUtils::StartsWithNoCase(cpu_hardware, "amlogic"))
+      aml_device_type = AML_DEVICE_TYPE_M9B;
     else
       aml_device_type = AML_DEVICE_TYPE_UNKNOWN;
   }
