@@ -59,7 +59,6 @@ private:
     IAudioClock        *m_pAudioClock;
 
     AEAudioFormat       m_format;
-    enum AEDataFormat   m_encodedFormat;
     unsigned int        m_encodedChannels;
     unsigned int        m_encodedSampleRate;
     CAEChannelInfo      m_channelLayout;
