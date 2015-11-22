@@ -259,29 +259,25 @@
 				<onclick>PlayerControl(Random)</onclick>
 			</control>
 			<control type="image" id="2300">
-				<width>215</width>
-				<height>55</height>
+				<width>160</width>
 				<texture>-</texture>
-				<visible>!MusicPlayer.Content(LiveTV) + Player.CanRecord</visible>
 			</control>
 			<control type="image" id="2400">
-				<width>215</width>
+				<width>55</width>
+				<texture>-</texture>
+				<visible>!system.getbool(audiooutput.dspaddonsenabled)</visible>
+			</control>
+			<control type="image" id="2500">
+				<width>55</width>
 				<texture>-</texture>
 				<visible>MusicPlayer.Content(LiveTV)</visible>
 			</control>
-			<control type="image" id="2500">
-				<width>270</width>
-				<height>55</height>
-				<texture>-</texture>
-				<visible>!MusicPlayer.Content(LiveTV) + !Player.CanRecord + !system.getbool(audiooutput.dspaddonsenabled)</visible>
-			</control>
 			<control type="image" id="2600">
-				<width>215</width>
+				<width>55</width>
 				<texture>-</texture>
-				<visible>system.getbool(audiooutput.dspaddonsenabled)</visible>
+				<visible>!Player.CanRecord</visible>
 			</control>
 			<control type="button" id="700">
-				<visible>system.getbool(audiooutput.dspaddonsenabled)</visible>
 				<width>55</width>
 				<height>55</height>
 				<label>15047</label>
@@ -289,6 +285,7 @@
 				<texturefocus>OSDDSPAudioFO.png</texturefocus>
 				<texturenofocus>OSDDSPAudioNF.png</texturenofocus>
 				<onclick>ActivateWindow(OSDAudioDSPSettings)</onclick>
+				<visible>system.getbool(audiooutput.dspaddonsenabled)</visible>
 			</control>
 			<control type="togglebutton" id="701">
 				<width>55</width>
