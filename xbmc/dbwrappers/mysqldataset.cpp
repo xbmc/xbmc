@@ -97,6 +97,7 @@ int MysqlDatabase::setErr(int err_code, const char * qry) {
       snprintf(err, 256, "Undefined MySQL error: Code (%d)", err_code);
       error = err;
   }
+  error = "[" + db + "] " + error;
   error += "\nQuery: ";
   error += qry;
   error += "\n";
