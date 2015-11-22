@@ -137,7 +137,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     float m_limiterHold;
     float m_limiterRelease;
 
-    bool  m_omxHWAudioDecode;
     bool  m_omxDecodeStartWithValidFrame;
 
     float m_videoSubsDelayRange;

@@ -121,7 +121,6 @@ void CAdvancedSettings::Initialize()
 
   m_seekSteps = { 10, 30, 60, 180, 300, 600, 1800 };
 
-  m_omxHWAudioDecode = false;
   m_omxDecodeStartWithValidFrame = true;
 
   m_audioDefaultPlayer = "paplayer";
@@ -482,7 +481,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   pElement = pRootElement->FirstChildElement("omx");
   if (pElement)
   {
-    XMLUtils::GetBoolean(pElement, "omxhwaudiodecode", m_omxHWAudioDecode);
     XMLUtils::GetBoolean(pElement, "omxdecodestartwithvalidframe", m_omxDecodeStartWithValidFrame);
   }
 
