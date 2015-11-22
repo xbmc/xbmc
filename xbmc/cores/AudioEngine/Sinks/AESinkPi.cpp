@@ -186,7 +186,7 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
   g_RBP.Initialize();
 
   /* if we are raw need to let gpu know */
-  m_passthrough = AE_IS_RAW(format.m_dataFormat);
+  m_passthrough = m_format.m_dataFormat == AE_FMT_RAW;
 
   m_initDevice = device;
   m_initFormat = format;
@@ -496,6 +496,7 @@ void CAESinkPi::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 {
   m_info.m_channels.Reset();
   m_info.m_dataFormats.clear();
+  m_info.m_streamTypes.clear();
   m_info.m_sampleRates.clear();
 
   m_info.m_deviceType = AE_DEVTYPE_HDMI;
@@ -514,15 +515,21 @@ void CAESinkPi::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_dataFormats.push_back(AE_FMT_FLOATP);
   m_info.m_dataFormats.push_back(AE_FMT_S32NEP);
   m_info.m_dataFormats.push_back(AE_FMT_S16NEP);
-  m_info.m_dataFormats.push_back(AE_FMT_AC3);
-  m_info.m_dataFormats.push_back(AE_FMT_DTS);
-  m_info.m_dataFormats.push_back(AE_FMT_EAC3);
+
+  m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+  m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+  m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+  m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+  m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+  m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+  m_info.m_dataFormats.push_back(AE_FMT_RAW);
 
   m_info.m_wantsIECPassthrough = true;
   list.push_back(m_info);
 
   m_info.m_channels.Reset();
   m_info.m_dataFormats.clear();
+  m_info.m_streamTypes.clear();
   m_info.m_sampleRates.clear();
 
   m_info.m_deviceType = AE_DEVTYPE_PCM;
@@ -544,6 +551,7 @@ void CAESinkPi::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 
   m_info.m_channels.Reset();
   m_info.m_dataFormats.clear();
+  m_info.m_streamTypes.clear();
   m_info.m_sampleRates.clear();
 
   m_info.m_deviceType = AE_DEVTYPE_PCM;
