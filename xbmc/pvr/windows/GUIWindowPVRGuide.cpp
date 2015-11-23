@@ -101,9 +101,10 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_DELETE_TIMER, 19060);  /* Delete timer */
       }
     }
-    else if (epg->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
+    else
     {
-      buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);      /* Record */
+      if (epg->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
+        buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);      /* Record */
       buttons.Add(CONTEXT_BUTTON_ADD_TIMER, 19061);       /* Add timer */
     }
 
