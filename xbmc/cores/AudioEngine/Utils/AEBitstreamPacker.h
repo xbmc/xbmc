@@ -22,6 +22,7 @@
 #include <stdint.h>
 #include <list>
 #include "AEPackIEC61937.h"
+#include "AEChannelInfo.h"
 
 class CAEStreamInfo;
 
@@ -35,6 +36,7 @@ public:
   uint8_t* GetBuffer();
   unsigned int GetSize();
   static unsigned int GetOutputRate(CAEStreamInfo &info);
+  static CAEChannelInfo GetOutputChannelMap(CAEStreamInfo &info);
 
 private:
   void PackTrueHD(CAEStreamInfo &info, uint8_t* data, int size);

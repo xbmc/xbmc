@@ -771,6 +771,7 @@ void CActiveAESink::OpenSink()
     {
       m_packer = new CAEBitstreamPacker();
       m_requestedFormat.m_sampleRate = CAEBitstreamPacker::GetOutputRate(m_requestedFormat.m_streamInfo);
+      m_requestedFormat.m_channelLayout = CAEBitstreamPacker::GetOutputChannelMap(m_requestedFormat.m_streamInfo);
     }
   }
 

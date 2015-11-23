@@ -239,3 +239,35 @@ unsigned int CAEBitstreamPacker::GetOutputRate(CAEStreamInfo &info)
   }
   return rate;
 }
+
+CAEChannelInfo CAEBitstreamPacker::GetOutputChannelMap(CAEStreamInfo &info)
+{
+  int channels = 2;
+  switch (info.m_type)
+  {
+    case CAEStreamInfo::STREAM_TYPE_AC3:
+    case CAEStreamInfo::STREAM_TYPE_EAC3:
+    case CAEStreamInfo::STREAM_TYPE_DTS_512:
+    case CAEStreamInfo::STREAM_TYPE_DTS_1024:
+    case CAEStreamInfo::STREAM_TYPE_DTS_2048:
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
+      channels = 2;
+      break;
+
+    case CAEStreamInfo::STREAM_TYPE_TRUEHD:
+    case CAEStreamInfo::STREAM_TYPE_DTSHD:
+      channels = 8;
+      break;
+
+    default:
+      break;
+  }
+
+  CAEChannelInfo channelMap;
+  for (int i=0; i<channels; i++)
+  {
+    channelMap += AE_CH_RAW;
+  }
+
+  return channelMap;
+}
