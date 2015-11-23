@@ -897,26 +897,6 @@ void CLinuxInputDevice::SetupKeyboardAutoRepeat(int fd)
 {
   bool enable = true;
 
-#if defined(HAS_LIBAMCODEC)
-  if (aml_get_device_type() == AML_DEVICE_TYPE_M1 || aml_get_device_type() == AML_DEVICE_TYPE_M3)
-  {
-    // ignore the native aml driver named 'key_input',
-    //  it is the dedicated power key handler (am_key_input)
-    if (strncmp(m_deviceName, "key_input", strlen("key_input")) == 0)
-      return;
-    // ignore the native aml driver named 'aml_keypad',
-    //  it is the dedicated IR remote handler (amremote)
-    else if (strncmp(m_deviceName, "aml_keypad", strlen("aml_keypad")) == 0)
-      return;
-
-    // turn off any keyboard autorepeat, there is a kernel bug
-    // where if the cpu is max'ed then key up is missed and
-    // we get a flood of EV_REP that never stop until next
-    // key down/up. Very nasty when seeking during video playback.
-    enable = false;
-  }
-#endif
-
   if (enable)
   {
     int kbdrep[2] = { 400, 80 };
