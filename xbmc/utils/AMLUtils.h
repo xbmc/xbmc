@@ -49,8 +49,6 @@ bool aml_support_hevc();
 bool aml_support_hevc_4k2k();
 bool aml_support_h264_4k2k();
 enum AML_DEVICE_TYPE aml_get_device_type();
-void aml_cpufreq_min(bool limit);
-void aml_cpufreq_max(bool limit);
 void aml_set_audio_passthrough(bool passthrough);
 bool aml_IsHdmiConnected();
 bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res);
