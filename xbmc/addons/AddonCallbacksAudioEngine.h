@@ -198,11 +198,6 @@ public:
   */
   static void AEStream_SetResampleRatio(void *AddonData, AEStreamHandle *StreamHandle, double Ratio);
 
-  /**
-  * Sginal a clock change
-  */
-  static void AEStream_Discontinuity(void *AddonData, AEStreamHandle *StreamHandle);
-
 private:
   CB_AudioEngineLib   *m_callbacks; /*!< callback addresses */
   CAddon              *m_addon;     /*!< the addon */

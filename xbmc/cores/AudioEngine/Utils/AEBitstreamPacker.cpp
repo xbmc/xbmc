@@ -98,6 +98,7 @@ unsigned int CAEBitstreamPacker::GetSize()
 uint8_t* CAEBitstreamPacker::GetBuffer()
 {
   m_dataSize = 0;
+  m_trueHDPos = 0;
   return m_packedBuffer;
 }
 

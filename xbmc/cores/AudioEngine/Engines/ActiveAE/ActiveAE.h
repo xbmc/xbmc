@@ -174,7 +174,7 @@ class CEngineStats
 {
 public:
   void Reset(unsigned int sampleRate, bool pcm);
-  void UpdateSinkDelay(const AEDelayStatus& status, int samples, int64_t pts, int clockId = 0);
+  void UpdateSinkDelay(const AEDelayStatus& status, int samples);
   void AddSamples(int samples, std::list<CActiveAEStream*> &streams);
   void GetDelay(AEDelayStatus& status);
   void GetDelay(AEDelayStatus& status, CActiveAEStream *stream);
@@ -182,8 +182,6 @@ public:
   float GetCacheTime(CActiveAEStream *stream);
   float GetCacheTotal(CActiveAEStream *stream);
   float GetWaterLevel();
-  int64_t GetPlayingPTS();
-  int Discontinuity(bool reset = false);
   void SetSuspended(bool state);
   void SetDSP(bool state);
   void SetCurrentSinkFormat(AEAudioFormat SinkFormat);
@@ -194,8 +192,6 @@ public:
   AEAudioFormat GetCurrentSinkFormat();
   CCriticalSection *GetLock() { return &m_lock; }
 protected:
-  int64_t m_playingPTS;
-  int m_clockId;
   float m_sinkCacheTotal;
   float m_sinkLatency;
   int m_bufferedSamples;
@@ -273,8 +269,6 @@ protected:
   void FreeSoundSample(uint8_t **data);
   void GetDelay(AEDelayStatus& status, CActiveAEStream *stream) { m_stats.GetDelay(status, stream); }
   void GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream) { m_stats.GetSyncInfo(info, stream); }
-  int64_t GetPlayingPTS() { return m_stats.GetPlayingPTS(); }
-  int Discontinuity() { return m_stats.Discontinuity(); }
   float GetCacheTime(CActiveAEStream *stream) { return m_stats.GetCacheTime(stream); }
   float GetCacheTotal(CActiveAEStream *stream) { return m_stats.GetCacheTotal(stream); }
   void FlushStream(CActiveAEStream *stream);
