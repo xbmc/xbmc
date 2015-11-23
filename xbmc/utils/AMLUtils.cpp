@@ -32,6 +32,7 @@
 #include "utils/StringUtils.h"
 #include "utils/AMLUtils.h"
 #include "guilib/gui3d.h"
+#include "utils/RegExp.h"
 
 bool aml_present()
 {
@@ -146,34 +147,51 @@ bool aml_permissions()
 
 bool aml_support_hevc()
 {
-  std::string valstr;
-  if(SysfsUtils::GetString("/sys/class/amstream/vcodec_profile", valstr) != 0)
+  static int has_hevc = -1;
+
+  if (has_hevc == -1)
   {
-    return false;
+    std::string valstr;
+    if(SysfsUtils::GetString("/sys/class/amstream/vcodec_profile", valstr) != 0)
+      has_hevc = 0;
+    else
+      has_hevc = (valstr.find("hevc:") != std::string::npos) ? 1: 0;
   }
-  return (valstr.find("hevc:") != std::string::npos);
+  return (has_hevc == 1);
 }
 
 bool aml_support_hevc_4k2k()
 {
-  std::string valstr;
-  if (SysfsUtils::GetString("/sys/class/amstream/vcodec_profile", valstr) != 0)
+  static int has_hevc_4k2k = -1;
+
+  if (has_hevc_4k2k == -1)
   {
-    return false;
+    CRegExp regexp;
+    regexp.RegComp("hevc:.*4k");
+    std::string valstr;
+    if (SysfsUtils::GetString("/sys/class/amstream/vcodec_profile", valstr) != 0)
+      has_hevc_4k2k = 0;
+    else
+      has_hevc_4k2k = (regexp.RegFind(valstr) >= 0) ? 1 : 0;
   }
-  return (valstr.find("hevc:4k") != std::string::npos);
+  return (has_hevc_4k2k == 1);
 }
 
 bool aml_support_h264_4k2k()
 {
-  std::string valstr;
-  if (SysfsUtils::GetString("/sys/class/amstream/vcodec_profile", valstr) != 0)
-  {
-    return false;
-  }
-  return (valstr.find("h264_4k2k:") != std::string::npos);
-}
+  static int has_h264_4k2k = -1;
 
+  if (has_h264_4k2k == -1)
+  {
+    std::string valstr;
+    if (SysfsUtils::GetString("/sys/class/amstream/vcodec_profile", valstr) != 0)
+    {
+      return false;
+    }
+    return (valstr.find("h264_4k2k:") != std::string::npos);
+  }
+  return (has_h264_4k2k == 1);
+}
 
 void aml_set_audio_passthrough(bool passthrough)
 {
