@@ -204,38 +204,6 @@ enum AML_DEVICE_TYPE aml_get_device_type()
   return aml_device_type;
 }
 
-void aml_cpufreq_min(bool limit)
-{
-// do not touch scaling_min_freq on android
-#if !defined(TARGET_ANDROID)
-  // only needed for m1/m3 SoCs
-  if (  aml_get_device_type() != AML_DEVICE_TYPE_UNKNOWN
-    &&  aml_get_device_type() <= AML_DEVICE_TYPE_M3)
-  {
-    int cpufreq = 300000;
-    if (limit)
-      cpufreq = 600000;
-
-    SysfsUtils::SetInt("/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq", cpufreq);
-  }
-#endif
-}
-
-void aml_cpufreq_max(bool limit)
-{
-  if (!aml_wired_present() && aml_get_device_type() == AML_DEVICE_TYPE_M6)
-  {
-    // this is a MX Stick, they cannot substain 1GHz
-    // operation without overheating so limit them to 800MHz.
-    int cpufreq = 1000000;
-    if (limit)
-      cpufreq = 800000;
-
-    SysfsUtils::SetInt("/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq", cpufreq);
-    SysfsUtils::SetString("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor", "ondemand");
-  }
-}
-
 void aml_set_audio_passthrough(bool passthrough)
 {
   if (  aml_present()

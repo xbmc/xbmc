@@ -64,14 +64,10 @@ bool CEGLNativeTypeAmlogic::CheckCompatibility()
 void CEGLNativeTypeAmlogic::Initialize()
 {
   aml_permissions();
-  aml_cpufreq_min(true);
-  aml_cpufreq_max(true);
   DisableFreeScale();
 }
 void CEGLNativeTypeAmlogic::Destroy()
 {
-  aml_cpufreq_min(false);
-  aml_cpufreq_max(false);
   return;
 }
 
