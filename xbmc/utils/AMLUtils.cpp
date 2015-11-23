@@ -182,13 +182,13 @@ enum AML_DEVICE_TYPE aml_get_device_type()
       else
         aml_device_type = AML_DEVICE_TYPE_UNKNOWN;
     }
-  }
-  else
-  {
-    if (StringUtils::StartsWithNoCase(cpu_hardware, "amlogic"))
-      aml_device_type = AML_DEVICE_TYPE_M9B;
     else
-      aml_device_type = AML_DEVICE_TYPE_UNKNOWN;
+    {
+      if (StringUtils::StartsWithNoCase(cpu_hardware, "amlogic"))
+        aml_device_type = AML_DEVICE_TYPE_M9B;
+      else
+        aml_device_type = AML_DEVICE_TYPE_UNKNOWN;
+    }
   }
 
   return aml_device_type;
