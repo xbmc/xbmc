@@ -24,6 +24,8 @@
 #include "system.h"
 #include "system_gl.h"
 
+#include "xbmc/utils/log.h"
+
 #include "StageFrightVideo.h"
 #include "StageFrightVideoPrivate.h"
 

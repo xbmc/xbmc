@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../posix -I../utils
+INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../posix 
 
 SRCS=EpgInfoTag.cpp \
 	EpgSearchFilter.cpp \

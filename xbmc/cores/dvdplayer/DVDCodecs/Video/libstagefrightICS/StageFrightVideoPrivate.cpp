@@ -32,7 +32,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
-#include "utils/log.h"
+#include "xbmc/utils/log.h"
 #include "threads/Thread.h"
 
 #include "android/jni/Surface.h"
