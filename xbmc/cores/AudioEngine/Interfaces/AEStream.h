@@ -95,12 +95,6 @@ public:
   virtual CAESyncInfo GetSyncInfo() = 0;
 
   /**
-   * Returns playing PTS
-   * @return millis
-   */
-  virtual int64_t GetPlayingPTS() = 0;
-
-  /**
    * Returns if the stream is buffering
    * @return True if the stream is buffering
    */
@@ -268,11 +262,6 @@ public:
    * Slave a stream to resume when this stream has drained
    */
   virtual void RegisterSlave(IAEStream *stream) = 0;
-
-  /**
-   * Sginal a clock change
-   */
-  virtual void Discontinuity() = 0;
 
   /**
    * Indicates if dsp addon system is active.

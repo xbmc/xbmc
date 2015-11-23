@@ -71,7 +71,6 @@ public:
   CSoundPacket *pkt;
   CActiveAEBufferPool *pool;
   int64_t timestamp;
-  int clockId;
   int pkt_start_offset;
   int refCount;
 };

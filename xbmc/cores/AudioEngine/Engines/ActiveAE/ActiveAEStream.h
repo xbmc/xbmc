@@ -109,7 +109,6 @@ public:
   virtual unsigned int AddData(uint8_t* const *data, unsigned int offset, unsigned int frames, double pts = 0.0);
   virtual double GetDelay();
   virtual CAESyncInfo GetSyncInfo();
-  virtual int64_t GetPlayingPTS();
   virtual bool IsBuffering();
   virtual double GetCacheTime();
   virtual double GetCacheTotal();
@@ -143,7 +142,6 @@ public:
   virtual void FadeVolume(float from, float to, unsigned int time);
   virtual bool IsFading();
   virtual void RegisterSlave(IAEStream *stream);
-  virtual void Discontinuity();
   virtual bool HasDSP();
 
 protected:
@@ -169,7 +167,6 @@ protected:
   CSampleBuffer *m_currentBuffer;
   CSoundPacket *m_remapBuffer;
   IAEResample *m_remapper;
-  int m_clockId;
 
   // only accessed by engine
   CActiveAEBufferPool *m_inputBuffers;

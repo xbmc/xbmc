@@ -254,7 +254,6 @@ unsigned int CActiveAEStream::AddData(uint8_t* const *data, unsigned int offset,
       if (!copied)
       {
         m_currentBuffer->timestamp = pts;
-        m_currentBuffer->clockId = m_clockId;
         m_currentBuffer->pkt_start_offset = m_currentBuffer->pkt->nb_samples;
       }
 
@@ -264,13 +263,37 @@ unsigned int CActiveAEStream::AddData(uint8_t* const *data, unsigned int offset,
       }
       copied += minFrames;
 
+      bool rawPktComplete = false;
       {
         CSingleLock lock(*m_statsLock);
-        m_currentBuffer->pkt->nb_samples += minFrames;
-        m_bufferedTime += (double)minFrames / m_currentBuffer->pkt->config.sample_rate;
+        if (m_format.m_dataFormat != AE_FMT_RAW)
+        {
+          m_currentBuffer->pkt->nb_samples += minFrames;
+          m_bufferedTime += (double)minFrames / m_currentBuffer->pkt->config.sample_rate;
+        }
+        else
+        {
+          if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+          {
+            m_currentBuffer->pkt->nb_samples += 2560;
+            uint8_t highByte = (minFrames >> 8) & 0xFF;
+            uint8_t lowByte = minFrames & 0xFF;
+            *(m_currentBuffer->pkt->data[0]+m_currentBuffer->pkt->nb_samples-2) = highByte;
+            *(m_currentBuffer->pkt->data[0]+m_currentBuffer->pkt->nb_samples-1) = lowByte;
+            m_bufferedTime += m_format.m_streamInfo.GetDuration() / 1000 / 24;
+            if (m_currentBuffer->pkt->nb_samples / 2560 == 24)
+              rawPktComplete = true;
+          }
+          else
+          {
+            m_bufferedTime += m_format.m_streamInfo.GetDuration() / 1000;
+            m_currentBuffer->pkt->nb_samples += minFrames;
+            rawPktComplete = true;
+          }
+        }
       }
 
-      if (m_currentBuffer->pkt->nb_samples == m_currentBuffer->pkt->max_nb_samples || m_format.m_dataFormat == AE_FMT_RAW)
+      if (m_currentBuffer->pkt->nb_samples == m_currentBuffer->pkt->max_nb_samples || rawPktComplete)
       {
         MsgStreamSample msgData;
         msgData.buffer = m_currentBuffer;
@@ -316,16 +339,6 @@ CAESyncInfo CActiveAEStream::GetSyncInfo()
   CAESyncInfo info;
   AE.GetSyncInfo(info, this);
   return info;
-}
-
-int64_t CActiveAEStream::GetPlayingPTS()
-{
-  return AE.GetPlayingPTS();
-}
-
-void CActiveAEStream::Discontinuity()
-{
-  m_clockId = AE.Discontinuity();
 }
 
 bool CActiveAEStream::IsBuffering()

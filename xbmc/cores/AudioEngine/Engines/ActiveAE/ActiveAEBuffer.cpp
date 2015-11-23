@@ -47,7 +47,6 @@ CSampleBuffer::CSampleBuffer() : pkt(NULL), pool(NULL)
 {
   refCount = 0;
   timestamp = 0;
-  clockId = -1;
   pkt_start_offset = 0;
 }
 
@@ -391,7 +390,6 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
       if (timestamp)
       {
         in->timestamp = timestamp;
-        in->clockId = -1;
       }
       m_outputSamples.push_back(in);
       busy = true;
@@ -483,13 +481,11 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
             m_lastSamplePts = in->timestamp;
           else
             in->pkt_start_offset = 0;
-          m_procSample->clockId = in->clockId;
         }
         else
         {
           m_lastSamplePts = timestamp;
           in->pkt_start_offset = 0;
-          m_procSample->clockId = -1;
         }
 
         // pts of last sample we added to the buffer

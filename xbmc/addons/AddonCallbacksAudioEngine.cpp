@@ -61,7 +61,6 @@ CAddonCallbacksAudioEngine::CAddonCallbacksAudioEngine(CAddon* addon)
   m_callbacks->AEStream_GetDataFormat         = AEStream_GetDataFormat;
   m_callbacks->AEStream_GetResampleRatio      = AEStream_GetResampleRatio;
   m_callbacks->AEStream_SetResampleRatio      = AEStream_SetResampleRatio;
-  m_callbacks->AEStream_Discontinuity         = AEStream_Discontinuity;
 }
 
 AEStreamHandle* CAddonCallbacksAudioEngine::AudioEngine_MakeStream(AudioEngineFormat StreamFormat, unsigned int Options)
@@ -393,19 +392,6 @@ void CAddonCallbacksAudioEngine::AEStream_SetResampleRatio(void *AddonData, AESt
   }
 
   ((IAEStream*)StreamHandle)->SetResampleRatio(Ratio);
-}
-
-void CAddonCallbacksAudioEngine::AEStream_Discontinuity(void *AddonData, AEStreamHandle *StreamHandle)
-{
-  // prevent compiler warnings
-  void *addonData = AddonData;
-  if (!addonData || !StreamHandle)
-  {
-    CLog::Log(LOGERROR, "libKODI_audioengine - %s - invalid stream data", __FUNCTION__);
-    return;
-  }
-
-  ((IAEStream*)StreamHandle)->Discontinuity();
 }
 
 }; /* namespace ADDON */
