@@ -103,8 +103,12 @@ public:
 
 class DllLibAmCodec : public DllDynamic, DllLibamCodecInterface
 {
-  // libamcodec is static linked into libamplayer.so
-  DECLARE_DLL_WRAPPER(DllLibAmCodec, "libamplayer.so")
+  // libamcodec is static linked into libamcodec.so (older versions use libamplayer.so)
+  public:
+  DllLibAmCodec() : DllDynamic("libamcodec.so") {
+    if(!CanLoad())
+      SetFile("libamplayer.so");
+  }
 
   DEFINE_METHOD1(int, codec_init,               (codec_para_t *p1))
   DEFINE_METHOD1(int, codec_close,              (codec_para_t *p1))
