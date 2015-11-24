@@ -733,7 +733,9 @@ void CTagLoaderTagLib::SetArtist(CMusicInfoTag &tag, const std::vector<std::stri
   if (values.size() == 1)
     tag.SetArtist(values[0]);
   else
-    tag.SetArtist(values);
+    // Fill both artist vector and artist desc from tag value.
+    // Note desc may not be empty as it could have been set by previous parsing of ID3v2 before APE
+    tag.SetArtist(values, true); 
 }
 
 const std::vector<std::string> CTagLoaderTagLib::SplitMBID(const std::vector<std::string> &values)
@@ -761,7 +763,9 @@ void CTagLoaderTagLib::SetAlbumArtist(CMusicInfoTag &tag, const std::vector<std:
   if (values.size() == 1)
     tag.SetAlbumArtist(values[0]);
   else
-    tag.SetAlbumArtist(values);
+    // Fill both artist vector and artist desc from tag value.
+    // Note desc may not be empty as it could have been set by previous parsing of ID3v2 before APE
+    tag.SetAlbumArtist(values, true);
 }
 
 void CTagLoaderTagLib::SetGenre(CMusicInfoTag &tag, const std::vector<std::string> &values)

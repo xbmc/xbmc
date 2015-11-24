@@ -343,10 +343,10 @@ void CMusicInfoTag::SetArtist(const std::string& strArtist)
   }
 }
 
-void CMusicInfoTag::SetArtist(const std::vector<std::string>& artists)
+void CMusicInfoTag::SetArtist(const std::vector<std::string>& artists, bool FillDesc /* = false*/)
 {
   m_artist = artists;
-  if (m_strArtistDesc.empty()) 
+  if (m_strArtistDesc.empty() || FillDesc) 
   { 
     SetArtistDesc(StringUtils::Join(artists, g_advancedSettings.m_musicItemSeparator));
   }
@@ -381,10 +381,10 @@ void CMusicInfoTag::SetAlbumArtist(const std::string& strAlbumArtist)
   }
 }
 
-void CMusicInfoTag::SetAlbumArtist(const std::vector<std::string>& albumArtists)
+void CMusicInfoTag::SetAlbumArtist(const std::vector<std::string>& albumArtists, bool FillDesc /* = false*/)
 {
   m_albumArtist = albumArtists;
-  if (m_strAlbumArtistDesc.empty()) 
+  if (m_strAlbumArtistDesc.empty() || FillDesc) 
     SetAlbumArtistDesc(StringUtils::Join(albumArtists, g_advancedSettings.m_musicItemSeparator));
 }
 
@@ -764,8 +764,10 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_strURL;
     ar << m_strTitle;
     ar << m_artist;
+    ar << m_strArtistDesc;
     ar << m_strAlbum;
     ar << m_albumArtist;
+    ar << m_strAlbumArtistDesc;
     ar << m_genre;
     ar << m_iDuration;
     ar << m_iTrack;
@@ -797,8 +799,10 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_strURL;
     ar >> m_strTitle;
     ar >> m_artist;
+    ar >> m_strArtistDesc;
     ar >> m_strAlbum;
     ar >> m_albumArtist;
+    ar >> m_strAlbumArtistDesc;
     ar >> m_genre;
     ar >> m_iDuration;
     ar >> m_iTrack;
