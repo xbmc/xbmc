@@ -93,10 +93,6 @@ public:
   virtual int codec_set_cntl_avthresh(codec_para_t *pcodec, unsigned int avthresh)=0;
   virtual int codec_set_cntl_syncthresh(codec_para_t *pcodec, unsigned int syncthresh)=0;
 
-  // grab these from libamplayer
-  virtual int h263vld(unsigned char *inbuf, unsigned char *outbuf, int inbuf_len, int s263)=0;
-  virtual int decodeble_h263(unsigned char *buf)=0;
-
   // grab this from amffmpeg so we do not have to load DllAvUtil
   virtual AVRational av_d2q(double d, int max)=0;
 };
@@ -122,9 +118,6 @@ class DllLibAmCodec : public DllDynamic, DllLibamCodecInterface
   DEFINE_METHOD2(int, codec_set_cntl_avthresh,  (codec_para_t *p1, unsigned int p2))
   DEFINE_METHOD2(int, codec_set_cntl_syncthresh,(codec_para_t *p1, unsigned int p2))
 
-  DEFINE_METHOD4(int, h263vld,                  (unsigned char *p1, unsigned char *p2, int p3, int p4))
-  DEFINE_METHOD1(int, decodeble_h263,           (unsigned char *p1))
-
   DEFINE_METHOD2(AVRational, av_d2q,            (double p1, int p2))
 
   BEGIN_METHOD_RESOLVE()
@@ -143,9 +136,6 @@ class DllLibAmCodec : public DllDynamic, DllLibamCodecInterface
     RESOLVE_METHOD(codec_set_cntl_mode)
     RESOLVE_METHOD(codec_set_cntl_avthresh)
     RESOLVE_METHOD(codec_set_cntl_syncthresh)
-
-    RESOLVE_METHOD(h263vld)
-    RESOLVE_METHOD(decodeble_h263)
 
     RESOLVE_METHOD(av_d2q)
   END_METHOD_RESOLVE()
@@ -335,8 +325,6 @@ typedef struct am_private_t
   unsigned int      video_ratio64;
   unsigned int      video_rate;
   unsigned int      video_rotation_degree;
-  int               flv_flag;
-  int               h263_decodable;
   int               extrasize;
   uint8_t           *extradata;
   DllLibAmCodec     *m_dll;
@@ -1519,13 +1507,6 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
     am_private->video_codec_type = codec_tag_to_vdec_type(am_private->video_codec_tag);
   if (am_private->video_codec_type == VIDEO_DEC_FORMAT_UNKNOW)
     am_private->video_codec_type = codec_tag_to_vdec_type(am_private->video_codec_id);
-
-  am_private->flv_flag = 0;
-  if (am_private->video_codec_id == AV_CODEC_ID_FLV1)
-  {
-    am_private->video_codec_tag = CODEC_TAG_F263;
-    am_private->flv_flag = 1;
-  }
 
   CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder "
     "hints.width(%d), hints.height(%d), hints.codec(%d), hints.codec_tag(%d), hints.pid(%d)",
