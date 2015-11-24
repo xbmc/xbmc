@@ -1250,47 +1250,6 @@ int set_header_info(am_private_t *para)
       else if (para->video_codec_type == VIDEO_DEC_FORMAT_H263)
       {
         return PLAYER_UNSUPPORT;
-        unsigned char *vld_buf;
-        int vld_len, vld_buf_size = para->video_width * para->video_height * 2;
-
-        if (!pkt->data_size) {
-            return PLAYER_SUCCESS;
-        }
-
-        if ((pkt->data[0] == 0) && (pkt->data[1] == 0) && (pkt->data[2] == 1) && (pkt->data[3] == 0xb6)) {
-            return PLAYER_SUCCESS;
-        }
-
-        vld_buf = (unsigned char*)malloc(vld_buf_size);
-        if (!vld_buf) {
-            return PLAYER_NOMEM;
-        }
-
-        if (para->flv_flag) {
-            vld_len = para->m_dll->h263vld(pkt->data, vld_buf, pkt->data_size, 1);
-        } else {
-            if (0 == para->h263_decodable) {
-                para->h263_decodable = para->m_dll->decodeble_h263(pkt->data);
-                if (0 == para->h263_decodable) {
-                    CLog::Log(LOGDEBUG, "[%s]h263 unsupport video and audio, exit", __FUNCTION__);
-                    return PLAYER_UNSUPPORT;
-                }
-            }
-            vld_len = para->m_dll->h263vld(pkt->data, vld_buf, pkt->data_size, 0);
-        }
-
-        if (vld_len > 0) {
-            if (pkt->buf) {
-                free(pkt->buf);
-            }
-            pkt->buf = vld_buf;
-            pkt->buf_size = vld_buf_size;
-            pkt->data = pkt->buf;
-            pkt->data_size = vld_len;
-        } else {
-            free(vld_buf);
-            pkt->data_size = 0;
-        }
       }
     } else if (para->video_format == VFORMAT_VC1) {
         if (para->video_codec_type == VIDEO_DEC_FORMAT_WMV3) {
