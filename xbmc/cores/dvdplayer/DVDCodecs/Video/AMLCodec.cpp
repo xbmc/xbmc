@@ -100,7 +100,7 @@ public:
 
 class DllLibAmCodec : public DllDynamic, DllLibamCodecInterface
 {
-  // libamcodec is static linked into libamplayer.so
+  // libamcodec is static linked into libamplayer.so or libamcodec.so
   DECLARE_DLL_WRAPPER(DllLibAmCodec, "libamplayer.so")
 
   DEFINE_METHOD1(int, codec_init,               (codec_para_t *p1))
@@ -1382,7 +1382,12 @@ CAMLCodec::CAMLCodec() : CThread("CAMLCodec")
   am_private = new am_private_t;
   memset(am_private, 0, sizeof(am_private_t));
   m_dll = new DllLibAmCodec;
-  m_dll->Load();
+  if(!m_dll->Load())
+  {
+    CLog::Log(LOGWARNING, "CAMLCodec::CAMLCodec libamplayer.so not found, trying libamcodec.so instead");
+    m_dll->SetFile("libamcodec.so");
+    m_dll->Load();
+  }
   am_private->m_dll = m_dll;
 }
 
