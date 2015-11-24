@@ -41,6 +41,10 @@
 #include "utils/BitstreamConverter.h"
 #endif
 
+extern "C" {
+#include "libavutil/avutil.h"
+}  // extern "C"
+
 #include <unistd.h>
 #include <queue>
 #include <vector>
@@ -92,9 +96,6 @@ public:
   virtual int codec_set_cntl_mode(codec_para_t *pcodec, unsigned int mode)=0;
   virtual int codec_set_cntl_avthresh(codec_para_t *pcodec, unsigned int avthresh)=0;
   virtual int codec_set_cntl_syncthresh(codec_para_t *pcodec, unsigned int syncthresh)=0;
-
-  // grab this from amffmpeg so we do not have to load DllAvUtil
-  virtual AVRational av_d2q(double d, int max)=0;
 };
 
 class DllLibAmCodec : public DllDynamic, DllLibamCodecInterface
@@ -118,8 +119,6 @@ class DllLibAmCodec : public DllDynamic, DllLibamCodecInterface
   DEFINE_METHOD2(int, codec_set_cntl_avthresh,  (codec_para_t *p1, unsigned int p2))
   DEFINE_METHOD2(int, codec_set_cntl_syncthresh,(codec_para_t *p1, unsigned int p2))
 
-  DEFINE_METHOD2(AVRational, av_d2q,            (double p1, int p2))
-
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(codec_init)
     RESOLVE_METHOD(codec_close)
@@ -136,8 +135,6 @@ class DllLibAmCodec : public DllDynamic, DllLibamCodecInterface
     RESOLVE_METHOD(codec_set_cntl_mode)
     RESOLVE_METHOD(codec_set_cntl_avthresh)
     RESOLVE_METHOD(codec_set_cntl_syncthresh)
-
-    RESOLVE_METHOD(av_d2q)
   END_METHOD_RESOLVE()
 
 public:
@@ -1431,9 +1428,9 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   am_private->video_pid        = hints.pid;
 
   // handle video ratio
-  AVRational video_ratio       = m_dll->av_d2q(1, SHRT_MAX);
+  AVRational video_ratio       = av_d2q(1, SHRT_MAX);
   //if (!hints.forced_aspect)
-  //  video_ratio = m_dll->av_d2q(hints.aspect, SHRT_MAX);
+  //  video_ratio = av_d2q(hints.aspect, SHRT_MAX);
   am_private->video_ratio      = ((int32_t)video_ratio.num << 16) | video_ratio.den;
   am_private->video_ratio64    = ((int64_t)video_ratio.num << 32) | video_ratio.den;
 
