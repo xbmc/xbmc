@@ -486,7 +486,6 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
   else if(demuxer)
   {
     std::string filename = demuxer->GetFileName();
-    int count = demuxer->GetNrOfStreams();
     int source;
     if(input) /* hack to know this is sub decoder */
       source = Source(STREAM_SOURCE_DEMUX, filename);
@@ -495,9 +494,8 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
     else
       source = Source(STREAM_SOURCE_VIDEOMUX, filename);
 
-    for(int i=0;i<count;i++)
+    for (auto stream : demuxer->GetStreams())
     {
-      CDemuxStream* stream = demuxer->GetStream(i);
       /* skip streams with no type */
       if (stream->type == STREAM_NONE)
         continue;

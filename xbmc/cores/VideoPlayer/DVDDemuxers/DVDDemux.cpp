@@ -63,17 +63,21 @@ std::string CDemuxStreamAudio::GetStreamType()
   return sInfo;
 }
 
-int CDVDDemux::GetNrOfSubtitleStreams()
+int CDVDDemux::GetNrOfStreams(StreamType streamType)
 {
   int iCounter = 0;
 
-  for (int i = 0; i < GetNrOfStreams(); i++)
+  for (auto pStream : GetStreams())
   {
-    CDemuxStream* pStream = GetStream(i);
-    if (pStream->type == STREAM_SUBTITLE) iCounter++;
+    if (pStream && pStream->type == streamType) iCounter++;
   }
 
   return iCounter;
+}
+
+int CDVDDemux::GetNrOfSubtitleStreams()
+{
+  return GetNrOfStreams(STREAM_SUBTITLE);
 }
 
 std::string CDemuxStream::GetStreamName()
@@ -81,9 +85,28 @@ std::string CDemuxStream::GetStreamName()
   return "";
 }
 
+CDemuxStream* CDVDDemux::GetStreamFromId(int index, StreamType streamType) const
+{
+  int counter = -1;
+  for (auto pStream : GetStreams())
+  {
+    if (pStream && pStream->type == streamType)
+      counter++;
+    if (index == counter)
+      return pStream;
+  }
+  return NULL;
+}
+
 AVDiscard CDemuxStream::GetDiscard()
 {
   return AVDISCARD_NONE;
+}
+
+int64_t CDemuxStream::NewGuid()
+{
+  static int64_t guid = 0;
+  return guid++;
 }
 
 void CDemuxStream::SetDiscard(AVDiscard discard)

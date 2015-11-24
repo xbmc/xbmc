@@ -106,7 +106,7 @@ namespace PVR
 class CCurrentStream
 {
 public:
-  int id;     // demuxerid of current playing stream
+  int64_t id;     // demuxerid of current playing stream
   int source;
   double dts;    // last dts from demuxer, used to find disncontinuities
   double dur;    // last frame expected duration
@@ -178,7 +178,7 @@ typedef struct SelectionStream
   std::string  name;
   CDemuxStream::EFlags flags = CDemuxStream::FLAG_NONE;
   int          source = 0;
-  int          id = 0;
+  int64_t      id = 0;
   std::string  codec;
   int          channels = 0;
   int          bitrate = 0;
