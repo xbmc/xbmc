@@ -1919,7 +1919,19 @@ void CApplication::Render()
     else
     {
       // engage the frame limiter as needed
-      limitFrames = lowfps || extPlayerActive;
+
+      // slowGUI: to reduce wasted cycles, skip render frames when no
+      //          playback and no recent input.
+      //              
+      // Set g_advancedSettings.m_guiSlowIdle to 0 to disable. Otherwise
+      // it holds the timeout in seconds to detect idle.
+      //
+      bool slowGUI = g_advancedSettings.m_guiSlowWhenIdle &&
+                     (!m_pPlayer->IsPlaying() || m_pPlayer->IsPaused()) && 
+                     GlobalIdleTime() > g_advancedSettings.m_guiSlowWhenIdle;
+
+      limitFrames = lowfps || extPlayerActive || slowGUI;
+
       // DXMERGE - we checked for g_videoConfig.GetVSyncMode() before this
       //           perhaps allowing it to be set differently than the UI option??
       if (vsync_mode == VSYNC_DISABLED || vsync_mode == VSYNC_VIDEO)
@@ -1942,6 +1954,8 @@ void CApplication::Render()
         }
         else if (lowfps)
           singleFrameTime = 200;  // 5 fps, <=200 ms latency to wake up
+        else if (slowGUI)
+          singleFrameTime = 500; // 2 fps, <=500 ms latency to wake up
       }
 
     }
