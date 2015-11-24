@@ -265,7 +265,10 @@ bool CGUIWindowMusicNav::Update(const std::string &strDirectory, bool updateFilt
 
   if (CGUIWindowMusicBase::Update(strDirectory, updateFilterPath))
   {
-    if (m_vecItems->GetContent().empty())
+    
+    if (m_vecItems->GetContent().empty() && 
+        !m_vecItems->IsSourcesPath() &&
+        !m_vecItems->IsVirtualDirectoryRoot())
       m_vecItems->SetContent("files");
 
     m_thumbLoader.Load(*m_unfilteredItems);
@@ -343,12 +346,15 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
     else
       items.SetContent("");
   }
-  else if (URIUtils::PathEquals(strDirectory, "special://musicplaylists/"))
+  else if (items.IsPlayList())
+    items.SetContent("songs");
+  else if (URIUtils::PathEquals(strDirectory, "special://musicplaylists/") || 
+           URIUtils::PathEquals(strDirectory, "library://music/playlists.xml/"))
     items.SetContent("playlists");
   else if (URIUtils::PathEquals(strDirectory, "plugin://music/"))
     items.SetContent("plugins");
-  else if (items.IsPlayList())
-    items.SetContent("songs");
+  else if (items.IsAddonsPath())
+    items.SetContent("addons");
 
   return bResult;
 }
