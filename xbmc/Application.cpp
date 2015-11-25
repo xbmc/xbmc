@@ -1955,7 +1955,7 @@ void CApplication::Render()
         else if (lowfps)
           singleFrameTime = 200;  // 5 fps, <=200 ms latency to wake up
         else if (slowGUI)
-          singleFrameTime = 500; // 2 fps, <=500 ms latency to wake up
+          singleFrameTime = 2000; // 2 fps, <=500 ms latency to wake up
       }
 
     }
@@ -2041,7 +2041,16 @@ void CApplication::Render()
 
     unsigned int frameTime = now - m_lastFrameTime;
     if (frameTime < singleFrameTime)
-      Sleep(singleFrameTime - frameTime);
+    {
+      unsigned int sleepTarget = singleFrameTime - frameTime;
+      unsigned int slept = 0;
+      while (CWinEvents::GetQueueSize() == 0 && slept < sleepTarget)
+      {
+        unsigned int sleep_ms = std::min<unsigned int>(sleepTarget,100);
+        Sleep(sleep_ms);
+        slept+=sleep_ms;
+      } 
+    }
   }
 
   if (flip)
