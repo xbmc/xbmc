@@ -18,6 +18,8 @@
  *
  */
 
+#include <algorithm>
+
 #include "MusicInfoTag.h"
 #include "music/Album.h"
 #include "music/Artist.h"
@@ -470,7 +472,7 @@ void CMusicInfoTag::SetUserrating(char rating)
 
 void CMusicInfoTag::SetListeners(int listeners)
 {
- m_listeners = listeners;
+  m_listeners = std::max(listeners, 0);
 }
 
 void CMusicInfoTag::SetPlayCount(int playcount)
@@ -865,6 +867,7 @@ void CMusicInfoTag::Clear()
   m_coverArt.clear();
   m_replayGain = ReplayGain();
   m_albumReleaseType = CAlbum::Album;
+  m_listeners = 0;
 }
 
 void CMusicInfoTag::AppendArtist(const std::string &artist)
