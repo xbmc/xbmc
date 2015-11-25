@@ -101,7 +101,7 @@ static const dxva2_mode_t dxva2_modes[] = {
 
     /* HEVC / H.265 */
     { "HEVC / H.265 variable-length decoder, main",   &D3D11_DECODER_PROFILE_HEVC_VLD_MAIN,   AV_CODEC_ID_HEVC },
-    { "HEVC / H.265 variable-length decoder, main10", &D3D11_DECODER_PROFILE_HEVC_VLD_MAIN10, 0 },
+    { "HEVC / H.265 variable-length decoder, main10", &D3D11_DECODER_PROFILE_HEVC_VLD_MAIN10, AV_CODEC_ID_HEVC },
 
 #ifdef FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO
     /* Intel specific modes (only useful on older GPUs) */
@@ -401,7 +401,7 @@ void CDXVAContext::QueryCaps()
   }
 }
 
-bool CDXVAContext::GetInputAndTarget(int codec, GUID &inGuid, DXGI_FORMAT &outFormat)
+bool CDXVAContext::GetInputAndTarget(int codec, bool bHighBitdepth, GUID &inGuid, DXGI_FORMAT &outFormat)
 {
   outFormat = DXGI_FORMAT_UNKNOWN;
 
@@ -414,13 +414,26 @@ bool CDXVAContext::GetInputAndTarget(int codec, GUID &inGuid, DXGI_FORMAT &outFo
 
     for (unsigned i = 0; i < m_input_count && outFormat == DXGI_FORMAT_UNKNOWN; i++)
     {
-      if (!IsEqualGUID(m_input_list[i], *mode->guid))
+      bool supported = IsEqualGUID(m_input_list[i], *mode->guid);
+      if (codec == AV_CODEC_ID_HEVC)
+      {
+        if (bHighBitdepth && !IsEqualGUID(m_input_list[i], D3D11_DECODER_PROFILE_HEVC_VLD_MAIN10))
+          supported = false;
+        else if (!bHighBitdepth && IsEqualGUID(m_input_list[i], D3D11_DECODER_PROFILE_HEVC_VLD_MAIN10))
+          supported = false;
+      }
+      if (!supported)
         continue;
 
       CLog::Log(LOGDEBUG, "DXVA - trying '%s'", mode->name);
       for (unsigned j = 0; render_targets_dxgi[j] != DXGI_FORMAT_UNKNOWN && outFormat == DXGI_FORMAT_UNKNOWN; j++)
       {
         BOOL supported;
+        if (bHighBitdepth && render_targets_dxgi[j] != DXGI_FORMAT_P010 && render_targets_dxgi[j] != DXGI_FORMAT_P016)
+          continue;
+        if (!bHighBitdepth && (render_targets_dxgi[j] == DXGI_FORMAT_P010 || render_targets_dxgi[j] == DXGI_FORMAT_P016))
+          continue;
+
         HRESULT res = m_service->CheckVideoDecoderFormat(&m_input_list[i], render_targets_dxgi[j], &supported);
         if (FAILED(res))
         {
@@ -904,7 +917,8 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum PixelFo
   if (!CDXVAContext::EnsureContext(&m_dxva_context, this))
     return false;
 
-  if (!m_dxva_context->GetInputAndTarget(avctx->codec_id, m_format.Guid, m_format.OutputFormat))
+  bool bHighBitdepth = (avctx->codec_id == AV_CODEC_ID_HEVC && (avctx->sw_pix_fmt == AV_PIX_FMT_YUV420P10 || avctx->profile == FF_PROFILE_HEVC_MAIN_10));
+  if (!m_dxva_context->GetInputAndTarget(avctx->codec_id, bHighBitdepth, m_format.Guid, m_format.OutputFormat))
   {
     CLog::Log(LOGDEBUG, "DXVA - unable to find an input/output format combination");
     return false;
