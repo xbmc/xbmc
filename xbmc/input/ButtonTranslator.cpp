@@ -1325,8 +1325,20 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
         else if (type == "appcommand")
             buttonCode = TranslateAppCommand(pButton->Value());
 
-        if (buttonCode && pButton->FirstChild())
-          MapAction(buttonCode, pButton->FirstChild()->Value(), map);
+        if (buttonCode)
+        {
+          if (pButton->FirstChild() && pButton->FirstChild()->Value()[0])
+            MapAction(buttonCode, pButton->FirstChild()->Value(), map);
+          else
+          {
+            buttonMap::iterator it = map.find(buttonCode);
+            while (it != map.end())
+            {
+              map.erase(it);
+              it = map.find(buttonCode);
+            }
+          }
+        }
         pButton = pButton->NextSiblingElement();
       }
 
