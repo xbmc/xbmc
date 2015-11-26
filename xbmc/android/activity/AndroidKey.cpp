@@ -187,6 +187,8 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
   if (event == NULL)
     return false;
 
+  bool ret = true;
+
   int32_t flags   = AKeyEvent_getFlags(event);
   int32_t state   = AKeyEvent_getMetaState(event);
   int32_t action  = AKeyEvent_getAction(event);
@@ -207,7 +209,7 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
       break;
     }
   }
-  if (m_handleMediaKeys)
+  if (sym == XBMCK_UNKNOWN)
   {
     for (unsigned int index = 0; index < sizeof(MediakeyMap) / sizeof(KeyMap); index++)
     {
@@ -216,6 +218,10 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
         sym = MediakeyMap[index].xbmcKey;
         break;
       }
+    }
+    if (sym != XBMCK_UNKNOWN)
+    {
+      ret = m_handleMediaKeys;
     }
   }
 
@@ -254,7 +260,7 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
         (state & AMETA_SYM_ON) ? "yes" : "no");
 #endif
       XBMC_Key((uint8_t)keycode, sym, modifiers, unicode, false);
-      return true;
+      break;
 
     case AKEY_EVENT_ACTION_UP:
 #if 1
@@ -265,7 +271,7 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
         (state & AMETA_SYM_ON) ? "yes" : "no");
 #endif
       XBMC_Key((uint8_t)keycode, sym, modifiers, unicode, true);
-      return true;
+      break;
 
     case AKEY_EVENT_ACTION_MULTIPLE:
 #if 1
@@ -275,6 +281,7 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
         (state & AMETA_SHIFT_ON) ? "yes" : "no",
         (state & AMETA_SYM_ON) ? "yes" : "no");
 #endif
+      return false;
       break;
 
     default:
@@ -285,10 +292,11 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
         (state & AMETA_SHIFT_ON) ? "yes" : "no",
         (state & AMETA_SYM_ON) ? "yes" : "no");
 #endif
+      return false;
       break;
   }
 
-  return false;
+  return ret;
 }
 
 void CAndroidKey::XBMC_Key(uint8_t code, uint16_t key, uint16_t modifiers, uint16_t unicode, bool up)
