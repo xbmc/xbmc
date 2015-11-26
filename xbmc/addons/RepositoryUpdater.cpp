@@ -118,7 +118,7 @@ void CRepositoryUpdater::CheckForUpdates(const ADDON::RepositoryPtr& repo, bool 
     m_doneEvent.Reset();
     if (showProgress)
       SetProgressIndicator(job);
-    CJobManager::GetInstance().AddJob(job, this, CJob::PRIORITY_LOW_PAUSABLE);
+    CJobManager::GetInstance().AddJob(job, this, CJob::PRIORITY_LOW);
   }
   else
   {
@@ -134,6 +134,15 @@ void CRepositoryUpdater::Await()
 
 void CRepositoryUpdater::OnTimeout()
 {
+  //workaround
+  if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+      g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
+  {
+    CLog::Log(LOGDEBUG,"CRepositoryUpdater: busy playing. postponing scheduled update");
+    m_timer.RestartAsync(2 * 60 * 1000);
+    return;
+  }
+
   CLog::Log(LOGDEBUG,"CRepositoryUpdater: running scheduled update");
   CheckForUpdates();
 }
