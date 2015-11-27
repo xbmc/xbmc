@@ -894,6 +894,10 @@ bool CPVRChannelGroup::Persist(void)
   if (!HasChanges() || (!m_bLoaded && m_iGroupId != -1))
     return bReturn;
 
+  // Mark newly created groups as loaded so future updates will also be persisted...
+  if (m_iGroupId == -1)
+    m_bLoaded = true;
+
   if (CPVRDatabase *database = GetPVRDatabase())
   {
     CLog::Log(LOGDEBUG, "CPVRChannelGroup - %s - persisting channel group '%s' with %d channels",
