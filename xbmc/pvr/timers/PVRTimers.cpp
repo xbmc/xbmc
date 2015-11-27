@@ -143,11 +143,11 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
         UpdateEpgEvent(newTimer);
 
         VecTimerInfoTag* addEntry = NULL;
-        MapTags::iterator itr = m_tags.find(newTimer->StartAsUTC());
+        MapTags::iterator itr = m_tags.find(newTimer->m_bStartAnyTime ? CDateTime() : newTimer->StartAsUTC());
         if (itr == m_tags.end())
         {
           addEntry = new VecTimerInfoTag;
-          m_tags.insert(std::make_pair(newTimer->StartAsUTC(), addEntry));
+          m_tags.insert(std::make_pair(newTimer->m_bStartAnyTime ? CDateTime() : newTimer->StartAsUTC(), addEntry));
         }
         else
         {
@@ -198,7 +198,8 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
         bChanged = true;
         bAddedOrDeleted = true;
       }
-      else if (timer->StartAsUTC() != it->first)
+      else if ((timer->m_bStartAnyTime && it->first != CDateTime()) ||
+               (!timer->m_bStartAnyTime && timer->StartAsUTC() != it->first))
       {
         /* timer start has changed */
         CLog::Log(LOGDEBUG,"PVRTimers - %s - changed start time timer %d on client %d",
@@ -230,11 +231,11 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
   for (VecTimerInfoTag::const_iterator timerIt = timersToMove.begin(); timerIt != timersToMove.end(); ++timerIt)
   {
     VecTimerInfoTag* addEntry = NULL;
-    MapTags::const_iterator itr = m_tags.find((*timerIt)->StartAsUTC());
+    MapTags::const_iterator itr = m_tags.find((*timerIt)->m_bStartAnyTime ? CDateTime() : (*timerIt)->StartAsUTC());
     if (itr == m_tags.end())
     {
       addEntry = new VecTimerInfoTag;
-      m_tags.insert(std::make_pair((*timerIt)->StartAsUTC(), addEntry));
+      m_tags.insert(std::make_pair((*timerIt)->m_bStartAnyTime ? CDateTime() : (*timerIt)->StartAsUTC(), addEntry));
     }
     else
     {
@@ -277,11 +278,11 @@ bool CPVRTimers::UpdateFromClient(const CPVRTimerInfoTagPtr &timer)
   {
     tag = CPVRTimerInfoTagPtr(new CPVRTimerInfoTag());
     VecTimerInfoTag* addEntry = NULL;
-    MapTags::iterator itr = m_tags.find(timer->StartAsUTC());
+    MapTags::iterator itr = m_tags.find(timer->m_bStartAnyTime ? CDateTime() : timer->StartAsUTC());
     if (itr == m_tags.end())
     {
       addEntry = new VecTimerInfoTag;
-      m_tags.insert(std::make_pair(timer->StartAsUTC(), addEntry));
+      m_tags.insert(std::make_pair(timer->m_bStartAnyTime ? CDateTime() : timer->StartAsUTC(), addEntry));
     }
     else
     {
