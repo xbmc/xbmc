@@ -18,9 +18,10 @@
 <!--       <obc45>Stop</obc45>         -->
 <!--    </universalremote>            -->
 
-<!-- Note that the action can be a built-in function.                 -->
-<!--  eg <B>ActivateWindow(MyMusic)</B>                         -->
-<!-- would automatically go to My Music on the press of the B button. -->
+<!-- Note that the action can be a built-in function.                                         -->
+<!--  eg <B>ActivateWindow(MyMusic)</B>                                                       -->
+<!-- would automatically go to My Music on the press of the B button.                         -->
+<!-- An empty action removes the corresponding mapping from the default keymap                -->
 
 <!-- Joysticks / Gamepads:                                                                    -->
 <!--   See the sample PS3 controller configuration below for the format.                      -->
