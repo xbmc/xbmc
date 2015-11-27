@@ -269,7 +269,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
       std::string strIcon;
       g_PVRClients->GetClientAddonIcon(entry.first, strIcon);
 
-      CEventLog::GetInstance().Add(EventPtr(new CNotificationEvent(strName, entry.second, strIcon, EventLevelInformation)));
+      CEventLog::GetInstance().Add(EventPtr(new CNotificationEvent(strName, entry.second, strIcon, EventLevel::Information)));
     }
   }
 

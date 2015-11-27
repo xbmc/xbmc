@@ -268,9 +268,9 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   CURL zipDir = URIUtils::CreateArchivePath("zip", pathToUrl, "");
   if (!CDirectory::GetDirectory(zipDir, items) || items.Size() != 1 || !items[0]->m_bIsFolder)
   {
-    CEventLog::GetInstance().AddWithNotification(
-      EventPtr(new CNotificationEvent(24045, StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()),
-                   "special://xbmc/media/icon256x256.png", EventLevelError)));
+    CEventLog::GetInstance().AddWithNotification(EventPtr(new CNotificationEvent(24045,
+        StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()),
+        "special://xbmc/media/icon256x256.png", EventLevel::Error)));
     return false;
   }
 
@@ -289,9 +289,9 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
     return DoInstall(addon, RepositoryPtr());
   }
 
-  CEventLog::GetInstance().AddWithNotification(
-    EventPtr(new CNotificationEvent(24045, StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()),
-                 "special://xbmc/media/icon256x256.png", EventLevelError)));
+  CEventLog::GetInstance().AddWithNotification(EventPtr(new CNotificationEvent(24045,
+      StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()),
+      "special://xbmc/media/icon256x256.png", EventLevel::Error)));
   return false;
 }
 
@@ -833,16 +833,15 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
     if (msg.empty())
       msg = g_localizeStrings.Get(addon2 != NULL ? 113 : 114);
 
-    activity = EventPtr(new CAddonManagementEvent(addon, EventLevelError, msg));
+    activity = EventPtr(new CAddonManagementEvent(addon, EventLevel::Error, msg));
     if (IsModal())
       CGUIDialogOK::ShowAndGetInput(CVariant{m_addon->Name()}, CVariant{msg});
   }
   else
   {
-    activity =
-      EventPtr(new CNotificationEvent(24045,
-                   !msg.empty() ? msg : StringUtils::Format(g_localizeStrings.Get(24143).c_str(), fileName.c_str()),
-                   EventLevelError));
+    activity = EventPtr(new CNotificationEvent(24045,
+        !msg.empty() ? msg : StringUtils::Format(g_localizeStrings.Get(24143).c_str(), fileName.c_str()),
+        EventLevel::Error));
 
     if (IsModal())
       CGUIDialogOK::ShowAndGetInput(CVariant{fileName}, CVariant{msg});

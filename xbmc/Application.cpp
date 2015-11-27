@@ -1110,7 +1110,7 @@ bool CApplication::Initialize()
   CEventLog::GetInstance().Add(EventPtr(new CNotificationEvent(
     StringUtils::Format(g_localizeStrings.Get(177).c_str(), g_sysinfo.GetAppName().c_str()),
     StringUtils::Format(g_localizeStrings.Get(178).c_str(), g_sysinfo.GetAppName().c_str()),
-    "special://xbmc/media/icon256x256.png", EventLevelBasic)));
+    "special://xbmc/media/icon256x256.png", EventLevel::Basic)));
 
   g_peripherals.Initialise();
 
