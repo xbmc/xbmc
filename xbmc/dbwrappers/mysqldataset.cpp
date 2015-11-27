@@ -27,6 +27,7 @@
 #include "system.h" // for GetLastError()
 #include "network/WakeOnAccess.h"
 #include "Util.h"
+#include "utils/StringUtils.h"
 
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"
@@ -108,6 +109,45 @@ const char *MysqlDatabase::getErrorMsg() {
    return error.c_str();
 }
 
+void MysqlDatabase::configure_connection() {
+  char sqlcmd[512];
+  int ret;
+
+  // MySQL 5.7.5+: See #8393
+  strcpy(sqlcmd, "SET SESSION sql_mode = (SELECT REPLACE(@@SESSION.sql_mode,'ONLY_FULL_GROUP_BY',''))");
+  if ((ret = mysql_real_query(conn, sqlcmd, strlen(sqlcmd))) != MYSQL_OK)
+    throw DbErrors("Can't disable sql_mode ONLY_FULL_GROUP_BY: '%s' (%d)", db.c_str(), ret);
+
+  // MySQL 5.7.6+: See #8393
+  strcpy(sqlcmd, "SELECT @@SESSION.optimizer_switch");
+  if ((ret = mysql_real_query(conn, sqlcmd, strlen(sqlcmd))) != MYSQL_OK)
+    throw DbErrors("Can't query optimizer_switch: '%s' (%d)", db.c_str(), ret);
+
+  MYSQL_RES* res = mysql_store_result(conn);
+  MYSQL_ROW row;
+
+  if (res)
+  {
+    if ((row = mysql_fetch_row(res)) != NULL)
+    {
+      std::string column = row[0];
+      std::vector<std::string> split = StringUtils::Split(column, ',');
+
+      for (std::vector<std::string>::iterator itIn = split.begin(); itIn != split.end(); ++itIn)
+      {
+        if (StringUtils::Trim(*itIn) == "derived_merge=on")
+        {
+          strcpy(sqlcmd, "SET SESSION optimizer_switch = 'derived_merge=off'");
+          if ((ret = mysql_real_query(conn, sqlcmd, strlen(sqlcmd))) != MYSQL_OK)
+            throw DbErrors("Can't set optimizer_switch = '%s': '%s' (%d)", StringUtils::Trim(*itIn).c_str(), db.c_str(), ret);
+          break;
+        }
+      }
+    }
+    mysql_free_result(res);
+  }
+}
+
 int MysqlDatabase::connect(bool create_new) {
   if (host.empty() || db.empty())
     return DB_CONNECTION_NONE;
@@ -151,6 +191,8 @@ int MysqlDatabase::connect(bool create_new) {
         CLog::Log(LOGERROR, "Unable to set utf8 charset: %s [%d](%s)",
                   db.c_str(), mysql_errno(conn), mysql_error(conn));
       }
+
+      configure_connection();
 
       // check existence
       if (exists())
