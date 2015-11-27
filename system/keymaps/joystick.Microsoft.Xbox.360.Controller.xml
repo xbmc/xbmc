@@ -600,10 +600,10 @@
   </ContextMenu>
   <Scripts>
     <joystick family="Xbox 360 Controller (Windows)">
-      <button id="3">Info</button>
+      <button id="3">ContextMenu</button>
     </joystick>
     <joystick family="Xbox 360 Controller (xpad)">
-      <button id="3">Info</button>
+      <button id="3">ContextMenu</button>
     </joystick>
   </Scripts>
   <Settings>
