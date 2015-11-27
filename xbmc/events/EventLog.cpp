@@ -38,16 +38,16 @@ std::string CEventLog::EventLevelToString(EventLevel level)
 {
   switch (level)
   {
-  case EventLevelBasic:
+  case EventLevel::Basic:
     return "basic";
 
-  case EventLevelWarning:
+  case EventLevel::Warning:
     return "warning";
 
-  case EventLevelError:
+  case EventLevel::Error:
     return "error";
 
-  case EventLevelInformation:
+  case EventLevel::Information:
   default:
     break;
   }
@@ -58,13 +58,13 @@ std::string CEventLog::EventLevelToString(EventLevel level)
 EventLevel CEventLog::EventLevelFromString(const std::string& level)
 {
   if (level == "basic")
-    return EventLevelBasic;
+    return EventLevel::Basic;
   if (level == "warning")
-    return EventLevelWarning;
+    return EventLevel::Warning;
   if (level == "error")
-    return EventLevelError;
+    return EventLevel::Error;
 
-  return EventLevelInformation;
+  return EventLevel::Information;
 }
 
 CEventLog& CEventLog::GetInstance()
@@ -119,7 +119,7 @@ void CEventLog::Add(const EventPtr& eventPtr)
 {
   if (eventPtr == nullptr || eventPtr->GetIdentifier().empty() ||
       !CSettings::GetInstance().GetBool(CSettings::SETTING_EVENTLOG_ENABLED) ||
-     (eventPtr->GetLevel() == EventLevelInformation && !CSettings::GetInstance().GetBool(CSettings::SETTING_EVENTLOG_ENABLED_NOTIFICATIONS)))
+     (eventPtr->GetLevel() == EventLevel::Information && !CSettings::GetInstance().GetBool(CSettings::SETTING_EVENTLOG_ENABLED_NOTIFICATIONS)))
     return;
 
   CSingleLock lock(m_critical);
@@ -157,9 +157,9 @@ void CEventLog::AddWithNotification(const EventPtr& eventPtr,
   else
   {
     CGUIDialogKaiToast::eMessageType type = CGUIDialogKaiToast::Info;
-    if (eventPtr->GetLevel() == EventLevelWarning)
+    if (eventPtr->GetLevel() == EventLevel::Warning)
       type = CGUIDialogKaiToast::Warning;
-    else if (eventPtr->GetLevel() == EventLevelError)
+    else if (eventPtr->GetLevel() == EventLevel::Error)
       type = CGUIDialogKaiToast::Error;
 
     CGUIDialogKaiToast::QueueNotification(type, eventPtr->GetLabel(), eventPtr->GetDescription(), displayTime, withSound, messageTime);
@@ -228,11 +228,11 @@ bool CEventLog::Execute(const std::string& eventPtrIdentifier)
   return itEvent->second->Execute();
 }
 
-void CEventLog::ShowFullEventLog(EventLevel level /* = EventLevelBasic */, bool includeHigherLevels /* = true */)
+void CEventLog::ShowFullEventLog(EventLevel level /* = EventLevel::Basic */, bool includeHigherLevels /* = true */)
 {
   // put together the path
   std::string path = "events://";
-  if (level != EventLevelBasic || !includeHigherLevels)
+  if (level != EventLevel::Basic || !includeHigherLevels)
   {
     // add the level to the path
     path += EventLevelToString(level);

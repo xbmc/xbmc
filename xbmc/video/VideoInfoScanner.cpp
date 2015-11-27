@@ -482,7 +482,7 @@ namespace VIDEO
         CEventLog::GetInstance().Add(EventPtr(new CMediaLibraryEvent(
           mediaType, pItem->GetPath(), 24145,
           StringUtils::Format(g_localizeStrings.Get(24147).c_str(), mediaType.c_str(), URIUtils::GetFileName(pItem->GetPath()).c_str()),
-          pItem->GetArt("thumb"), CURL::GetRedacted(pItem->GetPath()), EventLevelWarning)));
+          pItem->GetArt("thumb"), CURL::GetRedacted(pItem->GetPath()), EventLevel::Warning)));
       }
 
       pURL = NULL;

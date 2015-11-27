@@ -21,7 +21,7 @@
 #include "BaseEvent.h"
 #include "guilib/LocalizeStrings.h"
 
-CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, const CVariant& description, EventLevel level /* = EventLevelInformation */)
+CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, const CVariant& description, EventLevel level /* = EventLevel::Information */)
   : m_level(level),
     m_identifier(identifier),
     m_icon(),
@@ -32,7 +32,7 @@ CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, con
     m_dateTime(CDateTime::GetCurrentDateTime())
 { }
 
-CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, const CVariant& description, const std::string& icon, EventLevel level /* = EventLevelInformation */)
+CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, const CVariant& description, const std::string& icon, EventLevel level /* = EventLevel::Information */)
   : m_level(level),
     m_identifier(identifier),
     m_icon(icon),
@@ -43,7 +43,7 @@ CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, con
     m_dateTime(CDateTime::GetCurrentDateTime())
 { }
 
-CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, const CVariant& description, const std::string& icon, const CVariant& details, EventLevel level /* = EventLevelInformation */)
+CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, const CVariant& description, const std::string& icon, const CVariant& details, EventLevel level /* = EventLevel::Information */)
   : m_level(level),
     m_identifier(identifier),
     m_icon(icon),
@@ -54,7 +54,7 @@ CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, con
     m_dateTime(CDateTime::GetCurrentDateTime())
 { }
 
-CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, const CVariant& description, const std::string& icon, const CVariant& details, const CVariant& executionLabel, EventLevel level /* = EventLevelInformation */)
+CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, const CVariant& description, const std::string& icon, const CVariant& details, const CVariant& executionLabel, EventLevel level /* = EventLevel::Information */)
   : m_level(level),
     m_identifier(identifier),
     m_icon(icon),

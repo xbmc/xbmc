@@ -213,7 +213,7 @@ void CGUIWindowEventLog::UpdateButtons()
   // set the label, value and enabled state of the "level only" button
   SET_CONTROL_LABEL(CONTROL_BUTTON_LEVEL_ONLY, 14120);
   SET_CONTROL_SELECTED(GetID(), CONTROL_BUTTON_LEVEL_ONLY, CViewStateSettings::GetInstance().ShowHigherEventLevels());
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_LEVEL_ONLY, eventLevel < EventLevelError);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_LEVEL_ONLY, eventLevel < EventLevel::Error);
 
   CGUIMediaWindow::UpdateButtons();
 }
