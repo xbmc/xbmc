@@ -269,8 +269,8 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   if (!CDirectory::GetDirectory(zipDir, items) || items.Size() != 1 || !items[0]->m_bIsFolder)
   {
     CEventLog::GetInstance().AddWithNotification(
-      EventPtr(new CNotificationEvent(EventLevelError, 24045,
-                   StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()))), false);
+      EventPtr(new CNotificationEvent(24045, StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()),
+                   "special://xbmc/media/icon256x256.png", EventLevelError)));
     return false;
   }
 
@@ -290,8 +290,8 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   }
 
   CEventLog::GetInstance().AddWithNotification(
-    EventPtr(new CNotificationEvent(EventLevelError, 24045,
-                 StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()))), false);
+    EventPtr(new CNotificationEvent(24045, StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()),
+                 "special://xbmc/media/icon256x256.png", EventLevelError)));
   return false;
 }
 
@@ -840,9 +840,9 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
   else
   {
     activity =
-      EventPtr(new CNotificationEvent(EventLevelError, 24045,
-                   !msg.empty() ? msg : StringUtils::Format(g_localizeStrings.Get(24143).c_str(),
-                   fileName.c_str())));
+      EventPtr(new CNotificationEvent(24045,
+                   !msg.empty() ? msg : StringUtils::Format(g_localizeStrings.Get(24143).c_str(), fileName.c_str()),
+                   EventLevelError));
 
     if (IsModal())
       CGUIDialogOK::ShowAndGetInput(CVariant{fileName}, CVariant{msg});
