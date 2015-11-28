@@ -39,7 +39,7 @@
 
 #include "Application.h"
 #include "settings/AdvancedSettings.h"
-#include "xbmc.h"
+#include "platform/xbmc.h"
 #include "windowing/WinEvents.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"

@@ -813,6 +813,8 @@
 		DF91E9351C0A1C610011084D /* OSXTextInputResponder.mm in Sources */ = {isa = PBXBuildFile; fileRef = DF91E92E1C0A1C610011084D /* OSXTextInputResponder.mm */; };
 		DF91E9361C0A1C610011084D /* smc.c in Sources */ = {isa = PBXBuildFile; fileRef = DF91E92F1C0A1C610011084D /* smc.c */; };
 		DF91E9371C0A1C610011084D /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF91E9311C0A1C610011084D /* XBMCHelper.cpp */; };
+		DF91E93A1C0A21D60011084D /* xbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF91E9381C0A21D60011084D /* xbmc.cpp */; };
+		DF91E93B1C0A21D60011084D /* xbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF91E9381C0A21D60011084D /* xbmc.cpp */; };
 		DF923E5D1A11536A008CDB0C /* DataCacheCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF923E5B1A11536A008CDB0C /* DataCacheCore.cpp */; };
 		DF923E5E1A11536A008CDB0C /* DataCacheCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF923E5B1A11536A008CDB0C /* DataCacheCore.cpp */; };
 		DF93D69A1444A8B1007C6459 /* DirectoryCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6651444A8B0007C6459 /* DirectoryCache.cpp */; };
@@ -1264,7 +1266,6 @@
 		E38E22FC0D25F9FE00618676 /* VideoInfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E950D25F9FD00618676 /* VideoInfoScanner.cpp */; };
 		E38E22FD0D25F9FE00618676 /* VideoInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E970D25F9FD00618676 /* VideoInfoTag.cpp */; };
 		E38E23040D25F9FE00618676 /* XBApplicationEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA70D25F9FD00618676 /* XBApplicationEx.cpp */; };
-		E38E23150D25F9FE00618676 /* xbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ED10D25F9FD00618676 /* xbmc.cpp */; };
 		E38E23920D2626E600618676 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238B0D2626E600618676 /* AudioToolbox.framework */; };
 		E38E23930D2626E600618676 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238C0D2626E600618676 /* AudioUnit.framework */; };
 		E38E23940D2626E600618676 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238D0D2626E600618676 /* Cocoa.framework */; };
@@ -2036,7 +2037,6 @@
 		E499154A174E642900741B6D /* Util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E200D25F9FD00618676 /* Util.cpp */; };
 		E499154B174E642900741B6D /* XBApplicationEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA70D25F9FD00618676 /* XBApplicationEx.cpp */; };
 		E499154C174E642900741B6D /* XBDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 384718D61325BA04000486D6 /* XBDateTime.cpp */; };
-		E499154D174E642900741B6D /* xbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ED10D25F9FD00618676 /* xbmc.cpp */; };
 		E499154F174E64F200741B6D /* MouseStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8D112942546009E7A26 /* MouseStat.cpp */; };
 		E4991550174E656E00741B6D /* Addon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD17C15FCE77900E10810 /* Addon.cpp */; };
 		E4991551174E656E00741B6D /* AddonCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD18015FCE77900E10810 /* AddonCallback.cpp */; };
@@ -3651,6 +3651,8 @@
 		DF91E9301C0A1C610011084D /* smc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = smc.h; sourceTree = "<group>"; };
 		DF91E9311C0A1C610011084D /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
 		DF91E9321C0A1C610011084D /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
+		DF91E9381C0A21D60011084D /* xbmc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xbmc.cpp; sourceTree = "<group>"; };
+		DF91E9391C0A21D60011084D /* xbmc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc.h; sourceTree = "<group>"; };
 		DF923E5B1A11536A008CDB0C /* DataCacheCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DataCacheCore.cpp; sourceTree = "<group>"; };
 		DF923E5C1A11536A008CDB0C /* DataCacheCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataCacheCore.h; sourceTree = "<group>"; };
 		DF93D6651444A8B0007C6459 /* DirectoryCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryCache.cpp; sourceTree = "<group>"; };
@@ -4529,7 +4531,6 @@
 		E38E1EA70D25F9FD00618676 /* XBApplicationEx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBApplicationEx.cpp; sourceTree = "<group>"; };
 		E38E1EA80D25F9FD00618676 /* XBApplicationEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBApplicationEx.h; sourceTree = "<group>"; };
 		E38E1EAD0D25F9FD00618676 /* XBIRRemote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBIRRemote.h; sourceTree = "<group>"; };
-		E38E1ED10D25F9FD00618676 /* xbmc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xbmc.cpp; sourceTree = "<group>"; };
 		E38E238B0D2626E600618676 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
 		E38E238C0D2626E600618676 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
 		E38E238D0D2626E600618676 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
@@ -7198,6 +7199,8 @@
 				DFD7172E1C09FEC60025D964 /* darwin */,
 				DFD717231C09EDCE0025D964 /* posix */,
 				DFD717221C09EDCE0025D964 /* MessagePrinter.h */,
+				DF91E9381C0A21D60011084D /* xbmc.cpp */,
+				DF91E9391C0A21D60011084D /* xbmc.h */,
 				DFD7172A1C09F5CF0025D964 /* XbmcContext.cpp */,
 				DFD7172B1C09F5CF0025D964 /* XbmcContext.h */,
 			);
@@ -7458,7 +7461,6 @@
 				E38E1EA80D25F9FD00618676 /* XBApplicationEx.h */,
 				384718D61325BA04000486D6 /* XBDateTime.cpp */,
 				384718D71325BA04000486D6 /* XBDateTime.h */,
-				E38E1ED10D25F9FD00618676 /* xbmc.cpp */,
 			);
 			path = xbmc;
 			sourceTree = "<group>";
@@ -9264,6 +9266,7 @@
 				E38E20390D25F9FD00618676 /* DirectoryNodeAlbumRecentlyAddedSong.cpp in Sources */,
 				E38E203A0D25F9FD00618676 /* DirectoryNodeAlbumRecentlyPlayed.cpp in Sources */,
 				E38E203B0D25F9FD00618676 /* DirectoryNodeAlbumRecentlyPlayedSong.cpp in Sources */,
+				DF91E93A1C0A21D60011084D /* xbmc.cpp in Sources */,
 				E38E203C0D25F9FD00618676 /* DirectoryNodeAlbumTop100.cpp in Sources */,
 				E38E203D0D25F9FD00618676 /* DirectoryNodeAlbumTop100Song.cpp in Sources */,
 				E38E203E0D25F9FD00618676 /* DirectoryNodeArtist.cpp in Sources */,
@@ -9483,7 +9486,6 @@
 				7CCA95C81BC6E6F90091D308 /* Resolution.cpp in Sources */,
 				E38E22FD0D25F9FE00618676 /* VideoInfoTag.cpp in Sources */,
 				E38E23040D25F9FE00618676 /* XBApplicationEx.cpp in Sources */,
-				E38E23150D25F9FE00618676 /* xbmc.cpp in Sources */,
 				E38E25780D263BF600618676 /* unpack.cpp in Sources */,
 				E38E257C0D263C4400618676 /* rar.cpp in Sources */,
 				E38E25C00D263DC100618676 /* DVDFactoryDemuxer.cpp in Sources */,
@@ -11042,6 +11044,7 @@
 				E49914AB174E607200741B6D /* GUIWindowSystemInfo.cpp in Sources */,
 				7C8E022F1BA35D0B0072E8B2 /* GUIControlBuiltins.cpp in Sources */,
 				E49914AC174E607200741B6D /* GUIWindowWeather.cpp in Sources */,
+				DF91E93B1C0A21D60011084D /* xbmc.cpp in Sources */,
 				E499152C174E640800741B6D /* Application.cpp in Sources */,
 				DFD7172D1C09F5CF0025D964 /* XbmcContext.cpp in Sources */,
 				E499152E174E642900741B6D /* AppParamParser.cpp in Sources */,
@@ -11076,7 +11079,6 @@
 				E499154A174E642900741B6D /* Util.cpp in Sources */,
 				E499154B174E642900741B6D /* XBApplicationEx.cpp in Sources */,
 				E499154C174E642900741B6D /* XBDateTime.cpp in Sources */,
-				E499154D174E642900741B6D /* xbmc.cpp in Sources */,
 				E499154F174E64F200741B6D /* MouseStat.cpp in Sources */,
 				E4991550174E656E00741B6D /* Addon.cpp in Sources */,
 				E4991551174E656E00741B6D /* AddonCallback.cpp in Sources */,

@@ -29,7 +29,7 @@
 #include "IActivityHandler.h"
 #include "IInputHandler.h"
 
-#include "xbmc.h"
+#include "platform/xbmc.h"
 #include "platform/android/jni/Activity.h"
 #include "platform/android/jni/BroadcastReceiver.h"
 #include "platform/android/jni/AudioManager.h"

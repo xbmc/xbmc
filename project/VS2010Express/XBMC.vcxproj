@@ -1786,7 +1786,7 @@
     <ClCompile Include="..\..\xbmc\windows\GUIWindowWeather.cpp" />
     <ClCompile Include="..\..\xbmc\XBApplicationEx.cpp" />
     <ClCompile Include="..\..\xbmc\XBDateTime.cpp" />
-    <ClCompile Include="..\..\xbmc\xbmc.cpp" />
+    <ClCompile Include="..\..\xbmc\platform\xbmc.cpp" />
     <ClCompile Include="..\..\xbmc\platform\XbmcContext.cpp" />
   </ItemGroup>
   <ItemGroup>
