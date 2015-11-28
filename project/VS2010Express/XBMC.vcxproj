@@ -647,7 +647,7 @@
     <ClCompile Include="..\..\xbmc\listproviders\IListProvider.cpp" />
     <ClCompile Include="..\..\xbmc\listproviders\DirectoryProvider.cpp" />
     <ClCompile Include="..\..\xbmc\listproviders\StaticProvider.cpp" />
-    <ClCompile Include="..\..\xbmc\main\main.cpp">
+    <ClCompile Include="..\..\xbmc\platform\posix\main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\platform\win32\MessagePrinter.cpp" />

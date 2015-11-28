@@ -548,8 +548,8 @@ lib/cpluff/stamp-h1
 /xbmc/linux/Makefile
 /xbmc/linux/sse4/Makefile
 
-# /xbmc/main/
-/xbmc/main/Makefile
+# /xbmc/platform/posix
+/xbmc/platform/posix/Makefile
 
 # /xbmc/platform
 /xbmc/platform/Makefile

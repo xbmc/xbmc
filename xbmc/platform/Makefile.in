@@ -13,7 +13,6 @@ SRCS += darwin/osx/OSXTextInputResponder.mm
 SRCS += darwin/osx/smc.c
 SRCS += darwin/osx/XBMCHelper.m
 SRCS += darwin/osx/CocoaInterface.mm
-SRCS += darwin/osx/SDLMain.mm
 endif
 
 LIB=platform.a

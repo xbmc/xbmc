@@ -21,7 +21,7 @@
 #include "CompileInfo.h"
 #include "threads/Thread.h"
 #include "threads/platform/win/Win32Exception.h"
-#include "xbmc.h"
+#include "platform/xbmc.h"
 #include "utils/CPUInfo.h"
 #include "utils/Environment.h"
 

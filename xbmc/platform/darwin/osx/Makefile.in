@@ -1,6 +1,6 @@
 .SUFFIXES : .mm
 
-SRCS = darwin/osx/SDLMain.mm
+SRCS = SDLMain.mm
 
 LIB=sdlmain.a
 
