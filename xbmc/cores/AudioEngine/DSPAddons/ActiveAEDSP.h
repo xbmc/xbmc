@@ -432,7 +432,7 @@ namespace ActiveAE
      * @param newRegistration pass in pointer to bool to return whether the client was newly registered.
      * @return The id of the addon if it was created or found in the existing addon map, -1 otherwise.
      */
-    int RegisterAudioDSPAddon(ADDON::AddonPtr addon, bool* newRegistration = NULL);
+    int RegisterAudioDSPAddon(ADDON::AddonPtr addon);
 
     /*!
      * @brief Get the instance of the dsp addon, if it's ready.

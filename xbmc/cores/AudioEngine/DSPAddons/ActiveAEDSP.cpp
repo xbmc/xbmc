@@ -722,8 +722,7 @@ bool CActiveAEDSP::UpdateAddons(void)
   {
     dspAddon = std::dynamic_pointer_cast<CActiveAEDSPAddon>(*itr);
 
-    bool newRegistration = false;
-    if (RegisterAudioDSPAddon(dspAddon, &newRegistration) < 0 || newRegistration)
+    if (RegisterAudioDSPAddon(dspAddon) < 0)
     {
       CAddonMgr::GetInstance().DisableAddon(dspAddon->ID());
       --usableAddons;
@@ -798,12 +797,9 @@ void CActiveAEDSP::ShowDialogNoAddonsEnabled(void)
   g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
 }
 
-int CActiveAEDSP::RegisterAudioDSPAddon(AddonPtr addon, bool* newRegistration/*=NULL*/)
+int CActiveAEDSP::RegisterAudioDSPAddon(AddonPtr addon)
 {
   int iAddonId(-1);
-
-  if (newRegistration)
-    *newRegistration = false;
 
   if (!addon->Enabled())
     return -1;
@@ -827,8 +823,6 @@ int CActiveAEDSP::RegisterAudioDSPAddon(AddonPtr addon, bool* newRegistration/*=
       CLog::Log(LOGERROR, "ActiveAE DSP - %s - can't add dsp addon '%s' to the database", __FUNCTION__, addon->Name().c_str());
       return -1;
     }
-    else if (newRegistration)
-      *newRegistration = true;
   }
 
   AE_DSP_ADDON dspAddon;
