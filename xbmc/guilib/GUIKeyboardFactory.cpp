@@ -32,7 +32,7 @@
 
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #if defined(TARGET_DARWIN_IOS)
-#include "osx/ios/IOSKeyboard.h"
+#include "platform/darwin/ios/IOSKeyboard.h"
 #include "windowing/WindowingFactory.h"
 #endif
 

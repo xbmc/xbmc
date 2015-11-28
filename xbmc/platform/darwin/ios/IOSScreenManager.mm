@@ -37,9 +37,7 @@
 #include <objc/runtime.h>
 
 #import "IOSScreenManager.h"
-#if defined(TARGET_DARWIN_IOS)
-#import "xbmc/osx/ios/XBMCController.h"
-#endif
+#import "XBMCController.h"
 #import "IOSExternalTouchController.h"
 #import "IOSEAGLView.h"
 

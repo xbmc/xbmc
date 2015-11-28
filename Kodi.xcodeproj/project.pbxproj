@@ -904,8 +904,19 @@
 		DFD7173A1C09FEC60025D964 /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFD717331C09FEC60025D964 /* DarwinUtils.mm */; };
 		DFD7173B1C09FEC60025D964 /* OSXGNUReplacements.c in Sources */ = {isa = PBXBuildFile; fileRef = DFD717341C09FEC60025D964 /* OSXGNUReplacements.c */; };
 		DFD7173C1C09FEC60025D964 /* OSXGNUReplacements.c in Sources */ = {isa = PBXBuildFile; fileRef = DFD717341C09FEC60025D964 /* OSXGNUReplacements.c */; };
-		DFD7C7AD19D1DDA90071942C /* Default-667h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DFD7C7AB19D1DDA90071942C /* Default-667h@2x.png */; };
-		DFD7C7AE19D1DDA90071942C /* Default-736h@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DFD7C7AC19D1DDA90071942C /* Default-736h@3x.png */; };
+		DFD717561C0A031B0025D964 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DFD7173F1C0A031B0025D964 /* Default-568h@2x.png */; };
+		DFD717571C0A031B0025D964 /* Default-667h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DFD717401C0A031B0025D964 /* Default-667h@2x.png */; };
+		DFD717581C0A031B0025D964 /* Default-736h@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DFD717411C0A031B0025D964 /* Default-736h@3x.png */; };
+		DFD717591C0A031B0025D964 /* Default-Landscape-736h@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DFD717421C0A031B0025D964 /* Default-Landscape-736h@3x.png */; };
+		DFD7175A1C0A031B0025D964 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DFD717431C0A031B0025D964 /* InfoPlist.strings */; };
+		DFD7175C1C0A031B0025D964 /* IOSEAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFD717471C0A031B0025D964 /* IOSEAGLView.mm */; };
+		DFD7175D1C0A031B0025D964 /* IOSExternalTouchController.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFD717491C0A031B0025D964 /* IOSExternalTouchController.mm */; };
+		DFD7175E1C0A031B0025D964 /* IOSKeyboard.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFD7174B1C0A031B0025D964 /* IOSKeyboard.mm */; };
+		DFD7175F1C0A031B0025D964 /* IOSKeyboardView.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFD7174D1C0A031B0025D964 /* IOSKeyboardView.mm */; };
+		DFD717601C0A031B0025D964 /* IOSScreenManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFD7174F1C0A031B0025D964 /* IOSScreenManager.mm */; };
+		DFD717611C0A031B0025D964 /* XBMCApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD717511C0A031B0025D964 /* XBMCApplication.m */; };
+		DFD717621C0A031B0025D964 /* XBMCController.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFD717531C0A031B0025D964 /* XBMCController.mm */; };
+		DFD717641C0A03540025D964 /* IOS-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DFD717631C0A03540025D964 /* IOS-Info.plist */; };
 		DFD882E817DD189E001516FE /* StringValidation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882E517DD189E001516FE /* StringValidation.cpp */; };
 		DFD882E917DD189E001516FE /* StringValidation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882E517DD189E001516FE /* StringValidation.cpp */; };
 		DFD882F717DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882F417DD1A5B001516FE /* AddonPythonInvoker.cpp */; };
@@ -1275,15 +1286,6 @@
 		E499108C174D0D2600741B6D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E499108B174D0D2600741B6D /* UIKit.framework */; };
 		E499108E174D0D2600741B6D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E499108D174D0D2600741B6D /* Foundation.framework */; };
 		E4991090174D0D2600741B6D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E499108F174D0D2600741B6D /* CoreGraphics.framework */; };
-		E49910B5174D0E2A00741B6D /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E49910A7174D0E2A00741B6D /* Default-568h@2x.png */; };
-		E49910B6174D0E2A00741B6D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E49910A8174D0E2A00741B6D /* InfoPlist.strings */; };
-		E49910B7174D0E2A00741B6D /* IOSKeyboard.mm in Sources */ = {isa = PBXBuildFile; fileRef = E49910AB174D0E2A00741B6D /* IOSKeyboard.mm */; };
-		E49910B8174D0E2A00741B6D /* IOSKeyboardView.mm in Sources */ = {isa = PBXBuildFile; fileRef = E49910AD174D0E2A00741B6D /* IOSKeyboardView.mm */; };
-		E49910BA174D0E2A00741B6D /* XBMCApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = E49910B0174D0E2A00741B6D /* XBMCApplication.m */; };
-		E49910BB174D0E2A00741B6D /* XBMCController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E49910B2174D0E2A00741B6D /* XBMCController.mm */; };
-		E49910DC174E4A6400741B6D /* IOSEAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = E49910D7174E4A6400741B6D /* IOSEAGLView.mm */; };
-		E49910DD174E4A6400741B6D /* IOSExternalTouchController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E49910D9174E4A6400741B6D /* IOSExternalTouchController.mm */; };
-		E49910DE174E4A6400741B6D /* IOSScreenManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = E49910DB174E4A6400741B6D /* IOSScreenManager.mm */; };
 		E49910E3174E549400741B6D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E49910E2174E549400741B6D /* QuartzCore.framework */; };
 		E49910E5174E54A100741B6D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E49910E4174E54A100741B6D /* OpenGLES.framework */; };
 		E49910E7174E54B400741B6D /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E49910E6174E54B300741B6D /* CoreMedia.framework */; };
@@ -3766,8 +3768,27 @@
 		DFD717331C09FEC60025D964 /* DarwinUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinUtils.mm; sourceTree = "<group>"; };
 		DFD717341C09FEC60025D964 /* OSXGNUReplacements.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OSXGNUReplacements.c; sourceTree = "<group>"; };
 		DFD717351C09FEC60025D964 /* OSXGNUReplacements.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSXGNUReplacements.h; sourceTree = "<group>"; };
-		DFD7C7AB19D1DDA90071942C /* Default-667h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-667h@2x.png"; sourceTree = "<group>"; };
-		DFD7C7AC19D1DDA90071942C /* Default-736h@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-736h@3x.png"; sourceTree = "<group>"; };
+		DFD7173F1C0A031B0025D964 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		DFD717401C0A031B0025D964 /* Default-667h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-667h@2x.png"; sourceTree = "<group>"; };
+		DFD717411C0A031B0025D964 /* Default-736h@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-736h@3x.png"; sourceTree = "<group>"; };
+		DFD717421C0A031B0025D964 /* Default-Landscape-736h@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape-736h@3x.png"; sourceTree = "<group>"; };
+		DFD717441C0A031B0025D964 /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		DFD717461C0A031B0025D964 /* IOSEAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSEAGLView.h; sourceTree = "<group>"; };
+		DFD717471C0A031B0025D964 /* IOSEAGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSEAGLView.mm; sourceTree = "<group>"; };
+		DFD717481C0A031B0025D964 /* IOSExternalTouchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSExternalTouchController.h; sourceTree = "<group>"; };
+		DFD717491C0A031B0025D964 /* IOSExternalTouchController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSExternalTouchController.mm; sourceTree = "<group>"; };
+		DFD7174A1C0A031B0025D964 /* IOSKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSKeyboard.h; sourceTree = "<group>"; };
+		DFD7174B1C0A031B0025D964 /* IOSKeyboard.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSKeyboard.mm; sourceTree = "<group>"; };
+		DFD7174C1C0A031B0025D964 /* IOSKeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSKeyboardView.h; sourceTree = "<group>"; };
+		DFD7174D1C0A031B0025D964 /* IOSKeyboardView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSKeyboardView.mm; sourceTree = "<group>"; };
+		DFD7174E1C0A031B0025D964 /* IOSScreenManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSScreenManager.h; sourceTree = "<group>"; };
+		DFD7174F1C0A031B0025D964 /* IOSScreenManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSScreenManager.mm; sourceTree = "<group>"; };
+		DFD717501C0A031B0025D964 /* XBMCApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCApplication.h; sourceTree = "<group>"; };
+		DFD717511C0A031B0025D964 /* XBMCApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBMCApplication.m; sourceTree = "<group>"; };
+		DFD717521C0A031B0025D964 /* XBMCController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCController.h; sourceTree = "<group>"; };
+		DFD717531C0A031B0025D964 /* XBMCController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = XBMCController.mm; sourceTree = "<group>"; };
+		DFD717541C0A031B0025D964 /* XBMCDebugHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCDebugHelpers.h; sourceTree = "<group>"; };
+		DFD717631C0A03540025D964 /* IOS-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "IOS-Info.plist"; sourceTree = "<group>"; };
 		DFD882E517DD189E001516FE /* StringValidation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StringValidation.cpp; sourceTree = "<group>"; };
 		DFD882E617DD189E001516FE /* StringValidation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringValidation.h; sourceTree = "<group>"; };
 		DFD882F417DD1A5B001516FE /* AddonPythonInvoker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonPythonInvoker.cpp; path = python/AddonPythonInvoker.cpp; sourceTree = "<group>"; };
@@ -4536,30 +4557,12 @@
 		E499108B174D0D2600741B6D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		E499108D174D0D2600741B6D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		E499108F174D0D2600741B6D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
-		E49910A7174D0E2A00741B6D /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		E49910A9174D0E2A00741B6D /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		E49910AA174D0E2A00741B6D /* IOSKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSKeyboard.h; sourceTree = "<group>"; };
-		E49910AB174D0E2A00741B6D /* IOSKeyboard.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSKeyboard.mm; sourceTree = "<group>"; };
-		E49910AC174D0E2A00741B6D /* IOSKeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSKeyboardView.h; sourceTree = "<group>"; };
-		E49910AD174D0E2A00741B6D /* IOSKeyboardView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSKeyboardView.mm; sourceTree = "<group>"; };
-		E49910AF174D0E2A00741B6D /* XBMCApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCApplication.h; sourceTree = "<group>"; };
-		E49910B0174D0E2A00741B6D /* XBMCApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBMCApplication.m; sourceTree = "<group>"; };
-		E49910B1174D0E2A00741B6D /* XBMCController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCController.h; sourceTree = "<group>"; };
-		E49910B2174D0E2A00741B6D /* XBMCController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = XBMCController.mm; sourceTree = "<group>"; };
-		E49910B3174D0E2A00741B6D /* XBMCDebugHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCDebugHelpers.h; sourceTree = "<group>"; };
-		E49910B4174D0E2A00741B6D /* XBMCIOS-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "XBMCIOS-Info.plist"; sourceTree = "<group>"; };
 		E49910D0174E2DFF00741B6D /* App-iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "App-iOS.xcconfig"; sourceTree = "<group>"; };
 		E49910D1174E2E0000741B6D /* App-OSX.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "App-OSX.xcconfig"; sourceTree = "<group>"; };
 		E49910D2174E2E0000741B6D /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = App.xcconfig; sourceTree = "<group>"; };
 		E49910D3174E2E0000741B6D /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
 		E49910D4174E2E0000741B6D /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		E49910D5174E2E0000741B6D /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
-		E49910D6174E4A6400741B6D /* IOSEAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSEAGLView.h; sourceTree = "<group>"; };
-		E49910D7174E4A6400741B6D /* IOSEAGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSEAGLView.mm; sourceTree = "<group>"; };
-		E49910D8174E4A6400741B6D /* IOSExternalTouchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSExternalTouchController.h; sourceTree = "<group>"; };
-		E49910D9174E4A6400741B6D /* IOSExternalTouchController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSExternalTouchController.mm; sourceTree = "<group>"; };
-		E49910DA174E4A6400741B6D /* IOSScreenManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSScreenManager.h; sourceTree = "<group>"; };
-		E49910DB174E4A6400741B6D /* IOSScreenManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSScreenManager.mm; sourceTree = "<group>"; };
 		E49910E2174E549400741B6D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		E49910E4174E54A100741B6D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		E49910E6174E54B300741B6D /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -7195,6 +7198,7 @@
 		DFD7172E1C09FEC60025D964 /* darwin */ = {
 			isa = PBXGroup;
 			children = (
+				DFD7173D1C0A031B0025D964 /* ios */,
 				DFD7172F1C09FEC60025D964 /* AutoPool.h */,
 				DFD717301C09FEC60025D964 /* AutoPool.mm */,
 				DFD717321C09FEC60025D964 /* DarwinUtils.h */,
@@ -7203,6 +7207,34 @@
 				DFD717351C09FEC60025D964 /* OSXGNUReplacements.h */,
 			);
 			path = darwin;
+			sourceTree = "<group>";
+		};
+		DFD7173D1C0A031B0025D964 /* ios */ = {
+			isa = PBXGroup;
+			children = (
+				DFD717631C0A03540025D964 /* IOS-Info.plist */,
+				DFD7173F1C0A031B0025D964 /* Default-568h@2x.png */,
+				DFD717401C0A031B0025D964 /* Default-667h@2x.png */,
+				DFD717411C0A031B0025D964 /* Default-736h@3x.png */,
+				DFD717421C0A031B0025D964 /* Default-Landscape-736h@3x.png */,
+				DFD717431C0A031B0025D964 /* InfoPlist.strings */,
+				DFD717461C0A031B0025D964 /* IOSEAGLView.h */,
+				DFD717471C0A031B0025D964 /* IOSEAGLView.mm */,
+				DFD717481C0A031B0025D964 /* IOSExternalTouchController.h */,
+				DFD717491C0A031B0025D964 /* IOSExternalTouchController.mm */,
+				DFD7174A1C0A031B0025D964 /* IOSKeyboard.h */,
+				DFD7174B1C0A031B0025D964 /* IOSKeyboard.mm */,
+				DFD7174C1C0A031B0025D964 /* IOSKeyboardView.h */,
+				DFD7174D1C0A031B0025D964 /* IOSKeyboardView.mm */,
+				DFD7174E1C0A031B0025D964 /* IOSScreenManager.h */,
+				DFD7174F1C0A031B0025D964 /* IOSScreenManager.mm */,
+				DFD717501C0A031B0025D964 /* XBMCApplication.h */,
+				DFD717511C0A031B0025D964 /* XBMCApplication.m */,
+				DFD717521C0A031B0025D964 /* XBMCController.h */,
+				DFD717531C0A031B0025D964 /* XBMCController.mm */,
+				DFD717541C0A031B0025D964 /* XBMCDebugHelpers.h */,
+			);
+			path = ios;
 			sourceTree = "<group>";
 		};
 		DFFA43CE19104BFA00C3923B /* media */ = {
@@ -7296,8 +7328,6 @@
 		E37D5CB40D3023BB0081D327 /* osx */ = {
 			isa = PBXGroup;
 			children = (
-				E49910DF174E4A6D00741B6D /* iOS-Shared */,
-				E49910A6174D0E2A00741B6D /* iOS */,
 				F5EA05C30F73381A005C2EC5 /* CocoaInterface.h */,
 				F5EA05C00F733812005C2EC5 /* CocoaInterface.mm */,
 				F54BCC5D1439345300F86B0F /* HotKeyController.h */,
@@ -8526,28 +8556,6 @@
 			path = tools/darwin/Support;
 			sourceTree = "<group>";
 		};
-		E49910A6174D0E2A00741B6D /* iOS */ = {
-			isa = PBXGroup;
-			children = (
-				DFD7C7AB19D1DDA90071942C /* Default-667h@2x.png */,
-				DFD7C7AC19D1DDA90071942C /* Default-736h@3x.png */,
-				E49910A7174D0E2A00741B6D /* Default-568h@2x.png */,
-				E49910A8174D0E2A00741B6D /* InfoPlist.strings */,
-				E49910AA174D0E2A00741B6D /* IOSKeyboard.h */,
-				E49910AB174D0E2A00741B6D /* IOSKeyboard.mm */,
-				E49910AC174D0E2A00741B6D /* IOSKeyboardView.h */,
-				E49910AD174D0E2A00741B6D /* IOSKeyboardView.mm */,
-				E49910AF174D0E2A00741B6D /* XBMCApplication.h */,
-				E49910B0174D0E2A00741B6D /* XBMCApplication.m */,
-				E49910B1174D0E2A00741B6D /* XBMCController.h */,
-				E49910B2174D0E2A00741B6D /* XBMCController.mm */,
-				E49910B3174D0E2A00741B6D /* XBMCDebugHelpers.h */,
-				E49910B4174D0E2A00741B6D /* XBMCIOS-Info.plist */,
-			);
-			name = iOS;
-			path = ios;
-			sourceTree = "<group>";
-		};
 		E49910C2174E2CDE00741B6D /* Configurations */ = {
 			isa = PBXGroup;
 			children = (
@@ -8556,19 +8564,6 @@
 			);
 			name = Configurations;
 			path = tools/darwin/Configurations;
-			sourceTree = "<group>";
-		};
-		E49910DF174E4A6D00741B6D /* iOS-Shared */ = {
-			isa = PBXGroup;
-			children = (
-				E49910D6174E4A6400741B6D /* IOSEAGLView.h */,
-				E49910D7174E4A6400741B6D /* IOSEAGLView.mm */,
-				E49910D8174E4A6400741B6D /* IOSExternalTouchController.h */,
-				E49910D9174E4A6400741B6D /* IOSExternalTouchController.mm */,
-				E49910DA174E4A6400741B6D /* IOSScreenManager.h */,
-				E49910DB174E4A6400741B6D /* IOSScreenManager.mm */,
-			);
-			name = "iOS-Shared";
 			sourceTree = "<group>";
 		};
 		E49910F6174E55D400741B6D /* iOS */ = {
@@ -8962,10 +8957,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E49910B5174D0E2A00741B6D /* Default-568h@2x.png in Resources */,
 				2A1A5A6C1BDEAA6D0084702D /* NOTE in Resources */,
-				E49910B6174D0E2A00741B6D /* InfoPlist.strings in Resources */,
 				DFFA440119104C1300C3923B /* AppIcon29x29.png in Resources */,
+				DFD7175A1C0A031B0025D964 /* InfoPlist.strings in Resources */,
+				DFD717591C0A031B0025D964 /* Default-Landscape-736h@3x.png in Resources */,
 				DFFA440219104C1300C3923B /* AppIcon29x29@2x.png in Resources */,
 				DFFA440319104C1300C3923B /* AppIcon40x40.png in Resources */,
 				DFFA440419104C1300C3923B /* AppIcon40x40@2x.png in Resources */,
@@ -8982,13 +8977,15 @@
 				7CCDA1B8192753E30074CF51 /* X_MS_MediaReceiverRegistrarSCPD.xml in Resources */,
 				7CCDA1C3192753E30074CF51 /* AVTransportSCPD.xml in Resources */,
 				7CCDA1C5192753E30074CF51 /* AVTransportSCPDFull.xml in Resources */,
-				DFD7C7AE19D1DDA90071942C /* Default-736h@3x.png in Resources */,
-				DFD7C7AD19D1DDA90071942C /* Default-667h@2x.png in Resources */,
+				DFD717561C0A031B0025D964 /* Default-568h@2x.png in Resources */,
 				7CCDA1E4192753E30074CF51 /* RdrConnectionManagerSCPD.xml in Resources */,
 				7CCDA1EF192753E30074CF51 /* RenderingControlSCPD.xml in Resources */,
+				DFD717641C0A03540025D964 /* IOS-Info.plist in Resources */,
 				7CCDA1F1192753E30074CF51 /* RenderingControlSCPD_Full.xml in Resources */,
+				DFD717581C0A031B0025D964 /* Default-736h@3x.png in Resources */,
 				391416BF1B4A3EFA00BBF0AA /* guiinfo in Resources */,
 				7CCDA1FC192753E30074CF51 /* ConnectionManagerSCPD.xml in Resources */,
+				DFD717571C0A031B0025D964 /* Default-667h@2x.png in Resources */,
 				7CCDA207192753E30074CF51 /* ContentDirectorySCPD.xml in Resources */,
 				7CCDA212192753E30074CF51 /* ContentDirectorywSearchSCPD.xml in Resources */,
 				7CCDA756192756250074CF51 /* README.txt in Resources */,
@@ -10241,15 +10238,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E49910B7174D0E2A00741B6D /* IOSKeyboard.mm in Sources */,
-				E49910B8174D0E2A00741B6D /* IOSKeyboardView.mm in Sources */,
 				DF29BCFE1B5D911800904347 /* GUIWindowEventLog.cpp in Sources */,
 				DF4BF0181A4EF31E0053AC56 /* cc_decoder708.cpp in Sources */,
-				E49910BA174D0E2A00741B6D /* XBMCApplication.m in Sources */,
-				E49910BB174D0E2A00741B6D /* XBMCController.mm in Sources */,
-				E49910DC174E4A6400741B6D /* IOSEAGLView.mm in Sources */,
-				E49910DD174E4A6400741B6D /* IOSExternalTouchController.mm in Sources */,
-				E49910DE174E4A6400741B6D /* IOSScreenManager.mm in Sources */,
 				DF1D2DF41B6E85EE002BB9DB /* XbtManager.cpp in Sources */,
 				E499114F174E5CC300741B6D /* archive.cpp in Sources */,
 				E4991150174E5CC300741B6D /* arcread.cpp in Sources */,
@@ -10296,6 +10286,7 @@
 				DFEA4B5C1B52721700562321 /* GUIDialogAudioDSPSettings.cpp in Sources */,
 				E4991179174E5CE000741B6D /* Addon.cpp in Sources */,
 				E499117A174E5CE000741B6D /* AddonCallbacks.cpp in Sources */,
+				DFD717621C0A031B0025D964 /* XBMCController.mm in Sources */,
 				E499117B174E5CE000741B6D /* AddonCallbacksAddon.cpp in Sources */,
 				E499117C174E5CE000741B6D /* AddonCallbacksGUI.cpp in Sources */,
 				E499117D174E5CE000741B6D /* AddonCallbacksPVR.cpp in Sources */,
@@ -10522,6 +10513,7 @@
 				395F6DDE1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */,
 				E4991281174E5D9900741B6D /* DirectoryNodeAlbumRecentlyAddedSong.cpp in Sources */,
 				E4991282174E5D9900741B6D /* DirectoryNodeAlbumRecentlyPlayed.cpp in Sources */,
+				DFD7175D1C0A031B0025D964 /* IOSExternalTouchController.mm in Sources */,
 				E4991283174E5D9900741B6D /* DirectoryNodeAlbumRecentlyPlayedSong.cpp in Sources */,
 				E4991284174E5D9900741B6D /* DirectoryNodeAlbumTop100.cpp in Sources */,
 				E4991285174E5D9900741B6D /* DirectoryNodeAlbumTop100Song.cpp in Sources */,
@@ -10567,6 +10559,7 @@
 				DF0E4AD51AD5986F00A75430 /* GUIDialogPVRRadioRDSInfo.cpp in Sources */,
 				395C29C21A98A0A000EBC7AD /* Webinterface.cpp in Sources */,
 				E49912B2174E5D9900741B6D /* SmartPlaylistDirectory.cpp in Sources */,
+				DFD7175E1C0A031B0025D964 /* IOSKeyboard.mm in Sources */,
 				E49912B3174E5D9900741B6D /* SMBDirectory.cpp in Sources */,
 				E49912B4174E5D9900741B6D /* SMBFile.cpp in Sources */,
 				E49912B5174E5D9900741B6D /* SourcesDirectory.cpp in Sources */,
@@ -10648,6 +10641,7 @@
 				E49912FF174E5DAD00741B6D /* GUIListGroup.cpp in Sources */,
 				E4991300174E5DAD00741B6D /* GUIListItem.cpp in Sources */,
 				E4991301174E5DAD00741B6D /* GUIListItemLayout.cpp in Sources */,
+				DFD717611C0A031B0025D964 /* XBMCApplication.m in Sources */,
 				E4991302174E5DAD00741B6D /* GUIListLabel.cpp in Sources */,
 				E4991303174E5DAD00741B6D /* GUIMessage.cpp in Sources */,
 				7C8E023E1BA35D0B0072E8B2 /* ProfileBuiltins.cpp in Sources */,
@@ -10720,6 +10714,7 @@
 				E4991354174E5EBE00741B6D /* GUIOperations.cpp in Sources */,
 				E4991355174E5EBE00741B6D /* InputOperations.cpp in Sources */,
 				E4991356174E5EBE00741B6D /* JSONRPC.cpp in Sources */,
+				DFD717601C0A031B0025D964 /* IOSScreenManager.mm in Sources */,
 				E4991357174E5EBE00741B6D /* JSONServiceDescription.cpp in Sources */,
 				E4991358174E5EBE00741B6D /* PlayerOperations.cpp in Sources */,
 				E4991359174E5EBE00741B6D /* PlaylistOperations.cpp in Sources */,
@@ -10744,6 +10739,7 @@
 				E499136B174E5EF700741B6D /* ConvUtils.cpp in Sources */,
 				E499136C174E5EF700741B6D /* LinuxResourceCounter.cpp in Sources */,
 				E499136D174E5EF700741B6D /* LinuxTimezone.cpp in Sources */,
+				DFD7175F1C0A031B0025D964 /* IOSKeyboardView.mm in Sources */,
 				E499136E174E5EF700741B6D /* PosixMountProvider.cpp in Sources */,
 				E499136F174E5EF700741B6D /* XFileUtils.cpp in Sources */,
 				E4991370174E5EF700741B6D /* XHandle.cpp in Sources */,
@@ -10786,6 +10782,7 @@
 				E49913A5174E5F2100741B6D /* HTTPVfsHandler.cpp in Sources */,
 				E49913A6174E5F2100741B6D /* HTTPWebinterfaceAddonsHandler.cpp in Sources */,
 				E49913A7174E5F2100741B6D /* HTTPWebinterfaceHandler.cpp in Sources */,
+				DFD7175C1C0A031B0025D964 /* IOSEAGLView.mm in Sources */,
 				E49913A8174E5F2100741B6D /* IHTTPRequestHandler.cpp in Sources */,
 				3994425C1A8DD8D0006C39E9 /* ProgressJob.cpp in Sources */,
 				E49913A9174E5F2100741B6D /* NetworkLinux.cpp in Sources */,
@@ -11320,10 +11317,10 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		E49910A8174D0E2A00741B6D /* InfoPlist.strings */ = {
+		DFD717431C0A031B0025D964 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				E49910A9174D0E2A00741B6D /* English */,
+				DFD717441C0A031B0025D964 /* English */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -11534,7 +11531,7 @@
 					$XBMC_DEPENDS/include/python2.7,
 					$XBMC_DEPENDS/include/libxml2,
 				);
-				INFOPLIST_FILE = "$SRCROOT/xbmc/osx/ios/XBMCIOS-Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/xbmc/platform/darwin/ios/IOS-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -11575,7 +11572,7 @@
 					$XBMC_DEPENDS/include/python2.7,
 					$XBMC_DEPENDS/include/libxml2,
 				);
-				INFOPLIST_FILE = "xbmc/osx/ios/XBMCIOS-Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/xbmc/platform/darwin/ios/IOS-Info.plist";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
