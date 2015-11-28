@@ -563,11 +563,11 @@ lib/cpluff/stamp-h1
 /xbmc/network/httprequesthandler/python/Makefile
 /xbmc/network/upnp/Makefile
 
-# /xbmc/osx/
-/xbmc/osx/Makefile
-/xbmc/osx/Info.plist
-/xbmc/osx/ios/XBMCIOS-Info.plist
-/xbmc/osx/atv2/XBMCATV2-Info.plist
+# /xbmc/platform/darwin/osx/
+/xbmc/platform/darwin/osx/Info.plist
+
+# /xbmc/platform/darwin/ios/
+/xbmc/platform/darwin/osx/ios/IOS-Info.plist
 
 # /xbmc/peripherals/
 /xbmc/peripherals/bus/Makefile

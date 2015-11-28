@@ -44,9 +44,7 @@
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 #import "IOSEAGLView.h"
-#if defined(TARGET_DARWIN_IOS)
-#import "xbmc/osx/ios/XBMCController.h"
-#endif
+#import "XBMCController.h"
 #import "IOSScreenManager.h"
 #import "platform/darwin/AutoPool.h"
 #import "DarwinUtils.h"

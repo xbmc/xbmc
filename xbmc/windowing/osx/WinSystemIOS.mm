@@ -46,7 +46,7 @@
 #import <QuartzCore/CADisplayLink.h>
 
 #import "ios/XBMCController.h"
-#import "osx/IOSScreenManager.h"
+#import "platform/darwin/ios/IOSScreenManager.h"
 #include "platform/darwin/DarwinUtils.h"
 #import <dlfcn.h>
 
