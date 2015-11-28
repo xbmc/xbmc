@@ -33,12 +33,10 @@
 #ifdef TARGET_WINDOWS
 #include <mmdeviceapi.h>
 #include "win32/IMMNotificationClient.h"
-#include "main/win32/MessagePrinter.h"
 #endif
 
-#if !defined(TARGET_WINDOWS)
-#include "main/posix/MessagePrinter.h"
-#endif
+#include "platform/MessagePrinter.h"
+
 
 extern "C" int XBMC_Run(bool renderGUI)
 {

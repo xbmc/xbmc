@@ -18,7 +18,7 @@
 *
 */
 
-#include "MessagePrinter.h"
+#include "platform/MessagePrinter.h"
 #include "CompileInfo.h"
 
 #include <windows.h>

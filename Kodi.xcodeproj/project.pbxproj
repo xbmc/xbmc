@@ -158,8 +158,6 @@
 		391416BF1B4A3EFA00BBF0AA /* guiinfo in Resources */ = {isa = PBXBuildFile; fileRef = 391416BE1B4A3EFA00BBF0AA /* guiinfo */; };
 		395897151AAD94F00033D27C /* KeyboardLayoutManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395897131AAD94F00033D27C /* KeyboardLayoutManager.cpp */; };
 		395897161AAD94F00033D27C /* KeyboardLayoutManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395897131AAD94F00033D27C /* KeyboardLayoutManager.cpp */; };
-		395938771AC310B00053A590 /* MessagePrinter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395938751AC310B00053A590 /* MessagePrinter.cpp */; };
-		395938781AC310B00053A590 /* MessagePrinter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395938751AC310B00053A590 /* MessagePrinter.cpp */; };
 		395C29BC1A94733100EBC7AD /* Key.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29BA1A94733100EBC7AD /* Key.cpp */; };
 		395C29BD1A94733100EBC7AD /* Key.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29BA1A94733100EBC7AD /* Key.cpp */; };
 		395C29C11A98A0A000EBC7AD /* Webinterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29BF1A98A0A000EBC7AD /* Webinterface.cpp */; };
@@ -896,6 +894,8 @@
 		DFCA6ACB152245CD000BFAAE /* IHTTPRequestHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6AC3152245CD000BFAAE /* IHTTPRequestHandler.cpp */; };
 		DFD5812516C828500008EEA0 /* DAVCommon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD5812116C8284F0008EEA0 /* DAVCommon.cpp */; };
 		DFD5812616C828500008EEA0 /* DAVFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD5812316C828500008EEA0 /* DAVFile.cpp */; };
+		DFD717271C09EDCE0025D964 /* MessagePrinter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD717241C09EDCE0025D964 /* MessagePrinter.cpp */; };
+		DFD717291C09EDD70025D964 /* MessagePrinter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD717241C09EDCE0025D964 /* MessagePrinter.cpp */; };
 		DFD7C7AD19D1DDA90071942C /* Default-667h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DFD7C7AB19D1DDA90071942C /* Default-667h@2x.png */; };
 		DFD7C7AE19D1DDA90071942C /* Default-736h@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DFD7C7AC19D1DDA90071942C /* Default-736h@3x.png */; };
 		DFD882E817DD189E001516FE /* StringValidation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882E517DD189E001516FE /* StringValidation.cpp */; };
@@ -2559,8 +2559,6 @@
 		395897131AAD94F00033D27C /* KeyboardLayoutManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyboardLayoutManager.cpp; sourceTree = "<group>"; };
 		395897141AAD94F00033D27C /* KeyboardLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardLayoutManager.h; sourceTree = "<group>"; };
 		395938731AC28F5A0053A590 /* EmbeddedArt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmbeddedArt.h; sourceTree = "<group>"; };
-		395938751AC310B00053A590 /* MessagePrinter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MessagePrinter.cpp; sourceTree = "<group>"; };
-		395938761AC310B00053A590 /* MessagePrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagePrinter.h; sourceTree = "<group>"; };
 		395C29BA1A94733100EBC7AD /* Key.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Key.cpp; sourceTree = "<group>"; };
 		395C29BB1A94733100EBC7AD /* Key.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Key.h; sourceTree = "<group>"; };
 		395C29BF1A98A0A000EBC7AD /* Webinterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Webinterface.cpp; sourceTree = "<group>"; };
@@ -3757,6 +3755,8 @@
 		DFD5812216C8284F0008EEA0 /* DAVCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAVCommon.h; sourceTree = "<group>"; };
 		DFD5812316C828500008EEA0 /* DAVFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DAVFile.cpp; sourceTree = "<group>"; };
 		DFD5812416C828500008EEA0 /* DAVFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAVFile.h; sourceTree = "<group>"; };
+		DFD717221C09EDCE0025D964 /* MessagePrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagePrinter.h; sourceTree = "<group>"; };
+		DFD717241C09EDCE0025D964 /* MessagePrinter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MessagePrinter.cpp; sourceTree = "<group>"; };
 		DFD7C7AB19D1DDA90071942C /* Default-667h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-667h@2x.png"; sourceTree = "<group>"; };
 		DFD7C7AC19D1DDA90071942C /* Default-736h@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-736h@3x.png"; sourceTree = "<group>"; };
 		DFD882E517DD189E001516FE /* StringValidation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StringValidation.cpp; sourceTree = "<group>"; };
@@ -5376,16 +5376,6 @@
 			path = pthreads;
 			sourceTree = "<group>";
 		};
-		395938741AC310B00053A590 /* posix */ = {
-			isa = PBXGroup;
-			children = (
-				395938751AC310B00053A590 /* MessagePrinter.cpp */,
-				395938761AC310B00053A590 /* MessagePrinter.h */,
-			);
-			name = posix;
-			path = main/posix;
-			sourceTree = "<group>";
-		};
 		395C29C81A98A11B00EBC7AD /* wsgi */ = {
 			isa = PBXGroup;
 			children = (
@@ -5936,7 +5926,6 @@
 			isa = PBXGroup;
 			children = (
 				DFB15B1F15F8FB8100CDF0DE /* osx */,
-				395938741AC310B00053A590 /* posix */,
 				552A226815F7E14B0015C0D0 /* main.cpp */,
 			);
 			name = main;
@@ -7182,6 +7171,23 @@
 			path = httprequesthandler;
 			sourceTree = "<group>";
 		};
+		DFD717211C09EDCE0025D964 /* platform */ = {
+			isa = PBXGroup;
+			children = (
+				DFD717231C09EDCE0025D964 /* posix */,
+				DFD717221C09EDCE0025D964 /* MessagePrinter.h */,
+			);
+			path = platform;
+			sourceTree = "<group>";
+		};
+		DFD717231C09EDCE0025D964 /* posix */ = {
+			isa = PBXGroup;
+			children = (
+				DFD717241C09EDCE0025D964 /* MessagePrinter.cpp */,
+			);
+			path = posix;
+			sourceTree = "<group>";
+		};
 		DFFA43CE19104BFA00C3923B /* media */ = {
 			isa = PBXGroup;
 			children = (
@@ -7322,6 +7328,7 @@
 				E37D5CB40D3023BB0081D327 /* osx */,
 				F5E1050C140AA38000175026 /* peripherals */,
 				4313767E12D63EC200680C15 /* pictures */,
+				DFD717211C09EDCE0025D964 /* platform */,
 				18B7C91B129428CA009E7A26 /* playlists */,
 				430C880812D649B10098821A /* powermanagement */,
 				DF28ED92170E1A11005FA9D2 /* profiles */,
@@ -9654,7 +9661,6 @@
 				18B7C7CE1294222E009E7A26 /* GUIListLabel.cpp in Sources */,
 				18B7C7CF1294222E009E7A26 /* GUIMessage.cpp in Sources */,
 				18B7C7D01294222E009E7A26 /* GUIMoverControl.cpp in Sources */,
-				395938771AC310B00053A590 /* MessagePrinter.cpp in Sources */,
 				18B7C7D11294222E009E7A26 /* GUIMultiImage.cpp in Sources */,
 				18B7C7D21294222E009E7A26 /* GUIMultiSelectText.cpp in Sources */,
 				18B7C7D31294222E009E7A26 /* GUIPanelContainer.cpp in Sources */,
@@ -10018,6 +10024,7 @@
 				7C87B2CE162CE39600EF897D /* PlayerController.cpp in Sources */,
 				F52CC5F01713AAA200113454 /* DirectoryNodeGrouped.cpp in Sources */,
 				F52CC6AA1713BD2B00113454 /* DirectoryNodeGrouped.cpp in Sources */,
+				DFD717271C09EDCE0025D964 /* MessagePrinter.cpp in Sources */,
 				DFECFADF172D9C5100A43CF7 /* GUIControlSettings.cpp in Sources */,
 				DFECFB09172D9CAB00A43CF7 /* SettingAddon.cpp in Sources */,
 				DFECFB0C172D9CAB00A43CF7 /* SettingControl.cpp in Sources */,
@@ -10838,7 +10845,6 @@
 				E49913E6174E5F8D00741B6D /* PlayListXML.cpp in Sources */,
 				E49913E7174E5F8D00741B6D /* SmartPlayList.cpp in Sources */,
 				E49913E8174E5F9900741B6D /* CocoaPowerSyscall.cpp in Sources */,
-				395938781AC310B00053A590 /* MessagePrinter.cpp in Sources */,
 				E49913E9174E5F9900741B6D /* DPMSSupport.cpp in Sources */,
 				E49913EA174E5F9900741B6D /* PowerManager.cpp in Sources */,
 				E49913EB174E5FB000741B6D /* GUIDialogLockSettings.cpp in Sources */,
@@ -11252,6 +11258,7 @@
 				7CCDA822192756250074CF51 /* NptStreams.cpp in Sources */,
 				7CCDA82B192756250074CF51 /* NptStrings.cpp in Sources */,
 				7C226E3F1BA5F61D00185CE0 /* AddonCallbacksAudioEngine.cpp in Sources */,
+				DFD717291C09EDD70025D964 /* MessagePrinter.cpp in Sources */,
 				7CCDA834192756250074CF51 /* NptSystem.cpp in Sources */,
 				7CCDA83D192756250074CF51 /* NptThreads.cpp in Sources */,
 				7CCDA846192756250074CF51 /* NptTime.cpp in Sources */,

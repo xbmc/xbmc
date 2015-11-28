@@ -2413,7 +2413,7 @@ OUTPUT_FILES="Makefile \
     xbmc/android/jni/Makefile \
     xbmc/utils/Makefile \
     xbmc/main/Makefile \
-    xbmc/main/posix/Makefile \
+    xbmc/platform/Makefile \
     tools/darwin/Configurations/App.xcconfig \
     tools/darwin/Configurations/Common.xcconfig \
     tools/darwin/packaging/ios/mkdeb-ios.sh \
