@@ -3075,8 +3075,8 @@
     <ClCompile Include="..\..\xbmc\main\main.cpp">
       <Filter>main</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\main\win32\WinMain.cpp">
-      <Filter>main\win32</Filter>
+    <ClCompile Include="..\..\xbmc\platform\win32\WinMain.cpp">
+      <Filter>platform\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\platform\win32\MessagePrinter.cpp">
       <Filter>platform\win32</Filter>

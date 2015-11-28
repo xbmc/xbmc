@@ -651,7 +651,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\platform\win32\MessagePrinter.cpp" />
-    <ClCompile Include="..\..\xbmc\main\win32\WinMain.cpp">
+    <ClCompile Include="..\..\xbmc\platform\win32\WinMain.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
