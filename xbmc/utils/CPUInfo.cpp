@@ -32,7 +32,7 @@
 #include <mach-o/arch.h>
 #endif // defined(__ppc__) || defined (TARGET_DARWIN_IOS)
 #ifdef TARGET_DARWIN_OSX
-#include "osx/smc.h"
+#include "platform/darwin/osx/smc.h"
 #endif
 #endif
 

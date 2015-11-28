@@ -48,7 +48,7 @@
 #endif
 #if defined(TARGET_DARWIN)
 #include "platform/darwin/DarwinUtils.h"
-#include "osx/CocoaInterface.h"
+#include "platform/darwin/osx/CocoaInterface.h"
 #endif
 #include "powermanagement/PowerManager.h"
 #include "utils/StringUtils.h"

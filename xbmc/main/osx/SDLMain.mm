@@ -15,7 +15,7 @@
 #import <sys/param.h> /* for MAXPATHLEN */
 #import <unistd.h>
 
-#import "osx/CocoaInterface.h"
+#import "platform/darwin/osx/CocoaInterface.h"
 //hack around problem with xbmc's typedef int BOOL
 // and obj-c's typedef unsigned char BOOL
 #define BOOL XBMC_BOOL 
@@ -24,7 +24,7 @@
 #import "storage/osx/DarwinStorageProvider.h"
 #undef BOOL
 
-#import "osx/HotKeyController.h"
+#import "platform/darwin/osx/HotKeyController.h"
 #import "platform/darwin/DarwinUtils.h"
 
 // For some reaon, Apple removed setAppleMenu from the headers in 10.4,

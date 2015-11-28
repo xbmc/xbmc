@@ -6,10 +6,15 @@ SRCS += XbmcContext.cpp
 ifeq ($(findstring osx,@ARCH@), osx)
 SRCS += darwin/AutoPool.mm
 SRCS += darwin/DarwinUtils.mm
+SRCS += darwin/osx/HotKeyController.m
 SRCS += darwin/OSXGNUReplacements.c
+SRCS += darwin/osx/OSXTextInputResponder.mm
+SRCS += darwin/osx/smc.c
+SRCS += darwin/osx/XBMCHelper.m
+SRCS += darwin/osx/CocoaInterface.mm
 endif
 
 LIB=platform.a
 
 include @abs_top_srcdir@/Makefile.include
--include $(patsubst %.mm,%.P,$(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS))))
+-include $(patsubst %.m,%.P,$(patsubst %.mm,%.P,$(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))))

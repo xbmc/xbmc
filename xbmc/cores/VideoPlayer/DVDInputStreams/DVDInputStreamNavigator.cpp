@@ -30,7 +30,7 @@
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
 #if defined(TARGET_DARWIN)
-#include "osx/CocoaInterface.h"
+#include "platform/darwin/osx/CocoaInterface.h"
 #endif
 
 #define HOLDMODE_NONE 0

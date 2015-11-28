@@ -83,7 +83,7 @@
 #endif // HAS_WEB_SERVER
 
 #if defined(TARGET_DARWIN_OSX)
-#include "osx/XBMCHelper.h"
+#include "platform/darwin/osx/XBMCHelper.h"
 #endif
 
 using namespace KODI::MESSAGING;

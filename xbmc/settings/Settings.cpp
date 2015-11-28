@@ -45,7 +45,7 @@
 #include "network/upnp/UPnPSettings.h"
 #include "network/WakeOnAccess.h"
 #if defined(TARGET_DARWIN_OSX)
-#include "osx/XBMCHelper.h"
+#include "platform/darwin/osx/XBMCHelper.h"
 #endif // defined(TARGET_DARWIN_OSX)
 #if defined(TARGET_DARWIN)
 #include "platform/darwin/DarwinUtils.h"

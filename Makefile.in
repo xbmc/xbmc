@@ -131,7 +131,6 @@ DIRECTORY_ARCHIVES += xbmc/network/mdns/mdns.a
 endif
 
 ifeq ($(findstring osx,@ARCH@),osx)
-DIRECTORY_ARCHIVES += xbmc/osx/osx.a
 DIRECTORY_ARCHIVES += xbmc/network/osx/network.a
 DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
 DIRECTORY_ARCHIVES += xbmc/powermanagement/osx/powermanagement.a
