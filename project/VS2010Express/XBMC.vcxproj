@@ -1787,7 +1787,7 @@
     <ClCompile Include="..\..\xbmc\XBApplicationEx.cpp" />
     <ClCompile Include="..\..\xbmc\XBDateTime.cpp" />
     <ClCompile Include="..\..\xbmc\xbmc.cpp" />
-    <ClCompile Include="..\..\xbmc\XbmcContext.cpp" />
+    <ClCompile Include="..\..\xbmc\platform\XbmcContext.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacks.h" />
@@ -2259,7 +2259,7 @@
     <ClInclude Include="..\..\xbmc\win32\PlatformDefs.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIWindowSplash.h" />
     <ClInclude Include="..\..\xbmc\XBDateTime.h" />
-    <ClInclude Include="..\..\xbmc\XbmcContext.h" />
+    <ClInclude Include="..\..\xbmc\platform\XbmcContext.h" />
     <ClInclude Include="..\..\xbmc\win32\PlatformInclude.h" />
     <ClInclude Include="..\..\xbmc\win32\stat_utf8.h" />
     <ClInclude Include="..\..\xbmc\win32\stdio_utf8.h" />

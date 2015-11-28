@@ -896,6 +896,8 @@
 		DFD5812616C828500008EEA0 /* DAVFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD5812316C828500008EEA0 /* DAVFile.cpp */; };
 		DFD717271C09EDCE0025D964 /* MessagePrinter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD717241C09EDCE0025D964 /* MessagePrinter.cpp */; };
 		DFD717291C09EDD70025D964 /* MessagePrinter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD717241C09EDCE0025D964 /* MessagePrinter.cpp */; };
+		DFD7172C1C09F5CF0025D964 /* XbmcContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD7172A1C09F5CF0025D964 /* XbmcContext.cpp */; };
+		DFD7172D1C09F5CF0025D964 /* XbmcContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD7172A1C09F5CF0025D964 /* XbmcContext.cpp */; };
 		DFD7C7AD19D1DDA90071942C /* Default-667h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DFD7C7AB19D1DDA90071942C /* Default-667h@2x.png */; };
 		DFD7C7AE19D1DDA90071942C /* Default-736h@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DFD7C7AC19D1DDA90071942C /* Default-736h@3x.png */; };
 		DFD882E817DD189E001516FE /* StringValidation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882E517DD189E001516FE /* StringValidation.cpp */; };
@@ -2026,7 +2028,6 @@
 		E499154B174E642900741B6D /* XBApplicationEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA70D25F9FD00618676 /* XBApplicationEx.cpp */; };
 		E499154C174E642900741B6D /* XBDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 384718D61325BA04000486D6 /* XBDateTime.cpp */; };
 		E499154D174E642900741B6D /* xbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ED10D25F9FD00618676 /* xbmc.cpp */; };
-		E499154E174E642900741B6D /* XbmcContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC720A9B1550927000FFD782 /* XbmcContext.cpp */; };
 		E499154F174E64F200741B6D /* MouseStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8D112942546009E7A26 /* MouseStat.cpp */; };
 		E4991550174E656E00741B6D /* Addon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD17C15FCE77900E10810 /* Addon.cpp */; };
 		E4991551174E656E00741B6D /* AddonCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD18015FCE77900E10810 /* AddonCallback.cpp */; };
@@ -2078,7 +2079,6 @@
 		E4DC97550FFE5BA8008E0C07 /* SAPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */; };
 		E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP -I$SRCROOT/lib/libUPnP/Neptune/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Platinum  -I$SRCROOT/lib/libUPnP/Platinum/Source/Extras -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaServer -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaConnect -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaRenderer"; }; };
 		EC720A8F155091BB00FFD782 /* ilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC720A8D155091BB00FFD782 /* ilog.cpp */; };
-		EC720A9D1550927000FFD782 /* XbmcContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC720A9B1550927000FFD782 /* XbmcContext.cpp */; };
 		F500E35617F3412C004FC217 /* WinEvents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F500E35517F3412C004FC217 /* WinEvents.cpp */; };
 		F500E35717F3412C004FC217 /* WinEvents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F500E35517F3412C004FC217 /* WinEvents.cpp */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
@@ -3757,6 +3757,8 @@
 		DFD5812416C828500008EEA0 /* DAVFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAVFile.h; sourceTree = "<group>"; };
 		DFD717221C09EDCE0025D964 /* MessagePrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagePrinter.h; sourceTree = "<group>"; };
 		DFD717241C09EDCE0025D964 /* MessagePrinter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MessagePrinter.cpp; sourceTree = "<group>"; };
+		DFD7172A1C09F5CF0025D964 /* XbmcContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XbmcContext.cpp; sourceTree = "<group>"; };
+		DFD7172B1C09F5CF0025D964 /* XbmcContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XbmcContext.h; sourceTree = "<group>"; };
 		DFD7C7AB19D1DDA90071942C /* Default-667h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-667h@2x.png"; sourceTree = "<group>"; };
 		DFD7C7AC19D1DDA90071942C /* Default-736h@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-736h@3x.png"; sourceTree = "<group>"; };
 		DFD882E517DD189E001516FE /* StringValidation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StringValidation.cpp; sourceTree = "<group>"; };
@@ -4598,8 +4600,6 @@
 		E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptXbmcFile.cpp; sourceTree = "<group>"; };
 		EC720A8D155091BB00FFD782 /* ilog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ilog.cpp; path = commons/ilog.cpp; sourceTree = "<group>"; };
 		EC720A8E155091BB00FFD782 /* ilog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ilog.h; path = commons/ilog.h; sourceTree = "<group>"; };
-		EC720A9B1550927000FFD782 /* XbmcContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XbmcContext.cpp; sourceTree = "<group>"; };
-		EC720A9C1550927000FFD782 /* XbmcContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XbmcContext.h; sourceTree = "<group>"; };
 		F500E35517F3412C004FC217 /* WinEvents.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WinEvents.cpp; sourceTree = "<group>"; };
 		F500E35917F34132004FC217 /* WinEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinEvents.h; sourceTree = "<group>"; };
 		F502BFDA160F34B900C96C76 /* CallbackHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CallbackHandler.cpp; path = python/CallbackHandler.cpp; sourceTree = "<group>"; };
@@ -7176,6 +7176,8 @@
 			children = (
 				DFD717231C09EDCE0025D964 /* posix */,
 				DFD717221C09EDCE0025D964 /* MessagePrinter.h */,
+				DFD7172A1C09F5CF0025D964 /* XbmcContext.cpp */,
+				DFD7172B1C09F5CF0025D964 /* XbmcContext.h */,
 			);
 			path = platform;
 			sourceTree = "<group>";
@@ -7419,8 +7421,6 @@
 				384718D61325BA04000486D6 /* XBDateTime.cpp */,
 				384718D71325BA04000486D6 /* XBDateTime.h */,
 				E38E1ED10D25F9FD00618676 /* xbmc.cpp */,
-				EC720A9B1550927000FFD782 /* XbmcContext.cpp */,
-				EC720A9C1550927000FFD782 /* XbmcContext.h */,
 			);
 			path = xbmc;
 			sourceTree = "<group>";
@@ -9842,7 +9842,6 @@
 				7C1A85661520522500C63311 /* TextureCacheJob.cpp in Sources */,
 				7C1F6EBB13ECCFA7001726AB /* LibraryDirectory.cpp in Sources */,
 				EC720A8F155091BB00FFD782 /* ilog.cpp in Sources */,
-				EC720A9D1550927000FFD782 /* XbmcContext.cpp in Sources */,
 				F5ED8D6C1551F91400842059 /* BlurayDirectory.cpp in Sources */,
 				7C8E02251BA35D0B0072E8B2 /* CECBuiltins.cpp in Sources */,
 				F5ED908815538DCE00842059 /* XBMCTinyXML.cpp in Sources */,
@@ -10137,6 +10136,7 @@
 				7CCDA1AA192753E30074CF51 /* PltXbox360.cpp in Sources */,
 				7CCDA1AF192753E30074CF51 /* X_MS_MediaReceiverRegistrarSCPD.cpp in Sources */,
 				7CCDA1BA192753E30074CF51 /* AVTransportSCPD.cpp in Sources */,
+				DFD7172C1C09F5CF0025D964 /* XbmcContext.cpp in Sources */,
 				7CCDA1C7192753E30074CF51 /* PltMediaController.cpp in Sources */,
 				7CCDA1D0192753E30074CF51 /* PltMediaRenderer.cpp in Sources */,
 				3961C4391ABC0A46002DBBFB /* UISoundsResource.cpp in Sources */,
@@ -11037,6 +11037,7 @@
 				7C8E022F1BA35D0B0072E8B2 /* GUIControlBuiltins.cpp in Sources */,
 				E49914AC174E607200741B6D /* GUIWindowWeather.cpp in Sources */,
 				E499152C174E640800741B6D /* Application.cpp in Sources */,
+				DFD7172D1C09F5CF0025D964 /* XbmcContext.cpp in Sources */,
 				E499152E174E642900741B6D /* AppParamParser.cpp in Sources */,
 				E499152F174E642900741B6D /* Autorun.cpp in Sources */,
 				E4991530174E642900741B6D /* AutoSwitch.cpp in Sources */,
@@ -11070,7 +11071,6 @@
 				E499154B174E642900741B6D /* XBApplicationEx.cpp in Sources */,
 				E499154C174E642900741B6D /* XBDateTime.cpp in Sources */,
 				E499154D174E642900741B6D /* xbmc.cpp in Sources */,
-				E499154E174E642900741B6D /* XbmcContext.cpp in Sources */,
 				E499154F174E64F200741B6D /* MouseStat.cpp in Sources */,
 				E4991550174E656E00741B6D /* Addon.cpp in Sources */,
 				E4991551174E656E00741B6D /* AddonCallback.cpp in Sources */,

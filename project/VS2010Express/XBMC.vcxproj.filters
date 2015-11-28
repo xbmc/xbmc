@@ -2062,11 +2062,15 @@
     <ClCompile Include="..\..\xbmc\MediaSource.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\XbmcContext.cpp" />
+    <ClCompile Include="..\..\xbmc\platform\XbmcContext.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\POUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\XbmcContext.cpp" />
+    <ClCompile Include="..\..\xbmc\platform\XbmcContext.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\network\ZeroconfBrowser.cpp">
       <Filter>network</Filter>
     </ClCompile>
@@ -5068,7 +5072,9 @@
     <ClInclude Include="..\..\xbmc\filesystem\ZipFile.h">
       <Filter>filesystem</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\XbmcContext.h" />
+    <ClInclude Include="..\..\xbmc\platform\XbmcContext.h">
+      <Filter>platform</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\MemBufferCache.h">
       <Filter>filesystem</Filter>
     </ClInclude>

@@ -35,7 +35,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "Util.h"
-#include "XbmcContext.h"
+#include "platform/XbmcContext.h"
 #include "WindowingFactory.h"
 #undef BOOL
 
