@@ -25,6 +25,9 @@
 
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GlobalsHandling.h"
+#if defined(HAVE_WAYLAND)
+#include <wayland-egl.h>
+#endif
 #include <EGL/egl.h>
 #include "windowing/WinSystem.h"
 

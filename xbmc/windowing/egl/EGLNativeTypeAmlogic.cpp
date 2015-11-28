@@ -28,6 +28,9 @@
 #include <stdlib.h>
 #include <linux/fb.h>
 #include <sys/ioctl.h>
+#if defined(HAVE_WAYLAND)
+#include <wayland-egl.h>
+#endif
 #include <EGL/egl.h>
 
 CEGLNativeTypeAmlogic::CEGLNativeTypeAmlogic()

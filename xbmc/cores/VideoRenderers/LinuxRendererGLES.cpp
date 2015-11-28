@@ -66,6 +66,9 @@ extern "C" {
 #include "osx/DarwinUtils.h"
 #endif
 #if defined(HAS_LIBSTAGEFRIGHT)
+#if defined(HAVE_WAYLAND)
+#include <wayland-egl.h>
+#endif
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include "windowing/egl/EGLWrapper.h"

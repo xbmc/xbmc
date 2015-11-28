@@ -21,6 +21,9 @@
  */
 
 #include "guilib/Resolution.h"
+#if defined(HAVE_WAYLAND)
+#include <wayland-egl.h>
+#endif
 #include <EGL/egl.h>
 class CEGLNativeType;
 class CEGLWrapper

@@ -21,6 +21,9 @@
 #include <cstdlib>
 
 #include "system.h"
+#if defined(HAVE_WAYLAND)
+#include <wayland-egl.h>
+#endif
 #include <EGL/egl.h>
 
 #include "EGLNativeTypeIMX.h"
