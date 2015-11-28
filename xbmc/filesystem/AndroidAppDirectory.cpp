@@ -22,7 +22,7 @@
 
 #if defined(TARGET_ANDROID)
 #include "AndroidAppDirectory.h"
-#include "xbmc/android/activity/XBMCApp.h"
+#include "platform/android/activity/XBMCApp.h"
 #include "FileItem.h"
 #include "File.h"
 #include "utils/URIUtils.h"

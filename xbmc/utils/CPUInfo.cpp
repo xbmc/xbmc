@@ -51,7 +51,7 @@
 #endif
 
 #if defined(TARGET_ANDROID)
-#include "android/activity/AndroidFeatures.h"
+#include "platform/android/activity/AndroidFeatures.h"
 #endif
 
 #ifdef TARGET_WINDOWS

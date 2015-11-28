@@ -173,10 +173,10 @@ DIRECTORY_ARCHIVES += lib/UnrarXLib/UnrarXLib.a
 endif
 
 ifeq (@USE_ANDROID@,1)
-DIRECTORY_ARCHIVES += xbmc/android/loader/AndroidDyload.a
+DIRECTORY_ARCHIVES += xbmc/platform/android/loader/AndroidDyload.a
 DIRECTORY_ARCHIVES += xbmc/windowing/android/windowing_android.a
-DIRECTORY_ARCHIVES += xbmc/android/bionic_supplement/bionic_supplement.a
-DIRECTORY_ARCHIVES += xbmc/android/jni/jni.a
+DIRECTORY_ARCHIVES += xbmc/platform/android/bionic_supplement/bionic_supplement.a
+DIRECTORY_ARCHIVES += xbmc/platform/android/jni/jni.a
 endif
 
 ifeq (@USE_OMXPLAYER@,1)
@@ -394,7 +394,7 @@ $(FFMPEGOBJS): dvdpcodecs
 endif
 
 ifeq (@USE_ANDROID@,1)
-MAINOBJS+=xbmc/android/activity/activity.a
+MAINOBJS+=xbmc/platform/android/activity/activity.a
 else
 MAINOBJS+=xbmc/main/main.a
 endif # USE_ANDROID

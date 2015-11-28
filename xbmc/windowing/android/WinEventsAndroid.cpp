@@ -30,7 +30,7 @@
 #include "utils/log.h"
 #include "windowing/WindowingFactory.h"
 
-#include "android/jni/View.h"
+#include "platform/android/jni/View.h"
 
 #define DEBUG_MESSAGEPUMP 0
 

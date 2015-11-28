@@ -23,7 +23,7 @@
 #include "EGLNativeTypeAmlAndroid.h"
 #include "utils/log.h"
 #include "guilib/gui3d.h"
-#include "android/activity/XBMCApp.h"
+#include "platform/android/activity/XBMCApp.h"
 #include "utils/StringUtils.h"
 #include "utils/SysfsUtils.h"
 #include "utils/AMLUtils.h"

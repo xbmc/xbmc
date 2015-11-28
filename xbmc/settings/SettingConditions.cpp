@@ -26,7 +26,7 @@
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
 #if defined(TARGET_ANDROID)
-#include "android/activity/AndroidFeatures.h"
+#include "platform/android/activity/AndroidFeatures.h"
 #endif // defined(TARGET_ANDROID)
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"

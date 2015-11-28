@@ -47,7 +47,7 @@
 #endif
 #if defined(TARGET_ANDROID)
 #include "Video/DVDVideoCodecAndroidMediaCodec.h"
-#include "android/activity/AndroidFeatures.h"
+#include "platform/android/activity/AndroidFeatures.h"
 #endif
 #include "Audio/DVDAudioCodecFFmpeg.h"
 #include "Audio/DVDAudioCodecPassthrough.h"

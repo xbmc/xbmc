@@ -21,7 +21,7 @@
 #include <time.h>
 #include "system.h"
 #ifdef TARGET_ANDROID
-#include "android/bionic_supplement/bionic_supplement.h"
+#include "platform/android/bionic_supplement/bionic_supplement.h"
 #endif
 #include "PlatformInclude.h"
 #include "LinuxTimezone.h"

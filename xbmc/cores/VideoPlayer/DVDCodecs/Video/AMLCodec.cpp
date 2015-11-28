@@ -37,7 +37,7 @@
 #include "utils/TimeUtils.h"
 
 #if defined(TARGET_ANDROID)
-#include "android/activity/AndroidFeatures.h"
+#include "platform/android/activity/AndroidFeatures.h"
 #include "utils/BitstreamConverter.h"
 #endif
 

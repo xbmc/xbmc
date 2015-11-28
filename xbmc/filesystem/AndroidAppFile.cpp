@@ -23,7 +23,7 @@
 #if defined(TARGET_ANDROID)
 
 #include "AndroidAppFile.h"
-#include "android/activity/XBMCApp.h"
+#include "platform/android/activity/XBMCApp.h"
 #include <sys/stat.h>
 #include "Util.h"
 #include "URL.h"
@@ -31,13 +31,13 @@
 #include "utils/URIUtils.h"
 #include <jni.h>
 #include <android/bitmap.h>
-#include "android/jni/Context.h"
-#include "android/jni/Build.h"
-#include "android/jni/DisplayMetrics.h"
-#include "android/jni/Resources.h"
-#include "android/jni/Bitmap.h"
-#include "android/jni/BitmapDrawable.h"
-#include "android/jni/PackageManager.h"
+#include "platform/android/jni/Context.h"
+#include "platform/android/jni/Build.h"
+#include "platform/android/jni/DisplayMetrics.h"
+#include "platform/android/jni/Resources.h"
+#include "platform/android/jni/Bitmap.h"
+#include "platform/android/jni/BitmapDrawable.h"
+#include "platform/android/jni/PackageManager.h"
 using namespace XFILE;
 
 CFileAndroidApp::CFileAndroidApp(void)

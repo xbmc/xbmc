@@ -2408,9 +2408,9 @@ OUTPUT_FILES="Makefile \
     tools/EventClients/Clients/OSXRemote/Makefile \
     xbmc/peripherals/bus/Makefile \
     xbmc/peripherals/devices/Makefile \
-    xbmc/android/activity/Makefile \
-    xbmc/android/loader/Makefile \
-    xbmc/android/jni/Makefile \
+    xbmc/platform/android/activity/Makefile \
+    xbmc/platform/android/loader/Makefile \
+    xbmc/platform/android/jni/Makefile \
     xbmc/utils/Makefile \
     xbmc/main/Makefile \
     xbmc/platform/Makefile \
