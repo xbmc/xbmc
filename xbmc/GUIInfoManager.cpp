@@ -100,7 +100,7 @@
 #include "interfaces/info/InfoExpression.h"
 
 #if defined(TARGET_DARWIN_OSX)
-#include "osx/smc.h"
+#include "platform/darwin/osx/smc.h"
 #include "linux/LinuxResourceCounter.h"
 static CLinuxResourceCounter m_resourceCounter;
 #endif

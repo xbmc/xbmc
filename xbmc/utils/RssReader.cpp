@@ -28,7 +28,7 @@
 #include "filesystem/File.h"
 #include "filesystem/CurlFile.h"
 #if defined(TARGET_DARWIN)
-#include "osx/CocoaInterface.h"
+#include "platform/darwin/osx/CocoaInterface.h"
 #endif
 #include "settings/AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"

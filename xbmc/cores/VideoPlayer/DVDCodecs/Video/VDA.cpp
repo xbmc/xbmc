@@ -19,7 +19,7 @@
  */
 #include "system.h"
 #ifdef TARGET_DARWIN_OSX
-#include "osx/CocoaInterface.h"
+#include "platform/darwin/osx/CocoaInterface.h"
 #include "platform/darwin/DarwinUtils.h"
 #include "DVDVideoCodec.h"
 #include "DVDCodecs/DVDCodecUtils.h"

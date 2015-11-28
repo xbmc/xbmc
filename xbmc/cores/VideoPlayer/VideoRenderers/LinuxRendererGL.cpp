@@ -55,7 +55,7 @@ extern "C" {
 }
 
 #ifdef TARGET_DARWIN_OSX
-#include "osx/CocoaInterface.h"
+#include "platform/darwin/osx/CocoaInterface.h"
 #include <CoreVideo/CoreVideo.h>
 #include <OpenGL/CGLIOSurface.h>
 #include "platform/darwin/DarwinUtils.h"

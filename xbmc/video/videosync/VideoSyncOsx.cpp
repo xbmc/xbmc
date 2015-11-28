@@ -30,7 +30,7 @@
 #include "windowing/WindowingFactory.h"
 #include <QuartzCore/CVDisplayLink.h>
 #include <CoreVideo/CVHostTime.h>
-#include "osx/CocoaInterface.h"
+#include "platform/darwin/osx/CocoaInterface.h"
 
 bool CVideoSyncOsx::Setup(PUPDATECLOCK func)
 {
