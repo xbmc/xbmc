@@ -88,6 +88,9 @@
     <Filter Include="platform">
       <UniqueIdentifier>{90dd91e6-b726-4f88-803a-84156a663713}</UniqueIdentifier>
     </Filter>
+    <Filter Include="platform\posix">
+      <UniqueIdentifier>{4af60343-ab33-42c9-8752-b7898e9b5b86}</UniqueIdentifier>
+    </Filter>
     <Filter Include="platform\win32">
       <UniqueIdentifier>{9312ce72-49ff-422a-8e3a-05c0a2a534d5}</UniqueIdentifier>
     </Filter>
@@ -3072,8 +3075,8 @@
     <ClCompile Include="..\..\xbmc\pictures\PictureScalingAlgorithm.cpp">
       <Filter>pictures</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\main\main.cpp">
-      <Filter>main</Filter>
+    <ClCompile Include="..\..\xbmc\platform\posix\main.cpp">
+      <Filter>platform\posix</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\platform\win32\WinMain.cpp">
       <Filter>platform\win32</Filter>

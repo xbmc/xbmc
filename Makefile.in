@@ -395,7 +395,10 @@ endif
 ifeq (@USE_ANDROID@,1)
 MAINOBJS+=xbmc/platform/android/activity/activity.a
 else
-MAINOBJS+=xbmc/main/main.a
+MAINOBJS+=xbmc/platform/posix/posix.a
+ifeq ($(findstring osx,@ARCH@), osx)
+MAINOBJS+=xbmc/platform/darwin/osx/sdlmain.a
+endif
 endif # USE_ANDROID
 
 
@@ -405,7 +408,7 @@ OBJSXBMC:=$(filter-out $(DYNOBJSXBMC), $(OBJSXBMC))
 BIN_DIRS = $(dir $(DIRECTORY_ARCHIVES)) $(dir $(NWAOBJSXBMC)) $(dir $(MAINOBJS))
 
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(DVDPCODECS_DIRS) \
-	$(LIB_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS) xbmc/main
+	$(LIB_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS) xbmc/platform xbmc/platform/darwin/osx
 
 $(NWAOBJSXBMC) $(DIRECTORY_ARCHIVES) $(MAINOBJS): force
 	@$(MAKE) $(if $(V),,-s) -C $(@D)

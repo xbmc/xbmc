@@ -1,9 +1,8 @@
 .SUFFIXES : .m .mm .cpp
 
 SRCS  = main.cpp
-SRCS += posix/MessagePrinter.cpp
 
-LIB=main.a
+LIB=posix.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.mm,%.P,$(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS))))
