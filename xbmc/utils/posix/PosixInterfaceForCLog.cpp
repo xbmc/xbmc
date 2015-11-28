@@ -23,7 +23,7 @@
 #include <time.h>
 
 #if defined(TARGET_DARWIN)
-#include "DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #elif defined(TARGET_ANDROID)
 #include "platform/android/activity/XBMCApp.h"
 #endif // TARGET_ANDROID

@@ -22,7 +22,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "threads/Event.h"
 #include "Application.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #undef BOOL
 
 #import "IOSKeyboardView.h"

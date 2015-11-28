@@ -40,7 +40,7 @@
 #include "osx/XBMCHelper.h"
 #include "utils/SystemInfo.h"
 #include "osx/CocoaInterface.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #undef BOOL
 
 #import <SDL/SDL_video.h>

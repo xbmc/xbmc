@@ -38,7 +38,7 @@
 #import "CocoaInterface.h"
 #import "DllPaths_generated.h"
 
-#import "AutoPool.h"
+#import "platform/darwin/AutoPool.h"
 
 
 //#define MAX_DISPLAYS 32

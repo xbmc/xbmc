@@ -5,11 +5,7 @@ INCLUDES += -I@abs_top_srcdir@/xbmc/linux
 .SUFFIXES : .m .mm
 
 SRCS  = XBMCHelper.m
-SRCS += AutoPool.mm
-SRCS += DarwinUtils.mm
-SRCS += CocoaInterface.mm
 SRCS += HotKeyController.m
-SRCS += OSXGNUReplacements.c
 SRCS += OSXTextInputResponder.mm
 ifeq ($(findstring osx,@ARCH@), osx)
 SRCS += smc.c

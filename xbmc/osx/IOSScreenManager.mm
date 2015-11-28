@@ -30,7 +30,7 @@
 #include "WindowingFactory.h"
 #include "settings/DisplaySettings.h"
 #include "cores/AudioEngine/AEFactory.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #undef BOOL
 
 #import <Foundation/Foundation.h>

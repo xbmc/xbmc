@@ -184,7 +184,7 @@
 #include "osx/XBMCHelper.h"
 #endif
 #ifdef TARGET_DARWIN
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #endif
 
 #ifdef HAS_DVD_DRIVE

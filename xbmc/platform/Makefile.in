@@ -3,6 +3,12 @@
 SRCS = posix/MessagePrinter.cpp
 SRCS += XbmcContext.cpp
 
+ifeq ($(findstring osx,@ARCH@), osx)
+SRCS += darwin/AutoPool.mm
+SRCS += darwin/DarwinUtils.mm
+SRCS += darwin/OSXGNUReplacements.c
+endif
+
 LIB=platform.a
 
 include @abs_top_srcdir@/Makefile.include

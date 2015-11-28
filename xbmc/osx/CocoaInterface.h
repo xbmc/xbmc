@@ -21,7 +21,7 @@
 #define _OSX_INTERFACE_H_
 
 #include <string>
-#include "AutoPool.h"
+#include "platform/darwin/AutoPool.h"
 
 #ifdef __cplusplus
 extern "C"

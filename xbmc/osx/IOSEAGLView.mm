@@ -48,7 +48,7 @@
 #import "xbmc/osx/ios/XBMCController.h"
 #endif
 #import "IOSScreenManager.h"
-#import "AutoPool.h"
+#import "platform/darwin/AutoPool.h"
 #import "DarwinUtils.h"
 #import "XBMCDebugHelpers.h"
 

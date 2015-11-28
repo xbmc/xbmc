@@ -41,7 +41,7 @@
 #include "utils/SystemInfo.h"
 #include "windowing/WindowingFactory.h"
 #if defined(TARGET_DARWIN_OSX)
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #endif// defined(TARGET_DARWIN_OSX)
 
 bool AddonHasSettings(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
