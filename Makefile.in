@@ -55,7 +55,7 @@ DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/interfaces/python/python_binding.a \
                    xbmc/linux/linux.a \
                    xbmc/listproviders/listproviders.a \
-                   xbmc/main/posix/MessagePrinter.a \
+                   xbmc/platform/platform.a \
                    xbmc/media/media.a \
                    xbmc/messaging/messaging.a \
                    xbmc/messaging/helpers/messagingHelpers.a \
