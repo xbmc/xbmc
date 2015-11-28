@@ -43,7 +43,7 @@
   #include "Windows.h"
 #endif
 #if defined(TARGET_ANDROID)
-  #include "android/activity/XBMCApp.h"
+  #include "platform/android/activity/XBMCApp.h"
 #endif
 
 // If the process ends in less than this time (ms), we assume it's a launcher

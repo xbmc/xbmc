@@ -25,7 +25,7 @@
 #if defined(TARGET_DARWIN)
 #include "DarwinUtils.h"
 #elif defined(TARGET_ANDROID)
-#include "android/activity/XBMCApp.h"
+#include "platform/android/activity/XBMCApp.h"
 #endif // TARGET_ANDROID
 
 struct FILEWRAP : public FILE

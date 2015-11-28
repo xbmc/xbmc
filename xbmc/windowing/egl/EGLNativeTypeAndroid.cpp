@@ -24,15 +24,15 @@
 #include "EGLNativeTypeAndroid.h"
 #include "utils/log.h"
 #include "guilib/gui3d.h"
-#include "android/activity/XBMCApp.h"
+#include "platform/android/activity/XBMCApp.h"
 #include "utils/StringUtils.h"
-#include "android/jni/SystemProperties.h"
-#include "android/jni/Display.h"
-#include "android/jni/View.h"
-#include "android/jni/Window.h"
-#include "android/jni/WindowManager.h"
-#include "android/jni/Build.h"
-#include "android/jni/System.h"
+#include "platform/android/jni/SystemProperties.h"
+#include "platform/android/jni/Display.h"
+#include "platform/android/jni/View.h"
+#include "platform/android/jni/Window.h"
+#include "platform/android/jni/WindowManager.h"
+#include "platform/android/jni/Build.h"
+#include "platform/android/jni/System.h"
 
 CEGLNativeTypeAndroid::CEGLNativeTypeAndroid()
 {

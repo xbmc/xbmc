@@ -1,0 +1,165 @@
+(soon-to-be) libjni-android
+
+Quick and dirty readme.
+
+1. What is this?
+
+It is a native wrapper for JNI specifically designed to provide easy access
+to the Android API. The goal is to create a 1:1 mapping of java functionality
+to native apps.
+
+2. Is that possible?
+
+No. But we can try :)
+Java and c++ have some fundamental differences that make an exact mapping
+impossible. But we can come close.
+
+3. How does it work?
+
+The native classes use JNI to call into java while hiding the gory details from
+the user. Under the hood it's quite un-elegant. Typical JNI objects created and
+passed around using a thin wrapper. This wrapper is a heavily modified version
+of one found in libcrystax. Thanks crystax!
+
+4. What does it look like?
+
+  Here's a quick example:
+
+  void MyFunction()
+  {
+    // Find the launch intent for a package and start its activity
+    CJNIPackageManager manager = getPackageManager();
+    CJNIIntent intent = manager.getLaunchIntentForPackage("org.xbmc.kodi");
+    startActivity(sendIntent);
+  }
+
+This tiny bit of functionality would require dozens of lines if using JNI
+directly, but here it looks just like java code.
+
+5. How do I use it in my app?
+It is assumed that you are using a NativeActivity. Apps should create a main
+class that inherits from CJNIContext, and passes android_app->state->clazz to
+the constructor. This class now acts like a standard NativeActivity which
+inherits from Context. This class can now call the same functions that a Java
+activity can. Additionally, a virtual OnReceive function will catch broadcast
+events.
+
+TODO: Rename and make the distinction between NativeActivity and Context
+classes.
+
+6. How do I interact with the classes?
+
+Just as you would with java. There is no documentation for usage, because the
+Android API documentation should be sufficient.
+
+7. What are the caveats?
+
+With any luck, very few. This library is still very new and has not been
+exposed to many use-cases yet. Here are a few:
+
+a. Java can return NULL objects (not null-pointers).
+workaround: objects can be tested as a bool.
+
+Here's an example of a function that would crash:
+
+  void MyFunction()
+  {
+    std::string externalDir = getExternalFilesDir("foo").getAbsolutePath();
+    return externalDir;
+  }
+
+The Android API specifies that getExternalFilesDir("") can return NULL if the
+path is not found. Thus getAbsolutePath() has no instance and would crash when
+called.
+
+The fix:
+
+  std::string MyFunction()
+  {
+    std::string externalDir;
+    CJNIFile myFile = getExternalFilesDir("foo");
+    if (myFile)
+      externalDir myFile.getAbsolutePath();
+    retrun externalDir;
+  }
+
+b. Java has an understanding of arrays like Type[] which contain size info.
+   C-style arrays don't carry size information, so passing a c-array as a
+   parameter does not provide enough info to work with it realistically.
+
+   workaround: Data should be passed in/out of Java arrays as std::vectors of
+   primitive types or jni classes.
+   Care should be taken to avoid making needless copies of objects in the
+   process. To automate this, jcast() can be used to convert a j(h)objectArray
+   directly to a vector of native objects. For example:
+
+  std::vector<CJNIFoo> example()
+  {
+    return jcast<std::vector<CJNIFoo> >(call_method<jhobjectArray>(object, "function", "()[Lsome/Class;"))
+  }
+
+c. Probably lots more.
+
+8. Is the entire API implemented?
+Not even close! Classes and individual functions have been added as-needed.
+
+9. OK, how do I add xyz class?
+Each (non-static) class inherits from CJNIBase. This class stores an object
+for the subclass, handles copying, etc. The class is expected to provide
+functions and members of the same name as the Android api. Helper functions
+are used to make JNI usage less painful.
+
+Simplified Example:
+
+  #include "JNIBase.h"
+  class CJNISomeClass : public CJNIBase
+  {
+  public:
+    CJNISomeClass();
+    CJNISomeClass(const jni::jhobject &object) : CJNIBase(object){};
+    std::string getSomeString();
+  };
+
+  CJNISomeClass::CJNISomeClass() : CJNIBase("platform/android/some/ClassName")
+  {
+    m_object = new_object(GetClassName());
+  }
+
+  std::string CJNISomeClass::getSomeString()
+  {
+    return jcast<std::string>(call_method<jhstring>(m_object, "getSomeString", "()Ljava/lang/String;"));
+  }
+
+When a CJNISomeClass is created, it will use the hard-coded classname to
+construct a new instance (<init> is called on the class).
+If a CJNISomeClass is created from another CJNISomeClass, its underlying object
+will be used to create a new copy.
+
+Note that jhobjects can be cast to and from their parent classes. This is to
+facilitate easy chaining of functions.
+
+new_object and call_method are helper functions that do auto-lookups and
+casting of params and the result. See jutils/jutils-details.hpp for more
+helpers.
+
+10. What is the lifetime of the created objects?
+All native objects are returned as Global refs. This is overkill, but it was
+done in order to reduce complexity. All refs are automatically destroyed when
+objects go out of scope. Because of this, all objects should be passed as
+const ref whenever possible to avoid unnecessary reference creation.
+
+CJNISomeClass objects should almost never be long-lived, as some environments
+may have hard-limits for the amount that can be allocated.
+
+11. Why bother? Aren't there programs to generate these wrappers automatically?
+Sure, but none of them seemed to do it in a way that reduced complexity to a
+nominal level.
+
+12. Is it stable?
+It works as-tested, but hasn't seen much real-world exposure. Time will tell.
+Don't use it in production.
+
+13. What's with the CJNI naming?
+This library was created for XBMC and classes were created using XBMC
+naming conventions. If it is adopted elsewhere, the names should be changed to
+something more standard.

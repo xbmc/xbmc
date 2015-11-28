@@ -21,16 +21,16 @@
 #include "AESinkAUDIOTRACK.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Utils/AERingBuffer.h"
-#include "android/activity/XBMCApp.h"
+#include "platform/android/activity/XBMCApp.h"
 #include "settings/Settings.h"
 #if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
 #endif
 #include "utils/log.h"
 
-#include "android/jni/AudioFormat.h"
-#include "android/jni/AudioManager.h"
-#include "android/jni/AudioTrack.h"
+#include "platform/android/jni/AudioFormat.h"
+#include "platform/android/jni/AudioManager.h"
+#include "platform/android/jni/AudioTrack.h"
 
 using namespace jni;
 
