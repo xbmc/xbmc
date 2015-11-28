@@ -27,7 +27,7 @@
 #include "LinuxTimezone.h"
 #include "utils/SystemInfo.h"
 #if defined(TARGET_DARWIN)
-#include "osx/OSXGNUReplacements.h"
+#include "platform/darwin/OSXGNUReplacements.h"
 #endif
 #ifdef TARGET_FREEBSD
 #include "freebsd/FreeBSDGNUReplacements.h"

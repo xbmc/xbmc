@@ -48,7 +48,7 @@
 #include "TextureCache.h"
 #undef id
 #include <math.h>
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 
 using namespace KODI::MESSAGING;
 
@@ -75,7 +75,7 @@ const NSString *MPNowPlayingInfoPropertyPlaybackQueueCount = @"MPNowPlayingInfoP
 #import "IOSScreenManager.h"
 #import "XBMCApplication.h"
 #import "XBMCDebugHelpers.h"
-#import "AutoPool.h"
+#import "platform/darwin/AutoPool.h"
 
 XBMCController *g_xbmcController;
 static CEvent screenChangeEvent;

@@ -21,7 +21,7 @@
 #include "PeripheralBusUSB.h"
 #include "peripherals/Peripherals.h"
 #include "utils/log.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 
 #include <sys/param.h>
 

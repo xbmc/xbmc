@@ -25,7 +25,7 @@
 #undef BOOL
 
 #import "osx/HotKeyController.h"
-#import "osx/DarwinUtils.h"
+#import "platform/darwin/DarwinUtils.h"
 
 // For some reaon, Apple removed setAppleMenu from the headers in 10.4,
 // but the method still is there and works. To avoid warnings, we declare

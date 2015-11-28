@@ -47,7 +47,7 @@
 
 #import "ios/XBMCController.h"
 #import "osx/IOSScreenManager.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #import <dlfcn.h>
 
 // IOSDisplayLinkCallback is declared in the lower part of the file

@@ -47,7 +47,7 @@
 #include "utils/CharsetConverter.h"
 #endif
 #if defined(TARGET_DARWIN)
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #include "osx/CocoaInterface.h"
 #endif
 #include "powermanagement/PowerManager.h"

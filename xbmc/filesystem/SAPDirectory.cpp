@@ -32,7 +32,7 @@
 #include "utils/StringUtils.h"
 #include "URL.h"
 #if defined(TARGET_DARWIN)
-#include "osx/OSXGNUReplacements.h" // strnlen
+#include "platform/darwin/OSXGNUReplacements.h" // strnlen
 #endif
 #ifdef TARGET_FREEBSD
 #include "freebsd/FreeBSDGNUReplacements.h"

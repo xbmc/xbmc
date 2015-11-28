@@ -36,7 +36,7 @@ typedef unsigned char BYTE;
   #include <ApplicationServices/ApplicationServices.h>
 #endif
 
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 
 #include "osx/CocoaInterface.h"
 

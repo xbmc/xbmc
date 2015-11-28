@@ -25,7 +25,7 @@
   #import <Cocoa/Cocoa.h>
 #endif
 
-#import "osx/AutoPool.h"
+#import "platform/darwin/AutoPool.h"
 
 CCocoaAutoPool::CCocoaAutoPool()
 {
