@@ -273,6 +273,11 @@ void CAEFactory::Shutdown()
 IAEStream *CAEFactory::MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, 
   unsigned int encodedSampleRate, CAEChannelInfo channelLayout, unsigned int options)
 {
+  if (dataFormat == AE_FMT_INVALID || dataFormat == AE_FMT_MAX)
+  {
+    return NULL;
+  }
+
   if(AE)
     return AE->MakeStream(dataFormat, sampleRate, encodedSampleRate, channelLayout, options);
 
