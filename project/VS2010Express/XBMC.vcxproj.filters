@@ -879,7 +879,9 @@
     <ClCompile Include="..\..\xbmc\Application.cpp" />
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\SystemGlobals.cpp" />
-    <ClCompile Include="..\..\xbmc\xbmc.cpp" />
+    <ClCompile Include="..\..\xbmc\platform\xbmc.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\D3DResource.cpp">
       <Filter>guilib</Filter>
     </ClCompile>

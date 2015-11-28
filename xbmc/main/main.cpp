@@ -24,7 +24,7 @@
 #include "FileItem.h"
 #include "PlayListPlayer.h"
 #include "utils/log.h"
-#include "xbmc.h"
+#include "platform/xbmc.h"
 #ifdef TARGET_POSIX
 #include <sys/resource.h>
 #include <signal.h>
