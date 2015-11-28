@@ -815,6 +815,7 @@
 		DF91E9371C0A1C610011084D /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF91E9311C0A1C610011084D /* XBMCHelper.cpp */; };
 		DF91E93A1C0A21D60011084D /* xbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF91E9381C0A21D60011084D /* xbmc.cpp */; };
 		DF91E93B1C0A21D60011084D /* xbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF91E9381C0A21D60011084D /* xbmc.cpp */; };
+		DF91E93E1C0A26350011084D /* SDLMain.mm in Sources */ = {isa = PBXBuildFile; fileRef = DF91E93D1C0A26350011084D /* SDLMain.mm */; };
 		DF923E5D1A11536A008CDB0C /* DataCacheCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF923E5B1A11536A008CDB0C /* DataCacheCore.cpp */; };
 		DF923E5E1A11536A008CDB0C /* DataCacheCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF923E5B1A11536A008CDB0C /* DataCacheCore.cpp */; };
 		DF93D69A1444A8B1007C6459 /* DirectoryCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6651444A8B0007C6459 /* DirectoryCache.cpp */; };
@@ -843,7 +844,6 @@
 		DFAF6A4F16EBAE3800D6AE12 /* RssManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAF6A4D16EBAE3800D6AE12 /* RssManager.cpp */; };
 		DFB02DEA16629DBA00F37752 /* PyContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB02DE816629DBA00F37752 /* PyContext.cpp */; };
 		DFB0F472161B747500D744F4 /* AddonsOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB0F470161B747500D744F4 /* AddonsOperations.cpp */; };
-		DFB15B2215F8FB8100CDF0DE /* SDLMain.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFB15B2115F8FB8100CDF0DE /* SDLMain.mm */; };
 		DFB25D2F163D4743006C4A48 /* Addon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD17C15FCE77900E10810 /* Addon.cpp */; };
 		DFB25D30163D4743006C4A48 /* AddonCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD18015FCE77900E10810 /* AddonCallback.cpp */; };
 		DFB25D31163D4743006C4A48 /* AddonClass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD18415FCE77900E10810 /* AddonClass.cpp */; };
@@ -3653,6 +3653,8 @@
 		DF91E9321C0A1C610011084D /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		DF91E9381C0A21D60011084D /* xbmc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xbmc.cpp; sourceTree = "<group>"; };
 		DF91E9391C0A21D60011084D /* xbmc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc.h; sourceTree = "<group>"; };
+		DF91E93C1C0A26350011084D /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = "<group>"; };
+		DF91E93D1C0A26350011084D /* SDLMain.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SDLMain.mm; sourceTree = "<group>"; };
 		DF923E5B1A11536A008CDB0C /* DataCacheCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DataCacheCore.cpp; sourceTree = "<group>"; };
 		DF923E5C1A11536A008CDB0C /* DataCacheCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataCacheCore.h; sourceTree = "<group>"; };
 		DF93D6651444A8B0007C6459 /* DirectoryCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryCache.cpp; sourceTree = "<group>"; };
@@ -3709,8 +3711,6 @@
 		DFB02DE916629DBA00F37752 /* PyContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PyContext.h; path = python/PyContext.h; sourceTree = "<group>"; };
 		DFB0F470161B747500D744F4 /* AddonsOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonsOperations.cpp; sourceTree = "<group>"; };
 		DFB0F471161B747500D744F4 /* AddonsOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonsOperations.h; sourceTree = "<group>"; };
-		DFB15B2015F8FB8100CDF0DE /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = "<group>"; };
-		DFB15B2115F8FB8100CDF0DE /* SDLMain.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SDLMain.mm; sourceTree = "<group>"; };
 		DFB65F6515373AE7006B8FF1 /* AEFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEFactory.cpp; sourceTree = "<group>"; };
 		DFB65F6615373AE7006B8FF1 /* AEFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEFactory.h; sourceTree = "<group>"; };
 		DFB65F6A15373AE7006B8FF1 /* AEEncoderFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEEncoderFFmpeg.cpp; sourceTree = "<group>"; };
@@ -5929,7 +5929,6 @@
 		552A226615F7E11B0015C0D0 /* main */ = {
 			isa = PBXGroup;
 			children = (
-				DFB15B1F15F8FB8100CDF0DE /* osx */,
 				552A226815F7E14B0015C0D0 /* main.cpp */,
 			);
 			name = main;
@@ -7043,6 +7042,8 @@
 				DF91E92B1C0A1C610011084D /* Info.plist */,
 				DF91E92D1C0A1C610011084D /* OSXTextInputResponder.h */,
 				DF91E92E1C0A1C610011084D /* OSXTextInputResponder.mm */,
+				DF91E93C1C0A26350011084D /* SDLMain.h */,
+				DF91E93D1C0A26350011084D /* SDLMain.mm */,
 				DF91E92F1C0A1C610011084D /* smc.c */,
 				DF91E9301C0A1C610011084D /* smc.h */,
 				DF91E9311C0A1C610011084D /* XBMCHelper.cpp */,
@@ -7061,16 +7062,6 @@
 				DF02BA651A91065F006DCA16 /* VideoSyncOsx.h */,
 			);
 			name = videosync;
-			sourceTree = "<group>";
-		};
-		DFB15B1F15F8FB8100CDF0DE /* osx */ = {
-			isa = PBXGroup;
-			children = (
-				DFB15B2015F8FB8100CDF0DE /* SDLMain.h */,
-				DFB15B2115F8FB8100CDF0DE /* SDLMain.mm */,
-			);
-			name = osx;
-			path = main/osx;
 			sourceTree = "<group>";
 		};
 		DFB65F6315373AE7006B8FF1 /* AudioEngine */ = {
@@ -9222,6 +9213,7 @@
 				E38E1FA90D25F9FD00618676 /* VideoPlayerSubtitle.cpp in Sources */,
 				395C2A141A9F072400EBC7AD /* ResourceFile.cpp in Sources */,
 				E38E1FAA0D25F9FD00618676 /* VideoPlayerVideo.cpp in Sources */,
+				DF91E93E1C0A26350011084D /* SDLMain.mm in Sources */,
 				E38E1FAB0D25F9FD00618676 /* DVDStreamInfo.cpp in Sources */,
 				E38E1FAC0D25F9FD00618676 /* DVDFactorySubtitle.cpp in Sources */,
 				E38E1FAD0D25F9FD00618676 /* DVDSubtitleLineCollection.cpp in Sources */,
@@ -9930,7 +9922,6 @@
 				36A9466A15CF1FED00727135 /* UrlOptions.cpp in Sources */,
 				36A9466D15CF201F00727135 /* VideoDbUrl.cpp in Sources */,
 				552A226915F7E14B0015C0D0 /* main.cpp in Sources */,
-				DFB15B2215F8FB8100CDF0DE /* SDLMain.mm in Sources */,
 				DF2345E115FA639500A934F6 /* UPnP.cpp in Sources */,
 				DF2345E215FA639500A934F6 /* UPnPInternal.cpp in Sources */,
 				552840CC1626163B00ED1333 /* UPnPPlayer.cpp in Sources */,

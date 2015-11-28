@@ -3,10 +3,6 @@
 SRCS  = main.cpp
 SRCS += posix/MessagePrinter.cpp
 
-ifeq ($(findstring osx,@ARCH@),osx)
-SRCS += osx/SDLMain.mm
-endif
-
 LIB=main.a
 
 include @abs_top_srcdir@/Makefile.include
