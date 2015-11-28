@@ -18097,3 +18097,35 @@ msgstr ""
 msgctxt "#38023"
 msgid "Set my rating"
 msgstr ""
+
+msgctxt "#800002"
+msgid "Reduce framerate when paused"
+msgstr ""
+
+msgctxt "#800003"
+msgid "Allow framerate to drop when paused and no input has been received."
+
+msgctxt "#800004"
+msgid "Reduce framerate when not in playback"
+msgstr ""
+
+msgctxt "#800005"
+msgid "Allow framerate to drop when not in playback and no input has been received.  This will reduce the quality of the GUI animations."
+msgstr ""
+
+msgctxt "#800006"
+msgid "Reduce framerate after timeout (s)"
+msgstr ""
+
+msgctxt "#800007"
+msgid "How long to require no input before slowing framerate."
+msgstr ""
+
+msgctxt "#800008"
+msgid "Reduced frametime (ms)"
+msgstr ""
+
+msgctxt "#800009"
+msgid "How slow to reduce the framerate when idle."
+msgstr ""
+

@@ -308,6 +308,10 @@ CApplication::CApplication(void)
   m_lastFrameTime = 0;
   m_lastRenderTime = 0;
   m_skipGuiRender = false;
+  m_bSlowWhenPaused = false;
+  m_bSlowWhenNotPlaying = false;
+  m_slowGUIIdleTimeout = 5;
+  m_slowGUIFrametime = 2000;
   m_bTestMode = false;
 
   m_muted = false;
@@ -659,6 +663,12 @@ bool CApplication::Create()
   m_replayGainSettings.iPreAmp = CSettings::GetInstance().GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP);
   m_replayGainSettings.iNoGainPreAmp = CSettings::GetInstance().GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP);
   m_replayGainSettings.bAvoidClipping = CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING);
+
+  // initialize idle gui settings
+  m_bSlowWhenPaused = CSettings::GetInstance().GetBool(CSettings::SETTING_POWERMANAGEMENT_SLOWWHENPAUSED);
+  m_bSlowWhenNotPlaying = CSettings::GetInstance().GetBool(CSettings::SETTING_POWERMANAGEMENT_SLOWWHENNOTPLAYING);
+  m_slowGUIIdleTimeout = CSettings::GetInstance().GetBool(CSettings::SETTING_POWERMANAGEMENT_SLOWGUIIDLETIMEOUT);
+  m_slowGUIFrametime =  CSettings::GetInstance().GetBool(CSettings::SETTING_POWERMANAGEMENT_SLOWGUIFRAMETIME);
 
   // initialize the addon database (must be before the addon manager is init'd)
   CDatabaseManager::GetInstance().Initialize(true);
@@ -1447,6 +1457,14 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     m_replayGainSettings.iNoGainPreAmp = ((CSettingInt*)setting)->GetValue();
   else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING))
     m_replayGainSettings.bAvoidClipping = ((CSettingBool*)setting)->GetValue();
+  else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_POWERMANAGEMENT_SLOWWHENPAUSED))
+    m_bSlowWhenPaused = ((CSettingBool*)setting)->GetValue();
+  else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_POWERMANAGEMENT_SLOWWHENNOTPLAYING))
+    m_bSlowWhenNotPlaying = ((CSettingBool*)setting)->GetValue();
+  else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_POWERMANAGEMENT_SLOWGUIIDLETIMEOUT))
+    m_slowGUIIdleTimeout = ((CSettingInt*)setting)->GetValue();
+  else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_POWERMANAGEMENT_SLOWGUIFRAMETIME))
+    m_slowGUIFrametime = ((CSettingInt*)setting)->GetValue();
 }
 
 void CApplication::OnSettingAction(const CSetting *setting)
@@ -1923,12 +1941,9 @@ void CApplication::Render()
       // slowGUI: to reduce wasted cycles, skip render frames when no
       //          playback and no recent input.
       //              
-      // Set g_advancedSettings.m_guiSlowIdle to 0 to disable. Otherwise
-      // it holds the timeout in seconds to detect idle.
-      //
-      bool slowGUI = g_advancedSettings.m_guiSlowWhenIdle &&
-                     (!m_pPlayer->IsPlaying() || m_pPlayer->IsPaused()) && 
-                     GlobalIdleTime() > g_advancedSettings.m_guiSlowWhenIdle;
+      bool slowGUI = ((m_bSlowWhenPaused && m_pPlayer->IsPaused()) ||
+                     (m_bSlowWhenNotPlaying && !m_pPlayer->IsPlaying())) 
+                    && GlobalIdleTime() > m_slowGUIIdleTimeout;
 
       limitFrames = lowfps || extPlayerActive || slowGUI;
 
@@ -1955,7 +1970,7 @@ void CApplication::Render()
         else if (lowfps)
           singleFrameTime = 200;  // 5 fps, <=200 ms latency to wake up
         else if (slowGUI)
-          singleFrameTime = 2000; // 2 fps, <=500 ms latency to wake up
+          singleFrameTime = m_slowGUIFrametime; 
       }
 
     }
@@ -2039,6 +2054,7 @@ void CApplication::Render()
     if (!limitFrames)
       singleFrameTime = 40; //if not flipping, loop at 25 fps
 
+
     unsigned int frameTime = now - m_lastFrameTime;
     if (frameTime < singleFrameTime)
     {
@@ -2052,7 +2068,7 @@ void CApplication::Render()
       } 
     }
   }
-
+ 
   if (flip)
     g_graphicsContext.Flip(dirtyRegions);
 

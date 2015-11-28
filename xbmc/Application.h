@@ -466,6 +466,11 @@ protected:
   unsigned int m_lastRenderTime;
   bool m_skipGuiRender;
 
+  bool m_bSlowWhenPaused;
+  bool m_bSlowWhenNotPlaying;
+  int  m_slowGUIIdleTimeout;
+  int  m_slowGUIFrametime;
+
   bool m_bStandalone;
   bool m_bEnableLegacyRes;
   bool m_bTestMode;
