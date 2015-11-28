@@ -1189,7 +1189,6 @@ bool CApplication::Initialize()
       uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
 
       CStereoscopicsManager::GetInstance().Initialize();
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON, ACTIVE_AE_DSP_SYNC_ACTIVATE); // send a blocking message to active AudioDSP engine
     }
 
   }
