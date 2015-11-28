@@ -40,7 +40,7 @@
 #ifdef HAS_LIRC
 #include "input/linux/LIRC.h"
 #endif
-#include "XbmcContext.h"
+#include "platform/XbmcContext.h"
 
 #ifdef __cplusplus
 extern "C"

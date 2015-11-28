@@ -47,7 +47,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "AppParamParser.h"
-#include "XbmcContext.h"
+#include "platform/XbmcContext.h"
 #include <android/bitmap.h>
 #include "cores/AudioEngine/AEFactory.h"
 #include "android/jni/JNIThreading.h"

@@ -1,6 +1,7 @@
 .SUFFIXES : .m .mm .cpp
 
 SRCS = posix/MessagePrinter.cpp
+SRCS += XbmcContext.cpp
 
 LIB=platform.a
 
