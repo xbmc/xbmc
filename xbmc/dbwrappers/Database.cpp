@@ -694,8 +694,8 @@ bool CDatabase::CreateDatabase()
     RollbackTransaction();
     return false;
   }
-  CommitTransaction();
-  return true;
+
+  return CommitTransaction();
 }
 
 void CDatabase::UpdateVersionNumber()
