@@ -27,6 +27,7 @@
 #include "GUIPassword.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
+#include "filesystem/VideoDatabaseFile.h"
 #include "view/GUIViewState.h"
 #include "dialogs/GUIDialogOK.h"
 #include "PartyModeManager.h"
@@ -131,9 +132,50 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       if (!CGUIWindowVideoBase::OnMessage(message))
         return false;
 
-      // This needs to be done again, because the initialization of CGUIWindow overwrites it with default values
-      // Mostly affects cases where GUIWindowVideoNav is constructed and we're already in a show, e.g. entering from the homescreen
-      SelectFirstUnwatched();
+
+      if (message.GetStringParam(0) != "")
+      {
+        CURL url(message.GetStringParam(0));
+
+        int i = 0;
+        for (; i < m_vecItems->Size(); i++)
+        {
+          CFileItemPtr pItem = m_vecItems->Get(i);
+          if (URIUtils::PathEquals(pItem->GetPath(), message.GetStringParam(0), true, true))
+          {
+            m_viewControl.SetSelectedItem(i);
+            i = -1;
+            if (url.GetOption("showinfo") == "true")
+            {
+              ADDON::ScraperPtr scrapper;
+              OnItemInfo(*pItem, scrapper);
+            }
+            break;
+          }
+        }
+        if (i >= m_vecItems->Size() && url.GetOption("showinfo") == "true")
+        {
+          // We are here if the item is filtered out in the nav window
+          std::string path = message.GetStringParam(0);
+          CFileItem item(path, URIUtils::HasSlashAtEnd(path));
+          if (item.IsVideoDb())
+          {
+            *(item.GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item.GetPath()));
+            if (!item.GetVideoInfoTag()->IsEmpty())
+            {
+              item.SetPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
+              ADDON::ScraperPtr scrapper;
+              OnItemInfo(item, scrapper);
+            }
+          }
+        }
+      }
+      else
+      {
+        // This needs to be done again, because the initialization of CGUIWindow overwrites it with default values
+        // Mostly affects cases where GUIWindowVideoNav is constructed and we're already in a show, e.g. entering from the homescreen
+        SelectFirstUnwatched();
+      }
 
       return true;
     }
