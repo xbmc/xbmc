@@ -115,7 +115,7 @@ DemuxPacket* CDVDDemuxCDDA::Read()
   }
 
   pPacket->iSize = m_pInput->Read(pPacket->pData, CDDA_READ_SIZE);
-  pPacket->iStreamId = 0;
+  pPacket->iStreamId = m_stream->iId;
 
   if(pPacket->iSize < 1)
   {
@@ -166,13 +166,26 @@ int CDVDDemuxCDDA::GetStreamLength()
   return (int)track_mseconds;
 }
 
-CDemuxStream* CDVDDemuxCDDA::GetStream(int iStreamId)
+CDemuxStream* CDVDDemuxCDDA::GetStream(int64_t iStreamId)
 {
-  if(iStreamId != 0)
+  if(!m_stream || (iStreamId != m_stream->iId))
     return NULL;
 
   return m_stream;
 }
+
+const std::vector<CDemuxStream*> CDVDDemuxCDDA::GetStreams() const
+{
+  std::vector<CDemuxStream*> streams;
+
+  if (m_stream != nullptr)
+  {
+    streams.push_back(m_stream);
+  }
+
+  return streams;
+}
+
 
 int CDVDDemuxCDDA::GetNrOfStreams()
 {
@@ -187,9 +200,9 @@ std::string CDVDDemuxCDDA::GetFileName()
     return "";
 }
 
-std::string CDVDDemuxCDDA::GetStreamCodecName(int iStreamId)
+std::string CDVDDemuxCDDA::GetStreamCodecName(int64_t iStreamId)
 {
-  if (m_stream && iStreamId == 0)
+  if (m_stream && iStreamId == m_stream->iId)
     return "pcm";
   else
     return "";

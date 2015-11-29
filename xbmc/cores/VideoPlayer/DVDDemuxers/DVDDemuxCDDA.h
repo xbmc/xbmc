@@ -45,10 +45,11 @@ public:
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
   void SetSpeed(int iSpeed) {};
   int GetStreamLength() ;
-  CDemuxStream* GetStream(int iStreamId);
+  CDemuxStream* GetStream(int64_t iStreamId);
+  const std::vector<CDemuxStream*> GetStreams() const;
   int GetNrOfStreams();
   std::string GetFileName();
-  virtual std::string GetStreamCodecName(int iStreamId) override;
+  virtual std::string GetStreamCodecName(int64_t iStreamId) override;
 
 protected:
   friend class CDemuxStreamAudioCDDA;
