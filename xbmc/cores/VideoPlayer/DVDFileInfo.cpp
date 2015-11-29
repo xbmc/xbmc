@@ -484,10 +484,9 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const std::string &path, CStream
 
     int count = v.GetNrOfStreams();
 
-    for(int i = 0; i < count; i++)
+    for(CDemuxStream* stream : v.GetStreams())
     {
       CStreamDetailSubtitle *dsub = new CStreamDetailSubtitle();
-      CDemuxStream* stream = v.GetStream(i);
       std::string lang = stream->language;
       dsub->m_strLanguage = g_LangCodeExpander.ConvertToISO6392T(lang);
       details.AddStream(dsub);

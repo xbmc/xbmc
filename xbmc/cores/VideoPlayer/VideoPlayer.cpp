@@ -4561,9 +4561,12 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
     ExternalStreamInfo info;
     CUtil::GetExternalStreamDetailsFromFilename(m_item.GetPath(), vobsubfile, info);
 
-    for (int i = 0; i < v.GetNrOfSubtitleStreams(); ++i)
+    for (auto sub : v.GetStreams())
     {
-      int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), i);
+      if (sub->type != STREAM_SUBTITLE)
+        continue;
+
+      int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), sub->iId);
       SelectionStream& stream = m_SelectionStreams.Get(STREAM_SUBTITLE, index);
 
       if (stream.name.empty())
