@@ -121,5 +121,12 @@ bool CHTTPWebinterfaceHandler::ResolveAddon(const std::string &url, ADDON::Addon
   // append the path within the addon to the path of the addon
   addonPath = URIUtils::AddFileToFolder(addonPath, path);
 
+  // ensure that we don't have a directory traversal hack here
+  // by checking if the resolved absolute path is inside the addon path
+  std::string realPath = URIUtils::GetRealPath(addonPath);
+  std::string realAddonPath = URIUtils::GetRealPath(addon->Path());
+  if (!URIUtils::IsInPath(realPath, realAddonPath))
+    return false;
+
   return true;
 }
