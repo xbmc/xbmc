@@ -108,9 +108,23 @@ CDVDDemuxCC::~CDVDDemuxCC()
   Dispose();
 }
 
-CDemuxStream* CDVDDemuxCC::GetStream(int iStreamId)
+CDemuxStream* CDVDDemuxCC::GetStream(int64_t iStreamId)
 {
-  return &m_streams[iStreamId];
+  auto it = m_stream_index.find(iStreamId);
+  if (it == m_stream_index.end())
+    return nullptr;
+
+  return &(*it->second);
+}
+
+const std::vector<CDemuxStream*> CDVDDemuxCC::GetStreams() const
+{
+  std::vector<CDemuxStream*> streams;
+
+  for (auto iter : m_streams)
+    streams.push_back(&iter);
+
+  return streams;
 }
 
 int CDVDDemuxCC::GetNrOfStreams()
@@ -391,7 +405,7 @@ DemuxPacket* CDVDDemuxCC::Decode()
         pPacket->iSize = len;
         memcpy(pPacket->pData, data, pPacket->iSize);
 
-        pPacket->iStreamId = i;
+        pPacket->iStreamId = m_streams[m_streamdata[i].streamIdx].iId;
         pPacket->pts = m_streamdata[i].pts;
         pPacket->duration = 0;
         m_streamdata[i].hasData = false;

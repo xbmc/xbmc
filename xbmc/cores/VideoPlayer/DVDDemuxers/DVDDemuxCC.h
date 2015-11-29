@@ -38,7 +38,8 @@ public:
   virtual bool SeekTime(int time, bool backwords = false, double* startpts = NULL) {return true;};
   virtual void SetSpeed(int iSpeed) {};
   virtual int GetStreamLength() {return 0;};
-  virtual CDemuxStream* GetStream(int iStreamId);
+  virtual CDemuxStream* GetStream(int64_t iStreamId);
+  virtual const std::vector<CDemuxStream*> GetStreams() const;
   virtual int GetNrOfStreams();
   virtual std::string GetFileName() {return "";};
 
@@ -59,6 +60,7 @@ protected:
   };
   std::vector<streamdata> m_streamdata;
   std::vector<CDemuxStreamSubtitle> m_streams;
+  std::map<int64_t, std::vector<CDemuxStreamSubtitle>::iterator> m_stream_index;
   bool m_hasData;
   double m_curPts;
   std::vector<CCaptionBlock*> m_ccReorderBuffer;
