@@ -20,7 +20,7 @@ msgstr ""
 #[Description / location] For example, "#. Description of some setting" used on "#: xbmc/addons/guidialogaddoninfo.cpp"
 #When writing a description or setting, refer to a setting name in quotes. See existing entries for guidance.
 #For example, "Press \"OK\" for \"All seasons\"" instead of "Press OK for All seasons" after first word.
-
+liminate vertical tearing
 #: xbmc/addons/Addon.cpp
 #: system/settings/settings.xml
 msgctxt "#0"
@@ -16903,7 +16903,7 @@ msgstr ""
 #. Description of setting "System -> Video output -> Vertical blank sync" with label #13105
 #: system/settings/settings.xml
 msgctxt "#36356"
-msgid "Eliminate vertical tearing."
+msgid "Eliminates tearing."
 msgstr ""
 
 #. Description of setting "System -> Video output -> Video calibration..." with label #214
