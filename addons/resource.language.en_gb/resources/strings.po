@@ -20,7 +20,6 @@ msgstr ""
 #[Description / location] For example, "#. Description of some setting" used on "#: xbmc/addons/guidialogaddoninfo.cpp"
 #When writing a description or setting, refer to a setting name in quotes. See existing entries for guidance.
 #For example, "Press \"OK\" for \"All seasons\"" instead of "Press OK for All seasons" after first word.
-liminate vertical tearing
 #: xbmc/addons/Addon.cpp
 #: system/settings/settings.xml
 msgctxt "#0"
