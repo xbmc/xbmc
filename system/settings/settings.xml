@@ -1159,7 +1159,7 @@
         </setting>
         <setting id="scrapers.musicvideosdefault" type="addon" label="21415" help="36200">
           <level>4</level>
-          <default>metadata.musicvideos.theaudiodb.com</default>
+          <default>metadata.local</default>
           <constraints>
             <addontype>xbmc.metadata.scraper.musicvideos</addontype>
           </constraints>
