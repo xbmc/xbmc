@@ -345,7 +345,6 @@ protected:
   void DestroyPlayers();
 
   bool OpenStream(CCurrentStream& current, int iStream, int source, bool reset = true);
-  bool OpenStreamPlayer(CCurrentStream& current, CDVDStreamInfo& hint, bool reset);
   bool OpenAudioStream(CDVDStreamInfo& hint, bool reset = true);
   bool OpenVideoStream(CDVDStreamInfo& hint, bool reset = true);
   bool OpenSubtitleStream(CDVDStreamInfo& hint);

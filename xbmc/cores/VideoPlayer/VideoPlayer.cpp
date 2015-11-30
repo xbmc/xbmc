@@ -3377,7 +3377,6 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int iStream, int source, 
     current.source  = source;
     current.hint    = hint;
     current.stream  = (void*)stream;
-    current.syncState = IDVDStreamPlayer::SYNC_STARTING;
     current.lastdts = DVD_NOPTS_VALUE;
     if(stream)
       current.changes = stream->changes;
@@ -3399,30 +3398,22 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int iStream, int source, 
   return res;
 }
 
-bool CVideoPlayer::OpenStreamPlayer(CCurrentStream& current, CDVDStreamInfo& hint, bool reset)
+bool CVideoPlayer::OpenAudioStream(CDVDStreamInfo& hint, bool reset)
 {
-  IDVDStreamPlayer* player = GetStreamPlayer(current.player);
-  if(player == NULL)
+  IDVDStreamPlayer* player = GetStreamPlayer(m_CurrentAudio.player);
+  if(player == nullptr)
     return false;
 
-  if(current.id < 0 ||
-     current.hint != hint)
+  if(m_CurrentAudio.id < 0 ||
+     m_CurrentAudio.hint != hint)
   {
-    if (hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_H264)
-      SAFE_DELETE(m_pCCDemuxer);
-
     if (!player->OpenStream(hint))
       return false;
+
+    m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_STARTING;
   }
   else if (reset)
     player->SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET), 0);
-  return true;
-}
-
-bool CVideoPlayer::OpenAudioStream(CDVDStreamInfo& hint, bool reset)
-{
-  if(!OpenStreamPlayer(m_CurrentAudio, hint, reset))
-    return false;
 
   m_HasAudio = true;
 
@@ -3482,8 +3473,23 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
     }
   }
 
-  if(!OpenStreamPlayer(m_CurrentVideo, hint, reset))
+  IDVDStreamPlayer* player = GetStreamPlayer(m_CurrentVideo.player);
+  if(player == nullptr)
     return false;
+
+  if(m_CurrentVideo.id < 0 ||
+     m_CurrentVideo.hint != hint)
+  {
+    if (hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_H264)
+      SAFE_DELETE(m_pCCDemuxer);
+
+    if (!player->OpenStream(hint))
+      return false;
+
+    m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_STARTING;
+  }
+  else if (reset)
+    player->SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET), 0);
 
   m_HasVideo = true;
 
@@ -3500,8 +3506,16 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
 
 bool CVideoPlayer::OpenSubtitleStream(CDVDStreamInfo& hint)
 {
-  if(!OpenStreamPlayer(m_CurrentSubtitle, hint, true))
+  IDVDStreamPlayer* player = GetStreamPlayer(m_CurrentSubtitle.player);
+  if(player == nullptr)
     return false;
+
+  if(m_CurrentSubtitle.id < 0 ||
+     m_CurrentSubtitle.hint != hint)
+  {
+    if (!player->OpenStream(hint))
+      return false;
+  }
 
   return true;
 }
@@ -3540,8 +3554,16 @@ bool CVideoPlayer::OpenTeletextStream(CDVDStreamInfo& hint)
   if (!m_VideoPlayerTeletext->CheckStream(hint))
     return false;
 
-  if(!OpenStreamPlayer(m_CurrentTeletext, hint, true))
+  IDVDStreamPlayer* player = GetStreamPlayer(m_CurrentTeletext.player);
+  if(player == nullptr)
     return false;
+
+  if(m_CurrentTeletext.id < 0 ||
+     m_CurrentTeletext.hint != hint)
+  {
+    if (!player->OpenStream(hint))
+      return false;
+  }
 
   return true;
 }
@@ -3551,8 +3573,16 @@ bool CVideoPlayer::OpenRadioRDSStream(CDVDStreamInfo& hint)
   if (!m_VideoPlayerRadioRDS->CheckStream(hint))
     return false;
 
-  if(!OpenStreamPlayer(m_CurrentRadioRDS, hint, true))
+  IDVDStreamPlayer* player = GetStreamPlayer(m_CurrentRadioRDS.player);
+  if(player == nullptr)
     return false;
+
+  if(m_CurrentRadioRDS.id < 0 ||
+     m_CurrentRadioRDS.hint != hint)
+  {
+    if (!player->OpenStream(hint))
+      return false;
+  }
 
   return true;
 }
