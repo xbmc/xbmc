@@ -32,14 +32,17 @@
 #include "events/AddonManagementEvent.h"
 #include "events/EventLog.h"
 #include "FileItem.h"
+#include "filesystem/CurlFile.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "filesystem/ZipFile.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
 #include "TextureDatabase.h"
 #include "URL.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
+#include "utils/Mime.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -162,24 +165,41 @@ std::string CRepository::GetAddonHash(const AddonPtr& addon) const
        x = y; \
   }
 
-bool CRepository::Parse(const DirInfo& dir, VECADDONS &result)
+
+bool CRepository::FetchIndex(const std::string& url, VECADDONS& addons)
 {
-  std::string file = dir.info;
-  if (dir.compressed)
+  XFILE::CCurlFile http;
+  http.SetContentEncoding("gzip");
+
+  std::string content;
+  if (!http.Get(url, content))
+    return false;
+
+  if (URIUtils::HasExtension(url, ".gz")
+      || CMime::GetFileTypeFromMime(http.GetMimeType()) == CMime::EFileType::FileTypeGZip)
   {
-    CURL url(dir.info);
-    std::string opts = url.GetProtocolOptions();
-    if (!opts.empty())
-      opts += "&";
-    url.SetProtocolOptions(opts+"Encoding=gzip");
-    file = url.Get();
+    CLog::Log(LOGDEBUG, "CRepository '%s' is gzip. decompressing", url.c_str());
+    std::string buffer;
+    if (!CZipFile::DecompressGzip(content, buffer))
+      return false;
+    content = std::move(buffer);
   }
 
-  VECADDONS addons;
   CXBMCTinyXML doc;
-  if (doc.LoadFile(file) && doc.RootElement() &&
-      CAddonMgr::GetInstance().AddonsFromRepoXML(doc.RootElement(), addons))
+  if (!doc.Parse(content) || !doc.RootElement()
+      || !CAddonMgr::GetInstance().AddonsFromRepoXML(doc.RootElement(), addons))
   {
+    CLog::Log(LOGERROR, "CRepository: Failed to parse addons.xml. Malformated.");
+    return false;
+  }
+  return true;
+}
+
+bool CRepository::Parse(const DirInfo& dir, VECADDONS& addons)
+{
+  if (!FetchIndex(dir.info, addons))
+    return false;
+
     for (IVECADDONS i = addons.begin(); i != addons.end(); ++i)
     {
       AddonPtr addon = *i;
@@ -199,11 +219,8 @@ bool CRepository::Parse(const DirInfo& dir, VECADDONS &result)
         SET_IF_NOT_EMPTY(addon->Props().changelog,URIUtils::AddFileToFolder(dir.datadir,addon->ID()+"/changelog.txt"))
         SET_IF_NOT_EMPTY(addon->Props().fanart,URIUtils::AddFileToFolder(dir.datadir,addon->ID()+"/fanart.jpg"))
       }
-      result.push_back(addon);
     }
-    return true;
-  }
-  return false;
+  return true;
 }
 
 

@@ -59,6 +59,8 @@ namespace ADDON
 
   private:
     CRepository(const CRepository &rhs);
+
+    static bool FetchIndex(const std::string& url, VECADDONS& addons);
   };
 
   typedef std::shared_ptr<CRepository> RepositoryPtr;
