@@ -685,7 +685,8 @@
 						<onup>9003</onup>
 						<ondown>9000</ondown>
 						<onclick>ActivateWindow(PVRRadioRDSInfo)</onclick>
-						<visible>RDS.HasRadiotextPlus</visible>
+						<enable>RDS.HasRadiotextPlus</enable>
+						<animation effect="fade" start="100" end="30" time="75" condition="!RDS.HasRadiotextPlus">Conditional</animation>
 					</control>
 					<control type="button" id="606">
 						<left>160</left>
