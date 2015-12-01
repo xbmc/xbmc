@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.black"
        name="Black"
-       version="1.0.26"
+       version="1.0.27"
        provider-name="Team-Kodi">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -28,7 +28,7 @@
     <summary lang="fa_IR">محافظ خاموش کننده صفحه نمایش</summary>
     <summary lang="fi_FI">Tyhjä ruutu</summary>
     <summary lang="fr_CA">Un économiseur d'écran qui rend votre écran noir</summary>
-    <summary lang="fr_FR">Un économiseur d'écran qui rend votre écran noir</summary>
+    <summary lang="fr_FR">Un économiseur d'écran qui rend l'écran noir</summary>
     <summary lang="gl_ES"> Protector de pantalla que volta a súa pantalla negra</summary>
     <summary lang="he_IL">שומר מסך ההופך את המסך לשחור</summary>
     <summary lang="hr_HR">Čuvar zaslona koji pretvara zaslon u crno</summary>
@@ -53,6 +53,7 @@
     <summary lang="sk_SK">Šetrič obrazovky, ktorú ju zmení na čiernu</summary>
     <summary lang="sl_SI">Ohranjevalnik zaslona, ki počrni zaslon</summary>
     <summary lang="sr_RS">Чувар екрана који поцрни ваш екран</summary>
+    <summary lang="sr_RS@latin">Čuvar ekrana koji zacrni vaš ekran</summary>
     <summary lang="sv_SE">En skärmsläckare som gör din skärm svart</summary>
     <summary lang="tg_TJ">Пардаи экран бо таъсири «Пардаи экрани сиёҳ»</summary>
     <summary lang="th_TH">สกรีนเซฟเวอร์ที่จะพักหน้าจอของคุณให้เป็นสีดำ</summary>
@@ -84,7 +85,7 @@
     <description lang="fa_IR">Black یک محافظ ساده است که صفحه نمایش را خاموش می کند.</description>
     <description lang="fi_FI">Black on yksinkertainen näytönsäästäjä, joka muuttaa ruudun mustaksi.</description>
     <description lang="fr_CA">Black est un économiseur d'écran simple qui rend votre écran noir.</description>
-    <description lang="fr_FR">Black est un simple économiseur qui passe votre écran au noir.</description>
+    <description lang="fr_FR">Black est un simple économiseur qui passe l'écran au noir.</description>
     <description lang="gl_ES">Black é un  protector de pantalla que voltará a súa pantalla a negro.</description>
     <description lang="he_IL">Black הוא שומר מסך פשוט אשר צובע את המסך בשחור.</description>
     <description lang="hr_HR">Black je jednostavni čuvar zaslona koji pretvara zaslon u crno.</description>
@@ -109,6 +110,7 @@
     <description lang="sk_SK">Black je jednoduchý šetrič, ktorý zmení vašu obrazovku na čiernu.</description>
     <description lang="sl_SI">Black je enostaven ohranjevalnik zaslona, ki počrni zaslon.</description>
     <description lang="sr_RS">Black је једноставан чувар екрана који поцрни ваш екран.</description>
+    <description lang="sr_RS@latin">Crno je jednostavan čuvar ekrana koji će zacrniti vaš ekran.</description>
     <description lang="sv_SE">Detta är en enkel skärmsläckare som gör din skärm svart.</description>
     <description lang="tg_TJ">Ин пардаи экрани осон мебошад, ки таъсири «Пардаи экрани сиёҳ»-ро истифода мебарад.</description>
     <description lang="th_TH">หน้าจอสีดำเป็นสกรีนเซฟเวอร์แบบง่ายๆที่จะเปิดหน้าจอของคุณให้เป็นสีดำ</description>
