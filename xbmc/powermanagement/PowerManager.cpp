@@ -72,6 +72,8 @@ CPowerManager::~CPowerManager()
 
 void CPowerManager::Initialize()
 {
+  SAFE_DELETE(m_instance);
+
 #if defined(TARGET_DARWIN)
   m_instance = new CCocoaPowerSyscall();
 #elif defined(TARGET_ANDROID)
