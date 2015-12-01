@@ -1438,6 +1438,19 @@ void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
   FillInMimeType(false);
 }
 
+void CFileItem::SetFromMusicInfoTag(const MUSIC_INFO::CMusicInfoTag &music)
+{
+  if (!music.GetTitle().empty())
+    SetLabel(music.GetTitle());
+  if (!music.GetURL().empty())
+    m_strPath = music.GetURL();
+  m_bIsFolder = URIUtils::HasSlashAtEnd(m_strPath);
+
+  *GetMusicInfoTag() = music;
+  FillInDefaultIcon();
+  FillInMimeType(false);
+}
+
 void CFileItem::SetFromAlbum(const CAlbum &album)
 {
   if (!album.strAlbum.empty())
