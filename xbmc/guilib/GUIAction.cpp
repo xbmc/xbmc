@@ -58,7 +58,7 @@ bool CGUIAction::ExecuteActions(int controlID, int parentID, const CGUIListItemP
       g_windowManager.SendThreadMessage(msg);
     else
       g_windowManager.SendMessage(msg);
-    retval |= true;
+    retval = true;
   }
   return retval;
 }
