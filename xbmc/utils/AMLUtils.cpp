@@ -32,6 +32,7 @@
 #include "utils/StringUtils.h"
 #include "utils/AMLUtils.h"
 #include "guilib/gui3d.h"
+#include "utils/RegExp.h"
 
 bool aml_present()
 {
@@ -146,85 +147,55 @@ bool aml_permissions()
 
 bool aml_support_hevc()
 {
-  std::string valstr;
-  if(SysfsUtils::GetString("/sys/class/amstream/vcodec_profile", valstr) != 0)
-  {
-    return false;
-  }
-  return (valstr.find("hevc:") != std::string::npos);
-}
+  static int has_hevc = -1;
 
-enum AML_DEVICE_TYPE aml_get_device_type()
-{
-  static enum AML_DEVICE_TYPE aml_device_type = AML_DEVICE_TYPE_UNINIT;
-  if (aml_device_type == AML_DEVICE_TYPE_UNINIT)
+  if (has_hevc == -1)
   {
-    std::string cpu_hardware = g_cpuInfo.getCPUHardware();
-
-    if (cpu_hardware.find("MESON-M1") != std::string::npos)
-      aml_device_type = AML_DEVICE_TYPE_M1;
-    else if (cpu_hardware.find("MESON-M3") != std::string::npos
-          || cpu_hardware.find("MESON3")   != std::string::npos)
-      aml_device_type = AML_DEVICE_TYPE_M3;
-    else if (cpu_hardware.find("Meson6") != std::string::npos)
-      aml_device_type = AML_DEVICE_TYPE_M6;
-    else if ((cpu_hardware.find("Meson8") != std::string::npos) && (cpu_hardware.find("Meson8B") == std::string::npos))
-    {
-      if (aml_support_hevc())
-        aml_device_type = AML_DEVICE_TYPE_M8M2;
-      else
-        aml_device_type = AML_DEVICE_TYPE_M8;
-    } else if (cpu_hardware.find("Meson8B") != std::string::npos)
-      aml_device_type = AML_DEVICE_TYPE_M8B;
+    std::string valstr;
+    if(SysfsUtils::GetString("/sys/class/amstream/vcodec_profile", valstr) != 0)
+      has_hevc = 0;
     else
-      aml_device_type = AML_DEVICE_TYPE_UNKNOWN;
+      has_hevc = (valstr.find("hevc:") != std::string::npos) ? 1: 0;
   }
-
-  return aml_device_type;
+  return (has_hevc == 1);
 }
 
-void aml_cpufreq_min(bool limit)
+bool aml_support_hevc_4k2k()
 {
-// do not touch scaling_min_freq on android
-#if !defined(TARGET_ANDROID)
-  // only needed for m1/m3 SoCs
-  if (  aml_get_device_type() != AML_DEVICE_TYPE_UNKNOWN
-    &&  aml_get_device_type() <= AML_DEVICE_TYPE_M3)
-  {
-    int cpufreq = 300000;
-    if (limit)
-      cpufreq = 600000;
+  static int has_hevc_4k2k = -1;
 
-    SysfsUtils::SetInt("/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq", cpufreq);
+  if (has_hevc_4k2k == -1)
+  {
+    CRegExp regexp;
+    regexp.RegComp("hevc:.*4k");
+    std::string valstr;
+    if (SysfsUtils::GetString("/sys/class/amstream/vcodec_profile", valstr) != 0)
+      has_hevc_4k2k = 0;
+    else
+      has_hevc_4k2k = (regexp.RegFind(valstr) >= 0) ? 1 : 0;
   }
-#endif
+  return (has_hevc_4k2k == 1);
 }
 
-void aml_cpufreq_max(bool limit)
+bool aml_support_h264_4k2k()
 {
-  if (!aml_wired_present() && aml_get_device_type() == AML_DEVICE_TYPE_M6)
-  {
-    // this is a MX Stick, they cannot substain 1GHz
-    // operation without overheating so limit them to 800MHz.
-    int cpufreq = 1000000;
-    if (limit)
-      cpufreq = 800000;
+  static int has_h264_4k2k = -1;
 
-    SysfsUtils::SetInt("/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq", cpufreq);
-    SysfsUtils::SetString("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor", "ondemand");
+  if (has_h264_4k2k == -1)
+  {
+    std::string valstr;
+    if (SysfsUtils::GetString("/sys/class/amstream/vcodec_profile", valstr) != 0)
+    {
+      return false;
+    }
+    return (valstr.find("h264_4k2k:") != std::string::npos);
   }
+  return (has_h264_4k2k == 1);
 }
 
 void aml_set_audio_passthrough(bool passthrough)
 {
-  if (  aml_present()
-    &&  aml_get_device_type() != AML_DEVICE_TYPE_UNKNOWN
-    &&  aml_get_device_type() <= AML_DEVICE_TYPE_M8)
-  {
-    // m1 uses 1, m3 and above uses 2
-    int raw = aml_get_device_type() == AML_DEVICE_TYPE_M1 ? 1:2;
-    SysfsUtils::SetInt("/sys/class/audiodsp/digital_raw", passthrough ? raw:0);
-  }
+  SysfsUtils::SetInt("/sys/class/audiodsp/digital_raw", passthrough ? 2:0);
 }
 
 void aml_probe_hdmi_audio()
@@ -377,7 +348,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 50;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "720p"))
+  else if (StringUtils::EqualsNoCase(fromMode, "720p") || StringUtils::EqualsNoCase(fromMode, "720p60hz"))
   {
     res->iWidth = 1280;
     res->iHeight= 720;
@@ -395,7 +366,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 50;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "1080p"))
+  else if (StringUtils::EqualsNoCase(fromMode, "1080p") || StringUtils::EqualsNoCase(fromMode, "1080p60hz"))
   {
     res->iWidth = 1920;
     res->iHeight= 1080;
@@ -449,7 +420,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 59.940;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "1080i"))
+  else if (StringUtils::EqualsNoCase(fromMode, "1080i") || StringUtils::EqualsNoCase(fromMode, "1080i60hz"))
   {
     res->iWidth = 1920;
     res->iHeight= 1080;
@@ -476,7 +447,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 59.940;
     res->dwFlags = D3DPRESENTFLAG_INTERLACED;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "4k2ksmpte"))
+  else if (StringUtils::EqualsNoCase(fromMode, "4k2ksmpte") || StringUtils::EqualsNoCase(fromMode, "smpte24hz"))
   {
     res->iWidth = 1920;
     res->iHeight= 1080;
@@ -485,7 +456,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 24;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "4k2k23hz"))
+  else if (StringUtils::EqualsNoCase(fromMode, "4k2k23hz") || StringUtils::EqualsNoCase(fromMode, "2160p23hz"))
   {
     res->iWidth = 1920;
     res->iHeight= 1080;
@@ -494,7 +465,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 23.976;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "4k2k24hz"))
+  else if (StringUtils::EqualsNoCase(fromMode, "4k2k24hz") || StringUtils::EqualsNoCase(fromMode, "2160p24hz"))
   {
     res->iWidth = 1920;
     res->iHeight= 1080;
@@ -503,7 +474,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 24;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "4k2k25hz"))
+  else if (StringUtils::EqualsNoCase(fromMode, "4k2k25hz") || StringUtils::EqualsNoCase(fromMode, "2160p25hz"))
   {
     res->iWidth = 1920;
     res->iHeight= 1080;
@@ -512,7 +483,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 25;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "4k2k29hz"))
+  else if (StringUtils::EqualsNoCase(fromMode, "4k2k29hz") || StringUtils::EqualsNoCase(fromMode, "2160p29hz"))
   {
     res->iWidth = 1920;
     res->iHeight= 1080;
@@ -521,13 +492,31 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 29.970;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "4k2k30hz"))
+  else if (StringUtils::EqualsNoCase(fromMode, "4k2k30hz") || StringUtils::EqualsNoCase(fromMode, "2160p30hz"))
   {
     res->iWidth = 1920;
     res->iHeight= 1080;
     res->iScreenWidth = 3840;
     res->iScreenHeight= 2160;
     res->fRefreshRate = 30;
+    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+  }
+  else if (StringUtils::EqualsNoCase(fromMode, "2160p50hz420"))
+  {
+    res->iWidth = 1920;
+    res->iHeight= 1080;
+    res->iScreenWidth = 3840;
+    res->iScreenHeight= 2160;
+    res->fRefreshRate = 50;
+    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+  }
+  else if (StringUtils::EqualsNoCase(fromMode, "2160p60hz420"))
+  {
+    res->iWidth = 1920;
+    res->iHeight= 1080;
+    res->iScreenWidth = 3840;
+    res->iScreenHeight= 2160;
+    res->fRefreshRate = 60;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
   else
