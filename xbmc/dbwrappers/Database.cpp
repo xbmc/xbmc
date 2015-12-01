@@ -201,8 +201,8 @@ bool CDatabase::CommitMultipleExecute()
       return false;
     }
   }
-  CommitTransaction();
-  return true;
+
+  return CommitTransaction();
 }
 
 bool CDatabase::ExecuteQuery(const std::string &strQuery)
@@ -518,6 +518,8 @@ int CDatabase::GetDBVersion()
 bool CDatabase::UpdateVersion(const std::string &dbName)
 {
   int version = GetDBVersion();
+  bool bReturn = false;
+
   if (version < GetMinSchemaVersion())
   {
     CLog::Log(LOGERROR, "Can't update database %s from version %i - it's too old", dbName.c_str(), version);
@@ -547,17 +549,21 @@ bool CDatabase::UpdateVersion(const std::string &dbName)
       RollbackTransaction();
       return false;
     }
-    CommitTransaction();
+    bReturn = CommitTransaction();
     CLog::Log(LOGINFO, "Update to version %i successful", GetSchemaVersion());
   }
   else if (version > GetSchemaVersion())
   {
+    bReturn = false;
     CLog::Log(LOGERROR, "Can't open the database %s as it is a NEWER version than what we were expecting?", dbName.c_str());
-    return false;
   }
-  else 
+  else
+  {
+    bReturn = true;
     CLog::Log(LOGNOTICE, "Running database version %s", dbName.c_str());
-  return true;
+  }
+
+  return bReturn;
 }
 
 bool CDatabase::IsOpen()
