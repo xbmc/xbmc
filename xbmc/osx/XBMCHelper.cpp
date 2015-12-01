@@ -262,7 +262,7 @@ void XBMCHelper::Configure()
 
 void XBMCHelper::HandleLaunchAgent()
 {
-  int oldAlwaysOn = m_alwaysOn;
+  bool oldAlwaysOn = m_alwaysOn;
   m_alwaysOn = CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_APPLEREMOTEALWAYSON);
 
   // Installation/uninstallation.
