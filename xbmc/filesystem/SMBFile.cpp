@@ -172,8 +172,8 @@ void CSMB::Init()
     m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;
     // we need to strdup these, they will get free'ed on smbc_free_context
     if (CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
-      m_context->workgroup = strdup(CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).c_str()));
-    m_context->user = strdup("guest"));
+      m_context->workgroup = strdup(CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());
+    m_context->user = strdup("guest");
 #endif
 
     // initialize samba and do some hacking into the settings
