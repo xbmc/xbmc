@@ -162,7 +162,7 @@ msgstr "Jelenleg kiválasztott"
 
 msgctxt "#31101"
 msgid "Home screen options"
-msgstr "Sajátképernyő lehetőségei"
+msgstr "Főképernyő lehetőségei"
 
 msgctxt "#31102"
 msgid "Background"
@@ -227,14 +227,6 @@ msgstr "A háttérben az éppen játszott videó megjelenítése"
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "A háttérben az éppen futó vizualizáció megjelenítése"
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "TV főtéma dalok játszása a videó médiatárban (TvTunes kiegészítő)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -352,10 +344,6 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Utoljára bejelentkezve"
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Karaoke dalválasztó"
-
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Játszva"
@@ -443,10 +431,6 @@ msgstr "[B]MEGJELENÍTÉS MÓDJÁNAK BEÁLLÍTÁSA[/B][CR][CR]Felszín váltása
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]VIDEÓ BEÁLLÍTÁSOK[/B][CR][CR]Film médiatár kezelése · Videólejátszás beállítása · Videólistázás módjának beállítása[CR]Feliratok karaktertípusának váltása"
-
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]ZENE BEÁLLÍTÁSOK[/B][CR][CR]Zene médiatár kezelése · Zenelejátszás beállítása · Zenelistázás módjának beállítása[CR]Zene lejátszási szabályok felállítása · Karaoke lehetőségek"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

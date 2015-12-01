@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Ascunde creația artistică de pe fundal"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Ascunde EPG dacă RDS este prezent în fereastra canal"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Arată fundal video „Acum în redare”"
@@ -227,14 +231,6 @@ msgstr "Arată fundal video „Acum în redare”"
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Arată vizualizare „Acum în redare” pe fundal"
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Redă cântece temă TV în mediateca video (supliment TvTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -352,10 +348,6 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Ultimul autentificat"
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Selector cântece karaoke"
-
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Difuzat pe"
@@ -445,8 +437,8 @@ msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set v
 msgstr "[B]CONFIGURAȚI SETĂRI VIDEO[/B][CR][CR]Administrați  mediateca video · Configurați opțiuni redare video · Modificați opțiuni afișare liste de fișiere video[CR]Alegeți font subtitrare"
 
 msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]CONFIGURAȚI SETĂRI MUZICĂ[/B][CR][CR]Administrați mediateca audio · Setați opțiuni redare muzică · Modificați opțiuni afișare liste de fișiere audio[CR]Pregătiți trimitere cântec · Configurați opțiuni karaoke"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]CONFIGURAȚI SETĂRI MUZICĂ[/B][CR][CR]Administrați mediateca audio · Stabiliți opțiunile de redare a muzicii · Schimbați opțiunile de afișare listă ale muzicii[CR]Configurați trimitere cântece"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

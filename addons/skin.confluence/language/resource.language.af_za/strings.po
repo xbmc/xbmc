@@ -144,14 +144,6 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "Opsies"
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Speel TV tema musiek in video lys (TvTunes byvoegsel)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvMelodie"
-
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Lirieke"
@@ -243,10 +235,6 @@ msgstr "[B]KONFIGUREER VOORKOMS VERSTELLINGS[/B][CR][CR]Verander die tema · Ste
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]KONFIGUREER VIDEO VERSTELLINGS[/B][CR][CR]Beheer jou video lys · Stel video terugspeel opsies · Verander video lys opsies[CR]Stel onderskrif font"
-
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]KONFIGUREER MUSIEK VERSTELLINGS[/B][CR][CR]Beheer jou musiek lys · Stel musiek speel opsies · Verander musiek lys opsies[CR]Stel liedjie voorlegging op · Stel kareoke opsies"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"

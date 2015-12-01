@@ -144,14 +144,6 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "Имконот"
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Пахш кардани суруди мавзӯи телевизионӣ дар китобхонаи видеоӣ (Барномаи иловагии TvTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
-
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Лирика"
@@ -243,10 +235,6 @@ msgstr "[B]ТАНЗИМОТИ НАМУДИ ЗОҲИРӢ[/B][CR][CR]Тағйир 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]ТАНЗИМОТИ ПАРАМЕТРҲОИ ВИДЕО[/B][CR][CR]Идоракунии китобхонаи видеоӣ • Имконоти пахши видео[CR]Тағйир додани имконоти рӯйхати видеоҳо • Танзимоти шрифтҳои зерунвон"
-
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]ТАНЗИМОТИ ПАРАМЕТРҲОИ МУСИҚӢ[/B][CR][CR]Идоракунии китобхонаи мусиқӣ · Имконоти пахши мусиқӣ · Тағйир додани имконоти рӯйхати мусиқӣ[CR]Танзими иловакунии мусиқӣ · Танзими имконоти караоке"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"

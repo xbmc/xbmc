@@ -16,9 +16,21 @@ msgstr ""
 "Language: sk_SK\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
+msgctxt "#31000"
+msgid "Change your"
+msgstr "Zmeňte vaše"
+
+msgctxt "#31003"
+msgid "Power options"
+msgstr "Nastavenia napájania"
+
 msgctxt "#31004"
 msgid "Working..."
 msgstr "Pracujem..."
+
+msgctxt "#31005"
+msgid "Hide information"
+msgstr "Skryť informáciu"
 
 msgctxt "#31006"
 msgid "View options"
@@ -27,6 +39,10 @@ msgstr "Zobrazenie"
 msgctxt "#31008"
 msgid "Full screen"
 msgstr "Celá obrazovka"
+
+msgctxt "#31009"
+msgid "Total duration"
+msgstr "Celkové trvanie"
 
 msgctxt "#31022"
 msgid "Music - Files"
@@ -44,13 +60,29 @@ msgctxt "#31025"
 msgid "Items"
 msgstr "Položky"
 
+msgctxt "#31026"
+msgid "Misc options"
+msgstr "Ďalšie nastavenia"
+
 msgctxt "#31027"
 msgid "Location"
 msgstr "Mesto"
 
+msgctxt "#31028"
+msgid "Poster wrap"
+msgstr "Obal posteru"
+
 msgctxt "#31029"
 msgid "Fanart"
 msgstr "Fanart"
+
+msgctxt "#31031"
+msgid "Pic thumbs"
+msgstr "Obrázky náhľadov"
+
+msgctxt "#31032"
+msgid "Image wrap"
+msgstr "Obal obrázku"
 
 msgctxt "#31033"
 msgid "Info"
@@ -59,6 +91,10 @@ msgstr "Informácie"
 msgctxt "#31039"
 msgid "Actions"
 msgstr "Akcie"
+
+msgctxt "#31040"
+msgid "Now playing"
+msgstr "Práve hrá"
 
 msgctxt "#31042"
 msgid "PLAYING"
@@ -79,6 +115,10 @@ msgstr "PRETÁČA SA DOZADU"
 msgctxt "#31046"
 msgid "SEEKING"
 msgstr "VYHĽADÁVANIE"
+
+msgctxt "#31048"
+msgid "Visualisation presets"
+msgstr "Predvoľby vizualizácie"
 
 msgctxt "#31049"
 msgid "End time"
@@ -116,6 +156,10 @@ msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
 msgstr "Tento súbor sa skladá z viac častí. Vyberte tu, od ktorej chcete spustit prehrávaníe."
 
+msgctxt "#31061"
+msgid "Current selected"
+msgstr "Aktuálne vybraný"
+
 msgctxt "#31101"
 msgid "Home screen options"
 msgstr "Informácie na Domovskej stránke"
@@ -124,9 +168,25 @@ msgctxt "#31102"
 msgid "Background"
 msgstr "Pozadie"
 
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slideshow"
+msgstr "Zobrazovať \"Pauza\" pri prezentácii obrázkov"
+
+msgctxt "#31104"
+msgid "Play trailers in a window [COLOR=grey3](Video information dialogue only)[/COLOR]"
+msgstr "Prehrávať ukážky v okne [COLOR=grey3](iba z okna Informácie o videu)[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Rôzne nastavenia"
+
+msgctxt "#31107"
+msgid "Hide flagging read from video filenames [COLOR=grey3](e.g. Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Nezobrazovať ikonky zdroja videa [COLOR=grey3](napr. Blu-ray, HD-DVD)[/COLOR]"
+
+msgctxt "#31108"
+msgid "Hide main menu buttons"
+msgstr "Skryť položky hlavného menu"
 
 msgctxt "#31109"
 msgid "Enable custom background"
@@ -144,17 +204,53 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "Možnosti"
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Prehrávať skladbu TV seriálu vo video knižnici (TvTunes doplnok)"
+msgctxt "#31116"
+msgid "Show recently added albums"
+msgstr "Zobraziť naposledy pridané albumy"
 
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
+msgctxt "#31117"
+msgid "Show recently added videos"
+msgstr "Zobrazovať naposledy pridané videá"
+
+msgctxt "#31118"
+msgid "Home page programs submenu"
+msgstr "Domovská stránka / podmenu Programy"
+
+msgctxt "#31119"
+msgid "Hide background fanart"
+msgstr "Skryť Fanart na pozadí"
+
+msgctxt "#31124"
+msgid "Show background \"Now playing\" video"
+msgstr "Zobrazovať práve prehrávané video na pozadí"
+
+msgctxt "#31125"
+msgid "Show background \"Now playing\" visualisation"
+msgstr "Zobrazovať práve prehrávanú vizualizáciu na pozadí"
 
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Texty skladieb"
+
+msgctxt "#31129"
+msgid "Hide fanart in full screen visualisation"
+msgstr "Skryť Fanart pri vizualizácii na celú obrazovku"
+
+msgctxt "#31132"
+msgid "Lyrics add-on"
+msgstr "Doplnok Texty skladieb"
+
+msgctxt "#31134"
+msgid "Home page \"Videos\" submenu"
+msgstr "Domovská stránka / podmenu Videá"
+
+msgctxt "#31135"
+msgid "Home page \"Music\" submenu"
+msgstr "Domovská stránka / podmenu Hudba"
+
+msgctxt "#31136"
+msgid "Home page \"Pictures\" submenu"
+msgstr "Domovská stránka / podmenu Obrázky"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -172,21 +268,89 @@ msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Odkazy"
 
+msgctxt "#31203"
+msgid "Choose your song"
+msgstr "Vyberte si vašu skladbu"
+
+msgctxt "#31205"
+msgid "Lyrics source"
+msgstr "Zdroj textov skladieb"
+
 msgctxt "#31206"
 msgid "Found"
 msgstr "Nájdené"
+
+msgctxt "#31207"
+msgid "Find more items"
+msgstr "Hľadať viac položiek"
+
+msgctxt "#31208"
+msgid "Upcoming episodes"
+msgstr "Pripravované časti"
+
+msgctxt "#31300"
+msgid "Current temperature"
+msgstr "Aktuálna teplota"
+
+msgctxt "#31301"
+msgid "Last updated"
+msgstr "Naposledy aktualizované"
 
 msgctxt "#31303"
 msgid "Data provider"
 msgstr "Počasie Vám prináša"
 
+msgctxt "#31307"
+msgid "Hide fanart"
+msgstr "Skryť FanArt"
+
+msgctxt "#31308"
+msgid "Movie details"
+msgstr "Podrobnosti o filme"
+
+msgctxt "#31309"
+msgid "Memory used:"
+msgstr "Použitá pamäť:"
+
+msgctxt "#31310"
+msgid "Track number"
+msgstr "Číslo skladby"
+
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
 msgstr "Fanart obrázok[CR][CR]Nedostupný[CR][CR] Klik pre nastavenie"
 
+msgctxt "#31312"
+msgid "Current scraper"
+msgstr "Aktuálny sťahovač"
+
+msgctxt "#31313"
+msgid "Choose a scraper"
+msgstr "Vyber sťahovač"
+
+msgctxt "#31314"
+msgid "Content scanning options"
+msgstr "Možnosti vyhľadávania obsahu"
+
+msgctxt "#31317"
+msgid "Set fanart path"
+msgstr "Nastaviť cestu k FanArt"
+
+msgctxt "#31319"
+msgid "Selected profile"
+msgstr "Vybratý profil"
+
+msgctxt "#31320"
+msgid "Last logged in"
+msgstr "Posledné prihlásenie"
+
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Vysielané"
+
+msgctxt "#31325"
+msgid "Playlist options"
+msgstr "Nastavenia Playlistu"
 
 msgctxt "#31326"
 msgid "Created"
@@ -204,6 +368,14 @@ msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
 msgstr "[B]Časovač nastavený![/B] [COLOR=grey2] - Systém sa automaticky vypne za[/COLOR]"
 
+msgctxt "#31330"
+msgid "Click button to play[CR][CR]movie trailer"
+msgstr "Pre spustenie ukážky[CR][CR]stlačte tlačidlo"
+
+msgctxt "#31331"
+msgid "Album details"
+msgstr "Podrobnosti o albume"
+
 msgctxt "#31351"
 msgid "Pause"
 msgstr "Pauza"
@@ -212,6 +384,10 @@ msgctxt "#31352"
 msgid "Stop"
 msgstr "Zastaviť"
 
+msgctxt "#31353"
+msgid "Fast forward"
+msgstr "Posunúť dopredu"
+
 msgctxt "#31354"
 msgid "Rewind"
 msgstr "Pretočiť dozadu"
@@ -219,6 +395,10 @@ msgstr "Pretočiť dozadu"
 msgctxt "#31355"
 msgid "Movie menu"
 msgstr "Menu filmu"
+
+msgctxt "#31356"
+msgid "Download subtitles"
+msgstr "Stiahnuť titulky"
 
 msgctxt "#31360"
 msgid "Watch as 2D"
@@ -236,6 +416,10 @@ msgctxt "#31390"
 msgid "Skin default"
 msgstr "Predvolený vzhľad"
 
+msgctxt "#31391"
+msgid "Skin default with no caps"
+msgstr "Predvolený vzhľad bez veľkých písmen"
+
 msgctxt "#31392"
 msgid "Arial based"
 msgstr "Arial"
@@ -248,13 +432,21 @@ msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]MOŽNOSTI VIDEA[/B][CR][CR]Správa knižnice videí · Možnosti prehrávania videa · Zobrazenie video súborov[CR]Nastavenie titulkov"
 
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]MOŽNOSTI HUDBY[/B][CR][CR]Správa knižnice hudby · Možnosti prehrávania hudby · Zobrazenie hudobných súborov[CR]Služby pre odosielanie informácií o prehrávaných skladbách · Karaoke nastavenia"
+msgctxt "#31403"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
+msgstr "[B]MOŽNOSTI OBRÁZKOV[/B][CR][CR]Možnosti zobrazenia obrázkov · Nastavenie prezentácie"
+
+msgctxt "#31404"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set various cities to collect weather information"
+msgstr "[B]MOŽNOSTI POČASIA[/B][CR][CR]Nastavte rôzne mestá, pre ktoré si prajete získavať predpoveď počasia"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]MOŽNOSTI SYSTÉMU[/B][CR][CR]Nastavenie obrazovky · Nastavenie zvukového výstupu[CR]Možnosti úsporného režimu · Ukladanie informácií · Konfigurácia rodičovského zámku"
+
+msgctxt "#31408"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from kodi.tv[CR]Modify add-on settings"
+msgstr "[B]MOŽNOSTI DOPLNKOV[/B][CR][CR]Správa nainštalovaných doplnkov · Vyhľadávanie a inštalácia doplnkov z kodi.tv[CR]Zmena nastavenia doplnkov"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -264,6 +456,14 @@ msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]KONFIGUROVAŤ NASTAVENIA SLUŽBY[/B][CR][CR]Nastaviť ovládanie Kodi pomocou UPnP a HTTP · Konfigurovať zdielanie[CR]Zapnúť Zeroconf · Konfigurovať AirPlay"
 
+msgctxt "#31411"
+msgid "First run help..."
+msgstr "Pomocník po prvom spustení..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section. To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"OK\" to close this dialogue. It will not appear again."
+msgstr "Táto záložka zvýrazňuje, že sa na bočnej strane okna nachádza skryté menu. Aby ste sa k nemu dostali, kurzorovými tlačidlami na vašom diaľkovom ovládači alebo klávesnici choďte doľava, prípadne umiestnite kurzor myši ponad túto záložku. [CR][CR]Kliknutím na tlačidlo \"OK\" sa zavrie toto dialógové okno. V budúcnosti sa už nezobrazí."
+
 msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr "Dostupné lokálne titulky"
@@ -271,6 +471,10 @@ msgstr "Dostupné lokálne titulky"
 msgctxt "#31420"
 msgid "Login"
 msgstr "Prihlásiť"
+
+msgctxt "#31421"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Vyberte váš používateľský profil Kodi[CR]pre prihlásenie a pokračovanie"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
@@ -280,17 +484,65 @@ msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."
 msgstr "Zvoľte profil, ktorý bude použitý pri štarte, ak je prihlasovacia obrazovka vypnutá."
 
+msgctxt "#31501"
+msgid "Scheduled time"
+msgstr "Naplánovaný čas"
+
 msgctxt "#31502"
 msgid "TV"
 msgstr "TV"
+
+msgctxt "#31503"
+msgid "Add group"
+msgstr "Pridať skupinu"
+
+msgctxt "#31504"
+msgid "Rename group"
+msgstr "Premenovať skupinu"
+
+msgctxt "#31505"
+msgid "Delete group"
+msgstr "Vymazať skupinu"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
 msgstr "Dostupné[CR]skupiny"
 
+msgctxt "#31509"
+msgid "Channel group"
+msgstr "Skupina kanálov"
+
+msgctxt "#31510"
+msgid "Timer set"
+msgstr "Časovač nastavený"
+
+msgctxt "#31511"
+msgid "Channel options"
+msgstr "Možnosti kanálu"
+
+msgctxt "#31901"
+msgid "36-hour forecast"
+msgstr "36-hodinová predpoveď"
+
+msgctxt "#31902"
+msgid "Hourly forecast"
+msgstr "Hodinová predpoveď"
+
+msgctxt "#31903"
+msgid "Weekend forecast"
+msgstr "Víkendová predpoveď"
+
+msgctxt "#31904"
+msgid "Daily forecast"
+msgstr "Denná predpoveď"
+
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Predpoveď"
+
+msgctxt "#31908"
+msgid "Chance of precipitation"
+msgstr "Riziko zrážok"
 
 msgctxt "#31909"
 msgid "Fetching forecast info..."

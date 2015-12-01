@@ -212,10 +212,6 @@ msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]STILLINGAR FYRI VIDEO[/B][CR][CR]Umsit títt video savn · Áset møguleikar fyri video avspæling · Broyt stilling til vísing av video[CR]Áset skrivtslag til undirtekstir"
 
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]STILLINGAR FYRI TÓNLEIK[/B][CR][CR]Umsit títt tónleikasavn · Áset stillingar fyri spæling av tónleiki · Broyt stilling til vísing av tónleiki[CR]Áset skráseting av lagi · Áset stillingar fyri karaoke"
-
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]STILLINGAR FYRI SKIPAN[/B][CR][CR]Set upp og stilla skermar · Stilla ljóð · Stilla fjarstýringar[CR]Stilla streymsparing · Tendra debugging · Áset høvuðslás"

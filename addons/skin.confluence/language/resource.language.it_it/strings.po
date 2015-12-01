@@ -42,7 +42,7 @@ msgstr "Schermo Intero"
 
 msgctxt "#31009"
 msgid "Total duration"
-msgstr "Durata Totale"
+msgstr "Durata totale"
 
 msgctxt "#31022"
 msgid "Music - Files"
@@ -50,7 +50,7 @@ msgstr "Musica - File"
 
 msgctxt "#31023"
 msgid "Playing"
-msgstr "In Riproduzione"
+msgstr "In riproduzione"
 
 msgctxt "#31024"
 msgid "Page"
@@ -62,7 +62,7 @@ msgstr "Oggetti"
 
 msgctxt "#31026"
 msgid "Misc options"
-msgstr "Opzioni Varie"
+msgstr "Opzioni varie"
 
 msgctxt "#31027"
 msgid "Location"
@@ -78,7 +78,7 @@ msgstr "Fanart"
 
 msgctxt "#31031"
 msgid "Pic thumbs"
-msgstr "Miniature Immagini"
+msgstr "Miniature immagini"
 
 msgctxt "#31032"
 msgid "Image wrap"
@@ -94,7 +94,7 @@ msgstr "Azioni"
 
 msgctxt "#31040"
 msgid "Now playing"
-msgstr "In Riproduzione"
+msgstr "In riproduzione"
 
 msgctxt "#31042"
 msgid "PLAYING"
@@ -134,23 +134,23 @@ msgstr "Ordina: Decrescente"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "Apri Playlist"
+msgstr "Apri la playlist"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Salva Playlist"
+msgstr "Salva la playlist"
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "Chiudi Playlist"
+msgstr "Chiudi la playlist"
 
 msgctxt "#31058"
 msgid "System music files"
-msgstr "Suoni di Sistema"
+msgstr "Suoni di sistema"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "Playlist Attuale"
+msgstr "Playlist corrente"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
@@ -162,7 +162,7 @@ msgstr "Attualmente Selezionato"
 
 msgctxt "#31101"
 msgid "Home screen options"
-msgstr "Opzioni Pagina Iniziale"
+msgstr "Opzioni pagina iniziale"
 
 msgctxt "#31102"
 msgid "Background"
@@ -170,11 +170,11 @@ msgstr "Sfondo"
 
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slideshow"
-msgstr "Mostra \"In Pausa\" durante la presentazione delle immagini"
+msgstr "Mostra \"In pausa\" durante la presentazione delle immagini"
 
 msgctxt "#31104"
 msgid "Play trailers in a window [COLOR=grey3](Video information dialogue only)[/COLOR]"
-msgstr "Mostra trailer in finestra [COLOR=grey3](Solo finestra dialogo informazioni Video)[/COLOR]"
+msgstr "Mostra trailer in una finestra [COLOR=grey3](Solo finestra di dialogo Informazioni video)[/COLOR]"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
@@ -227,14 +227,6 @@ msgstr "Mostra Sfondo Video \"In Riproduzione\""
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Mostra Sfondo Visualizzazione \"In Riproduzione\""
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Riproduci le Sigle TV nella Libreria Video (Add-on TvTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -302,7 +294,7 @@ msgstr "Temperatura attuale"
 
 msgctxt "#31301"
 msgid "Last updated"
-msgstr "Ultimo Aggiornamento"
+msgstr "Ultimo aggiornamento"
 
 msgctxt "#31303"
 msgid "Data provider"
@@ -322,7 +314,7 @@ msgstr "Memoria usata:"
 
 msgctxt "#31310"
 msgid "Track number"
-msgstr "Numero Traccia"
+msgstr "Numero traccia"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
@@ -351,10 +343,6 @@ msgstr "Profilo selezionato"
 msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Ultimo login"
-
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Selettore Canzoni Karaoke"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -426,11 +414,11 @@ msgstr "Abilitato"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Predefinito Skin"
+msgstr "Predefinito della skin"
 
 msgctxt "#31391"
 msgid "Skin default with no caps"
-msgstr "Predefinito Skin senza maiuscole"
+msgstr "Predefinito della skin senza maiuscole"
 
 msgctxt "#31392"
 msgid "Arial based"
@@ -443,10 +431,6 @@ msgstr "[B]CONFIGURA LE IMPOSTAZIONI PER L'ASPETTO[/B][CR][CR]Cambia la Skin · 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]CONFIGURA IMPOSTAZIONI VIDEO[/B][CR][CR]Gestisci la tua Libreria video · Imposta le opzioni di riproduzione dei video · Cambia le opzioni per le liste video[CR]Imposta i font dei sottotitoli"
-
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]CONFIGURA IMPOSTAZIONI MUSICA[/B][CR][CR]Gestisci la tua libreria musicale · Imposta le opzioni di riproduzione della musica · Cambia le impostazioni per le liste audio[CR]Imposta invio canzone · Imposta le opzioni per il karaoke"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

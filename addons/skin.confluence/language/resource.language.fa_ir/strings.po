@@ -60,6 +60,10 @@ msgctxt "#31039"
 msgid "Actions"
 msgstr "عملیات"
 
+msgctxt "#31040"
+msgid "Now playing"
+msgstr "در حال پخش"
+
 msgctxt "#31042"
 msgid "PLAYING"
 msgstr "در حال پخش"
@@ -140,17 +144,13 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "گزینه ها"
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "پخش موسیقی تیتر تلویزیون در کتابخانه ویدئویی (افزونه TvTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
-
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "اشعار"
+
+msgctxt "#31132"
+msgid "Lyrics add-on"
+msgstr "افزونه متن ترانه"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -212,6 +212,10 @@ msgctxt "#31355"
 msgid "Movie menu"
 msgstr "منو فیلم"
 
+msgctxt "#31356"
+msgid "Download subtitles"
+msgstr "دانلود زیر نویس ها"
+
 msgctxt "#31360"
 msgid "Watch as 2D"
 msgstr "تماشا بصورت دو بعدی"
@@ -239,10 +243,6 @@ msgstr "[B] تنظیمات ظاهر برنامه [/B]  [CR][CR] تعویض پو�
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B] تنظیمات ویدئو[/B] [CR][CR] مرتب سازی کتابخانه ویدئویی. تنظیمات پخش ویدئو. انتخاب گزینه های مرتب سازی ویدئو. [CR] انتخاب قلم زیرنویس ها."
-
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B] تنظیمات موسیقی[/B] [CR][CR] مرتب سازی کتابخانه موسیقی. تنظیمات پخش موسیقی. انتخاب گزینه های مرتب سازی موسیقی . [CR] انتخاب گزینه های همخوانی."
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
@@ -276,9 +276,33 @@ msgctxt "#31502"
 msgid "TV"
 msgstr "تلویزیون"
 
+msgctxt "#31503"
+msgid "Add group"
+msgstr "افزودن گروه"
+
+msgctxt "#31504"
+msgid "Rename group"
+msgstr "تغییر نام گروه"
+
+msgctxt "#31505"
+msgid "Delete group"
+msgstr "حذف گروه"
+
 msgctxt "#31506"
 msgid "Available[CR]Groups"
 msgstr "گروه های [CR]موجود"
+
+msgctxt "#31901"
+msgid "36-hour forecast"
+msgstr "پیش بینی 36 ساعته"
+
+msgctxt "#31903"
+msgid "Weekend forecast"
+msgstr "پیش بینی هفتگی"
+
+msgctxt "#31904"
+msgid "Daily forecast"
+msgstr "پیش بینی روزانه"
 
 msgctxt "#31905"
 msgid "Forecast"

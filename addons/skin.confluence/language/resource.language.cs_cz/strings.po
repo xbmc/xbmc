@@ -228,14 +228,6 @@ msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Zobrazit právě přehrávanou vizualizaci na pozadí"
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Přehrát znělky v knihovně videí (doplněk TvTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
-
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Texty písní"
@@ -352,10 +344,6 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Naposledy přihlášen"
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Výběr karaoke skladby"
-
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Odvysíláno"
@@ -443,10 +431,6 @@ msgstr "[B]NASTAVENÍ MOŽNOSTÍ VZHLEDU[/B][CR][CR]Změna vzhledu · Výběr ja
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]NASTAVENÍ MOŽNOSTÍ VIDEA[/B][CR][CR]Správa knihovny videí · Možnosti přehrávání videa · Možnosti zobrazení video souborů[CR]Nastavení fontu titulků"
-
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]NASTAVENÍ MOŽNOSTÍ HUDBY[/B][CR][CR]Správa knihovny hudby · Možnosti přehrávání hudby · Možnosti zobrazení hudebních souborů[CR] Nastavení služby odesílání informací o přehrávaných skladbách · Nastavení karaoke"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
@@ -578,7 +562,7 @@ msgstr "OBRÁZKY"
 
 msgctxt "#31952"
 msgid "TV"
-msgstr "Televize"
+msgstr "TELEVIZE"
 
 msgctxt "#31953"
 msgid "VIDEOS"

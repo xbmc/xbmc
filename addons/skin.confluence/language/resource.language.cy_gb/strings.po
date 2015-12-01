@@ -144,14 +144,6 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "Dewisiadau"
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Chwarae caneuon thema teledu yn y llyfrgell fideo (ychwanegyn TvTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
-
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Geiriau Caneuon"
@@ -243,10 +235,6 @@ msgstr "[B]GOSODIADAU FFURFWEDDU GWEDD[/B][CR][CR]Newid y croen · Gosod iaith a
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]FFURFWEDDU GOSODIADAU FIDEO[/B][CR][CR]Rheoli eich llyfrgell fideo · Gosod dewisiadau chwarae fideo · Newid dewisiadau rhestru fideo[CR]Gosod ffontiau isdeitlau"
-
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]FFURFWEDDU GOSODIADAU CERDDORIAETH[/B][CR][CR]Rheoli eich llyfrgell cerddoriaeth · Gosod dewisiadau chwarae cerddoriaeth · Newid dewisiadau rhestru cerddoriaeth [CR]Gosod cyflwyno caneuon · Gosod dewisiadau karaoke"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"

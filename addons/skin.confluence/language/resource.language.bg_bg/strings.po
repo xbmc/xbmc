@@ -22,11 +22,15 @@ msgstr "Променете вашите"
 
 msgctxt "#31003"
 msgid "Power options"
-msgstr "Изключи..."
+msgstr "Настройки за захранване"
 
 msgctxt "#31004"
 msgid "Working..."
 msgstr "Работи..."
+
+msgctxt "#31005"
+msgid "Hide information"
+msgstr "Скрий информацията"
 
 msgctxt "#31006"
 msgid "View options"
@@ -164,6 +168,10 @@ msgctxt "#31102"
 msgid "Background"
 msgstr "Фон"
 
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slideshow"
+msgstr "Показвай \"На Пауза\" индикация при слайдшоу от снимки"
+
 msgctxt "#31104"
 msgid "Play trailers in a window [COLOR=grey3](Video information dialogue only)[/COLOR]"
 msgstr "Възпроизвеждай трейлърите в прозореца [COLOR=grey3]Информация за видеото[/COLOR]"
@@ -219,14 +227,6 @@ msgstr "Ползвай за фон възпроизвеждания видео �
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Ползвай за фон възпроизвежданата визуализация"
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Възпроизвеждай мелодии от ТВ Сериали в библиотеката (добавка TvTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -306,7 +306,7 @@ msgstr "Скрий фен-арта"
 
 msgctxt "#31308"
 msgid "Movie details"
-msgstr "Подробности за филма"
+msgstr "Детайли за филма"
 
 msgctxt "#31309"
 msgid "Memory used:"
@@ -344,10 +344,6 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Последно влизане"
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Прозорец за избор на караоке песен"
-
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Излъчен"
@@ -378,7 +374,7 @@ msgstr "Натиснете бутона, за да започне[CR][CR]въз�
 
 msgctxt "#31331"
 msgid "Album details"
-msgstr "Подробности за албума"
+msgstr "Детайли за албума"
 
 msgctxt "#31351"
 msgid "Pause"
@@ -436,10 +432,6 @@ msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]КОНФИГУРИРАЙТЕ ВИДЕОТО[/B][CR][CR]Управлявайте видео библиотеката си · Настройте възпроизвеждането на видео[CR]Променете настройките на списъците с видео файлове · Задайте шрифт за субтитрите"
 
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]КОНФИГУРИРАЙТЕ МУЗИКАТА[/B][CR][CR]Управлявайте музикалната си библиотеката · Настройте възпроизвеждането на музика[CR]Променете настройките на списъците с аудио файлове · Настройте караоке плеъра"
-
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
 msgstr "[B]КОНФИГУРИРАЙТЕ СНИМКИТЕ[/B][CR][CR]Променете настройките на списъците със снимки · Конфигурирайте презентациите"
@@ -492,6 +484,10 @@ msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."
 msgstr "Изберете кой профил да се ползва за влизане, когато екрана за вписване е изключен"
 
+msgctxt "#31501"
+msgid "Scheduled time"
+msgstr "График"
+
 msgctxt "#31502"
 msgid "TV"
 msgstr "Телевизия"
@@ -515,6 +511,14 @@ msgstr "Налични[CR]групи"
 msgctxt "#31509"
 msgid "Channel group"
 msgstr "Група канали"
+
+msgctxt "#31510"
+msgid "Timer set"
+msgstr "Настройка на брояча"
+
+msgctxt "#31511"
+msgid "Channel options"
+msgstr "Настройки на канала"
 
 msgctxt "#31901"
 msgid "36-hour forecast"
