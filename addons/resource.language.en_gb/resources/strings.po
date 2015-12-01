@@ -20,6 +20,7 @@ msgstr ""
 #[Description / location] For example, "#. Description of some setting" used on "#: xbmc/addons/guidialogaddoninfo.cpp"
 #When writing a description or setting, refer to a setting name in quotes. See existing entries for guidance.
 #For example, "Press \"OK\" for \"All seasons\"" instead of "Press OK for All seasons" after first word.
+
 #: xbmc/addons/Addon.cpp
 #: system/settings/settings.xml
 msgctxt "#0"
@@ -1340,10 +1341,10 @@ msgctxt "#304"
 msgid "Language"
 msgstr ""
 
+#. Label of active/inactive radiobutton in PVR timer settings dialog
 #: system/peripherals.xml
 #: xbmc/filesystem/AddonsDirectory.cpp
 #: system/settings/settings.xml
-#. Label of active/inactive radiobutton in PVR timer settings dialog
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#305"
 msgid "Enabled"
@@ -2822,8 +2823,6 @@ msgctxt "#644"
 msgid "Stretch 16:9 - Nonlinear"
 msgstr ""
 
-#empty string with id 644
-
 msgctxt "#645"
 msgid "Need to unpack a big file. Continue?"
 msgstr ""
@@ -3458,8 +3457,8 @@ msgid "Recording group"
 msgstr ""
 
 #. Label for setting TV->Recordings->Prevent duplicate episodes
-#: system/settings/settings.xml
 #. Label of prevent duplicate episodes list control (if user does not want to record the same episode multiple times) in PVR timer settings dialog
+#: system/settings/settings.xml
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#812"
 msgid "Prevent duplicate episodes"
@@ -3493,6 +3492,7 @@ msgstr ""
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#817"
 msgid "End any time"
+msgstr ""
 
 #. Label of "MaxRecordings" list in the PVR timer setting dialog
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
@@ -3500,7 +3500,7 @@ msgctxt "#818"
 msgid "Max recordings"
 msgstr ""
 
-#empty strings from id 819
+#empty string with id 819
 
 #. Representation of a one-time timer.
 #: xbmc/pvr/addons/PVRClient.cpp
@@ -3526,13 +3526,7 @@ msgctxt "#823"
 msgid "Repeating (guide-based)"
 msgstr ""
 
-#empty string with id 824
-
-#empty string with id 825
-
-#empty string with id 826
-
-#empty string with id 827
+#empty strings from id 824 to 827
 
 #. Text for notification that a repeating timer has been deleted
 #: xbmc/pvr/timers/PVRTimers.cpp
@@ -3540,7 +3534,7 @@ msgctxt "#828"
 msgid "Repeating timer deleted"
 msgstr ""
 
-#empty string from id 829 to 830
+#empty strings from id 829 to 830
 
 #. Weekday representation
 #: xbmc/dialogs/GUIDialogPVRTimerWeekdaysSettings.cpp
@@ -7475,7 +7469,7 @@ msgctxt "#15031"
 msgid "Audio DSP settings - Audio information"
 msgstr ""
 
-#empty string from id 15032
+#empty string with id 15032
 
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
 msgctxt "#15033"
@@ -7492,7 +7486,7 @@ msgctxt "#15035"
 msgid "Audio DSP settings - Resampler"
 msgstr ""
 
-#empty string from id 15036
+#empty string with id 15036
 
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
 msgctxt "#15037"
@@ -7611,7 +7605,7 @@ msgctxt "#15064"
 msgid "Apply changes directly"
 msgstr ""
 
-#empty string id 15065
+#empty string with id 15065
 
 #. Button to disable all enabled modes on current selected type
 #: addons/skin.confluence/720p/DialogAudioDSPManager.xml
@@ -8775,8 +8769,8 @@ msgid "Channel"
 msgstr ""
 
 #. heading for PVR timer days of week settings dialog
-#: skin.confluence
 #. Label of days of week button in PVR timer settings dialog
+#: skin.confluence
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#19079"
 msgid "Days of week"
@@ -13069,6 +13063,8 @@ msgctxt "#22022"
 msgid "Show video files in listings"
 msgstr ""
 
+#empty string with id 22023
+
 #: xbmc/windows/GUIWindowSystemInfo.cpp
 msgctxt "#22024"
 msgid "Direct3D version:"
@@ -14479,6 +14475,8 @@ msgctxt "#29971"
 msgid "Alarm"
 msgstr ""
 
+#empty strings from id 29972 to 29976
+
 #. Program style name
 #: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
 msgctxt "#29977"
@@ -14545,7 +14543,7 @@ msgctxt "#29987"
 msgid "Send present traffic messages around and can be handled from addons (nothing inisde KODI)"
 msgstr ""
 
-#empty strings from id 29888 to 33000
+#empty strings from id 29988 to 33000
 #strings 30000 thru 30999 reserved for plug-ins and plug-in settings
 #strings 31000 thru 31999 reserved for skins
 #strings 32000 thru 32999 reserved for scripts
@@ -15482,7 +15480,7 @@ msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
 msgstr ""
 
-#empty strings from id 36043
+#empty string with id 36043
 
 #. Name of an action to perform on a specific event, like changing the CEC source away from Kodi
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
@@ -17402,7 +17400,7 @@ msgctxt "#36441"
 msgid "Enable audio DSP processing"
 msgstr ""
 
-#empty strings from id 36459 to 36499
+#empty strings from id 36442 to 36459
 
 #. Description of settings "System -> Logging -> Enable event logging" with label #14112
 #: system/settings/settings.xml
@@ -17417,7 +17415,6 @@ msgid "Notification event describe regular processes and actions performed by th
 msgstr ""
 
 #empty strings from id 36462 to 36499
-
 #end reservation
 
 #. label of a setting for the stereoscopic 3D mode of the GUI that is/should be applied
@@ -18087,6 +18084,8 @@ msgstr ""
 msgctxt "#38020"
 msgid "Enables decoding of high quality DTS-HD audio streams. Note: This increases CPU load and is only available when DTS and DTS-HD audio passthrough are disabled."
 msgstr ""
+
+#empty string with id 38021
 
 #. Used for the viewstate selection
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
