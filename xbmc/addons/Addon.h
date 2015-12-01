@@ -154,8 +154,6 @@ public:
   AddonProps& Props() { return m_props; }
   const std::string ID() const { return m_props.id; }
   const std::string Name() const { return m_props.name; }
-  /*! This lies. Ask CAddonMgr */
-  bool Enabled() const { return true; }
   virtual bool IsInUse() const { return false; };
   const AddonVersion Version() const { return m_props.version; }
   const AddonVersion MinVersion() const { return m_props.minversion; }

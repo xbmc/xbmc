@@ -96,7 +96,6 @@ namespace ADDON
     virtual AddonProps& Props() =0;
     virtual const std::string ID() const =0;
     virtual const std::string Name() const =0;
-    virtual bool Enabled() const =0;
     virtual bool IsInUse() const =0;
     virtual const AddonVersion Version() const =0;
     virtual const AddonVersion MinVersion() const =0;
