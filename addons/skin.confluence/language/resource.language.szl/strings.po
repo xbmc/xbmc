@@ -228,14 +228,6 @@ msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Pokŏż prawie przegrywanõ wizualizacyjõ na zadku"
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Grej śpiywki ze programōw TV we bibliŏtyce wideo (przidŏwka TvTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
-
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Teksty śpiywek"
@@ -352,10 +344,6 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Ôstatnie logowaniy"
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Ôbiyrŏcz śpiywek karaoke"
-
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Emisyjŏ"
@@ -443,10 +431,6 @@ msgstr "[B]KŌNFIGURUJ NASZTALOWANIA WYGLŌNDU[/B][CR][CR]Ôbier skōry · Mowa 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]KŌNFIGURUJ NASZTALOWANIA WIDEO[/B][CR][CR]Biblioteka wideo · Ôdgrywaniy · Lista wideo · Czciōnka napisōw"
-
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]KŌNFIGURUJ NASZTALOWANIA MUZYKI[/B][CR][CR]Biblioteka muzyki · Ôdgrywaniy · Lista śpiywek · Publikacyjŏ śpiywek · Ôpcyje karaoke"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

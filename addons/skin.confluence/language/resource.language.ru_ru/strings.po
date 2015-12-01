@@ -228,14 +228,6 @@ msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Музыкальная визуализация в качестве фона"
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Играть мелодию сериала в медиатеке (дополнение TvTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
-
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Тексты"
@@ -352,10 +344,6 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Последний вход"
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Выбор песен для караоке"
-
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Премьера"
@@ -443,10 +431,6 @@ msgstr "[B]НАСТРОЙКА ВНЕШНЕГО ВИДА[/B][CR][CR]Измене�
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ ВИДЕО[/B][CR][CR]Управление медиатекой видео • Параметры воспроизведения видео[CR]Настройка списка видео • Настройка шрифта субтитров"
-
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ МУЗЫКИ[/B][CR][CR]Управление медиатекой аудио • Параметры воспроизведения аудио[CR]Настройка списка аудио • Настройка добавления песен • Настройка караоке"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

@@ -228,14 +228,6 @@ msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Apresentar visualização de fundo em \\\"Agora reproduzindo\\\""
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Reproduzir música tema do seriado na biblioteca de vídeo (add-on TvTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
-
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Letras"
@@ -352,10 +344,6 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr "última conexão"
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Selecionador de música karaoke"
-
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Transmitido"
@@ -444,10 +432,6 @@ msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]AJUSTES DE VÍDEO[/B][CR][CR]Gerencie sua coleção de vídeos · Defina opções de execução de vídeo[CR]Altere opções de listagem de vídeo · Defina fonte para legendas"
 
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]AJUSTES DE MÚSICAS[/B][CR][CR]Gerencie sua coleção de músicas · Defina opções de execução de música[CR]Altere opções de listagem de música · Configure submissão de música · Defina opções de karaokê"
-
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
 msgstr "[B]AJUSTES DE IMAGENS[/B][CR][CR]Defina opções de listagem de imagens · Configure apresentação de slides"
@@ -518,7 +502,7 @@ msgstr "Renomear grupo"
 
 msgctxt "#31505"
 msgid "Delete group"
-msgstr "Deletar gurpo"
+msgstr "Deletar grupo"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"

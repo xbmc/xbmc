@@ -16,6 +16,10 @@ msgstr ""
 "Language: es_MX\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#31000"
+msgid "Change your"
+msgstr "Cambiar al tuyo"
+
 msgctxt "#31004"
 msgid "Working..."
 msgstr "Trabajando..."
@@ -144,14 +148,6 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "Opciones"
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Reproducir canciones temáticas de TV en la biblioteca de Video (TvTunes add-on)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
-
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Letras"
@@ -243,10 +239,6 @@ msgstr "[B]CONFIGURAR AJUSTES DE APARIENCIA[/B][CR][CR]Cambiar el skin · Establ
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]CONFIGURAR AJUSTES DE VIDEO[/B][CR][CR]Administrar tu biblioteca de video · Configurar las opciones de reproducción de vídeo · Cambiar las opciones de listado de videos[CR]Establecer fuentes de subtítulos"
-
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]CONFIGURAR AJUSTES DE MÚSICA[/B][CR][CR]Administrar tu biblioteca de música · Configurar las opciones de reproducción de música · Cambiar las opciones de listado de música [CR]Configurar el envío de canciones · Ajustar opciones de karaoke"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"

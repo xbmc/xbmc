@@ -228,14 +228,6 @@ msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Toon achtergrond \"Nu afspelend\" visualisatie"
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Speel de Themasong van de TV serie af in de videobibliotheek. (TvTunes add-on)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
-
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Songteksten"
@@ -352,10 +344,6 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Laatst ingelogd op"
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Karaoke lied kiezer"
-
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Uitgezonden"
@@ -443,10 +431,6 @@ msgstr "[B]UITERLIJK INSTELLINGEN CONFIGUREREN[/B][CR][CR]Wijzig skin · Stel ta
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]VIDEO-INSTELLINGEN CONFIGUREREN[/B][CR][CR]Beheer uw videobibliotheek · Configureer videoafspeelopties en -bestandslijstsopties · Stel lettertype in voor ondertitels"
-
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]MUZIEKINSTELLINGEN CONFIGUREREN[/B][CR][CR]Beheer uw muziekbibliotheek · Configureer muziekafspeelopties en -bestandslijstopties · Configureer nummer indienen · Configureer karaokeopties"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

@@ -265,7 +265,7 @@ msgctxt "#31122"
 msgid "Hide EPG if RDS is present on channel window"
 msgstr ""
 
-#empty string id 31123
+#empty string with id 31123
 
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
@@ -418,7 +418,7 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr ""
 
-#empty string with id 31321"
+#empty string with id 31321
 
 msgctxt "#31322"
 msgid "Aired"

@@ -124,10 +124,6 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "விருப்பங்கள்"
 
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "தொலைராகங்கள்"
-
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "பாடல்வரிகள்"
@@ -179,10 +175,6 @@ msgstr "[B]தோற்றம் அமைப்புகள் கட்ட�
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]நிகழ்படம் அமைப்புகள் கட்டமைப்பு[/B][CR][CR]உங்கள் வீடியோ நூலக மேலாண்மை · வீடியோ பின்னணி விருப்பங்களை அமைக்க · வீடியோ பட்டியல் விருப்பங்களை மாற்ற[CR]வசன எழுத்துருக்களை அமைக்க"
-
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]இசை அமைப்புகள் கட்டமைப்பு[/B][CR][CR]உங்கள் இசை நூலகம் நிர்வகிக்க · இசை பின்னணி விருப்பங்களை அமைக்க · இசை பட்டியல் விருப்பங்களை மாற்ற[CR]சமர்ப்பிப்பு பாடல் அமைப்பு · கரோக்கே விருப்பங்கள் அமைக்க"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
