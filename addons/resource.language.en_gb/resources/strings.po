@@ -4089,7 +4089,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#1268"
-msgid "Enable AirPlay Video and Picture support"
+msgid "Enable AirPlay \"Videos\" and \"Pictures\" support"
 msgstr ""
 
 msgctxt "#1269"
@@ -17657,7 +17657,7 @@ msgstr ""
 #. Description of setting "Services -> AirPlay -> iOS 8 compatibility mode" with label #1268
 #: system/settings/settings.xml
 msgctxt "#36549"
-msgid "Enables support for receving videos and pictures via AirPlay. This needs to be disabled when using iOS 9 or later clients to restore music streaming via AirPlay. Videos and Pictures are only supported for iOS clients using iOS 8.x and older."
+msgid "Enables support for receiving \"Videos\" and \"Pictures\" via AirPlay. This needs to be disabled when using iOS 9 or later clients to restore music streaming via AirPlay. \"Videos\" and \"Pictures\" are only supported for iOS clients using iOS 8.x and older."
 msgstr ""
 
 #. Name of a setting
