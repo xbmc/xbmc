@@ -131,7 +131,6 @@ protected:
   double            m_demuxerPts;
   double            m_decoderPts;
   int               m_speed;
-  bool              m_preroll;
 
   CCriticalSection m_sharedSection;
   MMAL_COMPONENT_T *m_dec;
