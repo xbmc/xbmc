@@ -14540,7 +14540,7 @@ msgstr ""
 #. Help text of boolean on/off value
 #: system/settings/settings.xml
 msgctxt "#29987"
-msgid "Send present traffic messages around and can be handled from addons (nothing inisde KODI)"
+msgid "Send present traffic messages around and can be handled from addons (nothing inside KODI)"
 msgstr ""
 
 #empty strings from id 29988 to 33000
