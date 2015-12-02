@@ -138,7 +138,9 @@ bool CNetworkInterfaceLinux::IsConnected()
    if (IsRemoved() || m_interfaceFlags & IFF_LOOPBACK)
      return false;
 
-   unsigned int needFlags = IFF_RUNNING | IFF_LOWER_UP;
+   // Don't add IFF_LOWER_UP - looks it is driver dependent on Linux
+   // and missing on running interfaces on OSX (Maverick tested)
+   unsigned int needFlags = IFF_RUNNING; //IFF_LOWER_UP
    bool iRunning = (m_interfaceFlags & needFlags) == needFlags;
 
    // return only interfaces which has ip address
@@ -418,6 +420,10 @@ bool CNetworkLinux::queryInterfaceList()
   if (getifaddrs(&list) < 0)
     return false;
 
+#if !defined(TARGET_LINUX)
+  std::map<std::string,struct ifaddrs> t_hwaddrs;
+#endif
+
   InterfacesClear();
 
   // find last IPv4 record, we will add new interfaces
@@ -433,6 +439,15 @@ bool CNetworkLinux::queryInterfaceList()
    struct ifaddrs *cur;
    for(cur = list; cur != NULL; cur = cur->ifa_next)
    {
+     std::string name = cur->ifa_name;
+#if !defined(TARGET_LINUX)
+     if(cur->ifa_addr->sa_family == AF_LINK)
+     {
+       struct ifaddrs &t = *cur;
+       t_hwaddrs[name] = t;
+     }
+#endif
+
      if(!cur->ifa_addr ||
         (cur->ifa_addr->sa_family != AF_INET &&
          cur->ifa_addr->sa_family != AF_INET6))
@@ -444,7 +459,6 @@ bool CNetworkLinux::queryInterfaceList()
      // Add the interface.
      std::string addr = CNetwork::GetIpStr(cur->ifa_addr);
      std::string mask = CNetwork::GetIpStr(cur->ifa_netmask);
-     std::string name = cur->ifa_name;
 
      if(addr.empty() || mask.empty())
        continue;
@@ -458,7 +472,11 @@ bool CNetworkLinux::queryInterfaceList()
      }
 
      char macAddrRaw[6] = {0};
+#if !defined(TARGET_LINUX)
+     GetMacAddress(&t_hwaddrs[name], macAddrRaw);
+#else
      GetMacAddress(cur, macAddrRaw);
+#endif
 
      CNetworkInterfaceLinux *i = new CNetworkInterfaceLinux(this, cur->ifa_addr->sa_family == AF_INET6,
                                                             cur->ifa_flags, addr, mask, name, macAddrRaw);
