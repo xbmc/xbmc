@@ -672,7 +672,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SYSTEMTIME stTime;
   stTime.wYear = song.iYear;
   SetReleaseDate(stTime);
-  SetTrackNumber(song.iTrack);
+  SetTrackAndDiscNumber(song.iTrack);
   SetDuration(song.iDuration);
   SetMood(song.strMood);
   SetCompilation(song.bCompilation);
