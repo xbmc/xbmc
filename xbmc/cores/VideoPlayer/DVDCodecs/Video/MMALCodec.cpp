@@ -122,7 +122,6 @@ CMMALVideo::CMMALVideo()
 
   m_codingType = 0;
 
-  m_demux_queue_length = 0;
   m_es_format = mmal_format_alloc();
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_fps = 0.0f;
@@ -742,55 +741,13 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
   //  CLog::Log(LOGDEBUG, "%s::%s - %-8p %-6d dts:%.3f pts:%.3f ready_queue(%d)",
   //    CLASSNAME, __func__, pData, iSize, dts == DVD_NOPTS_VALUE ? 0.0 : dts*1e-6, pts == DVD_NOPTS_VALUE ? 0.0 : pts*1e-6, m_output_ready.size());
 
-  unsigned int demuxer_bytes = 0;
-  uint8_t *demuxer_content = NULL;
   MMAL_BUFFER_HEADER_T *buffer;
   MMAL_STATUS_T status;
 
   Prime();
-  // we need to queue then de-queue the demux packet, seems silly but
-  // mmal might not have an input buffer available when we are called
-  // and we must store the demuxer packet and try again later.
-  // try to send any/all demux packets to mmal decoder.
-  unsigned space = mmal_queue_length(m_dec_input_pool->queue) * m_dec_input->buffer_size;
-  if (pData && m_demux_queue.empty() && space >= (unsigned int)iSize)
-  {
-    demuxer_bytes = iSize;
-    demuxer_content = pData;
-  }
-  else if (pData && iSize)
-  {
-    mmal_demux_packet demux_packet;
-    demux_packet.dts = dts;
-    demux_packet.pts = pts;
-    demux_packet.size = iSize;
-    demux_packet.buff = new uint8_t[iSize];
-    memcpy(demux_packet.buff, pData, iSize);
-    m_demux_queue_length += demux_packet.size;
-    m_demux_queue.push(demux_packet);
-  }
-
-  uint8_t *buffer_to_free = NULL;
-
   while (1)
   {
-     space = mmal_queue_length(m_dec_input_pool->queue) * m_dec_input->buffer_size;
-     if (!demuxer_bytes && !m_demux_queue.empty())
-     {
-       mmal_demux_packet &demux_packet = m_demux_queue.front();
-       if (space >= (unsigned int)demux_packet.size)
-       {
-         // need to lock here to retrieve an input buffer and pop the queue
-         m_demux_queue_length -= demux_packet.size;
-         m_demux_queue.pop();
-         demuxer_bytes = (unsigned int)demux_packet.size;
-         demuxer_content = demux_packet.buff;
-         buffer_to_free = demux_packet.buff;
-         dts = demux_packet.dts;
-         pts = demux_packet.pts;
-       }
-     }
-     if (demuxer_content)
+     if (pData)
      {
        // 500ms timeout
        buffer = mmal_queue_timedwait(m_dec_input_pool->queue, 500);
@@ -805,20 +762,20 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
        buffer->pts = pts == DVD_NOPTS_VALUE ? MMAL_TIME_UNKNOWN : pts;
        buffer->dts = dts == DVD_NOPTS_VALUE ? MMAL_TIME_UNKNOWN : dts;
        if (m_hints.ptsinvalid) buffer->pts = MMAL_TIME_UNKNOWN;
-       buffer->length = demuxer_bytes > buffer->alloc_size ? buffer->alloc_size : demuxer_bytes;
+       buffer->length = (uint32_t)iSize > buffer->alloc_size ? buffer->alloc_size : (uint32_t)iSize;
        // set a flag so we can identify primary frames from generated frames (deinterlace)
        buffer->flags = MMAL_BUFFER_HEADER_FLAG_USER0;
 
-       memcpy(buffer->data, demuxer_content, buffer->length);
-       demuxer_bytes   -= buffer->length;
-       demuxer_content += buffer->length;
+       memcpy(buffer->data, pData, buffer->length);
+       iSize -= buffer->length;
+       pData += buffer->length;
 
-       if (demuxer_bytes == 0)
+       if (iSize == 0)
          buffer->flags |= MMAL_BUFFER_HEADER_FLAG_FRAME_END;
 
        if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-         CLog::Log(LOGDEBUG, "%s::%s - %-8p %-6d/%-6d dts:%.3f pts:%.3f flags:%x ready_queue(%d) demux_queue(%d) space(%d)",
-            CLASSNAME, __func__, buffer, buffer->length, demuxer_bytes, dts == DVD_NOPTS_VALUE ? 0.0 : dts*1e-6, pts == DVD_NOPTS_VALUE ? 0.0 : pts*1e-6, buffer->flags, m_output_ready.size(), m_demux_queue_length, mmal_queue_length(m_dec_input_pool->queue) * m_dec_input->buffer_size);
+         CLog::Log(LOGDEBUG, "%s::%s - %-8p %-6d/%-6d dts:%.3f pts:%.3f flags:%x ready_queue(%d)",
+            CLASSNAME, __func__, buffer, buffer->length, iSize, dts == DVD_NOPTS_VALUE ? 0.0 : dts*1e-6, pts == DVD_NOPTS_VALUE ? 0.0 : pts*1e-6, buffer->flags, m_output_ready.size());
        assert((int)buffer->length > 0);
        status = mmal_port_send_buffer(m_dec_input, buffer);
        if (status != MMAL_SUCCESS)
@@ -827,7 +784,7 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
          return VC_ERROR;
        }
 
-       if (demuxer_bytes == 0)
+       if (iSize == 0)
        {
          EDEINTERLACEMODE deinterlace_request = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
          EINTERLACEMETHOD interlace_method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
@@ -853,17 +810,9 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
            DestroyDeinterlace();
          if (deinterlace && !m_deint)
            CreateDeinterlace(interlace_method);
-
-         if (buffer_to_free)
-         {
-           delete [] buffer_to_free;
-           buffer_to_free = NULL;
-           demuxer_content = NULL;
-           continue;
-         }
        }
     }
-    if (!demuxer_bytes)
+    if (!iSize)
       break;
   }
   int ret = 0;
@@ -872,7 +821,7 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
   else if (dts != DVD_NOPTS_VALUE)
     m_demuxerPts = dts;
   double queued = m_decoderPts != DVD_NOPTS_VALUE && m_demuxerPts != DVD_NOPTS_VALUE ? m_demuxerPts - m_decoderPts : 0.0;
-  if (mmal_queue_length(m_dec_input_pool->queue) > 0 && !m_demux_queue_length && queued <= DVD_MSEC_TO_TIME(1000))
+  if (mmal_queue_length(m_dec_input_pool->queue) > 0 && queued <= DVD_MSEC_TO_TIME(1000))
     ret |= VC_BUFFER;
 
   if (!m_output_ready.empty())
@@ -883,7 +832,7 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
     Sleep(10); // otherwise we busy spin
 
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s - ret(%x) pics(%d) demux_queue(%d) space(%d) queued(%.2f)", CLASSNAME, __func__, ret, m_output_ready.size(), m_demux_queue_length, mmal_queue_length(m_dec_input_pool->queue) * m_dec_input->buffer_size, queued*1e-6);
+    CLog::Log(LOGDEBUG, "%s::%s - ret(%x) pics(%d) queued(%.2f)", CLASSNAME, __func__, ret, m_output_ready.size(), queued*1e-6);
 
   return ret;
 }
@@ -939,12 +888,6 @@ void CMMALVideo::Reset(void)
     else
       break;
   }
-
-  pthread_mutex_lock(&m_output_mutex);
-  while (!m_demux_queue.empty())
-    m_demux_queue.pop();
-  m_demux_queue_length = 0;
-  pthread_mutex_unlock(&m_output_mutex);
 
   if (!m_finished)
   {

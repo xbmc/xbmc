@@ -64,13 +64,6 @@ private:
 
 class CMMALVideo : public CDVDVideoCodec
 {
-  typedef struct mmal_demux_packet {
-    uint8_t *buff;
-    int size;
-    double dts;
-    double pts;
-  } mmal_demux_packet;
-
 public:
   CMMALVideo();
   virtual ~CMMALVideo();
@@ -109,9 +102,6 @@ protected:
   bool              m_finished;
   float             m_aspect_ratio;
   const char        *m_pFormatName;
-
-  std::queue<mmal_demux_packet> m_demux_queue;
-  unsigned           m_demux_queue_length;
 
   // mmal output buffers (video frames)
   pthread_mutex_t   m_output_mutex;
