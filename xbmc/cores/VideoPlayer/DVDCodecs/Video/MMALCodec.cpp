@@ -108,8 +108,6 @@ CMMALVideo::CMMALVideo()
 
   m_interlace_mode = MMAL_InterlaceProgressive;
   m_interlace_method = VS_INTERLACEMETHOD_NONE;
-  m_decoderPts = DVD_NOPTS_VALUE;
-  m_demuxerPts = DVD_NOPTS_VALUE;
 
   m_dec = NULL;
   m_dec_input = NULL;
@@ -816,23 +814,14 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
       break;
   }
   int ret = 0;
-  if (pts != DVD_NOPTS_VALUE)
-    m_demuxerPts = pts;
-  else if (dts != DVD_NOPTS_VALUE)
-    m_demuxerPts = dts;
-  double queued = m_decoderPts != DVD_NOPTS_VALUE && m_demuxerPts != DVD_NOPTS_VALUE ? m_demuxerPts - m_decoderPts : 0.0;
-  if (mmal_queue_length(m_dec_input_pool->queue) > 0 && queued <= DVD_MSEC_TO_TIME(1000))
-    ret |= VC_BUFFER;
 
   if (!m_output_ready.empty())
-  {
     ret |= VC_PICTURE;
-  }
-  if (!ret)
-    Sleep(10); // otherwise we busy spin
+  else
+    ret |= VC_BUFFER;
 
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s - ret(%x) pics(%d) queued(%.2f)", CLASSNAME, __func__, ret, m_output_ready.size(), queued*1e-6);
+    CLog::Log(LOGDEBUG, "%s::%s - ret(%x) pics(%d)", CLASSNAME, __func__, ret, m_output_ready.size());
 
   return ret;
 }
@@ -894,8 +883,6 @@ void CMMALVideo::Reset(void)
     SendCodecConfigData();
     Prime();
   }
-  m_decoderPts = DVD_NOPTS_VALUE;
-  m_demuxerPts = DVD_NOPTS_VALUE;
 }
 
 void CMMALVideo::SetSpeed(int iSpeed)
@@ -983,11 +970,6 @@ bool CMMALVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     CLog::Log(LOGERROR, "%s::%s - called but m_output_ready is empty", CLASSNAME, __func__);
     return false;
   }
-
-  if (pDvdVideoPicture->pts != DVD_NOPTS_VALUE)
-    m_decoderPts = pDvdVideoPicture->pts;
-  else
-    m_decoderPts = pDvdVideoPicture->dts;
 
   return true;
 }
