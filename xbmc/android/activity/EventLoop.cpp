@@ -160,19 +160,12 @@ int32_t CEventLoop::processInput(AInputEvent* event)
       rtn = m_inputHandler->onKeyboardEvent(event);
       break;
     case AINPUT_EVENT_TYPE_MOTION:
-      switch(source)
-      {
-        case AINPUT_SOURCE_TOUCHSCREEN:
-          rtn = m_inputHandler->onTouchEvent(event);
-          break;
-        case AINPUT_SOURCE_MOUSE:
-          rtn = m_inputHandler->onMouseEvent(event);
-          break;
-        case AINPUT_SOURCE_GAMEPAD:
-        case AINPUT_SOURCE_JOYSTICK:
-          rtn = m_inputHandler->onJoyStickMotionEvent(event);
-          break;
-      }
+      if (source & AINPUT_SOURCE_TOUCHSCREEN)
+        rtn = m_inputHandler->onTouchEvent(event);
+      else if (source & AINPUT_SOURCE_MOUSE)
+        rtn = m_inputHandler->onMouseEvent(event);
+      else if (source & (AINPUT_SOURCE_GAMEPAD | AINPUT_SOURCE_JOYSTICK))
+        rtn = m_inputHandler->onJoyStickMotionEvent(event);
       break;
   }
 
