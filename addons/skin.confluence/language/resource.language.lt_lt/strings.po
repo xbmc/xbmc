@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Slėpti fono Fanart"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Slėpti EPG, jei kanalo lange yra RDS"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Rodyti \"Dabar atkuriamą\" vaizdo įrašą fone"
@@ -431,6 +435,10 @@ msgstr "[B]KONFIGŪRUOTI IŠVAIZDOS NUSTATYMUS[/B][CR][CR]Pakeisti teminę išva
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]KONFIGŪRUOTI VAIZDO ĮRAŠŲ NUSTATYMUS[/B][CR][CR]Tvarkyti vaizdo biblioteką · Nustatyti vaizdo atkūrimo parinktis[CR]Keisti vaizdo įrašų sąrašo atvaizdavimo parinktis · Nustatyti subtitrų šriftus"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]KONFIGŪRUOTI MUZIKOS NUSTATYMUS[/B][CR][CR]Tvarkyti muzikos biblioteką · Nustatyti dainų įkėlimą[CR]Keisti muzikos sąrašo atvaizdavimo parinktis · Nustatyti muzikos atkūrimo parinktis"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

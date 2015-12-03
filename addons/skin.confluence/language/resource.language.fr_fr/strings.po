@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Masquer le fanart d'arrière-plan"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Masquer le guide des programmes en présence de RDS sur le canal"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Afficher la vidéo en cours de lecture en arrière-plan"
@@ -432,6 +436,10 @@ msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]CONFIGURATION DES PARAMÈTRES DES VIDÉOS[/B][CR][CR]Gestion de la vidéothèque · Définition des options de lecture de vidéos · Modification des options de listage de vidéos · Définition des polices de sous-titres"
 
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]CONFIGURATION DES PARAMÈTRES DE MUSIQUE[/B][CR][CR]Gestion de l'audiothèque · Définition des options de lecture · Modification des options de listes de musique[CR]Configuration de la soumission de chanson"
+
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
 msgstr "[B]CONFIGURATION DES PARAMÈTRES DES IMAGES[/B][CR][CR]Définition des options de listage d'images · Configuration du diaporama"
@@ -510,7 +518,7 @@ msgstr "Groupes[CR]disponibles"
 
 msgctxt "#31509"
 msgid "Channel group"
-msgstr "Groupe de chaînes"
+msgstr "Groupe de chaînes "
 
 msgctxt "#31510"
 msgid "Timer set"

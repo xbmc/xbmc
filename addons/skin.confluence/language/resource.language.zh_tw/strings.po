@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "隱藏背景 Fanart"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "如果該頻道畫面中有自帶RDS訊息，則不顯示電子節目表"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "在背景顯示正在播放的影片"
@@ -432,13 +436,25 @@ msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]配置視訊設定[/B][CR][CR]管理你的音樂資料庫 · 設定影片播放選項 · 修改影片清單選項[CR]設定字幕字型"
 
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]配置設定[/B][CR][CR]管理你的音樂資料庫 · 設定音樂播放選項 · 修改音樂清單選項[CR]設定歌曲提交"
+
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
 msgstr "[B]配置圖片設定[/B][CR][CR]設定圖片清單選項 · 設定幻燈片秀"
 
+msgctxt "#31404"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set various cities to collect weather information"
+msgstr "[B]配置天氣設定[/B][CR][CR]設定幾個要收集天氣資料的城市"
+
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]配置系統設定[/B][CR][CR]設定和校正顯示輸出 · 設定音效輸出 · 設定遙控器[CR]設定節能選項 · 啟用除錯 · 設定鎖定密碼"
+
+msgctxt "#31408"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from kodi.tv[CR]Modify add-on settings"
+msgstr "[B]配置附加元件[/B][CR][CR]管理已安裝的附加元件 · 從 kodi.tv 瀏覽並安裝附加元件[CR]修改附加元件設定"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -451,6 +467,10 @@ msgstr "[B]配置服務設定[/B][CR][CR]設定透過 UPnP 和 HTTP 控製 Kodi 
 msgctxt "#31411"
 msgid "First run help..."
 msgstr "第一次使用說明..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section. To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"OK\" to close this dialogue. It will not appear again."
+msgstr "這個標籤表示這個部分在視窗的側邊有提供額外選項的選單。你可以使用遙控器或鍵盤的左鍵或者是將滑鼠指標移動到這個標籤的範圍來存取這個選單。[CR][CR]按一下\"Ok\" 可以關閉這個對話框。它不會再出現。"
 
 msgctxt "#31413"
 msgid "Local subtitle available"
