@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Nie używaj fototapet w roli tła"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Ukrywaj przewodnik, gdy dostępne są informacje RDS"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Wyświetlaj odtwarzane wideo w tle interfejsu"
@@ -322,11 +326,11 @@ msgstr "Fototapeta[CR][CR]niedostępna[CR][CR]Naciśnij przycisk, aby dodać"
 
 msgctxt "#31312"
 msgid "Current scraper"
-msgstr "Aktualny ekstraktor"
+msgstr "Aktualny dostawca"
 
 msgctxt "#31313"
 msgid "Choose a scraper"
-msgstr "Wybierz ekstraktor"
+msgstr "Wybierz dostawcę"
 
 msgctxt "#31314"
 msgid "Content scanning options"
@@ -431,6 +435,10 @@ msgstr "[B]KONFIGURACJA WYGLĄDU[/B][CR][CR]Wybór skóry · Ustawienia regional
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]KONFIGURACJA WIDEO[/B][CR][CR]Biblioteka wideo · Odtwarzanie · Akceleracja · Listy wideo · Napisy"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]KONFIGURACJA MUZYKI[/B][CR][CR]Biblioteka muzyki · Odtwarzanie · Listy utworów · CD-Audio"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Nascondi Sfondo Fanart"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Nascondi l'EPG se è presente l'RDS nella finestra del canale"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Mostra Sfondo Video \"In Riproduzione\""
@@ -431,6 +435,10 @@ msgstr "[B]CONFIGURA LE IMPOSTAZIONI PER L'ASPETTO[/B][CR][CR]Cambia la Skin · 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]CONFIGURA IMPOSTAZIONI VIDEO[/B][CR][CR]Gestisci la tua Libreria video · Imposta le opzioni di riproduzione dei video · Cambia le opzioni per le liste video[CR]Imposta i font dei sottotitoli"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]CONFIGURA IMPOSTAZIONI MUSICA[/B][CR][CR]Gestisci la tua libreria musicale · Imposta le opzioni di riproduzione musicale · Cambia le impostazioni di ordinamento musicale[CR]Imposta invio canzone"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
