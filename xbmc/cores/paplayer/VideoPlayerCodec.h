@@ -59,7 +59,7 @@ private:
 
   std::string m_strContentType;
   std::string m_strFileName;
-  int m_nAudioStream;
+  int64_t m_nAudioStream;
   int m_audioPos;
   DemuxPacket* m_pPacket;
   int  m_nDecodedLen;
