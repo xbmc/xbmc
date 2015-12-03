@@ -28,6 +28,7 @@
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "Application.h"
+#include "interfaces/AnnouncementManager.h"
 
 #include "settings/lib/ISettingCallback.h"
 #include <sys/socket.h>
@@ -110,13 +111,14 @@ public:
 class CNetwork
 {
 public:
-  class CNetworkUpdater : public CThread
+  class CNetworkUpdater : public CThread, public ANNOUNCEMENT::IAnnouncer
   {
   public:
-    CNetworkUpdater(void (*watcher)(void *caller)) : CThread("NetConfUpdater"), m_watcher(watcher) {}
-    virtual ~CNetworkUpdater(void) {};
+    CNetworkUpdater(void (*watcher)(void *caller));
+    virtual ~CNetworkUpdater(void);
 
     volatile bool *Stopping() { return &m_bStop; }
+    void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
 
   protected:
     void Process() { m_watcher(this); }
