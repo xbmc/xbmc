@@ -108,6 +108,7 @@ public:
 
   virtual void SetVSync(bool vsync) = 0;
   bool GetVSync() { return m_bVSync; }
+  virtual void FinishPipeline() {};
 
   virtual void SetViewPort(CRect& viewPort) = 0;
   virtual void GetViewPort(CRect& viewPort) = 0;
