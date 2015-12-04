@@ -238,11 +238,7 @@ bool CRepositoryUpdateJob::DoWork()
     return true;
   }
 
-  database.AddRepository(m_repo->ID(), addons, newChecksum, m_repo->Version());
-
-  //Invalidate art. FIXME: this will cause a lot of unnecessary re-caching and
-  //unnecessary HEAD requests being sent to server. icons and fanart rarely
-  //change, and cannot change if there is no version bump.
+  //Invalidate art.
   {
     CTextureDatabase textureDB;
     textureDB.Open();
@@ -250,13 +246,21 @@ bool CRepositoryUpdateJob::DoWork()
 
     for (const auto& addon : addons)
     {
-      if (!addon->Props().fanart.empty())
-        textureDB.InvalidateCachedTexture(addon->Props().fanart);
-      if (!addon->Props().icon.empty())
-        textureDB.InvalidateCachedTexture(addon->Props().icon);
+      AddonPtr oldAddon;
+      if (database.GetAddon(addon->ID(), oldAddon) && addon->Version() > oldAddon->Version())
+      {
+        if (!addon->Props().icon.empty() || !addon->Props().fanart.empty())
+          CLog::Log(LOGDEBUG, "CRepository: invalidating cached art for '%s'", addon->ID().c_str());
+        if (!addon->Props().icon.empty())
+          textureDB.InvalidateCachedTexture(addon->Props().icon);
+        if (!addon->Props().fanart.empty())
+          textureDB.InvalidateCachedTexture(addon->Props().fanart);
+      }
     }
     textureDB.CommitMultipleExecute();
   }
+
+  database.AddRepository(m_repo->ID(), addons, newChecksum, m_repo->Version());
 
   //Update broken status
   database.BeginMultipleExecute();
