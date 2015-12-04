@@ -25,6 +25,8 @@
 #include "addons/AddonManager.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "events/AddonManagementEvent.h"
+#include "events/EventLog.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -74,6 +76,9 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
           CGUIDialogKaiToast::QueueNotification(
               "", g_localizeStrings.Get(24001), g_localizeStrings.Get(24061),
               TOAST_DISPLAY_TIME, false, TOAST_DISPLAY_TIME);
+
+        for (const auto &addon : hasUpdate)
+          CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24068)));
       }
     }
 
