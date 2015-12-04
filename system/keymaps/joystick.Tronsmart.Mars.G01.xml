@@ -207,8 +207,12 @@
       <button id="1">Pause</button>
       <button id="2">Stop</button>
       <button id="3">ActivateWindow(MusicOSD)</button>
-      <button id="5">ActivateWindow(VisualisationPresetList)</button>
-      <button id="6">Info</button>
+<!-- remap -->
+      <!-- <button id="5">ActivateWindow(VisualisationPresetList)</button> -->
+      <button id="7">ActivateWindow(VisualisationPresetList)</button>
+<!-- remap -->
+      <!-- <button id="6">Info</button> -->
+      <button id="8">Info</button>
 <!-- disable to use global mapping -->
       <!-- <button id="10">ActivateWindow(MusicOSD)</button> -->
 <!-- nonexistent buttons beyond 10 -->
@@ -216,9 +220,9 @@
       <!-- <button id="12">SkipPrevious</button> -->
 <!-- remap -->
       <!-- <button id="13">PreviousPreset</button> -->
-      <button id="7">PreviousPreset</button>
+      <button id="5">PreviousPreset</button>
       <!-- <button id="14">NextPreset</button> -->
-      <button id="8">NextPreset</button>
+      <button id="6">NextPreset</button>
 <!-- remap to avoid skip/freeze problems -->
       <axis id="3" limit="+1">AnalogRewind</axis>
       <axis id="3" limit="+1">AnalogSeekBack</axis>
