@@ -38,6 +38,7 @@ void CPullupCorrection::ResetVFRDetection(void)
   m_minframeduration = DVD_NOPTS_VALUE;
   m_maxframeduration = DVD_NOPTS_VALUE;
   m_VFRCounter = 0;
+  m_patternCounter = 0;
 }
 
 void CPullupCorrection::Flush()
@@ -89,6 +90,7 @@ void CPullupCorrection::Add(double pts)
     if (m_haspattern)
     {
       m_VFRCounter++;
+      m_lastPattern = m_pattern;
       CLog::Log(LOGDEBUG, "CPullupCorrection: pattern lost on diff %f, number of losses %i", GetDiff(0), m_VFRCounter);
       Flush();
     }
@@ -112,6 +114,11 @@ void CPullupCorrection::Add(double pts)
     {
       m_haspattern = true;
       m_patternlength = m_pattern.size();
+
+      if (!CheckPattern(m_lastPattern))
+      {
+        m_patternCounter++;
+      }
 
       double frameduration = CalcFrameDuration();
       CLog::Log(LOGDEBUG, "CPullupCorrection: detected pattern of length %i: %s, frameduration: %f",

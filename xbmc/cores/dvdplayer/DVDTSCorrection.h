@@ -25,6 +25,7 @@
 
 #define DIFFRINGSIZE 120
 #define VFR_DETECTION_THRESHOLD 3
+#define VFR_PATTERN_THRESHOLD 2
 
 class CPullupCorrection
 {
@@ -40,7 +41,7 @@ class CPullupCorrection
     double GetMaxFrameDuration(void) { return m_maxframeduration;  }
     double GetMinFrameDuration(void) { return m_minframeduration;  }
     bool   HasFullBuffer()    { return m_ringfill == DIFFRINGSIZE; }
-    bool   VFRDetection(void) { return (m_VFRCounter >= VFR_DETECTION_THRESHOLD); }
+    bool   VFRDetection(void) { return ((m_VFRCounter >= VFR_DETECTION_THRESHOLD) && (m_patternCounter >= VFR_PATTERN_THRESHOLD)); }
 
   private:
     double m_prevpts;                //last pts added
@@ -63,15 +64,16 @@ class CPullupCorrection
 
     double CalcFrameDuration(); //calculates the frame duration from m_pattern
 
-    std::vector<double> m_pattern; //the last saved pattern
-    int    m_patternpos;           //the position of the pattern in the ringbuffer, moves one to the past each time a pts is added
+    std::vector<double> m_pattern, m_lastPattern; //the last saved pattern
+    int m_patternpos;              //the position of the pattern in the ringbuffer, moves one to the past each time a pts is added
     double m_ptscorrection;        //the correction needed for the last added pts
     double m_trackingpts;          //tracked pts for smoothing the timestamps
     double m_frameduration;        //frameduration exposed to dvdplayer, used for calculating the fps
     double m_maxframeduration;     //Max value detected for frame duration (for VFR files case)
     double m_minframeduration;     //Min value detected for frame duration (for VFR files case)
-    bool   m_haspattern;           //for the log and detecting VFR files case
-    int    m_patternlength;        //for the codec info
-    int    m_VFRCounter;           //retry counter for VFR detection
-    std::string GetPatternStr();    //also for the log
+    bool m_haspattern;             //for the log and detecting VFR files case
+    int m_patternlength;           //for the codec info
+    int m_VFRCounter;              //retry counter for VFR detection
+    int m_patternCounter;
+    std::string GetPatternStr();   //also for the log
 };
