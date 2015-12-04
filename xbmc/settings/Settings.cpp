@@ -383,6 +383,10 @@ const std::string CSettings::SETTING_POWERMANAGEMENT_DISPLAYSOFF = "powermanagem
 const std::string CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME = "powermanagement.shutdowntime";
 const std::string CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE = "powermanagement.shutdownstate";
 const std::string CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS = "powermanagement.wakeonaccess";
+const std::string CSettings::SETTING_POWERMANAGEMENT_SLOWWHENPAUSED = "powermanagement.slowwhenpaused";
+const std::string CSettings::SETTING_POWERMANAGEMENT_SLOWWHENNOTPLAYING = "powermanagement.slowwhennotplaying";
+const std::string CSettings::SETTING_POWERMANAGEMENT_SLOWGUIIDLETIMEOUT = "powermanagement.slowguiidletimeout";
+const std::string CSettings::SETTING_POWERMANAGEMENT_SLOWGUIFRAMETIME = "powermanagement.slowguiframetime";
 const std::string CSettings::SETTING_DEBUG_SHOWLOGINFO = "debug.showloginfo";
 const std::string CSettings::SETTING_DEBUG_EXTRALOGGING = "debug.extralogging";
 const std::string CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL = "debug.setextraloglevel";
@@ -1091,6 +1095,11 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEAMCODEC);
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC);
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE);
+  settingSet.insert(CSettings::SETTING_POWERMANAGEMENT_SLOWWHENPAUSED);
+  settingSet.insert(CSettings::SETTING_POWERMANAGEMENT_SLOWWHENNOTPLAYING);
+  settingSet.insert(CSettings::SETTING_POWERMANAGEMENT_SLOWGUIIDLETIMEOUT);
+  settingSet.insert(CSettings::SETTING_POWERMANAGEMENT_SLOWGUIFRAMETIME);
+  
   m_settingsManager->RegisterCallback(&g_application, settingSet);
 
   settingSet.clear();

@@ -308,6 +308,10 @@ CApplication::CApplication(void)
   m_lastFrameTime = 0;
   m_lastRenderTime = 0;
   m_skipGuiRender = false;
+  m_bSlowWhenPaused = false;
+  m_bSlowWhenNotPlaying = false;
+  m_slowGUIIdleTimeout = 5;
+  m_slowGUIFrametime = 2000;
   m_bTestMode = false;
 
   m_muted = false;
@@ -659,6 +663,12 @@ bool CApplication::Create()
   m_replayGainSettings.iPreAmp = CSettings::GetInstance().GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP);
   m_replayGainSettings.iNoGainPreAmp = CSettings::GetInstance().GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP);
   m_replayGainSettings.bAvoidClipping = CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING);
+
+  // initialize idle gui settings
+  m_bSlowWhenPaused = CSettings::GetInstance().GetBool(CSettings::SETTING_POWERMANAGEMENT_SLOWWHENPAUSED);
+  m_bSlowWhenNotPlaying = CSettings::GetInstance().GetBool(CSettings::SETTING_POWERMANAGEMENT_SLOWWHENNOTPLAYING);
+  m_slowGUIIdleTimeout = CSettings::GetInstance().GetInt(CSettings::SETTING_POWERMANAGEMENT_SLOWGUIIDLETIMEOUT);
+  m_slowGUIFrametime =  CSettings::GetInstance().GetInt(CSettings::SETTING_POWERMANAGEMENT_SLOWGUIFRAMETIME);
 
   // initialize the addon database (must be before the addon manager is init'd)
   CDatabaseManager::GetInstance().Initialize(true);
@@ -1447,6 +1457,14 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     m_replayGainSettings.iNoGainPreAmp = ((CSettingInt*)setting)->GetValue();
   else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING))
     m_replayGainSettings.bAvoidClipping = ((CSettingBool*)setting)->GetValue();
+  else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_POWERMANAGEMENT_SLOWWHENPAUSED))
+    m_bSlowWhenPaused = ((CSettingBool*)setting)->GetValue();
+  else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_POWERMANAGEMENT_SLOWWHENNOTPLAYING))
+    m_bSlowWhenNotPlaying = ((CSettingBool*)setting)->GetValue();
+  else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_POWERMANAGEMENT_SLOWGUIIDLETIMEOUT))
+    m_slowGUIIdleTimeout = ((CSettingInt*)setting)->GetValue();
+  else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_POWERMANAGEMENT_SLOWGUIFRAMETIME))
+    m_slowGUIFrametime = ((CSettingInt*)setting)->GetValue();
 }
 
 void CApplication::OnSettingAction(const CSetting *setting)
@@ -1919,7 +1937,16 @@ void CApplication::Render()
     else
     {
       // engage the frame limiter as needed
-      limitFrames = lowfps || extPlayerActive;
+
+      // slowGUI: to reduce wasted cycles, skip render frames when no
+      //          playback and no recent input.
+      //              
+      bool slowGUI = ((m_bSlowWhenPaused && m_pPlayer->IsPaused()) ||
+                     (m_bSlowWhenNotPlaying && !m_pPlayer->IsPlaying())) 
+                    && GlobalIdleTime() > m_slowGUIIdleTimeout;
+
+      limitFrames = lowfps || extPlayerActive || slowGUI;
+
       // DXMERGE - we checked for g_videoConfig.GetVSyncMode() before this
       //           perhaps allowing it to be set differently than the UI option??
       if (vsync_mode == VSYNC_DISABLED || vsync_mode == VSYNC_VIDEO)
@@ -1942,6 +1969,8 @@ void CApplication::Render()
         }
         else if (lowfps)
           singleFrameTime = 200;  // 5 fps, <=200 ms latency to wake up
+        else if (slowGUI)
+          singleFrameTime = m_slowGUIFrametime; 
       }
 
     }
@@ -2025,11 +2054,21 @@ void CApplication::Render()
     if (!limitFrames)
       singleFrameTime = 40; //if not flipping, loop at 25 fps
 
+
     unsigned int frameTime = now - m_lastFrameTime;
     if (frameTime < singleFrameTime)
-      Sleep(singleFrameTime - frameTime);
+    {
+      unsigned int sleepTarget = singleFrameTime - frameTime;
+      unsigned int slept = 0;
+      while (CWinEvents::GetQueueSize() == 0 && slept < sleepTarget)
+      {
+        unsigned int sleep_ms = std::min<unsigned int>(sleepTarget,100);
+        Sleep(sleep_ms);
+        slept+=sleep_ms;
+      } 
+    }
   }
-
+ 
   if (flip)
     g_graphicsContext.Flip(dirtyRegions);
 

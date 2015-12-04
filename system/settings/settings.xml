@@ -2887,6 +2887,39 @@
           <control type="toggle" />
         </setting>
       </group>
+      <group id="3">
+        <setting id="powermanagement.slowwhenpaused" type="boolean" label="800002" help="800003">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="powermanagement.slowwhennotplaying" type="boolean" label="800004" help="800005">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="powermanagement.slowguiidletimeout" type="integer" label="800006" help="800007">
+          <level>1</level>
+          <default>5</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>1</step>
+            <maximum>100</maximum>
+          </constraints>
+          <control type="spinner" format="integer" />
+        </setting>
+        <setting id="powermanagement.slowguiframetime" type="integer" label="800008" help="800009">
+          <level>1</level>
+          <default>2000</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>100</step>
+            <maximum>4000</maximum>
+          </constraints>
+          <control type="spinner" format="integer" />
+        </setting>
+      </group>
+
     </category>
     <category id="logging" label="14092" help="36391">
       <group id="1">
