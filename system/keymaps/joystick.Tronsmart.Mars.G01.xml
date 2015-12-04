@@ -83,6 +83,8 @@
 <!-- added + alternative -->
       <button id="6">Playlist</button>
       <!-- <button id="6">XBMC.ActivateWindow(MusicPlaylist)</button> -->
+<!-- added -->
+      <button id="2">XBMC.ActivateWindow(Favourites)</button>
     </joystick>
   </Home>
   <MyFiles>
@@ -460,4 +462,13 @@
       <button id="8">Close</button>
     </joystick>
   </ProfileSettings>
+<!-- added -->
+  <Favourites>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="5">Delete</button>
+      <button id="7">MoveItemUp</button>
+      <button id="8">MoveItemDown</button>
+    </joystick>
+  </Favourites>
 </keymap>
