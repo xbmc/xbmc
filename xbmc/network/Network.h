@@ -91,6 +91,7 @@ public:
    virtual void GetMacAddressRaw(char rawMac[6]) = 0;
 
    virtual bool GetHostMacAddress(unsigned long host, std::string& mac) = 0;
+   bool GetHostMacAddress(const std::string &host, std::string& mac);
 
    virtual std::string GetCurrentIPAddress() = 0;
    virtual std::string GetCurrentNetmask() = 0;

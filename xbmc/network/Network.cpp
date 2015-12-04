@@ -190,6 +190,17 @@ std::string CNetwork::GetIpStr(unsigned long address)
   return addr;
 }
 
+bool CNetworkInterface::GetHostMacAddress(const std::string &host, std::string &mac)
+{
+  struct sockaddr_in in;
+
+  if (!CNetwork::ConvIPv4(host, &in))
+    return false;
+
+  unsigned long ip = in.sin_addr.s_addr;
+  return GetHostMacAddress(ip, mac);
+}
+
 int CNetwork::ParseHex(char *str, unsigned char *addr)
 {
    int len = 0;

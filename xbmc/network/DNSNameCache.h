@@ -38,6 +38,7 @@ public:
   CDNSNameCache(void);
   virtual ~CDNSNameCache(void);
   static bool Lookup(const std::string& strHostName, std::string& strIpAddress);
+  static std::string Lookup(const std::string& strHostName);
   static void Add(const std::string& strHostName, const std::string& strIpAddress);
 
   void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);

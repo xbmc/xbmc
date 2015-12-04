@@ -152,6 +152,14 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
   return bReturn;
 }
 
+std::string CDNSNameCache::Lookup(const std::string& strHostName)
+{
+  std::string ip;
+
+  Lookup(strHostName, ip);
+  return ip;
+}
+
 bool CDNSNameCache::GetCached(const std::string& strHostName, std::string& strIpAddress)
 {
   CSingleLock lock(m_critical);
