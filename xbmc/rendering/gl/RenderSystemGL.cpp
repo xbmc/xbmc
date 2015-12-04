@@ -40,6 +40,7 @@ CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
   m_enumRenderingSystem = RENDERING_SYSTEM_OPENGL;
   m_glslMajor = 0;
   m_glslMinor = 0;
+  m_latencyCounter = 0;
 }
 
 CRenderSystemGL::~CRenderSystemGL()
@@ -331,6 +332,7 @@ bool CRenderSystemGL::PresentRender(const CDirtyRegionList& dirty)
   }
 
   bool result = PresentRenderImpl(dirty);
+  m_latencyCounter++;
 
   if (m_iVSyncMode && m_iSwapRate != 0)
   {
@@ -397,6 +399,16 @@ void CRenderSystemGL::SetVSync(bool enable)
     CLog::Log(LOGERROR, "GL: Vertical Blank Syncing unsupported");
   else
     CLog::Log(LOGINFO, "GL: Selected vsync mode %d", m_iVSyncMode);
+}
+
+void CRenderSystemGL::FinishPipeline()
+{
+  // GL implementations are free to queue an undefined number of frames internally
+  // as a result video latency can be very high which is bad for a/v sync
+  // calling glFinish reduces latency to the number of back buffers
+  // in order to keep some elasticity, we call glFinish only every other cycle
+  if (m_latencyCounter & 0x01)
+    glFinish();
 }
 
 void CRenderSystemGL::CaptureStateBlock()
