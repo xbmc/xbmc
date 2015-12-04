@@ -667,8 +667,8 @@ bool CApplication::Create()
   // initialize idle gui settings
   m_bSlowWhenPaused = CSettings::GetInstance().GetBool(CSettings::SETTING_POWERMANAGEMENT_SLOWWHENPAUSED);
   m_bSlowWhenNotPlaying = CSettings::GetInstance().GetBool(CSettings::SETTING_POWERMANAGEMENT_SLOWWHENNOTPLAYING);
-  m_slowGUIIdleTimeout = CSettings::GetInstance().GetBool(CSettings::SETTING_POWERMANAGEMENT_SLOWGUIIDLETIMEOUT);
-  m_slowGUIFrametime =  CSettings::GetInstance().GetBool(CSettings::SETTING_POWERMANAGEMENT_SLOWGUIFRAMETIME);
+  m_slowGUIIdleTimeout = CSettings::GetInstance().GetInt(CSettings::SETTING_POWERMANAGEMENT_SLOWGUIIDLETIMEOUT);
+  m_slowGUIFrametime =  CSettings::GetInstance().GetInt(CSettings::SETTING_POWERMANAGEMENT_SLOWGUIFRAMETIME);
 
   // initialize the addon database (must be before the addon manager is init'd)
   CDatabaseManager::GetInstance().Initialize(true);
