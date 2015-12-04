@@ -236,6 +236,8 @@
       <altname>Tronsmart</altname>
       <button id="3">Close</button>
       <button id="6">Info</button>
+<!-- added -->
+      <button id="7">CodecInfo</button>
     </joystick>
   </MusicOSD>
   <VisualisationSettings>
@@ -300,6 +302,8 @@
     <joystick name="Gamepad For Windows (Controller)">
       <altname>Tronsmart</altname>
       <button id="3">Close</button>
+<!-- added -->
+      <button id="7">CodecInfo</button>
     </joystick>
   </VideoOSD>
   <VideoMenu>
@@ -329,6 +333,9 @@
     <joystick name="Gamepad For Windows (Controller)">
       <altname>Tronsmart</altname>
       <button id="5">Delete</button>
+<!-- added -->
+      <button id="7">MoveItemUp</button>
+      <button id="8">MoveItemDown</button>
     </joystick>
   </VideoBookmarks>
   <MyVideoLibrary>
