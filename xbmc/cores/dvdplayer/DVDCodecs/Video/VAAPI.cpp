@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2014 Team XBMC
+ *      Copyright (C) 2005-2015 Team XBMC
  *      http://xbmc.org
  *
  *  This library is free software; you can redistribute it and/or
@@ -2183,11 +2183,6 @@ bool COutput::EnsureBufferPool()
       GLX_X_RENDERABLE, True,
       None};
 
-  int pixmapAttribs[] = {
-      GLX_TEXTURE_TARGET_EXT, GLX_TEXTURE_2D_EXT,
-      GLX_TEXTURE_FORMAT_EXT, GLX_TEXTURE_FORMAT_RGBA_EXT,
-      None};
-
   GLXFBConfig *fbConfigs;
   fbConfigs = glXChooseFBConfig(m_Display, g_Windowing.GetCurrentScreen(), doubleVisAttributes, &num);
   if (fbConfigs==NULL)
@@ -2215,6 +2210,10 @@ bool COutput::EnsureBufferPool()
       return false;
     }
 
+    int pixmapAttribs[] = {
+      GLX_TEXTURE_TARGET_EXT, GLX_TEXTURE_2D_EXT,
+      GLX_TEXTURE_FORMAT_EXT, wndattribs.depth > 24 ? GLX_TEXTURE_FORMAT_RGBA_EXT : GLX_TEXTURE_FORMAT_RGB_EXT,
+      None};
     // create gl pixmap
     pic->glx.glPixmap = glXCreatePixmap(m_Display, fbConfigs[fbConfigIndex], pic->glx.pixmap, pixmapAttribs);
 
