@@ -153,6 +153,7 @@ bool CRendererVDPAU::LoadShadersHook()
   {
     CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
     m_renderMethod = RENDER_VDPAU;
+    m_fullRange = false;
     return true;
   }
   return false;

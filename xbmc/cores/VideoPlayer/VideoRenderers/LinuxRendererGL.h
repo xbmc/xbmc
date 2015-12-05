@@ -259,10 +259,13 @@ protected:
 
   void GetPlaneTextureSize(YUVPLANE& plane);
 
-  Shaders::BaseYUV2RGBShader     *m_pYUVShader;
+  Shaders::BaseYUV2RGBShader *m_pYUVShader;
   Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;
   ESCALINGMETHOD m_scalingMethodGui;
+  bool m_useDithering;
+  unsigned int m_ditherDepth;
+  bool m_fullRange;
 
   // clear colour for "black" bars
   float m_clearColour;

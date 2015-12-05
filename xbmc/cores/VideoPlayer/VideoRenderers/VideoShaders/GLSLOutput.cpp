@@ -1,6 +1,6 @@
 /*
  *      Copyright (c) 2007 d4rk
- *      Copyright (C) 2007-2013 Team XBMC
+ *      Copyright (C) 2007-2015 Team XBMC
  *      Copyright (C) 2015 Lauri Mylläri
  *      http://xbmc.org
  *
@@ -21,7 +21,6 @@
  */
 
 #include "system_gl.h"
-#include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 
 #include "GLSLOutput.h"
@@ -29,7 +28,7 @@
 
 using namespace Shaders;
 
-GLSLOutput::GLSLOutput(int texunit)
+GLSLOutput::GLSLOutput(int texunit, bool useDithering, unsigned int ditherDepth, bool fullrange)
 {
   // set member variable initial values
   m_1stTexUnit = texunit;
@@ -43,16 +42,18 @@ GLSLOutput::GLSLOutput(int texunit)
   m_hDitherQuant = -1;
   m_hDitherSize  = -1;
 
-  m_dither = g_Windowing.UseDithering();
-  m_ditherDepth = g_Windowing.DitherDepth();
-  m_fullRange = !g_Windowing.UseLimitedColor();
+  m_dither = useDithering;
+  m_ditherDepth = ditherDepth;
+  m_fullRange = fullrange;
 }
 
 std::string GLSLOutput::GetDefines()
 {
   std::string defines = "#define XBMC_OUTPUT 1\n";
-  if (m_dither) defines += "#define XBMC_DITHER 1\n";
-  if (m_fullRange) defines += "#define XBMC_FULLRANGE 1\n";
+  if (m_dither)
+    defines += "#define XBMC_DITHER 1\n";
+  if (m_fullRange)
+    defines += "#define XBMC_FULLRANGE 1\n";
   return defines;
 }
 
@@ -62,13 +63,15 @@ void GLSLOutput::OnCompiledAndLinked(GLuint programHandle)
 
   // get uniform locations
   //   dithering
-  if (m_dither) {
-    m_hDither      = glGetUniformLocation(programHandle, "m_dither");
+  if (m_dither)
+  {
+    m_hDither = glGetUniformLocation(programHandle, "m_dither");
     m_hDitherQuant = glGetUniformLocation(programHandle, "m_ditherquant");
-    m_hDitherSize  = glGetUniformLocation(programHandle, "m_dithersize");
+    m_hDitherSize = glGetUniformLocation(programHandle, "m_dithersize");
   }
 
-  if (m_dither) {
+  if (m_dither)
+  {
     // TODO: create a dither pattern
 
     // create a dither texture
@@ -104,7 +107,8 @@ void GLSLOutput::OnCompiledAndLinked(GLuint programHandle)
 bool GLSLOutput::OnEnabled()
 {
 
-  if (m_dither) {
+  if (m_dither)
+  {
     // set texture units
     glUniform1i(m_hDither, m_uDither);
     VerifyGLState();
@@ -129,7 +133,8 @@ bool GLSLOutput::OnEnabled()
 void GLSLOutput::OnDisabled()
 {
   // disable textures
-  if (m_dither) {
+  if (m_dither)
+  {
     glActiveTexture(GL_TEXTURE0 + m_uDither);
     glDisable(GL_TEXTURE_2D);
   }

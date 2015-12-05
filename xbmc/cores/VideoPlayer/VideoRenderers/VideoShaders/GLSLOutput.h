@@ -1,8 +1,5 @@
-#ifndef __GLSLOUTPUT_H__
-#define __GLSLOUTPUT_H__
-
 /*
- *      Copyright (C) 2007-2013 Team XBMC
+ *      Copyright (C) 2007-2015 Team XBMC
  *      Copyright (C) 2015 Lauri Mylläri
  *      http://xbmc.org
  *
@@ -21,17 +18,18 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 
 #include "system.h"
 #include "utils/GLUtils.h"
 
-namespace Shaders {
-
+namespace Shaders
+{
   class GLSLOutput
   {
   public:
     // take the 1st available texture unit as a parameter
-    GLSLOutput(int texunit);
+    GLSLOutput(int texunit, bool useDithering, unsigned int ditherDepth, bool fullrange);
     std::string GetDefines();
     void OnCompiledAndLinked(GLuint programHandle);
     bool OnEnabled();
@@ -42,7 +40,7 @@ namespace Shaders {
     void FreeTextures();
 
     bool m_dither;
-    unsigned m_ditherDepth;
+    unsigned int m_ditherDepth;
     bool m_fullRange;
     // first texture unit available to us
     int m_1stTexUnit;
@@ -57,8 +55,5 @@ namespace Shaders {
 
     // textures
     GLuint m_tDitherTex;
-
-
   };
 }
-#endif // __GLSLOUTPUT_H__
