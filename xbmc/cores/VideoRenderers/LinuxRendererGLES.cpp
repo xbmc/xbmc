@@ -2885,11 +2885,14 @@ bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
     return itr != m_renderFeatures.end();
   }
 
-  if(feature == RENDERFEATURE_BRIGHTNESS)
-    return true;
+  if (!(m_renderMethod & RENDER_MEDIACODECSURFACE))
+  {
+    if(feature == RENDERFEATURE_BRIGHTNESS)
+      return true;
 
-  if(feature == RENDERFEATURE_CONTRAST)
-    return true;
+    if(feature == RENDERFEATURE_CONTRAST)
+      return true;
+  }
 
   if(feature == RENDERFEATURE_GAMMA)
     return false;
