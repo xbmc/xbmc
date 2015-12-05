@@ -30,6 +30,7 @@
 #include "GUIInfoManager.h"
 #include "PasswordManager.h"
 #include "Util.h"
+#include "addons/Skin.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
@@ -236,6 +237,10 @@ bool CProfilesManager::LoadProfile(size_t index)
   // check if the profile is already active
   if (m_currentProfile == index)
     return true;
+
+  // save any settings of the currently used skin
+  if (g_SkinInfo != nullptr)
+    g_SkinInfo->SaveSettings();
 
   // unload any old settings
   CSettings::GetInstance().Unload();
