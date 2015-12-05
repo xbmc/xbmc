@@ -313,7 +313,8 @@ double CVideoReferenceClock::GetRefreshRate(double* interval /*= NULL*/)
 
 
 //this is called from CDVDClock::WaitAbsoluteClock, which is called from CXBMCRenderManager::WaitPresentTime
-//it waits until a certain timestamp has passed, used for displaying videoframes at the correct moment
+//it waits for a certain timestamp has passed, used for displaying videoframes at the correct moment
+//if vblanks are used as a clock source, this will return between the two vblanks that surround Target
 int64_t CVideoReferenceClock::Wait(int64_t Target)
 {
   int64_t       Now;
@@ -325,6 +326,9 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
   {
     while (m_CurrTime < Target)
     {
+      if (Target < (m_CurrTime + UpdateInterval()))
+        break;
+
       //calculate how long to sleep before we should have gotten a signal that a vblank happened
       Now = CurrentHostCounter();
       int64_t NextVblank = TimeOfNextVblank();

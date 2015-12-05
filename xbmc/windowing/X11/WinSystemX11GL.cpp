@@ -81,11 +81,11 @@ bool CWinSystemX11GL::PresentRenderImpl(const CDirtyRegionList& dirty)
     if(m_glXGetVideoSyncSGI(&before) != 0)
       CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
 
-    if(m_glXWaitVideoSyncSGI(2, (before+1)%2, &swap) != 0)
-      CLog::Log(LOGERROR, "%s - glXWaitVideoSyncSGI - Returned error", __FUNCTION__);
-
     glXSwapBuffers(m_dpy, m_glWindow);
     glFinish();
+
+    if(m_glXWaitVideoSyncSGI(2, (before+1)%2, &swap) != 0)
+      CLog::Log(LOGERROR, "%s - glXWaitVideoSyncSGI - Returned error", __FUNCTION__);
 
     if(m_glXGetVideoSyncSGI(&after) != 0)
       CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
@@ -113,6 +113,10 @@ bool CWinSystemX11GL::PresentRenderImpl(const CDirtyRegionList& dirty)
 
 void CWinSystemX11GL::SetVSyncImpl(bool enable)
 {
+  /* already enabled and a good method determined? */
+  if (enable && (m_iVSyncMode != 0))
+    return;
+
   /* turn of current setting first */
   if(m_glXSwapIntervalEXT)
     m_glXSwapIntervalEXT(m_dpy, m_glWindow, 0);
@@ -121,22 +125,25 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
 
   m_iVSyncErrors = 0;
 
-  if(!enable)
+  if(!enable) {
+    m_iVSyncMode = 0;
     return;
+  }
 
-  if (m_glXSwapIntervalEXT && !m_iVSyncMode)
+  if (m_glXSwapIntervalEXT)
   {
     m_glXSwapIntervalEXT(m_dpy, m_glWindow, 1);
     m_iVSyncMode = 6;
   }
-  if (m_glXSwapIntervalMESA && !m_iVSyncMode)
+  else if (m_glXSwapIntervalMESA)
   {
     if(m_glXSwapIntervalMESA(1) == 0)
       m_iVSyncMode = 2;
     else
       CLog::Log(LOGWARNING, "%s - glXSwapIntervalMESA failed", __FUNCTION__);
   }
-  if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI && !m_iVSyncMode)
+
+  if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI)
   {
     unsigned int count;
     if(m_glXGetVideoSyncSGI(&count) == 0)
