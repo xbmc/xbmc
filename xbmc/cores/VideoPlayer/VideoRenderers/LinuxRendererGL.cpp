@@ -259,7 +259,6 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
 
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(d_width, d_height);
-  ChooseBestResolution(fps);
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
   ManageDisplay();
 
@@ -681,9 +680,6 @@ void CLinuxRendererGL::PreInit()
   m_bConfigured = false;
   m_bValidated = false;
   UnInit();
-  m_resolution = CDisplaySettings::GetInstance().GetCurrentResolution();
-  if ( m_resolution == RES_WINDOW )
-    m_resolution = RES_DESKTOP;
 
   m_iYV12RenderBuffer = 0;
 
