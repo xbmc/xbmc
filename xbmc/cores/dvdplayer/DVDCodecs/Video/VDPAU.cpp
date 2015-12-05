@@ -1983,31 +1983,9 @@ void CMixer::SetSharpness()
 
 EINTERLACEMETHOD CMixer::GetDeinterlacingMethod(bool log /* = false */)
 {
-  EINTERLACEMETHOD method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
-  if (method == VS_INTERLACEMETHOD_AUTO)
-  {
-    int deint = -1;
-//    if (m_config.outHeight >= 720)
-//      deint = g_advancedSettings.m_videoVDPAUdeintHD;
-//    else
-//      deint = g_advancedSettings.m_videoVDPAUdeintSD;
-
-    if (deint != -1)
-    {
-      if (m_config.vdpau->Supports(EINTERLACEMETHOD(deint)))
-      {
-        method = EINTERLACEMETHOD(deint);
-        if (log)
-          CLog::Log(LOGNOTICE, "CVDPAU::GetDeinterlacingMethod: set de-interlacing to %d",  deint);
-      }
-      else
-      {
-        if (log)
-          CLog::Log(LOGWARNING, "CVDPAU::GetDeinterlacingMethod: method for de-interlacing (advanced settings) not supported");
-      }
-    }
-  }
-  return method;
+  // XXX: Ideally, the deinterlacing method should be detected at runtime.
+  // See https://github.com/xbmc/xbmc/pull/7799 for discussion.
+  return CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
 }
 
 void CMixer::SetDeinterlacing()
