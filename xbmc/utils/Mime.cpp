@@ -389,6 +389,7 @@ std::map<std::string, std::string> fillMimeTypes()
   mimeTypes.insert(std::pair<std::string, std::string>("step",      "application/step"));
   mimeTypes.insert(std::pair<std::string, std::string>("stl",       "application/sla"));
   mimeTypes.insert(std::pair<std::string, std::string>("stp",       "application/step"));
+  mimeTypes.insert(std::pair<std::string, std::string>("sup",       "application/x-pgs"));
   mimeTypes.insert(std::pair<std::string, std::string>("sv4cpio",   "application/x-sv4cpio"));
   mimeTypes.insert(std::pair<std::string, std::string>("sv4crc",    "application/x-sv4crc"));
   mimeTypes.insert(std::pair<std::string, std::string>("svf",       "image/vnd.dwg"));
