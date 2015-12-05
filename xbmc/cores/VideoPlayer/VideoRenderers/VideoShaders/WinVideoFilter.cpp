@@ -72,7 +72,7 @@ XMFLOAT4X4* CYUV2RGBMatrix::Matrix()
   if (m_NeedRecalc)
   {
     TransformMatrix matrix;
-    CalculateYUVMatrix(matrix, m_flags, m_format, m_blacklevel, m_contrast);
+    CalculateYUVMatrix(matrix, m_flags, m_format, m_blacklevel, m_contrast, true);
 
     m_mat._11 = matrix.m[0][0];
     m_mat._12 = matrix.m[1][0];

@@ -77,9 +77,6 @@ public:
   //does the output expect limited color range (ie 16-235)
   virtual bool UseLimitedColor();
 
-  virtual bool UseDithering();
-  virtual unsigned DitherDepth();
-
   virtual bool Minimize() { return false; }
   virtual bool Restore() { return false; }
   virtual bool Hide() { return false; }

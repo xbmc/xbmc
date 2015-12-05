@@ -135,6 +135,9 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_pVideoFilterShader = NULL;
   m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
+  m_useDithering = CSettings::GetInstance().GetBool("videoscreen.dither");
+  m_ditherDepth = CSettings::GetInstance().GetInt("videoscreen.ditherdepth");
+  m_fullRange = !g_Windowing.UseLimitedColor();
 
   m_rgbBuffer = NULL;
   m_rgbBufferSize = 0;
@@ -830,7 +833,9 @@ void CLinuxRendererGL::UpdateVideoFilter()
       }
     }
 
-    m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod, m_nonLinStretch, new GLSLOutput(3));
+    GLSLOutput *out;
+    out = new GLSLOutput(3, m_useDithering, m_ditherDepth, m_fullRange);
+    m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod, m_nonLinStretch, out);
     if (!m_pVideoFilterShader->CompileAndLink())
     {
       CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
@@ -896,9 +901,12 @@ void CLinuxRendererGL::LoadShaders(int field)
       {
         // create regular progressive scan shader
         // if single pass, create GLSLOutput helper and pass it to YUV2RGB shader
+        GLSLOutput *out = nullptr;
+        if (m_renderQuality == RQ_SINGLEPASS)
+          out = new GLSLOutput(3, m_useDithering, m_ditherDepth, m_fullRange);
         m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, m_format,
                                                     m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
-                                                    (m_renderQuality == RQ_SINGLEPASS) ? new GLSLOutput(3) : NULL);
+                                                    out);
 
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
 
