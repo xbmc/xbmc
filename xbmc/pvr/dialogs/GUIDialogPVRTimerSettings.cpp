@@ -744,6 +744,10 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
       // Drop TimerTypes that forbid EPGInfo, if it is populated
       if (type->ForbidsEpgTagOnCreate() && m_timerInfoTag->HasEpgInfoTag())
         continue;
+
+      // Drop TimerTypes that aren't repeating if end time is in the past
+      if (!type->IsRepeating() && m_timerInfoTag->EndAsLocalTime() < CDateTime::GetCurrentDateTime())
+        continue;
     }
 
     m_typeEntries.insert(std::make_pair(idx++, type));
