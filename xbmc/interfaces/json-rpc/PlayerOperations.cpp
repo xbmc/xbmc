@@ -35,6 +35,7 @@
 #include "GUIInfoManager.h"
 #include "epg/EpgInfoTag.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicThumbLoader.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -196,6 +197,11 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
             fileItem->SetFromMusicInfoTag(*currentMusicTag);
             if (fileItem->GetLabel().empty())
               fileItem->SetLabel(originalLabel);
+            if (!fileItem->HasArt("thumb"))
+            {
+              CMusicThumbLoader loader;
+              loader.LoadItem(fileItem.get());
+            }
           }
           fileItem->SetPath(g_application.CurrentFileItem().GetPath());
         }
