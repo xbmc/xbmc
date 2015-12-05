@@ -168,8 +168,8 @@ GLHACK=-Dclear=__GLclear
 # Modules that should always be present (non UNIX dependent):
 
 array arraymodule.c	# array objects
-cmath cmathmodule.c # -lm # complex math library functions
-math mathmodule.c # -lm # math library functions, e.g. sin()
+cmath cmathmodule.c  # -lm # complex math library functions
+math mathmodule.c _math.c # -lm # math library functions, e.g. sin()
 _struct _struct.c	# binary structure packing/unpacking
 time timemodule.c # -lm # time operations and variables
 operator operator.c	# operator.add() and similar goodies
@@ -501,7 +501,8 @@ xxsubtype xxsubtype.c
 
 _lsprof _lsprof.c rotatingtree.c
 _json _json.c
-_fileio _fileio.c
+#_io/fileio _io/fileio.c
+_io _io/bufferedio.c _io/bytesio.c _io/fileio.c _io/iobase.c _io/_iomodule.c _io/stringio.c _io/textio.c
 _heapq _heapqmodule.c
 _hotshot _hotshot.c
 future_builtins future_builtins.c

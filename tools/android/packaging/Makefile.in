@@ -83,11 +83,13 @@ shared:
 	mkdir -p assets
 	cp -rfp $(PREFIX)/share/@APP_NAME_LC@/* ./assets
 	find `pwd`/assets/ -depth -name ".git" -exec rm -rf {} \;
-	find `pwd`/assets/ -name "*.so" -exec rm {} \;
+	find `pwd`/assets/ -name "*.so" -not -name "*imaging*.so" -exec rm {} \;
 	find `pwd`/assets/addons/skin.*/media/* -depth -not -iname "Textures.xbt" -exec rm -rf {} \;
 	find `pwd`/assets/system/keymaps/ -depth -name "joystick*.xml" ! -name "joystick.xml" -exec rm {} \;
 	mv -f `pwd`/assets/system/keymaps/joystick.xml.sample `pwd`/assets/system/keymaps/joystick.xml
 	cd `pwd`/assets/addons; rm -rf $(EXCLUDED_ADDONS)
+	mkdir -p assets/system/certs
+	cp $(XBMCROOT)/tools/depends/target/openssl/cacert.pem assets/system/certs
 
 sharedapk: shared | xbmc/assets
 	cp -rfp assets/* ./xbmc/assets
@@ -98,9 +100,9 @@ sharedobb: shared
 	@echo "$(XBMCROOT)/main.@APP_NAME_LC@.obb created"
 
 python: | xbmc/assets
-	mkdir -p xbmc/assets/python2.6/lib/
-	cp -rfp $(PREFIX)/lib/python2.6 xbmc/assets/python2.6/lib/
-	cd xbmc/assets/python2.6/lib/python2.6/; rm -rf test config lib-dynload
+	mkdir -p xbmc/assets/python2.7/lib/
+	cp -rfp $(PREFIX)/lib/python2.7 xbmc/assets/python2.7/lib/
+	cd xbmc/assets/python2.7/lib/python2.7/; rm -rf test config lib-dynload
 
 res:
 	mkdir -p xbmc/res xbmc/res/raw xbmc/res/values images
@@ -120,13 +122,12 @@ res:
 
 libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	rm -rf xbmc/lib/$(CPU) xbmc/libs/$(CPU) xbmc/obj/local/$(CPU)
-	mkdir -p xbmc/lib/$(CPU) xbmc/assets/python2.6/lib/ xbmc/libs/$(CPU) xbmc/obj/local/$(CPU)
+	mkdir -p xbmc/lib/$(CPU) xbmc/assets/python2.7/lib/ xbmc/libs/$(CPU) xbmc/obj/local/$(CPU)
 	cp -fp $(SRCLIBS) xbmc/obj/local/$(CPU)/
 	cp -fp $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so xbmc/obj/local/$(CPU)/
 	find $(PREFIX)/lib/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
 	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
 	find $(PREFIX)/lib/@APP_NAME_LC@/system -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
-	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
 	cd xbmc/obj/local/$(CPU)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
 	cp -fp xbmc/obj/local/$(CPU)/*.so xbmc/lib/$(CPU)/
 	$(STRIP) --strip-unneeded xbmc/lib/$(CPU)/*.so

@@ -12,10 +12,11 @@ DEPENDS = \
 	libogg libvorbis libflac fribidi libmpeg2 \
 	libass libsquish \
 	libmodplug librtmp libxml2 yajl libmicrohttpd mysql libffi \
-	python26 libshairplay \
+	python27 libshairplay \
 	libplist libcec libbluray boost tinyxml dummy-libxbmc \
 	libamplayer libssh taglib libusb libnfs \
-	pythonmodule-pil libxslt ffmpeg platform crossguid libdcadec giflib
+	pythonmodule-pil pythonmodule-setuptools \
+	libxslt ffmpeg platform crossguid libdcadec giflib
 
 FFMPEG_DEPENDS = gnutls libdcadec
 
@@ -83,7 +84,7 @@ libflac: libogg gettext
 libass: fontconfig libpng freetype2 expat $(ICONV)
 librtmp: openssl
 libmicrohttpd: gnutls libgcrypt libgpg-error
-python26: expat gettext libxml2 sqlite3 openssl libffi
+python27: expat gettext libxml2 sqlite3 openssl libffi
 libcdio: $(ICONV)
 libplist: libxml2 $(ZLIB)
 libbluray: $(ICONV) libxml2
@@ -94,7 +95,8 @@ libpng: $(ZLIB)
 openssl: $(ZLIB)
 gnutls: nettle $(ZLIB)
 nettle: gmp
-pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng freetype2 python26
+pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng freetype2 python27 pythonmodule-setuptools
+pythonmodule-setuptools: python27
 libsdl2: $(LINUX_SYSTEM_LIBS)
 libxslt: libgcrypt
 ffmpeg: $(ICONV) $(ZLIB) bzip2 libvorbis $(FFMPEG_DEPENDS)
