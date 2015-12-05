@@ -619,8 +619,6 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   memset(&m_SpeedState, 0, sizeof(m_SpeedState));
 
   // omxplayer variables
-  m_OmxPlayerState.video_fifo          = 0;
-  m_OmxPlayerState.audio_fifo          = 0;
   m_OmxPlayerState.last_check_time     = 0.0;
   m_OmxPlayerState.stamp               = 0.0;
   m_OmxPlayerState.bOmxWaitVideo       = false;
@@ -3021,15 +3019,13 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
           strBuf += StringUtils::Format(" %d sec", DVD_TIME_TO_SEC(m_StateInput.cache_delay));
       }
 
-      strGeneralInfo = StringUtils::Format("C( a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s af:%d%% vf:%d%% amp:% 5.2f )"
+      strGeneralInfo = StringUtils::Format("C( a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s amp:% 5.2f )"
           , dDiff
           , strEDL.c_str()
           , (int)(CThread::GetRelativeUsage()*100)
           , (int)(m_VideoPlayerAudio->GetRelativeUsage()*100)
           , (int)(m_VideoPlayerVideo->GetRelativeUsage()*100)
           , strBuf.c_str()
-          , m_OmxPlayerState.audio_fifo
-          , m_OmxPlayerState.video_fifo
           , m_VideoPlayerAudio->GetDynamicRangeAmplification());
     }
     else
