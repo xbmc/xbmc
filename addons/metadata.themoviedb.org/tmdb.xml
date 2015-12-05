@@ -21,14 +21,14 @@
 	</NfoUrl>
 	<GetSearchResults dest="8">
 		<RegExp input="$$3" output="&lt;results&gt;\1&lt;/results&gt;" dest="8">
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\4&lt;/title&gt;&lt;id&gt;\1&lt;/id&gt;&lt;year&gt;\3&lt;/year&gt;&lt;url cache=&quot;tmdb-$INFO[language]-\1.json&quot;&gt;http://api.tmdb.org/3/movie/\1?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=$INFO[language]&lt;/url&gt;&lt;/entity&gt;" dest="3">
-				<expression repeat="yes">&quot;id&quot;:([0-9]*),&quot;original_language&quot;:&quot;[^&quot;]*&quot;,&quot;original_title&quot;:&quot;([^&quot;]*)&quot;,&quot;overview&quot;:.*?,&quot;release_date&quot;:&quot;([0-9]+)-.*?&quot;title&quot;:&quot;([^&quot;]*)</expression>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3&lt;/title&gt;&lt;id&gt;\2&lt;/id&gt;&lt;year&gt;\1&lt;/year&gt;&lt;url cache=&quot;tmdb-$INFO[language]-\2.json&quot;&gt;http://api.tmdb.org/3/movie/\2?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=$INFO[language]&lt;/url&gt;&lt;/entity&gt;" dest="3">
+				<expression repeat="yes">&quot;release_date&quot;:&quot;([0-9]+)-.*?&quot;id&quot;:([0-9]*),&quot;original_title&quot;:&quot;[^&quot;]*&quot;,&quot;original_language&quot;:&quot;[^&quot;]*&quot;,&quot;title&quot;:&quot;([^&quot;]*)&quot;</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;id&gt;\1&lt;/id&gt;&lt;year&gt;\3&lt;/year&gt;&lt;url cache=&quot;tmdb-$INFO[language]-\1.json&quot;&gt;http://api.tmdb.org/3/movie/\1?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=$INFO[language]&lt;/url&gt;&lt;/entity&gt;" dest="3+">
-				<expression repeat="yes">&quot;id&quot;:([0-9]*),&quot;original_language&quot;:&quot;[^&quot;]*&quot;,&quot;original_title&quot;:&quot;([^&quot;]*)&quot;,&quot;overview&quot;:.*?,&quot;release_date&quot;:&quot;([0-9]+)-</expression>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3&lt;/title&gt;&lt;id&gt;\2&lt;/id&gt;&lt;year&gt;\1&lt;/year&gt;&lt;url cache=&quot;tmdb-$INFO[language]-\2.json&quot;&gt;http://api.tmdb.org/3/movie/\2?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=$INFO[language]&lt;/url&gt;&lt;/entity&gt;" dest="3+">
+				<expression repeat="yes">&quot;release_date&quot;:&quot;([0-9]+)-.*?&quot;id&quot;:([0-9]*),&quot;original_title&quot;:&quot;([^&quot;]*)&quot;,&quot;original_language&quot;:&quot;[^&quot;]*&quot;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;id&gt;\1&lt;/id&gt;&lt;url cache=&quot;tmdb-$INFO[language]-\1.json&quot;&gt;http://api.tmdb.org/3/movie/\1?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=$INFO[language]&lt;/url&gt;&lt;/entity&gt;" dest="3+">
-				<expression repeat="yes">&quot;id&quot;:([0-9]*),&quot;original_language&quot;:&quot;[^&quot;]*&quot;,&quot;original_title&quot;:&quot;([^&quot;]*)&quot;,&quot;overview&quot;:.*?,&quot;release_date&quot;:null</expression>
+				<expression repeat="yes">&quot;release_date&quot;:null.*?&quot;id&quot;:([0-9]*),&quot;original_title&quot;:&quot;([^&quot;]*)&quot;,&quot;original_language&quot;:&quot;[^&quot;]*&quot;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
