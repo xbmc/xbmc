@@ -112,7 +112,6 @@ public:
   ERenderFormat GetRenderFormat() { return m_format; }
 
   void SetViewMode(int viewMode);
-  RESOLUTION GetResolution() const;
 
   /*! \brief Get video rectangle and view window
   \param source is original size of the video
@@ -128,22 +127,15 @@ public:
   static void SettingOptionsRenderMethodsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
 protected:
-  void       ChooseBestResolution(float fps);
-  bool       FindResolutionFromOverride(float fps, float& weight, bool fallback);
-  void       FindResolutionFromFpsMatch(float fps, float& weight);
-  RESOLUTION FindClosestResolution(float fps, float multiplier, RESOLUTION current, float& weight);
-  static float      RefreshWeight(float refresh, float fps);
-  void       CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount, float verticalShift);
-  void       CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height);
-  void       ManageDisplay();
+  void CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount, float verticalShift);
+  void CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height);
+  void ManageDisplay();
+  virtual void ReorderDrawPoints();//might be overwritten (by egl e.x.)
+  void saveRotatedCoords();//saves the current state of m_rotatedDestCoords
+  void syncDestRectToRotatedPoints();//sync any changes of m_destRect to m_rotatedDestCoords
+  void restoreRotatedCoords();//restore the current state of m_rotatedDestCoords from saveRotatedCoords
+  void MarkDirty();
 
-  virtual void       ReorderDrawPoints();//might be overwritten (by egl e.x.)
-  void       saveRotatedCoords();//saves the current state of m_rotatedDestCoords
-  void       syncDestRectToRotatedPoints();//sync any changes of m_destRect to m_rotatedDestCoords
-  void       restoreRotatedCoords();//restore the current state of m_rotatedDestCoords from saveRotatedCoords 
-  void       MarkDirty();
-
-  RESOLUTION m_resolution;    // the resolution we're running in
   unsigned int m_sourceWidth;
   unsigned int m_sourceHeight;
   float m_sourceFrameRatio;

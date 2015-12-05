@@ -327,20 +327,18 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
   Lock();
   m_bFullScreenVideo = bOnOff;
 
-#if defined(HAS_VIDEO_PLAYBACK)
   if(m_bFullScreenRoot)
   {
     bool allowDesktopRes = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_ALWAYS;
-    if(m_bFullScreenVideo || (!allowDesktopRes && g_application.m_pPlayer->IsPlayingVideo()))
+    if (m_bFullScreenVideo || (!allowDesktopRes && g_application.m_pPlayer->IsPlayingVideo()))
       SetVideoResolution(g_application.m_pPlayer->GetRenderResolution());
-    else if(CDisplaySettings::GetInstance().GetCurrentResolution() > RES_DESKTOP)
+    else if (CDisplaySettings::GetInstance().GetCurrentResolution() > RES_DESKTOP)
       SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution());
     else
       SetVideoResolution(RES_DESKTOP);
   }
   else
     SetVideoResolution(RES_WINDOW);
-#endif
 
   Unlock();
 }
