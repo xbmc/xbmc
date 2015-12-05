@@ -4740,7 +4740,7 @@ float CVideoPlayer::GetRenderAspectRatio()
 
 RESOLUTION CVideoPlayer::GetRenderResolution()
 {
-  return m_renderManager.GetResolution();
+  return g_graphicsContext.GetVideoResolution();
 }
 
 bool CVideoPlayer::IsRenderingVideo()

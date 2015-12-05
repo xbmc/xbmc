@@ -250,7 +250,7 @@ void CRenderer::Render(COverlay* o, float adjust_height)
     {
       if(align == COverlay::ALIGN_SUBTITLE)
       {
-        RESOLUTION_INFO res = g_graphicsContext.GetResInfo(m_pRenderManager->GetResolution());
+        RESOLUTION_INFO res = g_graphicsContext.GetResInfo(g_graphicsContext.GetVideoResolution());
         state.x += rv.x1 + rv.Width() * 0.5f;
         state.y += rv.y1  + (res.iSubtitles - res.Overscan.top);
       }
@@ -330,7 +330,7 @@ COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
   else if (subalign == SUBTITLE_ALIGN_MANUAL && g_advancedSettings.m_videoAssFixedWorks)
   {
     RESOLUTION_INFO res;
-    res = g_graphicsContext.GetResInfo(m_pRenderManager->GetResolution());
+    res = g_graphicsContext.GetResInfo(g_graphicsContext.GetVideoResolution());
     position = 100.0 - (res.iSubtitles - res.Overscan.top) * 100 / res.iHeight;
   }
   else

@@ -130,7 +130,7 @@ CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock
 
   m_bRenderSubs = false;
   m_stalled = false;
-  m_syncState == IDVDStreamPlayer::SYNC_STARTING;
+  m_syncState = IDVDStreamPlayer::SYNC_STARTING;
   m_iVideoDelay = 0;
   m_iSubtitleDelay = 0;
   m_FlipTimeStamp = 0.0;
