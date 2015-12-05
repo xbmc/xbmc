@@ -36,7 +36,7 @@
 	<ParseIMDBTOP250 dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;top250&gt;\1&lt;/top250&gt;" dest="2">
-				<expression>Top\s250\s#([0-9]*)&lt;/</expression>
+				<expression>Top\sRated\sMovies\s#([0-9]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
