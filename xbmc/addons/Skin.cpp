@@ -707,7 +707,7 @@ bool CSkinInfo::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /* = 
   const TiXmlElement *rootElement = doc.RootElement();
   if (rootElement == nullptr || rootElement->ValueStr().compare(XML_SETTINGS) != 0)
   {
-    CLog::Log(LOGWARNING, "CSkinInfo: no <skinsettings> tag found");
+    CLog::Log(LOGWARNING, "CSkinInfo: no <settings> tag found");
     return false;
   }
 
@@ -736,7 +736,7 @@ void CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
   TiXmlNode *settingsNode = doc.InsertEndChild(rootElement);
   if (settingsNode == NULL)
   {
-    CLog::Log(LOGWARNING, "CSkinInfo: could not create <skinsettings> tag");
+    CLog::Log(LOGWARNING, "CSkinInfo: could not create <settings> tag");
     return;
   }
 
