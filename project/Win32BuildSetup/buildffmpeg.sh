@@ -88,7 +88,7 @@ OPTIONS="
 --enable-libdcadec"
 
 echo configuring $LIBNAME
-./configure --extra-cflags="-fno-common -I/xbmc/lib/win32/ffmpeg_dxva2 -DNDEBUG" --extra-ldflags="-L/xbmc/system/players/VideoPlayer" ${OPTIONS} &&
+./configure --extra-cflags="-fno-common -I/xbmc/lib/win32/ffmpeg_dxva2 -DNDEBUG" --extra-ldflags="-L/xbmc/system/players/VideoPlayer -L/xbmc/system/players/dvdplayer" ${OPTIONS} &&
 
 make $MAKEFLAGS &&
 cp lib*/*.dll .libs/ &&
