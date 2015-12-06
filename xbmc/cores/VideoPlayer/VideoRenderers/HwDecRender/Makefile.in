@@ -15,6 +15,7 @@ SRCS += RendererVTB.cpp
 SRCS += RendererIMX.cpp
 SRCS += RendererOMX.cpp
 SRCS += RendererMediaCodec.cpp
+SRCS += RendererMediaCodecSurface.cpp
 endif
 
 ifeq (@USE_LIBAMCODEC@,1)
