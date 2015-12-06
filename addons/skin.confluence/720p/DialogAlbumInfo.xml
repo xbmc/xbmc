@@ -209,9 +209,15 @@
 							</item>
 							<item>
 								<label>$LOCALIZE[563]:</label>
-								<label2>$INFO[ListItem.Rating]</label2>
+								<label2>$INFO[ListItem.RatingAndVotes]</label2>
 								<onclick>noop</onclick>
-								<visible>!IsEmpty(ListItem.Rating)</visible>
+								<visible>!IsEmpty(ListItem.RatingAndVotes)</visible>
+							</item>
+							<item>
+								<label>$LOCALIZE[38018]:</label>
+								<label2>$INFO[ListItem.Userrating]</label2>
+								<onclick>noop</onclick>
+								<visible>!IsEmpty(ListItem.Userrating)</visible>
 							</item>
 							<item>
 								<label>$LOCALIZE[175]:</label>
@@ -534,6 +540,12 @@
 						<description>Get Fanart</description>
 						<include>ButtonInfoDialogsCommonValues</include>
 						<label>20413</label>
+					</control>
+					<control type="button" id="7">
+						<description>Set my rating</description>
+						<include>ButtonInfoDialogsCommonValues</include>
+						<label>38023</label>
+						<visible>Container.Content(Albums) + Control.IsEnabled(7)</visible>
 					</control>
 				</control>
 			</control>

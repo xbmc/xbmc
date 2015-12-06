@@ -74,7 +74,9 @@ CSong::CSong(CFileItem& item)
   strComment = tag.GetComment();
   strCueSheet = tag.GetCueSheet();
   strMood = tag.GetMood();
-  rating = tag.GetUserrating();
+  rating = tag.GetRating();
+  userrating = tag.GetUserrating();
+  votes = tag.GetVotes();
   iYear = stTime.wYear;
   iTrack = tag.GetTrackAndDiscNumber();
   iDuration = tag.GetDuration();
@@ -123,6 +125,8 @@ void CSong::Serialize(CVariant& value) const
   value["comment"] = strComment;
   value["mood"] = strMood;
   value["rating"] = rating;
+  value["userrating"] = userrating;
+  value["votes"] = votes;
   value["timesplayed"] = iTimesPlayed;
   value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDateTime() : "";
   value["dateadded"] = dateAdded.IsValid() ? dateAdded.GetAsDBDateTime() : "";
@@ -140,7 +144,9 @@ void CSong::Clear()
   strMusicBrainzTrackID.clear();
   strComment.clear();
   strMood.clear();
-  rating = '0';
+  rating = 0;
+  userrating = 0;
+  votes = 0;
   iTrack = 0;
   iDuration = 0;
   iYear = 0;

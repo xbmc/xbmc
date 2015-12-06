@@ -144,7 +144,9 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
   strType = source.strType;
 //  strPath = source.strPath; // don't merge the path
   m_strDateOfRelease = source.m_strDateOfRelease;
-  iRating = source.iRating;
+  fRating = source.fRating;
+  iUserrating = source.iUserrating;
+  iVotes = source.iVotes;
   if (override)
   {
     artistCredits = source.artistCredits;
@@ -307,8 +309,21 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
       rating *= (5.f / max_rating); // Normalise the Rating to between 0 and 5 
     if (rating > 5.f)
       rating = 5.f;
-    iRating = MathUtils::round_int(rating);
+    fRating = rating;
   }
+  const TiXmlElement* userrating = album->FirstChildElement("userrating");
+  if (userrating)
+  {
+    float rating = 0;
+    float max_rating = 10;
+    XMLUtils::GetFloat(album, "userrating", rating);
+    if (userrating->QueryFloatAttribute("max", &max_rating) == TIXML_SUCCESS && max_rating >= 1)
+      rating *= (5.f / max_rating); // Normalise the Rating to between 0 and 10 
+    if (rating > 5.f)
+      rating = 5.f;
+    iUserrating = MathUtils::round_int(rating);
+  }
+  XMLUtils::GetInt(album, "votes", iVotes);
 
   size_t iThumbCount = thumbURL.m_url.size();
   std::string xmlAdd = thumbURL.m_xml;
@@ -460,7 +475,9 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
   }
   XMLUtils::SetString(album,        "path", strPath);
 
-  XMLUtils::SetInt(album,         "rating", iRating);
+  XMLUtils::SetFloat(album,         "rating", fRating);
+  XMLUtils::SetInt(album,           "userrating", iUserrating);
+  XMLUtils::SetInt(album,           "votes", iVotes);
   XMLUtils::SetInt(album,           "year", iYear);
 
   for( VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin();artistCredit != artistCredits.end();++artistCredit)

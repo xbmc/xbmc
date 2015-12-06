@@ -73,7 +73,9 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldReview) return "albumview.strReview";
     else if (field == FieldMusicLabel) return "albumview.strLabel";
     else if (field == FieldAlbumType) return "albumview.strType";
-    else if (field == FieldRating) return "albumview.iRating";
+    else if (field == FieldRating) return "albumview.fRating";
+    else if (field == FieldVotes) return "albumview.iVotes";
+    else if (field == FieldUserRating) return "albumview.iUserrating";
     else if (field == FieldDateAdded) return "albumview.dateAdded";
     else if (field == FieldPlaycount) return "albumview.iTimesPlayed";
   }
@@ -90,6 +92,8 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldEndOffset) return "songview.iEndOffset";
     else if (field == FieldLastPlayed) return "songview.lastPlayed";
     else if (field == FieldRating) return "songview.rating";
+    else if (field == FieldVotes) return "songview.votes";
+    else if (field == FieldUserRating) return "songview.userrating";
     else if (field == FieldComment) return "songview.comment";
     else if (field == FieldMoods) return "songview.mood";
     else if (field == FieldAlbum) return "songview.strAlbum";
@@ -491,7 +495,9 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldReview) return CMusicDatabase::album_strReview;
     else if (field == FieldMusicLabel) return CMusicDatabase::album_strLabel;
     else if (field == FieldAlbumType) return CMusicDatabase::album_strType;
-    else if (field == FieldRating) return CMusicDatabase::album_iRating;
+    else if (field == FieldRating) return CMusicDatabase::album_fRating;
+    else if (field == FieldVotes) return CMusicDatabase::album_iVotes;
+    else if (field == FieldUserRating) return CMusicDatabase::album_iUserrating;
     else if (field == FieldPlaycount) return CMusicDatabase::album_iTimesPlayed;
     else if (field == FieldDateAdded) return CMusicDatabase::album_dtDateAdded;
   }
@@ -507,7 +513,9 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldStartOffset) return CMusicDatabase::song_iStartOffset;
     else if (field == FieldEndOffset) return CMusicDatabase::song_iEndOffset;
     else if (field == FieldLastPlayed) return CMusicDatabase::song_lastplayed;
-    else if (field == FieldRating) return CMusicDatabase::song_userrating;
+    else if (field == FieldRating) return CMusicDatabase::song_rating;
+    else if (field == FieldUserRating) return CMusicDatabase::song_userrating;
+    else if (field == FieldVotes) return CMusicDatabase::song_votes;
     else if (field == FieldComment) return CMusicDatabase::song_comment;
     else if (field == FieldMoods) return CMusicDatabase::song_mood;
     else if (field == FieldAlbum) return CMusicDatabase::song_strAlbum;

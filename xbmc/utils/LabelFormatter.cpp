@@ -250,8 +250,8 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
       value = item->m_dateTime.GetAsLocalizedTime("", false);
     break;
   case 'R': // rating
-    if (music && music->GetUserrating() != '0')
-      value.assign(1, music->GetUserrating());
+    if (music && music->GetRating() != 0.f)
+      value = StringUtils::Format("%.1f", music->GetRating());
     else if (movie && movie->m_fRating != 0.f)
       value = StringUtils::Format("%.1f", movie->m_fRating);
     break;
@@ -336,6 +336,8 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
   case 'r': // userrating
     if (movie && movie->m_iUserRating != 0)
       value = StringUtils::Format("%i", movie->m_iUserRating);
+    if (music && music->GetUserrating() != 0)
+      value = StringUtils::Format("%i", music->GetUserrating());
     break;
   case 't': // Date Taken
     if (pic && pic->GetDateTimeTaken().IsValid())
@@ -439,6 +441,9 @@ void CLabelFormatter::FillMusicMaskContent(const char mask, const std::string &v
     tag->SetDuration(StringUtils::TimeStringToSeconds(value));
     break;
   case 'R': // rating
+    tag->SetRating(value[0]);
+    break;
+  case 'r': // userrating
     tag->SetUserrating(value[0]);
     break;
   }

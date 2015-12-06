@@ -2191,16 +2191,16 @@ bool CApplication::OnAction(const CAction &action)
     if (tag)
     {
       *m_itemCurrentFile->GetMusicInfoTag() = *tag;
-      char rating = tag->GetUserrating();
+      int userrating = tag->GetUserrating();
       bool needsUpdate(false);
-      if (rating > '0' && action.GetID() == ACTION_DECREASE_RATING)
+      if (userrating > 0 && action.GetID() == ACTION_DECREASE_RATING)
       {
-        m_itemCurrentFile->GetMusicInfoTag()->SetUserrating(rating - 1);
+        m_itemCurrentFile->GetMusicInfoTag()->SetUserrating(userrating - 1);
         needsUpdate = true;
       }
-      else if (rating < '5' && action.GetID() == ACTION_INCREASE_RATING)
+      else if (userrating < 10 && action.GetID() == ACTION_INCREASE_RATING)
       {
-        m_itemCurrentFile->GetMusicInfoTag()->SetUserrating(rating + 1);
+        m_itemCurrentFile->GetMusicInfoTag()->SetUserrating(userrating + 1);
         needsUpdate = true;
       }
       if (needsUpdate)

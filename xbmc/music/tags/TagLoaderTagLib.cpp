@@ -177,7 +177,7 @@ bool CTagLoaderTagLib::ParseTag(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
   return true;
 }
 
-char CTagLoaderTagLib::POPMtoXBMC(int popm)
+int CTagLoaderTagLib::POPMtoXBMC(int popm)
 {
   // Ratings:
   // FROM: http://thiagoarrais.com/repos/banshee/src/Core/Banshee.Core/Banshee.Streaming/StreamRatingTagger.cs
@@ -190,12 +190,17 @@ char CTagLoaderTagLib::POPMtoXBMC(int popm)
   // Quod Libet: "quodlibet@lists.sacredchao.net" ratings
   //   (but that email can be changed):
   //   arbitrary scale from 0-255
-  if (popm == 0) return '0';
-  if (popm < 0x40) return '1';
-  if (popm < 0x80) return '2';
-  if (popm < 0xc0) return '3';
-  if (popm < 0xff) return '4';
-  return '5';
+  if (popm == 0) return 0;
+  if (popm < 0x19) return 1;
+  if (popm < 0x32) return 2;
+  if (popm < 0x4b) return 3;
+  if (popm < 0x64) return 4;
+  if (popm < 0x7d) return 5;
+  if (popm < 0x96) return 6;
+  if (popm < 0xaf) return 7;
+  if (popm < 0xc8) return 8;
+  if (popm < 0xe1) return 9;
+  else return 10;
 }
 
 template<>
@@ -342,8 +347,8 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, MUSIC_INFO::EmbeddedArt *art,
 
         // @xbmc.org ratings trump others (of course)
         if      (popFrame->email() == "ratings@xbmc.org")
-          tag.SetUserrating(popFrame->rating() / 51 + '0');
-        else if (tag.GetUserrating() == '0')
+          tag.SetUserrating(popFrame->rating() / 51); //TODO wtf? Why 51 find some explanation, somewhere...
+        else if (tag.GetUserrating() == 0)
         {
           if (popFrame->email() != "Windows Media Player 9 Series" &&
               popFrame->email() != "Banshee" &&
@@ -517,9 +522,9 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
       // http://forums.winamp.com/showthread.php?t=324512
       // The most common standard in that thread seems to be a 0-100 scale for 1-5 stars.
       // So, that's what we'll support for now.
-      int iRating = it->second.front().toInt();
-      if (iRating > 0 && iRating <= 100)
-        tag.SetUserrating((iRating / 20) + '0');
+      int iUserrating = it->second.front().toInt();
+      if (iUserrating > 0 && iUserrating <= 100)
+        tag.SetUserrating((iUserrating / 10));
     }
     else if (it->first == "METADATA_BLOCK_PICTURE")
     {
