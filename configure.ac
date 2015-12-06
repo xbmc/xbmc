@@ -911,9 +911,6 @@ AC_CHECK_TYPES([char16_t, char32_t])
 AC_CHECK_SIZEOF([wchar_t])
 AC_LANG_POP([C++])
 
-# Add top source directory for all builds so we can use config.h
-INCLUDES="-I\$(abs_top_srcdir) $INCLUDES" 
-
 # Check inotify availability
 AC_CHECK_HEADER([sys/inotify.h], AC_DEFINE([HAVE_INOTIFY],[1],[Define if we have inotify]),)
 
