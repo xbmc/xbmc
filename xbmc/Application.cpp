@@ -1492,14 +1492,6 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
     }
   }
 #endif
-#if defined(TARGET_ANDROID)
-  // TODO:Handle stf removed
-  if (setting->GetId( == CSettings::SETTING_VIDEOPLAYER_USESTAGEFRIGHT)
-  {
-    CSettingBool *usestagefright = (CSettingBool*)setting;
-    return usestagefright->SetValue(false);
-  }
-#endif
 #if defined(TARGET_DARWIN_OSX)
   if (setting->GetId() == CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE)
   {
