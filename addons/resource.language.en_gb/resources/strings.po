@@ -9259,12 +9259,17 @@ msgctxt "#19185"
 msgid "Clear data"
 msgstr ""
 
+#: xbmc/pvr/PVRManager.cpp
 msgctxt "#19186"
 msgid "All your TV related data (channels, groups, guide) will be cleared. Are you sure?"
 msgstr ""
 
-#empty string with id 19187
+#: xbmc/pvr/PVRManager.cpp
+msgctxt "#19187"
+msgid "Clearing all related data."
+msgstr ""
 
+#: xbmc/pvr/PVRManager.cpp
 msgctxt "#19188"
 msgid "All your guide data will be cleared. Are you sure?"
 msgstr ""
