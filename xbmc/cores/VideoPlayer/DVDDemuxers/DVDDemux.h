@@ -65,7 +65,7 @@ enum StreamSource {
   STREAM_SOURCE_VIDEOMUX      = 0x500
 };
 
-#define STREAM_SOURCE_MASK(a) ((a) & 0xf00)
+//#define STREAM_SOURCE_MASK(a) ((a) & 0xf00)
 
 /*
  * CDemuxStream
