@@ -337,26 +337,54 @@ void CFileCache::Process()
       iRead = m_source.Read(buffer.get(), maxWrite);
     if (iRead == 0)
     {
-      CLog::Log(LOGINFO, "CFileCache::Process - Hit eof.");
-      m_pCache->EndOfInput();
-
-      // The thread event will now also cause the wait of an event to return a false.
-      if (AbortableWait(m_seekEvent) == WAIT_SIGNALED)
+      // Check for actual EOF and retry as long as we still have data in our cache
+      if (m_writePos < m_fileSize && m_pCache->WaitForData(0, 0) > 0)
       {
-        m_pCache->ClearEndOfInput();
-        m_seekEvent.Set(); // hack so that later we realize seek is needed
+        CLog::Log(LOGDEBUG, "CFileCache::Process - Source read didn't return any data! Will retry.");
+
+        // Wait a bit:
+        if (m_seekEvent.WaitMSec(2000))
+          m_seekEvent.Set(); // hack so that later we realize seek is needed
+
+        // and retry:
+        continue; // while (!m_bStop)
       }
       else
-        break;
-    }
-    else if (iRead < 0)
-      m_bStop = true;
+      {
+        CLog::Log(LOGINFO, "CFileCache::Process - Source read didn't return any data! Hit eof(?)");
 
-    int iTotalWrite=0;
+        m_pCache->EndOfInput();
+
+        // The thread event will now also cause the wait of an event to return a false.
+        if (AbortableWait(m_seekEvent) == WAIT_SIGNALED)
+        {
+          m_pCache->ClearEndOfInput();
+          m_seekEvent.Set(); // hack so that later we realize seek is needed
+        }
+        else
+          break; // while (!m_bStop)
+      }
+    }
+    else if (iRead < 0) // Fatal error
+    {
+      CLog::Log(LOGDEBUG, "CFileCache::Process - Source read returned a fatal error! Will wait for buffer to empty.");
+
+      while (m_pCache->WaitForData(0, 0) > 0)
+      {
+        if (m_seekEvent.WaitMSec(100))
+        {
+          break;
+        }
+      }
+
+      break; // while (!m_bStop)
+    }
+
+    int iTotalWrite = 0;
     while (!m_bStop && (iTotalWrite < iRead))
     {
       int iWrite = 0;
-      iWrite = m_pCache->WriteToCache(buffer.get()+iTotalWrite, iRead - iTotalWrite);
+      iWrite = m_pCache->WriteToCache(buffer.get() + iTotalWrite, iRead - iTotalWrite);
 
       // write should always work. all handling of buffering and errors should be
       // done inside the cache strategy. only if unrecoverable error happened, WriteToCache would return error and we break.
