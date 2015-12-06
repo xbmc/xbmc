@@ -123,6 +123,7 @@ namespace XFILE
           bool            m_bFirstLoop;
           bool            m_isPaused;
           bool            m_sendRange;
+          bool            m_bLastError;
 
           char*           m_readBuffer;
 
@@ -141,7 +142,7 @@ namespace XFILE
           bool         Seek(int64_t pos);
           ssize_t      Read(void* lpBuf, size_t uiBufSize);
           bool         ReadString(char *szLine, int iLineLength);
-          bool         FillBuffer(unsigned int want);
+          int8_t       FillBuffer(unsigned int want);
           void         SetReadBuffer(const void* lpBuf, int64_t uiBufSize);
 
           void         SetResume(void);
