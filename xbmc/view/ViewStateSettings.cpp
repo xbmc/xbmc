@@ -42,7 +42,7 @@
 
 CViewStateSettings::CViewStateSettings()
   : m_settingLevel(SettingLevelStandard),
-    m_eventLevel(EventLevelBasic),
+    m_eventLevel(EventLevel::Basic),
     m_eventShowHigherLevels(true)
 {
   AddViewState("musicnavartists");
@@ -134,10 +134,10 @@ bool CViewStateSettings::Load(const TiXmlNode *settings)
     if (pEventLogNode != NULL)
     {
       int eventLevel;
-      if (XMLUtils::GetInt(pEventLogNode, XML_EVENTLOG_LEVEL, eventLevel, (const int)EventLevelBasic, (const int)EventLevelError))
+      if (XMLUtils::GetInt(pEventLogNode, XML_EVENTLOG_LEVEL, eventLevel, (const int)EventLevel::Basic, (const int)EventLevel::Error))
         m_eventLevel = (EventLevel)eventLevel;
       else
-        m_eventLevel = EventLevelBasic;
+        m_eventLevel = EventLevel::Basic;
 
       if (!XMLUtils::GetBoolean(pEventLogNode, XML_EVENTLOG_LEVEL_HIGHER, m_eventShowHigherLevels))
         m_eventShowHigherLevels = true;
@@ -251,10 +251,10 @@ SettingLevel CViewStateSettings::GetNextSettingLevel() const
 
 void CViewStateSettings::SetEventLevel(EventLevel eventLevel)
 {
-  if (eventLevel < EventLevelBasic)
-    m_eventLevel = EventLevelBasic;
-  if (eventLevel > EventLevelError)
-    m_eventLevel = EventLevelError;
+  if (eventLevel < EventLevel::Basic)
+    m_eventLevel = EventLevel::Basic;
+  if (eventLevel > EventLevel::Error)
+    m_eventLevel = EventLevel::Error;
   else
     m_eventLevel = eventLevel;
 }
@@ -267,8 +267,8 @@ void CViewStateSettings::CycleEventLevel()
 EventLevel CViewStateSettings::GetNextEventLevel() const
 {
   EventLevel level = (EventLevel)((int)m_eventLevel + 1);
-  if (level > EventLevelError)
-    level = EventLevelBasic;
+  if (level > EventLevel::Error)
+    level = EventLevel::Basic;
   return level;
 }
 
