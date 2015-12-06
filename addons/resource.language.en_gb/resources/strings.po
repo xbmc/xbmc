@@ -18119,3 +18119,13 @@ msgstr ""
 msgctxt "#38023"
 msgid "Set my rating"
 msgstr ""
+
+#: \xbmc\settings\dialogs\GUIDialogContentSettings.cpp
+msgctxt "#38024"
+msgid "Information provider selection"
+msgstr ""
+
+#: \xbmc\settings\dialogs\GUIDialogContentSettings.cpp
+msgctxt "#38025"
+msgid "Choose information provider"
+msgstr ""

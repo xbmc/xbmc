@@ -3,7 +3,7 @@
 	<defaultcontrol always="true">20</defaultcontrol>
 	<coordinates>
 		<left>240</left>
-		<top>20</top>
+		<top>90</top>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
@@ -11,207 +11,47 @@
 			<animation effect="fade" start="100" end="0" time="150" condition="Window.IsActive(AddonSettings)">Conditional</animation>
 			<include name="DialogBackgroundCommons">
 				<param name="DialogBackgroundWidth" value="800" />
-				<param name="DialogBackgroundHeight" value="680" />
+				<param name="DialogBackgroundHeight" value="535" />
 				<param name="DialogHeaderWidth" value="720" />
 				<param name="DialogHeaderLabel" value="$LOCALIZE[20333]" />
 				<param name="DialogHeaderId" value="1" />
 				<param name="CloseButtonLeft" value="710" />
 				<param name="CloseButtonNav" value="10" />
 			</include>
-			<control type="label">
-				<description>Content Picker Header</description>
-				<left>30</left>
-				<top>60</top>
-				<width>320</width>
-				<height>40</height>
-				<font>font12</font>
-				<label>$LOCALIZE[20344]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<textcolor>blue</textcolor>
-				<shadowcolor>black</shadowcolor>
-			</control>
-			<control type="spincontrolex" id="20">
+			<control type="button" id="20">
 				<description>Content Picker</description>
 				<left>30</left>
-				<top>100</top>
-				<width>320</width>
+				<top>60</top>
+				<width>740</width>
 				<height>40</height>
-				<texturefocus border="5">button-focus.png</texturefocus>
-				<texturenofocus border="5">button-nofocus.png</texturenofocus>
-				<font>-</font>
-				<label>-</label>
-				<reverse>yes</reverse>
 				<onup>28</onup>
-				<ondown>5</ondown>
-				<onleft>60</onleft>
-				<onright>21</onright>
+				<ondown>21</ondown>
+				<font>font13</font>
 			</control>
-			<control type="label">
-				<description>Content Picker label</description>
-				<left>35</left>
-				<top>100</top>
-				<width>280</width>
+			<control type="button" id="21">
+				<description>Information Provider Button</description>
+				<left>30</left>
+				<top>105</top>
+				<width>740</width>
 				<height>40</height>
-				<font>font13_title</font>
-				<label>$INFO[Control.GetLabel(20)]</label>
-				<align>left</align>
-				<aligny>center</aligny>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
+				<onup>20</onup>
+				<ondown>22</ondown>
+				<font>font13</font>
 			</control>
-			<control type="label">
-				<description>Used Scraper Header</description>
+			<control type="button" id="22">
+				<description>Scraper Settings Button</description>
 				<left>30</left>
 				<top>150</top>
-				<width>320</width>
-				<height>20</height>
-				<font>font12</font>
-				<label>$LOCALIZE[31312]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<textcolor>blue</textcolor>
-				<shadowcolor>black</shadowcolor>
-			</control>
-			<control type="image">
-				<description>Used Scraper Image</description>
-				<left>30</left>
-				<top>175</top>
-				<width>320</width>
-				<height>130</height>
-				<aspectratio>keep</aspectratio>
-				<texture>$INFO[ListItem.Icon]</texture>
-			</control>
-			<control type="label">
-				<description>Used Scaper Label</description>
-				<left>30</left>
-				<top>315</top>
-				<width>320</width>
-				<height>30</height>
-				<font>font13</font>
-				<label>[B]$INFO[ListItem.Label][/B]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<textcolor>selected</textcolor>
-				<shadowcolor>black</shadowcolor>
-			</control>
-			<control type="image">
-				<left>370</left>
-				<top>60</top>
-				<width>5</width>
-				<height>280</height>
-				<aspectratio>stretch</aspectratio>
-				<texture>separator_vertical.png</texture>
-			</control>
-			<control type="label">
-				<description>Scraper List Header</description>
-				<left>400</left>
-				<top>60</top>
-				<width>360</width>
+				<width>740</width>
 				<height>40</height>
-				<font>font12</font>
-				<label>$LOCALIZE[31313]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<textcolor>blue</textcolor>
-				<shadowcolor>black</shadowcolor>
-			</control>
-			<control type="list" id="21">
-				<left>400</left>
-				<top>100</top>
-				<width>360</width>
-				<height>241</height>
+				<label>- $LOCALIZE[5]</label>
 				<onup>21</onup>
-				<onleft>20</onleft>
-				<onright>60</onright>
-				<ondown>21</ondown>
-				<pagecontrol>60</pagecontrol>
-				<scrolltime>200</scrolltime>
-				<itemlayout height="45">
-					<control type="image">
-						<left>0</left>
-						<top>0</top>
-						<width>360</width>
-						<height>40</height>
-						<texture border="5">button-nofocus.png</texture>
-					</control>
-					<control type="image">
-						<left>5</left>
-						<top>5</top>
-						<width>35</width>
-						<height>30</height>
-						<texture>$INFO[Listitem.Icon]</texture>
-					</control>
-					<control type="label">
-						<left>50</left>
-						<top>0</top>
-						<width>290</width>
-						<height>40</height>
-						<font>font13</font>
-						<align>left</align>
-						<aligny>center</aligny>
-						<textcolor>grey2</textcolor>
-						<selectedcolor>selected</selectedcolor>
-						<info>ListItem.Label</info>
-					</control>
-				</itemlayout>
-				<focusedlayout height="45">
-					<control type="image">
-						<left>0</left>
-						<top>0</top>
-						<width>360</width>
-						<height>40</height>
-						<visible>!Control.HasFocus(21)</visible>
-						<texture border="5">button-nofocus.png</texture>
-					</control>
-					<control type="image">
-						<left>0</left>
-						<top>0</top>
-						<width>360</width>
-						<height>40</height>
-						<visible>Control.HasFocus(21)</visible>
-						<texture border="5">button-focus2.png</texture>
-					</control>
-					<control type="image">
-						<left>5</left>
-						<top>5</top>
-						<width>35</width>
-						<height>30</height>
-						<texture>$INFO[Listitem.Icon]</texture>
-					</control>
-					<control type="label">
-						<left>50</left>
-						<top>0</top>
-						<width>290</width>
-						<height>40</height>
-						<font>font13</font>
-						<align>left</align>
-						<aligny>center</aligny>
-						<textcolor>white</textcolor>
-						<selectedcolor>selected</selectedcolor>
-						<info>ListItem.Label</info>
-					</control>
-				</focusedlayout>
-			</control>
-			<control type="scrollbar" id="60">
-				<left>760</left>
-				<top>100</top>
-				<width>25</width>
-				<height>240</height>
-				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
-				<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
-				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
-				<textureslidernib>ScrollBarNib.png</textureslidernib>
-				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-				<onleft>21</onleft>
-				<onright>20</onright>
-				<showonepage>true</showonepage>
-				<orientation>vertical</orientation>
+				<ondown>5</ondown>
 			</control>
 			<control type="label">
 				<description>Scanning Options Header</description>
 				<left>30</left>
-				<top>350</top>
+				<top>205</top>
 				<width>740</width>
 				<height>20</height>
 				<font>font12</font>
@@ -224,11 +64,11 @@
 			<control type="grouplist" id="5">
 				<description>control area</description>
 				<left>30</left>
-				<top>380</top>
+				<top>235</top>
 				<width>740</width>
 				<height>220</height>
 				<itemgap>4</itemgap>
-				<onup>20</onup>
+				<onup>22</onup>
 				<ondown>28</ondown>
 				<onleft>5</onleft>
 				<onright>5</onright>
@@ -250,10 +90,10 @@
 				<texturefocus border="5">button-focus2.png</texturefocus>
 			</control>
 			<control type="group" id="9001">
-				<top>615</top>
+				<top>470</top>
 				<control type="button" id="28">
 					<description>OK Button</description>
-					<left>300</left>
+					<left>195</left>
 					<top>0</top>
 					<width>200</width>
 					<height>40</height>
@@ -261,14 +101,14 @@
 					<aligny>center</aligny>
 					<font>font12_title</font>
 					<label>186</label>
-					<onleft>22</onleft>
+					<onleft>29</onleft>
 					<onright>29</onright>
 					<onup>5</onup>
 					<ondown>20</ondown>
 				</control>
 				<control type="button" id="29">
 					<description>Cancel Button</description>
-					<left>510</left>
+					<left>405</left>
 					<top>0</top>
 					<width>200</width>
 					<height>40</height>
@@ -277,21 +117,6 @@
 					<font>font12_title</font>
 					<label>222</label>
 					<onleft>28</onleft>
-					<onright>22</onright>
-					<onup>5</onup>
-					<ondown>20</ondown>
-				</control>
-				<control type="button" id="22">
-					<description>Settings Button</description>
-					<left>90</left>
-					<top>0</top>
-					<width>200</width>
-					<height>40</height>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font12_title</font>
-					<label>5</label>
-					<onleft>29</onleft>
 					<onright>28</onright>
 					<onup>5</onup>
 					<ondown>20</ondown>
