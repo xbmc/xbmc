@@ -459,9 +459,9 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
   if ((m_flags & SCAN_RESCAN) || !m_musicDatabase.GetPathHash(strDirectory, dbHash) || dbHash != hash)
   { // path has changed - rescan
     if (dbHash.empty())
-      CLog::Log(LOGDEBUG, "%s Scanning dir '%s' as not in the database", __FUNCTION__, strDirectory.c_str());
+      CLog::Log(LOGDEBUG, "%s Scanning dir '%s' as not in the database", __FUNCTION__, CURL::GetRedacted(strDirectory).c_str());
     else
-      CLog::Log(LOGDEBUG, "%s Rescanning dir '%s' due to change", __FUNCTION__, strDirectory.c_str());
+      CLog::Log(LOGDEBUG, "%s Rescanning dir '%s' due to change", __FUNCTION__, CURL::GetRedacted(strDirectory).c_str());
 
     // filter items in the sub dir (for .cue sheet support)
     items.FilterCueItems();
@@ -479,7 +479,7 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
   }
   else
   { // path is the same - no need to rescan
-    CLog::Log(LOGDEBUG, "%s Skipping dir '%s' due to no change", __FUNCTION__, strDirectory.c_str());
+    CLog::Log(LOGDEBUG, "%s Skipping dir '%s' due to no change", __FUNCTION__, CURL::GetRedacted(strDirectory).c_str());
     m_currentItem += CountFiles(items, false);  // false for non-recursive
 
     // updated the dialog with our progress
@@ -1072,7 +1072,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
   CNfoFile nfoReader;
   if (XFILE::CFile::Exists(strNfo))
   {
-    CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
+    CLog::Log(LOGDEBUG,"Found matching nfo file: %s", CURL::GetRedacted(strNfo).c_str());
     result = nfoReader.Create(strNfo, info);
     if (result == CNfoFile::FULL_NFO)
     {
@@ -1293,7 +1293,7 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, const ADDO
   CNfoFile nfoReader;
   if (XFILE::CFile::Exists(strNfo))
   {
-    CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
+    CLog::Log(LOGDEBUG,"Found matching nfo file: %s", CURL::GetRedacted(strNfo).c_str());
     result = nfoReader.Create(strNfo, info);
     if (result == CNfoFile::FULL_NFO)
     {
