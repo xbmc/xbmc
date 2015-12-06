@@ -68,6 +68,7 @@
 
 #if defined(TARGET_ANDROID)
 #include "HwDecRender/RendererMediaCodec.h"
+#include "HwDecRender/RendererMediaCodecSurface.h"
 #endif
 
 #include "RenderCapture.h"
@@ -138,6 +139,7 @@ static std::string GetRenderFormatName(ERenderFormat format)
     case RENDER_FMT_CVBREF:    return "BGRA";
     case RENDER_FMT_BYPASS:    return "BYPASS";
     case RENDER_FMT_MEDIACODEC:return "MEDIACODEC";
+    case RENDER_FMT_MEDIACODECSURFACE:return "MEDIACODECSURFACE";
     case RENDER_FMT_IMXMAP:    return "IMXMAP";
     case RENDER_FMT_MMAL:      return "MMAL";
     case RENDER_FMT_AML:       return "AMLCODEC";
@@ -674,6 +676,12 @@ void CRenderManager::CreateRenderer()
       m_pRenderer = new CRendererMediaCodec;
 #endif
     }
+    else if (m_format == RENDER_FMT_MEDIACODECSURFACE)
+    {
+#if defined(TARGET_ANDROID)
+      m_pRenderer = new CRendererMediaCodecSurface;
+#endif
+    }
     else if (m_format == RENDER_FMT_MMAL)
     {
 #if defined(HAS_MMAL)
@@ -1202,6 +1210,7 @@ int CRenderManager::AddVideoPicture(DVDVideoPicture& pic)
        || pic.format == RENDER_FMT_VAAPI
        || pic.format == RENDER_FMT_VAAPINV12
        || pic.format == RENDER_FMT_MEDIACODEC
+       || pic.format == RENDER_FMT_MEDIACODECSURFACE
        || pic.format == RENDER_FMT_IMXMAP
        || pic.format == RENDER_FMT_MMAL)
     m_pRenderer->AddVideoPictureHW(pic, index);

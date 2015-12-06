@@ -783,7 +783,7 @@ bool CLinuxRendererGLES::UploadTexture(int index)
 void CLinuxRendererGLES::Render(DWORD flags, int index)
 {
   // If rendered directly by the hardware
-  if (m_renderMethod & RENDER_BYPASS || m_renderMethod & RENDER_MEDIACODECSURFACE)
+  if (m_renderMethod & RENDER_BYPASS)
     return;
 
   // obtain current field, if interlaced
@@ -1196,7 +1196,7 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
     return false;
 
   // If rendered directly by the hardware
-  if (m_renderMethod & RENDER_BYPASS || m_renderMethod & RENDER_MEDIACODECSURFACE)
+  if (m_renderMethod & RENDER_BYPASS)
   {
     capture->BeginRender();
     capture->EndRender();
