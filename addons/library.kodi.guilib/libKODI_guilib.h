@@ -35,7 +35,7 @@ typedef void* GUIHANDLE;
 #define GUI_HELPER_DLL "/library.kodi.guilib/" GUI_HELPER_DLL_NAME
 #endif
 
-/* current ADDONGUI API version */
+/* current ADDONGUI API version. Note: Do NOT confuse this with the XBMCGUI API */
 #define KODI_GUILIB_API_VERSION "5.8.0"
 
 /* min. ADDONGUI API version */
