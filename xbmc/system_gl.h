@@ -37,8 +37,8 @@
   #elif defined(TARGET_FREEBSD)
     #include <GL/gl.h>
   #elif defined(TARGET_DARWIN)
-    #include <GL/glew.h>
     #include <OpenGL/gl.h>
+    #include <OpenGL/glu.h>
     #include <OpenGL/glext.h>
   #endif
 #elif HAS_GLES == 2
