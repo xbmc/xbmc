@@ -46,12 +46,6 @@
     <Filter Include="cores\DllLoader\exports\util">
       <UniqueIdentifier>{111c81df-dc5e-4b93-a21f-c2171434952b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cores\VideoRenderers">
-      <UniqueIdentifier>{09e513b1-adc6-4af0-b0f3-966b8240fad5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="cores\VideoRenderers\Shaders">
-      <UniqueIdentifier>{041be182-9ec3-4c1b-abfc-d92f6802e7ca}</UniqueIdentifier>
-    </Filter>
     <Filter Include="cores\ExternalPlayer">
       <UniqueIdentifier>{f98cb00a-d64b-4af9-a386-78bb2be8213d}</UniqueIdentifier>
     </Filter>
@@ -367,6 +361,15 @@
     <Filter Include="interfaces\builtins">
       <UniqueIdentifier>{248ffbc4-43f5-4aaf-b259-2dd4f840fcef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="cores\VideoPlayer\VideoRenderers">
+      <UniqueIdentifier>{218ad38b-7c2e-45f4-a7cc-c337e0365386}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\VideoPlayer\VideoRenderers\HwDecRender">
+      <UniqueIdentifier>{6571cd13-5b1a-4bbb-bd72-80f4b4432818}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\VideoPlayer\VideoRenderers\VideoShaders">
+      <UniqueIdentifier>{0dde0eba-c702-41fb-92a8-38cc21839a62}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -406,9 +409,6 @@
       <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDOverlayContainer.cpp">
-      <Filter>cores\VideoPlayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDOverlayRenderer.cpp">
       <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoPlayer.cpp">
@@ -600,36 +600,6 @@
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\util\EmuFileWrapper.cpp">
       <Filter>cores\DllLoader\exports\util</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\BaseRenderer.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRenderer.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererDX.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererUtil.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderFlags.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderManager.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\WinRenderer.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\DXVAHD.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\ConvolutionKernels.cpp">
-      <Filter>cores\VideoRenderers\Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\YUV2RGBShader.cpp">
-      <Filter>cores\VideoRenderers\Shaders</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.cpp">
       <Filter>cores\ExternalPlayer</Filter>
     </ClCompile>
@@ -779,9 +749,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\PluginSource.cpp">
       <Filter>addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.cpp">
-      <Filter>cores\VideoRenderers\Shaders</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleTagMicroDVD.cpp">
       <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
@@ -1704,9 +1671,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\PVRManager.cpp">
       <Filter>pvr</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.cpp">
-      <Filter>cores\VideoRenderers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\windows\GUIViewStatePVR.cpp">
       <Filter>pvr\windows</Filter>
@@ -2833,9 +2797,6 @@
     <ClCompile Include="..\..\xbmc\utils\CharsetDetection.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererGUI.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\SettingsOperations.cpp">
       <Filter>interfaces\json-rpc</Filter>
     </ClCompile>
@@ -3228,6 +3189,48 @@
     <ClCompile Include="..\..\xbmc\pvr\PVRSettings.cpp">
       <Filter>pvr</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\BaseRenderer.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRenderer.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRendererDX.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRendererGUI.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRendererUtil.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\RenderCapture.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\RenderFlags.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\RenderManager.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\WinRenderer.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\HwDecRender\DXVAHD.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers\HwDecRender</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\VideoShaders\WinVideoFilter.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers\VideoShaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\Resolution.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\VideoShaders\ConvolutionKernels.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers\VideoShaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\VideoShaders\YUV2RGBShader.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers\VideoShaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -3270,9 +3273,6 @@
       <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDOverlayContainer.h">
-      <Filter>cores\VideoPlayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDOverlayRenderer.h">
       <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoPlayer.h">
@@ -3542,36 +3542,6 @@
     <ClInclude Include="..\..\xbmc\cores\DllLoader\exports\util\EmuFileWrapper.h">
       <Filter>cores\DllLoader\exports\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\BaseRenderer.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRenderer.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererDX.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererUtil.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\RenderFlags.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\RenderManager.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\WinRenderer.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\DXVAHD.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\ConvolutionKernels.h">
-      <Filter>cores\VideoRenderers\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\YUV2RGBShader.h">
-      <Filter>cores\VideoRenderers\Shaders</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.h">
       <Filter>cores\ExternalPlayer</Filter>
     </ClInclude>
@@ -3733,9 +3703,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\PluginSource.h">
       <Filter>addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.h">
-      <Filter>cores\VideoRenderers\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleTagMicroDVD.h">
       <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
@@ -4749,9 +4716,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\PVRManager.h">
       <Filter>pvr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.h">
-      <Filter>cores\VideoRenderers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRTimers.h">
       <Filter>pvr\windows</Filter>
@@ -5832,9 +5796,6 @@
     <ClInclude Include="..\..\xbmc\utils\CharsetDetection.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererGUI.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\SettingsOperations.h">
       <Filter>interfaces\json-rpc</Filter>
     </ClInclude>
@@ -6264,6 +6225,48 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\DispResource.h">
       <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\BaseRenderer.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRenderer.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRendererDX.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRendererGUI.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRendererUtil.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\RenderCapture.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\RenderFlags.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\RenderFormats.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\RenderManager.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\WinRenderer.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\HwDecRender\DXVAHD.h">
+      <Filter>cores\VideoPlayer\VideoRenderers\HwDecRender</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\VideoShaders\WinVideoFilter.h">
+      <Filter>cores\VideoPlayer\VideoRenderers\VideoShaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\VideoShaders\ConvolutionKernels.h">
+      <Filter>cores\VideoPlayer\VideoRenderers\VideoShaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\VideoShaders\YUV2RGBShader.h">
+      <Filter>cores\VideoPlayer\VideoRenderers\VideoShaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
