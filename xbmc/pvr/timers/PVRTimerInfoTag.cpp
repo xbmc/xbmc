@@ -857,18 +857,6 @@ std::string CPVRTimerInfoTag::GetDeletedNotificationText() const
   return StringUtils::Format("%s: '%s'", g_localizeStrings.Get(stringID).c_str(), m_strTitle.c_str());
 }
 
-void CPVRTimerInfoTag::QueueNotification(void) const
-{
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS))
-  {
-    std::string strMessage;
-    GetNotificationText(strMessage);
-
-    if (!strMessage.empty())
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(19166), strMessage);
-  }
-}
-
 CEpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(void) const
 {
   return m_epgTag;

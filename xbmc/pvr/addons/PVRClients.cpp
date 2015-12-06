@@ -252,12 +252,32 @@ bool CPVRClients::HasConnectedClients(void) const
   return false;
 }
 
-bool CPVRClients::GetClientName(int iClientId, std::string &strName) const
+bool CPVRClients::GetClientFriendlyName(int iClientId, std::string &strName) const
 {
   bool bReturn(false);
   PVR_CLIENT client;
   if ((bReturn = GetConnectedClient(iClientId, client)) == true)
     strName = client->GetFriendlyName();
+
+  return bReturn;
+}
+
+bool CPVRClients::GetClientAddonName(int iClientId, std::string &strName) const
+{
+  bool bReturn(false);
+  PVR_CLIENT client;
+  if ((bReturn = GetConnectedClient(iClientId, client)) == true)
+    strName = client->Name();
+
+  return bReturn;
+}
+
+bool CPVRClients::GetClientAddonIcon(int iClientId, std::string &strIcon) const
+{
+  bool bReturn(false);
+  PVR_CLIENT client;
+  if ((bReturn = GetConnectedClient(iClientId, client)) == true)
+    strIcon = client->Icon();
 
   return bReturn;
 }
