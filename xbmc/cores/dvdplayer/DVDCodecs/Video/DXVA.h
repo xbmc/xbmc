@@ -141,7 +141,7 @@ class CDecoder
 public:
   CDecoder();
  ~CDecoder();
-  virtual bool Open      (AVCodecContext* avctx, AVCodecContext* mainctx, const enum PixelFormat, unsigned int surfaces);
+  virtual bool Open      (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces);
   virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
   virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
   virtual int  Check     (AVCodecContext* avctx);
@@ -154,7 +154,7 @@ public:
   int   GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
   void  RelBuffer(uint8_t *data);
 
-  static bool      Supports(enum PixelFormat fmt);
+  static bool      Supports(enum AVPixelFormat fmt);
 
   void CloseDXVADecoder();
 

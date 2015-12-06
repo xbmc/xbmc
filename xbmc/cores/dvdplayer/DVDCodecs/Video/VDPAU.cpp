@@ -486,7 +486,7 @@ CDecoder::CDecoder() : m_vdpauOutput(&m_inMsgEvent)
   m_vdpauConfig.context = 0;
 }
 
-bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum PixelFormat fmt, unsigned int surfaces)
+bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat fmt, unsigned int surfaces)
 {
   // check if user wants to decode this format with VDPAU
   std::string gpuvendor = g_Windowing.GetRenderVendor();
@@ -760,7 +760,7 @@ int CDecoder::Check(AVCodecContext* avctx)
   return 0;
 }
 
-bool CDecoder::IsVDPAUFormat(PixelFormat format)
+bool CDecoder::IsVDPAUFormat(AVPixelFormat format)
 {
   if (format == AV_PIX_FMT_VDPAU)
     return true;
