@@ -113,17 +113,6 @@ bool CRenderSystemGL::InitRenderSystem()
   m_maxTextureSize = 2048;
   m_renderCaps = 0;
 
-#if defined(TARGET_DARWIN)
-  // init glew library
-  GLenum err = glewInit();
-  if (GLEW_OK != err)
-  {
-    // Problem: glewInit failed, something is seriously wrong
-    CLog::Log(LOGERROR, "InitRenderSystem() glewInit returned %i: %s", err, glewGetErrorString(err));
-    return false;
-  }
-#endif
-
   m_RenderExtensions  = " ";
   m_RenderExtensions += (const char*) glGetString(GL_EXTENSIONS);
   m_RenderExtensions += " ";
