@@ -47,6 +47,7 @@ public:
   static CJNIIntent getIntent();
   static CJNIClassLoader getClassLoader();
   static CJNIApplicationInfo getApplicationInfo();
+  static std::string getPackageName();
   static std::string getPackageResourcePath();
   static CJNIFile getCacheDir();
   static CJNIFile getDir(const std::string &path, int mode);

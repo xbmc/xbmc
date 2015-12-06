@@ -100,7 +100,7 @@ bool CJNIAudioManager::isWiredHeadsetOn()
 CJNIAudioManagerAudioFocusChangeListener* CJNIAudioManagerAudioFocusChangeListener::m_listenerInstance(NULL);
 
 CJNIAudioManagerAudioFocusChangeListener::CJNIAudioManagerAudioFocusChangeListener()
-: CJNIBase("org/xbmc/kodi/XBMCOnAudioFocusChangeListener")
+: CJNIBase(CJNIContext::getPackageName() + ".XBMCOnAudioFocusChangeListener")
 {
   CJNIMainActivity *appInstance = CJNIMainActivity::GetAppInstance();
   if (!appInstance)

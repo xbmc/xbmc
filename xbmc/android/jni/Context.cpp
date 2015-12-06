@@ -165,6 +165,12 @@ CJNIApplicationInfo CJNIContext::getApplicationInfo()
     "getApplicationInfo", "()Landroid/content/pm/ApplicationInfo;");
 }
 
+std::string CJNIContext::getPackageName()
+{
+  return jcast<std::string>(call_method<jhstring>(m_context,
+    "getPackageName", "()Ljava/lang/String;"));
+}
+
 std::string CJNIContext::getPackageResourcePath()
 {
   return jcast<std::string>(call_method<jhstring>(m_context,
