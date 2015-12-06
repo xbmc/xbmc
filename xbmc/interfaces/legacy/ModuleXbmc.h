@@ -32,13 +32,13 @@ namespace XBMCAddon
   {
 #ifndef SWIG
     // This is a bit of a hack to get around a SWIG problem
-    extern const int lLOGNOTICE;
+    extern const int lLOGDEBUG;
 #endif
 
     /**
      * log(msg[, level]) -- Write a string to XBMC's log file and the debug window.\n
      *     msg            : string - text to output.\n
-     *     level          : [opt] integer - log level to ouput at. (default=LOGNOTICE)\n
+     *     level          : [opt] integer - log level to ouput at. (default=LOGDEBUG)\n
      *     \n
      * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
      *        Once you use a keyword, all following arguments require the keyword.\n
@@ -52,7 +52,7 @@ namespace XBMCAddon
      *           example:
      *             - xbmc.log(msg='This is a test string.', level=xbmc.LOGDEBUG);
      */
-    void log(const char* msg, int level = lLOGNOTICE);
+    void log(const char* msg, int level = lLOGDEBUG);
 
     /**
      * Shutdown() -- Shutdown the htpc.

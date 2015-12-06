@@ -75,7 +75,7 @@ namespace XBMCAddon
     {
       // check for a valid loglevel
       if (level < LOGDEBUG || level > LOGNONE)
-        level = LOGNOTICE;
+        level = LOGDEBUG;
       CLog::Log(level, "%s", msg);
     }
 
@@ -562,6 +562,6 @@ namespace XBMCAddon
     int getISO_639_2(){ return CLangCodeExpander::ISO_639_2; }
     int getENGLISH_NAME() { return CLangCodeExpander::ENGLISH_NAME; }
 
-    const int lLOGNOTICE = LOGNOTICE;
+    const int lLOGDEBUG = LOGDEBUG;
   }
 }
