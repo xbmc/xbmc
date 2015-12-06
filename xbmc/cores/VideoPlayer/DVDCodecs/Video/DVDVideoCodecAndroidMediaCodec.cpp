@@ -37,8 +37,8 @@
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
 #include "android/activity/XBMCApp.h"
-#include "cores/VideoRenderers/RenderManager.h"
-#include "cores/VideoRenderers/RenderFlags.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 
 #include "android/jni/ByteBuffer.h"
 #include "android/jni/MediaCodec.h"
@@ -596,8 +596,6 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
     return;
 
   m_opened = false;
-
-  g_renderManager.RegisterRenderUpdateCallBack((const void*)NULL, NULL);
 
   // release any retained demux packets
   if (m_demux_pkt.pData)
