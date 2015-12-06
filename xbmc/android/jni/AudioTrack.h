@@ -30,6 +30,7 @@ namespace jni
 class CJNIAudioTrack : public CJNIBase
 {
   jharray m_buffer;
+  int     m_audioFormat;
 
   public:
     CJNIAudioTrack(int streamType, int sampleRateInHz, int channelConfig, int audioFormat, int bufferSizeInBytes, int mode) throw(std::invalid_argument);
@@ -39,12 +40,18 @@ class CJNIAudioTrack : public CJNIBase
     void  flush();
     void  release();
     int   write(char* audioData, int offsetInBytes, int sizeInBytes);
+    int   getState();
     int   getPlayState();
     int   getPlaybackHeadPosition();
 
     static int  MODE_STREAM;
+    static int  STATE_INITIALIZED;
     static int  PLAYSTATE_PLAYING;
-    
+    static int  PLAYSTATE_STOPPED;
+    static int  PLAYSTATE_PAUSED;
+    static int  WRITE_BLOCKING;
+    static int  WRITE_NON_BLOCKING;
+
     static void PopulateStaticFields();
     static int  getMinBufferSize(int sampleRateInHz, int channelConfig, int audioFormat);
     static int  getNativeOutputSampleRate(int streamType);

@@ -114,6 +114,13 @@ enum AEDataFormat
   AE_FMT_DTSHD,
   AE_FMT_LPCM,
 
+  /* Raw Bitstream formats */
+  AE_FMT_AC3_RAW,
+  AE_FMT_DTS_RAW,
+  AE_FMT_EAC3_RAW,
+  AE_FMT_TRUEHD_RAW,
+  AE_FMT_DTSHD_RAW,
+
   /* planar formats */
   AE_FMT_U8P,
   AE_FMT_S16NEP,
