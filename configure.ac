@@ -2142,7 +2142,7 @@ else
 fi
 
 if test "x$use_pulse" != "xno"; then
-  XBMC_STANDALONE_SH_PULSE=tools/Linux/${APP_NAME_LC}-standalone.sh.pulse
+  XBMC_STANDALONE_SH_PULSE=tools/Linux/kodi-standalone.sh.pulse
   final_message="$final_message\n  PulseAudio:\tYes"
 else
   XBMC_STANDALONE_SH_PULSE=/dev/null
@@ -2404,9 +2404,9 @@ OUTPUT_FILES="Makefile \
     lib/addons/library.xbmc.codec/Makefile \
     lib/addons/library.kodi.guilib/Makefile \
     lib/addons/library.xbmc.pvr/Makefile \
-    tools/Linux/${APP_NAME_LC}.sh \
-    tools/Linux/${APP_NAME_LC}-standalone.sh \
-    tools/Linux/${APP_NAME_LC}-xsession.desktop \
+    tools/Linux/kodi.sh \
+    tools/Linux/kodi-standalone.sh \
+    tools/Linux/kodi-xsession.desktop \
     tools/EventClients/Makefile \
     tools/EventClients/Clients/OSXRemote/Makefile \
     xbmc/peripherals/bus/Makefile \
