@@ -77,6 +77,7 @@ public:
     virtual bool Record(bool bOnOff) = 0;
     virtual bool CanPause() = 0;
     virtual bool CanSeek() = 0;
+    virtual bool IsOtherStreamHack() = 0;
   };
 
   class IDisplayTime
