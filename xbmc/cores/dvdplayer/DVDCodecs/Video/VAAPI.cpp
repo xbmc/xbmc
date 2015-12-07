@@ -1179,7 +1179,7 @@ long CVaapiRenderPicture::Release()
   vaapi->ReturnRenderPicture(this);
   vaapi->ReleasePicReference();
 
-  return refCount;
+  return 0;
 }
 
 void CVaapiRenderPicture::ReturnUnused()
