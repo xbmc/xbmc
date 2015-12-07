@@ -92,6 +92,7 @@ public:
     disabled = false;
     changes = 0;
     flags = FLAG_NONE;
+    realtime = false;
   }
 
   virtual ~CDemuxStream()
@@ -117,6 +118,7 @@ public:
   int level;   // encoder level of the stream reported by the decoder. used to qualify hw decoders.
   StreamType type;
   int source;
+  bool realtime;
 
   int iDuration; // in mseconds
   void* pPrivate; // private pointer for the demuxer
