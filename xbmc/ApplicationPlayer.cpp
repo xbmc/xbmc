@@ -807,6 +807,13 @@ RESOLUTION CApplicationPlayer::GetRenderResolution()
     return RES_INVALID;
 }
 
+void CApplicationPlayer::TriggerUpdateResolution()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->TriggerUpdateResolution();
+}
+
 bool CApplicationPlayer::IsRenderingVideo()
 {
   std::shared_ptr<IPlayer> player = GetInternal();

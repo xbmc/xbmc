@@ -90,6 +90,7 @@ public:
   void SetRenderViewMode(int mode);
   float GetRenderAspectRatio();
   RESOLUTION GetRenderResolution();
+  void TriggerUpdateResolution();
   bool IsRenderingVideo();
   bool IsRenderingGuiLayer();
   bool IsRenderingVideoLayer();
