@@ -53,31 +53,9 @@ namespace XFILE
   class CFile;
 }
 
-namespace PVR
-{
-  class CPVRChannel;
-  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
-}
-
 class CDVDInputStream
 {
 public:
-  class IChannel
-  {
-    public:
-    virtual ~IChannel() {};
-    virtual bool NextChannel(bool preview = false) = 0;
-    virtual bool PrevChannel(bool preview = false) = 0;
-    virtual bool SelectChannelByNumber(unsigned int channel) = 0;
-    virtual bool SelectChannel(const PVR::CPVRChannelPtr &channel) { return false; };
-    virtual PVR::CPVRChannelPtr GetSelectedChannel() { return PVR::CPVRChannelPtr(); };
-    virtual bool UpdateItem(CFileItem& item) = 0;
-    virtual bool CanRecord() = 0;
-    virtual bool IsRecording() = 0;
-    virtual bool Record(bool bOnOff) = 0;
-    virtual bool CanPause() = 0;
-    virtual bool CanSeek() = 0;
-  };
 
   class IDisplayTime
   {

@@ -38,7 +38,6 @@ class IVideoPlayer;
 
 class CDVDInputStreamPVRManager
   : public CDVDInputStream
-  , public CDVDInputStream::IChannel
   , public CDVDInputStream::IDisplayTime
   , public CDVDInputStream::ISeekable
 {
@@ -55,26 +54,27 @@ public:
 
   virtual ENextStream NextStream();
 
-  bool                SelectChannelByNumber(unsigned int iChannel);
-  bool                SelectChannel(const PVR::CPVRChannelPtr &channel);
-  bool                NextChannel(bool preview = false);
-  bool                PrevChannel(bool preview = false);
+  bool IsOtherStreamHack(void);
+  bool SelectChannelByNumber(unsigned int iChannel);
+  bool SelectChannel(const PVR::CPVRChannelPtr &channel);
+  bool NextChannel(bool preview = false);
+  bool PrevChannel(bool preview = false);
   PVR::CPVRChannelPtr GetSelectedChannel();
 
-  int             GetTotalTime();
-  int             GetTime();
+  int GetTotalTime();
+  int GetTime();
 
-  bool            CanRecord();
-  bool            IsRecording();
-  bool            Record(bool bOnOff);
-  bool            CanSeek();
-  bool            CanPause();
-  void            Pause(bool bPaused);
+  bool CanRecord();
+  bool IsRecording();
+  bool Record(bool bOnOff);
+  bool CanSeek();
+  bool CanPause();
+  void Pause(bool bPaused);
 
-  bool            UpdateItem(CFileItem& item);
+  bool UpdateItem(CFileItem& item);
 
   /* overloaded is streamtype to support m_pOtherStream */
-  bool            IsStreamType(DVDStreamType type) const;
+  bool IsStreamType(DVDStreamType type) const;
 
   /*! \brief Get the input format from the Backend
    If it is empty ffmpeg scanning the stream to find the right input format.
@@ -82,24 +82,25 @@ public:
    list of the input formats.
    \return The name of the input format
    */
-  std::string      GetInputFormat();
+  std::string GetInputFormat();
 
   /* returns m_pOtherStream */
   CDVDInputStream* GetOtherStream();
 
   void ResetScanTimeout(unsigned int iTimeoutMs);
+
 protected:
   bool CloseAndOpen(const char* strFile);
-  static bool SupportsChannelSwitch(void);
 
-  IVideoPlayer*               m_pPlayer;
-  CDVDInputStream*          m_pOtherStream;
-  XFILE::IFile*             m_pFile;
-  XFILE::ILiveTVInterface*  m_pLiveTV;
-  XFILE::IRecordable*       m_pRecordable;
-  bool                      m_eof;
-  std::string               m_strContent;
-  XbmcThreads::EndTime      m_ScanTimeout;
+  IVideoPlayer* m_pPlayer;
+  CDVDInputStream* m_pOtherStream;
+  XFILE::IFile* m_pFile;
+  XFILE::ILiveTVInterface* m_pLiveTV;
+  XFILE::IRecordable* m_pRecordable;
+  bool m_eof;
+  std::string m_strContent;
+  XbmcThreads::EndTime m_ScanTimeout;
+  bool m_isOtherStreamHack;
 };
 
 
