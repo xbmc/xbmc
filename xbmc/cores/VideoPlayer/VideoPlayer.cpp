@@ -2582,6 +2582,12 @@ void CVideoPlayer::HandleMessages()
       {
         FlushBuffers(false);
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+        // TODO find a better solution for the "otherStreaHack"
+        // a stream is not sopposed to be terminated before demuxer
+        if (input && input->IsOtherStreamHack())
+        {
+          SAFE_DELETE(m_pDemuxer);
+        }
         if(input && input->SelectChannelByNumber(static_cast<CDVDMsgInt*>(pMsg)->m_value))
         {
           SAFE_DELETE(m_pDemuxer);
@@ -2600,11 +2606,16 @@ void CVideoPlayer::HandleMessages()
       {
         FlushBuffers(false);
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+        if (input && input->IsOtherStreamHack())
+        {
+          SAFE_DELETE(m_pDemuxer);
+        }
         if(input && input->SelectChannel(static_cast<CDVDMsgType <CPVRChannelPtr> *>(pMsg)->m_value))
         {
           SAFE_DELETE(m_pDemuxer);
           m_playSpeed = DVD_PLAYSPEED_NORMAL;
-        }else
+        }
+        else
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
           CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP);
@@ -2625,6 +2636,10 @@ void CVideoPlayer::HandleMessages()
           {
             g_infoManager.SetDisplayAfterSeek(100000);
             FlushBuffers(false);
+            if (input->IsOtherStreamHack())
+            {
+              SAFE_DELETE(m_pDemuxer);
+            }
           }
 
           if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREVIEW_NEXT))
