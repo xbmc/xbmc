@@ -50,6 +50,7 @@ public:
 
   AVCodecID codec;
   StreamType type;
+  bool realtime;
   int flags;
   bool software;  //force software decoding
   std::string filename;
