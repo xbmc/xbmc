@@ -980,7 +980,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       ServerInstance->AnnounceToClients(EVENT_LOADING);
       // froce to internal VideoPlayer cause it is the only
       // one who will work well with airplay
-      g_application.m_eForcedNextPlayer = EPC_VideoPlayer;
+      g_application.m_eForcedNextPlayer = EPC_VIDEOPLAYER;
 
       CFileItemList *l = new CFileItemList; //don't delete,
       l->Add(std::make_shared<CFileItem>(fileToPlay));

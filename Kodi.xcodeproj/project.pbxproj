@@ -1003,7 +1003,6 @@
 		E38E1F730D25F9FD00618676 /* LibraryLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14ED0D25F9F900618676 /* LibraryLoader.cpp */; };
 		E38E1F750D25F9FD00618676 /* mmap_anon.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E14F10D25F9F900618676 /* mmap_anon.c */; };
 		E38E1F760D25F9FD00618676 /* SoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14F40D25F9F900618676 /* SoLoader.cpp */; };
-		E38E1F770D25F9FD00618676 /* DummyVideoPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14F60D25F9F900618676 /* DummyVideoPlayer.cpp */; };
 		E38E1F790D25F9FD00618676 /* DVDAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14FC0D25F9F900618676 /* DVDAudio.cpp */; };
 		E38E1F7A0D25F9FD00618676 /* DVDClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14FE0D25F9F900618676 /* DVDClock.cpp */; };
 		E38E1F7B0D25F9FD00618676 /* DVDAudioCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15070D25F9F900618676 /* DVDAudioCodecFFmpeg.cpp */; };
@@ -1467,7 +1466,6 @@
 		E4991224174E5D5A00741B6D /* OverlayRendererUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */; };
 		E4991225174E5D5A00741B6D /* RenderCapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56579AD13060D1E0085ED7F /* RenderCapture.cpp */; };
 		E4991226174E5D5A00741B6D /* RenderManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16650D25F9FA00618676 /* RenderManager.cpp */; };
-		E4991227174E5D5A00741B6D /* DummyVideoPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14F60D25F9F900618676 /* DummyVideoPlayer.cpp */; };
 		E4991228174E5D6100741B6D /* Database.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16800D25F9FA00618676 /* Database.cpp */; };
 		E4991229174E5D6100741B6D /* dataset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1CD70D25F9FC00618676 /* dataset.cpp */; };
 		E499122A174E5D6100741B6D /* mysqldataset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B2B2E1134F36400713D6D /* mysqldataset.cpp */; };
@@ -3934,8 +3932,6 @@
 		E38E14F20D25F9F900618676 /* mmap_anon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mmap_anon.h; sourceTree = "<group>"; };
 		E38E14F40D25F9F900618676 /* SoLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SoLoader.cpp; sourceTree = "<group>"; };
 		E38E14F50D25F9F900618676 /* SoLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoLoader.h; sourceTree = "<group>"; };
-		E38E14F60D25F9F900618676 /* DummyVideoPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DummyVideoPlayer.cpp; sourceTree = "<group>"; };
-		E38E14F70D25F9F900618676 /* DummyVideoPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DummyVideoPlayer.h; sourceTree = "<group>"; };
 		E38E14FC0D25F9F900618676 /* DVDAudio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudio.cpp; sourceTree = "<group>"; };
 		E38E14FD0D25F9F900618676 /* DVDAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudio.h; sourceTree = "<group>"; };
 		E38E14FE0D25F9F900618676 /* DVDClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDClock.cpp; sourceTree = "<group>"; };
@@ -7486,8 +7482,6 @@
 				F5E56B11108284E6006E788A /* playercorefactory */,
 				DF923E5B1A11536A008CDB0C /* DataCacheCore.cpp */,
 				DF923E5C1A11536A008CDB0C /* DataCacheCore.h */,
-				E38E14F60D25F9F900618676 /* DummyVideoPlayer.cpp */,
-				E38E14F70D25F9F900618676 /* DummyVideoPlayer.h */,
 				7CF05049190A1D7200222135 /* FFmpeg.cpp */,
 				7CF0504A190A1D7200222135 /* FFmpeg.h */,
 				E38E15B60D25F9FA00618676 /* IPlayer.h */,
@@ -9182,7 +9176,6 @@
 				E38E1F730D25F9FD00618676 /* LibraryLoader.cpp in Sources */,
 				E38E1F750D25F9FD00618676 /* mmap_anon.c in Sources */,
 				E38E1F760D25F9FD00618676 /* SoLoader.cpp in Sources */,
-				E38E1F770D25F9FD00618676 /* DummyVideoPlayer.cpp in Sources */,
 				E38E1F790D25F9FD00618676 /* DVDAudio.cpp in Sources */,
 				395C29DE1A98A11C00EBC7AD /* WsgiResponseBody.cpp in Sources */,
 				E38E1F7A0D25F9FD00618676 /* DVDClock.cpp in Sources */,
@@ -10420,7 +10413,6 @@
 				E4991224174E5D5A00741B6D /* OverlayRendererUtil.cpp in Sources */,
 				E4991225174E5D5A00741B6D /* RenderCapture.cpp in Sources */,
 				E4991226174E5D5A00741B6D /* RenderManager.cpp in Sources */,
-				E4991227174E5D5A00741B6D /* DummyVideoPlayer.cpp in Sources */,
 				E4991228174E5D6100741B6D /* Database.cpp in Sources */,
 				E4991229174E5D6100741B6D /* dataset.cpp in Sources */,
 				E499122A174E5D6100741B6D /* mysqldataset.cpp in Sources */,
