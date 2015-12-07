@@ -893,7 +893,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
   int retry = 0;
   unsigned int written = 0;
 
-  if (m_requestedFormat.m_dataFormat == AE_FMT_RAW && m_needIecPack && samples->pool)
+  if (m_requestedFormat.m_dataFormat == AE_FMT_RAW && m_needIecPack && samples->pool && frames > 0)
   {
     if (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
     {
