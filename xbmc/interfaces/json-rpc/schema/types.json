@@ -763,7 +763,7 @@
       "genre": { "$ref": "Array.String" },
       "track": { "type": "integer" },
       "tag": { "$ref": "Array.String" },
-      "rating": { "type": "number" }
+      "rating": { "type": "number" },
       "userrating": { "type": "integer" }
     }
   },
