@@ -77,4 +77,5 @@ private:
   bool AddSceneMarker(const int sceneMarker);
 
   void MergeShortCommBreaks();
+  void AddSceneMarkersForCommBreaks();
 };

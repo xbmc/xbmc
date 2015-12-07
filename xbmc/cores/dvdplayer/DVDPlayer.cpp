@@ -2896,17 +2896,26 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
   if (!m_State.canseek)
     return;
 
-  if (bLargeStep && bChapterOverride && GetChapter() > 0)
+  if (bLargeStep && bChapterOverride)
   {
-    if (!bPlus)
+    // Default to using EDL scene markers if they exists.
+    if (SeekScene(bPlus))
     {
-      SeekChapter(GetChapter() - 1);
       return;
     }
-    else if (GetChapter() < GetChapterCount())
+    // Otherwise see if chapters are defined for the video.
+    else if (GetChapter() > 0)
     {
-      SeekChapter(GetChapter() + 1);
-      return;
+      if (!bPlus)
+      {
+        SeekChapter(GetChapter() - 1);
+        return;
+      }
+      else if (GetChapter() < GetChapterCount())
+      {
+        SeekChapter(GetChapter() + 1);
+        return;
+      }
     }
   }
 

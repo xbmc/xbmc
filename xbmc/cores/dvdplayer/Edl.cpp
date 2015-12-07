@@ -138,7 +138,11 @@ bool CEdl::ReadEditDecisionLists(const std::string& strMovie, const float fFrame
   }
 
   if (bFound)
+  {
     MergeShortCommBreaks();
+
+    AddSceneMarkersForCommBreaks();
+  }
 
   return bFound;
 }
@@ -251,15 +255,6 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
 
     switch (iAction)
     {
-    case 0:
-      cut.action = CUT;
-      if (!AddCut(cut))
-      {
-        CLog::Log(LOGWARNING, "%s - Error adding cut from line %i in EDL file: %s", __FUNCTION__,
-                  iLine, edlFilename.c_str());
-        continue;
-      }
-      break;
     case 1:
       cut.action = MUTE;
       if (!AddCut(cut))
@@ -277,6 +272,9 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
         continue;
       }
       break;
+    
+    // Reinterpret CUTs (0) to be COMM_BREAKs as the CUT functionality causes problems when seeking.
+    case 0:
     case 3:
       cut.action = COMM_BREAK;
       if (!AddCut(cut))
@@ -990,4 +988,37 @@ void CEdl::MergeShortCommBreaks()
     }
   }
   return;
+}
+
+void CEdl::AddSceneMarkersForCommBreaks()
+{
+  // Only add scene markers if the EDL file does not identify any scene markers
+  if (m_vecSceneMarkers.empty())
+  {
+    // Add a scene marker to the beginning of the video.
+    if (!AddSceneMarker(0))
+    {
+      CLog::LogF(LOGWARNING, "Error adding scene marker at start of video.");
+    }
+
+    std::vector<CEdl::Cut>::iterator it = m_vecCuts.begin();
+    for (; it != m_vecCuts.end(); ++it)
+    {
+      if (it->action == CEdl::COMM_BREAK)
+      {
+        // Add a scene marker at the start and end of the commercial break.
+        if (!AddSceneMarker(it->start))
+        {
+          CLog::LogF(LOGWARNING, "Error adding scene marker at start of commercial break %i.",
+            it->start);
+        }
+
+        if (!AddSceneMarker(it->end))
+        {
+          CLog::LogF(LOGWARNING, "Error adding scene marker at end of commercial break %i.",
+            it->end);
+        }
+      }
+    }
+  }
 }
