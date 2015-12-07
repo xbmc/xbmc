@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2005-2013 Team XBMC
+*      Copyright (C) 2005-2015 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -99,34 +99,18 @@ struct RESOLUTION_INFO
   std::string strOutput;
   std::string strId;
 public:
-  RESOLUTION_INFO(int width = 1280, int height = 720, float aspect = 0, const std::string &mode = ""):
-    strMode(mode)
-  {
-    iWidth = width;
-    iHeight = height;
-    iBlanking = 0;
-    iScreenWidth = width;
-    iScreenHeight = height;
-    fPixelRatio = aspect ? ((float)width)/height / aspect : 1.0f;
-    bFullScreen = true;
-    fRefreshRate = 0;
-    dwFlags = iSubtitles = iScreen = 0;
-  }
-  float DisplayRatio() const
-  {
-    return iWidth * fPixelRatio / iHeight;
-  }
-  RESOLUTION_INFO(const RESOLUTION_INFO& res) :
-    Overscan(res.Overscan),
-    strMode(res.strMode),
-    strOutput(res.strOutput),
-    strId(res.strId)
-  {
-    bFullScreen = res.bFullScreen;
-    iScreen = res.iScreen; iWidth = res.iWidth; iHeight = res.iHeight;
-    iScreenWidth = res.iScreenWidth; iScreenHeight = res.iScreenHeight;
-    iSubtitles = res.iSubtitles; dwFlags = res.dwFlags;
-    fPixelRatio = res.fPixelRatio; fRefreshRate = res.fRefreshRate;
-    iBlanking = res.iBlanking;
-  }
+  RESOLUTION_INFO(int width = 1280, int height = 720, float aspect = 0, const std::string &mode = "");
+  float DisplayRatio() const;
+  RESOLUTION_INFO(const RESOLUTION_INFO& res);
+};
+
+class CResolutionUtils
+{
+public:
+  static RESOLUTION ChooseBestResolution(float fps, int width, bool is3D);
+protected:
+  static bool FindResolutionFromOverride(float fps, int width, bool is3D, RESOLUTION &resolution, float& weight, bool fallback);
+  static void FindResolutionFromFpsMatch(float fps, int width, bool is3D, RESOLUTION &resolution, float& weight);
+  static RESOLUTION FindClosestResolution(float fps, int width, bool is3D, float multiplier, RESOLUTION current, float& weight);
+  static float RefreshWeight(float refresh, float fps);
 };

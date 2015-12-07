@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2015 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,14 +20,12 @@
 
 #pragma once
 
-#if defined(HAS_GLX) || defined(HAS_EGL) || defined(TARGET_DARWIN)
 class IDispResource
 {
 public:
   virtual ~IDispResource() {};
-  virtual void OnLostDevice() {};
-  virtual void OnResetDevice() {};
+  virtual void OnLostDisplay() {};
+  virtual void OnResetDisplay() {};
   virtual void OnAppFocusChange(bool focus) {};
 };
 
-#endif

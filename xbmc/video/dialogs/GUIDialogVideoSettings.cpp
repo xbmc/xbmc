@@ -35,10 +35,7 @@
 #include "utils/log.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
-
-#ifdef HAS_VIDEO_PLAYBACK
-#include "cores/VideoRenderers/RenderManager.h"
-#endif
+#include "Application.h"
 
 #define SETTING_VIDEO_VIEW_MODE           "video.viewmode"
 #define SETTING_VIDEO_ZOOM                "video.zoom"
@@ -92,7 +89,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
   {
     videoSettings.m_ViewMode = static_cast<const CSettingInt*>(setting)->GetValue();
 
-    g_renderManager.SetViewMode(videoSettings.m_ViewMode);
+    g_application.m_pPlayer->SetRenderViewMode(videoSettings.m_ViewMode);
 
     m_viewModeChanged = true;
     m_settingsManager->SetNumber(SETTING_VIDEO_ZOOM, videoSettings.m_CustomZoomAmount);
@@ -122,7 +119,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
       if (m_settingsManager->GetInt(SETTING_VIDEO_VIEW_MODE) != ViewModeCustom)
         m_settingsManager->SetInt(SETTING_VIDEO_VIEW_MODE, ViewModeCustom);
       else
-        g_renderManager.SetViewMode(videoSettings.m_ViewMode);
+        g_application.m_pPlayer->SetRenderViewMode(videoSettings.m_ViewMode);
     }
   }
   else if (settingId == SETTING_VIDEO_POSTPROCESS)
@@ -236,11 +233,11 @@ void CGUIDialogVideoSettings::InitializeSettings()
   CVideoSettings &videoSettings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
   
   StaticIntegerSettingOptions entries;
-  if (g_renderManager.Supports(VS_DEINTERLACEMODE_OFF))
+  if (g_application.m_pPlayer->Supports(VS_DEINTERLACEMODE_OFF))
     entries.push_back(std::make_pair(16039, VS_DEINTERLACEMODE_OFF));
-  if (g_renderManager.Supports(VS_DEINTERLACEMODE_AUTO))
+  if (g_application.m_pPlayer->Supports(VS_DEINTERLACEMODE_AUTO))
     entries.push_back(std::make_pair(16040, VS_DEINTERLACEMODE_AUTO));
-  if (g_renderManager.Supports(VS_DEINTERLACEMODE_FORCE))
+  if (g_application.m_pPlayer->Supports(VS_DEINTERLACEMODE_FORCE))
     entries.push_back(std::make_pair(16041, VS_DEINTERLACEMODE_FORCE));
   if (!entries.empty())
     AddSpinner(groupVideo, SETTING_VIDEO_DEINTERLACEMODE, 16037, 0, static_cast<int>(videoSettings.m_DeinterlaceMode), entries);
@@ -278,7 +275,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
   /* remove unsupported methods */
   for (StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
   {
-    if (g_renderManager.Supports((EINTERLACEMETHOD)it->second))
+    if (g_application.m_pPlayer->Supports((EINTERLACEMETHOD)it->second))
       ++it;
     else
       it = entries.erase(it);
@@ -317,7 +314,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
   /* remove unsupported methods */
   for(StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
   {
-    if (g_renderManager.Supports((ESCALINGMETHOD)it->second))
+    if (g_application.m_pPlayer->Supports((ESCALINGMETHOD)it->second))
       ++it;
     else
       it = entries.erase(it);
@@ -326,32 +323,32 @@ void CGUIDialogVideoSettings::InitializeSettings()
   AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300, 0, static_cast<int>(videoSettings.m_ScalingMethod), entries);
 
 #ifdef HAS_VIDEO_PLAYBACK
-  if (g_renderManager.Supports(RENDERFEATURE_STRETCH) || g_renderManager.Supports(RENDERFEATURE_PIXEL_RATIO))
+  if (g_application.m_pPlayer->Supports(RENDERFEATURE_STRETCH) || g_application.m_pPlayer->Supports(RENDERFEATURE_PIXEL_RATIO))
   {
     entries.clear();
     for (int i = 0; i < 7; ++i)
       entries.push_back(std::make_pair(630 + i, i));
     AddSpinner(groupVideo, SETTING_VIDEO_VIEW_MODE, 629, 0, videoSettings.m_ViewMode, entries);
   }
-  if (g_renderManager.Supports(RENDERFEATURE_ZOOM))
+  if (g_application.m_pPlayer->Supports(RENDERFEATURE_ZOOM))
     AddSlider(groupVideo, SETTING_VIDEO_ZOOM, 216, 0, videoSettings.m_CustomZoomAmount, "%2.2f", 0.5f, 0.01f, 2.0f, 216, usePopup);
-  if (g_renderManager.Supports(RENDERFEATURE_VERTICAL_SHIFT))
+  if (g_application.m_pPlayer->Supports(RENDERFEATURE_VERTICAL_SHIFT))
     AddSlider(groupVideo, SETTING_VIDEO_VERTICAL_SHIFT, 225, 0, videoSettings.m_CustomVerticalShift, "%2.2f", -2.0f, 0.01f, 2.0f, 225, usePopup);
-  if (g_renderManager.Supports(RENDERFEATURE_PIXEL_RATIO))
+  if (g_application.m_pPlayer->Supports(RENDERFEATURE_PIXEL_RATIO))
     AddSlider(groupVideo, SETTING_VIDEO_PIXEL_RATIO, 217, 0, videoSettings.m_CustomPixelRatio, "%2.2f", 0.5f, 0.01f, 2.0f, 217, usePopup);
-  if (g_renderManager.Supports(RENDERFEATURE_POSTPROCESS))
+  if (g_application.m_pPlayer->Supports(RENDERFEATURE_POSTPROCESS))
     AddToggle(groupVideo, SETTING_VIDEO_POSTPROCESS, 16400, 0, videoSettings.m_PostProcess);
-  if (g_renderManager.Supports(RENDERFEATURE_BRIGHTNESS))
+  if (g_application.m_pPlayer->Supports(RENDERFEATURE_BRIGHTNESS))
     AddPercentageSlider(groupVideoPlayback, SETTING_VIDEO_BRIGHTNESS, 464, 0, static_cast<int>(videoSettings.m_Brightness), 14047, 1, 464, usePopup);
-  if (g_renderManager.Supports(RENDERFEATURE_CONTRAST))
+  if (g_application.m_pPlayer->Supports(RENDERFEATURE_CONTRAST))
     AddPercentageSlider(groupVideoPlayback, SETTING_VIDEO_CONTRAST, 465, 0, static_cast<int>(videoSettings.m_Contrast), 14047, 1, 465, usePopup);
-  if (g_renderManager.Supports(RENDERFEATURE_GAMMA))
+  if (g_application.m_pPlayer->Supports(RENDERFEATURE_GAMMA))
     AddPercentageSlider(groupVideoPlayback, SETTING_VIDEO_GAMMA, 466, 0, static_cast<int>(videoSettings.m_Gamma), 14047, 1, 466, usePopup);
-  if (g_renderManager.Supports(RENDERFEATURE_NOISE))
+  if (g_application.m_pPlayer->Supports(RENDERFEATURE_NOISE))
     AddSlider(groupVideoPlayback, SETTING_VIDEO_VDPAU_NOISE, 16312, 0, videoSettings.m_NoiseReduction, "%2.2f", 0.0f, 0.01f, 1.0f, 16312, usePopup);
-  if (g_renderManager.Supports(RENDERFEATURE_SHARPNESS))
+  if (g_application.m_pPlayer->Supports(RENDERFEATURE_SHARPNESS))
     AddSlider(groupVideoPlayback, SETTING_VIDEO_VDPAU_SHARPNESS, 16313, 0, videoSettings.m_Sharpness, "%2.2f", -1.0f, 0.02f, 1.0f, 16313, usePopup);
-  if (g_renderManager.Supports(RENDERFEATURE_NONLINSTRETCH))
+  if (g_application.m_pPlayer->Supports(RENDERFEATURE_NONLINSTRETCH))
     AddToggle(groupVideoPlayback, SETTING_VIDEO_NONLIN_STRETCH, 659, 0, videoSettings.m_CustomNonLinStretch);
 #endif
 

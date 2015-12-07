@@ -47,7 +47,6 @@ CSampleBuffer::CSampleBuffer() : pkt(NULL), pool(NULL)
 {
   refCount = 0;
   timestamp = 0;
-  clockId = -1;
   pkt_start_offset = 0;
 }
 
@@ -72,8 +71,13 @@ void CSampleBuffer::Return()
 CActiveAEBufferPool::CActiveAEBufferPool(AEAudioFormat format)
 {
   m_format = format;
-  if (AE_IS_RAW(m_format.m_dataFormat))
-    m_format.m_dataFormat = AE_FMT_S16NE;
+  if (m_format.m_dataFormat == AE_FMT_RAW)
+  {
+    m_format.m_frameSize = 1;
+    m_format.m_frames = 61440;
+    m_format.m_channelLayout.Reset();
+    m_format.m_channelLayout += AE_CH_FC;
+  }
 }
 
 CActiveAEBufferPool::~CActiveAEBufferPool()
@@ -119,6 +123,10 @@ bool CActiveAEBufferPool::Create(unsigned int totaltime)
 
   unsigned int time = 0;
   unsigned int buffertime = (m_format.m_frames*1000) / m_format.m_sampleRate;
+  if (m_format.m_dataFormat == AE_FMT_RAW)
+  {
+    buffertime = m_format.m_streamInfo.GetDuration();
+  }
   unsigned int n = 0;
   while (time < totaltime || n < 5)
   {
@@ -141,8 +149,13 @@ CActiveAEBufferPoolResample::CActiveAEBufferPoolResample(AEAudioFormat inputForm
   : CActiveAEBufferPool(outputFormat)
 {
   m_inputFormat = inputFormat;
-  if (AE_IS_RAW(m_inputFormat.m_dataFormat))
-    m_inputFormat.m_dataFormat = AE_FMT_S16NE;
+  if (m_inputFormat.m_dataFormat == AE_FMT_RAW)
+  {
+    m_format.m_frameSize = 1;
+    m_format.m_frames = 61440;
+    m_inputFormat.m_channelLayout.Reset();
+    m_inputFormat.m_channelLayout += AE_CH_FC;
+  }
   m_resampler = NULL;
   m_fillPackets = false;
   m_drain = false;
@@ -160,6 +173,7 @@ CActiveAEBufferPoolResample::CActiveAEBufferPoolResample(AEAudioFormat inputForm
   m_bypassDSP = false;
   m_changeResampler = false;
   m_changeDSP = false;
+  m_lastSamplePts = 0;
 }
 
 CActiveAEBufferPoolResample::~CActiveAEBufferPoolResample()
@@ -376,7 +390,6 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
       if (timestamp)
       {
         in->timestamp = timestamp;
-        in->clockId = -1;
       }
       m_outputSamples.push_back(in);
       busy = true;
@@ -464,24 +477,25 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
       {
         if (!timestamp)
         {
-          m_lastSamplePts = in->timestamp;
-          m_procSample->clockId = in->clockId;
+          if (in->timestamp)
+            m_lastSamplePts = in->timestamp;
+          else
+            in->pkt_start_offset = 0;
         }
         else
         {
           m_lastSamplePts = timestamp;
           in->pkt_start_offset = 0;
-          m_procSample->clockId = -1;
         }
 
         // pts of last sample we added to the buffer
-        m_lastSamplePts += (in->pkt->nb_samples-in->pkt_start_offset)/m_format.m_sampleRate * 1000;
+        m_lastSamplePts += (in->pkt->nb_samples-in->pkt_start_offset) * 1000 / m_format.m_sampleRate;
       }
 
       // calculate pts for last sample in m_procSample
       int bufferedSamples = m_resampler->GetBufferedSamples();
       m_procSample->pkt_start_offset = m_procSample->pkt->nb_samples;
-      m_procSample->timestamp = m_lastSamplePts - bufferedSamples/m_format.m_sampleRate*1000;
+      m_procSample->timestamp = m_lastSamplePts - bufferedSamples * 1000 / m_format.m_sampleRate;
 
       if ((m_drain || m_changeResampler || m_changeDSP) && m_empty)
       {
@@ -533,9 +547,9 @@ float CActiveAEBufferPoolResample::GetDelay()
   std::deque<CSampleBuffer*>::iterator itBuf;
 
   if (m_procSample)
-    delay += m_procSample->pkt->nb_samples / m_procSample->pkt->config.sample_rate;
+    delay += (float)m_procSample->pkt->nb_samples / m_procSample->pkt->config.sample_rate;
   if (m_dspSample)
-    delay += m_dspSample->pkt->nb_samples / m_dspSample->pkt->config.sample_rate;
+    delay += (float)m_dspSample->pkt->nb_samples / m_dspSample->pkt->config.sample_rate;
 
   for(itBuf=m_inputSamples.begin(); itBuf!=m_inputSamples.end(); ++itBuf)
   {

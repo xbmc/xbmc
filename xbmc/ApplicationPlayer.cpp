@@ -63,7 +63,7 @@ void CApplicationPlayer::ClosePlayerGapless(PLAYERCOREID newCore)
   if (!player)
     return;
 
-  bool gaplessSupported = (m_eCurrentPlayer == EPC_DVDPLAYER || m_eCurrentPlayer == EPC_PAPLAYER);
+  bool gaplessSupported = (m_eCurrentPlayer == EPC_VideoPlayer || m_eCurrentPlayer == EPC_PAPLAYER);
   gaplessSupported = gaplessSupported && (m_eCurrentPlayer == newCore);
   if (!gaplessSupported)
   {
@@ -71,7 +71,7 @@ void CApplicationPlayer::ClosePlayerGapless(PLAYERCOREID newCore)
   }
   else
   {
-    // XXX: we had to stop the previous playing item, it was done in dvdplayer::OpenFile.
+    // XXX: we had to stop the previous playing item, it was done in VideoPlayer::OpenFile.
     // but in paplayer::OpenFile, it sometimes just fade in without call CloseFile.
     // but if we do not stop it, we can not distingush callbacks from previous
     // item and current item, it will confused us then we can not make correct delay
@@ -736,4 +736,168 @@ void CApplicationPlayer::SetPlaySpeed(int iSpeed, bool bApplicationMuted)
 int CApplicationPlayer::GetPlaySpeed() const
 {
   return m_iPlaySpeed;
+}
+
+void CApplicationPlayer::FrameMove()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->FrameMove();
+}
+
+void CApplicationPlayer::FrameWait(int ms)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->FrameWait(ms);
+}
+
+bool CApplicationPlayer::HasFrame()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->HasFrame();
+  else
+    return false;
+}
+
+void CApplicationPlayer::Render(bool clear, uint32_t alpha, bool gui)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->Render(clear, alpha, gui);
+}
+
+void CApplicationPlayer::AfterRender()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->AfterRender();
+}
+
+void CApplicationPlayer::FlushRenderer()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->FlushRenderer();
+}
+
+void CApplicationPlayer::SetRenderViewMode(int mode)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->SetRenderViewMode(mode);
+}
+
+float CApplicationPlayer::GetRenderAspectRatio()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->GetRenderAspectRatio();
+  else
+    return 1.0;
+}
+
+RESOLUTION CApplicationPlayer::GetRenderResolution()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->GetRenderResolution();
+  else
+    return RES_INVALID;
+}
+
+bool CApplicationPlayer::IsRenderingVideo()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->IsRenderingVideo();
+  else
+    return false;
+}
+
+bool CApplicationPlayer::IsRenderingGuiLayer()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->IsRenderingGuiLayer();
+  else
+    return false;
+}
+
+bool CApplicationPlayer::IsRenderingVideoLayer()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->IsRenderingVideoLayer();
+  else
+    return false;
+}
+
+bool CApplicationPlayer::Supports(EDEINTERLACEMODE mode)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->Supports(mode);
+  else
+    return false;
+}
+
+bool CApplicationPlayer::Supports(EINTERLACEMETHOD method)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->Supports(method);
+  else
+    return false;
+}
+
+bool CApplicationPlayer::Supports(ESCALINGMETHOD method)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->Supports(method);
+  else
+    return false;
+}
+
+bool CApplicationPlayer::Supports(ERENDERFEATURE feature)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->Supports(feature);
+  else
+    return false;
+}
+
+CRenderCapture* CApplicationPlayer::RenderCaptureAlloc()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->RenderCaptureAlloc();
+  else
+    return NULL;
+}
+
+void CApplicationPlayer::RenderCapture(CRenderCapture* capture, unsigned int width, unsigned int height, int flags)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->RenderCapture(capture, width, height, flags);
+}
+
+void CApplicationPlayer::RenderCaptureRelease(CRenderCapture* capture)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->RenderCaptureRelease(capture);
+}
+
+std::string CApplicationPlayer::GetRenderVSyncState()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->GetRenderVSyncState();
+  else
+    return "";
 }

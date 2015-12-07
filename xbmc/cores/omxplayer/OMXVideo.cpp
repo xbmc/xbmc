@@ -31,7 +31,7 @@
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
-#include "cores/VideoRenderers/RenderManager.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "xbmc/guilib/GraphicContext.h"
 #include "settings/Settings.h"
 #include "utils/BitstreamConverter.h"
@@ -65,7 +65,8 @@
 
 #define MAX_TEXT_LENGTH 1024
 
-COMXVideo::COMXVideo() : m_video_codec_name("")
+COMXVideo::COMXVideo(CRenderManager& renderManager) : m_video_codec_name("")
+, m_renderManager(renderManager)
 {
   m_is_open           = false;
   m_extradata         = NULL;
@@ -252,7 +253,7 @@ bool COMXVideo::PortSettingsChanged()
 
   if(m_deinterlace)
   {
-    EINTERLACEMETHOD interlace_method = g_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
+    EINTERLACEMETHOD interlace_method = m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
     bool advanced_deinterlace = (interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED || interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF) &&
         port_image.format.video.nFrameWidth * port_image.format.video.nFrameHeight <= 576 * 720;
     bool half_framerate = interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF || interlace_method == VS_INTERLACEMETHOD_MMAL_BOB_HALF;
@@ -745,7 +746,7 @@ bool COMXVideo::GetPlayerInfo(double &match, double &phase, double &pll)
 }
 
 
-int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts)
+int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts, bool &settings_changed)
 {
   CSingleLock lock (m_critSection);
   OMX_ERRORTYPE omx_err;
@@ -820,6 +821,7 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts)
         }
       }
     }
+    settings_changed = m_settings_changed;
     return true;
 
   }

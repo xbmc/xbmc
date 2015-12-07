@@ -33,7 +33,7 @@
 #include "threads/SingleLock.h"
 #ifdef HAS_IMXVPU
 // This has to go into another header file
-#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecIMX.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecIMX.h"
 #endif
 #include "utils/log.h"
 #include "EGLWrapper.h"
@@ -307,7 +307,7 @@ bool CWinSystemEGL::CreateNewWindow(const std::string& name, bool fullScreen, RE
   CSingleLock lock(m_resourceSection);
   // tell any shared resources
   for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
-    (*i)->OnResetDevice();
+    (*i)->OnResetDisplay();
 
   return true;
 }

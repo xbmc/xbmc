@@ -37,13 +37,9 @@ public:
   ICodec()
   {
     m_TotalTime = 0;
-    m_SampleRate = 0;
-    m_EncodedSampleRate = 0;
-    m_BitsPerSample = 0;
-    m_BitsPerCodedSample = 0;
-    m_DataFormat = AE_FMT_INVALID;
-    m_Channels = 0;
-    m_Bitrate = 0;
+    m_bitRate = 0;
+    m_bitsPerSample = 0;
+    m_bitsPerCodedSample = 0;
   };
   virtual ~ICodec() {};
 
@@ -78,6 +74,8 @@ public:
   // the data has been exhausted, and READ_ERROR on error.
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize)=0;
 
+  virtual int ReadRaw(uint8_t **pBuffer, int *bufferSize) { return READ_ERROR; }
+
   // CanInit()
   // Should return true if the codec can be initialized
   // eg. check if a dll needed for the codec exists
@@ -93,24 +91,13 @@ public:
   virtual bool IsCaching()    const    {return false;}
   virtual int GetCacheLevel() const    {return -1;}
 
-  // GetChannelInfo()
-  // Return the channel layout and count information in an CAEChannelInfo object
-  // Implemented in PAPlayer.cpp to avoid an include here
-  virtual CAEChannelInfo GetChannelInfo(); 
-
   int64_t m_TotalTime;  // time in ms
-  int m_SampleRate;
-  int m_EncodedSampleRate;
-  int m_BitsPerSample;
-  int m_BitsPerCodedSample;
-  enum AEDataFormat m_DataFormat;
-  int m_Bitrate;
+  int m_bitRate;
+  int m_bitsPerSample;
+  int m_bitsPerCodedSample;
   std::string m_CodecName;
   MUSIC_INFO::CMusicInfoTag m_tag;
   XFILE::CFile m_file;
-
-protected:
-  int m_Channels; /* remove this soon, its being deprecated */
-
+  AEAudioFormat m_format;
 };
 

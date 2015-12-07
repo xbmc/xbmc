@@ -23,9 +23,6 @@
 \brief
 */
 
-#ifndef GUILIB_GRAPHICCONTEXT_H
-#define GUILIB_GRAPHICCONTEXT_H
-
 #pragma once
 
 #ifdef __GNUC__
@@ -66,7 +63,7 @@ enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
 
 enum AdjustRefreshRate
 {
-  ADJUST_REFRESHRATE_OFF          = 0,
+  ADJUST_REFRESHRATE_OFF = 0,
   ADJUST_REFRESHRATE_ALWAYS,
   ADJUST_REFRESHRATE_ON_STARTSTOP
 };
@@ -298,4 +295,3 @@ private:
 
 XBMC_GLOBAL_REF(CGraphicContext,g_graphicsContext);
 #define g_graphicsContext XBMC_GLOBAL_USE(CGraphicContext)
-#endif

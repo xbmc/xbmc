@@ -62,7 +62,7 @@ DLLEXPORT void AudioEngine_unregister_me(void *hdl, void* cb)
 // ---------------------------------------------
 // CAddonAEStream implementations
 // ---------------------------------------------
-DLLEXPORT CAddonAEStream* AudioEngine_make_stream(void *hdl, void *cb, AEDataFormat DataFormat, unsigned int SampleRate, unsigned int EncodedSampleRate, enum AEChannel *Channels, unsigned int Options)
+DLLEXPORT CAddonAEStream* AudioEngine_make_stream(void *hdl, void *cb, AudioEngineFormat Format, unsigned int Options)
 {
   if (!hdl || !cb)
   {
@@ -70,7 +70,7 @@ DLLEXPORT CAddonAEStream* AudioEngine_make_stream(void *hdl, void *cb, AEDataFor
     return NULL;
   }
 
-  AEStreamHandle *streamHandle = ((CB_AudioEngineLib*)cb)->MakeStream(DataFormat, SampleRate, EncodedSampleRate, Channels, Options);
+  AEStreamHandle *streamHandle = ((CB_AudioEngineLib*)cb)->MakeStream(Format, Options);
   if (!streamHandle)
   {
     fprintf(stderr, "%s-ERROR: AudioEngine_make_stream MakeStream failed!\n", LIBRARY_NAME);
@@ -209,11 +209,6 @@ const unsigned int CAddonAEStream::GetSampleRate() const
   return ((CB_AudioEngineLib*)m_Callbacks)->AEStream_GetSampleRate(((AddonCB*)m_AddonHandle)->addonData, m_StreamHandle);
 }
 
-const unsigned int CAddonAEStream::GetEncodedSampleRate() const
-{
-  return ((CB_AudioEngineLib*)m_Callbacks)->AEStream_GetEncodedSampleRate(((AddonCB*)m_AddonHandle)->addonData, m_StreamHandle);
-}
-
 const AEDataFormat CAddonAEStream::GetDataFormat() const
 {
   return ((CB_AudioEngineLib*)m_Callbacks)->AEStream_GetDataFormat(((AddonCB*)m_AddonHandle)->addonData, m_StreamHandle);
@@ -224,9 +219,9 @@ double CAddonAEStream::GetResampleRatio()
   return ((CB_AudioEngineLib*)m_Callbacks)->AEStream_GetResampleRatio(((AddonCB*)m_AddonHandle)->addonData, m_StreamHandle);
 }
 
-bool CAddonAEStream::SetResampleRatio(double Ratio)
+void CAddonAEStream::SetResampleRatio(double Ratio)
 {
-  return ((CB_AudioEngineLib*)m_Callbacks)->AEStream_SetResampleRatio(((AddonCB*)m_AddonHandle)->addonData, m_StreamHandle, Ratio);
+  ((CB_AudioEngineLib*)m_Callbacks)->AEStream_SetResampleRatio(((AddonCB*)m_AddonHandle)->addonData, m_StreamHandle, Ratio);
 }
 
 void CAddonAEStream::Discontinuity()

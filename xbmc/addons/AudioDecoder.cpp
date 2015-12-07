@@ -19,6 +19,7 @@
 #include "AudioDecoder.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/TagLoaderTagLib.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 namespace ADDON
 {
@@ -51,10 +52,19 @@ bool CAudioDecoder::Init(const std::string& strFile, unsigned int filecache)
   CTagLoaderTagLib tag;
   tag.Load(strFile, XFILE::CMusicFileDirectory::m_tag, NULL);
 
+  int channels;
+  int sampleRate;
+
   m_context = m_pStruct->Init(strFile.c_str(), filecache,
-                              &m_Channels, &m_SampleRate,
-                              &m_BitsPerSample, &m_TotalTime,
-                              &m_Bitrate, &m_DataFormat, &m_channel);
+                              &channels, &sampleRate,
+                              &m_bitsPerSample, &m_TotalTime,
+                              &m_bitRate, &m_format.m_dataFormat, &m_channel);
+
+  m_format.m_sampleRate = sampleRate;
+  if (m_channel)
+    m_format.m_channelLayout = CAEChannelInfo(m_channel);
+  else
+    m_format.m_channelLayout = CAEUtil::GuessChLayout(channels);
 
   return (m_context != NULL);
 }
@@ -120,10 +130,7 @@ int CAudioDecoder::GetTrackCount(const std::string& strPath)
 
 CAEChannelInfo CAudioDecoder::GetChannelInfo()
 {
-  if (m_channel)
-    return CAEChannelInfo(m_channel);
-
-  return ICodec::GetChannelInfo();
+  return m_format.m_channelLayout;
 }
 
 void CAudioDecoder::Destroy()

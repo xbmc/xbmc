@@ -6401,23 +6401,23 @@ msgid "Render method"
 msgstr ""
 
 #: system/settings/settings.xml
-#: xbmc/cores/VideoRenderers/BaseRenderer.cpp
+#: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
 msgctxt "#13416"
 msgid "Auto detect"
 msgstr ""
 
-#: xbmc/cores/VideoRenderers/BaseRenderer.cpp
+#: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
 msgctxt "#13417"
 msgid "Basic shaders (ARB)"
 msgstr ""
 
-#: xbmc/cores/VideoRenderers/BaseRenderer.cpp
+#: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
 msgctxt "#13418"
 msgid "Advanced shaders (GLSL)"
 msgstr ""
 
 #: system/settings/settings.xml
-#: xbmc/cores/VideoRenderers/BaseRenderer.cpp
+#: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
 msgctxt "#13419"
 msgid "Software"
 msgstr ""
@@ -6472,7 +6472,7 @@ msgid "Allow hardware acceleration - OpenMax"
 msgstr ""
 
 #: system/settings/settings.xml
-#: xbmc/cores/VideoRenderers/BaseRenderer.cpp
+#: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
 msgctxt "#13431"
 msgid "Pixel shaders"
 msgstr ""
@@ -6498,10 +6498,7 @@ msgctxt "#13435"
 msgid "Enable HQ scalers for scaling above"
 msgstr ""
 
-#: xbmc/settings/GUISettings.cpp
-msgctxt "#13436"
-msgid "Allow hardware acceleration - libstagefright"
-msgstr ""
+#empty string with id 13436
 
 #: system/settings/settings.xml
 msgctxt "#13437"
@@ -6673,7 +6670,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13550"
-msgid "Pause during refresh rate change"
+msgid "Delay after change of refresh rate"
 msgstr ""
 
 msgctxt "#13551"
@@ -8237,7 +8234,7 @@ msgctxt "#16318"
 msgid "Temporal / Spatial (half)"
 msgstr ""
 
-#: xbmc/cores/VideoRenderers/BaseRenderer.cpp
+#: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
 msgctxt "#16319"
 msgid "DXVA"
 msgstr ""
@@ -8272,7 +8269,7 @@ msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr ""
 
-#: xbmc/cores/VideoRenderers/BaseRenderer.cpp
+#: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
 msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr ""
@@ -14057,12 +14054,12 @@ msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr ""
 
-#: xbmc/cores/dvdplayer/DVDPlayer.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayer.cpp
 msgctxt "#25008"
 msgid "Playback of Blu-ray failed"
 msgstr ""
 
-#: xbmc/cores/dvdplayer/DVDPlayer.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayer.cpp
 msgctxt "#25009"
 msgid "The menu of this Blu-ray is not supported"
 msgstr ""
@@ -14227,277 +14224,277 @@ msgstr ""
 #empty strings from id 29923 to 29925
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29926"
 msgid "Adult hits"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29927"
 msgid "Spanish talk"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29928"
 msgid "Spanish music"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29929"
 msgid "Hip hop"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29930"
 msgid "Radio Traffic advisory message!"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29931"
 msgid "Radio message"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29932"
 msgid "Language"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29933"
 msgid "College"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29934"
 msgid "Personality"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29935"
 msgid "Public"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29936"
 msgid "Soft music"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29937"
 msgid "Adult hits"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29938"
 msgid "Soft rock"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29939"
 msgid "Talk"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29940"
 msgid "No programme type"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29941"
 msgid "News"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29942"
 msgid "Current affairs"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29943"
 msgid "Information"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29944"
 msgid "Sport"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29945"
 msgid "Education"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29946"
 msgid "Drama"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29947"
 msgid "Culture"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29948"
 msgid "Science"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29949"
 msgid "Varied"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29950"
 msgid "Pop music"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29951"
 msgid "Rock music"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29952"
 msgid "Easy listening music"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29953"
 msgid "Light classical"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29954"
 msgid "Serious classical"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29955"
 msgid "Other music"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29956"
 msgid "Weather"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29957"
 msgid "Finance"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29958"
 msgid "Children's Programmes"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29959"
 msgid "Social Affairs"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29960"
 msgid "Religion"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29961"
 msgid "Phone-in"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29962"
 msgid "Travel"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29963"
 msgid "Leisure"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29964"
 msgid "Jazz Music"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29965"
 msgid "Country Music"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29966"
 msgid "National Music"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29967"
 msgid "Oldies Music"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29968"
 msgid "Folk Music"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29969"
 msgid "Documentary"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29970"
 msgid "Alarm Test"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29971"
 msgid "Alarm"
 msgstr ""
@@ -14505,19 +14502,19 @@ msgstr ""
 #empty strings from id 29972 to 29976
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29977"
 msgid "Classic rock music"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29978"
 msgid "Classical"
 msgstr ""
 
 #. Program style name
-#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayerRadioRDS.cpp
 msgctxt "#29979"
 msgid "Nostalgia"
 msgstr ""
@@ -15523,7 +15520,19 @@ msgctxt "#36045"
 msgid "Pause Playback"
 msgstr ""
 
+
 #empty strings from id 36046 to 36100
+
+#: system/settings/settings.xml
+msgctxt "#36099"
+msgid "Dithering"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36100"
+msgid "Dither depth"
+msgstr ""
+
 #strings from 36100 to 36999 are reserved for settings descriptions
 
 #. Description of settings section "Appearance"
@@ -15909,16 +15918,16 @@ msgctxt "#36164"
 msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Pause during refresh rate change" with label #13550
+#. Description of setting "System -> Videooutput -> Delay after change of refresh rate #13550
 #: system/settings/settings.xml
 msgctxt "#36165"
-msgid "Pause for a small amount of time during a refresh rate change."
+msgid "Delay of reset event after a change of refresh rate"
 msgstr ""
 
 #. Description of setting "Videos -> Playback -> Sync playback to display" with label #13510
 #: system/settings/settings.xml
 msgctxt "#36166"
-msgid "Synchronise the video to the refresh rate of the monitor."
+msgid "Synchronise video and audio to the refresh rate of the monitor. VideoPlayer won't use passthrough audio in this case because resampling may be required."
 msgstr ""
 
 #. Description of setting "Appearance -> International -> Time format" with label #14107
@@ -17388,7 +17397,7 @@ msgstr ""
 #. Description of setting "Videos -> Playback -> Enable MMAL hardware decoding of video files"
 #: system/settings/settings.xml
 msgctxt "#36435"
-msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
+msgid "Use VideoPlayer for decoding of video files with MMAL acceleration."
 msgstr ""
 
 #. Button on settings "System -> Audio output" to opend DSP manager dialog
@@ -17688,6 +17697,7 @@ msgid "Enables support for receiving \"Videos\" and \"Pictures\" via AirPlay. Th
 msgstr ""
 
 #. Name of a setting
+
 #: system/settings/settings.xml
 msgctxt "#36550"
 msgid "Stereoscopic 3D effect strength"
@@ -17700,6 +17710,19 @@ msgid "Defines the strength of the stereoscopic 3D effect in the GUI. This is do
 msgstr ""
 
 #empty strings from id 36552 to 36599
+
+#. Description of setting "System -> Video output -> Dither" with label #36099
+#: system/settings/settings.xml
+msgctxt "#36598"
+msgid "Eliminate banding caused by RGB level conversion or other processing by adding a small amount of noise to the picture. This can be disabled for slower systems, or when Kodi is set to limited range RGB output and no video processing is needed."
+msgstr ""
+
+#. Description of setting "System -> Video output -> Dither depth" with label #36100
+#: system/settings/settings.xml
+msgctxt "#36599"
+msgid "Video dithering output precision in bits. Use the highest setting that doesn't show banding. The default of 8 is recommended for most systems. If your GPU is set to scale the output RGB levels or you use a laptop screen, a 7 or 6 bit setting may eliminate more banding. Lower settings are available for testing purposes only to make it easy to see whether dithering is applied and that the dither noise pixel size matches the display resolution."
+msgstr ""
+
 #reserved strings 365XX
 
 #. Description of settings category "Music -> Library" with label #14022
@@ -17840,34 +17863,34 @@ msgstr ""
 
 #empty strings from id 36922 to 36999
 
-#: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37000"
 msgid "(Visually impaired)"
 msgstr ""
 
-#: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37001"
 msgid "(Director's comments)"
 msgstr ""
 
-#: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37002"
 msgid "(Director's comments 2)"
 msgstr ""
 
 #empty strings from id 37003 to 37010
 
-#: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37011"
 msgid "(CC)"
 msgstr ""
 
-#: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37012"
 msgid "(Forced)"
 msgstr ""
 
-#: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37013"
 msgid "(Director's comments)"
 msgstr ""

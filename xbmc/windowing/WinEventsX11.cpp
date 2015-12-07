@@ -29,8 +29,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include <X11/Xlib.h>
 #include <X11/extensions/Xrandr.h>
-#include "X11/WinSystemX11GL.h"
-#include "X11/WinSystemX11GLES.h"
+#include "WindowingFactory.h"
 #include "X11/keysymdef.h"
 #include "X11/XF86keysym.h"
 #include "utils/log.h"

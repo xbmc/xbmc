@@ -29,7 +29,7 @@
 #include "OMXAudio.h"
 #include "OMXAudioCodecOMX.h"
 #include "threads/Thread.h"
-#include "IDVDPlayer.h"
+#include "IVideoPlayer.h"
 
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDMessageQueue.h"
@@ -48,8 +48,6 @@ protected:
   COMXAudio                 m_omxAudio;
   std::string               m_codec_name;
   bool                      m_passthrough;
-  bool                      m_use_hw_decode;
-  bool                      m_hw_decode;
   AEAudioFormat             m_format;
   COMXAudioCodecOMX         *m_pAudioCodec;
   int                       m_speed;
@@ -58,6 +56,7 @@ protected:
 
   bool                      m_stalled;
   bool                      m_started;
+  bool                      m_sync;
 
   BitstreamStats            m_audioStats;
 
@@ -87,10 +86,9 @@ public:
   void WaitForBuffers();
   void CloseStream(bool bWaitForBuffers);
   bool CodecChange();
-  bool Decode(DemuxPacket *pkt, bool bDropPacket);
-  void Flush();
-  bool AddPacket(DemuxPacket *pkt);
-  AEDataFormat GetDataFormat(CDVDStreamInfo hints);
+  bool Decode(DemuxPacket *pkt, bool bDropPacket, bool bTrickPlay);
+  void Flush(bool sync);
+  AEAudioFormat GetDataFormat(CDVDStreamInfo hints);
   bool IsPassthrough() const;
   bool OpenDecoder();
   void CloseDecoder();

@@ -302,34 +302,49 @@ case $host in
     AC_MSG_ERROR(unsupported host ($use_host))
 esac
 
-if test "$use_platform" = "raspberry-pi"; then
+case $use_platform in
+  raspberry-pi)
+     target_platform=raspberry-pi
+     use_neon=no
+     use_cpu=arm1176jzf-s
+     platform_cflags="-mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp"
+     platform_cxxflags="-mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp"
+     platform_ldflags=""
+     ;;
+  raspberry-pi2)
+     target_platform=raspberry-pi
+     use_neon=yes
+     use_cpu=cortex-a7
+     platform_cflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4"
+     platform_cxxflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4"
+     platform_ldflags="-lpthread"
+     ;;
+esac
+
+if test "$target_platform" = "raspberry-pi" ; then
   if test -d "${use_firmware}/opt/vc/include"; then
     :
   else
     AC_MSG_ERROR([Raspberry Pi firmware not found])
   fi
-  use_neon=no
   use_arch="arm"
-  use_cpu="arm1176jzf-s"
   use_hardcoded_tables="yes"
-  use_alsa="no"
   ARCH="arm"
   platform_os="linux"
   cross_compiling="yes"
   use_host="arm-linux-gnueabihf"
   deps_dir="$use_host"
-  platform_cflags="-pipe -mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard \
-   -mfpu=vfp -mabi=aapcs-linux -Wno-psabi -Wa,-mno-warn-deprecated \
-   -Wno-deprecated-declarations -isystem${use_firmware}/opt/vc/include \
-   -isystem${use_firmware}/opt/vc/include/interface/vcos/pthreads \
-   -isystem${use_firmware}/opt/vc/include/interface/vmcs_host/linux"
-  platform_cxxflags="-pipe -mcpu=arm1176jzf-s -mtune=arm1176jzf-s \
-   -mfloat-abi=hard -mfpu=vfp -mabi=aapcs-linux -Wno-psabi \
+  platform_cflags+=" -pipe -mabi=aapcs-linux -Wno-psabi \
    -Wa,-mno-warn-deprecated -Wno-deprecated-declarations \
    -isystem${use_firmware}/opt/vc/include \
    -isystem${use_firmware}/opt/vc/include/interface/vcos/pthreads \
    -isystem${use_firmware}/opt/vc/include/interface/vmcs_host/linux"
-  platform_ldflags="-L${use_firmware}/opt/vc/lib -lEGL -lGLESv2 -lbcm_host -lvcos \
+  platform_cxxflags+=" -pipe -mabi=aapcs-linux -Wno-psabi \
+   -Wa,-mno-warn-deprecated -Wno-deprecated-declarations \
+   -isystem${use_firmware}/opt/vc/include \
+   -isystem${use_firmware}/opt/vc/include/interface/vcos/pthreads \
+   -isystem${use_firmware}/opt/vc/include/interface/vmcs_host/linux"
+  platform_ldflags+=" -L${use_firmware}/opt/vc/lib -lEGL -lGLESv2 -lbcm_host -lvcos \
    -lvchiq_arm"
 fi
 
@@ -491,7 +506,7 @@ AC_SUBST(use_cpu)
 AC_SUBST(use_toolchain)
 AC_SUBST(use_build_toolchain)
 AC_SUBST(use_tarballs)
-AC_SUBST(use_platform)
+AC_SUBST(target_platform)
 AC_SUBST(use_firmware)
 AC_SUBST(cross_compiling)
 AC_SUBST(platform_cflags)

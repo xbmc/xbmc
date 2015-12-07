@@ -66,13 +66,14 @@ public:
   void SetTotalTime(int64_t time);
   void Start() { m_canPlay = true;}; // cause a pre-buffered stream to start.
   int GetStatus() { return m_status; };
-  void SetStatus(int status) { m_status = status; };
+  void SetStatus(int status) { m_status = status; }
 
-  void GetDataFormat(CAEChannelInfo *channelInfo, unsigned int *samplerate, unsigned int *encodedSampleRate, enum AEDataFormat *dataFormat);
-  unsigned int GetChannels() { if (m_codec) return m_codec->GetChannelInfo().Count(); else return 0; };
+  AEAudioFormat GetFormat();
+  unsigned int GetChannels() { return GetFormat().m_channelLayout.Count(); }
   // Data management
   unsigned int GetDataSize();
   void *GetData(unsigned int samples);
+  uint8_t* GetRawData(int &size);
   ICodec *GetCodec() const { return m_codec; }
   float GetReplayGain();
 
@@ -84,16 +85,19 @@ private:
   float m_outputBuffer[OUTPUT_SAMPLES];
 
   // input buffer (for transferring data from the Codecs to our Pcm Ringbuffer
-  BYTE m_pcmInputBuffer[INPUT_SIZE];
+  uint8_t m_pcmInputBuffer[INPUT_SIZE];
   float m_inputBuffer[INPUT_SAMPLES];
 
+  uint8_t *m_rawBuffer;
+  int m_rawBufferSize;
+
   // status
-  bool    m_eof;
-  int     m_status;
-  bool    m_canPlay;
+  bool m_eof;
+  int m_status;
+  bool m_canPlay;
 
   // the codec we're using
-  ICodec*          m_codec;
+  ICodec* m_codec;
 
   CCriticalSection m_critSection;
 };

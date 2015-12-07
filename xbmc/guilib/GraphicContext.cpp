@@ -26,7 +26,6 @@
 #include "settings/DisplaySettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
-#include "cores/VideoRenderers/RenderManager.h"
 #include "windowing/WindowingFactory.h"
 #include "TextureManager.h"
 #include "input/InputManager.h"
@@ -328,20 +327,18 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
   Lock();
   m_bFullScreenVideo = bOnOff;
 
-#if defined(HAS_VIDEO_PLAYBACK)
   if(m_bFullScreenRoot)
   {
     bool allowDesktopRes = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_ALWAYS;
-    if(m_bFullScreenVideo || (!allowDesktopRes && g_application.m_pPlayer->IsPlayingVideo()))
-      SetVideoResolution(g_renderManager.GetResolution());
-    else if(CDisplaySettings::GetInstance().GetCurrentResolution() > RES_DESKTOP)
+    if (m_bFullScreenVideo || (!allowDesktopRes && g_application.m_pPlayer->IsPlayingVideo()))
+      SetVideoResolution(g_application.m_pPlayer->GetRenderResolution());
+    else if (CDisplaySettings::GetInstance().GetCurrentResolution() > RES_DESKTOP)
       SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution());
     else
       SetVideoResolution(RES_DESKTOP);
   }
   else
     SetVideoResolution(RES_WINDOW);
-#endif
 
   Unlock();
 }
@@ -398,21 +395,6 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
   if (!forceUpdate && res == lastRes && m_bFullScreenRoot == g_advancedSettings.m_fullScreen)
   {
     return;
-  }
-
-  //only pause when switching monitor resolution/refreshrate,
-  //not when switching between fullscreen and windowed or when resizing the window
-  if ((res != RES_DESKTOP && res != RES_WINDOW) || (lastRes != RES_DESKTOP && lastRes != RES_WINDOW))
-  {
-    //pause the player during the refreshrate change
-    int delay = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_PAUSEAFTERREFRESHCHANGE);
-    if (delay > 0 && CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF && g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPausedPlayback())
-    {
-      g_application.m_pPlayer->Pause();
-      KODI::MESSAGING::ThreadMessage msg{TMSG_MEDIA_UNPAUSE};
-      CDelayedMessage* pauseMessage = new CDelayedMessage(msg, delay * 100);
-      pauseMessage->Create(true);
-    }
   }
 
   if (res >= RES_DESKTOP)
@@ -484,7 +466,6 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
   SetStereoView(RENDER_STEREO_VIEW_OFF);
 
   // update anyone that relies on sizing information
-  g_renderManager.Recover();
   CInputManager::GetInstance().SetMouseResolution(info_org.iWidth, info_org.iHeight, 1, 1);
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
 
@@ -1029,14 +1010,14 @@ bool CGraphicContext::ToggleFullScreenRoot ()
     {
       /* we need to trick renderer that we are fullscreen already so it gives us a valid value */
       m_bFullScreenRoot = true;
-      uiRes = g_renderManager.GetResolution();
+      uiRes = g_application.m_pPlayer->GetRenderResolution();
       m_bFullScreenRoot = false;
     }
     // if video is playing we need to switch to resolution chosen by RenderManager
     if (IsFullScreenVideo())
     {
       m_bFullScreenRoot = true;
-      videoRes = g_renderManager.GetResolution();
+      videoRes = g_application.m_pPlayer->GetRenderResolution();
       m_bFullScreenRoot = false;
       setVideoRes = true;
     }

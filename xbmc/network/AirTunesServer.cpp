@@ -31,7 +31,7 @@
 #include <utility>
 
 #include "Application.h"
-#include "cores/dvdplayer/DVDDemuxers/DVDDemuxBXA.h"
+#include "cores/VideoPlayer/DVDDemuxers/DVDDemuxBXA.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
 #include "filesystem/PipeFile.h"

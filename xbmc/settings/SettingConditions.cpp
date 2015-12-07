@@ -29,7 +29,7 @@
 #include "android/activity/AndroidFeatures.h"
 #endif // defined(TARGET_ANDROID)
 #include "cores/AudioEngine/AEFactory.h"
-#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "guilib/LocalizeStrings.h"
 #include "peripherals/Peripherals.h"
 #include "profiles/ProfilesManager.h"
@@ -235,9 +235,6 @@ void CSettingConditions::Initialize()
 #endif
 #ifdef TARGET_ANDROID
   m_simpleConditions.insert("has_mediacodec");
-#endif
-#ifdef HAS_LIBSTAGEFRIGHT
-  m_simpleConditions.insert("have_libstagefrightdecoder");
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
   m_simpleConditions.insert("have_videotoolboxdecoder");

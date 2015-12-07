@@ -33,6 +33,7 @@
 #include "xbmc/settings/VideoSettings.h"
 #include "threads/CriticalSection.h"
 #include "xbmc/rendering/RenderSystem.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include <string>
 
 #define VIDEO_BUFFERS 60
@@ -44,7 +45,7 @@ typedef void (*ResolutionUpdateCallBackFn)(void *ctx, uint32_t width, uint32_t h
 class COMXVideo
 {
 public:
-  COMXVideo();
+  COMXVideo(CRenderManager& renderManager);
   ~COMXVideo();
 
   // Required overrides
@@ -55,7 +56,7 @@ public:
   void Close(void);
   unsigned int GetFreeSpace();
   unsigned int GetSize();
-  int  Decode(uint8_t *pData, int iSize, double dts, double pts);
+  int  Decode(uint8_t *pData, int iSize, double dts, double pts, bool &settings_changed);
   void Reset(void);
   void SetDropState(bool bDrop);
   std::string GetDecoderName() { return m_video_codec_name; };
@@ -102,6 +103,7 @@ protected:
   bool              m_failed_eos;
   OMX_DISPLAYTRANSFORMTYPE m_transform;
   bool              m_settings_changed;
+  CRenderManager&   m_renderManager;
   static bool NaluFormatStartCodes(enum AVCodecID codec, uint8_t *in_extradata, int in_extrasize);
   CCriticalSection m_critSection;
 };

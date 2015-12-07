@@ -39,7 +39,7 @@ public:
   CAEChannelInfo& operator=(const enum AEChannel* rhs);
   CAEChannelInfo& operator=(const enum AEStdChLayout rhs);
   bool operator==(const CAEChannelInfo& rhs) const;
-  bool operator!=(const CAEChannelInfo& rhs);
+  bool operator!=(const CAEChannelInfo& rhs) const;
   CAEChannelInfo& operator+=(const enum AEChannel& rhs);
   CAEChannelInfo& operator-=(const enum AEChannel& rhs);
   const enum AEChannel operator[](unsigned int i) const;

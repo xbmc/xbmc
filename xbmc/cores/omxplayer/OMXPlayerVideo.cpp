@@ -39,15 +39,13 @@
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "windowing/WindowingFactory.h"
-#include "DVDOverlayRenderer.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
-#include "cores/VideoRenderers/RenderFormats.h"
-#include "cores/VideoRenderers/RenderFlags.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "guilib/GraphicContext.h"
 
-#include "DVDPlayer.h"
 #include "linux/RBP.h"
 
 using namespace RenderManager;
@@ -71,11 +69,13 @@ public:
 
 OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
                                CDVDOverlayContainer* pOverlayContainer,
-                               CDVDMessageQueue& parent)
+                               CDVDMessageQueue& parent, CRenderManager& renderManager)
 : CThread("OMXPlayerVideo")
 , m_messageQueue("video")
 , m_codecname("")
 , m_messageParent(parent)
+, m_omxVideo(renderManager)
+, m_renderManager(renderManager)
 {
   m_av_clock              = av_clock;
   m_pOverlayContainer     = pOverlayContainer;
@@ -260,7 +260,7 @@ void OMXPlayerVideo::ProcessOverlays(double pts)
   for(it = overlays.begin(); it != overlays.end(); ++it)
   {
     double pts2 = (*it)->bForced ? pts : pts - m_iSubtitleDelay;
-    g_renderManager.AddOverlay(*it, pts2);
+    m_renderManager.AddOverlay(*it, pts2);
   }
 }
 
@@ -282,13 +282,17 @@ std::string OMXPlayerVideo::GetStereoMode()
 
 void OMXPlayerVideo::Output(double pts, bool bDropPacket)
 {
-  if (!g_renderManager.IsStarted()) {
-    CLog::Log(LOGINFO, "%s - renderer not started", __FUNCTION__);
+  if (!m_renderManager.IsConfigured()) {
+    CLog::Log(LOGINFO, "%s - renderer not configured", __FUNCTION__);
     return;
   }
 
   if (CThread::m_bStop)
     return;
+
+  CRect SrcRect, DestRect, viewRect;
+  m_renderManager.GetVideoRect(SrcRect, DestRect, viewRect);
+  SetVideoRect(SrcRect, DestRect);
 
   // we aim to submit subtitles 100ms early
   const double preroll = DVD_MSEC_TO_TIME(100);
@@ -297,7 +301,7 @@ void OMXPlayerVideo::Output(double pts, bool bDropPacket)
   if (m_nextOverlay != DVD_NOPTS_VALUE && media_pts != 0.0 && media_pts + preroll <= m_nextOverlay)
     return;
 
-  int buffer = g_renderManager.WaitForBuffer(CThread::m_bStop);
+  int buffer = m_renderManager.WaitForBuffer(CThread::m_bStop);
   if (buffer < 0)
     return;
 
@@ -309,21 +313,26 @@ void OMXPlayerVideo::Output(double pts, bool bDropPacket)
   ProcessOverlays(media_pts + preroll);
 
   time += m_av_clock->GetAbsoluteClock();
-  g_renderManager.FlipPage(CThread::m_bStop, time/DVD_TIME_BASE);
+  m_renderManager.FlipPage(CThread::m_bStop, time/DVD_TIME_BASE);
 }
 
 void OMXPlayerVideo::Process()
 {
   double frametime = (double)DVD_TIME_BASE / m_fFrameRate;
   bool bRequestDrop = false;
+  bool settings_changed = false;
 
   m_videoStats.Start();
 
   while(!m_bStop)
   {
-    CDVDMsg* pMsg;
     int iQueueTimeOut = (int)(m_stalled ? frametime / 4 : frametime * 10) / 1000;
     int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE && m_started) ? 1 : 0;
+
+    if (m_started && !m_sync)
+      iPriority = 1;
+
+    CDVDMsg* pMsg;
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut, iPriority);
 
     if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT)
@@ -352,27 +361,13 @@ void OMXPlayerVideo::Process()
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
     {
-      CDVDMsgGeneralResync* pMsgGeneralResync = (CDVDMsgGeneralResync*)pMsg;
-
-      double delay = 0;
-
-      if(pMsgGeneralResync->m_clock && pMsgGeneralResync->m_timestamp != DVD_NOPTS_VALUE)
-      {
-        CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, %f, 1)", m_iCurrentPts, pMsgGeneralResync->m_timestamp);
-        m_av_clock->Discontinuity(pMsgGeneralResync->m_timestamp - delay);
-      }
-      else
-        CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, 0)", m_iCurrentPts);
+      double pts = static_cast<CDVDMsgDouble*>(pMsg)->m_value;
 
       m_nextOverlay = DVD_NOPTS_VALUE;
       m_iCurrentPts = DVD_NOPTS_VALUE;
-      pMsgGeneralResync->Release();
-      continue;
-    }
-    else if (pMsg->IsType(CDVDMsg::GENERAL_DELAY))
-    {
-      double timeout = static_cast<CDVDMsgDouble*>(pMsg)->m_value;
-      CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::GENERAL_DELAY(%f)", timeout);
+      m_sync = true;
+
+      CLog::Log(LOGDEBUG, "CVideoPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f)", pts);
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_SET_ASPECT))
     {
@@ -404,19 +399,14 @@ void OMXPlayerVideo::Process()
         CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::PLAYER_SETSPEED %d", m_speed);
       }
     }
-    else if (pMsg->IsType(CDVDMsg::PLAYER_STARTED))
-    {
-      CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::PLAYER_STARTED %d", m_started);
-      if(m_started)
-        m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_VIDEO));
-    }
     else if (pMsg->IsType(CDVDMsg::PLAYER_DISPLAYTIME))
     {
-      CDVDPlayer::SPlayerState& state = ((CDVDMsgType<CDVDPlayer::SPlayerState>*)pMsg)->m_value;
+      SPlayerState& state = ((CDVDMsgType<SPlayerState>*)pMsg)->m_value;
+      state.player    = VideoPlayer_VIDEO;
 
       if (m_speed != DVD_PLAYSPEED_NORMAL && m_speed != DVD_PLAYSPEED_PAUSE)
       {
-        if(state.time_src == CDVDPlayer::ETIMESOURCE_CLOCK)
+        if(state.time_src == ETIMESOURCE_CLOCK)
           state.time      = DVD_TIME_TO_MSEC(m_av_clock->GetClock(state.timestamp) + state.time_offset);
         else
           state.timestamp = CDVDClock::GetAbsoluteClock();
@@ -425,7 +415,7 @@ void OMXPlayerVideo::Process()
       {
         double pts = m_iCurrentPts;
         double stamp = m_av_clock->OMXMediaTime();
-        if(state.time_src == CDVDPlayer::ETIMESOURCE_CLOCK)
+        if(state.time_src == ETIMESOURCE_CLOCK)
           state.time      = stamp == 0.0 ? state.time : DVD_TIME_TO_MSEC(stamp + state.time_offset);
         else
           state.time      = stamp == 0.0 || pts == DVD_NOPTS_VALUE ? state.time : state.time + DVD_TIME_TO_MSEC(stamp - pts);
@@ -433,7 +423,6 @@ void OMXPlayerVideo::Process()
         if (stamp == 0.0) // cause message to be ignored
           state.player = 0;
       }
-      state.player    = DVDPLAYER_VIDEO;
       m_messageParent.Put(pMsg->Acquire());
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
@@ -490,12 +479,12 @@ void OMXPlayerVideo::Process()
         double pts = pPacket->pts;
 
         if (dts != DVD_NOPTS_VALUE)
-          dts += m_iVideoDelay - DVD_SEC_TO_TIME(g_renderManager.GetDisplayLatency());
+          dts += m_iVideoDelay - DVD_SEC_TO_TIME(m_renderManager.GetDisplayLatency());
 
         if (pts != DVD_NOPTS_VALUE)
-          pts += m_iVideoDelay - DVD_SEC_TO_TIME(g_renderManager.GetDisplayLatency());
+          pts += m_iVideoDelay - DVD_SEC_TO_TIME(m_renderManager.GetDisplayLatency());
 
-        m_omxVideo.Decode(pPacket->pData, pPacket->iSize, dts, m_hints.ptsinvalid ? DVD_NOPTS_VALUE : pts);
+        m_omxVideo.Decode(pPacket->pData, pPacket->iSize, dts, m_hints.ptsinvalid ? DVD_NOPTS_VALUE : pts, settings_changed);
 
         if (pts == DVD_NOPTS_VALUE)
           pts = dts;
@@ -504,11 +493,17 @@ void OMXPlayerVideo::Process()
         if(pts != DVD_NOPTS_VALUE)
           m_iCurrentPts = pts;
 
-        if(m_started == false)
+        if (m_started == false && !bRequestDrop && settings_changed)
         {
           m_codecname = m_omxVideo.GetDecoderName();
           m_started = true;
-          m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_VIDEO));
+          m_sync = false;
+          SStartMsg msg;
+          msg.player = VideoPlayer_VIDEO;
+          msg.cachetime = DVD_MSEC_TO_TIME(50); // TODO
+          msg.cachetotal = DVD_MSEC_TO_TIME(100); // TODO
+          msg.timestamp = pts;
+          m_messageParent.Put(new CDVDMsgType<SStartMsg>(CDVDMsg::PLAYER_STARTED, msg));
         }
 
         break;
@@ -531,12 +526,12 @@ bool OMXPlayerVideo::StepFrame()
   return true;
 }
 
-void OMXPlayerVideo::Flush()
+void OMXPlayerVideo::Flush(bool sync)
 {
   m_flush = true;
   m_messageQueue.Flush();
   m_messageQueue.Flush(CDVDMsg::GENERAL_EOF);
-  m_messageQueue.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH), 1);
+  m_messageQueue.Put(new CDVDMsgBool(CDVDMsg::GENERAL_FLUSH, sync), 1);
 }
 
 bool OMXPlayerVideo::OpenDecoder()
@@ -741,12 +736,6 @@ void OMXPlayerVideo::SetVideoRect(const CRect &InSrcRect, const CRect &InDestRec
   m_omxVideo.SetVideoRect(SrcRect, DestRect, video_stereo_mode, display_stereo_mode);
 }
 
-void OMXPlayerVideo::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect)
-{
-  OMXPlayerVideo *player = (OMXPlayerVideo*)ctx;
-  player->SetVideoRect(SrcRect, DestRect);
-}
-
 void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, float framerate, float display_aspect)
 {
   RESOLUTION res  = g_graphicsContext.GetVideoResolution();
@@ -801,9 +790,16 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, f
   CLog::Log(LOGDEBUG,"%s - change configuration. video:%dx%d. framerate: %4.2f. %dx%d format: BYPASS",
       __FUNCTION__, video_width, video_height, m_fFrameRate, iDisplayWidth, iDisplayHeight);
 
-  if(!g_renderManager.Configure(width, height,
-        iDisplayWidth, iDisplayHeight, m_fFrameRate, flags, format, 0,
-        m_hints.orientation, 3))
+  DVDVideoPicture picture;
+  memset(&picture, 0, sizeof(DVDVideoPicture));
+
+  picture.iWidth = width;
+  picture.iHeight = height;
+  picture.iDisplayWidth = iDisplayWidth;
+  picture.iDisplayHeight = iDisplayHeight;
+  picture.format = format;
+
+  if(!m_renderManager.Configure(picture, m_fFrameRate, flags, m_hints.orientation, 3))
   {
     CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
     return;
@@ -811,8 +807,6 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, f
 
   m_src_rect.SetRect(0, 0, 0, 0);
   m_dst_rect.SetRect(0, 0, 0, 0);
-
-  g_renderManager.RegisterRenderUpdateCallBack((const void*)this, RenderUpdateCallBack);
 }
 
 void OMXPlayerVideo::ResolutionUpdateCallBack(void *ctx, uint32_t width, uint32_t height, float framerate, float display_aspect)

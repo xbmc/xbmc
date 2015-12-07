@@ -17,15 +17,6 @@
     </category>
     <category id="videoacceleration">
       <group id="3">
-        <setting id="videoplayer.usestagefright" type="boolean" label="13436" help="36260">
-          <requirement>HAVE_LIBSTAGEFRIGHTDECODER</requirement>
-          <level>2</level>
-          <default>true</default>
-          <updates>
-            <update type="change" />
-          </updates>
-          <control type="toggle" />
-        </setting>
         <setting id="videoplayer.usemediacodecsurface" type="boolean" label="13440" help="36544">
           <visible>HAS_MEDIACODEC</visible>
           <level>2</level>

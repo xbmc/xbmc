@@ -22,7 +22,7 @@
 
 #ifdef HAS_OMXPLAYER
 
-#include "DVDPlayer.h"
+#include "VideoPlayer.h"
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
 #include "DVDInputStreams/DVDInputStream.h"
@@ -108,8 +108,8 @@ bool OMXPlayerUnsuitable(bool m_HasVideo, bool m_HasAudio, CDVDDemux* m_pDemuxer
   return false;
 }
 
-bool OMXDoProcessing(struct SOmxPlayerState &m_OmxPlayerState, int m_playSpeed, IDVDStreamPlayerVideo *m_dvdPlayerVideo, IDVDStreamPlayerAudio *m_dvdPlayerAudio,
-                     CCurrentStream m_CurrentAudio, CCurrentStream m_CurrentVideo, bool m_HasVideo, bool m_HasAudio)
+bool OMXDoProcessing(struct SOmxPlayerState &m_OmxPlayerState, int m_playSpeed, IDVDStreamPlayerVideo *m_VideoPlayerVideo, IDVDStreamPlayerAudio *m_VideoPlayerAudio,
+                     CCurrentStream m_CurrentAudio, CCurrentStream m_CurrentVideo, bool m_HasVideo, bool m_HasAudio, CRenderManager& m_renderManager)
 {
   bool reopen_stream = false;
   double now = CDVDClock::GetAbsoluteClock();
@@ -118,11 +118,11 @@ bool OMXDoProcessing(struct SOmxPlayerState &m_OmxPlayerState, int m_playSpeed, 
     m_OmxPlayerState.last_check_time = now;
     m_OmxPlayerState.stamp = m_OmxPlayerState.av_clock.OMXMediaTime();
     const bool m_Pause = m_playSpeed == DVD_PLAYSPEED_PAUSE;
-    const bool not_accepts_data = (!m_dvdPlayerAudio->AcceptsData() && m_HasAudio) ||
-        (!m_dvdPlayerVideo->AcceptsData() && m_HasVideo >= 0);
+    const bool not_accepts_data = (!m_VideoPlayerAudio->AcceptsData() && m_HasAudio) ||
+        (!m_VideoPlayerVideo->AcceptsData() && m_HasVideo >= 0);
     /* when the video/audio fifos are low, we pause clock, when high we resume */
-    double audio_pts = floor(m_dvdPlayerAudio->GetCurrentPts());
-    double video_pts = floor(m_dvdPlayerVideo->GetCurrentPts());
+    double audio_pts = floor(m_VideoPlayerAudio->GetCurrentPts());
+    double video_pts = floor(m_VideoPlayerVideo->GetCurrentPts());
 
     float audio_fifo = audio_pts / DVD_TIME_BASE - m_OmxPlayerState.stamp * 1e-6;
     float video_fifo = video_pts / DVD_TIME_BASE - m_OmxPlayerState.stamp * 1e-6;
@@ -130,46 +130,22 @@ bool OMXDoProcessing(struct SOmxPlayerState &m_OmxPlayerState, int m_playSpeed, 
     bool audio_fifo_low = false, video_fifo_low = false, audio_fifo_high = false, video_fifo_high = false;
 
     if (m_OmxPlayerState.interlace_method == VS_INTERLACEMETHOD_MAX)
-      m_OmxPlayerState.interlace_method = g_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
+      m_OmxPlayerState.interlace_method = m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
 
     // if deinterlace setting has changed, we should close and open video
     if (m_OmxPlayerState.current_deinterlace != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode ||
        (m_OmxPlayerState.current_deinterlace != VS_DEINTERLACEMODE_OFF &&
-        m_OmxPlayerState.interlace_method != g_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod)))
+        m_OmxPlayerState.interlace_method != m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod)))
     {
       CLog::Log(LOGNOTICE, "%s - Reopen stream due to interlace change (%d,%d,%d,%d)", __FUNCTION__,
         m_OmxPlayerState.current_deinterlace, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode,
-        m_OmxPlayerState.interlace_method, g_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod));
+        m_OmxPlayerState.interlace_method, m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod));
 
       m_OmxPlayerState.current_deinterlace = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
-      m_OmxPlayerState.interlace_method    = g_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
+      m_OmxPlayerState.interlace_method    = m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
       reopen_stream = true;
     }
 
-    m_OmxPlayerState.video_fifo = (int)(100.0*(m_dvdPlayerVideo->GetDecoderBufferSize()-m_dvdPlayerVideo->GetDecoderFreeSpace())/m_dvdPlayerVideo->GetDecoderBufferSize());
-    m_OmxPlayerState.audio_fifo = (int)(100.0*audio_fifo/m_dvdPlayerAudio->GetCacheTotal());
-
-    #ifdef _DEBUG
-    static unsigned count;
-    if ((count++ & 7) == 0)
-    {
-      char response[80];
-      if (m_dvdPlayerVideo->GetDecoderBufferSize() && m_dvdPlayerAudio->GetCacheTotal())
-        vc_gencmd(response, sizeof response, "render_bar 4 video_fifo %d %d %d %d",
-            m_OmxPlayerState.video_fifo,
-            (int)(100.0*video_fifo/m_dvdPlayerAudio->GetCacheTotal()),
-            0, 100);
-      if (m_dvdPlayerAudio->GetCacheTotal())
-        vc_gencmd(response, sizeof response, "render_bar 5 audio_fifo %d %d %d %d",
-            m_OmxPlayerState.audio_fifo,
-            (int)(100.0*m_dvdPlayerAudio->GetDelay()/m_dvdPlayerAudio->GetCacheTotal()),
-            0, 100);
-      vc_gencmd(response, sizeof response, "render_bar 6 video_queue %d %d %d %d",
-            m_dvdPlayerVideo->GetLevel(), 0, 0, 100);
-      vc_gencmd(response, sizeof response, "render_bar 7 audio_queue %d %d %d %d",
-            m_dvdPlayerAudio->GetLevel(), 0, 0, 100);
-    }
-    #endif
     if (audio_pts != DVD_NOPTS_VALUE)
     {
       audio_fifo_low = m_HasAudio && audio_fifo < threshold;
@@ -186,19 +162,19 @@ bool OMXDoProcessing(struct SOmxPlayerState &m_OmxPlayerState, int m_playSpeed, 
       video_fifo_high = true;
 
     #ifdef _DEBUG
-    CLog::Log(LOGDEBUG, "%s::%s M:%.6f-%.6f (A:%.6f V:%.6f) PEF:%d%d%d S:%.2f A:%.2f V:%.2f/T:%.2f (A:%d%d V:%d%d) A:%d%% V:%d%% (%.2f,%.2f)", "CDVDPlayer", __FUNCTION__,
+    CLog::Log(LOGDEBUG, "%s::%s M:%.6f-%.6f (A:%.6f V:%.6f) PEF:%d%d%d S:%.2f A:%.2f V:%.2f/T:%.2f (A:%d%d V:%d%d) A:%d%% V:%d%%", "CVideoPlayer", __FUNCTION__,
       m_OmxPlayerState.stamp*1e-6, m_OmxPlayerState.av_clock.OMXClockAdjustment()*1e-6, audio_pts*1e-6, video_pts*1e-6,
       m_OmxPlayerState.av_clock.OMXIsPaused(), m_OmxPlayerState.bOmxSentEOFs, not_accepts_data, m_playSpeed * (1.0f/DVD_PLAYSPEED_NORMAL),
       audio_pts == DVD_NOPTS_VALUE ? 0.0:audio_fifo, video_pts == DVD_NOPTS_VALUE ? 0.0:video_fifo, m_OmxPlayerState.threshold,
       audio_fifo_low, audio_fifo_high, video_fifo_low, video_fifo_high,
-      m_dvdPlayerAudio->GetLevel(), m_dvdPlayerVideo->GetLevel(), m_dvdPlayerAudio->GetDelay(), (float)m_dvdPlayerAudio->GetCacheTotal());
+      m_VideoPlayerAudio->GetLevel(), m_VideoPlayerVideo->GetLevel());
     #endif
 
     if(!m_Pause && (m_OmxPlayerState.bOmxSentEOFs || not_accepts_data || (audio_fifo_high && video_fifo_high) || m_playSpeed != DVD_PLAYSPEED_NORMAL))
     {
       if (m_OmxPlayerState.av_clock.OMXIsPaused())
       {
-        CLog::Log(LOGDEBUG, "%s::%s Resume %.2f,%.2f (A:%d%d V:%d%d) EOF:%d FULL:%d T:%.2f", "CDVDPlayer", __FUNCTION__, audio_fifo, video_fifo,
+        CLog::Log(LOGDEBUG, "%s::%s Resume %.2f,%.2f (A:%d%d V:%d%d) EOF:%d FULL:%d T:%.2f", "CVideoPlayer", __FUNCTION__, audio_fifo, video_fifo,
           audio_fifo_low, audio_fifo_high, video_fifo_low, video_fifo_high, m_OmxPlayerState.bOmxSentEOFs, not_accepts_data, m_OmxPlayerState.threshold);
         m_OmxPlayerState.av_clock.OMXResume();
       }
@@ -209,7 +185,7 @@ bool OMXDoProcessing(struct SOmxPlayerState &m_OmxPlayerState, int m_playSpeed, 
       {
         if (!m_Pause)
           m_OmxPlayerState.threshold = std::min(2.0f*m_OmxPlayerState.threshold, 16.0f);
-        CLog::Log(LOGDEBUG, "%s::%s Pause %.2f,%.2f (A:%d%d V:%d%d) EOF:%d FULL:%d T:%.2f", "CDVDPlayer", __FUNCTION__, audio_fifo, video_fifo,
+        CLog::Log(LOGDEBUG, "%s::%s Pause %.2f,%.2f (A:%d%d V:%d%d) EOF:%d FULL:%d T:%.2f", "CVideoPlayer", __FUNCTION__, audio_fifo, video_fifo,
           audio_fifo_low, audio_fifo_high, video_fifo_low, video_fifo_high, m_OmxPlayerState.bOmxSentEOFs, not_accepts_data, m_OmxPlayerState.threshold);
         m_OmxPlayerState.av_clock.OMXPause();
       }

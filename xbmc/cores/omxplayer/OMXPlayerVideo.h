@@ -28,7 +28,7 @@
 #include "DVDStreamInfo.h"
 #include "OMXVideo.h"
 #include "threads/Thread.h"
-#include "IDVDPlayer.h"
+#include "IVideoPlayer.h"
 
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDCodecs/Video/DVDVideoCodec.h"
@@ -36,7 +36,7 @@
 #include "DVDMessageQueue.h"
 #include "utils/BitstreamStats.h"
 #include "linux/DllBCM.h"
-#include "cores/VideoRenderers/RenderManager.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 
 class OMXPlayerVideo : public CThread, public IDVDStreamPlayerVideo
 {
@@ -55,6 +55,7 @@ protected:
   int                       m_speed;
   bool                      m_stalled;
   bool                      m_started;
+  bool                      m_sync;
   bool                      m_flush;
   std::string               m_codecname;
   double                    m_iSubtitleDelay;
@@ -75,6 +76,7 @@ protected:
   CDVDMessageQueue      &m_messageParent;
 
   BitstreamStats m_videoStats;
+  CRenderManager& m_renderManager;
 
   void ProcessOverlays(double pts);
   double NextOverlay(double pts);
@@ -85,7 +87,7 @@ protected:
   virtual void Process();
 private:
 public:
-  OMXPlayerVideo(OMXClock *av_clock, CDVDOverlayContainer* pOverlayContainer, CDVDMessageQueue& parent);
+  OMXPlayerVideo(OMXClock *av_clock, CDVDOverlayContainer* pOverlayContainer, CDVDMessageQueue& parent, CRenderManager& renderManager);
   ~OMXPlayerVideo();
   bool OpenStream(CDVDStreamInfo &hints);
   void SendMessage(CDVDMsg* pMsg, int priority = 0) { m_messageQueue.Put(pMsg, priority); }
@@ -100,7 +102,7 @@ public:
   void CloseStream(bool bWaitForBuffers);
   void Output(double pts, bool bDropPacket);
   bool StepFrame();
-  void Flush();
+  void Flush(bool sync);
   bool OpenDecoder();
   int  GetDecoderBufferSize();
   int  GetDecoderFreeSpace();
@@ -120,12 +122,11 @@ public:
   void EnableSubtitle(bool bEnable)                 { m_bRenderSubs = bEnable; }
   bool IsSubtitleEnabled()                          { return m_bRenderSubs; }
   void EnableFullscreen(bool bEnable)               { m_bAllowFullscreen = bEnable; }
-  float GetAspectRatio()                            { return g_renderManager.GetAspectRatio(); }
+  float GetAspectRatio()                            { return m_renderManager.GetAspectRatio(); }
   void SetFlags(unsigned flags)                     { m_flags = flags; };
   int GetFreeSpace();
   void  SetVideoRect(const CRect &SrcRect, const CRect &DestRect);
-  void GetVideoRect(CRect& SrcRect, CRect& DestRect, CRect& ViewRect) const { g_renderManager.GetVideoRect(SrcRect, DestRect, ViewRect); }
-  static void RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect);
+  void GetVideoRect(CRect& SrcRect, CRect& DestRect, CRect& ViewRect) const { m_renderManager.GetVideoRect(SrcRect, DestRect, ViewRect); }
   void ResolutionUpdateCallBack(uint32_t width, uint32_t height, float framerate, float pixel_aspect);
   static void ResolutionUpdateCallBack(void *ctx, uint32_t width, uint32_t height, float framerate, float pixel_aspect);
 };
