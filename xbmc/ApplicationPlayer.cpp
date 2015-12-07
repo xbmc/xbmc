@@ -63,7 +63,7 @@ void CApplicationPlayer::ClosePlayerGapless(PLAYERCOREID newCore)
   if (!player)
     return;
 
-  bool gaplessSupported = (m_eCurrentPlayer == EPC_VideoPlayer || m_eCurrentPlayer == EPC_PAPLAYER);
+  bool gaplessSupported = (m_eCurrentPlayer == EPC_VIDEOPLAYER || m_eCurrentPlayer == EPC_PAPLAYER);
   gaplessSupported = gaplessSupported && (m_eCurrentPlayer == newCore);
   if (!gaplessSupported)
   {

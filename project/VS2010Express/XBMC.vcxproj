@@ -1632,7 +1632,6 @@
     <ClCompile Include="..\..\xbmc\win32\Win32DelayedDllLoad.cpp" />
     <ClCompile Include="..\..\xbmc\win32\WIN32Util.cpp" />
     <ClCompile Include="..\..\xbmc\win32\WindowHelper.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\DummyVideoPlayer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDAudio.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDClock.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxSPU.cpp" />
@@ -2269,7 +2268,6 @@
     <ClInclude Include="..\..\xbmc\win32\stdio_utf8.h" />
     <ClInclude Include="..\..\xbmc\win32\WIN32Util.h" />
     <ClInclude Include="..\..\xbmc\win32\WindowHelper.h" />
-    <ClInclude Include="..\..\xbmc\cores\DummyVideoPlayer.h" />
     <ClInclude Include="..\..\xbmc\cores\IPlayer.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDAudio.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDClock.h" />

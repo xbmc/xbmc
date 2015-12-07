@@ -93,8 +93,7 @@ public:
     IPlayer* pPlayer;
     switch(m_eCore)
     {
-      case EPC_MPLAYER:
-      case EPC_VideoPlayer: pPlayer = new CVideoPlayer(callback); break;
+      case EPC_VIDEOPLAYER: pPlayer = new CVideoPlayer(callback); break;
       case EPC_PAPLAYER: pPlayer = new PAPlayer(callback); break;
       case EPC_EXTPLAYER: pPlayer = new CExternalPlayer(callback); break;
 #if defined(HAS_UPNP)

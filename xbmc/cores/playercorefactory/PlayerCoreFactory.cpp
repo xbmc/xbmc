@@ -190,8 +190,8 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     {
       if (url.IsFileType("ac3") || url.IsFileType("dts"))
       {
-        CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding VideoPlayer (%d)", EPC_VideoPlayer);
-        vecCores.push_back(EPC_VideoPlayer);
+        CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding VideoPlayer (%d)", EPC_VIDEOPLAYER);
+        vecCores.push_back(EPC_VIDEOPLAYER);
       }
       else
       {
@@ -320,12 +320,12 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
       delete *it;
     m_vecCoreConfigs.clear();
     // Builtin players; hard-coded because re-ordering them would break scripts
-    CPlayerCoreConfig* VideoPlayer = new CPlayerCoreConfig("VideoPlayer", EPC_VideoPlayer, NULL);
+    CPlayerCoreConfig* VideoPlayer = new CPlayerCoreConfig("VideoPlayer", EPC_VIDEOPLAYER, NULL);
     VideoPlayer->m_bPlaysAudio = VideoPlayer->m_bPlaysVideo = true;
     m_vecCoreConfigs.push_back(VideoPlayer);
 
      // Don't remove this, its a placeholder for the old MPlayer core, it would break scripts
-    CPlayerCoreConfig* mplayer = new CPlayerCoreConfig("oldmplayercore", EPC_VideoPlayer, NULL);
+    CPlayerCoreConfig* mplayer = new CPlayerCoreConfig("oldmplayercore", EPC_VIDEOPLAYER, NULL);
     m_vecCoreConfigs.push_back(mplayer);
 
     CPlayerCoreConfig* paplayer = new CPlayerCoreConfig("PAPlayer", EPC_PAPLAYER, NULL);
@@ -355,9 +355,9 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
       StringUtils::ToLower(type);
 
       EPLAYERCORES eCore = EPC_NONE;
-      if (type == "VideoPlayer" || type == "mplayer") eCore = EPC_VideoPlayer;
-      if (type == "paplayer" ) eCore = EPC_PAPLAYER;
-      if (type == "externalplayer" ) eCore = EPC_EXTPLAYER;
+      if (type == "VideoPlayer") eCore = EPC_VIDEOPLAYER;
+      if (type == "paplayer") eCore = EPC_PAPLAYER;
+      if (type == "externalplayer") eCore = EPC_EXTPLAYER;
 
       if (eCore != EPC_NONE)
       {

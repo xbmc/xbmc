@@ -24,9 +24,6 @@
 #include "Application.h"
 #include "input/Key.h"
 #include "WindowIDs.h"
-#ifndef HAS_VIDEO_PLAYBACK
-#include "cores/DummyVideoPlayer.h"
-#endif
 
 CGUIVideoControl::CGUIVideoControl(int parentID, int controlID, float posX, float posY, float width, float height)
     : CGUIControl(parentID, controlID, posX, posY, width, height)

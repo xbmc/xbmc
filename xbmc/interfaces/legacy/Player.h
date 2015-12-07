@@ -20,8 +20,6 @@
 
 #pragma once
 
-#include "cores/playercorefactory/PlayerCoreFactory.h"
-
 #include "ListItem.h"
 #include "PlayList.h"
 #include "InfoTagVideo.h"
@@ -33,6 +31,8 @@
 #include "Alternative.h"
 
 #include "swighelper.h"
+
+#include "cores/IPlayerCallback.h"
 
 namespace XBMCAddon
 {
@@ -56,7 +56,6 @@ namespace XBMCAddon
     {
     private:
       int iPlayList;
-      EPLAYERCORES playerCore;
 
       void playStream(const String& item = emptyString, const XBMCAddon::xbmcgui::ListItem* listitem = NULL, bool windowed = false);
       void playPlaylist(const PlayList* playlist = NULL,
@@ -71,7 +70,7 @@ namespace XBMCAddon
       // Construct a Player proxying the given generated binding. The 
       //  construction of a Player needs to identify whether or not any 
       //  callbacks will be executed asynchronously or not.
-      Player(int playerCore = EPC_NONE);
+      Player(int playerCore = 0);
       virtual ~Player(void);
 
       /**
