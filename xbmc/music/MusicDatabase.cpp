@@ -3405,7 +3405,10 @@ bool CMusicDatabase::GetArtistsNav(const std::string& strBaseDir, CFileItemList&
     else if (idSong > 0)
       musicUrl.AddOption("songid", idSong);
 
-    musicUrl.AddOption("albumartistsonly", albumArtistsOnly);
+    // Override albumArtistsOnly parameter (usually externally set to SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS)
+    // when local option already present in muscic URL thus allowing it to be an option in custom nodes
+    if (!musicUrl.HasOption("albumartistsonly"))
+      musicUrl.AddOption("albumartistsonly", albumArtistsOnly);
 
     bool result = GetArtistsByWhere(musicUrl.ToString(), filter, items, sortDescription, countOnly);
     CLog::Log(LOGDEBUG,"Time to retrieve artists from dataset = %i", XbmcThreads::SystemClockMillis() - time);
