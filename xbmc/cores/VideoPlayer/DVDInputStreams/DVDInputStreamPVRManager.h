@@ -38,7 +38,6 @@ class IVideoPlayer;
 
 class CDVDInputStreamPVRManager
   : public CDVDInputStream
-  , public CDVDInputStream::IChannel
   , public CDVDInputStream::IDisplayTime
   , public CDVDInputStream::ISeekable
 {
@@ -55,7 +54,7 @@ public:
 
   virtual ENextStream NextStream();
 
-  virtual bool IsOtherStreamHack(void);
+  bool IsOtherStreamHack(void);
   bool SelectChannelByNumber(unsigned int iChannel);
   bool SelectChannel(const PVR::CPVRChannelPtr &channel);
   bool NextChannel(bool preview = false);
