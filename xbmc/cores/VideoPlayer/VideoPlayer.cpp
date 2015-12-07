@@ -4781,6 +4781,11 @@ RESOLUTION CVideoPlayer::GetRenderResolution()
   return g_graphicsContext.GetVideoResolution();
 }
 
+void CVideoPlayer::TriggerUpdateResolution()
+{
+  m_renderManager.TriggerUpdateResolution(0, 0, 0);
+}
+
 bool CVideoPlayer::IsRenderingVideo()
 {
   return m_renderManager.IsConfigured();

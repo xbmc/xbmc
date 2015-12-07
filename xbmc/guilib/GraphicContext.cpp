@@ -990,9 +990,7 @@ bool CGraphicContext::IsFullScreenRoot () const
 
 bool CGraphicContext::ToggleFullScreenRoot ()
 {
-  RESOLUTION uiRes;  ///< resolution to save - not necessarily the same as the one we switch to (e.g. during video playback)
-  RESOLUTION videoRes;
-  bool setVideoRes = false;
+  RESOLUTION uiRes;
 
   if (m_bFullScreenRoot)
   {
@@ -1005,31 +1003,10 @@ bool CGraphicContext::ToggleFullScreenRoot ()
     else
       uiRes = (RESOLUTION) g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
 
-#if defined(HAS_VIDEO_PLAYBACK)
-    if (IsCalibrating())
-    {
-      /* we need to trick renderer that we are fullscreen already so it gives us a valid value */
-      m_bFullScreenRoot = true;
-      uiRes = g_application.m_pPlayer->GetRenderResolution();
-      m_bFullScreenRoot = false;
-    }
-    // if video is playing we need to switch to resolution chosen by RenderManager
-    if (IsFullScreenVideo())
-    {
-      m_bFullScreenRoot = true;
-      videoRes = g_application.m_pPlayer->GetRenderResolution();
-      m_bFullScreenRoot = false;
-      setVideoRes = true;
-    }
-#endif
+    g_application.m_pPlayer->TriggerUpdateResolution();
   }
 
   CDisplaySettings::GetInstance().SetCurrentResolution(uiRes, true);
-
-  if (setVideoRes)
-  {
-    SetVideoResolution(videoRes);
-  }
 
   return m_bFullScreenRoot;
 }
