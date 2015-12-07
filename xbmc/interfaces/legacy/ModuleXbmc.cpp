@@ -532,7 +532,7 @@ namespace XBMCAddon
     int getPLAYLIST_MUSIC() { return PLAYLIST_MUSIC; }
     int getPLAYLIST_VIDEO() { return PLAYLIST_VIDEO; }
     int getPLAYER_CORE_AUTO() { return EPC_NONE; }
-    int getPLAYER_CORE_VideoPlayer() { return EPC_VideoPlayer; }
+    int getPLAYER_CORE_DVDPLAYER() { return EPC_VideoPlayer; }
     int getPLAYER_CORE_MPLAYER() { return EPC_MPLAYER; }
     int getPLAYER_CORE_PAPLAYER() { return EPC_PAPLAYER; }
     int getTRAY_OPEN() { return TRAY_OPEN; }
