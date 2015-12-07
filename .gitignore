@@ -503,10 +503,10 @@ lib/cpluff/stamp-h1
 /xbmc/cores/VideoPlayer/DVDCodecs/Audio/Makefile
 /xbmc/cores/VideoPlayer/DVDCodecs/Makefile
 /xbmc/cores/VideoPlayer/DVDCodecs/Overlay/Makefile
-/xbmc/cores/VideoPlayer/DVDCodecs/Video/libstagefrightICS/Makefile
 /xbmc/cores/VideoPlayer/DVDCodecs/Video/Makefile
 /xbmc/cores/VideoPlayer/DVDDemuxers/Makefile
 /xbmc/cores/VideoPlayer/DVDSubtitles/Makefile
+/xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/Makefile
 /xbmc/cores/omxplayer/Makefile
 /xbmc/cores/paplayer/Makefile
 /xbmc/cores/playercorefactory/Makefile
