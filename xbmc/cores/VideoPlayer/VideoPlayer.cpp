@@ -2495,7 +2495,7 @@ void CVideoPlayer::HandleMessages()
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_SET_RECORD))
       {
-        CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+        CDVDInputStreamPVRManager* input = dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
         if(input)
           input->Record(*(CDVDMsgBool*)pMsg);
       }
@@ -2581,7 +2581,7 @@ void CVideoPlayer::HandleMessages()
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) == 0)
       {
         FlushBuffers(false);
-        CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+        CDVDInputStreamPVRManager* input = dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
         // TODO find a better solution for the "otherStreaHack"
         // a stream is not sopposed to be terminated before demuxer
         if (input && input->IsOtherStreamHack())
@@ -2605,7 +2605,7 @@ void CVideoPlayer::HandleMessages()
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT) == 0)
       {
         FlushBuffers(false);
-        CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+        CDVDInputStreamPVRManager* input = dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
         if (input && input->IsOtherStreamHack())
         {
           SAFE_DELETE(m_pDemuxer);
@@ -2624,7 +2624,7 @@ void CVideoPlayer::HandleMessages()
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV) ||
                pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREVIEW_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREVIEW_PREV))
       {
-        CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+        CDVDInputStreamPVRManager* input = dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
         if (input)
         {
           bool bSwitchSuccessful(false);
@@ -4170,7 +4170,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
     }
   }
 
-  if (dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream))
+  if (dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream))
   {
     switch (action.GetID())
     {
@@ -4516,11 +4516,11 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   if(m_pInputStream)
   {
     // override from input stream if needed
-    CDVDInputStream::IChannel* pChannel = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
-    if (pChannel)
+    CDVDInputStreamPVRManager* pvrStream = dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
+    if (pvrStream)
     {
-      state.canrecord = pChannel->CanRecord();
-      state.recording = pChannel->IsRecording();
+      state.canrecord = pvrStream->CanRecord();
+      state.recording = pvrStream->IsRecording();
     }
 
     CDVDInputStream::IDisplayTime* pDisplayTime = dynamic_cast<CDVDInputStream::IDisplayTime*>(m_pInputStream);
@@ -4629,7 +4629,7 @@ void CVideoPlayer::UpdateApplication(double timeout)
   && m_UpdateApplication + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
     return;
 
-  CDVDInputStream::IChannel* pStream = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+  CDVDInputStreamPVRManager* pStream = dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
   if(pStream)
   {
     CFileItem item(g_application.CurrentFileItem());
