@@ -1147,9 +1147,12 @@ void CRenderManager::UpdateResolution()
 
 void CRenderManager::TriggerUpdateResolution(float fps, int width, int flags)
 {
-  m_fps = fps;
-  m_width = width;
-  m_flags = flags;
+  if (width)
+  {
+    m_fps = fps;
+    m_width = width;
+    m_flags = flags;
+  }
   m_bTriggerUpdateResolution = true;
 }
 

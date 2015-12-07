@@ -411,6 +411,8 @@ public:
 
   virtual RESOLUTION GetRenderResolution() { return RES_INVALID; };
 
+  virtual void TriggerUpdateResolution() {};
+
   virtual bool IsRenderingVideo() { return false; };
 
   virtual bool IsRenderingGuiLayer() { return false; };
