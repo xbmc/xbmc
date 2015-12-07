@@ -2231,7 +2231,10 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
 
   if (m_mode == MODE_RAW)
   {
+    // TODO
+    // implement pause bursts for passthrough, until then we need to exit here
     stream->m_syncClock = CActiveAEStream::INSYNC;
+    return ret;
   }
 
   if (stream->m_syncClock == CActiveAEStream::STARTSYNC)
