@@ -340,7 +340,7 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
         database.Close();
 
         // fill in the details of the failed dependency
-        failedDep.first = addon->ID();
+        failedDep.first = addonID;
         failedDep.second = version.asString();
 
         return false;
