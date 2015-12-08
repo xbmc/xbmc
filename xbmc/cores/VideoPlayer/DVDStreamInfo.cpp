@@ -39,6 +39,7 @@ void CDVDStreamInfo::Clear()
 {
   codec = AV_CODEC_ID_NONE;
   type = STREAM_NONE;
+  realtime = false;
   software = false;
   codec_tag  = 0;
   flags = 0;
@@ -80,6 +81,7 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
 {
   if( codec     != right.codec
   ||  type      != right.type
+  ||  realtime  != right.realtime
   ||  codec_tag != right.codec_tag
   ||  flags     != right.flags
   ||  filename  != right.filename)
@@ -138,6 +140,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
 {
   codec = right.codec;
   type = right.type;
+  realtime = right.realtime;
   codec_tag = right.codec_tag;
   flags = right.flags;
   filename = right.filename;
@@ -195,6 +198,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
 
   codec = right.codec;
   type = right.type;
+  realtime = right.realtime;
   codec_tag = right.codec_fourcc;
   profile   = right.profile;
   level     = right.level;
