@@ -659,14 +659,21 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   if (status != MMAL_SUCCESS)
     CLog::Log(LOGERROR, "%s::%s Failed to disable interpolate timestamps mode on %s (status=%x %s)", CLASSNAME, __func__, m_dec_input->name, status, mmal_status_to_string(status));
 
+  // limit number of callback structures in video_decode to reduce latency. Too low and video hangs.
+  // negative numbers have special meaning. -1=size of DPB -2=size of DPB+1
+  status = mmal_port_parameter_set_uint32(m_dec_input, MMAL_PARAMETER_VIDEO_MAX_NUM_CALLBACKS, -3);
+  if (status != MMAL_SUCCESS)
+    CLog::Log(LOGERROR, "%s::%s Failed to configure max num callbacks on %s (status=%x %s)", CLASSNAME, __func__, m_dec_input->name, status, mmal_status_to_string(status));
+
   status = mmal_port_format_commit(m_dec_input);
   if (status != MMAL_SUCCESS)
   {
     CLog::Log(LOGERROR, "%s::%s Failed to commit format for decoder input port %s (status=%x %s)", CLASSNAME, __func__, m_dec_input->name, status, mmal_status_to_string(status));
     return false;
   }
-  m_dec_input->buffer_size = m_dec_input->buffer_size_recommended;
-  m_dec_input->buffer_num = m_dec_input->buffer_num_recommended;
+  // use a small number of large buffers to keep latency under control
+  m_dec_input->buffer_size = 1024*1024;
+  m_dec_input->buffer_num = 2;
 
   m_dec_input->userdata = (struct MMAL_PORT_USERDATA_T *)this;
   status = mmal_port_enable(m_dec_input, dec_input_port_cb_static);
@@ -755,13 +762,15 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
      if (pData)
      {
        // 500ms timeout
-       buffer = mmal_queue_timedwait(m_dec_input_pool->queue, 500);
-       if (!buffer)
        {
-         CLog::Log(LOGERROR, "%s::%s - mmal_queue_get failed", CLASSNAME, __func__);
-         return VC_ERROR;
+         CSingleExit unlock(m_sharedSection);
+         buffer = mmal_queue_timedwait(m_dec_input_pool->queue, 500);
+         if (!buffer)
+         {
+           CLog::Log(LOGERROR, "%s::%s - mmal_queue_get failed", CLASSNAME, __func__);
+           return VC_ERROR;
+         }
        }
-
        mmal_buffer_header_reset(buffer);
        buffer->cmd = 0;
        buffer->pts = pts == DVD_NOPTS_VALUE ? MMAL_TIME_UNKNOWN : pts;
@@ -835,11 +844,26 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
 
   if (!m_output_ready.empty())
     ret |= VC_PICTURE;
-  else
+  if (mmal_queue_length(m_dec_input_pool->queue) > 0)
     ret |= VC_BUFFER;
 
+  bool slept = false;
+  if (!ret)
+  {
+    slept = true;
+    {
+      // otherwise we busy spin
+      CSingleExit unlock(m_sharedSection);
+      Sleep(10);
+    }
+    if (!m_output_ready.empty())
+      ret |= VC_PICTURE;
+    if (mmal_queue_length(m_dec_input_pool->queue) > 0)
+      ret |= VC_BUFFER;
+  }
+
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s - ret(%x) pics(%d) queued(%.2f) (%.2f:%.2f) full(%d)", CLASSNAME, __func__, ret, m_output_ready.size(), queued*1e-6, m_demuxerPts*1e-6, m_decoderPts*1e-6, full);
+    CLog::Log(LOGDEBUG, "%s::%s - ret(%x) pics(%d) inputs(%d) slept(%d) queued(%.2f) (%.2f:%.2f) full(%d)", CLASSNAME, __func__, ret, m_output_ready.size(), mmal_queue_length(m_dec_input_pool->queue), slept, queued*1e-6, m_demuxerPts*1e-6, m_decoderPts*1e-6, full);
 
   return ret;
 }
