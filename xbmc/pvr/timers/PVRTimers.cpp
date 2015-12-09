@@ -698,11 +698,12 @@ CFileItemPtr CPVRTimers::GetTimerForEpgTag(const CFileItem *item) const
       {
         CPVRTimerInfoTagPtr timer = *timerIt;
 
-        if (timer->GetEpgInfoTag() == epgTag || 
-            (timer->m_iClientChannelUid == channel->UniqueID() &&
-            timer->m_bIsRadio == channel->IsRadio() &&
-            timer->StartAsUTC() <= epgTag->StartAsUTC() &&
-            timer->EndAsUTC() >= epgTag->EndAsUTC()))
+        if (!timer->IsRepeating() &&
+            (timer->GetEpgInfoTag() == epgTag ||
+             (timer->m_iClientChannelUid == channel->UniqueID() &&
+             timer->m_bIsRadio == channel->IsRadio() &&
+             timer->StartAsUTC() <= epgTag->StartAsUTC() &&
+             timer->EndAsUTC() >= epgTag->EndAsUTC())))
         {
           CFileItemPtr fileItem(new CFileItem(timer));
           return fileItem;
