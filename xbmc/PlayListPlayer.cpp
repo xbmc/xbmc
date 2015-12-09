@@ -194,7 +194,7 @@ bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
     return false;
   }
 
-  return Play(iSong, false);
+  return Play(iSong, "", false);
 }
 
 bool CPlayListPlayer::PlayPrevious()
@@ -217,7 +217,7 @@ bool CPlayListPlayer::PlayPrevious()
     return false;
   }
 
-  return Play(iSong, false, true);
+  return Play(iSong, "", false, true);
 }
 
 bool CPlayListPlayer::IsSingleItemNonRepeatPlaylist() const
@@ -235,7 +235,7 @@ bool CPlayListPlayer::Play()
   if (playlist.size() <= 0) 
     return false;
 
-  return Play(0);
+  return Play(0, "");
 }
 
 bool CPlayListPlayer::PlaySongId(int songId)
@@ -250,12 +250,12 @@ bool CPlayListPlayer::PlaySongId(int songId)
   for (int i = 0; i < playlist.size(); i++)
   {
     if (playlist[i]->HasMusicInfoTag() && playlist[i]->GetMusicInfoTag()->GetDatabaseId() == songId)
-      return Play(i);
+      return Play(i, "");
   }
   return Play();
 }
 
-bool CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPrevious /* = false */)
+bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = false */, bool bPlayPrevious /* = false */)
 {
   if (m_iCurrentPlayList == PLAYLIST_NONE)
     return false;
@@ -284,7 +284,7 @@ bool CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
   m_bPlaybackStarted = false;
 
   unsigned int playAttempt = XbmcThreads::SystemClockMillis();
-  PlayBackRet ret = g_application.PlayFile(*item, bAutoPlay);
+  PlayBackRet ret = g_application.PlayFile(*item, player, bAutoPlay);
   if (ret == PLAYBACK_CANCELED)
     return false;
   if (ret == PLAYBACK_FAIL)
@@ -732,7 +732,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
   {
   case TMSG_PLAYLISTPLAYER_PLAY:
     if (pMsg->param1 != -1)
-      Play(pMsg->param1);
+      Play(pMsg->param1, "");
     else
       Play();
     break;
@@ -818,7 +818,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
     if (pMsg->lpVoid && pMsg->param2 == 0)
     {
       CFileItem *item = (CFileItem *)pMsg->lpVoid;
-      g_application.PlayFile(*item, pMsg->param1 != 0);
+      g_application.PlayFile(*item, "", pMsg->param1 != 0);
       delete item;
       return;
     }
@@ -854,7 +854,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
         //For single item lists try PlayMedia. This covers some more cases where a playlist is not appropriate
         //It will fall through to PlayFile
         if (list->Size() == 1 && !(*list)[0]->IsPlayList())
-          g_application.PlayMedia(*((*list)[0]), playlist);
+          g_application.PlayMedia(*((*list)[0]), pMsg->strParam, playlist);
         else
         {
           // Handle "shuffled" option if present
@@ -865,7 +865,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
             SetRepeat(playlist, (PLAYLIST::REPEAT_STATE)list->GetProperty("repeat").asInteger(), false);
 
           Add(playlist, (*list));
-          Play(pMsg->param1);
+          Play(pMsg->param1, pMsg->strParam);
         }
       }
 

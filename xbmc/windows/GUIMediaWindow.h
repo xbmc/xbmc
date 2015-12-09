@@ -69,7 +69,7 @@ protected:
   // custom methods
   virtual void SetupShares();
   virtual void GoParentFolder();
-  virtual bool OnClick(int iItem);
+  virtual bool OnClick(int iItem, const std::string &player = "");
 
   /* \brief React to a "Select" action on an item in a view.
    \param item selected item.
@@ -150,8 +150,8 @@ protected:
   void GetDirectoryHistoryString(const CFileItem* pItem, std::string& strHistoryString);
   void SetHistoryForPath(const std::string& strDirectory);
   virtual void LoadPlayList(const std::string& strFileName) {}
-  virtual bool OnPlayMedia(int iItem);
-  virtual bool OnPlayAndQueueMedia(const CFileItemPtr &item);
+  virtual bool OnPlayMedia(int iItem, const std::string &player = "");
+  virtual bool OnPlayAndQueueMedia(const CFileItemPtr &item, std::string player = "");
   void UpdateFileList();
   virtual void OnDeleteItem(int iItem);
   void OnRenameItem(int iItem);

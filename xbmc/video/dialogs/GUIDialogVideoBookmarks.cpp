@@ -416,7 +416,7 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
   else
     bookmark.playerState.clear();
 
-  bookmark.player = CPlayerCoreFactory::GetInstance().GetPlayerName(g_application.GetCurrentPlayer());
+  bookmark.player = g_application.GetCurrentPlayer();
 
   // create the thumbnail image
   float aspectRatio = g_application.m_pPlayer->GetRenderAspectRatio();
