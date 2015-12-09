@@ -75,6 +75,7 @@ static const translateField fields[] = {
   { "lastplayed",        FieldLastPlayed,              CDatabaseQueryRule::DATE_FIELD,     NULL,                                 false, 568 },
   { "inprogress",        FieldInProgress,              CDatabaseQueryRule::BOOLEAN_FIELD,  NULL,                                 false, 575 },
   { "rating",            FieldRating,                  CDatabaseQueryRule::NUMERIC_FIELD,  CSmartPlaylistRule::ValidateRating,   false, 563 },
+  { "userrating",        FieldUserRating,              CDatabaseQueryRule::NUMERIC_FIELD,  CSmartPlaylistRule::ValidateMyRating, false, 38018 },
   { "votes",             FieldVotes,                   CDatabaseQueryRule::TEXT_FIELD,     StringValidation::IsPositiveInteger,  false, 205 },
   { "top250",            FieldTop250,                  CDatabaseQueryRule::NUMERIC_FIELD,  NULL,                                 false, 13409 },
   { "mpaarating",        FieldMPAA,                    CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 20074 },
@@ -265,6 +266,15 @@ bool CSmartPlaylistRule::ValidateRating(const std::string &input, void *data)
          rating >= 0.0 && rating <= 10.0;
 }
 
+bool CSmartPlaylistRule::ValidateMyRating(const std::string &input, void *data)
+{
+  std::string strRating = input;
+  StringUtils::Trim(strRating);
+
+  int rating = atoi(strRating.c_str());
+  return StringValidation::IsPositiveInteger(input, data) && rating <= 10;
+}
+
 std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
 {
   std::vector<Field> fields;
@@ -299,6 +309,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldPlaycount);
     fields.push_back(FieldLastPlayed);
     fields.push_back(FieldRating);
+    fields.push_back(FieldUserRating);
     fields.push_back(FieldComment);
     fields.push_back(FieldMoods);
   }
@@ -316,6 +327,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldAlbumType);
     fields.push_back(FieldMusicLabel);
     fields.push_back(FieldRating);
+    fields.push_back(FieldUserRating);
     fields.push_back(FieldPlaycount);
   }
   else if (type == "artists")
@@ -338,6 +350,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldTvShowStatus);
     fields.push_back(FieldVotes);
     fields.push_back(FieldRating);
+    fields.push_back(FieldUserRating);
     fields.push_back(FieldYear);
     fields.push_back(FieldGenre);
     fields.push_back(FieldDirector);
@@ -360,6 +373,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldPlot);
     fields.push_back(FieldVotes);
     fields.push_back(FieldRating);
+    fields.push_back(FieldUserRating);
     fields.push_back(FieldTime);
     fields.push_back(FieldWriter);
     fields.push_back(FieldAirDate);
@@ -388,6 +402,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldTagline);
     fields.push_back(FieldVotes);
     fields.push_back(FieldRating);
+    fields.push_back(FieldUserRating);
     fields.push_back(FieldTime);
     fields.push_back(FieldWriter);
     fields.push_back(FieldPlaycount);
@@ -420,6 +435,8 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldPath);
     fields.push_back(FieldPlaycount);
     fields.push_back(FieldLastPlayed);
+    fields.push_back(FieldRating);
+    fields.push_back(FieldUserRating);
     fields.push_back(FieldTime);
     fields.push_back(FieldDirector);
     fields.push_back(FieldStudio);
@@ -464,6 +481,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
     orders.push_back(SortByPlaycount);
     orders.push_back(SortByLastPlayed);
     orders.push_back(SortByRating);
+    orders.push_back(SortByUserRating);
   }
   else if (type == "albums")
   {
@@ -477,6 +495,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
     orders.push_back(SortByAlbumType);
     //orders.push_back(SortByMusicLabel);
     orders.push_back(SortByRating);
+    orders.push_back(SortByUserRating);
     orders.push_back(SortByPlaycount);
   }
   else if (type == "artists")
@@ -489,6 +508,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
     orders.push_back(SortByTvShowStatus);
     orders.push_back(SortByVotes);
     orders.push_back(SortByRating);
+    orders.push_back(SortByUserRating);
     orders.push_back(SortByYear);
     orders.push_back(SortByGenre);
     orders.push_back(SortByNumberOfEpisodes);
@@ -506,6 +526,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
     orders.push_back(SortByTvShowTitle);
     orders.push_back(SortByVotes);
     orders.push_back(SortByRating);
+    orders.push_back(SortByUserRating);
     orders.push_back(SortByTime);
     orders.push_back(SortByPlaycount);
     orders.push_back(SortByLastPlayed);
@@ -523,6 +544,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
     orders.push_back(SortBySortTitle);
     orders.push_back(SortByVotes);
     orders.push_back(SortByRating);
+    orders.push_back(SortByUserRating);
     orders.push_back(SortByTime);
     orders.push_back(SortByPlaycount);
     orders.push_back(SortByLastPlayed);
@@ -548,6 +570,8 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
     orders.push_back(SortByPlaycount);
     orders.push_back(SortByLastPlayed);
     orders.push_back(SortByTime);
+    orders.push_back(SortByRating);
+    orders.push_back(SortByUserRating);
     orders.push_back(SortByStudio);
     orders.push_back(SortByDateAdded);
   }
