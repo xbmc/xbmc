@@ -196,9 +196,10 @@ public:
   bool AddAlbum(CAlbum& album);
   /*! \brief Update an album and all its nested entities (artists, songs, infoSongs, etc)
    \param album the album to update
+   \param OverrideTagData whether or not to replace the artist and song data, defaults to true.
    \return true or false
    */
-  bool UpdateAlbum(CAlbum& album);
+  bool UpdateAlbum(CAlbum& album, bool OverrideTagData = true);
 
   /*! \brief Add an album and all its songs to the database
    \param album the album to add
