@@ -54,6 +54,7 @@
 static const CGUIDialogMediaFilter::Filter filterList[] = {
   { "movies",       FieldTitle,         556,    SettingTypeString,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_CONTAINS },
   { "movies",       FieldRating,        563,    SettingTypeNumber,  "range",  "number",   CDatabaseQueryRule::OPERATOR_BETWEEN },
+  { "movies",       FieldUserRating,    38018,  SettingTypeInteger, "range",  "integer",  CDatabaseQueryRule::OPERATOR_BETWEEN },
   //{ "movies",       FieldTime,          180,    SettingTypeInteger, "range",  "time",     CDatabaseQueryRule::OPERATOR_BETWEEN },
   { "movies",       FieldInProgress,    575,    SettingTypeInteger, "toggle", "",         CDatabaseQueryRule::OPERATOR_FALSE },
   { "movies",       FieldYear,          562,    SettingTypeInteger, "range",  "integer",  CDatabaseQueryRule::OPERATOR_BETWEEN },
@@ -65,7 +66,8 @@ static const CGUIDialogMediaFilter::Filter filterList[] = {
 
   { "tvshows",      FieldTitle,         556,    SettingTypeString,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_CONTAINS },
   //{ "tvshows",      FieldTvShowStatus,  126,    SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
-  { "tvshows",      FieldRating,        563,    SettingTypeNumber,  "range",  "integer",  CDatabaseQueryRule::OPERATOR_BETWEEN },
+  { "tvshows",      FieldRating,        563,    SettingTypeNumber,  "range",  "number",   CDatabaseQueryRule::OPERATOR_BETWEEN },
+  { "tvshows",      FieldUserRating,    38018,  SettingTypeInteger, "range",  "integer",  CDatabaseQueryRule::OPERATOR_BETWEEN },
   { "tvshows",      FieldInProgress,    575,    SettingTypeInteger, "toggle", "",         CDatabaseQueryRule::OPERATOR_FALSE },
   { "tvshows",      FieldYear,          562,    SettingTypeInteger, "range",  "integer",  CDatabaseQueryRule::OPERATOR_BETWEEN },
   { "tvshows",      FieldTag,           20459,  SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
@@ -76,12 +78,15 @@ static const CGUIDialogMediaFilter::Filter filterList[] = {
 
   { "episodes",     FieldTitle,         556,    SettingTypeString,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_CONTAINS },
   { "episodes",     FieldRating,        563,    SettingTypeNumber,  "range",  "number",   CDatabaseQueryRule::OPERATOR_BETWEEN },
+  { "episodes",     FieldUserRating,    38018,  SettingTypeInteger, "range",  "integer",  CDatabaseQueryRule::OPERATOR_BETWEEN },
   { "episodes",     FieldAirDate,       20416,  SettingTypeInteger, "range",  "date",     CDatabaseQueryRule::OPERATOR_BETWEEN },
   { "episodes",     FieldInProgress,    575,    SettingTypeInteger, "toggle", "",         CDatabaseQueryRule::OPERATOR_FALSE },
   { "episodes",     FieldActor,         20337,  SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
   { "episodes",     FieldDirector,      20339,  SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
 
   { "musicvideos",  FieldTitle,         556,    SettingTypeString,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_CONTAINS },
+  { "musicvideos",  FieldRating,        563,    SettingTypeNumber,  "range",  "number",   CDatabaseQueryRule::OPERATOR_BETWEEN },
+  { "musicvideos",  FieldUserRating,    38018,  SettingTypeInteger, "range",  "integer",  CDatabaseQueryRule::OPERATOR_BETWEEN },
   { "musicvideos",  FieldArtist,        557,    SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
   { "musicvideos",  FieldAlbum,         558,    SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
   //{ "musicvideos",  FieldTime,          180,    SettingTypeInteger, "range",  "time",  CDatabaseQueryRule::OPERATOR_BETWEEN },
@@ -97,6 +102,7 @@ static const CGUIDialogMediaFilter::Filter filterList[] = {
   { "albums",       FieldAlbum,         556,    SettingTypeString,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_CONTAINS },
   { "albums",       FieldArtist,        557,    SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
   { "albums",       FieldRating,        563,    SettingTypeNumber,  "range",  "number",   CDatabaseQueryRule::OPERATOR_BETWEEN },
+  { "albums",       FieldUserRating,    38018,  SettingTypeInteger, "range",  "integer",  CDatabaseQueryRule::OPERATOR_BETWEEN },
   { "albums",       FieldAlbumType,     564,    SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
   { "albums",       FieldYear,          562,    SettingTypeInteger, "range",  "integer",  CDatabaseQueryRule::OPERATOR_BETWEEN },
   { "albums",       FieldGenre,         515,    SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
@@ -107,6 +113,7 @@ static const CGUIDialogMediaFilter::Filter filterList[] = {
   { "songs",        FieldArtist,        557,    SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
   { "songs",        FieldTime,          180,    SettingTypeInteger, "range",  "time",     CDatabaseQueryRule::OPERATOR_BETWEEN },
   { "songs",        FieldRating,        563,    SettingTypeNumber,  "range",  "number",   CDatabaseQueryRule::OPERATOR_BETWEEN },
+  { "songs",        FieldUserRating,    38018,  SettingTypeInteger, "range",  "integer",  CDatabaseQueryRule::OPERATOR_BETWEEN },
   { "songs",        FieldYear,          562,    SettingTypeInteger, "range",  "integer",  CDatabaseQueryRule::OPERATOR_BETWEEN },
   { "songs",        FieldGenre,         515,    SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
   { "songs",        FieldPlaycount,     567,    SettingTypeInteger, "range",  "integer",  CDatabaseQueryRule::OPERATOR_BETWEEN },
@@ -743,7 +750,14 @@ void CGUIDialogMediaFilter::GetStringListOptions(const CSetting *setting, std::v
 
 void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interval, int &max)
 {
-  if (filter.field == FieldYear)
+  if (filter.field == FieldUserRating &&
+     (m_mediaType == "movies" || m_mediaType == "tvshows" || m_mediaType == "episodes"|| m_mediaType == "musicvideos" || m_mediaType == "albums" || m_mediaType == "songs"))
+  {
+    min = 0;
+    interval = 1;
+    max = 10;
+  }
+  else if (filter.field == FieldYear)
   {
     min = 0;
     interval = 1;
@@ -825,7 +839,7 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
 void CGUIDialogMediaFilter::GetRange(const Filter &filter, float &min, float &interval, float &max)
 {
   if (filter.field == FieldRating &&
-     (m_mediaType == "movies" || m_mediaType == "tvshows" || m_mediaType == "episodes" || m_mediaType == "albums" || m_mediaType == "songs"))
+     (m_mediaType == "movies" || m_mediaType == "tvshows" || m_mediaType == "episodes" || m_mediaType == "musicvideos" || m_mediaType == "albums" || m_mediaType == "songs"))
   {
     min = 0.0f;
     interval = 0.1f;
