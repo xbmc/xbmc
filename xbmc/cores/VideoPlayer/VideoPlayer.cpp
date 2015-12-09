@@ -1795,10 +1795,11 @@ void CVideoPlayer::HandlePlaySpeed()
 
   if (m_caching == CACHESTATE_DONE)
   {
-    if (m_playSpeed == DVD_PLAYSPEED_NORMAL && !isInMenu && m_syncTimer.IsTimePast())
+    if (m_playSpeed == DVD_PLAYSPEED_NORMAL && !isInMenu)
     {
       // take action is audio or video stream is stalled
-      if (m_VideoPlayerAudio->IsStalled() || m_VideoPlayerVideo->IsStalled())
+      if ((m_VideoPlayerAudio->IsStalled() || m_VideoPlayerVideo->IsStalled()) &&
+          m_syncTimer.IsTimePast())
       {
         if (m_pInputStream->IsRealtime())
         {
