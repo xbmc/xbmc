@@ -22,6 +22,10 @@ ifeq (@USE_LIBAMCODEC@,1)
 SRCS += RendererAML.cpp
 endif
 
+ifeq ($(findstring osx,@ARCH@),osx)
+SRCS += RendererVDA.cpp
+endif
+
 LIB=HwDecRender.a
 
 include ../../../../../Makefile.include
