@@ -8757,7 +8757,11 @@ msgctxt "#19076"
 msgid "Folder"
 msgstr ""
 
-#empty string with id 19077
+#. Label of the option to hide disabled timers (in confluence sideblade) in timer window.
+#: skin.confluence
+msgctxt "#19077"
+msgid "Hide disabled"
+msgstr ""
 
 #. Label of channel selector list in PVR timer settings dialog
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp

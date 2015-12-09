@@ -1632,6 +1632,10 @@
           <level>4</level>
           <default>true</default>
         </setting>
+        <setting id="pvrtimers.hidedisabledtimers" type="boolean" label="" help="">
+          <default>false</default>
+          <level>4</level>
+        </setting>
       </group>
     </category>
   </section>
