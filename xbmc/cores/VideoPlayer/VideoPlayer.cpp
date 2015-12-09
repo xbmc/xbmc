@@ -1860,7 +1860,20 @@ void CVideoPlayer::HandlePlaySpeed()
   {
     bool video = m_CurrentVideo.id < 0 || (m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC);
     bool audio = m_CurrentAudio.id < 0 || (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC);
-    if (video && audio)
+
+    if (m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_INSYNC &&
+        m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC)
+    {
+      m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_INSYNC;
+      m_VideoPlayerAudio->SendMessage(new CDVDMsgDouble(CDVDMsg::GENERAL_RESYNC, m_clock.GetClock()), 1);
+    }
+    else if (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_INSYNC &&
+             m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC)
+    {
+      m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_INSYNC;
+      m_VideoPlayerVideo->SendMessage(new CDVDMsgDouble(CDVDMsg::GENERAL_RESYNC, m_clock.GetClock()), 1);
+    }
+    else if (video && audio)
     {
       double clock = 0;
       if (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC)
