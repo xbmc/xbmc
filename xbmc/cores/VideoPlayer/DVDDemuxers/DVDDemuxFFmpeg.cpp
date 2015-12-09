@@ -577,6 +577,9 @@ void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
   if(!m_pFormatContext)
     return;
 
+  if (m_speed == iSpeed)
+    return;
+
   if(m_speed != DVD_PLAYSPEED_PAUSE && iSpeed == DVD_PLAYSPEED_PAUSE)
   {
     m_pInput->Pause(m_currentPts);
