@@ -119,7 +119,8 @@ bool CRendererAML::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
   ManageDisplay();
 
   CAMLCodec *codec = static_cast<CAMLCodec*>(m_buffers[m_iYV12RenderBuffer].hwDec);
-  codec->SetVideoRect(m_sourceRect, m_destRect);
+  if (codec)
+    codec->SetVideoRect(m_sourceRect, m_destRect);
 
   return true;
 }

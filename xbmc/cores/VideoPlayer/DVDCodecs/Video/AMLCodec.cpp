@@ -1832,7 +1832,7 @@ bool CAMLCodec::GetPicture(DVDVideoPicture *pDvdVideoPicture)
     return false;
 
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
-  pDvdVideoPicture->format = RENDER_FMT_BYPASS;
+  pDvdVideoPicture->format = RENDER_FMT_AML;
   pDvdVideoPicture->iDuration = (double)(am_private->video_rate * DVD_TIME_BASE) / UNIT_FREQ;
 
   pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
