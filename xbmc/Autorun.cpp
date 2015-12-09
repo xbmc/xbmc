@@ -125,7 +125,7 @@ bool CAutorun::PlayDisc(const std::string& path, bool bypassSettings, bool start
     g_windowManager.SendMessage( msg );
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     // Start playing the items we inserted
-    return g_playlistPlayer.Play(nSize);
+    return g_playlistPlayer.Play(nSize, "");
   }
 
   return bPlaying;
@@ -194,7 +194,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
           g_playlistPlayer.SetShuffle (PLAYLIST_VIDEO, false);
           g_playlistPlayer.Add(PLAYLIST_VIDEO, item);
           g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-          g_playlistPlayer.Play(0);
+          g_playlistPlayer.Play(0, "");
           return true;
         }
 
@@ -215,7 +215,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
           g_playlistPlayer.SetShuffle (PLAYLIST_VIDEO, false);
           g_playlistPlayer.Add(PLAYLIST_VIDEO, item);
           g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-          g_playlistPlayer.Play(0);
+          g_playlistPlayer.Play(0, "");
           return true;
         }
 
@@ -304,14 +304,14 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
             item.m_lStartOffset = STARTOFFSET_RESUME;
 
             // get playername
-            std::string hdVideoPlayer = CPlayerCoreFactory::GetInstance().GetPlayerName(CPlayerCoreFactory::GetInstance().GetDefaultPlayer(item));
+            std::string hdVideoPlayer = CPlayerCoreFactory::GetInstance().GetDefaultPlayer(item);
             
             // Single *.xpl or *.ifo files require an external player to handle playback.
             // If no matching rule was found, VideoPlayer will be default player.
-            if (hdVideoPlayer != "VideoPlayer")
+            if (hdVideoPlayer != "videoplayer")
             {
               CLog::Log(LOGINFO,"HD DVD: External singlefile playback initiated: %s",hddvdname.c_str());
-              g_application.PlayFile(item, false);
+              g_application.PlayFile(item, hdVideoPlayer, false);
               return true;
             } else
               CLog::Log(LOGINFO,"HD DVD: No external player found. Fallback to internal one.");
@@ -323,7 +323,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
           g_playlistPlayer.SetShuffle (PLAYLIST_VIDEO, false);
           g_playlistPlayer.Add(PLAYLIST_VIDEO, items);
           g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-          g_playlistPlayer.Play(0);
+          g_playlistPlayer.Play(0, "");
           return true;
         }
 				
@@ -346,7 +346,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
             g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
             g_playlistPlayer.Add(PLAYLIST_VIDEO, items);
             g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-            g_playlistPlayer.Play(0);
+            g_playlistPlayer.Play(0, "");
             return true;
           }
         }
@@ -406,7 +406,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
       g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
       g_playlistPlayer.Add(PLAYLIST_VIDEO, itemlist);
       g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-      g_playlistPlayer.Play(0);
+      g_playlistPlayer.Play(0, "");
     }
   }
   // then music

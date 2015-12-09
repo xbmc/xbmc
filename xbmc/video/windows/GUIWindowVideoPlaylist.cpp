@@ -146,7 +146,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
       {
         g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
         g_playlistPlayer.Reset();
-        g_playlistPlayer.Play(m_viewControl.GetSelectedItem());
+        g_playlistPlayer.Play(m_viewControl.GetSelectedItem(), "");
         UpdateButtons();
       }
       else if (iControl == CONTROL_BTNNEXT)
@@ -322,7 +322,7 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
   MarkPlaying();
 }
 
-bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem)
+bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem, const std::string &player)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
   if (g_partyModeManager.IsEnabled())
@@ -341,7 +341,7 @@ bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem)
         pPlaylistItem->GetVideoInfoTag()->m_resumePoint = pItem->GetVideoInfoTag()->m_resumePoint;
     }
     // now play item
-    g_playlistPlayer.Play( iItem );
+    g_playlistPlayer.Play(iItem, player);
   }
   return true;
 }
@@ -405,15 +405,15 @@ void CGUIWindowVideoPlaylist::GetContextButtons(int itemNumber, CContextButtons 
     {
       CFileItemPtr item = m_vecItems->Get(itemNumber);
       // check what players we have, if we have multiple display play with option
-      VECPLAYERCORES vecCores;
+      std::vector<std::string> players;
       if (item->IsVideoDb())
       {
         CFileItem item2(item->GetVideoInfoTag()->m_strFileNameAndPath, false);
-        CPlayerCoreFactory::GetInstance().GetPlayers(item2, vecCores);
+        CPlayerCoreFactory::GetInstance().GetPlayers(item2, players);
       }
       else
-        CPlayerCoreFactory::GetInstance().GetPlayers(*item, vecCores);
-      if (vecCores.size() > 1)
+        CPlayerCoreFactory::GetInstance().GetPlayers(*item, players);
+      if (players.size() > 1)
         buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
 
       if (XFILE::CFavouritesDirectory::IsFavourite(item.get(), GetID()))
@@ -453,17 +453,17 @@ bool CGUIWindowVideoPlaylist::OnContextButton(int itemNumber, CONTEXT_BUTTON but
       if (!item)
         break;
 
-      VECPLAYERCORES vecCores;
+      std::vector<std::string> players;
       if (item->IsVideoDb())
       {
         CFileItem item2(*item->GetVideoInfoTag());
-        CPlayerCoreFactory::GetInstance().GetPlayers(item2, vecCores);
+        CPlayerCoreFactory::GetInstance().GetPlayers(item2, players);
       }
       else
-        CPlayerCoreFactory::GetInstance().GetPlayers(*item, vecCores);
-      g_application.m_eForcedNextPlayer = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(vecCores);
-      if (g_application.m_eForcedNextPlayer != EPC_NONE)
-        OnClick(itemNumber);
+        CPlayerCoreFactory::GetInstance().GetPlayers(*item, players);
+      std::string player = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(players);
+      if (!player.empty())
+        OnClick(itemNumber, player);
       return true;
     }
 

@@ -1135,7 +1135,7 @@ bool CPVRManager::PlayMedia(const CFileItem& item)
     return true;
   }
 
-  return g_application.PlayFile(pvrItem, false) == PLAYBACK_OK;
+  return g_application.PlayFile(pvrItem, "videoplayer", false) == PLAYBACK_OK;
 }
 
 void CPVRManager::UpdateCurrentChannel(void)

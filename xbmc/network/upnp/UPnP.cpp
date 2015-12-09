@@ -383,8 +383,8 @@ public:
       return false;
 
     CPlayerCoreFactory::GetInstance().OnPlayerDiscovered((const char*)device->GetUUID()
-                                          ,(const char*)device->GetFriendlyName()
-                                          , EPC_UPNPPLAYER);
+                                          ,(const char*)device->GetFriendlyName());
+    
     m_registeredRenderers.insert(std::string(device->GetUUID().GetChars()));
     return true;
   }

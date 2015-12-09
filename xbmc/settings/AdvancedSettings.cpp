@@ -65,7 +65,6 @@ void CAdvancedSettings::OnSettingsLoaded()
   Load();
 
   // default players?
-  CLog::Log(LOGNOTICE, "Default DVD Player: %s", m_videoDefaultVideoPlayer.c_str());
   CLog::Log(LOGNOTICE, "Default Video Player: %s", m_videoDefaultPlayer.c_str());
   CLog::Log(LOGNOTICE, "Default Audio Player: %s", m_audioDefaultPlayer.c_str());
 
@@ -141,7 +140,6 @@ void CAdvancedSettings::Initialize()
   m_videoPPFFmpegDeint = "linblenddeint";
   m_videoPPFFmpegPostProc = "ha:128:7,va,dr";
   m_videoDefaultPlayer = "VideoPlayer";
-  m_videoDefaultVideoPlayer = "VideoPlayer";
   m_videoIgnoreSecondsAtStart = 3*60;
   m_videoIgnorePercentAtEnd   = 8.0f;
   m_videoPlayCountMinimumPercent = 90.0f;
@@ -497,7 +495,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetFloat(pElement, "subsdelayrange", m_videoSubsDelayRange, 10, 600);
     XMLUtils::GetFloat(pElement, "audiodelayrange", m_videoAudioDelayRange, 10, 600);
     XMLUtils::GetString(pElement, "defaultplayer", m_videoDefaultPlayer);
-    XMLUtils::GetString(pElement, "defaultVideoPlayer", m_videoDefaultVideoPlayer);
     XMLUtils::GetBoolean(pElement, "fullscreenonmoviestart", m_fullScreenOnMovieStart);
     // 101 on purpose - can be used to never automark as watched
     XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_videoPlayCountMinimumPercent, 0.0f, 101.0f);

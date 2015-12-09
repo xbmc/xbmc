@@ -189,7 +189,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_mediacodecForceSoftwareRendring;
 
     std::string m_videoDefaultPlayer;
-    std::string m_videoDefaultVideoPlayer;
     float m_videoPlayCountMinimumPercent;
 
     float m_slideshowBlackBarCompensation;

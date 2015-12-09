@@ -891,7 +891,7 @@ void CGUIMediaWindow::OnCacheFileItems(CFileItemList &items)
 // \brief With this function you can react on a users click in the list/thumb panel.
 // It returns true, if the click is handled.
 // This function calls OnPlayMedia()
-bool CGUIMediaWindow::OnClick(int iItem)
+bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return true;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
@@ -1035,11 +1035,11 @@ bool CGUIMediaWindow::OnClick(int iItem)
     if (autoplay && !g_partyModeManager.IsEnabled() && 
         !pItem->IsPlayList())
     {
-      return OnPlayAndQueueMedia(pItem);
+      return OnPlayAndQueueMedia(pItem, player);
     }
     else
     {
-      return OnPlayMedia(iItem);
+      return OnPlayMedia(iItem, player);
     }
   }
 
@@ -1279,7 +1279,7 @@ void CGUIMediaWindow::SetHistoryForPath(const std::string& strDirectory)
 // \brief Override if you want to change the default behavior, what is done
 // when the user clicks on a file.
 // This function is called by OnClick()
-bool CGUIMediaWindow::OnPlayMedia(int iItem)
+bool CGUIMediaWindow::OnPlayMedia(int iItem, const std::string &player)
 {
   // Reset Playlistplayer, playback started now does
   // not use the playlistplayer.
@@ -1291,9 +1291,9 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem)
 
   bool bResult = false;
   if (pItem->IsInternetStream() || pItem->IsPlayList())
-    bResult = g_application.PlayMedia(*pItem, m_guiState->GetPlaylist());
+    bResult = g_application.PlayMedia(*pItem, player, m_guiState->GetPlaylist());
   else
-    bResult = g_application.PlayFile(*pItem) == PLAYBACK_OK;
+    bResult = g_application.PlayFile(*pItem, player) == PLAYBACK_OK;
 
   if (pItem->m_lStartOffset == STARTOFFSET_RESUME)
     pItem->m_lStartOffset = 0;
@@ -1304,7 +1304,7 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem)
 // \brief Override if you want to change the default behavior of what is done
 // when the user clicks on a file in a "folder" with similar files.
 // This function is called by OnClick()
-bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item)
+bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string player)
 {
   //play and add current directory to temporary playlist
   int iPlaylist = m_guiState->GetPlaylist();
@@ -1358,7 +1358,7 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item)
 
     // play
     g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
-    g_playlistPlayer.Play(mediaToPlay);
+    g_playlistPlayer.Play(mediaToPlay, player);
   }
   return true;
 }

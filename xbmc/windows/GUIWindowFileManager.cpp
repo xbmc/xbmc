@@ -582,7 +582,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
   }
   else
   {
-    OnStart(pItem.get());
+    OnStart(pItem.get(), "");
     return ;
   }
   // UpdateButtons();
@@ -590,7 +590,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
 
 // TODO 2.0: Can this be removed, or should we run without the "special" file directories while
 // in filemanager view.
-void CGUIWindowFileManager::OnStart(CFileItem *pItem)
+void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
 {
   // start playlists from file manager
   if (pItem->IsPlayList())
@@ -610,7 +610,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
   }
   if (pItem->IsAudio() || pItem->IsVideo())
   {
-    g_application.PlayFile(*pItem);
+    g_application.PlayFile(*pItem, player);
     return ;
   }
 #ifdef HAS_PYTHON
@@ -984,8 +984,8 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     showEntry=(!pItem->IsParentFolder() || (pItem->IsParentFolder() && m_vecItems[list]->GetSelectedCount()>0));
 
   // determine available players
-  VECPLAYERCORES vecCores;
-  CPlayerCoreFactory::GetInstance().GetPlayers(*pItem, vecCores);
+  std::vector<std::string>players;
+  CPlayerCoreFactory::GetInstance().GetPlayers(*pItem, players);
 
   // add the needed buttons
   CContextButtons choices;
@@ -997,7 +997,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
       choices.Add(1, 188); // SelectAll
     if (!pItem->IsParentFolder())
       choices.Add(2,  XFILE::CFavouritesDirectory::IsFavourite(pItem.get(), GetID()) ? 14077 : 14076); // Add/Remove Favourite
-    if (vecCores.size() > 1)
+    if (players.size() > 1)
       choices.Add(3, 15213); // Play Using...
     if (CanRename(list) && !pItem->IsParentFolder())
       choices.Add(4, 118); // Rename
@@ -1030,11 +1030,11 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   }
   if (btnid == 3)
   {
-    VECPLAYERCORES vecCores;
-    CPlayerCoreFactory::GetInstance().GetPlayers(*pItem, vecCores);
-    g_application.m_eForcedNextPlayer = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(vecCores);
-    if (g_application.m_eForcedNextPlayer != EPC_NONE)
-      OnStart(pItem.get());
+    std::vector<std::string>players;
+    CPlayerCoreFactory::GetInstance().GetPlayers(*pItem, players);
+    std::string player = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(players);
+    if (!player.empty())
+      OnStart(pItem.get(), player);
   }
   if (btnid == 4)
     OnRename(list);

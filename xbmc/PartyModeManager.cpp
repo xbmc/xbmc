@@ -507,7 +507,7 @@ void CPartyModeManager::SendUpdateMessage()
 void CPartyModeManager::Play(int iPos)
 {
   // move current song to the top if its not there
-  g_playlistPlayer.Play(iPos);
+  g_playlistPlayer.Play(iPos, "");
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Playing song at %i", iPos);
   Process();
 }

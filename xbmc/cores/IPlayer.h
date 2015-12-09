@@ -433,6 +433,9 @@ public:
 
   virtual std::string GetRenderVSyncState() { return ""; };
 
+  std::string m_name;
+  std::string m_type;
+
 protected:
   IPlayerCallback& m_callback;
 };

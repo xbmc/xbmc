@@ -165,7 +165,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
         m_guiState->SetPlaylistDirectory("playlistmusic://");
         g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
         g_playlistPlayer.Reset();
-        g_playlistPlayer.Play(m_viewControl.GetSelectedItem());
+        g_playlistPlayer.Play(m_viewControl.GetSelectedItem(), "");
         UpdateButtons();
       }
       else if (iControl == CONTROL_BTNNEXT)
@@ -414,7 +414,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   MarkPlaying();
 }
 
-bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
+bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem, const std::string &player)
 {
   if (g_partyModeManager.IsEnabled())
     g_partyModeManager.Play(iItem);
@@ -427,7 +427,7 @@ bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
         m_guiState->SetPlaylistDirectory(m_vecItems->GetPath());
 
       g_playlistPlayer.SetCurrentPlaylist( iPlaylist );
-      g_playlistPlayer.Play( iItem );
+      g_playlistPlayer.Play(iItem, player);
     }
     else
     {
@@ -436,7 +436,7 @@ bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
       CFileItemPtr pItem=m_vecItems->Get(iItem);
       g_playlistPlayer.Reset();
       g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
-      g_application.PlayFile(*pItem);
+      g_application.PlayFile(*pItem, player);
     }
   }
 
@@ -512,9 +512,9 @@ void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons 
     else
     { // aren't in a move
       // check what players we have, if we have multiple display play with option
-      VECPLAYERCORES vecCores;
-      CPlayerCoreFactory::GetInstance().GetPlayers(*item, vecCores);
-      if (vecCores.size() > 1)
+      std::vector<std::string> players;
+      CPlayerCoreFactory::GetInstance().GetPlayers(*item, players);
+      if (players.size() > 1)
         buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
 
       buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
@@ -555,11 +555,11 @@ bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON but
       if (!item)
         break;
 
-      VECPLAYERCORES vecCores;  
-      CPlayerCoreFactory::GetInstance().GetPlayers(*item, vecCores);
-      g_application.m_eForcedNextPlayer = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(vecCores);
-      if( g_application.m_eForcedNextPlayer != EPC_NONE )
-        OnClick(itemNumber);
+      std::vector<std::string> players;
+      CPlayerCoreFactory::GetInstance().GetPlayers(*item, players);
+      std::string player = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(players);
+      if (!player.empty())
+        OnClick(itemNumber, player);
       return true;
     }
   case CONTEXT_BUTTON_MOVE_ITEM:

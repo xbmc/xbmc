@@ -100,7 +100,7 @@ static int PlayOffset(const std::vector<std::string>& params)
     g_playlistPlayer.PlayNext(pos);
   // we start playing the 'other' playlist so we need to use play to initialize the player state
   else
-    g_playlistPlayer.Play(pos);
+    g_playlistPlayer.Play(pos, "");
 
   return 0;
 }
@@ -320,7 +320,7 @@ static int PlayerControl(const std::vector<std::string>& params)
     if (channel)
     {
       CFileItem playItem(channel);
-      if (!g_application.PlayMedia(playItem, channel->IsRadio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
+      if (!g_application.PlayMedia(playItem, "", channel->IsRadio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
       {
         CLog::Log(LOGERROR, "ResumeLiveTv could not play channel: %s", channel->ChannelName().c_str());
         return false;
@@ -442,7 +442,7 @@ static int PlayMedia(const std::vector<std::string>& params)
     g_playlistPlayer.ClearPlaylist(playlist);
     g_playlistPlayer.Add(playlist, items);
     g_playlistPlayer.SetCurrentPlaylist(playlist);
-    g_playlistPlayer.Play(playOffset);
+    g_playlistPlayer.Play(playOffset, "");
   }
   else
   {
@@ -451,7 +451,7 @@ static int PlayMedia(const std::vector<std::string>& params)
     g_playlistPlayer.SetCurrentPlaylist(playlist);
 
     // play media
-    if (!g_application.PlayMedia(item, playlist))
+    if (!g_application.PlayMedia(item, "", playlist))
     {
       CLog::Log(LOGERROR, "PlayMedia could not play media: %s", params[0].c_str());
       return false;
@@ -467,8 +467,7 @@ static int PlayMedia(const std::vector<std::string>& params)
  */
 static int PlayWith(const std::vector<std::string>& params)
 {
-  g_application.m_eForcedNextPlayer = CPlayerCoreFactory::GetInstance().GetPlayerCore(params[0]);
-  g_application.OnAction(CAction(ACTION_PLAYER_PLAY));
+  g_application.OnAction(CAction(ACTION_PLAYER_PLAY, params[0]));
 
   return 0;
 }
