@@ -1214,6 +1214,7 @@ int CRenderManager::AddVideoPicture(DVDVideoPicture& pic)
        || pic.format == RENDER_FMT_VAAPINV12
        || pic.format == RENDER_FMT_MEDIACODEC
        || pic.format == RENDER_FMT_MEDIACODECSURFACE
+       || pic.format == RENDER_FMT_AML
        || pic.format == RENDER_FMT_IMXMAP
        || pic.format == RENDER_FMT_MMAL)
     m_pRenderer->AddVideoPictureHW(pic, index);
