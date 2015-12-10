@@ -1628,10 +1628,6 @@
     </category>
     <category id="pvrtimers" label="" help="">
       <group id="1">
-        <setting id="pvrtimers.timertypefilter" type="boolean" label="" help="">
-          <level>4</level>
-          <default>true</default>
-        </setting>
         <setting id="pvrtimers.hidedisabledtimers" type="boolean" label="" help="">
           <default>false</default>
           <level>4</level>
