@@ -223,6 +223,13 @@
 					<label>842</label>
 					<visible>Window.IsActive(TVTimers) | Window.IsActive(RadioTimers)</visible>
 				</control>
+				<control type="radiobutton" id="9">
+					<description>Hide disabled timers</description>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>19077</label>
+					<visible>Window.IsActive(TVTimers) | Window.IsActive(RadioTimers)</visible>
+				</control>
 				<!-- Playback controls -->
 				<include>CommonNowPlaying_Controls</include>
 			</control>
