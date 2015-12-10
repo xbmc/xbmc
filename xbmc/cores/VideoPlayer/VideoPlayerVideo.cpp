@@ -249,7 +249,8 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
 void CVideoPlayerVideo::CloseStream(bool bWaitForBuffers)
 {
   // wait until buffers are empty
-  if (bWaitForBuffers && m_speed > 0) m_messageQueue.WaitUntilEmpty();
+  if (bWaitForBuffers && m_speed > 0)
+    m_messageQueue.WaitUntilEmpty();
 
   m_messageQueue.Abort();
 

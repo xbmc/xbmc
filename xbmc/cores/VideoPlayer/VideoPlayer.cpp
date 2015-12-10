@@ -1398,6 +1398,12 @@ void CVideoPlayer::Process()
       if(next == CDVDInputStream::NEXTSTREAM_OPEN)
       {
         SAFE_DELETE(m_pDemuxer);
+
+        SetCaching(CACHESTATE_DONE);
+        CLog::Log(LOGNOTICE, "VideoPlayer: next stream, wait for old streams to be finished");
+        CloseStream(m_CurrentAudio, true);
+        CloseStream(m_CurrentVideo, true);
+
         m_CurrentAudio.stream = NULL;
         m_CurrentVideo.stream = NULL;
         m_CurrentSubtitle.stream = NULL;
