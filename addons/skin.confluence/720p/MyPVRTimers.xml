@@ -132,7 +132,8 @@
 					<height>330</height>
 					<onup>50</onup>
 					<ondown>50</ondown>
-					<onleft>103</onleft>
+					<onleft condition="Window.IsActive(TVTimers) | Window.IsActive(RadioTimers)">103</onleft>
+					<onleft condition="Window.IsActive(TVTimerRules) | Window.IsActive(RadioTimerRules)">105</onleft>
 					<onright>73</onright>
 					<pagecontrol>73</pagecontrol>
 					<scrolltime>200</scrolltime>
@@ -323,7 +324,8 @@
 					<textureslidernib>ScrollBarNib.png</textureslidernib>
 					<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
 					<onleft>50</onleft>
-					<onright>103</onright>
+					<onright condition="Window.IsActive(TVTimers) | Window.IsActive(RadioTimers)">103</onright>
+					<onright condition="Window.IsActive(TVTimerRules) | Window.IsActive(RadioTimerRules)">105</onright>
 					<showonepage>false</showonepage>
 					<orientation>vertical</orientation>
 				</control>
@@ -422,7 +424,24 @@
 			<control type="label">
 				<depth>DepthFooter</depth>
 				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
-				<description>Page Count Label</description>
+				<description>Page Count Label for Timer Rules</description>
+				<right>40</right>
+				<top>53r</top>
+				<width>500</width>
+				<height>20</height>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<scroll>false</scroll>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>([COLOR=blue]$INFO[Container(50).NumItems][/COLOR]) $LOCALIZE[19138] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(50).CurrentPage]/$INFO[Container(50).NumPages][/COLOR])</label>
+				<visible>Window.IsActive(TVTimerRules) | Window.IsActive(RadioTimerRules)</visible>
+				<include>Window_OpenClose_Animation</include>
+			</control>
+			<control type="label">
+				<depth>DepthFooter</depth>
+				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
+				<description>Page Count Label for Timers</description>
 				<right>40</right>
 				<top>53r</top>
 				<width>500</width>
@@ -433,6 +452,7 @@
 				<align>right</align>
 				<aligny>center</aligny>
 				<label>([COLOR=blue]$INFO[Container(50).NumItems][/COLOR]) $LOCALIZE[19040] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(50).CurrentPage]/$INFO[Container(50).NumPages][/COLOR])</label>
+				<visible>Window.IsActive(TVTimers) | Window.IsActive(RadioTimers)</visible>
 				<include>Window_OpenClose_Animation</include>
 			</control>
 		</control>

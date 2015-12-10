@@ -71,17 +71,19 @@ using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
-int CPVRManager::m_pvrWindowIds[10] = {
+int CPVRManager::m_pvrWindowIds[12] = {
     WINDOW_TV_CHANNELS,
     WINDOW_TV_GUIDE,
     WINDOW_TV_RECORDINGS,
     WINDOW_TV_SEARCH,
     WINDOW_TV_TIMERS,
+    WINDOW_TV_TIMER_RULES,
     WINDOW_RADIO_CHANNELS,
     WINDOW_RADIO_GUIDE,
     WINDOW_RADIO_RECORDINGS,
     WINDOW_RADIO_SEARCH,
-    WINDOW_RADIO_TIMERS
+    WINDOW_RADIO_TIMERS,
+    WINDOW_RADIO_TIMER_RULES
 };
 
 CPVRManager::CPVRManager(void) :
@@ -237,11 +239,13 @@ bool CPVRManager::IsPVRWindowActive(void) const
       g_windowManager.IsWindowActive(WINDOW_TV_GUIDE) ||
       g_windowManager.IsWindowActive(WINDOW_TV_RECORDINGS) ||
       g_windowManager.IsWindowActive(WINDOW_TV_TIMERS) ||
+      g_windowManager.IsWindowActive(WINDOW_TV_TIMER_RULES) ||
       g_windowManager.IsWindowActive(WINDOW_TV_SEARCH) ||
       g_windowManager.IsWindowActive(WINDOW_RADIO_CHANNELS) ||
       g_windowManager.IsWindowActive(WINDOW_RADIO_GUIDE) ||
       g_windowManager.IsWindowActive(WINDOW_RADIO_RECORDINGS) ||
       g_windowManager.IsWindowActive(WINDOW_RADIO_TIMERS) ||
+      g_windowManager.IsWindowActive(WINDOW_RADIO_TIMER_RULES) ||
       g_windowManager.IsWindowActive(WINDOW_RADIO_SEARCH) ||
       g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_CHANNEL_MANAGER) ||
       g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_CHANNELS) ||
@@ -260,11 +264,13 @@ bool CPVRManager::IsPVRWindow(int windowId)
           windowId == WINDOW_TV_RECORDINGS ||
           windowId == WINDOW_TV_SEARCH ||
           windowId == WINDOW_TV_TIMERS ||
+          windowId == WINDOW_TV_TIMER_RULES ||
           windowId == WINDOW_RADIO_CHANNELS ||
           windowId == WINDOW_RADIO_GUIDE ||
           windowId == WINDOW_RADIO_RECORDINGS ||
           windowId == WINDOW_RADIO_SEARCH ||
-          windowId == WINDOW_RADIO_TIMERS);
+          windowId == WINDOW_RADIO_TIMERS ||
+          windowId == WINDOW_RADIO_TIMER_RULES);
 }
 
 bool CPVRManager::InstallAddonAllowed(const std::string& strAddonId) const
