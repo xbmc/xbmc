@@ -72,7 +72,7 @@ bool CPVRClients::IsInUse(const std::string& strAddonId) const
   CSingleLock lock(m_critSection);
 
   for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
-    if (itr->second->Enabled() && itr->second->ID() == strAddonId)
+    if (!CAddonMgr::GetInstance().IsAddonDisabled(itr->second->ID()) && itr->second->ID() == strAddonId)
       return true;
   return false;
 }
@@ -1128,7 +1128,7 @@ int CPVRClients::RegisterClient(AddonPtr client)
   CAddonDatabase database;
   PVR_CLIENT addon;
 
-  if (!client->Enabled() || !database.Open())
+  if (CAddonMgr::GetInstance().IsAddonDisabled(client->ID()) || !database.Open())
     return -1;
 
   CLog::Log(LOGDEBUG, "%s - registering add-on '%s'", __FUNCTION__, client->Name().c_str());
@@ -1180,8 +1180,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
 
   for (VECADDONS::iterator it = map.begin(); it != map.end(); ++it)
   {
-    bool bEnabled = (*it)->Enabled() &&
-        !CAddonMgr::GetInstance().IsAddonDisabled((*it)->ID());
+    bool bEnabled = !CAddonMgr::GetInstance().IsAddonDisabled((*it)->ID());
 
     if (!bEnabled && IsKnownClient(*it))
     {
@@ -1219,7 +1218,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
         }
 
         // throttle connection attempts, no more than 1 attempt per 5 seconds
-        if (!bDisabled && addon->Enabled())
+        if (!bDisabled && !CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()))
         {
           time_t now;
           CDateTime::GetCurrentDateTime().GetAsTime(now);
@@ -1230,7 +1229,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
         }
 
         // re-check the enabled status. newly installed clients get disabled when they're added to the db
-        if (!bDisabled && addon->Enabled() && (status = addon->Create(iClientId)) != ADDON_STATUS_OK)
+        if (!bDisabled && !CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && (status = addon->Create(iClientId)) != ADDON_STATUS_OK)
         {
           CLog::Log(LOGWARNING, "%s - failed to create add-on %s, status = %d", __FUNCTION__, (*it)->Name().c_str(), status);
           if (!addon.get() || !addon->DllLoaded() || status == ADDON_STATUS_PERMANENT_FAILURE)
