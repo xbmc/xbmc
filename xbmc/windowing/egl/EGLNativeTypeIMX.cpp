@@ -42,6 +42,7 @@
 
 CEGLNativeTypeIMX::CEGLNativeTypeIMX()
   : m_sar(0.0f)
+  , m_show(true)
   , m_display(NULL)
   , m_window(NULL)
 {
@@ -256,14 +257,21 @@ bool CEGLNativeTypeIMX::SetNativeResolution(const RESOLUTION_INFO &res)
   DestroyNativeWindow();
   DestroyNativeDisplay();
 
+  ShowWindow(false);
   SysfsUtils::SetString("/sys/class/graphics/fb0/mode", res.strId + "\n");
 
   CreateNativeDisplay();
+  CreateNativeWindow();
 
   CLog::Log(LOGDEBUG, "%s: %s",__FUNCTION__, res.strId.c_str());
 
+/*** a hack around old broken kernel.
+     should be removed ***/
+
   // Reset AE
   CAEFactory::DeviceChange();
+
+/*************************/
 
   return true;
 }
@@ -320,13 +328,26 @@ bool CEGLNativeTypeIMX::GetPreferredResolution(RESOLUTION_INFO *res) const
 
 bool CEGLNativeTypeIMX::ShowWindow(bool show)
 {
+  if (m_show == show)
+    return true;
+
+  CLog::Log(LOGDEBUG, ": %s %s", __FUNCTION__, show?"show":"hide");
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/blank", show ? 0 : 1 );
+
+  m_show = show;
+
+/*** a hack around old broken kernel.
+     should be removed ***/
+
   // Force vsync by default
   eglSwapInterval(g_Windowing.GetEGLDisplay(), 1);
   EGLint result = eglGetError();
   if(result != EGL_SUCCESS)
     CLog::Log(LOGERROR, "EGL error in %s: %x",__FUNCTION__, result);
 
-  return false;
+/*************************/
+
+  return true;
 }
 
 float CEGLNativeTypeIMX::GetMonitorSAR()
