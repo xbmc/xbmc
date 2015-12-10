@@ -247,7 +247,7 @@ ssize_t CWin32File::Write(const void* lpBuf, size_t uiBufSize)
     if (!WriteFile(m_hFile, dummyBuf.get(), 0, &bytesWritten, NULL))
       return -1;
 
-    assert(bytesWritten != 0);
+    assert(bytesWritten == 0);
     return 0;
   }
 
