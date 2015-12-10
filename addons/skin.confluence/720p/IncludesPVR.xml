@@ -230,13 +230,6 @@
 					<visible>Window.IsActive(TVRecordings) | Window.IsActive(RadioRecordings)</visible>
 				</control>
 				<control type="radiobutton" id="8">
-					<description>Group timers</description>
-					<textwidth>235</textwidth>
-					<include>ButtonCommonValues</include>
-					<label>842</label>
-					<visible>Window.IsActive(TVTimers) | Window.IsActive(RadioTimers)</visible>
-				</control>
-				<control type="radiobutton" id="9">
 					<description>Hide disabled timers</description>
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>

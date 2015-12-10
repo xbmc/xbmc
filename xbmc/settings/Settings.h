@@ -215,7 +215,6 @@ public:
   static const std::string SETTING_PVRPARENTAL_PIN;
   static const std::string SETTING_PVRPARENTAL_DURATION;
   static const std::string SETTING_PVRCLIENT_MENUHOOK;
-  static const std::string SETTING_PVRTIMERS_TIMERTYPEFILTER;
   static const std::string SETTING_PVRTIMERS_HIDEDISABLEDTIMERS;
   static const std::string SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS;
   static const std::string SETTING_MUSICLIBRARY_DOWNLOADINFO;
