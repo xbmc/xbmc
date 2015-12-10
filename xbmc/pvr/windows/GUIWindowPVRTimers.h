@@ -19,46 +19,19 @@
  *
  */
 
-#include "GUIWindowPVRBase.h"
+#include "GUIWindowPVRTimersBase.h"
 
-#include <memory>
-
-class CFileItem;
-typedef std::shared_ptr<CFileItem> CFileItemPtr;
+#include <string>
 
 namespace PVR
 {
-  class CGUIWindowPVRTimers : public CGUIWindowPVRBase
+  class CGUIWindowPVRTimers : public CGUIWindowPVRTimersBase
   {
   public:
     CGUIWindowPVRTimers(bool bRadio);
     virtual ~CGUIWindowPVRTimers(void) {};
 
-    bool OnMessage(CGUIMessage& message);
-    bool OnAction(const CAction &action);
-    void GetContextButtons(int itemNumber, CContextButtons &buttons);
-    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-    bool Update(const std::string &strDirectory, bool updateFilterPath = true);
-    void UpdateButtons(void);
-    void UnregisterObservers(void);
-    void ResetObservers(void);
-
   protected:
-    std::string GetDirectoryPath(void);
-
-  private:
-    bool ActionDeleteTimer(CFileItem *item);
-    bool ActionShowTimer(CFileItem *item);
-    bool ShowNewTimerDialog(void);
-
-    bool OnContextButtonActivate(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonEdit(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
-
-    CFileItemPtr m_currentFileItem;
+    virtual std::string GetDirectoryPath(void);
   };
 }

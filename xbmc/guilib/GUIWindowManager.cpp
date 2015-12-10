@@ -120,6 +120,7 @@
 #include "pvr/windows/GUIWindowPVRRecordings.h"
 #include "pvr/windows/GUIWindowPVRGuide.h"
 #include "pvr/windows/GUIWindowPVRTimers.h"
+#include "pvr/windows/GUIWindowPVRTimerRules.h"
 #include "pvr/windows/GUIWindowPVRSearch.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/dialogs/GUIDialogPVRChannelsOSD.h"
@@ -250,11 +251,13 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIWindowPVRRecordings(false));
   Add(new CGUIWindowPVRGuide(false));
   Add(new CGUIWindowPVRTimers(false));
+  Add(new CGUIWindowPVRTimerRules(false));
   Add(new CGUIWindowPVRSearch(false));
   Add(new CGUIWindowPVRChannels(true));
   Add(new CGUIWindowPVRRecordings(true));
   Add(new CGUIWindowPVRGuide(true));
   Add(new CGUIWindowPVRTimers(true));
+  Add(new CGUIWindowPVRTimerRules(true));
   Add(new CGUIDialogPVRRadioRDSInfo);
   Add(new CGUIWindowPVRSearch(true));
   Add(new CGUIDialogPVRGuideInfo);
@@ -342,11 +345,13 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_TV_RECORDINGS);
     Delete(WINDOW_TV_GUIDE);
     Delete(WINDOW_TV_TIMERS);
+    Delete(WINDOW_TV_TIMER_RULES);
     Delete(WINDOW_TV_SEARCH);
     Delete(WINDOW_RADIO_CHANNELS);
     Delete(WINDOW_RADIO_RECORDINGS);
     Delete(WINDOW_RADIO_GUIDE);
     Delete(WINDOW_RADIO_TIMERS);
+    Delete(WINDOW_RADIO_TIMER_RULES);
     Delete(WINDOW_RADIO_SEARCH);
     Delete(WINDOW_DIALOG_PVR_GUIDE_INFO);
     Delete(WINDOW_DIALOG_PVR_RECORDING_INFO);

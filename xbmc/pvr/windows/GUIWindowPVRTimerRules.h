@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -18,20 +19,19 @@
  *
  */
 
-#include "utils/StringUtils.h"
-#include "pvr/timers/PVRTimers.h"
+#include "GUIWindowPVRTimersBase.h"
 
-#include "GUIWindowPVRTimers.h"
+#include <string>
 
-using namespace PVR;
-
-CGUIWindowPVRTimers::CGUIWindowPVRTimers(bool bRadio) :
-  CGUIWindowPVRTimersBase(bRadio, bRadio ? WINDOW_RADIO_TIMERS : WINDOW_TV_TIMERS, "MyPVRTimers.xml")
+namespace PVR
 {
-}
+  class CGUIWindowPVRTimerRules : public CGUIWindowPVRTimersBase
+  {
+  public:
+    CGUIWindowPVRTimerRules(bool bRadio);
+    virtual ~CGUIWindowPVRTimerRules(void) {};
 
-std::string CGUIWindowPVRTimers::GetDirectoryPath(void)
-{
-  const std::string basePath(CPVRTimersPath(m_bRadio, false).GetPath());
-  return StringUtils::StartsWith(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath() : basePath;
+  protected:
+    virtual std::string GetDirectoryPath(void);
+  };
 }

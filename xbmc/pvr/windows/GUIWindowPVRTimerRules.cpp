@@ -21,17 +21,17 @@
 #include "utils/StringUtils.h"
 #include "pvr/timers/PVRTimers.h"
 
-#include "GUIWindowPVRTimers.h"
+#include "GUIWindowPVRTimerRules.h"
 
 using namespace PVR;
 
-CGUIWindowPVRTimers::CGUIWindowPVRTimers(bool bRadio) :
-  CGUIWindowPVRTimersBase(bRadio, bRadio ? WINDOW_RADIO_TIMERS : WINDOW_TV_TIMERS, "MyPVRTimers.xml")
+CGUIWindowPVRTimerRules::CGUIWindowPVRTimerRules(bool bRadio) :
+  CGUIWindowPVRTimersBase(bRadio, bRadio ? WINDOW_RADIO_TIMER_RULES : WINDOW_TV_TIMER_RULES, "MyPVRTimers.xml")
 {
 }
 
-std::string CGUIWindowPVRTimers::GetDirectoryPath(void)
+std::string CGUIWindowPVRTimerRules::GetDirectoryPath(void)
 {
-  const std::string basePath(CPVRTimersPath(m_bRadio, false).GetPath());
+  const std::string basePath(CPVRTimersPath(m_bRadio, true).GetPath());
   return StringUtils::StartsWith(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath() : basePath;
 }

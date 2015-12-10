@@ -268,15 +268,20 @@
 		</control>
 		<control type="button" id="90146">
 			<include>ButtonHomeSubCommonValues</include>
+			<label>19138</label>
+			<onclick>ActivateWindow(TVTimerRules)</onclick>
+		</control>
+		<control type="button" id="90147">
+			<include>ButtonHomeSubCommonValues</include>
 			<label>19040</label>
 			<onclick>ActivateWindow(TVTimers)</onclick>
 		</control>
-		<control type="button" id="90147">
+		<control type="button" id="90148">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>137</label>
 			<onclick>ActivateWindow(TVSearch)</onclick>
 		</control>
-		<control type="image" id="90148">
+		<control type="image" id="90149">
 			<width>35</width>
 			<height>35</height>
 			<texture border="0,0,0,3">HomeSubEnd.png</texture>
@@ -305,15 +310,20 @@
 		</control>
 		<control type="button" id="90246">
 			<include>ButtonHomeSubCommonValues</include>
+			<label>19138</label>
+			<onclick>ActivateWindow(RadioTimerRules)</onclick>
+		</control>
+		<control type="button" id="90247">
+			<include>ButtonHomeSubCommonValues</include>
 			<label>19040</label>
 			<onclick>ActivateWindow(RadioTimers)</onclick>
 		</control>
-		<control type="button" id="90247">
+		<control type="button" id="90248">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>137</label>
 			<onclick>ActivateWindow(RadioSearch)</onclick>
 		</control>
-		<control type="image" id="90248">
+		<control type="image" id="90249">
 			<width>35</width>
 			<height>35</height>
 			<texture border="0,0,0,3">HomeSubEnd.png</texture>
