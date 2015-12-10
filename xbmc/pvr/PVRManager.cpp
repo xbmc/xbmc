@@ -338,9 +338,6 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
   while (!Load() && IsInitialising())
   {
     CLog::Log(LOGERROR, "PVRManager - %s - failed to load PVR data, retrying", __FUNCTION__);
-    if (m_guiInfo) m_guiInfo->Stop();
-    if (m_addons) m_addons->Stop();
-    Cleanup();
     Sleep(1000);
   }
 
@@ -517,9 +514,6 @@ void CPVRManager::Process(void)
   while (!Load() && IsInitialising())
   {
     CLog::Log(LOGERROR, "PVRManager - %s - failed to load PVR data, retrying", __FUNCTION__);
-    if (m_guiInfo) m_guiInfo->Stop();
-    if (m_addons) m_addons->Stop();
-    Cleanup();
     Sleep(1000);
   }
 
