@@ -422,6 +422,15 @@ const std::string CSettings::SETTING_GENERAL_ADDONBROKENFILTER = "general.addonb
 const std::string CSettings::SETTING_SOURCE_VIDEOS = "source.videos";
 const std::string CSettings::SETTING_SOURCE_MUSIC = "source.music";
 const std::string CSettings::SETTING_SOURCE_PICTURES = "source.pictures";
+const std::string CSettings::SETTING_GAMES_KEYBOARD_PLAYERS = "gameskeyboard.keyboardplayers";
+const std::string CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_1 = "gameskeyboard.keyboardplayerconfig1";
+const std::string CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_2 = "gameskeyboard.keyboardplayerconfig2";
+const std::string CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_3 = "gameskeyboard.keyboardplayerconfig3";
+const std::string CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_4 = "gameskeyboard.keyboardplayerconfig4";
+const std::string CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_5 = "gameskeyboard.keyboardplayerconfig5";
+const std::string CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_6 = "gameskeyboard.keyboardplayerconfig6";
+const std::string CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_7 = "gameskeyboard.keyboardplayerconfig7";
+const std::string CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_8 = "gameskeyboard.keyboardplayerconfig8";
 
 CSettings::CSettings()
   : m_initialized(false)
@@ -1209,6 +1218,15 @@ void CSettings::InitializeISettingCallbacks()
   m_settingsManager->RegisterCallback(&CWakeOnAccess::GetInstance(), settingSet);
 
   settingSet.clear();
+  settingSet.insert(CSettings::SETTING_GAMES_KEYBOARD_PLAYERS);
+  settingSet.insert(CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_1);
+  settingSet.insert(CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_2);
+  settingSet.insert(CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_3);
+  settingSet.insert(CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_4);
+  settingSet.insert(CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_5);
+  settingSet.insert(CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_6);
+  settingSet.insert(CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_7);
+  settingSet.insert(CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_8);
   m_settingsManager->RegisterCallback(&GAME::CGameSettings::GetInstance(), settingSet);
 }
 

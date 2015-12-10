@@ -1,5 +1,6 @@
 SRCS  = PeripheralBus.cpp
 SRCS += virtual/PeripheralBusAddon.cpp
+SRCS += virtual/PeripheralBusApplication.cpp
 
 ifeq (@USE_ANDROID@,1)
 SRCS += android/AndroidJoystickState.cpp

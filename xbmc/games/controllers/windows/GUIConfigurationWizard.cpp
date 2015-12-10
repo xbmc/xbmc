@@ -37,8 +37,10 @@ using namespace GAME;
 // Duration to wait for axes to neutralize after mapping is finished
 #define POST_MAPPING_WAIT_TIME_MS  (5 * 1000)
 
-CGUIConfigurationWizard::CGUIConfigurationWizard() :
+CGUIConfigurationWizard::CGUIConfigurationWizard(bool bEmulation, unsigned int controllerNumber /* = 0 */) :
   CThread("GUIConfigurationWizard"),
+  m_bEmulation(bEmulation),
+  m_controllerNumber(controllerNumber),
   m_callback(nullptr)
 {
   InitializeState();
@@ -282,14 +284,19 @@ void CGUIConfigurationWizard::InstallHooks(void)
 
   g_peripherals.RegisterJoystickButtonMapper(this);
   g_peripherals.RegisterObserver(this);
-  CInputManager::GetInstance().RegisterKeyboardHandler(this);
+
+  // If we're not using emulation, allow keyboard input to abort prompt
+  if (!m_bEmulation)
+    CInputManager::GetInstance().RegisterKeyboardHandler(this);
 }
 
 void CGUIConfigurationWizard::RemoveHooks(void)
 {
   using namespace PERIPHERALS;
 
-  CInputManager::GetInstance().UnregisterKeyboardHandler(this);
+  if (!m_bEmulation)
+    CInputManager::GetInstance().UnregisterKeyboardHandler(this);
+
   g_peripherals.UnregisterObserver(this);
   g_peripherals.UnregisterJoystickButtonMapper(this);
 }

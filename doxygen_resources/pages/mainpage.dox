@@ -141,6 +141,7 @@
     - Clients (e.g. game clients implementing \ref KEYBOARD::IKeyboardHandler) call
       \ref CInputManager::RegisterKeyboardHandler to register themselves as eligible
       for keyboard input events.
+    - Keyboards can emulate Joysticks as described in KEYBOARD::CJoystickEmulation.
 */
 
 /*!

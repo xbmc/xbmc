@@ -16267,7 +16267,104 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr ""
 
-#empty strings from id 35103 to 35199
+#empty strings from id 35103 to 35149
+
+#. Name of keyboard category in the settings category window
+#: system/settings/settings.xml
+msgctxt "#35150"
+msgid "Keyboard"
+msgstr ""
+
+#. Name of group for configuring keyboard players
+#: system/settings/settings.xml
+msgctxt "#35151"
+msgid "Player configuration"
+msgstr ""
+
+#. Name of setting for enabling the keyboard during gameplay
+#: system/settings/settings.xml
+msgctxt "#35152"
+msgid "Enable keyboard"
+msgstr ""
+
+#. Description of setting with label #35152 "Enable keyboard"
+#: system/settings/settings.xml
+msgctxt "#35153"
+msgid "This allows the keyboard to emulate up to 8 game controllers. If disabled, the keyboard can still be used to control emulators like DOSBox which require a full keyboard."
+msgstr ""
+
+#. Setting name for number of keyboard players
+#: system/settings/settings.xml
+msgctxt "#35154"
+msgid "Number of keyboard players"
+msgstr ""
+
+#. Description of settings with label #35066
+#: system/settings/settings.xml
+msgctxt "#35155"
+msgid "Set the number of players using the keyboard. This is intended for devices that use keyboard drivers, but you can also see how many people fit around a keyboard!"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#35156"
+msgid "%i"
+msgstr ""
+
+#. Name of setting to configure a keyboard player's controller configuration
+#: system/settings/settings.xml
+msgctxt "#35157"
+msgid "Configure keyboard player 1"
+msgstr ""
+
+#. Name of setting to configure a keyboard player's controller configuration
+#: system/settings/settings.xml
+msgctxt "#35158"
+msgid "Configure keyboard player 2"
+msgstr ""
+
+#. Name of setting to configure a keyboard player's controller configuration
+#: system/settings/settings.xml
+msgctxt "#35159"
+msgid "Configure keyboard player 3"
+msgstr ""
+
+#. Name of setting to configure a keyboard player's controller configuration
+#: system/settings/settings.xml
+msgctxt "#35160"
+msgid "Configure keyboard player 4"
+msgstr ""
+
+#. Name of setting to configure a keyboard player's controller configuration
+#: system/settings/settings.xml
+msgctxt "#35161"
+msgid "Configure keyboard player 5"
+msgstr ""
+
+#. Name of setting to configure a keyboard player's controller configuration
+#: system/settings/settings.xml
+msgctxt "#35162"
+msgid "Configure keyboard player 6"
+msgstr ""
+
+#. Name of setting to configure a keyboard player's controller configuration
+#: system/settings/settings.xml
+msgctxt "#35163"
+msgid "Configure keyboard player 7"
+msgstr ""
+
+#. Name of setting to configure a keyboard player's controller configuration
+#: system/settings/settings.xml
+msgctxt "#35164"
+msgid "Configure keyboard player 8"
+msgstr ""
+
+#. Name of the keyboard-emulated controller in the list of peripherals
+#: xbmc/peripherals/bus/virtual/PeripheralBusApplication.cpp
+msgctxt "#35165"
+msgid "Keyboard player"
+msgstr ""
+
+#empty strings from id 35166 to 35199
 
 #. This string is an early meme from the late 1990's that made fun of the poor translation in the 16-bit game Zero Wing from the late 1980's. DO NOT TRANSLATE!
 #: system/settings/settings.xml

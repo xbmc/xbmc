@@ -36,14 +36,27 @@
 
 using namespace GAME;
 
-CGUIFeatureList::CGUIFeatureList(CGUIWindow* window) :
+CGUIFeatureList::CGUIFeatureList(CGUIWindow* window, const std::string& windowParam) :
   m_window(window),
   m_guiList(nullptr),
   m_guiButtonTemplate(nullptr),
   m_guiGroupTitle(nullptr),
   m_guiFeatureSeparator(nullptr),
-  m_wizard(new CGUIConfigurationWizard)
+  m_wizard(nullptr)
 {
+  if (windowParam.empty())
+  {
+    // Run wizard for all physical controllers
+    m_wizard = new CGUIConfigurationWizard(false);
+  }
+  else
+  {
+    // Run wizard for specified emulated controller
+    unsigned int number;
+    std::istringstream str(windowParam);
+    str >> number;
+    m_wizard = new CGUIConfigurationWizard(true, number);
+  }
 }
 
 CGUIFeatureList::~CGUIFeatureList(void)

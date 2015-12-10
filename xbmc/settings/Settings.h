@@ -378,6 +378,15 @@ public:
   static const std::string SETTING_SOURCE_VIDEOS;
   static const std::string SETTING_SOURCE_MUSIC;
   static const std::string SETTING_SOURCE_PICTURES;
+  static const std::string SETTING_GAMES_KEYBOARD_PLAYERS;
+  static const std::string SETTING_GAMES_KEYBOARD_PLAYERCONFIG_1;
+  static const std::string SETTING_GAMES_KEYBOARD_PLAYERCONFIG_2;
+  static const std::string SETTING_GAMES_KEYBOARD_PLAYERCONFIG_3;
+  static const std::string SETTING_GAMES_KEYBOARD_PLAYERCONFIG_4;
+  static const std::string SETTING_GAMES_KEYBOARD_PLAYERCONFIG_5;
+  static const std::string SETTING_GAMES_KEYBOARD_PLAYERCONFIG_6;
+  static const std::string SETTING_GAMES_KEYBOARD_PLAYERCONFIG_7;
+  static const std::string SETTING_GAMES_KEYBOARD_PLAYERCONFIG_8;
 
   /*!
    \brief Creates a new settings wrapper around a new settings manager.

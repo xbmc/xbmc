@@ -329,6 +329,12 @@
 		68D9167B1DD0430E00058B06 /* GUIDialogNewJoystick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D916781DD0430E00058B06 /* GUIDialogNewJoystick.cpp */; };
 		68D77CFF1CD1C5E4004C1735 /* GameSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D77CFD1CD1C5E4004C1735 /* GameSettings.cpp */; };
 		68D77D001CD1C5E4004C1735 /* GameSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D77CFD1CD1C5E4004C1735 /* GameSettings.cpp */; };
+		68D77D0A1CD1C64C004C1735 /* JoystickEmulation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D77D061CD1C64C004C1735 /* JoystickEmulation.cpp */; };
+		68D77D0B1CD1C64C004C1735 /* JoystickEmulation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D77D061CD1C64C004C1735 /* JoystickEmulation.cpp */; };
+		68D77D0E1CD1C672004C1735 /* PeripheralBusApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D77D0C1CD1C672004C1735 /* PeripheralBusApplication.cpp */; };
+		68D77D0F1CD1C672004C1735 /* PeripheralBusApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D77D0C1CD1C672004C1735 /* PeripheralBusApplication.cpp */; };
+		68D77D121CD1C68A004C1735 /* PeripheralJoystickEmulation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D77D101CD1C68A004C1735 /* PeripheralJoystickEmulation.cpp */; };
+		68D77D131CD1C68A004C1735 /* PeripheralJoystickEmulation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D77D101CD1C68A004C1735 /* PeripheralJoystickEmulation.cpp */; };
 		761170901C8B85F8006C6366 /* AddonGUIRenderingControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7611708C1C8B85F8006C6366 /* AddonGUIRenderingControl.cpp */; };
 		761170911C8B85F8006C6366 /* AddonGUIWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7611708E1C8B85F8006C6366 /* AddonGUIWindow.cpp */; };
 		76AEFB361C8F79BD00EF2EC0 /* AddonInterfaces.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E991C878F61000F5E80 /* AddonInterfaces.cpp */; };
@@ -2862,6 +2868,13 @@
 		68D916791DD0430E00058B06 /* GUIDialogNewJoystick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIDialogNewJoystick.h; path = joysticks/dialogs/GUIDialogNewJoystick.h; sourceTree = "<group>"; };
 		68D77CFD1CD1C5E4004C1735 /* GameSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GameSettings.cpp; path = games/GameSettings.cpp; sourceTree = "<group>"; };
 		68D77CFE1CD1C5E4004C1735 /* GameSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameSettings.h; path = games/GameSettings.h; sourceTree = "<group>"; };
+		68D77D021CD1C638004C1735 /* IKeyboardHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IKeyboardHandler.h; path = keyboard/IKeyboardHandler.h; sourceTree = "<group>"; };
+		68D77D061CD1C64C004C1735 /* JoystickEmulation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JoystickEmulation.cpp; path = keyboard/generic/JoystickEmulation.cpp; sourceTree = "<group>"; };
+		68D77D071CD1C64C004C1735 /* JoystickEmulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JoystickEmulation.h; path = keyboard/generic/JoystickEmulation.h; sourceTree = "<group>"; };
+		68D77D0C1CD1C672004C1735 /* PeripheralBusApplication.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBusApplication.cpp; sourceTree = "<group>"; };
+		68D77D0D1CD1C672004C1735 /* PeripheralBusApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusApplication.h; sourceTree = "<group>"; };
+		68D77D101CD1C68A004C1735 /* PeripheralJoystickEmulation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralJoystickEmulation.cpp; sourceTree = "<group>"; };
+		68D77D111CD1C68A004C1735 /* PeripheralJoystickEmulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralJoystickEmulation.h; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
 		6E97BDC00DA2B620003A2A89 /* EventPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventPacket.h; sourceTree = "<group>"; };
 		6E97BDC10DA2B620003A2A89 /* EventServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventServer.h; sourceTree = "<group>"; };
@@ -5487,6 +5500,7 @@
 			isa = PBXGroup;
 			children = (
 				68AE5BAB1C92419500C4D527 /* joysticks */,
+				68D77D011CD1C627004C1735 /* keyboard */,
 				E4991332174E5E5C00741B6D /* touch */,
 				18B7C8CB12942546009E7A26 /* ButtonTranslator.cpp */,
 				18B7C8CC12942546009E7A26 /* ButtonTranslator.h */,
@@ -5566,6 +5580,8 @@
 			children = (
 				68AE5BE91C92422C00C4D527 /* PeripheralBusAddon.cpp */,
 				68AE5BEA1C92422C00C4D527 /* PeripheralBusAddon.h */,
+				68D77D0C1CD1C672004C1735 /* PeripheralBusApplication.cpp */,
+				68D77D0D1CD1C672004C1735 /* PeripheralBusApplication.h */,
 				1DAFDB7A16DFDCA7007F8C68 /* PeripheralBusCEC.cpp */,
 				1DAFDB7B16DFDCA7007F8C68 /* PeripheralBusCEC.h */,
 			);
@@ -6341,6 +6357,24 @@
 				76EC19C51D15514200D4AF19 /* ActiveAEDSPProcess.h */,
 			);
 			name = AudioDSPAddons;
+			sourceTree = "<group>";
+		};
+		68D77D011CD1C627004C1735 /* keyboard */ = {
+			isa = PBXGroup;
+			children = (
+				68D77D031CD1C63B004C1735 /* generic */,
+				68D77D021CD1C638004C1735 /* IKeyboardHandler.h */,
+			);
+			name = keyboard;
+			sourceTree = "<group>";
+		};
+		68D77D031CD1C63B004C1735 /* generic */ = {
+			isa = PBXGroup;
+			children = (
+				68D77D061CD1C64C004C1735 /* JoystickEmulation.cpp */,
+				68D77D071CD1C64C004C1735 /* JoystickEmulation.h */,
+			);
+			name = generic;
 			sourceTree = "<group>";
 		};
 		76F4C37B1C8E927A00A1E64B /* InputStream */ = {
@@ -9465,6 +9499,8 @@
 				1D638127161E211E003603ED /* PeripheralImon.h */,
 				68AE5BED1C92424300C4D527 /* PeripheralJoystick.cpp */,
 				68AE5BEE1C92424300C4D527 /* PeripheralJoystick.h */,
+				68D77D101CD1C68A004C1735 /* PeripheralJoystickEmulation.cpp */,
+				68D77D111CD1C68A004C1735 /* PeripheralJoystickEmulation.h */,
 				F5E10526140AA38000175026 /* PeripheralNIC.cpp */,
 				F5E10527140AA38000175026 /* PeripheralNIC.h */,
 				F5E10528140AA38000175026 /* PeripheralNyxboard.cpp */,
@@ -9866,6 +9902,7 @@
 				E38E1FC70D25F9FD00618676 /* CodecFactory.cpp in Sources */,
 				E38E1FE90D25F9FD00618676 /* LinuxRendererGL.cpp in Sources */,
 				E38E1FEC0D25F9FD00618676 /* RenderManager.cpp in Sources */,
+				68D77D0E1CD1C672004C1735 /* PeripheralBusApplication.cpp in Sources */,
 				E38E1FF00D25F9FD00618676 /* VideoFilterShader.cpp in Sources */,
 				E38E1FF10D25F9FD00618676 /* YUV2RGBShader.cpp in Sources */,
 				2AFBB94C1CC608A200BAB340 /* GUIEPGGridContainerModel.cpp in Sources */,
@@ -9965,6 +10002,7 @@
 				E38E207D0D25F9FD00618676 /* GUIDialogButtonMenu.cpp in Sources */,
 				E38E207F0D25F9FD00618676 /* GUIDialogContextMenu.cpp in Sources */,
 				E38E20800D25F9FD00618676 /* GUIDialogFavourites.cpp in Sources */,
+				68D77D0A1CD1C64C004C1735 /* JoystickEmulation.cpp in Sources */,
 				E38E20810D25F9FD00618676 /* GUIDialogFileBrowser.cpp in Sources */,
 				E38E20830D25F9FD00618676 /* GUIDialogGamepad.cpp in Sources */,
 				E38E20890D25F9FD00618676 /* GUIDialogMediaSource.cpp in Sources */,
@@ -10469,6 +10507,7 @@
 				F5E10544140AA38100175026 /* GUIDialogPeripheralSettings.cpp in Sources */,
 				F5E10547140AA38100175026 /* Peripherals.cpp in Sources */,
 				F5E1138014357F3800175026 /* PeripheralCecAdapter.cpp in Sources */,
+				68D77D121CD1C68A004C1735 /* PeripheralJoystickEmulation.cpp in Sources */,
 				DF673AA51443819600A5A509 /* AddonManager.cpp in Sources */,
 				7C8E022B1BA35D0B0072E8B2 /* GUIContainerBuiltins.cpp in Sources */,
 				68B7E5E81D5FA9B300A5AEC0 /* GUIFeatureControls.cpp in Sources */,
@@ -11468,10 +11507,12 @@
 				E4991393174E5F0E00741B6D /* TagLibVFSStream.cpp in Sources */,
 				E4991394174E5F0E00741B6D /* TagLoaderTagLib.cpp in Sources */,
 				E4991395174E5F0E00741B6D /* GUIWindowMusicBase.cpp in Sources */,
+				68D77D0B1CD1C64C004C1735 /* JoystickEmulation.cpp in Sources */,
 				E4991396174E5F0E00741B6D /* GUIWindowMusicNav.cpp in Sources */,
 				E4991397174E5F0E00741B6D /* GUIWindowMusicPlaylist.cpp in Sources */,
 				E4991398174E5F0E00741B6D /* GUIWindowMusicPlaylistEditor.cpp in Sources */,
 				E499139A174E5F0E00741B6D /* GUIWindowVisualisation.cpp in Sources */,
+				68D77D0F1CD1C672004C1735 /* PeripheralBusApplication.cpp in Sources */,
 				E499139B174E5F0E00741B6D /* Album.cpp in Sources */,
 				E499139C174E5F0E00741B6D /* Artist.cpp in Sources */,
 				68AE5C0E1C92437900C4D527 /* GUIFeatureList.cpp in Sources */,
@@ -11562,6 +11603,7 @@
 				DF396ED41C42A25F00214C1A /* DictionaryUtils.mm in Sources */,
 				E49913E2174E5F8D00741B6D /* PlayListM3U.cpp in Sources */,
 				E49913E3174E5F8D00741B6D /* PlayListPLS.cpp in Sources */,
+				68D77D131CD1C68A004C1735 /* PeripheralJoystickEmulation.cpp in Sources */,
 				E49913E4174E5F8D00741B6D /* PlayListURL.cpp in Sources */,
 				E49913E5174E5F8D00741B6D /* PlayListWPL.cpp in Sources */,
 				E49913E6174E5F8D00741B6D /* PlayListXML.cpp in Sources */,

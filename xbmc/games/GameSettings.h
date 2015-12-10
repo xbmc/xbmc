@@ -33,6 +33,7 @@ public:
   virtual ~CGameSettings() { }
 
   // Inherited from ISettingCallback
+  virtual void OnSettingChanged(const CSetting *setting) override;
   virtual void OnSettingAction(const CSetting *setting) override;
 
 private:

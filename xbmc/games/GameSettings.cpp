@@ -19,14 +19,35 @@
  */
 
 #include "GameSettings.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/WindowIDs.h"
+#include "peripherals/Peripherals.h"
 #include "settings/lib/Setting.h"
+#include "settings/Settings.h"
+#include "utils/StringUtils.h"
+
+#include <cstring>
 
 using namespace GAME;
+
+#define SETTING_GAMES_KEYBOARD_PLAYERCONFIG_PREFIX  "gameskeyboard.keyboardplayerconfig" //! @todo
 
 CGameSettings& CGameSettings::GetInstance()
 {
   static CGameSettings gameSettingsInstance;
   return gameSettingsInstance;
+}
+
+void CGameSettings::OnSettingChanged(const CSetting *setting)
+{
+  if (setting == NULL)
+    return;
+
+  const std::string& settingId = setting->GetId();
+  if (settingId == CSettings::SETTING_GAMES_KEYBOARD_PLAYERS)
+  {
+    PERIPHERALS::g_peripherals.TriggerDeviceScan(PERIPHERALS::PERIPHERAL_BUS_APPLICATION);
+  }
 }
 
 void CGameSettings::OnSettingAction(const CSetting *setting)
@@ -35,5 +56,9 @@ void CGameSettings::OnSettingAction(const CSetting *setting)
     return;
 
   const std::string& settingId = setting->GetId();
-  // TODO
+  if (StringUtils::StartsWith(settingId, SETTING_GAMES_KEYBOARD_PLAYERCONFIG_PREFIX))
+  {
+    std::string strControllerIndex = settingId.substr(std::strlen(SETTING_GAMES_KEYBOARD_PLAYERCONFIG_PREFIX));
+    g_windowManager.ActivateWindow(WINDOW_DIALOG_GAME_CONTROLLERS, strControllerIndex);
+  }
 }
