@@ -194,7 +194,8 @@ void CVideoPlayerAudio::CloseStream(bool bWaitForBuffers)
   bool bWait = bWaitForBuffers && m_speed > 0 && !CAEFactory::IsSuspended();
 
   // wait until buffers are empty
-  if (bWait) m_messageQueue.WaitUntilEmpty();
+  if (bWait)
+    m_messageQueue.WaitUntilEmpty();
 
   // send abort message to the audio queue
   m_messageQueue.Abort();
