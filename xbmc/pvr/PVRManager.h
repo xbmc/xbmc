@@ -596,9 +596,10 @@ namespace PVR
     /*!
      * @brief Load at least one client and load all other PVR data after loading the client.
      * If some clients failed to load here, the pvrmanager will retry to load them every second.
+     * @param bShowProgress True, to show a progress dialog for the different load stages.
      * @return If at least one client and all pvr data was loaded, false otherwise.
      */
-    bool Load(void);
+    bool Load(bool bShowProgress);
 
     /*!
      * @brief Reset all properties.
