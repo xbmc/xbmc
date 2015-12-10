@@ -20,12 +20,16 @@
 
 #include "JNIBase.h"
 
+#include <algorithm>
+
 using namespace jni;
 int CJNIBase::m_sdk_version = -1;
 
-CJNIBase::CJNIBase(std::string classname):
-    m_className(classname)
+CJNIBase::CJNIBase(std::string classname)
 {
+  // Convert "the.class.name" to "the/class/name"
+  m_className = classname;
+  std::replace(m_className.begin(), m_className.end(), '.', '/');
 }
 
 CJNIBase::CJNIBase(const jhobject &object):

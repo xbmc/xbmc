@@ -107,7 +107,7 @@ std::vector<androidPackage> CXBMCApp::m_applications;
 
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
   : CJNIMainActivity(nativeActivity)
-  , CJNIBroadcastReceiver("org/xbmc/kodi/XBMCBroadcastReceiver")
+  , CJNIBroadcastReceiver(CJNIContext::getPackageName() + ".XBMCBroadcastReceiver")
 {
   m_xbmcappinstance = this;
   m_activity = nativeActivity;

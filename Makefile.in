@@ -213,8 +213,8 @@ INCLUDES=$(sort @INCLUDES@)
 
 CLEAN_FILES=@APP_NAME_LC@.bin @APP_NAME_LC@-xrandr lib@APP_NAME_LC@.so
 
-DISTCLEAN_FILES=config.h config.log config.status tools/Linux/@APP_NAME_LC@.sh \
-        tools/Linux/@APP_NAME_LC@-standalone.sh autom4te.cache config.h.in~ \
+DISTCLEAN_FILES=config.h config.log config.status tools/Linux/kodi.sh \
+        tools/Linux/kodi-standalone.sh autom4te.cache config.h.in~ \
         system/libcpluff-@ARCH@.so
 
 ifeq (@USE_LIBXBMC@,1)
@@ -493,14 +493,14 @@ endif
 
 install-scripts:
 	@install -d $(DESTDIR)$(bindir)
-	@install tools/Linux/@APP_NAME_LC@.sh $(DESTDIR)$(bindir)/@APP_NAME_LC@
+	@install tools/Linux/kodi.sh $(DESTDIR)$(bindir)/@APP_NAME_LC@
 	@cd $(DESTDIR)$(bindir); [ -L xbmc ] || [ -f xbmc ] || ln -s @APP_NAME_LC@ xbmc
-	@install tools/Linux/@APP_NAME_LC@-standalone.sh $(DESTDIR)$(bindir)/@APP_NAME_LC@-standalone
+	@install tools/Linux/kodi-standalone.sh $(DESTDIR)$(bindir)/@APP_NAME_LC@-standalone
 	@cd $(DESTDIR)$(bindir); [ -L xbmc-standalone ] || [ -f xbmc-standalone ] ||  ln -s @APP_NAME_LC@-standalone xbmc-standalone
 	@install -d $(DESTDIR)$(datarootdir)/@APP_NAME_LC@
 	@cd $(DESTDIR)$(datarootdir); [ -L xbmc ] || [ -d xbmc ] || ln -s @APP_NAME_LC@ xbmc
 	@install -d $(DESTDIR)$(datarootdir)/xsessions
-	@install -m 0644 tools/Linux/@APP_NAME_LC@-xsession.desktop $(DESTDIR)$(datarootdir)/xsessions/@APP_NAME_LC@.desktop
+	@install -m 0644 tools/Linux/kodi-xsession.desktop $(DESTDIR)$(datarootdir)/xsessions/@APP_NAME_LC@.desktop
 	@cd $(DESTDIR)$(datarootdir)/xsessions; [ -L xbmc.desktop ] || [ -f xbmc.desktop ] || ln -s @APP_NAME_LC@.desktop xbmc.desktop
 
 install-datas: install-scripts
@@ -534,7 +534,7 @@ endif
 endif
 	@# Icons and links
 	@install -d $(DESTDIR)$(datarootdir)/applications
-	@install -m 0644 tools/Linux/@APP_NAME_LC@.desktop $(DESTDIR)$(datarootdir)/applications/@APP_NAME_LC@.desktop
+	@install -m 0644 tools/Linux/kodi.desktop $(DESTDIR)$(datarootdir)/applications/@APP_NAME_LC@.desktop
 
 	@install -d $(DESTDIR)$(datadir)/icons/hicolor/16x16/apps
 	@install -m 0644 tools/Linux/packaging/media/icon16x16.png $(DESTDIR)$(datadir)/icons/hicolor/16x16/apps/@APP_NAME_LC@.png
