@@ -97,9 +97,9 @@
 		<value condition="Control.IsVisible(6)">([COLOR=blue]$INFO[Container(6).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(6).CurrentPage]/$INFO[Container(6).NumPages][/COLOR])</value>
 	</variable>
 	<variable name="PlayerControlsRepeatImageVar">
-		<value condition="Playlist.IsRepeatOne + Control.HasFocus(604)">OSDRepeatOneFO.png</value>
-		<value condition="Playlist.IsRepeat + Control.HasFocus(604)">OSDRepeatAllFO.png</value>
-		<value condition="Control.HasFocus(604)">OSDRepeatFO.png</value>
+		<value condition="Playlist.IsRepeatOne + Control.HasFocus(704)">OSDRepeatOneFO.png</value>
+		<value condition="Playlist.IsRepeat + Control.HasFocus(704)">OSDRepeatAllFO.png</value>
+		<value condition="Control.HasFocus(704)">OSDRepeatFO.png</value>
 		<value condition="Playlist.IsRepeatOne">OSDRepeatOneNF.png</value>
 		<value condition="Playlist.IsRepeat">OSDRepeatAllNF.png</value>
 		<value>OSDRepeatNF.png</value>
@@ -958,20 +958,26 @@
 					<texturenofocus>OSDNextTrackNF.png</texturenofocus>
 					<onclick>PlayerControl(Next)</onclick>
 				</control>
-				<control type="button" id="704">
+				<control type="group" id="799">
 					<width>39</width>
 					<height>39</height>
-					<label>-</label>
-					<texturefocus>-</texturefocus>
-					<texturenofocus>-</texturenofocus>
-					<onclick>PlayerControl(Repeat)</onclick>
-					<visible>!Window.IsVisible(MusicPlaylist) + !Window.IsVisible(VideoPlaylist) + !Player.HasVideo</visible>
-				</control>
-				<control type="image" id="713">
-					<width>39</width>
-					<height>39</height>
-					<texture>$VAR[PlayerControlsRepeatImageVar]</texture>
-					<visible>!Window.IsVisible(MusicPlaylist) + !Window.IsVisible(VideoPlaylist) + !Player.HasVideo</visible>
+					<control type="button" id="704">
+						<width>39</width>
+						<height>39</height>
+						<label>-</label>
+						<texturefocus>-</texturefocus>
+						<texturenofocus>-</texturenofocus>
+						<onleft>702</onleft>
+						<onright>705</onright>
+						<onclick>PlayerControl(Repeat)</onclick>
+						<visible>!Window.IsVisible(MusicPlaylist) + !Window.IsVisible(VideoPlaylist) + !Player.HasVideo</visible>
+					</control>
+					<control type="image" id="713">
+						<width>39</width>
+						<height>39</height>
+						<texture>$VAR[PlayerControlsRepeatImageVar]</texture>
+						<visible>!Window.IsVisible(MusicPlaylist) + !Window.IsVisible(VideoPlaylist) + !Player.HasVideo</visible>
+					</control>
 				</control>
 				<control type="togglebutton" id="705">
 					<width>39</width>
