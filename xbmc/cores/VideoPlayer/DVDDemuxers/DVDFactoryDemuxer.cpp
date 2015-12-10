@@ -96,8 +96,10 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool
 
     if(pOtherStream)
     {
-      /* Used for MediaPortal PVR addon (uses PVR otherstream for playback of rtsp streams) */
-      if (pOtherStream->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
+      /* Used for MediaPortal PVR addon (uses PVR otherstream for playback of rtsp streams)
+         and to allow usage if from addon defined on structure PVR_CHANNEL with strStreamURL. */
+      if (pOtherStream->IsStreamType(DVDSTREAM_TYPE_FFMPEG) ||
+          pOtherStream->IsStreamType(DVDSTREAM_TYPE_FILE))
       {
         std::unique_ptr<CDVDDemuxFFmpeg> demuxer(new CDVDDemuxFFmpeg());
         if(demuxer->Open(pOtherStream, streaminfo))
