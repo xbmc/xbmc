@@ -8573,8 +8573,11 @@ msgctxt "#19039"
 msgid "Are you sure you want to hide this channel?"
 msgstr ""
 
+#: addons/skin.confluence/720p/IncludesHomeMenuItems.xml
+#: addons/skin.confluence/720p/IncludesPVR.xml
+#: addons/skin.confluence/720p/MyPVRTimers.xml
 msgctxt "#19040"
-msgid "Timer"
+msgid "Timers"
 msgstr ""
 
 msgctxt "#19041"
