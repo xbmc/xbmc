@@ -41,6 +41,7 @@ public:
   bool SetNativeResolution(RESOLUTION_INFO& res);
   bool ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions);
   bool ShowWindow(bool show);
+  bool BringToFront();
   bool GetQuirks(int *quirks);
   bool GetPreferredResolution(RESOLUTION_INFO *res);
   bool GetNativeResolution(RESOLUTION_INFO *res);

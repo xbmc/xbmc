@@ -502,6 +502,11 @@ bool CWinSystemEGL::Show(bool raise)
   return m_egl->ShowWindow(true);
 }
 
+bool CWinSystemEGL::BringToFront()
+{
+  return m_egl->BringToFront();
+}
+
 void CWinSystemEGL::Register(IDispResource *resource)
 {
   CSingleLock lock(m_resourceSection);

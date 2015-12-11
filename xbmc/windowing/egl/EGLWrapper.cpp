@@ -202,6 +202,14 @@ bool CEGLWrapper::ShowWindow(bool show)
   return m_nativeTypes->ShowWindow(show);
 }
 
+bool CEGLWrapper::BringToFront()
+{
+  if (!m_nativeTypes)
+    return false;
+
+  return m_nativeTypes->BringToFront();
+}
+
 bool CEGLWrapper::GetQuirks(int *quirks)
 {
   if (!m_nativeTypes || !quirks)

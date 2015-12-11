@@ -3345,6 +3345,10 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (item.IsStack())
     return PlayStack(item, bRestart);
 
+  // If video, bring us to front
+  if (item.IsVideo())
+    g_Windowing.BringToFront();
+
   CPlayerOptions options;
 
   if( item.HasProperty("StartPercent") )

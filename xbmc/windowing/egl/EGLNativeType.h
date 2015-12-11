@@ -146,6 +146,9 @@ public:
     framebuffer */
   virtual bool  ShowWindow(bool show) = 0;
 
+/*! \brief Bring the current window to front */
+  virtual bool  BringToFront() = 0;
+
 protected:
   XBNativeDisplayType  m_nativeDisplay;
   XBNativeWindowType   m_nativeWindow;

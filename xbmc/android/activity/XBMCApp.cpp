@@ -487,6 +487,15 @@ int CXBMCApp::android_printf(const char *format, ...)
   return result;
 }
 
+void CXBMCApp::BringToFront()
+{
+  if (!m_hasFocus)
+  {
+    CLog::Log(LOGERROR, "CXBMCApp::BringToFront");
+    StartActivity(getPackageName());
+  }
+}
+
 int CXBMCApp::GetDPI()
 {
   if (m_activity == NULL || m_activity->assetManager == NULL)
