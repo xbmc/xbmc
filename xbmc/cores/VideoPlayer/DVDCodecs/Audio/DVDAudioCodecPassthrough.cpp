@@ -124,6 +124,10 @@ int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize)
 void CDVDAudioCodecPassthrough::GetData(DVDAudioFrame &frame)
 {
   frame.nb_frames = GetData(frame.data);
+
+  if (frame.nb_frames == 0)
+    return;
+
   frame.passthrough = true;
   frame.format = m_format;
   frame.planes = 1;
