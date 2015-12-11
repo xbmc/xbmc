@@ -357,12 +357,6 @@ bool CTextureBundleXPR::LoadTexture(const std::string& Filename, CBaseTexture** 
 
   WORD RealSize[2];
 
-  enum XPR_FLAGS
-  {
-    XPRFLAG_PALETTE = 0x00000001,
-    XPRFLAG_ANIM = 0x00000002
-  };
-
   BYTE* Next = UnpackedBuf;
 
   DWORD flags = Endian_SwapLE32(*(DWORD*)Next);
