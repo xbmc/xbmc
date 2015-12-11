@@ -83,8 +83,7 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
   ||  type      != right.type
   ||  realtime  != right.realtime
   ||  codec_tag != right.codec_tag
-  ||  flags     != right.flags
-  ||  filename  != right.filename)
+  ||  flags     != right.flags)
     return false;
 
   if( withextradata )
