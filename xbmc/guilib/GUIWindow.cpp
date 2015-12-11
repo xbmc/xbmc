@@ -776,8 +776,10 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
     }
   }
 
+#ifdef _DEBUG
   int64_t slend;
   slend = CurrentHostCounter();
+#endif
 
   // and now allocate resources
   CGUIControlGroup::AllocResources();
