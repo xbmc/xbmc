@@ -113,7 +113,6 @@ SelectionStream& CSelectionStreams::Get(StreamType type, int index)
     if(count == index)
       return m_Streams[i];
   }
-  CLog::Log(LOGERROR, "%s - failed to get stream", __FUNCTION__);
   return m_invalid;
 }
 
