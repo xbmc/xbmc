@@ -24,8 +24,7 @@
 
 #include <dlfcn.h>
 
-typeof(AMotionEvent_getAxisValue) *p_AMotionEvent_getAxisValue;
-typeof(AMotionEvent_getButtonState) *p_AMotionEvent_getButtonState;
+#define IS_FROM_SOURCE(v, s) ((v & s) == s)
 
 CEventLoop::CEventLoop(android_app* application)
   : m_enabled(false),
@@ -48,12 +47,6 @@ void CEventLoop::run(IActivityHandler &activityHandler, IInputHandler &inputHand
 
   m_activityHandler = &activityHandler;
   m_inputHandler = &inputHandler;
-
-  // missing in early NDKs, is present in r9b+
-  p_AMotionEvent_getAxisValue = (typeof(AMotionEvent_getAxisValue)*) dlsym(RTLD_DEFAULT, "AMotionEvent_getAxisValue");
-  // missing in NDK
-  p_AMotionEvent_getButtonState = (typeof(AMotionEvent_getButtonState)*) dlsym(RTLD_DEFAULT, "AMotionEvent_getButtonState");
-  CXBMCApp::android_printf("CEventLoop: AMotionEvent_getAxisValue: %p, AMotionEvent_getButtonState: %p", p_AMotionEvent_getAxisValue, p_AMotionEvent_getButtonState);
 
   CXBMCApp::android_printf("CEventLoop: starting event loop");
   while (1)
@@ -152,7 +145,7 @@ int32_t CEventLoop::processInput(AInputEvent* event)
   switch(type)
   {
     case AINPUT_EVENT_TYPE_KEY:
-      if (source & AINPUT_SOURCE_GAMEPAD || source & AINPUT_SOURCE_JOYSTICK)
+      if (IS_FROM_SOURCE(source, AINPUT_SOURCE_GAMEPAD) || IS_FROM_SOURCE(source, AINPUT_SOURCE_JOYSTICK))
       {
         if (m_inputHandler->onJoyStickKeyEvent(event))
           return true;
@@ -160,11 +153,11 @@ int32_t CEventLoop::processInput(AInputEvent* event)
       rtn = m_inputHandler->onKeyboardEvent(event);
       break;
     case AINPUT_EVENT_TYPE_MOTION:
-      if (source & AINPUT_SOURCE_TOUCHSCREEN)
+      if (IS_FROM_SOURCE(source, AINPUT_SOURCE_TOUCHSCREEN))
         rtn = m_inputHandler->onTouchEvent(event);
-      else if (source & AINPUT_SOURCE_MOUSE)
+      else if (IS_FROM_SOURCE(source, AINPUT_SOURCE_MOUSE))
         rtn = m_inputHandler->onMouseEvent(event);
-      else if (source & (AINPUT_SOURCE_GAMEPAD | AINPUT_SOURCE_JOYSTICK))
+      else if (IS_FROM_SOURCE(source, AINPUT_SOURCE_GAMEPAD) || IS_FROM_SOURCE(source, AINPUT_SOURCE_JOYSTICK))
         rtn = m_inputHandler->onJoyStickMotionEvent(event);
       break;
   }
