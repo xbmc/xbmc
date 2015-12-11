@@ -54,7 +54,6 @@ private:
   unsigned int       m_latentFrames;
   unsigned int       m_outputBufferIndex;
 
-  bool               m_outputBitstream;   ///< true if we're bistreaming into a LinearPCM stream rather than AC3 stream.
   unsigned int       m_planes;            ///< number of audio planes (1 if non-planar)
   unsigned int       m_frameSizePerPlane; ///< frame size (per plane) in bytes
   unsigned int       m_framesPerSecond;   ///< sample rate
