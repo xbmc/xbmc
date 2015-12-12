@@ -366,12 +366,14 @@ CRepositoryUpdateJob::FetchStatus CRepositoryUpdateJob::FetchIfChanged(const std
     if (ShouldCancel(m_repo->m_dirs.size() + std::distance(m_repo->m_dirs.cbegin(), it), total))
       return STATUS_ERROR;
 
-    if (!CRepository::Parse(*it, addons))
+    VECADDONS tmp;
+    if (!CRepository::Parse(*it, tmp))
     {
       CLog::Log(LOGERROR, "CRepositoryUpdateJob[%s] failed to read or parse "
           "directory '%s'", m_repo->ID().c_str(), it->info.c_str());
       return STATUS_ERROR;
     }
+    addons.insert(addons.end(), tmp.begin(), tmp.end());
   }
 
   SetProgress(total, total);
