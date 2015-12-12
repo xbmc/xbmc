@@ -1383,6 +1383,7 @@ msgid "(0=auto)"
 msgstr ""
 
 #: xbmc/music/MusicDatabase.cpp
+#: xbmc/pvr/PVRManager.cpp
 msgctxt "#313"
 msgid "Cleaning database"
 msgstr ""
