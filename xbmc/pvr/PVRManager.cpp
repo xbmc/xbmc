@@ -753,8 +753,9 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
   g_EpgContainer.Stop();
 
   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  pDlgProgress->SetLine(0, CVariant{""});
-  pDlgProgress->SetLine(1, CVariant{g_localizeStrings.Get(19187)}); // All data in the PVR database is being erased
+  pDlgProgress->SetHeading(CVariant{313});
+  pDlgProgress->SetLine(0, CVariant{g_localizeStrings.Get(19187)}); // All data in the PVR database is being erased
+  pDlgProgress->SetLine(1, CVariant{""});
   pDlgProgress->SetLine(2, CVariant{""});
   pDlgProgress->Open();
   pDlgProgress->Progress();
