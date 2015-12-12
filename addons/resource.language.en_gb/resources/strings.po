@@ -2976,7 +2976,7 @@ msgstr ""
 
 #: xbmc/settings/AdvancedSettings.cpp
 msgctxt "#678"
-msgid "Verbose logging for the [B]UPnP[/B] components"
+msgid "Verbose logging for the [B]UPnP[/B] component"
 msgstr ""
 
 #: xbmc/settings/AdvancedSettings.cpp
@@ -9646,7 +9646,7 @@ msgstr ""
 #. DialogOK for no installed ADSP add-on available
 #: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
 msgctxt "#19274"
-msgid "You need a add-on installed for the process of audio DSP signal. System becomes disabled."
+msgid "You need a add-on installed for the process of audio DSP signal. Audio DSP is disabled again."
 msgstr ""
 
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
@@ -13907,7 +13907,7 @@ msgstr ""
 
 #: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
 msgctxt "#24138"
-msgid "DSP add-on is currently in use and can't be removed."
+msgid "The DSP add-on is currently in use and can't be removed."
 msgstr ""
 
 #. Label for the action provided by addon management events to jump to a specific Add-on
@@ -17429,13 +17429,13 @@ msgstr ""
 #. Description of setting "System -> Audio output -> Reset the Audio DSP database..." with label 311
 #: system/settings/settings.xml
 msgctxt "#36439"
-msgid "All data (add-on settings and audio DSP manager settings) in the audio DSP database is being erased."
+msgid "All audio DSP add-on and manager related settings in the database will be cleared."
 msgstr ""
 
 #. Used in confirm on dialog to erase database
 #: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
 msgctxt "#36440"
-msgid "Erasing all DSP add-on and audio DSP manager settings in the audio DSP database."
+msgid "Erasing all DSP add-on and audio DSP manager settings in the audio DSP database. Are you sure?"
 msgstr ""
 
 #. Settings boolean value name
