@@ -141,6 +141,9 @@
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
 #include "addons/binary/interfaces/AddonInterfaces.h"
 
+/* Game related include files */
+#include "games/controllers/windows/GUIControllerWindow.h"
+
 using namespace PVR;
 using namespace PERIPHERALS;
 using namespace KODI::MESSAGING;
@@ -285,6 +288,8 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIWindowSplash);
 
   Add(new CGUIWindowEventLog);
+
+  Add(new GAME::CGUIControllerWindow);
 }
 
 bool CGUIWindowManager::DestroyWindows()
@@ -387,6 +392,7 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_PROGRAMS);
     Delete(WINDOW_PICTURES);
     Delete(WINDOW_WEATHER);
+    Delete(WINDOW_DIALOG_GAME_CONTROLLERS);
 
     Delete(WINDOW_SETTINGS_MYPICTURES);
     Remove(WINDOW_SETTINGS_MYPROGRAMS);

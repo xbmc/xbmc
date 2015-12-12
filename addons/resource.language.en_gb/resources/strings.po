@@ -15510,12 +15510,124 @@ msgid "Game add-ons"
 msgstr ""
 
 #. Name of controller add-ons
+#: addons/skin.confluence/720p/DialogGameControllers.xml
 #: xbmc/addons/Addon.cpp
+#: xbmc/games/controllers/windows/GUIControllerWindow.cpp
 msgctxt "#35050"
 msgid "Controller profiles"
 msgstr ""
 
-#empty strings from id 35051 to 35099
+#empty strings from id 35051 to 35055
+
+#. Text of error dialog shown when no joystick add-ons provide button mapping
+#: xbmc/games/controllers/windows/GUIControllerWindow.cpp
+msgctxt "#35057"
+msgid "Controller configuration is disabled. Install the proper joystick support add-on."
+msgstr ""
+
+#. Title of controller configuration window
+#: addons/skin.confluence/720p/DialogGameControllers.xml
+msgctxt "#35058"
+msgid "Controller Configuration"
+msgstr ""
+
+#. Heading for controller buttons list in controller configuration window
+#: addons/skin.confluence/720p/DialogGameControllers.xml
+msgctxt "#35059"
+msgid "Buttons"
+msgstr ""
+
+#. Heading for prompt to reset a controller profile for all devices
+#: xbmc/games/controllers/windows/GUIControllerList.cpp
+msgctxt "#35060"
+msgid "Reset controller profile"
+msgstr ""
+
+#. Prompt to reset a controller profile for all devices
+#: xbmc/games/controllers/windows/GUIControllerList.cpp
+msgctxt "#35061"
+msgid "Would you like to reset this controller profile for all attached devices?"
+msgstr ""
+
+#. Notice that all controller profiles are installed
+#: xbmc/games/controllers/windows/GUIControllerWindow.cpp
+msgctxt "#35062"
+msgid "All available controller profiles are installed."
+msgstr ""
+
+#. Name of the setting that activates the controller configuration window
+#: system/settings/settings.xml
+msgctxt "#35063"
+msgid "Configure attached controllers"
+msgstr ""
+
+#. Description for the controller window setting
+#: system/settings/settings.xml
+msgctxt "#35064"
+msgid "Pair your controllers with the various input devices of different game systems."
+msgstr ""
+
+#empty strings from id 35065 to 35089
+
+#. Button prompt without timeout. %s - button name
+#: xbmc/games/controllers/guicontrols/GUIScalarFeatureButton.cpp
+msgctxt "#35090"
+msgid "Press %s"
+msgstr ""
+
+#. Button prompt with timeout. %s - button name, %d - seconds left in prompt
+#: xbmc/games/controllers/guicontrols/GUIScalarFeatureButton.cpp
+msgctxt "#35091"
+msgid "Press %s (%d)"
+msgstr ""
+
+#. Analog stick up prompt without timeout. %s - analog stick name
+#: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
+msgctxt "#35092"
+msgid "Move %s up"
+msgstr ""
+
+#. Analog stick up prompt with timeout. %s - analog stick name, %d - seconds left in prompt
+#: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
+msgctxt "#35093"
+msgid "Move %s up (%d)"
+msgstr ""
+
+#. Analog stick down prompt without timeout. %s - analog stick name
+#: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
+msgctxt "#35094"
+msgid "Move %s down"
+msgstr ""
+
+#. Analog stick down prompt with timeout. %s - analog stick name, %d - seconds left in prompt
+#: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
+msgctxt "#35095"
+msgid "Move %s down (%d)"
+msgstr ""
+
+#. Analog stick right prompt without timeout. %s - analog stick name
+#: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
+msgctxt "#35096"
+msgid "Move %s right"
+msgstr ""
+
+#. Analog stick right prompt with timeout. %s - analog stick name, %d - seconds left in prompt
+#: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
+msgctxt "#35097"
+msgid "Move %s right (%d)"
+msgstr ""
+
+#. Analog stick left prompt without timeout. %s - analog stick name
+#: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
+msgctxt "#35098"
+msgid "Move %s left"
+msgstr ""
+
+#. Analog stick left prompt with timeout. %s - analog stick name, %d - seconds left in prompt
+#: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
+msgctxt "#35099"
+msgid "Move %s left (%d)"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#35100"

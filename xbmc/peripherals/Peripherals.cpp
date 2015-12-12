@@ -45,6 +45,7 @@
 #include "filesystem/Directory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/WindowIDs.h"
 #include "GUIUserMessages.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
@@ -864,6 +865,10 @@ void CPeripherals::OnSettingAction(const CSetting *setting)
         }
       }
     } while (pDialog->IsConfirmed());
+  }
+  else if (settingId == CSettings::SETTING_INPUT_CONTROLLERCONFIG)
+  {
+    g_windowManager.ActivateWindow(WINDOW_DIALOG_GAME_CONTROLLERS);
   }
 }
 

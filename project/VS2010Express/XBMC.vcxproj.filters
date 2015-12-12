@@ -442,6 +442,12 @@
     <Filter Include="games\controllers">
       <UniqueIdentifier>{d0ae0c22-0869-416b-92c7-aa1dc14a58be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="games\controllers\guicontrols">
+      <UniqueIdentifier>{891f4e3d-e135-4ea9-8571-2b6ad3b1622d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="games\controllers\windows">
+      <UniqueIdentifier>{9e3dd585-08e1-4dae-bc21-05e49697ef94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -3414,6 +3420,33 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\input\joysticks\DefaultJoystick.cpp">
       <Filter>input\joysticks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIGameController.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\windows\GUIConfigurationWizard.cpp">
+      <Filter>games\controllers\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\windows\GUIControllerList.cpp">
+      <Filter>games\controllers\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\windows\GUIControllerWindow.cpp">
+      <Filter>games\controllers\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\windows\GUIFeatureList.cpp">
+      <Filter>games\controllers\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIAnalogStickButton.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIControllerButton.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIFeatureButton.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIScalarFeatureButton.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6628,6 +6661,39 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\joysticks\DefaultJoystick.h">
       <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIGameController.h">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIFeatureList.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\IConfigurationWindow.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIConfigurationWizard.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIControllerDefines.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIControllerList.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIControllerWindow.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIAnalogStickButton.h">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIControllerButton.h">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIFeatureButton.h">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIScalarFeatureButton.h">
+      <Filter>games\controllers\guicontrols</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

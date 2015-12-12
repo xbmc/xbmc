@@ -311,6 +311,7 @@ static const ActionMapping windows[] =
     { "radioguide"               , WINDOW_RADIO_GUIDE },
     { "radiotimers"              , WINDOW_RADIO_TIMERS },
     { "radiosearch"              , WINDOW_RADIO_SEARCH },
+    { "gamecontrollers"          , WINDOW_DIALOG_GAME_CONTROLLERS },
     { "pvrguideinfo"             , WINDOW_DIALOG_PVR_GUIDE_INFO },
     { "pvrrecordinginfo"         , WINDOW_DIALOG_PVR_RECORDING_INFO },
     { "pvrradiordsinfo"          , WINDOW_DIALOG_PVR_RADIO_RDS_INFO },

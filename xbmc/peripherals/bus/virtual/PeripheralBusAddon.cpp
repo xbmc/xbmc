@@ -41,19 +41,19 @@ CPeripheralBusAddon::CPeripheralBusAddon(CPeripherals *manager) :
 bool CPeripheralBusAddon::GetAddon(const std::string &strId, AddonPtr &addon) const
 {
   CSingleLock lock(m_critSection);
-  for (PeripheralAddonVector::const_iterator it = m_addons.begin(); it != m_addons.end(); ++it)
+  for (const auto& addonIt : m_addons)
   {
-    if ((*it)->ID() == strId)
+    if (addonIt->ID() == strId)
     {
-      addon = *it;
+      addon = addonIt;
       return true;
     }
   }
-  for (PeripheralAddonVector::const_iterator it = m_failedAddons.begin(); it != m_failedAddons.end(); ++it)
+  for (const auto& addonIt : m_failedAddons)
   {
-    if ((*it)->ID() == strId)
+    if (addonIt->ID() == strId)
     {
-      addon = *it;
+      addon = addonIt;
       return true;
     }
   }
@@ -63,11 +63,11 @@ bool CPeripheralBusAddon::GetAddon(const std::string &strId, AddonPtr &addon) co
 bool CPeripheralBusAddon::GetAddonWithButtonMap(const CPeripheral* device, PeripheralAddonPtr &addon) const
 {
   CSingleLock lock(m_critSection);
-  for (PeripheralAddonVector::const_iterator it = m_addons.begin(); it != m_addons.end(); ++it)
+  for (const auto& addonIt : m_addons)
   {
-    if ((*it)->HasButtonMaps())
+    if (addonIt->HasButtonMaps())
     {
-      addon = *it;
+      addon = addonIt;
       return true;
     }
   }
@@ -90,8 +90,8 @@ bool CPeripheralBusAddon::PerformDeviceScan(PeripheralScanResults &results)
     addons = m_addons;
   }
   
-  for (PeripheralAddonVector::const_iterator it = addons.begin(); it != addons.end(); ++it)
-    (*it)->PerformDeviceScan(results);
+  for (const auto& addon : addons)
+    addon->PerformDeviceScan(results);
 
   // Scan during bus initialization must return true or bus gets deleted
   return true;
@@ -129,8 +129,8 @@ void CPeripheralBusAddon::ProcessEvents(void)
     addons = m_addons;
   }
 
-  for (PeripheralAddonVector::const_iterator itAddon = addons.begin(); itAddon != addons.end(); ++itAddon)
-    (*itAddon)->ProcessEvents();
+  for (const auto& addon : addons)
+    addon->ProcessEvents();
 }
 
 void CPeripheralBusAddon::UnregisterRemovedDevices(const PeripheralScanResults &results)
@@ -139,12 +139,11 @@ void CPeripheralBusAddon::UnregisterRemovedDevices(const PeripheralScanResults &
 
   std::vector<CPeripheral*> removedPeripherals;
 
-  for (PeripheralAddonVector::const_iterator itAddon = m_addons.begin(); itAddon != m_addons.end(); ++itAddon)
-    (*itAddon)->UnregisterRemovedDevices(results, removedPeripherals);
+  for (const auto& addon : m_addons)
+    addon->UnregisterRemovedDevices(results, removedPeripherals);
 
-  for (unsigned int iDevicePtr = 0; iDevicePtr < removedPeripherals.size(); iDevicePtr++)
+  for (const auto& peripheral : removedPeripherals)
   {
-    CPeripheral *peripheral = removedPeripherals.at(iDevicePtr);
     m_manager->OnDeviceDeleted(*this, *peripheral);
     delete peripheral;
   }
@@ -170,16 +169,16 @@ void CPeripheralBusAddon::Register(CPeripheral* peripheral)
 void CPeripheralBusAddon::GetFeatures(std::vector<PeripheralFeature> &features) const
 {
   CSingleLock lock(m_critSection);
-  for (PeripheralAddonVector::const_iterator itAddon = m_addons.begin(); itAddon != m_addons.end(); ++itAddon)
-    (*itAddon)->GetFeatures(features);
+  for (const auto& addon : m_addons)
+    addon->GetFeatures(features);
 }
 
 bool CPeripheralBusAddon::HasFeature(const PeripheralFeature feature) const
 {
   bool bReturn(false);
   CSingleLock lock(m_critSection);
-  for (PeripheralAddonVector::const_iterator itAddon = m_addons.begin(); itAddon != m_addons.end(); ++itAddon)
-    bReturn = bReturn || (*itAddon)->HasFeature(feature);
+  for (const auto& addon : m_addons)
+    bReturn = bReturn || addon->HasFeature(feature);
   return bReturn;
 }
 
@@ -201,9 +200,9 @@ CPeripheral *CPeripheralBusAddon::GetByPath(const std::string &strPath) const
 {
   CSingleLock lock(m_critSection);
 
-  for (PeripheralAddonVector::const_iterator itAddon = m_addons.begin(); itAddon != m_addons.end(); ++itAddon)
+  for (const auto& addon : m_addons)
   {
-    CPeripheral* peripheral = (*itAddon)->GetByPath(strPath);
+    CPeripheral* peripheral = addon->GetByPath(strPath);
     if (peripheral)
       return peripheral;
   }
@@ -215,8 +214,8 @@ int CPeripheralBusAddon::GetPeripheralsWithFeature(std::vector<CPeripheral *> &r
 {
   int iReturn(0);
   CSingleLock lock(m_critSection);
-  for (PeripheralAddonVector::const_iterator itAddon = m_addons.begin(); itAddon != m_addons.end(); ++itAddon)
-    iReturn += (*itAddon)->GetPeripheralsWithFeature(results, feature);
+  for (const auto& addon : m_addons)
+    iReturn += addon->GetPeripheralsWithFeature(results, feature);
   return iReturn;
 }
 
@@ -224,8 +223,8 @@ size_t CPeripheralBusAddon::GetNumberOfPeripherals(void) const
 {
   size_t iReturn(0);
   CSingleLock lock(m_critSection);
-  for (PeripheralAddonVector::const_iterator itAddon = m_addons.begin(); itAddon != m_addons.end(); ++itAddon)
-    iReturn += (*itAddon)->GetNumberOfPeripherals();
+  for (const auto& addon : m_addons)
+    iReturn += addon->GetNumberOfPeripherals();
   return iReturn;
 }
 
@@ -233,16 +232,16 @@ size_t CPeripheralBusAddon::GetNumberOfPeripheralsWithId(const int iVendorId, co
 {
   size_t iReturn(0);
   CSingleLock lock(m_critSection);
-  for (PeripheralAddonVector::const_iterator itAddon = m_addons.begin(); itAddon != m_addons.end(); ++itAddon)
-    iReturn += (*itAddon)->GetNumberOfPeripheralsWithId(iVendorId, iProductId);
+  for (const auto& addon : m_addons)
+    iReturn += addon->GetNumberOfPeripheralsWithId(iVendorId, iProductId);
   return iReturn;
 }
 
 void CPeripheralBusAddon::GetDirectory(const std::string &strPath, CFileItemList &items) const
 {
   CSingleLock lock(m_critSection);
-  for (PeripheralAddonVector::const_iterator itAddon = m_addons.begin(); itAddon != m_addons.end(); ++itAddon)
-    (*itAddon)->GetDirectory(strPath, items);
+  for (const auto& addon : m_addons)
+    addon->GetDirectory(strPath, items);
 }
 
 bool CPeripheralBusAddon::SplitLocation(const std::string& strLocation, PeripheralAddonPtr& addon, unsigned int& peripheralIndex) const
@@ -255,11 +254,11 @@ bool CPeripheralBusAddon::SplitLocation(const std::string& strLocation, Peripher
     CSingleLock lock(m_critSection);
 
     const std::string& strAddonId = parts[0];
-    for (PeripheralAddonVector::const_iterator itAddon = m_addons.begin(); itAddon != m_addons.end(); ++itAddon)
+    for (const auto& addonIt : m_addons)
     {
-      if ((*itAddon)->ID() == strAddonId)
+      if (addonIt->ID() == strAddonId)
       {
-        addon = *itAddon;
+        addon = addonIt;
         break;
       }
     }
@@ -288,52 +287,52 @@ void CPeripheralBusAddon::UpdateAddons(void)
     CSingleLock lock(m_critSection);
     
     // Search for removed add-ons
-    for (PeripheralAddonVector::const_iterator it = m_addons.begin(); it != m_addons.end(); ++it)
+    for (const auto& addon : m_addons)
     {
       const bool bRemoved = (std::find(addons.begin(), addons.end(),
-        std::static_pointer_cast<CAddon>(*it)) == addons.end());
+        std::static_pointer_cast<CAddon>(addon)) == addons.end());
 
       if (bRemoved)
-        removedAddons.push_back(*it);
+        removedAddons.push_back(addon);
     }
 
     // Search for new add-ons
-    for (VECADDONS::const_iterator it = addons.begin(); it != addons.end(); ++it)
+    for (const auto& addon : addons)
     {
-      PeripheralAddonPtr addon = std::dynamic_pointer_cast<CPeripheralAddon>(*it);
-      if (!addon)
+      PeripheralAddonPtr peripheralAddon = std::dynamic_pointer_cast<CPeripheralAddon>(addon);
+      if (!peripheralAddon)
         continue;
 
       // If add-on failed to load, skip it
-      if (std::find(m_failedAddons.begin(), m_failedAddons.end(), addon) != m_failedAddons.end())
+      if (std::find(m_failedAddons.begin(), m_failedAddons.end(), peripheralAddon) != m_failedAddons.end())
         continue;
 
       // If add-on has already been created, skip it
-      if (std::find(m_addons.begin(), m_addons.end(), addon) != m_addons.end())
+      if (std::find(m_addons.begin(), m_addons.end(), peripheralAddon) != m_addons.end())
         continue;
 
-      newAddons.push_back(addon);
+      newAddons.push_back(peripheralAddon);
     }
 
     // Update m_addons
-    for (PeripheralAddonVector::const_iterator it = removedAddons.begin(); it != removedAddons.end(); ++it)
-      m_addons.erase(std::remove(m_addons.begin(), m_addons.end(), *it), m_addons.end());
-    for (PeripheralAddonVector::const_iterator it = newAddons.begin(); it != newAddons.end(); ++it)
-      m_addons.push_back(*it);
+    for (const auto& addon : removedAddons)
+      m_addons.erase(std::remove(m_addons.begin(), m_addons.end(), addon), m_addons.end());
+    for (const auto& addon : newAddons)
+      m_addons.push_back(addon);
   }
 
   // Destroy removed add-ons
-  for (PeripheralAddonVector::const_iterator it = removedAddons.begin(); it != removedAddons.end(); ++it)
-    (*it)->Destroy();
+  for (const auto& addon : removedAddons)
+    addon->Destroy();
 
   // Create new add-ons
-  for (PeripheralAddonVector::const_iterator it = newAddons.begin(); it != newAddons.end(); ++it)
+  for (const auto& addon : newAddons)
   {
-    if ((*it)->CreateAddon() != ADDON_STATUS_OK)
+    if (addon->CreateAddon() != ADDON_STATUS_OK)
     {
       CSingleLock lock(m_critSection);
-      m_addons.erase(std::remove(m_addons.begin(), m_addons.end(), *it), m_addons.end());
-      m_failedAddons.push_back(*it);
+      m_addons.erase(std::remove(m_addons.begin(), m_addons.end(), addon), m_addons.end());
+      m_failedAddons.push_back(addon);
     }
   }
 }

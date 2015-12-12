@@ -2754,6 +2754,10 @@
           <control type="toggle" />
           <default>true</default>
         </setting>
+        <setting id="input.controllerconfig" type="action" label="35063" help="35064">
+          <level>0</level>
+          <control type="button" format="action" />
+        </setting>
       </group>
     </category>
     <category id="network" label="798" help="36379">
