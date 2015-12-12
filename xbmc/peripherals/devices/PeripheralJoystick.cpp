@@ -41,6 +41,7 @@ CPeripheralJoystick::CPeripheralJoystick(const PeripheralScanResult& scanResult)
 
 CPeripheralJoystick::~CPeripheralJoystick(void)
 {
+  UnregisterJoystickInputHandler(&m_defaultInputHandler);
   UnregisterJoystickDriverHandler(&m_joystickMonitor);
 }
 
@@ -69,6 +70,7 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
   if (bSuccess)
   {
     // Give joystick monitor priority over default controller
+    RegisterJoystickInputHandler(&m_defaultInputHandler);
     RegisterJoystickDriverHandler(&m_joystickMonitor, false);
   }
 

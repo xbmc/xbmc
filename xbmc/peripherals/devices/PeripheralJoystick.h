@@ -20,6 +20,7 @@
 #pragma once
 
 #include "Peripheral.h"
+#include "input/joysticks/DefaultJoystick.h"
 #include "input/joysticks/IJoystickDriverHandler.h"
 #include "input/joysticks/JoystickMonitor.h"
 #include "input/joysticks/JoystickTypes.h"
@@ -92,6 +93,7 @@ namespace PERIPHERALS
     unsigned int                        m_buttonCount;
     unsigned int                        m_hatCount;
     unsigned int                        m_axisCount;
+    JOYSTICK::CDefaultJoystick          m_defaultInputHandler;
     JOYSTICK::CJoystickMonitor          m_joystickMonitor;
     std::vector<DriverHandler>          m_driverHandlers;
     CCriticalSection                    m_handlerMutex;

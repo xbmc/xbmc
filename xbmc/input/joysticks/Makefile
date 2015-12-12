@@ -1,4 +1,5 @@
-SRCS=DriverPrimitive.cpp \
+SRCS=DefaultJoystick.cpp \
+     DriverPrimitive.cpp \
      JoystickMonitor.cpp \
      JoystickTranslator.cpp \
      KeymapHandler.cpp \
