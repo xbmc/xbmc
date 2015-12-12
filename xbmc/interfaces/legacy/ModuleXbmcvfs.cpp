@@ -57,7 +57,7 @@ namespace XBMCAddon
     {
       DelayedCallGuard dg;
       if (URIUtils::HasSlashAtEnd(path, true))
-        return XFILE::CDirectory::Exists(path);
+        return XFILE::CDirectory::Exists(path, false);
       return XFILE::CFile::Exists(path, false);
     }      
 
