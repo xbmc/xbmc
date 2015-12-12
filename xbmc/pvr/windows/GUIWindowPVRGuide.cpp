@@ -59,10 +59,17 @@ void CGUIWindowPVRGuide::OnInitWindow()
 
   CGUIEPGGridContainer *epgGridContainer =
     dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
+
   if (epgGridContainer)
-    epgGridContainer->GoToNow();
+    UpdateViewTimelineGroup(epgGridContainer, g_PVRManager.GetPlayingGroup(m_bRadio));
 
   CGUIWindowPVRBase::OnInitWindow();
+
+  if (epgGridContainer)
+  {
+    epgGridContainer->SetChannel(GetSelectedItemPath(m_bRadio));
+    epgGridContainer->GoToNow();
+  }
 }
 
 void CGUIWindowPVRGuide::ResetObservers(void)
@@ -413,6 +420,20 @@ void CGUIWindowPVRGuide::GetViewTimelineItems(CFileItemList &items)
 
   CPVRChannelGroupPtr group = GetGroup();
 
+  UpdateViewTimelineGroup(epgGridContainer, group);
+
+  items.Clear();
+  items.RemoveDiscCache(GetID());
+  items.Assign(*m_cachedTimeline, false);
+
+  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, g_localizeStrings.Get(19032));
+  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, group->GroupName());
+
+  epgGridContainer->SetChannel(GetSelectedItemPath(m_bRadio));
+}
+
+void CGUIWindowPVRGuide::UpdateViewTimelineGroup(CGUIEPGGridContainer* epgGridContainer, const CPVRChannelGroupPtr& group)
+{
   if (m_bUpdateRequired || m_cachedTimeline->IsEmpty() || *m_cachedChannelGroup != *group)
   {
     m_bUpdateRequired = false;
@@ -421,10 +442,6 @@ void CGUIWindowPVRGuide::GetViewTimelineItems(CFileItemList &items)
     m_cachedChannelGroup = group;
     m_cachedChannelGroup->GetEPGAll(*m_cachedTimeline, true);
   }
-
-  items.Clear();
-  items.RemoveDiscCache(GetID());
-  items.Assign(*m_cachedTimeline, false);
 
   CDateTime startDate(m_cachedChannelGroup->GetFirstEPGDate());
   CDateTime endDate(m_cachedChannelGroup->GetLastEPGDate());
@@ -442,11 +459,6 @@ void CGUIWindowPVRGuide::GetViewTimelineItems(CFileItemList &items)
     startDate = maxPastDate;
 
   epgGridContainer->SetStartEnd(startDate, endDate);
-
-  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, g_localizeStrings.Get(19032));
-  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, GetGroup()->GroupName());
-
-  epgGridContainer->SetChannel(GetSelectedItemPath(m_bRadio));
 }
 
 bool CGUIWindowPVRGuide::OnContextButtonBegin(CFileItem *item, CONTEXT_BUTTON button)

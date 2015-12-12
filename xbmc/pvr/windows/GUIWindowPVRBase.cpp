@@ -79,10 +79,10 @@ void CGUIWindowPVRBase::SetSelectedItemPath(bool bRadio, const std::string &path
 
 std::string CGUIWindowPVRBase::GetSelectedItemPath(bool bRadio)
 {
-  if (!m_selectedItemPaths.at(bRadio).empty())
-    return m_selectedItemPaths.at(bRadio);
-  else if (g_PVRManager.IsPlaying())
+  if (g_PVRManager.IsPlaying())
     return g_application.CurrentFile();
+  else if (!m_selectedItemPaths.at(bRadio).empty())
+    return m_selectedItemPaths.at(bRadio);
 
   return "";
 }
