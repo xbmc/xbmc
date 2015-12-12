@@ -33,7 +33,7 @@
 #include "GUIUserMessages.h"
 
 #if defined(TARGET_DARWIN)
-#include "osx/CocoaInterface.h"
+#include "platform/darwin/osx/CocoaInterface.h"
 #endif
 
 const char* CGUIEditControl::smsLetters[10] = { " !@#$%^&*()[]{}<>/\\|0", ".,;:\'\"-+_=?`~1", "abc2ABC", "def3DEF", "ghi4GHI", "jkl5JKL", "mno6MNO", "pqrs7PQRS", "tuv8TUV", "wxyz9WXYZ" };

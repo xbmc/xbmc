@@ -2378,7 +2378,6 @@ OUTPUT_FILES="Makefile \
     xbmc/cores/playercorefactory/Makefile \
     xbmc/messaging/Makefile \
     xbmc/messaging/helpers/Makefile \
-    xbmc/osx/Makefile \
     xbmc/guilib/Makefile \
     xbmc/input/linux/Makefile \
     xbmc/interfaces/Makefile \
@@ -2408,19 +2407,20 @@ OUTPUT_FILES="Makefile \
     tools/EventClients/Clients/OSXRemote/Makefile \
     xbmc/peripherals/bus/Makefile \
     xbmc/peripherals/devices/Makefile \
-    xbmc/android/activity/Makefile \
-    xbmc/android/loader/Makefile \
-    xbmc/android/jni/Makefile \
+    xbmc/platform/posix/Makefile \
+    xbmc/platform/darwin/osx/Makefile \
+    xbmc/platform/android/activity/Makefile \
+    xbmc/platform/android/loader/Makefile \
+    xbmc/platform/android/jni/Makefile \
     xbmc/utils/Makefile \
-    xbmc/main/Makefile \
-    xbmc/main/posix/Makefile \
+    xbmc/platform/Makefile \
     tools/darwin/Configurations/App.xcconfig \
     tools/darwin/Configurations/Common.xcconfig \
     tools/darwin/packaging/ios/mkdeb-ios.sh \
     tools/darwin/packaging/osx/mkdmg-osx.sh \
     tools/darwin/packaging/migrate_to_kodi_ios.sh \
-    xbmc/osx/Info.plist \
-    xbmc/osx/ios/XBMCIOS-Info.plist \
+    xbmc/platform/darwin/osx/Info.plist \
+    xbmc/platform/darwin/ios/IOS-Info.plist \
     project/cmake/kodi-config.cmake \
     project/cmake/xbmc-config.cmake \
     tools/android/packaging/xbmc/AndroidManifest.xml \

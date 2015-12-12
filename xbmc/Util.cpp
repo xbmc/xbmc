@@ -38,7 +38,7 @@
 #include <sys/wait.h>
 #endif
 #if defined(TARGET_ANDROID)
-#include "android/bionic_supplement/bionic_supplement.h"
+#include "platform/android/bionic_supplement/bionic_supplement.h"
 #endif
 #include <stdlib.h>
 #include <algorithm>
@@ -69,7 +69,7 @@
 #endif
 #if defined(TARGET_DARWIN)
 #include "CompileInfo.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #endif
 #include "filesystem/File.h"
 #include "settings/MediaSettings.h"

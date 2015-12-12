@@ -647,11 +647,11 @@
     <ClCompile Include="..\..\xbmc\listproviders\IListProvider.cpp" />
     <ClCompile Include="..\..\xbmc\listproviders\DirectoryProvider.cpp" />
     <ClCompile Include="..\..\xbmc\listproviders\StaticProvider.cpp" />
-    <ClCompile Include="..\..\xbmc\main\main.cpp">
+    <ClCompile Include="..\..\xbmc\platform\posix\main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\main\win32\MessagePrinter.cpp" />
-    <ClCompile Include="..\..\xbmc\main\win32\WinMain.cpp">
+    <ClCompile Include="..\..\xbmc\platform\win32\MessagePrinter.cpp" />
+    <ClCompile Include="..\..\xbmc\platform\win32\WinMain.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
@@ -1101,7 +1101,7 @@
     <ClInclude Include="..\..\xbmc\interfaces\python\PyContext.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\PythonInvoker.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\pythreadstate.h" />
-    <ClInclude Include="..\..\xbmc\main\win32\MessagePrinter.h" />
+    <ClInclude Include="..\..\xbmc\platform\MessagePrinter.h" />
     <ClInclude Include="..\..\xbmc\media\MediaType.h" />
     <ClInclude Include="..\..\xbmc\messaging\ApplicationMessenger.h" />
     <ClInclude Include="..\..\xbmc\messaging\helpers\DialogHelper.h" />
@@ -1786,8 +1786,8 @@
     <ClCompile Include="..\..\xbmc\windows\GUIWindowWeather.cpp" />
     <ClCompile Include="..\..\xbmc\XBApplicationEx.cpp" />
     <ClCompile Include="..\..\xbmc\XBDateTime.cpp" />
-    <ClCompile Include="..\..\xbmc\xbmc.cpp" />
-    <ClCompile Include="..\..\xbmc\XbmcContext.cpp" />
+    <ClCompile Include="..\..\xbmc\platform\xbmc.cpp" />
+    <ClCompile Include="..\..\xbmc\platform\XbmcContext.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacks.h" />
@@ -2259,7 +2259,7 @@
     <ClInclude Include="..\..\xbmc\win32\PlatformDefs.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIWindowSplash.h" />
     <ClInclude Include="..\..\xbmc\XBDateTime.h" />
-    <ClInclude Include="..\..\xbmc\XbmcContext.h" />
+    <ClInclude Include="..\..\xbmc\platform\XbmcContext.h" />
     <ClInclude Include="..\..\xbmc\win32\PlatformInclude.h" />
     <ClInclude Include="..\..\xbmc\win32\stat_utf8.h" />
     <ClInclude Include="..\..\xbmc\win32\stdio_utf8.h" />

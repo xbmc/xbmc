@@ -47,14 +47,14 @@
 #include "utils/CharsetConverter.h"
 #endif
 #if defined(TARGET_DARWIN)
-#include "osx/DarwinUtils.h"
-#include "osx/CocoaInterface.h"
+#include "platform/darwin/DarwinUtils.h"
+#include "platform/darwin/osx/CocoaInterface.h"
 #endif
 #include "powermanagement/PowerManager.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 #if defined(TARGET_ANDROID)
-#include "android/jni/Build.h"
+#include "platform/android/jni/Build.h"
 #include "utils/AMLUtils.h"
 #endif
 

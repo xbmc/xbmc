@@ -72,7 +72,7 @@
 #include "utils/URIUtils.h"
 #endif
 #if defined(TARGET_ANDROID)
-#include "android/loader/AndroidDyload.h"
+#include "platform/android/loader/AndroidDyload.h"
 #elif !defined(TARGET_WINDOWS)
 #include <dlfcn.h>
 #endif

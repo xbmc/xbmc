@@ -85,6 +85,15 @@
     <Filter Include="playlists">
       <UniqueIdentifier>{084b5eb0-c9c9-444b-a2ee-dcb4f9537d35}</UniqueIdentifier>
     </Filter>
+    <Filter Include="platform">
+      <UniqueIdentifier>{90dd91e6-b726-4f88-803a-84156a663713}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platform\posix">
+      <UniqueIdentifier>{4af60343-ab33-42c9-8752-b7898e9b5b86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platform\win32">
+      <UniqueIdentifier>{9312ce72-49ff-422a-8e3a-05c0a2a534d5}</UniqueIdentifier>
+    </Filter>
     <Filter Include="powermanagement">
       <UniqueIdentifier>{b203de13-ce8c-4b43-9a87-a05e68fbad13}</UniqueIdentifier>
     </Filter>
@@ -873,7 +882,9 @@
     <ClCompile Include="..\..\xbmc\Application.cpp" />
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\SystemGlobals.cpp" />
-    <ClCompile Include="..\..\xbmc\xbmc.cpp" />
+    <ClCompile Include="..\..\xbmc\platform\xbmc.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\D3DResource.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -2056,11 +2067,15 @@
     <ClCompile Include="..\..\xbmc\MediaSource.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\XbmcContext.cpp" />
+    <ClCompile Include="..\..\xbmc\platform\XbmcContext.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\POUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\XbmcContext.cpp" />
+    <ClCompile Include="..\..\xbmc\platform\XbmcContext.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\network\ZeroconfBrowser.cpp">
       <Filter>network</Filter>
     </ClCompile>
@@ -3060,14 +3075,14 @@
     <ClCompile Include="..\..\xbmc\pictures\PictureScalingAlgorithm.cpp">
       <Filter>pictures</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\main\main.cpp">
-      <Filter>main</Filter>
+    <ClCompile Include="..\..\xbmc\platform\posix\main.cpp">
+      <Filter>platform\posix</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\main\win32\WinMain.cpp">
-      <Filter>main\win32</Filter>
+    <ClCompile Include="..\..\xbmc\platform\win32\WinMain.cpp">
+      <Filter>platform\win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\main\win32\MessagePrinter.cpp">
-      <Filter>main\win32</Filter>
+    <ClCompile Include="..\..\xbmc\platform\win32\MessagePrinter.cpp">
+      <Filter>platform\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\messaging\ApplicationMessenger.cpp">
       <Filter>messaging</Filter>
@@ -5062,7 +5077,9 @@
     <ClInclude Include="..\..\xbmc\filesystem\ZipFile.h">
       <Filter>filesystem</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\XbmcContext.h" />
+    <ClInclude Include="..\..\xbmc\platform\XbmcContext.h">
+      <Filter>platform</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\MemBufferCache.h">
       <Filter>filesystem</Filter>
     </ClInclude>
@@ -6067,8 +6084,8 @@
     <ClInclude Include="..\..\xbmc\pictures\PictureScalingAlgorithm.h">
       <Filter>pictures</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\main\win32\MessagePrinter.h">
-      <Filter>main\win32</Filter>
+    <ClInclude Include="..\..\xbmc\platform\MessagePrinter.h">
+      <Filter>platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\messaging\ApplicationMessenger.h">
       <Filter>messaging</Filter>

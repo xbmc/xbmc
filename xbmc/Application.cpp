@@ -180,11 +180,11 @@
 #endif
 
 #ifdef TARGET_DARWIN_OSX
-#include "osx/CocoaInterface.h"
-#include "osx/XBMCHelper.h"
+#include "platform/darwin/osx/CocoaInterface.h"
+#include "platform/darwin/osx/XBMCHelper.h"
 #endif
 #ifdef TARGET_DARWIN
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #endif
 
 #ifdef HAS_DVD_DRIVE
@@ -204,9 +204,9 @@
 #endif
 
 #if defined(TARGET_ANDROID)
-#include "android/activity/XBMCApp.h"
-#include "android/activity/AndroidFeatures.h"
-#include "android/jni/Build.h"
+#include "platform/android/activity/XBMCApp.h"
+#include "platform/android/activity/AndroidFeatures.h"
+#include "platform/android/jni/Build.h"
 #endif
 
 #ifdef TARGET_WINDOWS

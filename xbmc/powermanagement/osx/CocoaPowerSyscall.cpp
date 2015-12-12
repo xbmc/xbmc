@@ -36,9 +36,9 @@ typedef unsigned char BYTE;
   #include <ApplicationServices/ApplicationServices.h>
 #endif
 
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 
-#include "osx/CocoaInterface.h"
+#include "platform/darwin/osx/CocoaInterface.h"
 
 #if defined(TARGET_DARWIN_OSX)
 OSStatus SendAppleEventToSystemProcess(AEEventID eventToSendID)

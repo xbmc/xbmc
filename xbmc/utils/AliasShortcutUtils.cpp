@@ -20,7 +20,7 @@
 
 #if defined(TARGET_DARWIN_OSX)
 #include "utils/URIUtils.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #elif defined(TARGET_POSIX)
 #else
 #endif

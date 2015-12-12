@@ -26,7 +26,7 @@
 #include "guilib/GUIMessage.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 
 #include <arpa/inet.h>
 #include <netinet/in.h>

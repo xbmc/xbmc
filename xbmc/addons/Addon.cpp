@@ -44,7 +44,7 @@
 #include "interfaces/python/XBPython.h"
 #endif
 #if defined(TARGET_DARWIN)
-#include "../osx/OSXGNUReplacements.h"
+#include "../platform/darwin/OSXGNUReplacements.h"
 #endif
 #ifdef TARGET_FREEBSD
 #include "freebsd/FreeBSDGNUReplacements.h"

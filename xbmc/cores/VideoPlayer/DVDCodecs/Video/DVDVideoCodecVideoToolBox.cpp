@@ -31,7 +31,7 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 
 extern "C" {
 #include "libswscale/swscale.h"

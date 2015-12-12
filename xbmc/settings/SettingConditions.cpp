@@ -26,7 +26,7 @@
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
 #if defined(TARGET_ANDROID)
-#include "android/activity/AndroidFeatures.h"
+#include "platform/android/activity/AndroidFeatures.h"
 #endif // defined(TARGET_ANDROID)
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
@@ -41,7 +41,7 @@
 #include "utils/SystemInfo.h"
 #include "windowing/WindowingFactory.h"
 #if defined(TARGET_DARWIN_OSX)
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #endif// defined(TARGET_DARWIN_OSX)
 
 bool AddonHasSettings(const std::string &condition, const std::string &value, const CSetting *setting, void *data)

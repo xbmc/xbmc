@@ -23,7 +23,7 @@
 #include "CoreAudioChannelLayout.h"
 #include "CoreAudioHardware.h"
 #include "utils/log.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCoreAudioDevice

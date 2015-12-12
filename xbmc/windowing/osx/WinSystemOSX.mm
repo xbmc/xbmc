@@ -37,10 +37,10 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "osx/XBMCHelper.h"
+#include "platform/darwin/osx/XBMCHelper.h"
 #include "utils/SystemInfo.h"
-#include "osx/CocoaInterface.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/osx/CocoaInterface.h"
+#include "platform/darwin/DarwinUtils.h"
 #undef BOOL
 
 #import <SDL/SDL_video.h>
@@ -50,7 +50,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import <IOKit/pwr_mgt/IOPMLib.h>
 #import <IOKit/graphics/IOGraphicsLib.h>
-#import "osx/OSXTextInputResponder.h"
+#import "platform/darwin/osx/OSXTextInputResponder.h"
 
 // turn off deprecated warning spew.
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"

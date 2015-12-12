@@ -29,7 +29,7 @@
 #if defined(TARGET_DARWIN_IOS)
 #include <ImageIO/ImageIO.h>
 #include "filesystem/File.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #endif
 #if defined(TARGET_ANDROID)
 #include "URL.h"

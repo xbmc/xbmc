@@ -26,7 +26,7 @@
 #include "settings/AdvancedSettings.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "utils/log.h"
-#include "osx/CocoaInterface.h"
+#include "platform/darwin/osx/CocoaInterface.h"
 #include <CoreVideo/CoreVideo.h>
 #include <OpenGL/CGLIOSurface.h>
 #include "windowing/WindowingFactory.h"

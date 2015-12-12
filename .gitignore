@@ -484,11 +484,11 @@ lib/cpluff/stamp-h1
 # /xbmc/addons/
 /xbmc/addons/Makefile
 
-# /xbmc/android
-/xbmc/android/Makefile
-/xbmc/android/activity/Makefile
-/xbmc/android/loader/Makefile
-/xbmc/android/jni/Makefile
+# /xbmc/platform/android
+/xbmc/platform/android/Makefile
+/xbmc/platform/android/activity/Makefile
+/xbmc/platform/android/loader/Makefile
+/xbmc/platform/android/jni/Makefile
 
 # /xbmc/cdrip/
 /xbmc/cdrip/Makefile
@@ -548,8 +548,11 @@ lib/cpluff/stamp-h1
 /xbmc/linux/Makefile
 /xbmc/linux/sse4/Makefile
 
-# /xbmc/main/
-/xbmc/main/Makefile
+# /xbmc/platform/posix
+/xbmc/platform/posix/Makefile
+
+# /xbmc/platform
+/xbmc/platform/Makefile
 
 # /xbmc/messaging/
 /xbmc/messaging/Makefile
@@ -560,18 +563,15 @@ lib/cpluff/stamp-h1
 /xbmc/network/httprequesthandler/python/Makefile
 /xbmc/network/upnp/Makefile
 
-# /xbmc/osx/
-/xbmc/osx/Makefile
-/xbmc/osx/Info.plist
-/xbmc/osx/ios/XBMCIOS-Info.plist
-/xbmc/osx/atv2/XBMCATV2-Info.plist
+# /xbmc/platform/darwin/osx/
+/xbmc/platform/darwin/osx/Info.plist
+
+# /xbmc/platform/darwin/ios/
+/xbmc/platform/darwin/osx/ios/IOS-Info.plist
 
 # /xbmc/peripherals/
 /xbmc/peripherals/bus/Makefile
 /xbmc/peripherals/devices/Makefile
-
-# /xbmc/main/posix/
-xbmc/main/posix/Makefile
 
 #/xbmc/utils
 /xbmc/utils/Makefile
