@@ -398,6 +398,17 @@ DetailPrint "Running VS2013 re-distributable setup..."
   SetOutPath "$INSTDIR"
 SectionEnd
 
+Section "VS2015 C++ re-distributable Package (x86)" SEC_VCREDIST4
+DetailPrint "Running VS2015 re-distributable setup..."
+  SectionIn 1 2 #section is in install type Full
+  SetOutPath "$TEMP\vc2015"
+  File "${app_root}\..\dependencies\vcredist\2015\vcredist_x86.exe"
+  ExecWait '"$TEMP\vc2015\vcredist_x86.exe" /q' $VSRedistSetupError
+  RMDir /r "$TEMP\vc2015"
+  DetailPrint "Finished VS2015 re-distributable setup"
+  SetOutPath "$INSTDIR"
+SectionEnd
+
 SectionGroupEnd
 
 Function .onInit
