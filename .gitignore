@@ -843,3 +843,16 @@ xbmc/main/posix/Makefile
 /addons/visualization.milkdrop/*
 /addons/visualization.vortex/*
 /addons/visualization.waveform/*
+
+# files to be removed in K*****
+/system/players/dvdplayer/
+/xbmc/cores/dvdplayer/Makefile
+/xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile
+/xbmc/cores/dvdplayer/DVDCodecs/Makefile
+/xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile
+/xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS/Makefile
+/xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile
+/xbmc/cores/dvdplayer/DVDDemuxers/Makefile
+/xbmc/cores/dvdplayer/DVDSubtitles/Makefile
+/xbmc/cores/dvdplayer/VideoRenderers/Makefile
+/xbmc/cores/VideoRenderers/Makefile
