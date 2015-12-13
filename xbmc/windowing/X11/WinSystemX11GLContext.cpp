@@ -224,10 +224,4 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
   return ret;
 }
 
-bool CWinSystemX11GLContext::DestroyGLContext()
-{
-  m_pGLContext->Destroy();
-  return true;
-}
-
 #endif

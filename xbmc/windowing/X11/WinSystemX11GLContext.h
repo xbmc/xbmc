@@ -55,7 +55,6 @@ protected:
   virtual bool PresentRenderImpl(const CDirtyRegionList& dirty);
   virtual void SetVSyncImpl(bool enable);
   virtual bool RefreshGLContext(bool force);
-  virtual bool DestroyGLContext();
   virtual XVisualInfo* GetVisual();
 
   CGLContext *m_pGLContext;
