@@ -120,7 +120,7 @@ Simplified Example:
     std::string getSomeString();
   };
 
-  CJNISomeClass::CJNISomeClass() : CJNIBase("platform/android/some/ClassName")
+  CJNISomeClass::CJNISomeClass() : CJNIBase("android/some/ClassName")
   {
     m_object = new_object(GetClassName());
   }

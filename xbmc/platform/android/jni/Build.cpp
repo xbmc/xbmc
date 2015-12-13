@@ -22,7 +22,7 @@
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;
-const char *CJNIBuild::m_classname = "platform/android/os/Build";
+const char *CJNIBuild::m_classname = "android/os/Build";
 
 std::string CJNIBuild::UNKNOWN;
 std::string CJNIBuild::DISPLAY;

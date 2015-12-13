@@ -26,7 +26,7 @@
 
 using namespace jni;
 
-CJNIMediaCodecBufferInfo::CJNIMediaCodecBufferInfo() : CJNIBase("platform/android/media/MediaCodec$BufferInfo")
+CJNIMediaCodecBufferInfo::CJNIMediaCodecBufferInfo() : CJNIBase("android/media/MediaCodec$BufferInfo")
 {
   m_object = new_object(GetClassName(), "<init>", "()V");
   m_object.setGlobal();

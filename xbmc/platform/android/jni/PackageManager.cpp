@@ -32,7 +32,7 @@ int CJNIPackageManager::GET_ACTIVITIES(0);
 
 void CJNIPackageManager::PopulateStaticFields()
 {
-  jhclass clazz  = find_class("platform/android/content/pm/PackageManager");
+  jhclass clazz  = find_class("android/content/pm/PackageManager");
   GET_ACTIVITIES = (get_static_field<int>(clazz, "GET_ACTIVITIES"));
 }
 

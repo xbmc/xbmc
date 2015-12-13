@@ -25,7 +25,7 @@ using namespace jni;
 
 CJNIURI CJNIURI::parse(std::string uriString)
 {
-  return call_static_method<jhobject>("platform/android/net/Uri",
+  return call_static_method<jhobject>("android/net/Uri",
     "parse", "(Ljava/lang/String;)Landroid/net/Uri;",
     jcast<jhstring>(uriString));
 }

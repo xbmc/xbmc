@@ -22,7 +22,7 @@
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;
-const char *CJNISystemProperties::m_classname = "platform/android/os/SystemProperties";
+const char *CJNISystemProperties::m_classname = "android/os/SystemProperties";
 
 std::string CJNISystemProperties::get(const std::string& property, const std::string& defaultValue)
 {

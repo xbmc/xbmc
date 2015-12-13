@@ -40,13 +40,13 @@ int CJNIMediaCodec::INFO_OUTPUT_FORMAT_CHANGED(-2);
 int CJNIMediaCodec::INFO_TRY_AGAIN_LATER(-1);
 int CJNIMediaCodec::VIDEO_SCALING_MODE_SCALE_TO_FIT(1);
 int CJNIMediaCodec::VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING(2);
-const char *CJNIMediaCodec::m_classname = "platform/android/media/MediaCodec";
+const char *CJNIMediaCodec::m_classname = "android/media/MediaCodec";
 
 void CJNIMediaCodec::PopulateStaticFields()
 {
   if(GetSDKVersion() >= 16)
   {
-    jhclass clazz = find_class("platform/android/media/MediaCodec");
+    jhclass clazz = find_class("android/media/MediaCodec");
     BUFFER_FLAG_CODEC_CONFIG  = (get_static_field<int>(clazz, "BUFFER_FLAG_CODEC_CONFIG"));
     BUFFER_FLAG_END_OF_STREAM = (get_static_field<int>(clazz, "BUFFER_FLAG_END_OF_STREAM"));
     BUFFER_FLAG_SYNC_FRAME    = (get_static_field<int>(clazz, "BUFFER_FLAG_SYNC_FRAME"));

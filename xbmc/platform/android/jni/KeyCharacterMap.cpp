@@ -25,7 +25,7 @@ using namespace jni;
 
 CJNIKeyCharacterMap CJNIKeyCharacterMap::load(int deviceId)
 {
-  return (CJNIKeyCharacterMap)call_static_method<jhobject>("platform/android/view/KeyCharacterMap",
+  return (CJNIKeyCharacterMap)call_static_method<jhobject>("android/view/KeyCharacterMap",
     "load", "(I)Landroid/view/KeyCharacterMap;",
     deviceId);
 }

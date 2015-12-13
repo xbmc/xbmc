@@ -30,7 +30,7 @@ int CJNISurface::ROTATION_0;
 int CJNISurface::ROTATION_90;
 int CJNISurface::ROTATION_180;
 int CJNISurface::ROTATION_270;
-const char* CJNISurface::m_classname = "platform/android/view/Surface";
+const char* CJNISurface::m_classname = "android/view/Surface";
 
 void CJNISurface::PopulateStaticFields()
 {

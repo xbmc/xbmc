@@ -28,7 +28,7 @@ std::string CJNIBaseColumns::_COUNT;
 
 void CJNIBaseColumns::PopulateStaticFields()
 {
-  jhclass clazz = find_class("platform/android/provider/BaseColumns");
+  jhclass clazz = find_class("android/provider/BaseColumns");
   _ID    = (jcast<std::string>(get_static_field<jhstring>(clazz, "_ID")));
   _COUNT = (jcast<std::string>(get_static_field<jhstring>(clazz, "_COUNT")));
 }

@@ -40,7 +40,7 @@ int CJNIKeyEvent::KEYCODE_MEDIA_STOP;
 
 void CJNIKeyEvent::PopulateStaticFields()
 {
-  jhclass clazz = find_class("platform/android/view/KeyEvent");
+  jhclass clazz = find_class("android/view/KeyEvent");
   ACTION_DOWN  = (get_static_field<int>(clazz, "ACTION_DOWN"));
   ACTION_UP  = (get_static_field<int>(clazz, "ACTION_UP"));
   KEYCODE_MEDIA_RECORD  = (get_static_field<int>(clazz, "KEYCODE_MEDIA_RECORD"));

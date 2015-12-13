@@ -22,7 +22,7 @@
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;
-const char *CJNIDisplayMetrics::m_classname = "platform/android/util/DisplayMetrics";
+const char *CJNIDisplayMetrics::m_classname = "android/util/DisplayMetrics";
 
 int 	CJNIDisplayMetrics::DENSITY_DEFAULT(-1);
 int 	CJNIDisplayMetrics::DENSITY_HIGH(-1);

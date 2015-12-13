@@ -38,7 +38,7 @@ int CJNIConnectivityManager::DEFAULT_NETWORK_PREFERENCE(0);
 
 void CJNIConnectivityManager::PopulateStaticFields()
 {
-  jhclass clazz = find_class("platform/android/net/ConnectivityManager");
+  jhclass clazz = find_class("android/net/ConnectivityManager");
   TYPE_MOBILE       = (get_static_field<int>(clazz, "TYPE_MOBILE"));
   TYPE_WIFI         = (get_static_field<int>(clazz, "TYPE_WIFI"));
   TYPE_MOBILE_MMS   = (get_static_field<int>(clazz, "TYPE_MOBILE_MMS"));

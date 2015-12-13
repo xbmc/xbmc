@@ -25,7 +25,7 @@ using namespace jni;
 
 int64_t CJNISystemClock::uptimeMillis()
 {
-  return call_static_method<jlong>("platform/android/os/SystemClock",
+  return call_static_method<jlong>("android/os/SystemClock",
     "uptimeMillis", "()J");
 }
 

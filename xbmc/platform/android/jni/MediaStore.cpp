@@ -33,7 +33,7 @@ std::string CJNIMediaStoreMediaColumns::MIME_TYPE;
 
 void CJNIMediaStoreMediaColumns::PopulateStaticFields()
 {
-  jhclass clazz = find_class("platform/android/provider/MediaStore$MediaColumns");
+  jhclass clazz = find_class("android/provider/MediaStore$MediaColumns");
   DATA          = (jcast<std::string>(get_static_field<jhstring>(clazz, "DATA")));
   SIZE          = (jcast<std::string>(get_static_field<jhstring>(clazz, "SIZE")));
   DISPLAY_NAME  = (jcast<std::string>(get_static_field<jhstring>(clazz, "DISPLAY_NAME")));

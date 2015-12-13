@@ -22,7 +22,7 @@
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;
-const char *CJNIPackageItemInfo::m_classname = "platform/android/content/pm/PackageItemInfo";
+const char *CJNIPackageItemInfo::m_classname = "android/content/pm/PackageItemInfo";
 
 CJNIPackageItemInfo::CJNIPackageItemInfo(const jhobject &object) : CJNIBase(object)
   ,icon(       get_field<int>(m_object, "icon"))

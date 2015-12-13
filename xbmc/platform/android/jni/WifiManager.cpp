@@ -140,13 +140,13 @@ bool CJNIWifiManager::isWifiEnabled()
 
 int CJNIWifiManager::calculateSignalLevel(int rssi, int numLevels)
 {
-  return call_static_method<jint>("platform/android/net/wifi/WifiManager",
+  return call_static_method<jint>("android/net/wifi/WifiManager",
     "calculateSignalLevel", "(II)I", rssi, numLevels);
 }
 
 int CJNIWifiManager::compareSignalLevel(int rssiA, int rssiB)
 {
-  return call_static_method<jint>("platform/android/net/wifi/WifiManager",
+  return call_static_method<jint>("android/net/wifi/WifiManager",
     "compareSignalLevel", "(II)I", rssiA, rssiB);
 }
 

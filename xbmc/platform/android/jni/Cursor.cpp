@@ -32,7 +32,7 @@ int CJNICursor::FIELD_TYPE_BLOB(0);
 
 void CJNICursor::PopulateStaticFields()
 {
-  jhclass clazz = find_class("platform/android/database/Cursor");
+  jhclass clazz = find_class("android/database/Cursor");
   FIELD_TYPE_NULL     = (get_static_field<int>(clazz, "FIELD_TYPE_NULL"));
   FIELD_TYPE_INTEGER  = (get_static_field<int>(clazz, "FIELD_TYPE_INTEGER"));
   FIELD_TYPE_FLOAT    = (get_static_field<int>(clazz, "FIELD_TYPE_FLOAT"));

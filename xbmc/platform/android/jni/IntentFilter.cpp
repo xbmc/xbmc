@@ -23,12 +23,12 @@
 
 using namespace jni;
 
-CJNIIntentFilter::CJNIIntentFilter() : CJNIBase("platform/android/content/IntentFilter")
+CJNIIntentFilter::CJNIIntentFilter() : CJNIBase("android/content/IntentFilter")
 {
   m_object = new_object(GetClassName());
 }
 
-CJNIIntentFilter::CJNIIntentFilter(const std::string &action) : CJNIBase("platform/android/content/IntentFilter")
+CJNIIntentFilter::CJNIIntentFilter(const std::string &action) : CJNIBase("android/content/IntentFilter")
 {
   m_object = new_object(GetClassName(),
     "<init>", "(Ljava/lang/String;)V",

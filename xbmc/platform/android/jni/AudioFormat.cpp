@@ -48,7 +48,7 @@ void CJNIAudioFormat::PopulateStaticFields()
   int sdk = CJNIBase::GetSDKVersion();
   if (sdk >= 3)
   {
-    jhclass c = find_class("platform/android/media/AudioFormat");
+    jhclass c = find_class("android/media/AudioFormat");
     CJNIAudioFormat::ENCODING_PCM_16BIT = get_static_field<int>(c, "ENCODING_PCM_16BIT");
     if (sdk >= 5)
     {
