@@ -189,6 +189,7 @@ public:
   CDateTime m_dateAdded;
   MediaType m_type;
   int m_duration; ///< duration in seconds
+  int m_relevance; // Used for actors' number of appearances
 
 private:
   /* \brief Parse our native XML format for video info.

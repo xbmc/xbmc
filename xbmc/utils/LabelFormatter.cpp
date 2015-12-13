@@ -100,13 +100,14 @@ using namespace MUSIC_INFO;
  *  %Y - Year
  *  %Z - tvshow title
  *  %a - Date Added
+ *  %c - Relevance - Used for actors' appearences
  *  %d - Date and Time
  *  %p - Last Played
  *  %r - User Rating
  *  *t - Date Taken (suitable for Pictures)
  */
 
-#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWadprt"
+#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWacdprt"
 
 CLabelFormatter::CLabelFormatter(const std::string &mask, const std::string &mask2)
 {
@@ -257,6 +258,9 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     break;
   case 'C': // programs count
     value = StringUtils::Format("%i", item->m_iprogramCount);
+    break;
+  case 'c': // relevance
+    value = StringUtils::Format("%i", movie->m_relevance);
     break;
   case 'K':
     value = item->m_strTitle;

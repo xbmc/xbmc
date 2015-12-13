@@ -367,6 +367,7 @@ public:
     std::string name;
     std::string thumb;
     int playcount;
+    int appearances;
   };
 
   class CSeason   // used for season retrieval for non-master users

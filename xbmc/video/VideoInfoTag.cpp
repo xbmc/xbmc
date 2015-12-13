@@ -95,6 +95,7 @@ void CVideoInfoTag::Reset()
   m_iIdSeason = -1;
   m_dateAdded.Reset();
   m_type.clear();
+  m_relevance = -1;
 }
 
 bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathInfo, const TiXmlElement *additionalNode)
@@ -600,6 +601,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldInProgress:               sortable[FieldInProgress] = m_resumePoint.IsPartWay(); break;
   case FieldDateAdded:                sortable[FieldDateAdded] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::Empty; break;
   case FieldMediaType:                sortable[FieldMediaType] = m_type; break;
+  case FieldRelevance:                sortable[FieldRelevance] = m_relevance; break;
   default: break;
   }
 }
