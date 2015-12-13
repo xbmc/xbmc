@@ -1928,9 +1928,26 @@ void CGUIEPGGridContainer::GoToEnd()
 
 void CGUIEPGGridContainer::GoToNow()
 {
+  if (!m_gridStart.IsValid())
+    return;
+
   CDateTime currentDate = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
   int offset = ((currentDate - m_gridStart).GetSecondsTotal() / 60 - 30) / MINSPERBLOCK;
   ScrollToBlockOffset(offset);
+
+  for (int blockIndex = 0; blockIndex < m_blocksPerPage; blockIndex++)
+  {
+    const CFileItemPtr item = m_gridIndex[m_channelCursor + m_channelOffset][offset + blockIndex].item;
+    if (item)
+    {
+      const CEpgInfoTagPtr tag = item->GetEPGInfoTag();
+      if (tag && tag->StartAsUTC() <= currentDate && tag->EndAsUTC() > currentDate)
+      {
+        SetBlock(blockIndex); // Select currently active epg element
+        break;
+      }
+    }
+  }
 }
 
 void CGUIEPGGridContainer::SetStartEnd(CDateTime start, CDateTime end)
