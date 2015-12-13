@@ -26,19 +26,19 @@ using namespace jni;
 
 std::string CJNIEnvironment::getExternalStorageState()
 {
-  return jcast<std::string>(call_static_method<jhstring>("platform/android/os/Environment",
+  return jcast<std::string>(call_static_method<jhstring>("android/os/Environment",
     "getExternalStorageState", "()Ljava/lang/String;"));
 }
 
 CJNIFile CJNIEnvironment::getExternalStorageDirectory()
 {
-  return (CJNIFile)call_static_method<jhobject>("platform/android/os/Environment",
+  return (CJNIFile)call_static_method<jhobject>("android/os/Environment",
     "getExternalStorageDirectory", "()Ljava/io/File;");
 }
 
 CJNIFile CJNIEnvironment::getExternalStoragePublicDirectory(const std::string &type)
 {
-  return (CJNIFile)call_static_method<jhobject>("platform/android/os/Environment",
+  return (CJNIFile)call_static_method<jhobject>("android/os/Environment",
     "getExternalStoragePublicDirectory", "(Ljava/lang/String;)Ljava/io/File;",
     jcast<jhstring>(type));
 }

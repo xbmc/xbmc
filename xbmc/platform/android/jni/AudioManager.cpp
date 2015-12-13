@@ -38,7 +38,7 @@ int CJNIAudioManager::AUDIOFOCUS_REQUEST_FAILED(0x00000000);
 
 void CJNIAudioManager::PopulateStaticFields()
 {
-  jhclass clazz = find_class("platform/android/media/AudioManager");
+  jhclass clazz = find_class("android/media/AudioManager");
   STREAM_MUSIC  = (get_static_field<int>(clazz, "STREAM_MUSIC"));
   AUDIOFOCUS_GAIN  = (get_static_field<int>(clazz, "AUDIOFOCUS_GAIN"));
   AUDIOFOCUS_LOSS  = (get_static_field<int>(clazz, "AUDIOFOCUS_LOSS"));

@@ -23,7 +23,7 @@
 
 using namespace jni;
 
-CJNIStatFs::CJNIStatFs(const std::string &path) : CJNIBase("platform/android/os/StatFs")
+CJNIStatFs::CJNIStatFs(const std::string &path) : CJNIBase("android/os/StatFs")
 {
   m_object = new_object(GetClassName(), "<init>",
     "(Ljava/lang/String;)V",

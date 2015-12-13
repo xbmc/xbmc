@@ -23,7 +23,7 @@
 
 using namespace jni;
 
-CJNIWifiConfiguration::CJNIWifiConfiguration() : CJNIBase("platform/android/net/wifi/WifiConfiguration")
+CJNIWifiConfiguration::CJNIWifiConfiguration() : CJNIBase("android/net/wifi/WifiConfiguration")
 {
   m_object = new_object(GetClassName());
   m_object.setGlobal();

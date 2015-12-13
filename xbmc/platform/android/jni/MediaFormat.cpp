@@ -40,13 +40,13 @@ std::string CJNIMediaFormat::KEY_IS_ADTS;
 std::string CJNIMediaFormat::KEY_CHANNEL_MASK;
 std::string CJNIMediaFormat::KEY_AAC_PROFILE;
 std::string CJNIMediaFormat::KEY_FLAC_COMPRESSION_LEVEL;
-const char *CJNIMediaFormat::m_classname = "platform/android/media/MediaFormat";
+const char *CJNIMediaFormat::m_classname = "android/media/MediaFormat";
 
 void CJNIMediaFormat::PopulateStaticFields()
 {
   if(GetSDKVersion() >= 16)
   {
-    jhclass clazz = find_class("platform/android/media/MediaFormat");
+    jhclass clazz = find_class("android/media/MediaFormat");
     KEY_MIME            = jcast<std::string>(get_static_field<jhstring>(clazz, "KEY_MIME"));
     KEY_SAMPLE_RATE     = jcast<std::string>(get_static_field<jhstring>(clazz, "KEY_SAMPLE_RATE"));
     KEY_CHANNEL_COUNT   = jcast<std::string>(get_static_field<jhstring>(clazz, "KEY_CHANNEL_COUNT"));

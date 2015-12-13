@@ -72,7 +72,7 @@ int CJNIViewInputDeviceMotionRange::getSource() const
 
 /************************************************************************/
 /************************************************************************/
-const char *CJNIViewInputDevice::m_classname = "platform/android/view/InputDevice";
+const char *CJNIViewInputDevice::m_classname = "android/view/InputDevice";
 
 const CJNIViewInputDevice CJNIViewInputDevice::getDevice(int id)
 {
@@ -125,7 +125,7 @@ int CJNIView::SYSTEM_UI_FLAG_VISIBLE(0);
 
 void CJNIView::PopulateStaticFields()
 {
-  jhclass clazz = find_class("platform/android/view/View");
+  jhclass clazz = find_class("android/view/View");
   if(GetSDKVersion() >= 16)
   {
     SYSTEM_UI_FLAG_FULLSCREEN              = (get_static_field<int>(clazz, "SYSTEM_UI_FLAG_FULLSCREEN"));

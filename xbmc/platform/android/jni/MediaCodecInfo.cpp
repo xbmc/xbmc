@@ -98,7 +98,7 @@ int CJNIMediaCodecInfoCodecProfileLevel::AACObjectERLC(0);
 int CJNIMediaCodecInfoCodecProfileLevel::AACObjectLD(0);
 int CJNIMediaCodecInfoCodecProfileLevel::AACObjectHE_PS(0);
 int CJNIMediaCodecInfoCodecProfileLevel::AACObjectELD(0);
-const char *CJNIMediaCodecInfoCodecProfileLevel::m_classname = "platform/android/media/MediaCodecInfo$CodecProfileLevel";
+const char *CJNIMediaCodecInfoCodecProfileLevel::m_classname = "android/media/MediaCodecInfo$CodecProfileLevel";
 
 void CJNIMediaCodecInfoCodecProfileLevel::PopulateStaticFields()
 {
@@ -241,7 +241,7 @@ int CJNIMediaCodecInfoCodecCapabilities::COLOR_TI_FormatYUV420PackedSemiPlanar(0
 int CJNIMediaCodecInfoCodecCapabilities::COLOR_QCOM_FormatYUV420SemiPlanar(0);
 /* This one isn't exposed in 4.4 */
 int CJNIMediaCodecInfoCodecCapabilities::OMX_QCOM_COLOR_FormatYVU420SemiPlanarInterlace(0x7FA30C04);
-const char *CJNIMediaCodecInfoCodecCapabilities::m_classname = "platform/android/media/MediaCodecInfo$CodecCapabilities";
+const char *CJNIMediaCodecInfoCodecCapabilities::m_classname = "android/media/MediaCodecInfo$CodecCapabilities";
 
 void CJNIMediaCodecInfoCodecCapabilities::PopulateStaticFields()
 {
