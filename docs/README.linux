@@ -124,16 +124,28 @@ You can compile all addons or only specific addons by specifying e.g. ADDONS="au
 .1  Specific addons
     $ make -C tools/depends/target/binary-addons PREFIX=/<system prefix added on step 4.1> ADDONS="audioencoder.flac pvr.vdr.vnsi audiodecoder.snesapu"
 
-Audio encoders:
-    audioencoder.flac, audioencoder.lame, audioencoder.vorbis, audioencoder.wav
-
-PVR addons:
-    pvr.argustv, pvr.demo, pvr.dvblink, pvr.dvbviewer, pvr.filmon, pvr.hts, pvr.iptvsimple, pvr.mediaportal.tvserver,
-    pvr.mythtv, pvr.nextpvr, pvr.njoy, pvr.pctv, pvr.stalker, pvr.vbox, pvr.vdr.vnsi, pvr.vuplus
+ADSP addons:
+    adsp.basic, adsp.biquad.filters, adsp.freesurround
 
 Audio decoders:
     audiodecoder.modplug, audiodecoder.nosefart, audiodecoder.sidplay, audiodecoder.snesapu,
     audiodecoder.stsound, audiodecoder.timidity, audiodecoder.vgmstream
+
+Audio encoders:
+    audioencoder.flac, audioencoder.lame, audioencoder.vorbis, audioencoder.wav
+
+PVR addons:
+    pvr.argustv, pvr.demo, pvr.dvblink, pvr.dvbviewer, pvr.filmon, pvr.hdhomerun, pvr.hts, pvr.iptvsimple,
+    pvr.mediaportal.tvserver,pvr.mythtv, pvr.nextpvr, pvr.njoy, pvr.pctv, pvr.stalker, pvr.vbox, pvr.vdr.vnsi,
+    pvr.vuplus, pvr.wmc
+
+Screensavers:
+    screensaver.asteroids, screensaver.biogenesis, screensaver.greynetic, screensaver.matrixtrails,
+    screensaver.pingpong, screensaver.pyro, screensavers.rsxs, screensaver.stars
+
+Visualizations
+    visualization.fishbmc, visualization.goom, visualization.projectm, visualization.shadertoy
+    visualization.spectrum, visualization.vsxu, visualization.waveform
 
 -----------------------------------------------------------------------------
 4.5. Test suite
