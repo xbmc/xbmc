@@ -34,8 +34,8 @@ DEBIAN=${DEBIAN:-"https://github.com/xbmc/xbmc-packaging/archive/master.tar.gz"}
 BUILD_DATE=$(date '+%Y%m%d.%H%M')
 
 function usage {
-    echo "$0: this script builds a Kodi debian package from a git repository."
-    echo "The build is controlled by ENV variables, which van be overridden as appropriate:"
+    echo "$0: This script builds a Kodi debian package from a git repository."
+    echo "The build is controlled by ENV variables, which can be overridden as appropriate:"
     echo "BUILDER is either debuild(default) or pdebuild(needs a proper pbuilder setup)"
     checkEnv
 }
