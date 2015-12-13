@@ -28,11 +28,11 @@ std::string CJNIIntent::EXTRA_KEY_EVENT;
 
 void CJNIIntent::PopulateStaticFields()
 {
-  jhclass clazz = find_class("platform/android/content/Intent");
+  jhclass clazz = find_class("android/content/Intent");
   EXTRA_KEY_EVENT  = jcast<std::string>(get_static_field<jhstring>(clazz,"EXTRA_KEY_EVENT"));
 }
 
-CJNIIntent::CJNIIntent(const std::string &action) : CJNIBase("platform/android/content/Intent")
+CJNIIntent::CJNIIntent(const std::string &action) : CJNIBase("android/content/Intent")
 {
   if(action.empty())
     m_object = new_object(GetClassName());

@@ -24,7 +24,7 @@
 
 using namespace jni;
 
-CJNIBitmapDrawable::CJNIBitmapDrawable() : CJNIDrawable("platform/android/graphics/drawable/BitmapDrawable")
+CJNIBitmapDrawable::CJNIBitmapDrawable() : CJNIDrawable("android/graphics/drawable/BitmapDrawable")
 {
   m_object = new_object(GetClassName(), "<init>", "()V");
   m_object.setGlobal();

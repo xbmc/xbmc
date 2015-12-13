@@ -64,7 +64,7 @@ void CJNISurfaceTextureOnFrameAvailableListener::_onFrameAvailable(JNIEnv *env, 
 
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
-CJNISurfaceTexture::CJNISurfaceTexture(int texName) : CJNIBase("platform/android/graphics/SurfaceTexture")
+CJNISurfaceTexture::CJNISurfaceTexture(int texName) : CJNIBase("android/graphics/SurfaceTexture")
 {
   m_object = new_object(GetClassName(), "<init>", "(I)V", texName);
   m_object.setGlobal();

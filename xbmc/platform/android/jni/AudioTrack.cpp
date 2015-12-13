@@ -30,7 +30,7 @@ void CJNIAudioTrack::PopulateStaticFields()
 {
   if (CJNIBase::GetSDKVersion() >= 3)
   {
-    jhclass c = find_class("platform/android/media/AudioTrack");
+    jhclass c = find_class("android/media/AudioTrack");
     CJNIAudioTrack::PLAYSTATE_PLAYING = get_static_field<int>(c, "PLAYSTATE_PLAYING");
     if (CJNIBase::GetSDKVersion() >= 5)
       CJNIAudioTrack::MODE_STREAM = get_static_field<int>(c, "MODE_STREAM");
@@ -38,7 +38,7 @@ void CJNIAudioTrack::PopulateStaticFields()
 }
 
 CJNIAudioTrack::CJNIAudioTrack(int streamType, int sampleRateInHz, int channelConfig, int audioFormat, int bufferSizeInBytes, int mode) throw(std::invalid_argument)
-  : CJNIBase("platform/android/media/AudioTrack")
+  : CJNIBase("android/media/AudioTrack")
 {
   m_object = new_object(GetClassName(), "<init>", "(IIIIII)V",
                         streamType, sampleRateInHz, channelConfig,
@@ -126,13 +126,13 @@ int CJNIAudioTrack::getPlaybackHeadPosition()
 
 int CJNIAudioTrack::getMinBufferSize(int sampleRateInHz, int channelConfig, int audioFormat)
 {
-  return call_static_method<int>( "platform/android/media/AudioTrack", "getMinBufferSize", "(III)I",
+  return call_static_method<int>( "android/media/AudioTrack", "getMinBufferSize", "(III)I",
                                   sampleRateInHz, channelConfig, audioFormat);
 }
 
 int CJNIAudioTrack::getNativeOutputSampleRate(int streamType)
 {
-  return call_static_method<int>( "platform/android/media/AudioTrack", "getNativeOutputSampleRate", "(I)I",
+  return call_static_method<int>( "android/media/AudioTrack", "getNativeOutputSampleRate", "(I)I",
                                   streamType);
 }
 

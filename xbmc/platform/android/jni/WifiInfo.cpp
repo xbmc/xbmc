@@ -91,7 +91,7 @@ CJNISupplicantState CJNIWifiInfo::getSupplicantState() const
 
 CJNINetworkInfoDetailedState CJNIWifiInfo::getDetailedStateOf(const CJNISupplicantState &suppState)
 {
-  return call_static_method<jhobject>("platform/android/net/wifi/WifiInfo",
+  return call_static_method<jhobject>("android/net/wifi/WifiInfo",
     "getDetailedStateOf", "(Landroid/net/wifi/SupplicantState;)Landroid/net/NetworkInfo$DetailedState;",
     suppState.get_raw());
 }

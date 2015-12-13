@@ -33,7 +33,7 @@ std::string CJNIContentResolver::CURSOR_DIR_BASE_TYPE;
 
 void CJNIContentResolver::PopulateStaticFields()
 {
-  jhclass clazz = find_class("platform/android/content/ContentResolver");
+  jhclass clazz = find_class("android/content/ContentResolver");
   SCHEME_CONTENT          = jcast<std::string>(get_static_field<jhstring>(clazz,"SCHEME_CONTENT"));
   SCHEME_ANDROID_RESOURCE = jcast<std::string>(get_static_field<jhstring>(clazz,"SCHEME_ANDROID_RESOURCE"));
   SCHEME_FILE             = jcast<std::string>(get_static_field<jhstring>(clazz,"SCHEME_FILE"));
