@@ -30,6 +30,7 @@ bool CWinSystemX11GLESContext::PresentRenderImpl(const CDirtyRegionList& dirty)
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnResetDisplay();
   }
+  return true;
 }
 
 void CWinSystemX11GLESContext::SetVSyncImpl(bool enable)
@@ -161,11 +162,6 @@ bool CWinSystemX11GLESContext::RefreshGLContext(bool force)
     ret = m_pGLContext->Refresh(force, m_nScreen, m_glWindow, m_newGlContext);
   }
   return ret;
-}
-
-bool CWinSystemX11GLESContext::DestroyGLContext()
-{
-  m_pGLContext->Destroy();
 }
 
 #endif
