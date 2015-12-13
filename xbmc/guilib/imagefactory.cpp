@@ -51,7 +51,7 @@ IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
 #endif//HAS_GIFLIB
 
   if (strMimeType == "image/webp")
-    return new CFFmpegImage();
+    return new CFFmpegImage(strMimeType);
 
   return new CXImage(strMimeType);
 }

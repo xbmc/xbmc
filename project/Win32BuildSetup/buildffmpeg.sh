@@ -80,6 +80,8 @@ OPTIONS="
 --enable-encoder=aac \
 --enable-encoder=wmav2 \
 --enable-encoder=libvorbis \
+--enable-encoder=png \
+--enable-encoder=mjpeg \
 --enable-protocol=http \
 --enable-runtime-cpudetect \
 --enable-dxva2 \

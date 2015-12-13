@@ -18,7 +18,7 @@ ffmpg_config += --enable-gpl --enable-runtime-cpudetect
 ffmpg_config += --enable-postproc --enable-pthreads
 ffmpg_config += --enable-muxer=spdif --enable-muxer=adts
 ffmpg_config += --enable-muxer=asf --enable-muxer=ipod
-ffmpg_config += --enable-encoder=ac3 --enable-encoder=aac
+ffmpg_config += --enable-encoder=ac3 --enable-encoder=aac --enable-encoder=png --enable-encoder=mjpeg
 ffmpg_config += --enable-encoder=wmav2 --enable-protocol=http
 ffmpg_config += --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis
 ffmpg_config += --disable-vaapi --disable-vdpau --disable-crystalhd
