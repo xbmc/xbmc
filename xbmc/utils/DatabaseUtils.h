@@ -129,6 +129,7 @@ typedef enum {
   FieldDied,
   FieldStereoMode,
   FieldUserRating,
+  FieldRelevance, // Used for actors' appearences
   FieldMax
 } Field;
 

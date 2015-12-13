@@ -5433,7 +5433,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
     Filter extFilter = filter;
     if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
-      std::string view, view_id, media_type, extraField;
+      std::string view, view_id, media_type, extraField, group;
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
         view       = MediaTypeMovie;
@@ -5446,6 +5446,8 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
         view       = MediaTypeEpisode;
         view_id    = "idShow";
         media_type = MediaTypeTvShow;
+        extraField = "count(DISTINCT idShow)";
+        group = "actor.actor_id";
       }
       else if (idContent == VIDEODB_CONTENT_EPISODES)
       {
@@ -5471,6 +5473,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
       extFilter.AppendJoin(PrepareSQL("JOIN %s_view ON %s_link.media_id = %s_view.%s AND %s_link.media_type='%s'", view.c_str(), type, view.c_str(), view_id.c_str(), type, media_type.c_str()));
       extFilter.AppendJoin(PrepareSQL("JOIN files ON files.idFile = %s_view.idFile", view.c_str()));
       extFilter.AppendJoin("JOIN path ON path.idPath = files.idPath");
+      extFilter.AppendGroup(group);
     }
     else
     {
@@ -5488,6 +5491,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
         view       = MediaTypeTvShow;
         view_id    = "idShow";
         media_type = MediaTypeTvShow;
+        extraField = "count(idShow)";
       }
       else if (idContent == VIDEODB_CONTENT_EPISODES)
       {
@@ -5563,7 +5567,11 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
         actor.name = m_pDS->fv(1).get_asString();
         actor.thumb = m_pDS->fv(2).get_asString();
         if (idContent != VIDEODB_CONTENT_TVSHOWS)
+        {
           actor.playcount = m_pDS->fv(3).get_asInt();
+          actor.appearances = 1;
+        }
+        else actor.appearances = m_pDS->fv(4).get_asInt();
         it = mapActors.find(idActor);
         // is this actor already known?
         if (it == mapActors.end())
@@ -5572,6 +5580,8 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
           if (g_passwordManager.IsDatabasePathUnlocked(std::string(m_pDS->fv("path.strPath").get_asString()),*CMediaSourceSettings::GetInstance().GetSources("video")))
             mapActors.insert(std::pair<int, CActor>(idActor, actor));
         }
+        else if (idContent != VIDEODB_CONTENT_TVSHOWS)
+            it->second.appearances++;
         m_pDS->next();
       }
       m_pDS->close();
@@ -5590,6 +5600,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
         pItem->GetVideoInfoTag()->m_strPictureURL.ParseString(it->second.thumb);
         pItem->GetVideoInfoTag()->m_iDbId = it->first;
         pItem->GetVideoInfoTag()->m_type = type;
+        pItem->GetVideoInfoTag()->m_relevance = it->second.appearances;
         items.Add(pItem);
       }
     }
@@ -5616,6 +5627,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
             // only if the number of videos watched is equal to the total number (i.e. every video watched)
             pItem->GetVideoInfoTag()->m_playCount = (m_pDS->fv(4).get_asInt() == m_pDS->fv(3).get_asInt()) ? 1 : 0;
           }
+          pItem->GetVideoInfoTag()->m_relevance = m_pDS->fv(3).get_asInt();
           if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
             pItem->GetVideoInfoTag()->m_artist.push_back(pItem->GetLabel());
           items.Add(pItem);
