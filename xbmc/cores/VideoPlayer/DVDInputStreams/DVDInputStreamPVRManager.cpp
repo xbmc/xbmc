@@ -114,18 +114,18 @@ bool CDVDInputStreamPVRManager::Open()
   if(transFile.substr(0, 6) != "pvr://")
   {
     m_isOtherStreamHack = true;
-    
+
     m_item.SetPath(transFile);
     m_pOtherStream = CDVDFactoryInputStream::CreateInputStream(m_pPlayer, m_item);
     if (!m_pOtherStream)
     {
-      CLog::Log(LOGERROR, "CDVDInputStreamPVRManager::Open - unable to create input stream for [%s]", transFile.c_str());
+      CLog::Log(LOGERROR, "CDVDInputStreamPVRManager::Open - unable to create input stream for [%s]", CURL::GetRedacted(transFile).c_str());
       return false;
     }
 
     if (!m_pOtherStream->Open())
     {
-      CLog::Log(LOGERROR, "CDVDInputStreamPVRManager::Open - error opening [%s]", transFile.c_str());
+      CLog::Log(LOGERROR, "CDVDInputStreamPVRManager::Open - error opening [%s]", CURL::GetRedacted(transFile).c_str());
       delete m_pFile;
       m_pFile = NULL;
       m_pLiveTV = NULL;
@@ -137,7 +137,7 @@ bool CDVDInputStreamPVRManager::Open()
   }
 
   ResetScanTimeout((unsigned int) CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPLAYBACK_SCANTIME) * 1000);
-  CLog::Log(LOGDEBUG, "CDVDInputStreamPVRManager::Open - stream opened: %s", transFile.c_str());
+  CLog::Log(LOGDEBUG, "CDVDInputStreamPVRManager::Open - stream opened: %s", CURL::GetRedacted(transFile).c_str());
 
   return true;
 }
