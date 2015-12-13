@@ -233,7 +233,7 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
 
   AVPicture* pictureRGB = static_cast<AVPicture*>(av_mallocz(sizeof(AVPicture)));
 
-  int size = avpicture_fill(pictureRGB, NULL, PIX_FMT_RGB32, width, height);
+  int size = avpicture_fill(pictureRGB, NULL, AV_PIX_FMT_RGB32, width, height);
   if (size < 0)
   {
     CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate AVPicture member with %i x %i pixes", width, height);
@@ -251,7 +251,7 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
   else
   {
     // We need an extra buffer and copy it manually afterwards
-    if (avpicture_alloc(pictureRGB, PIX_FMT_RGB32, width, height) < 0)
+    if (avpicture_alloc(pictureRGB, AV_PIX_FMT_RGB32, width, height) < 0)
     {
       CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate temp buffer of size %i bytes", size);
       av_free(pictureRGB);
@@ -263,7 +263,7 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
   AVPixelFormat pixFormat = ConvertFormats(m_pFrame);
 
   struct SwsContext* context = sws_getContext(m_width, m_height, pixFormat,
-    width, height, PIX_FMT_RGB32, SWS_BICUBIC, NULL, NULL, NULL);
+    width, height, AV_PIX_FMT_RGB32, SWS_BICUBIC, NULL, NULL, NULL);
 
   sws_scale(context, m_pFrame->data, m_pFrame->linesize, 0, m_height,
     pictureRGB->data, pictureRGB->linesize);
