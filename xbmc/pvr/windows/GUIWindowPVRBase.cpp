@@ -324,7 +324,7 @@ bool CGUIWindowPVRBase::OpenGroupSelectionDialog(void)
   if (!dialog->IsConfirmed())
     return false;
 
-  const CFileItemPtr item = dialog->GetSelectedItem();
+  const CFileItemPtr item = dialog->GetSelectedFileItem();
   if (!item)
     return false;
 

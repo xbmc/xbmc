@@ -285,7 +285,7 @@ void CGUIDialogAddonInfo::OnUpdate()
   {
     Close();
 
-    auto selected = versions.at(dialog->GetSelectedLabel());
+    auto selected = versions.at(dialog->GetSelectedItem());
 
     //turn auto updating off if downgrading
     if (selected.first < m_localAddon->Version())

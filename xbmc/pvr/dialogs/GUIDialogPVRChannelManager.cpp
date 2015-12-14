@@ -457,7 +457,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
       pDlgSelect->Add((*itr)->Name());
     pDlgSelect->Open();
 
-    iSelection = pDlgSelect->GetSelectedLabel();
+    iSelection = pDlgSelect->GetSelectedItem();
   }
 
   if (iSelection >= 0 && iSelection < (int)m_clientsWithSettingsList.size())

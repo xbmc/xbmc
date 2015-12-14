@@ -739,7 +739,7 @@ void CPeripherals::OnSettingAction(const CSetting *setting)
       pDialog->SetSelected(iPos);
       pDialog->Open();
 
-      iPos = pDialog->IsConfirmed() ? pDialog->GetSelectedLabel() : -1;
+      iPos = pDialog->IsConfirmed() ? pDialog->GetSelectedItem() : -1;
 
       if (iPos >= 0)
       {
