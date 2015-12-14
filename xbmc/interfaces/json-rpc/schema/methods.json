@@ -413,6 +413,21 @@
     ],
     "returns": "string"
   },
+  "Player.SetVideoStream": {
+    "type": "method",
+    "description": "Set the video stream played by the player",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "stream", "required": true, "type": [
+          { "type": "string", "enum": [ "previous", "next" ] },
+          { "type": "integer", "minimum": 0, "description": "Index of the video stream to play" }
+        ]
+      }
+    ],
+    "returns": "string"
+  },
   "Player.SetSubtitle": {
     "type": "method",
     "description": "Set the subtitle displayed by the player",
