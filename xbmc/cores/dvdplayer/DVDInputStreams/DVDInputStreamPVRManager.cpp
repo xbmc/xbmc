@@ -111,7 +111,7 @@ bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& con
     m_pOtherStream = CDVDFactoryInputStream::CreateInputStream(m_pPlayer, transFile, content);
     if (!m_pOtherStream)
     {
-      CLog::Log(LOGERROR, "CDVDInputStreamPVRManager::Open - unable to create input stream for [%s]", transFile.c_str());
+      CLog::Log(LOGERROR, "CDVDInputStreamPVRManager::Open - unable to create input stream for [%s]", CURL::GetRedacted(transFile).c_str());
       return false;
     }
     else
@@ -119,7 +119,7 @@ bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& con
 
     if (!m_pOtherStream->Open(transFile.c_str(), content, contentLookup))
     {
-      CLog::Log(LOGERROR, "CDVDInputStreamPVRManager::Open - error opening [%s]", transFile.c_str());
+      CLog::Log(LOGERROR, "CDVDInputStreamPVRManager::Open - error opening [%s]", CURL::GetRedacted(transFile).c_str());
       delete m_pFile;
       m_pFile = NULL;
       m_pLiveTV = NULL;
@@ -133,7 +133,7 @@ bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& con
   ResetScanTimeout((unsigned int) CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPLAYBACK_SCANTIME) * 1000);
   m_content = content;
   m_contentLookup = contentLookup;
-  CLog::Log(LOGDEBUG, "CDVDInputStreamPVRManager::Open - stream opened: %s", transFile.c_str());
+  CLog::Log(LOGDEBUG, "CDVDInputStreamPVRManager::Open - stream opened: %s", CURL::GetRedacted(transFile).c_str());
 
   return true;
 }
