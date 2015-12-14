@@ -85,7 +85,7 @@ For Ubuntu (all versions >= 7.04):
       default-jre fp-compiler gawk gdc gettext git-core gperf libasound2-dev libass-dev \
       libboost-dev libboost-thread-dev libbz2-dev libcap-dev libcdio-dev libcurl3 \
       libcurl4-openssl-dev libdbus-1-dev libfontconfig-dev libegl1-mesa-dev libfreetype6-dev \
-      libfribidi-dev libgif-dev libiso9660-dev libjasper-dev libjpeg-dev liblzo2-dev \
+      libfribidi-dev libgif-dev libiso9660-dev libjpeg-dev liblzo2-dev \
       libmicrohttpd-dev libmodplug-dev libmpeg2-4-dev libmpeg3-dev libmysqlclient-dev libnfs-dev \
       libogg-dev libpcre3-dev libplist-dev libpng-dev libpulse-dev libsdl2-dev libsmbclient-dev \
       libsqlite3-dev libssh-dev libssl-dev libtiff-dev libtinyxml-dev libtool libudev-dev libusb-dev \
