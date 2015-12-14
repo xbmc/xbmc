@@ -319,7 +319,7 @@
 	<include name="ButtonInfoDialogsCommonValues">
 		<height>40</height>
 		<width>170</width>
-		<textoffsetx>20</textoffsetx>
+		<textoffsetx>5</textoffsetx>
 		<align>center</align>
 		<aligny>center</aligny>
 		<font>font12_title</font>
