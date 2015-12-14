@@ -40,7 +40,7 @@ python27-native: zlib-native
 #liblzo2 has stale packaged automake files that cause borked host/build detection
 liblzo2-native: automake-native
 JsonSchemaBuilder: automake-native
-TexturePacker: automake-native pkg-config-native libsquish-native libpng-native liblzo2-native giflib-native libpng-native
+TexturePacker: automake-native pkg-config-native libsquish-native libpng-native liblzo2-native giflib-native libjpeg-turbo-native
 
 native: $(NATIVE)
 $(NATIVE):
