@@ -22,7 +22,6 @@
 
 #include "windows/GUIMediaWindow.h"
 #include "PictureThumbLoader.h"
-#include "DllImageLib.h"
 
 class CGUIDialogProgress;
 
@@ -57,7 +56,6 @@ protected:
   void LoadPlayList(const std::string& strPlayList) override;
 
   CGUIDialogProgress* m_dlgProgress;
-  DllImageLib m_ImageLib;
 
   CPictureThumbLoader m_thumbLoader;
   bool m_slideShowStarted;
