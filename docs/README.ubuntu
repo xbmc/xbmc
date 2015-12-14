@@ -88,7 +88,7 @@ For Ubuntu (all versions >= 7.04):
       libfribidi-dev libgif-dev libiso9660-dev libjpeg-dev liblzo2-dev \
       libmicrohttpd-dev libmodplug-dev libmpeg2-4-dev libmpeg3-dev libmysqlclient-dev libnfs-dev \
       libogg-dev libpcre3-dev libplist-dev libpng-dev libpulse-dev libsdl2-dev libsmbclient-dev \
-      libsqlite3-dev libssh-dev libssl-dev libtiff-dev libtinyxml-dev libtool libudev-dev libusb-dev \
+      libsqlite3-dev libssh-dev libssl-dev libtinyxml-dev libtool libudev-dev libusb-dev \
       libva-dev libvdpau-dev libvorbis-dev libvorbisenc2 libxml2-dev libxmu-dev libxrandr-dev \
       libxrender-dev libxslt1-dev libxt-dev libyajl-dev mesa-utils nasm pmount python-dev \
       python-imaging python-sqlite swig unzip uuid-dev yasm zip zlib1g-dev
