@@ -195,7 +195,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
 {
   CGUIDialogSettingsManualBase::InitializeSettings();
 
-  CSettingCategory *category = AddCategory("audiosubtitlesettings", -1);
+  CSettingCategory *category = AddCategory("videosettings", -1);
   if (category == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
