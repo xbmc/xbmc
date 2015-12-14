@@ -98,10 +98,6 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       if (m_thumbLoader.IsLoading())
         m_thumbLoader.StopThread();
 
-      if (message.GetParam1() != WINDOW_SLIDESHOW)
-      {
-        m_ImageLib.Unload();
-      }
     }
     break;
 
@@ -112,11 +108,6 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         message.SetStringParam(CMediaSourceSettings::GetInstance().GetDefaultSource("pictures"));
 
       m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-
-      if (message.GetParam1() != WINDOW_SLIDESHOW)
-      {
-        m_ImageLib.Load();
-      }
 
       if (!CGUIMediaWindow::OnMessage(message))
         return false;

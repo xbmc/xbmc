@@ -2605,9 +2605,6 @@
     <ClCompile Include="..\..\xbmc\guilib\imagefactory.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\cximage.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\DAVFile.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -4237,9 +4234,6 @@
     <ClInclude Include="..\..\xbmc\network\windows\NetworkWin32.h">
       <Filter>network\windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\pictures\DllImageLib.h">
-      <Filter>pictures</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\pictures\DllLibExif.h">
       <Filter>pictures</Filter>
     </ClInclude>
@@ -5548,9 +5542,6 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\imagefactory.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\cximage.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\FFmpegVideoDecoder.h">

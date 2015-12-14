@@ -350,7 +350,6 @@ lib/cpluff/stamp-h1
 
 # /system
 /system/cpluff.dll
-/system/ImageLib.dll
 /system/libcurl.dll
 /system/libeay32.dll
 /system/librtmp.dll
@@ -794,17 +793,6 @@ lib/cpluff/stamp-h1
 
 #/lib/win32/ffmpeg
 /lib/win32/ffmpeg/
-
-# lib/cximage-6.0/
-/lib/cximage-6.0/Makefile
-/lib/cximage-6.0/Debug
-/lib/cximage-6.0/Release
-/lib/cximage-6.0/*/Debug
-/lib/cximage-6.0/*/Release
-
-# /lib/cximage-6.0/zlib/
-/lib/cximage-6.0/zlib/zconf.h
-/lib/cximage-6.0/zlib/Makefile
 
 # /lib/libexif
 /lib/libexif/Makefile
