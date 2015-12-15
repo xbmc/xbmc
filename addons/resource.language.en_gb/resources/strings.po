@@ -18241,3 +18241,9 @@ msgstr ""
 msgctxt "#38031"
 msgid "Video stream"
 msgstr ""
+
+#. Label for an option to select the angle to play if current disc has more than one angle
+#: xbmc\video\dialogs\GUIDialogVideoSettings.cpp
+msgctxt "#38032"
+msgid "Angle"
+msgstr ""
