@@ -65,21 +65,12 @@ struct ThumbDataManagement
     sws = nullptr;
   }
 };
-static size_t Clamp(int64_t newPosition, size_t bufferSize, size_t offset)
-{
-  size_t clampedPosition = 0;
-  if (newPosition < 0 || offset + newPosition < 0)
-  {
-    clampedPosition = 0;
-  }
-  else if (offset + newPosition >= bufferSize)
-  {
-    clampedPosition = bufferSize;
-  }
-  else
-    clampedPosition = (size_t)newPosition;
 
-  return clampedPosition;
+// valid positions are including 0 (start of buffer)
+// and bufferSize -1 last data point
+static inline size_t Clamp(int64_t newPosition, size_t bufferSize)
+{
+  return std::min(std::max((int64_t) 0, newPosition), (int64_t) (bufferSize -1));
 }
 
 static int mem_file_read(void *h, uint8_t* buf, int size)
@@ -109,11 +100,11 @@ static int64_t mem_file_seek(void *h, int64_t pos, int whence)
 
   if (whence == SEEK_SET)
   {
-    mbuf->pos = Clamp(pos, mbuf->size - 1, 0);
+    mbuf->pos = Clamp(pos, mbuf->size);
   }
   else if (whence == SEEK_CUR)
   {
-    mbuf->pos = Clamp(((int64_t)mbuf->pos) + pos, mbuf->size - 1, mbuf->pos);
+    mbuf->pos = Clamp(((int64_t)mbuf->pos) + pos, mbuf->size);
   }
   else
     CLog::LogFunction(LOGERROR, __FUNCTION__, "Unknown seek mode: %i", whence);
@@ -268,7 +259,7 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
   if (m_width == 0 || m_height == 0 || format != XB_FMT_A8R8G8B8)
     return false;
 
-  if (!m_pFrame || !m_pFrame->data)
+  if (!m_pFrame || !m_pFrame->data[0])
   {
     CLog::LogFunction(LOGERROR, __FUNCTION__, "AVFrame member not allocated");
     return false;
