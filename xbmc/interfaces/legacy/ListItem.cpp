@@ -551,6 +551,8 @@ namespace XBMCAddon
             video->m_iDuration = strtol(value.c_str(), NULL, 10);
           else if (key == "stereomode")
             video->m_strStereoMode = value;
+          else if (key == "language")
+            video->m_strLanguage = value;
         }
         item->GetVideoInfoTag()->m_streamDetails.AddStream(video);
       }
