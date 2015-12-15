@@ -43,20 +43,10 @@ IImage* ImageFactory::CreateLoader(const CURL& url)
 
 IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
 {
-  if(strMimeType == "image/jpeg" || strMimeType == "image/tbn" || strMimeType == "image/jpg")
-    return new CJpegIO();
 #if defined(HAS_GIFLIB)
-  else if (strMimeType == "image/gif")
+  if (strMimeType == "image/gif")
     return new Gif();
 #endif//HAS_GIFLIB
 
-  if (strMimeType == "image/webp")
-    return new CFFmpegImage(strMimeType);
-
-  return new CXImage(strMimeType);
-}
-
-IImage* ImageFactory::CreateFallbackLoader(const std::string& strMimeType)
-{
-  return new CXImage(strMimeType);
+  return new CFFmpegImage(strMimeType);
 }
