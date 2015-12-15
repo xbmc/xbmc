@@ -2234,7 +2234,6 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
     // TODO
     // implement pause bursts for passthrough, until then we need to exit here
     stream->m_syncClock = CActiveAEStream::INSYNC;
-    return ret;
   }
 
   if (stream->m_syncClock == CActiveAEStream::STARTSYNC)
@@ -2257,6 +2256,13 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   }
 
   bool newerror = stream->m_syncError.Get(error, stream->m_syncClock ? 100 : 1000);
+
+  // TODO: delete if passthrough ever gets a proper sync method
+  // for now I recommend to every one just not to use it, it has zero advantage anyway
+  if (m_mode == MODE_RAW)
+  {
+    return ret;
+  }
 
   if (newerror && fabs(error) > threshold && stream->m_syncClock == CActiveAEStream::INSYNC)
   {
