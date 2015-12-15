@@ -269,7 +269,8 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
       }
       if (strcmp(action, "change") == 0)
       {
-        if (mountpoint)
+        const char *optical = udev_device_get_property_value(dev, "ID_CDROM");
+        if (mountpoint && (optical && strcmp(optical, "1") == 0))
         {
           CLog::Log(LOGNOTICE, "UDev: Changed / Added %s", mountpoint);
           if (callback)
