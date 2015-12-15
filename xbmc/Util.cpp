@@ -1981,15 +1981,27 @@ void CUtil::GetExternalStreamDetailsFromFilename(const std::string& strVideo, co
   }
 
   // trim any non-alphanumeric char in the begining
-  std::string::iterator result = std::find_if(toParse.begin(), toParse.end(), ::isalnum);
+	std::string strNeedParse = "";
+	const char* pParse = toParse.c_str();
+	size_t nParseLen = toParse.length();
+	for (size_t i = 0; i < nParseLen; i++)
+	{
+		if (pParse[i] >= 48 && pParse[i] <= 122) // alphanumeric char is in [48,122]
+		{
+			if (::isalnum(pParse[i]))// warning: isalnum's assertion would fail if pass negative value into it. 
+			{
+				strNeedParse = toParse.substr(i, nParseLen - i);
+				break;
+			}
+		}
+	}
 
   std::string name;
-  if (result != toParse.end()) // if we have anything to parse
+	if (strNeedParse != "") // if we have anything to parse
   {
-    std::string inputString(result, toParse.end());
     std::string delimiters(" .-");
     std::vector<std::string> tokens;
-    StringUtils::Tokenize(inputString, tokens, delimiters);
+		StringUtils::Tokenize(strNeedParse, tokens, delimiters);
 
     for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it)
     {
