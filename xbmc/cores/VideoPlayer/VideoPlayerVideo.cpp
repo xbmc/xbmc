@@ -198,7 +198,6 @@ bool CVideoPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   else
   {
     OpenStream(hint, codec);
-    m_syncState = IDVDStreamPlayer::SYNC_STARTING;
     CLog::Log(LOGNOTICE, "Creating video thread");
     m_messageQueue.Init();
     Create();
@@ -244,12 +243,14 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   m_stalled = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_codecname = m_pVideoCodec->GetName();
   m_packets.clear();
+  m_syncState = IDVDStreamPlayer::SYNC_STARTING;
 }
 
 void CVideoPlayerVideo::CloseStream(bool bWaitForBuffers)
 {
   // wait until buffers are empty
-  if (bWaitForBuffers && m_speed > 0) m_messageQueue.WaitUntilEmpty();
+  if (bWaitForBuffers && m_speed > 0)
+    m_messageQueue.WaitUntilEmpty();
 
   m_messageQueue.Abort();
 

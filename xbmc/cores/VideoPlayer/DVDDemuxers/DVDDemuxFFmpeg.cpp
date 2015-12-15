@@ -577,6 +577,9 @@ void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
   if(!m_pFormatContext)
     return;
 
+  if (m_speed == iSpeed)
+    return;
+
   if(m_speed != DVD_PLAYSPEED_PAUSE && iSpeed == DVD_PLAYSPEED_PAUSE)
   {
     m_pInput->Pause(m_currentPts);
@@ -660,10 +663,8 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
   double timestamp = (double)pts * num  / den;
   double starttime = 0.0f;
 
-  // for dvd's we need the original time
-  if(CDVDInputStream::IMenus* menu = dynamic_cast<CDVDInputStream::IMenus*>(m_pInput))
-    starttime = menu->GetTimeStampCorrection() / DVD_TIME_BASE;
-  else if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
+  CDVDInputStream::IMenus* menu = dynamic_cast<CDVDInputStream::IMenus*>(m_pInput);
+  if (!menu && m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
     starttime = (double)m_pFormatContext->start_time / AV_TIME_BASE;
 
   if(timestamp > starttime)
@@ -984,8 +985,7 @@ void CDVDDemuxFFmpeg::UpdateCurrentPTS()
     if(stream && stream->cur_dts != (int64_t)AV_NOPTS_VALUE)
     {
       double ts = ConvertTimestamp(stream->cur_dts, stream->time_base.den, stream->time_base.num);
-      if(m_currentPts == DVD_NOPTS_VALUE || m_currentPts > ts )
-        m_currentPts = ts;
+      m_currentPts = ts;
     }
   }
 }

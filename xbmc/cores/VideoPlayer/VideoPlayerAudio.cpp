@@ -140,7 +140,6 @@ bool CVideoPlayerAudio::OpenStream(CDVDStreamInfo &hints)
   {
     OpenStream(hints, codec);
     m_messageQueue.Init();
-    m_syncState = IDVDStreamPlayer::SYNC_STARTING;
     CLog::Log(LOGNOTICE, "Creating audio thread");
     Create();
   }
@@ -187,6 +186,7 @@ void CVideoPlayerAudio::OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec)
   m_maxspeedadjust = 5.0;
 
   g_dataCacheCore.SignalAudioInfoChange();
+  m_syncState = IDVDStreamPlayer::SYNC_STARTING;
 }
 
 void CVideoPlayerAudio::CloseStream(bool bWaitForBuffers)
@@ -194,7 +194,8 @@ void CVideoPlayerAudio::CloseStream(bool bWaitForBuffers)
   bool bWait = bWaitForBuffers && m_speed > 0 && !CAEFactory::IsSuspended();
 
   // wait until buffers are empty
-  if (bWait) m_messageQueue.WaitUntilEmpty();
+  if (bWait)
+    m_messageQueue.WaitUntilEmpty();
 
   // send abort message to the audio queue
   m_messageQueue.Abort();
