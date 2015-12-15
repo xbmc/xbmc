@@ -44,7 +44,7 @@ struct MemBuffer
 static size_t Clamp(int64_t newPosition, size_t bufferSize, size_t offset)
 {
   size_t clampedPosition = 0;
-  if (newPosition < 0 || offset + newPosition < 0)
+  if (newPosition < 0 || ((int64_t) offset + newPosition) < 0)
   {
     clampedPosition = 0;
   }
@@ -225,7 +225,7 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
   if (m_width == 0 || m_height == 0 || format != XB_FMT_A8R8G8B8)
     return false;
 
-  if (!m_pFrame || !m_pFrame->data)
+  if (!m_pFrame || !m_pFrame->data[0])
   {
     CLog::LogFunction(LOGERROR, __FUNCTION__, "AVFrame member not allocated");
     return false;
