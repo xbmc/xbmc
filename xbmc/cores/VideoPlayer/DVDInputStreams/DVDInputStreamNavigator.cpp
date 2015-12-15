@@ -1103,6 +1103,44 @@ int CDVDInputStreamNavigator::GetAudioStreamCount()
   }
 }
 
+
+int CDVDInputStreamNavigator::GetAngleCount()
+{
+  if (!m_dvdnav) return 0;
+
+  int number_of_angles;
+  int current_angle;
+  dvdnav_status_t status = m_dll.dvdnav_get_angle_info(m_dvdnav, &current_angle, &number_of_angles);
+
+  if (status == DVDNAV_STATUS_OK)
+    return number_of_angles;
+  else
+    return -1;
+}
+
+int CDVDInputStreamNavigator::GetActiveAngle()
+{
+  if (!m_dvdnav) return 0;
+
+  int number_of_angles;
+  int current_angle;
+  dvdnav_status_t status = m_dll.dvdnav_get_angle_info(m_dvdnav, &current_angle, &number_of_angles);
+
+  if (status == DVDNAV_STATUS_OK)
+    return current_angle;
+  else
+    return -1;
+}
+
+bool CDVDInputStreamNavigator::SetAngle(int angle)
+{
+  if (!m_dvdnav) return 0;
+
+  dvdnav_status_t status = m_dll.dvdnav_angle_change(m_dvdnav, angle);
+
+  return (status == DVDNAV_STATUS_OK);
+}
+
 bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType)
 {
   int alpha[2][4];
@@ -1487,4 +1525,11 @@ int64_t CDVDInputStreamNavigator::GetChapterPos(int ch)
       return chapter->second;
   }
   return 0;
+}
+
+void CDVDInputStreamNavigator::GetVideoResolution(uint32_t* width, uint32_t* height)
+{
+  if (!m_dvdnav) return;
+
+  dvdnav_status_t status = m_dll.dvdnav_get_video_resolution(m_dvdnav, width, height);
 }
