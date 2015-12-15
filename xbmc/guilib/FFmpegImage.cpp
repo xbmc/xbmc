@@ -294,6 +294,9 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
     needsCopy = true;
   }
 
+  // Especially jpeg formats are full range this we need to take care here
+  // Input Formats like RGBA are handled correctly automatically
+  AVColorRange range = av_frame_get_color_range(m_pFrame);
   AVPixelFormat pixFormat = ConvertFormats(m_pFrame);
 
   // assumption quadratic maximums e.g. 2048x2048
@@ -313,6 +316,16 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
 
   struct SwsContext* context = sws_getContext(m_originalWidth, m_originalHeight, pixFormat,
     nWidth, nHeight, AV_PIX_FMT_RGB32, SWS_BICUBIC, NULL, NULL, NULL);
+
+  if (range == AVCOL_RANGE_JPEG)
+  {
+    int* inv_table = nullptr;
+    int* table = nullptr;
+    int srcRange, dstRange, brightness, contrast, saturation;
+    sws_getColorspaceDetails(context, &inv_table, &srcRange, &table, &dstRange, &brightness, &contrast, &saturation);
+    srcRange = 1;
+    sws_setColorspaceDetails(context, inv_table, srcRange, table, dstRange, brightness, contrast, saturation);
+  }
 
   sws_scale(context, m_pFrame->data, m_pFrame->linesize, 0, m_originalHeight,
     pictureRGB->data, pictureRGB->linesize);
