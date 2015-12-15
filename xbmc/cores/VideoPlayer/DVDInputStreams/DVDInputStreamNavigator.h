@@ -138,8 +138,6 @@ public:
 
   bool SeekTime(int iTimeInMsec); //seek within current pg(c)
 
-  double GetTimeStampCorrection() { return (double)(m_iVobUnitCorrection * 1000) / 90; }
-
   bool GetDVDTitleString(std::string& titleStr);
   bool GetDVDSerialString(std::string& serialStr);
 

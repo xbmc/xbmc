@@ -550,7 +550,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
             iNavresult = NAVRESULT_HOLD;
             break;
           }
-          m_iVobUnitCorrection += gap;
+          // m_iVobUnitCorrection += gap;
 
           CLog::Log(LOGDEBUG, "DVDNAV_NAV_PACKET - DISCONTINUITY FROM:%" PRId64" TO:%" PRId64" DIFF:%" PRId64, (m_iVobUnitStop * 1000)/90, ((int64_t)pci->pci_gi.vobu_s_ptm*1000)/90, (gap*1000)/90);
         }
@@ -1159,6 +1159,7 @@ bool CDVDInputStreamNavigator::SeekTime(int iTimeInMsec)
     CLog::Log(LOGDEBUG, "dvdnav: dvdnav_time_search failed( %s )", m_dll.dvdnav_err_to_string(m_dvdnav));
     return false;
   }
+  m_iTime = iTimeInMsec;
   return true;
 }
 
@@ -1187,8 +1188,7 @@ bool CDVDInputStreamNavigator::SeekChapter(int iChapter)
       return false;
     }
   }
-  else
-  if (iChapter == (m_iPart - 1))
+  else if (iChapter == (m_iPart - 1))
   {
     if (m_dll.dvdnav_prev_pg_search(m_dvdnav) == DVDNAV_STATUS_ERR)
     {
@@ -1196,8 +1196,7 @@ bool CDVDInputStreamNavigator::SeekChapter(int iChapter)
       return false;
     }
   }
-  else  
-  if (m_dll.dvdnav_part_play(m_dvdnav, m_iTitle, iChapter) == DVDNAV_STATUS_ERR)
+  else if (m_dll.dvdnav_part_play(m_dvdnav, m_iTitle, iChapter) == DVDNAV_STATUS_ERR)
   {
     CLog::Log(LOGERROR, "dvdnav: dvdnav_part_play failed( %s )", m_dll.dvdnav_err_to_string(m_dvdnav));
     return false;
