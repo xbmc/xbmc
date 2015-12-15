@@ -104,7 +104,6 @@ public:
     virtual bool HasMenu() = 0;
     virtual bool IsInMenu() = 0;
     virtual void SkipStill() = 0;
-    virtual double GetTimeStampCorrection() = 0;
     virtual bool GetState(std::string &xmlstate) = 0;
     virtual bool SetState(const std::string &xmlstate) = 0;
 

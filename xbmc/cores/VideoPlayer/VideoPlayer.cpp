@@ -1984,7 +1984,8 @@ void CVideoPlayer::HandlePlaySpeed()
           {
             CLog::Log(LOGDEBUG, "CVideoPlayer::Process - Seeking to catch up");
             m_SpeedState.lastseekpts = (int)DVD_TIME_TO_MSEC(m_clock.GetClock());
-            int iTime = DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset + 1000000.0 * m_playSpeed / m_playSpeed);
+            int direction = (m_playSpeed > 0) ? 1 : -1;
+            int iTime = DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset + 1000000.0 * direction);
             m_messenger.Put(new CDVDMsgPlayerSeek(iTime, (GetPlaySpeed() < 0), true, false, false, true, false));
           }
         }
@@ -2392,6 +2393,8 @@ void CVideoPlayer::HandleMessages()
           // dts after successful seek
           if (m_StateInput.time_src  == ETIMESOURCE_CLOCK && start == DVD_NOPTS_VALUE)
             m_StateInput.dts = DVD_MSEC_TO_TIME(time);
+          else if (m_StateInput.time_src  == ETIMESOURCE_INPUT)
+            m_StateInput.dts = DVD_MSEC_TO_TIME(time) - m_StateInput.time_offset;
           else
             m_StateInput.dts = start;
 
@@ -4486,13 +4489,13 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   SPlayerState state(m_StateInput);
 
-  if     (m_CurrentVideo.dts != DVD_NOPTS_VALUE)
+  if (m_CurrentVideo.dts != DVD_NOPTS_VALUE)
     state.dts = m_CurrentVideo.dts;
-  else if(m_CurrentAudio.dts != DVD_NOPTS_VALUE)
+  else if (m_CurrentAudio.dts != DVD_NOPTS_VALUE)
     state.dts = m_CurrentAudio.dts;
-  else if(m_CurrentVideo.startpts != DVD_NOPTS_VALUE)
+  else if (m_CurrentVideo.startpts != DVD_NOPTS_VALUE)
     state.dts = m_CurrentVideo.startpts;
-  else if(m_CurrentAudio.startpts != DVD_NOPTS_VALUE)
+  else if (m_CurrentAudio.startpts != DVD_NOPTS_VALUE)
     state.dts = m_CurrentAudio.startpts;
 
 
