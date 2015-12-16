@@ -331,10 +331,13 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
   return NULL;
 }
 
-CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint, bool allowpassthrough)
+CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint, bool allowpassthrough, bool allowdtshddecode)
 {
   CDVDAudioCodec* pCodec = NULL;
   CDVDCodecOptions options;
+
+  if (!allowdtshddecode)
+    options.m_keys.push_back(CDVDCodecOption("allowdtshddecode", "0"));
 
   // we don't use passthrough if "sync playback to display" is enabled
   if (allowpassthrough)
