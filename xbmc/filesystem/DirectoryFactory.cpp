@@ -68,9 +68,6 @@
 #ifdef HAS_UPNP
 #include "UPnPDirectory.h"
 #endif
-#ifdef HAS_FILESYSTEM_SAP
-#include "SAPDirectory.h"
-#endif
 #ifdef HAS_PVRCLIENTS
 #include "PVRDirectory.h"
 #endif
@@ -196,9 +193,6 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
     if (url.IsProtocol("upnp")) return new CUPnPDirectory();
 #endif
     if (url.IsProtocol("rss")) return new CRSSDirectory();
-#ifdef HAS_FILESYSTEM_SAP
-    if (url.IsProtocol("sap")) return new CSAPDirectory();
-#endif
 #ifdef HAS_PVRCLIENTS
     if (url.IsProtocol("pvr")) return new CPVRDirectory();
 #endif
