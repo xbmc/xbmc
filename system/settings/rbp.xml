@@ -27,6 +27,21 @@
           <control type="edit" format="integer" />
         </setting>
       </group>
+      <group id="3">
+        <setting id="videoplayer.supportmvc" type="boolean" label="38110" help="38111">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.framepacking" type="boolean" label="38112" help="38113">
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.supportmvc">true</dependency>
+          </dependencies>
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
     </category>
     <category id="myvideos">
       <group id="1">

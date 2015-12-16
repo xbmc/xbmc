@@ -221,15 +221,6 @@ bool COMXVideo::PortSettingsChanged()
   OMX_INIT_STRUCTURE(configDisplay);
   configDisplay.nPortIndex = m_omx_render.GetInputPort();
 
-  configDisplay.set = OMX_DISPLAY_SET_TRANSFORM;
-  configDisplay.transform = m_transform;
-  omx_err = m_omx_render.SetConfig(OMX_IndexConfigDisplayRegion, &configDisplay);
-  if(omx_err != OMX_ErrorNone)
-  {
-    CLog::Log(LOGWARNING, "%s::%s - could not set transform : %d", CLASSNAME, __func__, m_transform);
-    return false;
-  }
-
   if(m_hdmi_clock_sync)
   {
     OMX_CONFIG_LATENCYTARGETTYPE latencyTarget;
@@ -430,6 +421,11 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, EDEINTERLACEMODE de
           m_video_codec_name = "omx-h264";
           break;
       }
+    }
+    if (CSettings::GetInstance().GetBool("videoplayer.supportmvc"))
+    {
+      m_codingType = OMX_VIDEO_CodingMVC;
+      m_video_codec_name = "omx-mvc";
     }
     break;
     case AV_CODEC_ID_MPEG4:
@@ -843,7 +839,7 @@ void COMXVideo::Reset(void)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-void COMXVideo::SetVideoRect(const CRect& SrcRect, const CRect& DestRect, RENDER_STEREO_MODE video_mode, RENDER_STEREO_MODE display_mode)
+void COMXVideo::SetVideoRect(const CRect& SrcRect, const CRect& DestRect, RENDER_STEREO_MODE video_mode, RENDER_STEREO_MODE display_mode, bool stereo_invert)
 {
   CSingleLock lock (m_critSection);
   if(!m_is_open)
@@ -853,7 +849,7 @@ void COMXVideo::SetVideoRect(const CRect& SrcRect, const CRect& DestRect, RENDER
 
   OMX_INIT_STRUCTURE(configDisplay);
   configDisplay.nPortIndex = m_omx_render.GetInputPort();
-  configDisplay.set                 = (OMX_DISPLAYSETTYPE)(OMX_DISPLAY_SET_DEST_RECT|OMX_DISPLAY_SET_SRC_RECT|OMX_DISPLAY_SET_FULLSCREEN|OMX_DISPLAY_SET_NOASPECT|OMX_DISPLAY_SET_MODE);
+  configDisplay.set                 = (OMX_DISPLAYSETTYPE)(OMX_DISPLAY_SET_DEST_RECT|OMX_DISPLAY_SET_SRC_RECT|OMX_DISPLAY_SET_FULLSCREEN|OMX_DISPLAY_SET_NOASPECT|OMX_DISPLAY_SET_MODE|OMX_DISPLAY_SET_TRANSFORM);
   configDisplay.dest_rect.x_offset  = lrintf(DestRect.x1);
   configDisplay.dest_rect.y_offset  = lrintf(DestRect.y1);
   configDisplay.dest_rect.width     = lrintf(DestRect.Width());
@@ -866,23 +862,24 @@ void COMXVideo::SetVideoRect(const CRect& SrcRect, const CRect& DestRect, RENDER
 
   configDisplay.fullscreen = OMX_FALSE;
   configDisplay.noaspect = OMX_TRUE;
+  configDisplay.mode = OMX_DISPLAY_MODE_LETTERBOX;
+  configDisplay.transform = m_transform;
 
-  if (video_mode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL && display_mode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
-    configDisplay.mode = OMX_DISPLAY_MODE_STEREO_TOP_TO_TOP;
-  else if (video_mode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL && display_mode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
-    configDisplay.mode = OMX_DISPLAY_MODE_STEREO_TOP_TO_LEFT;
-  else if (video_mode == RENDER_STEREO_MODE_SPLIT_VERTICAL && display_mode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
-    configDisplay.mode = OMX_DISPLAY_MODE_STEREO_LEFT_TO_TOP;
-  else if (video_mode == RENDER_STEREO_MODE_SPLIT_VERTICAL && display_mode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
-    configDisplay.mode = OMX_DISPLAY_MODE_STEREO_LEFT_TO_LEFT;
+  if (video_mode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
+    configDisplay.transform = (OMX_DISPLAYTRANSFORMTYPE)(configDisplay.transform | DISPMANX_STEREOSCOPIC_TB);
+  else if (video_mode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
+    configDisplay.transform = (OMX_DISPLAYTRANSFORMTYPE)(configDisplay.transform | DISPMANX_STEREOSCOPIC_SBS);
   else
-    configDisplay.mode = OMX_DISPLAY_MODE_LETTERBOX;
+    configDisplay.transform = (OMX_DISPLAYTRANSFORMTYPE)(configDisplay.transform | DISPMANX_STEREOSCOPIC_MONO);
+
+  if (stereo_invert)
+    configDisplay.transform = (OMX_DISPLAYTRANSFORMTYPE)(configDisplay.transform | DISPMANX_STEREOSCOPIC_INVERT);
 
   m_omx_render.SetConfig(OMX_IndexConfigDisplayRegion, &configDisplay);
 
-  CLog::Log(LOGDEBUG, "%s::%s %d,%d,%d,%d -> %d,%d,%d,%d mode:%d", CLASSNAME, __func__,
+  CLog::Log(LOGDEBUG, "%s::%s %d,%d,%d,%d -> %d,%d,%d,%d t:%x", CLASSNAME, __func__,
       configDisplay.src_rect.x_offset, configDisplay.src_rect.y_offset, configDisplay.src_rect.width, configDisplay.src_rect.height,
-      configDisplay.dest_rect.x_offset, configDisplay.dest_rect.y_offset, configDisplay.dest_rect.width, configDisplay.dest_rect.height, configDisplay.mode);
+      configDisplay.dest_rect.x_offset, configDisplay.dest_rect.y_offset, configDisplay.dest_rect.width, configDisplay.dest_rect.height, configDisplay.transform);
 }
 
 int COMXVideo::GetInputBufferSize()

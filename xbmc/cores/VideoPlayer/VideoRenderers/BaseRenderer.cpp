@@ -345,6 +345,7 @@ void CBaseRenderer::ManageDisplay()
     else if(stereo_view == RENDER_STEREO_VIEW_RIGHT) stereo_view = RENDER_STEREO_VIEW_LEFT;
   }
 
+  if (m_format != RENDER_FMT_BYPASS)
   switch(stereo_mode)
   {
     case CONF_FLAGS_STEREO_MODE_TAB:
