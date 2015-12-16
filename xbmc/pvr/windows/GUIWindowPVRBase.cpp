@@ -79,12 +79,7 @@ void CGUIWindowPVRBase::SetSelectedItemPath(bool bRadio, const std::string &path
 
 std::string CGUIWindowPVRBase::GetSelectedItemPath(bool bRadio)
 {
-  if (!m_selectedItemPaths.at(bRadio).empty())
-    return m_selectedItemPaths.at(bRadio);
-  else if (g_PVRManager.IsPlaying())
-    return g_application.CurrentFile();
-
-  return "";
+  return m_selectedItemPaths.at(bRadio);
 }
 
 void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage msg)
@@ -838,7 +833,8 @@ void CGUIWindowPVRBase::UpdateButtons(void)
 
 void CGUIWindowPVRBase::UpdateSelectedItemPath()
 {
-  m_selectedItemPaths.at(m_bRadio) = m_viewControl.GetSelectedItemPath();
+  if (!m_viewControl.GetSelectedItemPath().empty())
+    m_selectedItemPaths.at(m_bRadio) = m_viewControl.GetSelectedItemPath();
 }
 
 bool CGUIWindowPVRBase::ConfirmDeleteTimer(CFileItem *item, bool &bDeleteSchedule)
