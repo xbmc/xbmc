@@ -619,7 +619,7 @@ bool CAddonInstallJob::DoWork()
   // run any post-install guff
   CEventLog::GetInstance().Add(
     EventPtr(new CAddonManagementEvent(m_addon, m_update ? 24065 : 24064)),
-    !IsModal() && CSettings::GetInstance().GetBool(CSettings::SETTING_GENERAL_ADDONNOTIFICATIONS), false);
+    !IsModal() && CSettings::GetInstance().GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS), false);
 
   ADDON::OnPostInstall(m_addon, m_update, IsModal());
 

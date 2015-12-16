@@ -22,6 +22,7 @@
 
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
+#include "addons/AddonSystemSettings.h"
 #include "AddonDatabase.h"
 #include "FileItem.h"
 #include "filesystem/Directory.h"
@@ -188,7 +189,7 @@ void CGUIDialogAddonInfo::UpdateControls()
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_UPDATE, isInstalled);
 
-  bool autoUpdatesOn = CSettings::GetInstance().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == AUTO_UPDATES_ON;
+  bool autoUpdatesOn = CSettings::GetInstance().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_ON;
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_AUTOUPDATE, isInstalled && autoUpdatesOn);
   SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_AUTOUPDATE, isInstalled && autoUpdatesOn &&
       !CAddonMgr::GetInstance().IsBlacklisted(m_localAddon->ID()));

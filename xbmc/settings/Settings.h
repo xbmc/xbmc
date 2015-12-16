@@ -359,8 +359,10 @@ public:
   static const std::string SETTING_CACHEDVD_LAN;
   static const std::string SETTING_CACHEUNKNOWN_INTERNET;
   static const std::string SETTING_SYSTEM_PLAYLISTSPATH;
-  static const std::string SETTING_GENERAL_ADDONUPDATES;
-  static const std::string SETTING_GENERAL_ADDONNOTIFICATIONS;
+  static const std::string SETTING_ADDONS_AUTOUPDATES;
+  static const std::string SETTING_ADDONS_NOTIFICATIONS;
+  static const std::string SETTING_ADDONS_SHOW_RUNNING;
+  static const std::string SETTING_ADDONS_MANAGE_DEPENDENCIES;
   static const std::string SETTING_GENERAL_ADDONFOREIGNFILTER;
   static const std::string SETTING_GENERAL_ADDONBROKENFILTER;
 

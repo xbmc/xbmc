@@ -28,6 +28,7 @@ extern "C" {
 
 #include "ActiveAEDSPProcess.h"
 #include "addons/AddonInstaller.h"
+#include "addons/AddonSystemSettings.h"
 #include "addons/GUIDialogAddonSettings.h"
 #include "Application.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.h"
@@ -228,7 +229,7 @@ bool CActiveAEDSP::InstallAddonAllowed(const std::string &strAddonId) const
 
 void CActiveAEDSP::MarkAsOutdated(const std::string& strAddonId)
 {
-  if (IsActivated() && CSettings::GetInstance().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == AUTO_UPDATES_ON)
+  if (IsActivated() && CSettings::GetInstance().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_ON)
   {
     CSingleLock lock(m_critSection);
     m_outdatedAddons.push_back(strAddonId);

@@ -5365,25 +5365,7 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr ""
 
-#. Used on the button to toggle add-on update mode in the Add-on Manager.
-#: xbmc/addons/GUIWindowAddonBrowser.cpp
-msgctxt "#12396"
-msgid "Auto updates: On"
-msgstr ""
-
-#. Used on the button to toggle add-on update mode in the Add-on Manager.
-#: xbmc/addons/GUIWindowAddonBrowser.cpp
-msgctxt "#12397"
-msgid "Auto updates: Notify"
-msgstr ""
-
-#. Used on the button to toggle add-on update mode in the Add-on Manager.
-#: xbmc/addons/GUIWindowAddonBrowser.cpp
-msgctxt "#12398"
-msgid "Auto updates: Never"
-msgstr ""
-
-#empty strings from id 12399 to 12599
+#empty strings from id 12396 to 12599
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12600"
@@ -13986,22 +13968,19 @@ msgctxt "#24993"
 msgid "Information providers"
 msgstr ""
 
-#: xbmc/addons/CGUIViewStateAddonBrowser.cpp
-#: xbmc/filesystem/AddonsDirectory.cpp
+#: system/settings/settings.xml
 msgctxt "#24994"
 msgid "Running"
 msgstr ""
 
-#: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24995"
-msgid "Orphaned dependencies"
+msgid "Orphaned"
 msgstr ""
 
-#: xbmc/addons/CGUIViewStateAddonBrowser.cpp
-#: xbmc/filesystem/AddonsDirectory.cpp
+#: system/settings/settings.xml
 msgctxt "#24996"
-msgid "Dependencies"
+msgid "Manage dependencies"
 msgstr ""
 
 #: xbmc/filesystem/AddonsDirectory.cpp
@@ -17757,7 +17736,64 @@ msgctxt "#36603"
 msgid "This category contains the settings for how video output is handled."
 msgstr ""
 
-#empty strings from id 36604 to 36899
+#: system/settings/settings.xml
+msgctxt "#36605"
+msgid "Updates"
+msgstr ""
+
+#. Option for setting "System -> Add-ons -> Updates"
+#: system/settings/settings.xml
+msgctxt "#36606"
+msgid "Install updates automatically"
+msgstr ""
+
+#. Option for setting "System -> Add-ons -> Updates"
+#: system/settings/settings.xml
+msgctxt "#36607"
+msgid "Notify, but don't install updates"
+msgstr ""
+
+#. Option for setting "System -> Add-ons -> Updates"
+#: system/settings/settings.xml
+msgctxt "#36608"
+msgid "Never check for updates"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36609"
+msgid "Show notifications"
+msgstr ""
+
+#. Description of settings category "System -> Add-ons"
+#: system/settings/settings.xml
+msgctxt "#36610"
+msgid "This category contains settings for the add-on system."
+msgstr ""
+
+#. Description of setting "System -> Add-ons -> Updates" with label #36605
+#: system/settings/settings.xml
+msgctxt "#36611"
+msgid "Change how auto updating of add-ons are handled."
+msgstr ""
+
+#. Description of setting "System -> Add-ons -> Show notifications" with label #36609
+#: system/settings/settings.xml
+msgctxt "#36612"
+msgid "Show notification when an add-on have been updated."
+msgstr ""
+
+#. Description of setting "System -> Add-ons -> Manage dependencies" with label #24996
+msgctxt "#36613"
+msgid "Manage modules and support libraries that have been automatically installed as a dependency to other add-ons. Items listed as \"Orphaned\" are no longer required by any add-ons and are safe to uninstall."
+msgstr ""
+
+#. Description of setting "System -> Add-ons -> Running" with label #24994
+#: system/settings/settings.xml
+msgctxt "#36614"
+msgid "Show add-ons that are currently running in the background."
+msgstr ""
+
+#empty strings from id 36615 to 36899
 
 #: xbmc/media/MediaType.cpp
 msgctxt "#36900"

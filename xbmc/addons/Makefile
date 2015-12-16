@@ -10,6 +10,7 @@ SRCS=Addon.cpp \
      AddonInstaller.cpp \
      AddonManager.cpp \
      AddonStatusHandler.cpp \
+     AddonSystemSettings.cpp \
      AddonVersion.cpp \
      AudioEncoder.cpp \
      ContextMenuAddon.cpp \

@@ -26,6 +26,7 @@
 #include "LangInfo.h"
 #include "Util.h"
 #include "events/EventLog.h"
+#include "addons/AddonSystemSettings.h"
 #include "addons/RepositoryUpdater.h"
 #include "addons/Skin.h"
 #include "cores/AudioEngine/AEFactory.h"
@@ -402,8 +403,10 @@ const std::string CSettings::SETTING_CACHEDVD_DVDROM = "cachedvd.dvdrom";
 const std::string CSettings::SETTING_CACHEDVD_LAN = "cachedvd.lan";
 const std::string CSettings::SETTING_CACHEUNKNOWN_INTERNET = "cacheunknown.internet";
 const std::string CSettings::SETTING_SYSTEM_PLAYLISTSPATH = "system.playlistspath";
-const std::string CSettings::SETTING_GENERAL_ADDONUPDATES = "general.addonupdates";
-const std::string CSettings::SETTING_GENERAL_ADDONNOTIFICATIONS = "general.addonnotifications";
+const std::string CSettings::SETTING_ADDONS_AUTOUPDATES = "general.addonupdates";
+const std::string CSettings::SETTING_ADDONS_NOTIFICATIONS = "general.addonnotifications";
+const std::string CSettings::SETTING_ADDONS_SHOW_RUNNING = "addons.showrunning";
+const std::string CSettings::SETTING_ADDONS_MANAGE_DEPENDENCIES = "addons.managedependencies";
 const std::string CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER = "general.addonforeignfilter";
 const std::string CSettings::SETTING_GENERAL_ADDONBROKENFILTER = "general.addonbrokenfilter";
 
@@ -1196,8 +1199,13 @@ void CSettings::InitializeISettingCallbacks()
   m_settingsManager->RegisterCallback(&ActiveAE::CActiveAEDSP::GetInstance(), settingSet);
 
   settingSet.clear();
-  settingSet.insert(CSettings::SETTING_GENERAL_ADDONUPDATES);
+  settingSet.insert(CSettings::SETTING_ADDONS_AUTOUPDATES);
   m_settingsManager->RegisterCallback(&ADDON::CRepositoryUpdater::GetInstance(), settingSet);
+
+  settingSet.clear();
+  settingSet.insert(CSettings::SETTING_ADDONS_SHOW_RUNNING);
+  settingSet.insert(CSettings::SETTING_ADDONS_MANAGE_DEPENDENCIES);
+  m_settingsManager->RegisterCallback(&ADDON::CAddonSystemSettings::GetInstance(), settingSet);
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);

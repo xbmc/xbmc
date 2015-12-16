@@ -23,6 +23,7 @@
 #include "GUIUserMessages.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
+#include "addons/AddonSystemSettings.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/AddonManagementEvent.h"
@@ -63,7 +64,7 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
     CLog::Log(LOGDEBUG, "CRepositoryUpdater: done.");
     m_doneEvent.Set();
 
-    if (CSettings::GetInstance().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == AUTO_UPDATES_NOTIFY)
+    if (CSettings::GetInstance().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_NOTIFY)
     {
       VECADDONS hasUpdate = CAddonMgr::GetInstance().GetOutdated();
       if (!hasUpdate.empty())
@@ -82,7 +83,7 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
       }
     }
 
-    if (CSettings::GetInstance().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == AUTO_UPDATES_ON)
+    if (CSettings::GetInstance().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_ON)
       CAddonInstaller::GetInstance().InstallUpdates();
 
     ScheduleUpdate();
@@ -154,7 +155,7 @@ void CRepositoryUpdater::OnTimeout()
 
 void CRepositoryUpdater::OnSettingChanged(const CSetting* setting)
 {
-  if (setting->GetId() == CSettings::SETTING_GENERAL_ADDONUPDATES)
+  if (setting->GetId() == CSettings::SETTING_ADDONS_AUTOUPDATES)
     ScheduleUpdate();
 }
 
@@ -186,7 +187,7 @@ void CRepositoryUpdater::ScheduleUpdate()
   CSingleLock lock(m_criticalSection);
   m_timer.Stop(true);
 
-  if (CSettings::GetInstance().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == AUTO_UPDATES_NEVER)
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_NEVER)
     return;
 
   if (!CAddonMgr::GetInstance().HasAddons(ADDON_REPOSITORY))
