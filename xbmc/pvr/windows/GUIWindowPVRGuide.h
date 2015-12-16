@@ -25,6 +25,11 @@
 
 class CSetting;
 
+namespace EPG
+{
+  class CGUIEPGGridContainer;
+}
+
 namespace PVR
 {
   class CGUIWindowPVRGuide : public CGUIWindowPVRBase
@@ -61,6 +66,8 @@ namespace PVR
     void GetViewNowItems(CFileItemList &items);
     void GetViewNextItems(CFileItemList &items);
     void GetViewTimelineItems(CFileItemList &items);
+
+    void UpdateViewTimelineGroup(EPG::CGUIEPGGridContainer* epgGridContainer, const CPVRChannelGroupPtr& group);
 
     CFileItemList      *m_cachedTimeline;
     CPVRChannelGroupPtr m_cachedChannelGroup;
