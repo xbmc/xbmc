@@ -394,8 +394,6 @@
     <ClCompile Include="..\..\xbmc\filesystem\ResourceDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ResourceFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\RSSDirectory.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\SAPDirectory.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\SAPFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\SFTPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\SFTPFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ShoutcastFile.cpp" />
@@ -1273,8 +1271,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\RarFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\RarManager.h" />
     <ClInclude Include="..\..\xbmc\filesystem\RSSDirectory.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\SAPDirectory.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\SAPFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\SFTPDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\SFTPFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ShoutcastFile.h" />

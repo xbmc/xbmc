@@ -167,10 +167,6 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
     }
   }
 
-  // SAP Streams
-  else if (url.IsProtocol("sap") && strFilename.empty())
-    strFilename = "SAP Streams";
-
   // Root file views
   else if (url.IsProtocol("sources"))
     strFilename = g_localizeStrings.Get(744);
@@ -422,9 +418,6 @@ bool CUtil::IsPVR(const std::string& strFile)
 bool CUtil::IsLiveTV(const std::string& strFile)
 {
   if (StringUtils::StartsWithNoCase(strFile, "pvr://channels"))
-    return true;
-
-  if(StringUtils::StartsWithNoCase(strFile, "sap:"))
     return true;
 
   return false;

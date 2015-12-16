@@ -959,8 +959,7 @@ bool URIUtils::IsLiveTV(const std::string& strFile)
   std::string strFileWithoutSlash(strFile);
   RemoveSlashAtEnd(strFileWithoutSlash);
 
-  if (IsProtocol(strFile, "sap")
-  ||(StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") && !PathStarts(strFileWithoutSlash, "pvr://recordings")))
+  if (StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") && !PathStarts(strFileWithoutSlash, "pvr://recordings"))
     return true;
 
   return false;
