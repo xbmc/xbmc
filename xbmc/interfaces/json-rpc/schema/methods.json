@@ -1478,7 +1478,7 @@
     "params": [
       { "name": "movieid", "$ref": "Library.Id", "required": true },
       { "name": "ignorenfo", "type": "boolean", "required": false, "default": false, "description": "Whether or not to ignore a local NFO if present." },
-	  { "name": "title", "type": "string", "required": "false", "default": "", "description": "Title to use for searching (instead of determining it from the item's filename/path)." }
+      { "name": "title", "type": "string", "required": "false", "default": "", "description": "Title to use for searching (instead of determining it from the item's filename/path)." }
     ],
     "returns": "string"
   },
@@ -1491,7 +1491,7 @@
       { "name": "tvshowid", "$ref": "Library.Id", "required": true },
       { "name": "ignorenfo", "type": "boolean", "required": false, "default": false, "description": "Whether or not to ignore a local NFO if present." },
       { "name": "refreshepisodes", "type": "boolean", "required": false, "default": false, "description": "Whether or not to refresh all episodes belonging to the TV show." },
-	  { "name": "title", "type": "string", "required": "false", "default": "", "description": "Title to use for searching (instead of determining it from the item's filename/path)." }
+      { "name": "title", "type": "string", "required": "false", "default": "", "description": "Title to use for searching (instead of determining it from the item's filename/path)." }
     ],
     "returns": "string"
   },
@@ -1503,7 +1503,7 @@
     "params": [
       { "name": "episodeid", "$ref": "Library.Id", "required": true },
       { "name": "ignorenfo", "type": "boolean", "required": false, "default": false, "description": "Whether or not to ignore a local NFO if present." },
-	  { "name": "title", "type": "string", "required": "false", "default": "", "description": "Title to use for searching (instead of determining it from the item's filename/path)." }
+      { "name": "title", "type": "string", "required": "false", "default": "", "description": "Title to use for searching (instead of determining it from the item's filename/path)." }
     ],
     "returns": "string"
   },
@@ -1515,7 +1515,7 @@
     "params": [
       { "name": "musicvideoid", "$ref": "Library.Id", "required": true },
       { "name": "ignorenfo", "type": "boolean", "required": false, "default": false, "description": "Whether or not to ignore a local NFO if present." },
-	  { "name": "title", "type": "string", "required": "false", "default": "", "description": "Title to use for searching (instead of determining it from the item's filename/path)." }
+      { "name": "title", "type": "string", "required": "false", "default": "", "description": "Title to use for searching (instead of determining it from the item's filename/path)." }
     ],
     "returns": "string"
   },
