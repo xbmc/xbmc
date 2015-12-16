@@ -1,0 +1,128 @@
+From 4a7d31c87bf41c1de21cb725176d5b34c2a95720 Mon Sep 17 00:00:00 2001
+From: Tsuda Kageyu <tsuda.kageyu@gmail.com>
+Date: Thu, 14 Nov 2013 14:05:32 +0900
+Subject: [PATCH] Rewrote ByteVector::replace() simpler
+
+---
+ taglib/toolkit/tbytevector.cpp | 77 +++++++++++++++---------------------------
+ tests/test_bytevector.cpp      |  5 +++
+ 2 files changed, 33 insertions(+), 49 deletions(-)
+
+diff --git a/taglib/toolkit/tbytevector.cpp b/taglib/toolkit/tbytevector.cpp
+index b658246..566a20f 100644
+--- a/taglib/toolkit/tbytevector.cpp
++++ b/taglib/toolkit/tbytevector.cpp
+@@ -31,6 +31,7 @@
+ #include <iostream>
+ #include <cstdio>
+ #include <cstring>
++#include <cstddef>
+ 
+ #include <tstring.h>
+ #include <tdebug.h>
+@@ -508,62 +509,40 @@ ByteVector &ByteVector::replace(const ByteVector &pattern, const ByteVector &wit
+   if(pattern.size() == 0 || pattern.size() > size())
+     return *this;
+ 
+-  const uint withSize = with.size();
+-  const uint patternSize = pattern.size();
+-  int offset = 0;
++  const size_t withSize    = with.size();
++  const size_t patternSize = pattern.size();
++  const ptrdiff_t diff = withSize - patternSize;
++  
++  size_t offset = 0;
++  while (true)
++  {
++    offset = find(pattern, offset);
++    if(offset == static_cast<size_t>(-1)) // Use npos in taglib2.
++      break;
+ 
+-  if(withSize == patternSize) {
+-    // I think this case might be common enough to optimize it
+     detach();
+-    offset = find(pattern);
+-    while(offset >= 0) {
+-      ::memcpy(data() + offset, with.data(), withSize);
+-      offset = find(pattern, offset + withSize);
+-    }
+-    return *this;
+-  }
+ 
+-  // calculate new size:
+-  uint newSize = 0;
+-  for(;;) {
+-    int next = find(pattern, offset);
+-    if(next < 0) {
+-      if(offset == 0)
+-        // pattern not found, do nothing:
+-        return *this;
+-      newSize += size() - offset;
+-      break;
++    if(diff < 0) {
++      ::memmove(
++        data() + offset + withSize, 
++        data() + offset + patternSize, 
++        size() - offset - patternSize);
++      resize(size() + diff);
+     }
+-    newSize += (next - offset) + withSize;
+-    offset = next + patternSize;
+-  }
+-
+-  // new private data of appropriate size:
+-  ByteVectorPrivate *newData = new ByteVectorPrivate(newSize, 0);
+-  char *target = DATA(newData);
+-  const char *source = data();
+-
+-  // copy modified data into new private data:
+-  offset = 0;
+-  for(;;) {
+-    int next = find(pattern, offset);
+-    if(next < 0) {
+-      ::memcpy(target, source + offset, size() - offset);
+-      break;
++    else if(diff > 0) {
++      resize(size() + diff);
++      ::memmove(
++        data() + offset + withSize, 
++        data() + offset + patternSize, 
++        size() - diff - offset - patternSize);
+     }
+-    int chunkSize = next - offset;
+-    ::memcpy(target, source + offset, chunkSize);
+-    target += chunkSize;
+-    ::memcpy(target, with.data(), withSize);
+-    target += withSize;
+-    offset += chunkSize + patternSize;
+-  }
+ 
+-  // replace private data:
+-  if(d->deref())
+-    delete d;
++    ::memcpy(data() + offset, with.data(), with.size());
+ 
+-  d = newData;
++    offset += withSize;
++    if(offset > size() - patternSize)
++      break;
++  }
+ 
+   return *this;
+ }
+diff --git a/tests/test_bytevector.cpp b/tests/test_bytevector.cpp
+index 9efd23a..eca74f8 100644
+--- a/tests/test_bytevector.cpp
++++ b/tests/test_bytevector.cpp
+@@ -239,6 +239,11 @@ class TestByteVector : public CppUnit::TestFixture
+       a.replace(ByteVector("ab"), ByteVector());
+       CPPUNIT_ASSERT_EQUAL(ByteVector("cdf"), a);
+     }
++    {
++      ByteVector a("abcdabf");
++      a.replace(ByteVector("bf"), ByteVector("x"));
++      CPPUNIT_ASSERT_EQUAL(ByteVector("abcdax"), a);
++    }
+   }
+ 
+ };
