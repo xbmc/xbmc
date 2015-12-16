@@ -18,7 +18,7 @@
  *
  */
 
-#include "RendererOMX.h"
+#include "RendererOpenMax.h"
 
 #if defined(HAVE_LIBOPENMAX)
 #include "cores/IPlayer.h"
@@ -27,7 +27,6 @@
 #include "utils/GLUtils.h"
 #include "settings/MediaSettings.h"
 #include "windowing/WindowingFactory.h"
-#include "DVDCodecs/Video/DVDVideoCodecIMX.h"
 
 CRendererOMX::CRendererOMX()
 {
@@ -60,11 +59,6 @@ void CRendererOMX::AddVideoPictureHW(DVDVideoPicture &picture, int index)
 
   OpenMaxVideoBufferHolder *buffer = static_cast<OpenMaxVideoBufferHolder *>(buf.hwDec);
   SAFE_RELEASE(buffer);
-
-  buf.hwDec = picture.IMXBuffer;
-
-  if (picture.IMXBuffer)
-    picture.IMXBuffer->Lock();
 }
 
 bool CRendererOMX::RenderUpdateCheckForEmptyField()
