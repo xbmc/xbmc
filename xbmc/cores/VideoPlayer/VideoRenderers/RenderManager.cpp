@@ -58,7 +58,7 @@
 #include "HwDecRender/RendererAML.h"
 #endif
 #if defined(HAVE_LIBOPENMAX)
-#include "HwDecRender/RendererOMX.h"
+#include "HwDecRender/RendererOpenMax.h"
 #endif
 #elif defined(HAS_DX)
   #include "WinRenderer.h"
