@@ -18165,3 +18165,23 @@ msgstr ""
 msgctxt "#38025"
 msgid "Choose information provider"
 msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#38110"
+msgid "Support MVC video (full frame 3D)"
+msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#38111"
+msgid "This option decodes frames for both eyes of MVC video. Disabling may improve performance if you don't require 3D"
+msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#38112"
+msgid "Use Full HD HDMI modes for 3D"
+msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#38113"
+msgid "This option uses frame-packing to output full resolution for 3D through HDMI"
+msgstr ""

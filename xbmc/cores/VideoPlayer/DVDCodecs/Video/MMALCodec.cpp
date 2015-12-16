@@ -538,6 +538,11 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       // H.264
       m_codingType = MMAL_ENCODING_H264;
       m_pFormatName = "mmal-h264";
+      if (CSettings::GetInstance().GetBool("videoplayer.supportmvc"))
+      {
+        m_codingType = MMAL_ENCODING_MVC;
+        m_pFormatName= "mmal-mvc";
+      }
     break;
     case AV_CODEC_ID_H263:
     case AV_CODEC_ID_MPEG4:
