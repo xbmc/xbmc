@@ -109,6 +109,7 @@ protected:
   //! codec changes, in which case we may want to switch passthrough on/off.
   bool SwitchCodecIfNeeded();
   float GetCurrentAttenuation()                         { return m_dvdAudio.GetCurrentAttenuation(); }
+  bool AllowDTSHDDecode();
 
   CDVDMessageQueue m_messageQueue;
   CDVDMessageQueue& m_messageParent;
