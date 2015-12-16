@@ -18190,3 +18190,25 @@ msgstr ""
 msgctxt "#38026"
 msgid "Appearances"
 msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#38027"
+msgid "Decode the stereo stream from 3D files"
+msgstr ""
+
+#. Description of setting "Decode the stereo stream from 3D files" with label #38027
+#: system/settings/rbp.xml
+msgctxt "#38028"
+msgid "If enabled, videos created in Multiview Video Coding (MVC) format can also be watched in stereoscopic 3D. MVC format is typically found on 3D Blu-rays.[CR]Note: Processing of this data may reduce playback performance, so only enable if you require stereoscopic 3D support."
+msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#38029"
+msgid "Enable Full HD HDMI modes for stereoscopic 3D"
+msgstr ""
+
+#. Description of setting "Enable Full HD HDMI modes for stereoscopic 3D" with label #38029
+#: system/settings/rbp.xml
+msgctxt "#38030"
+msgid "This option uses frame-packing to output full resolution for 3D through HDMI.[CR]Enabling this improves quality of Multiview Video Coding (MVC) videos, but may not be supported by all displays."
+msgstr ""

@@ -137,6 +137,7 @@ public:
   static const std::string SETTING_VIDEOPLAYER_USEMMAL;
   static const std::string SETTING_VIDEOPLAYER_USESTAGEFRIGHT;
   static const std::string SETTING_VIDEOPLAYER_LIMITGUIUPDATE;
+  static const std::string SETTING_VIDEOPLAYER_SUPPORTMVC;
   static const std::string SETTING_MYVIDEOS_SELECTACTION;
   static const std::string SETTING_MYVIDEOS_EXTRACTFLAGS;
   static const std::string SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS;
@@ -300,6 +301,7 @@ public:
   static const std::string SETTING_VIDEOSCREEN_GUICALIBRATION;
   static const std::string SETTING_VIDEOSCREEN_TESTPATTERN;
   static const std::string SETTING_VIDEOSCREEN_LIMITEDRANGE;
+  static const std::string SETTING_VIDEOSCREEN_FRAMEPACKING;
   static const std::string SETTING_AUDIOOUTPUT_AUDIODEVICE;
   static const std::string SETTING_AUDIOOUTPUT_CHANNELS;
   static const std::string SETTING_AUDIOOUTPUT_CONFIG;

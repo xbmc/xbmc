@@ -428,6 +428,11 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, EDEINTERLACEMODE de
           break;
       }
     }
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_SUPPORTMVC))
+    {
+      m_codingType = OMX_VIDEO_CodingMVC;
+      m_video_codec_name = "omx-mvc";
+    }
     break;
     case AV_CODEC_ID_MPEG4:
       // (role name) video_decoder.mpeg4
