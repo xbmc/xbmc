@@ -98,13 +98,6 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     share.strName = g_localizeStrings.Get(137);
     m_sources.push_back(share);
   }
-  {
-    CMediaSource share;
-    share.strPath = "addons://manage/";
-    share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-    share.strName = g_localizeStrings.Get(24992);
-    m_sources.push_back(share);
-  }
 
   return CGUIViewState::GetSources();
 }

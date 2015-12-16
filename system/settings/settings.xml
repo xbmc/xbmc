@@ -2889,6 +2889,40 @@
         </setting>
       </group>
     </category>
+    <category id="addons" label="24001" help="36610">
+      <group id="1">
+        <setting id="general.addonupdates" type="integer" label="36605" help="36611">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="36606">0</option> <!-- AUTO_UPDATES_ON -->
+              <option label="36607">1</option> <!-- AUTO_UPDATES_NOTIFY -->
+              <option label="36608">2</option> <!-- AUTO_UPDATES_NEVER -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="general.addonnotifications" type="boolean" label="36609" help="36612">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+          <dependencies>
+            <dependency type="enable" setting="general.addonupdates">0</dependency>
+          </dependencies>
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="addons.managedependencies" type="action" label="24996" help="36613">
+          <level>2</level>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="addons.showrunning" type="action" label="24994" help="36614">
+          <level>2</level>
+          <control type="button" format="action" />
+        </setting>
+      </group>
+    </category>
     <category id="logging" label="14092" help="36391">
       <group id="1">
         <setting id="eventlog.enabled" type="boolean" label="14112" help="36460">
@@ -3127,22 +3161,6 @@
     </category>
     <category id="general" label="" help="36412">
       <group id="1">
-        <setting id="general.addonupdates" type="integer" label="0" help="36413">
-          <level>4</level>
-          <default>0</default>
-          <constraints>
-            <options>
-              <option label="12396">0</option> <!-- AUTO_UPDATES_ON -->
-              <option label="12397">1</option> <!-- AUTO_UPDATES_NOTIFY -->
-              <option label="12398">2</option> <!-- AUTO_UPDATES_NEVER -->
-            </options>
-          </constraints>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="general.addonnotifications" type="boolean" label="0" help="36414">
-          <level>4</level>
-          <default>true</default>
-        </setting>
         <setting id="general.addonforeignfilter" type="boolean" label="0" help="36415">
           <level>4</level>
           <default>false</default>
