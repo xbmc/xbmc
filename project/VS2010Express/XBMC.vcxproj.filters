@@ -3234,6 +3234,12 @@
     <ClCompile Include="..\..\xbmc\guilib\FFmpegImage.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVRTimerRules.cpp">
+      <Filter>pvr\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVRTimersBase.cpp">
+      <Filter>pvr\windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6273,6 +6279,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\FFmpegImage.h">
       <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRTimerRules.h">
+      <Filter>pvr\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRTimersBase.h">
+      <Filter>pvr\windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
