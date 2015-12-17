@@ -32,6 +32,6 @@ namespace PVR
     virtual ~CGUIWindowPVRTimers(void) {};
 
   protected:
-    virtual std::string GetDirectoryPath(void);
+    virtual std::string GetDirectoryPath(void) override;
   };
 }
