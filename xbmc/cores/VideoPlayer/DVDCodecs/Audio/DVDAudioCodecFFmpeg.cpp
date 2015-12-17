@@ -25,6 +25,7 @@
 #include "../../DVDStreamInfo.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
+#include "DVDCodecs/DVDCodecs.h"
 extern "C" {
 #include "libavutil/opt.h"
 }
@@ -56,8 +57,14 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 {
   AVCodec* pCodec = NULL;
   m_bOpenedCodec = false;
+  bool allowdtshddecode = true;
 
-  if (hints.codec == AV_CODEC_ID_DTS && CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_SUPPORTSDTSHDCPUDECODING))
+  // set any special options
+  for(std::vector<CDVDCodecOption>::iterator it = options.m_keys.begin(); it != options.m_keys.end(); ++it)
+    if (it->m_name == "allowdtshddecode")
+      allowdtshddecode = atoi(it->m_value.c_str());
+
+  if (hints.codec == AV_CODEC_ID_DTS && allowdtshddecode)
     pCodec = avcodec_find_decoder_by_name("libdcadec");
 
   if (!pCodec)

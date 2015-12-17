@@ -27,6 +27,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "settings/Settings.h"
+#include "linux/RBP.h"
 
 // the size of the audio_render output port buffers
 #define AUDIO_DECODE_OUTPUT_BUFFER (32*1024)
@@ -66,7 +67,7 @@ bool COMXAudioCodecOMX::Open(CDVDStreamInfo &hints)
   AVCodec* pCodec = NULL;
   m_bOpenedCodec = false;
 
-  if (hints.codec == AV_CODEC_ID_DTS && CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_SUPPORTSDTSHDCPUDECODING))
+  if (hints.codec == AV_CODEC_ID_DTS && g_RBP.RasberryPiVersion() > 1)
     pCodec = avcodec_find_decoder_by_name("libdcadec");
 
   if (!pCodec)
