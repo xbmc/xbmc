@@ -42,7 +42,6 @@ namespace PVR
 class CAction;
 class CPlayerOptions;
 class CStreamDetails;
-class CRenderCapture;
 
 struct SPlayerAudioStreamInfo;
 struct SPlayerVideoStreamInfo;
@@ -98,9 +97,10 @@ public:
   bool Supports(EINTERLACEMETHOD method);
   bool Supports(ESCALINGMETHOD method);
   bool Supports(ERENDERFEATURE feature);
-  CRenderCapture *RenderCaptureAlloc();
-  void RenderCapture(CRenderCapture* capture, unsigned int width, unsigned int height, int flags);
-  void RenderCaptureRelease(CRenderCapture* capture);
+  unsigned int RenderCaptureAlloc();
+  void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags = 0);
+  void RenderCaptureRelease(unsigned int captureId);
+  bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size);
   std::string GetRenderVSyncState();
 
   // proxy calls

@@ -55,8 +55,6 @@
 
 #include "LanguageHook.h"
 
-#include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
-
 #include "threads/SystemClock.h"
 #include <vector>
 #include "utils/log.h"
@@ -547,15 +545,6 @@ namespace XBMCAddon
     int getLOGSEVERE() { return LOGSEVERE; }
     int getLOGFATAL() { return LOGFATAL; }
     int getLOGNONE() { return LOGNONE; }
-
-    // render capture user states
-    int getCAPTURE_STATE_WORKING() { return CAPTURESTATE_WORKING; }
-    int getCAPTURE_STATE_DONE(){ return CAPTURESTATE_DONE; }
-    int getCAPTURE_STATE_FAILED() { return CAPTURESTATE_FAILED; }
-
-    // render capture flags
-    int getCAPTURE_FLAG_CONTINUOUS() { return (int)CAPTUREFLAG_CONTINUOUS; }
-    int getCAPTURE_FLAG_IMMEDIATELY() { return (int)CAPTUREFLAG_IMMEDIATELY; }
 
     // language string formats
     int getISO_639_1() { return CLangCodeExpander::ISO_639_1; } 

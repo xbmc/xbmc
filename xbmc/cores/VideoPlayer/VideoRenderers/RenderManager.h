@@ -30,6 +30,7 @@
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
 #include <deque>
+#include <map>
 #include "PlatformDefs.h"
 #include "threads/Event.h"
 #include "DVDClock.h"
@@ -75,10 +76,10 @@ public:
   bool Flush();
   bool IsConfigured() const;
 
-  CRenderCapture* AllocRenderCapture();
-  void ReleaseRenderCapture(CRenderCapture* capture);
-  void Capture(CRenderCapture *capture, unsigned int width, unsigned int height, int flags);
-  void ManageCaptures();
+  unsigned int AllocRenderCapture();
+  void ReleaseRenderCapture(unsigned int captureId);
+  void StartRenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags);
+  bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size);
 
   // Functions called from GUI
   bool Supports(ERENDERFEATURE feature);
@@ -170,6 +171,8 @@ protected:
   void CreateRenderer();
   void DeleteRenderer();
 
+  void ManageCaptures();
+
   CBaseRenderer *m_pRenderer;
   OVERLAY::CRenderer m_overlays;
   CSharedSection m_sharedSection;
@@ -246,9 +249,11 @@ protected:
   CDVDClock &m_dvdClock;
 
   void RenderCapture(CRenderCapture* capture);
-  void RemoveCapture(CRenderCapture* capture);
+  void RemoveCaptures();
   CCriticalSection m_captCritSect;
-  std::list<CRenderCapture*> m_captures;
+  std::map<unsigned int, CRenderCapture*> m_captures;
+  static unsigned int m_nextCaptureId;
+  unsigned int m_captureWaitCounter;
   //set to true when adding something to m_captures, set to false when m_captures is made empty
   //std::list::empty() isn't thread safe, using an extra bool will save a lock per render when no captures are requested
   bool m_hasCaptures;

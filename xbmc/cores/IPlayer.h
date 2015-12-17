@@ -28,12 +28,14 @@
 #include <string>
 
 #define CURRENT_STREAM -1
+#define CAPTUREFLAG_CONTINUOUS  0x01 //after a render is done, render a new one immediately
+#define CAPTUREFLAG_IMMEDIATELY 0x02 //read out immediately after render, this can cause a busy wait
+#define CAPTUREFORMAT_BGRA 0x01
 
 struct TextCacheStruct_t;
 class TiXmlElement;
 class CStreamDetails;
 class CAction;
-class CRenderCapture;
 
 namespace PVR
 {
@@ -424,9 +426,10 @@ public:
   virtual bool Supports(ESCALINGMETHOD method) { return false; };
   virtual bool Supports(ERENDERFEATURE feature) { return false; };
 
-  virtual CRenderCapture *RenderCaptureAlloc() { return NULL; };
-  virtual void RenderCapture(CRenderCapture* capture, unsigned int width, unsigned int height, int flags) {};
-  virtual void RenderCaptureRelease(CRenderCapture* capture) {};
+  virtual unsigned int RenderCaptureAlloc() { return NULL; };
+  virtual void RenderCaptureRelease(unsigned int captureId) {};
+  virtual void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) {};
+  virtual bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) { return false; };
 
   virtual std::string GetRenderVSyncState() { return ""; };
 

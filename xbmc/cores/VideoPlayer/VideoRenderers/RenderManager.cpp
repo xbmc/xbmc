@@ -148,6 +148,8 @@ static std::string GetRenderFormatName(ERenderFormat format)
   return "UNKNOWN";
 }
 
+unsigned int CRenderManager::m_nextCaptureId = 0;
+
 CRenderManager::CRenderManager(CDVDClock &clock) : m_overlays(this), m_dvdClock(clock)
 {
   m_pRenderer = nullptr;
@@ -167,6 +169,7 @@ CRenderManager::CRenderManager(CDVDClock &clock) : m_overlays(this), m_dvdClock(
   m_QueueSkip   = 0;
   m_format      = RENDER_FMT_NONE;
   m_renderedOverlay = false;
+  m_captureWaitCounter = 0;
 }
 
 CRenderManager::~CRenderManager()
@@ -458,66 +461,71 @@ bool CRenderManager::HasFrame()
 
 void CRenderManager::FrameMove()
 {
-  CSharedLock lock(m_sharedSection);
-
-  if (m_renderState == STATE_UNCONFIGURED)
-    return;
-  else if (m_renderState == STATE_CONFIGURING)
   {
-    lock.Leave();
-    if (!Configure())
+    CSharedLock lock(m_sharedSection);
+
+    if (m_renderState == STATE_UNCONFIGURED)
       return;
-
-    if (m_flags & CONF_FLAGS_FULLSCREEN)
+    else if (m_renderState == STATE_CONFIGURING)
     {
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
-    }
-    lock.Enter();
-  }
+      lock.Leave();
+      if (!Configure())
+        return;
 
-  CSingleLock lock2(m_presentlock);
-
-  if (m_presentstep == PRESENT_FRAME2)
-  {
-    if (!m_queued.empty())
-    {
-      double timestamp = GetPresentTime();
-      SPresent& m = m_Queue[m_presentsource];
-      SPresent& q = m_Queue[m_queued.front()];
-      if(timestamp > m.timestamp + (q.timestamp - m.timestamp) * 0.5)
+      if (m_flags & CONF_FLAGS_FULLSCREEN)
       {
-        m_presentstep = PRESENT_READY;
-        m_presentevent.notifyAll();
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
+      }
+      lock.Enter();
+    }
+
+    CSingleLock lock2(m_presentlock);
+
+    if (m_presentstep == PRESENT_FRAME2)
+    {
+      if (!m_queued.empty())
+      {
+        double timestamp = GetPresentTime();
+        SPresent& m = m_Queue[m_presentsource];
+        SPresent& q = m_Queue[m_queued.front()];
+        if(timestamp > m.timestamp + (q.timestamp - m.timestamp) * 0.5)
+        {
+          m_presentstep = PRESENT_READY;
+          m_presentevent.notifyAll();
+        }
       }
     }
-  }
 
-  if (m_presentstep == PRESENT_READY)
-    PrepareNextRender();
+    if (m_presentstep == PRESENT_READY)
+      PrepareNextRender();
 
-  if(m_presentstep == PRESENT_FLIP)
-  {
-    m_pRenderer->FlipPage(m_presentsource);
-    m_presentstep = PRESENT_FRAME;
-    m_presentevent.notifyAll();
-  }
-
-  /* release all previous */
-  for (std::deque<int>::iterator it = m_discard.begin(); it != m_discard.end(); )
-  {
-    // renderer may want to keep the frame for postprocessing
-    if (!m_pRenderer->NeedBufferForRef(*it) || !m_bRenderGUI)
+    if(m_presentstep == PRESENT_FLIP)
     {
-      m_pRenderer->ReleaseBuffer(*it);
-      m_overlays.Release(*it);
-      m_free.push_back(*it);
-      it = m_discard.erase(it);
+      m_pRenderer->FlipPage(m_presentsource);
+      m_presentstep = PRESENT_FRAME;
+      m_presentevent.notifyAll();
     }
-    else
-      ++it;
+
+    /* release all previous */
+    for (std::deque<int>::iterator it = m_discard.begin(); it != m_discard.end(); )
+    {
+      // renderer may want to keep the frame for postprocessing
+      if (!m_pRenderer->NeedBufferForRef(*it) || !m_bRenderGUI)
+      {
+        m_pRenderer->ReleaseBuffer(*it);
+        m_overlays.Release(*it);
+        m_free.push_back(*it);
+        it = m_discard.erase(it);
+      }
+      else
+        ++it;
+    }
+    
+    m_bRenderGUI = true;
   }
 
-  m_bRenderGUI = true;
+  UpdateResolution();
+  ManageCaptures();
 }
 
 void CRenderManager::FrameFinish()
@@ -602,6 +610,7 @@ void CRenderManager::UnInit()
   DeleteRenderer();
 
   m_renderState = STATE_UNCONFIGURED;
+  RemoveCaptures();
 }
 
 bool CRenderManager::Flush()
@@ -746,37 +755,37 @@ void CRenderManager::DeleteRenderer()
   }
 }
 
-CRenderCapture* CRenderManager::AllocRenderCapture()
+unsigned int CRenderManager::AllocRenderCapture()
 {
-  return new CRenderCapture;
+  CRenderCapture *capture = new CRenderCapture;
+  m_captures[m_nextCaptureId] = capture;
+  return m_nextCaptureId++;
 }
 
-void CRenderManager::ReleaseRenderCapture(CRenderCapture* capture)
+void CRenderManager::ReleaseRenderCapture(unsigned int captureId)
 {
   CSingleLock lock(m_captCritSect);
 
-  RemoveCapture(capture);
+  std::map<unsigned int, CRenderCapture*>::iterator it;
+  it = m_captures.find(captureId);
 
-  //because a CRenderCapture might have some gl things allocated, it can only be deleted from app thread
-  if (g_application.IsCurrentThread())
-  {
-    delete capture;
-  }
-  else
-  {
-    capture->SetState(CAPTURESTATE_NEEDSDELETE);
-    m_captures.push_back(capture);
-  }
-
-  if (!m_captures.empty())
-    m_hasCaptures = true;
+  if (it != m_captures.end())
+    it->second->SetState(CAPTURESTATE_NEEDSDELETE);
 }
 
-void CRenderManager::Capture(CRenderCapture* capture, unsigned int width, unsigned int height, int flags)
+void CRenderManager::StartRenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags)
 {
   CSingleLock lock(m_captCritSect);
 
-  RemoveCapture(capture);
+  std::map<unsigned int, CRenderCapture*>::iterator it;
+  it = m_captures.find(captureId);
+  if (it == m_captures.end())
+  {
+    CLog::Log(LOGERROR, "CRenderManager::Capture - unknown capture id: %d", captureId);
+    return;
+  }
+
+  CRenderCapture *capture = it->second;
 
   capture->SetState(CAPTURESTATE_NEEDSRENDER);
   capture->SetUserState(CAPTURESTATE_WORKING);
@@ -794,21 +803,42 @@ void CRenderManager::Capture(CRenderCapture* capture, unsigned int width, unsign
       capture->SetUserState(capture->GetState());
       capture->GetEvent().Set();
     }
-
-    if ((flags & CAPTUREFLAG_CONTINUOUS) || !(flags & CAPTUREFLAG_IMMEDIATELY))
-    {
-      //schedule this capture for a render and readout
-      m_captures.push_back(capture);
-    }
-  }
-  else
-  {
-    //schedule this capture for a render and readout
-    m_captures.push_back(capture);
   }
 
   if (!m_captures.empty())
     m_hasCaptures = true;
+}
+
+bool CRenderManager::RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size)
+{
+  CSingleLock lock(m_captCritSect);
+
+  std::map<unsigned int, CRenderCapture*>::iterator it;
+  it = m_captures.find(captureId);
+  if (it == m_captures.end())
+    return false;
+
+  m_captureWaitCounter++;
+
+  {
+    if (!millis)
+      millis = 1000;
+    
+    CSingleExit exitlock(m_captCritSect);
+    if (!it->second->GetEvent().WaitMSec(millis))
+      return false;
+  }
+
+  m_captureWaitCounter--;
+
+  if (it->second->GetUserState() != CAPTURESTATE_DONE)
+    return false;
+
+  unsigned int srcSize = it->second->GetWidth() * it->second->GetHeight() * 4;
+  unsigned int bytes = std::min(srcSize, size);
+
+  memcpy(buffer, it->second->GetPixels(), bytes);
+  return true;
 }
 
 void CRenderManager::ManageCaptures()
@@ -819,10 +849,10 @@ void CRenderManager::ManageCaptures()
 
   CSingleLock lock(m_captCritSect);
 
-  std::list<CRenderCapture*>::iterator it = m_captures.begin();
+  std::map<unsigned int, CRenderCapture*>::iterator it = m_captures.begin();
   while (it != m_captures.end())
   {
-    CRenderCapture* capture = *it;
+    CRenderCapture* capture = it->second;
 
     if (capture->GetState() == CAPTURESTATE_NEEDSDELETE)
     {
@@ -852,10 +882,6 @@ void CRenderManager::ManageCaptures()
 
         ++it;
       }
-      else
-      {
-        it = m_captures.erase(it);
-      }
     }
     else
     {
@@ -874,12 +900,25 @@ void CRenderManager::RenderCapture(CRenderCapture* capture)
     capture->SetState(CAPTURESTATE_FAILED);
 }
 
-void CRenderManager::RemoveCapture(CRenderCapture* capture)
+void CRenderManager::RemoveCaptures()
 {
-  //remove this CRenderCapture from the list
-  std::list<CRenderCapture*>::iterator it;
-  while ((it = find(m_captures.begin(), m_captures.end(), capture)) != m_captures.end())
-    m_captures.erase(it);
+  CSingleLock lock(m_captCritSect);
+
+  while (m_captureWaitCounter > 0)
+  {
+    for (auto entry : m_captures)
+    {
+      entry.second->GetEvent().Set();
+    }
+    CSingleExit lockexit(m_captCritSect);
+    Sleep(10);
+  }
+
+  for (auto entry : m_captures)
+  {
+    delete entry.second;
+  }
+  m_captures.clear();
 }
 
 void CRenderManager::SetViewMode(int iViewMode)

@@ -22,12 +22,9 @@
 #include "GUIDialogVideoBookmarks.h"
 #include "video/VideoDatabase.h"
 #include "Application.h"
-#ifdef HAS_VIDEO_PLAYBACK
-#include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
 #if defined(HAS_LIBAMCODEC)
 #include "utils/ScreenshotAML.h"
 #endif//HAS_LIBAMCODEC
-#endif//HAS_VIDEO_PLAYBACK
 #include "pictures/Picture.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "view/ViewState.h"
@@ -430,38 +427,38 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
     height = BOOKMARK_THUMB_WIDTH;
     width = (int)(BOOKMARK_THUMB_WIDTH * aspectRatio);
   }
+
+
+  uint8_t *pixels = (uint8_t*)malloc(height * width * 4);
+  unsigned int captureId = g_application.m_pPlayer->RenderCaptureAlloc();
+
+  g_application.m_pPlayer->RenderCapture(captureId, width, height, CAPTUREFLAG_IMMEDIATELY);
+  bool hasImage = g_application.m_pPlayer->RenderCaptureGetPixels(captureId, 1000, pixels, height * width * 4);
+
+  if (hasImage)
   {
-#ifdef HAS_VIDEO_PLAYBACK
-    CRenderCapture* thumbnail = g_application.m_pPlayer->RenderCaptureAlloc();
 
-    if (thumbnail)
+    Crc32 crc;
+    crc.ComputeFromLowerCase(g_application.CurrentFile());
+    bookmark.thumbNailImage = StringUtils::Format("%08x_%i.jpg", (unsigned __int32) crc, (int)bookmark.timeInSeconds);
+    bookmark.thumbNailImage = URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetBookmarksThumbFolder(), bookmark.thumbNailImage);
+
+
+    if (!CPicture::CreateThumbnailFromSurface(pixels, width, height, width * 4,
+                                                         bookmark.thumbNailImage))
     {
-      g_application.m_pPlayer->RenderCapture(thumbnail, width, height, CAPTUREFLAG_IMMEDIATELY);
-
-#if !defined(HAS_LIBAMCODEC)
-      if (thumbnail->GetUserState() == CAPTURESTATE_DONE)
-      {
-#else//HAS_LIBAMCODEC
-      {
-        CScreenshotAML::CaptureVideoFrame(thumbnail->GetPixels(), width, height, false);
-#endif
-        Crc32 crc;
-        crc.ComputeFromLowerCase(g_application.CurrentFile());
-        bookmark.thumbNailImage = StringUtils::Format("%08x_%i.jpg", (unsigned __int32) crc, (int)bookmark.timeInSeconds);
-        bookmark.thumbNailImage = URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetBookmarksThumbFolder(), bookmark.thumbNailImage);
-        if (!CPicture::CreateThumbnailFromSurface(thumbnail->GetPixels(), width, height, thumbnail->GetWidth() * 4,
-                                            bookmark.thumbNailImage))
-          bookmark.thumbNailImage.clear();
-      }
-#if !defined(HAS_LIBAMCODEC)
-      else
-        CLog::Log(LOGERROR,"CGUIDialogVideoBookmarks: failed to create thumbnail");
-#endif
-
-      g_application.m_pPlayer->RenderCaptureRelease(thumbnail);
+      bookmark.thumbNailImage.clear();
     }
-#endif
+    else
+      CLog::Log(LOGERROR,"CGUIDialogVideoBookmarks: failed to create thumbnail");
+
+    g_application.m_pPlayer->RenderCaptureRelease(captureId);
   }
+  else
+    CLog::Log(LOGERROR,"CGUIDialogVideoBookmarks: failed to create thumbnail 2");
+
+  free(pixels);
+
   videoDatabase.Open();
   if (tag)
     videoDatabase.AddBookMarkForEpisode(*tag, bookmark);
