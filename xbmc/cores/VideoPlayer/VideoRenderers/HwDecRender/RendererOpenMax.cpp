@@ -18,7 +18,7 @@
  *
  */
 
-#include "RendererOMX.h"
+#include "RendererOpenMax.h"
 
 #if defined(HAVE_LIBOPENMAX)
 #include "cores/IPlayer.h"
@@ -38,7 +38,7 @@ CRendererOMX::~CRendererOMX()
 
 }
 
-bool SkipUploadYV12(int index)
+bool CRendererOMX::SkipUploadYV12(int index)
 {
   // skip if its already set
   return m_buffers[index].hwDec != 0 ? true : false;
@@ -50,18 +50,15 @@ void CRendererOMX::AddVideoPictureHW(DVDVideoPicture &picture, int index)
   if (buf.hwDec) {
     ((OpenMaxVideoBufferHolder *)buf.hwDec)->Release();
   }
-  buf.hwDec = picture->openMaxBufferHolder;
+  buf.hwDec = picture.openMaxBufferHolder;
   if (buf.hwDec) {
     ((OpenMaxVideoBufferHolder *)buf.hwDec)->Acquire();
   }
   
-  YUVBUFFER &buf = m_buffers[index];
+  buf = m_buffers[index];
 
-  SAFE_RELEASE(buf.hwDec);
-  buf.hwDec = picture.IMXBuffer;
-
-  if (picture.IMXBuffer)
-    picture.IMXBuffer->Lock();
+  OpenMaxVideoBufferHolder *buffer = static_cast<OpenMaxVideoBufferHolder *>(buf.hwDec);
+  SAFE_RELEASE(buffer);
 }
 
 bool CRendererOMX::RenderUpdateCheckForEmptyField()
@@ -75,6 +72,11 @@ bool CRendererOMX::Supports(EINTERLACEMETHOD method)
 }
 
 bool CRendererOMX::Supports(EDEINTERLACEMODE mode)
+{
+  return false;
+}
+
+bool CRendererOMX::Supports(ESCALINGMETHOD mode)
 {
   return false;
 }
@@ -103,9 +105,9 @@ bool CRendererOMX::LoadShadersHook()
 
 bool CRendererOMX::RenderHook(int index)
 {
-  OpenMaxVideoBufferHolder *bufferHolder = m_buffers[index].openMaxBufferHolder;
+  OpenMaxVideoBufferHolder *bufferHolder = static_cast<OpenMaxVideoBufferHolder *>(m_buffers[index].hwDec);
   if (!bufferHolder)
-    return;
+    return false;
   OpenMaxVideoBuffer *buffer = bufferHolder->m_openMaxVideoBuffer;
 
   GLuint textureId = buffer->texture_id;
