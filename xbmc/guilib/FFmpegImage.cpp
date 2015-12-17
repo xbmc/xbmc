@@ -44,7 +44,7 @@ struct MemBuffer
 static size_t Clamp(int64_t newPosition, size_t bufferSize, size_t offset)
 {
   size_t clampedPosition = 0;
-  if (newPosition < 0 || offset + newPosition < 0)
+  if (newPosition < 0 || ((int64_t) offset + newPosition) < 0)
   {
     clampedPosition = 0;
   }
@@ -225,7 +225,7 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
   if (m_width == 0 || m_height == 0 || format != XB_FMT_A8R8G8B8)
     return false;
 
-  if (!m_pFrame || !m_pFrame->data)
+  if (!m_pFrame || !m_pFrame->data[0])
   {
     CLog::LogFunction(LOGERROR, __FUNCTION__, "AVFrame member not allocated");
     return false;
@@ -259,11 +259,23 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
     }
     needsCopy = true;
   }
-
+  // Especially jpeg formats are full range this we need to take care here
+  // Input Formats like RGBA are handled correctly automatically
+  AVColorRange range = av_frame_get_color_range(m_pFrame);
   AVPixelFormat pixFormat = ConvertFormats(m_pFrame);
 
   struct SwsContext* context = sws_getContext(m_width, m_height, pixFormat,
     width, height, AV_PIX_FMT_RGB32, SWS_BICUBIC, NULL, NULL, NULL);
+
+  if (range == AVCOL_RANGE_JPEG)
+  {
+    int* inv_table = nullptr;
+    int* table = nullptr;
+    int srcRange, dstRange, brightness, contrast, saturation;
+    sws_getColorspaceDetails(context, &inv_table, &srcRange, &table, &dstRange, &brightness, &contrast, &saturation);
+    srcRange = 1;
+    sws_setColorspaceDetails(context, inv_table, srcRange, table, dstRange, brightness, contrast, saturation);
+  }
 
   sws_scale(context, m_pFrame->data, m_pFrame->linesize, 0, m_height,
     pictureRGB->data, pictureRGB->linesize);
