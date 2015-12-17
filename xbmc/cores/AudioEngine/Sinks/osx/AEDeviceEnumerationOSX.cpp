@@ -526,6 +526,13 @@ float AEDeviceEnumerationOSX::ScoreFormat(const AudioStreamBasicDescription &for
     if (formatDesc.mChannelsPerFrame != format.m_channelLayout.Count())
       return score;
     score += 5;
+
+    if (formatDesc.mFormatID == kAudioFormat60958AC3 ||
+        formatDesc.mFormatID == 'IAC3' ||
+        formatDesc.mFormatID == kAudioFormatAC3)
+    {
+      score += 1;
+    }
   }
   // non-passthrough, whatever works is fine
   else if (formatDesc.mFormatID == kAudioFormatLinearPCM)
