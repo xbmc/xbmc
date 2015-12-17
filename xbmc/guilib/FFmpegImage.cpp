@@ -211,6 +211,8 @@ bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSi
     {
       m_height = m_pFrame->height;
       m_width = m_pFrame->width;
+      m_originalWidth = m_width;
+      m_originalHeight = m_height;
 
       const AVPixFmtDescriptor* pixDescriptor = av_pix_fmt_desc_get(static_cast<AVPixelFormat>(m_pFrame->format));
       if (pixDescriptor && ((pixDescriptor->flags & AV_PIX_FMT_FLAG_ALPHA) != 0))
@@ -303,29 +305,41 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
 
   AVPixelFormat pixFormat = ConvertFormats(m_pFrame);
 
-  struct SwsContext* context = sws_getContext(m_width, m_height, pixFormat,
-    width, height, AV_PIX_FMT_RGB32, SWS_BICUBIC, NULL, NULL, NULL);
+  // assumption quadratic maximums e.g. 2048x2048
+  float ratio = m_width / (float) m_height;
+  unsigned int nHeight = m_originalHeight;
+  unsigned int nWidth = m_originalWidth;
+  if (nHeight > height)
+  {
+    nHeight = height;
+    nWidth = (unsigned int) (nHeight * ratio + 0.5f);
+  }
+  if (nWidth > width)
+  {
+    nWidth = width;
+    nHeight = (unsigned int) (nWidth / ratio + 0.5f);
+  }
 
-  sws_scale(context, m_pFrame->data, m_pFrame->linesize, 0, m_height,
+  struct SwsContext* context = sws_getContext(m_originalWidth, m_originalHeight, pixFormat,
+    nWidth, nHeight, AV_PIX_FMT_RGB32, SWS_BICUBIC, NULL, NULL, NULL);
+
+  sws_scale(context, m_pFrame->data, m_pFrame->linesize, 0, m_originalHeight,
     pictureRGB->data, pictureRGB->linesize);
   sws_freeContext(context);
-  
 
   if (needsCopy)
   {
     int minPitch = std::min((int)pitch, pictureRGB->linesize[0]);
-    int minHeight = std::min((int)height, (size / pictureRGB->linesize[0]));
-    if (minPitch < 0 || minHeight < 0)
+    if (minPitch < 0)
     {
       CLog::LogFunction(LOGERROR, __FUNCTION__, "negative pitch or height");
       av_free(pictureRGB);
       return false;
     }
-
     const unsigned char *src = pictureRGB->data[0];
     unsigned char* dst = pixels;
 
-    for (int y = 0; y < minHeight; y++)
+    for (unsigned int y = 0; y < nHeight; y++)
     {
       memcpy(dst, src, minPitch);
       src += pictureRGB->linesize[0];
@@ -337,8 +351,9 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
   pictureRGB->data[0] = nullptr;
   avpicture_free(pictureRGB);
 
-  m_originalHeight = m_height = height;
-  m_originalWidth = m_width = width;
+  // update width and height original dimensions are kept
+  m_height = nHeight;
+  m_width = nWidth;
 
   return true;
 }
