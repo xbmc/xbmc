@@ -4752,8 +4752,6 @@ bool CVideoPlayer::SwitchChannel(const CPVRChannelPtr &channel)
 void CVideoPlayer::FrameMove()
 {
   m_renderManager.FrameMove();
-  m_renderManager.UpdateResolution();
-  m_renderManager.ManageCaptures();
 }
 
 void CVideoPlayer::FrameWait(int ms)
@@ -4836,19 +4834,24 @@ bool CVideoPlayer::Supports(ERENDERFEATURE feature)
   return m_renderManager.Supports(feature);
 }
 
-CRenderCapture *CVideoPlayer::RenderCaptureAlloc()
+unsigned int CVideoPlayer::RenderCaptureAlloc()
 {
   return m_renderManager.AllocRenderCapture();
 }
 
-void CVideoPlayer::RenderCapture(CRenderCapture* capture, unsigned int width, unsigned int height, int flags)
+void CVideoPlayer::RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags)
 {
-  m_renderManager.Capture(capture, width, height, flags);
+  m_renderManager.StartRenderCapture(captureId, width, height, flags);
 }
 
-void CVideoPlayer::RenderCaptureRelease(CRenderCapture* capture)
+void CVideoPlayer::RenderCaptureRelease(unsigned int captureId)
 {
-  m_renderManager.ReleaseRenderCapture(capture);
+  m_renderManager.ReleaseRenderCapture(captureId);
+}
+
+bool CVideoPlayer::RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size)
+{
+  return m_renderManager.RenderCaptureGetPixels(captureId, millis, buffer, size);
 }
 
 std::string CVideoPlayer::GetRenderVSyncState()

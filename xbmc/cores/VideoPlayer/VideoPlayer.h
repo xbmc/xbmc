@@ -316,9 +316,10 @@ public:
   virtual bool Supports(ESCALINGMETHOD method);
   virtual bool Supports(ERENDERFEATURE feature);
 
-  virtual CRenderCapture *RenderCaptureAlloc();
-  virtual void RenderCapture(CRenderCapture* capture, unsigned int width, unsigned int height, int flags);
-  virtual void RenderCaptureRelease(CRenderCapture* capture);
+  virtual unsigned int RenderCaptureAlloc();
+  virtual void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags);
+  virtual void RenderCaptureRelease(unsigned int captureId);
+  virtual bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size);
 
   virtual std::string GetRenderVSyncState();
 

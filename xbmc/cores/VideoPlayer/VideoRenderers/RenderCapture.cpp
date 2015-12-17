@@ -22,6 +22,7 @@
 #include "utils/log.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
+#include "cores/IPlayer.h"
 
 CRenderCaptureBase::CRenderCaptureBase()
 {
