@@ -22,7 +22,7 @@
 
 #include <stdint.h>
 #ifdef BUILD_KODI_ADDON
-#include "kodi/AEChannelData.h"
+#include "AEChannelData.h"
 #else
 #include "cores/AudioEngine/Utils/AEChannelData.h"
 #endif
