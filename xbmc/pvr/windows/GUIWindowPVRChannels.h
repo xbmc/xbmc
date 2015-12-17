@@ -39,7 +39,7 @@ namespace PVR
     bool OnAction(const CAction &action);
 
   protected:
-    std::string GetDirectoryPath(void);
+    virtual std::string GetDirectoryPath(void) override;
 
   private:
     bool OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON button);

@@ -45,7 +45,7 @@ namespace PVR
     void ResetObservers(void);
 
   protected:
-    std::string GetDirectoryPath(void);
+    virtual std::string GetDirectoryPath(void) override;
     void OnPrepareFileItems(CFileItemList &items);
 
   private:
