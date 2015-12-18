@@ -7787,7 +7787,7 @@ msgstr ""
 
 #: addons/skin.confluence/720p/DialogAudioDSPManager.xml
 msgctxt "#15114"
-msgid "Here you can configure a input resampling process. Notice: Only one active mode is allowed!"
+msgid "Here you can configure an input resampling process. Notice: Only one active mode is allowed!"
 msgstr ""
 
 #: addons/skin.confluence/720p/DialogAudioDSPManager.xml
@@ -14071,7 +14071,7 @@ msgstr ""
 #. Header string on RDS Radiotext+ Info dialog
 #: addons/skin.confluence/720p/DialogPVRRadioRDSInfo.xml
 msgctxt "#29900"
-msgid "RadiotextPlus info"
+msgid "Radiotext Plus info"
 msgstr ""
 
 #. Music band name which make the song (if present)
@@ -14549,7 +14549,7 @@ msgstr ""
 #. Help text of boolean on/off value
 #: system/settings/settings.xml
 msgctxt "#29987"
-msgid "Send present traffic messages around and can be handled from addons (nothing inside KODI)"
+msgid "Send present traffic messages around and can be handled from add-ons (nothing inside Kodi)"
 msgstr ""
 
 #empty strings from id 29988 to 33000
