@@ -47,6 +47,7 @@
 
 #include <utility>
 
+#define CONTROL_SETTINGS 5
 #define CONTROL_FOREIGNFILTER 7
 #define CONTROL_BROKENFILTER  8
 #define CONTROL_CHECK_FOR_UPDATES  9
@@ -104,6 +105,11 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_CHECK_FOR_UPDATES)
       {
         CRepositoryUpdater::GetInstance().CheckForUpdates(true);
+        return true;
+      }
+      else if (iControl == CONTROL_SETTINGS)
+      {
+        g_windowManager.ActivateWindow(WINDOW_SETTINGS_SYSTEM, "addons");
         return true;
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
@@ -257,6 +263,7 @@ void CGUIWindowAddonBrowser::UpdateButtons()
   SET_CONTROL_SELECTED(GetID(),CONTROL_FOREIGNFILTER, CSettings::GetInstance().GetBool(CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER));
   SET_CONTROL_SELECTED(GetID(),CONTROL_BROKENFILTER, CSettings::GetInstance().GetBool(CSettings::SETTING_GENERAL_ADDONBROKENFILTER));
   CONTROL_ENABLE(CONTROL_CHECK_FOR_UPDATES);
+  CONTROL_ENABLE(CONTROL_SETTINGS);
 
   bool allowFilter = CAddonsDirectory::IsRepoDirectory(CURL(m_vecItems->GetPath()));
   CONTROL_ENABLE_ON_CONDITION(CONTROL_FOREIGNFILTER, allowFilter);

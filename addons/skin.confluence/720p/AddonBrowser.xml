@@ -97,6 +97,11 @@
 					<include>ButtonCommonValues</include>
 					<label>24034</label>
 				</control>
+				<control type="button" id="5">
+					<description>Settings shortcut</description>
+					<include>ButtonCommonValues</include>
+					<label>10004</label>
+				</control>
 				<include>CommonNowPlaying_Controls</include>
 			</control>
 			<control type="label">
