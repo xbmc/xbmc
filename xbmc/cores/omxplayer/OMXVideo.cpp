@@ -251,8 +251,7 @@ bool COMXVideo::PortSettingsChanged(ResolutionUpdateInfo &resinfo)
   if(m_deinterlace)
   {
     EINTERLACEMETHOD interlace_method = m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
-    bool advanced_deinterlace = (interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED || interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF) &&
-        port_image.format.video.nFrameWidth * port_image.format.video.nFrameHeight <= 576 * 720;
+    bool advanced_deinterlace = interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED || interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF;
     bool half_framerate = interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF || interlace_method == VS_INTERLACEMETHOD_MMAL_BOB_HALF;
     if (!advanced_deinterlace)
     {
@@ -273,10 +272,11 @@ bool COMXVideo::PortSettingsChanged(ResolutionUpdateInfo &resinfo)
     OMX_INIT_STRUCTURE(image_filter);
 
     image_filter.nPortIndex = m_omx_image_fx.GetOutputPort();
-    image_filter.nNumParams = 3;
+    image_filter.nNumParams = 4;
     image_filter.nParams[0] = 3;
     image_filter.nParams[1] = 0;
     image_filter.nParams[2] = half_framerate;
+    image_filter.nParams[3] = 1; // qpu
     if (!advanced_deinterlace)
       image_filter.eImageFilter = OMX_ImageFilterDeInterlaceFast;
     else
