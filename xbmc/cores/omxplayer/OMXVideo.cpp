@@ -142,9 +142,8 @@ bool COMXVideo::NaluFormatStartCodes(enum AVCodecID codec, uint8_t *in_extradata
   return false;    
 }
 
-bool COMXVideo::PortSettingsChanged()
+bool COMXVideo::PortSettingsChanged(ResolutionUpdateInfo &resinfo)
 {
-  CSingleLock lock (m_critSection);
   OMX_ERRORTYPE omx_err   = OMX_ErrorNone;
 
   if (m_settings_changed)
@@ -187,15 +186,13 @@ bool COMXVideo::PortSettingsChanged()
       port_image.format.video.xFramerate / (float)(1<<16), interlace.eMode, m_deinterlace);
 
   // let OMXPlayerVideo know about resolution so it can inform RenderManager
-  if (m_res_callback)
-  {
-    float display_aspect = 0.0f;
-    if (pixel_aspect.nX && pixel_aspect.nY)
-      display_aspect = (float)pixel_aspect.nX * port_image.format.video.nFrameWidth /
-        ((float)pixel_aspect.nY * port_image.format.video.nFrameHeight);
-    m_res_callback(m_res_ctx, port_image.format.video.nFrameWidth, port_image.format.video.nFrameHeight,
-        port_image.format.video.xFramerate / (float)(1<<16), display_aspect);
-  }
+  resinfo.width = port_image.format.video.nFrameWidth;
+  resinfo.height = port_image.format.video.nFrameHeight;
+  resinfo.framerate = port_image.format.video.xFramerate / (float)(1<<16);
+  resinfo.display_aspect = 0.0f;
+  resinfo.changed = true;
+  if (pixel_aspect.nX && pixel_aspect.nY)
+    resinfo.display_aspect = (float)pixel_aspect.nX * port_image.format.video.nFrameWidth / ((float)pixel_aspect.nY * port_image.format.video.nFrameHeight);
 
   if (m_settings_changed)
   {
@@ -803,10 +800,11 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts, bool &s
       }
       //CLog::Log(LOGINFO, "VideD: dts:%.0f pts:%.0f size:%d)\n", dts, pts, iSize);
 
+      ResolutionUpdateInfo resinfo = {};
       omx_err = m_omx_decoder.WaitForEvent(OMX_EventPortSettingsChanged, 0);
       if (omx_err == OMX_ErrorNone)
       {
-        if(!PortSettingsChanged())
+        if(!PortSettingsChanged(resinfo))
         {
           CLog::Log(LOGERROR, "%s::%s - error PortSettingsChanged omx_err(0x%08x)\n", CLASSNAME, __func__, omx_err);
           return false;
@@ -815,11 +813,14 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts, bool &s
       omx_err = m_omx_decoder.WaitForEvent(OMX_EventParamOrConfigChanged, 0);
       if (omx_err == OMX_ErrorNone)
       {
-        if(!PortSettingsChanged())
+        if(!PortSettingsChanged(resinfo))
         {
           CLog::Log(LOGERROR, "%s::%s - error PortSettingsChanged (EventParamOrConfigChanged) omx_err(0x%08x)\n", CLASSNAME, __func__, omx_err);
         }
       }
+      lock.Leave();
+      if (resinfo.changed && m_res_callback)
+        m_res_callback(m_res_ctx, resinfo.width, resinfo.height, resinfo.framerate, resinfo.display_aspect);
     }
     settings_changed = m_settings_changed;
     return true;
