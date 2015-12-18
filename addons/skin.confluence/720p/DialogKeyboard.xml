@@ -155,37 +155,37 @@
 					</control>
 					<control type="button" id="106">
 						<description>(0,6) key button</description>
-						<onup>8</onup>
+						<onup>305</onup>
 						<ondown>126</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="107">
 						<description>(0,7) key button</description>
-						<onup>8</onup>
+						<onup>306</onup>
 						<ondown>127</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="108">
 						<description>(0,8) key button</description>
-						<onup>305</onup>
+						<onup>308</onup>
 						<ondown>128</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="109">
 						<description>(0,9) key button</description>
-						<onup>305</onup>
+						<onup>308</onup>
 						<ondown>129</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="110">
 						<description>(0,10) key button</description>
-						<onup>306</onup>
+						<onup>308</onup>
 						<ondown>130</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="111">
 						<description>(0,11) key button</description>
-						<onup>306</onup>
+						<onup>308</onup>
 						<ondown>131</ondown>
 						<texturenofocus flipx="true" border="5,25,25,5">KeyboardCornerTopNF.png</texturenofocus>
 						<texturefocus flipx="true" border="5,25,25,5">KeyboardCornerTop.png</texturefocus>
@@ -457,37 +457,37 @@
 					<control type="button" id="166">
 						<description>(3,6) key button</description>
 						<onup>146</onup>
-						<ondown>8</ondown>
+						<ondown>305</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="167">
 						<description>(3,7) key button</description>
 						<onup>147</onup>
-						<ondown>8</ondown>
+						<ondown>306</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="168">
 						<description>(3,8) key button</description>
 						<onup>148</onup>
-						<ondown>305</ondown>
+						<ondown>308</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="169">
 						<description>(3,9) key button</description>
 						<onup>149</onup>
-						<ondown>305</ondown>
+						<ondown>308</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="170">
 						<description>(3,10) key button</description>
 						<onup>150</onup>
-						<ondown>306</ondown>
+						<ondown>308</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="171">
 						<description>(3,11) key button</description>
 						<onup>151</onup>
-						<ondown>306</ondown>
+						<ondown>308</ondown>
 						<include>KeyboardButton</include>
 					</control>
 				</control>
@@ -526,21 +526,21 @@
 					</control>
 					<control type="button" id="8">
 						<description>BACKSPACE button</description>
-						<width>200</width>
+						<width>100</width>
 						<height>50</height>
 						<label>20181</label>
-						<onup>165</onup>
-						<ondown>105</ondown>
+						<onup>164</onup>
+						<ondown>104</ondown>
 						<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
 						<texturefocus border="5">KeyboardKey.png</texturefocus>
 						<align>center</align>
 						<aligny>center</aligny>
-						<font>font13</font>
+						<font>-</font>
 						<focusedcolor>black</focusedcolor>
 					</control>
 					<control type="button" id="305">
 						<description>previous button</description>
-						<width>100</width>
+						<width>50</width>
 						<height>50</height>
 						<label>&lt;</label>
 						<align>center</align>
@@ -549,23 +549,46 @@
 						<texturefocus border="5">KeyboardKey.png</texturefocus>
 						<font>font30</font>
 						<focusedcolor>black</focusedcolor>
-						<onup>168</onup>
-						<ondown>108</ondown>
+						<onup>166</onup>
+						<ondown>106</ondown>
 					</control>
 					<control type="button" id="306">
 						<description>next button</description>
-						<width>100</width>
+						<width>50</width>
 						<height>50</height>
 						<label>&gt;</label>
 						<align>center</align>
 						<aligny>center</aligny>
-						<texturenofocus flipx="true" border="5,5,25,25">KeyboardCornerBottomNF.png</texturenofocus>
-						<texturefocus flipx="true" border="5,5,25,25">KeyboardCornerBottom.png</texturefocus>
+						<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
+						<texturefocus border="5">KeyboardKey.png</texturefocus>
 						<font>font30</font>
 						<focusedcolor>black</focusedcolor>
-						<onup>170</onup>
-						<ondown>110</ondown>
+						<onup>167</onup>
+						<ondown>107</ondown>
 					</control>
+					<control type="button" id="308">
+						<description>cancel button</description>
+						<width>200</width>
+						<height>50</height>
+						<label>222</label>
+						<align>center</align>
+						<aligny>center</aligny>
+						<texturenofocus flipx="true" border="5,5,25,25">KeyboardCornerBottomNF.png</texturenofocus>
+						<texturefocus flipx="true" border="5,5,25,25">KeyboardCornerBottom.png</texturefocus>
+						<font>font13</font>
+						<focusedcolor>black</focusedcolor>
+						<onup>168</onup>
+						<ondown>108</ondown>
+						<onclick>Close</onclick>
+					</control>
+				</control>
+				<control type="image">
+					<description>Backspace icon</description>
+					<left>435</left>
+					<top>210</top>
+					<width>30</width>
+					<height>30</height>
+					<texture>KeyboardBackKey.png</texture>
 				</control>
 			</control>
 		</control>
