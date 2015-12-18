@@ -28,8 +28,7 @@
 #define CONTROL_BTNGROUPITEMS             5
 #define CONTROL_BTNSHOWHIDDEN             6
 #define CONTROL_BTNSHOWDELETED            7
-#define CONTROL_BTNTIMERTYPEFILTER        8
-#define CONTROL_BTNHIDEDISABLEDTIMERS     9
+#define CONTROL_BTNHIDEDISABLEDTIMERS     8
 #define CONTROL_BTNCHANNELGROUPS          28
 #define CONTROL_BTNFILTERCHANNELS         31
 
@@ -85,7 +84,7 @@ namespace PVR
   protected:
     CGUIWindowPVRBase(bool bRadio, int id, const std::string &xmlFile);
 
-    virtual std::string GetDirectoryPath(void) { return ""; };
+    virtual std::string GetDirectoryPath(void) = 0;
     virtual CPVRChannelGroupPtr GetGroup(void);
     virtual void SetGroup(CPVRChannelGroupPtr group);
 

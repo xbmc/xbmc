@@ -45,6 +45,7 @@ namespace PVR
 
   protected:
     void UpdateSelectedItemPath();
+    virtual std::string GetDirectoryPath(void) override { return ""; }
     virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
 
   private:

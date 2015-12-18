@@ -3600,11 +3600,7 @@ msgctxt "#841"
 msgid "Only this"
 msgstr ""
 
-#. Label of the option to switch between hierarchical and flat timer view (in confluence sideblade).
-#: skin.confluence
-msgctxt "#842"
-msgid "Group timers"
-msgstr ""
+#empty string with id 842
 
 #. Label for a context menu entry to activate a currently inactive timer
 #: xbmc/pvr/windows/GUIWindowPVRTimers.cpp
@@ -9046,7 +9042,11 @@ msgctxt "#19137"
 msgid "No groups defined. Please create a group first"
 msgstr ""
 
-#empty string with id 19138
+#. Label of timer rules tv/radio home submenu item
+#: skin.confluence
+msgctxt "#19138"
+msgid "Timer rules"
+msgstr ""
 
 msgctxt "#19139"
 msgid "Name of the new group"

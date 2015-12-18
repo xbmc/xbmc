@@ -680,7 +680,7 @@ namespace PVR
     ManagerState                    m_managerState;
     CStopWatch                     *m_parentalTimer;
     std::vector<std::string>        m_outdatedAddons;
-    static int                      m_pvrWindowIds[10];
+    static int                      m_pvrWindowIds[12];
   };
 
   class CPVREpgsCreateJob : public CJob

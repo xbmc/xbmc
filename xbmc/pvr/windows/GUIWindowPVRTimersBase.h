@@ -19,22 +19,21 @@
  *
  */
 
-#include "video/VideoThumbLoader.h"
-#include "video/VideoDatabase.h"
-
 #include "GUIWindowPVRBase.h"
+
+#include <memory>
+
+class CFileItem;
+typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
 namespace PVR
 {
-  class CGUIWindowPVRRecordings : public CGUIWindowPVRBase
+  class CGUIWindowPVRTimersBase : public CGUIWindowPVRBase
   {
   public:
-    CGUIWindowPVRRecordings(bool bRadio);
-    virtual ~CGUIWindowPVRRecordings(void) {};
+    CGUIWindowPVRTimersBase(bool bRadio, int id, const std::string &xmlFile);
+    virtual ~CGUIWindowPVRTimersBase(void) {};
 
-    static std::string GetResumeString(const CFileItem& item);
-
-    void OnWindowLoaded();
     bool OnMessage(CGUIMessage& message);
     bool OnAction(const CAction &action);
     void GetContextButtons(int itemNumber, CContextButtons &buttons);
@@ -44,22 +43,19 @@ namespace PVR
     void UnregisterObservers(void);
     void ResetObservers(void);
 
-  protected:
-    virtual std::string GetDirectoryPath(void) override;
-    void OnPrepareFileItems(CFileItemList &items);
-
   private:
-    bool ActionDeleteRecording(CFileItem *item);
-    bool OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonUndelete(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonDeleteAll(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonMarkWatched(const CFileItemPtr &item, CONTEXT_BUTTON button);
+    bool ActionDeleteTimer(CFileItem *item);
+    bool ActionShowTimer(CFileItem *item);
+    bool ShowNewTimerDialog(void);
 
-    CVideoThumbLoader m_thumbLoader;
-    CVideoDatabase m_database;
-    bool m_bShowDeletedRecordings;
+    bool OnContextButtonActivate(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonEdit(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
+
+    CFileItemPtr m_currentFileItem;
   };
 }

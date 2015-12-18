@@ -141,6 +141,10 @@
 		2A1A5A6C1BDEAA6D0084702D /* NOTE in Resources */ = {isa = PBXBuildFile; fileRef = 2A1A5A5D1BDEAA6D0084702D /* NOTE */; };
 		2A7B2BDC1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; };
 		2A7B2BDD1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; };
+		2AC7EB5A1C21F6BA00BDAA95 /* GUIWindowPVRTimerRules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7EB561C21F6BA00BDAA95 /* GUIWindowPVRTimerRules.cpp */; };
+		2AC7EB5B1C21F6BA00BDAA95 /* GUIWindowPVRTimersBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7EB581C21F6BA00BDAA95 /* GUIWindowPVRTimersBase.cpp */; };
+		2AC7EB5C1C2330B300BDAA95 /* GUIWindowPVRTimerRules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7EB561C21F6BA00BDAA95 /* GUIWindowPVRTimerRules.cpp */; };
+		2AC7EB5D1C2330BC00BDAA95 /* GUIWindowPVRTimersBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7EB581C21F6BA00BDAA95 /* GUIWindowPVRTimersBase.cpp */; };
 		2F4564D51970129A00396109 /* GUIFontCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F4564D31970129A00396109 /* GUIFontCache.cpp */; };
 		2F4564D61970129A00396109 /* GUIFontCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F4564D31970129A00396109 /* GUIFontCache.cpp */; };
 		32C631281423A90F00F18420 /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32C631261423A90F00F18420 /* JpegIO.cpp */; };
@@ -223,8 +227,8 @@
 		39BD2AD91B845D40004A5A15 /* DialogHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39BD2AD71B845D40004A5A15 /* DialogHelper.cpp */; };
 		39C38CCA1BBFF1EE000F59F5 /* InputCodingTableKorean.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39C38CC81BBFF1EE000F59F5 /* InputCodingTableKorean.cpp */; };
 		39C38CCB1BBFF1EE000F59F5 /* InputCodingTableKorean.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39C38CC81BBFF1EE000F59F5 /* InputCodingTableKorean.cpp */; };
-		39C38CE11BCD600E000F59F5 /* FFmpegImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39C38CDF1BCD600E000F59F5 /* FFmpegImage.cpp */; settings = {ASSET_TAGS = (); }; };
-		39C38CE21BCD600E000F59F5 /* FFmpegImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39C38CDF1BCD600E000F59F5 /* FFmpegImage.cpp */; settings = {ASSET_TAGS = (); }; };
+		39C38CE11BCD600E000F59F5 /* FFmpegImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39C38CDF1BCD600E000F59F5 /* FFmpegImage.cpp */; };
+		39C38CE21BCD600E000F59F5 /* FFmpegImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39C38CDF1BCD600E000F59F5 /* FFmpegImage.cpp */; };
 		4260D5C71B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */; };
 		4260D5C81B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */; };
 		42DAC16E1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
@@ -2521,6 +2525,10 @@
 		2A1A5A6B1BDEAA6D0084702D /* xbmc_vis_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_vis_types.h; sourceTree = "<group>"; };
 		2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRSettings.cpp; sourceTree = "<group>"; };
 		2A7B2BDE1BD6F18B00044BCD /* PVRSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRSettings.h; sourceTree = "<group>"; };
+		2AC7EB561C21F6BA00BDAA95 /* GUIWindowPVRTimerRules.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowPVRTimerRules.cpp; sourceTree = "<group>"; };
+		2AC7EB571C21F6BA00BDAA95 /* GUIWindowPVRTimerRules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowPVRTimerRules.h; sourceTree = "<group>"; };
+		2AC7EB581C21F6BA00BDAA95 /* GUIWindowPVRTimersBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowPVRTimersBase.cpp; sourceTree = "<group>"; };
+		2AC7EB591C21F6BA00BDAA95 /* GUIWindowPVRTimersBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowPVRTimersBase.h; sourceTree = "<group>"; };
 		2F4564D31970129A00396109 /* GUIFontCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIFontCache.cpp; sourceTree = "<group>"; };
 		2F4564D41970129A00396109 /* GUIFontCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIFontCache.h; sourceTree = "<group>"; };
 		32C631261423A90F00F18420 /* JpegIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JpegIO.cpp; sourceTree = "<group>"; };
@@ -6728,8 +6736,12 @@
 				C84828B9156CFCD8005A996F /* GUIWindowPVRRecordings.h */,
 				C84828BA156CFCD8005A996F /* GUIWindowPVRSearch.cpp */,
 				C84828BB156CFCD8005A996F /* GUIWindowPVRSearch.h */,
+				2AC7EB561C21F6BA00BDAA95 /* GUIWindowPVRTimerRules.cpp */,
+				2AC7EB571C21F6BA00BDAA95 /* GUIWindowPVRTimerRules.h */,
 				C84828BC156CFCD8005A996F /* GUIWindowPVRTimers.cpp */,
 				C84828BD156CFCD8005A996F /* GUIWindowPVRTimers.h */,
+				2AC7EB581C21F6BA00BDAA95 /* GUIWindowPVRTimersBase.cpp */,
+				2AC7EB591C21F6BA00BDAA95 /* GUIWindowPVRTimersBase.h */,
 			);
 			path = windows;
 			sourceTree = "<group>";
@@ -9573,6 +9585,7 @@
 				F5E56BA61082A675006E788A /* PosixMountProvider.cpp in Sources */,
 				7CAA25351085963B0096DE39 /* PasswordManager.cpp in Sources */,
 				F599CD2B108E65370010EC2A /* IoSupport.cpp in Sources */,
+				2AC7EB5A1C21F6BA00BDAA95 /* GUIWindowPVRTimerRules.cpp in Sources */,
 				F599CD74108E6A7A0010EC2A /* DarwinStorageProvider.cpp in Sources */,
 				E4A249F71095C880003D74C6 /* AutorunMediaJob.cpp in Sources */,
 				F5A9D3091097C9370050490F /* AliasShortcutUtils.cpp in Sources */,
@@ -10061,6 +10074,7 @@
 				7C140992183224B8009F9411 /* SettingCategoryAccess.cpp in Sources */,
 				7C140995183224B8009F9411 /* SettingConditions.cpp in Sources */,
 				7C140998183224B8009F9411 /* SettingDependency.cpp in Sources */,
+				2AC7EB5B1C21F6BA00BDAA95 /* GUIWindowPVRTimersBase.cpp in Sources */,
 				7C14099B183224B8009F9411 /* SettingRequirement.cpp in Sources */,
 				7C14099E183224B8009F9411 /* SettingSection.cpp in Sources */,
 				39C38CE11BCD600E000F59F5 /* FFmpegImage.cpp in Sources */,
@@ -10670,6 +10684,7 @@
 				E4991323174E5DAD00741B6D /* JpegIO.cpp in Sources */,
 				E4991325174E5DAD00741B6D /* LocalizeStrings.cpp in Sources */,
 				7C8E024A1BA35D0B0072E8B2 /* WeatherBuiltins.cpp in Sources */,
+				2AC7EB5D1C2330BC00BDAA95 /* GUIWindowPVRTimersBase.cpp in Sources */,
 				E4991326174E5DAD00741B6D /* MatrixGLES.cpp in Sources */,
 				E4991327174E5DAD00741B6D /* Shader.cpp in Sources */,
 				E4991328174E5DAD00741B6D /* Texture.cpp in Sources */,
@@ -10771,6 +10786,7 @@
 				3994425C1A8DD8D0006C39E9 /* ProgressJob.cpp in Sources */,
 				E49913A9174E5F2100741B6D /* NetworkLinux.cpp in Sources */,
 				E49913AA174E5F2100741B6D /* ZeroconfBrowserOSX.cpp in Sources */,
+				2AC7EB5C1C2330B300BDAA95 /* GUIWindowPVRTimerRules.cpp in Sources */,
 				E49913AB174E5F2100741B6D /* ZeroconfOSX.cpp in Sources */,
 				E49913AC174E5F3300741B6D /* UPnP.cpp in Sources */,
 				E49913AD174E5F3300741B6D /* UPnPInternal.cpp in Sources */,
