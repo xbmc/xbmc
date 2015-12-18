@@ -58,6 +58,7 @@ using namespace PVR;
 using namespace EPG;
 using namespace KODI::MESSAGING;
 
+CCriticalSection CGUIWindowPVRBase::m_selectedItemPathsLock;
 std::string CGUIWindowPVRBase::m_selectedItemPaths[2];
 
 CGUIWindowPVRBase::CGUIWindowPVRBase(bool bRadio, int id, const std::string &xmlFile) :
@@ -74,11 +75,13 @@ CGUIWindowPVRBase::~CGUIWindowPVRBase(void)
 
 void CGUIWindowPVRBase::SetSelectedItemPath(bool bRadio, const std::string &path)
 {
+  CSingleLock lock(m_selectedItemPathsLock);
   m_selectedItemPaths[bRadio] = path;
 }
 
 std::string CGUIWindowPVRBase::GetSelectedItemPath(bool bRadio)
 {
+  CSingleLock lock(m_selectedItemPathsLock);
   return m_selectedItemPaths[bRadio];
 }
 
@@ -833,8 +836,10 @@ void CGUIWindowPVRBase::UpdateButtons(void)
 
 void CGUIWindowPVRBase::UpdateSelectedItemPath()
 {
-  if (!m_viewControl.GetSelectedItemPath().empty())
+  if (!m_viewControl.GetSelectedItemPath().empty()) {
+    CSingleLock lock(m_selectedItemPathsLock);
     m_selectedItemPaths[m_bRadio] = m_viewControl.GetSelectedItemPath();
+  }
 }
 
 bool CGUIWindowPVRBase::ConfirmDeleteTimer(CFileItem *item, bool &bDeleteSchedule)
