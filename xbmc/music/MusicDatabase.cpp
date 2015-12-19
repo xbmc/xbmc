@@ -4407,11 +4407,15 @@ void CMusicDatabase::UpdateTables(int version)
      m_pDS->exec("ALTER TABLE album ADD iVotes INTEGER NOT NULL DEFAULT 0");
      m_pDS->exec("ALTER TABLE song ADD votes INTEGER NOT NULL DEFAULT 0");
    }
+   if (version < 58)
+   {
+     m_pDS->exec("UPDATE album SET fRating = fRating * 2");
+   }
 }
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 57;
+  return 58;
 }
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, std::vector<std::pair<int,int> > &songIDs)
