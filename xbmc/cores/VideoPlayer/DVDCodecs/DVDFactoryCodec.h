@@ -33,10 +33,12 @@ class CDVDStreamInfo;
 class CDVDCodecOption;
 class CDVDCodecOptions;
 
+class IVPClockCallback;
+
 class CDVDFactoryCodec
 {
 public:
-  static CDVDVideoCodec* CreateVideoCodec(CDVDStreamInfo &hint, const CRenderInfo &info = CRenderInfo());
+  static CDVDVideoCodec* CreateVideoCodec(CDVDStreamInfo &hint, const CRenderInfo &info = CRenderInfo(), IVPClockCallback* clock = NULL);
   static CDVDAudioCodec* CreateAudioCodec(CDVDStreamInfo &hint, bool allowpassthrough = true, bool allowdtshddecode = true);
   static CDVDOverlayCodec* CreateOverlayCodec(CDVDStreamInfo &hint );
 

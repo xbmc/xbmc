@@ -22,6 +22,7 @@
 
 #include "threads/Thread.h"
 #include "IVideoPlayer.h"
+#include "Interfaces/IVPClockCallback.h"
 #include "DVDMessageQueue.h"
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDClock.h"
@@ -54,7 +55,7 @@ public:
   unsigned int m_dropRequests;
 };
 
-class CVideoPlayerVideo : public CThread, public IDVDStreamPlayerVideo
+class CVideoPlayerVideo : public CThread, public IDVDStreamPlayerVideo, public IVPClockCallback
 {
 public:
   CVideoPlayerVideo(CDVDClock* pClock
@@ -103,6 +104,9 @@ public:
   std::string GetStereoMode();
 
   void SetSpeed(int iSpeed);
+
+  // IVPClockCallback interface
+  virtual double GetInterpolatedClock();
 
   // classes
   CDVDOverlayContainer* m_pOverlayContainer;

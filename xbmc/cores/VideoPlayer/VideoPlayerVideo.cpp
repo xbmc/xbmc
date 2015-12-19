@@ -184,7 +184,7 @@ bool CVideoPlayerVideo::OpenStream( CDVDStreamInfo &hint )
     return false;
 
   CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
-  CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, info);
+  CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, info, this);
   if(!codec)
   {
     CLog::Log(LOGERROR, "Unsupported video codec");
@@ -1294,6 +1294,14 @@ int CVideoPlayerVideo::CalcDropRequirement(double pts, bool updateOnly)
     m_droppingStats.m_lateFrames = 0;
   }
   return result;
+}
+
+double CVideoPlayerVideo::GetInterpolatedClock()
+{
+  if(m_pClock)
+    return m_pClock->GetClock(true);
+  else
+    return 0.0;
 }
 
 void CDroppingStats::Reset()
