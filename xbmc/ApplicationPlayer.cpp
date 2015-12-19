@@ -883,7 +883,7 @@ unsigned int CApplicationPlayer::RenderCaptureAlloc()
   if (player)
     return player->RenderCaptureAlloc();
   else
-    return NULL;
+    return 0;
 }
 
 void CApplicationPlayer::RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags)
