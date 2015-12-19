@@ -188,6 +188,7 @@ std::map<std::string, std::string> fillMimeTypes()
   mimeTypes.insert(std::pair<std::string, std::string>("java",      "text/x-java-source"));
   mimeTypes.insert(std::pair<std::string, std::string>("jcm",       "application/x-java-commerce"));
   mimeTypes.insert(std::pair<std::string, std::string>("jfif",      "image/jpeg"));
+  mimeTypes.insert(std::pair<std::string, std::string>("jp2",       "image/jp2"));
   mimeTypes.insert(std::pair<std::string, std::string>("jfif-tbnl", "image/jpeg"));
   mimeTypes.insert(std::pair<std::string, std::string>("jpe",       "image/jpeg"));
   mimeTypes.insert(std::pair<std::string, std::string>("jpeg",      "image/jpeg"));
