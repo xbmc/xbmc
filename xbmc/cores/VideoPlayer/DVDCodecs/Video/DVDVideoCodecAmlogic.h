@@ -100,4 +100,6 @@ protected:
 
   CBitstreamParser *m_bitparser;
   CBitstreamConverter *m_bitstream;
+private:
+  CCriticalSection    m_secure;
 };
