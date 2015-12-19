@@ -186,7 +186,7 @@ namespace XBMCAddon
        * \n
        * - General Values that apply to all types:
        *     - count         : integer (12) - can be used to store an id for later, or for sorting purposes
-       *     - size          : long (1024) - size in bytes
+       *     - size          : long (1024) - size in bytes. Use -1 for setting no size.
        *     - date          : string (%d.%m.%Y / 01.01.2009) - file date
        * - Video Values:
        *     - genre         : string (Comedy)
@@ -209,7 +209,7 @@ namespace XBMCAddon
        *     - title         : string (Big Fan)
        *     - originaltitle : string (Big Fan)
        *     - sorttitle     : string (Big Fan)
-       *     - duration      : integer (245) - duration in seconds
+       *     - duration      : integer (245) - duration in seconds (use streaminfo???)
        *     - studio        : string (Warner Bros.)
        *     - tagline       : string (An awesome movie) - short description of movie
        *     - writer        : string (Robert D. Siegel)
@@ -222,8 +222,9 @@ namespace XBMCAddon
        *     - lastplayed    : string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
        *     - album         : string (The Joshua Tree)
        *     - artist        : list (['U2'])
-       *     - votes         : string (12345 votes)
+       *     - votes         : integer (12345)
        *     - trailer       : string (/home/user/trailer.avi)
+       *     - date          : string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
        *     - dateadded     : string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
        *     - mediatype     : string - "video", "movie", "tvshow", "season", "episode" or "musicvideo"
        * - Music Values:
@@ -231,6 +232,7 @@ namespace XBMCAddon
        *     - discnumber    : integer (2)
        *     - duration      : integer (245) - duration in seconds
        *     - year          : integer (1998)
+       *     - listeners     : integer (2)
        *     - genre         : string (Rock)
        *     - album         : string (Pulse)
        *     - artist        : string (Muse)
@@ -240,6 +242,12 @@ namespace XBMCAddon
        *     - lyrics        : string (On a dark desert highway...)
        *     - playcount     : integer (2) - number of times this item has been played
        *     - lastplayed    : string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
+       *     - comment       : string
+       *     - musicbrainztrackid        : string
+       *     - musicbrainzartistid       : string
+       *     - musicbrainzalbumid        : string
+       *     - musicbrainzalbumartistid  : string
+       *     - musicbrainztrmid          : string
        * - Picture Values:
        *     - title         : string (In the last summer-1)
        *     - picturepath   : string (/home/username/pictures/img001.jpg)
@@ -302,7 +310,7 @@ namespace XBMCAddon
        *        You can use the above as keywords for arguments and skip certain optional arguments.\n
        *        Once you use a keyword, all following arguments require the keyword.\n
        * \n
-       *  Some of these are treated internally by XBMC, such as the 'StartOffset' property, which is\n
+       *  Some of these are treated internally by Kodi, such as the 'StartOffset' property, which is\n
        *  the offset in seconds at which to start playback of an item.  Others may be used in the skin\n
        *  to add extra information, such as 'WatchedCount' for tvshow items\n
        * 
