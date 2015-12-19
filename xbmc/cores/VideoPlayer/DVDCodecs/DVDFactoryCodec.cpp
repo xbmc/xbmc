@@ -130,7 +130,7 @@ CDVDOverlayCodec* CDVDFactoryCodec::OpenCodec(CDVDOverlayCodec* pCodec, CDVDStre
 }
 
 
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const CRenderInfo &info)
+CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const CRenderInfo &info, IVPClockCallback* clock)
 {
   CDVDVideoCodec* pCodec = NULL;
   CDVDCodecOptions options;
@@ -215,7 +215,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
         if (hint.width <= 800)
           break;
       default:
-        if ( (pCodec = OpenCodec(new CDVDVideoCodecAmlogic(), hint, options)) ) return pCodec;
+        if ( (pCodec = OpenCodec(new CDVDVideoCodecAmlogic(clock), hint, options)) ) return pCodec;
     }
   }
 #endif

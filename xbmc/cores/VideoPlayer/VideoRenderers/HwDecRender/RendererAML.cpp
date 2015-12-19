@@ -23,6 +23,7 @@
 #if defined(HAS_LIBAMCODEC)
 #include "cores/IPlayer.h"
 #include "windowing/egl/EGLWrapper.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecAmlogic.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/AMLCodec.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
@@ -50,7 +51,19 @@ bool CRendererAML::RenderCapture(CRenderCapture* capture)
 void CRendererAML::AddVideoPictureHW(DVDVideoPicture &picture, int index)
 {
   YUVBUFFER &buf = m_buffers[index];
-  buf.hwDec = picture.amlcodec;
+  if (picture.amlcodec)
+    buf.hwDec = picture.amlcodec->Retain();
+}
+
+void CRendererAML::ReleaseBuffer(int idx)
+{
+  YUVBUFFER &buf = m_buffers[idx];
+  if (buf.hwDec)
+  {
+    CDVDAmlogicInfo *amli = static_cast<CDVDAmlogicInfo *>(buf.hwDec);
+    SAFE_RELEASE(amli);
+    buf.hwDec = NULL;
+  }
 }
 
 int CRendererAML::GetImageHook(YV12Image *image, int source, bool readonly)
@@ -118,8 +131,13 @@ bool CRendererAML::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
 {
   ManageDisplay();
 
-  CAMLCodec *codec = static_cast<CAMLCodec*>(m_buffers[m_iYV12RenderBuffer].hwDec);
-  codec->SetVideoRect(m_sourceRect, m_destRect);
+  CDVDAmlogicInfo *amli = static_cast<CDVDAmlogicInfo *>(m_buffers[m_iYV12RenderBuffer].hwDec);
+  if (amli)
+  {
+    CAMLCodec *amlcodec = amli->getAmlCodec();
+    if (amlcodec)
+      amlcodec->SetVideoRect(m_sourceRect, m_destRect);
+  }
 
   return true;
 }

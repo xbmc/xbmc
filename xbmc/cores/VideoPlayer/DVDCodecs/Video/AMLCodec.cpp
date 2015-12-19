@@ -26,6 +26,7 @@
 #include "cores/VideoPlayer/DVDClock.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
+#include "cores/VideoPlayer/Interfaces/IVPClockCallback.h"
 #include "guilib/GraphicContext.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
@@ -1376,7 +1377,9 @@ int set_header_info(am_private_t *para)
 }
 
 /*************************************************************************/
-CAMLCodec::CAMLCodec() : CThread("CAMLCodec")
+CAMLCodec::CAMLCodec(IVPClockCallback* clock)
+  : CThread("CAMLCodec")
+  , m_clock(clock)
 {
   m_opened = false;
   am_private = new am_private_t;
@@ -1832,7 +1835,7 @@ bool CAMLCodec::GetPicture(DVDVideoPicture *pDvdVideoPicture)
     return false;
 
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
-  pDvdVideoPicture->format = RENDER_FMT_BYPASS;
+  pDvdVideoPicture->format = RENDER_FMT_AML;
   pDvdVideoPicture->iDuration = (double)(am_private->video_rate * DVD_TIME_BASE) / UNIT_FREQ;
 
   pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
@@ -1998,7 +2001,16 @@ void CAMLCodec::Process()
 
 double CAMLCodec::GetPlayerPtsSeconds()
 {
-  return CDVDClock::GetAbsoluteClock() / DVD_TIME_BASE;
+  double clock_pts = 0.0;
+  if (m_clock)
+    clock_pts = m_clock->GetInterpolatedClock() / DVD_TIME_BASE;
+  else
+  {
+    CLog::Log(LOGWARNING, "CAMLCodec::GetPlayerPtsSeconds: cannot get player clock");
+    clock_pts = CDVDClock::GetAbsoluteClock() / DVD_TIME_BASE;
+  }
+
+  return clock_pts;
 }
 
 void CAMLCodec::SetVideoPtsSeconds(const double pts)
