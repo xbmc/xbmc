@@ -426,7 +426,7 @@ public:
   virtual bool Supports(ESCALINGMETHOD method) { return false; };
   virtual bool Supports(ERENDERFEATURE feature) { return false; };
 
-  virtual unsigned int RenderCaptureAlloc() { return NULL; };
+  virtual unsigned int RenderCaptureAlloc() { return 0; };
   virtual void RenderCaptureRelease(unsigned int captureId) {};
   virtual void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) {};
   virtual bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) { return false; };
