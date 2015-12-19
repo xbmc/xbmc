@@ -212,8 +212,11 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
 
 void CDVDVideoCodecAmlogic::Dispose(void)
 {
-  for (std::set<CDVDAmlogicInfo*>::iterator it = m_inflight.begin(); it != m_inflight.end(); ++it)
-    (*it)->invalidate();
+  {
+    CSingleLock lock(m_secure);
+    for (std::set<CDVDAmlogicInfo*>::iterator it = m_inflight.begin(); it != m_inflight.end(); ++it)
+      (*it)->invalidate();
+  }
 
   if (m_Codec)
     m_Codec->CloseDecoder(), delete m_Codec, m_Codec = NULL;
@@ -282,7 +285,12 @@ bool CDVDVideoCodecAmlogic::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   *pDvdVideoPicture = m_videobuffer;
 
   CDVDAmlogicInfo* info = new CDVDAmlogicInfo(this, m_Codec);
-  m_inflight.insert(info);
+
+  {
+    CSingleLock lock(m_secure);
+    m_inflight.insert(info);
+  }
+
   pDvdVideoPicture->amlcodec = info->Retain();
 
   // check for mpeg2 aspect ratio changes
@@ -553,6 +561,7 @@ void CDVDVideoCodecAmlogic::FrameRateTracking(uint8_t *pData, int iSize, double 
 
 void CDVDVideoCodecAmlogic::RemoveInfo(CDVDAmlogicInfo *info)
 {
+  CSingleLock lock(m_secure);
   m_inflight.erase(m_inflight.find(info));
 }
 
