@@ -121,6 +121,7 @@ private:
   struct MHD_Daemon *m_daemon_ip4;
   bool m_running;
   bool m_needcredentials;
+  size_t m_thread_stacksize;
   std::string m_Credentials64Encoded;
   CCriticalSection m_critSection;
   static std::vector<IHTTPRequestHandler *> m_requestHandlers;
