@@ -592,8 +592,8 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
       m_CurrentTeletext(STREAM_TELETEXT, VideoPlayer_TELETEXT),
       m_CurrentRadioRDS(STREAM_RADIO_RDS, VideoPlayer_RDS),
       m_messenger("player"),
-      m_ready(true),
-      m_renderManager(m_clock)
+      m_renderManager(m_clock),
+      m_ready(true)
 {
   m_players_created = false;
   m_pDemuxer = NULL;
