@@ -21,6 +21,9 @@
 
 #include "DVDVideoCodec.h"
 #include "DVDStreamInfo.h"
+#include "threads/CriticalSection.h"
+
+#include <set>
 
 class CAMLCodec;
 struct frame_queue;
@@ -28,10 +31,33 @@ struct mpeg2_sequence;
 class CBitstreamParser;
 class CBitstreamConverter;
 
+class CDVDVideoCodecAmlogic;
 class IVPClockCallback;
+
+class CDVDAmlogicInfo
+{
+public:
+  CDVDAmlogicInfo(CDVDVideoCodecAmlogic *codec, CAMLCodec *amlcodec);
+
+  // reference counting
+  CDVDAmlogicInfo* Retain();
+  long             Release();
+
+  CAMLCodec *getAmlCodec() const;
+  void invalidate();
+
+protected:
+  long m_refs;
+  CCriticalSection    m_section;
+
+  CDVDVideoCodecAmlogic* m_codec;
+  CAMLCodec* m_amlCodec;
+};
 
 class CDVDVideoCodecAmlogic : public CDVDVideoCodec
 {
+  friend class CDVDAmlogicInfo;
+
 public:
   CDVDVideoCodecAmlogic(IVPClockCallback* clock);
   virtual ~CDVDVideoCodecAmlogic();
@@ -42,6 +68,7 @@ public:
   virtual int  Decode(uint8_t *pData, int iSize, double dts, double pts);
   virtual void Reset(void);
   virtual bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
+  virtual bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetSpeed(int iSpeed);
   virtual void SetDropState(bool bDrop);
   virtual int  GetDataSize(void);
@@ -52,9 +79,11 @@ protected:
   void            FrameQueuePop(void);
   void            FrameQueuePush(double dts, double pts);
   void            FrameRateTracking(uint8_t *pData, int iSize, double dts, double pts);
+  void            RemoveInfo(CDVDAmlogicInfo* info);
 
   IVPClockCallback* m_clock;
   CAMLCodec      *m_Codec;
+  std::set<CDVDAmlogicInfo*> m_inflight;
   const char     *m_pFormatName;
   DVDVideoPicture m_videobuffer;
   bool            m_opened;
