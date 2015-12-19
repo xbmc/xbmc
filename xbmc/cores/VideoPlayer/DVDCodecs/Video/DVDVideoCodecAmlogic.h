@@ -28,10 +28,12 @@ struct mpeg2_sequence;
 class CBitstreamParser;
 class CBitstreamConverter;
 
+class IVPClockCallback;
+
 class CDVDVideoCodecAmlogic : public CDVDVideoCodec
 {
 public:
-  CDVDVideoCodecAmlogic();
+  CDVDVideoCodecAmlogic(IVPClockCallback* clock);
   virtual ~CDVDVideoCodecAmlogic();
 
   // Required overrides
@@ -51,6 +53,7 @@ protected:
   void            FrameQueuePush(double dts, double pts);
   void            FrameRateTracking(uint8_t *pData, int iSize, double dts, double pts);
 
+  IVPClockCallback* m_clock;
   CAMLCodec      *m_Codec;
   const char     *m_pFormatName;
   DVDVideoPicture m_videobuffer;
