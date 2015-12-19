@@ -27,6 +27,7 @@
 #include "utils/AMLUtils.h"
 #include "utils/BitstreamConverter.h"
 #include "utils/log.h"
+#include "threads/Atomics.h"
 
 #define __MODULE_NAME__ "DVDVideoCodecAmlogic"
 
@@ -191,7 +192,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
   m_videobuffer.iFlags  = DVP_FLAG_ALLOCATED;
   m_videobuffer.iWidth  = m_hints.width;
   m_videobuffer.iHeight = m_hints.height;
-  m_videobuffer.amlcodec = m_Codec;
+  m_videobuffer.amlcodec = NULL;
 
   m_videobuffer.iDisplayWidth  = m_videobuffer.iWidth;
   m_videobuffer.iDisplayHeight = m_videobuffer.iHeight;
@@ -211,6 +212,9 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
 
 void CDVDVideoCodecAmlogic::Dispose(void)
 {
+  for (std::set<CDVDAmlogicInfo*>::iterator it = m_inflight.begin(); it != m_inflight.end(); ++it)
+    (*it)->invalidate();
+
   if (m_Codec)
     m_Codec->CloseDecoder(), delete m_Codec, m_Codec = NULL;
   if (m_videobuffer.iFlags)
@@ -277,6 +281,10 @@ bool CDVDVideoCodecAmlogic::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     m_Codec->GetPicture(&m_videobuffer);
   *pDvdVideoPicture = m_videobuffer;
 
+  CDVDAmlogicInfo* info = new CDVDAmlogicInfo(this, m_Codec);
+  m_inflight.insert(info);
+  pDvdVideoPicture->amlcodec = info->Retain();
+
   // check for mpeg2 aspect ratio changes
   if (m_mpeg2_sequence && pDvdVideoPicture->pts >= m_mpeg2_sequence_pts)
     m_aspect_ratio = m_mpeg2_sequence->ratio;
@@ -293,6 +301,12 @@ bool CDVDVideoCodecAmlogic::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     }
   }
 
+  return true;
+}
+
+bool CDVDVideoCodecAmlogic::ClearPicture(DVDVideoPicture *pDvdVideoPicture)
+{
+  SAFE_RELEASE(pDvdVideoPicture->amlcodec);
   return true;
 }
 
@@ -536,3 +550,50 @@ void CDVDVideoCodecAmlogic::FrameRateTracking(uint8_t *pData, int iSize, double 
     FrameQueuePop();
   }
 }
+
+void CDVDVideoCodecAmlogic::RemoveInfo(CDVDAmlogicInfo *info)
+{
+  m_inflight.erase(m_inflight.find(info));
+}
+
+CDVDAmlogicInfo::CDVDAmlogicInfo(CDVDVideoCodecAmlogic *codec, CAMLCodec *amlcodec)
+  : m_refs(0)
+  , m_codec(codec)
+  , m_amlCodec(amlcodec)
+{
+}
+
+CDVDAmlogicInfo *CDVDAmlogicInfo::Retain()
+{
+  AtomicIncrement(&m_refs);
+  return this;
+}
+
+long CDVDAmlogicInfo::Release()
+{
+  long count = AtomicDecrement(&m_refs);
+  if (count == 0)
+  {
+    if (m_codec)
+      m_codec->RemoveInfo(this);
+    delete this;
+  }
+
+  return count;
+}
+
+CAMLCodec *CDVDAmlogicInfo::getAmlCodec() const
+{
+  CSingleLock lock(m_section);
+
+  return m_amlCodec;
+}
+
+void CDVDAmlogicInfo::invalidate()
+{
+  CSingleLock lock(m_section);
+
+  m_codec = NULL;
+  m_amlCodec = NULL;
+}
+
