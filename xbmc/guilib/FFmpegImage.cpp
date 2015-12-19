@@ -161,6 +161,8 @@ bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSi
   AVInputFormat* inp = nullptr;
   if (m_strMimeType == "image/jpeg" || m_strMimeType == "image/jpg")
     inp = av_find_input_format("jpeg_pipe");
+  else if (m_strMimeType == "image/jp2")
+    inp = av_find_input_format("j2k_pipe");
   else if (m_strMimeType == "image/png")
     inp = av_find_input_format("png_pipe");
   else if (m_strMimeType == "image/tiff")
