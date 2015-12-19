@@ -897,7 +897,7 @@ void CLinuxRendererGL::LoadShaders(int field)
       
       case RENDER_METHOD_GLSL:
       // Try GLSL shaders if supported and user requested auto or GLSL.
-      if (glCreateProgram && tryGlsl)
+      if (tryGlsl)
       {
         // create regular progressive scan shader
         // if single pass, create GLSLOutput helper and pass it to YUV2RGB shader
@@ -2801,7 +2801,7 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
 
 bool CLinuxRendererGL::SupportsMultiPassRendering()
 {
-  return g_Windowing.IsExtSupported("GL_EXT_framebuffer_object") && glCreateProgram;
+  return g_Windowing.IsExtSupported("GL_EXT_framebuffer_object");
 }
 
 bool CLinuxRendererGL::Supports(EDEINTERLACEMODE mode)
