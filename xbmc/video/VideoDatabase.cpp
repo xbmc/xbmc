@@ -401,23 +401,28 @@ void CVideoDatabase::CreateViews()
   CLog::Log(LOGINFO, "create season_view");
   std::string seasonview = PrepareSQL("CREATE VIEW season_view AS SELECT "
                                      "  seasons.*, "
-                                     "  tvshow_view.strPath AS strPath,"
-                                     "  tvshow_view.c%02d AS showTitle,"
-                                     "  tvshow_view.c%02d AS plot,"
-                                     "  tvshow_view.c%02d AS premiered,"
-                                     "  tvshow_view.c%02d AS genre,"
-                                     "  tvshow_view.c%02d AS studio,"
-                                     "  tvshow_view.c%02d AS mpaa,"
+                                     "  path.strPath AS strPath,"
+                                     "  tvshow.c%02d AS showTitle,"
+                                     "  tvshow.c%02d AS plot,"
+                                     "  tvshow.c%02d AS premiered,"
+                                     "  tvshow.c%02d AS genre,"
+                                     "  tvshow.c%02d AS studio,"
+                                     "  tvshow.c%02d AS mpaa,"
                                      "  count(DISTINCT episode.idEpisode) AS episodes,"
                                      "  count(files.playCount) AS playCount,"
                                      "  min(episode.c%02d) AS aired "
                                      "FROM seasons"
-                                     "  JOIN tvshow_view ON"
-                                     "    tvshow_view.idShow = seasons.idShow"
+                                     "  JOIN tvshow ON"
+                                     "    tvshow.idShow = seasons.idShow"
                                      "  JOIN episode ON"
-                                     "    episode.idShow = seasons.idShow AND episode.c%02d = seasons.season"
+                                     "    episode.idShow = seasons.idShow AND"
+                                     "    episode.c%02d = seasons.season"
                                      "  JOIN files ON"
                                      "    files.idFile = episode.idFile "
+                                     "  LEFT JOIN tvshowlinkpath ON"
+                                     "    tvshowlinkpath.idShow=tvshow.idShow"
+                                     "  LEFT JOIN path ON"
+                                     "    path.idPath=tvshowlinkpath.idPath "
                                      "GROUP BY seasons.idSeason",
                                      VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PLOT, VIDEODB_ID_TV_PREMIERED,
                                      VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA,
@@ -4684,7 +4689,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 100;
+  return 101;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
