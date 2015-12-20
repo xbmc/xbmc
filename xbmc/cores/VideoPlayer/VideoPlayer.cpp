@@ -155,7 +155,7 @@ public:
     : audiolang(lang),
       original(StringUtils::EqualsNoCase(CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE), "original")),
       nosub(StringUtils::EqualsNoCase(CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE), "none")),
-      onlyforced(StringUtils::EqualsNoCase(CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE), "foced_only"))
+      onlyforced(StringUtils::EqualsNoCase(CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE), "forced_only"))
   {
   };
 
