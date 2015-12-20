@@ -1027,10 +1027,8 @@ else
       AC_MSG_RESULT(== WARNING: OpenGL support is assumed.)
       AC_DEFINE([HAVE_LIBGLU],[1],["Define to 1 if you have the `GLU' library (-lGLU)."])
       AC_MSG_RESULT(== WARNING: OpenGLU support is assumed.)
-      AC_CHECK_LIB([GLEW],[main],, AC_MSG_ERROR($missing_library))
     else
       AC_CHECK_LIB([GL],  [main],, AC_MSG_ERROR($missing_library))
-      AC_CHECK_LIB([GLEW],[main],, AC_MSG_ERROR($missing_library))
       AC_CHECK_LIB([GLU], [main],, AC_MSG_ERROR($missing_library))
     fi
   else
