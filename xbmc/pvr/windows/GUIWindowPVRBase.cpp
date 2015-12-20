@@ -58,7 +58,8 @@ using namespace PVR;
 using namespace EPG;
 using namespace KODI::MESSAGING;
 
-std::map<bool, std::string> CGUIWindowPVRBase::m_selectedItemPaths;
+CCriticalSection CGUIWindowPVRBase::m_selectedItemPathsLock;
+std::string CGUIWindowPVRBase::m_selectedItemPaths[2];
 
 CGUIWindowPVRBase::CGUIWindowPVRBase(bool bRadio, int id, const std::string &xmlFile) :
   CGUIMediaWindow(id, xmlFile.c_str()),
@@ -74,12 +75,14 @@ CGUIWindowPVRBase::~CGUIWindowPVRBase(void)
 
 void CGUIWindowPVRBase::SetSelectedItemPath(bool bRadio, const std::string &path)
 {
-  m_selectedItemPaths.at(bRadio) = path;
+  CSingleLock lock(m_selectedItemPathsLock);
+  m_selectedItemPaths[bRadio] = path;
 }
 
 std::string CGUIWindowPVRBase::GetSelectedItemPath(bool bRadio)
 {
-  return m_selectedItemPaths.at(bRadio);
+  CSingleLock lock(m_selectedItemPathsLock);
+  return m_selectedItemPaths[bRadio];
 }
 
 void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage msg)
@@ -833,8 +836,10 @@ void CGUIWindowPVRBase::UpdateButtons(void)
 
 void CGUIWindowPVRBase::UpdateSelectedItemPath()
 {
-  if (!m_viewControl.GetSelectedItemPath().empty())
-    m_selectedItemPaths.at(m_bRadio) = m_viewControl.GetSelectedItemPath();
+  if (!m_viewControl.GetSelectedItemPath().empty()) {
+    CSingleLock lock(m_selectedItemPathsLock);
+    m_selectedItemPaths[m_bRadio] = m_viewControl.GetSelectedItemPath();
+  }
 }
 
 bool CGUIWindowPVRBase::ConfirmDeleteTimer(CFileItem *item, bool &bDeleteSchedule)
