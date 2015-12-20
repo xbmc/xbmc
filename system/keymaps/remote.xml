@@ -386,7 +386,7 @@
   </MyVideoPlaylist>
   <VirtualKeyboard>
     <remote>
-      <back>BackSpace</back>
+      <back>Back</back>
       <star>Shift</star>
       <hash>Symbols</hash>
       <zero>Number0</zero>
@@ -427,7 +427,7 @@
       <eight>Number8</eight>
       <nine>Number9</nine>
       <enter>Enter</enter>
-      <back>BackSpace</back>
+      <back>Back</back>
     </remote>
   </NumericInput>
   <Weather>
