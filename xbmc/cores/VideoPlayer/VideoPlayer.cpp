@@ -2517,8 +2517,21 @@ void CVideoPlayer::HandleMessages()
 
           FlushBuffers(!msg.GetFlush(), start, msg.GetAccurate(), msg.GetSync());
         }
-        else
-          CLog::Log(LOGWARNING, "error while seeking");
+        else if (m_pDemuxer)
+        {
+          CLog::Log(LOGDEBUG, "VideoPlayer: seek failed or hit end of stream");
+          // dts after successful seek
+          if (start == DVD_NOPTS_VALUE)
+            start = DVD_MSEC_TO_TIME(time) - m_State.time_offset;
+
+          m_State.dts = start;
+
+          FlushBuffers(false, start, false, true);
+          if (m_playSpeed != DVD_PLAYSPEED_PAUSE)
+          {
+            SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
+          }
+        }
 
         // set flag to indicate we have finished a seeking request
         if(!msg.GetTrickPlay())
