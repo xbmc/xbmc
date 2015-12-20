@@ -19,7 +19,6 @@
  */
 
 #include "imagefactory.h"
-#include "guilib/JpegIO.h"
 #include "guilib/FFmpegImage.h"
 #include "utils/Mime.h"
 #if defined(HAS_GIFLIB)
