@@ -105,6 +105,7 @@ double CAEStreamInfo::GetDuration()
       break;
     case STREAM_TYPE_DTS_512:
     case STREAM_TYPE_DTSHD_CORE:
+    case STREAM_TYPE_DTSHD:
       duration = 512.0 / m_sampleRate;
       break;
     case STREAM_TYPE_DTS_1024:
@@ -112,9 +113,6 @@ double CAEStreamInfo::GetDuration()
       break;
     case STREAM_TYPE_DTS_2048:
       duration = 2048.0 / m_sampleRate;
-      break;
-    case STREAM_TYPE_DTSHD:
-      duration = (double)m_dtsPeriod * 2 / 16 / 192000;
       break;
     default:
       CLog::Log(LOGERROR, "CAEStreamInfo::GetDuration - invalid stream type");
