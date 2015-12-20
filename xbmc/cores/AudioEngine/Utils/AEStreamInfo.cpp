@@ -31,11 +31,6 @@
 #define DTS_SFREQ_COUNT    16
 #define MAX_EAC3_BLOCKS    6
 
-static enum AEChannel OutputMaps[2][9] = {
-  {AE_CH_RAW, AE_CH_RAW, AE_CH_NULL},
-  {AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_NULL}
-};
-
 static const uint16_t AC3Bitrates   [] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
 static const uint16_t AC3FSCod      [] = {48000, 44100, 32000, 0};
 static const uint8_t  AC3BlkCod     [] = {1, 2, 3, 6};
