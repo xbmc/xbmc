@@ -273,23 +273,9 @@ unsigned int CActiveAEStream::AddData(uint8_t* const *data, unsigned int offset,
         }
         else
         {
-          if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
-          {
-            m_currentBuffer->pkt->nb_samples += 2560;
-            uint8_t highByte = (minFrames >> 8) & 0xFF;
-            uint8_t lowByte = minFrames & 0xFF;
-            *(m_currentBuffer->pkt->data[0]+m_currentBuffer->pkt->nb_samples-2) = highByte;
-            *(m_currentBuffer->pkt->data[0]+m_currentBuffer->pkt->nb_samples-1) = lowByte;
-            m_bufferedTime += m_format.m_streamInfo.GetDuration() / 1000 / 24;
-            if (m_currentBuffer->pkt->nb_samples / 2560 == 24)
-              rawPktComplete = true;
-          }
-          else
-          {
-            m_bufferedTime += m_format.m_streamInfo.GetDuration() / 1000;
-            m_currentBuffer->pkt->nb_samples += minFrames;
-            rawPktComplete = true;
-          }
+          m_bufferedTime += m_format.m_streamInfo.GetDuration() / 1000;
+          m_currentBuffer->pkt->nb_samples += minFrames;
+          rawPktComplete = true;
         }
       }
 
