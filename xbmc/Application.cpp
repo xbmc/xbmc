@@ -556,7 +556,7 @@ bool CApplication::Create()
   CLog::Log(LOGNOTICE, "External storage path = %s; status = %s", extstorage.c_str(), extready ? "ok" : "nok");
 #endif
 
-#if defined(__arm__)
+#if defined(__arm__) || defined(__aarch64__)
   if (g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON)
     CLog::Log(LOGNOTICE, "ARM Features: Neon enabled");
   else

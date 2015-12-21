@@ -37,7 +37,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	#cd $(PLATFORM); patch -p0 < ../04-oflagmunging.patch
 	# do not build the tests or docs
 	sed -ie "s|doc tests||" "$(PLATFORM)/Makefile.am"
-	sed -ie "s|!defined (__arm__)|!defined (__arm__) \&\& !defined (__arm64__)|" "$(PLATFORM)/src/hwf-arm.c"
+	sed -ie "s|!defined (__arm__)|!defined (__arm__) \&\& !defined (__aarch64__)|" "$(PLATFORM)/src/hwf-arm.c"
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 

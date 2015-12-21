@@ -7,7 +7,7 @@
 //
 //
 //
-#ifdef __ARM_NEON__
+#if defined(__ARM_NEON__) && !defined(__LP64__)
 
  /* Initial ARM Neon implementation of core YUV2RGB functions. */
         

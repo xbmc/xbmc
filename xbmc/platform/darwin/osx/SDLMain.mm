@@ -8,7 +8,7 @@
   SDLMain.m and SDLMain.h carry neither a copyright or license. They are in the
   public domain.
 */
-#if !defined(__arm__)
+#if !defined(__arm__) && !defined(__aarch64__)
 
 #import "SDL/SDL.h"
 #import "SDLMain.h"
