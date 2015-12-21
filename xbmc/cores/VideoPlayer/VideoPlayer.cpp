@@ -3669,7 +3669,12 @@ bool CVideoPlayer::CloseStream(CCurrentStream& current, bool bWaitForBuffers)
 
   IDVDStreamPlayer* player = GetStreamPlayer(current.player);
   if(player)
+  {
+    if ((current.type == STREAM_AUDIO && current.syncState != IDVDStreamPlayer::SYNC_INSYNC) ||
+        (current.type == STREAM_VIDEO && current.syncState != IDVDStreamPlayer::SYNC_INSYNC))
+      bWaitForBuffers = false;
     player->CloseStream(bWaitForBuffers);
+  }
 
   current.Clear();
   return true;
