@@ -337,7 +337,7 @@ int CVideoPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
 
     // consider stream stalled if queue is empty
     // we can't sync audio to clock with an empty queue
-    if (ALLOW_AUDIO(m_speed))
+    if (ALLOW_AUDIO(m_speed) && !m_stalled)
     {
       timeout = 0;
     }
