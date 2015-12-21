@@ -71,7 +71,7 @@ using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
-int CPVRManager::m_pvrWindowIds[12] = {
+const int CPVRManager::m_pvrWindowIds[12] = {
     WINDOW_TV_CHANNELS,
     WINDOW_TV_GUIDE,
     WINDOW_TV_RECORDINGS,
