@@ -1,0 +1,36 @@
+--- a/src/socket.c-org	2015-09-20 17:19:13.000000000 -0400
++++ b/src/socket.c	2015-09-20 17:19:56.000000000 -0400
+@@ -797,7 +797,7 @@ int ssh_socket_connect(ssh_socket s, con
+ 	return SSH_OK;
+ }
+ 
+-#ifndef _WIN32
++#if 0
+ /**
+  * @internal
+  * @brief executes a command and redirect input and outputs
+--- a/include/libssh/socket.h-org	2015-09-20 17:19:28.000000000 -0400
++++ b/include/libssh/socket.h	2015-09-20 17:20:49.000000000 -0400
+@@ -37,9 +37,11 @@ void ssh_socket_set_fd(ssh_socket s, soc
+ socket_t ssh_socket_get_fd_in(ssh_socket s);
+ #ifndef _WIN32
+ int ssh_socket_unix(ssh_socket s, const char *path);
++#if 0
+ void ssh_execute_command(const char *command, socket_t in, socket_t out);
+ int ssh_socket_connect_proxycommand(ssh_socket s, const char *command);
+ #endif
++#endif
+ void ssh_socket_close(ssh_socket s);
+ int ssh_socket_write(ssh_socket s,const void *buffer, int len);
+ int ssh_socket_is_open(ssh_socket s);
+--- a/src/client.c-org	2015-09-20 17:19:37.000000000 -0400
++++ b/src/client.c	2015-09-20 17:20:04.000000000 -0400
+@@ -518,7 +518,7 @@ int ssh_connect(ssh_session session) {
+     session->session_state=SSH_SESSION_STATE_SOCKET_CONNECTED;
+     ssh_socket_set_fd(session->socket, session->opts.fd);
+     ret=SSH_OK;
+-#ifndef _WIN32
++#if 0
+   } else if (session->opts.ProxyCommand != NULL){
+     ret = ssh_socket_connect_proxycommand(session->socket,
+                                           session->opts.ProxyCommand);
