@@ -1103,7 +1103,9 @@ bool CApplication::Initialize()
     StringUtils::Format(g_localizeStrings.Get(178).c_str(), g_sysinfo.GetAppName().c_str()),
     "special://xbmc/media/icon256x256.png", EventLevel::Basic)));
 
+#if !defined(TARGET_DARWIN_IOS)
   g_peripherals.Initialise();
+#endif
 
   // Load curl so curl_global_init gets called before any service threads
   // are started. Unloading will have no effect as curl is never fully unloaded.
@@ -4492,8 +4494,9 @@ void CApplication::Process()
     m_slowTimer.Reset();
     ProcessSlow();
   }
-
+#if !defined(TARGET_DARWIN)
   g_cpuInfo.getUsedPercentage(); // must call it to recalculate pct values
+#endif
 }
 
 // We get called every 500ms
