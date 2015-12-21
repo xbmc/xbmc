@@ -404,6 +404,17 @@ namespace XBMCAddon
     void audioResume();
 
     /**
+     * getUserAgent() -- Returns Kodi's HTTP UserAgent string
+     *
+     * example:
+     *   xbmc.getUserAgent()
+     *
+     * example output:
+     *   Kodi/17.0-ALPHA1 (X11; Linux x86_64) Ubuntu/15.10 App_Bitness/64 Version/17.0-ALPHA1-Git:2015-12-23-5770d28
+     */
+    String getUserAgent();
+
+    /**
     * convertLanguage(language, format) -- Returns the given language converted to the given format as a string.
     *
     * language: string either as name in English, two letter code (ISO 639-1), or three letter code (ISO 639-2/T(B)
