@@ -547,14 +547,15 @@ bool CGUIWindowPVRBase::DeleteTimer(CFileItem *item, bool bIsRecording)
   if (!timer || !timer->HasPVRTimerInfoTag())
     return false;
 
-  if (timer->GetPVRTimerInfoTag()->HasTimerType() &&
-      timer->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
-    return false;
-
   if (bIsRecording)
   {
     if (ConfirmStopRecording(timer.get()))
       return CPVRTimers::DeleteTimer(*timer, true, false);
+  }
+  else if (timer->GetPVRTimerInfoTag()->HasTimerType() &&
+           timer->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
+  {
+    return false;
   }
   else
   {
