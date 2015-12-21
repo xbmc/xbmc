@@ -137,7 +137,7 @@ bool CActiveAESink::SupportsFormat(const std::string &device, AEAudioFormat &for
             switch (format.m_streamInfo.m_type)
             {
               case CAEStreamInfo::STREAM_TYPE_EAC3:
-                samplerate = 4 * format.m_streamInfo.m_sampleRate;
+                samplerate = 192000;
                 break;
 
               case CAEStreamInfo::STREAM_TYPE_TRUEHD:
@@ -160,6 +160,7 @@ bool CActiveAESink::SupportsFormat(const std::string &device, AEAudioFormat &for
           }
           else if (isRaw && !info.m_wantsIECPassthrough)
           {
+            samplerate = 48000;
             AEDataTypeList::iterator iit3;
             iit3 = find(info.m_streamTypes.begin(), info.m_streamTypes.end(), format.m_streamInfo.m_type);
             formatExists = (iit3 != info.m_streamTypes.end());
