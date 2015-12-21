@@ -149,6 +149,12 @@ if test "@platform_os@" = "ios"; then
           export CPP="@use_toolchain@/usr/bin/clang -E"
           ;;
         esac
+ 
+    if test "@use_cpu@" = "arm64"; then
+      host=aarch64-apple-darwin
+      host_alias=aarch64-apple-darwin
+    fi 
+ 
     unset AS
     unset CCAS
   fi
