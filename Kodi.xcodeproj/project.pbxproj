@@ -753,6 +753,10 @@
 		DF34898213FDAAF60026A711 /* HttpParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF34898113FDAAF60026A711 /* HttpParser.cpp */; };
 		DF374B2418AC2BA20076B514 /* CoreAudioHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8AE852189DE47400C33786 /* CoreAudioHelpers.cpp */; };
 		DF396ED61C42AC5100214C1A /* AESinkDARWINIOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = DF396ED51C42AC5100214C1A /* AESinkDARWINIOS.mm */; };
+		DF396ED11C42A25F00214C1A /* DarwinNSUserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = DF396ECD1C42A25F00214C1A /* DarwinNSUserDefaults.mm */; };
+		DF396ED21C42A25F00214C1A /* DarwinNSUserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = DF396ECD1C42A25F00214C1A /* DarwinNSUserDefaults.mm */; };
+		DF396ED31C42A25F00214C1A /* DictionaryUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = DF396ECF1C42A25F00214C1A /* DictionaryUtils.mm */; };
+		DF396ED41C42A25F00214C1A /* DictionaryUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = DF396ECF1C42A25F00214C1A /* DictionaryUtils.mm */; };
 		DF402A581644613B001C56B8 /* AddonModuleXbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1ACFD115FCE50700E10810 /* AddonModuleXbmc.cpp */; };
 		DF402A591644613B001C56B8 /* AddonModuleXbmcaddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1ACFD515FCE50700E10810 /* AddonModuleXbmcaddon.cpp */; };
 		DF402A5A1644613B001C56B8 /* AddonModuleXbmcgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1ACFD915FCE50700E10810 /* AddonModuleXbmcgui.cpp */; };
@@ -3555,6 +3559,11 @@
 		DF34897A13FDAA270026A711 /* HttpParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpParser.h; sourceTree = "<group>"; };
 		DF34898113FDAAF60026A711 /* HttpParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpParser.cpp; sourceTree = "<group>"; };
 		DF396ED51C42AC5100214C1A /* AESinkDARWINIOS.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AESinkDARWINIOS.mm; path = Sinks/AESinkDARWINIOS.mm; sourceTree = "<group>"; };
+		DF396ECC1C42A25F00214C1A /* DarwinNSUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinNSUserDefaults.h; sourceTree = "<group>"; };
+		DF396ECD1C42A25F00214C1A /* DarwinNSUserDefaults.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinNSUserDefaults.mm; sourceTree = "<group>"; };
+		DF396ECE1C42A25F00214C1A /* DictionaryUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DictionaryUtils.h; sourceTree = "<group>"; };
+		DF396ECF1C42A25F00214C1A /* DictionaryUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DictionaryUtils.mm; sourceTree = "<group>"; };
+		DF396ED01C42A25F00214C1A /* NSLogDebugHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSLogDebugHelpers.h; sourceTree = "<group>"; };
 		DF3C3D181752BED3000989C3 /* copyframeworks-ios.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "copyframeworks-ios.command"; sourceTree = "<group>"; };
 		DF3C3D191752BED3000989C3 /* copyframeworks-osx.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "copyframeworks-osx.command"; sourceTree = "<group>"; };
 		DF3C3D1B1752BED3000989C3 /* CopyRootFiles-ios.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "CopyRootFiles-ios.command"; sourceTree = "<group>"; };
@@ -7201,8 +7210,13 @@
 				DFD7173D1C0A031B0025D964 /* ios */,
 				DFD7172F1C09FEC60025D964 /* AutoPool.h */,
 				DFD717301C09FEC60025D964 /* AutoPool.mm */,
+				DF396ECC1C42A25F00214C1A /* DarwinNSUserDefaults.h */,
+				DF396ECD1C42A25F00214C1A /* DarwinNSUserDefaults.mm */,
 				DFD717321C09FEC60025D964 /* DarwinUtils.h */,
 				DFD717331C09FEC60025D964 /* DarwinUtils.mm */,
+				DF396ECE1C42A25F00214C1A /* DictionaryUtils.h */,
+				DF396ECF1C42A25F00214C1A /* DictionaryUtils.mm */,
+				DF396ED01C42A25F00214C1A /* NSLogDebugHelpers.h */,
 				DFD717341C09FEC60025D964 /* OSXGNUReplacements.c */,
 				DFD717351C09FEC60025D964 /* OSXGNUReplacements.h */,
 			);
@@ -9302,6 +9316,7 @@
 				E38E20A00D25F9FD00618676 /* GUIDialogVisualisationPresetList.cpp in Sources */,
 				E38E20A20D25F9FD00618676 /* GUIDialogVolumeBar.cpp in Sources */,
 				DF91E9401C0A29530011084D /* main.cpp in Sources */,
+				DF396ED31C42A25F00214C1A /* DictionaryUtils.mm in Sources */,
 				E38E20A30D25F9FD00618676 /* GUIDialogYesNo.cpp in Sources */,
 				E38E20A40D25F9FD00618676 /* GUILargeTextureManager.cpp in Sources */,
 				E38E20A50D25F9FD00618676 /* GUIMediaWindow.cpp in Sources */,
@@ -9551,6 +9566,7 @@
 				F599CD74108E6A7A0010EC2A /* DarwinStorageProvider.cpp in Sources */,
 				E4A249F71095C880003D74C6 /* AutorunMediaJob.cpp in Sources */,
 				F5A9D3091097C9370050490F /* AliasShortcutUtils.cpp in Sources */,
+				DF396ED11C42A25F00214C1A /* DarwinNSUserDefaults.mm in Sources */,
 				7CCA95BF1BC6E6670091D308 /* RendererVDA.cpp in Sources */,
 				431AE5DA109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */,
 				7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */,
@@ -10325,6 +10341,7 @@
 				E49911DC174E5D3700741B6D /* DVDFactoryInputStream.cpp in Sources */,
 				E49911DD174E5D3700741B6D /* DVDInputStream.cpp in Sources */,
 				E49911DE174E5D3700741B6D /* DVDInputStreamBluray.cpp in Sources */,
+				DF396ED21C42A25F00214C1A /* DarwinNSUserDefaults.mm in Sources */,
 				E49911DF174E5D3700741B6D /* DVDInputStreamFFmpeg.cpp in Sources */,
 				E49911E0174E5D3700741B6D /* DVDInputStreamFile.cpp in Sources */,
 				E49911E2174E5D3700741B6D /* DVDInputStreamHttp.cpp in Sources */,
@@ -10800,6 +10817,7 @@
 				E49913DF174E5F8D00741B6D /* PlayList.cpp in Sources */,
 				E49913E0174E5F8D00741B6D /* PlayListB4S.cpp in Sources */,
 				E49913E1174E5F8D00741B6D /* PlayListFactory.cpp in Sources */,
+				DF396ED41C42A25F00214C1A /* DictionaryUtils.mm in Sources */,
 				E49913E2174E5F8D00741B6D /* PlayListM3U.cpp in Sources */,
 				E49913E3174E5F8D00741B6D /* PlayListPLS.cpp in Sources */,
 				E49913E4174E5F8D00741B6D /* PlayListURL.cpp in Sources */,
