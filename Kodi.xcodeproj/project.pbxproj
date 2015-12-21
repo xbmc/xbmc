@@ -925,7 +925,7 @@
 		DFD717601C0A031B0025D964 /* IOSScreenManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFD7174F1C0A031B0025D964 /* IOSScreenManager.mm */; };
 		DFD717611C0A031B0025D964 /* XBMCApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD717511C0A031B0025D964 /* XBMCApplication.m */; };
 		DFD717621C0A031B0025D964 /* XBMCController.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFD717531C0A031B0025D964 /* XBMCController.mm */; };
-		DFD717641C0A03540025D964 /* IOS-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DFD717631C0A03540025D964 /* IOS-Info.plist */; };
+		DFD717641C0A03540025D964 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DFD717631C0A03540025D964 /* Info.plist */; };
 		DFD882E817DD189E001516FE /* StringValidation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882E517DD189E001516FE /* StringValidation.cpp */; };
 		DFD882E917DD189E001516FE /* StringValidation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882E517DD189E001516FE /* StringValidation.cpp */; };
 		DFD882F717DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882F417DD1A5B001516FE /* AddonPythonInvoker.cpp */; };
@@ -3791,7 +3791,7 @@
 		DFD717521C0A031B0025D964 /* XBMCController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCController.h; sourceTree = "<group>"; };
 		DFD717531C0A031B0025D964 /* XBMCController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = XBMCController.mm; sourceTree = "<group>"; };
 		DFD717541C0A031B0025D964 /* XBMCDebugHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCDebugHelpers.h; sourceTree = "<group>"; };
-		DFD717631C0A03540025D964 /* IOS-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "IOS-Info.plist"; sourceTree = "<group>"; };
+		DFD717631C0A03540025D964 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DFD882E517DD189E001516FE /* StringValidation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StringValidation.cpp; sourceTree = "<group>"; };
 		DFD882E617DD189E001516FE /* StringValidation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringValidation.h; sourceTree = "<group>"; };
 		DFD882F417DD1A5B001516FE /* AddonPythonInvoker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonPythonInvoker.cpp; path = python/AddonPythonInvoker.cpp; sourceTree = "<group>"; };
@@ -7212,7 +7212,7 @@
 		DFD7173D1C0A031B0025D964 /* ios */ = {
 			isa = PBXGroup;
 			children = (
-				DFD717631C0A03540025D964 /* IOS-Info.plist */,
+				DFD717631C0A03540025D964 /* Info.plist */,
 				DFD7173F1C0A031B0025D964 /* Default-568h@2x.png */,
 				DFD717401C0A031B0025D964 /* Default-667h@2x.png */,
 				DFD717411C0A031B0025D964 /* Default-736h@3x.png */,
@@ -8942,7 +8942,7 @@
 				DFD717561C0A031B0025D964 /* Default-568h@2x.png in Resources */,
 				7CCDA1E4192753E30074CF51 /* RdrConnectionManagerSCPD.xml in Resources */,
 				7CCDA1EF192753E30074CF51 /* RenderingControlSCPD.xml in Resources */,
-				DFD717641C0A03540025D964 /* IOS-Info.plist in Resources */,
+				DFD717641C0A03540025D964 /* Info.plist in Resources */,
 				7CCDA1F1192753E30074CF51 /* RenderingControlSCPD_Full.xml in Resources */,
 				DFD717581C0A031B0025D964 /* Default-736h@3x.png in Resources */,
 				391416BF1B4A3EFA00BBF0AA /* guiinfo in Resources */,
@@ -11486,7 +11486,7 @@
 					$XBMC_DEPENDS/include/python2.7,
 					$XBMC_DEPENDS/include/libxml2,
 				);
-				INFOPLIST_FILE = "$(SRCROOT)/xbmc/platform/darwin/ios/IOS-Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/xbmc/platform/darwin/ios/Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -11527,7 +11527,7 @@
 					$XBMC_DEPENDS/include/python2.7,
 					$XBMC_DEPENDS/include/libxml2,
 				);
-				INFOPLIST_FILE = "$(SRCROOT)/xbmc/platform/darwin/ios/IOS-Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/xbmc/platform/darwin/ios/Info.plist";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
