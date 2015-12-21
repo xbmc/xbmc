@@ -158,21 +158,35 @@ bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSi
   fctx->pb = ioctx;
   ioctx->max_packet_size = FFMPEG_FILE_BUFFER_SIZE;
 
+  // Some clients have pngs saved as jpeg or ask us for png but are jpeg
+  // mythv throws all mimetypes away and asks us with application/octet-stream
+  // this is poor man's fallback to at least identify png / jpeg
+  bool is_jpeg = (bufSize > 2 && buffer[0] == 0xFF && buffer[1] == 0xD8 && buffer[2] == 0xFF);
+  bool is_png = (bufSize > 3 && buffer[1] == 'P' && buffer[2] == 'N' && buffer[3] == 'G');
+  bool is_tiff = (bufSize > 2 && buffer[0] == 'I' && buffer[1] == 'I' && buffer[2] == '*');
+
   AVInputFormat* inp = nullptr;
-  if (m_strMimeType == "image/jpeg" || m_strMimeType == "image/jpg")
+  if (is_jpeg)
     inp = av_find_input_format("jpeg_pipe");
+  else if (is_png)
+    inp = av_find_input_format("png_pipe");
+  else if (is_tiff)
+    inp = av_find_input_format("tiff_pipe");
   else if (m_strMimeType == "image/jp2")
     inp = av_find_input_format("j2k_pipe");
+  else if (m_strMimeType == "image/webp")
+    inp = av_find_input_format("webp_pipe");
+  // brute force parse if above check already failed
+  else if (m_strMimeType == "image/jpeg" || m_strMimeType == "image/jpg")
+    inp = av_find_input_format("jpeg_pipe");
   else if (m_strMimeType == "image/png")
     inp = av_find_input_format("png_pipe");
   else if (m_strMimeType == "image/tiff")
     inp = av_find_input_format("tiff_pipe");
-  else if (m_strMimeType == "image/webp")
-    inp = av_find_input_format("webp_pipe");
 
   if (avformat_open_input(&fctx, "", inp, NULL) < 0)
   {
-    CLog::Log(LOGNOTICE, "Could not find suitable input format: %s", m_strMimeType.c_str());
+    CLog::Log(LOGERROR, "Could not find suitable input format: %s", m_strMimeType.c_str());
     avformat_close_input(&fctx);
     FreeIOCtx(ioctx);
     return false;
