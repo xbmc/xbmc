@@ -409,18 +409,6 @@ void CAdvancedSettings::Initialize()
   m_extraLogEnabled = false;
   m_extraLogLevels = 0;
 
-  #if defined(TARGET_DARWIN)
-    std::string logDir = getenv("HOME");
-    #if defined(TARGET_DARWIN_OSX)
-      logDir += "/Library/Logs/";
-    #else // ios
-      logDir += "/" + std::string(CDarwinUtils::GetAppRootFolder()) + "/";
-    #endif
-    m_logFolder = logDir;
-  #else
-    m_logFolder = "special://home/";              // log file location
-  #endif
-
   m_userAgent = g_sysinfo.GetUserAgent();
 
   m_initialized = true;
@@ -1175,7 +1163,6 @@ void CAdvancedSettings::Clear()
   m_videoExtensions.clear();
   m_discStubExtensions.clear();
 
-  m_logFolder.clear();
   m_userAgent.clear();
 }
 
