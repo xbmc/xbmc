@@ -7,13 +7,17 @@ VERSION=1.6.2
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
+ifeq ($(OS),osx)
+CONFIGURE_FLAGS+= --disable-asm --disable-avx-support --disable-avx2-support
+endif
+ifeq ($(CPU),arm64)
+CONFIGURE_FLAGS+= --disable-asm --disable-neon-support
+endif
+
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) --disable-shared \
-
-ifeq ($(OS),osx)
-CONFIGURE+=--disable-asm --disable-avx-support --disable-avx2-support
-endif
+	  $(CONFIGURE_FLAGS)
 
 LIBDYLIB=$(PLATFORM)/src/.libs/$(LIBNAME).a
 
@@ -31,6 +35,10 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	#cd $(PLATFORM); patch -p0 < ../02-armasm.patch
 	cd $(PLATFORM); patch -p0 < ../03-gcrypt-android-select.patch
 	#cd $(PLATFORM); patch -p0 < ../04-oflagmunging.patch
+	# do not build the tests or docs
+	sed -ie "s|doc tests||" "$(PLATFORM)/Makefile.am"
+	sed -ie "s|!defined (__arm__)|!defined (__arm__) \&\& !defined (__arm64__)|" "$(PLATFORM)/src/hwf-arm.c"
+	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
