@@ -1141,11 +1141,13 @@ CGUIWindow* CGUIWindowManager::GetWindow(int id) const
   CGUIWindow *window;
   if (id == 0 || id == WINDOW_INVALID)
     return NULL;
+
+  CSingleLock lock(g_graphicsContext);
+
   window = m_idCache.Get(id);
   if (window)
     return window;
 
-  CSingleLock lock(g_graphicsContext);
   WindowMap::const_iterator it = m_mapWindows.find(id);
   if (it != m_mapWindows.end())
     window = (*it).second;
