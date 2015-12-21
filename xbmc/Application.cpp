@@ -476,10 +476,7 @@ bool CApplication::Create()
 
   if (!CLog::Init(CSpecialProtocol::TranslatePath(g_advancedSettings.m_logFolder).c_str()))
   {
-    std::string lcAppName = CCompileInfo::GetAppName();
-    StringUtils::ToLower(lcAppName);
-    fprintf(stderr,"Could not init logging classes. Permission errors on ~/.%s (%s)\n", lcAppName.c_str(),
-      CSpecialProtocol::TranslatePath(g_advancedSettings.m_logFolder).c_str());
+    fprintf(stderr,"Could not init logging classes. Log folder error (%s)\n", CSpecialProtocol::TranslatePath(g_advancedSettings.m_logFolder).c_str());
     return false;
   }
 
@@ -571,7 +568,7 @@ bool CApplication::Create()
   CLog::Log(LOGNOTICE, "Local hostname: %s", hostname.c_str());
   std::string lowerAppName = CCompileInfo::GetAppName();
   StringUtils::ToLower(lowerAppName);
-  CLog::Log(LOGNOTICE, "Log File is located: %s%s.log", g_advancedSettings.m_logFolder.c_str(), lowerAppName.c_str());
+  CLog::Log(LOGNOTICE, "Log File is located: %s/%s.log", g_advancedSettings.m_logFolder.c_str(), lowerAppName.c_str());
   CRegExp::LogCheckUtf8Support();
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
