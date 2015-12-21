@@ -697,6 +697,16 @@ void CMusicInfoTag::Serialize(CVariant& value) const
     value["artist"] = m_artist[0];
   else
     value["artist"] = m_artist;
+
+  // There are situations where the individual artist(s) are not queried from the song_artist and artist tables e.g. playlist,
+  // only artist description from song table. Since processing of the ARTISTS tag was added the individual artists may not always
+  // be accurately derrived by simply splitting the artist desc. Hence m_artist is only populated when the individual artists are
+  // queried, whereas GetArtistString() will always return the artist description.
+  // To avoid empty artist array in JSON, when m_artist is empty then an attempt is made to split the artist desc into artists.
+  // A longer term soltion would be to ensure that when individual artists are to be returned then the song_artist and artist tables
+  // are queried.
+  if (m_artist.empty())
+    value["artist"] = StringUtils::Split(GetArtistString(), g_advancedSettings.m_musicItemSeparator);
   value["displayartist"] = GetArtistString();
   value["displayalbumartist"] = GetAlbumArtistString();
   value["album"] = m_strAlbum;
