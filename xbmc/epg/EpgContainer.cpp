@@ -239,7 +239,17 @@ void CEpgContainer::LoadFromDB(void)
   unsigned int iCounter(0);
   if (m_database.IsOpen())
   {
-    ShowProgressDialog(false);
+    {
+      /* unlock m_critSection before calling ShowProgressDialog() -
+         this is not legal, but works around a deadlock bug (because
+         ShowProgressDialog() calls functions which lock
+         g_graphicsContext); note that ShowProgressDialog() is
+         sometimes called with m_critSection locked and sometimes
+         without; this is a major bug that must be addressed
+         eventually */
+      CSingleExit exit(m_critSection);
+      ShowProgressDialog(false);
+    }
 
     m_database.DeleteOldEpgEntries();
     m_database.Get(*this);
