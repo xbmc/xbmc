@@ -1986,13 +1986,10 @@ void CUtil::GetExternalStreamDetailsFromFilename(const std::string& strVideo, co
   size_t nParseLen = toParse.length();
   for (size_t i = 0; i < nParseLen; i++)
   {
-    if (pParse[i] >= 48 && pParse[i] <= 122) // alphanumeric char is in [48,122]
+    if (::isalnum((unsigned char)pParse[i]))// warning: isalnum's assertion would fail if pass negative value into it. 
     {
-      if (::isalnum(pParse[i]))// warning: isalnum's assertion would fail if pass negative value into it. 
-      {
-        strNeedParse = toParse.substr(i, nParseLen - i);
-        break;
-      }
+      strNeedParse = toParse.substr(i, nParseLen - i);
+      break;
     }
   }
 
