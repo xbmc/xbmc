@@ -1,5 +1,4 @@
-#ifndef __PLATFORM_DEFS_H__
-#define __PLATFORM_DEFS_H__
+#pragma once
 
 /*
  *      Copyright (C) 2005-2013 Team XBMC
@@ -21,7 +20,9 @@
  *
  */
 
-#ifdef TARGET_POSIX
+#ifndef TARGET_POSIX
+#error "This file is POSIX-specific only!"
+#else
 
 #define LINE_ENDING "\n"
 
@@ -60,7 +61,6 @@
 #endif
 #include <sys/time.h>
 #include <time.h>
-#endif
 
 #if defined(__ppc__) || defined(__powerpc__)
 #define PIXEL_ASHIFT 0
@@ -85,38 +85,26 @@
 #include <stdint.h>
 
 #ifndef PRId64
-#ifdef TARGET_WINDOWS
-#define PRId64 "I64d"
-#else
 #if __WORDSIZE == 64
 #define PRId64 "ld"
 #else
 #define PRId64 "lld"
 #endif
 #endif
-#endif
 
 #ifndef PRIu64
-#ifdef TARGET_WINDOWS
-#define PRIu64 "I64u"
-#else
 #if __WORDSIZE == 64
 #define PRIu64 "lu"
 #else
 #define PRIu64 "llu"
 #endif
 #endif
-#endif
 	
 #ifndef PRIx64
-#ifdef TARGET_WINDOWS
-#define PRIx64 "I64x"
-#else
 #if __WORDSIZE == 64
 #define PRIx64 "lx"
 #else
 #define PRIx64 "llx"
-#endif
 #endif
 #endif
 
@@ -128,7 +116,6 @@
 #define PRIuS "zu"
 #endif
 
-#ifdef TARGET_POSIX
 
 #define XXLog(a,b) printf("%s", (b))
 
@@ -155,11 +142,11 @@
 #define ZeroMemory(dst,size) memset(dst, 0, size)
 
 #define VOID    void
-#define __int8    char
-#define __int16   short
-#define __int32   int
-#define __int64   long long
-#define __uint64  unsigned long long
+#define __int8    int8_t
+#define __int16   int16_t
+#define __int32   int32_t
+#define __int64   int64_t
+#define __uint64  uint64_t
 
 #define __stdcall
 #define __cdecl
@@ -190,59 +177,47 @@ typedef CXHandle* HANDLE;
 typedef void* HINSTANCE;
 typedef void* HMODULE;
 
-typedef unsigned int  DWORD;
-typedef unsigned short  WORD;
-typedef unsigned char   BYTE;
+typedef uint32_t    DWORD;
+typedef uint16_t    WORD;
+typedef uint8_t     BYTE;
 typedef char        CHAR;
 typedef unsigned char UCHAR;
 typedef wchar_t     WCHAR;
 typedef int         BOOL;
-typedef BYTE        BOOLEAN;
+typedef uint8_t     BOOLEAN;
 typedef short       SHORT;
 typedef unsigned short  USHORT;
 typedef int         INT;
 typedef unsigned int  UINT;
 // typedef int INT32;              // unused; must match Xmd.h but why bother
-typedef unsigned int  UINT32;
-typedef long long     INT64;
-typedef unsigned long long    UINT64;
+typedef uint32_t    UINT32;
+typedef int64_t     INT64;
+typedef uint64_t    UINT64;
 typedef long        LONG;
-typedef long long     LONGLONG;
-#if defined(TARGET_DARWIN_OSX)
-typedef UInt32          ULONG;
-#else
-typedef unsigned long   ULONG;
-#endif
-typedef float         FLOAT;
-typedef size_t        SIZE_T;
-typedef void*         PVOID;
-typedef void*         LPVOID;
+typedef long long   LONGLONG;
+typedef unsigned long ULONG;
+typedef float       FLOAT;
+typedef size_t      SIZE_T;
+typedef void*       PVOID;
+typedef void*       LPVOID;
 //typedef PVOID         HANDLE;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
-typedef HANDLE        HDC;
+typedef HANDLE      HDC;
 typedef void*       HWND;
-#if defined(TARGET_DARWIN_OSX)
-typedef SInt32      HRESULT;
-#else
 typedef LONG        HRESULT;
-#endif
 typedef BYTE*       LPBYTE;
-typedef DWORD*        LPDWORD;
-typedef CONST CHAR*   LPCSTR;
-typedef CONST WCHAR*    LPCWSTR;
-typedef CHAR*     LPTSTR;
-typedef WCHAR         *PWSTR,      *LPWSTR,    *NWPSTR;
-typedef CHAR            *PSTR,       *LPSTR,     *NPSTR;
+typedef DWORD*      LPDWORD;
+typedef CONST CHAR* LPCSTR;
+typedef CONST WCHAR*  LPCWSTR;
+typedef CHAR*       LPTSTR;
+typedef WCHAR       *PWSTR,      *LPWSTR,    *NWPSTR;
+typedef CHAR        *PSTR,       *LPSTR,     *NPSTR;
 typedef LONG        *PLONG, *LPLONG;
-#ifdef UNICODE
-typedef LPCWSTR       LPCTSTR;
-#else
 typedef LPCSTR      LPCTSTR;
-#endif
-typedef unsigned __int64 ULONGLONG;
-typedef long        LONG_PTR;
-typedef unsigned long   ULONG_PTR;
-typedef ULONG_PTR     DWORD_PTR;
+typedef unsigned long long  ULONGLONG;
+typedef intptr_t    LONG_PTR;
+typedef uintptr_t   ULONG_PTR;
+typedef ULONG_PTR   DWORD_PTR;
 typedef __int64     __time64_t;
 typedef intptr_t (*FARPROC)(void);
 
@@ -658,10 +633,4 @@ typedef struct tWAVEFORMATEXTENSIBLE
   GUID SubFormat;
 } __attribute__((__packed__)) WAVEFORMATEXTENSIBLE;
 
-
-
 #endif
-
-#endif //__PLATFORM_DEFS_H__
-
-
