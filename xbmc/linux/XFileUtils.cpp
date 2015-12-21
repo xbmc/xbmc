@@ -29,6 +29,7 @@
 #include "XHandle.h"
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <stdlib.h>
 #if !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD) && !defined(TARGET_ANDROID)
 #include <sys/vfs.h>
 #else
