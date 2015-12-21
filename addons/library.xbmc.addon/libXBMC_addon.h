@@ -42,13 +42,12 @@ typedef intptr_t      ssize_t;
 #define ADDON_DLL               "\\library.xbmc.addon\\libXBMC_addon" ADDON_HELPER_EXT
 #define ADDON_HELPER_EXT        ".dll"
 #else
+// the ADDON_HELPER_ARCH is the platform dependend name which is used
+// as part of the name of dynamic addon libraries. It has to match the 
+// strings which are set in configure.ac for the "ARCH" variable.
 #if defined(__APPLE__)          // osx
-#if defined(__POWERPC__)
-#define ADDON_HELPER_ARCH       "powerpc-osx"
-#elif defined(__arm__)
+#if defined(__arm__) || defined(__aarch64__)
 #define ADDON_HELPER_ARCH       "arm-osx"
-#elif defined(__x86_64__)
-#define ADDON_HELPER_ARCH       "x86-osx"
 #else
 #define ADDON_HELPER_ARCH       "x86-osx"
 #endif
