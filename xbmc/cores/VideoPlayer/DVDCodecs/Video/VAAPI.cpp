@@ -571,6 +571,15 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       break;
     }
 #endif
+#if VA_CHECK_VERSION(0,38,1)
+    case AV_CODEC_ID_VP9:
+    {
+      profile = VAProfileVP9Profile0;
+      if (!m_vaapiConfig.context->SupportsProfile(profile))
+        return false;
+      break;
+    }
+#endif
     case AV_CODEC_ID_WMV3:
       profile = VAProfileVC1Main;
       if (!m_vaapiConfig.context->SupportsProfile(profile))
@@ -603,6 +612,8 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
   }
   else if (avctx->codec_id == AV_CODEC_ID_HEVC)
     m_vaapiConfig.maxReferences = 16;
+  else if (avctx->codec_id == AV_CODEC_ID_VP9)
+    m_vaapiConfig.maxReferences = 8;
   else
     m_vaapiConfig.maxReferences = 2;
 
