@@ -137,7 +137,7 @@ bool CActiveAESink::SupportsFormat(const std::string &device, AEAudioFormat &for
             switch (format.m_streamInfo.m_type)
             {
               case CAEStreamInfo::STREAM_TYPE_EAC3:
-                samplerate = 4 * format.m_streamInfo.m_sampleRate;
+                samplerate = 192000;
                 break;
 
               case CAEStreamInfo::STREAM_TYPE_TRUEHD:
@@ -160,7 +160,10 @@ bool CActiveAESink::SupportsFormat(const std::string &device, AEAudioFormat &for
           }
           else if (isRaw && !info.m_wantsIECPassthrough)
           {
-            // fix me
+            samplerate = 48000;
+            AEDataTypeList::iterator iit3;
+            iit3 = find(info.m_streamTypes.begin(), info.m_streamTypes.end(), format.m_streamInfo.m_type);
+            formatExists = (iit3 != info.m_streamTypes.end());
           }
           else // PCM case
           {
@@ -892,43 +895,69 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
   unsigned int maxFrames;
   int retry = 0;
   unsigned int written = 0;
+  std::unique_ptr<uint8_t[]> mergebuffer;
+  uint8_t* p_mergebuffer = NULL;
 
-  if (m_requestedFormat.m_dataFormat == AE_FMT_RAW && m_needIecPack && samples->pool && frames > 0)
+  if (m_requestedFormat.m_dataFormat == AE_FMT_RAW && frames > 0  && samples->pool)
   {
-    if (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+    if (m_needIecPack)
     {
-      int offset;
-      int len;
-      m_packer->GetBuffer();
-      for (int i=0; i<24; i++)
+      if (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD && frames == 61440)
       {
-        offset = i*2560;
-        len = (*(buffer[0] + offset+2560-2) << 8) + *(buffer[0] + offset+2560-1);
-        m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0] + offset, len);
+        int offset;
+        int len;
+        m_packer->GetBuffer();
+        for (int i=0; i<24; i++)
+        {
+          offset = i*2560;
+          len = (*(buffer[0] + offset+2560-2) << 8) + *(buffer[0] + offset+2560-1);
+          m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0] + offset, len);
+        }
+      }
+      else
+        m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0], frames);
+
+      unsigned int size = m_packer->GetSize();
+      packBuffer = m_packer->GetBuffer();
+      buffer = &packBuffer;
+      totalFrames = size / m_sinkFormat.m_frameSize;
+      frames = totalFrames;
+      switch(m_swapState)
+      {
+        case SKIP_SWAP:
+          break;
+        case NEED_BYTESWAP:
+          Endian_Swap16_buf((uint16_t *)buffer[0], (uint16_t *)buffer[0], size / 2);
+          break;
+        case CHECK_SWAP:
+          SwapInit(samples);
+          if (m_swapState == NEED_BYTESWAP)
+            Endian_Swap16_buf((uint16_t *)buffer[0], (uint16_t *)buffer[0], size / 2);
+          break;
+        default:
+          break;
       }
     }
     else
-      m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0], frames);
-
-    unsigned int size = m_packer->GetSize();
-    packBuffer = m_packer->GetBuffer();
-    buffer = &packBuffer;
-    totalFrames = size / m_sinkFormat.m_frameSize;
-    frames = totalFrames;
-    switch(m_swapState)
     {
-      case SKIP_SWAP:
-        break;
-      case NEED_BYTESWAP:
-        Endian_Swap16_buf((uint16_t *)buffer[0], (uint16_t *)buffer[0], size / 2);
-        break;
-      case CHECK_SWAP:
-        SwapInit(samples);
-        if (m_swapState == NEED_BYTESWAP)
-          Endian_Swap16_buf((uint16_t *)buffer[0], (uint16_t *)buffer[0], size / 2);
-        break;
-      default:
-        break;
+      if (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD && frames == 61440)
+      {
+        int offset;
+        int len;
+        unsigned int size = 0;
+        mergebuffer.reset(new uint8_t[MAX_IEC61937_PACKET]);
+        p_mergebuffer = mergebuffer.get();
+        for (int i=0; i<24; i++)
+        {
+          offset = i*2560;
+          len = (*(buffer[0] + offset+2560-2) << 8) + *(buffer[0] + offset+2560-1);
+          memcpy(&(mergebuffer.get())[size], buffer[0] + offset, len);
+          size += len;
+        }
+        buffer = &p_mergebuffer;
+        totalFrames = size / m_sinkFormat.m_frameSize;
+        frames = totalFrames;
+      }
     }
   }
 

@@ -21,6 +21,7 @@
  */
 
 #include <list>
+#include <memory>
 
 #include "system.h"
 #include "DVDAudioCodec.h"
@@ -50,5 +51,9 @@ private:
   unsigned int m_bufferSize;
   unsigned int m_dataSize;
   AEAudioFormat m_format;
+
+  // TrueHD specifics
+  std::unique_ptr<uint8_t[]> m_trueHDBuffer;
+  unsigned int       m_trueHDoffset;
 };
 

@@ -31,11 +31,6 @@
 #define DTS_SFREQ_COUNT    16
 #define MAX_EAC3_BLOCKS    6
 
-static enum AEChannel OutputMaps[2][9] = {
-  {AE_CH_RAW, AE_CH_RAW, AE_CH_NULL},
-  {AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_NULL}
-};
-
 static const uint16_t AC3Bitrates   [] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
 static const uint16_t AC3FSCod      [] = {48000, 44100, 32000, 0};
 static const uint8_t  AC3BlkCod     [] = {1, 2, 3, 6};
@@ -110,6 +105,7 @@ double CAEStreamInfo::GetDuration()
       break;
     case STREAM_TYPE_DTS_512:
     case STREAM_TYPE_DTSHD_CORE:
+    case STREAM_TYPE_DTSHD:
       duration = 512.0 / m_sampleRate;
       break;
     case STREAM_TYPE_DTS_1024:
@@ -117,9 +113,6 @@ double CAEStreamInfo::GetDuration()
       break;
     case STREAM_TYPE_DTS_2048:
       duration = 2048.0 / m_sampleRate;
-      break;
-    case STREAM_TYPE_DTSHD:
-      duration = (double)m_dtsPeriod * 2 / 16 / 192000;
       break;
     default:
       CLog::Log(LOGERROR, "CAEStreamInfo::GetDuration - invalid stream type");
