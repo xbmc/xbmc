@@ -209,6 +209,17 @@
       "channels": { "type": "integer", "required": true }
     }
   },
+  "Player.Video.Stream": {
+    "type": "object",
+    "properties": {
+      "index": { "type": "integer", "minimum": 0, "required": true },
+      "name": { "type": "string", "required": true },
+      "language": { "type": "string", "required": true },
+      "codec": { "type": "string", "required": true },
+      "width": { "type": "integer", "required": true },
+      "height": { "type": "integer", "required": true }
+    }
+  },
   "Player.Subtitle": {
     "type": "object",
     "properties": {
@@ -223,6 +234,7 @@
               "totaltime", "playlistid", "position", "repeat", "shuffled",
               "canseek", "canchangespeed", "canmove", "canzoom", "canrotate",
               "canshuffle", "canrepeat", "currentaudiostream", "audiostreams",
+              "currentvideostream", "videostreams",
               "subtitleenabled", "currentsubtitle", "subtitles", "live" ]
   },
   "Player.Property.Value": {
@@ -247,6 +259,8 @@
       "canrepeat": { "type": "boolean" },
       "currentaudiostream": { "$ref": "Player.Audio.Stream" },
       "audiostreams": { "type": "array", "items": { "$ref": "Player.Audio.Stream" } },
+      "currentvideostream": { "$ref": "Player.Video.Stream" },
+      "videostreams": { "type": "array", "items": { "$ref": "Player.Video.Stream" } },
       "subtitleenabled": { "type": "boolean" },
       "currentsubtitle": { "$ref": "Player.Subtitle" },
       "subtitles": { "type": "array", "items": { "$ref": "Player.Subtitle" } },

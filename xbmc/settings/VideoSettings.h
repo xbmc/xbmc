@@ -50,6 +50,7 @@ public:
   float m_SubtitleDelay;
   bool m_SubtitleOn;
   bool m_SubtitleCached;
+  int m_VideoStream;
   float m_Brightness;
   float m_Contrast;
   float m_Gamma;

@@ -57,6 +57,8 @@
 #define SETTING_AUDIO_PASSTHROUGH           "audio.digitalanalog"
 #define SETTING_AUDIO_DSP                      "audio.dsp"
 
+#define SETTING_VIDEO_STREAM                   "video.stream"
+
 #define SETTING_SUBTITLE_ENABLE                "subtitles.enable"
 #define SETTING_SUBTITLE_DELAY                 "subtitles.delay"
 #define SETTING_SUBTITLE_STREAM                "subtitles.stream"
@@ -154,6 +156,16 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(const CSetting *setting)
     {
       videoSettings.m_AudioStream = m_audioStream;
       g_application.m_pPlayer->SetAudioStream(m_audioStream);    // Set the audio stream to the one selected
+    }
+  }
+  else if (settingId == SETTING_VIDEO_STREAM)
+  {
+    m_videoStream = static_cast<const CSettingInt*>(setting)->GetValue();
+    // only change the video stream if a different one has been asked for
+    if (g_application.m_pPlayer->GetVideoStream() != m_videoStream)
+    {
+      videoSettings.m_VideoStream = m_videoStream;
+      g_application.m_pPlayer->SetVideoStream(m_videoStream);    // Set the video stream to the one selected
     }
   }
   else if (settingId == SETTING_AUDIO_OUTPUT_TO_ALL_SPEAKERS)
@@ -283,6 +295,12 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
     CLog::Log(LOGERROR, "CGUIDialogAudioSubtitleSettings: unable to setup settings");
     return;
   }
+  CSettingGroup *groupVideo = AddGroup(category);
+  if (groupVideo == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogAudioSubtitleSettings: unable to setup settings");
+    return;
+  }
   CSettingGroup *groupSubtitles = AddGroup(category);
   if (groupSubtitles == NULL)
   {
@@ -358,6 +376,8 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
     AddToggle(groupAudio, SETTING_AUDIO_PASSTHROUGH, 348, 0, m_passthrough);
   }
 
+  AddVideoStreams(groupVideo, SETTING_VIDEO_STREAM);
+
   // subitlte settings
   m_subtitleVisible = g_application.m_pPlayer->GetSubtitleVisible();
   // subtitle enabled setting
@@ -416,6 +436,18 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(CSettingGroup *group, cons
   AddList(group, settingId, 460, 0, m_audioStream, AudioStreamsOptionFiller, 460);
 }
 
+void CGUIDialogAudioSubtitleSettings::AddVideoStreams(CSettingGroup *group, const std::string &settingId)
+{
+  if (group == NULL || settingId.empty())
+    return;
+
+  m_videoStream = g_application.m_pPlayer->GetVideoStream();
+  if (m_videoStream < 0)
+    m_videoStream = 0;
+
+  AddList(group, settingId, 471, 0, m_videoStream, VideoStreamsOptionFiller, 471);
+}
+
 void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(CSettingGroup *group, const std::string &settingId)
 {
   if (group == NULL || settingId.empty())
@@ -455,6 +487,43 @@ void CGUIDialogAudioSubtitleSettings::AudioStreamsOptionFiller(const CSetting *s
       strItem = StringUtils::Format("%s - %s", strLanguage.c_str(), info.name.c_str());
 
     strItem += StringUtils::Format(" (%i/%i)", i + 1, audioStreamCount);
+    list.push_back(make_pair(strItem, i));
+  }
+
+  if (list.empty())
+  {
+    list.push_back(make_pair(g_localizeStrings.Get(231), -1));
+    current = -1;
+  }
+}
+
+void CGUIDialogAudioSubtitleSettings::VideoStreamsOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+{
+  int videoStreamCount = g_application.m_pPlayer->GetVideoStreamCount();
+
+  // cycle through each audio stream and add it to our list control
+  for (int i = 0; i < videoStreamCount; ++i)
+  {
+    std::string strItem;
+    std::string strLanguage;
+
+    SPlayerVideoStreamInfo info;
+    g_application.m_pPlayer->GetVideoStreamInfo(i, info);
+
+    if (!g_LangCodeExpander.Lookup(info.language, strLanguage))
+      strLanguage = g_localizeStrings.Get(13205); // Unknown
+
+    if (info.name.length() == 0)
+      strItem = strLanguage;
+    else
+      strItem = StringUtils::Format("%s - %s", strLanguage.c_str(), info.name.c_str());
+    
+    if (info.videoCodecName.length() == 0)
+      strItem += StringUtils::Format(" (%ix%i)", info.width, info.height);
+    else
+      strItem += StringUtils::Format(" (%s, %ix%i)", info.videoCodecName.c_str(), info.width, info.height);
+
+    strItem += StringUtils::Format(" (%i/%i)", i + 1, videoStreamCount);
     list.push_back(make_pair(strItem, i));
   }
 

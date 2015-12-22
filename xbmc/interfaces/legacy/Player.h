@@ -345,6 +345,23 @@ namespace XBMCAddon
        */
       void setAudioStream(int iStream);
 
+      // Player_getAvailableVideoStreams
+      /**
+      * getAvailableVideoStreams() -- get Video stream names
+      */
+      std::vector<String> getAvailableVideoStreams();
+
+      /**
+      * setVideoStream(stream) -- set Video Stream.
+      *
+      * stream           : int
+      *
+      * example:
+      *
+      *    - setVideoStream(1)
+      */
+      void setVideoStream(int iStream);
+
 #ifndef SWIG
       SWIGHIDDENVIRTUAL void OnPlayBackStarted();
       SWIGHIDDENVIRTUAL void OnPlayBackEnded();

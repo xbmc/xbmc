@@ -265,6 +265,10 @@ public:
   virtual int GetAudioStream();
   virtual void SetAudioStream(int iStream);
 
+  virtual int GetVideoStreamCount();
+  virtual int GetVideoStream();
+  virtual void SetVideoStream(int iStream);
+
   virtual TextCacheStruct_t* GetTeletextCache();
   virtual void LoadPage(int p, int sp, unsigned char* buffer);
 
@@ -286,7 +290,7 @@ public:
   virtual bool HasMenu();
 
   virtual int GetSourceBitrate();
-  virtual void GetVideoStreamInfo(SPlayerVideoStreamInfo &info);
+  virtual void GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info);
   virtual bool GetStreamDetails(CStreamDetails &details);
   virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
   virtual void UpdateStreamInfos();

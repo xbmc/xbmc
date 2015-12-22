@@ -1555,6 +1555,71 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
         break;
     }
   }
+  else if (property == "currentvideostream")
+  {
+    switch (player)
+    {
+    case Video:
+      if (g_application.m_pPlayer->HasPlayer())
+      {
+        result = CVariant(CVariant::VariantTypeObject);
+        int index = g_application.m_pPlayer->GetVideoStream();
+        if (index >= 0)
+        {
+          SPlayerVideoStreamInfo info;
+          g_application.m_pPlayer->GetVideoStreamInfo(index, info);
+
+          result["index"] = index;
+          result["name"] = info.name;
+          result["language"] = info.language;
+          result["codec"] = info.videoCodecName;
+          result["width"] = info.width;
+          result["height"] = info.height;
+        }
+      }
+      else
+        result = CVariant(CVariant::VariantTypeNull);
+      break;
+
+    case Audio:
+    case Picture:
+    default:
+      result = CVariant(CVariant::VariantTypeNull);
+      break;
+    }
+  }
+  else if (property == "videostreams")
+  {
+    result = CVariant(CVariant::VariantTypeArray);
+    switch (player)
+    {
+    case Video:
+      if (g_application.m_pPlayer->HasPlayer())
+      {
+        for (int index = 0; index < g_application.m_pPlayer->GetVideoStreamCount(); index++)
+        {
+          SPlayerVideoStreamInfo info;
+          g_application.m_pPlayer->GetVideoStreamInfo(index, info);
+
+          CVariant videoStream(CVariant::VariantTypeObject);
+          videoStream["index"] = index;
+          videoStream["name"] = info.name;
+          videoStream["language"] = info.language;
+          videoStream["codec"] = info.videoCodecName;
+          videoStream["width"] = info.width;
+          videoStream["height"] = info.height;
+
+          result.append(videoStream);
+        }
+      }
+      break;
+
+    case Audio:
+    case Picture:
+    default:
+      break;
+    }
+  }
   else if (property == "subtitleenabled")
   {
     switch (player)
