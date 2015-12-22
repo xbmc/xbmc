@@ -86,7 +86,6 @@ public:
   virtual bool IsInMenu();
   virtual bool OnMouseMove(const CPoint &point)  { return MouseMove(point); }
   virtual bool OnMouseClick(const CPoint &point) { return MouseClick(point); }
-  virtual double GetTimeStampCorrection()        { return 0.0; }
   virtual void SkipStill();
   virtual bool GetState(std::string &xmlstate)         { return false; }
   virtual bool SetState(const std::string &xmlstate)   { return false; }

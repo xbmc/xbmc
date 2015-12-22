@@ -479,9 +479,11 @@ protected:
       iSelectedAudioStream = -1;
       iDVDStillTime        =  0;
       iDVDStillStartTime   =  0;
+      syncClock = false;
     }
 
     int state;                // current dvdstate
+    bool syncClock;
     unsigned int iDVDStillTime;      // total time in ticks we should display the still before continuing
     unsigned int iDVDStillStartTime; // time in ticks when we started the still
     int iSelectedSPUStream;   // mpeg stream id, or -1 if disabled

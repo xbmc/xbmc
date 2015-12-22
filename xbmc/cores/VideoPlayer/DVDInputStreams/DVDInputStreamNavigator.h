@@ -108,6 +108,7 @@ public:
 
   bool HasMenu() { return true; }
   bool IsInMenu() { return m_bInMenu; }
+  double GetTimeStampCorrection() { return (double)(m_iVobUnitCorrection * 1000) / 90; }
 
   int GetActiveSubtitleStream();
   int GetSubTitleStreamCount();

@@ -1403,9 +1403,9 @@ void CVideoPlayer::Process()
         CloseStream(m_CurrentAudio, true);
         CloseStream(m_CurrentVideo, true);
 
-        m_CurrentAudio.stream = NULL;
-        m_CurrentVideo.stream = NULL;
-        m_CurrentSubtitle.stream = NULL;
+        m_CurrentAudio.Clear();
+        m_CurrentVideo.Clear();
+        m_CurrentSubtitle.Clear();
         continue;
       }
 
@@ -1504,6 +1504,23 @@ void CVideoPlayer::Process()
           else
             CDVDDemuxUtils::FreeDemuxPacket(pkt);
         }
+      }
+    }
+
+    if (IsInMenu())
+    {
+      if (CDVDInputStream::IMenus* menu = dynamic_cast<CDVDInputStream::IMenus*>(m_pInputStream))
+      {
+        double correction = menu->GetTimeStampCorrection();
+        if (pPacket->dts > correction)
+          pPacket->dts -= correction;
+        if (pPacket->pts > correction)
+          pPacket->pts -= correction;
+      }
+      if (m_dvd.syncClock)
+      {
+        m_clock.Discontinuity(pPacket->dts);
+        m_dvd.syncClock = false;
       }
     }
 
@@ -2141,6 +2158,7 @@ void CVideoPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket
       m_offset_pts += correction;
       UpdateCorrection(pPacket, correction);
       lastdts = pPacket->dts;
+      CLog::Log(LOGDEBUG, "CVideoPlayer::CheckContinuity - update correction: %f", correction);
     }
     else
     {
@@ -3940,7 +3958,8 @@ int CVideoPlayer::OnDVDNavResult(void* pData, int iMessage)
         //dvdnav_cell_change_event_t* cell_change_event = (dvdnav_cell_change_event_t*)pData;
         CLog::Log(LOGDEBUG, "DVDNAV_CELL_CHANGE");
 
-        m_dvd.state = DVDSTATE_NORMAL;
+        if (m_dvd.state != DVDSTATE_STILL)
+          m_dvd.state = DVDSTATE_NORMAL;
 
         if( m_VideoPlayerVideo->IsInited() )
           m_VideoPlayerVideo->SendMessage(new CDVDMsg(CDVDMsg::VIDEO_NOSKIP));
@@ -3967,7 +3986,12 @@ int CVideoPlayer::OnDVDNavResult(void* pData, int iMessage)
         if(m_dvd.state == DVDSTATE_SEEK)
           m_dvd.state = DVDSTATE_NORMAL;
         else
-          m_messenger.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
+        {
+          bool sync = !IsInMenu();
+          FlushBuffers(false, DVD_NOPTS_VALUE, false, sync);
+          m_dvd.syncClock = true;
+          m_pDemuxer->Flush();
+        }
 
         return NAVRESULT_ERROR;
       }
@@ -4014,7 +4038,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
   CDVDInputStream::IMenus* pMenus = dynamic_cast<CDVDInputStream::IMenus*>(m_pInputStream);
   if (pMenus)
   {
-    if( m_dvd.state == DVDSTATE_STILL && m_dvd.iDVDStillTime != 0 && pMenus->GetTotalButtons() == 0 )
+    if (m_dvd.state == DVDSTATE_STILL && m_dvd.iDVDStillTime != 0 && pMenus->GetTotalButtons() == 0)
     {
       switch(action.GetID())
       {
@@ -4280,7 +4304,7 @@ bool CVideoPlayer::IsInMenu() const
   CDVDInputStream::IMenus* pStream = dynamic_cast<CDVDInputStream::IMenus*>(m_pInputStream);
   if (pStream)
   {
-    if( m_dvd.state == DVDSTATE_STILL )
+    if (m_dvd.state == DVDSTATE_STILL)
       return true;
     else
       return pStream->IsInMenu();

@@ -242,11 +242,16 @@ int CDVDInputStreamNavigator::Read(uint8_t* buf, int buf_size)
   int iBytesRead;
 
   int NOPcount = 0;
-  while(true) {
+  while (true)
+  {
     int navresult = ProcessBlock(buf, &iBytesRead);
-    if (navresult == NAVRESULT_HOLD)       return 0; // return 0 bytes read;
-    else if (navresult == NAVRESULT_ERROR) return -1;
-    else if (navresult == NAVRESULT_DATA)  return iBytesRead;
+
+    if (navresult == NAVRESULT_HOLD)
+      return 0; // return 0 bytes read;
+    else if (navresult == NAVRESULT_ERROR)
+      return -1;
+    else if (navresult == NAVRESULT_DATA)
+      return iBytesRead;
     else if (navresult == NAVRESULT_NOP)
     {
       NOPcount++;
@@ -274,7 +279,8 @@ int64_t CDVDInputStreamNavigator::Seek(int64_t offset, int whence)
 
 int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
 {
-  if (!m_dvdnav) return -1;
+  if (!m_dvdnav)
+    return -1;
 
   int result;
   int len = 2048;
@@ -283,7 +289,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
   uint8_t* buf = m_lastblock;
   int iNavresult = -1;
 
-  if(m_holdmode == HOLDMODE_HELD)
+  if (m_holdmode == HOLDMODE_HELD)
     return NAVRESULT_HOLD;
 
   // the main reading function
@@ -328,10 +334,6 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
         // indirectly by some user interaction.
         m_holdmode = HOLDMODE_NONE;
         iNavresult = m_pVideoPlayer->OnDVDNavResult(buf, DVDNAV_STILL_FRAME);
-
-        /* if user didn't care for action, just skip it */
-        if(iNavresult == NAVRESULT_NOP)
-          SkipStill();
       }
       break;
 
@@ -440,7 +442,11 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
         }
         else
         {
-          m_bInMenu   = (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav));
+          bool menu = (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav));
+          if (menu != m_bInMenu)
+          {
+            m_bInMenu = menu;
+          }
           iNavresult = m_pVideoPlayer->OnDVDNavResult(buf, DVDNAV_VTS_CHANGE);
         }
       }
@@ -536,7 +542,11 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
         }
 
         /* if we have any buttons or are not in vts domain we assume we are in meny */
-        m_bInMenu = pci->hli.hl_gi.hli_ss || (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav));
+        bool menu = pci->hli.hl_gi.hli_ss || (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav));
+        if (menu != m_bInMenu)
+        {
+          m_bInMenu = menu;
+        }
 
         /* check for any gap in the stream, this is likely a discontinuity */
         int64_t gap = (int64_t)pci->pci_gi.vobu_s_ptm - m_iVobUnitStop;
@@ -550,7 +560,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
             iNavresult = NAVRESULT_HOLD;
             break;
           }
-          // m_iVobUnitCorrection += gap;
+          m_iVobUnitCorrection += gap;
 
           CLog::Log(LOGDEBUG, "DVDNAV_NAV_PACKET - DISCONTINUITY FROM:%" PRId64" TO:%" PRId64" DIFF:%" PRId64, (m_iVobUnitStop * 1000)/90, ((int64_t)pci->pci_gi.vobu_s_ptm*1000)/90, (gap*1000)/90);
         }
@@ -817,7 +827,8 @@ void CDVDInputStreamNavigator::OnPrevious()
 
 void CDVDInputStreamNavigator::SkipStill()
 {
-  if (!m_dvdnav) return ;
+  if (!m_dvdnav)
+    return ;
   m_dll.dvdnav_still_skip(m_dvdnav);
 }
 
