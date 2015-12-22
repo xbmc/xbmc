@@ -131,6 +131,11 @@ bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSi
 {
   
   uint8_t* fbuffer = (uint8_t*)av_malloc(FFMPEG_FILE_BUFFER_SIZE);
+  if (!fbuffer)
+  {
+    CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate FFMPEG_FILE_BUFFER_SIZE");
+    return false;
+  }
   MemBuffer buf;
   buf.data = buffer;
   buf.size = bufSize;
@@ -282,6 +287,11 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
   }
 
   AVPicture* pictureRGB = static_cast<AVPicture*>(av_mallocz(sizeof(AVPicture)));
+  if (!pictureRGB)
+  {
+    CLog::LogFunction(LOGERROR, __FUNCTION__, "AVPicture could not be allocated");
+    return false;
+  }
 
   int size = avpicture_fill(pictureRGB, NULL, AV_PIX_FMT_RGB32, width, height);
   if (size < 0)
