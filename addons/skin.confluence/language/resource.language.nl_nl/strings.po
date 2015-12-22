@@ -222,7 +222,7 @@ msgstr "Fanart achtergronden verbergen"
 
 msgctxt "#31122"
 msgid "Hide EPG if RDS is present on channel window"
-msgstr "Verberg EPG wanneer RDS is aanwezig op kanaalvenster"
+msgstr "Verberg EPG wanneer RDS aanwezig is op kanaalvenster"
 
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
@@ -438,7 +438,7 @@ msgstr "[B]VIDEO-INSTELLINGEN CONFIGUREREN[/B][CR][CR]Beheer uw videobibliotheek
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
-msgstr "[B]MUZIEKINSTELLINGEN[/B][CR][CR]Beheer uw muziekbibliotheek · Instellen muziekplayback · Verander muzieklijsten opties[CR]Instellen nummerinstelling"
+msgstr "[B]CONFIGUREER MUZIEKINSTELLINGEN[/B][CR][CR]Beheer uw muziekbibliotheek · Instellen muziek afspeel opties · Verander muzieklijsten opties[CR]Instellen nummer indiening "
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

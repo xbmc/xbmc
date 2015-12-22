@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Sakrij pozadinu slike omota"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Sakrij EPG ako je RDS prisutan na prozoru programa"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Prikaži pozadinu \"Trenutno se reproducira\" videa"
@@ -431,6 +435,10 @@ msgstr "[B]PRILAGODITE POSTAVKE IZGLEDA[/B][CR][CR]Promijenite presvlaku · Post
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]PRILAGODITE VIDEO POSTAVKE[/B][CR][CR]Upravljajte svojom videotekom · Postavite mogućnosti reprodukcije videa[CR]Promijenite mogućnosti popisivanja video sadržaja · Postavite slova podnaslova"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]PRILAGODITE POSTAVKE GLAZBE[/B][CR][CR]Upravljajte svojm fonotekom · Postavite mogućnosti reprodukcije glazbe · Promjenite mogućnosti popisivanja glazbenoga sadržaja[CR]Postavite slanje pjesama"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

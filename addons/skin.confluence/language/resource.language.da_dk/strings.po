@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Skjul baggrundsfankunst"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Skjul EPG hvis RDS er til stede på kanalvindue"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Vis \"Spiller nu\" i baggrunden for videoer"
@@ -431,6 +435,10 @@ msgstr "[B]KONFIGURER INDSTILLINGER FOR UDSEENDE[/B][CR][CR]Skift skin · Vælg 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]KONFIGURER VIDEOINDSTILLINGER[/B][CR][CR]Administrer dit videobibliotek · Vælg indstillinger for videoafspilning · Skift indstillinger for videooversigt[CR]Vælg skrifttype til undertekster"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]KONFIGURER MUSIKINDSTILLINGER[/B][CR][CR]Administrer dit musikbibliotek · Angiv indstillinger for musikafspilning · Ændr indstillinger for musikvisning[CR]Opsæt sangindsendelse"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

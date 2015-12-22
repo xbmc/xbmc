@@ -210,7 +210,7 @@ msgstr "Prikaži nedavno dodate albume"
 
 msgctxt "#31117"
 msgid "Show recently added videos"
-msgstr "Prikaži nedavno dodat video materijal"
+msgstr "Prikaži nedavno dodate videe"
 
 msgctxt "#31118"
 msgid "Home page programs submenu"
@@ -220,13 +220,17 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Sakrij pozadinsku sliku umetnosti ljubitelja"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Sakrij EPG ako je RDS prisutan na prozoru kanala"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
-msgstr "Prikaži u pozadini \"Sada Pušteni\" video"
+msgstr "Prikaži u pozadini \"Sada pušteni\" video"
 
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
-msgstr "Prikaži u pozadini \"Sada Pušteno\" vizualizaciju"
+msgstr "Prikaži u pozadini \"Sada pušteno\" vizuelizaciju"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -242,7 +246,7 @@ msgstr "Dodatni program za tekstove pesama"
 
 msgctxt "#31134"
 msgid "Home page \"Videos\" submenu"
-msgstr "Podmeni \"Video materijal\" na glavnom ekranu"
+msgstr "Podmeni \"Videi\" na glavnom ekranu"
 
 msgctxt "#31135"
 msgid "Home page \"Music\" submenu"
@@ -422,7 +426,7 @@ msgstr "Podrazumevana maska bez velikih slova"
 
 msgctxt "#31392"
 msgid "Arial based"
-msgstr "Zasnovano na Arialu"
+msgstr "Zasnovano na Arial-u"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
@@ -431,6 +435,10 @@ msgstr "[B]PODESITE PODEŠAVANJA PRIKAZA[/B][CR][CR]Promenite masku · Postavite
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]PODESITE VIDEO PODEŠAVANJA[/B][CR][CR]Upravljajte vašom video bibliotekom · Postavite opcije video reprodukcije - Promenite opcije izlistavanja filmova[CR]Postavite slova titlova"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]PODESITE MUZIČKA PODEŠAVANJA[/B][CR][CR]Upravljajte vašom muzičkom bibliotekom · Postavite opcije reprodukcije muzike - Promenite opcije izlistavanja muzike[CR]Postavite slanje pesama"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
@@ -450,11 +458,11 @@ msgstr "[B]PODESITE DODATNE PROGRAME[/B][CR][CR]Upravljajte vašim instaliranim 
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]PODESITE TV PODEŠAVANJA[/B][CR][CR]Promenite informacije celog ekrana · Upravljajte podešavanjima EPG podataka "
+msgstr "[B]PODESITE TV PODEŠAVANJA[/B][CR][CR]Promenite informacije celog ekrana · Upravljajte podešavanjima EPG podataka"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]PODESITE PODEŠAVANJA SERVISA[/B][CR][CR]Podesite kontrolu Kodija putem UPnP i HTTP · Podesite deljenje datoteka[CR]Omogućite Zeroconf - Podesite AirPlay"
+msgstr "[B]PODESITE PODEŠAVANJA SERVISA[/B][CR][CR]Podesite kontrolu Kodi putem UPnP i HTTP · Podesite deljenje datoteka[CR]Omogućite Zeroconf - Podesite AirPlay"
 
 msgctxt "#31411"
 msgid "First run help..."
@@ -478,11 +486,11 @@ msgstr "Izaberite vaš Kodi korisnički profil[CR]za prijavu, a potom nastavite 
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
-msgstr "Prikaži ili sakrij ekran za prijavu pri pokretanju"
+msgstr "Prikaži ili sakrij ekran za prijavu pri pokretanju."
 
 msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."
-msgstr "Izaberite profil koji će se koristiti prilikom pokretanja kada je ekran za prijavu onemogućen"
+msgstr "Izaberite profil koji će se koristiti prilikom pokretanja kada je ekran za prijavu onemogućen."
 
 msgctxt "#31501"
 msgid "Scheduled time"
@@ -506,7 +514,7 @@ msgstr "Izbriši grupu"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
-msgstr "Dostupne[CR]grupe"
+msgstr "Dostupne[CR]Grupe"
 
 msgctxt "#31509"
 msgid "Channel group"
@@ -566,7 +574,7 @@ msgstr "TV"
 
 msgctxt "#31953"
 msgid "VIDEOS"
-msgstr "VIDEO MATERIJAL"
+msgstr "VIDEI"
 
 msgctxt "#31954"
 msgid "MOVIES"
@@ -586,7 +594,7 @@ msgstr "PROGRAMI"
 
 msgctxt "#31958"
 msgid "PLAY DISC"
-msgstr "OPTIČKI DISK"
+msgstr "PUSTI DISK"
 
 msgctxt "#31959"
 msgid "SYSTEM"

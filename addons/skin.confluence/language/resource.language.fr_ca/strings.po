@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Masquer le fanart d’arrière-plan"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Cacher le GÉP si RDS est présent sur la fenêtre de la chaîne"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Afficher la vidéo d'arrière-plan « Lecture en cours »"
@@ -431,6 +435,10 @@ msgstr "[B]CONFIGURER LES PARAMÈTRES D'APPARENCE[/B][CR][CR]Changer l'habillage
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]CONFIGURER LES PARAMÈTRES DES VIDÉOS[/B][CR][CR]Gérer la vidéothèque · Définir les options de lecture · Changer les options de listage des vidéos[CR]Définir la police des sous-titres"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]CONFIGURER LES PARAMÈTRES DE LA MUSIQUE[/B][CR][CR]Gérer l'audiothèque · Définir les options de lecture · Changer les options de listage de la musique[CR]Paramétrer les envois de chansons"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

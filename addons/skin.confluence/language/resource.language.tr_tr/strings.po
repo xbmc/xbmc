@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Arka plan fanartını gizle"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Eğer kanal penceresinde RDS varsa EPG'yi gizle"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Arkaplanda oynatılan videoyu göster"
@@ -431,6 +435,10 @@ msgstr "[B]GÖRÜNÜM AYARLARINI YAPILANDIR[/B][CR][CR]Dış görünümü deği�
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]VİDEO AYARLARINI YAPILANDIR[/B][CR][CR]Video kitaplığını yönet · Video oynatma seçeneklerini ayarla · Video listeleme seçeneklerini değiştir[CR]Altyazı yazı tiplerini ayarla"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]MÜZİK AYARLARINI YAPILANDIR[/B][CR][CR]Müzik kitaplığını yönet · Müzik çalma seçeneklerini ayarla · Müzik listeleme seçeneklerini değiştir[CR]Şarkı sunumu ayarları"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

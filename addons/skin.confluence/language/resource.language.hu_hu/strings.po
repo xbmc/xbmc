@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Fanart-háttér elrejtése"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Rejtse el az EPG-t, ha az RDS látható a csatorna ablakban"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "A háttérben az éppen játszott videó megjelenítése"
@@ -431,6 +435,10 @@ msgstr "[B]MEGJELENÍTÉS MÓDJÁNAK BEÁLLÍTÁSA[/B][CR][CR]Felszín váltása
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]VIDEÓ BEÁLLÍTÁSOK[/B][CR][CR]Film médiatár kezelése · Videólejátszás beállítása · Videólistázás módjának beállítása[CR]Feliratok karaktertípusának váltása"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]ZENE BEÁLLÍTÁSOK[/B][CR][CR]Zene médiatár kezelése · Zenelejátszás beállítása · Zenelistázás módjának beállítása[CR]Hang benyújtásának beállítása"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

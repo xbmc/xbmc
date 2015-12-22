@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Sembunyi seni peminat latar belakang"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "sembunyi EPG jika RDS hadir pada tetingkap saluran"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Tunjuk video latar belakang \"Kini dimainkan\""
@@ -431,6 +435,10 @@ msgstr "[B]KONFIGUR TETAPAN PENAMPILAN[/B][CR][CR]Ubah kulit · Tetapkan bahasa 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]KONFIGUR TETAPAN VIDEO[/B][CR][CR]Ubah pustaka video anda · Tetapkan pilihan main balik video · Ubah pilihan penyenaraian video[CR]Tetapkan fon sarikata"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]KONFIGUR TETAPAN MUZIK[/B][CR][CR]Urus pustaka muzik anda · Tetapkan pilihan main balik muzik · Ubah pilihan penyenaraian[CR]Pasang penyerahan lagu"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

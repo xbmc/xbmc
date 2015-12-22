@@ -432,6 +432,10 @@ msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]비디오 설정[/B][CR][CR]비디오 라이브러리 관리 · 비디오 재생 옵션 변경 · 비디오 목록 옵션 변경[CR]자막 글꼴 설정"
 
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]음악 설정[/B][CR][CR]음악 라이브러리 관리 · 음악 재생 옵션 변경 · 음악 목록 옵션 변경[CR]노래 전송 설정"
+
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
 msgstr "[B]사진 설정[/B][CR][CR]사진 목록 옵션 변경 · 슬라이드쇼 설정"

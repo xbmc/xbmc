@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "隐藏同人画背景"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "频道窗口使用 RDS 时隐藏电子节目单"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "在背景显示“正在播放”视频"
@@ -431,6 +435,10 @@ msgstr "[B]设置用户界面[/B][CR][CR]变换皮肤 · 设置语言和区域 �
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]设置视频选项[/B][CR][CR]管理视频资料库 · 设置视频播放选项 · 修改视频列表选项 · 设置字幕字体"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]设置音乐选项[/B][CR][CR]管理音乐资料库 · 设置音乐播放选项 · 修改音乐列表选项 · 设置歌曲提交"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
