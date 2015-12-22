@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.dim"
        name="Dim"
-       version="1.0.27"
+       version="1.0.28"
        provider-name="Team-Kodi">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -53,7 +53,7 @@
     <summary lang="sk_SK">Šetrič obrazovky, ktorý zatemní  Vašu obrazovku </summary>
     <summary lang="sl_SI">Ohranjevalnik zaslona, ki zatemni zaslon</summary>
     <summary lang="sq_AL">Ruajtës ekrani, që errëson ekranin</summary>
-    <summary lang="sr_RS">Чувар екрана који затамни ваш екран.</summary>
+    <summary lang="sr_RS">Чувар екрана који пригушује ваш екран</summary>
     <summary lang="sr_RS@latin">Čuvar ekrana koji prigušuje vaš ekran</summary>
     <summary lang="sv_SE">En skärmsläckare som tonar ned din skärm</summary>
     <summary lang="tg_TJ">Пардаи экран бо таъсири «Пардаи экрани камнур»</summary>
@@ -111,7 +111,7 @@
     <description lang="sk_SK">"Dim" šetrič obrazovky je jednoduchý šetrič, ktorý zatemní Vašu obrazovku podľa nastavenia v rozsahu 20 až 100%.</description>
     <description lang="sl_SI">Dim je enostaven ohranjevalnik zaslona, ki zatemni zaslon do izbrane svetlosti med 20 in 100%.</description>
     <description lang="sq_AL">Errësuesi i ekranit është një mbrojtës i thjeshtë ekrani, i cili errëson (zbeh) ekranin tuaj në varësi të një vlere të axhustueshme nga 20 deri në 100%. </description>
-    <description lang="sr_RS">Dim чувар екрана је једноставан чувар екрана који ће затамнети (постепено) ваш екран на подешену вредност између 20 и 100%.</description>
+    <description lang="sr_RS">Чувар екрана Пригуши је једноставан чувар екрана који ће пригушити (избледети) ваш екран на подешену вредност између 20 и 100% .</description>
     <description lang="sr_RS@latin">Čuvar ekrana Priguši je jednostavan čuvar ekrana koji će prigušiti (izbledeti) vaš ekran na podešenu vrednost između 20 i 100% .</description>
     <description lang="sv_SE">Detta är en enkel skärmsläckare som tonar ned ljusstyrkan på din skärm till ett angivet värde mellan 20 och 100%</description>
     <description lang="tg_TJ">Ин пардаи экран бо таъсири «Пардаи экрани камнур» хеле осон мебошад, ки сатҳи камнури экранро то дараҷае байни 20% ва 100% тағйир меёбад.</description>
