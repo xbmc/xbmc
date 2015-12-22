@@ -24,6 +24,7 @@
 #include "DllPaths.h"
 #include "GUIUserMessages.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 #include "CompileInfo.h"
 
 #undef BOOL
@@ -629,12 +630,26 @@ const std::string& CDarwinUtils::GetManufacturer(void)
   return manufName;
 }
 
-bool CDarwinUtils::IsAliasShortcut(const std::string& path)
+bool CDarwinUtils::IsAliasShortcut(const std::string& path, bool isdirectory)
 {
   bool ret = false;
 #if defined(TARGET_DARWIN_OSX)
-  NSString *nsPath = [NSString stringWithUTF8String:path.c_str()];
-  NSURL *nsUrl = [NSURL fileURLWithPath:nsPath];
+  CCocoaAutoPool pool;
+  
+  NSURL *nsUrl;
+  if (isdirectory)
+  {
+    std::string cleanpath = path;
+    URIUtils::RemoveSlashAtEnd(cleanpath);
+    NSString *nsPath = [NSString stringWithUTF8String:cleanpath.c_str()];
+    nsUrl = [NSURL fileURLWithPath:nsPath isDirectory:TRUE];
+  }
+  else
+  {
+    NSString *nsPath = [NSString stringWithUTF8String:path.c_str()];
+    nsUrl = [NSURL fileURLWithPath:nsPath isDirectory:FALSE];
+  }
+  
   NSNumber* wasAliased = nil;
 
   if (nsUrl != nil)
