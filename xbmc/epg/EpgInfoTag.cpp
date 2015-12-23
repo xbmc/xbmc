@@ -202,7 +202,7 @@ void CEpgInfoTag::Serialize(CVariant &value) const
   value["filenameandpath"] = m_strFileNameAndPath;
   value["starttime"] = m_startTime.IsValid() ? m_startTime.GetAsDBDateTime() : StringUtils::Empty;
   value["endtime"] = m_endTime.IsValid() ? m_endTime.GetAsDBDateTime() : StringUtils::Empty;
-  value["runtime"] = StringUtils::Format("%d", GetDuration() / 60);
+  value["runtime"] = GetDuration() / 60;
   value["firstaired"] = m_firstAired.IsValid() ? m_firstAired.GetAsDBDate() : StringUtils::Empty;
   value["progress"] = Progress();
   value["progresspercentage"] = ProgressPercentage();
