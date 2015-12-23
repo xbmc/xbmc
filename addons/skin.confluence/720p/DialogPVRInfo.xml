@@ -221,6 +221,12 @@
 				<label>-</label>
 				<visible>Window.IsActive(PVRGuideInfo)</visible>
 			</control>
+			<control type="button" id="9">
+				<description>Enable</description>
+				<include>ButtonInfoDialogsCommonValues</include>
+				<label>-</label>
+				<visible>Window.IsActive(PVRGuideInfo)</visible>
+			</control>
 			<control type="button" id="7">
 				<description>OK</description>
 				<include>ButtonInfoDialogsCommonValues</include>
