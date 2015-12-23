@@ -565,6 +565,7 @@ lib/cpluff/stamp-h1
 
 # /xbmc/platform/darwin/osx/
 /xbmc/platform/darwin/osx/Info.plist
+/xbmc/platform/darwin/osx/Makefile
 
 # /xbmc/platform/darwin/ios/
 /xbmc/platform/darwin/osx/ios/IOS-Info.plist
