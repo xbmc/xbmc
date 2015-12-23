@@ -294,19 +294,9 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, MUSIC_INFO::EmbeddedArt *art,
         else if (desc == "ALBUMARTIST" || desc == "ALBUM ARTIST")
           SetAlbumArtist(tag, StringListToVectorString(stringList));
         else if (desc == "ARTISTS")
-        {
-          if (id3v2->header()->majorVersion() < 4)
-            tag.SetMusicBrainzArtistHints(StringListToVectorString(TagLib::StringList::split(stringList.front(), TagLib::String("/"))));
-          else
-            tag.SetMusicBrainzArtistHints(StringListToVectorString(stringList));
-        }
+          SetArtistHints(tag, StringListToVectorString(stringList));
         else if (desc == "ALBUMARTISTS" || desc == "ALBUM ARTISTS")
-        {
-          if (id3v2->header()->majorVersion() < 4)
-            tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(TagLib::StringList::split(stringList.front(), TagLib::String("/"))));
-          else
-            tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(stringList));
-        }
+          SetAlbumArtistHints(tag, StringListToVectorString(stringList));
         else if (desc == "MOOD")
           tag.SetMood(stringList.front().to8Bit(true));
         else if (g_advancedSettings.m_logLevel == LOG_LEVEL_MAX)
@@ -398,11 +388,11 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
     if (it->first == "ARTIST")
       SetArtist(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "ARTISTS")
-      tag.SetMusicBrainzArtistHints(StringListToVectorString(it->second.toStringList()));
+      SetArtistHints(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "ALBUMARTIST" || it->first == "ALBUM ARTIST")
       SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "ALBUMARTISTS" || it->first == "ALBUM ARTISTS")
-      tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(it->second.toStringList()));
+      SetAlbumArtistHints(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "ALBUM")
       tag.SetAlbum(it->second.toString().to8Bit(true));
     else if (it->first == "TITLE")
@@ -593,13 +583,13 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& 
     else if (it->first == "\251ART")
       SetArtist(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "----:com.apple.iTunes:ARTISTS")
-      tag.SetMusicBrainzArtistHints(StringListToVectorString(it->second.toStringList()));
+      SetArtistHints(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "\251alb")
       tag.SetAlbum(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "aART")
       SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "----:com.apple.iTunes:ALBUMARTISTS")
-      tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(it->second.toStringList()));
+      SetAlbumArtistHints(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "\251gen")
       SetGenre(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "\251cmt")
@@ -743,6 +733,14 @@ void CTagLoaderTagLib::SetArtist(CMusicInfoTag &tag, const std::vector<std::stri
     tag.SetArtist(values, true); 
 }
 
+void CTagLoaderTagLib::SetArtistHints(CMusicInfoTag &tag, const std::vector<std::string> &values)
+{
+  if (values.size() == 1)
+    tag.SetMusicBrainzArtistHints(StringUtils::Split(values[0], g_advancedSettings.m_musicItemSeparator));
+  else
+    tag.SetMusicBrainzArtistHints(values);
+}
+
 const std::vector<std::string> CTagLoaderTagLib::SplitMBID(const std::vector<std::string> &values)
 {
   if (values.empty() || values.size() > 1)
@@ -771,6 +769,14 @@ void CTagLoaderTagLib::SetAlbumArtist(CMusicInfoTag &tag, const std::vector<std:
     // Fill both artist vector and artist desc from tag value.
     // Note desc may not be empty as it could have been set by previous parsing of ID3v2 before APE
     tag.SetAlbumArtist(values, true);
+}
+
+void CTagLoaderTagLib::SetAlbumArtistHints(CMusicInfoTag &tag, const std::vector<std::string> &values)
+{
+  if (values.size() == 1)
+    tag.SetMusicBrainzAlbumArtistHints(StringUtils::Split(values[0], g_advancedSettings.m_musicItemSeparator));
+  else
+    tag.SetMusicBrainzAlbumArtistHints(values);
 }
 
 void CTagLoaderTagLib::SetGenre(CMusicInfoTag &tag, const std::vector<std::string> &values)
