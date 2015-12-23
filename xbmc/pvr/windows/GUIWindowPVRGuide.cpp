@@ -99,14 +99,6 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
         CPVRTimerTypePtr timerType(timer->GetTimerType());
         if (timerType && !timerType->IsReadOnly())
           buttons.Add(CONTEXT_BUTTON_DELETE_TIMER, 19060);  /* Delete timer */
-
-        if (timerType && timerType->SupportsEnableDisable())
-        {
-          if (timer->m_state == PVR_TIMER_STATE_DISABLED)
-            buttons.Add(CONTEXT_BUTTON_ACTIVATE, 843);    /* Activate */
-          else
-            buttons.Add(CONTEXT_BUTTON_ACTIVATE, 844);    /* Deactivate */
-        }
       }
     }
     else
@@ -404,7 +396,6 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       OnContextButtonBegin(pItem.get(), button) ||
       OnContextButtonEnd(pItem.get(), button) ||
       OnContextButtonNow(pItem.get(), button) ||
-      OnContextButtonActivate(pItem.get(), button) ||
       CGUIWindowPVRBase::OnContextButton(itemNumber, button);
 }
 
@@ -593,19 +584,6 @@ bool CGUIWindowPVRGuide::OnContextButtonDeleteTimer(CFileItem *item, CONTEXT_BUT
   if (button == CONTEXT_BUTTON_DELETE_TIMER)
   {
     DeleteTimer(item);
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRGuide::OnContextButtonActivate(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_ACTIVATE)
-  {
-    EnableDisableTimer(item);
     bReturn = true;
   }
 
