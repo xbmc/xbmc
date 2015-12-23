@@ -3851,6 +3851,7 @@ bool CVideoDatabase::GetVideoSettings(int idFile, CVideoSettings &settings)
       settings.m_StereoMode = m_pDS->fv("StereoMode").get_asInt();
       settings.m_StereoInvert = m_pDS->fv("StereoInvert").get_asBool();
       settings.m_SubtitleCached = false;
+      settings.m_VideoStream = m_pDS->fv("VideoStream").get_asInt();
       m_pDS->close();
       return true;
     }
