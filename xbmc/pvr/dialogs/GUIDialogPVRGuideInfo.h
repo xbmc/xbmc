@@ -51,7 +51,6 @@ namespace PVR
 
     bool OnClickButtonOK(CGUIMessage &message);
     bool OnClickButtonRecord(CGUIMessage &message);
-    bool OnClickButtonEnable(CGUIMessage &message);
     bool OnClickButtonPlay(CGUIMessage &message);
     bool OnClickButtonFind(CGUIMessage &message);
 
