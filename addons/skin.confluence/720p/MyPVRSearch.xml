@@ -229,15 +229,7 @@
 								<width>20</width>
 								<height>20</height>
 								<texture>PVR-HasTimer.png</texture>
-								<visible>ListItem.HasTimer + !ListItem.IsRecording + !ListItem.HasTimerSchedule + ListItem.IsEnabled</visible>
-							</control>
-							<control type="image">
-								<left>980</left>
-								<top>10</top>
-								<width>20</width>
-								<height>20</height>
-								<texture>PVR-HasTimer-Disabled.png</texture>
-								<visible>ListItem.HasTimer + !ListItem.IsRecording + !ListItem.HasTimerSchedule + !ListItem.IsEnabled</visible>
+								<visible>ListItem.HasTimer + !ListItem.IsRecording + !ListItem.HasTimerSchedule</visible>
 							</control>
 							<control type="image">
 								<left>980</left>
@@ -245,15 +237,7 @@
 								<width>20</width>
 								<height>20</height>
 								<texture>PVR-HasTimerSchedule.png</texture>
-								<visible>ListItem.HasTimerSchedule + !ListItem.IsRecording + ListItem.IsEnabled</visible>
-							</control>
-							<control type="image">
-								<left>980</left>
-								<top>10</top>
-								<width>20</width>
-								<height>20</height>
-								<texture>PVR-HasTimerSchedule-Disabled.png</texture>
-								<visible>ListItem.HasTimerSchedule + !ListItem.IsRecording + !ListItem.IsEnabled</visible>
+								<visible>ListItem.HasTimerSchedule + !ListItem.IsRecording</visible>
 							</control>
 							<control type="label">
 								<left>1010</left>
@@ -390,15 +374,7 @@
 								<width>20</width>
 								<height>20</height>
 								<texture>PVR-HasTimer.png</texture>
-								<visible>ListItem.HasTimer + !ListItem.IsRecording + !ListItem.HasTimerSchedule + ListItem.IsEnabled</visible>
-							</control>
-							<control type="image">
-								<left>980</left>
-								<top>10</top>
-								<width>20</width>
-								<height>20</height>
-								<texture>PVR-HasTimer-Disabled.png</texture>
-								<visible>ListItem.HasTimer + !ListItem.IsRecording + !ListItem.HasTimerSchedule + !ListItem.IsEnabled</visible>
+								<visible>ListItem.HasTimer + !ListItem.IsRecording + !ListItem.HasTimerSchedule</visible>
 							</control>
 							<control type="image">
 								<left>980</left>
@@ -406,15 +382,7 @@
 								<width>20</width>
 								<height>20</height>
 								<texture>PVR-HasTimerSchedule.png</texture>
-								<visible>ListItem.HasTimerSchedule + !ListItem.IsRecording + ListItem.IsEnabled</visible>
-							</control>
-							<control type="image">
-								<left>980</left>
-								<top>10</top>
-								<width>20</width>
-								<height>20</height>
-								<texture>PVR-HasTimerSchedule-Disabled.png</texture>
-								<visible>ListItem.HasTimerSchedule + !ListItem.IsRecording + !ListItem.IsEnabled</visible>
+								<visible>ListItem.HasTimerSchedule + !ListItem.IsRecording</visible>
 							</control>
 							<control type="label">
 								<left>1010</left>

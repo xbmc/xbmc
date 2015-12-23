@@ -79,7 +79,6 @@ namespace PVR
     static bool ShowTimerSettings(CFileItem *item);
     static bool AddTimer(CFileItem *item, bool bAdvanced);
     static bool DeleteTimer(CFileItem *item);
-    static bool EnableDisableTimer(CFileItem *item);
     static bool StopRecordFile(CFileItem *item);
 
   protected:

@@ -625,8 +625,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "imdbnumber",       LISTITEM_IMDBNUMBER },
                                   { "episodename",      LISTITEM_EPISODENAME },
                                   { "timertype",        LISTITEM_TIMERTYPE },
-                                  { "epgeventtitle",    LISTITEM_EPG_EVENT_TITLE },
-                                  { "isenabled",        LISTITEM_ISENABLED }};
+                                  { "epgeventtitle",    LISTITEM_EPG_EVENT_TITLE }};
 
 const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
                                   { "preset",           VISUALISATION_PRESET },
@@ -5918,7 +5917,8 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       if (pItem->HasEPGInfoTag())
       {
         CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
-        return (timer && timer->HasPVRTimerInfoTag());
+        if (timer && timer->HasPVRTimerInfoTag())
+          return timer->GetPVRTimerInfoTag()->IsActive();
       }
     }
     else if (condition == LISTITEM_HASTIMERSCHEDULE)
@@ -5926,15 +5926,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       if (pItem->HasEPGInfoTag())
       {
         CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
-        return (timer && timer->HasPVRTimerInfoTag() && timer->GetPVRTimerInfoTag()->GetTimerScheduleId() != PVR_TIMER_NO_PARENT);
-      }
-    }
-    else if (condition == LISTITEM_ISENABLED)
-    {
-      if (pItem->HasEPGInfoTag())
-      {
-        CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
-        if (timer && timer->HasPVRTimerInfoTag())
+        if (timer && timer->HasPVRTimerInfoTag() && timer->GetPVRTimerInfoTag()->GetTimerScheduleId() != PVR_TIMER_NO_PARENT)
           return timer->GetPVRTimerInfoTag()->IsActive();
       }
     }
