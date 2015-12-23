@@ -41,6 +41,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "Util.h"
+#include <algorithm>
 #include <cassert>
 
 extern "C" {
@@ -49,8 +50,6 @@ extern "C" {
 #include "libavutil/opt.h"
 #include "libswresample/swresample.h"
 }
-
-using namespace std;
 
 // the size of the audio_render output port buffers
 #define AUDIO_DECODE_OUTPUT_BUFFER (32*1024)
