@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     SDL - Simple DirectMedia Layer
     Copyright (C) 1997-2009 Sam Lantinga
@@ -13,7 +15,7 @@
     Lesser General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with XBMC; see the file COPYING.  If not, see
+    along with Kodi; see the file COPYING.  If not, see
     <http://www.gnu.org/licenses/>.
 
     Sam Lantinga
@@ -21,9 +23,6 @@
 */
 
 /* Include file for SDL keyboard event handling */
-
-#ifndef _XBMC_keyboard_h
-#define _XBMC_keyboard_h
 
 #include <stdint.h>
 
@@ -55,4 +54,3 @@ typedef struct XBMC_keysym {
 /* This is the mask which refers to all hotkey bindings */
 #define XBMC_ALL_HOTKEYS		0xFFFFFFFF
 
-#endif /* _XBMC_keyboard_h */

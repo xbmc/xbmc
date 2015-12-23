@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * Apple System Management Control (SMC) Tool
  * Copyright (C) 2006 devnull
@@ -17,10 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef __SMC_H__
-#define __SMC_H__
 #include <libkern/OSTypes.h>
-#endif
 
 #define SMC_VERSION               "0.01"
 

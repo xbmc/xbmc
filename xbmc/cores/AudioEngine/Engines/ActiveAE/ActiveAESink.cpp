@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2010-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2010-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -654,7 +654,7 @@ void CActiveAESink::EnumerateSinkList(bool force)
   unsigned int c_retry = 4;
   m_sinkInfoList.clear();
   CAESinkFactory::EnumerateEx(m_sinkInfoList);
-  while(m_sinkInfoList.size() == 0 && c_retry > 0)
+  while(m_sinkInfoList.empty() && c_retry > 0)
   {
     CLog::Log(LOGNOTICE, "No Devices found - retry: %d", c_retry);
     Sleep(1500);

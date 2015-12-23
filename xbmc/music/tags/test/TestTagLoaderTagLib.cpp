@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2012-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2012-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -59,11 +59,11 @@ TYPED_TEST(TestTagParser, ParsesBasicTag) {
   EXPECT_EQ(1985, tag.GetYear());
   EXPECT_EQ(2, tag.GetTrackNumber());
   EXPECT_EQ(1u, tag.GetArtist().size());
-  if (tag.GetArtist().size() > 0) EXPECT_EQ("artist", tag.GetArtist().front());
+  if (!tag.GetArtist().empty()) EXPECT_EQ("artist", tag.GetArtist().front());
   EXPECT_EQ("album", tag.GetAlbum());
   EXPECT_EQ("comment", tag.GetComment());
   EXPECT_EQ(1u, tag.GetGenre().size());
-  if (tag.GetGenre().size() > 0) EXPECT_EQ("Jazz", tag.GetGenre().front());
+  if (!tag.GetGenre().empty()) EXPECT_EQ("Jazz", tag.GetGenre().front());
   EXPECT_EQ("title", tag.GetTitle());
 }
 
@@ -140,10 +140,10 @@ TYPED_TEST(TestTagParser, FooProperties) {
   EXPECT_EQ(0, tag.GetYear());
   EXPECT_EQ(0, tag.GetTrackNumber());
   EXPECT_EQ(1u, tag.GetArtist().size());
-  if (tag.GetArtist().size() > 0) EXPECT_EQ("foo", tag.GetArtist().front());
+  if (!tag.GetArtist().empty()) EXPECT_EQ("foo", tag.GetArtist().front());
   EXPECT_EQ("foo", tag.GetAlbum());
   EXPECT_EQ("foo", tag.GetComment());
-  if (tag.GetGenre().size() > 0) EXPECT_EQ("foo", tag.GetGenre().front());
+  if (!tag.GetGenre().empty()) EXPECT_EQ("foo", tag.GetGenre().front());
   EXPECT_EQ("foo", tag.GetTitle());
 }
 

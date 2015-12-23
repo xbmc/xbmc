@@ -1,9 +1,8 @@
-#ifndef __XBMC_ADDON_CPP_H__
-#define __XBMC_ADDON_CPP_H__
+#pragma once
 
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +15,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -105,7 +104,7 @@ public:
   static unsigned int VecToStruct(std::vector<DllSetting> &vecSet, ADDON_StructSetting*** sSet) 
   {
     *sSet = NULL;
-    if(vecSet.size() == 0)
+    if (vecSet.empty())
       return 0;
 
     unsigned int uiElements=0;
@@ -127,7 +126,7 @@ public:
         (*sSet)[i]->current = vecSet[i].current;
         (*sSet)[i]->entry_elements = 0;
         (*sSet)[i]->entry = NULL;
-        if(vecSet[i].type == DllSetting::SPIN && vecSet[i].entry.size() > 0)
+        if(vecSet[i].type == DllSetting::SPIN && !vecSet[i].entry.empty())
         {
           (*sSet)[i]->entry = (char**)malloc(vecSet[i].entry.size()*sizeof(char**));
           for(unsigned int j=0;j<vecSet[i].entry.size();j++)
@@ -188,4 +187,3 @@ public:
   }
 };
 
-#endif

@@ -142,7 +142,7 @@ void CPVRTimerType::InitPriorityValues(const PVR_TIMER_TYPE &type)
     for (unsigned int i = 0; i < type.iPrioritiesSize; ++i)
     {
       std::string strDescr(type.priorities[i].strDescription);
-      if (strDescr.size() == 0)
+      if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
         strDescr = StringUtils::Format("%d", type.priorities[i].iValue);
@@ -180,7 +180,7 @@ void CPVRTimerType::InitLifetimeValues(const PVR_TIMER_TYPE &type)
     for (unsigned int i = 0; i < type.iLifetimesSize; ++i)
     {
       std::string strDescr(type.lifetimes[i].strDescription);
-      if (strDescr.size() == 0)
+      if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
         strDescr = StringUtils::Format("%d", type.lifetimes[i].iValue);
@@ -219,7 +219,7 @@ void CPVRTimerType::InitMaxRecordingsValues(const PVR_TIMER_TYPE &type)
     for (unsigned int i = 0; i < type.iMaxRecordingsSize; ++i)
     {
       std::string strDescr(type.maxRecordings[i].strDescription);
-      if (strDescr.size() == 0)
+      if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
         strDescr = StringUtils::Format("%d", type.maxRecordings[i].iValue);
@@ -244,7 +244,7 @@ void CPVRTimerType::InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE &typ
     for (unsigned int i = 0; i < type.iPreventDuplicateEpisodesSize; ++i)
     {
       std::string strDescr(type.preventDuplicateEpisodes[i].strDescription);
-      if (strDescr.size() == 0)
+      if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
         strDescr = StringUtils::Format("%d", type.preventDuplicateEpisodes[i].iValue);
@@ -281,7 +281,7 @@ void CPVRTimerType::InitRecordingGroupValues(const PVR_TIMER_TYPE &type)
     for (unsigned int i = 0; i < type.iRecordingGroupSize; ++i)
     {
       std::string strDescr(type.recordingGroup[i].strDescription);
-      if (strDescr.size() == 0)
+      if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
         strDescr = StringUtils::Format("%s %d",
