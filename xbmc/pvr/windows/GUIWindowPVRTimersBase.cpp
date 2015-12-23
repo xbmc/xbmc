@@ -250,17 +250,8 @@ bool CGUIWindowPVRTimersBase::OnContextButtonActivate(CFileItem *item, CONTEXT_B
 
   if (button == CONTEXT_BUTTON_ACTIVATE)
   {
+    EnableDisableTimer(item);
     bReturn = true;
-    if (!item->HasPVRTimerInfoTag())
-      return bReturn;
-
-    CPVRTimerInfoTagPtr timer = item->GetPVRTimerInfoTag();
-    if (timer->m_state == PVR_TIMER_STATE_DISABLED)
-      timer->m_state = PVR_TIMER_STATE_SCHEDULED;
-    else
-      timer->m_state = PVR_TIMER_STATE_DISABLED;
-
-    g_PVRTimers->UpdateTimer(*item);
   }
 
   return bReturn;
