@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <algorithm>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -49,7 +50,6 @@
 #include "linux/RBP.h"
 
 using namespace RenderManager;
-using namespace std;
 
 class COMXMsgVideoCodecChange : public CDVDMsg
 {
@@ -606,15 +606,15 @@ std::string OMXPlayerVideo::GetPlayerInfo()
 {
   double match = 0.0f, phase = 0.0f, pll = 0.0f;
   std::ostringstream s;
-  s << "fr:"     << fixed << setprecision(3) << m_fFrameRate;
-  s << ", vq:"   << setw(2) << min(99,GetLevel()) << "%";
+  s << "fr:"     << std::fixed << std::setprecision(3) << m_fFrameRate;
+  s << ", vq:"   << std::setw(2) << std::min(99,GetLevel()) << "%";
   s << ", dc:"   << m_codecname;
-  s << ", Mb/s:" << fixed << setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
+  s << ", Mb/s:" << std::fixed << std::setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
   if (m_omxVideo.GetPlayerInfo(match, phase, pll))
   {
-     s << ", match:" << fixed << setprecision(2) << match;
-     s << ", phase:" << fixed << setprecision(2) << phase;
-     s << ", pll:"   << fixed << setprecision(5) << pll;
+     s << ", match:" << std::fixed << std::setprecision(2) << match;
+     s << ", phase:" << std::fixed << std::setprecision(2) << phase;
+     s << ", pll:"   << std::fixed << std::setprecision(5) << pll;
   }
   return s.str();
 }

@@ -44,10 +44,10 @@
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/DataCacheCore.h"
 
+#include <algorithm>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
-
-using namespace std;
 
 class COMXMsgAudioCodecChange : public CDVDMsg
 {
@@ -667,8 +667,8 @@ int OMXPlayerAudio::GetAudioChannels()
 std::string OMXPlayerAudio::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "aq:"     << setw(2) << min(99,m_messageQueue.GetLevel() + MathUtils::round_int(100.0/8.0*GetCacheTime())) << "%";
-  s << ", Kb/s:" << fixed << setprecision(2) << (double)GetAudioBitrate() / 1024.0;
+  s << "aq:"     << std::setw(2) << std::min(99,m_messageQueue.GetLevel() + MathUtils::round_int(100.0/8.0*GetCacheTime())) << "%";
+  s << ", Kb/s:" << std::fixed << std::setprecision(2) << (double)GetAudioBitrate() / 1024.0;
 
   return s.str();
 }
