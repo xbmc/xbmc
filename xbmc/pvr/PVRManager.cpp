@@ -71,7 +71,7 @@ using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
-int CPVRManager::m_pvrWindowIds[12] = {
+const int CPVRManager::m_pvrWindowIds[12] = {
     WINDOW_TV_CHANNELS,
     WINDOW_TV_GUIDE,
     WINDOW_TV_RECORDINGS,
@@ -311,7 +311,12 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
   auto outdatedAddons = m_outdatedAddons;
   // stop threads and unload
   SetState(ManagerStateInterrupted);
-  g_EpgContainer.Stop();
+
+  {
+    CSingleExit exit(m_critSection);
+    g_EpgContainer.Stop();
+  }
+
   m_guiInfo->Stop();
   m_addons->Stop();
   Cleanup();
@@ -340,7 +345,11 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
   if (IsInitialising())
   {
     SetState(ManagerStateStarted);
-    g_EpgContainer.Start(true);
+
+    {
+      CSingleExit exit(m_critSection);
+      g_EpgContainer.Start(true);
+    }
 
     CLog::Log(LOGDEBUG, "PVRManager - %s - restarted", __FUNCTION__);
     return true;
@@ -372,7 +381,10 @@ void CPVRManager::Cleanup(void)
   m_pendingUpdates.clear();
 
   /* unregister application action listener */
-  g_application.UnregisterActionListener(&CPVRActionListener::GetInstance());
+  {
+    CSingleExit exit(m_critSection);
+    g_application.UnregisterActionListener(&CPVRActionListener::GetInstance());
+  }
 
   HideProgressDialog();
 
@@ -435,7 +447,10 @@ void CPVRManager::Start(bool bAsync /* = false */)
   m_database->Open();
 
   /* register application action listener */
-  g_application.RegisterActionListener(&CPVRActionListener::GetInstance());
+  {
+    CSingleExit exit(m_critSection);
+    g_application.RegisterActionListener(&CPVRActionListener::GetInstance());
+  }
 
   /* create the supervisor thread to do all background activities */
   StartUpdateThreads();
@@ -631,6 +646,7 @@ bool CPVRManager::Load(void)
   /* reset observer for pvr windows */
   for (std::size_t i = 0; i != ARRAY_SIZE(m_pvrWindowIds); i++)
   {
+    CSingleExit exit(m_critSection);
     CGUIWindowPVRBase *pWindow = (CGUIWindowPVRBase *) g_windowManager.GetWindow(m_pvrWindowIds[i]);
     if (pWindow)
       pWindow->ResetObservers();
