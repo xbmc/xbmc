@@ -566,6 +566,36 @@ bool CGUIWindowPVRBase::DeleteTimer(CFileItem *item, bool bIsRecording)
   return false;
 }
 
+bool CGUIWindowPVRBase::EnableDisableTimer(CFileItem *item)
+{
+  CFileItemPtr timer;
+
+  if (item->IsPVRTimer())
+  {
+    timer.reset(new CFileItem(*item));
+  }
+  else if (item->IsEPG())
+  {
+    timer = g_PVRTimers->GetTimerForEpgTag(item);
+  }
+
+  if (!timer || !timer->HasPVRTimerInfoTag())
+    return false;
+
+  if (timer->GetPVRTimerInfoTag()->HasTimerType() &&
+      timer->GetPVRTimerInfoTag()->GetTimerType()->SupportsEnableDisable())
+  {
+    if (timer->GetPVRTimerInfoTag()->m_state == PVR_TIMER_STATE_DISABLED)
+      timer->GetPVRTimerInfoTag()->m_state = PVR_TIMER_STATE_SCHEDULED;
+    else
+      timer->GetPVRTimerInfoTag()->m_state = PVR_TIMER_STATE_DISABLED;
+
+    return CPVRTimers::UpdateTimer(*timer);
+  }
+
+  return false;
+}
+
 void CGUIWindowPVRBase::CheckResumeRecording(CFileItem *item)
 {
   std::string resumeString = CGUIWindowPVRRecordings::GetResumeString(*item);
@@ -748,7 +778,16 @@ bool CGUIWindowPVRBase::ActionToggleTimer(CFileItem *item)
 
   CPVRTimerInfoTagPtr timer(item->GetEPGInfoTag()->Timer());
   if (timer)
+  {
+    if (!timer->IsRecording() && timer->HasTimerType())
+    {
+      /* 1) Read only timers cannot be deleted, so disable/enable them if possible */
+      /* 2) Activate disabled timers (record -> enable) */
+      if (timer->GetTimerType()->IsReadOnly() || timer->m_state == PVR_TIMER_STATE_DISABLED)
+        return EnableDisableTimer(item);
+    }
     return DeleteTimer(item, timer->IsRecording());
+  }
   else
     return AddTimer(item, false);
 }
