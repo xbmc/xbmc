@@ -781,7 +781,9 @@ bool CGUIWindowPVRBase::ActionToggleTimer(CFileItem *item)
   {
     if (!timer->IsRecording() && timer->HasTimerType())
     {
-      if (timer->GetTimerType()->IsReadOnly())
+      /* 1) Read only timers cannot be deleted, so disable/enable them if possible */
+      /* 2) Activate disabled timers (record -> enable) */
+      if (timer->GetTimerType()->IsReadOnly() || timer->m_state == PVR_TIMER_STATE_DISABLED)
         return EnableDisableTimer(item);
     }
     return DeleteTimer(item, timer->IsRecording());

@@ -268,7 +268,11 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
     }
     else if (tag->Timer()->HasTimerType())
     {
-      if (tag->Timer()->GetTimerType()->IsReadOnly())
+      /* 1) Read only timers cannot be deleted, so disable them if possible */
+      /* 2) Activate disabled timers (record -> enable) */
+      /* 3) Delete for all the rest */
+      if (tag->Timer()->GetTimerType()->IsReadOnly() ||
+          tag->Timer()->m_state == PVR_TIMER_STATE_DISABLED)
       {
         if (tag->Timer()->GetTimerType()->SupportsEnableDisable())
         {
