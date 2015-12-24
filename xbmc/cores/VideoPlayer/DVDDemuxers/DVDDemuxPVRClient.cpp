@@ -440,6 +440,7 @@ void CDVDDemuxPVRClient::RequestStreams()
     m_streams[i]->language[1] = props.stream[i].strLanguage[1];
     m_streams[i]->language[2] = props.stream[i].strLanguage[2];
     m_streams[i]->language[3] = props.stream[i].strLanguage[3];
+    m_streams[i]->realtime = true;
 
     CLog::Log(LOGDEBUG,"CDVDDemuxPVRClient::RequestStreams(): added/updated stream %d:%d with codec_id %d",
         m_streams[i]->iId,
