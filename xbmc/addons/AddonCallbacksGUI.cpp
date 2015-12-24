@@ -2147,7 +2147,7 @@ void CGUIAddonWindow::PulseActionEvent()
   m_actionEvent.Set();
 }
 
-bool CGUIAddonWindow::OnClick(int iItem)
+bool CGUIAddonWindow::OnClick(int iItem, const std::string &player)
 {
   // Hook Over calling  CGUIMediaWindow::OnClick(iItem) results in it trying to PLAY the file item
   // which if its not media is BAD and 99 out of 100 times undesireable.
