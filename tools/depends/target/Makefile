@@ -30,9 +30,8 @@ ifeq ($(OS),ios)
   EXCLUDED_DEPENDS = libcec libusb
 endif
 
-# TODO: Check use of libGLEW still needed with EGL
 ifeq ($(OS),osx)
-  DEPENDS += libGLEW libsdl
+  DEPENDS += libsdl
   EXCLUDED_DEPENDS = libusb
 endif
 
