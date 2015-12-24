@@ -137,7 +137,7 @@ static void SetUpdateAvailProperties(CFileItemList &items)
     if (outdated.find(items[i]->GetProperty("Addon.ID").asString()) != outdated.end())
     {
       items[i]->SetProperty("Addon.Status", g_localizeStrings.Get(24068));
-      items[i]->SetProperty("Addon.UpdateAvail", true);
+      items[i]->SetProperty("Addon.HasUpdate", true);
     }
   }
 }
@@ -561,7 +561,7 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
     if (installedAddon && installedAddon->Version() < addon->Version())
     {
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24068));
-      pItem->SetProperty("Addon.UpdateAvail", true);
+      pItem->SetProperty("Addon.HasUpdate", true);
     }
     CAddonDatabase::SetPropertiesFromAddon(addon,pItem);
     items.Add(pItem);

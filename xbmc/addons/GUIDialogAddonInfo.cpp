@@ -128,7 +128,7 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
           }
         }
 
-        OnEnable(!m_item->GetProperty("Addon.Enabled").asBoolean());
+        OnEnable(!m_item->GetProperty("Addon.IsEnabled").asBoolean());
         return true;
       }
       else if (iControl == CONTROL_BTN_SETTINGS)
@@ -175,7 +175,7 @@ void CGUIDialogAddonInfo::OnInitWindow()
 void CGUIDialogAddonInfo::UpdateControls()
 {
   bool isInstalled = NULL != m_localAddon.get();
-  bool isEnabled = isInstalled && m_item->GetProperty("Addon.Enabled").asBoolean();
+  bool isEnabled = isInstalled && m_item->GetProperty("Addon.IsEnabled").asBoolean();
   bool canDisable = isInstalled && CAddonMgr::GetInstance().CanAddonBeDisabled(m_localAddon->ID());
   bool canInstall = !isInstalled && m_item->GetProperty("Addon.Broken").empty();
   bool isRepo = (isInstalled && m_localAddon->Type() == ADDON_REPOSITORY) || (m_addon && m_addon->Type() == ADDON_REPOSITORY);
@@ -444,7 +444,7 @@ void CGUIDialogAddonInfo::OnChangeLog()
     pDlgInfo->SetText(g_localizeStrings.Get(13413));
     CFileItemList items;
     if (m_localAddon && 
-        !m_item->GetProperty("Addon.UpdateAvail").asBoolean())
+        !m_item->GetProperty("Addon.HasUpdate").asBoolean())
     {
       items.Add(CFileItemPtr(new CFileItem(m_localAddon->ChangeLog(),false)));
     }
@@ -483,10 +483,10 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
   m_localAddon.reset();
   m_addon.reset();
   if (CAddonMgr::GetInstance().GetAddon(item->GetProperty("Addon.ID").asString(), m_localAddon)) // sets m_localAddon if installed regardless of enabled state
-    m_item->SetProperty("Addon.Enabled", "true");
+    m_item->SetProperty("Addon.IsEnabled", "true");
   else
-    m_item->SetProperty("Addon.Enabled", "false");
-  m_item->SetProperty("Addon.Installed", m_localAddon ? "true" : "false");
+    m_item->SetProperty("Addon.IsEnabled", "false");
+  m_item->SetProperty("Addon.IsInstalled", m_localAddon ? "true" : "false");
 
   CAddonDatabase database;
   database.Open();
