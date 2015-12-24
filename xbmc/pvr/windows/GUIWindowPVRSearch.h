@@ -30,14 +30,14 @@ namespace PVR
     CGUIWindowPVRSearch(bool bRadio);
     virtual ~CGUIWindowPVRSearch(void) {};
 
-    bool OnMessage(CGUIMessage& message);
-    void OnWindowLoaded();
-    void GetContextButtons(int itemNumber, CContextButtons &buttons);
-    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-    bool OnContextButton(const CFileItem &item, CONTEXT_BUTTON button);
+    virtual bool OnMessage(CGUIMessage& message)  override;
+    virtual void OnWindowLoaded() override;
+    virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+    virtual bool OnContextButton(const CFileItem &item, CONTEXT_BUTTON button) override;
 
   protected:
-    void OnPrepareFileItems(CFileItemList &items);
+    virtual void OnPrepareFileItems(CFileItemList &items) override;
     virtual std::string GetDirectoryPath(void) override { return ""; }
 
   private:
