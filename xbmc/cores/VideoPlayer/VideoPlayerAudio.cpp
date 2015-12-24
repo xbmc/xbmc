@@ -667,6 +667,12 @@ void CVideoPlayerAudio::WaitForBuffers()
     Sleep((int)(1000 * (delay - 0.5)));
 }
 
+bool CVideoPlayerAudio::AcceptsData() const
+{
+  bool full = m_messageQueue.IsFull();
+  return !full;
+}
+
 bool CVideoPlayerAudio::SwitchCodecIfNeeded()
 {
   CLog::Log(LOGDEBUG, "CVideoPlayerAudio: Sample rate changed, checking for passthrough");
