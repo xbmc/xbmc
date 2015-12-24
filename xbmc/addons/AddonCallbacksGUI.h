@@ -190,26 +190,26 @@ public:
   CGUIAddonWindow(int id, const std::string& strXML, CAddon* addon);
   virtual ~CGUIAddonWindow(void);
 
-  virtual bool      OnMessage(CGUIMessage& message);
-  virtual bool      OnAction(const CAction &action);
-  virtual void      AllocResources(bool forceLoad = false);
-  virtual void      FreeResources(bool forceUnLoad = false);
-  virtual void      Render();
-  void              WaitForActionEvent(unsigned int timeout);
-  void              PulseActionEvent();
-  void              AddItem(CFileItemPtr fileItem, int itemPosition);
-  void              RemoveItem(int itemPosition);
-  void              ClearList();
-  CFileItemPtr      GetListItem(int position);
-  int               GetListSize();
-  int               GetCurrentListPosition();
-  void              SetCurrentListPosition(int item);
-  virtual bool      OnClick(int iItem);
+  bool OnMessage(CGUIMessage& message) override;
+  bool OnAction(const CAction &action) override;
+  void AllocResources(bool forceLoad = false) override;
+  void FreeResources(bool forceUnLoad = false) override;
+  void Render() override;
+  void WaitForActionEvent(unsigned int timeout);
+  void PulseActionEvent();
+  void AddItem(CFileItemPtr fileItem, int itemPosition);
+  void RemoveItem(int itemPosition);
+  void ClearList();
+  CFileItemPtr GetListItem(int position);
+  int GetListSize();
+  int GetCurrentListPosition();
+  void SetCurrentListPosition(int item);
+  bool OnClick(int iItem, const std::string &player = "") override;
 
 protected:
-  virtual void     Update();
-  virtual void     GetContextButtons(int itemNumber, CContextButtons &buttons);
-  void             SetupShares();
+  void Update();
+  void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+  void SetupShares() override;
 
   bool (*CBOnInit)(GUIHANDLE cbhdl);
   bool (*CBOnFocus)(GUIHANDLE cbhdl, int controlId);
