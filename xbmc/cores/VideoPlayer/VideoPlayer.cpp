@@ -3990,7 +3990,8 @@ int CVideoPlayer::OnDVDNavResult(void* pData, int iMessage)
           bool sync = !IsInMenu();
           FlushBuffers(false, DVD_NOPTS_VALUE, false, sync);
           m_dvd.syncClock = true;
-          m_pDemuxer->Flush();
+          if (m_pDemuxer)
+            m_pDemuxer->Flush();
         }
 
         return NAVRESULT_ERROR;
