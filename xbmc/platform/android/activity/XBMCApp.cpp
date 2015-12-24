@@ -179,6 +179,7 @@ void CXBMCApp::onResume()
   intentFilter.addAction("android.intent.action.SCREEN_ON");
   intentFilter.addAction("android.intent.action.HEADSET_PLUG");
   intentFilter.addAction("android.intent.action.HDMI_AUDIO_PLUG");
+  intentFilter.addAction("android.intent.action.SCREEN_OFF");
   registerReceiver(*this, intentFilter);
 
   if (!g_application.IsInScreenSaver())
@@ -827,6 +828,11 @@ void CXBMCApp::onReceive(CJNIIntent intent)
       m_headsetPlugged = newstate;
       CServiceBroker::GetActiveAE().DeviceChange();
     }
+  }
+  else if (action == "android.intent.action.SCREEN_OFF")
+  {
+    if (g_application.m_pPlayer->IsPlayingVideo())
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
   }
   else if (action == "android.intent.action.MEDIA_BUTTON")
   {
