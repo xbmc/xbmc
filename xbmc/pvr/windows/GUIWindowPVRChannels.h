@@ -29,14 +29,14 @@ namespace PVR
     CGUIWindowPVRChannels(bool bRadio);
     virtual ~CGUIWindowPVRChannels(void) {};
 
-    bool OnMessage(CGUIMessage& message);
-    void GetContextButtons(int itemNumber, CContextButtons &buttons);
-    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-    bool Update(const std::string &strDirectory, bool updateFilterPath = true);
-    void UpdateButtons(void);
-    void ResetObservers(void);
+    virtual bool OnMessage(CGUIMessage& message) override;
+    virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+    virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
+    virtual void UpdateButtons(void) override;
+    virtual void ResetObservers(void) override;
     void UnregisterObservers(void);
-    bool OnAction(const CAction &action);
+    virtual bool OnAction(const CAction &action) override;
 
   protected:
     virtual std::string GetDirectoryPath(void) override;
