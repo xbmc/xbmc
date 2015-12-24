@@ -442,11 +442,11 @@ namespace PVR
     bool UpdateItem(CFileItem& item);
 
     /*!
-     * @brief Switch to a channel given it's channel number.
-     * @param iChannelNumber The channel number to switch to.
+     * @brief Switch to a channel given it's channel id.
+     * @param iChannelId The channel id to switch to.
      * @return True if the channel was switched, false otherwise.
      */
-    bool ChannelSwitch(unsigned int iChannelNumber);
+    bool ChannelSwitchById(unsigned int iChannelId);
 
     /*!
      * @brief Switch to the next channel in this group.
