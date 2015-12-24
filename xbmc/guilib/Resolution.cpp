@@ -256,8 +256,8 @@ RESOLUTION CResolutionUtils::FindClosestResolution(float fps, int width, bool is
     }
     else
     {
-      int c_weight = MathUtils::round_int(RefreshWeight(curr.fRefreshRate, fRefreshRate * multiplier) * 1000.0);
-      int i_weight = MathUtils::round_int(RefreshWeight(info.fRefreshRate, fRefreshRate * multiplier) * 1000.0);
+      int c_weight = MathUtils::round_int(RefreshWeight(curr.fRefreshRate, fRefreshRate * multiplier) * 10000.0);
+      int i_weight = MathUtils::round_int(RefreshWeight(info.fRefreshRate, fRefreshRate * multiplier) * 10000.0);
 
       RESOLUTION current_bak = current;
       RESOLUTION_INFO curr_bak = curr;
