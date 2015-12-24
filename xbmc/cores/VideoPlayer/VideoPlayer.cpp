@@ -610,6 +610,7 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_errorCount = 0;
   m_offset_pts = 0.0;
   m_playSpeed = DVD_PLAYSPEED_NORMAL;
+  m_streamPlayerSpeed = DVD_PLAYSPEED_NORMAL;
   m_caching = CACHESTATE_DONE;
   m_HasVideo = false;
   m_HasAudio = false;
@@ -2611,6 +2612,7 @@ void CVideoPlayer::HandleMessages()
         m_clock.SetSpeed(speed);
         m_VideoPlayerAudio->SetSpeed(speed);
         m_VideoPlayerVideo->SetSpeed(speed);
+        m_streamPlayerSpeed = speed;
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) == 0)
       {
@@ -2798,6 +2800,7 @@ void CVideoPlayer::SetCaching(ECacheState state)
 
     m_VideoPlayerAudio->SetSpeed(DVD_PLAYSPEED_PAUSE);
     m_VideoPlayerVideo->SetSpeed(DVD_PLAYSPEED_PAUSE);
+    m_streamPlayerSpeed = DVD_PLAYSPEED_PAUSE;
 
     m_pInputStream->ResetScanTimeout((unsigned int) CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPLAYBACK_SCANTIME) * 1000);
   }
@@ -2808,6 +2811,7 @@ void CVideoPlayer::SetCaching(ECacheState state)
     m_clock.SetSpeed(m_playSpeed);
     m_VideoPlayerAudio->SetSpeed(m_playSpeed);
     m_VideoPlayerVideo->SetSpeed(m_playSpeed);
+    m_streamPlayerSpeed = m_playSpeed;
     m_pInputStream->ResetScanTimeout(0);
   }
   m_caching = state;
@@ -2826,6 +2830,7 @@ void CVideoPlayer::SetPlaySpeed(int speed)
 
   m_VideoPlayerAudio->SetSpeed(speed);
   m_VideoPlayerVideo->SetSpeed(speed);
+  m_streamPlayerSpeed = speed;
   SynchronizeDemuxer(100);
 }
 
@@ -3498,6 +3503,7 @@ bool CVideoPlayer::OpenAudioStream(CDVDStreamInfo& hint, bool reset)
     if (!player->OpenStream(hint))
       return false;
 
+    static_cast<IDVDStreamPlayerAudio*>(player)->SetSpeed(m_streamPlayerSpeed);
     m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_STARTING;
   }
   else if (reset)
@@ -3574,6 +3580,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
     if (!player->OpenStream(hint))
       return false;
 
+    static_cast<IDVDStreamPlayerVideo*>(player)->SetSpeed(m_streamPlayerSpeed);
     m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_STARTING;
   }
   else if (reset)
