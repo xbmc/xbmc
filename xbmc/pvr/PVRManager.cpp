@@ -693,25 +693,18 @@ void CPVRManager::HideProgressDialog(void)
   }
 }
 
-bool CPVRManager::ChannelSwitch(unsigned int iChannelNumber)
+bool CPVRManager::ChannelSwitchById(unsigned int iChannelId)
 {
   CSingleLock lock(m_critSection);
 
-  CPVRChannelGroupPtr playingGroup = GetPlayingGroup(m_addons->IsPlayingRadio());
-  if (!playingGroup)
+  CPVRChannelPtr channel = m_channelGroups->GetChannelById(iChannelId);
+  if (!channel)
   {
-    CLog::Log(LOGERROR, "PVRManager - %s - cannot get the selected group", __FUNCTION__);
+    CLog::Log(LOGERROR, "PVRManager - %s - cannot find channel with id %d", __FUNCTION__, iChannelId);
     return false;
   }
 
-  CFileItemPtr channel = playingGroup->GetByChannelNumber(iChannelNumber);
-  if (!channel || !channel->HasPVRChannelInfoTag())
-  {
-    CLog::Log(LOGERROR, "PVRManager - %s - cannot find channel %d", __FUNCTION__, iChannelNumber);
-    return false;
-  }
-
-  return PerformChannelSwitch(channel->GetPVRChannelInfoTag(), false);
+  return PerformChannelSwitch(channel, false);
 }
 
 bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, bool bUp)
