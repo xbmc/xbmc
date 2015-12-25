@@ -1045,6 +1045,8 @@ float CRenderManager::GetMaximumFPS()
 
 void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 {
+  CSingleExit exitLock(g_graphicsContext);
+  
   CSharedLock lock(m_sharedSection);
 
   if (m_renderState != STATE_CONFIGURED)
@@ -1105,7 +1107,6 @@ bool CRenderManager::IsVideoLayer()
 /* simple present method */
 void CRenderManager::PresentSingle(bool clear, DWORD flags, DWORD alpha)
 {
-  CSingleLock lock(g_graphicsContext);
   SPresent& m = m_Queue[m_presentsource];
 
   if (m.presentfield == FS_BOT)
@@ -1120,7 +1121,6 @@ void CRenderManager::PresentSingle(bool clear, DWORD flags, DWORD alpha)
  * we just render the two fields right after eachother */
 void CRenderManager::PresentFields(bool clear, DWORD flags, DWORD alpha)
 {
-  CSingleLock lock(g_graphicsContext);
   SPresent& m = m_Queue[m_presentsource];
 
   if(m_presentstep == PRESENT_FRAME)
@@ -1141,7 +1141,6 @@ void CRenderManager::PresentFields(bool clear, DWORD flags, DWORD alpha)
 
 void CRenderManager::PresentBlend(bool clear, DWORD flags, DWORD alpha)
 {
-  CSingleLock lock(g_graphicsContext);
   SPresent& m = m_Queue[m_presentsource];
 
   if( m.presentfield == FS_BOT )
