@@ -1922,8 +1922,6 @@ void CApplication::Render()
     }
   }
 
-  CSingleLock lock(g_graphicsContext);
-
   if (g_graphicsContext.IsFullScreenVideo() && m_pPlayer->IsPlaying() && vsync_mode == VSYNC_VIDEO)
     g_Windowing.SetVSync(true);
   else if (vsync_mode == VSYNC_ALWAYS)
@@ -1980,8 +1978,6 @@ void CApplication::Render()
     g_infoManager.UpdateFPS();
     m_lastRenderTime = now;
   }
-
-  lock.Leave();
 
   if (g_graphicsContext.IsFullScreenVideo())
   {
