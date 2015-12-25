@@ -15512,7 +15512,10 @@ msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
 msgstr ""
 
-#empty string with id 36043
+#: system/settings/settings.xml
+msgctxt "#36043"
+msgid "Number of buffers used by graphics driver"
+msgstr ""
 
 #. Name of an action to perform on a specific event, like changing the CEC source away from Kodi
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
@@ -17717,7 +17720,13 @@ msgctxt "#36551"
 msgid "Defines the strength of the stereoscopic 3D effect in the GUI. This is done by controlling the depth of perception within the GUI, so the higher the value, the more elements will pop out of the screen. [Zero] Disables the stereoscopic 3D effect of the GUI.[CR]For a good visual experience, the value should be higher for small screens and lower for large screens. Note: this is not supported by all skins."
 msgstr ""
 
-#empty strings from id 36552 to 36599
+#. Description of setting "System -> Video output -> NoOfBuffers" with label #36043
+#: system/settings/settings.xml
+msgctxt "#36552"
+msgid "Select if graphics driver uses double or triple buffering."
+msgstr ""
+
+#empty strings from id 36553 to 36599
 
 #. Description of setting "System -> Video output -> Dither" with label #36099
 #: system/settings/settings.xml

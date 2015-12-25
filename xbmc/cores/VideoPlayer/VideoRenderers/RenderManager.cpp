@@ -1158,10 +1158,15 @@ void CRenderManager::PresentBlend(bool clear, DWORD flags, DWORD alpha)
 
 void CRenderManager::UpdateDisplayLatency()
 {
-  float refresh = g_graphicsContext.GetFPS();
+  float fps = g_graphicsContext.GetFPS();
+  float refresh = fps;
   if (g_graphicsContext.GetVideoResolution() == RES_WINDOW)
     refresh = 0; // No idea about refresh rate when windowed, just get the default latency
   m_displayLatency = (double) g_advancedSettings.GetDisplayLatency(refresh);
+
+  int buffers = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOSCREEN_NOOFBUFFERS);
+  m_displayLatency += (buffers - 1) / fps;
+
   //CLog::Log(LOGDEBUG, "CRenderManager::UpdateDisplayLatency - Latency set to %1.0f msec", m_displayLatency * 1000.0f);
 }
 

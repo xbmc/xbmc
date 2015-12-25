@@ -2421,6 +2421,19 @@
           </updates>
           <control type="list" format="string" />
         </setting>
+        <setting id="videoscreen.noofbuffers" type="integer" label="36043" help="36552">
+          <level>2</level>
+          <default>3</default> <!-- triple buffers -->
+          <constraints>
+            <minimum>2</minimum>
+            <step>1</step>
+            <maximum>3</maximum>
+          </constraints>
+          <updates>
+            <update type="change" />
+          </updates>
+          <control type="list" format="string" />
+        </setting>
         <setting id="videoscreen.guicalibration" type="action" label="214" help="36357">
           <level>1</level>
           <control type="button" format="action" />
