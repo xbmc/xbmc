@@ -406,8 +406,6 @@ void CRenderSystemGLES::SetCameraPosition(const CPoint &camera, int screenWidth,
   if (!m_bRenderCreated)
     return;
   
-  g_graphicsContext.BeginPaint();
-  
   CPoint offset = camera - CPoint(screenWidth*0.5f, screenHeight*0.5f);
   
   float w = (float)m_viewPort[2]*0.5f;
@@ -421,8 +419,6 @@ void CRenderSystemGLES::SetCameraPosition(const CPoint &camera, int screenWidth,
   glMatrixProject->LoadIdentity();
   glMatrixProject->Frustum( (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
   glMatrixProject.Load();
-
-  g_graphicsContext.EndPaint();
 }
 
 void CRenderSystemGLES::Project(float &x, float &y, float &z)
