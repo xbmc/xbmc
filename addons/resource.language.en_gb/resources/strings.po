@@ -18153,3 +18153,8 @@ msgstr ""
 msgctxt "#38025"
 msgid "Choose information provider"
 msgstr ""
+
+#: xbmc\video\dialogs\GUIDialogVideoSettings.cpp
+msgctxt "#38026"
+msgid "Video stream"
+msgstr ""

@@ -312,6 +312,9 @@ public:
 
 static bool PredicateVideoPriority(const SelectionStream& lh, const SelectionStream& rh)
 {
+  PREDICATE_RETURN(lh.type_index == CMediaSettings::GetInstance().GetCurrentVideoSettings().m_VideoStream
+                 , rh.type_index == CMediaSettings::GetInstance().GetCurrentVideoSettings().m_VideoStream);
+
   PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
                  , rh.flags & CDemuxStream::FLAG_DEFAULT);
   return false;
@@ -354,15 +357,15 @@ int CSelectionStreams::IndexOf(StreamType type, int source, int id) const
     return -1;
 }
 
-int CSelectionStreams::IndexOf(StreamType type, CVideoPlayer& p) const
+int CSelectionStreams::IndexOf(StreamType type, const CVideoPlayer& p) const
 {
   if (p.m_pInputStream && p.m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     int id = -1;
     if(type == STREAM_AUDIO)
       id = ((CDVDInputStreamNavigator*)p.m_pInputStream)->GetActiveAudioStream();
-    else if(type == STREAM_VIDEO)
-      id = p.m_CurrentVideo.id;
+    else if (type == STREAM_VIDEO)
+      id = ((CDVDInputStreamNavigator*)p.m_pInputStream)->GetActiveAngle();
     else if(type == STREAM_SUBTITLE)
       id = ((CDVDInputStreamNavigator*)p.m_pInputStream)->GetActiveSubtitleStream();
 
@@ -461,6 +464,27 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       nav->GetSubtitleStreamInfo(i, info);
       s.name     = info.name;
       s.language = g_LangCodeExpander.ConvertToISO6392T(info.language);
+      Update(s);
+    }
+
+    count = nav->GetAngleCount();
+    uint32_t width = 0;
+    uint32_t height = 0;
+    int aspect = nav->GetVideoAspectRatio();
+    nav->GetVideoResolution(&width, &height);
+    for (int i = 1; i <= count; i++)
+    {
+      SelectionStream s;
+      s.source = source;
+      s.type = STREAM_VIDEO;
+      s.id = i;
+      s.flags = CDemuxStream::FLAG_NONE;
+      s.filename = filename;
+      s.channels = 0;
+      s.aspect_ratio = aspect;
+      s.width = (int)width;
+      s.height = (int)height;
+      s.name = StringUtils::Format("Angle %i", i);
       Update(s);
     }
   }
@@ -2470,6 +2494,30 @@ void CVideoPlayer::HandleMessages()
           }
         }
       }
+      else if (pMsg->IsType(CDVDMsg::PLAYER_SET_VIDEOSTREAM))
+      {
+        CDVDMsgPlayerSetVideoStream* pMsg2 = (CDVDMsgPlayerSetVideoStream*)pMsg;
+
+        SelectionStream& st = m_SelectionStreams.Get(STREAM_VIDEO, pMsg2->GetStreamId());
+        if (st.source != STREAM_SOURCE_NONE)
+        {
+          if (st.source == STREAM_SOURCE_NAV && m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+          {
+            CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
+            if (pStream->SetAngle(st.id))
+            {
+              m_dvd.iSelectedVideoStream = st.id;
+              m_messenger.Put(new CDVDMsgPlayerSeek((int)GetTime(), true, true, true, true, true));
+            }
+          }
+          else
+          {
+            CloseStream(m_CurrentVideo, false);
+            OpenStream(m_CurrentVideo, st.id, st.source);
+            m_messenger.Put(new CDVDMsgPlayerSeek((int)GetTime(), true, true, true, true, true));
+          }
+        }
+      }
       else if (pMsg->IsType(CDVDMsg::PLAYER_SET_SUBTITLESTREAM))
       {
         CDVDMsgPlayerSetSubtitleStream* pMsg2 = (CDVDMsgPlayerSetSubtitleStream*)pMsg;
@@ -3158,8 +3206,11 @@ void CVideoPlayer::UpdateStreamInfos()
   std::string retVal;
 
   // video
+  streamId = GetVideoStream();
+
+  if (streamId >= 0 && streamId < GetVideoStreamCount())
   {
-    SelectionStream& s = m_SelectionStreams.Get(STREAM_VIDEO, 0);
+    SelectionStream& s = m_SelectionStreams.Get(STREAM_VIDEO, streamId);
     s.bitrate = m_VideoPlayerVideo->GetVideoBitrate();
     s.aspect_ratio = m_renderManager.GetAspectRatio();
     CRect viewRect;
@@ -3238,6 +3289,22 @@ int CVideoPlayer::GetAudioStream()
 void CVideoPlayer::SetAudioStream(int iStream)
 {
   m_messenger.Put(new CDVDMsgPlayerSetAudioStream(iStream));
+  SynchronizeDemuxer(100);
+}
+
+int CVideoPlayer::GetVideoStreamCount() const
+{
+  return m_SelectionStreams.Count(STREAM_VIDEO);
+}
+
+int CVideoPlayer::GetVideoStream() const
+{
+  return m_SelectionStreams.IndexOf(STREAM_VIDEO, *this);
+}
+
+void CVideoPlayer::SetVideoStream(int iStream)
+{
+  m_messenger.Put(new CDVDMsgPlayerSetVideoStream(iStream));
   SynchronizeDemuxer(100);
 }
 
@@ -4367,11 +4434,16 @@ double CVideoPlayer::GetQueueTime()
   return std::max(a, v) * 8000.0 / 100;
 }
 
-void CVideoPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
+void CVideoPlayer::GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info)
 {
   CSingleLock lock(m_SelectionStreams.m_section);
+  if (streamId == CURRENT_STREAM)
+    streamId = GetVideoStream();
 
-  SelectionStream& s = m_SelectionStreams.Get(STREAM_VIDEO, 0);
+  if (streamId < 0 || streamId > GetVideoStreamCount() - 1)
+    return;
+
+  SelectionStream& s = m_SelectionStreams.Get(STREAM_VIDEO, streamId);
   if (s.language.length() > 0)
     info.language = s.language;
 
