@@ -191,7 +191,7 @@ void CVideoDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE sets ( idSet integer primary key, strSet text, strOverview text)");
 
   CLog::Log(LOGINFO, "create seasons table");
-  m_pDS->exec("CREATE TABLE seasons ( idSeason integer primary key, idShow integer, season integer, name text)");
+  m_pDS->exec("CREATE TABLE seasons ( idSeason integer primary key, idShow integer, season integer, name text, userrating integer)");
 
   CLog::Log(LOGINFO, "create art table");
   m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
@@ -2407,6 +2407,10 @@ int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details, const std:
     std::string sql = PrepareSQL("UPDATE seasons SET season=%i", details.m_iSeason);
     if (!details.m_strSortTitle.empty())
       sql += PrepareSQL(", name='%s'", details.m_strSortTitle.c_str());
+    if (details.m_iUserRating > 0 && details.m_iUserRating < 11)
+      sql += PrepareSQL(", userrating = %i", details.m_iUserRating);
+    else
+      sql += ", userrating = NULL";
     sql += PrepareSQL(" WHERE idSeason=%i", idSeason);
     m_pDS->exec(sql.c_str());
     CommitTransaction();
@@ -4680,11 +4684,13 @@ void CVideoDatabase::UpdateTables(int iVersion)
       m_pDS->next();
     }
   }
+  if (iVersion < 101)
+    m_pDS->exec("ALTER TABLE seasons ADD userrating INTEGER");
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 100;
+  return 101;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
@@ -5914,6 +5920,7 @@ bool CVideoDatabase::GetSeasonsByWhere(const std::string& strBaseDir, const Filt
         pItem->GetVideoInfoTag()->m_strPlot = m_pDS->fv(VIDEODB_ID_SEASON_TVSHOW_PLOT).get_asString();
         pItem->GetVideoInfoTag()->m_premiered.SetFromDBDate(m_pDS->fv(VIDEODB_ID_SEASON_TVSHOW_PREMIERED).get_asString());
         pItem->GetVideoInfoTag()->m_firstAired.SetFromDBDate(m_pDS->fv(VIDEODB_ID_SEASON_PREMIERED).get_asString());
+        pItem->GetVideoInfoTag()->m_iUserRating = m_pDS->fv(VIDEODB_ID_SEASON_USER_RATING).get_asInt();
 
         // season premiered date based on first episode airdate associated to the season
         // tvshow premiered date is used as a fallback
@@ -9424,6 +9431,8 @@ bool CVideoDatabase::SetVideoUserRating(int dbId, int rating, const MediaType& m
       sql = PrepareSQL("UPDATE musicvideo SET userrating=%i WHERE idMVideo = %i", rating, dbId);
     else if (mediaType == MediaTypeTvShow)
       sql = PrepareSQL("UPDATE tvshow SET userrating=%i WHERE idShow = %i", rating, dbId);
+    else if (mediaType == MediaTypeSeason)
+      sql = PrepareSQL("UPDATE seasons SET userrating=%i WHERE idSeason = %i", rating, dbId);
 
     m_pDS->exec(sql);
     return true;

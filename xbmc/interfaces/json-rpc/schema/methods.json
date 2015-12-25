@@ -1408,7 +1408,8 @@
     "permission": "UpdateData",
     "params": [
       { "name": "seasonid", "$ref": "Library.Id", "required": true },
-      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null }
+      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
+      { "name": "userrating", "$ref": "Optional.Integer" }
     ],
     "returns": "string"
   },
