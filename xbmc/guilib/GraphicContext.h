@@ -77,11 +77,6 @@ public:
 
   virtual void OnSettingChanged(const CSetting *setting) override;
 
-  // the following two functions should wrap any
-  // GL calls to maintain thread safety
-  void BeginPaint(bool lock=true);
-  void EndPaint(bool lock=true);
-
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
   float GetFPS() const;

@@ -441,8 +441,6 @@ void CRenderSystemGL::SetCameraPosition(const CPoint &camera, int screenWidth, i
   if (!m_bRenderCreated)
     return;
 
-  g_graphicsContext.BeginPaint();
-
   CPoint offset = camera - CPoint(screenWidth*0.5f, screenHeight*0.5f);
 
 
@@ -457,8 +455,6 @@ void CRenderSystemGL::SetCameraPosition(const CPoint &camera, int screenWidth, i
   glMatrixProject->LoadIdentity();
   glMatrixProject->Frustum( (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
   glMatrixProject.Load();
-
-  g_graphicsContext.EndPaint();
 }
 
 void CRenderSystemGL::Project(float &x, float &y, float &z)

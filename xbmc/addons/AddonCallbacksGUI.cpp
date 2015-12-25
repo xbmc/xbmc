@@ -2249,9 +2249,7 @@ void CGUIAddonRenderingControl::Render()
 {
   if (CBRender)
   {
-    g_graphicsContext.BeginPaint();
     CBRender(m_clientHandle);
-    g_graphicsContext.EndPaint();
   }
 }
 

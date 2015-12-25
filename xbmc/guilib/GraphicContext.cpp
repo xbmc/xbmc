@@ -973,16 +973,6 @@ float CGraphicContext::GetFPS() const
   return 60.0f;
 }
 
-void CGraphicContext::BeginPaint(bool lock)
-{
-  if (lock) Lock();
-}
-
-void CGraphicContext::EndPaint(bool lock)
-{
-  if (lock) Unlock();
-}
-
 bool CGraphicContext::IsFullScreenRoot () const
 {
   return m_bFullScreenRoot;
