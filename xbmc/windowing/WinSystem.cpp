@@ -254,3 +254,9 @@ std::string CWinSystemBase::GetClipboardText(void)
 {
   return "";
 }
+
+int CWinSystemBase::NoOfBuffers(void)
+{
+  int buffers = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOSCREEN_NOOFBUFFERS);
+  return buffers;
+}

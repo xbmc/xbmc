@@ -26,6 +26,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "windowing/WindowingFactory.h"
 
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
@@ -1053,10 +1054,15 @@ void CRenderManager::PresentBlend(bool clear, DWORD flags, DWORD alpha)
 
 void CRenderManager::UpdateDisplayLatency()
 {
-  float refresh = g_graphicsContext.GetFPS();
+  float fps = g_graphicsContext.GetFPS();
+  float refresh = fps;
   if (g_graphicsContext.GetVideoResolution() == RES_WINDOW)
     refresh = 0; // No idea about refresh rate when windowed, just get the default latency
   m_displayLatency = (double) g_advancedSettings.GetDisplayLatency(refresh);
+
+  int buffers = g_Windowing.NoOfBuffers();
+  m_displayLatency += (buffers - 1) / fps;
+
 }
 
 void CRenderManager::UpdateResolution()

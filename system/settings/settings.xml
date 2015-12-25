@@ -1937,6 +1937,16 @@
         </setting>
       </group>
       <group id="3" label="496">
+        <setting id="videoscreen.noofbuffers" type="integer" label="36043" help="36552">
+          <level>2</level>
+          <default>3</default> <!-- triple buffers -->
+          <constraints>
+            <minimum>2</minimum>
+            <step>1</step>
+            <maximum>3</maximum>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="videoscreen.guicalibration" type="action" label="214" help="36357">
           <level>3</level>
           <control type="button" format="action" />

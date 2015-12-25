@@ -73,9 +73,10 @@ public:
   virtual bool HasCursor(){ return true; }
   //some plattforms have api for gesture inertial scrolling - default to false and use the InertialScrollingHandler
   virtual bool HasInertialGestures(){ return false; }
-
   //does the output expect limited color range (ie 16-235)
   virtual bool UseLimitedColor();
+  //the number of presentation buffers
+  virtual int NoOfBuffers();
 
   virtual bool Minimize() { return false; }
   virtual bool Restore() { return false; }
