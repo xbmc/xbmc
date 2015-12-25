@@ -1849,22 +1849,6 @@ bool CApplication::LoadUserWindows()
   return true;
 }
 
-bool CApplication::RenderNoPresent()
-{
-  MEASURE_FUNCTION;
-
-// DXMERGE: This may have been important?
-//  g_graphicsContext.AcquireCurrentContext();
-
-  g_graphicsContext.Lock();
-  
-  bool hasRendered = g_windowManager.Render();
-
-  g_graphicsContext.Unlock();
-
-  return hasRendered;
-}
-
 float CApplication::GetDimScreenSaverLevel() const
 {
   if (!m_bScreenSave || !m_screenSaver ||
@@ -1962,21 +1946,18 @@ void CApplication::Render()
     if (g_graphicsContext.GetStereoMode())
     {
       g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_LEFT);
-      if (RenderNoPresent())
-        hasRendered = true;
+      hasRendered |= g_windowManager.Render();
 
       if (g_graphicsContext.GetStereoMode() != RENDER_STEREO_MODE_MONO)
       {
         g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_RIGHT);
-        if (RenderNoPresent())
-          hasRendered = true;
+        hasRendered |= g_windowManager.Render();
       }
       g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_OFF);
     }
     else
     {
-      if (RenderNoPresent())
-        hasRendered = true;
+      hasRendered |= g_windowManager.Render();
     }
     // execute post rendering actions (finalize window closing)
     g_windowManager.AfterRender();
