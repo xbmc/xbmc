@@ -307,7 +307,7 @@ void CRenderSystemDX::SetFullScreenInternal()
   if (!m_bRenderCreated)
     return;
 
-  HRESULT hr;
+  HRESULT hr = S_OK;
   BOOL bFullScreen;
   m_pSwapChain->GetFullscreenState(&bFullScreen, NULL);
 
@@ -315,18 +315,15 @@ void CRenderSystemDX::SetFullScreenInternal()
   if (!!bFullScreen && m_useWindowedDX)
   {
     CLog::Log(LOGDEBUG, "%s - Switching swap chain to windowed mode.", __FUNCTION__);
+
     hr = m_pSwapChain->SetFullscreenState(false, NULL);
-    m_bResizeRequred = S_OK == hr;
-
-    if (S_OK != hr)
+    if (SUCCEEDED(hr))
+      m_bResizeRequred = true;
+    else
       CLog::Log(LOGERROR, "%s - Failed switch full screen state: %s.", __FUNCTION__, GetErrorDescription(hr).c_str());
-    // wait until switching screen state is done
-    DXWait(m_pD3DDev, m_pImdContext);
-    return;
   }
-
   // true full-screen
-  if (m_bFullScreenDevice && !m_useWindowedDX)
+  else if (m_bFullScreenDevice && !m_useWindowedDX)
   {
     IDXGIOutput* pOutput = NULL;
     m_pSwapChain->GetContainingOutput(&pOutput);
@@ -339,10 +336,11 @@ void CRenderSystemDX::SetFullScreenInternal()
     {
       // swap chain requires to change FS mode after resize or transition from windowed to full-screen.
       CLog::Log(LOGDEBUG, "%s - Switching swap chain to fullscreen state.", __FUNCTION__);
-      hr = m_pSwapChain->SetFullscreenState(true, m_pOutput);
-      m_bResizeRequred = S_OK == hr;
 
-      if (S_OK != hr)
+      hr = m_pSwapChain->SetFullscreenState(true, m_pOutput);
+      if (SUCCEEDED(hr))
+        m_bResizeRequred = true;
+      else
         CLog::Log(LOGERROR, "%s - Failed switch full screen state: %s.", __FUNCTION__, GetErrorDescription(hr).c_str());
     }
     SAFE_RELEASE(pOutput);
@@ -385,22 +383,22 @@ void CRenderSystemDX::SetFullScreenInternal()
       || currentMode.Height != matchedMode.Height
       || currentRefreshRate != matchedRefreshRate)
     {
+      // change monitor resolution (in fullscreen mode) to required mode
       CLog::Log(LOGDEBUG, "%s - Switching mode to %dx%d@%0.3f.", __FUNCTION__, matchedMode.Width, matchedMode.Height, matchedRefreshRate);
 
-      // resize window (in windowed mode) or monitor resolution (in fullscreen mode) to required mode
       hr = m_pSwapChain->ResizeTarget(&matchedMode);
-      if (S_OK == hr && !m_bResizeRequred)
-      {
+      if (SUCCEEDED(hr))
         m_bResizeRequred = true;
-        ResolutionChanged();
-      }
-
-      if (FAILED(hr))
+      else
         CLog::Log(LOGERROR, "%s - Failed to switch output mode: %s", __FUNCTION__, GetErrorDescription(hr).c_str());
     }
+  }
 
+  if (m_bResizeRequred)
+  {
     // wait until switching screen state is done
     DXWait(m_pD3DDev, m_pImdContext);
+    ResolutionChangedDX();
   }
 }
 
@@ -837,7 +835,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
 
       // when transition from/to stereo mode trigger display reset event
       if (bNeedRecreate)
-        ResolutionChanged();
+        ResolutionChangedDX();
     }
     else
     {
