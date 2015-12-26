@@ -41,6 +41,7 @@ private:
   float        m_contrast;
   float        m_blacklevel;
   unsigned int m_flags;
+  bool         m_limitedRange;
   ERenderFormat m_format;
   XMFLOAT4X4   m_mat;
 };
@@ -122,7 +123,8 @@ public:
                                unsigned int sourceWidth, unsigned int sourceHeight,
                                unsigned int destWidth, unsigned int destHeight,
                                CRect sourceRect,
-                               CRect destRect) = 0;
+                               CRect destRect,
+                               bool useLimitedRange) = 0;
   CConvolutionShader() : CWinShader() {}
   virtual ~CConvolutionShader();
 
@@ -149,14 +151,15 @@ public:
                                unsigned int sourceWidth, unsigned int sourceHeight,
                                unsigned int destWidth, unsigned int destHeight,
                                CRect sourceRect,
-                               CRect destRect);
+                               CRect destRect,
+                               bool useLimitedRange);
   CConvolutionShader1Pass() : CConvolutionShader(), m_sourceWidth(0), m_sourceHeight(0) {}
 
 protected:
   virtual void PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
                                CRect sourceRect,
                                CRect destRect);
-  virtual void SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, int texStepsCount);
+  virtual void SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, int texStepsCount, bool useLimitedRange);
 
 
 private:
@@ -173,7 +176,8 @@ public:
                                unsigned int sourceWidth, unsigned int sourceHeight,
                                unsigned int destWidth, unsigned int destHeight,
                                CRect sourceRect,
-                               CRect destRect);
+                               CRect destRect,
+                               bool useLimitedRange);
   virtual ~CConvolutionShaderSeparable();
 
 protected:
@@ -184,7 +188,7 @@ protected:
                                unsigned int destWidth, unsigned int destHeight,
                                CRect sourceRect,
                                CRect destRect);
-  virtual void SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, int texStepsCount);
+  virtual void SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, int texStepsCount, bool useLimitedRange);
   virtual void SetStepParams(UINT stepIndex);
 
 private:
