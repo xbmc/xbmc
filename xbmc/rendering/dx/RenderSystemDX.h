@@ -112,7 +112,7 @@ protected:
   void Register(ID3DResource *resource);
   void Unregister(ID3DResource *resource);
 
-  virtual void ResolutionChanged() {};
+  virtual void ResolutionChangedDX() {};
   virtual void UpdateMonitor() {};
 
   // our adapter could change as we go

@@ -69,6 +69,7 @@ public:
 protected:
   virtual void UpdateMonitor();
   bool UseWindowedDX(bool fullScreen);
+  virtual void ResolutionChangedDX();
 };
 
 XBMC_GLOBAL_REF(CWinSystemWin32DX,g_Windowing);

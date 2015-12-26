@@ -211,4 +211,9 @@ void CWinSystemWin32DX::Unregister(IDispResource *resource)
   CWinSystemWin32::Unregister(resource);
 }
 
+void CWinSystemWin32DX::ResolutionChangedDX()
+{
+  CWinSystemWin32::ResolutionChanged();
+}
+
 #endif
