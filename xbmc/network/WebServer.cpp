@@ -69,6 +69,13 @@ typedef struct ConnectionHandler
   bool isNew;
   IHTTPRequestHandler *requestHandler;
   struct MHD_PostProcessor *postprocessor;
+
+  ConnectionHandler(const std::string& uri)
+    : fullUri(uri)
+    , isNew(true)
+    , postprocessor(nullptr)
+    , requestHandler(nullptr)
+  { }
 } ConnectionHandler;
 
 typedef struct {
@@ -943,18 +950,11 @@ int CWebServer::SendErrorResponse(struct MHD_Connection *connection, int errorTy
 
 void* CWebServer::UriRequestLogger(void *cls, const char *uri)
 {
-  // create a new connection handler
-  ConnectionHandler* conHandler = new ConnectionHandler();
-  conHandler->fullUri = uri;
-  conHandler->isNew = true;
-  conHandler->postprocessor = NULL;
-  conHandler->requestHandler = NULL;
-
   // log the full URI
   CLog::Log(LOGDEBUG, "webserver: request received for %s", uri);
 
-  // return the connection handler so that we can access it in AnswerToConnection as con_cls
-  return conHandler;
+  // create and return a new connection handler
+  return new ConnectionHandler(uri);
 }
 
 #if (MHD_VERSION >= 0x00090200)
