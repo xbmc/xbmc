@@ -109,6 +109,7 @@ protected:
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
+  bool ProcessDecoderOutput(int &decoderState, double &frametime, double &pts);
 
   int OutputPicture(const DVDVideoPicture* src, double pts);
   void ProcessOverlays(DVDVideoPicture* pSource, double pts);
@@ -161,5 +162,6 @@ protected:
   std::list<DVDMessageListItem> m_packets;
   CDroppingStats m_droppingStats;
   CRenderManager& m_renderManager;
+  DVDVideoPicture m_picture;
 };
 
