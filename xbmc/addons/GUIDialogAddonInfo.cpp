@@ -489,31 +489,7 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
 
   CAddonDatabase database;
   database.Open();
-  database.GetAddon(item->GetProperty("Addon.ID").asString(),m_addon);
-
-  if (TranslateType(item->GetProperty("Addon.intType").asString()) == ADDON_REPOSITORY)
-  {
-    CAddonDatabase database;
-    database.Open();
-    VECADDONS addons;
-    if (m_addon)
-      database.GetRepositoryContent(m_addon->ID(), addons);
-    else if (m_localAddon) // sanity
-      database.GetRepositoryContent(m_localAddon->ID(), addons);
-    int tot=0;
-    for (int i = ADDON_UNKNOWN+1;i<ADDON_MAX;++i)
-    {
-      int num=0;
-      for (unsigned int j=0;j<addons.size();++j)
-      {
-        if (addons[j]->Type() == (TYPE)i)
-          ++num;
-      }
-      m_item->SetProperty("Repo." + TranslateType((TYPE)i), num);
-      tot += num;
-    }
-    m_item->SetProperty("Repo.Addons", tot);
-  }
+  database.GetAddon(item->GetProperty("Addon.ID").asString(), m_addon);
   return true;
 }
 
