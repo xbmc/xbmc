@@ -69,12 +69,14 @@ typedef struct ConnectionHandler
   bool isNew;
   IHTTPRequestHandler *requestHandler;
   struct MHD_PostProcessor *postprocessor;
+  int errorStatus;
 
   ConnectionHandler(const std::string& uri)
     : fullUri(uri)
     , isNew(true)
     , postprocessor(nullptr)
     , requestHandler(nullptr)
+    , errorStatus(MHD_HTTP_OK)
   { }
 } ConnectionHandler;
 
@@ -361,7 +363,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
 
                 delete conHandler->requestHandler;
 
-                return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, methodType);
+                conHandler->errorStatus = MHD_HTTP_INTERNAL_SERVER_ERROR;
               }
             }
           }
@@ -386,18 +388,22 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
       if (conHandler->requestHandler == NULL)
       {
         CLog::Log(LOGERROR, "CWebServer: cannot handle partial HTTP POST for %s request because there is no valid request handler available", url);
-        return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, methodType);
+        conHandler->errorStatus = MHD_HTTP_INTERNAL_SERVER_ERROR;
       }
 
       // we only need to handle POST data if there actually is data left to handle
       if (*upload_data_size > 0)
       {
-        // either use MHD's POST processor
-        if (conHandler->postprocessor != NULL)
-          MHD_post_process(conHandler->postprocessor, upload_data, *upload_data_size);
-        // or simply copy the data to the handler
-        else
-          conHandler->requestHandler->AddPostData(upload_data, *upload_data_size);
+        // if nothing has gone wrong so far, process the given POST data
+        if (conHandler->errorStatus == MHD_HTTP_OK)
+        {
+          // either use MHD's POST processor
+          if (conHandler->postprocessor != NULL)
+            MHD_post_process(conHandler->postprocessor, upload_data, *upload_data_size) == MHD_YES;
+          // or simply copy the data to the handler
+          else
+            conHandler->requestHandler->AddPostData(upload_data, *upload_data_size);
+        }
 
         // signal that we have handled the data
         *upload_data_size = 0;
@@ -413,6 +419,14 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
       {
         if (conHandler->postprocessor != NULL)
           MHD_destroy_post_processor(conHandler->postprocessor);
+
+        // check if something went wrong while handling the POST data
+        if (conHandler->errorStatus != MHD_HTTP_OK)
+        {
+          delete conHandler->requestHandler;
+
+          return SendErrorResponse(connection, conHandler->errorStatus, methodType);
+        }
 
         return HandleRequest(conHandler->requestHandler);
       }
