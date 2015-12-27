@@ -203,7 +203,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   }
 
   CWebServer *server = reinterpret_cast<CWebServer*>(cls);
-  std::auto_ptr<ConnectionHandler> conHandler(reinterpret_cast<ConnectionHandler*>(*con_cls));
+  std::unique_ptr<ConnectionHandler> conHandler(reinterpret_cast<ConnectionHandler*>(*con_cls));
   HTTPMethod methodType = GetMethod(method);
   HTTPRequest request = { server, connection, conHandler->fullUri, url, methodType, version };
 
