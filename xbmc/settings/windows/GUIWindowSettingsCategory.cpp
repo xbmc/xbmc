@@ -212,15 +212,13 @@ void CGUIWindowSettingsCategory::Save()
 
 void CGUIWindowSettingsCategory::FocusCategory(const std::string& categoryId)
 {
-  for (int i = 0; i < m_categories.size(); ++i)
+  auto category = std::find_if(m_categories.cbegin(), m_categories.cend(),
+    [&categoryId](const CSettingCategory* category) { return category->GetId() == categoryId; });
+  if (category == m_categories.end())
   {
-    if (m_categories[i]->GetId() == categoryId)
-    {
-      m_iCategory = i;
-      SET_CONTROL_FOCUS(CONTROL_SETTINGS_START_BUTTONS + m_iCategory, 0);
-      CreateSettings();
-      return;
-    }
+    CLog::Log(LOGERROR, "CGUIWindowSettingsCategory: asked to focus unknown category '%s'.", categoryId.c_str());
+    return;
   }
-  CLog::Log(LOGERROR, "CGUIWindowSettingsCategory: asked to focus unknown category '%s'.", categoryId.c_str());
+
+  SET_CONTROL_FOCUS(CONTROL_SETTINGS_START_BUTTONS + std::distance(m_categories.cbegin(), category), 0);
 }
