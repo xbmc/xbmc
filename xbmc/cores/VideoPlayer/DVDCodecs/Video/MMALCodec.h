@@ -105,7 +105,8 @@ protected:
   const char        *m_pFormatName;
 
   // mmal output buffers (video frames)
-  pthread_mutex_t   m_output_mutex;
+  CCriticalSection m_output_mutex;
+  XbmcThreads::ConditionVariable m_output_cond;
   std::queue<CMMALVideoBuffer*> m_output_ready;
 
   // initialize mmal and get decoder component
