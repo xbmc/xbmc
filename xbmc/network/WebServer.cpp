@@ -95,8 +95,8 @@ typedef struct {
 std::vector<IHTTPRequestHandler *> CWebServer::m_requestHandlers;
 
 CWebServer::CWebServer()
-  : m_daemon_ip6(NULL),
-    m_daemon_ip4(NULL),
+  : m_daemon_ip6(nullptr),
+    m_daemon_ip4(nullptr),
     m_running(false),
     m_needcredentials(false),
     m_Credentials64Encoded("eGJtYzp4Ym1j") // xbmc:xbmc
@@ -117,27 +117,27 @@ HTTPMethod CWebServer::GetMethod(const char *method)
 
 int CWebServer::FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value) 
 {
-  if (cls == NULL || key == NULL)
+  if (cls == nullptr || key == nullptr)
     return MHD_NO;
 
   std::map<std::string, std::string> *arguments = (std::map<std::string, std::string> *)cls;
-  arguments->insert(std::make_pair(key, value != NULL ? value : ""));
+  arguments->insert(std::make_pair(key, value != nullptr ? value : ""));
   return MHD_YES; 
 }
 
 int CWebServer::FillArgumentMultiMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value) 
 {
-  if (cls == NULL || key == NULL)
+  if (cls == nullptr || key == nullptr)
     return MHD_NO;
 
   std::multimap<std::string, std::string> *arguments = (std::multimap<std::string, std::string> *)cls;
-  arguments->insert(std::make_pair(key, value != NULL ? value : ""));
+  arguments->insert(std::make_pair(key, value != nullptr ? value : ""));
   return MHD_YES; 
 }
 
 int CWebServer::AskForAuthentication(struct MHD_Connection *connection)
 {
-  struct MHD_Response *response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
+  struct MHD_Response *response = MHD_create_response_from_data(0, nullptr, MHD_NO, MHD_NO);
   if (!response)
   {
     CLog::Log(LOGERROR, "CWebServer: unable to create HTTP Unauthorized response");
@@ -196,7 +196,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
                       unsigned int *upload_data_size, void **con_cls)
 #endif
 {
-  if (cls == NULL || con_cls == NULL || *con_cls == NULL)
+  if (cls == nullptr || con_cls == nullptr || *con_cls == nullptr)
   {
     CLog::Log(LOGERROR, "CWebServer: invalid request received");
     return MHD_NO;
@@ -213,7 +213,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   conHandler->isNew = false;
 
   // reset con_cls and set it if still necessary
-  *con_cls = NULL;
+  *con_cls = nullptr;
 
 #ifdef WEBSERVER_DEBUG
   if (isNewRequest)
@@ -305,8 +305,8 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
                 ifModifiedSinceDate.SetFromRFC1123DateTime(ifModifiedSince) &&
                 lastModified.GetAsUTCDateTime() <= ifModifiedSinceDate)
               {
-                struct MHD_Response *response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
-                if (response == NULL)
+                struct MHD_Response *response = MHD_create_response_from_data(0, nullptr, MHD_NO, MHD_NO);
+                if (response == nullptr)
                 {
                   CLog::Log(LOGERROR, "CWebServer: failed to create a HTTP 304 response");
                   return MHD_NO;
@@ -357,7 +357,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
               conHandler->postprocessor = MHD_create_post_processor(connection, MAX_POST_BUFFER_SIZE, &CWebServer::HandlePostField, (void*)conHandler.get());
 
               // MHD doesn't seem to be able to handle this post request
-              if (conHandler->postprocessor == NULL)
+              if (conHandler->postprocessor == nullptr)
               {
                 CLog::Log(LOGERROR, "CWebServer: unable to create HTTP POST processor for %s", url);
 
@@ -385,7 +385,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
     // again we need to take special care of the POST data
     if (methodType == POST)
     {
-      if (conHandler->requestHandler == NULL)
+      if (conHandler->requestHandler == nullptr)
       {
         CLog::Log(LOGERROR, "CWebServer: cannot handle partial HTTP POST for %s request because there is no valid request handler available", url);
         conHandler->errorStatus = MHD_HTTP_INTERNAL_SERVER_ERROR;
@@ -399,7 +399,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
         {
           bool postDataHandled = false;
           // either use MHD's POST processor
-          if (conHandler->postprocessor != NULL)
+          if (conHandler->postprocessor != nullptr)
             postDataHandled = MHD_post_process(conHandler->postprocessor, upload_data, *upload_data_size) == MHD_YES;
           // or simply copy the data to the handler
           else
@@ -425,7 +425,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
       // we have handled all POST data so it's time to invoke the IHTTPRequestHandler
       else
       {
-        if (conHandler->postprocessor != NULL)
+        if (conHandler->postprocessor != nullptr)
           MHD_destroy_post_processor(conHandler->postprocessor);
 
         // check if something went wrong while handling the POST data
@@ -469,8 +469,8 @@ int CWebServer::HandlePostField(void *cls, enum MHD_ValueKind kind, const char *
 {
   ConnectionHandler *conHandler = (ConnectionHandler *)cls;
 
-  if (conHandler == NULL || conHandler->requestHandler == NULL ||
-      key == NULL || data == NULL || size == 0)
+  if (conHandler == nullptr || conHandler->requestHandler == nullptr ||
+      key == nullptr || data == nullptr || size == 0)
   {
     CLog::Log(LOGERROR, "CWebServer: unable to handle HTTP POST field");
     return MHD_NO;
@@ -482,7 +482,7 @@ int CWebServer::HandlePostField(void *cls, enum MHD_ValueKind kind, const char *
 
 int CWebServer::HandleRequest(IHTTPRequestHandler *handler)
 {
-  if (handler == NULL)
+  if (handler == nullptr)
     return MHD_NO;
 
   HTTPRequest request = handler->GetRequest();
@@ -495,7 +495,7 @@ int CWebServer::HandleRequest(IHTTPRequestHandler *handler)
   }
 
   const HTTPResponseDetails &responseDetails = handler->GetResponseDetails();
-  struct MHD_Response *response = NULL;
+  struct MHD_Response *response = nullptr;
   switch (responseDetails.type)
   {
     case HTTPNone:
@@ -540,7 +540,7 @@ int CWebServer::HandleRequest(IHTTPRequestHandler *handler)
 
 int CWebServer::FinalizeRequest(IHTTPRequestHandler *handler, int responseStatus, struct MHD_Response *response)
 {
-  if (handler == NULL || response == NULL)
+  if (handler == nullptr || response == nullptr)
     return MHD_NO;
 
   const HTTPRequest &request = handler->GetRequest();
@@ -622,7 +622,7 @@ int CWebServer::FinalizeRequest(IHTTPRequestHandler *handler, int responseStatus
 
 int CWebServer::CreateMemoryDownloadResponse(IHTTPRequestHandler *handler, struct MHD_Response *&response)
 {
-  if (handler == NULL)
+  if (handler == nullptr)
     return MHD_NO;
 
   const HTTPRequest &request = handler->GetRequest();
@@ -631,7 +631,7 @@ int CWebServer::CreateMemoryDownloadResponse(IHTTPRequestHandler *handler, struc
 
   // check if the response is completely empty
   if (responseRanges.empty())
-    return CreateMemoryDownloadResponse(request.connection, NULL, 0, false, false, response);
+    return CreateMemoryDownloadResponse(request.connection, nullptr, 0, false, false, response);
 
   // check if the response contains more ranges than the request asked for
   if ((request.ranges.IsEmpty() && responseRanges.size() > 1) ||
@@ -680,7 +680,7 @@ int CWebServer::CreateMemoryDownloadResponse(IHTTPRequestHandler *handler, struc
 
 int CWebServer::CreateRangedMemoryDownloadResponse(IHTTPRequestHandler *handler, struct MHD_Response *&response)
 {
-  if (handler == NULL)
+  if (handler == nullptr)
     return MHD_NO;
 
   const HTTPRequest &request = handler->GetRequest();
@@ -708,7 +708,7 @@ int CWebServer::CreateRangedMemoryDownloadResponse(IHTTPRequestHandler *handler,
   }
 
   if (ranges.empty())
-    return CreateMemoryDownloadResponse(request.connection, NULL, 0, false, false, response);
+    return CreateMemoryDownloadResponse(request.connection, nullptr, 0, false, false, response);
 
   // determine the last range position
   uint64_t lastRangePosition = ranges.back().GetLastPosition();
@@ -760,8 +760,8 @@ int CWebServer::CreateRangedMemoryDownloadResponse(IHTTPRequestHandler *handler,
 
 int CWebServer::CreateRedirect(struct MHD_Connection *connection, const std::string &strURL, struct MHD_Response *&response)
 {
-  response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
-  if (response == NULL)
+  response = MHD_create_response_from_data(0, nullptr, MHD_NO, MHD_NO);
+  if (response == nullptr)
   {
     CLog::Log(LOGERROR, "CWebServer: failed to create HTTP redirect response to %s", strURL.c_str());
     return MHD_NO;
@@ -773,7 +773,7 @@ int CWebServer::CreateRedirect(struct MHD_Connection *connection, const std::str
 
 int CWebServer::CreateFileDownloadResponse(IHTTPRequestHandler *handler, struct MHD_Response *&response)
 {
-  if (handler == NULL)
+  if (handler == nullptr)
     return MHD_NO;
 
   const HTTPRequest &request = handler->GetRequest();
@@ -873,7 +873,7 @@ int CWebServer::CreateFileDownloadResponse(IHTTPRequestHandler *handler, struct 
                                                   &CWebServer::ContentReaderCallback,
                                                   context.get(),
                                                   &CWebServer::ContentReaderFreeCallback);
-    if (response == NULL)
+    if (response == nullptr)
     {
       CLog::Log(LOGERROR, "CWebServer: failed to create a HTTP response for %s to be filled from %s", request.pathUrl.c_str(), filePath.c_str());
       return MHD_NO;
@@ -887,8 +887,8 @@ int CWebServer::CreateFileDownloadResponse(IHTTPRequestHandler *handler, struct 
   }
   else
   {
-    response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
-    if (response == NULL)
+    response = MHD_create_response_from_data(0, nullptr, MHD_NO, MHD_NO);
+    if (response == nullptr)
     {
       CLog::Log(LOGERROR, "CWebServer: failed to create a HTTP HEAD response for %s", request.pathUrl.c_str());
       return MHD_NO;
@@ -907,7 +907,7 @@ int CWebServer::CreateFileDownloadResponse(IHTTPRequestHandler *handler, struct 
 int CWebServer::CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method, struct MHD_Response *&response)
 {
   size_t payloadSize = 0;
-  void *payload = NULL;
+  void *payload = nullptr;
 
   if (method != HEAD)
   {
@@ -926,7 +926,7 @@ int CWebServer::CreateErrorResponse(struct MHD_Connection *connection, int respo
   }
 
   response = MHD_create_response_from_data(payloadSize, payload, MHD_NO, MHD_NO);
-  if (response == NULL)
+  if (response == nullptr)
   {
     CLog::Log(LOGERROR, "CWebServer: failed to create a HTTP %d error response", responseType);
     return MHD_NO;
@@ -938,7 +938,7 @@ int CWebServer::CreateErrorResponse(struct MHD_Connection *connection, int respo
 int CWebServer::CreateMemoryDownloadResponse(struct MHD_Connection *connection, const void *data, size_t size, bool free, bool copy, struct MHD_Response *&response)
 {
   response = MHD_create_response_from_data(size, const_cast<void*>(data), free ? MHD_YES : MHD_NO, copy ? MHD_YES : MHD_NO);
-  if (response == NULL)
+  if (response == nullptr)
   {
     CLog::Log(LOGERROR, "CWebServer: failed to create a HTTP download response");
     return MHD_NO;
@@ -949,7 +949,7 @@ int CWebServer::CreateMemoryDownloadResponse(struct MHD_Connection *connection, 
 
 int CWebServer::SendErrorResponse(struct MHD_Connection *connection, int errorType, HTTPMethod method)
 {
-  struct MHD_Response *response = NULL;
+  struct MHD_Response *response = nullptr;
   int ret = CreateErrorResponse(connection, errorType, method, response);
   if (ret == MHD_YES)
   {
@@ -988,7 +988,7 @@ int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
 #endif
 {
   HttpFileDownloadContext *context = (HttpFileDownloadContext *)cls;
-  if (context == NULL || context->file == NULL)
+  if (context == nullptr || context->file == nullptr)
     return -1;
 
 #ifdef WEBSERVER_DEBUG
@@ -1099,7 +1099,7 @@ static void panicHandlerForMHD(void* unused, const char* file, unsigned int line
 // local helper
 static void logFromMHD(void* unused, const char* fmt, va_list ap)
 {
-  if (fmt == NULL || fmt[0] == 0)
+  if (fmt == nullptr || fmt[0] == 0)
     CLog::Log(LOGERROR, "CWebServer: MHD reported error with empty string");
   else
   {
@@ -1122,7 +1122,7 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
   unsigned int timeout = 60 * 60 * 24;
 
 #if MHD_VERSION >= 0x00040500
-  MHD_set_panic_func(&panicHandlerForMHD, NULL);
+  MHD_set_panic_func(&panicHandlerForMHD, nullptr);
 #endif
 
   return MHD_start_daemon(flags |
@@ -1141,8 +1141,8 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
 #endif 
                           ,
                           port,
-                          NULL,
-                          NULL,
+                          nullptr,
+                          nullptr,
                           &CWebServer::AnswerToConnection,
                           this,
 
@@ -1153,7 +1153,7 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
                           MHD_OPTION_CONNECTION_TIMEOUT, timeout,
                           MHD_OPTION_URI_LOG_CALLBACK, &CWebServer::UriRequestLogger, this,
 #if (MHD_VERSION >= 0x00040001)
-                          MHD_OPTION_EXTERNAL_LOGGER, &logFromMHD, NULL,
+                          MHD_OPTION_EXTERNAL_LOGGER, &logFromMHD, nullptr,
 #endif // MHD_VERSION >= 0x00040001
                           MHD_OPTION_END);
 }
@@ -1172,7 +1172,7 @@ bool CWebServer::Start(int port, const std::string &username, const std::string 
     
     m_daemon_ip4 = StartMHD(0, port);
     
-    m_running = (m_daemon_ip6 != NULL) || (m_daemon_ip4 != NULL);
+    m_running = (m_daemon_ip6 != nullptr) || (m_daemon_ip4 != nullptr);
     if (m_running)
       CLog::Log(LOGNOTICE, "WebServer: Started the webserver");
     else
@@ -1186,10 +1186,10 @@ bool CWebServer::Stop()
 {
   if (m_running)
   {
-    if (m_daemon_ip6 != NULL)
+    if (m_daemon_ip6 != nullptr)
       MHD_stop_daemon(m_daemon_ip6);
 
-    if (m_daemon_ip4 != NULL)
+    if (m_daemon_ip4 != nullptr)
       MHD_stop_daemon(m_daemon_ip4);
     
     m_running = false;
@@ -1245,7 +1245,7 @@ int CWebServer::GetCapabilities()
 
 void CWebServer::RegisterRequestHandler(IHTTPRequestHandler *handler)
 {
-  if (handler == NULL)
+  if (handler == nullptr)
     return;
 
   for (std::vector<IHTTPRequestHandler *>::iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); ++it)
@@ -1265,7 +1265,7 @@ void CWebServer::RegisterRequestHandler(IHTTPRequestHandler *handler)
 
 void CWebServer::UnregisterRequestHandler(IHTTPRequestHandler *handler)
 {
-  if (handler == NULL)
+  if (handler == nullptr)
     return;
 
   for (std::vector<IHTTPRequestHandler *>::iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); ++it)
@@ -1280,11 +1280,11 @@ void CWebServer::UnregisterRequestHandler(IHTTPRequestHandler *handler)
 
 std::string CWebServer::GetRequestHeaderValue(struct MHD_Connection *connection, enum MHD_ValueKind kind, const std::string &key)
 {
-  if (connection == NULL)
+  if (connection == nullptr)
     return "";
 
   const char* value = MHD_lookup_connection_value(connection, kind, key.c_str());
-  if (value == NULL)
+  if (value == nullptr)
     return "";
 
   if (StringUtils::EqualsNoCase(key, MHD_HTTP_HEADER_CONTENT_TYPE))
@@ -1304,7 +1304,7 @@ std::string CWebServer::GetRequestHeaderValue(struct MHD_Connection *connection,
 
 int CWebServer::GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::map<std::string, std::string> &headerValues)
 {
-  if (connection == NULL)
+  if (connection == nullptr)
     return -1;
 
   return MHD_get_connection_values(connection, kind, FillArgumentMap, &headerValues);
@@ -1312,7 +1312,7 @@ int CWebServer::GetRequestHeaderValues(struct MHD_Connection *connection, enum M
 
 int CWebServer::GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::multimap<std::string, std::string> &headerValues)
 {
-  if (connection == NULL)
+  if (connection == nullptr)
     return -1;
 
   return MHD_get_connection_values(connection, kind, FillArgumentMultiMap, &headerValues);
@@ -1322,7 +1322,7 @@ bool CWebServer::GetRequestedRanges(struct MHD_Connection *connection, uint64_t 
 {
   ranges.Clear();
 
-  if (connection == NULL)
+  if (connection == nullptr)
     return false;
 
   return ranges.Parse(GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_RANGE), totalLength);
@@ -1340,7 +1340,7 @@ std::string CWebServer::CreateMimeTypeFromExtension(const char *ext)
 
 int CWebServer::AddHeader(struct MHD_Response *response, const std::string &name, const std::string &value)
 {
-  if (response == NULL || name.empty())
+  if (response == nullptr || name.empty())
     return 0;
 
 #ifdef WEBSERVER_DEBUG
@@ -1351,7 +1351,7 @@ int CWebServer::AddHeader(struct MHD_Response *response, const std::string &name
 
 bool CWebServer::GetLastModifiedDateTime(XFILE::CFile *file, CDateTime &lastModified)
 {
-  if (file == NULL)
+  if (file == nullptr)
     return false;
 
   struct __stat64 statBuffer;
@@ -1365,7 +1365,7 @@ bool CWebServer::GetLastModifiedDateTime(XFILE::CFile *file, CDateTime &lastModi
 #else
   time = localtime((time_t *)&statBuffer.st_mtime);
 #endif
-  if (time == NULL)
+  if (time == nullptr)
     return false;
 
   lastModified = *time;
