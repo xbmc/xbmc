@@ -849,7 +849,7 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
 
   if (!m_output_ready.empty())
     ret |= VC_PICTURE;
-  if (mmal_queue_length(m_dec_input_pool->queue) > 0)
+  if (mmal_queue_length(m_dec_input_pool->queue) > 0 && !(m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
     ret |= VC_BUFFER;
 
   bool slept = false;
@@ -860,11 +860,13 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
       // otherwise we busy spin
       CSingleExit unlock(m_sharedSection);
       CSingleLock lock(m_output_mutex);
-      m_output_cond.wait(lock, 10);
+      m_output_cond.wait(lock, 30);
     }
     if (!m_output_ready.empty())
       ret |= VC_PICTURE;
-    if (mmal_queue_length(m_dec_input_pool->queue) > 0)
+    if (mmal_queue_length(m_dec_input_pool->queue) > 0 && !(m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
+      ret |= VC_BUFFER;
+    else if (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN && !ret)
       ret |= VC_BUFFER;
   }
 
@@ -1051,5 +1053,8 @@ bool CMMALVideo::GetCodecStats(double &pts, int &droppedPics)
 void CMMALVideo::SetCodecControl(int flags)
 {
   CSingleLock lock(m_sharedSection);
+  if (m_codecControlFlags != flags)
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "%s::%s %x->%x", CLASSNAME, __func__, m_codecControlFlags, flags);
   m_codecControlFlags = flags;
 }
