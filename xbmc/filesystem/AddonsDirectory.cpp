@@ -126,22 +126,6 @@ static bool IsOrphaned(const AddonPtr& addon, const VECADDONS& all)
 }
 
 
-static void SetUpdateAvailProperties(CFileItemList &items)
-{
-  std::set<std::string> outdated;
-  for (const auto& addon : CAddonMgr::GetInstance().GetOutdated())
-    outdated.insert(addon->ID());
-
-  for (int i = 0; i < items.Size(); ++i)
-  {
-    if (outdated.find(items[i]->GetProperty("Addon.ID").asString()) != outdated.end())
-    {
-      items[i]->SetProperty("Addon.Status", g_localizeStrings.Get(24068));
-      items[i]->SetProperty("Addon.UpdateAvail", true);
-    }
-  }
-}
-
 // Creates categories from addon types, if we have any addons with that type.
 static void GenerateTypeListing(const CURL& path, const std::set<TYPE>& types,
     const VECADDONS& addons, CFileItemList& items)
@@ -276,15 +260,9 @@ static void UserInstalledAddons(const CURL& path, CFileItemList &items)
     items.Add(item);
   }
   else if (category == "all")
-  {
     CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(24998));
-    SetUpdateAvailProperties(items);
-  }
   else
-  {
     GenerateCategoryListing(path, addons, items);
-    SetUpdateAvailProperties(items);
-  }
 }
 
 static void DependencyAddons(const CURL& path, CFileItemList &items)
@@ -298,7 +276,6 @@ static void DependencyAddons(const CURL& path, CFileItemList &items)
       [&](const AddonPtr& _){ return !IsUserInstalled(_); });
 
   CAddonsDirectory::GenerateAddonListing(path, deps, items, g_localizeStrings.Get(24996));
-  SetUpdateAvailProperties(items);
 
   //Set orphaned status
   std::set<std::string> orphaned;
@@ -499,6 +476,10 @@ bool CAddonsDirectory::IsRepoDirectory(const CURL& url)
 void CAddonsDirectory::GenerateAddonListing(const CURL &path,
     const VECADDONS& addons, CFileItemList &items, const std::string label)
 {
+  std::set<std::string> outdated;
+  for (const auto& addon : CAddonMgr::GetInstance().GetOutdated())
+    outdated.insert(addon->ID());
+
   items.ClearItems();
   items.SetContent("addons");
   items.SetLabel(label);
@@ -508,22 +489,28 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
     itemPath.SetFileName(addon->ID());
     CFileItemPtr pItem = FileItemFromAddon(addon, itemPath.Get(), false);
 
-    AddonPtr installedAddon;
-    if (CAddonMgr::GetInstance().GetAddon(addon->ID(), installedAddon))
-      pItem->SetProperty("Addon.Status",g_localizeStrings.Get(305));
-    else if (CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()))
-      pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24023));
+    CAddonDatabase::SetPropertiesFromAddon(addon,pItem);
 
+    AddonPtr localAddon;
+    bool installed = CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_UNKNOWN, false);
+    bool disabled = CAddonMgr::GetInstance().IsAddonDisabled(addon->ID());
+    bool hasUpdate = outdated.find(addon->ID()) != outdated.end();
+
+    pItem->SetProperty("Addon.IsInstalled", installed);
+    pItem->SetProperty("Addon.IsEnabled", installed && !disabled);
+    pItem->SetProperty("Addon.HasUpdate", hasUpdate);
+
+    if (installed)
+      pItem->SetProperty("Addon.Status", g_localizeStrings.Get(305));
+    if (disabled)
+      pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24023));
     if (addon->Props().broken == "DEPSNOTMET")
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24049));
     else if (!addon->Props().broken.empty())
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24098));
-    if (installedAddon && installedAddon->Version() < addon->Version())
-    {
+    if (hasUpdate)
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24068));
-      pItem->SetProperty("Addon.UpdateAvail", true);
-    }
-    CAddonDatabase::SetPropertiesFromAddon(addon,pItem);
+
     items.Add(pItem);
   }
 }
