@@ -33,18 +33,19 @@ public:
 
   virtual void Initialize() { }
   virtual void Stop() { }
+  virtual bool Eject(const std::string& mountpath) { return false; }
 
   virtual void GetLocalDrives(VECSOURCES &localDrives);
   virtual void GetRemovableDrives(VECSOURCES &removableDrives);
-  
-  virtual bool Eject(const std::string& mountpath);
-
   virtual std::vector<std::string> GetDiskUsage();
 
   virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback);
 
 private:
-  static std::set<std::string> GetRemovableDrives();
   std::string unescape(const std::string& str);
-  std::set<std::string> m_removableDrives;
+  VECSOURCES m_removableDrives;
+  unsigned int m_removableLength;
+
+  static std::set<std::string> GetRemovableDrives();
+  static std::set<std::string> GetRemovableDrivesLinux();
 };

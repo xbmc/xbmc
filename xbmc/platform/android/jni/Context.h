@@ -36,6 +36,8 @@ class CJNIWindow;
 class CJNIContext
 {
 public:
+  const jni::jhobject& get_raw() const { return m_context; }
+
   static CJNIPackageManager GetPackageManager();
   static void startActivity(const CJNIIntent &intent);
   static jni::jhobject getSystemService(const std::string &service);

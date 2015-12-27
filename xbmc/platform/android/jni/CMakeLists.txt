@@ -46,6 +46,8 @@ set(SOURCES Activity.cpp
             Resources.cpp
             ScanResult.cpp
             StatFs.cpp
+            StorageManager.cpp
+            StorageVolume.cpp
             Surface.cpp
             SurfaceTexture.cpp
             SystemClock.cpp

@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2013 Team XBMC
+ *      Copyright (C) 2015 Team Kodi
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,13 +21,31 @@
 
 #include "JNIBase.h"
 
-class CJNIFile : public CJNIBase
+#include "Context.h"
+
+class CJNIStorageVolume : public CJNIBase
 {
 public:
-  CJNIFile();
-  CJNIFile(const jni::jhobject &file) : CJNIBase(file){};
-  ~CJNIFile(){};
+  CJNIStorageVolume(const jni::jhobject &object) : CJNIBase(object) {};
+  ~CJNIStorageVolume() {};
 
-  std::string getAbsolutePath();
-  int64_t getUsableSpace();
+  std::string getPath();
+  std::string getDescription(const CJNIContext& context);
+  int getDescriptionId();
+
+  bool isPrimary();
+  bool isRemovable();
+  bool isEmulated();
+
+  int64_t getMaxFileSize();
+  std::string getUuid();
+  int getFatVolumeId();
+
+  std::string getUserLabel();
+  std::string getState();
+
+private:
+  CJNIStorageVolume();
 };
+
+typedef std::vector<CJNIStorageVolume> CJNIStorageVolumes;
