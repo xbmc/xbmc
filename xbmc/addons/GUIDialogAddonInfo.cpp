@@ -448,8 +448,7 @@ void CGUIDialogAddonInfo::OnChangeLog()
   {
     pDlgInfo->SetText(g_localizeStrings.Get(13413));
     CFileItemList items;
-    if (m_localAddon && 
-        !m_item->GetProperty("Addon.UpdateAvail").asBoolean())
+    if (m_localAddon && !m_item->GetProperty("Addon.HasUpdate").asBoolean())
     {
       items.Add(CFileItemPtr(new CFileItem(m_localAddon->ChangeLog(),false)));
     }
@@ -483,15 +482,10 @@ bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
 bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
 {
   *m_item = *item;
-
-  // grab the local addon, if it's available
   m_localAddon.reset();
   m_addon.reset();
-  if (CAddonMgr::GetInstance().GetAddon(item->GetProperty("Addon.ID").asString(), m_localAddon)) // sets m_localAddon if installed regardless of enabled state
-    m_item->SetProperty("Addon.Enabled", "true");
-  else
-    m_item->SetProperty("Addon.Enabled", "false");
-  m_item->SetProperty("Addon.Installed", m_localAddon ? "true" : "false");
+
+  CAddonMgr::GetInstance().GetAddon(item->GetProperty("Addon.ID").asString(), m_localAddon, ADDON_UNKNOWN, false);
 
   CAddonDatabase database;
   database.Open();
