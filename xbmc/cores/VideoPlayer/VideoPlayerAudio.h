@@ -67,7 +67,7 @@ public:
 
   // waits until all available data has been rendered
   void WaitForBuffers();
-  bool AcceptsData() const                              { return !m_messageQueue.IsFull(); }
+  bool AcceptsData() const;
   bool HasData() const                                  { return m_messageQueue.GetDataSize() > 0; }
   int  GetLevel() const                                 { return m_messageQueue.GetLevel(); }
   bool IsInited() const                                 { return m_messageQueue.IsInited(); }

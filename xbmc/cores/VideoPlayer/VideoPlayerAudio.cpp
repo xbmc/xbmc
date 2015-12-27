@@ -337,7 +337,7 @@ int CVideoPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
 
     // consider stream stalled if queue is empty
     // we can't sync audio to clock with an empty queue
-    if (ALLOW_AUDIO(m_speed))
+    if (ALLOW_AUDIO(m_speed) && !m_stalled)
     {
       timeout = 0;
     }
@@ -665,6 +665,12 @@ void CVideoPlayerAudio::WaitForBuffers()
   double delay = m_dvdAudio.GetCacheTime();
   if(delay > 0.5)
     Sleep((int)(1000 * (delay - 0.5)));
+}
+
+bool CVideoPlayerAudio::AcceptsData() const
+{
+  bool full = m_messageQueue.IsFull();
+  return !full;
 }
 
 bool CVideoPlayerAudio::SwitchCodecIfNeeded()

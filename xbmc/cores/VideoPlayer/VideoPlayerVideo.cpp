@@ -276,6 +276,12 @@ void CVideoPlayerVideo::CloseStream(bool bWaitForBuffers)
   }
 }
 
+bool CVideoPlayerVideo::AcceptsData() const
+{
+  bool full = m_messageQueue.IsFull();
+  return !full;
+}
+
 void CVideoPlayerVideo::OnStartup()
 {
   m_iDroppedFrames = 0;
