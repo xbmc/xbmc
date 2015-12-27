@@ -67,7 +67,7 @@ typedef struct ConnectionHandler
 {
   std::string fullUri;
   bool isNew;
-  IHTTPRequestHandler *requestHandler;
+  std::shared_ptr<IHTTPRequestHandler> requestHandler;
   struct MHD_PostProcessor *postprocessor;
   int errorStatus;
 
@@ -258,7 +258,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
       if (requestHandler->CanHandleRequest(request))
       {
         // we found a matching IHTTPRequestHandler so let's get a new instance for this request
-        IHTTPRequestHandler *handler = requestHandler->Create(request);
+        std::shared_ptr<IHTTPRequestHandler> handler(requestHandler->Create(request));
 
         // if we got a GET request we need to check if it should be cached
         if (methodType == GET)
@@ -360,9 +360,6 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
               if (conHandler->postprocessor == nullptr)
               {
                 CLog::Log(LOGERROR, "CWebServer: unable to create HTTP POST processor for %s", url);
-
-                delete conHandler->requestHandler;
-
                 conHandler->errorStatus = MHD_HTTP_INTERNAL_SERVER_ERROR;
               }
             }
@@ -430,11 +427,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
 
         // check if something went wrong while handling the POST data
         if (conHandler->errorStatus != MHD_HTTP_OK)
-        {
-          delete conHandler->requestHandler;
-
           return SendErrorResponse(connection, conHandler->errorStatus, methodType);
-        }
 
         return HandleRequest(conHandler->requestHandler);
       }
@@ -446,7 +439,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
       {
         IHTTPRequestHandler *requestHandler = *it;
         if (requestHandler->CanHandleRequest(request))
-          return HandleRequest(requestHandler->Create(request));
+          return HandleRequest(std::shared_ptr<IHTTPRequestHandler>(requestHandler->Create(request)));
       }
     }
   }
@@ -480,7 +473,7 @@ int CWebServer::HandlePostField(void *cls, enum MHD_ValueKind kind, const char *
   return MHD_YES;
 }
 
-int CWebServer::HandleRequest(IHTTPRequestHandler *handler)
+int CWebServer::HandleRequest(const std::shared_ptr<IHTTPRequestHandler>& handler)
 {
   if (handler == nullptr)
     return MHD_NO;
@@ -490,7 +483,6 @@ int CWebServer::HandleRequest(IHTTPRequestHandler *handler)
   if (ret == MHD_NO)
   {
     CLog::Log(LOGERROR, "CWebServer: failed to handle HTTP request for %s", request.pathUrl.c_str());
-    delete handler;
     return SendErrorResponse(request.connection, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
   }
 
@@ -500,7 +492,6 @@ int CWebServer::HandleRequest(IHTTPRequestHandler *handler)
   {
     case HTTPNone:
       CLog::Log(LOGERROR, "CWebServer: HTTP request handler didn't process %s", request.pathUrl.c_str());
-      delete handler;
       return MHD_NO;
 
     case HTTPRedirect:
@@ -524,21 +515,19 @@ int CWebServer::HandleRequest(IHTTPRequestHandler *handler)
 
     default:
       CLog::Log(LOGERROR, "CWebServer: internal error while HTTP request handler processed %s", request.pathUrl.c_str());
-      delete handler;
       return SendErrorResponse(request.connection, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
   }
 
   if (ret == MHD_NO)
   {
     CLog::Log(LOGERROR, "CWebServer: failed to create HTTP response for %s", request.pathUrl.c_str());
-    delete handler;
     return SendErrorResponse(request.connection, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
   }
 
   return FinalizeRequest(handler, responseDetails.status, response);
 }
 
-int CWebServer::FinalizeRequest(IHTTPRequestHandler *handler, int responseStatus, struct MHD_Response *response)
+int CWebServer::FinalizeRequest(const std::shared_ptr<IHTTPRequestHandler>& handler, int responseStatus, struct MHD_Response *response)
 {
   if (handler == nullptr || response == nullptr)
     return MHD_NO;
@@ -615,12 +604,11 @@ int CWebServer::FinalizeRequest(IHTTPRequestHandler *handler, int responseStatus
 
   int ret = MHD_queue_response(request.connection, responseStatus, response);
   MHD_destroy_response(response);
-  delete handler;
 
   return ret;
 }
 
-int CWebServer::CreateMemoryDownloadResponse(IHTTPRequestHandler *handler, struct MHD_Response *&response)
+int CWebServer::CreateMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response)
 {
   if (handler == nullptr)
     return MHD_NO;
@@ -678,7 +666,7 @@ int CWebServer::CreateMemoryDownloadResponse(IHTTPRequestHandler *handler, struc
   return CreateRangedMemoryDownloadResponse(handler, response);
 }
 
-int CWebServer::CreateRangedMemoryDownloadResponse(IHTTPRequestHandler *handler, struct MHD_Response *&response)
+int CWebServer::CreateRangedMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response)
 {
   if (handler == nullptr)
     return MHD_NO;
@@ -771,7 +759,7 @@ int CWebServer::CreateRedirect(struct MHD_Connection *connection, const std::str
   return MHD_YES;
 }
 
-int CWebServer::CreateFileDownloadResponse(IHTTPRequestHandler *handler, struct MHD_Response *&response)
+int CWebServer::CreateFileDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response)
 {
   if (handler == nullptr)
     return MHD_NO;
