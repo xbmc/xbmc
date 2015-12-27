@@ -145,7 +145,7 @@ public:
   float GetRelativeUsage() { return 0.0f; }
   virtual bool OpenStream(CDVDStreamInfo &hint) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
-  virtual bool StepFrame() = 0;
+  virtual bool StepFrame() { return false; };
   virtual void Flush(bool sync) = 0;
   virtual void WaitForBuffers() = 0;
   virtual bool AcceptsData() const = 0;

@@ -285,12 +285,8 @@ bool CVideoPlayerVideo::AcceptsData() const
 void CVideoPlayerVideo::OnStartup()
 {
   m_iDroppedFrames = 0;
-
-  m_crop.x1 = m_crop.x2 = 0.0f;
-  m_crop.y1 = m_crop.y2 = 0.0f;
-
   m_FlipTimeStamp = m_pClock->GetAbsoluteClock();
-  m_FlipTimePts   = 0.0;
+  m_FlipTimePts = 0.0;
 }
 
 void CVideoPlayerVideo::Process()
@@ -766,18 +762,6 @@ void CVideoPlayerVideo::SetSpeed(int speed)
     m_messageQueue.Put( new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed), 1 );
   else
     m_speed = speed;
-}
-
-bool CVideoPlayerVideo::StepFrame()
-{
-#if 0
-  // sadly this doesn't work for now, audio player must
-  // drop packets at the same rate as we play frames
-  m_iNrOfPicturesNotToSkip++;
-  return true;
-#else
-  return false;
-#endif
 }
 
 void CVideoPlayerVideo::Flush(bool sync)
