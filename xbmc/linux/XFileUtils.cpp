@@ -18,6 +18,7 @@
  *
  */
 
+#include <stdlib.h>
 #include "system.h"
 #include "PlatformInclude.h"
 #include "XFileUtils.h"
