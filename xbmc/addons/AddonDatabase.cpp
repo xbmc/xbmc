@@ -628,7 +628,6 @@ void CAddonDatabase::SetPropertiesFromAddon(const AddonPtr& addon,
 {
   pItem->SetProperty("Addon.ID", addon->ID());
   pItem->SetProperty("Addon.Type", TranslateType(addon->Type(),true));
-  pItem->SetProperty("Addon.intType", TranslateType(addon->Type()));
   pItem->SetProperty("Addon.Name", addon->Name());
   pItem->SetProperty("Addon.Version", addon->Version().asString());
   pItem->SetProperty("Addon.Summary", addon->Summary());
