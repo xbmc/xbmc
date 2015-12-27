@@ -27,6 +27,9 @@ CApplicationPlayer::CApplicationPlayer()
 {
   m_iPlayerOPSeq = 0;
   m_eCurrentPlayer = EPC_NONE;
+  m_iAudioStream = -1;
+  m_iSubtitleStream = -1;
+  m_iPlaySpeed = 1;
 }
 
 std::shared_ptr<IPlayer> CApplicationPlayer::GetInternal() const

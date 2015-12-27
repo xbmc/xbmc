@@ -5134,7 +5134,7 @@ void CApplication::CheckPlayingProgress()
   if (m_pPlayer->IsPlaying())
   {
     int iSpeed = g_application.m_pPlayer->GetPlaySpeed();
-    if (iSpeed < 1)
+    if (iSpeed < 0)
     {
       iSpeed *= -1;
       int iPower = 0;
