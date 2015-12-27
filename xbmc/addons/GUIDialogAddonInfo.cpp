@@ -62,6 +62,7 @@ using namespace XFILE;
 CGUIDialogAddonInfo::CGUIDialogAddonInfo(void)
   : CGUIDialog(WINDOW_DIALOG_ADDON_INFO, "DialogAddonInfo.xml"),
   m_jobid(0),
+  m_addonEnabled(false),
   m_changelog(false)
 {
   m_item = CFileItemPtr(new CFileItem);
@@ -120,6 +121,7 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_ENABLE)
       {
+        //FIXME: should be moved to somewhere appropriate (e.g CAddonMgs::CanAddonBeDisabled or IsInUse) and button should be disabled
         if (m_localAddon)
         {
           if (m_localAddon->Type() == ADDON_ADSPDLL && ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
@@ -129,7 +131,7 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
           }
         }
 
-        OnEnable(!m_item->GetProperty("Addon.Enabled").asBoolean());
+        OnEnableDisable();
         return true;
       }
       else if (iControl == CONTROL_BTN_SETTINGS)
@@ -176,7 +178,7 @@ void CGUIDialogAddonInfo::OnInitWindow()
 void CGUIDialogAddonInfo::UpdateControls()
 {
   bool isInstalled = NULL != m_localAddon.get();
-  bool isEnabled = isInstalled && m_item->GetProperty("Addon.Enabled").asBoolean();
+  m_addonEnabled = m_localAddon && !CAddonMgr::GetInstance().IsAddonDisabled(m_localAddon->ID());
   bool canDisable = isInstalled && CAddonMgr::GetInstance().CanAddonBeDisabled(m_localAddon->ID());
   bool canInstall = !isInstalled && m_item->GetProperty("Addon.Broken").empty();
   bool isRepo = (isInstalled && m_localAddon->Type() == ADDON_REPOSITORY) || (m_addon && m_addon->Type() == ADDON_REPOSITORY);
@@ -185,7 +187,7 @@ void CGUIDialogAddonInfo::UpdateControls()
   SET_CONTROL_LABEL(CONTROL_BTN_INSTALL, isInstalled ? 24037 : 24038);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_ENABLE, canDisable);
-  SET_CONTROL_LABEL(CONTROL_BTN_ENABLE, isEnabled ? 24021 : 24022);
+  SET_CONTROL_LABEL(CONTROL_BTN_ENABLE, m_addonEnabled ? 24021 : 24022);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_UPDATE, isInstalled);
 
@@ -195,7 +197,7 @@ void CGUIDialogAddonInfo::UpdateControls()
       !CAddonMgr::GetInstance().IsBlacklisted(m_localAddon->ID()));
   SET_CONTROL_LABEL(CONTROL_BTN_AUTOUPDATE, 21340);
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SELECT, isEnabled && (CanOpen() ||
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SELECT, m_addonEnabled && (CanOpen() ||
       CanRun() || (CanUse() && !m_localAddon->IsInUse())));
   SET_CONTROL_LABEL(CONTROL_BTN_SELECT, CanUse() ? 21480 : (CanOpen() ? 21478 : 21479));
 
@@ -406,22 +408,24 @@ void CGUIDialogAddonInfo::OnUninstall()
   Close();
 }
 
-void CGUIDialogAddonInfo::OnEnable(bool enable)
+void CGUIDialogAddonInfo::OnEnableDisable()
 {
-  if (!m_localAddon.get())
+  if (!m_localAddon)
     return;
 
   if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
     return;
 
-  if (!enable && PromptIfDependency(24075, 24091))
-    return;
+  if (m_addonEnabled)
+  {
+    if (PromptIfDependency(24075, 24091))
+      return; //required. can't disable
 
-  if (enable)
-    CAddonMgr::GetInstance().EnableAddon(m_localAddon->ID());
-  else
     CAddonMgr::GetInstance().DisableAddon(m_localAddon->ID());
-  SetItem(m_item);
+  }
+  else
+    CAddonMgr::GetInstance().EnableAddon(m_localAddon->ID());
+
   UpdateControls();
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
 }

@@ -55,7 +55,7 @@ private:
   void OnUpdate();
   void OnInstall();
   void OnUninstall();
-  void OnEnable(bool enable);
+  void OnEnableDisable();
   void OnSettings();
   void OnChangeLog();
   void OnSelect();
@@ -82,6 +82,7 @@ private:
   CFileItemPtr m_item;
   ADDON::AddonPtr m_addon;
   ADDON::AddonPtr m_localAddon;
+  bool m_addonEnabled;
   unsigned int m_jobid;
   bool m_changelog;
 };
