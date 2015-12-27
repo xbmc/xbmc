@@ -85,6 +85,7 @@ public:
 
     VIDEO_NOSKIP,                   // next pictures is not to be skipped by the video renderer
     VIDEO_SET_ASPECT,               // set aspectratio of video
+    VIDEO_DRAIN,                    // wait for decoder to output last frame
 
     // audio related messages
 

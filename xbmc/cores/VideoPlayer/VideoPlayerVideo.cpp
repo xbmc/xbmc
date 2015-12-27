@@ -41,61 +41,6 @@
 
 using namespace RenderManager;
 
-class CPulldownCorrection
-{
-public:
-  CPulldownCorrection()
-  {
-    m_duration = 0.0;
-    m_accum    = 0;
-    m_total    = 0;
-    m_next     = m_pattern.end();
-  }
-
-  void init(double fps, int *begin, int *end)
-  {
-    std::copy(begin, end, std::back_inserter(m_pattern));
-    m_duration = DVD_TIME_BASE / fps;
-    m_accum    = 0;
-    m_total    = std::accumulate(m_pattern.begin(), m_pattern.end(), 0);
-    m_next     = m_pattern.begin();
-  }
-
-  double pts()
-  {
-    double input  = m_duration * std::distance(m_pattern.begin(), m_next);
-    double output = m_duration * m_accum / m_total;
-    return output - input;
-  }
-
-  double dur()
-  {
-    return m_duration * m_pattern.size() * *m_next / m_total;
-  }
-
-  void next()
-  {
-    m_accum += *m_next;
-    if(++m_next == m_pattern.end())
-    {
-      m_next  = m_pattern.begin();
-      m_accum = 0;
-    }
-  }
-
-  bool enabled()
-  {
-    return !m_pattern.empty();
-  }
-private:
-  double                     m_duration;
-  int                        m_total;
-  int                        m_accum;
-  std::vector<int>           m_pattern;
-  std::vector<int>::iterator m_next;
-};
-
-
 class CDVDMsgVideoCodecChange : public CDVDMsg
 {
 public:
@@ -250,7 +195,10 @@ void CVideoPlayerVideo::CloseStream(bool bWaitForBuffers)
 {
   // wait until buffers are empty
   if (bWaitForBuffers && m_speed > 0)
+  {
+    m_messageQueue.Put(new CDVDMsg(CDVDMsg::VIDEO_DRAIN), 0);
     m_messageQueue.WaitUntilEmpty();
+  }
 
   m_messageQueue.Abort();
 
@@ -293,13 +241,7 @@ void CVideoPlayerVideo::Process()
 {
   CLog::Log(LOGNOTICE, "running thread: video_thread");
 
-  DVDVideoPicture picture;
-  CPulldownCorrection pulldown;
-  CDVDVideoPPFFmpeg mPostProcess("");
-  std::string sPostProcessType;
-  bool bPostProcessDeint = false;
-
-  memset(&picture, 0, sizeof(DVDVideoPicture));
+  memset(&m_picture, 0, sizeof(DVDVideoPicture));
 
   double pts = 0;
   double frametime = (double)DVD_TIME_BASE / m_fFrameRate;
@@ -313,7 +255,7 @@ void CVideoPlayerVideo::Process()
 
   while (!m_bStop)
   {
-    int iQueueTimeOut = (int)(m_stalled ? frametime / 4 : frametime * 10) / 1000;
+    int iQueueTimeOut = (int)(m_stalled ? frametime : frametime * 10) / 1000;
     int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE && m_syncState == IDVDStreamPlayer::SYNC_INSYNC) ? 1 : 0;
 
     if (m_syncState == IDVDStreamPlayer::SYNC_WAITSYNC)
@@ -333,24 +275,25 @@ void CVideoPlayerVideo::Process()
       if( iPriority )
         continue;
 
+      // check if decoder has produced some output
+      m_pVideoCodec->SetCodecControl(DVD_CODEC_CTRL_DRAIN);
+      int decoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
+      ProcessDecoderOutput(decoderState, frametime, pts);
+
       //Okey, start rendering at stream fps now instead, we are likely in a stillframe
       if (!m_stalled)
       {
         if(m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
           CLog::Log(LOGINFO, "CVideoPlayerVideo - Stillframe detected, switching to forced %f fps", m_fFrameRate);
         m_stalled = true;
-        pts+= frametime*4;
+        pts += frametime * 4;
       }
 
       //Waiting timed out, output last picture
-      if( picture.iFlags & DVP_FLAG_ALLOCATED )
+      if (m_picture.iFlags & DVP_FLAG_ALLOCATED)
       {
-        //Remove interlaced flag before outputting
-        //no need to output this as if it was interlaced
-        picture.iFlags &= ~DVP_FLAG_INTERLACED;
-        picture.iFlags |= DVP_FLAG_NOSKIP;
-        OutputPicture(&picture, pts);
-        pts+= frametime;
+        OutputPicture(&m_picture, pts);
+        pts += frametime;
       }
 
       continue;
@@ -387,7 +330,7 @@ void CVideoPlayerVideo::Process()
     {
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
-      picture.iFlags &= ~DVP_FLAG_ALLOCATED;
+      m_picture.iFlags &= ~DVP_FLAG_ALLOCATED;
       m_packets.clear();
       m_droppingStats.Reset();
     }
@@ -396,7 +339,7 @@ void CVideoPlayerVideo::Process()
       bool sync = static_cast<CDVDMsgBool*>(pMsg)->m_value;
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
-      picture.iFlags &= ~DVP_FLAG_ALLOCATED;
+      m_picture.iFlags &= ~DVP_FLAG_ALLOCATED;
       m_packets.clear();
 
       m_pullupCorrection.Flush();
@@ -451,10 +394,25 @@ void CVideoPlayerVideo::Process()
       CDVDMsgVideoCodecChange* msg(static_cast<CDVDMsgVideoCodecChange*>(pMsg));
       OpenStream(msg->m_hints, msg->m_codec);
       msg->m_codec = NULL;
-      picture.iFlags &= ~DVP_FLAG_ALLOCATED;
+      m_picture.iFlags &= ~DVP_FLAG_ALLOCATED;
     }
+    else if (pMsg->IsType(CDVDMsg::VIDEO_DRAIN))
+    {
+      while (!m_bStop)
+      {
+        m_pVideoCodec->SetCodecControl(DVD_CODEC_CTRL_DRAIN);
+        int decoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
 
-    if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
+        bool cont = ProcessDecoderOutput(decoderState, frametime, pts);
+
+        if (!cont)
+          break;
+
+        if (decoderState & VC_BUFFER)
+          break;
+      }
+    }
+    else if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
       DemuxPacket* pPacket = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
       bool bPacketDrop     = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
@@ -486,9 +444,11 @@ void CVideoPlayerVideo::Process()
       }
       int codecControl = 0;
       if (iDropDirective & EOS_BUFFER_LEVEL)
-        codecControl |= DVD_CODEC_CTRL_DRAIN;
+        codecControl |= DVD_CODEC_CTRL_HURRY;
       if (m_speed > DVD_PLAYSPEED_NORMAL)
         codecControl |= DVD_CODEC_CTRL_NO_POSTPROC;
+      if (bPacketDrop)
+        codecControl |= DVD_CODEC_CTRL_DROP;
       m_pVideoCodec->SetCodecControl(codecControl);
       if (iDropDirective & EOS_DROPPED)
       {
@@ -518,7 +478,7 @@ void CVideoPlayerVideo::Process()
       EDEINTERLACEMODE mDeintMode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
       EINTERLACEMETHOD mInt = m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
 
-      unsigned int     mFilters = 0;
+      unsigned int mFilters = 0;
 
       if (mDeintMode != VS_DEINTERLACEMODE_OFF)
       {
@@ -553,190 +513,18 @@ void CVideoPlayerVideo::Process()
       // setting the flag to a new value
       bRequestDrop = false;
 
-      // loop while no error
+      // loop while no error and decoder produces pics
       while (!m_bStop)
       {
-        // if decoder was flushed, we need to seek back again to resume rendering
-        if (iDecoderState & VC_FLUSHED)
-        {
-          CLog::Log(LOGDEBUG, "CVideoPlayerVideo - video decoder was flushed");
-          while(!m_packets.empty())
-          {
-            CDVDMsgDemuxerPacket* msg = (CDVDMsgDemuxerPacket*)m_packets.front().message->Acquire();
-            m_packets.pop_front();
+        int dropped = m_iDroppedFrames;
+        bool cont = ProcessDecoderOutput(iDecoderState, frametime, pts);
+        iDropped += m_iDroppedFrames - dropped;
 
-            // all packets except the last one should be dropped
-            // if prio packets and current packet should be dropped, this is likely a new reset
-            msg->m_drop = !m_packets.empty() || (iPriority > 0 && bPacketDrop);
-            m_messageQueue.Put(msg, iPriority + 10);
-          }
-
-          m_pVideoCodec->Reset();
-          m_packets.clear();
-          picture.iFlags &= ~DVP_FLAG_ALLOCATED;
-          m_renderManager.DiscardBuffer();
+        if (!cont)
           break;
-        }
 
-        if (iDecoderState & VC_REOPEN)
-        {
-          while(!m_packets.empty())
-          {
-            CDVDMsgDemuxerPacket* msg = (CDVDMsgDemuxerPacket*)m_packets.front().message->Acquire();
-            msg->m_drop = false;
-            m_packets.pop_front();
-            m_messageQueue.Put(msg, iPriority + 10);
-          }
-
-          m_pVideoCodec->Reopen();
-          m_packets.clear();
-          picture.iFlags &= ~DVP_FLAG_ALLOCATED;
-          m_renderManager.DiscardBuffer();
-          break;
-        }
-
-        // if decoder had an error, tell it to reset to avoid more problems
-        if (iDecoderState & VC_ERROR)
-        {
-          CLog::Log(LOGDEBUG, "CVideoPlayerVideo - video decoder returned error");
-          break;
-        }
-
-        // check for a new picture
-        if (iDecoderState & VC_PICTURE)
-        {
-          // try to retrieve the picture (should never fail!), unless there is a demuxer bug ofcours
-          m_pVideoCodec->ClearPicture(&picture);
-          if (m_pVideoCodec->GetPicture(&picture))
-          {
-            sPostProcessType.clear();
-
-            if(picture.iDuration == 0.0)
-              picture.iDuration = frametime;
-
-            if(bPacketDrop)
-              picture.iFlags |= DVP_FLAG_DROPPED;
-
-            if (m_iNrOfPicturesNotToSkip > 0)
-            {
-              picture.iFlags |= DVP_FLAG_NOSKIP;
-              m_iNrOfPicturesNotToSkip--;
-            }
-
-            // validate picture timing,
-            // if both dts/pts invalid, use pts calulated from picture.iDuration
-            // if pts invalid use dts, else use picture.pts as passed
-            if (picture.dts == DVD_NOPTS_VALUE && picture.pts == DVD_NOPTS_VALUE)
-              picture.pts = pts;
-            else if (picture.pts == DVD_NOPTS_VALUE)
-              picture.pts = picture.dts;
-
-            /* use forced aspect if any */
-            if( m_fForcedAspectRatio != 0.0f )
-              picture.iDisplayWidth = (int) (picture.iDisplayHeight * m_fForcedAspectRatio);
-
-            //Deinterlace if codec said format was interlaced or if we have selected we want to deinterlace
-            //this video
-            if ((mDeintMode == VS_DEINTERLACEMODE_AUTO && (picture.iFlags & DVP_FLAG_INTERLACED)) || mDeintMode == VS_DEINTERLACEMODE_FORCE)
-            {
-              if(mInt == VS_INTERLACEMETHOD_SW_BLEND)
-              {
-                if (!sPostProcessType.empty())
-                  sPostProcessType += ",";
-                sPostProcessType += g_advancedSettings.m_videoPPFFmpegDeint;
-                bPostProcessDeint = true;
-              }
-            }
-
-            if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_PostProcess)
-            {
-              if (!sPostProcessType.empty())
-                sPostProcessType += ",";
-              // This is what mplayer uses for its "high-quality filter combination"
-              sPostProcessType += g_advancedSettings.m_videoPPFFmpegPostProc;
-            }
-
-            if (!sPostProcessType.empty())
-            {
-              mPostProcess.SetType(sPostProcessType, bPostProcessDeint);
-              if (mPostProcess.Process(&picture))
-                mPostProcess.GetPicture(&picture);
-            }
-
-            /* if frame has a pts (usually originiating from demux packet), use that */
-            if(picture.pts != DVD_NOPTS_VALUE)
-            {
-              if(pulldown.enabled())
-                picture.pts += pulldown.pts();
-
-              pts = picture.pts;
-            }
-
-            if(pulldown.enabled())
-            {
-              picture.iDuration = pulldown.dur();
-              pulldown.next();
-            }
-
-            if (picture.iRepeatPicture)
-              picture.iDuration *= picture.iRepeatPicture + 1;
-
-            int iResult = OutputPicture(&picture, pts);
-
-            frametime = (double)DVD_TIME_BASE/m_fFrameRate;
-
-            if (m_syncState == IDVDStreamPlayer::SYNC_STARTING && !(picture.iFlags & DVP_FLAG_DROPPED))
-            {
-              m_codecname = m_pVideoCodec->GetName();
-              m_syncState = IDVDStreamPlayer::SYNC_WAITSYNC;
-              SStartMsg msg;
-              msg.player = VideoPlayer_VIDEO;
-              msg.cachetime = DVD_MSEC_TO_TIME(50); // TODO
-              msg.cachetotal = DVD_MSEC_TO_TIME(100); // TODO
-              msg.timestamp = pts;
-              m_messageParent.Put(new CDVDMsgType<SStartMsg>(CDVDMsg::PLAYER_STARTED, msg));
-            }
-
-            // guess next frame pts. iDuration is always valid
-            if (m_speed != 0)
-              pts += picture.iDuration * m_speed / abs(m_speed);
-
-            if( iResult & EOS_ABORT )
-            {
-              //if we break here and we directly try to decode again wihout
-              //flushing the video codec things break for some reason
-              //i think the decoder (libmpeg2 atleast) still has a pointer
-              //to the data, and when the packet is freed that will fail.
-              iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
-              break;
-            }
-
-            if( (iResult & EOS_DROPPED) && !bPacketDrop )
-            {
-              m_iDroppedFrames++;
-              iDropped++;
-            }
-            else
-              iDropped = 0;
-          }
-          else
-          {
-            CLog::Log(LOGWARNING, "Decoder Error getting videoPicture.");
-            m_pVideoCodec->Reset();
-          }
-        }
-
-        // if the decoder needs more data, we just break this loop
-        // and try to get more data from the videoQueue
         if (iDecoderState & VC_BUFFER)
           break;
-
-        // update dropping stats
-        int ret = CalcDropRequirement(pts, true);
-        if (ret & EOS_DROPPED)
-        {
-          m_iDroppedFrames++;
-        }
 
         // the decoder didn't need more data, flush the remaning buffer
         iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
@@ -748,7 +536,174 @@ void CVideoPlayerVideo::Process()
   }
 
   // we need to let decoder release any picture retained resources.
-  m_pVideoCodec->ClearPicture(&picture);
+  m_pVideoCodec->ClearPicture(&m_picture);
+}
+
+bool CVideoPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametime, double &pts)
+{
+  std::string sPostProcessType;
+  bool bPostProcessDeint = false;
+  CDVDVideoPPFFmpeg mPostProcess("");
+
+  // if decoder was flushed, we need to seek back again to resume rendering
+  if (decoderState & VC_FLUSHED)
+  {
+    CLog::Log(LOGDEBUG, "CVideoPlayerVideo - video decoder was flushed");
+    while (!m_packets.empty())
+    {
+      CDVDMsgDemuxerPacket* msg = (CDVDMsgDemuxerPacket*)m_packets.front().message->Acquire();
+      m_packets.pop_front();
+
+      m_messageQueue.Put(msg, 10);
+    }
+
+    m_pVideoCodec->Reset();
+    m_packets.clear();
+    //picture.iFlags &= ~DVP_FLAG_ALLOCATED;
+    m_renderManager.DiscardBuffer();
+    return false;
+  }
+
+  if (decoderState & VC_REOPEN)
+  {
+    while (!m_packets.empty())
+    {
+      CDVDMsgDemuxerPacket* msg = (CDVDMsgDemuxerPacket*)m_packets.front().message->Acquire();
+      m_packets.pop_front();
+      m_messageQueue.Put(msg, 10);
+    }
+
+    m_pVideoCodec->Reopen();
+    m_packets.clear();
+    //picture.iFlags &= ~DVP_FLAG_ALLOCATED;
+    m_renderManager.DiscardBuffer();
+    return false;
+  }
+
+  // if decoder had an error, tell it to reset to avoid more problems
+  if (decoderState & VC_ERROR)
+  {
+    CLog::Log(LOGDEBUG, "CVideoPlayerVideo - video decoder returned error");
+    return false;
+  }
+
+  // check for a new picture
+  if (decoderState & VC_PICTURE)
+  {
+    // try to retrieve the picture (should never fail!), unless there is a demuxer bug ofcours
+    m_pVideoCodec->ClearPicture(&m_picture);
+    if (m_pVideoCodec->GetPicture(&m_picture))
+    {
+      sPostProcessType.clear();
+
+      if (m_picture.iDuration == 0.0)
+        m_picture.iDuration = frametime;
+
+      if (m_iNrOfPicturesNotToSkip > 0)
+      {
+        m_iNrOfPicturesNotToSkip--;
+      }
+
+      // validate picture timing,
+      // if both dts/pts invalid, use pts calulated from picture.iDuration
+      // if pts invalid use dts, else use picture.pts as passed
+      if (m_picture.dts == DVD_NOPTS_VALUE && m_picture.pts == DVD_NOPTS_VALUE)
+        m_picture.pts = pts;
+      else if (m_picture.pts == DVD_NOPTS_VALUE)
+        m_picture.pts = m_picture.dts;
+
+      /* use forced aspect if any */
+      if( m_fForcedAspectRatio != 0.0f )
+        m_picture.iDisplayWidth = (int) (m_picture.iDisplayHeight * m_fForcedAspectRatio);
+
+      //Deinterlace if codec said format was interlaced or if we have selected we want to deinterlace
+      //this video
+      // ask codec to do deinterlacing if possible
+      EDEINTERLACEMODE mDeintMode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
+      EINTERLACEMETHOD mInt = m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
+      if ((mDeintMode == VS_DEINTERLACEMODE_AUTO && (m_picture.iFlags & DVP_FLAG_INTERLACED)) || mDeintMode == VS_DEINTERLACEMODE_FORCE)
+      {
+        if (mInt == VS_INTERLACEMETHOD_SW_BLEND)
+        {
+          if (!sPostProcessType.empty())
+            sPostProcessType += ",";
+          sPostProcessType += g_advancedSettings.m_videoPPFFmpegDeint;
+          bPostProcessDeint = true;
+        }
+      }
+
+      if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_PostProcess)
+      {
+        if (!sPostProcessType.empty())
+          sPostProcessType += ",";
+        // This is what mplayer uses for its "high-quality filter combination"
+        sPostProcessType += g_advancedSettings.m_videoPPFFmpegPostProc;
+      }
+
+      if (!sPostProcessType.empty())
+      {
+        mPostProcess.SetType(sPostProcessType, bPostProcessDeint);
+        if (mPostProcess.Process(&m_picture))
+          mPostProcess.GetPicture(&m_picture);
+      }
+
+      /* if frame has a pts (usually originiating from demux packet), use that */
+      if (m_picture.pts != DVD_NOPTS_VALUE)
+      {
+        pts = m_picture.pts;
+      }
+
+      if (m_picture.iRepeatPicture)
+        m_picture.iDuration *= m_picture.iRepeatPicture + 1;
+
+      int iResult = OutputPicture(&m_picture, pts);
+
+      frametime = (double)DVD_TIME_BASE / m_fFrameRate;
+
+      if (m_syncState == IDVDStreamPlayer::SYNC_STARTING && !(m_picture.iFlags & DVP_FLAG_DROPPED))
+      {
+        m_codecname = m_pVideoCodec->GetName();
+        m_syncState = IDVDStreamPlayer::SYNC_WAITSYNC;
+        SStartMsg msg;
+        msg.player = VideoPlayer_VIDEO;
+        msg.cachetime = DVD_MSEC_TO_TIME(50); // TODO
+        msg.cachetotal = DVD_MSEC_TO_TIME(100); // TODO
+        msg.timestamp = pts;
+        m_messageParent.Put(new CDVDMsgType<SStartMsg>(CDVDMsg::PLAYER_STARTED, msg));
+      }
+
+      // guess next frame pts. iDuration is always valid
+      if (m_speed != 0)
+        pts += m_picture.iDuration * m_speed / abs(m_speed);
+
+      if (iResult & EOS_ABORT)
+      {
+        //if we break here and we directly try to decode again wihout
+        //flushing the video codec things break for some reason
+        //i think the decoder (libmpeg2 atleast) still has a pointer
+        //to the data, and when the packet is freed that will fail.
+        decoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
+        return false;
+      }
+
+      if ((iResult & EOS_DROPPED) && !(m_picture.iFlags & DVP_FLAG_DROPPED))
+        m_iDroppedFrames++;
+    }
+    else
+    {
+      CLog::Log(LOGWARNING, "Decoder Error getting videoPicture.");
+      m_pVideoCodec->Reset();
+    }
+
+    // update dropping stats
+    int ret = CalcDropRequirement(pts, true);
+    if (ret & EOS_DROPPED)
+    {
+      m_iDroppedFrames++;
+    }
+  }
+
+  return true;
 }
 
 void CVideoPlayerVideo::OnExit()
