@@ -242,7 +242,16 @@ int CDVDMessageQueue::GetLevel() const
   if(IsDataBased())
     return std::min(100, 100 * m_iDataSize / m_iMaxDataSize);
 
-  return std::min(100, MathUtils::round_int(100.0 * m_TimeSize * (m_TimeFront - m_TimeBack) / DVD_TIME_BASE ));
+  int level = std::min(100, MathUtils::round_int(100.0 * m_TimeSize * (m_TimeFront - m_TimeBack) / DVD_TIME_BASE ));
+
+  // if we added lots of packets with NOPTS, make sure that the queue is not signalled empty
+  if (level == 0 && m_iDataSize != 0)
+  {
+    CLog::Log(LOGNOTICE, "CDVDMessageQueue::GetLevel() - can't determine level");
+    return 1;
+  }
+
+  return level;
 }
 
 int CDVDMessageQueue::GetTimeSize() const
