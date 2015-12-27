@@ -397,12 +397,20 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
         // if nothing has gone wrong so far, process the given POST data
         if (conHandler->errorStatus == MHD_HTTP_OK)
         {
+          bool postDataHandled = false;
           // either use MHD's POST processor
           if (conHandler->postprocessor != NULL)
-            MHD_post_process(conHandler->postprocessor, upload_data, *upload_data_size) == MHD_YES;
+            postDataHandled = MHD_post_process(conHandler->postprocessor, upload_data, *upload_data_size) == MHD_YES;
           // or simply copy the data to the handler
           else
-            conHandler->requestHandler->AddPostData(upload_data, *upload_data_size);
+            postDataHandled = conHandler->requestHandler->AddPostData(upload_data, *upload_data_size);
+
+          // abort if the received POST data couldn't be handled
+          if (!postDataHandled)
+          {
+            CLog::Log(LOGERROR, "CWebServer: failed to handle HTTP POST data for %s", url);
+            conHandler->errorStatus = MHD_HTTP_REQUEST_ENTITY_TOO_LARGE;
+          }
         }
 
         // signal that we have handled the data
