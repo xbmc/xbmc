@@ -106,6 +106,12 @@ namespace PVR
      */
     void UpdateLastWatched(const CPVRChannelPtr &channel);
 
+    /*!
+     * @brief Set the playing group to the first group the channel is in if the given channel is not part of the current playing group
+     * @param channel The channel
+     */
+    void SetPlayingGroup(const CPVRChannelPtr &channel);
+
   public:
     /*!
      * @brief Stop the PVRManager and destroy all objects it created.
@@ -328,10 +334,10 @@ namespace PVR
 
     /*!
      * @brief Open a stream from the given channel.
-     * @param channel The channel to open.
+     * @param fileItem The file item with the channel to open.
      * @return True if the stream was opened, false otherwise.
      */
-    bool OpenLiveStream(const CFileItem &channel);
+    bool OpenLiveStream(const CFileItem &fileItem);
 
     /*!
      * @brief Open a stream from the given recording.
