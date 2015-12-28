@@ -60,6 +60,7 @@ public:
   static std::string KEY_CHANNEL_MASK;
   static std::string KEY_AAC_PROFILE;
   static std::string KEY_FLAC_COMPRESSION_LEVEL;
+  static std::string KEY_ROTATION;
 
 private:
   CJNIMediaFormat();

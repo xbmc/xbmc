@@ -628,6 +628,21 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, DWORD flags, DWORD alpha)
         break;
       }
 
+      // Handle orientation
+      switch (m_renderOrientation)
+      {
+        case 90:
+        case 270:
+        {
+          int diff = (int) ((dstRect.Height() - dstRect.Width()) / 2);
+          dstRect = CRect(dstRect.x1 - diff, dstRect.y1, dstRect.x2 + diff, dstRect.y2);
+          break;
+        }
+
+        default:
+          break;
+      }
+
       mci->RenderUpdate(srcRect, dstRect);
     }
   }
