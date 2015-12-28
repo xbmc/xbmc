@@ -3518,12 +3518,11 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
   {
     /* set aspect ratio as requested by navigator for dvd's */
     float aspect = static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->GetVideoAspectRatio();
-    if(aspect != 0.0)
+    if (aspect != 0.0)
     {
       hint.aspect = aspect;
       hint.forced_aspect = true;
     }
-    hint.software = true;
   }
   else if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
   {
