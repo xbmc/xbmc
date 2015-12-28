@@ -868,7 +868,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_dateAdded;
     ar >> m_strComment;
     ar >> m_strMood;
-    ar << m_Rating;
+    ar >> m_Rating;
     ar >> m_Userrating;
     ar >> m_Votes;
     ar >> m_iTimesPlayed;
