@@ -211,26 +211,13 @@ bool CWinRenderer::UpdateRenderMethod()
 
 bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation)
 {
-  if(m_sourceWidth  != width
-  || m_sourceHeight != height)
-  {
-    m_sourceWidth       = width;
-    m_sourceHeight      = height;
-    // need to recreate textures
-    m_NumYV12Buffers    = 0;
-    m_iYV12RenderBuffer = 0;
-    // reinitialize the filters/shaders
-    m_bFilterInitialized = false;
-  }
-  else
-  {
-    if (m_VideoBuffers[m_iYV12RenderBuffer] != nullptr)
-      m_VideoBuffers[m_iYV12RenderBuffer]->StartDecode();
-
-    m_iYV12RenderBuffer = 0;
-    if (m_VideoBuffers[0] != nullptr)
-      m_VideoBuffers[0]->StartRender();
-  }
+  m_sourceWidth       = width;
+  m_sourceHeight      = height;
+  // need to recreate textures
+  m_NumYV12Buffers    = 0;
+  m_iYV12RenderBuffer = 0;
+  // reinitialize the filters/shaders
+  m_bFilterInitialized = false;
 
   m_fps = fps;
   m_iFlags = flags;
@@ -264,41 +251,40 @@ int CWinRenderer::NextYV12Texture()
 bool CWinRenderer::AddVideoPicture(DVDVideoPicture* picture, int index)
 {
   if (!m_NumYV12Buffers)
-  {
     return false;
-  }
 
-  if (m_renderMethod == RENDER_DXVA)
-  {
-    int source = index;
-    if(source < 0 || NextYV12Texture() < 0)
-      return false;
-
-    DXVABuffer *buf = (DXVABuffer*)m_VideoBuffers[source];
-    SAFE_RELEASE(buf->pic);
-    if (picture->format == RENDER_FMT_DXVA)
-    {
-      buf->pic = picture->dxva->Acquire();
-    }
-    else
-    {
-      buf->pic = m_processor->Convert(picture);
-    }
-    buf->frameIdx = m_frameIdx;
-    m_frameIdx += 2;
-    return true;
-  }
-  else if (picture->format == RENDER_FMT_DXVA)
+  if (m_renderMethod == RENDER_DXVA || picture->format == RENDER_FMT_DXVA)
   {
     int source = index;
     if (source < 0 || NextYV12Texture() < 0)
       return false;
 
-    YUVBuffer *buf = (YUVBuffer*)m_VideoBuffers[source];
-    if (buf->IsReadyToRender())
-      return false;
+    if (m_renderMethod == RENDER_DXVA)
+    {
+      DXVABuffer *buf = (DXVABuffer*)m_VideoBuffers[source];
+      SAFE_RELEASE(buf->pic);
 
-    return buf->CopyFromDXVA(reinterpret_cast<ID3D11VideoDecoderOutputView*>(picture->dxva->view));
+      if (picture->format == RENDER_FMT_DXVA)
+      {
+        if (picture->dxva)
+          buf->pic = picture->dxva->Acquire();
+      }
+      else
+      {
+        buf->pic = m_processor->Convert(picture);
+      }
+      buf->frameIdx = m_frameIdx;
+      m_frameIdx += 2;
+      return true;
+    }
+    else if (picture->format == RENDER_FMT_DXVA)
+    {
+      YUVBuffer *buf = (YUVBuffer*)m_VideoBuffers[source];
+      if (buf->IsReadyToRender())
+        return false;
+
+      return buf->CopyFromDXVA(reinterpret_cast<ID3D11VideoDecoderOutputView*>(picture->dxva->view));
+    }
   }
   return false;
 }
@@ -366,11 +352,8 @@ void CWinRenderer::RenderUpdate(bool clear, unsigned int flags, unsigned int alp
     return;
 
   ManageTextures();
-
   CSingleLock lock(g_graphicsContext);
-
   ManageDisplay();
-
   Render(flags);
 }
 
@@ -475,14 +458,15 @@ void CWinRenderer::UnInit()
 
 void CWinRenderer::Flush()
 {
-  PreInit();
-  SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
-  ManageDisplay();
+  if (!m_bConfigured)
+    return;
 
-  m_bConfigured = true;
+  for (int i = 0; i < NUM_BUFFERS; i++)
+    DeleteYV12Texture(i);
 
-  SelectRenderMethod();
-  UpdateRenderMethod();
+  m_iYV12RenderBuffer = 0;
+  m_NumYV12Buffers = 0;
+  m_bFilterInitialized = false;
 }
 
 bool CWinRenderer::CreateIntermediateRenderTarget(unsigned int width, unsigned int height)
@@ -691,9 +675,10 @@ void CWinRenderer::UpdateVideoFilter()
 
 void CWinRenderer::Render(DWORD flags)
 {
+  UpdateVideoFilter();
+
   if (m_renderMethod == RENDER_DXVA)
   {
-    UpdateVideoFilter();
     CWinRenderer::RenderProcessor(flags);
     if (m_bUseHQScaler) // restore GUI states after HQ scalers
       g_Windowing.ApplyStateBlock();
@@ -703,14 +688,6 @@ void CWinRenderer::Render(DWORD flags)
   if (!m_VideoBuffers[m_iYV12RenderBuffer]->IsReadyToRender())
     return;
 
-  UpdateVideoFilter();
-
-  // Optimize later? we could get by with bilinear under some circumstances
-  /*if(!m_bUseHQScaler
-    || !g_graphicsContext.IsFullScreenVideo()
-    || g_graphicsContext.IsCalibrating()
-    || (m_destRect.Width() == m_sourceWidth && m_destRect.Height() == m_sourceHeight))
-    */
   CSingleLock lock(g_graphicsContext);
 
   if (m_renderMethod == RENDER_SW)
@@ -1045,11 +1022,7 @@ bool CWinRenderer::Supports(EINTERLACEMETHOD method)
     return true;
 
   if (m_renderMethod == RENDER_DXVA)
-  {
-    //if(method == VS_INTERLACEMETHOD_DXVA_BOB
-    //|| method == VS_INTERLACEMETHOD_DXVA_BEST)
-      return false; // only auto. DXVA processor selects deinterlacing method automatically
-  }
+    return false; // only auto. DXVA processor selects deinterlacing method automatically
 
   if(m_format != RENDER_FMT_DXVA
   && (   method == VS_INTERLACEMETHOD_DEINTERLACE
@@ -1247,6 +1220,10 @@ void YUVBuffer::Release()
   SAFE_RELEASE(m_staging);
   for(unsigned i = 0; i < m_activeplanes; i++)
   {
+    // unlock before release
+    if (m_locked && planes[i].texture.Get() && planes[i].rect.pData)
+      planes[i].texture.UnlockRect(0);
+
     planes[i].texture.Release();
     memset(&planes[i].rect, 0, sizeof(planes[i].rect));
   }
