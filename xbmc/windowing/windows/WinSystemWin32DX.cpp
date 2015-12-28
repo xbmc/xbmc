@@ -44,10 +44,7 @@ bool CWinSystemWin32DX::PresentRender(const CDirtyRegionList& dirty)
   if (m_delayDispReset && m_dispResetTimer.IsTimePast())
   {
     m_delayDispReset = false;
-    CSingleLock lock(CWinSystemWin32::m_resourceSection);
-    // tell any shared resources
-    for (auto i = CWinSystemWin32::m_resources.begin(); i != CWinSystemWin32::m_resources.end(); ++i)
-      (*i)->OnResetDisplay();
+    CWinSystemWin32::OnDisplayReset();
   }
   return result;
 }
@@ -211,9 +208,14 @@ void CWinSystemWin32DX::Unregister(IDispResource *resource)
   CWinSystemWin32::Unregister(resource);
 }
 
-void CWinSystemWin32DX::ResolutionChangedDX()
+void CWinSystemWin32DX::OnDisplayLost()
 {
-  CWinSystemWin32::ResolutionChanged();
+  CWinSystemWin32::OnDisplayLost();
+}
+
+void CWinSystemWin32DX::OnDisplayReset()
+{
+  CWinSystemWin32::OnDisplayReset();
 }
 
 #endif
