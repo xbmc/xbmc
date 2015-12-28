@@ -562,7 +562,7 @@ msgstr "Мапе"
 
 msgctxt "#31950"
 msgid "WEATHER"
-msgstr "ВРЕМЕНСКА ПРОГНОЗА"
+msgstr "ВРЕМЕ"
 
 msgctxt "#31951"
 msgid "PICTURES"
