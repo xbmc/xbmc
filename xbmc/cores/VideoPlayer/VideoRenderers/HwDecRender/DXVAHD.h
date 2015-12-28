@@ -65,8 +65,9 @@ protected:
   virtual bool UpdateSize(const DXVA2_VideoDesc& dsc);
   virtual bool ReInit();
   virtual bool InitProcessor();
-  virtual bool CreateSurfaces();
+  virtual bool ConfigureProcessor(unsigned int format, unsigned int extended_format);
   virtual bool OpenProcessor();
+  virtual bool CreateSurfaces();
   virtual bool ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def);
   ID3D11VideoProcessorInputView* GetInputView(ID3D11View* view);
 
