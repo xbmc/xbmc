@@ -823,8 +823,6 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
   // Filter and group the items if necessary
   OnFilterItems(GetProperty("filter").asString());
 
-  UpdateButtons();
-
   strSelectedItem = m_history.GetSelectedItem(m_vecItems->GetPath());
 
   bool bSelectedFound = false;
