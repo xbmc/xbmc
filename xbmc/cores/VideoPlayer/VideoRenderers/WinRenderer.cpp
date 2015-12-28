@@ -83,7 +83,6 @@ CWinRenderer::CWinRenderer()
   m_destWidth = 0;
   m_destHeight = 0;
   m_bConfigured = false;
-  m_clearColour = 0;
   m_format = RENDER_FMT_NONE;
   m_processor = nullptr;
   m_neededBuffers = 0;
@@ -341,7 +340,7 @@ void CWinRenderer::Update()
 void CWinRenderer::RenderUpdate(bool clear, unsigned int flags, unsigned int alpha)
 {
   if (clear)
-    g_graphicsContext.Clear(m_clearColour);
+    g_graphicsContext.Clear(g_Windowing.UseLimitedColor() ? 0x101010 : 0);
 
   if (alpha < 255)
     g_Windowing.SetAlphaBlendEnable(true);
@@ -385,9 +384,6 @@ void CWinRenderer::PreInit()
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
   UnInit();
-
-  // setup the background colour
-  m_clearColour = g_Windowing.UseLimitedColor() ? (16 * 0x010101) : 0;
 
   m_formats.clear();
   m_formats.push_back(RENDER_FMT_YUV420P);
@@ -797,8 +793,9 @@ void CWinRenderer::Stage1()
   CRect destRect = m_bUseHQScaler ? m_sourceRect : g_graphicsContext.StereoCorrection(m_destRect);
   // select target view 
   ID3D11RenderTargetView* pRTView = m_bUseHQScaler ? m_IntermediateTarget.GetRenderTarget() : oldRTView;
-  // set destination render target
-  pContext->OMSetRenderTargets(1, &pRTView, nullptr);
+  // change destination for HQ scallers
+  if (m_bUseHQScaler)
+    pContext->OMSetRenderTargets(1, &pRTView, nullptr);
   // get rendertarget's dimension
   if (pRTView)
   {
@@ -828,14 +825,16 @@ void CWinRenderer::Stage1()
   // Restore our view port.
   g_Windowing.RestoreViewPort();
   // Restore the render target and depth view.
-  pContext->OMSetRenderTargets(1, &oldRTView, oldDSView);
+  if (m_bUseHQScaler)
+    pContext->OMSetRenderTargets(1, &oldRTView, oldDSView);
   SAFE_RELEASE(oldRTView);
   SAFE_RELEASE(oldDSView);
 }
 
 void CWinRenderer::Stage2()
 {
-  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight, m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect));
+  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight, m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect)
+                      , (m_renderMethod == RENDER_DXVA && g_Windowing.UseLimitedColor()));
 }
 
 void CWinRenderer::RenderProcessor(DWORD flags)
@@ -845,27 +844,6 @@ void CWinRenderer::RenderProcessor(DWORD flags)
   DXVABuffer *image = (DXVABuffer*)m_VideoBuffers[m_iYV12RenderBuffer];
   if (!image->pic)
     return;
-
-  ID3D11Resource* target;
-  if ( m_bUseHQScaler 
-    || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN
-    || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA
-    || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE
-    || true /* workaround for some GPUs */)
-  {
-    target = m_IntermediateTarget.Get();
-    target->AddRef();
-  }
-  else // dead code.
-  {
-    ID3D11RenderTargetView* rtv = nullptr;
-    g_Windowing.Get3D11Context()->OMGetRenderTargets(1, &rtv, nullptr);
-    if (rtv)
-    {
-      rtv->GetResource(&target);
-      rtv->Release();
-    }
-  }
 
   int past = 0;
   int future = 0;
@@ -909,22 +887,17 @@ void CWinRenderer::RenderProcessor(DWORD flags)
       break;
   }
 
-  m_processor->Render(m_sourceRect, destRect, target, views, flags, image->frameIdx);
+  m_processor->Render(m_sourceRect, destRect, m_IntermediateTarget.Get(), views, flags, image->frameIdx);
   
   if (m_bUseHQScaler)
   {
     Stage2();
   }
-  // uncomment when workaround removed
-  else /*if ( g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN
-         || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA
-         || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)*/
+  else
   {
-    // texels
     CRect tu = { destRect.x1 / m_destWidth, destRect.y1 / m_destHeight, destRect.x2 / m_destWidth, destRect.y2 / m_destHeight };
-    CD3DTexture::DrawQuad(m_destRect, 0, &m_IntermediateTarget, &tu, SHADER_METHOD_RENDER_TEXTURE_NOBLEND);
+    CD3DTexture::DrawQuad(m_destRect, 0xFFFFFF, &m_IntermediateTarget, &tu, SHADER_METHOD_RENDER_TEXTURE_BLEND);
   }
-  SAFE_RELEASE(target);
 }
 
 bool CWinRenderer::RenderCapture(CRenderCapture* capture)

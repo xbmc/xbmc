@@ -228,11 +228,7 @@ protected:
   ESCALINGMETHOD       m_scalingMethodGui;
 
   bool                 m_bFilterInitialized;
-
   int                  m_iRequestedMethod;
-
-  // clear colour for "black" bars
-  DWORD                m_clearColour;
   unsigned int         m_extended_format;
 
   // Width and height of the render target
