@@ -459,16 +459,6 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
         // information only when necessary and update the decoding/displaying
         // accordingly.
 
-        // this may lead to a discontinuity, but it's also the end of the
-        // vobunit, so make sure everything in demuxer is output
-        if(m_holdmode == HOLDMODE_NONE)
-        {
-          CLog::Log(LOGDEBUG, "DVDNAV_CELL_CHANGE (HOLDING)");
-          m_holdmode = HOLDMODE_HELD;
-          iNavresult = NAVRESULT_HOLD;
-          break;
-        }
-
         uint32_t pos, len;
 
         m_dll.dvdnav_current_title_info(m_dvdnav, &m_iTitle, &m_iPart);

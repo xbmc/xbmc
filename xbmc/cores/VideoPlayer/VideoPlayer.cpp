@@ -3967,9 +3967,6 @@ int CVideoPlayer::OnDVDNavResult(void* pData, int iMessage)
 
         if (m_dvd.state != DVDSTATE_STILL)
           m_dvd.state = DVDSTATE_NORMAL;
-
-        if( m_VideoPlayerVideo->IsInited() )
-          m_VideoPlayerVideo->SendMessage(new CDVDMsg(CDVDMsg::VIDEO_NOSKIP));
       }
       break;
     case DVDNAV_NAV_PACKET:
