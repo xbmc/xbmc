@@ -159,6 +159,8 @@
 		384718D81325BA04000486D6 /* XBDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 384718D61325BA04000486D6 /* XBDateTime.cpp */; };
 		38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
 		391416BF1B4A3EFA00BBF0AA /* guiinfo in Resources */ = {isa = PBXBuildFile; fileRef = 391416BE1B4A3EFA00BBF0AA /* guiinfo */; };
+		39520F911C3174EE00272121 /* AddonSystemSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39520F8F1C3174EE00272121 /* AddonSystemSettings.cpp */; };
+		39520F921C3174EE00272121 /* AddonSystemSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39520F8F1C3174EE00272121 /* AddonSystemSettings.cpp */; };
 		395897151AAD94F00033D27C /* KeyboardLayoutManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395897131AAD94F00033D27C /* KeyboardLayoutManager.cpp */; };
 		395897161AAD94F00033D27C /* KeyboardLayoutManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395897131AAD94F00033D27C /* KeyboardLayoutManager.cpp */; };
 		395C29BC1A94733100EBC7AD /* Key.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29BA1A94733100EBC7AD /* Key.cpp */; };
@@ -2563,6 +2565,8 @@
 		38F4E56D13CCCB3B00664821 /* README.platform */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.platform; sourceTree = "<group>"; };
 		38F4E56E13CCCB3B00664821 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
 		391416BE1B4A3EFA00BBF0AA /* guiinfo */ = {isa = PBXFileReference; lastKnownFileType = folder; name = guiinfo; path = xbmc/guiinfo; sourceTree = SOURCE_ROOT; };
+		39520F8F1C3174EE00272121 /* AddonSystemSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonSystemSettings.cpp; sourceTree = "<group>"; };
+		39520F901C3174EE00272121 /* AddonSystemSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonSystemSettings.h; sourceTree = "<group>"; };
 		395897131AAD94F00033D27C /* KeyboardLayoutManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyboardLayoutManager.cpp; sourceTree = "<group>"; };
 		395897141AAD94F00033D27C /* KeyboardLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardLayoutManager.h; sourceTree = "<group>"; };
 		395938731AC28F5A0053A590 /* EmbeddedArt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmbeddedArt.h; sourceTree = "<group>"; };
@@ -4944,6 +4948,8 @@
 				18B49FF51152BFA5001AF8A6 /* AddonManager.h */,
 				F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */,
 				F52BFFD9115D5574004B1D66 /* AddonStatusHandler.h */,
+				39520F8F1C3174EE00272121 /* AddonSystemSettings.cpp */,
+				39520F901C3174EE00272121 /* AddonSystemSettings.h */,
 				18B700DF13A6A5750009C1AF /* AddonVersion.cpp */,
 				18B700E013A6A5750009C1AF /* AddonVersion.h */,
 				395C2A221AA4C32100EBC7AD /* AudioDecoder.cpp */,
@@ -9803,6 +9809,7 @@
 				F5E1053F140AA38100175026 /* PeripheralHID.cpp in Sources */,
 				F5E10540140AA38100175026 /* PeripheralNIC.cpp in Sources */,
 				F5E10541140AA38100175026 /* PeripheralNyxboard.cpp in Sources */,
+				39520F911C3174EE00272121 /* AddonSystemSettings.cpp in Sources */,
 				F5E10542140AA38100175026 /* PeripheralTuner.cpp in Sources */,
 				F5E10544140AA38100175026 /* GUIDialogPeripheralSettings.cpp in Sources */,
 				F5E10547140AA38100175026 /* Peripherals.cpp in Sources */,
@@ -10347,6 +10354,7 @@
 				E49911C0174E5D2500741B6D /* DVDAudioCodecFFmpeg.cpp in Sources */,
 				E49911C3174E5D2500741B6D /* DVDAudioCodecPassthrough.cpp in Sources */,
 				DF14CF7F1A77782E00396CC9 /* InputManager.cpp in Sources */,
+				39520F921C3174EE00272121 /* AddonSystemSettings.cpp in Sources */,
 				E49911C6174E5D2500741B6D /* DVDOverlayCodec.cpp in Sources */,
 				E49911C8174E5D2500741B6D /* DVDOverlayCodecFFmpeg.cpp in Sources */,
 				E49911C9174E5D2500741B6D /* DVDOverlayCodecSSA.cpp in Sources */,
