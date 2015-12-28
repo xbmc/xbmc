@@ -118,9 +118,10 @@ namespace PVR
     /*!
      * @brief Get the list of groups.
      * @param groups The list to store the results in.
+     * @param bExcludeHidden Whenever to exclude hidden channel groups.
      * @return The amount of items that were added.
      */
-    std::vector<CPVRChannelGroupPtr> GetMembers() const;
+    std::vector<CPVRChannelGroupPtr> GetMembers(bool bExcludeHidden = false) const;
 
     /*!
      * @brief Get the list of groups.

@@ -72,7 +72,7 @@ JSONRPC_STATUS CPVROperations::GetChannelGroups(const std::string &method, ITran
 
   int start, end;
 
-  std::vector<CPVRChannelGroupPtr> groupList = channelGroups->GetMembers();
+  std::vector<CPVRChannelGroupPtr> groupList = channelGroups->GetMembers(true);
   HandleLimits(parameterObject, result, groupList.size(), start, end);
   for (int index = start; index < end; index++)
     FillChannelGroupDetails(groupList.at(index), parameterObject, result["channelgroups"], true);
