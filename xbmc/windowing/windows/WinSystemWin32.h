@@ -183,6 +183,7 @@ protected:
   virtual void Register(IDispResource *resource);
   virtual void Unregister(IDispResource *resource);
   void OnDisplayLost();
+  void OnDisplayReset();
   virtual void ResolutionChanged();
 
   HWND m_hWnd;

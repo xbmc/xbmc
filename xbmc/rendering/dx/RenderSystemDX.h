@@ -112,8 +112,9 @@ protected:
   void Register(ID3DResource *resource);
   void Unregister(ID3DResource *resource);
 
-  virtual void ResolutionChangedDX() {};
   virtual void UpdateMonitor() {};
+  virtual void OnDisplayLost() {};
+  virtual void OnDisplayReset() {};
 
   // our adapter could change as we go
   bool                        m_needNewDevice;
