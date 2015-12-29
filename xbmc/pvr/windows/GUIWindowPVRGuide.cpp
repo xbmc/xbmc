@@ -451,6 +451,10 @@ void CGUIWindowPVRGuide::GetViewTimelineItems(CFileItemList &items)
 
   CPVRChannelGroupPtr group = GetGroup();
 
+  // group change detected reset grid coordinate
+  if (*m_cachedChannelGroup != *group)
+    epgGridContainer->ResetCoordinates();
+
   if (m_bUpdateRequired || m_cachedTimeline->IsEmpty() || *m_cachedChannelGroup != *group)
   {
     m_bUpdateRequired = false;
