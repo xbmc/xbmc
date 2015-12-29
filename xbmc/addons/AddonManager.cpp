@@ -456,25 +456,6 @@ bool CAddonMgr::ReloadSettings(const std::string &id)
   return false;
 }
 
-VECADDONS CAddonMgr::GetOutdated()
-{
-  CSingleLock lock(m_critSection);
-  auto isUpdated = [&](const AddonPtr& addon)
-  {
-    return addon->Version() >= m_database.GetAddonVersion(addon->ID()).first;
-  };
-
-  VECADDONS addons;
-  GetAllAddons(addons, true);
-  addons.erase(std::remove_if(addons.begin(), addons.end(), isUpdated), addons.end());
-  return addons;
-}
-
-bool CAddonMgr::HasOutdatedAddons()
-{
-  return !GetOutdated().empty();
-}
-
 bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* = true */)
 {
   CSingleLock lock(m_critSection);
