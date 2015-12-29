@@ -48,7 +48,7 @@
       <browser_back mod="longpress">ActivateWindow(Home)</browser_back>
       <key id='65446'>Back</key>
       <m>Menu</m>
-      <m mod="ctrl">ActivateWindow(PlayerControls)</m>
+      <n mod="ctrl">ActivateWindow(PlayerControls)</n>
       <s>ActivateWindow(shutdownmenu)</s>
       <escape>PreviousMenu</escape>
       <i>Info</i>
