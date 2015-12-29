@@ -62,7 +62,7 @@ void CApplicationPlayer::ClosePlayerGapless(std::string &playername)
   if (!player)
     return;
 
-  bool gaplessSupported = player->m_type == "pa" || player->m_type == "video";
+  bool gaplessSupported = player->m_type == "music" || player->m_type == "video";
   gaplessSupported = gaplessSupported && (playername == player->m_name);
   if (!gaplessSupported)
   {

@@ -193,7 +193,7 @@ void CPlayerCoreFactory::GetRemotePlayers(std::vector<std::string>&players) cons
   CSingleLock lock(m_section);
   for (auto config: m_vecPlayerConfigs)
   {
-    if (config->m_type != "upnp")
+    if (config->m_type != "remote")
       continue;
     players.push_back(config->m_name);
   }
@@ -315,7 +315,7 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     VideoPlayer->m_bPlaysVideo = true;
     m_vecPlayerConfigs.push_back(VideoPlayer);
 
-    CPlayerCoreConfig* paplayer = new CPlayerCoreConfig("PAPlayer", "pa", nullptr);
+    CPlayerCoreConfig* paplayer = new CPlayerCoreConfig("PAPlayer", "music", nullptr);
     paplayer->m_bPlaysAudio = true;
     m_vecPlayerConfigs.push_back(paplayer);
   }
