@@ -393,9 +393,6 @@
     <ClCompile Include="..\..\xbmc\win32\WindowHelper.cpp">
       <Filter>win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DummyVideoPlayer.cpp">
-      <Filter>cores</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDAudio.cpp">
       <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
@@ -3268,9 +3265,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\win32\WindowHelper.h">
       <Filter>win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DummyVideoPlayer.h">
-      <Filter>cores</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\IPlayer.h">
       <Filter>cores</Filter>

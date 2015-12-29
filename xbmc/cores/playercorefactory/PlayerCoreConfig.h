@@ -32,30 +32,29 @@
 
 class CPlayerCoreConfig
 {
-friend class CPlayerCoreFactory;
-
 public:
-  CPlayerCoreConfig(std::string name, const EPLAYERCORES eCore, const TiXmlElement* pConfig, const std::string& id = ""):
+
+  CPlayerCoreConfig(std::string name, std::string type, const TiXmlElement* pConfig, const std::string& id = ""):
     m_name(name),
-    m_id(id)
+    m_id(id),
+    m_type(type)
   {
-    m_eCore = eCore;
     m_bPlaysAudio = false;
     m_bPlaysVideo = false;
 
     if (pConfig)
     {
       m_config = (TiXmlElement*)pConfig->Clone();
-      const char *szAudio = pConfig->Attribute("audio");
-      const char *szVideo = pConfig->Attribute("video");
-      m_bPlaysAudio = szAudio && stricmp(szAudio, "true") == 0;
-      m_bPlaysVideo = szVideo && stricmp(szVideo, "true") == 0;
+      const char *sAudio = pConfig->Attribute("audio");
+      const char *sVideo = pConfig->Attribute("video");
+      m_bPlaysAudio = sAudio && stricmp(sAudio, "true") == 0;
+      m_bPlaysVideo = sVideo && stricmp(sVideo, "true") == 0;
     }
     else
     {
-      m_config = NULL;
+      m_config = nullptr;
     }
-    CLog::Log(LOGDEBUG, "CPlayerCoreConfig::<ctor>: created player %s for core %d", m_name.c_str(), m_eCore);
+    CLog::Log(LOGDEBUG, "CPlayerCoreConfig::<ctor>: created player %s", m_name.c_str());
   }
 
   virtual ~CPlayerCoreConfig()
@@ -73,11 +72,6 @@ public:
     return m_id;
   }
 
-  const EPLAYERCORES& GetType() const
-  {
-    return m_eCore;
-  }
-
   bool PlaysAudio() const
   {
     return m_bPlaysAudio;
@@ -91,17 +85,30 @@ public:
   IPlayer* CreatePlayer(IPlayerCallback& callback) const
   {
     IPlayer* pPlayer;
-    switch(m_eCore)
+    if (m_type.compare("video") == 0)
     {
-      case EPC_MPLAYER:
-      case EPC_VideoPlayer: pPlayer = new CVideoPlayer(callback); break;
-      case EPC_PAPLAYER: pPlayer = new PAPlayer(callback); break;
-      case EPC_EXTPLAYER: pPlayer = new CExternalPlayer(callback); break;
-#if defined(HAS_UPNP)
-      case EPC_UPNPPLAYER: pPlayer = new UPNP::CUPnPPlayer(callback, m_id.c_str()); break;
-#endif
-      default: return NULL;
+      pPlayer = new CVideoPlayer(callback);
     }
+    else if (m_type.compare("music") == 0)
+    {
+      pPlayer = new PAPlayer(callback);
+    }
+    else if (m_type.compare("external") == 0)
+    {
+      pPlayer = new CExternalPlayer(callback);
+    }
+
+#if defined(HAS_UPNP)
+    else if (m_type.compare("remote") == 0)
+    {
+      pPlayer = new UPNP::CUPnPPlayer(callback, m_id.c_str());
+    }
+#endif
+    else
+      return nullptr;
+
+    pPlayer->m_name = m_name;
+    pPlayer->m_type = m_type;
 
     if (pPlayer->Initialize(m_config))
     {
@@ -110,15 +117,14 @@ public:
     else
     {
       SAFE_DELETE(pPlayer);
-      return NULL;
+      return nullptr;
     }
   }
 
-private:
   std::string m_name;
-  std::string m_id;
+  std::string m_id; // uuid for upnp
+  std::string m_type;
   bool m_bPlaysAudio;
   bool m_bPlaysVideo;
-  EPLAYERCORES m_eCore;
   TiXmlElement* m_config;
 };

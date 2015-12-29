@@ -157,12 +157,13 @@
       },
       { "name": "options", "type": "object", "additionalProperties": false,
         "properties": {
-          "playercoreid": { "type": [
+          "playername": { "type": [
               "null",
-			  { "type": "string", "enum": [ "default" ], "required": true },
-              { "type": "integer", "minimum": 1, "required": true }
+              { "type": "string", "enum": [ "default" ], "required": true },
+              { "type": "string", "minLength": 1, "required": true, "description": "name of player" }
             ],
-            "default": null },
+            "default": null
+          },
           "shuffled": { "$ref": "Optional.Boolean" },
           "repeat": { "type": [ "null", { "$ref": "Player.Repeat", "required": true } ], "default": null },
           "resume": { "type": [
@@ -209,7 +210,6 @@
       "items": {
         "type": "object",
         "properties": {
-          "playercoreid": { "type": "integer", "minimum": 1, "required": true },
           "name": { "$ref": "Global.String.NotEmpty", "required": true },
           "type": { "type": "string", "enum": [ "internal", "external", "remote" ], "required": true },
           "playsvideo": { "type": "boolean", "required": true },

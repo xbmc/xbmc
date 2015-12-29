@@ -187,7 +187,7 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
 
   m_iLastRenderBuffer = -1;
 
-  if ((m_format == RENDER_FMT_BYPASS) && g_application.GetCurrentPlayer())
+  if ((m_format == RENDER_FMT_BYPASS))
   {
     m_renderFeatures.clear();
     m_scalingMethods.clear();

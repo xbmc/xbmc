@@ -52,7 +52,6 @@ class CApplicationPlayer
 {
   std::shared_ptr<IPlayer> m_pPlayer;
   unsigned int m_iPlayerOPSeq;  // used to detect whether an OpenFile request on player is canceled by us.
-  PLAYERCOREID m_eCurrentPlayer;
 
   CCriticalSection  m_player_lock;
 
@@ -70,14 +69,13 @@ public:
   // player management
   void CloseFile(bool reopen = false);
   void ClosePlayer();
-  void ClosePlayerGapless(PLAYERCOREID newCore);
-  void CreatePlayer(PLAYERCOREID newCore, IPlayerCallback& callback);
-  PLAYERCOREID GetCurrentPlayer() const { return m_eCurrentPlayer; }
+  void ClosePlayerGapless(std::string &playername);
+  void CreatePlayer(const std::string &player, IPlayerCallback& callback);
+  std::string GetCurrentPlayer();
   std::shared_ptr<IPlayer> GetInternal() const;
   int  GetPlaySpeed() const;
   bool HasPlayer() const;
   PlayBackRet OpenFile(const CFileItem& item, const CPlayerOptions& options);
-  void ResetPlayer() { m_eCurrentPlayer = EPC_NONE; }
   void SetPlaySpeed(int iSpeed, bool bApplicationMuted);
 
   void FrameMove();
@@ -102,6 +100,7 @@ public:
   void RenderCaptureRelease(unsigned int captureId);
   bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size);
   std::string GetRenderVSyncState();
+  bool IsExternalPlaying();
 
   // proxy calls
   void   AddSubtitle(const std::string& strSubPath);

@@ -58,20 +58,20 @@ namespace PVR
   {
   public:
     virtual ~CGUIWindowPVRBase(void);
-    virtual void OnInitWindow(void);
-    virtual void OnDeinitWindow(int nextWindowID);
-    virtual bool OnMessage(CGUIMessage& message);
-    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+    virtual void OnInitWindow(void) override;
+    virtual void OnDeinitWindow(int nextWindowID) override;
+    virtual bool OnMessage(CGUIMessage& message) override;
+    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
     virtual bool OnContextButton(const CFileItem &item, CONTEXT_BUTTON button) { return false; };
     virtual bool OnContextButtonActiveAEDSPSettings(CFileItem *item, CONTEXT_BUTTON button);
-    virtual void UpdateButtons(void);
-    virtual bool OnAction(const CAction &action);
-    virtual bool OnBack(int actionID);
+    virtual void UpdateButtons(void) override;
+    virtual bool OnAction(const CAction &action) override;
+    virtual bool OnBack(int actionID) override;
     virtual bool OpenGroupSelectionDialog(void);
     virtual void ResetObservers(void) {};
-    virtual void Notify(const Observable &obs, const ObservableMessage msg);
-    virtual void SetInvalid();
-    virtual bool CanBeActivated() const;
+    virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
+    virtual void SetInvalid() override;
+    virtual bool CanBeActivated() const override;
 
     static std::string GetSelectedItemPath(bool bRadio);
     static void SetSelectedItemPath(bool bRadio, const std::string &path);

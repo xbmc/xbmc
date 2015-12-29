@@ -32,7 +32,7 @@ class CGUIWindowAddonBrowser : public CGUIMediaWindow
 public:
   CGUIWindowAddonBrowser(void);
   virtual ~CGUIWindowAddonBrowser(void);
-  virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnMessage(CGUIMessage& message) override;
 
   /*! \brief Popup a selection dialog with a list of addons of the given type
    \param type the type of addon wanted
@@ -66,13 +66,13 @@ protected:
    */
   void SetItemLabel2(CFileItemPtr item);
 
-  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
-  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual bool OnClick(int iItem);
-  virtual void UpdateButtons();
-  virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
-  virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true);
-  virtual std::string GetStartFolder(const std::string &dir);
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+  virtual bool OnClick(int iItem, const std::string &player = "") override;
+  virtual void UpdateButtons() override;
+  virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
+  virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
+  virtual std::string GetStartFolder(const std::string &dir) override;
 
 private:
   void SetProperties();

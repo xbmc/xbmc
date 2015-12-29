@@ -139,9 +139,9 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(CGUIMessage &message)
     if (epgTag)
     {
       if (message.GetSenderId() == CONTROL_BTN_PLAY_RECORDING && epgTag->HasRecording())
-        ret = g_application.PlayFile(CFileItem(epgTag->Recording()));
+        ret = g_application.PlayFile(CFileItem(epgTag->Recording()), "videoplayer");
       else if (epgTag->HasPVRChannel())
-        ret = g_application.PlayFile(CFileItem(epgTag->ChannelTag()));
+        ret = g_application.PlayFile(CFileItem(epgTag->ChannelTag()), "videoplayer");
     }
     else
       ret = PLAYBACK_FAIL;

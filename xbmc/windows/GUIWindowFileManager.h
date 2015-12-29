@@ -51,7 +51,7 @@ protected:
   void GoParentFolder(int iList);
   void UpdateControl(int iList, int item);
   bool Update(int iList, const std::string &strDirectory); //???
-  void OnStart(CFileItem *pItem);
+  void OnStart(CFileItem *pItem, const std::string &player);
   bool SelectItem(int iList, int &item);
   void ClearFileItems(int iList);
   void OnClick(int iList, int iItem);
