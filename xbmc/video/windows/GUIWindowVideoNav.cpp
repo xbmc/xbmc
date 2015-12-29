@@ -1083,7 +1083,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   return CGUIWindowVideoBase::OnContextButton(itemNumber, button);
 }
 
-bool CGUIWindowVideoNav::OnClick(int iItem)
+bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
 {
   CFileItemPtr item = m_vecItems->Get(iItem);
   if (!item->m_bIsFolder && item->IsVideoDb() && !item->Exists())
@@ -1155,7 +1155,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
     return true;
   }
 
-  return CGUIWindowVideoBase::OnClick(iItem);
+  return CGUIWindowVideoBase::OnClick(iItem, player);
 }
 
 std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
