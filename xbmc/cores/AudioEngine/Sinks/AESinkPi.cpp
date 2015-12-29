@@ -498,14 +498,14 @@ bool CAESinkPi::HasVolume()
   return CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_USEANALOGAMPLIFIER);
 }
 
-static void SetHarwareVolume(COMXCoreComponent& render, float volume_, float gain)
+static void SetHarwareVolume(COMXCoreComponent& render, float volume_)
 {
   OMX_AUDIO_CONFIG_VOLUMETYPE volume;
   OMX_INIT_STRUCTURE(volume);
 
   volume.nPortIndex = render.GetInputPort();
   volume.bLinear    = OMX_TRUE;
-  volume.sVolume.nValue = (int)(volume_ * gain * 100.0 + 0.5);
+  volume.sVolume.nValue = (int)(volume_ * 100.0 + 0.5);
 
   OMX_ERRORTYPE omx_err = render.SetConfig(OMX_IndexConfigAudioVolume, &volume);
   if(omx_err != OMX_ErrorNone)
@@ -519,17 +519,14 @@ void CAESinkPi::SetVolume(float volume)
 {
   CLog::Log(LOGDEBUG, "%s:%s volume=%.2f", CLASSNAME, __func__, volume);
 
-  // the analogue volume is too quiet for some. Allow use of an advancedsetting to boost this (at risk of distortion) (deprecated)
-  double gain = pow(10, (g_advancedSettings.m_ac3Gain - 12.0f) / 20.0);
-
   if (m_omx_render.IsInitialized())
   {
-    SetHarwareVolume(m_omx_render, volume, gain);
+    SetHarwareVolume(m_omx_render, volume);
   }
 
   if (m_omx_render_slave.IsInitialized())
   {
-    SetHarwareVolume(m_omx_render_slave, volume, gain);
+    SetHarwareVolume(m_omx_render_slave, volume);
   }
 }
 

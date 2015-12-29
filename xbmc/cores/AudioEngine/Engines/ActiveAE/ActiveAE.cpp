@@ -2523,7 +2523,6 @@ std::string CActiveAE::GetDefaultDevice(bool passthrough)
 void CActiveAE::OnSettingsChange(const std::string& setting)
 {
   if (setting == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE      ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_USEANALOGAMPLIFIER     ||
       setting == CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE            ||
       setting == CSettings::SETTING_AUDIOOUTPUT_CONFIG                 ||
       setting == CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH         ||
