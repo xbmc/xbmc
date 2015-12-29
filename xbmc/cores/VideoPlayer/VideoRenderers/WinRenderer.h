@@ -180,27 +180,22 @@ public:
 
 protected:
   virtual void Render(DWORD flags);
-  void         RenderSW();
-  void         RenderPS();
-  void         Stage1();
-  void         Stage2();
-  void         ScaleGUIShader();
+  void RenderSW();
+  void RenderHW(DWORD flags);
+  void RenderPS();
+  void RenderHQ();
   virtual void ManageTextures();
-  void         DeleteYV12Texture(int index);
-  bool         CreateYV12Texture(int index);
-  int          NextYV12Texture();
-
+  void DeleteYV12Texture(int index);
+  bool CreateYV12Texture(int index);
+  int NextYV12Texture();
   void SelectRenderMethod();
-  bool UpdateRenderMethod();
-
   void UpdateVideoFilter();
   void SelectSWVideoFilter();
   void SelectPSVideoFilter();
   void UpdatePSVideoFilter();
-  bool CreateIntermediateRenderTarget(unsigned int width, unsigned int height);
+  bool CreateIntermediateRenderTarget(unsigned int width, unsigned int height, bool dynamic);
   bool CopyDXVA2YUVBuffer(ID3D11VideoDecoderOutputView* pView, YUVBuffer *pBuf);
 
-  void RenderProcessor(DWORD flags);
   int  m_iYV12RenderBuffer;
   int  m_NumYV12Buffers;
 
@@ -212,15 +207,9 @@ protected:
 
   // software scale libraries (fallback if required pixel shaders version is not available)
   struct SwsContext   *m_sw_scale_ctx;
-
-  // Software rendering
   SHADER_SAMPLER       m_TextureFilter;
-  CD3DTexture          m_SWTarget;
-
-  // PS rendering
   bool                 m_bUseHQScaler;
   CD3DTexture          m_IntermediateTarget;
-
   CYUV2RGBShader*      m_colorShader;
   CConvolutionShader*  m_scalerShader;
 
