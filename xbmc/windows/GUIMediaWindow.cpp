@@ -420,6 +420,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
             filter = message.GetStringParam();
         }
         OnFilterItems(filter);
+        UpdateButtons();
         return true;
       }
       else
@@ -822,6 +823,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
 
   // Filter and group the items if necessary
   OnFilterItems(GetProperty("filter").asString());
+  UpdateButtons();
 
   strSelectedItem = m_history.GetSelectedItem(m_vecItems->GetPath());
 
@@ -1798,7 +1800,6 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
   // and update our view control + buttons
   m_viewControl.SetItems(*m_vecItems);
   m_viewControl.SetSelectedItem(currentItemPath);
-  UpdateButtons();
 }
 
 bool CGUIMediaWindow::GetFilteredItems(const std::string &filter, CFileItemList &items)
@@ -1937,6 +1938,7 @@ bool CGUIMediaWindow::Filter(bool advanced /* = true */)
       CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_BTN_FILTER);
       OnMessage(selected);
       OnFilterItems(selected.GetLabel());
+      UpdateButtons();
       return true;
     }
     if (GetProperty("filter").empty())
@@ -1946,7 +1948,10 @@ bool CGUIMediaWindow::Filter(bool advanced /* = true */)
       SetProperty("filter", filter);
     }
     else
+    {
       OnFilterItems("");
+      UpdateButtons();
+    }
   }
   // advanced filtering
   else
