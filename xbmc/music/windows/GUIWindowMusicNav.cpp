@@ -265,12 +265,6 @@ bool CGUIWindowMusicNav::Update(const std::string &strDirectory, bool updateFilt
 
   if (CGUIWindowMusicBase::Update(strDirectory, updateFilterPath))
   {
-    
-    if (m_vecItems->GetContent().empty() && 
-        !m_vecItems->IsSourcesPath() &&
-        !m_vecItems->IsVirtualDirectoryRoot())
-      m_vecItems->SetContent("files");
-
     m_thumbLoader.Load(*m_unfilteredItems);
     return true;
   }
@@ -355,6 +349,8 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
     items.SetContent("plugins");
   else if (items.IsAddonsPath())
     items.SetContent("addons");
+  else if (!items.IsSourcesPath() && !items.IsVirtualDirectoryRoot() && !items.IsLibraryFolder())
+    items.SetContent("files");
 
   return bResult;
 }
