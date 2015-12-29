@@ -1607,8 +1607,8 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
     }
 
     if (m_sink.GetDeviceType(m_settings.device) == AE_DEVTYPE_IEC958)
-    {
       if (format.m_sampleRate > m_settings.samplerate)
+    {
       {
         format.m_sampleRate = m_settings.samplerate;
         CLog::Log(LOGINFO, "CActiveAE::ApplySettings - limit samplerate for SPDIF to %d", format.m_sampleRate);
@@ -2523,6 +2523,7 @@ std::string CActiveAE::GetDefaultDevice(bool passthrough)
 void CActiveAE::OnSettingsChange(const std::string& setting)
 {
   if (setting == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE      ||
+      setting == CSettings::SETTING_AUDIOOUTPUT_USEANALOGAMPLIFIER     ||
       setting == CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE            ||
       setting == CSettings::SETTING_AUDIOOUTPUT_CONFIG                 ||
       setting == CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH         ||
@@ -2609,9 +2610,7 @@ bool CActiveAE::IsSettingVisible(const std::string &settingId)
   {
     AEAudioFormat format;
     format.m_dataFormat = AE_FMT_RAW;
-    format.m_sampleRate = 192000;
     format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_TRUEHD;
-    format.m_streamInfo.m_sampleRate = 192000;
     if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), format) &&
         CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
       return true;
@@ -2620,9 +2619,7 @@ bool CActiveAE::IsSettingVisible(const std::string &settingId)
   {
     AEAudioFormat format;
     format.m_dataFormat = AE_FMT_RAW;
-    format.m_sampleRate = 192000;
     format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD;
-    format.m_streamInfo.m_sampleRate = 192000;
     if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), format) &&
         CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
       return true;
@@ -2631,9 +2628,6 @@ bool CActiveAE::IsSettingVisible(const std::string &settingId)
   {
     AEAudioFormat format;
     format.m_dataFormat = AE_FMT_RAW;
-    format.m_sampleRate = 48000;
-    // is multiplied by four later on
-    format.m_streamInfo.m_sampleRate = 48000;
     format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
     if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), format) &&
         CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)

@@ -72,6 +72,16 @@
       </group>
     </category>
     <category id="audiooutput">
+      <group id="0">
+        <setting id="audiooutput.useanalogamplifier" type="boolean" label="38122" help="38123">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+          <updates>
+            <update type="change" />
+          </updates>
+        </setting>
+      </group>
       <group id="1">
         <setting id="audiooutput.processquality">
           <default>101</default> <!-- AE_QUALITY_GPU -->
