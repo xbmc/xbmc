@@ -193,7 +193,7 @@ void CPlayerCoreFactory::GetRemotePlayers(std::vector<std::string>&players) cons
   CSingleLock lock(m_section);
   for (auto config: m_vecPlayerConfigs)
   {
-    if (config->m_type != "upnp")
+    if (config->m_type != "remote")
       continue;
     players.push_back(config->m_name);
   }
