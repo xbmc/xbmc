@@ -345,6 +345,7 @@ const std::string CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION = "videoscreen.g
 const std::string CSettings::SETTING_VIDEOSCREEN_TESTPATTERN = "videoscreen.testpattern";
 const std::string CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE = "videoscreen.limitedrange";
 const std::string CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE = "audiooutput.audiodevice";
+const std::string CSettings::SETTING_AUDIOOUTPUT_USEANALOGAMPLIFIER = "audiooutput.useanalogamplifier";
 const std::string CSettings::SETTING_AUDIOOUTPUT_CHANNELS = "audiooutput.channels";
 const std::string CSettings::SETTING_AUDIOOUTPUT_CONFIG = "audiooutput.config";
 const std::string CSettings::SETTING_AUDIOOUTPUT_SAMPLERATE = "audiooutput.samplerate";
@@ -1067,6 +1068,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_USEANALOGAMPLIFIER);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME);

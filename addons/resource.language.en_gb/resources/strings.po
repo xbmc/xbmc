@@ -18185,3 +18185,14 @@ msgstr ""
 msgctxt "#38025"
 msgid "Choose information provider"
 msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#38122"
+msgid "Use analogue amplifier"
+msgstr ""
+
+#: system/settings/rbp.xml
+msgctxt "#38123"
+msgid "Use Raspberry Pi embedded analogue amplifier for stereo 3.5mm output jack"
+msgstr ""
+

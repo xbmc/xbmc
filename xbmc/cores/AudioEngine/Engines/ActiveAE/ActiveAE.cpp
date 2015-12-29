@@ -1607,8 +1607,8 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
     }
 
     if (m_sink.GetDeviceType(m_settings.device) == AE_DEVTYPE_IEC958)
-    {
       if (format.m_sampleRate > m_settings.samplerate)
+    {
       {
         format.m_sampleRate = m_settings.samplerate;
         CLog::Log(LOGINFO, "CActiveAE::ApplySettings - limit samplerate for SPDIF to %d", format.m_sampleRate);

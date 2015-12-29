@@ -301,6 +301,7 @@ public:
   static const std::string SETTING_VIDEOSCREEN_TESTPATTERN;
   static const std::string SETTING_VIDEOSCREEN_LIMITEDRANGE;
   static const std::string SETTING_AUDIOOUTPUT_AUDIODEVICE;
+  static const std::string SETTING_AUDIOOUTPUT_USEANALOGAMPLIFIER;
   static const std::string SETTING_AUDIOOUTPUT_CHANNELS;
   static const std::string SETTING_AUDIOOUTPUT_CONFIG;
   static const std::string SETTING_AUDIOOUTPUT_SAMPLERATE;

@@ -29,6 +29,7 @@
 #include "AESinkPi.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/log.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "linux/RBP.h"
 
@@ -490,6 +491,43 @@ void CAESinkPi::Drain()
   if (delay)
     Sleep(delay);
   CLog::Log(LOGDEBUG, "%s:%s delay:%dms now:%dms", CLASSNAME, __func__, delay, (int)(status.GetDelay() * 1000.0));
+}
+
+bool CAESinkPi::HasVolume()
+{
+  return CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_USEANALOGAMPLIFIER);
+}
+
+static void SetHarwareVolume(COMXCoreComponent& render, float volume_)
+{
+  OMX_AUDIO_CONFIG_VOLUMETYPE volume;
+  OMX_INIT_STRUCTURE(volume);
+
+  volume.nPortIndex = render.GetInputPort();
+  volume.bLinear    = OMX_TRUE;
+  volume.sVolume.nValue = (int)(volume_ * 100.0 + 0.5);
+
+  OMX_ERRORTYPE omx_err = render.SetConfig(OMX_IndexConfigAudioVolume, &volume);
+  if(omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "%s - error setting OMX_IndexConfigAudioVolume, error 0x%08x\n", __func__, omx_err);
+  }
+  CLog::Log(LOGDEBUG, "%s - hardwareVolume=%d\n", __func__, volume.sVolume.nValue );
+}
+
+void CAESinkPi::SetVolume(float volume)
+{
+  CLog::Log(LOGDEBUG, "%s:%s volume=%.2f", CLASSNAME, __func__, volume);
+
+  if (m_omx_render.IsInitialized())
+  {
+    SetHarwareVolume(m_omx_render, volume);
+  }
+
+  if (m_omx_render_slave.IsInitialized())
+  {
+    SetHarwareVolume(m_omx_render_slave, volume);
+  }
 }
 
 void CAESinkPi::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
