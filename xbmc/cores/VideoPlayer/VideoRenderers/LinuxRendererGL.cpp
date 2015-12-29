@@ -550,8 +550,6 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   ManageDisplay();
 
-  g_graphicsContext.BeginPaint();
-
   if (clear)
   {
     //draw black bars when video is not transparent, clear the entire backbuffer when it is
@@ -600,8 +598,6 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   VerifyGLState();
   glEnable(GL_BLEND);
   glFlush();
-
-  g_graphicsContext.EndPaint();
 }
 
 void CLinuxRendererGL::ClearBackBuffer()
@@ -1871,7 +1867,6 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
   if( fields[FIELD_FULL][0].id == 0 ) return;
 
   /* finish up all textures, and delete them */
-  g_graphicsContext.BeginPaint();  //FIXME
   for(int f = 0;f<MAX_FIELDS;f++)
   {
     for(int p = 0;p<MAX_PLANES;p++)
@@ -1884,7 +1879,6 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
       }
     }
   }
-  g_graphicsContext.EndPaint();
 
   for(int p = 0;p<MAX_PLANES;p++)
   {
@@ -2145,7 +2139,6 @@ void CLinuxRendererGL::DeleteNV12Texture(int index)
   if( fields[FIELD_FULL][0].id == 0 ) return;
 
   // finish up all textures, and delete them
-  g_graphicsContext.BeginPaint();  //FIXME
   for(int f = 0;f<MAX_FIELDS;f++)
   {
     for(int p = 0;p<2;p++)
@@ -2161,7 +2154,6 @@ void CLinuxRendererGL::DeleteNV12Texture(int index)
     }
     fields[f][2].id = 0;
   }
-  g_graphicsContext.EndPaint();
 
   for(int p = 0;p<2;p++)
   {
@@ -2244,7 +2236,6 @@ void CLinuxRendererGL::DeleteYUV422PackedTexture(int index)
   if( fields[FIELD_FULL][0].id == 0 ) return;
 
   // finish up all textures, and delete them
-  g_graphicsContext.BeginPaint();  //FIXME
   for(int f = 0;f<MAX_FIELDS;f++)
   {
     if( fields[f][0].id )
@@ -2258,7 +2249,6 @@ void CLinuxRendererGL::DeleteYUV422PackedTexture(int index)
     fields[f][1].id = 0;
     fields[f][2].id = 0;
   }
-  g_graphicsContext.EndPaint();
 
   if (pbo[0])
   {

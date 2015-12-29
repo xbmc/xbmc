@@ -40,6 +40,7 @@
 
 #include "filesystem/File.h"
 #include "guilib/GraphicContext.h"
+#include "guilib/GUIWindowManager.h"
 
 #include "utils/JobManager.h"
 #include "utils/URIUtils.h"
@@ -75,9 +76,10 @@ bool CScreenshotSurface::capture()
   if (!m_buffer)
     return false;
 #elif defined(HAS_DX)
-  g_graphicsContext.Lock();
 
-  g_application.RenderNoPresent();
+  CSingleLock lock(g_graphicsContext);
+
+  g_windowManager.Render();
   g_Windowing.FinishCommandList();
 
   ID3D11DeviceContext* pImdContext = g_Windowing.GetImmediateContext();
@@ -128,12 +130,10 @@ bool CScreenshotSurface::capture()
   }
   SAFE_RELEASE(pRTTexture);
 
-  g_graphicsContext.Unlock();
-
 #elif defined(HAS_GL) || defined(HAS_GLES)
 
-  g_graphicsContext.BeginPaint();
-  g_application.RenderNoPresent();
+  CSingleLock lock(g_graphicsContext);
+  g_windowManager.Render();
 #ifndef HAS_GLES
   glReadBuffer(GL_BACK);
 #endif
@@ -152,7 +152,6 @@ bool CScreenshotSurface::capture()
 #else
   glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_BGRA, GL_UNSIGNED_BYTE, (GLvoid*)surface);
 #endif
-  g_graphicsContext.EndPaint();
 
   //make a new buffer and copy the read image to it with the Y axis inverted
   m_buffer = new unsigned char[m_stride * m_height];
