@@ -683,6 +683,14 @@ void CGUIEPGGridContainer::RenderItem(float posX, float posY, CGUIListItem *item
   g_graphicsContext.RestoreOrigin();
 }
 
+void CGUIEPGGridContainer::ResetCoordinates()
+{
+  m_channelCursor = 0;
+  m_channelOffset = 0;
+  m_blockCursor = 0;
+  m_blockOffset = 0;
+}
+
 bool CGUIEPGGridContainer::OnAction(const CAction &action)
 {
   switch (action.GetID())
@@ -1896,6 +1904,8 @@ void CGUIEPGGridContainer::Reset()
 
   m_lastItem    = NULL;
   m_lastChannel = NULL;
+
+  m_channels = 0;
 }
 
 void CGUIEPGGridContainer::GoToBegin()
@@ -1935,16 +1945,26 @@ void CGUIEPGGridContainer::GoToNow()
   int offset = ((currentDate - m_gridStart).GetSecondsTotal() / 60 - 30) / MINSPERBLOCK;
   ScrollToBlockOffset(offset);
 
-  for (int blockIndex = 0; blockIndex < m_blocksPerPage; blockIndex++)
+  if (m_channelCursor + m_channelOffset >= 0 &&
+      m_channelCursor + m_channelOffset < m_channels)
   {
-    const CFileItemPtr item = m_gridIndex[m_channelCursor + m_channelOffset][offset + blockIndex].item;
-    if (item)
+    // make sure offset is in valid range
+    offset = std::max(0, std::min(offset, m_blocks - m_blocksPerPage));
+
+    for (int blockIndex = 0; blockIndex < m_blocksPerPage; blockIndex++)
     {
-      const CEpgInfoTagPtr tag = item->GetEPGInfoTag();
-      if (tag && tag->StartAsUTC() <= currentDate && tag->EndAsUTC() > currentDate)
-      {
-        SetBlock(blockIndex); // Select currently active epg element
+      if (offset + blockIndex >= m_blocks)
         break;
+
+      const CFileItemPtr item = m_gridIndex[m_channelCursor + m_channelOffset][offset + blockIndex].item;
+      if (item)
+      {
+        const CEpgInfoTagPtr tag = item->GetEPGInfoTag();
+        if (tag && tag->StartAsUTC() <= currentDate && tag->EndAsUTC() > currentDate)
+        {
+          SetBlock(blockIndex); // Select currently active epg element
+          break;
+        }
       }
     }
   }
