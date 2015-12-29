@@ -400,28 +400,27 @@ void CVideoDatabase::CreateViews()
 
   CLog::Log(LOGINFO, "create season_view");
   std::string seasonview = PrepareSQL("CREATE VIEW season_view AS SELECT "
-                                     "  seasons.*, "
-                                     "  tvshow_view.strPath AS strPath,"
-                                     "  tvshow_view.c%02d AS showTitle,"
-                                     "  tvshow_view.c%02d AS plot,"
-                                     "  tvshow_view.c%02d AS premiered,"
-                                     "  tvshow_view.c%02d AS genre,"
-                                     "  tvshow_view.c%02d AS studio,"
-                                     "  tvshow_view.c%02d AS mpaa,"
-                                     "  count(DISTINCT episode.idEpisode) AS episodes,"
-                                     "  count(files.playCount) AS playCount,"
-                                     "  min(episode.c%02d) AS aired "
-                                     "FROM seasons"
-                                     "  JOIN tvshow_view ON"
-                                     "    tvshow_view.idShow = seasons.idShow"
-                                     "  JOIN episode ON"
-                                     "    episode.idShow = seasons.idShow AND episode.c%02d = seasons.season"
-                                     "  JOIN files ON"
-                                     "    files.idFile = episode.idFile "
-                                     "GROUP BY seasons.idSeason",
-                                     VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PLOT, VIDEODB_ID_TV_PREMIERED,
-                                     VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA,
-                                     VIDEODB_ID_EPISODE_AIRED, VIDEODB_ID_EPISODE_SEASON);
+                                      "  seasons.*, "
+                                      "  tvshow.c%02d AS showTitle,"
+                                      "  tvshow.c%02d AS plot,"
+                                      "  tvshow.c%02d AS premiered,"
+                                      "  tvshow.c%02d AS genre,"
+                                      "  tvshow.c%02d AS studio,"
+                                      "  tvshow.c%02d AS mpaa,"
+                                      "  count(DISTINCT episode.idEpisode) AS episodes,"
+                                      "  count(files.playCount) AS playCount,"
+                                      "  min(episode.c%02d) AS aired "
+                                      "FROM seasons"
+                                      "  JOIN tvshow ON"
+                                      "    tvshow.idShow = seasons.idShow"
+                                      "  JOIN episode ON"
+                                      "    episode.idSeason = seasons.idSeason"
+                                      "  JOIN files ON"
+                                      "    files.idFile = episode.idFile "
+                                      "GROUP BY seasons.idSeason",
+                                      VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PLOT, VIDEODB_ID_TV_PREMIERED,
+                                      VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA,
+                                      VIDEODB_ID_EPISODE_AIRED);
   m_pDS->exec(seasonview);
 
   CLog::Log(LOGINFO, "create musicvideo_view");
@@ -4684,7 +4683,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 100;
+  return 101;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
@@ -5868,79 +5867,69 @@ bool CVideoDatabase::GetSeasonsByWhere(const std::string& strBaseDir, const Filt
     if (iRowsFound <= 0)
       return iRowsFound == 0;
 
-    std::set<std::pair<int, int>> mapSeasons;
     while (!m_pDS->eof())
     {
       int id = m_pDS->fv(VIDEODB_ID_SEASON_ID).get_asInt();
       int showId = m_pDS->fv(VIDEODB_ID_SEASON_TVSHOW_ID).get_asInt();
       int iSeason = m_pDS->fv(VIDEODB_ID_SEASON_NUMBER).get_asInt();
       std::string name = m_pDS->fv(VIDEODB_ID_SEASON_NAME).get_asString();
-      std::string path = m_pDS->fv(VIDEODB_ID_SEASON_TVSHOW_PATH).get_asString();
 
-      if (mapSeasons.find(std::make_pair(showId, iSeason)) == mapSeasons.end() &&
-         (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser ||
-          g_passwordManager.IsDatabasePathUnlocked(path, *CMediaSourceSettings::GetInstance().GetSources("video"))))
+      std::string strLabel = name;
+      if (strLabel.empty())
       {
-        mapSeasons.insert(std::make_pair(showId, iSeason));
-
-        std::string strLabel = name;
-        if (strLabel.empty())
-        {
-          if (iSeason == 0)
-            strLabel = g_localizeStrings.Get(20381);
-          else
-            strLabel = StringUtils::Format(g_localizeStrings.Get(20358).c_str(), iSeason);
-        }
-        CFileItemPtr pItem(new CFileItem(strLabel));
-
-        CVideoDbUrl itemUrl = videoUrl;
-        std::string strDir;
-        if (appendFullShowPath)
-          strDir += StringUtils::Format("%d/", showId);
-        strDir += StringUtils::Format("%d/", iSeason);
-        itemUrl.AppendPath(strDir);
-        pItem->SetPath(itemUrl.ToString());
-
-        pItem->m_bIsFolder = true;
-        pItem->GetVideoInfoTag()->m_strTitle = strLabel;
-        if (!name.empty())
-          pItem->GetVideoInfoTag()->m_strSortTitle = name;
-        pItem->GetVideoInfoTag()->m_iSeason = iSeason;
-        pItem->GetVideoInfoTag()->m_iDbId = id;
-        pItem->GetVideoInfoTag()->m_iIdSeason = id;
-        pItem->GetVideoInfoTag()->m_type = MediaTypeSeason;
-        pItem->GetVideoInfoTag()->m_strPath = path;
-        pItem->GetVideoInfoTag()->m_strShowTitle = m_pDS->fv(VIDEODB_ID_SEASON_TVSHOW_TITLE).get_asString();
-        pItem->GetVideoInfoTag()->m_strPlot = m_pDS->fv(VIDEODB_ID_SEASON_TVSHOW_PLOT).get_asString();
-        pItem->GetVideoInfoTag()->m_premiered.SetFromDBDate(m_pDS->fv(VIDEODB_ID_SEASON_TVSHOW_PREMIERED).get_asString());
-        pItem->GetVideoInfoTag()->m_firstAired.SetFromDBDate(m_pDS->fv(VIDEODB_ID_SEASON_PREMIERED).get_asString());
-
-        // season premiered date based on first episode airdate associated to the season
-        // tvshow premiered date is used as a fallback
-        if (pItem->GetVideoInfoTag()->m_firstAired.IsValid())
-          pItem->GetVideoInfoTag()->m_iYear = pItem->GetVideoInfoTag()->m_firstAired.GetYear();
-        else if (pItem->GetVideoInfoTag()->m_premiered.IsValid())
-          pItem->GetVideoInfoTag()->m_iYear = pItem->GetVideoInfoTag()->m_premiered.GetYear();
-        pItem->GetVideoInfoTag()->m_genre = StringUtils::Split(m_pDS->fv(VIDEODB_ID_SEASON_TVSHOW_GENRE).get_asString(), g_advancedSettings.m_videoItemSeparator);
-        pItem->GetVideoInfoTag()->m_studio = StringUtils::Split(m_pDS->fv(VIDEODB_ID_SEASON_TVSHOW_STUDIO).get_asString(), g_advancedSettings.m_videoItemSeparator);
-        pItem->GetVideoInfoTag()->m_strMPAARating = m_pDS->fv(VIDEODB_ID_SEASON_TVSHOW_MPAA).get_asString();
-        pItem->GetVideoInfoTag()->m_iIdShow = showId;
-
-        int totalEpisodes = m_pDS->fv(VIDEODB_ID_SEASON_EPISODES_TOTAL).get_asInt();
-        int watchedEpisodes = m_pDS->fv(VIDEODB_ID_SEASON_EPISODES_WATCHED).get_asInt();
-        pItem->GetVideoInfoTag()->m_iEpisode = totalEpisodes;
-        pItem->SetProperty("totalepisodes", totalEpisodes);
-        pItem->SetProperty("numepisodes", totalEpisodes); // will be changed later to reflect watchmode setting
-        pItem->SetProperty("watchedepisodes", watchedEpisodes);
-        pItem->SetProperty("unwatchedepisodes", totalEpisodes - watchedEpisodes);
         if (iSeason == 0)
-          pItem->SetProperty("isspecial", true);
-        pItem->GetVideoInfoTag()->m_playCount = (totalEpisodes == watchedEpisodes) ? 1 : 0;
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
-
-        items.Add(pItem);
+          strLabel = g_localizeStrings.Get(20381);
+        else
+          strLabel = StringUtils::Format(g_localizeStrings.Get(20358).c_str(), iSeason);
       }
+      CFileItemPtr pItem(new CFileItem(strLabel));
 
+      CVideoDbUrl itemUrl = videoUrl;
+      std::string strDir;
+      if (appendFullShowPath)
+        strDir += StringUtils::Format("%d/", showId);
+      strDir += StringUtils::Format("%d/", iSeason);
+      itemUrl.AppendPath(strDir);
+      pItem->SetPath(itemUrl.ToString());
+
+      pItem->m_bIsFolder = true;
+      pItem->GetVideoInfoTag()->m_strTitle = strLabel;
+      if (!name.empty())
+        pItem->GetVideoInfoTag()->m_strSortTitle = name;
+      pItem->GetVideoInfoTag()->m_iSeason = iSeason;
+      pItem->GetVideoInfoTag()->m_iDbId = id;
+      pItem->GetVideoInfoTag()->m_iIdSeason = id;
+      pItem->GetVideoInfoTag()->m_type = MediaTypeSeason;
+      pItem->GetVideoInfoTag()->m_strShowTitle = m_pDS->fv(VIDEODB_ID_SEASON_TVSHOW_TITLE).get_asString();
+      pItem->GetVideoInfoTag()->m_strPlot = m_pDS->fv(VIDEODB_ID_SEASON_TVSHOW_PLOT).get_asString();
+      pItem->GetVideoInfoTag()->m_premiered.SetFromDBDate(m_pDS->fv(VIDEODB_ID_SEASON_TVSHOW_PREMIERED).get_asString());
+      pItem->GetVideoInfoTag()->m_firstAired.SetFromDBDate(m_pDS->fv(VIDEODB_ID_SEASON_PREMIERED).get_asString());
+
+      // season premiered date based on first episode airdate associated to the season
+      // tvshow premiered date is used as a fallback
+      if (pItem->GetVideoInfoTag()->m_firstAired.IsValid())
+        pItem->GetVideoInfoTag()->m_iYear = pItem->GetVideoInfoTag()->m_firstAired.GetYear();
+      else if (pItem->GetVideoInfoTag()->m_premiered.IsValid())
+        pItem->GetVideoInfoTag()->m_iYear = pItem->GetVideoInfoTag()->m_premiered.GetYear();
+      pItem->GetVideoInfoTag()->m_genre = StringUtils::Split(m_pDS->fv(VIDEODB_ID_SEASON_TVSHOW_GENRE).get_asString(), g_advancedSettings.m_videoItemSeparator);
+      pItem->GetVideoInfoTag()->m_studio = StringUtils::Split(m_pDS->fv(VIDEODB_ID_SEASON_TVSHOW_STUDIO).get_asString(), g_advancedSettings.m_videoItemSeparator);
+      pItem->GetVideoInfoTag()->m_strMPAARating = m_pDS->fv(VIDEODB_ID_SEASON_TVSHOW_MPAA).get_asString();
+      pItem->GetVideoInfoTag()->m_iIdShow = showId;
+
+      int totalEpisodes = m_pDS->fv(VIDEODB_ID_SEASON_EPISODES_TOTAL).get_asInt();
+      int watchedEpisodes = m_pDS->fv(VIDEODB_ID_SEASON_EPISODES_WATCHED).get_asInt();
+      pItem->GetVideoInfoTag()->m_iEpisode = totalEpisodes;
+      pItem->SetProperty("totalepisodes", totalEpisodes);
+      pItem->SetProperty("numepisodes", totalEpisodes); // will be changed later to reflect watchmode setting
+      pItem->SetProperty("watchedepisodes", watchedEpisodes);
+      pItem->SetProperty("unwatchedepisodes", totalEpisodes - watchedEpisodes);
+      if (iSeason == 0)
+        pItem->SetProperty("isspecial", true);
+      pItem->GetVideoInfoTag()->m_playCount = (totalEpisodes == watchedEpisodes) ? 1 : 0;
+      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
+
+      items.Add(pItem);
+      
       m_pDS->next();
     }
     m_pDS->close();
