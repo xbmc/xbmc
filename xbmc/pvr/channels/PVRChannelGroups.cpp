@@ -394,10 +394,15 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetLastPlayedGroup(int iChannelID /* = -1
   return group;
 }
 
-std::vector<CPVRChannelGroupPtr> CPVRChannelGroups::GetMembers() const
+std::vector<CPVRChannelGroupPtr> CPVRChannelGroups::GetMembers(bool bExcludeHidden /* = false */) const
 {
   CSingleLock lock(m_critSection);
-  std::vector<CPVRChannelGroupPtr> groups(m_groups.begin(), m_groups.end());
+  std::vector<CPVRChannelGroupPtr> groups;
+  for (CPVRChannelGroupPtr group : m_groups)
+  {
+    if (!bExcludeHidden || !group->IsHidden())
+      groups.push_back(group);
+  }
   return groups;
 }
 
