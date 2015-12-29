@@ -315,7 +315,7 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     VideoPlayer->m_bPlaysVideo = true;
     m_vecPlayerConfigs.push_back(VideoPlayer);
 
-    CPlayerCoreConfig* paplayer = new CPlayerCoreConfig("PAPlayer", "pa", nullptr);
+    CPlayerCoreConfig* paplayer = new CPlayerCoreConfig("PAPlayer", "music", nullptr);
     paplayer->m_bPlaysAudio = true;
     m_vecPlayerConfigs.push_back(paplayer);
   }
