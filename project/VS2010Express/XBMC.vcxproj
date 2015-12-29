@@ -190,6 +190,7 @@
     <ClCompile Include="..\..\xbmc\addons\AddonCallbacksPVR.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonInstaller.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\AddonSystemSettings.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonVersion.cpp" />
     <ClCompile Include="..\..\xbmc\addons\ContextMenuAddon.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AudioDecoder.cpp" />
@@ -1799,6 +1800,7 @@
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacksPVR.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonDatabase.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonInstaller.h" />
+    <ClInclude Include="..\..\xbmc\addons\AddonSystemSettings.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonVersion.h" />
     <ClInclude Include="..\..\xbmc\addons\DllLibCPluff.h" />
     <ClInclude Include="..\..\xbmc\addons\DllPVRClient.h" />

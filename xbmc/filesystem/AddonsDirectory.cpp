@@ -295,32 +295,27 @@ static void DependencyAddons(const CURL& path, CFileItemList &items)
 
   VECADDONS deps;
   std::copy_if(all.begin(), all.end(), std::back_inserter(deps),
-      [&](const AddonPtr& _){ return !IsUserInstalled(_) && !IsOrphaned(_, all); });
+      [&](const AddonPtr& _){ return !IsUserInstalled(_); });
 
   CAddonsDirectory::GenerateAddonListing(path, deps, items, g_localizeStrings.Get(24996));
   SetUpdateAvailProperties(items);
-}
 
-static void OrphanedAddons(const CURL& path, CFileItemList &items)
-{
-  VECADDONS all;
-  CAddonMgr::GetInstance().GetAllAddons(all, true);
-  CAddonMgr::GetInstance().GetAllAddons(all, false);
+  //Set orphaned status
+  std::set<std::string> orphaned;
+  for (const auto& addon : deps)
+  {
+    if (IsOrphaned(addon, all))
+      orphaned.insert(addon->ID());
+  }
 
-  VECADDONS orphaned;
-  std::copy_if(all.begin(), all.end(), std::back_inserter(orphaned),
-      [&](const AddonPtr& _){ return IsOrphaned(_, all); });
-
-  CAddonsDirectory::GenerateAddonListing(path, orphaned, items, g_localizeStrings.Get(24995));
-}
-
-static bool HaveOrphaned()
-{
-  VECADDONS addons;
-  CAddonMgr::GetInstance().GetAllAddons(addons, true);
-  CAddonMgr::GetInstance().GetAllAddons(addons, false);
-  return std::any_of(addons.begin(), addons.end(),
-                     [&](const AddonPtr& _){ return IsOrphaned(_, addons); });
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    if (orphaned.find(items[i]->GetProperty("Addon.ID").asString()) != orphaned.end())
+    {
+      items[i]->SetProperty("Addon.Status", g_localizeStrings.Get(24995));
+      items[i]->SetProperty("Addon.Orphaned", true);
+    }
+  }
 }
 
 static void OutdatedAddons(const CURL& path, CFileItemList &items)
@@ -422,31 +417,6 @@ static bool Repos(const CURL& path, CFileItemList &items)
   return true;
 }
 
-static void Manage(CFileItemList &items)
-{
-  items.SetLabel(g_localizeStrings.Get(24992));
-
-  {
-    CFileItemPtr item(new CFileItem("addons://dependencies/", true));
-    item->SetLabel(g_localizeStrings.Get(24996));
-    item->SetSpecialSort(SortSpecialOnTop);
-    items.Add(item);
-  }
-  if (HaveOrphaned())
-  {
-    CFileItemPtr item(new CFileItem("addons://orphaned/", true));
-    item->SetLabel(g_localizeStrings.Get(24995));
-    item->SetSpecialSort(SortSpecialOnTop);
-    items.Add(item);
-  }
-  {
-    CFileItemPtr item(new CFileItem("addons://running/", true));
-    item->SetLabel(g_localizeStrings.Get(24994));
-    item->SetSpecialSort(SortSpecialOnTop);
-    items.Add(item);
-  }
-}
-
 bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   std::string tmp(url.Get());
@@ -464,11 +434,6 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   else if (endpoint == "dependencies")
   {
     DependencyAddons(path, items);
-    return true;
-  }
-  else if (endpoint == "orphaned")
-  {
-    OrphanedAddons(path, items);
     return true;
   }
   // PVR & adsp hardcodes this view so keep for compatibility
@@ -512,11 +477,6 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   else if (endpoint == "search")
   {
     return GetSearchResults(path, items);
-  }
-  else if (endpoint == "manage")
-  {
-    Manage(items);
-    return true;
   }
   else
   {

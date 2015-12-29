@@ -82,17 +82,6 @@
 					<align>center</align>
 					<aligny>center</aligny>
 				</control>
-				<control type="button" id="5">
-					<description>addon-updates</description>
-					<textwidth>235</textwidth>
-					<include>ButtonCommonValues</include>
-					<label>24063</label>
-				</control>
-				<control type="radiobutton" id="6">
-					<description>No notifications</description>
-					<include>ButtonCommonValues</include>
-					<label>25000</label>
-				</control>
 				<control type="radiobutton" id="7">
 					<description>Hide foreign</description>
 					<include>ButtonCommonValues</include>
@@ -107,6 +96,11 @@
 					<description>Check for updates</description>
 					<include>ButtonCommonValues</include>
 					<label>24034</label>
+				</control>
+				<control type="button" id="5">
+					<description>Settings shortcut</description>
+					<include>ButtonCommonValues</include>
+					<label>10004</label>
 				</control>
 				<include>CommonNowPlaying_Controls</include>
 			</control>
