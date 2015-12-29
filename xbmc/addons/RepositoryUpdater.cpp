@@ -66,19 +66,19 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
 
     if (CSettings::GetInstance().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_NOTIFY)
     {
-      VECADDONS hasUpdate = CAddonMgr::GetInstance().GetOutdated();
-      if (!hasUpdate.empty())
+      VECADDONS updates = CAddonInstaller::GetInstance().GetAvailableUpdates();
+      if (!updates.empty())
       {
-        if (hasUpdate.size() == 1)
+        if (updates.size() == 1)
           CGUIDialogKaiToast::QueueNotification(
-              hasUpdate[0]->Icon(), hasUpdate[0]->Name(), g_localizeStrings.Get(24068),
+              updates[0]->Icon(), updates[0]->Name(), g_localizeStrings.Get(24068),
               TOAST_DISPLAY_TIME, false, TOAST_DISPLAY_TIME);
         else
           CGUIDialogKaiToast::QueueNotification(
               "", g_localizeStrings.Get(24001), g_localizeStrings.Get(24061),
               TOAST_DISPLAY_TIME, false, TOAST_DISPLAY_TIME);
 
-        for (const auto &addon : hasUpdate)
+        for (const auto &addon : updates)
           CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24068)));
       }
     }

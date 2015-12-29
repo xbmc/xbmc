@@ -36,6 +36,8 @@ public:
 
   bool IsDownloading() const;
   void GetInstallList(ADDON::VECADDONS &addons) const;
+  bool HasAvailableUpdates() const;
+  ADDON::VECADDONS GetAvailableUpdates() const;
   bool GetProgress(const std::string &addonID, unsigned int &percent) const;
   bool Cancel(const std::string &addonID);
 
