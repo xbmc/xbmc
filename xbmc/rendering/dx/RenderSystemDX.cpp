@@ -394,11 +394,12 @@ void CRenderSystemDX::SetFullScreenInternal()
     }
   }
 
+  // wait until switching screen state is done
   if (m_bResizeRequred)
   {
-    // wait until switching screen state is done
+    OnDisplayLost();
     DXWait(m_pD3DDev, m_pImdContext);
-    ResolutionChangedDX();
+    OnDisplayReset();
   }
 }
 
@@ -476,6 +477,8 @@ void CRenderSystemDX::OnDeviceLost()
   CSingleLock lock(m_resourceSection);
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_LOST);
 
+  OnDisplayLost();
+
   if (m_needNewDevice)
     DeleteDevice();
   else
@@ -499,9 +502,10 @@ void CRenderSystemDX::OnDeviceReset()
     for (std::vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnResetDevice();
 
-    // g_renderManager.Flush();
     g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
   }
+
+  OnDisplayReset();
 }
 
 bool CRenderSystemDX::CreateDevice()
@@ -835,7 +839,10 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
 
       // when transition from/to stereo mode trigger display reset event
       if (bNeedRecreate)
-        ResolutionChangedDX();
+      {
+        OnDisplayLost();
+        OnDeviceReset();
+      }
     }
     else
     {

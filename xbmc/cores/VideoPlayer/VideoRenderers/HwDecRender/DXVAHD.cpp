@@ -240,20 +240,8 @@ bool CProcessorHD::InitProcessor()
   return true;
 }
 
-bool CProcessorHD::Open(UINT width, UINT height, unsigned int flags, unsigned int format, unsigned int extended_format)
+bool CProcessorHD::ConfigureProcessor(unsigned int format, unsigned int extended_format)
 {
-  Close();
-
-  CSingleLock lock(m_section);
-
-  m_width = width;
-  m_height = height;
-  m_flags = flags;
-  m_renderFormat = format;
-
-  if (!InitProcessor())
-    return false;
-
   if (g_advancedSettings.m_DXVANoDeintProcForProgressive)
   {
     CLog::Log(LOGNOTICE, "%s - Auto deinterlacing mode workaround activated. Deinterlacing processor will be used only for interlaced frames.", __FUNCTION__);
@@ -261,7 +249,7 @@ bool CProcessorHD::Open(UINT width, UINT height, unsigned int flags, unsigned in
 
   UINT uiFlags;
   // check default output format DXGI_FORMAT_B8G8R8A8_UNORM (as render target)
-  if ( S_OK != m_pEnumerator->CheckVideoProcessorFormat(DXGI_FORMAT_B8G8R8A8_UNORM, &uiFlags)
+  if (S_OK != m_pEnumerator->CheckVideoProcessorFormat(DXGI_FORMAT_B8G8R8A8_UNORM, &uiFlags)
     || 0 == (uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT))
   {
     CLog::Log(LOGERROR, "%s - Unsupported output format.", __FUNCTION__);
@@ -273,7 +261,7 @@ bool CProcessorHD::Open(UINT width, UINT height, unsigned int flags, unsigned in
     m_textureFormat = (DXGI_FORMAT)extended_format;
 
     // this was checked by decoder, but check again.
-    if ( S_OK != m_pEnumerator->CheckVideoProcessorFormat(m_textureFormat, &uiFlags)
+    if (S_OK != m_pEnumerator->CheckVideoProcessorFormat(m_textureFormat, &uiFlags)
       || 0 == (uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
     {
       CLog::Log(LOGERROR, "%s - Unsupported input format.", __FUNCTION__);
@@ -292,7 +280,7 @@ bool CProcessorHD::Open(UINT width, UINT height, unsigned int flags, unsigned in
     if (format == RENDER_FMT_YUV420P16)
       m_textureFormat = DXGI_FORMAT_P016;
 
-    if ( S_OK != m_pEnumerator->CheckVideoProcessorFormat(m_textureFormat, &uiFlags)
+    if (S_OK != m_pEnumerator->CheckVideoProcessorFormat(m_textureFormat, &uiFlags)
       || 0 == (uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
     {
       CLog::Log(LOGERROR, "%s - Unsupported input format.", __FUNCTION__);
@@ -302,31 +290,56 @@ bool CProcessorHD::Open(UINT width, UINT height, unsigned int flags, unsigned in
     if (!CreateSurfaces())
       return false;
   }
-
-  CLog::Log(LOGDEBUG, "%s - Creating processor with input format: (%d).", __FUNCTION__, m_textureFormat);
-
-  if (!OpenProcessor())
-  {
-    return false;
-  }
-
   return true;
+}
+
+bool CProcessorHD::Open(UINT width, UINT height, unsigned int flags, unsigned int format, unsigned int extended_format)
+{
+  Close();
+
+  CSingleLock lock(m_section);
+
+  m_width = width;
+  m_height = height;
+  m_flags = flags;
+  m_renderFormat = format;
+
+  if (!InitProcessor())
+    return false;
+
+  if (!ConfigureProcessor(m_renderFormat, extended_format))
+    return false;
+
+  return OpenProcessor();
 }
 
 bool CProcessorHD::ReInit()
 {
-  return PreInit() && Open(m_width, m_height, m_flags, m_renderFormat, m_textureFormat);
+  CSingleLock lock(m_section);
+  Close();
+
+  if (!PreInit())
+    return false;
+
+  if (!InitProcessor())
+    return false;
+
+  if (!ConfigureProcessor(m_renderFormat, m_textureFormat))
+    return false;
+
+  return true;
 }
 
 bool CProcessorHD::OpenProcessor()
 {
+  CSingleLock lock(m_section);
+
   // restore the device if it was lost
   if (!m_pEnumerator && !ReInit())
     return false;
 
   SAFE_RELEASE(m_pVideoProcessor);
-
-  CLog::Log(LOGDEBUG, "%s - Creating video processor.", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s - Creating processor with input format: (%d).", __FUNCTION__, m_textureFormat);
 
   // create processor
   // There is a MSFT bug when creating processor it might throw first-chance exception
@@ -337,12 +350,16 @@ bool CProcessorHD::OpenProcessor()
     return false;
   }
 
-  D3D11_VIDEO_PROCESSOR_COLOR_SPACE cs;
-  cs.Usage         = 0;                                          // 0 - Playback, 1 - Processing
-  cs.RGB_Range     = 0;                                          // 0 - Full (0-255), 1 - Limited (16-235)
-  cs.YCbCr_Matrix  = m_flags & CONF_FLAGS_YUVCOEF_BT709 ? 1 : 0; // 0 - BT.601, 1 - BT.709
-  cs.YCbCr_xvYCC   = 1;                                          // 0 - Conventional YCbCr, 1 - xvYCC
-  cs.Nominal_Range = m_flags & CONF_FLAGS_YUV_FULLRANGE ? 2 : 1; // 2 - Full luminance range [0-255], 1 - Studio luminance range [16-235], 0 - driver defaults
+  D3D11_VIDEO_PROCESSOR_COLOR_SPACE cs
+  {
+    0,                                          // 0 - Playback, 1 - Processing
+    0,                                          // 0 - Full (0-255), 1 - Limited (16-235)
+    m_flags & CONF_FLAGS_YUVCOEF_BT709 ? 1 : 0, // 0 - BT.601, 1 - BT.709
+    m_flags & CONF_FLAGS_YUV_FULLRANGE ? 1 : 0, // 0 - Conventional YCbCr, 1 - xvYCC
+    0,                                          // 2 - Full luminance range [0-255], 1 - Studio luminance range [16-235], 0 - driver defaults
+  };
+  if (m_vcaps.DeviceCaps & D3D11_VIDEO_PROCESSOR_DEVICE_CAPS_NOMINAL_RANGE)
+    cs.Nominal_Range = m_flags & CONF_FLAGS_YUV_FULLRANGE ? 2 : 1;
   m_pVideoContext->VideoProcessorSetStreamColorSpace(m_pVideoProcessor, DEFAULT_STREAM_INDEX, &cs);
 
   // Output background color (black)
@@ -565,7 +582,7 @@ ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(ID3D11View* view)
   return inputView;
 }
 
-bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11View** views, DWORD flags, UINT frameIdx)
+bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11View** views, DWORD flags, UINT frameIdx, UINT rotation)
 {
   HRESULT hr;
   CSingleLock lock(m_section);
@@ -696,12 +713,13 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11Vi
   // Output rect
   m_pVideoContext->VideoProcessorSetOutputTargetRect(m_pVideoProcessor, TRUE, &dstRECT);
   // Output color space
+  // don't apply any color range conversion, this will be fixed at later stage.
   D3D11_VIDEO_PROCESSOR_COLOR_SPACE colorSpace = {};
   colorSpace.Usage         = 0;  // 0 - playback, 1 - video processing
   colorSpace.RGB_Range     = 0;  // 0 - 0-255, 1 - 16-235
   colorSpace.YCbCr_Matrix  = 1;  // 0 - BT.601, 1 = BT.709
   colorSpace.YCbCr_xvYCC   = 1;  // 0 - Conventional YCbCr, 1 - xvYCC
-  colorSpace.Nominal_Range = g_Windowing.UseLimitedColor() ? 1 : 2;  // 2 - 0-255, 1 = 16-235, 0 - undefined
+  colorSpace.Nominal_Range = 2;  // 2 - 0-255, 1 = 16-235, 0 - undefined
 
   m_pVideoContext->VideoProcessorSetOutputColorSpace(m_pVideoProcessor, &colorSpace);
 
@@ -709,6 +727,8 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11Vi
                                              , 0, 100, 50);
   ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast
                                              , 0, 100, 50);
+  // Rotation
+  m_pVideoContext->VideoProcessorSetStreamRotation(m_pVideoProcessor, DEFAULT_STREAM_INDEX, (rotation != 0), (D3D11_VIDEO_PROCESSOR_ROTATION)(rotation / 90));
 
   //
   // Create Output View of Output Surfaces.

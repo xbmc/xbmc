@@ -32,7 +32,5 @@ SamplerState DynamicSampler : register(s1)
 
 float4 PS(PS_INPUT input) : SV_TARGET
 {
-  return texVideo.Sample(DynamicSampler, input.tex);
+  return adjustColorRange(texVideo.Sample(DynamicSampler, input.tex));
 }
-
-

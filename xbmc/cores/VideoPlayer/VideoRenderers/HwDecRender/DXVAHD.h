@@ -51,7 +51,7 @@ public:
   virtual bool           Open(UINT width, UINT height, unsigned int flags, unsigned int format, unsigned int extended_format);
   virtual void           Close();
   virtual CRenderPicture *Convert(DVDVideoPicture* picture);
-  virtual bool           Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11View **views, DWORD flags, UINT frameIdx);
+  virtual bool           Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11View **views, DWORD flags, UINT frameIdx, UINT rotation);
   virtual unsigned       Size() { if (m_pVideoProcessor) return m_size; return 0; }
   virtual unsigned       PastRefs() { return m_max_back_refs; }
   virtual void           ApplySupportedFormats(std::vector<ERenderFormat> * formats);
@@ -65,8 +65,9 @@ protected:
   virtual bool UpdateSize(const DXVA2_VideoDesc& dsc);
   virtual bool ReInit();
   virtual bool InitProcessor();
-  virtual bool CreateSurfaces();
+  virtual bool ConfigureProcessor(unsigned int format, unsigned int extended_format);
   virtual bool OpenProcessor();
+  virtual bool CreateSurfaces();
   virtual bool ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def);
   ID3D11VideoProcessorInputView* GetInputView(ID3D11View* view);
 
