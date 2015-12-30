@@ -173,6 +173,13 @@ namespace PVR
     CFileItemPtr GetTimerForEpgTag(const CFileItem *item) const;
 
     /*!
+     * Get the timer rule for a given timer tag
+     * @param timer The timer to query the timer rule for
+     * @return The timer rule, or an empty fileitemptr if none was found.
+     */
+    CFileItemPtr GetTimerRule(const CFileItem *item) const;
+
+    /*!
      * @brief Update the channel pointers.
      */
     void UpdateChannels(void);

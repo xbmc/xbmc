@@ -722,6 +722,30 @@ CFileItemPtr CPVRTimers::GetTimerForEpgTag(const CFileItem *item) const
   return fileItem;
 }
 
+CFileItemPtr CPVRTimers::GetTimerRule(const CFileItem *item) const
+{
+  if (item && item->HasEPGInfoTag() && item->GetEPGInfoTag()->Timer())
+  {
+    const CPVRTimerInfoTagPtr timer(item->GetEPGInfoTag()->Timer());
+    unsigned int iRuleId = timer->GetTimerScheduleId();
+    if (iRuleId != PVR_TIMER_NO_PARENT)
+    {
+      int iClientId = timer->m_iClientId;
+
+      CSingleLock lock(m_critSection);
+      for (const auto &tagsEntry : m_tags)
+      {
+        for (const auto &timersEntry : *tagsEntry.second)
+        {
+          if (timersEntry->m_iClientId == iClientId && timersEntry->m_iClientIndex == iRuleId)
+            return CFileItemPtr(new CFileItem(timersEntry));
+        }
+      }
+    }
+  }
+  return CFileItemPtr();
+}
+
 void CPVRTimers::Notify(const Observable &obs, const ObservableMessage msg)
 {
   if (msg == ObservableMessageEpgContainer)
@@ -848,6 +872,7 @@ CPVRTimerInfoTagPtr CPVRTimers::GetById(unsigned int iTimerId) const
   }
   return item;
 }
+
 
 //= CPVRTimersPath ============================================================
 

@@ -78,6 +78,7 @@ namespace PVR
 
     static bool ShowTimerSettings(CFileItem *item);
     static bool AddTimer(CFileItem *item, bool bAdvanced);
+    static bool EditTimer(CFileItem *item);
     static bool DeleteTimer(CFileItem *item);
     static bool StopRecordFile(CFileItem *item);
 
@@ -102,6 +103,9 @@ namespace PVR
     virtual void UpdateSelectedItemPath();
     virtual bool IsValidMessage(CGUIMessage& message);
     void CheckResumeRecording(CFileItem *item);
+
+    bool OnContextButtonEditTimer(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonEditTimerRule(CFileItem *item, CONTEXT_BUTTON button);
 
     static CCriticalSection m_selectedItemPathsLock;
     static std::string m_selectedItemPaths[2];
