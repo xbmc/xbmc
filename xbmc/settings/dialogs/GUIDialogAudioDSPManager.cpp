@@ -676,7 +676,7 @@ bool CGUIDialogAudioDSPManager::OnContextButton(int itemNumber, CONTEXT_BUTTON b
     }
     else
     {
-      CGUIDialogOK::ShowAndGetInput(19033, 0, 15040, 0);
+      CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{15040});
     }
   }
 

@@ -300,7 +300,7 @@ void CActiveAEDSP::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_AUDIOOUTPUT_DSPRESETDB)
   {
-    if (HELPERS::ShowYesNoDialogLines(CVariant{19098}, CVariant{36440}, CVariant{750}) ==
+    if (HELPERS::ShowYesNoDialogLines(CVariant{19098}, CVariant{36440}) ==
       DialogResponse::YES)
     {
       CDateTime::ResetTimezoneBias();
@@ -679,7 +679,7 @@ bool CActiveAEDSP::UpdateAndInitialiseAudioDSPAddons(bool bInitialiseAllAudioDSP
       }
 
       if (bDisabled && IsActivated())
-        CGUIDialogOK::ShowAndGetInput(24070, 24071, 16029, 0);
+        CGUIDialogOK::ShowAndGetInput(CVariant{24070}, CVariant{16029});
     }
   }
 
@@ -789,7 +789,7 @@ void CActiveAEDSP::ShowDialogNoAddonsEnabled(void)
   if (!IsActivated())
     return;
 
-  CGUIDialogOK::ShowAndGetInput(15048, 15049, 0, 0);
+  CGUIDialogOK::ShowAndGetInput(CVariant{15048}, CVariant{15049});
 
   std::vector<std::string> params;
   params.push_back("addons://disabled/kodi.adsp");
