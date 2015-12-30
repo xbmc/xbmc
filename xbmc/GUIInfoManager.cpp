@@ -578,6 +578,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "trailer",          LISTITEM_TRAILER },
                                   { "sortletter",       LISTITEM_SORT_LETTER },
                                   { "tag",              LISTITEM_TAG },
+                                  { "set",              LISTITEM_SET },
                                   { "videocodec",       LISTITEM_VIDEO_CODEC },
                                   { "videoresolution",  LISTITEM_VIDEO_RESOLUTION },
                                   { "videoaspect",      LISTITEM_VIDEO_ASPECT },
@@ -5534,6 +5535,10 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_TAG:
     if (item->HasVideoInfoTag())
       return StringUtils::Join(item->GetVideoInfoTag()->m_tags, g_advancedSettings.m_videoItemSeparator);
+    break;
+  case LISTITEM_SET:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strSet;
     break;
   case LISTITEM_VIDEO_CODEC:
     if (item->HasVideoInfoTag())
