@@ -385,7 +385,8 @@ bool CPVRClient::CheckAPIVersion(void)
   try { guiVersion = AddonVersion(m_pStruct->GetGUIAPIVersion()); }
   catch (std::exception &e) { LogException(e, "GetGUIAPIVersion()"); return false;  }
 
-  if (!IsCompatibleGUIAPIVersion(minVersion, guiVersion))
+  /* Only do the check, if add-on depends on GUI API. */
+  if (!guiVersion.empty() && !IsCompatibleGUIAPIVersion(minVersion, guiVersion))
   {
     CLog::Log(LOGERROR, "PVR - Add-on '%s' is using an incompatible GUI API version. XBMC minimum GUI API version = '%s', add-on GUI API version '%s'", Name().c_str(), minVersion.asString().c_str(), guiVersion.asString().c_str());
     return false;
