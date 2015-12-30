@@ -52,16 +52,18 @@ extern "C"
   /*!
    * Get the XBMC_GUI_API_VERSION that was used to compile this add-on.
    * Used to check if this add-on is compatible with XBMC.
-   * @return The XBMC_GUI_API_VERSION that was used to compile this add-on.
+   * @return The XBMC_GUI_API_VERSION that was used to compile this add-on or empty string if this add-on does not depend on Kodi GUI API.
    * @remarks Valid implementation required.
+   * @note see libKODI_guilib.h about related parts
    */
   const char* GetGUIAPIVersion(void);
 
   /*!
    * Get the XBMC_GUI_MIN_API_VERSION that was used to compile this add-on.
    * Used to check if this add-on is compatible with XBMC.
-   * @return The XBMC_GUI_MIN_API_VERSION that was used to compile this add-on.
+   * @return The XBMC_GUI_MIN_API_VERSION that was used to compile this add-on or empty string if this add-on does not depend on Kodi GUI API.
    * @remarks Valid implementation required.
+   * @note see libKODI_guilib.h about related parts
    */
   const char* GetMininumGUIAPIVersion(void);
 
