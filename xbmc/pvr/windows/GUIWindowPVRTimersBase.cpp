@@ -308,12 +308,8 @@ bool CGUIWindowPVRTimersBase::OnContextButtonEdit(CFileItem *item, CONTEXT_BUTTO
 
   if (button == CONTEXT_BUTTON_EDIT)
   {
+    EditTimer(item);
     bReturn = true;
-    if (!item->HasPVRTimerInfoTag())
-      return bReturn;
-
-    if (ShowTimerSettings(item) && !item->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
-      g_PVRTimers->UpdateTimer(*item);
   }
 
   return bReturn;

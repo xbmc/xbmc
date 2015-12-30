@@ -285,6 +285,35 @@ bool CGUIWindowPVRBase::OnContextButtonActiveAEDSPSettings(CFileItem *item, CONT
   return bReturn;
 }
 
+bool CGUIWindowPVRBase::OnContextButtonEditTimer(CFileItem *item, CONTEXT_BUTTON button)
+{
+  bool bReturn = false;
+
+  if (button == CONTEXT_BUTTON_EDIT_TIMER)
+  {
+    EditTimer(item);
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CGUIWindowPVRBase::OnContextButtonEditTimerRule(CFileItem *item, CONTEXT_BUTTON button)
+{
+  bool bReturn = false;
+
+  if (button == CONTEXT_BUTTON_EDIT_TIMER_RULE)
+  {
+    CFileItemPtr parentTimer(g_PVRTimers->GetTimerRule(item));
+    if (parentTimer)
+      EditTimer(parentTimer.get());
+
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
 void CGUIWindowPVRBase::SetInvalid()
 {
   if (m_refreshTimeout.IsTimePast())
@@ -510,6 +539,28 @@ bool CGUIWindowPVRBase::AddTimer(CFileItem *item, bool bAdvanced)
       bReturn = g_PVRTimers->AddTimer(newTimer);
   }
   return bReturn;
+}
+
+bool CGUIWindowPVRBase::EditTimer(CFileItem *item)
+{
+  CFileItemPtr timer;
+
+  if (item->IsPVRTimer())
+  {
+    timer.reset(new CFileItem(*item));
+  }
+  else if (item->IsEPG())
+  {
+    timer = g_PVRTimers->GetTimerForEpgTag(item);
+  }
+
+  if (!timer || !timer->HasPVRTimerInfoTag())
+    return false;
+
+  if (ShowTimerSettings(timer.get()) && !timer->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
+    return g_PVRTimers->UpdateTimer(*timer);
+
+  return false;
 }
 
 bool CGUIWindowPVRBase::DeleteTimer(CFileItem *item)
