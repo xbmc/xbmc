@@ -18185,3 +18185,8 @@ msgstr ""
 msgctxt "#38025"
 msgid "Choose information provider"
 msgstr ""
+
+#: xbmc/view/GUIViewStateVideo.cpp
+msgctxt "#38026"
+msgid "Appearances"
+msgstr ""
