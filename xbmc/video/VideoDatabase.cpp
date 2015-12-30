@@ -369,33 +369,40 @@ void CVideoDatabase::CreateViews()
   std::string tvshowcounts = PrepareSQL("CREATE VIEW tvshowcounts AS SELECT "
                                        "      tvshow.idShow AS idShow,"
                                        "      MAX(files.lastPlayed) AS lastPlayed,"
-                                       "      NULLIF(COUNT(episode.c12), 0) AS totalCount,"
+                                       "      NULLIF(COUNT(episode.c%02d), 0) AS totalCount,"
                                        "      COUNT(files.playCount) AS watchedcount,"
-                                       "      NULLIF(COUNT(DISTINCT(episode.c12)), 0) AS totalSeasons, "
+                                       "      NULLIF(COUNT(DISTINCT(episode.idSeason)), 0) AS totalSeasons, "
                                        "      MAX(files.dateAdded) as dateAdded "
                                        "    FROM tvshow"
                                        "      LEFT JOIN episode ON"
                                        "        episode.idShow=tvshow.idShow"
                                        "      LEFT JOIN files ON"
                                        "        files.idFile=episode.idFile "
-                                       "    GROUP BY tvshow.idShow");
+                                       "    GROUP BY tvshow.idShow", 
+                                        VIDEODB_ID_EPISODE_UNIQUEID);
   m_pDS->exec(tvshowcounts);
 
   CLog::Log(LOGINFO, "create tvshow_view");
   std::string tvshowview = PrepareSQL("CREATE VIEW tvshow_view AS SELECT "
-                                     "  tvshow.*,"
-                                     "  path.idParentPath AS idParentPath,"
-                                     "  path.strPath AS strPath,"
-                                     "  tvshowcounts.dateAdded AS dateAdded,"
-                                     "  lastPlayed, totalCount, watchedcount, totalSeasons "
-                                     "FROM tvshow"
-                                     "  LEFT JOIN tvshowlinkpath ON"
-                                     "    tvshowlinkpath.idShow=tvshow.idShow"
-                                     "  LEFT JOIN path ON"
-                                     "    path.idPath=tvshowlinkpath.idPath"
-                                     "  INNER JOIN tvshowcounts ON"
-                                     "    tvshow.idShow = tvshowcounts.idShow "
-                                     "GROUP BY tvshow.idShow");
+                                       "  tvshow.*,"
+                                       "  (SELECT path.idParentPath FROM tvshowlinkpath"
+                                       "  LEFT JOIN path ON path.idPath = tvshowlinkpath.idPath"
+                                       "  WHERE tvshowlinkpath.idShow = tvshow.idShow)  AS idParentPath,"
+                                       "  (SELECT path.strPath FROM tvshowlinkpath"
+                                       "  LEFT JOIN path ON path.idPath = tvshowlinkpath.idPath"
+                                       "  WHERE tvshowlinkpath.idShow = tvshow.idShow)  AS strPath,"
+                                       "  MAX(files.dateAdded) AS dateAdded,"
+                                       "  MAX(files.lastPlayed) AS lastPlayed,"
+                                       "  NULLIF(COUNT(episode.c%02d), 0) AS totalCount,"
+                                       "  COUNT(files.playCount) AS watchedcount,"
+                                       "  NULLIF(COUNT(DISTINCT(episode.idSeason)), 0) AS totalSeasons "
+                                       "FROM tvshow"
+                                       "  LEFT JOIN episode ON"
+                                       "    episode.idShow=tvshow.idShow"
+                                       "  LEFT JOIN files ON"
+                                       "    files.idFile=episode.idFile "
+                                       "GROUP BY tvshow.idShow",
+                                        VIDEODB_ID_EPISODE_UNIQUEID);
   m_pDS->exec(tvshowview);
 
   CLog::Log(LOGINFO, "create season_view");
