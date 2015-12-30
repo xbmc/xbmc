@@ -148,6 +148,14 @@
 					<alttexturenofocus>-</alttexturenofocus>
 					<usealttexture>library.isscanningmusic</usealttexture>
 				</control>
+				<control type="button" id="204">
+					<description>Get more</description>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>21452</label>
+					<onclick>ActivateWindow(addonbrowser,addons://all/xbmc.addon.audio/,return)</onclick>
+					<visible>StringCompare(Container.FolderName,$LOCALIZE[24001]</visible>
+				</control>
 				<include>CommonNowPlaying_Controls</include>
 			</control>
 		</control>
