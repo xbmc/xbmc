@@ -226,7 +226,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
       url2.SetOptions("");
     if (url2.IsProtocol("zip"))
       url2.SetOptions("");
-    if (!g_directoryCache.FileExists(url2.Get(), bPathInCache) )
+    if (!g_directoryCache.FileExists(url2.GetFileName(), bPathInCache) )
     {
       if (bPathInCache)
         return false;
