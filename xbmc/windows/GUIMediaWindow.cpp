@@ -1008,11 +1008,6 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
         Refresh();
       return true;
     }
-    else if (StringUtils::StartsWithNoCase(pItem->GetPath(), "addons://more/"))
-    {
-      CBuiltins::GetInstance().Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.addon." + pItem->GetPath().substr(14) + ",return)");
-      return true;
-    }
 
     bool autoplay = m_guiState.get() && m_guiState->AutoPlayNextItem();
 
@@ -1542,7 +1537,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   // TODO: FAVOURITES Conditions on masterlock and localisation
   if (!item->IsParentFolder() && !item->IsPath("add") && !item->IsPath("newplaylist://") &&
       !URIUtils::IsProtocol(item->GetPath(), "newsmartplaylist") && !URIUtils::IsProtocol(item->GetPath(), "newtag") &&
-      !URIUtils::PathStarts(item->GetPath(), "addons://more/") && !URIUtils::IsProtocol(item->GetPath(), "musicsearch") &&
+      !URIUtils::IsProtocol(item->GetPath(), "musicsearch") &&
       !URIUtils::PathStarts(item->GetPath(), "pvr://guide/") && !URIUtils::PathStarts(item->GetPath(), "pvr://timers/"))
   {
     if (XFILE::CFavouritesDirectory::IsFavourite(item.get(), GetID()))
