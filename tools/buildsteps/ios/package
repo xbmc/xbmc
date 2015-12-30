@@ -9,5 +9,10 @@ cd $WORKSPACE/tools/darwin/packaging/ios/;sh mkdeb-ios.sh $Configuration
 
 #rename for upload
 #e.x. kodi-20130314-8c2fb31-Frodo-ios.deb
-UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-ios.deb"
+if [ "$DARWIN_ARM_CPU" == "arm64" ]
+then
+  UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-ios64.deb"
+else
+  UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-ios.deb"
+fi
 mv *.deb $UPLOAD_FILENAME
