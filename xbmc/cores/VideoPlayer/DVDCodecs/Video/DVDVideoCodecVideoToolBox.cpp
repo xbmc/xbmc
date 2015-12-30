@@ -1054,6 +1054,8 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     return false;
   if (hints.ptsinvalid)
     return false;
+  if (hints.codec != AV_CODEC_ID_H264)
+    return false;
 
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX) && !hints.software)
   {
