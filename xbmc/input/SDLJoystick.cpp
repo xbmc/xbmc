@@ -54,6 +54,15 @@ void CJoystick::Initialize()
   if (!IsEnabled())
     return;
 
+  if (SDL_WasInit(SDL_INIT_JOYSTICK) !=  0)
+  {
+    SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
+    if (SDL_WasInit(SDL_INIT_JOYSTICK) !=  0)
+    {
+      CLog::Log(LOGERROR, "Joystick subsystem still initialized!");
+    }
+  }
+
   if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) != 0)
   {
     CLog::Log(LOGERROR, "(Re)start joystick subsystem failed : %s",SDL_GetError());
