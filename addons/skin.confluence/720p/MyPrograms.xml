@@ -98,6 +98,7 @@
 					<textcolor>blue</textcolor>
 					<align>center</align>
 					<aligny>center</aligny>
+					<visible>Container.Content(addons)</visible>
 				</control>
 				<control type="button" id="204">
 					<description>Get more</description>
@@ -105,7 +106,7 @@
 					<include>ButtonCommonValues</include>
 					<label>21452</label>
 					<onclick>ActivateWindow(addonbrowser,addons://all/xbmc.addon.executable/,return)</onclick>
-					<visible>StringCompare(Container.FolderName,$LOCALIZE[24001]</visible>
+					<visible>Container.Content(addons)</visible>
 				</control>
 				<include>CommonNowPlaying_Controls</include>
 			</control>
