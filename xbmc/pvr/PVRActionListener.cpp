@@ -90,6 +90,11 @@ bool CPVRActionListener::OnAction(const CAction &action)
           (g_windowManager.IsWindowActive(WINDOW_FULLSCREEN_VIDEO) ||
            g_windowManager.IsWindowActive(WINDOW_VISUALISATION)))
       {
+        // do not consume action if a python modal is the top most dialog
+        // as a python modal can't return that it consumed the action.
+        if (g_windowManager.IsPythonWindow(g_windowManager.GetTopMostModalDialogID()))
+          return false;
+
         if(g_PVRManager.IsPlaying())
         {
           // pvr client addon
