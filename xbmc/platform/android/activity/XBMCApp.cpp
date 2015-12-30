@@ -83,7 +83,6 @@
 
 #define GIGABYTES       1073741824
 
-using namespace std;
 using namespace KODI::MESSAGING;
 
 template<class T, void(T::*fn)()>
@@ -559,13 +558,13 @@ std::vector<androidPackage> CXBMCApp::GetApplications()
   return m_applications;
 }
 
-bool CXBMCApp::HasLaunchIntent(const string &package)
+bool CXBMCApp::HasLaunchIntent(const std::string &package)
 {
   return GetPackageManager().getLaunchIntentForPackage(package) != NULL;
 }
 
 // Note intent, dataType, dataURI all default to ""
-bool CXBMCApp::StartActivity(const string &package, const string &intent, const string &dataType, const string &dataURI)
+bool CXBMCApp::StartActivity(const std::string &package, const std::string &intent, const std::string &dataType, const std::string &dataURI)
 {
   CJNIIntent newIntent = intent.empty() ?
     GetPackageManager().getLaunchIntentForPackage(package) :
