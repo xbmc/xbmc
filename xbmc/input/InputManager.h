@@ -45,7 +45,7 @@ class CKey;
 class CInputManager : public ISettingCallback
 {
 private:
-  CInputManager() { }
+  CInputManager() : m_ShallSetJoystickEnabled(0) { }
   CInputManager(const CInputManager&);
   CInputManager const& operator=(CInputManager const&);
   virtual ~CInputManager() { };
@@ -268,4 +268,5 @@ private:
 #if defined(HAS_SDL_JOYSTICK) 
   CJoystick m_Joystick;
 #endif
+  int m_ShallSetJoystickEnabled;
 };
