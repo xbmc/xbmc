@@ -582,7 +582,7 @@ ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(ID3D11View* view)
   return inputView;
 }
 
-bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11View** views, DWORD flags, UINT frameIdx)
+bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11View** views, DWORD flags, UINT frameIdx, UINT rotation)
 {
   HRESULT hr;
   CSingleLock lock(m_section);
@@ -727,6 +727,8 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11Vi
                                              , 0, 100, 50);
   ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast
                                              , 0, 100, 50);
+  // Rotation
+  m_pVideoContext->VideoProcessorSetStreamRotation(m_pVideoProcessor, DEFAULT_STREAM_INDEX, (rotation != 0), (D3D11_VIDEO_PROCESSOR_ROTATION)(rotation / 90));
 
   //
   // Create Output View of Output Surfaces.

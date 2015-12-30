@@ -196,6 +196,7 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
 {
   m_sourceWidth       = width;
   m_sourceHeight      = height;
+  m_renderOrientation = orientation;
   // need to recreate textures
   m_NumYV12Buffers    = 0;
   m_iYV12RenderBuffer = 0;
@@ -723,8 +724,10 @@ void CWinRenderer::RenderSW()
 
   g_Windowing.GetGUIShader()->SetSampler(m_TextureFilter);
   CRect tu = { m_sourceRect.x1 / srcWidth, m_sourceRect.y1 / srcHeight, m_sourceRect.x2 / srcWidth, m_sourceRect.y2 / srcHeight };
+  CRect destRect = CRect(m_rotatedDestCoords[0], m_rotatedDestCoords[2]);
+
   // pass contrast and brightness as diffuse color elements (see shader code)
-  CD3DTexture::DrawQuad(m_destRect, D3DCOLOR_ARGB(255, contrast, brightness, 255), &m_IntermediateTarget, &tu,
+  CD3DTexture::DrawQuad(destRect, D3DCOLOR_ARGB(255, contrast, brightness, 255), &m_IntermediateTarget, &tu,
                        !cbcontrol ? SHADER_METHOD_RENDER_VIDEO : SHADER_METHOD_RENDER_VIDEO_CONTROL);
 }
 
@@ -737,7 +740,33 @@ void CWinRenderer::RenderPS()
   ID3D11RenderTargetView *oldRTView = nullptr; ID3D11DepthStencilView* oldDSView = nullptr;
   pContext->OMGetRenderTargets(1, &oldRTView, &oldDSView);
   // select destination rectangle 
-  CRect destRect = m_bUseHQScaler ? m_sourceRect : g_graphicsContext.StereoCorrection(m_destRect);
+  CRect destRect;
+  if (m_bUseHQScaler)
+  {
+    if (m_renderOrientation > 0)
+    {
+      // we need to rotate source coordinates for HQ scaller 
+      // so we using ReorderDrawPoints with source coords.
+
+      // save coords
+      CRect oldDest = m_destRect;
+      saveRotatedCoords();
+
+      m_destRect = m_sourceRect;
+      ReorderDrawPoints();
+      // get rotated coords
+      destRect = CRect(m_rotatedDestCoords[0], m_rotatedDestCoords[2]);
+
+      // restore coords
+      restoreRotatedCoords();
+      m_destRect = oldDest;
+    }
+    else
+      destRect = m_sourceRect;
+  }
+  else
+    destRect = g_graphicsContext.StereoCorrection(CRect(m_rotatedDestCoords[0], m_rotatedDestCoords[2]));
+
   // select target view 
   ID3D11RenderTargetView* pRTView = m_bUseHQScaler ? m_IntermediateTarget.GetRenderTarget() : oldRTView;
   // change destination for HQ scallers
@@ -780,8 +809,9 @@ void CWinRenderer::RenderPS()
 
 void CWinRenderer::RenderHQ()
 {
-  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight, m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect)
-                      , (m_renderMethod == RENDER_DXVA && g_Windowing.UseLimitedColor()));
+  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight
+                       , m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect)
+                       , (m_renderMethod == RENDER_DXVA && g_Windowing.UseLimitedColor()));
 }
 
 void CWinRenderer::RenderHW(DWORD flags)
@@ -791,6 +821,7 @@ void CWinRenderer::RenderHW(DWORD flags)
   if (!image->pic)
     return;
 
+  
   int past = 0;
   int future = 0;
   DXVABuffer **buffers = reinterpret_cast<DXVABuffer**>(m_VideoBuffers);
@@ -833,7 +864,7 @@ void CWinRenderer::RenderHW(DWORD flags)
       break;
   }
 
-  m_processor->Render(m_sourceRect, destRect, m_IntermediateTarget.Get(), views, flags, image->frameIdx);
+  m_processor->Render(m_sourceRect, destRect, m_IntermediateTarget.Get(), views, flags, image->frameIdx, m_renderOrientation);
 
   if (!m_bUseHQScaler)
   {
@@ -956,6 +987,7 @@ bool CWinRenderer::Supports(ERENDERFEATURE feature)
       feature == RENDERFEATURE_ZOOM            ||
       feature == RENDERFEATURE_VERTICAL_SHIFT  ||
       feature == RENDERFEATURE_PIXEL_RATIO     ||
+      feature == RENDERFEATURE_ROTATION        ||
       feature == RENDERFEATURE_POSTPROCESS)
     return true;
 
