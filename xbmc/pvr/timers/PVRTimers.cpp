@@ -125,6 +125,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
         {
           bChanged = true;
           UpdateEpgEvent(existingTimer);
+          existingTimer->ResetChildState();
 
           if (bStateChanged && g_PVRManager.IsStarted())
           {
@@ -247,6 +248,21 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
     addEntry->push_back(*timerIt);
     UpdateEpgEvent(*timerIt);
   }
+
+  /* update child information for all parent timers */
+  for (const auto &tagsEntry : m_tags)
+  {
+    for (const auto &timersEntry : *tagsEntry.second)
+    {
+      if (timersEntry->GetTimerRuleId() != PVR_TIMER_NO_PARENT)
+      {
+        const CPVRTimerInfoTagPtr parentTimer(GetByClient(timersEntry->m_iClientId, timersEntry->GetTimerRuleId()));
+        if (parentTimer)
+          parentTimer->UpdateChildState(timersEntry);
+      }
+    }
+  }
+
 
   m_bIsUpdating = false;
   if (bChanged)
