@@ -107,7 +107,7 @@ private:
   bool ExtractFrames(unsigned int count);
   void ClearFrameAreaToTransparency(unsigned char* dest, const GifFrame &frame);
   void ConstructFrame(GifFrame &frame, const unsigned char* src) const;
-  bool PrepareTemplate(const GifFrame &frame);
+  bool PrepareTemplate(GifFrame &frame);
   void Release();
   void PrettyPrintError(std::string messageTemplate, int reason);
 
