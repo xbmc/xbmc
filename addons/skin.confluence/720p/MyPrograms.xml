@@ -105,7 +105,7 @@
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>21452</label>
-					<onclick>ActivateWindow(addonbrowser,addons://all/xbmc.addon.executable/,return)</onclick>
+					<onclick>ActivateWindow(addonbrowser,addons://more/executable/,return)</onclick>
 					<visible>Container.Content(addons)</visible>
 				</control>
 				<include>CommonNowPlaying_Controls</include>
