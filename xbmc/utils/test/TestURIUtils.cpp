@@ -452,7 +452,7 @@ TEST_F(TestURIUtils, CreateArchivePath)
 {
   std::string ref, var;
 
-  ref = "zip://%2fpath%2fto%2f/file";
+  ref = "zip://%2Fpath%2Fto%2F/file";
   var = URIUtils::CreateArchivePath("zip", CURL("/path/to/"), "file").Get();
   EXPECT_STREQ(ref.c_str(), var.c_str());
 }
