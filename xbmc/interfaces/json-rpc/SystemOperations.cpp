@@ -18,6 +18,7 @@
  *
  */
 
+#include "Application.h"
 #include "SystemOperations.h"
 #include "messaging/ApplicationMessenger.h"
 #include "interfaces/builtins/Builtins.h"
@@ -95,6 +96,21 @@ JSONRPC_STATUS CSystemOperations::Reboot(const std::string &method, ITransportLa
     return FailedToExecute;
 }
 
+JSONRPC_STATUS CSystemOperations::InhibitIdleShutdown(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+    if ((parameterObject["inhibit"].isString() &&
+         parameterObject["inhibit"].asString().compare("toggle") == 0) ||
+        (parameterObject["inhibit"].isBoolean() &&
+         parameterObject["inhibit"].asBoolean() != g_application.IsIdleShutdownInhibited()))
+    {
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_INHIBITIDLESHUTDOWN, !g_application.IsIdleShutdownInhibited());
+    }
+    else if (!parameterObject["inhibit"].isBoolean() && !parameterObject["inhibit"].isString()) {
+        return InvalidParams;
+    }
+    return GetPropertyValue(0, "isidleshutdowninhibited", result);;
+}
+
 JSONRPC_STATUS CSystemOperations::GetPropertyValue(int permissions, const std::string &property, CVariant &result)
 {
   if (property == "canshutdown")
@@ -105,6 +121,8 @@ JSONRPC_STATUS CSystemOperations::GetPropertyValue(int permissions, const std::s
     result = g_powerManager.CanHibernate() && (permissions & ControlPower);
   else if (property == "canreboot")
     result = g_powerManager.CanReboot() && (permissions & ControlPower);
+  else if (property == "isidleshutdowninhibited")
+      result = g_application.IsIdleShutdownInhibited();
   else
     return InvalidParams;
 

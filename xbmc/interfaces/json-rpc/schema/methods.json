@@ -2072,6 +2072,16 @@
     "params": [],
     "returns": "string"
   },
+  "System.InhibitIdleShutdown": {
+    "type": "method",
+    "description": "Toggle the inhibit idle shutdown timer",
+    "transport": "Response",
+    "permission": "ControlPower",
+    "params": [
+      { "name": "inhibit", "required": true, "$ref": "Global.Toggle" }
+    ],
+    "returns": { "type": "boolean", "description": "Inhibit idle shutdown state" }
+  },
   "Input.SendText": {
     "type": "method",
     "description": "Send a generic (unicode) text",
