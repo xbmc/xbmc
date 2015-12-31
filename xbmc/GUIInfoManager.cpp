@@ -5770,6 +5770,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_DBTYPE:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_type;
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetType();
     break;
   case LISTITEM_DBID:
     if (item->HasVideoInfoTag())
