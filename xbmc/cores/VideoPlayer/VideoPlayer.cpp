@@ -1801,11 +1801,11 @@ void CVideoPlayer::HandlePlaySpeed()
         (m_CurrentAudio.id < 0 || m_CurrentAudio.syncState != IDVDStreamPlayer::SYNC_STARTING))
       SetCaching(CACHESTATE_PLAY);
 
-    // handle situation that we get no data on one stream
+    // handle exceptions
     if (m_CurrentAudio.id >= 0 && m_CurrentVideo.id >= 0)
     {
-      if ((!m_VideoPlayerAudio->AcceptsData() && m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_STARTING) ||
-          (!m_VideoPlayerVideo->AcceptsData() && m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_STARTING))
+      if ((!m_VideoPlayerAudio->AcceptsData() || !m_VideoPlayerVideo->AcceptsData()) &&
+          m_cachingTimer.IsTimePast())
       {
         SetCaching(CACHESTATE_DONE);
       }
@@ -2809,6 +2809,8 @@ void CVideoPlayer::SetCaching(ECacheState state)
     m_streamPlayerSpeed = DVD_PLAYSPEED_PAUSE;
 
     m_pInputStream->ResetScanTimeout((unsigned int) CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPLAYBACK_SCANTIME) * 1000);
+
+    m_cachingTimer.Set(5000);
   }
 
   if (state == CACHESTATE_PLAY ||
