@@ -445,7 +445,7 @@ bool CWakeOnAccess::FindOrTouchHostEntry (const std::string& hostName, WakeUpEnt
     {
       CDateTime now = CDateTime::GetCurrentDateTime();
 
-      if (now > server.nextWake)
+      if (now >= server.nextWake)
       {
         result = server;
         need_wakeup = true;
