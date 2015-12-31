@@ -314,7 +314,7 @@ TEST_F(TestURIUtils, IsISO9660)
 
 TEST_F(TestURIUtils, IsLiveTV)
 {
-  EXPECT_TRUE(URIUtils::IsLiveTV("pvr://path/to/file"));
+  EXPECT_TRUE(URIUtils::IsLiveTV("whatever://path/to/file.pvr"));
 }
 
 TEST_F(TestURIUtils, IsMultiPath)
