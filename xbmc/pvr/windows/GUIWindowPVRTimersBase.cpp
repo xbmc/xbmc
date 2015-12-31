@@ -115,7 +115,7 @@ bool CGUIWindowPVRTimersBase::OnAction(const CAction &action)
       action.GetID() == ACTION_NAV_BACK)
   {
     CPVRTimersPath path(m_vecItems->GetPath());
-    if (path.IsValid() && path.IsTimerSchedule())
+    if (path.IsValid() && path.IsTimerRule())
     {
       m_currentFileItem.reset();
       GoParentFolder();
@@ -355,7 +355,7 @@ bool CGUIWindowPVRTimersBase::ActionDeleteTimer(CFileItem *item)
   {
     /* go to the parent folder if we're in a subdirectory and just deleted the last item */
     CPVRTimersPath path(m_vecItems->GetPath());
-    if (path.IsValid() && path.IsTimerSchedule())
+    if (path.IsValid() && path.IsTimerRule())
     {
       m_currentFileItem.reset();
       GoParentFolder();
