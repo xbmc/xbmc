@@ -433,7 +433,7 @@ void Gif::ConstructFrame(GifFrame &frame, const unsigned char* src) const
   }
 }
 
-bool Gif::PrepareTemplate(const GifFrame &frame)
+bool Gif::PrepareTemplate(GifFrame &frame)
 {
   switch (frame.m_disposal)
   {
@@ -457,6 +457,17 @@ bool Gif::PrepareTemplate(const GifFrame &frame)
   /* Restore to previous content */
   case DISPOSE_PREVIOUS:
   {
+
+    /* 
+    * This disposal method makes no sense for the first frame
+    * Since browsers etc. handle that too, we'll fall back to DISPOSE_DO_NOT
+    */
+    if (m_frames.empty())
+    {
+      frame.m_disposal = DISPOSE_DO_NOT;
+      return PrepareTemplate(frame);
+    }
+
     bool valid = false;
 
     for (int i = m_frames.size() - 1; i >= 0; --i)
