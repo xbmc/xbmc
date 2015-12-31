@@ -114,7 +114,22 @@ namespace PVR
     std::string ChannelIcon(void) const;
     CPVRChannelPtr ChannelTag(void) const;
 
+    /*!
+     * @brief updates this timer excluding the state of any children. See UpdateChildState/ResetChildState.
+     * @return true if the timer was updated successfully
+     */
     bool UpdateEntry(const CPVRTimerInfoTagPtr &tag);
+
+    /*!
+     * @brief merge in the state of this child timer. Run for each child after using ResetChildState.
+     * @return true if the child timer's state was merged successfully
+     */
+    bool UpdateChildState(const CPVRTimerInfoTagPtr &childTimer);
+
+    /*!
+     * @brief reset the state of children related to this timer. Run UpdateChildState for all children afterwards.
+     */
+    void ResetChildState();
 
     void UpdateEpgEvent(bool bClear = false);
 
@@ -269,5 +284,10 @@ namespace PVR
     CDateTime             m_StopTime;  /*!< stop time */
     CDateTime             m_FirstDay;  /*!< if it is a manual repeating timer the first date it starts */
     CPVRTimerTypePtr      m_timerType; /*!< the type of this timer */
+
+    unsigned int          m_iActiveChildTimers;   /*!< @brief Number of active timers which have this timer as their m_iParentClientIndex */
+    bool                  m_bHasChildConflictNOK; /*!< @brief Has at least one child timer with status PVR_TIMER_STATE_CONFLICT_NOK */
+    bool                  m_bHasChildRecording;   /*!< @brief Has at least one child timer with status PVR_TIMER_STATE_RECORDING */
+    bool                  m_bHasChildErrors;      /*!< @brief Has at least one child timer with status PVR_TIMER_STATE_ERROR */
   };
 }

@@ -9553,7 +9553,17 @@ msgctxt "#19254"
 msgid "Guide update failed for channel"
 msgstr ""
 
-#empty strings from id 19255 to 19256
+#. for a timer rule, the number of child timers which are currently scheduled to record. For use in "status" fields.
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#19255"
+msgid "%d scheduled"
+msgstr ""
+
+#. for a timer rule or timer to indicate this item has completed the intended recordings. For use in "status" fields.
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#19256"
+msgid "Completed"
+msgstr ""
 
 msgctxt "#19257"
 msgid "Lock channel"
