@@ -610,9 +610,9 @@ bool CGUIWindowPVRBase::DeleteTimer(CFileItem *item, bool bIsRecording)
   }
   else
   {
-    bool bDeleteSchedule(false);
-    if (ConfirmDeleteTimer(timer.get(), bDeleteSchedule))
-      return CPVRTimers::DeleteTimer(*timer, false, bDeleteSchedule);
+    bool bDeleteRule(false);
+    if (ConfirmDeleteTimer(timer.get(), bDeleteRule))
+      return CPVRTimers::DeleteTimer(*timer, false, bDeleteRule);
   }
   return false;
 }
@@ -894,17 +894,17 @@ void CGUIWindowPVRBase::UpdateSelectedItemPath()
   }
 }
 
-bool CGUIWindowPVRBase::ConfirmDeleteTimer(CFileItem *item, bool &bDeleteSchedule)
+bool CGUIWindowPVRBase::ConfirmDeleteTimer(CFileItem *item, bool &bDeleteRule)
 {
   bool bConfirmed(false);
 
-  if (item->GetPVRTimerInfoTag()->GetTimerScheduleId() != PVR_TIMER_NO_PARENT)
+  if (item->GetPVRTimerInfoTag()->GetTimerRuleId() != PVR_TIMER_NO_PARENT)
   {
-    // timer was scheduled by a repeating timer. prompt user for confirmation for deleting the complete repeating timer, including scheduled timers.
+    // timer was scheduled by a timer rule. prompt user for confirmation for deleting the timer rule, including scheduled timers.
     bool bCancel(false);
-    bDeleteSchedule = CGUIDialogYesNo::ShowAndGetInput(
+    bDeleteRule = CGUIDialogYesNo::ShowAndGetInput(
                         CVariant{122}, // "Confirm delete"
-                        CVariant{840}, // "Do you only want to delete this timer or also the repeating timer that has scheduled it?"
+                        CVariant{840}, // "Do you want to delete only this timer or also the timer rule that has scheduled it?"
                         CVariant{""},
                         CVariant{item->GetPVRTimerInfoTag()->Title()},
                         bCancel,
@@ -915,13 +915,13 @@ bool CGUIWindowPVRBase::ConfirmDeleteTimer(CFileItem *item, bool &bDeleteSchedul
   }
   else
   {
-    bDeleteSchedule = false;
+    bDeleteRule = false;
 
     // prompt user for confirmation for deleting the timer
     bConfirmed = CGUIDialogYesNo::ShowAndGetInput(
                         CVariant{122}, // "Confirm delete"
                         item->GetPVRTimerInfoTag()->IsRepeating()
-                          ? CVariant{845}  // "Are you sure you want to delete this repeating timer and all timers it has scheduled?"
+                          ? CVariant{845}  // "Are you sure you want to delete this timer rule and all timers it has scheduled?"
                           : CVariant{846}, // "Are you sure you want to delete this timer?"
                         CVariant{""},
                         CVariant{item->GetPVRTimerInfoTag()->Title()});

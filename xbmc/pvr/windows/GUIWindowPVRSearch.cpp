@@ -58,7 +58,7 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
     CPVRTimerInfoTagPtr timer(epg->Timer());
     if (timer)
     {
-      if (timer->GetTimerScheduleId() != PVR_TIMER_NO_PARENT)
+      if (timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT)
         buttons.Add(CONTEXT_BUTTON_EDIT_TIMER_RULE, 19243); /* Edit timer rule */
 
       const CPVRTimerTypePtr timerType(timer->GetTimerType());

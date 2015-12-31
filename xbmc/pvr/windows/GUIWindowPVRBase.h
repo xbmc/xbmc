@@ -117,13 +117,13 @@ namespace PVR
     /*!
      * @brief Open a dialog to confirm timer delete.
      * @param item the timer to delete.
-     * @param bDeleteSchedule in: ignored
-     *                        out, for one shot timer scheduled by a repeating timer: true to also delete the
-     *                             repeating timer that has scheduled this timer, false to only delete the one shot timer.
-     *                        out, for one shot timer not scheduled by a repeating timer: ignored
+     * @param bDeleteRule in: ignored
+     *                    out, for one shot timer scheduled by a timer rule: true to also delete the timer
+     *                    rule that has scheduled this timer, false to only delete the one shot timer.
+     *                    out, for one shot timer not scheduled by a timer rule: ignored
      * @return true, to proceed with delete, false otherwise.
      */
-    static bool ConfirmDeleteTimer(CFileItem *item, bool &bDeleteSchedule);
+    static bool ConfirmDeleteTimer(CFileItem *item, bool &bDeleteRule);
 
     /*!
      * @brief Open a dialog to confirm stop recording.
