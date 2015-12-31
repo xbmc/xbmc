@@ -431,6 +431,7 @@ protected:
   bool m_bAbortRequest;
 
   ECacheState  m_caching;
+  XbmcThreads::EndTime m_cachingTimer;
   CFileItem    m_item;
   XbmcThreads::EndTime m_ChannelEntryTimeOut;
 
