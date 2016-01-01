@@ -216,7 +216,19 @@ bool Gif::LoadGif(const char* file)
   {
     InitTemplateAndColormap();
 
-    return ExtractFrames(m_numFrames);
+    int extractedFrames = ExtractFrames(m_numFrames);
+    if (extractedFrames < 0)
+    {
+      CLog::Log(LOGDEBUG, "Gif::LoadGif(): Could not extract any frame. File %s", memOrFile().c_str());
+      return false;
+    } 
+    else if (extractedFrames < (int)m_numFrames)
+    {
+      CLog::Log(LOGDEBUG, "Gif::LoadGif(): Could only extract %d/%d frames. File %s", extractedFrames, m_numFrames, memOrFile().c_str());
+      m_numFrames = extractedFrames;
+    }
+
+    return true;
   }
   catch (std::bad_alloc& ba)
   {
@@ -341,17 +353,18 @@ bool Gif::GcbToFrame(GifFrame &frame, unsigned int imgIdx)
   return true;
 }
 
-bool Gif::ExtractFrames(unsigned int count)
+int Gif::ExtractFrames(unsigned int count)
 {
   if (!m_gif)
-    return false;
+    return -1;
 
   if (!m_pTemplate)
   {
     CLog::Log(LOGDEBUG, "Gif::ExtractFrames(): No frame template available");
-    return false;
+    return -1;
   }
 
+  int extracted = 0;
   for (unsigned int i = 0; i < count; i++)
   {
     FramePtr frame(new GifFrame);
@@ -366,7 +379,7 @@ bool Gif::ExtractFrames(unsigned int count)
       || !frame->m_width || !frame->m_height
       || frame->m_width > m_width || frame->m_height > m_height)
     {
-      CLog::Log(LOGDEBUG, "Gif::ExtractFrames(): Illegal frame dimensions: width: %d, height: %d, left: %d, top: %d instead of (%d,%d)",
+      CLog::Log(LOGDEBUG, "Gif::ExtractFrames(): Illegal frame dimensions: width: %d, height: %d, left: %d, top: %d instead of (%d,%d), skip it",
         frame->m_width, frame->m_height, frame->m_left, frame->m_top, m_width, m_height);
       continue;
     }
@@ -383,13 +396,16 @@ bool Gif::ExtractFrames(unsigned int count)
     }
     else
     {
-      CLog::Log(LOGDEBUG, "Gif::ExtractFrames(): No color map found for frame %d", i);
+      CLog::Log(LOGDEBUG, "Gif::ExtractFrames(): No color map found for frame %d, skip it", i);
       continue;
     }
 
     // fill delay, disposal and transparent color into frame
     if (!GcbToFrame(*frame, i))
-      return false;
+    {
+      CLog::Log(LOGDEBUG, "Gif::ExtractFrames(): Corrupted Graphics Control Block for frame %d, skip it", i);
+      continue;
+    }
 
     frame->m_pImage = new unsigned char[m_imageSize];
     frame->m_imageSize = m_imageSize;
@@ -398,11 +414,15 @@ bool Gif::ExtractFrames(unsigned int count)
     ConstructFrame(*frame, savedImage.RasterBits);
 
     if (!PrepareTemplate(*frame))
-      return false;
+    {
+      CLog::Log(LOGDEBUG, "Gif::ExtractFrames(): Could not prepare template after frame %d, skip it", i);
+      continue;
+    }
 
+    extracted++;
     m_frames.push_back(frame);
   }
-  return true;
+  return extracted;
 }
 
 void Gif::ConstructFrame(GifFrame &frame, const unsigned char* src) const
@@ -533,8 +553,19 @@ bool Gif::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsig
   {
     InitTemplateAndColormap();
 
-    if (!ExtractFrames(m_numFrames))
+    int extractedFrames = ExtractFrames(m_numFrames);
+    if (extractedFrames < 0)
+    {
+      CLog::Log(LOGDEBUG, "Gif::LoadGif(): Could not extract any frame. File %s", memOrFile().c_str());
       return false;
+    }
+    else if (extractedFrames < (int)m_numFrames)
+    {
+      CLog::Log(LOGDEBUG, "Gif::LoadGif(): Could only extract %d/%d frames. File %s", extractedFrames, m_numFrames, memOrFile().c_str());
+      m_numFrames = extractedFrames;
+    }
+
+    return true;
   }
   catch (std::bad_alloc& ba)
   {
