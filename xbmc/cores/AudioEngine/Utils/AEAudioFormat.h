@@ -21,9 +21,13 @@
 
 #include "AEChannelInfo.h"
 
-#define AE_IS_RAW(x) ((x) >= AE_FMT_AAC && (x) < AE_FMT_U8P)
-#define AE_IS_RAW_RAW(x) ((x) >= AE_FMT_AC3_RAW && (x) <= AE_FMT_DTSHD_RAW)
-#define AE_IS_RAW_HD(x) (((x) >= AE_FMT_EAC3 && (x) <= AE_FMT_DTSHD) || ((x) >= AE_FMT_EAC3_RAW && (x) <= AE_FMT_DTSHD_RAW))
+#ifdef TARGET_ANDROID
+#define AE_IS_RAW_RAW(x) ((x) >= (AE_FMT_AC3 + PT_FORMAT_RAW_CLASS) && (x) <= (AE_FMT_DTSHD + PT_FORMAT_RAW_CLASS))
+#else
+#define AE_IS_RAW_RAW(x) (false)
+#endif
+#define AE_IS_RAW(x) (((x) >= AE_FMT_AAC && (x) < AE_FMT_U8P) || AE_IS_RAW_RAW(x))
+#define AE_IS_RAW_HD(x) (((x) >= AE_FMT_EAC3 && (x) <= AE_FMT_DTSHD) || ((x) >= (AE_FMT_EAC3 + PT_FORMAT_RAW_CLASS) && (x) <= (AE_FMT_DTSHD + PT_FORMAT_RAW_CLASS)))
 #define AE_IS_PLANAR(x) ((x) >= AE_FMT_U8P && (x) <= AE_FMT_FLOATP)
 
 /**

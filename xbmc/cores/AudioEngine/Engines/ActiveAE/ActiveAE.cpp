@@ -1486,11 +1486,11 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
   // raw pass through
   if (AE_IS_RAW(format.m_dataFormat))
   {
-    if (((format.m_dataFormat == AE_FMT_AC3 || format.m_dataFormat == AE_FMT_AC3_RAW) && !settings.ac3passthrough) ||
-        ((format.m_dataFormat == AE_FMT_EAC3 || format.m_dataFormat == AE_FMT_EAC3_RAW) && !settings.eac3passthrough) ||
-        ((format.m_dataFormat == AE_FMT_TRUEHD || format.m_dataFormat == AE_FMT_TRUEHD_RAW) && !settings.truehdpassthrough) ||
-        ((format.m_dataFormat == AE_FMT_DTS || format.m_dataFormat == AE_FMT_DTS_RAW) && !settings.dtspassthrough) ||
-        ((format.m_dataFormat == AE_FMT_DTSHD || format.m_dataFormat == AE_FMT_DTSHD_RAW) && !settings.dtshdpassthrough))
+    if (((format.m_dataFormat & ~PT_FORMAT_RAW_CLASS) == AE_FMT_AC3 && !settings.ac3passthrough) ||
+        ((format.m_dataFormat & ~PT_FORMAT_RAW_CLASS) == AE_FMT_EAC3 && !settings.eac3passthrough) ||
+        ((format.m_dataFormat & ~PT_FORMAT_RAW_CLASS) == AE_FMT_TRUEHD && !settings.truehdpassthrough) ||
+        ((format.m_dataFormat & ~PT_FORMAT_RAW_CLASS) == AE_FMT_DTS && !settings.dtspassthrough) ||
+        ((format.m_dataFormat & ~PT_FORMAT_RAW_CLASS) == AE_FMT_DTSHD && !settings.dtshdpassthrough))
     {
       CLog::Log(LOGERROR, "CActiveAE::ApplySettingsToFormat - input audio format is wrong");
     }
@@ -2383,7 +2383,7 @@ bool CActiveAE::IsSettingVisible(const std::string &settingId)
     if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), AE_FMT_TRUEHD, 192000) &&
         CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
       return true;
-    else if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), AE_FMT_TRUEHD_RAW, 48000) &&
+    else if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), (AEDataFormat)(AE_FMT_TRUEHD + PT_FORMAT_RAW_CLASS), 48000) &&
         CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
       return true;
   }
@@ -2392,7 +2392,7 @@ bool CActiveAE::IsSettingVisible(const std::string &settingId)
     if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), AE_FMT_DTSHD, 192000) &&
         CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
       return true;
-    else if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), AE_FMT_DTSHD_RAW, 48000) &&
+    else if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), (AEDataFormat)(AE_FMT_DTSHD + PT_FORMAT_RAW_CLASS), 48000) &&
         CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
       return true;
   }
@@ -2401,7 +2401,7 @@ bool CActiveAE::IsSettingVisible(const std::string &settingId)
     if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), AE_FMT_EAC3, 192000) &&
         CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
       return true;
-    else if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), AE_FMT_EAC3_RAW, 48000) &&
+    else if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), (AEDataFormat)(AE_FMT_EAC3 + PT_FORMAT_RAW_CLASS), 48000) &&
         CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
       return true;
   }

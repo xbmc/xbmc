@@ -4,7 +4,10 @@ CXXFLAGS+=-DHAVE_MMX
 
 SRCS  = DVDAudioCodecFFmpeg.cpp
 SRCS += DVDAudioCodecPassthrough.cpp
+
+ifeq (@USE_ANDROID@,1)
 SRCS += DVDAudioCodecPassthroughRaw.cpp
+endif
 
 LIB=Audio.a
 

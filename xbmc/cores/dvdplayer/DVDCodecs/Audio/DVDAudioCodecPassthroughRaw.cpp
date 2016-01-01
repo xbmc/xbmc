@@ -61,11 +61,11 @@ bool CDVDAudioCodecPassthroughRaw::Open(CDVDStreamInfo &hints, CDVDCodecOptions 
 
   CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthroughRaw::Open codec: %d; ch:%d; birate:%d; blk;%d; bits:%d; profile:%d", m_hints.codec, m_hints.channels, m_hints.bitrate, m_hints.blockalign, m_hints.bitspersample, m_hints.profile);
 
-  bool bSupportsAC3Out    = CAEFactory::SupportsRaw(AE_FMT_AC3_RAW, hints.samplerate);
-  bool bSupportsDTSOut    = CAEFactory::SupportsRaw(AE_FMT_DTS_RAW, hints.samplerate);
-  bool bSupportsEAC3Out   = CAEFactory::SupportsRaw(AE_FMT_EAC3_RAW, hints.samplerate);
-  bool bSupportsTrueHDOut = CAEFactory::SupportsRaw(AE_FMT_TRUEHD_RAW, hints.samplerate);
-  bool bSupportsDTSHDOut  = CAEFactory::SupportsRaw(AE_FMT_DTSHD_RAW, hints.samplerate);
+  bool bSupportsAC3Out    = CAEFactory::SupportsRaw((AEDataFormat)(AE_FMT_AC3 + PT_FORMAT_RAW_CLASS), hints.samplerate);
+  bool bSupportsDTSOut    = CAEFactory::SupportsRaw((AEDataFormat)(AE_FMT_DTS + PT_FORMAT_RAW_CLASS), hints.samplerate);
+  bool bSupportsEAC3Out   = CAEFactory::SupportsRaw((AEDataFormat)(AE_FMT_EAC3 + PT_FORMAT_RAW_CLASS), hints.samplerate);
+  bool bSupportsTrueHDOut = CAEFactory::SupportsRaw((AEDataFormat)(AE_FMT_TRUEHD + PT_FORMAT_RAW_CLASS), hints.samplerate);
+  bool bSupportsDTSHDOut  = CAEFactory::SupportsRaw((AEDataFormat)(AE_FMT_DTSHD + PT_FORMAT_RAW_CLASS), hints.samplerate);
 
   if ((hints.codec == AV_CODEC_ID_AC3 && bSupportsAC3Out) ||
       (hints.codec == AV_CODEC_ID_EAC3 && bSupportsEAC3Out) ||
@@ -96,20 +96,20 @@ void CDVDAudioCodecPassthroughRaw::GetData(DVDAudioFrame &frame)
   float unscaledbitrate = (float)(frame.nb_frames*frame.framesize) * 48000;
   switch(m_codec)
   {
-    case AE_FMT_AC3_RAW:
-    case AE_FMT_EAC3_RAW:
+    case AE_FMT_AC3 + PT_FORMAT_RAW_CLASS:
+    case AE_FMT_EAC3 + PT_FORMAT_RAW_CLASS:
     {
       m_sampleRate = (unscaledbitrate + AC3_DIVISOR/2)  / AC3_DIVISOR;
       break;
     }
-    case AE_FMT_TRUEHD_RAW:
+    case AE_FMT_TRUEHD + PT_FORMAT_RAW_CLASS:
     {
         m_sampleRate = (unscaledbitrate + TRUEHD_DIVISOR/2) / TRUEHD_DIVISOR;
       break;
     }
 
-    case AE_FMT_DTS_RAW:
-    case AE_FMT_DTSHD_RAW:
+    case AE_FMT_DTS + PT_FORMAT_RAW_CLASS:
+    case AE_FMT_DTSHD + PT_FORMAT_RAW_CLASS:
     {
         m_sampleRate = (unscaledbitrate + DTS_DIVISOR/2) / DTS_DIVISOR;
       break;
@@ -155,22 +155,22 @@ enum AEDataFormat CDVDAudioCodecPassthroughRaw::GetDataFormat()
   switch(m_hints.codec)
   {
     case AV_CODEC_ID_AC3:
-      m_codec = AE_FMT_AC3_RAW;
+      m_codec = (AEDataFormat)(AE_FMT_AC3 + PT_FORMAT_RAW_CLASS);
       break;
 
     case AV_CODEC_ID_DTS:
       if (m_hints.profile >= 50)
-        m_codec = AE_FMT_DTSHD_RAW;
+        m_codec = (AEDataFormat)(AE_FMT_DTSHD + PT_FORMAT_RAW_CLASS);
       else
-        m_codec = AE_FMT_DTS_RAW;
+        m_codec = (AEDataFormat)(AE_FMT_DTS + PT_FORMAT_RAW_CLASS);
       break;
 
     case AV_CODEC_ID_EAC3:
-      m_codec = AE_FMT_EAC3_RAW;
+      m_codec = (AEDataFormat)(AE_FMT_EAC3 + PT_FORMAT_RAW_CLASS);
       break;
 
     case AV_CODEC_ID_TRUEHD:
-      m_codec = AE_FMT_TRUEHD_RAW;
+      m_codec = (AEDataFormat)(AE_FMT_TRUEHD + PT_FORMAT_RAW_CLASS);
       break;
   }
 
@@ -179,11 +179,12 @@ enum AEDataFormat CDVDAudioCodecPassthroughRaw::GetDataFormat()
 
 int CDVDAudioCodecPassthroughRaw::GetChannels()
 {
-  switch (m_codec)
+  unsigned int codec = m_codec & ~PT_FORMAT_RAW_CLASS;
+  switch (codec)
   {
-    case AE_FMT_AC3_RAW:
-    case AE_FMT_EAC3_RAW:
-    case AE_FMT_DTS_RAW:
+    case AE_FMT_AC3:
+    case AE_FMT_EAC3:
+    case AE_FMT_DTS:
       return 2;
 
     default:
@@ -199,11 +200,12 @@ int CDVDAudioCodecPassthroughRaw::GetEncodedChannels()
 CAEChannelInfo CDVDAudioCodecPassthroughRaw::GetChannelMap()
 {
   int count = 0;
-  switch (m_codec)
+  unsigned int codec = m_codec & ~PT_FORMAT_RAW_CLASS;
+  switch (codec)
   {
-    case AE_FMT_AC3_RAW:
-    case AE_FMT_EAC3_RAW:
-    case AE_FMT_DTS_RAW:
+    case AE_FMT_AC3:
+    case AE_FMT_EAC3:
+    case AE_FMT_DTS:
       count = 2;
 
     default:
@@ -237,10 +239,11 @@ int CDVDAudioCodecPassthroughRaw::Decode(uint8_t* pData, int iSize)
 
   // Do pseudo-encapsulation to make bitrate constant
   int constant_size = 0;
-  if (m_codec == AE_FMT_AC3_RAW || m_codec == AE_FMT_DTS_RAW)
-    constant_size = CONSTANT_BUFFER_SIZE_SD;
-  else
+  unsigned int codec = m_codec & ~PT_FORMAT_RAW_CLASS;
+  if (codec == AE_FMT_TRUEHD || codec == AE_FMT_DTSHD)
     constant_size = CONSTANT_BUFFER_SIZE_HD;
+  else
+    constant_size = CONSTANT_BUFFER_SIZE_SD;
 
   if (constant_size)
   {
@@ -249,7 +252,7 @@ int CDVDAudioCodecPassthroughRaw::Decode(uint8_t* pData, int iSize)
       m_bufferSize = constant_size;
       m_buffer = (uint8_t*)malloc(m_bufferSize);
     }
-    if (m_codec == AE_FMT_TRUEHD_RAW)
+    if (codec == AE_FMT_TRUEHD)
     {
       if (m_trueHDoffset + iSize > constant_size)
       {
