@@ -724,9 +724,14 @@ CFileItemPtr CPVRTimers::GetTimerForEpgTag(const CFileItem *item) const
 
 CFileItemPtr CPVRTimers::GetTimerRule(const CFileItem *item) const
 {
-  if (item && item->HasEPGInfoTag() && item->GetEPGInfoTag()->Timer())
+  CPVRTimerInfoTagPtr timer;
+  if (item && item->HasEPGInfoTag())
+    timer = item->GetEPGInfoTag()->Timer();
+  else if (item && item->HasPVRTimerInfoTag())
+    timer = item->GetPVRTimerInfoTag();
+
+  if (timer)
   {
-    const CPVRTimerInfoTagPtr timer(item->GetEPGInfoTag()->Timer());
     unsigned int iRuleId = timer->GetTimerRuleId();
     if (iRuleId != PVR_TIMER_NO_PARENT)
     {
