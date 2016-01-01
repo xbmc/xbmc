@@ -104,7 +104,7 @@ private:
   bool Slurp(GifFileType* gif);
   static void ConvertColorTable(std::vector<GifColor> &dest, ColorMapObject* src, unsigned int size);
   bool GcbToFrame(GifFrame &frame, unsigned int imgIdx);
-  bool ExtractFrames(unsigned int count);
+  int ExtractFrames(unsigned int count);
   void ClearFrameAreaToTransparency(unsigned char* dest, const GifFrame &frame);
   void ConstructFrame(GifFrame &frame, const unsigned char* src) const;
   bool PrepareTemplate(GifFrame &frame);
