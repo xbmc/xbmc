@@ -24,6 +24,7 @@
 #include "DllLibGif.h"
 #include <memory>
 #include <vector>
+#include "URL.h"
 
 namespace XFILE
 {
@@ -113,7 +114,7 @@ private:
 
   inline std::string memOrFile()
   {
-    return m_filename.empty() ? std::string("memory file") : m_filename;
+    return m_filename.empty() ? std::string("memory file") : CURL::GetRedacted(m_filename);
   }
 
 };
