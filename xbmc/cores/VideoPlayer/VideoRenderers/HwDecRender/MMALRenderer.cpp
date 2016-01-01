@@ -442,11 +442,7 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     return;
   }
 
-  if (g_graphicsContext.GetStereoMode())
-    g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_LEFT);
   ManageDisplay();
-  if (g_graphicsContext.GetStereoMode())
-    g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_OFF);
 
   if (m_format == RENDER_FMT_BYPASS)
   {
@@ -669,10 +665,8 @@ EINTERLACEMETHOD CMMALRenderer::AutoInterlaceMethod()
 
 void CMMALRenderer::SetVideoRect(const CRect& InSrcRect, const CRect& InDestRect)
 {
-  // we get called twice a frame for left/right. Can ignore the rights.
-  if (g_graphicsContext.GetStereoView() == RENDER_STEREO_VIEW_RIGHT)
-    return;
   CSingleLock lock(m_sharedSection);
+  assert(g_graphicsContext.GetStereoView() != RENDER_STEREO_VIEW_RIGHT);
 
   if (!m_vout_input)
     return;
@@ -682,6 +676,10 @@ void CMMALRenderer::SetVideoRect(const CRect& InSrcRect, const CRect& InDestRect
                                          (m_iFlags & CONF_FLAGS_STEREO_MODE_TAB) ? RENDER_STEREO_MODE_SPLIT_HORIZONTAL : RENDER_STEREO_MODE_OFF;
   bool stereo_invert                   = (m_iFlags & CONF_FLAGS_STEREO_CADANCE_RIGHT_LEFT) ? true : false;
   RENDER_STEREO_MODE display_stereo_mode = g_graphicsContext.GetStereoMode();
+
+  // ignore video stereo mode when 3D display mode is disabled
+  if (display_stereo_mode == RENDER_STEREO_MODE_OFF)
+    video_stereo_mode = RENDER_STEREO_MODE_OFF;
 
   // fix up transposed video
   if (m_renderOrientation == 90 || m_renderOrientation == 270)
@@ -714,40 +712,17 @@ void CMMALRenderer::SetVideoRect(const CRect& InSrcRect, const CRect& InDestRect
   CRect gui(0, 0, CDisplaySettings::GetInstance().GetResolutionInfo(res).iWidth, CDisplaySettings::GetInstance().GetResolutionInfo(res).iHeight);
   CRect display(0, 0, CDisplaySettings::GetInstance().GetResolutionInfo(res).iScreenWidth, CDisplaySettings::GetInstance().GetResolutionInfo(res).iScreenHeight);
 
-  if (display_stereo_mode != RENDER_STEREO_MODE_OFF && display_stereo_mode != RENDER_STEREO_MODE_MONO)
-  switch (video_stereo_mode)
+  if (display_stereo_mode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
   {
-  case RENDER_STEREO_MODE_SPLIT_VERTICAL:
-    // optimisation - use simpler display mode in common case of unscaled 3d with same display mode
-    if (video_stereo_mode == display_stereo_mode && DestRect.x1 == 0.0f && DestRect.x2 * 2.0f == gui.Width() && !stereo_invert)
-    {
-      SrcRect.x2 *= 2.0f;
-      DestRect.x2 *= 2.0f;
-      video_stereo_mode = RENDER_STEREO_MODE_OFF;
-      display_stereo_mode = RENDER_STEREO_MODE_OFF;
-    }
-    else if (display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN || display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA || display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
-    {
-      SrcRect.x2 *= 2.0f;
-    }
-    break;
-
-  case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
-    // optimisation - use simpler display mode in common case of unscaled 3d with same display mode
-    if (video_stereo_mode == display_stereo_mode && DestRect.y1 == 0.0f && DestRect.y2 * 2.0f == gui.Height() && !stereo_invert)
-    {
-      SrcRect.y2 *= 2.0f;
-      DestRect.y2 *= 2.0f;
-      video_stereo_mode = RENDER_STEREO_MODE_OFF;
-      display_stereo_mode = RENDER_STEREO_MODE_OFF;
-    }
-    else if (display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN || display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA || display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
-    {
-      SrcRect.y2 *= 2.0f;
-    }
-    break;
-
-  default: break;
+    float width = DestRect.x2 - DestRect.x1;
+    DestRect.x1 *= 2.0f;
+    DestRect.x2 = DestRect.x1 + 2.0f * width;
+  }
+  else if (display_stereo_mode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
+  {
+    float height = DestRect.y2 - DestRect.y1;
+    DestRect.y1 *= 2.0f;
+    DestRect.y2 = DestRect.y1 + 2.0f * height;
   }
 
   if (gui != display)
@@ -763,7 +738,7 @@ void CMMALRenderer::SetVideoRect(const CRect& InSrcRect, const CRect& InDestRect
   MMAL_DISPLAYREGION_T region;
   memset(&region, 0, sizeof region);
 
-  region.set                 = MMAL_DISPLAY_SET_DEST_RECT|MMAL_DISPLAY_SET_SRC_RECT|MMAL_DISPLAY_SET_FULLSCREEN|MMAL_DISPLAY_SET_NOASPECT|MMAL_DISPLAY_SET_MODE;
+  region.set                 = MMAL_DISPLAY_SET_DEST_RECT|MMAL_DISPLAY_SET_SRC_RECT|MMAL_DISPLAY_SET_FULLSCREEN|MMAL_DISPLAY_SET_NOASPECT|MMAL_DISPLAY_SET_MODE|MMAL_DISPLAY_SET_TRANSFORM;
   region.dest_rect.x         = lrintf(DestRect.x1);
   region.dest_rect.y         = lrintf(DestRect.y1);
   region.dest_rect.width     = lrintf(DestRect.Width());
@@ -776,35 +751,32 @@ void CMMALRenderer::SetVideoRect(const CRect& InSrcRect, const CRect& InDestRect
 
   region.fullscreen = MMAL_FALSE;
   region.noaspect = MMAL_TRUE;
+  region.mode = MMAL_DISPLAY_MODE_LETTERBOX;
 
-  if (m_renderOrientation)
-  {
-    region.set |= MMAL_DISPLAY_SET_TRANSFORM;
-    if (m_renderOrientation == 90)
-      region.transform = MMAL_DISPLAY_ROT90;
-    else if (m_renderOrientation == 180)
-      region.transform = MMAL_DISPLAY_ROT180;
-    else if (m_renderOrientation == 270)
-      region.transform = MMAL_DISPLAY_ROT270;
-    else assert(0);
-  }
-
-  if (video_stereo_mode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL && display_stereo_mode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
-    region.mode = MMAL_DISPLAY_MODE_STEREO_TOP_TO_TOP;
-  else if (video_stereo_mode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL && display_stereo_mode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
-    region.mode = MMAL_DISPLAY_MODE_STEREO_TOP_TO_LEFT;
-  else if (video_stereo_mode == RENDER_STEREO_MODE_SPLIT_VERTICAL && display_stereo_mode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
-    region.mode = MMAL_DISPLAY_MODE_STEREO_LEFT_TO_TOP;
-  else if (video_stereo_mode == RENDER_STEREO_MODE_SPLIT_VERTICAL && display_stereo_mode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
-    region.mode = MMAL_DISPLAY_MODE_STEREO_LEFT_TO_LEFT;
+  if (m_renderOrientation == 90)
+    region.transform = MMAL_DISPLAY_ROT90;
+  else if (m_renderOrientation == 180)
+    region.transform = MMAL_DISPLAY_ROT180;
+  else if (m_renderOrientation == 270)
+    region.transform = MMAL_DISPLAY_ROT270;
   else
-    region.mode = MMAL_DISPLAY_MODE_LETTERBOX;
+    region.transform = MMAL_DISPLAY_ROT0;
+
+  if (m_video_stereo_mode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
+    region.transform = (MMAL_DISPLAYTRANSFORM_T)(region.transform | DISPMANX_STEREOSCOPIC_TB);
+  else if (m_video_stereo_mode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
+    region.transform = (MMAL_DISPLAYTRANSFORM_T)(region.transform | DISPMANX_STEREOSCOPIC_SBS);
+  else
+    region.transform = (MMAL_DISPLAYTRANSFORM_T)(region.transform | DISPMANX_STEREOSCOPIC_MONO);
+
+  if (m_StereoInvert)
+    region.transform = (MMAL_DISPLAYTRANSFORM_T)(region.transform | DISPMANX_STEREOSCOPIC_INVERT);
 
   MMAL_STATUS_T status = mmal_util_set_display_region(m_vout_input, &region);
   if (status != MMAL_SUCCESS)
     CLog::Log(LOGERROR, "%s::%s Failed to set display region (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
 
-  CLog::Log(LOGDEBUG, "%s::%s %d,%d,%d,%d -> %d,%d,%d,%d mode:%d", CLASSNAME, __func__,
+  CLog::Log(LOGDEBUG, "%s::%s %d,%d,%d,%d -> %d,%d,%d,%d t:%x", CLASSNAME, __func__,
       region.src_rect.x, region.src_rect.y, region.src_rect.width, region.src_rect.height,
-      region.dest_rect.x, region.dest_rect.y, region.dest_rect.width, region.dest_rect.height, region.mode);
+      region.dest_rect.x, region.dest_rect.y, region.dest_rect.width, region.dest_rect.height, region.transform);
 }

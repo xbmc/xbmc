@@ -52,6 +52,7 @@ CWinSystemEGL::CWinSystemEGL() : CWinSystemBase()
   m_surface           = EGL_NO_SURFACE;
   m_context           = EGL_NO_CONTEXT;
   m_config            = NULL;
+  m_stereo_mode       = RENDER_STEREO_MODE_OFF;
 
   m_egl               = NULL;
   m_iVSyncMode        = 0;
@@ -273,6 +274,7 @@ bool CWinSystemEGL::CreateNewWindow(const std::string& name, bool fullScreen, RE
 {
   RESOLUTION_INFO current_resolution;
   current_resolution.iWidth = current_resolution.iHeight = 0;
+  RENDER_STEREO_MODE stereo_mode = g_graphicsContext.GetStereoMode();
 
   m_nWidth        = res.iWidth;
   m_nHeight       = res.iHeight;
@@ -284,12 +286,14 @@ bool CWinSystemEGL::CreateNewWindow(const std::string& name, bool fullScreen, RE
     current_resolution.iWidth == res.iWidth && current_resolution.iHeight == res.iHeight &&
     current_resolution.iScreenWidth == res.iScreenWidth && current_resolution.iScreenHeight == res.iScreenHeight &&
     m_bFullScreen == fullScreen && current_resolution.fRefreshRate == res.fRefreshRate &&
-    (current_resolution.dwFlags & D3DPRESENTFLAG_MODEMASK) == (res.dwFlags & D3DPRESENTFLAG_MODEMASK))
+    (current_resolution.dwFlags & D3DPRESENTFLAG_MODEMASK) == (res.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
+    m_stereo_mode == stereo_mode)
   {
     CLog::Log(LOGDEBUG, "CWinSystemEGL::CreateNewWindow: No need to create a new window");
     return true;
   }
 
+  m_stereo_mode = stereo_mode;
   m_bFullScreen   = fullScreen;
   // Destroy any existing window
   if (m_surface != EGL_NO_SURFACE)
@@ -529,35 +533,6 @@ EGLContext CWinSystemEGL::GetEGLContext()
 EGLConfig CWinSystemEGL::GetEGLConfig()
 {
   return m_config;
-}
-
-// the logic in this function should match whether CBaseRenderer::FindClosestResolution picks a 3D mode
-bool CWinSystemEGL::Support3D(int width, int height, uint32_t mode) const
-{
-  RESOLUTION_INFO &curr = CDisplaySettings::GetInstance().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
-
-  // if we are using automatic hdmi mode switching
-  if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
-  {
-    int searchWidth = curr.iScreenWidth;
-    int searchHeight = curr.iScreenHeight;
-
-    // only search the custom resolutions
-    for (unsigned int i = (int)RES_DESKTOP; i < CDisplaySettings::GetInstance().ResolutionInfoSize(); i++)
-    {
-      RESOLUTION_INFO res = CDisplaySettings::GetInstance().GetResolutionInfo(i);
-      if(res.iScreenWidth == searchWidth && res.iScreenHeight == searchHeight && (res.dwFlags & mode))
-        return true;
-    }
-  }
-  // otherwise just consider current mode
-  else
-  {
-     if (curr.dwFlags & mode)
-       return true;
-  }
-
-  return false;
 }
 
 bool CWinSystemEGL::ClampToGUIDisplayLimits(int &width, int &height)
