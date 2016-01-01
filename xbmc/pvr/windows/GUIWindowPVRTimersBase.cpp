@@ -87,11 +87,14 @@ void CGUIWindowPVRTimersBase::GetContextButtons(int itemNumber, CContextButtons 
 
         if (!timerType->IsReadOnly())
         {
-          buttons.Add(CONTEXT_BUTTON_EDIT, 21450);        /* Edit */
+          if (timer->GetTimerRuleId() == PVR_TIMER_NO_PARENT)
+            buttons.Add(CONTEXT_BUTTON_EDIT_TIMER, 21450);  /* Edit */
+          else
+            buttons.Add(CONTEXT_BUTTON_EDIT_TIMER, 19242);  /* Edit timer */
 
           // As epg-based timers will get it's title from the epg tag, they should not be renamable.
           if (timer->IsManual())
-            buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename */
+            buttons.Add(CONTEXT_BUTTON_RENAME, 118);        /* Rename */
 
           if (timer->IsRecording())
             buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059); /* Stop recording */
@@ -99,6 +102,9 @@ void CGUIWindowPVRTimersBase::GetContextButtons(int itemNumber, CContextButtons 
             buttons.Add(CONTEXT_BUTTON_DELETE, 117);        /* Delete */
         }
       }
+
+      if (timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT)
+        buttons.Add(CONTEXT_BUTTON_EDIT_TIMER_RULE, 19243); /* Edit timer rule */
 
       if (g_PVRClients->HasMenuHooks(timer->m_iClientId, PVR_MENUHOOK_TIMER))
         buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);    /* PVR client specific action */
@@ -135,7 +141,8 @@ bool CGUIWindowPVRTimersBase::OnContextButton(int itemNumber, CONTEXT_BUTTON but
       OnContextButtonAdd(pItem.get(), button) ||
       OnContextButtonDelete(pItem.get(), button) ||
       OnContextButtonStopRecord(pItem.get(), button) ||
-      OnContextButtonEdit(pItem.get(), button) ||
+      OnContextButtonEditTimer(pItem.get(), button) ||
+      OnContextButtonEditTimerRule(pItem.get(), button) ||
       OnContextButtonRename(pItem.get(), button) ||
       OnContextButtonInfo(pItem.get(), button) ||
       CGUIWindowPVRBase::OnContextButton(itemNumber, button);
@@ -296,19 +303,6 @@ bool CGUIWindowPVRTimersBase::OnContextButtonStopRecord(CFileItem *item, CONTEXT
   if (button == CONTEXT_BUTTON_STOP_RECORD)
   {
     StopRecordFile(item);
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRTimersBase::OnContextButtonEdit(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_EDIT)
-  {
-    EditTimer(item);
     bReturn = true;
   }
 
