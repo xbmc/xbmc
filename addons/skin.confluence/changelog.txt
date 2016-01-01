@@ -1,3 +1,11 @@
+[B]2.8.2[/B]
+
+- Updated language files from Transifex
+
+[B]2.8.1[/B]
+
+- Updated language files from Transifex
+
 [B]2.7.3[/B]
 
 - Updated language files from Transifex

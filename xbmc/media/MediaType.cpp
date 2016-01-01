@@ -19,8 +19,12 @@
  */
 
 #include "MediaType.h"
+
+#include <utility>
+
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
+
 
 static std::map<std::string, MediaTypes::MediaTypeInfo> fillDefaultMediaTypes()
 {

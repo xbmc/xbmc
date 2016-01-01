@@ -20,6 +20,7 @@
  */
 
 #include <map>
+#include <memory>
 
 #include "XBDateTime.h"
 #include "dbwrappers/Database.h"
@@ -29,6 +30,7 @@
 namespace EPG
 {
   class CEpg;
+  typedef std::shared_ptr<CEpg> CEpgPtr;
   class CEpgInfoTag;
   class CEpgContainer;
 
@@ -57,7 +59,7 @@ namespace EPG
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    virtual int GetSchemaVersion(void) const { return 10; };
+    virtual int GetSchemaVersion(void) const { return 11; };
 
     /*!
      * @brief Get the default sqlite database filename.

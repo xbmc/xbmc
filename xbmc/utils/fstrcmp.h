@@ -1,5 +1,4 @@
-#ifndef _FSTRCMP_H
-#define _FSTRCMP_H
+#pragma once
 
   /* GNU gettext - internationalization aids
   Copyright (C) 1995 Free Software Foundation, Inc.
@@ -33,4 +32,3 @@ double fstrcmp (const char *__s1, const char *__s2, double __minimum);
 } // extern "C"
 #endif
 
-#endif

@@ -3,8 +3,8 @@
 	<defaultcontrol always="true">100</defaultcontrol>
 	<onload condition="!MusicPlayer.Content(LiveTV)">SetFocus(602)</onload>
 	<include>dialogeffect</include>
+	<depth>DepthOSD</depth>
 	<coordinates>
-		<system>1</system>
 		<left>0</left>
 		<top>0</top>
 	</coordinates>
@@ -27,9 +27,10 @@
 			<ondown>100</ondown>
 			<animation effect="fade" time="150">VisibleChange</animation>
 			<animation effect="slide" start="0,0" end="-30,0" time="0" condition="Window.IsVisible(Mutebug)">conditional</animation>
-			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>
+			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(PVRRadioRDSInfo) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>
 		</control>
 		<control type="slider" id="87">
+			<depth>DepthOSD+</depth>
 			<description>Seek Slider</description>
 			<left>430</left>
 			<top>82r</top>
@@ -42,7 +43,7 @@
 			<textureslidernib>osd_slider_nibNF.png</textureslidernib>
 			<textureslidernibfocus>osd_slider_nib.png</textureslidernibfocus>
 			<animation effect="fade" time="150">VisibleChange</animation>
-			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>
+			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(PVRRadioRDSInfo) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>
 		</control>
 		<control type="grouplist" id="100">
 			<left>325</left>
@@ -52,7 +53,7 @@
 			<orientation>horizontal</orientation>
 			<itemgap>0</itemgap>
 			<animation effect="fade" time="150">VisibleChange</animation>
-			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>
+			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(PVRRadioRDSInfo) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>
 			<control type="button" id="300">
 				<width>55</width>
 				<height>55</height>
@@ -157,7 +158,18 @@
 				<texturefocus>OSDepgFO.png</texturefocus>
 				<texturenofocus>OSDepgNF.png</texturenofocus>
 				<onclick>ActivateWindow(PVROSDGuide)</onclick>
-				<visible>MusicPlayer.Content(LiveTV)</visible>
+				<visible>MusicPlayer.Content(LiveTV) + !RDS.HasRadiotextPlus</visible>
+			</control>
+			<control type="button" id="308">
+				<visible>RDS.HasRadiotextPlus</visible>
+				<width>55</width>
+				<height>55</height>
+				<label>209</label>
+				<font>-</font>
+				<texturefocus>OSDRadioRDSFO.png</texturefocus>
+				<texturenofocus>OSDRadioRDSNF.png</texturenofocus>
+				<onclick>ActivateWindow(PVRRadioRDSInfo)</onclick>
+				<visible>MusicPlayer.Content(LiveTV) + RDS.HasRadiotextPlus</visible>
 			</control>
 			<control type="group" id="699">
 				<width>55</width>
@@ -248,17 +260,24 @@
 			</control>
 			<control type="image" id="2300">
 				<width>160</width>
-				<height>55</height>
 				<texture>-</texture>
-				<visible>!MusicPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="image" id="2400">
-				<width>215</width>
+				<width>55</width>
+				<texture>-</texture>
+				<visible>!system.getbool(audiooutput.dspaddonsenabled)</visible>
+			</control>
+			<control type="image" id="2500">
+				<width>55</width>
 				<texture>-</texture>
 				<visible>MusicPlayer.Content(LiveTV)</visible>
 			</control>
+			<control type="image" id="2600">
+				<width>55</width>
+				<texture>-</texture>
+				<visible>!Player.CanRecord</visible>
+			</control>
 			<control type="button" id="700">
-				<visible>system.getbool(audiooutput.dspaddonsenabled)</visible>
 				<width>55</width>
 				<height>55</height>
 				<label>15047</label>
@@ -266,6 +285,7 @@
 				<texturefocus>OSDDSPAudioFO.png</texturefocus>
 				<texturenofocus>OSDDSPAudioNF.png</texturenofocus>
 				<onclick>ActivateWindow(OSDAudioDSPSettings)</onclick>
+				<visible>system.getbool(audiooutput.dspaddonsenabled)</visible>
 			</control>
 			<control type="togglebutton" id="701">
 				<width>55</width>
@@ -309,6 +329,8 @@
 				<texturefocus>OSDPreFO.png</texturefocus>
 				<texturenofocus>OSDPreNF.png</texturenofocus>
 				<onclick>ActivateWindow(122)</onclick>
+				<enable>Visualisation.HasPresets</enable>
+				<animation effect="fade" start="100" end="50" time="75" condition="!Visualisation.HasPresets">Conditional</animation>
 			</control>
 			<control type="button" id="704">
 				<width>55</width>
@@ -318,8 +340,7 @@
 				<texturefocus>OSDRecordOffFO.png</texturefocus>
 				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
 				<onclick>PlayerControl(record)</onclick>
-				<enable>Player.CanRecord</enable>
-				<animation effect="fade" start="100" end="50" time="75" condition="!Player.CanRecord">Conditional</animation>
+				<visible>Player.CanRecord</visible>
 			</control>
 		</control>
 	</controls>

@@ -22,10 +22,12 @@
 
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
-#include "utils/ScraperUrl.h"
 #include "utils/Fanart.h"
+#include "utils/ScraperUrl.h"
+#include "XBDateTime.h"
 
 class TiXmlNode;
 class CAlbum;
@@ -68,6 +70,7 @@ public:
     discography.clear();
     idArtist = -1;
     strPath.clear();
+    dateAdded.Reset();
   }
 
   /*! \brief Load artist information from an XML file.
@@ -79,6 +82,8 @@ public:
    */
   bool Load(const TiXmlElement *element, bool append = false, bool prioritise = false);
   bool Save(TiXmlNode *node, const std::string &tag, const std::string& strPath);
+
+  void SetDateAdded(const std::string& strDateAdded);
 
   std::string strArtist;
   std::string strMusicBrainzArtistID;
@@ -96,6 +101,7 @@ public:
   CScraperUrl thumbURL;
   CFanart fanart;
   std::vector<std::pair<std::string,std::string> > discography;
+  CDateTime dateAdded;
 };
 
 class CArtistCredit

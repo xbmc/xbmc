@@ -133,7 +133,7 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
   choices.Add(5, 20019);
 
   CFileItemPtr itemPtr = m_favourites->Get(item);
-  CContextMenuManager::Get().AddVisibleItems(itemPtr, choices);
+  CContextMenuManager::GetInstance().AddVisibleItems(itemPtr, choices);
 
   int button = CGUIDialogContextMenu::ShowAndGetChoice(choices);
 
@@ -151,7 +151,7 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
   else if (button == 5)
     OnSetThumb(item);
   else if (button >= CONTEXT_BUTTON_FIRST_ADDON)
-    CContextMenuManager::Get().Execute(button, itemPtr);
+    CContextMenuManager::GetInstance().OnClick(button, itemPtr);
 }
 
 void CGUIDialogFavourites::OnMoveItem(int item, int amount)

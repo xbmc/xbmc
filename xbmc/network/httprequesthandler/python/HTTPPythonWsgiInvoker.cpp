@@ -18,14 +18,16 @@
  *
  */
 
-#include "interfaces/python/swig.h"
-
 #include "HTTPPythonWsgiInvoker.h"
-#include "URL.h"
+
+#include <utility>
+
 #include "addons/Webinterface.h"
 #include "interfaces/legacy/wsgi/WsgiErrorStream.h"
 #include "interfaces/legacy/wsgi/WsgiInputStream.h"
 #include "interfaces/legacy/wsgi/WsgiResponse.h"
+#include "interfaces/python/swig.h"
+#include "URL.h"
 #include "utils/URIUtils.h"
 
 #define MODULE      "xbmc"
@@ -392,8 +394,6 @@ void CHTTPPythonWsgiInvoker::addWsgiEnvironment(HTTPPythonRequest* request, void
     return;
 
   PyObject* pyEnviron = reinterpret_cast<PyObject*>(environ);
-  if (pyEnviron == NULL)
-    return;
 
   // WSGI-defined variables
   {

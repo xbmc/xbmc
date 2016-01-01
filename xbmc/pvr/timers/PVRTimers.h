@@ -19,12 +19,18 @@
  *
  */
 
-#include "PVRTimerInfoTag.h"
-#include "XBDateTime.h"
+#include <map>
+#include <memory>
+
 #include "addons/include/xbmc_pvr_types.h"
+#include "PVRTimerInfoTag.h"
 #include "utils/Observer.h"
+#include "XBDateTime.h"
 
 class CFileItem;
+class CFileItemList;
+typedef std::shared_ptr<CFileItem> CFileItemPtr;
+
 namespace EPG
 {
   class CEpgInfoTag;
@@ -205,7 +211,7 @@ namespace PVR
 
     CPVRTimersPath(const std::string &strPath);
     CPVRTimersPath(const std::string &strPath, int iClientId, unsigned int iParentId);
-    CPVRTimersPath(bool bRadio, bool bGrouped);
+    CPVRTimersPath(bool bRadio, bool bTimerRules);
 
     bool IsValid() const { return m_bValid; }
 
@@ -213,7 +219,7 @@ namespace PVR
     bool              IsTimersRoot() const    { return m_bRoot; }
     bool              IsTimerSchedule() const { return !IsTimersRoot(); }
     bool              IsRadio() const         { return m_bRadio; }
-    bool              IsGrouped() const       { return m_bGrouped; }
+    bool              IsRules() const         { return m_bTimerRules; }
     int               GetClientId() const     { return m_iClientId; }
     unsigned int      GetParentId() const     { return m_iParentId; }
 
@@ -224,7 +230,7 @@ namespace PVR
     bool         m_bValid;
     bool         m_bRoot;
     bool         m_bRadio;
-    bool         m_bGrouped;
+    bool         m_bTimerRules;
     int          m_iClientId;
     unsigned int m_iParentId;
   };

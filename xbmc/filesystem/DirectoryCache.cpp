@@ -28,7 +28,9 @@
 
 #include <algorithm>
 
-using namespace std;
+// Maximum number of directories to keep in our cache
+#define MAX_CACHED_DIRS 50
+
 using namespace XFILE;
 
 CDirectoryCache::CDir::CDir(DIR_CACHE_TYPE cacheType)
@@ -115,7 +117,7 @@ void CDirectoryCache::SetDirectory(const std::string& strPath, const CFileItemLi
   CDir* dir = new CDir(cacheType);
   dir->m_Items->Copy(items);
   dir->SetLastAccess(m_accessCounter);
-  m_cache.insert(pair<std::string, CDir*>(storedPath, dir));
+  m_cache.insert(std::pair<std::string, CDir*>(storedPath, dir));
 }
 
 void CDirectoryCache::ClearFile(const std::string& strFile)
@@ -206,9 +208,9 @@ void CDirectoryCache::Clear()
     Delete(i++);
 }
 
-void CDirectoryCache::InitCache(set<std::string>& dirs)
+void CDirectoryCache::InitCache(std::set<std::string>& dirs)
 {
-  set<std::string>::iterator it;
+  std::set<std::string>::iterator it;
   for (it = dirs.begin(); it != dirs.end(); ++it)
   {
     const std::string& strDir = *it;
@@ -218,7 +220,7 @@ void CDirectoryCache::InitCache(set<std::string>& dirs)
   }
 }
 
-void CDirectoryCache::ClearCache(set<std::string>& dirs)
+void CDirectoryCache::ClearCache(std::set<std::string>& dirs)
 {
   iCache i = m_cache.begin();
   while (i != m_cache.end())
@@ -233,7 +235,6 @@ void CDirectoryCache::ClearCache(set<std::string>& dirs)
 void CDirectoryCache::CheckIfFull()
 {
   CSingleLock lock (m_cs);
-  static const unsigned int max_cached_dirs = 10;
 
   // find the last accessed folder, and remove if the number of cached folders is too many
   iCache lastAccessed = m_cache.end();
@@ -248,7 +249,7 @@ void CDirectoryCache::CheckIfFull()
       numCached++;
     }
   }
-  if (lastAccessed != m_cache.end() && numCached >= max_cached_dirs)
+  if (lastAccessed != m_cache.end() && numCached >= MAX_CACHED_DIRS)
     Delete(lastAccessed);
 }
 
@@ -271,7 +272,7 @@ void CDirectoryCache::PrintStats() const
   for (ciCache i = m_cache.begin(); i != m_cache.end(); i++)
   {
     CDir *dir = i->second;
-    oldest = min(oldest, dir->GetLastAccess());
+    oldest = std::min(oldest, dir->GetLastAccess());
     numItems += dir->m_Items->Size();
     numDirs++;
   }

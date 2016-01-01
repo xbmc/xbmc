@@ -18,12 +18,14 @@
  *
  */
 
-#include "utils/URIUtils.h"
-#include "settings/AdvancedSettings.h"
-#include "filesystem/MultiPathDirectory.h"
-#include "URL.h"
+#include <utility>
 
 #include "gtest/gtest.h"
+
+#include "filesystem/MultiPathDirectory.h"
+#include "settings/AdvancedSettings.h"
+#include "URL.h"
+#include "utils/URIUtils.h"
 
 using namespace XFILE;
 
@@ -312,7 +314,7 @@ TEST_F(TestURIUtils, IsISO9660)
 
 TEST_F(TestURIUtils, IsLiveTV)
 {
-  EXPECT_TRUE(URIUtils::IsLiveTV("sap://path/to/file"));
+  EXPECT_TRUE(URIUtils::IsLiveTV("pvr://path/to/file"));
 }
 
 TEST_F(TestURIUtils, IsMultiPath)

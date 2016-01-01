@@ -65,7 +65,7 @@ float CVideoSyncPi::GetFps()
   return m_fps;
 }
 
-void CVideoSyncPi::OnResetDevice()
+void CVideoSyncPi::OnResetDisplay()
 {
   m_abort = true;
 }

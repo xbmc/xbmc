@@ -44,7 +44,7 @@ int CAutoSwitch::GetView(const CFileItemList &vecItems)
   int iSortMethod = -1;
   int iPercent = 0;
   int iCurrentWindow = g_windowManager.GetActiveWindow();
-  bool bHideParentFolderItems = !CSettings::Get().GetBool("filelists.showparentdiritems");
+  bool bHideParentFolderItems = !CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_SHOWPARENTDIRITEMS);
 
   switch (iCurrentWindow)
   {

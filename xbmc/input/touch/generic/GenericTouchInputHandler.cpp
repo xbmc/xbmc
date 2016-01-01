@@ -44,7 +44,7 @@ CGenericTouchInputHandler::~CGenericTouchInputHandler()
   m_detectors.clear();
 }
 
-CGenericTouchInputHandler &CGenericTouchInputHandler::Get()
+CGenericTouchInputHandler &CGenericTouchInputHandler::GetInstance()
 {
   static CGenericTouchInputHandler sTouchInput;
   return sTouchInput;

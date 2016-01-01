@@ -3,12 +3,12 @@
 	<animation effect="fade" time="75">WindowOpen</animation>
 	<animation effect="fade" time="150">WindowClose</animation>
 	<coordinates>
-		<system>1</system>
 		<left>0</left>
 		<top>0</top>
 	</coordinates>
 	<controls>
 		<control type="group">
+			<depth>DepthDialog+</depth>
 			<left>1070</left>
 			<top>640</top>
 			<control type="image">

@@ -2,6 +2,7 @@
 <includes>
 	<include name="HomeRecentlyAddedInfo">
 		<control type="group" id="9003">
+			<depth>DepthMenu</depth>
 			<onup>20</onup>
 			<ondown condition="System.HasAddon(script.globalsearch)">608</ondown>
 			<ondown condition="!System.HasAddon(script.globalsearch)">603</ondown>

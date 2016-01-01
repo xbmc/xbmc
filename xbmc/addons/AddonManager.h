@@ -71,7 +71,7 @@ namespace ADDON
   class CAddonMgr : public Observable
   {
   public:
-    static CAddonMgr &Get();
+    static CAddonMgr &GetInstance();
     bool ReInit() { DeInit(); return Init(); }
     bool Init();
     void DeInit();
@@ -97,12 +97,10 @@ namespace ADDON
     void AddToUpdateableAddons(AddonPtr &pAddon);
     void RemoveFromUpdateableAddons(AddonPtr &pAddon);    
     bool ReloadSettings(const std::string &id);
-    /*! \brief Get all addons with available updates
-     \param addons List to fill with all outdated addons
-     \param getLocalVersion Whether to get the local addon version or the addon verion from the repository
-     \return True if there are outdated addons otherwise false
-     */
-    bool GetAllOutdatedAddons(VECADDONS &addons, bool getLocalVersion = false);
+
+    /*! \brief Get addons with available updates */
+    VECADDONS GetOutdated();
+
     /*! \brief Checks if there is any addon with available updates
      \return True if there are outdated addons otherwise false
      */
@@ -113,6 +111,9 @@ namespace ADDON
     static AddonPtr AddonFromProps(AddonProps& props);
     void FindAddons();
     void UnregisterAddon(const std::string& ID);
+
+    /*! Hook for clearing internal state after uninstall. */
+    void OnPostUnInstall(const std::string& id);
 
     /*! \brief Disable an addon. Returns true on success, false on failure. */
     bool DisableAddon(const std::string& ID);
@@ -148,8 +149,12 @@ namespace ADDON
     */
     bool CanAddonBeInstalled(const AddonPtr& addon);
 
+    bool AddToUpdateBlacklist(const std::string& id);
+    bool RemoveFromUpdateBlacklist(const std::string& id);
+    bool IsBlacklisted(const std::string& id) const;
+
     /* libcpluff */
-    std::string GetExtValue(cp_cfg_element_t *base, const char *path);
+    std::string GetExtValue(cp_cfg_element_t *base, const char *path) const;
 
     /*! \brief Retrieve an element from a given configuration element
      \param base the base configuration element.
@@ -177,6 +182,10 @@ namespace ADDON
     bool GetExtList(cp_cfg_element_t *base, const char *path, std::vector<std::string> &result) const;
 
     const cp_extension_t *GetExtension(const cp_plugin_info_t *props, const char *extension) const;
+
+    /*! \brief Retrieves the platform-specific library name from the given configuration element
+     */
+    std::string GetPlatformLibraryName(cp_cfg_element_t *base) const;
 
     /*! \brief Load the addon in the given path
      This loads the addon using c-pluff which parses the addon descriptor file.
@@ -244,6 +253,7 @@ namespace ADDON
     virtual ~CAddonMgr();
 
     std::set<std::string> m_disabled;
+    std::set<std::string> m_updateBlacklist;
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     CCriticalSection m_critSection;
     CAddonDatabase m_database;

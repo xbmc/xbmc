@@ -48,8 +48,6 @@ using namespace EPG;
 #define BLOCKJUMP    4 // how many blocks are jumped with each analogue scroll action
 #define BLOCK_SCROLL_OFFSET 60 / MINSPERBLOCK // how many blocks are jumped if we are at left/right edge of grid
 
-#define MAX_UPDATE_FREQUENCY 3000 // Do at maximum 1 grid data update in MAX_UPDATE_FREQUENCY milliseconds
-
 CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID, int controlID, float posX, float posY, float width,
                                            float height, int scrollTime, int preloadItems, int timeBlocks, int rulerUnit,
                                            const CTextureInfo& progressIndicatorTexture)
@@ -162,8 +160,8 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer &other)
   m_channelScrollLastTime   = other.m_channelScrollLastTime;
   m_channelScrollSpeed      = other.m_channelScrollSpeed;
   m_channelScrollOffset     = other.m_channelScrollOffset;
-  m_nextUpdateTimeout       = other.m_nextUpdateTimeout;
 }
+
 CGUIEPGGridContainer::~CGUIEPGGridContainer(void)
 {
   Reset();
@@ -575,12 +573,14 @@ void CGUIEPGGridContainer::ProcessProgressIndicator(unsigned int currentTime, CD
 {
   CPoint originRuler = CPoint(m_rulerPosX, m_rulerPosY) + m_renderOffset;
   float width = ((CDateTime::GetUTCDateTime() - m_gridStart).GetSecondsTotal() * m_blockSize) / (MINSPERBLOCK * 60) - m_programmeScrollOffset;
+  float height = std::min(m_channels, m_channelsPerPage) * m_channelHeight + m_rulerHeight;
 
   if (width > 0)
   {
     m_guiProgressIndicatorTexture.SetVisible(true);
     m_guiProgressIndicatorTexture.SetPosition(originRuler.x, originRuler.y);
     m_guiProgressIndicatorTexture.SetWidth(width);
+    m_guiProgressIndicatorTexture.SetHeight(height);
   }
   else
   {
@@ -594,6 +594,7 @@ void CGUIEPGGridContainer::RenderProgressIndicator()
 {
   if (g_graphicsContext.SetClipRegion(m_rulerPosX, m_rulerPosY, m_gridWidth, m_height))
   {
+    m_guiProgressIndicatorTexture.SetDiffuseColor(m_diffuseColor);
     m_guiProgressIndicatorTexture.Render();
     g_graphicsContext.RestoreClipRegion();
   }
@@ -680,6 +681,14 @@ void CGUIEPGGridContainer::RenderItem(float posX, float posY, CGUIListItem *item
       item->GetLayout()->Render(item, m_parentID);
   }
   g_graphicsContext.RestoreOrigin();
+}
+
+void CGUIEPGGridContainer::ResetCoordinates()
+{
+  m_channelCursor = 0;
+  m_channelOffset = 0;
+  m_blockCursor = 0;
+  m_blockOffset = 0;
 }
 
 bool CGUIEPGGridContainer::OnAction(const CAction &action)
@@ -807,13 +816,8 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
         return true;
 
       case GUI_MSG_LABEL_BIND:
-        if (m_nextUpdateTimeout.IsTimePast())
-        {
-          UpdateItems(static_cast<CFileItemList *>(message.GetPointer()));
-          m_nextUpdateTimeout.Set(MAX_UPDATE_FREQUENCY);
-          return true;
-        }
-        break;
+        UpdateItems(static_cast<CFileItemList *>(message.GetPointer()));
+        return true;
 
       case GUI_MSG_REFRESH_LIST:
         // update our list contents
@@ -982,11 +986,12 @@ void CGUIEPGGridContainer::UpdateItems(CFileItemList *items)
     {
       CFileItemPtr item = m_gridIndex[row][block].item;
 
-      if (item != m_gridIndex[row][block+1].item)
+      if ((item != m_gridIndex[row][block+1].item) || (!item && block == m_blocks - 1))
       {
         if (!item)
         {
           CEpgInfoTagPtr gapTag(CEpgInfoTag::CreateDefaultTag());
+          gapTag->SetPVRChannel(m_channelItems[row]->GetPVRChannelInfoTag());
           CFileItemPtr gapItem(new CFileItem(gapTag));
           for (int i = block ; i > block - itemSize; i--)
           {
@@ -1087,7 +1092,7 @@ void CGUIEPGGridContainer::ProgrammesScroll(int amount)
 
 void CGUIEPGGridContainer::OnUp()
 {
-  CGUIAction action = GetNavigateAction(ACTION_MOVE_UP);
+  CGUIAction action = GetAction(ACTION_MOVE_UP);
   if (m_channelCursor > 0)
   {
     SetChannel(m_channelCursor - 1);
@@ -1113,7 +1118,7 @@ void CGUIEPGGridContainer::OnUp()
 
 void CGUIEPGGridContainer::OnDown()
 {
-  CGUIAction action = GetNavigateAction(ACTION_MOVE_DOWN);
+  CGUIAction action = GetAction(ACTION_MOVE_DOWN);
   if (m_channelOffset + m_channelCursor + 1 < m_channels)
   {
     if (m_channelCursor + 1 < m_channelsPerPage)
@@ -1491,6 +1496,19 @@ int CGUIEPGGridContainer::GetSelectedItem() const
 const int CGUIEPGGridContainer::GetSelectedChannel() const
 {
   return m_channelCursor + m_channelOffset;
+}
+
+CFileItemPtr CGUIEPGGridContainer::GetSelectedChannelItem() const
+{
+  CFileItemPtr item;
+
+  if (!m_gridIndex.empty() &&
+      !m_epgItemsPtr.empty() &&
+      m_channelCursor + m_channelOffset < m_channels &&
+      m_blockCursor + m_blockOffset < m_blocks)
+    item = m_gridIndex[m_channelCursor + m_channelOffset][m_blockCursor + m_blockOffset].item;
+
+  return item;
 }
 
 CEpgInfoTagPtr CGUIEPGGridContainer::GetSelectedEpgInfoTag() const
@@ -1886,6 +1904,8 @@ void CGUIEPGGridContainer::Reset()
 
   m_lastItem    = NULL;
   m_lastChannel = NULL;
+
+  m_channels = 0;
 }
 
 void CGUIEPGGridContainer::GoToBegin()
@@ -1918,9 +1938,36 @@ void CGUIEPGGridContainer::GoToEnd()
 
 void CGUIEPGGridContainer::GoToNow()
 {
+  if (!m_gridStart.IsValid())
+    return;
+
   CDateTime currentDate = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
   int offset = ((currentDate - m_gridStart).GetSecondsTotal() / 60 - 30) / MINSPERBLOCK;
   ScrollToBlockOffset(offset);
+
+  if (m_channelCursor + m_channelOffset >= 0 &&
+      m_channelCursor + m_channelOffset < m_channels)
+  {
+    // make sure offset is in valid range
+    offset = std::max(0, std::min(offset, m_blocks - m_blocksPerPage));
+
+    for (int blockIndex = 0; blockIndex < m_blocksPerPage; blockIndex++)
+    {
+      if (offset + blockIndex >= m_blocks)
+        break;
+
+      const CFileItemPtr item = m_gridIndex[m_channelCursor + m_channelOffset][offset + blockIndex].item;
+      if (item)
+      {
+        const CEpgInfoTagPtr tag = item->GetEPGInfoTag();
+        if (tag && tag->StartAsUTC() <= currentDate && tag->EndAsUTC() > currentDate)
+        {
+          SetBlock(blockIndex); // Select currently active epg element
+          break;
+        }
+      }
+    }
+  }
 }
 
 void CGUIEPGGridContainer::SetStartEnd(CDateTime start, CDateTime end)

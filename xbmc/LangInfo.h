@@ -19,19 +19,20 @@
  *
  */
 
+#include <locale>
+#include <map>
+#include <memory>
+#include <set>
+#include <string>
+#include <utility>
+#include <vector>
+
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "utils/GlobalsHandling.h"
 #include "utils/Locale.h"
 #include "utils/Speed.h"
 #include "utils/Temperature.h"
-
-#include <map>
-#include <memory>
-#include <set>
-#include <string>
-#include <vector>
-#include <locale>
 
 #ifdef TARGET_WINDOWS
 #ifdef GetDateFormat
@@ -63,10 +64,10 @@ public:
   virtual ~CLangInfo();
 
   // implementation of ISettingCallback
-  virtual void OnSettingChanged(const CSetting *setting);
+  virtual void OnSettingChanged(const CSetting *setting) override;
 
   // implementation of ISettingsHandler
-  virtual void OnSettingsLoaded();
+  virtual void OnSettingsLoaded() override;
 
   bool Load(const std::string& strLanguage);
 
@@ -183,7 +184,9 @@ public:
   static void LoadTokens(const TiXmlNode* pTokens, std::set<std::string>& vecTokens);
 
   static void SettingOptionsLanguageNamesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
-  static void SettingOptionsStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsAudioStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsSubtitleStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsSubtitleDownloadlanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsISO6391LanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsShortDateFormatsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
@@ -199,6 +202,7 @@ protected:
   static bool DetermineUse24HourClockFromTimeFormat(const std::string& timeFormat);
   static bool DetermineUseMeridiemFromTimeFormat(const std::string& timeFormat);
   static std::string PrepareTimeFormat(const std::string& timeFormat, bool use24HourClock);
+  static void AddLanguages(std::vector< std::pair<std::string, std::string> > &list);
 
   class CRegion
   {

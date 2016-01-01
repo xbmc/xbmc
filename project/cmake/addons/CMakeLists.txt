@@ -1,15 +1,31 @@
 project(kodi-addons)
 
-cmake_minimum_required(VERSION 2.8)
+if(WIN32)
+  # there seems to be a bug in the CMake generator implementation in CMake 2.8.x releases for WIN32
+  cmake_minimum_required(VERSION 3.0)
+else()
+  cmake_minimum_required(VERSION 2.8)
+endif()
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
+
+option(ADDON_TARBALL_CACHING "Cache downloaded addon source tarballs?" ON)
+if(ADDON_TARBALL_CACHING)
+  message(STATUS "Addon source tarball caching is enabled")
+else()
+  message(STATUS "Addon source tarball caching is disabled")
+endif()
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
 if(NOT CORE_SYSTEM_NAME)
-  string(TOLOWER ${CMAKE_SYSTEM_NAME} CORE_SYSTEM_NAME)
+  if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(CORE_SYSTEM_NAME "osx")
+  else()
+    string(TOLOWER ${CMAKE_SYSTEM_NAME} CORE_SYSTEM_NAME)
+  endif()
 endif()
 
 include(ExternalProject)
@@ -65,6 +81,7 @@ list(APPEND CMAKE_PREFIX_PATH ${CMAKE_INSTALL_PREFIX})
 set(BUILD_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
                -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
                -DPACKAGE_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig
+               -DDEPENDS_PATH=${DEPENDS_PATH}
                -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                -DCMAKE_USER_MAKE_RULES_OVERRIDE=${CMAKE_USER_MAKE_RULES_OVERRIDE}
                -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX=${CMAKE_USER_MAKE_RULES_OVERRIDE_CXX}
@@ -78,16 +95,26 @@ if(MSVC)
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 endif()
 
+option(PACKAGE_ZIP "Prepare built addons for packaging" OFF)
 if(PACKAGE_ZIP)
   # needed for project installing
-  list(APPEND BUILD_ARGS -DPACKAGE_ZIP=1)
-  MESSAGE("package zip specified")
+  list(APPEND BUILD_ARGS -DPACKAGE_ZIP=ON)
+
+  # figure out where to store the packaged ZIP archives
+  if(NOT PACKAGE_DIR)
+    set(PACKAGE_DIR "${BUILD_DIR}/zips")
+  else()
+    file(TO_CMAKE_PATH "${PACKAGE_DIR}" PACKAGE_DIR)
+  endif()
+  list(APPEND BUILD_ARGS -DPACKAGE_DIR=${PACKAGE_DIR})
+
+  MESSAGE(STATUS "ZIP packaging enabled (destination: ${PACKAGE_DIR})")
 endif()
 
 if(CMAKE_TOOLCHAIN_FILE)
   list(APPEND BUILD_ARGS -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE})
-  MESSAGE("toolchain specified")
-  MESSAGE(${BUILD_ARGS})
+  MESSAGE(STATUS "Toolchain specified")
+  MESSAGE(STATUS ${BUILD_ARGS})
 endif()
 
 if(NOT ADDONS_TO_BUILD)
@@ -96,6 +123,13 @@ else()
   message(STATUS "Building following addons: ${ADDONS_TO_BUILD}")
   separate_arguments(ADDONS_TO_BUILD)
 endif()
+
+if(NOT ADDONS_DEFINITION_DIR)
+  set(ADDONS_DEFINITION_DIR ${PROJECT_SOURCE_DIR}/addons)
+else()
+  file(TO_CMAKE_PATH "${ADDONS_DEFINITION_DIR}" ADDONS_DEFINITION_DIR)
+endif()
+get_filename_component(ADDONS_DEFINITION_DIR "${ADDONS_DEFINITION_DIR}" ABSOLUTE)
 
 if(ADDON_SRC_PREFIX)
   message(STATUS "Overriding addon source directory prefix: ${ADDON_SRC_PREFIX}")
@@ -145,17 +179,61 @@ include(prepare-env)
 ### add the depends subdirectory for any general dependencies
 add_subdirectory(depends)
 
+# add a custom target "package-addons" which will package and install all addons
+add_custom_target(package-addons)
+
 ### get and build all the binary addons
 # look for all the addons to be built
-file(GLOB_RECURSE addons ${PROJECT_SOURCE_DIR}/addons/*.txt)
+file(GLOB_RECURSE addons ${ADDONS_DEFINITION_DIR}/*.txt)
+
+#if there are no addons assume that bootstrapping hasn't happened yet
+if(NOT addons)
+  message(STATUS "Bootstrapping all default repositories as no addons were found...")
+  set(BOOTSTRAP_BUILD_DIR "${BUILD_DIR}/bootstrap")
+
+  # make sure that the bootstraps build addon exists
+  if(NOT EXISTS ${BOOTSTRAP_BUILD_DIR})
+    file(MAKE_DIRECTORY ${BOOTSTRAP_BUILD_DIR})
+  endif()
+
+  # generate the bootstrap buildsystem
+  execute_process(COMMAND ${CMAKE_COMMAND} ${PROJECT_SOURCE_DIR}/bootstrap
+                                           -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+                                           -DCMAKE_INSTALL_PREFIX:PATH=${ADDONS_DEFINITION_DIR}
+                                           -DBUILD_DIR:PATH=${BOOTSTRAP_BUILD_DIR}
+                                           -DADDONS_TO_BUILD=${ADDONS_TO_BUILD}
+                  WORKING_DIRECTORY ${BOOTSTRAP_BUILD_DIR})
+
+  # execute the generated bootstrap buildsystem
+  execute_process(COMMAND ${CMAKE_COMMAND} --build ${BOOTSTRAP_BUILD_DIR}
+                  WORKING_DIRECTORY ${BOOTSTRAP_BUILD_DIR})
+
+  # now look for all the addons to be built again
+  file(GLOB_RECURSE addons ${ADDONS_DEFINITION_DIR}/*.txt)
+
+  if(NOT addons)
+    message(FATAL_ERROR "No addons available to be built")
+  endif()
+endif()
+
 foreach(addon ${addons})
   if(NOT (addon MATCHES platforms.txt))
     file(STRINGS ${addon} def)
     separate_arguments(def)
     list(GET def 0 id)
 
+    set(ADDON_FOUND FALSE)
+    # try to find a perfect match
     list(FIND ADDONS_TO_BUILD ${id} idx)
-    if(idx GREATER -1 OR ADDONS_TO_BUILD STREQUAL "all")
+    if(idx GREATER -1 OR "${ADDONS_TO_BUILD}" STREQUAL "all")
+      set(ADDON_FOUND TRUE)
+    # Maybe we have a regex
+    elseif(id MATCHES "${ADDONS_TO_BUILD}")
+      message(STATUS "Pattern ${ADDONS_TO_BUILD} matches ${id}, building addon")
+      set(ADDON_FOUND TRUE)
+    endif()
+
+    if(ADDON_FOUND)
       get_filename_component(dir ${addon} PATH)
 
       # check if the addon has a platforms.txt
@@ -183,6 +261,19 @@ foreach(addon ${addons})
         # if there is a 3rd parameter in the file, we consider it a git revision
         if(deflength GREATER 2 AND "${SOURCE_DIR}" STREQUAL "")
           list(GET def 2 revision)
+
+          # we need access to a git executable
+          find_package(Git REQUIRED)
+
+          # resolve revision to git hash
+          execute_process(COMMAND ${GIT_EXECUTABLE} ls-remote ${url} ${revision} OUTPUT_VARIABLE revision_hash)
+          # git ls-remote only works on branches and tag names but not on revisions
+          if(NOT "${revision_hash}" STREQUAL "")
+            string(REPLACE "\t" ";" revision_list ${revision_hash})
+            list(GET revision_list 0 revision_hash)
+            message(STATUS "${id}: git branch/tag ${revision} resolved to hash: ${revision_hash}")
+            set(revision ${revision_hash})
+          endif()
 
           # Note: downloading specific revisions via http in the format below is probably github specific
           # if we ever use other repositories, this might need adapting
@@ -214,7 +305,7 @@ foreach(addon ${addons})
         # download the addon if necessary
         if(NOT "${archive_name}" STREQUAL "")
           # download and extract the addon
-          if(NOT EXISTS ${BUILD_DIR}/download/${archive_name}.tar.gz)
+          if(NOT ADDON_TARBALL_CACHING OR NOT EXISTS ${BUILD_DIR}/download/${archive_name}.tar.gz)
             # cleanup any of the previously downloaded archives of this addon
             file(GLOB archives "${BUILD_DIR}/download/${id}*.tar.gz")
             if(archives)
@@ -279,6 +370,25 @@ foreach(addon ${addons})
               add_dependencies(${id} ${${id}_DEPS})
             endif()
           endif()
+
+          if(CROSS_AUTOCONF AND AUTOCONF_FILES)
+            if(EXISTS ${SOURCE_DIR}/bootstrap/autoreconf.txt)
+              file(STRINGS ${SOURCE_DIR}/bootstrap/autoreconf.txt conf_dirs)
+              foreach(conf_dir ${conf_dirs})
+                foreach(afile ${AUTOCONF_FILES})
+                  message(STATUS "copying ${afile} to ${SOURCE_DIR}/${conf_dir}")
+                  file(COPY ${afile} DESTINATION ${SOURCE_DIR}/${conf_dir})
+                endforeach()
+              endforeach()
+            endif()
+          endif()
+
+          # create a forwarding target to the addon-package target
+          add_custom_target(package-${id}
+                    COMMAND ${CMAKE_COMMAND} --build ${id}-prefix/src/${id}-build --target addon-package
+                    DEPENDS ${id})
+          add_dependencies(package-addons package-${id})
+
         else()
           message(FATAL_ERROR "${id}: invalid or missing addon source directory at ${SOURCE_DIR}")
         endif()

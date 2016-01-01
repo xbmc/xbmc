@@ -165,12 +165,10 @@ bool CGUISliderControl::OnAction(const CAction &action)
   switch ( action.GetID() )
   {
   case ACTION_MOVE_LEFT:
-    //case ACTION_OSD_SHOW_VALUE_MIN:
     Move(-1);
     return true;
 
   case ACTION_MOVE_RIGHT:
-    //case ACTION_OSD_SHOW_VALUE_PLUS:
     Move(1);
     return true;
 
@@ -555,13 +553,19 @@ EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEv
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
   {
-    Move(10);
-    return EVENT_RESULT_HANDLED;
+    if (m_guiBackground.HitTest(point))
+    {
+      Move(10);
+      return EVENT_RESULT_HANDLED;
+    }
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
-    Move(-10);
-    return EVENT_RESULT_HANDLED;
+    if (m_guiBackground.HitTest(point))
+    {
+      Move(-10);
+      return EVENT_RESULT_HANDLED;
+    }
   }
   else if (event.m_id == ACTION_GESTURE_NOTIFY)
   {

@@ -26,25 +26,22 @@
 class CFileItem;
 class CFileItemList;
 
-class CGUIDialogSelect :
-      public CGUIDialogBoxBase
+class CGUIDialogSelect : public CGUIDialogBoxBase
 {
 public:
   CGUIDialogSelect(void);
   virtual ~CGUIDialogSelect(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnBack(int actionID);
+  virtual bool OnMessage(CGUIMessage& message) override;
+  virtual bool OnBack(int actionID) override;
 
   void Reset();
   int  Add(const std::string& strLabel);
-  int  Add(const CFileItem* pItem);
-  void Add(const CFileItemList& items);
-  void SetItems(CFileItemList* items);
-  int GetSelectedLabel() const;
-  const std::string& GetSelectedLabelText() const;
-  const CFileItemPtr GetSelectedItem() const;
-  const CFileItemList& GetSelectedItems() const;
-  void EnableButton(bool enable, int string);
+  int  Add(const CFileItem& item);
+  void SetItems(const CFileItemList& items);
+  const CFileItemPtr GetSelectedFileItem() const;
+  int GetSelectedItem() const;
+  const std::vector<int>& GetSelectedItems() const;
+  void EnableButton(bool enable, int label);
   bool IsButtonPressed();
   void Sort(bool bSortOrder = true);
   void SetSelected(int iSelected);
@@ -53,21 +50,23 @@ public:
   void SetSelected(const std::vector<std::string> &selectedLabels);
   void SetUseDetails(bool useDetails);
   void SetMultiSelection(bool multiSelection);
-protected:
-  virtual CGUIControl *GetFirstFocusableControl(int id);
-  virtual void OnWindowLoaded();
-  virtual void OnInitWindow();
-  virtual void OnWindowUnload();
-  void SetupButton();
 
+protected:
+  virtual CGUIControl *GetFirstFocusableControl(int id) override;
+  virtual void OnWindowLoaded() override;
+  virtual void OnInitWindow() override;
+  virtual void OnDeinitWindow(int nextWindowID) override;
+  virtual void OnWindowUnload() override;
+
+private:
   bool m_bButtonEnabled;
-  int m_buttonString;
   bool m_bButtonPressed;
-  int m_iSelected;
+  int m_buttonLabel;
+  CFileItemPtr m_selectedItem;
   bool m_useDetails;
   bool m_multiSelection;
 
-  CFileItemList* m_selectedItems;
-  CFileItemList* m_vecList;
+  std::vector<int> m_selectedItems;
+  std::unique_ptr<CFileItemList> m_vecList;
   CGUIViewControl m_viewControl;
 };

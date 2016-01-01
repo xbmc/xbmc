@@ -6,6 +6,7 @@ SET EXITCODE=0
 
 SET install=false
 SET clean=false
+SET package=false
 SET addon=
 
 SETLOCAL EnableDelayedExpansion
@@ -14,9 +15,11 @@ FOR %%b IN (%*) DO (
     SET install=true
   ) ELSE ( IF %%b == clean (
     SET clean=true
+  ) ELSE ( IF %%b == package (
+    SET package=true
   ) ELSE (
     SET addon=!addon! %%b
-  ))
+  )))
 )
 SETLOCAL DisableDelayedExpansion
 
@@ -26,7 +29,12 @@ call "%VS120COMNTOOLS%..\..\VC\bin\vcvars32.bat"
 SET WORKDIR=%WORKSPACE%
 
 IF "%WORKDIR%" == "" (
-  SET WORKDIR=%CD%\..\..\..
+  rem resolve the relative path
+  SETLOCAL EnableDelayedExpansion
+  PUSHD ..\..\..
+  SET WORKDIR=!CD!
+  POPD
+  SETLOCAL DisableDelayedExpansion
 )
 
 rem setup some paths that we need later
@@ -50,11 +58,13 @@ DEL /F %ADDONS_FAILURE_FILE% > NUL 2>&1
 IF %clean% == true (
   rem remove the build directory if it exists
   IF EXIST "%ADDONS_BUILD_PATH%" (
+    ECHO Cleaning build directory...
     RMDIR "%ADDONS_BUILD_PATH%" /S /Q > NUL
   )
 
   rem remove the build directory if it exists
   IF EXIST "%ADDON_DEPENDS_PATH%" (
+    ECHO Cleaning dependencies...
     RMDIR "%ADDON_DEPENDS_PATH%" /S /Q > NUL
   )
 
@@ -101,7 +111,7 @@ cmake "%ADDONS_PATH%" -G "NMake Makefiles" ^
       -DAPP_ROOT=%WORKDIR% ^
       -DBUILD_DIR=%ADDONS_BUILD_PATH% ^
       -DDEPENDS_PATH=%ADDON_DEPENDS_PATH% ^
-      -DPACKAGE_ZIP=1 ^
+      -DPACKAGE_ZIP=ON ^
       -DADDONS_TO_BUILD="%ADDONS_TO_BUILD%"
 IF ERRORLEVEL 1 (
   ECHO cmake error level: %ERRORLEVEL% > %ERRORFILE%
@@ -129,7 +139,17 @@ FOR %%a IN (%ADDONS_TO_MAKE%) DO (
     ECHO nmake %%a error level: %ERRORLEVEL% > %ERRORFILE%
     ECHO %%a >> %ADDONS_FAILURE_FILE%
   ) ELSE (
-    ECHO %%a >> %ADDONS_SUCCESS_FILE%
+    if %package% == true (
+      nmake package-%%a
+      IF ERRORLEVEL 1 (
+        ECHO nmake package-%%a error level: %ERRORLEVEL% > %ERRORFILE%
+        ECHO %%a >> %ADDONS_FAILURE_FILE%
+      ) ELSE (
+        ECHO %%a >> %ADDONS_SUCCESS_FILE%
+      )
+    ) ELSE (
+      ECHO %%a >> %ADDONS_SUCCESS_FILE%
+    )
   )
 )
 

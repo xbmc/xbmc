@@ -42,7 +42,7 @@ public:
   static bool           CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const std::string& destFile);
   void           Close();
   // methods for the imagefactory
-  virtual bool   Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format);
+  virtual bool   Decode(unsigned char* const pixels, unsigned int width, unsigned int height, unsigned int pitch, unsigned int format);
   virtual bool   LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height);
   virtual bool   CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const std::string& destFile, 
                                             unsigned char* &bufferout, unsigned int &bufferoutSize);

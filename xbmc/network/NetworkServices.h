@@ -42,11 +42,11 @@ class CHTTPWebinterfaceAddonsHandler;
 class CNetworkServices : public ISettingCallback
 {
 public:
-  static CNetworkServices& Get();
+  static CNetworkServices& GetInstance();
   
-  virtual bool OnSettingChanging(const CSetting *setting);
-  virtual void OnSettingChanged(const CSetting *setting);
-  virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode);
+  virtual bool OnSettingChanging(const CSetting *setting) override;
+  virtual void OnSettingChanged(const CSetting *setting) override;
+  virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
 
   void Start();
   void Stop(bool bWait);

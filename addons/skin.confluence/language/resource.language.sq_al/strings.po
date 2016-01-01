@@ -140,14 +140,6 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "Opcionet"
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Luaj melodinë kryesore përcjellse së një seriali televiziv ne bibleotekën video (Shtesa TVTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TVTunes"
-
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Tekste Këngësh"
@@ -227,10 +219,6 @@ msgstr "[B]KONFIGURO OPCIONET TË PAMJES[/B][CR][CR]Ndrysho maskën · Cakto gju
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]KONFIGURO OPCIONET E VIDEOVE[/B][CR][CR]Menaxho video-bibliotekën tënde · Cakto opcionet e video-riprodhimit · Ndrysho pamjen e video-listës[CR]Cakto shkrimin e subtitrave"
-
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]KONFIGURO OPCIONET E MUZIKËS[/B][CR][CR]Menaxho bibliotekën e muzikës tënde · Cakto opcione të riprodhimit të muzikës · Ndrysho pamjen e listës së muzikës[CR]Cakto opcionet karaoke"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"

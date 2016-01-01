@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -20,12 +19,13 @@
  *
  */
 
+#include <memory>
+#include <utility>
+
 #include "FileItem.h"
 #include "PVRChannel.h"
 #include "settings/lib/ISettingCallback.h"
 #include "utils/JobManager.h"
-
-#include <memory>
 
 namespace EPG
 {
@@ -271,7 +271,7 @@ namespace PVR
 
     //@}
 
-    virtual void OnSettingChanged(const CSetting *setting);
+    virtual void OnSettingChanged(const CSetting *setting) override;
 
     /*!
      * @brief Get a channel given it's EPG ID.
@@ -314,14 +314,14 @@ namespace PVR
      * @param channel The current channel.
      * @return The channel or NULL if it wasn't found.
      */
-    CFileItemPtr GetByChannelUp(const CFileItem &channel) const;
+    CFileItemPtr GetByChannelUp(const CPVRChannelPtr &channel) const;
 
     /*!
      * @brief Get the previous channel in this group.
      * @param channel The current channel.
      * @return The channel or NULL if it wasn't found.
      */
-    CFileItemPtr GetByChannelDown(const CFileItem &channel) const;
+    CFileItemPtr GetByChannelDown(const CPVRChannelPtr &channel) const;
 
     /*!
      * Get the current members of this group
@@ -379,7 +379,7 @@ namespace PVR
      */
     void ResetChannelNumberCache(void);
 
-    void OnJobComplete(unsigned int jobID, bool success, CJob* job) {}
+    void OnJobComplete(unsigned int jobID, bool success, CJob* job) override {}
 
     /*!
      * @brief Get all EPG tables and apply a filter.
@@ -392,9 +392,10 @@ namespace PVR
     /*!
      * @brief Get all EPG tables.
      * @param results The fileitem list to store the results in.
+     * @param bIncludeChannelsWithoutEPG, for channels without EPG data, put an empty EPG tag associated with the channel into results
      * @return The amount of entries that were added.
      */
-    int GetEPGAll(CFileItemList &results) const;
+    int GetEPGAll(CFileItemList &results, bool bIncludeChannelsWithoutEPG = false) const;
 
     /*!
      * @brief Get all entries that are active now.

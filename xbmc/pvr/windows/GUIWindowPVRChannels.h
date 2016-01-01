@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -30,17 +29,17 @@ namespace PVR
     CGUIWindowPVRChannels(bool bRadio);
     virtual ~CGUIWindowPVRChannels(void) {};
 
-    bool OnMessage(CGUIMessage& message);
-    void GetContextButtons(int itemNumber, CContextButtons &buttons);
-    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-    bool Update(const std::string &strDirectory, bool updateFilterPath = true);
-    void UpdateButtons(void);
-    void ResetObservers(void);
+    virtual bool OnMessage(CGUIMessage& message) override;
+    virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+    virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
+    virtual void UpdateButtons(void) override;
+    virtual void ResetObservers(void) override;
     void UnregisterObservers(void);
-    bool OnAction(const CAction &action);
+    virtual bool OnAction(const CAction &action) override;
 
   protected:
-    std::string GetDirectoryPath(void);
+    virtual std::string GetDirectoryPath(void) override;
 
   private:
     bool OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON button);
@@ -48,7 +47,8 @@ namespace PVR
     bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonManage(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonUpdateEpg(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonRecord(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
 
     void ShowChannelManager();
     void ShowGroupManager(void);

@@ -57,7 +57,7 @@ public:
    */
   static bool WaitOnEvent(CEvent &event, unsigned int timeout = 100, bool allowCancel = true);
 protected:
-  virtual void Open_Internal();
+  virtual void Open_Internal(const std::string &param = "");
   bool m_bCanceled;
   bool m_bLastVisible;
   float m_progress; ///< current progress

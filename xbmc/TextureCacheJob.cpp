@@ -68,7 +68,7 @@ bool CTextureCacheJob::DoWork()
 
   // check whether we need cache the job anyway
   bool needsRecaching = false;
-  std::string path(CTextureCache::Get().CheckCachedImage(m_url, false, needsRecaching));
+  std::string path(CTextureCache::GetInstance().CheckCachedImage(m_url, false, needsRecaching));
   if (!path.empty() && !needsRecaching)
     return false;
   return CacheTexture();
@@ -99,7 +99,7 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
     m_details.file = m_cachePath + ".jpg";
     if (out_texture)
       *out_texture = LoadImage(CTextureCache::GetCachedPath(m_details.file), width, height, "" /* already flipped */);
-    CLog::Log(LOGDEBUG, "Fast %s image '%s' to '%s': %p", m_oldHash.empty() ? "Caching" : "Recaching", image.c_str(), m_details.file.c_str(), out_texture);
+    CLog::Log(LOGDEBUG, "Fast %s image '%s' to '%s': %p", m_oldHash.empty() ? "Caching" : "Recaching", CURL::GetRedacted(image).c_str(), m_details.file.c_str(), out_texture);
     return true;
   }
 #endif
@@ -111,7 +111,7 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
     else
       m_details.file = m_cachePath + ".jpg";
 
-    CLog::Log(LOGDEBUG, "%s image '%s' to '%s':", m_oldHash.empty() ? "Caching" : "Recaching", image.c_str(), m_details.file.c_str());
+    CLog::Log(LOGDEBUG, "%s image '%s' to '%s':", m_oldHash.empty() ? "Caching" : "Recaching", CURL::GetRedacted(image).c_str(), m_details.file.c_str());
 
     if (CPicture::CacheTexture(texture, width, height, CTextureCache::GetCachedPath(m_details.file), scalingAlgorithm))
     {
@@ -208,7 +208,7 @@ CBaseTexture *CTextureCacheJob::LoadImage(const std::string &image, unsigned int
       && !StringUtils::StartsWithNoCase(file.GetMimeType(), "image/") && !StringUtils::EqualsNoCase(file.GetMimeType(), "application/octet-stream")) // ignore non-pictures
     return NULL;
 
-  CBaseTexture *texture = CBaseTexture::LoadFromFile(image, width, height, CSettings::Get().GetBool("pictures.useexifrotation"), requirePixels, file.GetMimeType());
+  CBaseTexture *texture = CBaseTexture::LoadFromFile(image, width, height, requirePixels, file.GetMimeType());
   if (!texture)
     return NULL;
 
@@ -245,7 +245,7 @@ std::string CTextureCacheJob::GetImageHash(const std::string &url)
     // so set an obviously bad hash
     return "BADHASH";
   }
-  CLog::Log(LOGDEBUG, "%s - unable to stat url %s", __FUNCTION__, url.c_str());
+  CLog::Log(LOGDEBUG, "%s - unable to stat url %s", __FUNCTION__, CURL::GetRedacted(url).c_str());
   return "";
 }
 

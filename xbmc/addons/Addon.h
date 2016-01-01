@@ -148,13 +148,12 @@ public:
 
   // properties
   TYPE Type() const { return m_props.type; }
+  virtual TYPE FullType() const { return Type(); }
   bool IsType(TYPE type) const { return type == m_props.type; }
   AddonProps Props() const { return m_props; }
   AddonProps& Props() { return m_props; }
   const std::string ID() const { return m_props.id; }
   const std::string Name() const { return m_props.name; }
-  /*! This lies. Ask CAddonMgr */
-  bool Enabled() const { return true; }
   virtual bool IsInUse() const { return false; };
   const AddonVersion Version() const { return m_props.version; }
   const AddonVersion MinVersion() const { return m_props.minversion; }
@@ -203,7 +202,7 @@ public:
   virtual void OnPostInstall(bool update, bool modal) {};
   virtual void OnPreUnInstall() {};
   virtual void OnPostUnInstall() {};
-  virtual bool CanInstall(const std::string& referer) { return true; }
+  virtual bool CanInstall() { return true; }
 protected:
   friend class CAddonCallbacksAddon;
 

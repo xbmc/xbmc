@@ -56,6 +56,7 @@ public:
 
   static bool Validate(const std::string &input, void *data);
   static bool ValidateRating(const std::string &input, void *data);
+  static bool ValidateMyRating(const std::string &input, void *data);
 
 protected:
   virtual std::string         GetField(int field, const std::string& type) const;

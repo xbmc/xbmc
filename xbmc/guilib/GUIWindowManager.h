@@ -28,14 +28,16 @@
  *
  */
 
-#include "GUIWindow.h"
-#include "IWindowManagerCallback.h"
-#include "IMsgTargetCallback.h"
-#include "DirtyRegionTracker.h"
-#include "utils/GlobalsHandling.h"
-#include "guilib/WindowIDs.h"
-#include "messaging/IMessageTarget.h"
 #include <list>
+#include <utility>
+
+#include "DirtyRegionTracker.h"
+#include "guilib/WindowIDs.h"
+#include "GUIWindow.h"
+#include "IMsgTargetCallback.h"
+#include "IWindowManagerCallback.h"
+#include "messaging/IMessageTarget.h"
+#include "utils/GlobalsHandling.h"
 
 class CGUIDialog;
 enum class DialogModalityType;
@@ -167,7 +169,6 @@ public:
   bool IsWindowActive(const std::string &xmlFile, bool ignoreClosing = true) const;
   bool IsWindowVisible(const std::string &xmlFile) const;
   bool IsWindowTopMost(const std::string &xmlFile) const;
-  bool IsOverlayAllowed() const;
   /*! \brief Checks if the given window is an addon window.
    *
    * \return true if the given window is an addon window, otherwise false.
@@ -178,7 +179,6 @@ public:
    * \return true if the given window is a python window, otherwise false.
    */
   bool IsPythonWindow(int id) const { return (id >= WINDOW_PYTHON_START && id <= WINDOW_PYTHON_END); };
-  void ShowOverlay(CGUIWindow::OVERLAY_STATE state);
   void GetActiveModelessWindows(std::vector<int> &ids);
 #ifdef _DEBUG
   void DumpTextureUse();
@@ -188,7 +188,6 @@ private:
 
   void LoadNotOnDemandWindows();
   void UnloadNotOnDemandWindows();
-  void HideOverlay(CGUIWindow::OVERLAY_STATE state);
   void AddToWindowHistory(int newWindowID);
   void ClearWindowHistory();
   void CloseWindowSync(CGUIWindow *window, int nextWindowID = 0);
@@ -222,7 +221,6 @@ private:
   CCriticalSection m_critSection;
   std::vector <IMsgTargetCallback*> m_vecMsgTargets;
 
-  bool m_bShowOverlay;
   int  m_iNested;
   bool m_initialized;
 

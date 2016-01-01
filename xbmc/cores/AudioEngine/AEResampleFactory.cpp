@@ -31,7 +31,7 @@ namespace ActiveAE
 IAEResample *CAEResampleFactory::Create(uint32_t flags /* = 0 */)
 {
 #if defined(TARGET_RASPBERRY_PI)
-  if (!(flags & AERESAMPLEFACTORY_QUICK_RESAMPLE) && CSettings::Get().GetInt("audiooutput.processquality") == AE_QUALITY_GPU)
+  if (!(flags & AERESAMPLEFACTORY_QUICK_RESAMPLE) && CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_PROCESSQUALITY) == AE_QUALITY_GPU)
     return new CActiveAEResamplePi();
 #endif
   return new CActiveAEResampleFFMPEG();

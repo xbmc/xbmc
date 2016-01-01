@@ -20,8 +20,9 @@
 
 
 #include "WinSystemWin32DX.h"
-#include "settings/Settings.h"
 #include "guilib/gui3d.h"
+#include "settings/Settings.h"
+#include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
 
 #ifdef HAS_DX
@@ -37,9 +38,20 @@ CWinSystemWin32DX::~CWinSystemWin32DX()
 
 }
 
+bool CWinSystemWin32DX::PresentRender(const CDirtyRegionList& dirty)
+{
+  bool result = PresentRenderImpl(dirty);
+  if (m_delayDispReset && m_dispResetTimer.IsTimePast())
+  {
+    m_delayDispReset = false;
+    CWinSystemWin32::OnDisplayReset();
+  }
+  return result;
+}
+
 bool CWinSystemWin32DX::UseWindowedDX(bool fullScreen)
 {
-  return (CSettings::Get().GetBool("videoscreen.fakefullscreen") || !fullScreen);
+  return (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN) || !fullScreen);
 }
 
 bool CWinSystemWin32DX::CreateNewWindow(std::string name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
@@ -52,14 +64,20 @@ bool CWinSystemWin32DX::CreateNewWindow(std::string name, bool fullScreen, RESOL
   CRenderSystemDX::m_interlaced = ((res.dwFlags & D3DPRESENTFLAG_INTERLACED) != 0);
   CRenderSystemDX::m_useWindowedDX = UseWindowedDX(fullScreen);
   SetRenderParams(m_nWidth, m_nHeight, fullScreen, res.fRefreshRate);
-  SetMonitor(GetMonitor(res.iScreen).hMonitor);
+  const MONITOR_DETAILS* monitor = GetMonitor(res.iScreen);
+  if (!monitor)
+    return false;
+
+  SetMonitor(monitor->hMonitor);
 
   return true;
 }
 
 void CWinSystemWin32DX::UpdateMonitor()
 {
-  SetMonitor(GetMonitor(m_nScreen).hMonitor);
+  const MONITOR_DETAILS* monitor = GetMonitor(m_nScreen);
+  if (monitor)
+    SetMonitor(monitor->hMonitor);
 }
 
 bool CWinSystemWin32DX::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
@@ -83,7 +101,11 @@ bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, boo
   // In other cases, set the window/mode then swith DXGI mode.
   bool FS2Windowed = !m_useWindowedDX && UseWindowedDX(fullScreen);
 
-  SetMonitor(GetMonitor(res.iScreen).hMonitor);
+  const MONITOR_DETAILS* monitor = GetMonitor(res.iScreen);
+  if (!monitor)
+    return false;
+
+  SetMonitor(monitor->hMonitor);
   CRenderSystemDX::m_interlaced = ((res.dwFlags & D3DPRESENTFLAG_INTERLACED) != 0);
   CRenderSystemDX::m_useWindowedDX = UseWindowedDX(fullScreen);
 
@@ -164,6 +186,36 @@ void CWinSystemWin32DX::NotifyAppFocusChange(bool bGaining)
     if (!bGaining)
       ShowWindow(m_hWnd, SW_SHOWMINIMIZED);
   }
+}
+
+void CWinSystemWin32DX::Register(ID3DResource *resource)
+{
+  CRenderSystemDX::Register(resource);
+}
+
+void CWinSystemWin32DX::Unregister(ID3DResource *resource)
+{
+  CRenderSystemDX::Unregister(resource);
+}
+
+void CWinSystemWin32DX::Register(IDispResource *resource)
+{
+  CWinSystemWin32::Register(resource);
+}
+
+void CWinSystemWin32DX::Unregister(IDispResource *resource)
+{
+  CWinSystemWin32::Unregister(resource);
+}
+
+void CWinSystemWin32DX::OnDisplayLost()
+{
+  CWinSystemWin32::OnDisplayLost();
+}
+
+void CWinSystemWin32DX::OnDisplayReset()
+{
+  CWinSystemWin32::OnDisplayReset();
 }
 
 #endif

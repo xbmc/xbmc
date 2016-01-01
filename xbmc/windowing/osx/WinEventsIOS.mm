@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2012-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2012-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -54,27 +54,12 @@ bool CWinEventsIOS::MessagePump()
     XBMC_Event pumpEvent;
     {
       CSingleLock lock(g_inputCond);
-      if (events.size() == 0)
+      if (events.empty())
         return ret;
       pumpEvent = events.front();
       events.pop_front();
     }  
-    
-    if (pumpEvent.type == XBMC_USEREVENT)
-    {
-      // On ATV2, we push in events as a XBMC_USEREVENT,
-      // the jbutton.which will be the keyID to translate using joystick.AppleRemote.xml
-      // jbutton.holdTime is the time the button is hold in ms (for repeated keypresses)
-      std::string joystickName = "AppleRemote";
-      float fAmount = 1.0;
-      unsigned char wKeyID = pumpEvent.jbutton.which;
-      unsigned int holdTime = pumpEvent.jbutton.holdTime;
-
-      CLog::Log(LOGDEBUG,"CWinEventsIOS: Button press keyID = %i", wKeyID);
-      ret |= CInputManager::Get().ProcessJoystickEvent(g_windowManager.GetActiveWindowID(), joystickName, wKeyID, JACTIVE_BUTTON, fAmount, holdTime);
-    }
-    else
-      ret |= g_application.OnEvent(pumpEvent);
+    ret = g_application.OnEvent(pumpEvent);
   }
   return ret;
 }

@@ -32,27 +32,27 @@ namespace XBMCAddon
   {
 #ifndef SWIG
     // This is a bit of a hack to get around a SWIG problem
-    extern const int lLOGNOTICE;
+    extern const int lLOGDEBUG;
 #endif
 
     /**
      * log(msg[, level]) -- Write a string to XBMC's log file and the debug window.\n
      *     msg            : string - text to output.\n
-     *     level          : [opt] integer - log level to ouput at. (default=LOGNOTICE)\n
+     *     level          : [opt] integer - log level to ouput at. (default=LOGDEBUG)\n
      *     \n
      * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
      *        Once you use a keyword, all following arguments require the keyword.\n
      * \n
      * Text is written to the log for the following conditions.\n
-     *           XBMC loglevel == -1 (NONE, nothing at all is logged)\n
-     *           XBMC loglevel == 0 (NORMAL, shows LOGNOTICE, LOGERROR, LOGSEVERE and LOGFATAL)\n
-     *           XBMC loglevel == 1 (DEBUG, shows all)\n
+     *           - loglevel == -1 (NONE, nothing at all is logged)
+     *           - loglevel == 0 (NORMAL, shows LOGNOTICE, LOGERROR, LOGSEVERE and LOGFATAL)
+     *           - loglevel == 1 (DEBUG, shows all)
      *           See pydocs for valid values for level.\n
      *           
      *           example:
-     *             - xbmc.log(msg='This is a test string.', level=xbmc.LOGDEBUG));
+     *             - xbmc.log(msg='This is a test string.', level=xbmc.LOGDEBUG);
      */
-    void log(const char* msg, int level = lLOGNOTICE);
+    void log(const char* msg, int level = lLOGDEBUG);
 
     /**
      * Shutdown() -- Shutdown the htpc.
@@ -80,7 +80,7 @@ namespace XBMCAddon
     void executescript(const char* script);
 
     /**
-     * executebuiltin(function) -- Execute a built in XBMC function.
+     * executebuiltin(function) -- Execute a built in Kodi function.
      * 
      * function       : string - builtin function to execute.
      * 
@@ -404,6 +404,17 @@ namespace XBMCAddon
     void audioResume();
 
     /**
+     * getUserAgent() -- Returns Kodi's HTTP UserAgent string
+     *
+     * example:
+     *   xbmc.getUserAgent()
+     *
+     * example output:
+     *   Kodi/17.0-ALPHA1 (X11; Linux x86_64) Ubuntu/15.10 App_Bitness/64 Version/17.0-ALPHA1-Git:2015-12-23-5770d28
+     */
+    String getUserAgent();
+
+    /**
     * convertLanguage(language, format) -- Returns the given language converted to the given format as a string.
     *
     * language: string either as name in English, two letter code (ISO 639-1), or three letter code (ISO 639-2/T(B)
@@ -428,10 +439,6 @@ namespace XBMCAddon
 
     SWIG_CONSTANT_FROM_GETTER(int,PLAYLIST_MUSIC);
     SWIG_CONSTANT_FROM_GETTER(int,PLAYLIST_VIDEO);
-    SWIG_CONSTANT_FROM_GETTER(int,PLAYER_CORE_AUTO);
-    SWIG_CONSTANT_FROM_GETTER(int,PLAYER_CORE_DVDPLAYER);
-    SWIG_CONSTANT_FROM_GETTER(int,PLAYER_CORE_MPLAYER);
-    SWIG_CONSTANT_FROM_GETTER(int,PLAYER_CORE_PAPLAYER);
     SWIG_CONSTANT_FROM_GETTER(int,TRAY_OPEN);
     SWIG_CONSTANT_FROM_GETTER(int,DRIVE_NOT_READY);
     SWIG_CONSTANT_FROM_GETTER(int,TRAY_CLOSED_NO_MEDIA);
@@ -445,13 +452,6 @@ namespace XBMCAddon
     SWIG_CONSTANT_FROM_GETTER(int,LOGFATAL);
     SWIG_CONSTANT_FROM_GETTER(int,LOGNONE);
 
-
-    SWIG_CONSTANT_FROM_GETTER(int,CAPTURE_STATE_WORKING);
-    SWIG_CONSTANT_FROM_GETTER(int,CAPTURE_STATE_DONE);
-    SWIG_CONSTANT_FROM_GETTER(int,CAPTURE_STATE_FAILED);
-
-    SWIG_CONSTANT_FROM_GETTER(int,CAPTURE_FLAG_CONTINUOUS);
-    SWIG_CONSTANT_FROM_GETTER(int,CAPTURE_FLAG_IMMEDIATELY);
     SWIG_CONSTANT_FROM_GETTER(int,ISO_639_1);
     SWIG_CONSTANT_FROM_GETTER(int,ISO_639_2);
     SWIG_CONSTANT_FROM_GETTER(int,ENGLISH_NAME);

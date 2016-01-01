@@ -1,3 +1,5 @@
+#pragma once
+
 /**********************************************************************
  * Copyright (c) 2004, Leo Seib, Hannover
  *
@@ -25,9 +27,6 @@
  * THE SOFTWARE.
  *
  **********************************************************************/
-
-#ifndef _QRYDAT_H
-#define _QRYDAT_H
 
 #include <map>
 #include <vector>
@@ -244,4 +243,3 @@ public:
 
 } // namespace
 
-#endif

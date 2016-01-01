@@ -19,10 +19,10 @@
  *
  */
 
-#include <string>
-#include <vector>
-
 #include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 class CFileItem; typedef std::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;

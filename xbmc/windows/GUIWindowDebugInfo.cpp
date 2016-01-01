@@ -34,14 +34,12 @@
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
 
-#include <climits>
-
 CGUIWindowDebugInfo::CGUIWindowDebugInfo(void)
   : CGUIDialog(WINDOW_DEBUG_INFO, "", DialogModalityType::MODELESS)
 {
   m_needsScaling = false;
   m_layout = NULL;
-  m_renderOrder = INT_MAX - 2;
+  m_renderOrder = RENDER_ORDER_WINDOW_DEBUG;
 }
 
 CGUIWindowDebugInfo::~CGUIWindowDebugInfo(void)

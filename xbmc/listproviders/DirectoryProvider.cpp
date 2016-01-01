@@ -19,24 +19,27 @@
  */
 
 #include "DirectoryProvider.h"
+
+#include <memory>
+#include <utility>
+
+#include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "filesystem/FavouritesDirectory.h"
 #include "guilib/GUIWindowManager.h"
-#include "utils/JobManager.h"
-#include "utils/XMLUtils.h"
-#include "utils/URIUtils.h"
-#include "utils/Variant.h"
-#include "threads/SingleLock.h"
+#include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
-#include "FileItem.h"
-#include "video/VideoThumbLoader.h"
 #include "music/MusicThumbLoader.h"
 #include "pictures/PictureThumbLoader.h"
-#include "interfaces/AnnouncementManager.h"
+#include "settings/Settings.h"
+#include "threads/SingleLock.h"
+#include "utils/JobManager.h"
+#include "utils/SortUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/Variant.h"
+#include "utils/XMLUtils.h"
+#include "video/VideoThumbLoader.h"
 
-#include <memory>
-
-using namespace std;
 using namespace XFILE;
 using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
@@ -44,11 +47,15 @@ using namespace KODI::MESSAGING;
 class CDirectoryJob : public CJob
 {
 public:
-  CDirectoryJob(const std::string &url, int limit, int parentID)
-  : m_url(url), m_limit(limit), m_parentID(parentID) {};
-  virtual ~CDirectoryJob() {};
+  CDirectoryJob(const std::string &url, SortDescription sort, int limit, int parentID)
+    : m_url(url),
+      m_sort(sort),
+      m_limit(limit),
+      m_parentID(parentID)
+  { }
+  virtual ~CDirectoryJob() { }
 
-  virtual const char* GetType() const { return "directory"; };
+  virtual const char* GetType() const { return "directory"; }
   virtual bool operator==(const CJob *job) const
   {
     if (strcmp(job->GetType(),GetType()) == 0)
@@ -65,8 +72,12 @@ public:
     CFileItemList items;
     if (CDirectory::GetDirectory(m_url, items, ""))
     {
+      // sort the items if necessary
+      if (m_sort.sortBy != SortByNone)
+        items.Sort(m_sort);
+
       // limit must not exceed the number of items
-      int limit = (m_limit == 0) ? items.Size() : min((int) m_limit, items.Size());
+      int limit = (m_limit == 0) ? items.Size() : std::min((int) m_limit, items.Size());
       // convert to CGUIStaticItem's and set visibility and targets
       m_items.reserve(limit);
       for (int i = 0; i < limit; i++)
@@ -129,6 +140,7 @@ public:
 private:
   std::string m_url;
   std::string m_target;
+  SortDescription m_sort;
   unsigned int m_limit;
   int m_parentID;
   std::vector<CGUIStaticItemPtr> m_items;
@@ -149,9 +161,19 @@ CDirectoryProvider::CDirectoryProvider(const TiXmlElement *element, int parentID
     const char *target = element->Attribute("target");
     if (target)
       m_target.SetLabel(target, "", parentID);
+
+    const char *sortMethod = element->Attribute("sortby");
+    if (sortMethod)
+      m_sortMethod.SetLabel(sortMethod, "", parentID);
+
+    const char *sortOrder = element->Attribute("sortorder");
+    if (sortOrder)
+      m_sortOrder.SetLabel(sortOrder, "", parentID);
+
     const char *limit = element->Attribute("limit");
     if (limit)
       m_limit.SetLabel(limit, "", parentID);
+
     m_url.SetLabel(element->FirstChild()->ValueStr(), "", parentID);
   }
 }
@@ -177,11 +199,12 @@ bool CDirectoryProvider::Update(bool forceRefresh)
 
   // update the URL & limit and fire off a new job if needed
   fireJob |= UpdateURL();
+  fireJob |= UpdateSort();
   fireJob |= UpdateLimit();
   if (fireJob)
     FireJob();
 
-  for (vector<CGUIStaticItemPtr>::iterator i = m_items.begin(); i != m_items.end(); ++i)
+  for (std::vector<CGUIStaticItemPtr>::iterator i = m_items.begin(); i != m_items.end(); ++i)
     changed |= (*i)->UpdateVisibility(m_parentID);
   return changed; // TODO: Also returned changed if properties are changed (if so, need to update scroll to letter).
 }
@@ -216,11 +239,11 @@ void CDirectoryProvider::Announce(AnnouncementFlag flag, const char *sender, con
   }
 }
 
-void CDirectoryProvider::Fetch(vector<CGUIListItemPtr> &items) const
+void CDirectoryProvider::Fetch(std::vector<CGUIListItemPtr> &items) const
 {
   CSingleLock lock(m_section);
   items.clear();
-  for (vector<CGUIStaticItemPtr>::const_iterator i = m_items.begin(); i != m_items.end(); ++i)
+  for (std::vector<CGUIStaticItemPtr>::const_iterator i = m_items.begin(); i != m_items.end(); ++i)
   {
     if ((*i)->IsVisible())
       items.push_back(*i);
@@ -241,6 +264,8 @@ void CDirectoryProvider::Reset(bool immediately /* = false */)
     m_currentTarget.clear();
     m_currentUrl.clear();
     m_itemTypes.clear();
+    m_currentSort.sortBy = SortByNone;
+    m_currentSort.sortOrder = SortOrderAscending;
     m_currentLimit = 0;
     m_updateState = OK;
     RegisterListProvider(false);
@@ -263,7 +288,7 @@ void CDirectoryProvider::OnJobComplete(unsigned int jobID, bool success, CJob *j
 bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
 {
   CFileItem fileItem(*std::static_pointer_cast<CFileItem>(item));
-  string target = fileItem.GetProperty("node.target").asString();
+  std::string target = fileItem.GetProperty("node.target").asString();
   if (target.empty())
     target = m_currentTarget;
   if (target.empty())
@@ -271,7 +296,7 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
   if (fileItem.HasProperty("node.target_url"))
     fileItem.SetPath(fileItem.GetProperty("node.target_url").asString());
   // grab the execute string
-  string execute = CFavouritesDirectory::GetExecutePath(fileItem, target);
+  std::string execute = CFavouritesDirectory::GetExecutePath(fileItem, target);
   if (!execute.empty())
   {
     CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);
@@ -293,7 +318,7 @@ void CDirectoryProvider::FireJob()
   CSingleLock lock(m_section);
   if (m_jobID)
     CJobManager::GetInstance().CancelJob(m_jobID);
-  m_jobID = CJobManager::GetInstance().AddJob(new CDirectoryJob(m_currentUrl, m_currentLimit, m_parentID), this);
+  m_jobID = CJobManager::GetInstance().AddJob(new CDirectoryJob(m_currentUrl, m_currentSort, m_currentLimit, m_parentID), this);
 }
 
 void CDirectoryProvider::RegisterListProvider(bool hasLibraryContent)
@@ -301,12 +326,12 @@ void CDirectoryProvider::RegisterListProvider(bool hasLibraryContent)
   if (hasLibraryContent && !m_isAnnounced)
   {
     m_isAnnounced = true;
-    CAnnouncementManager::Get().AddAnnouncer(this);
+    CAnnouncementManager::GetInstance().AddAnnouncer(this);
   }
   else if (!hasLibraryContent && m_isAnnounced)
   {
     m_isAnnounced = false;
-    CAnnouncementManager::Get().RemoveAnnouncer(this);
+    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
   }
 }
 
@@ -331,6 +356,25 @@ bool CDirectoryProvider::UpdateLimit()
     return false;
 
   m_currentLimit = value;
+
+  return true;
+}
+
+bool CDirectoryProvider::UpdateSort()
+{
+  SortBy sortMethod(SortUtils::SortMethodFromString(m_sortMethod.GetLabel(m_parentID, false)));
+  SortOrder sortOrder(SortUtils::SortOrderFromString(m_sortOrder.GetLabel(m_parentID, false)));
+  if (sortOrder == SortOrderNone)
+    sortOrder = SortOrderAscending;
+
+  if (sortMethod == m_currentSort.sortBy && sortOrder == m_currentSort.sortOrder)
+    return false;
+
+  m_currentSort.sortBy = sortMethod;
+  m_currentSort.sortOrder = sortOrder;
+
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
+    m_currentSort.sortAttributes = static_cast<SortAttribute>(m_currentSort.sortAttributes | SortAttributeIgnoreArticle);
 
   return true;
 }

@@ -28,10 +28,11 @@
 #define DLL_PATH_CPLUFF        "special://xbmcbin/system/libcpluff-@ARCH@.so"
 #define DLL_PATH_IMAGELIB      "special://xbmcbin/system/ImageLib-@ARCH@.so"
 #define DLL_PATH_LIBEXIF       "special://xbmcbin/system/libexif-@ARCH@.so"
-#define DLL_PATH_MEDIAINFO     "special://xbmcbin/system/mediainfo-@ARCH@.so"
 
 #define DLL_PATH_LIBRTMP       "@RTMP_SONAME@"
 #define DLL_PATH_LIBNFS        "@NFS_SONAME@"
+#define DLL_PATH_LIBGIF        "@GIF_SONAME@"
+
 #define DLL_PATH_LIBPLIST      "@PLIST_SONAME@"
 #define DLL_PATH_LIBSHAIRPLAY  "@SHAIRPLAY_SONAME@"
 #define DLL_PATH_LIBCEC        "@LIBCEC_SONAME@"
@@ -40,9 +41,9 @@
 #define DLL_PATH_LIBCURL       "@CURL_SONAME@"
 #endif
 
-/* dvdplayer */
+/* VideoPlayer */
 #define DLL_PATH_LIBASS        "@ASS_SONAME@"
-#define DLL_PATH_LIBDVDNAV     "special://xbmcbin/system/players/dvdplayer/libdvdnav-@ARCH@.so"
+#define DLL_PATH_LIBDVDNAV     "special://xbmcbin/system/players/VideoPlayer/libdvdnav-@ARCH@.so"
 #define DLL_PATH_LIBMPEG2      "@MPEG2_SONAME@"
 
 /* libbluray */

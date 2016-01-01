@@ -108,6 +108,7 @@ public:
 
   virtual void SetVSync(bool vsync) = 0;
   bool GetVSync() { return m_bVSync; }
+  virtual void FinishPipeline() {};
 
   virtual void SetViewPort(CRect& viewPort) = 0;
   virtual void GetViewPort(CRect& viewPort) = 0;
@@ -121,7 +122,7 @@ public:
   virtual void CaptureStateBlock() = 0;
   virtual void ApplyStateBlock() = 0;
 
-  virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight) = 0;
+  virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.f) = 0;
   virtual void ApplyHardwareTransform(const TransformMatrix &matrix) = 0;
   virtual void RestoreHardwareTransform() = 0;
   virtual void SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view)

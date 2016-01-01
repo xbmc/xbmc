@@ -31,8 +31,6 @@ extern "C" {
 #include "libavutil/channel_layout.h"
 }
 
-using namespace std;
-
 /* declare the rng seed and initialize it */
 unsigned int CAEUtil::m_seed = (unsigned int)(CurrentHostCounter() / 1000.0f);
 #ifdef __SSE2__
@@ -40,21 +38,22 @@ unsigned int CAEUtil::m_seed = (unsigned int)(CurrentHostCounter() / 1000.0f);
   MEMALIGN(16, __m128i CAEUtil::m_sseSeed) = _mm_set_epi32(CAEUtil::m_seed, CAEUtil::m_seed+1, CAEUtil::m_seed, CAEUtil::m_seed+1);
 #endif
 
-void   AEDelayStatus::SetDelay(double d)
+void AEDelayStatus::SetDelay(double d)
 {
   delay = d;
-  tick  = CurrentHostCounter();
+  maxcorrection = d;
+  tick = CurrentHostCounter();
 }
 
 double AEDelayStatus::GetDelay()
 {
-  double d = delay;
-  if(tick)
-    d -= (double)(CurrentHostCounter() - tick) / CurrentHostFrequency();
-  if(d < 0)
-    return 0.0;
-  else
-    return d;
+  double d = 0;
+  if (tick)
+    d = (double)(CurrentHostCounter() - tick) / CurrentHostFrequency();
+  if (d > maxcorrection)
+    d = maxcorrection;
+
+  return delay - d;
 }
 
 CAEChannelInfo CAEUtil::GuessChLayout(const unsigned int channels)
@@ -124,14 +123,8 @@ const unsigned int CAEUtil::DataFormatToBits(const enum AEDataFormat dataFormat)
     
     sizeof(double) << 3, /* DOUBLE */
     sizeof(float ) << 3, /* FLOAT  */
-    
-    16,                  /* AAC    */
-    16,                  /* AC3    */
-    16,                  /* DTS    */
-    16,                  /* EAC3   */
-    16,                  /* TRUEHD */
-    16,                  /* DTS-HD */
-    32,                  /* LPCM   */
+
+     8,                  /* RAW    */
 
      8,                  /* U8P    */
     16,                  /* S16NEP */
@@ -165,6 +158,34 @@ const unsigned int CAEUtil::DataFormatToDitherBits(const enum AEDataFormat dataF
     return 0;
 }
 
+const char* CAEUtil::StreamTypeToStr(const enum CAEStreamInfo::DataType dataType)
+{
+  switch (dataType)
+  {
+    case CAEStreamInfo::STREAM_TYPE_AC3:
+      return "STREAM_TYPE_AC3";
+    case CAEStreamInfo::STREAM_TYPE_DTSHD:
+      return "STREAM_TYPE_DTSHD";
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
+      return "STREAM_TYPE_DTSHD_CORE";
+    case CAEStreamInfo::STREAM_TYPE_DTS_1024:
+      return "STREAM_TYPE_DTS_1024";
+    case CAEStreamInfo::STREAM_TYPE_DTS_2048:
+      return "STREAM_TYPE_DTS_2048";
+    case CAEStreamInfo::STREAM_TYPE_DTS_512:
+      return "STREAM_TYPE_DTS_512";
+    case CAEStreamInfo::STREAM_TYPE_EAC3:
+      return "STREAM_TYPE_EAC3";
+    case CAEStreamInfo::STREAM_TYPE_MLP:
+      return "STREAM_TYPE_MLP";
+    case CAEStreamInfo::STREAM_TYPE_TRUEHD:
+      return "STREAM_TYPE_TRUEHD";
+
+    default:
+      return "STREAM_TYPE_NULL";
+  }
+}
+
 const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
 {
   if (dataFormat < 0 || dataFormat >= AE_FMT_MAX)
@@ -194,14 +215,7 @@ const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
     "AE_FMT_DOUBLE",
     "AE_FMT_FLOAT",
     
-    /* for passthrough streams and the like */
-    "AE_FMT_AAC",
-    "AE_FMT_AC3",
-    "AE_FMT_DTS",
-    "AE_FMT_EAC3",
-    "AE_FMT_TRUEHD",
-    "AE_FMT_DTSHD",
-    "AE_FMT_LPCM",
+    "AE_FMT_RAW",
 
     /* planar formats */
     "AE_FMT_U8P",
@@ -525,9 +539,9 @@ bool CAEUtil::S16NeedsByteSwap(AEDataFormat in, AEDataFormat out)
     AE_FMT_S16LE;
 #endif
 
-  if (in == AE_FMT_S16NE || AE_IS_RAW(in))
+  if (in == AE_FMT_S16NE || (in == AE_FMT_RAW))
     in = nativeFormat;
-  if (out == AE_FMT_S16NE || AE_IS_RAW(out))
+  if (out == AE_FMT_S16NE || (out == AE_FMT_RAW))
     out = nativeFormat;
 
   return in != out;
@@ -604,6 +618,8 @@ AVSampleFormat CAEUtil::GetAVSampleFormat(AEDataFormat format)
   else if (format == AE_FMT_S24NE3P) return AV_SAMPLE_FMT_S32P;
   else if (format == AE_FMT_FLOATP)  return AV_SAMPLE_FMT_FLTP;
   else if (format == AE_FMT_DOUBLEP) return AV_SAMPLE_FMT_DBLP;
+
+  else if (format == AE_FMT_RAW) return AV_SAMPLE_FMT_U8;
 
   if (AE_IS_PLANAR(format))
     return AV_SAMPLE_FMT_FLTP;

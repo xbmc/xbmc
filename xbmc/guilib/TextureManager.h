@@ -22,16 +22,14 @@
 \file TextureManager.h
 \brief
 */
+#pragma once
 
-#ifndef GUILIB_TEXTUREMANAGER_H
-#define GUILIB_TEXTUREMANAGER_H
-
-#include <vector>
 #include <list>
+#include <vector>
+#include <utility>
+
 #include "TextureBundle.h"
 #include "threads/CriticalSection.h"
-
-#pragma once
 
 /************************************************************************/
 /*                                                                      */
@@ -85,6 +83,8 @@ public:
   uint32_t GetMemoryUsage() const;
   void Flush();
   bool IsEmpty() const;
+  void SetHeight(int height);
+  void SetWidth(int height);
 protected:
   void FreeTexture();
 
@@ -142,4 +142,3 @@ protected:
  \brief
  */
 extern CGUITextureManager g_TextureManager;
-#endif

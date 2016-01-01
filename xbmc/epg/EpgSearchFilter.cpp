@@ -53,7 +53,7 @@ void EpgSearchFilter::Reset()
   m_iChannelGroup            = EPG_SEARCH_UNSET;
   m_bIgnorePresentTimers     = true;
   m_bIgnorePresentRecordings = true;
-  m_iUniqueBroadcastId	     = EPG_SEARCH_UNSET;
+  m_iUniqueBroadcastId	     = 0;
 }
 
 bool EpgSearchFilter::MatchGenre(const CEpgInfoTag &tag) const
@@ -104,7 +104,7 @@ bool EpgSearchFilter::MatchSearchTerm(const CEpgInfoTag &tag) const
 
 bool EpgSearchFilter::MatchBroadcastId(const CEpgInfoTag &tag) const
 {
-  if (m_iUniqueBroadcastId != EPG_SEARCH_UNSET)
+  if (m_iUniqueBroadcastId != 0)
     return (tag.UniqueBroadcastID() == m_iUniqueBroadcastId);
 
   return true;
@@ -171,7 +171,7 @@ bool EpgSearchFilter::MatchChannelNumber(const CEpgInfoTag &tag) const
   {
     CPVRChannelGroupPtr group = (m_iChannelGroup != EPG_SEARCH_UNSET) ? g_PVRChannelGroups->GetByIdFromAll(m_iChannelGroup) : g_PVRChannelGroups->GetGroupAllTV();
     if (!group)
-      group = CPVRManager::Get().ChannelGroups()->GetGroupAllTV();
+      group = CPVRManager::GetInstance().ChannelGroups()->GetGroupAllTV();
 
     bReturn = (m_iChannelNumber == (int) group->GetChannelNumber(tag.ChannelTag()));
   }

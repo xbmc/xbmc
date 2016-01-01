@@ -22,7 +22,7 @@
 
 #if defined(TARGET_ANDROID)
 #include "AndroidAppDirectory.h"
-#include "xbmc/android/activity/XBMCApp.h"
+#include "platform/android/activity/XBMCApp.h"
 #include "FileItem.h"
 #include "File.h"
 #include "utils/URIUtils.h"
@@ -33,7 +33,6 @@
 #include "CompileInfo.h"
 
 using namespace XFILE;
-using namespace std;
 
 CAndroidAppDirectory::CAndroidAppDirectory(void)
 {
@@ -54,7 +53,7 @@ bool CAndroidAppDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
   if (dirname == "apps")
   {
-    vector<androidPackage> applications = CXBMCApp::GetApplications();
+    std::vector<androidPackage> applications = CXBMCApp::GetApplications();
     if (applications.empty())
     {
       CLog::Log(LOGERROR, "CAndroidAppDirectory::GetDirectory Application lookup listing failed");
@@ -70,6 +69,7 @@ bool CAndroidAppDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       pItem->SetPath(path);
       pItem->SetLabel((*i).packageLabel);
       pItem->SetArt("thumb", path+".png");
+      pItem->m_dwSize = -1;  // No size
       items.Add(pItem);
     }
     return true;

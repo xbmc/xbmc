@@ -144,14 +144,6 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "オプション"
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "ビデオライブラリで TV テーマ曲を再生 (TvTunes アドオン)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
-
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "歌詞"
@@ -243,10 +235,6 @@ msgstr "[B]外観設定[/B][CR][CR]スキン選択 - 言語と地域の設定 - 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]ビデオ設定[/B][CR][CR]ビデオライブラリ管理 - ビデオ再生設定 - ビデオ一覧設定変更[CR]字幕用フォント変更"
-
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]ミュージック設定[/B][CR][CR]ミュージックライブラリ管理 - ミュージック再生設定 - ミュージック一覧設定変更[CR]楽曲送信設定 - カラオケ設定"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"

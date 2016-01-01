@@ -23,9 +23,9 @@
 #include <time.h>
 
 #if defined(TARGET_DARWIN)
-#include "DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #elif defined(TARGET_ANDROID)
-#include "android/activity/XBMCApp.h"
+#include "platform/android/activity/XBMCApp.h"
 #endif // TARGET_ANDROID
 
 struct FILEWRAP : public FILE
@@ -40,6 +40,7 @@ CPosixInterfaceForCLog::~CPosixInterfaceForCLog()
 {
   if (m_file)
     fclose(m_file);
+  m_file = NULL;
 }
 
 bool CPosixInterfaceForCLog::OpenLogFile(const std::string &logFilename, const std::string &backupOldLogToFilename)

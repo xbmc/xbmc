@@ -2,11 +2,11 @@
 <window>
 	<defaultcontrol always="true">10</defaultcontrol>
 	<coordinates>
-		<system>1</system>
 		<left>335</left>
 		<top>230</top>
 	</coordinates>
 	<include>dialogeffect</include>
+	<depth>DepthDialog+</depth>
 	<controls>
 		<include name="DialogBackgroundCommons">
 			<param name="DialogBackgroundWidth" value="610" />
@@ -37,7 +37,7 @@
 			<font>font13</font>
 			<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
 		</control>
-		<control type="progress">
+		<control type="progress" id="20">
 			<description>Progressbar</description>
 			<left>30</left>
 			<top>148</top>

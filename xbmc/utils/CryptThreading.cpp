@@ -40,7 +40,10 @@
 #include <gcrypt.h>
 #include <errno.h>
 
+#if GCRYPT_VERSION_NUMBER < 0x010600
 GCRY_THREAD_OPTION_PTHREAD_IMPL;
+#endif
+
 #endif
 
 /* ========================================================================= */
@@ -82,9 +85,11 @@ CryptThreadingInitializer::CryptThreadingInitializer()
     locks[i] = NULL;
 
 #ifdef HAVE_GCRYPT
+#if GCRYPT_VERSION_NUMBER < 0x010600
   // set up gcrypt
   gcry_control(GCRYCTL_SET_THREAD_CBS, &gcry_threads_pthread);
   attemptedToSetSSLMTHook = true;
+#endif
 #endif
 
   if (!attemptedToSetSSLMTHook)

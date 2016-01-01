@@ -61,6 +61,7 @@ public:
   virtual bool IsExtSupported(const char* extension);
 
   virtual void SetVSync(bool vsync);
+  virtual void ResetVSync() { m_bVsyncInit = false; }
 
   virtual void SetViewPort(CRect& viewPort);
   virtual void GetViewPort(CRect& viewPort);
@@ -73,7 +74,7 @@ public:
   virtual void CaptureStateBlock();
   virtual void ApplyStateBlock();
 
-  virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight);
+  virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.0f);
 
   virtual void ApplyHardwareTransform(const TransformMatrix &matrix);
   virtual void RestoreHardwareTransform();

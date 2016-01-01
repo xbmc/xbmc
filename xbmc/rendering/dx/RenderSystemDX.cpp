@@ -24,7 +24,7 @@
 #include <DirectXPackedVector.h>
 #include "Application.h"
 #include "RenderSystemDX.h"
-#include "cores/VideoRenderers/RenderManager.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "guilib/D3DResource.h"
 #include "guilib/GUIShaderDX.h"
 #include "guilib/GUITextureD3D.h"
@@ -158,7 +158,7 @@ void CRenderSystemDX::SetMonitor(HMONITOR monitor)
         {
           pAdapter->GetDesc(&m_adapterDesc);
 
-          CLog::Log(LOGDEBUG, __FUNCTION__" - Selected %S adapter. ", m_adapterDesc.Description, outputDesc.DeviceName);
+          CLog::Log(LOGDEBUG, __FUNCTION__" - Selected %S adapter. ", m_adapterDesc.Description);
 
           SAFE_RELEASE(m_adapter);
           m_adapter = pAdapter;
@@ -307,7 +307,7 @@ void CRenderSystemDX::SetFullScreenInternal()
   if (!m_bRenderCreated)
     return;
 
-  HRESULT hr;
+  HRESULT hr = S_OK;
   BOOL bFullScreen;
   m_pSwapChain->GetFullscreenState(&bFullScreen, NULL);
 
@@ -315,18 +315,15 @@ void CRenderSystemDX::SetFullScreenInternal()
   if (!!bFullScreen && m_useWindowedDX)
   {
     CLog::Log(LOGDEBUG, "%s - Switching swap chain to windowed mode.", __FUNCTION__);
+
     hr = m_pSwapChain->SetFullscreenState(false, NULL);
-    m_bResizeRequred = S_OK == hr;
-
-    if (S_OK != hr)
+    if (SUCCEEDED(hr))
+      m_bResizeRequred = true;
+    else
       CLog::Log(LOGERROR, "%s - Failed switch full screen state: %s.", __FUNCTION__, GetErrorDescription(hr).c_str());
-    // wait until switching screen state is done
-    DXWait(m_pD3DDev, m_pImdContext);
-    return;
   }
-
   // true full-screen
-  if (m_bFullScreenDevice && !m_useWindowedDX)
+  else if (m_bFullScreenDevice && !m_useWindowedDX)
   {
     IDXGIOutput* pOutput = NULL;
     m_pSwapChain->GetContainingOutput(&pOutput);
@@ -339,10 +336,11 @@ void CRenderSystemDX::SetFullScreenInternal()
     {
       // swap chain requires to change FS mode after resize or transition from windowed to full-screen.
       CLog::Log(LOGDEBUG, "%s - Switching swap chain to fullscreen state.", __FUNCTION__);
-      hr = m_pSwapChain->SetFullscreenState(true, m_pOutput);
-      m_bResizeRequred = S_OK == hr;
 
-      if (S_OK != hr)
+      hr = m_pSwapChain->SetFullscreenState(true, m_pOutput);
+      if (SUCCEEDED(hr))
+        m_bResizeRequred = true;
+      else
         CLog::Log(LOGERROR, "%s - Failed switch full screen state: %s.", __FUNCTION__, GetErrorDescription(hr).c_str());
     }
     SAFE_RELEASE(pOutput);
@@ -385,18 +383,23 @@ void CRenderSystemDX::SetFullScreenInternal()
       || currentMode.Height != matchedMode.Height
       || currentRefreshRate != matchedRefreshRate)
     {
+      // change monitor resolution (in fullscreen mode) to required mode
       CLog::Log(LOGDEBUG, "%s - Switching mode to %dx%d@%0.3f.", __FUNCTION__, matchedMode.Width, matchedMode.Height, matchedRefreshRate);
 
-      // resize window (in windowed mode) or monitor resolution (in fullscreen mode) to required mode
       hr = m_pSwapChain->ResizeTarget(&matchedMode);
-      m_bResizeRequred = S_OK == hr;
-
-      if (FAILED(hr))
+      if (SUCCEEDED(hr))
+        m_bResizeRequred = true;
+      else
         CLog::Log(LOGERROR, "%s - Failed to switch output mode: %s", __FUNCTION__, GetErrorDescription(hr).c_str());
     }
+  }
 
-    // wait until switching screen state is done
+  // wait until switching screen state is done
+  if (m_bResizeRequred)
+  {
+    OnDisplayLost();
     DXWait(m_pD3DDev, m_pImdContext);
+    OnDisplayReset();
   }
 }
 
@@ -414,13 +417,6 @@ bool CRenderSystemDX::DestroyRenderSystem()
   SAFE_RELEASE(m_pOutput);
   SAFE_RELEASE(m_adapter);
   SAFE_RELEASE(m_dxgiFactory);
-#ifdef _DEBUG
-  if (m_d3dDebug)
-  {
-    m_d3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL);
-    m_d3dDebug->Release();
-  }
-#endif
   return true;
 }
 
@@ -435,6 +431,9 @@ void CRenderSystemDX::DeleteDevice()
   for (std::vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
     (*i)->OnDestroyDevice();
 
+  if (m_pSwapChain)
+    m_pSwapChain->SetFullscreenState(false, NULL);
+
   SAFE_DELETE(m_pGUIShader);
   SAFE_RELEASE(m_pTextureRight);
   SAFE_RELEASE(m_pRenderTargetViewRight);
@@ -446,16 +445,8 @@ void CRenderSystemDX::DeleteDevice()
   SAFE_RELEASE(m_depthStencilState);
   SAFE_RELEASE(m_depthStencilView);
   SAFE_RELEASE(m_pRenderTargetView);
-  if (m_pSwapChain)
-  {
-    m_pSwapChain->SetFullscreenState(false, NULL);
-    SAFE_RELEASE(m_pSwapChain);
-  }
-  SAFE_RELEASE(m_pSwapChain1);
-  SAFE_RELEASE(m_pD3DDev);
   if (m_pContext && m_pContext != m_pImdContext)
   {
-    FinishCommandList(false);
     m_pContext->ClearState();
     m_pContext->Flush();
     SAFE_RELEASE(m_pContext);
@@ -466,6 +457,16 @@ void CRenderSystemDX::DeleteDevice()
     m_pImdContext->Flush();
     SAFE_RELEASE(m_pImdContext);
   }
+  SAFE_RELEASE(m_pSwapChain);
+  SAFE_RELEASE(m_pSwapChain1);
+  SAFE_RELEASE(m_pD3DDev);
+#ifdef _DEBUG
+  if (m_d3dDebug)
+  {
+    m_d3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL);
+    SAFE_RELEASE(m_d3dDebug);
+  }
+#endif
   m_bResizeRequred = false;
   m_bHWStereoEnabled = false;
   m_bRenderCreated = false;
@@ -475,6 +476,8 @@ void CRenderSystemDX::OnDeviceLost()
 {
   CSingleLock lock(m_resourceSection);
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_LOST);
+
+  OnDisplayLost();
 
   if (m_needNewDevice)
     DeleteDevice();
@@ -492,14 +495,17 @@ void CRenderSystemDX::OnDeviceReset()
 
   if (m_needNewDevice)
     CreateDevice();
-  else
-  { // we're back
+  
+  if (m_bRenderCreated)
+  {
+    // we're back
     for (std::vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnResetDevice();
+
+    g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
   }
 
-  g_renderManager.Flush();
-  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
+  OnDisplayReset();
 }
 
 bool CRenderSystemDX::CreateDevice()
@@ -830,6 +836,13 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
 
         Sleep(100);
       }
+
+      // when transition from/to stereo mode trigger display reset event
+      if (bNeedRecreate)
+      {
+        OnDisplayLost();
+        OnDeviceReset();
+      }
     }
     else
     {
@@ -1052,7 +1065,7 @@ bool CRenderSystemDX::CreateStates()
 	m_pContext->OMSetDepthStencilState(m_depthStencilState, 0);
 
   D3D11_RASTERIZER_DESC rasterizerState;
-  rasterizerState.CullMode = D3D11_CULL_BACK; 
+  rasterizerState.CullMode = D3D11_CULL_NONE; 
   rasterizerState.FillMode = D3D11_FILL_SOLID;// DEBUG - D3D11_FILL_WIREFRAME
   rasterizerState.FrontCounterClockwise = false;
   rasterizerState.DepthBias = 0;
@@ -1079,7 +1092,7 @@ bool CRenderSystemDX::CreateStates()
   blendState.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA; // D3D11_BLEND_INV_SRC_ALPHA;
   blendState.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
   blendState.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-  blendState.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+  blendState.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
   blendState.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
   blendState.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
@@ -1099,7 +1112,7 @@ bool CRenderSystemDX::PresentRenderImpl(const CDirtyRegionList &dirty)
 {
   HRESULT hr;
 
-  if (!m_bRenderCreated)
+  if (!m_bRenderCreated || m_resizeInProgress)
     return false;
 
   if (m_nDeviceStatus != S_OK)
@@ -1210,6 +1223,7 @@ bool CRenderSystemDX::BeginRender()
     if (DXGI_ERROR_DEVICE_REMOVED == m_nDeviceStatus)
     {
       OnDeviceLost();
+      OnDeviceReset();
     }
     return false;
   }
@@ -1249,9 +1263,7 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
     if (m_stereoView == RENDER_STEREO_VIEW_RIGHT)
     {
       // execute command's queue
-      if ( m_stereoMode != RENDER_STEREO_MODE_SPLIT_HORIZONTAL
-        && m_stereoMode != RENDER_STEREO_MODE_SPLIT_VERTICAL)
-        FinishCommandList();
+      FinishCommandList();
 
       // do not clear RT for anaglyph modes
       if ( m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA
@@ -1300,16 +1312,6 @@ bool CRenderSystemDX::IsExtSupported(const char* extension)
   return false;
 }
 
-bool CRenderSystemDX::PresentRender(const CDirtyRegionList &dirty)
-{
-  if (!m_bRenderCreated || m_resizeInProgress)
-    return false;
-
-  bool result = PresentRenderImpl(dirty);
-
-  return result;
-}
-
 void CRenderSystemDX::SetVSync(bool enable)
 {
   m_bVSync = enable;
@@ -1334,7 +1336,7 @@ void CRenderSystemDX::ApplyStateBlock()
   m_pGUIShader->ApplyStateBlock();
 }
 
-void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight)
+void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor)
 {
   if (!m_bRenderCreated)
     return;
@@ -1353,7 +1355,7 @@ void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, i
   // position.
   XMMATRIX flipY, translate;
   flipY = XMMatrixScaling(1.0, -1.0f, 1.0f);
-  translate = XMMatrixTranslation(-(w + offset.x), -(h + offset.y), 2 * h);
+  translate = XMMatrixTranslation(-(w + offset.x - stereoFactor), -(h + offset.y), 2 * h);
   m_pGUIShader->SetView(XMMatrixMultiply(translate, flipY));
 
   // projection onto screen space
@@ -1362,6 +1364,9 @@ void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, i
 
 void CRenderSystemDX::Project(float &x, float &y, float &z)
 {
+  if (!m_bRenderCreated)
+    return;
+
   m_pGUIShader->Project(x, y, z);
 }
 
@@ -1482,7 +1487,10 @@ void CRenderSystemDX::RestoreViewPort()
 
 bool CRenderSystemDX::ScissorsCanEffectClipping()
 {
-  return m_pGUIShader != NULL && m_pGUIShader->HardwareClipIsPossible(); 
+  if (!m_bRenderCreated)
+    return false;
+
+  return m_pGUIShader != NULL && m_pGUIShader->HardwareClipIsPossible();
 }
 
 CRect CRenderSystemDX::ClipRectToScissorRect(const CRect &rect)
@@ -1637,6 +1645,9 @@ bool CRenderSystemDX::SupportsStereo(RENDER_STEREO_MODE mode) const
 
 void CRenderSystemDX::FlushGPU()
 {
+  if (!m_bRenderCreated)
+    return;
+
   FinishCommandList();
   m_pImdContext->Flush();
 }

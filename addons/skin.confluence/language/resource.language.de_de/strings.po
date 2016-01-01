@@ -228,14 +228,6 @@ msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Die \"Es läuft\" Hintergrund-Visualisierung anzeigen"
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "TV-Titelmusikstücke beim Navigieren in der Video-Bibliothek abspielen (TvTunes Addon)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
-
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Liedtexte"
@@ -352,10 +344,6 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Zuletzt angemeldet"
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Karaoke-Titelauswahl"
-
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Ausgestrahlt"
@@ -443,10 +431,6 @@ msgstr "[B]ERSCHEINUNGSBILD KONFIGURIEREN[/B][CR][CR]Skin auswählen · Sprache 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]VIDEO-EINSTELLUNGEN KONFIGURIEREN[/B][CR][CR]Die Video-Bibliothek verwalten · Videoabspieleinstellungen vornehmen · Videoauflistungseinstellungen ändern[CR]Untertitel-Schriftarten einstellen"
-
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]MUSIK-EINSTELLUNGEN KONFIGURIEREN[/B][CR][CR]Die Musik-Bibliothek verwalten· Musikabspieleinstellungen · Musikauflistungseinstellungen ändern[CR]Musikübertragung einrichten · Karaoke-Einstellungen"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

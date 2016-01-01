@@ -30,7 +30,7 @@
 #include "utils/log.h"
 #include "windowing/WindowingFactory.h"
 
-#include "android/jni/View.h"
+#include "platform/android/jni/View.h"
 
 #define DEBUG_MESSAGEPUMP 0
 
@@ -220,7 +220,7 @@ bool CWinEventsAndroid::MessagePump()
 
       if (fabs(amount) >= ALMOST_ZERO)
       {
-        ret |= CInputManager::Get().ProcessJoystickEvent(g_windowManager.GetActiveWindowID(),
+        ret |= CInputManager::GetInstance().ProcessJoystickEvent(g_windowManager.GetActiveWindowID(),
             input_device.name, item, input_type, amount, holdTime);
       }
     }

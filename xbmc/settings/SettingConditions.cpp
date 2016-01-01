@@ -26,10 +26,10 @@
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
 #if defined(TARGET_ANDROID)
-#include "android/activity/AndroidFeatures.h"
+#include "platform/android/activity/AndroidFeatures.h"
 #endif // defined(TARGET_ANDROID)
 #include "cores/AudioEngine/AEFactory.h"
-#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "guilib/LocalizeStrings.h"
 #include "peripherals/Peripherals.h"
 #include "profiles/ProfilesManager.h"
@@ -41,7 +41,7 @@
 #include "utils/SystemInfo.h"
 #include "windowing/WindowingFactory.h"
 #if defined(TARGET_DARWIN_OSX)
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #endif// defined(TARGET_DARWIN_OSX)
 
 bool AddonHasSettings(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
@@ -54,7 +54,7 @@ bool AddonHasSettings(const std::string &condition, const std::string &value, co
     return false;
 
   ADDON::AddonPtr addon;
-  if (!ADDON::CAddonMgr::Get().GetAddon(settingAddon->GetValue(), addon, settingAddon->GetAddonType()) || addon == NULL)
+  if (!ADDON::CAddonMgr::GetInstance().GetAddon(settingAddon->GetValue(), addon, settingAddon->GetAddonType()) || addon == NULL)
     return false;
 
   if (addon->Type() == ADDON::ADDON_SKIN)
@@ -95,52 +95,52 @@ bool IsUsingTTFSubtitles(const std::string &condition, const std::string &value,
 
 bool ProfileCanWriteDatabase(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
-  return CProfilesManager::Get().GetCurrentProfile().canWriteDatabases();
+  return CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases();
 }
 
 bool ProfileCanWriteSources(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
-  return CProfilesManager::Get().GetCurrentProfile().canWriteSources();
+  return CProfilesManager::GetInstance().GetCurrentProfile().canWriteSources();
 }
 
 bool ProfileHasAddons(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
-  return CProfilesManager::Get().GetCurrentProfile().hasAddons();
+  return CProfilesManager::GetInstance().GetCurrentProfile().hasAddons();
 }
 
 bool ProfileHasDatabase(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
-  return CProfilesManager::Get().GetCurrentProfile().hasDatabases();
+  return CProfilesManager::GetInstance().GetCurrentProfile().hasDatabases();
 }
 
 bool ProfileHasSources(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
-  return CProfilesManager::Get().GetCurrentProfile().hasSources();
+  return CProfilesManager::GetInstance().GetCurrentProfile().hasSources();
 }
 
 bool ProfileHasAddonManagerLocked(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
-  return CProfilesManager::Get().GetCurrentProfile().addonmanagerLocked();
+  return CProfilesManager::GetInstance().GetCurrentProfile().addonmanagerLocked();
 }
 
 bool ProfileHasFilesLocked(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
-  return CProfilesManager::Get().GetCurrentProfile().filesLocked();
+  return CProfilesManager::GetInstance().GetCurrentProfile().filesLocked();
 }
 
 bool ProfileHasMusicLocked(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
-  return CProfilesManager::Get().GetCurrentProfile().musicLocked();
+  return CProfilesManager::GetInstance().GetCurrentProfile().musicLocked();
 }
 
 bool ProfileHasPicturesLocked(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
-  return CProfilesManager::Get().GetCurrentProfile().picturesLocked();
+  return CProfilesManager::GetInstance().GetCurrentProfile().picturesLocked();
 }
 
 bool ProfileHasProgramsLocked(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
-  return CProfilesManager::Get().GetCurrentProfile().programsLocked();
+  return CProfilesManager::GetInstance().GetCurrentProfile().programsLocked();
 }
 
 bool ProfileHasSettingsLocked(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
@@ -154,12 +154,12 @@ bool ProfileHasSettingsLocked(const std::string &condition, const std::string &v
     slValue = LOCK_LEVEL::ADVANCED;
   else if (StringUtils::EqualsNoCase(value, "expert"))
     slValue = LOCK_LEVEL::EXPERT;
-  return slValue <= CProfilesManager::Get().GetCurrentProfile().settingsLockLevel();
+  return slValue <= CProfilesManager::GetInstance().GetCurrentProfile().settingsLockLevel();
 }
 
 bool ProfileHasVideosLocked(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
-  return CProfilesManager::Get().GetCurrentProfile().videoLocked();
+  return CProfilesManager::GetInstance().GetCurrentProfile().videoLocked();
 }
 
 bool ProfileLockMode(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
@@ -169,7 +169,7 @@ bool ProfileLockMode(const std::string &condition, const std::string &value, con
   if (tmp != NULL && *tmp != '\0')
     return false;
 
-  return CProfilesManager::Get().GetCurrentProfile().getLockMode() == lock;
+  return CProfilesManager::GetInstance().GetCurrentProfile().getLockMode() == lock;
 }
 
 std::set<std::string> CSettingConditions::m_simpleConditions;
@@ -206,9 +206,6 @@ void CSettingConditions::Initialize()
 #if HAS_GLES == 2
   m_simpleConditions.insert("has_glesv2");
 #endif
-#ifdef HAS_KARAOKE
-  m_simpleConditions.insert("has_karaoke");
-#endif
 #ifdef HAS_SDL_JOYSTICK
   m_simpleConditions.insert("has_sdl_joystick");
 #endif
@@ -239,9 +236,6 @@ void CSettingConditions::Initialize()
 #ifdef TARGET_ANDROID
   m_simpleConditions.insert("has_mediacodec");
 #endif
-#ifdef HAS_LIBSTAGEFRIGHT
-  m_simpleConditions.insert("have_libstagefrightdecoder");
-#endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
   m_simpleConditions.insert("have_videotoolboxdecoder");
   if (g_sysinfo.HasVideoToolBoxDecoder())
@@ -253,10 +247,6 @@ void CSettingConditions::Initialize()
 #ifdef HAS_LIBAMCODEC
   if (aml_present())
     m_simpleConditions.insert("have_amcodec");
-#endif
-#ifdef TARGET_DARWIN_IOS_ATV2
-  if (g_sysinfo.IsAppleTV2())
-    m_simpleConditions.insert("isappletv2");
 #endif
 #ifdef TARGET_DARWIN_OSX
   if (CDarwinUtils::IsSnowLeopard())

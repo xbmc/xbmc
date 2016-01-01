@@ -22,7 +22,9 @@
 
 #include <memory>
 #include "threads/SystemClock.h"
+#include "guilib/Resolution.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#include "cores/IPlayer.h"
 
 typedef enum
 {
@@ -50,7 +52,6 @@ class CApplicationPlayer
 {
   std::shared_ptr<IPlayer> m_pPlayer;
   unsigned int m_iPlayerOPSeq;  // used to detect whether an OpenFile request on player is canceled by us.
-  PLAYERCOREID m_eCurrentPlayer;
 
   CCriticalSection  m_player_lock;
 
@@ -68,15 +69,38 @@ public:
   // player management
   void CloseFile(bool reopen = false);
   void ClosePlayer();
-  void ClosePlayerGapless(PLAYERCOREID newCore);
-  void CreatePlayer(PLAYERCOREID newCore, IPlayerCallback& callback);
-  PLAYERCOREID GetCurrentPlayer() const { return m_eCurrentPlayer; }
+  void ClosePlayerGapless(std::string &playername);
+  void CreatePlayer(const std::string &player, IPlayerCallback& callback);
+  std::string GetCurrentPlayer();
   std::shared_ptr<IPlayer> GetInternal() const;
   int  GetPlaySpeed() const;
   bool HasPlayer() const;
   PlayBackRet OpenFile(const CFileItem& item, const CPlayerOptions& options);
-  void ResetPlayer() { m_eCurrentPlayer = EPC_NONE; }
   void SetPlaySpeed(int iSpeed, bool bApplicationMuted);
+
+  void FrameMove();
+  void FrameWait(int ms);
+  bool HasFrame();
+  void Render(bool clear, uint32_t alpha = 255, bool gui = true);
+  void AfterRender();
+  void FlushRenderer();
+  void SetRenderViewMode(int mode);
+  float GetRenderAspectRatio();
+  RESOLUTION GetRenderResolution();
+  void TriggerUpdateResolution();
+  bool IsRenderingVideo();
+  bool IsRenderingGuiLayer();
+  bool IsRenderingVideoLayer();
+  bool Supports(EDEINTERLACEMODE mode);
+  bool Supports(EINTERLACEMETHOD method);
+  bool Supports(ESCALINGMETHOD method);
+  bool Supports(ERENDERFEATURE feature);
+  unsigned int RenderCaptureAlloc();
+  void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags = 0);
+  void RenderCaptureRelease(unsigned int captureId);
+  bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size);
+  std::string GetRenderVSyncState();
+  bool IsExternalPlaying();
 
   // proxy calls
   void   AddSubtitle(const std::string& strSubPath);
@@ -112,6 +136,7 @@ public:
   void  GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info);
   bool  GetSubtitleVisible();
   TextCacheStruct_t* GetTeletextCache();
+  std::string GetRadioText(unsigned int line);
   int64_t GetTime() const;
   int64_t GetDisplayTime() const;
   int64_t GetTotalTime() const;
@@ -120,6 +145,7 @@ public:
   bool  HasAudio() const;
   bool  HasMenu() const;
   bool  HasVideo() const;
+  bool  HasRDS() const;
   bool  IsCaching() const;
   bool  IsInMenu() const;
   bool  IsPaused() const;
@@ -128,6 +154,7 @@ public:
   bool  IsPlaying() const;
   bool  IsPlayingAudio() const;
   bool  IsPlayingVideo() const;
+  bool  IsPlayingRDS() const;
   bool  IsRecording() const;
   void  LoadPage(int p, int sp, unsigned char* buffer);
   bool  OnAction(const CAction &action);

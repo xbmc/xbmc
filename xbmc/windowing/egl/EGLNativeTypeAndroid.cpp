@@ -24,18 +24,17 @@
 #include "EGLNativeTypeAndroid.h"
 #include "utils/log.h"
 #include "guilib/gui3d.h"
-#include "android/activity/XBMCApp.h"
+#include "platform/android/activity/XBMCApp.h"
 #include "utils/StringUtils.h"
-#include "android/jni/SystemProperties.h"
-#include "android/jni/Display.h"
-#include "android/jni/View.h"
-#include "android/jni/Window.h"
-#include "android/jni/WindowManager.h"
-#include "android/jni/Build.h"
-#include "android/jni/System.h"
+#include "platform/android/jni/SystemProperties.h"
+#include "platform/android/jni/Display.h"
+#include "platform/android/jni/View.h"
+#include "platform/android/jni/Window.h"
+#include "platform/android/jni/WindowManager.h"
+#include "platform/android/jni/Build.h"
+#include "platform/android/jni/System.h"
 
 CEGLNativeTypeAndroid::CEGLNativeTypeAndroid()
-  : m_width(0), m_height(0)
 {
 }
 
@@ -67,29 +66,6 @@ static bool DeviceCanUseDisplaysize(const std::string &name)
 void CEGLNativeTypeAndroid::Initialize()
 {
   std::string displaySize;
-  m_width = m_height = 0;
-
-  // FIXME: Temporary shield specific hack to obtain HDMI resolution
-  //        Remove and use New Android M API
-  if (DeviceCanUseDisplaysize(CJNIBuild::DEVICE))
-    displaySize = CJNISystemProperties::get("sys.display-size", "");
-
-  // Override with xmbc_properties if present
-  std::string customdisplaySize = CJNISystem::getProperty("xbmc.display-size", "");
-  if (!customdisplaySize.empty())
-    displaySize = customdisplaySize;
-
-  if (!displaySize.empty())
-  {
-    CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: display-size: %s", displaySize.c_str());
-    std::vector<std::string> aSize = StringUtils::Split(displaySize, "x");
-    if (aSize.size() == 2)
-    {
-      m_width = StringUtils::IsInteger(aSize[0]) ? atoi(aSize[0].c_str()) : 0;
-      m_height = StringUtils::IsInteger(aSize[1]) ? atoi(aSize[1].c_str()) : 0;
-    }
-  }
-
   return;
 }
 void CEGLNativeTypeAndroid::Destroy()
@@ -121,8 +97,8 @@ bool CEGLNativeTypeAndroid::GetNativeWindow(XBNativeWindowType **nativeWindow) c
 {
   if (!nativeWindow)
     return false;
-  *nativeWindow = (XBNativeWindowType*) CXBMCApp::GetNativeWindow(30000);
-  return (*nativeWindow != NULL);
+  *nativeWindow = (XBNativeWindowType*) CXBMCApp::GetNativeWindow(2000);
+  return (*nativeWindow != NULL && **nativeWindow != NULL);
 }
 
 bool CEGLNativeTypeAndroid::DestroyNativeDisplay()
@@ -141,8 +117,9 @@ static float currentRefreshRate()
   if (window)
   {
     float preferredRate = window.getAttributes().getpreferredRefreshRate();
-    if (preferredRate > 1.0)
+    if (preferredRate > 20.0 && preferredRate < 70.0)
     {
+      CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: Preferred refresh rate: %f", preferredRate);
       return preferredRate;
     }
     CJNIView view(window.getDecorView());
@@ -151,7 +128,11 @@ static float currentRefreshRate()
       if (display)
       {
         float reportedRate = display.getRefreshRate();
-        return reportedRate;
+        if (reportedRate > 20.0 && reportedRate < 70.0)
+        {
+          CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: Current display refresh rate: %f", reportedRate);
+          return reportedRate;
+        }
       }
     }
   }
@@ -165,18 +146,10 @@ bool CEGLNativeTypeAndroid::GetNativeResolution(RESOLUTION_INFO *res) const
   if (!nativeWindow)
     return false;
 
-  if (!m_width || !m_height)
-  {
-    ANativeWindow_acquire(*nativeWindow);
-    res->iWidth = ANativeWindow_getWidth(*nativeWindow);
-    res->iHeight= ANativeWindow_getHeight(*nativeWindow);
-    ANativeWindow_release(*nativeWindow);
-  }
-  else
-  {
-    res->iWidth = m_width;
-    res->iHeight = m_height;
-  }
+  ANativeWindow_acquire(*nativeWindow);
+  res->iWidth = ANativeWindow_getWidth(*nativeWindow);
+  res->iHeight= ANativeWindow_getHeight(*nativeWindow);
+  ANativeWindow_release(*nativeWindow);
 
   res->fRefreshRate = currentRefreshRate();
   res->dwFlags= D3DPRESENTFLAG_PROGRESSIVE;
@@ -194,9 +167,7 @@ bool CEGLNativeTypeAndroid::GetNativeResolution(RESOLUTION_INFO *res) const
 
 bool CEGLNativeTypeAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
 {
-  CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: SetNativeResolution: %dx%d", m_width, m_height);
-  if (m_width && m_height)
-    CXBMCApp::SetBuffersGeometry(m_width, m_height, 0);
+  CLog::Log(LOGNOTICE, "CEGLNativeTypeAndroid: Switching to resolution: %s", res.strMode.c_str());
 
   if (abs(currentRefreshRate() - res.fRefreshRate) > 0.0001)
     CXBMCApp::SetRefreshRate(res.fRefreshRate);

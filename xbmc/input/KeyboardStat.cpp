@@ -32,7 +32,8 @@
 #include "threads/SystemClock.h"
 #include "utils/log.h"
 
-using namespace std;
+#define HOLD_THRESHOLD 250
+
 using namespace PERIPHERALS;
 
 bool operator==(const XBMC_keysym& lhs, const XBMC_keysym& rhs)
@@ -59,7 +60,7 @@ void CKeyboardStat::Initialize()
 
 bool CKeyboardStat::LookupSymAndUnicodePeripherals(XBMC_keysym &keysym, uint8_t *key, char *unicode)
 {
-  vector<CPeripheral *> hidDevices;
+  std::vector<CPeripheral *> hidDevices;
   if (g_peripherals.GetPeripheralsWithFeature(hidDevices, FEATURE_HID))
   {
     for (unsigned int iDevicePtr = 0; iDevicePtr < hidDevices.size(); iDevicePtr++)
@@ -159,6 +160,8 @@ CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
   if (keysym == m_lastKeysym)
   {
     held = XbmcThreads::SystemClockMillis() - m_lastKeyTime;
+    if (held > HOLD_THRESHOLD)
+      modifiers |= CKey::MODIFIER_LONG;
   }
 
   // For all shift-X keys except shift-A to shift-Z and shift-F1 to shift-F24 the

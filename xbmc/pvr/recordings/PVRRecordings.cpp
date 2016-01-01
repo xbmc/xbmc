@@ -18,19 +18,19 @@
  *
  */
 
-#include "FileItem.h"
-#include "epg/EpgContainer.h"
-#include "URL.h"
-#include "utils/log.h"
-#include "threads/SingleLock.h"
-#include "video/VideoDatabase.h"
-
-#include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
-
-#include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
 #include "PVRRecordings.h"
+
+#include <utility>
+
+#include "epg/EpgContainer.h"
+#include "FileItem.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/PVRManager.h"
+#include "threads/SingleLock.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "video/VideoDatabase.h"
 
 using namespace PVR;
 
@@ -502,7 +502,7 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
     newTag->Update(*tag);
     if (newTag->EpgEvent() > 0)
     {
-      EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::Get().GetTagById(newTag->EpgEvent());
+      EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(newTag->EpgEvent());
       if (epgTag)
         epgTag->SetRecording(newTag);
     }
@@ -514,13 +514,13 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
 void CPVRRecordings::UpdateEpgTags(void)
 {
   CSingleLock lock(m_critSection);
-  int iEpgEvent;
+  unsigned int iEpgEvent;
   for (PVR_RECORDINGMAP_ITR it = m_recordings.begin(); it != m_recordings.end(); ++it)
   {
     iEpgEvent = it->second->EpgEvent();
     if (iEpgEvent > 0 && !it->second->IsDeleted())
     {
-      EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::Get().GetTagById(iEpgEvent);
+      EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(iEpgEvent);
       if (epgTag)
         epgTag->SetRecording(it->second);
     }

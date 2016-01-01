@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,13 +13,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 #include "AutorunMediaJob.h"
 #include "Application.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -40,7 +40,7 @@ bool CAutorunMediaJob::DoWork()
   g_application.WakeUpScreenSaverAndDPMS();
 
   pDialog->Reset();
-  if (m_label.size() > 0)
+  if (!m_label.empty())
     pDialog->SetHeading(CVariant{m_label});
   else
     pDialog->SetHeading(CVariant{g_localizeStrings.Get(21331)});
@@ -52,11 +52,11 @@ bool CAutorunMediaJob::DoWork()
 
   pDialog->Open();
 
-  int selection = pDialog->GetSelectedLabel();
+  int selection = pDialog->GetSelectedItem();
   if (selection >= 0)
   {
     std::string strAction = StringUtils::Format("ActivateWindow(%s, %s)", GetWindowString(selection), m_path.c_str());
-    CBuiltins::Execute(strAction);
+    CBuiltins::GetInstance().Execute(strAction);
   }
 
   return true;

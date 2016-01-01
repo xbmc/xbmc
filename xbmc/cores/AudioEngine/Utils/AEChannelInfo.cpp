@@ -205,7 +205,7 @@ bool CAEChannelInfo::operator==(const CAEChannelInfo& rhs) const
   return true;
 }
 
-bool CAEChannelInfo::operator!=(const CAEChannelInfo& rhs)
+bool CAEChannelInfo::operator!=(const CAEChannelInfo& rhs) const
 {
   return !(*this == rhs);
 }

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<defaultcontrol always="true">22</defaultcontrol>
-	<allowoverlay>no</allowoverlay>
 	<coordinates>
-		<system>1</system>
 		<left>240</left>
 		<top>22</top>
 	</coordinates>
@@ -145,7 +143,7 @@
 					<font>font12_title</font>
 					<align>center</align>
 					<aligny>center</aligny>
-					<onup>17</onup>
+					<onup>12</onup>
 					<onleft>10</onleft>
 					<onright>10</onright>
 					<ondown>14</ondown>

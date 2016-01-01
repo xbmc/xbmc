@@ -22,7 +22,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Utils/AERingBuffer.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHelpers.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "threads/Condition.h"
@@ -545,22 +545,20 @@ static void EnumerateDevices(AEDeviceInfoList &list)
   device.m_deviceName = "default";
   device.m_displayName = "Default";
   device.m_displayNameExtra = "";
-#if defined(TARGET_DARWIN_IOS_ATV2)
-  device.m_deviceType = AE_DEVTYPE_IEC958;
-  device.m_dataFormats.push_back(AE_FMT_AC3);
-  device.m_dataFormats.push_back(AE_FMT_DTS);
-#else
   // TODO screen changing on ios needs to call
   // devices changed once this is available in activae
   if (g_Windowing.GetCurrentScreen() > 0)
   {
     device.m_deviceType = AE_DEVTYPE_IEC958; //allow passthrough for tvout
-    device.m_dataFormats.push_back(AE_FMT_AC3);
-    device.m_dataFormats.push_back(AE_FMT_DTS);
+    device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+    device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+    device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+    device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+    device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+    device.m_dataFormats.push_back(AE_FMT_RAW);
   }
   else
     device.m_deviceType = AE_DEVTYPE_PCM;
-#endif
 
   // add channel info
   CAEChannelInfo channel_info;
@@ -580,9 +578,8 @@ static void EnumerateDevices(AEDeviceInfoList &list)
   device.m_dataFormats.push_back(AE_FMT_S16LE);
   //device.m_dataFormats.push_back(AE_FMT_S24LE3);
   //device.m_dataFormats.push_back(AE_FMT_S32LE);
-  // AE_FMT_FLOAT is 3% slower on atv2
-  // then S16LE - so leave it out for now
-  //device.m_dataFormats.push_back(AE_FMT_FLOAT);
+  device.m_dataFormats.push_back(AE_FMT_FLOAT);
+  device.m_wantsIECPassthrough = true;
 
   CLog::Log(LOGDEBUG, "EnumerateDevices:Device(%s)" , device.m_deviceName.c_str());
 
@@ -624,16 +621,12 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
 
   AudioStreamBasicDescription audioFormat = {};
 
-  // AE_FMT_FLOAT is 3% slower on atv2
-  // then S16LE - so leave it out for now
-  // just leave the code commented in here
-  // as it might come handy at some point maybe ...
-  //if (format.m_dataFormat == AE_FMT_FLOAT)
-  //  audioFormat.mFormatFlags    |= kLinearPCMFormatFlagIsFloat;
-  //else// this will be selected when AE wants AC3 or DTS or anything other then float
+  if (format.m_dataFormat == AE_FMT_FLOAT)
+    audioFormat.mFormatFlags    |= kLinearPCMFormatFlagIsFloat;
+  else// this will be selected when AE wants AC3 or DTS or anything other then float
   {
     audioFormat.mFormatFlags    |= kLinearPCMFormatFlagIsSignedInteger;
-    if (AE_IS_RAW(format.m_dataFormat))
+    if (format.m_dataFormat == AE_FMT_RAW)
       forceRaw = true;
     format.m_dataFormat = AE_FMT_S16LE;
   }
@@ -684,7 +677,6 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   m_audioSink->open(audioFormat);
 
   format.m_frames = m_audioSink->chunkSize();
-  format.m_frameSamples = format.m_frames * audioFormat.mChannelsPerFrame;
   // reset to the realised samplerate
   format.m_sampleRate = m_audioSink->getRealisedSampleRate();
   m_format = format;

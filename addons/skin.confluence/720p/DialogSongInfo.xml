@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<defaultcontrol always="true">10</defaultcontrol>
+	<defaultcontrol always="true">12</defaultcontrol>
 	<coordinates>
-		<system>1</system>
 		<left>185</left>
 		<top>105</top>
 	</coordinates>
@@ -49,259 +48,160 @@
 				<aspectratio aligny="top">keep</aspectratio>
 				<texture flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
 			</control>
-			<control type="group">
+			<control type="list">
 				<left>250</left>
 				<top>120</top>
-				<control type="label">
-					<description>Artist Title</description>
-					<left>0</left>
-					<top>0</top>
-					<width>150</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<textcolor>blue</textcolor>
-					<label>$LOCALIZE[557]:</label>
-				</control>
-				<control type="fadelabel">
-					<description>Artist Value</description>
-					<left>160</left>
-					<top>0</top>
-					<width>460</width>
-					<height>25</height>
-					<align>left</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<textcolor>white</textcolor>
-					<label fallback="161">$INFO[ListItem.Artist]</label>
-					<scrollout>false</scrollout>
-					<pauseatend>2000</pauseatend>
-				</control>
-				<control type="label">
-					<description>Album Title</description>
-					<left>0</left>
-					<top>30</top>
-					<width>150</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<textcolor>blue</textcolor>
-					<label>$LOCALIZE[558]:</label>
-				</control>
-				<control type="fadelabel">
-					<description>Album Value</description>
-					<left>160</left>
-					<top>30</top>
-					<width>460</width>
-					<height>25</height>
-					<align>left</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<textcolor>white</textcolor>
-					<label fallback="161">$INFO[ListItem.Album]$INFO[listitem.discnumber, - $LOCALIZE[427] ]</label>
-					<scrollout>false</scrollout>
-					<pauseatend>2000</pauseatend>
-				</control>
-				<control type="label">
-					<description>Genre Title</description>
-					<left>0</left>
-					<top>60</top>
-					<width>150</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<textcolor>blue</textcolor>
-					<label>$LOCALIZE[515]:</label>
-					<scrollout>false</scrollout>
-					<pauseatend>2000</pauseatend>
-				</control>
-				<control type="fadelabel">
-					<description>Genre Value</description>
-					<left>160</left>
-					<top>60</top>
-					<width>460</width>
-					<height>25</height>
-					<align>left</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<textcolor>white</textcolor>
-					<label fallback="161">$INFO[ListItem.Genre]</label>
-				</control>
-				<control type="label">
-					<description>Year Title</description>
-					<left>0</left>
-					<top>90</top>
-					<width>150</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<textcolor>blue</textcolor>
-					<label>$LOCALIZE[562]:</label>
-				</control>
-				<control type="fadelabel">
-					<description>Year Value</description>
-					<left>160</left>
-					<top>90</top>
-					<width>460</width>
-					<height>25</height>
-					<align>left</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<textcolor>white</textcolor>
-					<label fallback="161">$INFO[ListItem.Year]</label>
-				</control>
-				<control type="label">
-					<description>Track Number Title</description>
-					<left>0</left>
-					<top>120</top>
-					<width>150</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<textcolor>blue</textcolor>
-					<label>$LOCALIZE[554]:</label>
-				</control>
-				<control type="fadelabel">
-					<description>Track Number Value</description>
-					<left>160</left>
-					<top>120</top>
-					<width>460</width>
-					<height>25</height>
-					<align>left</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<textcolor>white</textcolor>
-					<label fallback="161">$INFO[ListItem.TrackNumber]</label>
-				</control>
-				<control type="label">
-					<description>Rating Title</description>
-					<left>0</left>
-					<top>150</top>
-					<width>150</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<textcolor>blue</textcolor>
-					<label>$LOCALIZE[563]:</label>
-				</control>
-				<control type="group">
-					<left>160</left>
-					<top>148</top>
-					<control type="image">
-						<description>Rating value</description>
+				<width>640</width>
+				<height>330</height>
+				<pagecontrol>-</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="30">
+					<control type="label">
 						<left>0</left>
 						<top>0</top>
 						<width>150</width>
-						<height>32</height>
-						<aspectratio align="left">keep</aspectratio>
-						<texture>LeftRating/$INFO[ListItem.StarRating]</texture>
+						<height>30</height>
+						<font>font13</font>
+						<align>right</align>
+						<aligny>center</aligny>
+						<textcolor>blue</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<info>ListItem.Label</info>
 					</control>
-					<control type="button" id="14">
-						<description>Decrease Rating</description>
+					<control type="label">
 						<left>160</left>
-						<top>5</top>
-						<width>33</width>
-						<height>22</height>
-						<onclick>DecreaseRating</onclick>
-						<texturenofocus>scroll-down-2.png</texturenofocus>
-						<texturefocus>scroll-down-focus-2.png</texturefocus>
-						<onleft>15</onleft>
-						<onright>15</onright>
-						<ondown>9000</ondown>
-						<onup>9000</onup>
+						<top>0</top>
+						<width>460</width>
+						<height>30</height>
+						<font>font13</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<textcolor>white</textcolor>
+						<selectedcolor>white</selectedcolor>
+						<info>ListItem.Label2</info>
 					</control>
-					<control type="button" id="15">
-						<description>Increase Rating</description>
-						<left>193</left>
-						<top>5</top>
-						<width>33</width>
-						<height>22</height>
-						<onclick>IncreaseRating</onclick>
-						<texturenofocus>scroll-up-2.png</texturenofocus>
-						<texturefocus>scroll-up-focus-2.png</texturefocus>
-						<onleft>14</onleft>
-						<onright>14</onright>
-						<ondown>9000</ondown>
-						<onup>9000</onup>
+				</itemlayout>
+				<focusedlayout height="30">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>640</width>
+						<height>30</height>
+						<visible>Control.HasFocus(49)</visible>
+						<texture>MenuItemFO.png</texture>
+						<include>VisibleFadeEffect</include>
 					</control>
-				</control>
-				<control type="label">
-					<description>Comment Title</description>
-					<left>0</left>
-					<top>180</top>
-					<width>150</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<textcolor>blue</textcolor>
-					<label>$LOCALIZE[569]:</label>
-				</control>
-				<control type="textbox">
-					<description>Comment value</description>
-					<left>160</left>
-					<top>179</top>
-					<width>460</width>
-					<height>138</height>
-					<font>font13</font>
-					<pagecontrol>-</pagecontrol>
-					<label fallback="161">$INFO[ListItem.Comment]</label>
-				</control>
+					<control type="label">
+						<left>0</left>
+						<top>0</top>
+						<width>150</width>
+						<height>30</height>
+						<font>font13</font>
+						<align>right</align>
+						<aligny>center</aligny>
+						<textcolor>blue</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<left>160</left>
+						<top>0</top>
+						<width>460</width>
+						<height>30</height>
+						<font>font13</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<textcolor>white</textcolor>
+						<selectedcolor>white</selectedcolor>
+						<info>ListItem.Label2</info>
+					</control>
+				</focusedlayout>
+				<content>
+					<item>
+						<label>$LOCALIZE[557]:</label>
+						<label2>$INFO[ListItem.Artist]</label2>
+						<onclick>noop</onclick>
+						<visible>!IsEmpty(ListItem.Artist)</visible>
+					</item>
+					<item>
+						<label>$LOCALIZE[558]:</label>
+						<label2>$INFO[ListItem.Album]$INFO[listitem.discnumber, - $LOCALIZE[427] ]</label2>
+						<onclick>noop</onclick>
+						<visible>!IsEmpty(ListItem.Album)</visible>
+					</item>
+					<item>
+						<label>$LOCALIZE[515]:</label>
+						<label2>$INFO[ListItem.Genre]</label2>
+						<onclick>noop</onclick>
+						<visible>!IsEmpty(ListItem.Genre)</visible>
+					</item>
+					<item>
+						<label>$LOCALIZE[562]:</label>
+						<label2>$INFO[ListItem.Year]</label2>
+						<onclick>noop</onclick>
+						<visible>!IsEmpty(ListItem.Year)</visible>
+					</item>
+					<item>
+						<label>$LOCALIZE[554]:</label>
+						<label2>$INFO[ListItem.TrackNumber]</label2>
+						<onclick>noop</onclick>
+						<visible>!IsEmpty(ListItem.TrackNumber)</visible>
+					</item>
+					<item>
+						<label>$LOCALIZE[563]:</label>
+						<label2>$INFO[ListItem.RatingAndVotes]</label2>
+						<onclick>noop</onclick>
+						<visible>!IsEmpty(ListItem.RatingAndVotes)</visible>
+					</item>
+					<item>
+						<label>$LOCALIZE[38018]:</label>
+						<label2>$INFO[ListItem.Userrating]</label2>
+						<onclick>noop</onclick>
+						<visible>!IsEmpty(ListItem.Userrating)</visible>
+					</item>
+				</content>
+			</control>
+			<control type="label">
+				<description>Comment Title</description>
+				<left>40</left>
+				<top>360</top>
+				<width>150</width>
+				<height>25</height>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<textcolor>blue</textcolor>
+				<label>$LOCALIZE[569]:</label>
+				<visible>!IsEmpty(ListItem.Comment)</visible>
+			</control>
+			<control type="textbox">
+				<description>Comment value</description>
+				<left>200</left>
+				<top>360</top>
+				<width>670</width>
+				<height>75</height>
+				<font>font13</font>
+				<pagecontrol>-</pagecontrol>
+				<label>$INFO[ListItem.Comment]</label>
 			</control>
 			<control type="group" id="9000">
-				<left>40</left>
+				<left>140</left>
 				<top>445</top>
-				<control type="button" id="10">
-					<description>Ok button</description>
-					<left>0</left>
-					<top>0</top>
-					<width>200</width>
-					<height>40</height>
-					<label>186</label>
-					<font>font12_title</font>
-					<align>center</align>
-					<onleft>13</onleft>
-					<onright>11</onright>
-					<onup>14</onup>
-					<ondown>14</ondown>
-				</control>
-				<control type="button" id="11">
-					<description>Cancel button</description>
-					<left>210</left>
-					<top>0</top>
-					<width>200</width>
-					<height>40</height>
-					<label>222</label>
-					<font>font12_title</font>
-					<align>center</align>
-					<onleft>10</onleft>
-					<onright>12</onright>
-					<onup>14</onup>
-					<ondown>14</ondown>
-				</control>
 				<control type="button" id="12">
 					<description>Album Info button</description>
-					<left>420</left>
+					<left>0</left>
 					<top>0</top>
 					<width>200</width>
 					<height>40</height>
 					<label>10523</label>
 					<font>font12_title</font>
 					<align>center</align>
-					<onleft>11</onleft>
+					<onleft>7</onleft>
 					<onright>13</onright>
-					<onup>14</onup>
-					<ondown>14</ondown>
 				</control>
 				<control type="button" id="13">
 					<description>Get Thumb button</description>
-					<left>630</left>
+					<left>210</left>
 					<top>0</top>
 					<width>200</width>
 					<height>40</height>
@@ -309,9 +209,20 @@
 					<font>font12_title</font>
 					<align>center</align>
 					<onleft>12</onleft>
-					<onright>10</onright>
-					<onup>14</onup>
-					<ondown>14</ondown>
+					<onright>7</onright>
+				</control>
+				<control type="button" id="7">
+					<description>Set my rating</description>
+					<left>420</left>
+					<top>0</top>
+					<width>200</width>
+					<height>40</height>
+					<label>38023</label>
+					<font>font12_title</font>
+					<align>center</align>
+					<onleft>13</onleft>
+					<onright>12</onright>
+					<visible>Control.IsEnabled(7)</visible>
 				</control>
 			</control>
 		</control>

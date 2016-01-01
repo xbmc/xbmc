@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -20,8 +19,9 @@
  *
  */
 
-#include "GUIWindowPVRBase.h"
 #include "epg/GUIEPGGridContainer.h"
+#include "threads/SystemClock.h"
+#include "GUIWindowPVRBase.h"
 
 class CSetting;
 
@@ -33,17 +33,20 @@ namespace PVR
     CGUIWindowPVRGuide(bool bRadio);
     virtual ~CGUIWindowPVRGuide(void);
 
-    virtual void OnInitWindow();
-    bool OnMessage(CGUIMessage& message);
-    bool OnAction(const CAction &action);
-    void GetContextButtons(int itemNumber, CContextButtons &buttons);
-    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-    void ResetObservers(void);
+    virtual void OnInitWindow() override;
+    virtual bool OnMessage(CGUIMessage& message) override;
+    virtual bool OnAction(const CAction &action) override;
+    virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+    virtual void ResetObservers(void) override;
     void UnregisterObservers(void);
+    virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
+    virtual void UpdateButtons(void) override;
 
   protected:
-    void UpdateSelectedItemPath();
-    virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
+    virtual void UpdateSelectedItemPath() override;
+    virtual std::string GetDirectoryPath(void) override { return ""; }
+    virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
 
   private:
     bool SelectPlayingFile(void);
@@ -55,6 +58,7 @@ namespace PVR
     bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonDeleteTimer(CFileItem *item, CONTEXT_BUTTON button);
 
     void GetViewChannelItems(CFileItemList &items);
     void GetViewNowItems(CFileItemList &items);
@@ -65,5 +69,7 @@ namespace PVR
     CPVRChannelGroupPtr m_cachedChannelGroup;
 
     bool m_bUpdateRequired;
+
+    XbmcThreads::EndTime m_nextUpdateTimeout;
   };
 }

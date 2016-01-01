@@ -23,8 +23,10 @@
 
 #include "../../addons/library.kodi.guilib/libKODI_guilib.h"
 #include "../../addons/library.kodi.adsp/libKODI_adsp.h"
-#include "cores/dvdplayer/DVDDemuxers/DVDDemuxUtils.h"
+#include "../../addons/library.kodi.audioengine/libKODI_audioengine.h"
+#include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "addons/include/kodi_adsp_types.h"
+#include "addons/include/kodi_audioengine_types.h"
 #include "addons/include/xbmc_pvr_types.h"
 #include "addons/include/xbmc_codec_types.h"
 
@@ -397,6 +399,70 @@ typedef struct CB_ADSPLib
   ADSPSoundPlay_GetVolume       SoundPlay_GetVolume;
 } CB_ADSPLib;
 
+// ---------------------------------------
+// libKODI_audioengine definitions
+// ---------------------------------------
+typedef AEStreamHandle* (*AudioEngine_MakeStream)(AudioEngineFormat Format, unsigned int Options);
+typedef void            (*AudioEngine_FreeStream)(AEStreamHandle *stream);
+typedef bool            (*AudioEngine_GetCurrentSinkFormat)(void *addonData, AudioEngineFormat *SinkFormat);
+
+// Audio Engine Stream definitions
+typedef unsigned int            (*AudioEngine_Stream_GetSpace)(void *addonData, AEStreamHandle *handle);
+typedef unsigned int            (*AudioEngine_Stream_AddData)(void *addonData, AEStreamHandle *handle, uint8_t* const *Data, unsigned int Offset, unsigned int Frames);
+typedef double                  (*AudioEngine_Stream_GetDelay)(void *addonData, AEStreamHandle *handle);
+typedef bool                    (*AudioEngine_Stream_IsBuffering)(void *addonData, AEStreamHandle *handle);
+typedef double                  (*AudioEngine_Stream_GetCacheTime)(void *addonData, AEStreamHandle *handle);
+typedef double                  (*AudioEngine_Stream_GetCacheTotal)(void *addonData, AEStreamHandle *handle);
+typedef void                    (*AudioEngine_Stream_Pause)(void *addonData, AEStreamHandle *handle);
+typedef void                    (*AudioEngine_Stream_Resume)(void *addonData, AEStreamHandle *handle);
+typedef void                    (*AudioEngine_Stream_Drain)(void *addonData, AEStreamHandle *handle, bool Wait);
+typedef bool                    (*AudioEngine_Stream_IsDraining)(void *addonData, AEStreamHandle *handle);
+typedef bool                    (*AudioEngine_Stream_IsDrained)(void *addonData, AEStreamHandle *handle);
+typedef void                    (*AudioEngine_Stream_Flush)(void *addonData, AEStreamHandle *handle);
+typedef float                   (*AudioEngine_Stream_GetVolume)(void *addonData, AEStreamHandle *handle);
+typedef void                    (*AudioEngine_Stream_SetVolume)(void *addonData, AEStreamHandle *handle, float Volume);
+typedef float                   (*AudioEngine_Stream_GetAmplification)(void *addonData, AEStreamHandle *handle);
+typedef void                    (*AudioEngine_Stream_SetAmplification)(void *addonData, AEStreamHandle *handle, float Amplify);
+typedef const unsigned int      (*AudioEngine_Stream_GetFrameSize)(void *addonData, AEStreamHandle *handle);
+typedef const unsigned int      (*AudioEngine_Stream_GetChannelCount)(void *addonData, AEStreamHandle *handle);
+typedef const unsigned int      (*AudioEngine_Stream_GetSampleRate)(void *addonData, AEStreamHandle *handle);
+typedef const AEDataFormat      (*AudioEngine_Stream_GetDataFormat)(void *addonData, AEStreamHandle *handle);
+typedef double                  (*AudioEngine_Stream_GetResampleRatio)(void *addonData, AEStreamHandle *handle);
+typedef void                    (*AudioEngine_Stream_SetResampleRatio)(void *addonData, AEStreamHandle *handle, double Ratio);
+typedef void                    (*AudioEngine_Stream_Discontinuity)(void *addonData, AEStreamHandle *handle);
+
+typedef struct CB_AudioEngineLib
+{
+  AudioEngine_MakeStream                    MakeStream;
+  AudioEngine_FreeStream                    FreeStream;
+  AudioEngine_GetCurrentSinkFormat          GetCurrentSinkFormat;
+
+  // AudioEngine stream callbacks
+  AudioEngine_Stream_GetSpace               AEStream_GetSpace;
+  AudioEngine_Stream_AddData                AEStream_AddData;
+  AudioEngine_Stream_GetDelay               AEStream_GetDelay;
+  AudioEngine_Stream_IsBuffering            AEStream_IsBuffering;
+  AudioEngine_Stream_GetCacheTime           AEStream_GetCacheTime;
+  AudioEngine_Stream_GetCacheTotal          AEStream_GetCacheTotal;
+  AudioEngine_Stream_Pause                  AEStream_Pause;
+  AudioEngine_Stream_Resume                 AEStream_Resume;
+  AudioEngine_Stream_Drain                  AEStream_Drain;
+  AudioEngine_Stream_IsDraining             AEStream_IsDraining;
+  AudioEngine_Stream_IsDrained              AEStream_IsDrained;
+  AudioEngine_Stream_Flush                  AEStream_Flush;
+  AudioEngine_Stream_GetVolume              AEStream_GetVolume;
+  AudioEngine_Stream_SetVolume              AEStream_SetVolume;
+  AudioEngine_Stream_GetAmplification       AEStream_GetAmplification;
+  AudioEngine_Stream_SetAmplification       AEStream_SetAmplification;
+  AudioEngine_Stream_GetFrameSize           AEStream_GetFrameSize;
+  AudioEngine_Stream_GetChannelCount        AEStream_GetChannelCount;
+  AudioEngine_Stream_GetSampleRate          AEStream_GetSampleRate;
+  AudioEngine_Stream_GetDataFormat          AEStream_GetDataFormat;
+  AudioEngine_Stream_GetResampleRatio       AEStream_GetResampleRatio;
+  AudioEngine_Stream_SetResampleRatio       AEStream_SetResampleRatio;
+  AudioEngine_Stream_Discontinuity          AEStream_Discontinuity;
+} CB_AudioEngineLib;
+
 typedef void (*PVRTransferEpgEntry)(void *userData, const ADDON_HANDLE handle, const EPG_TAG *epgentry);
 typedef void (*PVRTransferChannelEntry)(void *userData, const ADDON_HANDLE handle, const PVR_CHANNEL *chan);
 typedef void (*PVRTransferTimerEntry)(void *userData, const ADDON_HANDLE handle, const PVR_TIMER *timer);
@@ -440,6 +506,8 @@ typedef CB_AddOnLib* (*XBMCAddOnLib_RegisterMe)(void *addonData);
 typedef void (*XBMCAddOnLib_UnRegisterMe)(void *addonData, CB_AddOnLib *cbTable);
 typedef CB_ADSPLib* (*KODIADSPLib_RegisterMe)(void *addonData);
 typedef void (*KODIADSPLib_UnRegisterMe)(void *addonData, CB_ADSPLib *cbTable);
+typedef CB_AudioEngineLib* (*KODIAudioEngineLib_RegisterMe)(void *addonData);
+typedef void (*KODIAudioEngineLib_UnRegisterMe)(void *addonData, CB_AudioEngineLib *cbTable);
 typedef CB_CODECLib* (*XBMCCODECLib_RegisterMe)(void *addonData);
 typedef void (*XBMCCODECLib_UnRegisterMe)(void *addonData, CB_CODECLib *cbTable);
 typedef CB_GUILib* (*XBMCGUILib_RegisterMe)(void *addonData);
@@ -453,6 +521,8 @@ typedef struct AddonCB
   void                      *addonData;
   XBMCAddOnLib_RegisterMe    AddOnLib_RegisterMe;
   XBMCAddOnLib_UnRegisterMe  AddOnLib_UnRegisterMe;
+  KODIAudioEngineLib_RegisterMe   AudioEngineLib_RegisterMe;
+  KODIAudioEngineLib_UnRegisterMe AudioEngineLib_UnRegisterMe;
   XBMCCODECLib_RegisterMe    CODECLib_RegisterMe;
   XBMCCODECLib_UnRegisterMe  CODECLib_UnRegisterMe;
   XBMCGUILib_RegisterMe      GUILib_RegisterMe;
@@ -470,6 +540,7 @@ namespace ADDON
 class CAddon;
 class CAddonCallbacksAddon;
 class CAddonCallbacksADSP;
+class CAddonCallbacksAudioEngine;
 class CAddonCallbacksCodec;
 class CAddonCallbacksGUI;
 class CAddonCallbacksPVR;
@@ -485,6 +556,8 @@ public:
   static void AddOnLib_UnRegisterMe(void *addonData, CB_AddOnLib *cbTable);
   static CB_ADSPLib* ADSPLib_RegisterMe(void *addonData);
   static void ADSPLib_UnRegisterMe(void *addonData, CB_ADSPLib *cbTable);
+  static CB_AudioEngineLib* AudioEngineLib_RegisterMe(void *addonData);
+  static void AudioEngineLib_UnRegisterMe(void *addonData, CB_AudioEngineLib *cbTable);
   static CB_CODECLib* CODECLib_RegisterMe(void *addonData);
   static void CODECLib_UnRegisterMe(void *addonData, CB_CODECLib *cbTable);
   static CB_GUILib* GUILib_RegisterMe(void *addonData);
@@ -494,6 +567,7 @@ public:
 
   CAddonCallbacksAddon *GetHelperAddon() { return m_helperAddon; }
   CAddonCallbacksADSP *GetHelperADSP() { return m_helperADSP; }
+  CAddonCallbacksAudioEngine *GetHelperAudioEngine() { return m_helperAudioEngine; }
   CAddonCallbacksCodec *GetHelperCodec() { return m_helperCODEC; }
   CAddonCallbacksGUI *GetHelperGUI() { return m_helperGUI; }
   CAddonCallbacksPVR *GetHelperPVR() { return m_helperPVR; }
@@ -503,6 +577,7 @@ private:
   CAddon              *m_addon;
   CAddonCallbacksAddon *m_helperAddon;
   CAddonCallbacksADSP  *m_helperADSP;
+  CAddonCallbacksAudioEngine  *m_helperAudioEngine;
   CAddonCallbacksCodec *m_helperCODEC;
   CAddonCallbacksGUI   *m_helperGUI;
   CAddonCallbacksPVR   *m_helperPVR;

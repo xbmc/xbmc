@@ -19,12 +19,13 @@
  */
 #pragma once
 
-#include <memory>
-
 #include "network/Zeroconf.h"
 #include "threads/CriticalSection.h"
 #include <dns_sd.h>
 #include "threads/Thread.h"
+
+#include <memory>
+#include <utility>
 
 class CZeroconfMDNS : public CZeroconf,public CThread
 {

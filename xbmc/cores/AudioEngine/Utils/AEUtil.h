@@ -55,8 +55,7 @@ extern "C" {
 // AV sync options
 enum AVSync
 {
-  SYNC_DISCON   = 0,
-  SYNC_SKIPDUP,
+  SYNC_DISCON = 0,
   SYNC_RESAMPLE
 };
 
@@ -64,14 +63,16 @@ struct AEDelayStatus
 {
   AEDelayStatus()
   : delay(0.0)
+  , maxcorrection(0.0)
   , tick(0)
   {}
 
   void   SetDelay(double d);
   double GetDelay();
 
-  double       delay;   /*!< delay in sink currently */
-  int64_t      tick;    /*!< timestamp when delay was calculated */
+  double delay;  // delay in sink currently
+  double maxcorrection; // time correction must not be greater than sink delay
+  int64_t tick;  // timestamp when delay was calculated
 };
 
 /**
@@ -150,6 +151,7 @@ public:
   static const unsigned int      DataFormatToUsedBits (const enum AEDataFormat dataFormat);
   static const unsigned int      DataFormatToDitherBits(const enum AEDataFormat dataFormat);
   static const char*             DataFormatToStr   (const enum AEDataFormat dataFormat);
+  static const char* StreamTypeToStr(const enum CAEStreamInfo::DataType dataType);
 
   /*! \brief convert a volume percentage (as a proportion) to a dB gain
    We assume a dB range of 60dB, i.e. assume that 0% volume corresponds

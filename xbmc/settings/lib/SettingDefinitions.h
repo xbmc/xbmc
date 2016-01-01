@@ -20,6 +20,7 @@
  */
 
 #include <string>
+#include <utility>
 #include <vector>
 
 #define SETTING_XML_ROOT              "settings"

@@ -56,7 +56,7 @@ public:
 
   static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 private:
-  CAEChannelInfo GetChannelLayoutRaw(AEDataFormat dataFormat);
+  CAEChannelInfo GetChannelLayoutRaw(const AEAudioFormat& format);
   CAEChannelInfo GetChannelLayoutLegacy(const AEAudioFormat& format, unsigned int minChannels, unsigned int maxChannels);
   CAEChannelInfo GetChannelLayout(const AEAudioFormat& format, unsigned int channels);
 

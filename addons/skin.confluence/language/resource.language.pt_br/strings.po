@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Ocultar fanart fundo da visualização"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Esconder EPG se RDS está presente na janela do canal"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Exibir vídeo \\\"reproduzindo agora\\\" ao fundo"
@@ -227,14 +231,6 @@ msgstr "Exibir vídeo \\\"reproduzindo agora\\\" ao fundo"
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Apresentar visualização de fundo em \\\"Agora reproduzindo\\\""
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Reproduzir música tema do seriado na biblioteca de vídeo (add-on TvTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -352,10 +348,6 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr "última conexão"
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Selecionador de música karaoke"
-
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Transmitido"
@@ -445,8 +437,8 @@ msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set v
 msgstr "[B]AJUSTES DE VÍDEO[/B][CR][CR]Gerencie sua coleção de vídeos · Defina opções de execução de vídeo[CR]Altere opções de listagem de vídeo · Defina fonte para legendas"
 
 msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]AJUSTES DE MÚSICAS[/B][CR][CR]Gerencie sua coleção de músicas · Defina opções de execução de música[CR]Altere opções de listagem de música · Configure submissão de música · Defina opções de karaokê"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]AJUSTES DE MÚSICAS[/B][CR][CR]Gerencie sua coleção de músicas · Defina opções de execução de música[CR]Altere opções de listagem de música · Configure submissão de música"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
@@ -518,7 +510,7 @@ msgstr "Renomear grupo"
 
 msgctxt "#31505"
 msgid "Delete group"
-msgstr "Deletar gurpo"
+msgstr "Deletar grupo"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"

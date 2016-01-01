@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<defaultcontrol always="true">52</defaultcontrol>
-	<allowoverlay>no</allowoverlay>
 	<coordinates>
-		<system>1</system>
 		<left>0</left>
 		<top>0</top>
 	</coordinates>
@@ -212,21 +210,24 @@
 				</control>
 			</control>
 		</control>
-		<include>Clock</include>
-		<control type="label">
-			<description>Date label</description>
-			<right>20</right>
-			<top>35</top>
-			<width>200</width>
-			<height>15</height>
-			<align>right</align>
-			<aligny>center</aligny>
-			<font>font10</font>
-			<textcolor>white</textcolor>
-			<shadowcolor>black</shadowcolor>
-			<label>$INFO[System.Date]</label>
-			<include>Window_OpenClose_Animation</include>
-			<animation effect="slide" start="0,0" end="-40,0" time="75" condition="Window.IsVisible(Mutebug)">conditional</animation>
+		<control type="group">
+			<depth>DepthHeader</depth>
+			<include>Clock</include>
+			<control type="label">
+				<description>Date label</description>
+				<right>20</right>
+				<top>35</top>
+				<width>200</width>
+				<height>15</height>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font10</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<label>$INFO[System.Date]</label>
+				<include>Window_OpenClose_Animation</include>
+				<animation effect="slide" start="0,0" end="-40,0" time="75" condition="Window.IsVisible(Mutebug)">conditional</animation>
+			</control>
 		</control>
 	</controls>
 </window>

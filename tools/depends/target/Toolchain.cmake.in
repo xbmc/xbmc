@@ -1,6 +1,6 @@
 SET(OS "@platform_os@")
 SET(CPU "@use_cpu@")
-SET(PLATFORM "@use_platform@")
+SET(PLATFORM "@target_platform@")
 IF("${OS}" STREQUAL "linux" OR "${OS}" STREQUAL "android")
 SET(CMAKE_SYSTEM_NAME Linux)
 ENDIF()

@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -754,19 +754,19 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
   else if( url2.IsProtocol("http")
        ||  url2.IsProtocol("https"))
   {
-    if (CSettings::Get().GetBool("network.usehttpproxy")
-        && !CSettings::Get().GetString("network.httpproxyserver").empty()
-        && CSettings::Get().GetInt("network.httpproxyport") > 0
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_NETWORK_USEHTTPPROXY)
+        && !CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER).empty()
+        && CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT) > 0
         && m_proxy.empty())
     {
-      m_proxy = CSettings::Get().GetString("network.httpproxyserver");
-      m_proxy += StringUtils::Format(":%d", CSettings::Get().GetInt("network.httpproxyport"));
-      if (CSettings::Get().GetString("network.httpproxyusername").length() > 0 && m_proxyuserpass.empty())
+      m_proxy = CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER);
+      m_proxy += StringUtils::Format(":%d", CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT));
+      if (CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME).length() > 0 && m_proxyuserpass.empty())
       {
-        m_proxyuserpass = CSettings::Get().GetString("network.httpproxyusername");
-        m_proxyuserpass += ":" + CSettings::Get().GetString("network.httpproxypassword");
+        m_proxyuserpass = CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME);
+        m_proxyuserpass += ":" + CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD);
       }
-      m_proxytype = (ProxyType)CSettings::Get().GetInt("network.httpproxytype");
+      m_proxytype = (ProxyType)CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYTYPE);
       CLog::Log(LOGDEBUG, "Using proxy %s, type %d", m_proxy.c_str(), proxyType2CUrlProxyType[m_proxytype]);
     }
 
@@ -777,7 +777,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     // handle any protocol options
     std::map<std::string, std::string> options;
     url2.GetProtocolOptions(options);
-    if (options.size() > 0)
+    if (!options.empty())
     {
       // set xbmc headers
       for (std::map<std::string,std::string>::const_iterator it = options.begin(); it != options.end(); ++it)
@@ -900,7 +900,7 @@ bool CCurlFile::Download(const std::string& strURL, const std::string& strFileNa
     return false;
   }
   ssize_t written = 0;
-  if (strData.size() > 0)
+  if (!strData.empty())
     written = file.Write(strData.c_str(), strData.size());
 
   if (pdwSize != NULL)
@@ -940,6 +940,12 @@ void CCurlFile::Reset()
 
 bool CCurlFile::Open(const CURL& url)
 {
+  if (!g_curlInterface.IsLoaded())
+  {
+    CLog::Log(LOGERROR, "CurlFile::Open: curl interface not loaded");
+    return false;
+  }
+
   m_opened = true;
   m_seekable = true;
 
@@ -973,7 +979,7 @@ bool CCurlFile::Open(const CURL& url)
   // since we can't know the stream size up front if we're gzipped/deflated
   // flag the stream with an unknown file size rather than the compressed
   // file size.
-  if (m_contentencoding.size() > 0)
+  if (!m_contentencoding.empty())
     m_state->m_fileSize = 0;
 
   // check if this stream is a shoutcast stream. sometimes checking the protocol line is not enough so examine other headers as well.
@@ -1528,8 +1534,9 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
                   msg->data.result == CURLE_RECV_ERROR)        &&
                   !m_bFirstLoop)
               CURLresult = msg->data.result;
-            else if ( (msg->data.result == CURLE_HTTP_RANGE_ERROR     ||
-                       httpCode == 416 /* = Requested Range Not Satisfiable */) &&
+            else if ( (msg->data.result == CURLE_HTTP_RANGE_ERROR              ||
+                       httpCode == 416 /* = Requested Range Not Satisfiable */ ||
+                       httpCode == 406 /* = Not Acceptable (fixes issues with non compliant HDHomerun servers */) &&
                        m_bFirstLoop                                   &&
                        m_filePos == 0                                 &&
                        m_sendRange)

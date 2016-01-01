@@ -4,7 +4,9 @@ SRCS=GUIViewStatePVR.cpp \
      GUIWindowPVRGuide.cpp \
      GUIWindowPVRRecordings.cpp \
      GUIWindowPVRSearch.cpp \
-     GUIWindowPVRTimers.cpp
+     GUIWindowPVRTimersBase.cpp \
+     GUIWindowPVRTimers.cpp \
+     GUIWindowPVRTimerRules.cpp
 
 LIB=pvrwindows.a
 

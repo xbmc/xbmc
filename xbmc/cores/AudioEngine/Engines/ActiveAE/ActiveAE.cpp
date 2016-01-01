@@ -26,6 +26,7 @@ using namespace ActiveAE;
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSPProcess.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "cores/AudioEngine/AEResampleFactory.h"
 #include "cores/AudioEngine/Encoders/AEEncoderFFmpeg.h"
 
@@ -37,7 +38,7 @@ using namespace ActiveAE;
 #define MAX_WATER_LEVEL 0.2   // buffered time after stream stages in seconds
 #define MAX_BUFFER_TIME 0.1   // max time of a buffer in seconds
 
-void CEngineStats::Reset(unsigned int sampleRate)
+void CEngineStats::Reset(unsigned int sampleRate, bool pcm)
 {
   CSingleLock lock(m_lock);
   m_sinkDelay.SetDelay(0.0);
@@ -45,15 +46,13 @@ void CEngineStats::Reset(unsigned int sampleRate)
   m_bufferedSamples = 0;
   m_suspended = false;
   m_hasDSP = false;
-  m_playingPTS = 0;
-  m_clockId = 0;
+  m_pcmOutput = pcm;
 }
 
-void CEngineStats::UpdateSinkDelay(const AEDelayStatus& status, int samples, int64_t pts, int clockId)
+void CEngineStats::UpdateSinkDelay(const AEDelayStatus& status, int samples)
 {
   CSingleLock lock(m_lock);
   m_sinkDelay = status;
-  m_playingPTS = (clockId == m_clockId) ? pts : 0;
   if (samples > m_bufferedSamples)
   {
     CLog::Log(LOGERROR, "CEngineStats::UpdateSinkDelay - inconsistency in buffer time");
@@ -75,7 +74,10 @@ void CEngineStats::AddSamples(int samples, std::list<CActiveAEStream*> &streams)
     std::deque<CSampleBuffer*>::iterator itBuf;
     for(itBuf=(*it)->m_processingSamples.begin(); itBuf!=(*it)->m_processingSamples.end(); ++itBuf)
     {
-      delay += (float)(*itBuf)->pkt->nb_samples / (*itBuf)->pkt->config.sample_rate;
+      if (m_pcmOutput)
+        delay += (float)(*itBuf)->pkt->nb_samples / (*itBuf)->pkt->config.sample_rate;
+      else
+        delay += m_sinkFormat.m_streamInfo.GetDuration() / 1000;
     }
     delay += (*it)->m_resampleBuffers->GetDelay();
     (*it)->m_bufferedTime = delay;
@@ -86,7 +88,10 @@ void CEngineStats::GetDelay(AEDelayStatus& status)
 {
   CSingleLock lock(m_lock);
   status = m_sinkDelay;
-  status.delay += (double)m_bufferedSamples / m_sinkSampleRate;
+  if (m_pcmOutput)
+    status.delay += (double)m_bufferedSamples / m_sinkSampleRate;
+  else
+    status.delay += (double)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
 }
 
 // this is used to sync a/v so we need to add sink latency here
@@ -94,16 +99,52 @@ void CEngineStats::GetDelay(AEDelayStatus& status, CActiveAEStream *stream)
 {
   CSingleLock lock(m_lock);
   status = m_sinkDelay;
-  status.delay += (double)m_bufferedSamples / m_sinkSampleRate;
+  status.delay += m_sinkLatency;
+  if (m_pcmOutput)
+    status.delay += (double)m_bufferedSamples / m_sinkSampleRate;
+  else
+    status.delay += (double)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
+
+  if (stream->m_resampleBuffers)
+    status.delay += stream->m_bufferedTime / stream->m_resampleBuffers->m_resampleRatio;
+}
+
+// this is used to sync a/v so we need to add sink latency here
+void CEngineStats::GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream)
+{
+  CSingleLock lock(m_lock);
+  AEDelayStatus status;
+  status = m_sinkDelay;
+  if (m_pcmOutput)
+    status.delay += (double)m_bufferedSamples / m_sinkSampleRate;
+  else
+    status.delay += (double)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
 
   status.delay += m_sinkLatency;
-  status.delay += stream->m_bufferedTime / stream->m_streamResampleRatio;
+  if (stream->m_resampleBuffers)
+    status.delay += stream->m_bufferedTime / stream->m_resampleBuffers->m_resampleRatio;
+
+  info.delay = status.GetDelay();
+  info.error = stream->m_syncError.GetLastError(info.errortime);
+  info.state = CAESyncInfo::SYNC_OFF;
+  if (stream->m_resampleBuffers)
+    info.rr = stream->m_resampleBuffers->m_resampleRatio;
+
+  if (stream->m_pClock)
+  {
+    if (stream->m_syncClock)
+      info.state = CAESyncInfo::SYNC_ACTIVE;
+    else
+      info.state = CAESyncInfo::SYNC_PLAY;
+  }
 }
 
 float CEngineStats::GetCacheTime(CActiveAEStream *stream)
 {
   CSingleLock lock(m_lock);
   float delay = (float)m_bufferedSamples / m_sinkSampleRate;
+  if (!m_pcmOutput)
+    delay = (float)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
 
   delay += stream->m_bufferedTime;
   return delay;
@@ -114,35 +155,13 @@ float CEngineStats::GetCacheTotal(CActiveAEStream *stream)
   return MAX_CACHE_LEVEL + m_sinkCacheTotal;
 }
 
-int64_t CEngineStats::GetPlayingPTS()
-{
-  CSingleLock lock(m_lock);
-  if (m_playingPTS == 0)
-    return 0;
-
-  int64_t pts = m_playingPTS + m_sinkDelay.GetDelay()*1000;
-
-  if (pts < 0)
-    return 0;
-
-  return pts;
-}
-
-int CEngineStats::Discontinuity(bool reset)
-{
-  CSingleLock lock(m_lock);
-  m_playingPTS = 0;
-  if (reset)
-    m_clockId = 0;
-  else
-    m_clockId++;
-  return m_clockId;
-}
-
 float CEngineStats::GetWaterLevel()
 {
   CSingleLock lock(m_lock);
-  return (float)m_bufferedSamples / m_sinkSampleRate;
+  if (m_pcmOutput)
+    return (float)m_bufferedSamples / m_sinkSampleRate;
+  else
+    return (float)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
 }
 
 void CEngineStats::SetSuspended(bool state)
@@ -163,10 +182,22 @@ void CEngineStats::SetDSP(bool state)
   m_hasDSP = state;
 }
 
+void CEngineStats::SetCurrentSinkFormat(AEAudioFormat SinkFormat)
+{
+  CSingleLock lock(m_lock);
+  m_sinkFormat = SinkFormat;
+}
+
 bool CEngineStats::HasDSP()
 {
   CSingleLock lock(m_lock);
   return m_hasDSP;
+}
+
+AEAudioFormat CEngineStats::GetCurrentSinkFormat()
+{
+  CSingleLock lock(m_lock);
+  return m_sinkFormat;
 }
 
 CActiveAE::CActiveAE() :
@@ -187,11 +218,10 @@ CActiveAE::CActiveAE() :
   m_aeMuted = false;
   m_mode = MODE_PCM;
   m_encoder = NULL;
-  m_audioCallback = NULL;
   m_vizInitialized = false;
   m_sinkHasVolume = false;
   m_aeGUISoundForce = false;
-  m_stats.Reset(44100);
+  m_stats.Reset(44100, true);
 }
 
 CActiveAE::~CActiveAE()
@@ -271,6 +301,15 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEControlProtocol::APPFOCUSED:
           m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::APPFOCUSED, msg->data, sizeof(bool));
           return;
+        case CActiveAEControlProtocol::STREAMRESAMPLEMODE:
+          MsgStreamParameter *par;
+          par = (MsgStreamParameter*)msg->data;
+          if (par->stream)
+          {
+            par->stream->m_resampleMode = par->parameter.int_par;
+            par->stream->m_resampleIntegral = 0.0;
+          }
+          return;
         default:
           break;
         }
@@ -292,6 +331,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           CActiveAEStream *stream;
           stream = *(CActiveAEStream**)msg->data;
           DiscardStream(stream);
+          msg->Reply(CActiveAEDataProtocol::ACC);
           return;
         case CActiveAEDataProtocol::FREESOUND:
           sound = *(CActiveAESound**)msg->data;
@@ -506,6 +546,8 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           return;
         case CActiveAEControlProtocol::RESUMESTREAM:
           stream = *(CActiveAEStream**)msg->data;
+          if (stream->m_paused)
+            stream->m_syncClock = CActiveAEStream::STARTSYNC;
           stream->m_paused = false;
           streaming = true;
           m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::STREAMING, &streaming, sizeof(bool));
@@ -541,9 +583,9 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEControlProtocol::STREAMFFMPEGINFO:
           MsgStreamFFmpegInfo *info;
           info = (MsgStreamFFmpegInfo*)msg->data;
-          par->stream->m_profile = info->profile;
-          par->stream->m_matrixEncoding = info->matrix_encoding;
-          par->stream->m_audioServiceType = info->audio_service_type;
+          info->stream->m_profile = info->profile;
+          info->stream->m_matrixEncoding = info->matrix_encoding;
+          info->stream->m_audioServiceType = info->audio_service_type;
           return;
         case CActiveAEControlProtocol::STREAMFADE:
           MsgStreamFade *fade;
@@ -626,6 +668,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEDataProtocol::FREESTREAM:
           stream = *(CActiveAEStream**)msg->data;
           DiscardStream(stream);
+          msg->Reply(CActiveAEDataProtocol::ACC);
           if (m_streams.empty())
           {
             if (m_extKeepConfig)
@@ -750,6 +793,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           CActiveAEStream *stream;
           stream = *(CActiveAEStream**)msg->data;
           stream->m_paused = false;
+          stream->m_syncClock = CActiveAEStream::STARTSYNC;
           m_state = AE_TOP_CONFIGURED_PLAY;
           m_extTimeout = 0;
           return;
@@ -950,10 +994,8 @@ AEAudioFormat CActiveAE::GetInputFormat(AEAudioFormat *desiredFmt)
   {
     inputFormat.m_dataFormat    = AE_FMT_FLOAT;
     inputFormat.m_sampleRate    = 44100;
-    inputFormat.m_encodedRate   = 0;
     inputFormat.m_channelLayout = AE_CH_LAYOUT_2_0;
     inputFormat.m_frames        = 0;
-    inputFormat.m_frameSamples  = 0;
     inputFormat.m_frameSize     = 0;
   }
   // force input format after unpausing slave
@@ -989,7 +1031,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   ApplySettingsToFormat(m_sinkRequestFormat, m_settings, (int*)&m_mode);
   m_extKeepConfig = 0;
 
-  std::string device = AE_IS_RAW(m_sinkRequestFormat.m_dataFormat) ? m_settings.passthoughdevice : m_settings.device;
+  std::string device = (m_sinkRequestFormat.m_dataFormat == AE_FMT_RAW) ? m_settings.passthoughdevice : m_settings.device;
   std::string driver;
   CAESinkFactory::ParseDevice(device, driver);
   if ((!CompareFormat(m_sinkRequestFormat, m_sinkFormat) && !CompareFormat(m_sinkRequestFormat, oldSinkRequestFormat)) ||
@@ -1001,15 +1043,18 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     m_settings.driver = driver;
     m_currDevice = device;
     initSink = true;
-    m_stats.Reset(m_sinkFormat.m_sampleRate);
+    m_stats.Reset(m_sinkFormat.m_sampleRate, m_mode == MODE_PCM);
     m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::VOLUME, &m_volume, sizeof(float));
 
-    // limit buffer size in case of sink returns large buffer
-    unsigned int buffertime = m_sinkFormat.m_frames / m_sinkFormat.m_sampleRate;
-    if (buffertime > MAX_BUFFER_TIME)
+    if (m_sinkRequestFormat.m_dataFormat != AE_FMT_RAW)
     {
-      CLog::Log(LOGWARNING, "ActiveAE::%s - sink returned large buffer of %d ms, reducing to %d ms", __FUNCTION__, buffertime, (int)(MAX_BUFFER_TIME*1000));
-      m_sinkFormat.m_frames = MAX_BUFFER_TIME * m_sinkFormat.m_sampleRate;
+      // limit buffer size in case of sink returns large buffer
+      double buffertime = (double)m_sinkFormat.m_frames / m_sinkFormat.m_sampleRate;
+      if (buffertime > MAX_BUFFER_TIME)
+      {
+        CLog::Log(LOGWARNING, "ActiveAE::%s - sink returned large buffer of %d ms, reducing to %d ms", __FUNCTION__, (int)(buffertime * 1000), (int)(MAX_BUFFER_TIME*1000));
+        m_sinkFormat.m_frames = MAX_BUFFER_TIME * m_sinkFormat.m_sampleRate;
+      }
     }
   }
 
@@ -1077,7 +1122,6 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       outputFormat = inputFormat;
       outputFormat.m_dataFormat = AE_FMT_FLOATP;
       outputFormat.m_sampleRate = 48000;
-      outputFormat.m_encodedRate = 48000;
 
       // setup encoder
       if (!m_encoder)
@@ -1096,12 +1140,14 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       if (m_encoder->GetCodecID() == AV_CODEC_ID_AC3)
       {
         AEAudioFormat format;
-        format.m_channelLayout = AE_CH_LAYOUT_2_0;
-        format.m_dataFormat = AE_FMT_S16NE;
-        format.m_frameSize = 2* (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3);
-        format.m_frames = AC3_FRAME_SIZE;
+        format.m_channelLayout += AE_CH_FC;
+        format.m_dataFormat = AE_FMT_RAW;
         format.m_sampleRate = 48000;
-        format.m_encodedRate = m_encoderFormat.m_sampleRate;
+        format.m_channelLayout = AE_CH_LAYOUT_2_0;
+        format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
+        format.m_streamInfo.m_channels = 2;
+        format.m_streamInfo.m_sampleRate = 48000;
+        // TODO
         if (m_encoderBuffers && initSink)
         {
           m_discardBufferPools.push_back(m_encoderBuffers);
@@ -1141,7 +1187,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     std::list<CActiveAEStream*>::iterator it;
     for(it=m_streams.begin(); it!=m_streams.end(); ++it)
     {
-      isRaw = AE_IS_RAW((*it)->m_format.m_dataFormat);
+      isRaw = ((*it)->m_format.m_dataFormat == AE_FMT_RAW);
 
       if (!(*it)->m_inputBuffers)
       {
@@ -1167,7 +1213,8 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
 
         (*it)->m_resampleBuffers = new CActiveAEBufferPoolResample((*it)->m_inputBuffers->m_format, outputFormat, m_settings.resampleQuality);
         (*it)->m_resampleBuffers->m_forceResampler = (*it)->m_forceResampler;
-        if (useDSP)
+        (*it)->m_resampleBuffers->m_bypassDSP = (*it)->m_bypassDSP;
+        if (useDSP && !(*it)->m_resampleBuffers->m_bypassDSP)
           (*it)->m_resampleBuffers->SetExtraData((*it)->m_profile, (*it)->m_matrixEncoding, (*it)->m_audioServiceType);
         (*it)->m_resampleBuffers->Create(MAX_CACHE_LEVEL*1000, false, m_settings.stereoupmix, m_settings.normalizelevels, useDSP);
 
@@ -1184,7 +1231,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     m_stats.AddSamples(0, m_streams);
 
     // buffers for viz
-    if (!AE_IS_RAW(inputFormat.m_dataFormat))
+    if (!(inputFormat.m_dataFormat == AE_FMT_RAW))
     {
       if (initSink && m_vizBuffers)
       {
@@ -1193,7 +1240,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         m_discardBufferPools.push_back(m_vizBuffersInput);
         m_vizBuffersInput = NULL;
       }
-      if (!m_vizBuffers && m_audioCallback)
+      if (!m_vizBuffers && !m_audioCallback.empty())
       {
         AEAudioFormat vizFormat = m_internalFormat;
         vizFormat.m_channelLayout = AE_CH_LAYOUT_2_0;
@@ -1210,6 +1257,10 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         m_vizInitialized = false;
       }
     }
+
+    // buffers need to sync
+    m_silenceBuffers = new CActiveAEBufferPool(outputFormat);
+    m_silenceBuffers->Create(500);
   }
 
   // resample buffers for sink
@@ -1255,13 +1306,13 @@ CActiveAEStream* CActiveAE::CreateStream(MsgStreamNew *streamMsg)
   std::list<CActiveAEStream*>::iterator it;
   for(it = m_streams.begin(); it != m_streams.end(); ++it)
   {
-    if((*it)->IsDrained())
+    if ((*it)->IsDrained())
       continue;
-    if(AE_IS_RAW((*it)->m_format.m_dataFormat))
+    if ((*it)->m_format.m_dataFormat == AE_FMT_RAW)
       hasRawStream = true;
     hasStream = true;
   }
-  if (hasRawStream || (hasStream && AE_IS_RAW(streamMsg->format.m_dataFormat)))
+  if (hasRawStream || (hasStream && (streamMsg->format.m_dataFormat == AE_FMT_RAW)))
   {
     return NULL;
   }
@@ -1278,7 +1329,8 @@ CActiveAEStream* CActiveAE::CreateStream(MsgStreamNew *streamMsg)
   stream->m_statsLock = m_stats.GetLock();
   stream->m_fadingSamples = 0;
   stream->m_started = false;
-  stream->m_clockId = m_stats.Discontinuity(true);
+  stream->m_resampleMode = 0;
+  stream->m_syncClock = CActiveAEStream::STARTSYNC;
 
   if (streamMsg->options & AESTREAM_PAUSED)
   {
@@ -1288,6 +1340,13 @@ CActiveAEStream* CActiveAE::CreateStream(MsgStreamNew *streamMsg)
 
   if (streamMsg->options & AESTREAM_FORCE_RESAMPLE)
     stream->m_forceResampler = true;
+
+  if(streamMsg->options & AESTREAM_BYPASS_ADSP)
+  {
+    stream->m_bypassDSP = true;
+  }
+
+  stream->m_pClock = streamMsg->clock;
 
   m_streams.push_back(stream);
 
@@ -1333,6 +1392,7 @@ void CActiveAE::SFlushStream(CActiveAEStream *stream)
   stream->m_streamPort->Purge();
   stream->m_bufferedTime = 0.0;
   stream->m_paused = false;
+  stream->m_syncClock = CActiveAEStream::STARTSYNC;
 
   // flush the engine if we only have a single stream
   if (m_streams.size() == 1)
@@ -1366,7 +1426,7 @@ void CActiveAE::FlushEngine()
     CLog::Log(LOGERROR, "ActiveAE::%s - failed to flush", __FUNCTION__);
     m_extError = true;
   }
-  m_stats.Reset(m_sinkFormat.m_sampleRate);
+  m_stats.Reset(m_sinkFormat.m_sampleRate, m_mode == MODE_PCM);
 }
 
 void CActiveAE::ClearDiscardedBuffers()
@@ -1466,16 +1526,8 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
     *mode = MODE_PCM;
 
   // raw pass through
-  if (AE_IS_RAW(format.m_dataFormat))
+  if (format.m_dataFormat == AE_FMT_RAW)
   {
-    if ((format.m_dataFormat == AE_FMT_AC3 && !settings.ac3passthrough) ||
-        (format.m_dataFormat == AE_FMT_EAC3 && !settings.eac3passthrough) ||
-        (format.m_dataFormat == AE_FMT_TRUEHD && !settings.truehdpassthrough) ||
-        (format.m_dataFormat == AE_FMT_DTS && !settings.dtspassthrough) ||
-        (format.m_dataFormat == AE_FMT_DTSHD && !settings.dtshdpassthrough))
-    {
-      CLog::Log(LOGERROR, "CActiveAE::ApplySettingsToFormat - input audio format is wrong");
-    }
     if (mode)
       *mode = MODE_RAW;
   }
@@ -1487,10 +1539,12 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
            !m_streams.empty() &&
            (format.m_channelLayout.Count() > 2 || settings.stereoupmix))
   {
-    format.m_dataFormat = AE_FMT_AC3;
+    format.m_dataFormat = AE_FMT_RAW;
     format.m_sampleRate = 48000;
-    format.m_encodedRate = 48000;
     format.m_channelLayout = AE_CH_LAYOUT_2_0;
+    format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
+    format.m_streamInfo.m_channels = 2;
+    format.m_streamInfo.m_sampleRate = 48000;
     if (mode)
       *mode = MODE_TRANSCODE;
   }
@@ -1527,7 +1581,7 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
       CAEChannelInfo stdLayout(stdChannelLayout);
 
       if (m_settings.config == AE_CONFIG_FIXED || settings.dspaddonsenabled || (settings.stereoupmix && format.m_channelLayout.Count() <= 2))
-        format.m_channelLayout = CActiveAEDSP::Get().GetInternalChannelLayout(stdChannelLayout);
+        format.m_channelLayout = CActiveAEDSP::GetInstance().GetInternalChannelLayout(stdChannelLayout);
       else if (m_extKeepConfig && (settings.config == AE_CONFIG_AUTO) && (oldMode != MODE_RAW))
         format.m_channelLayout = m_internalFormat.m_channelLayout;
       else
@@ -1595,7 +1649,7 @@ bool CActiveAE::NeedReconfigureSink()
   AEAudioFormat newFormat = GetInputFormat();
   ApplySettingsToFormat(newFormat, m_settings);
 
-  std::string device = AE_IS_RAW(newFormat.m_dataFormat) ? m_settings.passthoughdevice : m_settings.device;
+  std::string device = (newFormat.m_dataFormat == AE_FMT_RAW) ? m_settings.passthoughdevice : m_settings.device;
   std::string driver;
   CAESinkFactory::ParseDevice(device, driver);
 
@@ -1612,8 +1666,8 @@ bool CActiveAE::InitSink()
   SinkConfig config;
   config.format = m_sinkRequestFormat;
   config.stats = &m_stats;
-  config.device = AE_IS_RAW(m_sinkRequestFormat.m_dataFormat) ? &m_settings.passthoughdevice :
-                                                                &m_settings.device;
+  config.device = (m_sinkRequestFormat.m_dataFormat == AE_FMT_RAW) ? &m_settings.passthoughdevice :
+                                                                     &m_settings.device;
 
   // send message to sink
   Message *reply;
@@ -1638,6 +1692,7 @@ bool CActiveAE::InitSink()
       m_sinkHasVolume = data->hasVolume;
       m_stats.SetSinkCacheTotal(data->cacheTotal);
       m_stats.SetSinkLatency(data->latency);
+      m_stats.SetCurrentSinkFormat(m_sinkFormat);
     }
     reply->Release();
   }
@@ -1646,6 +1701,9 @@ bool CActiveAE::InitSink()
     CLog::Log(LOGERROR, "ActiveAE::%s - failed to init", __FUNCTION__);
     m_stats.SetSinkCacheTotal(0);
     m_stats.SetSinkLatency(0);
+    AEAudioFormat invalidFormat;
+    invalidFormat.m_dataFormat = AE_FMT_INVALID;
+    m_stats.SetCurrentSinkFormat(invalidFormat);
     m_extError = true;
     return false;
   }
@@ -1719,8 +1777,10 @@ bool CActiveAE::RunStages()
   {
     if ((*it)->m_resampleBuffers && !(*it)->m_paused)
       busy = (*it)->m_resampleBuffers->ResampleBuffers();
-    else if ((*it)->m_resampleBuffers && 
-            ((*it)->m_resampleBuffers->m_inputSamples.size() > (*it)->m_resampleBuffers->m_allSamples.size() * 0.5))
+
+    if ((*it)->m_streamIsBuffering &&
+        (*it)->m_resampleBuffers &&
+        ((*it)->m_resampleBuffers->m_inputSamples.size() > (*it)->m_resampleBuffers->m_allSamples.size() * 0.5))
     {
       CSingleLock lock((*it)->m_streamLock);
       (*it)->m_streamIsBuffering = false;
@@ -1777,6 +1837,28 @@ bool CActiveAE::RunStages()
   if (m_stats.GetWaterLevel() < MAX_WATER_LEVEL &&
      (m_mode != MODE_TRANSCODE || (m_encoderBuffers && !m_encoderBuffers->m_freeSamples.empty())))
   {
+    // calculate sync error
+    for (it = m_streams.begin(); it != m_streams.end(); ++it)
+    {
+      if ((*it)->m_paused || !(*it)->m_started || !(*it)->m_resampleBuffers || !(*it)->m_pClock)
+        continue;
+
+      if ((*it)->m_resampleBuffers->m_outputSamples.empty())
+        continue;
+
+      CSampleBuffer *buf = (*it)->m_resampleBuffers->m_outputSamples.front();
+      if (buf->timestamp)
+      {
+        AEDelayStatus status;
+        m_stats.GetDelay(status);
+        double pts = buf->timestamp - (buf->pkt_start_offset * 1000 / buf->pkt->config.sample_rate);
+        double delay = status.GetDelay() * 1000;
+        double playingPts = pts - delay;
+        double error = playingPts - (*it)->m_pClock->GetClock();
+        (*it)->m_syncError.Add(error);
+      }
+    }
+
     // mix streams and sounds sounds
     if (m_mode != MODE_RAW)
     {
@@ -1817,6 +1899,14 @@ bool CActiveAE::RunStages()
 
         if (!(*it)->m_resampleBuffers->m_outputSamples.empty())
         {
+          CSampleBuffer *tmp = SyncStream(*it);
+          if (tmp)
+          {
+            if (!out)
+              out = tmp;
+            continue;
+          }
+
           (*it)->m_started = true;
 
           if (!out)
@@ -1993,12 +2083,13 @@ bool CActiveAE::RunStages()
         // viz
         {
           CSingleLock lock(m_vizLock);
-          if (m_audioCallback && !m_streams.empty())
+          if (!m_audioCallback.empty() && !m_streams.empty())
           {
             if (!m_vizInitialized || !m_vizBuffers)
             {
               Configure();
-              m_audioCallback->OnInitialize(2, m_vizBuffers->m_format.m_sampleRate, 32);
+              for (auto& it : m_audioCallback)
+                it->OnInitialize(2, m_vizBuffers->m_format.m_sampleRate, 32);
               m_vizInitialized = true;
             }
 
@@ -2006,7 +2097,7 @@ bool CActiveAE::RunStages()
             {
               // copy the samples into the viz input buffer
               CSampleBuffer *viz = m_vizBuffersInput->GetFreeBuffer();
-              int samples = std::min(512, out->pkt->nb_samples);
+              int samples = out->pkt->nb_samples;
               int bytes = samples * out->pkt->config.channels / out->pkt->planes * out->pkt->bytes_per_sample;
               for(int i= 0; i < out->pkt->planes; i++)
               {
@@ -2029,9 +2120,9 @@ bool CActiveAE::RunStages()
                 break;
               else
               {
-                int samples;
-                samples = std::min(512, buf->pkt->nb_samples);
-                m_audioCallback->OnAudioData((float*)(buf->pkt->data[0]), samples);
+                int samples = buf->pkt->nb_samples;
+                for (auto& it : m_audioCallback)
+                  it->OnAudioData((float*)(buf->pkt->data[0]), samples);
                 buf->Return();
                 m_vizBuffers->m_outputSamples.pop_front();
               }
@@ -2049,14 +2140,12 @@ bool CActiveAE::RunStages()
         if (m_mode == MODE_TRANSCODE && m_encoder)
         {
           CSampleBuffer *buf = m_encoderBuffers->GetFreeBuffer();
-          m_encoder->Encode(out->pkt->data[0], out->pkt->planes*out->pkt->linesize,
-                            buf->pkt->data[0], buf->pkt->planes*buf->pkt->linesize);
-          buf->pkt->nb_samples = buf->pkt->max_nb_samples;
+          buf->pkt->nb_samples = m_encoder->Encode(out->pkt->data[0], out->pkt->planes*out->pkt->linesize,
+                                                   buf->pkt->data[0], buf->pkt->planes*buf->pkt->linesize);
 
           // set pts of last sample
           buf->pkt_start_offset = buf->pkt->nb_samples;
           buf->timestamp = out->timestamp;
-          buf->clockId = out->clockId;
 
           out->Return();
           out = buf;
@@ -2067,7 +2156,8 @@ bool CActiveAE::RunStages()
       // update stats
       if(out)
       {
-        m_stats.AddSamples(out->pkt->nb_samples, m_streams);
+        int samples = (m_mode == MODE_TRANSCODE) ? 1 : out->pkt->nb_samples;
+        m_stats.AddSamples(samples, m_streams);
         m_sinkBuffers->m_inputSamples.push_back(out);
       }
     }
@@ -2080,9 +2170,14 @@ bool CActiveAE::RunStages()
       {
         if (!(*it)->m_resampleBuffers->m_outputSamples.empty() && !(*it)->m_paused)
         {
-          buffer =  (*it)->m_resampleBuffers->m_outputSamples.front();
-          (*it)->m_resampleBuffers->m_outputSamples.pop_front();
-          m_stats.AddSamples(buffer->pkt->nb_samples, m_streams);
+          (*it)->m_started = true;
+          buffer = SyncStream(*it);
+          if (!buffer)
+          {
+            buffer = (*it)->m_resampleBuffers->m_outputSamples.front();
+            (*it)->m_resampleBuffers->m_outputSamples.pop_front();
+          }
+          m_stats.AddSamples(1, m_streams);
           m_sinkBuffers->m_inputSamples.push_back(buffer);
         }
       }
@@ -2125,6 +2220,159 @@ bool CActiveAE::HasWork()
   }
 
   return false;
+}
+
+CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
+{
+  CSampleBuffer *ret = NULL;
+
+  if (!stream->m_pClock)
+    return ret;
+
+  if (m_mode == MODE_RAW)
+  {
+    // TODO
+    // implement pause bursts for passthrough, until then we need to exit here
+    stream->m_syncClock = CActiveAEStream::INSYNC;
+  }
+
+  if (stream->m_syncClock == CActiveAEStream::STARTSYNC)
+  {
+    stream->m_syncClock = CActiveAEStream::MUTE;
+    stream->m_syncError.Flush(100);
+    stream->m_resampleBuffers->m_resampleRatio = 1.0;
+    stream->m_resampleIntegral = 0;
+    CLog::Log(LOGDEBUG,"ActiveAE - start sync of audio stream");
+  }
+
+  double error;
+  double threshold = 100;
+  if (stream->m_resampleMode)
+  {
+    if (stream->m_pClock && stream->m_pClock->GetClockSpeed() > 1.1)
+      threshold *= 10;
+    else
+      threshold *= 2;
+  }
+
+  bool newerror = stream->m_syncError.Get(error, stream->m_syncClock ? 100 : 1000);
+
+  // TODO: delete if passthrough ever gets a proper sync method
+  // for now I recommend to every one just not to use it, it has zero advantage anyway
+  if (m_mode == MODE_RAW)
+  {
+    return ret;
+  }
+
+  if (newerror && fabs(error) > threshold && stream->m_syncClock == CActiveAEStream::INSYNC)
+  {
+    stream->m_syncClock = CActiveAEStream::ADJUST;
+    stream->m_resampleBuffers->m_resampleRatio = 1.0;
+    stream->m_resampleIntegral = 0;
+    stream->m_lastSyncError = error;
+    CLog::Log(LOGDEBUG,"ActiveAE::SyncStream - average error %f above threshold of %f", error, threshold);
+  }
+  else if (newerror && stream->m_syncClock == CActiveAEStream::MUTE)
+  {
+    stream->m_syncClock = CActiveAEStream::ADJUST;
+    stream->m_lastSyncError = error;
+    CLog::Log(LOGDEBUG,"ActiveAE::SyncStream - average error of %f, start adjusting", error);
+  }
+
+  if (stream->m_syncClock == CActiveAEStream::MUTE)
+  {
+    CSampleBuffer *buf = stream->m_resampleBuffers->m_outputSamples.front();
+    for(int i=0; i<buf->pkt->planes; i++)
+    {
+      memset(buf->pkt->data[i], 0, buf->pkt->linesize);
+    }
+  }
+  else if (stream->m_syncClock == CActiveAEStream::ADJUST)
+  {
+    if (error > 0)
+    {
+      ret = m_silenceBuffers->GetFreeBuffer();
+      if (ret)
+      {
+        int framesToDelay = error / 1000 * ret->pkt->config.sample_rate;
+        if (framesToDelay > ret->pkt->max_nb_samples)
+          framesToDelay = ret->pkt->max_nb_samples;
+        if (m_mode == MODE_TRANSCODE)
+        {
+          if (framesToDelay > (int) (m_encoderFormat.m_frames / 2))
+            framesToDelay = m_encoderFormat.m_frames;
+          else
+            framesToDelay = 0;
+        }
+        ret->pkt->nb_samples = framesToDelay;
+        for(int i=0; i<ret->pkt->planes; i++)
+        {
+          memset(ret->pkt->data[i], 0, ret->pkt->linesize);
+        }
+        stream->m_syncError.Correction(-framesToDelay*1000/ret->pkt->config.sample_rate);
+        error -= framesToDelay*1000/ret->pkt->config.sample_rate;
+      }
+    }
+    else
+    {
+      CSampleBuffer *buf = stream->m_resampleBuffers->m_outputSamples.front();
+      int framesToSkip = -error / 1000 * buf->pkt->config.sample_rate;
+      if (framesToSkip > buf->pkt->nb_samples)
+        framesToSkip = buf->pkt->nb_samples;
+      if (m_mode == MODE_TRANSCODE)
+      {
+        if (framesToSkip > (int) (m_encoderFormat.m_frames / 2))
+          framesToSkip = buf->pkt->nb_samples;
+        else
+          framesToSkip = 0;
+      }
+      int bytesToSkip = framesToSkip*buf->pkt->bytes_per_sample;
+      for(int i=0; i<buf->pkt->planes; i++)
+      {
+        memmove(buf->pkt->data[i], buf->pkt->data[i]+bytesToSkip, buf->pkt->linesize - bytesToSkip);
+      }
+      buf->pkt->nb_samples -= framesToSkip;
+      stream->m_syncError.Correction(framesToSkip*1000/buf->pkt->config.sample_rate);
+      error += framesToSkip*1000/buf->pkt->config.sample_rate;
+    }
+
+    if (fabs(error) < 30)
+    {
+      if (stream->m_lastSyncError > threshold * 2)
+      {
+        stream->m_syncClock = CActiveAEStream::MUTE;
+        stream->m_syncError.Flush(100);
+        CLog::Log(LOGDEBUG,"ActiveAE::SyncStream - average error %f, last average error: %f", error, stream->m_lastSyncError);
+        stream->m_lastSyncError = error;
+      }
+      else
+      {
+        stream->m_syncClock = CActiveAEStream::INSYNC;
+        stream->m_syncError.Flush(1000);
+        stream->m_resampleIntegral = 0;
+        stream->m_resampleBuffers->m_resampleRatio = 1.0;
+        CLog::Log(LOGDEBUG,"ActiveAE::SyncStream - average error %f below threshold of %f", error, 30.0);
+      }
+    }
+
+    return ret;
+  }
+
+  if (!newerror || stream->m_syncClock != CActiveAEStream::INSYNC)
+    return ret;
+
+  if (stream->m_resampleMode)
+  {
+    if (stream->m_resampleBuffers)
+    {
+      stream->m_resampleBuffers->m_resampleRatio = stream->CalcResampleRatio(error);
+    }
+  }
+  else if (stream->m_resampleBuffers)
+  {
+    stream->m_resampleBuffers->m_resampleRatio = 1.0;
+  }
+  return ret;
 }
 
 void CActiveAE::MixSounds(CSoundPacket &dstSample)
@@ -2203,30 +2451,30 @@ void CActiveAE::Deamplify(CSoundPacket &dstSample)
 
 void CActiveAE::LoadSettings()
 {
-  m_settings.device = CSettings::Get().GetString("audiooutput.audiodevice");
-  m_settings.passthoughdevice = CSettings::Get().GetString("audiooutput.passthroughdevice");
+  m_settings.device = CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE);
+  m_settings.passthoughdevice = CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE);
 
-  m_settings.config = CSettings::Get().GetInt("audiooutput.config");
-  m_settings.channels = (m_sink.GetDeviceType(m_settings.device) == AE_DEVTYPE_IEC958) ? AE_CH_LAYOUT_2_0 : CSettings::Get().GetInt("audiooutput.channels");
-  m_settings.samplerate = CSettings::Get().GetInt("audiooutput.samplerate");
+  m_settings.config = CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG);
+  m_settings.channels = (m_sink.GetDeviceType(m_settings.device) == AE_DEVTYPE_IEC958) ? AE_CH_LAYOUT_2_0 : CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CHANNELS);
+  m_settings.samplerate = CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_SAMPLERATE);
 
-  m_settings.dspaddonsenabled = IsSettingVisible("audiooutput.dspaddonsenabled") ? CSettings::Get().GetBool("audiooutput.dspaddonsenabled") : false;
+  m_settings.dspaddonsenabled = IsSettingVisible(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED) ? CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED) : false;
 
-  m_settings.stereoupmix = IsSettingVisible("audiooutput.stereoupmix") ? CSettings::Get().GetBool("audiooutput.stereoupmix") : false;
-  m_settings.normalizelevels = !CSettings::Get().GetBool("audiooutput.maintainoriginalvolume");
-  m_settings.guisoundmode = CSettings::Get().GetInt("audiooutput.guisoundmode");
+  m_settings.stereoupmix = IsSettingVisible(CSettings::SETTING_AUDIOOUTPUT_STEREOUPMIX) ? CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_STEREOUPMIX) : false;
+  m_settings.normalizelevels = !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME);
+  m_settings.guisoundmode = CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_GUISOUNDMODE);
 
-  m_settings.passthrough = m_settings.config == AE_CONFIG_FIXED ? false : CSettings::Get().GetBool("audiooutput.passthrough");
+  m_settings.passthrough = m_settings.config == AE_CONFIG_FIXED ? false : CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH);
   if (!m_sink.HasPassthroughDevice())
     m_settings.passthrough = false;
-  m_settings.ac3passthrough = CSettings::Get().GetBool("audiooutput.ac3passthrough");
-  m_settings.ac3transcode = CSettings::Get().GetBool("audiooutput.ac3transcode");
-  m_settings.eac3passthrough = CSettings::Get().GetBool("audiooutput.eac3passthrough");
-  m_settings.truehdpassthrough = CSettings::Get().GetBool("audiooutput.truehdpassthrough");
-  m_settings.dtspassthrough = CSettings::Get().GetBool("audiooutput.dtspassthrough");
-  m_settings.dtshdpassthrough = CSettings::Get().GetBool("audiooutput.dtshdpassthrough");
+  m_settings.ac3passthrough = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH);
+  m_settings.ac3transcode = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3TRANSCODE);
+  m_settings.eac3passthrough = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_EAC3PASSTHROUGH);
+  m_settings.truehdpassthrough = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH);
+  m_settings.dtspassthrough = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH);
+  m_settings.dtshdpassthrough = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH);
 
-  m_settings.resampleQuality = static_cast<AEQuality>(CSettings::Get().GetInt("audiooutput.processquality"));
+  m_settings.resampleQuality = static_cast<AEQuality>(CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_PROCESSQUALITY));
 }
 
 bool CActiveAE::Initialize()
@@ -2274,31 +2522,31 @@ std::string CActiveAE::GetDefaultDevice(bool passthrough)
 
 void CActiveAE::OnSettingsChange(const std::string& setting)
 {
-  if (setting == "audiooutput.passthroughdevice"      ||
-      setting == "audiooutput.audiodevice"            ||
-      setting == "audiooutput.config"                 ||
-      setting == "audiooutput.ac3passthrough"         ||
-      setting == "audiooutput.ac3transcode"           ||
-      setting == "audiooutput.eac3passthrough"        ||
-      setting == "audiooutput.dtspassthrough"         ||
-      setting == "audiooutput.truehdpassthrough"      ||
-      setting == "audiooutput.dtshdpassthrough"       ||
-      setting == "audiooutput.channels"               ||
-      setting == "audiooutput.stereoupmix"            ||
-      setting == "audiooutput.streamsilence"          ||
-      setting == "audiooutput.processquality"         ||
-      setting == "audiooutput.passthrough"            ||
-      setting == "audiooutput.samplerate"             ||
-      setting == "audiooutput.maintainoriginalvolume" ||
-      setting == "audiooutput.guisoundmode")
+  if (setting == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE      ||
+      setting == CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE            ||
+      setting == CSettings::SETTING_AUDIOOUTPUT_CONFIG                 ||
+      setting == CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH         ||
+      setting == CSettings::SETTING_AUDIOOUTPUT_AC3TRANSCODE           ||
+      setting == CSettings::SETTING_AUDIOOUTPUT_EAC3PASSTHROUGH        ||
+      setting == CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH         ||
+      setting == CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH      ||
+      setting == CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH       ||
+      setting == CSettings::SETTING_AUDIOOUTPUT_CHANNELS               ||
+      setting == CSettings::SETTING_AUDIOOUTPUT_STEREOUPMIX            ||
+      setting == CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE          ||
+      setting == CSettings::SETTING_AUDIOOUTPUT_PROCESSQUALITY         ||
+      setting == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH            ||
+      setting == CSettings::SETTING_AUDIOOUTPUT_SAMPLERATE             ||
+      setting == CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME ||
+      setting == CSettings::SETTING_AUDIOOUTPUT_GUISOUNDMODE)
   {
     m_controlPort.SendOutMessage(CActiveAEControlProtocol::RECONFIGURE);
   }
 }
 
-bool CActiveAE::SupportsRaw(AEDataFormat format, int samplerate)
+bool CActiveAE::SupportsRaw(AEAudioFormat &format)
 {
-  if (!m_sink.SupportsFormat(CSettings::Get().GetString("audiooutput.passthroughdevice"), format, samplerate))
+  if (!m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), format))
     return false;
 
   return true;
@@ -2311,18 +2559,18 @@ bool CActiveAE::SupportsSilenceTimeout()
 
 bool CActiveAE::HasStereoAudioChannelCount()
 {
-  std::string device = CSettings::Get().GetString("audiooutput.audiodevice");
-  int numChannels = (m_sink.GetDeviceType(device) == AE_DEVTYPE_IEC958) ? AE_CH_LAYOUT_2_0 : CSettings::Get().GetInt("audiooutput.channels");
-  bool passthrough = CSettings::Get().GetInt("audiooutput.config") == AE_CONFIG_FIXED ? false : CSettings::Get().GetBool("audiooutput.passthrough");
+  std::string device = CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE);
+  int numChannels = (m_sink.GetDeviceType(device) == AE_DEVTYPE_IEC958) ? AE_CH_LAYOUT_2_0 : CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CHANNELS);
+  bool passthrough = CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) == AE_CONFIG_FIXED ? false : CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH);
   return numChannels == AE_CH_LAYOUT_2_0 && ! (passthrough &&
-    CSettings::Get().GetBool("audiooutput.ac3passthrough") &&
-    CSettings::Get().GetBool("audiooutput.ac3transcode"));
+    CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH) &&
+    CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3TRANSCODE));
 }
 
 bool CActiveAE::HasHDAudioChannelCount()
 {
-  std::string device = CSettings::Get().GetString("audiooutput.audiodevice");
-  int numChannels = (m_sink.GetDeviceType(device) == AE_DEVTYPE_IEC958) ? AE_CH_LAYOUT_2_0 : CSettings::Get().GetInt("audiooutput.channels");
+  std::string device = CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE);
+  int numChannels = (m_sink.GetDeviceType(device) == AE_DEVTYPE_IEC958) ? AE_CH_LAYOUT_2_0 : CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CHANNELS);
   return numChannels > AE_CH_LAYOUT_5_1;
 }
 
@@ -2340,72 +2588,81 @@ bool CActiveAE::SupportsQualityLevel(enum AEQuality level)
 
 bool CActiveAE::IsSettingVisible(const std::string &settingId)
 {
-  if (settingId == "audiooutput.samplerate")
+  if (settingId == CSettings::SETTING_AUDIOOUTPUT_SAMPLERATE)
   {
-    if (m_sink.GetDeviceType(CSettings::Get().GetString("audiooutput.audiodevice")) == AE_DEVTYPE_IEC958)
+    if (m_sink.GetDeviceType(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE)) == AE_DEVTYPE_IEC958)
       return true;
-    if (CSettings::Get().GetInt("audiooutput.config") == AE_CONFIG_FIXED)
+    if (CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) == AE_CONFIG_FIXED)
       return true;
   }
-  else if (settingId == "audiooutput.channels")
+  else if (settingId == CSettings::SETTING_AUDIOOUTPUT_CHANNELS)
   {
-    if (m_sink.GetDeviceType(CSettings::Get().GetString("audiooutput.audiodevice")) != AE_DEVTYPE_IEC958)
+    if (m_sink.GetDeviceType(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE)) != AE_DEVTYPE_IEC958)
       return true;
   }
-  else if (settingId == "audiooutput.passthrough")
+  else if (settingId == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH)
   {
-    if (m_sink.HasPassthroughDevice() && CSettings::Get().GetInt("audiooutput.config") != AE_CONFIG_FIXED)
+    if (m_sink.HasPassthroughDevice() && CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
       return true;
   }
-  else if (settingId == "audiooutput.truehdpassthrough")
+  else if (settingId == CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH)
   {
-    if (m_sink.SupportsFormat(CSettings::Get().GetString("audiooutput.passthroughdevice"), AE_FMT_TRUEHD, 192000) &&
-        CSettings::Get().GetInt("audiooutput.config") != AE_CONFIG_FIXED)
+    AEAudioFormat format;
+    format.m_dataFormat = AE_FMT_RAW;
+    format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_TRUEHD;
+    if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), format) &&
+        CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
       return true;
   }
-  else if (settingId == "audiooutput.dtshdpassthrough")
+  else if (settingId == CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH)
   {
-    if (m_sink.SupportsFormat(CSettings::Get().GetString("audiooutput.passthroughdevice"), AE_FMT_DTSHD, 192000) &&
-        CSettings::Get().GetInt("audiooutput.config") != AE_CONFIG_FIXED)
+    AEAudioFormat format;
+    format.m_dataFormat = AE_FMT_RAW;
+    format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD;
+    if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), format) &&
+        CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
       return true;
   }
-  else if (settingId == "audiooutput.eac3passthrough")
+  else if (settingId == CSettings::SETTING_AUDIOOUTPUT_EAC3PASSTHROUGH)
   {
-    if (m_sink.SupportsFormat(CSettings::Get().GetString("audiooutput.passthroughdevice"), AE_FMT_EAC3, 192000) &&
-        CSettings::Get().GetInt("audiooutput.config") != AE_CONFIG_FIXED)
+    AEAudioFormat format;
+    format.m_dataFormat = AE_FMT_RAW;
+    format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
+    if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), format) &&
+        CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
       return true;
   }
-  else if (settingId == "audiooutput.stereoupmix")
+  else if (settingId == CSettings::SETTING_AUDIOOUTPUT_STEREOUPMIX)
   {
     if (m_sink.HasPassthroughDevice() ||
-        CSettings::Get().GetInt("audiooutput.channels") > AE_CH_LAYOUT_2_0)
+        CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CHANNELS) > AE_CH_LAYOUT_2_0)
     return true;
   }
-  else if (settingId == "audiooutput.ac3transcode")
+  else if (settingId == CSettings::SETTING_AUDIOOUTPUT_AC3TRANSCODE)
   {
     if (m_sink.HasPassthroughDevice() &&
-        CSettings::Get().GetBool("audiooutput.ac3passthrough") &&
-        CSettings::Get().GetInt("audiooutput.config") != AE_CONFIG_FIXED &&
-        (CSettings::Get().GetInt("audiooutput.channels") <= AE_CH_LAYOUT_2_0 || m_sink.GetDeviceType(CSettings::Get().GetString("audiooutput.audiodevice")) == AE_DEVTYPE_IEC958))
+        CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH) &&
+        CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED &&
+        (CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CHANNELS) <= AE_CH_LAYOUT_2_0 || m_sink.GetDeviceType(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE)) == AE_DEVTYPE_IEC958))
       return true;
   }
-  else if (settingId == "audiooutput.dspaddonsenabled")
+  else if (settingId == CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED)
   {
-    if (m_sink.GetDeviceType(CSettings::Get().GetString("audiooutput.audiodevice")) != AE_DEVTYPE_IEC958)
+    if (m_sink.GetDeviceType(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE)) != AE_DEVTYPE_IEC958)
     {
       return true;
     }
   }
-  else if (settingId == "audiooutput.dspsettings")
+  else if (settingId == CSettings::SETTING_AUDIOOUTPUT_DSPSETTINGS)
   {
-    if (CSettings::Get().GetBool("audiooutput.dspaddonsenabled") &&
-        m_sink.GetDeviceType(CSettings::Get().GetString("audiooutput.audiodevice")) != AE_DEVTYPE_IEC958)
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED) &&
+        m_sink.GetDeviceType(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE)) != AE_DEVTYPE_IEC958)
       return true;
   }
-  else if (settingId == "audiooutput.dspresetdb")
+  else if (settingId == CSettings::SETTING_AUDIOOUTPUT_DSPRESETDB)
   {
-    if (CSettings::Get().GetBool("audiooutput.dspaddonsenabled") &&
-        m_sink.GetDeviceType(CSettings::Get().GetString("audiooutput.audiodevice")) != AE_DEVTYPE_IEC958)
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED) &&
+        m_sink.GetDeviceType(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE)) != AE_DEVTYPE_IEC958)
       return true;
   }
   return false;
@@ -2494,7 +2751,12 @@ bool CActiveAE::HasDSP()
   return m_stats.HasDSP();
 };
 
-void CActiveAE::OnLostDevice()
+AEAudioFormat CActiveAE::GetCurrentSinkFormat()
+{
+  return m_stats.GetCurrentSinkFormat();
+}
+
+void CActiveAE::OnLostDisplay()
 {
   Message *reply;
   if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::DISPLAYLOST,
@@ -2514,7 +2776,7 @@ void CActiveAE::OnLostDevice()
   }
 }
 
-void CActiveAE::OnResetDevice()
+void CActiveAE::OnResetDisplay()
 {
   m_controlPort.SendOutMessage(CActiveAEControlProtocol::DISPLAYRESET);
 }
@@ -2828,25 +3090,28 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
 // Streams
 //-----------------------------------------------------------------------------
 
-IAEStream *CActiveAE::MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int encodedSampleRate, CAEChannelInfo& channelLayout, unsigned int options)
+IAEStream *CActiveAE::MakeStream(AEAudioFormat &audioFormat, unsigned int options, IAEClockCallback *clock)
 {
   if (IsSuspended())
     return NULL;
 
   //TODO: pass number of samples in audio packet
 
-  AEAudioFormat format;
-  format.m_dataFormat = dataFormat;
-  format.m_sampleRate = sampleRate;
-  format.m_encodedRate = encodedSampleRate;
-  format.m_channelLayout = channelLayout;
+  AEAudioFormat format = audioFormat;
   format.m_frames = format.m_sampleRate / 10;
-  format.m_frameSize = format.m_channelLayout.Count() *
-                       (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3);
+
+  if (format.m_dataFormat != AE_FMT_RAW)
+  {
+    format.m_frameSize = format.m_channelLayout.Count() *
+                         (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3);
+  }
+  else
+    format.m_frameSize = 1;
 
   MsgStreamNew msg;
   msg.format = format;
   msg.options = options;
+  msg.clock = clock;
 
   Message *reply;
   if (m_dataPort.SendOutMessageSync(CActiveAEDataProtocol::NEWSTREAM,
@@ -2867,10 +3132,22 @@ IAEStream *CActiveAE::MakeStream(enum AEDataFormat dataFormat, unsigned int samp
   return NULL;
 }
 
-IAEStream *CActiveAE::FreeStream(IAEStream *stream)
+bool CActiveAE::FreeStream(IAEStream *stream)
 {
-  m_dataPort.SendOutMessage(CActiveAEDataProtocol::FREESTREAM, &stream, sizeof(IAEStream*));
-  return NULL;
+  Message *reply;
+  if (m_dataPort.SendOutMessageSync(CActiveAEDataProtocol::FREESTREAM,
+                                    &reply,1000,
+                                    &stream, sizeof(IAEStream*)))
+  {
+    bool success = reply->signal == CActiveAEControlProtocol::ACC;
+    reply->Release();
+    if (success)
+    {
+      return true;
+    }
+  }
+  CLog::Log(LOGERROR, "CActiveAE::FreeStream - failed");
+  return false;
 }
 
 void CActiveAE::FlushStream(CActiveAEStream *stream)
@@ -2936,6 +3213,15 @@ void CActiveAE::SetStreamResampleRatio(CActiveAEStream *stream, double ratio)
                                      &msg, sizeof(MsgStreamParameter));
 }
 
+void CActiveAE::SetStreamResampleMode(CActiveAEStream *stream, int mode)
+{
+  MsgStreamParameter msg;
+  msg.stream = stream;
+  msg.parameter.int_par = mode;
+  m_controlPort.SendOutMessage(CActiveAEControlProtocol::STREAMRESAMPLEMODE,
+                               &msg, sizeof(MsgStreamParameter));
+}
+
 void CActiveAE::SetStreamFFmpegInfo(CActiveAEStream *stream, int profile, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type)
 {
   MsgStreamFFmpegInfo msg;
@@ -2961,12 +3247,14 @@ void CActiveAE::SetStreamFade(CActiveAEStream *stream, float from, float target,
 void CActiveAE::RegisterAudioCallback(IAudioCallback* pCallback)
 {
   CSingleLock lock(m_vizLock);
-  m_audioCallback = pCallback;
+  m_audioCallback.push_back(pCallback);
   m_vizInitialized = false;
 }
 
-void CActiveAE::UnregisterAudioCallback()
+void CActiveAE::UnregisterAudioCallback(IAudioCallback* pCallback)
 {
   CSingleLock lock(m_vizLock);
-  m_audioCallback = NULL;
+  auto it = std::find(m_audioCallback.begin(), m_audioCallback.end(), pCallback);
+  if (it != m_audioCallback.end())
+    m_audioCallback.erase(it);
 }

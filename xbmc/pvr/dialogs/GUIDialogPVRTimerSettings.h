@@ -22,9 +22,10 @@
 #include "pvr/channels/PVRChannel.h" // PVR_INVALID_CHANNEL_UID
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
-#include <memory>
-#include <vector>
 #include <map>
+#include <memory>
+#include <utility>
+#include <vector>
 
 class CFileItem;
 class CSetting;
@@ -67,6 +68,8 @@ namespace PVR
     static void SetDateFromIndex(CDateTime &datetime, int date);
     static void SetTimeFromSystemTime(CDateTime &datetime, const SYSTEMTIME &time);
 
+    static int GetWeekdaysFromSetting(const CSetting *setting);
+
     static void TypesFiller(
       const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
     static void ChannelsFiller(
@@ -81,8 +84,14 @@ namespace PVR
       const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
     static void LifetimesFiller(
       const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+    static void MaxRecordingsFiller(
+      const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
     static void RecordingGroupFiller(
       const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+    static void MarginTimeFiller(
+      const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+
+    static std::string WeekdaysValueFormatter(const CSetting *setting);
 
     void AddCondition(
       CSetting *setting, const std::string &identifier, SettingConditionCheck condition,
@@ -96,8 +105,11 @@ namespace PVR
     static bool TypeSupportsCondition(
       const std::string &condition, const std::string &value, const CSetting *setting, void *data);
 
-    void AddAnytimeDependentVisibilityCondition(CSetting *setting, const std::string &identifier);
-    static bool AnytimeSetCondition(
+    void AddStartAnytimeDependentVisibilityCondition(CSetting *setting, const std::string &identifier);
+    static bool StartAnytimeSetCondition(
+      const std::string &condition, const std::string &value, const CSetting *setting, void *data);
+    void AddEndAnytimeDependentVisibilityCondition(CSetting *setting, const std::string &identifier);
+    static bool EndAnytimeSetCondition(
       const std::string &condition, const std::string &value, const CSetting *setting, void *data);
 
     typedef std::map<int, CPVRTimerTypePtr>  TypeEntriesMap;
@@ -137,14 +149,14 @@ namespace PVR
     bool                m_bIsRadio;
     bool                m_bIsNewTimer;
     bool                m_bTimerActive;
-    bool                m_bStartAnytime;
-    bool                m_bEndAnytime;
     std::string         m_strTitle;
     std::string         m_strEpgSearchString;
     bool                m_bFullTextEpgSearch;
     ChannelDescriptor   m_channel;
     CDateTime           m_startLocalTime;
     CDateTime           m_endLocalTime;
+    bool                m_bStartAnyTime;
+    bool                m_bEndAnyTime;
     unsigned int        m_iWeekdays;
     CDateTime           m_firstDayLocalTime;
     unsigned int        m_iPreventDupEpisodes;
@@ -152,6 +164,7 @@ namespace PVR
     unsigned int        m_iMarginEnd;
     int                 m_iPriority;
     int                 m_iLifetime;
+    int                 m_iMaxRecordings;
     std::string         m_strDirectory;
     unsigned int        m_iRecordingGroup;
   };

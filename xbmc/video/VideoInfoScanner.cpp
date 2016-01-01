@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,45 +13,54 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#include "threads/SystemClock.h"
-#include "FileItem.h"
 #include "VideoInfoScanner.h"
+
+#include <utility>
+
+#include "dialogs/GUIDialogExtendedProgressBar.h"
+#include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogProgress.h"
+#include "events/EventLog.h"
+#include "events/MediaLibraryEvent.h"
+#include "FileItem.h"
 #include "filesystem/DirectoryCache.h"
-#include "Util.h"
-#include "NfoFile.h"
-#include "utils/RegExp.h"
-#include "utils/md5.h"
+#include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/StackDirectory.h"
-#include "VideoInfoDownloader.h"
 #include "GUIInfoManager.h"
-#include "filesystem/File.h"
-#include "dialogs/GUIDialogExtendedProgressBar.h"
-#include "dialogs/GUIDialogProgress.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "dialogs/GUIDialogOK.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "GUIUserMessages.h"
 #include "interfaces/AnnouncementManager.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
+#include "NfoFile.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "utils/StringUtils.h"
-#include "guilib/LocalizeStrings.h"
-#include "guilib/GUIWindowManager.h"
+#include "TextureCache.h"
+#include "threads/SystemClock.h"
+#include "URL.h"
+#include "Util.h"
 #include "utils/log.h"
+#include "utils/md5.h"
+#include "utils/RegExp.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoThumbLoader.h"
-#include "TextureCache.h"
-#include "GUIUserMessages.h"
-#include "URL.h"
+#include "VideoInfoDownloader.h"
 
 using namespace XFILE;
 using namespace ADDON;
+using namespace KODI::MESSAGING;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 namespace VIDEO
 {
@@ -79,7 +88,7 @@ namespace VIDEO
 
     try
     {
-      if (m_showDialog && !CSettings::Get().GetBool("videolibrary.backgroundupdate"))
+      if (m_showDialog && !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE))
       {
         CGUIDialogExtendedProgressBar* dialog =
           (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
@@ -91,7 +100,7 @@ namespace VIDEO
       if (m_bClean && m_pathsToScan.empty())
       {
         std::set<int> paths;
-        CVideoLibraryQueue::Get().CleanLibrary(paths, false, m_handle);
+        CVideoLibraryQueue::GetInstance().CleanLibrary(paths, false, m_handle);
 
         if (m_handle)
           m_handle->MarkFinished();
@@ -109,7 +118,7 @@ namespace VIDEO
       m_bCanInterrupt = true;
 
       CLog::Log(LOGNOTICE, "VideoInfoScanner: Starting scan ..");
-      ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanStarted");
+      ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanStarted");
 
       // Reset progress vars
       m_currentItem = 0;
@@ -147,7 +156,7 @@ namespace VIDEO
       if (!bCancelled)
       {
         if (m_bClean)
-          CVideoLibraryQueue::Get().CleanLibrary(m_pathsToClean, false, m_handle);
+          CVideoLibraryQueue::GetInstance().CleanLibrary(m_pathsToClean, false, m_handle);
         else
         {
           if (m_handle)
@@ -168,7 +177,7 @@ namespace VIDEO
     }
     
     m_bRunning = false;
-    ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanFinished");
+    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanFinished");
     
     if (m_handle)
       m_handle->MarkFinished();
@@ -464,6 +473,16 @@ namespace VIDEO
       else if (ret == INFO_NOT_FOUND)
       {
         CLog::Log(LOGWARNING, "No information found for item '%s', it won't be added to the library.", CURL::GetRedacted(pItem->GetPath()).c_str());
+
+        MediaType mediaType = MediaTypeMovie;
+        if (info2->Content() == CONTENT_TVSHOWS)
+          mediaType = MediaTypeTvShow;
+        else if (info2->Content() == CONTENT_MUSICVIDEOS)
+          mediaType = MediaTypeMusicVideo;
+        CEventLog::GetInstance().Add(EventPtr(new CMediaLibraryEvent(
+          mediaType, pItem->GetPath(), 24145,
+          StringUtils::Format(g_localizeStrings.Get(24147).c_str(), mediaType.c_str(), URIUtils::GetFileName(pItem->GetPath()).c_str()),
+          pItem->GetArt("thumb"), CURL::GetRedacted(pItem->GetPath()), EventLevel::Warning)));
       }
 
       pURL = NULL;
@@ -665,7 +684,7 @@ namespace VIDEO
     EPISODELIST files;
     if (!EnumerateSeriesFolder(item, files))
       return INFO_HAVE_ALREADY;
-    if (files.size() == 0) // no update or no files
+    if (files.empty()) // no update or no files
       return INFO_NOT_NEEDED;
 
     if (m_bStop || (progress && progress->IsCanceled()))
@@ -1258,7 +1277,7 @@ namespace VIDEO
     CVariant data;
     if (m_bRunning)
       data["transaction"] = true;
-    ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", itemCopy, data);
+    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", itemCopy, data);
     return lResult;
   }
 
@@ -1321,7 +1340,7 @@ namespace VIDEO
         if (!image.empty())
         { // cache the image and determine sizing
           CTextureDetails details;
-          if (CTextureCache::Get().CacheImage(image, details))
+          if (CTextureCache::GetInstance().CacheImage(image, details))
           {
             std::string type = GetArtTypeFromSize(details.width, details.height);
             if (art.find(type) == art.end())
@@ -1360,13 +1379,13 @@ namespace VIDEO
     }
 
     for (CGUIListItem::ArtMap::const_iterator i = art.begin(); i != art.end(); ++i)
-      CTextureCache::Get().BackgroundCacheImage(i->second);
+      CTextureCache::GetInstance().BackgroundCacheImage(i->second);
 
     pItem->SetArt(art);
 
     // parent folder to apply the thumb to and to search for local actor thumbs
     std::string parentDir = URIUtils::GetBasePath(pItem->GetPath());
-    if (CSettings::Get().GetBool("videolibrary.actorthumbs"))
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
       FetchActorThumbs(movieDetails.m_cast, actorArtPath.empty() ? parentDir : actorArtPath);
     if (bApplyToDir)
       ApplyThumbToFolder(parentDir, art["thumb"]);
@@ -1906,7 +1925,7 @@ namespace VIDEO
           if (!image.empty())
           { // cache the image and determine sizing
             CTextureDetails details;
-            if (CTextureCache::Get().CacheImage(image, details))
+            if (CTextureCache::GetInstance().CacheImage(image, details))
             {
               std::string type = GetArtTypeFromSize(details.width, details.height);
               if (art.find(type) == art.end())
@@ -1964,7 +1983,7 @@ namespace VIDEO
         if (i->thumb.empty() && !i->thumbUrl.GetFirstThumb().m_url.empty())
           i->thumb = CScraperUrl::GetThumbURL(i->thumbUrl.GetFirstThumb());
         if (!i->thumb.empty())
-          CTextureCache::Get().BackgroundCacheImage(i->thumb);
+          CTextureCache::GetInstance().BackgroundCacheImage(i->thumb);
       }
     }
   }
@@ -1975,7 +1994,7 @@ namespace VIDEO
     if (info->Content() == CONTENT_MOVIES || info->Content() == CONTENT_MUSICVIDEOS
         || (info->Content() == CONTENT_TVSHOWS && !pItem->m_bIsFolder))
       strNfoFile = GetnfoFile(pItem, bGrabAny);
-    if (info->Content() == CONTENT_TVSHOWS && pItem->m_bIsFolder)
+    else if (info->Content() == CONTENT_TVSHOWS && pItem->m_bIsFolder)
       strNfoFile = URIUtils::AddFileToFolder(pItem->GetPath(), "tvshow.nfo");
 
     CNfoFile::NFOResult result=CNfoFile::NO_NFO;
@@ -2016,6 +2035,7 @@ namespace VIDEO
         scrUrl = m_nfoReader.ScraperUrl();
         info = m_nfoReader.GetScraperInfo();
 
+        StringUtils::RemoveCRLF(scrUrl.m_url[0].m_url);
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Fetching url '%s' using %s scraper (content: '%s')",
           scrUrl.m_url[0].m_url.c_str(), info->Name().c_str(), TranslateContent(info->Content()).c_str());
 
@@ -2039,7 +2059,7 @@ namespace VIDEO
       CGUIDialogOK::ShowAndGetInput(CVariant{20448}, CVariant{20449});
       return false;
     }
-    return CGUIDialogYesNo::ShowAndGetInput(CVariant{20448}, CVariant{20450});
+    return HELPERS::ShowYesNoDialogText(CVariant{20448}, CVariant{20450}) == DialogResponse::YES;
   }
 
   bool CVideoInfoScanner::ProgressCancelled(CGUIDialogProgress* progress, int heading, const std::string &line1)

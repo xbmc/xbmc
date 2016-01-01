@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<defaultcontrol always="true">450</defaultcontrol>
-	<allowoverlay>no</allowoverlay>
 	<coordinates>
-		<system>1</system>
 		<left>0</left>
 		<top>0</top>
 	</coordinates>
 	<controls>
 		<control type="group">
+			<depth>DepthDialog+</depth>
 			<left>360</left>
 			<animation effect="slide" start="700,0" end="0,0" time="300" tween="quadratic" easing="out" condition="![Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowOpen</animation>
 			<animation effect="slide" start="-180,0" end="0,0" time="300" tween="quadratic" easing="out" condition="[Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowOpen</animation>
@@ -348,6 +347,9 @@
 				</control>
 			</control>
 		</control>
-		<include>Clock</include>
+		<control type="group">
+			<depth>DepthDialog+</depth>
+			<include>Clock</include>
+		</control>
 	</controls>
 </window>

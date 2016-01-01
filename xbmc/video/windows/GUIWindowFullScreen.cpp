@@ -23,9 +23,6 @@
 #include "GUIWindowFullScreen.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
-#ifdef HAS_VIDEO_PLAYBACK
-#include "cores/VideoRenderers/RenderManager.h"
-#endif
 #include "GUIInfoManager.h"
 #include "guilib/GUIProgressControl.h"
 #include "guilib/GUILabelControl.h"
@@ -122,6 +119,17 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     }
   }
 
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) &&
+      g_infoManager.IsPlayerChannelPreviewActive() &&
+      (action.GetID() == ACTION_SELECT_ITEM || CButtonTranslator::GetInstance().GetGlobalAction(action.GetButtonCode()).GetID() == ACTION_SELECT_ITEM))
+  {
+    // If confirm channel switch is active, channel preview is currently shown
+    // and the button that caused this action matches (global) action "Select" (OK)
+    // switch to the channel currently displayed within the preview.
+    g_application.m_pPlayer->SwitchChannel(g_application.CurrentFileItem().GetPVRChannelInfoTag());
+    return true;
+  }
+
   switch (action.GetID())
   {
   case ACTION_SHOW_OSD:
@@ -213,7 +221,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       if (m_bShowViewModeInfo)
       {
 #ifdef HAS_VIDEO_PLAYBACK
-        g_renderManager.SetViewMode(++CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
+        g_application.m_pPlayer->SetRenderViewMode(++CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
 #endif
       }
       m_bShowViewModeInfo = true;
@@ -242,7 +250,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
 void CGUIWindowFullScreen::ClearBackground()
 {
-  if (g_renderManager.IsVideoLayer())
+  if (g_application.m_pPlayer->IsRenderingVideoLayer())
 #ifdef HAS_IMXVPU
     g_graphicsContext.Clear((16 << 16)|(8 << 8)|16);
 #else
@@ -306,10 +314,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       // switch resolution
       g_graphicsContext.SetFullScreenVideo(true);
 
-#ifdef HAS_VIDEO_PLAYBACK
-      // make sure renderer is uptospeed
-      g_renderManager.Update();
-#endif
       // now call the base class to load our windows
       CGUIWindow::OnMessage(message);
 
@@ -324,17 +328,12 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       CGUIWindow::OnMessage(message);
 
-      CSettings::Get().Save();
+      CSettings::GetInstance().Save();
 
       CSingleLock lock (g_graphicsContext);
       g_graphicsContext.SetFullScreenVideo(false);
       lock.Leave();
 
-#ifdef HAS_VIDEO_PLAYBACK
-      // make sure renderer is uptospeed
-      g_renderManager.Update();
-      g_renderManager.FrameFinish();
-#endif
       return true;
     }
   case GUI_MSG_SETFOCUS:
@@ -421,7 +420,7 @@ void CGUIWindowFullScreen::FrameMove()
                                        , refreshrate
                                        , missedvblanks
                                        , clockspeed - 100.0
-                                       , g_renderManager.GetVSyncState().c_str());
+                                       , g_application.m_pPlayer->GetRenderVSyncState().c_str());
 
       strGeneralFPS = StringUtils::Format("%s\nW( %s )\n%s"
                                           , strGeneral.c_str()
@@ -446,7 +445,7 @@ void CGUIWindowFullScreen::FrameMove()
     {
       // get the "View Mode" string
       std::string strTitle = g_localizeStrings.Get(629);
-      std::string strMode = g_localizeStrings.Get(630 + CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
+      std::string strMode = g_localizeStrings.Get(630 + CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
       std::string strInfo = StringUtils::Format("%s : %s", strTitle.c_str(), strMode.c_str());
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
       msg.SetLabel(strInfo);
@@ -465,10 +464,10 @@ void CGUIWindowFullScreen::FrameMove()
                                                  (int)info.SrcRect.Height(),
                                                  (int)(info.DestRect.Width() * xscale),
                                                  (int)(info.DestRect.Height() * yscale),
-                                                 CDisplaySettings::Get().GetZoomAmount(),
-                                                 info.videoAspectRatio*CDisplaySettings::Get().GetPixelRatio(),
-                                                 CDisplaySettings::Get().GetPixelRatio(),
-                                                 CDisplaySettings::Get().GetVerticalShift());
+                                                 CDisplaySettings::GetInstance().GetZoomAmount(),
+                                                 info.videoAspectRatio*CDisplaySettings::GetInstance().GetPixelRatio(),
+                                                 CDisplaySettings::GetInstance().GetPixelRatio(),
+                                                 CDisplaySettings::GetInstance().GetVerticalShift());
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
       msg.SetLabel(strSizing);
       OnMessage(msg);
@@ -542,13 +541,11 @@ void CGUIWindowFullScreen::FrameMove()
     SET_CONTROL_HIDDEN(LABEL_ROW3);
     SET_CONTROL_HIDDEN(BLUE_BAR);
   }
-
-  g_renderManager.FrameMove();
 }
 
 void CGUIWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &dirtyregion)
 {
-  if (g_renderManager.IsGuiLayer())
+  if (g_application.m_pPlayer->IsRenderingGuiLayer())
     MarkDirtyRegion();
 
   CGUIWindow::Process(currentTime, dirtyregion);
@@ -561,7 +558,7 @@ void CGUIWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &d
 void CGUIWindowFullScreen::Render()
 {
   g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
-  g_renderManager.Render(true, 0, 255);
+  g_application.m_pPlayer->Render(true, 255);
   g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
   CGUIWindow::Render();
 }
@@ -570,10 +567,7 @@ void CGUIWindowFullScreen::RenderEx()
 {
   CGUIWindow::RenderEx();
   g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
-#ifdef HAS_VIDEO_PLAYBACK
-  g_renderManager.Render(false, 0, 255, false);
-  g_renderManager.FrameFinish();
-#endif
+  g_application.m_pPlayer->Render(false, 255, false);
 }
 
 void CGUIWindowFullScreen::ChangetheTimeCode(int remote)

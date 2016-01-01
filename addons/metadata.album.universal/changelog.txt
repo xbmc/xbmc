@@ -1,3 +1,19 @@
+[B]2.5.0[/B]
+Removed: amazon.de review
+
+[B]2.4.4[/B]
+Fixed: Won't scrape MBID randomly
+Re-introduced: Proper scraping of "Official" releases that may have a "disambiguation" attribute in musicbrainz.
+
+[B]2.4.3[/B]
+Changed: Don't query artwork when mbid is missing (workaround - proper fix is needed)
+
+[B]2.4.2[/B]
+Fixed: Revert changes done in 2.4.1
+
+[B]2.4.1[/B]
+Fixed: Proper scraping of "Official" releases that may have a "disambiguation" attribute in musicbrainz.
+
 [B]2.4.0[/B]
 Changed: Language is now a selection list
 

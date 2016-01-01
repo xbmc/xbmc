@@ -14,16 +14,34 @@
 	<include file="IncludesHomeMenuItems.xml" />
 	<include file="IncludesPVR.xml" />
 	<include file="IncludesBackgroundBuilding.xml" />
+	<!-- CONSTANTS -->
 	<constant name="FanartCrossfadeTime">500</constant>
 	<constant name="IconCrossfadeTime">400</constant>
+	<constant name="DepthDialog">0.50</constant>
+	<constant name="DepthDialog+">0.52</constant>
+	<constant name="DepthDialog-">0.48</constant>
+	<constant name="DepthMax">0.54</constant>
+	<constant name="DepthOSD">0.40</constant>
+	<constant name="DepthOSD+">0.44</constant>
+	<constant name="DepthOSD-">0.36</constant>
+	<constant name="DepthOSDPopout">0.48</constant>
+	<constant name="DepthContent">0</constant>
+	<constant name="DepthContent+">0.08</constant>
+	<constant name="DepthContent-">-0.08</constant>
+	<constant name="DepthContentPopout">0.15</constant>
+	<constant name="DepthMenu">0.08</constant>
+	<constant name="DepthMenu+">0.14</constant>
+	<constant name="DepthMenu-">0.00</constant>
+	<constant name="DepthHeader">0.08</constant>
+	<constant name="DepthFooter">0.08</constant>
+	<constant name="DepthBackground">-0.80</constant>
+	<constant name="DepthFloor">-0.20</constant>
+	<constant name="DepthSideBlade">0.15</constant>
+	<!-- VARIABLES -->
 	<variable name="MediaInfoOverlayVar">
 		<value condition="ListItem.IsCollection">flagging/video/Set.png</value>
 		<value condition="!ListItem.IsStereoscopic">$INFO[ListItem.VideoResolution,flagging/lists/,.png]</value>
 		<value>flagging/lists/3D.png</value>
-	</variable>
-	<variable name="OverlayVar">
-		<value condition="!ListItem.IsResumable">$INFO[ListItem.Overlay]</value>
-		<value>OverlayWatching.png</value>
 	</variable>
 	<variable name="BannerThumb">
 		<value condition="!IsEmpty(ListItem.Art(banner))">$INFO[ListItem.Art(banner)]</value>
@@ -32,6 +50,10 @@
 	<variable name="PosterThumb">
 		<value condition="!IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
 		<value>$INFO[ListItem.Icon]</value>
+	</variable>
+	<variable name="AlbumInfoPanelLabel">
+		<value condition="Container.Content(Artists)">$INFO[ListItem.Label]</value>
+		<value>$INFO[ListItem.TrackNumber,([COLOR=selected][B],[/B][/COLOR]) - ]$INFO[ListItem.Label]</value>
 	</variable>
 	<variable name="PlayList">
 		<value condition="Window.IsActive(videolibrary) + !StringCompare(Playlist.Length(video),0)">ActivateWindow(videoplaylist)</value>
@@ -42,7 +64,7 @@
 		<value>DialogBack2.png</value>
 	</variable>
 	<variable name="typehackflagging">
-		<value condition="[substring(ListItem.FilenameAndPath,bluray) | substring(ListItem.FilenameAndPath,bdrip) | substring(ListItem.FilenameAndPath,bd25) | substring(ListItem.FilenameAndPath,bd50)]">bluray</value>
+		<value condition="[substring(ListItem.FilenameAndPath,bluray) | substring(ListItem.FilenameAndPath,bdrip) | substring(ListItem.FilenameAndPath,brrip) | substring(ListItem.FilenameAndPath,bd25) | substring(ListItem.FilenameAndPath,bd50)]">bluray</value>
 		<value condition="substring(ListItem.FilenameAndPath,hddvd)">hddvd</value>
 		<value condition="substring(ListItem.FilenameAndPath,dvd)">dvd</value>
 		<value condition="[substring(ListItem.FilenameAndPath,pdtv) | substring(ListItem.FilenameAndPath,hdtv) | substring(ListItem.FilenameAndPath,dsr)]">TV</value>
@@ -75,9 +97,9 @@
 		<value condition="Control.IsVisible(6)">([COLOR=blue]$INFO[Container(6).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(6).CurrentPage]/$INFO[Container(6).NumPages][/COLOR])</value>
 	</variable>
 	<variable name="PlayerControlsRepeatImageVar">
-		<value condition="Playlist.IsRepeatOne + Control.HasFocus(604)">OSDRepeatOneFO.png</value>
-		<value condition="Playlist.IsRepeat + Control.HasFocus(604)">OSDRepeatAllFO.png</value>
-		<value condition="Control.HasFocus(604)">OSDRepeatFO.png</value>
+		<value condition="Playlist.IsRepeatOne + Control.HasFocus(704)">OSDRepeatOneFO.png</value>
+		<value condition="Playlist.IsRepeat + Control.HasFocus(704)">OSDRepeatAllFO.png</value>
+		<value condition="Control.HasFocus(704)">OSDRepeatFO.png</value>
 		<value condition="Playlist.IsRepeatOne">OSDRepeatOneNF.png</value>
 		<value condition="Playlist.IsRepeat">OSDRepeatAllNF.png</value>
 		<value>OSDRepeatNF.png</value>
@@ -86,6 +108,94 @@
 		<value condition="!IsEmpty(Window.Property(IsRadio))">$LOCALIZE[19199] - $LOCALIZE[19024]</value>
 		<value>$LOCALIZE[19199] - $LOCALIZE[19023]</value>
 	</variable>
+	<!-- INCLUDES -->
+	<include name="AlbumInfoPanel">
+		<control type="panel" id="50">
+			<left>$PARAM[panel-left]</left>
+			<top>520</top>
+			<width>$PARAM[panel-width]</width>
+			<height>120</height>
+			<onleft>9000</onleft>
+			<onright>61</onright>
+			<onup>61</onup>
+			<ondown>9000</ondown>
+			<viewtype label="">list</viewtype>
+			<pagecontrol>61</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<orientation>vertical</orientation>
+			<itemlayout height="40" width="$PARAM[item-width]">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>$PARAM[item-width]</width>
+					<height>40</height>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="label">
+					<left>10</left>
+					<top>0</top>
+					<width>$PARAM[label-width]</width>
+					<height>40</height>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<selectedcolor>selected</selectedcolor>
+					<label>$VAR[AlbumInfoPanelLabel]</label>
+				</control>
+				<control type="label">
+					<left>10</left>
+					<top>0</top>
+					<width>$PARAM[label-width]</width>
+					<height>40</height>
+					<font>font12</font>
+					<align>right</align>
+					<aligny>center</aligny>
+					<selectedcolor>selected</selectedcolor>
+					<label>$INFO[ListItem.Duration]</label>
+				</control>
+			</itemlayout>
+			<focusedlayout height="40" width="$PARAM[item-width]">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>$PARAM[item-width]</width>
+					<height>40</height>
+					<visible>!Control.HasFocus(50)</visible>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>$PARAM[item-width]</width>
+					<height>40</height>
+					<visible>Control.HasFocus(50)</visible>
+					<texture border="5">button-focus2.png</texture>
+				</control>
+				<control type="label">
+					<left>10</left>
+					<top>0</top>
+					<width>$PARAM[label-width]</width>
+					<height>40</height>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<selectedcolor>selected</selectedcolor>
+					<label>$VAR[AlbumInfoPanelLabel]</label>
+				</control>
+				<control type="label">
+					<left>10</left>
+					<top>0</top>
+					<width>$PARAM[label-width]</width>
+					<height>40</height>
+					<font>font12</font>
+					<align>right</align>
+					<aligny>center</aligny>
+					<selectedcolor>selected</selectedcolor>
+					<label>$INFO[ListItem.Duration]</label>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
 	<include name="DialogBackgroundCommons">
 		<control type="image">
 			<description>background image</description>
@@ -143,7 +253,7 @@
 			<texture>black-back.png</texture>
 			<animation effect="fade" time="300">Visible</animation>
 			<animation effect="fade" time="150">Hidden</animation>
-			<visible>Window.IsActive(MovieInformation) | Window.IsActive(MusicInformation) | Window.IsActive(SongInformation) | Window.IsActive(FileBrowser) | Window.IsActive(TextViewer) | Window.IsActive(AddonSettings) | Window.IsActive(ContentSettings) | Window.IsActive(SelectDialog) | Window.IsActive(FileStackingDialog) | Window.IsActive(MediaSource) | Window.IsActive(PictureInfo) | Window.IsActive(PlayerControls) | Window.IsActive(VirtualKeyboard) | Window.IsActive(NumericInput) | Window.IsActive(ProfileSettings) | Window.IsActive(LockSettings) | Window.IsActive(SmartPlaylistEditor) | Window.IsActive(SmartPlaylistRule) | Window.IsActive(script-RSS_Editor-rssEditor.xml) | Window.IsActive(script-RSS_Editor-setEditor.xml) | Window.IsActive(AddonInformation) | Window.IsActive(Peripherals) | Window.IsActive(PeripheralSettings) | Window.IsActive(script-cu-lrclyrics-main.xml) | Window.IsActive(MediaFilter)</visible>
+			<visible>Window.IsActive(MovieInformation) | Window.IsActive(MusicInformation) | Window.IsActive(SongInformation) | Window.IsActive(FileBrowser) | Window.IsActive(TextViewer) | Window.IsActive(AddonSettings) | Window.IsActive(ContentSettings) | Window.IsActive(SelectDialog) | Window.IsActive(MediaSource) | Window.IsActive(PictureInfo) | Window.IsActive(PlayerControls) | Window.IsActive(VirtualKeyboard) | Window.IsActive(NumericInput) | Window.IsActive(ProfileSettings) | Window.IsActive(LockSettings) | Window.IsActive(SmartPlaylistEditor) | Window.IsActive(SmartPlaylistRule) | Window.IsActive(script-RSS_Editor-rssEditor.xml) | Window.IsActive(script-RSS_Editor-setEditor.xml) | Window.IsActive(AddonInformation) | Window.IsActive(PeripheralSettings) | Window.IsActive(script-cu-lrclyrics-main.xml) | Window.IsActive(MediaFilter)</visible>
 		</control>
 	</include>
 	<include name="WindowTitleCommons">
@@ -209,7 +319,7 @@
 	<include name="ButtonInfoDialogsCommonValues">
 		<height>40</height>
 		<width>170</width>
-		<textoffsetx>20</textoffsetx>
+		<textoffsetx>5</textoffsetx>
 		<align>center</align>
 		<aligny>center</aligny>
 		<font>font12_title</font>
@@ -218,7 +328,8 @@
 		<pulseonselect>false</pulseonselect>
 	</include>
 	<include name="SideBladeLeft">
-		<animation effect="slide" start="0,0" end="250,0" time="300" tween="quadratic" easing="out" condition="ControlGroup(9000).HasFocus | Control.HasFocus(9001) | Control.HasFocus(8999)">Conditional</animation>
+		<depth>DepthSideBlade</depth>
+		<animation effect="slide" start="0,0" end="250,0" time="300" tween="quadratic" easing="out" condition="[ControlGroup(9000).HasFocus | Control.HasFocus(9001) | Control.HasFocus(8999)] + ![Window.IsActive(PVRGuideInfo) | Window.IsActive(PVRRadioRDSInfo)]">Conditional</animation>
 		<animation effect="slide" start="0,0" end="-300,0" time="300" tween="quadratic" easing="out" condition="ControlGroup(9000).HasFocus | Control.HasFocus(9001)">WindowClose</animation>
 		<animation effect="slide" start="0,0" end="-50,0" time="225" tween="quadratic" easing="out" condition="![ControlGroup(9000).HasFocus | Control.HasFocus(9001)]">WindowClose</animation>
 		<animation effect="slide" start="-50,0" end="0,0" time="225" tween="quadratic" easing="out">WindowOpen</animation>
@@ -244,9 +355,9 @@
 			<texturenofocus>HasSub.png</texturenofocus>
 		</control>
 		<control type="image">
-			<left>0</left>
+			<left>-20</left>
 			<top>0</top>
-			<width>260</width>
+			<width>280</width>
 			<height>720</height>
 			<texture border="0,0,10,0">MediaBladeSub.png</texture>
 		</control>
@@ -697,134 +808,45 @@
 			<description>Fake Button to fix Player Controls Navigation</description>
 			<visible>false</visible>
 		</control>
-		<control type="group" id="9006">
-			<width>250</width>
+		<control type="group" id="90060">
 			<height>45</height>
 			<visible>VideoPlayer.Content(LiveTV)</visible>
 			<include>VisibleFadeEffect</include>
-			<control type="button" id="600">
-				<left>20</left>
-				<top>2</top>
-				<width>39</width>
-				<height>39</height>
-				<label>-</label>
-				<texturefocus>OSDChannelUPFO.png</texturefocus>
-				<texturenofocus>OSDChannelUPNF.png</texturenofocus>
-				<onleft>50</onleft>
-				<onright>601</onright>
-				<onup>610</onup>
-				<ondown>611</ondown>
-				<onclick>ChannelDown</onclick>
-			</control>
-			<control type="button" id="601">
-				<left>60</left>
-				<top>2</top>
-				<width>39</width>
-				<height>39</height>
-				<label>-</label>
-				<texturefocus>OSDChannelDownFO.png</texturefocus>
-				<texturenofocus>OSDChannelDownNF.png</texturenofocus>
-				<onleft>600</onleft>
-				<onright>603</onright>
-				<onup>610</onup>
-				<ondown>611</ondown>
-				<onclick>ChannelUp</onclick>
-			</control>
-			<control type="button" id="603">
-				<left>100</left>
-				<top>2</top>
-				<width>39</width>
-				<height>39</height>
-				<label>-</label>
-				<texturefocus>OSDStopFO.png</texturefocus>
-				<texturenofocus>OSDStopNF.png</texturenofocus>
-				<onleft>601</onleft>
-				<onright>604</onright>
-				<onup>610</onup>
-				<ondown>611</ondown>
-				<onclick>down</onclick>
-				<onclick>PlayerControl(Stop)</onclick>
-			</control>
-			<control type="togglebutton" id="604">
-				<left>140</left>
-				<top>2</top>
-				<width>39</width>
-				<height>39</height>
-				<label>-</label>
-				<texturefocus>OSDPauseFO.png</texturefocus>
-				<texturenofocus>OSDPauseNF.png</texturenofocus>
-				<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
-				<alttexturefocus>OSDPlayFO.png</alttexturefocus>
-				<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
-				<onleft>603</onleft>
-				<onright>605</onright>
-				<onup>610</onup>
-				<ondown>606</ondown>
-				<onback>50</onback>
-				<onclick>PlayerControl(Play)</onclick>
-				<enable>Player.PauseEnabled</enable>
-				<animation effect="fade" start="100" end="30" time="75" condition="!Player.PauseEnabled">Conditional</animation>
-			</control>
-			<control type="button" id="605">
-				<left>180</left>
-				<top>2</top>
-				<width>39</width>
-				<height>39</height>
-				<label>-</label>
-				<texturefocus>OSDRecordOffFO.png</texturefocus>
-				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
-				<onleft>604</onleft>
+			<control type="grouplist" id="9006">
+				<width>250</width>
+				<height>45</height>
+				<itemgap>1</itemgap>
+				<orientation>horizontal</orientation>
 				<onright>50</onright>
-				<onup>610</onup>
-				<ondown>611</ondown>
-				<onclick>PlayerControl(record)</onclick>
-				<enable>Player.CanRecord</enable>
-				<animation effect="fade" start="100" end="30" time="75" condition="!Player.CanRecord">Conditional</animation>
-			</control>
-		</control>
-		<control type="group" id="9005">
-			<visible>Player.HasMedia</visible>
-			<visible>!VideoPlayer.Content(LiveTV)</visible>
-			<include>VisibleFadeEffect</include>
-			<width>250</width>
-			<height>45</height>
-			<defaultcontrol always="true">603</defaultcontrol>
-			<control type="button" id="600">
-				<left>5</left>
-				<top>2</top>
-				<width>39</width>
-				<height>39</height>
-				<label>-</label>
-				<texturefocus>OSDPrevTrackFO.png</texturefocus>
-				<texturenofocus>OSDPrevTrackNF.png</texturenofocus>
-				<onleft>50</onleft>
-				<onright>606</onright>
-				<onup>610</onup>
-				<ondown>611</ondown>
 				<onback>50</onback>
-				<onclick>PlayerControl(Previous)</onclick>
-			</control>
-			<control type="button" id="606">
-				<left>45</left>
-				<top>2</top>
-				<width>39</width>
-				<height>39</height>
-				<label>-</label>
-				<texturefocus>OSDRewindFO.png</texturefocus>
-				<texturenofocus>OSDRewindNF.png</texturenofocus>
-				<onleft>600</onleft>
-				<onright>603</onright>
 				<onup>610</onup>
 				<ondown>611</ondown>
-				<onback>50</onback>
-				<onclick>PlayerControl(Rewind)</onclick>
-				<visible>Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo</visible>
-			</control>
-			<control type="group">
-				<animation effect="slide" start="0,0" end="40,0" time="0" condition="Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo">Conditional</animation>
-				<control type="togglebutton" id="603">
-					<left>45</left>
-					<top>2</top>
+				<control type="button" id="600">
+					<width>39</width>
+					<height>39</height>
+					<label>-</label>
+					<texturefocus>OSDChannelUPFO.png</texturefocus>
+					<texturenofocus>OSDChannelUPNF.png</texturenofocus>
+					<onclick>ChannelDown</onclick>
+				</control>
+				<control type="button" id="601">
+					<width>39</width>
+					<height>39</height>
+					<label>-</label>
+					<texturefocus>OSDChannelDownFO.png</texturefocus>
+					<texturenofocus>OSDChannelDownNF.png</texturenofocus>
+					<onclick>ChannelUp</onclick>
+				</control>
+				<control type="button" id="603">
+					<width>39</width>
+					<height>39</height>
+					<label>-</label>
+					<texturefocus>OSDStopFO.png</texturefocus>
+					<texturenofocus>OSDStopNF.png</texturenofocus>
+					<onclick>down</onclick>
+					<onclick>PlayerControl(Stop)</onclick>
+				</control>
+				<control type="togglebutton" id="604">
 					<width>39</width>
 					<height>39</height>
 					<label>-</label>
@@ -833,89 +855,131 @@
 					<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
 					<alttexturefocus>OSDPlayFO.png</alttexturefocus>
 					<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
-					<onleft>606</onleft>
-					<onright>601</onright>
-					<onup>610</onup>
-					<ondown>611</ondown>
-					<onback>50</onback>
+					<onclick>PlayerControl(Play)</onclick>
+					<enable>Player.PauseEnabled</enable>
+					<animation effect="fade" start="100" end="30" time="75" condition="!Player.PauseEnabled">Conditional</animation>
+				</control>
+				<control type="button" id="605">
+					<width>39</width>
+					<height>39</height>
+					<label>-</label>
+					<texturefocus>OSDRecordOffFO.png</texturefocus>
+					<texturenofocus>OSDRecordOffNF.png</texturenofocus>
+					<onclick>PlayerControl(record)</onclick>
+					<enable>Player.CanRecord</enable>
+					<animation effect="fade" start="100" end="30" time="75" condition="!Player.CanRecord">Conditional</animation>
+				</control>
+				<control type="button" id="606">
+					<width>39</width>
+					<height>39</height>
+					<label>-</label>
+					<visible>RDS.HasRadiotextPlus</visible>
+					<texturefocus>OSDRadioRDSFO.png</texturefocus>
+					<texturenofocus>OSDRadioRDSNF.png</texturenofocus>
+					<onclick>ActivateWindow(PVRRadioRDSInfo)</onclick>
+				</control>
+				<control type="button" id="622">
+					<width>39</width>
+					<height>39</height>
+					<label>-</label>
+					<visible>!RDS.HasRadiotextPlus</visible>
+					<texturefocus>OSDChannelListFO.png</texturefocus>
+					<texturenofocus>OSDChannelListNF.png</texturenofocus>
+					<onclick>ActivateWindow(PVRGuideInfo)</onclick>
+				</control>
+			</control>
+		</control>
+		<control type="group" id="90050">
+			<visible>Player.HasMedia</visible>
+			<visible>!VideoPlayer.Content(LiveTV)</visible>
+			<include>VisibleFadeEffect</include>
+			<height>45</height>
+			<control type="grouplist" id="9005">
+				<width>250</width>
+				<height>45</height>
+				<itemgap>1</itemgap>
+				<orientation>horizontal</orientation>
+				<onright>50</onright>
+				<onback>50</onback>
+				<onup>610</onup>
+				<ondown>611</ondown>
+				<defaultcontrol always="true">603</defaultcontrol>
+				<control type="button" id="700">
+					<width>39</width>
+					<height>39</height>
+					<label>-</label>
+					<texturefocus>OSDPrevTrackFO.png</texturefocus>
+					<texturenofocus>OSDPrevTrackNF.png</texturenofocus>
+					<onclick>PlayerControl(Previous)</onclick>
+				</control>
+				<control type="button" id="706">
+					<width>39</width>
+					<height>39</height>
+					<label>-</label>
+					<texturefocus>OSDRewindFO.png</texturefocus>
+					<texturenofocus>OSDRewindNF.png</texturenofocus>
+					<onclick>PlayerControl(Rewind)</onclick>
+					<visible>Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo</visible>
+				</control>
+				<control type="togglebutton" id="703">
+					<width>39</width>
+					<height>39</height>
+					<label>-</label>
+					<texturefocus>OSDPauseFO.png</texturefocus>
+					<texturenofocus>OSDPauseNF.png</texturenofocus>
+					<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+					<alttexturefocus>OSDPlayFO.png</alttexturefocus>
+					<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
 					<onclick>PlayerControl(Play)</onclick>
 				</control>
-				<control type="button" id="601">
-					<left>85</left>
-					<top>2</top>
+				<control type="button" id="701">
 					<width>39</width>
 					<height>39</height>
 					<label>-</label>
 					<texturefocus>OSDStopFO.png</texturefocus>
 					<texturenofocus>OSDStopNF.png</texturenofocus>
-					<onleft>603</onleft>
-					<onright>607</onright>
-					<onup>610</onup>
-					<ondown>611</ondown>
-					<onback>50</onback>
 					<onclick>down</onclick>
 					<onclick>PlayerControl(Stop)</onclick>
 				</control>
-				<control type="button" id="607">
-					<left>125</left>
-					<top>2</top>
+				<control type="button" id="707">
 					<width>39</width>
 					<height>39</height>
 					<label>-</label>
 					<texturefocus>OSDForwardFO.png</texturefocus>
 					<texturenofocus>OSDForwardNF.png</texturenofocus>
-					<onleft>601</onleft>
-					<onright>602</onright>
-					<onup>610</onup>
-					<ondown>611</ondown>
-					<onback>50</onback>
 					<onclick>PlayerControl(Forward)</onclick>
 					<visible>Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo</visible>
 				</control>
-				<control type="button" id="602">
-					<left>125</left>
-					<top>2</top>
+				<control type="button" id="702">
 					<width>39</width>
 					<height>39</height>
 					<label>-</label>
 					<texturefocus>OSDNextTrackFO.png</texturefocus>
 					<texturenofocus>OSDNextTrackNF.png</texturenofocus>
-					<onleft>607</onleft>
-					<onright>604</onright>
-					<onup>610</onup>
-					<ondown>611</ondown>
-					<onback>50</onback>
 					<onclick>PlayerControl(Next)</onclick>
-					<animation effect="slide" start="0,0" end="40,0" time="0" condition="Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo">Conditional</animation>
 				</control>
-			</control>
-			<control type="group">
-				<visible>!Window.IsVisible(MusicPlaylist) + !Window.IsVisible(VideoPlaylist) + !Player.HasVideo</visible>
-				<control type="button" id="604">
-					<left>165</left>
-					<top>2</top>
+				<control type="group" id="799">
 					<width>39</width>
 					<height>39</height>
-					<label>-</label>
-					<texturefocus>-</texturefocus>
-					<texturenofocus>-</texturenofocus>
-					<onclick>PlayerControl(Repeat)</onclick>
-					<onleft>602</onleft>
-					<onright>605</onright>
-					<onup>610</onup>
-					<ondown>611</ondown>
-					<onback>50</onback>
+					<control type="button" id="704">
+						<width>39</width>
+						<height>39</height>
+						<label>-</label>
+						<texturefocus>-</texturefocus>
+						<texturenofocus>-</texturenofocus>
+						<onleft>702</onleft>
+						<onright>705</onright>
+						<onclick>PlayerControl(Repeat)</onclick>
+						<visible>!Window.IsVisible(MusicPlaylist) + !Window.IsVisible(VideoPlaylist) + !Player.HasVideo</visible>
+					</control>
+					<control type="image" id="713">
+						<width>39</width>
+						<height>39</height>
+						<texture>$VAR[PlayerControlsRepeatImageVar]</texture>
+						<visible>!Window.IsVisible(MusicPlaylist) + !Window.IsVisible(VideoPlaylist) + !Player.HasVideo</visible>
+					</control>
 				</control>
-				<control type="image">
-					<left>165</left>
-					<top>2</top>
-					<width>39</width>
-					<height>39</height>
-					<texture>$VAR[PlayerControlsRepeatImageVar]</texture>
-				</control>
-				<control type="togglebutton" id="605">
-					<left>205</left>
-					<top>2</top>
+				<control type="togglebutton" id="705">
 					<width>39</width>
 					<height>39</height>
 					<label>-</label>
@@ -925,11 +989,7 @@
 					<alttexturefocus>OSDRandomOnFO.png</alttexturefocus>
 					<alttexturenofocus>OSDRandomOnNF.png</alttexturenofocus>
 					<onclick>PlayerControl(Random)</onclick>
-					<onleft>604</onleft>
-					<onright>50</onright>
-					<onup>610</onup>
-					<ondown>611</ondown>
-					<onback>50</onback>
+					<visible>!Window.IsVisible(MusicPlaylist) + !Window.IsVisible(VideoPlaylist) + !Player.HasVideo</visible>
 				</control>
 			</control>
 		</control>
@@ -954,6 +1014,7 @@
 	</include>
 	<include name="ScrollOffsetLabel">
 		<control type="group">
+			<depth>DepthSideBlade</depth>
 			<visible>Container.Scrolling + [StringCompare(Container.SortMethod,$LOCALIZE[551]) | StringCompare(Container.SortMethod,$LOCALIZE[561]) | StringCompare(Container.SortMethod,$LOCALIZE[558]) | StringCompare(Container.SortMethod,$LOCALIZE[557]) | StringCompare(Container.SortMethod,$LOCALIZE[556])]</visible>
 			<animation effect="slide" start="0,0" end="0,-60" time="75">Visible</animation>
 			<animation effect="slide" start="0,-60" end="0,0" delay="300" time="75">Hidden</animation>
@@ -1280,6 +1341,7 @@
 		<animation effect="fade" time="200">WindowClose</animation>
 	</include>
 	<include name="dialogeffect">
+		<depth>DepthDialog</depth>
 		<animation effect="fade" time="200">WindowOpen</animation>
 		<animation effect="fade" time="200">WindowClose</animation>
 	</include>
@@ -1296,5 +1358,53 @@
 		<aligny>center</aligny>
 		<font>font13</font>
 		<focusedcolor>black</focusedcolor>
+	</include>
+	<include name="CommonWindowHeader">
+		<param name="Icon" default="icon_home" />
+		<param name="Label" default="" />
+		<param name="ShowLabel2" default="False" />
+		<definition>
+			<control type="group">
+				<depth>DepthHeader</depth>
+				<control type="image">
+					<description>Section header image</description>
+					<left>20</left>
+					<top>3</top>
+					<width>35</width>
+					<height>35</height>
+					<aspectratio>keep</aspectratio>
+					<texture>$PARAM[Icon].png</texture>
+				</control>
+				<control type="grouplist">
+					<left>65</left>
+					<top>5</top>
+					<width>1000</width>
+					<height>30</height>
+					<orientation>horizontal</orientation>
+					<align>left</align>
+					<itemgap>5</itemgap>
+					<control type="label">
+						<include>WindowTitleCommons</include>
+						<label>$PARAM[Label]</label>
+					</control>
+					<control type="label">
+						<include>WindowTitleCommons</include>
+						<label>[COLOR=blue] - [/COLOR]$INFO[Container.FolderName]</label>
+						<visible>!IsEmpty(Container.FolderName)</visible>
+					</control>
+					<control type="label">
+						<include>WindowTitleCommons</include>
+						<label>[COLOR=blue] - [/COLOR]$INFO[Control.GetLabel(2)]</label>
+						<visible>$PARAM[ShowLabel2]</visible>
+					</control>
+				</control>
+				<include>Clock</include>
+			</control>
+		</definition>
+	</include>
+	<include name="BackgroundDimensions">
+		<width>1280</width>
+		<height>720</height>
+		<animation effect="zoom" center="auto" end="101,101" time="0" condition="IntegerGreaterThan(System.StereoscopicMode,0)">conditional</animation>
 	</include>
 </includes>

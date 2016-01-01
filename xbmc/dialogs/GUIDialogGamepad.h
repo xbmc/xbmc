@@ -41,6 +41,7 @@ public:
   static bool ShowAndVerifyInput(std::string& strPassword, const std::string& dlgHeading, const std::string& dlgLine0, const std::string& dlgLine1, const std::string& dlgLine2, bool bGetUserInput, bool bHideInputChars);
 protected:
   virtual bool OnAction(const CAction &action);
+  virtual void OnInitWindow();
   bool m_bCanceled;
   char m_cHideInputChar;
 };

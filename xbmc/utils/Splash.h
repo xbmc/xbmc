@@ -21,34 +21,22 @@
  */
 
 #include <string>
-#include "threads/Thread.h"
 
-class CGUITextLayout;
 class CGUIImage;
 
-class CSplash : public CThread
+class CSplash
 {
 public:
-  CSplash(const std::string& imageName);
+  static CSplash& GetInstance();
+
+  void Show();
+
+protected:
+  CSplash();
+  CSplash(const CSplash&);
+  CSplash& operator=(CSplash const&);
   virtual ~CSplash();
 
-  bool Start();
-  void Stop();
-
-  // In case you don't want to use another thread
-  void Show();
-  void Show(const std::string& message);
-  void Hide();
-
 private:
-  virtual void Process();
-  virtual void OnStartup();
-  virtual void OnExit();
-
-  float fade;
-  std::string m_ImageName;
-
-  CGUITextLayout* m_messageLayout;
   CGUIImage* m_image;
-  bool m_layoutWasLoading;
 };

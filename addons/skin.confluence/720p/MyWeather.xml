@@ -1,45 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<defaultcontrol always="true">50</defaultcontrol>
-	<allowoverlay>no</allowoverlay>
+	<menucontrol>9000</menucontrol>
 	<onload condition="!Skin.HasSetting(FirstTimeRun)">ActivateWindow(1112)</onload>
 	<controls>
 		<include>CommonBackground</include>
 		<control type="multiimage">
-			<left>0</left>
-			<top>0</top>
-			<width>1280</width>
-			<height>720</height>
-			<imagepath background="true">$INFO[Skin.String(WeatherFanartDir)]$INFO[Window(Weather).Property(Current.FanartCode)]</imagepath>
+			<depth>DepthBackground</depth>
+			<include>BackgroundDimensions</include>
+			<aspectratio>scale</aspectratio>
+			<imagepath background="true">resource://resource.images.weatherfanart.multi/$INFO[Window(Weather).Property(Current.FanartCode)]</imagepath>
 			<timeperimage>10000</timeperimage>
 			<randomize>true</randomize>
 			<fadetime>1000</fadetime>
 			<include>VisibleFadeEffect</include>
-			<visible>Skin.HasSetting(ShowWeatherFanart) + !IsEmpty(Skin.String(WeatherFanartDir))</visible>
+			<visible>System.HasAddon(resource.images.weatherfanart.multi)</visible>
 			<animation effect="fade" time="150">WindowClose</animation>
 		</control>
-		<control type="image">
-			<description>Section header image</description>
-			<left>20</left>
-			<top>3</top>
-			<width>35</width>
-			<height>35</height>
-			<aspectratio>keep</aspectratio>
-			<texture>icon_weather.png</texture>
-		</control>
-		<control type="grouplist">
-			<left>65</left>
-			<top>5</top>
-			<width>1000</width>
-			<height>30</height>
-			<orientation>horizontal</orientation>
-			<align>left</align>
-			<itemgap>5</itemgap>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<label>$LOCALIZE[8]</label>
-			</control>
-		</control>
+		<include name="CommonWindowHeader">
+			<param name="Icon" value="icon_weather" />
+			<param name="Label" value="$LOCALIZE[8]" />
+		</include>
 		<control type="image">
 			<left>0</left>
 			<top>100r</top>
@@ -146,40 +127,43 @@
 						<aligny>center</aligny>
 						<textcolor>grey2</textcolor>
 					</control>
-					<control type="label">
-						<description>current temp Value</description>
-						<left>15</left>
-						<top>185</top>
-						<width>180</width>
-						<height>40</height>
-						<font>WeatherTemp</font>
-						<align>right</align>
-						<aligny>top</aligny>
-						<label>$INFO[Window.Property(Current.Temperature)]</label>
-						<textcolor>white</textcolor>
-						<shadowcolor>black</shadowcolor>
-					</control>
-					<control type="label">
-						<description>current temp Value Units</description>
-						<left>200</left>
-						<top>206</top>
-						<width>100</width>
-						<height>40</height>
-						<font>font16</font>
-						<align>left</align>
-						<aligny>top</aligny>
-						<label>[B]$INFO[System.TemperatureUnits][/B]</label>
-						<textcolor>white</textcolor>
-						<shadowcolor>black</shadowcolor>
-					</control>
-					<control type="image">
-						<description>current weather icon</description>
-						<left>260</left>
-						<top>145</top>
-						<width>200</width>
-						<height>200</height>
-						<info>Window.Property(Current.ConditionIcon)</info>
-						<aspectratio>keep</aspectratio>
+					<control type="group">
+						<depth>DepthContent+</depth>
+						<control type="label">
+							<description>current temp Value</description>
+							<left>15</left>
+							<top>185</top>
+							<width>180</width>
+							<height>40</height>
+							<font>WeatherTemp</font>
+							<align>right</align>
+							<aligny>top</aligny>
+							<label>$INFO[Window.Property(Current.Temperature)]</label>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+						</control>
+						<control type="label">
+							<description>current temp Value Units</description>
+							<left>200</left>
+							<top>206</top>
+							<width>100</width>
+							<height>40</height>
+							<font>font16</font>
+							<align>left</align>
+							<aligny>top</aligny>
+							<label>[B]$INFO[System.TemperatureUnits][/B]</label>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+						</control>
+						<control type="image">
+							<description>current weather icon</description>
+							<left>260</left>
+							<top>145</top>
+							<width>200</width>
+							<height>200</height>
+							<info>Window.Property(Current.ConditionIcon)</info>
+							<aspectratio>keep</aspectratio>
+						</control>
 					</control>
 					<control type="label">
 						<description>current condition label</description>
@@ -451,7 +435,10 @@
 				</control>
 			</control>
 		</control>
-		<include>CommonNowPlaying</include>
+		<control type="group">
+			<depth>DepthFooter</depth>
+			<include>CommonNowPlaying</include>
+		</control>
 		<include>MainWindowMouseButtons</include>
 		<control type="group">
 			<left>-250</left>
@@ -566,16 +553,6 @@
 					<include>ButtonCommonValues</include>
 					<label>103</label>
 				</control>
-				<control type="button" id="5">
-					<description>Custom Weather Script Button</description>
-					<label>$INFO[Skin.String(WeatherScript_Label)]</label>
-					<onclick>SetFocus(50)</onclick>
-					<onclick>RunScript($INFO[Skin.String(WeatherScript_Path)])</onclick>
-					<onclick>SetFocus(50)</onclick>
-					<textwidth>235</textwidth>
-					<include>ButtonCommonValues</include>
-					<visible>Skin.HasSetting(WeatherScript_Enable) + !IsEmpty(Skin.String(WeatherScript_Label))</visible>
-				</control>
 				<control type="button" id="4">
 					<description>Settings button</description>
 					<label>5</label>
@@ -583,22 +560,8 @@
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 				</control>
-				<control type="radiobutton" id="250">
-					<description>Fanart Toggle</description>
-					<include>ButtonCommonValues</include>
-					<label>31307</label>
-					<onclick>Skin.ToggleSetting(ShowWeatherFanart)</onclick>
-					<selected>!Skin.HasSetting(ShowWeatherFanart)</selected>
-				</control>
-				<control type="button" id="251">
-					<include>ButtonCommonValues</include>
-					<label>31317</label>
-					<onclick>Skin.SetPath(WeatherFanartDir)</onclick>
-					<enable>Skin.HasSetting(ShowWeatherFanart)</enable>
-				</control>
 				<include>CommonNowPlaying_Controls</include>
 			</control>
 		</control>
-		<include>Clock</include>
 	</controls>
 </window>

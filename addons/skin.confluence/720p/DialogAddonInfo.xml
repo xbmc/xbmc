@@ -2,7 +2,6 @@
 <window>
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<coordinates>
-		<system>1</system>
 		<left>185</left>
 		<top>40</top>
 		<origin x="185" y="10">!IsEmpty(ListItem.Property(Addon.broken))</origin>
@@ -298,6 +297,14 @@
 					<align>center</align>
 					<font>font12_title</font>
 				</control>
+				<control type="radiobutton" id="13">
+					<description>Auto-update button</description>
+					<width>220</width>
+					<height>43</height>
+					<label>21340</label>
+					<align>center</align>
+					<font>font12_title</font>
+				</control>
 				<control type="button" id="12">
 					<description>Launch Addon button</description>
 					<width>220</width>
@@ -319,14 +326,6 @@
 					<width>220</width>
 					<height>43</height>
 					<label>24021</label>
-					<align>center</align>
-					<font>font12_title</font>
-				</control>
-				<control type="button" id="11">
-					<description>Rollback button</description>
-					<width>220</width>
-					<height>43</height>
-					<label>24048</label>
 					<align>center</align>
 					<font>font12_title</font>
 				</control>

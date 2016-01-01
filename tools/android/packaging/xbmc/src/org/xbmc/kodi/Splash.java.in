@@ -320,7 +320,7 @@ public class Splash extends Activity {
 
           if (! (sName.startsWith("assets/") || (mInstallLibs && sName.startsWith("lib/"))) )
             continue;
-          if (sName.startsWith("assets/python2.6"))
+          if (sName.startsWith("assets/python2.7"))
             continue;
 
           String sFullPath = null;
@@ -505,7 +505,7 @@ public class Splash extends Activity {
       }
 
       fPackagePath = new File(sPackagePath);
-      if (fPackagePath.length() < 20 * 1024 * 1024)
+      if (fPackagePath.length() < 10 * 1024 * 1024)
         fPackagePath.delete();  // borked download
       if (!fPackagePath.exists())
       {
@@ -683,15 +683,23 @@ public class Splash extends Activity {
     mStateMachine.sendEmptyMessage(Checking);
 
     String curArch = "";
-    try {
+    String curArch2 = "";
+    try
+    {
       curArch = Build.CPU_ABI.substring(0,3);
-    } catch (IndexOutOfBoundsException e) {
+    } catch (IndexOutOfBoundsException e)
+    {
       mErrorMsg = "Error! Unexpected architecture: " + Build.CPU_ABI;
       Log.e(TAG, mErrorMsg);
       mState = InError;
-   }
+    }
+    try
+    {
+      curArch2 = Build.CPU_ABI2.substring(0,3);
+    } catch (IndexOutOfBoundsException e) {}
 
-    if (mState != InError) {
+    if (mState != InError)
+    {
       // Check if we are on the proper arch
 
       // Read the properties
@@ -701,8 +709,10 @@ public class Splash extends Activity {
         Properties properties = new Properties();
         properties.load(xbmcprop);
 
-        if (!curArch.equalsIgnoreCase(properties.getProperty("native_arch"))) {
-          mErrorMsg = "This @APP_NAME@ package is not compatible with your device (" + curArch + " vs. " + properties.getProperty("native_arch") +").\nPlease check the <a href=\"http://wiki.kodi.tv/index.php?title=XBMC_for_Android_specific_FAQ\">Kodi Android wiki</a> for more information.";
+        if (!curArch.equalsIgnoreCase(properties.getProperty("native_arch"))
+              && !curArch2.equalsIgnoreCase(properties.getProperty("native_arch")))
+        {
+          mErrorMsg = "This @APP_NAME@ package is not compatible with your device (device=" + curArch + " vs. package=" + properties.getProperty("native_arch") +").\nPlease check the <a href=\"http://wiki.kodi.tv/index.php?title=XBMC_for_Android_specific_FAQ\">Kodi Android wiki</a> for more information.";
           Log.e(TAG, mErrorMsg);
           mState = InError;
         }

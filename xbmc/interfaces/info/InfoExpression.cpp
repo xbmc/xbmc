@@ -25,7 +25,6 @@
 #include <list>
 #include <memory>
 
-using namespace std;
 using namespace INFO;
 
 InfoSingle::InfoSingle(const std::string &expression, int context)

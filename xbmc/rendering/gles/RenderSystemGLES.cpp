@@ -401,12 +401,10 @@ void CRenderSystemGLES::ApplyStateBlock()
   glClear(GL_DEPTH_BUFFER_BIT);
 }
 
-void CRenderSystemGLES::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight)
+void CRenderSystemGLES::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor)
 { 
   if (!m_bRenderCreated)
     return;
-  
-  g_graphicsContext.BeginPaint();
   
   CPoint offset = camera - CPoint(screenWidth*0.5f, screenHeight*0.5f);
   
@@ -414,15 +412,13 @@ void CRenderSystemGLES::SetCameraPosition(const CPoint &camera, int screenWidth,
   float h = (float)m_viewPort[3]*0.5f;
 
   glMatrixModview->LoadIdentity();
-  glMatrixModview->Translatef(-(w + offset.x), +(h + offset.y), 0);
+  glMatrixModview->Translatef(-(w + offset.x - stereoFactor), +(h + offset.y), 0);
   glMatrixModview->LookAt(0.0, 0.0, -2.0*h, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0);
   glMatrixModview.Load();
 
   glMatrixProject->LoadIdentity();
   glMatrixProject->Frustum( (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
   glMatrixProject.Load();
-
-  g_graphicsContext.EndPaint();
 }
 
 void CRenderSystemGLES::Project(float &x, float &y, float &z)
@@ -440,7 +436,7 @@ bool CRenderSystemGLES::TestRender()
 {
   static float theta = 0.0;
 
-  //RESOLUTION_INFO resInfo = CDisplaySettings::Get().GetCurrentResolutionInfo();
+  //RESOLUTION_INFO resInfo = CDisplaySettings::GetInstance().GetCurrentResolutionInfo();
   //glViewport(0, 0, resInfo.iWidth, resInfo.iHeight);
 
   glMatrixModview.Push();

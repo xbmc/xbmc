@@ -23,8 +23,6 @@
 #include "utils/log.h"
 #include "system.h"
 
-using namespace std;
-
 namespace ADDON
 {
 
@@ -33,7 +31,7 @@ CService::CService(const cp_extension_t *ext)
 {
   BuildServiceType();
 
-  std::string start = CAddonMgr::Get().GetExtValue(ext->configuration, "@start");
+  std::string start = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@start");
   if (start == "startup")
     m_startOption = STARTUP;
 }
@@ -57,7 +55,7 @@ bool CService::Start()
   {
 #ifdef HAS_PYTHON
   case PYTHON:
-    ret = (CScriptInvocationManager::Get().ExecuteAsync(LibPath(), this->shared_from_this()) != -1);
+    ret = (CScriptInvocationManager::GetInstance().ExecuteAsync(LibPath(), this->shared_from_this()) != -1);
     break;
 #endif
 
@@ -78,7 +76,7 @@ bool CService::Stop()
   {
 #ifdef HAS_PYTHON
   case PYTHON:
-    ret = CScriptInvocationManager::Get().Stop(LibPath());
+    ret = CScriptInvocationManager::GetInstance().Stop(LibPath());
     break;
 #endif
 
@@ -97,7 +95,7 @@ void CService::BuildServiceType()
   std::string ext;
 
   size_t p = str.find_last_of('.');
-  if (p != string::npos)
+  if (p != std::string::npos)
     ext = str.substr(p + 1);
 
 #ifdef HAS_PYTHON

@@ -20,6 +20,7 @@
  *
  */
 
+#include <cstdint>
 #include "guilib/GUIDialog.h"
 
 class CGUIDialogNumeric :
@@ -36,16 +37,17 @@ public:
 
   bool IsConfirmed() const;
   bool IsCanceled() const;
+  bool IsInputHidden() const { return m_mode == INPUT_PASSWORD; };
 
   static bool ShowAndVerifyNewPassword(std::string& strNewPassword);
   static int ShowAndVerifyPassword(std::string& strPassword, const std::string& strHeading, int iRetries);
   static bool ShowAndVerifyInput(std::string& strPassword, const std::string& strHeading, bool bGetUserInput);
 
   void SetHeading(const std::string &strHeading);
-  void SetMode(INPUT_MODE mode, void *initial);
+  void SetMode(INPUT_MODE mode, const SYSTEMTIME &initial);
   void SetMode(INPUT_MODE mode, const std::string &initial);
-  void GetOutput(void *output) const;
-  std::string GetOutput() const;
+  SYSTEMTIME GetOutput() const;
+  std::string GetOutputString() const;
 
   static bool ShowAndGetTime(SYSTEMTIME &time, const std::string &heading);
   static bool ShowAndGetDate(SYSTEMTIME &date, const std::string &heading);
@@ -57,7 +59,7 @@ protected:
   virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
 
-  void OnNumber(unsigned int num);
+  void OnNumber(uint32_t num);
   void VerifyDate(bool checkYear);
   void OnNext();
   void OnPrevious();
@@ -65,14 +67,19 @@ protected:
   void OnOK();
   void OnCancel();
 
+  void HandleInputIP(uint32_t num);
+  void HandleInputDate(uint32_t num);
+  void HandleInputSeconds(uint32_t num);
+  void HandleInputTime(uint32_t num);
+
   bool m_bConfirmed;
   bool m_bCanceled;
 
   INPUT_MODE m_mode;                // the current input mode
   SYSTEMTIME m_datetime;            // for time and date modes
-  WORD m_ip[4];                     // for ip address mode
-  unsigned int m_block;             // for time, date, and IP methods.
-  unsigned int m_lastblock;
+  uint8_t m_ip[4];                  // for ip address mode
+  uint32_t m_block;             // for time, date, and IP methods.
+  uint32_t m_lastblock;
   bool m_dirty;                     // true if the current block has been changed.
   std::string m_number;              ///< for number or password input
 };

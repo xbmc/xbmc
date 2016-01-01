@@ -81,6 +81,8 @@ bool AEDeviceEnumerationOSX::Enumerate()
         m_isPlanar = false;
 
       CCoreAudioStream::GetAvailablePhysicalFormats(streamList[streamIdx], &info.formatList);
+
+      CCoreAudioStream::GetAvailableVirtualFormats(streamList[streamIdx], &info.formatListVirt);
       
       hasPassthroughOrDigitalFormats(info.formatList, info.hasPassthroughFormats, info.isDigital);
 
@@ -215,7 +217,9 @@ CADeviceList AEDeviceEnumerationOSX::GetDeviceInfoList() const
     deviceInfo.m_channels = getChannelInfoForStream(streamIdx);
     deviceInfo.m_sampleRates = getSampleRateListForStream(streamIdx);
     deviceInfo.m_dataFormats = getFormatListForStream(streamIdx);
+    deviceInfo.m_streamTypes = getTypeListForStream(streamIdx);
     deviceInfo.m_deviceType = m_caStreamInfos[streamIdx].deviceType;
+    deviceInfo.m_wantsIECPassthrough = true;
     
     CoreAudioDataSourceList sourceList;
     // if this enumerator contains multiple devices with more then 1 source we add :source suffixes to the
@@ -266,6 +270,16 @@ bool AEDeviceEnumerationOSX::hasDataFormat(const AEDataFormatList &list, const e
   return false;
 }
 
+bool AEDeviceEnumerationOSX::hasDataType(const AEDataTypeList &list, CAEStreamInfo::DataType type) const
+{
+  for (size_t i = 0; i < list.size(); ++i)
+  {
+    if (list[i] == type)
+      return true;
+  }
+  return false;
+}
+
 AEDataFormatList AEDeviceEnumerationOSX::getFormatListForStream(UInt32 streamIdx) const
 {
   AEDataFormatList returnDataFormatList;
@@ -285,6 +299,27 @@ AEDataFormatList AEDeviceEnumerationOSX::getFormatListForStream(UInt32 streamIdx
     }
   }
   return returnDataFormatList;
+}
+
+AEDataTypeList AEDeviceEnumerationOSX::getTypeListForStream(UInt32 streamIdx) const
+{
+  AEDataTypeList returnDataTypeList;
+  if (streamIdx >= m_caStreamInfos.size())
+    return returnDataTypeList;
+
+  // check the streams
+  const StreamFormatList &formatList = m_caStreamInfos[streamIdx].formatList;
+  for(UInt32 formatIdx = 0; formatIdx < formatList.size(); formatIdx++)
+  {
+    AudioStreamBasicDescription formatDesc = formatList[formatIdx].mFormat;
+    AEDataTypeList aeTypeList = caFormatToAEType(formatDesc, m_caStreamInfos[streamIdx].isDigital);
+    for (UInt32 typeListIdx = 0; typeListIdx < aeTypeList.size(); typeListIdx++)
+    {
+      if (!hasDataType(returnDataTypeList, aeTypeList[typeListIdx]))
+        returnDataTypeList.push_back(aeTypeList[typeListIdx]);
+    }
+  }
+  return returnDataTypeList;
 }
 
 CAEChannelInfo AEDeviceEnumerationOSX::getChannelInfoForStream(UInt32 streamIdx) const
@@ -314,8 +349,6 @@ AEDataFormatList AEDeviceEnumerationOSX::caFormatToAE(const AudioStreamBasicDesc
   {
     case kAudioFormatAC3:
     case kAudioFormat60958AC3:
-      formatList.push_back(AE_FMT_AC3);
-      formatList.push_back(AE_FMT_DTS);
       break;
     default:
       switch(formatDesc.mBitsPerChannel)
@@ -325,19 +358,6 @@ AEDataFormatList AEDeviceEnumerationOSX::caFormatToAE(const AudioStreamBasicDesc
           formatList.push_back(AE_FMT_S16BE);
         else
         {
-          /* Passthrough is possible with a 2ch digital output */
-          if (formatDesc.mChannelsPerFrame == 2 && isDigital)
-          {
-            if (formatDesc.mSampleRate == 48000)
-            {
-              formatList.push_back(AE_FMT_AC3);
-              formatList.push_back(AE_FMT_DTS);
-            }
-            else if (formatDesc.mSampleRate == 192000)
-            {
-              formatList.push_back(AE_FMT_EAC3);
-            }
-          }
           formatList.push_back(AE_FMT_S16LE);
         }
         break;
@@ -362,6 +382,52 @@ AEDataFormatList AEDeviceEnumerationOSX::caFormatToAE(const AudioStreamBasicDesc
       break;
   }
   return formatList;
+}
+
+AEDataTypeList AEDeviceEnumerationOSX::caFormatToAEType(const AudioStreamBasicDescription &formatDesc, bool isDigital) const
+{
+  AEDataTypeList typeList;
+  // add stream format info
+  switch (formatDesc.mFormatID)
+  {
+    case kAudioFormatAC3:
+    case kAudioFormat60958AC3:
+      typeList.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+      typeList.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+      typeList.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+      typeList.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+      typeList.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+      break;
+    default:
+      switch(formatDesc.mBitsPerChannel)
+    {
+      case 16:
+        if (formatDesc.mFormatFlags & kAudioFormatFlagIsBigEndian)
+          ;
+        else
+        {
+          /* Passthrough is possible with a 2ch digital output */
+          if (formatDesc.mChannelsPerFrame == 2 && isDigital)
+          {
+            if (formatDesc.mSampleRate == 48000)
+            {
+              typeList.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+              typeList.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+              typeList.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+              typeList.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+              typeList.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+            }
+            else if (formatDesc.mSampleRate == 192000)
+            {
+              typeList.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+            }
+          }
+        }
+        break;
+    }
+      break;
+  }
+  return typeList;
 }
 
 AESampleRateList AEDeviceEnumerationOSX::getSampleRateListForStream(UInt32 streamIdx) const
@@ -450,62 +516,51 @@ float AEDeviceEnumerationOSX::scoreSampleRate(Float64 destinationRate, unsigned 
 float AEDeviceEnumerationOSX::ScoreFormat(const AudioStreamBasicDescription &formatDesc, const AEAudioFormat &format) const
 {
   float score = 0;
-  if (format.m_dataFormat == AE_FMT_AC3 ||
-      format.m_dataFormat == AE_FMT_DTS)
+
+  if (format.m_streamInfo.m_type != CAEStreamInfo::STREAM_TYPE_NULL)
   {
+    if (formatDesc.mBitsPerChannel != 16)
+      return score;
+    if (formatDesc.mSampleRate !=  format.m_sampleRate)
+      return score;
+    if (formatDesc.mChannelsPerFrame != format.m_channelLayout.Count())
+      return score;
+    score += 5;
+
     if (formatDesc.mFormatID == kAudioFormat60958AC3 ||
         formatDesc.mFormatID == 'IAC3' ||
         formatDesc.mFormatID == kAudioFormatAC3)
     {
-      if (formatDesc.mSampleRate == format.m_sampleRate &&
-          formatDesc.mBitsPerChannel == CAEUtil::DataFormatToBits(format.m_dataFormat) &&
-          formatDesc.mChannelsPerFrame == format.m_channelLayout.Count())
-      {
-        // perfect match
-        score = FLT_MAX;
-      }
+      score += 1;
     }
   }
-  if (format.m_dataFormat == AE_FMT_AC3 ||
-      format.m_dataFormat == AE_FMT_DTS ||
-      format.m_dataFormat == AE_FMT_EAC3)
-  { // we should be able to bistreaming in PCM if the samplerate, bitdepth and channels match
-    if (formatDesc.mSampleRate       == format.m_sampleRate                            &&
-        formatDesc.mBitsPerChannel   == CAEUtil::DataFormatToBits(format.m_dataFormat) &&
-        formatDesc.mChannelsPerFrame == format.m_channelLayout.Count()                 &&
-        formatDesc.mFormatID         == kAudioFormatLinearPCM)
-    {
-      score = FLT_MAX / 2;
-    }
-  }
-  else
-  { // non-passthrough, whatever works is fine
-    if (formatDesc.mFormatID == kAudioFormatLinearPCM)
-    {
-      score += scoreSampleRate(formatDesc.mSampleRate, format.m_sampleRate);
+  // non-passthrough, whatever works is fine
+  else if (formatDesc.mFormatID == kAudioFormatLinearPCM)
+  {
+    score += scoreSampleRate(formatDesc.mSampleRate, format.m_sampleRate);
 
-      if (formatDesc.mChannelsPerFrame == format.m_channelLayout.Count())
+    if (formatDesc.mChannelsPerFrame == format.m_channelLayout.Count())
+      score += 5;
+    else if (formatDesc.mChannelsPerFrame > format.m_channelLayout.Count())
+      score += 1;
+    if (format.m_dataFormat == AE_FMT_FLOAT || format.m_dataFormat == AE_FMT_FLOATP)
+    { // for float, prefer the highest bitdepth we have
+      if (formatDesc.mBitsPerChannel >= 16)
+        score += (formatDesc.mBitsPerChannel / 8);
+    }
+    else
+    {
+      if (formatDesc.mBitsPerChannel == CAEUtil::DataFormatToBits(format.m_dataFormat))
         score += 5;
-      else if (formatDesc.mChannelsPerFrame > format.m_channelLayout.Count())
+      else if (formatDesc.mBitsPerChannel == CAEUtil::DataFormatToBits(format.m_dataFormat))
         score += 1;
-      if (format.m_dataFormat == AE_FMT_FLOAT || format.m_dataFormat == AE_FMT_FLOATP)
-      { // for float, prefer the highest bitdepth we have
-        if (formatDesc.mBitsPerChannel >= 16)
-          score += (formatDesc.mBitsPerChannel / 8);
-      }
-      else
-      {
-        if (formatDesc.mBitsPerChannel == CAEUtil::DataFormatToBits(format.m_dataFormat))
-          score += 5;
-        else if (formatDesc.mBitsPerChannel == CAEUtil::DataFormatToBits(format.m_dataFormat))
-          score += 1;
-      }
     }
   }
+
   return score;
 }
 
-bool AEDeviceEnumerationOSX::FindSuitableFormatForStream(UInt32 &streamIdx, const AEAudioFormat &format, AudioStreamBasicDescription &outputFormat, EPassthroughMode &passthrough, AudioStreamID &outputStream) const
+bool AEDeviceEnumerationOSX::FindSuitableFormatForStream(UInt32 &streamIdx, const AEAudioFormat &format, bool virt, AudioStreamBasicDescription &outputFormat, AudioStreamID &outputStream) const
 {
   CLog::Log(LOGDEBUG, "%s: Finding stream for format %s", __FUNCTION__, CAEUtil::DataFormatToStr(format.m_dataFormat));
   
@@ -514,7 +569,6 @@ bool AEDeviceEnumerationOSX::FindSuitableFormatForStream(UInt32 &streamIdx, cons
   UInt32                      streamIdxStart = streamIdx;
   UInt32                      streamIdxEnd   = streamIdx + 1;
   UInt32                      streamIdxCurrent = streamIdx;
-  passthrough                                  = PassthroughModeNone;
   
   if (streamIdx == INT_MAX)
   {
@@ -530,9 +584,12 @@ bool AEDeviceEnumerationOSX::FindSuitableFormatForStream(UInt32 &streamIdx, cons
   for(streamIdxCurrent = streamIdxStart; streamIdxCurrent < streamIdxEnd; streamIdxCurrent++)
   {
     
-    // Probe physical formats
-    const StreamFormatList &formats = m_caStreamInfos[streamIdxCurrent].formatList;
-    for (StreamFormatList::const_iterator j = formats.begin(); j != formats.end(); ++j)
+    // Probe physical or virtual  formats
+    const StreamFormatList *formats = &m_caStreamInfos[streamIdxCurrent].formatList;
+    if (virt)
+      formats = &m_caStreamInfos[streamIdxCurrent].formatListVirt;
+
+    for (StreamFormatList::const_iterator j = formats->begin(); j != formats->end(); ++j)
     {
       AudioStreamBasicDescription formatDesc = j->mFormat;
 
@@ -546,17 +603,13 @@ bool AEDeviceEnumerationOSX::FindSuitableFormatForStream(UInt32 &streamIdx, cons
       float score = ScoreFormat(formatDesc, format);
 
       std::string formatString;
-      CLog::Log(LOGDEBUG, "%s: Physical Format: %s rated %f", __FUNCTION__, StreamDescriptionToString(formatDesc, formatString), score);
+      if (!virt)
+        CLog::Log(LOGDEBUG, "%s: Physical Format: %s rated %f", __FUNCTION__, StreamDescriptionToString(formatDesc, formatString), score);
+      else
+        CLog::Log(LOGDEBUG, "%s: Virtual Format: %s rated %f", __FUNCTION__, StreamDescriptionToString(formatDesc, formatString), score);
 
       if (score > outputScore)
       {
-        if (score > 10000)
-        {
-            if (score > FLT_MAX/2)
-              passthrough  = PassthroughModeNative;
-            else
-              passthrough  = PassthroughModeBitstream;
-        }
         outputScore  = score;
         outputFormat = formatDesc;
         outputStream = m_caStreamInfos[streamIdxCurrent].streamID;

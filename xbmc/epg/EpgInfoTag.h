@@ -143,13 +143,13 @@ namespace EPG
      * @brief Change the unique broadcast ID of this event.
      * @param iUniqueBroadcastId The new unique broadcast ID.
      */
-    void SetUniqueBroadcastID(int iUniqueBroadcastID);
+    void SetUniqueBroadcastID(unsigned int iUniqueBroadcastID);
 
     /*!
      * @brief Get the unique broadcast ID.
      * @return The unique broadcast ID.
      */
-    int UniqueBroadcastID(void) const;
+    unsigned int UniqueBroadcastID(void) const;
 
     /*!
      * @brief Get the event's database ID.
@@ -403,6 +403,11 @@ namespace EPG
      */
     bool Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId = true);
 
+    /*!
+     * @brief status function to extract IsSeries boolean from EPG iFlags bitfield
+     */
+    bool IsSeries() const { return (m_iFlags & EPG_TAG_FLAG_IS_SERIES) > 0; }
+
   private:
 
     /*!
@@ -422,6 +427,11 @@ namespace EPG
      */
     CDateTime GetCurrentPlayingTime(void) const;
 
+    /*!
+     *  @brief Return the m_iFlags as an unsigned int bitfield (for database use).
+     */
+    unsigned int Flags() const { return m_iFlags; }
+
     bool                     m_bNotify;            /*!< notify on start */
 
     int                      m_iBroadcastId;       /*!< database ID */
@@ -432,7 +442,7 @@ namespace EPG
     int                      m_iSeriesNumber;      /*!< series number */
     int                      m_iEpisodeNumber;     /*!< episode number */
     int                      m_iEpisodePart;       /*!< episode part number */
-    int                      m_iUniqueBroadcastID; /*!< unique broadcast ID */
+    unsigned int             m_iUniqueBroadcastID; /*!< unique broadcast ID */
     std::string              m_strTitle;           /*!< title */
     std::string              m_strPlotOutline;     /*!< plot outline */
     std::string              m_strPlot;            /*!< plot */
@@ -453,6 +463,8 @@ namespace EPG
     PVR::CPVRTimerInfoTagPtr m_timer;
 
     CEpg *                   m_epg;                /*!< the schedule that this event belongs to */
+
+    unsigned int             m_iFlags;             /*!< the flags applicable to this EPG entry */
 
     CCriticalSection         m_critSection;
     PVR::CPVRChannelPtr      m_pvrChannel;

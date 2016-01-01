@@ -93,8 +93,16 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
       //ask if the control wants inertial scrolling
       if(g_windowManager.SendMessage(message))
       {
-        if( message.GetParam1() == EVENT_RESULT_PAN_HORIZONTAL ||
-            message.GetParam1() == EVENT_RESULT_PAN_VERTICAL)
+        int result = 0;
+        if (message.GetPointer())
+        {
+          int *p = static_cast<int*>(message.GetPointer());
+          message.SetPointer(nullptr);
+          result = *p;
+          delete p;
+        }
+        if( result == EVENT_RESULT_PAN_HORIZONTAL ||
+            result == EVENT_RESULT_PAN_VERTICAL)
         {
           inertialRequested = true;
         }

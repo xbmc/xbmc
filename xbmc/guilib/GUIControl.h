@@ -105,6 +105,7 @@ public:
   virtual void OnLeft();
   virtual void OnRight();
   virtual bool OnBack();
+  virtual bool OnInfo();
   virtual void OnNextControl();
   virtual void OnPrevControl();
   virtual void OnFocus() {};
@@ -163,8 +164,9 @@ public:
   bool IsVisibleFromSkin() const { return m_visibleFromSkinCondition; };
   virtual bool IsDisabled() const;
   virtual void SetPosition(float posX, float posY);
-  virtual void SetHitRect(const CRect &rect);
+  virtual void SetHitRect(const CRect &rect, const color_t &color);
   virtual void SetCamera(const CPoint &camera);
+  virtual void SetStereoFactor(const float &factor);
   bool SetColorDiffuse(const CGUIInfoColor &color);
   CPoint GetRenderPosition() const;
   virtual float GetXPosition() const;
@@ -187,7 +189,7 @@ public:
    \sa SetNavigationAction
    */
   typedef std::map<int, CGUIAction> ActionMap;
-  void SetNavigationActions(const ActionMap &actions);
+  void SetActions(const ActionMap &actions);
 
   /*! \brief Set actions to perform on navigation
    Navigations are set if replace is true or if there is no previously set action
@@ -196,12 +198,12 @@ public:
    \param replace Actions are set only if replace is true or there is no previously set action.  Defaults to true
    \sa SetNavigationActions
    */
-  void SetNavigationAction(int actionID, const CGUIAction &action, bool replace = true);
+  void SetAction(int actionID, const CGUIAction &action, bool replace = true);
 
   /*! \brief Get an action the control can be perform.
    \param action the actionID to retrieve.
    */
-  CGUIAction GetNavigateAction(int actionID) const;
+  CGUIAction GetAction(int actionID) const;
 
   /*! \brief  Start navigating in given direction.
    */
@@ -325,6 +327,7 @@ protected:
   float m_height;
   float m_width;
   CRect m_hitRect;
+  color_t m_hitColor;
   CGUIInfoColor m_diffuseColor;
   int m_controlID;
   int m_parentID;
@@ -353,6 +356,7 @@ protected:
   std::vector<CAnimation> m_animations;
   CPoint m_camera;
   bool m_hasCamera;
+  float m_stereo;
   TransformMatrix m_transform;
   TransformMatrix m_cachedTransform; // Contains the absolute transform the control
 

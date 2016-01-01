@@ -8,16 +8,17 @@
 ;PLEASE KEEP THIS LIST IN ALPHABETICAL ORDER!
 boost-1.46.1-headers-win32.7z
 bzip2-1.0.5-win32.7z
+crossguid-8f399e8bd4-win32.7z
 curl-7.42.1-win32.7z
 dnssd-541-win32.zip
 doxygen-1.8.2-win32.7z
 fontconfig-2.8.0-win32.7z
 freetype-2.4.6-win32-3.7z
-giflib-5.0.5p-win32.7z
+giflib-5.1.0-win32.7z
 gnutls-3.2.3-win32.zip
 jsonschemabuilder-1.0.0-win32-3.7z
 libass-0.12.1-win32.7z
-libbluray-0.4.0-win32.zip
+libbluray-0.8.1-win32-vc120.7z
 libcdio-0.83-win32-2.7z
 libcec-3.0.0-win32-2.7z
 libexpat_2.0.1-win32.7z
@@ -34,7 +35,7 @@ libpng-1.5.13-win32.7z
 librtmp-20150114-git-a107ce-win32.7z
 libsdl-1.2.10-win32.7z
 libsdl_image-1.2.14-win32.7z
-libshairplay-068f138-win32.7z
+libshairplay-52fd9db-win32.7z
 libssh-0.5.0-1-win32.zip
 libvorbis-vc100-1.3.1-win32.7z
 libxml2-2.7.8_1-win32.7z
@@ -44,9 +45,9 @@ libzlib-vc100-1.2.5-win32.7z
 mysqlclient-6.1.3-win32-vc120.7z
 pcre-8.34-win32-vc120.7z
 PIL-1.1.7p-win32.7z
-python-2.7.8-win32.7z
-sqlite-3.8.6-win32-vc120.7z
+python-2.7.10-win32.7z
+sqlite-3.9.2-win32-vc120.7z
 swig-2.0.7-win32-1.7z
-taglib-1.9.1-win32-vc120.7z
-texturepacker-1.0.2-win32.7z
+taglib-1.10-win32-vc120.7z
+texturepacker-1.0.4-win32.7z
 tinyxml-2.6.2_3-win32-vc120.7z

@@ -20,8 +20,11 @@
  *
  */
 
-#if defined(HAVE_CONFIG_H) && !defined(TARGET_WINDOWS)
+#if defined(HAVE_CONFIG_H)
 #include "config.h"
+#endif
+
+#if !defined(TARGET_WINDOWS)
 #define DECLARE_UNUSED(a,b) a __attribute__((unused)) b;
 #endif
 
@@ -29,9 +32,8 @@
  * All platforms
  *****************/
 #define HAS_DVD_SWSCALE
-#define HAS_DVDPLAYER
+#define HAS_VideoPlayer
 #define HAS_EVENT_SERVER
-#define HAS_KARAOKE
 #define HAS_SCREENSAVER
 #define HAS_PYTHON
 #define HAS_VIDEO_PLAYBACK
@@ -52,7 +54,6 @@
 
 #define HAS_FILESYSTEM
 #define HAS_FILESYSTEM_CDDA
-#define HAS_FILESYSTEM_SAP
 
 #ifdef HAVE_LIBSMBCLIENT
   #define HAS_FILESYSTEM_SMB
@@ -82,6 +83,10 @@
   #define HAS_ZEROCONF
   #define HAS_MDNS
   #define HAS_MDNS_EMBEDDED
+#endif
+
+#if defined(HAVE_LIBGIF)
+  #define HAS_GIFLIB
 #endif
 
 /**********************
@@ -124,6 +129,7 @@
 #define HAVE_LIBVORBISENC
 #define HAS_MYSQL
 #define HAS_UPNP
+#define HAS_GIFLIB
 
 #define DECLARE_UNUSED(a,b) a b;
 #endif
@@ -156,7 +162,6 @@
 #endif
 #define HAS_GL
 #ifdef HAVE_X11
-#define HAS_GLX
 #define HAS_X11_WIN_EVENTS
 #endif
 #ifdef HAVE_SDL
@@ -183,6 +188,13 @@
 
 #ifdef HAVE_LIBSSH
 #define HAS_FILESYSTEM_SFTP
+#endif
+
+#if defined(HAVE_X11)
+#define HAS_EGL
+#if !defined(HAVE_LIBGLESV2)
+#define HAS_GLX
+#endif
 #endif
 
 /****************************************
@@ -226,9 +238,7 @@
 #undef HAS_LIRC
 #endif
 
-// EGL detected. Dont use GLX!
 #ifdef HAVE_LIBEGL
-#undef HAS_GLX
 #define HAS_EGL
 #endif
 
@@ -261,7 +271,7 @@
 /****************
  * default skin
  ****************/
-#if defined(HAS_TOUCH_SKIN) && defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
+#if defined(HAS_TOUCH_SKIN) && defined(TARGET_DARWIN_IOS)
 #define DEFAULT_SKIN          "skin.re-touched"
 #else
 #define DEFAULT_SKIN          "skin.confluence"

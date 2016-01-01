@@ -30,7 +30,7 @@
   #include <linux/sockios.h>
 #endif
 #ifdef TARGET_ANDROID
-#include "android/bionic_supplement/bionic_supplement.h"
+#include "platform/android/bionic_supplement/bionic_supplement.h"
 #include "sys/system_properties.h"
 #include <sys/wait.h>
 #endif
@@ -66,8 +66,6 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-
-using namespace std;
 
 CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, std::string interfaceName, char interfaceMacAddrRaw[6]):
   m_interfaceName(interfaceName),
@@ -321,7 +319,7 @@ CNetworkLinux::~CNetworkLinux(void)
   if (m_sock != -1)
     close(CNetworkLinux::m_sock);
 
-  vector<CNetworkInterface*>::iterator it = m_interfaces.begin();
+  std::vector<CNetworkInterface*>::iterator it = m_interfaces.begin();
   while(it != m_interfaces.end())
   {
     CNetworkInterface* nInt = *it;
@@ -478,7 +476,7 @@ std::vector<std::string> CNetworkLinux::GetNameServers(void)
   Sleep(100);
   if (pipe)
   {
-    vector<std::string> tmpStr;
+    std::vector<std::string> tmpStr;
     char buffer[256] = {'\0'};
     if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
     {

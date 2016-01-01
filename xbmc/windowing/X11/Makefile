@@ -1,6 +1,8 @@
 SRCS=WinSystemX11.cpp \
-     WinSystemX11GL.cpp \
-     WinSystemX11GLES.cpp \
+     WinSystemX11GLContext.cpp \
+     WinSystemX11GLESContext.cpp \
+     GLContextEGL.cpp \
+     GLContextGLX.cpp \
      XRandR.cpp \
      
 LIB=windowing_X11.a

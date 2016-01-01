@@ -231,7 +231,7 @@ public:
   CD3DVertexShader();
   ~CD3DVertexShader();
 
-  bool Create(const std::wstring vertexFile, D3D11_INPUT_ELEMENT_DESC* vertexLayout, unsigned int vertexLayoutSize);
+  bool Create(const std::wstring& vertexFile, D3D11_INPUT_ELEMENT_DESC* vertexLayout, unsigned int vertexLayoutSize);
   bool Create(const void* code, size_t codeLength, D3D11_INPUT_ELEMENT_DESC* vertexLayout, unsigned int vertexLayoutSize);
   void ReleaseShader();
   void BindShader();
@@ -259,7 +259,7 @@ public:
   CD3DPixelShader();
   ~CD3DPixelShader();
 
-  bool Create(const std::wstring wstrFile);
+  bool Create(const std::wstring& wstrFile);
   bool Create(const void* code, size_t codeLength);
   void ReleaseShader();
   void BindShader();

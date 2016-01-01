@@ -52,6 +52,7 @@ public:
   virtual void AddControl(CGUIControl *control, int position = -1);
   virtual void ClearAll();
 
+  virtual std::string GetLabel(int info) const;
   virtual bool GetCondition(int condition, int data) const;
   /**
    * Calculate total size of child controls area (including gaps between controls)
@@ -63,15 +64,21 @@ public:
   void SetMinSize(float minWidth, float minHeight);
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+  bool IsControlOnScreen(float pos, const CGUIControl* control) const;
   bool IsFirstFocusableControl(const CGUIControl *control) const;
   bool IsLastFocusableControl(const CGUIControl *control) const;
   void ValidateOffset();
+  void CalculateItemGap();
   inline float Size(const CGUIControl *control) const;
   void ScrollTo(float offset);
   float GetAlignOffset() const;
 
+  int GetNumItems() const;
+  int GetSelectedItem() const;
+
   float m_itemGap;
   int m_pageControl;
+  int m_focusedPosition;
 
   float m_totalSize;
 

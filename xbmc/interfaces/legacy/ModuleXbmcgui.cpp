@@ -22,7 +22,6 @@
 #include "LanguageHook.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
-#include "utils/log.h"
 
 #define NOTIFICATION_INFO     "info"
 #define NOTIFICATION_WARNING  "warning"
@@ -32,16 +31,6 @@ namespace XBMCAddon
 {
   namespace xbmcgui
   {
-    void lock()
-    {
-      CLog::Log(LOGWARNING,"'xbmcgui.lock()' is depreciated and serves no purpose anymore, it will be removed in future releases");
-    }
-
-    void unlock()
-    {
-      CLog::Log(LOGWARNING,"'xbmcgui.unlock()' is depreciated and serves no purpose anymore, it will be removed in future releases");
-    }
-
     long getCurrentWindowId()
     {
       DelayedCallGuard dg;
@@ -55,7 +44,7 @@ namespace XBMCAddon
       CSingleLock gl(g_graphicsContext);
       return g_windowManager.GetTopMostModalDialogID();
     }
-    
+
     const char* getNOTIFICATION_INFO()    { return NOTIFICATION_INFO; }
     const char* getNOTIFICATION_WARNING() { return NOTIFICATION_WARNING; }
     const char* getNOTIFICATION_ERROR()   { return NOTIFICATION_ERROR; }

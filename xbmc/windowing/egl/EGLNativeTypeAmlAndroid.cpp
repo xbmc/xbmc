@@ -23,19 +23,23 @@
 #include "EGLNativeTypeAmlAndroid.h"
 #include "utils/log.h"
 #include "guilib/gui3d.h"
-#include "android/activity/XBMCApp.h"
+#include "platform/android/activity/XBMCApp.h"
 #include "utils/StringUtils.h"
 #include "utils/SysfsUtils.h"
 #include "utils/AMLUtils.h"
+
+bool CEGLNativeTypeAmlAndroid::m_isWritable = false;
 
 bool CEGLNativeTypeAmlAndroid::CheckCompatibility()
 {
   if (aml_present())
   {
+    m_isWritable = false;
     if (SysfsUtils::HasRW("/sys/class/display/mode"))
-      return true;
+      m_isWritable = true;
     else
-      CLog::Log(LOGERROR, "AMLEGL: no rw on /sys/class/display/mode");
+      CLog::Log(LOGINFO, "AMLEGL: no rw on /sys/class/display/mode");
+    return true;
   }
   return false;
 }
@@ -62,6 +66,9 @@ bool CEGLNativeTypeAmlAndroid::GetNativeResolution(RESOLUTION_INFO *res) const
 
 bool CEGLNativeTypeAmlAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
 {
+  if (!m_isWritable)
+    return false;
+
   switch((int)(res.fRefreshRate*10))
   {
     default:
@@ -69,6 +76,32 @@ bool CEGLNativeTypeAmlAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
       switch(res.iScreenWidth)
       {
         default:
+        case 720:
+          if (!aml_IsHdmiConnected())
+          {
+            if (res.iScreenHeight == 480)
+              return SetDisplayResolution("480cvbs");
+            else
+              return SetDisplayResolution("576cvbs");
+          }
+          else
+          {
+            if (res.iScreenHeight == 480)
+            {
+              if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
+                return SetDisplayResolution("480i");
+              else
+                return SetDisplayResolution("480p");
+            }
+            else
+            {
+              if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
+                return SetDisplayResolution("576i");
+              else
+                return SetDisplayResolution("576p");
+            }
+          }
+          break;
         case 1280:
           return SetDisplayResolution("720p");
           break;
@@ -80,6 +113,16 @@ bool CEGLNativeTypeAmlAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
           break;
       }
       break;
+    case 599:
+      switch(res.iScreenWidth)
+      {
+        default:
+          if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
+            return SetDisplayResolution("1080i59hz");
+          else
+            return SetDisplayResolution("1080p59hz");
+          break;
+      }
     case 500:
       switch(res.iScreenWidth)
       {
@@ -106,6 +149,17 @@ bool CEGLNativeTypeAmlAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
           break;
       }
       break;
+    case 299:
+      switch(res.iScreenWidth)
+      {
+        case 3840:
+          return SetDisplayResolution("4k2k29hz");
+          break;
+        default:
+          return SetDisplayResolution("1080p29hz");
+          break;
+      }
+      break;
     case 250:
       switch(res.iScreenWidth)
       {
@@ -128,6 +182,17 @@ bool CEGLNativeTypeAmlAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
           break;
         default:
           return SetDisplayResolution("1080p24hz");
+          break;
+      }
+      break;
+    case 239:
+      switch(res.iScreenWidth)
+      {
+        case 3840:
+          return SetDisplayResolution("4k2k23hz");
+          break;
+        default:
+          return SetDisplayResolution("1080p23hz");
           break;
       }
       break;

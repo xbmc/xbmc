@@ -21,6 +21,7 @@
 
 #include <map>
 #include <string>
+#include <utility>
 
 #include "input/KeyboardLayout.h"
 
@@ -33,7 +34,7 @@ class CKeyboardLayoutManager
 public:
   virtual ~CKeyboardLayoutManager();
 
-  static CKeyboardLayoutManager& Get();
+  static CKeyboardLayoutManager& GetInstance();
 
   bool Load(const std::string& path = "");
   void Unload();

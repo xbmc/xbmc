@@ -22,16 +22,16 @@
 #include "guilib/GraphicContext.h"
 #include "guilib/GUITexture.h"
 #include "Application.h"
-#include <climits>
 
 CGUIWindowScreensaverDim::CGUIWindowScreensaverDim(void)
   : CGUIDialog(WINDOW_SCREENSAVER_DIM, "", DialogModalityType::MODELESS)
 {
   m_needsScaling = false;
   m_dimLevel = 100.0f;
+  m_newDimLevel = 100.0f;
   m_animations.push_back(CAnimation::CreateFader(0, 100, 0, 1000, ANIM_TYPE_WINDOW_OPEN));
   m_animations.push_back(CAnimation::CreateFader(100, 0, 0, 1000, ANIM_TYPE_WINDOW_CLOSE));
-  m_renderOrder = INT_MAX;
+  m_renderOrder = RENDER_ORDER_WINDOW_SCREENSAVER;
 }
 
 CGUIWindowScreensaverDim::~CGUIWindowScreensaverDim(void)
@@ -40,18 +40,17 @@ CGUIWindowScreensaverDim::~CGUIWindowScreensaverDim(void)
 
 void CGUIWindowScreensaverDim::UpdateVisibility()
 {
-  float level = g_application.GetDimScreenSaverLevel();
-  if (level)
-  {
-    m_dimLevel = level;
+  m_newDimLevel = g_application.GetDimScreenSaverLevel();
+  if (m_newDimLevel)
     Open();
-  }
   else
     Close();
 }
 
 void CGUIWindowScreensaverDim::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
+  if (m_newDimLevel != m_dimLevel && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+    m_dimLevel = m_newDimLevel;
   CGUIDialog::Process(currentTime, dirtyregions);
   m_renderRegion.SetRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
 }

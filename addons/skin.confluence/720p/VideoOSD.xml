@@ -3,8 +3,8 @@
 	<defaultcontrol always="true">100</defaultcontrol>
 	<onload condition="!VideoPlayer.Content(LiveTV)">SetFocus(202)</onload>
 	<include>dialogeffect</include>
+	<depth>DepthOSD</depth>
 	<coordinates>
-		<system>1</system>
 		<left>0</left>
 		<top>0</top>
 	</coordinates>
@@ -30,6 +30,7 @@
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(VideoBookmarks)]</visible>
 		</control>
 		<control type="slider" id="87">
+			<depth>DepthOSD+</depth>
 			<description>Seek Slider</description>
 			<left>430</left>
 			<top>82r</top>
@@ -173,12 +174,17 @@
 			<control type="image" id="2200">
 				<width>270</width>
 				<texture>-</texture>
-				<visible>!VideoPlayer.Content(LiveTV)</visible>
+				<visible>VideoPlayer.HasMenu + !VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="image" id="2300">
-				<width>165</width>
+				<width>160</width>
 				<texture>-</texture>
 				<visible>VideoPlayer.Content(LiveTV)</visible>
+			</control>
+			<control type="image" id="2600">
+				<width>325</width>
+				<texture>-</texture>
+				<visible>!VideoPlayer.Content(LiveTV) + !VideoPlayer.HasMenu</visible>
 			</control>
 			<control type="button" id="255">
 				<enable>VideoPlayer.IsStereoscopic</enable>
@@ -249,9 +255,7 @@
 				<onup>1000</onup>
 				<ondown>1000</ondown>
 				<onclick>PlayerControl(ShowVideoMenu)</onclick>
-				<enable>VideoPlayer.HasMenu</enable>
-				<animation effect="fade" start="100" end="50" time="75" condition="!VideoPlayer.HasMenu">Conditional</animation>
-				<visible>!VideoPlayer.Content(LiveTV)</visible>
+				<visible>!VideoPlayer.Content(LiveTV) + VideoPlayer.HasMenu</visible>
 			</control>
 			<control type="togglebutton" id="353">
 				<width>55</width>
@@ -284,11 +288,13 @@
 			<visible>Control.HasFocus(410) | Control.HasFocus(250) | ControlGroup(400).HasFocus</visible>
 		</control>
 		<control type="grouplist" id="400">
+			<depth>DepthOSD+</depth>
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(VideoBookmarks)]</visible>
 			<animation effect="fade" time="150">VisibleChange</animation>
 			<animation effect="slide" start="0,0" end="0,80" time="0" condition="![VideoPlayer.HasSubtitles + VideoPlayer.SubtitlesEnabled]">Conditional</animation>
 			<animation effect="slide" start="0,0" end="0,40" time="0" condition="!VideoPlayer.HasSubtitles">Conditional</animation>
-			<animation effect="slide" start="0,0" end="55,0" time="0" condition="VideoPlayer.Content(LiveTV)">Conditional</animation>
+			<animation effect="slide" start="0,0" end="55,0" time="0" condition="![VideoPlayer.HasMenu | VideoPlayer.Content(LiveTV)]">Conditional</animation>
+			<animation effect="slide" start="0,0" end="55,0" time="0" condition="!VideoPlayer.HasMenu + VideoPlayer.Content(LiveTV)">Conditional</animation>
 			<right>145</right>
 			<bottom>45</bottom>
 			<width>256</width>
@@ -405,8 +411,10 @@
 			<visible>Control.HasFocus(520) | Control.HasFocus(255) | ControlGroup(500).HasFocus</visible>
 		</control>
 		<control type="grouplist" id="500">
+			<depth>DepthOSD+</depth>
 			<visible>videoplayer.isstereoscopic + ![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)] + [Control.HasFocus(255) | ControlGroup(500).HasFocus | Control.HasFocus(520)]</visible>
 			<animation effect="fade" time="150">VisibleChange</animation>
+			<animation effect="slide" start="0,0" end="55,0" time="0" condition="![VideoPlayer.HasMenu | VideoPlayer.Content(LiveTV)]">Conditional</animation>
 			<animation effect="slide" start="0,0" end="55,0" time="0" condition="VideoPlayer.Content(LiveTV)">Conditional</animation>
 			<right>200</right>
 			<bottom>45</bottom>
@@ -480,7 +488,7 @@
 				<texturefocus border="25,5,25,5">SubMenuBack-MiddleFO.png</texturefocus>
 				<texturenofocus border="25,5,25,5">SubMenuBack-MiddleNF.png</texturenofocus>
 				<onclick>StereoModeToMono</onclick>
-				<selected>StringCompare(System.StereoscopicMode,8)</selected>
+				<selected>StringCompare(System.StereoscopicMode,9)</selected>
 				<pulseonselect>false</pulseonselect>
 			</control>
 			<control type="image" id="549">

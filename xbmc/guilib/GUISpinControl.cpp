@@ -23,8 +23,6 @@
 #include "utils/StringUtils.h"
 #include <stdio.h>
 
-using namespace std;
-
 #define SPIN_BUTTON_DOWN 1
 #define SPIN_BUTTON_UP   2
 
@@ -260,9 +258,9 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
     case GUI_MSG_SET_LABELS:
       if (message.GetPointer())
       {
-        const vector< pair<string, int> > *labels = (const vector< pair<string, int> > *)message.GetPointer();
+        const std::vector< std::pair<std::string, int> > *labels = (const std::vector< std::pair<std::string, int> > *)message.GetPointer();
         Clear();
-        for (vector< pair<string, int> >::const_iterator i = labels->begin(); i != labels->end(); ++i)
+        for (std::vector< std::pair<std::string, int> >::const_iterator i = labels->begin(); i != labels->end(); ++i)
           AddLabel(i->first, i->second);
         SetValue( message.GetParam1());
       }
@@ -607,19 +605,19 @@ std::string CGUISpinControl::GetStringValue() const
   return "";
 }
 
-void CGUISpinControl::AddLabel(const string& strLabel, int iValue)
+void CGUISpinControl::AddLabel(const std::string& strLabel, int iValue)
 {
   m_vecLabels.push_back(strLabel);
   m_vecValues.push_back(iValue);
 }
 
-void CGUISpinControl::AddLabel(const string& strLabel, const string& strValue)
+void CGUISpinControl::AddLabel(const std::string& strLabel, const std::string& strValue)
 {
   m_vecLabels.push_back(strLabel);
   m_vecStrValues.push_back(strValue);
 }
 
-const string CGUISpinControl::GetLabel() const
+const std::string CGUISpinControl::GetLabel() const
 {
   if (m_iValue >= 0 && m_iValue < (int)m_vecLabels.size())
   {
@@ -971,13 +969,19 @@ EVENT_RESULT CGUISpinControl::OnMouseEvent(const CPoint &point, const CMouseEven
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
   {
-    MoveUp();
-    return EVENT_RESULT_HANDLED;
+    if (m_imgspinUpFocus.HitTest(point) || m_imgspinDownFocus.HitTest(point))
+    {
+      MoveUp();
+      return EVENT_RESULT_HANDLED;
+    }
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
-    MoveDown();
-    return EVENT_RESULT_HANDLED;
+    if (m_imgspinUpFocus.HitTest(point) || m_imgspinDownFocus.HitTest(point))
+    {
+      MoveDown();
+      return EVENT_RESULT_HANDLED;
+    }
   }
   return EVENT_RESULT_UNHANDLED;
 }

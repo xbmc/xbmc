@@ -1,1 +1,0 @@
-pvr.vdr.vnsi https://github.com/kodi-pvr/pvr.vdr.vnsi 8dedf20

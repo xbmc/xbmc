@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -20,13 +19,14 @@
  *
  */
 
-#include "FileItem.h"
+#include <memory>
+#include <utility>
+
 #include "addons/include/xbmc_pvr_types.h"
-#include "utils/Observer.h"
+#include "FileItem.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
-
-#include <memory>
+#include "utils/Observer.h"
 
 #define PVR_INVALID_CHANNEL_UID -1
 
@@ -35,6 +35,7 @@ class CVariant;
 namespace EPG
 {
   class CEpg;
+  typedef std::shared_ptr<CEpg> CEpgPtr;
   class CEpgInfoTag;
   typedef std::shared_ptr<CEpgInfoTag> CEpgInfoTagPtr;
 
@@ -250,6 +251,11 @@ namespace PVR
     bool IsEmpty() const;
 
     bool IsChanged() const;
+
+    /*!
+     * @brief reset changed flag after persist
+     */
+    void Persisted();
     //@}
 
     /*! @name Client related channel methods
@@ -298,7 +304,7 @@ namespace PVR
      *
      * The stream input type
      * If it is empty, ffmpeg will try to scan the stream to find the right input format.
-     * See "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/allformats.c" for a
+     * See "xbmc/cores/VideoPlayer/Codecs/ffmpeg/libavformat/allformats.c" for a
      * list of the input formats.
      *
      * @return The stream input type
@@ -391,7 +397,7 @@ namespace PVR
      * @brief Get the EPG table for this channel.
      * @return The EPG for this channel.
      */
-    EPG::CEpg *GetEPG(void) const;
+    EPG::CEpgPtr GetEPG(void) const;
 
     /*!
      * @brief Get the EPG table for this channel.

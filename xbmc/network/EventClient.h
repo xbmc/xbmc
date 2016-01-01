@@ -1,9 +1,8 @@
-#ifndef __EVENT_CLIENT_H__
-#define __EVENT_CLIENT_H__
+#pragma once
 
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +15,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -155,8 +154,8 @@ namespace EVENTCLIENT
 
     void RefreshSettings()
     {
-      m_iRepeatDelay = CSettings::Get().GetInt("services.esinitialdelay");
-      m_iRepeatSpeed = CSettings::Get().GetInt("services.escontinuousdelay");
+      m_iRepeatDelay = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_ESINITIALDELAY);
+      m_iRepeatSpeed = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY);
     }
 
     SOCKETS::CAddress& Address()
@@ -261,6 +260,5 @@ namespace EVENTCLIENT
     CEventButtonState m_currentButton;
   };
 
-} // EVENTCLIENT
+}
 
-#endif // __EVENT_CLIENT_H__

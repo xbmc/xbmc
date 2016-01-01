@@ -32,9 +32,9 @@
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GraphicContext.h"
 
-#if SDL_VERSION == 1
+#if HAVE_SDL_VERSION == 1
 #include <SDL/SDL_stdinc.h>
-#elif SDL_VERSION == 2
+#elif HAVE_SDL_VERSION == 2
 #include <SDL2/SDL_stdinc.h>
 #else
 #define SDL_memset4(dst, val, len)		\
@@ -2854,7 +2854,7 @@ TextPageinfo_t* CTeletextDecoder::DecodePage(bool showl25,             // 1=deco
         PageAtrb[i] = atr;
 
       /* decode parity/hamming */
-      for (unsigned int i = 40; i < sizeof(PageChar); i++)
+      for (unsigned int i = 40; i < TELETEXT_PAGE_SIZE; i++)
       {
         PageAtrb[i] = atr;
         p = PageChar + i;

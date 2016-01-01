@@ -12,12 +12,13 @@ DEPENDS = \
 	libogg libvorbis libflac fribidi libmpeg2 \
 	libass libsquish \
 	libmodplug librtmp libxml2 yajl libmicrohttpd mysql libffi \
-	python26 libshairplay \
+	python27 libshairplay \
 	libplist libcec libbluray boost tinyxml dummy-libxbmc \
-	libamplayer libssh taglib libusb libnfs libmp3lame \
-	pythonmodule-pil libxslt ffmpeg platform
+	libamplayer libssh taglib libusb libnfs \
+	pythonmodule-pil pythonmodule-setuptools \
+	libxslt ffmpeg platform crossguid libdcadec giflib
 
-FFMPEG_DEPENDS = gnutls
+FFMPEG_DEPENDS = gnutls libdcadec
 
 ifeq ($(ENABLE_GPLV3),yes)
   DEPENDS+=samba-gplv3 libcdio-gplv3
@@ -26,17 +27,17 @@ else
 endif
 
 ifeq ($(OS),ios)
-  DEPENDS += Backrow
   EXCLUDED_DEPENDS = libcec libusb
 endif
 
 ifeq ($(OS),osx)
-  DEPENDS += libGLEW libsdl
+  DEPENDS += libsdl
   EXCLUDED_DEPENDS = libusb
 endif
 
 ifeq ($(OS),android)
-  DEPENDS += mdnsresponder android-sources-ics google-breakpad
+  DEPENDS += mdnsresponder google-breakpad libuuid
+  CROSSGUID_DEPS = libuuid
 endif
 
 DEPENDS := $(filter-out $(EXCLUDED_DEPENDS),$(DEPENDS))
@@ -56,6 +57,7 @@ endif
 ALSA_LIB=
 LINUX_SYSTEM_LIBS=
 ifeq ($(OS),linux)
+  DEPENDS += libuuid
   #not for raspberry pi
   ifneq ($(TARGET_PLATFORM),raspberry-pi)
     DEPENDS += libsdl2 linux-system-libs
@@ -63,6 +65,7 @@ ifeq ($(OS),linux)
   endif
   DEPENDS += alsa-lib
   ALSA_LIB = alsa-lib
+  CROSSGUID_DEPS = libuuid
 endif
 
 .PHONY: $(DEPENDS)
@@ -81,23 +84,24 @@ libflac: libogg gettext
 libass: fontconfig libpng freetype2 expat $(ICONV)
 librtmp: openssl
 libmicrohttpd: gnutls libgcrypt libgpg-error
-python26: expat gettext libxml2 sqlite3 openssl libffi
+python27: expat gettext libxml2 sqlite3 openssl libffi
 libcdio: $(ICONV)
 libplist: libxml2 $(ZLIB)
 libbluray: $(ICONV) libxml2
-libssh: openssl
+libssh: openssl $(ZLIB)
 mysql: openssl
 libzip: $(ZLIB)
-libmp3lame: $(ICONV)
 libpng: $(ZLIB)
 openssl: $(ZLIB)
 gnutls: nettle $(ZLIB)
 nettle: gmp
-pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng freetype2 python26
+pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng freetype2 python27 pythonmodule-setuptools
+pythonmodule-setuptools: python27
 libsdl2: $(LINUX_SYSTEM_LIBS)
 libxslt: libgcrypt
 ffmpeg: $(ICONV) $(ZLIB) bzip2 libvorbis $(FFMPEG_DEPENDS)
 libcec: platform
+crossguid: $(CROSSGUID_DEPS)
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
@@ -122,7 +126,24 @@ test-dependencies:
 distclean::
 	for d in $(DEPENDS); do $(MAKE) -C $$d distclean; done
 
-linux-system-libs:
+linux-system-libs-egl:
+	[ -f $(PREFIX)/lib/pkgconfig/egl.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/egl.pc $(PREFIX)/lib/pkgconfig/egl.pc
+	[ -f $(PREFIX)/lib/pkgconfig/damageproto.pc ] || ln -s  /usr/share/pkgconfig/damageproto.pc $(PREFIX)/lib/pkgconfig/damageproto.pc
+	[ -f $(PREFIX)/lib/pkgconfig/fixesproto.pc ] || ln -s  /usr/share/pkgconfig/fixesproto.pc $(PREFIX)/lib/pkgconfig/fixesproto.pc
+	[ -f $(PREFIX)/lib/pkgconfig/wayland-egl.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/wayland-egl.pc $(PREFIX)/lib/pkgconfig/wayland-egl.pc
+	[ -f $(PREFIX)/lib/pkgconfig/x11-xcb.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/x11-xcb.pc $(PREFIX)/lib/pkgconfig/x11-xcb.pc
+	[ -f $(PREFIX)/lib/pkgconfig/xcb-dri2.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-dri2.pc $(PREFIX)/lib/pkgconfig/xcb-dri2.pc
+	[ -f $(PREFIX)/lib/pkgconfig/xcb-dri3.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-dri3.pc $(PREFIX)/lib/pkgconfig/xcb-dri3.pc
+	[ -f $(PREFIX)/lib/pkgconfig/xcb-glx.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-glx.pc $(PREFIX)/lib/pkgconfig/xcb-glx.pc
+	[ -f $(PREFIX)/lib/pkgconfig/xcb-present.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-present.pc $(PREFIX)/lib/pkgconfig/xcb-present.pc
+	[ -f $(PREFIX)/lib/pkgconfig/xcb-sync.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-sync.pc $(PREFIX)/lib/pkgconfig/xcb-sync.pc
+	[ -f $(PREFIX)/lib/pkgconfig/xdamage.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xdamage.pc $(PREFIX)/lib/pkgconfig/xdamage.pc
+	[ -f $(PREFIX)/lib/pkgconfig/xf86vidmodeproto.pc ] || ln -s /usr/share/pkgconfig/xf86vidmodeproto.pc $(PREFIX)/lib/pkgconfig/xf86vidmodeproto.pc
+	[ -f $(PREFIX)/lib/pkgconfig/xfixes.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xfixes.pc $(PREFIX)/lib/pkgconfig/xfixes.pc
+	[ -f $(PREFIX)/lib/pkgconfig/xshmfence.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xshmfence.pc $(PREFIX)/lib/pkgconfig/xshmfence.pc
+	[ -f $(PREFIX)/lib/pkgconfig/xxf86vm.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xxf86vm.pc $(PREFIX)/lib/pkgconfig/xxf86vm.pc
+
+linux-system-libs: linux-system-libs-egl
 	[ -f $(PREFIX)/lib/pkgconfig/x11.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/x11.pc $(PREFIX)/lib/pkgconfig/x11.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xproto.pc ] || ln -s /usr/share/pkgconfig/xproto.pc $(PREFIX)/lib/pkgconfig/xproto.pc
 	[ -f $(PREFIX)/lib/pkgconfig/kbproto.pc ] || ln -s /usr/share/pkgconfig/kbproto.pc $(PREFIX)/lib/pkgconfig/kbproto.pc

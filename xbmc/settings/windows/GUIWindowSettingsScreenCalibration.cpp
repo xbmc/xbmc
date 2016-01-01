@@ -22,9 +22,6 @@
 #include "GUIWindowSettingsScreenCalibration.h"
 #include "guilib/GUIMoverControl.h"
 #include "guilib/GUIResizeControl.h"
-#ifdef HAS_VIDEO_PLAYBACK
-#include "cores/VideoRenderers/RenderManager.h"
-#endif
 #include "Application.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
@@ -139,16 +136,11 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      CDisplaySettings::Get().UpdateCalibrations();
-      CSettings::Get().Save();
+      CDisplaySettings::GetInstance().UpdateCalibrations();
+      CSettings::GetInstance().Save();
       g_graphicsContext.SetCalibrating(false);
-      g_windowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
       // reset our screen resolution to what it was initially
-      g_graphicsContext.SetVideoResolution(CDisplaySettings::Get().GetCurrentResolution());
-      // Inform the player so we can update the resolution
-#ifdef HAS_VIDEO_PLAYBACK
-      g_renderManager.Update();
-#endif
+      g_graphicsContext.SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution());
       g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
     }
     break;
@@ -156,7 +148,6 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
-      g_windowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
       g_graphicsContext.SetCalibrating(true);
 
       // Get the allowable resolutions that we can calibrate...
@@ -165,10 +156,8 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       { // don't allow resolution switching if we are playing a video
 
 #ifdef HAS_VIDEO_PLAYBACK
-        RESOLUTION res = g_renderManager.GetResolution();
+        RESOLUTION res = g_application.m_pPlayer->GetRenderResolution();
         g_graphicsContext.SetVideoResolution(res);
-        // Inform the renderer so we can update the resolution
-        g_renderManager.Update();
 #endif
 
         m_iCurRes = 0;

@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([kodi], [15.9.701], [http://trac.kodi.tv])
+AC_INIT([kodi], [16.9.701], [http://trac.kodi.tv])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_prog_cc_for_build.m4])
@@ -170,20 +170,8 @@ configure_debug="ERROR: this is a configure debug statement"
 missing_library="Could not find a required library. Please see the README for your platform."
 missing_headers="Could not find some required headers. Please see the README for your platform."
 missing_program="Could not find a required program. Please see the README for your platform."
-waveform_enabled="== WAVEFORM enabled =="
-waveform_disabled="== WAVEFORM disabled =="
-spectrum_enabled="== SPECTRUM enabled =="
-spectrum_disabled="== SPECTRUM disabled =="
-goom_enabled="== GOOM enabled. =="
-goom_disabled="== GOOM disabled. =="
 alsa_disabled="== ALSA support disabled. =="
 dbus_disabled="== DBUS support disabled. =="
-rsxs_enabled="== RSXS enabled. =="
-rsxs_disabled="== RSXS disabled. =="
-fishbmc_enabled="== FishBMC enabled. =="
-fishbmc_disabled="== FishBMC disabled. =="
-projectm_enabled="== ProjectM enabled. =="
-projectm_disabled="== ProjectM disabled. =="
 wayland_enabled="== Wayland enabled. =="
 wayland_disabled="== Wayland disabled. =="
 x11_enabled="== X11 enabled. =="
@@ -210,6 +198,8 @@ librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
 librtmp_disabled="== RTMP support disabled. =="
 libnfs_not_found="== Could not find libnfs. NFS client support disabled. =="
 libnfs_disabled="== NFS support disabled. =="
+libgif_not_found="== Could not find libgif. libgif support disabled. =="
+libgif_disabled="== libgif support disabled. =="
 libshairplay_not_found="== Could not find libshairplay. =="
 samba_disabled="== SAMBA support disabled. =="
 libplist_not_found="== Could not find libplist. AirPlay support disabled. =="
@@ -316,42 +306,6 @@ AC_ARG_ENABLE([joystick],
   [use_joystick=$enableval],
   [use_joystick=auto])
 
-AC_ARG_ENABLE([waveform],
-  [AS_HELP_STRING([--enable-waveform],
-  [enable Waveform visualisation (default is yes)])],
-  [use_waveform=$enableval],
-  [use_waveform=yes])
-
-AC_ARG_ENABLE([spectrum],
-  [AS_HELP_STRING([--enable-spectrum],
-  [enable Spectrum visualisation (default is yes)])],
-  [use_spectrum=$enableval],
-  [use_spectrum=yes])
-
-AC_ARG_ENABLE([goom],
-  [AS_HELP_STRING([--enable-goom],
-  [enable GOOM visualisation (default is no)])],
-  [use_goom=$enableval],
-  [use_goom=no])
-
-AC_ARG_ENABLE([rsxs],
-  [AS_HELP_STRING([--enable-rsxs],
-  [enable really slick X screensavers (default is yes)])],
-  [use_rsxs=$enableval],
-  [use_rsxs=yes])
-
-AC_ARG_ENABLE([fishbmc],
-  [AS_HELP_STRING([--enable-fishbmc],
-  [enable FishBMC visualisation (default is yes)])],
-  [use_fishbmc=$enableval],
-  [use_fishbmc=yes])
-
-AC_ARG_ENABLE([projectm],
-  [AS_HELP_STRING([--enable-projectm],
-  [enable ProjectM visualisation (default is yes)])],
-  [use_projectm=$enableval],
-  [use_projectm=yes])
-
 AC_ARG_ENABLE([wayland],
   [AS_HELP_STRING([--enable-wayland],
   [enable wayland (default is no) 'Linux Only'])],
@@ -411,6 +365,12 @@ AC_ARG_ENABLE([nfs],
   [enable NFS support via libnfs (default is auto)])],
   [use_libnfs=$enableval],
   [use_libnfs=auto])
+
+AC_ARG_ENABLE([gif],
+  [AS_HELP_STRING([--enable-gif],
+  [enable gif support via libgif (default is auto)])],
+  [use_libgif=$enableval],
+  [use_libgif=auto])
 
 AC_ARG_ENABLE([airplay],
   [AS_HELP_STRING([--enable-airplay],
@@ -553,7 +513,7 @@ AC_ARG_ENABLE([breakpad],
 
 AC_ARG_ENABLE([codec],
   [AS_HELP_STRING([--enable-codec],
-  [enable additional codecs from a list of comma separated names, (default is none, choices are amcodec, libstagefright and imxvpu)])],
+  [enable additional codecs from a list of comma separated names, (default is none, choices are amcodec and imxvpu)])],
   [add_codecs=$enableval],
   [add_codecs=no])
 
@@ -605,6 +565,7 @@ case $host in
      build_shared_lib=yes    
      ;;
   i*86*-linux-gnu*|i*86*-*-linux-uclibc*)
+     target_platform=target_linux
      ARCH="i486-linux"
      if test "$use_cpu" = "no" -a "$cross_compiling" = "yes";  then
         use_arch="x86"
@@ -626,6 +587,7 @@ case $host in
      fi
      ;;
   x86_64-*-linux-gnu*|x86_64-*-linux-uclibc*)
+     target_platform=target_linux
      ARCH="x86_64-linux"
      if test "$use_cpu" = "no" -a "$cross_compiling" = "yes";  then
         use_arch="x86_64"
@@ -634,10 +596,12 @@ case $host in
      USE_STATIC_FFMPEG=1
      ;;
   i386-*-freebsd*)
+     target_platform=target_linux
      ARCH="x86-freebsd"
      MAKE="gmake"
      ;;
   amd64-*-freebsd*)
+     target_platform=target_linux
      ARCH="x86_64-freebsd"
      MAKE="gmake"
      ;;
@@ -652,10 +616,10 @@ case $host in
      use_cpu=cortex-a8
      ARCH="arm-osx"
      use_arch="arm"
-     PYTHON_VERSION="2.6"
-     PYTHON_LDFLAGS="-L${prefix}/lib -lpython2.6"
-     PYTHON_CPPFLAGS="-I${prefix}/include/python2.6"
-     PYTHON_SITE_PKG="${prefix}/lib/python2.6/site-packages"
+     PYTHON_VERSION="2.7"
+     PYTHON_LDFLAGS="-L${prefix}/lib -lpython2.7"
+     PYTHON_CPPFLAGS="-I${prefix}/include/python2.7"
+     PYTHON_SITE_PKG="${prefix}/lib/python2.7/site-packages"
      PYTHON_NOVERSIONCHECK="no-check"
      DEPENDS_ROOT_FOR_XCODE=$(echo ${prefix%/*})
      AC_SUBST([DEPENDS_ROOT_FOR_XCODE])
@@ -682,6 +646,7 @@ case $host in
      ARCH="powerpc64-linux"
      ;;
   arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
+     target_platform=target_linux
      ARCH="arm"
      use_arch="arm"
      use_joystick=no
@@ -705,6 +670,7 @@ case $host in
      build_shared_lib=yes
      ;;
   mips*-*-linux-gnu*)
+     target_platform=target_linux
      ARCH="mips"
      use_arch="mips"
      use_joystick=no
@@ -719,18 +685,6 @@ case $host in
 esac
 AC_SUBST([ARCH])
 
-case $host in
-  *-apple-darwin*)
-     check_sdl_arch=[`file $NATIVE_ROOT/lib/libSDL_image.dylib | awk '{print $NF}'`]
-     if test "x$check_sdl_arch" = "xi386" ; then
-       DARWIN_NATIVE_ARCH=-m32
-     elif test "x$check_sdl_arch" = "xx86_64" ; then
-       DARWIN_NATIVE_ARCH=-m64
-     fi
-     ;;
-esac
-AC_SUBST([DARWIN_NATIVE_ARCH])
-
 if test "$target_platform" = "target_android" ; then
   USE_ANDROID=1
   webserver_checkdepends=yes
@@ -744,8 +698,17 @@ case $use_platform in
   raspberry-pi)
      target_platform=target_raspberry_pi
      use_neon=no
-     use_arch="arm"
      use_cpu=arm1176jzf-s
+     ;;
+  raspberry-pi2)
+     target_platform=target_raspberry_pi
+     use_neon=yes
+     use_cpu=cortex-a7
+     ;;
+esac
+
+if test "$target_platform" = "target_raspberry_pi" ; then
+     use_arch="arm"
      use_hardcoded_tables="yes"
      use_openmax=no
      ARCH="arm"
@@ -754,14 +717,12 @@ case $use_platform in
      USE_MMAL=1; AC_DEFINE([HAS_MMAL],[1],["Define to 1 if MMAL libs is enabled"])
      CFLAGS="$CFLAGS"
      CXXFLAGS="$CXXFLAGS"
-     ;;
-esac
+fi
 
 if test "$host_vendor" = "apple"; then
   use_avahi=no
   use_alsa=no
   use_openmax=no
-  use_goom=no
   use_libudev=no
   use_libusb=no
   use_x11=no
@@ -847,6 +808,9 @@ if test "$host_vendor" = "apple" ; then
     LIBS="$LIBS -framework QuartzCore"
     LIBS="$LIBS -framework SystemConfiguration"
     LIBS="$LIBS -framework VideoDecodeAcceleration"
+  else
+    #arm/ios
+    LIBS="$LIBS -framework CoreFoundation"
   fi
 elif test "$target_platform" = "target_raspberry_pi"; then
   ARCH="arm"
@@ -954,9 +918,6 @@ AC_CHECK_TYPES([std::u16string, std::u32string], [], [], [[#include <string>]])
 AC_CHECK_TYPES([char16_t, char32_t])
 AC_CHECK_SIZEOF([wchar_t])
 AC_LANG_POP([C++])
-
-# Add top source directory for all builds so we can use config.h
-INCLUDES="-I\$(abs_top_srcdir) $INCLUDES" 
 
 # Check inotify availability
 AC_CHECK_HEADER([sys/inotify.h], AC_DEFINE([HAVE_INOTIFY],[1],[Define if we have inotify]),)
@@ -1066,10 +1027,8 @@ else
       AC_MSG_RESULT(== WARNING: OpenGL support is assumed.)
       AC_DEFINE([HAVE_LIBGLU],[1],["Define to 1 if you have the `GLU' library (-lGLU)."])
       AC_MSG_RESULT(== WARNING: OpenGLU support is assumed.)
-      AC_CHECK_LIB([GLEW],[main],, AC_MSG_ERROR($missing_library))
     else
       AC_CHECK_LIB([GL],  [main],, AC_MSG_ERROR($missing_library))
-      AC_CHECK_LIB([GLEW],[main],, AC_MSG_ERROR($missing_library))
       AC_CHECK_LIB([GLU], [main],, AC_MSG_ERROR($missing_library))
     fi
   else
@@ -1099,6 +1058,7 @@ AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],, AC_MSG_ERROR($missing_library),
 AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([LIBDCADEC], [dcadec],, AC_MSG_ERROR([libdcadec not found]))
 
 PKG_CHECK_MODULES([LIBCURL], [libcurl],, AC_MSG_ERROR([libcurl not found]))
 XB_FIND_SONAME([CURL], [curl])
@@ -1168,6 +1128,23 @@ int main() {
   )])
 AC_LANG_POP([C++])
 
+if test "${target_platform}" = "target_linux" || test "${target_platform}" = "target_raspberry_pi" || test "${target_platform}" = "target_android"; then
+  PKG_CHECK_MODULES([UUID], [uuid],, AC_MSG_ERROR(libuuid not found))
+fi
+
+AC_MSG_CHECKING("for libcrossguid")
+AC_LANG_PUSH([C++])
+SAVED_LIBS="$LIBS"
+LIBS="$LIBS -lcrossguid $UUID_LIBS"
+AC_LINK_IFELSE(
+  [AC_LANG_PROGRAM(
+    [#include <guid.h>],
+    [Guid dummy])],
+  [AC_MSG_RESULT(yes); SAVED_LIBS="$SAVED_LIBS $LDFLAGS -lcrossguid $UUID_LIBS"],
+  [AC_MSG_ERROR(crossguid not found)])
+LIBS="$SAVED_LIBS"
+AC_LANG_POP([C++])
+
 PKG_CHECK_MODULES([YAJL], [yajl >= 2],
   [INCLUDES="$INCLUDES $YAJL_CFLAGS"; LIBS="$LIBS $YAJL_LIBS"; YAJL_FOUND="true"],
   [AC_COMPILE_IFELSE(
@@ -1234,16 +1211,16 @@ fi
 # check for libbluray
 AS_CASE([x$use_libbluray],
   [xyes],[
-    PKG_CHECK_MODULES([LIBBLURAY],[libbluray >= 0.2.1],[use_libbluray="yes"], AC_MSG_ERROR($missing_library))
+    PKG_CHECK_MODULES([LIBBLURAY],[libbluray >= 0.7.0],[use_libbluray="yes"], AC_MSG_ERROR($missing_library))
   ],
   [xauto],[
-    PKG_CHECK_MODULES([LIBBLURAY],[libbluray >= 0.2.1],[use_libbluray="yes"], [use_libbluray="no"])
+    PKG_CHECK_MODULES([LIBBLURAY],[libbluray >= 0.7.0],[use_libbluray="yes"], [use_libbluray="no"])
   ])
 
 AS_CASE([x$use_libbluray],
   [xyes],[
     INCLUDES="$INCLUDES $LIBBLURAY_CFLAGS";
-    LIBBLURAY_LIB_BASENAME=`$PKG_CONFIG --libs-only-L "libbluray >= 0.2.1"`;
+    LIBBLURAY_LIB_BASENAME=`$PKG_CONFIG --libs-only-L "libbluray >= 0.7.0"`;
     XB_FIND_SONAME([BLURAY], [bluray], [use_libbluray], [$LIBBLURAY_LIB_BASENAME])
     AC_DEFINE([HAVE_LIBBLURAY], 1, [System has libbluray library])
     AC_SUBST([HAVE_LIBBLURAY], 1)
@@ -1269,7 +1246,7 @@ if test "$host_vendor" = "apple" ; then
   if test "$use_arch" != "arm"; then
     AC_CHECK_LIB([SDL],      [main],, AC_MSG_ERROR($missing_library))
     AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
-    AC_DEFINE([SDL_VERSION],[1],["SDL major version"])
+    AC_DEFINE([HAVE_SDL_VERSION],[1],["SDL major version"])
   fi
 else
 if test "$target_platform" != "target_android" ; then
@@ -1292,7 +1269,7 @@ fi
   # joystick
   if test "$use_joystick" != "no"; then
     PKG_CHECK_MODULES([SDL2], [sdl2],
-      [AC_DEFINE([SDL_VERSION],[2],["SDL major version"])
+      [AC_DEFINE([HAVE_SDL_VERSION],[2],["SDL major version"])
        AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
        INCLUDES="$INCLUDES $SDL2_CFLAGS"; LIBS="$LIBS $SDL2_LIBS"; use_joystick="yes"],
       [if test "$use_joystick" = "yes"; then
@@ -1307,9 +1284,6 @@ fi
   fi
 fi
 
-XB_FIND_SONAME([OGG],         [ogg])
-XB_FIND_SONAME([VORBIS],      [vorbis])
-XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
 XB_FIND_SONAME([ASS],         [ass])
 XB_FIND_SONAME([MPEG2],       [mpeg2])
 
@@ -1413,74 +1387,12 @@ if test "$use_x11" = "yes"; then
   PKG_CHECK_MODULES([DRM],  [libdrm],
     [INCLUDES="$INCLUDES $DRM_CFLAGS"; LIBS="$LIBS $DRM_LIBS"],
     AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([EGL], [egl],
+    [INCLUDES="$INCLUDES $EGL_CFLAGS"; LIBS="$LIBS $EGL_LIBS"],
+    AC_MSG_ERROR($missing_library))
   AC_DEFINE([HAVE_X11], [1], [Define to 1 if you have X11 libs installed.])
 else
   AC_MSG_RESULT($x11_disabled)
-fi
-
-# WAVEFORM
-if test "$use_waveform" = "yes"; then
-  AC_MSG_NOTICE($waveform_enabled)
-    DISABLE_WAVEFORM=0
-else
-  AC_MSG_NOTICE($waveform_disabled)
-  DISABLE_WAVEFORM=1
-fi
-
-# SPECTRUM
-if test "$use_spectrum" = "yes"; then
-  AC_MSG_NOTICE($spectrum_enabled)
-    DISABLE_SPECTRUM=0
-else
-  AC_MSG_NOTICE($spectrum_disabled)
-  DISABLE_SPECTRUM=1
-fi
-
-# GOOM
-if test "$use_goom" = "yes" && test "$use_gl" = "yes"; then
-  AC_MSG_NOTICE($goom_enabled)
-  DISABLE_GOOM=0
-else
-  AC_MSG_NOTICE($goom_disabled)
-  DISABLE_GOOM=1
-fi
-
-# RSXS
-if test "$use_rsxs" = "no" || test "$use_gl" = "no"; then
-  AC_MSG_NOTICE($rsxs_disabled)
-  DISABLE_RSXS=1
-else
-  AC_MSG_NOTICE($rsxs_enabled)
-  DISABLE_RSXS=0
-  # darwin osx can do rsxs but does not use x11, so do not pkg-config check for them
-  if test "$host_vendor" != "apple" ; then
-    PKG_CHECK_MODULES([XT],    [xt],
-      [INCLUDES="$INCLUDES $XT_CFLAGS"; LIBS="$LIBS $XT_LIBS"],
-      AC_MSG_ERROR($missing_library))
-    PKG_CHECK_MODULES([XMU],   [xmu],
-      [INCLUDES="$INCLUDES $XMU_CFLAGS"; LIBS="$LIBS $XMU_LIBS"],
-      AC_MSG_ERROR($missing_library))
-  fi
-fi
-
-# FISHBMC
-if test "$use_fishbmc" = "no" || test "$use_gl" = "no"; then
-  AC_MSG_NOTICE($fishbmc_disabled)   
-  DISABLE_FISHBMC=1
-  use_fishbmc="no"
-else
-  AC_MSG_NOTICE($fishbmc_enabled)
-  DISABLE_FISHBMC=0
-fi
-
-# PROJECTM
-if test "$use_projectm" = "no" || test "$use_gl" = "no"; then
-  AC_MSG_NOTICE($projectm_disabled)
-  DISABLE_PROJECTM=1
-  use_projectm="no"
-else
-  AC_MSG_NOTICE($projectm_enabled)
-  DISABLE_PROJECTM=0
 fi
 
 # touch skin
@@ -1564,6 +1476,29 @@ else
   AC_MSG_NOTICE($libnfs_disabled)
 fi
 
+# libgif
+if test "$use_libgif" != "no"; then
+  AC_CHECK_HEADERS([gif_lib.h],,
+   [if test "$use_libgif" = "yes"; then
+      AC_MSG_ERROR($libgif_not_found)
+      USE_LIBGIF=0
+    elif test "$use_libgif" != "no"; then
+      AC_MSG_NOTICE($libgif_not_found)
+      use_libgif="no"
+      USE_LIBGIF=0
+    fi
+   ])
+  if test "$use_libgif" != "no"; then
+    XB_FIND_SONAME([GIF], [gif], [use_libgif])
+  fi
+  if test "$use_libgif" != "no"; then
+    AC_DEFINE([HAVE_LIBGIF], [1], [Whether to use libgif library.])
+    USE_LIBGIF=1
+  fi
+else
+  USE_LIBGIF=0
+  AC_MSG_NOTICE($libgif_disabled)
+fi
 
 # libplist for airplay feature
 USE_AIRPLAY=0
@@ -1788,6 +1723,7 @@ if test "${USE_STATIC_FFMPEG}" = "1"; then
   FFMPEG_LIBDIR=${pkg_cfg_prefix}$(PKG_CONFIG_SYSROOT_DIR="" ${PKG_CONFIG} --static --variable=libdir libavcodec)
   GNUTLS_ALL_LIBS=$(${PKG_CONFIG} --static --libs-only-l --silence-errors gnutls)
   VORBISENC_ALL_LIBS=$(${PKG_CONFIG} --static --libs-only-l --silence-errors vorbisenc)
+  DCADEC_ALL_LIBS=$(${PKG_CONFIG} --static --libs-only-l --silence-errors dcadec)
 
   # check if static libs are available
   for ff_lib in ${ff_libs}; do
@@ -1936,9 +1872,6 @@ for codecs in `echo $add_codecs | sed 's/,/ /g'`; do
     *amcodec*)
         AC_CHECK_HEADER([amcodec/codec_error.h],, AC_MSG_ERROR($missing_headers))
         XB_ADD_CODEC([LIBAMCODEC], [amcodec], [$codecs])
-        ;;
-    *libstagefright*)
-        XB_ADD_CODEC([LIBSTAGEFRIGHT], [libstagefright], [$codecs])
         ;;
     *imxvpu*)
       AC_CHECK_HEADER([imx-mm/vpu/vpu_wrapper.h],, AC_MSG_ERROR($missing_headers))
@@ -2107,42 +2040,6 @@ else
   final_message="$final_message\n  Joystick:\tNo"
 fi
 
-if test "$use_waveform" = "yes"; then
-  final_message="$final_message\n  Waveform:\tYes"
-else
-  final_message="$final_message\n  Waveform:\tNo"
-fi
-
-if test "$use_spectrum" = "yes"; then
-  final_message="$final_message\n  Spectrum:\tYes"
-else
-  final_message="$final_message\n  Spectrum:\tNo"
-fi
-
-if test "$use_goom" = "yes"; then
-  final_message="$final_message\n  GOOM:\t\tYes"
-else
-  final_message="$final_message\n  GOOM:\t\tNo"
-fi
-
-if test "$use_rsxs" = "yes"; then
-  final_message="$final_message\n  RSXS:\t\tYes"
-else
-  final_message="$final_message\n  RSXS:\t\tNo"
-fi
-
-if test "$use_fishbmc" = "yes"; then
-  final_message="$final_message\n  FishBMC:\tYes"
-else
-  final_message="$final_message\n  FishBMC:\tNo"
-fi
-
-if test "$use_projectm" = "yes"; then
-  final_message="$final_message\n  ProjectM:\tYes"
-else
-  final_message="$final_message\n  ProjectM:\tNo"
-fi
-
 if test "$use_touch_skin" = "yes"; then
   final_message="$final_message\n  Touch skin:\tYes"
 else
@@ -2240,7 +2137,7 @@ else
 fi
 
 if test "x$use_pulse" != "xno"; then
-  XBMC_STANDALONE_SH_PULSE=tools/Linux/${APP_NAME_LC}-standalone.sh.pulse
+  XBMC_STANDALONE_SH_PULSE=tools/Linux/kodi-standalone.sh.pulse
   final_message="$final_message\n  PulseAudio:\tYes"
 else
   XBMC_STANDALONE_SH_PULSE=/dev/null
@@ -2370,6 +2267,12 @@ else
   final_message="$final_message\n  libnfs client support:No"
 fi
 
+if test "$use_libgif" != "no"; then
+  final_message="$final_message\n  libgif support:\tYes"
+else
+  final_message="$final_message\n  libgif support:\tNo"
+fi
+
 if test "$use_airplay" != "no"; then
   final_message="$final_message\n  AirPlay support:\tYes"
 else
@@ -2455,27 +2358,28 @@ OUTPUT_FILES="Makefile \
     xbmc/Makefile \
     xbmc/cdrip/Makefile \
     xbmc/cores/Makefile \
-    xbmc/cores/VideoRenderers/Makefile \
-    xbmc/cores/dvdplayer/Makefile \
+    xbmc/cores/VideoPlayer/VideoRenderers/Makefile \
+    xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/Makefile \
+    xbmc/cores/VideoPlayer/Makefile \
     lib/libdvd/Makefile \
     xbmc/cores/DllLoader/Makefile \
     xbmc/cores/DllLoader/exports/Makefile \
-    xbmc/cores/dvdplayer/DVDCodecs/Makefile \
-    xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile \
-    xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile \
-    xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile \
-    xbmc/cores/dvdplayer/DVDDemuxers/Makefile \
-    xbmc/cores/dvdplayer/DVDSubtitles/Makefile \
+    xbmc/cores/VideoPlayer/DVDCodecs/Makefile \
+    xbmc/cores/VideoPlayer/DVDCodecs/Audio/Makefile \
+    xbmc/cores/VideoPlayer/DVDCodecs/Overlay/Makefile \
+    xbmc/cores/VideoPlayer/DVDCodecs/Video/Makefile \
+    xbmc/cores/VideoPlayer/DVDDemuxers/Makefile \
+    xbmc/cores/VideoPlayer/DVDSubtitles/Makefile \
     xbmc/cores/AudioEngine/Makefile \
     xbmc/cores/paplayer/Makefile \
     xbmc/cores/omxplayer/Makefile \
     xbmc/cores/playercorefactory/Makefile \
     xbmc/messaging/Makefile \
-    xbmc/music/karaoke/Makefile \
-    xbmc/osx/Makefile \
+    xbmc/messaging/helpers/Makefile \
     xbmc/guilib/Makefile \
     xbmc/input/linux/Makefile \
     xbmc/interfaces/Makefile \
+    xbmc/interfaces/builtins/Makefile \
     xbmc/network/Makefile \
     xbmc/network/upnp/Makefile \
     lib/libexif/Makefile \
@@ -2486,42 +2390,35 @@ OUTPUT_FILES="Makefile \
     xbmc/freebsd/Makefile \
     xbmc/linux/Makefile \
     xbmc/filesystem/Makefile \
-    xbmc/screensavers/rsxs-0.9/xbmc/Makefile \
-    xbmc/visualizations/XBMCProjectM/Makefile \
-    xbmc/visualizations/Goom/Makefile \
-    xbmc/visualizations/OpenGLSpectrum/Makefile \
-    xbmc/visualizations/fishBMC/Makefile \
-    xbmc/visualizations/WaveForm/Makefile \
     xbmc/windowing/Makefile \
     xbmc/windowing/egl/Makefile \
     lib/addons/library.xbmc.addon/Makefile \
     lib/addons/library.kodi.adsp/Makefile \
+    lib/addons/library.kodi.audioengine/Makefile \
     lib/addons/library.xbmc.codec/Makefile \
     lib/addons/library.kodi.guilib/Makefile \
     lib/addons/library.xbmc.pvr/Makefile \
-    xbmc/visualizations/EGLHelpers/Makefile \
-    tools/Linux/${APP_NAME_LC}.sh \
-    tools/Linux/${APP_NAME_LC}-standalone.sh \
-    tools/Linux/${APP_NAME_LC}-xsession.desktop \
+    tools/Linux/kodi.sh \
+    tools/Linux/kodi-standalone.sh \
+    tools/Linux/kodi-xsession.desktop \
     tools/EventClients/Makefile \
     tools/EventClients/Clients/OSXRemote/Makefile \
     xbmc/peripherals/bus/Makefile \
     xbmc/peripherals/devices/Makefile \
-    xbmc/android/activity/Makefile \
-    xbmc/android/loader/Makefile \
-    xbmc/android/jni/Makefile \
+    xbmc/platform/posix/Makefile \
+    xbmc/platform/darwin/osx/Makefile \
+    xbmc/platform/android/activity/Makefile \
+    xbmc/platform/android/loader/Makefile \
+    xbmc/platform/android/jni/Makefile \
     xbmc/utils/Makefile \
-    xbmc/main/Makefile \
+    xbmc/platform/Makefile \
     tools/darwin/Configurations/App.xcconfig \
     tools/darwin/Configurations/Common.xcconfig \
     tools/darwin/packaging/ios/mkdeb-ios.sh \
-    tools/darwin/packaging/atv2/mkdeb-atv2.sh \
     tools/darwin/packaging/osx/mkdmg-osx.sh \
     tools/darwin/packaging/migrate_to_kodi_ios.sh \
-    tools/darwin/packaging/seatbeltunlock/mkdeb-seatbeltunlock.sh \
-    xbmc/osx/Info.plist \
-    xbmc/osx/ios/XBMCIOS-Info.plist \
-    xbmc/osx/atv2/XBMCATV2-Info.plist \
+    xbmc/platform/darwin/osx/Info.plist \
+    xbmc/platform/darwin/ios/IOS-Info.plist \
     project/cmake/kodi-config.cmake \
     project/cmake/xbmc-config.cmake \
     tools/android/packaging/xbmc/AndroidManifest.xml \
@@ -2532,6 +2429,8 @@ OUTPUT_FILES="Makefile \
     tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCOnFrameAvailableListener.java \
     tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCSettingsContentObserver.java \
     tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCOnAudioFocusChangeListener.java \
+    tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCVideoView.java \
+    tools/android/packaging/xbmc/activity_main.xml \
     tools/android/packaging/xbmc/strings.xml \
     addons/xbmc.addon/addon.xml"
 
@@ -2545,10 +2444,6 @@ fi
 
 if test "$use_touch_skin" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES addons/skin.re-touched/media/Makefile"
-fi
-
-if test "$use_codec_libstagefright" = "yes"; then
-OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS/Makefile"
 fi
 
 if test "$use_sse4" = "yes"; then
@@ -2593,16 +2488,11 @@ AC_SUBST(CXXFLAGS_FOR_BUILD)
 AC_SUBST(LDFLAGS_FOR_BUILD)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
-AC_SUBST(DISABLE_WAVEFORM)
-AC_SUBST(DISABLE_SPECTRUM)
-AC_SUBST(DISABLE_GOOM)
-AC_SUBST(DISABLE_RSXS)
-AC_SUBST(DISABLE_FISHBMC)
-AC_SUBST(DISABLE_PROJECTM)
 AC_SUBST(FFMPEG_LIBDIR)
 AC_SUBST(USE_STATIC_FFMPEG)
 AC_SUBST(GNUTLS_ALL_LIBS)
 AC_SUBST(VORBISENC_ALL_LIBS)
+AC_SUBST(DCADEC_ALL_LIBS)
 AC_SUBST(USE_TOUCH_SKIN)
 AC_SUBST(USE_LIBAV_HACKS)
 AC_SUBST(PYTHON_VERSION)
@@ -2622,6 +2512,7 @@ AC_SUBST(USE_VDPAU)
 AC_SUBST(USE_VAAPI)
 AC_SUBST(USE_LIBSMBCLIENT)
 AC_SUBST(USE_LIBNFS)
+AC_SUBST(USE_LIBGIF)
 AC_SUBST(USE_AIRPLAY)
 AC_SUBST(USE_OPENMAX)
 AC_SUBST(USE_PULSE)
@@ -2742,78 +2633,6 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdnav], [
     --disable-shared \
     --cc="$CC"
 ], [0])
-
-XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
-  set -x
-  rm -f CMakeCache.txt &&                              \
-  CC="$ORIGCC" CXX="$ORIGCXX" LDFLAGS="$LDFLAGS" cmake \
-    -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF        \
-    -DCMAKE_C_FLAGS:STRING="${CPPFLAGS} ${CFLAGS}"     \
-    -DCMAKE_CXX_FLAGS:STRING="${CPPFLAGS} ${CXXFLAGS}" \
-    -DCMAKE_INSTALL_PREFIX="${prefix}"                 \
-    -DCMAKE_INSTALL_LIBDIR:PATH="${libdir}"            \
-    -DINCLUDE_INSTALL_DIR:PATH="${includedir}"         \
-    -DLIB_INSTALL_DIR:PATH="${libdir}"                 \
-    -DSYSCONF_INSTALL_DIR:PATH="${sysconfdir}"         \
-    -DSHARE_INSTALL_PREFIX:PATH="${datadir}" . &&
-  if test "$host_vendor" = "apple" ; then
-    # cmake has hardcoded paths to macports which bork our darwin depends cross/ppc, remove them
-    sed -ie "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/link.txt
-    sed -ie "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/flags.make
-    sed -ie "s|-I/opt/local/include| |" CMakeFiles/projectM.dir/flags.make
-  fi
-  set +x
-], [$DISABLE_PROJECTM])
-
-XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
-  ./configure  \
-    CFLAGS="$CFLAGS" \ 
-    CXXFLAGS="$CXXFLAGS" \
-    --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
-    --host=$host_alias \
-    --build=$build_alias \
-    --target=$target_alias \      
-    --disable-shared \
-    --enable-static \
-    --with-pic
-], [$DISABLE_GOOM])
-
-XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
-  if test "$host_vendor" = "apple"; then
-    # clang treats inlines different
-    case $CC in
-      *clang*)
-        TEMPCFLAGS="$CFLAGS";;
-      *)
-        TEMPCFLAGS="${CFLAGS} -fgnu89-inline";;
-    esac
-  else
-    TEMPCFLAGS="$CFLAGS";
-  fi
-  ./configure \
-    CC="$CC" \
-    CXX="$CXX" \
-    CFLAGS="$TEMPCFLAGS" \ 
-    CXXFLAGS="$CXXFLAGS" \
-    `if test "$host_vendor" = "apple"; then echo --with-png=${prefix} --x-includes=/usr/X11/include --x-libraries=/usr/X11/lib; fi` \
-    --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
-    --host=$host_alias \
-    --build=$build_alias \
-    --target=$target_alias \      
-    --without-xscreensaver \
-    --disable-sound \
-    --disable-cyclone \
-    --disable-fieldlines \
-    --disable-flocks \
-    --disable-flux \
-    --disable-helios \
-    --disable-hyperspace \
-    --disable-lattice \
-    --disable-skyrocket
-  if echo "$ARCH" | grep -q freebsd ; then
-    sed -i.back "s;\(STDBOOL_H = \)stdbool.h;\1;" lib/Makefile
-  fi
-], [$DISABLE_RSXS])
 
 XB_CONFIG_MODULE([lib/cpluff], [
   ./configure --disable-nls \

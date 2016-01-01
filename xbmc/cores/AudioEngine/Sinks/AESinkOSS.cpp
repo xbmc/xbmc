@@ -145,12 +145,12 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, std::string &device)
     oss_fmt = AFMT_S16_LE;
   else if ((format.m_dataFormat == AE_FMT_U8   ) && (format_mask & AFMT_U8    ))
     oss_fmt = AFMT_U8;
-  else if ((AE_IS_RAW(format.m_dataFormat)     ) && (format_mask & AFMT_AC3   ))
+  else if (((format.m_dataFormat == AE_FMT_RAW)     ) && (format_mask & AFMT_AC3   ))
   {
     oss_fmt = AFMT_AC3;
     format.m_dataFormat = AE_FMT_S16NE;
   }
-  else if (AE_IS_RAW(format.m_dataFormat))
+  else if (format.m_dataFormat == AE_FMT_RAW)
   {
     close(m_fd);
     CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to find a suitable RAW output format");
@@ -319,7 +319,6 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, std::string &device)
   format.m_sampleRate    = oss_sr;
   format.m_frameSize     = (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelLayout.Count();
   format.m_frames        = bi.fragsize / format.m_frameSize;
-  format.m_frameSamples  = format.m_frames * format.m_channelLayout.Count();
 
   m_device = device;
   m_format = format;
@@ -338,13 +337,27 @@ inline CAEChannelInfo CAESinkOSS::GetChannelLayout(const AEAudioFormat& format)
 {
   unsigned int count = 0;
 
-       if (format.m_dataFormat == AE_FMT_AC3 ||
-           format.m_dataFormat == AE_FMT_DTS ||
-           format.m_dataFormat == AE_FMT_EAC3)
-           count = 2;
-  else if (format.m_dataFormat == AE_FMT_TRUEHD ||
-           format.m_dataFormat == AE_FMT_DTSHD)
-           count = 8;
+  if (format.m_dataFormat == AE_FMT_RAW)
+  {
+    switch (format.m_streamInfo.m_type)
+    {
+    case CAEStreamInfo::STREAM_TYPE_DTSHD:
+    case CAEStreamInfo::STREAM_TYPE_TRUEHD:
+      count = 8;
+      break;
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
+    case CAEStreamInfo::STREAM_TYPE_DTS_512:
+    case CAEStreamInfo::STREAM_TYPE_DTS_1024:
+    case CAEStreamInfo::STREAM_TYPE_DTS_2048:
+    case CAEStreamInfo::STREAM_TYPE_AC3:
+    case CAEStreamInfo::STREAM_TYPE_EAC3:
+      count = 2;
+      break;
+    default:
+      count = 0;
+      break;
+    }
+  }
   else
   {
     for (unsigned int c = 0; c < 8; ++c)
@@ -501,6 +514,7 @@ void CAESinkOSS::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
         if (*rate >= ainfo.min_rate && *rate <= ainfo.max_rate)
           info.m_sampleRates.push_back(*rate);
     }
+    info.m_wantsIECPassthrough = true;
     list.push_back(info);
   }
 #endif

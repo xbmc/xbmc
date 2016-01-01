@@ -1,6 +1,8 @@
+#pragma once
+
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,13 +15,10 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
-#ifndef __XBMC_PVR_H__
-#define __XBMC_PVR_H__
 
 #include "xbmc_addon_dll.h"
 #include "xbmc_pvr_types.h"
@@ -373,12 +372,10 @@ extern "C"
    * Delete a timer on the backend.
    * @param timer The timer to delete.
    * @param bForceDelete Set to true to delete a timer that is currently recording a program.
-   * @param bDeleteScheduled For repeating timers, set to true to not only delete the repeating timer itself, but also all
-            timers scheduled by the repeating timer. For non-repeating timers, this parameter will be ignored.
    * @return PVR_ERROR_NO_ERROR if the timer has been deleted successfully.
    * @remarks Required if bSupportsTimers is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR DeleteTimer(const PVR_TIMER& timer, bool bForceDelete, bool bDeleteScheduled);
+  PVR_ERROR DeleteTimer(const PVR_TIMER& timer, bool bForceDelete);
 
   /*!
    * Update the timer information on the backend.
@@ -727,4 +724,3 @@ extern "C"
   };
 };
 
-#endif

@@ -32,7 +32,7 @@ strip -S .libs/libdvdcss-2.dll
 cd ..
 mkdir -p includes/dvdcss
 cp libdvdcss/src/dvdcss/dvdcss.h includes/dvdcss
-cp libdvdcss/.libs/libdvdcss-2.dll /xbmc/system/players/dvdplayer/
+cp libdvdcss/.libs/libdvdcss-2.dll /xbmc/system/players/VideoPlayer/
 
 #libdvdread
 cd libdvdread
@@ -79,7 +79,7 @@ gcc \
 
 strip -S obj/libdvdnav.dll
 cd ..
-cp libdvdnav/obj/libdvdnav.dll /xbmc/system/players/dvdplayer/
+cp libdvdnav/obj/libdvdnav.dll /xbmc/system/players/VideoPlayer/
 echo "***** Done *****"
 #remove the bgprocessfile for signaling the process end
 rm $BGPROCESSFILE

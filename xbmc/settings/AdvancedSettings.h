@@ -21,6 +21,7 @@
 
 #include <set>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "pictures/PictureScalingAlgorithm.h"
@@ -101,18 +102,6 @@ struct RefreshVideoLatency
   float delay;
 };
 
-struct StagefrightConfig
-{
-  int useAVCcodec;
-  int useHEVCcodec;
-  int useVC1codec;
-  int useVPXcodec;
-  int useMP4codec;
-  int useMPEG2codec;
-  bool useSwRenderer;
-  bool useInputDTS;
-};
-
 typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
 
 class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
@@ -122,10 +111,10 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     static CAdvancedSettings* getInstance();
 
-    virtual void OnSettingsLoaded();
-    virtual void OnSettingsUnloaded();
+    virtual void OnSettingsLoaded() override;
+    virtual void OnSettingsUnloaded() override;
 
-    virtual void OnSettingChanged(const CSetting *setting);
+    virtual void OnSettingChanged(const CSetting *setting) override;
 
     void Initialize();
     bool Initialized() { return m_initialized; };
@@ -144,11 +133,10 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     float m_ac3Gain;
     std::string m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
-    bool m_dvdplayerIgnoreDTSinWAV;
+    bool m_VideoPlayerIgnoreDTSinWAV;
     float m_limiterHold;
     float m_limiterRelease;
 
-    bool  m_omxHWAudioDecode;
     bool  m_omxDecodeStartWithValidFrame;
 
     float m_videoSubsDelayRange;
@@ -176,7 +164,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_musicPercentSeekBackward;
     int m_musicPercentSeekForwardBig;
     int m_musicPercentSeekBackwardBig;
-    int m_videoBlackBarColour;
     int m_videoIgnoreSecondsAtStart;
     float m_videoIgnorePercentAtEnd;
     float m_audioApplyDrc;
@@ -199,11 +186,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_DXVAAllowHqScaling;
     int  m_videoFpsDetect;
     int  m_videoBusyDialogDelay_ms;
-    StagefrightConfig m_stagefrightConfig;
     bool m_mediacodecForceSoftwareRendring;
 
     std::string m_videoDefaultPlayer;
-    std::string m_videoDefaultDVDPlayer;
     float m_videoPlayCountMinimumPercent;
 
     float m_slideshowBlackBarCompensation;
@@ -269,10 +254,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_iMusicLibraryRecentlyAddedItems;
     int m_iMusicLibraryDateAdded;
     bool m_bMusicLibraryAllItemsOnBottom;
-    bool m_bMusicLibraryAlbumsSortByArtistThenYear;
     bool m_bMusicLibraryCleanOnUpdate;
     std::string m_strMusicLibraryAlbumFormat;
-    std::string m_strMusicLibraryAlbumFormatRight;
     bool m_prioritiseAPEv2tags;
     std::string m_musicItemSeparator;
     std::string m_videoItemSeparator;
@@ -280,7 +263,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     bool m_bVideoLibraryAllItemsOnBottom;
     int m_iVideoLibraryRecentlyAddedItems;
-    bool m_bVideoLibraryHideEmptySeries;
     bool m_bVideoLibraryCleanOnUpdate;
     bool m_bVideoLibraryUseFastHash;
     bool m_bVideoLibraryExportAutoThumbs;
@@ -332,25 +314,18 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_bVirtualShares;
     bool m_bAllowDeferredRendering;
 
-    float m_karaokeSyncDelayCDG; // seems like different delay is needed for CDG and MP3s
-    float m_karaokeSyncDelayLRC;
-    bool m_karaokeChangeGenreForKaraokeSongs;
-    bool m_karaokeKeepDelay; // store user-changed song delay in the database
-    int m_karaokeStartIndex; // auto-assign numbering start from this value
-    bool m_karaokeAlwaysEmptyOnCdgs; // always have empty background on CDG files
-    bool m_karaokeUseSongSpecificBackground; // use song-specific video or image if available instead of default
-    std::string m_karaokeDefaultBackgroundType; // empty string or "vis", "image" or "video"
-    std::string m_karaokeDefaultBackgroundFilePath; // only for "image" or "video" types above
-
     std::string m_cpuTempCmd;
     std::string m_gpuTempCmd;
+
+    // Touchscreen
+    int m_screenAlign_xOffset;
+    int m_screenAlign_yOffset;
+    float m_screenAlign_xStretchFactor;
+    float m_screenAlign_yStretchFactor;
 
     /* PVR/TV related advanced settings */
     int m_iPVRTimeCorrection;     /*!< @brief correct all times (epg tags, timer tags, recording tags) by this amount of minutes. defaults to 0. */
     int m_iPVRInfoToggleInterval; /*!< @brief if there are more than 1 pvr gui info item available (e.g. multiple recordings active at the same time), use this toggle delay in milliseconds. defaults to 3000. */
-    int m_iPVRMinVideoCacheLevel;      /*!< @brief cache up to this level in the video buffer buffer before resuming playback if the buffers run dry */
-    int m_iPVRMinAudioCacheLevel;      /*!< @brief cache up to this level in the audio buffer before resuming playback if the buffers run dry */
-    bool m_bPVRCacheInDvdPlayer; /*!< @brief true to use "CACHESTATE_PVR" in CDVDPlayer (default) */
     bool m_bPVRChannelIconsAutoScan; /*!< @brief automatically scan user defined folder for channel icons when loading internal channel groups */
     bool m_bPVRAutoScanIconsUserSet; /*!< @brief mark channel icons populated by auto scan as "user set" */
     int m_iPVRNumericChannelSwitchTimeout; /*!< @brief time in ms before the numeric dialog auto closes when confirmchannelswitch is disabled */
@@ -385,6 +360,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     void SetDebugMode(bool debug);
 
+    //! \brief Toggles dirty-region visualization
+    void ToggleDirtyRegionVisualization() { m_guiVisualizeDirtyRegions = !m_guiVisualizeDirtyRegions; };
+
     // runtime settings which cannot be set from advancedsettings.xml
     std::string m_pictureExtensions;
     std::string m_videoExtensions;
@@ -409,4 +387,5 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void setExtraLogLevel(const std::vector<CVariant> &components);
 };
 
-XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);
+XBMC_GLOBAL_REF(CAdvancedSettings,g_advancedSettings);
+#define g_advancedSettings XBMC_GLOBAL_USE(CAdvancedSettings)

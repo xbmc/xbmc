@@ -23,7 +23,6 @@
 #include "utils/URIUtils.h"
 #include "URL.h"
 
-using namespace std;
 using namespace XFILE;
 
 CMultiPathFile::CMultiPathFile(void)
@@ -38,7 +37,7 @@ bool CMultiPathFile::Open(const CURL& url)
   // grab the filename off the url
   std::string path, fileName;
   URIUtils::Split(url.Get(), path, fileName);
-  vector<std::string> vecPaths;
+  std::vector<std::string> vecPaths;
   if (!CMultiPathDirectory::GetPaths(path, vecPaths))
     return false;
 
@@ -57,7 +56,7 @@ bool CMultiPathFile::Exists(const CURL& url)
   // grab the filename off the url
   std::string path, fileName;
   URIUtils::Split(url.Get(), path, fileName);
-  vector<std::string> vecPaths;
+  std::vector<std::string> vecPaths;
   if (!CMultiPathDirectory::GetPaths(path, vecPaths))
     return false;
 
@@ -76,7 +75,7 @@ int CMultiPathFile::Stat(const CURL& url, struct __stat64* buffer)
   // grab the filename off the url
   std::string path, fileName;
   URIUtils::Split(url.Get(), path, fileName);
-  vector<std::string> vecPaths;
+  std::vector<std::string> vecPaths;
   if (!CMultiPathDirectory::GetPaths(path, vecPaths))
     return false;
 

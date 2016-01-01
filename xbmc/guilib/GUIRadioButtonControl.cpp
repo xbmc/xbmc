@@ -20,6 +20,7 @@
 
 #include "GUIRadioButtonControl.h"
 #include "GUIInfoManager.h"
+#include "LocalizeStrings.h"
 #include "input/Key.h"
 
 CGUIRadioButtonControl::CGUIRadioButtonControl(int parentID, int controlID, float posX, float posY, float width, float height,
@@ -45,6 +46,7 @@ CGUIRadioButtonControl::CGUIRadioButtonControl(int parentID, int controlID, floa
   m_imgRadioOnDisabled.SetAspectRatio(CAspectRatio::AR_KEEP);
   m_imgRadioOffDisabled.SetAspectRatio(CAspectRatio::AR_KEEP);
   ControlType = GUICONTROL_RADIO;
+  m_useLabel2 = false;
 }
 
 CGUIRadioButtonControl::~CGUIRadioButtonControl(void)
@@ -87,7 +89,7 @@ void CGUIRadioButtonControl::Process(unsigned int currentTime, CDirtyRegionList 
       m_bSelected = selected;
     }
   }
-  
+
   m_imgRadioOnFocus.Process(currentTime);
   m_imgRadioOnNoFocus.Process(currentTime);
   m_imgRadioOffFocus.Process(currentTime);
@@ -95,25 +97,10 @@ void CGUIRadioButtonControl::Process(unsigned int currentTime, CDirtyRegionList 
   m_imgRadioOnDisabled.Process(currentTime);
   m_imgRadioOffDisabled.Process(currentTime);
 
+  if (m_useLabel2)
+    SetLabel2(g_localizeStrings.Get(m_bSelected ? 16041 : 351));
+
   CGUIButtonControl::Process(currentTime, dirtyregions);
-}
-
-void CGUIRadioButtonControl::ProcessText(unsigned int currentTime)
-{
-  bool changed = false;
-
-  if (m_bInvalidated)
-  {
-    changed |= m_label.SetMaxRect(m_posX, m_posY, m_width - m_imgRadioOnFocus.GetWidth(), m_height);
-    changed |= m_label.SetText(m_info.GetLabel(GetParentID()));
-  }
-
-  changed |= m_label.SetScrolling(HasFocus());
-  changed |= m_label.SetColor(GetTextColor());
-  changed |= m_label.Process(currentTime);
-
-  if (changed)
-    MarkDirtyRegion();
 }
 
 bool CGUIRadioButtonControl::OnAction(const CAction &action)
@@ -211,6 +198,12 @@ void CGUIRadioButtonControl::SetRadioDimensions(float posX, float posY, float wi
     m_imgRadioOnDisabled.SetHeight(height);
     m_imgRadioOffDisabled.SetHeight(height);
   }
+
+  // use label2 to display the button value in case no
+  // dimensions were specified and there's no label2 yet.
+  if (GetLabel2().empty() && !width && !height)
+    m_useLabel2 = true;
+
   SetPosition(GetXPosition(), GetYPosition());
 }
 

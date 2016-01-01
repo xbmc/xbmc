@@ -19,13 +19,15 @@
  */
 #pragma once
 
-#include <memory>
 #include <map>
+#include <memory>
+#include <utility>
+
+#include <dns_sd.h>
 
 #include "network/ZeroconfBrowser.h"
-#include "threads/Thread.h"
 #include "threads/CriticalSection.h"
-#include <dns_sd.h>
+#include "threads/Thread.h"
 
 //platform specific implementation of  zeroconfbrowser interface using native os x APIs
 class CZeroconfBrowserMDNS : public CZeroconfBrowser

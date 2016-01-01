@@ -19,16 +19,18 @@
  *
  */
 
+#include "addons/AddonDatabase.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
-#include "PVRClient.h"
+
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecording.h"
-#include "addons/AddonDatabase.h"
 
-#include <vector>
+#include "PVRClient.h"
+
 #include <deque>
+#include <vector>
 
 namespace EPG
 {
@@ -158,7 +160,23 @@ namespace PVR
      * @param strName The friendly name of the client or an empty string when it wasn't found.
      * @return True if the client was found, false otherwise.
      */
-    bool GetClientName(int iClientId, std::string &strName) const;
+    bool GetClientFriendlyName(int iClientId, std::string &strName) const;
+
+    /*!
+     * @brief Get the addon name for the client with the given id.
+     * @param iClientId The id of the client.
+     * @param strName The addon name of the client or an empty string when it wasn't found.
+     * @return True if the client was found, false otherwise.
+     */
+    bool GetClientAddonName(int iClientId, std::string &strName) const;
+
+    /*!
+     * @brief Get the addon icon for the client with the given id.
+     * @param iClientId The id of the client.
+     * @param strIcon The path to the addon icon of the client or an empty string when it wasn't found.
+     * @return True if the client was found, false otherwise.
+     */
+    bool GetClientAddonIcon(int iClientId, std::string &strIcon) const;
 
     /*!
      * @brief Returns properties about all connected clients
@@ -354,11 +372,10 @@ namespace PVR
      * @brief Delete a timer from the backend.
      * @param timer The timer to delete.
      * @param bForce Also delete when currently recording if true.
-     * @param bDeleteSchedule Also delete schedule instead of single timer.
      * @param error An error if it occured.
      * @return True if the timer was deleted successfully, false otherwise.
      */
-    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, bool bDeleteSchedule);
+    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce);
 
     /*!
      * @brief Rename a timer on the backend.

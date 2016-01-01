@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2010-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2010-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,15 +13,17 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "system.h"
 
 #include "AEFactory.h"
 
 #include "Engines/ActiveAE/ActiveAE.h"
+#include "Utils/AEStreamInfo.h"
 
 #include "guilib/LocalizeStrings.h"
 #include "settings/lib/Setting.h"
@@ -168,30 +170,36 @@ std::string CAEFactory::GetDefaultDevice(bool passthrough)
   return "default";
 }
 
-bool CAEFactory::SupportsRaw(AEDataFormat format, int samplerate)
+bool CAEFactory::SupportsRaw(AEAudioFormat &format)
 {
   // check if passthrough is enabled
-  if (!CSettings::Get().GetBool("audiooutput.passthrough"))
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH))
     return false;
 
   // fixed config disabled passthrough
-  if (CSettings::Get().GetInt("audiooutput.config") == AE_CONFIG_FIXED)
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) == AE_CONFIG_FIXED)
     return false;
 
   // check if the format is enabled in settings
-  if (format == AE_FMT_AC3 && !CSettings::Get().GetBool("audiooutput.ac3passthrough"))
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_AC3 && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH))
     return false;
-  if (format == AE_FMT_DTS && !CSettings::Get().GetBool("audiooutput.dtspassthrough"))
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTS_512 && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH))
     return false;
-  if (format == AE_FMT_EAC3 && !CSettings::Get().GetBool("audiooutput.eac3passthrough"))
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTS_1024 && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH))
     return false;
-  if (format == AE_FMT_TRUEHD && !CSettings::Get().GetBool("audiooutput.truehdpassthrough"))
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTS_2048 && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH))
     return false;
-  if (format == AE_FMT_DTSHD && !CSettings::Get().GetBool("audiooutput.dtshdpassthrough"))
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_CORE && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH))
+    return false;
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_EAC3 && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_EAC3PASSTHROUGH))
+    return false;
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH))
+    return false;
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD && !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH))
     return false;
 
   if(AE)
-    return AE->SupportsRaw(format, samplerate);
+    return AE->SupportsRaw(format);
 
   return false;
 }
@@ -270,21 +278,20 @@ void CAEFactory::Shutdown()
     AE->Shutdown();
 }
 
-IAEStream *CAEFactory::MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, 
-  unsigned int encodedSampleRate, CAEChannelInfo channelLayout, unsigned int options)
+IAEStream *CAEFactory::MakeStream(AEAudioFormat &audioFormat, unsigned int options, IAEClockCallback *clock)
 {
   if(AE)
-    return AE->MakeStream(dataFormat, sampleRate, encodedSampleRate, channelLayout, options);
+    return AE->MakeStream(audioFormat, options, clock);
 
   return NULL;
 }
 
-IAEStream *CAEFactory::FreeStream(IAEStream *stream)
+bool CAEFactory::FreeStream(IAEStream *stream)
 {
   if(AE)
     return AE->FreeStream(stream);
 
-  return NULL;
+  return false;
 }
 
 void CAEFactory::GarbageCollect()
@@ -346,7 +353,7 @@ void CAEFactory::SettingOptionsAudioDevicesFillerGeneral(const CSetting *setting
   bool foundValue = false;
   AEDeviceList sinkList;
   EnumerateOutputDevices(sinkList, passthrough);
-  if (sinkList.size() == 0)
+  if (sinkList.empty())
     list.push_back(std::make_pair("Error - no devices found", "error"));
   else
   {
@@ -372,10 +379,10 @@ void CAEFactory::RegisterAudioCallback(IAudioCallback* pCallback)
     AE->RegisterAudioCallback(pCallback);
 }
 
-void CAEFactory::UnregisterAudioCallback()
+void CAEFactory::UnregisterAudioCallback(IAudioCallback* pCallback)
 {
   if (AE)
-    AE->UnregisterAudioCallback();
+    AE->UnregisterAudioCallback(pCallback);
 }
 
 bool CAEFactory::IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting, void *data)

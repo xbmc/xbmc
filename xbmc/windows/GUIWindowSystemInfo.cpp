@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2015 Team XBMC
+ *      Copyright (C) 2005-2015 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -59,7 +59,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
       SET_CONTROL_LABEL(52, CSysInfo::GetAppName() + " " + CSysInfo::GetVersion());
       SET_CONTROL_LABEL(53, CSysInfo::GetBuildDate());
-      CONTROL_ENABLE_ON_CONDITION(CONTROL_BT_PVR, PVR::CPVRManager::Get().IsStarted());
+      CONTROL_ENABLE_ON_CONDITION(CONTROL_BT_PVR, PVR::CPVRManager::GetInstance().IsStarted());
       return true;
     }
     break;
@@ -106,7 +106,7 @@ void CGUIWindowSystemInfo::FrameMove()
   else if (m_section == CONTROL_BT_STORAGE)
   {
     SET_CONTROL_LABEL(40, g_localizeStrings.Get(20155));
-    if (m_diskUsage.size() == 0)
+    if (m_diskUsage.empty())
       m_diskUsage = g_mediaManager.GetDiskUsage();
 
     for (size_t d = 0; d < m_diskUsage.size(); d++)

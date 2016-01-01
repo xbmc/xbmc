@@ -340,9 +340,11 @@ bool CJpegIO::Read(unsigned char* buffer, unsigned int bufSize, unsigned int min
   }
 }
 
-bool CJpegIO::Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format)
+bool CJpegIO::Decode(unsigned char* const pixels, unsigned int width, unsigned int height, unsigned int pitch, unsigned int format)
 {
   unsigned char *dst = (unsigned char*)pixels;
+  unsigned int copyWidth = std::min(m_width, width);
+  unsigned int copyHeight = std::min(m_height, height);
 
   struct my_error_mgr jerr;
   m_cinfo.err = jpeg_std_error(&jerr.pub);
@@ -359,7 +361,7 @@ bool CJpegIO::Decode(const unsigned char *pixels, unsigned int pitch, unsigned i
 
     if (format == XB_FMT_RGB8)
     {
-      while (m_cinfo.output_scanline < m_height)
+      while (m_cinfo.output_scanline < copyHeight)
       {
         jpeg_read_scanlines(&m_cinfo, &dst, 1);
         dst += pitch;
@@ -368,12 +370,12 @@ bool CJpegIO::Decode(const unsigned char *pixels, unsigned int pitch, unsigned i
     else if (format == XB_FMT_A8R8G8B8)
     {
       unsigned char* row = new unsigned char[m_width * 3];
-      while (m_cinfo.output_scanline < m_height)
+      while (m_cinfo.output_scanline < copyHeight)
       {
         jpeg_read_scanlines(&m_cinfo, &row, 1);
         unsigned char *src2 = row;
         unsigned char *dst2 = dst;
-        for (unsigned int x = 0; x < m_width; x++, src2 += 3)
+        for (unsigned int x = 0; x < copyWidth; x++, src2 += 3)
         {
           *dst2++ = src2[2];
           *dst2++ = src2[1];
@@ -416,7 +418,7 @@ bool CJpegIO::CreateThumbnailFromMemory(unsigned char* buffer, unsigned int bufS
   pitch = Width() * 3;
   sourceBuf = new unsigned char [Height() * pitch];
 
-  if (!Decode(sourceBuf,pitch,XB_FMT_RGB8))
+  if (!Decode(sourceBuf, Width(), Height(),pitch,XB_FMT_RGB8))
   {
     delete [] sourceBuf;
     return false;

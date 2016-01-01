@@ -33,13 +33,11 @@
 #include "GUIUserMessages.h"
 
 #if defined(TARGET_DARWIN)
-#include "osx/CocoaInterface.h"
+#include "platform/darwin/osx/CocoaInterface.h"
 #endif
 
 const char* CGUIEditControl::smsLetters[10] = { " !@#$%^&*()[]{}<>/\\|0", ".,;:\'\"-+_=?`~1", "abc2ABC", "def3DEF", "ghi4GHI", "jkl5JKL", "mno6MNO", "pqrs7PQRS", "tuv8TUV", "wxyz9WXYZ" };
 const unsigned int CGUIEditControl::smsDelay = 1000;
-
-using namespace std;
 
 #ifdef TARGET_WINDOWS
 extern HWND g_hWnd;
@@ -654,7 +652,6 @@ void CGUIEditControl::SetCursorPosition(unsigned int iPosition)
 void CGUIEditControl::OnSMSCharacter(unsigned int key)
 {
   assert(key < 10);
-  bool sendUpdate = false;
   if (m_smsTimer.IsRunning())
   {
     // we're already entering an SMS character
@@ -662,7 +659,6 @@ void CGUIEditControl::OnSMSCharacter(unsigned int key)
     { // a different key was clicked than last time, or we have timed out
       m_smsLastKey = key;
       m_smsKeyIndex = 0;
-      sendUpdate = true;
     }
     else
     { // same key as last time within the appropriate time period
@@ -680,7 +676,7 @@ void CGUIEditControl::OnSMSCharacter(unsigned int key)
   m_smsKeyIndex = m_smsKeyIndex % strlen(smsLetters[key]);
 
   m_text2.insert(m_text2.begin() + m_cursorPos++, smsLetters[key][m_smsKeyIndex]);
-  UpdateText(sendUpdate);
+  UpdateText();
   m_smsTimer.StartZero();
 }
 

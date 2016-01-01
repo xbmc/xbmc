@@ -1,6 +1,8 @@
+#pragma once
+
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,13 +15,10 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
-#ifndef _OMX_PLAYERAUDIO_H_
-#define _OMX_PLAYERAUDIO_H_
 
 #include <deque>
 #include <sys/types.h>
@@ -29,7 +28,7 @@
 #include "OMXAudio.h"
 #include "OMXAudioCodecOMX.h"
 #include "threads/Thread.h"
-#include "IDVDPlayer.h"
+#include "IVideoPlayer.h"
 
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDMessageQueue.h"
@@ -48,8 +47,6 @@ protected:
   COMXAudio                 m_omxAudio;
   std::string               m_codec_name;
   bool                      m_passthrough;
-  bool                      m_use_hw_decode;
-  bool                      m_hw_decode;
   AEAudioFormat             m_format;
   COMXAudioCodecOMX         *m_pAudioCodec;
   int                       m_speed;
@@ -58,6 +55,7 @@ protected:
 
   bool                      m_stalled;
   bool                      m_started;
+  bool                      m_sync;
 
   BitstreamStats            m_audioStats;
 
@@ -87,10 +85,9 @@ public:
   void WaitForBuffers();
   void CloseStream(bool bWaitForBuffers);
   bool CodecChange();
-  bool Decode(DemuxPacket *pkt, bool bDropPacket);
-  void Flush();
-  bool AddPacket(DemuxPacket *pkt);
-  AEDataFormat GetDataFormat(CDVDStreamInfo hints);
+  bool Decode(DemuxPacket *pkt, bool bDropPacket, bool bTrickPlay);
+  void Flush(bool sync);
+  AEAudioFormat GetDataFormat(CDVDStreamInfo hints);
   bool IsPassthrough() const;
   bool OpenDecoder();
   void CloseDecoder();
@@ -111,4 +108,4 @@ public:
 
   bool BadState() { return m_bad_state; }
 };
-#endif
+

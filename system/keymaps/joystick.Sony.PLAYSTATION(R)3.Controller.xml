@@ -93,8 +93,10 @@
       <button id="3">ActivateWindow(PlayerControls)</button>
       <axis id="1">AnalogSeekForward</axis>
       <axis id="2">AnalogSeekBack</axis>
-      <axis id="3">VolumeUp</axis>
-      <axis id="4">VolumeDown</axis>
+      <axis id="3" limit="+1">VolumeUp</axis>
+      <axis id="3" limit="-1">VolumeDown</axis>
+      <axis id="4" limit="+1">VolumeDown</axis>
+      <axis id="4" limit="-1">VolumeUp</axis>
       <axis trigger="true" rest="-32768" id="13">ScrollUp</axis>
       <axis trigger="true" rest="-32768" id="14">ScrollDown</axis>
       <button id="5">Up</button>

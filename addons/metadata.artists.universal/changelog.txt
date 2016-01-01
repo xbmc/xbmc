@@ -1,3 +1,6 @@
+[B]3.6.1[/B]
+Fixed: Won't scrape MBID randomly
+
 [B]3.6.0[/B]
 Changed: Language is now a selection list
 

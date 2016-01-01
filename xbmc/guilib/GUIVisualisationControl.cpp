@@ -27,7 +27,6 @@
 #include "utils/log.h"
 #include "input/Key.h"
 
-using namespace std;
 using namespace ADDON;
 
 #define LABEL_ROW1 10
@@ -101,7 +100,7 @@ void CGUIVisualisationControl::Process(unsigned int currentTime, CDirtyRegionLis
     if (!m_addon && !m_bAttemptedLoad)
     {
       AddonPtr addon;
-      if (ADDON::CAddonMgr::Get().GetDefault(ADDON_VIZ, addon))
+      if (ADDON::CAddonMgr::GetInstance().GetDefault(ADDON_VIZ, addon))
       {
         m_addon = std::dynamic_pointer_cast<CVisualisation>(addon);
         if (m_addon)

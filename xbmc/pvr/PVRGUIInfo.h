@@ -19,12 +19,14 @@
  *
  */
 
+#include "addons/include/xbmc_pvr_types.h"
+#include "pvr/addons/PVRClients.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
-#include "utils/Observer.h"
 #include "threads/Thread.h"
-#include "pvr/addons/PVRClients.h"
-#include "addons/include/xbmc_pvr_types.h"
+#include "utils/Observer.h"
+
+#include <atomic>
 
 namespace EPG
 {
@@ -102,8 +104,6 @@ namespace PVR
     void UpdateNextTimer(void);
     void UpdateTimeshift(void);
 
-    const SBackend& GetCurrentActiveBackend() const;
-
     bool TimerInfoToggle(void);
     void UpdateTimersToggle(void);
     void ToggleShowInfo(void);
@@ -163,10 +163,15 @@ namespace PVR
     unsigned int                    m_iRecordingTimerAmount;
     unsigned int                    m_iCurrentActiveClient;
     std::string                     m_strPlayingClientName;
+    std::string                     m_strBackendName;
+    std::string                     m_strBackendVersion;
+    std::string                     m_strBackendHost;
     std::string                     m_strBackendTimers;
     std::string                     m_strBackendRecordings;
     std::string                     m_strBackendDeletedRecordings;
     std::string                     m_strBackendChannels;
+    long long                       m_iBackendDiskTotal;
+    long long                       m_iBackendDiskUsed;
     unsigned int                    m_iDuration;
 
     bool                            m_bHasNonRecordingTimers;
@@ -195,5 +200,13 @@ namespace PVR
     std::string                     m_strTimeshiftPlayTime;
 
     CCriticalSection                m_critSection;
+
+    /**
+     * The various backend-related fields will only be updated when this
+     * flag is set. This is done to limit the amount of unnecessary
+     * backend querying when we're not displaying any of the queried
+     * information.
+     */
+    mutable std::atomic<bool>       m_updateBackendCacheRequested;
   };
 }

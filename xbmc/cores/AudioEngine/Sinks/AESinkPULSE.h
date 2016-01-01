@@ -70,6 +70,9 @@ private:
   pa_stream *m_Stream; 
   pa_cvolume m_Volume;
   bool m_volume_needs_update;
+  uint32_t m_periodSize;
+  uint64_t m_lastPackageStamp;
+  uint64_t m_filled_bytes;
 
   pa_context *m_Context;
   pa_threaded_mainloop *m_MainLoop;

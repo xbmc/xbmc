@@ -19,14 +19,17 @@
  */
 
 #include "GUIViewControl.h"
-#include "guilib/GUIWindowManager.h"
-#include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
+
+#include <utility>
+
 #include "FileItem.h"
-#include "guilib/LocalizeStrings.h"
 #include "GUIInfoManager.h"
-#include "guilib/WindowIDs.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/IGUIContainer.h"
+#include "guilib/LocalizeStrings.h"
+#include "guilib/WindowIDs.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 CGUIViewControl::CGUIViewControl(void)
 {

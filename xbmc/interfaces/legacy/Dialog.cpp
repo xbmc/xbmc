@@ -103,7 +103,34 @@ namespace XBMCAddon
 
       pDialog->Open();
 
-      return pDialog->GetSelectedLabel();
+      return pDialog->GetSelectedItem();
+    }
+
+
+    std::unique_ptr<std::vector<int>> Dialog::multiselect(const String& heading,
+        const std::vector<String>& options, int autoclose)
+    {
+      DelayedCallGuard dcguard(languageHook);
+      CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+      if (pDialog == nullptr)
+        throw WindowException("Error: Window is NULL");
+
+      pDialog->Reset();
+      pDialog->SetMultiSelection(true);
+      pDialog->SetHeading(CVariant{heading});
+
+      for (const auto& option : options)
+        pDialog->Add(option);
+
+      if (autoclose > 0)
+        pDialog->SetAutoClose(autoclose);
+
+      pDialog->Open();
+
+      if (pDialog->IsConfirmed())
+        return std::unique_ptr<std::vector<int>>(new std::vector<int>(pDialog->GetSelectedItems()));
+      else
+        return std::unique_ptr<std::vector<int>>();
     }
 
     bool Dialog::ok(const String& heading, const String& line1, 
@@ -166,7 +193,7 @@ namespace XBMCAddon
       DelayedCallGuard dcguard(languageHook);
       std::string value;
       std::string mask = maskparam;
-      VECSOURCES *shares = CMediaSourceSettings::Get().GetSources(s_shares);
+      VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(s_shares);
       if (!shares) 
         throw WindowException("Error: GetSources given %s is NULL.",s_shares.c_str());
 
@@ -188,7 +215,7 @@ namespace XBMCAddon
                           bool useFileDirectories, const String& defaultt )
     {
       DelayedCallGuard dcguard(languageHook);
-      VECSOURCES *shares = CMediaSourceSettings::Get().GetSources(s_shares);
+      VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(s_shares);
       std::vector<String> valuelist;
       String lmask = mask;
       if (!shares) 

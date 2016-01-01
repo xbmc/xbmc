@@ -17,10 +17,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h" //HAS_ZEROCONF define
-#include <assert.h>
 #include "Zeroconf.h"
+
+#include <cassert>
+
 #include "settings/Settings.h"
+#include "system.h" //HAS_ZEROCONF define
+#include "threads/Atomics.h"
+#include "threads/CriticalSection.h"
+#include "threads/SingleLock.h"
+#include "utils/JobManager.h"
 
 #if defined(HAS_AVAHI)
 #include "linux/ZeroconfAvahi.h"
@@ -30,11 +36,6 @@
 #elif defined(HAS_MDNS)
 #include "mdns/ZeroconfMDNS.h"
 #endif
-
-#include "threads/CriticalSection.h"
-#include "threads/SingleLock.h"
-#include "threads/Atomics.h"
-#include "utils/JobManager.h"
 
 #ifndef HAS_ZEROCONF
 //dummy implementation used if no zeroconf is present
@@ -114,9 +115,9 @@ bool CZeroconf::Start()
   CSingleLock lock(*mp_crit_sec);
   if(!IsZCdaemonRunning())
   {
-    CSettings::Get().SetBool("services.zeroconf", false);
-    if (CSettings::Get().GetBool("services.airplay"))
-      CSettings::Get().SetBool("services.airplay", false);
+    CSettings::GetInstance().SetBool(CSettings::SETTING_SERVICES_ZEROCONF, false);
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
+      CSettings::GetInstance().SetBool(CSettings::SETTING_SERVICES_AIRPLAY, false);
     return false;
   }
   if(m_started)

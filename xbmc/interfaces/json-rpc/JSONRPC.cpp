@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -36,7 +36,6 @@
 
 using namespace ANNOUNCEMENT;
 using namespace JSONRPC;
-using namespace std;
 
 bool CJSONRPC::m_initialized = false;
 
@@ -46,7 +45,7 @@ void CJSONRPC::Initialize()
     return;
 
   // Add some types/enums at runtime
-  vector<string> enumList;
+  std::vector<std::string> enumList;
   for (int addonType = ADDON::ADDON_UNKNOWN; addonType < ADDON::ADDON_MAX; addonType++)
     enumList.push_back(ADDON::TranslateType(static_cast<ADDON::TYPE>(addonType), false));
   CJSONServiceDescription::AddEnum("Addon.Types", enumList);
@@ -60,7 +59,7 @@ void CJSONRPC::Initialize()
   CJSONServiceDescription::AddEnum("GUI.Window", enumList);
 
   // filter-related enums
-  vector<string> smartplaylistList;
+  std::vector<std::string> smartplaylistList;
   CDatabaseQueryRule::GetAvailableOperators(smartplaylistList);
   CJSONServiceDescription::AddEnum("List.Filter.Operators", smartplaylistList);
 
@@ -137,8 +136,8 @@ JSONRPC_STATUS CJSONRPC::Version(const std::string &method, ITransportLayer *tra
   const char* version = CJSONServiceDescription::GetVersion();
   if (version != NULL)
   {
-    vector<string> parts = StringUtils::Split(version, ".");
-    if (parts.size() > 0)
+    std::vector<std::string> parts = StringUtils::Split(version, ".");
+    if (!parts.empty())
       result["version"]["major"] = (int)strtol(parts[0].c_str(), NULL, 10);
     if (parts.size() > 1)
       result["version"]["minor"] = (int)strtol(parts[1].c_str(), NULL, 10);
@@ -222,12 +221,12 @@ JSONRPC_STATUS CJSONRPC::SetConfiguration(const std::string &method, ITransportL
 JSONRPC_STATUS CJSONRPC::NotifyAll(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
 {
   if (parameterObject["data"].isNull())
-    CAnnouncementManager::Get().Announce(Other, parameterObject["sender"].asString().c_str(),  
+    CAnnouncementManager::GetInstance().Announce(Other, parameterObject["sender"].asString().c_str(),  
       parameterObject["message"].asString().c_str());
   else
   {
     CVariant data = parameterObject["data"];
-    CAnnouncementManager::Get().Announce(Other, parameterObject["sender"].asString().c_str(),  
+    CAnnouncementManager::GetInstance().Announce(Other, parameterObject["sender"].asString().c_str(),  
       parameterObject["message"].asString().c_str(), data);
   }
 

@@ -59,10 +59,9 @@ public:
     , param1{ p1 }
     , param2{ p2 }
     , lpVoid{ payload }
-
+    , strParam( param )
+    , params( vecParams )
   {
-    strParam = param;
-    params = vecParams;
   }
 
   ThreadMessage(const ThreadMessage& other)
@@ -72,7 +71,8 @@ public:
     lpVoid(other.lpVoid),
     strParam(other.strParam),
     params(other.params),
-    waitEvent(other.waitEvent)
+    waitEvent(other.waitEvent),
+    result(other.result)
   {
   }
 
@@ -83,7 +83,8 @@ public:
     lpVoid(other.lpVoid),
     strParam(std::move(other.strParam)),
     params(std::move(other.params)),
-    waitEvent(std::move(other.waitEvent))
+    waitEvent(std::move(other.waitEvent)),
+    result(std::move(other.result))
   {
   }
 
@@ -98,6 +99,7 @@ public:
     strParam = other.strParam;
     params = other.params;
     waitEvent = other.waitEvent;
+    result = other.result;
     return *this;
   }
 
@@ -112,6 +114,7 @@ public:
     strParam = std::move(other.strParam);
     params = std::move(other.params);
     waitEvent = std::move(other.waitEvent);
+    result = std::move(other.result);
     return *this;
   }
 
@@ -122,8 +125,17 @@ public:
   std::string strParam;
   std::vector<std::string> params;
 
+  void SetResult(int res)
+  {
+    //On posted messages result will be zero, since they can't
+    //retreive the response we silently ignore this to let message
+    //handlers not have to worry about it
+    if (result)
+      *result = res;
+  }
 protected:
   std::shared_ptr<CEvent> waitEvent;
+  std::shared_ptr<int> result;
 };
 }
 }

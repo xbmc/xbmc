@@ -46,8 +46,4 @@ public:
   virtual bool  GetPreferredResolution(RESOLUTION_INFO *res) const;
 
   virtual bool  ShowWindow(bool show);
-
-protected:
-  int m_width;
-  int m_height;
 };

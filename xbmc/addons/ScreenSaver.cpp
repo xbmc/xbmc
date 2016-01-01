@@ -20,6 +20,7 @@
 #include "ScreenSaver.h"
 #include "guilib/GraphicContext.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
+#include "settings/Settings.h"
 #include "utils/AlarmClock.h"
 #include "windowing/WindowingFactory.h"
 
@@ -42,15 +43,20 @@ AddonPtr CScreenSaver::Clone() const
   return AddonPtr(new CScreenSaver(*this));
 }
 
+bool CScreenSaver::IsInUse() const
+{
+  return CSettings::GetInstance().GetString(CSettings::SETTING_SCREENSAVER_MODE) == ID();
+}
+
 bool CScreenSaver::CreateScreenSaver()
 {
-  if (CScriptInvocationManager::Get().HasLanguageInvoker(LibPath()))
+  if (CScriptInvocationManager::GetInstance().HasLanguageInvoker(LibPath()))
   {
     // Don't allow a previously-scheduled alarm to kill our new screensaver
     g_alarmClock.Stop(SCRIPT_ALARM, true);
 
-    if (!CScriptInvocationManager::Get().Stop(LibPath()))
-      CScriptInvocationManager::Get().ExecuteAsync(LibPath(), Clone());
+    if (!CScriptInvocationManager::GetInstance().Stop(LibPath()))
+      CScriptInvocationManager::GetInstance().ExecuteAsync(LibPath(), Clone());
     return true;
   }
  // pass it the screen width,height

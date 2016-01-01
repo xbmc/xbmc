@@ -75,21 +75,14 @@ chmod u+w "$TARGET_FRAMEWORKS/$(basename $a)"
 install_name_tool -change "$a" "$DYLIB_NAMEPATH/$(basename $a)" "$TARGET_BINARY"
 done
 
-if [ "$SDK_NAME" = "iphoneos6.0" ] ; then
-echo "Fixing $TARGET_BINARY VideoToolbox dylib name"
-VTB_SDK6=/System/Library/Frameworks/VideoToolbox.framework/VideoToolbox
-VTB_SDK5=/System/Library/PrivateFrameworks/VideoToolbox.framework/VideoToolbox
-install_name_tool -change "$VTB_SDK6" "$VTB_SDK5" "$TARGET_BINARY"
-fi
-
-echo "Package $EXTERNAL_LIBS/lib/python2.6"
+echo "Package $EXTERNAL_LIBS/lib/python2.7"
 mkdir -p "$TARGET_CONTENTS/Frameworks/lib"
 PYTHONSYNC="rsync -aq --exclude .DS_Store --exclude *.a --exclude *.exe --exclude test --exclude tests"
-${PYTHONSYNC} "$EXTERNAL_LIBS/lib/python2.6" "$TARGET_FRAMEWORKS/lib/"
-rm -rf "$TARGET_FRAMEWORKS/lib/python2.6/config"
+${PYTHONSYNC} "$EXTERNAL_LIBS/lib/python2.7" "$TARGET_FRAMEWORKS/lib/"
+rm -rf "$TARGET_FRAMEWORKS/lib/python2.7/config"
 
-echo "Checking $TARGET_FRAMEWORKS/lib/python2.6 *.so for dylib dependencies"
-check_xbmc_dylib_depends "$TARGET_FRAMEWORKS"/lib/python2.6 "*.so"
+echo "Checking $TARGET_FRAMEWORKS/lib/python2.7 *.so for dylib dependencies"
+check_xbmc_dylib_depends "$TARGET_FRAMEWORKS"/lib/python2.7 "*.so"
 
 echo "Checking $XBMC_HOME/system *.so for dylib dependencies"
 check_xbmc_dylib_depends "$XBMC_HOME"/system "*.so"

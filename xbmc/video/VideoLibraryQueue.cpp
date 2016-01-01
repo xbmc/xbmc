@@ -19,19 +19,24 @@
  */
 
 #include "VideoLibraryQueue.h"
-#include "GUIUserMessages.h"
-#include "Util.h"
+
+#include <utility>
+
 #include "guilib/GUIWindowManager.h"
+#include "GUIUserMessages.h"
 #include "threads/SingleLock.h"
-#include "video/VideoDatabase.h"
+#include "Util.h"
 #include "video/jobs/VideoLibraryCleaningJob.h"
 #include "video/jobs/VideoLibraryJob.h"
 #include "video/jobs/VideoLibraryMarkWatchedJob.h"
+#include "video/jobs/VideoLibraryRefreshingJob.h"
 #include "video/jobs/VideoLibraryScanningJob.h"
+#include "video/VideoDatabase.h"
 
 CVideoLibraryQueue::CVideoLibraryQueue()
   : CJobQueue(false, 1, CJob::PRIORITY_LOW),
     m_jobs(),
+    m_modal(false),
     m_cleaning(false)
 { }
 
@@ -41,7 +46,7 @@ CVideoLibraryQueue::~CVideoLibraryQueue()
   m_jobs.clear();
 }
 
-CVideoLibraryQueue& CVideoLibraryQueue::Get()
+CVideoLibraryQueue& CVideoLibraryQueue::GetInstance()
 {
   static CVideoLibraryQueue s_instance;
   return s_instance;
@@ -95,11 +100,13 @@ void CVideoLibraryQueue::CleanLibrary(const std::set<int>& paths /* = std::set<i
     AddJob(cleaningJob);
   else
   {
+    m_modal = true;
     m_cleaning = true;
     cleaningJob->DoWork();
 
     delete cleaningJob;
     m_cleaning = false;
+    m_modal = false;
     Refresh();
   }
 }
@@ -110,11 +117,33 @@ void CVideoLibraryQueue::CleanLibraryModal(const std::set<int>& paths /* = std::
   if (IsRunning())
     return;
 
+  m_modal = true;
   m_cleaning = true;
   CVideoLibraryCleaningJob cleaningJob(paths, true);
   cleaningJob.DoWork();
   m_cleaning = false;
+  m_modal = false;
   Refresh();
+}
+
+void CVideoLibraryQueue::RefreshItem(CFileItemPtr item, bool ignoreNfo /* = false */, bool forceRefresh /* = true */, bool refreshAll /* = false */, const std::string& searchTitle /* = "" */)
+{
+  AddJob(new CVideoLibraryRefreshingJob(item, forceRefresh, refreshAll, ignoreNfo, searchTitle));
+}
+
+bool CVideoLibraryQueue::RefreshItemModal(CFileItemPtr item, bool forceRefresh /* = true */, bool refreshAll /* = false */)
+{
+  // we can't perform a modal library cleaning if other jobs are running
+  if (IsRunning())
+    return false;
+
+  m_modal = true;
+  CVideoLibraryRefreshingJob refreshingJob(item, forceRefresh, refreshAll);
+
+  bool result = refreshingJob.DoModal();
+  m_modal = false;
+
+  return result;
 }
 
 void CVideoLibraryQueue::MarkAsWatched(const CFileItemPtr &item, bool watched)
@@ -183,7 +212,7 @@ void CVideoLibraryQueue::CancelAllJobs()
 
 bool CVideoLibraryQueue::IsRunning() const
 {
-  return CJobQueue::IsProcessing() || m_cleaning;
+  return CJobQueue::IsProcessing() || m_modal;
 }
 
 void CVideoLibraryQueue::Refresh()

@@ -48,7 +48,6 @@
 CGUIWindowMusicPlaylistEditor::CGUIWindowMusicPlaylistEditor(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_PLAYLIST_EDITOR, "MyMusicPlaylistEditor.xml")
 {
-  m_thumbLoader.SetObserver(this);
   m_playlistThumbLoader.SetObserver(this);
   m_playlist = new CFileItemList;
 }
@@ -326,7 +325,7 @@ void CGUIWindowMusicPlaylistEditor::GetContextButtons(int itemNumber, CContextBu
   }
   buttons.Add(CONTEXT_BUTTON_LOAD, 21385);
 
-  CContextMenuManager::Get().AddVisibleItems(item, buttons);
+  CContextMenuManager::GetInstance().AddVisibleItems(item, buttons);
 }
 
 bool CGUIWindowMusicPlaylistEditor::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -407,7 +406,7 @@ void CGUIWindowMusicPlaylistEditor::OnSavePlaylist()
   { // save playlist as an .m3u
     PLAYLIST::CPlayListM3U playlist;
     playlist.Add(*m_playlist);
-    std::string strBase = URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "music");
+    std::string strBase = URIUtils::AddFileToFolder(CSettings::GetInstance().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH), "music");
     std::string path = URIUtils::AddFileToFolder(strBase, name + ".m3u");
     playlist.Save(path);
     m_strLoadedPlaylist = name;
@@ -417,7 +416,7 @@ void CGUIWindowMusicPlaylistEditor::OnSavePlaylist()
 void CGUIWindowMusicPlaylistEditor::AppendToPlaylist(CFileItemList &newItems)
 {
   OnRetrieveMusicInfo(newItems);
-  FormatItemLabels(newItems, LABEL_MASKS(CSettings::Get().GetString("musicfiles.trackformat"), CSettings::Get().GetString("musicfiles.trackformatright"), "%L", ""));
+  FormatItemLabels(newItems, LABEL_MASKS(CSettings::GetInstance().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT), "%D", "%L", ""));
   m_playlist->Append(newItems);
   UpdatePlaylist();
 }

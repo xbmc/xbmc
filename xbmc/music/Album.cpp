@@ -28,7 +28,6 @@
 
 #include <algorithm>
 
-using namespace std;
 using namespace MUSIC_INFO;
 
 typedef struct ReleaseTypeInfo {
@@ -52,31 +51,45 @@ CAlbum::CAlbum(const CFileItem& item)
   strAlbum = tag.GetAlbum();
   strMusicBrainzAlbumID = tag.GetMusicBrainzAlbumID();
   genre = tag.GetGenre();
-  artist = tag.GetAlbumArtist();
+  std::vector<std::string> musicBrainAlbumArtistHints = tag.GetMusicBrainzAlbumArtistHints();
+  strArtistDesc = tag.GetAlbumArtistString();
+
   if (!tag.GetMusicBrainzAlbumArtistID().empty())
   { // have musicbrainz artist info, so use it
     for (size_t i = 0; i < tag.GetMusicBrainzAlbumArtistID().size(); i++)
     {
       std::string artistId = tag.GetMusicBrainzAlbumArtistID()[i];
       std::string artistName;
+
       /*
-       We try and get the corresponding artist name from the album artist tag.
-       We match on the same index, and if that fails just use the first name we have.
-       If no albumartist exists, try matching on artist if the MBArtistID matches.
-       */
-      if (!artist.empty())
-        artistName = (i < artist.size()) ? artist[i] : artist[0];
+         We try and get the mbrainzid <-> name matching from the hints and match on the same index.
+         If not found, we try and use the mbrainz <-> name matching from the artists fields
+         If still not found, try and use the same index of the albumartist field.
+         If still not found, use the mbrainzid and hope we later on can update that entry
+         */
+
+      if (i < musicBrainAlbumArtistHints.size())
+        artistName = musicBrainAlbumArtistHints[i];
       else if (!tag.GetMusicBrainzArtistID().empty() && !tag.GetArtist().empty())
       {
-        vector<string>::const_iterator j = std::find(tag.GetMusicBrainzArtistID().begin(), tag.GetMusicBrainzArtistID().end(), artistId);
-        if (j != tag.GetMusicBrainzArtistID().end())
-        { // find corresponding artist
-          size_t d = std::distance(j,tag.GetMusicBrainzArtistID().begin());
-          artistName = (d < tag.GetArtist().size()) ? tag.GetArtist()[d] : tag.GetArtist()[0];
+        for (size_t j = 0; j < tag.GetMusicBrainzArtistID().size(); j++)
+        {
+          if (artistId == tag.GetMusicBrainzArtistID()[j])
+          {
+            if (j < tag.GetMusicBrainzArtistHints().size())
+              artistName = tag.GetMusicBrainzArtistHints()[j];
+            else
+              artistName = (j < tag.GetArtist().size()) ? tag.GetArtist()[j] : tag.GetArtist()[0];
+          }
         }
       }
+
+      if (artistName.empty() && tag.GetMusicBrainzAlbumArtistID().size() == tag.GetAlbumArtist().size())
+        artistName = tag.GetAlbumArtist()[i];
+
       if (artistName.empty())
         artistName = artistId;
+
       std::string strJoinPhrase = (i == tag.GetMusicBrainzAlbumArtistID().size()-1) ? "" : g_advancedSettings.m_musicItemSeparator;
       CArtistCredit artistCredit(artistName, tag.GetMusicBrainzAlbumArtistID()[i], strJoinPhrase);
       artistCredits.push_back(artistCredit);
@@ -84,7 +97,7 @@ CAlbum::CAlbum(const CFileItem& item)
   }
   else
   { // no musicbrainz info, so fill in directly
-    for (vector<string>::const_iterator it = tag.GetAlbumArtist().begin(); it != tag.GetAlbumArtist().end(); ++it)
+    for (std::vector<std::string>::const_iterator it = tag.GetAlbumArtist().begin(); it != tag.GetAlbumArtist().end(); ++it)
     {
       std::string strJoinPhrase = (it == --tag.GetAlbumArtist().end() ? "" : g_advancedSettings.m_musicItemSeparator);
       CArtistCredit artistCredit(*it, "", strJoinPhrase);
@@ -94,6 +107,8 @@ CAlbum::CAlbum(const CFileItem& item)
   iYear = stTime.wYear;
   bCompilation = tag.GetCompilation();
   iTimesPlayed = 0;
+  dateAdded.Reset();
+  lastPlayed.Reset();
   releaseType = tag.GetAlbumReleaseType();
 }
 
@@ -129,11 +144,12 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
   strType = source.strType;
 //  strPath = source.strPath; // don't merge the path
   m_strDateOfRelease = source.m_strDateOfRelease;
-  iRating = source.iRating;
+  fRating = source.fRating;
+  iUserrating = source.iUserrating;
+  iVotes = source.iVotes;
   if (override)
   {
     artistCredits = source.artistCredits;
-    artist = source.artist; // artist information is read-only from the database. artistCredits is what counts on scan
   }
   else if (source.artistCredits.size() > artistCredits.size())
     artistCredits.insert(artistCredits.end(), source.artistCredits.begin()+artistCredits.size(), source.artistCredits.end());
@@ -151,14 +167,52 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
   infoSongs = source.infoSongs;
 }
 
-std::string CAlbum::GetArtistString() const
-{
-  return StringUtils::Join(artist, g_advancedSettings.m_musicItemSeparator);
-}
-
 std::string CAlbum::GetGenreString() const
 {
   return StringUtils::Join(genre, g_advancedSettings.m_musicItemSeparator);
+}
+
+const std::vector<std::string> CAlbum::GetAlbumArtist() const
+{
+  //Get artist names as vector from artist credits
+  std::vector<std::string> albumartists;
+  for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
+  {
+    albumartists.push_back(artistCredit->GetArtist());
+  }
+  return albumartists;
+}
+
+const std::vector<std::string> CAlbum::GetMusicBrainzAlbumArtistID() const
+{
+  //Get artist MusicBrainz IDs as vector from artist credits
+  std::vector<std::string> muisicBrainzID;
+  for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
+  {
+    muisicBrainzID.push_back(artistCredit->GetMusicBrainzArtistID());
+  }
+  return muisicBrainzID;
+}
+
+const std::string CAlbum::GetAlbumArtistString() const
+{
+  //Artist description may be different from the artists in artistcredits (see ALBUMARTISTS tag processing)
+  //but is takes precidence as a string because artistcredits is not always filled during processing
+  if (!strArtistDesc.empty())
+    return strArtistDesc;
+  std::string artistString;
+  for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
+    artistString += artistCredit->GetArtist() + artistCredit->GetJoinPhrase();
+  return artistString;
+}
+
+const std::vector<int> CAlbum::GetArtistIDArray() const
+{
+  // Get album artist IDs for json rpc
+  std::vector<int> artistids;
+  for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
+    artistids.push_back(artistCredit->GetArtistId());
+  return artistids;
 }
 
 std::string CAlbum::GetReleaseType() const
@@ -169,6 +223,16 @@ std::string CAlbum::GetReleaseType() const
 void CAlbum::SetReleaseType(const std::string& strReleaseType)
 {
   releaseType = ReleaseTypeFromString(strReleaseType);
+}
+
+void CAlbum::SetDateAdded(const std::string& strDateAdded)
+{
+  dateAdded.SetFromDBDateTime(strDateAdded);
+}
+
+void CAlbum::SetLastPlayed(const std::string& strLastPlayed)
+{
+  lastPlayed.SetFromDBDateTime(strLastPlayed);
 }
 
 std::string CAlbum::ReleaseTypeToString(CAlbum::ReleaseType releaseType)
@@ -203,8 +267,8 @@ bool CAlbum::operator<(const CAlbum &a) const
     if (strAlbum > a.strAlbum) return false;
 
     // This will do an std::vector compare (i.e. item by item)
-    if (artist < a.artist) return true;
-    if (artist > a.artist) return false;
+    if (GetAlbumArtist() < a.GetAlbumArtist()) return true;
+    if (GetAlbumArtist() > a.GetAlbumArtist()) return false;
     return false;
   }
 
@@ -221,7 +285,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
 
   XMLUtils::GetString(album,              "title", strAlbum);
   XMLUtils::GetString(album, "musicBrainzAlbumID", strMusicBrainzAlbumID);
-
+  std::vector<std::string> artist; // Support old style <artist></artist> for backwards compatibility
   XMLUtils::GetStringArray(album, "artist", artist, prioritise, g_advancedSettings.m_musicItemSeparator);
   XMLUtils::GetStringArray(album, "genre", genre, prioritise, g_advancedSettings.m_musicItemSeparator);
   XMLUtils::GetStringArray(album, "style", styles, prioritise, g_advancedSettings.m_musicItemSeparator);
@@ -245,8 +309,21 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
       rating *= (5.f / max_rating); // Normalise the Rating to between 0 and 5 
     if (rating > 5.f)
       rating = 5.f;
-    iRating = MathUtils::round_int(rating);
+    fRating = rating;
   }
+  const TiXmlElement* userrating = album->FirstChildElement("userrating");
+  if (userrating)
+  {
+    float rating = 0;
+    float max_rating = 10;
+    XMLUtils::GetFloat(album, "userrating", rating);
+    if (userrating->QueryFloatAttribute("max", &max_rating) == TIXML_SUCCESS && max_rating >= 1)
+      rating *= (5.f / max_rating); // Normalise the Rating to between 0 and 10 
+    if (rating > 5.f)
+      rating = 5.f;
+    iUserrating = MathUtils::round_int(rating);
+  }
+  XMLUtils::GetInt(album, "votes", iVotes);
 
   size_t iThumbCount = thumbURL.m_url.size();
   std::string xmlAdd = thumbURL.m_xml;
@@ -295,7 +372,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
   // or removed entirely in preference for better tags (MusicBrainz?)
   if (artistCredits.empty() && !artist.empty())
   {
-    for (vector<string>::const_iterator it = artist.begin(); it != artist.end(); ++it)
+    for (std::vector<std::string>::const_iterator it = artist.begin(); it != artist.end(); ++it)
     {
       CArtistCredit artistCredit(*it, "",
                                  it == --artist.end() ? "" : g_advancedSettings.m_musicItemSeparator);
@@ -373,7 +450,7 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
 
   XMLUtils::SetString(album,                    "title", strAlbum);
   XMLUtils::SetString(album,       "musicBrainzAlbumID", strMusicBrainzAlbumID);
-  XMLUtils::SetStringArray(album,              "artist", artist);
+  XMLUtils::SetStringArray(album,              "artist", GetAlbumArtist());
   XMLUtils::SetStringArray(album,               "genre", genre);
   XMLUtils::SetStringArray(album,               "style", styles);
   XMLUtils::SetStringArray(album,                "mood", moods);
@@ -398,7 +475,9 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
   }
   XMLUtils::SetString(album,        "path", strPath);
 
-  XMLUtils::SetInt(album,         "rating", iRating);
+  XMLUtils::SetFloat(album,         "rating", fRating);
+  XMLUtils::SetInt(album,           "userrating", iUserrating);
+  XMLUtils::SetInt(album,           "votes", iVotes);
   XMLUtils::SetInt(album,           "year", iYear);
 
   for( VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin();artistCredit != artistCredits.end();++artistCredit)

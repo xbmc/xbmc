@@ -57,12 +57,14 @@ typedef enum {
   SortByTrackNumber,
   SortByTime,
   SortByArtist,
+  SortByArtistThenYear,
   SortByAlbum,
   SortByAlbumType,
   SortByGenre,
   SortByCountry,
   SortByYear,
   SortByRating,
+  SortByUserRating,
   SortByVotes,
   SortByTop250,
   SortByProgramCount,
@@ -92,7 +94,8 @@ typedef enum {
   SortByRandom,
   SortByChannel,
   SortByChannelNumber,
-  SortByDateTaken
+  SortByDateTaken,
+  SortByRelevance
 } SortBy;
 
 typedef struct SortDescription {
@@ -124,6 +127,11 @@ class SortUtils
 public:
   static SORT_METHOD TranslateOldSortMethod(SortBy sortBy, bool ignoreArticle);
   static SortDescription TranslateOldSortMethod(SORT_METHOD sortBy);
+
+  static SortBy SortMethodFromString(const std::string& sortMethod);
+  static const std::string& SortMethodToString(SortBy sortMethod);
+  static SortOrder SortOrderFromString(const std::string& sortOrder);
+  static const std::string& SortOrderToString(SortOrder sortOrder);
 
   /*! \brief retrieve the label id associated with a sort method for displaying in the UI.
    \param sortBy the sort method in question.

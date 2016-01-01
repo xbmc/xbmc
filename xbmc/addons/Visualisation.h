@@ -20,7 +20,7 @@
 #pragma once
 
 #include "AddonDll.h"
-#include "cores/IAudioCallback.h"
+#include "cores/AudioEngine/Interfaces/IAudioCallback.h"
 #include "include/xbmc_vis_types.h"
 #include "guilib/IRenderingCallback.h"
 #include "utils/rfft.h"
@@ -61,6 +61,7 @@ namespace ADDON
     CVisualisation(const cp_extension_t *ext) : CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>(ext) {}
     virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
     virtual void OnAudioData(const float* pAudioData, int iAudioDataLength);
+    virtual bool IsInUse() const;
     bool Create(int x, int y, int w, int h, void *device);
     void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const std::string &strSongName);
     void AudioData(const float *pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
@@ -69,6 +70,7 @@ namespace ADDON
     void GetInfo(VIS_INFO *info);
     bool OnAction(VIS_ACTION action, void *param = NULL);
     bool UpdateTrack();
+    bool HasPresets() { return m_hasPresets; };
     bool HasSubModules() { return !m_submodules.empty(); }
     bool IsLocked();
     unsigned GetPreset();
@@ -106,6 +108,7 @@ namespace ADDON
     bool m_bWantsFreq;
     float m_fFreq[AUDIO_BUFFER_SIZE];         // Frequency data
     bool m_bCalculate_Freq;       // True if the vis wants freq data
+    bool m_hasPresets;
     std::unique_ptr<RFFT> m_transform;
 
     // track information

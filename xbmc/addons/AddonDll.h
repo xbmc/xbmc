@@ -66,7 +66,6 @@ namespace ADDON
   protected:
     void HandleException(std::exception &e, const char* context);
     bool Initialized() { return m_initialized; }
-    virtual void BuildLibName(const cp_extension_t *ext = NULL) {}
     virtual bool LoadSettings();
     TheStruct* m_pStruct;
     TheProps*     m_pInfo;
@@ -95,20 +94,6 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
   : CAddon(ext),
     m_bIsChild(false)
 {
-  // if library attribute isn't present, look for a system-dependent one
-  if (ext && m_strLibName.empty())
-  {
-#if defined(TARGET_ANDROID)
-  m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_android");
-#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
-    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_linux");
-#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
-    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_windx");
-#elif defined(TARGET_DARWIN)
-    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_osx");
-#endif
-  }
-
   m_pStruct     = NULL;
   m_initialized = false;
   m_pDll        = NULL;
@@ -228,6 +213,9 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
 template<class TheDll, typename TheStruct, typename TheProps>
 ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::Create()
 {
+  /* ensure that a previous instance is destroyed */
+  Destroy();
+
   ADDON_STATUS status(ADDON_STATUS_UNKNOWN);
   CLog::Log(LOGDEBUG, "ADDON: Dll Initializing - %s", Name().c_str());
   m_initialized = false;
@@ -247,7 +235,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::Create()
     if (status == ADDON_STATUS_OK)
     {
       m_initialized = true;
-      ANNOUNCEMENT::CAnnouncementManager::Get().AddAnnouncer(this);
+      ANNOUNCEMENT::CAnnouncementManager::GetInstance().AddAnnouncer(this);
     }
     else if ((status == ADDON_STATUS_NEED_SETTINGS) || (status == ADDON_STATUS_NEED_SAVEDSETTINGS))
     {
@@ -267,9 +255,6 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::Create()
   {
     HandleException(e, "m_pDll->Create");
   }
-
-  if (!m_initialized)
-    SAFE_DELETE(m_pHelpers);
 
   return status;
 }
@@ -313,7 +298,7 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Stop()
 template<class TheDll, typename TheStruct, typename TheProps>
 void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
 {
-  ANNOUNCEMENT::CAnnouncementManager::Get().RemoveAnnouncer(this);
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
 
   /* Unload library file */
   try

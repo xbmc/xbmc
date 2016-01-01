@@ -25,7 +25,11 @@
 
 #include "AEChannelData.h"
 
+class CHelper_libKODI_audioengine;
+
 class CAEChannelInfo {
+  friend class CHelper_libKODI_audioengine;
+
 public:
   CAEChannelInfo();
   CAEChannelInfo(const enum AEChannel* rhs);
@@ -35,7 +39,7 @@ public:
   CAEChannelInfo& operator=(const enum AEChannel* rhs);
   CAEChannelInfo& operator=(const enum AEStdChLayout rhs);
   bool operator==(const CAEChannelInfo& rhs) const;
-  bool operator!=(const CAEChannelInfo& rhs);
+  bool operator!=(const CAEChannelInfo& rhs) const;
   CAEChannelInfo& operator+=(const enum AEChannel& rhs);
   CAEChannelInfo& operator-=(const enum AEChannel& rhs);
   const enum AEChannel operator[](unsigned int i) const;

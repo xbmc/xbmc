@@ -20,7 +20,10 @@
  *
  */
 
+#include <utility>
+
 #include "guilib/GUIDialog.h"
+
 
 class CMediaSource;
 
@@ -75,7 +78,6 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_INFO,
                       CONTEXT_BUTTON_INFO_ALL,
                       CONTEXT_BUTTON_CDDB,
-                      CONTEXT_BUTTON_REFRESH,
                       CONTEXT_BUTTON_SCAN,
                       CONTEXT_BUTTON_STOP_SCANNING,
                       CONTEXT_BUTTON_SET_ARTIST_THUMB,
@@ -103,8 +105,9 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_ADD,
                       CONTEXT_BUTTON_ACTIVATE,
                       CONTEXT_BUTTON_START_RECORD,
-                      CONTEXT_BUTTON_ADVANCED_RECORD,
+                      CONTEXT_BUTTON_ADD_TIMER,
                       CONTEXT_BUTTON_STOP_RECORD,
+                      CONTEXT_BUTTON_DELETE_TIMER,
                       CONTEXT_BUTTON_GROUP_MANAGER,
                       CONTEXT_BUTTON_CHANNEL_MANAGER,
                       CONTEXT_BUTTON_FILTER,
@@ -123,7 +126,6 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_PLAY_AND_QUEUE,
                       CONTEXT_BUTTON_PLAY_ONLY_THIS,
                       CONTEXT_BUTTON_UPDATE_EPG,
-                      CONTEXT_BUTTON_RECORD_ITEM,
                       CONTEXT_BUTTON_TAGS_ADD_ITEMS,
                       CONTEXT_BUTTON_TAGS_REMOVE_ITEMS,
                       CONTEXT_BUTTON_SET_MOVIESET,
@@ -134,6 +136,7 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_DELETE_ALL,
                       CONTEXT_BUTTON_HELP,
                       CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS,
+                      CONTEXT_BUTTON_CHECK_FOR_UPDATES,
                       CONTEXT_BUTTON_USER1,
                       CONTEXT_BUTTON_USER2,
                       CONTEXT_BUTTON_USER3,

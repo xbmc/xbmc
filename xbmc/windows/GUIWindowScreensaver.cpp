@@ -122,8 +122,6 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 //      RESOLUTION res = g_graphicsContext.GetVideoResolution();
  //     g_graphicsContext.SetVideoResolution(res, FALSE);
 
-      // enable the overlay
-      g_windowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
     }
     break;
 
@@ -139,7 +137,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       m_addon.reset();
       // Setup new screensaver instance
       AddonPtr addon;
-      if (!CAddonMgr::Get().GetAddon(CSettings::Get().GetString("screensaver.mode"), addon, ADDON_SCREENSAVER))
+      if (!CAddonMgr::GetInstance().GetAddon(CSettings::GetInstance().GetString(CSettings::SETTING_SCREENSAVER_MODE), addon, ADDON_SCREENSAVER))
         return false;
 
       m_addon = std::dynamic_pointer_cast<CScreenSaver>(addon);
@@ -154,8 +152,6 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 //      RESOLUTION res = g_graphicsContext.GetVideoResolution();
 //      g_graphicsContext.SetVideoResolution(res, TRUE);
 
-      // disable the overlay
-      g_windowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
       return true;
     }
   case GUI_MSG_CHECK_LOCK:

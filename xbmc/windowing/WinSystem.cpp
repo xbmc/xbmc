@@ -50,7 +50,7 @@ CWinSystemBase::~CWinSystemBase()
 bool CWinSystemBase::InitWindowSystem()
 {
   UpdateResolutions();
-  CDisplaySettings::Get().ApplyCalibrations();
+  CDisplaySettings::GetInstance().ApplyCalibrations();
   return true;
 }
 
@@ -96,7 +96,7 @@ void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen
 void CWinSystemBase::UpdateResolutions()
 {
   // add the window res - defaults are fine.
-  RESOLUTION_INFO& window = CDisplaySettings::Get().GetResolutionInfo(RES_WINDOW);
+  RESOLUTION_INFO& window = CDisplaySettings::GetInstance().GetResolutionInfo(RES_WINDOW);
   window.bFullScreen = false;
   if (window.iWidth == 0)
     window.iWidth = 720;
@@ -112,7 +112,7 @@ void CWinSystemBase::UpdateResolutions()
 
 void CWinSystemBase::SetWindowResolution(int width, int height)
 {
-  RESOLUTION_INFO& window = CDisplaySettings::Get().GetResolutionInfo(RES_WINDOW);
+  RESOLUTION_INFO& window = CDisplaySettings::GetInstance().GetResolutionInfo(RES_WINDOW);
   window.iWidth = width;
   window.iHeight = height;
   window.iScreenWidth = width;
@@ -124,7 +124,7 @@ void CWinSystemBase::SetWindowResolution(int width, int height)
 int CWinSystemBase::DesktopResolution(int screen)
 {
   for (int idx = 0; idx < GetNumScreens(); idx++)
-    if (CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP + idx).iScreen == screen)
+    if (CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP + idx).iScreen == screen)
       return RES_DESKTOP + idx;
   // Uh? something's wrong, fallback to default res of main screen
   return RES_DESKTOP;
@@ -132,7 +132,7 @@ int CWinSystemBase::DesktopResolution(int screen)
 
 static void AddResolution(std::vector<RESOLUTION_WHR> &resolutions, unsigned int addindex, float bestRefreshrate)
 {
-  RESOLUTION_INFO resInfo = CDisplaySettings::Get().GetResolutionInfo(addindex);
+  RESOLUTION_INFO resInfo = CDisplaySettings::GetInstance().GetResolutionInfo(addindex);
   int width  = resInfo.iScreenWidth;
   int height = resInfo.iScreenHeight;
   int flags  = resInfo.dwFlags & D3DPRESENTFLAG_MODEMASK;
@@ -171,9 +171,9 @@ std::vector<RESOLUTION_WHR> CWinSystemBase::ScreenResolutions(int screen, float 
 {
   std::vector<RESOLUTION_WHR> resolutions;
 
-  for (unsigned int idx = RES_DESKTOP; idx < CDisplaySettings::Get().ResolutionInfoSize(); idx++)
+  for (unsigned int idx = RES_DESKTOP; idx < CDisplaySettings::GetInstance().ResolutionInfoSize(); idx++)
   {
-    RESOLUTION_INFO info = CDisplaySettings::Get().GetResolutionInfo(idx);
+    RESOLUTION_INFO info = CDisplaySettings::GetInstance().GetResolutionInfo(idx);
     if (info.iScreen == screen)
       AddResolution(resolutions, idx, refreshrate);
   }
@@ -187,7 +187,7 @@ std::vector<RESOLUTION_WHR> CWinSystemBase::ScreenResolutions(int screen, float 
 
 static void AddRefreshRate(std::vector<REFRESHRATE> &refreshrates, unsigned int addindex)
 {
-  float RefreshRate = CDisplaySettings::Get().GetResolutionInfo(addindex).fRefreshRate;
+  float RefreshRate = CDisplaySettings::GetInstance().GetResolutionInfo(addindex).fRefreshRate;
 
   for (unsigned int idx = 0; idx < refreshrates.size(); idx++)
     if (   refreshrates[idx].RefreshRate == RefreshRate)
@@ -206,11 +206,11 @@ std::vector<REFRESHRATE> CWinSystemBase::RefreshRates(int screen, int width, int
 {
   std::vector<REFRESHRATE> refreshrates;
 
-  for (unsigned int idx = RES_DESKTOP; idx < CDisplaySettings::Get().ResolutionInfoSize(); idx++)
-    if (   CDisplaySettings::Get().GetResolutionInfo(idx).iScreen == screen
-        && CDisplaySettings::Get().GetResolutionInfo(idx).iScreenWidth  == width
-        && CDisplaySettings::Get().GetResolutionInfo(idx).iScreenHeight == height
-        && (CDisplaySettings::Get().GetResolutionInfo(idx).dwFlags & D3DPRESENTFLAG_MODEMASK) == (dwFlags & D3DPRESENTFLAG_MODEMASK))
+  for (unsigned int idx = RES_DESKTOP; idx < CDisplaySettings::GetInstance().ResolutionInfoSize(); idx++)
+    if (   CDisplaySettings::GetInstance().GetResolutionInfo(idx).iScreen == screen
+        && CDisplaySettings::GetInstance().GetResolutionInfo(idx).iScreenWidth  == width
+        && CDisplaySettings::GetInstance().GetResolutionInfo(idx).iScreenHeight == height
+        && (CDisplaySettings::GetInstance().GetResolutionInfo(idx).dwFlags & D3DPRESENTFLAG_MODEMASK) == (dwFlags & D3DPRESENTFLAG_MODEMASK))
       AddRefreshRate(refreshrates, idx);
 
   // Can't assume a sort order
@@ -223,7 +223,7 @@ REFRESHRATE CWinSystemBase::DefaultRefreshRate(int screen, std::vector<REFRESHRA
 {
   REFRESHRATE bestmatch = rates[0];
   float bestfitness = -1.0f;
-  float targetfps = CDisplaySettings::Get().GetResolutionInfo(DesktopResolution(screen)).fRefreshRate;
+  float targetfps = CDisplaySettings::GetInstance().GetResolutionInfo(DesktopResolution(screen)).fRefreshRate;
 
   for (unsigned i = 0; i < rates.size(); i++)
   {
@@ -243,7 +243,7 @@ REFRESHRATE CWinSystemBase::DefaultRefreshRate(int screen, std::vector<REFRESHRA
 bool CWinSystemBase::UseLimitedColor()
 {
 #if defined(HAS_GL) || defined(HAS_DX)
-  static CSettingBool* setting = (CSettingBool*)CSettings::Get().GetSetting("videoscreen.limitedrange");
+  static CSettingBool* setting = (CSettingBool*)CSettings::GetInstance().GetSetting(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
   return setting->GetValue();
 #else
   return false;

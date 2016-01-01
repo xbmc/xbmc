@@ -19,21 +19,22 @@
 #include "AudioDecoder.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/TagLoaderTagLib.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 namespace ADDON
 {
 
 CAudioDecoder::CAudioDecoder(const cp_extension_t* ext)
  : AudioDecoderDll(ext),
-   m_extension(CAddonMgr::Get().GetExtValue(ext->configuration, "@extension")),
-   m_mimetype(CAddonMgr::Get().GetExtValue(ext->configuration, "@mimetype")),
+   m_extension(CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@extension")),
+   m_mimetype(CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@mimetype")),
    m_context(NULL),
-   m_tags(CAddonMgr::Get().GetExtValue(ext->configuration, "@tags") == "true"),
-   m_tracks(CAddonMgr::Get().GetExtValue(ext->configuration, "@tracks") == "true"),
+   m_tags(CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@tags") == "true"),
+   m_tracks(CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@tracks") == "true"),
    m_channel(NULL)
 {
-  m_CodecName = CAddonMgr::Get().GetExtValue(ext->configuration, "@name");
-  m_strExt = CAddonMgr::Get().GetExtValue(ext->configuration, "@name")+"stream";
+  m_CodecName = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@name");
+  m_strExt = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@name")+"stream";
 }
 
 AddonPtr CAudioDecoder::Clone() const
@@ -51,10 +52,19 @@ bool CAudioDecoder::Init(const std::string& strFile, unsigned int filecache)
   CTagLoaderTagLib tag;
   tag.Load(strFile, XFILE::CMusicFileDirectory::m_tag, NULL);
 
+  int channels;
+  int sampleRate;
+
   m_context = m_pStruct->Init(strFile.c_str(), filecache,
-                              &m_Channels, &m_SampleRate,
-                              &m_BitsPerSample, &m_TotalTime,
-                              &m_Bitrate, &m_DataFormat, &m_channel);
+                              &channels, &sampleRate,
+                              &m_bitsPerSample, &m_TotalTime,
+                              &m_bitRate, &m_format.m_dataFormat, &m_channel);
+
+  m_format.m_sampleRate = sampleRate;
+  if (m_channel)
+    m_format.m_channelLayout = CAEChannelInfo(m_channel);
+  else
+    m_format.m_channelLayout = CAEUtil::GuessChLayout(channels);
 
   return (m_context != NULL);
 }
@@ -120,10 +130,7 @@ int CAudioDecoder::GetTrackCount(const std::string& strPath)
 
 CAEChannelInfo CAudioDecoder::GetChannelInfo()
 {
-  if (m_channel)
-    return CAEChannelInfo(m_channel);
-
-  return ICodec::GetChannelInfo();
+  return m_format.m_channelLayout;
 }
 
 void CAudioDecoder::Destroy()

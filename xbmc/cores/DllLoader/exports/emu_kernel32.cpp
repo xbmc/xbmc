@@ -41,9 +41,8 @@
 #include <string.h>
 #include <vector>
 #include <stdlib.h>
-using namespace std;
 
-vector<string> m_vecAtoms;
+std::vector<std::string> m_vecAtoms;
 
 //#define API_DEBUG
 
@@ -56,7 +55,7 @@ extern "C" UINT WINAPI dllGetAtomNameA( ATOM nAtom, LPTSTR lpBuffer, int nSize)
 {
   if (nAtom < 1 || nAtom > m_vecAtoms.size() ) return 0;
   nAtom--;
-  string& strAtom = m_vecAtoms[nAtom];
+  std::string& strAtom = m_vecAtoms[nAtom];
   strcpy(lpBuffer, strAtom.c_str());
   return strAtom.size();
 }
@@ -65,7 +64,7 @@ extern "C" ATOM WINAPI dllFindAtomA( LPCTSTR lpString)
 {
   for (int i = 0; i < (int)m_vecAtoms.size(); ++i)
   {
-    string& strAtom = m_vecAtoms[i];
+    std::string& strAtom = m_vecAtoms[i];
     if (strAtom == lpString) return i + 1;
   }
   return 0;
@@ -273,8 +272,8 @@ static void DumpSystemInfo(const SYSTEM_INFO* si)
 {
   CLog::Log(LOGDEBUG, "  Processor architecture %d\n", si->wProcessorArchitecture);
   CLog::Log(LOGDEBUG, "  Page size: %d\n", si->dwPageSize);
-  CLog::Log(LOGDEBUG, "  Minimum app address: %d\n", si->lpMinimumApplicationAddress);
-  CLog::Log(LOGDEBUG, "  Maximum app address: %d\n", si->lpMaximumApplicationAddress);
+  CLog::Log(LOGDEBUG, "  Minimum app address: %p\n", si->lpMinimumApplicationAddress);
+  CLog::Log(LOGDEBUG, "  Maximum app address: %p\n", si->lpMaximumApplicationAddress);
   CLog::Log(LOGDEBUG, "  Active processor mask: 0x%x\n", si->dwActiveProcessorMask);
   CLog::Log(LOGDEBUG, "  Number of processors: %d\n", si->dwNumberOfProcessors);
   CLog::Log(LOGDEBUG, "  Processor type: 0x%x\n", si->dwProcessorType);

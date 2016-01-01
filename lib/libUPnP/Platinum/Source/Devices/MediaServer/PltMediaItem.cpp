@@ -261,6 +261,8 @@ PLT_MediaObject::Reset()
     m_XbmcInfo.votes = "";
     m_XbmcInfo.artwork.Clear();
     m_XbmcInfo.unique_identifier = "";
+    m_XbmcInfo.countries.Clear();
+    m_XbmcInfo.user_rating = 0;
 
     m_Didl = "";
 
@@ -604,6 +606,23 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
         didl += "<xbmc:uniqueidentifier>";
         PLT_Didl::AppendXmlEscape(didl, m_XbmcInfo.unique_identifier);
         didl += "</xbmc:uniqueidentifier>";
+    }
+
+    // country
+    if (mask & PLT_FILTER_MASK_XBMC_COUNTRY) {
+      for (NPT_List<NPT_String>::Iterator it =
+        m_XbmcInfo.countries.GetFirstItem(); it; ++it) {
+        didl += "<xbmc:country>";
+        PLT_Didl::AppendXmlEscape(didl, (*it));
+        didl += "</xbmc:country>";
+      }
+    }
+
+    // user rating
+    if (mask & PLT_FILTER_MASK_XBMC_USERRATING) {
+      didl += "<xbmc:userrating>";
+      didl += NPT_String::FromInteger(m_XbmcInfo.user_rating);
+      didl += "</xbmc:userrating>";
     }
 
     // class is required

@@ -84,12 +84,12 @@ protected:
     source.m_iLockMode = LOCK_MODE_EVERYONE;
     source.m_ignore = true;
 
-    CMediaSourceSettings::Get().AddShare("videos", source);
+    CMediaSourceSettings::GetInstance().AddShare("videos", source);
   }
 
   void TearDownMediaSources()
   {
-    CMediaSourceSettings::Get().Clear();
+    CMediaSourceSettings::GetInstance().Clear();
   }
 
   std::string GetUrl(const std::string& path)

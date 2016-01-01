@@ -19,14 +19,16 @@
  */
 
 #include "MusicThumbLoader.h"
+
+#include <utility>
+
 #include "FileItem.h"
-#include "TextureDatabase.h"
+#include "music/infoscanner/MusicInfoScanner.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
-#include "music/infoscanner/MusicInfoScanner.h"
+#include "TextureDatabase.h"
 #include "video/VideoThumbLoader.h"
 
-using namespace std;
 using namespace MUSIC_INFO;
 
 CMusicThumbLoader::CMusicThumbLoader() : CThumbLoader()
@@ -103,7 +105,7 @@ bool CMusicThumbLoader::LoadItemCached(CFileItem* pItem)
       int idArtist = m_musicDatabase->GetArtistByName(artist);
       if (idArtist >= 0)
       {
-        string fanart = m_musicDatabase->GetArtForItem(idArtist, MediaTypeArtist, "fanart");
+        std::string fanart = m_musicDatabase->GetArtForItem(idArtist, MediaTypeArtist, "fanart");
         if (!fanart.empty())
         {
           pItem->SetArt("artist.fanart", fanart);
@@ -194,7 +196,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
   if (tag.GetDatabaseId() > -1 && !tag.GetType().empty())
   {
     m_musicDatabase->Open();
-    map<string, string> artwork;
+    std::map<std::string, std::string> artwork;
     if (m_musicDatabase->GetArtForItem(tag.GetDatabaseId(), tag.GetType(), artwork))
       item.SetArt(artwork);
     else if (tag.GetType() == MediaTypeSong)
@@ -208,13 +210,13 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
       if (i != m_albumArt.end())
       {
         item.AppendArt(i->second, MediaTypeAlbum);
-        for (map<string, string>::const_iterator j = i->second.begin(); j != i->second.end(); ++j)
+        for (std::map<std::string, std::string>::const_iterator j = i->second.begin(); j != i->second.end(); ++j)
           item.SetArtFallback(j->first, "album." + j->first);
       }
     }
     if (tag.GetType() == MediaTypeSong || tag.GetType() == MediaTypeAlbum)
     { // fanart from the artist
-      string fanart = m_musicDatabase->GetArtistArtForItem(tag.GetDatabaseId(), tag.GetType(), "fanart");
+      std::string fanart = m_musicDatabase->GetArtistArtForItem(tag.GetDatabaseId(), tag.GetType(), "fanart");
       if (!fanart.empty())
       {
         item.SetArt("artist.fanart", fanart);
@@ -239,7 +241,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
 bool CMusicThumbLoader::GetEmbeddedThumb(const std::string &path, EmbeddedArt &art)
 {
   CFileItem item(path, false);
-  unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(item));
+  std::unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(item));
   CMusicInfoTag tag;
   if (NULL != pLoader.get())
     pLoader->Load(path, tag, &art);

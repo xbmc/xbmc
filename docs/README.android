@@ -13,7 +13,7 @@ TOC
 1. Introduction
 -----------------------------------------------------------------------------
 
-We currently recommend Ubuntu "Precise Pangolin" (12.04) 64Bit. This is what our continuous 
+We currently recommend Ubuntu "Trusty Tahr" (14.04) 64Bit. This is what our continuous
 integration system "jenkins" is using.
 Additionally, building from OSX Snow Leopard or Mavericks (others on your own risk ;) ) is working (see 3.1).
 
@@ -25,20 +25,20 @@ character itself should NOT be typed as part of the command.
 -----------------------------------------------------------------------------
 2. Installing the required Ubuntu packages
 -----------------------------------------------------------------------------
-These are the minimum packages necessary for building Kodi. Non-Ubuntu
-users will need to get the equivalents.
+These are the minimum packages necessary for building Kodi.
+Non-Ubuntu users will need to get the equivalents.
 
-   # sudo apt-get install build-essential default-jdk git curl autoconf \
-       unzip zip zlib1g-dev gawk gperf cmake
+    $ sudo apt-get install build-essential default-jdk git curl autoconf \
+      unzip zip zlib1g-dev gawk gperf cmake
 
 If you run a 64bit operating system you will also need to get ia32-libs
 
- ubuntu >= 14.04:
-   # sudo apt-get install lib32stdc++6 lib32z1 lib32z1-dev
+Ubuntu >= 14.04:
+    $ sudo apt-get install lib32stdc++6 lib32z1 lib32z1-dev
 
- older versions:
-   # sudo apt-get install ia32-libs
-   
+Older versions:
+    $ sudo apt-get install ia32-libs
+
 The following versions are used on our continuous integration system "jenkins". Other (newer)
 versions might work as well.
 
@@ -53,30 +53,32 @@ JRE: openjre-6-jre (java version "1.6.0_27")
 To develop Kodi for Android the Android SDK and NDK are required.
 
 --------------------------------------------------------------------
-3.1. Prerequesites when compiling on Mac OSX
+3.1. Prerequisites when compiling on Mac OSX
 --------------------------------------------------------------------
 
 a. When building on Mac OSX you should download the java version from here: http://support.apple.com/kb/DL1572
 Or ensure otherwise that you are using java 1.6 (java -version tells you the version).
 b. The compilation for android needs a case sensitive filesystem. The
-   filesystem used on normal osx installations is case insensitive. So you 
+   filesystem used on normal OSX installations is case insensitive. So you
    need to generate a writeable hdd image and format it with hfs+ (case sensitive).
    The size should be 20GB.
 c. Generate a writable dmg with the following command:
-   # hdiutil create -type UDIF -fs 'Case-sensitive Journaled HFS+' -size 20g -volname android-dev ~/android-dev.dmg
+    $ hdiutil create -type UDIF -fs 'Case-sensitive Journaled HFS+' -size 20g -volname android-dev ~/android-dev.dmg
+
 d. Whenever you want to compile/develop you need to mount it:
-   # open ~/android-dev.dmg
+    $ open ~/android-dev.dmg
+
 e. Your workspace can be accessed in /Volumes/android-dev/ then
 f. Once you have your hdd image with case sensitive hfs+ file system do all steps
-   below inside of this filesystem. In the end you need to adapt all pathes in this
+   below inside of this filesystem. In the end you need to adapt all paths in this
    document so that they match your local environment. As an example here is a
-   configure line from step 5.1 which demonstrates possible pathes. In this 
+   configure line from step 5.1 which demonstrates possible paths. In this
    example the hdd image is mounted on /Volumes/android-dev.
-   ./configure --with-tarballs=/Users/Shared/xbmc-depends/tarballs --host=arm-linux-androideabi \
-               --with-sdk-path=/Volumes/android-dev/android/android-sdk-macosx \
-               --with-ndk=/Volumes/android-dev/android/android-ndk-r10d \
-               --with-toolchain=/Volumes/android-dev/android/android-toolchain-arm/android-17 \
-               --prefix=/Volumes/android-dev/android/xbmc-depends
+    $ ./configure --with-tarballs=/Users/Shared/xbmc-depends/tarballs --host=arm-linux-androideabi \
+                  --with-sdk-path=/Volumes/android-dev/android/android-sdk-macosx \
+                  --with-ndk=/Volumes/android-dev/android/android-ndk-r10d \
+                  --with-toolchain=/Volumes/android-dev/android/android-toolchain-arm/android-17 \
+                  --prefix=/Volumes/android-dev/android/xbmc-depends
 
 --------------------------------------------------------------------
 3.2. Getting the Android SDK and NDK
@@ -84,15 +86,15 @@ f. Once you have your hdd image with case sensitive hfs+ file system do all step
 
 To get the Android SDK, go to http://developer.android.com/sdk and
 download the latest version for your operating system. The NDK
-can be downloaded from http://developer.android.com/tools/sdk/ndk/ 
+can be downloaded from http://developer.android.com/tools/sdk/ndk/
 
 [NOTICE] Compiling Kodi for Android requires Android NDK
-         Revision at least 10d. For the SDK just use the latest available. 
+         Revision at least 10d. For the SDK just use the latest available.
          It will work.
 
 After downloading the SDK and NDK extract the files contained in the
 archives to your harddisk. For our example we are extracting in the following
-directories (this matches the example from tools/depends/README aswell):
+directories (this matches the example from tools/depends/README as well):
 
 NDK (referenced as <android-ndk> from now on):
 /opt/android-ndk-r10d
@@ -116,9 +118,9 @@ Android SDK will not work. (see point 2.)
 After having extracted the Android SDK to <android-sdk> you need to
 install some android packages using the Android SDK Manager:
 
-   # cd <android-sdk>/tools
-   # ./android update sdk -u -t platform,platform-tool
-   # ./android update sdk -u -t build-tools-20.0.0
+    $ cd <android-sdk>/tools
+    $ ./android update sdk -u -t platform,platform-tool
+    $ ./android update sdk -u -t build-tools-20.0.0
 --------------------------------------------------------------------
 3.4. Setup the Android toolchain
 --------------------------------------------------------------------
@@ -129,27 +131,27 @@ the Android NDK which you earlier extracted to <android-ndk>. The
 following commands will create a toolchain suitable for the most
 common scenario.
 The --install-dir option (and therefore the <android-toolchain-arm>/<android-toolchain-x86> value)
-specifies where the resulting toolchain should be installed (your choice). 
+specifies where the resulting toolchain should be installed (your choice).
 
 [NOTICE] Kodi uses the android API Version 17 and gcc version 4.8!
 
 Building for arm architecture:
 
-   # cd <android-ndk>
-   # ls platforms
-   # cd build/tools
-   # ./make-standalone-toolchain.sh --ndk-dir=../../ \
-     --install-dir=<android-toolchain-arm>/android-17 --platform=android-17 \
-     --toolchain=arm-linux-androideabi-4.8
-     
+    $ cd <android-ndk>
+    $ ls platforms
+    $ cd build/tools
+    $ ./make-standalone-toolchain.sh --ndk-dir=../../ \
+      --install-dir=<android-toolchain-arm>/android-17 --platform=android-17 \
+      --toolchain=arm-linux-androideabi-4.8
+
 Building for x86 architecture:
 
-   # cd <android-ndk>
-   # ls platforms
-   # cd build/tools
-   # ./make-standalone-toolchain.sh --ndk-dir=../../ \
-     --install-dir=<android-toolchain-x86>/android-17 --platform=android-17 \
-     --toolchain=x86-4.8 --arch=x86 --system=linux-x86_64
+    $ cd <android-ndk>
+    $ ls platforms
+    $ cd build/tools
+    $ ./make-standalone-toolchain.sh --ndk-dir=../../ \
+      --install-dir=<android-toolchain-x86>/android-17 --platform=android-17 \
+      --toolchain=x86-4.8 --arch=x86 --system=linux-x86_64
 
 Make sure to pick a toolchain for your desired architecture. If an error about
 the used system is shown - please add proper --system parameter as mentioned
@@ -159,11 +161,11 @@ in the error message.
 3.5. Create a (new) debug key to sign debug APKs
 --------------------------------------------------------------------
 
-  All packages must be signed. The following command will generate a
-  self-signed debug key. If the result is a cryptic error, it
-  probably just means a debug key already existed, no cause for alarm.
+All packages must be signed. The following command will generate a
+self-signed debug key. If the result is a cryptic error, it
+probably just means a debug key already existed, no cause for alarm.
 
-  # keytool -genkey -keystore ~/.android/debug.keystore -v -alias \
+    $ keytool -genkey -keystore ~/.android/debug.keystore -v -alias \
       androiddebugkey -dname "CN=Android Debug,O=Android,C=US" -keypass \
       android -storepass android -keyalg RSA -keysize 2048 -validity 10000
 
@@ -171,10 +173,10 @@ in the error message.
 4. Getting the source code
 -----------------------------------------------------------------------------
 
-   # cd $HOME
-   # git clone git://github.com/xbmc/xbmc.git kodi-android
-   # cd kodi-android
-   # git submodule update --init addons/skin.re-touched
+    $ cd $HOME
+    $ git clone git://github.com/xbmc/xbmc.git kodi-android
+    $ cd kodi-android
+    $ git submodule update --init addons/skin.re-touched
 
 -----------------------------------------------------------------------------
 5. How to compile
@@ -188,45 +190,46 @@ on with the Android toolchain and creating an Android Application Package
 5.1. Building dependencies
 --------------------------------------------------------------------
 
-   # cd $HOME/kodi-android/tools/depends
-   # ./bootstrap
-   # ./configure --help
+    $ cd $HOME/kodi-android/tools/depends
+    $ ./bootstrap
+    $ ./configure --help
 
-   Run configure with the correct settings for you local configuration.
-   See tools/depends/README for examples.
+Run configure with the correct settings for you local configuration.
+See tools/depends/README for examples.
 
-   Anyone working on the dependencies themselves will want to set the
-   environment variables specified in ~/.bashrc or similar, to avoid
-   having to input these with each configure. 
+Anyone working on the dependencies themselves will want to set the
+environment variables specified in ~/.bashrc or similar, to avoid
+having to input these with each configure.
 
-   # make -j <jobs>
-   # make -j <jobs> -C target/binary-addons
+    $ make -j <jobs>
+    $ make -j <jobs> -C target/binary-addons
 
-   NOTE: if you only want to build specific addons you can specify like this:
-   # make -C target/binary-addons ADDONS="pvr.hts pvr.dvblink"
+NOTE: if you only want to build specific addons you can specify like this:
+    $ make -C target/binary-addons ADDONS="pvr.hts pvr.dvblink"
 
-   This build was designed to be massively parallel. Don't be afraid to
-   give it a 'make -j20' or so.
+This build was designed to be massively parallel. Don't be afraid to
+give it a 'make -j20' or so.
 
-   Verify that all deps built correctly (it will tell you so) before
-   continuing. You will get crazy build errors otherwise. If in doubt
-   run another 'make' (single threaded) until the message 
-   "Dependencies built successfully." appears. If the single make
-   fails keep cleaning the dependend library in charge by issueing
-   make -C target/<name_of_failed_lib> distclean. Then try make again.
-   Rinse and repeat until you are really done and all libs are built.
+Verify that all dependencies are built correctly (it will tell you so)
+before continuing to avoid errors. If in doubt run another 'make' (single threaded)
+until the message "Dependencies built successfully." appears. If the single make
+fails, keep cleaning the specific library by issuing:
+    $ make -C target/<name_of_failed_lib> distclean
+
+Then try make again.
+Rinse and repeat until you are really done and all libs are built.
 
 --------------------------------------------------------------------
 5.2. Building Kodi
 --------------------------------------------------------------------
 
-   # cd $HOME/kodi-android
-   # make -C tools/depends/target/xbmc
-   # make
-   # make apk
+    $ cd $HOME/kodi-android
+    $ make -C tools/depends/target/xbmc
+    $ make
+    $ make apk
 
-   After the first build (assuming bootstrap and configure are successful),
-   subsequent builds can be run with a simple 'make' and 'make apk'.
+After the first build (assuming bootstrap and configure are successful),
+subsequent builds can be run with a simple 'make' and 'make apk'.
 
 -----------------------------------------------------------------------------
 6. Installing Kodi in an Android system
@@ -247,10 +250,10 @@ device's Android settings:
   - Applications
     [X] Unknown sources
 
-   # cd $HOME/kodi-android/tools/android/packaging
-   # adb devices
-   # adb -s <device-id> install -r images/xbmcapp-debug.apk
-      
+    $ cd $HOME/kodi-android/tools/android/packaging
+    $ adb devices
+    $ adb -s <device-id> install -r images/xbmcapp-debug.apk
+
 The <device-id> can be retrieved from the list returned by the
 "adb devices" command and is the first value in the row representing
 your device.
@@ -273,12 +276,12 @@ when using the emulator):
   - Applications
     [X] Unknown sources
      -  Development
-      [X] USB debugging
+        [X] USB debugging
 
 To access the log output of your Android system run (the -s parameter
 and the <device-id> may not be needed when using the Android emulator)
 
-  # adb -s <device-id> logcat
+    $ adb -s <device-id> logcat
 
 
 --------------------------------------------------------------------
@@ -290,7 +293,7 @@ using gdb directly, you will need to use ndk-gdb which wraps it. Do NOT trust
 the -p/--project switches, as they do not work. Instead you will need
 to cd to tools/android/packaging/xbmc and execute it from there.
 
-  # ndk-gdb --start --delay=0
+    $ ndk-gdb --start --delay=0
 
 This will open the installed version of Kodi and break. The warnings can be
 ignored as we have setup the appropriate paths already.
@@ -350,18 +353,16 @@ Below are a few helpful commands when building/debugging. These assume that pwd
 is 'tools/android/packaging' and that the proper sdk/ndk paths are set.
 
 -Install a new build over the existing one
-  # adb -e install -r images/xbmcapp-debug.apk
+    $ adb -e install -r images/xbmcapp-debug.apk
 
 -Launch Kodi on the emulator without the GUI
-  # adb shell am start -a android.intent.action.MAIN -n org.xbmc.xbmc/android.app.NativeActivity
+    $ adb shell am start -a android.intent.action.MAIN -n org.xbmc.xbmc/android.app.NativeActivity
 
 -Kill a misbehaving Kodi
-  # adb shell ps | grep org.xbmc | awk '{print $2}' | xargs adb shell kill
+    $ adb shell ps | grep org.xbmc | awk '{print $2}' | xargs adb shell kill
 
 -Filter logcat messages by a specific tag (e.g. "XBMC")
-  # adb logcat -s XBMC:V
-  
--Enable CheckJNI (BEFORE starting the application)
-  # adb shell setprop debug.checkjni 1
-  
+    $ adb logcat -s XBMC:V
 
+-Enable CheckJNI (BEFORE starting the application)
+    $ adb shell setprop debug.checkjni 1

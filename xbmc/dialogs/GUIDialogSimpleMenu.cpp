@@ -38,7 +38,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
   if (item.m_lStartOffset || (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iBookmarkId > 0))
     return true;
 
-  if (CSettings::Get().GetInt("disc.playback") != BD_PLAYBACK_SIMPLE_MENU)
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_DISC_PLAYBACK) != BD_PLAYBACK_SIMPLE_MENU)
     return true;
 
   std::string path;
@@ -100,12 +100,12 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string&
   {
     dialog->Reset();
     dialog->SetHeading(CVariant{25006}); // Select playback item
-    dialog->SetItems(&items);
+    dialog->SetItems(items);
     dialog->SetUseDetails(true);
     dialog->Open();
 
-    CFileItemPtr item_new = dialog->GetSelectedItem();
-    if (!item_new || dialog->GetSelectedLabel() < 0)
+    CFileItemPtr item_new = dialog->GetSelectedFileItem();
+    if (!item_new || dialog->GetSelectedItem() < 0)
     {
       CLog::Log(LOGDEBUG, "CGUIWindowVideoBase::ShowPlaySelection - User aborted %s", directory.c_str());
       break;

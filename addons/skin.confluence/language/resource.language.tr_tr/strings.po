@@ -170,7 +170,7 @@ msgstr "Arka Plan"
 
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slideshow"
-msgstr "Resim slayt gösterisinde \"Duraklatıldı\"yı göster"
+msgstr "Resim slayt gösterisinde \"Duraklatıldı\" mesajını göster"
 
 msgctxt "#31104"
 msgid "Play trailers in a window [COLOR=grey3](Video information dialogue only)[/COLOR]"
@@ -222,19 +222,11 @@ msgstr "Arka plan fanartını gizle"
 
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
-msgstr "\"Video oynatılıyorken\" arka planı göster"
+msgstr "Arkaplanda oynatılan videoyu göster"
 
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
-msgstr "\"Görsel efektler oynatılıyorken\" arka planı göster"
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "TV tema şarkılarını video kitaplığında çal (TvTunes eklentisi)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
+msgstr "Arkaplanda görsel öğeyi göster"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -298,7 +290,7 @@ msgstr "Gelecek bölümler"
 
 msgctxt "#31300"
 msgid "Current temperature"
-msgstr "Sıcaklık"
+msgstr "Geçerli sıcaklık"
 
 msgctxt "#31301"
 msgid "Last updated"
@@ -352,13 +344,9 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Son giriş yapan"
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Karaoke şarkı seçici"
-
 msgctxt "#31322"
 msgid "Aired"
-msgstr "Gösterim"
+msgstr "Yayınlanma"
 
 msgctxt "#31325"
 msgid "Playlist options"
@@ -443,10 +431,6 @@ msgstr "[B]GÖRÜNÜM AYARLARINI YAPILANDIR[/B][CR][CR]Dış görünümü deği�
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]VİDEO AYARLARINI YAPILANDIR[/B][CR][CR]Video kitaplığını yönet · Video oynatma seçeneklerini ayarla · Video listeleme seçeneklerini değiştir[CR]Altyazı yazı tiplerini ayarla"
-
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]MÜZİK AYARLARINI YAPILANDIR[/B][CR][CR]Müzik kitaplığını yönet · Müzik çalma seçeneklerini ayarla · Müzik listeleme seçeneklerini değiştir · Şarkı sunumu ayarları · Karaoke seçeneklerini ayarla"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

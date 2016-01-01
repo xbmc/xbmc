@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2012-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2012-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,29 +13,31 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "PVRClients.h"
 
+#include <cassert>
+#include <utility>
+
 #include "Application.h"
-#include "messaging/ApplicationMessenger.h"
-#include "GUIUserMessages.h"
+#include "cores/IPlayer.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "pvr/PVRManager.h"
 #include "guilib/GUIWindowManager.h"
-#include "settings/Settings.h"
-#include "pvr/channels/PVRChannelGroups.h"
+#include "GUIUserMessages.h"
+#include "messaging/ApplicationMessenger.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
+#include "pvr/channels/PVRChannelGroups.h"
+#include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
+#include "settings/Settings.h"
 #include "utils/Variant.h"
-
-#include <assert.h>
 
 using namespace ADDON;
 using namespace PVR;
@@ -70,7 +72,7 @@ bool CPVRClients::IsInUse(const std::string& strAddonId) const
   CSingleLock lock(m_critSection);
 
   for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
-    if (itr->second->Enabled() && itr->second->ID() == strAddonId)
+    if (!CAddonMgr::GetInstance().IsAddonDisabled(itr->second->ID()) && itr->second->ID() == strAddonId)
       return true;
   return false;
 }
@@ -195,7 +197,7 @@ int CPVRClients::EnabledClientAmount(void) const
   CSingleLock lock(m_critSection);
 
   for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
-    if (!CAddonMgr::Get().IsAddonDisabled(itr->second->ID()))
+    if (!CAddonMgr::GetInstance().IsAddonDisabled(itr->second->ID()))
       ++iReturn;
 
   return iReturn;
@@ -204,7 +206,7 @@ int CPVRClients::EnabledClientAmount(void) const
 bool CPVRClients::HasEnabledClients(void) const
 {
   for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
-    if (!CAddonMgr::Get().IsAddonDisabled(itr->second->ID()))
+    if (!CAddonMgr::GetInstance().IsAddonDisabled(itr->second->ID()))
       return true;
   return false;
 }
@@ -250,7 +252,7 @@ bool CPVRClients::HasConnectedClients(void) const
   return false;
 }
 
-bool CPVRClients::GetClientName(int iClientId, std::string &strName) const
+bool CPVRClients::GetClientFriendlyName(int iClientId, std::string &strName) const
 {
   bool bReturn(false);
   PVR_CLIENT client;
@@ -260,15 +262,44 @@ bool CPVRClients::GetClientName(int iClientId, std::string &strName) const
   return bReturn;
 }
 
+bool CPVRClients::GetClientAddonName(int iClientId, std::string &strName) const
+{
+  bool bReturn(false);
+  PVR_CLIENT client;
+  if ((bReturn = GetConnectedClient(iClientId, client)) == true)
+    strName = client->Name();
+
+  return bReturn;
+}
+
+bool CPVRClients::GetClientAddonIcon(int iClientId, std::string &strIcon) const
+{
+  bool bReturn(false);
+  PVR_CLIENT client;
+  if ((bReturn = GetConnectedClient(iClientId, client)) == true)
+    strIcon = client->Icon();
+
+  return bReturn;
+}
+
 std::vector<SBackend> CPVRClients::GetBackendProperties() const
 {
   std::vector<SBackend> backendProperties;
-  CSingleLock lock(m_critSection);
+  std::vector<PVR_CLIENT> clients;
 
-  for (const auto &entry : m_clientMap)
   {
-    const auto &client = entry.second;
-    
+    CSingleLock lock(m_critSection);
+
+    for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
+    {
+      PVR_CLIENT client = itr->second;
+      if (client)
+        clients.push_back(client);
+    }
+  }
+
+  for (const auto &client : clients)
+  {
     if (!client->ReadyToUse())
       continue;
 
@@ -378,7 +409,7 @@ bool CPVRClients::SwitchChannel(const CPVRChannelPtr &channel)
     }
     else
     {
-      CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(channel)));
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(channel)));
       bSwitchSuccessful = true;
     }
   }
@@ -478,13 +509,13 @@ PVR_ERROR CPVRClients::UpdateTimer(const CPVRTimerInfoTag &timer)
   return error;
 }
 
-PVR_ERROR CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, bool bDeleteSchedule)
+PVR_ERROR CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce)
 {
   PVR_ERROR error(PVR_ERROR_UNKNOWN);
   PVR_CLIENT client;
 
   if (GetConnectedClient(timer.m_iClientId, client))
-    error = client->DeleteTimer(timer, bForce, bDeleteSchedule);
+    error = client->DeleteTimer(timer, bForce);
 
   return error;
 }
@@ -638,7 +669,7 @@ PVR_ERROR CPVRClients::DeleteAllRecordingsFromTrash()
         pDialog->Add(itrClients->second->GetBackendName());
     }
     pDialog->Open();
-    selection = pDialog->GetSelectedLabel();
+    selection = pDialog->GetSelectedItem();
   }
 
   if (selection == 0)
@@ -880,7 +911,7 @@ void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CF
       }
       pDialog->Open();
 
-      int selection = pDialog->GetSelectedLabel();
+      int selection = pDialog->GetSelectedItem();
       if (selection >= 0)
       {
         itrClients = clients.begin();
@@ -913,7 +944,7 @@ void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CF
     if (hookIDs.size() > 1)
     {
       pDialog->Open();
-      selection = pDialog->GetSelectedLabel();
+      selection = pDialog->GetSelectedItem();
     }
     if (selection >= 0)
       client->CallMenuHook(hooks->at(hookIDs.at(selection)), item);
@@ -961,7 +992,7 @@ void CPVRClients::StartChannelScan(void)
 
     pDialog->Open();
 
-    int selection = pDialog->GetSelectedLabel();
+    int selection = pDialog->GetSelectedItem();
     if (selection >= 0)
       scanClient = possibleScanClients[selection];
   }
@@ -1097,7 +1128,7 @@ int CPVRClients::RegisterClient(AddonPtr client)
   CAddonDatabase database;
   PVR_CLIENT addon;
 
-  if (!client->Enabled() || !database.Open())
+  if (CAddonMgr::GetInstance().IsAddonDisabled(client->ID()) || !database.Open())
     return -1;
 
   CLog::Log(LOGDEBUG, "%s - registering add-on '%s'", __FUNCTION__, client->Name().c_str());
@@ -1149,8 +1180,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
 
   for (VECADDONS::iterator it = map.begin(); it != map.end(); ++it)
   {
-    bool bEnabled = (*it)->Enabled() &&
-        !CAddonMgr::Get().IsAddonDisabled((*it)->ID());
+    bool bEnabled = !CAddonMgr::GetInstance().IsAddonDisabled((*it)->ID());
 
     if (!bEnabled && IsKnownClient(*it))
     {
@@ -1188,7 +1218,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
         }
 
         // throttle connection attempts, no more than 1 attempt per 5 seconds
-        if (!bDisabled && addon->Enabled())
+        if (!bDisabled && !CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()))
         {
           time_t now;
           CDateTime::GetCurrentDateTime().GetAsTime(now);
@@ -1199,7 +1229,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
         }
 
         // re-check the enabled status. newly installed clients get disabled when they're added to the db
-        if (!bDisabled && addon->Enabled() && (status = addon->Create(iClientId)) != ADDON_STATUS_OK)
+        if (!bDisabled && !CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && (status = addon->Create(iClientId)) != ADDON_STATUS_OK)
         {
           CLog::Log(LOGWARNING, "%s - failed to create add-on %s, status = %d", __FUNCTION__, (*it)->Name().c_str(), status);
           if (!addon.get() || !addon->DllLoaded() || status == ADDON_STATUS_PERMANENT_FAILURE)
@@ -1224,7 +1254,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
     for (VECADDONS::iterator it = disableAddons.begin(); it != disableAddons.end(); ++it)
     {
       // disable in the add-on db
-      CAddonMgr::Get().DisableAddon((*it)->ID());
+      CAddonMgr::GetInstance().DisableAddon((*it)->ID());
 
       // remove from the pvr add-on list
       VECADDONS::iterator addonPtr = std::find(m_addons.begin(), m_addons.end(), *it);
@@ -1240,8 +1270,8 @@ void CPVRClients::Process(void)
 {
   bool bCheckedEnabledClientsOnStartup(false);
 
-  CAddonMgr::Get().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
-  CAddonMgr::Get().RegisterObserver(this);
+  CAddonMgr::GetInstance().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
+  CAddonMgr::GetInstance().RegisterObserver(this);
 
   UpdateAddons();
 
@@ -1274,12 +1304,12 @@ bool CPVRClients::AutoconfigureClients(void)
   std::vector<PVR_CLIENT> autoConfigAddons;
   PVR_CLIENT addon;
   VECADDONS map;
-  CAddonMgr::Get().GetAddons(ADDON_PVRDLL, map, false);
+  CAddonMgr::GetInstance().GetAddons(ADDON_PVRDLL, map, false);
 
   /** get the auto-configurable add-ons */
   for (VECADDONS::iterator it = map.begin(); it != map.end(); ++it)
   {
-    if (CAddonMgr::Get().IsAddonDisabled((*it)->ID()))
+    if (CAddonMgr::GetInstance().IsAddonDisabled((*it)->ID()))
     {
       addon = std::dynamic_pointer_cast<CPVRClient>(*it);
       if (addon->CanAutoconfigure())
@@ -1288,7 +1318,7 @@ bool CPVRClients::AutoconfigureClients(void)
   }
 
   /** no configurable add-ons found */
-  if (autoConfigAddons.size() == 0)
+  if (autoConfigAddons.empty())
     return bReturn;
 
   /** display a progress bar while trying to auto-configure add-ons */
@@ -1319,7 +1349,7 @@ bool CPVRClients::AutoconfigureClients(void)
         progressHandle->MarkFinished();
 
         /** enable the add-on */
-        CAddonMgr::Get().EnableAddon((*it)->ID());
+        CAddonMgr::GetInstance().EnableAddon((*it)->ID());
         CSingleLock lock(m_critSection);
         m_addons.push_back(*it);
         bReturn = true;
@@ -1357,7 +1387,7 @@ bool CPVRClients::UpdateAddons(void)
 {
   VECADDONS addons;
   PVR_CLIENT addon;
-  bool bReturn(CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true));
+  bool bReturn(CAddonMgr::GetInstance().GetAddons(ADDON_PVRDLL, addons, true));
   size_t usableClients;
   bool bDisable(false);
 
@@ -1386,13 +1416,13 @@ bool CPVRClients::UpdateAddons(void)
     if (bDisable)
     {
       CLog::Log(LOGDEBUG, "%s - disabling add-on '%s'", __FUNCTION__, (*it)->Name().c_str());
-      CAddonMgr::Get().DisableAddon((*it)->ID());
+      CAddonMgr::GetInstance().DisableAddon((*it)->ID());
       usableClients--;
     }
   }
 
   if ((!bReturn || usableClients == 0) && !m_bNoAddonWarningDisplayed &&
-      !CAddonMgr::Get().HasAddons(ADDON_PVRDLL, false) &&
+      !CAddonMgr::GetInstance().HasAddons(ADDON_PVRDLL, false) &&
       (g_PVRManager.IsStarted() || g_PVRManager.IsInitialising()))
   {
     // No PVR add-ons could be found
@@ -1400,7 +1430,7 @@ bool CPVRClients::UpdateAddons(void)
     // Please visit http://kodi.wiki/view/PVR to learn more.
     m_bNoAddonWarningDisplayed = true;
     CGUIDialogOK::ShowAndGetInput(CVariant{19271}, CVariant{19272});
-    CSettings::Get().SetBool("pvrmanager.enabled", false);
+    CSettings::GetInstance().SetBool(CSettings::SETTING_PVRMANAGER_ENABLED, false);
     CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_SETTINGS_MYPVR, 0);
     g_windowManager.SendThreadMessage(msg, WINDOW_SETTINGS_MYPVR);
   }

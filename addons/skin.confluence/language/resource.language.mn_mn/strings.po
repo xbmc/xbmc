@@ -20,21 +20,105 @@ msgctxt "#31008"
 msgid "Full screen"
 msgstr "Бүтэн дэлгэц"
 
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Дууны Файлууд"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Тоглуулж байна"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Хуудас"
+
+msgctxt "#31026"
+msgid "Misc options"
+msgstr "бусад тохиргоонууд"
+
 msgctxt "#31027"
 msgid "Location"
 msgstr "Байрлал"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "мэдээлэл"
+
+msgctxt "#31040"
+msgid "Now playing"
+msgstr "Одоо тоглуулж байгаа"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "ТОГЛУУЛЖ БАЙНА"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ТҮР ЗОГСООСОН"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "УРАГШ ГҮЙЛГЭХ"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "БУЦААХ"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "ХАЙХ"
 
 msgctxt "#31049"
 msgid "End time"
 msgstr "Дуусах цаг"
 
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Өсөхөөр эрэмбэлэх"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Уруудахаар эрэмбэлэх"
+
 msgctxt "#31102"
 msgid "Background"
 msgstr "Арын хэсэг"
 
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Нуух"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Тохиргоонууд"
+
+msgctxt "#31116"
+msgid "Show recently added albums"
+msgstr "Саяхан нэмэгдсэн хуурцаг"
+
+msgctxt "#31117"
+msgid "Show recently added videos"
+msgstr "Саяхан нэмэгдсэн видеонууд"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Дууны үгс"
+
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Дөт зам"
+
+msgctxt "#31205"
+msgid "Lyrics source"
+msgstr "Дууны үгсийн эх үүсвэр"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Оллоо"
+
+msgctxt "#31308"
+msgid "Movie details"
+msgstr "Киноны мэдээлэл"
 
 msgctxt "#31327"
 msgid "Resolution"

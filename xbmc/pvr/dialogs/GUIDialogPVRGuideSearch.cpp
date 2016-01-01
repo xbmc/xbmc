@@ -19,14 +19,16 @@
  */
 
 #include "GUIDialogPVRGuideSearch.h"
-#include "guilib/LocalizeStrings.h"
-#include "guilib/GUIEditControl.h"
-#include "utils/StringUtils.h"
+
+#include <utility>
 
 #include "addons/include/xbmc_pvr_types.h"
-#include "pvr/PVRManager.h"
 #include "epg/EpgSearchFilter.h"
+#include "guilib/GUIEditControl.h"
+#include "guilib/LocalizeStrings.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/PVRManager.h"
+#include "utils/StringUtils.h"
 
 using namespace PVR;
 

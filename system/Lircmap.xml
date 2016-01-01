@@ -86,7 +86,7 @@
 		<power>KEY_POWER</power>
 		<myvideo>KEY_VIDEO</myvideo>
 		<mymusic>KEY_AUDIO</mymusic>
-		<mytv>LiveTV</mytv>
+		<livetv>LiveTV</livetv>
 		<guide>KEY_EPG</guide>
 		<one>KEY_1</one>
 		<two>KEY_2</two>
@@ -412,7 +412,7 @@
 	</remote>
 
 	<remote device="linux-input-layer">
-	<altname>cx23885_remote</altname>
+		<altname>cx23885_remote</altname>
 		<left>KEY_LEFT</left>
 		<right>KEY_RIGHT</right>
 		<up>KEY_UP</up>
@@ -438,8 +438,8 @@
 		<reverse>KEY_REWIND</reverse>
 		<volumeplus>KEY_VOLUMEUP</volumeplus>
 		<volumeminus>KEY_VOLUMEDOWN</volumeminus>
-		<channelplus>KEY_CHANNELUP</channelplus>
-		<channelminus>KEY_CHANNELDOWN</channelminus>
+		<pageplus>KEY_CHANNELUP</pageplus>
+		<pageminus>KEY_CHANNELDOWN</pageminus>
 		<skipplus>KEY_NEXTSONG</skipplus>
 		<skipplus>KEY_NEXT</skipplus>
 		<skipminus>KEY_PREVIOUSSONG</skipminus>
@@ -456,7 +456,7 @@
 		<mypictures>KEY_CAMERA</mypictures>
 		<mytv>KEY_TV</mytv>
 		<liveradio>KEY_RADIO</liveradio>
-		<mytv>KEY_TUNER</mytv>
+		<livetv>KEY_TUNER</livetv>
 		<one>KEY_1</one>
 		<two>KEY_2</two>
 		<three>KEY_3</three>
@@ -556,8 +556,8 @@
 		<reverse>KEY_REWIND</reverse>
 		<volumeplus>KEY_VOLUMEUP</volumeplus>
 		<volumeminus>KEY_VOLUMEDOWN</volumeminus>
-		<channelplus>KEY_CHANNELUP</channelplus>
-		<channelminus>KEY_CHANNELDOWN</channelminus>
+		<pageplus>KEY_CHANNELUP</pageplus>
+		<pageminus>KEY_CHANNELDOWN</pageminus>
 		<skipplus>KEY_NEXT</skipplus>
 		<skipminus>KEY_PREVIOUS</skipminus>
 		<title>KEY_EPG</title>
@@ -574,7 +574,7 @@
 		<myvideo>KEY_VIDEO</myvideo>
 		<mymusic>KEY_AUDIO</mymusic>
 		<mypictures>KEY_CAMERA</mypictures>
-		<mytv>KEY_TUNER</mytv>
+		<livetv>KEY_TUNER</livetv>
 		<mytv>KEY_TV</mytv>
 		<teletext>KEY_TEXT</teletext>
 		<one>KEY_NUMERIC_1</one>

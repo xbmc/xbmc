@@ -196,18 +196,29 @@ namespace PythonBindings
       PyObject *tracebackModule = PyImport_ImportModule("traceback");
       if (tracebackModule != NULL)
       {
-        PyObject *tbList = PyObject_CallMethod(tracebackModule, "format_exception", "OOO", exc_type, exc_value == NULL ? Py_None : exc_value, exc_traceback == NULL ? Py_None : exc_traceback);
-        PyObject *emptyString = PyString_FromString("");
-        PyObject *strRetval = PyObject_CallMethod(emptyString, "join", "O", tbList);
+        char method[] = "format_exception";
+        char format[] = "OOO";
+        PyObject *tbList = PyObject_CallMethod(tracebackModule, method, format, exc_type, exc_value == NULL ? Py_None : exc_value, exc_traceback == NULL ? Py_None : exc_traceback);
 
-        str = PyString_AsString(strRetval);
-        if (str != NULL)
-          exceptionTraceback = str;
+        if (tbList)
+        {
+          PyObject *emptyString = PyString_FromString("");
+          char method[] = "join";
+          char format[] = "O";
+          PyObject *strRetval = PyObject_CallMethod(emptyString, method, format, tbList);
+          Py_DECREF(emptyString);
 
-        Py_DECREF(tbList);
-        Py_DECREF(emptyString);
-        Py_DECREF(strRetval);
+          if (strRetval)
+          {
+            str = PyString_AsString(strRetval);
+            if (str != NULL)
+              exceptionTraceback = str;
+            Py_DECREF(strRetval);
+          }
+          Py_DECREF(tbList);
+        }
         Py_DECREF(tracebackModule);
+
       }
     }
 

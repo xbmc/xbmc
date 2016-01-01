@@ -31,13 +31,13 @@ public:
 
 protected:
   // implementation of CGUIDialogSettingsBase
-  virtual CSetting* GetSetting(const std::string &settingId);
+  virtual CSetting* GetSetting(const std::string &settingId) override;
 
-  virtual std::set<std::string> CreateSettings();
-  virtual void FreeSettingsControls();
+  virtual std::set<std::string> CreateSettings() override;
+  virtual void FreeSettingsControls() override;
 
   // implementation of ISettingControlCreator
-  virtual ISettingControl* CreateControl(const std::string &controlType);
+  virtual ISettingControl* CreateControl(const std::string &controlType) const override;
 
   CSettingsManager *m_settingsManager;
 };

@@ -63,7 +63,6 @@ public:
   bool IsSelected() const { return m_bSelected; };
 protected:
   virtual bool UpdateColors();
-  virtual void ProcessText(unsigned int currentTime);
   CGUITexture m_imgRadioOnFocus;
   CGUITexture m_imgRadioOnNoFocus;
   CGUITexture m_imgRadioOffFocus;
@@ -73,4 +72,5 @@ protected:
   float m_radioPosX;
   float m_radioPosY;
   INFO::InfoPtr m_toggleSelect;
+  bool m_useLabel2;
 };

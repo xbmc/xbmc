@@ -23,7 +23,8 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../ntohl.patch
 	cd $(PLATFORM); patch -p0 < ../md5.patch
 	cd $(PLATFORM); patch -p1 < ../darwin.patch
-	sed -ie "s|-fstack-protector|-fnostack-protector|" "$(PLATFORM)/cmake/Modules/DefineCompilerFlags.cmake"
+	cd $(PLATFORM); patch -p0 < ../fix-gcc-5-compile.patch
+	sed -ie "s|-fstack-protector|-fno-stack-protector|" "$(PLATFORM)/cmake/Modules/DefineCompilerFlags.cmake"
 	sed -ie "s|add_subdirectory(examples)||" "$(PLATFORM)/CMakeLists.txt"
 	cd $(PLATFORM)/build; $(CMAKE) -DWITH_STATIC_LIB=1 -DWITH_EXAMPLES=0 -DTHREADS_PTHREAD_ARG=0 -DWITH_GSSAPI=0 VERBOSE=1 ..
 
@@ -34,6 +35,7 @@ $(LIBDYLIB): $(PLATFORM)
 	make -C $(PLATFORM)/build install
 	rm -f $(PREFIX)/lib/libssh.so $(PREFIX)/lib/libssh.so.4.3.0 $(PREFIX)/lib/libssh.so.4
 	rm -f $(PREFIX)/lib/libssh.*dylib*
+	rm -f $(PREFIX)/lib/libssh_threads.*dylib*
 	touch $@
 
 clean:

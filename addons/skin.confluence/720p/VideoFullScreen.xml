@@ -4,12 +4,13 @@
 	<controls>
 		<!-- media infos -->
 		<control type="group" id="1">
+			<depth>DepthOSD</depth>
 			<visible>[Player.ShowInfo | Window.IsActive(VideoOSD)] + ![Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(SliderDialog)]</visible>
 			<animation effect="fade" time="150">VisibleChange</animation>
 			<control type="image" id="1">
-				<left>0</left>
+				<left>-20</left>
 				<top>-150</top>
-				<width>1280</width>
+				<width>1320</width>
 				<height>256</height>
 				<texture flipy="true" border="1">HomeNowPlayingBack.png</texture>
 			</control>
@@ -57,13 +58,14 @@
 				<animation effect="slide" start="0,0" end="-70,0" time="0" condition="Window.IsVisible(VideoOSD)">conditional</animation>
 			</control>
 			<control type="image" id="1">
-				<left>0</left>
+				<left>-20</left>
 				<top>230r</top>
-				<width>1280</width>
+				<width>1320</width>
 				<height>230</height>
 				<texture border="1">HomeNowPlayingBack.png</texture>
 			</control>
 			<control type="image" id="1">
+				<depth>DepthOSDPopout</depth>
 				<description>cover image</description>
 				<left>20</left>
 				<top>260r</top>
@@ -76,6 +78,7 @@
 				<visible>![VideoPlayer.Content(Movies) | VideoPlayer.Content(LiveTV)]</visible>
 			</control>
 			<control type="image" id="1">
+				<depth>DepthOSDPopout</depth>
 				<description>Movie cover image</description>
 				<left>20</left>
 				<top>350r</top>
@@ -88,6 +91,7 @@
 				<visible>VideoPlayer.Content(Movies)</visible>
 			</control>
 			<control type="image" id="1">
+				<depth>DepthOSDPopout</depth>
 				<description>PIcon image</description>
 				<left>20</left>
 				<top>200r</top>
@@ -121,7 +125,7 @@
 					<height>25</height>
 					<aspectratio align="center" aligny="center">keep</aspectratio>
 					<texture>PVR-IsRecording.png</texture>
-					<visible>VideoPlayer.Content(LiveTV) + Player.Recording</visible>
+					<visible>VideoPlayer.Content(LiveTV) + Player.Recording + !Player.ChannelPreviewActive</visible>
 				</control>
 				<control type="label" id="1">
 					<description>Heading label</description>
@@ -135,7 +139,7 @@
 					<label>$LOCALIZE[19158]</label>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
-					<visible>VideoPlayer.Content(LiveTV) + Player.Recording</visible>
+					<visible>VideoPlayer.Content(LiveTV) + Player.Recording + !Player.ChannelPreviewActive</visible>
 				</control>
 				<control type="label" id="1">
 					<description>Studio label</description>
@@ -212,13 +216,14 @@
 						<height>35</height>
 						<aspectratio align="center">keep</aspectratio>
 						<texture>$INFO[VideoPlayer.VideoResolution,flagging/video/,.png]</texture>
+						<visible>!Player.ChannelPreviewActive</visible>
 					</control>
 					<control type="image" id="1">
 						<description>ADSP Master Mode Image</description>
 						<width>85</width>
 						<height>35</height>
 						<aspectratio align="right">keep</aspectratio>
-						<visible>!IsEmpty(ADSP.MasterOwnIcon)</visible>
+						<visible>![IsEmpty(ADSP.MasterOwnIcon) | Player.ChannelPreviewActive]</visible>
 						<texture>$INFO[ADSP.MasterOwnIcon]</texture>
 					</control>
 					<control type="image" id="1">
@@ -226,7 +231,7 @@
 						<width>85</width>
 						<height>35</height>
 						<aspectratio align="center">keep</aspectratio>
-						<visible>IsEmpty(ADSP.MasterOverrideIcon)</visible>
+						<visible>IsEmpty(ADSP.MasterOverrideIcon) + !Player.ChannelPreviewActive</visible>
 						<texture>$INFO[VideoPlayer.AudioCodec,flagging/audio/,.png]</texture>
 					</control>
 					<control type="image" id="1">
@@ -234,7 +239,7 @@
 						<width>85</width>
 						<height>35</height>
 						<aspectratio align="right">keep</aspectratio>
-						<visible>!IsEmpty(ADSP.MasterOverrideIcon)</visible>
+						<visible>![IsEmpty(ADSP.MasterOverrideIcon) | Player.ChannelPreviewActive]</visible>
 						<texture>$INFO[ADSP.MasterOverrideIcon]</texture>
 					</control>
 					<control type="image" id="1">
@@ -243,11 +248,12 @@
 						<height>35</height>
 						<aspectratio align="center">keep</aspectratio>
 						<texture>$INFO[VideoPlayer.AudioChannels,flagging/audio/,.png]</texture>
+						<visible>!Player.ChannelPreviewActive</visible>
 					</control>
 					<control type="group" id="1">
 						<width>85</width>
 						<height>35</height>
-						<visible>!IsEmpty(VideoPlayer.AudioLanguage)</visible>
+						<visible>![IsEmpty(VideoPlayer.AudioLanguage) | Player.ChannelPreviewActive]</visible>
 						<control type="image" id="1">
 							<left>5</left>
 							<top>0</top>
@@ -270,7 +276,7 @@
 					<control type="group" id="1">
 						<width>85</width>
 						<height>35</height>
-						<visible>!IsEmpty(VideoPlayer.SubtitlesLanguage)</visible>
+						<visible>![IsEmpty(VideoPlayer.SubtitlesLanguage) | Player.ChannelPreviewActive]</visible>
 						<control type="image" id="1">
 							<left>5</left>
 							<top>0</top>
@@ -353,6 +359,7 @@
 					<height>16</height>
 					<info>Player.ProgressCache</info>
 					<midtexture border="6,0,6,0">OSDProgressMidLight.png</midtexture>
+					<visible>!Player.ChannelPreviewActive</visible>
 				</control>
 				<control type="progress" id="1">
 					<description>Progressbar</description>
@@ -388,6 +395,7 @@
 		</control>
 		<!-- codec info -->
 		<control type="group" id="0">
+			<depth>DepthOSD+</depth>
 			<left>0</left>
 			<top>20</top>
 			<animation effect="fade" time="150">VisibleChange</animation>
@@ -434,6 +442,7 @@
 			</control>
 		</control>
 		<control type="group">
+			<depth>DepthOSD+</depth>
 			<visible>Player.ShowCodec + VideoPlayer.Content(LiveTV) + system.getbool(pvrplayback.signalquality)</visible>
 			<top>185</top>
 			<control type="image">

@@ -23,7 +23,7 @@
 #include "test/TestUtils.h"
 
 #if defined(TARGET_DARWIN_OSX)
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #endif
 #include "gtest/gtest.h"
 

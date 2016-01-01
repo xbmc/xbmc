@@ -29,12 +29,12 @@ class TiXmlNode;
 class CMediaSourceSettings : public ISettingsHandler
 {
 public:
-  static CMediaSourceSettings& Get();
+  static CMediaSourceSettings& GetInstance();
 
   static std::string GetSourcesFile();
   
-  virtual void OnSettingsLoaded();
-  virtual void OnSettingsUnloaded();
+  virtual void OnSettingsLoaded() override;
+  virtual void OnSettingsUnloaded() override;
 
   bool Load();
   bool Load(const std::string &file);

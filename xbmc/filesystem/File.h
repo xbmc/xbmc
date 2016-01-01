@@ -53,22 +53,25 @@ public:
 };
 
 /* indicate that caller can handle truncated reads, where function returns before entire buffer has been filled */
-#define READ_TRUNCATED 0x01
+#define READ_TRUNCATED    0x01
 
 /* indicate that that caller support read in the minimum defined chunk size, this disables internal cache then */
-#define READ_CHUNKED   0x02
+#define READ_CHUNKED      0x02
 
 /* use cache to access this file */
-#define READ_CACHED     0x04
+#define READ_CACHED       0x04
 
 /* open without caching. regardless to file type. */
-#define READ_NO_CACHE  0x08
+#define READ_NO_CACHE     0x08
 
 /* calcuate bitrate for file while reading */
-#define READ_BITRATE   0x10
+#define READ_BITRATE      0x10
 
-/* indicate the caller will seek between multiple streams in the file frequently */
+/* indicate to the caller we will seek between multiple streams in the file frequently */
 #define READ_MULTI_STREAM 0x20
+
+/* indicate to the caller file is audio and/or video (and e.g. may grow) */
+#define READ_AUDIO_VIDEO  0x40
 
 class CFileStreamBuffer;
 

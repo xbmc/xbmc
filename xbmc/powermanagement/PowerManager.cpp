@@ -18,23 +18,26 @@
  *
  */
 
-#include <memory>
-#include <list>
-#include "system.h"
 #include "PowerManager.h"
+
+#include <list>
+#include <memory>
+
 #include "Application.h"
 #include "cores/AudioEngine/AEFactory.h"
-#include "settings/lib/Setting.h"
-#include "settings/Settings.h"
-#include "windowing/WindowingFactory.h"
-#include "utils/log.h"
-#include "utils/Weather.h"
-#include "interfaces/Builtins.h"
-#include "interfaces/AnnouncementManager.h"
-#include "guilib/LocalizeStrings.h"
-#include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "interfaces/AnnouncementManager.h"
+#include "interfaces/builtins/Builtins.h"
+#include "pvr/PVRManager.h"
+#include "settings/lib/Setting.h"
+#include "settings/Settings.h"
+#include "system.h"
+#include "utils/log.h"
+#include "utils/Weather.h"
+#include "windowing/WindowingFactory.h"
 
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaPowerSyscall.h"
@@ -69,6 +72,8 @@ CPowerManager::~CPowerManager()
 
 void CPowerManager::Initialize()
 {
+  SAFE_DELETE(m_instance);
+
 #if defined(TARGET_DARWIN)
   m_instance = new CCocoaPowerSyscall();
 #elif defined(TARGET_ANDROID)
@@ -122,7 +127,7 @@ void CPowerManager::Initialize()
 
 void CPowerManager::SetDefaults()
 {
-  int defaultShutdown = CSettings::Get().GetInt("powermanagement.shutdownstate");
+  int defaultShutdown = CSettings::GetInstance().GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE);
 
   switch (defaultShutdown)
   {
@@ -161,7 +166,7 @@ void CPowerManager::SetDefaults()
     break;
   }
 
-  ((CSettingInt*)CSettings::Get().GetSetting("powermanagement.shutdownstate"))->SetDefault(defaultShutdown);
+  ((CSettingInt*)CSettings::GetInstance().GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(defaultShutdown);
 }
 
 bool CPowerManager::Powerdown()
@@ -180,38 +185,21 @@ bool CPowerManager::Powerdown()
 
 bool CPowerManager::Suspend()
 {
-  if (CanSuspend() && m_instance->Suspend())
-  {
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-    if (dialog)
-      dialog->Open();
-
-    return true;
-  }
-
-  return false;
+  return (CanSuspend() && m_instance->Suspend());
 }
 
 bool CPowerManager::Hibernate()
 {
-  if (CanHibernate() && m_instance->Hibernate())
-  {
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-    if (dialog)
-      dialog->Open();
-
-    return true;
-  }
-
-  return false;
+  return (CanHibernate() && m_instance->Hibernate());
 }
+
 bool CPowerManager::Reboot()
 {
   bool success = CanReboot() ? m_instance->Reboot() : false;
 
   if (success)
   {
-    CAnnouncementManager::Get().Announce(System, "xbmc", "OnRestart");
+    CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnRestart");
 
     CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
     if (dialog)
@@ -253,15 +241,21 @@ void CPowerManager::ProcessEvents()
 
 void CPowerManager::OnSleep()
 {
-  CAnnouncementManager::Get().Announce(System, "xbmc", "OnSleep");
+  CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnSleep");
+
+  CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+  if (dialog)
+    dialog->Open();
+
   CLog::Log(LOGNOTICE, "%s: Running sleep jobs", __FUNCTION__);
 
   // stop lirc
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   CLog::Log(LOGNOTICE, "%s: Stopping lirc", __FUNCTION__);
-  CBuiltins::Execute("LIRC.Stop");
+  CBuiltins::GetInstance().Execute("LIRC.Stop");
 #endif
 
+  PVR::CPVRManager::GetInstance().SetWakeupCommand();
   g_application.SaveFileState(true);
   g_application.StopPlaying();
   g_application.StopShutdownTimer();
@@ -295,14 +289,14 @@ void CPowerManager::OnWake()
   // restart lirc
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   CLog::Log(LOGNOTICE, "%s: Restarting lirc", __FUNCTION__);
-  CBuiltins::Execute("LIRC.Start");
+  CBuiltins::GetInstance().Execute("LIRC.Start");
 #endif
 
   CAEFactory::Resume();
   g_application.UpdateLibraries();
   g_weatherManager.Refresh();
 
-  CAnnouncementManager::Get().Announce(System, "xbmc", "OnWake");
+  CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnWake");
 }
 
 void CPowerManager::OnLowBattery()
@@ -311,7 +305,7 @@ void CPowerManager::OnLowBattery()
 
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13050), "");
 
-  CAnnouncementManager::Get().Announce(System, "xbmc", "OnLowBattery");
+  CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnLowBattery");
 }
 
 void CPowerManager::SettingOptionsShutdownStatesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)

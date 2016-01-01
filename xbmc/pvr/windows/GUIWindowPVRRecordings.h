@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -20,9 +19,10 @@
  *
  */
 
-#include "GUIWindowPVRBase.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoDatabase.h"
+
+#include "GUIWindowPVRBase.h"
 
 namespace PVR
 {
@@ -34,19 +34,19 @@ namespace PVR
 
     static std::string GetResumeString(const CFileItem& item);
 
-    void OnWindowLoaded();
-    bool OnMessage(CGUIMessage& message);
-    bool OnAction(const CAction &action);
-    void GetContextButtons(int itemNumber, CContextButtons &buttons);
-    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-    bool Update(const std::string &strDirectory, bool updateFilterPath = true);
-    void UpdateButtons(void);
+    virtual void OnWindowLoaded() override;
+    virtual bool OnMessage(CGUIMessage& message) override;
+    virtual bool OnAction(const CAction &action) override;
+    virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+    virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
+    virtual void UpdateButtons(void) override;
     void UnregisterObservers(void);
-    void ResetObservers(void);
+    virtual void ResetObservers(void) override;
 
   protected:
-    std::string GetDirectoryPath(void);
-    void OnPrepareFileItems(CFileItemList &items);
+    virtual std::string GetDirectoryPath(void) override;
+    virtual void OnPrepareFileItems(CFileItemList &items) override;
 
   private:
     bool ActionDeleteRecording(CFileItem *item);

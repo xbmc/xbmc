@@ -46,7 +46,9 @@ protected:
   virtual int GetSettingLevel() const;
   virtual CSettingSection* GetSection();
   virtual void Save();
-  
+
+  void FocusCategory(const std::string& categoryId);
+
   CSettings& m_settings;
   int m_iSection;
   bool m_returningFromSkinLoad; // true if we are returning from loading the skin

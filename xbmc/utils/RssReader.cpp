@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -28,7 +28,7 @@
 #include "filesystem/File.h"
 #include "filesystem/CurlFile.h"
 #if defined(TARGET_DARWIN)
-#include "osx/CocoaInterface.h"
+#include "platform/darwin/osx/CocoaInterface.h"
 #endif
 #include "settings/AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
@@ -40,7 +40,6 @@
 #define RSS_COLOR_HEADLINE  1
 #define RSS_COLOR_CHANNEL   2
 
-using namespace std;
 using namespace XFILE;
 
 //////////////////////////////////////////////////////////////////////
@@ -66,7 +65,7 @@ CRssReader::~CRssReader()
     delete m_vecTimeStamps[i];
 }
 
-void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, const vector<int> &times, int spacesBetweenFeeds, bool rtl)
+void CRssReader::Create(IRssObserver* aObserver, const std::vector<std::string>& aUrls, const std::vector<int> &times, int spacesBetweenFeeds, bool rtl)
 {
   CSingleLock lock(m_critical);
 
@@ -144,7 +143,7 @@ void CRssReader::Process()
 
     // we wait for the network to come up
     if ((url.IsProtocol("http") || url.IsProtocol("https")) &&
-        !g_application.getNetwork().IsAvailable(true))
+        !g_application.getNetwork().IsAvailable())
     {
       CLog::Log(LOGWARNING, "RSS: No network connection");
       strXML = "<rss><item><title>"+g_localizeStrings.Get(15301)+"</title></item></rss>";
@@ -257,9 +256,9 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
   HTML::CHTMLUtil html;
 
   TiXmlElement * itemNode = channelXmlNode->FirstChildElement("item");
-  map <std::string, std::wstring> mTagElements;
-  typedef pair <std::string, std::wstring> StrPair;
-  list <std::string>::iterator i;
+  std::map<std::string, std::wstring> mTagElements;
+  typedef std::pair<std::string, std::wstring> StrPair;
+  std::list<std::string>::iterator i;
 
   // Add the title tag in if we didn't pass any tags in at all
   // Represents default behaviour before configurability
@@ -303,7 +302,7 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
     int rsscolour = RSS_COLOR_HEADLINE;
     for (i = m_tagSet.begin(); i != m_tagSet.end(); ++i)
     {
-      map <std::string, std::wstring>::iterator j = mTagElements.find(*i);
+      std::map<std::string, std::wstring>::iterator j = mTagElements.find(*i);
 
       if (j == mTagElements.end())
         continue;
@@ -396,7 +395,7 @@ void CRssReader::UpdateObserver()
 
   vecText feed;
   getFeed(feed);
-  if (feed.size() > 0)
+  if (!feed.empty())
   {
     CSingleLock lock(g_graphicsContext);
     if (m_pObserver) // need to check again when locked to make sure observer wasnt removed

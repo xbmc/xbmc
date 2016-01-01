@@ -41,6 +41,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "Util.h"
+#include <algorithm>
 #include <cassert>
 
 extern "C" {
@@ -49,8 +50,6 @@ extern "C" {
 #include "libavutil/opt.h"
 #include "libswresample/swresample.h"
 }
-
-using namespace std;
 
 // the size of the audio_render output port buffers
 #define AUDIO_DECODE_OUTPUT_BUFFER (32*1024)
@@ -66,7 +65,6 @@ COMXAudio::COMXAudio() :
   m_Mute            (false  ),
   m_drc             (0      ),
   m_Passthrough     (false  ),
-  m_HWDecode        (false  ),
   m_BytesPerSec     (0      ),
   m_InputBytesPerSec(0      ),
   m_BufferLen       (0      ),
@@ -136,7 +134,7 @@ bool COMXAudio::PortSettingsChanged()
       return false;
   }
 
-  SetDynamicRangeCompression((long)(CMediaSettings::Get().GetCurrentVideoSettings().m_VolumeAmplification * 100));
+  SetDynamicRangeCompression((long)(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_VolumeAmplification * 100));
   UpdateAttenuation();
 
   if( m_omx_mixer.IsInitialized() )
@@ -155,7 +153,7 @@ bool COMXAudio::PortSettingsChanged()
     // round up to power of 2
     m_pcm_output.nChannels = m_OutputChannels > 4 ? 8 : m_OutputChannels > 2 ? 4 : m_OutputChannels;
     /* limit samplerate (through resampling) if requested */
-    m_pcm_output.nSamplingRate = std::min(std::max((int)m_pcm_output.nSamplingRate, 8000), CSettings::Get().GetInt("audiooutput.samplerate"));
+    m_pcm_output.nSamplingRate = std::min(std::max((int)m_pcm_output.nSamplingRate, 8000), CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_SAMPLERATE));
 
     m_pcm_output.nPortIndex = m_omx_mixer.GetOutputPort();
     omx_err = m_omx_mixer.SetParameter(OMX_IndexParamAudioPcm, &m_pcm_output);
@@ -248,7 +246,7 @@ bool COMXAudio::PortSettingsChanged()
   {
     // By default audio_render is the clock master, and if output samples don't fit the timestamps, it will speed up/slow down the clock.
     // This tends to be better for maintaining audio sync and avoiding audio glitches, but can affect video/display sync
-    if(CSettings::Get().GetBool("videoplayer.usedisplayasclock") || m_output == AESINKPI_BOTH)
+    if(CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) || m_output == AESINKPI_BOTH)
     {
       OMX_CONFIG_BOOLEANTYPE configBool;
       OMX_INIT_STRUCTURE(configBool);
@@ -274,7 +272,7 @@ bool COMXAudio::PortSettingsChanged()
   {
     // By default audio_render is the clock master, and if output samples don't fit the timestamps, it will speed up/slow down the clock.
     // This tends to be better for maintaining audio sync and avoiding audio glitches, but can affect video/display sync
-    if(CSettings::Get().GetBool("videoplayer.usedisplayasclock"))
+    if(CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK))
     {
       OMX_CONFIG_BOOLEANTYPE configBool;
       OMX_INIT_STRUCTURE(configBool);
@@ -534,18 +532,16 @@ static uint32_t GetChannelMap(const CAEChannelInfo &channelLayout, bool passthro
   return channel_map;
 }
 
-bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo &hints, CAEChannelInfo channelMap, bool bUsePassthrough, bool bUseHWDecode)
+bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo &hints, CAEChannelInfo channelMap, bool bUsePassthrough)
 {
   CSingleLock lock (m_critSection);
   OMX_ERRORTYPE omx_err;
 
   Deinitialize();
 
-  m_HWDecode    = bUseHWDecode;
   m_Passthrough = bUsePassthrough;
 
   m_InputChannels = channelMap.Count();
-  m_format = format;
 
   if(m_InputChannels == 0)
     return false;
@@ -558,23 +554,13 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   if(!m_av_clock)
     return false;
 
-  /* passthrough overwrites hw decode */
-  if(m_Passthrough)
-  {
-    m_HWDecode = false;
-  }
-  else if(m_HWDecode)
-  {
-    /* check again if we are capable to hw decode the format */
-    m_HWDecode = CanHWDecode(hints.codec);
-  }
-  SetCodingType(format.m_dataFormat);
+  SetCodingType(format);
 
-  if (m_Passthrough || CSettings::Get().GetString("audiooutput.audiodevice") == "PI:HDMI")
+  if (m_Passthrough || CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "PI:HDMI")
     m_output = AESINKPI_HDMI;
-  else if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Analogue")
+  else if (CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "PI:Analogue")
     m_output = AESINKPI_ANALOGUE;
-  else if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Both")
+  else if (CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "PI:Both")
     m_output = AESINKPI_BOTH;
   else assert(0);
 
@@ -598,11 +584,11 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
 
   if (!m_Passthrough)
   {
-    bool upmix = CSettings::Get().GetBool("audiooutput.stereoupmix");
-    bool normalize = !CSettings::Get().GetBool("audiooutput.maintainoriginalvolume");
+    bool upmix = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_STEREOUPMIX);
+    bool normalize = !CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME);
     void *remapLayout = NULL;
 
-    CAEChannelInfo stdLayout = (enum AEStdChLayout)CSettings::Get().GetInt("audiooutput.channels");
+    CAEChannelInfo stdLayout = (enum AEStdChLayout)CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CHANNELS);
 
     // ignore layout setting for analogue
     if (m_output == AESINKPI_ANALOGUE || m_output == AESINKPI_BOTH)
@@ -611,7 +597,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
     CAEChannelInfo resolvedMap = channelMap;
     resolvedMap.ResolveChannels(stdLayout);
 
-    if (CSettings::Get().GetInt("audiooutput.config") == AE_CONFIG_FIXED || (upmix && channelMap.Count() <= 2))
+    if (CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) == AE_CONFIG_FIXED || (upmix && channelMap.Count() <= 2))
       resolvedMap = stdLayout;
 
     uint64_t m_dst_chan_layout = GetAVChannelLayout(resolvedMap);
@@ -725,9 +711,11 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
 
     m_wave_header.dwChannelMask = m_src_chan_layout;
   }
+  else
+    SetAudioProps(m_Passthrough, 0);
 
-  m_SampleRate    = m_format.m_sampleRate;
-  m_BitsPerSample = CAEUtil::DataFormatToBits(m_format.m_dataFormat);
+  m_SampleRate    = format.m_sampleRate;
+  m_BitsPerSample = m_Passthrough ? 16 : CAEUtil::DataFormatToBits(format.m_dataFormat);
   m_BytesPerSec   = m_SampleRate * 2 << rounded_up_channels_shift[m_InputChannels];
   m_BufferLen     = m_BytesPerSec * AUDIO_BUFFER_SECONDS;
   m_InputBytesPerSec = m_SampleRate * m_BitsPerSample * m_InputChannels >> 3;
@@ -743,7 +731,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   m_wave_header.Format.nBlockAlign          = m_InputChannels * (m_BitsPerSample >> 3);
   // 0x8000 is custom format interpreted by GPU as WAVE_FORMAT_IEEE_FLOAT_PLANAR
   m_wave_header.Format.wFormatTag           = m_BitsPerSample == 32 ? 0x8000 : WAVE_FORMAT_PCM;
-  m_wave_header.Format.nSamplesPerSec       = m_format.m_sampleRate;
+  m_wave_header.Format.nSamplesPerSec       = format.m_sampleRate;
   m_wave_header.Format.nAvgBytesPerSec      = m_BytesPerSec;
   m_wave_header.Format.wBitsPerSample       = m_BitsPerSample;
   m_wave_header.Samples.wValidBitsPerSample = m_BitsPerSample;
@@ -758,7 +746,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   m_pcm_input.nBitPerSample         = m_BitsPerSample;
   m_pcm_input.ePCMMode              = OMX_AUDIO_PCMModeLinear;
   m_pcm_input.nChannels             = m_InputChannels;
-  m_pcm_input.nSamplingRate         = m_format.m_sampleRate;
+  m_pcm_input.nSamplingRate         = format.m_sampleRate;
 
   if(!m_omx_decoder.Initialize("OMX.broadcom.audio_decode", OMX_IndexParamAudioInit))
     return false;
@@ -873,35 +861,6 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
       return false;
     }
   } 
-  else if(m_HWDecode)
-  {
-    // send decoder config
-    if(m_extrasize > 0 && m_extradata != NULL)
-    {
-      OMX_BUFFERHEADERTYPE *omx_buffer = m_omx_decoder.GetInputBuffer();
-  
-      if(omx_buffer == NULL)
-      {
-        CLog::Log(LOGERROR, "%s::%s - buffer error 0x%08x", CLASSNAME, __func__, omx_err);
-        return false;
-      }
-  
-      omx_buffer->nOffset = 0;
-      omx_buffer->nFilledLen = std::min((OMX_U32)m_extrasize, omx_buffer->nAllocLen);
-
-      memset((unsigned char *)omx_buffer->pBuffer, 0x0, omx_buffer->nAllocLen);
-      memcpy((unsigned char *)omx_buffer->pBuffer, m_extradata, omx_buffer->nFilledLen);
-      omx_buffer->nFlags = OMX_BUFFERFLAG_CODECCONFIG | OMX_BUFFERFLAG_ENDOFFRAME;
-  
-      omx_err = m_omx_decoder.EmptyThisBuffer(omx_buffer);
-      if (omx_err != OMX_ErrorNone)
-      {
-        CLog::Log(LOGERROR, "%s::%s - OMX_EmptyThisBuffer() failed with result(0x%x)\n", CLASSNAME, __func__, omx_err);
-        m_omx_decoder.DecoderEmptyBufferDone(m_omx_decoder.GetComponent(), omx_buffer);
-        return false;
-      }
-    }
-  }
 
   /* return on decoder error so m_Initialized stays false */
   if(m_omx_decoder.BadState())
@@ -919,8 +878,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   CLog::Log(LOGDEBUG, "COMXAudio::Initialize Input bps %d samplerate %d channels %d buffer size %d bytes per second %d",
       (int)m_pcm_input.nBitPerSample, (int)m_pcm_input.nSamplingRate, (int)m_pcm_input.nChannels, m_BufferLen, m_InputBytesPerSec);
   PrintPCM(&m_pcm_input, std::string("input"));
-  CLog::Log(LOGDEBUG, "COMXAudio::Initialize device passthrough %d hwdecode %d",
-     m_Passthrough, m_HWDecode);
+  CLog::Log(LOGDEBUG, "COMXAudio::Initialize device passthrough %d", m_Passthrough);
 
   return true;
 }
@@ -973,7 +931,6 @@ bool COMXAudio::Deinitialize()
   m_av_clock  = NULL;
 
   m_Initialized = false;
-  m_HWDecode    = false;
 
   if(m_extradata)
     free(m_extradata);
@@ -1096,13 +1053,7 @@ bool COMXAudio::ApplyVolume(void)
 }
 
 //***********************************************************************************************
-unsigned int COMXAudio::AddPackets(const void* data, unsigned int len)
-{
-  return AddPackets(data, len, 0, 0, 0);
-}
-
-//***********************************************************************************************
-unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dts, double pts, unsigned int frame_size)
+unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dts, double pts, unsigned int frame_size, bool &settings_changed)
 {
   CSingleLock lock (m_critSection);
 
@@ -1112,7 +1063,7 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
     return len;
   }
 
-  unsigned pitch = (m_Passthrough || m_HWDecode) ? 1:(m_BitsPerSample >> 3) * m_InputChannels;
+  unsigned pitch = m_Passthrough ? 1:(m_BitsPerSample >> 3) * m_InputChannels;
   unsigned int demuxer_samples = len / pitch;
   unsigned int demuxer_samples_sent = 0;
   uint8_t *demuxer_content = (uint8_t *)data;
@@ -1146,7 +1097,7 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
     omx_buffer->nFilledLen = samples * pitch;
 
     unsigned int frames = frame_size ? len/frame_size:0;
-    if ((samples < demuxer_samples || frames > 1) && m_BitsPerSample==32 && !(m_Passthrough || m_HWDecode))
+    if ((samples < demuxer_samples || frames > 1) && m_BitsPerSample==32 && !m_Passthrough)
     {
       const unsigned int sample_pitch   = m_BitsPerSample >> 3;
       const unsigned int frame_samples  = frame_size / pitch;
@@ -1238,6 +1189,7 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
   m_submitted += (float)demuxer_samples / m_SampleRate;
   if (m_amplification != 1.0)
     UpdateAttenuation();
+  settings_changed = m_settings_changed;
   return len;
 }
 
@@ -1488,16 +1440,20 @@ void COMXAudio::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
     return ;
 }
 
-void COMXAudio::SetCodingType(AEDataFormat dataFormat)
+void COMXAudio::SetCodingType(AEAudioFormat format)
 {
-  switch(dataFormat)
-  { 
-    case AE_FMT_DTS:
+  CAEStreamInfo::DataType type = m_Passthrough ? format.m_streamInfo.m_type : CAEStreamInfo::STREAM_TYPE_NULL;
+  switch(type)
+  {
+    case CAEStreamInfo::STREAM_TYPE_DTS_512:
+    case CAEStreamInfo::STREAM_TYPE_DTS_1024:
+    case CAEStreamInfo::STREAM_TYPE_DTS_2048:
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
       CLog::Log(LOGDEBUG, "COMXAudio::SetCodingType OMX_AUDIO_CodingDTS\n");
       m_eEncoding = OMX_AUDIO_CodingDTS;
       break;
-    case AE_FMT_AC3:
-    case AE_FMT_EAC3:
+    case CAEStreamInfo::STREAM_TYPE_AC3:
+    case CAEStreamInfo::STREAM_TYPE_EAC3:
       CLog::Log(LOGDEBUG, "COMXAudio::SetCodingType OMX_AUDIO_CodingDDP\n");
       m_eEncoding = OMX_AUDIO_CodingDDP;
       break;
@@ -1505,30 +1461,7 @@ void COMXAudio::SetCodingType(AEDataFormat dataFormat)
       CLog::Log(LOGDEBUG, "COMXAudio::SetCodingType OMX_AUDIO_CodingPCM\n");
       m_eEncoding = OMX_AUDIO_CodingPCM;
       break;
-  } 
-}
-
-bool COMXAudio::CanHWDecode(AVCodecID codec)
-{
-  bool ret = false;
-  switch(codec)
-  { 
-    case AV_CODEC_ID_DTS:
-      CLog::Log(LOGDEBUG, "COMXAudio::CanHWDecode OMX_AUDIO_CodingDTS\n");
-      ret = true;
-      break;
-    case AV_CODEC_ID_AC3:
-    case AV_CODEC_ID_EAC3:
-      CLog::Log(LOGDEBUG, "COMXAudio::CanHWDecode OMX_AUDIO_CodingDDP\n");
-      ret = true;
-      break;
-    default:
-      CLog::Log(LOGDEBUG, "COMXAudio::CanHWDecode OMX_AUDIO_CodingPCM\n");
-      ret = false;
-      break;
-  } 
-
-  return ret;
+  }
 }
 
 void COMXAudio::PrintChannels(OMX_AUDIO_CHANNELTYPE eChannelMapping[])

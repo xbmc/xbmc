@@ -20,7 +20,8 @@
  */
 
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
-#include "cores/IAudioCallback.h"
+#include "cores/AudioEngine/Utils/AEStreamData.h"
+#include "cores/AudioEngine/Interfaces/IAudioCallback.h"
 #include <stdint.h>
 
 extern "C" {
@@ -28,13 +29,29 @@ extern "C" {
 }
 
 /**
- * Bit options to pass to IAE::GetStream
+ * Callback interafce for VideoPlayer clock needed by AE for sync
  */
-enum AEStreamOptions
+class IAEClockCallback
 {
-  AESTREAM_FORCE_RESAMPLE = 0x01, /* force resample even if rates match */
-  AESTREAM_PAUSED         = 0x02, /* create the stream paused */
-  AESTREAM_AUTOSTART      = 0x04  /* autostart the stream when enough data is buffered */
+public:
+  virtual double GetClock() = 0;
+  virtual double GetClockSpeed() { return 1.0; };
+};
+
+class CAESyncInfo
+{
+public:
+  double delay;
+  double error;
+  double rr;
+  unsigned int errortime;
+  enum AESyncState
+  {
+    SYNC_OFF,
+    SYNC_PLAY,
+    SYNC_ACTIVE
+  };
+  AESyncState state;
 };
 
 /**
@@ -72,10 +89,10 @@ public:
   virtual double GetDelay() = 0;
 
   /**
-   * Returns playing PTS
-   * @return millis
+   * Returns info about audio to clock synchronization
+   * @return CAESyncInfo
    */
-  virtual int64_t GetPlayingPTS() = 0;
+  virtual CAESyncInfo GetSyncInfo() = 0;
 
   /**
    * Returns if the stream is buffering
@@ -190,12 +207,6 @@ public:
   virtual const unsigned int GetSampleRate() const = 0;
 
   /**
-   * Returns the stream's encoded sample rate if the stream is RAW
-   * @return The stream's encoded sample rate
-   */
-  virtual const unsigned int GetEncodedSampleRate() const = 0;
-
-  /**
    * Return the data format the stream has been configured with
    * @return The stream's data format (eg, AE_FMT_S16LE)
    */
@@ -213,7 +224,12 @@ public:
    * @note This function may return false if the stream is not resampling, if you wish to use this be sure to set the AESTREAM_FORCE_RESAMPLE option
    * @param ratio the new sample rate ratio, calculated by ((double)desiredRate / (double)GetSampleRate())
    */
-  virtual bool SetResampleRatio(double ratio) = 0;
+  virtual void SetResampleRatio(double ratio) = 0;
+
+  /**
+   * Sets the resamplling on/ff
+   */
+  virtual void SetResampleMode(int mode) = 0;
 
   /**
    * Registers the audio callback to call with each block of data, this is used by Audio Visualizations
@@ -246,11 +262,6 @@ public:
    * Slave a stream to resume when this stream has drained
    */
   virtual void RegisterSlave(IAEStream *stream) = 0;
-
-  /**
-   * Sginal a clock change
-   */
-  virtual void Discontinuity() = 0;
 
   /**
    * Indicates if dsp addon system is active.

@@ -13,6 +13,8 @@ testMain
 *.kdev4
 # gedit
 *~
+# CLion
+/.idea
 
 # generated files etc
 config.cache
@@ -88,8 +90,8 @@ config.log
 /build-aux/ltmain.sh
 /autotools
 /BUILD
-/xbmc.log
-/xbmc.old.log
+/kodi.log
+/kodi.old.log
 /Makefile.depend
 /config.status
 /configure
@@ -101,25 +103,11 @@ config.log
 /*.patch
 
 # /addons/
-/addons/com.nullsoft.milkdrop.xbmc/*.vis
-/addons/org.xbmc.addons.dxspectrum/*.vis
 /addons/packages
-/addons/screensaver.rsxs.euphoria/Euphoria.xbs
-/addons/screensaver.rsxs.plasma/Plasma.xbs
-/addons/screensaver.rsxs.solarwinds/Solarwinds.xbs
 /addons/skin.confluence/media/Makefile
 /addons/skin.confluence/media/Textures.xbt
 /addons/skin.pm3-hd/media/Textures.xbt
-/addons/visualization.dxspectrum/Spectrum_win32dx.vis
-/addons/visualization.glspectrum/opengl_spectrum.vis
-/addons/visualization.milkdrop/MilkDrop_win32dx.vis
-/addons/visualization.projectm/projectM.vis
-/addons/visualization.projectm/resources/presets.zip
-/addons/visualization.vortex/Vortex_win32dx.vis
-/addons/visualization.waveform/Waveform.vis
-/addons/visualization.waveform/Waveform_win32.vis
 /addons/visualization.itunes/iTunes.mvis
-/addons/visualization.fishbmc/fishbmc.vis
 /addons/script.module.pil/
 /addons/audioencoder.*
 /addons/pvr.*
@@ -159,6 +147,9 @@ config.log
 /lib/addons/library.xbmc.codec/project/VS2010Express/Debug
 /lib/addons/library.xbmc.pvr/project/VS2010Express/Release
 /lib/addons/library.xbmc.pvr/project/VS2010Express/Debug
+/lib/addons/library.kodi.audioengine/Makefile
+/lib/addons/library.kodi.audioengine/project/VS2010Express/Release/
+/lib/addons/library.kodi.audioengine/project/VS2010Express/Debug/
 
 # /lib/cpluff/
 /lib/cpluff/ABOUT-NLS
@@ -307,6 +298,7 @@ lib/cpluff/stamp-h1
 /project/cmake/addons/*.error
 /project/cmake/addons/.failure
 /project/cmake/addons/.success
+/project/cmake/addons/addons
 /project/cmake/addons/build
 /project/cmake/addons/depends/build
 /project/cmake/addons/output
@@ -351,6 +343,7 @@ lib/cpluff/stamp-h1
 /project/VS2010Express/*.vsp
 /project/VS2010Express/*.metaproj
 /project/VS2010Express/*.metaproj.tmp
+/project/VS2010Express/.vs
 
 # /skin/
 /skin/Confluence/media/Textures.xbt
@@ -382,8 +375,8 @@ lib/cpluff/stamp-h1
 /system/cdrip/vorbis.dll
 /system/cdrip/vorbisenc.dll
 
-# /system/players/dvdplayer
-/system/players/dvdplayer/*
+# /system/players/VideoPlayer
+/system/players/VideoPlayer/*
 
 # /system/players/paplayer
 /system/players/paplayer/libmodplug.dll
@@ -411,24 +404,20 @@ lib/cpluff/stamp-h1
 # /system
 /system/zlib1.dll
 
-
-# /screensavers/
-/screensavers/Solarwinds.xbs
-/screensavers/Euphoria.xbs
-/screensavers/Plasma.xbs
-
 # /skin/Confluence/
 /skin/Confluence/BUILD
 
 #/tools/android
-/tools/android/packaging/xbmc/AndroidManifest.xml
 /tools/android/packaging/Makefile
+/tools/android/packaging/xbmc/activity_main.xml
+/tools/android/packaging/xbmc/AndroidManifest.xml
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/Main.java
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/Splash.java
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCBroadcastReceiver.java
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCOnAudioFocusChangeListener.java
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCOnFrameAvailableListener.java
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCSettingsContentObserver.java
+/tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCVideoView.java
 /tools/android/packaging/xbmc/strings.xml
 
 #/tools/depends
@@ -494,13 +483,12 @@ lib/cpluff/stamp-h1
 
 # /xbmc/addons/
 /xbmc/addons/Makefile
-/xbmc/addons/visualization.waveform
 
-# /xbmc/android
-/xbmc/android/Makefile
-/xbmc/android/activity/Makefile
-/xbmc/android/loader/Makefile
-/xbmc/android/jni/Makefile
+# /xbmc/platform/android
+/xbmc/platform/android/Makefile
+/xbmc/platform/android/activity/Makefile
+/xbmc/platform/android/loader/Makefile
+/xbmc/platform/android/jni/Makefile
 
 # /xbmc/cdrip/
 /xbmc/cdrip/Makefile
@@ -511,19 +499,19 @@ lib/cpluff/stamp-h1
 /xbmc/cores/DllLoader/exports/wrapper.def
 /xbmc/cores/DllLoader/Makefile
 /xbmc/cores/DllLoader/exports/Makefile
-/xbmc/cores/dvdplayer/Makefile
-/xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile
-/xbmc/cores/dvdplayer/DVDCodecs/Makefile
-/xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile
-/xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS/Makefile
-/xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile
-/xbmc/cores/dvdplayer/DVDDemuxers/Makefile
-/xbmc/cores/dvdplayer/DVDSubtitles/Makefile
+/xbmc/cores/VideoPlayer/Makefile
+/xbmc/cores/VideoPlayer/DVDCodecs/Audio/Makefile
+/xbmc/cores/VideoPlayer/DVDCodecs/Makefile
+/xbmc/cores/VideoPlayer/DVDCodecs/Overlay/Makefile
+/xbmc/cores/VideoPlayer/DVDCodecs/Video/Makefile
+/xbmc/cores/VideoPlayer/DVDDemuxers/Makefile
+/xbmc/cores/VideoPlayer/DVDSubtitles/Makefile
+/xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/Makefile
 /xbmc/cores/omxplayer/Makefile
 /xbmc/cores/paplayer/Makefile
 /xbmc/cores/playercorefactory/Makefile
 /xbmc/cores/Makefile
-/xbmc/cores/VideoRenderers/Makefile
+/xbmc/cores/VideoPlayer/VideoRenderers/Makefile
 
 # /xbmc/filesystem/
 /xbmc/filesystem/Makefile
@@ -550,6 +538,7 @@ lib/cpluff/stamp-h1
 
 # /xbmc/interfaces/
 /xbmc/interfaces/Makefile
+/xbmc/interfaces/builtins/Makefile
 /xbmc/interfaces/json-rpc/ServiceDescription.h
 /xbmc/interfaces/python/Makefile
 /xbmc/interfaces/python/generated/
@@ -559,128 +548,34 @@ lib/cpluff/stamp-h1
 /xbmc/linux/Makefile
 /xbmc/linux/sse4/Makefile
 
-# /xbmc/main/
-/xbmc/main/Makefile
+# /xbmc/platform/posix
+/xbmc/platform/posix/Makefile
+
+# /xbmc/platform
+/xbmc/platform/Makefile
 
 # /xbmc/messaging/
 /xbmc/messaging/Makefile
-
-# /xbmc/music/
-/xbmc/music/karaoke/Makefile
+/xbmc/messaging/helpers/Makefile
 
 # /xbmc/network/
 /xbmc/network/Makefile
 /xbmc/network/httprequesthandler/python/Makefile
 /xbmc/network/upnp/Makefile
 
-# /xbmc/osx/
-/xbmc/osx/Makefile
-/xbmc/osx/Info.plist
-/xbmc/osx/ios/XBMCIOS-Info.plist
-/xbmc/osx/atv2/XBMCATV2-Info.plist
+# /xbmc/platform/darwin/osx/
+/xbmc/platform/darwin/osx/Info.plist
+/xbmc/platform/darwin/osx/Makefile
+
+# /xbmc/platform/darwin/ios/
+/xbmc/platform/darwin/osx/ios/IOS-Info.plist
 
 # /xbmc/peripherals/
 /xbmc/peripherals/bus/Makefile
 /xbmc/peripherals/devices/Makefile
 
-#/xbmc/screensavers/
-/xbmc/screensavers/Makefile
-/xbmc/screensavers/rsxs-0.9/Makefile
-/xbmc/screensavers/rsxs-0.9/configure
-/xbmc/screensavers/rsxs-0.9/config.h
-/xbmc/screensavers/rsxs-0.9/config.log
-/xbmc/screensavers/rsxs-0.9/config/Makefile
-/xbmc/screensavers/rsxs-0.9/lib/Makefile
-/xbmc/screensavers/rsxs-0.9/libltdl/Makefile
-/xbmc/screensavers/rsxs-0.9/src/Makefile
-/xbmc/screensavers/rsxs-0.9/src/cyclone/Makefile
-/xbmc/screensavers/rsxs-0.9/src/euphoria/Makefile
-/xbmc/screensavers/rsxs-0.9/src/fieldlines/Makefile
-/xbmc/screensavers/rsxs-0.9/src/flocks/Makefile
-/xbmc/screensavers/rsxs-0.9/src/flux/Makefile
-/xbmc/screensavers/rsxs-0.9/src/helios/Makefile
-/xbmc/screensavers/rsxs-0.9/src/hyperspace/Makefile
-/xbmc/screensavers/rsxs-0.9/src/lattice/Makefile
-/xbmc/screensavers/rsxs-0.9/src/plasma/Makefile
-/xbmc/screensavers/rsxs-0.9/src/skyrocket/Makefile
-/xbmc/screensavers/rsxs-0.9/src/solarwinds/Makefile
-/xbmc/screensavers/rsxs-0.9/xbmc/Makefile
-/xbmc/screensavers/rsxs-0.9/autom4te.cache/
-/xbmc/screensavers/rsxs-0.9/lib/alloca.h
-/xbmc/screensavers/rsxs-0.9/lib/argz.h
-/xbmc/screensavers/rsxs-0.9/lib/getopt.h
-/xbmc/screensavers/rsxs-0.9/rsxs.spec
-/xbmc/screensavers/rsxs-0.9/src/.dirstamp
-/xbmc/screensavers/rsxs-0.9/src/euphoria/rs-euphoria
-/xbmc/screensavers/rsxs-0.9/src/plasma/rs-plasma
-/xbmc/screensavers/rsxs-0.9/src/solarwinds/rs-solarwinds
-/xbmc/screensavers/rsxs-0.9/stamp-h1
-/xbmc/screensavers/rsxs-0.9/aclocal.m4
-/xbmc/screensavers/rsxs-0.9/compile
-/xbmc/screensavers/rsxs-0.9/config.guess
-/xbmc/screensavers/rsxs-0.9/config.h.in
-/xbmc/screensavers/rsxs-0.9/config.h.in~
-/xbmc/screensavers/rsxs-0.9/config.sub
-/xbmc/screensavers/rsxs-0.9/config/Makefile.in
-/xbmc/screensavers/rsxs-0.9/depcomp
-/xbmc/screensavers/rsxs-0.9/INSTALL
-/xbmc/screensavers/rsxs-0.9/install-sh
-/xbmc/screensavers/rsxs-0.9/lib/Makefile.in
-/xbmc/screensavers/rsxs-0.9/libltdl/Makefile.in
-/xbmc/screensavers/rsxs-0.9/Makefile.in
-/xbmc/screensavers/rsxs-0.9/missing
-/xbmc/screensavers/rsxs-0.9/src/cyclone/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/euphoria/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/fieldlines/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/flocks/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/flux/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/helios/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/hyperspace/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/lattice/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/plasma/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/skyrocket/Makefile.in
-/xbmc/screensavers/rsxs-0.9/src/solarwinds/Makefile.in
-
 #/xbmc/utils
 /xbmc/utils/Makefile
-
-#/xbmc/visualizations/
-/xbmc/visualizations/DirectXSpectrum/Debug (DirectX)
-/xbmc/visualizations/DirectXSpectrum/Release (DirectX)
-/xbmc/visualizations/EGLHelpers/Makefile
-/xbmc/visualizations/fishBMC/Makefile
-/xbmc/visualizations/Goom/Makefile
-/xbmc/visualizations/Goom/goom2k4-0/aclocal.m4
-/xbmc/visualizations/Goom/goom2k4-0/compile
-/xbmc/visualizations/Goom/goom2k4-0/configure
-/xbmc/visualizations/Goom/goom2k4-0/INSTALL
-/xbmc/visualizations/Goom/goom2k4-0/mkinstalldirs
-/xbmc/visualizations/Goom/goom2k4-0/Makefile.in
-/xbmc/visualizations/Goom/goom2k4-0/config.guess
-/xbmc/visualizations/Goom/goom2k4-0/config.sub
-/xbmc/visualizations/Goom/goom2k4-0/depcomp
-/xbmc/visualizations/Goom/goom2k4-0/install-sh
-/xbmc/visualizations/Goom/goom2k4-0/ltmain.sh
-/xbmc/visualizations/Goom/goom2k4-0/missing
-/xbmc/visualizations/Goom/goom2k4-0/sdl-goom/Makefile.in
-/xbmc/visualizations/Goom/goom2k4-0/src/Makefile.in
-/xbmc/visualizations/Goom/goom2k4-0/xmms-goom/Makefile.in
-/xbmc/visualizations/Goom/goom2k4-0/ylwrap
-/xbmc/visualizations/Goom/goom2k4-0/gtk-gui-devel/confdefs.h
-/xbmc/visualizations/Milkdrop/Debug
-/xbmc/visualizations/Milkdrop/Release
-/xbmc/visualizations/OpenGLSpectrum/Makefile
-/xbmc/visualizations/Vortex/Vortex/Vortex.vcxproj.metaproj
-/xbmc/visualizations/WaveForm/Makefile
-/xbmc/visualizations/WaveForm/Debug (DirectX)
-/xbmc/visualizations/WaveForm/Release (DirectX)
-/xbmc/visualizations/XBMCProjectM/Makefile
-/xbmc/visualizations/XBMCProjectM/libprojectM/Makefile
-/xbmc/visualizations/XBMCProjectM/libprojectM/CMakeCache.txt
-/xbmc/visualizations/XBMCProjectM/libprojectM/CMakeFiles/
-/xbmc/visualizations/XBMCProjectM/libprojectM/cmake_install.cmake
-/xbmc/visualizations/XBMCProjectM/libprojectM/config.inp
 
 #/xbmc/win32/
 /xbmc/win32/XBMC_PC.rc
@@ -760,6 +655,7 @@ lib/cpluff/stamp-h1
 /lib/libdvd/libdvdcss/stamp-doxygen
 /lib/libdvd/libdvdcss/test/Makefile
 /lib/libdvd/libdvdcss/doc/doxygen.cfg
+/lib/libdvd/libdvdcss/doc/doxygen_sqlite3.db
 /lib/libdvd/libdvdcss/doc/Makefile
 /lib/libdvd/libdvdcss/doc/Makefile.in
 /lib/libdvd/libdvdcss/doc/html/
@@ -937,6 +833,27 @@ lib/cpluff/stamp-h1
 /addons/library.kodi.guilib/libKODI_guilib.lib
 /addons/library.xbmc.pvr/libXBMC_pvr.dll
 /addons/library.xbmc.pvr/libXBMC_pvr.lib
+/addons/library.kodi.audioengine/libKODI_audioengine.dll
+/addons/library.kodi.audioengine/libKODI_audioengine.lib
 
 /pvr-addons
 /adsp-addons
+
+# files removed in Jarvis
+/addons/visualization.dxspectrum/*
+/addons/visualization.milkdrop/*
+/addons/visualization.vortex/*
+/addons/visualization.waveform/*
+
+# files to be removed in K*****
+/system/players/dvdplayer/
+/xbmc/cores/dvdplayer/Makefile
+/xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile
+/xbmc/cores/dvdplayer/DVDCodecs/Makefile
+/xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile
+/xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS/Makefile
+/xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile
+/xbmc/cores/dvdplayer/DVDDemuxers/Makefile
+/xbmc/cores/dvdplayer/DVDSubtitles/Makefile
+/xbmc/cores/dvdplayer/VideoRenderers/Makefile
+/xbmc/cores/VideoRenderers/Makefile

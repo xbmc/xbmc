@@ -18,9 +18,10 @@
 <!--       <obc45>Stop</obc45>         -->
 <!--    </universalremote>            -->
 
-<!-- Note that the action can be a built-in function.                 -->
-<!--  eg <B>ActivateWindow(MyMusic)</B>                         -->
-<!-- would automatically go to My Music on the press of the B button. -->
+<!-- Note that the action can be a built-in function.                                         -->
+<!--  eg <B>ActivateWindow(MyMusic)</B>                                                       -->
+<!-- would automatically go to My Music on the press of the B button.                         -->
+<!-- An empty action removes the corresponding mapping from the default keymap                -->
 
 <!-- Joysticks / Gamepads:                                                                    -->
 <!--   See the sample PS3 controller configuration below for the format.                      -->
@@ -35,6 +36,10 @@
 <!--                                                                                          -->
 <!--  Axis Ids / Analog Controls                                                              -->
 <!--   Coming soon.                                                                           -->
+<!--                                                                                          -->
+<!--  Long presses                                                                            -->
+<!--   A limitation is that if a single press is mapped in a section, a global "longpress"    -->
+<!--   will be ignored. The workaround is to duplicate the long mapping in the section.       -->
 <keymap>
   <global>
     <remote>
@@ -52,7 +57,8 @@
       <pageplus>PageUp</pageplus>
       <pageminus>PageDown</pageminus>
       <back>Back</back>
-      <menu>PreviousMenu</menu>
+      <menu>ContextMenu</menu>
+      <menu mod="longpress">Menu</menu>
       <contentsmenu>PreviousMenu</contentsmenu>
       <rootmenu>PreviousMenu</rootmenu>
       <title>ContextMenu</title>
@@ -70,7 +76,7 @@
       <myvideo>ActivateWindow(MyVideos)</myvideo>
       <mymusic>ActivateWindow(MyMusic)</mymusic>
       <mypictures>ActivateWindow(MyPictures)</mypictures>
-      <mytv>ActivateWindow(TVChannels)</mytv>
+      <mytv>ActivateWindow(Videos,TvShows)</mytv>
       <guide>ActivateWindow(TVGuide)</guide>
       <livetv>ActivateWindow(TVChannels)</livetv>
       <liveradio>ActivateWindow(RadioChannels)</liveradio>
@@ -380,7 +386,7 @@
   </MyVideoPlaylist>
   <VirtualKeyboard>
     <remote>
-      <back>BackSpace</back>
+      <back>Back</back>
       <star>Shift</star>
       <hash>Symbols</hash>
       <zero>Number0</zero>
@@ -421,7 +427,7 @@
       <eight>Number8</eight>
       <nine>Number9</nine>
       <enter>Enter</enter>
-      <back>BackSpace</back>
+      <back>Back</back>
     </remote>
   </NumericInput>
   <Weather>
@@ -577,16 +583,20 @@
     <remote>
       <left>StepBack</left>
       <right>StepForward</right>
-      <up>ChannelUp</up>
-      <down>ChannelDown</down>
+      <up>Up</up>
+      <down>Down</down>
+      <pageplus>ChannelUp</pageplus>
+      <pageminus>ChannelDown</pageminus>
     </remote>
   </FullscreenLiveTV>
   <FullscreenRadio>
     <remote>
       <left>StepBack</left>
       <right>StepForward</right>
-      <up>ChannelUp</up>
-      <down>ChannelDown</down>
+      <up>Up</up>
+      <down>Down</down>
+      <pageplus>ChannelUp</pageplus>
+      <pageminus>ChannelDown</pageminus>
     </remote>
   </FullscreenRadio>
   <PVROSDChannels>
@@ -597,6 +607,16 @@
       <rootmenu>Close</rootmenu>
       <start>Close</start>
       <playlist>Close</playlist>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>number2</two>
+      <three>number3</three>
+      <four>number4</four>
+      <five>number5</five>
+      <six>number6</six>
+      <seven>number7</seven>
+      <eight>number8</eight>
+      <nine>number9</nine>
     </remote>
   </PVROSDChannels>
   <PVROSDGuide>
@@ -607,8 +627,60 @@
       <rootmenu>Close</rootmenu>
       <start>Close</start>
       <guide>Close</guide>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>number2</two>
+      <three>number3</three>
+      <four>number4</four>
+      <five>number5</five>
+      <six>number6</six>
+      <seven>number7</seven>
+      <eight>number8</eight>
+      <nine>number9</nine>
     </remote>
   </PVROSDGuide>
+  <TVChannels>
+    <remote>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>number2</two>
+      <three>number3</three>
+      <four>number4</four>
+      <five>number5</five>
+      <six>number6</six>
+      <seven>number7</seven>
+      <eight>number8</eight>
+      <nine>number9</nine>
+    </remote>
+  </TVChannels>
+  <TVGuide>
+    <remote>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>number2</two>
+      <three>number3</three>
+      <four>number4</four>
+      <five>number5</five>
+      <six>number6</six>
+      <seven>number7</seven>
+      <eight>number8</eight>
+      <nine>number9</nine>
+    </remote>
+  </TVGuide>
+  <RadioChannels>
+    <remote>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>number2</two>
+      <three>number3</three>
+      <four>number4</four>
+      <five>number5</five>
+      <six>number6</six>
+      <seven>number7</seven>
+      <eight>number8</eight>
+      <nine>number9</nine>
+    </remote>
+  </RadioChannels>
   <MyTVSettings>
     <remote>
       <back>PreviousMenu</back>

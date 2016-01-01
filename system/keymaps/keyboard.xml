@@ -1,40 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- This file contains the mapping of keys (gamepad, remote, and keyboard) to actions within XBMC -->
-<!-- The <global> section is a fall through - they will only be used if the button is not          -->
-<!-- used in the current window's section.  Note that there is only handling                       -->
-<!-- for a single action per button at this stage.                                                 -->
-<!-- For joystick/gamepad configuration under linux/win32, see below as it differs from xbox       -->
-<!-- gamepads.                                                                                     -->
-
-<!-- The format is:                      -->
-<!--    <device>                         -->
-<!--      <button>action</button>        -->
-<!--    </device>                        -->
-
-<!-- To map keys from other remotes using the RCA protocol, you may add <universalremote> blocks -->
-<!-- In this case, the tags used are <obc#> where # is the original button code (OBC) of the key -->
-<!-- You set it up by adding a <universalremote> block to the window or <global> section:       -->
-<!--    <universalremote>             -->
-<!--       <obc45>Stop</obc45>         -->
-<!--    </universalremote>            -->
-
-<!-- Note that the action can be a built-in function.                 -->
-<!--  eg <B>ActivateWindow(MyMusic)</B>                         -->
-<!-- would automatically go to My Music on the press of the B button. -->
-
-<!-- Joysticks / Gamepads:                                                                    -->
-<!--   See the sample PS3 controller configuration below for the format.                      -->
-<!--                                                                                          -->
-<!--  Joystick Name:                                                                          -->
-<!--   Do 'cat /proc/bus/input/devices' or see your xbmc log file  to find the names of       -->
-<!--   detected joysticks. The name used in the configuration should match the detected name. -->
-<!--                                                                                          -->
-<!--  Button Ids:                                                                             -->
-<!--   'id' is the button ID used by SDL. Joystick button ids of connected joysticks appear   -->
-<!--   in xbmc.log when they are pressed. Use your log to map custom buttons to actions.      -->
-<!--                                                                                          -->
-<!--  Axis Ids / Analog Controls                                                              -->
-<!--   Coming soon.                                                                           -->
+<!-- This file contains the mapping of keyboard keys to actions within Kodi.              -->
+<!--                                                                                      -->
+<!-- The format is:                                                                       -->
+<!--  <window>                                                                            -->
+<!--    <device>                                                                          -->
+<!--      <button>action</button>                                                         -->
+<!--    </device>                                                                         -->
+<!--  </window>                                                                           -->
+<!--                                                                                      -->
+<!-- The <global> section is a fall through - they will only be used if the button is     -->
+<!-- not used in the current window's section.                                            -->
+<!--                                                                                      -->
+<!-- Actions can be built-in functions.                                                   -->
+<!--  eg <B>ActivateWindow(MyMusic)</B>                                                   -->
+<!-- would automatically go to Music on the press of the B button.                        -->
+<!--                                                                                      -->
+<!--  Long presses                                                                        -->
+<!--   A limitation is that if a single press is mapped in a section, a global "longpress"-->
+<!--   will be ignored. The workaround is to duplicate the long mapping in the section.   -->
+<!--                                                                                      -->
+<!-- An empty action removes the corresponding mapping from default and parent keymaps.   -->
+<!-- This is different from a "noop" action, which disables a button.                     -->
+<!--                                                                                      -->
+<!-- More documentation on keymaps can be found on http://kodi.wiki/view/keymaps          -->
 <keymap>
   <global>
     <keyboard>
@@ -52,15 +40,22 @@
       <pageup>PageUp</pageup>
       <pagedown>PageDown</pagedown>
       <return>Select</return>
+      <return mod="longpress">ContextMenu</return>
       <enter>Select</enter>
+      <enter mod="longpress">ContextMenu</enter>
       <backspace>Back</backspace>
+      <browser_back>Back</browser_back>
+      <browser_back mod="longpress">ActivateWindow(Home)</browser_back>
       <key id='65446'>Back</key>
-      <m>ActivateWindow(PlayerControls)</m>
+      <m>Menu</m>
+      <n mod="ctrl">ActivateWindow(PlayerControls)</n>
       <s>ActivateWindow(shutdownmenu)</s>
       <escape>PreviousMenu</escape>
       <i>Info</i>
       <menu>ContextMenu</menu>
+      <menu mod="longpress">Menu</menu>
       <c>ContextMenu</c>
+      <c mod="longpress">Menu</c>
       <space>Pause</space>
       <x>Stop</x>
       <period>SkipNext</period>
@@ -104,6 +99,11 @@
       <j>ActivateWindow(RadioChannels)</j>
       <k>ActivateWindow(TVRecordings)</k>
       <b>ActivateWindow(TVTimers)</b>
+      <!-- PVR -->
+      <red>ActivateWindow(TVChannels)</red>
+      <green>ActivateWindow(MyVideos)</green>
+      <yellow>ActivateWindow(MyMusic)</yellow>
+      <blue>ActivateWindow(MyPictures)</blue>
       <!-- Multimedia keyboard keys -->
       <browser_back>Back</browser_back>
       <browser_forward/>
@@ -111,7 +111,10 @@
       <browser_stop/>
       <browser_search/>
       <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
+      <favorites>ActivateWindow(Favourites)</favorites>
+      <config>ActivateWindow(Settings)</config>
       <browser_home>ActivateWindow(Home)</browser_home>
+      <homepage>ActivateWindow(Home)</homepage>
       <volume_mute>Mute</volume_mute>
       <volume_down>VolumeDown</volume_down>
       <volume_up>VolumeUp</volume_up>
@@ -139,6 +142,8 @@
       <f mod="ctrl">SkipNext</f>          <!-- Skip -->
       <b mod="ctrl">SkipPrevious</b>      <!-- Replay -->
       <d mod="ctrl">Info</d>              <!-- MCE Details -->
+      <r mod="ctrl">Record</r>            <!-- Record -->
+      <f4 mod="alt">PreviousMenu</f4>     <!-- Exit -->
       <f10>VolumeUp</f10>                 <!-- MCE Vol up -->
       <f9>VolumeDown</f9>                 <!-- MCE Vol down -->
       <f8>Mute</f8>                       <!-- MCE mute -->
@@ -151,11 +156,12 @@
       <t mod="ctrl">ActivateWindow(TVChannels)</t>  <!-- MCE Live TV  -->
       <t mod="ctrl,shift">ActivateWindow(TVChannels)</t>  <!-- MCE My TV -->
       <a mod="ctrl">ActivateWindow(RadioChannels)</a>  <!-- MCE My Radio -->
-      <!-- MCE keypresses without an obvious use in XBMC -->
+      <!-- MCE keypresses without an obvious use in Kodi -->
       <u mod="ctrl">Notification(MCEKeypress, DVD subtitle, 3)</u>
       <a mod="ctrl,shift">Notification(MCEKeypress, DVD audio, 3)</a>
       <k mod="ctrl,shift">ReloadKeymaps</k>
       <d mod="ctrl,shift">ToggleDebug</d>
+      <r mod="ctrl,shift">ToggleDirtyRegionVisualization</r>
     </keyboard>
   </global>
   <LoginScreen>
@@ -167,53 +173,89 @@
     <keyboard>
       <i>info</i>
       <end mod="ctrl">ShutDown()</end>
+      <backspace mod="longpress">ActivateWindow(ShutdownMenu)</backspace>
     </keyboard>
   </Home>
   <VirtualKeyboard>
     <keyboard>
+      <left>Left</left>
+      <right>Right</right>
+      <up>Up</up>
+      <down>Down</down>
+      <return>Select</return>
+      <enter>Select</enter>
       <backspace>Backspace</backspace>
+      <browser_back>Backspace</browser_back>
+      <browser_back mod="longpress">PreviousMenu</browser_back>
     </keyboard>
   </VirtualKeyboard>
   <MyTVChannels>
     <keyboard>
-      <m>Move</m>
+      <m mod="ctrl">Move</m>
+      <h>PreviousMenu</h>
     </keyboard>
   </MyTVChannels>
   <MyTVRecordings>
     <keyboard>
       <delete>Delete</delete>
       <r>Rename</r>
+      <k>PreviousMenu</k>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
     </keyboard>
   </MyTVRecordings>
   <MyTVTimers>
     <keyboard>
       <delete>Delete</delete>
       <r>Rename</r>
+      <b>PreviousMenu</b>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
     </keyboard>
   </MyTVTimers>
   <MyRadioChannels>
     <keyboard>
-      <m>Move</m>
+      <m mod="ctrl">Move</m>
+      <j>PreviousMenu</j>
     </keyboard>
   </MyRadioChannels>
   <MyRadioRecordings>
     <keyboard>
       <delete>Delete</delete>
       <r>Rename</r>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
     </keyboard>
   </MyRadioRecordings>
   <MyRadioTimers>
     <keyboard>
       <delete>Delete</delete>
       <r>Rename</r>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
     </keyboard>
   </MyRadioTimers>
+  <TVGuide>
+    <keyboard>
+      <e>PreviousMenu</e>
+    </keyboard>
+  </TVGuide>
   <MyFiles>
     <keyboard>
       <space>Highlight</space>
       <delete>Delete</delete>
       <m>Move</m>
       <r>Rename</r>
+      <play_pause mod="longpress">Highlight</play_pause>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </MyFiles>
   <MyMusicPlaylist>
@@ -222,6 +264,7 @@
       <delete>Delete</delete>
       <u>MoveItemUp</u>
       <d>MoveItemDown</d>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </MyMusicPlaylist>
   <MyMusicPlaylistEditor>
@@ -229,6 +272,7 @@
       <u>MoveItemUp</u>
       <d>MoveItemDown</d>
       <delete>Delete</delete>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </MyMusicPlaylistEditor>
   <MyMusicFiles>
@@ -236,12 +280,14 @@
       <n>Playlist</n>
       <q>Queue</q>
       <delete>Delete</delete>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </MyMusicFiles>
   <MyMusicLibrary>
     <keyboard>
       <n>Playlist</n>
       <q>Queue</q>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </MyMusicLibrary>
   <FullscreenVideo>
@@ -251,15 +297,22 @@
       <period>StepForward</period>
       <comma>StepBack</comma>
       <backspace>Fullscreen</backspace>
-      <quote>Seek(-7)</quote><!-- Replaces smallstepback -->
+      <backspace mod="longpress">Stop</backspace>
+      <browser_back>Fullscreen</browser_back>
+      <browser_back mod="longpress">Stop</browser_back>
+      <quote>Seek(-7)</quote> <!-- Replaces smallstepback -->
       <opensquarebracket>BigStepForward</opensquarebracket>
       <closesquarebracket>BigStepBack</closesquarebracket>
       <return>OSD</return>
       <enter>OSD</enter>
+      <return mod="longpress">PlayPause</return>
+      <enter mod="longpress">PlayPause</enter>
       <m>OSD</m>
+      <menu>OSD</menu>
       <i>Info</i>
       <o>CodecInfo</o>
       <z>AspectRatio</z>
+      <zoom>AspectRatio</zoom>
       <t>ShowSubtitles</t>
       <t mod="ctrl">SubtitleAlign</t>
       <l>NextSubtitle</l>
@@ -271,6 +324,7 @@
       <escape>Fullscreen</escape>
       <c>Playlist</c>
       <v>ActivateWindow(Teletext)</v>
+      <text>ActivateWindow(Teletext)</text>
       <up mod="ctrl">SubtitleShiftUp</up>
       <down mod="ctrl">SubtitleShiftDown</down>
       <pageup>SkipNext</pageup>
@@ -292,11 +346,12 @@
       <i>Back</i>
       <d mod="ctrl">Back</d>
       <m>OSD</m>
+      <menu>OSD</menu>
     </keyboard>
   </FullscreenInfo>
   <PlayerControls>
     <keyboard>
-      <m>Back</m>
+      <m mod="ctrl">Back</m>
     </keyboard>
   </PlayerControls>
   <Visualisation>
@@ -308,12 +363,17 @@
       <pageup>IncreaseRating</pageup>
       <pagedown>DecreaseRating</pagedown>
       <backspace>Fullscreen</backspace>
+      <backspace mod="longpress">Stop</backspace>
+      <browser_back>Fullscreen</browser_back>
+      <browser_back mod="longpress">Stop</browser_back>
       <return>OSD</return>
       <enter>OSD</enter>
       <m>OSD</m>
+      <menu>OSD</menu>
       <i>Info</i>
       <p>ActivateWindow(VisualisationPresetList)</p>
       <v>Addon.Default.OpenSettings(xbmc.player.musicviz)</v>
+      <text>Addon.Default.OpenSettings(xbmc.player.musicviz)</text>
       <n>ActivateWindow(MusicPlaylist)</n>
       <left>StepBack</left>
       <right>StepForward</right>
@@ -333,10 +393,12 @@
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
       <m>Back</m>
+      <menu>Back</menu>
       <i>Info</i>
       <o>CodecInfo</o>
       <p>ActivateWindow(VisualisationPresetList)</p>
       <v>Addon.Default.OpenSettings(xbmc.player.musicviz)</v>
+      <text>Addon.Default.OpenSettings(xbmc.player.musicviz)</text>
       <n>ActivateWindow(MusicPlaylist)</n>
     </keyboard>
   </MusicOSD>
@@ -351,6 +413,7 @@
       <o>CodecInfo</o>
       <p>ActivateWindow(VisualisationPresetList)</p>
       <v>Back</v>
+      <text>Back</text>
       <n>ActivateWindow(MusicPlaylist)</n>
     </keyboard>
   </VisualisationSettings>
@@ -365,6 +428,7 @@
       <o>CodecInfo</o>
       <p>Back</p>
       <v>Back</v>
+      <text>Back</text>
       <n>ActivateWindow(MusicPlaylist)</n>
     </keyboard>
   </VisualisationPresetList>
@@ -389,6 +453,7 @@
       <return>Rotate</return>
       <enter>Rotate</enter>
       <r>Rotate</r>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </SlideShow>
   <ScreenCalibration>
@@ -409,6 +474,7 @@
   <VideoOSD>
     <keyboard>
       <m>Back</m>
+      <menu>Back</menu>
       <g mod="ctrl">Back</g> <!-- MCE Guide button -->
       <i>Info</i>
       <o>CodecInfo</o>
@@ -419,9 +485,11 @@
       <opensquarebracket>BigStepForward</opensquarebracket>
       <closesquarebracket>BigStepBack</closesquarebracket>
       <m>OSD</m>
+      <menu>OSD</menu>
       <i>Info</i>
       <o>CodecInfo</o>
       <z>AspectRatio</z>
+      <zoom>AspectRatio</zoom>
       <t>ShowSubtitles</t>
       <l>NextSubtitle</l>
       <a>AudioDelay</a>
@@ -454,6 +522,7 @@
       <delete>Delete</delete>
       <n>Playlist</n>
       <w>ToggleWatched</w>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </MyVideoLibrary>
   <MyVideoFiles>
@@ -461,6 +530,7 @@
       <n>Playlist</n>
       <q>Queue</q>
       <w>ToggleWatched</w>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </MyVideoFiles>
   <MyVideoPlaylist>
@@ -469,11 +539,13 @@
       <delete>Delete</delete>
       <u>MoveItemUp</u>
       <d>MoveItemDown</d>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </MyVideoPlaylist>
   <MyPictures>
     <keyboard>
       <delete>Delete</delete>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </MyPictures>
   <ContextMenu>
@@ -482,20 +554,17 @@
       <menu>Back</menu>
     </keyboard>
   </ContextMenu>
-  <Scripts>
-    <keyboard>
-      <i>info</i>
-    </keyboard>
-  </Scripts>
   <MusicInformation>
     <keyboard>
       <i>Back</i>
       <d mod="ctrl">Back</d>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </MusicInformation>
   <MovieInformation>
     <keyboard>
       <i>Back</i>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </MovieInformation>
   <PictureInfo>
@@ -506,45 +575,67 @@
       <d mod="ctrl">Back</d>
       <o>Back</o>
       <space>Pause</space>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </PictureInfo>
   <Teletext>
     <keyboard>
       <v>Back</v>
+      <text>Back</text>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
     </keyboard>
   </Teletext>
   <Favourites>
     <keyboard>
       <backspace>Close</backspace>
+      <browser_back>Close</browser_back>
       <u>MoveItemUp</u>
       <d>MoveItemDown</d>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </Favourites>
   <NumericInput>
     <keyboard>
       <backspace>Close</backspace>
+      <browser_back>Close</browser_back>
     </keyboard>
   </NumericInput>
   <FullscreenLiveTV>
     <keyboard>
       <left>StepBack</left>
       <right>StepForward</right>
-      <up>ChannelUp</up>
-      <down>ChannelDown</down>
+      <up>Up</up>
+      <down>Down</down>
+      <return>OSD</return>
+      <enter>OSD</enter>
+      <return mod="longpress">ActivateWindow(PVROSDChannels)</return>
+      <enter mod="longpress">ActivateWindow(PVROSDChannels)</enter>
+      <pageup>ChannelUp</pageup>
+      <pagedown>ChannelDown</pagedown>
     </keyboard>
   </FullscreenLiveTV>
   <FullscreenRadio>
     <keyboard>
       <left>StepBack</left>
       <right>StepForward</right>
-      <up>ChannelUp</up>
-      <down>ChannelDown</down>
+      <up>Up</up>
+      <down>Down</down>
+      <return>OSD</return>
+      <enter>OSD</enter>
+      <return mod="longpress">ActivateWindow(PVROSDChannels)</return>
+      <enter mod="longpress">ActivateWindow(PVROSDChannels)</enter>
+      <pageup>ChannelUp</pageup>
+      <pagedown>ChannelDown</pagedown>
     </keyboard>
   </FullscreenRadio>
   <PVROSDChannels>
     <keyboard>
       <backspace>Close</backspace>
       <escape>Close</escape>
+      <browser_back>Close</browser_back>
       <c>Close</c>
     </keyboard>
   </PVROSDChannels>
@@ -552,16 +643,19 @@
     <keyboard>
       <backspace>Close</backspace>
       <escape>Close</escape>
+      <browser_back>Close</browser_back>
     </keyboard>
   </PVROSDGuide>
   <MyTVSettings>
     <keyboard>
       <backspace>PreviousMenu</backspace>
+      <browser_back>PreviousMenu</browser_back>
     </keyboard>
   </MyTVSettings>
   <FileBrowser>
     <keyboard>
       <space>Highlight</space>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </FileBrowser>
   <ShutdownMenu>
@@ -572,19 +666,46 @@
   <AddonInformation>
     <keyboard>
       <i>Back</i>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </AddonInformation>
   <AddonSettings>
     <keyboard>
       <delete>Delete</delete>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </AddonSettings>
   <Addon>
     <keyboard>
       <f1>Red</f1>
+      <red>Red</red>
       <f2>Green</f2>
+      <green>Green</green>
       <f3>Yellow</f3>
+      <yellow>Yellow</yellow>
       <f4>Blue</f4>
+      <blue>Blue</blue>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </Addon>
+  <Programs>
+    <keyboard>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
+    </keyboard>
+  </Programs>
+  <Settings>
+    <keyboard>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
+    </keyboard>
+  </Settings>
+  <MediaFilter>
+    <keyboard>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
+    </keyboard>
+  </MediaFilter>
+  <Weather>
+    <keyboard>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
+    </keyboard>
+  </Weather>
 </keymap>

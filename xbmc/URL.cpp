@@ -160,6 +160,17 @@ void CURL::Parse(const std::string& strURL1)
     return;
   }
 
+  if (IsProtocol("udf"))
+  {
+    std::string lower(strURL);
+    StringUtils::ToLower(lower);
+    size_t isoPos = lower.find(".iso\\", iPos);
+    if (isoPos != std::string::npos)
+    {
+      strURL = strURL.replace(isoPos + 4, 1, "/");
+    }
+  }
+
   // check for username/password - should occur before first /
   if (iPos == std::string::npos) iPos = 0;
 
@@ -173,6 +184,7 @@ void CURL::Parse(const std::string& strURL1)
   if(IsProtocol("rss") ||
      IsProtocol("rar") ||
      IsProtocol("apk") ||
+     IsProtocol("xbt") ||
      IsProtocol("zip") ||
      IsProtocol("addons") ||
      IsProtocol("image") ||
@@ -483,6 +495,7 @@ const std::string CURL::GetFileNameWithoutPath() const
   // *.zip and *.rar store the actual zip/rar path in the hostname of the url
   if ((IsProtocol("rar")  ||
        IsProtocol("zip")  ||
+       IsProtocol("xbt")  ||
        IsProtocol("apk")) &&
        m_strFileName.empty())
     return URIUtils::GetFileName(m_strHostName);
@@ -774,7 +787,7 @@ std::string CURL::Encode(const std::string& strURLData)
     if (StringUtils::isasciialphanum(kar) || kar == '-' || kar == '.' || kar == '_' || kar == '!' || kar == '(' || kar == ')')
       strResult.push_back(kar);
     else
-      strResult += StringUtils::Format("%%%02.2x", (unsigned int)((unsigned char)kar)); // TODO: Change to "%%%02.2X" after Gotham
+      strResult += StringUtils::Format("%%%2.2X", (unsigned int)((unsigned char)kar));
   }
 
   return strResult;

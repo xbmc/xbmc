@@ -27,7 +27,6 @@
 #include <errno.h>
 #include <limits.h>
 
-using namespace std;
 using namespace XFILE;
 
 //////////////////////////////////////////////////////////////////////

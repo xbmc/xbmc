@@ -23,7 +23,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "utils/log.h"
 #if defined(TARGET_ANDROID)
-#include "android/loader/AndroidDyload.h"
+#include "platform/android/loader/AndroidDyload.h"
 #endif
 
 SoLoader::SoLoader(const std::string &so, bool bGlobal) : LibraryLoader(so)
@@ -72,7 +72,6 @@ bool SoLoader::Load()
 
 void SoLoader::Unload()
 {
-  CLog::Log(LOGDEBUG, "Unloading: %s\n", GetName());
 
   if (m_soHandle)
   {

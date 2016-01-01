@@ -45,20 +45,19 @@
 #include "video/VideoDatabase.h"
 #include "settings/Settings.h"
 
-using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 //  Constructor is protected use ParseURL()
 CDirectoryNode::CDirectoryNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent)
 {
-  m_Type=Type;
-  m_strName=strName;
-  m_pParent=pParent;
+  m_Type = Type;
+  m_strName = strName;
+  m_pParent = pParent;
 }
 
 CDirectoryNode::~CDirectoryNode()
 {
-  delete m_pParent;
+  delete m_pParent, m_pParent = nullptr;
 }
 
 //  Parses a given path and returns the current node of the path
@@ -66,21 +65,23 @@ CDirectoryNode* CDirectoryNode::ParseURL(const std::string& strPath)
 {
   CURL url(strPath);
 
-  std::string strDirectory=url.GetFileName();
+  std::string strDirectory = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(strDirectory);
 
-  vector<string> Path = StringUtils::Split(strDirectory, '/');
+  std::vector<std::string> Path = StringUtils::Tokenize(strDirectory, '/');
+  // we always have a root node, it is special and has a path of ""
   Path.insert(Path.begin(), "");
 
-  CDirectoryNode* pNode=NULL;
-  CDirectoryNode* pParent=NULL;
-  NODE_TYPE NodeType=NODE_TYPE_ROOT;
-
-  for (int i=0; i<(int)Path.size(); ++i)
+  CDirectoryNode *pNode = nullptr;
+  CDirectoryNode *pParent = nullptr;
+  NODE_TYPE NodeType = NODE_TYPE_ROOT;
+  // loop down the dir path, creating a node with a parent.
+  // if we hit a child type of NODE_TYPE_NONE, then we are done.
+  for (size_t i = 0; i < Path.size() && NodeType != NODE_TYPE_NONE; ++i)
   {
-    pNode=CDirectoryNode::CreateNode(NodeType, Path[i], pParent);
-    NodeType= pNode ? pNode->GetChildType() : NODE_TYPE_NONE;
-    pParent=pNode;
+    pNode = CDirectoryNode::CreateNode(NodeType, Path[i], pParent);
+    NodeType = pNode ? pNode->GetChildType() : NODE_TYPE_NONE;
+    pParent = pNode;
   }
 
   // Add all the additional URL options to the last node
@@ -93,7 +94,7 @@ CDirectoryNode* CDirectoryNode::ParseURL(const std::string& strPath)
 //  returns the database ids of the path,
 void CDirectoryNode::GetDatabaseInfo(const std::string& strPath, CQueryParams& params)
 {
-  unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
+  std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
 
   if (!pNode.get())
     return;
@@ -179,7 +180,7 @@ CDirectoryNode* CDirectoryNode::GetParent() const
 
 void CDirectoryNode::RemoveParent()
 {
-  m_pParent=NULL;
+  m_pParent = nullptr;
 }
 
 //  should be overloaded by a derived class
@@ -193,26 +194,26 @@ bool CDirectoryNode::GetContent(CFileItemList& items) const
 //  Creates a videodb url
 std::string CDirectoryNode::BuildPath() const
 {
-  vector<string> array;
+  std::vector<std::string> array;
 
   if (!m_strName.empty())
     array.insert(array.begin(), m_strName);
 
   CDirectoryNode* pParent=m_pParent;
-  while (pParent!=NULL)
+  while (pParent != NULL)
   {
     const std::string& strNodeName=pParent->GetName();
     if (!strNodeName.empty())
       array.insert(array.begin(), strNodeName);
 
-    pParent=pParent->GetParent();
+    pParent = pParent->GetParent();
   }
 
   std::string strPath="videodb://";
-  for (int i=0; i<(int)array.size(); ++i)
-    strPath+=array[i]+"/";
+  for (int i = 0; i < (int)array.size(); ++i)
+    strPath += array[i]+"/";
 
-  string options = m_options.GetOptionsString();
+  std::string options = m_options.GetOptionsString();
   if (!options.empty())
     strPath += "?" + options;
 
@@ -235,10 +236,10 @@ void CDirectoryNode::CollectQueryParams(CQueryParams& params) const
   params.SetQueryParam(m_Type, m_strName);
 
   CDirectoryNode* pParent=m_pParent;
-  while (pParent!=NULL)
+  while (pParent != NULL)
   {
     params.SetQueryParam(pParent->GetType(), pParent->GetName());
-    pParent=pParent->GetParent();
+    pParent = pParent->GetParent();
   }
 }
 
@@ -255,13 +256,13 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
   if (CanCache() && items.Load())
     return true;
 
-  unique_ptr<CDirectoryNode> pNode(CDirectoryNode::CreateNode(GetChildType(), "", this));
+  std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::CreateNode(GetChildType(), "", this));
 
   bool bSuccess=false;
   if (pNode.get())
   {
     pNode->m_options = m_options;
-    bSuccess=pNode->GetContent(items);
+    bSuccess = pNode->GetContent(items);
     if (bSuccess)
     {
       AddQueuingFolder(items);
@@ -284,7 +285,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
   CFileItemPtr pItem;
 
   // always show "all" items by default
-  if (!CSettings::Get().GetBool("videolibrary.showallitems"))
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWALLITEMS))
     return;
 
   // no need for "all" item when only one item
@@ -296,7 +297,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
     return;
 
   // hack - as the season node might return episodes
-  unique_ptr<CDirectoryNode> pNode(ParseURL(items.GetPath()));
+  std::unique_ptr<CDirectoryNode> pNode(ParseURL(items.GetPath()));
 
   switch (pNode->GetChildType())
   {

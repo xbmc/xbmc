@@ -54,7 +54,7 @@ namespace ActiveAE
        * @param streamType The input stream type to find allowed master process dsp addons for it, e.g. AE_DSP_ASTREAM_MUSIC
        * @return True if the dsp processing becomes available
        */
-      bool Create(AEAudioFormat inputFormat, AEAudioFormat outputFormat, bool upmix, AEQuality quality, AE_DSP_STREAMTYPE streamType,
+      bool Create(const AEAudioFormat &inputFormat, const AEAudioFormat &outputFormat, bool upmix, AEQuality quality, AE_DSP_STREAMTYPE streamType,
                   enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type, int profile);
 
       /*!>
@@ -260,7 +260,7 @@ namespace ActiveAE
       AE_DSP_BASETYPE GetBaseType(AE_DSP_STREAM_PROPERTIES *props);
       bool RecheckProcessArray(unsigned int inputFrames);
       bool ReallocProcessArray(unsigned int requestSize);
-      void CalculateCPUUsage(unsigned int iTime);
+      void CalculateCPUUsage(uint64_t iTime);
       void SetFFMpegDSPProcessorArray(float *array_ffmpeg[2][AE_DSP_CH_MAX], float **array_in, float **array_out);
     //@}
     //@{

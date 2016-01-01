@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -55,7 +55,6 @@ static const bdaddr_t bt_bdaddr_local = {{0, 0, 0, 0xff, 0xff, 0xff}};
 
 using namespace JSONRPC;
 using namespace ANNOUNCEMENT;
-//using namespace std; On VS2010, bind conflicts with std::bind
 
 #define RECEIVEBUFFER 1024
 
@@ -153,7 +152,7 @@ void CTCPServer::Process()
             {
               CWebSocket *websocket = CWebSocketManager::Handle(buffer, nread, response);
 
-              if (response.size() > 0)
+              if (!response.empty())
                 m_connections[i]->Send(response.c_str(), response.size());
 
               if (websocket != NULL)
@@ -257,7 +256,7 @@ bool CTCPServer::Initialize()
 
   if (started)
   {
-    CAnnouncementManager::Get().AddAnnouncer(this);
+    CAnnouncementManager::GetInstance().AddAnnouncer(this);
     CLog::Log(LOGINFO, "JSONRPC Server: Successfully initialized");
     return true;
   }
@@ -479,7 +478,7 @@ void CTCPServer::Deinitialize()
   m_sdpd = NULL;
 #endif
 
-  CAnnouncementManager::Get().RemoveAnnouncer(this);
+  CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
 }
 
 CTCPServer::CTCPClient::CTCPClient()

@@ -20,6 +20,7 @@
  */
 #include "cximage.h"
 #include "utils/log.h"
+#include <algorithm>
 
 CXImage::CXImage(const std::string& strMimeType): m_strMimeType(strMimeType), m_thumbnailbuffer(NULL)
 {
@@ -65,10 +66,13 @@ bool CXImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, u
   return true;
 }
 
-bool CXImage::Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format)
+bool CXImage::Decode(unsigned char* const pixels, unsigned int width, unsigned int height, unsigned int pitch, unsigned int format)
 {
   if (m_image.width == 0 || m_image.height == 0 || !m_dll.IsLoaded())
     return false;
+
+  unsigned int copyWidth = std::min(m_width, width);
+  unsigned int copyHeight = std::min(m_height, height);
 
   unsigned int dstPitch = pitch;
   unsigned int srcPitch = ((m_image.width + 1)* 3 / 4) * 4; // bitmap row length is aligned to 4 bytes
@@ -76,11 +80,11 @@ bool CXImage::Decode(const unsigned char *pixels, unsigned int pitch, unsigned i
   unsigned char *dst = (unsigned char*)pixels;
   unsigned char *src = m_image.texture + (m_height - 1) * srcPitch;
 
-  for (unsigned int y = 0; y < m_height; y++)
+  for (unsigned int y = 0; y < copyHeight; y++)
   {
     unsigned char *dst2 = dst;
     unsigned char *src2 = src;
-    for (unsigned int x = 0; x < m_width; x++, dst2 += 4, src2 += 3)
+    for (unsigned int x = 0; x < copyWidth; x++, dst2 += 4, src2 += 3)
     {
       dst2[0] = src2[0];
       dst2[1] = src2[1];
@@ -96,12 +100,12 @@ bool CXImage::Decode(const unsigned char *pixels, unsigned int pitch, unsigned i
     dst = (unsigned char*)pixels + 3;
     src = m_image.alpha + (m_height - 1) * m_width;
 
-    for (unsigned int y = 0; y < m_height; y++)
+    for (unsigned int y = 0; y < copyHeight; y++)
     {
       unsigned char *dst2 = dst;
       unsigned char *src2 = src;
 
-      for (unsigned int x = 0; x < m_width; x++,  dst2+=4, src2++)
+      for (unsigned int x = 0; x < copyWidth; x++,  dst2+=4, src2++)
         *dst2 = *src2;
       src -= m_width;
       dst += dstPitch;

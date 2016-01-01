@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<defaultcontrol always="true">10</defaultcontrol>
-	<allowoverlay>no</allowoverlay>
+	<menucontrol>9000</menucontrol>
 	<views>10,11,12,13</views>
 	<controls>
 		<include>CommonBackground</include>
@@ -55,7 +55,10 @@
 			<include>PVRGuideViewNext</include>
 			<include>PVRGuideViewChannel</include>
 		</control>
-		<include>CommonNowPlaying</include>
+		<control type="group">
+			<depth>DepthFooter</depth>
+			<include>CommonNowPlaying</include>
+		</control>
 		<include>BehindDialogFadeOut</include>
 		<include>ScrollOffsetLabel</include>
 		<control type="image">
@@ -69,6 +72,5 @@
 			<visible>Window.IsActive(FileBrowser) | Window.IsActive(PVRGuideInfo) | Window.IsActive(PVRRecordingInfo) | Window.IsActive(PVRTimerSetting) | Window.IsActive(PVRGroupManager) | Window.IsActive(PVRGuideSearch)</visible>
 		</control>
 		<include>PVRSideBlade</include>
-		<include>Clock</include>
 	</controls>
 </window>

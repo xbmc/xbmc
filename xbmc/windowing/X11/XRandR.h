@@ -1,9 +1,8 @@
-#ifndef __XRANDR__
-#define __XRANDR__
+#pragma once
 
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +15,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -33,32 +32,36 @@ class XMode
 {
 public:
   XMode()
-    {
-      id="";
-      name="";
-      hz=0.0f;
-      isPreferred=false;
-      isCurrent=false;
-      w=h=0;
-    }
+  {
+    id="";
+    name="";
+    hz=0.0f;
+    isPreferred=false;
+    isCurrent=false;
+    w=h=0;
+  }
   bool operator==(XMode& mode) const
-    {
-      if (id!=mode.id)
-        return false;
-      if (name!=mode.name)
-        return false;
-      if (hz!=mode.hz)
-        return false;
-      if (isPreferred!=mode.isPreferred)
-        return false;
-      if (isCurrent!=mode.isCurrent)
-        return false;
-      if (w!=mode.w)
-        return false;
-      if (h!=mode.h)
-        return false;
-      return true;
-    }
+  {
+    if (id != mode.id)
+      return false;
+    if (name != mode.name)
+      return false;
+    if (hz != mode.hz)
+      return false;
+    if (isPreferred != mode.isPreferred)
+      return false;
+    if (isCurrent != mode.isCurrent)
+      return false;
+    if (w != mode.w)
+      return false;
+    if (h != mode.h)
+      return false;
+    return true;
+  }
+  bool IsInterlaced()
+  {
+    return name.back() == 'i';
+  }
   std::string id;
   std::string name;
   float hz;
@@ -72,11 +75,11 @@ class XOutput
 {
 public:
   XOutput()
-    {
-      name="";
-      isConnected=false;
-      w=h=x=y=wmm=hmm=0;
-    }
+  {
+    name = "";
+    isConnected = false;
+    w = h = x = y = wmm = hmm = 0;
+  }
   std::string name;
   bool isConnected;
   int screen;
@@ -98,8 +101,8 @@ public:
   bool Query(bool force=false, bool ignoreoff=true);
   bool Query(bool force, int screennum, bool ignoreoff=true);
   std::vector<XOutput> GetModes(void);
-  XMode   GetCurrentMode(const std::string& outputName);
-  XMode   GetPreferredMode(const std::string& outputName);
+  XMode GetCurrentMode(const std::string& outputName);
+  XMode GetPreferredMode(const std::string& outputName);
   XOutput *GetOutput(const std::string& outputName);
   bool SetMode(XOutput output, XMode mode);
   void LoadCustomModeLinesToAllOutputs(void);
@@ -126,4 +129,3 @@ extern CXRandR g_xrandr;
 
 #endif
 
-#endif

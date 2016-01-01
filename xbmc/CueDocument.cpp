@@ -216,7 +216,7 @@ void CCueDocument::GetMediaFiles(std::vector<std::string>& mediaFiles)
   for (Tracks::const_iterator it = m_tracks.begin(); it != m_tracks.end(); ++it)
     uniqueFiles.insert(it->strFile);
 
-  for (TSet::const_iterator it = uniqueFiles.begin(); it != uniqueFiles.end(); it++)
+  for (TSet::const_iterator it = uniqueFiles.begin(); it != uniqueFiles.end(); ++it)
     mediaFiles.push_back(*it);
 }
 
@@ -240,11 +240,14 @@ bool CCueDocument::GetSong(int aTrackNumber, CSong& aSong)
   if (aTrackNumber < 0 || aTrackNumber >= static_cast<int>(m_tracks.size()))
     return false;
   const CCueTrack& track = m_tracks[aTrackNumber];
+  //Pass artist to MusicInfoTag object by setting artist description string only.
+  //Artist credits not used during loading from cue sheet.
   if ((track.strArtist.length() == 0) && (m_strArtist.length() > 0))
-    aSong.artist = StringUtils::Split(m_strArtist, g_advancedSettings.m_musicItemSeparator);
+    aSong.strArtistDesc = m_strArtist;
   else
-    aSong.artist = StringUtils::Split(track.strArtist, g_advancedSettings.m_musicItemSeparator);
-  aSong.albumArtist = StringUtils::Split(m_strArtist, g_advancedSettings.m_musicItemSeparator);
+    aSong.strArtistDesc = track.strArtist;
+  //Pass album artist to MusicInfoTag object by setting album artist vector. 
+  aSong.SetAlbumArtist(StringUtils::Split(m_strArtist, g_advancedSettings.m_musicItemSeparator));
   aSong.strAlbum = m_strAlbum;
   aSong.genre = StringUtils::Split(m_strGenre, g_advancedSettings.m_musicItemSeparator);
   aSong.iYear = m_iYear;

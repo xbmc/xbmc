@@ -47,7 +47,7 @@ CMediaSourceSettings::CMediaSourceSettings()
 CMediaSourceSettings::~CMediaSourceSettings()
 { }
 
-CMediaSourceSettings& CMediaSourceSettings::Get()
+CMediaSourceSettings& CMediaSourceSettings::GetInstance()
 {
   static CMediaSourceSettings sMediaSourceSettings;
   return sMediaSourceSettings;
@@ -56,10 +56,10 @@ CMediaSourceSettings& CMediaSourceSettings::Get()
 std::string CMediaSourceSettings::GetSourcesFile()
 {
   std::string file;
-  if (CProfilesManager::Get().GetCurrentProfile().hasSources())
-    file = CProfilesManager::Get().GetProfileUserDataFolder();
+  if (CProfilesManager::GetInstance().GetCurrentProfile().hasSources())
+    file = CProfilesManager::GetInstance().GetProfileUserDataFolder();
   else
-    file = CProfilesManager::Get().GetUserDataFolder();
+    file = CProfilesManager::GetInstance().GetUserDataFolder();
 
   return URIUtils::AddFileToFolder(file, SOURCES_FILE);
 }
@@ -132,7 +132,7 @@ bool CMediaSourceSettings::Save(const std::string &file) const
   SetSources(pRoot, "pictures", m_pictureSources, m_defaultPictureSource);
   SetSources(pRoot, "files", m_fileSources, m_defaultFileSource);
 
-  CWakeOnAccess::Get().QueueMACDiscoveryForAllRemotes();
+  CWakeOnAccess::GetInstance().QueueMACDiscoveryForAllRemotes();
 
   return doc.SaveFile(file);
 }

@@ -20,8 +20,9 @@
  */
 
 #include <memory>
-#include <vector>
 #include <string>
+#include <utility>
+#include <vector>
 
 struct PVR_TIMER_TYPE;
 
@@ -153,6 +154,25 @@ namespace PVR
     bool ForbidsNewInstances() const { return (m_iAttributes & PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES) > 0; }
 
     /*!
+     * @brief Check whether this timer type is forbidden when epg tag info is present.
+     * @return True if new instances are forbidden when epg info is present, false otherwise.
+     */
+    bool ForbidsEpgTagOnCreate() const { return (m_iAttributes & PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE) > 0; }
+
+    /*!
+     * @brief Check whether this timer type requires epg tag info to be present.
+     * @return True if new instances require EPG info, false otherwise.
+     */
+    bool RequiresEpgTagOnCreate() const { return (m_iAttributes & (PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
+                                                                   PVR_TIMER_TYPE_REQUIRES_EPG_SERIES_ON_CREATE)) > 0; }
+
+    /*!
+     * @brief Check whether this timer type requires epg tag info including series attributes to be present.
+     * @return True if new instances require an EPG tag with series attributes, false otherwise.
+     */
+    bool RequiresEpgSeriesOnCreate() const { return (m_iAttributes & PVR_TIMER_TYPE_REQUIRES_EPG_SERIES_ON_CREATE) > 0; }
+
+    /*!
      * @brief Check whether this type supports the "enabling/disabling" of timers of its type.
      * @return True if "enabling/disabling" feature is supported, false otherwise.
      */
@@ -165,10 +185,27 @@ namespace PVR
     bool SupportsChannels() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_CHANNELS) > 0; }
 
     /*!
-     * @brief Check whether this type supports start time and end time.
-     * @return True if start time and end time values is supported, false otherwise.
+     * @brief Check whether this type supports start time.
+     * @return True if start time values are supported, false otherwise.
      */
-    bool SupportsStartEndTime() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_START_END_TIME) > 0; }
+    bool SupportsStartTime() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_START_TIME) > 0; }
+
+    /*!
+     * @brief Check whether this type supports end time.
+     * @return True if end time values are supported, false otherwise.
+     */
+    bool SupportsEndTime() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_END_TIME) > 0; }
+    /*!
+     * @brief Check whether this type supports start any time.
+     * @return True if start any time is supported, false otherwise.
+     */
+    bool SupportsStartAnyTime() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_START_ANYTIME) > 0; }
+
+    /*!
+     * @brief Check whether this type supports end any time.
+     * @return True if end any time is supported, false otherwise.
+     */
+    bool SupportsEndAnyTime() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_END_ANYTIME) > 0; }
 
     /*!
      * @brief Check whether this type supports matching a search string against epg episode title.
@@ -220,6 +257,12 @@ namespace PVR
     bool SupportsLifetime() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_LIFETIME) > 0; }
 
     /*!
+     * @brief Check whether this type supports MaxRecordings for recordings.
+     * @return True if MaxRecordings is supported, false otherwise.
+     */
+    bool SupportsMaxRecordings() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS) > 0; }
+
+    /*!
      * @brief Check whether this type supports user specified recording folders.
      * @return True if recording folders are supported, false otherwise.
      */
@@ -256,6 +299,18 @@ namespace PVR
     int GetLifetimeDefault() const { return m_iLifetimeDefault; }
 
     /*!
+     * @brief Obtain a list with all possible values for the MaxRecordings attribute.
+     * @param list out, the list with the values or an empty list, if MaxRecordings is not supported by this type.
+     */
+    void GetMaxRecordingsValues(std::vector< std::pair<std::string, int> > &list) const;
+
+    /*!
+     * @brief Obtain the default value for the MaxRecordings attribute.
+     * @return the default value.
+     */
+    int GetMaxRecordingsDefault() const { return m_iMaxRecordingsDefault; }
+
+    /*!
      * @brief Obtain a list with all possible values for the duplicate episode prevention attribute.
      * @param list out, the list with the values or an empty list, if duplicate episode prevention is not supported by this type.
      */
@@ -284,6 +339,7 @@ namespace PVR
     void InitAttributeValues(const PVR_TIMER_TYPE &type);
     void InitPriorityValues(const PVR_TIMER_TYPE &type);
     void InitLifetimeValues(const PVR_TIMER_TYPE &type);
+    void InitMaxRecordingsValues(const PVR_TIMER_TYPE &type);
     void InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE &type);
     void InitRecordingGroupValues(const PVR_TIMER_TYPE &type);
 
@@ -295,6 +351,8 @@ namespace PVR
     int           m_iPriorityDefault;
     std::vector< std::pair<std::string, int> > m_lifetimeValues;
     int           m_iLifetimeDefault;
+    std::vector< std::pair<std::string, int> > m_maxRecordingsValues;
+    int           m_iMaxRecordingsDefault;
     std::vector< std::pair<std::string, int> > m_preventDupEpisodesValues;
     unsigned int  m_iPreventDupEpisodesDefault;
     std::vector< std::pair<std::string, int> > m_recordingGroupValues;

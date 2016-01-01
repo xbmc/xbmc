@@ -18,26 +18,27 @@
  *
  */
 
+#include "PartyModeManager.h"
+
 #include <algorithm>
 
-#include "threads/SystemClock.h"
-#include "PartyModeManager.h"
-#include "PlayListPlayer.h"
+#include "Application.h"
+#include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogProgress.h"
+#include "guilib/GUIWindowManager.h"
+#include "GUIUserMessages.h"
+#include "interfaces/AnnouncementManager.h"
 #include "music/MusicDatabase.h"
 #include "music/windows/GUIWindowMusicPlaylist.h"
-#include "video/VideoDatabase.h"
+#include "PlayListPlayer.h"
+#include "playlists/PlayList.h"
 #include "playlists/SmartPlayList.h"
 #include "profiles/ProfilesManager.h"
-#include "dialogs/GUIDialogProgress.h"
-#include "GUIUserMessages.h"
-#include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogOK.h"
-#include "playlists/PlayList.h"
+#include "threads/SystemClock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "Application.h"
-#include "interfaces/AnnouncementManager.h"
+#include "video/VideoDatabase.h"
 
 using namespace PLAYLIST;
 
@@ -67,9 +68,9 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   if (!strXspPath.empty()) //if a path to a smartplaylist is supplied use it
     partyModePath = strXspPath;
   else if (m_bIsVideo)
-    partyModePath = CProfilesManager::Get().GetUserDataItem("PartyMode-Video.xsp");
+    partyModePath = CProfilesManager::GetInstance().GetUserDataItem("PartyMode-Video.xsp");
   else
-    partyModePath = CProfilesManager::Get().GetUserDataItem("PartyMode.xsp");
+    partyModePath = CProfilesManager::GetInstance().GetUserDataItem("PartyMode.xsp");
 
   playlistLoaded=playlist.Load(partyModePath);
 
@@ -506,7 +507,7 @@ void CPartyModeManager::SendUpdateMessage()
 void CPartyModeManager::Play(int iPos)
 {
   // move current song to the top if its not there
-  g_playlistPlayer.Play(iPos);
+  g_playlistPlayer.Play(iPos, "");
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Playing song at %i", iPos);
   Process();
 }
@@ -714,6 +715,6 @@ void CPartyModeManager::Announce()
     
     data["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
     data["property"]["partymode"] = m_bEnabled;
-    ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPropertyChanged", data);
+    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPropertyChanged", data);
   }
 }

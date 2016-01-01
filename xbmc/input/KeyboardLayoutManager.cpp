@@ -18,12 +18,13 @@
  *
  */
 
+#include "KeyboardLayoutManager.h"
+
 #include <algorithm>
 
-#include "KeyboardLayoutManager.h"
 #include "FileItem.h"
-#include "URL.h"
 #include "filesystem/Directory.h"
+#include "URL.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 
@@ -34,7 +35,7 @@ CKeyboardLayoutManager::~CKeyboardLayoutManager()
   Unload();
 }
 
-CKeyboardLayoutManager& CKeyboardLayoutManager::Get()
+CKeyboardLayoutManager& CKeyboardLayoutManager::GetInstance()
 {
   static CKeyboardLayoutManager s_instance;
   return s_instance;
@@ -128,7 +129,7 @@ bool CKeyboardLayoutManager::GetLayout(const std::string& name, CKeyboardLayout&
 
 void CKeyboardLayoutManager::SettingOptionsKeyboardLayoutsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void* data)
 {
-  for (KeyboardLayouts::const_iterator it = CKeyboardLayoutManager::Get().m_layouts.begin(); it != CKeyboardLayoutManager::Get().m_layouts.end(); ++it)
+  for (KeyboardLayouts::const_iterator it = CKeyboardLayoutManager::GetInstance().m_layouts.begin(); it != CKeyboardLayoutManager::GetInstance().m_layouts.end(); ++it)
   {
     std::string name = it->second.GetName();
     list.push_back(make_pair(name, name));

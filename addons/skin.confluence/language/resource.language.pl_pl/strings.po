@@ -118,7 +118,7 @@ msgstr "PRZEWIJANIE"
 
 msgctxt "#31048"
 msgid "Visualisation presets"
-msgstr "Szablony wizualizacji"
+msgstr "Wzorce wizualizacji"
 
 msgctxt "#31049"
 msgid "End time"
@@ -186,7 +186,7 @@ msgstr "Ukrywaj etykiety mediów wczytane z nazw pliku [COLOR=grey3](Blu-ray, HD
 
 msgctxt "#31108"
 msgid "Hide main menu buttons"
-msgstr "Ukryj przyciski menu"
+msgstr "Ukrywaj przyciski menu"
 
 msgctxt "#31109"
 msgid "Enable custom background"
@@ -194,7 +194,7 @@ msgstr "Pokazuj niestandardowe tło"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr "Ścieżka do folderu obrazów tła:"
+msgstr "Ścieżka do folderu z obrazami tła:"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -220,21 +220,17 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Nie używaj fototapet w roli tła"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Ukrywaj przewodnik, gdy dostępne są informacje RDS"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
-msgstr "Wyświetlaj panel Teraz odtwarzane w tle interfejsu"
+msgstr "Wyświetlaj odtwarzane wideo w tle interfejsu"
 
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
-msgstr "Wyświetlaj wizualizację Teraz odtwarzane w tle interfejsu"
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Odtwarzaj motywy muzyczne w bibliotece wideo (dodatek TvTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "Dodatek TvTunes"
+msgstr "Wyświetlaj wizualizację muzyki w tle interfejsu"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -330,11 +326,11 @@ msgstr "Fototapeta[CR][CR]niedostępna[CR][CR]Naciśnij przycisk, aby dodać"
 
 msgctxt "#31312"
 msgid "Current scraper"
-msgstr "Aktualny ekstraktor"
+msgstr "Aktualny dostawca"
 
 msgctxt "#31313"
 msgid "Choose a scraper"
-msgstr "Wybierz ekstraktor"
+msgstr "Wybierz dostawcę"
 
 msgctxt "#31314"
 msgid "Content scanning options"
@@ -342,7 +338,7 @@ msgstr "Opcje skanowania zawartości"
 
 msgctxt "#31317"
 msgid "Set fanart path"
-msgstr "Ustaw ścieżkę do folderu tapet"
+msgstr "Ustaw ścieżkę do folderu z tapetami"
 
 msgctxt "#31319"
 msgid "Selected profile"
@@ -351,10 +347,6 @@ msgstr "Wybrany profil"
 msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Ostatnio zalogowany"
-
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Selektor utworów Karaoke"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -445,8 +437,8 @@ msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set v
 msgstr "[B]KONFIGURACJA WIDEO[/B][CR][CR]Biblioteka wideo · Odtwarzanie · Akceleracja · Listy wideo · Napisy"
 
 msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]KONFIGURACJA MUZYKI[/B][CR][CR]Biblioteka muzyki · Odtwarzanie · Listy utworów · CD-Audio · Karaoke"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]KONFIGURACJA MUZYKI[/B][CR][CR]Biblioteka muzyki · Odtwarzanie · Listy utworów · CD-Audio"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

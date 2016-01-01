@@ -19,21 +19,28 @@
  */
 
 #include "RssManager.h"
+
+#include <utility>
+
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/File.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"
+#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/RssReader.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
-using namespace std;
 using namespace XFILE;
+using namespace KODI::MESSAGING;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 CRssManager::CRssManager()
 {
@@ -45,7 +52,7 @@ CRssManager::~CRssManager()
   Stop();
 }
 
-CRssManager& CRssManager::Get()
+CRssManager& CRssManager::GetInstance()
 {
   static CRssManager sRssManager;
   return sRssManager;
@@ -67,17 +74,15 @@ void CRssManager::OnSettingAction(const CSetting *setting)
     return;
 
   const std::string &settingId = setting->GetId();
-  if (settingId == "lookandfeel.rssedit")
+  if (settingId == CSettings::SETTING_LOOKANDFEEL_RSSEDIT)
   {
     ADDON::AddonPtr addon;
-    ADDON::CAddonMgr::Get().GetAddon("script.rss.editor",addon);
-    if (!addon)
+    if (!ADDON::CAddonMgr::GetInstance().GetAddon("script.rss.editor", addon))
     {
-      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{24076}, CVariant{24100}, CVariant{"RSS Editor"}, CVariant{24101}))
+      if (!CAddonInstaller::GetInstance().InstallModal("script.rss.editor", addon))
         return;
-      CAddonInstaller::Get().Install("script.rss.editor", true, "", false);
     }
-    CBuiltins::Execute("RunScript(script.rss.editor)");
+    CBuiltins::GetInstance().Execute("RunScript(script.rss.editor)");
   }
 }
 
@@ -101,7 +106,7 @@ void CRssManager::Stop()
 bool CRssManager::Load()
 {
   CSingleLock lock(m_critical);
-  string rssXML = CProfilesManager::Get().GetUserDataItem("RssFeeds.xml");
+  std::string rssXML = CProfilesManager::GetInstance().GetUserDataItem("RssFeeds.xml");
   if (!CFile::Exists(rssXML))
     return false;
 
@@ -142,14 +147,14 @@ bool CRssManager::Load()
         {
           // TODO: UTF-8: Do these URLs need to be converted to UTF-8?
           //              What about the xml encoding?
-          string strUrl = pFeed->FirstChild()->ValueStr();
+          std::string strUrl = pFeed->FirstChild()->ValueStr();
           set.url.push_back(strUrl);
           set.interval.push_back(iInterval);
         }
         pFeed = pFeed->NextSiblingElement("feed");
       }
 
-      m_mapRssUrls.insert(make_pair(iId,set));
+      m_mapRssUrls.insert(std::make_pair(iId,set));
     }
     else
       CLog::Log(LOGERROR, "CRssManager: found rss url set with no id in RssFeeds.xml, ignored");

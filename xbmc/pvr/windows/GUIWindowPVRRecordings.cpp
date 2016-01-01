@@ -18,25 +18,26 @@
  *
  */
 
-#include "GUIWindowPVRRecordings.h"
-
 #include "ContextMenuManager.h"
-#include "guilib/GUIKeyboardFactory.h"
+#include "GUIInfoManager.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "guilib/LocalizeStrings.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "guilib/LocalizeStrings.h"
-#include "GUIInfoManager.h"
-#include "pvr/PVRManager.h"
-#include "pvr/recordings/PVRRecordings.h"
-#include "pvr/timers/PVRTimers.h"
+#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "threads/SingleLock.h"
-#include "pvr/addons/PVRClients.h"
 #include "video/windows/GUIWindowVideoNav.h"
-#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
+
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/recordings/PVRRecordings.h"
+#include "pvr/timers/PVRTimers.h"
+
+#include "GUIWindowPVRRecordings.h"
 
 using namespace PVR;
 
@@ -117,28 +118,24 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
 
   bool isDeletedRecording = false;
 
-  if (ActiveAE::CActiveAEDSP::Get().IsProcessing())
-    buttons.Add(CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS, 15047);  /* if something is played and dsp is active, allow settings selection */
-
-  if (pItem->HasPVRRecordingInfoTag())
+  CPVRRecordingPtr recording(pItem->GetPVRRecordingInfoTag());
+  if (recording)
   {
-    isDeletedRecording = pItem->GetPVRRecordingInfoTag()->IsDeleted();
+    isDeletedRecording = recording->IsDeleted();
 
-    buttons.Add(CONTEXT_BUTTON_INFO, 19053);      /* Get Information of this recording */
+    buttons.Add(CONTEXT_BUTTON_INFO, 19053);        /* Recording Information */
     if (!isDeletedRecording)
     {
-      buttons.Add(CONTEXT_BUTTON_FIND, 19003);      /* Find similar program */
-      buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); /* Play this recording */
+      buttons.Add(CONTEXT_BUTTON_FIND, 19003);      /* Find similar */
+      buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); /* Start from beginning */
       std::string resumeString = GetResumeString(*pItem);
       if (!resumeString.empty())
-      {
         buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
-      }
     }
     else
     {
-      buttons.Add(CONTEXT_BUTTON_UNDELETE, 19290);    /* Undelete this recording */
-      buttons.Add(CONTEXT_BUTTON_DELETE, 19291);      /* Delete this permanently */
+      buttons.Add(CONTEXT_BUTTON_UNDELETE, 19290);      /* Undelete */
+      buttons.Add(CONTEXT_BUTTON_DELETE, 19291);        /* Delete permanently */
       if (m_vecItems->GetObjectCount() > 1)
         buttons.Add(CONTEXT_BUTTON_DELETE_ALL, 19292);  /* Delete all permanently */
     }
@@ -147,35 +144,37 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
   {
     if (pItem->m_bIsFolder)
     {
-      // Have both options for folders since we don't know whether all childs are watched/unwatched
-      buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); /* Mark as UnWatched */
-      buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   /* Mark as Watched */
+      // Have both options for folders since we don't know whether all children are watched/unwatched
+      buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); /* Mark as unwatched */
+      buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   /* Mark as watched */
     }
-    if (pItem->HasPVRRecordingInfoTag())
+    if (recording)
     {
-      if (pItem->GetPVRRecordingInfoTag()->m_playCount > 0)
-        buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); /* Mark as UnWatched */
+      if (recording->m_playCount > 0)
+        buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); /* Mark as unwatched */
       else
-        buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   /* Mark as Watched */
+        buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   /* Mark as watched */
 
-      buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename this recording */
+      buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename */
     }
 
-    buttons.Add(CONTEXT_BUTTON_DELETE, 117);
+    buttons.Add(CONTEXT_BUTTON_DELETE, 117);        /* Delete */
   }
 
-  if (pItem->HasPVRRecordingInfoTag())
+  if (ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
+    buttons.Add(CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS, 15047);  /* Audio DSP settings */
+
+  if (recording)
   {
-    if (!isDeletedRecording && g_PVRClients->HasMenuHooks(pItem->GetPVRRecordingInfoTag()->m_iClientId, PVR_MENUHOOK_RECORDING))
-      buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
-    else if (isDeletedRecording && g_PVRClients->HasMenuHooks(pItem->GetPVRRecordingInfoTag()->m_iClientId, PVR_MENUHOOK_DELETED_RECORDING))
+    if ((!isDeletedRecording && g_PVRClients->HasMenuHooks(recording->m_iClientId, PVR_MENUHOOK_RECORDING)) ||
+        (isDeletedRecording && g_PVRClients->HasMenuHooks(recording->m_iClientId, PVR_MENUHOOK_DELETED_RECORDING)))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
   }
 
   if (!isDeletedRecording)
     CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
 
-  CContextMenuManager::Get().AddVisibleItems(pItem, buttons);
+  CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);
 }
 
 bool CGUIWindowPVRRecordings::OnAction(const CAction &action)
@@ -241,6 +240,9 @@ void CGUIWindowPVRRecordings::UpdateButtons(void)
 
 bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
 {
+  if (!IsValidMessage(message))
+    return false;
+  
   bool bReturn = false;
   switch (message.GetMessage())
   {
@@ -299,6 +301,9 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
       switch(message.GetParam1())
       {
         case ObservableMessageTimers:
+        case ObservableMessageEpg:
+        case ObservableMessageEpgContainer:
+        case ObservableMessageEpgActiveItem:
         case ObservableMessageCurrentItem:
         {
           if (IsActive())

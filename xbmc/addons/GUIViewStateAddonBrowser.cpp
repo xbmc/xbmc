@@ -68,7 +68,7 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     share.strName = g_localizeStrings.Get(24998);
     m_sources.push_back(share);
   }
-  if (CAddonMgr::Get().HasOutdatedAddons())
+  if (CAddonMgr::GetInstance().HasOutdatedAddons())
   {
     CMediaSource share;
     share.strPath = "addons://outdated/";
@@ -76,7 +76,7 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     share.strName = g_localizeStrings.Get(24043); // "Available updates"
     m_sources.push_back(share);
   }
-  if (CAddonMgr::Get().HasAddons(ADDON_REPOSITORY, true))
+  if (CAddonMgr::GetInstance().HasAddons(ADDON_REPOSITORY, true))
   {
     CMediaSource share;
     share.strPath = "addons://repos/";
@@ -96,13 +96,6 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     share.strPath = "addons://search/";
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     share.strName = g_localizeStrings.Get(137);
-    m_sources.push_back(share);
-  }
-  {
-    CMediaSource share;
-    share.strPath = "addons://manage/";
-    share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-    share.strName = g_localizeStrings.Get(24992);
     m_sources.push_back(share);
   }
 

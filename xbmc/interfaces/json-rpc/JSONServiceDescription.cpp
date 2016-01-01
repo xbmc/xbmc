@@ -41,12 +41,11 @@
 #include "TextureOperations.h"
 #include "SettingsOperations.h"
 
-using namespace std;
 using namespace JSONRPC;
 
-map<string, CVariant> CJSONServiceDescription::m_notifications = map<string, CVariant>();
+std::map<std::string, CVariant> CJSONServiceDescription::m_notifications = std::map<std::string, CVariant>();
 CJSONServiceDescription::CJsonRpcMethodMap CJSONServiceDescription::m_actionMap;
-map<string, JSONSchemaTypeDefinitionPtr> CJSONServiceDescription::m_types = map<string, JSONSchemaTypeDefinitionPtr>();
+std::map<std::string, JSONSchemaTypeDefinitionPtr> CJSONServiceDescription::m_types = std::map<std::string, JSONSchemaTypeDefinitionPtr>();
 CJSONServiceDescription::IncompleteSchemaDefinitionMap CJSONServiceDescription::m_incompleteDefinitions = CJSONServiceDescription::IncompleteSchemaDefinitionMap();
 
 JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
@@ -141,6 +140,10 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoLibrary.SetSeasonDetails",                CVideoLibrary::SetSeasonDetails },
   { "VideoLibrary.SetEpisodeDetails",               CVideoLibrary::SetEpisodeDetails },
   { "VideoLibrary.SetMusicVideoDetails",            CVideoLibrary::SetMusicVideoDetails },
+  { "VideoLibrary.RefreshMovie",                    CVideoLibrary::RefreshMovie },
+  { "VideoLibrary.RefreshTVShow",                   CVideoLibrary::RefreshTVShow },
+  { "VideoLibrary.RefreshEpisode",                  CVideoLibrary::RefreshEpisode },
+  { "VideoLibrary.RefreshMusicVideo",               CVideoLibrary::RefreshMusicVideo },
   { "VideoLibrary.RemoveMovie",                     CVideoLibrary::RemoveMovie },
   { "VideoLibrary.RemoveTVShow",                    CVideoLibrary::RemoveTVShow },
   { "VideoLibrary.RemoveEpisode",                   CVideoLibrary::RemoveEpisode },
@@ -235,12 +238,33 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 };
 
 JSONSchemaTypeDefinition::JSONSchemaTypeDefinition()
-  : missingReference(""), referencedTypeSet(false),
-    type(AnyValue), minimum(-std::numeric_limits<double>::max()), maximum(std::numeric_limits<double>::max()),
-    exclusiveMinimum(false), exclusiveMaximum(false), divisibleBy(0),
-    minLength(-1), maxLength(-1),
-    minItems(0), maxItems(0), uniqueItems(false),
-    hasAdditionalProperties(false)
+  : missingReference(),
+    name(),
+    ID(),
+    referencedType(nullptr),
+    referencedTypeSet(false),
+    extends(),
+    description(),
+    type(AnyValue),
+    unionTypes(),
+    optional(true),
+    defaultValue(),
+    minimum(-std::numeric_limits<double>::max()),
+    maximum(std::numeric_limits<double>::max()),
+    exclusiveMinimum(false),
+    exclusiveMaximum(false),
+    divisibleBy(0),
+    minLength(-1),
+    maxLength(-1),
+    enums(),
+    items(),
+    minItems(0),
+    maxItems(0),
+    uniqueItems(false),
+    additionalItems(),
+    properties(),
+    hasAdditionalProperties(false),
+    additionalProperties(nullptr)
 { }
 
 bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* = false */)
@@ -524,13 +548,13 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
   {
     if ((type & NumberValue) == NumberValue)
     {
-      minimum = value["minimum"].asDouble(-numeric_limits<double>::max());
-      maximum = value["maximum"].asDouble(numeric_limits<double>::max());
+      minimum = value["minimum"].asDouble(-std::numeric_limits<double>::max());
+      maximum = value["maximum"].asDouble(std::numeric_limits<double>::max());
     }
     else if ((type  & IntegerValue) == IntegerValue)
     {
-      minimum = (double)value["minimum"].asInteger(numeric_limits<int>::min());
-      maximum = (double)value["maximum"].asInteger(numeric_limits<int>::max());
+      minimum = (double)value["minimum"].asInteger(std::numeric_limits<int>::min());
+      maximum = (double)value["maximum"].asInteger(std::numeric_limits<int>::max());
     }
 
     exclusiveMinimum = value["exclusiveMinimum"].asBoolean(false);
@@ -745,7 +769,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant &value, CVariant &
       // are either no more schemas in the "items"
       // array or no more elements in the value's array
       unsigned int arrayIndex;
-      for (arrayIndex = 0; arrayIndex < min(items.size(), (size_t)value.size()); arrayIndex++)
+      for (arrayIndex = 0; arrayIndex < std::min(items.size(), (size_t)value.size()); arrayIndex++)
       {
         JSONRPC_STATUS status = items.at(arrayIndex)->Check(value[arrayIndex], outputValue[arrayIndex], errorData["property"]);
         if (status != OK)
@@ -1029,16 +1053,16 @@ void JSONSchemaTypeDefinition::Print(bool isParameter, bool isGlobal, bool print
     {
       if (CJSONUtils::HasType(type, NumberValue))
       {
-        if (minimum > -numeric_limits<double>::max())
+        if (minimum > -std::numeric_limits<double>::max())
           output["minimum"] = minimum;
-        if (maximum < numeric_limits<double>::max())
+        if (maximum < std::numeric_limits<double>::max())
           output["maximum"] = maximum;
       }
       else
       {
-        if (minimum > numeric_limits<int>::min())
+        if (minimum > std::numeric_limits<int>::min())
           output["minimum"] = (int)minimum;
-        if (maximum < numeric_limits<int>::max())
+        if (maximum < std::numeric_limits<int>::max())
           output["maximum"] = (int)maximum;
       }
 
@@ -1127,8 +1151,8 @@ void JSONSchemaTypeDefinition::Set(const JSONSchemaTypeDefinitionPtr typeDefinit
   if (typeDefinition.get() == NULL)
     return;
 
-  string origName = name;
-  string origDescription = description;
+  std::string origName = name;
+  std::string origDescription = description;
   bool origOptional = optional;
   CVariant origDefaultValue = defaultValue;
   JSONSchemaTypeDefinitionPtr referencedTypeDef = referencedType;
@@ -1188,7 +1212,13 @@ unsigned int JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::size() const
 }
 
 JsonRpcMethod::JsonRpcMethod()
-  : missingReference(""), method(NULL),
+  : missingReference(),
+    name(),
+    method(NULL),
+    transportneed(Response),
+    permission(ReadData),
+    description(),
+    parameters(),
     returns(new JSONSchemaTypeDefinition())
 { }
 
@@ -1956,7 +1986,7 @@ void CJSONServiceDescription::removeReferenceTypeDefinition(const std::string &t
   if (typeID.empty())
     return;
 
-  map<string, JSONSchemaTypeDefinitionPtr>::iterator type = m_types.find(typeID);
+  std::map<std::string, JSONSchemaTypeDefinitionPtr>::iterator type = m_types.find(typeID);
   if (type != m_types.end())
     m_types.erase(type);
 }

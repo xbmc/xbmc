@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window type="dialog">
 	<coordinates>
-		<system>1</system>
 		<left>380</left>
 		<top>0</top>
 	</coordinates>
 	<controls>
 		<control type="group" id="250">
+			<depth>DepthDialog-</depth>
 			<animation effect="slide" start="0,0" end="900,0" time="375" tween="quadratic" easing="out">WindowClose</animation>
 			<animation type="Conditional" condition="Control.HasFocus(150) | Control.HasFocus(160)" reversible="true">
 				<effect type="slide" end="-250,0" time="300" />

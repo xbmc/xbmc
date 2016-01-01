@@ -80,25 +80,28 @@ OPTIONS="
 --enable-encoder=aac \
 --enable-encoder=wmav2 \
 --enable-encoder=libvorbis \
+--enable-encoder=png \
+--enable-encoder=mjpeg \
 --enable-protocol=http \
 --enable-runtime-cpudetect \
 --enable-dxva2 \
 --cpu=i686 \
---enable-gnutls"
+--enable-gnutls \
+--enable-libdcadec"
 
 echo configuring $LIBNAME
-./configure --extra-cflags="-fno-common -I/xbmc/lib/win32/ffmpeg_dxva2 -DNDEBUG" --extra-ldflags="-L/xbmc/system/players/dvdplayer" ${OPTIONS} &&
+./configure --extra-cflags="-fno-common -I/xbmc/lib/win32/ffmpeg_dxva2 -DNDEBUG" --extra-ldflags="-L/xbmc/system/players/VideoPlayer -L/xbmc/system/players/dvdplayer" ${OPTIONS} &&
 
 make $MAKEFLAGS &&
 cp lib*/*.dll .libs/ &&
 cp lib*/*.lib .libs/ &&
-cp .libs/avcodec-*.dll /xbmc/system/players/dvdplayer/ &&
-cp .libs/avformat-*.dll /xbmc/system/players/dvdplayer/ &&
-cp .libs/avutil-*.dll /xbmc/system/players/dvdplayer/ &&
-cp .libs/avfilter-*.dll /xbmc/system/players/dvdplayer/ &&
-cp .libs/postproc-*.dll /xbmc/system/players/dvdplayer/ &&
-cp .libs/swresample-*.dll /xbmc/system/players/dvdplayer/ &&
-cp .libs/swscale-*.dll /xbmc/system/players/dvdplayer/
+cp .libs/avcodec-*.dll /xbmc/system/players/VideoPlayer/ &&
+cp .libs/avformat-*.dll /xbmc/system/players/VideoPlayer/ &&
+cp .libs/avutil-*.dll /xbmc/system/players/VideoPlayer/ &&
+cp .libs/avfilter-*.dll /xbmc/system/players/VideoPlayer/ &&
+cp .libs/postproc-*.dll /xbmc/system/players/VideoPlayer/ &&
+cp .libs/swresample-*.dll /xbmc/system/players/VideoPlayer/ &&
+cp .libs/swscale-*.dll /xbmc/system/players/VideoPlayer/
 
 #remove the bgprocessfile for signaling the process end
 if [ -f $BGPROCESSFILE ]; then

@@ -31,8 +31,10 @@
 #include "ActiveAEDSPDatabase.h"
 #include "ActiveAEDSPMode.h"
 
-#define ACTIVE_AE_DSP_STATE_ON  0
-#define ACTIVE_AE_DSP_STATE_OFF 1
+#define ACTIVE_AE_DSP_STATE_OFF       0
+#define ACTIVE_AE_DSP_STATE_ON        1
+
+#define ACTIVE_AE_DSP_SYNC_ACTIVATE   0
 #define ACTIVE_AE_DSP_ASYNC_ACTIVATE  1
 
 extern "C" {
@@ -51,7 +53,7 @@ namespace ActiveAE
   typedef std::map< int, AE_DSP_ADDON >::iterator         AE_DSP_ADDONMAP_ITR;
   typedef std::map< int, AE_DSP_ADDON >::const_iterator   AE_DSP_ADDONMAP_CITR;
 
-  #define g_AEDSPManager       CActiveAEDSP::Get()
+  #define g_AEDSPManager       CActiveAEDSP::GetInstance()
 
   //@{
   /*!
@@ -60,7 +62,6 @@ namespace ActiveAE
   class CActiveAEDSP : public ADDON::IAddonMgrCallback,
                        public ISettingCallback,
                        public Observer,
-                       public KODI::MESSAGING::IMessageTarget,
                        private CThread
   {
   /*! @name Master audio dsp control class */
@@ -76,18 +77,12 @@ namespace ActiveAE
      * @brief Stop the ActiveAEDSP and destroy all objects it created.
      */
     virtual ~CActiveAEDSP();
-    //@{
+
     /*!
      * @brief Get the instance of the ActiveAEDSP.
      * @return The ActiveAEDSP instance.
      */
-    static CActiveAEDSP &Get(void);
-  //@}
-
-  /*! @name message handling methods */
-  //@{
-    virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
-    virtual int  GetMessageMask() override;
+    static CActiveAEDSP &GetInstance();
   //@}
 
   /*! @name initialization and configuration methods */
@@ -122,16 +117,15 @@ namespace ActiveAE
     /*!
      * @brief Mark an add-on as outdated so it will be upgrade when it's possible again
      * @param strAddonId The add-on to mark as outdated
-     * @param strReferer The referer to use when downloading
      */
-    void MarkAsOutdated(const std::string& strAddonId, const std::string& strReferer);
+    void MarkAsOutdated(const std::string& strAddonId);
 
     /*!
      * @brief Mark an add-on as outdated so it will be upgrade when it's possible again
      * @param outdatedAddons The generated list of outdated add-on's
      * @return True when outdated addons are present.
      */
-    bool HasOutdatedAddons(std::map<std::string, std::string> &outdatedAddons);
+    bool HasOutdatedAddons(std::vector<std::string> &outdatedAddons);
 
     /*!
      * @brief Get the audio dsp database pointer.
@@ -142,7 +136,7 @@ namespace ActiveAE
 
   /*! @name Settings and action callback methods */
   //@{
-    virtual void OnSettingAction(const CSetting *setting);
+    virtual void OnSettingAction(const CSetting *setting) override;
   //@}
 
   /*! @name Backend methods */
@@ -173,14 +167,14 @@ namespace ActiveAE
      * @param bDataChanged True if the addon's data changed, false otherwise (unused).
      * @return True if the audio dsp addon was found and restarted, false otherwise.
      */
-    virtual bool RequestRestart(ADDON::AddonPtr addon, bool bDataChanged);
+    virtual bool RequestRestart(ADDON::AddonPtr addon, bool bDataChanged) override;
 
     /*!
      * @brief Remove a single audio dsp add-on.
      * @param addon The add-on to remove.
      * @return True if it was found and removed, false otherwise.
      */
-    virtual bool RequestRemoval(ADDON::AddonPtr addon);
+    virtual bool RequestRemoval(ADDON::AddonPtr addon) override;
 
     /*!
      * @brief Checks whether an add-on is loaded
@@ -202,7 +196,7 @@ namespace ActiveAE
      * @param obs
      * @param msg The observed message type
      */
-    void Notify(const Observable &obs, const ObservableMessage msg);
+    void Notify(const Observable &obs, const ObservableMessage msg) override;
 
     /*!
      * @return The amount of enabled audio dsp addons.
@@ -244,7 +238,7 @@ namespace ActiveAE
      * @param addon The addon addon pointer.
      * @return True when the addon pointer is valid and ready, false otherwise.
      */
-    bool IsReadyAudioDSPAddon(const ADDON::AddonPtr addon);
+    bool IsReadyAudioDSPAddon(const ADDON::AddonPtr& addon);
 
     /*!
      * @brief Get the instance of the audio dsp addon.
@@ -306,7 +300,7 @@ namespace ActiveAE
      * @param wasActive if it is true a recreation of present stream control becomes performed (process class becomes not deleted)
      * @return True if the dsp processing becomes available
      */
-    bool CreateDSPs(unsigned int &streamId, CActiveAEDSPProcessPtr &process, AEAudioFormat inputFormat, AEAudioFormat outputFormat,
+    bool CreateDSPs(unsigned int &streamId, CActiveAEDSPProcessPtr &process, const AEAudioFormat &inputFormat, const AEAudioFormat &outputFormat,
                     bool upmix, AEQuality quality, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type,
                     int profile, bool wasActive = false);
 
@@ -404,7 +398,7 @@ namespace ActiveAE
     /*!
      * @brief Thread to which updates the backend information
      */
-    virtual void Process(void);
+    virtual void Process(void) override;
 
   private:
     /*!
@@ -423,7 +417,7 @@ namespace ActiveAE
      * @param addon The dsp addon to check.
      * @return True if this addon is registered, false otherwise.
      */
-    bool IsKnownAudioDSPAddon(const ADDON::AddonPtr addon) const;
+    bool IsKnownAudioDSPAddon(const ADDON::AddonPtr& addon) const;
 
     /*!
      * @brief Check whether there are any new audio dsp add-ons enabled or whether any of the known addons has been disabled.
@@ -438,7 +432,7 @@ namespace ActiveAE
      * @param newRegistration pass in pointer to bool to return whether the client was newly registered.
      * @return The id of the addon if it was created or found in the existing addon map, -1 otherwise.
      */
-    int RegisterAudioDSPAddon(ADDON::AddonPtr addon, bool* newRegistration = NULL);
+    int RegisterAudioDSPAddon(ADDON::AddonPtr addon);
 
     /*!
      * @brief Get the instance of the dsp addon, if it's ready.
@@ -453,7 +447,7 @@ namespace ActiveAE
      * @param addon The addon class pointer.
      * @return the id of the asked addon, -1 if not available
      */
-    int GetAudioDSPAddonId(const ADDON::AddonPtr addon) const;
+    int GetAudioDSPAddonId(const ADDON::AddonPtr& addon) const;
 
     static const int        m_StreamTypeNameTable[];                    /*!< Table for stream type strings related to type id */
     bool                    m_isActive;                                 /*!< set to true if all available dsp addons are loaded */
@@ -468,7 +462,7 @@ namespace ActiveAE
     unsigned int            m_activeProcessId;                          /*!< The currently active audio stream id of a playing file source */
     bool                    m_isValidAudioDSPSettings;                  /*!< if settings load was successfull it becomes true */
     AE_DSP_MODELIST         m_modes[AE_DSP_MODE_TYPE_MAX];              /*!< list of currently used dsp processing calls */
-    std::map<std::string, std::string> m_outdatedAddons;
+    std::vector<std::string> m_outdatedAddons;
   };
   //@}
 }

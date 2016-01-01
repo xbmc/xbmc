@@ -139,8 +139,10 @@ namespace XBMCAddon
         {
           std::string artName = it->first;
           StringUtils::ToLower(artName);
-          const std::string artFilename(it->second.c_str());
-          item->SetArt(artName, artFilename);
+          if (artName == "icon")
+            item->SetIconImage(it->second);
+          else
+            item->SetArt(artName, it->second);
         }
       }
     }
@@ -234,6 +236,12 @@ namespace XBMCAddon
       item->SetMimeType(mimetype);
     }
 
+    void ListItem::setContentLookup(bool enable)
+    {
+      LOCKGUI;
+      item->SetContentLookup(enable);
+    }
+
     String ListItem::getdescription()
     {
       return item->GetLabel();
@@ -290,6 +298,8 @@ namespace XBMCAddon
             item->m_iprogramCount = strtol(value.c_str(), NULL, 10);
           else if (key == "rating")
             item->GetVideoInfoTag()->m_fRating = (float)strtod(value.c_str(), NULL);
+          else if (key == "userrating")
+            item->GetVideoInfoTag()->m_iUserRating = strtol(value.c_str(), NULL, 10);
           else if (key == "size")
             item->m_dwSize = (int64_t)strtoll(value.c_str(), NULL, 10);
           else if (key == "watched") // backward compat - do we need it?
@@ -396,24 +406,12 @@ namespace XBMCAddon
           }
           else if (key == "dateadded")
             item->GetVideoInfoTag()->m_dateAdded.SetFromDBDateTime(value.c_str());
-        }
-
-        // For backward compatibility.
-        // FIXME: Remove this behaviour. It should be possible to set only tvshowtitle without
-        // having mediatype implicitly changed.
-        if (item->GetVideoInfoTag()->m_type == MediaTypeNone)
-        {
-          if (!item->GetVideoInfoTag()->m_strShowTitle.empty() && item->GetVideoInfoTag()->m_iSeason == -1)
+          else if (key == "mediatype")
           {
-            item->GetVideoInfoTag()->m_type = MediaTypeTvShow;
-          }
-          else if (item->GetVideoInfoTag()->m_iSeason > -1)
-          {
-            item->GetVideoInfoTag()->m_type = MediaTypeEpisode;
-          }
-          else if (!item->GetVideoInfoTag()->m_artist.empty())
-          {
-            item->GetVideoInfoTag()->m_type = MediaTypeMusicVideo;
+            if (MediaTypes::IsValidMediaType(value))
+              item->GetVideoInfoTag()->m_type = value;
+            else
+              CLog::Log(LOGWARNING, "Invalid media type \"%s\"", value.c_str());
           }
         }
       }
@@ -453,7 +451,9 @@ namespace XBMCAddon
           else if (key == "title")
             item->GetMusicInfoTag()->SetTitle(value);
           else if (key == "rating")
-            item->GetMusicInfoTag()->SetRating(value[0]);
+            item->GetMusicInfoTag()->SetRating((float)strtod(value.c_str(), NULL));
+          else if (key == "userrating")
+            item->GetMusicInfoTag()->SetUserrating(strtol(value.c_str(), NULL, 10));
           else if (key == "lyrics")
             item->GetMusicInfoTag()->SetLyrics(value);
           else if (key == "lastplayed")

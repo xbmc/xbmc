@@ -65,7 +65,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
       // is this the first time accessing this window?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
-        message.SetStringParam(CMediaSourceSettings::Get().GetDefaultSource("programs"));
+        message.SetStringParam(CMediaSourceSettings::GetInstance().GetDefaultSource("programs"));
 
       return CGUIMediaWindow::OnMessage(message);
     }
@@ -84,7 +84,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         }
         else if (iAction == ACTION_SHOW_INFO)
         {
-          OnInfo(iItem);
+          OnItemInfo(iItem);
           return true;
         }
       }
@@ -118,7 +118,7 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
 
-  CContextMenuManager::Get().AddVisibleItems(item, buttons);
+  CContextMenuManager::GetInstance().AddVisibleItems(item, buttons);
 }
 
 bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -137,7 +137,7 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_INFO:
-    OnInfo(itemNumber);
+    OnItemInfo(itemNumber);
     return true;
 
   default:
@@ -219,7 +219,7 @@ std::string CGUIWindowPrograms::GetStartFolder(const std::string &dir)
   return CGUIMediaWindow::GetStartFolder(dir);
 }
 
-void CGUIWindowPrograms::OnInfo(int iItem)
+void CGUIWindowPrograms::OnItemInfo(int iItem)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size())
     return;

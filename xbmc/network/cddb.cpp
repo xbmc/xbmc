@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,18 +13,10 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
-//-----------------------------------------------------------------------------
-// File: cddb.cpp
-//
-// Desc: Make a connection to the CDDB database
-//
-// Hist: 00.00.01
-//
-//-----------------------------------------------------------------------------
 
 #include "system.h"
 
@@ -42,18 +34,21 @@
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
 
+#include <memory>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 
-using namespace std;
 using namespace MEDIA_DETECT;
-using namespace AUTOPTR;
 using namespace CDDB;
 
 //-------------------------------------------------------------------------------------------------------------------
 Xcddb::Xcddb()
-    : m_cddb_socket(INVALID_SOCKET)
+#if defined(TARGET_WINDOWS)
+    : m_cddb_socket(closesocket, INVALID_SOCKET)
+#else
+    : m_cddb_socket(close, -1)
+#endif
     , m_cddb_ip_adress(g_advancedSettings.m_cddbAddress)
 {
   m_lastError = 0;
@@ -124,7 +119,7 @@ bool Xcddb::openSocket()
 //-------------------------------------------------------------------------------------------------------------------
 bool Xcddb::closeSocket()
 {
-  if ( m_cddb_socket.isValid() )
+  if (m_cddb_socket)
   {
     m_cddb_socket.reset();
   }
@@ -134,7 +129,7 @@ bool Xcddb::closeSocket()
 //-------------------------------------------------------------------------------------------------------------------
 bool Xcddb::Send( const void *buffer, int bytes )
 {
-  auto_aptr<char> tmp_buffer (new char[bytes + 10]);
+  std::unique_ptr<char[]> tmp_buffer(new char[bytes + 10]);
   strcpy(tmp_buffer.get(), (const char*)buffer);
   tmp_buffer.get()[bytes] = '.';
   tmp_buffer.get()[bytes + 1] = 0x0d;
@@ -160,12 +155,12 @@ bool Xcddb::Send( const char *buffer)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-string Xcddb::Recv(bool wait4point)
+std::string Xcddb::Recv(bool wait4point)
 {
   char tmpbuffer[1];
   char prevChar;
   int counter = 0;
-  string str_buffer;
+  std::string str_buffer;
 
 
   //##########################################################
@@ -214,7 +209,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
   //##########################################################
   // Compose the cddb query string
   std::string read_buffer = getInexactCommand(inexact_list_select);
-  if (read_buffer.size() == 0)
+  if (read_buffer.empty())
   {
     CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexaxt_list_select Size of inexaxt_list_select are 0");
     m_lastError = E_PARAMETER_WRONG;
@@ -396,7 +391,7 @@ void Xcddb::addTitle(const char *buffer)
   }
 
   // track artist" / "track title
-  vector<string> values = StringUtils::Split(value, " / ");
+  std::vector<std::string> values = StringUtils::Split(value, " / ");
   if (values.size() > 1)
   {
     g_charsetConverter.unknownToUTF8(values[0]);
@@ -414,7 +409,7 @@ void Xcddb::addTitle(const char *buffer)
 //-------------------------------------------------------------------------------------------------------------------
 const std::string& Xcddb::getInexactCommand(int select) const
 {
-  typedef map<int, std::string>::const_iterator iter;
+  typedef std::map<int, std::string>::const_iterator iter;
   iter i = m_mapInexact_cddb_command_list.find(select);
   if (i == m_mapInexact_cddb_command_list.end())
     return m_strNull;
@@ -424,7 +419,7 @@ const std::string& Xcddb::getInexactCommand(int select) const
 //-------------------------------------------------------------------------------------------------------------------
 const std::string& Xcddb::getInexactArtist(int select) const
 {
-  typedef map<int, std::string>::const_iterator iter;
+  typedef std::map<int, std::string>::const_iterator iter;
   iter i = m_mapInexact_artist_list.find(select);
   if (i == m_mapInexact_artist_list.end())
     return m_strNull;
@@ -434,7 +429,7 @@ const std::string& Xcddb::getInexactArtist(int select) const
 //-------------------------------------------------------------------------------------------------------------------
 const std::string& Xcddb::getInexactTitle(int select) const
 {
-  typedef map<int, std::string>::const_iterator iter;
+  typedef std::map<int, std::string>::const_iterator iter;
   iter i = m_mapInexact_title_list.find(select);
   if (i == m_mapInexact_title_list.end())
     return m_strNull;
@@ -444,7 +439,7 @@ const std::string& Xcddb::getInexactTitle(int select) const
 //-------------------------------------------------------------------------------------------------------------------
 const std::string& Xcddb::getTrackArtist(int track) const
 {
-  typedef map<int, std::string>::const_iterator iter;
+  typedef std::map<int, std::string>::const_iterator iter;
   iter i = m_mapArtists.find(track);
   if (i == m_mapArtists.end())
     return m_strNull;
@@ -454,7 +449,7 @@ const std::string& Xcddb::getTrackArtist(int track) const
 //-------------------------------------------------------------------------------------------------------------------
 const std::string& Xcddb::getTrackTitle(int track) const
 {
-  typedef map<int, std::string>::const_iterator iter;
+  typedef std::map<int, std::string>::const_iterator iter;
   iter i = m_mapTitles.find(track);
   if (i == m_mapTitles.end())
     return m_strNull;
@@ -619,7 +614,7 @@ void Xcddb::addExtended(const char *buffer)
 //-------------------------------------------------------------------------------------------------------------------
 const std::string& Xcddb::getTrackExtended(int track) const
 {
-  typedef map<int, std::string>::const_iterator iter;
+  typedef std::map<int, std::string>::const_iterator iter;
   iter i = m_mapExtended_track.find(track);
   if (i == m_mapExtended_track.end())
     return m_strNull;
@@ -749,7 +744,7 @@ void Xcddb::setCacheDir(const std::string& pCacheDir )
 //-------------------------------------------------------------------------------------------------------------------
 bool Xcddb::queryCache( uint32_t discid )
 {
-  if (cCacheDir.size() == 0)
+  if (cCacheDir.empty())
     return false;
 
   XFILE::CFile file;
@@ -769,7 +764,7 @@ bool Xcddb::queryCache( uint32_t discid )
 //-------------------------------------------------------------------------------------------------------------------
 bool Xcddb::writeCacheFile( const char* pBuffer, uint32_t discid )
 {
-  if (cCacheDir.size() == 0)
+  if (cCacheDir.empty())
     return false;
 
   XFILE::CFile file;
@@ -786,7 +781,7 @@ bool Xcddb::writeCacheFile( const char* pBuffer, uint32_t discid )
 //-------------------------------------------------------------------------------------------------------------------
 bool Xcddb::isCDCached( int nr_of_tracks, toc cdtoc[] )
 {
-  if (cCacheDir.size() == 0)
+  if (cCacheDir.empty())
     return false;
 
   return XFILE::CFile::Exists(GetCacheFile(calc_disc_id(nr_of_tracks, cdtoc)));
@@ -1058,7 +1053,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
 //-------------------------------------------------------------------------------------------------------------------
 bool Xcddb::isCDCached( CCdInfo* pInfo )
 {
-  if (cCacheDir.size() == 0)
+  if (cCacheDir.empty())
     return false;
   if ( pInfo == NULL )
     return false;

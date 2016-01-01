@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<defaultcontrol>20</defaultcontrol>
-	<allowoverlay>no</allowoverlay>
 	<controls>
 		<include>CommonBackground</include>
 		<control type="image">
@@ -12,28 +11,6 @@
 			<texture>floor.png</texture>
 			<animation effect="slide" start="0,10" end="0,0" time="150" condition="Window.Previous(Home)">WindowOpen</animation>
 			<animation effect="slide" start="0,0" end="0,10" time="150" condition="Window.Next(Home)">WindowClose</animation>
-		</control>
-		<control type="image">
-			<description>Section header image</description>
-			<left>20</left>
-			<top>3</top>
-			<width>35</width>
-			<height>35</height>
-			<aspectratio>keep</aspectratio>
-			<texture>icon_system.png</texture>
-		</control>
-		<control type="grouplist">
-			<left>65</left>
-			<top>5</top>
-			<width>1000</width>
-			<height>30</height>
-			<orientation>horizontal</orientation>
-			<align>left</align>
-			<itemgap>5</itemgap>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<label>$LOCALIZE[7]</label>
-			</control>
 		</control>
 		<control type="group">
 			<left>30</left>
@@ -383,29 +360,32 @@
 				</focusedlayout>
 			</control>
 		</control>
-		<control type="label">
-			<description>number of files/pages in left list text label</description>
-			<left>40</left>
-			<top>53r</top>
-			<width>570</width>
-			<font>font12</font>
-			<align>left</align>
-			<scroll>true</scroll>
-			<textcolor>grey</textcolor>
-			<shadowcolor>black</shadowcolor>
-			<label>([COLOR=blue]$INFO[Container(20).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(20).CurrentPage]/$INFO[Container(20).NumPages][/COLOR])</label>
-		</control>
-		<control type="label">
-			<description>number of files/pages in left list text label</description>
-			<right>40</right>
-			<top>53r</top>
-			<width>570</width>
-			<font>font12</font>
-			<align>right</align>
-			<scroll>true</scroll>
-			<textcolor>grey</textcolor>
-			<shadowcolor>black</shadowcolor>
-			<label>([COLOR=blue]$INFO[Container(21).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(21).CurrentPage]/$INFO[Container(21).NumPages][/COLOR])</label>
+		<control type="group">
+			<depth>DepthFooter</depth>
+			<control type="label">
+				<description>number of files/pages in left list text label</description>
+				<left>40</left>
+				<top>53r</top>
+				<width>570</width>
+				<font>font12</font>
+				<align>left</align>
+				<scroll>true</scroll>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<label>([COLOR=blue]$INFO[Container(20).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(20).CurrentPage]/$INFO[Container(20).NumPages][/COLOR])</label>
+			</control>
+			<control type="label">
+				<description>number of files/pages in left list text label</description>
+				<right>40</right>
+				<top>53r</top>
+				<width>570</width>
+				<font>font12</font>
+				<align>right</align>
+				<scroll>true</scroll>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<label>([COLOR=blue]$INFO[Container(21).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(21).CurrentPage]/$INFO[Container(21).NumPages][/COLOR])</label>
+			</control>
 		</control>
 		<control type="group" id="10">
 			<left>595</left>
@@ -464,6 +444,9 @@
 				<texture>icon_home.png</texture>
 			</control>
 		</control>
-		<include>Clock</include>
+		<include name="CommonWindowHeader">
+			<param name="Icon" value="icon_system" />
+			<param name="Label" value="$LOCALIZE[7]" />
+		</include>
 	</controls>
 </window>

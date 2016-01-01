@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Fanart achtergronden verbergen"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Verberg EPG wanneer RDS is aanwezig op kanaalvenster"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Toon achtergrond \"nu afspelend\" video"
@@ -227,14 +231,6 @@ msgstr "Toon achtergrond \"nu afspelend\" video"
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Toon achtergrond \"Nu afspelend\" visualisatie"
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Speel de Themasong van de TV serie af in de videobibliotheek. (TvTunes add-on)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -352,10 +348,6 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Laatst ingelogd op"
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Karaoke lied kiezer"
-
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Uitgezonden"
@@ -445,8 +437,8 @@ msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set v
 msgstr "[B]VIDEO-INSTELLINGEN CONFIGUREREN[/B][CR][CR]Beheer uw videobibliotheek · Configureer videoafspeelopties en -bestandslijstsopties · Stel lettertype in voor ondertitels"
 
 msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]MUZIEKINSTELLINGEN CONFIGUREREN[/B][CR][CR]Beheer uw muziekbibliotheek · Configureer muziekafspeelopties en -bestandslijstopties · Configureer nummer indienen · Configureer karaokeopties"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]MUZIEKINSTELLINGEN[/B][CR][CR]Beheer uw muziekbibliotheek · Instellen muziekplayback · Verander muzieklijsten opties[CR]Instellen nummerinstelling"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

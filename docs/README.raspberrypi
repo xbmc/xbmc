@@ -8,7 +8,7 @@ TOC
 -----------------------------------------------------------------------------
 
 You can build Kodi for the Raspberry Pi in different ways. This document
-shows two differnt methods. The first assumes that you want to run Kodi
+shows two different methods. The first assumes that you want to run Kodi
 on top of an image like Raspbian, the second shows how to create an entire
 image which includes Linux.
 
@@ -19,22 +19,22 @@ image which includes Linux.
 The following steps were tested with Ubuntu 14.04 x64. (Note that building on
 a 32 bit machine requires slightly different setting)
 
-    sudo apt-get install git autoconf curl g++ zlib1g-dev libcurl4-openssl-dev gawk gperf libtool autopoint swig default-jre
+    $ sudo apt-get install git autoconf curl g++ zlib1g-dev libcurl4-openssl-dev gawk gperf libtool autopoint swig default-jre
 
-    git clone https://github.com/raspberrypi/tools
-    sudo cp -r tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64 /opt
+    $ git clone https://github.com/raspberrypi/tools
+    $ sudo cp -r tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64 /opt
 
-    git clone https://github.com/raspberrypi/firmware
-    sudo mkdir -p /opt/bcm-rootfs/opt
-    sudo cp -r firmware/opt/vc /opt/bcm-rootfs/opt
+    $ git clone https://github.com/raspberrypi/firmware
+    $ sudo mkdir -p /opt/bcm-rootfs/opt
+    $ sudo cp -r firmware/opt/vc /opt/bcm-rootfs/opt
 
-    sudo mkdir -p /opt/xbmc-bcm
-    sudo chmod 777 /opt/xbmc-bcm
+    $ sudo mkdir -p /opt/xbmc-bcm
+    $ sudo chmod 777 /opt/xbmc-bcm
 
-    git clone https://github.com/xbmc/xbmc
+    $ git clone https://github.com/xbmc/xbmc
 
-    cd xbmc/tools/depends
-    ./bootstrap
+    $ cd xbmc/tools/depends
+    $ ./bootstrap
     PATH="$PATH:/opt/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin" \
        ./configure --host=arm-linux-gnueabihf \
        --prefix=/opt/xbmc-bcm/xbmc-dbg \
@@ -43,21 +43,19 @@ a 32 bit machine requires slightly different setting)
        --with-platform=raspberry-pi \
        --build=i686-linux
 
-    make
-    cd ../..
+    $ make
+    $ cd ../..
 
     CONFIG_EXTRA="--with-platform=raspberry-pi \
        --enable-libcec --enable-player=omxplayer \
        --disable-x11 --disable-xrandr --disable-openmax \
        --disable-optical-drive --disable-dvdcss --disable-joystick \
        --disable-crystalhd --disable-vtbdecoder --disable-vaapi \
-       --disable-vdpau --disable-projectm --disable-rsxs --disable-fishbmc \
-       --enable-alsa --disable-solarwinds --disable-euphoria \
-       --disable-plasma" \
-       make -C tools/depends/target/xbmc
+       --disable-vdpau --enable-alsa" \
+    $ make -C tools/depends/target/xbmc
 
-    make
-    make install
+    $ make
+    $ sudo make install
 
 -----------------------------------------------------------------------------
 3. Building Kodi using buildroot environment
@@ -69,18 +67,18 @@ Create a top level directory where you checkout Kodi and buildroot.
 
 For example :
 
-mkdir /opt/kodi-raspberrypi
-cd /opt/kodi-raspberrypi
+    $ mkdir /opt/kodi-raspberrypi
+    $ cd /opt/kodi-raspberrypi
 
 Checkout kodi :
 
-git clone https://github.com/xbmc/xbmc.git kodi
+    $ git clone https://github.com/xbmc/xbmc.git kodi
 
 Checkout buildroot :
 
-git clone https://github.com/huceke/buildroot-rbp.git
+    $ git clone https://github.com/huceke/buildroot-rbp.git
 
-cd /opt/kodi-raspberrypi/buildroot-rbp
+    $ cd /opt/kodi-raspberrypi/buildroot-rbp
 
 Follow the instructions in README.rbp how to build the system and Kodi.
 

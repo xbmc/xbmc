@@ -17,8 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include <cstring>
+
 #include "XBTF.h"
+
+#include <cstring>
+#include <utility>
 
 CXBTFFrame::CXBTFFrame()
 {
@@ -126,27 +129,25 @@ uint64_t CXBTFFrame::GetHeaderSize() const
 }
 
 CXBTFFile::CXBTFFile()
-{
-  memset(m_path, 0, sizeof(m_path));
-  m_loop = 0;
-}
+  : m_path(),
+    m_loop(0),
+    m_frames()
+{ }
 
 CXBTFFile::CXBTFFile(const CXBTFFile& ref)
-{
-  strcpy(m_path, ref.m_path);
-  m_loop = ref.m_loop;
-  m_frames = ref.m_frames;
-}
+  : m_path(ref.m_path),
+    m_loop(ref.m_loop),
+    m_frames(ref.m_frames)
+{ }
 
-char* CXBTFFile::GetPath()
+const std::string& CXBTFFile::GetPath() const
 {
   return m_path;
 }
 
 void CXBTFFile::SetPath(const std::string& path)
 {
-  memset(m_path, 0, sizeof(m_path));
-  strncpy(m_path, path.c_str(), sizeof(m_path) - 1);
+  m_path = path;
 }
 
 uint32_t CXBTFFile::GetLoop() const
@@ -159,46 +160,95 @@ void CXBTFFile::SetLoop(uint32_t loop)
   m_loop = loop;
 }
 
+const std::vector<CXBTFFrame>& CXBTFFile::GetFrames() const
+{
+  return m_frames;
+}
+
 std::vector<CXBTFFrame>& CXBTFFile::GetFrames()
 {
   return m_frames;
 }
 
+uint64_t CXBTFFile::GetPackedSize() const
+{
+  uint64_t size = 0;
+  for (const auto& frame : m_frames)
+    size += frame.GetPackedSize();
+
+  return size;
+}
+
+uint64_t CXBTFFile::GetUnpackedSize() const
+{
+  uint64_t size = 0;
+  for (const auto& frame : m_frames)
+    size += frame.GetUnpackedSize();
+
+  return size;
+}
+
 uint64_t CXBTFFile::GetHeaderSize() const
 {
   uint64_t result =
-    sizeof(m_path) +
+    MaximumPathLength +
     sizeof(m_loop) +
     sizeof(uint32_t); /* Number of frames */
 
-  for (size_t i = 0; i < m_frames.size(); i++)
-  {
-    result += m_frames[i].GetHeaderSize();
-  }
+  for (const auto& frame : m_frames)
+    result += frame.GetHeaderSize();
 
   return result;
 }
 
-CXBTF::CXBTF()
+uint64_t CXBTFBase::GetHeaderSize() const
 {
-}
+  uint64_t result = XBTF_MAGIC.size() + XBTF_VERSION.size() +
+    sizeof(uint32_t) /* number of files */;
 
-uint64_t CXBTF::GetHeaderSize() const
-{
-  uint64_t result =
-    4 /* Magic */ +
-    1 /* Vesion */ +
-    sizeof(uint32_t) /* Number of Files */;
-
-  for (size_t i = 0; i < m_files.size(); i++)
-  {
-    result += m_files[i].GetHeaderSize();
-  }
+  for (const auto& file : m_files)
+    result += file.second.GetHeaderSize();
 
   return result;
 }
 
-std::vector<CXBTFFile>& CXBTF::GetFiles()
+bool CXBTFBase::Exists(const std::string& name) const
 {
-  return m_files;
+  CXBTFFile dummy;
+  return Get(name, dummy);
+}
+
+bool CXBTFBase::Get(const std::string& name, CXBTFFile& file) const
+{
+  const auto& iter = m_files.find(name);
+  if (iter == m_files.end())
+    return false;
+
+  file = iter->second;
+  return true;
+}
+
+std::vector<CXBTFFile> CXBTFBase::GetFiles() const
+{
+  std::vector<CXBTFFile> files;
+  files.reserve(m_files.size());
+
+  for (const auto& file : m_files)
+    files.push_back(file.second);
+
+  return files;
+}
+
+void CXBTFBase::AddFile(const CXBTFFile& file)
+{
+  m_files.insert(std::make_pair(file.GetPath(), file));
+}
+
+void CXBTFBase::UpdateFile(const CXBTFFile& file)
+{
+  auto&& it = m_files.find(file.GetPath());
+  if (it == m_files.end())
+    return;
+
+  it->second = file;
 }

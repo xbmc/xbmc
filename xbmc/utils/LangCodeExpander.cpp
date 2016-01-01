@@ -32,7 +32,7 @@ typedef struct LCENTRY
   const char *name;
 } LCENTRY;
 
-extern const struct LCENTRY g_iso639_1[186];
+extern const struct LCENTRY g_iso639_1[185];
 extern const struct LCENTRY g_iso639_2[538];
 
 struct ISO639
@@ -50,7 +50,7 @@ struct ISO3166_1
 
 // declared as extern to allow forward declaration
 extern const ISO639 LanguageCodes[189];
-extern const ISO3166_1 RegionCodes[246];
+extern const ISO3166_1 RegionCodes[245];
 
 CLangCodeExpander::CLangCodeExpander()
 { }
@@ -515,9 +515,8 @@ std::string CLangCodeExpander::ConvertToISO6392T(const std::string& lang)
   return lang;
 }
 
-extern const LCENTRY g_iso639_1[186] =
+extern const LCENTRY g_iso639_1[185] =
 {
-  { MAKECODE('\0','\0','c','c'), "Closed Caption" },
   { MAKECODE('\0','\0','a','a'), "Afar" },
   { MAKECODE('\0','\0','a','b'), "Abkhazian" },
   { MAKECODE('\0','\0','a','e'), "Avestan" },
@@ -629,7 +628,7 @@ extern const LCENTRY g_iso639_1[186] =
   { MAKECODE('\0','\0','m','t'), "Maltese" },
   { MAKECODE('\0','\0','m','y'), "Burmese" },
   { MAKECODE('\0','\0','n','a'), "Nauru" },
-  { MAKECODE('\0','\0','n','b'), "Bokm\xC3\xA5l, Norwegian" },
+  { MAKECODE('\0','\0','n','b'), "Norwegian Bokm\xC3\xA5l" },
   { MAKECODE('\0','\0','n','d'), "Ndebele, North" },
   { MAKECODE('\0','\0','n','e'), "Nepali" },
   { MAKECODE('\0','\0','n','g'), "Ndonga" },
@@ -1442,7 +1441,7 @@ const ISO639 LanguageCodes[189] =
 };
 
 // Based on ISO 3166
-const ISO3166_1 RegionCodes[246] =
+const ISO3166_1 RegionCodes[245] =
 {
   { "af", "afg" },
   { "ax", "ala" },
@@ -1490,7 +1489,6 @@ const ISO3166_1 RegionCodes[246] =
   { "cl", "chl" },
   { "cn", "chn" },
   { "cx", "cxr" },
-  { "cc", "cck" },
   { "co", "col" },
   { "km", "com" },
   { "cg", "cog" },

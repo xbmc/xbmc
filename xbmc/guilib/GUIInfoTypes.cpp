@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -28,7 +28,6 @@
 #include "utils/StringUtils.h"
 #include "addons/Skin.h"
 
-using namespace std;
 using ADDON::CAddonMgr;
 
 CGUIInfoBool::CGUIInfoBool(bool value)
@@ -150,7 +149,7 @@ const std::string &CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, 
   bool needsUpdate = m_dirty;
   if (!m_info.empty())
   {
-    for (vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
+    for (std::vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
     {
       if (portion->m_info)
       {
@@ -174,7 +173,7 @@ const std::string &CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool pr
   bool needsUpdate = m_dirty;
   if (item->IsFileItem() && !m_info.empty())
   {
-    for (vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
+    for (std::vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
     {
       if (portion->m_info)
       {
@@ -198,7 +197,7 @@ const std::string &CGUIInfoLabel::CacheLabel(bool rebuild) const
   if (rebuild)
   {
     m_label.clear();
-    for (vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
+    for (std::vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
       m_label += portion->Get();
     m_dirty = false;
   }
@@ -209,12 +208,12 @@ const std::string &CGUIInfoLabel::CacheLabel(bool rebuild) const
 
 bool CGUIInfoLabel::IsEmpty() const
 {
-  return m_info.size() == 0;
+  return m_info.empty();
 }
 
 bool CGUIInfoLabel::IsConstant() const
 {
-  return m_info.size() == 0 || (m_info.size() == 1 && m_info[0].m_info == 0);
+  return m_info.empty() || (m_info.size() == 1 && m_info[0].m_info == 0);
 }
 
 bool CGUIInfoLabel::ReplaceSpecialKeywordReferences(const std::string &strInput, const std::string &strKeyword, const StringReplacerFunc &func, std::string &strOutput)
@@ -279,7 +278,7 @@ std::string AddonReplacer(const std::string &str)
   size_t length = str.find(" ");
   std::string id = str.substr(0, length);
   int stringid = atoi(str.substr(length + 1).c_str());
-  return CAddonMgr::Get().GetString(id, stringid);
+  return CAddonMgr::GetInstance().GetString(id, stringid);
 }
 
 std::string NumberReplacer(const std::string &str)
@@ -334,7 +333,7 @@ void CGUIInfoLabel::Parse(const std::string &label, int context)
     for (size_t i = 0; i < sizeof(infoformatmap) / sizeof(infoformat); i++)
     {
       pos2 = work.find(infoformatmap[i].str);
-      if (pos2 != string::npos && pos2 < pos1)
+      if (pos2 != std::string::npos && pos2 < pos1)
       {
         pos1 = pos2;
         len = strlen(infoformatmap[i].str);
@@ -352,7 +351,7 @@ void CGUIInfoLabel::Parse(const std::string &label, int context)
       {
         // decipher the block
         std::string block = work.substr(pos1 + len, pos2 - pos1 - len);
-        vector<string> params = StringUtils::Split(block, ",");
+        std::vector<std::string> params = StringUtils::Split(block, ",");
         if (!params.empty())
         {
           int info;
@@ -432,4 +431,10 @@ std::string CGUIInfoLabel::GetLabel(const std::string &label, int contextWindow 
 { // translate the label
   CGUIInfoLabel info(label, "", contextWindow);
   return info.GetLabel(contextWindow, preferImage);
+}
+
+std::string CGUIInfoLabel::GetItemLabel(const std::string &label, const CGUIListItem *item, bool preferImage /*= false */)
+{ // translate the label
+  CGUIInfoLabel info(label);
+  return info.GetItemLabel(item, preferImage);
 }

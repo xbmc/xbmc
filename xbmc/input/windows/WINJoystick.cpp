@@ -1,6 +1,6 @@
 /*
-*      Copyright (C) 2012-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2012-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -25,8 +25,6 @@
 
 #include <memory>
 #include <dinput.h>
-
-using namespace std;
 
 extern HWND g_hWnd;
 
@@ -201,7 +199,7 @@ void CJoystick::Initialize()
   if( FAILED( hr = m_pDI->EnumDevices( DI8DEVCLASS_GAMECTRL, EnumJoysticksCallback, this, DIEDFL_ATTACHEDONLY ) ) )
     return;
 
-  if(m_pJoysticks.size() == 0)
+  if(m_pJoysticks.empty())
   {
     CLog::Log(LOGDEBUG, __FUNCTION__" : No Joystick found");
     return;

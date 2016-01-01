@@ -176,6 +176,20 @@
     ],
     "returns": null
   },
+  "AudioLibrary.OnExport": {
+    "type": "notification",
+    "description": "An audio library export has finished.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "object", "required": false,
+        "properties": {
+          "file": { "type": "string", "required": false, "default": "" },
+          "failcount": { "type": "integer", "minimum": 0, "required": false, "default": 0 }
+        }
+      }
+    ],
+    "returns": null
+  },
   "VideoLibrary.OnUpdate": {
     "type": "notification",
     "description": "A video item has been updated.",
@@ -187,6 +201,21 @@
           "type": { "type": "string", "id": "Notifications.Library.Video.Type", "enum": [ "movie", "tvshow", "episode", "musicvideo" ], "required": true },
           "playcount": { "type": "integer", "minimum": 0, "default": -1 },
           "transaction": { "$ref": "Optional.Boolean", "description": "True if the update is being performed within a transaction." }
+        }
+      }
+    ],
+    "returns": null
+  },
+  "VideoLibrary.OnExport": {
+    "type": "notification",
+    "description": "A video library export has finished.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "object", "required": false,
+        "properties": {
+          "file": { "type": "string", "required": false, "default": "" },
+          "root": { "type": "string", "required": false, "default": "" },
+          "failcount": { "type": "integer", "minimum": 0, "required": false, "default": 0 }
         }
       }
     ],

@@ -19,12 +19,16 @@
  */
 
 #include "Addon.h"
+
+#include <utility>
+
 #include "AddonCallbacksCodec.h"
 #include "utils/StringUtils.h"
 
 extern "C" {
 #include "libavcodec/avcodec.h"
 }
+
 
 namespace ADDON
 {
@@ -33,7 +37,7 @@ class CCodecIds
 public:
   virtual ~CCodecIds(void) {}
 
-  static CCodecIds& Get(void)
+  static CCodecIds& GetInstance()
   {
     static CCodecIds _instance;
     return _instance;
@@ -107,7 +111,7 @@ CAddonCallbacksCodec::~CAddonCallbacksCodec()
 xbmc_codec_t CAddonCallbacksCodec::GetCodecByName(const void* addonData, const char* strCodecName)
 {
   (void)addonData;
-  return CCodecIds::Get().GetCodecByName(strCodecName);
+  return CCodecIds::GetInstance().GetCodecByName(strCodecName);
 }
 
 }; /* namespace ADDON */

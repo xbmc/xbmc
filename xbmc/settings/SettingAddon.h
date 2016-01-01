@@ -30,15 +30,15 @@ public:
   CSettingAddon(const std::string &id, const CSettingAddon &setting);
   virtual ~CSettingAddon() { }
 
-  virtual CSetting* Clone(const std::string &id) const;
+  virtual CSetting* Clone(const std::string &id) const override;
 
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false);
+  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
   ADDON::TYPE GetAddonType() const { return m_addonType; }
   void SetAddonType(ADDON::TYPE addonType) { m_addonType = addonType; }
 
 private:
-  void copy(const CSettingAddon &setting);
+  void copyaddontype(const CSettingAddon &setting);
 
   ADDON::TYPE m_addonType;
 };

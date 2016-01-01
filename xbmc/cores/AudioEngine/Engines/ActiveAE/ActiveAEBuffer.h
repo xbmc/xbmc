@@ -71,7 +71,6 @@ public:
   CSoundPacket *pkt;
   CActiveAEBufferPool *pool;
   int64_t timestamp;
-  int clockId;
   int pkt_start_offset;
   int refCount;
 };
@@ -118,6 +117,7 @@ public:
   bool m_empty;
   bool m_useResampler;
   bool m_useDSP;
+  bool m_bypassDSP;
   bool m_changeResampler;
   bool m_forceResampler;
   bool m_changeDSP;

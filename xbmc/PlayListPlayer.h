@@ -51,7 +51,7 @@ class CPlayListPlayer : public IMsgTargetCallback,
 public:
   CPlayListPlayer(void);
   virtual ~CPlayListPlayer(void);
-  virtual bool OnMessage(CGUIMessage &message);
+  virtual bool OnMessage(CGUIMessage &message) override;
 
   virtual int GetMessageMask() override;
   virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
@@ -74,7 +74,7 @@ public:
    \param replace whether this item should replace the currently playing item. See CApplication::PlayFile (defaults to false).
    \param playPreviousOnFail whether to go back to the previous item if playback fails (default to false)
    */
-  bool Play(int index, bool replace = false, bool playPreviousOnFail = false);
+  bool Play(int index, std::string player, bool replace = false, bool playPreviousOnFail = false);
 
   /*! \brief Returns the index of the current item in active playlist.
    \return Current item in the active playlist.

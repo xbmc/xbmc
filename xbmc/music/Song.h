@@ -72,6 +72,47 @@ public:
     return false;
   }
 
+  /*! \brief Get artist names from the vector of artistcredits objects
+  \return artist names as a vector of strings
+  */
+  const std::vector<std::string> GetArtist() const;
+  
+  /*! \brief Get artist MusicBrainz IDs from the vector of artistcredits objects
+  \return artist MusicBrainz IDs as a vector of strings
+  */
+  const std::vector<std::string> GetMusicBrainzArtistID() const;
+
+  /*! \brief Get artist names from the artist decription string (if it exists)
+  or concatenated from the vector of artistcredits objects
+  \return artist names as a single string
+  */
+  const std::string GetArtistString() const;
+
+  /*! \brief Get song artist IDs (for json rpc) from the vector of artistcredits objects
+  \return album artist IDs as a vector of integers
+  */
+  const std::vector<int> GetArtistIDArray() const;
+
+  /*! \brief Get album artist names associated with song from tag data
+   Note for initial album processing only, normalised album artist data belongs to album 
+   and is stored in album artist credits
+  \return album artist names as a vector of strings
+  */
+  const std::vector<std::string> GetAlbumArtist() const { return m_albumArtist; }
+
+  /*! \brief Set album artist vector. 
+   Album artist is held local to song until album created for inital processing only.
+   Normalised album artist data belongs to album and is stored in album artist credits
+  \param album artist names as a vector of strings
+  */
+  void SetAlbumArtist(const std::vector<std::string>& albumartists) { m_albumArtist = albumartists; }
+  
+  /*! \brief Whether this song has any artists in artist credits vector
+    Tests if artist credits has been populated yet, during processing there can be
+    artists in the artist description but not yet in the credits
+  */
+  bool HasArtistCredits() const { return !artistCredits.empty(); }
+
   /*! \brief whether this song has art associated with it
    Tests both the strThumb and embeddedArt members.
    */
@@ -86,10 +127,9 @@ public:
   int idAlbum;
   std::string strFileName;
   std::string strTitle;
-  std::vector<std::string> artist;
+  std::string strArtistDesc;
   VECARTISTCREDITS artistCredits;
   std::string strAlbum;
-  std::vector<std::string> albumArtist;
   std::vector<std::string> genre;
   std::string strThumb;
   MUSIC_INFO::EmbeddedArtInfo embeddedArt;
@@ -97,7 +137,9 @@ public:
   std::string strComment;
   std::string strMood;
   std::string strCueSheet;
-  char rating;
+  float rating;
+  int userrating;
+  int votes;
   int iTrack;
   int iDuration;
   int iYear;
@@ -108,11 +150,10 @@ public:
   int iEndOffset;
   bool bCompilation;
 
-  // Karaoke-specific information
-  long       iKaraokeNumber;        //! Karaoke song number to "select by number". 0 for non-karaoke
-  std::string strKaraokeLyrEncoding; //! Karaoke song lyrics encoding if known. Empty if unknown.
-  int        iKaraokeDelay;         //! Karaoke song lyrics-music delay in 1/10 seconds.
   ReplayGain replayGain;
+
+private:
+  std::vector<std::string> m_albumArtist; // Album artist from tag for album processing, no desc or MBID
 };
 
 /*!

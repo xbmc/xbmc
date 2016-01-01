@@ -29,7 +29,7 @@
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
-          <control type="spinner" format="string" delayed="true" />
+          <control type="list" format="string" />
         </setting>
         <setting id="lookandfeel.skincolors" type="string" parent="lookandfeel.skin" label="14078" help="36106">
           <level>1</level>
@@ -40,7 +40,7 @@
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
-          <control type="spinner" format="string" delayed="true" />
+          <control type="list" format="string" />
         </setting>
         <setting id="lookandfeel.font" type="string" parent="lookandfeel.skin" label="13303" help="36107">
           <level>1</level>
@@ -51,7 +51,7 @@
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
-          <control type="spinner" format="string" delayed="true" />
+          <control type="list" format="string" />
         </setting>
         <setting id="lookandfeel.skinzoom" type="integer" parent="lookandfeel.skin" label="20109" help="36108">
           <level>2</level>
@@ -79,19 +79,32 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
-        <setting id="lookandfeel.soundskin" type="string" label="15108" help="36110">
+        <setting id="lookandfeel.soundskin" type="addon" label="15108" help="36110">
           <level>0</level>
           <default>resource.uisounds.confluence</default>
           <constraints>
-            <options>skinsounds</options>
+            <addontype>kodi.resource.uisounds</addontype>
+            <allowempty>true</allowempty>
+          </constraints>
+          <updates>
+            <update type="change" />
+          </updates>
+          <control type="button" format="addon">
+            <show more="true" details="true">installed</show>
+          </control>
+        </setting>
+        <setting id="lookandfeel.stereostrength" type="integer" label="36550" help="36551">
+          <level>2</level>
+          <default>5</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>1</step>
+            <maximum>10</maximum>
           </constraints>
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
-          <updates>
-            <update type="change" />
-          </updates>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
       </group>
       <group id="2">
@@ -228,7 +241,7 @@
           <dependencies>
             <dependency type="update" setting="locale.country" />
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
       </group>
       <group id="4">
@@ -463,6 +476,16 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="videolibrary.groupsingleitemsets" type="boolean" label="20470" help="36157">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videolibrary.showemptytvshows" type="boolean" label="20471" help="36163">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="2">
         <setting id="videolibrary.updateonstartup" type="boolean" label="22000" help="36146">
@@ -497,7 +520,7 @@
           <level>1</level>
           <default>original</default>
           <constraints>
-            <options>streamlanguages</options>
+            <options>audiostreamlanguages</options>
           </constraints>
           <control type="list" format="string" />
         </setting>
@@ -550,17 +573,6 @@
             </options>
           </constraints>
           <control type="list" format="string" />
-        </setting>
-        <setting id="videoplayer.pauseafterrefreshchange" type="integer" parent="videoplayer.adjustrefreshrate" label="13550" help="36165">
-          <level>2</level>
-          <default>0</default>
-          <constraints>
-            <options>refreshchangedelays</options>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.adjustrefreshrate" operator="!is">0</dependency> <!-- ADJUST_REFRESHRATE_OFF -->
-          </dependencies>
-          <control type="spinner" format="string" />
         </setting>
         <setting id="videoplayer.usedisplayasclock" type="boolean" label="13510" help="36166">
           <level>2</level>
@@ -863,7 +875,7 @@
           <level>1</level>
           <default>original</default>
           <constraints>
-            <options>streamlanguages</options>
+            <options>subtitlestreamlanguages</options>
           </constraints>
           <control type="list" format="string" />
         </setting>
@@ -979,7 +991,7 @@
           <level>1</level>
           <default>English</default>
           <constraints>
-            <options>iso6391languages</options>
+            <options>subtitledownloadlanguages</options>
             <delimiter>,</delimiter>
             <minimumitems>1</minimumitems>
           </constraints>
@@ -1070,6 +1082,18 @@
         </setting>
       </group>
       <group id="2">
+        <setting id="bluray.playerregion" type="integer" label="14121" help="38017">
+          <level>1</level>
+          <default>1</default> <!-- region A -->
+          <constraints>
+            <options>
+              <option label="14122">1</option> <!-- region A -->
+              <option label="14123">2</option> <!-- region B -->
+              <option label="14124">4</option> <!-- region C -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
         <setting id="disc.playback" type="integer" label="14102" help="37031">
           <level>1</level>
           <default>0</default> <!-- default -->
@@ -1124,7 +1148,7 @@
         </setting>
         <setting id="scrapers.musicvideosdefault" type="addon" label="21415" help="36200">
           <level>4</level>
-          <default>metadata.musicvideos.theaudiodb.com</default>
+          <default>metadata.local</default>
           <constraints>
             <addontype>xbmc.metadata.scraper.musicvideos</addontype>
           </constraints>
@@ -1374,6 +1398,42 @@
           <control type="spinner" format="string" />
         </setting>
       </group>
+      <group id="4">
+        <setting id="pvrplayback.enableradiords" type="boolean" label="29980" help="29981">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="pvrplayback.trafficadvisory" type="boolean" label="29982" help="29983">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+          <dependencies>
+            <dependency type="enable" setting="pvrplayback.enableradiords">true</dependency>
+          </dependencies>
+        </setting>
+        <setting id="pvrplayback.trafficadvisoryvolume" type="integer" label="29984" help="29985">
+          <level>2</level>
+          <default>10</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>1</step>
+            <maximum>20</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14050</formatlabel>
+          </control>
+          <dependencies>
+            <dependency type="enable" setting="pvrplayback.enableradiords">true</dependency>
+            <dependency type="enable" setting="pvrplayback.trafficadvisory">true</dependency>
+          </dependencies>
+        </setting>
+        <setting id="pvrplayback.sendrdstrafficmsg" type="boolean" label="29986" help="29987">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
     </category>
     <category id="pvrrecord" label="19043" help="36233">
       <group id="1">
@@ -1413,27 +1473,19 @@
         </setting>
         <setting id="pvrrecord.marginstart" type="integer" label="19175" help="36237">
           <level>2</level>
-          <default>0</default>
+          <default>0</default> <!-- 0 mins -->
           <constraints>
-            <minimum>0</minimum>
-            <step>1</step>
-            <maximum>60</maximum>
+            <options>pvrrecordmargins</options>
           </constraints>
-          <control type="spinner" format="string">
-            <formatlabel>14044</formatlabel>
-          </control>
+          <control type="list" format="string"/>
         </setting>
         <setting id="pvrrecord.marginend" type="integer" label="19176" help="36238">
           <level>2</level>
-          <default>0</default>
+          <default>0</default> <!-- 0 mins -->
           <constraints>
-            <minimum>0</minimum>
-            <step>1</step>
-            <maximum>60</maximum>
+            <options>pvrrecordmargins</options>
           </constraints>
-          <control type="spinner" format="string">
-            <formatlabel>14044</formatlabel>
-          </control>
+          <control type="list" format="string"/>
         </setting>
         <setting id="pvrrecord.preventduplicateepisodes" type="integer" label="812" help="36423">
           <level>2</level>
@@ -1576,9 +1628,9 @@
     </category>
     <category id="pvrtimers" label="" help="">
       <group id="1">
-        <setting id="pvrtimers.timertypefilter" type="boolean" label="" help="">
+        <setting id="pvrtimers.hidedisabledtimers" type="boolean" label="" help="">
+          <default>false</default>
           <level>4</level>
-          <default>true</default>
         </setting>
       </group>
     </category>
@@ -1774,7 +1826,7 @@
       <group id="5">
         <setting id="musicplayer.visualisation" type="addon" label="250" help="36273">
           <level>0</level>
-          <default>visualization.glspectrum</default>
+          <default>visualization.spectrum</default>
           <constraints>
             <addontype>xbmc.player.musicviz</addontype>
             <allowempty>true</allowempty>
@@ -1799,13 +1851,6 @@
             <heading>16016</heading>
           </control>
         </setting>
-        <setting id="musicfiles.trackformatright" type="string" label="13387" help="36276">
-          <level>2</level>
-          <default>%D</default>
-          <control type="edit" format="string">
-            <heading>16016</heading>
-          </control>
-        </setting>
         <setting id="musicfiles.nowplayingtrackformat" type="string" label="13307" help="36277">
           <level>4</level>
           <default></default>
@@ -1816,27 +1861,7 @@
             <heading>16016</heading>
           </control>
         </setting>
-        <setting id="musicfiles.nowplayingtrackformatright" type="string" label="13387" help="36278">
-          <level>4</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="edit" format="string">
-            <heading>16016</heading>
-          </control>
-        </setting>
         <setting id="musicfiles.librarytrackformat" type="string" label="13307" help="36279">
-          <level>4</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="edit" format="string">
-            <heading>16016</heading>
-          </control>
-        </setting>
-        <setting id="musicfiles.librarytrackformatright" type="string" label="13387" help="36280">
           <level>4</level>
           <default></default>
           <constraints>
@@ -1913,94 +1938,6 @@
         </setting>
       </group>
     </category>
-    <category id="karaoke" label="13327" help="36292">
-      <requirement>HAS_KARAOKE</requirement>
-      <group id="1">
-        <setting id="karaoke.enabled" type="boolean" label="13323" help="36293">
-          <level>2</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="karaoke.autopopupselector" type="boolean" label="22037" help="36294">
-          <level>2</level>
-          <default>false</default>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-      </group>
-      <group id="2">
-        <setting id="karaoke.font" type="string" label="22030" help="36295">
-          <level>2</level>
-          <default>arial.ttf</default>
-          <constraints>
-            <options>fonts</options>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-          </dependencies>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="karaoke.fontheight" type="integer" parent="karaoke.font" label="22031" help="36296">
-          <level>2</level>
-          <default>36</default>
-          <constraints>
-            <minimum>16</minimum>
-            <step>2</step>
-            <maximum>74</maximum>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-            <dependency type="update" setting="karaoke.font" />
-          </dependencies>
-          <control type="spinner" format="string" />
-        </setting>
-        <setting id="karaoke.fontcolors" type="integer" parent="karaoke.font" label="22032" help="36297">
-          <level>2</level>
-          <default>0</default> <!-- white/green -->
-          <constraints>
-            <options>
-              <option label="22040">0</option> <!-- white/green -->
-              <option label="22041">1</option> <!-- white/red -->
-              <option label="22042">2</option> <!-- white/blue -->
-              <option label="22043">3</option> <!-- black/white -->
-            </options>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-          </dependencies>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="karaoke.charset" type="string" parent="karaoke.font" label="22033" help="36298">
-          <level>2</level>
-          <default>DEFAULT</default>
-          <constraints>
-            <options>charsets</options>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-          </dependencies>
-          <control type="list" format="string" />
-        </setting>
-      </group>
-      <group id="3">
-        <setting id="karaoke.export" type="action" label="22038" help="36299">
-          <level>2</level>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-          </dependencies>
-          <control type="button" format="action" />
-        </setting>
-        <setting id="karaoke.importcsv" type="action" label="22036" help="36300">
-          <level>2</level>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-          </dependencies>
-          <control type="button" format="action" />
-        </setting>
-      </group>
-    </category>
     <category id="mymusic" label="0" help="0">
       <group id="1">
         <setting id="mymusic.startwindow" type="integer" label="0" help="36301">
@@ -2024,17 +1961,7 @@
   <section id="pictures" label="1" help="36304">
     <category id="pictures" label="14081" help="36305">
       <group id="1">
-        <setting id="pictures.usetags" type="boolean" label="14082" help="36306">
-          <level>0</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="pictures.generatethumbs" type="boolean" label="13360" help="36307">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="pictures.useexifrotation" type="boolean" label="20184" help="36308">
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
@@ -2357,7 +2284,7 @@
             <hidden>true</hidden>
           </control>
         </setting>
-        <setting id="services.airplayios8compat" type="boolean" parent="services.airplay" label="1268" help="36549">
+        <setting id="services.airplayvideosupport" type="boolean" parent="services.airplay" label="1268" help="36549">
           <level>3</level>
           <default>true</default>
           <dependencies>
@@ -2452,6 +2379,14 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="videoscreen.delayrefreshchange" type="integer" parent="videoscreen.screen" label="13550" help="36165">
+          <level>2</level>
+          <default>0</default>
+          <constraints>
+            <options>refreshchangedelays</options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
       </group>
       <group id="2">
         <setting id="videoscreen.stereoscopicmode" type="integer" label="36500" help="36539">
@@ -2513,6 +2448,26 @@
             <update type="rename">videoplayer.vdpaustudiolevel</update>
           </updates>
           <control type="toggle" />
+        </setting>
+        <setting id="videoscreen.dither" type="boolean" label="36099" help="36598">
+          <requirement>HAS_GL</requirement>
+          <level>3</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoscreen.ditherdepth" type="integer" label="36100" help="36599">
+          <requirement>HAS_GL</requirement>
+          <level>3</level>
+          <default>8</default>
+          <constraints>
+            <minimum>2</minimum>
+            <step>1</step>
+            <maximum>8</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="videoscreen.dither" operator="is">true</dependency>
+          </dependencies>
+          <control type="spinner" format="integer" />
         </setting>
       </group>
     </category>
@@ -2934,8 +2889,66 @@
         </setting>
       </group>
     </category>
-    <category id="debug" label="14092" help="36391">
+    <category id="addons" label="24001" help="36610">
       <group id="1">
+        <setting id="general.addonupdates" type="integer" label="36605" help="36611">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="36606">0</option> <!-- AUTO_UPDATES_ON -->
+              <option label="36607">1</option> <!-- AUTO_UPDATES_NOTIFY -->
+              <option label="36608">2</option> <!-- AUTO_UPDATES_NEVER -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="general.addonnotifications" type="boolean" label="36609" help="36612">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+          <dependencies>
+            <dependency type="enable" setting="general.addonupdates">0</dependency>
+          </dependencies>
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="addons.managedependencies" type="action" label="24996" help="36613">
+          <level>2</level>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="addons.showrunning" type="action" label="24994" help="36614">
+          <level>2</level>
+          <control type="button" format="action" />
+        </setting>
+      </group>
+    </category>
+    <category id="logging" label="14092" help="36391">
+      <group id="1">
+        <setting id="eventlog.enabled" type="boolean" label="14112" help="36460">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="eventlog.enablednotifications" type="boolean" parent="eventlog.enabled" label="14113" help="36461">
+          <level>1</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="eventlog.enabled" operator="is">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="eventlog.show" type="action" label="14114" help="36431">
+          <level>1</level>
+          <dependencies>
+            <dependency type="enable" setting="eventlog.enabled" operator="is">true</dependency>
+          </dependencies>
+          <control type="button" format="action">
+            <hidevalue>true</hidevalue>
+          </control>
+        </setting>
+      </group>
+      <group id="2">
         <setting id="debug.showloginfo" type="boolean" label="20191" help="36392">
           <level>1</level>
           <default>false</default>
@@ -3148,22 +3161,6 @@
     </category>
     <category id="general" label="" help="36412">
       <group id="1">
-        <setting id="general.addonupdates" type="integer" label="0" help="36413">
-          <level>4</level>
-          <default>0</default>
-          <constraints>
-            <options>
-              <option label="12396">0</option> <!-- AUTO_UPDATES_ON -->
-              <option label="12397">1</option> <!-- AUTO_UPDATES_NOTIFY -->
-              <option label="12398">2</option> <!-- AUTO_UPDATES_NEVER -->
-            </options>
-          </constraints>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="general.addonnotifications" type="boolean" label="0" help="36414">
-          <level>4</level>
-          <default>true</default>
-        </setting>
         <setting id="general.addonforeignfilter" type="boolean" label="0" help="36415">
           <level>4</level>
           <default>false</default>

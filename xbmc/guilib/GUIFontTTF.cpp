@@ -48,9 +48,6 @@
 #pragma comment(lib, "freetype246MT.lib")
 #endif
 
-using namespace std;
-
-
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
 
@@ -461,7 +458,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
       characters.push(*ch);
 
       if (maxPixelWidth > 0 &&
-          cursorX + (alignment & XBFONT_TRUNCATED ? ch->advance + 3 * m_ellipsesWidth : 0) > maxPixelWidth)
+          cursorX + ((alignment & XBFONT_TRUNCATED) ? ch->advance + 3 * m_ellipsesWidth : 0) > maxPixelWidth)
         break;
       cursorX += ch->advance;
     }
@@ -567,7 +564,7 @@ float CGUIFontTTFBase::GetTextWidthInternal(vecText::const_iterator start, vecTe
       // and not advance distance - this makes sure that italic text isn't
       // choped on the end (as render width is larger than advance then).
       if (start == end)
-        width += max(c->right - c->left + c->offsetX, c->advance);
+        width += std::max(c->right - c->left + c->offsetX, c->advance);
       else
         width += c->advance;
     }
@@ -604,7 +601,7 @@ unsigned int CGUIFontTTFBase::GetTextureLineHeight() const
 CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(character_t chr)
 {
   wchar_t letter = (wchar_t)(chr & 0xffff);
-  character_t style = (chr & 0x3000000) >> 24;
+  character_t style = (chr & 0x7000000) >> 24;
 
   // ignore linebreaks
   if (letter == L'\r')
@@ -704,6 +701,9 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
   // and italics if applicable
   if (style & FONT_STYLE_ITALICS)
     ObliqueGlyph(m_face->glyph);
+  // and light if applicable
+  if (style & FONT_STYLE_LIGHT)
+    LightenGlyph(m_face->glyph);
   // grab the glyph
   if (FT_Get_Glyph(m_face->glyph, &glyph))
   {
@@ -728,7 +728,7 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
       m_posX += -bitGlyph->left;
 
     // check we have enough room for the character
-    if (m_posX + bitGlyph->left + bitmap.width > m_textureWidth)
+    if ((m_posX + bitGlyph->left + bitmap.width) > static_cast<int>(m_textureWidth))
     { // no space - gotta drop to the next line (which means creating a new texture and copying it across)
       m_posX = 0;
       m_posY += GetTextureLineHeight();
@@ -780,13 +780,13 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
   if (!isEmptyGlyph)
   {
     // ensure our rect will stay inside the texture (it *should* but we need to be certain)
-    unsigned int x1 = max(m_posX + ch->offsetX, 0);
-    unsigned int y1 = max(m_posY + ch->offsetY, 0);
-    unsigned int x2 = min(x1 + bitmap.width, m_textureWidth);
-    unsigned int y2 = min(y1 + bitmap.rows, m_textureHeight);
+    unsigned int x1 = std::max(m_posX + ch->offsetX, 0);
+    unsigned int y1 = std::max(m_posY + ch->offsetY, 0);
+    unsigned int x2 = std::min(x1 + bitmap.width, m_textureWidth);
+    unsigned int y2 = std::min(y1 + bitmap.rows, m_textureHeight);
     CopyCharToTexture(bitGlyph, x1, y1, x2, y2);
   
-    m_posX += spacing_between_characters_in_texture + (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance);
+    m_posX += spacing_between_characters_in_texture + (unsigned short)std::max(ch->right - ch->left + ch->offsetX, ch->advance);
   }
   m_numChars++;
 
@@ -839,10 +839,14 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
     float rx3 = (float)MathUtils::round_int(x[3]);
     x[1] = (float)MathUtils::truncate_int(x[1]);
     x[2] = (float)MathUtils::truncate_int(x[2]);
-    if (rx0 > x[0])
+    if (x[0] > 0.0f && rx0 > x[0])
       x[1] += 1;
-    if (rx3 > x[3])
+    else if (x[0] < 0.0f && rx0 < x[0])
+      x[1] -= 1;
+    if (x[3] > 0.0f && rx3 > x[3])
       x[2] += 1;
+    else if (x[3] < 0.0f && rx3 < x[3])
+      x[2] -= 1;
     x[0] = rx0;
     x[3] = rx3;
   }
@@ -867,6 +871,7 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
   SVertex* v = &vertices[vertices.size() - 4];
   m_color = color;
 
+#ifndef HAS_DX
   unsigned char r = GET_R(color)
               , g = GET_G(color)
               , b = GET_B(color)
@@ -878,11 +883,12 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
     g = (235 - 16) * g / 255;
     b = (235 - 16) * b / 255;
   }
+#endif
 
   for(int i = 0; i < 4; i++)
   {
 #ifdef HAS_DX
-    CD3DHelper::XMStoreColor(&v[i].col, a, r, g, b);
+    CD3DHelper::XMStoreColor(&v[i].col, color);
 #else
     v[i].r = r;
     v[i].g = g;
@@ -993,5 +999,39 @@ void CGUIFontTTFBase::EmboldenGlyph(FT_GlyphSlot slot)
   slot->metrics.vertBearingY += dy;
   slot->metrics.vertAdvance  += dy;
 }
+ 
+// Lighten code - original taken from freetype2 (ftsynth.c)  
+void CGUIFontTTFBase::LightenGlyph(FT_GlyphSlot slot)
+{
+  if (slot->format != FT_GLYPH_FORMAT_OUTLINE)
+    return;
+
+  /* some reasonable strength */
+  FT_Pos strength = FT_MulFix(m_face->units_per_EM,
+                              m_face->size->metrics.y_scale) / -48;
+
+  FT_BBox bbox_before, bbox_after;
+  FT_Outline_Get_CBox(&slot->outline, &bbox_before);
+  FT_Outline_Embolden(&slot->outline, strength);  // ignore error  
+  FT_Outline_Get_CBox(&slot->outline, &bbox_after);
+
+  FT_Pos dx = bbox_after.xMax - bbox_before.xMax;
+  FT_Pos dy = bbox_after.yMax - bbox_before.yMax;
+
+  if (slot->advance.x)
+    slot->advance.x += dx;
+
+  if (slot->advance.y)
+    slot->advance.y += dy;
+
+  slot->metrics.width += dx;
+  slot->metrics.height += dy;
+  slot->metrics.horiBearingY += dy;
+  slot->metrics.horiAdvance += dx;
+  slot->metrics.vertBearingX -= dx / 2;
+  slot->metrics.vertBearingY += dy;
+  slot->metrics.vertAdvance += dy;
+}
+
 
 

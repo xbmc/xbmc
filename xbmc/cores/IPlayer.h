@@ -24,9 +24,13 @@
 #include <memory>
 #include "IPlayerCallback.h"
 #include "guilib/Geometry.h"
+#include "guilib/Resolution.h"
 #include <string>
 
 #define CURRENT_STREAM -1
+#define CAPTUREFLAG_CONTINUOUS  0x01 //after a render is done, render a new one immediately
+#define CAPTUREFLAG_IMMEDIATELY 0x02 //read out immediately after render, this can cause a busy wait
+#define CAPTUREFORMAT_BGRA 0x01
 
 struct TextCacheStruct_t;
 class TiXmlElement;
@@ -125,6 +129,111 @@ struct SPlayerVideoStreamInfo
   }
 };
 
+enum EDEINTERLACEMODE
+{
+  VS_DEINTERLACEMODE_OFF=0,
+  VS_DEINTERLACEMODE_AUTO=1,
+  VS_DEINTERLACEMODE_FORCE=2
+};
+
+enum EINTERLACEMETHOD
+{
+  VS_INTERLACEMETHOD_NONE=0, // Legacy
+  VS_INTERLACEMETHOD_AUTO=1,
+  VS_INTERLACEMETHOD_RENDER_BLEND=2,
+
+  VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED=3,
+  VS_INTERLACEMETHOD_RENDER_WEAVE=4,
+
+  VS_INTERLACEMETHOD_RENDER_BOB_INVERTED=5,
+  VS_INTERLACEMETHOD_RENDER_BOB=6,
+
+  VS_INTERLACEMETHOD_DEINTERLACE=7,
+
+  VS_INTERLACEMETHOD_VDPAU_BOB=8,
+  VS_INTERLACEMETHOD_INVERSE_TELECINE=9,
+
+  VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE=11,
+  VS_INTERLACEMETHOD_VDPAU_TEMPORAL=12,
+  VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF=13,
+  VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL=14,
+  VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF=15,
+  VS_INTERLACEMETHOD_DEINTERLACE_HALF=16,
+  VS_INTERLACEMETHOD_DXVA_BOB = 17,
+  VS_INTERLACEMETHOD_DXVA_BEST = 18,
+  // VS_INTERLACEMETHOD_DXVA_ANY = 19, Legacy
+
+  VS_INTERLACEMETHOD_SW_BLEND = 20,
+  VS_INTERLACEMETHOD_AUTO_ION = 21,
+
+  VS_INTERLACEMETHOD_VAAPI_BOB = 22,
+  VS_INTERLACEMETHOD_VAAPI_MADI = 23,
+  VS_INTERLACEMETHOD_VAAPI_MACI = 24,
+
+  VS_INTERLACEMETHOD_MMAL_ADVANCED = 25,
+  VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF = 26,
+  VS_INTERLACEMETHOD_MMAL_BOB = 27,
+  VS_INTERLACEMETHOD_MMAL_BOB_HALF = 28,
+
+  VS_INTERLACEMETHOD_IMX_FASTMOTION = 29,
+  VS_INTERLACEMETHOD_IMX_FASTMOTION_DOUBLE = 30,
+
+  VS_INTERLACEMETHOD_MAX // do not use and keep as last enum value.
+};
+
+enum ESCALINGMETHOD
+{
+  VS_SCALINGMETHOD_NEAREST=0,
+  VS_SCALINGMETHOD_LINEAR,
+
+  VS_SCALINGMETHOD_CUBIC,
+  VS_SCALINGMETHOD_LANCZOS2,
+  VS_SCALINGMETHOD_LANCZOS3_FAST,
+  VS_SCALINGMETHOD_LANCZOS3,
+  VS_SCALINGMETHOD_SINC8,
+  VS_SCALINGMETHOD_NEDI,
+
+  VS_SCALINGMETHOD_BICUBIC_SOFTWARE,
+  VS_SCALINGMETHOD_LANCZOS_SOFTWARE,
+  VS_SCALINGMETHOD_SINC_SOFTWARE,
+  VS_SCALINGMETHOD_VDPAU_HARDWARE,
+  VS_SCALINGMETHOD_DXVA_HARDWARE,
+
+  VS_SCALINGMETHOD_AUTO,
+
+  VS_SCALINGMETHOD_SPLINE36_FAST,
+  VS_SCALINGMETHOD_SPLINE36,
+
+  VS_SCALINGMETHOD_MAX // do not use and keep as last enum value.
+};
+
+enum ERENDERFEATURE
+{
+  RENDERFEATURE_GAMMA,
+  RENDERFEATURE_BRIGHTNESS,
+  RENDERFEATURE_CONTRAST,
+  RENDERFEATURE_NOISE,
+  RENDERFEATURE_SHARPNESS,
+  RENDERFEATURE_NONLINSTRETCH,
+  RENDERFEATURE_ROTATION,
+  RENDERFEATURE_STRETCH,
+  RENDERFEATURE_ZOOM,
+  RENDERFEATURE_VERTICAL_SHIFT,
+  RENDERFEATURE_PIXEL_RATIO,
+  RENDERFEATURE_POSTPROCESS
+};
+
+enum ViewMode {
+  ViewModeNormal = 0,
+  ViewModeZoom,
+  ViewModeStretch4x3,
+  ViewModeWideZoom,
+  ViewModeStretch16x9,
+  ViewModeOriginal,
+  ViewModeCustom,
+  ViewModeStretch16x9Nonlin
+};
+
 class IPlayer
 {
 public:
@@ -141,6 +250,7 @@ public:
   virtual bool IsPaused() const = 0;
   virtual bool HasVideo() const = 0;
   virtual bool HasAudio() const = 0;
+  virtual bool HasRDS() const { return false; }
   virtual bool IsPassthrough() const { return false;}
   virtual bool CanSeek() {return true;}
   virtual void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) = 0;
@@ -184,6 +294,8 @@ public:
 
   virtual TextCacheStruct_t* GetTeletextCache() { return NULL; };
   virtual void LoadPage(int p, int sp, unsigned char* buffer) {};
+
+  virtual std::string GetRadioText(unsigned int line) { return ""; };
 
   virtual int  GetChapterCount()                               { return 0; }
   virtual int  GetChapter()                                    { return -1; }
@@ -279,6 +391,50 @@ public:
    \brief define the subtitle capabilities of the player
    */
   virtual void GetSubtitleCapabilities(std::vector<int> &subCaps) { subCaps.assign(1,IPC_SUBS_ALL); };
+
+  /*!
+   \breif hook into render loop of render thread
+   */
+  virtual void FrameMove() {};
+
+  virtual void FrameWait(int ms) {};
+
+  virtual bool HasFrame() { return false; };
+
+  virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true) {};
+
+  virtual void AfterRender() {};
+
+  virtual void FlushRenderer() {};
+
+  virtual void SetRenderViewMode(int mode) {};
+
+  virtual float GetRenderAspectRatio() { return 1.0; };
+
+  virtual RESOLUTION GetRenderResolution() { return RES_INVALID; };
+
+  virtual void TriggerUpdateResolution() {};
+
+  virtual bool IsRenderingVideo() { return false; };
+
+  virtual bool IsRenderingGuiLayer() { return false; };
+
+  virtual bool IsRenderingVideoLayer() { return false; };
+
+  virtual bool Supports(EDEINTERLACEMODE mode) { return false; };
+  virtual bool Supports(EINTERLACEMETHOD method) { return false; };
+  virtual bool Supports(ESCALINGMETHOD method) { return false; };
+  virtual bool Supports(ERENDERFEATURE feature) { return false; };
+
+  virtual unsigned int RenderCaptureAlloc() { return 0; };
+  virtual void RenderCaptureRelease(unsigned int captureId) {};
+  virtual void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) {};
+  virtual bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) { return false; };
+
+  virtual std::string GetRenderVSyncState() { return ""; };
+
+  std::string m_name;
+  std::string m_type;
 
 protected:
   IPlayerCallback& m_callback;

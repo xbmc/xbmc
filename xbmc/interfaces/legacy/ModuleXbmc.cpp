@@ -51,11 +51,10 @@
 #include "storage/MediaManager.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
+#include "utils/SystemInfo.h"
 #include "AddonUtils.h"
 
 #include "LanguageHook.h"
-
-#include "cores/VideoRenderers/RenderCapture.h"
 
 #include "threads/SystemClock.h"
 #include <vector>
@@ -75,20 +74,20 @@ namespace XBMCAddon
     {
       // check for a valid loglevel
       if (level < LOGDEBUG || level > LOGNONE)
-        level = LOGNOTICE;
+        level = LOGDEBUG;
       CLog::Log(level, "%s", msg);
     }
 
     void shutdown()
     {
       XBMC_TRACE;
-      CApplicationMessenger::Get().PostMsg(TMSG_SHUTDOWN);
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_SHUTDOWN);
     }
 
     void restart()
     {
       XBMC_TRACE;
-      CApplicationMessenger::Get().PostMsg(TMSG_RESTART);
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_RESTART);
     }
 
     void executescript(const char* script)
@@ -97,7 +96,7 @@ namespace XBMCAddon
       if (! script)
         return;
 
-      CApplicationMessenger::Get().PostMsg(TMSG_EXECUTE_SCRIPT, -1, -1, nullptr, script);
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_SCRIPT, -1, -1, nullptr, script);
     }
 
     void executebuiltin(const char* function, bool wait /* = false*/)
@@ -106,9 +105,9 @@ namespace XBMCAddon
       if (! function)
         return;
       if (wait)
-        CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, function);
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, function);
       else
-        CApplicationMessenger::Get().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, function);
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, function);
     }
 
     String executeJSONRPC(const char* jsonrpccommand)
@@ -170,7 +169,7 @@ namespace XBMCAddon
     String getSkinDir()
     {
       XBMC_TRACE;
-      return CSettings::Get().GetString("lookandfeel.skin");
+      return CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
     }
 
     String getLanguage(int format /* = CLangCodeExpander::ENGLISH_NAME */, bool region /*= false*/)
@@ -420,6 +419,13 @@ namespace XBMCAddon
           result = g_langInfo.GetDateFormat(false);
           StringUtils::Replace(result, "MM", "%m");
           StringUtils::Replace(result, "DD", "%d");
+#ifdef TARGET_WINDOWS
+          StringUtils::Replace(result, "M", "%#m");
+          StringUtils::Replace(result, "D", "%#d");
+#else
+          StringUtils::Replace(result, "M", "%-m");
+          StringUtils::Replace(result, "D", "%-d");
+#endif
           StringUtils::Replace(result, "YYYY", "%Y");
         }
       else if (strcmpi(id, "tempunit") == 0)
@@ -514,6 +520,11 @@ namespace XBMCAddon
       return convertedLanguage;
     }
 
+    String getUserAgent()
+    {
+      return CSysInfo::GetUserAgent();
+    }
+
     int getSERVER_WEBSERVER() { return CApplication::ES_WEBSERVER; }
     int getSERVER_AIRPLAYSERVER() { return CApplication::ES_AIRPLAYSERVER; }
     int getSERVER_UPNPSERVER() { return CApplication::ES_UPNPSERVER; }
@@ -524,10 +535,6 @@ namespace XBMCAddon
 
     int getPLAYLIST_MUSIC() { return PLAYLIST_MUSIC; }
     int getPLAYLIST_VIDEO() { return PLAYLIST_VIDEO; }
-    int getPLAYER_CORE_AUTO() { return EPC_NONE; }
-    int getPLAYER_CORE_DVDPLAYER() { return EPC_DVDPLAYER; }
-    int getPLAYER_CORE_MPLAYER() { return EPC_MPLAYER; }
-    int getPLAYER_CORE_PAPLAYER() { return EPC_PAPLAYER; }
     int getTRAY_OPEN() { return TRAY_OPEN; }
     int getDRIVE_NOT_READY() { return DRIVE_NOT_READY; }
     int getTRAY_CLOSED_NO_MEDIA() { return TRAY_CLOSED_NO_MEDIA; }
@@ -541,20 +548,11 @@ namespace XBMCAddon
     int getLOGFATAL() { return LOGFATAL; }
     int getLOGNONE() { return LOGNONE; }
 
-    // render capture user states
-    int getCAPTURE_STATE_WORKING() { return CAPTURESTATE_WORKING; }
-    int getCAPTURE_STATE_DONE(){ return CAPTURESTATE_DONE; }
-    int getCAPTURE_STATE_FAILED() { return CAPTURESTATE_FAILED; }
-
-    // render capture flags
-    int getCAPTURE_FLAG_CONTINUOUS() { return (int)CAPTUREFLAG_CONTINUOUS; }
-    int getCAPTURE_FLAG_IMMEDIATELY() { return (int)CAPTUREFLAG_IMMEDIATELY; }
-
     // language string formats
     int getISO_639_1() { return CLangCodeExpander::ISO_639_1; } 
     int getISO_639_2(){ return CLangCodeExpander::ISO_639_2; }
     int getENGLISH_NAME() { return CLangCodeExpander::ENGLISH_NAME; }
 
-    const int lLOGNOTICE = LOGNOTICE;
+    const int lLOGDEBUG = LOGDEBUG;
   }
 }

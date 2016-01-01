@@ -30,7 +30,6 @@
 #include "guilib/gui3d.h"
 
 #ifdef HAS_GL
-#include <GL/glew.h>
 
 #pragma comment (lib,"opengl32.lib")
 #pragma comment (lib,"glu32.lib")
@@ -83,7 +82,7 @@ bool CWinSystemWin32GL::InitRenderSystem()
 
   CWIN32Util::CheckGLVersion();
 
-  CSettings::Get().SetBool("videoscreen.fakefullscreen", true);
+  CSettings::GetInstance().SetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN, true);
 
   return true;
 }

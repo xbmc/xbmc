@@ -32,6 +32,7 @@
 #include <map>
 
 #include "guilib/XBTF.h"
+#include "guilib/XBTFReader.h"
 
 #include "DecoderManager.h"
 
@@ -81,7 +82,7 @@ const char *GetFormatString(unsigned int format)
   }
 }
 
-void CreateSkeletonHeaderImpl(CXBTF& xbtf, std::string fullPath, std::string relativePath)
+void CreateSkeletonHeaderImpl(CXBTFWriter& xbtfWriter, std::string fullPath, std::string relativePath)
 {
   struct dirent* dp;
   struct stat stat_p;
@@ -108,7 +109,7 @@ void CreateSkeletonHeaderImpl(CXBTF& xbtf, std::string fullPath, std::string rel
             tmpPath += "/";
           }
 
-          CreateSkeletonHeaderImpl(xbtf, fullPath + DIR_SEPARATOR + dp->d_name, tmpPath + dp->d_name);
+          CreateSkeletonHeaderImpl(xbtfWriter, fullPath + DIR_SEPARATOR + dp->d_name, tmpPath + dp->d_name);
         }
         else if (DecoderManager::IsSupportedGraphicsFile(dp->d_name))
         {
@@ -123,7 +124,7 @@ void CreateSkeletonHeaderImpl(CXBTF& xbtf, std::string fullPath, std::string rel
 
           CXBTFFile file;
           file.SetPath(fileName);
-          xbtf.GetFiles().push_back(file);
+          xbtfWriter.AddFile(file);
         }
       }
     }
@@ -136,10 +137,10 @@ void CreateSkeletonHeaderImpl(CXBTF& xbtf, std::string fullPath, std::string rel
   }
 }
 
-void CreateSkeletonHeader(CXBTF& xbtf, std::string fullPath)
+void CreateSkeletonHeader(CXBTFWriter& xbtfWriter, std::string fullPath)
 {
   std::string temp;
-  CreateSkeletonHeaderImpl(xbtf, fullPath, temp);
+  CreateSkeletonHeaderImpl(xbtfWriter, fullPath, temp);
 }
 
 CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned char *data, unsigned int size, unsigned int format, bool hasAlpha, unsigned int flags)
@@ -285,7 +286,7 @@ void Usage()
   puts("  -help            Show this screen.");
   puts("  -input <dir>     Input directory. Default: current dir");
   puts("  -output <dir>    Output directory/filename. Default: Textures.xpr");
-  puts("  -dupecheck       Enable duplicate file detection. Reduces output file size. Default: on");
+  puts("  -dupecheck       Enable duplicate file detection. Reduces output file size. Default: off");
   puts("  -use_lzo         Use lz0 packing.     Default: on");
   puts("  -use_dxt         Use DXT compression. Default: on");
   puts("  -use_none        Use No  compression. Default: off");
@@ -320,25 +321,25 @@ static bool checkDupe(struct MD5Context* ctx,
 
 int createBundle(const std::string& InputDir, const std::string& OutputFile, double maxMSE, unsigned int flags, bool dupecheck)
 {
-  map<string,unsigned int> hashes;
-  vector<unsigned int> dupes;
-  CXBTF xbtf;
-  CreateSkeletonHeader(xbtf, InputDir);
-  dupes.resize(xbtf.GetFiles().size());
-  if (!dupecheck)
-  {
-    for (unsigned int i=0;i<dupes.size();++i)
-      dupes[i] = i;
-  }
-
-  CXBTFWriter writer(xbtf, OutputFile);
+  CXBTFWriter writer(OutputFile);
   if (!writer.Create())
   {
     fprintf(stderr, "Error creating file\n");
     return 1;
   }
 
-  std::vector<CXBTFFile>& files = xbtf.GetFiles();
+  map<string,unsigned int> hashes;
+  vector<unsigned int> dupes;
+  CreateSkeletonHeader(writer, InputDir);
+
+  std::vector<CXBTFFile> files = writer.GetFiles();
+  dupes.resize(files.size());
+  if (!dupecheck)
+  {
+    for (unsigned int i=0;i<dupes.size();++i)
+      dupes[i] = i;
+  }
+
   for (size_t i = 0; i < files.size(); i++)
   {
     struct MD5Context ctx;
@@ -358,7 +359,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
 
     if (!loaded)
     {
-      fprintf(stderr, "...unable to load image %s\n", file.GetPath());
+      fprintf(stderr, "...unable to load image %s\n", file.GetPath().c_str());
       continue;
     }
 
@@ -373,7 +374,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
 
       if (checkDupe(&ctx,hashes,dupes,i))
       {
-        printf("****  duplicate of %s\n", files[dupes[i]].GetPath());
+        printf("****  duplicate of %s\n", files[dupes[i]].GetPath().c_str());
         file.GetFrames().insert(file.GetFrames().end(),
                                 files[dupes[i]].GetFrames().begin(),
                                 files[dupes[i]].GetFrames().end());
@@ -395,6 +396,8 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
     }
     DecoderManager::FreeDecodedFrames(frames);
     file.SetLoop(0);
+
+    writer.UpdateFile(file);
   }
 
   if (!writer.UpdateHeader(dupes))

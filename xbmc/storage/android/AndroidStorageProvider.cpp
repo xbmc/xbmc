@@ -24,7 +24,7 @@
 #include <map>
 
 #include "AndroidStorageProvider.h"
-#include "android/activity/XBMCApp.h"
+#include "platform/android/activity/XBMCApp.h"
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
@@ -183,10 +183,6 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
         // Blacklist
         bool bl_ok = true;
 
-        // Reject unreadable
-        if (!XFILE::CDirectory::Exists(mountStr))
-          bl_ok = false;
-
         // What mount points are rejected
         for (unsigned int i=0; i < ARRAY_SIZE(mountBL); ++i)
           if (StringUtils::StartsWithNoCase(mountStr, mountBL[i]))
@@ -214,11 +210,15 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 
           if(devok && (fsok || mountok))
           {
-            CMediaSource share;
-            share.strPath = unescape(mountStr);
-            share.strName = URIUtils::GetFileName(mountStr);
-            share.m_ignore = true;
-            removableDrives.push_back(share);
+            // Reject unreadable
+            if (XFILE::CDirectory::Exists(mountStr))
+            {
+              CMediaSource share;
+              share.strPath = unescape(mountStr);
+              share.strName = URIUtils::GetFileName(mountStr);
+              share.m_ignore = true;
+              removableDrives.push_back(share);
+            }
           }
         }
       }

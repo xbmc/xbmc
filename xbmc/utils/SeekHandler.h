@@ -19,15 +19,15 @@
  *
  */
 
+#include <map>
+#include <utility>
 #include <vector>
+
 #include "input/Key.h"
 #include "interfaces/IActionListener.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "utils/Stopwatch.h"
-
-#include <map>
-#include <vector>
 
 enum SeekType
 {
@@ -38,12 +38,12 @@ enum SeekType
 class CSeekHandler : public ISettingCallback, public IActionListener
 {
 public:
-  static CSeekHandler& Get();
+  static CSeekHandler& GetInstance();
 
   static void SettingOptionsSeekStepsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
   
-  virtual void OnSettingChanged(const CSetting *setting);
-  virtual bool OnAction(const CAction &action);
+  virtual void OnSettingChanged(const CSetting *setting) override;
+  virtual bool OnAction(const CAction &action) override;
 
   void Seek(bool forward, float amount, float duration = 0, bool analogSeek = false, SeekType type = SEEK_TYPE_VIDEO);
   void SeekSeconds(int seconds);

@@ -19,9 +19,12 @@
  */
 
 #include "GUIDialogPeripheralSettings.h"
-#include "FileItem.h"
+
+#include <utility>
+
 #include "addons/Skin.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "FileItem.h"
 #include "peripherals/Peripherals.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingSection.h"
@@ -30,7 +33,6 @@
 
 #define CONTROL_BUTTON_DEFAULTS 50
 
-using namespace std;
 using namespace PERIPHERALS;
 
 CGUIDialogPeripheralSettings::CGUIDialogPeripheralSettings()
@@ -121,7 +123,7 @@ void CGUIDialogPeripheralSettings::SetupView()
 {
   CGUIDialogSettingsManualBase::SetupView();
 
-  SetHeading(5);
+  SetHeading(m_item->GetLabel());
 }
 
 void CGUIDialogPeripheralSettings::InitializeSettings()
@@ -160,8 +162,8 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
     return;
   }
   
-  vector<CSetting*> settings = peripheral->GetSettings();
-  for (vector<CSetting*>::iterator itSetting = settings.begin(); itSetting != settings.end(); ++itSetting)
+  std::vector<CSetting*> settings = peripheral->GetSettings();
+  for (std::vector<CSetting*>::iterator itSetting = settings.begin(); itSetting != settings.end(); ++itSetting)
   {
     CSetting *setting = *itSetting;
     if (setting == NULL)
@@ -189,11 +191,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
 
       case SettingTypeInteger:
       {
-        CSettingInt *intSetting = static_cast<CSettingInt*>(setting);
-        if (intSetting == NULL)
-          break;
-        
-        CSettingInt *settingInt = new CSettingInt(setting->GetId(), *intSetting);
+        CSettingInt *settingInt = new CSettingInt(setting->GetId(), *static_cast<CSettingInt*>(setting));
         if (settingInt->GetOptions().empty())
           settingInt->SetControl(GetSliderControl("integer", false, -1, usePopup, -1, "%i"));
         else

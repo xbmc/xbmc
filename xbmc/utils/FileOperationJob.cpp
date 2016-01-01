@@ -33,7 +33,6 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
-using namespace std;
 using namespace XFILE;
 
 CFileOperationJob::CFileOperationJob()
@@ -131,18 +130,19 @@ bool CFileOperationJob::DoProcessFolder(FileAction action, const std::string& st
     return true;
   }
 
-  CLog::Log(LOGDEBUG,"FileManager, processing folder: %s",strPath.c_str());
   CFileItemList items;
   CDirectory::GetDirectory(strPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_GET_HIDDEN);
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr pItem = items[i];
     pItem->Select(true);
-    CLog::Log(LOGDEBUG,"  -- %s",pItem->GetPath().c_str());
   }
 
   if (!DoProcess(action, items, strDestFile, fileOperations, totalTime))
+  {
+    CLog::Log(LOGERROR,"FileManager: error while processing folder: %s", strPath.c_str());
     return false;
+  }
 
   if (action == ActionMove)
   {
@@ -273,49 +273,34 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
   {
     case ActionCopy:
     case ActionReplace:
-    {
-      CLog::Log(LOGDEBUG,"FileManager: copy %s -> %s\n", m_strFileA.c_str(), m_strFileB.c_str());
-
       bResult = CFile::Copy(m_strFileA, m_strFileB, this, &data);
-    }
-    break;
+      break;
 
     case ActionMove:
-    {
-      CLog::Log(LOGDEBUG,"FileManager: move %s -> %s\n", m_strFileA.c_str(), m_strFileB.c_str());
-
       if (CanBeRenamed(m_strFileA, m_strFileB))
         bResult = CFile::Rename(m_strFileA, m_strFileB);
       else if (CFile::Copy(m_strFileA, m_strFileB, this, &data))
         bResult = CFile::Delete(m_strFileA);
       else
         bResult = false;
-    }
-    break;
+      break;
 
     case ActionDelete:
-    {
-      CLog::Log(LOGDEBUG,"FileManager: delete %s\n", m_strFileA.c_str());
-
       bResult = CFile::Delete(m_strFileA);
-    }
-    break;
+      break;
 
     case ActionDeleteFolder:
-    {
-      CLog::Log(LOGDEBUG,"FileManager: delete folder %s\n", m_strFileA.c_str());
-
       bResult = CDirectory::Remove(m_strFileA);
-    }
-    break;
+      break;
 
     case ActionCreateFolder:
-    {
-      CLog::Log(LOGDEBUG,"FileManager: create folder %s\n", m_strFileA.c_str());
-
       bResult = CDirectory::Create(m_strFileA);
-    }
-    break;
+      break;
+
+    default:
+      CLog::Log(LOGERROR, "FileManager: unknown operation");
+      bResult = false;
+      break;
   }
 
   current += (double)m_time * opWeight;
@@ -333,11 +318,6 @@ inline bool CFileOperationJob::CanBeRenamed(const std::string &strFileA, const s
     return true;
 #endif
   return false;
-}
-
-void CFileOperationJob::CFileOperation::Debug()
-{
-  printf("%i | %s > %s\n", m_action, m_strFileA.c_str(), m_strFileB.c_str());
 }
 
 bool CFileOperationJob::CFileOperation::OnFileCallback(void* pContext, int ipercent, float avgSpeed)

@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -43,7 +43,7 @@
   #include "Windows.h"
 #endif
 #if defined(TARGET_ANDROID)
-  #include "android/activity/XBMCApp.h"
+  #include "platform/android/activity/XBMCApp.h"
 #endif
 
 // If the process ends in less than this time (ms), we assume it's a launcher
@@ -166,7 +166,7 @@ void CExternalPlayer::Process()
     }
   }
 
-  if (m_filenameReplacers.size() > 0)
+  if (!m_filenameReplacers.empty())
   {
     for (unsigned int i = 0; i < m_filenameReplacers.size(); i++)
     {
@@ -411,8 +411,8 @@ BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
   si.wShowWindow = m_hideconsole ? SW_HIDE : SW_SHOW;
 
   std::wstring WstrPath, WstrSwitches;
-  g_charsetConverter.utf8ToW(strPath, WstrPath);
-  g_charsetConverter.utf8ToW(strSwitches, WstrSwitches);
+  g_charsetConverter.utf8ToW(strPath, WstrPath, false);
+  g_charsetConverter.utf8ToW(strSwitches, WstrSwitches, false);
 
   if (m_bAbortRequest) return false;
 
@@ -461,13 +461,13 @@ BOOL CExternalPlayer::ExecuteAppLinux(const char* strSwitches)
 {
   CLog::Log(LOGNOTICE, "%s: %s", __FUNCTION__, strSwitches);
 
-  bool remoteUsed = CInputManager::Get().IsRemoteControlEnabled();
-  CInputManager::Get().DisableRemoteControl();
+  bool remoteUsed = CInputManager::GetInstance().IsRemoteControlEnabled();
+  CInputManager::GetInstance().DisableRemoteControl();
 
   int ret = system(strSwitches);
 
   if (remoteUsed)
-    CInputManager::Get().EnableRemoteControl();
+    CInputManager::GetInstance().EnableRemoteControl();
 
   if (ret != 0)
   {

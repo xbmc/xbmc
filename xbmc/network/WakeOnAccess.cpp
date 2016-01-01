@@ -44,8 +44,6 @@
 
 #include "WakeOnAccess.h"
 
-using namespace std;
-
 #define DEFAULT_NETWORK_INIT_SEC      (20)   // wait 20 sec for network after startup or resume
 #define DEFAULT_NETWORK_SETTLE_MS     (500)  // require 500ms of consistent network availability before trusting it
 
@@ -108,8 +106,8 @@ bool CMACDiscoveryJob::DoWork()
     return false;
   }
 
-  vector<CNetworkInterface*>& ifaces = g_application.getNetwork().GetInterfaceList();
-  for (vector<CNetworkInterface*>::const_iterator it = ifaces.begin(); it != ifaces.end(); ++it)
+  std::vector<CNetworkInterface*>& ifaces = g_application.getNetwork().GetInterfaceList();
+  for (std::vector<CNetworkInterface*>::const_iterator it = ifaces.begin(); it != ifaces.end(); ++it)
   {
     if ((*it)->GetHostMacAddress(ipAddress, m_macAddres))
       return true;
@@ -172,12 +170,6 @@ public:
       m_dialog->SetLine(0, CVariant{""});
       m_dialog->SetLine(1, CVariant{""});
       m_dialog->SetLine(2, CVariant{""});
-
-      int nest_level = NestDetect::Level();
-      if (nest_level > 1)
-      {
-        m_dialog->SetLine(2, CVariant{StringUtils::Format("Nesting:%d", nest_level)});
-      }
     }
   }
   ~ProgressDialogHelper ()
@@ -196,7 +188,7 @@ public:
 
     if (m_dialog)
     {
-      m_dialog->SetLine(1, CVariant{line1});
+      m_dialog->SetLine(0, CVariant{line1});
 
       m_dialog->SetPercentage(1); // avoid flickering by starting at 1% ..
     }
@@ -221,7 +213,7 @@ public:
         unsigned ms_passed = timeOutMs - end_time.MillisLeft();
 
         int percentage = (ms_passed * 100) / timeOutMs;
-        m_dialog->SetPercentage(max(percentage, 1)); // avoid flickering , keep minimum 1%
+        m_dialog->SetPercentage(std::max(percentage, 1)); // avoid flickering , keep minimum 1%
       }
 
       Sleep (m_dialog ? 20 : 200);
@@ -323,7 +315,7 @@ CWakeOnAccess::CWakeOnAccess()
 {
 }
 
-CWakeOnAccess &CWakeOnAccess::Get()
+CWakeOnAccess &CWakeOnAccess::GetInstance()
 {
   static CWakeOnAccess sWakeOnAccess;
   return sWakeOnAccess;
@@ -338,7 +330,7 @@ bool CWakeOnAccess::WakeUpHost(const CURL& url)
   return true;
 }
 
-bool CWakeOnAccess::WakeUpHost (const std::string& hostName, const string& customMessage)
+bool CWakeOnAccess::WakeUpHost (const std::string& hostName, const std::string& customMessage)
 {
   if (!IsEnabled())
     return true; // bail if feature is turned off
@@ -453,7 +445,7 @@ bool CWakeOnAccess::FindOrTouchHostEntry (const std::string& hostName, WakeUpEnt
     {
       CDateTime now = CDateTime::GetCurrentDateTime();
 
-      if (now > server.nextWake)
+      if (now >= server.nextWake)
       {
         result = server;
         need_wakeup = true;
@@ -486,9 +478,9 @@ void CWakeOnAccess::TouchHostEntry (const std::string& hostName)
   }
 }
 
-static void AddHost (const std::string& host, vector<string>& hosts)
+static void AddHost (const std::string& host, std::vector<std::string>& hosts)
 {
-  for (vector<string>::const_iterator it = hosts.begin(); it != hosts.end(); ++it)
+  for (std::vector<std::string>::const_iterator it = hosts.begin(); it != hosts.end(); ++it)
     if (StringUtils::EqualsNoCase(host, *it))
       return; // allready there ..
 
@@ -496,7 +488,7 @@ static void AddHost (const std::string& host, vector<string>& hosts)
     hosts.push_back(host);
 }
 
-static void AddHostFromDatabase(const DatabaseSettings& setting, vector<string>& hosts)
+static void AddHostFromDatabase(const DatabaseSettings& setting, std::vector<std::string>& hosts)
 {
   if (StringUtils::EqualsNoCase(setting.type, "mysql"))
     AddHost(setting.host, hosts);
@@ -515,7 +507,7 @@ void CWakeOnAccess::QueueMACDiscoveryForHost(const std::string& host)
 
 static void AddHostsFromMediaSource(const CMediaSource& source, std::vector<std::string>& hosts)
 {
-  for (vector<string>::const_iterator it = source.vecPaths.begin() ; it != source.vecPaths.end(); ++it)
+  for (std::vector<std::string>::const_iterator it = source.vecPaths.begin() ; it != source.vecPaths.end(); ++it)
   {
     CURL url(*it);
 
@@ -523,13 +515,13 @@ static void AddHostsFromMediaSource(const CMediaSource& source, std::vector<std:
   }
 }
 
-static void AddHostsFromVecSource(const VECSOURCES& sources, vector<string>& hosts)
+static void AddHostsFromVecSource(const VECSOURCES& sources, std::vector<std::string>& hosts)
 {
   for (VECSOURCES::const_iterator it = sources.begin(); it != sources.end(); ++it)
     AddHostsFromMediaSource(*it, hosts);
 }
 
-static void AddHostsFromVecSource(const VECSOURCES* sources, vector<string>& hosts)
+static void AddHostsFromVecSource(const VECSOURCES* sources, std::vector<std::string>& hosts)
 {
   if (sources)
     AddHostsFromVecSource(*sources, hosts);
@@ -537,10 +529,10 @@ static void AddHostsFromVecSource(const VECSOURCES* sources, vector<string>& hos
 
 void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
 {
-  vector<string> hosts;
+  std::vector<std::string> hosts;
 
   // add media sources
-  CMediaSourceSettings& ms = CMediaSourceSettings::Get();
+  CMediaSourceSettings& ms = CMediaSourceSettings::GetInstance();
 
   AddHostsFromVecSource(ms.GetSources("video"), hosts);
   AddHostsFromVecSource(ms.GetSources("music"), hosts);
@@ -562,7 +554,7 @@ void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
     AddHost (url.GetHostName(), hosts);
   }
 
-  for (vector<string>::const_iterator it = hosts.begin(); it != hosts.end(); ++it)
+  for (std::vector<std::string>::const_iterator it = hosts.begin(); it != hosts.end(); ++it)
     QueueMACDiscoveryForHost(*it);
 }
 
@@ -635,6 +627,23 @@ void CWakeOnAccess::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   }
 }
 
+void CWakeOnAccess::OnSettingChanged(const CSetting *setting)
+{
+  if (setting == nullptr)
+    return;
+
+  const std::string& settingId = setting->GetId();
+  if (settingId == CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS)
+  {
+    bool enabled = static_cast<const CSettingBool*>(setting)->GetValue();
+
+    SetEnabled(enabled);
+
+    if (enabled)
+      QueueMACDiscoveryForAllRemotes();
+  }
+}
+
 std::string CWakeOnAccess::GetSettingFile()
 {
   return CSpecialProtocol::TranslatePath("special://profile/wakeonlan.xml");
@@ -647,19 +656,6 @@ void CWakeOnAccess::OnSettingsLoaded()
   LoadFromXML();
 }
 
-void CWakeOnAccess::OnSettingsSaved()
-{
-  bool enabled = CSettings::Get().GetBool("powermanagement.wakeonaccess");
-
-  if (enabled != IsEnabled())
-  {
-    SetEnabled(enabled);
-
-    if (enabled)
-      QueueMACDiscoveryForAllRemotes();
-  }
-}
-
 void CWakeOnAccess::SetEnabled(bool enabled) 
 {
   m_enabled = enabled;
@@ -669,7 +665,7 @@ void CWakeOnAccess::SetEnabled(bool enabled)
 
 void CWakeOnAccess::LoadFromXML()
 {
-  bool enabled = CSettings::Get().GetBool("powermanagement.wakeonaccess");
+  bool enabled = CSettings::GetInstance().GetBool(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(GetSettingFile()))

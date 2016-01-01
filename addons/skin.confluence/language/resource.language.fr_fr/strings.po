@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Change your"
-msgstr "Changer vos"
+msgstr "Modification des"
 
 msgctxt "#31003"
 msgid "Power options"
@@ -34,7 +34,7 @@ msgstr "Masquer les informations"
 
 msgctxt "#31006"
 msgid "View options"
-msgstr "Options d'affichage"
+msgstr "Options des vues"
 
 msgctxt "#31008"
 msgid "Full screen"
@@ -78,7 +78,7 @@ msgstr "Fanart"
 
 msgctxt "#31031"
 msgid "Pic thumbs"
-msgstr "Miniatures"
+msgstr "Galerie de miniatures"
 
 msgctxt "#31032"
 msgid "Image wrap"
@@ -86,7 +86,7 @@ msgstr "Galerie d'images"
 
 msgctxt "#31033"
 msgid "Info"
-msgstr "Info"
+msgstr "Infos"
 
 msgctxt "#31039"
 msgid "Actions"
@@ -102,7 +102,7 @@ msgstr "LECTURE"
 
 msgctxt "#31043"
 msgid "PAUSED"
-msgstr "PAUSE"
+msgstr "EN PAUSE"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -114,11 +114,11 @@ msgstr "RETOUR RAPIDE"
 
 msgctxt "#31046"
 msgid "SEEKING"
-msgstr "RECHERCHE"
+msgstr "DÉPLACEMENT"
 
 msgctxt "#31048"
 msgid "Visualisation presets"
-msgstr "Préréglages de visualisation"
+msgstr "Présélections de visualisation"
 
 msgctxt "#31049"
 msgid "End time"
@@ -126,11 +126,11 @@ msgstr "Heure de fin"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Tri : Ascendant"
+msgstr "Ordre : Croissant"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Tri : Descendant"
+msgstr "Ordre : Décroissant"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -154,7 +154,7 @@ msgstr "Liste de lecture actuelle"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
-msgstr "Ce fichier est empilé, sélectionnez le point à partir duquel vous souhaitez le lire."
+msgstr "Ce fichier est empilé, sélectionner le point à partir duquel le lire."
 
 msgctxt "#31061"
 msgid "Current selected"
@@ -162,7 +162,7 @@ msgstr "Sélection actuelle"
 
 msgctxt "#31101"
 msgid "Home screen options"
-msgstr "Options de l'écran d'accueil"
+msgstr "Options de la page d'accueil"
 
 msgctxt "#31102"
 msgid "Background"
@@ -170,11 +170,11 @@ msgstr "Arrière-plan"
 
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slideshow"
-msgstr "Afficher \"Pause\" dans le diaporama d'images"
+msgstr "Afficher « Pause » dans le diaporama d'images"
 
 msgctxt "#31104"
 msgid "Play trailers in a window [COLOR=grey3](Video information dialogue only)[/COLOR]"
-msgstr "Lire les bandes-annonces dans une fenêtre [COLOR=grey3](Juste l'information de la vidéo)[/COLOR]"
+msgstr "Lire les bandes-annonces dans une fenêtre [COLOR=grey3](juste l'information de la vidéo)[/COLOR]"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
@@ -214,11 +214,15 @@ msgstr "Afficher les vidéos ajoutées récemment"
 
 msgctxt "#31118"
 msgid "Home page programs submenu"
-msgstr "Sous-menu \"Programmes\" de la page d'accueil"
+msgstr "Sous-menu Programmes de la page d'accueil"
 
 msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Masquer le fanart d'arrière-plan"
+
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Masquer le guide des programmes en présence de RDS sur le canal"
 
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
@@ -227,14 +231,6 @@ msgstr "Afficher la vidéo en cours de lecture en arrière-plan"
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Afficher la visualisation en cours de lecture en arrière-plan"
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Jouer les génériques TV dans la vidéothèque (extension TvTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -246,31 +242,31 @@ msgstr "Masquer le fanart en visualisation plein écran"
 
 msgctxt "#31132"
 msgid "Lyrics add-on"
-msgstr "Extensions de paroles"
+msgstr "Extension de paroles"
 
 msgctxt "#31134"
 msgid "Home page \"Videos\" submenu"
-msgstr "Sous-menu \"Vidéos\" de la page d'accueil"
+msgstr "Sous-menu Vidéos de la page d'accueil"
 
 msgctxt "#31135"
 msgid "Home page \"Music\" submenu"
-msgstr "Sous-menu \"Musique\" de la page d'accueil"
+msgstr "Sous-menu Musique de la page d'accueil"
 
 msgctxt "#31136"
 msgid "Home page \"Pictures\" submenu"
-msgstr "Sous-menu \"Images\" de la page d'accueil"
+msgstr "Sous-menu Images de la page d'accueil"
 
 msgctxt "#31140"
 msgid "Music OSD"
-msgstr "Menu à l'écran Musique"
+msgstr "Incrustation à l'écran Musique"
 
 msgctxt "#31141"
 msgid "Video OSD"
-msgstr "Menu à l'écran Vidéo"
+msgstr "Incrustation à l'écran Vidéos"
 
 msgctxt "#31142"
 msgid "Settings level"
-msgstr "Niveau de paramètres"
+msgstr "Niveau de paramétrage"
 
 msgctxt "#31200"
 msgid "Shortcuts"
@@ -278,7 +274,7 @@ msgstr "Raccourcis"
 
 msgctxt "#31203"
 msgid "Choose your song"
-msgstr "Choisir votre morceau"
+msgstr "Choisir une chanson"
 
 msgctxt "#31205"
 msgid "Lyrics source"
@@ -322,23 +318,23 @@ msgstr "Mémoire utilisée :"
 
 msgctxt "#31310"
 msgid "Track number"
-msgstr "Numéro de la piste"
+msgstr "Numéro de la piste "
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
-msgstr "Image Fanart[CR][CR]Indisponible[CR][CR] Cliquer sur le bouton pour définir"
+msgstr "Image fanart[CR][CR]Indisponible[CR][CR]Cliquer sur le bouton pour définir"
 
 msgctxt "#31312"
 msgid "Current scraper"
-msgstr "Scraper actuel"
+msgstr "Collecteur actuel"
 
 msgctxt "#31313"
 msgid "Choose a scraper"
-msgstr "Choisir un scraper"
+msgstr "Choisir un collecteur"
 
 msgctxt "#31314"
 msgid "Content scanning options"
-msgstr "Options de balayage des contenus"
+msgstr "Options d'analyse de contenu"
 
 msgctxt "#31317"
 msgid "Set fanart path"
@@ -352,17 +348,13 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Dernière connexion"
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Sélecteur de chanson Karaoké"
-
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Diffusé"
 
 msgctxt "#31325"
 msgid "Playlist options"
-msgstr "Options des listes de lecture"
+msgstr "Options de la liste de lecture"
 
 msgctxt "#31326"
 msgid "Created"
@@ -378,7 +370,7 @@ msgstr "Ajouté récemment"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
-msgstr "[B]Minuterie programmée ![/B] [COLOR=grey2] - Arrêt automatique du système dans[/COLOR]"
+msgstr "[B]Minuterie programmée ![/B][COLOR=grey2] - Arrêt automatique du système dans[/COLOR]"
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]movie trailer"
@@ -406,7 +398,7 @@ msgstr "Retour rapide"
 
 msgctxt "#31355"
 msgid "Movie menu"
-msgstr "Menu Film"
+msgstr "Menu film"
 
 msgctxt "#31356"
 msgid "Download subtitles"
@@ -426,59 +418,59 @@ msgstr "Activé"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Prédéfini par l'habillage"
+msgstr "Par défaut du thème"
 
 msgctxt "#31391"
 msgid "Skin default with no caps"
-msgstr "Prédéfini par l'habillage sans majuscules"
+msgstr "Par défaut du thème, sans majuscules"
 
 msgctxt "#31392"
 msgid "Arial based"
-msgstr "Basé sur Arial"
+msgstr "Basée sur Arial"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]CONFIGURATION DES PARAMÈTRES D'APPARENCE[/B][CR][CR]Changer l'habillage · Définir la langue et la région · Changer les options de liste de fichiers[CR]Configurer un économiseur d'écran"
+msgstr "[B]CONFIGURATION DES PARAMÈTRES D'APPARENCE[/B][CR][CR]Changement du thème · Définition de la langue et de la région · Modification des options de listage de fichiers · Configuration d'un économiseur d'écran"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]CONFIGURATION DES PARAMÈTRES VIDÉO[/B][CR][CR]Gérer votre médiathèque vidéo · Définir les options de lecture · Changer les options des listes de vidéos[CR]Définir la police des sous-titres"
+msgstr "[B]CONFIGURATION DES PARAMÈTRES DES VIDÉOS[/B][CR][CR]Gestion de la vidéothèque · Définition des options de lecture de vidéos · Modification des options de listage de vidéos · Définition des polices de sous-titres"
 
 msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]CONFIGURATION DES PARAMÈTRES MUSIQUE[/B][CR][CR]Gérer votre médiathèque musicale · Définir les options de lecture · Changer les options des listes de musique[CR]Paramétrer les soumissions de chansons · Définir les options karaoké"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]CONFIGURATION DES PARAMÈTRES DE MUSIQUE[/B][CR][CR]Gestion de l'audiothèque · Définition des options de lecture · Modification des options de listes de musique[CR]Configuration de la soumission de chanson"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
-msgstr "[B]CONFIGURATION DES PARAMÈTRES D'IMAGE[/B][CR][CR]Définir les options des listes d'images · Configurer le diaporama"
+msgstr "[B]CONFIGURATION DES PARAMÈTRES DES IMAGES[/B][CR][CR]Définition des options de listage d'images · Configuration du diaporama"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set various cities to collect weather information"
-msgstr "[B]CONFIGURATION DES PARAMÈTRES MÉTÉO[/B][CR][CR]Définir les différentes villes pour recueillir des informations météo"
+msgstr "[B]CONFIGURATION DES PARAMÈTRES DE LA MÉTÉO[/B][CR][CR]Définition des différentes villes pour collecter les informations météo"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B]CONFIGURATION DES PARAMÈTRES SYSTÈME[/B][CR][CR]Configurer et calibrer l'affichage · Configurer les sorties audio · Configurer les périphériques[CR]Définir les options de gestion d'énergie · Activer le débogage · Configurer le verrouillage administrateur"
+msgstr "[B]CONFIGURATION DES PARAMÈTRES DU SYSTÈME[/B][CR][CR]Configuration et calibration des écrans · Configuration de la sortie audio · Configuration des télécommandes · Définition des options de gestion d'énergie · Activation du débogage · Configuration du verrou maître"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from kodi.tv[CR]Modify add-on settings"
-msgstr "[B]CONFIGURATION DES EXTENSIONS[/B][CR][CR]Gérer vos extensions installées · Parcourir et installer des extensions depuis kodi.tv[CR]Modifier les paramètres des extensions"
+msgstr "[B]CONFIGURATION DES EXTENSIONS[/B][CR][CR]Gestion des extensions installées · Parcours et installation des extensions depuis kodi.tv · Modification des paramètres des extensions"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]CONFIGURATION DES RÉGLAGES TV[/B][CR][CR]Changer les informations de plein écran · Gérer les données du guide des programmes"
+msgstr "[B]CONFIGURATION DES RÉGLAGES TV[/B][CR][CR]Modification des informations de plein écran · Gestion des données du guide des programmes"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]CONFIGURATION DES PARAMÈTRES DE SERVICE[/B][CR][CR]Configurer le contrôle de Kodi via UPnP et HTTP · Configurer le partage de fichiers[CR]Activer Zeroconf · Configurer AirPlay"
+msgstr "[B]CONFIGURATION DES PARAMÈTRES DES SERVICES[/B][CR][CR]Configuration du contrôle de Kodi via UPnP et HTTP · Configuration du partage de fichiers · Activation Zeroconf · Configuration AirPlay"
 
 msgctxt "#31411"
 msgid "First run help..."
-msgstr "Lancer l'aide d'abord..."
+msgstr "Aide au démarrage"
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section. To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"OK\" to close this dialogue. It will not appear again."
-msgstr "Cet onglet signifie qu'il y a un menu sur le côté de la fenêtre qui contient des options supplémentaires pour cette section. Pour accéder au menu, naviguez vers la gauche avec votre télécommande ou votre clavier ou placez le pointeur de votre souris sur l'onglet.[CR][CR]Cliquez sur \"OK\" pour fermer cette fenêtre. Elle n’apparaîtra plus."
+msgstr "Cet onglet signifie qu'il y a un menu sur le côté de la fenêtre qui contient des options supplémentaires pour cette section. Pour accéder au menu, naviguer vers la gauche avec la télécommande ou le clavier, ou placer le pointeur de la souris sur l'onglet.[CR][CR]Cliquer sur « Ok » pour fermer cette fenêtre. Elle n’apparaîtra plus."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -490,15 +482,15 @@ msgstr "Connexion"
 
 msgctxt "#31421"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Choisissez votre profil utilisateur Kodi[CR]pour vous identifier et poursuivre"
+msgstr "Choisir le profil utilisateur Kodi[CR]pour s'identifier et poursuivre"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
-msgstr "Afficher ou masquer l'écran de connexion au démarrage."
+msgstr "Affiche ou masque l'écran de connexion au démarrage."
 
 msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."
-msgstr "Sélectionner le profil utilisé au démarrage lorsque l'écran de connexion est désactivé."
+msgstr "Sélection du profil utilisé au démarrage lorsque l'écran de connexion est désactivé."
 
 msgctxt "#31501"
 msgid "Scheduled time"
@@ -510,15 +502,15 @@ msgstr "TV"
 
 msgctxt "#31503"
 msgid "Add group"
-msgstr "Ajouter un groupe"
+msgstr "Ajouter un groupe…"
 
 msgctxt "#31504"
 msgid "Rename group"
-msgstr "Renommer un groupe"
+msgstr "Renommer…"
 
 msgctxt "#31505"
 msgid "Delete group"
-msgstr "Supprimer un groupe"
+msgstr "Supprimer…"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
@@ -526,11 +518,11 @@ msgstr "Groupes[CR]disponibles"
 
 msgctxt "#31509"
 msgid "Channel group"
-msgstr "Groupe de chaînes"
+msgstr "Groupe de chaînes "
 
 msgctxt "#31510"
 msgid "Timer set"
-msgstr "Minuterie définie"
+msgstr "Programmation définie"
 
 msgctxt "#31511"
 msgid "Channel options"
@@ -602,7 +594,7 @@ msgstr "PROGRAMMES"
 
 msgctxt "#31958"
 msgid "PLAY DISC"
-msgstr "DISQUE"
+msgstr "LIRE DISQUE"
 
 msgctxt "#31959"
 msgid "SYSTEM"

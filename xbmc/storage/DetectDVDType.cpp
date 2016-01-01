@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team XBMC
+ *      http://kodi.tv/
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -150,12 +150,12 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 
       case DRIVE_NOT_READY:
         {
-          // drive is not ready (closing, opening)
+          // Drive is not ready (closing, opening)
           m_isoReader.Reset();
           SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(503));
           m_DriveState = DRIVE_NOT_READY;
           // DVD-ROM in undefined state
-          // better delete old CD Information
+          // Better delete old CD Information
           if ( m_pCdInfo != NULL )
           {
             delete m_pCdInfo;
@@ -172,7 +172,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 
       case DRIVE_CLOSED_NO_MEDIA:
         {
-          // nothing in there...
+          // Nothing in there...
           m_isoReader.Reset();
           SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(504));
           m_DriveState = DRIVE_CLOSED_NO_MEDIA;
@@ -251,7 +251,7 @@ void CDetectDVDMedia::DetectMediaType()
   }
   else
   {
-    if (m_pCdInfo->IsUDF(1) || m_pCdInfo->IsUDFX(1))
+    if (m_pCdInfo->IsUDF(1))
       strNewUrl = "D:\\";
     else if (m_pCdInfo->IsAudio(1))
     {
@@ -308,7 +308,7 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const std::string& strNewUrl, bool bCDD
 
   if (strDiscLabel != "") strDescription = strDiscLabel;
 
-  // store it in case others want it
+  // Store it in case others want it
   m_diskLabel = strDescription;
   m_diskPath = strNewUrl;
 }
@@ -480,8 +480,7 @@ bool CDetectDVDMedia::IsDiscInDrive()
 
 // Static function
 // Returns a CCdInfo class, which contains
-// Media information of the current
-// inserted CD.
+// Media information of the current inserted CD.
 // Can be NULL
 CCdInfo* CDetectDVDMedia::GetCdInfo()
 {

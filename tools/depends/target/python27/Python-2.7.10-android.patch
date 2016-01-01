@@ -1,0 +1,59 @@
+--- Modules/pwdmodule.c.orig	2015-10-09 10:16:03.679939815 +0200
++++ Modules/pwdmodule.c	2015-10-09 10:18:48.567945964 +0200
+@@ -68,14 +68,14 @@
+ #define SETS(i,val) sets(v, i, val)
+ 
+     SETS(setIndex++, p->pw_name);
+-#ifdef __VMS
++#if defined __VMS || defined(ANDROID)
+     SETS(setIndex++, "");
+ #else
+     SETS(setIndex++, p->pw_passwd);
+ #endif
+     PyStructSequence_SET_ITEM(v, setIndex++, _PyInt_FromUid(p->pw_uid));
+     PyStructSequence_SET_ITEM(v, setIndex++, _PyInt_FromGid(p->pw_gid));
+-#ifdef __VMS
++#if defined __VMS || defined(ANDROID)
+     SETS(setIndex++, "");
+ #else
+     SETS(setIndex++, p->pw_gecos);
+--- Modules/termios.c.orig	2015-10-09 10:56:52.448031136 +0200
++++ Modules/termios.c	2015-10-09 10:59:43.668037521 +0200
+@@ -227,6 +227,7 @@
+     return Py_None;
+ }
+ 
++#if !defined(ANDROID)
+ PyDoc_STRVAR(termios_tcdrain__doc__,
+ "tcdrain(fd) -> None\n\
+ \n\
+@@ -246,6 +247,7 @@
+     Py_INCREF(Py_None);
+     return Py_None;
+ }
++#endif
+ 
+ PyDoc_STRVAR(termios_tcflush__doc__,
+ "tcflush(fd, queue) -> None\n\
+@@ -301,8 +303,10 @@
+      METH_VARARGS, termios_tcsetattr__doc__},
+     {"tcsendbreak", termios_tcsendbreak,
+      METH_VARARGS, termios_tcsendbreak__doc__},
++#if !defined(ANDROID)
+     {"tcdrain", termios_tcdrain,
+      METH_VARARGS, termios_tcdrain__doc__},
++#endif
+     {"tcflush", termios_tcflush,
+      METH_VARARGS, termios_tcflush__doc__},
+     {"tcflow", termios_tcflow,
+--- Modules/posixmodule.c.orig	2015-10-09 13:19:47.524350922 +0200
++++ Modules/posixmodule.c	2015-10-09 13:20:55.436353454 +0200
+@@ -3981,7 +3981,7 @@
+     slave_fd = open(slave_name, O_RDWR | O_NOCTTY); /* open slave */
+     if (slave_fd < 0)
+         return posix_error();
+-#if !defined(__CYGWIN__) && !defined(HAVE_DEV_PTC)
++#if !defined(__CYGWIN__) && !defined(HAVE_DEV_PTC) && !defined(ANDROID)
+     ioctl(slave_fd, I_PUSH, "ptem"); /* push ptem */
+     ioctl(slave_fd, I_PUSH, "ldterm"); /* push ldterm */
+ #ifndef __hpux

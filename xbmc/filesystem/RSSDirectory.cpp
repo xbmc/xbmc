@@ -19,23 +19,25 @@
  */
 
 #include "RSSDirectory.h"
-#include "FileItem.h"
+
+#include <climits>
+#include <utility>
+
 #include "CurlFile.h"
+#include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "threads/SingleLock.h"
+#include "URL.h"
+#include "utils/HTMLUtil.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
-#include "utils/HTMLUtil.h"
-#include "utils/StringUtils.h"
 #include "video/VideoInfoTag.h"
-#include "utils/log.h"
-#include "URL.h"
-#include "climits"
-#include "threads/SingleLock.h"
 
 using namespace XFILE;
-using namespace std;
 using namespace MUSIC_INFO;
 
 namespace {
@@ -466,7 +468,7 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const std::string& pa
   else if(FindMime(resources, "image/"))
     mime = "image/";
 
-  int maxrate = CSettings::Get().GetInt("network.bandwidth");
+  int maxrate = CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_BANDWIDTH);
   if(maxrate == 0)
     maxrate = INT_MAX;
 

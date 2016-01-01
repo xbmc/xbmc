@@ -47,7 +47,7 @@ public:
   ~CSettingGroup();
 
   // implementation of ISetting
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false);
+  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
   /*!
    \brief Gets the full list of settings belonging to the setting group.
@@ -98,7 +98,7 @@ public:
   ~CSettingCategory();
 
   // implementation of ISetting
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false);
+  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
   /*!
    \brief Gets the full list of setting groups belonging to the setting
@@ -153,7 +153,7 @@ public:
   ~CSettingSection();
 
   // implementation of ISetting
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false);
+  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
   /*!
    \brief Gets the full list of setting categories belonging to the setting

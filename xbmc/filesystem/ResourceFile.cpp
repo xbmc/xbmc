@@ -54,7 +54,7 @@ bool CResourceFile::TranslatePath(const CURL &url, std::string &translatedPath)
     return false;
 
   AddonPtr addon;
-  if (!CAddonMgr::Get().GetAddon(addonId, addon, ADDON_UNKNOWN, true) || addon == NULL)
+  if (!CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON_UNKNOWN, true) || addon == NULL)
     return false;
 
   std::shared_ptr<CResource> resource = std::dynamic_pointer_cast<ADDON::CResource>(addon);
@@ -65,7 +65,7 @@ bool CResourceFile::TranslatePath(const CURL &url, std::string &translatedPath)
   if (!resource->IsAllowed(filePath))
     return false;
 
-  translatedPath = CUtil::ValidatePath(URIUtils::AddFileToFolder(addon->Path(), "resources/" + filePath));
+  translatedPath = CUtil::ValidatePath(resource->GetFullPath(filePath));
   return true;
 }
 

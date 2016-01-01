@@ -67,7 +67,8 @@ Helper.setup(this,classes,
       'std::string' : new File('typemaps/python.string.outtm'),
       'p.q(const).char' : '${result} = PyString_FromString(${api});',
       (Pattern.compile('''(p.){0,1}XbmcCommons::Buffer''')) : new File('typemaps/python.buffer.outtm'),
-      (Pattern.compile('''boost::shared_ptr<\\(.*\\)>''')) : new File('typemaps/python.boost_shared_ptr.outtm'),
+      (Pattern.compile('''std::shared_ptr<\\(.*\\)>''')) : new File('typemaps/python.smart_ptr.outtm'),
+      (Pattern.compile('''std::unique_ptr<\\(.*\\)>''')) : new File('typemaps/python.smart_ptr.outtm'),
       (Pattern.compile('''(p.){0,1}std::vector<\\(.*\\)>''')) : new File('typemaps/python.vector.outtm'),
       (Pattern.compile('''(p.){0,1}Tuple<\\(.*\\)>''')) : new File('typemaps/python.Tuple.outtm'),
       (Pattern.compile('''(p.){0,1}Alternative<\\(.*\\)>''')) : new File('typemaps/python.Alternative.outtm')
@@ -939,7 +940,7 @@ namespace PythonBindings
    // constants
    PyModule_AddStringConstant(module, (char*)"__author__", (char*)"Team Kodi <http://kodi.tv>");
    PyModule_AddStringConstant(module, (char*)"__date__", (char*)"${new Date().toString()}");
-   PyModule_AddStringConstant(module, (char*)"__version__", (char*)"2.21.0");
+   PyModule_AddStringConstant(module, (char*)"__version__", (char*)"2.25.0");
    PyModule_AddStringConstant(module, (char*)"__credits__", (char*)"Team Kodi");
    PyModule_AddStringConstant(module, (char*)"__platform__", (char*)"ALL");
 

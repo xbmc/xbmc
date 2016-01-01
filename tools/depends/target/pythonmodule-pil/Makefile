@@ -1,23 +1,32 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile Imaging-1.1.7-access.patch \
-      Imaging-1.1.7-crosscompiling-0.1.patch Imaging-1.1.7-setuptools-0.1.patch
+DEPS= ../../Makefile.include Makefile pillow-crosscompile.patch
 
 VERSION.TXT := $(XBMCROOT)/version.txt
 APP_NAME=$(shell awk '/APP_NAME/ {print tolower($$2)}' $(VERSION.TXT))
 
 # lib name, version
-LIBNAME=Imaging
-VERSION=1.1.7
+LIBNAME=pillow
+VERSION=3.0.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
+CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" LDSHARED="$(CC) -shared" LDFLAGS="$(LDFLAGS)" PYTHONPATH="$(PREFIX)/lib/python2.7/site-packages/"
 ifeq ($(OS),android)
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" LDSHARED="$(CC) -shared" LDFLAGS="$(LDFLAGS) -L$(PREFIX)/lib/dummy-lib$(APP_NAME)/ -l$(APP_NAME) -lm"
-else
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" LDFLAGS="$(LDFLAGS)"
+PILPATH=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
+CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" LDSHARED="$(CC) -shared" LDFLAGS="$(LDFLAGS) -L$(PREFIX)/lib/dummy-lib$(APP_NAME)/ -l$(APP_NAME) -lm" PYTHONPATH="$(PILPATH):$(PREFIX)/lib/python2.7/site-packages/"
+endif
+ifeq ($(OS),osx)
+CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" CCSHARED="$(CC) $(CFLAGS) $(PYTHON_O)" LDFLAGS="$(LDFLAGS)" PYTHONPATH="$(PREFIX)/lib/python2.7/site-packages/"
+endif
+ifeq ($(OS),ios)
+PYTHON_O=$(abs_top_srcdir)/target/python27/$(PLATFORM)/Modules/python.o
+CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" CCSHARED="$(CC) $(CFLAGS) $(PYTHON_O)" LDFLAGS="$(LDFLAGS)" PYTHONPATH="$(PREFIX)/lib/python2.7/site-packages/"
 endif
 
-LIBDYLIB=$(PLATFORM)/dist/PIL-$(VERSION)-py2.6-$(OS)-$(CPU).egg
+LIBDYLIB=$(PLATFORM)/dist/PIL-$(VERSION)-py2.7-$(OS)-$(CPU).egg
+ifeq ($(OS),android)
+LIBDYLIB=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil/lib/PIL/_imaging.so
+endif
 
 all: .installed-$(PLATFORM)
 
@@ -27,26 +36,20 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 < ../Imaging-1.1.7-crosscompiling-0.1.patch
-	cd $(PLATFORM); patch -p1 < ../Imaging-1.1.7-setuptools-0.1.patch
-	cd $(PLATFORM); patch -p1 < ../Imaging-1.1.7-access.patch
-	cd $(PLATFORM); patch -p0 < ../Imaging-1.1.7-zip-include.patch
-	cd $(PLATFORM); patch -p0 < ../Imaging-1.1.7-remove-zlib-check.patch
-	cd $(PLATFORM); patch -p1 < ../Imaging-1.1.7-bz2-link.patch
-	cd $(PLATFORM); sed -ie "s|"darwin"|"darwinNot"|g" "setup.py"
+	cd $(PLATFORM); patch -p0 < ../pillow-crosscompile.patch
 
 $(LIBDYLIB): $(PLATFORM)
 	mkdir -p $(PLATFORM)/output
-	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python setup.py build -x bdist_egg --plat-name $(OS)-$(CPU)
+	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python setup.py build_ext --plat-name $(OS)-$(CPU)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 ifeq ($(OS),android)
-	mkdir -p $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil/lib/PIL/
-	unzip -oq $(LIBDYLIB) -d $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil/lib/PIL/
+	mkdir -p $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil/lib
+	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python setup.py install --install-lib  $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
+	cd $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil/lib && unzip ../Pillow-*.egg
+	cd $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil && rm -rf Pillow-*.egg
 else
-	mkdir -p $(PREFIX)/lib/python2.6/site-packages/PIL
-	unzip -oq $(LIBDYLIB) -d $(PREFIX)/lib/python2.6/site-packages/PIL/
-	echo 'PIL' > $(PREFIX)/lib/python2.6/site-packages/PIL.pth
+	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python setup.py install --prefix=$(PREFIX)
 endif
 	touch $@
 

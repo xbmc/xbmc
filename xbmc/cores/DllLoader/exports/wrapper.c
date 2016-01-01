@@ -197,7 +197,7 @@ int __wrap_ferror(FILE *stream)
 
 void __wrap_clearerr(FILE *stream)
 {
-  return dll_clearerr(stream);
+  dll_clearerr(stream);
 }
 
 int __wrap_feof(FILE *stream)

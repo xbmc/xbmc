@@ -24,7 +24,6 @@
 #include "guilib/GUIControl.h"
 #include "guilib/GUIListItemLayout.h"
 #include "guilib/IGUIContainer.h"
-#include "threads/SystemClock.h"
 
 namespace EPG
 {
@@ -68,6 +67,7 @@ namespace EPG
     virtual int GetSelectedItem() const;
     const int GetSelectedChannel() const;
     void SetSelectedChannel(int channelIndex);
+    CFileItemPtr GetSelectedChannelItem() const;
     PVR::CPVRChannelPtr GetChannel(int iIndex);
     void SetSelectedBlock(int blockIndex);
     virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
@@ -94,6 +94,7 @@ namespace EPG
     void SetStartEnd(CDateTime start, CDateTime end);
     void SetChannel(const PVR::CPVRChannelPtr &channel);
     void SetChannel(const std::string &channel);
+    void ResetCoordinates();
 
   protected:
     bool OnClick(int actionID);
@@ -229,7 +230,5 @@ namespace EPG
     float m_channelScrollOffset;
 
     CCriticalSection m_critSection;
-
-    XbmcThreads::EndTime m_nextUpdateTimeout;
   };
 }

@@ -20,18 +20,19 @@
 
 #pragma once
 
-#include "cores/playercorefactory/PlayerCoreFactory.h"
-
 #include "ListItem.h"
 #include "PlayList.h"
 #include "InfoTagVideo.h"
 #include "Exception.h"
 #include "AddonString.h"
 #include "InfoTagMusic.h"
+#include "InfoTagRadioRDS.h"
 #include "AddonCallback.h"
 #include "Alternative.h"
 
 #include "swighelper.h"
+
+#include "cores/IPlayerCallback.h"
 
 namespace XBMCAddon
 {
@@ -55,7 +56,6 @@ namespace XBMCAddon
     {
     private:
       int iPlayList;
-      EPLAYERCORES playerCore;
 
       void playStream(const String& item = emptyString, const XBMCAddon::xbmcgui::ListItem* listitem = NULL, bool windowed = false);
       void playPlaylist(const PlayList* playlist = NULL,
@@ -70,7 +70,7 @@ namespace XBMCAddon
       // Construct a Player proxying the given generated binding. The 
       //  construction of a Player needs to identify whether or not any 
       //  callbacks will be executed asynchronously or not.
-      Player(int playerCore = EPC_NONE);
+      Player(int playerCore = 0);
       virtual ~Player(void);
 
       /**
@@ -124,7 +124,7 @@ namespace XBMCAddon
       /**
        * onPlayBackStarted() -- onPlayBackStarted method.
        * 
-       * Will be called when xbmc starts playing a file
+       * Will be called when Kodi starts playing a file
        */
       // Player_OnPlayBackStarted
       virtual void onPlayBackStarted();
@@ -133,7 +133,7 @@ namespace XBMCAddon
       /**
        * onPlayBackEnded() -- onPlayBackEnded method.
        * 
-       * Will be called when xbmc stops playing a file
+       * Will be called when Kodi stops playing a file
        */
       // Player_OnPlayBackEnded
       virtual void onPlayBackEnded();
@@ -141,7 +141,7 @@ namespace XBMCAddon
       /**
        * onPlayBackStopped() -- onPlayBackStopped method.
        * 
-       * Will be called when user stops xbmc playing a file
+       * Will be called when user stops Kodi playing a file
        */
       // Player_OnPlayBackStopped
       virtual void onPlayBackStopped();
@@ -200,22 +200,28 @@ namespace XBMCAddon
       virtual void onPlayBackSeekChapter(int chapter);
 
       /**
-       * isPlaying() -- returns True is xbmc is playing a file.
+       * isPlaying() -- returns True is Kodi is playing a file.
        */
       // Player_IsPlaying
       bool isPlaying();
 
       /**
-       * isPlayingAudio() -- returns True is xbmc is playing an audio file.
+       * isPlayingAudio() -- returns True is Kodi is playing an audio file.
        */
       // Player_IsPlayingAudio
       bool isPlayingAudio();
 
       /**
-       * isPlayingVideo() -- returns True if xbmc is playing a video.
+       * isPlayingVideo() -- returns True if Kodi is playing a video.
        */
       // Player_IsPlayingVideo
       bool isPlayingVideo();
+
+      /**
+       * isPlayingRDS() -- returns True if xbmc is playing a radio data system (RDS).
+       */
+      // Player_IsPlayingRDS
+      bool isPlayingRDS();
 
       /**
        * getPlayingFile() -- returns the current playing file as a string.\n
@@ -277,7 +283,7 @@ namespace XBMCAddon
       /**
        * getAvailableSubtitleStreams() -- get Subtitle stream names
        */
-      std::vector<String>* getAvailableSubtitleStreams();
+      std::vector<String> getAvailableSubtitleStreams();
 
       // Player_setSubtitleStream
       /**
@@ -306,6 +312,14 @@ namespace XBMCAddon
       InfoTagMusic* getMusicInfoTag();
 
       /**
+       * getRadioRDSInfoTag() -- returns the RadioRDSInfoTag of the current playing 'Radio Song if present'.
+       *
+       * Throws: Exception, if player is not playing a file or current file is not a rds file.
+       */
+      // Player_GetRadioRDSInfoTag
+      InfoTagRadioRDS* getRadioRDSInfoTag() throw (PlayerException);
+
+      /**
        * getTotalTime() -- Returns the total time of the current playing media in
        *                   seconds.  This is only accurate to the full second.
        *
@@ -317,7 +331,7 @@ namespace XBMCAddon
       /**
        * getAvailableAudioStreams() -- get Audio stream names
        */
-      std::vector<String>* getAvailableAudioStreams();
+      std::vector<String> getAvailableAudioStreams();
 
       /**
        * setAudioStream(stream) -- set Audio Stream.

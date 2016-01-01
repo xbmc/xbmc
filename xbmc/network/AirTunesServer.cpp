@@ -21,43 +21,45 @@
  *
  */
 
+#include "system.h"
+
+#ifdef HAS_AIRTUNES
+#include "AirTunesServer.h"
+
+#include <map>
+#include <string>
+#include <utility>
+
+#include "Application.h"
+#include "cores/VideoPlayer/DVDDemuxers/DVDDemuxBXA.h"
+#include "FileItem.h"
+#include "filesystem/File.h"
+#include "filesystem/PipeFile.h"
+#include "GUIInfoManager.h"
+#include "guilib/GUIWindowManager.h"
+#include "interfaces/AnnouncementManager.h"
+#include "messaging/ApplicationMessenger.h"
+#include "music/tags/MusicInfoTag.h"
+#include "network/dacp/dacp.h"
 #include "network/Network.h"
+#include "network/Zeroconf.h"
+#include "network/ZeroconfBrowser.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
+#include "URL.h"
+#include "utils/EndianSwap.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
+#include "utils/SystemInfo.h"
+#include "utils/Variant.h"
+
 #if !defined(TARGET_WINDOWS)
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 #endif
 
-#include "AirTunesServer.h"
-
 #ifdef HAS_AIRPLAY
 #include "network/AirPlayServer.h"
 #endif
-
-#ifdef HAS_AIRTUNES
-
-#include "utils/log.h"
-#include "network/Zeroconf.h"
-#include "messaging/ApplicationMessenger.h"
-#include "filesystem/PipeFile.h"
-#include "Application.h"
-#include "cores/dvdplayer/DVDDemuxers/DVDDemuxBXA.h"
-#include "filesystem/File.h"
-#include "music/tags/MusicInfoTag.h"
-#include "FileItem.h"
-#include "GUIInfoManager.h"
-#include "guilib/GUIWindowManager.h"
-#include "utils/Variant.h"
-#include "utils/SystemInfo.h"
-#include "utils/StringUtils.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
-#include "utils/EndianSwap.h"
-#include "URL.h"
-#include "interfaces/AnnouncementManager.h"
-#include "network/ZeroconfBrowser.h"
-#include "network/dacp/dacp.h"
-
-#include <map>
-#include <string>
 
 #define TMP_COVERART_PATH_JPG "special://temp/airtunes_album_thumb.jpg"
 #define TMP_COVERART_PATH_PNG "special://temp/airtunes_album_thumb.png"
@@ -130,7 +132,7 @@ void CAirTunesServer::RefreshMetadata()
   if (m_metadata[2].length())
     tag.SetArtist(m_metadata[2]);//artist
   
-  CApplicationMessenger::Get().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1, -1, static_cast<void*>(new CFileItem(tag)));
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1, -1, static_cast<void*>(new CFileItem(tag)));
 }
 
 void CAirTunesServer::RefreshCoverArt(const char *outputFilename/* = NULL*/)
@@ -354,7 +356,7 @@ void CAirTunesServer::AudioOutputFunctions::audio_set_coverart(void *cls, void *
   CAirTunesServer::SetCoverArtFromBuffer((char *)buffer, buflen);
 }
 
-char *session="Kodi-AirTunes";
+char session[]="Kodi-AirTunes";
 
 void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int channels, int samplerate)
 {
@@ -374,7 +376,7 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
   if (pipe->Write(&header, sizeof(header)) == 0)
     return 0;
 
-  CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP);
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
 
   CFileItem *item = new CFileItem();
   item->SetPath(pipe->GetName());
@@ -382,7 +384,7 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
   m_streamStarted = true;
   m_sampleRate = samplerate;
 
-  CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
 
   // Not all airplay streams will provide metadata (e.g. if using mirroring,
   // no metadata will be sent).  If there *is* metadata, it will be received
@@ -465,7 +467,7 @@ void  CAirTunesServer::AudioOutputFunctions::audio_set_volume(void *cls, void *s
 #ifdef HAS_AIRPLAY
   CAirPlayServer::backupVolume();
 #endif
-  if (CSettings::Get().GetBool("services.airplayvolumecontrol"))
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL))
     g_application.SetVolume(volPercent, false);//non-percent volume 0.0-1.0
 }
 
@@ -495,7 +497,7 @@ void  CAirTunesServer::AudioOutputFunctions::audio_destroy(void *cls, void *sess
   if (!CAirPlayServer::IsPlaying())
 #endif
   {
-    CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP);
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
     CLog::Log(LOGDEBUG, "AIRTUNES: AirPlay not running - stopping player");
   }
   
@@ -647,13 +649,13 @@ void CAirTunesServer::RegisterActionListener(bool doRegister)
 {
   if (doRegister)
   {
-    CAnnouncementManager::Get().AddAnnouncer(this);
+    CAnnouncementManager::GetInstance().AddAnnouncer(this);
     g_application.RegisterActionListener(this);
     ServerInstance->Create();
   }
   else
   {
-    CAnnouncementManager::Get().RemoveAnnouncer(this);
+    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
     g_application.UnregisterActionListener(this);
     ServerInstance->StopThread(true);
   }

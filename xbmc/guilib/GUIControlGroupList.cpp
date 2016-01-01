@@ -22,6 +22,7 @@
 #include "input/Key.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "GUIControlProfiler.h"
+#include "utils/StringUtils.h"
 #include "GUIFont.h" // for XBFONT_* definitions
 
 CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float posX, float posY, float width, float height, float itemGap, int pageControl, ORIENTATION orientation, bool useControlPositions, uint32_t alignment, const CScroller& scroller)
@@ -30,6 +31,7 @@ CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float po
 {
   m_itemGap = itemGap;
   m_pageControl = pageControl;
+  m_focusedPosition = 0;
   m_totalSize = 0;
   m_orientation = orientation;
   m_alignment = alignment;
@@ -66,6 +68,7 @@ void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &d
     SendWindowMessage(message2);
   }
   // we run through the controls, rendering as we go
+  int index = 0;
   float pos = GetAlignOffset();
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
@@ -79,7 +82,16 @@ void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &d
     control->DoProcess(currentTime, dirtyregions);
 
     if (control->IsVisible())
+    {
+      if (IsControlOnScreen(pos, control))
+      {
+        if (control->HasFocus())
+          m_focusedPosition = index;
+        index++;
+      }
+
       pos += Size(control) + m_itemGap;
+    }
     g_graphicsContext.RestoreOrigin();
   }
   CGUIControl::Process(currentTime, dirtyregions);
@@ -171,7 +183,7 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
           continue;
         if (control->HasID(m_focusedControl))
         {
-          if (offset >= m_scroller.GetValue() && offset + Size(control) <= m_scroller.GetValue() + Size())
+          if (IsControlOnScreen(offset, control))
             return CGUIControlGroup::OnMessage(message);
           break;
         }
@@ -184,7 +196,7 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
         CGUIControl *control = *it;
         if (!control->IsVisible())
           continue;
-        if (control->CanFocus() && offset >= m_scroller.GetValue() && offset + Size(control) <= m_scroller.GetValue() + Size())
+        if (control->CanFocus() && IsControlOnScreen(offset, control))
         {
           m_focusedControl = control->GetID();
           break;
@@ -208,6 +220,9 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
 
 void CGUIControlGroupList::ValidateOffset()
 {
+  // calculate item gap. this needs to be done
+  // before fetching the total size
+  CalculateItemGap();
   // calculate how many items we have on this page
   m_totalSize = GetTotalSize();
   // check our m_offset range
@@ -225,8 +240,8 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
 
   if (control)
   { // set the navigation of items so that they form a list
-    CGUIAction beforeAction = GetNavigateAction((m_orientation == VERTICAL) ? ACTION_MOVE_UP : ACTION_MOVE_LEFT);
-    CGUIAction afterAction = GetNavigateAction((m_orientation == VERTICAL) ? ACTION_MOVE_DOWN : ACTION_MOVE_RIGHT);
+    CGUIAction beforeAction = GetAction((m_orientation == VERTICAL) ? ACTION_MOVE_UP : ACTION_MOVE_LEFT);
+    CGUIAction afterAction = GetAction((m_orientation == VERTICAL) ? ACTION_MOVE_DOWN : ACTION_MOVE_RIGHT);
     if (m_children.size())
     {
       // we're inserting at the given position, so grab the items above and below and alter
@@ -261,16 +276,16 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
       if (m_orientation == VERTICAL)
       {
         if (before) // update the DOWN action to point to us
-          before->SetNavigationAction(ACTION_MOVE_DOWN, CGUIAction(control->GetID()));
+          before->SetAction(ACTION_MOVE_DOWN, CGUIAction(control->GetID()));
         if (after) // update the UP action to point to us
-          after->SetNavigationAction(ACTION_MOVE_UP, CGUIAction(control->GetID()));
+          after->SetAction(ACTION_MOVE_UP, CGUIAction(control->GetID()));
       }
       else
       {
         if (before) // update the RIGHT action to point to us
-          before->SetNavigationAction(ACTION_MOVE_RIGHT, CGUIAction(control->GetID()));
+          before->SetAction(ACTION_MOVE_RIGHT, CGUIAction(control->GetID()));
         if (after) // update the LEFT action to point to us
-          after->SetNavigationAction(ACTION_MOVE_LEFT, CGUIAction(control->GetID()));
+          after->SetAction(ACTION_MOVE_LEFT, CGUIAction(control->GetID()));
       }
     }
     // now the control's nav
@@ -279,19 +294,19 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
     // don't override them if child have already defined actions
     if (m_orientation == VERTICAL)
     {
-      control->SetNavigationAction(ACTION_MOVE_UP, beforeAction);
-      control->SetNavigationAction(ACTION_MOVE_DOWN, afterAction);
-      control->SetNavigationAction(ACTION_MOVE_LEFT, GetNavigateAction(ACTION_MOVE_LEFT), false);
-      control->SetNavigationAction(ACTION_MOVE_RIGHT, GetNavigateAction(ACTION_MOVE_RIGHT), false);
+      control->SetAction(ACTION_MOVE_UP, beforeAction);
+      control->SetAction(ACTION_MOVE_DOWN, afterAction);
+      control->SetAction(ACTION_MOVE_LEFT, GetAction(ACTION_MOVE_LEFT), false);
+      control->SetAction(ACTION_MOVE_RIGHT, GetAction(ACTION_MOVE_RIGHT), false);
     }
     else
     {
-      control->SetNavigationAction(ACTION_MOVE_LEFT, beforeAction);
-      control->SetNavigationAction(ACTION_MOVE_RIGHT, afterAction);
-      control->SetNavigationAction(ACTION_MOVE_UP, GetNavigateAction(ACTION_MOVE_UP), false);
-      control->SetNavigationAction(ACTION_MOVE_DOWN, GetNavigateAction(ACTION_MOVE_DOWN), false);
+      control->SetAction(ACTION_MOVE_LEFT, beforeAction);
+      control->SetAction(ACTION_MOVE_RIGHT, afterAction);
+      control->SetAction(ACTION_MOVE_UP, GetAction(ACTION_MOVE_UP), false);
+      control->SetAction(ACTION_MOVE_DOWN, GetAction(ACTION_MOVE_DOWN), false);
     }
-    control->SetNavigationAction(ACTION_NAV_BACK, GetNavigateAction(ACTION_NAV_BACK), false);
+    control->SetAction(ACTION_NAV_BACK, GetAction(ACTION_NAV_BACK), false);
 
     if (!m_useControlPositions)
       control->SetPosition(0,0);
@@ -362,7 +377,7 @@ EVENT_RESULT CGUIControlGroupList::SendMouseEvent(const CPoint &point, const CMo
       CGUIControl *child = *i;
       if (child->IsVisible())
       {
-        if (pos + Size(child) > m_scroller.GetValue() && pos < m_scroller.GetValue() + Size())
+        if (IsControlOnScreen(pos, child))
         { // we're on screen
           float offsetX = m_orientation == VERTICAL ? m_posX : m_posX + alignOffset + pos - m_scroller.GetValue();
           float offsetY = m_orientation == VERTICAL ? m_posY + alignOffset + pos - m_scroller.GetValue() : m_posY;
@@ -395,7 +410,7 @@ void CGUIControlGroupList::UnfocusFromPoint(const CPoint &point)
     CGUIControl *child = *it;
     if (child->IsVisible())
     {
-      if (pos + Size(child) > m_scroller.GetValue() && pos < m_scroller.GetValue() + Size())
+      if (IsControlOnScreen(pos, child))
       { // we're on screen
         CPoint offset = (m_orientation == VERTICAL) ? CPoint(m_posX, m_posY + alignOffset + pos - m_scroller.GetValue()) : CPoint(m_posX + alignOffset + pos - m_scroller.GetValue(), m_posY);
         child->UnfocusFromPoint(controlCoords - offset);
@@ -414,9 +429,54 @@ bool CGUIControlGroupList::GetCondition(int condition, int data) const
     return (m_totalSize >= Size() && m_scroller.GetValue() < m_totalSize - Size());
   case CONTAINER_HAS_PREVIOUS:
     return (m_scroller.GetValue() > 0);
+  case CONTAINER_POSITION:
+    return (m_focusedPosition == data);
   default:
     return false;
   }
+}
+
+std::string CGUIControlGroupList::GetLabel(int info) const
+{
+  switch (info)
+  {
+  case CONTAINER_CURRENT_ITEM:
+    return StringUtils::Format("%i", GetSelectedItem());
+  case CONTAINER_NUM_ITEMS:
+    return StringUtils::Format("%i", GetNumItems());
+  case CONTAINER_POSITION:
+    return StringUtils::Format("%i", m_focusedPosition);
+  default:
+    break;
+  }
+  return "";
+}
+
+int CGUIControlGroupList::GetNumItems() const
+{
+  return std::count_if(m_children.begin(), m_children.end(), [&](const CGUIControl *child) {
+    return (child->IsVisible() && child->CanFocus());
+  });
+}
+
+int CGUIControlGroupList::GetSelectedItem() const
+{
+  int index = 1;
+  for (const auto& child : m_children)
+  {
+    if (child->IsVisible() && child->CanFocus())
+    {
+      if (child->HasFocus())
+        return index;
+      index++;
+    }
+  }
+  return -1;
+}
+
+bool CGUIControlGroupList::IsControlOnScreen(float pos, const CGUIControl *control) const
+{
+  return (pos >= m_scroller.GetValue() && pos + Size(control) <= m_scroller.GetValue() + Size());
 }
 
 bool CGUIControlGroupList::IsFirstFocusableControl(const CGUIControl *control) const
@@ -445,13 +505,33 @@ bool CGUIControlGroupList::IsLastFocusableControl(const CGUIControl *control) co
   return false;
 }
 
+void CGUIControlGroupList::CalculateItemGap()
+{
+  if (m_alignment & XBFONT_JUSTIFIED)
+  {
+    int itemsCount = 0;
+    float itemsSize = 0;
+    for (const auto& child : m_children)
+    {
+      if (child->IsVisible())
+      {
+        itemsSize += Size(child);
+        itemsCount++;
+      }
+    }
+
+    if (itemsCount > 0)
+      m_itemGap = (Size() - itemsSize) / itemsCount;
+  }
+}
+
 float CGUIControlGroupList::GetAlignOffset() const
 {
   if (m_totalSize < Size())
   {
     if (m_alignment & XBFONT_RIGHT)
       return Size() - m_totalSize;
-    if (m_alignment & XBFONT_CENTER_X)
+    if (m_alignment & (XBFONT_CENTER_X | XBFONT_JUSTIFIED))
       return (Size() - m_totalSize)*0.5f;
   }
   return 0.0f;

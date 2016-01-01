@@ -32,7 +32,7 @@ EXECUTABLE_SUFFIX = .bin
 XBMC_DEPENDS = $(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target
 INSTALL_PATH = $(HOME)/Library/Bundles
 
-USER_HEADER_SEARCH_PATHS = $(inherited) $XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6
+USER_HEADER_SEARCH_PATHS = $(inherited) $XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.7
 
 GCC_INLINES_ARE_PRIVATE_EXTERN = NO
 GCC_SYMBOLS_PRIVATE_EXTERN = NO
@@ -40,6 +40,9 @@ COPY_PHASE_STRIP = NO
 DEAD_CODE_STRIPPING = NO
 OTHER_CPLUSPLUSFLAGS = $(inherited) $(OTHER_CFLAGS) -Wreorder
 
-OTHER_LDFLAGS = $(XBMC_OTHER_LDFLAGS_COMMON) -weak_framework VideoToolbox
+OTHER_LDFLAGS = $(XBMC_OTHER_LDFLAGS_COMMON)
 
 GCC_PREPROCESSOR_DEFINITIONS = TARGET_DARWIN_IOS $(inherited)
+
+// set this to YES once we have a deployment target of at least ios 6.0
+ENABLE_BITCODE = NO

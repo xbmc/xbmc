@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Skrij ozadja"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Skrij el. prog. vodnika, če je v oknu kanala prisoten RDS"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Prikaži v ozadju \"Zdaj se predvaja\" video"
@@ -227,14 +231,6 @@ msgstr "Prikaži v ozadju \"Zdaj se predvaja\" video"
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Prikaži v ozadju \"Zdaj se predvaja\" vizualizacija"
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "V knjižnici predvajaj uvodne pesmi TV serij (dodatek TvTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -352,10 +348,6 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Zadnja prijava"
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Izbirnik pesmi za karaoke"
-
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Predvajano"
@@ -445,8 +437,8 @@ msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set v
 msgstr "[B]PRILAGODITE NASTAVITVE VIDEA[/B][CR][CR]Upravljajte s knjižnico videa · Nastavite možnosti predvajanja videa[CR]Spremenite možnosti seznamov · Določite pisavo podnapisov"
 
 msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]PRILAGODITE NASTAVITVE GLASBE[/B][CR][CR]Upravljajte s knjižnico glasbe · Nastavite možnosti predvajanja glasbe[CR]Spremenite možnosti seznamov · Nastavite objavo pesmi · Nastavite karaoke"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]PRILAGODITE NASTAVITVE GLASBE[/B][CR][CR]Upravljajte knjižnico glasbe · Nastavite možnosti predvajanja glasbe · Spremenite možnosti seznamov[CR]Nastavite objavo pesmi"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

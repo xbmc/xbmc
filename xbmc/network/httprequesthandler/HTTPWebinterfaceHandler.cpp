@@ -95,7 +95,7 @@ bool CHTTPWebinterfaceHandler::ResolveAddon(const std::string &url, ADDON::Addon
     if (components.size() <= 1)
       return false;
 
-    if (!ADDON::CAddonMgr::Get().GetAddon(components.at(1), addon) || addon == NULL)
+    if (!ADDON::CAddonMgr::GetInstance().GetAddon(components.at(1), addon) || addon == NULL)
       return false;
 
     addonPath = addon->Path();
@@ -108,7 +108,7 @@ bool CHTTPWebinterfaceHandler::ResolveAddon(const std::string &url, ADDON::Addon
     // determine the path within the addon
     path = StringUtils::Join(components, WEBSERVER_DIRECTORY_SEPARATOR);
   }
-  else if (!ADDON::CAddonMgr::Get().GetDefault(ADDON::ADDON_WEB_INTERFACE, addon) || addon == NULL)
+  else if (!ADDON::CAddonMgr::GetInstance().GetDefault(ADDON::ADDON_WEB_INTERFACE, addon) || addon == NULL)
     return false;
 
   // get the path of the addon
@@ -120,6 +120,13 @@ bool CHTTPWebinterfaceHandler::ResolveAddon(const std::string &url, ADDON::Addon
 
   // append the path within the addon to the path of the addon
   addonPath = URIUtils::AddFileToFolder(addonPath, path);
+
+  // ensure that we don't have a directory traversal hack here
+  // by checking if the resolved absolute path is inside the addon path
+  std::string realPath = URIUtils::GetRealPath(addonPath);
+  std::string realAddonPath = URIUtils::GetRealPath(addon->Path());
+  if (!URIUtils::IsInPath(realPath, realAddonPath))
+    return false;
 
   return true;
 }

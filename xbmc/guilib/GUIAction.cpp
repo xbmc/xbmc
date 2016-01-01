@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -23,8 +23,6 @@
 #include "GUIWindowManager.h"
 #include "GUIControl.h"
 #include "GUIInfoManager.h"
-
-using namespace std;
 
 CGUIAction::CGUIAction()
 {
@@ -37,14 +35,14 @@ CGUIAction::CGUIAction(int controlID)
   SetNavigation(controlID);
 }
 
-bool CGUIAction::ExecuteActions(int controlID, int parentID) const
+bool CGUIAction::ExecuteActions(int controlID, int parentID, const CGUIListItemPtr &item /* = NULL */) const
 {
-  if (m_actions.size() == 0) return false;
+  if (m_actions.empty()) return false;
   // take a copy of actions that satisfy our conditions
-  vector<std::string> actions;
+  std::vector<std::string> actions;
   for (ciActions it = m_actions.begin() ; it != m_actions.end() ; ++it)
   {
-    if (it->condition.empty() || g_infoManager.EvaluateBool(it->condition))
+    if (it->condition.empty() || g_infoManager.EvaluateBool(it->condition, 0, item))
     {
       if (!StringUtils::IsInteger(it->action))
         actions.push_back(it->action);
@@ -52,15 +50,15 @@ bool CGUIAction::ExecuteActions(int controlID, int parentID) const
   }
   // execute them
   bool retval = false;
-  for (vector<std::string>::iterator i = actions.begin(); i != actions.end(); ++i)
+  for (std::vector<std::string>::iterator i = actions.begin(); i != actions.end(); ++i)
   {
-    CGUIMessage msg(GUI_MSG_EXECUTE, controlID, parentID);
+    CGUIMessage msg(GUI_MSG_EXECUTE, controlID, parentID, 0, 0, item);
     msg.SetStringParam(*i);
     if (m_sendThreadMessages)
       g_windowManager.SendThreadMessage(msg);
     else
       g_windowManager.SendMessage(msg);
-    retval |= true;
+    retval = true;
   }
   return retval;
 }

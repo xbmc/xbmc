@@ -240,11 +240,11 @@ PopulateObjectFromTag(CMusicInfoTag&         tag,
       object.m_People.artists.Add(tag.GetArtist().at(index).c_str());
       object.m_People.artists.Add(tag.GetArtist().at(index).c_str(), "Performer");
     }
-    object.m_People.artists.Add(StringUtils::Join(!tag.GetAlbumArtist().empty() ? tag.GetAlbumArtist() : tag.GetArtist(), g_advancedSettings.m_musicItemSeparator).c_str(), "AlbumArtist");
-    if(tag.GetAlbumArtist().empty())
-        object.m_Creator = StringUtils::Join(tag.GetArtist(), g_advancedSettings.m_musicItemSeparator).c_str();
+    object.m_People.artists.Add((!tag.GetAlbumArtistString().empty() ? tag.GetAlbumArtistString() : tag.GetArtistString()).c_str(), "AlbumArtist");
+    if(tag.GetAlbumArtistString().empty())
+        object.m_Creator = tag.GetArtistString().c_str();
     else
-        object.m_Creator = StringUtils::Join(tag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator).c_str();
+      object.m_Creator = tag.GetAlbumArtistString().c_str();
     object.m_MiscInfo.original_track_number = tag.GetTrackNumber();
     if(tag.GetDatabaseId() >= 0) {
       object.m_ReferenceID = NPT_String::Format("musicdb://songs/%i%s", tag.GetDatabaseId(), URIUtils::GetExtension(tag.GetURL()).c_str());
@@ -317,6 +317,9 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     object.m_XbmcInfo.rating = tag.m_fRating;
     object.m_XbmcInfo.votes = tag.m_strVotes.c_str();
     object.m_XbmcInfo.unique_identifier = tag.m_strIMDBNumber.c_str();
+    for (const auto& country : tag.m_country)
+      object.m_XbmcInfo.countries.Add(country.c_str());
+    object.m_XbmcInfo.user_rating = tag.m_iUserRating;
 
     for (unsigned int index = 0; index < tag.m_genre.size(); index++)
       object.m_Affiliation.genres.Add(tag.m_genre.at(index).c_str());
@@ -472,9 +475,9 @@ BuildObject(CFileItem&                    item,
                       CMusicInfoTag *tag = (CMusicInfoTag*)item.GetMusicInfoTag();
                       if (tag) {
                           container->m_People.artists.Add(
-                              CorrectAllItemsSortHack(StringUtils::Join(tag->GetArtist(), g_advancedSettings.m_musicItemSeparator)).c_str(), "Performer");
+                              CorrectAllItemsSortHack(tag->GetArtistString()).c_str(), "Performer");
                           container->m_People.artists.Add(
-                              CorrectAllItemsSortHack(StringUtils::Join(!tag->GetAlbumArtist().empty() ? tag->GetAlbumArtist() : tag->GetArtist(), g_advancedSettings.m_musicItemSeparator)).c_str(), "AlbumArtist");
+                              CorrectAllItemsSortHack((!tag->GetAlbumArtistString().empty() ? tag->GetAlbumArtistString() : tag->GetArtistString())).c_str(), "AlbumArtist");
                       }
 #ifdef WMP_ID_MAPPING
                       // Some upnp clients expect all artists to have parent root id 107
@@ -491,9 +494,9 @@ BuildObject(CFileItem&                    item,
                       CMusicInfoTag *tag = (CMusicInfoTag*)item.GetMusicInfoTag();
                       if (tag) {
                           container->m_People.artists.Add(
-                              CorrectAllItemsSortHack(StringUtils::Join(tag->GetArtist(), g_advancedSettings.m_musicItemSeparator)).c_str(), "Performer");
+                              CorrectAllItemsSortHack(tag->GetArtistString()).c_str(), "Performer");
                           container->m_People.artists.Add(
-                              CorrectAllItemsSortHack(StringUtils::Join(!tag->GetAlbumArtist().empty() ? tag->GetAlbumArtist() : tag->GetArtist(), g_advancedSettings.m_musicItemSeparator)).c_str(), "AlbumArtist");
+                              CorrectAllItemsSortHack(!tag->GetAlbumArtistString().empty() ? tag->GetAlbumArtistString() : tag->GetArtistString()).c_str(), "AlbumArtist");
                           container->m_Affiliation.album = CorrectAllItemsSortHack(tag->GetAlbum()).c_str();
                       }
 #ifdef WMP_ID_MAPPING
@@ -620,7 +623,7 @@ BuildObject(CFileItem&                    item,
     // to look for external subtitles
     if (upnp_server != NULL && item.IsVideo() &&
        (upnp_service == UPnPPlayer || upnp_service == UPnPRenderer ||
-        CSettings::Get().GetBool("services.upnplookforexternalsubtitles")))
+        CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_UPNPLOOKFOREXTERNALSUBTITLES)))
     {
         // find any available external subtitles
         std::vector<std::string> filenames;
@@ -650,7 +653,7 @@ BuildObject(CFileItem&                    item,
         else if (!subtitles.empty())
         {
             /* trying to find subtitle with prefered language settings */
-            std::string preferredLanguage = (CSettings::Get().GetSetting("locale.subtitlelanguage"))->ToString();
+            std::string preferredLanguage = (CSettings::GetInstance().GetSetting("locale.subtitlelanguage"))->ToString();
             std::string preferredLanguageCode;
             g_LangCodeExpander.ConvertToISO6392T(preferredLanguage, preferredLanguageCode);
 
@@ -826,6 +829,9 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
     tag.m_fRating = object.m_XbmcInfo.rating;
     tag.m_strVotes = object.m_XbmcInfo.votes;
     tag.m_strIMDBNumber = object.m_XbmcInfo.unique_identifier;
+    for (unsigned int index = 0; index < object.m_XbmcInfo.countries.GetItemCount(); index++)
+      tag.m_country.push_back(object.m_XbmcInfo.countries.GetItem(index)->GetChars());
+    tag.m_iUserRating = object.m_XbmcInfo.user_rating;
 
     for (unsigned int index = 0; index < object.m_Affiliation.genres.GetItemCount(); index++)
     {

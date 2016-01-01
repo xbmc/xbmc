@@ -28,25 +28,30 @@
 #include "utils/log.h"
 #include "utils/Variant.h"
 
-using namespace std;
-
 #define CONTROL_CANCEL_BUTTON 10
 #define CONTROL_PROGRESS_BAR 20
 
 CGUIDialogProgress::CGUIDialogProgress(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_PROGRESS, "DialogProgress.xml")
 {
-  m_bCanceled = false;
-  m_iCurrent=0;
-  m_iMax=0;
-  m_percentage = 0;
-  m_showProgress = false;
-  m_bCanCancel = true;
+  Reset();
 }
 
 CGUIDialogProgress::~CGUIDialogProgress(void)
 {
 
+}
+
+void CGUIDialogProgress::Reset()
+{
+  CSingleLock lock(m_section);
+  m_bCanceled = false;
+  m_iCurrent = 0;
+  m_iMax = 0;
+  m_percentage = 0;
+  m_showProgress = false;
+  m_bCanCancel = true;
+  SetInvalid();
 }
 
 void CGUIDialogProgress::SetCanCancel(bool bCanCancel)
@@ -56,16 +61,16 @@ void CGUIDialogProgress::SetCanCancel(bool bCanCancel)
   SetInvalid();
 }
 
-void CGUIDialogProgress::Open()
+void CGUIDialogProgress::Open(const std::string &param /* = "" */)
 {
-  CLog::Log(LOGDEBUG, "DialogProgress::StartModal called %s", m_active ? "(already running)!" : "");
+  CLog::Log(LOGDEBUG, "DialogProgress::Open called %s", m_active ? "(already running)!" : "");
 
   {
     CSingleLock lock(g_graphicsContext);
     ShowProgressBar(false);
   }
   
-  CGUIDialog::Open_Internal(false);
+  CGUIDialog::Open_Internal(false, param);
 
   while (m_active && IsAnimating(ANIM_TYPE_WINDOW_OPEN))
   {
@@ -101,7 +106,7 @@ bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
   {
 
   case GUI_MSG_WINDOW_DEINIT:
-    SetCanCancel(true);
+    Reset();
     break;
 
   case GUI_MSG_CLICKED:
@@ -109,7 +114,7 @@ bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_CANCEL_BUTTON && m_bCanCancel && !m_bCanceled)
       {
-        string strHeading = m_strHeading;
+        std::string strHeading = m_strHeading;
         strHeading.append(" : ");
         strHeading.append(g_localizeStrings.Get(16024));
         CGUIDialogBoxBase::SetHeading(CVariant{strHeading});

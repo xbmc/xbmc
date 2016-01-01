@@ -66,10 +66,7 @@ bool CGUIFontTTFDX::FirstBegin()
     return false;
 
   CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
-  ID3D11ShaderResourceView* resource = m_speedupTexture->GetShaderResource();
   pGUIShader->Begin(SHADER_METHOD_RENDER_FONT);
-  pGUIShader->SetShaderViews(1, &resource);
-  g_Windowing.SetAlphaBlendEnable(true);
 
   return true;
 }
@@ -80,12 +77,24 @@ void CGUIFontTTFDX::LastEnd()
   if (!pContext)
     return;
 
-  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+  typedef CGUIFontTTFBase::CTranslatedVertices trans;
+  bool transIsEmpty = std::all_of(m_vertexTrans.begin(), m_vertexTrans.end(),
+                                  [](trans& _) { return _.vertexBuffer->size <= 0; });
+  // no chars to render
+  if (m_vertex.empty() && transIsEmpty)
+    return;
+
   CreateStaticIndexBuffer();
 
   unsigned int offset = 0;
   unsigned int stride = sizeof(SVertex);
 
+  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+  // Set font texture as shader resource
+  ID3D11ShaderResourceView* resources[] = { m_speedupTexture->GetShaderResource() };
+  pGUIShader->SetShaderViews(1, resources);
+  // Enable alpha blend
+  g_Windowing.SetAlphaBlendEnable(true);
   // Set our static index buffer
   pContext->IASetIndexBuffer(m_staticIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
   // Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
@@ -113,7 +122,7 @@ void CGUIFontTTFDX::LastEnd()
     }
   }
 
-  if (!m_vertexTrans.empty())
+  if (!transIsEmpty)
   {
     // Deal with the vertices that can be hardware clipped and therefore translated
 
@@ -254,7 +263,7 @@ bool CGUIFontTTFDX::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, 
   FT_Bitmap bitmap = bitGlyph->bitmap;
 
   ID3D11DeviceContext* pContext = g_Windowing.GetImmediateContext();
-  if (m_speedupTexture)
+  if (m_speedupTexture && pContext)
   {
     CD3D11_BOX dstBox(x1, y1, 0, x2, y2, 1);
     pContext->UpdateSubresource(m_speedupTexture->Get(), 0, &dstBox, bitmap.buffer, bitmap.pitch, 0);

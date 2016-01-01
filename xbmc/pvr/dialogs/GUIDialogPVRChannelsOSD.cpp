@@ -18,27 +18,31 @@
  *
  */
 
-#include "GUIDialogPVRChannelsOSD.h"
 #include "Application.h"
-#include "messaging/ApplicationMessenger.h"
 #include "FileItem.h"
+#include "GUIInfoManager.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "epg/EpgContainer.h"
+#include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "guilib/LocalizeStrings.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "GUIDialogPVRGuideInfo.h"
-#include "view/ViewState.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
-#include "GUIInfoManager.h"
 #include "utils/StringUtils.h"
+#include "view/ViewState.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/windows/GUIWindowPVRBase.h"
 
+#include "GUIDialogPVRChannelsOSD.h"
+#include "GUIDialogPVRGuideInfo.h"
+
 using namespace PVR;
 using namespace EPG;
 using namespace KODI::MESSAGING;
+
+#define MAX_INVALIDATION_FREQUENCY 2000 // limit to one invalidation per X milliseconds
 
 #define CONTROL_LIST                  11
 
@@ -55,6 +59,8 @@ CGUIDialogPVRChannelsOSD::~CGUIDialogPVRChannelsOSD()
 
   if (IsObserving(g_infoManager))
     g_infoManager.UnregisterObserver(this);
+  if (IsObserving(g_EpgContainer))
+    g_EpgContainer.UnregisterObserver(this);
 }
 
 bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
@@ -82,6 +88,22 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
           ShowInfo(iItem);
           return true;
         }
+      }
+    }
+    break;
+  case GUI_MSG_REFRESH_LIST:
+    {
+      switch(message.GetParam1())
+      {
+        case ObservableMessageCurrentItem:
+          m_viewControl.SetItems(*m_vecItems);
+          return true;
+        case ObservableMessageEpg:
+        case ObservableMessageEpgContainer:
+        case ObservableMessageEpgActiveItem:
+          if (IsActive())
+            SetInvalid();
+          return true;
       }
     }
     break;
@@ -167,6 +189,8 @@ void CGUIDialogPVRChannelsOSD::Update()
 
   if (!IsObserving(g_infoManager))
     g_infoManager.RegisterObserver(this);
+  if (!IsObserving(g_EpgContainer))
+    g_EpgContainer.RegisterObserver(this);
 
   m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
 
@@ -192,6 +216,18 @@ void CGUIDialogPVRChannelsOSD::Update()
   }
 
   g_graphicsContext.Unlock();
+}
+
+void CGUIDialogPVRChannelsOSD::SetInvalid()
+{
+  if (m_refreshTimeout.IsTimePast())
+  {
+    VECFILEITEMS items = m_vecItems->GetList();
+    for (VECFILEITEMS::iterator it = items.begin(); it != items.end(); ++it)
+      (*it)->SetInvalid();
+    CGUIDialog::SetInvalid();
+    m_refreshTimeout.Set(MAX_INVALIDATION_FREQUENCY);
+  }
 }
 
 void CGUIDialogPVRChannelsOSD::SaveControlStates()
@@ -226,10 +262,10 @@ void CGUIDialogPVRChannelsOSD::Clear()
 
 void CGUIDialogPVRChannelsOSD::CloseOrSelect(unsigned int iItem)
 {
-  if (CSettings::Get().GetBool("pvrmenu.closechannelosdonswitch"))
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH))
   {
-    if (CSettings::Get().GetInt("pvrmenu.displaychannelinfo") > 0)
-      g_PVRManager.ShowPlayerInfo(CSettings::Get().GetInt("pvrmenu.displaychannelinfo"));
+    if (CSettings::GetInstance().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO) > 0)
+      g_PVRManager.ShowPlayerInfo(CSettings::GetInstance().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
     Close();
   }
   else
@@ -262,7 +298,7 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
     }
   }
   else
-    CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*pItem)));
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*pItem)));
 
   m_group = GetPlayingGroup();
 
@@ -325,12 +361,8 @@ CGUIControl *CGUIDialogPVRChannelsOSD::GetFirstFocusableControl(int id)
 
 void CGUIDialogPVRChannelsOSD::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  if (msg == ObservableMessageCurrentItem)
-  {
-    g_graphicsContext.Lock();
-    m_viewControl.SetItems(*m_vecItems);
-    g_graphicsContext.Unlock();
-  }
+  CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
+  CApplicationMessenger::GetInstance().SendGUIMessage(m);
 }
 
 void CGUIDialogPVRChannelsOSD::SaveSelectedItemPath(int iGroupID)
