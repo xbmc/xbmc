@@ -1028,7 +1028,7 @@ bool CVideoPlayer::IsValidStream(CCurrentStream& stream)
   int source = STREAM_SOURCE_MASK(stream.source);
   if(source == STREAM_SOURCE_TEXT)
     return true;
-  if(source == STREAM_SOURCE_DEMUX_SUB)
+  if(source == STREAM_SOURCE_DEMUX_SUB || source == STREAM_SOURCE_DEMUX_SUP)
   {
     CDemuxStream* st = m_pSubtitleDemuxer->GetStream(stream.id);
     if(st == NULL || st->disabled)
@@ -3347,6 +3347,43 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int iStream, int source, 
 
   CLog::Log(LOGNOTICE, "Opening stream: %i source: %i", iStream, source);
 
+  if (STREAM_SOURCE_MASK(source) == STREAM_SOURCE_DEMUX_SUP)
+  {
+    int index = m_SelectionStreams.IndexOf(current.type, source, iStream);
+    if (index < 0)
+      return false;
+    SelectionStream st = m_SelectionStreams.Get(current.type, index);
+
+    if (!m_pSubtitleDemuxer || m_pSubtitleDemuxer->GetFileName() != st.filename)
+    {
+      CLog::Log(LOGNOTICE, "Opening Subtitle file: %s", st.filename.c_str());
+      CFileItem item(st.filename, false);
+      item.SetMimeType("application/x-pgs");
+      item.SetContentLookup(false);
+      CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
+      if (!pInputStream->Open())
+        return false;
+      std::unique_ptr<CDVDDemuxFFmpeg> demux(new CDVDDemuxFFmpeg());
+      if (!demux->Open(pInputStream))
+        return false;
+      m_pSubtitleDemuxer = demux.release();
+    }
+    double pts = m_VideoPlayerVideo->GetCurrentPts();
+    if (pts == DVD_NOPTS_VALUE)
+      pts = m_CurrentVideo.dts;
+    if (pts == DVD_NOPTS_VALUE)
+      pts = 0;
+    pts += m_offset_pts;
+    if (!m_pSubtitleDemuxer->SeekTime((int)(1000.0 * pts / (double)DVD_TIME_BASE)))
+      CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %f", __FUNCTION__, pts);
+    stream = m_pSubtitleDemuxer->GetStream(iStream);
+    if (!stream || stream->disabled)
+      return false;
+    stream->source = STREAM_SOURCE_DEMUX_SUP;
+    stream->SetDiscard(AVDISCARD_NONE);
+
+    hint.Assign(*stream, true);
+  }
   if(STREAM_SOURCE_MASK(source) == STREAM_SOURCE_DEMUX_SUB)
   {
     int index = m_SelectionStreams.IndexOf(current.type, source, iStream);
@@ -4466,7 +4503,10 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
       return AddSubtitleFile(vobsubidx, filename);
   }
   SelectionStream s;
-  s.source   = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, filename);
+  if (ext == ".sup")
+    s.source = m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUP, filename);
+  else
+    s.source = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, filename);
   s.type     = STREAM_SUBTITLE;
   s.id       = 0;
   s.filename = filename;
