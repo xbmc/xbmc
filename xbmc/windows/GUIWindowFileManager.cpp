@@ -49,7 +49,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
-
 #include "utils/JobManager.h"
 #include "utils/FileOperationJob.h"
 #include "utils/FileUtils.h"
@@ -62,30 +61,28 @@ using namespace XFILE;
 using namespace PLAYLIST;
 using namespace KODI::MESSAGING;
 
-#define ACTION_COPY                     1
-#define ACTION_MOVE                     2
-#define ACTION_DELETE                   3
-#define ACTION_CREATEFOLDER             4
-#define ACTION_DELETEFOLDER             5
+#define CONTROL_BTNSELECTALL            1
+#define CONTROL_BTNFAVOURITES           2
+#define CONTROL_BTNPLAYWITH             3
+#define CONTROL_BTNRENAME               4
+#define CONTROL_BTNDELETE               5
+#define CONTROL_BTNCOPY                 6
+#define CONTROL_BTNMOVE                 7
+#define CONTROL_BTNNEWFOLDER            8
+#define CONTROL_BTNCALCSIZE             9
+#define CONTROL_BTNGOTOROOT             10
+#define CONTROL_BTNSWITCHMEDIA          11
+#define CONTROL_BTNCANCELJOB            12
 
-#define CONTROL_BTNVIEWASICONS          2
-#define CONTROL_BTNSORTBY               3
-#define CONTROL_BTNSORTASC              4
-#define CONTROL_BTNNEWFOLDER            6
-#define CONTROL_BTNSELECTALL            7
-#define CONTROL_BTNCOPY                10
-#define CONTROL_BTNMOVE                11
-#define CONTROL_BTNDELETE               8
-#define CONTROL_BTNRENAME               9
 
-#define CONTROL_NUMFILES_LEFT          12
-#define CONTROL_NUMFILES_RIGHT         13
+#define CONTROL_NUMFILES_LEFT           12
+#define CONTROL_NUMFILES_RIGHT          13
 
-#define CONTROL_LEFT_LIST              20
-#define CONTROL_RIGHT_LIST             21
+#define CONTROL_LEFT_LIST               20
+#define CONTROL_RIGHT_LIST              21
 
-#define CONTROL_CURRENTDIRLABEL_LEFT  101
-#define CONTROL_CURRENTDIRLABEL_RIGHT 102
+#define CONTROL_CURRENTDIRLABEL_LEFT    101
+#define CONTROL_CURRENTDIRLABEL_RIGHT   102
 
 CGUIWindowFileManager::CGUIWindowFileManager(void)
     : CGUIWindow(WINDOW_FILES, "FileManager.xml"),
@@ -692,7 +689,7 @@ void CGUIWindowFileManager::OnCopy(int iList)
   if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{120}, CVariant{123}))
     return;
 
-  AddJob(new CFileOperationJob(CFileOperationJob::ActionCopy, 
+  AddJob(new CFileOperationJob(CFileOperationJob::ActionCopy,
                                 *m_vecItems[iList],
                                 m_Directory[1 - iList]->GetPath(),
                                 true, 16201, 16202));
@@ -994,41 +991,41 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     //The ".." item is not selectable. Take that into account when figuring out if all items are selected
     int notSelectable = CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_SHOWPARENTDIRITEMS) ? 1 : 0;
     if (NumSelected(list) <  m_vecItems[list]->Size() - notSelectable)
-      choices.Add(1, 188); // SelectAll
+      choices.Add(CONTROL_BTNSELECTALL, 188); // SelectAll
     if (!pItem->IsParentFolder())
-      choices.Add(2,  XFILE::CFavouritesDirectory::IsFavourite(pItem.get(), GetID()) ? 14077 : 14076); // Add/Remove Favourite
+      choices.Add(CONTROL_BTNFAVOURITES,  XFILE::CFavouritesDirectory::IsFavourite(pItem.get(), GetID()) ? 14077 : 14076); // Add/Remove Favourite
     if (players.size() > 1)
-      choices.Add(3, 15213); // Play Using...
+      choices.Add(CONTROL_BTNPLAYWITH, 15213);
     if (CanRename(list) && !pItem->IsParentFolder())
-      choices.Add(4, 118); // Rename
+      choices.Add(CONTROL_BTNRENAME, 118);
     if (CanDelete(list) && showEntry)
-      choices.Add(5, 117); // Delete
+      choices.Add(CONTROL_BTNDELETE, 117);
     if (CanCopy(list) && showEntry)
-      choices.Add(6, 115); // Copy
+      choices.Add(CONTROL_BTNCOPY, 115);
     if (CanMove(list) && showEntry)
-      choices.Add(7, 116); // Move
+      choices.Add(CONTROL_BTNMOVE, 116);
   }
   if (CanNewFolder(list))
-    choices.Add(8, 20309); // New Folder
+    choices.Add(CONTROL_BTNNEWFOLDER, 20309);
   if (item >= 0 && pItem->m_bIsFolder && !pItem->IsParentFolder())
-    choices.Add(9, 13393); // Calculate Size
-  choices.Add(11, 20128); // Go To Root
-  choices.Add(12, 523);     // switch media
+    choices.Add(CONTROL_BTNCALCSIZE, 13393);
+  choices.Add(CONTROL_BTNGOTOROOT, 20128);
+  choices.Add(CONTROL_BTNSWITCHMEDIA, 523);
   if (CJobManager::GetInstance().IsProcessing("filemanager"))
-    choices.Add(13, 167);
+    choices.Add(CONTROL_BTNCANCELJOB, 167);
 
   int btnid = CGUIDialogContextMenu::ShowAndGetChoice(choices);
-  if (btnid == 1)
+  if (btnid == CONTROL_BTNSELECTALL)
   {
     OnSelectAll(list);
     bDeselect=false;
   }
-  if (btnid == 2)
+  if (btnid == CONTROL_BTNFAVOURITES)
   {
     XFILE::CFavouritesDirectory::AddOrRemove(pItem.get(), GetID());
     return;
   }
-  if (btnid == 3)
+  if (btnid == CONTROL_BTNPLAYWITH)
   {
     std::vector<std::string>players;
     CPlayerCoreFactory::GetInstance().GetPlayers(*pItem, players);
@@ -1036,17 +1033,17 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     if (!player.empty())
       OnStart(pItem.get(), player);
   }
-  if (btnid == 4)
+  if (btnid == CONTROL_BTNRENAME)
     OnRename(list);
-  if (btnid == 5)
+  if (btnid == CONTROL_BTNDELETE)
     OnDelete(list);
-  if (btnid == 6)
+  if (btnid == CONTROL_BTNCOPY)
     OnCopy(list);
-  if (btnid == 7)
+  if (btnid == CONTROL_BTNMOVE)
     OnMove(list);
-  if (btnid == 8)
+  if (btnid == CONTROL_BTNNEWFOLDER)
     OnNewFolder(list);
-  if (btnid == 9)
+  if (btnid == CONTROL_BTNCALCSIZE)
   {
     // setup the progress dialog, and show it
     CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
@@ -1078,17 +1075,17 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     if (progress)
       progress->Close();
   }
-  if (btnid == 11)
+  if (btnid == CONTROL_BTNGOTOROOT)
   {
     Update(list,"");
     return;
   }
-  if (btnid == 12)
+  if (btnid == CONTROL_BTNSWITCHMEDIA)
   {
     CGUIDialogContextMenu::SwitchMedia("files", m_vecItems[list]->GetPath());
     return;
   }
-  if (btnid == 13)
+  if (btnid == CONTROL_BTNCANCELJOB)
     CancelJobs();
 
   if (bDeselect && item >= 0 && item < m_vecItems[list]->Size())
