@@ -3334,6 +3334,8 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, std::string player, bo
 
     if (!player.empty() && player != "default")
       newPlayer = player;
+    else if (m_pPlayer->GetCurrentPlayer().empty())
+      newPlayer = CPlayerCoreFactory::GetInstance().GetDefaultPlayer(item);
     else
       newPlayer = m_pPlayer->GetCurrentPlayer();
   }
