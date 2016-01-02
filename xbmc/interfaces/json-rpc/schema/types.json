@@ -786,6 +786,16 @@
       { "type": "string", "enum": [ "alltv", "allradio" ], "required": true }
     ]
   },
+  "PVR.Fields.Broadcast": {
+    "extends": "Item.Fields.Base",
+    "items": { "type": "string",
+      "enum": [ "title", "plot", "plotoutline", "starttime",
+                "endtime", "runtime", "progress", "progresspercentage",
+                "genre", "episodename", "episodenum", "episodepart",
+                "firstaired", "hastimer", "isactive", "parentalrating",
+                "wasactive", "thumbnail", "rating" ]
+    }
+  },
   "PVR.Details.Broadcast": {
     "extends": "Item.Details.Base",
     "properties": {
@@ -817,31 +827,6 @@
       "enum": [ "thumbnail", "channeltype", "hidden", "locked", "channel", "lastplayed", "broadcastnow", "broadcastnext" ]
     }
   },
-  "PVR.Details.Broadcast": {
-    "extends": "Item.Details.Base",
-    "properties": {
-      "broadcastid": { "$ref": "Library.Id", "required": true },
-      "title": { "type": "string" },
-      "plot": { "type": "string" },
-      "plotoutline": { "type": "string" },
-      "starttime": { "type": "string" },
-      "endtime": { "type": "string" },
-      "runtime": { "type": "integer" },
-      "progress": { "type": "integer" },
-      "progresspercentage": { "type": "number" },
-      "genre": { "type": "string" },
-      "episodename": { "type": "string" },
-      "episodenum": { "type": "integer" },
-      "episodepart": { "type": "integer" },
-      "firstaired": { "type": "string" },
-      "hastimer": { "type": "boolean" },
-      "isactive": { "type": "boolean" },
-      "parentalrating": { "type": "integer" },
-      "wasactive": { "type": "boolean" },
-      "thumbnail": { "type": "string" },
-      "rating": { "type": "integer" }
-    }
-  },
   "PVR.Details.Channel": {
     "extends": "Item.Details.Base",
     "properties": {
@@ -870,16 +855,6 @@
       "channels": { "type": "array",
         "items": { "$ref": "PVR.Details.Channel" }
       }
-    }
-  },
-  "PVR.Fields.Broadcast": {
-    "extends": "Item.Fields.Base",
-    "items": { "type": "string",
-      "enum": [ "title", "plot", "plotoutline", "starttime",
-                "endtime", "runtime", "progress", "progresspercentage",
-                "genre", "episodename", "episodenum", "episodepart",
-                "firstaired", "hastimer", "isactive", "parentalrating",
-                "wasactive", "thumbnail", "rating" ]
     }
   },
   "PVR.TimerState": {
@@ -1409,13 +1384,6 @@
     "type": "string",
     "enum": [ "currentwindow", "currentcontrol", "skin", "fullscreen", "stereoscopicmode" ]
   },
-  "GUI.Stereoscopy.Mode": {
-    "type": "object",
-    "properties": {
-      "mode": { "type": "string", "required": true, "enum": [ "off", "split_vertical", "split_horizontal", "row_interleaved", "hardware_based", "anaglyph_cyan_red", "anaglyph_green_magenta", "anaglyph_yellow_blue", "monoscopic" ] },
-      "label": { "type": "string", "required": true }
-    }
-  },
   "GUI.Property.Value": {
     "type": "object",
     "properties": {
@@ -1682,18 +1650,6 @@
     "extends": "Setting.Details.SettingBase",
     "additionalProperties": false
   },
-  "Setting.Details.Setting": {
-    "type": [
-      { "$ref": "Setting.Details.SettingBool", "required": true },
-      { "$ref": "Setting.Details.SettingInt", "required": true },
-      { "$ref": "Setting.Details.SettingNumber", "required": true },
-      { "$ref": "Setting.Details.SettingString", "required": true },
-      { "$ref": "Setting.Details.SettingAction", "required": true },
-      { "$ref": "Setting.Details.SettingList", "required": true },
-      { "$ref": "Setting.Details.SettingPath", "required": true },
-      { "$ref": "Setting.Details.SettingAddon", "required": true }
-    ]
-  },  
   "Setting.Details.SettingList": {
     "extends": "Setting.Details.SettingBase",
     "properties": {
@@ -1721,6 +1677,18 @@
       "addontype": { "$ref": "Addon.Types", "required": true }
     },
     "additionalProperties": false
+  },
+  "Setting.Details.Setting": {
+    "type": [
+      { "$ref": "Setting.Details.SettingBool", "required": true },
+      { "$ref": "Setting.Details.SettingInt", "required": true },
+      { "$ref": "Setting.Details.SettingNumber", "required": true },
+      { "$ref": "Setting.Details.SettingString", "required": true },
+      { "$ref": "Setting.Details.SettingAction", "required": true },
+      { "$ref": "Setting.Details.SettingList", "required": true },
+      { "$ref": "Setting.Details.SettingPath", "required": true },
+      { "$ref": "Setting.Details.SettingAddon", "required": true }
+    ]
   },
   "Setting.Details.Group": {
     "type": "object",
