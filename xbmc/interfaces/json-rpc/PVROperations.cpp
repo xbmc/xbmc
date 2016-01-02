@@ -395,8 +395,6 @@ JSONRPC_STATUS CPVROperations::DeleteTimer(const std::string &method, ITransport
 
 	  bool repeating =(bool)parameterObject["repeating"].asBoolean(false);
 
-	  CPVRTimers* timers = g_PVRTimers;
-
 	  boolean sentOkay = timers->DeleteTimer(timer,false,repeating);
 
 	  if(sentOkay) {
