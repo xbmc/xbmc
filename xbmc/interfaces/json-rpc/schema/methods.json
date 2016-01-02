@@ -1911,6 +1911,18 @@
       }
     }
   },
+  "PVR.DeleteTimer": {
+    "type": "method",
+    "description": "Removes a timer",
+    "transport": "Response",
+    "permission": "ControlPVR",
+    "params": [
+      { "name": "timerid", "$ref": "Library.Id", "required": true },
+      { "name": "repeating", "type": "boolean" },
+      { "name": "properties", "$ref": "PVR.Fields.Timer" }
+    ],
+    "returns":  "string"
+  },
   "PVR.GetRecordings": {
     "type": "method",
     "description": "Retrieves the recordings",

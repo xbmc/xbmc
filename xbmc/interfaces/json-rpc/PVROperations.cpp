@@ -380,6 +380,31 @@ JSONRPC_STATUS CPVROperations::AddTimer(const std::string &method, ITransportLay
     
 }
 
+JSONRPC_STATUS CPVROperations::DeleteTimer(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+	if (!g_PVRManager.IsStarted())
+	    return FailedToExecute;
+
+	  CPVRTimers* timers = g_PVRTimers;
+	  if (!timers)
+	    return FailedToExecute;
+
+	  CPVRTimerInfoTagPtr timer = timers->GetById((int)parameterObject["timerid"].asInteger());
+	  if (!timer)
+	    return InvalidParams;
+
+	  bool repeating =(bool)parameterObject["repeating"].asBoolean(false);
+
+	  CPVRTimers* timers = g_PVRTimers;
+
+	  boolean sentOkay = timers->DeleteTimer(timer,false,repeating);
+
+	  if(sentOkay) {
+		  return ACK;
+	  }
+	  return FailedToExecute;
+}
+
 JSONRPC_STATUS CPVROperations::GetRecordings(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   if (!g_PVRManager.IsStarted())
