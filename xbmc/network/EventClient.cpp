@@ -237,7 +237,7 @@ bool CEventClient::ProcessPacket(CEventPacket *packet)
     valid = OnPacketBUTTON(packet);
     break;
 
-  case PT_MOUSE:
+  case EVENTPACKET::PT_MOUSE:
     valid = OnPacketMOUSE(packet);
     break;
 
