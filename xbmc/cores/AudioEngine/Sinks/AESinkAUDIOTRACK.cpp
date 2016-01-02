@@ -37,7 +37,7 @@
 
 #include <algorithm>
 
-//#define DEBUG_VERBOSE 1
+#define DEBUG_VERBOSE 1
 
 using namespace jni;
 
@@ -174,6 +174,8 @@ CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
   m_audiotrackbuffer_sec = 0.0;
   m_at_jni = NULL;
   m_duration_written = 0;
+  m_last_duration_written = 0;
+  m_last_head_pos = 0;
   m_sink_delay = 0;
 }
 
@@ -388,6 +390,8 @@ void CAESinkAUDIOTRACK::Deinitialize()
   m_at_jni->release();
 
   m_duration_written = 0;
+  m_last_duration_written = 0;
+  m_last_head_pos = 0;
   m_sink_delay = 0;
 
   delete m_at_jni;
@@ -424,7 +428,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   }
 
   double delay = m_duration_written - ((double)head_pos / m_sink_sampleRate);
-  if (m_duration_written != m_last_duration_written)
+  if (m_duration_written != m_last_duration_written && head_pos != m_last_head_pos)
   {
 
     m_smoothedDelayVec.push_back(delay);
@@ -434,6 +438,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
       m_smoothedDelayVec.erase(m_smoothedDelayVec.begin());
 
     m_last_duration_written = m_duration_written;
+    m_last_head_pos = head_pos;
   }
 
   double smootheDelay = 0;
@@ -531,6 +536,8 @@ void CAESinkAUDIOTRACK::Drain()
   // we should not return from drain as long the device is in playing state
   m_at_jni->stop();
   m_duration_written = 0;
+  m_last_duration_written = 0;
+  m_last_head_pos = 0;
   m_sink_delay = 0;
 }
 

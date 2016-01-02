@@ -57,6 +57,7 @@ private:
   jni::CJNIAudioTrack  *m_at_jni;
   double                m_duration_written;
   double                m_last_duration_written;
+  uint32_t              m_last_head_pos;
 
   static CAEDeviceInfo m_info;
   static std::set<unsigned int>       m_sink_sampleRates;
