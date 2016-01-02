@@ -142,11 +142,11 @@ public:
   bool GetDVDTitleString(std::string& titleStr);
   bool GetDVDSerialString(std::string& serialStr);
 
+  void CheckButtons();
+
 protected:
 
   int ProcessBlock(uint8_t* buffer, int* read);
-
-  void CheckButtons();
 
   /**
    * XBMC     : the audio stream id we use in xbmc
