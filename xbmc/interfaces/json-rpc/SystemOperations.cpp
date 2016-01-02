@@ -108,7 +108,7 @@ JSONRPC_STATUS CSystemOperations::InhibitIdleShutdown(const std::string &method,
     else if (!parameterObject["inhibit"].isBoolean() && !parameterObject["inhibit"].isString()) {
         return InvalidParams;
     }
-    return GetPropertyValue(0, "isidleshutdowninhibited", result);;
+    return GetPropertyValue(0, "isidleshutdowninhibited", result);
 }
 
 JSONRPC_STATUS CSystemOperations::GetPropertyValue(int permissions, const std::string &property, CVariant &result)
