@@ -227,7 +227,7 @@ bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSi
       m_originalHeight = m_height;
 
       const AVPixFmtDescriptor* pixDescriptor = av_pix_fmt_desc_get(static_cast<AVPixelFormat>(m_pFrame->format));
-      if (pixDescriptor && ((pixDescriptor->flags & AV_PIX_FMT_FLAG_ALPHA) != 0))
+      if (pixDescriptor && ((pixDescriptor->flags & (AV_PIX_FMT_FLAG_ALPHA | AV_PIX_FMT_FLAG_PAL)) != 0))
         m_hasAlpha = true;
     }    
     else
