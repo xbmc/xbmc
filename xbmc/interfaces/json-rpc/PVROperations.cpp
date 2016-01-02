@@ -395,7 +395,7 @@ JSONRPC_STATUS CPVROperations::DeleteTimer(const std::string &method, ITransport
 
 	  bool repeating =(bool)parameterObject["repeating"].asBoolean(false);
 
-	  boolean sentOkay = timers->DeleteTimer(timer,false,repeating);
+	  bool sentOkay = timers->DeleteTimer(timer,false,repeating);
 
 	  if(sentOkay) {
 		  return ACK;
