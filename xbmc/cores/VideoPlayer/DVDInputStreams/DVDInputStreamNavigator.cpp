@@ -560,12 +560,6 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
 
         m_iTime = (int) ( m_dll.dvdnav_convert_time( &(pci->pci_gi.e_eltm) ) + m_iCellStart ) / 90;
 
-        if (m_bCheckButtons)
-        {
-          CheckButtons();
-          m_bCheckButtons = false;
-        }
-
         iNavresult = m_pVideoPlayer->OnDVDNavResult((void*)pci, DVDNAV_NAV_PACKET);
       }
       break;
@@ -691,9 +685,9 @@ int CDVDInputStreamNavigator::GetCurrentButton()
 
 void CDVDInputStreamNavigator::CheckButtons()
 {
-  if (m_dvdnav)
+  if (m_dvdnav && m_bCheckButtons)
   {
-
+    m_bCheckButtons = false;
     pci_t* pci = m_dll.dvdnav_get_current_nav_pci(m_dvdnav);
     int iCurrentButton = GetCurrentButton();
 

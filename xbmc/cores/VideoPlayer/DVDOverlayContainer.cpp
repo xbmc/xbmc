@@ -172,6 +172,8 @@ void CDVDOverlayContainer::UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, 
 {
   CSingleLock lock(*this);
 
+  pStream->CheckButtons();
+
   //Update any forced overlays.
   for(VecOverlays::iterator it = m_overlays.begin(); it != m_overlays.end(); ++it )
   {
