@@ -46,6 +46,7 @@ namespace Shaders {
     : virtual public CShaderProgram
   {
   public:
+    BaseYUV2RGBShader() : m_forceLimitedColorRange(true) {};
     virtual ~BaseYUV2RGBShader()      {};
     virtual void SetField(int field)  {};
     virtual void SetWidth(int width)  {};
@@ -63,6 +64,10 @@ namespace Shaders {
     virtual void SetMatrices(GLfloat *p, GLfloat *m) {};
     virtual void SetAlpha(GLfloat alpha)             {};
 #endif
+    void SetForceLimitedColorRange(bool forceLimitedColorRange) { m_forceLimitedColorRange = forceLimitedColorRange; }
+
+  protected:
+    bool  m_forceLimitedColorRange;
   };
 
 
