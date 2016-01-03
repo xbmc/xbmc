@@ -1,40 +1,146 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Credits
+	KemoNine (xbmcandroid.com/forums)
+	Staticadk (xbmcandroid.com/forums)
+	GSH (xbmcandroid.com/forums)
+-->
+
 <playercorefactory>
-  <players>
-    <!-- These are compiled-in as re-ordering them would break scripts
-    The following aliases may also be used:
-      audiodefaultplayer, videodefaultplayer, videodefaultdvdplayer
-    <player name="DVDPlayer" audio="true" video="true" />
-    <player name="DVDPlayer" /> placeholder for MPlayer
-    <player name="PAPlayer" audio="true" />
-    -->
-  </players>
+	<players>
+		<!-- Cast2TV-PRO definition -->
+		<player name="Cast2TV-PRO" type="ExternalPlayer" audio="true" video="true">
+			<!-- Android intent -->
+			<filename>com.ytweb</filename>
+			<!-- Hide XBMC -->
+			<hidexbmc>true</hidexbmc>
+			<!-- After 2 minutes bump the play count of the item in XBMC -->
+			<playcountminimumtime>120</playcountminimumtime>
+		</player>
+		
+		<!-- Cast2TV-LITE definition -->
+		<player name="Cast2TV-Lite" type="ExternalPlayer" audio="true" video="true">
+			<!-- Android intent -->
+			<filename>com.ytweblite</filename>
+			<!-- Hide XBMC -->
+			<hidexbmc>true</hidexbmc>
+			<!-- After 2 minutes bump the play count of the item in XBMC -->
+			<playcountminimumtime>120</playcountminimumtime>
+		</player>
+		
+		<!-- MXPlayer Free definition -->
+		<player name="MX Playerfree" type="ExternalPlayer" audio="false" video="true">
+			<!-- Android intent -->
+			<filename>com.mxtech.videoplayer.ad</filename>
+			<!-- Hide XBMC -->
+			<hidexbmc>true</hidexbmc>
+			<!-- After 2 minutes bump the play count of the item in XBMC -->
+			<playcountminimumtime>120</playcountminimumtime>
+		</player>
 
-  <rules name="system rules">
-    <rule name="mms/udp" protocols="mms|mmsh|udp" player="DVDPlayer" />
-    <rule name="lastfm/shout" protocols="lastfm|shout" player="PAPlayer" />
-    <rule name="rtmp" protocols="rtmp" player="videodefaultplayer" />
+		<!-- MX Player Pro definition -->
+		<player name="MX Player Pro" type="ExternalPlayer" audio="false" video="true">
+			<!-- Android intent -->
+			<filename>com.mxtech.videoplayer.pro</filename>
+			<!-- Hide XBMC -->
+			<hidexbmc>true</hidexbmc>
+			<!-- After 2 minutes bump the play count of the item in XBMC -->
+			<playcountminimumtime>120</playcountminimumtime>
+		</player>
 
-    <!-- dvdplayer can play standard rtsp streams -->
-    <rule name="rtsp" protocols="rtsp" filetypes="!(rm|ra)"  player="PAPlayer" />
+		<!-- Avia definition -->
+		<player name="Avia" type="ExternalPlayer" audio="false" video="true">
+			<!-- Android intent -->
+			<filename>com.videon.android.mediaplayer</filename>
+			<!-- Hide XBMC -->
+			<hidexbmc>true</hidexbmc>
+			<!-- After 2 minutes bump the play count of the item in XBMC -->
+			<playcountminimumtime>120</playcountminimumtime>
+		</player>
 
-    <!-- Internet streams -->
-    <rule name="streams" internetstream="true">
-      <rule name="aacp/sdp" mimetypes="audio/aacp|application/sdp" player="DVDPlayer" />
-      <rule name="mp2" mimetypes="application/octet-stream" filetypes="mp2" player="PAPlayer" />
-    </rule>
+		<!-- VLC Player definition -->
+		<player name="VLC" type="ExternalPlayer" audio="false" video="true">
+			<!-- Android intent -->
+			<filename>org.videolan.vlc</filename>
+			<!-- Hide XBMC -->
+			<hidexbmc>true</hidexbmc>
+			<!-- After 2 minutes bump the play count of the item in XBMC -->
+			<playcountminimumtime>120</playcountminimumtime>
+		</player>
 
-    <!-- DVDs -->
-    <rule name="dvd" dvd="true" player="DVDPlayer" />
-    <rule name="dvdimage" dvdimage="true" player="DVDPlayer" />
+		<!-- Allcast definition -->
+		<player name="Allcast" type="ExternalPlayer" audio="false" video="true">
+			<!-- Android intent -->
+			<filename>com.koushikdutta.cast</filename>
+			<!-- Hide XBMC -->
+			<hidexbmc>true</hidexbmc>
+			<!-- After 2 minutes bump the play count of the item in XBMC -->
+			<playcountminimumtime>120</playcountminimumtime>
+		</player>
 
-    <!-- Only dvdplayer can handle these normally -->
-    <rule name="sdp/asf" filetypes="sdp|asf" player="DVDPlayer" />
+		<!-- RockPlayer Lite definition -->
+		<player name="RockPlayerLite" type="ExternalPlayer" audio="false" video="true">
+			<!-- Android intent -->
+			<filename>com.redirectin.rockplayer.android.unified.lite</filename>
+			<!-- Hide XBMC -->
+			<hidexbmc>true</hidexbmc>
+			<!-- After 2 minutes bump the play count of the item in XBMC -->
+			<playcountminimumtime>120</playcountminimumtime>
+		</player>
 
-    <!-- Pass these to dvdplayer as we do not know if they are audio or video -->
-    <rule name="nsv" filetypes="nsv" player="DVDPlayer" />
+		<!-- BubbleUPnP definition -->
+		<player name="BubbleUPnP" type="ExternalPlayer" audio="false" video="true">
+			<!-- Android intent -->
+			<filename>com.bubblesoft.android.bubbleupnp</filename>
+			<!-- Hide XBMC -->
+			<hidexbmc>true</hidexbmc>
+			<!-- After 2 minutes bump the play count of the item in XBMC -->
+			<playcountminimumtime>120</playcountminimumtime>
+		</player>
 
-    <!-- pvr radio channels should be played by dvdplayer because they need buffering -->
-    <rule name="radio" filetypes="pvr" filename=".*/radio/.*" player="DVDPlayer" />
-  </rules>
+		<!-- Gallery definition -->
+		<player name="Gallery" type="ExternalPlayer" audio="false" video="true">
+			<!-- Android intent -->
+			<filename>com.android.gallery3d</filename>
+			<!-- Hide XBMC -->
+			<hidexbmc>true</hidexbmc>
+			<!-- After 2 minutes bump the play count of the item in XBMC -->
+			<playcountminimumtime>120</playcountminimumtime>
+		</player>
+
+		<!-- Vget definition -->
+		<player name="Vget" type="ExternalPlayer" audio="false" video="true">
+			<!-- Android intent -->
+			<filename>mb.videoget</filename>
+			<!-- Hide XBMC -->
+			<hidexbmc>true</hidexbmc>
+			<!-- After 2 minutes bump the play count of the item in XBMC -->
+			<playcountminimumtime>120</playcountminimumtime>
+		</player>
+
+		<!-- LocalCast definition -->
+		<player name="Localcast" type="ExternalPlayer" audio="false" video="true">
+			<!-- Android intent -->
+			<filename>de.stefanpledl.localcast</filename>
+			<!-- Hide XBMC -->
+			<hidexbmc>true</hidexbmc>
+			<!-- After 2 minutes bump the play count of the item in XBMC -->
+			<playcountminimumtime>120</playcountminimumtime>
+		</player>
+	
+	<!-- Rules for which external player to use -->
+	<!-- Cast2TV-PRO Pro is default
+	         change player= value to one of the above names to change this -->
+	<rules action="prepend">		
+		<!-- rtmp Streams -->
+		<rule protocols="rtmp" player="Cast2TV-Lite"/>
+		<rule protocols="http" player="Cast2TV-Lite"/>
+		<rule protocols="https" player="Cast2TV-Lite"/>
+		<rule protocols="rtmpe" player="Cast2TV-Lite"/>
+      
+		<!-- rtsp Streams -->
+		<rule protocols="rtsp" player="Cast2TV-Lite" />
+		
+		<!-- Video files -- Default rule (last to ensure above trigger first makes Cast2TV-PRO default for all playback -->
+		<rule video="true" player="Cast2TV-Lite"/>
+	</rules>
 </playercorefactory>
