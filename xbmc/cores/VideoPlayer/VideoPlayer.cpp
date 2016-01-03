@@ -3562,6 +3562,24 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
   if (hint.stereo_mode.empty())
     hint.stereo_mode = CStereoscopicsManager::GetInstance().DetectStereoModeByString(m_item.GetPath());
 
+  SelectionStream& s = m_SelectionStreams.Get(STREAM_VIDEO, 0);
+  switch(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_StereoMode)
+  {
+    case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+      s.stereo_mode = "left_right";
+      break;
+    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
+      s.stereo_mode = "top_bottom";
+      break;
+    default:
+      s.stereo_mode = hint.stereo_mode;
+      break;
+  }
+  if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_StereoInvert)
+    s.stereo_mode = RenderManager::GetStereoModeInvert(s.stereo_mode);
+  if (s.stereo_mode == "mono")
+    s.stereo_mode = "";
+
   if(hint.flags & AV_DISPOSITION_ATTACHED_PIC)
     return false;
 
