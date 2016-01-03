@@ -6,7 +6,13 @@ LIBNAME=libKODI_guilib
 OBJS=$(LIBNAME).o
 
 LIB_INTERFACE=../../../addons/library.kodi.guilib/libKODI_guilib.h
+
+ifeq ($(findstring osx,$(ARCH)), osx)
+LIB_SHARED=../../../addons/library.kodi.guilib/$(LIBNAME)-$(ARCH).dylib
+else
 LIB_SHARED=../../../addons/library.kodi.guilib/$(LIBNAME)-$(ARCH).so
+endif
+
 GENERATED_ADDON_GUILIB = ../../../addons/kodi.guilib/addon.xml
 LIB_VERSION := $(shell sed -n 's/.*KODI_GUILIB_API_VERSION\s*"\(.*\)"/\1/p' $(LIB_INTERFACE))
 LIB_VERSION_MIN := $(shell sed -n 's/.*KODI_GUILIB_MIN_API_VERSION\s*"\(.*\)"/\1/p' $(LIB_INTERFACE))
@@ -15,9 +21,7 @@ all: $(LIB_SHARED) $(GENERATED_ADDON_GUILIB)
 
 $(LIB_SHARED): $(OBJS) $(LIB_INTERFACE)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(LDFLAGS) -Wl,-alias_list,@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias \
-	-bundle -undefined dynamic_lookup -o $@ \
-	@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o $(OBJS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -dynamiclib -o $@ $(OBJS)
 else
 	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -g -o $(LIB_SHARED) $(OBJS)
 endif
