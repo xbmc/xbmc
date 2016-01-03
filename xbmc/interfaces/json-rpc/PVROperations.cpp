@@ -344,7 +344,7 @@ JSONRPC_STATUS CPVROperations::AddTimer(const std::string &method, ITransportLay
 
 	EpgSearchFilter filter;
 	filter.Reset();
-	filter.m_iUniqueBroadcastId=(int)parameterObject["broadcastid"].asInteger();
+	filter.m_iUniqueBroadcastId=(int)parameterObject["broadcastid"].asUnsignedInteger();
 
 	CFileItemList broadcasts;
 	int resultSize = g_EpgContainer.GetEPGSearch(broadcasts,filter);
