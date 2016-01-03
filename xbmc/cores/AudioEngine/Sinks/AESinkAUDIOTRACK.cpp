@@ -37,7 +37,7 @@
 
 #include <algorithm>
 
-#define DEBUG_VERBOSE 1
+//#define DEBUG_VERBOSE 1
 
 using namespace jni;
 
