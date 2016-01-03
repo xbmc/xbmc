@@ -289,7 +289,7 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
 
   GLfloat matrix[4][4];
   // keep video levels
-  CalculateYUVMatrixGL(matrix, m_flags, m_format, m_black, m_contrast, true);
+  CalculateYUVMatrixGL(matrix, m_flags, m_format, m_black, m_contrast, m_forceLimitedColorRange);
 
   glUniformMatrix4fv(m_hMatrix, 1, GL_FALSE, (GLfloat*)matrix);
 #if HAS_GLES == 2
