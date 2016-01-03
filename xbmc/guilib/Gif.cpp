@@ -333,13 +333,13 @@ bool Gif::GcbToFrame(GifFrame &frame, unsigned int imgIdx)
     }
     else
     {
-      frame.m_delay = UNSIGNED_LITTLE_ENDIAN(extb->Bytes[1], extb->Bytes[2]) * 10;
+      uint8_t low = static_cast<uint8_t>(extb->Bytes[1]);
+      uint8_t high = static_cast<uint8_t>(extb->Bytes[2]);
+      frame.m_delay = UNSIGNED_LITTLE_ENDIAN(low, high) * 10;
       frame.m_disposal = (extb->Bytes[0] >> 2) & 0x07;
       if (extb->Bytes[0] & 0x01)
       {
-        transparent = static_cast<int>(extb->Bytes[3]);
-        if (transparent < 0)
-          transparent += 256;
+        transparent = static_cast<uint8_t>(extb->Bytes[3]);
       }
       else
         transparent = -1;
