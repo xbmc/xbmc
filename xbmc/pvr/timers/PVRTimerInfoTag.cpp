@@ -69,6 +69,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   m_state               = PVR_TIMER_STATE_SCHEDULED;
   m_FirstDay.SetValid(false);
   m_iTimerId            = 0;
+  ResetChildState();
 
   if (g_PVRClients->SupportsTimers(m_iClientId))
   {
@@ -127,6 +128,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr 
   m_state               = timer.state;
   m_strFileNameAndPath  = StringUtils::Format("pvr://client%i/timers/%i", m_iClientId, m_iClientIndex);
   m_iTimerId            = 0;
+  ResetChildState();
 
   if (g_PVRClients->SupportsTimers(m_iClientId))
   {
@@ -207,7 +209,11 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           m_iMarginEnd          == right.m_iMarginEnd &&
           m_state               == right.m_state &&
           m_timerType           == right.m_timerType &&
-          m_iTimerId            == right.m_iTimerId);
+          m_iTimerId            == right.m_iTimerId &&
+          m_iActiveChildTimers  == right.m_iActiveChildTimers &&
+          m_bHasChildConflictNOK== right.m_bHasChildConflictNOK &&
+          m_bHasChildRecording  == right.m_bHasChildRecording &&
+          m_bHasChildErrors     == right.m_bHasChildErrors);
 }
 
 CPVRTimerInfoTag::~CPVRTimerInfoTag(void)
@@ -421,6 +427,22 @@ std::string CPVRTimerInfoTag::GetStatus() const
     strReturn = g_localizeStrings.Get(257);
   else if (m_state == PVR_TIMER_STATE_DISABLED)
     strReturn = g_localizeStrings.Get(13106);
+  else if (m_state == PVR_TIMER_STATE_COMPLETED)
+    if (m_bHasChildRecording)
+      strReturn = g_localizeStrings.Get(19162); // "Recording active"
+    else
+      strReturn = g_localizeStrings.Get(19256); // "Completed"
+  else if (m_state == PVR_TIMER_STATE_SCHEDULED || m_state == PVR_TIMER_STATE_NEW)
+  {
+    if (m_bHasChildRecording)
+      strReturn = g_localizeStrings.Get(19162); // "Recording active"
+    else if (m_bHasChildErrors)
+      strReturn = g_localizeStrings.Get(257);   // "Error"
+    else if (m_bHasChildConflictNOK)
+      strReturn = g_localizeStrings.Get(19276); // "Conflict error"
+    else if (m_iActiveChildTimers > 0)
+      strReturn = StringUtils::Format(g_localizeStrings.Get(19255).c_str(), m_iActiveChildTimers); // "%d scheduled"
+  }
 
   return strReturn;
 }
@@ -613,6 +635,46 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTagPtr &tag)
     UpdateSummary();
 
   return true;
+}
+
+bool CPVRTimerInfoTag::UpdateChildState(const CPVRTimerInfoTagPtr &childTimer)
+{
+  if (!childTimer || childTimer->m_iParentClientIndex != m_iClientIndex)
+    return false;
+
+  switch (childTimer->m_state)
+  {
+  case PVR_TIMER_STATE_NEW:
+  case PVR_TIMER_STATE_SCHEDULED:
+  case PVR_TIMER_STATE_CONFLICT_OK:
+    m_iActiveChildTimers++;
+    break;
+  case PVR_TIMER_STATE_RECORDING:
+    m_iActiveChildTimers++;
+    m_bHasChildRecording = true;
+    break;
+  case PVR_TIMER_STATE_CONFLICT_NOK:
+    m_bHasChildConflictNOK = true;
+    break;
+  case PVR_TIMER_STATE_ERROR:
+    m_bHasChildErrors = true;
+    break;
+  case PVR_TIMER_STATE_COMPLETED:
+  case PVR_TIMER_STATE_ABORTED:
+  case PVR_TIMER_STATE_CANCELLED:
+  case PVR_TIMER_STATE_DISABLED:
+    //these are not the child timers we are looking for
+    break;
+  }
+  return true;
+}
+
+void CPVRTimerInfoTag::ResetChildState()
+{
+  m_iActiveChildTimers = 0;
+  m_bHasChildConflictNOK = false;
+  m_bHasChildRecording = false;
+  m_bHasChildErrors = false;
 }
 
 bool CPVRTimerInfoTag::UpdateOnClient()
