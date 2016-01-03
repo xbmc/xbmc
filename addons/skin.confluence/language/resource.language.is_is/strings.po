@@ -398,7 +398,7 @@ msgstr "Kvikmyndavalmynd"
 
 msgctxt "#31356"
 msgid "Download subtitles"
-msgstr "Niðurhala þýðingartextum"
+msgstr "Sækja þýðingartexta"
 
 msgctxt "#31360"
 msgid "Watch as 2D"

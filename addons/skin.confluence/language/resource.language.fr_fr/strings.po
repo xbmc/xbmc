@@ -66,7 +66,7 @@ msgstr "Options diverses"
 
 msgctxt "#31027"
 msgid "Location"
-msgstr "Emplacement"
+msgstr "Lieu"
 
 msgctxt "#31028"
 msgid "Poster wrap"
@@ -370,7 +370,7 @@ msgstr "Ajouté récemment"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
-msgstr "[B]Minuterie programmée ![/B][COLOR=grey2] - Arrêt automatique du système dans[/COLOR]"
+msgstr "[B]Arrêt programmé ![/B][COLOR=grey2] - Le système s'arrêtera dans[/COLOR]"
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]movie trailer"
@@ -430,39 +430,39 @@ msgstr "Basée sur Arial"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]CONFIGURER LES PARAMÈTRES D'APPARENCE[/B][CR][CR]Changer l'habillage · Définir la langue et la région · Modifier les options de listage de fichiers · Configurer un économiseur d'écran"
+msgstr "[B]CONFIGURATION DES PARAMÈTRES D'APPARENCE[/B][CR][CR]Changement de l'habillage · Définition de la langue et de la région · Modification des options de listage de fichiers · Configuration d'un économiseur d'écran"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]CONFIGURER LES PARAMÈTRES DES VIDÉOS[/B][CR][CR]Gérer la vidéothèque · Définir les options de lecture de vidéos · Modifier les options de listage de vidéos · Définir es polices de sous-titres"
+msgstr "[B]CONFIGURATION DES PARAMÈTRES DES VIDÉOS[/B][CR][CR]Gestion de la vidéothèque · Définition des options de lecture de vidéos · Modification des options de listage de vidéos · Définition des polices de sous-titres"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
-msgstr "[B]CONFIGURER LES PARAMÈTRES DE MUSIQUE[/B][CR][CR]Gérer l'audiothèque · Définir les options de lecture · Modifier les options de listage de musique[CR]Configurer la soumission de chanson"
+msgstr "[B]CONFIGURATION DES PARAMÈTRES DE MUSIQUE[/B][CR][CR]Gestion de l'audiothèque · Définition des options de lecture · Modification des options de listes de musique[CR]Configuration de la soumission de chanson"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
-msgstr "[B]CONFIGURER LES PARAMÈTRES DES IMAGES[/B][CR][CR]Définir les options de listage d'images · Configurer le diaporama"
+msgstr "[B]CONFIGURATION DES PARAMÈTRES DES IMAGES[/B][CR][CR]Définition des options de listage d'images · Configuration du diaporama"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set various cities to collect weather information"
-msgstr "[B]CONFIGURER LES PARAMÈTRES DE LA MÉTÉO[/B][CR][CR]Définir les différentes villes pour collecter les informations météo"
+msgstr "[B]CONFIGURATION DES PARAMÈTRES DE LA MÉTÉO[/B][CR][CR]Définition des différentes villes pour collecter les informations météo"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B]CONFIGURER LES PARAMÈTRES DU SYSTÈME[/B][CR][CR]Configurer et calibrer les écrans · Configurer la sortie audio · Configurer les télécommandes[CR]Définir les options de gestion d'énergie · Activer le débogage · Configurer le verrouillage maître"
+msgstr "[B]CONFIGURATION DES PARAMÈTRES DU SYSTÈME[/B][CR][CR]Configuration et calibration des écrans · Configuration de la sortie audio · Configuration des télécommandes · Définition des options de gestion d'énergie · Activation du débogage · Configuration du verrouillage maître"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from kodi.tv[CR]Modify add-on settings"
-msgstr "[B]CONFIGURER LES EXTENSIONS[/B][CR][CR]Gérer vos extensions installées · Rechercher et installer des extensions depuis kodi.tv[CR]Modifier les paramètres des extensions"
+msgstr "[B]CONFIGURATION DES EXTENSIONS[/B][CR][CR]Gestion des extensions installées · Parcours et installation des extensions depuis kodi.tv[CR]Modification des paramètres des extensions"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]CONFIGURER LES PARAMÈTRES TV[/B][CR][CR]Changer les informations de plein écran · Gérer les données du guide des programmes"
+msgstr "[B]CONFIGURATION DES RÉGLAGES TV[/B][CR][CR]Modification des informations de plein écran · Gestion des données du guide électronique des programmes TV"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]CONFIGURER LES PARAMÈTRES DES SERVICES[/B][CR][CR]Configurer le contrôle de Kodi via UPnP et HTTP · Configurer le partage de fichiers[CR]Activer Zeroconf · Configurer AirPlay"
+msgstr "[B]CONFIGURATION DES PARAMÈTRES DES SERVICES[/B][CR][CR]Configuration du contrôle de Kodi via UPnP et HTTP · Configuration du partage de fichiers · Activation Zeroconf · Configuration AirPlay"
 
 msgctxt "#31411"
 msgid "First run help..."

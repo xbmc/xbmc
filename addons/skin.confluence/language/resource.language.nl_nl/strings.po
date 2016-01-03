@@ -22,7 +22,7 @@ msgstr "Verander je"
 
 msgctxt "#31003"
 msgid "Power options"
-msgstr "vermogen opties"
+msgstr "Energiebeheer"
 
 msgctxt "#31004"
 msgid "Working..."
@@ -62,7 +62,7 @@ msgstr "Items"
 
 msgctxt "#31026"
 msgid "Misc options"
-msgstr "Diverse Opties"
+msgstr "Overige opties"
 
 msgctxt "#31027"
 msgid "Location"
@@ -186,7 +186,7 @@ msgstr "Verberg markeringen gelezen uit bestandsnamen[COLOR=grey3](Bijv. Blu-ray
 
 msgctxt "#31108"
 msgid "Hide main menu buttons"
-msgstr "Verberg hoofd menu knoppen"
+msgstr "Verberg knoppen in het hoofdmenu"
 
 msgctxt "#31109"
 msgid "Enable custom background"
@@ -226,7 +226,7 @@ msgstr "Verberg EPG wanneer RDS aanwezig is op kanaalvenster"
 
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
-msgstr "Toon achtergrond \"nu afspelend\" video"
+msgstr "Toon achtergrond \"Nu afspelend\" video"
 
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"

@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "배경 팬아트 숨김"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "채널창에서 RDS 가 있으면 EPG 숨김"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "배경에 \"지금 재생 중\" 비디오 보기"
