@@ -10,14 +10,14 @@ dnl -------------------
 dnl Version information
 define(CP_M4_VERSION_MAJOR, [0])
 define(CP_M4_VERSION_MINOR, [1])
-define(CP_M4_VERSION_REV, [3])
+define(CP_M4_VERSION_REV, [4])
 define(CP_M4_RELEASE_VERSION, CP_M4_VERSION_MAJOR.CP_M4_VERSION_MINOR.CP_M4_VERSION_REV)
 
 dnl Backwards compatibility information
 define(CP_M4_ABI_COMPATIBILITY, [0.1])
 
 dnl Library version information
-define(CP_M4_C_LIB_VERSION, [0:3:0])
+define(CP_M4_C_LIB_VERSION, [1:0:1])
 define(CP_M4_CXX_LIB_VERSION, [0:0:0])
 
 # Autoconf initialization
@@ -44,8 +44,7 @@ AC_SUBST([CP_CXX_LIB_VERSION])
 
 # Automake initialization
 # -----------------------
-AM_INIT_AUTOMAKE([foreign])
-m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+AM_INIT_AUTOMAKE([foreign subdir-objects])
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.16.1])
 
@@ -58,6 +57,15 @@ if test -z "$CC"; then
 fi
 AC_PROG_CC_C_O
 AC_C_CONST
+case "$ac_cv_c_const" in
+  no)
+    DEFINE_EMPTY_CONST=1
+    ;;
+  *)
+    DEFINE_EMPTY_CONST=0
+    ;;
+esac
+AC_SUBST([DEFINE_EMPTY_CONST])
 AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
@@ -74,6 +82,7 @@ CPPFLAGS="$CPPFLAGS -I\$(top_builddir)/libcpluff -I\$(top_srcdir)/libcpluff"
 
 # Substitute variables for libcpluff and non-libcpluff components
 AC_SUBST([LIBS_LIBCPLUFF])
+AC_SUBST([LIBS_TESTSUITE])
 AC_SUBST([LIBS_OTHER])
 
 # Define shared library extension
@@ -105,8 +114,8 @@ if test "$enable_threads" != no; then
   # Check for Posix thread support
   if test -z "$cp_threads" && \
     ( test -z "$enable_threads" || test "$enable_threads" = Posix ); then
-    AC_MSG_CHECKING([for Posix threads])
-    AC_LINK_IFELSE(
+    AC_CACHE_CHECK([for Posix threads], [cp_cv_sys_pthread],
+      [AC_LINK_IFELSE(
 [AC_LANG_SOURCE([#include <pthread.h>
 
 int main(int argc, char **argv) {
@@ -115,23 +124,27 @@ int main(int argc, char **argv) {
 	pthread_mutex_init(&mutex, NULL);
 	return 0;
 }
-])], [AC_MSG_RESULT([yes])
-cp_threads=Posix], AC_MSG_RESULT([no]))
+])], [cp_cv_sys_pthread=yes], [cp_cv_sys_pthread=no])])
+    if test "$cp_cv_sys_pthread" = yes; then
+      cp_threads=Posix
+    fi
   fi
   
   # Check for Windows thread suppport
   if test -z "$cp_threads" && \
     ( test -z "$enable_threads" || test "$enable_threads" = Windows ); then
-    AC_MSG_CHECKING([for Windows threads])
-    AC_LINK_IFELSE(
+    AC_CACHE_CHECK([for Windows threads], [cp_cv_sys_wthread],
+      [AC_LINK_IFELSE(
 [AC_LANG_SOURCE([#include <windows.h>
 
 int main(int argc, char **argv) {
   CreateMutex(NULL, FALSE, NULL);
   return 0;
 }
-])], [AC_MSG_RESULT([yes])
-cp_threads=Windows], AC_MSG_RESULT([no]))
+])], [cp_cv_sys_wthread=yes], [cp_cv_sys_wthread=no])])
+    if test "$cp_cv_sys_wthread" = yes; then
+      cp_threads=Windows
+    fi
   fi
   
   # Check if we got the desired thread support
@@ -166,13 +179,12 @@ dlmechanism=none
 if test "$with_dlopen" != no && test "$with_libltdl" != yes; then
   AC_CHECK_HEADER([dlfcn.h],
     AC_CHECK_LIB([dl], [dlopen],
-      [LIBS_LIBCPLUFF="-ldl $LIBS_LIBCPLUFF"; dlmechanism=dlopen],
-	AC_CHECK_LIB([c], [dlopen], [dlmechanism=dlopen])))
+      [LIBS_DL="-ldl $LIBS_DL"; dlmechanism=dlopen]))
 fi
 if test "$dlmechanism" = none && test "$with_libltdl" != no && test "$with_dlopen" != yes; then  
   AC_CHECK_HEADER([ltdl.h],
     AC_CHECK_LIB([ltdl], [lt_dlopen],
-      [LIBS_LIBCPLUFF="-lltdl $LIBS_LIBCPLUFF"; dlmechanism=libltdl]))
+      [LIBS_DL="-lltdl $LIBS_DL"; dlmechanism=libltdl]))
 fi
 case "$dlmechanism" in
   dlopen)
@@ -185,6 +197,8 @@ case "$dlmechanism" in
     AC_MSG_ERROR([Either the Posix dlopen facility or GNU Libtool libltdl is required])
     ;;
 esac
+LIBS_LIBCPLUFF="$LIBS_DL $LIBS_LIBCPLUFF"
+LIBS_TESTSUITE="$LIBS_DL $LIBS_TESTSUITE"
 
 # Check for Expat XML parsing library
 # -----------------------------------
@@ -216,6 +230,19 @@ LIBS_OTHER="\$(top_builddir)/libcpluff/libcpluff.la $LIBS_OTHER"
 # ------------------------------
 AC_CHECK_FUNCS([stat lstat])
 
+# Check for isatty and fileno functions
+# -------------------------------------
+AC_MSG_CHECKING([for isatty and fileno])
+AC_LINK_IFELSE(
+[AC_LANG_SOURCE([#include <unistd.h>
+#include <stdio.h>
+
+int main(int argc, char **argv) {
+  return isatty(fileno(stdin));
+}
+])], [AC_MSG_RESULT([yes])
+AC_DEFINE([HAVE_ISATTY_FILENO],[],[Define to use isatty and fileno])], AC_MSG_RESULT([no]))
+
 # Debugging support
 # -----------------
 AC_ARG_ENABLE([debug],
@@ -228,6 +255,7 @@ AC_ARG_ENABLE([gcc-warnings],
     [enable default set of GCC compiler warnings]))
 if test "$enable_gcc_warnings" = yes; then
   CFLAGS="$CFLAGS -Wall -pedantic -std=gnu99"
+  CXXFLAGS="$CXXFLAGS -Wall -pedantic -std=c++0x"
 fi
 
 # File name separator character
@@ -310,6 +338,7 @@ AC_MSG_NOTICE([    CFLAGS='$CFLAGS'])
 AC_MSG_NOTICE([    LDFLAGS='$LDFLAGS'])
 AC_MSG_NOTICE([    LIBS='$LIBS'])
 AC_MSG_NOTICE([    LIBS_LIBCPLUFF='$LIBS_LIBCPLUFF'])
+AC_MSG_NOTICE([    LIBS_TESTSUITE='$LIBS_TESTSUITE'])
 AC_MSG_NOTICE([    LIBS_OTHER='$LIBS_OTHER'])
 AC_MSG_NOTICE([    LIB_READLINE='$LIB_READLINE'])
 AC_MSG_NOTICE([    LTLIBINTL='$LTLIBINTL'])

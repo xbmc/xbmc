@@ -25,7 +25,9 @@ examples-install: install
 dist-hook:
 	rm -f '$(distdir)/ABOUT-NLS'
 
-distcheck-hook:
+distcheck-hook: distcheck-potfiles distcheck-examples
+
+distcheck-potfiles:
 	files="`cd '$(srcdir)' && find console libcpluff loader -type f -name '*.[ch]' -exec grep -q '_(' '{}' \; -print`"; \
 		rc=0; \
 		for f in $$files; do \
@@ -35,6 +37,27 @@ distcheck-hook:
 			fi; \
 		done; \
 		exit $$rc
+
+distcheck-examples:
+	{ test ! -d _examples_test || { \
+			chmod -R u+w _examples_test; \
+			rm -rf _examples_test; } && \
+		mkdir _examples_test && \
+		absdistdir="`cd '$(distdir)' && pwd`" && \
+		cd _examples_test && \
+		instdir="`pwd`/_inst" && \
+		"$$absdistdir"/configure --prefix="$$instdir" && \
+		make install && \
+		cd _inst/share/doc/cpluff/examples && \
+		./autogen.sh && \
+		CPPFLAGS="-I$$instdir/include" LDFLAGS="-L$$instdir/lib" CPLUFF_LOADER="$$instdir/bin/cpluff-loader" ./configure --prefix="$$instdir" && \
+		make install && \
+		test "`LC_ALL=C "$$instdir"/bin/cpfile . | tail -1`" = ".: directory" && \
+		cd ../../../../../.. && \
+		chmod -R u+w _examples_test && \
+		rm -rf _examples_test; } || \
+		{ echo "Could not compile, install or run example source code"; \
+			exit 1; }
 
 clean-local:
 	test ! -f examples/Makefile || (cd examples && $(MAKE) $(AM_MAKEFLAGS) clean)

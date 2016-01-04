@@ -2,10 +2,8 @@ INSTALLING C-PLUFF
 ==================
 
 These are instructions for building and installing the C-Pluff framework
-implementation using the source code distribution. Precompiled binaries
-are available for some platforms at the download page
-
-  http://www.c-pluff.org/download
+implementation using the source code distribution or the source code from the
+version control repository.
 
 For help on building C-Pluff based applications, see the examples in the
 examples directory.
@@ -15,6 +13,8 @@ Prerequisites
 -------------
 
 To build C-Pluff, you need to have following prerequisites installed:
+
+  - GNU Make, C/C++ compiler (GCC), etc.
 
   - a C library supporting POSIX dlopen
     (for example, GNU C library)
@@ -34,10 +34,34 @@ Following components are optional and are used if they are installed:
     (http://cnswww.cns.cwru.edu/php/chet/readline/rltop.html)
 
 
+Preparing GNU Autotools build environment
+-----------------------------------------
+
+If you are using a pre-packaged source distribution cpluff-VERSION.tar.gz then
+you may skip directly to section Building.
+
+If you are building from source checked out from the version control repository
+then you have to first prepare the GNU autotools build environment. To do this,
+simply execute the following command in the top level source directory.
+
+  ./autogen.sh
+
+The following tools must be installed to successfully prepare the build
+environment.
+
+  - GNU Gettext
+
+  - GNU Libtool
+
+  - GNU Automake
+
+  - GNU Autoconf
+
+
 Building
 --------
 
-To build C-Pluff, follow the usual autotools procedure:
+To build C-Pluff, follow the usual Autotools procedure:
 
   Building in the source directory:
     ./configure
@@ -74,22 +98,3 @@ root directory during installation. This is typically used to create
 binary packages.
 
   make DESTDIR=/tmp/installation install
-
-
-Known good build platforms
---------------------------
-
-C-Pluff is known to compile cleanly on following combinations:
-
-  - Native Linux build
-    - GCC 4.1.2
-    - GNU C library 2.3.6
-    - Expat 1.95.8
-
-  - Cross compilation for Windows on Linux
-    - MinGW Runtime 3.9
-    - MinGW binutils 2.16.91
-    - MinGW 3.4.5
-    - Expat 2.0.0 (or 1.95.8 or 1.95.1)
-    - GNU Libtool libltdl 1.5.22
-    - GNU Gettext 0.16.1 (or 0.14.4)

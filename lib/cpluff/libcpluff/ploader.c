@@ -25,6 +25,10 @@
  * Plug-in descriptor loader
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -161,15 +165,15 @@ static void descriptor_errorf(ploader_context_t *plcontext, int warn,
 		cpi_warnf(plcontext->context,
 			N_("Suspicious plug-in descriptor content in %s, line %d, column %d (%s)."),
 		plcontext->file,
-		XML_GetCurrentLineNumber(plcontext->parser),
-		XML_GetCurrentColumnNumber(plcontext->parser) + 1,
+		(int) XML_GetCurrentLineNumber(plcontext->parser),
+		(int) XML_GetCurrentColumnNumber(plcontext->parser) + 1,
 		message);
 	} else {				
 		cpi_errorf(plcontext->context,
 			N_("Invalid plug-in descriptor content in %s, line %d, column %d (%s)."),
 			plcontext->file,
-			XML_GetCurrentLineNumber(plcontext->parser),
-			XML_GetCurrentColumnNumber(plcontext->parser) + 1,
+			(int) XML_GetCurrentLineNumber(plcontext->parser),
+			(int) XML_GetCurrentColumnNumber(plcontext->parser) + 1,
 			message);
 	}
 	if (!warn) {
@@ -188,8 +192,8 @@ static void resource_error(ploader_context_t *plcontext) {
 		cpi_errorf(plcontext->context,
 			N_("Insufficient system resources to parse plug-in descriptor content in %s, line %d, column %d."),
 			plcontext->file,
-			XML_GetCurrentLineNumber(plcontext->parser),
-			XML_GetCurrentColumnNumber(plcontext->parser) + 1);
+			(int) XML_GetCurrentLineNumber(plcontext->parser),
+			(int) XML_GetCurrentColumnNumber(plcontext->parser) + 1);
 	}
 	plcontext->resource_error_count++;
 }
@@ -976,6 +980,152 @@ static void dealloc_plugin_info(cp_context_t *ctx, cp_plugin_info_t *plugin) {
 	cpi_free_plugin(plugin);
 }
 
+static cp_status_t init_descriptor_parsing(cp_context_t *context, ploader_context_t **plcontextptr, XML_Parser *parserptr, char *file) {
+	XML_Parser parser;
+	ploader_context_t *plcontext;
+
+	// Initialize the XML parsing 
+	*parserptr = parser = XML_ParserCreate(NULL);
+	if (parser == NULL) {
+		return CP_ERR_RESOURCE;
+	}
+	XML_SetElementHandler(parser,
+		start_element_handler,
+		end_element_handler);
+		
+	// Initialize the parsing context 
+	if ((*plcontextptr = plcontext = malloc(sizeof(ploader_context_t))) == NULL) {
+		return CP_ERR_RESOURCE;
+	}
+	memset(plcontext, 0, sizeof(ploader_context_t));
+	if ((plcontext->plugin = malloc(sizeof(cp_plugin_info_t))) == NULL) {
+		return CP_ERR_RESOURCE;
+	}
+	plcontext->context = context;
+	plcontext->configuration = NULL;
+	plcontext->value = NULL;
+	plcontext->parser = parser;
+	plcontext->file = file;
+	plcontext->state = PARSER_BEGIN;
+	memset(plcontext->plugin, 0, sizeof(cp_plugin_info_t));
+	plcontext->plugin->name = NULL;
+	plcontext->plugin->identifier = NULL;
+	plcontext->plugin->version = NULL;
+	plcontext->plugin->provider_name = NULL;
+	plcontext->plugin->abi_bw_compatibility = NULL;
+	plcontext->plugin->api_bw_compatibility = NULL;
+	plcontext->plugin->plugin_path = NULL;
+	plcontext->plugin->req_cpluff_version = NULL;
+	plcontext->plugin->imports = NULL;
+	plcontext->plugin->runtime_lib_name = NULL;
+	plcontext->plugin->runtime_funcs_symbol = NULL;
+	plcontext->plugin->ext_points = NULL;
+	plcontext->plugin->extensions = NULL;
+	XML_SetUserData(parser, plcontext);
+
+	return CP_OK;
+}
+
+static cp_status_t do_descriptor_parsing(XML_Parser parser, cp_context_t *context, ploader_context_t *plcontext, char *file, unsigned int buffer_len) {
+	int i;
+
+	// Parse the data 
+	if (!(i = XML_ParseBuffer(parser, buffer_len, buffer_len == 0))
+		&& context != NULL) {
+		cpi_lock_context(context);
+		cpi_errorf(context,
+			N_("XML parsing error in %s, line %d, column %d (%s)."),
+			file,
+			(int) XML_GetErrorLineNumber(parser),
+			(int) (XML_GetErrorColumnNumber(parser) + 1),
+			XML_ErrorString(XML_GetErrorCode(parser)));
+		cpi_unlock_context(context);
+	}
+	if (!i || plcontext->state == PARSER_ERROR) {
+		return CP_ERR_MALFORMED;
+	} else {
+		return CP_OK;
+	}
+}
+
+static cp_status_t finish_descriptor_parsing(cp_status_t status, cp_context_t *context, ploader_context_t *plcontext, char **path) {
+	if (status == CP_OK) {
+		if (plcontext->state != PARSER_END || plcontext->error_count > 0) {
+			status = CP_ERR_MALFORMED;
+		}
+		if (plcontext->resource_error_count > 0) {
+			status = CP_ERR_RESOURCE;
+		}
+	}
+	if (status != CP_OK) {
+		return status;
+	}
+
+	// Initialize the plug-in path 
+	plcontext->plugin->plugin_path = *path;
+	*path = NULL;
+
+	// Increase plug-in usage count
+	status = cpi_register_info(context, plcontext->plugin, (void (*)(cp_context_t *, void *)) dealloc_plugin_info);
+	return status;
+
+}
+
+static void check_cleanup_descriptor_parsing(cp_status_t status, cp_context_t *context, ploader_context_t *plcontext, XML_Parser parser, const char *path, char *file, cp_plugin_info_t **plugin) {
+
+	// Report possible errors
+	if (status != CP_OK) {
+		switch (status) {
+			case CP_ERR_MALFORMED:
+				cpi_errorf(context,
+					N_("Plug-in descriptor in %s is invalid."), path);
+				break;
+			case CP_ERR_IO:
+				cpi_errorf(context,
+					N_("An I/O error occurred while loading a plug-in descriptor from %s."), path);
+				break;
+			case CP_ERR_RESOURCE:
+				cpi_errorf(context,
+					N_("Insufficient system resources to load a plug-in descriptor from %s."), path);
+				break;
+			default:
+				cpi_errorf(context,
+					N_("Failed to load a plug-in descriptor from %s."), path);
+				break;
+		}
+	}
+	cpi_unlock_context(context);
+
+	// Release persistently allocated data on failure 
+	if (status != CP_OK) {
+		if (file != NULL) {
+			free(file);
+		}
+		if (plcontext != NULL && plcontext->plugin != NULL) {
+			cpi_free_plugin(plcontext->plugin);
+			plcontext->plugin = NULL;
+		}
+	}
+	
+	// Otherwise copy the plug-in pointer
+	else {
+		*plugin = plcontext->plugin;
+	}
+
+	// Release data allocated for parsing 
+	if (parser != NULL) {
+		XML_ParserFree(parser);
+	}
+	if (plcontext != NULL) {
+		if (plcontext->value != NULL) {
+			free(plcontext->value);
+		}
+		free(plcontext);
+		plcontext = NULL;
+	}
+
+}
+
 CP_C_API cp_plugin_info_t * cp_load_plugin_descriptor(cp_context_t *context, const char *path, cp_status_t *error) {
 	char *file = NULL;
 	cp_status_t status = CP_OK;
@@ -1015,53 +1165,16 @@ CP_C_API cp_plugin_info_t * cp_load_plugin_descriptor(cp_context_t *context, con
 			break;
 		}
 
-		// Initialize the XML parsing 
-		parser = XML_ParserCreate(NULL);
-		if (parser == NULL) {
-			status = CP_ERR_RESOURCE;
+		// Initialize descriptor parsing
+		status = init_descriptor_parsing(context, &plcontext, &parser, file);
+		if (status != CP_OK) {
 			break;
 		}
-		XML_SetElementHandler(parser,
-			start_element_handler,
-			end_element_handler);
-		
-		// Initialize the parsing context 
-		if ((plcontext = malloc(sizeof(ploader_context_t))) == NULL) {
-			status = CP_ERR_RESOURCE;
-			break;
-		}
-		memset(plcontext, 0, sizeof(ploader_context_t));
-		if ((plcontext->plugin = malloc(sizeof(cp_plugin_info_t))) == NULL) {
-			status = CP_ERR_RESOURCE;
-			break;
-		}
-		plcontext->context = context;
-		plcontext->configuration = NULL;
-		plcontext->value = NULL;
-		plcontext->parser = parser;
-		plcontext->file = file;
-		plcontext->state = PARSER_BEGIN;
-		memset(plcontext->plugin, 0, sizeof(cp_plugin_info_t));
-		plcontext->plugin->name = NULL;
-		plcontext->plugin->identifier = NULL;
-		plcontext->plugin->version = NULL;
-		plcontext->plugin->provider_name = NULL;
-		plcontext->plugin->abi_bw_compatibility = NULL;
-		plcontext->plugin->api_bw_compatibility = NULL;
-		plcontext->plugin->plugin_path = NULL;
-		plcontext->plugin->req_cpluff_version = NULL;
-		plcontext->plugin->imports = NULL;
-		plcontext->plugin->runtime_lib_name = NULL;
-		plcontext->plugin->runtime_funcs_symbol = NULL;
-		plcontext->plugin->ext_points = NULL;
-		plcontext->plugin->extensions = NULL;
-		XML_SetUserData(parser, plcontext);
 
 		// Parse the plug-in descriptor 
 		while (1) {
-			int bytes_read;
+			unsigned int bytes_read;
 			void *xml_buffer;
-			int i;
 			
 			// Get buffer from Expat 
 			if ((xml_buffer = XML_GetBuffer(parser, CP_XML_PARSER_BUFFER_SIZE))
@@ -1078,103 +1191,21 @@ CP_C_API cp_plugin_info_t * cp_load_plugin_descriptor(cp_context_t *context, con
 			}
 
 			// Parse the data 
-			if (!(i = XML_ParseBuffer(parser, bytes_read, bytes_read == 0))
-				&& context != NULL) {
-				cpi_lock_context(context);
-				cpi_errorf(context,
-					N_("XML parsing error in %s, line %d, column %d (%s)."),
-					file,
-					XML_GetErrorLineNumber(parser),
-					XML_GetErrorColumnNumber(parser) + 1,
-					XML_ErrorString(XML_GetErrorCode(parser)));
-				cpi_unlock_context(context);
-			}
-			if (!i || plcontext->state == PARSER_ERROR) {
-				status = CP_ERR_MALFORMED;
+			status = do_descriptor_parsing(parser, context, plcontext, file, bytes_read);
+			if (status != CP_OK || bytes_read == 0) {
 				break;
 			}
-			
-			if (bytes_read == 0) {
-				break;
-			}
-		}
-		if (status == CP_OK) {
-			if (plcontext->state != PARSER_END || plcontext->error_count > 0) {
-				status = CP_ERR_MALFORMED;
-			}
-			if (plcontext->resource_error_count > 0) {
-				status = CP_ERR_RESOURCE;
-			}
-		}
-		if (status != CP_OK) {
-			break;
 		}
 
-		// Initialize the plug-in path 
+		// Finish parsing
 		*(file + path_len) = '\0';
-		plcontext->plugin->plugin_path = file;
-		file = NULL;
-		
-		// Increase plug-in usage count
-		if ((status = cpi_register_info(context, plcontext->plugin, (void (*)(cp_context_t *, void *)) dealloc_plugin_info)) != CP_OK) {
-			break;
-		}
-		
+		status = finish_descriptor_parsing(status, context, plcontext, &file);
 	} while (0);
 
-	// Report possible errors
-	if (status != CP_OK) {
-		switch (status) {
-			case CP_ERR_MALFORMED:
-				cpi_errorf(context,
-					N_("Plug-in descriptor in %s is invalid."), path);
-				break;
-			case CP_ERR_IO:
-				cpi_debugf(context,
-					N_("An I/O error occurred while loading a plug-in descriptor from %s."), path);
-				break;
-			case CP_ERR_RESOURCE:
-				cpi_errorf(context,
-					N_("Insufficient system resources to load a plug-in descriptor from %s."), path);
-				break;
-			default:
-				cpi_errorf(context,
-					N_("Failed to load a plug-in descriptor from %s."), path);
-				break;
-		}
-	}
-	cpi_unlock_context(context);
-
-	// Release persistently allocated data on failure 
-	if (status != CP_OK) {
-		if (file != NULL) {
-			free(file);
-			file = NULL;
-		}
-		if (plcontext != NULL && plcontext->plugin != NULL) {
-			cpi_free_plugin(plcontext->plugin);
-			plcontext->plugin = NULL;
-		}
-	}
-	
-	// Otherwise copy the plug-in pointer
-	else {
-		plugin = plcontext->plugin;
-	}
-
-	// Release data allocated for parsing 
-	if (parser != NULL) {
-		XML_ParserFree(parser);
-	}
+	// Check and clean up
+	check_cleanup_descriptor_parsing(status, context, plcontext, parser, path, file, &plugin);
 	if (fh != NULL) {
 		fclose(fh);
-	}
-	if (plcontext != NULL) {
-		if (plcontext->value != NULL) {
-			free(plcontext->value);
-		}
-		free(plcontext);
-		plcontext = NULL;
 	}
 
 	// Return error code
@@ -1187,7 +1218,7 @@ CP_C_API cp_plugin_info_t * cp_load_plugin_descriptor(cp_context_t *context, con
 
 CP_C_API cp_plugin_info_t * cp_load_plugin_descriptor_from_memory(cp_context_t *context, const char *buffer, unsigned int buffer_len, cp_status_t *error) {
 	char *file = NULL;
-  const char *path = "memory";
+	const char *path = "memory";
 	cp_status_t status = CP_OK;
 	XML_Parser parser = NULL;
 	ploader_context_t *plcontext = NULL;
@@ -1204,157 +1235,43 @@ CP_C_API cp_plugin_info_t * cp_load_plugin_descriptor_from_memory(cp_context_t *
 			status = CP_ERR_RESOURCE;
 			break;
 		}
-    strcpy(file, path);
+		strcpy(file, path);
 
-		// Initialize the XML parsing 
-		parser = XML_ParserCreate(NULL);
-		if (parser == NULL) {
-			status = CP_ERR_RESOURCE;
-			break;
-		}
-		XML_SetElementHandler(parser,
-			start_element_handler,
-			end_element_handler);
-		
-		// Initialize the parsing context 
-		if ((plcontext = malloc(sizeof(ploader_context_t))) == NULL) {
-			status = CP_ERR_RESOURCE;
-			break;
-		}
-		memset(plcontext, 0, sizeof(ploader_context_t));
-		if ((plcontext->plugin = malloc(sizeof(cp_plugin_info_t))) == NULL) {
-			status = CP_ERR_RESOURCE;
-			break;
-		}
-		plcontext->context = context;
-		plcontext->configuration = NULL;
-		plcontext->value = NULL;
-		plcontext->parser = parser;
-		plcontext->file = file;
-		plcontext->state = PARSER_BEGIN;
-		memset(plcontext->plugin, 0, sizeof(cp_plugin_info_t));
-		plcontext->plugin->name = NULL;
-		plcontext->plugin->identifier = NULL;
-		plcontext->plugin->version = NULL;
-		plcontext->plugin->provider_name = NULL;
-		plcontext->plugin->abi_bw_compatibility = NULL;
-		plcontext->plugin->api_bw_compatibility = NULL;
-		plcontext->plugin->plugin_path = NULL;
-		plcontext->plugin->req_cpluff_version = NULL;
-		plcontext->plugin->imports = NULL;
-		plcontext->plugin->runtime_lib_name = NULL;
-		plcontext->plugin->runtime_funcs_symbol = NULL;
-		plcontext->plugin->ext_points = NULL;
-		plcontext->plugin->extensions = NULL;
-		XML_SetUserData(parser, plcontext);
-
-		// Parse the plug-in descriptor 
-    do {
-		  void *xml_buffer;
-		  int i;
-  		
-		  // Get buffer from Expat 
-		  if ((xml_buffer = XML_GetBuffer(parser, buffer_len))
-			  == NULL) {
-			  status = CP_ERR_RESOURCE;
-			  break;
-		  }
-  		
-		  // Read data into buffer
-      memcpy(xml_buffer, buffer, buffer_len);
-
-		  // Parse the data 
-		  if (!(i = XML_ParseBuffer(parser, buffer_len, 1))
-			  && context != NULL) {
-			  cpi_lock_context(context);
-			  cpi_errorf(context,
-				  N_("XML parsing error in %s, line %d, column %d (%s)."),
-				  file,
-				  XML_GetErrorLineNumber(parser),
-				  XML_GetErrorColumnNumber(parser) + 1,
-				  XML_ErrorString(XML_GetErrorCode(parser)));
-			  cpi_unlock_context(context);
-		  }
-		  if (!i || plcontext->state == PARSER_ERROR) {
-			  status = CP_ERR_MALFORMED;
-			  break;
-		  }
-    } while (0);
-		if (status == CP_OK) {
-			if (plcontext->state != PARSER_END || plcontext->error_count > 0) {
-				status = CP_ERR_MALFORMED;
-			}
-			if (plcontext->resource_error_count > 0) {
-				status = CP_ERR_RESOURCE;
-			}
-		}
+		// Initialize descriptor parsing
+		status = init_descriptor_parsing(context, &plcontext, &parser, file);
 		if (status != CP_OK) {
 			break;
 		}
-    
-		// Initialize the plug-in path 
+
+		// Parse the plug-in descriptor 
+		do {
+			void *xml_buffer;
+  		
+			// Get buffer from Expat 
+			if ((xml_buffer = XML_GetBuffer(parser, buffer_len))
+					== NULL) {
+				status = CP_ERR_RESOURCE;
+				break;
+			}
+
+			// Read data into buffer
+			memcpy(xml_buffer, buffer, buffer_len);
+
+			// Parse the data 
+			status = do_descriptor_parsing(parser, context, plcontext, file, buffer_len);
+			if (status == CP_OK) {
+				status = do_descriptor_parsing(parser, context, plcontext, file, 0);
+			}
+		} while (0);
+
+		// Finish parsing
 		*(file + path_len) = '\0';
-		plcontext->plugin->plugin_path = file;
-		file = NULL;
-		
-		// Increase plug-in usage count
-		if ((status = cpi_register_info(context, plcontext->plugin, (void (*)(cp_context_t *, void *)) dealloc_plugin_info)) != CP_OK) {
-			break;
-		}
+		status = finish_descriptor_parsing(status, context, plcontext, &file);
 		
 	} while (0);
 
-	// Report possible errors
-	if (status != CP_OK) {
-		switch (status) {
-			case CP_ERR_MALFORMED:
-				cpi_errorf(context,
-					N_("Plug-in descriptor in %s is invalid."), path);
-				break;
-			case CP_ERR_IO:
-				cpi_debugf(context,
-					N_("An I/O error occurred while loading a plug-in descriptor from %s."), path);
-				break;
-			case CP_ERR_RESOURCE:
-				cpi_errorf(context,
-					N_("Insufficient system resources to load a plug-in descriptor from %s."), path);
-				break;
-			default:
-				cpi_errorf(context,
-					N_("Failed to load a plug-in descriptor from %s."), path);
-				break;
-		}
-	}
-	cpi_unlock_context(context);
-
-	// Release persistently allocated data on failure 
-	if (status != CP_OK) {
-		if (file != NULL) {
-			free(file);
-			file = NULL;
-		}
-		if (plcontext != NULL && plcontext->plugin != NULL) {
-			cpi_free_plugin(plcontext->plugin);
-			plcontext->plugin = NULL;
-		}
-	}
-	
-	// Otherwise copy the plug-in pointer
-	else {
-		plugin = plcontext->plugin;
-	}
-
-	// Release data allocated for parsing 
-	if (parser != NULL) {
-		XML_ParserFree(parser);
-	}
-	if (plcontext != NULL) {
-		if (plcontext->value != NULL) {
-			free(plcontext->value);
-		}
-		free(plcontext);
-		plcontext = NULL;
-	}
+	// Check and clean up
+	check_cleanup_descriptor_parsing(status, context, plcontext, parser, path, file, &plugin);
 
 	// Return error code
 	if (error != NULL) {

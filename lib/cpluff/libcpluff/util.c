@@ -25,6 +25,10 @@
  * Internal utility functions
  */ 
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -153,7 +157,6 @@ static int vercmp_num_value(const char *v, const char *vn) {
 CP_HIDDEN int cpi_vercmp(const char *v1, const char *v2) {
 	const char *v1n;
 	const char *v2n;
-	int diff;
 	
 	// Check for NULL versions
 	if (v1 == NULL && v2 != NULL) {
@@ -183,7 +186,7 @@ CP_HIDDEN int cpi_vercmp(const char *v1, const char *v2) {
 			if (v2 < v2n) {
 				c2 = *v2++;
 			}
-			diff = vercmp_char_value(c1) - vercmp_char_value(c2);
+			int diff = vercmp_char_value(c1) - vercmp_char_value(c2);
 			if (diff != 0) {
 				return diff;
 			}

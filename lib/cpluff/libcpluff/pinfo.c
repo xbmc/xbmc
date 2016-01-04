@@ -25,6 +25,10 @@
  * Plug-in information functions
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -99,7 +103,7 @@ CP_HIDDEN cp_status_t cpi_register_info(cp_context_t *context, void *res, cpi_de
 	
 	// Report success
 	if (status == CP_OK) {
-		cpi_debugf(context, _("An information object at address %p was registered."), res);
+		cpi_debugf(context, N_("Registered a new reference counted object at address %p."), res);
 	}		
 	
 	// Release resources on failure
@@ -121,9 +125,9 @@ CP_HIDDEN void cpi_use_info(cp_context_t *context, void *res) {
 	if ((node = hash_lookup(context->env->infos, res)) != NULL) {
 		info_resource_t *ir = hnode_get(node);
 		ir->usage_count++;
-		cpi_debugf(context, _("Reference count of the information object at address  %p increased to %d."), res, ir->usage_count);
+		cpi_debugf(context, N_("Reference count of the object at address %p increased to %d."), res, ir->usage_count);
 	} else {
-		cpi_fatalf(_("Reference count of an unknown information object at address %p could not be increased."), res);
+		cpi_fatalf(_("Attempt to increase the reference count of an unknown object at address %p."), res);
 	}
 }
 
@@ -136,16 +140,16 @@ CP_HIDDEN void cpi_release_info(cp_context_t *context, void *info) {
 	if ((node = hash_lookup(context->env->infos, info)) != NULL) {
 		info_resource_t *ir = hnode_get(node);
 		assert(ir != NULL && info == ir->resource);
-		if (--ir->usage_count == 0) {
+		ir->usage_count--;
+		cpi_debugf(context, N_("Reference count of the object at address %p decreased to %d."), info, ir->usage_count);
+		if (ir->usage_count == 0) {
 			hash_delete_free(context->env->infos, node);
 			ir->dealloc_func(context, info);
-			cpi_debugf(context, _("The information object at address %p was unregistered."), info);
+			cpi_debugf(context, N_("Deallocated the reference counted object at address %p."), info);
 			free(ir);
-		} else {
-			cpi_debugf(context, _("Reference count of the information object at address %p decreased to %d."), info, ir->usage_count);
 		}
 	} else {
-		cpi_fatalf(_("Could not release an unknown information object at address %p."), info);
+		cpi_fatalf(_("Attempt to release an unknown reference counted object at address %p."), info);
 	}
 }
 
@@ -166,7 +170,7 @@ CP_HIDDEN void cpi_release_infos(cp_context_t *context) {
 	while ((node = hash_scan_next(&scan)) != NULL) {
 		info_resource_t *ir = hnode_get(node);			
 		cpi_lock_context(context);
-		cpi_errorf(context, _("An unreleased information object was encountered at address %p with reference count %d when destroying the associated plug-in context. Not releasing the object."), ir->resource, ir->usage_count);
+		cpi_errorf(context, N_("An unreleased information object was encountered at address %p with reference count %d when destroying the associated plug-in context. Not releasing the object."), ir->resource, ir->usage_count);
 		cpi_unlock_context(context);
 		hash_scan_delfree(context->env->infos, node);
 		free(ir);
@@ -194,7 +198,7 @@ CP_C_API cp_plugin_info_t * cp_get_plugin_info(cp_context_t *context, const char
 		// Lookup plug-in information
 		if (id != NULL) {
 			if ((node = hash_lookup(context->env->plugins, id)) == NULL) {
-				//cpi_warnf(context, N_("Could not return information about unknown plug-in %s."), id);
+				cpi_warnf(context, N_("Could not return information about unknown plug-in %s."), id);
 				status = CP_ERR_UNKNOWN;
 				break;
 			}
@@ -568,7 +572,7 @@ CP_C_API cp_status_t cp_register_plistener(cp_context_t *context, cp_plugin_list
 	
 	// Report error or success
 	if (status != CP_OK) {
-		cpi_error(context, _("A plug-in listener could not be registered due to insufficient memory."));
+		cpi_error(context, N_("A plug-in listener could not be registered due to insufficient memory."));
 	} else if (cpi_is_logged(context, CP_LOG_DEBUG)) {
 		char owner[64];
 		/* TRANSLATORS: %s is the context owner */
@@ -663,7 +667,7 @@ static cp_cfg_element_t * lookup_cfg_element(cp_cfg_element_t *base, const char 
 		if (end - start == 2 && !strncmp(path + start, "..", 2)) {
 			base = base->parent;
 		} else {
-			unsigned int i;
+			int i;
 			int found = 0;
 			
 			for (i = 0; !found && i < base->num_children; i++) {
@@ -707,7 +711,7 @@ CP_C_API char * cp_lookup_cfg_value(cp_cfg_element_t *base, const char *path) {
 		if (attr == NULL) {
 			return e->value;
 		} else {
-			unsigned int i;
+			int i;
 			
 			for (i = 0; i < e->num_atts; i++) {
 				if (!strcmp(attr, e->atts[2*i])) {

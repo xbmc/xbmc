@@ -1,0 +1,12 @@
+Options +MultiViews
+DirectoryIndex index
+AddType text/plain;charset=US-ASCII .asc
+AddType text/plain;charset=US-ASCII .gpg
+AddType text/html;charset=UTF-8 .html
+AddType text/css .css
+AddType image/vnd.microsoft.icon .ico
+AddLanguage en .en
+AddLanguage fi .fi
+AddLanguage sv .sv
+LanguagePriority en fi sv
+ForceLanguagePriority Fallback

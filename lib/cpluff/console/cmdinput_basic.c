@@ -25,6 +25,9 @@
 
 #include <stdio.h>
 #include <string.h>
+#if defined(HAVE_ISATTY_FILENO)
+#include <unistd.h>
+#endif
 #include "console.h"
 
 #define CMDLINE_SIZE 256
@@ -51,6 +54,14 @@ CP_HIDDEN char *cmdline_input(const char *prompt) {
 			success = 1;
 		}
 	} while (!success);
+
+#if defined(HAVE_ISATTY_FILENO)
+	/* Echo input if not tty input */
+	if (!isatty(fileno(stdin))) {
+		fputs(cmdline, stdout);
+	}
+#endif
+
 	i = strlen(cmdline);
 	if (i > 0 && cmdline[i - 1] == '\n') {
 		cmdline[i - 1] = '\0';
