@@ -114,6 +114,20 @@ using namespace PVR;
 using namespace INFO;
 using namespace EPG;
 
+class CSetCurrentItemJob : public CJob
+{
+  CFileItem &m_itemCurrentFile;
+public:
+  CSetCurrentItemJob(CFileItem &item) : m_itemCurrentFile(item) { }
+  ~CSetCurrentItemJob(void) {}
+
+  bool DoWork(void)
+  {
+    g_infoManager.SetCurrentItem(m_itemCurrentFile, true);
+    return true;
+  }
+};
+
 CGUIInfoManager::CGUIInfoManager(void) :
     Observable()
 {
@@ -4601,8 +4615,15 @@ void CGUIInfoManager::ResetCurrentItem()
   m_currentMovieDuration = "";
 }
 
-void CGUIInfoManager::SetCurrentItem(CFileItem &item)
+void CGUIInfoManager::SetCurrentItem(CFileItem &item, bool blocking /*= false */)
 {
+  if (!blocking)
+  {
+    CSetCurrentItemJob *job = new CSetCurrentItemJob(item);
+    CJobManager::GetInstance().AddJob(job, NULL);
+    return;
+  }
+
   ResetCurrentItem();
 
   if (item.IsAudio())
