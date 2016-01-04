@@ -154,7 +154,9 @@ bool Gif::LoadGifMetaData(GifFileType* gif)
       // Read number of loops
       if (++extb && extb->Function == CONTINUE_EXT_FUNC_CODE)
       {
-        m_loops = UNSIGNED_LITTLE_ENDIAN(extb->Bytes[1], extb->Bytes[2]);
+        uint8_t low = static_cast<uint8_t>(extb->Bytes[1]);
+        uint8_t high = static_cast<uint8_t>(extb->Bytes[2]);
+        m_loops = UNSIGNED_LITTLE_ENDIAN(low, high);
       }
     }
   }
