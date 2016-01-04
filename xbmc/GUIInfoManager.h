@@ -151,7 +151,10 @@ public:
   std::string GetDate(bool bNumbersOnly = false);
   std::string GetDuration(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
 
-  void SetCurrentItem(CFileItem &item);
+  /*! \brief Set currently playing file item
+   \param blocking whether to run in current thread (true) or background thread (false)
+   */
+  void SetCurrentItem(CFileItem &item, bool blocking = false);
   void ResetCurrentItem();
   // Current song stuff
   /// \brief Retrieves tag info (if necessary) and fills in our current song path.
