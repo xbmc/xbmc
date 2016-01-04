@@ -23,7 +23,6 @@
 
 /* libraries */
 #define DLL_PATH_CPLUFF        "special://xbmcbin/system/cpluff.dll"
-#define DLL_PATH_IMAGELIB      "special://xbmcbin/system/ImageLib.dll"
 #define DLL_PATH_LIBEXIF       "special://xbmcbin/system/libexif.dll"
 #define DLL_PATH_LIBGIF        "special://xbmcbin/system/libgif.dll"
 #define DLL_PATH_LIBCURL       "special://xbmcbin/system/libcurl.dll"

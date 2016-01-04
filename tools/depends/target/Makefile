@@ -8,7 +8,7 @@ DEPENDS = \
 	pcre expat gettext sqlite3 libgpg-error \
 	libgcrypt bzip2 liblzo2 libzip freetype2 fontconfig \
 	openssl gmp nettle gnutls libssh2 curl \
-	libjpeg-turbo tiff jasper libpng \
+	libjpeg-turbo libpng \
 	libogg libvorbis libflac fribidi libmpeg2 \
 	libass libsquish \
 	libmodplug librtmp libxml2 yajl libmicrohttpd mysql libffi \
@@ -77,8 +77,6 @@ libgcrypt: libgpg-error
 fontconfig: freetype2 expat $(ICONV)
 libssh2: libgcrypt openssl
 curl: openssl libssh2
-tiff: libjpeg-turbo
-jasper: libjpeg-turbo
 libvorbis: libogg
 libflac: libogg gettext
 libass: fontconfig libpng freetype2 expat $(ICONV)

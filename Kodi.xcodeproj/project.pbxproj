@@ -147,7 +147,6 @@
 		2AC7EB5D1C2330BC00BDAA95 /* GUIWindowPVRTimersBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7EB581C21F6BA00BDAA95 /* GUIWindowPVRTimersBase.cpp */; };
 		2F4564D51970129A00396109 /* GUIFontCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F4564D31970129A00396109 /* GUIFontCache.cpp */; };
 		2F4564D61970129A00396109 /* GUIFontCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F4564D31970129A00396109 /* GUIFontCache.cpp */; };
-		32C631281423A90F00F18420 /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32C631261423A90F00F18420 /* JpegIO.cpp */; };
 		36A9443D15821E2800727135 /* DatabaseUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9443B15821E2800727135 /* DatabaseUtils.cpp */; };
 		36A9444115821E7C00727135 /* SortUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9443F15821E7C00727135 /* SortUtils.cpp */; };
 		36A9466315CF1FA600727135 /* DbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9466115CF1FA600727135 /* DbUrl.cpp */; };
@@ -762,7 +761,6 @@
 		DF402A64164461B9001C56B8 /* LanguageHook.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502BFE4160F34DC00C96C76 /* LanguageHook.cpp */; };
 		DF402A65164461B9001C56B8 /* swig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502BFF0160F36AD00C96C76 /* swig.cpp */; };
 		DF402A66164461B9001C56B8 /* XBPython.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502BFE6160F34FE00C96C76 /* XBPython.cpp */; };
-		DF404A3916B9896C00D8023E /* cximage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF404A3416B9896C00D8023E /* cximage.cpp */; };
 		DF404A3A16B9896C00D8023E /* imagefactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF404A3716B9896C00D8023E /* imagefactory.cpp */; };
 		DF40BC1E178B4BEC009DB567 /* PythonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF40BC1C178B4BEC009DB567 /* PythonInvoker.cpp */; };
 		DF40BC20178B4BEC009DB567 /* PythonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF40BC1C178B4BEC009DB567 /* PythonInvoker.cpp */; };
@@ -1619,7 +1617,6 @@
 		E49912D7174E5DA000741B6D /* ZipDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17930D25F9FA00618676 /* ZipDirectory.cpp */; };
 		E49912D8174E5DA000741B6D /* ZipFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6971444A8B0007C6459 /* ZipFile.cpp */; };
 		E49912D9174E5DA000741B6D /* ZipManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17950D25F9FA00618676 /* ZipManager.cpp */; };
-		E49912DB174E5DAD00741B6D /* cximage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF404A3416B9896C00D8023E /* cximage.cpp */; };
 		E49912DC174E5DAD00741B6D /* D3DResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7561294222E009E7A26 /* D3DResource.cpp */; };
 		E49912DD174E5DAD00741B6D /* DDSImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7571294222E009E7A26 /* DDSImage.cpp */; };
 		E49912DE174E5DAD00741B6D /* DirectXGraphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7581294222E009E7A26 /* DirectXGraphics.cpp */; };
@@ -1691,7 +1688,6 @@
 		E4991320174E5DAD00741B6D /* GUIWrappingListContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7991294222E009E7A26 /* GUIWrappingListContainer.cpp */; };
 		E4991321174E5DAD00741B6D /* imagefactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF404A3716B9896C00D8023E /* imagefactory.cpp */; };
 		E4991322174E5DAD00741B6D /* IWindowManagerCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79A1294222E009E7A26 /* IWindowManagerCallback.cpp */; };
-		E4991323174E5DAD00741B6D /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32C631261423A90F00F18420 /* JpegIO.cpp */; };
 		E4991325174E5DAD00741B6D /* LocalizeStrings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79C1294222E009E7A26 /* LocalizeStrings.cpp */; };
 		E4991326174E5DAD00741B6D /* MatrixGLES.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79D1294222E009E7A26 /* MatrixGLES.cpp */; };
 		E4991327174E5DAD00741B6D /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79E1294222E009E7A26 /* Shader.cpp */; };
@@ -2528,8 +2524,6 @@
 		2AC7EB591C21F6BA00BDAA95 /* GUIWindowPVRTimersBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowPVRTimersBase.h; sourceTree = "<group>"; };
 		2F4564D31970129A00396109 /* GUIFontCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIFontCache.cpp; sourceTree = "<group>"; };
 		2F4564D41970129A00396109 /* GUIFontCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIFontCache.h; sourceTree = "<group>"; };
-		32C631261423A90F00F18420 /* JpegIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JpegIO.cpp; sourceTree = "<group>"; };
-		32C631271423A90F00F18420 /* JpegIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JpegIO.h; sourceTree = "<group>"; };
 		36A9443B15821E2800727135 /* DatabaseUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DatabaseUtils.cpp; sourceTree = "<group>"; };
 		36A9443C15821E2800727135 /* DatabaseUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseUtils.h; sourceTree = "<group>"; };
 		36A9443E15821E5400727135 /* ISortable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISortable.h; sourceTree = "<group>"; };
@@ -3569,8 +3563,6 @@
 		DF3C3D1D1752BED3000989C3 /* genoutputdirlink.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = genoutputdirlink.command; sourceTree = "<group>"; };
 		DF3C3D1E1752BED3000989C3 /* makepythoninterface.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = makepythoninterface.command; sourceTree = "<group>"; };
 		DF3C3D1F1752BED3000989C3 /* updateversioninfo-osx.command */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "updateversioninfo-osx.command"; sourceTree = "<group>"; };
-		DF404A3416B9896C00D8023E /* cximage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cximage.cpp; sourceTree = "<group>"; };
-		DF404A3516B9896C00D8023E /* cximage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cximage.h; sourceTree = "<group>"; };
 		DF404A3616B9896C00D8023E /* iimage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iimage.h; sourceTree = "<group>"; };
 		DF404A3716B9896C00D8023E /* imagefactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imagefactory.cpp; sourceTree = "<group>"; };
 		DF404A3816B9896C00D8023E /* imagefactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = imagefactory.h; sourceTree = "<group>"; };
@@ -4050,7 +4042,6 @@
 		E38E16810D25F9FA00618676 /* Database.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Database.h; sourceTree = "<group>"; };
 		E38E16840D25F9FA00618676 /* DetectDVDType.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DetectDVDType.cpp; sourceTree = "<group>"; };
 		E38E16850D25F9FA00618676 /* DetectDVDType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetectDVDType.h; sourceTree = "<group>"; };
-		E38E16860D25F9FA00618676 /* DllImageLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllImageLib.h; sourceTree = "<group>"; };
 		E38E16870D25F9FA00618676 /* DllLibExif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibExif.h; sourceTree = "<group>"; };
 		E38E16890D25F9FA00618676 /* DNSNameCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DNSNameCache.cpp; sourceTree = "<group>"; };
 		E38E168A0D25F9FA00618676 /* DNSNameCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DNSNameCache.h; sourceTree = "<group>"; };
@@ -4994,8 +4985,6 @@
 			children = (
 				7CCA95C71BC6E6F90091D308 /* Resolution.cpp */,
 				391416BE1B4A3EFA00BBF0AA /* guiinfo */,
-				DF404A3416B9896C00D8023E /* cximage.cpp */,
-				DF404A3516B9896C00D8023E /* cximage.h */,
 				18B7C7561294222E009E7A26 /* D3DResource.cpp */,
 				18B7C6F81294222D009E7A26 /* D3DResource.h */,
 				18B7C7571294222E009E7A26 /* DDSImage.cpp */,
@@ -5153,8 +5142,6 @@
 				18B7C7411294222D009E7A26 /* IMsgTargetCallback.h */,
 				18B7C79A1294222E009E7A26 /* IWindowManagerCallback.cpp */,
 				18B7C7421294222D009E7A26 /* IWindowManagerCallback.h */,
-				32C631261423A90F00F18420 /* JpegIO.cpp */,
-				32C631271423A90F00F18420 /* JpegIO.h */,
 				18B7C79C1294222E009E7A26 /* LocalizeStrings.cpp */,
 				18B7C7441294222D009E7A26 /* LocalizeStrings.h */,
 				18B7C79D1294222E009E7A26 /* MatrixGLES.cpp */,
@@ -5464,7 +5451,6 @@
 		4313767E12D63EC200680C15 /* pictures */ = {
 			isa = PBXGroup;
 			children = (
-				E38E16860D25F9FA00618676 /* DllImageLib.h */,
 				E38E16870D25F9FA00618676 /* DllLibExif.h */,
 				E38E17C60D25F9FA00618676 /* GUIDialogPictureInfo.cpp */,
 				E38E17C70D25F9FA00618676 /* GUIDialogPictureInfo.h */,
@@ -9783,7 +9769,6 @@
 				DF34898213FDAAF60026A711 /* HttpParser.cpp in Sources */,
 				18968DC814155D7C005BA742 /* ApplicationOperations.cpp in Sources */,
 				DF0E4AD41AD5986F00A75430 /* GUIDialogPVRRadioRDSInfo.cpp in Sources */,
-				32C631281423A90F00F18420 /* JpegIO.cpp in Sources */,
 				DF448457140048A60069344B /* AirTunesServer.cpp in Sources */,
 				DF44845E140048C80069344B /* PipesManager.cpp in Sources */,
 				DF98D98C1434F47D00A6EBE1 /* SkinVariable.cpp in Sources */,
@@ -9994,7 +9979,6 @@
 				DF64FE3D16C07AAA00D028FB /* GUIViewControl.cpp in Sources */,
 				DF64FE3E16C07AAA00D028FB /* GUIViewState.cpp in Sources */,
 				DF64FE4016C07AAA00D028FB /* ViewDatabase.cpp in Sources */,
-				DF404A3916B9896C00D8023E /* cximage.cpp in Sources */,
 				DF404A3A16B9896C00D8023E /* imagefactory.cpp in Sources */,
 				DFD5812516C828500008EEA0 /* DAVCommon.cpp in Sources */,
 				DFD5812616C828500008EEA0 /* DAVFile.cpp in Sources */,
@@ -10595,7 +10579,6 @@
 				E49912D7174E5DA000741B6D /* ZipDirectory.cpp in Sources */,
 				E49912D8174E5DA000741B6D /* ZipFile.cpp in Sources */,
 				E49912D9174E5DA000741B6D /* ZipManager.cpp in Sources */,
-				E49912DB174E5DAD00741B6D /* cximage.cpp in Sources */,
 				E49912DC174E5DAD00741B6D /* D3DResource.cpp in Sources */,
 				E49912DD174E5DAD00741B6D /* DDSImage.cpp in Sources */,
 				E49912DE174E5DAD00741B6D /* DirectXGraphics.cpp in Sources */,
@@ -10677,7 +10660,6 @@
 				E4991320174E5DAD00741B6D /* GUIWrappingListContainer.cpp in Sources */,
 				E4991321174E5DAD00741B6D /* imagefactory.cpp in Sources */,
 				E4991322174E5DAD00741B6D /* IWindowManagerCallback.cpp in Sources */,
-				E4991323174E5DAD00741B6D /* JpegIO.cpp in Sources */,
 				E4991325174E5DAD00741B6D /* LocalizeStrings.cpp in Sources */,
 				7C8E024A1BA35D0B0072E8B2 /* WeatherBuiltins.cpp in Sources */,
 				2AC7EB5D1C2330BC00BDAA95 /* GUIWindowPVRTimersBase.cpp in Sources */,

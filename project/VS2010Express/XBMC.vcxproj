@@ -444,7 +444,6 @@
     <ClCompile Include="..\..\xbmc\filesystem\ZipManager.cpp" />
     <ClCompile Include="..\..\xbmc\GUIInfoManager.cpp" />
     <ClCompile Include="..\..\xbmc\GUILargeTextureManager.cpp" />
-    <ClCompile Include="..\..\xbmc\guilib\cximage.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\D3DResource.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\DDSImage.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\DirectXGraphics.cpp" />
@@ -516,7 +515,6 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIWrappingListContainer.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\imagefactory.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\IWindowManagerCallback.cpp" />
-    <ClCompile Include="..\..\xbmc\guilib\JpegIO.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\LocalizeStrings.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\MatrixGLES.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\Resolution.cpp" />
@@ -1001,7 +999,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\XbtFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\XbtManager.h" />
     <ClInclude Include="..\..\xbmc\guiinfo\GUIInfoLabels.h" />
-    <ClInclude Include="..\..\xbmc\guilib\cximage.h" />
     <ClInclude Include="..\..\xbmc\guilib\DispResource.h" />
     <ClInclude Include="..\..\xbmc\guilib\FFmpegImage.h" />
     <ClInclude Include="..\..\xbmc\guilib\Gif.h" />
@@ -1936,7 +1933,6 @@
     <ClInclude Include="..\..\xbmc\guilib\IAudioDeviceChangedCallback.h" />
     <ClInclude Include="..\..\xbmc\guilib\IMsgTargetCallback.h" />
     <ClInclude Include="..\..\xbmc\guilib\IWindowManagerCallback.h" />
-    <ClInclude Include="..\..\xbmc\guilib\JpegIO.h" />
     <ClInclude Include="..\..\xbmc\guilib\LocalizeStrings.h" />
     <ClInclude Include="..\..\xbmc\guilib\MatrixGLES.h" />
     <ClInclude Include="..\..\xbmc\guilib\Resolution.h" />
@@ -2055,7 +2051,6 @@
     <ClInclude Include="..\..\xbmc\peripherals\dialogs\GUIDialogPeripheralSettings.h" />
     <ClInclude Include="..\..\xbmc\peripherals\Peripherals.h" />
     <ClInclude Include="..\..\xbmc\peripherals\PeripheralTypes.h" />
-    <ClInclude Include="..\..\xbmc\pictures\DllImageLib.h" />
     <ClInclude Include="..\..\xbmc\pictures\DllLibExif.h" />
     <ClInclude Include="..\..\xbmc\pictures\GUIDialogPictureInfo.h" />
     <ClInclude Include="..\..\xbmc\pictures\GUIViewStatePictures.h" />

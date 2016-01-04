@@ -8,7 +8,7 @@ NATIVE= m4-native gettext-native autoconf-native automake-native \
         libtool-native pkg-config-native yasm-native cmake-native \
         gas-preprocessor-native python27-native zlib-native \
         pcre-native swig-native rpl-native libsquish-native \
-        tiff-native libpng-native libjpeg-turbo-native liblzo2-native giflib-native \
+        libpng-native libjpeg-turbo-native liblzo2-native giflib-native \
         distribute-native distutilscross-native JsonSchemaBuilder TexturePacker \
         google-breakpad-native
 
@@ -31,7 +31,6 @@ autoconf-native: m4-native
 automake-native: autoconf-native
 libtool-native: automake-native
 libpng-native: zlib-native
-tiff-native: libjpeg-turbo-native
 swig-native: pcre-native
 distribute-native: python27-native
 distutilscross-native: python27-native distribute-native
@@ -41,7 +40,7 @@ python27-native: zlib-native
 #liblzo2 has stale packaged automake files that cause borked host/build detection
 liblzo2-native: automake-native
 JsonSchemaBuilder: automake-native
-TexturePacker: automake-native pkg-config-native libsquish-native libpng-native liblzo2-native giflib-native libpng-native
+TexturePacker: automake-native pkg-config-native libsquish-native libpng-native liblzo2-native giflib-native libjpeg-turbo-native
 
 native: $(NATIVE)
 $(NATIVE):
