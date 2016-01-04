@@ -219,26 +219,18 @@ protected:
   // PS rendering
   bool                 m_bUseHQScaler;
   CD3DTexture          m_IntermediateTarget;
-
   CYUV2RGBShader*      m_colorShader;
   CConvolutionShader*  m_scalerShader;
-
   ESCALINGMETHOD       m_scalingMethod;
   ESCALINGMETHOD       m_scalingMethodGui;
-
   bool                 m_bFilterInitialized;
 
   int                  m_iRequestedMethod;
-
-  // clear colour for "black" bars
-  DWORD                m_clearColour;
   unsigned int         m_extended_format;
-
   // Width and height of the render target
   // the separable HQ scalers need this info, but could the m_destRect be used instead?
   unsigned int         m_destWidth;
   unsigned int         m_destHeight;
-
   int                  m_neededBuffers;
   unsigned int         m_frameIdx;
 };

@@ -36,11 +36,12 @@ using namespace DirectX::PackedVector;
 
 CYUV2RGBMatrix::CYUV2RGBMatrix()
 {
-  m_NeedRecalc  = true;
-  m_blacklevel  = 0.0f;
-  m_contrast    = 0.0f;
-  m_flags       = 0;
-  m_format      = RENDER_FMT_NONE;
+  m_NeedRecalc = true;
+  m_blacklevel = 0.0f;
+  m_contrast = 0.0f;
+  m_flags = 0;
+  m_limitedRange = false;
+  m_format = RENDER_FMT_NONE;
 }
 
 void CYUV2RGBMatrix::SetParameters(float contrast, float blacklevel, unsigned int flags, ERenderFormat format)
@@ -64,6 +65,11 @@ void CYUV2RGBMatrix::SetParameters(float contrast, float blacklevel, unsigned in
   {
     m_NeedRecalc = true;
     m_format = format;
+  }
+  if (m_limitedRange != g_Windowing.UseLimitedColor())
+  {
+    m_NeedRecalc = true;
+    m_limitedRange = g_Windowing.UseLimitedColor();
   }
 }
 
@@ -517,11 +523,12 @@ void CConvolutionShader1Pass::Render(CD3DTexture &sourceTexture,
                                 unsigned int sourceWidth, unsigned int sourceHeight,
                                 unsigned int destWidth, unsigned int destHeight,
                                 CRect sourceRect,
-                                CRect destRect)
+                                CRect destRect,
+                                bool useLimitedRange)
 {
   PrepareParameters(sourceWidth, sourceHeight, sourceRect, destRect);
   float texSteps[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
-  SetShaderParameters(sourceTexture, &texSteps[0], ARRAY_SIZE(texSteps));
+  SetShaderParameters(sourceTexture, &texSteps[0], ARRAY_SIZE(texSteps), useLimitedRange);
   Execute(nullptr, 4);
 }
 
@@ -568,17 +575,22 @@ void CConvolutionShader1Pass::PrepareParameters(unsigned int sourceWidth, unsign
   }
 }
 
-void CConvolutionShader1Pass::SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, int texStepsCount)
+void CConvolutionShader1Pass::SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, int texStepsCount, bool useLimitedRange)
 {
   m_effect.SetTechnique( "SCALER_T" );
   m_effect.SetTexture( "g_Texture",  sourceTexture ) ;
   m_effect.SetTexture( "g_KernelTexture", m_HQKernelTexture );
   m_effect.SetFloatArray("g_StepXY", texSteps, texStepsCount);
-
   UINT numVP = 1;
   D3D11_VIEWPORT viewPort = {};
   g_Windowing.Get3D11Context()->RSGetViewports(&numVP, &viewPort);
   m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);
+  float colorRange[2] =
+  {
+    (useLimitedRange ? 16.f : 0.f) / 255.f,
+    (useLimitedRange ? (235.f - 16.f) : 255.f) / 255.f,
+  };
+  m_effect.SetFloatArray("g_colorRange", colorRange, _countof(colorRange));
 }
 
 //==================================================================================
@@ -653,7 +665,8 @@ void CConvolutionShaderSeparable::Render(CD3DTexture &sourceTexture,
                                 unsigned int sourceWidth, unsigned int sourceHeight,
                                 unsigned int destWidth, unsigned int destHeight,
                                 CRect sourceRect,
-                                CRect destRect)
+                                CRect destRect,
+                                bool useLimitedRange)
 {
   if(m_destWidth != destWidth || m_sourceHeight != sourceHeight)
     CreateIntermediateRenderTarget(destWidth, sourceHeight);
@@ -666,7 +679,7 @@ void CConvolutionShaderSeparable::Render(CD3DTexture &sourceTexture,
     1.0f / static_cast<float>(destWidth), 
     1.0f / static_cast<float>(sourceHeight)
   };
-  SetShaderParameters(sourceTexture, texSteps, 4);
+  SetShaderParameters(sourceTexture, texSteps, 4, useLimitedRange);
 
   Execute(nullptr, 4);
 
@@ -808,12 +821,18 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
   }
 }
 
-void CConvolutionShaderSeparable::SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, int texStepsCount)
+void CConvolutionShaderSeparable::SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, int texStepsCount, bool useLimitedRange)
 {
   m_effect.SetTechnique( "SCALER_T" );
   m_effect.SetTexture( "g_Texture",  sourceTexture );
   m_effect.SetTexture( "g_KernelTexture", m_HQKernelTexture );
   m_effect.SetFloatArray("g_StepXY", texSteps, texStepsCount);
+  float colorRange[2] =
+  {
+    (useLimitedRange ? 16.f : 0.f) / 255.f,
+    (useLimitedRange ? (235.f - 16.f) : 255.f) / 255.f,
+  };
+  m_effect.SetFloatArray("g_colorRange", colorRange, _countof(colorRange));
 }
 
 void CConvolutionShaderSeparable::SetStepParams(UINT iPass)
