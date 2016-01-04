@@ -1,4 +1,7 @@
-#### About
+![Kodi logo](https://raw.githubusercontent.com/xbmc/xbmc-forum/master/xbmc/images/logo-sbs-black.png)
+# Kodi Home Theatre Software
+
+**Welcome to Kodi!**
 
 Kodi is an award-winning free and open source (GPL) software media player and
 entertainment hub for digital media. Kodi is available for multiple platforms.
@@ -27,24 +30,23 @@ covers, descriptions, and fanart. There are playlist and slideshow functions, a
 weather forecast feature and many audio visualizations. Once installed, your
 computer will become a fully functional multimedia jukebox.
 
-***
 
-##### Installation
+## Installation
 
 See [docs/README.xxx] (https://github.com/xbmc/xbmc/tree/master/docs) for specific platform build information.
 
-##### Quick Kodi development links
+## Quick Kodi development links
 
 * [Contributing] (https://github.com/xbmc/xbmc/blob/master/CONTRIBUTING.md)
-* [Submitting a patch] (http://kodi.wiki/view/HOW-TO_submit_a_patch) 
+* [Submitting a patch] (http://kodi.wiki/view/HOW-TO_submit_a_patch)
 * [Code guidelines] (http://kodi.wiki/view/Official:Code_guidelines_and_formatting_conventions)
 * [Kodi development] (http://kodi.wiki/view/Development)
 
-##### Useful links
+## Useful links
 
 * [Kodi wiki] (http://kodi.wiki/)
 * [Kodi bug tracker] (http://trac.kodi.tv)
 * [Kodi community forums] (http://forum.kodi.tv/)
 * [Kodi website] (http://kodi.tv)
 
-#### Enjoy Kodi and help us improve it today. :)
+**Enjoy Kodi and help us improve it today. :)**
