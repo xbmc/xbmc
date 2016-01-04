@@ -98,11 +98,13 @@ void Gif::Close(GifFileType* gif)
 {
   int err = 0;
   int reason = 0;
-#if GIFLIB_MAJOR == 5
+#if GIFLIB_MAJOR == 5 && GIFLIB_MINOR >= 1
   err = m_dll.DGifCloseFile(gif, &reason);
 #else
   err = m_dll.DGifCloseFile(gif);
+#if GIFLIB_MAJOR < 5
   reason = m_dll.GifLastError();
+#endif
   if (err == GIF_ERROR)
     free(gif);
 #endif
