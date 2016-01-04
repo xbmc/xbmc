@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile removelegacy.patch android.patch ntohl.patch md5.patch
+DEPS= ../../Makefile.include Makefile removelegacy.patch android.patch ntohl.patch md5.patch pkg-config.patch
 
 # lib name, version
 LIBNAME=libssh
@@ -29,6 +29,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../md5.patch
 	cd $(PLATFORM); patch -p1 < ../darwin.patch
 	cd $(PLATFORM); patch -p0 < ../fix-gcc-5-compile.patch
+	cd $(PLATFORM); patch -p0 < ../pkg-config.patch
 ifeq ($(OS),ios)
 	cd $(PLATFORM); patch -p1 < ../darwin-no-fork.patch
 endif

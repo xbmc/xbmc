@@ -192,8 +192,6 @@ vtbdecoder_enabled="== VTBDecoder support enabled. =="
 vtbdecoder_disabled="== VTBDecoder support manually disabled. =="
 openmax_disabled="== OpenMax support manually disabled. =="
 openmax_not_found="== Could not find OpenMax headers. OpenMax support disabled. =="
-ssh_not_found="== Could not find libssh. =="
-ssh_disabled="== SSH SFTP disabled. =="
 librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
 librtmp_disabled="== RTMP support disabled. =="
 libnfs_not_found="== Could not find libnfs. NFS client support disabled. =="
@@ -1400,11 +1398,12 @@ fi
 
 # libssh
 if test "x$use_ssh" = "xno"; then
-  AC_MSG_NOTICE($ssh_disabled)
+  AC_MSG_NOTICE(ssh support disabled by user)
   use_libssh="no"
 else
-  AC_CHECK_LIB([ssh], [sftp_tell64],, AC_MSG_ERROR($ssh_not_found))
-  AC_DEFINE([HAVE_LIBSSH], [1], [Whether to use libSSH library.])
+  PKG_CHECK_MODULES([LIBSSH], [libssh],
+    [INCLUDES="$INCLUDES $LIBSSH_CFLAGS"; LIBS="$LIBS $LIBSSH_LIBS"; AC_DEFINE([HAVE_LIBSSH], [1], [Whether to use libSSH library.])],
+    AC_MSG_ERROR(libssh not found))
 fi
 
 # libRTMP
