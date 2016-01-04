@@ -122,7 +122,8 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avct
     }
 #endif
 #ifdef HAS_DX
-  if(DXVA::CDecoder::Supports(*cur) && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDXVA2))
+  if(DXVA::CDecoder::Supports(*cur) && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDXVA2) &&
+     !ctx->m_hints.dvd && !ctx->m_hints.stills)
   {
     CLog::Log(LOGNOTICE, "CDVDVideoCodecFFmpeg::GetFormat - Creating DXVA(%ix%i)", avctx->width, avctx->height);
     DXVA::CDecoder* dec = new DXVA::CDecoder();

@@ -3534,6 +3534,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
       hint.aspect = aspect;
       hint.forced_aspect = true;
     }
+    hint.dvd = true;
   }
   else if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
   {
