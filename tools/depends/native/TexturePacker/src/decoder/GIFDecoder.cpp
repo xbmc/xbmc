@@ -34,26 +34,25 @@ bool GIFDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   GifHelper *gifImage = new GifHelper();
   if (gifImage->LoadGif(filename.c_str()))
   {
-    std::vector<GifFrame> extractedFrames = gifImage->GetFrames();
+    auto extractedFrames = gifImage->GetFrames();
     n = extractedFrames.size();
     if (n > 0)
     {
+      unsigned int height = gifImage->GetHeight();
+      unsigned int width = gifImage->GetWidth();
+      unsigned int pitch = gifImage->GetPitch();
+      unsigned int frameSize = pitch * height;
       for (unsigned int i = 0; i < extractedFrames.size(); i++)
       {
         DecodedFrame frame;
         
-        frame.rgbaImage.pixels = (char *)new char[extractedFrames[i].m_imageSize];
-        memcpy(frame.rgbaImage.pixels, extractedFrames[i].m_pImage, extractedFrames[i].m_imageSize);
-        frame.rgbaImage.height = extractedFrames[i].m_height;
-        frame.rgbaImage.width = extractedFrames[i].m_width;
+        frame.rgbaImage.pixels = (char *)new char[frameSize];
+        memcpy(frame.rgbaImage.pixels, extractedFrames[i]->m_pImage, frameSize);
+        frame.rgbaImage.height = height;
+        frame.rgbaImage.width = width;
         frame.rgbaImage.bbp = 32;
-        frame.rgbaImage.pitch = extractedFrames[i].m_pitch;
-
-        frame.delay = extractedFrames[i].m_delay;
-        frame.disposal = extractedFrames[i].m_disposal;
-        frame.x = extractedFrames[i].m_left;
-        frame.y = extractedFrames[i].m_top;
-
+        frame.rgbaImage.pitch = pitch;
+        frame.delay = extractedFrames[i]->m_delay;
         
         frames.frameList.push_back(frame);
       }
