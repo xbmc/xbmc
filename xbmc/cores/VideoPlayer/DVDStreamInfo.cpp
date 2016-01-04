@@ -44,6 +44,7 @@ void CDVDStreamInfo::Clear()
   codec_tag  = 0;
   flags = 0;
   filename.clear();
+  dvd = false;
 
   if( extradata && extrasize ) free(extradata);
 
@@ -143,6 +144,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   codec_tag = right.codec_tag;
   flags = right.flags;
   filename = right.filename;
+  dvd = right.dvd;
 
   if( extradata && extrasize ) free(extradata);
 
