@@ -108,7 +108,17 @@ inline void convert_yuv420_nv12(uint8_t *const src[], const int srcStride[], int
         _mm_stream_si128((__m128i *)(d + (i << 1) + 32), xmm2);
         _mm_stream_si128((__m128i *)(d + (i << 1) + 48), xmm1);
       }
-      for (; i < chromaWidth; i += 16)
+      if (((size_t)chromaWidth) & 0xF)
+      {
+        d += (i << 1);
+        u += i; v += i;
+        for (; i < chromaWidth; ++i)
+        {
+          *d++ = *u++;
+          *d++ = *v++;
+        }
+      }
+      else
       {
         xmm0 = _mm_load_si128((__m128i*)(v + i));
         xmm1 = _mm_load_si128((__m128i*)(u + i));
