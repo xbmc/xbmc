@@ -120,14 +120,12 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
   // Also push these players in case it is NOT audio either
   if (item.IsVideo() || !item.IsAudio())
   {
-    if (std::find(players.begin(), players.end(), "videodefaultplayer") != players.end())
+    int idx = GetPlayerIndex("videodefaultplayer");
+    if (idx > -1)
     {
-      unsigned int eVideoDefault = GetPlayerIndex("videodefaultplayer");
-      if (eVideoDefault > 0)
-      {
-        CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding videodefaultplayer");
-        players.push_back("videodefaultplayer");
-      }
+      std::string eVideoDefault = GetPlayerName(idx);
+      CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding videodefaultplayer (%s)", eVideoDefault.c_str());
+      players.push_back(eVideoDefault);
     }
     GetPlayers(players, false, true);  // Video-only players
     GetPlayers(players, true, true);   // Audio & video players
@@ -137,14 +135,12 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
   // Pushback all audio players in case we don't know the type
   if (item.IsAudio())
   {
-    if (std::find(players.begin(), players.end(), "videodefaultplayer") != players.end())
+    int idx = GetPlayerIndex("audiodefaultplayer");
+    if (idx > -1)
     {
-      unsigned int eAudioDefault = GetPlayerIndex("audiodefaultplayer");
-      if (eAudioDefault > 0)
-      {
-        CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding audiodefaultplayer");
-        players.push_back("audiodefaultplayer");
-      }
+      std::string eAudioDefault = GetPlayerName(idx);
+      CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding audiodefaultplayer (%s)", eAudioDefault.c_str());
+        players.push_back(eAudioDefault);
     }
     GetPlayers(players, true, false); // Audio-only players
     GetPlayers(players, true, true);  // Audio & video players
@@ -175,6 +171,15 @@ int CPlayerCoreFactory::GetPlayerIndex(const std::string& strCoreName) const
     CLog::Log(LOGWARNING, "CPlayerCoreFactory::GetPlayer(%s): no such player: %s", strCoreName.c_str(), strRealCoreName.c_str());
   }
   return -1;
+}
+
+std::string CPlayerCoreFactory::GetPlayerName(size_t idx) const
+{
+  CSingleLock lock(m_section);
+  if (m_vecPlayerConfigs.empty() || idx > m_vecPlayerConfigs.size())
+    return "";
+
+  return m_vecPlayerConfigs[idx]->m_name;
 }
 
 void CPlayerCoreFactory::GetPlayers(std::vector<std::string>&players, std::string &type) const
