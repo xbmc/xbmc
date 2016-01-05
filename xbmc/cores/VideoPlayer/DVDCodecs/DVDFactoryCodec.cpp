@@ -144,10 +144,14 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 
   if (!hint.software)
   {
+#if defined(HAS_LIBAMCODEC)
+    pCodec = OpenCodec(new CDVDVideoCodecAmlogic(clock), hint, options);
+    if (pCodec)
+      return pCodec;
+#endif
+
 #if defined(HAS_IMXVPU)
     pCodec = OpenCodec(new CDVDVideoCodecIMX(), hint, options);
-#elif defined(HAS_LIBAMCODEC)
-    pCodec = OpenCodec(new CDVDVideoCodecAmlogic(clock), hint, options);
 #elif defined(HAVE_VIDEOTOOLBOXDECODER)
     pCodec = OpenCodec(new CDVDVideoCodecVideoToolBox(), hint, options);
 #elif defined(TARGET_ANDROID)
