@@ -497,7 +497,7 @@ bool CMMALVideo::SendCodecConfigData()
 {
   CSingleLock lock(m_sharedSection);
   MMAL_STATUS_T status;
-  if (!m_dec_input_pool)
+  if (!m_dec_input_pool || !m_hints.extrasize)
     return true;
   // send code config data
   MMAL_BUFFER_HEADER_T *buffer = mmal_queue_timedwait(m_dec_input_pool->queue, 500);
