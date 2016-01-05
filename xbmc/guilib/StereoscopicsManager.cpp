@@ -391,22 +391,6 @@ void CStereoscopicsManager::OnSettingChanged(const CSetting *setting)
   }
 }
 
-bool CStereoscopicsManager::OnMessage(CGUIMessage &message)
-{
-  switch (message.GetMessage())
-  {
-  case GUI_MSG_PLAYBACK_STARTED:
-    OnPlaybackStarted();
-    break;
-  case GUI_MSG_PLAYBACK_STOPPED:
-  case GUI_MSG_PLAYLISTPLAYER_STOPPED:
-    OnPlaybackStopped();
-    break;
-  }
-
-  return false;
-}
-
 bool CStereoscopicsManager::OnAction(const CAction &action)
 {
   RENDER_STEREO_MODE mode = GetStereoMode();
@@ -516,7 +500,7 @@ bool CStereoscopicsManager::IsVideoStereoscopic()
   return !GetVideoStereoMode().empty();
 }
 
-void CStereoscopicsManager::OnPlaybackStarted(void)
+void CStereoscopicsManager::PlaybackStarted(void)
 {
   STEREOSCOPIC_PLAYBACK_MODE playbackMode = (STEREOSCOPIC_PLAYBACK_MODE) CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE);
   RENDER_STEREO_MODE mode = GetStereoMode();
@@ -613,7 +597,7 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
   }
 }
 
-void CStereoscopicsManager::OnPlaybackStopped(void)
+void CStereoscopicsManager::PlaybackStopped(void)
 {
   RENDER_STEREO_MODE mode = GetStereoMode();
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_QUITSTEREOMODEONSTOP) && mode != RENDER_STEREO_MODE_OFF)

@@ -41,8 +41,7 @@ enum STEREOSCOPIC_PLAYBACK_MODE
   STEREOSCOPIC_PLAYBACK_MODE_IGNORE = 100,
 };
 
-class CStereoscopicsManager : public ISettingCallback,
-                              public IMsgTargetCallback
+class CStereoscopicsManager : public ISettingCallback
 {
 public:
   CStereoscopicsManager(void);
@@ -80,18 +79,17 @@ public:
   CAction ConvertActionCommandToAction(const std::string &command, const std::string &parameter);
   std::string NormalizeStereoMode(const std::string &mode);
   virtual void OnSettingChanged(const CSetting *setting) override;
-  virtual bool OnMessage(CGUIMessage &message) override;
   /*!
    * @brief Handle 3D specific cActions
    * @param action The action to process
    * @return True if action could be handled, false otherwise.
    */
   bool OnAction(const CAction &action);
+  void PlaybackStarted(void);
+  void PlaybackStopped(void);
 
 private:
   void ApplyStereoMode(const RENDER_STEREO_MODE &mode, bool notify = true);
-  void OnPlaybackStarted(void);
-  void OnPlaybackStopped(void);
   std::string GetVideoStereoMode();
   bool IsVideoStereoscopic();
 

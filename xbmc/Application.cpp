@@ -1683,7 +1683,6 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
   g_windowManager.AddMsgTarget(&g_playlistPlayer);
   g_windowManager.AddMsgTarget(&g_infoManager);
   g_windowManager.AddMsgTarget(&g_fontManager);
-  g_windowManager.AddMsgTarget(&CStereoscopicsManager::GetInstance());
   g_windowManager.SetCallback(*this);
   g_windowManager.Initialize();
   CTextureCache::GetInstance().Initialize();
@@ -3586,6 +3585,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, std::string player, bo
 
 void CApplication::OnPlayBackEnded()
 {
+  CStereoscopicsManager::GetInstance().PlaybackStopped();
   CSingleLock lock(m_playStateMutex);
   CLog::LogF(LOGDEBUG,"play state was %d, starting %d", m_ePlayState, m_bPlaybackStarting);
   m_ePlayState = PLAY_STATE_ENDED;
@@ -3628,6 +3628,7 @@ void CApplication::OnPlayBackStarted()
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
+  CStereoscopicsManager::GetInstance().PlaybackStarted();
 }
 
 void CApplication::OnQueueNextItem()
@@ -3648,6 +3649,8 @@ void CApplication::OnQueueNextItem()
 
 void CApplication::OnPlayBackStopped()
 {
+  CStereoscopicsManager::GetInstance().PlaybackStopped();
+
   CSingleLock lock(m_playStateMutex);
   CLog::LogF(LOGDEBUG, "play state was %d, starting %d", m_ePlayState, m_bPlaybackStarting);
   m_ePlayState = PLAY_STATE_STOPPED;
