@@ -373,8 +373,6 @@ bool CRenderManager::Configure()
     CreateRenderer();
     if (!m_pRenderer)
       return false;
-    else
-      m_pRenderer->PreInit();
   }
 
   bool result = m_pRenderer->Configure(m_width, m_height, m_dwidth, m_dheight, m_fps, m_flags, m_format, m_extended_format, m_orientation);
@@ -583,7 +581,7 @@ void CRenderManager::PreInit()
 
   if (!m_pRenderer)
   {
-    m_format = RENDER_FMT_NONE;
+    m_format = RENDER_FMT_YUV420P;
     CreateRenderer();
   }
 
