@@ -918,7 +918,7 @@
           <constraints>
             <options>fonts</options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="subtitles.height" type="integer" parent="subtitles.font" label="289" help="36186">
           <level>1</level>
@@ -1395,7 +1395,7 @@
               <option label="212">2</option>   <!-- 59.94Hz -->
             </options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
       </group>
       <group id="4">
@@ -2361,7 +2361,7 @@
             <dependency type="update" setting="videoscreen.screen" />
             <dependency type="update" setting="videoscreen.resolution" />
           </dependencies>
-          <control type="spinner" format="string" delayed="true" />
+          <control type="list" format="string" />
         </setting>
         <setting id="videoscreen.fakefullscreen" type="boolean" parent="videoscreen.screen" label="14083" help="36354">
           <level>2</level>
