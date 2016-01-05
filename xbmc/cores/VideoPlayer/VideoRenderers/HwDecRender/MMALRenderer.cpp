@@ -286,6 +286,10 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
   m_fps = fps;
   m_iFlags = flags;
 
+  // cause SetVideoRect to trigger - needed after a hdmi mode change
+  m_src_rect.SetRect(0, 0, 0, 0);
+  m_dst_rect.SetRect(0, 0, 0, 0);
+
   CLog::Log(LOGDEBUG, "%s::%s - %dx%d->%dx%d@%.2f flags:%x format:%d ext:%x orient:%d", CLASSNAME, __func__, width, height, d_width, d_height, fps, flags, format, extended_format, orientation);
 
   // calculate the input frame aspect ratio
