@@ -1903,7 +1903,7 @@
     "params": [
       { "name": "broadcastid", "$ref": "Library.Id", "required": true },
       { "name": "repeating", "type": "boolean" },
-      { "name": "properties", "$ref": "PVR.Fields.Broadcast" }
+      { "name": "properties", "$ref": "PVR.Fields.Timer" }
     ],
     "returns": { "type": "object",
       "properties": {
