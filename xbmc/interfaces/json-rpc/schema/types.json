@@ -515,7 +515,7 @@
                 "playcount", "writer", "studio", "mpaa", "cast", "country",
                 "imdbnumber", "runtime", "set", "showlink", "streamdetails",
                 "top250", "votes", "fanart", "thumbnail", "file", "sorttitle",
-                "resume", "setid", "dateadded", "tag", "art", "userrating" ]
+                "resume", "setid", "dateadded", "tag", "art", "userrating", "ratings" ]
     }
   },
   "Video.Fields.MovieSet": {
@@ -533,7 +533,7 @@
                 "imdbnumber", "premiered", "votes", "lastplayed",
                 "fanart", "thumbnail", "file", "originaltitle",
                 "sorttitle", "episodeguide", "season", "watchedepisodes",
-                "dateadded", "tag", "art", "userrating" ]
+                "dateadded", "tag", "art", "userrating", "ratings" ]
     }
   },
   "Video.Fields.Season": {
@@ -553,7 +553,7 @@
                 "showtitle", "cast", "streamdetails", "lastplayed", "fanart",
                 "thumbnail", "file", "resume", "tvshowid", "dateadded",
                 "uniqueid", "art", "specialsortseason", "specialsortepisode", "userrating",
-                "seasonid" ]
+                "seasonid", "ratings" ]
     }
   },
   "Video.Fields.MusicVideo": {
@@ -574,6 +574,18 @@
         "role": { "type": "string", "required": true },
         "order": { "type": "integer", "required": true },
         "thumbnail": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "Video.Ratings": {
+    "type": "array",
+    "items": { "type": "object",
+      "properties": {
+        "name": { "type": "string", "required": true },
+        "rating": { "type": "number", "required": true },
+        "votes": { "type": "integer" },
+        "default": { "type": "boolean" }
       },
       "additionalProperties": false
     }
@@ -677,7 +689,8 @@
       "votes": { "type": "string" },
       "setid": { "$ref": "Library.Id" },
       "tag": { "$ref": "Array.String" },
-      "userrating": { "type": "integer" }
+      "userrating": { "type": "integer" },
+      "ratings": { "type": "Video.Ratings" }
     }
   },
   "Video.Details.MovieSet": {
@@ -716,7 +729,8 @@
       "episodeguide": { "type": "string" },
       "season": { "type": "integer" },
       "tag": { "$ref": "Array.String" },
-      "userrating": { "type": "integer" }
+      "userrating": { "type": "integer" },
+      "ratings": { "type": "Video.Ratings" }
     }
   },
   "Video.Details.Season": {
@@ -750,7 +764,8 @@
       "specialsortseason": { "type": "integer" },
       "specialsortepisode": { "type": "integer" },
       "userrating": { "type": "integer" },
-      "seasonid": { "$ref": "Library.Id" }
+      "seasonid": { "$ref": "Library.Id" },
+      "ratings": { "type": "Video.Ratings" }
     }
   },
   "Video.Details.MusicVideo": {
