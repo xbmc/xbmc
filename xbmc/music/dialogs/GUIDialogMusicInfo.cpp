@@ -447,11 +447,10 @@ void CGUIDialogMusicInfo::OnGetThumb()
   }
 
   std::string result;
-  bool flip=false;
   VECSOURCES sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
   AddItemPathToFileBrowserSources(sources, *m_albumItem);
   g_mediaManager.GetLocalDrives(sources);
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(1030), result, &flip))
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(1030), result))
     return;   // user cancelled
 
   if (result == "thumb://Current")
@@ -546,8 +545,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
   std::string result;
   VECSOURCES sources = *CMediaSourceSettings::GetInstance().GetSources("music");
   g_mediaManager.GetLocalDrives(sources);
-  bool flip=false;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445))
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, 20445))
     return;   // user cancelled
 
   // delete the thumbnail if that's what the user wants, else overwrite with the
@@ -566,9 +564,6 @@ void CGUIDialogMusicInfo::OnGetFanart()
   }
   else if (StringUtils::EqualsNoCase(result, "fanart://None") || !CFile::Exists(result))
     result.clear();
-
-  if (flip && !result.empty())
-    result = CTextureUtils::GetWrappedImageURL(result, "", "flipped");
 
   // update thumb in the database
   CMusicDatabase db;

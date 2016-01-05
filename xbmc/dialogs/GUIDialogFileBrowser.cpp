@@ -56,7 +56,6 @@ using namespace XFILE;
 #define CONTROL_OK            413
 #define CONTROL_CANCEL        414
 #define CONTROL_NEWFOLDER     415
-#define CONTROL_FLIP          416
 
 CGUIDialogFileBrowser::CGUIDialogFileBrowser()
     : CGUIDialog(WINDOW_DIALOG_FILE_BROWSER, "FileBrowser.xml")
@@ -71,8 +70,6 @@ CGUIDialogFileBrowser::CGUIDialogFileBrowser()
   m_addNetworkShareEnabled = false;
   m_singleList = false;
   m_thumbLoader.SetObserver(this);
-  m_flipEnabled = false;
-  m_bFlip = false;
   m_multipleSelection = false;
   m_loadType = KEEP_IN_MEMORY;
 }
@@ -143,7 +140,6 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_bConfirmed = false;
-      m_bFlip = false;
       bool bIsDir = false;
       // this code allows two different selection modes for directories
       // end the path with a slash to start inside the directory
@@ -258,8 +254,6 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
             CGUIDialogOK::ShowAndGetInput(CVariant{20069}, CVariant{20072});
         }
       }
-      else if (message.GetSenderId() == CONTROL_FLIP)
-        m_bFlip = !m_bFlip;
     }
     break;
   case GUI_MSG_SETFOCUS:
@@ -512,14 +506,6 @@ void CGUIDialogFileBrowser::FrameMove()
     {
       CONTROL_DISABLE(CONTROL_NEWFOLDER);
     }
-    if (m_flipEnabled)
-    {
-      CONTROL_ENABLE(CONTROL_FLIP);
-    }
-    else
-    {
-      CONTROL_DISABLE(CONTROL_FLIP);
-    }
   }
   CGUIDialog::FrameMove();
 }
@@ -609,7 +595,7 @@ void CGUIDialogFileBrowser::OnWindowUnload()
   m_viewControl.Reset();
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, const VECSOURCES &shares, const std::string &heading, std::string &result, bool* flip, int label)
+bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, const VECSOURCES &shares, const std::string &heading, std::string &result, int label)
 {
   CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
   if (!browser)
@@ -628,7 +614,6 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, const VE
     browser->m_vecItems->Add(item);
   }
   browser->SetHeading(heading);
-  browser->m_flipEnabled = flip?true:false;
   browser->Open();
   bool confirmed(browser->IsConfirmed());
   if (confirmed)
@@ -641,9 +626,6 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, const VE
       return ShowAndGetImage(shares, g_localizeStrings.Get(label), result);
     }
   }
-
-  if (flip)
-    *flip = browser->m_bFlip != 0;
 
   g_windowManager.Remove(browser->GetID());
   delete browser;

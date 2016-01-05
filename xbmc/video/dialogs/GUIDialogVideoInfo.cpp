@@ -835,8 +835,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
   VECSOURCES sources(*CMediaSourceSettings::GetInstance().GetSources("video"));
   AddItemPathToFileBrowserSources(sources, item);
   g_mediaManager.GetLocalDrives(sources);
-  bool flip=false;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) ||
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, 20445) ||
     StringUtils::EqualsNoCase(result, "fanart://Current"))
     return;   // user cancelled
 
@@ -859,9 +858,6 @@ void CGUIDialogVideoInfo::OnGetFanart()
   else if (StringUtils::EqualsNoCase(result, "fanart://None") || !CFile::Exists(result))
     result.clear();
 
-  // set the fanart image
-  if (flip && !result.empty())
-    result = CTextureUtils::GetWrappedImageURL(result, "", "flipped");
   CVideoDatabase db;
   if (db.Open())
   {
@@ -2023,8 +2019,7 @@ bool CGUIDialogVideoInfo::OnGetFanart(const CFileItemPtr &videoItem)
   VECSOURCES sources(*CMediaSourceSettings::GetInstance().GetSources("video"));
   g_mediaManager.GetLocalDrives(sources);
   AddItemPathToFileBrowserSources(sources, item);
-  bool flip = false;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) ||
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, 20445) ||
       StringUtils::EqualsNoCase(result, "fanart://Current"))
     return false;
 
@@ -2035,9 +2030,7 @@ bool CGUIDialogVideoInfo::OnGetFanart(const CFileItemPtr &videoItem)
   }
   else if (StringUtils::EqualsNoCase(result, "fanart://None") || !CFile::Exists(result))
     result.clear();
-  if (!result.empty() && flip)
-    result = CTextureUtils::GetWrappedImageURL(result, "", "flipped");
-
+  
   videodb.SetArtForItem(item.GetVideoInfoTag()->m_iDbId, item.GetVideoInfoTag()->m_type, "fanart", result);
 
   // clear view cache and reload images

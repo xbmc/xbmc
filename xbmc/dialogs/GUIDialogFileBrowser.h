@@ -49,7 +49,7 @@ public:
   static bool ShowAndGetSource(std::string &path, bool allowNetworkShares, VECSOURCES* additionalShare = NULL, const std::string& strType="");
   static bool ShowAndGetFileList(const VECSOURCES &shares, const std::string &mask, const std::string &heading, std::vector<std::string> &path, bool useThumbs = false, bool useFileDirectories = false);
   static bool ShowAndGetImage(const VECSOURCES &shares, const std::string &heading, std::string &path);
-  static bool ShowAndGetImage(const CFileItemList &items, const VECSOURCES &shares, const std::string &heading, std::string &path, bool* flip=NULL, int label=21371);
+  static bool ShowAndGetImage(const CFileItemList &items, const VECSOURCES &shares, const std::string &heading, std::string &path, int label=21371);
   static bool ShowAndGetImageList(const VECSOURCES &shares, const std::string &heading, std::vector<std::string> &path);
 
   void SetSources(const VECSOURCES &shares);
@@ -82,9 +82,7 @@ protected:
   CDirectoryHistory m_history;
   int m_browsingForFolders; // 0 - no, 1 - yes, 2 - yes, only writable
   bool m_bConfirmed;
-  int m_bFlip;
   bool m_addNetworkShareEnabled;
-  bool m_flipEnabled;
   std::string m_addSourceType;
   bool m_browsingForImages;
   bool m_useFileDirectories;
