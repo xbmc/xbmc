@@ -115,13 +115,6 @@
 						<include>ButtonMediaSubCommonValues</include>
 						<label>119</label>
 					</control>
-					<control type="radiobutton" id="416">
-						<description>Flip Image button</description>
-						<height>48</height>
-						<align>center</align>
-						<include>ButtonMediaSubCommonValues</include>
-						<label>749</label>
-					</control>
 				</control>
 				<control type="image">
 					<left>685</left>
@@ -137,16 +130,6 @@
 					<height>211</height>
 					<aspectratio>keep</aspectratio>
 					<texture background="true">$INFO[ListItem.Icon]</texture>
-					<visible>!SubString(Control.GetLabel(416),*)</visible>
-				</control>
-				<control type="image">
-					<left>250</left>
-					<top>465</top>
-					<width>410</width>
-					<height>200</height>
-					<aspectratio>keep</aspectratio>
-					<texture background="true" flipx="true">$INFO[ListItem.Icon]</texture>
-					<visible>SubString(Control.GetLabel(416),*)</visible>
 				</control>
 				<control type="panel" id="450">
 					<left>20</left>
