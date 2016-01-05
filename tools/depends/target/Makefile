@@ -136,7 +136,11 @@ linux-system-libs-egl:
 	[ -f $(PREFIX)/lib/pkgconfig/xcb-dri2.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-dri2.pc $(PREFIX)/lib/pkgconfig/xcb-dri2.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xcb-dri3.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-dri3.pc $(PREFIX)/lib/pkgconfig/xcb-dri3.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xcb-glx.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-glx.pc $(PREFIX)/lib/pkgconfig/xcb-glx.pc
+	[ -f $(PREFIX)/lib/pkgconfig/xcb-xfixes.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-xfixes.pc $(PREFIX)/lib/pkgconfig/xcb-xfixes.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xcb-present.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-present.pc $(PREFIX)/lib/pkgconfig/xcb-present.pc
+	[ -f $(PREFIX)/lib/pkgconfig/xcb-randr.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xcb-randr.pc $(PREFIX)/lib/pkgconfig/xcb-randr.pc
+	[ -f $(PREFIX)/lib/pkgconfig/xcb-render.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xcb-render.pc $(PREFIX)/lib/pkgconfig/xcb-render.pc
+	[ -f $(PREFIX)/lib/pkgconfig/xcb-shape.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-shape.pc $(PREFIX)/lib/pkgconfig/xcb-shape.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xcb-sync.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-sync.pc $(PREFIX)/lib/pkgconfig/xcb-sync.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xdamage.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xdamage.pc $(PREFIX)/lib/pkgconfig/xdamage.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xf86vidmodeproto.pc ] || ln -s /usr/share/pkgconfig/xf86vidmodeproto.pc $(PREFIX)/lib/pkgconfig/xf86vidmodeproto.pc
