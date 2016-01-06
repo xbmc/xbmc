@@ -278,10 +278,8 @@ char* CAddonCallbacksAddon::GetLocalizedString(const void* addonData, long dwCod
   CAddonCallbacksAddon* addonHelper = helper->GetHelperAddon();
 
   std::string string;
-  if (dwCode >= 30000 && dwCode <= 30999)
-    string = addonHelper->m_addon->GetString(dwCode).c_str();
-  else if (dwCode >= 32000 && dwCode <= 32999)
-    string = addonHelper->m_addon->GetString(dwCode).c_str();
+  if ((dwCode >= 30000 && dwCode <= 30999) || (dwCode >= 32000 && dwCode <= 32999))
+    string = g_localizeStrings.GetAddonString(addonHelper->m_addon->ID(), dwCode).c_str();
   else
     string = g_localizeStrings.Get(dwCode).c_str();
 

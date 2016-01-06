@@ -116,7 +116,6 @@ namespace ADDON
     virtual void UpdateSetting(const std::string& key, const std::string& value) =0;
     virtual std::string GetSetting(const std::string& key) =0;
     virtual TiXmlElement* GetSettingsXML() =0;
-    virtual std::string GetString(uint32_t id) =0;
     virtual const ADDONDEPS &GetDeps() const =0;
     virtual AddonVersion GetDependencyVersion(const std::string &dependencyID) const =0;
     virtual bool MeetsVersion(const AddonVersion &version) const =0;
@@ -135,8 +134,6 @@ namespace ADDON
 
   private:
     friend class CAddonMgr;
-    virtual bool LoadStrings() =0;
-    virtual void ClearStrings() =0;
   };
 };
 

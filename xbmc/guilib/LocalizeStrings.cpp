@@ -27,6 +27,7 @@
 #include "utils/URIUtils.h"
 #include "utils/POUtils.h"
 #include "filesystem/Directory.h"
+#include "threads/SharedSection.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 
@@ -296,4 +297,41 @@ void CLocalizeStrings::Clear(uint32_t start, uint32_t end)
     else
       ++it;
   }
+}
+
+bool CLocalizeStrings::LoadAddonStrings(const std::string& path, const std::string& language, const std::string& addonId)
+{
+  std::map<uint32_t, LocStr> strings;
+  std::string encoding;
+
+  if (!LoadStr2Mem(path, language, strings, encoding))
+  {
+    if (StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT)) // no fallback, nothing to do
+      return false;
+  }
+
+  // load the fallback
+  if (!StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT))
+    LoadStr2Mem(path, LANGUAGE_DEFAULT, strings, encoding);
+
+  CExclusiveLock lock(m_addonStringsMutex);
+  auto it = m_addonStrings.find(addonId);
+  if (it != m_addonStrings.end())
+    m_addonStrings.erase(it);
+
+  return m_addonStrings.emplace(std::string(addonId), std::move(strings)).second;
+}
+
+std::string CLocalizeStrings::GetAddonString(const std::string& addonId, uint32_t code)
+{
+  CSharedLock lock(m_addonStringsMutex);
+  auto i = m_addonStrings.find(addonId);
+  if (i == m_addonStrings.end())
+    return StringUtils::Empty;
+
+  auto j = i->second.find(code);
+  if (j == i->second.end())
+    return StringUtils::Empty;
+
+  return j->second.strTranslated;
 }

@@ -646,15 +646,6 @@ bool CAddonMgr::SetDefault(const TYPE &type, const std::string &addonID)
   return true;
 }
 
-std::string CAddonMgr::GetString(const std::string &id, const int number)
-{
-  AddonPtr addon;
-  if (GetAddon(id, addon))
-    return addon->GetString(number);
-
-  return "";
-}
-
 void CAddonMgr::FindAddons()
 {
   {

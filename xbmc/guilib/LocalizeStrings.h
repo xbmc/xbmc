@@ -29,6 +29,7 @@
  */
 
 #include "threads/CriticalSection.h"
+#include "threads/SharedSection.h"
 
 #include <map>
 #include <string>
@@ -56,8 +57,10 @@ public:
   virtual ~CLocalizeStrings(void);
   bool Load(const std::string& strPathName, const std::string& strLanguage);
   bool LoadSkinStrings(const std::string& path, const std::string& language);
+  bool LoadAddonStrings(const std::string& path, const std::string& language, const std::string& addonId);
   void ClearSkinStrings();
   const std::string& Get(uint32_t code) const;
+  std::string GetAddonString(const std::string& addonId, uint32_t code);
   void Clear();
 
 protected:
@@ -65,10 +68,12 @@ protected:
 
   static std::string ToUTF8(const std::string &encoding, const std::string &str);
   std::map<uint32_t, LocStr> m_strings;
+  std::map<std::string, std::map<uint32_t, LocStr>> m_addonStrings;
   typedef std::map<uint32_t, LocStr>::const_iterator ciStrings;
   typedef std::map<uint32_t, LocStr>::iterator       iStrings;
 
   CCriticalSection m_critSection;
+  CSharedSection m_addonStringsMutex;
 };
 
 /*!
