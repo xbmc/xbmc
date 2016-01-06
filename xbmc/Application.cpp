@@ -2581,7 +2581,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     break;
 
   case TMSG_SETVIDEORESOLUTION:
-    g_graphicsContext.SetVideoResolution(static_cast<RESOLUTION>(pMsg->param1), pMsg->param2 == 1);
+    g_graphicsContext.SetVideoResolution(static_cast<RESOLUTION>(pMsg->param1), (pMsg->param2 & 1) != 0, (pMsg->param2 & 2) != 0);
     break;
 
   case TMSG_TOGGLEFULLSCREEN:

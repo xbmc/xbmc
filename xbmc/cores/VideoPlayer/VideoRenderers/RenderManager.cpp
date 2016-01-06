@@ -1172,7 +1172,7 @@ void CRenderManager::UpdateResolution()
       if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF && m_fps > 0.0f)
       {
         RESOLUTION res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, CONF_FLAGS_STEREO_MODE_MASK(m_flags));
-        g_graphicsContext.SetVideoResolution(res, true);
+        g_graphicsContext.SetVideoResolution(res, true, true);
         UpdateDisplayLatency();
       }
       m_bTriggerUpdateResolution = false;
