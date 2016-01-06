@@ -3178,9 +3178,7 @@ msgctxt "#748"
 msgid "Edit path"
 msgstr ""
 
-msgctxt "#749"
-msgid "Mirror image"
-msgstr ""
+#empty string with id 749
 
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
 msgctxt "#750"
