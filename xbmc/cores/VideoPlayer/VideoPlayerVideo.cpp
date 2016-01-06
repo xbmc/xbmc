@@ -445,6 +445,8 @@ void CVideoPlayerVideo::Process()
         codecControl |= DVD_CODEC_CTRL_NO_POSTPROC;
       if (bPacketDrop)
         codecControl |= DVD_CODEC_CTRL_DROP;
+      if (!m_renderManager.Supports(RENDERFEATURE_ROTATION))
+        codecControl |= DVD_CODEC_CTRL_ROTATE;
       m_pVideoCodec->SetCodecControl(codecControl);
       if (iDropDirective & EOS_DROPPED)
       {
@@ -469,28 +471,6 @@ void CVideoPlayerVideo::Process()
       // both frames will be dropped in that case instead of just the first
       // decoder still needs to provide an empty image structure, with correct flags
       m_pVideoCodec->SetDropState(bRequestDrop);
-
-      // ask codec to do deinterlacing if possible
-      EDEINTERLACEMODE mDeintMode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
-      EINTERLACEMETHOD mInt = m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
-
-      unsigned int mFilters = 0;
-
-      if (mDeintMode != VS_DEINTERLACEMODE_OFF)
-      {
-        if (mInt == VS_INTERLACEMETHOD_DEINTERLACE)
-          mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY;
-        else if(mInt == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
-          mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_HALFED;
-
-        if (mDeintMode == VS_DEINTERLACEMODE_AUTO && mFilters)
-          mFilters |=  CDVDVideoCodec::FILTER_DEINTERLACE_FLAGGED;
-      }
-
-      if (!m_renderManager.Supports(RENDERFEATURE_ROTATION))
-        mFilters |= CDVDVideoCodec::FILTER_ROTATE;
-
-      mFilters = m_pVideoCodec->SetFilters(mFilters);
 
       int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
 
