@@ -153,7 +153,7 @@ public:
   void SetCameraPosition(const CPoint &camera);
   void SetStereoView(RENDER_STEREO_VIEW view);
   RENDER_STEREO_VIEW GetStereoView()  { return m_stereoView; }
-  void SetStereoMode(RENDER_STEREO_MODE mode) { m_nextStereoMode = mode; }
+  void SetStereoMode(RENDER_STEREO_MODE mode);
   RENDER_STEREO_MODE GetStereoMode()  { return m_stereoMode; }
   void RestoreCameraPosition();
   void SetStereoFactor(float factor);
@@ -278,7 +278,7 @@ private:
   std::stack<UITransform> m_transforms;
   RENDER_STEREO_VIEW m_stereoView;
   RENDER_STEREO_MODE m_stereoMode;
-  RENDER_STEREO_MODE m_nextStereoMode;
+  RENDER_STEREO_MODE m_lastStereoMode;
 
   CRect m_scissors;
 };

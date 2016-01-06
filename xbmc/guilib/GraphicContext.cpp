@@ -58,7 +58,7 @@ CGraphicContext::CGraphicContext(void) :
   /*m_groupTransform*/
   m_stereoView(RENDER_STEREO_VIEW_OFF)
   , m_stereoMode(RENDER_STEREO_MODE_OFF)
-  , m_nextStereoMode(RENDER_STEREO_MODE_OFF)
+  , m_lastStereoMode(RENDER_STEREO_MODE_OFF)
 {
 }
 
@@ -392,7 +392,7 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
   }
 
   // If we are switching to the same resolution and same window/full-screen, no need to do anything
-  if (!forceUpdate && res == lastRes && m_bFullScreenRoot == g_advancedSettings.m_fullScreen)
+  if (!forceUpdate && res == lastRes && m_bFullScreenRoot == g_advancedSettings.m_fullScreen && (!switch3d || m_stereoMode == m_lastStereoMode))
   {
     return;
   }
@@ -420,6 +420,7 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
   m_scissors.SetRect(0, 0, (float)m_iScreenWidth, (float)m_iScreenHeight);
   m_Resolution    = res;
   m_fFPSOverride = 0 ;
+  m_lastStereoMode = m_stereoMode;
 
   if (g_advancedSettings.m_fullScreen)
   {
@@ -983,16 +984,17 @@ void CGraphicContext::SetMediaDir(const std::string &strMediaDir)
   m_strMediaDir = strMediaDir;
 }
 
+
+void CGraphicContext::SetStereoMode(RENDER_STEREO_MODE mode)
+{
+  m_stereoMode = mode;
+  g_application.m_pPlayer->TriggerUpdateResolution();
+  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
+}
+
 void CGraphicContext::Flip(const CDirtyRegionList& dirty)
 {
   g_Windowing.PresentRender(dirty);
-
-  if(m_stereoMode != m_nextStereoMode)
-  {
-    m_stereoMode = m_nextStereoMode;
-    SetVideoResolution(GetVideoResolution(), true);
-    g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
-  }
 }
 
 void CGraphicContext::ApplyHardwareTransform()
