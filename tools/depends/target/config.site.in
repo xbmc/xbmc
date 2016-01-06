@@ -159,11 +159,6 @@ if test "@platform_os@" = "ios"; then
     export CFLAGS=`echo ${CFLAGS} | sed 's/-O3/-Os/'`
     export CPPFLAGS=`echo ${CPPFLAGS} | sed 's/-O3/-Os/'`
   fi
-
-  # tweaks for libmpeg2
-  if test "${PACKAGE_NAME}" = "libmpeg2" ; then
-    export LDFLAGS="${LDFLAGS} -Wl,-read_only_relocs,suppress"
-  fi
 fi
 
 #Fix for older, broken android toolchains
@@ -176,7 +171,6 @@ fi
 if test "${ac_unique_file}" = "src/flac/main.c" || \
    test "${ac_unique_file}" = "src/framing.c" || \
    test "${ac_unique_file}" = "src/libdvdcss.c" || \
-   test "${PACKAGE_NAME}" = "libmpeg2" || \
    test "${PACKAGE_NAME}" = "libssh2" ; then
      CFLAGS="$CFLAGS -fvisibility=default"
 fi
