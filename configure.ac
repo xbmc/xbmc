@@ -420,12 +420,6 @@ AC_ARG_ENABLE([non-free],
   [use_nonfree=$enableval],
   [use_nonfree=yes])
 
-AC_ARG_ENABLE([asap-codec],
-  [AS_HELP_STRING([--enable-asap-codec],
-  [enable ASAP ADPCM support])],
-  [use_asap=$enableval],
-  [use_asap=no])
-
 AC_ARG_ENABLE([mysql],
   [AS_HELP_STRING([--disable-mysql],
   [disable mysql])],
@@ -2200,23 +2194,6 @@ else
   final_message="$final_message\n  Non-free:\tNo"
 fi
 
-if test "$use_asap" = "yes"; then
-  AC_CHECK_PROGS(HAVE_GDC,gdc-4.4 gdc-4.3 gdc,"no")
-  if test "$HAVE_GDC" = "no"; then
-    AC_MSG_ERROR($missing_program);
-  fi
-  AC_CHECK_PROG(HAVE_FPC,fpc,"yes","no")
-  if test "$HAVE_FPC" = "no"; then
-    AC_MSG_ERROR($missing_program);
-  fi
-  USE_ASAP_CODEC=1
-  AC_DEFINE([USE_ASAP_CODEC], [1], [Define to 1 to enable ASAP codec.])
-  final_message="$final_message\n  ASAP Codec:\tYes"
-else
-  USE_ASAP_CODEC=0
-  final_message="$final_message\n  ASAP Codec:\tNo"
-fi
-
 if test "$use_mysql" = "yes"; then
   final_message="$final_message\n  MySQL:\tYes"
   USE_MYSQL=1
@@ -2486,7 +2463,6 @@ AC_SUBST(USE_LIBAV_HACKS)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(OUTPUT_FILES)
 AC_SUBST(HAVE_XBMC_NONFREE)
-AC_SUBST(USE_ASAP_CODEC)
 AC_SUBST(LIBCURL_BASENAME)
 AC_SUBST(LIBVORBISFILE_BASENAME)
 AC_SUBST(LIBOGG_BASENAME)
