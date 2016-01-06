@@ -119,7 +119,7 @@ bool OMXDoProcessing(struct SOmxPlayerState &m_OmxPlayerState, int m_playSpeed, 
     m_OmxPlayerState.stamp = m_OmxPlayerState.av_clock.OMXMediaTime();
     const bool m_Pause = m_playSpeed == DVD_PLAYSPEED_PAUSE;
     const bool not_accepts_data = (!m_VideoPlayerAudio->AcceptsData() && m_HasAudio) ||
-        (!m_VideoPlayerVideo->AcceptsData() && m_HasVideo >= 0);
+        (!m_VideoPlayerVideo->AcceptsData() && m_HasVideo);
     /* when the video/audio fifos are low, we pause clock, when high we resume */
     double audio_pts = floor(m_VideoPlayerAudio->GetCurrentPts());
     double video_pts = floor(m_VideoPlayerVideo->GetCurrentPts());
