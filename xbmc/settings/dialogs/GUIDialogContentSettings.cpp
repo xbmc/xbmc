@@ -130,19 +130,15 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
         ADDON::TYPE type = ADDON::ScraperTypeFromContent(m_content);
         std::string selectedAddonId = m_scraper->ID();
 
-        if (CGUIWindowAddonBrowser::SelectAddonID(type, selectedAddonId, false) == 1)
+        if (CGUIWindowAddonBrowser::SelectAddonID(type, selectedAddonId, false) == 1
+            && selectedAddonId != m_scraper->ID())
         {
-          AddonPtr last = m_scraper;
-
           AddonPtr scraperAddon;
           CAddonMgr::GetInstance().GetAddon(selectedAddonId, scraperAddon);
           m_scraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
 
           SET_CONTROL_LABEL2(CONTROL_SCRAPER_LIST_BUTTON, m_scraper->Name());
-
-          if (m_scraper != last)
-            SetupView();
-
+          SetupView();
           CONTROL_ENABLE_ON_CONDITION(CONTROL_SCRAPER_SETTINGS, m_scraper->HasSettings());
           SET_CONTROL_FOCUS(CONTROL_SCRAPER_LIST_BUTTON, 0);
         }
