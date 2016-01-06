@@ -604,6 +604,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "isresumable",      LISTITEM_IS_RESUMABLE},
                                   { "percentplayed",    LISTITEM_PERCENT_PLAYED},
                                   { "isfolder",         LISTITEM_IS_FOLDER },
+                                  { "isparentfolder",   LISTITEM_IS_PARENTFOLDER },
                                   { "iscollection",     LISTITEM_IS_COLLECTION },
                                   { "originaltitle",    LISTITEM_ORIGINALTITLE },
                                   { "lastplayed",       LISTITEM_LASTPLAYED },
@@ -5929,6 +5930,14 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     return item->IsSelected();
   else if (condition == LISTITEM_IS_FOLDER)
     return item->m_bIsFolder;
+  else if (condition == LISTITEM_IS_PARENTFOLDER)
+  {
+    if (item->IsFileItem())
+    {
+      const CFileItem *pItem = (const CFileItem *)item;
+      return pItem->IsParentFolder();
+    }
+  }
   else if (condition == LISTITEM_IS_RESUMABLE)
   {
     if (item->IsFileItem())
