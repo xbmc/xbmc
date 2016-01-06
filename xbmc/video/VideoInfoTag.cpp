@@ -651,8 +651,12 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
 
 const CRating CVideoInfoTag::GetRating(std::string type) const
 {
-  if (type.empty() || m_ratings.find(type) == m_ratings.end())
-    return GetRating(m_strDefaultRating);
+  if (type.empty())
+    type = m_strDefaultRating;
+
+  if (m_ratings.find(type) == m_ratings.end())
+    return CRating();
+
   return m_ratings.find(type)->second;
 }
 
@@ -1124,10 +1128,7 @@ void CVideoInfoTag::SetPictureURL(CScraperUrl &pictureURL)
 
 void CVideoInfoTag::AddRating(float rating, int votes, const std::string& type /* = "" */)
 {
-  if (type.empty())
-    AddRating(CRating(rating, votes), m_strDefaultRating);
-  else
-    AddRating(CRating(rating, votes), type);
+  AddRating(CRating(rating, votes), type);
 }
 
 void CVideoInfoTag::AddRating(CRating rating, const std::string& type /* = "" */)

@@ -2435,7 +2435,7 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, CVideoInfoTag &details
   AddActorLinksToItem(idTvShow, MediaTypeTvShow, "director", details.m_director);
 
   // add ratings
-  details.m_iIdRating = AddRatings(idTvShow, MediaTypeMovie, details.m_ratings, details.m_strDefaultRating);
+  details.m_iIdRating = AddRatings(idTvShow, MediaTypeTvShow, details.m_ratings, details.m_strDefaultRating);
 
   // add "all seasons" - the rest are added in SetDetailsForEpisode
   AddSeason(idTvShow, -1);
