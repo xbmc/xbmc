@@ -1453,24 +1453,30 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
 
 int CGUIInfoManager::TranslateListItem(const Property &info)
 {
+  if (info.num_params() == 1)
+  {
+    if (info.name == "property")
+    {
+      // properties are stored case sensitive in m_listItemProperties, but lookup is insensitive in CGUIListItem::GetProperty
+      if (StringUtils::EqualsNoCase(info.param(), "fanart_image"))
+        return AddListItemProp("fanart", LISTITEM_ART_OFFSET);
+      return AddListItemProp(info.param());
+    }
+    if (info.name == "art")
+      return AddListItemProp(info.param(), LISTITEM_ART_OFFSET);
+    if (info.name == "ratings")
+      return AddListItemProp(info.param(), LISTITEM_RATING_OFFSET);
+    if (info.name == "votes")
+      return AddListItemProp(info.param(), LISTITEM_VOTES_OFFSET);
+    if (info.name == "ratingandvotes")
+      return AddListItemProp(info.param(), LISTITEM_RATING_AND_VOTES_OFFSET);
+  }
+
   for (size_t i = 0; i < sizeof(listitem_labels) / sizeof(infomap); i++) // these ones don't have or need an id
   {
     if (info.name == listitem_labels[i].str)
       return listitem_labels[i].val;
   }
-  if (info.name == "property" && info.num_params() == 1)
-  {
-    // properties are stored case sensitive in m_listItemProperties, but lookup is insensitive in CGUIListItem::GetProperty
-    if (StringUtils::EqualsNoCase(info.param(), "fanart_image"))
-      return AddListItemProp("fanart", LISTITEM_ART_OFFSET);
-    return AddListItemProp(info.param());
-  }
-  if (info.name == "art" && info.num_params() == 1)
-    return AddListItemProp(info.param(), LISTITEM_ART_OFFSET);
-  if (info.name == "ratings" && info.num_params() == 1)
-    return AddListItemProp(info.param(), LISTITEM_RATING_OFFSET);
-  if (info.name == "votes" && info.num_params() == 1)
-    return AddListItemProp(info.param(), LISTITEM_VOTES_OFFSET);
   return 0;
 }
 
@@ -5013,6 +5019,20 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   { // grab the votes
     std::string votes = m_listitemProperties[info - (LISTITEM_PROPERTY_START + LISTITEM_VOTES_OFFSET)];
     return StringUtils::Format("%i", item->GetVideoInfoTag()->GetRating(votes).votes);
+  }
+
+  if (info >= LISTITEM_PROPERTY_START + LISTITEM_RATING_AND_VOTES_OFFSET && info - (LISTITEM_PROPERTY_START + LISTITEM_RATING_AND_VOTES_OFFSET) < (int)m_listitemProperties.size())
+  { // grab the rating and the votes
+    std::string ratingName = m_listitemProperties[info - (LISTITEM_PROPERTY_START + LISTITEM_RATING_AND_VOTES_OFFSET)];
+    CRating rating = item->GetVideoInfoTag()->GetRating(ratingName);
+
+    if (rating.rating <= 0.f)
+      return "";
+    
+    if (rating.votes == 0)
+      return StringUtils::Format("%.1f", rating.rating);
+    else
+      return StringUtils::Format(g_localizeStrings.Get(20350).c_str(), rating.rating, rating.votes);
   }
 
   if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
