@@ -339,8 +339,8 @@ JSONRPC_STATUS CPVROperations::GetTimerDetails(const std::string &method, ITrans
 
 JSONRPC_STATUS CPVROperations::AddTimer(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  if (!g_PVRManager.IsStarted())
-    return FailedToExecute;
+  //if (!g_PVRManager.IsStarted())
+  //  return FailedToExecute;
 
   EpgSearchFilter filter;
   filter.Reset();
