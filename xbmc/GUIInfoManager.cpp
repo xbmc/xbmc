@@ -116,9 +116,9 @@ using namespace EPG;
 
 class CSetCurrentItemJob : public CJob
 {
-  CFileItem &m_itemCurrentFile;
+  CFileItem m_itemCurrentFile;
 public:
-  CSetCurrentItemJob(CFileItem &item) : m_itemCurrentFile(item) { }
+  CSetCurrentItemJob(CFileItem item) : m_itemCurrentFile(item) { }
   ~CSetCurrentItemJob(void) {}
 
   bool DoWork(void)
