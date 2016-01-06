@@ -140,10 +140,10 @@
 					<visible>!SubString(Control.GetLabel(416),*)</visible>
 				</control>
 				<control type="image">
-					<left>250</left>
-					<top>465</top>
-					<width>410</width>
-					<height>200</height>
+					<left>690</left>
+					<top>405</top>
+					<width>211</width>
+					<height>211</height>
 					<aspectratio>keep</aspectratio>
 					<texture background="true" flipx="true">$INFO[ListItem.Icon]</texture>
 					<visible>SubString(Control.GetLabel(416),*)</visible>
