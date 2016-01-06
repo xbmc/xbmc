@@ -711,43 +711,6 @@ lib/cpluff/stamp-h1
 /lib/libdvd/libdvdread/autom4te.cache
 /lib/libdvd/libdvdread/config.h.in~
 
-# /lib/libmpeg2/
-/lib/libmpeg2/config.log
-/lib/libmpeg2/config.status
-/lib/libmpeg2/libtool
-/lib/libmpeg2/configure.lineno
-/lib/libmpeg2/Makefile
-/lib/libmpeg2/src/*.exe
-
-# /lib/libmpeg2/doc/
-/lib/libmpeg2/doc/Makefile
-
-# /lib/libmpeg2/include/
-/lib/libmpeg2/include/stamp-h1
-/lib/libmpeg2/include/config.h
-/lib/libmpeg2/include/Makefile
-
-# /lib/libmpeg2/libmpeg2/
-/lib/libmpeg2/libmpeg2/Makefile
-
-# /lib/libmpeg2/libmpeg2/convert/
-/lib/libmpeg2/libmpeg2/convert/Makefile
-
-# /lib/libmpeg2/libvo/
-/lib/libmpeg2/libvo/Makefile
-
-# /lib/libmpeg2/src/
-/lib/libmpeg2/src/Makefile
-/lib/libmpeg2/src/corrupt_mpeg2
-/lib/libmpeg2/src/extract_mpeg2
-/lib/libmpeg2/src/mpeg2dec
-
-# /lib/libmpeg2/test/
-/lib/libmpeg2/test/Makefile
-
-# /lib/libmpeg2/vc++/
-/lib/libmpeg2/vc++/Makefile
-
 # /lib/xbadpcm/
 /lib/xbadpcm/Makefile
 /lib/xbadpcm/adpcm.lib
