@@ -72,15 +72,12 @@ protected:
   // specialization of CGUIDialogSettingsBase
   virtual bool AllowResettingSettings() const { return false; }
   virtual void Save();
-  virtual void OnOkay();
-  virtual void OnCancel();
   virtual void SetupView();
 
   // specialization of CGUIDialogSettingsManualBase
   virtual void InitializeSettings();
 
 private:
-  bool m_needsSaving;
   /*!
   * @brief The currently selected content type
   */

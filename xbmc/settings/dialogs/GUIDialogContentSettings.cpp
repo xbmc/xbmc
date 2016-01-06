@@ -60,7 +60,6 @@ bool ByAddonName(const AddonPtr& lhs, const AddonPtr& rhs)
 
 CGUIDialogContentSettings::CGUIDialogContentSettings()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_CONTENT_SETTINGS, "DialogContentSettings.xml"),
-    m_needsSaving(false),
     m_content(CONTENT_NONE),
     m_originalContent(CONTENT_NONE),
     m_showScanSettings(false),
@@ -162,18 +161,13 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
           if (m_scraper != last)
             SetupView();
 
-          if (m_scraper != last)
-            m_needsSaving = true;
           CONTROL_ENABLE_ON_CONDITION(CONTROL_SCRAPER_SETTINGS, m_scraper->HasSettings());
           SET_CONTROL_FOCUS(CONTROL_SCRAPER_LIST_BUTTON, 0);
         }
       }
       else if (iControl == CONTROL_SCRAPER_SETTINGS)
       {
-        bool result = CGUIDialogAddonSettings::ShowAndGetInput(m_scraper, false);
-        if (result)
-          m_needsSaving = true;
-        return result;
+        return CGUIDialogAddonSettings::ShowAndGetInput(m_scraper, false);
       }
 
       break;
@@ -304,7 +298,6 @@ void CGUIDialogContentSettings::OnInitWindow()
 {
   SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE_BUTTON, 20344);
   SET_CONTROL_LABEL(CONTROL_SCRAPER_LIST_BUTTON, 38025);
-  m_needsSaving = false;
 
   CGUIDialogSettingsManualBase::OnInitWindow();
 }
@@ -330,37 +323,11 @@ void CGUIDialogContentSettings::OnSettingChanged(const CSetting *setting)
   }
   else if (settingId == SETTING_EXCLUDE)
     m_exclude = static_cast<const CSettingBool*>(setting)->GetValue();
-
-  m_needsSaving = true;
 }
 
 void CGUIDialogContentSettings::Save()
 {
-  if (!m_needsSaving ||
-      m_scraper == NULL)
-    return;
-
-  if (m_content == CONTENT_NONE)
-  {
-    m_scraper.reset();
-    return;
-  }
-}
-
-void CGUIDialogContentSettings::OnOkay()
-{
-  // watch for content change, but same scraper
-  if (m_content != m_originalContent)
-    m_needsSaving = true;
-
-  CGUIDialogSettingsManualBase::OnOkay();
-}
-
-void CGUIDialogContentSettings::OnCancel()
-{
-  m_needsSaving = false;
-
-  CGUIDialogSettingsManualBase::OnCancel();
+  //Should be saved by caller of ::Show
 }
 
 void CGUIDialogContentSettings::SetupView()
