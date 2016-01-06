@@ -1,0 +1,75 @@
+--- lib/util/system.c.orig	2015-12-12 17:56:12.000000000 +0100
++++ lib/util/system.c	2015-12-12 17:56:46.000000000 +0100
+@@ -96,7 +96,7 @@
+ 
+ _PUBLIC_ pid_t sys_fork(void)
+ {
+-	pid_t forkret = fork();
++	pid_t forkret = (pid_t)-1;
+ 
+ 	if (forkret == (pid_t)0) {
+ 		/* Child - reset mypid so sys_getpid does a system call. */
+--- source3/lib/system.orig	2015-12-12 17:58:30.000000000 +0100
++++ source3/lib/system.c	2015-12-12 17:58:45.000000000 +0100
+@@ -1506,7 +1506,7 @@
+ 		for (p = popen_chain; p; p = p->next)
+ 			close(p->fd);
+ 
+-		execv(argl[0], argl);
++		//execv(argl[0], argl);
+ 		_exit (127);
+ 	}
+ 
+--- source3/lib/util.c.orig	2015-12-12 18:01:38.000000000 +0100
++++ source3/lib/util.c	2015-12-12 18:01:58.000000000 +0100
+@@ -1120,7 +1120,7 @@
+ 	cmd = lp_panic_action();
+ 	if (cmd && *cmd) {
+ 		DEBUG(0, ("smb_panic(): calling panic action [%s]\n", cmd));
+-		result = system(cmd);
++		result = -1;
+ 
+ 		if (result == -1)
+ 			DEBUG(0, ("smb_panic(): fork failed in panic action: %s\n",
+--- source3/lib/sock_exec.c.orig	2015-12-12 18:06:28.000000000 +0100
++++ source3/lib/sock_exec.c	2015-12-12 18:06:41.000000000 +0100
+@@ -101,7 +101,7 @@
+ 		DEBUG(0,("socketpair_tcp failed (%s)\n", strerror(errno)));
+ 		return -1;
+ 	}
+-	if (fork() == 0) {
++	if (-1 == 0) {
+ 		close(fd[0]);
+ 		close(0);
+ 		close(1);
+@@ -111,7 +111,7 @@
+ 		if (dup(fd[1]) == -1) {
+ 			exit(1);
+ 		}
+-		exit(system(prog));
++		exit(-1);
+ 	}
+ 	close(fd[1]);
+ 	return fd[0];
+--- source3/lib/smbrun.c.orig	2015-12-12 18:00:04.000000000 +0100
++++ source3/lib/smbrun.c	2015-12-12 18:00:57.000000000 +0100
+@@ -192,8 +192,8 @@
+ 				exit(82);
+ 		}
+ 
+-		execl("/bin/sh","sh","-c",
+-		    newcmd ? (const char *)newcmd : cmd, NULL);
++		//execl("/bin/sh","sh","-c",
++		//    newcmd ? (const char *)newcmd : cmd, NULL);
+ 
+ 		SAFE_FREE(newcmd);
+ 	}
+@@ -343,7 +343,7 @@
+ 	}
+ #endif
+ 
+-	execl("/bin/sh", "sh", "-c", cmd, NULL);  
++	//execl("/bin/sh", "sh", "-c", cmd, NULL);  
+ 
+ 	/* not reached */
+ 	exit(82);

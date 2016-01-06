@@ -1,0 +1,45 @@
+diff -uPr appletvos9.0_arm64-target/src/util/daemonize.cpp works/src/util/daemonize.cpp
+--- src/util/daemonize.cpp	2015-12-18 18:20:26.000000000 +0100
++++ src/util/daemonize.cpp	2015-12-13 16:15:19.000000000 +0100
+@@ -25,7 +25,7 @@
+ void Daemonize()
+ {
+   //fork a child process
+-  pid_t pid = fork();
++  pid_t pid = -1;//fork();
+   if (pid == -1)
+     fprintf(stderr, "fork(): %s", GetErrno().c_str());
+   else if (pid > 0)
+diff -uPr appletvos9.0_arm64-target/src/util/tcpsocket.cpp works/src/util/tcpsocket.cpp
+--- src/util/tcpsocket.cpp	2014-11-27 19:26:33.000000000 +0100
++++ src/util/tcpsocket.cpp	2015-12-18 18:19:24.000000000 +0100
+@@ -31,8 +31,6 @@
+ #include "tcpsocket.h"
+ #include "misc.h"
+ 
+-using namespace std;
+-
+ void CTcpData::SetData(uint8_t* data, int size, bool append)
+ {
+   CopyData(reinterpret_cast<char*>(data), size, append);
+diff -uPr appletvos9.0_arm64-target/src/device/deviceltbl.cpp works/src/device/deviceltbl.cpp
+--- src/device/deviceltbl.cpp	2014-11-27 19:26:33.000000000 +0100
++++ src/device/deviceltbl.cpp	2015-12-13 16:14:49.000000000 +0100
+@@ -51,7 +51,7 @@
+ 
+ bool CDeviceLtbl::WriteOutput()
+ {
+-  uint8_t prefix[4] = {0x55, 0xAA, 0x00, m_channels.size()};
++  uint8_t prefix[4] = {0x55, 0xAA, 0x00, (uint8_t)m_channels.size()};
+ 
+   //get the channel values from the clienshandler
+   int64_t now = GetTimeUs();
+@@ -114,7 +114,7 @@
+   uint8_t buff[512];
+   uint8_t prefix[2]    = {0x55, 0xAA};
+   uint8_t open[2]      = {0x83, 0x00};
+-  uint8_t getvalues[4] = {0x81, 0x02, 0x00, m_channels.size()};
++  uint8_t getvalues[4] = {0x81, 0x02, 0x00, (uint8_t)m_channels.size()};
+ 
+   if (m_isopened)
+     return true; //nothing to do here

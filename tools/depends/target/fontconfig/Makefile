@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include lconv.patch Makefile
+DEPS= ../../Makefile.include lconv.patch fix-aarch64_atomics.patch Makefile
 
 # lib name, version
 LIBNAME=fontconfig
@@ -24,7 +24,8 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 < ../lconv.patch 
+	cd $(PLATFORM); patch -p1 < ../lconv.patch
+	cd $(PLATFORM); patch -p1 < ../fix-aarch64_atomics.patch 
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 

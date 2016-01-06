@@ -86,8 +86,11 @@ libreplace_cv_HAVE_GETADDRINFO=no
 if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "ios"; then
   # disable python support
   export PYTHON_VER=0.0
-  # ios/osx-10.6 issue with collision of _MD5 exported from a system lib
-  export LDFLAGS="${LDFLAGS} -Wl,-unexported_symbol,_MD5* -lc"
+  if test "@use_cpu@" != "arm64"; then
+    # ios/osx-10.6 issue with collision of _MD5 exported from a system lib
+    export LDFLAGS="${LDFLAGS} -Wl,-unexported_symbol,_MD5* -lc"
+  fi
+  samba_cv_HAVE_IFACE_GETIFADDRS=yes
 fi
 
 if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "osx"; then
@@ -102,6 +105,7 @@ if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "osx"; then
   ac_cv_header_execinfo_h=no
   # fixes crash on 10.6 if xbmc is built using 10.7 SDK with 10.6 min
   ac_cv_func_vdprintf=no
+  samba_cv_HAVE_IFACE_GETIFADDRS=yes
 fi
 
 if test "@platform_os@" = "android"; then
@@ -149,6 +153,12 @@ if test "@platform_os@" = "ios"; then
           export CPP="@use_toolchain@/usr/bin/clang -E"
           ;;
         esac
+ 
+    if test "@use_cpu@" = "arm64"; then
+      host=aarch64-apple-darwin
+      host_alias=aarch64-apple-darwin
+    fi 
+ 
     unset AS
     unset CCAS
   fi

@@ -28,6 +28,9 @@ endif
 
 ifeq ($(OS),ios)
   EXCLUDED_DEPENDS = libcec libusb
+ifeq ($(TARGET_PLATFORM),appletvos)
+  DEPENDS += boblight
+endif
 endif
 
 ifeq ($(OS),osx)
@@ -86,7 +89,7 @@ python27: expat gettext libxml2 sqlite3 openssl libffi
 libcdio: $(ICONV)
 libplist: libxml2 $(ZLIB)
 libbluray: $(ICONV) libxml2
-libssh: openssl $(ZLIB)
+libssh: libgcrypt openssl $(ZLIB)
 mysql: openssl
 libzip: $(ZLIB)
 libpng: $(ZLIB)
