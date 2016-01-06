@@ -592,22 +592,6 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametim
       if( m_fForcedAspectRatio != 0.0f )
         m_picture.iDisplayWidth = (int) (m_picture.iDisplayHeight * m_fForcedAspectRatio);
 
-      //Deinterlace if codec said format was interlaced or if we have selected we want to deinterlace
-      //this video
-      // ask codec to do deinterlacing if possible
-      EDEINTERLACEMODE mDeintMode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
-      EINTERLACEMETHOD mInt = m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
-      if ((mDeintMode == VS_DEINTERLACEMODE_AUTO && (m_picture.iFlags & DVP_FLAG_INTERLACED)) || mDeintMode == VS_DEINTERLACEMODE_FORCE)
-      {
-        if (mInt == VS_INTERLACEMETHOD_SW_BLEND)
-        {
-          if (!sPostProcessType.empty())
-            sPostProcessType += ",";
-          sPostProcessType += g_advancedSettings.m_videoPPFFmpegDeint;
-          bPostProcessDeint = true;
-        }
-      }
-
       if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_PostProcess)
       {
         if (!sPostProcessType.empty())
