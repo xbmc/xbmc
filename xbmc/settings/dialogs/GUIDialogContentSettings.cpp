@@ -53,10 +53,6 @@
 
 using namespace ADDON;
 
-bool ByAddonName(const AddonPtr& lhs, const AddonPtr& rhs)
-{
-  return StringUtils::CompareNoCase(lhs->Name(), rhs->Name()) < 0;
-}
 
 CGUIDialogContentSettings::CGUIDialogContentSettings()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_CONTENT_SETTINGS, "DialogContentSettings.xml"),
@@ -67,27 +63,13 @@ CGUIDialogContentSettings::CGUIDialogContentSettings()
     m_useDirectoryNames(false),
     m_containsSingleItem(false),
     m_exclude(false),
-    m_noUpdating(false),
-    m_vecItems(new CFileItemList)
+    m_noUpdating(false)
 { }
-
-CGUIDialogContentSettings::~CGUIDialogContentSettings()
-{
-  m_scraper = nullptr;
-  delete m_vecItems;
-}
 
 bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
 {
   switch (message.GetMessage())
   {
-    case GUI_MSG_WINDOW_DEINIT:
-    {
-      m_vecItems->Clear();
-
-      break;
-    }
-
     case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
@@ -178,27 +160,6 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
   }
 
   return CGUIDialogSettingsManualBase::OnMessage(message);
-}
-
-CFileItemPtr CGUIDialogContentSettings::GetCurrentListItem(int offset)
-{
-  int currentItem = -1;
-  if (m_exclude)
-    return CFileItemPtr();
-
-  for (int i = 0; i < m_vecItems->Size(); ++i)
-  {
-    if (m_vecItems->Get(i)->IsSelected())
-    {
-      currentItem = i;
-      break;
-    }
-  }
-
-  if (currentItem == -1)
-    return CFileItemPtr();
-
-  return m_vecItems->Get((currentItem + offset) % m_vecItems->Size());
 }
 
 void CGUIDialogContentSettings::SetContent(CONTENT_TYPE content)
@@ -334,7 +295,6 @@ void CGUIDialogContentSettings::SetupView()
 {
   SET_CONTROL_LABEL2(CONTROL_CONTENT_TYPE_BUTTON, ADDON::TranslateContent(m_content, true));
 
-  m_vecItems->Clear();
   if (m_content == CONTENT_NONE)
   {
     m_showScanSettings = false;

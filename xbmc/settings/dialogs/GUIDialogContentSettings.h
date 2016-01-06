@@ -36,14 +36,12 @@ class CGUIDialogContentSettings : public CGUIDialogSettingsManualBase
 {
 public:
   CGUIDialogContentSettings();
-  virtual ~CGUIDialogContentSettings();
 
   // specializations of CGUIControl
   virtual bool OnMessage(CGUIMessage &message);
 
   // specialization of CGUIWindow
   virtual bool HasListItems() const { return true; };
-  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 
   CONTENT_TYPE GetContent() const { return m_content; }
   void SetContent(CONTENT_TYPE content);
@@ -97,6 +95,4 @@ private:
   bool m_containsSingleItem;
   bool m_exclude;
   bool m_noUpdating;
-  
-  CFileItemList* m_vecItems;
 };
