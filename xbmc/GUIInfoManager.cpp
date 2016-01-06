@@ -6315,13 +6315,6 @@ bool CGUIInfoManager::ConditionsChangedValues(const std::map<INFO::InfoPtr, bool
   return false;
 }
 
-bool CGUIInfoManager::IsPlayerOSDActive() const
-{
-  return m_playerShowInfo &&
-         (g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD) ||
-          g_windowManager.IsWindowActive(WINDOW_DIALOG_MUSIC_OSD));
-}
-
 bool CGUIInfoManager::IsPlayerChannelPreviewActive() const
 {
   return m_playerShowInfo &&

@@ -193,7 +193,6 @@ public:
   bool GetShowInfo() const { return m_playerShowInfo; }
   void ToggleShowCodec() { m_playerShowCodec = !m_playerShowCodec; };
   bool ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; return m_playerShowInfo; };
-  bool IsPlayerOSDActive() const;
   bool IsPlayerChannelPreviewActive() const;
 
   std::string GetSystemHeatInfo(int info);
