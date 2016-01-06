@@ -38,10 +38,10 @@ public:
   CGUIDialogContentSettings();
 
   // specializations of CGUIControl
-  virtual bool OnMessage(CGUIMessage &message);
+  bool OnMessage(CGUIMessage &message) override;
 
   // specialization of CGUIWindow
-  virtual bool HasListItems() const { return true; };
+  bool HasListItems() const override { return true; };
 
   CONTENT_TYPE GetContent() const { return m_content; }
   void SetContent(CONTENT_TYPE content);
@@ -62,18 +62,18 @@ public:
 
 protected:
   // specializations of CGUIWindow
-  virtual void OnInitWindow();
+  void OnInitWindow() override;
 
   // implementations of ISettingCallback
-  virtual void OnSettingChanged(const CSetting *setting);
+  void OnSettingChanged(const CSetting *setting) override;
 
   // specialization of CGUIDialogSettingsBase
-  virtual bool AllowResettingSettings() const { return false; }
-  virtual void Save();
-  virtual void SetupView();
+  bool AllowResettingSettings() const override { return false; }
+  void Save() override;
+  void SetupView() override;
 
   // specialization of CGUIDialogSettingsManualBase
-  virtual void InitializeSettings();
+  void InitializeSettings() override;
 
 private:
   /*!
