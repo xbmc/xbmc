@@ -967,8 +967,7 @@ bool CWinRenderer::Supports(EINTERLACEMETHOD method)
 
   if(m_format != RENDER_FMT_DXVA
   && (   method == VS_INTERLACEMETHOD_DEINTERLACE
-      || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF
-      || method == VS_INTERLACEMETHOD_SW_BLEND))
+      || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF))
     return true;
 
   return false;
