@@ -356,10 +356,6 @@ void CVideoPlayerVideo::Process()
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_NOSKIP))
     {
-      // libmpeg2 is also returning incomplete frames after a dvd cell change
-      // so the first few pictures are not the correct ones to display in some cases
-      // just display those together with the correct one.
-      // (setting it to 2 will skip some menu stills, 5 is working ok for me).
       m_iNrOfPicturesNotToSkip = 5;
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))

@@ -1012,7 +1012,6 @@
 		E38E1F880D25F9FD00618676 /* DVDOverlayCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152D0D25F9F900618676 /* DVDOverlayCodecFFmpeg.cpp */; };
 		E38E1F890D25F9FD00618676 /* DVDOverlayCodecText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152F0D25F9F900618676 /* DVDOverlayCodecText.cpp */; };
 		E38E1F8D0D25F9FD00618676 /* DVDVideoCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */; };
-		E38E1F8E0D25F9FD00618676 /* DVDVideoCodecLibMpeg2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153F0D25F9F900618676 /* DVDVideoCodecLibMpeg2.cpp */; };
 		E38E1F8F0D25F9FD00618676 /* DVDVideoPPFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15410D25F9F900618676 /* DVDVideoPPFFmpeg.cpp */; };
 		E38E1F910D25F9FD00618676 /* DVDDemux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15490D25F9F900618676 /* DVDDemux.cpp */; };
 		E38E1F930D25F9FD00618676 /* DVDDemuxShoutcast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E154D0D25F9F900618676 /* DVDDemuxShoutcast.cpp */; };
@@ -1402,7 +1401,6 @@
 		E49911CA174E5D2500741B6D /* DVDOverlayCodecText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152F0D25F9F900618676 /* DVDOverlayCodecText.cpp */; };
 		E49911CB174E5D2500741B6D /* DVDOverlayCodecTX3G.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CEE60713D3C89700225F72 /* DVDOverlayCodecTX3G.cpp */; };
 		E49911CE174E5D2500741B6D /* DVDVideoCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */; };
-		E49911CF174E5D2500741B6D /* DVDVideoCodecLibMpeg2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153F0D25F9F900618676 /* DVDVideoCodecLibMpeg2.cpp */; };
 		E49911D1174E5D2500741B6D /* DVDVideoPPFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15410D25F9F900618676 /* DVDVideoPPFFmpeg.cpp */; };
 		E49911D2174E5D2E00741B6D /* DVDDemux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15490D25F9F900618676 /* DVDDemux.cpp */; };
 		E49911D3174E5D2E00741B6D /* DVDDemuxBXA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE89ACA41621DAB800E17DBC /* DVDDemuxBXA.cpp */; };
@@ -3947,16 +3945,11 @@
 		E38E15310D25F9F900618676 /* DVDOverlayImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayImage.h; sourceTree = "<group>"; };
 		E38E15320D25F9F900618676 /* DVDOverlaySpu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlaySpu.h; sourceTree = "<group>"; };
 		E38E15330D25F9F900618676 /* DVDOverlayText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayText.h; sourceTree = "<group>"; };
-		E38E153B0D25F9F900618676 /* DllLibMpeg2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibMpeg2.h; sourceTree = "<group>"; };
 		E38E153C0D25F9F900618676 /* DVDVideoCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDVideoCodec.h; sourceTree = "<group>"; };
 		E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDVideoCodecFFmpeg.cpp; sourceTree = "<group>"; };
 		E38E153E0D25F9F900618676 /* DVDVideoCodecFFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDVideoCodecFFmpeg.h; sourceTree = "<group>"; };
-		E38E153F0D25F9F900618676 /* DVDVideoCodecLibMpeg2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDVideoCodecLibMpeg2.cpp; sourceTree = "<group>"; };
-		E38E15400D25F9F900618676 /* DVDVideoCodecLibMpeg2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDVideoCodecLibMpeg2.h; sourceTree = "<group>"; };
 		E38E15410D25F9F900618676 /* DVDVideoPPFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDVideoPPFFmpeg.cpp; sourceTree = "<group>"; };
 		E38E15420D25F9F900618676 /* DVDVideoPPFFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDVideoPPFFmpeg.h; sourceTree = "<group>"; };
-		E38E15440D25F9F900618676 /* mpeg2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mpeg2.h; sourceTree = "<group>"; };
-		E38E15450D25F9F900618676 /* mpeg2convert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mpeg2convert.h; sourceTree = "<group>"; };
 		E38E15490D25F9F900618676 /* DVDDemux.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemux.cpp; sourceTree = "<group>"; };
 		E38E154A0D25F9F900618676 /* DVDDemux.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemux.h; sourceTree = "<group>"; };
 		E38E154C0D25F9F900618676 /* DVDDemuxFFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemuxFFmpeg.h; sourceTree = "<group>"; };
@@ -7638,15 +7631,11 @@
 		E38E153A0D25F9F900618676 /* Video */ = {
 			isa = PBXGroup;
 			children = (
-				E38E15430D25F9F900618676 /* libmpeg2 */,
-				E38E153B0D25F9F900618676 /* DllLibMpeg2.h */,
 				DFBD336A1BD531CB001A8FEE /* DllVideoToolBox.h */,
 				F597B05A18A804E0005AADAE /* DVDVideoCodec.cpp */,
 				E38E153C0D25F9F900618676 /* DVDVideoCodec.h */,
 				E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */,
 				E38E153E0D25F9F900618676 /* DVDVideoCodecFFmpeg.h */,
-				E38E153F0D25F9F900618676 /* DVDVideoCodecLibMpeg2.cpp */,
-				E38E15400D25F9F900618676 /* DVDVideoCodecLibMpeg2.h */,
 				E499158F174E6ABD00741B6D /* DVDVideoCodecVideoToolBox.cpp */,
 				E4991590174E6ABE00741B6D /* DVDVideoCodecVideoToolBox.h */,
 				E38E15410D25F9F900618676 /* DVDVideoPPFFmpeg.cpp */,
@@ -7657,15 +7646,6 @@
 				551C3A44175A12010051AAAD /* VDA.h */,
 			);
 			path = Video;
-			sourceTree = "<group>";
-		};
-		E38E15430D25F9F900618676 /* libmpeg2 */ = {
-			isa = PBXGroup;
-			children = (
-				E38E15440D25F9F900618676 /* mpeg2.h */,
-				E38E15450D25F9F900618676 /* mpeg2convert.h */,
-			);
-			path = libmpeg2;
 			sourceTree = "<group>";
 		};
 		E38E15480D25F9F900618676 /* DVDDemuxers */ = {
@@ -9177,7 +9157,6 @@
 				E38E1F880D25F9FD00618676 /* DVDOverlayCodecFFmpeg.cpp in Sources */,
 				E38E1F890D25F9FD00618676 /* DVDOverlayCodecText.cpp in Sources */,
 				E38E1F8D0D25F9FD00618676 /* DVDVideoCodecFFmpeg.cpp in Sources */,
-				E38E1F8E0D25F9FD00618676 /* DVDVideoCodecLibMpeg2.cpp in Sources */,
 				E38E1F8F0D25F9FD00618676 /* DVDVideoPPFFmpeg.cpp in Sources */,
 				E38E1F910D25F9FD00618676 /* DVDDemux.cpp in Sources */,
 				7C8E023A1BA35D0B0072E8B2 /* PlayerBuiltins.cpp in Sources */,
@@ -10332,7 +10311,6 @@
 				7C8E02471BA35D0B0072E8B2 /* SystemBuiltins.cpp in Sources */,
 				E49911CB174E5D2500741B6D /* DVDOverlayCodecTX3G.cpp in Sources */,
 				E49911CE174E5D2500741B6D /* DVDVideoCodecFFmpeg.cpp in Sources */,
-				E49911CF174E5D2500741B6D /* DVDVideoCodecLibMpeg2.cpp in Sources */,
 				395C29BD1A94733100EBC7AD /* Key.cpp in Sources */,
 				E49911D1174E5D2500741B6D /* DVDVideoPPFFmpeg.cpp in Sources */,
 				E49911D2174E5D2E00741B6D /* DVDDemux.cpp in Sources */,
