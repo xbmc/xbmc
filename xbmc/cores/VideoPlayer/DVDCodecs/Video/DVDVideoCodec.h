@@ -149,6 +149,7 @@ struct DVDVideoUserData
 #define DVD_CODEC_CTRL_HURRY        0x04000000  //< see GetCodecStats
 #define DVD_CODEC_CTRL_DROP         0x08000000  //< this frame is going to be dropped in output
 #define DVD_CODEC_CTRL_DRAIN        0x10000000  //< squeeze out pictured without feeding new packets
+#define DVD_CODEC_CTRL_ROTATE       0x20000000  //< rotate if renderer does not support it
 
 // DVP_FLAG 0x00000100 - 0x00000f00 is in use by libmpeg2!
 
@@ -238,20 +239,6 @@ public:
    * DVD_PLAYSPEED_PAUSE and friends.
    */
   virtual void SetSpeed(int iSpeed) {};
-
-  enum EFilterFlags {
-    FILTER_NONE                =  0x0,
-    FILTER_DEINTERLACE_YADIF   =  0x1,  //< use first deinterlace mode
-    FILTER_DEINTERLACE_ANY     =  0xf,  //< use any deinterlace mode
-    FILTER_DEINTERLACE_FLAGGED = 0x10,  //< only deinterlace flagged frames
-    FILTER_DEINTERLACE_HALFED  = 0x20,  //< do half rate deinterlacing
-    FILTER_ROTATE              = 0x40,  //< rotate image according to the codec hints
-  };
-
-  /**
-   * set the type of filters that should be applied at decoding stage if possible
-   */
-  virtual unsigned int SetFilters(unsigned int filters) { return 0; }
 
   /**
    * should return codecs name

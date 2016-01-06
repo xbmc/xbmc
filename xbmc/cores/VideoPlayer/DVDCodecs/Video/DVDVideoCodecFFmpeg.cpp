@@ -34,6 +34,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/VideoSettings.h"
+#include "settings/MediaSettings.h"
 #include "utils/log.h"
 #include <memory>
 
@@ -75,6 +76,15 @@ enum DecoderState
   STATE_HW_SINGLE,
   STATE_HW_FAILED,
   STATE_SW_MULTI
+};
+
+enum EFilterFlags {
+  FILTER_NONE                =  0x0,
+  FILTER_DEINTERLACE_YADIF   =  0x1,  //< use first deinterlace mode
+  FILTER_DEINTERLACE_ANY     =  0xf,  //< use any deinterlace mode
+  FILTER_DEINTERLACE_FLAGGED = 0x10,  //< only deinterlace flagged frames
+  FILTER_DEINTERLACE_HALFED  = 0x20,  //< do half rate deinterlacing
+  FILTER_ROTATE              = 0x40,  //< rotate image according to the codec hints
 };
 
 enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
@@ -388,14 +398,31 @@ void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
   }
 }
 
-unsigned int CDVDVideoCodecFFmpeg::SetFilters(unsigned int flags)
+void CDVDVideoCodecFFmpeg::SetFilters()
 {
+  // ask codec to do deinterlacing if possible
+  EDEINTERLACEMODE mDeintMode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
+  EINTERLACEMETHOD mInt = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
+
+  unsigned int filters = 0;
+
+  if (mDeintMode != VS_DEINTERLACEMODE_OFF)
+  {
+    if(mInt == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
+      filters = FILTER_DEINTERLACE_ANY | FILTER_DEINTERLACE_HALFED;
+    else
+      filters = FILTER_DEINTERLACE_ANY;
+
+    if (mDeintMode == VS_DEINTERLACEMODE_AUTO && filters)
+      filters |= FILTER_DEINTERLACE_FLAGGED;
+  }
+
+  if (m_codecControlFlags & DVD_CODEC_CTRL_ROTATE)
+    filters |= FILTER_ROTATE;
+
   m_filters_next.clear();
 
-  if(m_pHardware)
-    return 0;
-
-  if(flags & FILTER_ROTATE)
+  if (filters & FILTER_ROTATE)
   {
     switch(m_iOrientation)
     {
@@ -413,20 +440,16 @@ unsigned int CDVDVideoCodecFFmpeg::SetFilters(unsigned int flags)
       }
   }
 
-  if(flags & FILTER_DEINTERLACE_YADIF)
+  if (filters & FILTER_DEINTERLACE_YADIF)
   {
-    if(flags & FILTER_DEINTERLACE_HALFED)
+    if (filters & FILTER_DEINTERLACE_HALFED)
       m_filters_next = "yadif=0:-1";
     else
       m_filters_next = "yadif=1:-1";
 
-    if(flags & FILTER_DEINTERLACE_FLAGGED)
+    if (filters & FILTER_DEINTERLACE_FLAGGED)
       m_filters_next += ":1";
-
-    flags &= ~FILTER_DEINTERLACE_ANY | FILTER_DEINTERLACE_YADIF;
   }
-
-  return flags;
 }
 
 union pts_union
@@ -468,6 +491,9 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
     if (result)
       return result;
   }
+
+  if (!m_pHardware && pData)
+    SetFilters();
 
   if (m_pFilterGraph)
   {
