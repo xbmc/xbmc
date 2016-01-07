@@ -160,6 +160,7 @@ public:
   void ReloadSkin(bool confirm = false);
   const std::string& CurrentFile();
   CFileItem& CurrentFileItem();
+  void SetCurrentFileItem(const CFileItem &item);
   CFileItem& CurrentUnstackedItem();
   virtual bool OnMessage(CGUIMessage& message) override;
   std::string GetCurrentPlayer();

@@ -36,6 +36,7 @@
 #include "interfaces/info/InfoBool.h"
 #include "interfaces/info/SkinVariable.h"
 #include "cores/IPlayer.h"
+#include "FileItem.h"
 
 #include <list>
 #include <map>
@@ -95,6 +96,8 @@ private:
   int m_data2;
 };
 
+class CSetCurrentItemJob;
+
 /*!
  \ingroup strings
  \brief
@@ -102,6 +105,8 @@ private:
 class CGUIInfoManager : public IMsgTargetCallback, public Observable,
                         public KODI::MESSAGING::IMessageTarget
 {
+friend CSetCurrentItemJob;
+
 public:
   CGUIInfoManager(void);
   virtual ~CGUIInfoManager(void);
@@ -154,7 +159,7 @@ public:
   /*! \brief Set currently playing file item
    \param blocking whether to run in current thread (true) or background thread (false)
    */
-  void SetCurrentItem(CFileItem &item, bool blocking = false);
+  void SetCurrentItem(const CFileItemPtr item);
   void ResetCurrentItem();
   // Current song stuff
   /// \brief Retrieves tag info (if necessary) and fills in our current song path.
@@ -294,6 +299,8 @@ protected:
    * @return the currently active tag or NULL if no active tag was found
    */
   EPG::CEpgInfoTagPtr GetEpgInfoTag() const;
+
+  void SetCurrentItemJob(const CFileItemPtr item);
 
   // Conditional string parameters are stored here
   std::vector<std::string> m_stringParameters;
