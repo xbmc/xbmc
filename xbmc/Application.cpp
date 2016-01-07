@@ -3210,7 +3210,7 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
       }
     }
 
-    *m_itemCurrentFile = item;
+    m_itemCurrentFile.reset(new CFileItem(item));
     m_currentStackPosition = 0;
 
     if (seconds > 0)
@@ -3252,7 +3252,8 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, const std::string& pla
     m_pPlayer->SetPlaySpeed(1, g_application.m_muted);
     m_pPlayer->m_iPlaySpeed = 1;     // Reset both CApp's & Player's speed else we'll get confused
 
-    *m_itemCurrentFile = item;
+    m_itemCurrentFile.reset(new CFileItem(item));
+
     m_nextPlaylistItem = -1;
     m_currentStackPosition = 0;
     m_currentStack->Clear();
@@ -4211,9 +4212,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
         CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, g_playlistPlayer.GetCurrentPlaylist(), param, item);
         g_windowManager.SendThreadMessage(msg);
         g_playlistPlayer.SetCurrentSong(m_nextPlaylistItem);
-        *m_itemCurrentFile = *item;
+        m_itemCurrentFile.reset(new CFileItem(*item));
       }
-      g_infoManager.SetCurrentItem(*m_itemCurrentFile);
+      g_infoManager.SetCurrentItem(m_itemCurrentFile);
       g_partyModeManager.OnSongChange(true);
 
       CVariant param;
@@ -4666,6 +4667,11 @@ const std::string& CApplication::CurrentFile()
 CFileItem& CApplication::CurrentFileItem()
 {
   return *m_itemCurrentFile;
+}
+
+void CApplication::SetCurrentFileItem(const CFileItem& item)
+{
+  m_itemCurrentFile.reset(new CFileItem(item));
 }
 
 CFileItem& CApplication::CurrentUnstackedItem()

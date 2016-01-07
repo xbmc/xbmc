@@ -116,14 +116,14 @@ using namespace EPG;
 
 class CSetCurrentItemJob : public CJob
 {
-  CFileItem &m_itemCurrentFile;
+  CFileItemPtr m_itemCurrentFile;
 public:
-  CSetCurrentItemJob(CFileItem &item) : m_itemCurrentFile(item) { }
+  CSetCurrentItemJob(const CFileItemPtr item) : m_itemCurrentFile(item) { }
   ~CSetCurrentItemJob(void) {}
 
   bool DoWork(void)
   {
-    g_infoManager.SetCurrentItem(m_itemCurrentFile, true);
+    g_infoManager.SetCurrentItemJob(m_itemCurrentFile);
     return true;
   }
 };
@@ -4615,29 +4615,28 @@ void CGUIInfoManager::ResetCurrentItem()
   m_currentMovieDuration = "";
 }
 
-void CGUIInfoManager::SetCurrentItem(CFileItem &item, bool blocking /*= false */)
+void CGUIInfoManager::SetCurrentItem(const CFileItemPtr item)
 {
-  if (!blocking)
-  {
-    CSetCurrentItemJob *job = new CSetCurrentItemJob(item);
-    CJobManager::GetInstance().AddJob(job, NULL);
-    return;
-  }
+  CSetCurrentItemJob *job = new CSetCurrentItemJob(item);
+  CJobManager::GetInstance().AddJob(job, NULL);
+}
 
+void CGUIInfoManager::SetCurrentItemJob(const CFileItemPtr item)
+{
   ResetCurrentItem();
 
-  if (item.IsAudio())
-    SetCurrentSong(item);
+  if (item->IsAudio())
+    SetCurrentSong(*item);
   else
-    SetCurrentMovie(item);
+    SetCurrentMovie(*item);
 
-  if (item.HasPVRRadioRDSInfoTag())
-    m_currentFile->SetPVRRadioRDSInfoTag(item.GetPVRRadioRDSInfoTag());
-  if (item.HasEPGInfoTag())
-    m_currentFile->SetEPGInfoTag(item.GetEPGInfoTag());
-  else if (item.HasPVRChannelInfoTag())
+  if (item->HasPVRRadioRDSInfoTag())
+    m_currentFile->SetPVRRadioRDSInfoTag(item->GetPVRRadioRDSInfoTag());
+  if (item->HasEPGInfoTag())
+    m_currentFile->SetEPGInfoTag(item->GetEPGInfoTag());
+  else if (item->HasPVRChannelInfoTag())
   {
-    CEpgInfoTagPtr tag(item.GetPVRChannelInfoTag()->GetEPGNow());
+    CEpgInfoTagPtr tag(item->GetPVRChannelInfoTag()->GetEPGNow());
     if (tag)
       m_currentFile->SetEPGInfoTag(tag);
   }
@@ -6435,13 +6434,14 @@ void CGUIInfoManager::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
     auto item = static_cast<CFileItem*>(pMsg->lpVoid);
     if (!item)
       return;
+
+    CFileItemPtr itemptr(item);
     if (pMsg->param1 == 1 && item->HasMusicInfoTag()) // only grab music tag
       SetCurrentSongTag(*item->GetMusicInfoTag());
     else if (pMsg->param1 == 2 && item->HasVideoInfoTag()) // only grab video tag
       SetCurrentVideoTag(*item->GetVideoInfoTag());
     else
-      SetCurrentItem(*item);
-    delete item;
+      SetCurrentItem(itemptr);
   }
   break;
 
