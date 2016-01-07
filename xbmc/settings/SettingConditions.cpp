@@ -38,6 +38,9 @@
 #if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
 #endif // defined(HAS_LIBAMCODEC)
+#if defined(TARGET_ANDROID) && defined(HAS_LIBACTSCODEC)
+#include "utils/ActsUtils.h"
+#endif
 #include "utils/SystemInfo.h"
 #include "windowing/WindowingFactory.h"
 #if defined(TARGET_DARWIN_OSX)
@@ -248,6 +251,12 @@ void CSettingConditions::Initialize()
   if (aml_present())
     m_simpleConditions.insert("have_amcodec");
 #endif
+
+#if defined(TARGET_ANDROID) && defined(HAS_LIBACTSCODEC)
+  if (acts_present())
+    m_simpleConditions.insert("have_actscodec");
+#endif
+
 #ifdef TARGET_DARWIN_OSX
   if (CDarwinUtils::IsSnowLeopard())
     m_simpleConditions.insert("osxissnowleopard");

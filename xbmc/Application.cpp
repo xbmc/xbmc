@@ -214,6 +214,10 @@
 #include "utils/AMLUtils.h"
 #endif
 
+#if defined(TARGET_ANDROID) && defined(HAS_LIBACTSCODEC)
+#include "utils/ActsUtils.h"
+#endif
+
 #include "cores/FFmpeg.h"
 #include "utils/CharsetConverter.h"
 #include "pictures/GUIWindowSlideShow.h"
@@ -1475,6 +1479,19 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
 {
   if (setting == NULL)
     return false;
+#if defined(TARGET_ANDROID) && defined(HAS_LIBACTSCODEC)
+  if (setting->GetId()  == CSettings::SETTING_VIDEOPLAYER_USEACTSCODEC)
+  {
+    // Do not permit actionscodec to be used on non-actions platforms.
+    // The setting will be hidden but the default value is true,
+    // so change it to false.
+    if (!acts_present())
+    {
+      CSettingBool *useactscodec = (CSettingBool*)setting;
+      return useactscodec->SetValue(false);
+    }
+  }
+#endif
 
 #if defined(HAS_LIBAMCODEC)
   if (setting->GetId() == CSettings::SETTING_VIDEOPLAYER_USEAMCODEC)

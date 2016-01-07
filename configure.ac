@@ -513,7 +513,7 @@ AC_ARG_ENABLE([breakpad],
 
 AC_ARG_ENABLE([codec],
   [AS_HELP_STRING([--enable-codec],
-  [enable additional codecs from a list of comma separated names, (default is none, choices are amcodec and imxvpu)])],
+  [enable additional codecs from a list of comma separated names, (default is none, choices are actscodec,amcodec and imxvpu)])],
   [add_codecs=$enableval],
   [add_codecs=no])
 
@@ -1872,6 +1872,9 @@ for codecs in `echo $add_codecs | sed 's/,/ /g'`; do
     *amcodec*)
         AC_CHECK_HEADER([amcodec/codec_error.h],, AC_MSG_ERROR($missing_headers))
         XB_ADD_CODEC([LIBAMCODEC], [amcodec], [$codecs])
+        ;;
+    *actscodec*)
+        XB_ADD_CODEC([LIBACTSCODEC], [actscodec], [$codecs])
         ;;
     *imxvpu*)
       AC_CHECK_HEADER([imx-mm/vpu/vpu_wrapper.h],, AC_MSG_ERROR($missing_headers))

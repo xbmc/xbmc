@@ -6566,6 +6566,11 @@ msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If
 msgstr ""
 
 #empty strings from id 13453 to 13456
+#: system/settings/settings.xml
+msgctxt "#13453"
+msgid "Allow hardware acceleration - ActsCodec"
+msgstr ""
+
 
 #. Option for video related setting #13454: sw filter
 #: system/settings/settings.xml
@@ -17440,6 +17445,11 @@ msgid "Enable audio DSP processing"
 msgstr ""
 
 #empty strings from id 36442 to 36459
+#. Description of setting "Videos -> Playback -> Allow hardware acceleration (actscodec)" with label #13453
+#: system/settings/settings.xml
+msgctxt "#36442"
+msgid "Enable hardware video decode using acts decoder."
+msgstr 
 
 #. Description of settings "System -> Logging -> Enable event logging" with label #14112
 #: system/settings/settings.xml
