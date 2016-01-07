@@ -21,7 +21,6 @@
 #include "system.h"
 #include "RenderManager.h"
 #include "RenderFlags.h"
-#include "threads/CriticalSection.h"
 #include "video/VideoReferenceClock.h"
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"
@@ -81,38 +80,6 @@
 using namespace KODI::MESSAGING;
 
 #define MAXPRESENTDELAY 0.500
-
-
-/* at any point we want an exclusive lock on rendermanager */
-/* we must make sure we don't have a graphiccontext lock */
-/* these two functions allow us to step out from that lock */
-/* and reaquire it after having the exclusive lock */
-
-template<class T>
-class CRetakeLock
-{
-public:
-  CRetakeLock(CSharedSection &section, CCriticalSection &owned = g_graphicsContext)
-    : m_count(owned.exit())
-    , m_lock (section),
-      m_owned(owned)
-  {
-    m_owned.restore(m_count);
-  }
-
-  void Leave() { m_lock.Leave(); }
-  void Enter()
-  {
-    m_count = m_owned.exit();
-    m_lock.Enter();
-    m_owned.restore(m_count);
-  }
-
-private:
-  DWORD             m_count;
-  T                 m_lock;
-  CCriticalSection &m_owned;
-};
 
 static void requeue(std::deque<int> &trg, std::deque<int> &src)
 {
@@ -179,14 +146,14 @@ CRenderManager::~CRenderManager()
 
 void CRenderManager::GetVideoRect(CRect &source, CRect &dest, CRect &view)
 {
-  CSharedLock lock(m_sharedSection);
+  CSingleLock lock(m_critSection);
   if (m_pRenderer)
     m_pRenderer->GetVideoRect(source, dest, view);
 }
 
 float CRenderManager::GetAspectRatio()
 {
-  CSharedLock lock(m_sharedSection);
+  CSingleLock lock(m_critSection);
   if (m_pRenderer)
     return m_pRenderer->GetAspectRatio();
   else
@@ -293,7 +260,7 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
                          (m_fps == 0.0 || fmod(m_fps, fps) != 0.0) &&
                          (render_framerate != config_framerate);
 
-    CSharedLock lock(m_sharedSection);
+    CSingleLock lock(m_critSection);
     if (m_width == picture.iWidth &&
         m_height == picture.iHeight &&
         m_dwidth == picture.iDisplayWidth &&
@@ -327,7 +294,7 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
   }
 
   {
-    CExclusiveLock lock(m_sharedSection);
+    CSingleLock lock(m_critSection);
     m_width = picture.iWidth;
     m_height = picture.iHeight,
     m_dwidth = picture.iDisplayWidth;
@@ -348,7 +315,7 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
     return false;
   }
 
-  CSharedLock lock(m_sharedSection);
+  CSingleLock lock(m_critSection);
   if (m_renderState != STATE_CONFIGURED)
   {
     CLog::Log(LOGWARNING, "CRenderManager::Configure - failed to configure");
@@ -360,7 +327,7 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
 
 bool CRenderManager::Configure()
 {
-  CExclusiveLock lock(m_sharedSection);
+  CSingleLock lock(m_critSection);
   CSingleLock lock2(m_presentlock);
 
   if (m_pRenderer && m_pRenderer->GetRenderFormat() != m_format)
@@ -424,7 +391,7 @@ bool CRenderManager::Configure()
 
 bool CRenderManager::IsConfigured() const
 {
-  CSharedLock lock(m_sharedSection);
+  CSingleLock lock(m_critSection);
   if (m_renderState == STATE_CONFIGURED)
     return true;
   else
@@ -433,7 +400,7 @@ bool CRenderManager::IsConfigured() const
 
 void CRenderManager::Update()
 {
-  CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+  CSingleLock lock(m_critSection);
 
   if (m_pRenderer)
     m_pRenderer->Update();
@@ -460,7 +427,7 @@ bool CRenderManager::HasFrame()
 void CRenderManager::FrameMove()
 {
   {
-    CSharedLock lock(m_sharedSection);
+    CSingleLock lock(m_critSection);
 
     if (m_renderState == STATE_UNCONFIGURED)
       return;
@@ -572,7 +539,7 @@ void CRenderManager::PreInit()
     return;
   }
 
-  CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+  CSingleLock lock(m_critSection);
 
   m_presentcorr = 0.0;
   m_presenterr  = 0.0;
@@ -599,7 +566,7 @@ void CRenderManager::UnInit()
     return;
   }
 
-  CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+  CSingleLock lock(m_critSection);
 
   m_overlays.Flush();
   g_fontManager.Unload("__subtitle__");
@@ -620,7 +587,7 @@ bool CRenderManager::Flush()
   {
     CLog::Log(LOGDEBUG, "%s - flushing renderer", __FUNCTION__);
 
-    CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+    CSingleLock lock(m_critSection);
 
     if (m_pRenderer)
     {
@@ -893,7 +860,6 @@ void CRenderManager::ManageCaptures()
 
 void CRenderManager::RenderCapture(CRenderCapture* capture)
 {
-  CSharedLock lock(m_sharedSection);
   if (!m_pRenderer || !m_pRenderer->RenderCapture(capture))
     capture->SetState(CAPTURESTATE_FAILED);
 }
@@ -921,7 +887,7 @@ void CRenderManager::RemoveCaptures()
 
 void CRenderManager::SetViewMode(int iViewMode)
 {
-  CSharedLock lock(m_sharedSection);
+  CSingleLock lock(m_critSection);
   if (m_pRenderer)
     m_pRenderer->SetViewMode(iViewMode);
   g_dataCacheCore.SignalVideoInfoChange();
@@ -929,7 +895,7 @@ void CRenderManager::SetViewMode(int iViewMode)
 
 void CRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, double pts /* = 0 */, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
 {
-  { CSharedLock lock(m_sharedSection);
+  { CSingleLock lock(m_critSection);
 
     if(bStop)
       return;
@@ -1014,7 +980,7 @@ RESOLUTION CRenderManager::GetResolution()
 {
   RESOLUTION res = g_graphicsContext.GetVideoResolution();
 
-  CSharedLock lock(m_sharedSection);
+  CSingleLock lock(m_critSection);
   if (m_renderState == STATE_UNCONFIGURED)
     return res;
 
@@ -1042,8 +1008,6 @@ float CRenderManager::GetMaximumFPS()
 void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 {
   CSingleExit exitLock(g_graphicsContext);
-  
-  CSharedLock lock(m_sharedSection);
 
   if (m_renderState != STATE_CONFIGURED)
     return;
@@ -1076,7 +1040,7 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 
 bool CRenderManager::IsGuiLayer()
 {
-  { CSharedLock lock(m_sharedSection);
+  { CSingleLock lock(m_critSection);
 
     if (!m_pRenderer)
       return false;
@@ -1089,7 +1053,7 @@ bool CRenderManager::IsGuiLayer()
 
 bool CRenderManager::IsVideoLayer()
 {
-  { CSharedLock lock(m_sharedSection);
+  { CSingleLock lock(m_critSection);
 
     if (!m_pRenderer)
       return false;
@@ -1164,7 +1128,7 @@ void CRenderManager::UpdateResolution()
 {
   if (m_bTriggerUpdateResolution)
   {
-    CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+    CSingleLock lock(m_critSection);
     if (g_graphicsContext.IsFullScreenVideo() && g_graphicsContext.IsFullScreenRoot())
     {
       if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF && m_fps > 0.0f)
@@ -1193,7 +1157,7 @@ void CRenderManager::TriggerUpdateResolution(float fps, int width, int flags)
 // Get renderer info, can be called before configure
 CRenderInfo CRenderManager::GetRenderInfo()
 {
-  CSharedLock lock(m_sharedSection);
+  CSingleLock lock(m_critSection);
   CRenderInfo info;
   if (!m_pRenderer)
   {
@@ -1205,7 +1169,7 @@ CRenderInfo CRenderManager::GetRenderInfo()
 
 int CRenderManager::AddVideoPicture(DVDVideoPicture& pic)
 {
-  CSharedLock lock(m_sharedSection);
+  CSingleLock lock(m_critSection);
   if (!m_pRenderer)
     return -1;
 
@@ -1260,7 +1224,7 @@ int CRenderManager::AddVideoPicture(DVDVideoPicture& pic)
 
 bool CRenderManager::Supports(ERENDERFEATURE feature)
 {
-  CSharedLock lock(m_sharedSection);
+  CSingleLock lock(m_critSection);
   if (m_pRenderer)
     return m_pRenderer->Supports(feature);
   else
@@ -1269,7 +1233,7 @@ bool CRenderManager::Supports(ERENDERFEATURE feature)
 
 bool CRenderManager::Supports(EDEINTERLACEMODE method)
 {
-  CSharedLock lock(m_sharedSection);
+  CSingleLock lock(m_critSection);
   if (m_pRenderer)
     return m_pRenderer->Supports(method);
   else
@@ -1278,7 +1242,7 @@ bool CRenderManager::Supports(EDEINTERLACEMODE method)
 
 bool CRenderManager::Supports(EINTERLACEMETHOD method)
 {
-  CSharedLock lock(m_sharedSection);
+  CSingleLock lock(m_critSection);
   if (m_pRenderer)
     return m_pRenderer->Supports(method);
   else
@@ -1287,7 +1251,7 @@ bool CRenderManager::Supports(EINTERLACEMETHOD method)
 
 bool CRenderManager::Supports(ESCALINGMETHOD method)
 {
-  CSharedLock lock(m_sharedSection);
+  CSingleLock lock(m_critSection);
   if (m_pRenderer)
     return m_pRenderer->Supports(method);
   else
@@ -1296,7 +1260,7 @@ bool CRenderManager::Supports(ESCALINGMETHOD method)
 
 EINTERLACEMETHOD CRenderManager::AutoInterlaceMethod(EINTERLACEMETHOD mInt)
 {
-  CSharedLock lock(m_sharedSection);
+  CSingleLock lock(m_critSection);
   return AutoInterlaceMethodInternal(mInt);
 }
 
@@ -1434,7 +1398,7 @@ void CRenderManager::PrepareNextRender()
 
 void CRenderManager::DiscardBuffer()
 {
-  CSharedLock lock(m_sharedSection);
+  CSingleLock lock(m_critSection);
   CSingleLock lock2(m_presentlock);
 
   while(!m_queued.empty())

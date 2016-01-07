@@ -26,7 +26,7 @@
 #include "cores/VideoPlayer/VideoRenderers/OverlayRenderer.h"
 #include "guilib/Geometry.h"
 #include "guilib/Resolution.h"
-#include "threads/SharedSection.h"
+#include "threads/CriticalSection.h"
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
 #include <deque>
@@ -128,7 +128,7 @@ public:
       if (m_free.empty())
         return;
     }
-    CSharedLock lock(m_sharedSection);
+    CSingleLock lock(m_critSection);
     m_overlays.AddOverlay(o, pts, m_free.front());
   }
 
@@ -175,7 +175,7 @@ protected:
 
   CBaseRenderer *m_pRenderer;
   OVERLAY::CRenderer m_overlays;
-  CSharedSection m_sharedSection;
+  CCriticalSection m_critSection;
   bool m_bTriggerUpdateResolution;
   bool m_bRenderGUI;
   int m_waitForBufferCount;
