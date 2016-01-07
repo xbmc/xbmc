@@ -179,7 +179,7 @@ public:
   bool PlayMedia(const CFileItem& item, const std::string &player, int iPlaylist = PLAYLIST_MUSIC);
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const std::string& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist, int track=0);
-  PlayBackRet PlayFile(const CFileItem& item, std::string player, bool bRestart = false);
+  PlayBackRet PlayFile(const CFileItem& item, const std::string& player, bool bRestart = false);
   void SaveFileState(bool bForeground = false);
   void UpdateFileState();
   void LoadVideoSettings(const CFileItem& item);
