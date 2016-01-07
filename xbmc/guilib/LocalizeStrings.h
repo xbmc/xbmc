@@ -63,37 +63,6 @@ public:
 protected:
   void Clear(uint32_t start, uint32_t end);
 
-  /*! \brief Loads language ids and strings to memory map m_strings.
-   * It tries to load a strings.po file first. If doesn't exist, it loads a strings.xml file instead.
-   \param pathname The directory name, where we look for the strings file.
-   \param language We load the strings for this language. Fallback language is always English.
-   \param encoding Encoding of the strings. For PO files we only use utf-8.
-   \param offset An offset value to place strings from the id value.
-   \return false if no strings.po or strings.xml file was loaded.
-   */
-  bool LoadStr2Mem(const std::string &pathname, const std::string &language,
-                   std::string &encoding, uint32_t offset = 0);
-
-  /*! \brief Tries to load ids and strings from a strings.po file to m_strings map.
-   * It should only be called from the LoadStr2Mem function to have a fallback.
-   \param pathname The directory name, where we look for the strings file.
-   \param encoding Encoding of the strings. For PO files we only use utf-8.
-   \param offset An offset value to place strings from the id value.
-   \param bSourceLanguage If we are loading the source English strings.po.
-   \return false if no strings.po file was loaded.
-   */
-  bool LoadPO(const std::string &filename, std::string &encoding, uint32_t offset = 0,
-              bool bSourceLanguage = false);
-
-  /*! \brief Tries to load ids and strings from a strings.xml file to m_strings map.
-   * It should only be called from the LoadStr2Mem function to try a PO file first.
-   \param pathname The directory name, where we look for the strings file.
-   \param encoding Encoding of the strings.
-   \param offset An offset value to place strings from the id value.
-   \return false if no strings.xml file was loaded.
-   */
-  bool LoadXML(const std::string &filename, std::string &encoding, uint32_t offset = 0);
-
   static std::string ToUTF8(const std::string &encoding, const std::string &str);
   std::map<uint32_t, LocStr> m_strings;
   typedef std::map<uint32_t, LocStr>::const_iterator ciStrings;

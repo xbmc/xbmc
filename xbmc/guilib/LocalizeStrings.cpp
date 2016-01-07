@@ -30,6 +30,156 @@
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 
+
+/*! \brief Tries to load ids and strings from a strings.xml file to the `strings` map..
+ * It should only be called from the LoadStr2Mem function to try a PO file first.
+ \param pathname The directory name, where we look for the strings file.
+ \param strings [out] The resulting strings map.
+ \param encoding Encoding of the strings.
+ \param offset An offset value to place strings from the id value.
+ \return false if no strings.xml file was loaded.
+ */
+static bool LoadXML(const std::string &filename, std::map<uint32_t, LocStr>& strings,
+    std::string &encoding, uint32_t offset = 0)
+{
+  CXBMCTinyXML xmlDoc;
+  if (!xmlDoc.LoadFile(filename))
+  {
+    CLog::Log(LOGDEBUG, "unable to load %s: %s at line %d", filename.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
+    return false;
+  }
+
+  TiXmlElement* pRootElement = xmlDoc.RootElement();
+  if (!pRootElement || pRootElement->NoChildren() ||
+      pRootElement->ValueStr()!="strings")
+  {
+    CLog::Log(LOGERROR, "%s Doesn't contain <strings>", filename.c_str());
+    return false;
+  }
+
+  const TiXmlElement *pChild = pRootElement->FirstChildElement("string");
+  while (pChild)
+  {
+    // Load old style language file with id as attribute
+    const char* attrId=pChild->Attribute("id");
+    if (attrId && !pChild->NoChildren())
+    {
+      uint32_t id = atoi(attrId) + offset;
+      if (strings.find(id) == strings.end())
+        strings[id].strTranslated = pChild->FirstChild()->Value();
+    }
+    pChild = pChild->NextSiblingElement("string");
+  }
+  return true;
+}
+
+/*! \brief Tries to load ids and strings from a strings.po file to the `strings` map.
+ * It should only be called from the LoadStr2Mem function to have a fallback.
+ \param pathname The directory name, where we look for the strings file.
+ \param strings [out] The resulting strings map.
+ \param encoding Encoding of the strings. For PO files we only use utf-8.
+ \param offset An offset value to place strings from the id value.
+ \param bSourceLanguage If we are loading the source English strings.po.
+ \return false if no strings.po file was loaded.
+ */
+static bool LoadPO(const std::string &filename, std::map<uint32_t, LocStr>& strings,
+    std::string &encoding, uint32_t offset = 0 , bool bSourceLanguage = false)
+{
+  CPODocument PODoc;
+  if (!PODoc.LoadFile(filename))
+    return false;
+
+  int counter = 0;
+
+  while ((PODoc.GetNextEntry()))
+  {
+    uint32_t id;
+    if (PODoc.GetEntryType() == ID_FOUND)
+    {
+      bool bStrInMem = strings.find((id = PODoc.GetEntryID()) + offset) != strings.end();
+      PODoc.ParseEntry(bSourceLanguage);
+
+      if (bSourceLanguage && !PODoc.GetMsgid().empty())
+      {
+        if (bStrInMem && (strings[id + offset].strOriginal.empty() ||
+                          PODoc.GetMsgid() == strings[id + offset].strOriginal))
+          continue;
+        else if (bStrInMem)
+          CLog::Log(LOGDEBUG,
+              "POParser: id:%i was recently re-used in the English string file, which is not yet "
+                  "changed in the translated file. Using the English string instead", id);
+        strings[id + offset].strTranslated = PODoc.GetMsgid();
+        counter++;
+      }
+      else if (!bSourceLanguage && !bStrInMem && !PODoc.GetMsgstr().empty())
+      {
+        strings[id + offset].strTranslated = PODoc.GetMsgstr();
+        strings[id + offset].strOriginal = PODoc.GetMsgid();
+        counter++;
+      }
+    }
+    else if (PODoc.GetEntryType() == MSGID_FOUND)
+    {
+      // TODO: implement reading of non-id based string entries from the PO files.
+      // These entries would go into a separate memory map, using hash codes for fast look-up.
+      // With this memory map we can implement using gettext(), ngettext(), pgettext() calls,
+      // so that we don't have to use new IDs for new strings. Even we can start converting
+      // the ID based calls to normal gettext calls.
+    }
+    else if (PODoc.GetEntryType() == MSGID_PLURAL_FOUND)
+    {
+      // TODO: implement reading of non-id based pluralized string entries from the PO files.
+      // We can store the pluralforms for each language, in the langinfo.xml files.
+    }
+  }
+
+  CLog::Log(LOGDEBUG, "POParser: loaded %i strings from file %s", counter, filename.c_str());
+  return true;
+}
+
+/*! \brief Loads language ids and strings to memory map `strings`.
+ * It tries to load a strings.po file first. If doesn't exist, it loads a strings.xml file instead.
+ \param pathname The directory name, where we look for the strings file.
+ \param language We load the strings for this language. Fallback language is always English.
+ \param strings [out] The resulting strings map.
+ \param encoding Encoding of the strings. For PO files we only use utf-8.
+ \param offset An offset value to place strings from the id value.
+ \return false if no strings.po or strings.xml file was loaded.
+ */
+static bool LoadStr2Mem(const std::string &pathname_in, const std::string &language,
+    std::map<uint32_t, LocStr>& strings,  std::string &encoding, uint32_t offset = 0 )
+{
+  std::string pathname = CSpecialProtocol::TranslatePathConvertCase(pathname_in + language);
+  if (!XFILE::CDirectory::Exists(pathname))
+  {
+    bool exists = false;
+    std::string lang;
+    // check if there's a language addon using the old language naming convention
+    if (ADDON::CLanguageResource::FindLegacyLanguage(language, lang))
+    {
+      pathname = CSpecialProtocol::TranslatePathConvertCase(pathname_in + lang);
+      exists = XFILE::CDirectory::Exists(pathname);
+    }
+
+    if (!exists)
+    {
+      CLog::Log(LOGDEBUG,
+          "LocalizeStrings: no translation available in currently set gui language, at path %s",
+          pathname.c_str());
+      return false;
+    }
+  }
+
+  bool useSourceLang = StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT) || StringUtils::EqualsNoCase(language, LANGUAGE_OLD_DEFAULT);
+  if (LoadPO(URIUtils::AddFileToFolder(pathname, "strings.po"), strings, encoding, offset, useSourceLang))
+    return true;
+
+  CLog::Log(LOGDEBUG, "LocalizeStrings: no strings.po file exist at %s, fallback to strings.xml",
+      pathname.c_str());
+  return LoadXML(URIUtils::AddFileToFolder(pathname, "strings.xml"), strings, encoding, offset);
+}
+
+
 CLocalizeStrings::CLocalizeStrings(void)
 {
 
@@ -61,7 +211,7 @@ bool CLocalizeStrings::LoadSkinStrings(const std::string& path, const std::strin
   ClearSkinStrings();
   // load the skin strings in.
   std::string encoding;
-  if (!LoadStr2Mem(path, language, encoding))
+  if (!LoadStr2Mem(path, language, m_strings, encoding))
   {
     if (StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT)) // no fallback, nothing to do
       return false;
@@ -69,129 +219,8 @@ bool CLocalizeStrings::LoadSkinStrings(const std::string& path, const std::strin
 
   // load the fallback
   if (!StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT))
-    LoadStr2Mem(path, LANGUAGE_DEFAULT, encoding);
+    LoadStr2Mem(path, LANGUAGE_DEFAULT, m_strings, encoding);
 
-  return true;
-}
-
-bool CLocalizeStrings::LoadStr2Mem(const std::string &pathname_in, const std::string &language,
-                                   std::string &encoding, uint32_t offset /* = 0 */)
-{
-  std::string pathname = CSpecialProtocol::TranslatePathConvertCase(pathname_in + language);
-  if (!XFILE::CDirectory::Exists(pathname))
-  {
-    bool exists = false;
-    std::string lang;
-    // check if there's a language addon using the old language naming convention
-    if (ADDON::CLanguageResource::FindLegacyLanguage(language, lang))
-    {
-      pathname = CSpecialProtocol::TranslatePathConvertCase(pathname_in + lang);
-      exists = XFILE::CDirectory::Exists(pathname);
-    }
-
-    if (!exists)
-    {
-      CLog::Log(LOGDEBUG,
-                "LocalizeStrings: no translation available in currently set gui language, at path %s",
-                pathname.c_str());
-      return false;
-    }
-  }
-
-  if (LoadPO(URIUtils::AddFileToFolder(pathname, "strings.po"), encoding, offset,
-             StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT) || StringUtils::EqualsNoCase(language, LANGUAGE_OLD_DEFAULT)))
-    return true;
-
-  CLog::Log(LOGDEBUG, "LocalizeStrings: no strings.po file exist at %s, fallback to strings.xml",
-            pathname.c_str());
-  return LoadXML(URIUtils::AddFileToFolder(pathname, "strings.xml"), encoding, offset);
-}
-
-bool CLocalizeStrings::LoadPO(const std::string &filename, std::string &encoding,
-                              uint32_t offset /* = 0 */, bool bSourceLanguage)
-{
-  CPODocument PODoc;
-  if (!PODoc.LoadFile(filename))
-    return false;
-
-  int counter = 0;
-
-  while ((PODoc.GetNextEntry()))
-  {
-    uint32_t id;
-    if (PODoc.GetEntryType() == ID_FOUND)
-    {
-      bool bStrInMem = m_strings.find((id = PODoc.GetEntryID()) + offset) != m_strings.end();
-      PODoc.ParseEntry(bSourceLanguage);
-
-      if (bSourceLanguage && !PODoc.GetMsgid().empty())
-      {
-        if (bStrInMem && (m_strings[id + offset].strOriginal.empty() ||
-            PODoc.GetMsgid() == m_strings[id + offset].strOriginal))
-          continue;
-        else if (bStrInMem)
-          CLog::Log(LOGDEBUG,
-                    "POParser: id:%i was recently re-used in the English string file, which is not yet "
-                    "changed in the translated file. Using the English string instead", id);
-        m_strings[id + offset].strTranslated = PODoc.GetMsgid();
-        counter++;
-      }
-      else if (!bSourceLanguage && !bStrInMem && !PODoc.GetMsgstr().empty())
-      {
-        m_strings[id + offset].strTranslated = PODoc.GetMsgstr();
-        m_strings[id + offset].strOriginal = PODoc.GetMsgid();
-        counter++;
-      }
-    }
-    else if (PODoc.GetEntryType() == MSGID_FOUND)
-    {
-      // TODO: implement reading of non-id based string entries from the PO files.
-      // These entries would go into a separate memory map, using hash codes for fast look-up.
-      // With this memory map we can implement using gettext(), ngettext(), pgettext() calls,
-      // so that we don't have to use new IDs for new strings. Even we can start converting
-      // the ID based calls to normal gettext calls.
-    }
-    else if (PODoc.GetEntryType() == MSGID_PLURAL_FOUND)
-    {
-      // TODO: implement reading of non-id based pluralized string entries from the PO files.
-      // We can store the pluralforms for each language, in the langinfo.xml files.
-    }
-  }
-
-  CLog::Log(LOGDEBUG, "POParser: loaded %i strings from file %s", counter, filename.c_str());
-  return true;
-}
-
-bool CLocalizeStrings::LoadXML(const std::string &filename, std::string &encoding, uint32_t offset /* = 0 */)
-{
-  CXBMCTinyXML xmlDoc;
-  if (!xmlDoc.LoadFile(filename))
-  {
-    CLog::Log(LOGDEBUG, "unable to load %s: %s at line %d", filename.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
-    return false;
-  }
-
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
-  if (!pRootElement || pRootElement->NoChildren() ||
-       pRootElement->ValueStr()!="strings")
-  {
-    CLog::Log(LOGERROR, "%s Doesn't contain <strings>", filename.c_str());
-    return false;
-  }
-
-  const TiXmlElement *pChild = pRootElement->FirstChildElement("string");
-  while (pChild)
-  {
-    // Load old style language file with id as attribute
-    const char* attrId=pChild->Attribute("id");
-    if (attrId && !pChild->NoChildren())
-    {
-      uint32_t id = atoi(attrId) + offset;
-      if (m_strings.find(id) == m_strings.end())
-        m_strings[id].strTranslated = pChild->FirstChild()->Value();
-    }
-    pChild = pChild->NextSiblingElement("string");
-  }
   return true;
 }
 
@@ -203,17 +232,17 @@ bool CLocalizeStrings::Load(const std::string& strPathName, const std::string& s
   CSingleLock lock(m_critSection);
   Clear();
 
-  if (!LoadStr2Mem(strPathName, strLanguage, encoding))
+  if (!LoadStr2Mem(strPathName, strLanguage, m_strings, encoding))
   {
     // try loading the fallback
-    if (!bLoadFallback || !LoadStr2Mem(strPathName, LANGUAGE_DEFAULT, encoding))
+    if (!bLoadFallback || !LoadStr2Mem(strPathName, LANGUAGE_DEFAULT, m_strings, encoding))
       return false;
 
     bLoadFallback = false;
   }
 
   if (bLoadFallback)
-    LoadStr2Mem(strPathName, LANGUAGE_DEFAULT, encoding);
+    LoadStr2Mem(strPathName, LANGUAGE_DEFAULT, m_strings, encoding);
 
   // fill in the constant strings
   m_strings[20022].strTranslated = "";
