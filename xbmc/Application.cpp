@@ -2068,7 +2068,8 @@ bool CApplication::OnAction(const CAction &action)
 
   if (action.GetID() == ACTION_TOGGLE_FULLSCREEN)
   {
-    g_graphicsContext.ToggleFullScreenRoot();
+    g_graphicsContext.ToggleFullScreen();
+    m_pPlayer->TriggerUpdateResolution();
     return true;
   }
 
@@ -2586,9 +2587,8 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     break;
 
   case TMSG_TOGGLEFULLSCREEN:
-    g_graphicsContext.Lock();
-    g_graphicsContext.ToggleFullScreenRoot();
-    g_graphicsContext.Unlock();
+    g_graphicsContext.ToggleFullScreen();
+    m_pPlayer->TriggerUpdateResolution();
     break;
 
   case TMSG_MINIMIZE:

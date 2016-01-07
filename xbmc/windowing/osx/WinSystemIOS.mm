@@ -32,6 +32,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "settings/DisplaySettings.h"
 #include "guilib/GraphicContext.h"
+#include "messaging/ApplicationMessenger.h"
 #include "guilib/Texture.h"
 #include "utils/StringUtils.h"
 #include "guilib/DispResource.h"
@@ -58,6 +59,8 @@
 @property (nonatomic, setter=SetVideoSyncImpl:) CVideoSyncIos *_videoSyncImpl;
 - (void) runDisplayLink;
 @end
+
+using namespace KODI::MESSAGING;
 
 struct CADisplayLinkWrapper
 {
@@ -450,14 +453,14 @@ bool CWinSystemIOS::HasCursor()
 void CWinSystemIOS::NotifyAppActiveChange(bool bActivated)
 {
   if (bActivated && m_bWasFullScreenBeforeMinimize && !g_graphicsContext.IsFullScreenRoot())
-    g_graphicsContext.ToggleFullScreenRoot();
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
 }
 
 bool CWinSystemIOS::Minimize()
 {
   m_bWasFullScreenBeforeMinimize = g_graphicsContext.IsFullScreenRoot();
   if (m_bWasFullScreenBeforeMinimize)
-    g_graphicsContext.ToggleFullScreenRoot();
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
 
   return true;
 }

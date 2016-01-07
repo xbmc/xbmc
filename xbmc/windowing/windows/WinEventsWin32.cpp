@@ -48,10 +48,12 @@
 #include "network/ZeroconfBrowser.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
+#include "messaging/ApplicationMessenger.h"
 
 #ifdef TARGET_WINDOWS
 
 using namespace PERIPHERALS;
+using namespace KODI::MESSAGING;
 
 HWND g_hWnd = NULL;
 
@@ -509,7 +511,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           return(DefWindowProc(hWnd, uMsg, wParam, lParam));
         case VK_RETURN: //alt-return
           if ((lParam & REPEATED_KEYMASK) == 0)
-            g_graphicsContext.ToggleFullScreenRoot();
+            CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
           return 0;
       }
       //deliberate fallthrough
