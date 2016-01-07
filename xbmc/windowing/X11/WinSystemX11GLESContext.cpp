@@ -1,6 +1,6 @@
 #include "system.h"
 
-#if defined(HAVE_X11) && defined(HAS_EGL)
+#if defined(HAVE_X11) && defined(HAS_GLES)
 
 #include "WinSystemX11GLESContext.h"
 #include "utils/log.h"
