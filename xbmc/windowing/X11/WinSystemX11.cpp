@@ -18,6 +18,7 @@
  *
  */
 
+#include <limits.h>
 #include "system.h"
 
 #if defined(HAVE_X11)
@@ -1071,6 +1072,49 @@ void CWinSystemX11::UpdateCrtc()
 
   m_crtc = g_xrandr.GetCrtc(posx+winattr.width/2, posy+winattr.height/2, fps);
   g_graphicsContext.SetFPS(fps);
+}
+
+std::string CWinSystemX11::GetClipboardText(void)
+{
+  if(!m_dpy)
+    return "";
+
+  std::string result;
+  Window p = DefaultRootWindow(m_dpy);
+  Window w = XCreateSimpleWindow(m_dpy, p, 0, 0, 1, 1, 0, CopyFromParent, CopyFromParent);
+  Atom utf8_string = XInternAtom(m_dpy, "UTF8_STRING", False);
+  XConvertSelection(m_dpy, XA_PRIMARY, utf8_string, None, w, CurrentTime);
+  XFlush(m_dpy);
+
+  for(unsigned long offset = 0;;)
+  {
+    XEvent ev;
+    XNextEvent(m_dpy, &ev);
+
+    if(SelectionNotify == ev.type && ev.xselection.property != None)
+    {
+      Atom real_type = None;
+      unsigned char *data;
+      unsigned long items_read, items_left = 0;
+      int real_format = 0;
+
+      XGetWindowProperty(m_dpy, w, ev.xselection.property, offset, INT_MAX, False,
+                         AnyPropertyType, &real_type, &real_format, &items_read, &items_left, &data);
+
+      if(items_read)
+      {
+        result.append(reinterpret_cast<const char*>(data), items_read);
+        offset += items_read;
+      }
+
+      XDeleteProperty(m_dpy, w, ev.xselection.property);
+
+      if(!items_left)
+        break;
+    }
+  }
+
+  return result;
 }
 
 #endif
