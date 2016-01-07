@@ -341,9 +341,9 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
 
     if (bundle >= 0)
     {
-      CBaseTexture **pTextures;
+      CBaseTexture **pTextures = nullptr;
       int nLoops = 0, width = 0, height = 0;
-      int* Delay;
+      int* Delay = nullptr;
       int nImages = m_TexBundle[bundle].LoadAnim(strTextureName, &pTextures, width, height, nLoops, &Delay);
       if (!nImages)
       {
