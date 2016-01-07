@@ -92,7 +92,7 @@ double CDVDClock::WaitAbsoluteClock(double target)
 
 double CDVDClock::GetClock(bool interpolated /*= true*/)
 {
-  CSharedLock lock(m_critSection);
+  CSingleLock lock(m_critSection);
 
   int64_t current = g_VideoReferenceClock.GetTime(interpolated);
   m_systemAdjust += m_speedAdjust * (current - m_lastSystemTime);
@@ -116,7 +116,7 @@ double CDVDClock::GetClock(double& absolute, bool interpolated /*= true*/)
 void CDVDClock::SetSpeed(int iSpeed)
 {
   // this will sometimes be a little bit of due to rounding errors, ie clock might jump abit when changing speed
-  CExclusiveLock lock(m_critSection);
+  CSingleLock lock(m_critSection);
 
   if(iSpeed == DVD_PLAYSPEED_PAUSE)
   {
@@ -141,22 +141,26 @@ void CDVDClock::SetSpeed(int iSpeed)
 
 void CDVDClock::SetSpeedAdjust(double adjust)
 {
-  CExclusiveLock lock(m_critSection);
+  CSingleLock lock(m_critSection);
   m_speedAdjust = adjust;
 }
 
 double CDVDClock::GetSpeedAdjust()
 {
-  CExclusiveLock lock(m_critSection);
+  CSingleLock lock(m_critSection);
   return m_speedAdjust;
 }
 
 bool CDVDClock::Update(double clock, double absolute, double limit, const char* log)
 {
-  CExclusiveLock lock(m_critSection);
-  double was_absolute = SystemToAbsolute(m_startClock);
-  double was_clock    = m_iDisc + absolute - was_absolute;
-  lock.Leave();
+  double was_absolute;
+  double was_clock;
+
+  {
+    CSingleLock lock(m_critSection);
+    was_absolute = SystemToAbsolute(m_startClock);
+    was_clock = m_iDisc + absolute - was_absolute;
+  }
 
   double error = std::abs(clock - was_clock);
 
@@ -183,7 +187,7 @@ bool CDVDClock::Update(double clock, double absolute, double limit, const char* 
 
 void CDVDClock::Discontinuity(double clock, double absolute)
 {
-  CExclusiveLock lock(m_critSection);
+  CSingleLock lock(m_critSection);
   m_startClock = AbsoluteToSystem(absolute);
   if(m_pauseClock)
     m_pauseClock = m_startClock;
