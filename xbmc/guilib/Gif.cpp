@@ -512,8 +512,9 @@ bool Gif::PrepareTemplate(GifFrame &frame)
   }
   default:
   {
-    CLog::Log(LOGDEBUG, "Gif::PrepareTemplate(): Unknown disposal method: %d", frame.m_disposal);
-    return false;
+    CLog::Log(LOGDEBUG, "Gif::PrepareTemplate(): Unknown disposal method: %d. Using DISPOSAL_UNSPECIFIED, the animation might be wrong now.", frame.m_disposal);
+    frame.m_disposal = DISPOSAL_UNSPECIFIED;
+    return PrepareTemplate(frame);
   }
   }
   return true;
