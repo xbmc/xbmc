@@ -354,9 +354,6 @@ JSONRPC_STATUS CPVROperations::AddTimer(const std::string &method, ITransportLay
   else if (broadcasts.Size() > 1)
     return InternalError;
 
-  result["numberOfBroadcast"]= resultSize;
-  return OK;
-
   CFileItemPtr broadcast = broadcasts.Get(0);
 
   CEpgInfoTagPtr epgTag = broadcast->GetEPGInfoTag();
