@@ -52,7 +52,11 @@ public:
     virtual GifFileType* DGifOpenFileName(const char *GifFileName, int *Error) = 0;
     virtual GifFileType *DGifOpen(void *userPtr, InputFunc readFunc, int *Error) = 0;
     virtual int DGifSavedExtensionToGCB(GifFileType *GifFile, int ImageIndex, GraphicsControlBlock *GCB) = 0;
+#if GIFLIB_MINOR >= 1
     virtual int DGifCloseFile(GifFileType* GifFile, int *Error)=0;
+#else
+    virtual int DGifCloseFile(GifFileType* GifFile) = 0;
+#endif
 #else
     virtual GifFileType* DGifOpenFileName(const char *GifFileName) = 0;
     virtual GifFileType *DGifOpen(void *userPtr, InputFunc readFunc)=0;
@@ -72,7 +76,11 @@ class DllLibGif : public DllDynamic, DllLibGifInterface
   DEFINE_METHOD2(GifFileType*, DGifOpenFileName, (const char *p1, int *p2))
   DEFINE_METHOD3(GifFileType*, DGifOpen, (void *p1, InputFunc p2, int *p3))
   DEFINE_METHOD3(int, DGifSavedExtensionToGCB, (GifFileType *p1, int p2, GraphicsControlBlock *p3))
+#if GIFLIB_MINOR >= 1
   DEFINE_METHOD2(int, DGifCloseFile, (GifFileType* p1, int *p2))
+#else
+  DEFINE_METHOD1(int, DGifCloseFile, (GifFileType* p1))
+#endif
 #else
   DEFINE_METHOD0(int, GifLastError)
   DEFINE_METHOD1(GifFileType*, DGifOpenFileName, (const char *p1))
