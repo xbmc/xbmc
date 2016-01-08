@@ -2663,9 +2663,9 @@ void CVideoPlayer::HandleMessages()
         if (input)
         {
           bool bSwitchSuccessful(false);
-          bool bShowPreview(!g_infoManager.IsPlayerOSDActive() &&
-                            (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREVIEW_NEXT) ||
-                             pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREVIEW_PREV)));
+          bool bShowPreview(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREVIEW_NEXT) ||
+                            pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREVIEW_PREV) ||
+                            CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT) > 0);
 
           if (!bShowPreview)
           {
@@ -2688,8 +2688,7 @@ void CVideoPlayer::HandleMessages()
             {
               UpdateApplication(0);
 
-              if (!g_infoManager.IsPlayerOSDActive() &&
-                  CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH))
+              if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREVIEW_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREVIEW_PREV))
                 m_ChannelEntryTimeOut.SetInfinite();
               else
                 m_ChannelEntryTimeOut.Set(CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT));
@@ -4229,16 +4228,17 @@ bool CVideoPlayer::OnAction(const CAction &action)
       case ACTION_CHANNEL_UP:
       {
         bool bPreview(action.GetID() == ACTION_MOVE_UP && // only up/down shows a preview, all others do switch
-                      (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) ||
-                       CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT) > 0));
+                      CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH));
 
         if (bPreview)
           m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_PREVIEW_NEXT));
         else
+        {
           m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_NEXT));
 
-        if (!bPreview || g_infoManager.IsPlayerOSDActive())
-          g_infoManager.SetDisplayAfterSeek();
+          if (CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT) == 0)
+            g_infoManager.SetDisplayAfterSeek();
+        }
 
         ShowPVRChannelInfo();
         return true;
@@ -4249,16 +4249,17 @@ bool CVideoPlayer::OnAction(const CAction &action)
       case ACTION_CHANNEL_DOWN:
       {
         bool bPreview(action.GetID() == ACTION_MOVE_DOWN && // only up/down shows a preview, all others do switch
-                      (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) ||
-                       CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT) > 0));
+                      CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH));
 
         if (bPreview)
           m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_PREVIEW_PREV));
         else
+        {
           m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_PREV));
 
-        if (!bPreview || g_infoManager.IsPlayerOSDActive())
-          g_infoManager.SetDisplayAfterSeek();
+          if (CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT) == 0)
+            g_infoManager.SetDisplayAfterSeek();
+        }
 
         ShowPVRChannelInfo();
         return true;
