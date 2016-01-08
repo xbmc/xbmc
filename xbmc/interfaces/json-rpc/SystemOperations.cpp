@@ -98,6 +98,7 @@ JSONRPC_STATUS CSystemOperations::Reboot(const std::string &method, ITransportLa
 
 JSONRPC_STATUS CSystemOperations::InhibitIdleShutdown(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
+<<<<<<< 825d82ca622829b6eaca7b1b4b880ebb6395cb66
     if ((parameterObject["inhibit"].isString() &&
          parameterObject["inhibit"].asString().compare("toggle") == 0) ||
         (parameterObject["inhibit"].isBoolean() &&
@@ -109,6 +110,19 @@ JSONRPC_STATUS CSystemOperations::InhibitIdleShutdown(const std::string &method,
         return InvalidParams;
     }
     return GetPropertyValue(0, "isidleshutdowninhibited", result);
+=======
+  if ((parameterObject["inhibit"].isString() &&
+       parameterObject["inhibit"].asString().compare("toggle") == 0) ||
+      (parameterObject["inhibit"].isBoolean() &&
+       parameterObject["inhibit"].asBoolean() != g_application.IsIdleShutdownInhibited()))
+  {
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_INHIBITIDLESHUTDOWN, !g_application.IsIdleShutdownInhibited());
+  }
+  else if (!parameterObject["inhibit"].isBoolean() && !parameterObject["inhibit"].isString())
+    return InvalidParams;
+
+  return GetPropertyValue(0, "isidleshutdowninhibited", result);
+>>>>>>> fix indentation. removed the curly braces from the else if block
 }
 
 JSONRPC_STATUS CSystemOperations::GetPropertyValue(int permissions, const std::string &property, CVariant &result)
