@@ -1825,7 +1825,8 @@ void CVideoPlayer::HandlePlaySpeed()
     if (m_playSpeed == DVD_PLAYSPEED_NORMAL && !isInMenu)
     {
       // take action is audio or video stream is stalled
-      if ((m_VideoPlayerAudio->IsStalled() || m_VideoPlayerVideo->IsStalled()) &&
+      if (((m_VideoPlayerAudio->IsStalled() && m_CurrentAudio.packets) ||
+           (m_VideoPlayerVideo->IsStalled() && m_CurrentVideo.packets)) &&
           m_syncTimer.IsTimePast())
       {
         if (m_pInputStream->IsRealtime())
@@ -1941,6 +1942,7 @@ void CVideoPlayer::HandlePlaySpeed()
       m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_INSYNC;
       m_VideoPlayerAudio->SendMessage(new CDVDMsgDouble(CDVDMsg::GENERAL_RESYNC, clock), 1);
       m_VideoPlayerVideo->SendMessage(new CDVDMsgDouble(CDVDMsg::GENERAL_RESYNC, clock), 1);
+      SetCaching(CACHESTATE_DONE);
 
       m_syncTimer.Set(3000);
     }
