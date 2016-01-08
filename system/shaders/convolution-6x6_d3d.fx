@@ -38,6 +38,12 @@ SamplerState KernelSampler : IMMUTABLE
   Filter   = MIN_MAG_MIP_LINEAR;
 };
 
+struct VS_INPUT
+{
+  float4 Position   : POSITION;
+  float2 TextureUV  : TEXCOORD0;
+};
+
 struct VS_OUTPUT
 {
   float2 TextureUV  : TEXCOORD0;
@@ -47,7 +53,7 @@ struct VS_OUTPUT
 //
 // VS for rendering in screen space
 //
-VS_OUTPUT VS(VS_OUTPUT In)
+VS_OUTPUT VS(VS_INPUT In)
 {
   VS_OUTPUT output  = (VS_OUTPUT)0;
   output.Position.x =  (In.Position.x / (g_viewPort.x  / 2.0)) - 1;
