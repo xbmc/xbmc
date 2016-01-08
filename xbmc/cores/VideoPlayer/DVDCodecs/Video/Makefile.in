@@ -31,12 +31,6 @@ INCLUDES += -I$(prefix)/include/amplayer
 endif
 
 ifeq (@USE_ANDROID@,1)
-ifeq (@USE_LIBACTSCODEC@,1)
-SRCS += DVDVideoCodecActions.cpp
-endif
-endif
-
-ifeq (@USE_ANDROID@,1)
 SRCS += DVDVideoCodecAndroidMediaCodec.cpp
 endif
 

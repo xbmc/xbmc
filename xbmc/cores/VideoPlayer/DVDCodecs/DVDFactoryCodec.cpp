@@ -45,9 +45,6 @@
 #include "utils/AMLUtils.h"
 #include "Video/DVDVideoCodecAmlogic.h"
 #endif
-#if defined(TARGET_ANDROID) && defined(HAS_LIBACTSCODEC)
-#include "Video/DVDVideoCodecActions.h"
-#endif
 #if defined(TARGET_ANDROID)
 #include "Video/DVDVideoCodecAndroidMediaCodec.h"
 #include "platform/android/activity/AndroidFeatures.h"
@@ -161,11 +158,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #else
   hwSupport += "AMCodec:no ";
 #endif
-#if defined(TARGET_ANDROID) && defined(HAS_LIBACTSCODEC)
-	hwSupport += "ActsCodec:yes ";
-#else
-	hwSupport += "ActsCodec:no ";
-#endif
 #if defined(TARGET_ANDROID)
   hwSupport += "MediaCodec:yes ";
 #else
@@ -208,14 +200,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
      // If dvd is an mpeg2 and hint.stills
      if ( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
   }
-#if defined(TARGET_ANDROID) && defined(HAS_LIBACTSCODEC)
-  // amcodec can handle dvd playback.
-  if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEACTSCODEC))
-  {
-    CLog::Log(LOGINFO, "use actions decoder\n");
-    if ( (pCodec = OpenCodec(new CDVDVideoCodecActions(), hint, options)) ) return pCodec;
-  }
-#endif
+
 #if defined(HAS_LIBAMCODEC)
   // amcodec can handle dvd playback.
   if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEAMCODEC))

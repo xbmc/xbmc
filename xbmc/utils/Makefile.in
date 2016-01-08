@@ -87,12 +87,6 @@ ifeq (@USE_LIBAMCODEC@,1)
 SRCS += ScreenshotAML.cpp
 endif
 
-ifeq (@USE_ANDROID@,1)
-ifeq (@USE_LIBACTSCODEC@,1)
-SRCS += ActsUtils.cpp
-endif
-endif
-
 LIB   = utils.a
 
 include @abs_top_srcdir@/Makefile.include
