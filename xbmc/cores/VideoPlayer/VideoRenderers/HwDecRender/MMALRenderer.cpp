@@ -291,6 +291,11 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
   m_dst_rect.SetRect(0, 0, 0, 0);
 
   CLog::Log(LOGDEBUG, "%s::%s - %dx%d->%dx%d@%.2f flags:%x format:%d ext:%x orient:%d", CLASSNAME, __func__, width, height, d_width, d_height, fps, flags, format, extended_format, orientation);
+  if (format != RENDER_FMT_YUV420P && format != RENDER_FMT_BYPASS && format != RENDER_FMT_MMAL)
+  {
+    CLog::Log(LOGERROR, "%s::%s - format:%d not supported", CLASSNAME, __func__, format);
+    return false;
+  }
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
