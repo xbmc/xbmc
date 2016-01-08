@@ -946,7 +946,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
         else if (value != SELECT_ACTION_PLAY)
           return false; // if not selected PLAY, then we changed our mind so return
       }
-      stack->m_lStartPartNumber = selectedFile;
+      stack->m_lStartPartNumber = selectedFile + 1;
     }
     // regular stack
     else
