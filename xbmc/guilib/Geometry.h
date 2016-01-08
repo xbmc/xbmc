@@ -82,6 +82,13 @@ public:
     return *this;
   };
 
+  bool operator !=(const this_type &point) const
+  {
+    if (x != point.x) return true;
+    if (y != point.y) return true;
+    return false;
+  };
+
   T x, y;
 };
 
