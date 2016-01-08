@@ -221,6 +221,10 @@ libusb_disabled="== libusb disabled. Plug and play USB device support will not b
 libusb_disabled_udev_found="== libusb disabled. =="
 libcec_enabled="== libcec enabled. =="
 libcec_disabled="== libcec disabled. CEC adapter support will not be available. =="
+libbluetooth_not_found="== Could not find libbluetooth. Bluetooth support will not be available =="
+libbluetooth_enabled="== libbluetooth enabled. =="
+libbluetooth_disabled="== libbluetooth disabled. Bluetooth support will not be available. =="
+
 
 AC_ARG_WITH([ffmpeg],
   [AS_HELP_STRING([--with-ffmpeg],
@@ -480,6 +484,12 @@ AC_ARG_ENABLE([libcec],
   [enable libcec support (default is auto)])],
   [use_libcec=$enableval],
   [use_libcec=auto])
+
+AC_ARG_ENABLE([libbluetooth],
+  [AS_HELP_STRING([--enable-libbluetooth],
+  [enable libbluetooth support (default is auto)])],
+  [use_libbluetooth=$enableval],
+  [use_libbluetooth=auto])
 
 AC_ARG_ENABLE([libcap],
   [AS_HELP_STRING([--enable-libcap],
@@ -1097,7 +1107,7 @@ AC_CHECK_LIB([ssl],         [main],, AC_MSG_ERROR($missing_library))
 if test "$use_mysql" = "yes"; then
   AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 fi
-AC_CHECK_LIB([bluetooth],   [hci_devid],, AC_MSG_RESULT([Could not find suitable version of libbluetooth]))
+
 
 AC_LANG_PUSH([C++])
 PKG_CHECK_MODULES([TINYXML], [tinyxml >= 2.6.2],
@@ -1590,6 +1600,22 @@ if test "x$use_libcec" != "xno"; then
 else
   use_libcec="no"
   AC_MSG_NOTICE($libcec_disabled)
+fi
+
+# libbluetooth
+USE_LIBBLUETOOTH=0
+if test "$use_libbluetooth" = "auto"; then
+  PKG_CHECK_MODULES([BLUETOOTH],[bluez],,[use_libbluetooth="no";AC_MSG_RESULT($libbluetooth_not_found)])
+elif test "$use_libbluetooth" = "yes"; then
+  PKG_CHECK_MODULES([BLUETOOTH],[bluez],,[use_libbluetooth="no";AC_MSG_ERROR($libbluetooth_not_found)])
+else
+  AC_MSG_NOTICE($libbluetooth_disabled)
+fi
+
+if test "x$use_libbluetooth" != "xno"; then
+  USE_LIBBLUETOOTH=1;INCLUDES="$INCLUDES $BLUETOOTH_CFLAGS";LIBS="$LIBS $BLUETOOTH_LIBS"
+  AC_DEFINE([HAVE_LIBBLUETOOTH],[1],["Define to 1 if libbluetooth is installed"])
+  AC_MSG_NOTICE($libbluetooth_enabled)
 fi
 
 # libcap
@@ -2285,6 +2311,12 @@ else
   final_message="$final_message\n  libcec support:\tNo"
 fi
 
+if test "x$use_libbluetooth" != "xno"; then
+  final_message="$final_message\n  libbluetooth support:\tYes"
+else
+  final_message="$final_message\n  libbluetooth support:\tNo"
+fi
+
 if test "x$use_libcap" != "xno"; then
   final_message="$final_message\n  libcap support:\tYes"
 else
@@ -2488,6 +2520,7 @@ AC_SUBST(USE_AIRTUNES)
 AC_SUBST(USE_LIBUDEV)
 AC_SUBST(USE_LIBUSB)
 AC_SUBST(USE_LIBCEC)
+AC_SUBST(USE_LIBBLUETOOTH)
 AC_SUBST(USE_MYSQL)
 AC_SUBST(USE_WAYLAND)
 AC_SUBST(USE_WEB_SERVER)
