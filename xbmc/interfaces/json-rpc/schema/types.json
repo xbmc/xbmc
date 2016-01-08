@@ -1425,7 +1425,7 @@
   },
   "System.Property.Name": {
     "type": "string",
-    "enum": [ "canshutdown", "cansuspend", "canhibernate", "canreboot" ]
+    "enum": [ "canshutdown", "cansuspend", "canhibernate", "canreboot", "isidleshutdowninhibited" ]
   },
   "System.Property.Value": {
     "type": "object",
@@ -1433,7 +1433,8 @@
       "canshutdown": { "type": "boolean" },
       "cansuspend": { "type": "boolean" },
       "canhibernate": { "type": "boolean" },
-      "canreboot": { "type": "boolean" }
+      "canreboot": { "type": "boolean" },
+      "isidleshutdowninhibited": { "type": "boolean" }
     }
   },
   "Application.Property.Name": {
