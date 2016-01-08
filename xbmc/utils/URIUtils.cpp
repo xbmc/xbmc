@@ -522,10 +522,20 @@ bool URIUtils::PathStarts(const std::string& url, const char *start)
   return StringUtils::StartsWith(url, start);
 }
 
-bool URIUtils::PathEquals(const std::string& url, const std::string &start, bool ignoreTrailingSlash /* = false */)
+bool URIUtils::PathEquals(const std::string& url, const std::string &start, bool ignoreTrailingSlash /* = false */, bool ignoreURLOptions /* = false */)
 {
-  std::string path1 = url;
-  std::string path2 = start;
+  std::string path1, path2;
+  if (ignoreURLOptions)
+  {
+    path1 = CURL(url).GetWithoutOptions();
+    path2 = CURL(start).GetWithoutOptions();
+  }
+  else
+  {
+    path1 = url;
+    path2 = start;
+  }
+
   if (ignoreTrailingSlash)
   {
     RemoveSlashAtEnd(path1);
