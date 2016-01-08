@@ -28,7 +28,6 @@
 // * foo.so will be renamed libfoo.so in the packaging stage
 
 #define DLL_PATH_CPLUFF        "libcpluff-@ARCH@.so"
-#define DLL_PATH_IMAGELIB      "libImageLib-@ARCH@.so"
 #define DLL_PATH_LIBEXIF       "libexif-@ARCH@.so"
 
 #define DLL_PATH_LIBRTMP       "@RTMP_SONAME@"
@@ -45,7 +44,6 @@
 /* VideoPlayer */
 #define DLL_PATH_LIBASS        "@ASS_SONAME@"
 #define DLL_PATH_LIBDVDNAV     "libdvdnav-@ARCH@.so"
-#define DLL_PATH_LIBMPEG2      "@MPEG2_SONAME@"
 
 /* libbluray */
 #define DLL_PATH_LIBBLURAY     "@BLURAY_SONAME@"

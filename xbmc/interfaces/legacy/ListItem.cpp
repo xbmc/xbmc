@@ -297,7 +297,7 @@ namespace XBMCAddon
           else if (key == "count")
             item->m_iprogramCount = strtol(value.c_str(), NULL, 10);
           else if (key == "rating")
-            item->GetVideoInfoTag()->m_fRating = (float)strtod(value.c_str(), NULL);
+            item->GetVideoInfoTag()->SetRating((float)strtod(value.c_str(), NULL));
           else if (key == "userrating")
             item->GetVideoInfoTag()->m_iUserRating = strtol(value.c_str(), NULL, 10);
           else if (key == "size")
@@ -389,7 +389,7 @@ namespace XBMCAddon
           else if (key == "album")
             item->GetVideoInfoTag()->m_strAlbum = value;
           else if (key == "votes")
-            item->GetVideoInfoTag()->m_strVotes = value;
+            item->GetVideoInfoTag()->SetVotes(StringUtils::ReturnDigits(value));
           else if (key == "trailer")
             item->GetVideoInfoTag()->m_strTrailer = value;
           else if (key == "date")

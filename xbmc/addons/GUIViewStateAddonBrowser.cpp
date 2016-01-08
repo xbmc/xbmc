@@ -25,6 +25,7 @@
 #include "guilib/WindowIDs.h"
 #include "view/ViewState.h"
 #include "addons/Addon.h"
+#include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 
 using namespace XFILE;
@@ -68,7 +69,7 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     share.strName = g_localizeStrings.Get(24998);
     m_sources.push_back(share);
   }
-  if (CAddonMgr::GetInstance().HasOutdatedAddons())
+  if (CAddonInstaller::GetInstance().HasAvailableUpdates())
   {
     CMediaSource share;
     share.strPath = "addons://outdated/";

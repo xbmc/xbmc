@@ -27,8 +27,8 @@
 
 extern "C"
 {
-#include <libavutil/imgutils.h>
 #include "libavformat/avformat.h"
+#include "libavutil/imgutils.h"
 #include "libavcodec/avcodec.h"
 #include "libavutil/avutil.h"
 #include "libswscale/swscale.h"
@@ -229,6 +229,21 @@ bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSi
       const AVPixFmtDescriptor* pixDescriptor = av_pix_fmt_desc_get(static_cast<AVPixelFormat>(m_pFrame->format));
       if (pixDescriptor && ((pixDescriptor->flags & (AV_PIX_FMT_FLAG_ALPHA | AV_PIX_FMT_FLAG_PAL)) != 0))
         m_hasAlpha = true;
+
+      AVDictionary* dic = av_frame_get_metadata(m_pFrame);
+      AVDictionaryEntry* entry = NULL;
+      if (dic)
+      {
+          entry = av_dict_get(dic, "Orientation", NULL, AV_DICT_MATCH_CASE);
+          if (entry && entry->value)
+          {
+             int orientation = atoi(entry->value);
+             // only values between including 0 and including 8
+             // http://sylvana.net/jpegcrop/exif_orientation.html
+             if (orientation >= 0 && orientation <= 8)
+               m_orientation = (unsigned int) orientation;
+          }
+      }
     }    
     else
     {

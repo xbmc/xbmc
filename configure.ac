@@ -420,12 +420,6 @@ AC_ARG_ENABLE([non-free],
   [use_nonfree=$enableval],
   [use_nonfree=yes])
 
-AC_ARG_ENABLE([asap-codec],
-  [AS_HELP_STRING([--enable-asap-codec],
-  [enable ASAP ADPCM support])],
-  [use_asap=$enableval],
-  [use_asap=no])
-
 AC_ARG_ENABLE([mysql],
   [AS_HELP_STRING([--disable-mysql],
   [disable mysql])],
@@ -1051,11 +1045,6 @@ if test "$use_mysql" = "yes"; then
   fi
 fi
 AC_CHECK_HEADER([ass/ass.h],, AC_MSG_ERROR($missing_library))
-AC_CHECK_HEADER([mpeg2dec/mpeg2.h],, AC_MSG_ERROR($missing_library))
-AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],, AC_MSG_ERROR($missing_library),
-  AC_INCLUDES_DEFAULT()
-  [#include <mpeg2dec/mpeg2.h>])
-AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([LIBDCADEC], [dcadec],, AC_MSG_ERROR([libdcadec not found]))
@@ -1088,8 +1077,6 @@ fi
 PKG_CHECK_MODULES([GNUTLS], [gnutls], [have_gnutls=yes];AC_DEFINE([HAVE_GNUTLS], [1], [Define if we have gnutls]), AC_MSG_WARN("gnutls not found"))
 
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
-AC_CHECK_LIB([tiff],        [main],, AC_MSG_ERROR($missing_library))
 if echo "$ARCH" | grep -q freebsd; then
 AC_CHECK_LIB([pthread],     [main],LIBS="-pthread $LIBS", AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([pthread],     [pthread_set_name_np],
@@ -1249,9 +1236,6 @@ if test "$host_vendor" = "apple" ; then
     AC_DEFINE([HAVE_SDL_VERSION],[1],["SDL major version"])
   fi
 else
-if test "$target_platform" != "target_android" ; then
-  AC_CHECK_LIB([jasper],     [main],, AC_MSG_ERROR($missing_library)) # check for cximage
-fi
 if test "x$use_alsa" != "xno"; then
   PKG_CHECK_MODULES([ALSA],  [alsa],
     [INCLUDES="$INCLUDES $ALSA_CFLAGS"; LIBS="$LIBS $ALSA_LIBS"; use_alsa=yes],
@@ -1285,7 +1269,6 @@ fi
 fi
 
 XB_FIND_SONAME([ASS],         [ass])
-XB_FIND_SONAME([MPEG2],       [mpeg2])
 
 # WebServer
 if test "$use_webserver" = "yes"; then
@@ -2211,23 +2194,6 @@ else
   final_message="$final_message\n  Non-free:\tNo"
 fi
 
-if test "$use_asap" = "yes"; then
-  AC_CHECK_PROGS(HAVE_GDC,gdc-4.4 gdc-4.3 gdc,"no")
-  if test "$HAVE_GDC" = "no"; then
-    AC_MSG_ERROR($missing_program);
-  fi
-  AC_CHECK_PROG(HAVE_FPC,fpc,"yes","no")
-  if test "$HAVE_FPC" = "no"; then
-    AC_MSG_ERROR($missing_program);
-  fi
-  USE_ASAP_CODEC=1
-  AC_DEFINE([USE_ASAP_CODEC], [1], [Define to 1 to enable ASAP codec.])
-  final_message="$final_message\n  ASAP Codec:\tYes"
-else
-  USE_ASAP_CODEC=0
-  final_message="$final_message\n  ASAP Codec:\tNo"
-fi
-
 if test "$use_mysql" = "yes"; then
   final_message="$final_message\n  MySQL:\tYes"
   USE_MYSQL=1
@@ -2383,7 +2349,6 @@ OUTPUT_FILES="Makefile \
     xbmc/network/Makefile \
     xbmc/network/upnp/Makefile \
     lib/libexif/Makefile \
-    lib/cximage-6.0/Makefile \
     lib/libUPnP/Makefile \
     xbmc/DllPaths_generated.h \
     xbmc/DllPaths_generated_android.h \
@@ -2498,7 +2463,6 @@ AC_SUBST(USE_LIBAV_HACKS)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(OUTPUT_FILES)
 AC_SUBST(HAVE_XBMC_NONFREE)
-AC_SUBST(USE_ASAP_CODEC)
 AC_SUBST(LIBCURL_BASENAME)
 AC_SUBST(LIBVORBISFILE_BASENAME)
 AC_SUBST(LIBOGG_BASENAME)

@@ -2068,7 +2068,8 @@ bool CApplication::OnAction(const CAction &action)
 
   if (action.GetID() == ACTION_TOGGLE_FULLSCREEN)
   {
-    g_graphicsContext.ToggleFullScreenRoot();
+    g_graphicsContext.ToggleFullScreen();
+    m_pPlayer->TriggerUpdateResolution();
     return true;
   }
 
@@ -2586,9 +2587,8 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     break;
 
   case TMSG_TOGGLEFULLSCREEN:
-    g_graphicsContext.Lock();
-    g_graphicsContext.ToggleFullScreenRoot();
-    g_graphicsContext.Unlock();
+    g_graphicsContext.ToggleFullScreen();
+    m_pPlayer->TriggerUpdateResolution();
     break;
 
   case TMSG_MINIMIZE:
@@ -3210,7 +3210,7 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
       }
     }
 
-    *m_itemCurrentFile = item;
+    m_itemCurrentFile.reset(new CFileItem(item));
     m_currentStackPosition = 0;
 
     if (seconds > 0)
@@ -3234,7 +3234,7 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
   return PLAYBACK_FAIL;
 }
 
-PlayBackRet CApplication::PlayFile(const CFileItem& item, std::string player, bool bRestart)
+PlayBackRet CApplication::PlayFile(const CFileItem& item, const std::string& player, bool bRestart)
 {
   // Ensure the MIME type has been retrieved for http:// and shout:// streams
   if (item.GetMimeType().empty())
@@ -3252,7 +3252,8 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, std::string player, bo
     m_pPlayer->SetPlaySpeed(1, g_application.m_muted);
     m_pPlayer->m_iPlaySpeed = 1;     // Reset both CApp's & Player's speed else we'll get confused
 
-    *m_itemCurrentFile = item;
+    m_itemCurrentFile.reset(new CFileItem(item));
+
     m_nextPlaylistItem = -1;
     m_currentStackPosition = 0;
     m_currentStack->Clear();
@@ -4211,9 +4212,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
         CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, g_playlistPlayer.GetCurrentPlaylist(), param, item);
         g_windowManager.SendThreadMessage(msg);
         g_playlistPlayer.SetCurrentSong(m_nextPlaylistItem);
-        *m_itemCurrentFile = *item;
+        m_itemCurrentFile.reset(new CFileItem(*item));
       }
-      g_infoManager.SetCurrentItem(*m_itemCurrentFile);
+      g_infoManager.SetCurrentItem(m_itemCurrentFile);
       g_partyModeManager.OnSongChange(true);
 
       CVariant param;
@@ -4666,6 +4667,11 @@ const std::string& CApplication::CurrentFile()
 CFileItem& CApplication::CurrentFileItem()
 {
   return *m_itemCurrentFile;
+}
+
+void CApplication::SetCurrentFileItem(const CFileItem& item)
+{
+  m_itemCurrentFile.reset(new CFileItem(item));
 }
 
 CFileItem& CApplication::CurrentUnstackedItem()

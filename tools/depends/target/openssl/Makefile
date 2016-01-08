@@ -14,7 +14,7 @@ ifeq ($(OS), android)
 endif
 ifeq ($(OS), ios)
   # No darwin-arm-cc so use darwin-i386-cc and patch files after configure
-  CONFIGURE=./Configure darwin-i386-cc zlib no-asm no-krb5 shared --openssldir=$(PREFIX)
+  CONFIGURE=./Configure darwin-i386-cc zlib no-asm no-krb5 --openssldir=$(PREFIX)
 endif
 ifeq ($(OS), osx)
   ifeq ($(CPU),x86_64)
@@ -44,9 +44,10 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	fi
 	if test "$(OS)" = "ios"; then \
 		sed -ie "s|CFLAG= |CFLAG=$(CFLAGS) |" "$(PLATFORM)/Makefile"; \
-		sed -ie "s|-arch i386|-arch armv7|" "$(PLATFORM)/Makefile"; \
+		sed -ie "s|-arch i386|-arch $(CPU)|" "$(PLATFORM)/Makefile"; \
 		sed -ie "s|static volatile sig_atomic_t intr_signal;|static volatile intr_signal;|" "$(PLATFORM)/crypto/ui/ui_openssl.c"; \
 	fi
+	sed -ie "s|apps test||" "$(PLATFORM)/Makefile"; \
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)

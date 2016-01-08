@@ -1871,11 +1871,9 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
 
 #if !defined(TARGET_ANDROID) && (defined(__i386__) || defined(__x86_64__))
   if(method == VS_INTERLACEMETHOD_DEINTERLACE
-  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF
-  || method == VS_INTERLACEMETHOD_SW_BLEND)
+  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
 #else
-  if(method == VS_INTERLACEMETHOD_SW_BLEND
-  || method == VS_INTERLACEMETHOD_RENDER_BOB
+  if(method == VS_INTERLACEMETHOD_RENDER_BOB
   || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
 #endif
     return true;

@@ -46,6 +46,8 @@
 #include "../WinEventsX11.h"
 #include "input/InputManager.h"
 
+using namespace KODI::MESSAGING;
+
 #define EGL_NO_CONFIG (EGLConfig)0
 
 CWinSystemX11::CWinSystemX11() : CWinSystemBase()
@@ -501,7 +503,7 @@ void CWinSystemX11::NotifyAppActiveChange(bool bActivated)
 {
   if (bActivated && m_bWasFullScreenBeforeMinimize && !m_bFullScreen)
   {
-    g_graphicsContext.ToggleFullScreenRoot();
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
 
     m_bWasFullScreenBeforeMinimize = false;
   }
@@ -514,7 +516,7 @@ void CWinSystemX11::NotifyAppFocusChange(bool bGaining)
       !m_bFullScreen)
   {
     m_bWasFullScreenBeforeMinimize = false;
-    g_graphicsContext.ToggleFullScreenRoot();
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
     m_minimized = false;
   }
   if (!bGaining)
@@ -527,7 +529,7 @@ bool CWinSystemX11::Minimize()
   if (m_bWasFullScreenBeforeMinimize)
   {
     m_bIgnoreNextFocusMessage = true;
-    g_graphicsContext.ToggleFullScreenRoot();
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
   }
 
   XIconifyWindow(m_dpy, m_mainWindow, m_nScreen);

@@ -5,7 +5,7 @@ ifeq ($(USE_BUILDROOT),1)
 	SUBDIRS = ffmpeg xbmc
 else
 	BUILDTOOLS = help2man autoconf automake libtool pkg-config yasm cmake patchelf
-	SUBDIRS = liblzo2 tiff libnfs jasper libplist libshairplay tinyxml ffmpeg xbmc
+	SUBDIRS = liblzo2 libnfs libplist libshairplay tinyxml ffmpeg xbmc
 endif
 
 IMAGENAME = xbmc-rbp-`date +'%y%m%d'`

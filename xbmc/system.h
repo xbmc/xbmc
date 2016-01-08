@@ -48,10 +48,6 @@
 
 #define HAS_JSONRPC
 
-#ifdef USE_ASAP_CODEC
-#define HAS_ASAP_CODEC
-#endif
-
 #define HAS_FILESYSTEM
 #define HAS_FILESYSTEM_CDDA
 
@@ -116,7 +112,6 @@
 #define HAVE_LIBSSH
 #define HAS_LIBRTMP
 #define HAVE_LIBBLURAY
-#define HAS_ASAP_CODEC
 #define HAS_FILESYSTEM_SMB
 #define HAS_FILESYSTEM_NFS
 #define HAS_ZEROCONF

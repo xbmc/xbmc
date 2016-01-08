@@ -52,6 +52,7 @@ typedef intptr_t      ssize_t;
 #else
 #define ADDON_HELPER_ARCH       "x86-osx"
 #endif
+#define ADDON_HELPER_EXT        ".dylib"
 #else                           // linux
 #if defined(__x86_64__)
 #define ADDON_HELPER_ARCH       "x86_64-linux"
@@ -66,9 +67,9 @@ typedef intptr_t      ssize_t;
 #else
 #define ADDON_HELPER_ARCH       "i486-linux"
 #endif
+#define ADDON_HELPER_EXT        ".so"
 #endif
 #include <dlfcn.h>              // linux+osx
-#define ADDON_HELPER_EXT        ".so"
 #define ADDON_DLL_NAME "libXBMC_addon-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
 #define ADDON_DLL "/library.xbmc.addon/" ADDON_DLL_NAME
 #endif

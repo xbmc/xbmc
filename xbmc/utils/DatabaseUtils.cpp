@@ -156,14 +156,8 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldPlot) result = StringUtils::Format("movie_view.c%02d", VIDEODB_ID_PLOT);
     else if (field == FieldPlotOutline) result = StringUtils::Format("movie_view.c%02d", VIDEODB_ID_PLOTOUTLINE);
     else if (field == FieldTagline) result = StringUtils::Format("movie_view.c%02d", VIDEODB_ID_TAGLINE);
-    else if (field == FieldVotes) result = StringUtils::Format("movie_view.c%02d", VIDEODB_ID_VOTES);
-    else if (field == FieldRating)
-    {
-      if (queryPart == DatabaseQueryPartOrderBy)
-        result = StringUtils::Format("CAST(movie_view.c%02d as DECIMAL(5,3))", VIDEODB_ID_RATING);
-      else
-        result = StringUtils::Format("movie_view.c%02d", VIDEODB_ID_RATING);
-    }
+    else if (field == FieldVotes) return "movie_view.votes";
+    else if (field == FieldRating) return "movie_view.rating";
     else if (field == FieldWriter) result = StringUtils::Format("movie_view.c%02d", VIDEODB_ID_CREDITS);
     else if (field == FieldYear) result = StringUtils::Format("movie_view.c%02d", VIDEODB_ID_YEAR);
     else if (field == FieldSortTitle) result = StringUtils::Format("movie_view.c%02d", VIDEODB_ID_SORTTITLE);
@@ -200,8 +194,8 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     }
     else if (field == FieldPlot) result = StringUtils::Format("tvshow_view.c%02d", VIDEODB_ID_TV_PLOT);
     else if (field == FieldTvShowStatus) result = StringUtils::Format("tvshow_view.c%02d", VIDEODB_ID_TV_STATUS);
-    else if (field == FieldVotes) result = StringUtils::Format("tvshow_view.c%02d", VIDEODB_ID_TV_VOTES);
-    else if (field == FieldRating) result = StringUtils::Format("tvshow_view.c%02d", VIDEODB_ID_TV_RATING);
+    else if (field == FieldVotes) return "tvshow_view.votes";
+    else if (field == FieldRating) return "tvshow_view.rating";
     else if (field == FieldYear) result = StringUtils::Format("tvshow_view.c%02d", VIDEODB_ID_TV_PREMIERED);
     else if (field == FieldGenre) result = StringUtils::Format("tvshow_view.c%02d", VIDEODB_ID_TV_GENRE);
     else if (field == FieldMPAA) result = StringUtils::Format("tvshow_view.c%02d", VIDEODB_ID_TV_MPAA);
@@ -224,8 +218,8 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     if (field == FieldId) return "episode_view.idEpisode";
     else if (field == FieldTitle) result = StringUtils::Format("episode_view.c%02d", VIDEODB_ID_EPISODE_TITLE);
     else if (field == FieldPlot) result = StringUtils::Format("episode_view.c%02d", VIDEODB_ID_EPISODE_PLOT);
-    else if (field == FieldVotes) result = StringUtils::Format("episode_view.c%02d", VIDEODB_ID_EPISODE_VOTES);
-    else if (field == FieldRating) result = StringUtils::Format("episode_view.c%02d", VIDEODB_ID_EPISODE_RATING);
+    else if (field == FieldVotes) return "episode_view.votes";
+    else if (field == FieldRating) return "episode_view.rating";
     else if (field == FieldWriter) result = StringUtils::Format("episode_view.c%02d", VIDEODB_ID_EPISODE_CREDITS);
     else if (field == FieldAirDate) result = StringUtils::Format("episode_view.c%02d", VIDEODB_ID_EPISODE_AIRED);
     else if (field == FieldTime) result = StringUtils::Format("episode_view.c%02d", VIDEODB_ID_EPISODE_RUNTIME);
@@ -576,8 +570,8 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldPlot) index = VIDEODB_ID_PLOT;
     else if (field == FieldPlotOutline) index = VIDEODB_ID_PLOTOUTLINE;
     else if (field == FieldTagline) index = VIDEODB_ID_TAGLINE;
-    else if (field == FieldVotes) index = VIDEODB_ID_VOTES;
-    else if (field == FieldRating) index = VIDEODB_ID_RATING;
+    else if (field == FieldVotes) index = VIDEODB_DETAILS_MOVIE_VOTES;
+    else if (field == FieldRating) index = VIDEODB_DETAILS_MOVIE_RATING;
     else if (field == FieldWriter) index = VIDEODB_ID_CREDITS;
     else if (field == FieldYear) index = VIDEODB_ID_YEAR;
     else if (field == FieldTime) index = VIDEODB_ID_RUNTIME;
@@ -613,8 +607,8 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldSortTitle) index = VIDEODB_ID_TV_SORTTITLE;
     else if (field == FieldPlot) index = VIDEODB_ID_TV_PLOT;
     else if (field == FieldTvShowStatus) index = VIDEODB_ID_TV_STATUS;
-    else if (field == FieldVotes) index = VIDEODB_ID_TV_VOTES;
-    else if (field == FieldRating) index = VIDEODB_ID_TV_RATING;
+    else if (field == FieldVotes) index = VIDEODB_DETAILS_TVSHOW_VOTES;
+    else if (field == FieldRating) index = VIDEODB_DETAILS_TVSHOW_RATING;
     else if (field == FieldYear) index = VIDEODB_ID_TV_PREMIERED;
     else if (field == FieldGenre) index = VIDEODB_ID_TV_GENRE;
     else if (field == FieldMPAA) index = VIDEODB_ID_TV_MPAA;
@@ -642,8 +636,8 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     if (field == FieldId) return 0;
     else if (field == FieldTitle) index = VIDEODB_ID_EPISODE_TITLE;
     else if (field == FieldPlot) index = VIDEODB_ID_EPISODE_PLOT;
-    else if (field == FieldVotes) index = VIDEODB_ID_EPISODE_VOTES;
-    else if (field == FieldRating) index = VIDEODB_ID_EPISODE_RATING;
+    else if (field == FieldVotes) index = VIDEODB_DETAILS_EPISODE_VOTES;
+    else if (field == FieldRating) index = VIDEODB_DETAILS_EPISODE_RATING;
     else if (field == FieldWriter) index = VIDEODB_ID_EPISODE_CREDITS;
     else if (field == FieldAirDate) index = VIDEODB_ID_EPISODE_AIRED;
     else if (field == FieldTime) index = VIDEODB_ID_EPISODE_RUNTIME;

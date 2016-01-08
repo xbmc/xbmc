@@ -98,13 +98,6 @@ namespace ADDON
     void RemoveFromUpdateableAddons(AddonPtr &pAddon);    
     bool ReloadSettings(const std::string &id);
 
-    /*! \brief Get addons with available updates */
-    VECADDONS GetOutdated();
-
-    /*! \brief Checks if there is any addon with available updates
-     \return True if there are outdated addons otherwise false
-     */
-    bool HasOutdatedAddons();
     std::string GetString(const std::string &id, const int number);
 
     std::string GetTranslatedString(const cp_cfg_element_t *root, const char *tag);

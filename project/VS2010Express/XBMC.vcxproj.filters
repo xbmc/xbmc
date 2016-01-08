@@ -456,9 +456,6 @@
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Video\DVDVideoCodecFFmpeg.cpp">
       <Filter>cores\VideoPlayer\DVDCodecs\Video</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Video\DVDVideoCodecLibMpeg2.cpp">
-      <Filter>cores\VideoPlayer\DVDCodecs\Video</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Video\DVDVideoPPFFmpeg.cpp">
       <Filter>cores\VideoPlayer\DVDCodecs\Video</Filter>
     </ClCompile>
@@ -1767,9 +1764,6 @@
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\ApplicationOperations.cpp">
       <Filter>interfaces\json-rpc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\JpegIO.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\info\SkinVariable.cpp">
       <Filter>interfaces\info</Filter>
     </ClCompile>
@@ -2605,9 +2599,6 @@
     <ClCompile Include="..\..\xbmc\guilib\imagefactory.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\cximage.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\DAVFile.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -3342,9 +3333,6 @@
       <Filter>cores\VideoPlayer\DVDCodecs\Video</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Video\DVDVideoCodecFFmpeg.h">
-      <Filter>cores\VideoPlayer\DVDCodecs\Video</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Video\DVDVideoCodecLibMpeg2.h">
       <Filter>cores\VideoPlayer\DVDCodecs\Video</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Video\DVDVideoPPFFmpeg.h">
@@ -4237,9 +4225,6 @@
     <ClInclude Include="..\..\xbmc\network\windows\NetworkWin32.h">
       <Filter>network\windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\pictures\DllImageLib.h">
-      <Filter>pictures</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\pictures\DllLibExif.h">
       <Filter>pictures</Filter>
     </ClInclude>
@@ -4827,9 +4812,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\ApplicationOperations.h">
       <Filter>interfaces\json-rpc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\JpegIO.h">
-      <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\info\SkinVariable.h">
       <Filter>interfaces\info</Filter>
@@ -5548,9 +5530,6 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\imagefactory.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\cximage.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\FFmpegVideoDecoder.h">

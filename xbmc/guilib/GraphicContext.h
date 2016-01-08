@@ -92,7 +92,7 @@ public:
   const CRect GetViewWindow() const;
   void SetViewWindow(float left, float top, float right, float bottom);
   bool IsFullScreenRoot() const;
-  bool ToggleFullScreenRoot();
+  void ToggleFullScreen();
   void SetFullScreenVideo(bool bOnOff);
   bool IsFullScreenVideo() const;
   bool IsCalibrating() const;

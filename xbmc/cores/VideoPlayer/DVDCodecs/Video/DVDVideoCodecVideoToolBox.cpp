@@ -31,6 +31,7 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/SystemInfo.h"
 #include "platform/darwin/DarwinUtils.h"
 
 extern "C" {
@@ -1045,6 +1046,17 @@ bool CDVDVideoCodecVideoToolBox::HandleDyLoad()
 
 bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX))
+    return false;
+  if (!g_sysinfo.HasVideoToolBoxDecoder())
+    return false;
+  if (hints.stills)
+    return false;
+  if (hints.ptsinvalid)
+    return false;
+  if (hints.codec != AV_CODEC_ID_H264)
+    return false;
+
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX) && !hints.software)
   {
     int width  = hints.width;

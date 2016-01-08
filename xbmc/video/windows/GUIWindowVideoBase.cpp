@@ -671,7 +671,7 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, std::string player
     }
     break;
   case SELECT_ACTION_PLAY_OR_RESUME:
-    return OnResumeItem(iItem);
+    return OnResumeItem(iItem, player);
   case SELECT_ACTION_INFO:
     if (OnItemInfo(iItem))
       return true;
@@ -744,9 +744,9 @@ bool CGUIWindowVideoBase::OnItemInfo(int iItem)
   return item->HasVideoInfoTag();
 }
 
-void CGUIWindowVideoBase::OnRestartItem(int iItem)
+void CGUIWindowVideoBase::OnRestartItem(int iItem, const std::string &player)
 {
-  CGUIMediaWindow::OnClick(iItem);
+  CGUIMediaWindow::OnClick(iItem, player);
 }
 
 std::string CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
@@ -786,7 +786,7 @@ bool CGUIWindowVideoBase::ShowResumeMenu(CFileItem &item)
   return true;
 }
 
-bool CGUIWindowVideoBase::OnResumeItem(int iItem)
+bool CGUIWindowVideoBase::OnResumeItem(int iItem, const std::string &player)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size()) return true;
   CFileItemPtr item = m_vecItems->Get(iItem);
@@ -794,7 +794,7 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem)
   if (item->m_bIsFolder)
   {
     // resuming directories isn't supported yet. play.
-    PlayItem(iItem);
+    PlayItem(iItem, player);
     return true;
   }
 
@@ -808,10 +808,10 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem)
     int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
     if (value < 0)
       return true;
-    return OnFileAction(iItem, value, "");
+    return OnFileAction(iItem, value, player);
   }
 
-  return OnFileAction(iItem, SELECT_ACTION_PLAY, "");
+  return OnFileAction(iItem, SELECT_ACTION_PLAY, player);
 }
 
 void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &buttons)
@@ -1183,7 +1183,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
     }
   }
 
-  PlayMovie(&item);
+  PlayMovie(&item, player);
 
   return true;
 }
@@ -1202,7 +1202,7 @@ bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr &item, std::str
   return CGUIMediaWindow::OnPlayAndQueueMedia(movieItem, player);
 }
 
-void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
+void CGUIWindowVideoBase::PlayMovie(const CFileItem *item, const std::string &player)
 {
   CFileItemPtr movieItem(new CFileItem(*item));
 
@@ -1216,7 +1216,7 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
     m_thumbLoader.StopAsync();
 
   // play movie...
-  g_playlistPlayer.Play(0, "");
+  g_playlistPlayer.Play(0, player);
 
   if(!g_application.m_pPlayer->IsPlayingVideo())
     m_thumbLoader.Load(*m_vecItems);
@@ -1277,7 +1277,7 @@ void CGUIWindowVideoBase::LoadPlayList(const std::string& strPlayList, int iPlay
   }
 }
 
-void CGUIWindowVideoBase::PlayItem(int iItem)
+void CGUIWindowVideoBase::PlayItem(int iItem, const std::string &player)
 {
   // restrictions should be placed in the appropiate window code
   // only call the base code if the item passes since this clears
@@ -1317,7 +1317,7 @@ void CGUIWindowVideoBase::PlayItem(int iItem)
   else
   {
     // single item, play it
-    OnClick(iItem);
+    OnClick(iItem, player);
   }
 }
 

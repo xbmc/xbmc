@@ -858,14 +858,6 @@ static bool CheckCompatibility(AVCodecContext *avctx)
     return false;
   }
 
-  // there are many corrupt mpeg2 rips from dvd's which don't
-  // follow profile spec properly, they go corrupt on hw, so
-  // keep those running in software for the time being.
-  if (avctx->codec_id  == AV_CODEC_ID_MPEG2VIDEO
-  &&  avctx->height    <= 576
-  &&  avctx->width     <= 720)
-    return false;
-
   // Check for hardware limited to H264 L4.1 (ie Bluray).
 
   // No advanced settings: autodetect.

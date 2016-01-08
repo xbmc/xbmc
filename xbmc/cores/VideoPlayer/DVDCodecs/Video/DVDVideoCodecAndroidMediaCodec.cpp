@@ -49,6 +49,7 @@
 #include "platform/android/jni/Surface.h"
 #include "platform/android/jni/SurfaceTexture.h"
 #include "platform/android/activity/AndroidFeatures.h"
+#include "settings/Settings.h"
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
@@ -346,7 +347,13 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s\n", "null size, cannot handle");
     return false;
   }
+  else if (hints.stills)
+    return false;
+  else if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC) &&
+           !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
+    return false;
 
+  m_render_surface = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE);
   m_drop = false;
   m_hints = hints;
 
@@ -357,6 +364,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       m_formatname = "amc-mpeg2";
       break;
     case AV_CODEC_ID_MPEG4:
+      if (hints.width <= 800)
+        return false;
       m_mime = "video/mp4v-es";
       m_formatname = "amc-mpeg4";
       break;

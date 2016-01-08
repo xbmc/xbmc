@@ -162,6 +162,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         CMediaSettings::GetInstance().CycleWatchedMode(m_vecItems->GetContent());
         CSettings::GetInstance().Save();
         OnFilterItems(GetProperty("filter").asString());
+        UpdateButtons();
         return true;
       }
       else if (iControl == CONTROL_BTNSHOWALL)
@@ -172,6 +173,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           CMediaSettings::GetInstance().SetWatchedMode(m_vecItems->GetContent(), WatchedModeAll);
         CSettings::GetInstance().Save();
         OnFilterItems(GetProperty("filter").asString());
+        UpdateButtons();
         return true;
       }
       else if (iControl == CONTROL_UPDATE_LIBRARY)

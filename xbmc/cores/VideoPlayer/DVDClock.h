@@ -21,7 +21,6 @@
  */
 
 #include "system.h"
-#include "threads/SharedSection.h"
 #include "threads/CriticalSection.h"
 
 #define DVD_TIME_BASE 1000000
@@ -77,7 +76,7 @@ protected:
   static int64_t AbsoluteToSystem(double absolute);
   double SystemToPlaying(int64_t system);
 
-  CSharedSection m_critSection;
+  CCriticalSection m_critSection;
   int64_t m_systemUsed;
   int64_t m_startClock;
   int64_t m_pauseClock;
