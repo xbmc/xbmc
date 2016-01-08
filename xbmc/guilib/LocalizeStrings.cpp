@@ -175,6 +175,21 @@ static bool LoadStr2Mem(const std::string &pathname_in, const std::string &langu
   return LoadXML(URIUtils::AddFileToFolder(pathname, "strings.xml"), strings, encoding, offset);
 }
 
+static bool LoadWithFallback(const std::string& path, const std::string& language, std::map<uint32_t, LocStr>& strings)
+{
+  std::string encoding;
+  if (!LoadStr2Mem(path, language, strings, encoding))
+  {
+    if (StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT)) // no fallback, nothing to do
+      return false;
+  }
+
+  // load the fallback
+  if (!StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT))
+    LoadStr2Mem(path, LANGUAGE_DEFAULT, strings, encoding);
+
+  return true;
+}
 
 CLocalizeStrings::CLocalizeStrings(void)
 {
@@ -196,39 +211,17 @@ bool CLocalizeStrings::LoadSkinStrings(const std::string& path, const std::strin
 {
   ClearSkinStrings();
   // load the skin strings in.
-  std::string encoding;
-  if (!LoadStr2Mem(path, language, m_strings, encoding))
-  {
-    if (StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT)) // no fallback, nothing to do
-      return false;
-  }
-
-  // load the fallback
-  if (!StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT))
-    LoadStr2Mem(path, LANGUAGE_DEFAULT, m_strings, encoding);
-
-  return true;
+  return LoadWithFallback(path, language, m_strings);
 }
 
 bool CLocalizeStrings::Load(const std::string& strPathName, const std::string& strLanguage)
 {
-  bool bLoadFallback = !StringUtils::EqualsNoCase(strLanguage, LANGUAGE_DEFAULT);
-
   std::string encoding;
   CSingleLock lock(m_critSection);
   Clear();
 
-  if (!LoadStr2Mem(strPathName, strLanguage, m_strings, encoding))
-  {
-    // try loading the fallback
-    if (!bLoadFallback || !LoadStr2Mem(strPathName, LANGUAGE_DEFAULT, m_strings, encoding))
-      return false;
-
-    bLoadFallback = false;
-  }
-
-  if (bLoadFallback)
-    LoadStr2Mem(strPathName, LANGUAGE_DEFAULT, m_strings, encoding);
+  if (!LoadWithFallback(strPathName, strLanguage, m_strings))
+    return false;
 
   // fill in the constant strings
   m_strings[20022].strTranslated = "";
@@ -287,17 +280,8 @@ void CLocalizeStrings::Clear(uint32_t start, uint32_t end)
 bool CLocalizeStrings::LoadAddonStrings(const std::string& path, const std::string& language, const std::string& addonId)
 {
   std::map<uint32_t, LocStr> strings;
-  std::string encoding;
-
-  if (!LoadStr2Mem(path, language, strings, encoding))
-  {
-    if (StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT)) // no fallback, nothing to do
-      return false;
-  }
-
-  // load the fallback
-  if (!StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT))
-    LoadStr2Mem(path, LANGUAGE_DEFAULT, strings, encoding);
+  if (!LoadWithFallback(path, language, strings))
+    return false;
 
   CExclusiveLock lock(m_addonStringsMutex);
   auto it = m_addonStrings.find(addonId);
