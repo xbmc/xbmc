@@ -83,6 +83,7 @@ public:
   IDXGIOutput* GetCurrentOutput(void) { return m_pOutput; }
 
   virtual void Project(float &x, float &y, float &z);
+  virtual CRect GetBackBufferRect() { return CRect(0.f, 0.f, static_cast<float>(m_nBackBufferWidth), static_cast<float>(m_nBackBufferHeight)); }
 
   void FinishCommandList(bool bExecute = true);
   void FlushGPU();

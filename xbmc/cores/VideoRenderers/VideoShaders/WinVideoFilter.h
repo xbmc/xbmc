@@ -78,7 +78,7 @@ class CYUV2RGBShader : public CWinShader
 public:
   virtual bool Create(unsigned int sourceWidth, unsigned int sourceHeight, ERenderFormat fmt);
   virtual void Render(CRect sourceRect,
-                      CRect destRect,
+                      CPoint dest[],
                       float contrast,
                       float brightness,
                       unsigned int flags,
@@ -94,7 +94,7 @@ public:
 
 protected:
   virtual void PrepareParameters(CRect sourceRect,
-                                 CRect destRect,
+                                 CPoint dest[],
                                  float contrast,
                                  float brightness,
                                  unsigned int flags);
@@ -103,7 +103,8 @@ protected:
 private:
   CYUV2RGBMatrix      m_matrix;
   unsigned int        m_sourceWidth, m_sourceHeight;
-  CRect               m_sourceRect , m_destRect;
+  CRect               m_sourceRect;
+  CPoint              m_dest[4];
   ERenderFormat       m_format;
   float               m_texSteps[2];
 
