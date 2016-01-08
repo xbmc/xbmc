@@ -349,6 +349,9 @@ JSONRPC_STATUS CPVROperations::AddTimer(const std::string &method, ITransportLay
   CFileItemList broadcasts;
   int resultSize = g_EpgContainer.GetEPGSearch(broadcasts, filter);
 
+  result["numberOfBroadcast"]= resultSize;
+  return OK;
+
   if (broadcasts.Size() <= 0)
     return InvalidRequest;
   else if (broadcasts.Size() > 1)
