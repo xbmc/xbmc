@@ -186,16 +186,6 @@ CLocalizeStrings::~CLocalizeStrings(void)
 
 }
 
-std::string CLocalizeStrings::ToUTF8(const std::string& strEncoding, const std::string& str)
-{
-  if (strEncoding.empty())
-    return str;
-
-  std::string ret;
-  g_charsetConverter.ToUtf8(strEncoding, str, ret);
-  return ret;
-}
-
 void CLocalizeStrings::ClearSkinStrings()
 {
   // clear the skin strings

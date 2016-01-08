@@ -66,7 +66,6 @@ public:
 protected:
   void Clear(uint32_t start, uint32_t end);
 
-  static std::string ToUTF8(const std::string &encoding, const std::string &str);
   std::map<uint32_t, LocStr> m_strings;
   std::map<std::string, std::map<uint32_t, LocStr>> m_addonStrings;
   typedef std::map<uint32_t, LocStr>::const_iterator ciStrings;
