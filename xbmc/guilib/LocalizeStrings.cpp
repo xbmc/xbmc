@@ -204,11 +204,14 @@ CLocalizeStrings::~CLocalizeStrings(void)
 void CLocalizeStrings::ClearSkinStrings()
 {
   // clear the skin strings
+  CExclusiveLock lock(m_stringsMutex);
   Clear(31000, 31999);
 }
 
 bool CLocalizeStrings::LoadSkinStrings(const std::string& path, const std::string& language)
 {
+  //TODO: shouldn't hold lock while loading file
+  CExclusiveLock lock(m_stringsMutex);
   ClearSkinStrings();
   // load the skin strings in.
   return LoadWithFallback(path, language, m_strings);
@@ -216,42 +219,43 @@ bool CLocalizeStrings::LoadSkinStrings(const std::string& path, const std::strin
 
 bool CLocalizeStrings::Load(const std::string& strPathName, const std::string& strLanguage)
 {
-  std::string encoding;
-  CSingleLock lock(m_critSection);
-  Clear();
-
-  if (!LoadWithFallback(strPathName, strLanguage, m_strings))
+  std::map<uint32_t, LocStr> strings;
+  if (!LoadWithFallback(strPathName, strLanguage, strings))
     return false;
 
   // fill in the constant strings
-  m_strings[20022].strTranslated = "";
-  m_strings[20027].strTranslated = "°F";
-  m_strings[20028].strTranslated = "K";
-  m_strings[20029].strTranslated = "°C";
-  m_strings[20030].strTranslated = "°Ré";
-  m_strings[20031].strTranslated = "°Ra";
-  m_strings[20032].strTranslated = "°Rø";
-  m_strings[20033].strTranslated = "°De";
-  m_strings[20034].strTranslated = "°N";
+  strings[20022].strTranslated = "";
+  strings[20027].strTranslated = "°F";
+  strings[20028].strTranslated = "K";
+  strings[20029].strTranslated = "°C";
+  strings[20030].strTranslated = "°Ré";
+  strings[20031].strTranslated = "°Ra";
+  strings[20032].strTranslated = "°Rø";
+  strings[20033].strTranslated = "°De";
+  strings[20034].strTranslated = "°N";
 
-  m_strings[20200].strTranslated = "km/h";
-  m_strings[20201].strTranslated = "m/min";
-  m_strings[20202].strTranslated = "m/s";
-  m_strings[20203].strTranslated = "ft/h";
-  m_strings[20204].strTranslated = "ft/min";
-  m_strings[20205].strTranslated = "ft/s";
-  m_strings[20206].strTranslated = "mph";
-  m_strings[20207].strTranslated = "kts";
-  m_strings[20208].strTranslated = "Beaufort";
-  m_strings[20209].strTranslated = "inch/s";
-  m_strings[20210].strTranslated = "yard/s";
-  m_strings[20211].strTranslated = "Furlong/Fortnight";
+  strings[20200].strTranslated = "km/h";
+  strings[20201].strTranslated = "m/min";
+  strings[20202].strTranslated = "m/s";
+  strings[20203].strTranslated = "ft/h";
+  strings[20204].strTranslated = "ft/min";
+  strings[20205].strTranslated = "ft/s";
+  strings[20206].strTranslated = "mph";
+  strings[20207].strTranslated = "kts";
+  strings[20208].strTranslated = "Beaufort";
+  strings[20209].strTranslated = "inch/s";
+  strings[20210].strTranslated = "yard/s";
+  strings[20211].strTranslated = "Furlong/Fortnight";
 
+  CExclusiveLock lock(m_stringsMutex);
+  Clear();
+  m_strings = std::move(strings);
   return true;
 }
 
 const std::string& CLocalizeStrings::Get(uint32_t dwCode) const
 {
+  CSharedLock lock(m_stringsMutex);
   ciStrings i = m_strings.find(dwCode);
   if (i == m_strings.end())
   {
@@ -262,11 +266,13 @@ const std::string& CLocalizeStrings::Get(uint32_t dwCode) const
 
 void CLocalizeStrings::Clear()
 {
+  CExclusiveLock lock(m_stringsMutex);
   m_strings.clear();
 }
 
 void CLocalizeStrings::Clear(uint32_t start, uint32_t end)
 {
+  CExclusiveLock lock(m_stringsMutex);
   iStrings it = m_strings.begin();
   while (it != m_strings.end())
   {
