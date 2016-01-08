@@ -1709,7 +1709,7 @@ bool CFileItemList::Contains(const std::string& fileName, bool ignoreURLOptions 
 {
   CSingleLock lock(m_lock);
 
-  if (m_fastLookup && !ignoreUrlOptions)
+  if (m_fastLookup && !ignoreURLOptions)
     return m_map.find(fileName) != m_map.end();
 
   // slow method...
