@@ -58,6 +58,7 @@ static bool LoadXML(const std::string &filename, std::map<uint32_t, LocStr>& str
     return false;
   }
 
+  const auto originalSize = strings.size();
   const TiXmlElement *pChild = pRootElement->FirstChildElement("string");
   while (pChild)
   {
@@ -71,6 +72,7 @@ static bool LoadXML(const std::string &filename, std::map<uint32_t, LocStr>& str
     }
     pChild = pChild->NextSiblingElement("string");
   }
+  CLog::Log(LOGDEBUG, "LocalizeStrings: loaded %i strings from file %s", strings.size() - originalSize, filename.c_str());
   return true;
 }
 
@@ -134,7 +136,7 @@ static bool LoadPO(const std::string &filename, std::map<uint32_t, LocStr>& stri
     }
   }
 
-  CLog::Log(LOGDEBUG, "POParser: loaded %i strings from file %s", counter, filename.c_str());
+  CLog::Log(LOGDEBUG, "LocalizeStrings: loaded %i strings from file %s", counter, filename.c_str());
   return true;
 }
 
@@ -163,20 +165,13 @@ static bool LoadStr2Mem(const std::string &pathname_in, const std::string &langu
     }
 
     if (!exists)
-    {
-      CLog::Log(LOGDEBUG,
-          "LocalizeStrings: no translation available in currently set gui language, at path %s",
-          pathname.c_str());
       return false;
-    }
   }
 
   bool useSourceLang = StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT) || StringUtils::EqualsNoCase(language, LANGUAGE_OLD_DEFAULT);
   if (LoadPO(URIUtils::AddFileToFolder(pathname, "strings.po"), strings, encoding, offset, useSourceLang))
     return true;
 
-  CLog::Log(LOGDEBUG, "LocalizeStrings: no strings.po file exist at %s, fallback to strings.xml",
-      pathname.c_str());
   return LoadXML(URIUtils::AddFileToFolder(pathname, "strings.xml"), strings, encoding, offset);
 }
 
