@@ -2077,7 +2077,7 @@
   },
   "System.InhibitIdleShutdown": {
     "type": "method",
-    "description": "Toggle the inhibit idle shutdown timer",
+    "description": "Toggle the inhibit status of the idle shutdown timer. When enabled the inhibit prevents the system to shutdown on idle.",
     "transport": "Response",
     "permission": "ControlPower",
     "params": [
