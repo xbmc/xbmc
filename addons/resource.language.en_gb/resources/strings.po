@@ -11429,8 +11429,10 @@ msgctxt "#20349"
 msgid "No video files found in this path!"
 msgstr ""
 
+#. Label for showing media rating and votes (combined), for example: "9.1 (87 votes)"
+#: xbmc/GUIInfoManager.cpp
 msgctxt "#20350"
-msgid "votes"
+msgid "%.1f (%i votes)"
 msgstr ""
 
 #: xbmc/video/jobs/VideoLibraryRefreshingJob.cpp
