@@ -38,7 +38,7 @@ enum class DialogResponse
   NO
 };
 
-/*! \struct DialogHelper.h "messaging/helpers/DialogHelper.h"
+/*! \struct DialogYesNoMessage DialogHelper.h "messaging/helpers/DialogHelper.h"
     \brief Payload sent for message TMSG_GUI_DIALOG_YESNO
 
     \sa ShowDialogText

@@ -194,14 +194,14 @@ public:
   /*! \brief Set actions to perform on navigation
    Navigations are set if replace is true or if there is no previously set action
    \param actionID id of the nagivation action
-   \param actions CGUIAction to set
+   \param action CGUIAction to set
    \param replace Actions are set only if replace is true or there is no previously set action.  Defaults to true
    \sa SetNavigationActions
    */
   void SetAction(int actionID, const CGUIAction &action, bool replace = true);
 
   /*! \brief Get an action the control can be perform.
-   \param action the actionID to retrieve.
+   \param actionID The actionID to retrieve.
    */
   CGUIAction GetAction(int actionID) const;
 

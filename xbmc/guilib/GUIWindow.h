@@ -252,7 +252,7 @@ protected:
   int m_renderOrder;      // for render order of dialogs
 
   /*! \brief Grabs the window's top,left position in skin coordinates
-   The window origin may change based on <origin> tag conditions in the skin.
+   The window origin may change based on `<origin>` tag conditions in the skin.
 
    \return the window's origin in skin coordinates
    */
