@@ -337,6 +337,71 @@ JSONRPC_STATUS CPVROperations::GetTimerDetails(const std::string &method, ITrans
   return OK;
 }
 
+JSONRPC_STATUS CPVROperations::AddTimer(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  if (!g_PVRManager.IsStarted())
+    return FailedToExecute;
+
+  EpgSearchFilter filter;
+  filter.Reset();
+  filter.m_iUniqueBroadcastId = parameterObject["broadcastid"].asUnsignedInteger();
+
+  CFileItemList broadcasts;
+  int resultSize = g_EpgContainer.GetEPGSearch(broadcasts, filter);
+
+  if (broadcasts.Size() <= 0)
+    return InvalidRequest;
+  else if (broadcasts.Size() > 1)
+    return InternalError;
+
+  CFileItemPtr broadcast = broadcasts.Get(0);
+
+  CEpgInfoTagPtr epgTag = broadcast->GetEPGInfoTag();
+  if (!epgTag)
+      return InternalError;
+
+  bool repeating =(bool)parameterObject["repeating"].asBoolean(false);
+
+  if (epgTag->Timer() == NULL)
+  {
+      CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTag::CreateFromEpg(epgTag,repeating);
+      if (newTimer)
+      {
+          CPVRTimers* timers = g_PVRTimers;
+          bool added = timers->AddTimer(newTimer);
+          if (added) {
+             HandleFileItem("timerid", false, "timerdetails", CFileItemPtr(new CFileItem(newTimer)), parameterObject, parameterObject["properties"], result, false);
+             return OK;
+          }
+      }
+      return FailedToExecute;
+  }
+  return FailedToExecute;
+}
+
+JSONRPC_STATUS CPVROperations::DeleteTimer(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+	if (!g_PVRManager.IsStarted())
+	    return FailedToExecute;
+
+	  CPVRTimers* timers = g_PVRTimers;
+	  if (!timers)
+	    return FailedToExecute;
+
+	  CPVRTimerInfoTagPtr timer = timers->GetById((int)parameterObject["timerid"].asInteger());
+	  if (!timer)
+	    return InvalidParams;
+
+	  bool repeating =(bool)parameterObject["repeating"].asBoolean(false);
+
+	  bool sentOkay = timers->DeleteTimer(timer,false,repeating);
+
+	  if(sentOkay) {
+		  return ACK;
+	  }
+	  return FailedToExecute;
+}
+
 JSONRPC_STATUS CPVROperations::GetRecordings(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   if (!g_PVRManager.IsStarted())

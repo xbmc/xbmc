@@ -1898,6 +1898,34 @@
       }
     }
   },
+  "PVR.AddTimer": {
+    "type": "method",
+    "description": "Adds a timer",
+    "transport": "Response",
+    "permission": "ControlPVR",
+    "params": [
+      { "name": "broadcastid", "$ref": "Library.Id", "required": true },
+      { "name": "repeating", "type": "boolean" },
+      { "name": "properties", "$ref": "PVR.Fields.Timer" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "timerdetails": { "$ref": "PVR.Details.Timer" }
+      }
+    }
+  },
+  "PVR.DeleteTimer": {
+    "type": "method",
+    "description": "Removes a timer",
+    "transport": "Response",
+    "permission": "ControlPVR",
+    "params": [
+      { "name": "timerid", "$ref": "Library.Id", "required": true },
+      { "name": "repeating", "type": "boolean" },
+      { "name": "properties", "$ref": "PVR.Fields.Timer" }
+    ],
+    "returns":  "string"
+  },
   "PVR.GetRecordings": {
     "type": "method",
     "description": "Retrieves the recordings",
