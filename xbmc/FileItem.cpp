@@ -1646,6 +1646,7 @@ bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
 
 CFileItemList::CFileItemList()
 : CFileItem("", true),
+  m_ignoreURLOptions(false),
   m_fastLookup(false),
   m_sortIgnoreFolders(false),
   m_cacheToDisc(CACHE_IF_SLOW),
@@ -1655,6 +1656,7 @@ CFileItemList::CFileItemList()
 
 CFileItemList::CFileItemList(const std::string& strPath)
 : CFileItem(strPath, true),
+  m_ignoreURLOptions(false),
   m_fastLookup(false),
   m_sortIgnoreFolders(false),
   m_cacheToDisc(CACHE_IF_SLOW),
@@ -1687,6 +1689,17 @@ const CFileItemPtr CFileItemList::operator[] (const std::string& strPath) const
   return Get(strPath);
 }
 
+void CFileItemList::SetIgnoreURLOptions(bool ignoreURLOptions)
+{
+  m_ignoreURLOptions = ignoreURLOptions;
+
+  if (m_fastLookup)
+  {
+    m_fastLookup = false; // Force SetFastlookup to clear map
+    SetFastLookup(true);  // and regenerate map
+  }
+}
+
 void CFileItemList::SetFastLookup(bool fastLookup)
 {
   CSingleLock lock(m_lock);
@@ -1697,7 +1710,7 @@ void CFileItemList::SetFastLookup(bool fastLookup)
     for (unsigned int i=0; i < m_items.size(); i++)
     {
       CFileItemPtr pItem = m_items[i];
-      m_map.insert(MAPFILEITEMSPAIR(pItem->GetPath(), pItem));
+      m_map.insert(MAPFILEITEMSPAIR(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions() : pItem->GetPath(), pItem));
     }
   }
   if (!fastLookup && m_fastLookup)
@@ -1705,18 +1718,18 @@ void CFileItemList::SetFastLookup(bool fastLookup)
   m_fastLookup = fastLookup;
 }
 
-bool CFileItemList::Contains(const std::string& fileName, bool ignoreURLOptions /* = false */) const
+bool CFileItemList::Contains(const std::string& fileName) const
 {
   CSingleLock lock(m_lock);
 
-  if (m_fastLookup && !ignoreURLOptions)
-    return m_map.find(fileName) != m_map.end();
+  if (m_fastLookup)
+    return m_map.find(m_ignoreURLOptions ? CURL(fileName).GetWithoutOptions() : fileName) != m_map.end();
 
   // slow method...
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     const CFileItemPtr pItem = m_items[i];
-    if (pItem->IsPath(fileName, ignoreURLOptions))
+    if (pItem->IsPath(m_ignoreURLOptions ? CURL(fileName).GetWithoutOptions() : fileName))
       return true;
   }
   return false;
@@ -1758,7 +1771,7 @@ void CFileItemList::Add(const CFileItemPtr &pItem)
   m_items.push_back(pItem);
   if (m_fastLookup)
   {
-    m_map.insert(MAPFILEITEMSPAIR(pItem->GetPath(), pItem));
+    m_map.insert(MAPFILEITEMSPAIR(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions() : pItem->GetPath(), pItem));
   }
 }
 
@@ -1776,7 +1789,7 @@ void CFileItemList::AddFront(const CFileItemPtr &pItem, int itemPosition)
   }
   if (m_fastLookup)
   {
-    m_map.insert(MAPFILEITEMSPAIR(pItem->GetPath(), pItem));
+    m_map.insert(MAPFILEITEMSPAIR(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions() : pItem->GetPath(), pItem));
   }
 }
 
@@ -1791,7 +1804,7 @@ void CFileItemList::Remove(CFileItem* pItem)
       m_items.erase(it);
       if (m_fastLookup)
       {
-        m_map.erase(pItem->GetPath());
+        m_map.erase(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions() : pItem->GetPath());
       }
       break;
     }
@@ -1807,7 +1820,7 @@ void CFileItemList::Remove(int iItem)
     CFileItemPtr pItem = *(m_items.begin() + iItem);
     if (m_fastLookup)
     {
-      m_map.erase(pItem->GetPath());
+      m_map.erase(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions() : pItem->GetPath());
     }
     m_items.erase(m_items.begin() + iItem);
   }
@@ -1890,7 +1903,7 @@ CFileItemPtr CFileItemList::Get(const std::string& strPath)
 
   if (m_fastLookup)
   {
-    IMAPFILEITEMS it=m_map.find(strPath);
+    IMAPFILEITEMS it = m_map.find(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath);
     if (it != m_map.end())
       return it->second;
 
@@ -1900,7 +1913,7 @@ CFileItemPtr CFileItemList::Get(const std::string& strPath)
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CFileItemPtr pItem = m_items[i];
-    if (pItem->IsPath(strPath))
+    if (pItem->IsPath(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath))
       return pItem;
   }
 
@@ -1913,7 +1926,7 @@ const CFileItemPtr CFileItemList::Get(const std::string& strPath) const
 
   if (m_fastLookup)
   {
-    std::map<std::string, CFileItemPtr>::const_iterator it=m_map.find(strPath);
+    std::map<std::string, CFileItemPtr>::const_iterator it = m_map.find(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath);
     if (it != m_map.end())
       return it->second;
 
@@ -1923,7 +1936,7 @@ const CFileItemPtr CFileItemList::Get(const std::string& strPath) const
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CFileItemPtr pItem = m_items[i];
-    if (pItem->IsPath(strPath))
+    if (pItem->IsPath(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath))
       return pItem;
   }
 
@@ -2043,6 +2056,8 @@ void CFileItemList::Archive(CArchive& ar)
 
     ar << (int)(m_items.size() - i);
 
+    ar << m_ignoreURLOptions;
+
     ar << m_fastLookup;
 
     ar << (int)m_sortDescription.sortBy;
@@ -2083,9 +2098,9 @@ void CFileItemList::Archive(CArchive& ar)
         pParent.reset(new CFileItem(*pItem));
     }
 
+    SetIgnoreURLOptions(false);
     SetFastLookup(false);
     Clear();
-
 
     CFileItem::Archive(ar);
 
@@ -2102,7 +2117,10 @@ void CFileItemList::Archive(CArchive& ar)
     else
       m_items.reserve(iSize);
 
-    bool fastLookup=false;
+    bool ignoreURLOptions = false;
+    ar >> ignoreURLOptions;
+
+    bool fastLookup = false;
     ar >> fastLookup;
 
     int tempint;
@@ -2144,6 +2162,7 @@ void CFileItemList::Archive(CArchive& ar)
       Add(pItem);
     }
 
+    SetIgnoreURLOptions(ignoreURLOptions);
     SetFastLookup(fastLookup);
   }
 }
