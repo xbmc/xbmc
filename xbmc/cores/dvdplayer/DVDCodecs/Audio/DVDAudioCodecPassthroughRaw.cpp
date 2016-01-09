@@ -26,7 +26,7 @@
 
 #include "cores/AudioEngine/AEFactory.h"
 
-//#define DEBUG_VERBOSE 1
+#define DEBUG_VERBOSE 1
 
 static enum AEChannel OutputMaps[2][9] = {
   {AE_CH_RAW, AE_CH_RAW, AE_CH_NULL},
@@ -93,10 +93,14 @@ void CDVDAudioCodecPassthroughRaw::GetData(DVDAudioFrame &frame)
   frame.encoded_sample_rate   = GetEncodedSampleRate();
   frame.nb_frames             = GetData(frame.data)/frame.framesize;
 
-  float unscaledbitrate = (float)(frame.nb_frames*frame.framesize) * 48000;
+  float unscaledbitrate = (float)(frame.nb_frames*frame.framesize) * frame.encoded_sample_rate;
   switch(m_codec)
   {
     case AE_FMT_AC3 + PT_FORMAT_RAW_CLASS:
+    {
+      m_sampleRate = (float)(frame.nb_frames*frame.framesize) / 0.032;  // fixed 32ms
+      break;
+    }
     case AE_FMT_EAC3 + PT_FORMAT_RAW_CLASS:
     {
       m_sampleRate = (unscaledbitrate + AC3_DIVISOR/2)  / AC3_DIVISOR;

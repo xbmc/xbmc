@@ -37,7 +37,7 @@
 
 #include <algorithm>
 
-//#define DEBUG_VERBOSE 1
+#define DEBUG_VERBOSE 1
 
 using namespace jni;
 
@@ -201,16 +201,20 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 
   int stream = CJNIAudioManager::STREAM_MUSIC;
 
-  // Get equal or lower supported sample rate
-  std::set<unsigned int>::iterator s = m_sink_sampleRates.upper_bound(m_format.m_sampleRate);
-  if (--s != m_sink_sampleRates.begin())
-    m_sink_sampleRate = *s;
-  else
-    m_sink_sampleRate = CJNIAudioTrack::getNativeOutputSampleRate(CJNIAudioManager::STREAM_MUSIC);
-
   if (AE_IS_RAW(m_format.m_dataFormat) && !CXBMCApp::IsHeadsetPlugged())
   {
     m_passthrough = true;
+
+    // Get equal or lower supported sample rate
+    std::set<unsigned int>::iterator s = m_sink_sampleRates.upper_bound(m_format.m_encodedRate);
+    if (--s != m_sink_sampleRates.begin())
+      m_sink_sampleRate = *s;
+    else
+      m_sink_sampleRate = CJNIAudioTrack::getNativeOutputSampleRate(CJNIAudioManager::STREAM_MUSIC);
+
+    m_encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
+//    m_sink_sampleRate       = CJNIAudioTrack::getNativeOutputSampleRate(CJNIAudioManager::STREAM_MUSIC);
+
     switch (m_format.m_dataFormat)
     {
       case AE_FMT_AC3 + PT_FORMAT_RAW_CLASS:
@@ -218,8 +222,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         {
           m_encoding              = CJNIAudioFormat::ENCODING_AC3;
           m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
-          m_format.m_frames       = AC3_FRAME_SIZE * m_format.m_sampleRate / 48000;
-          m_sink_sampleRate       = 48000;
+          m_format.m_frames       = m_format.m_sampleRate * 0.032;  // fixed 32ms
         }
         else
           m_format.m_dataFormat   = AE_FMT_S16LE;
@@ -230,8 +233,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         {
           m_encoding              = CJNIAudioFormat::ENCODING_E_AC3;
           m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
-          m_format.m_frames       = AC3_FRAME_SIZE * m_format.m_sampleRate / 48000;
-          m_sink_sampleRate       = 48000;
+          m_format.m_frames       = AC3_FRAME_SIZE * m_format.m_sampleRate / m_sink_sampleRate;
         }
         else
           m_format.m_dataFormat   = AE_FMT_S16LE;
@@ -242,8 +244,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         {
           m_encoding              = CJNIAudioFormat::ENCODING_DTS;
           m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
-          m_format.m_frames       = DTS1_FRAME_SIZE * m_format.m_sampleRate / 48000;
-          m_sink_sampleRate       = 48000;
+          m_format.m_frames       = DTS1_FRAME_SIZE * m_format.m_sampleRate / m_sink_sampleRate;
         }
         else
           m_format.m_dataFormat   = AE_FMT_S16LE;
@@ -254,8 +255,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         {
           m_encoding              = CJNIAudioFormat::ENCODING_DTS_HD;
           m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
-          m_format.m_frames       = DTS1_FRAME_SIZE * m_format.m_sampleRate / 48000;
-          m_sink_sampleRate       = 48000;
+          m_format.m_frames       = DTS1_FRAME_SIZE * m_format.m_sampleRate / m_sink_sampleRate;
         }
         else
           m_format.m_dataFormat   = AE_FMT_S16LE;
@@ -266,8 +266,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         {
           m_encoding              = CJNIAudioFormat::ENCODING_DOLBY_TRUEHD;
           m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
-          m_format.m_frames       = TRUEHD_UNIT * m_format.m_sampleRate / 48000;
-          m_sink_sampleRate       = 48000;
+          m_format.m_frames       = TRUEHD_UNIT * m_format.m_sampleRate / m_sink_sampleRate;
         }
         else
           m_format.m_dataFormat   = AE_FMT_S16LE;
@@ -283,6 +282,14 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   else
   {
     m_passthrough = false;
+
+    // Get equal or lower supported sample rate
+    std::set<unsigned int>::iterator s = m_sink_sampleRates.upper_bound(m_format.m_sampleRate);
+    if (--s != m_sink_sampleRates.begin())
+      m_sink_sampleRate = *s;
+    else
+      m_sink_sampleRate = CJNIAudioTrack::getNativeOutputSampleRate(CJNIAudioManager::STREAM_MUSIC);
+
     m_format.m_sampleRate     = m_sink_sampleRate;
     if (CJNIAudioManager::GetSDKVersion() >= 21 && m_format.m_channelLayout.Count() == 2)
     {
@@ -355,7 +362,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       Deinitialize();
       return false;
     }
-    CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize returned: m_sampleRate %u; format:%s(%d); min_buffer_size %u; m_frames %u; m_frameSize %u; channels: %d; m_audiotrackbuffer_sec(%f)", m_format.m_sampleRate, CAEUtil::DataFormatToStr(m_format.m_dataFormat), m_format.m_dataFormat, m_buffer_size, m_format.m_frames, m_format.m_frameSize, m_format.m_channelLayout.Count(), m_audiotrackbuffer_sec);
+    CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize returned: m_sampleRate %u; format:%s(%d); min_buffer_size %u; m_frames %u; m_frameSize %u; channels: %d; m_audiotrackbuffer_sec(%f), m_sink_saplerate(%d)", m_format.m_sampleRate, CAEUtil::DataFormatToStr(m_format.m_dataFormat), m_format.m_dataFormat, m_buffer_size, m_format.m_frames, m_format.m_frameSize, m_format.m_channelLayout.Count(), m_audiotrackbuffer_sec, m_sink_sampleRate);
   }
 
   format                    = m_format;
@@ -508,7 +515,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
       int len = m_at_jni->write((char*)(&out_buf[written]), 0, bsize);
       if (len < 0)
       {
-        CLog::Log(LOGERROR, "CAESinkAUDIOTRACK::AddPackets write returned error:  %d", written);
+        CLog::Log(LOGERROR, "CAESinkAUDIOTRACK::AddPackets write returned error:  %d(%d)", len, written);
         return INT_MAX;
       }
       written += len;
@@ -575,6 +582,7 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   {
     m_info.m_deviceType = AE_DEVTYPE_HDMI;
     // passthrough
+    m_sink_sampleRates.insert(44100);
     m_sink_sampleRates.insert(48000);
     m_info.m_dataFormats.push_back(AE_FMT_AC3);
     m_info.m_dataFormats.push_back(AE_FMT_DTS);
