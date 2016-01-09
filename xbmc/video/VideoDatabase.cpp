@@ -1454,7 +1454,7 @@ int CVideoDatabase::AddRatings(int mediaId, const char *mediaType, const RatingM
       {
         id = m_pDS->fv(0).get_asInt();
         m_pDS->close();
-        strSQL = PrepareSQL("UPDATE rating SET rating.rating = %.f, rating.votes = %i WHERE rating.rating_id = %i", i.second.rating, i.second.votes, id);
+        strSQL = PrepareSQL("UPDATE rating SET rating = %.f, votes = %i WHERE rating_id = %i", i.second.rating, i.second.votes, id);
         m_pDS->exec(strSQL);        
       }
       if (i.first == defaultRating)
