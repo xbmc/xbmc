@@ -37,6 +37,8 @@ typedef intptr_t ssize_t;
 #endif // !_SSIZE_T_DEFINED
 #endif // TARGET_WINDOWS
 
+struct VFSDirEntry;
+
 typedef void (*AddOnLogCallback)(void *addonData, const ADDON::addon_log_t loglevel, const char *msg);
 typedef void (*AddOnQueueNotification)(void *addonData, const ADDON::queue_msg_t type, const char *msg);
 typedef bool (*AddOnWakeOnLan)(const char* mac);
@@ -65,6 +67,8 @@ typedef bool (*AddOnCanOpenDirectory)(const void* addonData, const char* strURL)
 typedef bool (*AddOnCreateDirectory)(const void* addonData, const char *strPath);
 typedef bool (*AddOnDirectoryExists)(const void* addonData, const char *strPath);
 typedef bool (*AddOnRemoveDirectory)(const void* addonData, const char *strPath);
+typedef bool (*AddOnGetDirectory)(const void* addonData, const char *strPath, const char* mask, VFSDirEntry** items, unsigned int* num_items);
+typedef void (*AddOnFreeDirectory)(const void* addonData, VFSDirEntry* items, unsigned int num_items);
 
 typedef struct CB_AddOn
 {
@@ -96,6 +100,8 @@ typedef struct CB_AddOn
   AddOnCreateDirectory    CreateDirectory;
   AddOnDirectoryExists    DirectoryExists;
   AddOnRemoveDirectory    RemoveDirectory;
+  AddOnGetDirectory       GetDirectory;
+  AddOnFreeDirectory      FreeDirectory;
 } CB_AddOnLib;
 
 typedef xbmc_codec_t (*CODECGetCodecByName)(const void* addonData, const char* strCodecName);

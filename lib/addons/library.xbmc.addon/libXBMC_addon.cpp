@@ -276,4 +276,20 @@ DLLEXPORT bool XBMC_remove_directory(void *hdl, void* cb, const char *strPath)
   return ((CB_AddOnLib*)cb)->RemoveDirectory(((AddonCB*)hdl)->addonData, strPath);
 }
 
+DLLEXPORT bool XBMC_get_directory(void *hdl, void* cb, const char *strPath, const char* mask, VFSDirEntry** items, unsigned int* num_items)
+{
+  if (cb == NULL)
+    return false;
+
+  return ((CB_AddOnLib*)cb)->GetDirectory(((AddonCB*)hdl)->addonData, strPath, mask, items, num_items);
+}
+
+DLLEXPORT void XBMC_free_directory(void *hdl, void* cb, VFSDirEntry* items, unsigned int num_items)
+{
+  if (cb == NULL)
+    return;
+
+  ((CB_AddOnLib*)cb)->FreeDirectory(((AddonCB*)hdl)->addonData, items, num_items);
+}
+
 };
