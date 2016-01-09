@@ -127,11 +127,6 @@ void CActiveAEDSPAddon::ResetProperties(int iClientId /* = AE_DSP_INVALID_ADDON_
   m_strAudioDSPVersion    = DEFAULT_INFO_STRING_VALUE;
   m_strFriendlyName       = DEFAULT_INFO_STRING_VALUE;
   m_strAudioDSPName       = DEFAULT_INFO_STRING_VALUE;
-  m_isPreProcessing       = false;
-  m_isPreResampling       = false;
-  m_isMasterProcessing    = false;
-  m_isPostResampling      = false;
-  m_isPostProcessing      = false;
   memset(&m_addonCapabilities, 0, sizeof(m_addonCapabilities));
   m_apiVersion = AddonVersion("0.0.0");
 }

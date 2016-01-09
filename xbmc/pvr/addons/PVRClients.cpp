@@ -56,7 +56,6 @@ CPVRClients::CPVRClients(void) :
     m_playingClientId(-EINVAL),
     m_bIsPlayingLiveTV(false),
     m_bIsPlayingRecording(false),
-    m_scanStart(0),
     m_bNoAddonWarningDisplayed(false),
     m_bRestartManagerOnAddonDisabled(false)
 {

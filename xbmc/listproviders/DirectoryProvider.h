@@ -64,7 +64,6 @@ public:
   // callback from directory job
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 private:
-  unsigned int     m_updateTime;
   UpdateState      m_updateState;
   bool             m_isAnnounced;
   unsigned int     m_jobID;

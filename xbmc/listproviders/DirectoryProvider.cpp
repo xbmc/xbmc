@@ -149,7 +149,6 @@ private:
 
 CDirectoryProvider::CDirectoryProvider(const TiXmlElement *element, int parentID)
  : IListProvider(parentID),
-   m_updateTime(0),
    m_updateState(OK),
    m_isAnnounced(false),
    m_jobID(0),
