@@ -1683,7 +1683,6 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
   g_windowManager.AddMsgTarget(&g_playlistPlayer);
   g_windowManager.AddMsgTarget(&g_infoManager);
   g_windowManager.AddMsgTarget(&g_fontManager);
-  g_windowManager.AddMsgTarget(&CStereoscopicsManager::GetInstance());
   g_windowManager.SetCallback(*this);
   g_windowManager.Initialize();
   CTextureCache::GetInstance().Initialize();
@@ -2583,7 +2582,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     break;
 
   case TMSG_SETVIDEORESOLUTION:
-    g_graphicsContext.SetVideoResolution(static_cast<RESOLUTION>(pMsg->param1), pMsg->param2 == 1);
+    g_graphicsContext.SetVideoResolution(static_cast<RESOLUTION>(pMsg->param1), (pMsg->param2 & 1) != 0, (pMsg->param2 & 2) != 0);
     break;
 
   case TMSG_TOGGLEFULLSCREEN:
@@ -3587,6 +3586,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, const std::string& pla
 
 void CApplication::OnPlayBackEnded()
 {
+  CStereoscopicsManager::GetInstance().PlaybackStopped();
   CSingleLock lock(m_playStateMutex);
   CLog::LogF(LOGDEBUG,"play state was %d, starting %d", m_ePlayState, m_bPlaybackStarting);
   m_ePlayState = PLAY_STATE_ENDED;
@@ -3629,6 +3629,7 @@ void CApplication::OnPlayBackStarted()
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
+  CStereoscopicsManager::GetInstance().PlaybackStarted();
 }
 
 void CApplication::OnQueueNextItem()
@@ -3649,6 +3650,8 @@ void CApplication::OnQueueNextItem()
 
 void CApplication::OnPlayBackStopped()
 {
+  CStereoscopicsManager::GetInstance().PlaybackStopped();
+
   CSingleLock lock(m_playStateMutex);
   CLog::LogF(LOGDEBUG, "play state was %d, starting %d", m_ePlayState, m_bPlaybackStarting);
   m_ePlayState = PLAY_STATE_STOPPED;

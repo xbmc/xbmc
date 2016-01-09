@@ -98,7 +98,7 @@ public:
   bool IsCalibrating() const;
   void SetCalibrating(bool bOnOff);
   bool IsValidResolution(RESOLUTION res);
-  void SetVideoResolution(RESOLUTION res, bool forceUpdate = false);
+  void SetVideoResolution(RESOLUTION res, bool forceUpdate = false, bool switch3d = false);
   RESOLUTION GetVideoResolution() const;
   void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
   void ResetOverscan(RESOLUTION_INFO &resinfo);
@@ -153,7 +153,7 @@ public:
   void SetCameraPosition(const CPoint &camera);
   void SetStereoView(RENDER_STEREO_VIEW view);
   RENDER_STEREO_VIEW GetStereoView()  { return m_stereoView; }
-  void SetStereoMode(RENDER_STEREO_MODE mode) { m_nextStereoMode = mode; }
+  void SetStereoMode(RENDER_STEREO_MODE mode);
   RENDER_STEREO_MODE GetStereoMode()  { return m_stereoMode; }
   void RestoreCameraPosition();
   void SetStereoFactor(float factor);
@@ -266,7 +266,7 @@ private:
   void UpdateCameraPosition(const CPoint &camera, const float &factor);
   // this method is indirectly called by the public SetVideoResolution
   // it only works when called from mainthread (thats what SetVideoResolution ensures)
-  void SetVideoResolutionInternal(RESOLUTION res, bool forceUpdate);
+  void SetVideoResolutionInternal(RESOLUTION res, bool forceUpdate, bool switch3d);
   RESOLUTION_INFO m_windowResolution;
   std::stack<CPoint> m_cameras;
   std::stack<CPoint> m_origins;
@@ -278,7 +278,7 @@ private:
   std::stack<UITransform> m_transforms;
   RENDER_STEREO_VIEW m_stereoView;
   RENDER_STEREO_MODE m_stereoMode;
-  RENDER_STEREO_MODE m_nextStereoMode;
+  RENDER_STEREO_MODE m_lastStereoMode;
 
   CRect m_scissors;
 };

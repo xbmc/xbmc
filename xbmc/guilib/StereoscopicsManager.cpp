@@ -140,12 +140,7 @@ void CStereoscopicsManager::SetStereoMode(const RENDER_STEREO_MODE &mode)
 
   // resolve automatic mode before applying
   if (mode == RENDER_STEREO_MODE_AUTO)
-  {
-    if (g_infoManager.EvaluateBool("videoplayer.isstereoscopic"))
-      applyMode = GetStereoModeOfPlayingVideo();
-    else
-      applyMode = RENDER_STEREO_MODE_OFF;
-  }
+    applyMode = GetStereoModeOfPlayingVideo();
 
   if (applyMode != currentMode && applyMode >= RENDER_STEREO_MODE_OFF)
   {
@@ -209,7 +204,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeByUserChoice(const std::s
 {
   RENDER_STEREO_MODE mode = GetStereoMode();
   // if no stereo mode is set already, suggest mode of current video by preselecting it
-  if (mode == RENDER_STEREO_MODE_OFF && g_infoManager.EvaluateBool("videoplayer.isstereoscopic"))
+  if (mode == RENDER_STEREO_MODE_OFF)
     mode = GetStereoModeOfPlayingVideo();
 
   CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -254,8 +249,8 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeByUserChoice(const std::s
 RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeOfPlayingVideo(void)
 {
   RENDER_STEREO_MODE mode = RENDER_STEREO_MODE_OFF;
+  std::string playerMode = GetVideoStereoMode();
 
-  std::string playerMode = g_infoManager.GetLabel(VIDEOPLAYER_STEREOSCOPIC_MODE);
   if (!playerMode.empty())
   {
     int convertedMode = ConvertVideoToGuiStereoMode(playerMode);
@@ -396,22 +391,6 @@ void CStereoscopicsManager::OnSettingChanged(const CSetting *setting)
   }
 }
 
-bool CStereoscopicsManager::OnMessage(CGUIMessage &message)
-{
-  switch (message.GetMessage())
-  {
-  case GUI_MSG_PLAYBACK_STARTED:
-    OnPlaybackStarted();
-    break;
-  case GUI_MSG_PLAYBACK_STOPPED:
-  case GUI_MSG_PLAYLISTPLAYER_STOPPED:
-    OnPlaybackStopped();
-    break;
-  }
-
-  return false;
-}
-
 bool CStereoscopicsManager::OnAction(const CAction &action)
 {
   RENDER_STEREO_MODE mode = GetStereoMode();
@@ -504,7 +483,24 @@ void CStereoscopicsManager::ApplyStereoMode(const RENDER_STEREO_MODE &mode, bool
   }
 }
 
-void CStereoscopicsManager::OnPlaybackStarted(void)
+std::string CStereoscopicsManager::GetVideoStereoMode()
+{
+  std::string playerMode;
+  if (g_application.m_pPlayer->IsPlaying())
+  {
+    SPlayerVideoStreamInfo videoInfo;
+    g_application.m_pPlayer->GetVideoStreamInfo(videoInfo);
+    playerMode = videoInfo.stereoMode;
+  }
+  return playerMode;
+}
+
+bool CStereoscopicsManager::IsVideoStereoscopic()
+{
+  return !GetVideoStereoMode().empty();
+}
+
+void CStereoscopicsManager::PlaybackStarted(void)
 {
   STEREOSCOPIC_PLAYBACK_MODE playbackMode = (STEREOSCOPIC_PLAYBACK_MODE) CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE);
   RENDER_STEREO_MODE mode = GetStereoMode();
@@ -513,7 +509,7 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
   if (playbackMode == STEREOSCOPIC_PLAYBACK_MODE_IGNORE && mode == RENDER_STEREO_MODE_OFF)
     return;
 
-  if (!g_infoManager.EvaluateBool("videoplayer.isstereoscopic"))
+  if (!CStereoscopicsManager::IsVideoStereoscopic())
   {
     // exit stereo mode if started item is not stereoscopic
     // and if user prefers to stop 3D playback when movie is finished
@@ -601,7 +597,7 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
   }
 }
 
-void CStereoscopicsManager::OnPlaybackStopped(void)
+void CStereoscopicsManager::PlaybackStopped(void)
 {
   RENDER_STEREO_MODE mode = GetStereoMode();
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_QUITSTEREOMODEONSTOP) && mode != RENDER_STEREO_MODE_OFF)
