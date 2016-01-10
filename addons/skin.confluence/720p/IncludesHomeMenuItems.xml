@@ -102,25 +102,30 @@
 		</control>
 		<control type="button" id="90173">
 			<include>ButtonHomeSubCommonValues</include>
+			<label>575</label>
+			<onclick>ActivateWindow(Videos,InProgressTvShows,return)</onclick>
+		</control>
+		<control type="button" id="90174">
+			<include>ButtonHomeSubCommonValues</include>
 			<label>369</label>
 			<onclick>ActivateWindow(Videos,TVShowTitles,return)</onclick>
 		</control>
-		<control type="button" id="90174">
+		<control type="button" id="90175">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>135</label>
 			<onclick>ActivateWindow(Videos,TVShowGenres,return)</onclick>
 		</control>
-		<control type="button" id="90175">
+		<control type="button" id="90176">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>652</label>
 			<onclick>ActivateWindow(Videos,TVShowYears,return)</onclick>
 		</control>
-		<control type="button" id="90176">
+		<control type="button" id="90177">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>344</label>
 			<onclick>ActivateWindow(Videos,TVShowActors,return)</onclick>
 		</control>
-		<control type="image" id="90177">
+		<control type="image" id="90178">
 			<width>35</width>
 			<height>35</height>
 			<texture border="0,0,0,3">HomeSubEnd.png</texture>
