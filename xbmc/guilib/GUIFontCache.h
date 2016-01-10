@@ -234,12 +234,14 @@ struct CVertexBuffer
 {
 #if defined(HAS_GL) || defined(HAS_GLES)
   typedef unsigned int BufferHandleType;
+#define  BUFFER_HANDLE_INIT 0
 #elif defined(HAS_DX)
   typedef void* BufferHandleType;
+#define BUFFER_HANDLE_INIT nullptr
 #endif
   BufferHandleType bufferHandle; // this is really a GLuint
   size_t size;
-  CVertexBuffer() : bufferHandle(NULL), size(0), m_font(NULL) {}
+  CVertexBuffer() : bufferHandle(BUFFER_HANDLE_INIT), size(0), m_font(NULL) {}
   CVertexBuffer(BufferHandleType bufferHandle, size_t size, const CGUIFontTTFBase *font) : bufferHandle(bufferHandle), size(size), m_font(font) {}
   CVertexBuffer(const CVertexBuffer &other) : bufferHandle(other.bufferHandle), size(other.size), m_font(other.m_font)
   {
