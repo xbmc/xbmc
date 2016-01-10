@@ -586,6 +586,20 @@ void CApplicationPlayer::SetSubtitleVisible(bool bVisible)
   }
 }
 
+void CApplicationPlayer::SetTime(int64_t time)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->SetTime(time);
+}
+
+void CApplicationPlayer::SetTotalTime(int64_t time)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->SetTotalTime(time);
+}
+
 void CApplicationPlayer::AddSubtitle(const std::string& strSubPath)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
