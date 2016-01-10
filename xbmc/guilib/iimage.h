@@ -39,6 +39,8 @@ public:
   /*!
    \brief Decodes the previously loaded image data to the output buffer in 32 bit raw bits
    \param pixels The output buffer
+   \param width The width of the image
+   \param height The height of the image
    \param pitch The pitch of the output buffer
    \param format The format of the output buffer (JpegIO only)
    \return true if the image data could be decoded to the output buffer
