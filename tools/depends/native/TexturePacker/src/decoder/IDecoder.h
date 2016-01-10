@@ -37,10 +37,8 @@ public:
 class DecodedFrame
 {
   public:
-   DecodedFrame() : x(0), y(0), disposal(0), delay(0) { }
+   DecodedFrame() : delay(0) { }
    RGBAImage	rgbaImage;				/* rgbaimage for this frame */
-   int				x, y;					/* Frame offset position */
-   int				disposal;				/* Disposal code */
    int				delay;					/* Frame delay in ms */
 };
 
