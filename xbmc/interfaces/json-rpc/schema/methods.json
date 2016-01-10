@@ -1300,7 +1300,7 @@
       }
     }
   },
-  "VideoLibrary.GetInProgressTvShows": {
+  "VideoLibrary.GetInProgressTVShows": {
     "type": "method",
     "description": "Retrieve all in progress tvshows",
     "transport": "Response",
