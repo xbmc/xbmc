@@ -37,13 +37,10 @@
 #endif
 #include "utils/fstrcmp.h"
 #include "Util.h"
-#include "LangInfo.h"
-#include <locale>
 #include <functional>
 
 #include <assert.h>
 #include <math.h>
-#include <sstream>
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
