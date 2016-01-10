@@ -313,7 +313,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     {
       m_format.m_frameSize      = 1;
       m_sink_frameSize          = m_format.m_frameSize;
-      if (m_encoding == CJNIAudioFormat::ENCODING_TRUEHD || m_encoding == CJNIAudioFormat::ENCODING_DTSHD)
+      if (m_encoding == CJNIAudioFormat::ENCODING_DOLBY_TRUEHD || m_encoding == CJNIAudioFormat::ENCODING_DTS_HD)
         m_buffer_size           = std::max((unsigned int) 61440, m_buffer_size);
       else
         m_buffer_size           = std::max((unsigned int) 16384, m_buffer_size);
