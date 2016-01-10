@@ -622,6 +622,8 @@
 		8883CEA70DD81807004E8B72 /* DVDSubtitleParserSSA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CEA30DD81807004E8B72 /* DVDSubtitleParserSSA.cpp */; };
 		8883CEA80DD81807004E8B72 /* DVDSubtitlesLibass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CEA50DD81807004E8B72 /* DVDSubtitlesLibass.cpp */; };
 		889B4D8E0E0EF86C00FAD25E /* RSSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 889B4D8C0E0EF86C00FAD25E /* RSSDirectory.cpp */; };
+		9A7368511C401F5F00CA169F /* DirectoryNodeInProgressTvShows.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A73684F1C401F5F00CA169F /* DirectoryNodeInProgressTvShows.cpp */; };
+		9A7368521C401F5F00CA169F /* DirectoryNodeInProgressTvShows.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A73684F1C401F5F00CA169F /* DirectoryNodeInProgressTvShows.cpp */; };
 		AE32174218313ADF0003FAFC /* XSLTUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */; };
 		AE4E87A717354C4A00D15206 /* XSLTUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */; };
 		AE84CB5A15A5B8A600A3810E /* TagLibVFSStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE84CB5915A5B8A600A3810E /* TagLibVFSStream.cpp */; };
@@ -3278,6 +3280,8 @@
 		889B4D8D0E0EF86C00FAD25E /* RSSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSSDirectory.h; sourceTree = "<group>"; };
 		88ECB6580DE013C4003396A7 /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = /System/Library/Frameworks/DiskArbitration.framework; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* Kodi */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Kodi; sourceTree = BUILT_PRODUCTS_DIR; };
+		9A73684F1C401F5F00CA169F /* DirectoryNodeInProgressTvShows.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeInProgressTvShows.cpp; sourceTree = "<group>"; };
+		9A7368501C401F5F00CA169F /* DirectoryNodeInProgressTvShows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeInProgressTvShows.h; sourceTree = "<group>"; };
 		AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XSLTUtils.cpp; sourceTree = "<group>"; };
 		AE4E87A617354C4A00D15206 /* XSLTUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XSLTUtils.h; sourceTree = "<group>"; };
 		AE84CB5915A5B8A600A3810E /* TagLibVFSStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLibVFSStream.cpp; sourceTree = "<group>"; };
@@ -8078,6 +8082,8 @@
 				E38E177F0D25F9FA00618676 /* DirectoryNodeTitleMusicVideos.h */,
 				E38E17800D25F9FA00618676 /* DirectoryNodeTitleTvShows.cpp */,
 				E38E17810D25F9FA00618676 /* DirectoryNodeTitleTvShows.h */,
+				9A73684F1C401F5F00CA169F /* DirectoryNodeInProgressTvShows.cpp */,
+				9A7368501C401F5F00CA169F /* DirectoryNodeInProgressTvShows.h */,
 				E38E17820D25F9FA00618676 /* DirectoryNodeTvShowsOverview.cpp */,
 				E38E17830D25F9FA00618676 /* DirectoryNodeTvShowsOverview.h */,
 				E38E17880D25F9FA00618676 /* QueryParams.cpp */,
@@ -9389,6 +9395,7 @@
 				E38E22700D25F9FE00618676 /* LinuxResourceCounter.cpp in Sources */,
 				E38E22710D25F9FE00618676 /* LinuxTimezone.cpp in Sources */,
 				E38E22750D25F9FE00618676 /* XFileUtils.cpp in Sources */,
+				9A7368511C401F5F00CA169F /* DirectoryNodeInProgressTvShows.cpp in Sources */,
 				E38E22760D25F9FE00618676 /* XHandle.cpp in Sources */,
 				395C29E31A98A15700EBC7AD /* HTTPPythonHandler.cpp in Sources */,
 				E38E22770D25F9FE00618676 /* XMemUtils.cpp in Sources */,
@@ -10777,6 +10784,7 @@
 				E49913C8174E5F7500741B6D /* PeripheralBusUSB.cpp in Sources */,
 				E49913C9174E5F7500741B6D /* PeripheralBus.cpp in Sources */,
 				E49913CA174E5F8100741B6D /* Peripheral.cpp in Sources */,
+				9A7368521C401F5F00CA169F /* DirectoryNodeInProgressTvShows.cpp in Sources */,
 				E49913CB174E5F8100741B6D /* PeripheralBluetooth.cpp in Sources */,
 				E49913CC174E5F8100741B6D /* PeripheralCecAdapter.cpp in Sources */,
 				E49913CD174E5F8100741B6D /* PeripheralDisk.cpp in Sources */,

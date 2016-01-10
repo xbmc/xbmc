@@ -430,6 +430,7 @@
     <ClCompile Include="..\..\xbmc\filesystem\UPnPFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\VideoDatabaseDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeGrouped.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeInProgressTvShows.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\win32\Win32Directory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\win32\Win32SMBDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\win32\Win32File.cpp" />
@@ -991,6 +992,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\ResourceDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ResourceFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeGrouped.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeInProgressTvShows.h" />
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32Directory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32SMBDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32File.h" />
