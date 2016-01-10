@@ -67,6 +67,7 @@ public:
   char GetDirectorySeparator() const;
 
   std::string Get() const;
+  std::string GetWithoutOptions() const;
   std::string GetWithoutUserDetails(bool redact = false) const;
   std::string GetWithoutFilename() const;
   std::string GetRedacted() const;
