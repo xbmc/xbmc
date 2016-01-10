@@ -1126,8 +1126,11 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "rating"))
   {
     details.SetRating(parameterObject["rating"].asFloat());
-    if (ParameterNotNull(parameterObject, "votes"))
-      details.SetVotes(StringUtils::ReturnDigits(parameterObject["votes"].asString()));
+    updatedDetails.insert("ratings");
+  }
+  if (ParameterNotNull(parameterObject, "votes"))
+  {
+    details.SetVotes(StringUtils::ReturnDigits(parameterObject["votes"].asString()));
     updatedDetails.insert("ratings");
   }
   if (ParameterNotNull(parameterObject, "ratings"))
