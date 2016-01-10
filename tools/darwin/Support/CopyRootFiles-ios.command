@@ -17,7 +17,7 @@ SYNC="rsync -aq --exclude .git* --exclude .DS_Store* --exclude *.dll --exclude *
 SKINSYNC="rsync -aq --exclude .git* --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.*  --exclude *.bat"
 
 # rsync command for including everything but the skins
-ADDONSYNC="rsync -aq --exclude .git* --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude addons/skin.confluence --exclude addons/skin.re-touched --exclude visualization.*"
+ADDONSYNC="rsync -aq --no-links --exclude .git* --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude addons/skin.confluence --exclude addons/skin.re-touched"
 
 # binary name is Kodi but we build Kodi.bin so to get a clean binary each time
 mv $TARGET_BUILD_DIR/$TARGET_NAME/$APP_NAME.bin $TARGET_BUILD_DIR/$TARGET_NAME/$APP_NAME
