@@ -72,7 +72,6 @@ public:
   void ClosePlayerGapless(std::string &playername);
   void CreatePlayer(const std::string &player, IPlayerCallback& callback);
   std::string GetCurrentPlayer();
-  std::shared_ptr<IPlayer> GetInternal() const;
   int  GetPlaySpeed() const;
   bool HasPlayer() const;
   PlayBackRet OpenFile(const CFileItem& item, const CPlayerOptions& options);
@@ -181,4 +180,7 @@ public:
   void  SetVolume(float volume);
   bool  SwitchChannel(const PVR::CPVRChannelPtr &channel);
   void  ToFFRW(int iSpeed = 0);
+  
+  protected:
+    std::shared_ptr<IPlayer> GetInternal() const;
 };
