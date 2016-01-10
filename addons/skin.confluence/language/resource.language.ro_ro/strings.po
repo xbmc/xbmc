@@ -42,7 +42,7 @@ msgstr "Ecran complet"
 
 msgctxt "#31009"
 msgid "Total duration"
-msgstr "Durată totală"
+msgstr "Durata totală"
 
 msgctxt "#31022"
 msgid "Music - Files"
