@@ -455,6 +455,13 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   {
     return GetSearchResults(path, items);
   }
+  else if (endpoint == "more")
+  {
+    std::string type = path.GetFileName();
+    if (type == "video" || type == "audio" || type == "image" || type == "executable")
+      return Browse(CURL("addons://all/xbmc.addon." + type), items);
+    return false;
+  }
   else
   {
     return Browse(path, items);
@@ -585,22 +592,10 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, CFileIte
     items.Add(item);
   }
 
-  items.Add(GetMoreItem(content));
-
   items.SetContent("addons");
   items.SetLabel(g_localizeStrings.Get(24001)); // Add-ons
 
   return items.Size() > 0;
-}
-
-CFileItemPtr CAddonsDirectory::GetMoreItem(const std::string &content)
-{
-  CFileItemPtr item(new CFileItem("addons://more/"+content,false));
-  item->SetLabelPreformated(true);
-  item->SetLabel(g_localizeStrings.Get(21452));
-  item->SetIconImage("DefaultAddon.png");
-  item->SetSpecialSort(SortSpecialOnBottom);
-  return item;
 }
   
 }
