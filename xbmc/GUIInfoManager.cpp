@@ -2326,15 +2326,14 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
           switch( info )
           {
           case PLAYER_PROGRESS:
-            if (IsPlayerChannelPreviewActive())
             {
-              CEpgInfoTagPtr tag(GetEpgInfoTag());
+              const CEpgInfoTagPtr tag(GetEpgInfoTag());
               if (tag)
-                value = tag->ProgressPercentage();
+                value = static_cast<int>(tag->ProgressPercentage());
+              else
+                value = static_cast<int>(g_application.GetPercentage());
+              break;
             }
-            else
-              value = (int)(g_application.GetPercentage());
-            break;
           case PLAYER_PROGRESS_CACHE:
             value = (int)(g_application.GetCachePercentage());
             break;
