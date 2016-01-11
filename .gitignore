@@ -257,6 +257,7 @@ lib/cpluff/stamp-h1
 /project/VS2010Express/*.metaproj
 /project/VS2010Express/*.metaproj.tmp
 /project/VS2010Express/.vs
+/project/VS2010Express/XBMC for Windows.VC.opendb
 
 # /skin/
 /skin/Confluence/media/Textures.xbt
@@ -650,6 +651,9 @@ lib/cpluff/stamp-h1
 
 /pvr-addons
 /adsp-addons
+
+# Doxygen generated files
+/docs/html
 
 # files removed in Jarvis
 /addons/visualization.dxspectrum/*
