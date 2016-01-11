@@ -701,7 +701,8 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetLastPlayed(song.lastPlayed);
   SetDateAdded(song.dateAdded);
   SetCoverArtInfo(song.embeddedArt.size, song.embeddedArt.mime);
-  SetUserrating(song.rating);
+  SetRating(song.rating);
+  SetUserrating(song.userrating);
   SetVotes(song.votes);
   SetURL(song.strFileName);
   SYSTEMTIME stTime;
