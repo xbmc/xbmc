@@ -1410,7 +1410,7 @@ CPVRChannelPtr CGUIEPGGridContainer::GetChannel(int iIndex)
 
   if (iIndex >= 0 && (size_t) iIndex < m_channelItems.size())
   {
-    CFileItemPtr fileItem = m_channelItems[iIndex];
+    const CFileItemPtr &fileItem = m_channelItems[iIndex];
     if (fileItem->HasPVRChannelInfoTag())
       return fileItem->GetPVRChannelInfoTag();
   }
