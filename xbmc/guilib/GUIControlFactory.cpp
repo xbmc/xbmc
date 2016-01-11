@@ -1136,6 +1136,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
       control = new CGUIControlGroupList(
         parentID, id, posX, posY, width, height, buttonGap, pageControl, orientation, useControlCoords, labelInfo.align, scroller);
+      ((CGUIControlGroup *)control)->SetDefaultControl(defaultControl, defaultAlways);
       ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
       ((CGUIControlGroupList *)control)->SetMinSize(minWidth, minHeight);
     }
