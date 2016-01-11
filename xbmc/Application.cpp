@@ -4840,10 +4840,10 @@ double CApplication::GetTime() const
     if (m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0)
     {
       long startOfCurrentFile = (m_currentStackPosition > 0) ? (*m_currentStack)[m_currentStackPosition-1]->m_lEndOffset : 0;
-      rc = (double)startOfCurrentFile + m_pPlayer->GetDisplayTime() * 0.001;
+      rc = (double)startOfCurrentFile + m_pPlayer->GetTime() * 0.001;
     }
     else
-      rc = static_cast<double>(m_pPlayer->GetDisplayTime() * 0.001f);
+      rc = static_cast<double>(m_pPlayer->GetTime() * 0.001f);
   }
 
   return rc;

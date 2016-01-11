@@ -321,10 +321,6 @@ public:
    */
   virtual void SetTime(int64_t time) { }
   /*!
-   \brief time of frame on screen in milliseconds
-   */
-  virtual int64_t GetDisplayTime() { return GetTime(); }
-  /*!
    \brief total time in milliseconds
    */
   virtual int64_t GetTotalTime() { return 0; }

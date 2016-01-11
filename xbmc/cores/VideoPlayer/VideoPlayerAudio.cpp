@@ -397,17 +397,6 @@ int CVideoPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
 
       m_decode.Release();
     }
-    else if (pMsg->IsType(CDVDMsg::PLAYER_DISPLAYTIME))
-    {
-      SPlayerState& state = ((CDVDMsgType<SPlayerState>*)pMsg)->m_value;
-
-      if(state.time_src == ETIMESOURCE_CLOCK)
-        state.time = DVD_TIME_TO_MSEC(m_pClock->GetClock(state.timestamp) + state.time_offset);
-      else
-        state.timestamp = CDVDClock::GetAbsoluteClock();
-      state.player = VideoPlayer_AUDIO;
-      m_messageParent.Put(pMsg->Acquire());
-    }
     else if (pMsg->IsType(CDVDMsg::GENERAL_EOF))
     {
       CLog::Log(LOGDEBUG, "CVideoPlayerAudio - CDVDMsg::GENERAL_EOF");

@@ -367,24 +367,6 @@ void CVideoPlayerVideo::Process()
         m_pVideoCodec->SetSpeed(m_speed);
       m_droppingStats.Reset();
     }
-    else if (pMsg->IsType(CDVDMsg::PLAYER_DISPLAYTIME))
-    {
-      SPlayerState& state = ((CDVDMsgType<SPlayerState>*)pMsg)->m_value;
-
-      if(state.time_src == ETIMESOURCE_CLOCK)
-      {
-        double pts = GetCurrentPts();
-        if (pts == DVD_NOPTS_VALUE)
-          pts = m_pClock->GetClock();
-        state.time = DVD_TIME_TO_MSEC(pts + state.time_offset);
-        state.disptime = state.time;
-        state.timestamp = CDVDClock::GetAbsoluteClock();
-      }
-      else
-        state.timestamp = CDVDClock::GetAbsoluteClock();
-      state.player = VideoPlayer_VIDEO;
-      m_messageParent.Put(pMsg->Acquire());
-    }
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
     {
       CDVDMsgVideoCodecChange* msg(static_cast<CDVDMsgVideoCodecChange*>(pMsg));

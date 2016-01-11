@@ -281,7 +281,6 @@ public:
   virtual void SeekTime(int64_t iTime);
   virtual bool SeekTimeRelative(int64_t iTime);
   virtual int64_t GetTime();
-  virtual int64_t GetDisplayTime();
   virtual int64_t GetTotalTime();
   virtual void ToFFRW(int iSpeed);
   virtual bool OnAction(const CAction &action);
@@ -501,7 +500,7 @@ protected:
   friend class OMXPlayerAudio;
 #endif
 
-  SPlayerState m_State, m_StateInput;
+  SPlayerState m_State;
   CCriticalSection m_StateSection;
   XbmcThreads::EndTime m_syncTimer;
 
