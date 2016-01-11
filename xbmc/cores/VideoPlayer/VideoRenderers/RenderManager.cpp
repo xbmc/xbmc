@@ -146,14 +146,14 @@ CRenderManager::~CRenderManager()
 
 void CRenderManager::GetVideoRect(CRect &source, CRect &dest, CRect &view)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_statelock);
   if (m_pRenderer)
     m_pRenderer->GetVideoRect(source, dest, view);
 }
 
 float CRenderManager::GetAspectRatio()
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_statelock);
   if (m_pRenderer)
     return m_pRenderer->GetAspectRatio();
   else
@@ -260,7 +260,7 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
                          (m_fps == 0.0 || fmod(m_fps, fps) != 0.0) &&
                          (render_framerate != config_framerate);
 
-    CSingleLock lock(m_critSection);
+    CSingleLock lock(m_statelock);
     if (m_width == picture.iWidth &&
         m_height == picture.iHeight &&
         m_dwidth == picture.iDisplayWidth &&
@@ -294,7 +294,7 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
   }
 
   {
-    CSingleLock lock(m_critSection);
+    CSingleLock lock(m_statelock);
     m_width = picture.iWidth;
     m_height = picture.iHeight,
     m_dwidth = picture.iDisplayWidth;
@@ -315,7 +315,7 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
     return false;
   }
 
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_statelock);
   if (m_renderState != STATE_CONFIGURED)
   {
     CLog::Log(LOGWARNING, "CRenderManager::Configure - failed to configure");
@@ -327,8 +327,10 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
 
 bool CRenderManager::Configure()
 {
-  CSingleLock lock(m_critSection);
+  // lock all interfaces
+  CSingleLock lock(m_statelock);
   CSingleLock lock2(m_presentlock);
+  CSingleLock lock3(m_datalock);
 
   if (m_pRenderer && m_pRenderer->GetRenderFormat() != m_format)
   {
@@ -391,7 +393,7 @@ bool CRenderManager::Configure()
 
 bool CRenderManager::IsConfigured() const
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_statelock);
   if (m_renderState == STATE_CONFIGURED)
     return true;
   else
@@ -400,8 +402,6 @@ bool CRenderManager::IsConfigured() const
 
 void CRenderManager::Update()
 {
-  CSingleLock lock(m_critSection);
-
   if (m_pRenderer)
     m_pRenderer->Update();
 }
@@ -427,7 +427,7 @@ bool CRenderManager::HasFrame()
 void CRenderManager::FrameMove()
 {
   {
-    CSingleLock lock(m_critSection);
+    CSingleLock lock(m_statelock);
 
     if (m_renderState == STATE_UNCONFIGURED)
       return;
@@ -441,7 +441,6 @@ void CRenderManager::FrameMove()
       {
         CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
       }
-      lock.Enter();
     }
   }
   {
@@ -521,7 +520,6 @@ void CRenderManager::FrameFinish()
     else if(m_presentstep == PRESENT_FRAME2)
       m_presentstep = PRESENT_IDLE;
 
-
     if(m_presentstep == PRESENT_IDLE)
     {
       if(!m_queued.empty())
@@ -540,7 +538,7 @@ void CRenderManager::PreInit()
     return;
   }
 
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_statelock);
 
   m_presentcorr = 0.0;
   m_presenterr  = 0.0;
@@ -568,7 +566,7 @@ void CRenderManager::UnInit()
     return;
   }
 
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_statelock);
 
   m_overlays.Flush();
   g_fontManager.Unload("__subtitle__");
@@ -589,12 +587,25 @@ bool CRenderManager::Flush()
   {
     CLog::Log(LOGDEBUG, "%s - flushing renderer", __FUNCTION__);
 
-    CSingleLock lock(m_critSection);
+    CSingleExit exitlock(g_graphicsContext);
+
+    CSingleLock lock(m_statelock);
+    CSingleLock lock2(m_presentlock);
+    CSingleLock lock3(m_datalock);
 
     if (m_pRenderer)
     {
       m_pRenderer->Flush();
       m_overlays.Flush();
+
+      m_queued.clear();
+      m_discard.clear();
+      m_free.clear();
+      m_presentsource = 0;
+      m_presentstep = PRESENT_IDLE;
+      for (int i = 1; i < m_QueueSize; i++)
+        m_free.push_back(i);
+
       m_flushEvent.Set();
     }
   }
@@ -610,18 +621,9 @@ bool CRenderManager::Flush()
     else
       return true;
   }
-
-  CSingleLock lock(m_presentlock);
-  m_queued.clear();
-  m_discard.clear();
-  m_free.clear();
-  m_presentsource = 0;
-  m_presentstep = PRESENT_IDLE;
-  for (int i = 1; i < m_QueueSize; i++)
-    m_free.push_back(i);
-
   return true;
 }
+
 void CRenderManager::CreateRenderer()
 {
   if (!m_pRenderer)
@@ -889,7 +891,7 @@ void CRenderManager::RemoveCaptures()
 
 void CRenderManager::SetViewMode(int iViewMode)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_statelock);
   if (m_pRenderer)
     m_pRenderer->SetViewMode(iViewMode);
   g_dataCacheCore.SignalVideoInfoChange();
@@ -897,84 +899,85 @@ void CRenderManager::SetViewMode(int iViewMode)
 
 void CRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, double pts /* = 0 */, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
 {
-  { CSingleLock lock(m_critSection);
+  { CSingleLock lock(m_statelock);
 
-    if(bStop)
+    if (bStop)
       return;
 
-    if(!m_pRenderer) return;
+    if(!m_pRenderer)
+      return;
+  }
 
-    EPRESENTMETHOD presentmethod;
+  EPRESENTMETHOD presentmethod;
 
-    EDEINTERLACEMODE deinterlacemode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
-    EINTERLACEMETHOD interlacemethod = AutoInterlaceMethodInternal(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
+  EDEINTERLACEMODE deinterlacemode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
+  EINTERLACEMETHOD interlacemethod = AutoInterlaceMethodInternal(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
 
-    if(g_advancedSettings.m_videoDisableBackgroundDeinterlace && !g_graphicsContext.IsFullScreenVideo())
-      deinterlacemode = VS_DEINTERLACEMODE_OFF;
+  if(g_advancedSettings.m_videoDisableBackgroundDeinterlace && !g_graphicsContext.IsFullScreenVideo())
+    deinterlacemode = VS_DEINTERLACEMODE_OFF;
 
-    if (deinterlacemode == VS_DEINTERLACEMODE_OFF)
-    {
+  if (deinterlacemode == VS_DEINTERLACEMODE_OFF)
+  {
+    presentmethod = PRESENT_METHOD_SINGLE;
+    sync = FS_NONE;
+  }
+  else
+  {
+    if (deinterlacemode == VS_DEINTERLACEMODE_AUTO && sync == FS_NONE)
       presentmethod = PRESENT_METHOD_SINGLE;
-      sync = FS_NONE;
-    }
     else
     {
-      if (deinterlacemode == VS_DEINTERLACEMODE_AUTO && sync == FS_NONE)
-        presentmethod = PRESENT_METHOD_SINGLE;
-      else
+      bool invert = false;
+      if      (interlacemethod == VS_INTERLACEMETHOD_RENDER_BLEND)            presentmethod = PRESENT_METHOD_BLEND;
+      else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_WEAVE)            presentmethod = PRESENT_METHOD_WEAVE;
+      else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED) { presentmethod = PRESENT_METHOD_WEAVE ; invert = true; }
+      else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BOB)              presentmethod = PRESENT_METHOD_BOB;
+      else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)   { presentmethod = PRESENT_METHOD_BOB; invert = true; }
+      else if (interlacemethod == VS_INTERLACEMETHOD_IMX_FASTMOTION_DOUBLE)   presentmethod = PRESENT_METHOD_BOB;
+      else                                                                    presentmethod = PRESENT_METHOD_SINGLE;
+
+      if (presentmethod != PRESENT_METHOD_SINGLE)
       {
-        bool invert = false;
-        if      (interlacemethod == VS_INTERLACEMETHOD_RENDER_BLEND)            presentmethod = PRESENT_METHOD_BLEND;
-        else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_WEAVE)            presentmethod = PRESENT_METHOD_WEAVE;
-        else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED) { presentmethod = PRESENT_METHOD_WEAVE ; invert = true; }
-        else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BOB)              presentmethod = PRESENT_METHOD_BOB;
-        else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)   { presentmethod = PRESENT_METHOD_BOB; invert = true; }
-        else if (interlacemethod == VS_INTERLACEMETHOD_IMX_FASTMOTION_DOUBLE)   presentmethod = PRESENT_METHOD_BOB;
-        else                                                                    presentmethod = PRESENT_METHOD_SINGLE;
+        /* default to odd field if we want to deinterlace and don't know better */
+        if (deinterlacemode == VS_DEINTERLACEMODE_FORCE && sync == FS_NONE)
+          sync = FS_TOP;
 
-        if (presentmethod != PRESENT_METHOD_SINGLE)
+        /* invert present field */
+        if (invert)
         {
-          /* default to odd field if we want to deinterlace and don't know better */
-          if (deinterlacemode == VS_DEINTERLACEMODE_FORCE && sync == FS_NONE)
+          if (sync == FS_BOT)
             sync = FS_TOP;
-
-          /* invert present field */
-          if (invert)
-          {
-            if (sync == FS_BOT)
-              sync = FS_TOP;
-            else
-              sync = FS_BOT;
-          }
+          else
+            sync = FS_BOT;
         }
       }
     }
+  }
 
-    /* failsafe for invalid timestamps, to make sure queue always empties */
-    if(timestamp > GetPresentTime() + 5.0)
-      timestamp = GetPresentTime() + 5.0;
+  /* failsafe for invalid timestamps, to make sure queue always empties */
+  if(timestamp > GetPresentTime() + 5.0)
+    timestamp = GetPresentTime() + 5.0;
 
-    CSingleLock lock2(m_presentlock);
+  CSingleLock lock(m_presentlock);
 
-    if(m_free.empty())
-      return;
+  if(m_free.empty())
+    return;
 
-    if(source < 0)
-      source = m_free.front();
+  if(source < 0)
+    source = m_free.front();
 
-    SPresent& m = m_Queue[source];
-    m.timestamp     = timestamp;
-    m.presentfield  = sync;
-    m.presentmethod = presentmethod;
-    m.pts           = pts;
-    requeue(m_queued, m_free);
+  SPresent& m = m_Queue[source];
+  m.timestamp     = timestamp;
+  m.presentfield  = sync;
+  m.presentmethod = presentmethod;
+  m.pts           = pts;
+  requeue(m_queued, m_free);
 
-    /* signal to any waiters to check state */
-    if(m_presentstep == PRESENT_IDLE)
-    {
-      m_presentstep = PRESENT_READY;
-      m_presentevent.notifyAll();
-    }
+  /* signal to any waiters to check state */
+  if(m_presentstep == PRESENT_IDLE)
+  {
+    m_presentstep = PRESENT_READY;
+    m_presentevent.notifyAll();
   }
 }
 
@@ -982,7 +985,7 @@ RESOLUTION CRenderManager::GetResolution()
 {
   RESOLUTION res = g_graphicsContext.GetVideoResolution();
 
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_statelock);
   if (m_renderState == STATE_UNCONFIGURED)
     return res;
 
@@ -1011,8 +1014,11 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 {
   CSingleExit exitLock(g_graphicsContext);
 
-  if (m_renderState != STATE_CONFIGURED)
-    return;
+  {
+    CSingleLock lock(m_statelock);
+    if (m_renderState != STATE_CONFIGURED)
+      return;
+  }
 
   if (!gui && m_pRenderer->IsGuiLayer())
     return;
@@ -1045,7 +1051,7 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 
 bool CRenderManager::IsGuiLayer()
 {
-  { CSingleLock lock(m_critSection);
+  { CSingleLock lock(m_statelock);
 
     if (!m_pRenderer)
       return false;
@@ -1058,7 +1064,7 @@ bool CRenderManager::IsGuiLayer()
 
 bool CRenderManager::IsVideoLayer()
 {
-  { CSingleLock lock(m_critSection);
+  { CSingleLock lock(m_statelock);
 
     if (!m_pRenderer)
       return false;
@@ -1133,7 +1139,6 @@ void CRenderManager::UpdateResolution()
 {
   if (m_bTriggerUpdateResolution)
   {
-    CSingleLock lock(m_critSection);
     if (g_graphicsContext.IsFullScreenVideo() && g_graphicsContext.IsFullScreenRoot())
     {
       if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF && m_fps > 0.0f)
@@ -1162,7 +1167,7 @@ void CRenderManager::TriggerUpdateResolution(float fps, int width, int flags)
 // Get renderer info, can be called before configure
 CRenderInfo CRenderManager::GetRenderInfo()
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_statelock);
   CRenderInfo info;
   if (!m_pRenderer)
   {
@@ -1174,10 +1179,6 @@ CRenderInfo CRenderManager::GetRenderInfo()
 
 int CRenderManager::AddVideoPicture(DVDVideoPicture& pic)
 {
-  CSingleLock lock(m_critSection);
-  if (!m_pRenderer)
-    return -1;
-
   int index;
   {
     CSingleLock lock(m_presentlock);
@@ -1185,6 +1186,10 @@ int CRenderManager::AddVideoPicture(DVDVideoPicture& pic)
       return -1;
     index = m_free.front();
   }
+
+  CSingleLock lock(m_datalock);
+  if (!m_pRenderer)
+    return -1;
 
   // TODO: this is a Windows onl thing and should go away
   if(m_pRenderer->AddVideoPicture(&pic, index))
@@ -1235,13 +1240,13 @@ void CRenderManager::AddOverlay(CDVDOverlay* o, double pts)
       return;
     idx = m_free.front();
   }
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_datalock);
   m_overlays.AddOverlay(o, pts, idx);
 }
 
 bool CRenderManager::Supports(ERENDERFEATURE feature)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_statelock);
   if (m_pRenderer)
     return m_pRenderer->Supports(feature);
   else
@@ -1250,7 +1255,7 @@ bool CRenderManager::Supports(ERENDERFEATURE feature)
 
 bool CRenderManager::Supports(EDEINTERLACEMODE method)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_statelock);
   if (m_pRenderer)
     return m_pRenderer->Supports(method);
   else
@@ -1259,7 +1264,7 @@ bool CRenderManager::Supports(EDEINTERLACEMODE method)
 
 bool CRenderManager::Supports(EINTERLACEMETHOD method)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_statelock);
   if (m_pRenderer)
     return m_pRenderer->Supports(method);
   else
@@ -1268,7 +1273,7 @@ bool CRenderManager::Supports(EINTERLACEMETHOD method)
 
 bool CRenderManager::Supports(ESCALINGMETHOD method)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_statelock);
   if (m_pRenderer)
     return m_pRenderer->Supports(method);
   else
@@ -1277,7 +1282,7 @@ bool CRenderManager::Supports(ESCALINGMETHOD method)
 
 EINTERLACEMETHOD CRenderManager::AutoInterlaceMethod(EINTERLACEMETHOD mInt)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_statelock);
   return AutoInterlaceMethodInternal(mInt);
 }
 
@@ -1353,8 +1358,6 @@ int CRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
 
 void CRenderManager::PrepareNextRender()
 {
-  CSingleLock lock(m_presentlock);
-
   if (m_queued.empty())
   {
     CLog::Log(LOGERROR, "CRenderManager::PrepareNextRender - asked to prepare with nothing available");
@@ -1415,7 +1418,6 @@ void CRenderManager::PrepareNextRender()
 
 void CRenderManager::DiscardBuffer()
 {
-  CSingleLock lock(m_critSection);
   CSingleLock lock2(m_presentlock);
 
   while(!m_queued.empty())
