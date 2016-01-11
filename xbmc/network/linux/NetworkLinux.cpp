@@ -499,27 +499,7 @@ std::vector<std::string> CNetworkLinux::GetNameServers(void)
 {
    std::vector<std::string> result;
 
-#if defined(TARGET_DARWIN)
-  FILE* pipe = popen("scutil --dns | grep \"nameserver\" | tail -n2", "r");
-  usleep(100000);
-  if (pipe)
-  {
-    std::vector<std::string> tmpStr;
-    char buffer[256] = {'\0'};
-    if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
-    {
-      tmpStr = StringUtils::Split(buffer, "\n");
-      for (unsigned int i = 0; i < tmpStr.size(); i ++)
-      {
-        // result looks like this - > '  nameserver[0] : 192.168.1.1'
-        // 2 blank spaces + 13 in 'nameserver[0]' + blank + ':' + blank == 18 :)
-        if (tmpStr[i].length() >= 18)
-          result.push_back(tmpStr[i].substr(18));
-      }
-    }
-    pclose(pipe);
-  } 
-#elif defined(TARGET_ANDROID)
+#if defined(TARGET_ANDROID)
   char nameserver[PROP_VALUE_MAX];
 
   if (__system_property_get("net.dns1",nameserver))
@@ -537,13 +517,20 @@ std::vector<std::string> CNetworkLinux::GetNameServers(void)
      if (!strIp.empty())
        result.push_back(strIp);
 
+#if !defined(TARGET_DARWIN)
      strIp = CNetwork::GetIpStr((struct sockaddr *)_res._u._ext.nsaddrs[i]);
      if (!strIp.empty())
        result.push_back(strIp);
+#endif
 
-     if (_res.nscount + _res._u._ext.nscount6 == result.size())
+     if (_res.nscount
+#if !defined(TARGET_DARWIN)
+         + _res._u._ext.nscount6
+#endif
+         == result.size())
        break;
    }
+
 #endif
   if (result.empty())
        CLog::Log(LOGWARNING, "Unable to determine nameserver");
