@@ -283,7 +283,7 @@ std::string CVideoDatabaseDirectory::GetIcon(const std::string &strDirectory)
   case NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS: // Recently Added Episodes
     return "DefaultRecentlyAddedMusicVideos.png";
   case NODE_TYPE_INPROGRESS_TVSHOWS: // InProgress TvShows
-    return "DefaultInProgressTvShows.png";
+    return "DefaultInProgressShows.png";
   case NODE_TYPE_STUDIO: // Studios
     return "DefaultStudios.png";
   case NODE_TYPE_MUSICVIDEOS_OVERVIEW: // Music Videos
