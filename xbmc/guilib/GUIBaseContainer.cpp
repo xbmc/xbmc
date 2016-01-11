@@ -1201,11 +1201,11 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
 void CGUIBaseContainer::GetCurrentLayouts()
 {
   m_layout = NULL;
-  for (unsigned int i = 0; i < m_layouts.size(); i++)
+  for (auto &i : m_layouts)
   {
-    if (m_layouts[i].CheckCondition())
+    if (i.CheckCondition())
     {
-      m_layout = &m_layouts[i];
+      m_layout = &i;
       break;
     }
   }
@@ -1213,11 +1213,11 @@ void CGUIBaseContainer::GetCurrentLayouts()
     m_layout = &m_layouts.front(); // failsafe
 
   m_focusedLayout = NULL;
-  for (unsigned int i = 0; i < m_focusedLayouts.size(); i++)
+  for (auto &i : m_focusedLayouts)
   {
-    if (m_focusedLayouts[i].CheckCondition())
+    if (i.CheckCondition())
     {
-      m_focusedLayout = &m_focusedLayouts[i];
+      m_focusedLayout = &i;
       break;
     }
   }
