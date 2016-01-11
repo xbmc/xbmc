@@ -24,7 +24,7 @@
 class CDVDVideoCodecActions : public CDVDVideoCodecAndroidMediaCodec
 {
 public:
-  CDVDVideoCodecActions(bool surface_render = false);
+  CDVDVideoCodecActions(bool surface_render = true);
   virtual ~CDVDVideoCodecActions();
 
   
