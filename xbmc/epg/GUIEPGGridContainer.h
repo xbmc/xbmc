@@ -109,14 +109,14 @@ namespace EPG
     void Reset();
     void ClearGridIndex(void);
 
-    GridItemsPtr *GetItem(const int &channel);
-    GridItemsPtr *GetNextItem(const int &channel);
-    GridItemsPtr *GetPrevItem(const int &channel);
-    GridItemsPtr *GetClosestItem(const int &channel);
+    GridItemsPtr *GetItem(int channel);
+    GridItemsPtr *GetNextItem(int channel);
+    GridItemsPtr *GetPrevItem(int channel);
+    GridItemsPtr *GetClosestItem(int channel);
 
     int GetItemSize(GridItemsPtr *item);
-    int GetBlock(const CGUIListItemPtr &item, const int &channel);
-    int GetRealBlock(const CGUIListItemPtr &item, const int &channel);
+    int GetBlock(const CGUIListItemPtr &item, int channel);
+    int GetRealBlock(const CGUIListItemPtr &item, int channel);
     void MoveToRow(int row);
 
     CGUIListItemLayout *GetFocusedLayout() const;
