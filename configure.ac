@@ -1074,7 +1074,8 @@ else
   AC_MSG_RESULT(no)
 fi
 
-AC_CHECK_HEADER([openssl/crypto.h], AC_DEFINE([HAVE_OPENSSL],[1],[Define if we have openssl]),)
+PKG_CHECK_MODULES([OPENSSL], [openssl],
+  [INCLUDES="$INCLUDES $OPENSSL_CFLAGS"; LIBS="$LIBS $OPENSSL_LIBS"; AC_DEFINE([HAVE_OPENSSL],[1],[Define if we have openssl])],)
 AC_CHECK_HEADER([gcrypt.h], gcrypt_headers_available=yes,gcrypt_headers_available=no)
 if test "$gcrypt_headers_available" = "yes"; then
    # if we have the headers then we must have the lib
