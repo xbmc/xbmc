@@ -109,7 +109,50 @@ inline void CBaseRenderer::ReorderDrawPoints()
   }
 
 
-  int diff = (int) ((m_destRect.Height() - m_destRect.Width()) / 2);
+  int diffX = 0;
+  int diffY = 0;
+  int centerX = 0;
+  int centerY = 0;
+  
+  if (changeAspect)// we are either rotating by 90 or 270 degrees which inverts aspect ratio
+  {
+    int newWidth = m_destRect.Height(); // new width is old height
+    int newHeight = m_destRect.Width(); // new height is old width
+    int diffWidth = newWidth - m_destRect.Width(); // difference between old and new width
+    int diffHeight = newHeight - m_destRect.Height(); // difference between old and new height
+
+    // if the new width is bigger then the old or
+    // the new height is bigger then the old - we need to scale down
+    if (diffWidth > 0 || diffHeight > 0 )
+    {
+      float aspectRatio = GetAspectRatio();
+      // scale to fit screen width because
+      // the difference in width is bigger then the
+      // difference in height
+      if (diffWidth > diffHeight)
+      {
+        newWidth = m_destRect.Width(); // clamp to the width of the old dest rect
+        newHeight *= aspectRatio;
+      }
+      else // scale to fit screen height
+      {
+        newHeight = m_destRect.Height(); // clamp to the height of the old dest rect
+        newWidth /= aspectRatio;
+      }
+    }
+    
+    // calculate the center point of the view
+    centerX = m_viewRect.x1 + m_viewRect.Width() / 2;
+    centerY = m_viewRect.y1 + m_viewRect.Height() / 2;
+
+    // calculate the number of pixels we need to go in each
+    // x direction from the center point
+    diffX = newWidth / 2;
+    // calculate the number of pixels we need to go in each
+    // y direction from the center point
+    diffY = newHeight / 2;
+    
+  }
 
   for (int destIdx=0, srcIdx=pointOffset; destIdx < 4; destIdx++)
   {
@@ -120,21 +163,21 @@ inline void CBaseRenderer::ReorderDrawPoints()
     {
       switch (srcIdx)
       {
-        case 0:
-          m_rotatedDestCoords[destIdx].x -= diff;
-          m_rotatedDestCoords[destIdx].y += diff;
+        case 0:// top left
+          m_rotatedDestCoords[destIdx].x = centerX - diffX;
+          m_rotatedDestCoords[destIdx].y = centerY - diffY;
           break;
-        case 1:
-          m_rotatedDestCoords[destIdx].x += diff;
-          m_rotatedDestCoords[destIdx].y += diff;
+        case 1:// top right
+          m_rotatedDestCoords[destIdx].x = centerX + diffX;
+          m_rotatedDestCoords[destIdx].y = centerY - diffY;
           break;
-        case 2:
-          m_rotatedDestCoords[destIdx].x += diff;
-          m_rotatedDestCoords[destIdx].y -= diff;
+        case 2:// bottom right
+          m_rotatedDestCoords[destIdx].x = centerX + diffX;
+          m_rotatedDestCoords[destIdx].y = centerY + diffY;
           break;
-        case 3:
-          m_rotatedDestCoords[destIdx].x -= diff;
-          m_rotatedDestCoords[destIdx].y -= diff;
+        case 3:// bottom left
+          m_rotatedDestCoords[destIdx].x = centerX - diffX;
+          m_rotatedDestCoords[destIdx].y = centerY + diffY;
           break;
       }
     }
