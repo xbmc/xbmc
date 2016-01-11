@@ -511,7 +511,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
   if (content.empty())
   {
     content = database.GetContentForPath(items.GetPath());
-    items.SetContent(content.empty() ? "files" : content);
+    items.SetContent((content.empty() && !items.IsPlugin()) ? "files" : content);
   }
 
   /*
