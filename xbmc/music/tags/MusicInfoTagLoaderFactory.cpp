@@ -101,7 +101,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
     CMusicInfoTagLoaderSHN *pTagLoader = new CMusicInfoTagLoaderSHN();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
-  else if (strExtension == "mka" || strExtension == "dsf")
+  else if (strExtension == "mka" || strExtension == "dsf" || strExtension == "dff")
     return new CMusicInfoTagLoaderFFmpeg();
 
   return NULL;
