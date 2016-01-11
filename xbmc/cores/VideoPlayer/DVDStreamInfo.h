@@ -55,7 +55,7 @@ public:
   bool software;  //force software decoding
   std::string filename;
   bool dvd;
-
+  bool stream_continues; //the stream change continues - supress general resync
 
   // VIDEO
   int fpsscale; // scale of 1001 and a rate of 60000 will result in 59.94 fps
@@ -90,6 +90,7 @@ public:
   void*        extradata; // extra data for codec to use
   unsigned int extrasize; // size of extra data
   unsigned int codec_tag; // extra identifier hints for decoding
+  DemuxPacket *pPacket;
 
   bool operator==(const CDVDStreamInfo& right)      { return Equal(right, true);}
   bool operator!=(const CDVDStreamInfo& right)      { return !Equal(right, true);}

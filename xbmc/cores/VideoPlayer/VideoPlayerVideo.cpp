@@ -188,7 +188,7 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   m_stalled = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_codecname = m_pVideoCodec->GetName();
   m_packets.clear();
-  m_syncState = IDVDStreamPlayer::SYNC_STARTING;
+  m_syncState = hint.stream_continues ? IDVDStreamPlayer::SYNC_INSYNC:IDVDStreamPlayer::SYNC_STARTING;
 }
 
 void CVideoPlayerVideo::CloseStream(bool bWaitForBuffers)

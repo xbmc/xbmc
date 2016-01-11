@@ -198,7 +198,7 @@ void CVideoPlayerAudio::OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec)
   m_maxspeedadjust = 5.0;
 
   g_dataCacheCore.SignalAudioInfoChange();
-  m_syncState = IDVDStreamPlayer::SYNC_STARTING;
+  m_syncState = hints.stream_continues ? IDVDStreamPlayer::SYNC_INSYNC : IDVDStreamPlayer::SYNC_STARTING;
 }
 
 void CVideoPlayerAudio::CloseStream(bool bWaitForBuffers)

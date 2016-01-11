@@ -80,9 +80,13 @@ static const struct StereoModeConversionMap WmvToInternalStereoModeMap[] =
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {
   if(!m_stream) return;
-  char temp[128];
-  avcodec_string(temp, 128, m_stream->codec, 0);
-  strInfo = temp;
+  if (!m_streaminfo.empty())
+    strInfo = m_streaminfo;
+  else {
+    char temp[128];
+    avcodec_string(temp, 128, m_stream->codec, 0);
+    m_streaminfo = strInfo = temp;
+  }
 }
 
 void CDemuxStreamAudioFFmpeg::GetStreamName(std::string& strInfo)
@@ -106,17 +110,25 @@ void CDemuxStreamSubtitleFFmpeg::GetStreamName(std::string& strInfo)
 void CDemuxStreamVideoFFmpeg::GetStreamInfo(std::string& strInfo)
 {
   if(!m_stream) return;
-  char temp[128];
-  avcodec_string(temp, 128, m_stream->codec, 0);
-  strInfo = temp;
+  if (!m_streaminfo.empty())
+    strInfo = m_streaminfo;
+  else {
+    char temp[128];
+    avcodec_string(temp, 128, m_stream->codec, 0);
+    m_streaminfo = strInfo = temp;
+  }
 }
 
 void CDemuxStreamSubtitleFFmpeg::GetStreamInfo(std::string& strInfo)
 {
   if(!m_stream) return;
-  char temp[128];
-  avcodec_string(temp, 128, m_stream->codec, 0);
-  strInfo = temp;
+  if (!m_streaminfo.empty())
+    strInfo = m_streaminfo;
+  else {
+    char temp[128];
+    avcodec_string(temp, 128, m_stream->codec, 0);
+    m_streaminfo = strInfo = temp;
+  }
 }
 
 static int interrupt_cb(void* ctx)
@@ -227,6 +239,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
       iformat = av_find_input_format("mpeg");
     else if( content.compare("video/mp2t") == 0 )
       iformat = av_find_input_format("mpegts");
+    else if (content.compare("video/quicktime") == 0)
+      iformat = av_find_input_format("mov");
     else if( content.compare("multipart/x-mixed-replace") == 0 )
       iformat = av_find_input_format("mjpeg");
   }
@@ -276,7 +290,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
     if(m_ioContext->max_packet_size)
       m_ioContext->max_packet_size *= FFMPEG_FILE_BUFFER_SIZE / m_ioContext->max_packet_size;
 
-    if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
+    if (m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
       m_ioContext->seekable = 0;
 
     std::string content = m_pInput->GetContent();
@@ -860,7 +874,9 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         stream->codec != m_pFormatContext->streams[pPacket->iStreamId]->codec->codec_id)
     {
       // content has changed, or stream did not yet exist
+      CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::%s - streamId %d change. Packet-pts: %0.4lf", __FUNCTION__, pPacket->iStreamId, pPacket->pts);
       stream = AddStream(pPacket->iStreamId);
+      stream->continues = true;
     }
     // we already check for a valid m_streams[pPacket->iStreamId] above
     else if (stream->type == STREAM_AUDIO)
@@ -869,7 +885,9 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
           ((CDemuxStreamAudio*)stream)->iSampleRate != m_pFormatContext->streams[pPacket->iStreamId]->codec->sample_rate)
       {
         // content has changed
+        CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::%s - audio stream change. Packet-pts: %0.4lf", __FUNCTION__, pPacket->pts);
         stream = AddStream(pPacket->iStreamId);
+        stream->continues = true;
       }
     }
     else if (stream->type == STREAM_VIDEO)
@@ -878,7 +896,9 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
           ((CDemuxStreamVideo*)stream)->iHeight != m_pFormatContext->streams[pPacket->iStreamId]->codec->height)
       {
         // content has changed
+        CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::%s - video stream change. Packet-pts: %0.4lf", __FUNCTION__, pPacket->pts);
         stream = AddStream(pPacket->iStreamId);
+        stream->continues = true;
       }
     }
     if (!stream)
@@ -889,6 +909,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     }
     // set continuous stream id for player
     pPacket->iStreamId = stream->iId;
+    stream->initial_packet = pPacket;
   }
   return pPacket;
 }
@@ -1128,7 +1149,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         st->iChannelLayout = pStream->codec->channel_layout;
         if (st->iBitsPerSample == 0)
           st->iBitsPerSample = pStream->codec->bits_per_coded_sample;
-	
+
         if(av_dict_get(pStream->metadata, "title", NULL, 0))
           st->m_description = av_dict_get(pStream->metadata, "title", NULL, 0)->value;
 
@@ -1245,10 +1266,10 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
         {
           CDemuxStreamSubtitleFFmpeg* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
           stream = st;
-	    
+
           if(av_dict_get(pStream->metadata, "title", NULL, 0))
             st->m_description = av_dict_get(pStream->metadata, "title", NULL, 0)->value;
-	
+
           break;
         }
       }
