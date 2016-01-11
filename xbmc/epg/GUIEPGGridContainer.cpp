@@ -1027,21 +1027,16 @@ void CGUIEPGGridContainer::UpdateItems(CFileItemList *items)
 
   m_channels = m_epgItemsPtr.size();
 
-  if (prevSelectedEpgTag)
+  // Grid index got recreated. Do cursors and offsets still point to the same epg tag?
+  if (prevSelectedEpgTag && prevSelectedEpgTag != GetSelectedEpgInfoTag())
   {
-    // Grid index got recreated. Do cursors and offsets still point to the same epg tag?
-    if (prevSelectedEpgTag == GetSelectedEpgInfoTag())
-      return;
-
     int newChannelCursor = GetChannel(prevSelectedEpgTag);
     if (newChannelCursor >= 0)
     {
       int newBlockCursor = GetBlock(prevSelectedEpgTag, newChannelCursor);
-      if (newBlockCursor >= 0)
+      if (newBlockCursor >= 0 &&
+          (newChannelCursor != m_channelCursor || newBlockCursor != m_blockCursor))
       {
-        if (newChannelCursor == m_channelCursor && newBlockCursor == m_blockCursor)
-          return;
-
         if (newBlockCursor > 0 && newBlockCursor != m_blockCursor)
         {
           SetInvalid();
