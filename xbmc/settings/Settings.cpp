@@ -903,11 +903,6 @@ void CSettings::InitializeDefaults()
 
   if (g_application.IsStandAlone())
     ((CSettingInt*)m_settingsManager->GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(POWERSTATE_SHUTDOWN);
-
-#if defined(HAS_WEB_SERVER)
-  if (CUtil::CanBindPrivileged())
-    ((CSettingInt*)m_settingsManager->GetSetting(CSettings::SETTING_SERVICES_WEBSERVERPORT))->SetDefault(80);
-#endif
 }
 
 void CSettings::InitializeOptionFillers()
