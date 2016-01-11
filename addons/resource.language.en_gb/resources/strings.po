@@ -6566,7 +6566,11 @@ msgctxt "#13452"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 interlaced fails hard on Intel hardware."
 msgstr ""
 
-#empty strings from id 13453 to 13456
+#: system/settings/settings.xml
+msgctxt "#13453"
+msgid "Allow hardware acceleration - ActsCodec"
+msgstr
+#empty strings from id 13454 to 13456
 
 #. Option for video related setting #13454: sw filter
 #: system/settings/settings.xml
@@ -17442,7 +17446,12 @@ msgctxt "#36441"
 msgid "Enable audio DSP processing"
 msgstr ""
 
-#empty strings from id 36442 to 36459
+#. Description of setting "Videos -> Playback -> Allow hardware acceleration (actscodec)" with label #13453
+#: system/settings/settings.xml
+msgctxt "#36442"
+msgid "Enable hardware video decode using acts decoder."
+msgstr 
+#empty strings from id 36443 to 36459
 
 #. Description of settings "System -> Logging -> Enable event logging" with label #14112
 #: system/settings/settings.xml
