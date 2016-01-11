@@ -621,7 +621,7 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
   CFileItemPtr item = m_vecItems->Get(iItem);
 
   std::string path = item->GetPath();
-  if (!item->m_bIsFolder && path != "add" && path != "addons://more/video" &&
+  if (!item->m_bIsFolder && path != "add" &&
       !StringUtils::StartsWith(path, "newsmartplaylist://") &&
       !StringUtils::StartsWith(path, "newplaylist://") &&
       !StringUtils::StartsWith(path, "newtag://"))
@@ -946,7 +946,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
         else if (value != SELECT_ACTION_PLAY)
           return false; // if not selected PLAY, then we changed our mind so return
       }
-      stack->m_lStartPartNumber = selectedFile;
+      stack->m_lStartPartNumber = selectedFile + 1;
     }
     // regular stack
     else

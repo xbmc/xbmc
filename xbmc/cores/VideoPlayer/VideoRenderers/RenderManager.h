@@ -122,15 +122,7 @@ public:
    */
   void FlipPage(volatile bool& bStop, double timestamp = 0.0, double pts = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
 
-  void AddOverlay(CDVDOverlay* o, double pts)
-  {
-    { CSingleLock lock(m_presentlock);
-      if (m_free.empty())
-        return;
-    }
-    CSingleLock lock(m_critSection);
-    m_overlays.AddOverlay(o, pts, m_free.front());
-  }
+  void AddOverlay(CDVDOverlay* o, double pts);
 
   // Get renderer info, can be called before configure
   CRenderInfo GetRenderInfo();

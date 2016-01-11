@@ -593,6 +593,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "sortletter",       LISTITEM_SORT_LETTER },
                                   { "tag",              LISTITEM_TAG },
                                   { "set",              LISTITEM_SET },
+                                  { "setid",            LISTITEM_SETID },
                                   { "videocodec",       LISTITEM_VIDEO_CODEC },
                                   { "videoresolution",  LISTITEM_VIDEO_RESOLUTION },
                                   { "videoaspect",      LISTITEM_VIDEO_ASPECT },
@@ -603,6 +604,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "isresumable",      LISTITEM_IS_RESUMABLE},
                                   { "percentplayed",    LISTITEM_PERCENT_PLAYED},
                                   { "isfolder",         LISTITEM_IS_FOLDER },
+                                  { "isparentfolder",   LISTITEM_IS_PARENTFOLDER },
                                   { "iscollection",     LISTITEM_IS_COLLECTION },
                                   { "originaltitle",    LISTITEM_ORIGINALTITLE },
                                   { "lastplayed",       LISTITEM_LASTPLAYED },
@@ -1453,24 +1455,30 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
 
 int CGUIInfoManager::TranslateListItem(const Property &info)
 {
+  if (info.num_params() == 1)
+  {
+    if (info.name == "property")
+    {
+      // properties are stored case sensitive in m_listItemProperties, but lookup is insensitive in CGUIListItem::GetProperty
+      if (StringUtils::EqualsNoCase(info.param(), "fanart_image"))
+        return AddListItemProp("fanart", LISTITEM_ART_OFFSET);
+      return AddListItemProp(info.param());
+    }
+    if (info.name == "art")
+      return AddListItemProp(info.param(), LISTITEM_ART_OFFSET);
+    if (info.name == "ratings")
+      return AddListItemProp(info.param(), LISTITEM_RATING_OFFSET);
+    if (info.name == "votes")
+      return AddListItemProp(info.param(), LISTITEM_VOTES_OFFSET);
+    if (info.name == "ratingandvotes")
+      return AddListItemProp(info.param(), LISTITEM_RATING_AND_VOTES_OFFSET);
+  }
+
   for (size_t i = 0; i < sizeof(listitem_labels) / sizeof(infomap); i++) // these ones don't have or need an id
   {
     if (info.name == listitem_labels[i].str)
       return listitem_labels[i].val;
   }
-  if (info.name == "property" && info.num_params() == 1)
-  {
-    // properties are stored case sensitive in m_listItemProperties, but lookup is insensitive in CGUIListItem::GetProperty
-    if (StringUtils::EqualsNoCase(info.param(), "fanart_image"))
-      return AddListItemProp("fanart", LISTITEM_ART_OFFSET);
-    return AddListItemProp(info.param());
-  }
-  if (info.name == "art" && info.num_params() == 1)
-    return AddListItemProp(info.param(), LISTITEM_ART_OFFSET);
-  if (info.name == "ratings" && info.num_params() == 1)
-    return AddListItemProp(info.param(), LISTITEM_RATING_OFFSET);
-  if (info.name == "votes" && info.num_params() == 1)
-    return AddListItemProp(info.param(), LISTITEM_VOTES_OFFSET);
   return 0;
 }
 
@@ -4181,10 +4189,9 @@ std::string CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
         strRatingAndVotes = StringUtils::Format("%.1f",
           m_currentFile->GetMusicInfoTag()->GetRating());
       else
-        strRatingAndVotes = StringUtils::Format("%.1f (%i %s)",
+        strRatingAndVotes = StringUtils::Format(g_localizeStrings.Get(20350).c_str(),
           m_currentFile->GetMusicInfoTag()->GetRating(),
-          m_currentFile->GetMusicInfoTag()->GetVotes(),
-          g_localizeStrings.Get(20350).c_str());
+          m_currentFile->GetMusicInfoTag()->GetVotes());
     }
     return strRatingAndVotes;
   }
@@ -4417,10 +4424,9 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
             strRatingAndVotes = StringUtils::Format("%.1f",
                                                     rating.rating);
           else
-            strRatingAndVotes = StringUtils::Format("%.1f (%i %s)",
+            strRatingAndVotes = StringUtils::Format(g_localizeStrings.Get(20350).c_str(),
                                                     rating.rating,
-                                                    rating.votes,
-                                                    g_localizeStrings.Get(20350).c_str());
+                                                    rating.votes);
         }
         return strRatingAndVotes;
       }
@@ -5016,6 +5022,20 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     return StringUtils::Format("%i", item->GetVideoInfoTag()->GetRating(votes).votes);
   }
 
+  if (info >= LISTITEM_PROPERTY_START + LISTITEM_RATING_AND_VOTES_OFFSET && info - (LISTITEM_PROPERTY_START + LISTITEM_RATING_AND_VOTES_OFFSET) < (int)m_listitemProperties.size())
+  { // grab the rating and the votes
+    std::string ratingName = m_listitemProperties[info - (LISTITEM_PROPERTY_START + LISTITEM_RATING_AND_VOTES_OFFSET)];
+    CRating rating = item->GetVideoInfoTag()->GetRating(ratingName);
+
+    if (rating.rating <= 0.f)
+      return "";
+    
+    if (rating.votes == 0)
+      return StringUtils::Format("%.1f", rating.rating);
+    else
+      return StringUtils::Format(g_localizeStrings.Get(20350).c_str(), rating.rating, rating.votes);
+  }
+
   if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
   { // grab the property
     std::string property = m_listitemProperties[info - LISTITEM_PROPERTY_START];
@@ -5270,10 +5290,9 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
           strRatingAndVotes = StringUtils::Format("%.1f",
                                                   r.rating);
         else
-          strRatingAndVotes = StringUtils::Format("%.1f (%i %s)",
+          strRatingAndVotes = StringUtils::Format(g_localizeStrings.Get(20350).c_str(),
                                                   r.rating,
-                                                  r.votes,
-                                                  g_localizeStrings.Get(20350).c_str());
+                                                  r.votes);
         return strRatingAndVotes;
       }
       else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > 0.f) // music rating & votes
@@ -5282,10 +5301,9 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         if (item->GetMusicInfoTag()->GetVotes() <= 0)
           strRatingAndVotes = StringUtils::Format("%.1f", item->GetMusicInfoTag()->GetRating());
         else
-          strRatingAndVotes = StringUtils::Format("%.1f (%i %s)",
+          strRatingAndVotes = StringUtils::Format(g_localizeStrings.Get(20350).c_str(),
             item->GetMusicInfoTag()->GetRating(),
-            item->GetMusicInfoTag()->GetVotes(),
-            g_localizeStrings.Get(20350).c_str());
+            item->GetMusicInfoTag()->GetVotes());
         return strRatingAndVotes;
       }
     }
@@ -5585,6 +5603,14 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_SET:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strSet;
+    break;
+  case LISTITEM_SETID:
+    if (item->HasVideoInfoTag())
+    {
+      int iSetId = item->GetVideoInfoTag()->m_iSetId;
+      if (iSetId > 0)
+        return StringUtils::Format("%d", iSetId);
+    }
     break;
   case LISTITEM_VIDEO_CODEC:
     if (item->HasVideoInfoTag())
@@ -5920,6 +5946,14 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     return item->IsSelected();
   else if (condition == LISTITEM_IS_FOLDER)
     return item->m_bIsFolder;
+  else if (condition == LISTITEM_IS_PARENTFOLDER)
+  {
+    if (item->IsFileItem())
+    {
+      const CFileItem *pItem = (const CFileItem *)item;
+      return pItem->IsParentFolder();
+    }
+  }
   else if (condition == LISTITEM_IS_RESUMABLE)
   {
     if (item->IsFileItem())
@@ -6369,13 +6403,6 @@ bool CGUIInfoManager::ConditionsChangedValues(const std::map<INFO::InfoPtr, bool
       return true;
   }
   return false;
-}
-
-bool CGUIInfoManager::IsPlayerOSDActive() const
-{
-  return m_playerShowInfo &&
-         (g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD) ||
-          g_windowManager.IsWindowActive(WINDOW_DIALOG_MUSIC_OSD));
 }
 
 bool CGUIInfoManager::IsPlayerChannelPreviewActive() const

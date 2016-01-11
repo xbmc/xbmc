@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2015 Team Kodi
+ *      Copyright (C) 2016 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -1452,9 +1452,9 @@ int CVideoDatabase::AddRatings(int mediaId, const char *mediaType, const RatingM
       }
       else
       {
-        id = m_pDS->fv(1).get_asInt();
+        id = m_pDS->fv(0).get_asInt();
         m_pDS->close();
-        strSQL = PrepareSQL("UPDATE rating SET rating.rating = '%.f', rating.votes = %i WHERE rating.media_id = %i", i.second.rating, i.second.votes, id);
+        strSQL = PrepareSQL("UPDATE rating SET rating = %f, votes = %i WHERE rating_id = %i", i.second.rating, i.second.votes, id);
         m_pDS->exec(strSQL);        
       }
       if (i.first == defaultRating)
@@ -6680,6 +6680,15 @@ bool CVideoDatabase::GetRecentlyAddedMusicVideosNav(const std::string& strBaseDi
   filter.order = "dateAdded desc, idMVideo desc";
   filter.limit = PrepareSQL("%u", limit ? limit : g_advancedSettings.m_iVideoLibraryRecentlyAddedItems);
   return GetMusicVideosByWhere(strBaseDir, filter, items);
+}
+
+bool CVideoDatabase::GetInProgressTvShowsNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit)
+{
+  Filter filter;
+  filter.order = PrepareSQL("c%02d", VIDEODB_ID_TV_TITLE);
+  filter.limit = PrepareSQL("%u", limit ? limit : g_advancedSettings.m_iVideoLibraryRecentlyAddedItems);
+  filter.where = "watchedCount != 0 AND totalCount != watchedCount";
+  return GetTvShowsByWhere(strBaseDir, filter, items);
 }
 
 std::string CVideoDatabase::GetGenreById(int id)

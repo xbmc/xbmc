@@ -37,6 +37,7 @@
 #include <cassert>
 
 #include "TransformMatrix.h"
+#include "system.h"
 
 #define FONT_CACHE_TIME_LIMIT (1000)
 #define FONT_CACHE_DIST_LIMIT (0.01f)
@@ -231,10 +232,17 @@ struct CGUIFontCacheDynamicPosition
 
 struct CVertexBuffer
 {
-  void *bufferHandle;
+#if defined(HAS_GL) || defined(HAS_GLES)
+  typedef unsigned int BufferHandleType;
+#define  BUFFER_HANDLE_INIT 0
+#elif defined(HAS_DX)
+  typedef void* BufferHandleType;
+#define BUFFER_HANDLE_INIT nullptr
+#endif
+  BufferHandleType bufferHandle; // this is really a GLuint
   size_t size;
-  CVertexBuffer() : bufferHandle(NULL), size(0), m_font(NULL) {}
-  CVertexBuffer(void *bufferHandle, size_t size, const CGUIFontTTFBase *font) : bufferHandle(bufferHandle), size(size), m_font(font) {}
+  CVertexBuffer() : bufferHandle(BUFFER_HANDLE_INIT), size(0), m_font(NULL) {}
+  CVertexBuffer(BufferHandleType bufferHandle, size_t size, const CGUIFontTTFBase *font) : bufferHandle(bufferHandle), size(size), m_font(font) {}
   CVertexBuffer(const CVertexBuffer &other) : bufferHandle(other.bufferHandle), size(other.size), m_font(other.m_font)
   {
     /* In practice, the copy constructor is only called before a vertex buffer

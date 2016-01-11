@@ -292,7 +292,7 @@ bool CRendererMediaCodec::UploadTexture(int index)
   {
     CDVDMediaCodecInfo *mci = static_cast<CDVDMediaCodecInfo *>(buf.hwDec);
 #ifdef DEBUG_VERBOSE
-    mindex = (mci->GetIndex();
+    mindex = mci->GetIndex();
 #endif
     buf.fields[0][0].id = mci->GetTextureID();
     mci->UpdateTexImage();

@@ -117,7 +117,7 @@ static std::string GetRenderFormatName(ERenderFormat format)
 
 unsigned int CRenderManager::m_nextCaptureId = 0;
 
-CRenderManager::CRenderManager(CDVDClock &clock) : m_overlays(this), m_dvdClock(clock)
+CRenderManager::CRenderManager(CDVDClock &clock) : m_dvdClock(clock)
 {
   m_pRenderer = nullptr;
   m_renderState = STATE_UNCONFIGURED;
@@ -443,7 +443,8 @@ void CRenderManager::FrameMove()
       }
       lock.Enter();
     }
-
+  }
+  {
     CSingleLock lock2(m_presentlock);
 
     if (m_presentstep == PRESENT_FRAME2)
@@ -1034,6 +1035,9 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
     if (!m_pRenderer->IsGuiLayer())
       m_pRenderer->Update();
     m_renderedOverlay = m_overlays.HasOverlay(m_presentsource);
+    CRect src, dst, view;
+    m_pRenderer->GetVideoRect(src, dst, view);
+    m_overlays.SetVideoRect(src, dst, view);
     m_overlays.Render(m_presentsource);
   }
 }
@@ -1220,6 +1224,18 @@ int CRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   m_pRenderer->ReleaseImage(index, false);
 
   return index;
+}
+
+void CRenderManager::AddOverlay(CDVDOverlay* o, double pts)
+{
+  int idx;
+  { CSingleLock lock(m_presentlock);
+    if (m_free.empty())
+      return;
+    idx = m_free.front();
+  }
+  CSingleLock lock(m_critSection);
+  m_overlays.AddOverlay(o, pts, idx);
 }
 
 bool CRenderManager::Supports(ERENDERFEATURE feature)

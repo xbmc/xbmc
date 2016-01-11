@@ -7,6 +7,7 @@ SWITCH=`echo $1 | tr [A-Z] [a-z]`
 DIRNAME=`dirname $0`
 DSYM_TARGET_DIR=/Users/Shared/xbmc-depends/dSyms
 DSYM_FILENAME=@APP_NAME@.app.dSYM
+ARM64=false
 
 if [ ${SWITCH:-""} = "debug" ]; then
   echo "Packaging Debug target for iOS"
@@ -20,6 +21,11 @@ else
   echo "You need to specify the build target"
   exit 1 
 fi  
+
+# check if build is 64-bit
+if [[ "$(lipo -info "$APP/@APP_NAME@" | awk '{print $NF}')" == "arm64" ]]; then
+  ARM64=true
+fi
 
 #copy bzip2 of dsym to xbmc-depends install dir
 if [ -d $DSYM ]; then
@@ -47,6 +53,7 @@ if [ -f "${XBMC_DEPENDS_ROOT}/buildtools-native/bin/dpkg-deb" ]; then
 fi
 
 PACKAGE=org.xbmc.@APP_NAME_LC@-ios
+PACKAGE_ARM64="${PACKAGE}64"
 
 VERSION=@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@
 REVISION=0
@@ -54,8 +61,14 @@ REVISION=0
 if [ "@APP_VERSION_TAG_LC@" != "" ]; then
   REVISION=$REVISION~@APP_VERSION_TAG_LC@
 fi
+# customize revision string
+[ ! -z "$2" ] && REVISION="$2"
 
 ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_iphoneos-arm.deb
+
+# package identifier for arm64
+$ARM64 && ARCHIVE=${PACKAGE_ARM64}_${VERSION}-${REVISION}_iphoneos-arm.deb
+
 SIZE="$(du -s -k ${APP} | awk '{print $1}')"
 
 echo Creating $PACKAGE package version $VERSION revision $REVISION
@@ -64,14 +77,23 @@ ${SUDO} rm -rf $DIRNAME/$ARCHIVE
 
 # create debian control file.
 mkdir -p $DIRNAME/$PACKAGE/DEBIAN
-echo "Package: $PACKAGE"                          >  $DIRNAME/$PACKAGE/DEBIAN/control
+if [ $ARM64 ]; then
+  echo "Package: $PACKAGE_ARM64"                  >  $DIRNAME/$PACKAGE/DEBIAN/control
+  echo "Name: @APP_NAME@-iOS (64-bit)"            >> $DIRNAME/$PACKAGE/DEBIAN/control
+  echo "Depends: firmware (>= 7.0)"               >> $DIRNAME/$PACKAGE/DEBIAN/control
+  echo "Pre-Depends: cy+cpu.arm64"                >> $DIRNAME/$PACKAGE/DEBIAN/control
+  echo "Conflicts: $PACKAGE"                      >> $DIRNAME/$PACKAGE/DEBIAN/control
+  echo "Replaces: $PACKAGE"                       >> $DIRNAME/$PACKAGE/DEBIAN/control
+else
+  echo "Package: $PACKAGE"                        >  $DIRNAME/$PACKAGE/DEBIAN/control
+  echo "Name: @APP_NAME@-iOS"                     >> $DIRNAME/$PACKAGE/DEBIAN/control
+  echo "Depends: firmware (>= 5.1)"               >> $DIRNAME/$PACKAGE/DEBIAN/control
+fi
 echo "Priority: Extra"                            >> $DIRNAME/$PACKAGE/DEBIAN/control
-echo "Name: @APP_NAME@-iOS"                       >> $DIRNAME/$PACKAGE/DEBIAN/control
-echo "Depends: firmware (>= 5.1)"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Version: $VERSION-$REVISION"                >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Architecture: iphoneos-arm"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Installed-Size: $SIZE"                      >> $DIRNAME/$PACKAGE/DEBIAN/control
-echo "Description: @APP_NAME@ Entertainment Center for 5.x iOS" >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Description: @APP_NAME@ Entertainment Center for iOS" >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Homepage: http://kodi.tv/"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Maintainer: Memphiz"                        >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Author: Team-@APP_NAME@"                    >> $DIRNAME/$PACKAGE/DEBIAN/control

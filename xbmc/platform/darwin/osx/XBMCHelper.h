@@ -20,7 +20,7 @@
  *
  */
 
-#if !defined(__arm__)
+#if !defined(__arm__) && !defined(__aarch64__)
 
 #include "settings/lib/ISettingCallback.h"
 

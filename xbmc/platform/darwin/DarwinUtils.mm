@@ -320,7 +320,7 @@ const char *CDarwinUtils::GetOSXVersionString(void)
 #endif
 }
 
-int  CDarwinUtils::GetFrameworkPath(bool forPython, char* path, uint32_t *pathsize)
+int  CDarwinUtils::GetFrameworkPath(bool forPython, char* path, size_t *pathsize)
 {
   CCocoaAutoPool pool;
   // see if we can figure out who we are
@@ -380,7 +380,7 @@ int  CDarwinUtils::GetFrameworkPath(bool forPython, char* path, uint32_t *pathsi
   return -1;
 }
 
-int  CDarwinUtils::GetExecutablePath(char* path, uint32_t *pathsize)
+int  CDarwinUtils::GetExecutablePath(char* path, size_t *pathsize)
 {
   CCocoaAutoPool pool;
   // see if we can figure out who we are
@@ -421,7 +421,7 @@ bool CDarwinUtils::IsIosSandboxed(void)
   static int ret = -1;
   if (ret == -1)
   {
-    uint32_t path_size = 2*MAXPATHLEN;
+    size_t path_size = 2*MAXPATHLEN;
     char     given_path[2*MAXPATHLEN];
     int      result = -1; 
     ret = 0;

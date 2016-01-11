@@ -279,7 +279,7 @@ std::string CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
          continue;
 
       // search where the word begins
-      n = sscanf(line,  "%16s %128s %128s",
+      n = sscanf(line,  "%15s %127s %127s",
          iface, dst, gateway);
 
       if (n < 3)

@@ -56,12 +56,6 @@ namespace XFILE
      */
     static bool GetScriptsAndPlugins(const std::string &content, CFileItemList &items);
 
-    /*! \brief return the "Get More..." link item for the current content type
-     \param content the content type for the link item
-     \return a CFileItemPtr to a new item for the link.
-     */
-    static CFileItemPtr GetMoreItem(const std::string &content);
-
     static void GenerateAddonListing(const CURL &path, const ADDON::VECADDONS& addons, CFileItemList &items, const std::string label);
     static CFileItemPtr FileItemFromAddon(const ADDON::AddonPtr &addon, const std::string& path, bool folder = false);
   

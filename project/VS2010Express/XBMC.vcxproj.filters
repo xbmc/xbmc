@@ -3240,6 +3240,9 @@
     <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVRTimersBase.cpp">
       <Filter>pvr\windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeInProgressTvShows.cpp">
+      <Filter>filesystem\VideoDatabaseDirectory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6269,6 +6272,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRTimersBase.h">
       <Filter>pvr\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeInProgressTvShows.h">
+      <Filter>filesystem\VideoDatabaseDirectory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
