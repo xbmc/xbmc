@@ -339,6 +339,10 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
 
   UpdateName();
+
+  if (hints.pPacket)
+    Decode(hints.pPacket->pData, hints.pPacket->iSize, hints.pPacket->dts, hints.pPacket->pts);
+
   return true;
 }
 

@@ -1,0 +1,69 @@
+diff --git a/isom.h b/isom.h
+index 1f466f0..a9d1b9a 100644
+--- a/isom.h
++++ b/isom.h
+@@ -177,6 +177,7 @@ typedef struct MOVContext {
+     int64_t duration;     ///< duration of the longest track
+     int found_moov;       ///< 'moov' atom has been found
+     int found_mdat;       ///< 'mdat' atom has been found
++	int skip_additional_moov; ///< no track action if additional moov atoms are found
+     DVDemuxContext *dv_demux;
+     AVFormatContext *dv_fctx;
+     int isom;             ///< 1 if file is ISO Media (mp4/3gp)
+diff --git a/mov.c b/mov.c
+index 8534bf9..c7492d1 100644
+--- a/mov.c
++++ b/mov.c
+@@ -3989,7 +3989,22 @@ static int mov_read_default(MOVContext *c, AVIOContext *pb, MOVAtom atom)
+                     c->atom_depth --;
+                     return 0;
+                 }
+-            }
++			}
++			else if (a.type == MKTAG('m', 'o', 'o', 'v') && c->found_moov)
++			{
++				if (c->skip_additional_moov)
++				{
++					avio_seek(pb, -8, SEEK_CUR);
++					c->next_root_atom = avio_tell(pb);
++					pb->seekable = 0;
++					c->atom_depth--;
++					return 0;
++				}
++				while (c->fc->nb_streams > 0)
++					ff_free_stream(c->fc, c->fc->streams[c->fc->nb_streams - 1]);
++				c->found_moov = 0;
++				c->found_mdat = 0;
++			}
+             total_size += 8;
+             if (a.size == 1 && total_size + 8 <= atom.size) { /* 64 bit extended size */
+                 a.size = avio_rb64(pb) - 8;
+@@ -4462,7 +4477,8 @@ static int mov_read_header(AVFormatContext *s)
+     int i;
+ 
+     mov->fc = s;
+-    /* .mov and .mp4 aren't streamable anyway (only progressive download if moov is before mdat) */
++	mov->skip_additional_moov = 1;
++	/* .mov and .mp4 aren't streamable anyway (only progressive download if moov is before mdat) */
+     if (pb->seekable)
+         atom.size = avio_size(pb);
+     else
+@@ -4541,7 +4557,9 @@ static int mov_read_header(AVFormatContext *s)
+             av_log(s, AV_LOG_VERBOSE, "Forcing full parsing for mp3 stream\n");
+             st->need_parsing = AVSTREAM_PARSE_FULL;
+         }
+-    }
++		if (mov->duration && mov->time_scale && st->time_base.den)
++			st->duration = (mov->duration * mov->time_scale / st->time_base.den);
++	}
+ 
+     if (mov->trex_data) {
+         for (i = 0; i < s->nb_streams; i++) {
+@@ -4606,6 +4624,7 @@ static int mov_read_header(AVFormatContext *s)
+     }
+     ff_configure_buffers_for_index(s, AV_TIME_BASE);
+ 
++	mov->skip_additional_moov = 0;
+     return 0;
+ }
+ 

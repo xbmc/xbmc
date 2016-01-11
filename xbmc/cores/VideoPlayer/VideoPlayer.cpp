@@ -3517,7 +3517,7 @@ bool CVideoPlayer::OpenAudioStream(CDVDStreamInfo& hint, bool reset)
       return false;
 
     static_cast<IDVDStreamPlayerAudio*>(player)->SetSpeed(m_streamPlayerSpeed);
-    m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_STARTING;
+    m_CurrentAudio.syncState = hint.stream_continues ? IDVDStreamPlayer::SYNC_INSYNC : IDVDStreamPlayer::SYNC_STARTING;
     m_CurrentAudio.packets = 0;
   }
   else if (reset)
@@ -3601,7 +3601,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
       s.stereo_mode = "";
 
     static_cast<IDVDStreamPlayerVideo*>(player)->SetSpeed(m_streamPlayerSpeed);
-    m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_STARTING;
+    m_CurrentVideo.syncState = hint.stream_continues ? IDVDStreamPlayer::SYNC_INSYNC : IDVDStreamPlayer::SYNC_STARTING;
     m_CurrentVideo.packets = 0;
   }
   else if (reset)

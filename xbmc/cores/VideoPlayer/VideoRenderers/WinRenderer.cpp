@@ -59,7 +59,7 @@ static RenderMethodDetail *FindRenderMethod(RenderMethod m)
 
 CWinRenderer::CWinRenderer()
 {
-  m_iYV12RenderBuffer = 0;
+  m_iYV12RenderBuffer = 1;
   m_NumYV12Buffers = 0;
 
   m_colorShader = nullptr;
@@ -199,7 +199,7 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   m_renderOrientation = orientation;
   // need to recreate textures
   m_NumYV12Buffers    = 0;
-  m_iYV12RenderBuffer = 0;
+  m_iYV12RenderBuffer = 1;
   // reinitialize the filters/shaders
   m_bFilterInitialized = false;
 
@@ -318,6 +318,7 @@ void CWinRenderer::Update()
   if (!m_bConfigured) 
     return;
   ManageDisplay();
+  ManageTextures();
 }
 
 void CWinRenderer::RenderUpdate(bool clear, unsigned int flags, unsigned int alpha)
@@ -431,7 +432,7 @@ void CWinRenderer::Flush()
   for (int i = 0; i < NUM_BUFFERS; i++)
     DeleteYV12Texture(i);
 
-  m_iYV12RenderBuffer = 0;
+  m_iYV12RenderBuffer = 1;
   m_NumYV12Buffers = 0;
   m_bFilterInitialized = false;
 }

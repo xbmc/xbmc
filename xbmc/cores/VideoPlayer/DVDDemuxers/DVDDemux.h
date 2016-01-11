@@ -93,6 +93,8 @@ public:
     changes = 0;
     flags = FLAG_NONE;
     realtime = false;
+    continues = false;
+    initial_packet = 0;
   }
 
   virtual ~CDemuxStream()
@@ -127,6 +129,9 @@ public:
 
   char language[4]; // ISO 639 3-letter language code (empty string if undefined)
   bool disabled; // set when stream is disabled. (when no decoder exists)
+  bool continues; // this stream continues the previous one
+
+  DemuxPacket *initial_packet;
 
   int  changes; // increment on change which player may need to know about
 
