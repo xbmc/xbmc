@@ -1209,7 +1209,7 @@ void CGUIBaseContainer::GetCurrentLayouts()
       break;
     }
   }
-  if (!m_layout && m_layouts.size())
+  if (!m_layout && !m_layouts.empty())
     m_layout = &m_layouts[0];  // failsafe
 
   m_focusedLayout = NULL;
@@ -1221,7 +1221,7 @@ void CGUIBaseContainer::GetCurrentLayouts()
       break;
     }
   }
-  if (!m_focusedLayout && m_focusedLayouts.size())
+  if (!m_focusedLayout && !m_focusedLayouts.empty())
     m_focusedLayout = &m_focusedLayouts[0];  // failsafe
 }
 
