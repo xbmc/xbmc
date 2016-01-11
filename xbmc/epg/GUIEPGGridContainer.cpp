@@ -1406,6 +1406,8 @@ bool CGUIEPGGridContainer::OnMouseWheel(char wheel, const CPoint &point)
 
 CPVRChannelPtr CGUIEPGGridContainer::GetChannel(int iIndex)
 {
+  CSingleLock lock(m_critSection);
+
   if (iIndex >= 0 && (size_t) iIndex < m_channelItems.size())
   {
     CFileItemPtr fileItem = m_channelItems[iIndex];
