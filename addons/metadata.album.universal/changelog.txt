@@ -1,3 +1,6 @@
+[B]2.5.1[/B]
+Update author name
+
 [B]2.5.0[/B]
 Removed: amazon.de review
 

@@ -22,7 +22,7 @@
 	<ParseIMDBRating dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;" dest="2">
-				<expression>&lt;span\sitemprop=&quot;ratingValue&quot;&gt;([0-9.]+).*?&gt;.*?title=&quot;([0-9,]+)\s</expression>
+				<expression>&lt;span\sitemprop=&quot;ratingValue&quot;&gt;([0-9.]+).*?ratingCount&quot;&gt;([0-9,]+)&lt;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -120,7 +120,7 @@
 	<ParseIMDBOutline dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;" dest="2">
-				<expression fixchars="1" trim="1">&lt;/p&gt;\n?\s+&lt;p\sitemprop=&quot;description&quot;&gt;([^&lt;]+)&lt;/p&gt;</expression>
+				<expression fixchars="1" trim="1">itemprop=&quot;description&quot;&gt;([^&lt;]+)&lt;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -134,7 +134,7 @@
 	<ParseIMDBOutlineToPlot dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="2">
-				<expression fixchars="1" trim="1">&lt;/p&gt;\n?\s+&lt;p\sitemprop=&quot;description&quot;&gt;([^&lt;]+)&lt;/p&gt;</expression>
+				<expression fixchars="1" trim="1">itemprop=&quot;description&quot;&gt;([^&lt;]+)&lt;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -303,6 +303,9 @@
 			<RegExp input="$$10" output="\1" dest="4">
 				<RegExp input="$$1" output="\2" dest="9">
 					<expression fixchars="2">&lt;meta\sname=&quot;title&quot;\scontent=&quot;(IMDb\s-\s)?(?:&amp;#x22;)?([^&quot;]*?)(?:&amp;#x22;)? \([^\(]*?([0-9]{4})(?:–\s)?\)</expression>
+				</RegExp>
+				<RegExp input="$$1" output="\1" dest="9">
+					<expression fixchars="1">class=&quot;originalTitle&quot;&gt;([^&lt;]*)</expression>
 				</RegExp>
 				<RegExp input="$$9" output="\1" dest="10">
 					<expression />
