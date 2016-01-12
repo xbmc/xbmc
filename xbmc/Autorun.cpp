@@ -308,7 +308,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
             
             // Single *.xpl or *.ifo files require an external player to handle playback.
             // If no matching rule was found, VideoPlayer will be default player.
-            if (hdVideoPlayer != "videoplayer")
+            if (hdVideoPlayer != "VideoPlayer")
             {
               CLog::Log(LOGINFO,"HD DVD: External singlefile playback initiated: %s",hddvdname.c_str());
               g_application.PlayFile(item, hdVideoPlayer, false);
