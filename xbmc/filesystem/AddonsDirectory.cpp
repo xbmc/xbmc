@@ -595,7 +595,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, CFileIte
   items.SetContent("addons");
   items.SetLabel(g_localizeStrings.Get(24001)); // Add-ons
 
-  return items.Size() > 0;
+  return true;
 }
   
 }
