@@ -31,12 +31,10 @@
 #include "utils/log.h"
 #include "utils/Variant.h"
 
-#define CONTROL_BUTTON_DEFAULTS 50
-
 using namespace PERIPHERALS;
 
 CGUIDialogPeripheralSettings::CGUIDialogPeripheralSettings()
-  : CGUIDialogSettingsManualBase(WINDOW_DIALOG_PERIPHERAL_SETTINGS, "DialogPeripheralSettings.xml"),
+  : CGUIDialogSettingsManualBase(WINDOW_DIALOG_PERIPHERAL_SETTINGS, "DialogSettings.xml"),
     m_item(NULL),
     m_initialising(false)
 { }
@@ -52,7 +50,7 @@ CGUIDialogPeripheralSettings::~CGUIDialogPeripheralSettings()
 bool CGUIDialogPeripheralSettings::OnMessage(CGUIMessage &message)
 {
   if (message.GetMessage() == GUI_MSG_CLICKED &&
-      message.GetSenderId() == CONTROL_BUTTON_DEFAULTS)
+      message.GetSenderId() == CONTROL_SETTINGS_CUSTOM_BUTTON)
   {
     OnResetSettings();
     return true;
@@ -124,6 +122,9 @@ void CGUIDialogPeripheralSettings::SetupView()
   CGUIDialogSettingsManualBase::SetupView();
 
   SetHeading(m_item->GetLabel());
+  SET_CONTROL_LABEL(CONTROL_SETTINGS_OKAY_BUTTON, 186);
+  SET_CONTROL_LABEL(CONTROL_SETTINGS_CANCEL_BUTTON, 222);
+  SET_CONTROL_LABEL(CONTROL_SETTINGS_CUSTOM_BUTTON, 409);
 }
 
 void CGUIDialogPeripheralSettings::InitializeSettings()

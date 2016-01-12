@@ -72,7 +72,7 @@ using namespace PVR;
 #define ENTRY_ANY_CHANNEL (-1)
 
 CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings() :
-  CGUIDialogSettingsManualBase(WINDOW_DIALOG_PVR_TIMER_SETTING, "DialogPVRTimerSettings.xml"),
+  CGUIDialogSettingsManualBase(WINDOW_DIALOG_PVR_TIMER_SETTING, "DialogSettings.xml"),
   m_bIsRadio(false),
   m_bIsNewTimer(true),
   m_bTimerActive(false),
@@ -219,6 +219,10 @@ void CGUIDialogPVRTimerSettings::SetTimer(CFileItem *item)
 void CGUIDialogPVRTimerSettings::SetupView()
 {
   CGUIDialogSettingsManualBase::SetupView();
+  SetHeading(19065);
+  SET_CONTROL_HIDDEN(CONTROL_SETTINGS_CUSTOM_BUTTON);
+  SET_CONTROL_LABEL(CONTROL_SETTINGS_OKAY_BUTTON, 186);
+  SET_CONTROL_LABEL(CONTROL_SETTINGS_CANCEL_BUTTON, 222);
   SetButtonLabels();
 }
 

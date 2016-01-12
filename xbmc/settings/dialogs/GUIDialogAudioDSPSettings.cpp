@@ -79,12 +79,10 @@
 #define SETTING_STREAM_INFO_TYPE_OUTPUT           "audiodsp.info.typeoutput"
 #define SETTING_STREAM_INFO_MODE_CPU_USAGE        "audiodsp.info.modecpuusage_"
 
-#define CONTROL_SETTINGS_LABEL                    2
-
 using namespace ActiveAE;
 
 CGUIDialogAudioDSPSettings::CGUIDialogAudioDSPSettings()
-  : CGUIDialogSettingsManualBase(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS, "DialogAudioDSPSettings.xml")
+  : CGUIDialogSettingsManualBase(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS, "DialogSettings.xml")
 {
   m_ActiveStreamId                                = 0;
   m_GetCPUUsage                                   = false;
@@ -134,7 +132,7 @@ void CGUIDialogAudioDSPSettings::OpenMenu(const std::string &id)
   else if (id == SETTING_AUDIO_CAT_PROC_INFO)
     m_MenuName = 15031;
 
-  SET_CONTROL_LABEL(CONTROL_SETTINGS_LABEL, g_localizeStrings.Get(m_MenuName));
+  SetHeading(g_localizeStrings.Get(m_MenuName));
   CreateSettings();
   SET_CONTROL_FOCUS(m_MenuPositions[id], 0);
 }
@@ -207,7 +205,7 @@ bool CGUIDialogAudioDSPSettings::OnBack(int actionID)
     m_iCategory = mainCategory;
 
   if (m_iCategory == mainCategory)
-    SET_CONTROL_LABEL(CONTROL_SETTINGS_LABEL, g_localizeStrings.Get(15028));
+    SetHeading(15028);
 
   CreateSettings();
   SET_CONTROL_FOCUS(m_MenuPositions[m_categories[m_iCategory]->GetId()], 0);
@@ -398,7 +396,10 @@ void CGUIDialogAudioDSPSettings::Save()
 void CGUIDialogAudioDSPSettings::SetupView()
 {
   CGUIDialogSettingsManualBase::SetupView();
-  SET_CONTROL_LABEL(CONTROL_SETTINGS_LABEL, g_localizeStrings.Get(15028));
+  SetHeading(15028);
+  SET_CONTROL_HIDDEN(CONTROL_SETTINGS_OKAY_BUTTON);
+  SET_CONTROL_HIDDEN(CONTROL_SETTINGS_CUSTOM_BUTTON);
+  SET_CONTROL_LABEL(CONTROL_SETTINGS_CANCEL_BUTTON, 15067);
 }
 
 void CGUIDialogAudioDSPSettings::InitializeSettings()
