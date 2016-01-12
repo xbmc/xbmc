@@ -1855,6 +1855,7 @@ void CVideoPlayer::HandlePlaySpeed()
           {
             CLog::Log(LOGDEBUG,"CVideoPlayer::HandlePlaySpeed - audio stream stalled, triggering re-sync");
             FlushBuffers(false);
+            m_messenger.Put(new CDVDMsgPlayerSeek((int) GetTime(), false, true, true, true, true));
           }
         }
       }
