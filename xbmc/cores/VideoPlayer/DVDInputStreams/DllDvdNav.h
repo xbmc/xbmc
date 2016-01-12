@@ -102,12 +102,14 @@ public:
   virtual dvdnav_status_t dvdnav_get_state(dvdnav_t *self, dvd_state_t *save_state)=0;
   virtual dvdnav_status_t dvdnav_set_state(dvdnav_t *self, dvd_state_t *save_state)=0;
   virtual dvdnav_status_t dvdnav_get_angle_info(dvdnav_t *self, int32_t *current_angle,int32_t *number_of_angles)=0;
+  virtual dvdnav_status_t dvdnav_angle_change(dvdnav_t *self, int32_t angle) = 0;
   virtual dvdnav_status_t dvdnav_mouse_activate(dvdnav_t *self, pci_t *pci, int32_t x, int32_t y)=0;
   virtual dvdnav_status_t dvdnav_mouse_select(dvdnav_t *self, pci_t *pci, int32_t x, int32_t y)=0;
   virtual dvdnav_status_t dvdnav_get_title_string(dvdnav_t *self, const char **title_str)=0;
   virtual dvdnav_status_t dvdnav_get_serial_string(dvdnav_t *self, const char **serial_str)=0;
   virtual uint32_t dvdnav_describe_title_chapters(dvdnav_t* self, uint32_t title, uint64_t** times, uint64_t* duration)=0;
   virtual void dvdnav_free(void* pdata) = 0;
+  virtual int dvdnav_get_video_resolution(dvdnav_t* self, uint32_t* width, uint32_t* height)=0;
 };
 
 #if (defined USE_STATIC_LIBDVDNAV)
@@ -305,12 +307,14 @@ class DllDvdNav : public DllDynamic, DllDvdNavInterface
   DEFINE_METHOD2(dvdnav_status_t, dvdnav_get_state, (dvdnav_t *p1, dvd_state_t *p2))
   DEFINE_METHOD2(dvdnav_status_t, dvdnav_set_state, (dvdnav_t *p1, dvd_state_t *p2))
   DEFINE_METHOD3(dvdnav_status_t, dvdnav_get_angle_info, (dvdnav_t *p1, int32_t *p2,int32_t *p3))
+  DEFINE_METHOD2(dvdnav_status_t, dvdnav_angle_change, (dvdnav_t *p1, int32_t p2))
   DEFINE_METHOD4(dvdnav_status_t, dvdnav_mouse_activate, (dvdnav_t *p1, pci_t *p2, int32_t p3, int32_t p4))
   DEFINE_METHOD4(dvdnav_status_t, dvdnav_mouse_select, (dvdnav_t *p1, pci_t *p2, int32_t p3, int32_t p4))
   DEFINE_METHOD2(dvdnav_status_t, dvdnav_get_title_string, (dvdnav_t *p1, const char **p2))
   DEFINE_METHOD2(dvdnav_status_t, dvdnav_get_serial_string, (dvdnav_t *p1, const char **p2))
   DEFINE_METHOD4(uint32_t, dvdnav_describe_title_chapters, (dvdnav_t* p1, uint32_t p2, uint64_t** p3, uint64_t* p4))
   DEFINE_METHOD1(void, dvdnav_free, (void *p1))
+  DEFINE_METHOD3(int, dvdnav_get_video_resolution, (dvdnav_t* p1, uint32_t* p2, uint32_t* p3))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(dvdnav_open)
     RESOLVE_METHOD(dvdnav_close)
@@ -367,12 +371,14 @@ class DllDvdNav : public DllDynamic, DllDvdNavInterface
     RESOLVE_METHOD(dvdnav_get_state)
     RESOLVE_METHOD(dvdnav_set_state)
     RESOLVE_METHOD(dvdnav_get_angle_info)
+    RESOLVE_METHOD(dvdnav_angle_change)
     RESOLVE_METHOD(dvdnav_mouse_activate)
     RESOLVE_METHOD(dvdnav_mouse_select)
     RESOLVE_METHOD(dvdnav_get_title_string)
     RESOLVE_METHOD(dvdnav_get_serial_string)
     RESOLVE_METHOD(dvdnav_describe_title_chapters)
     RESOLVE_METHOD(dvdnav_free)
+    RESOLVE_METHOD(dvdnav_get_video_resolution)
 END_METHOD_RESOLVE()
 };
 

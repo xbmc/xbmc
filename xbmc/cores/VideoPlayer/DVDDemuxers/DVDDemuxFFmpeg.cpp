@@ -111,6 +111,15 @@ void CDemuxStreamVideoFFmpeg::GetStreamInfo(std::string& strInfo)
   strInfo = temp;
 }
 
+void CDemuxStreamVideoFFmpeg::GetStreamName(std::string& strInfo)
+{
+  if (!m_stream) return;
+  if (!m_description.empty())
+    strInfo = m_description;
+  else
+    CDemuxStream::GetStreamName(strInfo);
+}
+
 void CDemuxStreamSubtitleFFmpeg::GetStreamInfo(std::string& strInfo)
 {
   if(!m_stream) return;
@@ -1224,6 +1233,9 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
             }
           }
         }
+        if (av_dict_get(pStream->metadata, "title", NULL, 0))
+          st->m_description = av_dict_get(pStream->metadata, "title", NULL, 0)->value;
+
         break;
       }
     case AVMEDIA_TYPE_DATA:

@@ -53,6 +53,7 @@ void CStreamDetailVideo::Archive(CArchive& ar)
     ar << m_iWidth;
     ar << m_iDuration;
     ar << m_strStereoMode;
+    ar << m_strLanguage;
   }
   else
   {
@@ -62,6 +63,7 @@ void CStreamDetailVideo::Archive(CArchive& ar)
     ar >> m_iWidth;
     ar >> m_iDuration;
     ar >> m_strStereoMode;
+    ar >> m_strLanguage;
   }
 }
 void CStreamDetailVideo::Serialize(CVariant& value) const
@@ -72,6 +74,7 @@ void CStreamDetailVideo::Serialize(CVariant& value) const
   value["width"] = m_iWidth;
   value["duration"] = m_iDuration;
   value["stereomode"] = m_strStereoMode;
+  value["language"] = m_strLanguage;
 }
 
 bool CStreamDetailVideo::IsWorseThan(CStreamDetail *that)
@@ -265,6 +268,15 @@ CStreamDetail *CStreamDetails::NewStream(CStreamDetail::StreamType type)
     AddStream(retVal);
 
   return retVal;
+}
+
+std::string CStreamDetails::GetVideoLanguage(int idx) const
+{
+  CStreamDetailVideo *item = (CStreamDetailVideo*)GetNthStream(CStreamDetail::VIDEO, idx);
+  if (item)
+    return item->m_strLanguage;
+  else
+    return "";
 }
 
 int CStreamDetails::GetStreamCount(CStreamDetail::StreamType type) const

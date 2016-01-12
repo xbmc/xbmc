@@ -509,11 +509,11 @@ void CApplicationPlayer::OnNothingToQueueNotify()
     player->OnNothingToQueueNotify();
 }
 
-void CApplicationPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
+void CApplicationPlayer::GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    player->GetVideoStreamInfo(info);
+    player->GetVideoStreamInfo(streamId, info);
 }
 
 void CApplicationPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
@@ -540,6 +540,31 @@ int  CApplicationPlayer::GetAudioStreamCount()
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     return player->GetAudioStreamCount();
+  else
+    return 0;
+}
+
+int CApplicationPlayer::GetVideoStream()
+{
+  if (!m_videoStreamUpdate.IsTimePast())
+    return m_iVideoStream;
+
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+  {
+    m_iVideoStream = player->GetVideoStream();
+    m_videoStreamUpdate.Set(1000);
+    return m_iVideoStream;
+  }
+  else
+    return 0;
+}
+
+int CApplicationPlayer::GetVideoStreamCount()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->GetVideoStreamCount();
   else
     return 0;
 }
@@ -598,6 +623,18 @@ void CApplicationPlayer::SetTotalTime(int64_t time)
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     player->SetTotalTime(time);
+}
+
+void CApplicationPlayer::SetVideoStream(int iStream)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+  {
+    player->SetVideoStream(iStream);
+    m_iVideoStream = iStream;
+    m_videoStreamUpdate.Set(1000);
+    CMediaSettings::GetInstance().GetCurrentVideoSettings().m_VideoStream = iStream;
+  }
 }
 
 void CApplicationPlayer::AddSubtitle(const std::string& strSubPath)

@@ -18235,3 +18235,15 @@ msgstr ""
 msgctxt "#38030"
 msgid "This option uses frame-packing to output full resolution for 3D through HDMI.[CR]Enabling this improves quality of Multiview Video Coding (MVC) videos, but may not be supported by all displays."
 msgstr ""
+
+#. Label for an option to select the video stream to play if current video has more than one video stream
+#: xbmc\video\dialogs\GUIDialogVideoSettings.cpp
+msgctxt "#38031"
+msgid "Video stream"
+msgstr ""
+
+#. Label for an option to select the angle to play if current disc has more than one angle
+#: xbmc\video\dialogs\GUIDialogVideoSettings.cpp
+msgctxt "#38032"
+msgid "Angle"
+msgstr ""
