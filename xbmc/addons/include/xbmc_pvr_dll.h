@@ -436,12 +436,6 @@ extern "C"
   long long LengthLiveStream(void);
 
   /*!
-   * @return The channel number on the backend of the live stream that's currently being read.
-   * @remarks Required if bHandlesInputStream or bHandlesDemuxing is set to true. Return -1 if this add-on won't provide this function.
-   */
-  int GetCurrentClientChannel(void);
-
-  /*!
    * Switch to another channel. Only to be called when a live stream has already been opened.
    * @param channel The channel to switch to.
    * @return True if the switch was successful, false otherwise.
@@ -699,7 +693,6 @@ extern "C"
     pClient->SeekLiveStream                 = SeekLiveStream;
     pClient->PositionLiveStream             = PositionLiveStream;
     pClient->LengthLiveStream               = LengthLiveStream;
-    pClient->GetCurrentClientChannel        = GetCurrentClientChannel;
     pClient->SwitchChannel                  = SwitchChannel;
     pClient->SignalStatus                   = SignalStatus;
     pClient->GetLiveStreamURL               = GetLiveStreamURL;
@@ -732,4 +725,3 @@ extern "C"
     pClient->IsRealTimeStream               = IsRealTimeStream;
   };
 };
-

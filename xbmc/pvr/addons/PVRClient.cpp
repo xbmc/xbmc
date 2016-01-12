@@ -1403,16 +1403,6 @@ int64_t CPVRClient::GetStreamLength(void)
   return -EINVAL;
 }
 
-int CPVRClient::GetCurrentClientChannel(void)
-{
-  if (IsPlayingLiveStream())
-  {
-    try { return m_pStruct->GetCurrentClientChannel(); }
-    catch (std::exception &e) { LogException(e, __FUNCTION__); }
-  }
-  return -EINVAL;
-}
-
 bool CPVRClient::SwitchChannel(const CPVRChannelPtr &channel)
 {
   bool bSwitched(false);

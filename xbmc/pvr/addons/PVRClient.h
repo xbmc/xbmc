@@ -456,11 +456,6 @@ namespace PVR
     void PauseStream(bool bPaused);
 
     /*!
-     * @return The channel number on the server of the live stream that's currently being read.
-     */
-    int GetCurrentClientChannel(void);
-
-    /*!
      * @brief Switch to another channel. Only to be called when a live stream has already been opened.
      * @param channel The channel to switch to.
      * @return True if the switch was successful, false otherwise.

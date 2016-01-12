@@ -555,7 +555,6 @@ extern "C" {
     long long    (__cdecl* SeekLiveStream)(long long, int);
     long long    (__cdecl* PositionLiveStream)(void);
     long long    (__cdecl* LengthLiveStream)(void);
-    int          (__cdecl* GetCurrentClientChannel)(void);
     bool         (__cdecl* SwitchChannel)(const PVR_CHANNEL&);
     PVR_ERROR    (__cdecl* SignalStatus)(PVR_SIGNAL_STATUS&);
     const char*  (__cdecl* GetLiveStreamURL)(const PVR_CHANNEL&);
@@ -586,4 +585,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
