@@ -11329,23 +11329,6 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = "";
 				GENERATE_PROFILING_CODE = NO;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					$SRCROOT,
-					xbmc,
-					xbmc/linux,
-					xbmc/osx,
-					xbmc/cores/VideoPlayer,
-					lib,
-					lib/ffmpeg,
-					addons/library.xbmc.addon,
-					$XBMC_DEPENDS/include,
-					$XBMC_DEPENDS/include/libcec,
-					$XBMC_DEPENDS/include/mysql,
-					$XBMC_DEPENDS/include/freetype2,
-					$XBMC_DEPENDS/include/python2.7,
-					$XBMC_DEPENDS/include/libxml2,
-				);
 				INFOPLIST_FILE = $SRCROOT/xbmc/platform/darwin/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
@@ -11388,23 +11371,6 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = YES;
 				GCC_VERSION = "";
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					$SRCROOT,
-					xbmc,
-					xbmc/linux,
-					xbmc/osx,
-					xbmc/cores/VideoPlayer,
-					lib,
-					lib/ffmpeg,
-					addons/library.xbmc.addon,
-					$XBMC_DEPENDS/include,
-					$XBMC_DEPENDS/include/libcec,
-					$XBMC_DEPENDS/include/mysql,
-					$XBMC_DEPENDS/include/freetype2,
-					$XBMC_DEPENDS/include/python2.7,
-					$XBMC_DEPENDS/include/libxml2,
-				);
 				INFOPLIST_FILE = $SRCROOT/xbmc/platform/darwin/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
@@ -11496,22 +11462,6 @@
 					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					$SRCROOT,
-					xbmc,
-					xbmc/linux,
-					xbmc/osx,
-					xbmc/cores/VideoPlayer,
-					lib,
-					addons/library.xbmc.addon,
-					$XBMC_DEPENDS/include,
-					$XBMC_DEPENDS/include/libcec,
-					$XBMC_DEPENDS/include/mysql,
-					$XBMC_DEPENDS/include/freetype2,
-					$XBMC_DEPENDS/include/python2.7,
-					$XBMC_DEPENDS/include/libxml2,
-				);
 				INFOPLIST_FILE = "$(SRCROOT)/xbmc/platform/darwin/ios/Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -11537,22 +11487,6 @@
 					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					$SRCROOT,
-					xbmc,
-					xbmc/linux,
-					xbmc/osx,
-					xbmc/cores/VideoPlayer,
-					lib,
-					addons/library.xbmc.addon,
-					$XBMC_DEPENDS/include,
-					$XBMC_DEPENDS/include/libcec,
-					$XBMC_DEPENDS/include/mysql,
-					$XBMC_DEPENDS/include/freetype2,
-					$XBMC_DEPENDS/include/python2.7,
-					$XBMC_DEPENDS/include/libxml2,
-				);
 				INFOPLIST_FILE = "$(SRCROOT)/xbmc/platform/darwin/ios/Info.plist";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
