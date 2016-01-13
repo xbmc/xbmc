@@ -192,8 +192,6 @@ vtbdecoder_enabled="== VTBDecoder support enabled. =="
 vtbdecoder_disabled="== VTBDecoder support manually disabled. =="
 openmax_disabled="== OpenMax support manually disabled. =="
 openmax_not_found="== Could not find OpenMax headers. OpenMax support disabled. =="
-ssh_not_found="== Could not find libssh. =="
-ssh_disabled="== SSH SFTP disabled. =="
 librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
 librtmp_disabled="== RTMP support disabled. =="
 libnfs_not_found="== Could not find libnfs. NFS client support disabled. =="
@@ -1076,7 +1074,8 @@ else
   AC_MSG_RESULT(no)
 fi
 
-AC_CHECK_HEADER([openssl/crypto.h], AC_DEFINE([HAVE_OPENSSL],[1],[Define if we have openssl]),)
+PKG_CHECK_MODULES([OPENSSL], [openssl],
+  [INCLUDES="$INCLUDES $OPENSSL_CFLAGS"; LIBS="$LIBS $OPENSSL_LIBS"; AC_DEFINE([HAVE_OPENSSL],[1],[Define if we have openssl])],)
 AC_CHECK_HEADER([gcrypt.h], gcrypt_headers_available=yes,gcrypt_headers_available=no)
 if test "$gcrypt_headers_available" = "yes"; then
    # if we have the headers then we must have the lib
@@ -1400,11 +1399,12 @@ fi
 
 # libssh
 if test "x$use_ssh" = "xno"; then
-  AC_MSG_NOTICE($ssh_disabled)
+  AC_MSG_NOTICE(ssh support disabled by user)
   use_libssh="no"
 else
-  AC_CHECK_LIB([ssh], [sftp_tell64],, AC_MSG_ERROR($ssh_not_found))
-  AC_DEFINE([HAVE_LIBSSH], [1], [Whether to use libSSH library.])
+  PKG_CHECK_MODULES([LIBSSH], [libssh],
+    [INCLUDES="$INCLUDES $LIBSSH_CFLAGS"; LIBS="$LIBS $LIBSSH_LIBS"; AC_DEFINE([HAVE_LIBSSH], [1], [Whether to use libSSH library.])],
+    AC_MSG_ERROR(libssh not found))
 fi
 
 # libRTMP
