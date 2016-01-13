@@ -143,6 +143,9 @@ struct DVDVideoUserData
 #define DVP_FLAG_INTERLACED         0x00000008  //< Set to indicate that this frame is interlaced
 
 #define DVP_FLAG_DROPPED            0x00000010  //< indicate that this picture has been dropped in decoder stage, will have no data
+#define DVP_FLAG_CONSUMED           0x00000020  //< indicate that this picture has been added in renderManager caused of an stream change
+#define DVP_FLAG_DRAINED            0x00000040  //< indicate that this picture was drained out of the decoder
+#define DVP_FLAG_LAST_DRAINED       0x00000080  //< indicate that this picture is the last one drained out of the decoder
 
 #define DVD_CODEC_CTRL_SKIPDEINT    0x01000000  //< indicate that this picture was requested to have been dropped in deint stage
 #define DVD_CODEC_CTRL_NO_POSTPROC  0x02000000  //< see GetCodecStats

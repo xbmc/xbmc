@@ -109,8 +109,7 @@ protected:
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
-  bool ProcessDecoderOutput(int &decoderState, double &frametime, double &pts);
-
+  bool ProcessDecoderOutput(int &decoderState, double &frametime, double &pts, const int drainFlags);
   int OutputPicture(const DVDVideoPicture* src, double pts);
   void ProcessOverlays(DVDVideoPicture* pSource, double pts);
   void OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec);

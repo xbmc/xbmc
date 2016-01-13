@@ -107,6 +107,7 @@ public:
     int priority = 0;
     return Get(pMsg, iTimeoutInMilliSeconds, priority);
   }
+  const CDVDMsg* CDVDMessageQueue::Peek();
 
   int GetDataSize() const { return m_iDataSize; }
   int GetTimeSize() const;

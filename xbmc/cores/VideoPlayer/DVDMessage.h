@@ -108,17 +108,17 @@ public:
   /**
    * checks for message type
    */
-  inline bool IsType(Message msg) XBMC_FORCE_INLINE
+  inline bool IsType(Message msg) const XBMC_FORCE_INLINE
   {
     return (m_message == msg);
   }
 
-  inline Message GetMessageType() XBMC_FORCE_INLINE
+  inline Message GetMessageType() const XBMC_FORCE_INLINE
   {
     return m_message;
   }
 
-  long GetNrOfReferences()
+  long GetNrOfReferences() const
   {
     return m_refs;
   }

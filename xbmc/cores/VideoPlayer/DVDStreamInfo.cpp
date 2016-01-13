@@ -46,6 +46,9 @@ void CDVDStreamInfo::Clear()
   filename.clear();
   dvd = false;
 
+  stream_continues = false;
+  pPacket = 0;
+
   if( extradata && extrasize ) free(extradata);
 
   extradata = NULL;
@@ -145,6 +148,8 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   flags = right.flags;
   filename = right.filename;
   dvd = right.dvd;
+  stream_continues = right.stream_continues;
+  pPacket = right.pPacket;
 
   if( extradata && extrasize ) free(extradata);
 
@@ -204,6 +209,9 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   profile   = right.profile;
   level     = right.level;
   flags     = right.flags;
+
+  stream_continues = right.continues;
+  pPacket = right.initial_packet;
 
   if( withextradata && right.ExtraSize )
   {

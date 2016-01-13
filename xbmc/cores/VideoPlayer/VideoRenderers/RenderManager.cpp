@@ -125,6 +125,7 @@ CRenderManager::CRenderManager(CDVDClock &clock) : m_dvdClock(clock)
   m_presentstep = PRESENT_IDLE;
   m_rendermethod = 0;
   m_presentsource = 0;
+  m_drainedbuffersource = 2;
   m_bTriggerUpdateResolution = false;
   m_hasCaptures = false;
   m_displayLatency = 0.0f;
@@ -278,11 +279,12 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
   std::string formatstr = GetRenderFormatName(picture.format);
   CLog::Log(LOGDEBUG, "CRenderManager::Configure - change configuration. %dx%d. display: %dx%d. framerate: %4.2f. format: %s", picture.iWidth, picture.iHeight, picture.iDisplayWidth, picture.iDisplayHeight, fps, formatstr.c_str());
 
+
   // make sure any queued frame was fully presented
   {
     CSingleLock lock(m_presentlock);
     XbmcThreads::EndTime endtime(5000);
-    while(m_presentstep != PRESENT_IDLE && m_presentstep != PRESENT_READY)
+    while(m_presentstep != PRESENT_IDLE)
     {
       if(endtime.IsTimePast())
       {
@@ -322,6 +324,11 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
     return false;
   }
 
+  int nIndex(AddVideoPicture(picture));
+  bool stopped(false);
+
+  FlipPage(stopped,nIndex);
+  picture.iFlags |= DVP_FLAG_CONSUMED;
   return true;
 }
 
@@ -359,13 +366,14 @@ bool CRenderManager::Configure()
       CLog::Log(LOGWARNING, "CRenderManager::Configure - queue size too small (%d, %d, %d)", m_QueueSize, renderbuffers, m_NumberBuffers);
     }
 
-    m_pRenderer->SetBufferSize(m_QueueSize);
+    m_pRenderer->SetBufferSize(m_QueueSize + 1);
     m_pRenderer->Update();
 
     m_queued.clear();
     m_discard.clear();
     m_free.clear();
     m_presentsource = 0;
+    m_drainedbuffersource = m_QueueSize;
     for (int i=1; i < m_QueueSize; i++)
       m_free.push_back(i);
 
@@ -486,7 +494,7 @@ void CRenderManager::FrameMove()
       else
         ++it;
     }
-    
+
     m_bRenderGUI = true;
   }
 
@@ -789,7 +797,7 @@ bool CRenderManager::RenderCaptureGetPixels(unsigned int captureId, unsigned int
   {
     if (!millis)
       millis = 1000;
-    
+
     CSingleExit exitlock(m_captCritSect);
     if (!it->second->GetEvent().WaitMSec(millis))
       return false;
@@ -1181,8 +1189,13 @@ int CRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   {
     CSingleLock lock(m_presentlock);
     if (m_free.empty())
-      return -1;
-    index = m_free.front();
+    {
+      if (pic.iFlags & DVP_FLAG_LAST_DRAINED)
+        index = m_drainedbuffersource;
+      else
+        return -1;
+    } else
+      index = m_free.front();
   }
 
   // TODO: this is a Windows onl thing and should go away

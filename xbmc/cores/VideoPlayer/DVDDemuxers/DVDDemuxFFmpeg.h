@@ -42,7 +42,11 @@ public:
   CDemuxStreamVideoFFmpeg(CDVDDemuxFFmpeg *parent, AVStream* stream)
     : m_parent(parent)
     , m_stream(stream)
-  {}
+  {
+    GetStreamInfo(m_streaminfo);
+  }
+  std::string m_streaminfo;
+
   virtual void GetStreamInfo(std::string& strInfo);
 };
 
@@ -56,8 +60,10 @@ public:
   CDemuxStreamAudioFFmpeg(CDVDDemuxFFmpeg *parent, AVStream* stream)
     : m_parent(parent)
     , m_stream(stream)
-  {}
-  std::string m_description;
+  {
+    GetStreamInfo(m_streaminfo);
+  }
+  std::string m_description, m_streaminfo;
 
   virtual void GetStreamInfo(std::string& strInfo);
   virtual void GetStreamName(std::string& strInfo);
@@ -72,8 +78,10 @@ public:
   CDemuxStreamSubtitleFFmpeg(CDVDDemuxFFmpeg *parent, AVStream* stream)
     : m_parent(parent)
     , m_stream(stream)
-  {}
-  std::string m_description;
+  {
+    GetStreamInfo(m_streaminfo);
+  }
+  std::string m_description, m_streaminfo;
 
   virtual void GetStreamInfo(std::string& strInfo);
   virtual void GetStreamName(std::string& strInfo);

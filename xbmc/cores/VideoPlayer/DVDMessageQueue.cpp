@@ -205,6 +205,16 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
   return (MsgQueueReturnCode)ret;
 }
 
+const CDVDMsg* CDVDMessageQueue::Peek()
+{
+  CSingleLock lock(m_section);
+
+  if (!m_list.empty() && !m_bCaching)
+    return m_list.back().message->Acquire();
+
+  return NULL;
+}
+
 unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type)
 {
   CSingleLock lock(m_section);

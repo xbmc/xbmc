@@ -212,7 +212,7 @@ protected:
     double         timestamp;
     EFIELDSYNC     presentfield;
     EPRESENTMETHOD presentmethod;
-  } m_Queue[NUM_BUFFERS];
+  } m_Queue[NUM_BUFFERS + 1];
 
   std::deque<int> m_free;
   std::deque<int> m_queued;
@@ -234,6 +234,7 @@ protected:
   int m_errorindex;
   EPRESENTSTEP m_presentstep;
   int m_presentsource;
+  int m_drainedbuffersource;
   XbmcThreads::ConditionVariable  m_presentevent;
   CCriticalSection m_presentlock;
   CEvent m_flushEvent;

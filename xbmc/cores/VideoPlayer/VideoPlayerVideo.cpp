@@ -138,7 +138,7 @@ bool CVideoPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
   g_VideoReferenceClock.Start();
 
-  if(m_messageQueue.IsInited())
+  if (m_messageQueue.IsInited())
     m_messageQueue.Put(new CDVDMsgVideoCodecChange(hint, codec), 0);
   else
   {
@@ -152,33 +152,40 @@ bool CVideoPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
 void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
 {
-  //reported fps is usually not completely correct
-  if (hint.fpsrate && hint.fpsscale)
-    m_fFrameRate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * hint.fpsscale / hint.fpsrate);
-  else
-    m_fFrameRate = 25;
-
-  m_bFpsInvalid = (hint.fpsrate == 0 || hint.fpsscale == 0);
-
-  m_pullupCorrection.ResetVFRDetection();
-  m_bCalcFrameRate = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) ||
-                     CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF;
-  ResetFrameRateCalc();
-
-  m_iDroppedRequest = 0;
-  m_iLateFrames = 0;
-
-  if( m_fFrameRate > 120 || m_fFrameRate < 5 )
+  if (!hint.stream_continues)
   {
-    CLog::Log(LOGERROR, "CVideoPlayerVideo::OpenStream - Invalid framerate %d, using forced 25fps and just trust timestamps", (int)m_fFrameRate);
-    m_fFrameRate = 25;
-  }
+    //reported fps is usually not completely correct
+    if (hint.fpsrate && hint.fpsscale)
+      m_fFrameRate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * hint.fpsscale / hint.fpsrate);
+    else
+      m_fFrameRate = 25;
 
-  // use aspect in stream if available
-  if(hint.forced_aspect)
-    m_fForcedAspectRatio = hint.aspect;
+    m_bFpsInvalid = (hint.fpsrate == 0 || hint.fpsscale == 0);
+
+    m_pullupCorrection.ResetVFRDetection();
+    m_bCalcFrameRate = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) ||
+      CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF;
+    ResetFrameRateCalc();
+
+    m_iDroppedRequest = 0;
+    m_iLateFrames = 0;
+
+    if (m_fFrameRate > 120 || m_fFrameRate < 5)
+    {
+      CLog::Log(LOGERROR, "CVideoPlayerVideo::OpenStream - Invalid framerate %d, using forced 25fps and just trust timestamps", (int)m_fFrameRate);
+      m_fFrameRate = 25;
+    }
+
+    // use aspect in stream if available
+    if (hint.forced_aspect)
+      m_fForcedAspectRatio = hint.aspect;
+    else
+      m_fForcedAspectRatio = 0.0;
+
+    m_syncState = IDVDStreamPlayer::SYNC_STARTING;
+  }
   else
-    m_fForcedAspectRatio = 0.0;
+    m_syncState = IDVDStreamPlayer::SYNC_INSYNC;
 
   if (m_pVideoCodec)
     delete m_pVideoCodec;
@@ -188,7 +195,6 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   m_stalled = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_codecname = m_pVideoCodec->GetName();
   m_packets.clear();
-  m_syncState = IDVDStreamPlayer::SYNC_STARTING;
 }
 
 void CVideoPlayerVideo::CloseStream(bool bWaitForBuffers)
@@ -278,7 +284,7 @@ void CVideoPlayerVideo::Process()
       // check if decoder has produced some output
       m_pVideoCodec->SetCodecControl(DVD_CODEC_CTRL_DRAIN);
       int decoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
-      ProcessDecoderOutput(decoderState, frametime, pts);
+      ProcessDecoderOutput(decoderState, frametime, pts, DVP_FLAG_DRAINED);
 
       //Okey, start rendering at stream fps now instead, we are likely in a stillframe
       if (!m_stalled)
@@ -295,7 +301,6 @@ void CVideoPlayerVideo::Process()
         OutputPicture(&m_picture, pts);
         pts += frametime;
       }
-
       continue;
     }
 
@@ -394,12 +399,16 @@ void CVideoPlayerVideo::Process()
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_DRAIN))
     {
-      while (!m_bStop)
+      int drainFlags = DVP_FLAG_DRAINED;
+      while (!m_bStop  && m_pVideoCodec)
       {
         m_pVideoCodec->SetCodecControl(DVD_CODEC_CTRL_DRAIN);
         int decoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
 
-        bool cont = ProcessDecoderOutput(decoderState, frametime, pts);
+        if (decoderState & VC_BUFFER)
+          drainFlags |= DVP_FLAG_LAST_DRAINED;
+
+        bool cont = ProcessDecoderOutput(decoderState, frametime, pts, drainFlags);
 
         if (!cont)
           break;
@@ -493,7 +502,7 @@ void CVideoPlayerVideo::Process()
       while (!m_bStop)
       {
         int dropped = m_iDroppedFrames;
-        bool cont = ProcessDecoderOutput(iDecoderState, frametime, pts);
+        bool cont = ProcessDecoderOutput(iDecoderState, frametime, pts, 0);
         iDropped += m_iDroppedFrames - dropped;
 
         if (!cont)
@@ -515,7 +524,7 @@ void CVideoPlayerVideo::Process()
   m_pVideoCodec->ClearPicture(&m_picture);
 }
 
-bool CVideoPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametime, double &pts)
+bool CVideoPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametime, double &pts, const int drainFlags)
 {
   std::string sPostProcessType;
   bool bPostProcessDeint = false;
@@ -570,6 +579,8 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametim
     m_pVideoCodec->ClearPicture(&m_picture);
     if (m_pVideoCodec->GetPicture(&m_picture))
     {
+      m_picture.iFlags |= drainFlags;
+
       sPostProcessType.clear();
 
       if (m_picture.iDuration == 0.0)
@@ -720,7 +731,6 @@ void CVideoPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, double pts)
                                         , static_cast<CDVDOverlayGroup*>(pOverlay)->m_overlays.end());
         else
           overlays.push_back(pOverlay);
-
       }
     }
 
@@ -731,8 +741,6 @@ void CVideoPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, double pts)
       m_renderManager.AddOverlay(*it, pts2);
     }
   }
-
-
 }
 #endif
 
@@ -804,6 +812,10 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     pts += m_pullupCorrection.GetCorrection();
   }
 
+  // The first frame on change was inserted directly to avoid black screens
+  if (picture.iFlags & DVP_FLAG_CONSUMED)
+    return 0;
+
   //try to calculate the framerate
   CalcFrameRate();
 
@@ -847,7 +859,17 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   else if (m_stalled)
     iSleepTime = iFrameSleep;
   else
-    iSleepTime = iClockSleep;
+  {
+    const CDVDMsg *msg(m_messageQueue.Peek());
+    if (msg && msg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
+    {
+      if (!(picture.iFlags & DVP_FLAG_DRAINED))
+        m_messageQueue.Put(new CDVDMsg(CDVDMsg::VIDEO_DRAIN), 100);
+      iSleepTime = 0.0;
+    }
+    else
+      iSleepTime = iClockSleep;
+  }
 
   // limit sleep time to 2000ms
   if (iSleepTime > DVD_MSEC_TO_TIME(2000))
@@ -915,16 +937,21 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       mDisplayField = FS_BOT;
   }
 
-  // make sure waiting time is not negative
-  int maxWaitTime = std::max(DVD_TIME_TO_MSEC(iSleepTime) + 500, 50);
-  // don't wait when going ff
-  if (m_speed > DVD_PLAYSPEED_NORMAL)
-    maxWaitTime = std::max(DVD_TIME_TO_MSEC(iSleepTime), 0);
-  int buffer = m_renderManager.WaitForBuffer(m_bStop, maxWaitTime);
-  if (buffer < 0)
+  // Inserted the last pic of a stream as early as possible to give a stream change more time to process
+  // Note: DVP_FLAG_LAST_DRAINED pics will be inserted into an extra render buffer buffer
+  if (!(picture.iFlags & DVP_FLAG_LAST_DRAINED))
   {
-    m_droppingStats.AddOutputDropGain(pts, 1/m_fFrameRate);
-    return EOS_DROPPED;
+    // make sure waiting time is not negative
+    int maxWaitTime = std::max(DVD_TIME_TO_MSEC(iSleepTime) + 500, 50);
+    // don't wait when going ff
+    if (m_speed > DVD_PLAYSPEED_NORMAL)
+      maxWaitTime = std::max(DVD_TIME_TO_MSEC(iSleepTime), 0);
+    int buffer = m_renderManager.WaitForBuffer(m_bStop, maxWaitTime);
+    if (buffer < 0)
+    {
+      m_droppingStats.AddOutputDropGain(pts, 1 / m_fFrameRate);
+      return EOS_DROPPED;
+    }
   }
 
   ProcessOverlays(pPicture, pts_org);
