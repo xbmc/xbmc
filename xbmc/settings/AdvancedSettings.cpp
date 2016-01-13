@@ -194,11 +194,35 @@ void CAdvancedSettings::Initialize()
   m_videoCleanStringRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|remastered|divx|divx5|dsr|dsrip|dutch|dvd|dvd5|dvd9|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|3d|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
   m_videoCleanStringRegExps.push_back("(\\[.*\\])");
 
+  // this vector will be inserted at the end to
+  // m_moviesExcludeFromScanRegExps, m_tvshowExcludeFromScanRegExps and
+  // m_audioExcludeFromScanRegExps
+  m_allExcludeFromScanRegExps.clear();
+  m_allExcludeFromScanRegExps.push_back(".+\\.ite$");  // ignore itunes extras dir
+  m_allExcludeFromScanRegExps.push_back("[\\/]\\.\\_");
+  m_allExcludeFromScanRegExps.push_back("\\.DS_Store");
+  m_allExcludeFromScanRegExps.push_back("\\.AppleDouble");
+  
   m_moviesExcludeFromScanRegExps.clear();
   m_moviesExcludeFromScanRegExps.push_back("-trailer");
   m_moviesExcludeFromScanRegExps.push_back("[!-._ \\\\/]sample[-._ \\\\/]");
   m_moviesExcludeFromScanRegExps.push_back("[\\/](proof|subs)[\\/]");
+  m_moviesExcludeFromScanRegExps.insert(m_moviesExcludeFromScanRegExps.end(),
+                                        m_allExcludeFromScanRegExps.begin(),
+                                        m_allExcludeFromScanRegExps.end());
+
+  
+  m_tvshowExcludeFromScanRegExps.clear();
   m_tvshowExcludeFromScanRegExps.push_back("[!-._ \\\\/]sample[-._ \\\\/]");
+  m_tvshowExcludeFromScanRegExps.insert(m_tvshowExcludeFromScanRegExps.end(),
+                                        m_allExcludeFromScanRegExps.begin(),
+                                        m_allExcludeFromScanRegExps.end());
+
+  
+  m_audioExcludeFromScanRegExps.clear();
+  m_tvshowExcludeFromScanRegExps.insert(m_tvshowExcludeFromScanRegExps.end(),
+                                        m_allExcludeFromScanRegExps.begin(),
+                                        m_allExcludeFromScanRegExps.end());
 
   m_folderStackRegExps.clear();
   m_folderStackRegExps.push_back("((cd|dvd|dis[ck])[0-9]+)$");
@@ -299,7 +323,11 @@ void CAdvancedSettings::Initialize()
   m_curlDisableIPV6 = false;      //Certain hardware/OS combinations have trouble
                                   //with ipv6.
 
+#if defined(TARGET_DARWIN_IOS)
+  m_startFullScreen = true;
+#else
   m_startFullScreen = false;
+#endif
   m_showExitButton = true;
   m_splashImage = true;
 
@@ -347,7 +375,11 @@ void CAdvancedSettings::Initialize()
 
   m_enableMultimediaKeys = false;
 
+#if defined(TARGET_DARWIN_IOS)
+  m_canWindowed = false;
+#else
   m_canWindowed = true;
+#endif
   m_guiVisualizeDirtyRegions = false;
   m_guiAlgorithmDirtyRegions = 3;
   m_guiDirtyRegionNoFlipTimeout = 0;
@@ -380,9 +412,9 @@ void CAdvancedSettings::Initialize()
   #if defined(TARGET_DARWIN)
     std::string logDir = getenv("HOME");
     #if defined(TARGET_DARWIN_OSX)
-    logDir += "/Library/Logs/";
+      logDir += "/Library/Logs/";
     #else // ios
-    logDir += "/" + std::string(CDarwinUtils::GetAppRootFolder()) + "/";
+      logDir += "/" + std::string(CDarwinUtils::GetAppRootFolder()) + "/";
     #endif
     m_logFolder = logDir;
   #else
@@ -1133,6 +1165,7 @@ void CAdvancedSettings::Clear()
   m_videoExcludeFromListingRegExps.clear();
   m_videoStackRegExps.clear();
   m_folderStackRegExps.clear();
+  m_allExcludeFromScanRegExps.clear();
   m_audioExcludeFromScanRegExps.clear();
   m_audioExcludeFromListingRegExps.clear();
   m_pictureExcludeFromListingRegExps.clear();

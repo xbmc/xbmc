@@ -24,6 +24,7 @@
 #include "DllPaths.h"
 #include "GUIUserMessages.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 #include "CompileInfo.h"
 
 #undef BOOL
@@ -396,6 +397,22 @@ int  CDarwinUtils::GetExecutablePath(char* path, size_t *pathsize)
   return 0;
 }
 
+const char* CDarwinUtils::GetUserHomeDirectory(void)
+{
+  static std::string appHomeFolder;
+  if (appHomeFolder.empty())
+  {
+#if defined(TARGET_DARWIN_IOS)
+    appHomeFolder = URIUtils::AddFileToFolder(CDarwinUtils::GetAppRootFolder(), CCompileInfo::GetAppName());
+#else
+    appHomeFolder = URIUtils::AddFileToFolder(getenv("HOME"), "Library/Application Support");
+    appHomeFolder = URIUtils::AddFileToFolder(appHomeFolder, CCompileInfo::GetAppName());
+#endif
+  }
+  
+  return appHomeFolder.c_str();
+}
+
 const char* CDarwinUtils::GetAppRootFolder(void)
 {
   static std::string rootFolder = "";
@@ -523,6 +540,16 @@ int CDarwinUtils::BatteryLevel(void)
   return batteryLevel * 100;  
 }
 
+void CDarwinUtils::EnableOSScreenSaver(bool enable)
+{
+
+}
+
+void CDarwinUtils::ResetSystemIdleTimer()
+{
+
+}
+
 void CDarwinUtils::SetScheduling(int message)
 {
   int policy;
@@ -629,12 +656,26 @@ const std::string& CDarwinUtils::GetManufacturer(void)
   return manufName;
 }
 
-bool CDarwinUtils::IsAliasShortcut(const std::string& path)
+bool CDarwinUtils::IsAliasShortcut(const std::string& path, bool isdirectory)
 {
   bool ret = false;
 #if defined(TARGET_DARWIN_OSX)
-  NSString *nsPath = [NSString stringWithUTF8String:path.c_str()];
-  NSURL *nsUrl = [NSURL fileURLWithPath:nsPath];
+  CCocoaAutoPool pool;
+  
+  NSURL *nsUrl;
+  if (isdirectory)
+  {
+    std::string cleanpath = path;
+    URIUtils::RemoveSlashAtEnd(cleanpath);
+    NSString *nsPath = [NSString stringWithUTF8String:cleanpath.c_str()];
+    nsUrl = [NSURL fileURLWithPath:nsPath isDirectory:TRUE];
+  }
+  else
+  {
+    NSString *nsPath = [NSString stringWithUTF8String:path.c_str()];
+    nsUrl = [NSURL fileURLWithPath:nsPath isDirectory:FALSE];
+  }
+  
   NSNumber* wasAliased = nil;
 
   if (nsUrl != nil)
