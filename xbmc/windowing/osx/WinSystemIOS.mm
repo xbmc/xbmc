@@ -46,7 +46,7 @@
 #import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/CADisplayLink.h>
 
-#import "ios/XBMCController.h"
+#import "platform/darwin/ios/XBMCController.h"
 #import "platform/darwin/ios/IOSScreenManager.h"
 #include "platform/darwin/DarwinUtils.h"
 #import <dlfcn.h>

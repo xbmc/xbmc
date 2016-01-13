@@ -70,7 +70,7 @@ cp -f "$TARGET_BUILD_DIR/$APP_NAME" "$TARGET_BINARY"
 echo "Creating icon"
 iconutil -c icns --output "$TARGET_CONTENTS/Resources/kodi.icns" "$SRCROOT/tools/darwin/packaging/media/osx/icon.iconset"
 
-cp -f "$SRCROOT/xbmc/osx/Info.plist" "$TARGET_CONTENTS/"
+cp -f "$SRCROOT/xbmc/platform/darwin/osx/Info.plist" "$TARGET_CONTENTS/"
 
 # Copy all of XBMC's dylib dependencies and rename their locations to inside the Framework
 echo "Checking $TARGET_BINARY dylib dependencies"
