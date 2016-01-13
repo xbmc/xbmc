@@ -11346,7 +11346,7 @@
 					$XBMC_DEPENDS/include/python2.7,
 					$XBMC_DEPENDS/include/libxml2,
 				);
-				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
+				INFOPLIST_FILE = $SRCROOT/xbmc/platform/darwin/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -11405,7 +11405,7 @@
 					$XBMC_DEPENDS/include/python2.7,
 					$XBMC_DEPENDS/include/libxml2,
 				);
-				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
+				INFOPLIST_FILE = $SRCROOT/xbmc/platform/darwin/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
