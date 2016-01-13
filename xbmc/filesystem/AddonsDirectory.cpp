@@ -397,7 +397,6 @@ static bool Browse(const CURL& path, CFileItemList &items)
 static bool Repos(const CURL& path, CFileItemList &items)
 {
   items.SetLabel(g_localizeStrings.Get(24033));
-  items.SetContent("addons");
 
   VECADDONS addons;
   CAddonMgr::GetInstance().GetAddons(ADDON_REPOSITORY, addons, true);
@@ -405,13 +404,10 @@ static bool Repos(const CURL& path, CFileItemList &items)
     return true;
   else if (addons.size() == 1)
     return Browse(CURL("addons://" + addons[0]->ID()), items);
-  else
-  {
-    CFileItemPtr item(new CFileItem("addons://all/", true));
-    item->SetLabel(g_localizeStrings.Get(24087));
-    item->SetSpecialSort(SortSpecialOnTop);
-    items.Add(item);
-  }
+  CFileItemPtr item(new CFileItem("addons://all/", true));
+  item->SetLabel(g_localizeStrings.Get(24087));
+  item->SetSpecialSort(SortSpecialOnTop);
+  items.Add(item);
 
   for (const auto& repo : addons)
   {
@@ -419,6 +415,7 @@ static bool Repos(const CURL& path, CFileItemList &items)
     CAddonDatabase::SetPropertiesFromAddon(repo, item);
     items.Add(item);
   }
+  items.SetContent("addons");
   return true;
 }
 
@@ -655,6 +652,6 @@ CFileItemPtr CAddonsDirectory::GetMoreItem(const std::string &content)
   item->SetSpecialSort(SortSpecialOnBottom);
   return item;
 }
-  
+
 }
 
