@@ -2914,6 +2914,11 @@
             <dependency type="enable" setting="general.addonupdates">0</dependency>
           </dependencies>
         </setting>
+        <setting id="addons.unknownsources" type="boolean" label="36615" help="36616">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="2">
         <setting id="addons.managedependencies" type="action" label="24996" help="36613">
