@@ -282,7 +282,7 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
   {
     CSingleLock lock(m_presentlock);
     XbmcThreads::EndTime endtime(5000);
-    while(m_presentstep != PRESENT_IDLE && m_presentstep != PRESENT_READY)
+    while (m_presentstep != PRESENT_IDLE)
     {
       if(endtime.IsTimePast())
       {
