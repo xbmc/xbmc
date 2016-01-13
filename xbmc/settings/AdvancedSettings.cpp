@@ -220,7 +220,7 @@ void CAdvancedSettings::Initialize()
 
   
   m_audioExcludeFromScanRegExps.clear();
-  m_tvshowExcludeFromScanRegExps.insert(m_tvshowExcludeFromScanRegExps.end(),
+  m_audioExcludeFromScanRegExps.insert(m_audioExcludeFromScanRegExps.end(),
                                         m_allExcludeFromScanRegExps.begin(),
                                         m_allExcludeFromScanRegExps.end());
 
