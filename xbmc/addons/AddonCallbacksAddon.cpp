@@ -31,6 +31,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
+#include "addons/include/kodi_vfs_types.h"
 
 using namespace XFILE;
 
@@ -72,6 +73,8 @@ CAddonCallbacksAddon::CAddonCallbacksAddon(CAddon* addon)
   m_callbacks->CreateDirectory    = CreateDirectory;
   m_callbacks->DirectoryExists    = DirectoryExists;
   m_callbacks->RemoveDirectory    = RemoveDirectory;
+  m_callbacks->GetDirectory       = GetDirectory;
+  m_callbacks->FreeDirectory      = FreeDirectory;
 }
 
 CAddonCallbacksAddon::~CAddonCallbacksAddon()
@@ -530,6 +533,57 @@ bool CAddonCallbacksAddon::RemoveDirectory(const void* addonData, const char *st
     CFile::Delete(fileItems.Get(i)->GetPath());
 
   return CDirectory::Remove(strPath);
+}
+
+static void CFileItemListToVFSDirEntries(VFSDirEntry* entries,
+                                         const CFileItemList& items)
+{
+  for (int i=0;i<items.Size();++i)
+  {
+    entries[i].label = strdup(items[i]->GetLabel().c_str());
+    entries[i].path = strdup(items[i]->GetPath().c_str());
+    entries[i].size = items[i]->m_dwSize;
+    entries[i].folder = items[i]->m_bIsFolder;
+  }
+}
+
+bool CAddonCallbacksAddon::GetDirectory(const void* addonData, const char *strPath, const char* mask, VFSDirEntry** items, unsigned int* num_items)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return false;
+
+  CFileItemList fileItems;
+  if (!CDirectory::GetDirectory(strPath, fileItems, mask, DIR_FLAG_NO_FILE_DIRS))
+    return false;
+
+  if (fileItems.Size() > 0)
+  {
+    *num_items = static_cast<unsigned int>(fileItems.Size());
+    *items = new VFSDirEntry[fileItems.Size()];
+  }
+  else
+  {
+    *num_items = 0;
+    *items = nullptr;
+  }
+
+  CFileItemListToVFSDirEntries(*items, fileItems);
+  return true;
+}
+
+void CAddonCallbacksAddon::FreeDirectory(const void* addonData, VFSDirEntry* items, unsigned int num_items)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return;
+
+  for (unsigned int i=0;i<num_items;++i)
+  {
+    free(items[i].label);
+    free(items[i].path);
+  }
+  delete[] items;
 }
 
 }; /* namespace ADDON */

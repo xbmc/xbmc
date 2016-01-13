@@ -14,6 +14,7 @@ BINDINGS+=xbmc/addons/include/xbmc_pvr_dll.h
 BINDINGS+=xbmc/addons/include/xbmc_pvr_types.h
 BINDINGS+=xbmc/addons/include/xbmc_scr_dll.h
 BINDINGS+=xbmc/addons/include/xbmc_scr_types.h
+BINDINGS+=xbmc/addons/include/kodi_vfs_types.h
 BINDINGS+=xbmc/addons/include/xbmc_vis_dll.h
 BINDINGS+=xbmc/addons/include/xbmc_vis_types.h
 BINDINGS+=xbmc/addons/include/xbmc_stream_utils.hpp

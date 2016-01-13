@@ -21,6 +21,8 @@
 
 #include "AddonCallbacks.h"
 
+struct VFSDirEntry;
+
 namespace ADDON
 {
 
@@ -64,6 +66,8 @@ public:
   static bool CreateDirectory(const void* addonData, const char *strPath);
   static bool DirectoryExists(const void* addonData, const char *strPath);
   static bool RemoveDirectory(const void* addonData, const char *strPath);
+  static bool GetDirectory(const void* addondata, const char* strPath, const char* mask, VFSDirEntry** items, unsigned int* num_items);
+  static void FreeDirectory(const void* addondata, VFSDirEntry* items, unsigned int num_items);
 
 private:
   CB_AddOnLib  *m_callbacks; /*!< callback addresses */
