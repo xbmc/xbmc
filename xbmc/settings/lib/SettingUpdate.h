@@ -26,7 +26,8 @@ class TiXmlNode;
 typedef enum {
   SettingUpdateTypeNone   = 0,
   SettingUpdateTypeRename,
-  SettingUpdateTypeChange
+  SettingUpdateTypeChange,
+  SettingUpdateTypeKeep
 } SettingUpdateType;
 
 class CSettingUpdate

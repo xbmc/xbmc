@@ -1020,6 +1020,10 @@ bool CSettingsManager::UpdateSetting(const TiXmlNode *node, CSetting *setting, c
   bool updated = false;
   const char *oldSetting = NULL;
   const TiXmlNode *oldSettingNode = NULL;
+  if (update.GetType() == SettingUpdateTypeKeep) {
+    setting->SetChanged(true);
+    return true;
+  }
   if (update.GetType() == SettingUpdateTypeRename)
   {
     if (update.GetValue().empty())
