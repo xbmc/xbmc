@@ -2114,6 +2114,9 @@
             <step>1</step>
             <maximum>65535</maximum>
           </constraints>
+          <updates>
+            <update type="change" />
+          </updates>
           <control type="edit" format="integer" />
         </setting>
         <setting id="services.webserverusername" type="string" parent="services.webserver" label="1048" help="36330">
