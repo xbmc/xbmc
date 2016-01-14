@@ -50,6 +50,12 @@ namespace EPG
      */
     static CEpgInfoTagPtr CreateDefaultTag();
 
+    /*!
+     * @brief Create a new EPG infotag with 'data' as content.
+     * @param data The tag's content.
+     */
+    CEpgInfoTag(const EPG_TAG &data);
+
   private:
     /*!
      * @brief Create a new empty event.
@@ -60,12 +66,6 @@ namespace EPG
      * @brief Create a new empty event without a unique ID.
      */
     CEpgInfoTag(CEpg *epg, PVR::CPVRChannelPtr pvrChannel, const std::string &strTableName = "", const std::string &strIconPath = "");
-
-    /*!
-     * @brief Create a new EPG infotag with 'data' as content.
-     * @param data The tag's content.
-     */
-    CEpgInfoTag(const EPG_TAG &data);
 
     // Prevent copy construction, even for CEpgInfoTag instances and friends.
     // Note: Only declared, but intentionally not implemented

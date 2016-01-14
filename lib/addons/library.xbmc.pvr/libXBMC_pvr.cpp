@@ -172,6 +172,14 @@ DLLEXPORT void PVR_connection_state_change(void *hdl, void* cb, const char *strC
   ((CB_PVRLib*)cb)->ConnectionStateChange(((AddonCB*)hdl)->addonData, strConnectionString, newState, strMessage);
 }
 
+DLLEXPORT void PVR_epg_event_state_change(void *hdl, void* cb, EPG_TAG *tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState)
+{
+  if (cb == NULL)
+    return;
+
+  ((CB_PVRLib*)cb)->EpgEventStateChange(((AddonCB*)hdl)->addonData, tag, iUniqueChannelId, newState);
+}
+
 DLLEXPORT void PVR_transfer_channel_group(void *hdl, void* cb, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group)
 {
   if (cb == NULL)

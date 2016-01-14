@@ -209,10 +209,18 @@ namespace EPG
      * @brief Update an entry in this EPG.
      * @param tag The tag to update.
      * @param bUpdateDatabase If set to true, this event will be persisted in the database.
-     * @param bSort If set to false, epg entries will not be sorted after updating; used for mass updates
      * @return True if it was updated successfully, false otherwise.
      */
-    bool UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase = false, bool bSort = true);
+    bool UpdateEntry(const CEpgInfoTagPtr &tag, bool bUpdateDatabase = false);
+
+    /*!
+     * @brief Update an entry in this EPG.
+     * @param tag The tag to update.
+     * @param newState the new state of the event.
+     * @param bUpdateDatabase If set to true, this event will be persisted in the database.
+     * @return True if it was updated successfully, false otherwise.
+     */
+    bool UpdateEntry(const CEpgInfoTagPtr &tag, EPG_EVENT_STATE newState, bool bUpdateDatabase = false);
 
     /*!
      * @brief Update the EPG from 'start' till 'end'.
@@ -308,6 +316,16 @@ namespace EPG
 
   protected:
     CEpg(void);
+
+    /*!
+     * @brief Update an entry in this EPG.
+     * @param data The tag to update.
+     * @param newState The new state of the event.
+     * @param it An iterator pointing to m_tags entry for the EPG event to update or m_tags.end().
+     * @param bUpdateDatabase If set to true, this event will be persisted in the database.
+     * @return True if it was updated successfully, false otherwise.
+     */
+    bool UpdateEntry(const CEpgInfoTagPtr &tag, EPG_EVENT_STATE newState, std::map<CDateTime, CEpgInfoTagPtr>::iterator &eit, bool bUpdateDatabase = false);
 
     /*!
      * @brief Update the EPG from a scraper set in the channel tag.

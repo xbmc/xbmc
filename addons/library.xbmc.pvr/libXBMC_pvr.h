@@ -158,6 +158,10 @@ public:
       dlsym(m_libXBMC_pvr, "PVR_connection_state_change");
     if (PVR_connection_state_change == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+    PVR_epg_event_state_change = (void (*)(void* HANDLE, void* CB, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState))
+      dlsym(m_libXBMC_pvr, "PVR_epg_event_state_change");
+    if (PVR_epg_event_state_change == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
     m_Callbacks = PVR_register_me(m_Handle);
     return m_Callbacks != NULL;
   }
@@ -316,6 +320,18 @@ public:
     return PVR_connection_state_change(m_Handle, m_Callbacks, strConnectionString, newState, strMessage);
   }
 
+  /*!
+   * @brief Notify a state change for an EPG event
+   * @param tag The EPG event.
+   * @param iUniqueChannelId The unique id of the channel for the EPG event
+   * @param newState The new state. For EPG_EVENT_CREATED and EPG_EVENT_UPDATED, tag must be filled with all available
+   *        event data, not just a delta. For EPG_EVENT_DELETED, it is sufficient to fill EPG_TAG.iUniqueBroadcastId
+   */
+  void EpgEventStateChange(EPG_TAG *tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState)
+  {
+    return PVR_epg_event_state_change(m_Handle, m_Callbacks, tag, iUniqueChannelId, newState);
+  }
+
 protected:
   void* (*PVR_register_me)(void*);
   void (*PVR_unregister_me)(void*, void*);
@@ -337,6 +353,7 @@ protected:
   DemuxPacket* (*PVR_allocate_demux_packet)(void*, void*, int);
 #endif
   void (*PVR_connection_state_change)(void*, void*, const char*, PVR_CONNECTION_STATE, const char*);
+  void (*PVR_epg_event_state_change)(void*, void*, EPG_TAG*, unsigned int, EPG_EVENT_STATE);
 
 private:
   void* m_libXBMC_pvr;

@@ -725,3 +725,4 @@ extern "C"
     pClient->IsRealTimeStream               = IsRealTimeStream;
   };
 };
+
