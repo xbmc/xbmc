@@ -399,32 +399,6 @@ void OMXPlayerVideo::Process()
         CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::PLAYER_SETSPEED %d", m_speed);
       }
     }
-    else if (pMsg->IsType(CDVDMsg::PLAYER_DISPLAYTIME))
-    {
-      SPlayerState& state = ((CDVDMsgType<SPlayerState>*)pMsg)->m_value;
-      state.player    = VideoPlayer_VIDEO;
-
-      if (m_speed != DVD_PLAYSPEED_NORMAL && m_speed != DVD_PLAYSPEED_PAUSE)
-      {
-        if(state.time_src == ETIMESOURCE_CLOCK)
-          state.time      = DVD_TIME_TO_MSEC(m_av_clock->GetClock(state.timestamp) + state.time_offset);
-        else
-          state.timestamp = CDVDClock::GetAbsoluteClock();
-      }
-      else
-      {
-        double pts = m_iCurrentPts;
-        double stamp = m_av_clock->OMXMediaTime();
-        if(state.time_src == ETIMESOURCE_CLOCK)
-          state.time      = stamp == 0.0 ? state.time : DVD_TIME_TO_MSEC(stamp + state.time_offset);
-        else
-          state.time      = stamp == 0.0 || pts == DVD_NOPTS_VALUE ? state.time : state.time + DVD_TIME_TO_MSEC(stamp - pts);
-        state.timestamp = CDVDClock::GetAbsoluteClock();
-        if (stamp == 0.0) // cause message to be ignored
-          state.player = 0;
-      }
-      m_messageParent.Put(pMsg->Acquire());
-    }
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
     {
       COMXMsgVideoCodecChange* msg(static_cast<COMXMsgVideoCodecChange*>(pMsg));

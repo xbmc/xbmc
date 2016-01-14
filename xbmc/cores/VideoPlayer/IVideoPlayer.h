@@ -30,12 +30,6 @@
 #define VideoPlayer_TELETEXT 4
 #define VideoPlayer_RDS      5
 
-enum ETimeSource
-{
-  ETIMESOURCE_CLOCK,
-  ETIMESOURCE_INPUT,
-  ETIMESOURCE_MENU,
-};
 
 template <typename T> class CRectGen;
 typedef CRectGen<float>  CRect;
@@ -50,10 +44,8 @@ struct SPlayerState
     player        = 0;
     timestamp     = 0;
     time          = 0;
-    disptime      = 0;
     time_total    = 0;
     time_offset   = 0;
-    time_src      = ETIMESOURCE_CLOCK;
     dts           = DVD_NOPTS_VALUE;
     player_state  = "";
     chapter       = 0;
@@ -76,9 +68,7 @@ struct SPlayerState
   double time_offset;       // difference between time and pts
 
   double time;              // current playback time
-  double disptime;          // current time of frame on screen
   double time_total;        // total playback time
-  ETimeSource time_src;     // current time source
   double dts;               // last known dts
 
   std::string player_state;  // full player state
