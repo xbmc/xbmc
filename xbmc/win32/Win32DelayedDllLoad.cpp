@@ -27,13 +27,13 @@ static const std::string dlls[] = {
   "sqlite3.dll",
   "dnssd.dll",
   "libxslt.dll",
-  "avcodec-56.dll",
-  "avfilter-5.dll",
-  "avformat-56.dll",
-  "avutil-54.dll",
-  "postproc-53.dll",
-  "swresample-1.dll",
-  "swscale-3.dll"
+  "avcodec-57.dll",
+  "avfilter-6.dll",
+  "avformat-57.dll",
+  "avutil-55.dll",
+  "postproc-54.dll",
+  "swresample-2.dll",
+  "swscale-4.dll"
 };
 
 FARPROC WINAPI delayHookNotifyFunc (unsigned dliNotify, PDelayLoadInfo pdli)
