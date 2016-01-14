@@ -5,7 +5,7 @@
   name="Confluence"
   provider-name="Jezz_X, Team Kodi">
   <requires>
-    <import addon="xbmc.gui" version="5.10.0"/>
+    <import addon="xbmc.gui" version="5.11.0"/>
   </requires>
   <extension
     point="xbmc.gui.skin"
