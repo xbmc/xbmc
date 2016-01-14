@@ -23,11 +23,8 @@
 #include "input/Key.h"
 #include "messaging/helpers/DialogHelper.h"
 
-#define CONTROL_NO_BUTTON 10
-#define CONTROL_YES_BUTTON 11
-
 CGUIDialogYesNo::CGUIDialogYesNo(int overrideId /* = -1 */)
-    : CGUIDialogBoxBase(overrideId == -1 ? WINDOW_DIALOG_YES_NO : overrideId, "DialogYesNo.xml")
+    : CGUIDialogBoxBase(overrideId == -1 ? WINDOW_DIALOG_YES_NO : overrideId, "DialogConfirm.xml")
 {
   m_bConfirmed = false;
   m_bCanceled = false;
@@ -71,6 +68,15 @@ bool CGUIDialogYesNo::OnBack(int actionID)
   m_bCanceled = true;
   m_bConfirmed = false;
   return CGUIDialogBoxBase::OnBack(actionID);
+}
+
+void CGUIDialogYesNo::OnInitWindow()
+{
+  CGUIDialogBoxBase::OnInitWindow();
+
+  SET_CONTROL_VISIBLE(CONTROL_YES_BUTTON);
+  SET_CONTROL_VISIBLE(CONTROL_NO_BUTTON);
+  SET_CONTROL_FOCUS(CONTROL_NO_BUTTON, 0);
 }
 
 bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2, bool &bCanceled)
