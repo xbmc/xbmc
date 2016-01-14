@@ -30,6 +30,7 @@
 #define CONTROL_HEADER_LABEL   1
 #define CONTROL_NONE_AVAILABLE 4
 #define CONTROL_LIST           3
+#define CONTROL_CANCEL_BUTTON  7
 
 using ADDON::CVisualisation;
 
@@ -66,6 +67,8 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
         }
         return true;
       }
+      else if (message.GetSenderId() == CONTROL_CANCEL_BUTTON)
+        Close();
     }
     break;
   case GUI_MSG_VISUALISATION_UNLOADING:
@@ -158,15 +161,19 @@ void CGUIDialogVisualisationPresetList::Update()
 
   // update our dialog's label
   SET_CONTROL_LABEL(CONTROL_HEADER_LABEL, strHeading);
-  // hide / show proper controls from DialogSelect (5: add more button, 6: detailed list)
+  // hide / show proper controls from DialogSelect (5: add more button, 6: detailed list,7: cancel)
   SET_CONTROL_VISIBLE(CONTROL_LIST);
   SET_CONTROL_HIDDEN(5);
   SET_CONTROL_HIDDEN(6);
+  SET_CONTROL_LABEL(CONTROL_CANCEL_BUTTON, g_localizeStrings.Get(222));
+  SET_CONTROL_VISIBLE(CONTROL_CANCEL_BUTTON);
   // if there is no presets, add a label saying so
   if (m_vecPresets->Size() == 0)
   {
     SET_CONTROL_VISIBLE(CONTROL_NONE_AVAILABLE);
     SET_CONTROL_LABEL(CONTROL_NONE_AVAILABLE, 13389);
+    SET_CONTROL_HIDDEN(CONTROL_LIST);
+    SET_CONTROL_FOCUS(CONTROL_CANCEL_BUTTON, 0);
   }
   else
   {
