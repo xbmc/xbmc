@@ -455,6 +455,13 @@ bool CNetworkServices::OnSettingUpdate(CSetting* &setting, const char *oldSettin
         !CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_WEBSERVERPASSWORD).empty())
       return true;
   }
+  if (settingId == CSettings::SETTING_SERVICES_WEBSERVERPORT)
+  {
+    // if webserverport is default but webserver is activated then treat it as altered
+    // and don't change the port to new value
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_WEBSERVER))
+      return true;
+  }
   return false;
 }
 
