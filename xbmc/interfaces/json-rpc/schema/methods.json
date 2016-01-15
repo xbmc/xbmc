@@ -1122,7 +1122,7 @@
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "tvshowid", "$ref": "Library.Id", "required": true },
+      { "name": "tvshowid", "$ref": "Library.Id" },
       { "name": "properties", "$ref": "Video.Fields.Season" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
