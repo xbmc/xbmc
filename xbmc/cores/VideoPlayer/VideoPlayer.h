@@ -109,7 +109,6 @@ public:
   int source;
   double dts;    // last dts from demuxer, used to find disncontinuities
   double dur;    // last frame expected duration
-  double dts_state; // when did we last send a playback state update
   CDVDStreamInfo hint;   // stream hints, used to notice stream changes
   void* stream; // pointer or integer, identifying stream playing. if it changes stream changed
   int changes; // remembered counter from stream to track codec changes
@@ -137,7 +136,6 @@ public:
     id = -1;
     source = STREAM_SOURCE_NONE;
     dts = DVD_NOPTS_VALUE;
-    dts_state = DVD_NOPTS_VALUE;
     dur = DVD_NOPTS_VALUE;
     hint.Clear();
     stream = NULL;
