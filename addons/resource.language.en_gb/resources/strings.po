@@ -15245,9 +15245,9 @@ msgctxt "#35003"
 msgid "Generic disk"
 msgstr ""
 
-#: addons/skin.confluence/720p/DialogPeripheralSettings.xml
+#: xbmc/peripherals/Peripherals.cpp
 msgctxt "#35004"
-msgid "There are no settings available\nfor this peripheral."
+msgid "There are no settings available for this peripheral."
 msgstr ""
 
 #: xbmc/peripherals/Peripherals.cpp
