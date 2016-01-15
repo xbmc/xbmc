@@ -193,9 +193,9 @@ void CMusicInfoScanner::Process()
         m_musicDatabase.GetAlbum(params.GetAlbumId(), album);
         if (m_handle)
         {
-          float percentage = (float) std::distance(it, m_pathsToScan.end()) / m_pathsToScan.size();
+          float percentage = (float) std::distance(m_pathsToScan.begin(), it) / m_pathsToScan.size();
           m_handle->SetText(album.GetAlbumArtistString() + " - " + album.strAlbum);
-          m_handle->SetPercentage(percentage);
+          m_handle->SetPercentage(percentage*100);
         }
 
         // find album info
@@ -240,6 +240,35 @@ void CMusicInfoScanner::Process()
           break;
       }
     }
+    if (m_scanType == 3) // Interactive ablum info
+    {
+      for (std::set<std::string>::const_iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end(); ++it)
+      {
+        CQueryParams params;
+        CDirectoryNode::GetDatabaseInfo(*it, params);
+        if (m_musicDatabase.HasAlbumBeenScraped(params.GetAlbumId())) // should this be here?
+          continue;
+
+        CAlbum album;
+        m_musicDatabase.GetAlbum(params.GetAlbumId(), album);
+        if (m_handle)
+        {
+          float percentage = (float) std::distance(m_pathsToScan.begin(), it) / m_pathsToScan.size();
+          m_handle->SetText(album.GetAlbumArtistString() + " - " + album.strAlbum);
+          m_handle->SetPercentage(percentage*100);
+        }
+
+        // find album info
+        ADDON::ScraperPtr scraper;
+        if (!m_musicDatabase.GetScraperForPath(*it, scraper, ADDON::ADDON_SCRAPER_ALBUMS))
+          continue;
+
+        UpdateDatabaseAlbumInfo(album, scraper, true, m_dlgProgress);
+
+        if (m_bStop)
+          break;
+      }
+    }
 
   }
   catch (...)
@@ -254,7 +283,7 @@ void CMusicInfoScanner::Process()
   
   // we need to clear the musicdb cache and update any active lists
   CUtil::DeleteMusicDatabaseDirectoryCache();
-  CGUIMessage msg(GUI_MSG_SCAN_FINISHED, 0, 0, 0);
+  CGUIMessage msg(GUI_MSG_SCAN_FINISHED, 0, 0, m_scanType);
   g_windowManager.SendThreadMessage(msg);
   
   if (m_handle)
@@ -300,8 +329,28 @@ void CMusicInfoScanner::StartCleanDatabase()
   m_bRunning = true;
 }
 
+bool CMusicInfoScanner::CheckAlbumAllScraped()
+{
+  CFileItemList items;
+  m_musicDatabase.Open();
+  m_musicDatabase.GetAlbumsNav("musicdb://albums/", items);
+  CMusicInfoTag* musictag;
+  for (int i=0;i<items.Size();++i)
+  {
+    musictag = items[i]->GetMusicInfoTag();
+    if(!m_musicDatabase.HasAlbumBeenScraped(musictag->GetAlbumId()))
+    {
+      m_musicDatabase.Close();
+      return false;
+    }
+  }
+
+  m_musicDatabase.Close();
+  return true;
+}
+
 void CMusicInfoScanner::FetchAlbumInfo(const std::string& strDirectory,
-                                       bool refresh)
+                                       bool refresh, CGUIDialogProgress* pDialog)
 {
   m_fileCountReader.StopThread();
   StopThread();
@@ -339,7 +388,13 @@ void CMusicInfoScanner::FetchAlbumInfo(const std::string& strDirectory,
   }
   m_musicDatabase.Close();
 
-  m_scanType = 1;
+  m_dlgProgress = pDialog;
+
+  if(pDialog)
+    m_scanType = 3;
+  else
+    m_scanType = 1;
+
   Create();
   m_bRunning = true;
 }
