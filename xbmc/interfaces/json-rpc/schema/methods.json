@@ -1415,7 +1415,8 @@
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
       { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null },
       { "name": "userrating", "$ref": "Optional.Integer" },
-      { "name": "ratings", "$ref": "Video.Ratings" }
+      { "name": "ratings", "$ref": "Video.Ratings" },
+      { "name": "dateadded", "$ref": "Optional.String" }
     ],
     "returns": "string"
   },
@@ -1457,7 +1458,8 @@
       { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
       { "name": "userrating", "$ref": "Optional.Integer" },
-      { "name": "ratings", "$ref": "Video.Ratings" }
+      { "name": "ratings", "$ref": "Video.Ratings" },
+      { "name": "dateadded", "$ref": "Optional.String" }
     ],
     "returns": "string"
   },
@@ -1499,7 +1501,8 @@
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
       { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null },
       { "name": "userrating", "$ref": "Optional.Integer" },
-      { "name": "ratings", "$ref": "Video.Ratings" }
+      { "name": "ratings", "$ref": "Video.Ratings" },
+      { "name": "dateadded", "$ref": "Optional.String" }
     ],
     "returns": "string"
   },
@@ -1528,7 +1531,8 @@
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
       { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null },
       { "name": "rating", "$ref": "Optional.Number" },
-      { "name": "userrating", "$ref": "Optional.Integer" }
+      { "name": "userrating", "$ref": "Optional.Integer" },
+      { "name": "dateadded", "$ref": "Optional.String" }
     ],
     "returns": "string"
   },
