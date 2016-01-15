@@ -956,7 +956,7 @@ bool CVideoLibrary::RequiresAdditionalDetails(const MediaType& mediaType, const 
   for (CVariant::const_iterator_array itr = properties.begin_array(); itr != properties.end_array(); itr++)
   {
     std::string propertyValue = itr->asString();
-    if (propertyValue == "cast" || propertyValue == "showlink" || propertyValue == "tag" || propertyValue == "streamdetails")
+    if (propertyValue == "cast" || propertyValue == "ratings" || propertyValue == "showlink" || propertyValue == "streamdetails" || propertyValue == "tag")
       return true;
   }
 
