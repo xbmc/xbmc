@@ -167,7 +167,9 @@ protected:
 
   CBaseRenderer *m_pRenderer;
   OVERLAY::CRenderer m_overlays;
-  CCriticalSection m_critSection;
+  CCriticalSection m_statelock;
+  CCriticalSection m_presentlock;
+  CCriticalSection m_datalock;
   bool m_bTriggerUpdateResolution;
   bool m_bRenderGUI;
   int m_waitForBufferCount;
@@ -235,7 +237,6 @@ protected:
   EPRESENTSTEP m_presentstep;
   int m_presentsource;
   XbmcThreads::ConditionVariable  m_presentevent;
-  CCriticalSection m_presentlock;
   CEvent m_flushEvent;
   double m_clock_framefinish;
   CDVDClock &m_dvdClock;

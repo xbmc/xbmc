@@ -595,10 +595,14 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametim
         pts = m_picture.pts;
       }
 
+      double extraDelay = 0.0;
       if (m_picture.iRepeatPicture)
-        m_picture.iDuration *= m_picture.iRepeatPicture + 1;
+      {
+        extraDelay = m_picture.iRepeatPicture * m_picture.iDuration;
+        m_picture.iDuration += extraDelay;
+      }
 
-      int iResult = OutputPicture(&m_picture, pts);
+      int iResult = OutputPicture(&m_picture, pts + extraDelay);
 
       frametime = (double)DVD_TIME_BASE / m_fFrameRate;
 

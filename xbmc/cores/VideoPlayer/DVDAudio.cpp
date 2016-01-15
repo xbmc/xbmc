@@ -104,9 +104,6 @@ unsigned int CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
 {
   CSingleLock lock (m_critSection);
 
-  m_playingPts = audioframe.pts - GetDelay();
-  m_timeOfPts = CDVDClock::GetAbsoluteClock();
-
   if(!m_pAudioStream)
     return 0;
 
@@ -152,6 +149,9 @@ unsigned int CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
     Sleep(1);
     lock.Enter();
   } while (!m_bStop);
+
+  m_playingPts = audioframe.pts + audioframe.duration - GetDelay();
+  m_timeOfPts = CDVDClock::GetAbsoluteClock();
 
   return total - frames;
 }

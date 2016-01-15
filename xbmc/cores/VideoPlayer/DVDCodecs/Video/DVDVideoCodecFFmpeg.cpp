@@ -748,8 +748,6 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
 
   if (pDvdVideoPicture->pts != DVD_NOPTS_VALUE)
     m_decoderPts = pDvdVideoPicture->pts;
-  else
-    m_decoderPts = m_dts;
 
   if (m_requestSkipDeint)
   {

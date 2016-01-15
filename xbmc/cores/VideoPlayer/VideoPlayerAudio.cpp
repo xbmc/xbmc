@@ -345,9 +345,22 @@ int CVideoPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, timeout, priority);
 
     if (ret == MSGQ_TIMEOUT)
-      return DECODE_FLAG_TIMEOUT;
-
-    if (MSGQ_IS_ERROR(ret))
+    {
+      // Flush as the audio output may keep looping if we don't
+      if (ALLOW_AUDIO(m_speed) && !m_stalled && m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
+      {
+        // while AE sync is active, we still have time to fill buffers
+        if (m_syncTimer.IsTimePast())
+        {
+          CLog::Log(LOGNOTICE, "CVideoPlayerAudio::Process - stream stalled");
+          m_stalled = true;
+        }
+      }
+      if (timeout == 0)
+        Sleep(10);
+      continue;
+    }
+    else if (MSGQ_IS_ERROR(ret))
       return DECODE_FLAG_ABORT;
 
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
@@ -372,6 +385,7 @@ int CVideoPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
       if (m_speed != DVD_PLAYSPEED_PAUSE)
         m_dvdAudio.Resume();
       m_syncState = IDVDStreamPlayer::SYNC_INSYNC;
+      m_syncTimer.Set(3000);
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
@@ -491,17 +505,6 @@ void CVideoPlayerAudio::Process()
     if (result & DECODE_FLAG_ERROR)
     {
       CLog::Log(LOGDEBUG, "CVideoPlayerAudio::Process - Decode Error");
-      continue;
-    }
-
-    if (result & DECODE_FLAG_TIMEOUT)
-    {
-      // Flush as the audio output may keep looping if we don't
-      if (ALLOW_AUDIO(m_speed) && !m_stalled && m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
-      {
-        m_stalled = true;
-      }
-
       continue;
     }
 
