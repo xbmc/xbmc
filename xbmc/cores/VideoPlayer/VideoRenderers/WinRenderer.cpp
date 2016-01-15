@@ -34,6 +34,7 @@
 #include "utils/log.h"
 #include "utils/win32/gpu_memcpy_sse4.h"
 #include "VideoShaders/WinVideoFilter.h"
+#include "win32/WIN32Util.h"
 #include "windowing/WindowingFactory.h"
 
 typedef struct {
@@ -538,6 +539,8 @@ void CWinRenderer::SelectPSVideoFilter()
       m_bUseHQScaler = true;
     }
   }
+  if (m_renderOrientation)
+    m_bUseHQScaler = false;
 }
 
 void CWinRenderer::UpdatePSVideoFilter()
@@ -580,7 +583,7 @@ void CWinRenderer::UpdatePSVideoFilter()
   if (m_renderMethod == RENDER_DXVA)
   {
     // we'd use m_IntermediateTarget as rendering target for possible anaglyph stereo with dxva processor.
-    if (!m_bUseHQScaler) 
+    if (!m_bUseHQScaler)
       CreateIntermediateRenderTarget(m_destWidth, m_destHeight, false);
     // When using DXVA, we are already setup at this point, color shader is not needed
     return;
@@ -724,10 +727,8 @@ void CWinRenderer::RenderSW()
 
   g_Windowing.GetGUIShader()->SetSampler(m_TextureFilter);
   CRect tu = { m_sourceRect.x1 / srcWidth, m_sourceRect.y1 / srcHeight, m_sourceRect.x2 / srcWidth, m_sourceRect.y2 / srcHeight };
-  CRect destRect = CRect(m_rotatedDestCoords[0], m_rotatedDestCoords[2]);
-
   // pass contrast and brightness as diffuse color elements (see shader code)
-  CD3DTexture::DrawQuad(destRect, D3DCOLOR_ARGB(255, contrast, brightness, 255), &m_IntermediateTarget, &tu,
+  CD3DTexture::DrawQuad(m_rotatedDestCoords, D3DCOLOR_ARGB(255, contrast, brightness, 255), &m_IntermediateTarget, &tu,
                        !cbcontrol ? SHADER_METHOD_RENDER_VIDEO : SHADER_METHOD_RENDER_VIDEO_CONTROL);
 }
 
@@ -736,65 +737,46 @@ void CWinRenderer::RenderPS()
   CD3D11_VIEWPORT viewPort(0.0f, 0.0f, 0.0f, 0.0f);
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
 
-  // store current render target and depth view.
   ID3D11RenderTargetView *oldRTView = nullptr; ID3D11DepthStencilView* oldDSView = nullptr;
-  pContext->OMGetRenderTargets(1, &oldRTView, &oldDSView);
-  // select destination rectangle 
-  CRect destRect;
   if (m_bUseHQScaler)
   {
-    if (m_renderOrientation > 0)
-    {
-      // we need to rotate source coordinates for HQ scaller 
-      // so we using ReorderDrawPoints with source coords.
-
-      // save coords
-      CRect oldDest = m_destRect;
-      saveRotatedCoords();
-
-      m_destRect = m_sourceRect;
-      ReorderDrawPoints();
-      // get rotated coords
-      destRect = CRect(m_rotatedDestCoords[0], m_rotatedDestCoords[2]);
-
-      // restore coords
-      restoreRotatedCoords();
-      m_destRect = oldDest;
-    }
-    else
-      destRect = m_sourceRect;
+    // store current render target and depth view.
+    pContext->OMGetRenderTargets(1, &oldRTView, &oldDSView);
+    // change destination for HQ scallers
+    ID3D11RenderTargetView* pRTView = m_IntermediateTarget.GetRenderTarget();
+    pContext->OMSetRenderTargets(1, &pRTView, nullptr);
+    // viewport equals intermediate target size
+    viewPort = CD3D11_VIEWPORT(0.0f, 0.0f, 
+                               static_cast<float>(m_IntermediateTarget.GetWidth()), 
+                               static_cast<float>(m_IntermediateTarget.GetHeight()));
+    g_Windowing.ResetScissors();
   }
   else
-    destRect = g_graphicsContext.StereoCorrection(CRect(m_rotatedDestCoords[0], m_rotatedDestCoords[2]));
-
-  // select target view 
-  ID3D11RenderTargetView* pRTView = m_bUseHQScaler ? m_IntermediateTarget.GetRenderTarget() : oldRTView;
-  // change destination for HQ scallers
-  if (m_bUseHQScaler)
-    pContext->OMSetRenderTargets(1, &pRTView, nullptr);
-  // get rendertarget's dimension
-  if (pRTView)
   {
-    ID3D11Resource* pResource = nullptr;
-    ID3D11Texture2D* pTexture = nullptr;
-
-    pRTView->GetResource(&pResource);
-    if (SUCCEEDED(pResource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&pTexture))))
-    {
-      D3D11_TEXTURE2D_DESC desc;
-      pTexture->GetDesc(&desc);
-      viewPort = CD3D11_VIEWPORT(0.0f, 0.0f, static_cast<float>(desc.Width), static_cast<float>(desc.Height));
-    }
-    SAFE_RELEASE(pResource);
-    SAFE_RELEASE(pTexture);
+    // viewport equals full backbuffer size
+    CRect bbSize = g_Windowing.GetBackBufferRect();
+    viewPort = CD3D11_VIEWPORT(0.f, 0.f, bbSize.Width(), bbSize.Height());
   }
-  // reset scissors for HQ scaler
-  if (m_bUseHQScaler)
-    g_Windowing.ResetScissors();
   // reset view port
   pContext->RSSetViewports(1, &viewPort);
+  // select destination rectangle 
+  CPoint destPoints[4];
+  if (m_renderOrientation)
+  {
+    for (size_t i = 0; i < 4; i++)
+      destPoints[i] = m_rotatedDestCoords[i];
+  }
+  else
+  {
+    CRect destRect = m_bUseHQScaler ? m_sourceRect : g_graphicsContext.StereoCorrection(m_destRect);
+    destPoints[0] = { destRect.x1, destRect.y1 };
+    destPoints[1] = { destRect.x2, destRect.y1 };
+    destPoints[2] = { destRect.x2, destRect.y2 };
+    destPoints[3] = { destRect.x1, destRect.y2 };
+  }
+
   // render video frame
-  m_colorShader->Render(m_sourceRect, destRect,
+  m_colorShader->Render(m_sourceRect, destPoints,
                         CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast,
                         CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness,
                         m_iFlags, reinterpret_cast<YUVBuffer*>(m_VideoBuffers[m_iYV12RenderBuffer]));
@@ -802,9 +784,11 @@ void CWinRenderer::RenderPS()
   g_Windowing.RestoreViewPort();
   // Restore the render target and depth view.
   if (m_bUseHQScaler)
+  {
     pContext->OMSetRenderTargets(1, &oldRTView, oldDSView);
-  SAFE_RELEASE(oldRTView);
-  SAFE_RELEASE(oldDSView);
+    SAFE_RELEASE(oldRTView);
+    SAFE_RELEASE(oldDSView);
+  }
 }
 
 void CWinRenderer::RenderHQ()
@@ -816,11 +800,9 @@ void CWinRenderer::RenderHQ()
 
 void CWinRenderer::RenderHW(DWORD flags)
 {
-  CRect destRect = m_bUseHQScaler ? m_sourceRect : g_graphicsContext.StereoCorrection(m_destRect);
   DXVABuffer *image = reinterpret_cast<DXVABuffer*>(m_VideoBuffers[m_iYV12RenderBuffer]);
   if (!image->pic)
     return;
-
   
   int past = 0;
   int future = 0;
@@ -864,12 +846,52 @@ void CWinRenderer::RenderHW(DWORD flags)
       break;
   }
 
-  m_processor->Render(m_sourceRect, destRect, m_IntermediateTarget.Get(), views, flags, image->frameIdx, m_renderOrientation);
+  CRect destRect;
+  switch (m_renderOrientation)
+  {
+  case 90:
+    destRect = CRect(m_rotatedDestCoords[3], m_rotatedDestCoords[1]);
+    break;
+  case 180:
+    destRect = m_destRect;
+    break;
+  case 270:
+    destRect = CRect(m_rotatedDestCoords[1], m_rotatedDestCoords[3]);
+    break;
+  default:
+    destRect = m_bUseHQScaler ? m_sourceRect : g_graphicsContext.StereoCorrection(m_destRect);
+    break;
+  }
+
+  CRect src = m_sourceRect, dst = destRect;
+  CRect target = CRect(0.0f, 0.0f,
+                       static_cast<float>(m_IntermediateTarget.GetWidth()), 
+                       static_cast<float>(m_IntermediateTarget.GetHeight()));
+  CWIN32Util::CropSource(src, dst, target, m_renderOrientation);
+
+  m_processor->Render(src, dst, m_IntermediateTarget.Get(), views, flags, image->frameIdx, m_renderOrientation);
 
   if (!m_bUseHQScaler)
   {
-    CRect tu = { destRect.x1 / m_destWidth, destRect.y1 / m_destHeight, destRect.x2 / m_destWidth, destRect.y2 / m_destHeight };
-    CD3DTexture::DrawQuad(m_destRect, 0xFFFFFF, &m_IntermediateTarget, &tu, SHADER_METHOD_RENDER_TEXTURE_BLEND);
+    CRect oldViewPort;
+    bool stereoHack = g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL
+                   || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL;
+
+    if (stereoHack)
+    {
+      CRect bbSize = g_Windowing.GetBackBufferRect();
+
+      g_Windowing.GetViewPort(oldViewPort);
+      g_Windowing.SetViewPort(bbSize);
+      g_Windowing.SetCameraPosition(CPoint(bbSize.Width() / 2.f, bbSize.Height() / 2.f), bbSize.Width(), bbSize.Height(), 0.f);
+    }
+
+    // render frame
+    CRect tu = { dst.x1 / m_destWidth, dst.y1 / m_destHeight, dst.x2 / m_destWidth, dst.y2 / m_destHeight };
+    CD3DTexture::DrawQuad(dst, 0xFFFFFF, &m_IntermediateTarget, &tu, SHADER_METHOD_RENDER_TEXTURE_BLEND);
+
+    if (stereoHack)
+      g_Windowing.SetViewPort(oldViewPort);
   }
 }
 
@@ -1003,7 +1025,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
       if (method == VS_SCALINGMETHOD_DXVA_HARDWARE ||
           method == VS_SCALINGMETHOD_AUTO)
         return true;
-      else if (!g_advancedSettings.m_DXVAAllowHqScaling)
+      else if (!g_advancedSettings.m_DXVAAllowHqScaling || m_renderOrientation)
         return false;
     }
 
@@ -1011,7 +1033,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
       || (method == VS_SCALINGMETHOD_LINEAR && m_renderMethod == RENDER_PS)) 
         return true;
 
-    if (g_Windowing.GetFeatureLevel() >= D3D_FEATURE_LEVEL_9_3)
+    if (g_Windowing.GetFeatureLevel() >= D3D_FEATURE_LEVEL_9_3 && !m_renderOrientation)
     {
       if(method == VS_SCALINGMETHOD_CUBIC
       || method == VS_SCALINGMETHOD_LANCZOS2

@@ -1480,34 +1480,85 @@ bool CWIN32Util::GetFocussedProcess(std::string &strProcessFile)
 }
 
 // Adjust the src rectangle so that the dst is always contained in the target rectangle.
-void CWIN32Util::CropSource(CRect& src, CRect& dst, CRect target)
+void CWIN32Util::CropSource(CRect& src, CRect& dst, CRect target, UINT rotation /* = 0 */)
 {
-  if(dst.x1 < target.x1)
+  float s_width = src.Width(), s_height = src.Height();
+  float d_width = dst.Width(), d_height = dst.Height();
+
+  if (dst.x1 < target.x1)
   {
-    src.x1 -= (dst.x1 - target.x1)
-            * (src.x2 - src.x1)
-            / (dst.x2 - dst.x1);
+    switch (rotation)
+    {
+    case 90:
+      src.y1 -= (dst.x1 - target.x1) * s_height / d_width;
+      break;
+    case 180:
+      src.x2 += (dst.x1 - target.x1) * s_width  / d_width;
+      break;
+    case 270:
+      src.y2 += (dst.x1 - target.x1) * s_height / d_width;
+      break;
+    default:
+      src.x1 -= (dst.x1 - target.x1) * s_width  / d_width;
+      break;
+    }
     dst.x1  = target.x1;
   }
   if(dst.y1 < target.y1)
   {
-    src.y1 -= (dst.y1 - target.y1)
-            * (src.y2 - src.y1)
-            / (dst.y2 - dst.y1);
+    switch (rotation)
+    {
+    case 90:
+      src.x1 -= (dst.y1 - target.y1) * s_width  / d_height;
+      break;
+    case 180:
+      src.y2 += (dst.y1 - target.y1) * s_height / d_height;
+      break;
+    case 270:
+      src.x2 += (dst.y1 - target.y1) * s_width  / d_height;
+      break;
+    default:
+      src.y1 -= (dst.y1 - target.y1) * s_height / d_height;
+      break;
+    }
     dst.y1  = target.y1;
   }
   if(dst.x2 > target.x2)
   {
-    src.x2 -= (dst.x2 - target.x2)
-            * (src.x2 - src.x1)
-            / (dst.x2 - dst.x1);
+    switch (rotation)
+    {
+    case 90:
+      src.y2 -= (dst.x2 - target.x2) * s_height / d_width;
+      break;
+    case 180:
+      src.x1 += (dst.x2 - target.x2) * s_width  / d_width;
+      break;
+    case 270:
+      src.y1 += (dst.x2 - target.x2) * s_height / d_width;
+      break;
+    default:
+      src.x2 -= (dst.x2 - target.x2) * s_width  / d_width;
+      break;
+    }
     dst.x2  = target.x2;
   }
   if(dst.y2 > target.y2)
   {
-    src.y2 -= (dst.y2 - target.y2)
-            * (src.y2 - src.y1)
-            / (dst.y2 - dst.y1);
+    switch (rotation)
+    {
+    case 90:
+      src.x2 -= (dst.y2 - target.y2) * s_width / d_height;
+      break;
+    case 180:
+      src.y1 += (dst.y2 - target.y2) * s_height / d_height;
+      break;
+    case 270:
+      src.x1 += (dst.y2 - target.y2) * s_width / d_height;
+      break;
+    default:
+      src.y2 -= (dst.y2 - target.y2) * s_height / d_height;
+      break;
+    }
     dst.y2  = target.y2;
   }
   // Callers expect integer coordinates.

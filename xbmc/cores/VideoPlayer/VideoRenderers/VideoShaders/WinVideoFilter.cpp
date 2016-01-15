@@ -315,13 +315,13 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
   return true;
 }
 
-void CYUV2RGBShader::Render(CRect sourceRect, CRect destRect,
+void CYUV2RGBShader::Render(CRect sourceRect, CPoint dest[],
                             float contrast,
                             float brightness,
                             unsigned int flags,
                             YUVBuffer* YUVbuf)
 {
-  PrepareParameters(sourceRect, destRect,
+  PrepareParameters(sourceRect, dest,
                     contrast, brightness, flags);
   SetShaderParameters(YUVbuf);
   Execute(nullptr, 4);
@@ -332,45 +332,48 @@ CYUV2RGBShader::~CYUV2RGBShader()
 }
 
 void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
-                                       CRect destRect,
+                                       CPoint dest[],
                                        float contrast,
                                        float brightness,
                                        unsigned int flags)
 {
-  if (m_sourceRect != sourceRect || m_destRect != destRect)
+  if (m_sourceRect != sourceRect 
+    || m_dest[0] != dest[0] || m_dest[1] != dest[1] 
+    || m_dest[2] != dest[2] || m_dest[3] != dest[3])
   {
     m_sourceRect = sourceRect;
-    m_destRect = destRect;
+    for (size_t i = 0; i < 4; ++i)
+      m_dest[i] = dest[i];
 
     CUSTOMVERTEX* v;
     CWinShader::LockVertexBuffer((void**)&v);
 
-    v[0].x = destRect.x1;
-    v[0].y = destRect.y1;
+    v[0].x = m_dest[0].x;
+    v[0].y = m_dest[0].y;
     v[0].z = 0.0f;
     v[0].tu = sourceRect.x1 / m_sourceWidth;
     v[0].tv = sourceRect.y1 / m_sourceHeight;
     v[0].tu2 = v[0].tu3 = (sourceRect.x1 / 2.0f) / (m_sourceWidth>>1);
     v[0].tv2 = v[0].tv3 = (sourceRect.y1 / 2.0f) / (m_sourceHeight>>1);
 
-    v[1].x = destRect.x2;
-    v[1].y = destRect.y1;
+    v[1].x = m_dest[1].x;
+    v[1].y = m_dest[1].y;
     v[1].z = 0.0f;
     v[1].tu = sourceRect.x2 / m_sourceWidth;
     v[1].tv = sourceRect.y1 / m_sourceHeight;
     v[1].tu2 = v[1].tu3 = (sourceRect.x2 / 2.0f) / (m_sourceWidth>>1);
     v[1].tv2 = v[1].tv3 = (sourceRect.y1 / 2.0f) / (m_sourceHeight>>1);
 
-    v[2].x = destRect.x2;
-    v[2].y = destRect.y2;
+    v[2].x = m_dest[2].x;
+    v[2].y = m_dest[2].y;
     v[2].z = 0.0f;
     v[2].tu = sourceRect.x2 / m_sourceWidth;
     v[2].tv = sourceRect.y2 / m_sourceHeight;
     v[2].tu2 = v[2].tu3 = (sourceRect.x2 / 2.0f) / (m_sourceWidth>>1);
     v[2].tv2 = v[2].tv3 = (sourceRect.y2 / 2.0f) / (m_sourceHeight>>1);
 
-    v[3].x = destRect.x1;
-    v[3].y = destRect.y2;
+    v[3].x = m_dest[3].x;
+    v[3].y = m_dest[3].y;
     v[3].z = 0.0f;
     v[3].tu = sourceRect.x1 / m_sourceWidth;
     v[3].tv = sourceRect.y2 / m_sourceHeight;

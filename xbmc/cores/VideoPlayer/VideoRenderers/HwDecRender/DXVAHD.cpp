@@ -600,20 +600,6 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11Vi
 
   bool progressive = deinterlace_mode == VS_DEINTERLACEMODE_OFF;
 
-  ID3D11Texture2D* targetTex = nullptr;
-  hr = target->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&targetTex));
-  if (FAILED(hr))
-  {
-    CLog::Log(LOGERROR, __FUNCTION__" - failed getting target texture with error %x", hr);
-    return false;
-  }
-
-  D3D11_TEXTURE2D_DESC desc;
-  targetTex->GetDesc(&desc);
-  targetTex->Release();
-
-  CRect rectTarget(0, 0, float(desc.Width), float(desc.Height));
-  CWIN32Util::CropSource(src, dst, rectTarget);
   RECT sourceRECT = { src.x1, src.y1, src.x2, src.y2 };
   RECT dstRECT    = { dst.x1, dst.y1, dst.x2, dst.y2 };
 
