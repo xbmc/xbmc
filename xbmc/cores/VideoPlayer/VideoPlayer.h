@@ -124,6 +124,13 @@ public:
   double startpts;
   double lastdts;
 
+  enum
+  {
+    AV_SYNC_NONE,
+    AV_SYNC_CHECK,
+    AV_SYNC_CONT
+  } avsync;
+
   CCurrentStream(StreamType t, int i)
     : type(t)
     , player(i)
@@ -146,6 +153,7 @@ public:
     starttime = DVD_NOPTS_VALUE;
     startpts = DVD_NOPTS_VALUE;
     lastdts = DVD_NOPTS_VALUE;
+    avsync = AV_SYNC_CHECK;
   }
 
   double dts_end()
