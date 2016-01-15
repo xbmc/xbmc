@@ -727,7 +727,7 @@ bool CMusicDatabase::GetSong(int idSong, CSong& song)
       int idSongArtist = record->at(songArtistOffset + artistCredit_idArtist).get_asInt();
       if (artistcredits.find(idSongArtist) == artistcredits.end())
       {
-        song.artistCredits.push_back(GetArtistCreditFromDataset(record, songArtistOffset));
+        song.artistCredits.emplace_back(GetArtistCreditFromDataset(record, songArtistOffset));
         artistcredits.insert(idSongArtist);
       }
 
@@ -1000,7 +1000,7 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
       int idAlbumArtist = record->at(albumArtistOffset + artistCredit_idArtist).get_asInt();
       if (artistcredits.find(idAlbumArtist) == artistcredits.end())
       {
-        album.artistCredits.push_back(GetArtistCreditFromDataset(record, albumArtistOffset));
+        album.artistCredits.emplace_back(GetArtistCreditFromDataset(record, albumArtistOffset));
         artistcredits.insert(idAlbumArtist);
       }
 
@@ -1009,7 +1009,7 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
         int idSong = record->at(songOffset + song_idSong).get_asInt();
         if (songs.find(idSong) == songs.end())
         {
-          album.songs.push_back(GetSongFromDataset(record, songOffset));
+          album.songs.emplace_back(GetSongFromDataset(record, songOffset));
           songs.insert(idSong);
         }
 
@@ -1019,14 +1019,14 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
         {
           for (VECSONGS::iterator si = album.songs.begin(); si != album.songs.end(); ++si)
             if (si->idSong == idSongArtistSong)
-              si->artistCredits.push_back(GetArtistCreditFromDataset(record, songArtistOffset));
+              si->artistCredits.emplace_back(GetArtistCreditFromDataset(record, songArtistOffset));
           songartistcredits.insert(std::make_pair(idSongArtistSong, idSongArtistArtist));
         }
 
         int idAlbumInfoSong = m_pDS.get()->get_sql_record()->at(infoSongOffset + albumInfoSong_idAlbumInfoSong).get_asInt();
         if (infosongs.find(idAlbumInfoSong) == infosongs.end())
         {
-          album.infoSongs.push_back(GetAlbumInfoSongFromDataset(record, infoSongOffset));
+          album.infoSongs.emplace_back(GetAlbumInfoSongFromDataset(record, infoSongOffset));
           infosongs.insert(idAlbumInfoSong);
         }
       }
@@ -1291,7 +1291,7 @@ bool CMusicDatabase::GetArtist(int idArtist, CArtist &artist, bool fetchAll /* =
       {
         const dbiplus::sql_record* const record = m_pDS.get()->get_sql_record();
 
-        artist.discography.push_back(std::make_pair(record->at(discographyOffset + 1).get_asString(), record->at(discographyOffset + 2).get_asString()));
+        artist.discography.emplace_back(record->at(discographyOffset + 1).get_asString(), record->at(discographyOffset + 2).get_asString());
         m_pDS->next();
       }
     }
@@ -1444,7 +1444,7 @@ bool CMusicDatabase::GetArtistsByAlbum(int idAlbum, CFileItem* item)
     VECARTISTCREDITS artistCredits;
     while (!m_pDS->eof())
     {
-      artistCredits.push_back(GetArtistCreditFromDataset(m_pDS->get_sql_record(), 0));
+      artistCredits.emplace_back(GetArtistCreditFromDataset(m_pDS->get_sql_record(), 0));
       m_pDS->next();
     }
     m_pDS->close();
@@ -1456,9 +1456,9 @@ bool CMusicDatabase::GetArtistsByAlbum(int idAlbum, CFileItem* item)
     for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
     {
       artistidObj.push_back(artistCredit->GetArtistId());
-      albumartists.push_back(artistCredit->GetArtist());
+      albumartists.emplace_back(artistCredit->GetArtist());
       if (!artistCredit->GetMusicBrainzArtistID().empty())
-        musicBrainzID.push_back(artistCredit->GetMusicBrainzArtistID());
+        musicBrainzID.emplace_back(artistCredit->GetMusicBrainzArtistID());
     }
     item->GetMusicInfoTag()->SetAlbumArtist(albumartists);
     item->GetMusicInfoTag()->SetMusicBrainzAlbumArtistID(musicBrainzID);
