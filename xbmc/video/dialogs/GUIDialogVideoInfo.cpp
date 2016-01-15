@@ -351,7 +351,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
     }
   }
 
-  m_castList->SetContent(MediaTypes::ToPlural(type));
+  m_castList->SetContent(CMediaTypes::ToPlural(type));
 
   CVideoThumbLoader loader;
   loader.LoadItem(m_movieItem.get());
@@ -1851,13 +1851,13 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
 
 std::string CGUIDialogVideoInfo::GetLocalizedVideoType(const std::string &strType)
 {
-  if (MediaTypes::IsMediaType(strType, MediaTypeMovie))
+  if (CMediaTypes::IsMediaType(strType, MediaTypeMovie))
     return g_localizeStrings.Get(20342);
-  else if (MediaTypes::IsMediaType(strType, MediaTypeTvShow))
+  else if (CMediaTypes::IsMediaType(strType, MediaTypeTvShow))
     return g_localizeStrings.Get(20343);
-  else if (MediaTypes::IsMediaType(strType, MediaTypeEpisode))
+  else if (CMediaTypes::IsMediaType(strType, MediaTypeEpisode))
     return g_localizeStrings.Get(20359);
-  else if (MediaTypes::IsMediaType(strType, MediaTypeMusicVideo))
+  else if (CMediaTypes::IsMediaType(strType, MediaTypeMusicVideo))
     return g_localizeStrings.Get(20391);
 
   return "";

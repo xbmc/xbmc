@@ -23,7 +23,7 @@
 #include <set>
 #include <string>
 
-typedef std::string MediaType;
+using MediaType = std::string;
 
 #define MediaTypeNone             ""
 #define MediaTypeMusic            "music"
@@ -38,7 +38,7 @@ typedef std::string MediaType;
 #define MediaTypeSeason           "season"
 #define MediaTypeEpisode          "episode"
 
-class MediaTypes
+class CMediaTypes
 {
 public:
   static bool IsValidMediaType(const MediaType &mediaType);

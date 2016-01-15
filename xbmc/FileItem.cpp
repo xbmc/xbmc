@@ -2930,7 +2930,7 @@ std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
 
   if (bUseFolderNames &&
      (!m_bIsFolder || URIUtils::IsInArchive(m_strPath) ||
-     (HasVideoInfoTag() && GetVideoInfoTag()->m_iDbId > 0 && !MediaTypes::IsContainer(GetVideoInfoTag()->m_type))))
+     (HasVideoInfoTag() && GetVideoInfoTag()->m_iDbId > 0 && !CMediaTypes::IsContainer(GetVideoInfoTag()->m_type))))
   {
     std::string name2(strMovieName);
     URIUtils::GetParentPath(name2,strMovieName);
