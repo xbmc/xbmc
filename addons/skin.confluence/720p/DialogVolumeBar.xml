@@ -8,6 +8,8 @@
 			<depth>DepthOSD</depth>
 			<left>820</left>
 			<top>0</top>
+			<include>VisibleFadeEffect</include>
+			<visible>!Player.Muted</visible>
 			<control type="image">
 				<left>0</left>
 				<top>-10</top>
@@ -61,6 +63,16 @@
 					<aligny>center</aligny>
 				</control>
 			</control>
+		</control>
+		<control type="image">
+			<left>50r</left>
+			<top>2</top>
+			<width>45</width>
+			<height>45</height>
+			<aspectratio>keep</aspectratio>
+			<texture>icon-mute.png</texture>
+			<include>VisibleFadeEffect</include>
+			<visible>Player.Muted</visible>
 		</control>
 	</controls>
 </window>
