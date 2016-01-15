@@ -94,7 +94,6 @@ CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
   m_unfilteredItems = new CFileItemList;
   m_vecItems->SetPath("?");
   m_iLastControl = -1;
-  m_iSelectedItem = -1;
   m_canFilterAdvanced = false;
 
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), *m_vecItems));
@@ -229,7 +228,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      m_iSelectedItem = m_viewControl.GetSelectedItem();
+      SetMediaSelectedItem(m_vecItems->GetPath(), m_viewControl.GetSelectedItem());
       m_iLastControl = GetFocusedControlID();
       CGUIWindow::OnMessage(message);
 
@@ -995,7 +994,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
 #endif
   else
   {
-    m_iSelectedItem = m_viewControl.GetSelectedItem();
+    SetMediaSelectedItem(m_vecItems->GetPath(), m_viewControl.GetSelectedItem());
 
     if (pItem->GetPath() == "newplaylist://")
     {
@@ -1455,10 +1454,20 @@ void CGUIMediaWindow::OnInitWindow()
 
   m_rootDir.SetAllowThreads(true);
 
-  if (m_iSelectedItem > -1)
-    m_viewControl.SetSelectedItem(m_iSelectedItem);
-
   CGUIWindow::OnInitWindow();
+
+  m_viewControl.SetSelectedItem(GetMediaSelectedItem(m_vecItems->GetPath()));
+}
+
+int CGUIMediaWindow::GetMediaSelectedItem(const std::string& strDirectory)
+{
+  auto it = m_mediaSelectedItems.find(strDirectory);
+  return it != m_mediaSelectedItems.end() ? it->second : 0;
+}
+
+void CGUIMediaWindow::SetMediaSelectedItem(const std::string& strDirectory, int iItem)
+{
+  m_mediaSelectedItems[strDirectory] = iItem;
 }
 
 CGUIControl *CGUIMediaWindow::GetFirstFocusableControl(int id)
