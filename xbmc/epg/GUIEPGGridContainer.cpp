@@ -2131,12 +2131,12 @@ void CGUIEPGGridContainer::SetRenderOffset(const CPoint &offset)
 void CGUIEPGGridContainer::FreeItemsMemory()
 {
   // free memory of items
-  for (std::vector<CFileItemPtr>::iterator it = m_channelItems.begin(); it != m_channelItems.end(); ++it)
-    (*it)->FreeMemory();
-  for (std::vector<CFileItemPtr>::iterator it = m_rulerItems.begin(); it != m_rulerItems.end(); ++it)
-    (*it)->FreeMemory();
-  for (std::vector<CFileItemPtr>::iterator it = m_programmeItems.begin(); it != m_programmeItems.end(); ++it)
-    (*it)->FreeMemory();
+  for (const auto &i : m_channelItems)
+    i->FreeMemory();
+  for (const auto &i : m_rulerItems)
+    i->FreeMemory();
+  for (const auto &i : m_programmeItems)
+    i->FreeMemory();
 }
 
 void CGUIEPGGridContainer::FreeChannelMemory(int keepStart, int keepEnd)
