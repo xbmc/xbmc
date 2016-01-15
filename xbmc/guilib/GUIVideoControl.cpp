@@ -95,14 +95,6 @@ EVENT_RESULT CGUIVideoControl::OnMouseEvent(const CPoint &point, const CMouseEve
     g_windowManager.SendMessage(message);
     return EVENT_RESULT_HANDLED;
   }
-  else if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
-  { // toggle the playlist window
-    if (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_PLAYLIST)
-      g_windowManager.PreviousWindow();
-    else
-      g_windowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
-    return EVENT_RESULT_HANDLED;
-  }
   return EVENT_RESULT_UNHANDLED;
 }
 
