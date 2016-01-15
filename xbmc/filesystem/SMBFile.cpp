@@ -101,6 +101,7 @@ void CSMB::Init()
     char smb_conf[MAX_PATH];
     std::string home = CSpecialProtocol::TranslatePath("special://home");
     URIUtils::RemoveSlashAtEnd(home);
+    snprintf(smb_conf, sizeof(smb_conf), "%s/.smb", home.c_str());
     if (mkdir(smb_conf, 0755) == 0)
     {
       snprintf(smb_conf, sizeof(smb_conf), "%s/.smb/smb.conf", home.c_str());
