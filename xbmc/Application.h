@@ -28,6 +28,8 @@
 #include "utils/GlobalsHandling.h"
 #include "messaging/IMessageTarget.h"
 
+#include "dialogs/GUIDialogProgress.h"
+
 #include <map>
 #include <memory>
 #include <string>
@@ -277,7 +279,7 @@ public:
    \param flags Flags for controlling the scanning process.  See xbmc/music/infoscanner/MusicInfoScanner.h for possible values.
    */
   void StartMusicScan(const std::string &path, bool userInitiated = true, int flags = 0);
-  void StartMusicAlbumScan(const std::string& strDirectory, bool refresh = false);
+  void StartMusicAlbumScan(const std::string& strDirectory, bool refresh = false, CGUIDialogProgress* pDialog = NULL);
   void StartMusicArtistScan(const std::string& strDirectory, bool refresh = false);
 
   void UpdateLibraries();

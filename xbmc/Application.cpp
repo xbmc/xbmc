@@ -5091,14 +5091,14 @@ void CApplication::StartMusicScan(const std::string &strDirectory, bool userInit
 }
 
 void CApplication::StartMusicAlbumScan(const std::string& strDirectory,
-                                       bool refresh)
+                                       bool refresh, CGUIDialogProgress* pDialog)
 {
   if (m_musicInfoScanner->IsScanning())
     return;
 
   m_musicInfoScanner->ShowDialog(true);
 
-  m_musicInfoScanner->FetchAlbumInfo(strDirectory,refresh);
+  m_musicInfoScanner->FetchAlbumInfo(strDirectory,refresh,pDialog);
 }
 
 void CApplication::StartMusicArtistScan(const std::string& strDirectory,
