@@ -1031,7 +1031,10 @@ void CGUIEPGGridContainer::UpdateItems(CFileItemList *items)
   {
     // Grid index got recreated. Do cursors and offsets still point to the same epg tag?
     if (prevSelectedEpgTag == GetSelectedEpgInfoTag())
+    {
+      m_item = GetItem(m_channelCursor);
       return;
+    }
 
     int newChannelCursor = GetChannel(prevSelectedEpgTag);
     if (newChannelCursor >= 0)
@@ -1040,7 +1043,10 @@ void CGUIEPGGridContainer::UpdateItems(CFileItemList *items)
       if (newBlockCursor >= 0)
       {
         if (newChannelCursor == m_channelCursor && newBlockCursor == m_blockCursor)
+        {
+          m_item = GetItem(m_channelCursor);
           return;
+        }
 
         if (newBlockCursor > 0 && newBlockCursor != m_blockCursor)
         {
@@ -1055,12 +1061,24 @@ void CGUIEPGGridContainer::UpdateItems(CFileItemList *items)
         }
 
         if (newBlockCursor > 0)
+        {
+          // Note: m_item guaranteed to be set here.
           return;
+        }
       }
     }
   }
 
   // Fallback. Goto now.
+
+  if (m_channelCursor + m_channelOffset < 0 ||
+      m_channelCursor + m_channelOffset >= m_channels)
+    m_channelCursor = m_channelOffset = 0;
+
+  if (m_blockCursor + m_blockOffset < 0 ||
+      m_blockCursor + m_blockOffset >= m_blocks)
+    m_blockCursor = m_blockOffset = 0;
+
   m_item = GetItem(m_channelCursor);
   if (m_item)
     SetBlock(GetBlock(m_item->item, m_channelCursor));
