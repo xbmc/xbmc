@@ -662,42 +662,6 @@ std::string CNetwork::CanonizeIPv6(const std::string &address)
   return result;
 }
 
-int CNetwork::PrefixLengthIPv6(const std::string &address)
-{
-  struct sockaddr_in6 mask;
-  if (!ConvIPv6(address, &mask))
-    return -1;
-
-  unsigned int m;
-  unsigned int segment_size = 128 / sizeof(mask.sin6_addr.s6_addr);
-  auto segment_tmax = mask.sin6_addr.s6_addr[0];
-  segment_tmax = -1;
-
-  // let's assume mask being ff80:: - in binary form:
-  // 11111111:10000000
-  // as prefix-length is count of leftmost contiguous bits,
-  // we can simply check how many segments are full of bits (0xff).
-  // this * nr_bits in segment + individual bits from the first segment
-  // not full is our prefix-length.
-  for (m = 0;
-       m < sizeof(mask.sin6_addr.s6_addr) && (mask.sin6_addr.s6_addr[m] == segment_tmax);
-       m += 1);
-
-  m *= segment_size;
-  // if we didn't match all segments (prefixlength not /128)
-  if (m < 128)
-  {
-    // we shift left until we get all bits zero,
-    // then we have final length (in this case it is /9)
-    auto leftover_bits = mask.sin6_addr.s6_addr[m / segment_size];
-    do {
-      m++;
-    } while (leftover_bits <<= 1);
-  }
-
-  return m;
-}
-
 uint8_t CNetwork::PrefixLength(const struct sockaddr *netmask)
 {
   uint8_t prefixLength = 0;

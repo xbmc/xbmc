@@ -325,20 +325,6 @@ public:
     */
    static std::string CanonizeIPv6(const std::string &address);
 
-   // Networking API calls are providing IPv6 mask information
-   // in the same data structure as address itself (128bit information)
-   // e.g. FFFF:FFFF:FFFF:FFF0:0000:0000:0000:0000
-   // This function returns decimal value specifying how many of the
-   // leftmost contiguous bits of the address comprise
-   // the prefix. This representation is called prefix-length.
-   // Above mask represents prefix of length 60 and formal (and canonised)
-   // address/mask specification would look like this:
-   // 12AB:0:0:CD30::/60
-   // This is also the common preferred way of displaying IPv6 addresses
-   // return 0-128, -1 in case of error (for instance string's notation
-   //                  doesn't comply to standard)
-   static int     PrefixLengthIPv6(const std::string &address);
-
   /*!
    \brief  computes the prefix length for a (IPv4/IPv6) netmask
    \param  struct sockaddr
