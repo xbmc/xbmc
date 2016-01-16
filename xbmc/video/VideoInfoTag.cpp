@@ -679,6 +679,7 @@ const std::string CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
 void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
 {
   std::string value;
+  float fValue;
 
   if (XMLUtils::GetString(movie, "title", value))
     SetTitle(value);
@@ -712,10 +713,9 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         m_strDefaultRating = name;
     }
   }
-  else
+  else if (XMLUtils::GetFloat(movie, "rating", fValue))
   {
-    CRating r;
-    XMLUtils::GetFloat(movie, "rating", r.rating);
+    CRating r(fValue, 0);
     if (XMLUtils::GetString(movie, "votes", value))
       r.votes = StringUtils::ReturnDigits(value);
     int max_value = 10;
