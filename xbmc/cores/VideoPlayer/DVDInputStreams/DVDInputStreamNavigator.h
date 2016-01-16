@@ -71,6 +71,22 @@ struct DVDNavSubtitleStreamInfo : DVDNavStreamInfo
     flags(CDemuxStream::EFlags::FLAG_NONE) {}
 };
 
+struct DVDNavVideoStreamInfo : DVDNavStreamInfo
+{
+  int angles;
+  float aspectRatio;
+  std::string codec;
+  uint32_t width;
+  uint32_t height;
+
+  DVDNavVideoStreamInfo() : DVDNavStreamInfo(),
+    angles(0),
+    aspectRatio(0.0f),
+    width(0),
+    height(0)
+  {}
+};
+
 class DVDNavResult
 {
 public:
@@ -138,7 +154,6 @@ public:
 
   int GetActiveAudioStream();
   int GetAudioStreamCount();
-  int GetAngleCount();
   int GetActiveAngle();
   bool SetAngle(int angle);
   bool SetActiveAudioStream(int iId);
@@ -151,7 +166,6 @@ public:
   int GetChapterCount() { return m_iPartCount; } // the number of parts in the current title
   void GetChapterName(std::string& name, int idx=-1) {};
   int64_t GetChapterPos(int ch=-1);
-  void GetVideoResolution(uint32_t * width, uint32_t * height);
   bool SeekChapter(int iChapter);
 
   int GetTotalTime(); // the total time in milli seconds
@@ -165,6 +179,8 @@ public:
   std::string GetDVDSerialString();
 
   void CheckButtons();
+
+  DVDNavVideoStreamInfo GetVideoStreamInfo();
 
 protected:
 
@@ -186,6 +202,9 @@ protected:
 
   static void SetAudioStreamName(DVDNavStreamInfo &info, const audio_attr_t &audio_attributes);
   static void SetSubtitleStreamName(DVDNavStreamInfo &info, const subp_attr_t &subp_attributes);
+
+  int GetAngleCount();
+  void GetVideoResolution(uint32_t * width, uint32_t * height);
 
   DllDvdNav m_dll;
   bool m_bCheckButtons;

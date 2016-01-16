@@ -465,12 +465,8 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       Update(s);
     }
 
-    count = nav->GetAngleCount();
-    uint32_t width = 0;
-    uint32_t height = 0;
-    int aspect = nav->GetVideoAspectRatio();
-    nav->GetVideoResolution(&width, &height);
-    for (int i = 1; i <= count; i++)
+    DVDNavVideoStreamInfo info = nav->GetVideoStreamInfo();
+    for (int i = 1; i <= info.angles; i++)
     {
       SelectionStream s;
       s.source = source;
@@ -479,9 +475,10 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       s.flags = CDemuxStream::FLAG_NONE;
       s.filename = filename;
       s.channels = 0;
-      s.aspect_ratio = aspect;
-      s.width = (int)width;
-      s.height = (int)height;
+      s.aspect_ratio = info.aspectRatio;
+      s.width = (int)info.width;
+      s.height = (int)info.height;
+      s.codec = info.codec;
       s.name = StringUtils::Format("%s %i", g_localizeStrings.Get(38032).c_str(), i);
       Update(s);
     }

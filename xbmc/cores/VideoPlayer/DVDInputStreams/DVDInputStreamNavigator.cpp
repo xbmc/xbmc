@@ -1102,7 +1102,8 @@ int CDVDInputStreamNavigator::GetAudioStreamCount()
 
 int CDVDInputStreamNavigator::GetAngleCount()
 {
-  if (!m_dvdnav) return 0;
+  if (!m_dvdnav)
+    return -1;
 
   int number_of_angles;
   int current_angle;
@@ -1116,7 +1117,8 @@ int CDVDInputStreamNavigator::GetAngleCount()
 
 int CDVDInputStreamNavigator::GetActiveAngle()
 {
-  if (!m_dvdnav) return 0;
+  if (!m_dvdnav)
+    return -1;
 
   int number_of_angles;
   int current_angle;
@@ -1130,7 +1132,8 @@ int CDVDInputStreamNavigator::GetActiveAngle()
 
 bool CDVDInputStreamNavigator::SetAngle(int angle)
 {
-  if (!m_dvdnav) return 0;
+  if (!m_dvdnav)
+    return false;
 
   dvdnav_status_t status = m_dll.dvdnav_angle_change(m_dvdnav, angle);
 
@@ -1534,4 +1537,21 @@ void CDVDInputStreamNavigator::GetVideoResolution(uint32_t* width, uint32_t* hei
   if (!m_dvdnav) return;
 
   dvdnav_status_t status = m_dll.dvdnav_get_video_resolution(m_dvdnav, width, height);
+}
+
+DVDNavVideoStreamInfo CDVDInputStreamNavigator::GetVideoStreamInfo()
+{
+  DVDNavVideoStreamInfo info;
+  if (!m_dvdnav)
+    return info;
+
+  info.angles = GetAngleCount();
+  info.aspectRatio = GetVideoAspectRatio();
+  GetVideoResolution(&info.width, &info.height);
+
+  // Until we add get_video_attr or get_video_codec we can't distinguish MPEG-1 (h261)
+  // from MPEG-2 (h262). The latter is far more common, so use this.
+  info.codec = "h262";
+
+  return info;
 }
