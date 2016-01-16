@@ -403,9 +403,9 @@ bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/)
           // if the addon has a running instance, grab that
           AddonPtr runningAddon = addon->GetRunningInstance();
           if (runningAddon)
-            addon = runningAddon;
+            addon = std::move(runningAddon);
         }
-        addons.push_back(addon);
+        addons.emplace_back(std::move(addon));
       }
     }
   }
@@ -478,9 +478,9 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
           // if the addon has a running instance, grab that
           AddonPtr runningAddon = addon->GetRunningInstance();
           if (runningAddon)
-            addon = runningAddon;
+            addon = std::move(runningAddon);
         }
-        addons.push_back(addon);
+        addons.push_back(std::move(addon));
       }
     }
   }
@@ -1079,7 +1079,7 @@ bool CAddonMgr::AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons)
     {
       AddonPtr addon = GetAddonFromDescriptor(info);
       if (addon.get())
-        addons.push_back(addon);
+        addons.push_back(std::move(addon));
       m_cpluff->release_info(context, info);
     }
     element = element->NextSiblingElement("addon");
