@@ -864,9 +864,11 @@ int CDVDInputStreamNavigator::GetActiveSubtitleStream()
   return activeStream;
 }
 
-bool CDVDInputStreamNavigator::GetSubtitleStreamInfo(const int iId, DVDNavStreamInfo &info)
+DVDNavStreamInfo CDVDInputStreamNavigator::GetSubtitleStreamInfo(const int iId)
 {
-  if (!m_dvdnav) return false;
+  DVDNavStreamInfo info;
+  if (!m_dvdnav)
+    return info;
 
   int streamId = ConvertSubtitleStreamId_XBMCToExternal(iId);
   subp_attr_t subp_attributes;
@@ -880,10 +882,10 @@ bool CDVDInputStreamNavigator::GetSubtitleStreamInfo(const int iId, DVDNavStream
     lang[1] = (subp_attributes.lang_code & 255);
     lang[0] = (subp_attributes.lang_code >> 8) & 255;
 
-    g_LangCodeExpander.ConvertToISO6392T(lang, info.language);
-    return true;
+    info.language = g_LangCodeExpander.ConvertToISO6392T(lang);
   }
-  return false;
+
+  return info;
 }
 
 void CDVDInputStreamNavigator::SetSubtitleStreamName(DVDNavStreamInfo &info, const subp_attr_t &subp_attributes)
@@ -1044,12 +1046,13 @@ void CDVDInputStreamNavigator::SetAudioStreamName(DVDNavStreamInfo &info, const 
   }
 
   StringUtils::TrimLeft(info.name);
-
 }
 
-bool CDVDInputStreamNavigator::GetAudioStreamInfo(const int iId, DVDNavStreamInfo &info)
+DVDNavStreamInfo CDVDInputStreamNavigator::GetAudioStreamInfo(const int iId)
 {
-  if (!m_dvdnav) return false;
+  DVDNavStreamInfo info;
+  if (!m_dvdnav)
+    return info;
 
   int streamId = ConvertAudioStreamId_XBMCToExternal(iId);
   audio_attr_t audio_attributes;
@@ -1063,13 +1066,11 @@ bool CDVDInputStreamNavigator::GetAudioStreamInfo(const int iId, DVDNavStreamInf
     lang[1] = (audio_attributes.lang_code & 255);
     lang[0] = (audio_attributes.lang_code >> 8) & 255;
 
-    g_LangCodeExpander.ConvertToISO6392T(lang, info.language);
-
+    info.language = g_LangCodeExpander.ConvertToISO6392T(lang);
     info.channels = audio_attributes.channels + 1;
-
-    return true;
   }
-  return false;
+
+  return info;
 }
 
 int CDVDInputStreamNavigator::GetAudioStreamCount()
@@ -1489,22 +1490,28 @@ int CDVDInputStreamNavigator::ConvertSubtitleStreamId_ExternalToXBMC(int id)
   }
 }
 
-bool CDVDInputStreamNavigator::GetDVDTitleString(std::string& titleStr)
+std::string CDVDInputStreamNavigator::GetDVDTitleString()
 {
-  if (!m_dvdnav) return false;
+  if (!m_dvdnav)
+    return "";
+
   const char* str = NULL;
-  m_dll.dvdnav_get_title_string(m_dvdnav, &str);
-  titleStr.assign(str);
-  return true;
+  if (m_dll.dvdnav_get_title_string(m_dvdnav, &str) == DVDNAV_STATUS_OK)
+    return str;
+  else
+    return "";
 }
 
-bool CDVDInputStreamNavigator::GetDVDSerialString(std::string& serialStr)
+std::string CDVDInputStreamNavigator::GetDVDSerialString()
 {
-  if (!m_dvdnav) return false;
+  if (!m_dvdnav)
+    return "";
+
   const char* str = NULL;
-  m_dll.dvdnav_get_serial_string(m_dvdnav, &str);
-  serialStr.assign(str);
-  return true;
+  if (m_dll.dvdnav_get_serial_string(m_dvdnav, &str) == DVDNAV_STATUS_OK)
+    return str;
+  else
+    return "";
 }
 
 int64_t CDVDInputStreamNavigator::GetChapterPos(int ch)

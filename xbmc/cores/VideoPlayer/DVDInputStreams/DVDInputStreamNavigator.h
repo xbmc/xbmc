@@ -112,7 +112,7 @@ public:
 
   int GetActiveSubtitleStream();
   int GetSubTitleStreamCount();
-  bool GetSubtitleStreamInfo(const int iId, DVDNavStreamInfo &info);
+  DVDNavStreamInfo GetSubtitleStreamInfo(const int iId);
 
   bool SetActiveSubtitleStream(int iId);
   void EnableSubtitleStream(bool bEnable);
@@ -124,7 +124,7 @@ public:
   int GetActiveAngle();
   bool SetAngle(int angle);
   bool SetActiveAudioStream(int iId);
-  bool GetAudioStreamInfo(const int iId, DVDNavStreamInfo &info);
+  DVDNavStreamInfo GetAudioStreamInfo(const int iId);
 
   bool GetState(std::string &xmlstate);
   bool SetState(const std::string &xmlstate);
@@ -143,8 +143,8 @@ public:
 
   bool SeekTime(int iTimeInMsec); //seek within current pg(c)
 
-  bool GetDVDTitleString(std::string& titleStr);
-  bool GetDVDSerialString(std::string& serialStr);
+  std::string GetDVDTitleString();
+  std::string GetDVDSerialString();
 
   void CheckButtons();
 
