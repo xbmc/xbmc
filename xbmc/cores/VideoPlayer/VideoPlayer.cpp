@@ -4670,7 +4670,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   {
     CDemuxStream* pStream = m_pDemuxer->GetStream(m_CurrentAudio.id);
     if (pStream && pStream->type == STREAM_AUDIO)
-      ((CDemuxStreamAudio*)pStream)->GetStreamInfo(state.demux_audio);
+      state.demux_audio = ((CDemuxStreamAudio*)pStream)->GetStreamInfo();
   }
   else
     state.demux_audio = "";
@@ -4679,7 +4679,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   {
     CDemuxStream* pStream = m_pDemuxer->GetStream(m_CurrentVideo.id);
     if (pStream && pStream->type == STREAM_VIDEO)
-      ((CDemuxStreamVideo*)pStream)->GetStreamInfo(state.demux_video);
+      state.demux_video = ((CDemuxStreamVideo*)pStream)->GetStreamInfo();
   }
   else
     state.demux_video = "";

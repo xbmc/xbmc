@@ -58,8 +58,9 @@ void CDemuxStreamPVRInternal::DisposeParser()
   }
 }
 
-void CDemuxStreamVideoPVRClient::GetStreamInfo(std::string& strInfo)
+std::string CDemuxStreamVideoPVRClient::GetStreamInfo()
 {
+  std::string strInfo;
   switch (codec)
   {
     case AV_CODEC_ID_MPEG2VIDEO:
@@ -71,10 +72,13 @@ void CDemuxStreamVideoPVRClient::GetStreamInfo(std::string& strInfo)
     default:
       break;
   }
+
+  return strInfo;
 }
 
-void CDemuxStreamAudioPVRClient::GetStreamInfo(std::string& strInfo)
+std::string CDemuxStreamAudioPVRClient::GetStreamInfo()
 {
+  std::string strInfo;
   switch (codec)
   {
     case AV_CODEC_ID_AC3:
@@ -95,10 +99,13 @@ void CDemuxStreamAudioPVRClient::GetStreamInfo(std::string& strInfo)
     default:
       break;
   }
+
+  return strInfo;
 }
 
-void CDemuxStreamSubtitlePVRClient::GetStreamInfo(std::string& strInfo)
+std::string CDemuxStreamSubtitlePVRClient::GetStreamInfo()
 {
+  return "";
 }
 
 CDVDDemuxPVRClient::CDVDDemuxPVRClient() : CDVDDemux()

@@ -100,9 +100,9 @@ public:
     delete [] ExtraData;
   }
 
-  virtual void GetStreamInfo(std::string& strInfo)
+  virtual std::string GetStreamInfo()
   {
-    strInfo = "";
+    return "";
   }
 
   virtual std::string GetStreamName();
@@ -222,7 +222,7 @@ public:
   {
     type = STREAM_TELETEXT;
   }
-  virtual void GetStreamInfo(std::string& strInfo);
+  virtual std::string GetStreamInfo();
 };
 
 class CDemuxStreamRadioRDS : public CDemuxStream
@@ -232,7 +232,7 @@ public:
   {
     type = STREAM_RADIO_RDS;
   }
-  virtual void GetStreamInfo(std::string& strInfo);
+  virtual std::string GetStreamInfo();
 };
 
 class CDVDDemux

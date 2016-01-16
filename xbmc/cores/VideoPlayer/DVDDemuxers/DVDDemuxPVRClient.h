@@ -53,7 +53,7 @@ public:
   CDemuxStreamVideoPVRClient(CDVDDemuxPVRClient *parent)
     : CDemuxStreamPVRInternal(parent)
   {}
-  virtual void GetStreamInfo(std::string& strInfo);
+  virtual std::string GetStreamInfo() override;
 };
 
 class CDemuxStreamAudioPVRClient
@@ -64,7 +64,7 @@ public:
   CDemuxStreamAudioPVRClient(CDVDDemuxPVRClient *parent)
     : CDemuxStreamPVRInternal(parent)
   {}
-  virtual void GetStreamInfo(std::string& strInfo);
+  virtual std::string GetStreamInfo() override;
 };
 
 class CDemuxStreamSubtitlePVRClient
@@ -75,7 +75,7 @@ public:
   CDemuxStreamSubtitlePVRClient(CDVDDemuxPVRClient *parent)
     : CDemuxStreamPVRInternal(parent)
   {}
-  virtual void GetStreamInfo(std::string& strInfo);
+  virtual std::string GetStreamInfo() override;
 };
 
 

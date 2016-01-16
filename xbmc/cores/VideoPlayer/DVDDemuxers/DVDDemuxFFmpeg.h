@@ -45,7 +45,7 @@ public:
   {}
   std::string      m_description;
 
-  virtual void GetStreamInfo(std::string& strInfo);
+  virtual std::string GetStreamInfo() override;
   virtual std::string GetStreamName() override;
 };
 
@@ -62,7 +62,7 @@ public:
   {}
   std::string m_description;
 
-  virtual void GetStreamInfo(std::string& strInfo);
+  virtual std::string GetStreamInfo() override;
   virtual std::string GetStreamName() override;
 };
 
@@ -78,7 +78,7 @@ public:
   {}
   std::string m_description;
 
-  virtual void GetStreamInfo(std::string& strInfo);
+  virtual std::string GetStreamInfo() override;
   virtual std::string GetStreamName() override;
 
 };

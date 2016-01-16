@@ -77,12 +77,14 @@ static const struct StereoModeConversionMap WmvToInternalStereoModeMap[] =
 
 #define FF_MAX_EXTRADATA_SIZE ((1 << 28) - FF_INPUT_BUFFER_PADDING_SIZE)
 
-void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
+std::string CDemuxStreamAudioFFmpeg::GetStreamInfo()
 {
-  if(!m_stream) return;
+  if(!m_stream)
+    return "";
   char temp[128];
   avcodec_string(temp, 128, m_stream->codec, 0);
-  strInfo = temp;
+
+  return temp;
 }
 
 std::string CDemuxStreamAudioFFmpeg::GetStreamName()
@@ -105,12 +107,14 @@ std::string CDemuxStreamSubtitleFFmpeg::GetStreamName()
     return CDemuxStream::GetStreamName();
 }
 
-void CDemuxStreamVideoFFmpeg::GetStreamInfo(std::string& strInfo)
+std::string CDemuxStreamVideoFFmpeg::GetStreamInfo()
 {
-  if(!m_stream) return;
+  if(!m_stream)
+    return "";
   char temp[128];
   avcodec_string(temp, 128, m_stream->codec, 0);
-  strInfo = temp;
+  
+  return temp;
 }
 
 std::string CDemuxStreamVideoFFmpeg::GetStreamName()
@@ -123,12 +127,14 @@ std::string CDemuxStreamVideoFFmpeg::GetStreamName()
     return CDemuxStream::GetStreamName();
 }
 
-void CDemuxStreamSubtitleFFmpeg::GetStreamInfo(std::string& strInfo)
+std::string CDemuxStreamSubtitleFFmpeg::GetStreamInfo()
 {
-  if(!m_stream) return;
+  if(!m_stream)
+    return "";
   char temp[128];
   avcodec_string(temp, 128, m_stream->codec, 0);
-  strInfo = temp;
+  
+  return temp;
 }
 
 static int interrupt_cb(void* ctx)
