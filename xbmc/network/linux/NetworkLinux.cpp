@@ -588,12 +588,12 @@ bool CNetworkLinux::PingHostImpl(const std::string &target, unsigned int timeout
   return result == 0;
 }
 
-#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
 bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::string& mac)
 {
   if (m_network->GetFirstConnectedFamily() == AF_INET6 || isIPv6())
     return false;
 
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
   bool ret = false;
   size_t needed;
   char *buf, *next;
@@ -640,13 +640,7 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::strin
     }
   }
   return ret;
-}
 #else
-bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::string& mac)
-{
-  if (m_network->GetFirstConnectedFamily() == AF_INET6 || isIPv6())
-    return false;
-
   struct arpreq areq;
   struct sockaddr_in* sin;
 
@@ -680,8 +674,8 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::strin
       return true;
 
   return false;
-}
 #endif
+}
 
 std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
 {
