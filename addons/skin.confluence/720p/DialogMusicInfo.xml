@@ -35,7 +35,7 @@
 				<animation effect="fade" delay="300" start="0" end="100" time="150">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
 				<control type="label">
-					<description>Album header label</description>
+					<description>Header label</description>
 					<left>210</left>
 					<top>50</top>
 					<width>1030</width>
@@ -54,22 +54,23 @@
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
-						<width>300</width>
-						<height>300</height>
+						<width>270</width>
+						<height>270</height>
 						<aspectratio>keep</aspectratio>
 						<bordertexture border="5">button-nofocus.png</bordertexture>
 						<bordersize>4</bordersize>
 						<texture background="true">$INFO[ListItem.Icon]</texture>
 					</control>
 					<control type="list" id="49">
-						<left>310</left>
+						<left>280</left>
 						<top>0</top>
-						<width>730</width>
-						<height>300</height>
+						<width>760</width>
+						<height>270</height>
 						<onleft>49</onleft>
 						<onright>49</onright>
 						<onup>9000</onup>
-						<ondown>50</ondown>
+						<ondown condition="!Container.Content(Songs)">50</ondown>
+						<ondown condition="Container.Content(Songs)">9000</ondown>
 						<pagecontrol>-</pagecontrol>
 						<scrolltime>200</scrolltime>
 						<itemlayout height="30">
@@ -88,7 +89,7 @@
 							<control type="label">
 								<left>150</left>
 								<top>0</top>
-								<width>580</width>
+								<width>610</width>
 								<height>30</height>
 								<font>font13</font>
 								<align>left</align>
@@ -102,7 +103,7 @@
 							<control type="image">
 								<left>0</left>
 								<top>0</top>
-								<width>730</width>
+								<width>760</width>
 								<height>30</height>
 								<visible>Control.HasFocus(49)</visible>
 								<texture>MenuItemFO.png</texture>
@@ -123,7 +124,7 @@
 							<control type="label">
 								<left>150</left>
 								<top>0</top>
-								<width>580</width>
+								<width>610</width>
 								<height>30</height>
 								<font>font13</font>
 								<align>left</align>
@@ -140,10 +141,18 @@
 						</content>
 					</control>
 				</control>
+				<control type="image">
+					<left>210</left>
+					<top>368</top>
+					<width>1030</width>
+					<height>4</height>
+					<aspectratio>stretch</aspectratio>
+					<texture>separator.png</texture>
+				</control>
 				<control type="textbox">
 					<description>Description</description>
 					<left>210</left>
-					<top>390</top>
+					<top>375</top>
 					<width>1030</width>
 					<height>122</height>
 					<label>$VAR[MusicInfoLabel]</label>
@@ -153,7 +162,16 @@
 					<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 				</control>
 				<control type="image">
-					<description>Album cover</description>
+					<left>210</left>
+					<top>512</top>
+					<width>1030</width>
+					<height>4</height>
+					<aspectratio>stretch</aspectratio>
+					<texture>separator.png</texture>
+					<visible>Container.Content(Songs)</visible>
+				</control>
+				<control type="image">
+					<description>Thumb</description>
 					<left>210</left>
 					<top>520</top>
 					<width>120</width>
@@ -161,7 +179,7 @@
 					<texture>$VAR[MusicInfoListThumb]</texture>
 					<aspectratio>keep</aspectratio>
 				</control>
-				<include name="AlbumInfoPanel" condition="Container.Content(Artists) | Container.Content(Albums)">
+				<include name="MusicInfoPanel" condition="Container.Content(Artists) | Container.Content(Albums)">
 					<param name="panel-left" value="340"/>
 					<param name="panel-width" value="900"/>
 					<param name="item-width" value="450"/>
@@ -190,28 +208,28 @@
 					<orientation>horizontal</orientation>
 					<onleft>9000</onleft>
 					<onright>9000</onright>
-					<onup>50</onup>
+					<onup condition="!Container.Content(Songs)">50</onup>
+					<onup condition="Container.Content(Songs)">49</onup>
 					<ondown>49</ondown>
 					<control type="button" id="6">
 						<description>Refresh</description>
 						<include>ButtonInfoDialogsCommonValues</include>
-						<label>184</label>
+						<label>-</label>
 					</control>
 					<control type="button" id="10">
 						<description>Get Thumb</description>
 						<include>ButtonInfoDialogsCommonValues</include>
-						<label>13405</label>
+						<label>-</label>
 					</control>
 					<control type="button" id="12">
 						<description>Get Fanart / Album info</description>
 						<include>ButtonInfoDialogsCommonValues</include>
-						<label>20413</label>
+						<label>-</label>
 					</control>
 					<control type="button" id="7">
 						<description>Set my rating</description>
 						<include>ButtonInfoDialogsCommonValues</include>
-						<label>38023</label>
-						<visible>[Container.Content(Albums) | Container.Content(Songs)] + Control.IsEnabled(7)</visible>
+						<label>-</label>
 					</control>
 				</control>
 			</control>
