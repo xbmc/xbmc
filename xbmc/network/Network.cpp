@@ -18,6 +18,7 @@
  *
  */
 
+#include <bitset>
 #include <stdlib.h>
 
 #include <netinet/in.h>
@@ -695,6 +696,33 @@ int CNetwork::PrefixLengthIPv6(const std::string &address)
   }
 
   return m;
+}
+
+uint8_t CNetwork::PrefixLength(const struct sockaddr *netmask)
+{
+  uint8_t prefixLength = 0;
+  switch (netmask->sa_family)
+  {
+    case AF_INET:
+      prefixLength = std::bitset<sizeof(((struct sockaddr_in *) netmask)->sin_addr.s_addr)>(((struct sockaddr_in *) netmask)->sin_addr.s_addr).count();
+      break;
+    case AF_INET6:
+      for (unsigned int i = 0; i < sizeof(((struct sockaddr_in6 *) netmask)->sin6_addr.s6_addr); ++i)
+        prefixLength += std::bitset<sizeof(((struct sockaddr_in6 *) netmask)->sin6_addr.s6_addr)>(((struct sockaddr_in6 *) netmask)->sin6_addr.s6_addr[i]).count();
+      break;
+  }
+  return prefixLength;
+}
+
+bool CNetwork::CompareAddresses(const struct sockaddr * sa, const struct sockaddr * sb)
+{
+  if (sa->sa_family != sb->sa_family)
+    return false;
+  else if (sa->sa_family == AF_INET)
+    return ((struct sockaddr_in *)(sa))->sin_addr.s_addr == ((struct sockaddr_in *)(sb))->sin_addr.s_addr;
+  else if (sa->sa_family == AF_INET6)
+    return (memcmp((char *) &(((struct sockaddr_in6 *)(sa))->sin6_addr), (char *) &(((struct sockaddr_in6 *)(sb))->sin6_addr), sizeof(((struct sockaddr_in6 *)(sa))->sin6_addr))) == 0;
+  return false;
 }
 
 CNetwork::CNetworkUpdater::CNetworkUpdater(void (*watcher)(void *caller))

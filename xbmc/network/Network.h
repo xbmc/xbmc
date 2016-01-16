@@ -339,6 +339,23 @@ public:
    //                  doesn't comply to standard)
    static int     PrefixLengthIPv6(const std::string &address);
 
+  /*!
+   \brief  computes the prefix length for a (IPv4/IPv6) netmask
+   \param  struct sockaddr
+   \return The prefix length of the netmask
+           For IPv4 it can be between 0 and 32
+           For IPv6 it can be between 0 and 128
+   */
+  static uint8_t PrefixLength(const struct sockaddr *netmask);
+
+  /*!
+   \brief  compares two ip addresses (IPv4/IPv6)
+   \param  ip address 1
+   \param  ip address 2
+   \return if the two addresses are the same
+   */
+  static bool CompareAddresses(const struct sockaddr *sa, const struct sockaddr *sb);
+
    /*!
     \brief fully IPv4/IPv6 compatible
            - IPv6 part is limited to addr/mask match only (IPv4 way)
