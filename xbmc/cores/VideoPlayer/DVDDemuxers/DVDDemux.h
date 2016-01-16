@@ -196,7 +196,7 @@ public:
 
   virtual ~CDemuxStreamAudio() {}
 
-  void GetStreamType(std::string& strInfo);
+  std::string GetStreamType();
 
   int iChannels;
   int iSampleRate;
