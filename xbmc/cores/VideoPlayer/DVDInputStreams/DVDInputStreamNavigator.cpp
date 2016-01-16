@@ -1257,12 +1257,10 @@ float CDVDInputStreamNavigator::GetVideoAspectRatio()
   CLog::Log(LOGINFO, "%s - Aspect wanted: %d, Scale permissions: %d", __FUNCTION__, iAspect, iPerm);
   switch(iAspect)
   {
-    case 2: //4:3
+    case 0: //4:3
       return 4.0f / 3.0f;
     case 3: //16:9
       return 16.0f / 9.0f;
-    case 4:
-      return 2.11f / 1.0f;
     default: //Unknown, use libmpeg2
       return 0.0f;
   }
