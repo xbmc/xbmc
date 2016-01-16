@@ -18,4 +18,4 @@ else
 		`cat @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.def` @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o
 endif
 
-include @abs_top_srcdir@/Makefile.include
+include ../../Makefile.include

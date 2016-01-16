@@ -4,5 +4,5 @@ SRCS  = main.cpp
 
 LIB=posix.a
 
-include @abs_top_srcdir@/Makefile.include
+include ../../../Makefile.include
 -include $(patsubst %.mm,%.P,$(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS))))

@@ -4,5 +4,5 @@ SRCS  = FreeBSDGNUReplacements.c
 
 LIB = freebsd.a
 
-include @abs_top_srcdir@/Makefile.include
+include ../../Makefile.include
 

@@ -99,7 +99,7 @@ endif
 
 LIB = guilib.a
 
-include @abs_top_srcdir@/Makefile.include
+include ../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 
 try : try.o TextureBundle.o DirectXGraphics.o GUIFontTTF.o

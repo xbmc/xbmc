@@ -304,16 +304,16 @@ int CSkinInfo::GetStartWindow() const
 bool CSkinInfo::LoadStartupWindows(const cp_extension_t *ext)
 {
   m_startupWindows.clear();
-  m_startupWindows.push_back(CStartupWindow(WINDOW_HOME, "513"));
-  m_startupWindows.push_back(CStartupWindow(WINDOW_TV_CHANNELS, "19180"));
-  m_startupWindows.push_back(CStartupWindow(WINDOW_RADIO_CHANNELS, "19183"));
-  m_startupWindows.push_back(CStartupWindow(WINDOW_PROGRAMS, "0"));
-  m_startupWindows.push_back(CStartupWindow(WINDOW_PICTURES, "1"));
-  m_startupWindows.push_back(CStartupWindow(WINDOW_MUSIC, "2"));
-  m_startupWindows.push_back(CStartupWindow(WINDOW_VIDEOS, "3"));
-  m_startupWindows.push_back(CStartupWindow(WINDOW_FILES, "7"));
-  m_startupWindows.push_back(CStartupWindow(WINDOW_SETTINGS_MENU, "5"));
-  m_startupWindows.push_back(CStartupWindow(WINDOW_WEATHER, "8"));
+  m_startupWindows.emplace_back(WINDOW_HOME, "513");
+  m_startupWindows.emplace_back(WINDOW_TV_CHANNELS, "19180");
+  m_startupWindows.emplace_back(WINDOW_RADIO_CHANNELS, "19183");
+  m_startupWindows.emplace_back(WINDOW_PROGRAMS, "0");
+  m_startupWindows.emplace_back(WINDOW_PICTURES, "1");
+  m_startupWindows.emplace_back(WINDOW_MUSIC, "2");
+  m_startupWindows.emplace_back(WINDOW_VIDEOS, "3");
+  m_startupWindows.emplace_back(WINDOW_FILES, "7");
+  m_startupWindows.emplace_back(WINDOW_SETTINGS_MENU, "5");
+  m_startupWindows.emplace_back(WINDOW_WEATHER, "8");
   return true;
 }
 
