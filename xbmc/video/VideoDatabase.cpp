@@ -6062,20 +6062,35 @@ bool CVideoDatabase::GetSeasonsByWhere(const std::string& strBaseDir, const Filt
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    // parse the base path to get additional filters
+    int total = -1;
+
+    std::string strSQL = "SELECT %s FROM season_view ";
     CVideoDbUrl videoUrl;
-    if (!videoUrl.FromString(strBaseDir))
-      return false;
-
-    std::string strSQL = "SELECT * FROM season_view ";
-
+    std::string strSQLExtra;
     Filter extFilter = filter;
-    if (!BuildSQL(strBaseDir, strSQL, extFilter, strSQL, videoUrl))
+    SortDescription sorting = sortDescription;
+    if (!BuildSQL(strBaseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl, sorting))
       return false;
+
+    // Apply the limiting directly here if there's no special sorting but limiting
+    if (extFilter.limit.empty() &&
+      sorting.sortBy == SortByNone &&
+      (sorting.limitStart > 0 || sorting.limitEnd > 0))
+    {
+      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
+      strSQLExtra += DatabaseUtils::BuildLimitClause(sorting.limitEnd, sorting.limitStart);
+    }
+
+    strSQL = PrepareSQL(strSQL, !extFilter.fields.empty() ? extFilter.fields.c_str() : "*") + strSQLExtra;
 
     int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0)
       return iRowsFound == 0;
+
+    // store the total value of items as a property
+    if (total < iRowsFound)
+      total = iRowsFound;
+    items.SetProperty("total", total);
 
     std::set<std::pair<int, int>> mapSeasons;
     while (!m_pDS->eof())
