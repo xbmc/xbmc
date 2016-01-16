@@ -476,9 +476,10 @@ std::string CDVDDemuxPVRClient::GetFileName()
     return "";
 }
 
-void CDVDDemuxPVRClient::GetStreamCodecName(int iStreamId, std::string &strName)
+std::string CDVDDemuxPVRClient::GetStreamCodecName(int iStreamId)
 {
   CDemuxStream *stream = GetStream(iStreamId);
+  std::string strName;
   if (stream)
   {
     if (stream->codec == AV_CODEC_ID_AC3)
@@ -496,6 +497,7 @@ void CDVDDemuxPVRClient::GetStreamCodecName(int iStreamId, std::string &strName)
     else if (stream->codec == AV_CODEC_ID_EAC3)
       strName = "eac3";
   }
+  return strName;
 }
 
 bool CDVDDemuxPVRClient::SeekTime(int timems, bool backwards, double *startpts)

@@ -1503,9 +1503,10 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
   return SeekTime(DVD_TIME_TO_MSEC(dts), true, startpts);
 }
 
-void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, std::string &strName)
+std::string CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId)
 {
   CDemuxStream *stream = GetStream(iStreamId);
+  std::string strName;
   if (stream)
   {
     unsigned int in = stream->codec_fourcc;
@@ -1529,7 +1530,7 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, std::string &strName)
       {
         strName = fourcc;
         StringUtils::ToLower(strName);
-        return;
+        return strName;
       }
     }
 
@@ -1543,7 +1544,8 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, std::string &strName)
         strName = "dtshd_hra";
       else
         strName = "dca";
-      return;
+
+      return strName;
     }
 #endif
 
@@ -1551,6 +1553,7 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, std::string &strName)
     if (codec)
       strName = codec->name;
   }
+  return strName;
 }
 
 bool CDVDDemuxFFmpeg::IsProgramChange()

@@ -48,7 +48,7 @@ public:
   CDemuxStream* GetStream(int iStreamId);
   int GetNrOfStreams();
   std::string GetFileName();
-  virtual void GetStreamCodecName(int iStreamId, std::string &strName);
+  virtual std::string GetStreamCodecName(int iStreamId) override;
 
 protected:
   friend class CDemuxStreamAudioCDDA;

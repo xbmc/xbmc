@@ -114,7 +114,7 @@ public:
   int GetChapter();
   void GetChapterName(std::string& strChapterName, int chapterIdx=-1);
   int64_t GetChapterPos(int chapterIdx=-1);
-  virtual void GetStreamCodecName(int iStreamId, std::string &strName);
+  virtual std::string GetStreamCodecName(int iStreamId) override;
 
   bool Aborted();
 
