@@ -105,7 +105,7 @@ public:
     strInfo = "";
   }
 
-  virtual void GetStreamName(std::string& strInfo);
+  virtual std::string GetStreamName();
 
   virtual void      SetDiscard(AVDiscard discard);
   virtual AVDiscard GetDiscard();

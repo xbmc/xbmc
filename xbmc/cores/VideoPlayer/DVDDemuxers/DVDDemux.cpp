@@ -198,9 +198,9 @@ const CDemuxStreamRadioRDS* CDVDDemux::GetStreamFromRadioRDSId(int iRadioRDSInde
   return NULL;
 }
 
-void CDemuxStream::GetStreamName( std::string& strInfo )
+std::string CDemuxStream::GetStreamName()
 {
-  strInfo = "";
+  return "";
 }
 
 AVDiscard CDemuxStream::GetDiscard()

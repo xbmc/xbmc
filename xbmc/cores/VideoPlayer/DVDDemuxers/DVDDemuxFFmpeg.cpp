@@ -85,22 +85,24 @@ void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
   strInfo = temp;
 }
 
-void CDemuxStreamAudioFFmpeg::GetStreamName(std::string& strInfo)
+std::string CDemuxStreamAudioFFmpeg::GetStreamName()
 {
-  if(!m_stream) return;
+  if(!m_stream)
+    return "";
   if(!m_description.empty())
-    strInfo = m_description;
+    return m_description;
   else
-    CDemuxStream::GetStreamName(strInfo);
+    return CDemuxStream::GetStreamName();
 }
 
-void CDemuxStreamSubtitleFFmpeg::GetStreamName(std::string& strInfo)
+std::string CDemuxStreamSubtitleFFmpeg::GetStreamName()
 {
-  if(!m_stream) return;
+  if(!m_stream)
+    return "";
   if(!m_description.empty())
-    strInfo = m_description;
+    return m_description;
   else
-    CDemuxStream::GetStreamName(strInfo);
+    return CDemuxStream::GetStreamName();
 }
 
 void CDemuxStreamVideoFFmpeg::GetStreamInfo(std::string& strInfo)
@@ -111,13 +113,14 @@ void CDemuxStreamVideoFFmpeg::GetStreamInfo(std::string& strInfo)
   strInfo = temp;
 }
 
-void CDemuxStreamVideoFFmpeg::GetStreamName(std::string& strInfo)
+std::string CDemuxStreamVideoFFmpeg::GetStreamName()
 {
-  if (!m_stream) return;
+  if (!m_stream)
+    return "";
   if (!m_description.empty())
-    strInfo = m_description;
+    return m_description;
   else
-    CDemuxStream::GetStreamName(strInfo);
+    return CDemuxStream::GetStreamName();
 }
 
 void CDemuxStreamSubtitleFFmpeg::GetStreamInfo(std::string& strInfo)

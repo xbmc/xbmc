@@ -46,7 +46,7 @@ public:
   std::string      m_description;
 
   virtual void GetStreamInfo(std::string& strInfo);
-  virtual void GetStreamName(std::string& strInfo);
+  virtual std::string GetStreamName() override;
 };
 
 
@@ -63,7 +63,7 @@ public:
   std::string m_description;
 
   virtual void GetStreamInfo(std::string& strInfo);
-  virtual void GetStreamName(std::string& strInfo);
+  virtual std::string GetStreamName() override;
 };
 
 class CDemuxStreamSubtitleFFmpeg
@@ -79,7 +79,7 @@ public:
   std::string m_description;
 
   virtual void GetStreamInfo(std::string& strInfo);
-  virtual void GetStreamName(std::string& strInfo);
+  virtual std::string GetStreamName() override;
 
 };
 
