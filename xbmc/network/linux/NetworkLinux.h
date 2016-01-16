@@ -35,9 +35,8 @@ class CNetworkInterfaceLinux : public CNetworkInterface
   friend class CNetworkLinux;
 
 public:
-   CNetworkInterfaceLinux(CNetworkLinux* network, bool sa_ipv6,
-                unsigned int ifa_flags, std::string ifa_addr, std::string ifa_netmask,
-                std::string interfaceName, char interfaceMacAddrRaw[6]);
+   CNetworkInterfaceLinux(CNetworkLinux* network, unsigned int ifa_flags, struct sockaddr *address,
+                          struct sockaddr *netmask, std::string interfaceName, char interfaceMacAddrRaw[6]);
    ~CNetworkInterfaceLinux(void);
 
    virtual std::string& GetName(void);
@@ -59,15 +58,15 @@ public:
    virtual void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
    virtual void SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
 
-   bool isIPv6() { return m_interfaceIpv6; }
-   bool isIPv4() { return !m_interfaceIpv6; }
+   bool isIPv6() { return m_address->sa_family == AF_INET6; }
+   bool isIPv4() { return m_address->sa_family == AF_INET;  }
 
    // Returns the list of access points in the area
    virtual std::vector<NetworkAccessPoint> GetAccessPoints(void);
 
-   bool Exists(const std::string &addr, const std::string &mask, const std::string &name)
+   bool Exists(const struct sockaddr *address, const struct sockaddr *netmask, const std::string &name)
    {
-     return (addr == m_interfaceAddr && mask == m_interfaceNetmask && name == m_interfaceName);
+    return CNetwork::CompareAddresses(m_address, address) && CNetwork::CompareAddresses(m_netmask, netmask) && name == m_interfaceName;
    }
 
 protected:
@@ -76,10 +75,9 @@ protected:
 
 private:
    void WriteSettings(FILE* fw, NetworkAssignment assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
-   bool            m_interfaceIpv6;
    unsigned int    m_interfaceFlags;   /* Flags from SIOCGIFFLAGS */
-   std::string     m_interfaceAddr;    /* Address of interface */
-   std::string     m_interfaceNetmask; /* Netmask of interface */
+  struct sockaddr* m_address;
+  struct sockaddr* m_netmask;
    bool            m_removed;
    std::string     m_interfaceName;
    std::string     m_interfaceMacAdr;
@@ -112,7 +110,7 @@ public:
 
    bool ForceRereadInterfaces() { return queryInterfaceList(); }
 private:
-   CNetworkInterfaceLinux *Exists(const std::string &addr, const std::string &mask, const std::string &name);
+   CNetworkInterfaceLinux *Exists(const struct sockaddr *addr, const struct sockaddr *mask, const std::string &name);
    void InterfacesClear(void);
    void DeleteRemoved(void);
 

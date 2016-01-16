@@ -83,13 +83,10 @@
 
 using namespace KODI::MESSAGING;
 
-CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, bool sa_ipv6, unsigned int ifa_flags,
-                                               std::string ifa_addr, std::string ifa_netmask, std::string interfaceName,
-                                               char interfaceMacAddrRaw[6]) :
-  m_interfaceIpv6(sa_ipv6),
+CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, unsigned int ifa_flags,
+                                               struct sockaddr *address, struct sockaddr *netmask,
+                                               std::string interfaceName, char interfaceMacAddrRaw[6]) :
   m_interfaceFlags(ifa_flags),
-  m_interfaceAddr(ifa_addr),
-  m_interfaceNetmask(ifa_netmask),
   m_removed(false),
   m_interfaceName(interfaceName),
   m_interfaceMacAdr(StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
@@ -101,11 +98,17 @@ CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, bool sa_i
                                         (uint8_t)interfaceMacAddrRaw[5]))
 {
    m_network = network;
+  m_address = (struct sockaddr *) malloc(sizeof(struct sockaddr_storage));
+  m_netmask = (struct sockaddr *) malloc(sizeof(struct sockaddr_storage));
+  memcpy(m_address, address, sizeof(struct sockaddr_storage));
+  memcpy(m_netmask, netmask, sizeof(struct sockaddr_storage));
    memcpy(m_interfaceMacAddrRaw, interfaceMacAddrRaw, sizeof(m_interfaceMacAddrRaw));
 }
 
 CNetworkInterfaceLinux::~CNetworkInterfaceLinux(void)
 {
+  free(m_address);
+  free(m_netmask);
 }
 
 std::string& CNetworkInterfaceLinux::GetName(void)
@@ -143,8 +146,7 @@ bool CNetworkInterfaceLinux::IsConnected()
    unsigned int needFlags = IFF_RUNNING; //IFF_LOWER_UP
    bool iRunning = (m_interfaceFlags & needFlags) == needFlags;
 
-   // return only interfaces which has ip address
-   return iRunning && !m_interfaceAddr.empty();
+  return iRunning;
 }
 
 std::string CNetworkInterfaceLinux::GetMacAddress()
@@ -159,10 +161,7 @@ void CNetworkInterfaceLinux::GetMacAddressRaw(char rawMac[6])
 
 std::string CNetworkInterfaceLinux::GetCurrentIPAddress(void)
 {
-   std::string result;
-
-   result = m_interfaceAddr;
-   return result;
+   return CNetwork::GetIpStr(m_address);
 }
 
 std::string CNetworkInterfaceLinux::GetCurrentNetmask(void)
@@ -170,9 +169,9 @@ std::string CNetworkInterfaceLinux::GetCurrentNetmask(void)
    std::string result;
 
    if (isIPv4())
-     result = m_interfaceNetmask;
+    result = CNetwork::GetIpStr(m_netmask);
    else
-     result = StringUtils::Format("%d", CNetwork::PrefixLengthIPv6(m_interfaceNetmask));
+    result = StringUtils::Format("%u", CNetwork::PrefixLength(m_netmask));
    return result;
 }
 
@@ -399,7 +398,7 @@ void CNetworkLinux::GetMacAddress(struct ifaddrs *tif, char *mac)
 #endif
 }
 
-CNetworkInterfaceLinux *CNetworkLinux::Exists(const std::string &addr, const std::string &mask, const std::string &name)
+CNetworkInterfaceLinux *CNetworkLinux::Exists(const struct sockaddr *addr, const struct sockaddr *mask, const std::string &name)
 {
   for (auto &&iface: m_interfaces)
     if (((CNetworkInterfaceLinux*)iface)->Exists(addr, mask, name))
@@ -462,7 +461,7 @@ bool CNetworkLinux::queryInterfaceList()
      if(addr.empty() || mask.empty())
        continue;
 
-     CNetworkInterfaceLinux *iface = Exists(addr, mask, name);
+     CNetworkInterfaceLinux *iface = Exists(cur->ifa_addr, cur->ifa_netmask, name);
      if (iface)
      {
        iface->SetRemoved(false);
@@ -477,8 +476,8 @@ bool CNetworkLinux::queryInterfaceList()
      GetMacAddress(cur, macAddrRaw);
 #endif
 
-     CNetworkInterfaceLinux *i = new CNetworkInterfaceLinux(this, cur->ifa_addr->sa_family == AF_INET6,
-                                                            cur->ifa_flags, addr, mask, name, macAddrRaw);
+     CNetworkInterfaceLinux *i = new CNetworkInterfaceLinux(this, cur->ifa_flags, cur->ifa_addr,
+                                                            cur->ifa_netmask, name, macAddrRaw);
 
      m_interfaces.insert_after(pos, i);
      if (i->isIPv4())
