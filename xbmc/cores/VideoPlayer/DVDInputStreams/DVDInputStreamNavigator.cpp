@@ -864,9 +864,9 @@ int CDVDInputStreamNavigator::GetActiveSubtitleStream()
   return activeStream;
 }
 
-DVDNavStreamInfo CDVDInputStreamNavigator::GetSubtitleStreamInfo(const int iId)
+DVDNavSubtitleStreamInfo CDVDInputStreamNavigator::GetSubtitleStreamInfo(const int iId)
 {
-  DVDNavStreamInfo info;
+  DVDNavSubtitleStreamInfo info;
   if (!m_dvdnav)
     return info;
 
@@ -1048,9 +1048,9 @@ void CDVDInputStreamNavigator::SetAudioStreamName(DVDNavStreamInfo &info, const 
   StringUtils::TrimLeft(info.name);
 }
 
-DVDNavStreamInfo CDVDInputStreamNavigator::GetAudioStreamInfo(const int iId)
+DVDNavAudioStreamInfo CDVDInputStreamNavigator::GetAudioStreamInfo(const int iId)
 {
-  DVDNavStreamInfo info;
+  DVDNavAudioStreamInfo info;
   if (!m_dvdnav)
     return info;
 

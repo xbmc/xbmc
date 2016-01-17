@@ -48,9 +48,27 @@ struct DVDNavStreamInfo
 {
   std::string name;
   std::string language;
+
+  DVDNavStreamInfo() {}
+};
+
+struct DVDNavAudioStreamInfo : DVDNavStreamInfo
+{
+  std::string codec;
   int channels;
 
-  DVDNavStreamInfo() : channels(0) {}
+  DVDNavAudioStreamInfo() : DVDNavStreamInfo(),
+    channels(0) {}
+};
+
+struct DVDNavSubtitleStreamInfo : DVDNavStreamInfo
+{
+  std::string name;
+  std::string language;
+  CDemuxStream::EFlags flags;
+
+  DVDNavSubtitleStreamInfo() : DVDNavStreamInfo(),
+    flags(CDemuxStream::EFlags::FLAG_NONE) {}
 };
 
 class DVDNavResult
@@ -112,7 +130,7 @@ public:
 
   int GetActiveSubtitleStream();
   int GetSubTitleStreamCount();
-  DVDNavStreamInfo GetSubtitleStreamInfo(const int iId);
+  DVDNavSubtitleStreamInfo GetSubtitleStreamInfo(const int iId);
 
   bool SetActiveSubtitleStream(int iId);
   void EnableSubtitleStream(bool bEnable);
@@ -124,7 +142,7 @@ public:
   int GetActiveAngle();
   bool SetAngle(int angle);
   bool SetActiveAudioStream(int iId);
-  DVDNavStreamInfo GetAudioStreamInfo(const int iId);
+  DVDNavAudioStreamInfo GetAudioStreamInfo(const int iId);
 
   bool GetState(std::string &xmlstate);
   bool SetState(const std::string &xmlstate);
