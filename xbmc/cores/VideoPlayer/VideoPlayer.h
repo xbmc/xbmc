@@ -252,6 +252,7 @@ public:
   virtual bool Record(bool bOnOff);
   virtual void SetAVDelay(float fValue = 0.0f);
   virtual float GetAVDelay();
+  virtual bool IsInMenu() const override;
 
   virtual void SetSubTitleDelay(float fValue = 0.0f);
   virtual float GetSubTitleDelay();
@@ -400,7 +401,7 @@ protected:
 
   void HandleMessages();
   void HandlePlaySpeed();
-  bool IsInMenu() const;
+  bool IsInMenuInternal() const;
 
   void SynchronizePlayers(unsigned int sources);
   void SynchronizeDemuxer(unsigned int timeout);
