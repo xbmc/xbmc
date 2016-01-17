@@ -593,6 +593,11 @@ namespace PVR
      */
     bool Autoconfigure(void);
 
+    /*!
+     * @brief is real-time stream?
+     */
+    bool IsRealTimeStream() const;
+
   private:
     /*!
      * @brief Checks whether the provided API version is compatible with XBMC

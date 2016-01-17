@@ -672,6 +672,8 @@ namespace PVR
 
     int GetClientId(const std::string& strId) const;
 
+    bool IsRealTimeStream() const;
+
   private:
     /*!
      * @brief Update add-ons from the AddonManager
