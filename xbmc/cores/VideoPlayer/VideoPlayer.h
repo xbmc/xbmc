@@ -289,7 +289,6 @@ public:
   virtual int64_t GetTotalTime();
   virtual void ToFFRW(int iSpeed);
   virtual bool OnAction(const CAction &action);
-  virtual bool HasMenu();
 
   virtual int GetSourceBitrate();
   virtual bool GetStreamDetails(CStreamDetails &details);

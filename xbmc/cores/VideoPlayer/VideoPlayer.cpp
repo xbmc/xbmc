@@ -4357,15 +4357,6 @@ bool CVideoPlayer::IsInMenu() const
   return false;
 }
 
-bool CVideoPlayer::HasMenu()
-{
-  CDVDInputStream::IMenus* pStream = dynamic_cast<CDVDInputStream::IMenus*>(m_pInputStream);
-  if (pStream)
-    return pStream->HasMenu();
-  else
-    return false;
-}
-
 std::string CVideoPlayer::GetPlayerState()
 {
   CSingleLock lock(m_StateSection);
