@@ -755,6 +755,28 @@ std::vector<std::string> StringUtils::Split(const std::string& input, const char
   return results;
 }
 
+std::vector<std::string> StringUtils::SplitMulti(const std::string& input, const char* delimiters, size_t iMaxStrings /*= 0*/)
+{
+  std::vector<std::string> results;
+  if (input.empty())
+    return results;
+
+  size_t nextDelim;
+  size_t textPos = 0;
+  do
+  {
+    if (--iMaxStrings == 0)
+    {
+      results.push_back(input.substr(textPos));
+      break;
+    }
+    nextDelim = input.find_first_of(delimiters, textPos);
+    results.push_back(input.substr(textPos, nextDelim - textPos));
+    textPos = nextDelim + 1;
+  } while (nextDelim != std::string::npos);
+
+  return results;
+}
 
 // returns the number of occurrences of strFind in strInput.
 int StringUtils::FindNumber(const std::string& strInput, const std::string &strFind)
