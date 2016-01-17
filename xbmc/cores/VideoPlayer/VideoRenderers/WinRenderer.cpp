@@ -218,6 +218,7 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   ManageDisplay();
 
   SelectRenderMethod();
+  ManageTextures();
   m_bConfigured = true;
 
   return true;
