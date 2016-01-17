@@ -1534,7 +1534,7 @@ void CVideoPlayer::Process()
       }
     }
 
-    if (IsInMenu())
+    if (IsInMenuInternal())
     {
       if (CDVDInputStream::IMenus* menu = dynamic_cast<CDVDInputStream::IMenus*>(m_pInputStream))
       {
@@ -1793,7 +1793,7 @@ bool CVideoPlayer::GetCachingTimes(double& level, double& delay, double& offset)
 
 void CVideoPlayer::HandlePlaySpeed()
 {
-  bool isInMenu = IsInMenu();
+  bool isInMenu = IsInMenuInternal();
 
   if (isInMenu && m_caching != CACHESTATE_DONE)
     SetCaching(CACHESTATE_DONE);
@@ -4028,7 +4028,7 @@ int CVideoPlayer::OnDVDNavResult(void* pData, int iMessage)
           m_dvd.state = DVDSTATE_NORMAL;
         else
         {
-          bool sync = !IsInMenu();
+          bool sync = !IsInMenuInternal();
           FlushBuffers(false, DVD_NOPTS_VALUE, false, sync);
           m_dvd.syncClock = true;
           m_dvd.state = DVDSTATE_NORMAL;
@@ -4344,7 +4344,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
   return false;
 }
 
-bool CVideoPlayer::IsInMenu() const
+bool CVideoPlayer::IsInMenuInternal() const
 {
   CDVDInputStream::IMenus* pStream = dynamic_cast<CDVDInputStream::IMenus*>(m_pInputStream);
   if (pStream)
@@ -4357,13 +4357,10 @@ bool CVideoPlayer::IsInMenu() const
   return false;
 }
 
-bool CVideoPlayer::HasMenu()
+bool CVideoPlayer::IsInMenu() const
 {
-  CDVDInputStream::IMenus* pStream = dynamic_cast<CDVDInputStream::IMenus*>(m_pInputStream);
-  if (pStream)
-    return pStream->HasMenu();
-  else
-    return false;
+  CSingleLock lock(m_StateSection);
+  return m_State.isInMenu;
 }
 
 std::string CVideoPlayer::GetPlayerState()
@@ -4581,7 +4578,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   if (m_pDemuxer)
   {
-    if (IsInMenu())
+    if (IsInMenuInternal())
       state.chapter = 0;
     else
       state.chapter       = m_pDemuxer->GetChapter();
@@ -4604,6 +4601,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   state.canpause = true;
   state.canseek = true;
+  state.isInMenu = false;
 
   if (m_pInputStream)
   {
@@ -4635,11 +4633,13 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       {
         state.time = XbmcThreads::SystemClockMillis() - m_dvd.iDVDStillStartTime;
         state.time_total = m_dvd.iDVDStillTime;
+        state.isInMenu = true;
       }
-      else if (IsInMenu())
+      else if (IsInMenuInternal())
       {
         state.time = pDisplayTime->GetTime();
         state.time_offset = 0;
+        state.isInMenu = true;
       }
     }
 

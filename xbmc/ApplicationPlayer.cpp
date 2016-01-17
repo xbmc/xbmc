@@ -327,12 +327,6 @@ bool CApplicationPlayer::IsInMenu() const
   return (player && player->IsInMenu());
 }
 
-bool CApplicationPlayer::HasMenu() const
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  return (player && player->HasMenu());
-}
-
 int CApplicationPlayer::GetCacheLevel() const
 {
   std::shared_ptr<IPlayer> player = GetInternal();

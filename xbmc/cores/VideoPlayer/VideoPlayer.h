@@ -252,6 +252,7 @@ public:
   virtual bool Record(bool bOnOff);
   virtual void SetAVDelay(float fValue = 0.0f);
   virtual float GetAVDelay();
+  virtual bool IsInMenu() const override;
 
   virtual void SetSubTitleDelay(float fValue = 0.0f);
   virtual float GetSubTitleDelay();
@@ -289,7 +290,6 @@ public:
   virtual int64_t GetTotalTime();
   virtual void ToFFRW(int iSpeed);
   virtual bool OnAction(const CAction &action);
-  virtual bool HasMenu();
 
   virtual int GetSourceBitrate();
   virtual bool GetStreamDetails(CStreamDetails &details);
@@ -401,7 +401,7 @@ protected:
 
   void HandleMessages();
   void HandlePlaySpeed();
-  bool IsInMenu() const;
+  bool IsInMenuInternal() const;
 
   void SynchronizePlayers(unsigned int sources);
   void SynchronizeDemuxer(unsigned int timeout);
