@@ -1658,14 +1658,12 @@
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\DVDOverlayCodecTX3G.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemux.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxFFmpeg.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxShoutcast.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxUtils.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDFactoryDemuxer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDFactoryInputStream.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStream.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamFFmpeg.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamFile.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamHttp.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamMemory.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamNavigator.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamRTMP.cpp" />
@@ -2303,7 +2301,6 @@
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\DVDOverlayText.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemux.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxFFmpeg.h" />
-    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxShoutcast.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxUtils.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDFactoryDemuxer.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DllDvdNav.h" />
@@ -2311,7 +2308,6 @@
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStream.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamFFmpeg.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamFile.h" />
-    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamHttp.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamMemory.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamNavigator.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamRTMP.h" />

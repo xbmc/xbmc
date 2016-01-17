@@ -477,9 +477,6 @@
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxFFmpeg.cpp">
       <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxShoutcast.cpp">
-      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxUtils.cpp">
       <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClCompile>
@@ -496,9 +493,6 @@
       <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamFile.cpp">
-      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamHttp.cpp">
       <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamMemory.cpp">
@@ -3374,9 +3368,6 @@
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxFFmpeg.h">
       <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxShoutcast.h">
-      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxUtils.h">
       <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClInclude>
@@ -3396,9 +3387,6 @@
       <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamFile.h">
-      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamHttp.h">
       <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamMemory.h">
