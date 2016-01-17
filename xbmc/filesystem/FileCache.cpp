@@ -313,7 +313,8 @@ void CFileCache::Process()
 
       if (m_seekEvent.WaitMSec(100))
       {
-        m_seekEvent.Set();
+        if (!m_bStop)
+          m_seekEvent.Set();
         break;
       }
     }
@@ -343,8 +344,11 @@ void CFileCache::Process()
         CLog::Log(LOGDEBUG, "CFileCache::Process - Source read didn't return any data! Will retry.");
 
         // Wait a bit:
-        if (m_seekEvent.WaitMSec(2000))
-          m_seekEvent.Set(); // hack so that later we realize seek is needed
+        if (m_seekEvent.WaitMSec(5000))
+        {
+          if (!m_bStop)
+            m_seekEvent.Set(); // hack so that later we realize seek is needed
+        }
 
         // and retry:
         continue; // while (!m_bStop)
@@ -359,7 +363,8 @@ void CFileCache::Process()
         if (AbortableWait(m_seekEvent) == WAIT_SIGNALED)
         {
           m_pCache->ClearEndOfInput();
-          m_seekEvent.Set(); // hack so that later we realize seek is needed
+          if (!m_bStop)
+            m_seekEvent.Set(); // hack so that later we realize seek is needed
         }
         else
           break; // while (!m_bStop)
@@ -406,7 +411,8 @@ void CFileCache::Process()
       // check if seek was asked. otherwise if cache is full we'll freeze.
       if (m_seekEvent.WaitMSec(0))
       {
-        m_seekEvent.Set(); // make sure we get the seek event later.
+        if (!m_bStop)
+          m_seekEvent.Set(); // make sure we get the seek event later.
         break;
       }
     }
