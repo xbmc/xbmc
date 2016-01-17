@@ -4357,10 +4357,17 @@ bool CVideoPlayer::IsInMenuInternal() const
   return false;
 }
 
+
 bool CVideoPlayer::IsInMenu() const
 {
   CSingleLock lock(m_StateSection);
   return m_State.isInMenu;
+}
+
+bool CVideoPlayer::HasMenu() const
+{
+  CSingleLock lock(m_StateSection);
+  return m_State.hasMenu;
 }
 
 std::string CVideoPlayer::GetPlayerState()
@@ -4602,6 +4609,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   state.canpause = true;
   state.canseek = true;
   state.isInMenu = false;
+  state.hasMenu = false;
 
   if (m_pInputStream)
   {
@@ -4641,6 +4649,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
         state.time_offset = 0;
         state.isInMenu = true;
       }
+      state.hasMenu = true;
     }
 
     if (CDVDInputStream::ISeekable* ptr = dynamic_cast<CDVDInputStream::ISeekable*>(m_pInputStream))

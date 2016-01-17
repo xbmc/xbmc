@@ -390,6 +390,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "cover",            VIDEOPLAYER_COVER },
                                   { "usingoverlays",    VIDEOPLAYER_USING_OVERLAYS },
                                   { "isfullscreen",     VIDEOPLAYER_ISFULLSCREEN },
+                                  { "hasmenu",          VIDEOPLAYER_HASMENU },
                                   { "playlistlength",   VIDEOPLAYER_PLAYLISTLEN },
                                   { "playlistposition", VIDEOPLAYER_PLAYLISTPOS },
                                   { "plot",             VIDEOPLAYER_PLOT },
@@ -2850,6 +2851,9 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     break;
     case VIDEOPLAYER_ISFULLSCREEN:
       bReturn = g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO;
+    break;
+    case VIDEOPLAYER_HASMENU:
+      bReturn = g_application.m_pPlayer->HasMenu();
     break;
     case PLAYLIST_ISRANDOM:
       bReturn = g_playlistPlayer.IsShuffled(g_playlistPlayer.GetCurrentPlaylist());

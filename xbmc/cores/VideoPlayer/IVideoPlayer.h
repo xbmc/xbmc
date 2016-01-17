@@ -49,6 +49,7 @@ struct SPlayerState
     dts           = DVD_NOPTS_VALUE;
     player_state  = "";
     isInMenu = false;
+    hasMenu = false;
     chapter       = 0;
     chapters.clear();
     canrecord     = false;
@@ -74,6 +75,7 @@ struct SPlayerState
 
   std::string player_state;  // full player state
   bool isInMenu;
+  bool hasMenu;
 
   int         chapter;                   // current chapter
   std::vector<std::pair<std::string, int64_t>> chapters; // name and position for chapters
