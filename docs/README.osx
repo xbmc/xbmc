@@ -215,7 +215,7 @@ distribution.
 
 2.  $ cd tools/darwin/packaging/osx
 
-3.  $ chmod +x ./mkdeb-osx.sh && ./mkdmg-osx.sh release
+3.  $ chmod +x ./mkdmg-osx.sh && ./mkdmg-osx.sh release
 
 4. Use release or debug - you have to be sure that you build the corresponding
    version before.
