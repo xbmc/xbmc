@@ -191,6 +191,9 @@
 #define MUSICPLAYER_USER_RATING     235
 #define MUSICPLAYER_RATING_AND_VOTES     236
 #define MUSICPLAYER_VOTES           237
+#define MUSICPLAYER_MOOD            238
+#define MUSICPLAYER_CONTRIBUTORS    239
+#define MUSICPLAYER_CONTRIBUTOR_AND_ROLE 240
 
 #define VIDEOPLAYER_TITLE             250
 #define VIDEOPLAYER_GENRE             251
@@ -385,6 +388,7 @@
 #define LIBRARY_IS_SCANNING         728
 #define LIBRARY_IS_SCANNING_VIDEO   729
 #define LIBRARY_IS_SCANNING_MUSIC   730
+#define LIBRARY_HAS_ROLE            735
 
 #define SYSTEM_PLATFORM_LINUX       741
 #define SYSTEM_PLATFORM_WINDOWS     742
@@ -721,6 +725,10 @@
 #define LISTITEM_SET                (LISTITEM_START + 155)
 #define LISTITEM_SETID              (LISTITEM_START + 156)
 #define LISTITEM_IS_PARENTFOLDER    (LISTITEM_START + 157)
+#define LISTITEM_MOOD               (LISTITEM_START + 158)
+#define LISTITEM_CONTRIBUTORS       (LISTITEM_START + 159)
+#define LISTITEM_CONTRIBUTOR_AND_ROLE (LISTITEM_START + 160)
+
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1300)
@@ -728,8 +736,8 @@
 
 #define MUSICPLAYER_PROPERTY_OFFSET       800  // 100 id's reserved for musicplayer props.
 #define LISTITEM_ART_OFFSET               900  // 100 id's reserved for listitem art.
-#define LISTITEM_RATING_OFFSET            1000 // 100 id's reserved for listitem ratings.
-#define LISTITEM_VOTES_OFFSET             1100 // 100 id's reserved for listitem votes.
+#define LISTITEM_RATING_OFFSET      1000 // 100 id's reserved for listitem ratings.
+#define LISTITEM_VOTES_OFFSET       1100 // 100 id's reserved for listitem votes.
 #define LISTITEM_RATING_AND_VOTES_OFFSET  1200 // 100 id's reserved for listitem ratingandvotes.
 
 #define CONDITIONAL_LABEL_START       LISTITEM_END + 1 // 36501

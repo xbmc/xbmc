@@ -94,7 +94,7 @@ public:
   \return album artist names as a single string
   */
   const std::string GetAlbumArtistString() const;
-
+  
   /*! \brief Get album artist IDs (for json rpc) from the vector of artistcredits objects
   \return album artist IDs as a vector of integers
   */

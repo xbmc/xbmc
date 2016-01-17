@@ -404,6 +404,17 @@
       "thumbnail": { "type": "string" }
     }
   },
+  "Library.Fields.Role": {
+    "extends": "Item.Fields.Base",
+    "items": { "type": "string", "enum": [ "title" ] }
+  },
+  "Library.Details.Role": {
+    "extends": "Item.Details.Base",
+    "properties": {
+      "roleid": { "$ref": "Library.Id", "required": true },
+      "title": { "type": "string" }
+    }
+  },
   "Audio.Fields.Artist": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
@@ -430,18 +441,32 @@
     "items": { "type": "string",
       "description": "Requesting the genreid, artistid and/or albumartistid field will result in increased response times",
       "enum": [ "title", "artist", "albumartist", "genre", "year",
-                "rating", "votes", "userrating", "album", "track", "duration", "comment",
+                "rating", "album", "track", "duration", "comment", 
                 "lyrics", "musicbrainztrackid", "musicbrainzartistid",
                 "musicbrainzalbumid", "musicbrainzalbumartistid",
                 "playcount", "fanart", "thumbnail", "file", "albumid",
                 "lastplayed", "disc", "genreid", "artistid", "displayartist",
-                "albumartistid", "albumreleasetype", "dateadded" ]
+                "albumartistid", "albumreleasetype", "dateadded", 
+                "votes", "userrating", "mood", "contributors",
+                "displaycomposer", "displayconductor", "displayorchestra", "displaylyricist"
+				 ]
     }
   },
   "Audio.Album.ReleaseType": {
     "type": "string",
     "enum": [ "album", "single" ],
     "default": "album"
+  },
+  "Audio.Contributors": {
+    "type": "array",
+    "items": { "type": "object",
+      "properties": {
+        "name": { "type": "string", "required": true },
+        "role": { "type": "string", "required": true },
+        "artistid": { "type": "integer", "required": true }
+      },
+      "additionalProperties": false
+    }
   },
   "Audio.Details.Base": {
     "extends": "Media.Details.Base",
@@ -457,13 +482,13 @@
       "artist": { "$ref": "Array.String" },
       "year": { "type": "integer" },
       "rating": { "type": "number" },
-      "votes": { "type": "integer" },
-      "userrating": { "type": "integer" },
       "musicbrainzalbumid": { "type": "string" },
       "musicbrainzalbumartistid": { "type": "string" },
       "genreid": { "$ref": "Array.Integer" },
       "artistid": { "$ref": "Array.Integer" },
-      "displayartist": { "type" : "string" }
+      "displayartist": { "type" : "string" },
+      "votes": { "type": "integer" },
+      "userrating": { "type": "integer" }
     }
   },
   "Audio.Details.Artist": {
@@ -517,7 +542,13 @@
       "lastplayed": { "type": "string" },
       "disc": { "type": "integer" },
       "albumartistid": { "$ref": "Array.Integer" },
-      "albumreleasetype": { "$ref": "Audio.Album.ReleaseType" }
+      "albumreleasetype": { "$ref": "Audio.Album.ReleaseType" },
+      "mood": { "type": "string"},
+      "contributors": { "$ref": "Audio.Contributors" },
+      "displaycomposer": { "type": "string"},
+      "displayconductor": { "type": "string"},
+      "displayorchestra": { "type": "string"},
+      "displaylyricist": { "type": "string"}
     }
   },
   "Video.Fields.Movie": {
@@ -1284,7 +1315,12 @@
       "specialsortepisode": { "type": "integer" },
       "compilation": { "type": "boolean" },
       "releasetype": { "$ref": "Audio.Album.ReleaseType" },
-      "albumreleasetype": { "$ref": "Audio.Album.ReleaseType" }
+      "albumreleasetype": { "$ref": "Audio.Album.ReleaseType" },
+      "contributors": { "$ref": "Audio.Contributors" },
+      "displaycomposer": { "type": "string"},
+      "displayconductor": { "type": "string"},
+      "displayorchestra": { "type": "string"},
+      "displaylyricist": { "type": "string"}
     }
   },
   "List.Fields.All": {
@@ -1303,7 +1339,8 @@
                 "description", "theme", "mood", "style", "albumlabel", "sorttitle",
                 "episodeguide", "uniqueid", "dateadded", "channel", "channeltype", "hidden",
                 "locked", "channelnumber", "starttime", "endtime", "specialsortseason",
-                "specialsortepisode", "compilation", "releasetype", "albumreleasetype" ]
+                "specialsortepisode", "compilation", "releasetype", "albumreleasetype",
+                "contributors", "displaycomposer", "displayconductor", "displayorchestra", "displaylyricist" ]
     }
   },
   "List.Item.All": {

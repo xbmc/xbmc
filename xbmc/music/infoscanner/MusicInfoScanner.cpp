@@ -714,8 +714,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       album.strAlbum = songsByAlbumName->first;
       for (std::vector<std::string>::iterator it = common.begin(); it != common.end(); ++it)
       {
-        std::string strJoinPhrase = (it == --common.end() ? "" : g_advancedSettings.m_musicItemSeparator);
-        CArtistCredit artistCredit(*it, strJoinPhrase);
+        CArtistCredit artistCredit(*it);
         album.artistCredits.push_back(artistCredit);
       }
       album.bCompilation = compilation;

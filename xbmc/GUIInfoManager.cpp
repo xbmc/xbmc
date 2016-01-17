@@ -366,6 +366,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "userrating",       MUSICPLAYER_USER_RATING },
                                   { "votes",            MUSICPLAYER_VOTES },
                                   { "comment",          MUSICPLAYER_COMMENT },
+                                  { "mood",             MUSICPLAYER_MOOD },
                                   { "lyrics",           MUSICPLAYER_LYRICS },
                                   { "playlistplaying",  MUSICPLAYER_PLAYLISTPLAYING },
                                   { "exists",           MUSICPLAYER_EXISTS },
@@ -502,6 +503,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "albumartist",      LISTITEM_ALBUM_ARTIST },
                                   { "year",             LISTITEM_YEAR },
                                   { "genre",            LISTITEM_GENRE },
+                                  { "contributors",     LISTITEM_CONTRIBUTORS },
+                                  { "contributorandrole", LISTITEM_CONTRIBUTOR_AND_ROLE },
                                   { "director",         LISTITEM_DIRECTOR },
                                   { "filename",         LISTITEM_FILENAME },
                                   { "filenameandpath",  LISTITEM_FILENAME_AND_PATH },
@@ -513,6 +516,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "ratingandvotes",   LISTITEM_RATING_AND_VOTES },
                                   { "userrating",       LISTITEM_USER_RATING },
                                   { "votes",            LISTITEM_VOTES },
+                                  { "mood",             LISTITEM_MOOD },
                                   { "programcount",     LISTITEM_PROGRAM_COUNT },
                                   { "duration",         LISTITEM_DURATION },
                                   { "isselected",       LISTITEM_ISSELECTED },
@@ -1145,6 +1149,8 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         else if (cat == "moviesets") return LIBRARY_HAS_MOVIE_SETS;
         else if (cat == "singles") return LIBRARY_HAS_SINGLES;
         else if (cat == "compilations") return LIBRARY_HAS_COMPILATIONS;
+        else if (cat == "role" && prop.num_params() > 1)
+          return AddMultiInfo(GUIInfo(LIBRARY_HAS_ROLE, ConditionalStringParameter(prop.param(1)), 0));
       }
     }
     else if (cat.name == "musicplayer")
@@ -1528,6 +1534,11 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       return "";
 
     std::string property = m_listitemProperties[info - LISTITEM_PROPERTY_START-MUSICPLAYER_PROPERTY_OFFSET];
+    if (StringUtils::StartsWithNoCase(property, "Role.") && m_currentFile->HasMusicInfoTag())
+    { // "Role.xxxx" properties are held in music tag
+      property.erase(0, 5); //Remove Role.
+      return m_currentFile->GetMusicInfoTag()->GetArtistStringForRole(property);
+    }
     return m_currentFile->GetProperty(property).asString();
   }
 
@@ -1740,6 +1751,8 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case MUSICPLAYER_RATING_AND_VOTES:
   case MUSICPLAYER_USER_RATING:
   case MUSICPLAYER_COMMENT:
+  case MUSICPLAYER_CONTRIBUTORS:
+  case MUSICPLAYER_CONTRIBUTOR_AND_ROLE:
   case MUSICPLAYER_LYRICS:
   case MUSICPLAYER_CHANNEL_NAME:
   case MUSICPLAYER_CHANNEL_NUMBER:
@@ -3378,6 +3391,32 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             bReturn = g_playlistPlayer.GetRepeat(playlistid) == PLAYLIST::REPEAT_ONE;
         }
         break;
+      case LIBRARY_HAS_ROLE:
+      {
+        std::string strRole = m_stringParameters[info.GetData1()];
+        // Find value for role if already stored
+        int artistcount = -1;
+        for (const auto &role : m_libraryRoleCounts)
+        {
+          if (StringUtils::EqualsNoCase(strRole, role.first))
+          {
+            artistcount = role.second;
+            break;
+          }
+        }
+        // Otherwise get from DB and store
+        if (artistcount < 0)
+        {
+          CMusicDatabase db;
+          if (db.Open())
+          {
+            artistcount = db.GetArtistCountForRole(strRole);
+            db.Close();
+            m_libraryRoleCounts.push_back(std::make_pair(strRole, artistcount));
+          }
+        }
+        bReturn = artistcount > 0;
+      }
     }
   }
   return (info.m_info < 0) ? !bReturn : bReturn;
@@ -4143,6 +4182,7 @@ std::string CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
 {
   if (!item->HasMusicInfoTag()) return "";
   const CMusicInfoTag &tag = *item->GetMusicInfoTag();
+
   switch (info)
   {
   case MUSICPLAYER_TITLE:
@@ -4199,6 +4239,12 @@ std::string CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
     return GetItemLabel(item, LISTITEM_USER_RATING);
   case MUSICPLAYER_COMMENT:
     return GetItemLabel(item, LISTITEM_COMMENT);
+  case MUSICPLAYER_MOOD:
+    return GetItemLabel(item, LISTITEM_MOOD);
+  case MUSICPLAYER_CONTRIBUTORS:
+    return GetItemLabel(item, LISTITEM_CONTRIBUTORS);
+  case MUSICPLAYER_CONTRIBUTOR_AND_ROLE:
+    return GetItemLabel(item, LISTITEM_CONTRIBUTOR_AND_ROLE);
   case MUSICPLAYER_DURATION:
     return GetItemLabel(item, LISTITEM_DURATION);
   case MUSICPLAYER_CHANNEL_NAME:
@@ -5036,8 +5082,14 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   }
 
   if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
-  { // grab the property
+  { 
     std::string property = m_listitemProperties[info - LISTITEM_PROPERTY_START];
+    if (StringUtils::StartsWithNoCase(property, "Role.") && item->HasMusicInfoTag())
+    { // "Role.xxxx" properties are held in music tag
+      property.erase(0, 5); //Remove Role.
+      return item->GetMusicInfoTag()->GetArtistStringForRole(property);
+    }
+    // grab the property
     return item->GetProperty(property).asString();
   }
 
@@ -5142,6 +5194,14 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_ALBUM_ARTIST:
     if (item->HasMusicInfoTag())
       return item->GetMusicInfoTag()->GetAlbumArtistString();
+    break;
+  case LISTITEM_CONTRIBUTORS:
+    if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->HasContributors())
+      return item->GetMusicInfoTag()->GetContributorsText();
+    break;
+  case LISTITEM_CONTRIBUTOR_AND_ROLE:
+    if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->HasContributors())
+      return item->GetMusicInfoTag()->GetContributorsAndRolesText();
     break;
   case LISTITEM_DIRECTOR:
     if (item->HasPVRChannelInfoTag())
@@ -5484,6 +5544,10 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       return item->GetPVRTimerInfoTag()->GetStatus();
     if (item->HasMusicInfoTag())
       return item->GetMusicInfoTag()->GetComment();
+    break;
+  case LISTITEM_MOOD:
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetMood();
     break;
   case LISTITEM_ACTUAL_ICON:
     return item->GetIconImage();
@@ -6257,6 +6321,7 @@ void CGUIInfoManager::ResetLibraryBools()
   m_libraryHasMovieSets = -1;
   m_libraryHasSingles = -1;
   m_libraryHasCompilations = -1;
+  m_libraryRoleCounts.clear();
 }
 
 bool CGUIInfoManager::GetLibraryBool(int condition)
