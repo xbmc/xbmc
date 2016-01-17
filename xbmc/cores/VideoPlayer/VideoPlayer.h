@@ -253,6 +253,7 @@ public:
   virtual void SetAVDelay(float fValue = 0.0f);
   virtual float GetAVDelay();
   virtual bool IsInMenu() const override;
+  virtual bool HasMenu() const override;
 
   virtual void SetSubTitleDelay(float fValue = 0.0f);
   virtual float GetSubTitleDelay();

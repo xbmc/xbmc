@@ -145,6 +145,7 @@ public:
   int   GetVideoStreamCount();
   void  GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info);
   bool  HasAudio() const;
+  bool  HasMenu() const;
   bool  HasVideo() const;
   bool  HasRDS() const;
   bool  IsCaching() const;
