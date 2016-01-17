@@ -19,6 +19,7 @@
  */
 
 #include "DVDDemux.h"
+#include "utils/StringUtils.h"
 
 void CDemuxStreamTeletext::GetStreamInfo(std::string& strInfo)
 {
@@ -32,35 +33,90 @@ void CDemuxStreamRadioRDS::GetStreamInfo(std::string& strInfo)
 
 void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
 {
-  char sInfo[64];
-
-  if (codec == AV_CODEC_ID_AC3) strcpy(sInfo, "AC3 ");
-  else if (codec == AV_CODEC_ID_DTS)
+  switch (codec)
   {
+  case AV_CODEC_ID_AC3:
+    strInfo = "AC3 ";
+    break;
+  case AV_CODEC_ID_DTS:
+  {
+    switch (profile)
+    {
 #ifdef FF_PROFILE_DTS_HD_MA
-    if (profile == FF_PROFILE_DTS_HD_MA)
-      strcpy(sInfo, "DTS-HD MA ");
-    else if (profile == FF_PROFILE_DTS_HD_HRA)
-      strcpy(sInfo, "DTS-HD HRA ");
-    else
+    case FF_PROFILE_DTS_HD_MA:
+      strInfo = "DTS-HD MA ";
+      break;
+    case FF_PROFILE_DTS_HD_HRA:
+      strInfo = "DTS-HD HRA ";
+      break;
 #endif
-      strcpy(sInfo, "DTS ");
+    default:
+      strInfo = "DTS ";
+      break;
+    }
+    break;
   }
-  else if (codec == AV_CODEC_ID_MP2) strcpy(sInfo, "MP2 ");
-  else if (codec == AV_CODEC_ID_TRUEHD) strcpy(sInfo, "Dolby TrueHD ");
-  else strcpy(sInfo, "");
+  case AV_CODEC_ID_MP2:
+    strInfo = "MP2 ";
+    break;
+  case AV_CODEC_ID_MP3:
+    strInfo = "MP3 ";
+    break;
+  case AV_CODEC_ID_TRUEHD:
+    strInfo = "Dolby TrueHD ";
+    break;
+  case AV_CODEC_ID_AAC:
+    strInfo = "AAC ";
+    break;
+  case AV_CODEC_ID_ALAC:
+    strInfo = "ALAC ";
+    break;
+  case AV_CODEC_ID_FLAC:
+    strInfo = "FLAC ";
+    break;
+  case AV_CODEC_ID_VORBIS:
+    strInfo = "VORBIS ";
+    break;
+  case AV_CODEC_ID_PCM_BLURAY:
+  case AV_CODEC_ID_PCM_DVD:
+    strInfo = "PCM ";
+    break;
+  }
 
-  if (iChannels == 1) strcat(sInfo, "Mono");
-  else if (iChannels == 2) strcat(sInfo, "Stereo");
-  else if (iChannels == 6) strcat(sInfo, "5.1");
-  else if (iChannels == 8) strcat(sInfo, "7.1");
-  else if (iChannels != 0)
+  // if the channel layout couldn't be determined, guess it
+  if (m_channelLayout.empty())
   {
-    char temp[32];
-    sprintf(temp, " %d%s", iChannels, "-chs");
-    strcat(sInfo, temp);
+    switch (iChannels)
+    {
+    case 1:
+      strInfo = "Mono";
+      break;
+    case 2:
+      strInfo = "Stereo";
+      break;
+    case 6:
+      strInfo = "5.1";
+      break;
+    case 7:
+      strInfo = "6.1";
+      break;
+    case 8:
+      strInfo = "7.1";
+      break;
+    default:
+    {
+      if (iChannels != 0)
+      {
+        strInfo += StringUtils::Format("%d-chs", iChannels);
+      }
+      break;
+    }
+    }
   }
-  strInfo = sInfo;
+  else
+  {
+    strInfo += m_channelLayout;
+  }
 }
 
 int CDVDDemux::GetNrOfAudioStreams()
