@@ -22,11 +22,9 @@
 #include "DVDFactoryDemuxer.h"
 
 #include "DVDInputStreams/DVDInputStream.h"
-#include "DVDInputStreams/DVDInputStreamHttp.h"
 #include "DVDInputStreams/DVDInputStreamPVRManager.h"
 
 #include "DVDDemuxFFmpeg.h"
-#include "DVDDemuxShoutcast.h"
 #include "DVDDemuxBXA.h"
 #include "DVDDemuxCDDA.h"
 #include "DVDDemuxPVRClient.h"
@@ -65,22 +63,6 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool
       {
         return demuxer.release();
       }
-    }
-  }
-
-  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_HTTP))
-  {
-    CDVDInputStreamHttp* pHttpStream = (CDVDInputStreamHttp*)pInputStream;
-    CHttpHeader *header = pHttpStream->GetHttpHeader();
-
-    /* check so we got the meta information as requested in our http header */
-    if( header->GetValue("icy-metaint").length() > 0 )
-    {
-      std::unique_ptr<CDVDDemuxShoutcast> demuxer(new CDVDDemuxShoutcast());
-      if(demuxer->Open(pInputStream))
-        return demuxer.release();
-      else
-        return NULL;
     }
   }
 
