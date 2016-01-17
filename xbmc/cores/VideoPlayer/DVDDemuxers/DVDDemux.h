@@ -204,6 +204,7 @@ public:
   int iBitRate;
   int iBitsPerSample;
   uint64_t iChannelLayout;
+  std::string m_channelLayout;
 };
 
 class CDemuxStreamSubtitle : public CDemuxStream
