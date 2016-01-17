@@ -124,7 +124,6 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
         if (existingTimer->UpdateEntry(*timerIt))
         {
           bChanged = true;
-          UpdateEpgEvent(existingTimer);
           existingTimer->ResetChildState();
 
           if (bStateChanged && g_PVRManager.IsStarted())
@@ -143,7 +142,6 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
         /* new timer */
         CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTagPtr(new CPVRTimerInfoTag);
         newTimer->UpdateEntry(*timerIt);
-        UpdateEpgEvent(newTimer);
 
         VecTimerInfoTag* addEntry = NULL;
         MapTags::iterator itr = m_tags.find(newTimer->m_bStartAnyTime ? CDateTime() : newTimer->StartAsUTC());
@@ -159,7 +157,6 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
 
         newTimer->m_iTimerId = ++m_iLastId;
         addEntry->push_back(newTimer);
-        UpdateEpgEvent(newTimer);
         bChanged = true;
         bAddedOrDeleted = true;
 
@@ -246,7 +243,6 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
     }
 
     addEntry->push_back(*timerIt);
-    UpdateEpgEvent(*timerIt);
   }
 
   /* update child information for all parent timers */
@@ -313,8 +309,6 @@ bool CPVRTimers::UpdateFromClient(const CPVRTimerInfoTagPtr &timer)
     tag->m_iTimerId = ++m_iLastId;
     addEntry->push_back(tag);
   }
-
-  UpdateEpgEvent(tag);
 
   return tag->UpdateEntry(timer);
 }
@@ -816,43 +810,6 @@ CDateTime CPVRTimers::GetNextEventTime(void) const
 
   const CDateTime retVal(wakeuptime);
   return retVal;
-}
-
-void CPVRTimers::UpdateEpgEvent(CPVRTimerInfoTagPtr timer)
-{
-  CSingleLock lock(timer->m_critSection);
-
-  /* repeating timers have no epg event */
-  if (timer->IsRepeating())
-    return;
-
-  /* already got an epg event set */
-  if (timer->m_epgTag)
-    return;
-
-  /* try to get the channel */
-  CPVRChannelPtr channel = g_PVRChannelGroups->GetByUniqueID(timer->m_iClientChannelUid, timer->m_iClientId);
-  if (!channel)
-    return;
-
-  /* try to get the EPG table */
-  CEpgPtr epg = channel->GetEPG();
-  if (!epg)
-    return;
-
-  /* try to set the timer on the epg tag that matches with a 2 minute margin */
-  CEpgInfoTagPtr epgTag = epg->GetTagBetween(timer->StartAsUTC() - CDateTimeSpan(0, 0, 2, 0), timer->EndAsUTC() + CDateTimeSpan(0, 0, 2, 0));
-  if (!epgTag)
-    epgTag = epg->GetTagAround(timer->StartAsUTC());
-
-  if (epgTag)
-  {
-    timer->m_epgTag = epgTag;
-    timer->m_genre = epgTag->Genre();
-    timer->m_iGenreType = epgTag->GenreType();
-    timer->m_iGenreSubType = epgTag->GenreSubType();
-    epgTag->SetTimer(timer);
-  }
 }
 
 void CPVRTimers::UpdateChannels(void)

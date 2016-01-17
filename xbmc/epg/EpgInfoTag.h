@@ -320,10 +320,14 @@ namespace EPG
     std::string Path(void) const;
 
     /*!
-     * @brief Set a timer for this event or NULL to clear it.
-     * @param newTimer The new timer value.
+     * @brief Set a timer for this event.
+     * @param iTimerId The id of the new timer.
      */
-    void SetTimer(PVR::CPVRTimerInfoTagPtr newTimer);
+    void SetTimer(unsigned int iTimerId);
+
+    /*!
+     * @brief Clear the timer for this event.
+     */
     void ClearTimer(void);
 
     /*!

@@ -22,6 +22,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/timers/PVRTimers.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -712,9 +713,9 @@ const int CEpgInfoTag::EpgID(void) const
   return m_epg ? m_epg->EpgID() : -1;
 }
 
-void CEpgInfoTag::SetTimer(CPVRTimerInfoTagPtr timer)
+void CEpgInfoTag::SetTimer(unsigned int iTimerId)
 {
-  m_timer = timer;
+  m_timer = g_PVRTimers->GetById(iTimerId);
 }
 
 void CEpgInfoTag::ClearTimer(void)

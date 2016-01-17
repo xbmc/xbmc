@@ -264,6 +264,20 @@ CEpgInfoTagPtr CEpg::GetTag(const CDateTime &StartTime) const
   return CEpgInfoTagPtr();
 }
 
+CEpgInfoTagPtr CEpg::GetTagByBroadcastId(unsigned int iUniqueBroadcastId) const
+{
+  if (iUniqueBroadcastId != EPG_TAG_INVALID_UID)
+  {
+    CSingleLock lock(m_critSection);
+    for (const auto &infoTag : m_tags)
+    {
+      if (infoTag.second->UniqueBroadcastID() == iUniqueBroadcastId)
+        return infoTag.second;
+    }
+  }
+  return CEpgInfoTagPtr();
+}
+
 CEpgInfoTagPtr CEpg::GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime) const
 {
   CSingleLock lock(m_critSection);

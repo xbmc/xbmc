@@ -206,6 +206,13 @@ namespace EPG
     CEpgInfoTagPtr GetTag(const CDateTime &beginTime) const;
 
     /*!
+     * @brief Get the event matching the given unique broadcast id
+     * @param iUniqueBroadcastId The uid to look up
+     * @return The matching event or NULL if it wasn't found.
+     */
+    CEpgInfoTagPtr GetTagByBroadcastId(unsigned int iUniqueBroadcastId) const;
+
+    /*!
      * @brief Update an entry in this EPG.
      * @param tag The tag to update.
      * @param bUpdateDatabase If set to true, this event will be persisted in the database.
