@@ -25,6 +25,7 @@
 #include <pthread.h>
 #include <string>
 #include <vector>
+#include <map>
 
 #include <android/native_activity.h>
 
@@ -63,6 +64,24 @@ struct androidPackage
   int icon;
 };
 
+class CActivityResultEvent : public CEvent
+{
+public:
+  CActivityResultEvent(int requestcode)
+    : m_requestcode(requestcode)
+  {}
+  int GetRequestCode() const { return m_requestcode; }
+  int GetResultCode() const { return m_resultcode; }
+  void SetResultCode(int resultcode) { m_resultcode = resultcode; }
+  CJNIIntent GetResultData() const { return m_resultdata; }
+  void SetResultData(const CJNIIntent &resultdata) { m_resultdata = resultdata; }
+
+protected:
+  int m_requestcode;
+  CJNIIntent m_resultdata;
+  int m_resultcode;
+};
+
 class CXBMCApp : public IActivityHandler, public CJNIMainActivity,
                  public CJNIBroadcastReceiver,
                  public CJNIAudioManagerAudioFocusChangeListener
@@ -72,6 +91,7 @@ public:
   virtual ~CXBMCApp();
   virtual void onReceive(CJNIIntent intent);
   virtual void onNewIntent(CJNIIntent intent);
+  virtual void onActivityResult(int requestCode, int resultCode, CJNIIntent resultData);
   virtual void onVolumeChanged(int volume);
   virtual void onAudioFocusChange(int focusChange);
   virtual void doFrame(int64_t frameTimeNanos);
@@ -131,6 +151,7 @@ public:
   static int GetDPI();
 
   static CRect MapRenderToDroid(const CRect& srcRect);
+  static int WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent& result);
 
   // Playback callbacks
   static void OnPlayBackStarted();
@@ -185,6 +206,7 @@ private:
   pthread_t m_thread;
   static CCriticalSection m_applicationsMutex;
   static std::vector<androidPackage> m_applications;
+  static std::vector<CActivityResultEvent*> m_activityResultEvents;
 
   static ANativeWindow* m_window;
   static CEvent m_windowCreated;
