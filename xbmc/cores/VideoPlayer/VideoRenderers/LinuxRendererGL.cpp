@@ -531,9 +531,12 @@ void CLinuxRendererGL::Flush()
 
 void CLinuxRendererGL::Update()
 {
-  if (!m_bConfigured) return;
+  if (!m_bConfigured)
+    return;
   ManageDisplay();
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
+
+  ValidateRenderTarget();
 }
 
 void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)

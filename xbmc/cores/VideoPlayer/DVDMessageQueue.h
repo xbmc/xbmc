@@ -132,7 +132,6 @@ private:
 
   bool m_bAbortRequest;
   bool m_bInitialized;
-  bool m_bCaching;
 
   int m_iDataSize;
   double m_TimeFront;

@@ -282,7 +282,7 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
   {
     CSingleLock lock(m_presentlock);
     XbmcThreads::EndTime endtime(5000);
-    while(m_presentstep != PRESENT_IDLE && m_presentstep != PRESENT_READY)
+    while (m_presentstep != PRESENT_IDLE)
     {
       if(endtime.IsTimePast())
       {
@@ -307,6 +307,10 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
     m_NumberBuffers  = buffers;
     m_renderState = STATE_CONFIGURING;
     m_stateEvent.Reset();
+
+    CSingleLock lock2(m_presentlock);
+    m_presentstep = PRESENT_READY;
+    m_presentevent.notifyAll();
   }
 
   if (!m_stateEvent.WaitMSec(1000))
@@ -400,12 +404,6 @@ bool CRenderManager::IsConfigured() const
     return false;
 }
 
-void CRenderManager::Update()
-{
-  if (m_pRenderer)
-    m_pRenderer->Update();
-}
-
 void CRenderManager::FrameWait(int ms)
 {
   XbmcThreads::EndTime timeout(ms);
@@ -436,6 +434,8 @@ void CRenderManager::FrameMove()
       lock.Leave();
       if (!Configure())
         return;
+
+      FrameWait(50);
 
       if (m_flags & CONF_FLAGS_FULLSCREEN)
       {

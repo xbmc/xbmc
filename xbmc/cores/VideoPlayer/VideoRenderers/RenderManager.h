@@ -59,7 +59,6 @@ public:
   // Functions called from render thread
   void GetVideoRect(CRect &source, CRect &dest, CRect &view);
   float GetAspectRatio();
-  void Update();
   void FrameMove();
   void FrameFinish();
   void FrameWait(int ms);

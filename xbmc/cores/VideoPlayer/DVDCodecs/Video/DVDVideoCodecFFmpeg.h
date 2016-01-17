@@ -104,6 +104,7 @@ protected:
   AVFilterContext* m_pFilterIn;
   AVFilterContext* m_pFilterOut;
   AVFrame*         m_pFilterFrame;
+  bool m_filterEof;
 
   int m_iPictureWidth;
   int m_iPictureHeight;

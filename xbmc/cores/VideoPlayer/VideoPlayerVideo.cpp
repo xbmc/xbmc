@@ -152,6 +152,8 @@ bool CVideoPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
 void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
 {
+  CLog::Log(LOGDEBUG, "CVideoPlayerVideo::OpenStream - open stream with codec id: %i", hint.codec);
+
   //reported fps is usually not completely correct
   if (hint.fpsrate && hint.fpsscale)
     m_fFrameRate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * hint.fpsscale / hint.fpsrate);
@@ -370,13 +372,28 @@ void CVideoPlayerVideo::Process()
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
     {
       CDVDMsgVideoCodecChange* msg(static_cast<CDVDMsgVideoCodecChange*>(pMsg));
+
+      while (!m_bStop && m_pVideoCodec)
+      {
+        m_pVideoCodec->SetCodecControl(DVD_CODEC_CTRL_DRAIN);
+        int decoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
+
+        bool cont = ProcessDecoderOutput(decoderState, frametime, pts);
+
+        if (!cont)
+          break;
+
+        if (decoderState & VC_BUFFER)
+          break;
+      }
+
       OpenStream(msg->m_hints, msg->m_codec);
       msg->m_codec = NULL;
       m_picture.iFlags &= ~DVP_FLAG_ALLOCATED;
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_DRAIN))
     {
-      while (!m_bStop)
+      while (!m_bStop && m_pVideoCodec)
       {
         m_pVideoCodec->SetCodecControl(DVD_CODEC_CTRL_DRAIN);
         int decoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);

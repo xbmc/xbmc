@@ -29,7 +29,6 @@ CDVDMessageQueue::CDVDMessageQueue(const std::string &owner) : m_hEvent(true), m
   m_iDataSize     = 0;
   m_bAbortRequest = false;
   m_bInitialized = false;
-  m_bCaching = false;
 
   m_TimeBack = DVD_NOPTS_VALUE;
   m_TimeFront = DVD_NOPTS_VALUE;
@@ -157,7 +156,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
 
   while (!m_bAbortRequest)
   {
-    if (!m_list.empty() && m_list.back().priority >= priority && !m_bCaching)
+    if (!m_list.empty() && m_list.back().priority >= priority)
     {
       DVDMessageListItem& item(m_list.back());
       priority = item.priority;

@@ -1641,6 +1641,9 @@ void CVideoPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
   CheckContinuity(m_CurrentAudio, pPacket);
   UpdateTimestamps(m_CurrentAudio, pPacket);
 
+  if (m_CurrentAudio.avsync == CCurrentStream::AV_SYNC_CHECK)
+    m_CurrentAudio.avsync = CCurrentStream::AV_SYNC_NONE;
+
   bool drop = false;
   if (CheckPlayerInit(m_CurrentAudio))
     drop = true;
@@ -1680,6 +1683,8 @@ void CVideoPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
     CheckContinuity(m_CurrentVideo, pPacket);
     UpdateTimestamps(m_CurrentVideo, pPacket);
   }
+  if (m_CurrentVideo.avsync == CCurrentStream::AV_SYNC_CHECK)
+    m_CurrentVideo.avsync = CCurrentStream::AV_SYNC_NONE;
 
   bool drop = false;
   if (CheckPlayerInit(m_CurrentVideo))
@@ -1920,14 +1925,14 @@ void CVideoPlayer::HandlePlaySpeed()
     bool audio = m_CurrentAudio.id < 0 || (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC) ||
                  (m_CurrentAudio.packets == 0 && m_CurrentVideo.packets > threshold);
 
-    if (m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_INSYNC &&
-        m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC)
+    if (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC &&
+        m_CurrentAudio.avsync == CCurrentStream::AV_SYNC_CONT)
     {
       m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_INSYNC;
       m_VideoPlayerAudio->SendMessage(new CDVDMsgDouble(CDVDMsg::GENERAL_RESYNC, m_clock.GetClock()), 1);
     }
-    else if (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_INSYNC &&
-             m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC)
+    else if (m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC &&
+             m_CurrentVideo.avsync == CCurrentStream::AV_SYNC_CONT)
     {
       m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_INSYNC;
       m_VideoPlayerVideo->SendMessage(new CDVDMsgDouble(CDVDMsg::GENERAL_RESYNC, m_clock.GetClock()), 1);
@@ -2188,6 +2193,11 @@ void CVideoPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket
       pPacket->dts = DVD_NOPTS_VALUE;
       pPacket->pts = DVD_NOPTS_VALUE;
     }
+  }
+  else
+  {
+    if (current.avsync == CCurrentStream::AV_SYNC_CHECK)
+      current.avsync = CCurrentStream::AV_SYNC_CONT;
   }
   current.lastdts = lastdts;
 }
@@ -3495,6 +3505,7 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int iStream, int source, 
     current.hint    = hint;
     current.stream  = (void*)stream;
     current.lastdts = DVD_NOPTS_VALUE;
+    current.avsync = CCurrentStream::AV_SYNC_CHECK;
     if(stream)
       current.changes = stream->changes;
   }

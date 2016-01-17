@@ -413,8 +413,10 @@ void CLinuxRendererGLES::Flush()
 
 void CLinuxRendererGLES::Update()
 {
-  if (!m_bConfigured) return;
+  if (!m_bConfigured)
+    return;
   ManageDisplay();
+  ValidateRenderTarget();
 }
 
 void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)

@@ -495,7 +495,7 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
   if (!m_pHardware && pData)
     SetFilters();
 
-  if (m_pFilterGraph)
+  if (m_pFilterGraph && !m_filterEof)
   {
     int result = 0;
     if (pData == NULL)
@@ -583,7 +583,10 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
                                , m_pCodecContext->pix_fmt) == m_formats.end();
 
     bool need_reopen  = false;
-    if(m_filters != m_filters_next)
+    if (m_filters != m_filters_next)
+      need_reopen = true;
+
+    if (!m_filters_next.empty() && m_filterEof)
       need_reopen = true;
 
     if (m_pFilterIn)
@@ -607,10 +610,13 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
   int result;
   if (m_pHardware)
     result = m_pHardware->Decode(m_pCodecContext, m_pFrame);
-  else if (m_pFilterGraph && !(m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
+  else if (m_pFilterGraph && !m_filterEof)
     result = FilterProcess(m_pFrame);
   else
     result = VC_PICTURE | VC_BUFFER;
+
+  if (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN)
+    result &= ~VC_BUFFER;
 
   if (result & VC_FLUSHED)
     Reset();
@@ -881,6 +887,7 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
     return result;
   }
 
+  m_filterEof = false;
   return result;
 }
 
@@ -900,7 +907,7 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
 {
   int result;
 
-  if (frame)
+  if (frame || (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
   {
     result = av_buffersrc_add_frame(m_pFilterIn, frame);
     if (result < 0)
@@ -912,9 +919,16 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
 
   result = av_buffersink_get_frame(m_pFilterOut, m_pFilterFrame);
 
-  if(result  == AVERROR(EAGAIN) || result == AVERROR_EOF)
+  if (result  == AVERROR(EAGAIN))
     return VC_BUFFER;
-  else if(result < 0)
+  else if (result == AVERROR_EOF)
+  {
+    result = av_buffersink_get_frame(m_pFilterOut, m_pFilterFrame);
+    m_filterEof = true;
+    if (result < 0)
+      return VC_BUFFER;
+  }
+  else if (result < 0)
   {
     CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - av_buffersink_get_frame");
     return VC_ERROR;
