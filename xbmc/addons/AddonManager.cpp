@@ -456,6 +456,29 @@ bool CAddonMgr::ReloadSettings(const std::string &id)
   return false;
 }
 
+VECADDONS CAddonMgr::GetAvailableUpdates()
+{
+  CSingleLock lock(m_critSection);
+  auto start = XbmcThreads::SystemClockMillis();
+
+  VECADDONS updates;
+  VECADDONS installed;
+  GetAllAddons(installed, true);
+  for (const auto& addon : installed)
+  {
+    AddonPtr remote;
+    if (m_database.GetAddon(addon->ID(), remote) && remote->Version() > addon->Version())
+      updates.emplace_back(std::move(remote));
+  }
+  CLog::Log(LOGDEBUG, "CAddonMgr::GetAvailableUpdates took %i ms", XbmcThreads::SystemClockMillis() - start);
+  return updates;
+}
+
+bool CAddonMgr::HasAvailableUpdates()
+{
+  return !GetAvailableUpdates().empty();
+}
+
 bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* = true */)
 {
   CSingleLock lock(m_critSection);

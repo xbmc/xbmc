@@ -66,7 +66,7 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
 
     if (CSettings::GetInstance().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_NOTIFY)
     {
-      VECADDONS updates = CAddonInstaller::GetInstance().GetAvailableUpdates();
+      VECADDONS updates = CAddonMgr::GetInstance().GetAvailableUpdates();
       if (!updates.empty())
       {
         if (updates.size() == 1)
