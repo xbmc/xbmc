@@ -946,6 +946,7 @@
 		DFDE5D511AE5658200EE53AD /* PictureScalingAlgorithm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDE5D4F1AE5658200EE53AD /* PictureScalingAlgorithm.cpp */; };
 		DFDE5D521AE5658200EE53AD /* PictureScalingAlgorithm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDE5D4F1AE5658200EE53AD /* PictureScalingAlgorithm.cpp */; };
 		DFE4095B17417FDF00473BD9 /* LegacyPathTranslation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFE4095917417FDF00473BD9 /* LegacyPathTranslation.cpp */; };
+		DFE4BE061C661C5F0048EB03 /* AnnounceReceiver.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFE4BE051C661C5F0048EB03 /* AnnounceReceiver.mm */; };
 		DFEA4B4E1B5271A900562321 /* AddonCallbacksAudioDSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C973CE31B50378E0002A874 /* AddonCallbacksAudioDSP.cpp */; };
 		DFEA4B501B5271EB00562321 /* ActiveAEDSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C973CE71B5037EF0002A874 /* ActiveAEDSP.cpp */; };
 		DFEA4B521B5271EE00562321 /* ActiveAEDSPAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C973CE91B5037EF0002A874 /* ActiveAEDSPAddon.cpp */; };
@@ -3816,6 +3817,8 @@
 		DFDE5D501AE5658200EE53AD /* PictureScalingAlgorithm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureScalingAlgorithm.h; sourceTree = "<group>"; };
 		DFE4095917417FDF00473BD9 /* LegacyPathTranslation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LegacyPathTranslation.cpp; sourceTree = "<group>"; };
 		DFE4095A17417FDF00473BD9 /* LegacyPathTranslation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LegacyPathTranslation.h; sourceTree = "<group>"; };
+		DFE4BE041C661C5F0048EB03 /* AnnounceReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnounceReceiver.h; sourceTree = "<group>"; };
+		DFE4BE051C661C5F0048EB03 /* AnnounceReceiver.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AnnounceReceiver.mm; sourceTree = "<group>"; };
 		DFEB902519E9335E00728978 /* AEResample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEResample.h; sourceTree = "<group>"; };
 		DFEB902619E9337200728978 /* AEResampleFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEResampleFactory.cpp; sourceTree = "<group>"; };
 		DFEB902719E9337200728978 /* AEResampleFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEResampleFactory.h; sourceTree = "<group>"; };
@@ -7203,6 +7206,7 @@
 			children = (
 				DF91E9251C0A1C610011084D /* osx */,
 				DFD7173D1C0A031B0025D964 /* ios */,
+				DFE4BE031C661C5F0048EB03 /* ios-common */,
 				DFD7172F1C09FEC60025D964 /* AutoPool.h */,
 				DFD717301C09FEC60025D964 /* AutoPool.mm */,
 				DF396ECC1C42A25F00214C1A /* DarwinNSUserDefaults.h */,
@@ -7244,6 +7248,15 @@
 				DFD717541C0A031B0025D964 /* XBMCDebugHelpers.h */,
 			);
 			path = ios;
+			sourceTree = "<group>";
+		};
+		DFE4BE031C661C5F0048EB03 /* ios-common */ = {
+			isa = PBXGroup;
+			children = (
+				DFE4BE041C661C5F0048EB03 /* AnnounceReceiver.h */,
+				DFE4BE051C661C5F0048EB03 /* AnnounceReceiver.mm */,
+			);
+			path = "ios-common";
 			sourceTree = "<group>";
 		};
 		DFFA43CE19104BFA00C3923B /* media */ = {
@@ -11109,6 +11122,7 @@
 				7C2612721825B6340086E04D /* DatabaseQuery.cpp in Sources */,
 				7C920CFA181669FF00DA1477 /* TextureOperations.cpp in Sources */,
 				DFEF0BAD180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */,
+				DFE4BE061C661C5F0048EB03 /* AnnounceReceiver.mm in Sources */,
 				DFEF0BC2180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */,
 				7CC82C9418284F9F0010DF30 /* CharsetDetection.cpp in Sources */,
 				DF6D1DFE18312525009DB64F /* OverlayRendererGUI.cpp in Sources */,
