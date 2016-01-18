@@ -1004,7 +1004,7 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
     return VC_BUFFER;
   }
   else
-    return 0;
+    return VC_BUFFER;
 }
 
 bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
