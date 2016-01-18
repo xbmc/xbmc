@@ -81,7 +81,7 @@ public:
    * returns bytes used or -1 on error
    *
    */
-  virtual int Decode(uint8_t* pData, int iSize) = 0;
+  virtual int Decode(uint8_t* pData, int iSize, double dts, double pts) = 0;
 
   /*
    * returns nr of bytes in decode buffer

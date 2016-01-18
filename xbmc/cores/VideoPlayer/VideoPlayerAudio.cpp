@@ -266,7 +266,7 @@ int CVideoPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
       if (dts != DVD_NOPTS_VALUE)
         m_audioClock = dts;
 
-      int len = m_pAudioCodec->Decode(m_decode.data, m_decode.size);
+      int len = m_pAudioCodec->Decode(m_decode.data, m_decode.size, m_decode.dts, m_decode.pts);
       if (len < 0 || len > m_decode.size)
       {
         /* if error, we skip the packet */
@@ -287,12 +287,17 @@ int CVideoPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
       if (audioframe.nb_frames == 0)
         continue;
 
-      audioframe.pts = m_audioClock;
-
-      if (dts == DVD_NOPTS_VALUE)
-        audioframe.hasTimestamp = false;
+      audioframe.hasTimestamp = true;
+      if (audioframe.pts == DVD_NOPTS_VALUE)
+      {
+        audioframe.pts = m_audioClock;
+        if (dts == DVD_NOPTS_VALUE)
+          audioframe.hasTimestamp = false;
+      }
       else
-        audioframe.hasTimestamp = true;
+      {
+        m_audioClock = audioframe.pts;
+      }
 
       if (audioframe.format.m_sampleRate && m_streaminfo.samplerate != (int) audioframe.format.m_sampleRate)
       {
