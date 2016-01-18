@@ -624,7 +624,8 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
   if (!item->m_bIsFolder && path != "add" &&
       !StringUtils::StartsWith(path, "newsmartplaylist://") &&
       !StringUtils::StartsWith(path, "newplaylist://") &&
-      !StringUtils::StartsWith(path, "newtag://"))
+      !StringUtils::StartsWith(path, "newtag://") &&
+      !StringUtils::StartsWith(path, "script://"))
     return OnFileAction(iItem, CSettings::GetInstance().GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION), "");
 
   return CGUIMediaWindow::OnSelect(iItem);
