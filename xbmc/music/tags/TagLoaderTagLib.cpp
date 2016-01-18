@@ -400,6 +400,8 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
       tag.SetYear(it->second.toString().toInt());
     else if (it->first == "GENRE")
       SetGenre(tag, StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "MOOD")
+      tag.SetMood(it->second.toString().to8Bit(true));
     else if (it->first == "COMMENT")
       tag.SetComment(it->second.toString().to8Bit(true));
     else if (it->first == "CUESHEET")
@@ -470,6 +472,8 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
       tag.SetYear(it->second.front().toInt());
     else if (it->first == "GENRE")
       SetGenre(tag, StringListToVectorString(it->second));
+    else if (it->first == "MOOD")
+      tag.SetMood(it->second.front().to8Bit(true));
     else if (it->first == "COMMENT")
       tag.SetComment(it->second.front().to8Bit(true));
     else if (it->first == "CUESHEET")
@@ -587,6 +591,8 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& 
       SetAlbumArtistHints(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "\251gen")
       SetGenre(tag, StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "----:com.apple.iTunes:MOOD")
+      tag.SetMood(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "\251cmt")
       tag.SetComment(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "cpil")
