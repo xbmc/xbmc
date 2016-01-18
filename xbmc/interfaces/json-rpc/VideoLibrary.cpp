@@ -98,7 +98,7 @@ JSONRPC_STATUS CVideoLibrary::GetMovieDetails(const std::string &method, ITransp
     return InternalError;
 
   CVideoInfoTag infos;
-  if (!videodatabase.GetMovieInfo("", infos, id) || infos.m_iDbId <= 0)
+  if (!videodatabase.GetMovieInfo("", infos, id, RequiresAdditionalDetails(MediaTypeMovie, parameterObject)) || infos.m_iDbId <= 0)
     return InvalidParams;
 
   HandleFileItem("movieid", true, "moviedetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["properties"], result, false);
@@ -197,7 +197,7 @@ JSONRPC_STATUS CVideoLibrary::GetTVShowDetails(const std::string &method, ITrans
 
   CFileItemPtr fileItem(new CFileItem());
   CVideoInfoTag infos;
-  if (!videodatabase.GetTvShowInfo("", infos, id, fileItem.get()) || infos.m_iDbId <= 0)
+  if (!videodatabase.GetTvShowInfo("", infos, id, fileItem.get(), RequiresAdditionalDetails(MediaTypeTvShow, parameterObject)) || infos.m_iDbId <= 0)
     return InvalidParams;
 
   fileItem->SetFromVideoInfoTag(infos);
@@ -306,7 +306,7 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodeDetails(const std::string &method, ITran
   int id = (int)parameterObject["episodeid"].asInteger();
 
   CVideoInfoTag infos;
-  if (!videodatabase.GetEpisodeInfo("", infos, id) || infos.m_iDbId <= 0)
+  if (!videodatabase.GetEpisodeInfo("", infos, id, RequiresAdditionalDetails(MediaTypeEpisode, parameterObject)) || infos.m_iDbId <= 0)
     return InvalidParams;
 
   CFileItemPtr pItem = CFileItemPtr(new CFileItem(infos));
@@ -378,7 +378,7 @@ JSONRPC_STATUS CVideoLibrary::GetMusicVideoDetails(const std::string &method, IT
   int id = (int)parameterObject["musicvideoid"].asInteger();
 
   CVideoInfoTag infos;
-  if (!videodatabase.GetMusicVideoInfo("", infos, id) || infos.m_iDbId <= 0)
+  if (!videodatabase.GetMusicVideoInfo("", infos, id, RequiresAdditionalDetails(MediaTypeMusicVideo, parameterObject)) || infos.m_iDbId <= 0)
     return InvalidParams;
 
   HandleFileItem("musicvideoid", true, "musicvideodetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["properties"], result, false);
@@ -947,20 +947,28 @@ bool CVideoLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   return success;
 }
 
-bool CVideoLibrary::RequiresAdditionalDetails(const MediaType& mediaType, const CVariant &parameterObject)
+int CVideoLibrary::RequiresAdditionalDetails(const MediaType& mediaType, const CVariant &parameterObject)
 {
   if (mediaType != MediaTypeMovie && mediaType != MediaTypeTvShow && mediaType != MediaTypeEpisode && mediaType != MediaTypeMusicVideo)
-    return false;
+    return VideoDbDetailsNone;
 
   const CVariant& properties = parameterObject["properties"];
+  int details = VideoDbDetailsNone;
   for (CVariant::const_iterator_array itr = properties.begin_array(); itr != properties.end_array(); itr++)
   {
     std::string propertyValue = itr->asString();
-    if (propertyValue == "cast" || propertyValue == "ratings" || propertyValue == "showlink" || propertyValue == "streamdetails" || propertyValue == "tag")
-      return true;
+    if (propertyValue == "cast")
+      details = details | VideoDbDetailsCast;
+    else if (propertyValue == "ratings")
+      details = details | VideoDbDetailsRating;
+    else if (propertyValue == "showlink")
+      details = details | VideoDbDetailsShowLink;
+    else if (propertyValue == "streamdetails")
+      details = details | VideoDbDetailsStream;
+    else if (propertyValue == "tag")
+      details = details | VideoDbDetailsTag;
   }
-
-  return false;
+  return details;
 }
 
 JSONRPC_STATUS CVideoLibrary::HandleItems(const char *idProperty, const char *resultName, CFileItemList &items, const CVariant &parameterObject, CVariant &result, bool limit /* = true */)

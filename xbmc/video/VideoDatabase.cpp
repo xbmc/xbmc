@@ -1193,7 +1193,7 @@ int CVideoDatabase::GetEpisodeId(const std::string& strFilenameAndPath, int idEp
         {
           CVideoInfoTag tag;
           int idTmpEpisode = pDS->fv("episode.idEpisode").get_asInt();
-          GetEpisodeInfo(strFilenameAndPath,tag,idTmpEpisode);
+          GetEpisodeInfo(strFilenameAndPath, tag, idTmpEpisode, VideoDbDetailsNone);
           if (tag.m_iEpisode == idEpisode && (idSeason == -1 || tag.m_iSeason == idSeason)) {
             // match on the episode hint, and there's no season hint or a season hint match
             idEpisode = idTmpEpisode;
@@ -1675,7 +1675,7 @@ void CVideoDatabase::AddCast(int mediaId, const char *mediaType, const std::vect
 }
 
 //********************************************************************************************************************************
-bool CVideoDatabase::LoadVideoInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details)
+bool CVideoDatabase::LoadVideoInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int getDetails /* = VideoDbDetailsAll */)
 {
   if (GetMovieInfo(strFilenameAndPath, details))
     return true;
@@ -1869,11 +1869,10 @@ void CVideoDatabase::GetMusicVideosByArtist(const std::string& strArtist, CFileI
 }
 
 //********************************************************************************************************************************
-bool CVideoDatabase::GetMovieInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idMovie /* = -1 */)
+bool CVideoDatabase::GetMovieInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idMovie /* = -1 */, int getDetails /* = VideoDbDetailsAll */)
 {
   try
   {
-    // TODO: Optimize this - no need for all the queries!
     if (idMovie < 0)
       idMovie = GetMovieId(strFilenameAndPath);
     if (idMovie < 0) return false;
@@ -1881,7 +1880,7 @@ bool CVideoDatabase::GetMovieInfo(const std::string& strFilenameAndPath, CVideoI
     std::string sql = PrepareSQL("select * from movie_view where idMovie=%i", idMovie);
     if (!m_pDS->query(sql))
       return false;
-    details = GetDetailsForMovie(m_pDS, true);
+    details = GetDetailsForMovie(m_pDS, getDetails);
     return !details.IsEmpty();
   }
   catch (...)
@@ -1892,7 +1891,7 @@ bool CVideoDatabase::GetMovieInfo(const std::string& strFilenameAndPath, CVideoI
 }
 
 //********************************************************************************************************************************
-bool CVideoDatabase::GetTvShowInfo(const std::string& strPath, CVideoInfoTag& details, int idTvShow /* = -1 */, CFileItem *item /* = NULL */)
+bool CVideoDatabase::GetTvShowInfo(const std::string& strPath, CVideoInfoTag& details, int idTvShow /* = -1 */, CFileItem *item /* = NULL */, int getDetails /* = VideoDbDetailsAll */)
 {
   try
   {
@@ -1903,7 +1902,7 @@ bool CVideoDatabase::GetTvShowInfo(const std::string& strPath, CVideoInfoTag& de
     std::string sql = PrepareSQL("SELECT * FROM tvshow_view WHERE idShow=%i GROUP BY idShow", idTvShow);
     if (!m_pDS->query(sql))
       return false;
-    details = GetDetailsForTvShow(m_pDS, true, item);
+    details = GetDetailsForTvShow(m_pDS, getDetails, item);
     return !details.IsEmpty();
   }
   catch (...)
@@ -1957,11 +1956,10 @@ bool CVideoDatabase::GetSeasonInfo(int idSeason, CVideoInfoTag& details)
   return false;
 }
 
-bool CVideoDatabase::GetEpisodeInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idEpisode /* = -1 */)
+bool CVideoDatabase::GetEpisodeInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idEpisode /* = -1 */, int getDetails /* = VideoDbDetailsAll */)
 {
   try
   {
-    // TODO: Optimize this - no need for all the queries!
     if (idEpisode < 0)
       idEpisode = GetEpisodeId(strFilenameAndPath);
     if (idEpisode < 0) return false;
@@ -1969,7 +1967,7 @@ bool CVideoDatabase::GetEpisodeInfo(const std::string& strFilenameAndPath, CVide
     std::string sql = PrepareSQL("select * from episode_view where idEpisode=%i",idEpisode);
     if (!m_pDS->query(sql))
       return false;
-    details = GetDetailsForEpisode(m_pDS, true);
+    details = GetDetailsForEpisode(m_pDS, getDetails);
     return !details.IsEmpty();
   }
   catch (...)
@@ -1979,11 +1977,10 @@ bool CVideoDatabase::GetEpisodeInfo(const std::string& strFilenameAndPath, CVide
   return false;
 }
 
-bool CVideoDatabase::GetMusicVideoInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idMVideo /* = -1 */)
+bool CVideoDatabase::GetMusicVideoInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idMVideo /* = -1 */, int getDetails /* = VideoDbDetailsAll */)
 {
   try
   {
-    // TODO: Optimize this - no need for all the queries!
     if (idMVideo < 0)
       idMVideo = GetMusicVideoId(strFilenameAndPath);
     if (idMVideo < 0) return false;
@@ -1991,7 +1988,7 @@ bool CVideoDatabase::GetMusicVideoInfo(const std::string& strFilenameAndPath, CV
     std::string sql = PrepareSQL("select * from musicvideo_view where idMVideo=%i", idMVideo);
     if (!m_pDS->query(sql))
       return false;
-    details = GetDetailsForMusicVideo(m_pDS, true);
+    details = GetDetailsForMusicVideo(m_pDS, getDetails);
     return !details.IsEmpty();
   }
   catch (...)
@@ -3615,12 +3612,12 @@ bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag)
   return match;
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForMovie(std::unique_ptr<Dataset> &pDS, bool getDetails /* = false */)
+CVideoInfoTag CVideoDatabase::GetDetailsForMovie(std::unique_ptr<Dataset> &pDS, int getDetails /* = VideoDbDetailsNone */)
 {
   return GetDetailsForMovie(pDS->get_sql_record(), getDetails);
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* const record, bool getDetails /* = false */)
+CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* const record, int getDetails /* = VideoDbDetailsNone */)
 {
   CVideoInfoTag details;
 
@@ -3656,40 +3653,50 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
 
   if (getDetails)
   {
-    GetCast(details.m_iDbId, "movie", details.m_cast);
-    GetTags(details.m_iDbId, MediaTypeMovie, details.m_tags);
-    GetRatings(details.m_iDbId, MediaTypeMovie, details.m_ratings);
+    if (getDetails & VideoDbDetailsCast)
+    {
+      GetCast(details.m_iDbId, MediaTypeMovie, details.m_cast);
+      castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
+    }
 
-    castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
+    if (getDetails & VideoDbDetailsTag)
+      GetTags(details.m_iDbId, MediaTypeMovie, details.m_tags);
+
+    if (getDetails & VideoDbDetailsRating)
+      GetRatings(details.m_iDbId, MediaTypeMovie, details.m_ratings);
+
     details.m_strPictureURL.Parse();
 
-    // create tvshowlink string
-    std::vector<int> links;
-    GetLinksToTvShow(idMovie,links);
-    for (unsigned int i=0;i<links.size();++i)
+    if (getDetails & VideoDbDetailsShowLink)
     {
-      std::string strSQL = PrepareSQL("select c%02d from tvshow where idShow=%i",
-                         VIDEODB_ID_TV_TITLE,links[i]);
-      m_pDS2->query(strSQL);
-      if (!m_pDS2->eof())
-        details.m_showLink.push_back(m_pDS2->fv(0).get_asString());
+      // create tvshowlink string
+      std::vector<int> links;
+      GetLinksToTvShow(idMovie, links);
+      for (unsigned int i = 0; i < links.size(); ++i)
+      {
+        std::string strSQL = PrepareSQL("select c%02d from tvshow where idShow=%i",
+          VIDEODB_ID_TV_TITLE, links[i]);
+        m_pDS2->query(strSQL);
+        if (!m_pDS2->eof())
+          details.m_showLink.push_back(m_pDS2->fv(0).get_asString());
+      }
+      m_pDS2->close();
     }
-    m_pDS2->close();
 
-    // get streamdetails
-    GetStreamDetails(details);
+    if (getDetails & VideoDbDetailsStream)
+      GetStreamDetails(details);
 
-    details.m_hasDetails = true;
+    details.m_parsedDetails = getDetails;
   }
   return details;
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(std::unique_ptr<Dataset> &pDS, bool getDetails /* = false */, CFileItem* item /* = NULL */)
+CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(std::unique_ptr<Dataset> &pDS, int getDetails /* = VideoDbDetailsNone */, CFileItem* item /* = NULL */)
 {
   return GetDetailsForTvShow(pDS->get_sql_record(), getDetails, item);
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* const record, bool getDetails /* = false */, CFileItem* item /* = NULL */)
+CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* const record, int getDetails /* = VideoDbDetailsNone */, CFileItem* item /* = NULL */)
 {
   CVideoInfoTag details;
 
@@ -3722,14 +3729,21 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
 
   if (getDetails)
   {
-    GetCast(details.m_iDbId, "tvshow", details.m_cast);
-    GetTags(details.m_iDbId, MediaTypeTvShow, details.m_tags);
-    GetRatings(details.m_iDbId, MediaTypeTvShow, details.m_ratings);
+    if (getDetails & VideoDbDetailsCast)
+    {
+      GetCast(details.m_iDbId, "tvshow", details.m_cast);
+      castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
+    }
 
-    castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
+    if (getDetails & VideoDbDetailsTag)
+      GetTags(details.m_iDbId, MediaTypeTvShow, details.m_tags);
+
+    if (getDetails & VideoDbDetailsRating)
+      GetRatings(details.m_iDbId, MediaTypeTvShow, details.m_ratings);
+
     details.m_strPictureURL.Parse();
 
-    details.m_hasDetails = true;
+    details.m_parsedDetails = getDetails;
   }
 
   if (item != NULL)
@@ -3746,12 +3760,12 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   return details;
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(std::unique_ptr<Dataset> &pDS, bool getDetails /* = false */)
+CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(std::unique_ptr<Dataset> &pDS, int getDetails /* = VideoDbDetailsNone */)
 {
   return GetDetailsForEpisode(pDS->get_sql_record(), getDetails);
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* const record, bool getDetails /* = false */)
+CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* const record, int getDetails /* = VideoDbDetailsNone */)
 {
   CVideoInfoTag details;
 
@@ -3791,29 +3805,35 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
 
   if (getDetails)
   {
-    GetCast(details.m_iDbId, "episode", details.m_cast);
-    GetCast(details.m_iIdShow, "tvshow", details.m_cast);
-    GetRatings(details.m_iDbId, MediaTypeEpisode, details.m_ratings);
+    if (getDetails & VideoDbDetailsCast)
+    {
+      GetCast(details.m_iDbId, MediaTypeEpisode, details.m_cast);
+      GetCast(details.m_iIdShow, MediaTypeTvShow, details.m_cast);
+      castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
+    }
 
-    castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
+    if (getDetails & VideoDbDetailsRating)
+      GetRatings(details.m_iDbId, MediaTypeEpisode, details.m_ratings);
+
     details.m_strPictureURL.Parse();
+    
+    if (getDetails &  VideoDbDetailsBookmark)
+      GetBookMarkForEpisode(details, details.m_EpBookmark);
+    
+    if (getDetails & VideoDbDetailsStream)
+      GetStreamDetails(details);
 
-    GetBookMarkForEpisode(details, details.m_EpBookmark);
-
-    // get streamdetails
-    GetStreamDetails(details);
-
-    details.m_hasDetails = true;
+    details.m_parsedDetails = getDetails;
   }
   return details;
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(std::unique_ptr<Dataset> &pDS, bool getDetails /* = false */)
+CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(std::unique_ptr<Dataset> &pDS, int getDetails /* = VideoDbDetailsNone */)
 {
   return GetDetailsForMusicVideo(pDS->get_sql_record(), getDetails);
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record* const record, bool getDetails /* = false */)
+CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record* const record, int getDetails /* = VideoDbDetailsNone */)
 {
   CVideoInfoTag details;
 
@@ -3840,14 +3860,15 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
 
   if (getDetails)
   {
-    GetTags(details.m_iDbId, MediaTypeMusicVideo, details.m_tags);
+    if (getDetails & VideoDbDetailsTag)
+      GetTags(details.m_iDbId, MediaTypeMusicVideo, details.m_tags);
 
     details.m_strPictureURL.Parse();
 
-    // get streamdetails
-    GetStreamDetails(details);
+    if (getDetails & VideoDbDetailsStream)
+      GetStreamDetails(details);
 
-    details.m_hasDetails = true;
+    details.m_parsedDetails = getDetails;
   }
   return details;
 }
@@ -6307,7 +6328,7 @@ std::string CVideoDatabase::GetItemById(const std::string &itemType, int id)
 bool CVideoDatabase::GetMoviesNav(const std::string& strBaseDir, CFileItemList& items,
                                   int idGenre /* = -1 */, int idYear /* = -1 */, int idActor /* = -1 */, int idDirector /* = -1 */,
                                   int idStudio /* = -1 */, int idCountry /* = -1 */, int idSet /* = -1 */, int idTag /* = -1 */,
-                                  const SortDescription &sortDescription /* = SortDescription() */, bool getDetails /* = false */)
+                                  const SortDescription &sortDescription /* = SortDescription() */, int getDetails /* = VideoDbDetailsNone */)
 {
   CVideoDbUrl videoUrl;
   if (!videoUrl.FromString(strBaseDir))
@@ -6334,7 +6355,7 @@ bool CVideoDatabase::GetMoviesNav(const std::string& strBaseDir, CFileItemList& 
   return GetMoviesByWhere(videoUrl.ToString(), filter, items, sortDescription, getDetails);
 }
 
-bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription /* = SortDescription() */, bool getDetails /* = false */)
+bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription /* = SortDescription() */, int getDetails /* = VideoDbDetailsNone */)
 {
   try
   {
@@ -6422,7 +6443,7 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
 
 bool CVideoDatabase::GetTvShowsNav(const std::string& strBaseDir, CFileItemList& items,
                                   int idGenre /* = -1 */, int idYear /* = -1 */, int idActor /* = -1 */, int idDirector /* = -1 */, int idStudio /* = -1 */, int idTag /* = -1 */,
-                                  const SortDescription &sortDescription /* = SortDescription() */, bool getDetails /* = false */)
+                                  const SortDescription &sortDescription /* = SortDescription() */, int getDetails /* = VideoDbDetailsNone */)
 {
   CVideoDbUrl videoUrl;
   if (!videoUrl.FromString(strBaseDir))
@@ -6447,7 +6468,7 @@ bool CVideoDatabase::GetTvShowsNav(const std::string& strBaseDir, CFileItemList&
   return GetTvShowsByWhere(videoUrl.ToString(), filter, items, sortDescription, getDetails);
 }
 
-bool CVideoDatabase::GetTvShowsByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription /* = SortDescription() */, bool getDetails /* = false */)
+bool CVideoDatabase::GetTvShowsByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription /* = SortDescription() */, int getDetails /* = VideoDbDetailsNone */)
 {
   try
   {
@@ -6528,7 +6549,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const std::string& strBaseDir, const Filt
   return false;
 }
 
-bool CVideoDatabase::GetEpisodesNav(const std::string& strBaseDir, CFileItemList& items, int idGenre, int idYear, int idActor, int idDirector, int idShow, int idSeason, const SortDescription &sortDescription /* = SortDescription() */, bool getDetails /* = false */)
+bool CVideoDatabase::GetEpisodesNav(const std::string& strBaseDir, CFileItemList& items, int idGenre, int idYear, int idActor, int idDirector, int idShow, int idSeason, const SortDescription &sortDescription /* = SortDescription() */, int getDetails /* = VideoDbDetailsNone */)
 {
   CVideoDbUrl videoUrl;
   if (!videoUrl.FromString(strBaseDir))
@@ -6572,7 +6593,7 @@ bool CVideoDatabase::GetEpisodesNav(const std::string& strBaseDir, CFileItemList
   return ret;
 }
 
-bool CVideoDatabase::GetEpisodesByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, bool appendFullShowPath /* = true */, const SortDescription &sortDescription /* = SortDescription() */, bool getDetails /* = false */)
+bool CVideoDatabase::GetEpisodesByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, bool appendFullShowPath /* = true */, const SortDescription &sortDescription /* = SortDescription() */, int getDetails /* = VideoDbDetailsNone */)
 {
   try
   {
@@ -6664,7 +6685,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const std::string& strBaseDir, const Fil
   return false;
 }
 
-bool CVideoDatabase::GetMusicVideosNav(const std::string& strBaseDir, CFileItemList& items, int idGenre, int idYear, int idArtist, int idDirector, int idStudio, int idAlbum, int idTag /* = -1 */, const SortDescription &sortDescription /* = SortDescription() */, bool getDetails /* = false */)
+bool CVideoDatabase::GetMusicVideosNav(const std::string& strBaseDir, CFileItemList& items, int idGenre, int idYear, int idArtist, int idDirector, int idStudio, int idAlbum, int idTag /* = -1 */, const SortDescription &sortDescription /* = SortDescription() */, int getDetails /* = VideoDbDetailsNone */)
 {
   CVideoDbUrl videoUrl;
   if (!videoUrl.FromString(strBaseDir))
@@ -6689,7 +6710,7 @@ bool CVideoDatabase::GetMusicVideosNav(const std::string& strBaseDir, CFileItemL
   return GetMusicVideosByWhere(videoUrl.ToString(), filter, items, true, sortDescription, getDetails);
 }
 
-bool CVideoDatabase::GetRecentlyAddedMoviesNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit /* = 0 */, bool getDetails /* = false */)
+bool CVideoDatabase::GetRecentlyAddedMoviesNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit /* = 0 */, int getDetails /* = VideoDbDetailsNone */)
 {
   Filter filter;
   filter.order = "dateAdded desc, idMovie desc";
@@ -6697,7 +6718,7 @@ bool CVideoDatabase::GetRecentlyAddedMoviesNav(const std::string& strBaseDir, CF
   return GetMoviesByWhere(strBaseDir, filter, items, SortDescription(), getDetails);
 }
 
-bool CVideoDatabase::GetRecentlyAddedEpisodesNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit /* = 0 */, bool getDetails /* = false */)
+bool CVideoDatabase::GetRecentlyAddedEpisodesNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit /* = 0 */, int getDetails /* = VideoDbDetailsNone */)
 {
   Filter filter;
   filter.order = "dateAdded desc, idEpisode desc";
@@ -6705,7 +6726,7 @@ bool CVideoDatabase::GetRecentlyAddedEpisodesNav(const std::string& strBaseDir, 
   return GetEpisodesByWhere(strBaseDir, filter, items, false, SortDescription(), getDetails);
 }
 
-bool CVideoDatabase::GetRecentlyAddedMusicVideosNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit /* = 0 */, bool getDetails /* = false */)
+bool CVideoDatabase::GetRecentlyAddedMusicVideosNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit /* = 0 */, int getDetails /* = VideoDbDetailsNone */)
 {
   Filter filter;
   filter.order = "dateAdded desc, idMVideo desc";
@@ -6713,7 +6734,7 @@ bool CVideoDatabase::GetRecentlyAddedMusicVideosNav(const std::string& strBaseDi
   return GetMusicVideosByWhere(strBaseDir, filter, items, true, SortDescription(), getDetails);
 }
 
-bool CVideoDatabase::GetInProgressTvShowsNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit /* = 0 */, bool getDetails /* = false */)
+bool CVideoDatabase::GetInProgressTvShowsNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit /* = 0 */, int getDetails /* = VideoDbDetailsNone */)
 {
   Filter filter;
   filter.order = PrepareSQL("c%02d", VIDEODB_ID_TV_TITLE);
@@ -7416,7 +7437,7 @@ void CVideoDatabase::GetMusicVideosByAlbum(const std::string& strSearch, CFileIt
   }
 }
 
-bool CVideoDatabase::GetMusicVideosByWhere(const std::string &baseDir, const Filter &filter, CFileItemList &items, bool checkLocks /*= true*/, const SortDescription &sortDescription /* = SortDescription() */, bool getDetails /* = false */)
+bool CVideoDatabase::GetMusicVideosByWhere(const std::string &baseDir, const Filter &filter, CFileItemList &items, bool checkLocks /*= true*/, const SortDescription &sortDescription /* = SortDescription() */, int getDetails /* = VideoDbDetailsNone */)
 {
   try
   {
@@ -8541,7 +8562,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
     while (!m_pDS->eof())
     {
-      CVideoInfoTag movie = GetDetailsForMovie(m_pDS, true);
+      CVideoInfoTag movie = GetDetailsForMovie(m_pDS, VideoDbDetailsAll);
       // strip paths to make them relative
       if (StringUtils::StartsWith(movie.m_strTrailer, movie.m_strPath))
         movie.m_strTrailer = movie.m_strTrailer.substr(movie.m_strPath.size());
@@ -8641,7 +8662,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
     while (!m_pDS->eof())
     {
-      CVideoInfoTag movie = GetDetailsForMusicVideo(m_pDS, true);
+      CVideoInfoTag movie = GetDetailsForMusicVideo(m_pDS, VideoDbDetailsAll);
       std::map<std::string, std::string> artwork;
       if (GetArtForItem(movie.m_iDbId, movie.m_type, artwork) && singleFile)
       {
@@ -8727,7 +8748,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
     while (!m_pDS->eof())
     {
-      CVideoInfoTag tvshow = GetDetailsForTvShow(m_pDS, true);
+      CVideoInfoTag tvshow = GetDetailsForTvShow(m_pDS, VideoDbDetailsAll);
 
       std::map<int, std::map<std::string, std::string> > seasonArt;
       GetTvShowSeasonArt(tvshow.m_iDbId, seasonArt);
@@ -8836,7 +8857,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
       while (!pDS->eof())
       {
-        CVideoInfoTag episode = GetDetailsForEpisode(pDS, true);
+        CVideoInfoTag episode = GetDetailsForEpisode(pDS, VideoDbDetailsAll);
         std::map<std::string, std::string> artwork;
         if (GetArtForItem(episode.m_iDbId, MediaTypeEpisode, artwork) && singleFile)
         {
@@ -8854,7 +8875,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         while (!singleFile && !pDS->eof() &&
                episode.m_iFileId == pDS->fv("idFile").get_asInt())
         {
-          episode = GetDetailsForEpisode(pDS, true);
+          episode = GetDetailsForEpisode(pDS, VideoDbDetailsAll);
           episode.Save(pMain, "episodedetails", singleFile);
           pDS->next();
         }
