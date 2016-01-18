@@ -187,8 +187,10 @@ std::string CDVDDemuxCDDA::GetFileName()
     return "";
 }
 
-void CDVDDemuxCDDA::GetStreamCodecName(int iStreamId, std::string &strName)
+std::string CDVDDemuxCDDA::GetStreamCodecName(int iStreamId)
 {
   if (m_stream && iStreamId == 0)
-    strName = "pcm";
+    return "pcm";
+  else
+    return "";
 }

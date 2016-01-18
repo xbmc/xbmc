@@ -77,55 +77,64 @@ static const struct StereoModeConversionMap WmvToInternalStereoModeMap[] =
 
 #define FF_MAX_EXTRADATA_SIZE ((1 << 28) - FF_INPUT_BUFFER_PADDING_SIZE)
 
-void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
+std::string CDemuxStreamAudioFFmpeg::GetStreamInfo()
 {
-  if(!m_stream) return;
+  if(!m_stream)
+    return "";
   char temp[128];
   avcodec_string(temp, 128, m_stream->codec, 0);
-  strInfo = temp;
+
+  return temp;
 }
 
-void CDemuxStreamAudioFFmpeg::GetStreamName(std::string& strInfo)
+std::string CDemuxStreamAudioFFmpeg::GetStreamName()
 {
-  if(!m_stream) return;
+  if(!m_stream)
+    return "";
   if(!m_description.empty())
-    strInfo = m_description;
+    return m_description;
   else
-    CDemuxStream::GetStreamName(strInfo);
+    return CDemuxStream::GetStreamName();
 }
 
-void CDemuxStreamSubtitleFFmpeg::GetStreamName(std::string& strInfo)
+std::string CDemuxStreamSubtitleFFmpeg::GetStreamName()
 {
-  if(!m_stream) return;
+  if(!m_stream)
+    return "";
   if(!m_description.empty())
-    strInfo = m_description;
+    return m_description;
   else
-    CDemuxStream::GetStreamName(strInfo);
+    return CDemuxStream::GetStreamName();
 }
 
-void CDemuxStreamVideoFFmpeg::GetStreamInfo(std::string& strInfo)
+std::string CDemuxStreamVideoFFmpeg::GetStreamInfo()
 {
-  if(!m_stream) return;
+  if(!m_stream)
+    return "";
   char temp[128];
   avcodec_string(temp, 128, m_stream->codec, 0);
-  strInfo = temp;
+  
+  return temp;
 }
 
-void CDemuxStreamVideoFFmpeg::GetStreamName(std::string& strInfo)
+std::string CDemuxStreamVideoFFmpeg::GetStreamName()
 {
-  if (!m_stream) return;
+  if (!m_stream)
+    return "";
   if (!m_description.empty())
-    strInfo = m_description;
+    return m_description;
   else
-    CDemuxStream::GetStreamName(strInfo);
+    return CDemuxStream::GetStreamName();
 }
 
-void CDemuxStreamSubtitleFFmpeg::GetStreamInfo(std::string& strInfo)
+std::string CDemuxStreamSubtitleFFmpeg::GetStreamInfo()
 {
-  if(!m_stream) return;
+  if(!m_stream)
+    return "";
   char temp[128];
   avcodec_string(temp, 128, m_stream->codec, 0);
-  strInfo = temp;
+  
+  return temp;
 }
 
 static int interrupt_cb(void* ctx)
@@ -1503,9 +1512,10 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
   return SeekTime(DVD_TIME_TO_MSEC(dts), true, startpts);
 }
 
-void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, std::string &strName)
+std::string CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId)
 {
   CDemuxStream *stream = GetStream(iStreamId);
+  std::string strName;
   if (stream)
   {
     unsigned int in = stream->codec_fourcc;
@@ -1529,7 +1539,7 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, std::string &strName)
       {
         strName = fourcc;
         StringUtils::ToLower(strName);
-        return;
+        return strName;
       }
     }
 
@@ -1543,7 +1553,8 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, std::string &strName)
         strName = "dtshd_hra";
       else
         strName = "dca";
-      return;
+
+      return strName;
     }
 #endif
 
@@ -1551,6 +1562,7 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, std::string &strName)
     if (codec)
       strName = codec->name;
   }
+  return strName;
 }
 
 bool CDVDDemuxFFmpeg::IsProgramChange()

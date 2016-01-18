@@ -58,8 +58,9 @@ void CDemuxStreamPVRInternal::DisposeParser()
   }
 }
 
-void CDemuxStreamVideoPVRClient::GetStreamInfo(std::string& strInfo)
+std::string CDemuxStreamVideoPVRClient::GetStreamInfo()
 {
+  std::string strInfo;
   switch (codec)
   {
     case AV_CODEC_ID_MPEG2VIDEO:
@@ -71,10 +72,13 @@ void CDemuxStreamVideoPVRClient::GetStreamInfo(std::string& strInfo)
     default:
       break;
   }
+
+  return strInfo;
 }
 
-void CDemuxStreamAudioPVRClient::GetStreamInfo(std::string& strInfo)
+std::string CDemuxStreamAudioPVRClient::GetStreamInfo()
 {
+  std::string strInfo;
   switch (codec)
   {
     case AV_CODEC_ID_AC3:
@@ -95,10 +99,13 @@ void CDemuxStreamAudioPVRClient::GetStreamInfo(std::string& strInfo)
     default:
       break;
   }
+
+  return strInfo;
 }
 
-void CDemuxStreamSubtitlePVRClient::GetStreamInfo(std::string& strInfo)
+std::string CDemuxStreamSubtitlePVRClient::GetStreamInfo()
 {
+  return "";
 }
 
 CDVDDemuxPVRClient::CDVDDemuxPVRClient() : CDVDDemux()
@@ -476,9 +483,10 @@ std::string CDVDDemuxPVRClient::GetFileName()
     return "";
 }
 
-void CDVDDemuxPVRClient::GetStreamCodecName(int iStreamId, std::string &strName)
+std::string CDVDDemuxPVRClient::GetStreamCodecName(int iStreamId)
 {
   CDemuxStream *stream = GetStream(iStreamId);
+  std::string strName;
   if (stream)
   {
     if (stream->codec == AV_CODEC_ID_AC3)
@@ -496,6 +504,7 @@ void CDVDDemuxPVRClient::GetStreamCodecName(int iStreamId, std::string &strName)
     else if (stream->codec == AV_CODEC_ID_EAC3)
       strName = "eac3";
   }
+  return strName;
 }
 
 bool CDVDDemuxPVRClient::SeekTime(int timems, bool backwards, double *startpts)

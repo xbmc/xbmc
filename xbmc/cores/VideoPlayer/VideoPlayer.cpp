@@ -517,10 +517,8 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       s.flags    = stream->flags;
       s.filename = demuxer->GetFileName();
       s.filename2 = filename2;
-      stream->GetStreamName(s.name);
-      std::string codec;
-      demuxer->GetStreamCodecName(stream->iId, codec);
-      s.codec    = codec;
+      s.name = stream->GetStreamName();
+      s.codec    = demuxer->GetStreamCodecName(stream->iId);
       s.channels = 0; // Default to 0. Overwrite if STREAM_AUDIO below.
       if(stream->type == STREAM_VIDEO)
       {
@@ -530,7 +528,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       if(stream->type == STREAM_AUDIO)
       {
         std::string type;
-        ((CDemuxStreamAudio*)stream)->GetStreamType(type);
+        type = ((CDemuxStreamAudio*)stream)->GetStreamType();
         if(type.length() > 0)
         {
           if(s.name.length() > 0)
@@ -4683,7 +4681,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   {
     CDemuxStream* pStream = m_pDemuxer->GetStream(m_CurrentAudio.id);
     if (pStream && pStream->type == STREAM_AUDIO)
-      ((CDemuxStreamAudio*)pStream)->GetStreamInfo(state.demux_audio);
+      state.demux_audio = ((CDemuxStreamAudio*)pStream)->GetStreamInfo();
   }
   else
     state.demux_audio = "";
@@ -4692,7 +4690,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   {
     CDemuxStream* pStream = m_pDemuxer->GetStream(m_CurrentVideo.id);
     if (pStream && pStream->type == STREAM_VIDEO)
-      ((CDemuxStreamVideo*)pStream)->GetStreamInfo(state.demux_video);
+      state.demux_video = ((CDemuxStreamVideo*)pStream)->GetStreamInfo();
   }
   else
     state.demux_video = "";
