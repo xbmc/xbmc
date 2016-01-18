@@ -297,7 +297,7 @@ static void DependencyAddons(const CURL& path, CFileItemList &items)
 
 static void OutdatedAddons(const CURL& path, CFileItemList &items)
 {
-  VECADDONS addons = CAddonInstaller::GetInstance().GetAvailableUpdates();
+  VECADDONS addons = CAddonMgr::GetInstance().GetAvailableUpdates();
   CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(24043));
 
   if (items.Size() > 1)
@@ -480,7 +480,7 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
     const VECADDONS& addons, CFileItemList &items, const std::string label)
 {
   std::set<std::string> outdated;
-  for (const auto& addon : CAddonInstaller::GetInstance().GetAvailableUpdates())
+  for (const auto& addon : CAddonMgr::GetInstance().GetAvailableUpdates())
     outdated.insert(addon->ID());
 
   items.ClearItems();
