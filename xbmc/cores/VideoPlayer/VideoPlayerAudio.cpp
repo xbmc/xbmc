@@ -287,8 +287,12 @@ int CVideoPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
       if (audioframe.nb_frames == 0)
         continue;
 
-      if (audioframe.pts == DVD_NOPTS_VALUE)
-        audioframe.pts = m_audioClock;
+      audioframe.pts = m_audioClock;
+
+      if (dts == DVD_NOPTS_VALUE)
+        audioframe.hasTimestamp = false;
+      else
+        audioframe.hasTimestamp = true;
 
       if (audioframe.format.m_sampleRate && m_streaminfo.samplerate != (int) audioframe.format.m_sampleRate)
       {
@@ -380,8 +384,7 @@ int CVideoPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
       double pts = static_cast<CDVDMsgDouble*>(pMsg)->m_value;
       CLog::Log(LOGDEBUG, "CVideoPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f)", pts);
 
-      m_audioClock = pts;
-      m_ptsInput.Flush();
+      m_audioClock = pts + m_dvdAudio.GetDelay();
       if (m_speed != DVD_PLAYSPEED_PAUSE)
         m_dvdAudio.Resume();
       m_syncState = IDVDStreamPlayer::SYNC_INSYNC;
@@ -399,6 +402,7 @@ int CVideoPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
       m_dvdAudio.Flush();
       m_ptsInput.Flush();
       m_stalled = true;
+      m_audioClock = 0;
 
       if (sync)
       {
@@ -568,7 +572,7 @@ void CVideoPlayerAudio::Process()
         msg.player = VideoPlayer_AUDIO;
         msg.cachetotal = cachetotal;
         msg.cachetime = cachetime;
-        msg.timestamp = m_audioClock;
+        msg.timestamp = audioframe.hasTimestamp ? audioframe.pts : DVD_NOPTS_VALUE;
         m_messageParent.Put(new CDVDMsgType<SStartMsg>(CDVDMsg::PLAYER_STARTED, msg));
       }
     }
