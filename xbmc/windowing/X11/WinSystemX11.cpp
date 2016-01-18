@@ -18,7 +18,6 @@
  *
  */
 
-#include <limits.h>
 #include "system.h"
 
 #if defined(HAVE_X11)
