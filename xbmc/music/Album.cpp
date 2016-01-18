@@ -198,7 +198,7 @@ const std::string CAlbum::GetAlbumArtistString() const
   //but is takes precidence as a string because artistcredits is not always filled during processing
   if (!strArtistDesc.empty())
     return strArtistDesc;
-  std::vector<std::string> artistvector(artistCredits.size());
+  std::vector<std::string> artistvector;
   for (VECARTISTCREDITS::const_iterator i = artistCredits.begin(); i != artistCredits.end(); ++i)
     artistvector.emplace_back(i->GetArtist());
   std::string artistString;
