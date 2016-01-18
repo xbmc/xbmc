@@ -9,7 +9,7 @@ DEPENDS = \
 	libgcrypt bzip2 liblzo2 libzip freetype2 fontconfig \
 	openssl gmp nettle gnutls libssh2 curl \
 	libjpeg-turbo libpng \
-	libogg libvorbis libflac fribidi libmpeg2 \
+	libogg libvorbis libflac fribidi \
 	libass libsquish \
 	libmodplug librtmp libxml2 yajl libmicrohttpd mysql libffi \
 	python27 libshairplay \
@@ -28,6 +28,9 @@ endif
 
 ifeq ($(OS),ios)
   EXCLUDED_DEPENDS = libcec libusb
+ifeq ($(TARGET_PLATFORM),appletvos)
+  DEPENDS += boblight
+endif
 endif
 
 ifeq ($(OS),osx)
@@ -86,7 +89,7 @@ python27: expat gettext libxml2 sqlite3 openssl libffi
 libcdio: $(ICONV)
 libplist: libxml2 $(ZLIB)
 libbluray: $(ICONV) libxml2
-libssh: openssl $(ZLIB)
+libssh: libgcrypt openssl $(ZLIB)
 mysql: openssl
 libzip: $(ZLIB)
 libpng: $(ZLIB)
@@ -133,7 +136,11 @@ linux-system-libs-egl:
 	[ -f $(PREFIX)/lib/pkgconfig/xcb-dri2.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-dri2.pc $(PREFIX)/lib/pkgconfig/xcb-dri2.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xcb-dri3.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-dri3.pc $(PREFIX)/lib/pkgconfig/xcb-dri3.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xcb-glx.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-glx.pc $(PREFIX)/lib/pkgconfig/xcb-glx.pc
+	[ -f $(PREFIX)/lib/pkgconfig/xcb-xfixes.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-xfixes.pc $(PREFIX)/lib/pkgconfig/xcb-xfixes.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xcb-present.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-present.pc $(PREFIX)/lib/pkgconfig/xcb-present.pc
+	[ -f $(PREFIX)/lib/pkgconfig/xcb-randr.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xcb-randr.pc $(PREFIX)/lib/pkgconfig/xcb-randr.pc
+	[ -f $(PREFIX)/lib/pkgconfig/xcb-render.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xcb-render.pc $(PREFIX)/lib/pkgconfig/xcb-render.pc
+	[ -f $(PREFIX)/lib/pkgconfig/xcb-shape.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-shape.pc $(PREFIX)/lib/pkgconfig/xcb-shape.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xcb-sync.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-sync.pc $(PREFIX)/lib/pkgconfig/xcb-sync.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xdamage.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xdamage.pc $(PREFIX)/lib/pkgconfig/xdamage.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xf86vidmodeproto.pc ] || ln -s /usr/share/pkgconfig/xf86vidmodeproto.pc $(PREFIX)/lib/pkgconfig/xf86vidmodeproto.pc

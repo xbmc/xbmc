@@ -44,7 +44,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message) override;
   virtual bool OnAction(const CAction &action) override;
 
-  void PlayMovie(const CFileItem *item);
+  void PlayMovie(const CFileItem *item, const std::string &player = "");
   static void GetResumeItemOffset(const CFileItem *item, int& startoffset, int& partNumber);
   static bool HasResumeItemOffset(const CFileItem *item);
 
@@ -117,9 +117,9 @@ protected:
    */
   bool OnFileAction(int item, int action, std::string player);
 
-  void OnRestartItem(int iItem);
-  bool OnResumeItem(int iItem);
-  void PlayItem(int iItem);
+  void OnRestartItem(int iItem, const std::string &player = "");
+  bool OnResumeItem(int iItem, const std::string &player = "");
+  void PlayItem(int iItem, const std::string &player = "");
   virtual bool OnPlayMedia(int iItem, const std::string &player = "") override;
   virtual bool OnPlayAndQueueMedia(const CFileItemPtr &item, std::string player = "") override;
   void LoadPlayList(const std::string& strPlayList, int iPlayList = PLAYLIST_VIDEO);

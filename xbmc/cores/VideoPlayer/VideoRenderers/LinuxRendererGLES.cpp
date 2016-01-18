@@ -53,7 +53,7 @@ extern "C" {
 #include "libswscale/swscale.h"
 }
 
-#if defined(__ARM_NEON__)
+#if defined(__ARM_NEON__) && !defined(__LP64__)
 #include "yuv2rgb.neon.h"
 #include "utils/CPUInfo.h"
 #endif
@@ -413,8 +413,10 @@ void CLinuxRendererGLES::Flush()
 
 void CLinuxRendererGLES::Update()
 {
-  if (!m_bConfigured) return;
+  if (!m_bConfigured)
+    return;
   ManageDisplay();
+  ValidateRenderTarget();
 }
 
 void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
@@ -1275,7 +1277,7 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
       m_rgbBuffer = new BYTE[m_rgbBufferSize];
     }
 
-#if defined(__ARM_NEON__)
+#if defined(__ARM_NEON__) && !defined(__LP64__)
     if (g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON)
     {
       yuv420_2_rgb8888_neon(m_rgbBuffer, im->plane[0], im->plane[2], im->plane[1],
@@ -1871,11 +1873,9 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
 
 #if !defined(TARGET_ANDROID) && (defined(__i386__) || defined(__x86_64__))
   if(method == VS_INTERLACEMETHOD_DEINTERLACE
-  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF
-  || method == VS_INTERLACEMETHOD_SW_BLEND)
+  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
 #else
-  if(method == VS_INTERLACEMETHOD_SW_BLEND
-  || method == VS_INTERLACEMETHOD_RENDER_BOB
+  if(method == VS_INTERLACEMETHOD_RENDER_BOB
   || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
 #endif
     return true;

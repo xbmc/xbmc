@@ -51,7 +51,7 @@ $(APP): $(PLATFORM)
 	#TEMP workaround for skins: create legacy link. Remove me when skins are fixed
 	@mkdir -p $(XBMCROOT)/tools/TexturePacker
 	@[ -f $(XBMCROOT)/tools/TexturePacker/TexturePacker ] && rm $(XBMCROOT)/tools/TexturePacker/TexturePacker || :
-	@ln -s $(APPBIN) $(XBMCROOT)/tools/TexturePacker/TexturePacker
+	@ln -sf $(APPBIN) $(XBMCROOT)/tools/TexturePacker/TexturePacker
 	@echo "all:" > $(XBMCROOT)/tools/TexturePacker/Makefile
 	@echo "\t@echo "WARNING: use of tools/TexturePacker/TexturePacker is deprecated, please update your skins Makefile"" >> $(XBMCROOT)/tools/TexturePacker/Makefile
 

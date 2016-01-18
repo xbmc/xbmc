@@ -413,6 +413,21 @@
     ],
     "returns": "string"
   },
+  "Player.SetVideoStream": {
+    "type": "method",
+    "description": "Set the video stream played by the player",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "stream", "required": true, "type": [
+          { "type": "string", "enum": [ "previous", "next" ] },
+          { "type": "integer", "minimum": 0, "description": "Index of the video stream to play" }
+        ]
+      }
+    ],
+    "returns": "string"
+  },
   "Player.SetSubtitle": {
     "type": "method",
     "description": "Set the subtitle displayed by the player",
@@ -630,7 +645,7 @@
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "albumartistsonly", "$ref": "Optional.Boolean", "description": "Whether or not to include artists only appearing in compilations. If the parameter is not passed or is passed as null the GUI setting will be used" },
+      { "name": "albumartistsonly", "$ref": "Optional.Boolean", "description": "Whether or not to only include album artists rather than the artists of individual songs as well. If the parameter is not passed or is passed as null the GUI setting will be used" },
       { "name": "properties", "$ref": "Audio.Fields.Artist" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" },
@@ -641,6 +656,8 @@
           { "type": "object", "properties": { "albumid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "album": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "songid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "roleid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "role": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
           { "$ref": "List.Filter.Artists" }
         ]
       }
@@ -732,6 +749,8 @@
           { "type": "object", "properties": { "artist": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "albumid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "album": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "roleid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "role": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
           { "$ref": "List.Filter.Songs" }
         ]
       },
@@ -859,6 +878,26 @@
         "limits": { "$ref": "List.LimitsReturned", "required": true },
         "genres": { "type": "array", "required": true,
           "items": { "$ref": "Library.Details.Genre" }
+        }
+      }
+    }
+  },
+  "AudioLibrary.GetContributorRoles": {
+    "type": "method",
+    "description": "Retrieve all contributor roles",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "properties", "$ref": "Library.Fields.Role" },
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "roles": { "type": "array", "required": true,
+          "items": { "$ref": "Library.Details.Role" }
         }
       }
     }
@@ -1122,7 +1161,7 @@
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "tvshowid", "$ref": "Library.Id", "required": true },
+      { "name": "tvshowid", "$ref": "Library.Id" },
       { "name": "properties", "$ref": "Video.Fields.Season" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
@@ -1300,6 +1339,25 @@
       }
     }
   },
+  "VideoLibrary.GetInProgressTVShows": {
+    "type": "method",
+    "description": "Retrieve all in progress tvshows",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "properties", "$ref": "Video.Fields.TVShow" },
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "tvshows": { "type": "array",
+          "items": { "$ref": "Video.Details.TVShow" }
+        }
+      }
+    }
+  },
   "VideoLibrary.GetGenres": {
     "type": "method",
     "description": "Retrieve all genres",
@@ -1356,7 +1414,8 @@
       { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
       { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null },
-      { "name": "userrating", "$ref": "Optional.Integer" }
+      { "name": "userrating", "$ref": "Optional.Integer" },
+      { "name": "ratings", "$ref": "Video.Ratings" }
     ],
     "returns": "string"
   },
@@ -1397,7 +1456,8 @@
       { "name": "fanart", "$ref": "Optional.String" },
       { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
-      { "name": "userrating", "$ref": "Optional.Integer" }
+      { "name": "userrating", "$ref": "Optional.Integer" },
+      { "name": "ratings", "$ref": "Video.Ratings" }
     ],
     "returns": "string"
   },
@@ -1438,7 +1498,8 @@
       { "name": "fanart", "$ref": "Optional.String" },
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
       { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null },
-      { "name": "userrating", "$ref": "Optional.Integer" }
+      { "name": "userrating", "$ref": "Optional.Integer" },
+      { "name": "ratings", "$ref": "Video.Ratings" }
     ],
     "returns": "string"
   },

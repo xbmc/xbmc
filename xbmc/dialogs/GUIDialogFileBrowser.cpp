@@ -946,23 +946,25 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
       if (CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(newPath))
       {
         g_mediaManager.SetLocationPath(strOldPath,newPath);
+        CURL url(newPath);
         for (unsigned int i=0;i<shares.size();++i)
         {
           if (URIUtils::CompareWithoutSlashAtEnd(shares[i].strPath, strOldPath))//getPath().Equals(strOldPath))
           {
-            shares[i].strName = newPath;
-            shares[i].strPath = newPath;//setPath(newPath);
+            shares[i].strName = url.GetWithoutUserDetails();
+            shares[i].strPath = newPath;
             URIUtils::RemoveSlashAtEnd(shares[i].strName);
             break;
           }
         }
-        // re-open our dialog
+        // refresh dialog content
         SetSources(shares);
         m_rootDir.SetMask("/");
         m_browsingForFolders = 1;
         m_addNetworkShareEnabled = true;
-        m_selectedPath = newPath;
-        Open();
+        m_selectedPath = url.GetWithoutUserDetails();
+        Update(m_Directory->GetPath());
+        m_viewControl.SetSelectedItem(iItem);
       }
     }
     else

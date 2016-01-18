@@ -100,12 +100,12 @@ public:
     delete [] ExtraData;
   }
 
-  virtual void GetStreamInfo(std::string& strInfo)
+  virtual std::string GetStreamInfo()
   {
-    strInfo = "";
+    return "";
   }
 
-  virtual void GetStreamName(std::string& strInfo);
+  virtual std::string GetStreamName();
 
   virtual void      SetDiscard(AVDiscard discard);
   virtual AVDiscard GetDiscard();
@@ -196,7 +196,7 @@ public:
 
   virtual ~CDemuxStreamAudio() {}
 
-  void GetStreamType(std::string& strInfo);
+  std::string GetStreamType();
 
   int iChannels;
   int iSampleRate;
@@ -222,7 +222,7 @@ public:
   {
     type = STREAM_TELETEXT;
   }
-  virtual void GetStreamInfo(std::string& strInfo);
+  virtual std::string GetStreamInfo();
 };
 
 class CDemuxStreamRadioRDS : public CDemuxStream
@@ -232,7 +232,7 @@ public:
   {
     type = STREAM_RADIO_RDS;
   }
-  virtual void GetStreamInfo(std::string& strInfo);
+  virtual std::string GetStreamInfo();
 };
 
 class CDVDDemux
@@ -377,5 +377,5 @@ public:
   /*
    * return a user-presentable codec name of the given stream
    */
-  virtual void GetStreamCodecName(int iStreamId, std::string &strName) {};
+  virtual std::string GetStreamCodecName(int iStreamId) { return ""; };
 };

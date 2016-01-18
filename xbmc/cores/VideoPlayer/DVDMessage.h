@@ -57,6 +57,7 @@ public:
     // player core related messages (cVideoPlayer.cpp)
 
     PLAYER_SET_AUDIOSTREAM,         //
+    PLAYER_SET_VIDEOSTREAM,         //
     PLAYER_SET_SUBTITLESTREAM,      //
     PLAYER_SET_SUBTITLESTREAM_VISIBLE, //
     PLAYER_SET_STATE,               // restore the VideoPlayer to a certain state
@@ -73,8 +74,6 @@ public:
     PLAYER_CHANNEL_SELECT,          // switches to the provided channel
     PLAYER_STARTED,                 // sent whenever a sub player has finished it's first frame after open
 
-    PLAYER_DISPLAYTIME,             // display time struct from av players
-
     // demuxer related messages
 
     DEMUXER_PACKET,                 // data packet
@@ -85,6 +84,7 @@ public:
 
     VIDEO_NOSKIP,                   // next pictures is not to be skipped by the video renderer
     VIDEO_SET_ASPECT,               // set aspectratio of video
+    VIDEO_DRAIN,                    // wait for decoder to output last frame
 
     // audio related messages
 
@@ -181,6 +181,15 @@ class CDVDMsgPlayerSetAudioStream : public CDVDMsg
 public:
   CDVDMsgPlayerSetAudioStream(int streamId) : CDVDMsg(PLAYER_SET_AUDIOSTREAM) { m_streamId = streamId; }
   int GetStreamId()                     { return m_streamId; }
+private:
+  int m_streamId;
+};
+
+class CDVDMsgPlayerSetVideoStream : public CDVDMsg
+{
+public:
+  CDVDMsgPlayerSetVideoStream(int streamId) : CDVDMsg(PLAYER_SET_VIDEOSTREAM) { m_streamId = streamId; }
+  int GetStreamId() const { return m_streamId; }
 private:
   int m_streamId;
 };

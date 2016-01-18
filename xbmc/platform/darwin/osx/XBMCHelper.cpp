@@ -18,7 +18,7 @@
  *
  */
 
-#if defined(__APPLE__) && !defined(__arm__)
+#if defined(__APPLE__) && !defined(__arm__) && !defined(__aarch64__)
 #include <fstream>
 #include <signal.h>
 #include <sstream>

@@ -54,6 +54,7 @@ public:
   int flags;
   bool software;  //force software decoding
   std::string filename;
+  bool dvd;
 
 
   // VIDEO

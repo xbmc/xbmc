@@ -8,9 +8,7 @@ SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 ifeq ($(OS),ios)
-  ifneq (,$(findstring 3.,$(XCODE_VERSION)))
-    CONFIGURE_FLAGS=-disable-assembler
-  endif
+  CONFIGURE_FLAGS=-disable-assembler
 endif
 
 # configuration settings

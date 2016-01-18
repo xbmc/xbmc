@@ -22,7 +22,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#if !defined(__arm__)
+#if !defined(__arm__) && !defined(__aarch64__)
 #include "WinSystemOSX.h"
 #include "rendering/gl/RenderSystemGL.h"
 #include "utils/GlobalsHandling.h"

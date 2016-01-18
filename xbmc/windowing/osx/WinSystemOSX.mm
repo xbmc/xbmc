@@ -40,6 +40,7 @@
 #include "platform/darwin/osx/XBMCHelper.h"
 #include "utils/SystemInfo.h"
 #include "platform/darwin/osx/CocoaInterface.h"
+#include "platform/darwin/DictionaryUtils.h"
 #include "platform/darwin/DarwinUtils.h"
 #undef BOOL
 
@@ -200,63 +201,6 @@ CRect CGRectToCRect(CGRect cgrect)
     cgrect.origin.y + cgrect.size.height);
   return crect;
 }
-
-//------------------------------------------------------------------------------------------
-Boolean GetDictionaryBoolean(CFDictionaryRef theDict, const void* key)
-{
-        // get a boolean from the dictionary
-        Boolean value = false;
-        CFBooleanRef boolRef;
-        boolRef = (CFBooleanRef)CFDictionaryGetValue(theDict, key);
-        if (boolRef != NULL)
-                value = CFBooleanGetValue(boolRef);
-        return value;
-}
-//------------------------------------------------------------------------------------------
-long GetDictionaryLong(CFDictionaryRef theDict, const void* key)
-{
-        // get a long from the dictionary
-        long value = 0;
-        CFNumberRef numRef;
-        numRef = (CFNumberRef)CFDictionaryGetValue(theDict, key);
-        if (numRef != NULL)
-                CFNumberGetValue(numRef, kCFNumberLongType, &value);
-        return value;
-}
-//------------------------------------------------------------------------------------------
-int GetDictionaryInt(CFDictionaryRef theDict, const void* key)
-{
-        // get a long from the dictionary
-        int value = 0;
-        CFNumberRef numRef;
-        numRef = (CFNumberRef)CFDictionaryGetValue(theDict, key);
-        if (numRef != NULL)
-                CFNumberGetValue(numRef, kCFNumberIntType, &value);
-        return value;
-}
-//------------------------------------------------------------------------------------------
-float GetDictionaryFloat(CFDictionaryRef theDict, const void* key)
-{
-        // get a long from the dictionary
-        int value = 0;
-        CFNumberRef numRef;
-        numRef = (CFNumberRef)CFDictionaryGetValue(theDict, key);
-        if (numRef != NULL)
-                CFNumberGetValue(numRef, kCFNumberFloatType, &value);
-        return value;
-}
-//------------------------------------------------------------------------------------------
-double GetDictionaryDouble(CFDictionaryRef theDict, const void* key)
-{
-        // get a long from the dictionary
-        double value = 0.0;
-        CFNumberRef numRef;
-        numRef = (CFNumberRef)CFDictionaryGetValue(theDict, key);
-        if (numRef != NULL)
-                CFNumberGetValue(numRef, kCFNumberDoubleType, &value);
-        return value;
-}
-
 //---------------------------------------------------------------------------------
 void SetMenuBarVisible(bool visible)
 {

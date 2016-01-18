@@ -142,12 +142,14 @@ struct DVDVideoUserData
 #define DVP_FLAG_ALLOCATED          0x00000004  //< Set to indicate that this has allocated data
 #define DVP_FLAG_INTERLACED         0x00000008  //< Set to indicate that this frame is interlaced
 
-#define DVP_FLAG_NOSKIP             0x00000010  //< indicate this picture should never be dropped
-#define DVP_FLAG_DROPPED            0x00000020  //< indicate that this picture has been dropped in decoder stage, will have no data
+#define DVP_FLAG_DROPPED            0x00000010  //< indicate that this picture has been dropped in decoder stage, will have no data
 
 #define DVD_CODEC_CTRL_SKIPDEINT    0x01000000  //< indicate that this picture was requested to have been dropped in deint stage
 #define DVD_CODEC_CTRL_NO_POSTPROC  0x02000000  //< see GetCodecStats
-#define DVD_CODEC_CTRL_DRAIN        0x04000000  //< see GetCodecStats
+#define DVD_CODEC_CTRL_HURRY        0x04000000  //< see GetCodecStats
+#define DVD_CODEC_CTRL_DROP         0x08000000  //< this frame is going to be dropped in output
+#define DVD_CODEC_CTRL_DRAIN        0x10000000  //< squeeze out pictured without feeding new packets
+#define DVD_CODEC_CTRL_ROTATE       0x20000000  //< rotate if renderer does not support it
 
 // DVP_FLAG 0x00000100 - 0x00000f00 is in use by libmpeg2!
 
@@ -238,20 +240,6 @@ public:
    */
   virtual void SetSpeed(int iSpeed) {};
 
-  enum EFilterFlags {
-    FILTER_NONE                =  0x0,
-    FILTER_DEINTERLACE_YADIF   =  0x1,  //< use first deinterlace mode
-    FILTER_DEINTERLACE_ANY     =  0xf,  //< use any deinterlace mode
-    FILTER_DEINTERLACE_FLAGGED = 0x10,  //< only deinterlace flagged frames
-    FILTER_DEINTERLACE_HALFED  = 0x20,  //< do half rate deinterlacing
-    FILTER_ROTATE              = 0x40,  //< rotate image according to the codec hints
-  };
-
-  /**
-   * set the type of filters that should be applied at decoding stage if possible
-   */
-  virtual unsigned int SetFilters(unsigned int filters) { return 0; }
-
   /**
    * should return codecs name
    */
@@ -305,12 +293,20 @@ public:
    *                  if speed is not normal the codec can switch off
    *                  postprocessing and de-interlacing
    *
-   * DVD_CODEC_CTRL_DRAIN :
+   * DVD_CODEC_CTRL_HURRY :
    *                  codecs may do postprocessing and de-interlacing.
    *                  If video buffers in RenderManager are about to run dry,
    *                  this is signaled to codec. Codec can wait for post-proc
    *                  to be finished instead of returning empty and getting another
    *                  packet.
+   *
+   * DVD_CODEC_CTRL_DRAIN :
+   *                  instruct decoder to deliver last pictures without requesting
+   *                  new packets
+   *
+   * DVD_CODEC_CTRL_DROP :
+   *                  this packet is going to be dropped. decoder is free to use it
+   *                  for decoding
    *
    */
   virtual void SetCodecControl(int flags) {}

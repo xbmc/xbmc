@@ -218,7 +218,7 @@ SortOrder CGUIViewState::GetSortOrder() const
 int CGUIViewState::GetSortOrderLabel() const
 {
   if (m_currentSortMethod >= 0 && m_currentSortMethod < (int)m_sortMethods.size())
-    if (m_sortMethods[m_currentSortMethod].m_sortDescription.sortOrder == SortOrderAscending)
+    if (m_sortMethods[m_currentSortMethod].m_sortDescription.sortOrder == SortOrderDescending)
       return 585;
 
   return 584; // default sort order label 'Ascending'

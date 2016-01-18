@@ -20,19 +20,19 @@
 
 #include "DVDDemux.h"
 
-void CDemuxStreamTeletext::GetStreamInfo(std::string& strInfo)
+std::string CDemuxStreamTeletext::GetStreamInfo()
 {
-  strInfo = "Teletext Data Stream";
+  return "Teletext Data Stream";
 }
 
-void CDemuxStreamRadioRDS::GetStreamInfo(std::string& strInfo)
+std::string CDemuxStreamRadioRDS::GetStreamInfo()
 {
-  strInfo = "Radio Data Stream (RDS)";
+  return "Radio Data Stream (RDS)";
 }
 
-void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
+std::string CDemuxStreamAudio::GetStreamType()
 {
-  char sInfo[64];
+  char sInfo[64] = {0};
 
   if (codec == AV_CODEC_ID_AC3) strcpy(sInfo, "AC3 ");
   else if (codec == AV_CODEC_ID_DTS)
@@ -60,7 +60,7 @@ void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
     sprintf(temp, " %d%s", iChannels, "-chs");
     strcat(sInfo, temp);
   }
-  strInfo = sInfo;
+  return sInfo;
 }
 
 int CDVDDemux::GetNrOfAudioStreams()
@@ -198,9 +198,9 @@ const CDemuxStreamRadioRDS* CDVDDemux::GetStreamFromRadioRDSId(int iRadioRDSInde
   return NULL;
 }
 
-void CDemuxStream::GetStreamName( std::string& strInfo )
+std::string CDemuxStream::GetStreamName()
 {
-  strInfo = "";
+  return "";
 }
 
 AVDiscard CDemuxStream::GetDiscard()

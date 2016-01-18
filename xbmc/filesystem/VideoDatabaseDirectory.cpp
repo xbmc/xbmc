@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2016 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -219,6 +219,8 @@ bool CVideoDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
       strLabel = g_localizeStrings.Get(33054); break;
     case NODE_TYPE_EPISODES: // Episodes
       strLabel = g_localizeStrings.Get(20360); break;
+    case NODE_TYPE_INPROGRESS_TVSHOWS: // InProgress TvShows
+      strLabel = g_localizeStrings.Get(626); break;
     default:
       return false;
     }
@@ -280,6 +282,8 @@ std::string CVideoDatabaseDirectory::GetIcon(const std::string &strDirectory)
     return "DefaultRecentlyAddedEpisodes.png";
   case NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS: // Recently Added Episodes
     return "DefaultRecentlyAddedMusicVideos.png";
+  case NODE_TYPE_INPROGRESS_TVSHOWS: // InProgress TvShows
+    return "DefaultInProgressShows.png";
   case NODE_TYPE_STUDIO: // Studios
     return "DefaultStudios.png";
   case NODE_TYPE_MUSICVIDEOS_OVERVIEW: // Music Videos

@@ -28,6 +28,7 @@
 #include "utils/BitstreamConverter.h"
 #include "utils/log.h"
 #include "threads/Atomics.h"
+#include "settings/Settings.h"
 
 #define __MODULE_NAME__ "DVDVideoCodecAmlogic"
 
@@ -62,6 +63,11 @@ CDVDVideoCodecAmlogic::~CDVDVideoCodecAmlogic()
 
 bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEAMCODEC))
+    return false;
+  if (hints.stills)
+    return false;
+
   if (!aml_permissions())
   {
     CLog::Log(LOGERROR, "AML: no proper permission, please contact the device vendor. Skipping codec...");
@@ -116,6 +122,8 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     case AV_CODEC_ID_MPEG4:
     case AV_CODEC_ID_MSMPEG4V2:
     case AV_CODEC_ID_MSMPEG4V3:
+      if (hints.width <= 800)
+        return false;
       m_pFormatName = "am-mpeg4";
       break;
     case AV_CODEC_ID_H263:

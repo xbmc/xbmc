@@ -54,8 +54,7 @@ CSong::CSong(CFileItem& item)
         artistName = (i < artist.size()) ? artist[i] : artist[0];
       if (artistName.empty())
         artistName = artistId;
-      std::string strJoinPhrase = (i == tag.GetMusicBrainzArtistID().size()-1) ? "" : g_advancedSettings.m_musicItemSeparator;
-      CArtistCredit artistCredit(artistName, artistId, strJoinPhrase);
+      CArtistCredit artistCredit(artistName, artistId);
       artistCredits.push_back(artistCredit);
     }
   }
@@ -63,14 +62,14 @@ CSong::CSong(CFileItem& item)
   { // no musicbrainz info, so fill in directly
     for (std::vector<std::string>::const_iterator it = tag.GetArtist().begin(); it != tag.GetArtist().end(); ++it)
     {
-      std::string strJoinPhrase = (it == --tag.GetArtist().end() ? "" : g_advancedSettings.m_musicItemSeparator);
-      CArtistCredit artistCredit(*it, "", strJoinPhrase);
+      CArtistCredit artistCredit(*it);
       artistCredits.push_back(artistCredit);
     }
   }
   strAlbum = tag.GetAlbum();
   m_albumArtist = tag.GetAlbumArtist();
   strMusicBrainzTrackID = tag.GetMusicBrainzTrackID();
+  m_musicRoles = tag.GetContributors();
   strComment = tag.GetComment();
   strCueSheet = tag.GetCueSheet();
   strMood = tag.GetMood();
@@ -142,6 +141,7 @@ void CSong::Clear()
   genre.clear();
   strThumb.clear();
   strMusicBrainzTrackID.clear();
+  m_musicRoles.clear();
   strComment.clear();
   strMood.clear();
   rating = 0;
@@ -168,6 +168,11 @@ const std::vector<std::string> CSong::GetArtist() const
   {
     songartists.push_back(artistCredit->GetArtist());
   }
+  //When artist credits have not been populated attempt to build an artist vector from the descrpition string
+  //This is a tempory fix, in the longer term other areas should query the song_artist table and populate
+  //artist credits. Note that splitting the string may not give the same artists as held in the song_artist table
+  if (songartists.empty() && !strArtistDesc.empty())
+    songartists = StringUtils::Split(strArtistDesc, g_advancedSettings.m_musicItemSeparator);
   return songartists;
 }
 
@@ -188,9 +193,12 @@ const std::string CSong::GetArtistString() const
   //but is takes precidence as a string because artistcredits is not always filled during processing
   if (!strArtistDesc.empty())
     return strArtistDesc;
+  std::vector<std::string> artistvector;
+  for (VECARTISTCREDITS::const_iterator i = artistCredits.begin(); i != artistCredits.end(); ++i)
+    artistvector.push_back(i->GetArtist());
   std::string artistString;
-  for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
-    artistString += artistCredit->GetArtist() + artistCredit->GetJoinPhrase();
+  if (!artistvector.empty())
+    artistString = StringUtils::Join(artistvector, g_advancedSettings.m_musicItemSeparator);
   return artistString;
 }
 
@@ -201,6 +209,11 @@ const std::vector<int> CSong::GetArtistIDArray() const
   for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
     artistids.push_back(artistCredit->GetArtistId());
   return artistids;
+}
+
+void CSong::AppendArtistRole(const CMusicRole& musicRole)
+{
+  m_musicRoles.push_back(musicRole);
 }
 
 bool CSong::HasArt() const

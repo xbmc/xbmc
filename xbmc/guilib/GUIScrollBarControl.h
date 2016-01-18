@@ -1,5 +1,5 @@
 /*!
-\file GUIScrollBar.h
+\file 
 \brief
 */
 
@@ -35,18 +35,18 @@
  \ingroup controls
  \brief
  */
-class CGUIScrollBar :
+class GUIScrollBarControl :
       public CGUIControl
 {
 public:
-  CGUIScrollBar(int parentID, int controlID, float posX, float posY,
+  GUIScrollBarControl(int parentID, int controlID, float posX, float posY,
                        float width, float height,
                        const CTextureInfo& backGroundTexture,
                        const CTextureInfo& barTexture, const CTextureInfo& barTextureFocus,
                        const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus,
                        ORIENTATION orientation, bool showOnePage);
-  virtual ~CGUIScrollBar(void);
-  virtual CGUIScrollBar *Clone() const { return new CGUIScrollBar(*this); };
+  virtual ~GUIScrollBarControl(void);
+  virtual GUIScrollBarControl *Clone() const { return new GUIScrollBarControl(*this); };
 
   virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();

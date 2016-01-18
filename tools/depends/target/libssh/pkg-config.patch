@@ -1,0 +1,10 @@
+--- libssh.pc.cmake.orig	2014-12-27 11:30:13.000000000 +0100
++++ libssh.pc.cmake	2016-01-11 15:12:20.556549666 +0100
+@@ -1,6 +1,6 @@
+ Name: ${APPLICATION_NAME}
+ Description: The SSH Library
+ Version: ${APPLICATION_VERSION}
+-Libs: -L${LIB_INSTALL_DIR} -lssh
++Libs: -L${LIB_INSTALL_DIR} -lssh -lcrypto
+ Cflags: -I${INCLUDE_INSTALL_DIR}
+ 

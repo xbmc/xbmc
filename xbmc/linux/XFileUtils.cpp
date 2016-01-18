@@ -29,6 +29,7 @@
 #include "XHandle.h"
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <stdlib.h>
 #if !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD) && !defined(TARGET_ANDROID)
 #include <sys/vfs.h>
 #else
@@ -59,7 +60,7 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
 
   std::string strPath(szPath);
 
-  if (IsAliasShortcut(strPath))
+  if (IsAliasShortcut(strPath, false))
     TranslateAliasShortcut(strPath);
 
   if (strPath.empty())
@@ -149,7 +150,7 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
   std::string strFileName = hHandle->m_FindFileResults[hHandle->m_nFindFileIterator++];
   std::string strFileNameTest = hHandle->m_FindFileDir + strFileName;
 
-  if (IsAliasShortcut(strFileNameTest))
+  if (IsAliasShortcut(strFileNameTest, false))
     TranslateAliasShortcut(strFileNameTest);
 
   struct stat64 fileStat;

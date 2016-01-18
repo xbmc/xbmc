@@ -230,6 +230,7 @@ bool CGUIWindowPVRChannels::OnMessage(CGUIMessage& message)
         std::string filter = GetProperty("filter").asString();
         CGUIKeyboardFactory::ShowAndGetFilter(filter, false);
         OnFilterItems(filter);
+        UpdateButtons();
 
         bReturn = true;
       }

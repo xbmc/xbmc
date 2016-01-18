@@ -68,7 +68,7 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     share.strName = g_localizeStrings.Get(24998);
     m_sources.push_back(share);
   }
-  if (CAddonMgr::GetInstance().HasOutdatedAddons())
+  if (CAddonMgr::GetInstance().HasAvailableUpdates())
   {
     CMediaSource share;
     share.strPath = "addons://outdated/";

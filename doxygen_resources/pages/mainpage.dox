@@ -2,58 +2,88 @@
     \brief  Introduction page
 
   \mainpage Introduction
-            Welcome to the documentation of XBMC. This starting page is meant to help people find their
+            Welcome to the documentation of Kodi. This starting page is meant to help people find their
             way around the code.
             
             This documentation is a work in progress - only some of the code has thus far been documented
             and we welcome any and all input to documenting it further. Documentation serves both to help
             newcomers get to grips with the source quickly, and to highlight possible deficiencies in the
-            code or interfaces.
+            code or interfaces. Due to the projects history you may find XBMC mentioned in the docs, this was
+            the previous name of the project.
 
             Any help/suggestions are more than welcome.
               
-  \section  doxy_whatisxbmc What is XBMC?
-            XBMC is a free, open source (GPL) multimedia player that runs on Linux, Mac OS X (10.4 and later),
-            AppleTV and Windows.  See http://xbmc.org for more details.
+  \section  doxy_whatisxbmc What is Kodi?
+            Kodi is a free, open source (GPL) multimedia player that runs on Linux, Mac OS X (10.4 and later),
+            Windows, IOS and Android.  See http://kodi.tv for more details.
 */
 
 // Groups definition
 
-///////////////////////////////////////
-//
-// xbmc project
-//
-///////////////////////////////////////
-
 /*!
-	\defgroup windows XBMC windows
-	
-	XBMC windows
+	\defgroup jobs Asynchronous jobs
+	Threaded job execution
 */
 
 /*!
-	\defgroup music Music info
-	
-	Elements used in my music
+	\defgroup guilib Guilib classes
+	Guilib classes
 */
 
+/*!
+	\defgroup graphics Graphics and Screen
+	\ingroup guilib
+	
+	Everything around graphics and Screen
+*/
 
-//////////////////////////////////////
-//
-// guilib project
-//
-//////////////////////////////////////
+^/*!
+	\defgroup thumbs Thumbs
+	\ingroup graphics
+	Everything around the thumbs
+*/
 
 /*!
-	\defgroup guilib guilib classes
+	\defgroup textures Textures and Fonts
+	\ingroup graphics
 	
-	guilib classes
+	Everything about textures and fonts
+*/
+
+/*!
+	\defgroup items Items
+	\ingroup guilib
+	Everything around items
+*/
+
+/*!
+	\defgroup labels Labels
+	\ingroup guilib
+	Everything around labels
+*/
+
+/*!
+	\defgroup lists Lists
+	\ingroup guilib
+	Everything around lists
+*/
+
+/*!
+	\defgroup strings Strings and Localization
+	\ingroup guilib
+	
+	Everything around Strings and localization
+*/
+
+/*!
+	\defgroup tinyxml XML Parser
+	\ingroup strings
+	Tiny XML - XML Parser
 */
 
 /*!
 	\defgroup winref Window Reference
 	\ingroup guilib
-	
 	The window reference
 */
 
@@ -84,35 +114,79 @@
 */
 
 /*!
-	\defgroup graphics Graphics and Screen
-	\ingroup guilib
-	
-	Everything around graphics and Screen
+
+	\defgroup database Database
+
+	Everything around the database
 */
 
 /*!
-	\defgroup textures Textures and Fonts
-	\ingroup graphics
-	
-	Everything about textures and fonts
+	\defgroup filesystem Filesystem
+	Everything around the filesystem
 */
 
 /*!
-	\defgroup strings Strings and Localization
-	\ingroup guilib
-	
-	Everything around Strings and localization
+	\defgroup input Input
+	Everything around input
 */
 
 /*!
-	\defgroup tinyxml XML Parser
-	\ingroup strings
-	
-	Tiny XML - XML Parser
+	\defgroup mouse Mouse
+	\ingroup input
+	Everything around mouse
 */
 
 /*!
-	\defgroup jobs Asynchronous jobs
+	\defgroup touch Touch
+	\ingroup input
+	Everything around touch detection
+*/
 
-	Threaded job execution
+/*!
+	\defgroup touch_generic Touch
+	\ingroup touch
+	Everything around generic touch detection
+*/
+
+/*!
+	\defgroup interface Interfaces
+	Everything around interfaces
+*/
+
+/*!
+	\defgroup info Info
+	\ingroup interface
+	Everything around the info interface
+*/
+
+/*!
+	\defgroup jsonrpc JSON-RPC
+	\ingroup interface
+	Everything around the json-rpc interface
+*/
+
+/*!
+	\defgroup jsonrpc JSON-RPC
+	\ingroup interface
+	Everything around the json-rpc interface
+*/
+
+/*!
+	\defgroup listproviders Listproviders
+	Everything around the listproviders
+*/
+
+/*!
+	\defgroup music Music info
+	Elements used in my music
+*/
+
+/*!
+	\defgroup settings Settings
+	Everything around the settings
+*/
+
+/*!
+	\defgroup windows Windows
+	Kodi windows
 */

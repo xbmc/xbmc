@@ -53,7 +53,7 @@ public:
   CDemuxStreamVideoPVRClient(CDVDDemuxPVRClient *parent)
     : CDemuxStreamPVRInternal(parent)
   {}
-  virtual void GetStreamInfo(std::string& strInfo);
+  virtual std::string GetStreamInfo() override;
 };
 
 class CDemuxStreamAudioPVRClient
@@ -64,7 +64,7 @@ public:
   CDemuxStreamAudioPVRClient(CDVDDemuxPVRClient *parent)
     : CDemuxStreamPVRInternal(parent)
   {}
-  virtual void GetStreamInfo(std::string& strInfo);
+  virtual std::string GetStreamInfo() override;
 };
 
 class CDemuxStreamSubtitlePVRClient
@@ -75,7 +75,7 @@ public:
   CDemuxStreamSubtitlePVRClient(CDVDDemuxPVRClient *parent)
     : CDemuxStreamPVRInternal(parent)
   {}
-  virtual void GetStreamInfo(std::string& strInfo);
+  virtual std::string GetStreamInfo() override;
 };
 
 
@@ -100,7 +100,7 @@ public:
   CDemuxStream* GetStream(int iStreamId);
   int GetNrOfStreams();
   std::string GetFileName();
-  virtual void GetStreamCodecName(int iStreamId, std::string &strName);
+  virtual std::string GetStreamCodecName(int iStreamId) override;
 
 protected:
   CDVDInputStream* m_pInput;

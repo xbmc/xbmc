@@ -531,9 +531,12 @@ void CLinuxRendererGL::Flush()
 
 void CLinuxRendererGL::Update()
 {
-  if (!m_bConfigured) return;
+  if (!m_bConfigured)
+    return;
   ManageDisplay();
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
+
+  ValidateRenderTarget();
 }
 
 void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
@@ -2816,8 +2819,7 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
     return true;
   
   if(method == VS_INTERLACEMETHOD_DEINTERLACE
-  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF
-  || method == VS_INTERLACEMETHOD_SW_BLEND)
+  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
     return true;
 
   if((method == VS_INTERLACEMETHOD_RENDER_BLEND

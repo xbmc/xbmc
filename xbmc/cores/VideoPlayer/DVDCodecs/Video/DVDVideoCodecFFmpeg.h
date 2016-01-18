@@ -44,16 +44,17 @@ public:
   class IHardwareDecoder : public IDVDResourceCounted<IHardwareDecoder>
   {
     public:
-             IHardwareDecoder() {}
+    IHardwareDecoder() {}
     virtual ~IHardwareDecoder() {};
-    virtual bool Open      (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces) = 0;
-    virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame) = 0;
+    virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces) = 0;
+    virtual int  Decode(AVCodecContext* avctx, AVFrame* frame) = 0;
     virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture) = 0;
-    virtual int  Check     (AVCodecContext* avctx) = 0;
-    virtual void Reset     () {}
+    virtual int  Check(AVCodecContext* avctx) = 0;
+    virtual void Reset() {}
     virtual unsigned GetAllowedReferences() { return 0; }
     virtual bool CanSkipDeint() {return false; }
     virtual const std::string Name() = 0;
+    virtual void SetCodecControl(int flags) {};
   };
 
   CDVDVideoCodecFFmpeg();
@@ -66,7 +67,6 @@ public:
   bool GetPictureCommon(DVDVideoPicture* pDvdVideoPicture);
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
-  virtual unsigned int SetFilters(unsigned int filters);
   virtual const char* GetName() { return m_name.c_str(); }; // m_name is never changed after open
   virtual unsigned GetConvergeCount();
   virtual unsigned GetAllowedReferences();
@@ -82,6 +82,7 @@ protected:
   int  FilterOpen(const std::string& filters, bool scale);
   void FilterClose();
   int  FilterProcess(AVFrame* frame);
+  void SetFilters();
 
   void UpdateName()
   {
@@ -103,6 +104,7 @@ protected:
   AVFilterContext* m_pFilterIn;
   AVFilterContext* m_pFilterOut;
   AVFrame*         m_pFilterFrame;
+  bool m_filterEof;
 
   int m_iPictureWidth;
   int m_iPictureHeight;

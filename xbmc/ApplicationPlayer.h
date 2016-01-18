@@ -58,6 +58,8 @@ class CApplicationPlayer
   // cache player state
   XbmcThreads::EndTime m_audioStreamUpdate;
   int m_iAudioStream;
+  XbmcThreads::EndTime m_videoStreamUpdate;
+  int m_iVideoStream;
   XbmcThreads::EndTime m_subtitleStreamUpdate;
   int m_iSubtitleStream;
   
@@ -72,7 +74,6 @@ public:
   void ClosePlayerGapless(std::string &playername);
   void CreatePlayer(const std::string &player, IPlayerCallback& callback);
   std::string GetCurrentPlayer();
-  std::shared_ptr<IPlayer> GetInternal() const;
   int  GetPlaySpeed() const;
   bool HasPlayer() const;
   PlayBackRet OpenFile(const CFileItem& item, const CPlayerOptions& options);
@@ -138,10 +139,11 @@ public:
   TextCacheStruct_t* GetTeletextCache();
   std::string GetRadioText(unsigned int line);
   int64_t GetTime() const;
-  int64_t GetDisplayTime() const;
   int64_t GetTotalTime() const;
   void  GetVideoInfo(std::string& strVideoInfo);
-  void  GetVideoStreamInfo(SPlayerVideoStreamInfo &info);
+  int   GetVideoStream();
+  int   GetVideoStreamCount();
+  void  GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info);
   bool  HasAudio() const;
   bool  HasMenu() const;
   bool  HasVideo() const;
@@ -176,7 +178,13 @@ public:
   void  SetSubtitle(int iStream);
   void  SetSubTitleDelay(float fValue = 0.0f);
   void  SetSubtitleVisible(bool bVisible);
+  void  SetTime(int64_t time);
+  void  SetTotalTime(int64_t time);
+  void  SetVideoStream(int iStream);
   void  SetVolume(float volume);
   bool  SwitchChannel(const PVR::CPVRChannelPtr &channel);
   void  ToFFRW(int iSpeed = 0);
+  
+  protected:
+    std::shared_ptr<IPlayer> GetInternal() const;
 };

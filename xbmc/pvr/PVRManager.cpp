@@ -1193,8 +1193,9 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   if (!m_currentFile || *m_currentFile->GetPVRChannelInfoTag() == *item.GetPVRChannelInfoTag())
     return false;
 
-  g_application.CurrentFileItem() = *m_currentFile;
-  g_infoManager.SetCurrentItem(*m_currentFile);
+  g_application.SetCurrentFileItem(*m_currentFile);
+  CFileItemPtr itemptr(new CFileItem(*m_currentFile));
+  g_infoManager.SetCurrentItem(itemptr);
 
   CPVRChannelPtr channelTag(item.GetPVRChannelInfoTag());
   CEpgInfoTagPtr epgTagNow(channelTag->GetEPGNow());

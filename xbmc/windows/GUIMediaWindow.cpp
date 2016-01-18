@@ -420,6 +420,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
             filter = message.GetStringParam();
         }
         OnFilterItems(filter);
+        UpdateButtons();
         return true;
       }
       else
@@ -822,6 +823,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
 
   // Filter and group the items if necessary
   OnFilterItems(GetProperty("filter").asString());
+  UpdateButtons();
 
   strSelectedItem = m_history.GetSelectedItem(m_vecItems->GetPath());
 
@@ -1006,11 +1008,6 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
       m_vecItems->RemoveDiscCache(GetID());
       if (CGUIDialogSmartPlaylistEditor::NewPlaylist(pItem->GetPath().substr(19)))
         Refresh();
-      return true;
-    }
-    else if (StringUtils::StartsWithNoCase(pItem->GetPath(), "addons://more/"))
-    {
-      CBuiltins::GetInstance().Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.addon." + pItem->GetPath().substr(14) + ",return)");
       return true;
     }
 
@@ -1542,7 +1539,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   // TODO: FAVOURITES Conditions on masterlock and localisation
   if (!item->IsParentFolder() && !item->IsPath("add") && !item->IsPath("newplaylist://") &&
       !URIUtils::IsProtocol(item->GetPath(), "newsmartplaylist") && !URIUtils::IsProtocol(item->GetPath(), "newtag") &&
-      !URIUtils::PathStarts(item->GetPath(), "addons://more/") && !URIUtils::IsProtocol(item->GetPath(), "musicsearch") &&
+      !URIUtils::IsProtocol(item->GetPath(), "musicsearch") &&
       !URIUtils::PathStarts(item->GetPath(), "pvr://guide/") && !URIUtils::PathStarts(item->GetPath(), "pvr://timers/"))
   {
     if (XFILE::CFavouritesDirectory::IsFavourite(item.get(), GetID()))
@@ -1798,7 +1795,6 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
   // and update our view control + buttons
   m_viewControl.SetItems(*m_vecItems);
   m_viewControl.SetSelectedItem(currentItemPath);
-  UpdateButtons();
 }
 
 bool CGUIMediaWindow::GetFilteredItems(const std::string &filter, CFileItemList &items)
@@ -1937,6 +1933,7 @@ bool CGUIMediaWindow::Filter(bool advanced /* = true */)
       CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_BTN_FILTER);
       OnMessage(selected);
       OnFilterItems(selected.GetLabel());
+      UpdateButtons();
       return true;
     }
     if (GetProperty("filter").empty())
@@ -1946,7 +1943,10 @@ bool CGUIMediaWindow::Filter(bool advanced /* = true */)
       SetProperty("filter", filter);
     }
     else
+    {
       OnFilterItems("");
+      UpdateButtons();
+    }
   }
   // advanced filtering
   else

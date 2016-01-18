@@ -7,6 +7,8 @@ SRCS += XbmcContext.cpp
 ifeq ($(findstring osx,@ARCH@), osx)
 SRCS += darwin/AutoPool.mm
 SRCS += darwin/DarwinUtils.mm
+SRCS += darwin/DictionaryUtils.mm
+SRCS += darwin/DarwinNSUserDefaults.mm
 SRCS += darwin/osx/HotKeyController.m
 SRCS += darwin/OSXGNUReplacements.c
 SRCS += darwin/osx/OSXTextInputResponder.mm

@@ -25,7 +25,7 @@
 #include "cores/IPlayer.h"
 #include "threads/Thread.h"
 #include "AudioDecoder.h"
-#include "threads/SharedSection.h"
+#include "threads/CriticalSection.h"
 #include "utils/Job.h"
 
 #include "cores/AudioEngine/Interfaces/IAudioCallback.h"
@@ -137,7 +137,7 @@ private:
 
   CFileItem*          m_FileItem;            /* our queued file or current file if no file is queued */      
 
-  CSharedSection      m_streamsLock;         /* lock for the stream list */
+  CCriticalSection    m_streamsLock;         /* lock for the stream list */
   StreamList          m_streams;             /* playing streams */  
   StreamList          m_finishing;           /* finishing streams */
   int                 m_jobCounter;

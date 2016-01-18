@@ -383,6 +383,7 @@ bool CAddonDatabase::GetAddons(VECADDONS& addons, const ADDON::TYPE &type /* = A
         sql += PrepareSQL(" AND a.type = '%s'", strType.c_str());
     }
 
+    auto start = XbmcThreads::SystemClockMillis();
     m_pDS->query(sql);
     while (!m_pDS->eof())
     {
@@ -392,6 +393,7 @@ bool CAddonDatabase::GetAddons(VECADDONS& addons, const ADDON::TYPE &type /* = A
       m_pDS->next();
     }
     m_pDS->close();
+    CLog::Log(LOGDEBUG, "CAddonDatabase::GetAddons took %i ms", XbmcThreads::SystemClockMillis() - start);
     return true;
   }
   catch (...)

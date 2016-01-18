@@ -159,6 +159,14 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     }
     iLabel = 515;
   }
+  else if (m_rule.m_field == FieldRole)
+  {
+    if (m_type == "artists" || m_type == "mixed")
+    {
+      database.GetRolesNav("musicdb://songs/", items);
+      iLabel = 38027;
+    }
+  }
   else if (m_rule.m_field == FieldCountry)
   {
     videodatabase.GetCountriesNav(basePath, items, type);

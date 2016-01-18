@@ -21,5 +21,5 @@
 
 #include <string>
 
-bool IsAliasShortcut(const std::string& path);
+bool IsAliasShortcut(const std::string& path, bool isdirectory);
 void TranslateAliasShortcut(std::string &path);

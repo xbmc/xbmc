@@ -39,8 +39,11 @@ ifeq ($(OS), android)
   ffmpg_config += --target-os=linux
 endif
 ifeq ($(OS), ios)
-  ffmpg_config += --cpu=cortex-a8 --yasmexe=$(NATIVEPREFIX)/bin/yasm
-  ffmpg_config += --disable-decoder=mpeg_xvmc --enable-vda --disable-crystalhd
+  ifneq ($(CPU), arm64)
+    ffmpg_config += --cpu=cortex-a8
+  endif
+  ffmpg_config += --yasmexe=$(NATIVEPREFIX)/bin/yasm
+  ffmpg_config += --disable-decoder=mpeg_xvmc --disable-vda --disable-crystalhd
   ffmpg_config += --target-os=darwin
 endif
 ifeq ($(OS), osx)

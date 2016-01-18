@@ -424,6 +424,7 @@ public:
 
   virtual int  Check(AVCodecContext* avctx);
   virtual const std::string Name() { return "vaapi"; }
+  virtual void SetCodecControl(int flags);
 
   bool Supports(EINTERLACEMETHOD method);
   EINTERLACEMETHOD AutoInterlaceMethod();

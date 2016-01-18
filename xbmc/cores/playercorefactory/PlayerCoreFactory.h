@@ -65,6 +65,7 @@ protected:
   CPlayerCoreFactory& operator=(CPlayerCoreFactory const&);
   virtual ~CPlayerCoreFactory();
   int GetPlayerIndex(const std::string& strCoreName) const;
+  std::string GetPlayerName(size_t idx) const;
 
   bool LoadConfiguration(const std::string &file, bool clear);
 

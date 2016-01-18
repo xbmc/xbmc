@@ -122,15 +122,6 @@ config.log
 /lib/*/1
 /lib/*/win32/1
 
-# /lib/asap/
-/lib/asap/Makefile
-/lib/asap/players.h
-/lib/asap/players/*.obx
-/lib/asap/win32/xbmc_asap.dll
-/lib/asap/win32/xbmc_asap.lib
-/lib/asap/xbmc/xbmc_asap.res
-
-
 # /lib/addons/
 /lib/addons/library.kodi.guilib/Makefile
 /lib/addons/library.kodi.guilib/project/VS2010Express/Release
@@ -181,16 +172,6 @@ lib/cpluff/libtool
 lib/cpluff/po/POTFILES
 lib/cpluff/stamp-h1
 
-# /lib/ffmpeg/
-/lib/ffmpeg/
-
-# /lib/libcec
-/lib/libcec/libcec
-
-# /lib/fribidi
-/lib/fribidi/libfridibidi/Debug
-/lib/fribidi/libfridibidi/Release
-
 # /lib/gtest
 /lib/gtest/Makefile.in
 /lib/gtest/aclocal.m4
@@ -219,74 +200,6 @@ lib/cpluff/stamp-h1
 /lib/gtest/samples/.dirstamp
 /lib/gtest/scripts/gtest-config
 /lib/gtest/src/.dirstamp
-
-# /lib/jsoncpp
-/lib/jsoncpp/src/lib_json/Makefile
-
-# /lib/libass
-/lib/libass/config.guess
-/lib/libass/config.h
-/lib/libass/config.sub
-/lib/libass/depcomp
-/lib/libass/Makefile
-/lib/libass/Makefile.in
-/lib/libass/aclocal.m4
-/lib/libass/autom4te.cache/
-/lib/libass/compile
-/lib/libass/config.h.in
-/lib/libass/config.h.in~
-/lib/libass/configure
-/lib/libass/install-sh
-/lib/libass/libass/Makefile
-/lib/libass/libass/Makefile.in
-/lib/libass/libtool
-/lib/libass/ltmain.sh
-/lib/libass/m4/libtool.m4
-/lib/libass/m4/ltoptions.m4
-/lib/libass/m4/ltsugar.m4
-/lib/libass/m4/ltversion.m4
-/lib/libass/m4/lt~obsolete.m4
-/lib/libass/missing
-/lib/libass/shave/libtool.m4
-/lib/libass/shave/ltoptions.m4
-/lib/libass/shave/ltsugar.m4
-/lib/libass/shave/ltversion.m4
-/lib/libass/shave/lt~obsolete.m4
-/lib/libass/shave/shave
-/lib/libass/shave/shave-libtool
-/lib/libass/stamp-h1
-/lib/libass/test/Makefile
-/lib/libass/test/Makefile.in
-/lib/libass/test/test
-/lib/libass/xbmc/Makefile
-/lib/libass/xbmc/libass_win32/Debug
-/lib/libass/xbmc/libass_win32/Release
-/lib/libass/m4/libtool.m4
-/lib/libass/m4/ltoptions.m4
-/lib/libass/m4/ltsugar.m4
-/lib/libass/m4/ltversion.m4
-/lib/libass/m4/lt~obsolete.m4
-
-# /lib/libiconv
-/lib/libiconv/libiconv_win32/Debug
-/lib/libiconv/libiconv_win32/Release
-
-# /lib/liblame
-/lib/liblame/config.h
-/lib/liblame/obj
-
-# /lib/libmodplug/
-/lib/libmodplug/libtool
-/lib/libmodplug/src/stamp-h1
-/lib/libmodplug/Makefile
-/lib/libmodplug/src/Makefile
-/lib/libmodplug/src/config.h
-/lib/libmodplug/Debug
-/lib/libmodplug/Release
-
-# /lib/pcre
-/lib/pcre/libpcre/Debug
-/lib/pcre/libpcre/Release
 
 # /project
 /project/obj
@@ -378,16 +291,9 @@ lib/cpluff/stamp-h1
 /system/players/VideoPlayer/*
 
 # /system/players/paplayer
-/system/players/paplayer/libmodplug.dll
-/system/players/paplayer/StSoundLibrary.dll
 /system/players/paplayer/vorbisfile.dll
-/system/players/paplayer/vgmstream.dll
-/system/players/paplayer/NoseFart.dll
-/system/players/paplayer/libsidplay2.dll
 /system/players/paplayer/adpcm.dll
-/system/players/paplayer/timidity.dll
 /system/players/paplayer/libFLAC.dll
-/system/players/paplayer/xbmc_asap.dll
 
 # /system
 /system/profiles.xml
@@ -711,82 +617,6 @@ lib/cpluff/stamp-h1
 /lib/libdvd/libdvdread/autom4te.cache
 /lib/libdvd/libdvdread/config.h.in~
 
-# /lib/libmpeg2/
-/lib/libmpeg2/config.log
-/lib/libmpeg2/config.status
-/lib/libmpeg2/libtool
-/lib/libmpeg2/configure.lineno
-/lib/libmpeg2/Makefile
-/lib/libmpeg2/src/*.exe
-
-# /lib/libmpeg2/doc/
-/lib/libmpeg2/doc/Makefile
-
-# /lib/libmpeg2/include/
-/lib/libmpeg2/include/stamp-h1
-/lib/libmpeg2/include/config.h
-/lib/libmpeg2/include/Makefile
-
-# /lib/libmpeg2/libmpeg2/
-/lib/libmpeg2/libmpeg2/Makefile
-
-# /lib/libmpeg2/libmpeg2/convert/
-/lib/libmpeg2/libmpeg2/convert/Makefile
-
-# /lib/libmpeg2/libvo/
-/lib/libmpeg2/libvo/Makefile
-
-# /lib/libmpeg2/src/
-/lib/libmpeg2/src/Makefile
-/lib/libmpeg2/src/corrupt_mpeg2
-/lib/libmpeg2/src/extract_mpeg2
-/lib/libmpeg2/src/mpeg2dec
-
-# /lib/libmpeg2/test/
-/lib/libmpeg2/test/Makefile
-
-# /lib/libmpeg2/vc++/
-/lib/libmpeg2/vc++/Makefile
-
-# /lib/xbadpcm/
-/lib/xbadpcm/Makefile
-/lib/xbadpcm/adpcm.lib
-
-# /lib/nosefart/
-/lib/nosefart/Makefile
-/lib/nosefart/NoseFart.lib
-/lib/nosefart/Debug
-/lib/nosefart/Release
-
-# /lib/libsidplay2/
-/lib/libsidplay2/Makefile
-
-# /lib/libsidplay2/libsidplay/win/VC
-/lib/libsidplay2/libsidplay/win/VC/Debug
-/lib/libsidplay2/libsidplay/win/VC/Release
-
-# /lib/snesapu/SNES/SNESAPU/
-/lib/snesapu/SNES/SNESAPU/Makefile
-
-# /lib/stsound/StSoundLibrary/
-/lib/stsound/StSoundLibrary/Makefile
-/lib/stsound/StSoundLibrary/StSoundLibrary.lib
-/lib/stsound/StSoundLibrary/Debug
-/lib/stsound/StSoundLibrary/Release
-
-# /lib/timidity/
-/lib/timidity/Makefile
-
-# /lib/vgmstream/
-/lib/vgmstream/Makefile
-
-# /lib/vgmstream/win32/
-/lib/vgmstream/win32/Debug
-/lib/vgmstream/win32/Release
-/lib/vgmstream/win32/win32.ncb
-/lib/vgmstream/win32/win32.suo
-/lib/vgmstream/win32/win32.lib
-
 #/lib/win32
 /lib/win32/*.tar*
 /lib/win32/pax_global_header
@@ -799,12 +629,6 @@ lib/cpluff/stamp-h1
 /lib/libexif/Debug (DLL)
 /lib/libexif/Release (DLL)
 /lib/libexif/libexif.lib
-
-/lib/libsquish/Makefile
-/lib/libsquish/lib/squishd.lib
-/lib/libsquish/lib/squish.lib
-/lib/libsquish/vs7/squish/Debug
-/lib/libsquish/vs7/squish/Release
 
 /lib/libUPnP/Makefile
 

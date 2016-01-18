@@ -30,12 +30,6 @@
 #define VideoPlayer_TELETEXT 4
 #define VideoPlayer_RDS      5
 
-enum ETimeSource
-{
-  ETIMESOURCE_CLOCK,
-  ETIMESOURCE_INPUT,
-  ETIMESOURCE_MENU,
-};
 
 template <typename T> class CRectGen;
 typedef CRectGen<float>  CRect;
@@ -50,12 +44,12 @@ struct SPlayerState
     player        = 0;
     timestamp     = 0;
     time          = 0;
-    disptime      = 0;
     time_total    = 0;
     time_offset   = 0;
-    time_src      = ETIMESOURCE_CLOCK;
     dts           = DVD_NOPTS_VALUE;
     player_state  = "";
+    isInMenu = false;
+    hasMenu = false;
     chapter       = 0;
     chapters.clear();
     canrecord     = false;
@@ -76,12 +70,12 @@ struct SPlayerState
   double time_offset;       // difference between time and pts
 
   double time;              // current playback time
-  double disptime;          // current time of frame on screen
   double time_total;        // total playback time
-  ETimeSource time_src;     // current time source
   double dts;               // last known dts
 
   std::string player_state;  // full player state
+  bool isInMenu;
+  bool hasMenu;
 
   int         chapter;                   // current chapter
   std::vector<std::pair<std::string, int64_t>> chapters; // name and position for chapters
@@ -145,7 +139,7 @@ public:
   float GetRelativeUsage() { return 0.0f; }
   virtual bool OpenStream(CDVDStreamInfo &hint) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
-  virtual bool StepFrame() = 0;
+  virtual bool StepFrame() { return false; };
   virtual void Flush(bool sync) = 0;
   virtual void WaitForBuffers() = 0;
   virtual bool AcceptsData() const = 0;

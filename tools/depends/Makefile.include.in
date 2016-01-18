@@ -82,6 +82,9 @@ NATIVE_CPPFLAGS=-I@prefix@/@tool_dir@/include
 NATIVE_CXXFLAGS=-I@prefix@/@tool_dir@/include
 
 
+ifeq ($(CPU), arm64)
+  export GASPP_FIX_XCODE5=1
+endif
 export AUTOM4TE=@prefix@/@tool_dir@/bin/autom4te
 export AUTOMAKE=@prefix@/@tool_dir@/bin/automake
 export AUTOCONF=@prefix@/@tool_dir@/bin/autoconf

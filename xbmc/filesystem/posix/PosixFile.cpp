@@ -56,7 +56,7 @@ CPosixFile::~CPosixFile()
 static std::string getFilename(const CURL& url)
 {
   std::string filename(url.GetFileName());
-  if (IsAliasShortcut(filename))
+  if (IsAliasShortcut(filename, false))
     TranslateAliasShortcut(filename);
   
   return filename;

@@ -90,8 +90,7 @@ CAlbum::CAlbum(const CFileItem& item)
       if (artistName.empty())
         artistName = artistId;
 
-      std::string strJoinPhrase = (i == tag.GetMusicBrainzAlbumArtistID().size()-1) ? "" : g_advancedSettings.m_musicItemSeparator;
-      CArtistCredit artistCredit(artistName, tag.GetMusicBrainzAlbumArtistID()[i], strJoinPhrase);
+      CArtistCredit artistCredit(artistName, tag.GetMusicBrainzAlbumArtistID()[i]);
       artistCredits.push_back(artistCredit);
     }
   }
@@ -99,11 +98,10 @@ CAlbum::CAlbum(const CFileItem& item)
   { // no musicbrainz info, so fill in directly
     for (std::vector<std::string>::const_iterator it = tag.GetAlbumArtist().begin(); it != tag.GetAlbumArtist().end(); ++it)
     {
-      std::string strJoinPhrase = (it == --tag.GetAlbumArtist().end() ? "" : g_advancedSettings.m_musicItemSeparator);
-      CArtistCredit artistCredit(*it, "", strJoinPhrase);
-      artistCredits.push_back(artistCredit);
+      artistCredits.emplace_back(*it);
     }
   }
+
   iYear = stTime.wYear;
   bCompilation = tag.GetCompilation();
   iTimesPlayed = 0;
@@ -200,9 +198,12 @@ const std::string CAlbum::GetAlbumArtistString() const
   //but is takes precidence as a string because artistcredits is not always filled during processing
   if (!strArtistDesc.empty())
     return strArtistDesc;
+  std::vector<std::string> artistvector;
+  for (VECARTISTCREDITS::const_iterator i = artistCredits.begin(); i != artistCredits.end(); ++i)
+    artistvector.emplace_back(i->GetArtist());
   std::string artistString;
-  for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
-    artistString += artistCredit->GetArtist() + artistCredit->GetJoinPhrase();
+  if (!artistvector.empty())
+    artistString = StringUtils::Join(artistvector, g_advancedSettings.m_musicItemSeparator);
   return artistString;
 }
 
@@ -214,6 +215,7 @@ const std::vector<int> CAlbum::GetArtistIDArray() const
     artistids.push_back(artistCredit->GetArtistId());
   return artistids;
 }
+
 
 std::string CAlbum::GetReleaseType() const
 {
@@ -285,6 +287,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
 
   XMLUtils::GetString(album,              "title", strAlbum);
   XMLUtils::GetString(album, "musicBrainzAlbumID", strMusicBrainzAlbumID);
+  XMLUtils::GetString(album, "artistdesc", strArtistDesc);
   std::vector<std::string> artist; // Support old style <artist></artist> for backwards compatibility
   XMLUtils::GetStringArray(album, "artist", artist, prioritise, g_advancedSettings.m_musicItemSeparator);
   XMLUtils::GetStringArray(album, "genre", genre, prioritise, g_advancedSettings.m_musicItemSeparator);
@@ -359,8 +362,6 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
       CArtistCredit artistCredit;
       XMLUtils::GetString(albumArtistCreditsNode,  "artist",               artistCredit.m_strArtist);
       XMLUtils::GetString(albumArtistCreditsNode,  "musicBrainzArtistID",  artistCredit.m_strMusicBrainzArtistID);
-      XMLUtils::GetString(albumArtistCreditsNode,  "joinphrase",           artistCredit.m_strJoinPhrase);
-      XMLUtils::GetBoolean(albumArtistCreditsNode, "featuring",            artistCredit.m_boolFeatured);
       artistCredits.push_back(artistCredit);
     }
 
@@ -374,8 +375,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
   {
     for (std::vector<std::string>::const_iterator it = artist.begin(); it != artist.end(); ++it)
     {
-      CArtistCredit artistCredit(*it, "",
-                                 it == --artist.end() ? "" : g_advancedSettings.m_musicItemSeparator);
+      CArtistCredit artistCredit(*it);
       artistCredits.push_back(artistCredit);
     }
   }
@@ -402,8 +402,6 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
           CArtistCredit artistCredit;
           XMLUtils::GetString(songArtistCreditsNode,  "artist",               artistCredit.m_strArtist);
           XMLUtils::GetString(songArtistCreditsNode,  "musicBrainzArtistID",  artistCredit.m_strMusicBrainzArtistID);
-          XMLUtils::GetString(songArtistCreditsNode,  "joinphrase",           artistCredit.m_strJoinPhrase);
-          XMLUtils::GetBoolean(songArtistCreditsNode, "featuring",            artistCredit.m_boolFeatured);
           song.artistCredits.push_back(artistCredit);
         }
         
@@ -450,7 +448,7 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
 
   XMLUtils::SetString(album,                    "title", strAlbum);
   XMLUtils::SetString(album,       "musicBrainzAlbumID", strMusicBrainzAlbumID);
-  XMLUtils::SetStringArray(album,              "artist", GetAlbumArtist());
+  XMLUtils::SetString(album,              "artistdesc", strArtistDesc); //Can be different from artist credits
   XMLUtils::SetStringArray(album,               "genre", genre);
   XMLUtils::SetStringArray(album,               "style", styles);
   XMLUtils::SetStringArray(album,                "mood", moods);
@@ -487,10 +485,8 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
     TiXmlNode *albumArtistCreditsNode = album->InsertEndChild(albumArtistCreditsElement);
     XMLUtils::SetString(albumArtistCreditsNode,               "artist", artistCredit->m_strArtist);
     XMLUtils::SetString(albumArtistCreditsNode,  "musicBrainzArtistID", artistCredit->m_strMusicBrainzArtistID);
-    XMLUtils::SetString(albumArtistCreditsNode,           "joinphrase", artistCredit->m_strJoinPhrase);
-    XMLUtils::SetString(albumArtistCreditsNode,            "featuring", artistCredit->GetArtist());
   }
-
+  
   for( VECSONGS::const_iterator song = infoSongs.begin(); song != infoSongs.end(); ++song)
   {
     // add a <song> tag
@@ -503,8 +499,6 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
       TiXmlNode *songArtistCreditsNode = node->InsertEndChild(songArtistCreditsElement);
       XMLUtils::SetString(songArtistCreditsNode,               "artist", artistCredit->m_strArtist);
       XMLUtils::SetString(songArtistCreditsNode,  "musicBrainzArtistID", artistCredit->m_strMusicBrainzArtistID);
-      XMLUtils::SetString(songArtistCreditsNode,           "joinphrase", artistCredit->m_strJoinPhrase);
-      XMLUtils::SetString(songArtistCreditsNode,            "featuring", artistCredit->GetArtist());
     }
     XMLUtils::SetString(node,   "musicBrainzTrackID",   song->strMusicBrainzTrackID);
     XMLUtils::SetString(node,   "title",                song->strTitle);

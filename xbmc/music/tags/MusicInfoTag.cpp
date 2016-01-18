@@ -24,6 +24,7 @@
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "utils/StringUtils.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
 #include "utils/Archive.h"
@@ -116,6 +117,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_musicBrainzAlbumArtistID = tag.m_musicBrainzAlbumArtistID;
   m_musicBrainzAlbumArtistHints = tag.m_musicBrainzAlbumArtistHints;
   m_strMusicBrainzTRMID = tag.m_strMusicBrainzTRMID;
+  m_musicRoles = tag.m_musicRoles;
   m_strComment = tag.m_strComment;
   m_strMood = tag.m_strMood;
   m_strLyrics = tag.m_strLyrics;
@@ -137,7 +139,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_replayGain = tag.m_replayGain;
   m_albumReleaseType = tag.m_albumReleaseType;
 
-  memcpy(&m_dwReleaseDate, &tag.m_dwReleaseDate, sizeof(m_dwReleaseDate) );
+  memcpy(&m_dwReleaseDate, &tag.m_dwReleaseDate, sizeof(m_dwReleaseDate));
   m_coverArt = tag.m_coverArt;
   return *this;
 }
@@ -235,7 +237,7 @@ const std::vector<std::string>& CMusicInfoTag::GetGenre() const
 
 void CMusicInfoTag::GetReleaseDate(SYSTEMTIME& dateTime) const
 {
-  memcpy(&dateTime, &m_dwReleaseDate, sizeof(m_dwReleaseDate) );
+  memcpy(&dateTime, &m_dwReleaseDate, sizeof(m_dwReleaseDate));
 }
 
 int CMusicInfoTag::GetYear() const
@@ -582,7 +584,7 @@ const std::string& CMusicInfoTag::GetMusicBrainzTRMID() const
 
 void CMusicInfoTag::SetMusicBrainzTrackID(const std::string& strTrackID)
 {
-  m_strMusicBrainzTrackID=strTrackID;
+  m_strMusicBrainzTrackID = strTrackID;
 }
 
 void CMusicInfoTag::SetMusicBrainzArtistID(const std::vector<std::string>& musicBrainzArtistId)
@@ -597,7 +599,7 @@ void CMusicInfoTag::SetMusicBrainzArtistHints(const std::vector<std::string>& mu
 
 void CMusicInfoTag::SetMusicBrainzAlbumID(const std::string& strAlbumID)
 {
-  m_strMusicBrainzAlbumID=strAlbumID;
+  m_strMusicBrainzAlbumID = strAlbumID;
 }
 
 void CMusicInfoTag::SetMusicBrainzAlbumArtistID(const std::vector<std::string>& musicBrainzAlbumArtistId)
@@ -613,7 +615,7 @@ void CMusicInfoTag::SetMusicBrainzAlbumArtistHints(const std::vector<std::string
 
 void CMusicInfoTag::SetMusicBrainzTRMID(const std::string& strTRMID)
 {
-  m_strMusicBrainzTRMID=strTRMID;
+  m_strMusicBrainzTRMID = strTRMID;
 }
 
 void CMusicInfoTag::SetCoverArtInfo(size_t size, const std::string &mimeType)
@@ -647,6 +649,7 @@ void CMusicInfoTag::SetArtist(const CArtist& artist)
 
 void CMusicInfoTag::SetAlbum(const CAlbum& album)
 {
+  Clear();
   //Set all artist infomation from album artist credits and artist description
   SetArtistDesc(album.GetAlbumArtistString());
   SetArtist(album.GetAlbumArtist());
@@ -678,6 +681,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
 
 void CMusicInfoTag::SetSong(const CSong& song)
 {
+  Clear();
   SetTitle(song.strTitle);
   SetGenre(song.genre);
   /* Set all artist infomation from song artist credits and artist description.
@@ -695,13 +699,15 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetAlbum(song.strAlbum);
   SetAlbumArtist(song.GetAlbumArtist()); //Only have album artist in song as vector, no desc or MBID
   SetMusicBrainzTrackID(song.strMusicBrainzTrackID);
+  SetContributors(song.GetContributors());
   SetComment(song.strComment);
   SetCueSheet(song.strCueSheet);
   SetPlayCount(song.iTimesPlayed);
   SetLastPlayed(song.lastPlayed);
   SetDateAdded(song.dateAdded);
   SetCoverArtInfo(song.embeddedArt.size, song.embeddedArt.mime);
-  SetUserrating(song.rating);
+  SetRating(song.rating);
+  SetUserrating(song.userrating);
   SetVotes(song.votes);
   SetURL(song.strFileName);
   SYSTEMTIME stTime;
@@ -756,6 +762,19 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["musicbrainzalbumartistid"] = m_musicBrainzAlbumArtistID; 
   value["musicbrainztrmid"] = m_strMusicBrainzTRMID;
   value["comment"] = m_strComment;
+  value["contributors"] = CVariant(CVariant::VariantTypeArray);
+  for (const auto& role : m_musicRoles)
+  {
+    CVariant contributor;
+    contributor["name"] = role.GetArtist();
+    contributor["role"] = role.GetRoleDesc();
+    contributor["artistid"] = (int)(role.GetArtistId());
+    value["contributors"].push_back(contributor);
+  }
+  value["displaycomposer"] = GetArtistStringForRole("composer");   //TCOM
+  value["displayconductor"] = GetArtistStringForRole("conductor"); //TPE3
+  value["displayorchestra"] = GetArtistStringForRole("orchestra");
+  value["displaylyricist"] = GetArtistStringForRole("lyricist");   //TEXT
   value["mood"] = StringUtils::Split(m_strMood, g_advancedSettings.m_musicItemSeparator);
   value["rating"] = m_Rating;
   value["userrating"] = m_Userrating;
@@ -830,6 +849,14 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_lastPlayed;
     ar << m_dateAdded;
     ar << m_strComment;
+    ar << (int)m_musicRoles.size();   
+    for (VECMUSICROLES::const_iterator credit = m_musicRoles.begin(); credit != m_musicRoles.end(); ++credit)
+    {
+      ar << credit->GetRoleId();
+      ar << credit->GetRoleDesc();
+      ar << credit->GetArtist();
+      ar << credit->GetArtistId();
+    }
     ar << m_strMood;
     ar << m_Rating;
     ar << m_Userrating;
@@ -867,6 +894,21 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_lastPlayed;
     ar >> m_dateAdded;
     ar >> m_strComment;
+    int iMusicRolesSize;
+    ar >> iMusicRolesSize;
+    m_musicRoles.reserve(iMusicRolesSize);
+    for (int i = 0; i < iMusicRolesSize; ++i)
+    {
+      int idRole;
+      long idArtist;
+      std::string strArtist;
+      std::string strRole;
+      ar >> idRole;
+      ar >> strRole;
+      ar >> strArtist;
+      ar >> idArtist;
+      m_musicRoles.emplace_back(idRole, strRole, strArtist, idArtist);
+    }
     ar >> m_strMood;
     ar >> m_Rating;
     ar >> m_Userrating;
@@ -900,6 +942,7 @@ void CMusicInfoTag::Clear()
   m_strMusicBrainzAlbumID.clear();
   m_musicBrainzAlbumArtistID.clear();
   m_strMusicBrainzTRMID.clear();
+  m_musicRoles.clear();
   m_iDuration = 0;
   m_iTrack = 0;
   m_bLoaded = false;
@@ -912,7 +955,7 @@ void CMusicInfoTag::Clear()
   m_iDbId = -1;
   m_type.clear();
   m_iTimesPlayed = 0;
-  memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate) );
+  memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate));
   m_iAlbumId = -1;
   m_coverArt.clear();
   m_replayGain = ReplayGain();
@@ -954,6 +997,72 @@ void CMusicInfoTag::AppendGenre(const std::string &genre)
   }
 
   m_genre.push_back(genre);
+}
+
+void CMusicInfoTag::AddArtistRole(const std::string& Role, const std::string& strArtist)
+{
+  if (!strArtist.empty())
+    AddArtistRole(Role, StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator));
+}
+
+void CMusicInfoTag::AddArtistRole(const std::string& Role, const std::vector<std::string>& artists)
+{
+  for (unsigned int index = 0; index < artists.size(); index++)
+  {
+    CMusicRole ArtistCredit(Role, Trim(artists.at(index)));
+    //Prevent duplicate entries
+    VECMUSICROLES::iterator credit = find(m_musicRoles.begin(), m_musicRoles.end(), ArtistCredit);
+    if (credit == m_musicRoles.end())
+      m_musicRoles.push_back(ArtistCredit);
+  }
+}
+
+void CMusicInfoTag::AppendArtistRole(const CMusicRole& ArtistRole)
+{
+  //Append contributor, no check for duplicates as from database
+  m_musicRoles.push_back(ArtistRole);
+}
+
+const std::string CMusicInfoTag::GetArtistStringForRole(const std::string& strRole) const
+{
+  std::vector<std::string> artistvector;
+  for (VECMUSICROLES::const_iterator credit = m_musicRoles.begin(); credit != m_musicRoles.end(); ++credit) 
+  {
+    if (StringUtils::EqualsNoCase(credit->GetRoleDesc(), strRole))
+      artistvector.push_back(credit->GetArtist());
+  }
+  return StringUtils::Join(artistvector, g_advancedSettings.m_musicItemSeparator);
+}
+
+const std::string CMusicInfoTag::GetContributorsText() const
+{
+  std::string strLabel;
+  for (VECMUSICROLES::const_iterator credit = m_musicRoles.begin(); credit != m_musicRoles.end(); ++credit)
+  {
+    strLabel += StringUtils::Format("%s\n", credit->GetArtist().c_str());
+  }
+  return StringUtils::TrimRight(strLabel, "\n");
+}
+
+const std::string CMusicInfoTag::GetContributorsAndRolesText() const
+{
+  std::string strLabel;
+  for (VECMUSICROLES::const_iterator credit = m_musicRoles.begin(); credit != m_musicRoles.end(); ++credit)
+  {
+    strLabel += StringUtils::Format("%s - %s\n", credit->GetRoleDesc().c_str(), credit->GetArtist().c_str());
+  }
+  return StringUtils::TrimRight(strLabel, "\n");
+}
+
+
+const VECMUSICROLES &CMusicInfoTag::GetContributors()  const
+{
+  return m_musicRoles;
+}
+
+void CMusicInfoTag::SetContributors(const VECMUSICROLES& contributors)
+{
+  m_musicRoles = contributors;
 }
 
 std::string CMusicInfoTag::Trim(const std::string &value) const

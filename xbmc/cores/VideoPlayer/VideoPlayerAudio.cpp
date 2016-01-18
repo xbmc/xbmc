@@ -345,9 +345,22 @@ int CVideoPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, timeout, priority);
 
     if (ret == MSGQ_TIMEOUT)
-      return DECODE_FLAG_TIMEOUT;
-
-    if (MSGQ_IS_ERROR(ret))
+    {
+      // Flush as the audio output may keep looping if we don't
+      if (ALLOW_AUDIO(m_speed) && !m_stalled && m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
+      {
+        // while AE sync is active, we still have time to fill buffers
+        if (m_syncTimer.IsTimePast())
+        {
+          CLog::Log(LOGNOTICE, "CVideoPlayerAudio::Process - stream stalled");
+          m_stalled = true;
+        }
+      }
+      if (timeout == 0)
+        Sleep(10);
+      continue;
+    }
+    else if (MSGQ_IS_ERROR(ret))
       return DECODE_FLAG_ABORT;
 
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
@@ -372,6 +385,7 @@ int CVideoPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
       if (m_speed != DVD_PLAYSPEED_PAUSE)
         m_dvdAudio.Resume();
       m_syncState = IDVDStreamPlayer::SYNC_INSYNC;
+      m_syncTimer.Set(3000);
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
@@ -396,17 +410,6 @@ int CVideoPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
         m_pAudioCodec->Reset();
 
       m_decode.Release();
-    }
-    else if (pMsg->IsType(CDVDMsg::PLAYER_DISPLAYTIME))
-    {
-      SPlayerState& state = ((CDVDMsgType<SPlayerState>*)pMsg)->m_value;
-
-      if(state.time_src == ETIMESOURCE_CLOCK)
-        state.time = DVD_TIME_TO_MSEC(m_pClock->GetClock(state.timestamp) + state.time_offset);
-      else
-        state.timestamp = CDVDClock::GetAbsoluteClock();
-      state.player = VideoPlayer_AUDIO;
-      m_messageParent.Put(pMsg->Acquire());
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_EOF))
     {
@@ -460,7 +463,7 @@ void CVideoPlayerAudio::OnStartup()
 void CVideoPlayerAudio::UpdatePlayerInfo()
 {
   std::ostringstream s;
-  s << "aq:"     << std::setw(2) << std::min(99,m_messageQueue.GetLevel() + MathUtils::round_int(100.0/8.0*m_dvdAudio.GetCacheTime())) << "%";
+  s << "aq:"     << std::setw(2) << std::min(99,m_messageQueue.GetLevel()) << "%";
   s << ", Kb/s:" << std::fixed << std::setprecision(2) << (double)GetAudioBitrate() / 1024.0;
 
   //print the inverse of the resample ratio, since that makes more sense
@@ -502,17 +505,6 @@ void CVideoPlayerAudio::Process()
     if (result & DECODE_FLAG_ERROR)
     {
       CLog::Log(LOGDEBUG, "CVideoPlayerAudio::Process - Decode Error");
-      continue;
-    }
-
-    if (result & DECODE_FLAG_TIMEOUT)
-    {
-      // Flush as the audio output may keep looping if we don't
-      if (ALLOW_AUDIO(m_speed) && !m_stalled && m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
-      {
-        m_stalled = true;
-      }
-
       continue;
     }
 

@@ -53,14 +53,9 @@
 
 using namespace ADDON;
 
-bool ByAddonName(const AddonPtr& lhs, const AddonPtr& rhs)
-{
-  return StringUtils::CompareNoCase(lhs->Name(), rhs->Name()) < 0;
-}
 
 CGUIDialogContentSettings::CGUIDialogContentSettings()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_CONTENT_SETTINGS, "DialogContentSettings.xml"),
-    m_needsSaving(false),
     m_content(CONTENT_NONE),
     m_originalContent(CONTENT_NONE),
     m_showScanSettings(false),
@@ -68,27 +63,13 @@ CGUIDialogContentSettings::CGUIDialogContentSettings()
     m_useDirectoryNames(false),
     m_containsSingleItem(false),
     m_exclude(false),
-    m_noUpdating(false),
-    m_vecItems(new CFileItemList)
+    m_noUpdating(false)
 { }
-
-CGUIDialogContentSettings::~CGUIDialogContentSettings()
-{
-  m_scraper = nullptr;
-  delete m_vecItems;
-}
 
 bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
 {
   switch (message.GetMessage())
   {
-    case GUI_MSG_WINDOW_DEINIT:
-    {
-      m_vecItems->Clear();
-
-      break;
-    }
-
     case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
@@ -149,31 +130,22 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
         ADDON::TYPE type = ADDON::ScraperTypeFromContent(m_content);
         std::string selectedAddonId = m_scraper->ID();
 
-        if (CGUIWindowAddonBrowser::SelectAddonID(type, selectedAddonId, false) == 1)
+        if (CGUIWindowAddonBrowser::SelectAddonID(type, selectedAddonId, false) == 1
+            && selectedAddonId != m_scraper->ID())
         {
-          AddonPtr last = m_scraper;
-
           AddonPtr scraperAddon;
           CAddonMgr::GetInstance().GetAddon(selectedAddonId, scraperAddon);
           m_scraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
 
           SET_CONTROL_LABEL2(CONTROL_SCRAPER_LIST_BUTTON, m_scraper->Name());
-
-          if (m_scraper != last)
-            SetupView();
-
-          if (m_scraper != last)
-            m_needsSaving = true;
+          SetupView();
           CONTROL_ENABLE_ON_CONDITION(CONTROL_SCRAPER_SETTINGS, m_scraper->HasSettings());
           SET_CONTROL_FOCUS(CONTROL_SCRAPER_LIST_BUTTON, 0);
         }
       }
       else if (iControl == CONTROL_SCRAPER_SETTINGS)
       {
-        bool result = CGUIDialogAddonSettings::ShowAndGetInput(m_scraper, false);
-        if (result)
-          m_needsSaving = true;
-        return result;
+        return CGUIDialogAddonSettings::ShowAndGetInput(m_scraper, false);
       }
 
       break;
@@ -184,27 +156,6 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
   }
 
   return CGUIDialogSettingsManualBase::OnMessage(message);
-}
-
-CFileItemPtr CGUIDialogContentSettings::GetCurrentListItem(int offset)
-{
-  int currentItem = -1;
-  if (m_exclude)
-    return CFileItemPtr();
-
-  for (int i = 0; i < m_vecItems->Size(); ++i)
-  {
-    if (m_vecItems->Get(i)->IsSelected())
-    {
-      currentItem = i;
-      break;
-    }
-  }
-
-  if (currentItem == -1)
-    return CFileItemPtr();
-
-  return m_vecItems->Get((currentItem + offset) % m_vecItems->Size());
 }
 
 void CGUIDialogContentSettings::SetContent(CONTENT_TYPE content)
@@ -304,7 +255,6 @@ void CGUIDialogContentSettings::OnInitWindow()
 {
   SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE_BUTTON, 20344);
   SET_CONTROL_LABEL(CONTROL_SCRAPER_LIST_BUTTON, 38025);
-  m_needsSaving = false;
 
   CGUIDialogSettingsManualBase::OnInitWindow();
 }
@@ -330,44 +280,17 @@ void CGUIDialogContentSettings::OnSettingChanged(const CSetting *setting)
   }
   else if (settingId == SETTING_EXCLUDE)
     m_exclude = static_cast<const CSettingBool*>(setting)->GetValue();
-
-  m_needsSaving = true;
 }
 
 void CGUIDialogContentSettings::Save()
 {
-  if (!m_needsSaving ||
-      m_scraper == NULL)
-    return;
-
-  if (m_content == CONTENT_NONE)
-  {
-    m_scraper.reset();
-    return;
-  }
-}
-
-void CGUIDialogContentSettings::OnOkay()
-{
-  // watch for content change, but same scraper
-  if (m_content != m_originalContent)
-    m_needsSaving = true;
-
-  CGUIDialogSettingsManualBase::OnOkay();
-}
-
-void CGUIDialogContentSettings::OnCancel()
-{
-  m_needsSaving = false;
-
-  CGUIDialogSettingsManualBase::OnCancel();
+  //Should be saved by caller of ::Show
 }
 
 void CGUIDialogContentSettings::SetupView()
 {
   SET_CONTROL_LABEL2(CONTROL_CONTENT_TYPE_BUTTON, ADDON::TranslateContent(m_content, true));
 
-  m_vecItems->Clear();
   if (m_content == CONTENT_NONE)
   {
     m_showScanSettings = false;

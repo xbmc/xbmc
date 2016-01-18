@@ -662,22 +662,16 @@ namespace PVR
     void LogException(const std::exception &e, const char *strFunctionName) const;
 
     bool                   m_bReadyToUse;          /*!< true if this add-on is connected to the backend, false otherwise */
-    std::string            m_strHostName;          /*!< the host name */
     PVR_MENUHOOKS          m_menuhooks;            /*!< the menu hooks for this add-on */
     CPVRTimerTypes         m_timertypes;           /*!< timer types supported by this backend */
     int                    m_iClientId;            /*!< database ID of the client */
 
     /* cached data */
     std::string            m_strBackendName;       /*!< the cached backend version */
-    bool                   m_bGotBackendName;      /*!< true if the backend name has already been fetched */
     std::string            m_strBackendVersion;    /*!< the cached backend version */
-    bool                   m_bGotBackendVersion;   /*!< true if the backend version has already been fetched */
     std::string            m_strConnectionString;  /*!< the cached connection string */
-    bool                   m_bGotConnectionString; /*!< true if the connection string has already been fetched */
     std::string            m_strFriendlyName;      /*!< the cached friendly name */
-    bool                   m_bGotFriendlyName;     /*!< true if the friendly name has already been fetched */
     PVR_ADDON_CAPABILITIES m_addonCapabilities;     /*!< the cached add-on capabilities */
-    bool                   m_bGotAddonCapabilities; /*!< true if the add-on capabilities have already been fetched */
     std::string            m_strBackendHostname;    /*!< the cached backend hostname */
 
     /* stored strings to make sure const char* members in PVR_PROPERTIES stay valid */

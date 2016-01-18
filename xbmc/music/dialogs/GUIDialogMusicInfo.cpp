@@ -253,7 +253,7 @@ void CGUIDialogMusicInfo::SetDiscography()
   database.Open();
 
   std::vector<int> albumsByArtist;
-  database.GetAlbumsByArtist(m_artist.idArtist, true, albumsByArtist);
+  database.GetAlbumsByArtist(m_artist.idArtist, albumsByArtist);
 
   for (unsigned int i=0;i<m_artist.discography.size();++i)
   {

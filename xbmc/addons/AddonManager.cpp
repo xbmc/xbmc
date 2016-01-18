@@ -456,23 +456,27 @@ bool CAddonMgr::ReloadSettings(const std::string &id)
   return false;
 }
 
-VECADDONS CAddonMgr::GetOutdated()
+VECADDONS CAddonMgr::GetAvailableUpdates()
 {
   CSingleLock lock(m_critSection);
-  auto isUpdated = [&](const AddonPtr& addon)
-  {
-    return addon->Version() >= m_database.GetAddonVersion(addon->ID()).first;
-  };
+  auto start = XbmcThreads::SystemClockMillis();
 
-  VECADDONS addons;
-  GetAllAddons(addons, true);
-  addons.erase(std::remove_if(addons.begin(), addons.end(), isUpdated), addons.end());
-  return addons;
+  VECADDONS updates;
+  VECADDONS installed;
+  GetAllAddons(installed, true);
+  for (const auto& addon : installed)
+  {
+    AddonPtr remote;
+    if (m_database.GetAddon(addon->ID(), remote) && remote->Version() > addon->Version())
+      updates.emplace_back(std::move(remote));
+  }
+  CLog::Log(LOGDEBUG, "CAddonMgr::GetAvailableUpdates took %i ms", XbmcThreads::SystemClockMillis() - start);
+  return updates;
 }
 
-bool CAddonMgr::HasOutdatedAddons()
+bool CAddonMgr::HasAvailableUpdates()
 {
-  return !GetOutdated().empty();
+  return !GetAvailableUpdates().empty();
 }
 
 bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* = true */)

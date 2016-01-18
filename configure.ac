@@ -192,8 +192,6 @@ vtbdecoder_enabled="== VTBDecoder support enabled. =="
 vtbdecoder_disabled="== VTBDecoder support manually disabled. =="
 openmax_disabled="== OpenMax support manually disabled. =="
 openmax_not_found="== Could not find OpenMax headers. OpenMax support disabled. =="
-ssh_not_found="== Could not find libssh. =="
-ssh_disabled="== SSH SFTP disabled. =="
 librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
 librtmp_disabled="== RTMP support disabled. =="
 libnfs_not_found="== Could not find libnfs. NFS client support disabled. =="
@@ -221,6 +219,10 @@ libusb_disabled="== libusb disabled. Plug and play USB device support will not b
 libusb_disabled_udev_found="== libusb disabled. =="
 libcec_enabled="== libcec enabled. =="
 libcec_disabled="== libcec disabled. CEC adapter support will not be available. =="
+libbluetooth_not_found="== Could not find libbluetooth. Bluetooth support will not be available =="
+libbluetooth_enabled="== libbluetooth enabled. =="
+libbluetooth_disabled="== libbluetooth disabled. Bluetooth support will not be available. =="
+
 
 AC_ARG_WITH([ffmpeg],
   [AS_HELP_STRING([--with-ffmpeg],
@@ -420,12 +422,6 @@ AC_ARG_ENABLE([non-free],
   [use_nonfree=$enableval],
   [use_nonfree=yes])
 
-AC_ARG_ENABLE([asap-codec],
-  [AS_HELP_STRING([--enable-asap-codec],
-  [enable ASAP ADPCM support])],
-  [use_asap=$enableval],
-  [use_asap=no])
-
 AC_ARG_ENABLE([mysql],
   [AS_HELP_STRING([--disable-mysql],
   [disable mysql])],
@@ -486,6 +482,12 @@ AC_ARG_ENABLE([libcec],
   [enable libcec support (default is auto)])],
   [use_libcec=$enableval],
   [use_libcec=auto])
+
+AC_ARG_ENABLE([libbluetooth],
+  [AS_HELP_STRING([--enable-libbluetooth],
+  [enable libbluetooth support (default is auto)])],
+  [use_libbluetooth=$enableval],
+  [use_libbluetooth=auto])
 
 AC_ARG_ENABLE([libcap],
   [AS_HELP_STRING([--enable-libcap],
@@ -1051,10 +1053,6 @@ if test "$use_mysql" = "yes"; then
   fi
 fi
 AC_CHECK_HEADER([ass/ass.h],, AC_MSG_ERROR($missing_library))
-AC_CHECK_HEADER([mpeg2dec/mpeg2.h],, AC_MSG_ERROR($missing_library))
-AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],, AC_MSG_ERROR($missing_library),
-  AC_INCLUDES_DEFAULT()
-  [#include <mpeg2dec/mpeg2.h>])
 AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([LIBDCADEC], [dcadec],, AC_MSG_ERROR([libdcadec not found]))
@@ -1076,7 +1074,8 @@ else
   AC_MSG_RESULT(no)
 fi
 
-AC_CHECK_HEADER([openssl/crypto.h], AC_DEFINE([HAVE_OPENSSL],[1],[Define if we have openssl]),)
+PKG_CHECK_MODULES([OPENSSL], [openssl],
+  [INCLUDES="$INCLUDES $OPENSSL_CFLAGS"; LIBS="$LIBS $OPENSSL_LIBS"; AC_DEFINE([HAVE_OPENSSL],[1],[Define if we have openssl])],)
 AC_CHECK_HEADER([gcrypt.h], gcrypt_headers_available=yes,gcrypt_headers_available=no)
 if test "$gcrypt_headers_available" = "yes"; then
    # if we have the headers then we must have the lib
@@ -1107,7 +1106,7 @@ AC_CHECK_LIB([ssl],         [main],, AC_MSG_ERROR($missing_library))
 if test "$use_mysql" = "yes"; then
   AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 fi
-AC_CHECK_LIB([bluetooth],   [hci_devid],, AC_MSG_RESULT([Could not find suitable version of libbluetooth]))
+
 
 AC_LANG_PUSH([C++])
 PKG_CHECK_MODULES([TINYXML], [tinyxml >= 2.6.2],
@@ -1279,7 +1278,6 @@ fi
 fi
 
 XB_FIND_SONAME([ASS],         [ass])
-XB_FIND_SONAME([MPEG2],       [mpeg2])
 
 # WebServer
 if test "$use_webserver" = "yes"; then
@@ -1401,11 +1399,12 @@ fi
 
 # libssh
 if test "x$use_ssh" = "xno"; then
-  AC_MSG_NOTICE($ssh_disabled)
+  AC_MSG_NOTICE(ssh support disabled by user)
   use_libssh="no"
 else
-  AC_CHECK_LIB([ssh], [sftp_tell64],, AC_MSG_ERROR($ssh_not_found))
-  AC_DEFINE([HAVE_LIBSSH], [1], [Whether to use libSSH library.])
+  PKG_CHECK_MODULES([LIBSSH], [libssh],
+    [INCLUDES="$INCLUDES $LIBSSH_CFLAGS"; LIBS="$LIBS $LIBSSH_LIBS"; AC_DEFINE([HAVE_LIBSSH], [1], [Whether to use libSSH library.])],
+    AC_MSG_ERROR(libssh not found))
 fi
 
 # libRTMP
@@ -1601,6 +1600,22 @@ if test "x$use_libcec" != "xno"; then
 else
   use_libcec="no"
   AC_MSG_NOTICE($libcec_disabled)
+fi
+
+# libbluetooth
+USE_LIBBLUETOOTH=0
+if test "$use_libbluetooth" = "auto"; then
+  PKG_CHECK_MODULES([BLUETOOTH],[bluez],,[use_libbluetooth="no";AC_MSG_RESULT($libbluetooth_not_found)])
+elif test "$use_libbluetooth" = "yes"; then
+  PKG_CHECK_MODULES([BLUETOOTH],[bluez],,[use_libbluetooth="no";AC_MSG_ERROR($libbluetooth_not_found)])
+else
+  AC_MSG_NOTICE($libbluetooth_disabled)
+fi
+
+if test "x$use_libbluetooth" != "xno"; then
+  USE_LIBBLUETOOTH=1;INCLUDES="$INCLUDES $BLUETOOTH_CFLAGS";LIBS="$LIBS $BLUETOOTH_LIBS"
+  AC_DEFINE([HAVE_LIBBLUETOOTH],[1],["Define to 1 if libbluetooth is installed"])
+  AC_MSG_NOTICE($libbluetooth_enabled)
 fi
 
 # libcap
@@ -2205,23 +2220,6 @@ else
   final_message="$final_message\n  Non-free:\tNo"
 fi
 
-if test "$use_asap" = "yes"; then
-  AC_CHECK_PROGS(HAVE_GDC,gdc-4.4 gdc-4.3 gdc,"no")
-  if test "$HAVE_GDC" = "no"; then
-    AC_MSG_ERROR($missing_program);
-  fi
-  AC_CHECK_PROG(HAVE_FPC,fpc,"yes","no")
-  if test "$HAVE_FPC" = "no"; then
-    AC_MSG_ERROR($missing_program);
-  fi
-  USE_ASAP_CODEC=1
-  AC_DEFINE([USE_ASAP_CODEC], [1], [Define to 1 to enable ASAP codec.])
-  final_message="$final_message\n  ASAP Codec:\tYes"
-else
-  USE_ASAP_CODEC=0
-  final_message="$final_message\n  ASAP Codec:\tNo"
-fi
-
 if test "$use_mysql" = "yes"; then
   final_message="$final_message\n  MySQL:\tYes"
   USE_MYSQL=1
@@ -2311,6 +2309,12 @@ if test "x$use_libcec" != "xno"; then
   final_message="$final_message\n  libcec support:\tYes"
 else
   final_message="$final_message\n  libcec support:\tNo"
+fi
+
+if test "x$use_libbluetooth" != "xno"; then
+  final_message="$final_message\n  libbluetooth support:\tYes"
+else
+  final_message="$final_message\n  libbluetooth support:\tNo"
 fi
 
 if test "x$use_libcap" != "xno"; then
@@ -2411,7 +2415,7 @@ OUTPUT_FILES="Makefile \
     tools/darwin/packaging/osx/mkdmg-osx.sh \
     tools/darwin/packaging/migrate_to_kodi_ios.sh \
     xbmc/platform/darwin/osx/Info.plist \
-    xbmc/platform/darwin/ios/IOS-Info.plist \
+    xbmc/platform/darwin/ios/Info.plist \
     project/cmake/kodi-config.cmake \
     project/cmake/xbmc-config.cmake \
     tools/android/packaging/xbmc/AndroidManifest.xml \
@@ -2491,7 +2495,6 @@ AC_SUBST(USE_LIBAV_HACKS)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(OUTPUT_FILES)
 AC_SUBST(HAVE_XBMC_NONFREE)
-AC_SUBST(USE_ASAP_CODEC)
 AC_SUBST(LIBCURL_BASENAME)
 AC_SUBST(LIBVORBISFILE_BASENAME)
 AC_SUBST(LIBOGG_BASENAME)
@@ -2517,6 +2520,7 @@ AC_SUBST(USE_AIRTUNES)
 AC_SUBST(USE_LIBUDEV)
 AC_SUBST(USE_LIBUSB)
 AC_SUBST(USE_LIBCEC)
+AC_SUBST(USE_LIBBLUETOOTH)
 AC_SUBST(USE_MYSQL)
 AC_SUBST(USE_WAYLAND)
 AC_SUBST(USE_WEB_SERVER)

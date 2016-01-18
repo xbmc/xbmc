@@ -79,6 +79,7 @@ public:
   virtual void SetDropState(bool bDrop);
   virtual const char* GetName(void) { return m_pFormatName ? m_pFormatName:"mmal-xxx"; }
   virtual bool GetCodecStats(double &pts, int &droppedPics);
+  virtual void SetCodecControl(int flags);
   virtual void SetSpeed(int iSpeed);
 
   // MMAL decoder callback routines.
@@ -104,7 +105,8 @@ protected:
   const char        *m_pFormatName;
 
   // mmal output buffers (video frames)
-  pthread_mutex_t   m_output_mutex;
+  CCriticalSection m_output_mutex;
+  XbmcThreads::ConditionVariable m_output_cond;
   std::queue<CMMALVideoBuffer*> m_output_ready;
 
   // initialize mmal and get decoder component
@@ -121,6 +123,7 @@ protected:
   double            m_demuxerPts;
   double            m_decoderPts;
   int               m_speed;
+  int               m_codecControlFlags;
 
   CCriticalSection m_sharedSection;
   MMAL_COMPONENT_T *m_dec;

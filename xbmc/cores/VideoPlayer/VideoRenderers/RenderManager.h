@@ -26,7 +26,7 @@
 #include "cores/VideoPlayer/VideoRenderers/OverlayRenderer.h"
 #include "guilib/Geometry.h"
 #include "guilib/Resolution.h"
-#include "threads/SharedSection.h"
+#include "threads/CriticalSection.h"
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
 #include <deque>
@@ -59,7 +59,6 @@ public:
   // Functions called from render thread
   void GetVideoRect(CRect &source, CRect &dest, CRect &view);
   float GetAspectRatio();
-  void Update();
   void FrameMove();
   void FrameFinish();
   void FrameWait(int ms);
@@ -122,15 +121,7 @@ public:
    */
   void FlipPage(volatile bool& bStop, double timestamp = 0.0, double pts = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
 
-  void AddOverlay(CDVDOverlay* o, double pts)
-  {
-    { CSingleLock lock(m_presentlock);
-      if (m_free.empty())
-        return;
-    }
-    CSharedLock lock(m_sharedSection);
-    m_overlays.AddOverlay(o, pts, m_free.front());
-  }
+  void AddOverlay(CDVDOverlay* o, double pts);
 
   // Get renderer info, can be called before configure
   CRenderInfo GetRenderInfo();
@@ -175,7 +166,9 @@ protected:
 
   CBaseRenderer *m_pRenderer;
   OVERLAY::CRenderer m_overlays;
-  CSharedSection m_sharedSection;
+  CCriticalSection m_statelock;
+  CCriticalSection m_presentlock;
+  CCriticalSection m_datalock;
   bool m_bTriggerUpdateResolution;
   bool m_bRenderGUI;
   int m_waitForBufferCount;
@@ -243,7 +236,6 @@ protected:
   EPRESENTSTEP m_presentstep;
   int m_presentsource;
   XbmcThreads::ConditionVariable  m_presentevent;
-  CCriticalSection m_presentlock;
   CEvent m_flushEvent;
   double m_clock_framefinish;
   CDVDClock &m_dvdClock;

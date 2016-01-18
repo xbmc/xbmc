@@ -34,6 +34,9 @@ endif
 ifneq ($(OS),android)
 	cd $(PLATFORM); patch -p1 < ../sqlite3.c.patch
 endif
+	# do not build the program sqlite3
+	sed -ie "s|bin_PROGRAMS = sqlite3||" "$(PLATFORM)/Makefile.am";
+	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)

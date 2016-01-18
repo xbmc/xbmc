@@ -124,6 +124,25 @@ bool CTagLoaderTagLib::ParseTag(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
       SetGenre(tag, GetASFStringList(it->second));
     else if (it->first == "WM/Mood")
       tag.SetMood(it->second.front().toString().to8Bit(true));
+    else if (it->first == "WM/Composer")
+      AddArtistRole(tag, "Composer", GetASFStringList(it->second));
+    else if (it->first == "WM/Conductor")
+      AddArtistRole(tag, "Conductor", GetASFStringList(it->second));
+    //No ASF/WMA tag from Taglib for "ensemble"
+    else if (it->first == "WM/Writer")
+      AddArtistRole(tag, "Lyricist", GetASFStringList(it->second));
+    else if (it->first == "WM/ModifiedBy")
+      AddArtistRole(tag, "Remixer", GetASFStringList(it->second));
+    else if (it->first == "WM/Engineer")
+      AddArtistRole(tag, "Engineer", GetASFStringList(it->second));
+    else if (it->first == "WM/Producer")
+      AddArtistRole(tag, "Producer", GetASFStringList(it->second));
+    else if (it->first == "WM/DJMixer")
+      AddArtistRole(tag, "DJMixer", GetASFStringList(it->second));
+    else if (it->first == "WM/Mixer")
+      AddArtistRole(tag, "mixer", GetASFStringList(it->second));
+    else if (it->first == "WM/Publisher")
+    {} // Known unsupported, supress warnings
     else if (it->first == "WM/AlbumArtistSortOrder")
     {} // Known unsupported, supress warnings
     else if (it->first == "WM/ArtistSortOrder")
@@ -241,6 +260,11 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, MUSIC_INFO::EmbeddedArt *art,
     else if (it->first == "TYER")   tag.SetYear(strtol(it->second.front()->toString().toCString(true), NULL, 10));
     else if (it->first == "TCMP")   tag.SetCompilation((strtol(it->second.front()->toString().toCString(true), NULL, 10) == 0) ? false : true);
     else if (it->first == "TENC")   {} // EncodedBy
+    else if (it->first == "TCOM")   AddArtistRole(tag, "Composer", GetID3v2StringList(it->second));
+    else if (it->first == "TPE3")   AddArtistRole(tag, "Conductor", GetID3v2StringList(it->second));
+    else if (it->first == "TEXT")   AddArtistRole(tag, "Lyricist", GetID3v2StringList(it->second));
+    else if (it->first == "TPE4")   AddArtistRole(tag, "Remixer", GetID3v2StringList(it->second));
+    else if (it->first == "TPUB")   {} // Publisher. Known unsupported, supress warnings
     else if (it->first == "TCOP")   {} // Copyright message
     else if (it->first == "TDRC")   tag.SetYear(strtol(it->second.front()->toString().toCString(true), NULL, 10));
     else if (it->first == "TDRL")   tag.SetYear(strtol(it->second.front()->toString().toCString(true), NULL, 10));
@@ -301,6 +325,26 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, MUSIC_INFO::EmbeddedArt *art,
           tag.SetMood(stringList.front().to8Bit(true));
         else if (g_advancedSettings.m_logLevel == LOG_LEVEL_MAX)
           CLog::Log(LOGDEBUG, "unrecognized user text tag detected: TXXX:%s", frame->description().toCString(true));
+      }
+    else if (it->first == "TIPL")
+      // Loop through and process the involved people list 
+      // For example Arranger, Engineer, Producer, DJMixer or Mixer
+      // In fieldlist every odd field is a function, and every even is an artist or a comma delimited list of artists.
+      for (ID3v2::FrameList::ConstIterator ip = it->second.begin(); ip != it->second.end(); ++ip)
+      {
+        ID3v2::TextIdentificationFrame *tiplframe = dynamic_cast<ID3v2::TextIdentificationFrame*> (*ip);
+        if (tiplframe)
+          AddArtistRole(tag, StringListToVectorString(tiplframe->fieldList()));
+      }
+    else if (it->first == "TMCL")
+      // Loop through and process the musicain credits list
+      // It is a mapping between the instrument and the person that played it, but also includes "orchestra" or "soloist".
+      // In fieldlist every odd field is an instrument, and every even is an artist or a comma delimited list of artists.
+      for (ID3v2::FrameList::ConstIterator ip = it->second.begin(); ip != it->second.end(); ++ip)
+      {
+        ID3v2::TextIdentificationFrame *tiplframe = dynamic_cast<ID3v2::TextIdentificationFrame*> (*ip);
+        if (tiplframe)
+          AddArtistRole(tag, StringListToVectorString(tiplframe->fieldList()));
       }
     else if (it->first == "UFID")
       // Loop through any UFID frames and set them
@@ -411,6 +455,31 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
       tag.SetCueSheet(it->second.toString().to8Bit(true));
     else if (it->first == "ENCODEDBY")
     {}
+    else if (it->first == "COMPOSER")
+      AddArtistRole(tag, "Composer", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "CONDUCTOR")
+      AddArtistRole(tag, "Conductor", StringListToVectorString(it->second.toStringList()));
+    else if ((it->first == "BAND") || (it->first == "ENSEMBLE"))
+      AddArtistRole(tag, "Orchestra", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "LYRICIST")
+      AddArtistRole(tag, "Lyricist", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "MIXARTIST")   
+      AddArtistRole(tag, "Remixer", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "ARRANGER") 
+      AddArtistRole(tag, "Arranger", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "ENGINEER") 
+      AddArtistRole(tag, "Engineer", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "PRODUCER") 
+      AddArtistRole(tag, "Producer", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "DJMIXER") 
+      AddArtistRole(tag, "DJMixer", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "MIXER")
+      AddArtistRole(tag, "Mixer", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "PERFORMER")
+      // Picard uses PERFORMER tag as musician credits list formatted "name (instrument)"
+      AddArtistInstrument(tag, StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "LABEL")   
+    {} // Publisher. Known unsupported, supress warnings
     else if (it->first == "COMPILATION")
       tag.SetCompilation(it->second.toString().toInt() == 1);
     else if (it->first == "LYRICS")
@@ -456,11 +525,11 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
     if (it->first == "ARTIST")
       SetArtist(tag, StringListToVectorString(it->second));
     else if (it->first == "ARTISTS")
-      tag.SetMusicBrainzArtistHints(StringListToVectorString(it->second));
+      SetArtistHints(tag, StringListToVectorString(it->second));
     else if (it->first == "ALBUMARTIST" || it->first == "ALBUM ARTIST")
       SetAlbumArtist(tag, StringListToVectorString(it->second));
     else if (it->first == "ALBUMARTISTS" || it->first == "ALBUM ARTISTS")
-      tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(it->second));
+      SetAlbumArtistHints(tag, StringListToVectorString(it->second));
     else if (it->first == "ALBUM")
       tag.SetAlbum(it->second.front().to8Bit(true));
     else if (it->first == "TITLE")
@@ -480,9 +549,32 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
     else if (it->first == "CUESHEET")
       tag.SetCueSheet(it->second.front().to8Bit(true));
     else if (it->first == "ENCODEDBY")
-    {}
-    else if (it->first == "ENSEMBLE")
-    {}
+    {} // Known but unsupported, supress warnings
+    else if (it->first == "COMPOSER")
+      AddArtistRole(tag, "Composer", StringListToVectorString(it->second));
+    else if (it->first == "CONDUCTOR")
+      AddArtistRole(tag, "Conductor", StringListToVectorString(it->second));
+    else if ((it->first == "BAND") || (it->first == "ENSEMBLE"))
+      AddArtistRole(tag, "Orchestra", StringListToVectorString(it->second));
+    else if (it->first == "LYRICIST")
+      AddArtistRole(tag, "Lyricist", StringListToVectorString(it->second));
+    else if (it->first == "MIXARTIST")
+      AddArtistRole(tag, "Remixer", StringListToVectorString(it->second));
+    else if (it->first == "ARRANGER")
+      AddArtistRole(tag, "Arranger", StringListToVectorString(it->second));
+    else if (it->first == "ENGINEER")
+      AddArtistRole(tag, "Engineer", StringListToVectorString(it->second));
+    else if (it->first == "PRODUCER")
+      AddArtistRole(tag, "Producer", StringListToVectorString(it->second));
+    else if (it->first == "DJMIXER")
+      AddArtistRole(tag, "DJMixer", StringListToVectorString(it->second));
+    else if (it->first == "MIXER")
+      AddArtistRole(tag, "Mixer", StringListToVectorString(it->second));
+    else if (it->first == "PERFORMER")
+      // Picard uses PERFORMER tag as musician credits list formatted "name (instrument)"
+      AddArtistInstrument(tag, StringListToVectorString(it->second));
+    else if (it->first == "LABEL")
+    {} // Publisher. Known unsupported, supress warnings
     else if (it->first == "COMPILATION")
       tag.SetCompilation(it->second.front().toInt() == 1);
     else if (it->first == "LYRICS")
@@ -594,6 +686,26 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& 
       SetGenre(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "\251cmt")
       tag.SetComment(it->second.toStringList().front().to8Bit(true));
+    else if (it->first == "\251wrt")
+      AddArtistRole(tag, "Composer", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "----:com.apple.iTunes:CONDUCTOR")
+      AddArtistRole(tag, "Conductor", StringListToVectorString(it->second.toStringList()));
+    //No MP4 standard tag for "ensemble"
+    else if (it->first == "----:com.apple.iTunes:LYRICIST")
+      AddArtistRole(tag, "Lyricist", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "----:com.apple.iTunes:REMIXER")
+      AddArtistRole(tag, "Remixer", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "----:com.apple.iTunes:ENGINEER")
+      AddArtistRole(tag, "Engineer", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "----:com.apple.iTunes:PRODUCER")
+      AddArtistRole(tag, "Producer", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "----:com.apple.iTunes:DJMIXER")
+      AddArtistRole(tag, "DJMixer", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "----:com.apple.iTunes:MIXER")
+      AddArtistRole(tag, "Mixer", StringListToVectorString(it->second.toStringList()));
+    //No MP4 standard tag for musician credits
+    else if (it->first == "----:com.apple.iTunes:LABEL")
+    {} // Publisher. Known unsupported, supress warnings
     else if (it->first == "cpil")
       tag.SetCompilation(it->second.toBool());
     else if (it->first == "trkn")
@@ -801,6 +913,52 @@ void CTagLoaderTagLib::SetGenre(CMusicInfoTag &tag, const std::vector<std::strin
     tag.SetGenre(genres[0]);
   else
     tag.SetGenre(genres);
+}
+
+void CTagLoaderTagLib::AddArtistRole(CMusicInfoTag &tag, const std::string& strRole, const std::vector<std::string> &values)
+{
+  if (values.size() == 1)
+    tag.AddArtistRole(strRole, values[0]);
+  else
+    tag.AddArtistRole(strRole, values);
+}
+
+void CTagLoaderTagLib::AddArtistRole(CMusicInfoTag &tag, const std::vector<std::string> &values)
+{
+  // Values contains role, name pairs (as in ID3 standard for TIPL or TMCL tags)
+  // Every odd entry is a function (e.g. Producer, Arranger etc.) or instrument (e.g. Orchestra, Vocal, Piano)
+  // and every even is an artist or a comma delimited list of artists.
+
+  if (values.size() % 2 != 0) // Must contain an even number of entries 
+    return;
+
+  for (int i = 0; i < values.size() - 1; i += 2)
+    tag.AddArtistRole(values[i], StringUtils::Split(values[i + 1], ","));
+}
+
+void CTagLoaderTagLib::AddArtistInstrument(CMusicInfoTag &tag, const std::vector<std::string> &values)
+{
+  // Values is a musician credits list, each entry is artist name followed by instrument (or function)
+  // e.g. violin, drums, background vocals, solo, orchestra etc. in brackets. This is how Picard uses PERFORMER tag.
+  // If there is not a pair of brackets then role is "performer" by default, and the whole entry is 
+  // taken as artist name.
+  
+  for (int i = 0; i < values.size(); ++i)
+  {
+    std::string strRole = "Performer";
+    std::string strArtist = values[i];
+    unsigned firstLim = values[i].find_first_of("(");
+    unsigned lastLim = values[i].find_last_of(")");
+    if (lastLim != std::string::npos && firstLim != std::string::npos && firstLim < lastLim - 1)
+    {
+      //Pair of brackets with something between them
+      strRole = values[i].substr(firstLim + 1, lastLim - firstLim - 1);
+      StringUtils::Trim(strRole);
+      strArtist.erase(firstLim, lastLim - firstLim + 1);
+    }
+    StringUtils::Trim(strArtist);
+    tag.AddArtistRole(strRole, strArtist);
+  }
 }
 
 bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, const std::string& fallbackFileExtension, MUSIC_INFO::EmbeddedArt *art /* = NULL */)

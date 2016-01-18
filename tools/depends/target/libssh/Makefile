@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile removelegacy.patch android.patch ntohl.patch md5.patch
+DEPS= ../../Makefile.include Makefile removelegacy.patch android.patch ntohl.patch md5.patch pkg-config.patch
 
 # lib name, version
 LIBNAME=libssh
@@ -8,6 +8,11 @@ SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 LIBDYLIB=$(PLATFORM)/build/src/$(LIBNAME).a
+
+ifeq ($(OS),ios)
+#_tlv_bootstrap aka __thread is private under ios/tvos. That is thread local storage, so disable it
+CMAKE_EXTRAFLAGS=-DHAVE_GCC_THREAD_LOCAL_STORAGE=0
+endif
 
 all: .installed-$(PLATFORM)
 
@@ -24,9 +29,13 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../md5.patch
 	cd $(PLATFORM); patch -p1 < ../darwin.patch
 	cd $(PLATFORM); patch -p0 < ../fix-gcc-5-compile.patch
+	cd $(PLATFORM); patch -p0 < ../pkg-config.patch
+ifeq ($(OS),ios)
+	cd $(PLATFORM); patch -p1 < ../darwin-no-fork.patch
+endif
 	sed -ie "s|-fstack-protector|-fno-stack-protector|" "$(PLATFORM)/cmake/Modules/DefineCompilerFlags.cmake"
 	sed -ie "s|add_subdirectory(examples)||" "$(PLATFORM)/CMakeLists.txt"
-	cd $(PLATFORM)/build; $(CMAKE) -DWITH_STATIC_LIB=1 -DWITH_EXAMPLES=0 -DTHREADS_PTHREAD_ARG=0 -DWITH_GSSAPI=0 VERBOSE=1 ..
+	cd $(PLATFORM)/build; $(CMAKE) -DWITH_STATIC_LIB=1 -DWITH_EXAMPLES=0 -DTHREADS_PTHREAD_ARG=0 $(CMAKE_EXTRAFLAGS) -DWITH_GSSAPI=0 VERBOSE=1 ..
 
 $(LIBDYLIB): $(PLATFORM)
 	make -j 1 -C $(PLATFORM)/build

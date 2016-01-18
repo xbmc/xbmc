@@ -43,7 +43,10 @@ public:
     : m_parent(parent)
     , m_stream(stream)
   {}
-  virtual void GetStreamInfo(std::string& strInfo);
+  std::string      m_description;
+
+  virtual std::string GetStreamInfo() override;
+  virtual std::string GetStreamName() override;
 };
 
 
@@ -59,8 +62,8 @@ public:
   {}
   std::string m_description;
 
-  virtual void GetStreamInfo(std::string& strInfo);
-  virtual void GetStreamName(std::string& strInfo);
+  virtual std::string GetStreamInfo() override;
+  virtual std::string GetStreamName() override;
 };
 
 class CDemuxStreamSubtitleFFmpeg
@@ -75,8 +78,8 @@ public:
   {}
   std::string m_description;
 
-  virtual void GetStreamInfo(std::string& strInfo);
-  virtual void GetStreamName(std::string& strInfo);
+  virtual std::string GetStreamInfo() override;
+  virtual std::string GetStreamName() override;
 
 };
 
@@ -111,7 +114,7 @@ public:
   int GetChapter();
   void GetChapterName(std::string& strChapterName, int chapterIdx=-1);
   int64_t GetChapterPos(int chapterIdx=-1);
-  virtual void GetStreamCodecName(int iStreamId, std::string &strName);
+  virtual std::string GetStreamCodecName(int iStreamId) override;
 
   bool Aborted();
 

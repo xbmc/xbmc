@@ -1021,6 +1021,55 @@ JSONRPC_STATUS CPlayerOperations::SetSubtitle(const std::string &method, ITransp
   return ACK;
 }
 
+JSONRPC_STATUS CPlayerOperations::SetVideoStream(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  switch (GetPlayer(parameterObject["playerid"]))
+  {
+  case Video:
+  {
+    int streamCount = g_application.m_pPlayer->GetVideoStreamCount();
+    if (streamCount > 0)
+    {
+      int index = g_application.m_pPlayer->GetVideoStream();
+      if (parameterObject["stream"].isString())
+      {
+        std::string action = parameterObject["stream"].asString();
+        if (action.compare("previous") == 0)
+        {
+          index--;
+          if (index < 0)
+            index = streamCount - 1;
+        }
+        else if (action.compare("next") == 0)
+        {
+          index++;
+          if (index >= streamCount)
+            index = 0;
+        }
+        else
+          return InvalidParams;
+      }
+      else if (parameterObject["stream"].isInteger())
+        index = (int)parameterObject["stream"].asInteger();
+
+      if (index < 0 || streamCount <= index)
+        return InvalidParams;
+
+      g_application.m_pPlayer->SetVideoStream(index);
+    }
+    else
+      return FailedToExecute;
+    break;
+  }
+  case Audio:
+  case Picture:
+  default:
+    return FailedToExecute;
+  }
+
+  return ACK;
+}
+
 int CPlayerOperations::GetActivePlayers()
 {
   int activePlayers = 0;
@@ -1542,6 +1591,71 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
       case Picture:
       default:
         break;
+    }
+  }
+  else if (property == "currentvideostream")
+  {
+    switch (player)
+    {
+    case Video:
+    {
+      int index = g_application.m_pPlayer->GetVideoStream();
+      if (index >= 0)
+      {
+        result = CVariant(CVariant::VariantTypeObject);
+        SPlayerVideoStreamInfo info;
+        g_application.m_pPlayer->GetVideoStreamInfo(index, info);
+
+        result["index"] = index;
+        result["name"] = info.name;
+        result["language"] = info.language;
+        result["codec"] = info.videoCodecName;
+        result["width"] = info.width;
+        result["height"] = info.height;
+      }
+      else
+        result = CVariant(CVariant::VariantTypeNull);
+      break;
+    }
+    case Audio:
+    case Picture:
+    default:
+      result = CVariant(CVariant::VariantTypeNull);
+      break;
+    }
+  }
+  else if (property == "videostreams")
+  {
+    result = CVariant(CVariant::VariantTypeArray);
+    switch (player)
+    {
+    case Video:
+    {
+      int streamCount = g_application.m_pPlayer->GetVideoStreamCount();
+      if (streamCount >= 0)
+      {
+        for (int index = 0; index < streamCount; ++index)
+        {
+          SPlayerVideoStreamInfo info;
+          g_application.m_pPlayer->GetVideoStreamInfo(index, info);
+
+          CVariant videoStream(CVariant::VariantTypeObject);
+          videoStream["index"] = index;
+          videoStream["name"] = info.name;
+          videoStream["language"] = info.language;
+          videoStream["codec"] = info.videoCodecName;
+          videoStream["width"] = info.width;
+          videoStream["height"] = info.height;
+
+          result.append(videoStream);
+        }
+      }
+      break;
+    }
+    case Audio:
+    case Picture:
+    default:
+      break;
     }
   }
   else if (property == "subtitleenabled")

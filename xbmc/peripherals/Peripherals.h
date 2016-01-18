@@ -230,7 +230,6 @@ namespace PERIPHERALS
 #endif
     std::vector<CPeripheralBus *>        m_busses;
     std::vector<PeripheralDeviceMapping> m_mappings;
-    CSettingsCategory *                  m_settings;
     CCriticalSection                     m_critSection;
   };
 }
