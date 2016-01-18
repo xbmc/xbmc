@@ -462,7 +462,6 @@ bool CApplication::Create()
 #endif
 
   // only the InitDirectories* for the current platform should return true
-  // putting this before the first log entries saves another ifdef for g_advancedSettings.m_logFolder
   bool inited = InitDirectoriesLinux();
   if (!inited)
     inited = InitDirectoriesOSX();
@@ -474,9 +473,9 @@ bool CApplication::Create()
   CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
   CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
 
-  if (!CLog::Init(CSpecialProtocol::TranslatePath(g_advancedSettings.m_logFolder).c_str()))
+  if (!CLog::Init(CSpecialProtocol::TranslatePath("special://logpath").c_str()))
   {
-    fprintf(stderr,"Could not init logging classes. Log folder error (%s)\n", CSpecialProtocol::TranslatePath(g_advancedSettings.m_logFolder).c_str());
+    fprintf(stderr,"Could not init logging classes. Log folder error (%s)\n", CSpecialProtocol::TranslatePath("special://logpath").c_str());
     return false;
   }
 
@@ -568,7 +567,7 @@ bool CApplication::Create()
   CLog::Log(LOGNOTICE, "Local hostname: %s", hostname.c_str());
   std::string lowerAppName = CCompileInfo::GetAppName();
   StringUtils::ToLower(lowerAppName);
-  CLog::Log(LOGNOTICE, "Log File is located: %s/%s.log", g_advancedSettings.m_logFolder.c_str(), lowerAppName.c_str());
+  CLog::Log(LOGNOTICE, "Log File is located: %s/%s.log", CSpecialProtocol::TranslatePath("special://logpath").c_str(), lowerAppName.c_str());
   CRegExp::LogCheckUtf8Support();
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
@@ -911,9 +910,7 @@ bool CApplication::InitDirectoriesLinux()
     if (getenv(envAppTemp))
       strTempPath = getenv(envAppTemp);
     CSpecialProtocol::SetTempPath(strTempPath);
-
-    URIUtils::AddSlashAtEnd(strTempPath);
-    g_advancedSettings.m_logFolder = strTempPath;
+    CSpecialProtocol::SetLogPath(strTempPath);
 
     CreateUserDirs();
 
@@ -921,7 +918,6 @@ bool CApplication::InitDirectoriesLinux()
   else
   {
     URIUtils::AddSlashAtEnd(appPath);
-    g_advancedSettings.m_logFolder = appPath;
 
     CSpecialProtocol::SetXBMCBinPath(appBinPath);
     CSpecialProtocol::SetXBMCPath(appPath);
@@ -933,10 +929,8 @@ bool CApplication::InitDirectoriesLinux()
     if (getenv(envAppTemp))
       strTempPath = getenv(envAppTemp);
     CSpecialProtocol::SetTempPath(strTempPath);
+    CSpecialProtocol::SetLogPath(strTempPath);
     CreateUserDirs();
-
-    URIUtils::AddSlashAtEnd(strTempPath);
-    g_advancedSettings.m_logFolder = strTempPath;
   }
 
   return true;
@@ -1008,15 +1002,12 @@ bool CApplication::InitDirectoriesOSX()
     #else
       strTempPath = userHome + "/Library/Logs";
     #endif
-    URIUtils::AddSlashAtEnd(strTempPath);
-    g_advancedSettings.m_logFolder = strTempPath;
-
+    CSpecialProtocol::SetLogPath(strTempPath);
     CreateUserDirs();
   }
   else
   {
     URIUtils::AddSlashAtEnd(appPath);
-    g_advancedSettings.m_logFolder = appPath;
 
     CSpecialProtocol::SetXBMCBinPath(appPath);
     CSpecialProtocol::SetXBMCPath(appPath);
@@ -1025,9 +1016,7 @@ bool CApplication::InitDirectoriesOSX()
 
     std::string strTempPath = URIUtils::AddFileToFolder(appPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
-
-    URIUtils::AddSlashAtEnd(strTempPath);
-    g_advancedSettings.m_logFolder = strTempPath;
+    CSpecialProtocol::SetLogPath(strTempPath);
   }
 
   return true;
@@ -1047,8 +1036,7 @@ bool CApplication::InitDirectoriesWin32()
   CSpecialProtocol::SetXBMCPath(xbmcPath);
 
   std::string strWin32UserFolder = CWIN32Util::GetProfilePath();
-
-  g_advancedSettings.m_logFolder = strWin32UserFolder;
+  CSpecialProtocol::SetLogPath(strWin32UserFolder);
   CSpecialProtocol::SetHomePath(strWin32UserFolder);
   CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(strWin32UserFolder, "userdata"));
   CSpecialProtocol::SetTempPath(URIUtils::AddFileToFolder(strWin32UserFolder,"cache"));
@@ -1075,6 +1063,7 @@ void CApplication::CreateUserDirs()
   CDirectory::Create("special://home/system");
   CDirectory::Create("special://masterprofile/");
   CDirectory::Create("special://temp/");
+  CDirectory::Create("special://logpath");
   CDirectory::Create("special://temp/temp"); // temp directory for python and dllGetTempPathA
 }
 

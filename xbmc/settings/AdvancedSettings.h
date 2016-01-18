@@ -379,8 +379,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     False to show at the bottom of video (default) */
     bool m_videoAssFixedWorks;
 
-    std::string m_logFolder;
-
     std::string m_userAgent;
 
   private:
