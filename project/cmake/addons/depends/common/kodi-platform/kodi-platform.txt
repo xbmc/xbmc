@@ -1,1 +1,1 @@
-kodi-platform https://github.com/xbmc/kodi-platform 15edaf78d6307eaa5e1d17028122d8bce9d55aa2
+kodi-platform https://github.com/xbmc/kodi-platform fed924e764b4c9c722f7f5d825ce70d4b61ae54f
