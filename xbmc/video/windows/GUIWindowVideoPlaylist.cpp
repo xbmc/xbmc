@@ -55,7 +55,7 @@ using namespace PLAYLIST;
 #define CONTROL_BTNREPEAT         26
 
 CGUIWindowVideoPlaylist::CGUIWindowVideoPlaylist()
-: CGUIWindowVideoBase(WINDOW_VIDEO_PLAYLIST, "MyVideoPlaylist.xml")
+: CGUIWindowVideoBase(WINDOW_VIDEO_PLAYLIST, "MyPlaylist.xml")
 {
   m_movingFrom = -1;
 }
