@@ -495,6 +495,12 @@ void CRenderManager::FrameMove()
 
 void CRenderManager::FrameFinish()
 {
+  {
+    CSingleLock lock(m_statelock);
+    if (m_renderState != STATE_CONFIGURED)
+      return;
+  }
+
   /* wait for this present to be valid */
   SPresent& m = m_Queue[m_presentsource];
 
@@ -556,6 +562,7 @@ void CRenderManager::PreInit()
   m_QueueSize   = 2;
   m_QueueSkip   = 0;
   m_presentstep = PRESENT_IDLE;
+  m_format = RENDER_FMT_NONE;
 }
 
 void CRenderManager::UnInit()

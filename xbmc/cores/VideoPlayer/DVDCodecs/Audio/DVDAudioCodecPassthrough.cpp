@@ -100,7 +100,7 @@ void CDVDAudioCodecPassthrough::Dispose()
   m_bufferSize = 0;
 }
 
-int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize)
+int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize, double dts, double pts)
 {
   if (iSize <= 0)
     return 0;

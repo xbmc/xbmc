@@ -128,7 +128,8 @@ public:
   {
     AV_SYNC_NONE,
     AV_SYNC_CHECK,
-    AV_SYNC_CONT
+    AV_SYNC_CONT,
+    AV_SYNC_FORCE
   } avsync;
 
   CCurrentStream(StreamType t, int i)
@@ -153,7 +154,7 @@ public:
     starttime = DVD_NOPTS_VALUE;
     startpts = DVD_NOPTS_VALUE;
     lastdts = DVD_NOPTS_VALUE;
-    avsync = AV_SYNC_CHECK;
+    avsync = AV_SYNC_FORCE;
   }
 
   double dts_end()

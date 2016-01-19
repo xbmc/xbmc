@@ -343,6 +343,7 @@ void CVideoPlayerVideo::Process()
         m_pVideoCodec->Reset();
       m_picture.iFlags &= ~DVP_FLAG_ALLOCATED;
       m_packets.clear();
+      pts = 0;
 
       m_pullupCorrection.Flush();
       //we need to recalculate the framerate
@@ -569,6 +570,8 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametim
     m_pVideoCodec->ClearPicture(&m_picture);
     if (m_pVideoCodec->GetPicture(&m_picture))
     {
+      bool hasTimestamp = true;
+
       sPostProcessType.clear();
 
       if (m_picture.iDuration == 0.0)
@@ -583,7 +586,10 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametim
       // if both dts/pts invalid, use pts calulated from picture.iDuration
       // if pts invalid use dts, else use picture.pts as passed
       if (m_picture.dts == DVD_NOPTS_VALUE && m_picture.pts == DVD_NOPTS_VALUE)
+      {
         m_picture.pts = pts;
+        hasTimestamp = false;
+      }
       else if (m_picture.pts == DVD_NOPTS_VALUE)
         m_picture.pts = m_picture.dts;
 
@@ -631,7 +637,7 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametim
         msg.player = VideoPlayer_VIDEO;
         msg.cachetime = DVD_MSEC_TO_TIME(50); // TODO
         msg.cachetotal = DVD_MSEC_TO_TIME(100); // TODO
-        msg.timestamp = pts;
+        msg.timestamp = hasTimestamp ? pts : DVD_NOPTS_VALUE;
         m_messageParent.Put(new CDVDMsgType<SStartMsg>(CDVDMsg::PLAYER_STARTED, msg));
       }
 

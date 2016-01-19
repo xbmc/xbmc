@@ -129,10 +129,11 @@ protected:
         Release();
     }
 
-    CDVDMsgDemuxerPacket*  msg;
-    uint8_t*               data;
-    int                    size;
-    double                 dts;
+    CDVDMsgDemuxerPacket* msg;
+    uint8_t* data;
+    int size;
+    double dts;
+    double pts;
 
     void Attach(CDVDMsgDemuxerPacket* msg2)
     {
@@ -143,7 +144,7 @@ protected:
       data = p->pData;
       size = p->iSize;
       dts = p->dts;
-
+      pts = p->pts;
     }
     void Release()
     {

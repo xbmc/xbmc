@@ -45,6 +45,7 @@ typedef struct stDVDAudioFrame
 {
   uint8_t* data[16];
   double pts;
+  bool hasTimestamp;
   double duration;
   unsigned int nb_frames;
   unsigned int framesize;
@@ -80,7 +81,7 @@ public:
    * returns bytes used or -1 on error
    *
    */
-  virtual int Decode(uint8_t* pData, int iSize) = 0;
+  virtual int Decode(uint8_t* pData, int iSize, double dts, double pts) = 0;
 
   /*
    * returns nr of bytes in decode buffer

@@ -137,7 +137,7 @@ void CDVDAudioCodecFFmpeg::Dispose()
   }
 }
 
-int CDVDAudioCodecFFmpeg::Decode(uint8_t* pData, int iSize)
+int CDVDAudioCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double pts)
 {
   int iBytesUsed;
   if (!m_pCodecContext) return -1;
@@ -146,6 +146,8 @@ int CDVDAudioCodecFFmpeg::Decode(uint8_t* pData, int iSize)
   av_init_packet(&avpkt);
   avpkt.data = pData;
   avpkt.size = iSize;
+  avpkt.dts = (dts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : dts / DVD_TIME_BASE * AV_TIME_BASE;
+  avpkt.pts = (pts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : pts / DVD_TIME_BASE * AV_TIME_BASE;
   iBytesUsed = avcodec_decode_audio4( m_pCodecContext
                                                  , m_pFrame1
                                                  , &m_gotFrame
@@ -197,7 +199,6 @@ void CDVDAudioCodecFFmpeg::GetData(DVDAudioFrame &frame)
   frame.planes = AE_IS_PLANAR(frame.format.m_dataFormat) ? frame.format.m_channelLayout.Count() : 1;
   frame.bits_per_sample = CAEUtil::DataFormatToBits(frame.format.m_dataFormat);
   frame.format.m_sampleRate = m_format.m_sampleRate;
-  frame.pts = DVD_NOPTS_VALUE;
   frame.matrix_encoding = GetMatrixEncoding();
   frame.audio_service_type = GetAudioServiceType();
   frame.profile = GetProfile();
@@ -206,6 +207,12 @@ void CDVDAudioCodecFFmpeg::GetData(DVDAudioFrame &frame)
     frame.duration = ((double)frame.nb_frames * DVD_TIME_BASE) / frame.format.m_sampleRate;
   else
     frame.duration = 0.0;
+
+  int64_t bpts = av_frame_get_best_effort_timestamp(m_pFrame1);
+  if(bpts != AV_NOPTS_VALUE)
+    frame.pts = (double)bpts * DVD_TIME_BASE / AV_TIME_BASE;
+  else
+    frame.pts = DVD_NOPTS_VALUE;
 }
 
 int CDVDAudioCodecFFmpeg::GetData(uint8_t** dst)
