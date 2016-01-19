@@ -1526,5 +1526,9 @@ void CDVDInputStreamNavigator::GetVideoResolution(uint32_t* width, uint32_t* hei
 {
   if (!m_dvdnav) return;
 
-  dvdnav_status_t status = m_dll.dvdnav_get_video_resolution(m_dvdnav, width, height);
+  if (m_dll.dvdnav_get_video_resolution(m_dvdnav, width, height) == DVDNAV_STATUS_ERR)
+  {
+    CLog::Log(LOGERROR, "dvdnav: dvdnav_get_video_resolution( %s )", m_dll.dvdnav_err_to_string(m_dvdnav));
+    return;
+  }
 }
