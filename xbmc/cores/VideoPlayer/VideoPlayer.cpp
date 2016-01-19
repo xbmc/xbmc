@@ -3248,6 +3248,13 @@ void CVideoPlayer::UpdateStreamInfos()
     s.stereo_mode = m_VideoPlayerVideo->GetStereoMode();
     if (s.stereo_mode == "mono")
       s.stereo_mode = "";
+
+    CDemuxStream* stream = m_pDemuxer->GetStream(m_CurrentVideo.id);
+    if (stream && stream->type == STREAM_VIDEO)
+    {
+      s.width = ((CDemuxStreamVideo*)stream)->iWidth;
+      s.height = ((CDemuxStreamVideo*)stream)->iHeight;
+    }
   }
 
   // audio
