@@ -82,8 +82,8 @@ private:
   CFileItemPtr m_item;
   ADDON::AddonPtr m_addon;
   ADDON::AddonPtr m_localAddon;
-  bool m_addonEnabled;
   unsigned int m_jobid;
+  bool m_addonEnabled;
   bool m_changelog;
 };
 
