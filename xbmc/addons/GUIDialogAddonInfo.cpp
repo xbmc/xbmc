@@ -368,7 +368,7 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
 
   VECADDONS addons;
   std::vector<std::string> deps;
-  CAddonMgr::GetInstance().GetAllAddons(addons);
+  CAddonMgr::GetInstance().GetAddons(addons);
   for (VECADDONS::const_iterator it  = addons.begin();
        it != addons.end();++it)
   {

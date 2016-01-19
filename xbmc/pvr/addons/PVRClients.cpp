@@ -1303,7 +1303,7 @@ bool CPVRClients::AutoconfigureClients(void)
   std::vector<PVR_CLIENT> autoConfigAddons;
   PVR_CLIENT addon;
   VECADDONS map;
-  CAddonMgr::GetInstance().GetAddons(ADDON_PVRDLL, map, false);
+  CAddonMgr::GetInstance().GetInstalledAddons(map, ADDON_PVRDLL);
 
   /** get the auto-configurable add-ons */
   for (VECADDONS::iterator it = map.begin(); it != map.end(); ++it)
@@ -1386,7 +1386,7 @@ bool CPVRClients::UpdateAddons(void)
 {
   VECADDONS addons;
   PVR_CLIENT addon;
-  bool bReturn(CAddonMgr::GetInstance().GetAddons(ADDON_PVRDLL, addons, true));
+  bool bReturn(CAddonMgr::GetInstance().GetAddons(addons, ADDON_PVRDLL));
   size_t usableClients;
   bool bDisable(false);
 
@@ -1421,7 +1421,7 @@ bool CPVRClients::UpdateAddons(void)
   }
 
   if ((!bReturn || usableClients == 0) && !m_bNoAddonWarningDisplayed &&
-      !CAddonMgr::GetInstance().HasAddons(ADDON_PVRDLL, false) &&
+      !CAddonMgr::GetInstance().HasInstalledAddons(ADDON_PVRDLL) &&
       (g_PVRManager.IsStarted() || g_PVRManager.IsInitialising()))
   {
     // No PVR add-ons could be found

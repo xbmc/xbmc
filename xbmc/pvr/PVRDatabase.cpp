@@ -141,7 +141,7 @@ void CPVRDatabase::UpdateTables(int iVersion)
   {
     VECADDONS addons;
     CAddonDatabase database;
-    if (database.Open() && CAddonMgr::GetInstance().GetAddons(ADDON_PVRDLL, addons, true))
+    if (database.Open() && CAddonMgr::GetInstance().GetAddons(addons, ADDON_PVRDLL))
     {
       /** find all old client IDs */
       std::string strQuery(PrepareSQL("SELECT idClient, sUid FROM clients"));

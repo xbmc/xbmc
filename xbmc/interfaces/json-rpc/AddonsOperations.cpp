@@ -78,25 +78,21 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
     VECADDONS typeAddons;
     if (*typeIt == ADDON_UNKNOWN)
     {
-      if (!enabled.isBoolean())
-      {
-        CAddonMgr::GetInstance().GetAllAddons(typeAddons, false);
-        CAddonMgr::GetInstance().GetAllAddons(typeAddons, true);
-      }
+      if (!enabled.isBoolean()) //All
+        CAddonMgr::GetInstance().GetInstalledAddons(typeAddons);
+      else if (enabled.asBoolean()) //Enabled
+        CAddonMgr::GetInstance().GetAddons(typeAddons);
       else
-        CAddonMgr::GetInstance().GetAllAddons(typeAddons, enabled.asBoolean());
+        CAddonMgr::GetInstance().GetDisabledAddons(typeAddons);
     }
     else
     {
-      if (!enabled.isBoolean())
-      {
-        CAddonMgr::GetInstance().GetAddons(*typeIt, typeAddons, false);
-        VECADDONS enabledAddons;
-        CAddonMgr::GetInstance().GetAddons(*typeIt, enabledAddons, true);
-        typeAddons.insert(typeAddons.end(), enabledAddons.begin(), enabledAddons.end());
-      }
+      if (!enabled.isBoolean()) //All
+        CAddonMgr::GetInstance().GetInstalledAddons(typeAddons, *typeIt);
+      else if (enabled.asBoolean()) //Enabled
+        CAddonMgr::GetInstance().GetAddons(typeAddons, *typeIt);
       else
-        CAddonMgr::GetInstance().GetAddons(*typeIt, typeAddons, enabled.asBoolean());
+        CAddonMgr::GetInstance().GetDisabledAddons(typeAddons, *typeIt);
     }
 
     addons.insert(addons.end(), typeAddons.begin(), typeAddons.end());

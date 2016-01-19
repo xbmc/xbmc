@@ -457,7 +457,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
       else if (*type == ADDON_VIDEO)
         CAddonsDirectory::GetScriptsAndPlugins("video", typeAddons);
       else
-        CAddonMgr::GetInstance().GetAddons(*type, typeAddons);
+        CAddonMgr::GetInstance().GetAddons(typeAddons, *type);
 
       addons.insert(addons.end(), typeAddons.begin(), typeAddons.end());
     }

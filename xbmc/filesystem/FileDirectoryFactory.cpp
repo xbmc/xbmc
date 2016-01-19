@@ -65,7 +65,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   std::string strExtension=URIUtils::GetExtension(url);
   StringUtils::ToLower(strExtension);
   VECADDONS codecs;
-  CAddonMgr::GetInstance().GetAddons(ADDON_AUDIODECODER, codecs);
+  CAddonMgr::GetInstance().GetAddons(codecs, ADDON_AUDIODECODER);
   for (size_t i=0;i<codecs.size();++i)
   {
     std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));
