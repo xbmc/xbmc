@@ -296,6 +296,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "screenheight",     SYSTEM_SCREEN_HEIGHT },
                                   { "currentwindow",    SYSTEM_CURRENT_WINDOW },
                                   { "currentcontrol",   SYSTEM_CURRENT_CONTROL },
+                                  { "currentcontrolid", SYSTEM_CURRENT_CONTROL_ID },
                                   { "dvdlabel",         SYSTEM_DVD_LABEL },
                                   { "internetstate",    SYSTEM_INTERNET_STATE },
                                   { "osversioninfo",    SYSTEM_OS_VERSION_INFO },
@@ -2104,13 +2105,19 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     strLabel = StringUtils::Format("%i", CSettings::GetInstance().GetInt(CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW));
     break;
   case SYSTEM_CURRENT_CONTROL:
+  case SYSTEM_CURRENT_CONTROL_ID:
     {
       CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
       if (window)
       {
         CGUIControl *control = window->GetFocusedControl();
         if (control)
-          strLabel = control->GetDescription();
+        {
+          if (info == SYSTEM_CURRENT_CONTROL_ID)
+            strLabel = StringUtils::Format("%i", control->GetID());
+          else if (info == SYSTEM_CURRENT_CONTROL)
+            strLabel = control->GetDescription();
+        }
       }
     }
     break;

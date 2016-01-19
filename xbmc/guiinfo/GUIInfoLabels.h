@@ -114,6 +114,7 @@
 #define SYSTEM_SCREEN_HEIGHT        134
 #define SYSTEM_CURRENT_WINDOW       135
 #define SYSTEM_CURRENT_CONTROL      136
+#define SYSTEM_CURRENT_CONTROL_ID   137
 #define SYSTEM_DVD_LABEL            138
 #define SYSTEM_HASLOCKS             140
 #define SYSTEM_ISMASTER             141
