@@ -67,8 +67,8 @@ typedef struct ConnectionHandler
 {
   std::string fullUri;
   bool isNew;
-  std::shared_ptr<IHTTPRequestHandler> requestHandler;
   struct MHD_PostProcessor *postprocessor;
+  std::shared_ptr<IHTTPRequestHandler> requestHandler;
   int errorStatus;
 
   ConnectionHandler(const std::string& uri)
