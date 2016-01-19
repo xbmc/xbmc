@@ -1759,3 +1759,11 @@ time_t CPVRClients::GetBufferTimeEnd() const
   return time;
 }
 
+bool CPVRClients::IsRealTimeStream(void) const
+{
+  PVR_CLIENT client;
+  if (GetPlayingClient(client))
+    return client->IsRealTimeStream();
+  return false;
+}
+

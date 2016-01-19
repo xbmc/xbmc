@@ -1972,3 +1972,17 @@ bool CPVRClient::Autoconfigure(void)
 
   return bReturn;
 }
+
+bool CPVRClient::IsRealTimeStream(void) const
+{
+  bool bReturn(false);
+  if (IsPlaying())
+  {
+    try
+    {
+      bReturn = m_pStruct->IsRealTimeStream();
+    }
+    catch (std::exception &e) { LogException(e, __FUNCTION__); }
+  }
+  return bReturn;
+}
