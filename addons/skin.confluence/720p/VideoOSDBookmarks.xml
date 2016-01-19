@@ -93,7 +93,7 @@
 					<width>220</width>
 					<height>150</height>
 					<aspectratio>scale</aspectratio>
-					<info>ListItem.Icon</info>
+					<texture background="true">$INFO[ListItem.Icon]</texture>
 				</control>
 				<control type="label">
 					<left>7</left>
@@ -121,7 +121,7 @@
 					<width>220</width>
 					<height>150</height>
 					<aspectratio>scale</aspectratio>
-					<info>ListItem.Icon</info>
+					<texture background="true">$INFO[ListItem.Icon]</texture>
 				</control>
 				<control type="label">
 					<left>7</left>
