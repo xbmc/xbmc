@@ -116,7 +116,6 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_strMusicBrainzAlbumID = tag.m_strMusicBrainzAlbumID;
   m_musicBrainzAlbumArtistID = tag.m_musicBrainzAlbumArtistID;
   m_musicBrainzAlbumArtistHints = tag.m_musicBrainzAlbumArtistHints;
-  m_strMusicBrainzTRMID = tag.m_strMusicBrainzTRMID;
   m_musicRoles = tag.m_musicRoles;
   m_strComment = tag.m_strComment;
   m_strMood = tag.m_strMood;
@@ -577,11 +576,6 @@ const std::vector<std::string>& CMusicInfoTag::GetMusicBrainzAlbumArtistHints() 
     return m_musicBrainzAlbumArtistHints;
 }
 
-const std::string& CMusicInfoTag::GetMusicBrainzTRMID() const
-{
-  return m_strMusicBrainzTRMID;
-}
-
 void CMusicInfoTag::SetMusicBrainzTrackID(const std::string& strTrackID)
 {
   m_strMusicBrainzTrackID = strTrackID;
@@ -610,12 +604,6 @@ void CMusicInfoTag::SetMusicBrainzAlbumArtistID(const std::vector<std::string>& 
 void CMusicInfoTag::SetMusicBrainzAlbumArtistHints(const std::vector<std::string>& musicBrainzAlbumArtistHints)
 {
     m_musicBrainzAlbumArtistHints = musicBrainzAlbumArtistHints;
-}
-
-
-void CMusicInfoTag::SetMusicBrainzTRMID(const std::string& strTRMID)
-{
-  m_strMusicBrainzTRMID = strTRMID;
 }
 
 void CMusicInfoTag::SetCoverArtInfo(size_t size, const std::string &mimeType)
@@ -760,7 +748,6 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["musicbrainzartistid"] = m_musicBrainzArtistID;
   value["musicbrainzalbumid"] = m_strMusicBrainzAlbumID;
   value["musicbrainzalbumartistid"] = m_musicBrainzAlbumArtistID; 
-  value["musicbrainztrmid"] = m_strMusicBrainzTRMID;
   value["comment"] = m_strComment;
   value["contributors"] = CVariant(CVariant::VariantTypeArray);
   for (const auto& role : m_musicRoles)
@@ -845,7 +832,6 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_musicBrainzArtistID;
     ar << m_strMusicBrainzAlbumID;
     ar << m_musicBrainzAlbumArtistID;
-    ar << m_strMusicBrainzTRMID;
     ar << m_lastPlayed;
     ar << m_dateAdded;
     ar << m_strComment;
@@ -890,7 +876,6 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_musicBrainzArtistID;
     ar >> m_strMusicBrainzAlbumID;
     ar >> m_musicBrainzAlbumArtistID;
-    ar >> m_strMusicBrainzTRMID;
     ar >> m_lastPlayed;
     ar >> m_dateAdded;
     ar >> m_strComment;
@@ -941,7 +926,6 @@ void CMusicInfoTag::Clear()
   m_musicBrainzArtistID.clear();
   m_strMusicBrainzAlbumID.clear();
   m_musicBrainzAlbumArtistID.clear();
-  m_strMusicBrainzTRMID.clear();
   m_musicRoles.clear();
   m_iDuration = 0;
   m_iTrack = 0;

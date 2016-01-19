@@ -466,8 +466,6 @@ namespace XBMCAddon
             item->GetMusicInfoTag()->SetMusicBrainzAlbumID(value);
           else if (key == "musicbrainzalbumartistid")
             item->GetMusicInfoTag()->SetMusicBrainzAlbumArtistID(StringUtils::Split(value, g_advancedSettings.m_musicItemSeparator));
-          else if (key == "musicbrainztrmid")
-            item->GetMusicInfoTag()->SetMusicBrainzTRMID(value);
           else if (key == "comment")
             item->GetMusicInfoTag()->SetComment(value);
           else if (key == "date")
