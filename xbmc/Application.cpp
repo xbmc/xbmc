@@ -2958,7 +2958,7 @@ void CApplication::Stop(int exitCode)
 
     // stop scanning before we kill the network and so on
     if (m_musicInfoScanner->IsScanning())
-      m_musicInfoScanner->Stop();
+      m_musicInfoScanner->Stop(true);
 
     if (CVideoLibraryQueue::GetInstance().IsRunning())
       CVideoLibraryQueue::GetInstance().CancelAllJobs();

@@ -393,12 +393,12 @@ bool CMusicInfoScanner::IsScanning()
   return m_bRunning;
 }
 
-void CMusicInfoScanner::Stop()
+void CMusicInfoScanner::Stop(bool wait /* = false*/)
 {
   if (m_bCanInterrupt)
     m_musicDatabase.Interupt();
 
-  StopThread(false);
+  StopThread(wait);
 }
 
 void CMusicInfoScanner::CleanDatabase(bool showProgress /* = true */)
