@@ -753,7 +753,6 @@ bool CMusicDatabase::GetSong(int idSong, CSong& song)
     {
       const dbiplus::sql_record* const record = m_pDS.get()->get_sql_record();
 
-      int idSongArtist = record->at(songArtistOffset + artistCredit_idArtist).get_asInt();
       int idSongArtistRole = record->at(songArtistOffset + artistCredit_idRole).get_asInt();
       if (idSongArtistRole == ROLE_ARTIST)
         song.artistCredits.push_back(GetArtistCreditFromDataset(record, songArtistOffset));
@@ -1043,7 +1042,6 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
           songs.insert(idSong);
         }
 
-        int idSongArtist = record->at(songArtistOffset + artistCredit_idArtist).get_asInt();
         int idSongArtistRole = record->at(songArtistOffset + artistCredit_idRole).get_asInt();
         //By query order song is the last one appened to the album song vector.                
         if (idSongArtistRole == ROLE_ARTIST)
