@@ -1025,6 +1025,34 @@ bool CVideoDatabase::GetLinksToTvShow(int idMovie, std::vector<int>& ids)
   return false;
 }
 
+bool CVideoDatabase::GetLinksToTvShow(std::map<int, CVideoInfoTag>& details)
+{
+  std::string media_ids;
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS2.get()) return false;
+
+    media_ids = StringUtils::Join(details);
+    std::string strSQL = PrepareSQL("SELECT movielinktvshow.idMovie, tvshow.c%02d FROM movielinktvshow JOIN tvshow ON tvshow.idShow = movielinktvshow.idShow WHERE movielinktvshow.idMovie IN (%s)", VIDEODB_ID_TV_TITLE, media_ids.c_str());
+    m_pDS2->query(strSQL);
+    while (!m_pDS2->eof())
+    {
+      details[m_pDS2->fv(0).get_asInt()].m_showLink.push_back(m_pDS2->fv(1).get_asString());
+      m_pDS2->next();
+    }
+
+    m_pDS2->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, media_ids.c_str());
+  }
+
+  return false;
+}
+
 
 //********************************************************************************************************************************
 int CVideoDatabase::GetFileId(const std::string& strFilenameAndPath)
@@ -3571,6 +3599,87 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
   return retVal;
 }
  
+bool CVideoDatabase::GetStreamDetails(const std::string &media_type, std::map<int, CVideoInfoTag>& details)
+{
+  bool retVal = false;
+  std::string media_ids;
+
+  std::unique_ptr<Dataset> pDS(m_pDB->CreateDataset());
+  try
+  {
+    std::string id;
+    if (media_type == MediaTypeMovie)
+      id = "idMovie";
+    else if (media_type == MediaTypeEpisode)
+      id = "idEpisode";
+    else if (media_type == MediaTypeMusicVideo)
+      id = "idMVideo";
+    else
+      return false;
+
+    media_ids = StringUtils::Join(details);
+    std::string strSQL = PrepareSQL("SELECT %s.%s, streamdetails.* FROM streamdetails "
+                                    "JOIN %s ON %s.idFile = streamdetails.idFile "
+                                    "WHERE %s.%s IN (%s)", 
+                                    media_type.c_str(), id.c_str(), media_type.c_str(), media_type.c_str(), 
+                                    media_type.c_str(), id.c_str(), media_ids.c_str());
+    pDS->query(strSQL);
+
+    while (!pDS->eof())
+    {
+      CStreamDetail::StreamType e = (CStreamDetail::StreamType)pDS->fv(2).get_asInt();
+      switch (e)
+      {
+      case CStreamDetail::VIDEO:
+        {
+          CStreamDetailVideo *p = new CStreamDetailVideo();
+          p->m_strCodec = pDS->fv(3).get_asString();
+          p->m_fAspect = pDS->fv(4).get_asFloat();
+          p->m_iWidth = pDS->fv(5).get_asInt();
+          p->m_iHeight = pDS->fv(6).get_asInt();
+          p->m_iDuration = pDS->fv(11).get_asInt();
+          p->m_strStereoMode = pDS->fv(12).get_asString();
+          p->m_strLanguage = pDS->fv(13).get_asString();
+          details[pDS->fv(0).get_asInt()].m_streamDetails.AddStream(p);
+          retVal = true;
+          break;
+        }
+      case CStreamDetail::AUDIO:
+        {
+          CStreamDetailAudio *p = new CStreamDetailAudio();
+          p->m_strCodec = pDS->fv(7).get_asString();
+          if (pDS->fv(8).get_isNull())
+            p->m_iChannels = -1;
+          else
+            p->m_iChannels = pDS->fv(8).get_asInt();
+          p->m_strLanguage = pDS->fv(9).get_asString();
+          details[pDS->fv(0).get_asInt()].m_streamDetails.AddStream(p);
+          retVal = true;
+          break;
+        }
+      case CStreamDetail::SUBTITLE:
+        {
+          CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
+          p->m_strLanguage = pDS->fv(10).get_asString();
+          details[pDS->fv(0).get_asInt()].m_streamDetails.AddStream(p);
+          retVal = true;
+          break;
+        }
+      }
+
+      pDS->next();
+    }
+
+    pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, media_ids.c_str());
+  }
+
+  return retVal;
+}
+ 
 bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag)
 {
   if (tag.m_iFileId < 0)
@@ -3934,6 +4043,48 @@ void CVideoDatabase::GetCast(int media_id, const std::string &media_type, std::v
   }
 }
 
+void CVideoDatabase::GetCast(const std::string &media_type, std::map<int, CVideoInfoTag>& details)
+{
+  std::string media_ids;
+  try
+  {
+    if (!m_pDB.get()) return;
+    if (!m_pDS2.get()) return;
+
+    media_ids = StringUtils::Join(details);
+    std::string sql = PrepareSQL("SELECT actor.name,"
+                                 "  actor_link.role,"
+                                 "  actor_link.cast_order,"
+                                 "  actor.art_urls,"
+                                 "  art.url, "
+                                 "  actor_link.media_id "
+                                 "FROM actor_link"
+                                 "  JOIN actor ON"
+                                 "    actor_link.actor_id=actor.actor_id"
+                                 "  LEFT JOIN art ON"
+                                 "    art.media_id=actor.actor_id AND art.media_type='actor' AND art.type='thumb' "
+                                 "WHERE actor_link.media_id IN (%s) AND actor_link.media_type='%s'"
+                                 "ORDER BY actor_link.cast_order", media_ids.c_str(), media_type.c_str());
+    m_pDS2->query(sql);
+    while (!m_pDS2->eof())
+    {
+      SActorInfo info;
+      info.strName = m_pDS2->fv(0).get_asString();
+      info.strRole = m_pDS2->fv(1).get_asString();
+      info.order = m_pDS2->fv(2).get_asInt();
+      info.thumbUrl.ParseString(m_pDS2->fv(3).get_asString());
+      info.thumb = m_pDS2->fv(4).get_asString();
+      details[m_pDS2->fv(5).get_asInt()].m_cast.push_back(info);
+      m_pDS2->next();
+    }
+    m_pDS2->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%s,%s) failed", __FUNCTION__, media_ids.c_str(), media_type.c_str());
+  }
+}
+
 void CVideoDatabase::GetTags(int media_id, const std::string &media_type, std::vector<std::string> &tags)
 {
   try
@@ -3956,6 +4107,30 @@ void CVideoDatabase::GetTags(int media_id, const std::string &media_type, std::v
   }
 }
 
+void CVideoDatabase::GetTags(const std::string &media_type, std::map<int, CVideoInfoTag>& details)
+{
+  std::string media_ids;
+  try
+  {
+    if (!m_pDB.get()) return;
+    if (!m_pDS2.get()) return;
+
+    media_ids = StringUtils::Join(details);
+    std::string sql = PrepareSQL("SELECT tag.name, tag_link.media_id FROM tag INNER JOIN tag_link ON tag_link.tag_id = tag.tag_id WHERE tag_link.media_id IN (%s) AND tag_link.media_type = '%s' ORDER BY tag.tag_id", media_ids.c_str(), media_type.c_str());
+    m_pDS2->query(sql);
+    while (!m_pDS2->eof())
+    {
+      details[m_pDS2->fv(1).get_asInt()].m_tags.push_back(m_pDS2->fv(0).get_asString());
+      m_pDS2->next();
+    }
+    m_pDS2->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%s,%s) failed", __FUNCTION__, media_ids.c_str(), media_type.c_str());
+  }
+}
+
 void CVideoDatabase::GetRatings(int media_id, const std::string &media_type, RatingMap &ratings)
 {
   try
@@ -3975,6 +4150,30 @@ void CVideoDatabase::GetRatings(int media_id, const std::string &media_type, Rat
   catch (...)
   {
     CLog::Log(LOGERROR, "%s(%i,%s) failed", __FUNCTION__, media_id, media_type.c_str());
+  }
+}
+
+void CVideoDatabase::GetRatings(const std::string &media_type, std::map<int, CVideoInfoTag>& details)
+{
+  std::string media_ids;
+  try
+  {
+    if (!m_pDB.get()) return;
+    if (!m_pDS2.get()) return;
+
+    media_ids = StringUtils::Join(details);
+    std::string sql = PrepareSQL("SELECT rating.rating_type, rating.rating, rating.votes, rating.media_id FROM rating WHERE rating.media_id IN (%s) AND rating.media_type = '%s'", media_ids.c_str(), media_type.c_str());
+    m_pDS2->query(sql);
+    while (!m_pDS2->eof())
+    {
+      details[m_pDS2->fv(3).get_asInt()].AddRating(m_pDS2->fv(1).get_asFloat(), m_pDS2->fv(2).get_asInt(), m_pDS2->fv(0).get_asString());
+      m_pDS2->next();
+    }
+    m_pDS2->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%s,%s) failed", __FUNCTION__, media_ids.c_str(), media_type.c_str());
   }
 }
 
@@ -6418,30 +6617,77 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
     // get data from returned rows
     items.Reserve(results.size());
     const query_data &data = m_pDS->get_result_set().records;
+    std::map<int, CVideoInfoTag> media;
+    std::vector<int> ids;
+    ids.reserve(results.size());
     for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); ++it)
     {
       unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
       const dbiplus::sql_record* const record = data.at(targetRow);
 
-      CVideoInfoTag movie = GetDetailsForMovie(record, getDetails);
+      CVideoInfoTag movie = GetDetailsForMovie(record, VideoDbDetailsNone);
       if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
           g_passwordManager.bMasterUser                                   ||
           g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath, *CMediaSourceSettings::GetInstance().GetSources("video")))
       {
-        CFileItemPtr pItem(new CFileItem(movie));
-
-        CVideoDbUrl itemUrl = videoUrl;
-        std::string path = StringUtils::Format("%i", movie.m_iDbId);
-        itemUrl.AppendPath(path);
-        pItem->SetPath(itemUrl.ToString());
-
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_playCount > 0);
-        items.Add(pItem);
+        media[movie.m_iDbId] = movie;
+        ids.push_back(movie.m_iDbId);
       }
     }
-
     // cleanup
     m_pDS->close();
+
+    std::map<int, std::vector<SActorInfo>> cast;
+    std::map<int, std::vector<std::string>> tags;
+    std::map<int, RatingMap> ratings;
+    std::map<int, std::vector<std::string>> tvshowlinks;
+    std::map<int, CStreamDetails> streams;
+    if (getDetails && !media.empty())
+    {
+      if (getDetails & VideoDbDetailsCast)
+        GetCast(MediaTypeMovie, media);
+
+      if (getDetails & VideoDbDetailsTag)
+        GetTags(MediaTypeMovie, media);
+
+      if (getDetails & VideoDbDetailsRating)
+        GetRatings(MediaTypeMovie, media);
+
+      if (getDetails & VideoDbDetailsShowLink)
+        GetLinksToTvShow(media);
+
+      if (getDetails & VideoDbDetailsStream)
+        GetStreamDetails(MediaTypeMovie, media);
+    }
+
+    for (auto& id : ids)
+    {
+      auto& movie = media[id];
+      if (getDetails)
+      {
+        if (getDetails & VideoDbDetailsStream)
+        {
+          movie.m_streamDetails.DetermineBestStreams();
+
+          if (movie.m_streamDetails.GetVideoDuration() > 0)
+            movie.m_duration = movie.m_streamDetails.GetVideoDuration();
+        }
+
+        movie.m_strPictureURL.Parse();
+        movie.m_parsedDetails = getDetails;
+      }
+
+      CFileItemPtr pItem(new CFileItem(movie));
+
+      CVideoDbUrl itemUrl = videoUrl;
+      std::string path = StringUtils::Format("%i", movie.m_iDbId);
+      itemUrl.AppendPath(path);
+      pItem->SetPath(itemUrl.ToString());
+
+      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, movie.m_playCount > 0);
+      items.Add(pItem);
+    }
+
     return true;
   }
   catch (...)
@@ -6524,32 +6770,67 @@ bool CVideoDatabase::GetTvShowsByWhere(const std::string& strBaseDir, const Filt
 
     // get data from returned rows
     items.Reserve(results.size());
+    std::map<int, CVideoInfoTag> media;
+    std::vector<int> ids;
+    ids.reserve(results.size());
+    std::ostringstream mediaSS;
     const query_data &data = m_pDS->get_result_set().records;
     for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); ++it)
     {
       unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
       const dbiplus::sql_record* const record = data.at(targetRow);
       
-      CFileItemPtr pItem(new CFileItem());
-      CVideoInfoTag movie = GetDetailsForTvShow(record, getDetails, pItem.get());
+      CVideoInfoTag movie = GetDetailsForTvShow(record, VideoDbDetailsNone);
       if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
            g_passwordManager.bMasterUser                                     ||
            g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath, *CMediaSourceSettings::GetInstance().GetSources("video")))
       {
-        pItem->SetFromVideoInfoTag(movie);
-
-        CVideoDbUrl itemUrl = videoUrl;
-        std::string path = StringUtils::Format("%i/", record->at(0).get_asInt());
-        itemUrl.AppendPath(path);
-        pItem->SetPath(itemUrl.ToString());
-
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
-        items.Add(pItem);
+        media[movie.m_iDbId] = movie;
+        ids.push_back(movie.m_iDbId);
       }
     }
-
     // cleanup
     m_pDS->close();
+
+    if (getDetails && !media.empty())
+    {
+      if (getDetails & VideoDbDetailsCast)
+        GetCast(MediaTypeTvShow, media);
+
+      if (getDetails & VideoDbDetailsTag)
+        GetTags(MediaTypeTvShow, media);
+
+      if (getDetails & VideoDbDetailsRating)
+        GetRatings(MediaTypeTvShow, media);
+    }
+
+    for (auto& id : ids)
+    {
+      auto& movie = media[id];
+      if (getDetails)
+      {
+        movie.m_strPictureURL.Parse();
+        movie.m_parsedDetails = getDetails;
+      }
+
+      CFileItemPtr pItem(new CFileItem());
+      pItem->m_dateTime = movie.m_premiered;
+      pItem->SetProperty("totalseasons", movie.m_iSeason);
+      pItem->SetProperty("totalepisodes", movie.m_iEpisode);
+      pItem->SetProperty("numepisodes", movie.m_iEpisode); // will be changed later to reflect watchmode setting
+      pItem->SetProperty("watchedepisodes", movie.m_playCount);
+      pItem->SetProperty("unwatchedepisodes", movie.m_iEpisode - movie.m_playCount);
+      pItem->SetFromVideoInfoTag(movie);
+
+      CVideoDbUrl itemUrl = videoUrl;
+      std::string path = StringUtils::Format("%i/", movie.m_iDbId);
+      itemUrl.AppendPath(path);
+      pItem->SetPath(itemUrl.ToString());
+
+      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
+      items.Add(pItem);
+    }
+
     return true;
   }
   catch (...)
@@ -6652,40 +6933,119 @@ bool CVideoDatabase::GetEpisodesByWhere(const std::string& strBaseDir, const Fil
     items.Reserve(results.size());
     CLabelFormatter formatter("%H. %T", "");
 
+    std::map<int, CVideoInfoTag> media;
+    std::vector<int> ids;
+    ids.reserve(results.size());
+    std::vector<int> tvshowids;
+    std::map<int, CVideoInfoTag> castTvShows;
     const query_data &data = m_pDS->get_result_set().records;
     for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); ++it)
     {
       unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
       const dbiplus::sql_record* const record = data.at(targetRow);
 
-      CVideoInfoTag movie = GetDetailsForEpisode(record, getDetails);
+      CVideoInfoTag movie = GetDetailsForEpisode(record, VideoDbDetailsNone);
       if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
           g_passwordManager.bMasterUser                                     ||
           g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath, *CMediaSourceSettings::GetInstance().GetSources("video")))
       {
-        CFileItemPtr pItem(new CFileItem(movie));
-        formatter.FormatLabel(pItem.get());
-      
-        int idEpisode = record->at(0).get_asInt();
-
-        CVideoDbUrl itemUrl = videoUrl;
-        std::string path;
-        if (appendFullShowPath && videoUrl.GetItemType() != "episodes")
-          path = StringUtils::Format("%i/%i/%i", record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_ID).get_asInt(), movie.m_iSeason, idEpisode);
-        else
-          path = StringUtils::Format("%i", idEpisode);
-        itemUrl.AppendPath(path);
-        pItem->SetPath(itemUrl.ToString());
-
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, movie.m_playCount > 0);
-        pItem->m_dateTime = movie.m_firstAired;
-        pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
-        items.Add(pItem);
+        media[movie.m_iDbId] = movie;
+        ids.push_back(movie.m_iDbId);
+        if ((getDetails & VideoDbDetailsCast) && castTvShows.find(movie.m_iIdShow) == castTvShows.end())
+        {
+          tvshowids.push_back(movie.m_iIdShow);
+          castTvShows[movie.m_iIdShow] = CVideoInfoTag();
+        }
       }
     }
-
     // cleanup
     m_pDS->close();
+
+    if (getDetails && !media.empty())
+    {
+      if (getDetails & VideoDbDetailsCast)
+      {
+        GetCast(MediaTypeEpisode, media);
+        GetCast(MediaTypeTvShow, castTvShows);
+      }
+
+      if (getDetails & VideoDbDetailsRating)
+        GetRatings(MediaTypeEpisode, media);
+
+      if (getDetails &  VideoDbDetailsBookmark)
+      {
+        std::string mediaList = StringUtils::Join(media);
+        std::string strSQL = PrepareSQL("SELECT bookmark.timeInSeconds, bookmark.playerState FROM bookmark JOIN episode ON episode.c%02d=bookmark.idBookmark WHERE episode.idEpisode IN (%s) AND bookmark.type=%i", VIDEODB_ID_EPISODE_BOOKMARK, mediaList.c_str(), CBookmark::EPISODE);
+        m_pDS2->query(strSQL);
+        while (!m_pDS2->eof())
+        {
+          CBookmark bookmark;
+          bookmark.timeInSeconds = m_pDS2->fv(0).get_asDouble();
+          bookmark.playerState = m_pDS2->fv(1).get_asString();
+          bookmark.type = CBookmark::EPISODE;
+          media[m_pDS2->fv(0).get_asInt()].m_EpBookmark = bookmark;
+          m_pDS2->next();
+        }
+        m_pDS2->close();
+      }
+
+      if (getDetails & VideoDbDetailsStream)
+        GetStreamDetails(MediaTypeEpisode, media);
+    }
+
+    for (auto& id : ids)
+    {
+      auto& movie = media[id];
+      if (getDetails)
+      {
+        if (getDetails & VideoDbDetailsCast)
+        {
+          const auto& castTvShow = castTvShows.find(movie.m_iIdShow);
+          if (castTvShow != castTvShows.end())
+          {
+            for (const auto& actor : castTvShow->second.m_cast)
+            {
+              if (std::find_if(movie.m_cast.begin(), movie.m_cast.end(),
+                  [&actor](const SActorInfo& info) { return info.strName == actor.strName; }) == movie.m_cast.end())
+              {
+                movie.m_cast.push_back(actor);
+              }
+            }
+          }
+        }
+
+        if (getDetails & VideoDbDetailsStream)
+        {
+          movie.m_streamDetails.DetermineBestStreams();
+
+          if (movie.m_streamDetails.GetVideoDuration() > 0)
+            movie.m_duration = movie.m_streamDetails.GetVideoDuration();
+        }
+
+        movie.m_strPictureURL.Parse();
+        movie.m_parsedDetails = getDetails;
+      }
+      CFileItemPtr pItem(new CFileItem(movie));
+      formatter.FormatLabel(pItem.get());
+
+      int idEpisode = movie.m_iDbId;
+
+      CVideoDbUrl itemUrl = videoUrl;
+      std::string path;
+      if (appendFullShowPath && videoUrl.GetItemType() != "episodes")
+        path = StringUtils::Format("%i/%i/%i", movie.m_iIdShow, movie.m_iSeason, idEpisode);
+      else
+        path = StringUtils::Format("%i", idEpisode);
+      itemUrl.AppendPath(path);
+      pItem->SetPath(itemUrl.ToString());
+
+      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, movie.m_playCount > 0);
+      pItem->m_dateTime = movie.m_firstAired;
+      pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
+      items.Add(pItem);
+
+    }
+
     return true;
   }
   catch (...)
@@ -7494,29 +7854,62 @@ bool CVideoDatabase::GetMusicVideosByWhere(const std::string &baseDir, const Fil
     items.Reserve(results.size());
     // get songs from returned subtable
     const query_data &data = m_pDS->get_result_set().records;
+    std::map<int, CVideoInfoTag> media;
+    std::vector<int> ids;
+    ids.reserve(results.size());
     for (DatabaseResults::const_iterator it = results.begin(); it != results.end(); ++it)
     {
       unsigned int targetRow = (unsigned int)it->at(FieldRow).asInteger();
       const dbiplus::sql_record* const record = data.at(targetRow);
       
-      CVideoInfoTag musicvideo = GetDetailsForMusicVideo(record, getDetails);
+      CVideoInfoTag musicvideo = GetDetailsForMusicVideo(record, VideoDbDetailsNone);
       if (!checkLocks || CProfilesManager::GetInstance().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser ||
           g_passwordManager.IsDatabasePathUnlocked(musicvideo.m_strPath, *CMediaSourceSettings::GetInstance().GetSources("video")))
       {
-        CFileItemPtr item(new CFileItem(musicvideo));
-
-        CVideoDbUrl itemUrl = videoUrl;
-        std::string path = StringUtils::Format("%i", record->at(0).get_asInt());
-        itemUrl.AppendPath(path);
-        item->SetPath(itemUrl.ToString());
-
-        item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, musicvideo.m_playCount > 0);
-        items.Add(item);
+        media[musicvideo.m_iDbId] = musicvideo;
+        ids.push_back(musicvideo.m_iDbId);
       }
     }
-
     // cleanup
     m_pDS->close();
+
+    if (getDetails && !media.empty())
+    {
+      if (getDetails & VideoDbDetailsTag)
+        GetTags(MediaTypeMusicVideo, media);
+
+      if (getDetails & VideoDbDetailsStream)
+        GetStreamDetails(MediaTypeMusicVideo, media);
+    }
+
+    for (auto& id : ids)
+    {
+      auto& movie = media[id];
+      if (getDetails)
+      {
+        if (getDetails & VideoDbDetailsStream)
+        {
+          movie.m_streamDetails.DetermineBestStreams();
+
+          if (movie.m_streamDetails.GetVideoDuration() > 0)
+            movie.m_duration = movie.m_streamDetails.GetVideoDuration();
+        }
+
+        movie.m_strPictureURL.Parse();
+        movie.m_parsedDetails = getDetails;
+      }
+
+      CFileItemPtr item(new CFileItem(movie));
+
+      CVideoDbUrl itemUrl = videoUrl;
+      std::string path = StringUtils::Format("%i", movie.m_iDbId);
+      itemUrl.AppendPath(path);
+      item->SetPath(itemUrl.ToString());
+
+      item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, movie.m_playCount > 0);
+      items.Add(item);
+    }
+
     return true;
   }
   catch (...)

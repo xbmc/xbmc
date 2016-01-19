@@ -596,6 +596,7 @@ public:
   void DeleteBookMarkForEpisode(const CVideoInfoTag& tag);
   bool GetResumePoint(CVideoInfoTag& tag);
   bool GetStreamDetails(CFileItem& item);
+  bool GetStreamDetails(const std::string &media_type, std::map<int, CVideoInfoTag>& details);
   bool GetStreamDetails(CVideoInfoTag& tag) const;
 
   // scraper settings
@@ -698,6 +699,7 @@ public:
   bool LinkMovieToTvshow(int idMovie, int idShow, bool bRemove);
   bool IsLinkedToTvshow(int idMovie);
   bool GetLinksToTvShow(int idMovie, std::vector<int>& ids);
+  bool GetLinksToTvShow(std::map<int, CVideoInfoTag>& details);
 
   // general browsing
   bool GetGenresNav(const std::string& strBaseDir, CFileItemList& items, int idContent=-1, const Filter &filter = Filter(), bool countOnly = false);
@@ -900,8 +902,11 @@ protected:
   bool GetPeopleNav(const std::string& strBaseDir, CFileItemList& items, const char *type, int idContent = -1, const Filter &filter = Filter(), bool countOnly = false);
   bool GetNavCommon(const std::string& strBaseDir, CFileItemList& items, const char *type, int idContent=-1, const Filter &filter = Filter(), bool countOnly = false);
   void GetCast(int media_id, const std::string &media_type, std::vector<SActorInfo> &cast);
+  void GetCast(const std::string &media_type, std::map<int, CVideoInfoTag>& details);
   void GetTags(int media_id, const std::string &media_type, std::vector<std::string> &tags);
+  void GetTags(const std::string &media_type, std::map<int, CVideoInfoTag>& details);
   void GetRatings(int media_id, const std::string &media_type, RatingMap &ratings);
+  void GetRatings(const std::string &media_type, std::map<int, CVideoInfoTag>& details);
 
   void GetDetailsFromDB(std::unique_ptr<dbiplus::Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
   void GetDetailsFromDB(const dbiplus::sql_record* const record, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
