@@ -191,7 +191,10 @@ bool CPVRGUIInfo::TimerInfoToggle(void)
 
 void CPVRGUIInfo::Process(void)
 {
-  unsigned int mLoop(0);
+  unsigned int mLoop(1); /* Delay first backend data cache update. It might last
+                            very long (e.g. GetDriveSpace()) and block parallel
+                            backend operations called by other threads (like
+                            initial EPG and channel sync) */
   int toggleInterval = g_advancedSettings.m_iPVRInfoToggleInterval / 1000;
 
   /* updated on request */
