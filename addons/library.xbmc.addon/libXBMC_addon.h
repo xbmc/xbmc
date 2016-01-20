@@ -36,7 +36,7 @@ typedef intptr_t      ssize_t;
 #endif // !_SSIZE_T_DEFINED
 
 #if defined(BUILD_KODI_ADDON)
-	#include "platform/windows/dlfcn-win32.h"
+	#include "p8-platform/windows/dlfcn-win32.h"
 #else
 	#include "dlfcn-win32.h"
 #endif
