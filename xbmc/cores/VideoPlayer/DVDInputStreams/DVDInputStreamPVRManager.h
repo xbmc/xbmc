@@ -44,15 +44,16 @@ class CDVDInputStreamPVRManager
 public:
   CDVDInputStreamPVRManager(IVideoPlayer* pPlayer, CFileItem& fileitem);
   virtual ~CDVDInputStreamPVRManager();
-  virtual bool Open();
-  virtual void Close();
-  virtual int Read(uint8_t* buf, int buf_size);
-  virtual int64_t Seek(int64_t offset, int whence);
-  virtual bool Pause(double dTime) { return false; }
-  virtual bool IsEOF();
-  virtual int64_t GetLength();
+  virtual bool Open() override;
+  virtual void Close() override;
+  virtual int Read(uint8_t* buf, int buf_size) override;
+  virtual int64_t Seek(int64_t offset, int whence) override;
+  virtual bool Pause(double dTime) override { return false; }
+  virtual bool IsEOF() override;
+  virtual int64_t GetLength() override;
 
-  virtual ENextStream NextStream();
+  virtual ENextStream NextStream() override;
+  virtual bool IsRealtime() override;
 
   bool IsOtherStreamHack(void);
   bool SelectChannelByNumber(unsigned int iChannel);
@@ -61,14 +62,14 @@ public:
   bool PrevChannel(bool preview = false);
   PVR::CPVRChannelPtr GetSelectedChannel();
 
-  int GetTotalTime();
-  int GetTime();
+  int GetTotalTime() override;
+  int GetTime() override;
 
   bool CanRecord();
   bool IsRecording();
   bool Record(bool bOnOff);
-  bool CanSeek();
-  bool CanPause();
+  bool CanSeek() override;
+  bool CanPause() override;
   void Pause(bool bPaused);
 
   bool UpdateItem(CFileItem& item);

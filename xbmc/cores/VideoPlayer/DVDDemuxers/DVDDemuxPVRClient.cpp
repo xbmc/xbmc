@@ -290,10 +290,6 @@ DemuxPacket* CDVDDemuxPVRClient::Read()
     return NULL;
   }
 
-  // TODO query client
-  if (m_pInput)
-    m_pInput->SetRealtime(true);
-
   if (pPacket->iStreamId == DMX_SPECIALID_STREAMINFO)
   {
     RequestStreams();
