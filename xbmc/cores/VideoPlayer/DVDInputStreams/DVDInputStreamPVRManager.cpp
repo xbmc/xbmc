@@ -114,9 +114,6 @@ bool CDVDInputStreamPVRManager::Open()
   if(transFile.substr(0, 6) != "pvr://")
   {
     m_isOtherStreamHack = true;
-
-    if (m_pLiveTV)
-      m_realtime = true;
     
     m_item.SetPath(transFile);
     m_pOtherStream = CDVDFactoryInputStream::CreateInputStream(m_pPlayer, m_item);
@@ -398,4 +395,9 @@ bool CDVDInputStreamPVRManager::CloseAndOpen(const char* strFile)
 bool CDVDInputStreamPVRManager::IsOtherStreamHack(void)
 {
   return m_isOtherStreamHack;
+}
+
+bool CDVDInputStreamPVRManager::IsRealtime()
+{
+  return g_PVRClients->IsRealTimeStream();
 }
