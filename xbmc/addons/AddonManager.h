@@ -91,9 +91,27 @@ namespace ADDON
      \return true if an addon matching the id of the given type is available and is enabled (if enabledOnly is true).
      */
     bool GetAddon(const std::string &id, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabledOnly = true);
-    bool HasAddons(const TYPE &type, bool enabled = true);
-    bool GetAddons(const TYPE &type, VECADDONS &addons, bool enabled = true);
-    bool GetAllAddons(VECADDONS &addons, bool enabled = true);
+
+    bool HasAddons(const TYPE &type);
+
+    bool HasInstalledAddons(const TYPE &type);
+
+    /*! Returns all installed, enabled add-ons. */
+    bool GetAddons(VECADDONS& addons);
+
+    /*! Returns enabled add-ons with given type. */
+    bool GetAddons(VECADDONS& addons, const TYPE& type);
+
+    /*! Returns all installed, including disabled. */
+    bool GetInstalledAddons(VECADDONS& addons);
+
+    /*! Returns installed add-ons, including disabled, with given type. */
+    bool GetInstalledAddons(VECADDONS& addons, const TYPE& type);
+
+    bool GetDisabledAddons(VECADDONS& addons);
+
+    bool GetDisabledAddons(VECADDONS& addons, const TYPE& type);
+
     void AddToUpdateableAddons(AddonPtr &pAddon);
     void RemoveFromUpdateableAddons(AddonPtr &pAddon);    
     bool ReloadSettings(const std::string &id);
@@ -244,6 +262,8 @@ namespace ADDON
 
     AddonPtr Factory(const cp_extension_t *props);
     bool CheckUserDirs(const cp_cfg_element_t *element);
+
+    bool GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enabledOnly);
 
     // private construction, and no assignements; use the provided singleton methods
     CAddonMgr();

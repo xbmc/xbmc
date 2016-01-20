@@ -174,7 +174,7 @@ bool CLanguageResource::FindLanguageAddonByName(const std::string &legacyLanguag
   VECADDONS addons;
   if (!languageAddons.empty())
     addons = languageAddons;
-  else if (!CAddonMgr::GetInstance().GetAddons(ADDON_RESOURCE_LANGUAGE, addons, true) || addons.empty())
+  else if (!CAddonMgr::GetInstance().GetAddons(addons, ADDON_RESOURCE_LANGUAGE) || addons.empty())
     return false;
 
   // try to find a language that matches the old language in name or id

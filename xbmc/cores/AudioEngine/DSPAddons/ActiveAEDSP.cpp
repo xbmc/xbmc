@@ -706,7 +706,7 @@ bool CActiveAEDSP::UpdateAddons(void)
 {
   VECADDONS addons;
   AE_DSP_ADDON dspAddon;
-  bool bReturn(CAddonMgr::GetInstance().GetAddons(ADDON_ADSPDLL, addons, true));
+  bool bReturn(CAddonMgr::GetInstance().GetAddons(addons, ADDON_ADSPDLL));
   size_t usableAddons;
 
   if (bReturn)
@@ -730,7 +730,7 @@ bool CActiveAEDSP::UpdateAddons(void)
   }
 
   if ((!bReturn || usableAddons == 0) && !m_noAddonWarningDisplayed &&
-      !CAddonMgr::GetInstance().HasAddons(ADDON_ADSPDLL, false) &&
+      !CAddonMgr::GetInstance().HasInstalledAddons(ADDON_ADSPDLL) &&
       IsActivated())
   {
     // No audio DSP add-ons could be found

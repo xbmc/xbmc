@@ -1122,7 +1122,7 @@ void CLangInfo::SettingOptionsLanguageNamesFiller(const CSetting *setting, std::
 {
   // find languages...
   ADDON::VECADDONS addons;
-  if (!ADDON::CAddonMgr::GetInstance().GetAddons(ADDON::ADDON_RESOURCE_LANGUAGE, addons, true))
+  if (!ADDON::CAddonMgr::GetInstance().GetAddons(addons, ADDON::ADDON_RESOURCE_LANGUAGE))
     return;
 
   for (ADDON::VECADDONS::const_iterator addon = addons.begin(); addon != addons.end(); ++addon)

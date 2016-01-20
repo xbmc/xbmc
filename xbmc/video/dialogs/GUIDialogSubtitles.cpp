@@ -234,7 +234,7 @@ void CGUIDialogSubtitles::FillServices()
   ClearServices();
 
   VECADDONS addons;
-  ADDON::CAddonMgr::GetInstance().GetAddons(ADDON_SUBTITLE_MODULE, addons, true);
+  ADDON::CAddonMgr::GetInstance().GetAddons(addons, ADDON_SUBTITLE_MODULE);
 
   if (addons.empty())
   {

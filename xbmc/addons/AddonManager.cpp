@@ -327,8 +327,8 @@ bool CAddonMgr::Init()
 
   // disable some system addons by default because they are optional
   VECADDONS addons;
-  GetAddons(ADDON_PVRDLL, addons);
-  GetAddons(ADDON_AUDIODECODER, addons);
+  GetAddons(addons, ADDON_PVRDLL);
+  GetAddons(addons, ADDON_AUDIODECODER);
   std::string systemAddonsPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
   for (auto &addon : addons)
   {
@@ -351,7 +351,7 @@ bool CAddonMgr::Init()
   m_updateBlacklist.insert(blacklisted.begin(), blacklisted.end());
 
   VECADDONS repos;
-  if (GetAddons(ADDON_REPOSITORY, repos))
+  if (GetAddons(repos, ADDON_REPOSITORY))
   {
     VECADDONS::iterator it = repos.begin();
     for (;it != repos.end(); ++it)
@@ -371,46 +371,16 @@ void CAddonMgr::DeInit()
   m_disabled.clear();
 }
 
-bool CAddonMgr::HasAddons(const TYPE &type, bool enabled /*= true*/)
+bool CAddonMgr::HasAddons(const TYPE &type)
 {
-  // TODO: This isn't particularly efficient as we create an addon type for each addon using the Factory, just so
-  //       we can check addon dependencies in the addon constructor.
   VECADDONS addons;
-  return GetAddons(type, addons, enabled);
+  return GetAddonsInternal(type, addons, true);
 }
 
-bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/)
+bool CAddonMgr::HasInstalledAddons(const TYPE &type)
 {
-  CSingleLock lock(m_critSection);
-  if (!m_cp_context)
-    return false;
-
-  cp_status_t status;
-  int num;
-  cp_plugin_info_t **cpaddons = m_cpluff->get_plugins_info(m_cp_context, &status, &num);
-
-  for (int i = 0; i < num; ++i)
-  {
-    const cp_plugin_info_t *cpaddon = cpaddons[i];
-    if (cpaddon->extensions && IsAddonDisabled(cpaddon->identifier) != enabled)
-    {
-      //Get the first extension only
-      AddonPtr addon = Factory(&cpaddon->extensions[0]);
-      if (addon)
-      {
-        if (enabled)
-        {
-          // if the addon has a running instance, grab that
-          AddonPtr runningAddon = addon->GetRunningInstance();
-          if (runningAddon)
-            addon = runningAddon;
-        }
-        addons.push_back(addon);
-      }
-    }
-  }
-  m_cpluff->release_info(m_cp_context, cpaddons);
-  return !addons.empty();
+  VECADDONS addons;
+  return GetAddonsInternal(type, addons, false);
 }
 
 void CAddonMgr::AddToUpdateableAddons(AddonPtr &pAddon)
@@ -463,7 +433,7 @@ VECADDONS CAddonMgr::GetAvailableUpdates()
 
   VECADDONS updates;
   VECADDONS installed;
-  GetAllAddons(installed, true);
+  GetAddons(installed);
   for (const auto& addon : installed)
   {
     AddonPtr remote;
@@ -479,7 +449,61 @@ bool CAddonMgr::HasAvailableUpdates()
   return !GetAvailableUpdates().empty();
 }
 
-bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* = true */)
+bool CAddonMgr::GetAddons(VECADDONS& addons)
+{
+  return GetAddonsInternal(ADDON_UNKNOWN, addons, true);
+}
+
+bool CAddonMgr::GetAddons(VECADDONS& addons, const TYPE& type)
+{
+  return GetAddonsInternal(type, addons, true);
+}
+
+bool CAddonMgr::GetInstalledAddons(VECADDONS& addons)
+{
+  return GetAddonsInternal(ADDON_UNKNOWN, addons, false);
+}
+
+bool CAddonMgr::GetInstalledAddons(VECADDONS& addons, const TYPE& type)
+{
+  return GetAddonsInternal(type, addons, false);
+}
+
+bool CAddonMgr::GetDisabledAddons(VECADDONS& addons)
+{
+  return CAddonMgr::GetDisabledAddons(addons, ADDON_UNKNOWN);
+}
+
+bool CAddonMgr::GetDisabledAddons(VECADDONS& addons, const TYPE& type)
+{
+  VECADDONS all;
+  if (CAddonMgr::GetInstance().GetInstalledAddons(all, type))
+  {
+    std::copy_if(all.begin(), all.end(), std::back_inserter(addons),
+        [this](const AddonPtr& addon){ return IsAddonDisabled(addon->ID()); });
+    return true;
+  }
+  return false;
+}
+
+static cp_extension_t* GetFirstExtPoint(cp_plugin_info_t* addon, TYPE type)
+{
+  for (unsigned int i = 0; i < addon->num_extensions; ++i)
+  {
+    cp_extension_t* ext = &addon->extensions[i];
+    if (strcmp(ext->ext_point_id, "kodi.addon.metadata") == 0 || strcmp(ext->ext_point_id, "xbmc.addon.metadata") == 0)
+      continue;
+
+    if (type == ADDON_UNKNOWN)
+      return ext;
+
+    if (type == TranslateType(ext->ext_point_id))
+      return ext;
+  }
+  return nullptr;
+}
+
+bool CAddonMgr::GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enabledOnly)
 {
   CSingleLock lock(m_critSection);
   if (!m_cp_context)
@@ -487,27 +511,26 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
   cp_status_t status;
   int num;
   std::string ext_point(TranslateType(type));
-  cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
+  cp_plugin_info_t **cpaddons = m_cpluff->get_plugins_info(m_cp_context, &status, &num);
+
   for(int i=0; i <num; i++)
   {
-    const cp_extension_t *props = exts[i];
-    if (IsAddonDisabled(props->plugin->identifier) != enabled)
+    cp_extension_t *props = GetFirstExtPoint(cpaddons[i], type);
+    if (props == nullptr)
+      continue;
+    if (enabledOnly && IsAddonDisabled(cpaddons[i]->identifier))
+      continue;
+    AddonPtr addon(Factory(props));
+    if (addon)
     {
-      AddonPtr addon(Factory(props));
-      if (addon)
-      {
-        if (enabled)
-        {
-          // if the addon has a running instance, grab that
-          AddonPtr runningAddon = addon->GetRunningInstance();
-          if (runningAddon)
-            addon = runningAddon;
-        }
-        addons.push_back(addon);
-      }
+      // if the addon has a running instance, grab that
+      AddonPtr runningAddon = addon->GetRunningInstance();
+      if (runningAddon)
+        addon = runningAddon;
+      addons.push_back(addon);
     }
   }
-  m_cpluff->release_info(m_cp_context, exts);
+  m_cpluff->release_info(m_cp_context, cpaddons);
   return addons.size() > 0;
 }
 
@@ -1138,7 +1161,7 @@ bool CAddonMgr::StartServices(const bool beforelogin)
   CLog::Log(LOGDEBUG, "ADDON: Starting service addons.");
 
   VECADDONS services;
-  if (!GetAddons(ADDON_SERVICE, services))
+  if (!GetAddons(services, ADDON_SERVICE))
     return false;
 
   bool ret = true;
@@ -1161,7 +1184,7 @@ void CAddonMgr::StopServices(const bool onlylogin)
   CLog::Log(LOGDEBUG, "ADDON: Stopping service addons.");
 
   VECADDONS services;
-  if (!GetAddons(ADDON_SERVICE, services))
+  if (!GetAddons(services, ADDON_SERVICE))
     return;
 
   for (IVECADDONS it = services.begin(); it != services.end(); ++it)

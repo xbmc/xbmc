@@ -76,7 +76,7 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     share.strName = g_localizeStrings.Get(24043); // "Available updates"
     m_sources.push_back(share);
   }
-  if (CAddonMgr::GetInstance().HasAddons(ADDON_REPOSITORY, true))
+  if (CAddonMgr::GetInstance().HasAddons(ADDON_REPOSITORY))
   {
     CMediaSource share;
     share.strPath = "addons://repos/";
