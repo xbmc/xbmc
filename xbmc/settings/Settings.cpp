@@ -1159,6 +1159,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_PVRCLIENT_MENUHOOK);
   settingSet.insert(CSettings::SETTING_PVRMENU_SEARCHICONS);
   settingSet.insert(CSettings::SETTING_EPG_RESETEPG);
+  settingSet.insert(CSettings::SETTING_EPG_DAYSTODISPLAY);
   settingSet.insert(CSettings::SETTING_PVRPARENTAL_ENABLED);
   m_settingsManager->RegisterCallback(&PVR::g_PVRManager, settingSet);
 

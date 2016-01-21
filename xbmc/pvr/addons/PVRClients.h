@@ -531,6 +531,15 @@ namespace PVR
      */
     PVR_ERROR GetEPGForChannel(const CPVRChannelPtr &channel, EPG::CEpg *epg, time_t start, time_t end);
 
+    /*!
+     * Tell the client the time frame to use when notifying epg events back to Kodi. The client might push epg events asynchronously
+     * to Kodi using the callback function EpgEventStateChange. To be able to only push events that are actually of interest for Kodi,
+     * client needs to know about the epg time frame Kodi uses.
+     * @param iDays number of days from "now". EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all epg events, regardless of event times.
+     * @return PVR_ERROR_NO_ERROR if new value was successfully set.
+     */
+    PVR_ERROR SetEPGTimeFrame(int iDays);
+
     //@}
 
     /*! @name Channel methods */

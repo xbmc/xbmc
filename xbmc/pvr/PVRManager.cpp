@@ -176,6 +176,10 @@ void CPVRManager::OnSettingChanged(const CSetting *setting)
         ((CSettingBool*)setting)->SetValue(false);
     }
   }
+  else if(settingId == CSettings::SETTING_EPG_DAYSTODISPLAY)
+  {
+    m_addons->SetEPGTimeFrame(static_cast<const CSettingInt*>(setting)->GetValue());
+  }
 }
 
 void CPVRManager::OnSettingAction(const CSetting *setting)

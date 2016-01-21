@@ -196,6 +196,8 @@ ADDON_STATUS CPVRClient::Create(int iClientId)
 
   m_bReadyToUse = bReadyToUse;
 
+  SetEPGTimeFrame(CSettings::GetInstance().GetInt(CSettings::SETTING_EPG_DAYSTODISPLAY));
+
   return status;
 }
 
@@ -798,6 +800,29 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannelPtr &channel, CEpg *epg,
         addonChannel,
         start ? start - g_advancedSettings.m_iPVRTimeCorrection : 0,
         end ? end - g_advancedSettings.m_iPVRTimeCorrection : 0);
+
+    LogError(retVal, __FUNCTION__);
+  }
+  catch (std::exception &e)
+  {
+    LogException(e, __FUNCTION__);
+  }
+
+  return retVal;
+}
+
+PVR_ERROR CPVRClient::SetEPGTimeFrame(int iDays)
+{
+  if (!m_bReadyToUse)
+    return PVR_ERROR_SERVER_ERROR;
+
+  if (!m_addonCapabilities.bSupportsEPG)
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
+  PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
+  try
+  {
+    retVal = m_pStruct->SetEPGTimeFrame(iDays);
 
     LogError(retVal, __FUNCTION__);
   }
