@@ -57,6 +57,7 @@ public:
   int planes;                            // 1 for non planar formats, #channels for planar
   int nb_samples;                        // number of frames used
   int max_nb_samples;                    // max number of frames this packet can hold
+  int pause_burst_ms;
 };
 
 class CActiveAEBufferPool;

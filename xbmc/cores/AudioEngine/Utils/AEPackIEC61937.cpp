@@ -216,3 +216,30 @@ int CAEPackIEC61937::PackDTS(uint8_t *data, unsigned int size, uint8_t *dest, bo
 
   return frameSize;
 }
+
+int CAEPackIEC61937::PackPause(uint8_t *dest, unsigned int millis, unsigned int framesize, unsigned int samplerate, unsigned int rep_priod, unsigned int encodedRate)
+{
+  int periodInBytes = rep_priod * framesize;
+  double periodInTime = (double)rep_priod / samplerate * 1000;
+  int periodsNeeded = millis / periodInTime;
+  int maxPeriods = MAX_IEC61937_PACKET / periodInBytes;
+  if (periodsNeeded > maxPeriods)
+    periodsNeeded = maxPeriods;
+  uint16_t gap = encodedRate * millis / 1000;
+
+  struct IEC61937Packet *packet = (struct IEC61937Packet*)dest;
+  packet->m_preamble1 = IEC61937_PREAMBLE1;
+  packet->m_preamble2 = IEC61937_PREAMBLE2;
+  packet->m_type = 3;
+  packet->m_length = 32;
+  memset(packet->m_data, 0, periodInBytes - 8);
+
+  for (int i=1; i<periodsNeeded; i++)
+  {
+    memcpy(dest+i*periodInBytes, dest, periodInBytes);
+  }
+
+  packet->m_data[1] = (gap & 0x00FF) << 8;
+  packet->m_data[0] = (gap & 0xFF00) >> 8;
+  return periodsNeeded * periodInBytes;
+}

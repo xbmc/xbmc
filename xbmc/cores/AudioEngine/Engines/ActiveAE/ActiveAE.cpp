@@ -2229,13 +2229,6 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   if (!stream->m_pClock)
     return ret;
 
-  if (m_mode == MODE_RAW)
-  {
-    // TODO
-    // implement pause bursts for passthrough, until then we need to exit here
-    stream->m_syncClock = CActiveAEStream::INSYNC;
-  }
-
   if (stream->m_syncClock == CActiveAEStream::STARTSYNC)
   {
     stream->m_syncClock = CActiveAEStream::MUTE;
@@ -2257,13 +2250,6 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
 
   bool newerror = stream->m_syncError.Get(error, stream->m_syncClock ? 100 : 1000);
 
-  // TODO: delete if passthrough ever gets a proper sync method
-  // for now I recommend to every one just not to use it, it has zero advantage anyway
-  if (m_mode == MODE_RAW)
-  {
-    return ret;
-  }
-
   if (newerror && fabs(error) > threshold && stream->m_syncClock == CActiveAEStream::INSYNC)
   {
     stream->m_syncClock = CActiveAEStream::ADJUST;
@@ -2282,9 +2268,17 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   if (stream->m_syncClock == CActiveAEStream::MUTE)
   {
     CSampleBuffer *buf = stream->m_resampleBuffers->m_outputSamples.front();
-    for(int i=0; i<buf->pkt->planes; i++)
+    if (m_mode == MODE_RAW)
     {
-      memset(buf->pkt->data[i], 0, buf->pkt->linesize);
+      buf->pkt->nb_samples = 0;
+      buf->pkt->pause_burst_ms = stream->m_resampleBuffers->m_format.m_streamInfo.GetDuration();
+    }
+    else
+    {
+      for(int i=0; i<buf->pkt->planes; i++)
+      {
+        memset(buf->pkt->data[i], 0, buf->pkt->linesize);
+      }
     }
   }
   else if (stream->m_syncClock == CActiveAEStream::ADJUST)
@@ -2294,6 +2288,8 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
       ret = m_silenceBuffers->GetFreeBuffer();
       if (ret)
       {
+        ret->pkt->nb_samples = 0;
+        ret->pkt->pause_burst_ms = 0;
         int framesToDelay = error / 1000 * ret->pkt->config.sample_rate;
         if (framesToDelay > ret->pkt->max_nb_samples)
           framesToDelay = ret->pkt->max_nb_samples;
@@ -2305,12 +2301,31 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
             framesToDelay = 0;
         }
         ret->pkt->nb_samples = framesToDelay;
-        for(int i=0; i<ret->pkt->planes; i++)
+        if (m_mode == MODE_RAW)
         {
-          memset(ret->pkt->data[i], 0, ret->pkt->linesize);
+          ret->pkt->nb_samples = 0;
+          ret->pkt->pause_burst_ms = error;
+          if (error > stream->m_format.m_streamInfo.GetDuration())
+            ret->pkt->pause_burst_ms = stream->m_format.m_streamInfo.GetDuration();
+
+          stream->m_syncError.Correction(-ret->pkt->pause_burst_ms);
+          error -= ret->pkt->pause_burst_ms;
         }
-        stream->m_syncError.Correction(-framesToDelay*1000/ret->pkt->config.sample_rate);
-        error -= framesToDelay*1000/ret->pkt->config.sample_rate;
+        else
+        {
+          stream->m_syncError.Correction(-framesToDelay*1000/ret->pkt->config.sample_rate);
+          error -= framesToDelay*1000/ret->pkt->config.sample_rate;
+          for(int i=0; i<ret->pkt->planes; i++)
+          {
+            memset(ret->pkt->data[i], 0, ret->pkt->linesize);
+          }
+        }
+
+        if (!ret->pkt->nb_samples & !ret->pkt->pause_burst_ms)
+        {
+          ret->Return();
+          ret = nullptr;
+        }
       }
     }
     else
@@ -2326,14 +2341,26 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
         else
           framesToSkip = 0;
       }
-      int bytesToSkip = framesToSkip*buf->pkt->bytes_per_sample;
-      for(int i=0; i<buf->pkt->planes; i++)
+      if (m_mode == MODE_RAW)
       {
-        memmove(buf->pkt->data[i], buf->pkt->data[i]+bytesToSkip, buf->pkt->linesize - bytesToSkip);
+        if (-error > stream->m_format.m_streamInfo.GetDuration() / 2)
+        {
+          stream->m_syncError.Correction(stream->m_format.m_streamInfo.GetDuration());
+          error += stream->m_format.m_streamInfo.GetDuration();
+          buf->pkt->nb_samples = 0;
+        }
       }
-      buf->pkt->nb_samples -= framesToSkip;
-      stream->m_syncError.Correction(framesToSkip*1000/buf->pkt->config.sample_rate);
-      error += framesToSkip*1000/buf->pkt->config.sample_rate;
+      else
+      {
+        int bytesToSkip = framesToSkip*buf->pkt->bytes_per_sample;
+        for(int i=0; i<buf->pkt->planes; i++)
+        {
+          memmove(buf->pkt->data[i], buf->pkt->data[i]+bytesToSkip, buf->pkt->linesize - bytesToSkip);
+        }
+        buf->pkt->nb_samples -= framesToSkip;
+        stream->m_syncError.Correction(framesToSkip*1000/buf->pkt->config.sample_rate);
+        error += framesToSkip*1000/buf->pkt->config.sample_rate;
+      }
     }
 
     if (fabs(error) < 30)
