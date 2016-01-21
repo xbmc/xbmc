@@ -65,6 +65,11 @@ public:
   */
   virtual unsigned int AddPackets(uint8_t **data, unsigned int frames, unsigned int offset) = 0;
 
+  /*!
+   * @brief instruct the sink to add a pause
+   * @param millis ms to pause
+   */
+  virtual void AddPause(unsigned int millis) {};
 
   /*!
    * @brief Return a timestamped status structure with delay and sink info

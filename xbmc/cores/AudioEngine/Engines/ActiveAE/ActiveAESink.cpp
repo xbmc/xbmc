@@ -902,6 +902,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
   unsigned int written = 0;
   std::unique_ptr<uint8_t[]> mergebuffer;
   uint8_t* p_mergebuffer = NULL;
+  AEDelayStatus status;
 
   if (m_requestedFormat.m_dataFormat == AE_FMT_RAW)
   {
@@ -984,10 +985,16 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
         totalFrames = size / m_sinkFormat.m_frameSize;
         frames = totalFrames;
       }
+      if (samples->pkt->pause_burst_ms > 0)
+      {
+        m_sink->AddPause(samples->pkt->pause_burst_ms);
+        m_sink->GetDelay(status);
+        m_stats->UpdateSinkDelay(status, samples->pool ? 1 : 0);
+        return status.delay * 1000;
+      }
     }
   }
 
-  AEDelayStatus status;
   int framesOrPackets;
 
   while (frames > 0)
