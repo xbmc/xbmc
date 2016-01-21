@@ -136,6 +136,14 @@ CAEStreamParser::~CAEStreamParser()
 {
 }
 
+void CAEStreamParser::Reset()
+{
+  m_skipBytes = 0;
+  m_bufferSize = 0;
+  m_needBytes = 0;
+  m_hasSync = false;
+}
+
 int CAEStreamParser::AddData(uint8_t *data, unsigned int size, uint8_t **buffer/* = NULL */, unsigned int *bufferSize/* = 0 */)
 {
   if (size == 0)
