@@ -637,6 +637,17 @@ extern "C"
   bool IsRealTimeStream();
 
   /*!
+   * Tell the client the time frame to use when notifying epg events back to Kodi. The client might push epg events asynchronously
+   * to Kodi using the callback function EpgEventStateChange. To be able to only push events that are actually of interest for Kodi,
+   * client needs to know about the epg time frame Kodi uses. Kodi calls this function once after the client add-on has been sucessfully
+   * initialized and then everytime the time frame value changes.
+   * @param iDays number of days from "now". EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all epg events, regardless of event times.
+   * @return PVR_ERROR_NO_ERROR if new value was successfully set.
+   * @remarks Required if bSupportsEPG is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   */
+  PVR_ERROR SetEPGTimeFrame(int iDays);
+
+  /*!
    * Called by XBMC to assign the function pointers of this add-on to pClient.
    * @param pClient The struct to assign the function pointers to.
    */
@@ -723,6 +734,8 @@ extern "C"
 
     pClient->IsTimeshifting                 = IsTimeshifting;
     pClient->IsRealTimeStream               = IsRealTimeStream;
+
+    pClient->SetEPGTimeFrame                = SetEPGTimeFrame;
   };
 };
 

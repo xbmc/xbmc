@@ -158,6 +158,11 @@ extern "C" {
                                              PVR_WEEKDAY_SUNDAY;
 
   /*!
+   * @brief timeframe value for use with SetEPGTimeFrame function to indicate "no timeframe".
+   */
+  const int EPG_TIMEFRAME_UNLIMITED = -1;
+
+  /*!
    * @brief PVR add-on error codes
    */
   typedef enum
@@ -580,6 +585,7 @@ extern "C" {
     const char*  (__cdecl* GetBackendHostname)(void);
     bool         (__cdecl* IsTimeshifting)(void);
     bool         (__cdecl* IsRealTimeStream)(void);
+    PVR_ERROR    (__cdecl* SetEPGTimeFrame)(int);
   } PVRClient;
 
 #ifdef __cplusplus
