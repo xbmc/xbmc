@@ -361,7 +361,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   format                    = m_format;
 
   // Force volume to 100% for passthrough
-  if (m_passthrough)
+  if (m_passthrough && !WantsIEC61937())
   {
     m_volume = CXBMCApp::GetSystemVolume();
     CXBMCApp::SetSystemVolume(1.0);
