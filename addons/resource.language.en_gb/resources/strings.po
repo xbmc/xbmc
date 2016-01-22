@@ -2879,6 +2879,7 @@ msgid "Browse for playlist"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+#: xbmc/interfaces/builtins/SkinBuiltins.cpp
 msgctxt "#657"
 msgid "Browse for folder"
 msgstr ""
