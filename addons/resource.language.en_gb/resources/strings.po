@@ -5594,6 +5594,7 @@ msgstr ""
 #: xbmc/peripherals/bus/PeripheralBus.cpp
 #: system/settings/settings.xml
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+#: xbmc/addons/GUIWindowAddonBrowser.cpp
 msgctxt "#13106"
 msgid "Disabled"
 msgstr ""
@@ -8838,8 +8839,13 @@ msgctxt "#19097"
 msgid "Enter the name for the recording"
 msgstr ""
 
+#: xbmc/addons/AddonSystemSettings.cpp
+#: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
+#: xbmc/pvr/channels/PVRChannelGroupInternal.cpp
+#: xbmc/pvr/PVRManager.cpp
+#: xbmc/settings/dialogs/GUIDialogAudioDSPManager.cpp:
 msgctxt "#19098"
-msgid "Warning"
+msgid "Warning!"
 msgstr ""
 
 #: xbmc/pvr/PVRGUIInfo.cpp
@@ -17814,7 +17820,31 @@ msgctxt "#36614"
 msgid "Show add-ons that are currently running in the background."
 msgstr ""
 
-#empty strings from id 36615 to 36899
+#. Label of a setting or option referring to the source/origin of e.g. add-ons.
+#: system/settings/settings.xml
+msgctxt "#36615"
+msgid "Unknown sources"
+msgstr ""
+
+#. Description of setting "System -> Add-ons -> Unknown sources" with label #36615
+#: system/settings/settings.xml
+msgctxt "#36616"
+msgid "Allow installation of add-ons from unknown sources."
+msgstr ""
+
+#. Text in warning dialog when attempting to install add-ons from zip file.
+#: xbmc/addons/GUIWindowAddonBrowser.cpp
+msgctxt "#36617"
+msgid "For security, installation of add-ons from unknown sources is disabled."
+msgstr ""
+
+#. Text in confirm dialog when enabling setting "System -> Add-ons -> Unknown sources"
+#: xbmc/addons/AddonSystemSettings.cpp
+msgctxt "#36618"
+msgid "Add-ons will be given access to personal data stored on this device. By allowing, you agree that you are solely responsible for any loss of data, unwanted behaviour, or damage to your device. Proceed?"
+msgstr ""
+
+#empty strings from id 36619 to 36899
 
 #: xbmc/media/MediaType.cpp
 msgctxt "#36900"

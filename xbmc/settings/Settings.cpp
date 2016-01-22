@@ -408,6 +408,7 @@ const std::string CSettings::SETTING_SYSTEM_PLAYLISTSPATH = "system.playlistspat
 const std::string CSettings::SETTING_ADDONS_AUTOUPDATES = "general.addonupdates";
 const std::string CSettings::SETTING_ADDONS_NOTIFICATIONS = "general.addonnotifications";
 const std::string CSettings::SETTING_ADDONS_SHOW_RUNNING = "addons.showrunning";
+const std::string CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES = "addons.unknownsources";
 const std::string CSettings::SETTING_ADDONS_MANAGE_DEPENDENCIES = "addons.managedependencies";
 const std::string CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER = "general.addonforeignfilter";
 const std::string CSettings::SETTING_GENERAL_ADDONBROKENFILTER = "general.addonbrokenfilter";
@@ -1202,6 +1203,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_ADDONS_SHOW_RUNNING);
   settingSet.insert(CSettings::SETTING_ADDONS_MANAGE_DEPENDENCIES);
+  settingSet.insert(CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES);
   m_settingsManager->RegisterCallback(&ADDON::CAddonSystemSettings::GetInstance(), settingSet);
 
   settingSet.clear();
