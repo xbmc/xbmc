@@ -1065,6 +1065,9 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
 
 EINTERLACEMETHOD CWinRenderer::AutoInterlaceMethod()
 {
+  if (m_renderMethod == RENDER_DXVA)
+    return VS_INTERLACEMETHOD_RENDER_BOB;
+
   return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
 }
 
