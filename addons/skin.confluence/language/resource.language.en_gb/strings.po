@@ -705,3 +705,27 @@ msgstr ""
 msgctxt "#31960"
 msgid "RADIO"
 msgstr ""
+
+msgctxt "#31961"
+msgid "Home screen widgets"
+msgstr ""
+
+msgctxt "#31962"
+msgid "In progress movies"
+msgstr ""
+
+msgctxt "#31963"
+msgid "Random movies"
+msgstr ""
+
+msgctxt "#31964"
+msgid "Random episodes"
+msgstr ""
+
+msgctxt "#31965"
+msgid "Most played albums"
+msgstr ""
+
+msgctxt "#31966"
+msgid "Random albums"
+msgstr ""
