@@ -73,6 +73,7 @@ public:
     PLAYER_CHANNEL_SELECT_NUMBER,   // switches to the channel with the provided channel number
     PLAYER_CHANNEL_SELECT,          // switches to the provided channel
     PLAYER_STARTED,                 // sent whenever a sub player has finished it's first frame after open
+    PLAYER_AVCHANGE,                // signal a change in audio or video parameters
 
     // demuxer related messages
 

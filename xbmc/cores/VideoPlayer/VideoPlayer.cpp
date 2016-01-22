@@ -614,7 +614,7 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
       m_CurrentTeletext(STREAM_TELETEXT, VideoPlayer_TELETEXT),
       m_CurrentRadioRDS(STREAM_RADIO_RDS, VideoPlayer_RDS),
       m_messenger("player"),
-      m_renderManager(m_clock),
+      m_renderManager(m_clock, this),
       m_ready(true)
 {
   m_players_created = false;
@@ -2816,6 +2816,12 @@ void CVideoPlayer::HandleMessages()
         if (((CDVDMsgGeneralSynchronize*)pMsg)->Wait(100, SYNCSOURCE_OWNER))
           CLog::Log(LOGDEBUG, "CVideoPlayer - CDVDMsg::GENERAL_SYNCHRONIZE");
       }
+      else if (pMsg->IsType(CDVDMsg::PLAYER_AVCHANGE))
+      {
+        UpdateStreamInfos();
+        g_dataCacheCore.SignalAudioInfoChange();
+        g_dataCacheCore.SignalVideoInfoChange();
+      }
 
     pMsg->Release();
   }
@@ -4961,6 +4967,11 @@ bool CVideoPlayer::RenderCaptureGetPixels(unsigned int captureId, unsigned int m
 std::string CVideoPlayer::GetRenderVSyncState()
 {
   return m_renderManager.GetVSyncState();
+}
+
+void CVideoPlayer::VideoParamsChange()
+{
+  m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_AVCHANGE));
 }
 
 // IDispResource interface
