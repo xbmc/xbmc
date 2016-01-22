@@ -96,6 +96,7 @@ protected:
   }
 
   AVFrame* m_pFrame;
+  AVFrame* m_pDecodedFrame;
   AVCodecContext* m_pCodecContext;
 
   std::string       m_filters;
