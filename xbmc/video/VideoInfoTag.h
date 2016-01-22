@@ -197,7 +197,7 @@ public:
   int m_iIdRating;
   std::string m_strDefaultRating;
   int m_iUserRating;
-  float m_fEpBookmark;
+  CBookmark m_EpBookmark;
   int m_iBookmarkId;
   int m_iIdShow;
   int m_iIdSeason;
