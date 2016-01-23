@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.xbmc.org"
 		name="Kodi Add-on repository"
-		version="2.4.4"
+		version="2.4.5"
 		provider-name="XBMC Foundation">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -162,7 +162,7 @@
 		<disclaimer lang="is_IS">Kodi teymið gerir ekki allar þessar viðbætur og er ekki ábyrgt fyrir innihaldi þeirra.</disclaimer>
 		<disclaimer lang="it_IT">Il team di Kodi non ha creato tutti gli add-on di questa libreria e non è responsabile per il loro contenuto</disclaimer>
 		<disclaimer lang="ja_JP">Kodi チームが、このリポジトリ上の全アドオンを作ったわけではありません。また、その内容についても責任は負いかねます。</disclaimer>
-		<disclaimer lang="ko_KR">Team-Kodi가 이 저장소의 모든 애드온을 제작한 것은 아니며, 애드온 컨텐츠에 대한 책임이 없습니다.</disclaimer>
+		<disclaimer lang="ko_KR">Team-Kodi가 이 저장소의 모든 애드온을 제작한 것은 아니며, 애드온 콘텐츠에 대한 책임이 없습니다.</disclaimer>
 		<disclaimer lang="lt_LT">Kodi komanda netestavo priedų šioje saugykloje ir neatsako arba nėra atsakinga už jų turinį</disclaimer>
 		<disclaimer lang="lv_LV">Kodi komanda nav izveidojusi visus šīs krātuves pielikumus un nav atbildīga par to saturu</disclaimer>
 		<disclaimer lang="mk_MK">Kodi тимот ги нема направено сите овие додатоци и не е одговорен за нивната содржина</disclaimer>
