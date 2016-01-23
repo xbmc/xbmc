@@ -737,7 +737,7 @@ public class Splash extends Activity {
           Log.e(TAG, mErrorMsg);
           mState = InError;
         } else {
-          ret = CheckCpuFeature("neon") || CheckCpuFeature("aarch64");  //aarch64 is always neon
+          ret = CheckCpuFeature("neon") || CheckCpuFeature("aarch64") || CheckCpuFeature("asimd");  // aarch64 is always neon; asimd feature also represents neon
           if (!ret) {
             mErrorMsg = "This @APP_NAME@ package is not compatible with your device (NEON).\nPlease check the <a href=\"http://wiki.kodi.tv/index.php?title=XBMC_for_Android_specific_FAQ\">Kodi Android wiki</a> for more information.";
             Log.e(TAG, mErrorMsg);
