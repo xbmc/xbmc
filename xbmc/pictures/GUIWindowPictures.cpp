@@ -296,7 +296,7 @@ bool CGUIWindowPictures::GetDirectory(const std::string &strDirectory, CFileItem
   if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("pictures"), &label))
     items.SetLabel(label);
 
-  if (items.GetContent().empty() && !items.IsVirtualDirectoryRoot())
+  if (items.GetContent().empty() && !items.IsVirtualDirectoryRoot() && !items.IsPlugin())
     items.SetContent("images");
   return true;
 }
