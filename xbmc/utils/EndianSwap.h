@@ -24,11 +24,12 @@
 
 /* Include config.h to define (or not) WORDS_BIGENDIAN
    File created by configure */
-#if defined(TARGET_POSIX)
+#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
 #include "config.h"
-#include <inttypes.h>
 #endif
-#ifdef TARGET_WINDOWS
+#ifdef TARGET_POSIX
+#include <inttypes.h>
+#elif TARGET_WINDOWS
 #define __inline__ __inline
 #include <stdint.h>
 #endif
