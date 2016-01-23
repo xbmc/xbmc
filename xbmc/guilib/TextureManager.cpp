@@ -44,6 +44,7 @@
 #if defined(TARGET_DARWIN_IOS)
 #include "windowing/WindowingFactory.h" // for g_Windowing in CGUITextureManager::FreeUnusedTextures
 #endif
+#include "FFmpegImage.h"
 
 /************************************************************************/
 /*                                                                      */
@@ -408,6 +409,51 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
       return pMap->GetTexture();
     }
   } // of if (strPath.Right(4).ToLower()==".gif")
+  else if (StringUtils::EndsWithNoCase(strPath, ".apng"))
+  {
+    CTextureMap* pMap = nullptr;
+    CFFmpegImage* anim = new CFFmpegImage("image/apng");
+    XFILE::CFile file;
+    XFILE::auto_buffer buf;
+    CFFmpegImage anim(mimeType);
+    pMap = new CTextureMap(strTextureName, 0, 0, 0);
+
+    if (file.LoadFile(strPath, buf) <= 0 ||
+       !anim.Initialize((uint8_t*)buf.get(), buf.size()) || !pMap)
+    {
+      CLog::Log(LOGERROR, "Texture manager unable to load file: %s", CURL::GetRedacted(strPath).c_str());
+      file.Close();
+      return emptyTexture;
+    }
+
+    unsigned int maxWidth = 0;
+    unsigned int maxHeight = 0;
+
+    auto frame = anim.ReadFrame();
+    while (frame)
+    {
+      CTexture *glTexture = new CTexture();
+      if (glTexture)
+      {
+        glTexture->LoadFromMemory(anim.Width(), anim.Height(), frame->GetPitch(), XB_FMT_A8R8G8B8, true, frame->m_pImage);
+        pMap->Add(glTexture, frame->m_delay);
+        maxWidth = std::max(maxWidth, glTexture->GetWidth());
+        maxHeight = std::max(maxHeight, glTexture->GetHeight());
+      }
+      frame = anim.ReadFrame();
+    }
+
+    pMap->SetWidth((int)maxWidth);
+    pMap->SetHeight((int)maxHeight);
+
+    file.Close();
+
+    if (pMap)
+    {
+      m_vecTextures.push_back(pMap);
+      return pMap->GetTexture();
+    }
+  }
 
   CBaseTexture *pTexture = NULL;
   int width = 0, height = 0;

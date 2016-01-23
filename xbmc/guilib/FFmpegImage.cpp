@@ -221,6 +221,8 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, unsigned int bufSize)
   AVInputFormat* inp = nullptr;
   if (is_jpeg)
     inp = av_find_input_format("jpeg_pipe");
+  else if (m_strMimeType == "image/apng")
+    inp = av_find_input_format("apng");
   else if (is_png)
     inp = av_find_input_format("png_pipe");
   else if (is_tiff)
