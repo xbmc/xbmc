@@ -15210,8 +15210,8 @@ msgstr ""
 
 #empty strings from id 34409 to 34999
 
-#: addons/skin.confluence/720p/DialogPeripheralManager.xml
 #: system/settings/settings.xml
+#: xbmc/peripherals/Peripherals.cpp
 msgctxt "#35000"
 msgid "Peripherals"
 msgstr ""
@@ -15276,34 +15276,7 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr ""
 
-#empty strings from id 35103 to 35499
-
-#: Unknown
-msgctxt "#35500"
-msgid "Location"
-msgstr ""
-
-#: addons/skin.confluence/720p/DialogPeripheralManager.xml
-msgctxt "#35501"
-msgid "Class"
-msgstr ""
-
-#: Unknown
-msgctxt "#35502"
-msgid "Name"
-msgstr ""
-
-#: addons/skin.confluence/720p/DialogPeripheralManager.xml
-msgctxt "#35503"
-msgid "Vendor"
-msgstr ""
-
-#: addons/skin.confluence/720p/DialogPeripheralManager.xml
-msgctxt "#35504"
-msgid "Product ID"
-msgstr ""
-
-#empty strings from id 35505 to 35999
+#empty strings from id 35103 to 35999
 
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 msgctxt "#36000"
