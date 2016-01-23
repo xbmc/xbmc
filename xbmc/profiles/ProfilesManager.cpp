@@ -71,8 +71,12 @@ using namespace XFILE;
 static CProfile EmptyProfile;
 
 CProfilesManager::CProfilesManager()
-  : m_usingLoginScreen(false), m_autoLoginProfile(-1), m_lastUsedProfile(0),
-    m_currentProfile(0), m_nextProfileId(0)
+  : m_usingLoginScreen(false),
+    m_profileLoadedForLogin(false),
+    m_autoLoginProfile(-1),
+    m_lastUsedProfile(0),
+    m_currentProfile(0),
+    m_nextProfileId(0)
 { }
 
 CProfilesManager::~CProfilesManager()
@@ -221,6 +225,7 @@ void CProfilesManager::Clear()
 {
   CSingleLock lock(m_critical);
   m_usingLoginScreen = false;
+  m_profileLoadedForLogin = false;
   m_lastUsedProfile = 0;
   m_nextProfileId = 0;
   SetCurrentProfileId(0);
@@ -238,14 +243,16 @@ bool CProfilesManager::LoadProfile(size_t index)
   if (m_currentProfile == index)
     return true;
 
-  // save any settings of the currently used skin
-  if (g_SkinInfo != nullptr)
+  // save any settings of the currently used skin but only if the (master)
+  // profile hasn't just been loaded as a temporary profile for login
+  if (g_SkinInfo != nullptr && !m_profileLoadedForLogin)
     g_SkinInfo->SaveSettings();
 
   // unload any old settings
   CSettings::GetInstance().Unload();
 
   SetCurrentProfileId(index);
+  m_profileLoadedForLogin = false;
 
   // load the new settings
   if (!CSettings::GetInstance().Load())
@@ -427,7 +434,12 @@ void CProfilesManager::LoadMasterProfileForLogin()
   // save the previous user
   m_lastUsedProfile = m_currentProfile;
   if (m_currentProfile != 0)
+  {
     LoadProfile(0);
+
+    // remember that the (master) profile has only been loaded for login
+    m_profileLoadedForLogin = true;
+  }
 }
 
 bool CProfilesManager::GetProfileName(const size_t profileId, std::string& name) const
