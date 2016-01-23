@@ -790,13 +790,18 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
       CLog::Log(LOGDEBUG, "%s - VPU dec 0x%x decode takes : %lld\n\n", __FUNCTION__, decRet,  XbmcThreads::SystemClockMillis() - before_dec);
 #endif
 
-      if (ret != VPU_DEC_RET_SUCCESS)
+      if (ret == VPU_DEC_RET_WRONG_CALL_SEQUENCE &&
+          decRet & VPU_DEC_RESOLUTION_CHANGED)
       {
-        CLog::Log(LOGERROR, "%s - VPU decode failed with error code %d.\n", __FUNCTION__, ret);
+        VpuFreeBuffers();
+      }
+      else if (ret != VPU_DEC_RET_SUCCESS)
+      {
+        CLog::Log(LOGERROR, "%s - VPU decode failed with error code %d (0x%x).\n", __FUNCTION__, ret, decRet);
         goto out_error;
       }
 
-      if (decRet & VPU_DEC_INIT_OK)
+      if (decRet & VPU_DEC_INIT_OK || decRet & VPU_DEC_RESOLUTION_CHANGED)
       // VPU decoding init OK : We can retrieve stream info
       {
         ret = VPU_DecGetInitialInfo(m_vpuHandle, &m_initInfo);
