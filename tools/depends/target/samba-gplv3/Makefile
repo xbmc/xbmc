@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile samba_android.patch no_fork_and_exec.patch
+DEPS= ../../Makefile.include Makefile samba_android.patch no_fork_and_exec.patch samba_custom_port_support.patch
 
 # lib name, version
 LIBNAME=samba
