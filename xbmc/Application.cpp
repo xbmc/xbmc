@@ -2378,6 +2378,7 @@ bool CApplication::OnAction(const CAction &action)
   if (action.GetID() == ACTION_MUTE)
   {
     ToggleMute();
+    ShowVolumeBar(&action);
     return true;
   }
 
@@ -4182,6 +4183,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
       {
         // remove splash window
         g_windowManager.Delete(WINDOW_SPLASH);
+
+        // show the volumebar if the volume is muted
+        if (IsMuted() || GetVolume(false) <= VOLUME_MINIMUM)
+          ShowVolumeBar();
 
         if (m_fallbackLanguageLoaded)
           CGUIDialogOK::ShowAndGetInput(CVariant{24133}, CVariant{24134});

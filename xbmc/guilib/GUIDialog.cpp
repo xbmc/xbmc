@@ -237,3 +237,8 @@ void CGUIDialog::ResetAutoClose(void)
   if (m_autoClosing && m_active)
     m_showStartTime = CTimeUtils::GetFrameTime();
 }
+
+void CGUIDialog::CancelAutoClose(void)
+{
+  m_autoClosing = false;
+}

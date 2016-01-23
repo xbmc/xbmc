@@ -2489,7 +2489,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = (pWindow && pWindow->IsMediaWindow());
   }
   else if (condition == PLAYER_MUTED)
-    bReturn = g_application.IsMuted();
+    bReturn = (g_application.IsMuted() || g_application.GetVolume(false) <= VOLUME_MINIMUM);
   else if (condition >= LIBRARY_HAS_MUSIC && condition <= LIBRARY_HAS_COMPILATIONS)
     bReturn = GetLibraryBool(condition);
   else if (condition == LIBRARY_IS_SCANNING)

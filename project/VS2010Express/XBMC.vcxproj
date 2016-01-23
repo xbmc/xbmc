@@ -302,7 +302,6 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogKeyboardGeneric.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogMediaFilter.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogMediaSource.cpp" />
-    <ClCompile Include="..\..\xbmc\dialogs\GUIDialogMuteBug.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogNumeric.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogOK.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayEject.cpp" />
@@ -1832,7 +1831,6 @@
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogGamepad.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKaiToast.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMediaSource.h" />
-    <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMuteBug.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogNumeric.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogOK.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogPlayEject.h" />

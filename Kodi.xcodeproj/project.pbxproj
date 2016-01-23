@@ -1128,7 +1128,6 @@
 		E38E20830D25F9FD00618676 /* GUIDialogGamepad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17AC0D25F9FA00618676 /* GUIDialogGamepad.cpp */; };
 		E38E20890D25F9FD00618676 /* GUIDialogMediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17B80D25F9FA00618676 /* GUIDialogMediaSource.cpp */; };
 		E38E208A0D25F9FD00618676 /* GUIDialogMusicOSD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17BA0D25F9FA00618676 /* GUIDialogMusicOSD.cpp */; };
-		E38E208C0D25F9FD00618676 /* GUIDialogMuteBug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17BE0D25F9FA00618676 /* GUIDialogMuteBug.cpp */; };
 		E38E208D0D25F9FD00618676 /* GUIDialogNetworkSetup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17C00D25F9FA00618676 /* GUIDialogNetworkSetup.cpp */; };
 		E38E208E0D25F9FD00618676 /* GUIDialogNumeric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17C20D25F9FA00618676 /* GUIDialogNumeric.cpp */; };
 		E38E208F0D25F9FD00618676 /* GUIDialogOK.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17C40D25F9FA00618676 /* GUIDialogOK.cpp */; };
@@ -1492,7 +1491,6 @@
 		E499123D174E5D7E00741B6D /* GUIDialogKeyboardGeneric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF830D0A15BB260C00602BE6 /* GUIDialogKeyboardGeneric.cpp */; };
 		E499123E174E5D7E00741B6D /* GUIDialogMediaFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A95DA31624894400727135 /* GUIDialogMediaFilter.cpp */; };
 		E499123F174E5D7E00741B6D /* GUIDialogMediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17B80D25F9FA00618676 /* GUIDialogMediaSource.cpp */; };
-		E4991240174E5D7E00741B6D /* GUIDialogMuteBug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17BE0D25F9FA00618676 /* GUIDialogMuteBug.cpp */; };
 		E4991241174E5D7E00741B6D /* GUIDialogNumeric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17C20D25F9FA00618676 /* GUIDialogNumeric.cpp */; };
 		E4991242174E5D7E00741B6D /* GUIDialogOK.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17C40D25F9FA00618676 /* GUIDialogOK.cpp */; };
 		E4991243174E5D7E00741B6D /* GUIDialogPlayEject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B7931340723F00FC2B16 /* GUIDialogPlayEject.cpp */; };
@@ -4198,8 +4196,6 @@
 		E38E17B90D25F9FA00618676 /* GUIDialogMediaSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogMediaSource.h; sourceTree = "<group>"; };
 		E38E17BA0D25F9FA00618676 /* GUIDialogMusicOSD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogMusicOSD.cpp; sourceTree = "<group>"; };
 		E38E17BB0D25F9FA00618676 /* GUIDialogMusicOSD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogMusicOSD.h; sourceTree = "<group>"; };
-		E38E17BE0D25F9FA00618676 /* GUIDialogMuteBug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogMuteBug.cpp; sourceTree = "<group>"; };
-		E38E17BF0D25F9FA00618676 /* GUIDialogMuteBug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogMuteBug.h; sourceTree = "<group>"; };
 		E38E17C00D25F9FA00618676 /* GUIDialogNetworkSetup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogNetworkSetup.cpp; sourceTree = "<group>"; };
 		E38E17C10D25F9FA00618676 /* GUIDialogNetworkSetup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogNetworkSetup.h; sourceTree = "<group>"; };
 		E38E17C20D25F9FA00618676 /* GUIDialogNumeric.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogNumeric.cpp; sourceTree = "<group>"; };
@@ -5561,8 +5557,6 @@
 				36A95DA41624894400727135 /* GUIDialogMediaFilter.h */,
 				E38E17B80D25F9FA00618676 /* GUIDialogMediaSource.cpp */,
 				E38E17B90D25F9FA00618676 /* GUIDialogMediaSource.h */,
-				E38E17BE0D25F9FA00618676 /* GUIDialogMuteBug.cpp */,
-				E38E17BF0D25F9FA00618676 /* GUIDialogMuteBug.h */,
 				E38E17C20D25F9FA00618676 /* GUIDialogNumeric.cpp */,
 				E38E17C30D25F9FA00618676 /* GUIDialogNumeric.h */,
 				E38E17C40D25F9FA00618676 /* GUIDialogOK.cpp */,
@@ -9291,7 +9285,6 @@
 				E38E20830D25F9FD00618676 /* GUIDialogGamepad.cpp in Sources */,
 				E38E20890D25F9FD00618676 /* GUIDialogMediaSource.cpp in Sources */,
 				E38E208A0D25F9FD00618676 /* GUIDialogMusicOSD.cpp in Sources */,
-				E38E208C0D25F9FD00618676 /* GUIDialogMuteBug.cpp in Sources */,
 				E38E208D0D25F9FD00618676 /* GUIDialogNetworkSetup.cpp in Sources */,
 				E38E208E0D25F9FD00618676 /* GUIDialogNumeric.cpp in Sources */,
 				E38E208F0D25F9FD00618676 /* GUIDialogOK.cpp in Sources */,
@@ -10416,7 +10409,6 @@
 				E499123D174E5D7E00741B6D /* GUIDialogKeyboardGeneric.cpp in Sources */,
 				E499123E174E5D7E00741B6D /* GUIDialogMediaFilter.cpp in Sources */,
 				E499123F174E5D7E00741B6D /* GUIDialogMediaSource.cpp in Sources */,
-				E4991240174E5D7E00741B6D /* GUIDialogMuteBug.cpp in Sources */,
 				395C29E41A98A15700EBC7AD /* HTTPPythonHandler.cpp in Sources */,
 				E4991241174E5D7E00741B6D /* GUIDialogNumeric.cpp in Sources */,
 				E4991242174E5D7E00741B6D /* GUIDialogOK.cpp in Sources */,
