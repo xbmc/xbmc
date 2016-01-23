@@ -71,6 +71,7 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool ne
   );
   if (!m_pAudioStream) return false;
 
+  m_DataFormat     = audioframe.data_format;
   m_iBitrate       = audioframe.sample_rate;
   m_iBitsPerSample = audioframe.bits_per_sample;
   m_bPassthrough   = audioframe.passthrough;
@@ -228,7 +229,8 @@ bool CDVDAudio::IsValidFormat(const DVDAudioFrame &audioframe)
 
   if(m_iBitrate       != audioframe.sample_rate
   || m_iBitsPerSample != audioframe.bits_per_sample
-  || m_channelLayout  != audioframe.channel_layout)
+  || m_channelLayout  != audioframe.channel_layout
+  || m_DataFormat     != audioframe.data_format)
     return false;
 
   return true;

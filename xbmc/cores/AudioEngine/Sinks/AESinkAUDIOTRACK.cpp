@@ -37,7 +37,7 @@
 
 #include <algorithm>
 
-#define DEBUG_VERBOSE 1
+//#define DEBUG_VERBOSE 1
 
 using namespace jni;
 
@@ -49,6 +49,9 @@ using namespace jni;
  * this should be disabled or adapted accordingly.
  */
 #define LIMIT_TO_STEREO_AND_5POINT1_AND_7POINT1 1
+
+#define CONSTANT_BUFFER_SIZE_SD 16384
+#define CONSTANT_BUFFER_SIZE_HD 61440
 
 #define TRUEHD_UNIT 960
 #define SMOOTHED_DELAY_MAX 10
@@ -197,7 +200,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   m_smoothedDelayCount = 0;
   m_smoothedDelayVec.clear();
 
-  CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize requested: sampleRate %u; format: %s(%d); channels: %d", format.m_sampleRate, CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_dataFormat, format.m_channelLayout.Count());
+  CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize requested: %p, sampleRate %u; format: %s(%d); channels: %d", this, format.m_sampleRate, CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_dataFormat, format.m_channelLayout.Count());
 
   int stream = CJNIAudioManager::STREAM_MUSIC;
 
@@ -222,7 +225,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         {
           m_encoding              = CJNIAudioFormat::ENCODING_AC3;
           m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
-          m_format.m_frames       = m_format.m_sampleRate * 0.032;  // fixed 32ms
+          m_format.m_frames       = CONSTANT_BUFFER_SIZE_SD;
         }
         else
           m_format.m_dataFormat   = AE_FMT_S16LE;
@@ -233,7 +236,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         {
           m_encoding              = CJNIAudioFormat::ENCODING_E_AC3;
           m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
-          m_format.m_frames       = AC3_FRAME_SIZE * m_format.m_sampleRate / m_sink_sampleRate;
+          m_format.m_frames       = CONSTANT_BUFFER_SIZE_SD;
         }
         else
           m_format.m_dataFormat   = AE_FMT_S16LE;
@@ -244,7 +247,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         {
           m_encoding              = CJNIAudioFormat::ENCODING_DTS;
           m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
-          m_format.m_frames       = DTS1_FRAME_SIZE * m_format.m_sampleRate / m_sink_sampleRate;
+          m_format.m_frames       = CONSTANT_BUFFER_SIZE_SD;
         }
         else
           m_format.m_dataFormat   = AE_FMT_S16LE;
@@ -255,7 +258,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         {
           m_encoding              = CJNIAudioFormat::ENCODING_DTS_HD;
           m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
-          m_format.m_frames       = DTS1_FRAME_SIZE * m_format.m_sampleRate / m_sink_sampleRate;
+          m_format.m_frames       = CONSTANT_BUFFER_SIZE_HD;
         }
         else
           m_format.m_dataFormat   = AE_FMT_S16LE;
@@ -266,7 +269,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         {
           m_encoding              = CJNIAudioFormat::ENCODING_DOLBY_TRUEHD;
           m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
-          m_format.m_frames       = TRUEHD_UNIT * m_format.m_sampleRate / m_sink_sampleRate;
+          m_format.m_frames       = CONSTANT_BUFFER_SIZE_HD;
         }
         else
           m_format.m_dataFormat   = AE_FMT_S16LE;
@@ -379,9 +382,9 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 
 void CAESinkAUDIOTRACK::Deinitialize()
 {
-#ifdef DEBUG_VERBOSE
-  CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Deinitialize");
-#endif
+//#ifdef DEBUG_VERBOSE
+  CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Deinitialize %p", this);
+//#endif
   // Restore volume
   if (m_volume != -1)
     CXBMCApp::SetSystemVolume(m_volume);
@@ -523,7 +526,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
     }
     written = frames * m_format.m_frameSize;     // Be sure to report to AE everything has been written
 
-    m_duration_written += ((double)written / m_sink_frameSize) / m_format.m_sampleRate;
+    m_duration_written += (double)m_format.m_frames / m_format.m_sampleRate;
   }
 
 #ifdef DEBUG_VERBOSE

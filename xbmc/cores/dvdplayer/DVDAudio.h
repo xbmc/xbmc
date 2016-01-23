@@ -70,6 +70,7 @@ protected:
   double m_timeOfPts;
   CCriticalSection m_critSection;
 
+  enum AEDataFormat m_DataFormat;
   int m_iBitrate;
   int m_iBitsPerSample;
   double m_SecondsPerByte;

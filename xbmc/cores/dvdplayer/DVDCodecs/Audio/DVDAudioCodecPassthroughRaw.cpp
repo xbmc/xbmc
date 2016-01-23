@@ -26,27 +26,22 @@
 
 #include "cores/AudioEngine/AEFactory.h"
 
-#define DEBUG_VERBOSE 1
+//#define DEBUG_VERBOSE 1
 
-static enum AEChannel OutputMaps[2][9] = {
-  {AE_CH_RAW, AE_CH_RAW, AE_CH_NULL},
-  {AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_NULL}
-};
-
-#define AC3_DIVISOR 1536
-#define DTS_DIVISOR 512
-#define TRUEHD_DIVISOR 960
 #define CONSTANT_BUFFER_SIZE_SD 16384
 #define CONSTANT_BUFFER_SIZE_HD 61440
 
 CDVDAudioCodecPassthroughRaw::CDVDAudioCodecPassthroughRaw(void) :
   m_buffer    (NULL),
   m_bufferSize(0),
+  m_infobuffer    (NULL),
+  m_infobufferSize(0),
   m_bufferUsed(0),
   m_sampleRate(0),
   m_codec(AE_FMT_INVALID),
-  m_trueHDoffset(0),
-  m_trueHDpos(0)
+  m_frameoffset(0),
+  m_framepos(0),
+  m_pktperframe(1)
 {
 }
 
@@ -73,7 +68,6 @@ bool CDVDAudioCodecPassthroughRaw::Open(CDVDStreamInfo &hints, CDVDCodecOptions 
       (hints.codec == AV_CODEC_ID_TRUEHD && bSupportsTrueHDOut) ||
       ((hints.codec == AV_CODEC_ID_DTS && hints.profile >= 50) && bSupportsDTSHDOut) )
   {
-    GetDataFormat();
     return true;
   }
 
@@ -93,49 +87,49 @@ void CDVDAudioCodecPassthroughRaw::GetData(DVDAudioFrame &frame)
   frame.encoded_sample_rate   = GetEncodedSampleRate();
   frame.nb_frames             = GetData(frame.data)/frame.framesize;
 
-  float unscaledbitrate = (float)(frame.nb_frames*frame.framesize) * frame.encoded_sample_rate;
   switch(m_codec)
   {
     case AE_FMT_AC3 + PT_FORMAT_RAW_CLASS:
     {
-      m_sampleRate = (float)(frame.nb_frames*frame.framesize) / 0.032;  // fixed 32ms
+      frame.duration = 0.032;
       break;
     }
     case AE_FMT_EAC3 + PT_FORMAT_RAW_CLASS:
     {
-      m_sampleRate = (unscaledbitrate + AC3_DIVISOR/2)  / AC3_DIVISOR;
+      frame.duration = 1536.0 / frame.encoded_sample_rate;
       break;
     }
     case AE_FMT_TRUEHD + PT_FORMAT_RAW_CLASS:
     {
-        m_sampleRate = (unscaledbitrate + TRUEHD_DIVISOR/2) / TRUEHD_DIVISOR;
+      int rate;
+      if (frame.encoded_sample_rate == 48000 ||
+          frame.encoded_sample_rate == 96000 ||
+          frame.encoded_sample_rate == 192000)
+        rate = 192000;
+      else
+        rate = 176400;
+      frame.duration = 3840.0 / rate;
       break;
     }
 
     case AE_FMT_DTS + PT_FORMAT_RAW_CLASS:
     case AE_FMT_DTSHD + PT_FORMAT_RAW_CLASS:
     {
-        m_sampleRate = (unscaledbitrate + DTS_DIVISOR/2) / DTS_DIVISOR;
+      frame.duration = 512.0 / frame.encoded_sample_rate;
       break;
     }
-
-    default:
-      m_sampleRate = GetSampleRate();
-      break;
   }
+  m_sampleRate = frame.nb_frames / frame.duration;
+  frame.duration *= 1000.0 * 1000.0;
+
   frame.sample_rate           = GetSampleRate();
   frame.channel_layout        = GetChannelMap();
   frame.channel_count         = GetChannels();
 
-#ifdef DEBUG_VERBOSE
-  CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthroughRaw::GetData samplerate: %d", frame.sample_rate);
-#endif
 
-  // compute duration.
-  if (frame.sample_rate)
-    frame.duration = ((double)frame.nb_frames * DVD_TIME_BASE) / frame.sample_rate;
-  else
-    frame.duration = 0.0;
+#ifdef DEBUG_VERBOSE
+  CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthroughRaw::GetData codec: %d; samplerate: %d; duration: %f", m_codec, frame.sample_rate, frame.duration);
+#endif
 }
 
 int CDVDAudioCodecPassthroughRaw::GetSampleRate()
@@ -153,28 +147,30 @@ int CDVDAudioCodecPassthroughRaw::GetEncodedSampleRate()
 
 enum AEDataFormat CDVDAudioCodecPassthroughRaw::GetDataFormat()
 {
-  if (m_codec != AE_FMT_INVALID)
-    return m_codec;
-
-  switch(m_hints.codec)
+  switch(m_info.GetDataType())
   {
-    case AV_CODEC_ID_AC3:
+    case CAEStreamInfo::STREAM_TYPE_AC3:
       m_codec = (AEDataFormat)(AE_FMT_AC3 + PT_FORMAT_RAW_CLASS);
       break;
 
-    case AV_CODEC_ID_DTS:
-      if (m_hints.profile >= 50)
-        m_codec = (AEDataFormat)(AE_FMT_DTSHD + PT_FORMAT_RAW_CLASS);
-      else
-        m_codec = (AEDataFormat)(AE_FMT_DTS + PT_FORMAT_RAW_CLASS);
+    case CAEStreamInfo::STREAM_TYPE_DTS_512:
+    case CAEStreamInfo::STREAM_TYPE_DTS_1024:
+    case CAEStreamInfo::STREAM_TYPE_DTS_2048:
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
+      m_codec = (AEDataFormat)(AE_FMT_DTS + PT_FORMAT_RAW_CLASS);
       break;
 
-    case AV_CODEC_ID_EAC3:
+    case CAEStreamInfo::STREAM_TYPE_DTSHD:
+      m_codec = (AEDataFormat)(AE_FMT_DTSHD + PT_FORMAT_RAW_CLASS);
+      break;
+
+    case CAEStreamInfo::STREAM_TYPE_EAC3:
       m_codec = (AEDataFormat)(AE_FMT_EAC3 + PT_FORMAT_RAW_CLASS);
       break;
 
-    case AV_CODEC_ID_TRUEHD:
+    case CAEStreamInfo::STREAM_TYPE_TRUEHD:
       m_codec = (AEDataFormat)(AE_FMT_TRUEHD + PT_FORMAT_RAW_CLASS);
+      m_pktperframe = 24;
       break;
   }
 
@@ -183,17 +179,7 @@ enum AEDataFormat CDVDAudioCodecPassthroughRaw::GetDataFormat()
 
 int CDVDAudioCodecPassthroughRaw::GetChannels()
 {
-  unsigned int codec = m_codec & ~PT_FORMAT_RAW_CLASS;
-  switch (codec)
-  {
-    case AE_FMT_AC3:
-    case AE_FMT_EAC3:
-    case AE_FMT_DTS:
-      return 2;
-
-    default:
-      return 8;
-  }
+  return m_info.GetOutputChannels();
 }
 
 int CDVDAudioCodecPassthroughRaw::GetEncodedChannels()
@@ -203,23 +189,7 @@ int CDVDAudioCodecPassthroughRaw::GetEncodedChannels()
 
 CAEChannelInfo CDVDAudioCodecPassthroughRaw::GetChannelMap()
 {
-  int count = 0;
-  unsigned int codec = m_codec & ~PT_FORMAT_RAW_CLASS;
-  switch (codec)
-  {
-    case AE_FMT_AC3:
-    case AE_FMT_EAC3:
-    case AE_FMT_DTS:
-      count = 2;
-
-    default:
-      count = 8;
-  }
-
-  if (count > 6)
-    return CAEChannelInfo(OutputMaps[1]);
-  else
-    return CAEChannelInfo(OutputMaps[0]);
+  return m_info.GetChannelMap();
 }
 
 void CDVDAudioCodecPassthroughRaw::Dispose()
@@ -229,79 +199,67 @@ void CDVDAudioCodecPassthroughRaw::Dispose()
     delete[] m_buffer;
     m_buffer = NULL;
   }
+  if (m_infobuffer)
+  {
+    delete[] m_infobuffer;
+    m_infobuffer = NULL;
+  }
 
   m_bufferSize = 0;
+  m_infobufferSize = 0;
   m_sampleRate = 0;
 }
 
 int CDVDAudioCodecPassthroughRaw::Decode(uint8_t* pData, int iSize)
 {
-#ifdef DEBUG_VERBOSE
-  CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthroughRaw::Decode %d", iSize);
-#endif
   if (iSize <= 0) return 0;
 
   // Do pseudo-encapsulation to make bitrate constant
   int constant_size = 0;
-  unsigned int codec = m_codec & ~PT_FORMAT_RAW_CLASS;
-  if (codec == AE_FMT_TRUEHD || codec == AE_FMT_DTSHD)
+  unsigned int used = 0;
+
+  unsigned int size = m_infobufferSize;
+  used = m_info.AddData(pData, iSize, &m_infobuffer, &size);
+#ifdef DEBUG_VERBOSE
+  CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthroughRaw::Decode iSize(%d), size(%d), used(%d)", iSize, size, used);
+#endif
+  m_infobufferSize = std::max(m_infobufferSize, size);
+
+  if (m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_TRUEHD || m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_DTSHD)
     constant_size = CONSTANT_BUFFER_SIZE_HD;
   else
     constant_size = CONSTANT_BUFFER_SIZE_SD;
 
-  if (constant_size)
+  if (!m_buffer || m_bufferSize != constant_size)
   {
-    if (!m_buffer)
-    {
-      m_bufferSize = constant_size;
-      m_buffer = (uint8_t*)malloc(m_bufferSize);
-    }
-    if (codec == AE_FMT_TRUEHD)
-    {
-      if (m_trueHDoffset + iSize > constant_size)
-      {
-        CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthroughRaw::Decode Error: TrueHD Buffer too small %d(%d)", m_trueHDoffset + iSize, m_trueHDpos);
-        return 0;
-      }
+    if (m_buffer)
+      delete[] m_buffer;
+    m_bufferSize = constant_size;
+    m_buffer = (uint8_t*)malloc(m_bufferSize);
+    m_frameoffset = m_framepos = 0;
+  }
 
-      memcpy(m_buffer+sizeof(int)+m_trueHDoffset, pData, iSize);
-      m_trueHDoffset += iSize;
-      m_trueHDpos++;
-      if (m_trueHDpos == 24)
-      {
-        ((int*)m_buffer)[0] = m_trueHDoffset;
-        m_bufferUsed = m_bufferSize;
-        m_trueHDoffset = m_trueHDpos = 0;
-      }
-      else
-        m_bufferUsed = 0;
-    }
-    else
-    {
-      if (iSize > constant_size)
-      {
-        CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthroughRaw::Decode Error: Buffer too small %d", iSize);
-        return 0;
-      }
+  if (m_frameoffset + iSize > constant_size)
+  {
+    CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthroughRaw::Decode Error: Frame Buffer too small %d(%d)", m_frameoffset + iSize, m_framepos);
+    return 0;
+  }
 
-      ((int*)m_buffer)[0] = iSize;
-      memcpy(m_buffer+sizeof(int), pData, iSize);
+  m_bufferUsed = 0;
+  if (size)
+  {
+    memcpy(m_buffer+sizeof(int)+m_frameoffset, m_infobuffer, size);
+    m_frameoffset += size;
+    m_framepos++;
+    if (m_framepos == m_pktperframe)
+    {
+      ((int*)m_buffer)[0] = m_frameoffset;
       m_bufferUsed = m_bufferSize;
+      m_frameoffset = m_framepos = 0;
     }
-
   }
-  else
-  {
-    if (iSize > m_bufferSize)
-    {
-      m_bufferSize = iSize;
-      m_buffer = (uint8_t*)realloc(m_buffer, m_bufferSize);
-    }
 
-    memcpy(m_buffer, pData, iSize);
-    m_bufferUsed = iSize;
-  }
-  return iSize;
+  return used;
 }
 
 int CDVDAudioCodecPassthroughRaw::GetData(uint8_t** dst)
@@ -311,6 +269,11 @@ int CDVDAudioCodecPassthroughRaw::GetData(uint8_t** dst)
 #endif
   *dst     = m_buffer;
   return m_bufferUsed;
+}
+
+int CDVDAudioCodecPassthroughRaw::GetBufferSize()
+{
+  return (int)m_info.GetBufferSize();
 }
 
 void CDVDAudioCodecPassthroughRaw::Reset()

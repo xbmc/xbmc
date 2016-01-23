@@ -85,36 +85,36 @@ enum AEDataFormat
 {
   AE_FMT_INVALID = -1,
 
-  AE_FMT_U8,
+  AE_FMT_U8,      // 0
 
-  AE_FMT_S16BE,
-  AE_FMT_S16LE,
-  AE_FMT_S16NE,
+  AE_FMT_S16BE,   // 1
+  AE_FMT_S16LE,   // 2
+  AE_FMT_S16NE,   // 3
 
-  AE_FMT_S32BE,
-  AE_FMT_S32LE,
-  AE_FMT_S32NE,
+  AE_FMT_S32BE,   // 4
+  AE_FMT_S32LE,   // 5
+  AE_FMT_S32NE,   // 6
 
-  AE_FMT_S24BE4,
-  AE_FMT_S24LE4,
-  AE_FMT_S24NE4,    // 24 bits in lower 3 bytes
-  AE_FMT_S24NE4MSB, // S32 with bits_per_sample < 32
+  AE_FMT_S24BE4,   // 7
+  AE_FMT_S24LE4,   // 8
+  AE_FMT_S24NE4,   // 9                    // 24 bits in lower 3 bytes
+  AE_FMT_S24NE4MSB,   // 10 / 0xa          // S32 with bits_per_sample < 32
 
-  AE_FMT_S24BE3,
-  AE_FMT_S24LE3,
-  AE_FMT_S24NE3, /* S24 in 3 bytes */
+  AE_FMT_S24BE3,   // 11 / 0xb
+  AE_FMT_S24LE3,   // 12 / 0xc
+  AE_FMT_S24NE3,   // 13 / 0xd                     /* S24 in 3 bytes */
 
-  AE_FMT_DOUBLE,
-  AE_FMT_FLOAT,
+  AE_FMT_DOUBLE,   // 14 / 0xe
+  AE_FMT_FLOAT,   // 15 / 0xf
 
   /* Bitstream formats */
-  AE_FMT_AAC,
-  AE_FMT_AC3,
-  AE_FMT_DTS,
-  AE_FMT_EAC3,
-  AE_FMT_TRUEHD,
-  AE_FMT_DTSHD,
-  AE_FMT_LPCM,
+  AE_FMT_AAC,   // 16 / 0x10
+  AE_FMT_AC3,   // 17 / 0x11
+  AE_FMT_DTS,   // 18 / 0x12
+  AE_FMT_EAC3,   // 19 / 0x13
+  AE_FMT_TRUEHD,   // 20 / 0x14
+  AE_FMT_DTSHD,   // 21 / 0x15
+  AE_FMT_LPCM,   // 22 / 0x16
 
   /* planar formats */
   AE_FMT_U8P,

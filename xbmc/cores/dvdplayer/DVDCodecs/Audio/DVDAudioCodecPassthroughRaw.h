@@ -26,6 +26,7 @@
 #include "DVDAudioCodec.h"
 #include "DVDStreamInfo.h"
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+#include "cores/AudioEngine/Utils/AEStreamInfo.h"
 
 class CDVDAudioCodecPassthroughRaw : public CDVDAudioCodec
 {
@@ -47,15 +48,20 @@ public:
   virtual enum AEDataFormat GetDataFormat();
   virtual bool NeedPassthrough           () { return true;          }
   virtual const char* GetName            () { return "passthroughraw"; }
+  virtual int  GetBufferSize();
 
 private:
   CDVDStreamInfo     m_hints;
+  CAEStreamInfo      m_info;
   uint8_t*           m_buffer;
-  int                m_bufferSize;
+  unsigned int       m_bufferSize;
+  uint8_t*           m_infobuffer;
+  unsigned int       m_infobufferSize;
   int                m_bufferUsed;
   int                m_sampleRate;
   enum AEDataFormat  m_codec;
-  unsigned int       m_trueHDoffset;
-  unsigned int       m_trueHDpos;
+  unsigned int       m_pktperframe;
+  unsigned int       m_frameoffset;
+  unsigned int       m_framepos;
 };
 
