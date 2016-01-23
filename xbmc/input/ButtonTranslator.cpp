@@ -335,7 +335,8 @@ static const ActionMapping windows[] =
     { "submenu"                  , WINDOW_DIALOG_SUB_MENU },
     { "favourites"               , WINDOW_DIALOG_FAVOURITES },
     { "contextmenu"              , WINDOW_DIALOG_CONTEXT_MENU },
-    { "infodialog"               , WINDOW_DIALOG_KAI_TOAST },
+    { "notification"             , WINDOW_DIALOG_KAI_TOAST },
+    { "infodialog"               , WINDOW_DIALOG_KAI_TOAST },          // backward compat
     { "numericinput"             , WINDOW_DIALOG_NUMERIC },
     { "gamepadinput"             , WINDOW_DIALOG_GAMEPAD },
     { "shutdownmenu"             , WINDOW_DIALOG_BUTTON_MENU },
