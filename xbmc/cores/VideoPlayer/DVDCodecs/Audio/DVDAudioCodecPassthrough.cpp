@@ -83,9 +83,13 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
 
     // only get the dts core from the parser if we don't support dtsHD
     m_parser.SetCoreOnly(true);
-    m_bufferSize = 0;
   }
 
+  m_dataSize = 0;
+  m_bufferSize = 0;
+  m_backlogSize = 0;
+  m_currentPts = DVD_NOPTS_VALUE;
+  m_nextPts = DVD_NOPTS_VALUE;
   return ret;
 }
 
@@ -102,15 +106,63 @@ void CDVDAudioCodecPassthrough::Dispose()
 
 int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize, double dts, double pts)
 {
-  if (iSize <= 0)
-    return 0;
+  int used = 0;
+  if (m_backlogSize)
+  {
+    if (m_currentPts == DVD_NOPTS_VALUE)
+    {
+      m_currentPts = m_nextPts;
+      m_nextPts = DVD_NOPTS_VALUE;
+    }
 
-  unsigned int used;
-  m_dataSize = m_bufferSize;
-  used = m_parser.AddData(pData, iSize, &m_buffer, &m_dataSize);
-  m_bufferSize = std::max(m_bufferSize, m_dataSize);
+    m_dataSize = m_bufferSize;
+    unsigned int consumed = m_parser.AddData(m_backlogBuffer, m_backlogSize, &m_buffer, &m_dataSize);
+    m_bufferSize = std::max(m_bufferSize, m_dataSize);
+    if (consumed != m_backlogSize)
+    {
+      memmove(m_backlogBuffer, m_backlogBuffer+consumed, consumed);
+      m_backlogSize -= consumed;
+    }
+  }
 
-  if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD && m_dataSize)
+  if (pData && !m_dataSize)
+  {
+    if (iSize <= 0)
+      return 0;
+
+    if (m_currentPts == DVD_NOPTS_VALUE)
+      m_currentPts = pts;
+
+    m_dataSize = m_bufferSize;
+    used = m_parser.AddData(pData, iSize, &m_buffer, &m_dataSize);
+    m_bufferSize = std::max(m_bufferSize, m_dataSize);
+
+    if (used != iSize)
+    {
+      m_backlogSize = iSize - used;
+      memcpy(m_backlogBuffer, pData + used, m_backlogSize);
+      if (m_nextPts != DVD_NOPTS_VALUE)
+      {
+        m_nextPts = pts;
+      }
+      used = iSize;
+    }
+  }
+  else if (pData)
+  {
+    if (m_nextPts != DVD_NOPTS_VALUE)
+    {
+      m_nextPts = pts;
+    }
+    memcpy(m_backlogBuffer + m_backlogSize, pData, iSize);
+    m_backlogSize += iSize;
+    used = iSize;
+  }
+
+  if (!m_dataSize)
+    return used;
+
+  if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
   {
     if (!m_trueHDoffset)
       memset(m_trueHDBuffer.get(), 0, TRUEHD_BUF_SIZE);
@@ -160,7 +212,9 @@ void CDVDAudioCodecPassthrough::GetData(DVDAudioFrame &frame)
   frame.planes = 1;
   frame.bits_per_sample = 8;
   frame.duration = DVD_MSEC_TO_TIME(frame.format.m_streamInfo.GetDuration());
-  frame.pts = DVD_NOPTS_VALUE;
+  frame.pts = m_currentPts;
+  m_currentPts = DVD_NOPTS_VALUE;
+  m_dataSize = 0;
 }
 
 int CDVDAudioCodecPassthrough::GetData(uint8_t** dst)
@@ -175,6 +229,12 @@ int CDVDAudioCodecPassthrough::GetData(uint8_t** dst)
 void CDVDAudioCodecPassthrough::Reset()
 {
   m_trueHDoffset = 0;
+  m_dataSize = 0;
+  m_bufferSize = 0;
+  m_backlogSize = 0;
+  m_currentPts = DVD_NOPTS_VALUE;
+  m_nextPts = DVD_NOPTS_VALUE;
+  m_parser.Reset();
 }
 
 int CDVDAudioCodecPassthrough::GetBufferSize()

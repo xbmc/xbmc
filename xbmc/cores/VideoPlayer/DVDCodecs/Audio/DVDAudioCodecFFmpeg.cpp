@@ -140,7 +140,8 @@ void CDVDAudioCodecFFmpeg::Dispose()
 int CDVDAudioCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double pts)
 {
   int iBytesUsed;
-  if (!m_pCodecContext) return -1;
+  if (!m_pCodecContext)
+    return -1;
 
   AVPacket avpkt;
   av_init_packet(&avpkt);

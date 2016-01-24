@@ -33,6 +33,8 @@ public:
   ~CAEBitstreamPacker();
 
   void Pack(CAEStreamInfo &info, uint8_t* data, int size);
+  void PackPause(CAEStreamInfo &info, unsigned int millis);
+  void Reset();
   uint8_t* GetBuffer();
   unsigned int GetSize();
   static unsigned int GetOutputRate(CAEStreamInfo &info);
@@ -57,5 +59,6 @@ private:
 
   unsigned int  m_dataSize;
   uint8_t       m_packedBuffer[MAX_IEC61937_PACKET];
+  unsigned int m_pauseDuration;
 };
 
