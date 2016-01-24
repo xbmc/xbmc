@@ -931,15 +931,3 @@ bool CEpg::IsValid(void) const
   return true;
 }
 
-std::vector<CEpgInfoTagPtr> CEpg::GetAllEventsWithBroadcastId() const
-{
-  CSingleLock lock(m_critSection);
-  std::vector<CEpgInfoTagPtr> events;
-  events.reserve(m_tags.size());
-  for (const auto &infoTag : m_tags)
-  {
-    if (infoTag.second->UniqueBroadcastID() != EPG_TAG_INVALID_UID)
-      events.push_back(infoTag.second);
-  }
-  return events;
-}

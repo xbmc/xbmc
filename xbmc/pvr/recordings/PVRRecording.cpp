@@ -29,6 +29,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 
 #include "PVRRecording.h"
 
@@ -112,6 +113,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strFanartPath                  = recording.strFanartPath;
   m_bIsDeleted                     = recording.bIsDeleted;
   m_iEpgEventId                    = recording.iEpgEventId;
+  m_iChannelUid                    = recording.iChannelUid;
 }
 
 bool CPVRRecording::operator ==(const CPVRRecording& right) const
@@ -139,7 +141,8 @@ bool CPVRRecording::operator ==(const CPVRRecording& right) const
        m_strFanartPath      == right.m_strFanartPath &&
        m_iRecordingId       == right.m_iRecordingId &&
        m_bIsDeleted         == right.m_bIsDeleted &&
-       m_iEpgEventId        == right.m_iEpgEventId);
+       m_iEpgEventId        == right.m_iEpgEventId &&
+       m_iChannelUid        == right.m_iChannelUid);
 }
 
 bool CPVRRecording::operator !=(const CPVRRecording& right) const
@@ -162,6 +165,7 @@ void CPVRRecording::Serialize(CVariant& value) const
   value["recordingid"] = m_iRecordingId;
   value["deleted"] = m_bIsDeleted;
   value["epgevent"] = m_iEpgEventId;
+  value["channeluid"] = m_iChannelUid;
 
   if (!value.isMember("art"))
     value["art"] = CVariant(CVariant::VariantTypeObject);
@@ -190,6 +194,7 @@ void CPVRRecording::Reset(void)
   m_iEpgEventId        = EPG_TAG_INVALID_UID;
   m_iSeason            = -1;
   m_iEpisode           = -1;
+  m_iChannelUid        = PVR_INVALID_CHANNEL_UID;
 
   m_recordingTime.Reset();
   CVideoInfoTag::Reset();
@@ -217,9 +222,16 @@ bool CPVRRecording::Delete(void)
 
 void CPVRRecording::OnDelete(void)
 {
-  EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(EpgEvent());
-  if (epgTag)
-    epgTag->ClearRecording();
+  if (m_iEpgEventId != EPG_TAG_INVALID_UID)
+  {
+    const CPVRChannelPtr channel(Channel());
+    if (channel)
+    {
+      const EPG::CEpgInfoTagPtr epgTag(EPG::CEpgContainer::GetInstance().GetTagById(channel, m_iEpgEventId));
+      if (epgTag)
+        epgTag->ClearRecording();
+    }
+  }
 }
 
 bool CPVRRecording::Undelete(void)
@@ -361,6 +373,7 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   m_strFanartPath     = tag.m_strFanartPath;
   m_bIsDeleted        = tag.m_bIsDeleted;
   m_iEpgEventId       = tag.m_iEpgEventId;
+  m_iChannelUid       = tag.m_iChannelUid;
 
   if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId))
     m_playCount       = tag.m_playCount;
@@ -431,12 +444,9 @@ void CPVRRecording::CopyClientInfo(CVideoInfoTag *target) const
 
 CPVRChannelPtr CPVRRecording::Channel(void) const
 {
-  if (m_iEpgEventId != EPG_TAG_INVALID_UID)
-  {
-    EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(m_iEpgEventId);
-    if (epgTag)
-      return epgTag->ChannelTag();
-  }
+  if (m_iChannelUid != PVR_INVALID_CHANNEL_UID)
+    return g_PVRChannelGroups->GetByUniqueID(m_iChannelUid, m_iClientId);
+
   return CPVRChannelPtr();
 }
 
@@ -444,8 +454,12 @@ bool CPVRRecording::IsBeingRecorded(void) const
 {
   if (m_iEpgEventId != EPG_TAG_INVALID_UID)
   {
-    EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(m_iEpgEventId);
-    return epgTag ? epgTag->HasRecording() : false;
+    const CPVRChannelPtr channel(Channel());
+    if (channel)
+    {
+      const EPG::CEpgInfoTagPtr epgTag(EPG::CEpgContainer::GetInstance().GetTagById(channel, m_iEpgEventId));
+      return epgTag ? epgTag->HasRecording() : false;
+    }
   }
   return false;
 }

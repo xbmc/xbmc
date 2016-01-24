@@ -315,12 +315,6 @@ namespace EPG
      */
     bool IsValid(void) const;
 
-    /*!
-     * @brief Get all events with a valid broadcast Id
-     * @return the table of events
-     */
-    std::vector<CEpgInfoTagPtr> GetAllEventsWithBroadcastId() const;
-
   protected:
     CEpg(void);
 

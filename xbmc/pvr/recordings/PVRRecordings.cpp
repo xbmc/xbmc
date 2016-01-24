@@ -462,11 +462,15 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
   {
     newTag = CPVRRecordingPtr(new CPVRRecording);
     newTag->Update(*tag);
-    if (newTag->EpgEvent() > EPG_TAG_INVALID_UID)
+    if (newTag->BroadcastUid() != EPG_TAG_INVALID_UID)
     {
-      EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(newTag->EpgEvent());
-      if (epgTag)
-        epgTag->SetRecording(newTag);
+      const CPVRChannelPtr channel(newTag->Channel());
+      if (channel)
+      {
+        const EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(channel, newTag->BroadcastUid());
+        if (epgTag)
+          epgTag->SetRecording(newTag);
+      }
     }
     newTag->m_iRecordingId = ++m_iLastId;
     m_recordings.insert(std::make_pair(CPVRRecordingUid(newTag->m_iClientId, newTag->m_strRecordingId), newTag));
@@ -477,14 +481,19 @@ void CPVRRecordings::UpdateEpgTags(void)
 {
   CSingleLock lock(m_critSection);
   unsigned int iEpgEvent;
+  CPVRChannelPtr channel;
   for (PVR_RECORDINGMAP_ITR it = m_recordings.begin(); it != m_recordings.end(); ++it)
   {
-    iEpgEvent = it->second->EpgEvent();
-    if (iEpgEvent > EPG_TAG_INVALID_UID && !it->second->IsDeleted())
+    iEpgEvent = it->second->BroadcastUid();
+    if (iEpgEvent != EPG_TAG_INVALID_UID && !it->second->IsDeleted())
     {
-      EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(iEpgEvent);
-      if (epgTag)
-        epgTag->SetRecording(it->second);
+      channel = it->second->Channel();
+      if (channel)
+      {
+        const EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(channel, iEpgEvent);
+        if (epgTag)
+          epgTag->SetRecording(it->second);
+      }
     }
   }
 }
