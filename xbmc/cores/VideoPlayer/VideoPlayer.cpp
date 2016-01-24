@@ -1855,8 +1855,8 @@ void CVideoPlayer::HandlePlaySpeed()
     if (m_playSpeed == DVD_PLAYSPEED_NORMAL && !isInMenu)
     {
       // take action is audio or video stream is stalled
-      if (((m_VideoPlayerAudio->IsStalled() && m_CurrentAudio.packets) ||
-           (m_VideoPlayerVideo->IsStalled() && m_CurrentVideo.packets)) &&
+      if (((m_VideoPlayerAudio->IsStalled() && m_CurrentAudio.inited) ||
+           (m_VideoPlayerVideo->IsStalled() && m_CurrentVideo.inited)) &&
           m_syncTimer.IsTimePast())
       {
         if (m_pInputStream->IsRealtime())
