@@ -3032,22 +3032,22 @@ bool CVideoDatabase::GetBookMarkForEpisode(const CVideoInfoTag& tag, CBookmark& 
   try
   {
     std::string strSQL = PrepareSQL("select bookmark.* from bookmark join episode on episode.c%02d=bookmark.idBookmark where episode.idEpisode=%i", VIDEODB_ID_EPISODE_BOOKMARK, tag.m_iDbId);
-    m_pDS->query( strSQL );
-    if (!m_pDS->eof())
+    m_pDS2->query( strSQL );
+    if (!m_pDS2->eof())
     {
-      bookmark.timeInSeconds = m_pDS->fv("timeInSeconds").get_asDouble();
-      bookmark.totalTimeInSeconds = m_pDS->fv("totalTimeInSeconds").get_asDouble();
-      bookmark.thumbNailImage = m_pDS->fv("thumbNailImage").get_asString();
-      bookmark.playerState = m_pDS->fv("playerState").get_asString();
-      bookmark.player = m_pDS->fv("player").get_asString();
-      bookmark.type = (CBookmark::EType)m_pDS->fv("type").get_asInt();
+      bookmark.timeInSeconds = m_pDS2->fv("timeInSeconds").get_asDouble();
+      bookmark.totalTimeInSeconds = m_pDS2->fv("totalTimeInSeconds").get_asDouble();
+      bookmark.thumbNailImage = m_pDS2->fv("thumbNailImage").get_asString();
+      bookmark.playerState = m_pDS2->fv("playerState").get_asString();
+      bookmark.player = m_pDS2->fv("player").get_asString();
+      bookmark.type = (CBookmark::EType)m_pDS2->fv("type").get_asInt();
     }
     else
     {
-      m_pDS->close();
+      m_pDS2->close();
       return false;
     }
-    m_pDS->close();
+    m_pDS2->close();
   }
   catch (...)
   {
@@ -3797,11 +3797,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
 
     castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
     details.m_strPictureURL.Parse();
-    std::string strSQL = PrepareSQL("select * from bookmark join episode on episode.c%02d=bookmark.idBookmark where episode.idEpisode=%i and bookmark.type=%i", VIDEODB_ID_EPISODE_BOOKMARK,details.m_iDbId,CBookmark::EPISODE);
-    m_pDS2->query(strSQL);
-    if (!m_pDS2->eof())
-      details.m_fEpBookmark = m_pDS2->fv("bookmark.timeInSeconds").get_asFloat();
-    m_pDS2->close();
+
+    GetBookMarkForEpisode(details, details.m_EpBookmark);
 
     // get streamdetails
     GetStreamDetails(details);

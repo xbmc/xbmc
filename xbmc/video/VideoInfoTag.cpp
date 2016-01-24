@@ -86,7 +86,8 @@ void CVideoInfoTag::Reset()
   m_namedSeasons.clear();
   m_streamDetails.Reset();
   m_playCount = 0;
-  m_fEpBookmark = 0;
+  m_EpBookmark.Reset();
+  m_EpBookmark.type = CBookmark::EPISODE;
   m_basePath.clear();
   m_parentPathID = -1;
   m_resumePoint.Reset();
@@ -132,7 +133,22 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     movie->InsertEndChild(ratings);
   }
   XMLUtils::SetInt(movie, "userrating", m_iUserRating);
-  XMLUtils::SetFloat(movie, "epbookmark", m_fEpBookmark);
+
+  if (m_EpBookmark.timeInSeconds > 0)
+  {
+    TiXmlElement epbookmark("episodebookmark");
+    XMLUtils::SetFloat(&epbookmark, "position", (float)m_EpBookmark.timeInSeconds);
+    if (!m_EpBookmark.playerState.empty())
+    {
+      TiXmlElement playerstate("playerstate");
+      CXBMCTinyXML doc;
+      doc.Parse(m_EpBookmark.playerState);
+      playerstate.InsertEndChild(*doc.RootElement());
+      epbookmark.InsertEndChild(playerstate);
+    }
+    movie->InsertEndChild(epbookmark);
+  }
+
   XMLUtils::SetInt(movie, "year", m_iYear);
   XMLUtils::SetInt(movie, "top250", m_iTop250);
   if (tag == "episodedetails" || tag == "tvshow")
@@ -366,7 +382,8 @@ void CVideoInfoTag::Archive(CArchive& ar)
       ar << namedSeason.first;
       ar << namedSeason.second;
     }
-    ar << m_fEpBookmark;
+    ar << m_EpBookmark.playerState;
+    ar << m_EpBookmark.timeInSeconds;
     ar << m_basePath;
     ar << m_parentPathID;
     ar << m_resumePoint.timeInSeconds;
@@ -469,8 +486,8 @@ void CVideoInfoTag::Archive(CArchive& ar)
       ar >> seasonName;
       m_namedSeasons.insert(std::make_pair(seasonNumber, seasonName));
     }
-
-    ar >> m_fEpBookmark;
+    ar >> m_EpBookmark.playerState;
+    ar >> m_EpBookmark.timeInSeconds;
     ar >> m_basePath;
     ar >> m_parentPathID;
     ar >> m_resumePoint.timeInSeconds;
@@ -726,7 +743,22 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     m_strDefaultRating = "default";
   }
   XMLUtils::GetInt(movie, "userrating", m_iUserRating);
-  XMLUtils::GetFloat(movie, "epbookmark", m_fEpBookmark);
+
+  const TiXmlElement *epbookmark = movie->FirstChildElement("episodebookmark");
+  if (epbookmark)
+  {
+    XMLUtils::GetDouble(epbookmark, "position", m_EpBookmark.timeInSeconds);
+    const TiXmlElement *playerstate = epbookmark->FirstChildElement("playerstate");
+    if (playerstate)
+    {
+      const TiXmlElement *value = playerstate->FirstChildElement();
+      if (value)
+        m_EpBookmark.playerState << *value;
+    }
+  }
+  else
+    XMLUtils::GetDouble(movie, "epbookmark", m_EpBookmark.timeInSeconds);
+
   int max_value = 10;
   const TiXmlElement* urElement = movie->FirstChildElement("userrating");
   if (urElement && (urElement->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value >= 1)
