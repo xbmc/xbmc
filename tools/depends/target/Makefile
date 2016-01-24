@@ -7,7 +7,7 @@ endif
 DEPENDS = \
 	pcre expat gettext sqlite3 libgpg-error \
 	libgcrypt bzip2 liblzo2 libzip freetype2 fontconfig \
-	openssl gmp nettle gnutls libssh2 curl \
+	openssl gmp nettle gnutls curl \
 	libjpeg-turbo libpng \
 	libogg libvorbis libflac fribidi \
 	libass libsquish \
@@ -78,8 +78,7 @@ all: .installed-$(PLATFORM)
 gettext: $(ICONV)
 libgcrypt: libgpg-error
 fontconfig: freetype2 expat $(ICONV)
-libssh2: libgcrypt openssl
-curl: openssl libssh2
+curl: openssl
 libvorbis: libogg
 libflac: libogg gettext
 libass: fontconfig libpng freetype2 expat $(ICONV)
