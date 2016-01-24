@@ -22,6 +22,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 
@@ -38,7 +39,34 @@ CSong::CSong(CFileItem& item)
   std::vector<std::string> musicBrainArtistHints = tag.GetMusicBrainzArtistHints();
   strArtistDesc = tag.GetArtistString();
   if (!tag.GetMusicBrainzArtistID().empty())
-  { // have musicbrainz artist info, so use it
+  { // Have musicbrainz artist info, so use it
+    // Establish tag consistency - do the number of musicbrainz ids and number of names in hints or artist match
+    if (tag.GetMusicBrainzArtistID().size() != musicBrainArtistHints.size() &&
+        tag.GetMusicBrainzArtistID().size() != artist.size())
+    {
+      // Tags mis-match - report it and then try to fix
+      CLog::Log(LOGDEBUG, "Mis-match in song file tags: %i mbid %i names %s %s", 
+        (int)tag.GetMusicBrainzArtistID().size(), (int)artist.size(), strTitle.c_str(), strArtistDesc.c_str());
+      /*
+        Most likey we have no hints and a single artist name like "Artist1 feat. Artist2"
+        or "Composer; Conductor, Orchestra, Soloist" or "Artist1/Artist2" where the
+        expected single item separator (default = space-slash-space) as not been used.
+        Comma and slash (no spaces) are poor delimiters as could be in name e.g. AC/DC,
+        but here treat them as such in attempt to find artist names.
+      */
+      if (artist.size() == 1)
+      {
+        std::vector<std::string> names;
+        if (artist[0].find(" feat. ") != std::string::npos)
+          names = StringUtils::Split(artist[0], " feat. ");
+        else 
+          names = StringUtils::SplitMulti(artist[0], "/;:|#,");
+        //If we have extracted the right number of names then use them as hints
+        if (tag.GetMusicBrainzArtistID().size() == names.size())
+          musicBrainArtistHints = names;
+      }     
+    }
+
     for (size_t i = 0; i < tag.GetMusicBrainzArtistID().size(); i++)
     {
       std::string artistId = tag.GetMusicBrainzArtistID()[i];
@@ -47,23 +75,23 @@ CSong::CSong(CFileItem& item)
        We try and get the corresponding artist name from the hints list.
        If the hints list is missing or the wrong length, it will try the artist list.
        We match on the same index, and if that fails just use the first name we have.
-       */
+       Failing all else use musicbrainz id as the name and hope later on we can update that entry.
+       If we have more names than musicbrainz id they are ingored, but raise warning.
+      */
       if (i < musicBrainArtistHints.size())
         artistName = musicBrainArtistHints[i];
       else if (!artist.empty())
         artistName = (i < artist.size()) ? artist[i] : artist[0];
       if (artistName.empty())
         artistName = artistId;
-      CArtistCredit artistCredit(artistName, artistId);
-      artistCredits.push_back(artistCredit);
+      artistCredits.emplace_back(StringUtils::Trim(artistName), artistId);
     }
   }
   else
   { // no musicbrainz info, so fill in directly
     for (std::vector<std::string>::const_iterator it = tag.GetArtist().begin(); it != tag.GetArtist().end(); ++it)
     {
-      CArtistCredit artistCredit(*it);
-      artistCredits.push_back(artistCredit);
+      artistCredits.emplace_back(*it);
     }
   }
   strAlbum = tag.GetAlbum();
