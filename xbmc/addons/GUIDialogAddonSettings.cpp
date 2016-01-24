@@ -188,6 +188,11 @@ void CGUIDialogAddonSettings::OnInitWindow()
   CreateSections();
   CreateControls();
   CGUIDialogBoxBase::OnInitWindow();
+
+  SET_CONTROL_VISIBLE(ID_BUTTON_OK);
+  SET_CONTROL_VISIBLE(ID_BUTTON_CANCEL);
+  SET_CONTROL_VISIBLE(ID_BUTTON_DEFAULT);
+  SET_CONTROL_VISIBLE(CONTROL_HEADING_LABEL);
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
