@@ -932,6 +932,10 @@
 		DFD717611C0A031B0025D964 /* XBMCApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD717511C0A031B0025D964 /* XBMCApplication.m */; };
 		DFD717621C0A031B0025D964 /* XBMCController.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFD717531C0A031B0025D964 /* XBMCController.mm */; };
 		DFD717641C0A03540025D964 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DFD717631C0A03540025D964 /* Info.plist */; };
+		DFD810F71C54F25900BEE004 /* darwinICMPPing.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD810F41C54F25900BEE004 /* darwinICMPPing.m */; };
+		DFD810F81C54F25900BEE004 /* darwinICMPPing.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD810F41C54F25900BEE004 /* darwinICMPPing.m */; };
+		DFD810F91C54F25900BEE004 /* SimplePing.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD810F61C54F25900BEE004 /* SimplePing.m */; };
+		DFD810FA1C54F25900BEE004 /* SimplePing.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD810F61C54F25900BEE004 /* SimplePing.m */; };
 		DFD882E817DD189E001516FE /* StringValidation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882E517DD189E001516FE /* StringValidation.cpp */; };
 		DFD882E917DD189E001516FE /* StringValidation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882E517DD189E001516FE /* StringValidation.cpp */; };
 		DFD882F717DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882F417DD1A5B001516FE /* AddonPythonInvoker.cpp */; };
@@ -3801,6 +3805,10 @@
 		DFD717531C0A031B0025D964 /* XBMCController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = XBMCController.mm; sourceTree = "<group>"; };
 		DFD717541C0A031B0025D964 /* XBMCDebugHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCDebugHelpers.h; sourceTree = "<group>"; };
 		DFD717631C0A03540025D964 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DFD810F31C54F25900BEE004 /* darwinICMPPing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = darwinICMPPing.h; sourceTree = "<group>"; };
+		DFD810F41C54F25900BEE004 /* darwinICMPPing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = darwinICMPPing.m; sourceTree = "<group>"; };
+		DFD810F51C54F25900BEE004 /* SimplePing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimplePing.h; sourceTree = "<group>"; };
+		DFD810F61C54F25900BEE004 /* SimplePing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimplePing.m; sourceTree = "<group>"; };
 		DFD882E517DD189E001516FE /* StringValidation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StringValidation.cpp; sourceTree = "<group>"; };
 		DFD882E617DD189E001516FE /* StringValidation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringValidation.h; sourceTree = "<group>"; };
 		DFD882F417DD1A5B001516FE /* AddonPythonInvoker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonPythonInvoker.cpp; path = python/AddonPythonInvoker.cpp; sourceTree = "<group>"; };
@@ -5648,6 +5656,10 @@
 		4313772312D646E300680C15 /* osx */ = {
 			isa = PBXGroup;
 			children = (
+				DFD810F31C54F25900BEE004 /* darwinICMPPing.h */,
+				DFD810F41C54F25900BEE004 /* darwinICMPPing.m */,
+				DFD810F51C54F25900BEE004 /* SimplePing.h */,
+				DFD810F61C54F25900BEE004 /* SimplePing.m */,
 				E49ACD9D10074A4000A86ECD /* ZeroconfBrowserOSX.cpp */,
 				E49ACD9E10074A4000A86ECD /* ZeroconfBrowserOSX.h */,
 				E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */,
@@ -9275,6 +9287,7 @@
 				E38E206D0D25F9FD00618676 /* DirectoryNodeTitleMusicVideos.cpp in Sources */,
 				E38E206E0D25F9FD00618676 /* DirectoryNodeTitleTvShows.cpp in Sources */,
 				E38E206F0D25F9FD00618676 /* DirectoryNodeTvShowsOverview.cpp in Sources */,
+				DFD810F71C54F25900BEE004 /* darwinICMPPing.m in Sources */,
 				E38E20720D25F9FD00618676 /* QueryParams.cpp in Sources */,
 				E38E20730D25F9FD00618676 /* VideoDatabaseDirectory.cpp in Sources */,
 				E38E20740D25F9FD00618676 /* VirtualDirectory.cpp in Sources */,
@@ -9767,6 +9780,7 @@
 				F5E1053E140AA38100175026 /* PeripheralDisk.cpp in Sources */,
 				F5E1053F140AA38100175026 /* PeripheralHID.cpp in Sources */,
 				F5E10540140AA38100175026 /* PeripheralNIC.cpp in Sources */,
+				DFD810F91C54F25900BEE004 /* SimplePing.m in Sources */,
 				F5E10541140AA38100175026 /* PeripheralNyxboard.cpp in Sources */,
 				39520F911C3174EE00272121 /* AddonSystemSettings.cpp in Sources */,
 				F5E10542140AA38100175026 /* PeripheralTuner.cpp in Sources */,
@@ -10274,6 +10288,7 @@
 				E499118B174E5CE000741B6D /* Service.cpp in Sources */,
 				E499118C174E5CE000741B6D /* Skin.cpp in Sources */,
 				E499118D174E5CE000741B6D /* Visualisation.cpp in Sources */,
+				DFD810F81C54F25900BEE004 /* darwinICMPPing.m in Sources */,
 				E499118E174E5CE400741B6D /* CDDARipJob.cpp in Sources */,
 				E499118F174E5CE400741B6D /* CDDARipper.cpp in Sources */,
 				E4991190174E5CE400741B6D /* Encoder.cpp in Sources */,
@@ -10476,6 +10491,7 @@
 				E499127E174E5D9900741B6D /* DirectoryNodeAlbumCompilations.cpp in Sources */,
 				E499127F174E5D9900741B6D /* DirectoryNodeAlbumCompilationsSongs.cpp in Sources */,
 				E4991280174E5D9900741B6D /* DirectoryNodeAlbumRecentlyAdded.cpp in Sources */,
+				DFD810FA1C54F25900BEE004 /* SimplePing.m in Sources */,
 				395F6DDE1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */,
 				E4991281174E5D9900741B6D /* DirectoryNodeAlbumRecentlyAddedSong.cpp in Sources */,
 				E4991282174E5D9900741B6D /* DirectoryNodeAlbumRecentlyPlayed.cpp in Sources */,
