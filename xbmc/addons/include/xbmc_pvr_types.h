@@ -296,9 +296,6 @@ extern "C" {
     int    iSignal;                                        /*!< @brief (optional) signal strength */
     long   iBER;                                           /*!< @brief (optional) bit error rate */
     long   iUNC;                                           /*!< @brief (optional) uncorrected blocks */
-    double dVideoBitrate;                                  /*!< @brief (optional) video bitrate */
-    double dAudioBitrate;                                  /*!< @brief (optional) audio bitrate */
-    double dDolbyBitrate;                                  /*!< @brief (optional) dolby bitrate */
   } ATTRIBUTE_PACKED PVR_SIGNAL_STATUS;
 
   /*!
