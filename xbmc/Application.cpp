@@ -1965,7 +1965,7 @@ void CApplication::Render()
     m_lastRenderTime = now;
   }
 
-  if (g_graphicsContext.IsFullScreenVideo())
+  if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
   {
     g_Windowing.FinishPipeline();
   }
