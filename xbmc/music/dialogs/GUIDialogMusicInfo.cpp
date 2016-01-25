@@ -25,7 +25,9 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
+#include "messaging/ApplicationMessenger.h"
 #include "music/MusicDatabase.h"
+#include "music/dialogs/GUIDialogSongInfo.h"
 #include "music/tags/MusicInfoTag.h"
 #include "filesystem/File.h"
 #include "FileItem.h"
@@ -42,6 +44,7 @@
 #include "filesystem/Directory.h"
 
 using namespace XFILE;
+using namespace KODI::MESSAGING;
 
 #define CONTROL_BTN_REFRESH      6
 #define CONTROL_USERRATING       7
@@ -59,6 +62,7 @@ CGUIDialogMusicInfo::CGUIDialogMusicInfo(void)
   m_loadType = KEEP_IN_MEMORY;
   m_startUserrating = -1;
   m_needsUpdate = false;
+  m_initSonginfo = false;
 }
 
 CGUIDialogMusicInfo::~CGUIDialogMusicInfo(void)
@@ -72,6 +76,15 @@ bool CGUIDialogMusicInfo::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
+      if (m_initSonginfo)
+      {
+        m_initSonginfo = false;
+
+        CGUIDialogSongInfo* songInfo = (CGUIDialogSongInfo *)g_windowManager.GetWindow(WINDOW_DIALOG_SONG_INFO);
+        if (songInfo)
+          CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_DIALOG_OPEN, -1, 0, static_cast<void*>(songInfo));
+      }
+
       if (m_startUserrating != m_albumItem->GetMusicInfoTag()->GetUserrating())
       {
         CMusicDatabase db;
@@ -310,6 +323,13 @@ void CGUIDialogMusicInfo::SetLabel(int iControl, const std::string& strLabel)
 
 void CGUIDialogMusicInfo::OnInitWindow()
 {
+  CGUIDialogSongInfo* dialog = (CGUIDialogSongInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_SONG_INFO);
+  if (dialog && dialog->IsDialogRunning())
+  {
+    m_initSonginfo = true;
+    dialog->Close();
+  }
+
   SET_CONTROL_LABEL(CONTROL_BTN_REFRESH, 184);
   SET_CONTROL_LABEL(CONTROL_USERRATING, 38023);
   SET_CONTROL_LABEL(CONTROL_BTN_GET_THUMB, 13405);

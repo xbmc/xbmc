@@ -67,6 +67,7 @@ protected:
   bool m_needsUpdate;
   bool m_hasUpdatedThumb;
   bool m_bArtistInfo;
+  bool m_initSonginfo;
   CFileItemPtr   m_albumItem;
   CFileItemList* m_albumSongs;
 };
