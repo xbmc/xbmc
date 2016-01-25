@@ -30,89 +30,46 @@ public:
     CThread("TestStopWatch"){}
 };
 
-TEST(TestStopWatch, Start)
+TEST(TestStopWatch, Initialization)
 {
   CStopWatch a;
-  CTestStopWatchThread thread;
-
   EXPECT_FALSE(a.IsRunning());
   EXPECT_EQ(0.0f, a.GetElapsedSeconds());
   EXPECT_EQ(0.0f, a.GetElapsedMilliseconds());
+}
 
-  std::cout << "Calling Start()" << std::endl;
+TEST(TestStopWatch, Start)
+{
+  CStopWatch a;
   a.Start();
-  thread.Sleep(1000);
   EXPECT_TRUE(a.IsRunning());
-  std::cout << "Elapsed Seconds: " << a.GetElapsedSeconds() << std::endl;
-  std::cout << "Elapsed Milliseconds: " << a.GetElapsedMilliseconds() << std::endl;
 }
 
 TEST(TestStopWatch, Stop)
 {
   CStopWatch a;
-  CTestStopWatchThread thread;
-
-  EXPECT_FALSE(a.IsRunning());
-  EXPECT_EQ(0.0f, a.GetElapsedSeconds());
-  EXPECT_EQ(0.0f, a.GetElapsedMilliseconds());
-
-  std::cout << "Calling Start()" << std::endl;
   a.Start();
-  thread.Sleep(1000);
-  EXPECT_TRUE(a.IsRunning());
-  std::cout << "Elapsed Seconds: " << a.GetElapsedSeconds() << std::endl;
-  std::cout << "Elapsed Milliseconds: " << a.GetElapsedMilliseconds() << std::endl;
-
   a.Stop();
   EXPECT_FALSE(a.IsRunning());
-  EXPECT_GT(a.GetElapsedSeconds(), 0.0f);
-  EXPECT_GT(a.GetElapsedMilliseconds(), 0.0f);
 }
 
-TEST(TestStopWatch, StartZero)
+TEST(TestStopWatch, ElapsedTime)
 {
   CStopWatch a;
   CTestStopWatchThread thread;
-
-  EXPECT_FALSE(a.IsRunning());
-  EXPECT_EQ(0.0f, a.GetElapsedSeconds());
-  EXPECT_EQ(0.0f, a.GetElapsedMilliseconds());
-
-  std::cout << "Calling StartZero()" << std::endl;
-  a.StartZero();
-  thread.Sleep(1000);
-  EXPECT_TRUE(a.IsRunning());
-  std::cout << "Elapsed Seconds: " << a.GetElapsedSeconds() << std::endl;
-  std::cout << "Elapsed Milliseconds: " << a.GetElapsedMilliseconds() << std::endl;
-
-  std::cout << "Calling StartZero()" << std::endl;
-  a.StartZero();
-  thread.Sleep(1000);
-  EXPECT_TRUE(a.IsRunning());
-  std::cout << "Elapsed Seconds: " << a.GetElapsedSeconds() << std::endl;
-  std::cout << "Elapsed Milliseconds: " << a.GetElapsedMilliseconds() << std::endl;
+  a.Start();
+  thread.Sleep(1);
+  EXPECT_GT(a.GetElapsedSeconds(), 0.0f);
+  EXPECT_GT(a.GetElapsedMilliseconds(), 0.0f);
 }
 
 TEST(TestStopWatch, Reset)
 {
   CStopWatch a;
   CTestStopWatchThread thread;
-
-  EXPECT_FALSE(a.IsRunning());
-  EXPECT_EQ(0.0f, a.GetElapsedSeconds());
-  EXPECT_EQ(0.0f, a.GetElapsedMilliseconds());
-
-  std::cout << "Calling StartZero()" << std::endl;
   a.StartZero();
-  thread.Sleep(1000);
-  EXPECT_TRUE(a.IsRunning());
-  std::cout << "Elapsed Seconds: " << a.GetElapsedSeconds() << std::endl;
-  std::cout << "Elapsed Milliseconds: " << a.GetElapsedMilliseconds() << std::endl;
-
-  std::cout << "Calling Reset()" << std::endl;
+  thread.Sleep(2);
+  EXPECT_GT(a.GetElapsedMilliseconds(), 1);
   a.Reset();
-  thread.Sleep(1000);
-  EXPECT_TRUE(a.IsRunning());
-  std::cout << "Elapsed Seconds: " << a.GetElapsedSeconds() << std::endl;
-  std::cout << "Elapsed Milliseconds: " << a.GetElapsedMilliseconds() << std::endl;
+  EXPECT_LT(a.GetElapsedMilliseconds(), 1);
 }
