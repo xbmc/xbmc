@@ -470,7 +470,21 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
 {
   std::vector<SortBy> orders;
   orders.push_back(SortByNone);
-  if (type == "songs")
+  if (type == "mixed")
+  {
+    orders.push_back(SortByGenre);
+    orders.push_back(SortByAlbum);
+    orders.push_back(SortByArtist);
+    orders.push_back(SortByTitle);
+    orders.push_back(SortByYear);
+    orders.push_back(SortByTime);
+    orders.push_back(SortByTrackNumber);
+    orders.push_back(SortByFile);
+    orders.push_back(SortByPath);
+    orders.push_back(SortByPlaycount);
+    orders.push_back(SortByLastPlayed);
+  }
+  else if (type == "songs")
   {
     orders.push_back(SortByGenre);
     orders.push_back(SortByAlbum);
