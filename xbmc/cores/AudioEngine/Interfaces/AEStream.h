@@ -48,8 +48,10 @@ public:
   enum AESyncState
   {
     SYNC_OFF,
-    SYNC_PLAY,
-    SYNC_ACTIVE
+    SYNC_INSYNC,
+    SYNC_START,
+    SYNC_MUTE,
+    SYNC_ADJUST
   };
   AESyncState state;
 };

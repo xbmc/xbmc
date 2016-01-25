@@ -35,9 +35,10 @@ using namespace ActiveAE;
 #define AE (*((CActiveAE*)CAEFactory::GetEngine()))
 
 
-CActiveAEStream::CActiveAEStream(AEAudioFormat *format)
+CActiveAEStream::CActiveAEStream(AEAudioFormat *format, unsigned int streamid)
 {
   m_format = *format;
+  m_id = streamid;
   m_bufferedTime = 0;
   m_currentBuffer = NULL;
   m_drain = false;
@@ -265,7 +266,7 @@ unsigned int CActiveAEStream::AddData(uint8_t* const *data, unsigned int offset,
 
       bool rawPktComplete = false;
       {
-        CSingleLock lock(*m_statsLock);
+        CSingleLock lock(m_statsLock);
         if (m_format.m_dataFormat != AE_FMT_RAW)
         {
           m_currentBuffer->pkt->nb_samples += minFrames;
