@@ -207,12 +207,24 @@ int COMXAudioCodecOMX::GetData(BYTE** dst, double &dts, double &pts)
   /* output audio will be packed */
   int outputSize = av_samples_get_buffer_size(&outLineSize, m_pCodecContext->channels, m_pFrame1->nb_samples, m_desiredSampleFormat, 1);
 
+  // if this buffer won't fit then flush out what we have
+  int desired_size = AUDIO_DECODE_OUTPUT_BUFFER * (m_pCodecContext->channels * GetBitsPerSample()) >> (rounded_up_channels_shift[m_pCodecContext->channels] + 4);
+  if (m_iBufferOutputUsed && (m_iBufferOutputUsed + outputSize > desired_size || m_bNoConcatenate))
+  {
+     int ret = m_iBufferOutputUsed;
+     m_iBufferOutputUsed = 0;
+     dts = m_dts;
+     pts = m_pts;
+     *dst = m_pBufferOutput;
+     return ret;
+  }
+  m_frameSize = outputSize;
+
   if (m_iBufferOutputAlloced < m_iBufferOutputUsed + outputSize)
   {
      m_pBufferOutput = (BYTE*)av_realloc(m_pBufferOutput, m_iBufferOutputUsed + outputSize + FF_INPUT_BUFFER_PADDING_SIZE);
      m_iBufferOutputAlloced = m_iBufferOutputUsed + outputSize;
   }
-  *dst = m_pBufferOutput;
 
   /* need to convert format */
   if(m_pCodecContext->sample_fmt != m_desiredSampleFormat)
@@ -260,28 +272,16 @@ int COMXAudioCodecOMX::GetData(BYTE** dst, double &dts, double &pts)
     }
   }
   m_bGotFrame = false;
-  int desired_size = AUDIO_DECODE_OUTPUT_BUFFER * (m_pCodecContext->channels * GetBitsPerSample()) >> (rounded_up_channels_shift[m_pCodecContext->channels] + 4);
 
   if (m_bFirstFrame)
   {
-    CLog::Log(LOGDEBUG, "COMXAudioCodecOMX::GetData size=%d/%d line=%d/%d buf=%p, desired=%d", inputSize, outputSize, inLineSize, outLineSize, *dst, desired_size);
+    CLog::Log(LOGDEBUG, "COMXAudioCodecOMX::GetData size=%d/%d line=%d/%d buf=%p, desired=%d", inputSize, outputSize, inLineSize, outLineSize, m_pBufferOutput, desired_size);
     m_bFirstFrame = false;
   }
   m_iBufferOutputUsed += outputSize;
 
   if (!m_bNoConcatenate && m_pCodecContext->sample_fmt == AV_SAMPLE_FMT_FLTP && m_frameSize && (int)m_frameSize != outputSize)
     CLog::Log(LOGERROR, "COMXAudioCodecOMX::GetData Unexpected change of size (%d->%d)", m_frameSize, outputSize);
-  m_frameSize = outputSize;
-
-  // if next buffer submitted won't fit then flush it out
-  if (m_iBufferOutputUsed + outputSize > desired_size || m_bNoConcatenate)
-  {
-     int ret = m_iBufferOutputUsed;
-     m_iBufferOutputUsed = 0;
-     dts = m_dts;
-     pts = m_pts;
-     return ret;
-  }
   return 0;
 }
 
