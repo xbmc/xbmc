@@ -159,7 +159,8 @@ int COMXAudioCodecOMX::Decode(BYTE* pData, int iSize, double dts, double pts)
   if (!m_pCodecContext) return -1;
 
   AVPacket avpkt;
-  m_bGotFrame = false;
+  if (m_bGotFrame)
+    return 0;
   av_init_packet(&avpkt);
   avpkt.data = pData;
   avpkt.size = iSize;
@@ -258,6 +259,7 @@ int COMXAudioCodecOMX::GetData(BYTE** dst, double &dts, double &pts)
       outputSize = 0;
     }
   }
+  m_bGotFrame = false;
   int desired_size = AUDIO_DECODE_OUTPUT_BUFFER * (m_pCodecContext->channels * GetBitsPerSample()) >> (rounded_up_channels_shift[m_pCodecContext->channels] + 4);
 
   if (m_bFirstFrame)
@@ -275,7 +277,6 @@ int COMXAudioCodecOMX::GetData(BYTE** dst, double &dts, double &pts)
   if (m_iBufferOutputUsed + outputSize > desired_size || m_bNoConcatenate)
   {
      int ret = m_iBufferOutputUsed;
-     m_bGotFrame = false;
      m_iBufferOutputUsed = 0;
      dts = m_dts;
      pts = m_pts;
