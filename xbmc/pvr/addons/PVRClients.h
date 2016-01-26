@@ -339,6 +339,12 @@ namespace PVR
     //@{
 
     /*!
+     * @brief Check whether there is at least one connected client supporting timers.
+     * @return True if at least one connected client supports timers, false otherwise.
+     */
+    bool SupportsTimers() const;
+
+    /*!
      * @brief Check whether a client supports timers.
      * @param iClientId The id of the client to check.
      * @return True if the supports timers, false otherwise.

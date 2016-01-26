@@ -1457,6 +1457,19 @@ bool CPVRClients::GetClient(const std::string &strId, AddonPtr &addon) const
   return false;
 }
 
+bool CPVRClients::SupportsTimers() const
+{
+  PVR_CLIENTMAP clients;
+  GetConnectedClients(clients);
+
+  for (const auto &entry : clients)
+  {
+    if (entry.second->SupportsTimers())
+      return true;
+  }
+  return false;
+}
+
 bool CPVRClients::SupportsChannelGroups(int iClientId) const
 {
   PVR_CLIENT client;
