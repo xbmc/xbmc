@@ -269,7 +269,7 @@ void CAddonMgr::UnregisterAddonMgrCallback(TYPE type)
 bool CAddonMgr::Init()
 {
   CSingleLock lock(m_critSection);
-  m_cpluff = new DllLibCPluff;
+  m_cpluff = std::unique_ptr<DllLibCPluff>(new DllLibCPluff);
   m_cpluff->Load();
 
   m_database.Open();
@@ -363,10 +363,7 @@ bool CAddonMgr::Init()
 
 void CAddonMgr::DeInit()
 {
-  if (m_cpluff && m_cpluff->IsLoaded())
-    m_cpluff->destroy();
-  delete m_cpluff;
-  m_cpluff = NULL;
+  m_cpluff.reset();
   m_database.Close();
   m_disabled.clear();
 }

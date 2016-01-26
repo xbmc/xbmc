@@ -240,7 +240,7 @@ namespace ADDON
 
     /* libcpluff */
     cp_context_t *m_cp_context;
-    DllLibCPluff *m_cpluff;
+    std::unique_ptr<DllLibCPluff> m_cpluff;
     VECADDONS    m_updateableAddons;
 
     /*! \brief Fetch a (single) addon from a plugin descriptor.
