@@ -57,8 +57,9 @@ namespace ADDON
                        , public IRenderingCallback
   {
   public:
-    CVisualisation(const ADDON::AddonProps &props) : CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>(props) {}
-    CVisualisation(const cp_extension_t *ext) : CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>(ext) {}
+    explicit CVisualisation(AddonProps props)
+        : CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>(std::move(props)) {}
+
     virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
     virtual void OnAudioData(const float* pAudioData, int iAudioDataLength);
     virtual bool IsInUse() const;

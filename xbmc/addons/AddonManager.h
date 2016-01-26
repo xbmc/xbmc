@@ -39,14 +39,7 @@ namespace ADDON
   typedef std::map<TYPE, VECADDONS>::iterator IMAPADDONS;
   typedef std::vector<cp_cfg_element_t*> ELEMENTS;
 
-  const std::string ADDON_METAFILE             = "description.xml";
-  const std::string ADDON_VIS_EXT              = "*.vis";
   const std::string ADDON_PYTHON_EXT           = "*.py";
-  const std::string ADDON_SCRAPER_EXT          = "*.xml";
-  const std::string ADDON_SCREENSAVER_EXT      = "*.xbs";
-  const std::string ADDON_PVRDLL_EXT           = "*.pvr";
-  const std::string ADDON_DSP_AUDIO_EXT        = "*.adsp";
-  const std::string ADDON_VERSION_RE = "(?<Major>\\d*)\\.?(?<Minor>\\d*)?\\.?(?<Build>\\d*)?\\.?(?<Revision>\\d*)?";
 
   /**
   * Class - IAddonMgrCallback
@@ -228,6 +221,9 @@ namespace ADDON
     /*! \brief Stop all services addons.
     */
     void StopServices(const bool onlylogin);
+    static AddonPtr Factory(const cp_plugin_info_t* plugin, TYPE type);
+    static AddonPtr Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder);
+    static void FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder);
 
   private:
     void LoadAddons(const std::string &path,
@@ -238,23 +234,13 @@ namespace ADDON
     std::unique_ptr<DllLibCPluff> m_cpluff;
     VECADDONS    m_updateableAddons;
 
-    /*! \brief Fetch a (single) addon from a plugin descriptor.
-     Assumes that there is a single (non-trivial) extension point per addon.
-     \param info the plugin descriptor
-     \param type the extension point we want
-     \return an AddonPtr based on the descriptor.  May be NULL if no suitable extension point is found.
-     */
-    AddonPtr GetAddonFromDescriptor(const cp_plugin_info_t *info,
-                                    const std::string& type="");
-
     /*! \brief Check whether this addon is supported on the current platform
      \param info the plugin descriptor
      \return true if the addon is supported, false otherwise.
      */
-    bool PlatformSupportsAddon(const cp_plugin_info_t *info) const;
+    static bool PlatformSupportsAddon(const cp_plugin_info_t *info);
 
-    AddonPtr Factory(const cp_extension_t *props);
-    bool CheckUserDirs(const cp_cfg_element_t *element);
+    static bool CheckUserDirs(const cp_cfg_element_t *element);
 
     bool GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enabledOnly);
 

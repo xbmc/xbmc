@@ -40,8 +40,7 @@ namespace ActiveAE
   class CActiveAEDSPAddon : public ADDON::CAddonDll<DllAudioDSP, AudioDSP, AE_DSP_PROPERTIES>
   {
   public:
-    CActiveAEDSPAddon(const ADDON::AddonProps& props);
-    CActiveAEDSPAddon(const cp_extension_t *ext);
+    explicit CActiveAEDSPAddon(ADDON::AddonProps props);
     ~CActiveAEDSPAddon(void);
 
     virtual void OnDisabled();

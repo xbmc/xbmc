@@ -59,62 +59,51 @@ AddonPtr CRepository::Clone() const
   return AddonPtr(new CRepository(*this));
 }
 
-CRepository::CRepository(const AddonProps& props) :
-  CAddon(props)
+std::unique_ptr<CRepository> CRepository::FromExtension(AddonProps props, const cp_extension_t* ext)
 {
-}
-
-CRepository::CRepository(const cp_extension_t *ext)
-  : CAddon(ext)
-{
-  // read in the other props that we need
-  if (ext)
+  DirList dirs;
+  AddonVersion version("0.0.0");
+  AddonPtr addonver;
+  if (CAddonMgr::GetInstance().GetAddon("xbmc.addon", addonver))
+    version = addonver->Version();
+  for (size_t i = 0; i < ext->configuration->num_children; ++i)
   {
-    AddonVersion version("0.0.0");
-    AddonPtr addonver;
-    if (CAddonMgr::GetInstance().GetAddon("xbmc.addon", addonver))
-      version = addonver->Version();
-    for (size_t i = 0; i < ext->configuration->num_children; ++i)
+    if(ext->configuration->children[i].name &&
+       strcmp(ext->configuration->children[i].name, "dir") == 0)
     {
-      if(ext->configuration->children[i].name &&
-         strcmp(ext->configuration->children[i].name, "dir") == 0)
+      AddonVersion min_version(CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "@minversion"));
+      if (min_version <= version)
       {
-        AddonVersion min_version(CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "@minversion"));
-        if (min_version <= version)
-        {
-          DirInfo dir;
-          dir.version    = min_version;
-          dir.checksum   = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "checksum");
-          dir.compressed = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "info@compressed") == "true";
-          dir.info       = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "info");
-          dir.datadir    = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "datadir");
-          dir.zipped     = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "datadir@zip") == "true";
-          dir.hashes     = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "hashes") == "true";
-          m_dirs.push_back(dir);
-        }
+        DirInfo dir;
+        dir.version    = min_version;
+        dir.checksum   = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "checksum");
+        dir.compressed = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "info@compressed") == "true";
+        dir.info       = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "info");
+        dir.datadir    = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "datadir");
+        dir.zipped     = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "datadir@zip") == "true";
+        dir.hashes     = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "hashes") == "true";
+        dirs.push_back(dir);
       }
     }
-    // backward compatibility
-    if (!CAddonMgr::GetInstance().GetExtValue(ext->configuration, "info").empty())
-    {
-      DirInfo info;
-      info.checksum   = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "checksum");
-      info.compressed = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "info@compressed") == "true";
-      info.info       = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "info");
-      info.datadir    = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "datadir");
-      info.zipped     = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "datadir@zip") == "true";
-      info.hashes     = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "hashes") == "true";
-      m_dirs.push_back(info);
-    }
   }
+  // backward compatibility
+  if (!CAddonMgr::GetInstance().GetExtValue(ext->configuration, "info").empty())
+  {
+    DirInfo info;
+    info.checksum   = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "checksum");
+    info.compressed = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "info@compressed") == "true";
+    info.info       = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "info");
+    info.datadir    = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "datadir");
+    info.zipped     = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "datadir@zip") == "true";
+    info.hashes     = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "hashes") == "true";
+    dirs.push_back(info);
+  }
+
+  return std::unique_ptr<CRepository>(new CRepository(std::move(props), std::move(dirs)));
 }
 
-CRepository::CRepository(const CRepository &rhs)
-  : CAddon(rhs), m_dirs(rhs.m_dirs)
-{
-}
-
-CRepository::~CRepository()
+CRepository::CRepository(AddonProps props, DirList dirs)
+    : CAddon(std::move(props)), m_dirs(std::move(dirs))
 {
 }
 

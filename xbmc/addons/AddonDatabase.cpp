@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <utility>
 
+#include "addons/AddonBuilder.h"
 #include "addons/AddonManager.h"
 #include "dbwrappers/dataset.h"
 #include "utils/log.h"
@@ -324,33 +325,39 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr &addon)
     {
       const dbiplus::query_data &data = m_pDS2->get_result_set().records;
       const dbiplus::sql_record* const record = data[0];
-      AddonProps props(record->at(addon_addonID).get_asString(),
-                       TranslateType(record->at(addon_type).get_asString()),
-                       record->at(addon_version).get_asString(),
-                       record->at(addon_minversion).get_asString());
-      props.name = record->at(addon_name).get_asString();
-      props.summary = record->at(addon_summary).get_asString();
-      props.description = record->at(addon_description).get_asString();
-      props.changelog = record->at(addon_changelog).get_asString();
-      props.path = record->at(addon_path).get_asString();
-      props.icon = record->at(addon_icon).get_asString();
-      props.fanart = record->at(addon_fanart).get_asString();
-      props.author = record->at(addon_author).get_asString();
-      props.disclaimer = record->at(addon_disclaimer).get_asString();
-      props.broken = record->at(broken_reason).get_asString();
 
+      CAddonBuilder builder;
+      builder.SetId(record->at(addon_addonID).get_asString());
+      builder.SetType(TranslateType(record->at(addon_type).get_asString()));
+      builder.SetVersion(AddonVersion(record->at(addon_version).get_asString()));
+      builder.SetMinVersion(AddonVersion(record->at(addon_minversion).get_asString()));
+      builder.SetName(record->at(addon_name).get_asString());
+      builder.SetSummary(record->at(addon_summary).get_asString());
+      builder.SetDescription(record->at(addon_description).get_asString());
+      builder.SetChangelog(record->at(addon_changelog).get_asString());
+      builder.SetDisclaimer(record->at(addon_disclaimer).get_asString());
+      builder.SetAuthor(record->at(addon_author).get_asString());
+      builder.SetBroken(record->at(broken_reason).get_asString());
+      builder.SetPath(record->at(addon_path).get_asString());
+      builder.SetIcon(record->at(addon_icon).get_asString());
+      builder.SetFanart(record->at(addon_fanart).get_asString());
+
+      InfoMap extrainfo;
+      ADDONDEPS dependencies;
       /* while this is a cartesion join and we'll typically get multiple rows, we rely on the fact that
          extrainfo and dependencies are maps, so insert() will insert the first instance only */
       for (dbiplus::query_data::const_iterator i = data.begin(); i != data.end(); ++i)
       {
         const dbiplus::sql_record* const record = *i;
         if (!record->at(addonextra_key).get_asString().empty())
-          props.extrainfo.insert(std::make_pair(record->at(addonextra_key).get_asString(), record->at(addonextra_value).get_asString()));
+          extrainfo.insert(std::make_pair(record->at(addonextra_key).get_asString(), record->at(addonextra_value).get_asString()));
         if (!m_pDS2->fv(dependencies_addon).get_asString().empty())
-          props.dependencies.insert(std::make_pair(record->at(dependencies_addon).get_asString(), std::make_pair(AddonVersion(record->at(dependencies_version).get_asString()), record->at(dependencies_optional).get_asBool())));
+          dependencies.insert(std::make_pair(record->at(dependencies_addon).get_asString(), std::make_pair(AddonVersion(record->at(dependencies_version).get_asString()), record->at(dependencies_optional).get_asBool())));
       }
+      builder.SetExtrainfo(std::move(extrainfo));
+      builder.SetDependencies(std::move(dependencies));
 
-      addon = CAddonMgr::AddonFromProps(props);
+      addon = builder.Build();
       return NULL != addon.get();
     }
   }

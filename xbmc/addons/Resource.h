@@ -42,15 +42,7 @@ public:
   }
 
 protected:
-  CResource(const AddonProps &props)
-    : CAddon(props)
-  { }
-  CResource(const cp_extension_t *ext)
-    : CAddon(ext)
-  { }
-  CResource(const CResource &rhs)
-    : CAddon(rhs)
-  { }
+  explicit CResource(AddonProps props) : CAddon(std::move(props)) {}
 
   std::string GetResourcePath() const
   {

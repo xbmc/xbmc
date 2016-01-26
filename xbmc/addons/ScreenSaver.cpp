@@ -32,10 +32,10 @@
 namespace ADDON
 {
 
-  CScreenSaver::CScreenSaver(const char *addonID)
-   : ADDON::CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>(AddonProps(addonID, ADDON_UNKNOWN, "", ""))
-  {
-  }
+CScreenSaver::CScreenSaver(const char *addonID)
+    : ADDON::CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>(AddonProps(addonID, ADDON_UNKNOWN, "", ""))
+{
+}
 
 AddonPtr CScreenSaver::Clone() const
 {
