@@ -1859,7 +1859,7 @@ void CApplication::Render()
 
   bool hasRendered = false;
   bool limitFrames = false;
-  unsigned int singleFrameTime = 10; // default limit 100 fps
+  unsigned int singleFrameTime = 40; // default limit 25 fps
   bool vsync = true;
 
   // Whether externalplayer is playing and we're unfocused
@@ -1873,24 +1873,22 @@ void CApplication::Render()
     if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
     {
       m_bPresentFrame = m_pPlayer->HasFrame();
-      if (vsync_mode == VSYNC_DISABLED)
-        vsync = false;
     }
     else
     {
       // engage the frame limiter as needed
       limitFrames = lowfps || extPlayerActive;
-      // DXMERGE - we checked for g_videoConfig.GetVSyncMode() before this
-      //           perhaps allowing it to be set differently than the UI option??
+
+      // TODO:
+      // remove those useless modes, they don't do any good
       if (vsync_mode == VSYNC_DISABLED || vsync_mode == VSYNC_VIDEO)
       {
         limitFrames = true; // not using vsync.
-        vsync = false;
+        singleFrameTime = 10;
       }
-      else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000.0f / singleFrameTime)
+      else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 100)
       {
         limitFrames = true; // using vsync, but it isn't working.
-        vsync = false;
       }
 
       if (limitFrames)
@@ -1912,7 +1910,10 @@ void CApplication::Render()
   else if (vsync_mode == VSYNC_ALWAYS)
     g_Windowing.SetVSync(true);
   else if (vsync_mode != VSYNC_DRIVER)
+  {
     g_Windowing.SetVSync(false);
+    vsync = false;
+  }
 
   if (m_bPresentFrame && m_pPlayer->IsPlaying() && !m_pPlayer->IsPaused())
     ResetScreenSaver();
@@ -1964,7 +1965,7 @@ void CApplication::Render()
     m_lastRenderTime = now;
   }
 
-  if (g_graphicsContext.IsFullScreenVideo())
+  if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
   {
     g_Windowing.FinishPipeline();
   }
@@ -1981,9 +1982,6 @@ void CApplication::Render()
   //fps limiter, make sure each frame lasts at least singleFrameTime milliseconds
   if (limitFrames || !(flip || m_bPresentFrame))
   {
-    if (!limitFrames)
-      singleFrameTime = 40; //if not flipping, loop at 25 fps
-
     unsigned int frameTime = now - m_lastFrameTime;
     if (frameTime < singleFrameTime)
       Sleep(singleFrameTime - frameTime);
