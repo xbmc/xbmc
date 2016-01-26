@@ -439,8 +439,9 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
   m_seenPaths.insert(strDirectory);
 
   // Discard all excluded files defined by m_musicExcludeRegExps
-  std::vector<std::string> regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
-  if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
+  const std::vector<std::string> &regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
+
+  if (IsExcluded(strDirectory, regexps))
     return true;
 
   // load subfolder

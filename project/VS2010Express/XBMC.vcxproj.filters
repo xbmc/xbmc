@@ -3228,6 +3228,7 @@
     <ClCompile Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeInProgressTvShows.cpp">
       <Filter>filesystem\VideoDatabaseDirectory</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\InfoScanner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6252,6 +6253,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeInProgressTvShows.h">
       <Filter>filesystem\VideoDatabaseDirectory</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\InfoScanner.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">

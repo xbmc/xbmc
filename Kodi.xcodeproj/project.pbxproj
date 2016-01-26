@@ -138,6 +138,8 @@
 		1D638128161E211E003603ED /* PeripheralImon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1D638126161E211E003603ED /* PeripheralImon.cpp */; };
 		1DAFDB7C16DFDCA7007F8C68 /* PeripheralBusCEC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1DAFDB7A16DFDCA7007F8C68 /* PeripheralBusCEC.cpp */; };
 		1DE0443515828F4B005DDB4D /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1DE0443315828F4B005DDB4D /* Exception.cpp */; };
+		228FA65D1C53F9D50023BBF0 /* InfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 228FA65C1C53F9D50023BBF0 /* InfoScanner.cpp */; };
+		228FA65E1C53F9D50023BBF0 /* InfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 228FA65C1C53F9D50023BBF0 /* InfoScanner.cpp */; };
 		2A1A5A6C1BDEAA6D0084702D /* NOTE in Resources */ = {isa = PBXBuildFile; fileRef = 2A1A5A5D1BDEAA6D0084702D /* NOTE */; };
 		2A7B2BDC1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; };
 		2A7B2BDD1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; };
@@ -2494,6 +2496,8 @@
 		1DAFDB7B16DFDCA7007F8C68 /* PeripheralBusCEC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusCEC.h; sourceTree = "<group>"; };
 		1DE0443315828F4B005DDB4D /* Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Exception.cpp; path = commons/Exception.cpp; sourceTree = "<group>"; };
 		1DE0443415828F4B005DDB4D /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exception.h; path = commons/Exception.h; sourceTree = "<group>"; };
+		228FA65B1C53F9D50023BBF0 /* InfoScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoScanner.h; sourceTree = "<group>"; };
+		228FA65C1C53F9D50023BBF0 /* InfoScanner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfoScanner.cpp; sourceTree = "<group>"; };
 		2A1A5A581BDEAA6D0084702D /* kodi_adsp_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodi_adsp_dll.h; sourceTree = "<group>"; };
 		2A1A5A591BDEAA6D0084702D /* kodi_adsp_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodi_adsp_types.h; sourceTree = "<group>"; };
 		2A1A5A5A1BDEAA6D0084702D /* kodi_audiodec_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodi_audiodec_dll.h; sourceTree = "<group>"; };
@@ -7408,6 +7412,8 @@
 				E38E17F30D25F9FA00618676 /* GUIPassword.h */,
 				E38E17F60D25F9FA00618676 /* GUIUserMessages.h */,
 				DFEF0BAB180ADE6400AEAED1 /* IFileItemListModifier.h */,
+				228FA65B1C53F9D50023BBF0 /* InfoScanner.h */,
+				228FA65C1C53F9D50023BBF0 /* InfoScanner.cpp */,
 				E38E184F0D25F9FA00618676 /* IProgressCallback.h */,
 				E38E18580D25F9FA00618676 /* LangInfo.cpp */,
 				E38E18590D25F9FA00618676 /* LangInfo.h */,
@@ -10123,6 +10129,7 @@
 				7CCDA779192756250074CF51 /* Neptune.cpp in Sources */,
 				7CCDA782192756250074CF51 /* NptAutomaticCleaner.cpp in Sources */,
 				7CCDA785192756250074CF51 /* NptBase64.cpp in Sources */,
+				228FA65D1C53F9D50023BBF0 /* InfoScanner.cpp in Sources */,
 				7CCDA78E192756250074CF51 /* NptBufferedStreams.cpp in Sources */,
 				7CCDA797192756250074CF51 /* NptCommon.cpp in Sources */,
 				7CCDA7A0192756250074CF51 /* NptConsole.cpp in Sources */,
@@ -10271,6 +10278,7 @@
 				E499118F174E5CE400741B6D /* CDDARipper.cpp in Sources */,
 				E4991190174E5CE400741B6D /* Encoder.cpp in Sources */,
 				DFEA4B561B5271F600562321 /* ActiveAEDSPMode.cpp in Sources */,
+				228FA65E1C53F9D50023BBF0 /* InfoScanner.cpp in Sources */,
 				E4991191174E5CE400741B6D /* EncoderFFmpeg.cpp in Sources */,
 				E4991196174E5CEB00741B6D /* Exception.cpp in Sources */,
 				E4991197174E5CEB00741B6D /* ilog.cpp in Sources */,
