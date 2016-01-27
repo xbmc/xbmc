@@ -44,6 +44,9 @@
 #include "utils/AMLUtils.h"
 #include "Video/DVDVideoCodecAmlogic.h"
 #endif
+#if defined(TARGET_ANDROID) && defined(HAS_LIBACTSCODEC)
+#include "Video/DVDVideoCodecActions.h"
+#endif
 #if defined(TARGET_ANDROID)
 #include "Video/DVDVideoCodecAndroidMediaCodec.h"
 #include "platform/android/activity/AndroidFeatures.h"
@@ -149,6 +152,11 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
     pCodec = OpenCodec(new CDVDVideoCodecAmlogic(clock), hint, options);
     if (pCodec)
       return pCodec;
+#endif
+#if defined(TARGET_ANDROID) && defined(HAS_LIBACTSCODEC)
+   
+    CLog::Log(LOGINFO, "use actions decoder\n");
+    if ( (pCodec = OpenCodec(new CDVDVideoCodecActions(), hint, options)) )   	return pCodec;
 #endif
 
 #if defined(HAS_IMXVPU)
