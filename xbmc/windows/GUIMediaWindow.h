@@ -170,16 +170,6 @@ protected:
    */
   static std::string RemoveParameterFromPath(const std::string &strDirectory, const std::string &strParameter);
 
-  /*! \brief Method to get the last selected item
-  \param strDirectory current Path/URL
-  \return last selected item */
-  int GetMediaSelectedItem(const std::string& strDirectory);
-
-  /*! \brief Method to save the last selected item
-  \param strDirectory current Path/URL
-  \param iItem current selected item */
-  void SetMediaSelectedItem(const std::string& strDirectory, int iItem);
-
   XFILE::CVirtualDirectory m_rootDir;
   CGUIViewControl m_viewControl;
 
@@ -191,6 +181,7 @@ protected:
 
   // save control state on window exit
   int m_iLastControl;
+  int m_iSelectedItem;
   std::string m_startDirectory;
 
   CSmartPlaylist m_filter;
@@ -208,7 +199,4 @@ protected:
    \sa Update
    */
   std::string m_strFilterPath;
-
- private:
-  std::map<std::string, int> m_mediaSelectedItems;
 };
