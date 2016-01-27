@@ -43,6 +43,8 @@ public:
   virtual ~CGUIWindowVideoBase(void);
   virtual bool OnMessage(CGUIMessage& message) override;
   virtual bool OnAction(const CAction &action) override;
+  virtual void OnInitWindow() override;
+  virtual void OnDeinitWindow(int nextWindowID) override;
 
   void PlayMovie(const CFileItem *item, const std::string &player = "");
   static void GetResumeItemOffset(const CFileItem *item, int& startoffset, int& partNumber);
@@ -50,7 +52,6 @@ public:
 
   void AddToDatabase(int iItem);
   virtual void OnItemInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper);
-
 
   /*! \brief Show the resume menu for this item (if it has a resume bookmark)
    If a resume bookmark is found, we set the item's m_lStartOffset to STARTOFFSET_RESUME.
@@ -138,9 +139,22 @@ protected:
 
   bool OnPlayStackPart(int item);
 
+  /*! \brief Method to get the last selected item
+  \param strDirectory current Path/URL
+  \return last selected item */
+  int GetSelectedItem(const std::string& strDirectory);
+
+  /*! \brief Method to save the last selected item
+  \param strDirectory current Path/URL
+  \param iItem current selected item */
+  void SetSelectedItem(const std::string& strDirectory, int iItem);
+
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;
 
   CVideoThumbLoader m_thumbLoader;
   bool m_stackingAvailable;
+
+private:
+  std::map<std::string, int> m_SelectedItems;
 };

@@ -201,6 +201,31 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   return CGUIMediaWindow::OnMessage(message);
 }
 
+void CGUIWindowVideoBase::OnInitWindow()
+{
+  CGUIMediaWindow::OnInitWindow();
+  // set the selected item
+  m_viewControl.SetSelectedItem(GetSelectedItem(m_vecItems->GetPath()));
+}
+
+void CGUIWindowVideoBase::OnDeinitWindow(int nextWindowID)
+{
+  CGUIMediaWindow::OnDeinitWindow(nextWindowID);
+  // store the selected item
+  SetSelectedItem(m_vecItems->GetPath(), m_viewControl.GetSelectedItem());
+}
+
+int CGUIWindowVideoBase::GetSelectedItem(const std::string& strDirectory)
+{
+  auto it = m_SelectedItems.find(strDirectory);
+  return it != m_SelectedItems.end() ? it->second : 0;
+}
+
+void CGUIWindowVideoBase::SetSelectedItem(const std::string& strDirectory, int iItem)
+{
+  m_SelectedItems[strDirectory] = iItem;
+}
+
 void CGUIWindowVideoBase::OnItemInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
 {
   if (!pItem)
