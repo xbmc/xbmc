@@ -97,7 +97,7 @@ void CVideoInfoTag::Reset()
   m_dateAdded.Reset();
   m_type.clear();
   m_relevance = -1;
-  m_hasDetails = false;
+  m_parsedDetails = 0;
 }
 
 bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathInfo, const TiXmlElement *additionalNode)
