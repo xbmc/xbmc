@@ -94,7 +94,7 @@ class CActiveAEStream : public IAEStream
 protected:
   friend class CActiveAE;
   friend class CEngineStats;
-  CActiveAEStream(AEAudioFormat *format);
+  CActiveAEStream(AEAudioFormat *format, unsigned int streamid);
   virtual ~CActiveAEStream();
   void FadingFinished();
   void IncFreeBuffers();
@@ -146,6 +146,7 @@ public:
 
 protected:
 
+  unsigned int m_id;
   AEAudioFormat m_format;
   float m_streamVolume;
   float m_streamRgain;
@@ -162,6 +163,7 @@ protected:
   bool m_bypassDSP;
   IAEStream *m_streamSlave;
   CCriticalSection m_streamLock;
+  CCriticalSection m_statsLock;
   uint8_t *m_leftoverBuffer;
   int m_leftoverBytes;
   CSampleBuffer *m_currentBuffer;
@@ -174,7 +176,6 @@ protected:
   std::deque<CSampleBuffer*> m_processingSamples;
   CActiveAEDataProtocol *m_streamPort;
   CEvent m_inMsgEvent;
-  CCriticalSection *m_statsLock;
   bool m_drain;
   bool m_paused;
   bool m_started;
@@ -196,13 +197,7 @@ protected:
   IAEClockCallback *m_pClock;
   CSyncError m_syncError;
   double m_lastSyncError;
-  enum
-  {
-    INSYNC = 0,
-    STARTSYNC,
-    MUTE,
-    ADJUST
-  } m_syncClock;
+  CAESyncInfo::AESyncState m_syncState;
 };
 }
 
