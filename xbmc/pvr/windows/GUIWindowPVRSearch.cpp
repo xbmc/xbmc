@@ -73,7 +73,7 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
           buttons.Add(CONTEXT_BUTTON_DELETE_TIMER, 19060);  /* Delete timer */
       }
     }
-    else
+    else if (g_PVRClients->SupportsTimers())
     {
       if (epg->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
         buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);      /* Record */
