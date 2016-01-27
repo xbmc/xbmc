@@ -228,7 +228,6 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      SetMediaSelectedItem(m_vecItems->GetPath(), m_viewControl.GetSelectedItem());
       m_iLastControl = GetFocusedControlID();
       CGUIWindow::OnMessage(message);
 
@@ -994,8 +993,6 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
 #endif
   else
   {
-    SetMediaSelectedItem(m_vecItems->GetPath(), m_viewControl.GetSelectedItem());
-
     if (pItem->GetPath() == "newplaylist://")
     {
       m_vecItems->RemoveDiscCache(GetID());
@@ -1455,19 +1452,6 @@ void CGUIMediaWindow::OnInitWindow()
   m_rootDir.SetAllowThreads(true);
 
   CGUIWindow::OnInitWindow();
-
-  m_viewControl.SetSelectedItem(GetMediaSelectedItem(m_vecItems->GetPath()));
-}
-
-int CGUIMediaWindow::GetMediaSelectedItem(const std::string& strDirectory)
-{
-  auto it = m_mediaSelectedItems.find(strDirectory);
-  return it != m_mediaSelectedItems.end() ? it->second : 0;
-}
-
-void CGUIMediaWindow::SetMediaSelectedItem(const std::string& strDirectory, int iItem)
-{
-  m_mediaSelectedItems[strDirectory] = iItem;
 }
 
 CGUIControl *CGUIMediaWindow::GetFirstFocusableControl(int id)
