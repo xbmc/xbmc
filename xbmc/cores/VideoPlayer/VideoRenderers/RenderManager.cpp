@@ -33,7 +33,6 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "guilib/GUIFontManager.h"
-#include "cores/DataCacheCore.h"
 
 #if defined(HAS_GL)
 #include "LinuxRendererGL.h"
@@ -117,7 +116,7 @@ static std::string GetRenderFormatName(ERenderFormat format)
 
 unsigned int CRenderManager::m_nextCaptureId = 0;
 
-CRenderManager::CRenderManager(CDVDClock &clock) : m_dvdClock(clock)
+CRenderManager::CRenderManager(CDVDClock &clock, IRenderMsg *player) : m_dvdClock(clock)
 {
   m_pRenderer = nullptr;
   m_renderState = STATE_UNCONFIGURED;
@@ -137,6 +136,7 @@ CRenderManager::CRenderManager(CDVDClock &clock) : m_dvdClock(clock)
   m_format      = RENDER_FMT_NONE;
   m_renderedOverlay = false;
   m_captureWaitCounter = 0;
+  m_playerPort = player;
 }
 
 CRenderManager::~CRenderManager()
@@ -901,7 +901,7 @@ void CRenderManager::SetViewMode(int iViewMode)
   CSingleLock lock(m_statelock);
   if (m_pRenderer)
     m_pRenderer->SetViewMode(iViewMode);
-  g_dataCacheCore.SignalVideoInfoChange();
+  m_playerPort->VideoParamsChange();
 }
 
 void CRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, double pts /* = 0 */, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
@@ -1155,8 +1155,8 @@ void CRenderManager::UpdateResolution()
         UpdateDisplayLatency();
       }
       m_bTriggerUpdateResolution = false;
+      m_playerPort->VideoParamsChange();
     }
-    g_dataCacheCore.SignalVideoInfoChange();
   }
 }
 

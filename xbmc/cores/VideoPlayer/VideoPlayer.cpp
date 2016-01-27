@@ -614,7 +614,7 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
       m_CurrentTeletext(STREAM_TELETEXT, VideoPlayer_TELETEXT),
       m_CurrentRadioRDS(STREAM_RADIO_RDS, VideoPlayer_RDS),
       m_messenger("player"),
-      m_renderManager(m_clock),
+      m_renderManager(m_clock, this),
       m_ready(true)
 {
   m_players_created = false;
@@ -1855,8 +1855,8 @@ void CVideoPlayer::HandlePlaySpeed()
     if (m_playSpeed == DVD_PLAYSPEED_NORMAL && !isInMenu)
     {
       // take action is audio or video stream is stalled
-      if (((m_VideoPlayerAudio->IsStalled() && m_CurrentAudio.packets) ||
-           (m_VideoPlayerVideo->IsStalled() && m_CurrentVideo.packets)) &&
+      if (((m_VideoPlayerAudio->IsStalled() && m_CurrentAudio.inited) ||
+           (m_VideoPlayerVideo->IsStalled() && m_CurrentVideo.inited)) &&
           m_syncTimer.IsTimePast())
       {
         if (m_pInputStream->IsRealtime())
@@ -2816,6 +2816,12 @@ void CVideoPlayer::HandleMessages()
         if (((CDVDMsgGeneralSynchronize*)pMsg)->Wait(100, SYNCSOURCE_OWNER))
           CLog::Log(LOGDEBUG, "CVideoPlayer - CDVDMsg::GENERAL_SYNCHRONIZE");
       }
+      else if (pMsg->IsType(CDVDMsg::PLAYER_AVCHANGE))
+      {
+        UpdateStreamInfos();
+        g_dataCacheCore.SignalAudioInfoChange();
+        g_dataCacheCore.SignalVideoInfoChange();
+      }
 
     pMsg->Release();
   }
@@ -2875,12 +2881,10 @@ void CVideoPlayer::SetPlaySpeed(int speed)
   if (IsPlaying())
     m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed));
   else
+  {
     m_playSpeed = speed;
-
-  m_VideoPlayerAudio->SetSpeed(speed);
-  m_VideoPlayerVideo->SetSpeed(speed);
-  m_streamPlayerSpeed = speed;
-  SynchronizeDemuxer(100);
+    m_streamPlayerSpeed = speed;
+  }
 }
 
 bool CVideoPlayer::CanPause()
@@ -4963,6 +4967,11 @@ bool CVideoPlayer::RenderCaptureGetPixels(unsigned int captureId, unsigned int m
 std::string CVideoPlayer::GetRenderVSyncState()
 {
   return m_renderManager.GetVSyncState();
+}
+
+void CVideoPlayer::VideoParamsChange()
+{
+  m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_AVCHANGE));
 }
 
 // IDispResource interface

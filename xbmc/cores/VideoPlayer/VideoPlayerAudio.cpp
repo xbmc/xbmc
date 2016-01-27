@@ -28,7 +28,6 @@
 #include "utils/MathUtils.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "cores/DataCacheCore.h"
 #ifdef TARGET_RASPBERRY_PI
 #include "linux/RBP.h"
 #endif
@@ -161,7 +160,7 @@ void CVideoPlayerAudio::OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec)
 
   m_maxspeedadjust = 5.0;
 
-  g_dataCacheCore.SignalAudioInfoChange();
+  m_messageParent.Put(new CDVDMsg(CDVDMsg::PLAYER_AVCHANGE));
   m_syncState = IDVDStreamPlayer::SYNC_STARTING;
 }
 
@@ -446,7 +445,7 @@ void CVideoPlayerAudio::Process()
 
           m_streaminfo.channels = audioframe.format.m_channelLayout.Count();
 
-          g_dataCacheCore.SignalAudioInfoChange();
+          m_messageParent.Put(new CDVDMsg(CDVDMsg::PLAYER_AVCHANGE));
         }
 
         // Zero out the frame data if we are supposed to silence the audio
