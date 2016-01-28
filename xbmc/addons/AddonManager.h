@@ -155,11 +155,6 @@ namespace ADDON
     bool IsAddonInstalled(const std::string& ID);
 
     /* \brief Checks whether an addon can be installed. Broken addons can't be installed.
-     \param ID id of the addon
-     */
-    bool CanAddonBeInstalled(const std::string& ID);
-
-    /* \brief Checks whether an addon can be installed. Broken addons can't be installed.
     \param addon addon to be checked
     */
     bool CanAddonBeInstalled(const AddonPtr& addon);

@@ -787,23 +787,6 @@ bool CAddonMgr::IsAddonInstalled(const std::string& ID)
   return GetAddon(ID, tmp, ADDON_UNKNOWN, false);
 }
 
-bool CAddonMgr::CanAddonBeInstalled(const std::string& ID)
-{
-  if (ID.empty())
-    return false;
-
-  CSingleLock lock(m_critSection);
-  // can't install already installed addon
-  if (IsAddonInstalled(ID))
-    return false;
-
-  // can't install broken addons
-  if (!m_database.IsAddonBroken(ID).empty())
-    return false;
-
-  return true;
-}
-
 bool CAddonMgr::CanAddonBeInstalled(const AddonPtr& addon)
 {
   if (addon == NULL)
