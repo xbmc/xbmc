@@ -35,7 +35,7 @@ public:
   static bool UpdateVideo();
   static bool UpdateMusic();
   static bool UpdateTotal();
-  virtual bool DoWork();
+  bool DoWork() override;
 private:
   int m_flag;
 };

@@ -43,13 +43,13 @@ CRecentlyAddedJob::CRecentlyAddedJob(int flag)
 
 bool CRecentlyAddedJob::UpdateVideo()
 {
-  CGUIWindow* home = g_windowManager.GetWindow(WINDOW_HOME);
+  auto home = g_windowManager.GetWindow(WINDOW_HOME);
 
-  if ( home == NULL )
+  if ( home == nullptr )
     return false;
 
   CLog::Log(LOGDEBUG, "CRecentlyAddedJob::UpdateVideos() - Running RecentlyAdded home screen update");
-  
+
   int            i = 0;
   CFileItemList  items;
   CVideoDatabase videodatabase;
@@ -62,7 +62,7 @@ bool CRecentlyAddedJob::UpdateVideo()
   {  
     for (; i < items.Size(); ++i)
     {
-      CFileItemPtr item = items.Get(i);
+      auto item = items.Get(i);
       std::string   value = StringUtils::Format("%i", i + 1);
       std::string   strRating = StringUtils::Format("%.1f", item->GetVideoInfoTag()->GetRating().rating);
       
@@ -101,8 +101,8 @@ bool CRecentlyAddedJob::UpdateVideo()
   if (videodatabase.GetRecentlyAddedEpisodesNav("videodb://recentlyaddedepisodes/", TVShowItems, NUM_ITEMS))
   {
     for (; i < TVShowItems.Size(); ++i)
-    {    
-      CFileItemPtr item          = TVShowItems.Get(i);
+    {
+      auto item          = TVShowItems.Get(i);
       int          EpisodeSeason = item->GetVideoInfoTag()->m_iSeason;
       int          EpisodeNumber = item->GetVideoInfoTag()->m_iEpisode;
       std::string   EpisodeNo = StringUtils::Format("s%02de%02d", EpisodeSeason, EpisodeNumber);
@@ -155,7 +155,7 @@ bool CRecentlyAddedJob::UpdateVideo()
   {
     for (; i < MusicVideoItems.Size(); ++i)
     {
-      CFileItemPtr item = MusicVideoItems.Get(i);
+      auto item = MusicVideoItems.Get(i);
       std::string   value = StringUtils::Format("%i", i + 1);
 
       home->SetProperty("LatestMusicVideo." + value + ".Title"       , item->GetLabel());
@@ -191,13 +191,13 @@ bool CRecentlyAddedJob::UpdateVideo()
 
 bool CRecentlyAddedJob::UpdateMusic()
 {
-  CGUIWindow* home = g_windowManager.GetWindow(WINDOW_HOME);
+  auto home = g_windowManager.GetWindow(WINDOW_HOME);
   
-  if ( home == NULL )
+  if ( home == nullptr )
     return false;
   
   CLog::Log(LOGDEBUG, "CRecentlyAddedJob::UpdateMusic() - Running RecentlyAdded home screen update");
-  
+
   int            i = 0;
   CFileItemList  musicItems;
   CMusicDatabase musicdatabase;
@@ -213,7 +213,7 @@ bool CRecentlyAddedJob::UpdateMusic()
     std::string strAlbumFanart;
     for (; i < musicItems.Size(); ++i)
     {
-      CFileItemPtr item = musicItems.Get(i);
+      auto item = musicItems.Get(i);
       std::string   value = StringUtils::Format("%i", i + 1);
       
       std::string   strRating;
@@ -263,9 +263,9 @@ bool CRecentlyAddedJob::UpdateMusic()
   
   if (musicdatabase.GetRecentlyAddedAlbums(albums, NUM_ITEMS))
   { 
-    for (; i < (int)albums.size(); ++i)
+    for (; i < albums.size(); ++i)
     {
-      CAlbum&    album=albums[i];
+      auto& album=albums[i];
       std::string value = StringUtils::Format("%i", i + 1);
       std::string strThumb = musicdatabase.GetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb");
       std::string strFanart = musicdatabase.GetArtistArtForItem(album.idAlbum, MediaTypeAlbum, "fanart");
