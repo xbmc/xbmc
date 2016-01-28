@@ -207,11 +207,11 @@ void CGUIDialogProgress::Process(unsigned int currentTime, CDirtyRegionList &dir
 
 void CGUIDialogProgress::OnInitWindow()
 {
-  CGUIDialogBoxBase::OnInitWindow();
-
-  SET_CONTROL_VISIBLE(CONTROL_NO_BUTTON);
-  SET_CONTROL_VISIBLE(CONTROL_PROGRESS_BAR);
+  SET_CONTROL_HIDDEN(CONTROL_YES_BUTTON);
+  SET_CONTROL_HIDDEN(CONTROL_CUSTOM_BUTTON);
   SET_CONTROL_FOCUS(CONTROL_NO_BUTTON, 0);
+
+  CGUIDialogBoxBase::OnInitWindow();
 }
 
 int CGUIDialogProgress::GetDefaultLabelID(int controlId) const
