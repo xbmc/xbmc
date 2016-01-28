@@ -32,6 +32,7 @@
 #include "settings/AdvancedSettings.h"
 #include "music/MusicThumbLoader.h"
 #include "video/VideoThumbLoader.h"
+#include "xbmc/settings/Settings.h"
 
 #define NUM_ITEMS 10
 
@@ -297,9 +298,9 @@ bool CRecentlyAddedJob::UpdateMusic()
 
 bool CRecentlyAddedJob::UpdateTotal()
 {
-  CGUIWindow* home = g_windowManager.GetWindow(WINDOW_HOME);
+  auto home = g_windowManager.GetWindow(WINDOW_HOME);
   
-  if ( home == NULL )
+  if ( home == nullptr )
     return false;
   
   CLog::Log(LOGDEBUG, "CRecentlyAddedJob::UpdateTotal() - Running RecentlyAdded home screen update");
@@ -308,9 +309,20 @@ bool CRecentlyAddedJob::UpdateTotal()
   CMusicDatabase musicdatabase;
   
   musicdatabase.Open();
+
+  CMusicDbUrl musicUrl;
+  musicUrl.FromString("musicdb://artists/");
+  musicUrl.AddOption("albumartistsonly", !CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS));
+
+  CFileItemList items;
+  CDatabase::Filter filter;
+  musicdatabase.GetArtistsByWhere(musicUrl.ToString(), filter, items, SortDescription(), true);
+  int MusArtistTotals = 0;
+  if (items.Size() == 1 && items.Get(0)->HasProperty("total"))
+    MusArtistTotals = items.Get(0)->GetProperty("total").asInteger();
+
   int MusSongTotals   = atoi(musicdatabase.GetSingleValue("songview"       , "count(1)").c_str());
   int MusAlbumTotals  = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strAlbum)").c_str());
-  int MusArtistTotals = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strArtists)").c_str());
   musicdatabase.Close();
  
   videodatabase.Open();
