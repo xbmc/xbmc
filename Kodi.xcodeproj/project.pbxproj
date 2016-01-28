@@ -599,7 +599,6 @@
 		7CCF7FC9106A0DF500992676 /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */; };
 		7CDAE9050FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */; };
 		7CEBD8A80F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */; };
-		7CEE2E5B13D6B71E000ABF2A /* TimeSmoother.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEE2E5913D6B71E000ABF2A /* TimeSmoother.cpp */; };
 		7CEE587D1B5A3FFB007C2B5A /* AudioDSPSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEE587C1B5A3FFB007C2B5A /* AudioDSPSettings.cpp */; };
 		7CEE587E1B5A3FFB007C2B5A /* AudioDSPSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEE587C1B5A3FFB007C2B5A /* AudioDSPSettings.cpp */; };
 		7CF0504B190A1D7200222135 /* FFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF05049190A1D7200222135 /* FFmpeg.cpp */; };
@@ -1959,7 +1958,6 @@
 		E4991477174E605900741B6D /* StringUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8F11294261F009E7A26 /* StringUtils.cpp */; };
 		E4991478174E605900741B6D /* SystemInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E830D25F9FD00618676 /* SystemInfo.cpp */; };
 		E4991479174E605900741B6D /* TextSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C848291D156D003E005A996F /* TextSearch.cpp */; };
-		E499147A174E605900741B6D /* TimeSmoother.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEE2E5913D6B71E000ABF2A /* TimeSmoother.cpp */; };
 		E499147B174E605900741B6D /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */; };
 		E499147D174E605900741B6D /* URIUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8EC12942613009E7A26 /* URIUtils.cpp */; };
 		E499147E174E605900741B6D /* UrlOptions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9466815CF1FED00727135 /* UrlOptions.cpp */; };
@@ -3239,8 +3237,6 @@
 		7CDAE9040FFCA3520040B25F /* DVDTSCorrection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDTSCorrection.h; sourceTree = "<group>"; };
 		7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpecialProtocolDirectory.cpp; sourceTree = "<group>"; };
 		7CEBD8A70F33A0D800CAF6AD /* SpecialProtocolDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecialProtocolDirectory.h; sourceTree = "<group>"; };
-		7CEE2E5913D6B71E000ABF2A /* TimeSmoother.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeSmoother.cpp; sourceTree = "<group>"; };
-		7CEE2E5A13D6B71E000ABF2A /* TimeSmoother.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeSmoother.h; sourceTree = "<group>"; };
 		7CEE587C1B5A3FFB007C2B5A /* AudioDSPSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioDSPSettings.cpp; sourceTree = "<group>"; };
 		7CF05049190A1D7200222135 /* FFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FFmpeg.cpp; sourceTree = "<group>"; };
 		7CF0504A190A1D7200222135 /* FFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFmpeg.h; sourceTree = "<group>"; };
@@ -8462,8 +8458,6 @@
 				397877D41AAAF87700F98A45 /* Temperature.h */,
 				C848291D156D003E005A996F /* TextSearch.cpp */,
 				C848291E156D003E005A996F /* TextSearch.h */,
-				7CEE2E5913D6B71E000ABF2A /* TimeSmoother.cpp */,
-				7CEE2E5A13D6B71E000ABF2A /* TimeSmoother.h */,
 				7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */,
 				7CCF7FC8106A0DF500992676 /* TimeUtils.h */,
 				18B7C8EC12942613009E7A26 /* URIUtils.cpp */,
@@ -9749,7 +9743,6 @@
 				F5CEE60913D3C89700225F72 /* DVDOverlayCodecTX3G.cpp in Sources */,
 				38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */,
 				3802709A13D5A653009493DD /* SystemClock.cpp in Sources */,
-				7CEE2E5B13D6B71E000ABF2A /* TimeSmoother.cpp in Sources */,
 				DFAB049813F8376700B70BFB /* InertialScrollingHandler.cpp in Sources */,
 				DF3488E713FD958F0026A711 /* GUIAction.cpp in Sources */,
 				DF34892A13FD9C780026A711 /* AirPlayServer.cpp in Sources */,
@@ -10952,7 +10945,6 @@
 				E4991477174E605900741B6D /* StringUtils.cpp in Sources */,
 				E4991478174E605900741B6D /* SystemInfo.cpp in Sources */,
 				E4991479174E605900741B6D /* TextSearch.cpp in Sources */,
-				E499147A174E605900741B6D /* TimeSmoother.cpp in Sources */,
 				E499147B174E605900741B6D /* TimeUtils.cpp in Sources */,
 				E499147D174E605900741B6D /* URIUtils.cpp in Sources */,
 				E499147E174E605900741B6D /* UrlOptions.cpp in Sources */,

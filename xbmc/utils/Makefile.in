@@ -65,7 +65,6 @@ SRCS += StringValidation.cpp
 SRCS += SystemInfo.cpp
 SRCS += Temperature.cpp
 SRCS += TextSearch.cpp
-SRCS += TimeSmoother.cpp
 SRCS += TimeUtils.cpp
 SRCS += URIUtils.cpp
 SRCS += UrlOptions.cpp
