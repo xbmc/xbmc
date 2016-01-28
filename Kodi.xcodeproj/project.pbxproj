@@ -625,6 +625,10 @@
 		889B4D8E0E0EF86C00FAD25E /* RSSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 889B4D8C0E0EF86C00FAD25E /* RSSDirectory.cpp */; };
 		9A7368511C401F5F00CA169F /* DirectoryNodeInProgressTvShows.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A73684F1C401F5F00CA169F /* DirectoryNodeInProgressTvShows.cpp */; };
 		9A7368521C401F5F00CA169F /* DirectoryNodeInProgressTvShows.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A73684F1C401F5F00CA169F /* DirectoryNodeInProgressTvShows.cpp */; };
+		9AC167B61C5ED478004F0C29 /* MusicFileItemListModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9AC167B41C5ED478004F0C29 /* MusicFileItemListModifier.cpp */; };
+		9AC167B71C5ED478004F0C29 /* MusicFileItemListModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9AC167B41C5ED478004F0C29 /* MusicFileItemListModifier.cpp */; };
+		9AC167BA1C5ED48A004F0C29 /* VideoFileItemListModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9AC167B81C5ED48A004F0C29 /* VideoFileItemListModifier.cpp */; };
+		9AC167BB1C5ED48A004F0C29 /* VideoFileItemListModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9AC167B81C5ED48A004F0C29 /* VideoFileItemListModifier.cpp */; };
 		AE32174218313ADF0003FAFC /* XSLTUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */; };
 		AE4E87A717354C4A00D15206 /* XSLTUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */; };
 		AE84CB5A15A5B8A600A3810E /* TagLibVFSStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE84CB5915A5B8A600A3810E /* TagLibVFSStream.cpp */; };
@@ -3280,6 +3284,10 @@
 		8DD76F7E0486A8DE00D96B5E /* Kodi */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Kodi; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A73684F1C401F5F00CA169F /* DirectoryNodeInProgressTvShows.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeInProgressTvShows.cpp; sourceTree = "<group>"; };
 		9A7368501C401F5F00CA169F /* DirectoryNodeInProgressTvShows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeInProgressTvShows.h; sourceTree = "<group>"; };
+		9AC167B41C5ED478004F0C29 /* MusicFileItemListModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicFileItemListModifier.cpp; sourceTree = "<group>"; };
+		9AC167B51C5ED478004F0C29 /* MusicFileItemListModifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicFileItemListModifier.h; sourceTree = "<group>"; };
+		9AC167B81C5ED48A004F0C29 /* VideoFileItemListModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoFileItemListModifier.cpp; sourceTree = "<group>"; };
+		9AC167B91C5ED48A004F0C29 /* VideoFileItemListModifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoFileItemListModifier.h; sourceTree = "<group>"; };
 		AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XSLTUtils.cpp; sourceTree = "<group>"; };
 		AE4E87A617354C4A00D15206 /* XSLTUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XSLTUtils.h; sourceTree = "<group>"; };
 		AE84CB5915A5B8A600A3810E /* TagLibVFSStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLibVFSStream.cpp; sourceTree = "<group>"; };
@@ -5514,6 +5522,8 @@
 		431376DC12D6430600680C15 /* windows */ = {
 			isa = PBXGroup;
 			children = (
+				9AC167B41C5ED478004F0C29 /* MusicFileItemListModifier.cpp */,
+				9AC167B51C5ED478004F0C29 /* MusicFileItemListModifier.h */,
 				E38E180D0D25F9FA00618676 /* GUIWindowMusicBase.cpp */,
 				E38E180E0D25F9FA00618676 /* GUIWindowMusicBase.h */,
 				E38E18110D25F9FA00618676 /* GUIWindowMusicNav.cpp */,
@@ -5843,6 +5853,8 @@
 		43FAC88812D6364800F67914 /* windows */ = {
 			isa = PBXGroup;
 			children = (
+				9AC167B81C5ED48A004F0C29 /* VideoFileItemListModifier.cpp */,
+				9AC167B91C5ED48A004F0C29 /* VideoFileItemListModifier.h */,
 				E38E18050D25F9FA00618676 /* GUIWindowFullScreen.cpp */,
 				E38E18060D25F9FA00618676 /* GUIWindowFullScreen.h */,
 				E38E183B0D25F9FA00618676 /* GUIWindowVideoBase.cpp */,
@@ -9867,6 +9879,7 @@
 				C8482901156CFE4B005A996F /* Observer.cpp in Sources */,
 				DFC6F4C11AFF7E300039A7FA /* rfft.cpp in Sources */,
 				C8482904156CFED9005A996F /* DVDDemuxPVRClient.cpp in Sources */,
+				9AC167BA1C5ED48A004F0C29 /* VideoFileItemListModifier.cpp in Sources */,
 				C8482909156CFF24005A996F /* PVRDirectory.cpp in Sources */,
 				C848290A156CFF24005A996F /* PVRFile.cpp in Sources */,
 				C8482910156CFFA0005A996F /* DVDInputStreamPVRManager.cpp in Sources */,
@@ -10142,6 +10155,7 @@
 				7CCDA7DC192756250074CF51 /* NptList.cpp in Sources */,
 				7CCDA7E5192756250074CF51 /* NptLogging.cpp in Sources */,
 				7CCDA7E8192756250074CF51 /* NptMessaging.cpp in Sources */,
+				9AC167B61C5ED478004F0C29 /* MusicFileItemListModifier.cpp in Sources */,
 				7CCDA7F1192756250074CF51 /* NptNetwork.cpp in Sources */,
 				7CCDA7FA192756250074CF51 /* NptQueue.cpp in Sources */,
 				7CCDA803192756250074CF51 /* NptResults.cpp in Sources */,
@@ -11028,6 +11042,7 @@
 				E4991541174E642900741B6D /* SectionLoader.cpp in Sources */,
 				E4991542174E642900741B6D /* SystemGlobals.cpp in Sources */,
 				E4991544174E642900741B6D /* TextureCache.cpp in Sources */,
+				9AC167B71C5ED478004F0C29 /* MusicFileItemListModifier.cpp in Sources */,
 				E4991545174E642900741B6D /* TextureCacheJob.cpp in Sources */,
 				E4991546174E642900741B6D /* TextureDatabase.cpp in Sources */,
 				E4991547174E642900741B6D /* ThumbLoader.cpp in Sources */,
@@ -11164,6 +11179,7 @@
 				7CCDA151192753E30074CF51 /* PltIconsData.cpp in Sources */,
 				7CCDA15A192753E30074CF51 /* PltMimeType.cpp in Sources */,
 				7CCDA163192753E30074CF51 /* PltProtocolInfo.cpp in Sources */,
+				9AC167BB1C5ED48A004F0C29 /* VideoFileItemListModifier.cpp in Sources */,
 				7CCDA16C192753E30074CF51 /* PltService.cpp in Sources */,
 				7CCDA175192753E30074CF51 /* PltSsdp.cpp in Sources */,
 				7CCDA17E192753E30074CF51 /* PltStateVariable.cpp in Sources */,
