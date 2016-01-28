@@ -142,48 +142,13 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
   }
 #endif
 
-  switch((int)(0.5 + res.fRefreshRate))
-  {
-    default:
-    case 60:
-      switch(res.iScreenWidth)
-      {
-        default:
-        case 1280:
-          SetDisplayResolution("720p");
-          break;
-        case 1920:
-          if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
-            SetDisplayResolution("1080i");
-          else
-            SetDisplayResolution("1080p");
-          break;
-      }
-      break;
-    case 50:
-      switch(res.iScreenWidth)
-      {
-        default:
-        case 1280:
-          SetDisplayResolution("720p50hz");
-          break;
-        case 1920:
-          if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
-            SetDisplayResolution("1080i50hz");
-          else
-            SetDisplayResolution("1080p50hz");
-          break;
-      }
-      break;
-    case 30:
-      SetDisplayResolution("1080p30hz");
-      break;
-    case 24:
-      SetDisplayResolution("1080p24hz");
-      break;
-  }
+  // Don't set the same mode as current
+  std::string mode;
+  SysfsUtils::GetString("/sys/class/display/mode", mode);
+  if (res.strId == mode)
+    return false;
 
-  return true;
+  return SetDisplayResolution(res.strId.c_str());
 }
 
 bool CEGLNativeTypeAmlogic::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
