@@ -793,7 +793,7 @@ bool CAddonMgr::CanAddonBeInstalled(const AddonPtr& addon)
     return false;
 
   // can't install broken addons
-  if (!addon->Props().broken.empty())
+  if (!addon->Broken().empty())
     return false;
 
   return true;

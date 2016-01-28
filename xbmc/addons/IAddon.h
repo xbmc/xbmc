@@ -92,8 +92,7 @@ namespace ADDON
     virtual TYPE Type() const =0;
     virtual TYPE FullType() const =0;
     virtual bool IsType(TYPE type) const =0;
-    virtual AddonProps Props() const =0;
-    virtual AddonProps& Props() =0;
+    virtual const AddonProps& Props() =0;
     virtual const std::string ID() const =0;
     virtual const std::string Name() const =0;
     virtual bool IsInUse() const =0;
@@ -110,6 +109,7 @@ namespace ADDON
     virtual const std::string Icon() const =0;
     virtual int  Stars() const =0;
     virtual const std::string Disclaimer() const =0;
+    virtual const std::string Broken() const =0;
     virtual const InfoMap &ExtraInfo() const =0;
     virtual bool HasSettings() =0;
     virtual void SaveSettings() =0;

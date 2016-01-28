@@ -208,7 +208,7 @@ CAddon::CAddon(AddonProps props)
 }
 
 CAddon::CAddon(const CAddon &rhs)
-  : m_props(rhs.Props()),
+  : m_props(rhs.m_props),
     m_settings(rhs.m_settings)
 {
   m_addonXmlDoc = rhs.m_addonXmlDoc;

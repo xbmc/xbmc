@@ -39,8 +39,8 @@ std::unique_ptr<CPluginSource> CPluginSource::FromExtension(AddonProps props, co
 CPluginSource::CPluginSource(AddonProps props) : CAddon(std::move(props))
 {
   std::string provides;
-  InfoMap::const_iterator i = Props().extrainfo.find("provides");
-  if (i != Props().extrainfo.end())
+  InfoMap::const_iterator i = m_props.extrainfo.find("provides");
+  if (i != m_props.extrainfo.end())
     provides = i->second;
   SetProvides(provides);
 }

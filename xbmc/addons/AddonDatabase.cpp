@@ -149,7 +149,7 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
                                TranslateType(addon->Type(),false).c_str(),
                                addon->Name().c_str(), addon->Summary().c_str(),
                                addon->Description().c_str(),addon->Stars(),
-                               addon->Path().c_str(), addon->Props().icon.c_str(),
+                               addon->Path().c_str(), addon->Icon().c_str(),
                                addon->ChangeLog().c_str(),addon->FanArt().c_str(),
                                addon->ID().c_str(), addon->Version().asString().c_str(),
                                addon->Author().c_str(),addon->Disclaimer().c_str(),
@@ -647,12 +647,11 @@ void CAddonDatabase::SetPropertiesFromAddon(const AddonPtr& addon,
   std::string starrating = StringUtils::Format("rating%d.png", addon->Stars());
   pItem->SetProperty("Addon.StarRating",starrating);
   pItem->SetProperty("Addon.Path", addon->Path());
-  if (addon->Props().broken == "DEPSNOTMET")
+  if (addon->Broken()== "DEPSNOTMET")
     pItem->SetProperty("Addon.Broken", g_localizeStrings.Get(24044));
   else
-    pItem->SetProperty("Addon.Broken", addon->Props().broken);
-  std::map<std::string,std::string>::iterator it = 
-                    addon->Props().extrainfo.find("language");
+    pItem->SetProperty("Addon.Broken", addon->Broken());
+  const auto it = addon->Props().extrainfo.find("language");
   if (it != addon->Props().extrainfo.end())
     pItem->SetProperty("Addon.Language", it->second);
 }

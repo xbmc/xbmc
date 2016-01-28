@@ -255,12 +255,12 @@ bool CRepositoryUpdateJob::DoWork()
       AddonPtr oldAddon;
       if (database.GetAddon(addon->ID(), oldAddon) && addon->Version() > oldAddon->Version())
       {
-        if (!addon->Props().icon.empty() || !addon->Props().fanart.empty())
+        if (!addon->Icon().empty() || !addon->FanArt().empty())
           CLog::Log(LOGDEBUG, "CRepository: invalidating cached art for '%s'", addon->ID().c_str());
-        if (!addon->Props().icon.empty())
-          textureDB.InvalidateCachedTexture(addon->Props().icon);
-        if (!addon->Props().fanart.empty())
-          textureDB.InvalidateCachedTexture(addon->Props().fanart);
+        if (!addon->Icon().empty())
+          textureDB.InvalidateCachedTexture(addon->Icon());
+        if (!addon->FanArt().empty())
+          textureDB.InvalidateCachedTexture(addon->Icon());
       }
     }
     textureDB.CommitMultipleExecute();
@@ -283,18 +283,19 @@ bool CRepositoryUpdateJob::DoWork()
       //Newer version in db (ie. in a different repo)
       continue;
 
+    std::string broken = addon->Broken();
     bool depsMet = CAddonInstaller::GetInstance().CheckDependencies(addon);
-    if (!depsMet && addon->Props().broken.empty())
-      addon->Props().broken = "DEPSNOTMET";
+    if (!depsMet && broken.empty())
+      broken = "DEPSNOTMET";
 
     if (localAddon)
     {
       bool brokenInDb = !database.IsAddonBroken(addon->ID()).empty();
-      if (!addon->Props().broken.empty() && !brokenInDb)
+      if (!broken.empty() && !brokenInDb)
       {
         //newly broken
         int line = 24096;
-        if (addon->Props().broken == "DEPSNOTMET")
+        if (broken == "DEPSNOTMET")
           line = 24104;
         if (HELPERS::ShowYesNoDialogLines(CVariant{addon->Name()}, CVariant{line}, CVariant{24097}, CVariant{""}) 
           == DialogResponse::YES)
@@ -303,11 +304,11 @@ bool CRepositoryUpdateJob::DoWork()
         }
 
         CLog::Log(LOGDEBUG, "CRepositoryUpdateJob[%s] addon '%s' marked broken. reason: \"%s\"",
-             m_repo->ID().c_str(), addon->ID().c_str(), addon->Props().broken.c_str());
+             m_repo->ID().c_str(), addon->ID().c_str(), broken.c_str());
 
         CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24096)));
       }
-      else if (addon->Props().broken.empty() && brokenInDb)
+      else if (broken.empty() && brokenInDb)
       {
         //Unbroken
         CLog::Log(LOGDEBUG, "CRepositoryUpdateJob[%s] addon '%s' unbroken",
@@ -316,7 +317,7 @@ bool CRepositoryUpdateJob::DoWork()
     }
 
     //Update broken status
-    database.BreakAddon(addon->ID(), addon->Props().broken);
+    database.BreakAddon(addon->ID(), broken);
   }
   database.CommitMultipleExecute();
   return true;

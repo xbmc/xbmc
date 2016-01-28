@@ -82,14 +82,15 @@ public:
   std::string license;
   std::string summary;
   std::string description;
-  std::string path;
   std::string libname;
   std::string author;
   std::string source;
-  std::string icon;
+  //TODO: fix parts relying on mutating these
+  mutable std::string path;
+  mutable std::string icon;
+  mutable std::string changelog;
+  mutable std::string fanart;
   std::string disclaimer;
-  std::string changelog;
-  std::string fanart;
   ADDONDEPS dependencies;
   std::string broken;
   InfoMap    extrainfo;
@@ -143,8 +144,7 @@ public:
   TYPE Type() const { return m_props.type; }
   virtual TYPE FullType() const { return Type(); }
   bool IsType(TYPE type) const { return type == m_props.type; }
-  AddonProps Props() const { return m_props; }
-  AddonProps& Props() { return m_props; }
+  const AddonProps& Props() { return m_props; }
   const std::string ID() const { return m_props.id; }
   const std::string Name() const { return m_props.name; }
   virtual bool IsInUse() const { return false; };
@@ -161,6 +161,7 @@ public:
   const std::string Icon() const { return m_props.icon; };
   int Stars() const { return m_props.stars; }
   const std::string Disclaimer() const { return m_props.disclaimer; }
+  const std::string Broken() const { return m_props.broken; }
   const InfoMap &ExtraInfo() const { return m_props.extrainfo; }
   const ADDONDEPS &GetDeps() const { return m_props.dependencies; }
 
@@ -236,13 +237,13 @@ protected:
    */
   virtual void SettingsToXML(CXBMCTinyXML &doc) const;
 
+  const AddonProps m_props;
   CXBMCTinyXML      m_addonXmlDoc;
   bool              m_settingsLoaded;
   bool              m_userSettingsLoaded;
 
 private:
   friend class CAddonMgr;
-  AddonProps m_props;
   std::string        m_userSettingsPath;
   void BuildProfilePath();
 
