@@ -377,6 +377,12 @@ bool CGUIWindowPVRTimers::ActionDeleteTimer(CFileItem *item)
 
 bool CGUIWindowPVRTimers::ActionShowTimer(CFileItem *item)
 {
+  if (!g_PVRClients->SupportsTimers())
+  {
+    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19215}); // "Information", "The PVR backend does not support timers."
+    return false;
+  }
+
   bool bReturn = false;
 
   /* Check if "Add timer..." entry is pressed by OK, if yes
