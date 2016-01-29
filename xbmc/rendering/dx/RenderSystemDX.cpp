@@ -1116,7 +1116,12 @@ bool CRenderSystemDX::PresentRenderImpl(const CDirtyRegionList &dirty)
     return false;
 
   if (m_nDeviceStatus != S_OK)
+  {
+    // if DXGI_STATUS_OCCLUDED occurred we just clear command queue and return
+    if (m_nDeviceStatus == DXGI_STATUS_OCCLUDED)
+      FinishCommandList(false);
     return false;
+  }
 
   if ( m_stereoMode == RENDER_STEREO_MODE_INTERLACED
     || m_stereoMode == RENDER_STEREO_MODE_CHECKERBOARD)
@@ -1214,8 +1219,7 @@ bool CRenderSystemDX::BeginRender()
     if (m_nDeviceStatus != oldStatus)
       CLog::Log(LOGDEBUG, "DXGI_STATUS_OCCLUDED");
     // Status OCCLUDED is not an error and not handled by FAILED macro, 
-    // but if it occurs we should not render anything, so just return false
-    return false;
+    // but if it occurs we should not render anything, this status will be accounted on present stage
   }
 
   if (FAILED(m_nDeviceStatus))
