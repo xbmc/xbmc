@@ -90,7 +90,7 @@ void CEngineStats::AddStream(unsigned int streamid)
 
 void CEngineStats::RemoveStream(unsigned int streamid)
 {
-  for (auto it = m_streamStats.begin(); it != m_streamStats.end(); )
+  for (auto it = m_streamStats.begin(); it != m_streamStats.end(); ++it)
   {
     if (it->m_streamId == streamid)
     {
