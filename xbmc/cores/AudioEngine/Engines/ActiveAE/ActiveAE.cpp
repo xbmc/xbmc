@@ -1844,6 +1844,8 @@ bool CActiveAE::RunStages()
     if (!(*it)->m_drain)
     {
       float buftime = (float)(*it)->m_inputBuffers->m_format.m_frames / (*it)->m_inputBuffers->m_format.m_sampleRate;
+      if ((*it)->m_inputBuffers->m_format.m_dataFormat == AE_FMT_RAW)
+        buftime = (*it)->m_inputBuffers->m_format.m_streamInfo.GetDuration() / 1000;
       time += buftime * (*it)->m_processingSamples.size();
       while ((time < MAX_CACHE_LEVEL || (*it)->m_streamIsBuffering) && !(*it)->m_inputBuffers->m_freeSamples.empty())
       {
