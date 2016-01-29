@@ -879,9 +879,6 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogContextMenu.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\dialogs\GUIDialogFavourites.cpp">
-      <Filter>dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogFileBrowser.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
@@ -1578,7 +1575,13 @@
     <ClCompile Include="..\..\xbmc\windows\GUIMediaWindow.cpp">
       <Filter>windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\windows\GUIViewStateFavourites.cpp">
+      <Filter>windows</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\windows\GUIWindowDebugInfo.cpp">
+      <Filter>windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\windows\GUIWindowFavourites.cpp">
       <Filter>windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\windows\GUIWindowFileManager.cpp">
@@ -3978,9 +3981,6 @@
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogContextMenu.h">
       <Filter>dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\dialogs\GUIDialogFavourites.h">
-      <Filter>dialogs</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogFileBrowser.h">
       <Filter>dialogs</Filter>
     </ClInclude>
@@ -4763,7 +4763,13 @@
     <ClInclude Include="..\..\xbmc\windows\GUIMediaWindow.h">
       <Filter>windows</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\windows\GUIViewStateFavourites.h">
+      <Filter>windows</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\windows\GUIWindowDebugInfo.h">
+      <Filter>windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\windows\GUIWindowFavourites.h">
       <Filter>windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\windows\GUIWindowFileManager.h">

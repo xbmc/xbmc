@@ -4,7 +4,6 @@ SRCS=GUIDialogBoxBase.cpp \
      GUIDialogCache.cpp \
      GUIDialogContextMenu.cpp \
      GUIDialogExtendedProgressBar.cpp \
-     GUIDialogFavourites.cpp \
      GUIDialogFileBrowser.cpp \
      GUIDialogGamepad.cpp \
      GUIDialogKaiToast.cpp \

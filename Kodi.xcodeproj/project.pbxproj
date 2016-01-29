@@ -233,6 +233,8 @@
 		39C38CE21BCD600E000F59F5 /* FFmpegImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39C38CDF1BCD600E000F59F5 /* FFmpegImage.cpp */; };
 		4260D5C71B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */; };
 		4260D5C81B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */; };
+		42BC07B61C5B7C0700783E7A /* GUIWindowFavourites.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42BC07B41C5B7C0700783E7A /* GUIWindowFavourites.cpp */; };
+		42BC07B91C5B844600783E7A /* GUIViewStateFavourites.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42BC07B71C5B844600783E7A /* GUIViewStateFavourites.cpp */; };
 		42DAC16E1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
 		42DAC16F1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
 		42E2E1C91B53F74D005C7E4E /* VideoLibraryRefreshingJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E1C71B53F74D005C7E4E /* VideoLibraryRefreshingJob.cpp */; };
@@ -1204,7 +1206,6 @@
 		E38E207C0D25F9FD00618676 /* GUIDialogBusy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E179E0D25F9FA00618676 /* GUIDialogBusy.cpp */; };
 		E38E207D0D25F9FD00618676 /* GUIDialogButtonMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17A00D25F9FA00618676 /* GUIDialogButtonMenu.cpp */; };
 		E38E207F0D25F9FD00618676 /* GUIDialogContextMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17A40D25F9FA00618676 /* GUIDialogContextMenu.cpp */; };
-		E38E20800D25F9FD00618676 /* GUIDialogFavourites.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17A60D25F9FA00618676 /* GUIDialogFavourites.cpp */; };
 		E38E20810D25F9FD00618676 /* GUIDialogFileBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17A80D25F9FA00618676 /* GUIDialogFileBrowser.cpp */; };
 		E38E20830D25F9FD00618676 /* GUIDialogGamepad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17AC0D25F9FA00618676 /* GUIDialogGamepad.cpp */; };
 		E38E20890D25F9FD00618676 /* GUIDialogMediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17B80D25F9FA00618676 /* GUIDialogMediaSource.cpp */; };
@@ -1560,7 +1561,6 @@
 		E4991236174E5D7E00741B6D /* GUIDialogCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A478090D29029A00F3C3A6 /* GUIDialogCache.cpp */; };
 		E4991237174E5D7E00741B6D /* GUIDialogContextMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17A40D25F9FA00618676 /* GUIDialogContextMenu.cpp */; };
 		E4991238174E5D7E00741B6D /* GUIDialogExtendedProgressBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828FC156CFDC3005A996F /* GUIDialogExtendedProgressBar.cpp */; };
-		E4991239174E5D7E00741B6D /* GUIDialogFavourites.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17A60D25F9FA00618676 /* GUIDialogFavourites.cpp */; };
 		E499123A174E5D7E00741B6D /* GUIDialogFileBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17A80D25F9FA00618676 /* GUIDialogFileBrowser.cpp */; };
 		E499123B174E5D7E00741B6D /* GUIDialogGamepad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17AC0D25F9FA00618676 /* GUIDialogGamepad.cpp */; };
 		E499123C174E5D7E00741B6D /* GUIDialogKaiToast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38A06CC0D95AA5500FF8227 /* GUIDialogKaiToast.cpp */; };
@@ -2689,6 +2689,10 @@
 		39C38CE01BCD600E000F59F5 /* FFmpegImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFmpegImage.h; sourceTree = "<group>"; };
 		4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowSplash.cpp; sourceTree = "<group>"; };
 		4260D5C61B67BB8F003F6F2D /* GUIWindowSplash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowSplash.h; sourceTree = "<group>"; };
+		42BC07B41C5B7C0700783E7A /* GUIWindowFavourites.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowFavourites.cpp; sourceTree = "<group>"; };
+		42BC07B51C5B7C0700783E7A /* GUIWindowFavourites.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowFavourites.h; sourceTree = "<group>"; };
+		42BC07B71C5B844600783E7A /* GUIViewStateFavourites.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStateFavourites.cpp; sourceTree = "<group>"; };
+		42BC07B81C5B844600783E7A /* GUIViewStateFavourites.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStateFavourites.h; sourceTree = "<group>"; };
 		42DAC16B1A6E780C0066B4C8 /* IActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IActionListener.h; sourceTree = "<group>"; };
 		42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRActionListener.cpp; sourceTree = "<group>"; };
 		42DAC16D1A6E789E0066B4C8 /* PVRActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRActionListener.h; sourceTree = "<group>"; };
@@ -4331,8 +4335,6 @@
 		E38E17A10D25F9FA00618676 /* GUIDialogButtonMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogButtonMenu.h; sourceTree = "<group>"; };
 		E38E17A40D25F9FA00618676 /* GUIDialogContextMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogContextMenu.cpp; sourceTree = "<group>"; };
 		E38E17A50D25F9FA00618676 /* GUIDialogContextMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogContextMenu.h; sourceTree = "<group>"; };
-		E38E17A60D25F9FA00618676 /* GUIDialogFavourites.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogFavourites.cpp; sourceTree = "<group>"; };
-		E38E17A70D25F9FA00618676 /* GUIDialogFavourites.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogFavourites.h; sourceTree = "<group>"; };
 		E38E17A80D25F9FA00618676 /* GUIDialogFileBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogFileBrowser.cpp; sourceTree = "<group>"; };
 		E38E17A90D25F9FA00618676 /* GUIDialogFileBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogFileBrowser.h; sourceTree = "<group>"; };
 		E38E17AC0D25F9FA00618676 /* GUIDialogGamepad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogGamepad.cpp; sourceTree = "<group>"; };
@@ -5690,8 +5692,6 @@
 				E38E17A50D25F9FA00618676 /* GUIDialogContextMenu.h */,
 				C84828FC156CFDC3005A996F /* GUIDialogExtendedProgressBar.cpp */,
 				C84828FD156CFDC3005A996F /* GUIDialogExtendedProgressBar.h */,
-				E38E17A60D25F9FA00618676 /* GUIDialogFavourites.cpp */,
-				E38E17A70D25F9FA00618676 /* GUIDialogFavourites.h */,
 				E38E17A80D25F9FA00618676 /* GUIDialogFileBrowser.cpp */,
 				E38E17A90D25F9FA00618676 /* GUIDialogFileBrowser.h */,
 				E38E17AC0D25F9FA00618676 /* GUIDialogGamepad.cpp */,
@@ -5847,8 +5847,12 @@
 			children = (
 				E38E17F00D25F9FA00618676 /* GUIMediaWindow.cpp */,
 				E38E17F10D25F9FA00618676 /* GUIMediaWindow.h */,
+				42BC07B71C5B844600783E7A /* GUIViewStateFavourites.cpp */,
+				42BC07B81C5B844600783E7A /* GUIViewStateFavourites.h */,
 				F558F29413ABD7DF00631E12 /* GUIWindowDebugInfo.cpp */,
 				F558F29513ABD7DF00631E12 /* GUIWindowDebugInfo.h */,
+				42BC07B41C5B7C0700783E7A /* GUIWindowFavourites.cpp */,
+				42BC07B51C5B7C0700783E7A /* GUIWindowFavourites.h */,
 				E38E18030D25F9FA00618676 /* GUIWindowFileManager.cpp */,
 				E38E18040D25F9FA00618676 /* GUIWindowFileManager.h */,
 				E38E18090D25F9FA00618676 /* GUIWindowHome.cpp */,
@@ -9757,7 +9761,6 @@
 				68AE5BBF1C9241DF00C4D527 /* DriverPrimitive.cpp in Sources */,
 				E38E207D0D25F9FD00618676 /* GUIDialogButtonMenu.cpp in Sources */,
 				E38E207F0D25F9FD00618676 /* GUIDialogContextMenu.cpp in Sources */,
-				E38E20800D25F9FD00618676 /* GUIDialogFavourites.cpp in Sources */,
 				E38E20810D25F9FD00618676 /* GUIDialogFileBrowser.cpp in Sources */,
 				E38E20830D25F9FD00618676 /* GUIDialogGamepad.cpp in Sources */,
 				E38E20890D25F9FD00618676 /* GUIDialogMediaSource.cpp in Sources */,
@@ -10096,6 +10099,7 @@
 				18B7C7B71294222E009E7A26 /* GUIControl.cpp in Sources */,
 				397877D81AAAF87700F98A45 /* Temperature.cpp in Sources */,
 				18B7C7B81294222E009E7A26 /* GUIControlFactory.cpp in Sources */,
+				42BC07B91C5B844600783E7A /* GUIViewStateFavourites.cpp in Sources */,
 				18B7C7B91294222E009E7A26 /* GUIControlGroup.cpp in Sources */,
 				18B7C7BA1294222E009E7A26 /* GUIControlGroupList.cpp in Sources */,
 				18B7C7BB1294222E009E7A26 /* GUIControlProfiler.cpp in Sources */,
@@ -10268,6 +10272,7 @@
 				DF527736151BAF4C00B5B63B /* WebSocketV13.cpp in Sources */,
 				DF527737151BAF4C00B5B63B /* WebSocketV8.cpp in Sources */,
 				188F75FE152217BC009870CE /* Mime.cpp in Sources */,
+				42BC07B61C5B7C0700783E7A /* GUIWindowFavourites.cpp in Sources */,
 				188F7602152217DF009870CE /* GUIOperations.cpp in Sources */,
 				DFCA6AC7152245CD000BFAAE /* HTTPJsonRpcHandler.cpp in Sources */,
 				DFCA6AC8152245CD000BFAAE /* HTTPVfsHandler.cpp in Sources */,
@@ -10911,7 +10916,6 @@
 				E4991237174E5D7E00741B6D /* GUIDialogContextMenu.cpp in Sources */,
 				395C29D61A98A11C00EBC7AD /* WsgiErrorStream.cpp in Sources */,
 				E4991238174E5D7E00741B6D /* GUIDialogExtendedProgressBar.cpp in Sources */,
-				E4991239174E5D7E00741B6D /* GUIDialogFavourites.cpp in Sources */,
 				E499123A174E5D7E00741B6D /* GUIDialogFileBrowser.cpp in Sources */,
 				E499123B174E5D7E00741B6D /* GUIDialogGamepad.cpp in Sources */,
 				E499123C174E5D7E00741B6D /* GUIDialogKaiToast.cpp in Sources */,

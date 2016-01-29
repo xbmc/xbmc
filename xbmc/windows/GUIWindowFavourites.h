@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2016 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,33 +20,22 @@
  *
  */
 
-#include "guilib/GUIDialog.h"
+#include "GUIMediaWindow.h"
 
-class CFileItem;
-class CFileItemList;
-
-class CGUIDialogFavourites :
-      public CGUIDialog
+class CGUIWindowFavourites : public CGUIMediaWindow
 {
 public:
-  CGUIDialogFavourites(void);
-  virtual ~CGUIDialogFavourites(void);
-  virtual bool OnMessage(CGUIMessage &message);
-  virtual void OnInitWindow();
+  CGUIWindowFavourites(void);
+  virtual ~CGUIWindowFavourites(void);
 
-  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
+  virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
 
-  virtual bool HasListItems() const { return true; };
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
 
-protected:
-  int GetSelectedItem();
-  void OnClick(int item);
-  void OnPopupMenu(int item);
-  void OnMoveItem(int item, int amount);
-  void OnDelete(int item);
-  void OnRename(int item);
-  void OnSetThumb(int item);
-  void UpdateList();
-
-  CFileItemList* m_favourites;
+  virtual bool OnSelect(int item) override;
+  virtual void OnDeleteItem(int iItem) override;
+  virtual void OnRenameItem(int iItem);
+  virtual void OnSetThumb(int iItem);
 };
+

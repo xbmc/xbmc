@@ -318,7 +318,6 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogCache.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogContextMenu.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogExtendedProgressBar.cpp" />
-    <ClCompile Include="..\..\xbmc\dialogs\GUIDialogFavourites.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogFileBrowser.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogGamepad.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogKaiToast.cpp" />
@@ -1935,7 +1934,9 @@
     <ClCompile Include="..\..\xbmc\windowing\WinEvents.cpp" />
     <ClCompile Include="..\..\xbmc\windowing\WinSystem.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIMediaWindow.cpp" />
+    <ClCompile Include="..\..\xbmc\windows\GUIViewStateFavourites.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIWindowDebugInfo.cpp" />
+    <ClCompile Include="..\..\xbmc\windows\GUIWindowFavourites.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIWindowFileManager.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIWindowHome.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIWindowLoginScreen.cpp" />
@@ -1988,7 +1989,6 @@
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogCache.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogContextMenu.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogExtendedProgressBar.h" />
-    <ClInclude Include="..\..\xbmc\dialogs\GUIDialogFavourites.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogFileBrowser.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogGamepad.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKaiToast.h" />
@@ -2576,7 +2576,9 @@
     <ClInclude Include="..\..\xbmc\windowing\WinSystem.h" />
     <ClInclude Include="..\..\xbmc\windowing\XBMC_events.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIMediaWindow.h" />
+    <ClInclude Include="..\..\xbmc\windows\GUIViewStateFavourites.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIWindowDebugInfo.h" />
+    <ClInclude Include="..\..\xbmc\windows\GUIWindowFavourites.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIWindowFileManager.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIWindowHome.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIWindowLoginScreen.h" />

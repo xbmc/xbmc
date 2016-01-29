@@ -459,7 +459,7 @@ msgctxt "#117"
 msgid "Delete"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/windows/GUIWindowFavourites.cpp
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#118"
 msgid "Rename"
@@ -3889,7 +3889,7 @@ msgctxt "#1029"
 msgid "Enter the new label"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/windows/GUIWindowFavourites.cpp
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
 #: xbmc/music/dialogs/GUIDialogSongInfo.cpp
 msgctxt "#1030"
@@ -6188,12 +6188,12 @@ msgctxt "#13331"
 msgid "Error: Out of memory"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/windows/GUIWindowFavourites.cpp
 msgctxt "#13332"
 msgid "Move up"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/windows/GUIWindowFavourites.cpp
 msgctxt "#13333"
 msgid "Move down"
 msgstr ""
@@ -7489,7 +7489,7 @@ msgctxt "#15014"
 msgid "Keep"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/windows/GUIWindowFavourites.cpp
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15015"
 msgid "Remove"
@@ -7991,7 +7991,7 @@ msgstr ""
 
 #empty strings from id 16005 to 16007
 
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/windows/GUIWindowFavourites.cpp
 msgctxt "#16008"
 msgid "Enter new title"
 msgstr ""
@@ -10558,7 +10558,7 @@ msgid "No thumb"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/windows/GUIWindowFavourites.cpp
 msgctxt "#20019"
 msgid "Choose thumbnail"
 msgstr ""

@@ -70,6 +70,7 @@
 #include "pictures/GUIWindowSlideShow.h"
 #include "windows/GUIWindowSplash.h"
 #include "windows/GUIWindowStartup.h"
+#include "windows/GUIWindowFavourites.h"
 #include "video/windows/GUIWindowFullScreen.h"
 #include "video/dialogs/GUIDialogVideoOSD.h"
 
@@ -98,7 +99,6 @@
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogGamepad.h"
 #include "dialogs/GUIDialogSubMenu.h"
-#include "dialogs/GUIDialogFavourites.h"
 #include "dialogs/GUIDialogButtonMenu.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogPlayerControls.h"
@@ -195,6 +195,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIWindowScreensaverDim);
   Add(new CGUIWindowDebugInfo);
   Add(new CGUIWindowPointer);
+  Add(new CGUIWindowFavourites);
   Add(new CGUIDialogYesNo);
   Add(new CGUIDialogProgress);
   Add(new CGUIDialogExtendedProgressBar);
@@ -218,7 +219,6 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogNetworkSetup);
   Add(new CGUIDialogMediaSource);
   Add(new CGUIDialogProfileSettings);
-  Add(new CGUIDialogFavourites);
   Add(new CGUIDialogSongInfo);
   Add(new CGUIDialogSmartPlaylistEditor);
   Add(new CGUIDialogSmartPlaylistRule);
@@ -307,6 +307,7 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_VIDEO_PLAYLIST);
     Delete(WINDOW_VIDEO_NAV);
     Delete(WINDOW_FILES);
+    Delete(WINDOW_FAVOURITES);
     Delete(WINDOW_DIALOG_YES_NO);
     Delete(WINDOW_DIALOG_PROGRESS);
     Delete(WINDOW_DIALOG_NUMERIC);
@@ -329,7 +330,6 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
     Delete(WINDOW_DIALOG_VIDEO_BOOKMARKS);
     Delete(WINDOW_DIALOG_CONTENT_SETTINGS);
-    Delete(WINDOW_DIALOG_FAVOURITES);
     Delete(WINDOW_DIALOG_SONG_INFO);
     Delete(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
     Delete(WINDOW_DIALOG_SMART_PLAYLIST_RULE);
