@@ -185,20 +185,13 @@ bool CWinSystemEGL::CreateWindow(RESOLUTION_INFO &res)
     }
   }
 
-  /* The intel driver on wayland is broken and always returns a surface
-   * size of -1, -1. Work around it for now */
-  if (m_egl->TrustSurfaceSize())
+  int width = 0, height = 0;
+  if (!m_egl->GetSurfaceSize(m_display, m_surface, &width, &height))
   {
-    int width = 0, height = 0;
-    if (!m_egl->GetSurfaceSize(m_display, m_surface, &width, &height))
-    {
-      CLog::Log(LOGERROR, "%s: Surface is invalid",__FUNCTION__);
-      return false;
-    }
-    CLog::Log(LOGDEBUG, "%s: Created surface of size %ix%i",__FUNCTION__, width, height);
+    CLog::Log(LOGERROR, "%s: Surface is invalid",__FUNCTION__);
+    return false;
   }
-  else
-    CLog::Log(LOGDEBUG, "%s: Cannot reliably get surface size with this backend",__FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s: Created surface of size %ix%i",__FUNCTION__, width, height);
 
   EGLint contextAttrs[] =
   {

@@ -172,8 +172,6 @@ missing_headers="Could not find some required headers. Please see the README for
 missing_program="Could not find a required program. Please see the README for your platform."
 alsa_disabled="== ALSA support disabled. =="
 dbus_disabled="== DBUS support disabled. =="
-wayland_enabled="== Wayland enabled. =="
-wayland_disabled="== Wayland disabled. =="
 x11_enabled="== X11 enabled. =="
 x11_disabled="== X11 disabled. =="
 pulse_not_found="== Could not find libpulse. PulseAudio support disabled. =="
@@ -307,12 +305,6 @@ AC_ARG_ENABLE([joystick],
   [enable SDL joystick support (default is auto)])],
   [use_joystick=$enableval],
   [use_joystick=auto])
-
-AC_ARG_ENABLE([wayland],
-  [AS_HELP_STRING([--enable-wayland],
-  [enable wayland (default is no) 'Linux Only'])],
-  [use_wayland=$enableval],
-  [use_wayland=no])
 
 AC_ARG_ENABLE([x11],
   [AS_HELP_STRING([--enable-x11],
@@ -655,7 +647,6 @@ case $host in
      use_neon=yes
      use_gles=yes
      use_gl=no
-     use_wayland=no
      USE_STATIC_FFMPEG=1
      ;;
   arm*-*linux-android*)
@@ -668,7 +659,6 @@ case $host in
      use_gles=yes
      use_optical_drive=no
      use_x11=no
-     use_wayland=no
      build_shared_lib=yes
      ;;
   mips*-*-linux-gnu*)
@@ -679,7 +669,6 @@ case $host in
      use_gles=no
      use_gl=yes
      use_sdl=yes
-     use_wayland=no
      USE_STATIC_FFMPEG=1
      ;;
   *)
@@ -728,7 +717,6 @@ if test "$host_vendor" = "apple"; then
   use_libudev=no
   use_libusb=no
   use_x11=no
-  use_wayland=no
 fi
 
 XBMC_SETUP_ARCH_DEFINES()
@@ -941,64 +929,6 @@ if test -z "$PYTHON_VERSION"; then
 else
   LIBS="$LIBS $PYTHON_LDFLAGS"
   AC_MSG_NOTICE([Using Python $PYTHON_VERSION])
-fi
-
-# Wayland
-if test "$use_wayland" = "yes"; then
-  AC_MSG_NOTICE($wayland_enabled)
-  PKG_CHECK_MODULES([WAYLAND_CLIENT],    [wayland-client],
-    [INCLUDES="$INCLUDES $WAYLAND_CLIENT_CFLAGS";
-     WAYLAND_CLIENT_LIBRARY_LINE=`LIBRARY=\`${PKG_CONFIG} --libs-only-l wayland-client\`; echo ${LIBRARY:2}`;
-     XB_FIND_SONAME([WAYLAND_CLIENT_LIBRARY], ${WAYLAND_CLIENT_LIBRARY_LINE})],
-     AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([WAYLAND_EGL],    [wayland-egl],
-    [INCLUDES="$INCLUDES $WAYLAND_EGL_CFLAGS";
-     WAYLAND_EGL_LIBRARY_LINE=`LIBRARY=\`${PKG_CONFIG} --libs-only-l wayland-egl\`; echo ${LIBRARY:2:11}`
-     XB_FIND_SONAME([WAYLAND_EGL_LIBRARY], ${WAYLAND_EGL_LIBRARY_LINE})],
-    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([XKBCOMMON],    [xkbcommon],
-    [INCLUDES="$INCLUDES $XKBCOMMON_CFLAGS";
-     XKBCOMMON_LIBRARY_LINE=`LIBRARY=\`${PKG_CONFIG} --libs-only-l xkbcommon\`; echo ${LIBRARY:2}`;
-     XB_FIND_SONAME([XKBCOMMON_LIBRARY], $XKBCOMMON_LIBRARY_LINE)],
-    AC_MSG_ERROR($missing_library))
-  AC_DEFINE([HAVE_WAYLAND], [1], [Define to 1 if you have Wayland libs installed.])
-  AC_DEFINE([HAVE_XKBCOMMON], [1], [Define to 1 if you have libxkbcommon installed.])
-
-  # If we are also building with tests then we want to build
-  # wayland tests as well
-  if test "$configure_gtest" = "yes"; then
-    have_weston_sdk=no;
-    PKG_CHECK_MODULES([PIXMAN],
-                      [pixman-1],have_pixman=yes,
-                      [AC_MSG_WARN($missing_library); have_pixman=no])
-    PKG_CHECK_MODULES([WESTON],
-                      [weston >= 1.1.90],[have_weston_sdk=yes],
-                      [have_weston_sdk=no; AC_MSG_WARN($missing_library)])
-
-    AC_CHECK_PROG(WAYLAND_SCANNER, wayland-scanner, "wayland-scanner", "no")
-    if test "x$WAYLAND_SCANNER" == "xno"; then
-      AC_MSG_WARN($missing_program)
-    else
-      if test "x$have_weston_sdk" == "xyes" && test "x$have_pixman" = "xyes"; then
-        AC_SUBST(WAYLAND_TEST_INCLUDES,"$WAYLAND_CLIENT_CFLAGS $XKBCOMMON_CFLAGS $PIXMAN_CFLAGS $WESTON_CFLAGS")
-        AC_SUBST(WAYLAND_TEST_LIBS,"$WAYLAND_CLIENT_LIBS $XKBCOMMON_LIBS $PIXMAN_LIBS $WESTON_LIBS")
-        AC_DEFINE([HAVE_WESTON_SDK], [1], [Define to 1 if Weston SDK is installed.])
-        AC_SUBST(USE_WAYLAND_TEST_EXTENSION, 1)
-      fi
-      AC_SUBST(WAYLAND_SCANNER)
-      AC_DEFINE([HAVE_WAYLAND_XBMC_PROTO],[1],["Define to 1 if the wayland test-protocol will be built"])
-    fi
-  fi
-
-  # Disable SDL and X11 builds
-  use_joystick=no
-  use_x11=no
-
-  # Wayland requires the EGL "window system" which in turn only supports
-  # the OpenGL ES API, so enable gles support
-  use_gles=yes
-else
-  AC_MSG_RESULT($wayland_disabled)
 fi
 
 # Checks for platforms libraries.
@@ -2063,14 +1993,6 @@ else
   final_message="$final_message\n  X11:\t\tNo"
 fi
 
-if test "$use_wayland" = "yes"; then
-  final_message="$final_message\n  Wayland:\tYes"
-  USE_WAYLAND=1
-  USE_XKBCOMMON=1
-else
-  final_message="$final_message\n  Wayland:\tNo"
-fi
-
 if test "$use_libbluray" = "yes"; then
   final_message="$final_message\n  Bluray:\tYes"
 else
@@ -2435,10 +2357,6 @@ if test "$use_webserver" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES xbmc/network/httprequesthandler/python/Makefile"
 fi
 
-if test "$use_wayland" = "yes"; then
-OUTPUT_FILES="$OUTPUT_FILES xbmc/windowing/tests/wayland/Makefile"
-fi
-
 if test "$use_touch_skin" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES addons/skin.re-touched/media/Makefile"
 fi
@@ -2522,10 +2440,8 @@ AC_SUBST(USE_LIBUSB)
 AC_SUBST(USE_LIBCEC)
 AC_SUBST(USE_LIBBLUETOOTH)
 AC_SUBST(USE_MYSQL)
-AC_SUBST(USE_WAYLAND)
 AC_SUBST(USE_WEB_SERVER)
 AC_SUBST(USE_UPNP)
-AC_SUBST(USE_XKBCOMMON)
 AC_SUBST(USE_OMXLIB)
 AC_SUBST(USE_ANDROID)
 AC_SUBST(GTEST_CONFIGURED)
