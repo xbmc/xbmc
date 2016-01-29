@@ -94,7 +94,6 @@ CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
   m_unfilteredItems = new CFileItemList;
   m_vecItems->SetPath("?");
   m_iLastControl = -1;
-  m_iSelectedItem = -1;
   m_canFilterAdvanced = false;
 
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), *m_vecItems));
@@ -229,7 +228,6 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      m_iSelectedItem = m_viewControl.GetSelectedItem();
       m_iLastControl = GetFocusedControlID();
       CGUIWindow::OnMessage(message);
 
@@ -723,21 +721,10 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
   if (strDirectory == "?")
     return false;
 
-  // get selected item
-  int iItem = m_viewControl.GetSelectedItem();
-  std::string strSelectedItem;
-  if (iItem >= 0 && iItem < m_vecItems->Size())
-  {
-    CFileItemPtr pItem = m_vecItems->Get(iItem);
-    if (!pItem->IsParentFolder())
-    {
-      GetDirectoryHistoryString(pItem.get(), strSelectedItem);
-    }
-  }
-  
-  std::string strCurrentDirectory = m_vecItems->GetPath();
-  m_history.SetSelectedItem(strSelectedItem, strCurrentDirectory);
+  // stores the selected item in history
+  SaveSelectedItemInHistory();
 
+  std::string strCurrentDirectory = m_vecItems->GetPath();
   std::string directory = strDirectory;
   // check if the path contains a filter and temporarily remove it
   // so that the retrieved list of items is unfiltered
@@ -825,28 +812,8 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
   OnFilterItems(GetProperty("filter").asString());
   UpdateButtons();
 
-  strSelectedItem = m_history.GetSelectedItem(m_vecItems->GetPath());
-
-  bool bSelectedFound = false;
-  //int iSongInDirectory = -1;
-  for (int i = 0; i < m_vecItems->Size(); ++i)
-  {
-    CFileItemPtr pItem = m_vecItems->Get(i);
-
-    // Update selected item
-    std::string strHistory;
-    GetDirectoryHistoryString(pItem.get(), strHistory);
-    if (strHistory == strSelectedItem)
-    {
-      m_viewControl.SetSelectedItem(i);
-      bSelectedFound = true;
-      break;
-    }
-  }
-
-  // if we haven't found the selected item, select the first item
-  if (!bSelectedFound)
-    m_viewControl.SetSelectedItem(0);
+  // Restore selected item from history
+  RestoreSelectedItemFromHistory();
 
   m_history.AddPath(m_vecItems->GetPath(), m_strFilterPath);
 
@@ -995,7 +962,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
 #endif
   else
   {
-    m_iSelectedItem = m_viewControl.GetSelectedItem();
+    SaveSelectedItemInHistory();
 
     if (pItem->GetPath() == "newplaylist://")
     {
@@ -1145,6 +1112,44 @@ void CGUIMediaWindow::GoParentFolder()
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(2080), g_localizeStrings.Get(2081));
     GoParentFolder();
   }
+}
+
+void CGUIMediaWindow::SaveSelectedItemInHistory()
+{
+  int iItem = m_viewControl.GetSelectedItem();
+  std::string strSelectedItem;
+  if (iItem >= 0 && iItem < m_vecItems->Size())
+  {
+    CFileItemPtr pItem = m_vecItems->Get(iItem);
+    if (!pItem->IsParentFolder())
+      GetDirectoryHistoryString(pItem.get(), strSelectedItem);
+  }
+
+  m_history.SetSelectedItem(strSelectedItem, m_vecItems->GetPath());
+}
+
+void CGUIMediaWindow::RestoreSelectedItemFromHistory()
+{
+  std::string strSelectedItem = m_history.GetSelectedItem(m_vecItems->GetPath());
+
+  if (!strSelectedItem.empty())
+  {
+    for (int i = 0; i < m_vecItems->Size(); ++i)
+    {
+      CFileItemPtr pItem = m_vecItems->Get(i);
+      std::string strHistory;
+      GetDirectoryHistoryString(pItem.get(), strHistory);
+      // set selected item if equals with history
+      if (strHistory == strSelectedItem)
+      {
+        m_viewControl.SetSelectedItem(i);
+        return;
+      }
+    }
+  }
+
+  // if we haven't found the selected item, select the first item
+  m_viewControl.SetSelectedItem(0);
 }
 
 // \brief Override the function to change the default behavior on how
@@ -1455,10 +1460,19 @@ void CGUIMediaWindow::OnInitWindow()
 
   m_rootDir.SetAllowThreads(true);
 
-  if (m_iSelectedItem > -1)
-    m_viewControl.SetSelectedItem(m_iSelectedItem);
-
   CGUIWindow::OnInitWindow();
+}
+
+void CGUIMediaWindow::SaveControlStates()
+{
+  CGUIWindow::SaveControlStates();
+  SaveSelectedItemInHistory();
+}
+
+void CGUIMediaWindow::RestoreControlStates()
+{
+  CGUIWindow::RestoreControlStates();
+  RestoreSelectedItemFromHistory();
 }
 
 CGUIControl *CGUIMediaWindow::GetFirstFocusableControl(int id)
