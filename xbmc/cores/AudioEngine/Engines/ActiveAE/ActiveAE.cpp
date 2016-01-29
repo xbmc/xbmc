@@ -65,32 +65,6 @@ void CEngineStats::AddSamples(int samples, std::list<CActiveAEStream*> &streams)
 {
   CSingleLock lock(m_lock);
   m_bufferedSamples += samples;
-
-  //update buffered time of streams
-  std::list<CActiveAEStream*>::iterator it;
-  for(it=streams.begin(); it!=streams.end(); ++it)
-  {
-    float delay = 0;
-    std::deque<CSampleBuffer*>::iterator itBuf;
-    CSingleLock lock((*it)->m_statsLock);
-    for(itBuf=(*it)->m_processingSamples.begin(); itBuf!=(*it)->m_processingSamples.end(); ++itBuf)
-    {
-      if (m_pcmOutput)
-        delay += (float)(*itBuf)->pkt->nb_samples / (*itBuf)->pkt->config.sample_rate;
-      else
-        delay += m_sinkFormat.m_streamInfo.GetDuration() / 1000;
-    }
-    delay += (*it)->m_resampleBuffers->GetDelay();
-    for (auto &stream : m_streamStats)
-    {
-      if (stream.m_streamId == (*it)->m_id)
-      {
-        stream.m_bufferedTime = delay;
-        (*it)->m_bufferedTime = 0;
-        break;
-      }
-    }
-  }
 }
 
 void CEngineStats::GetDelay(AEDelayStatus& status)
@@ -133,12 +107,30 @@ void CEngineStats::UpdateStream(CActiveAEStream *stream)
   {
     if (str.m_streamId == stream->m_id)
     {
+      float delay = 0;
       str.m_syncState = stream->m_syncState;
       str.m_syncError = stream->m_syncError.GetLastError(str.m_errorTime);
       if (stream->m_resampleBuffers)
+      {
         str.m_resampleRatio = stream->m_resampleBuffers->m_resampleRatio;
+        delay += stream->m_resampleBuffers->GetDelay();
+      }
       else
+      {
         str.m_resampleRatio = 1.0;
+      }
+
+      CSingleLock lock(stream->m_statsLock);
+      std::deque<CSampleBuffer*>::iterator itBuf;
+      for(itBuf=stream->m_processingSamples.begin(); itBuf!=stream->m_processingSamples.end(); ++itBuf)
+      {
+        if (m_pcmOutput)
+          delay += (float)(*itBuf)->pkt->nb_samples / (*itBuf)->pkt->config.sample_rate;
+        else
+          delay += m_sinkFormat.m_streamInfo.GetDuration() / 1000;
+      }
+      str.m_bufferedTime = delay;
+      stream->m_bufferedTime = 0;
       break;
     }
   }
@@ -1450,12 +1442,15 @@ void CActiveAE::SFlushStream(CActiveAEStream *stream)
   stream->m_bufferedTime = 0.0;
   stream->m_paused = false;
   stream->m_syncState = CAESyncInfo::AESyncState::SYNC_START;
+  stream->m_syncError.Flush();
 
   // flush the engine if we only have a single stream
   if (m_streams.size() == 1)
   {
     FlushEngine();
   }
+
+  m_stats.UpdateStream(stream);
 }
 
 void CActiveAE::FlushEngine()
