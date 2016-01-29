@@ -198,6 +198,32 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
   }
 }
 
+static bool LoadManifest(std::set<std::string>& addons)
+{
+  CXBMCTinyXML doc;
+  if (!doc.LoadFile("special://xbmc/system/addon-manifest.xml"))
+  {
+    CLog::Log(LOGERROR, "ADDONS: manifest missing");
+    return false;
+  }
+
+  auto root = doc.RootElement();
+  if (!root || root->ValueStr() != "addons")
+  {
+    CLog::Log(LOGERROR, "ADDONS: malformatted manifest");
+    return false;
+  }
+
+  auto elem = root->FirstChildElement("addon");
+  while (elem)
+  {
+    if (elem->FirstChild())
+      addons.insert(elem->FirstChild()->ValueStr());
+    elem = elem->NextSiblingElement("addon");
+  }
+  return true;
+}
+
 CAddonMgr::CAddonMgr()
   : m_cp_context(nullptr),
   m_cpluff(nullptr)
@@ -243,8 +269,6 @@ bool CAddonMgr::Init()
   CSingleLock lock(m_critSection);
   m_cpluff = std::unique_ptr<DllLibCPluff>(new DllLibCPluff);
   m_cpluff->Load();
-
-  m_database.Open();
 
   if (!m_cpluff->IsLoaded())
   {
@@ -295,32 +319,30 @@ bool CAddonMgr::Init()
     return false;
   }
 
-  FindAddonsAndNotify();
-
-  // disable some system addons by default because they are optional
-  VECADDONS addons;
-  GetAddons(addons, ADDON_PVRDLL);
-  GetAddons(addons, ADDON_AUDIODECODER);
-  std::string systemAddonsPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
-  for (auto &addon : addons)
+  if (!LoadManifest(m_systemAddons))
   {
-    if (StringUtils::StartsWith(addon->Path(), systemAddonsPath))
-    {
-      if (!m_database.IsSystemAddonRegistered(addon->ID()))
-      {
-        m_database.DisableAddon(addon->ID());
-        m_database.AddSystemAddon(addon->ID());
-      }
-    }
+    CLog::Log(LOGERROR, "ADDONS: Failed to read manifest");
+    return false;
   }
 
-  std::vector<std::string> disabled;
-  m_database.GetDisabled(disabled);
-  m_disabled.insert(disabled.begin(), disabled.end());
+  m_database.Open();
+  FindAddonsAndNotify();
 
-  std::vector<std::string> blacklisted;
-  m_database.GetBlacklisted(blacklisted);
-  m_updateBlacklist.insert(blacklisted.begin(), blacklisted.end());
+  //Ensure critical add-ons are installed and enabled
+  for (const auto& id : m_systemAddons)
+  {
+    AddonPtr addon;
+    if (!GetAddon(id, addon, ADDON_UNKNOWN, false))
+    {
+      CLog::Log(LOGFATAL, "addon '%s' is missing.", id.c_str());
+      return false;
+    }
+    if (!EnableAddon(id))
+    {
+      CLog::Log(LOGFATAL, "addon '%s' could not be enabled.", id.c_str());
+      return false;
+    }
+  }
 
   VECADDONS repos;
   if (GetAddons(repos, ADDON_REPOSITORY))
@@ -664,6 +686,15 @@ bool CAddonMgr::FindAddons()
       m_database.SyncInstalled(installed);
     }
 
+    // Reload caches
+    std::set<std::string> tmp;
+    m_database.GetDisabled(tmp);
+    m_disabled = std::move(tmp);
+
+    tmp.clear();
+    m_database.GetBlacklisted(tmp);
+    m_updateBlacklist = std::move(tmp);
+
     SetChanged();
   }
 
@@ -775,6 +806,9 @@ bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
     return false;
 
   CSingleLock lock(m_critSection);
+  if (IsSystemAddon(ID))
+    return false;
+
   AddonPtr localAddon;
   // can't disable an addon that isn't installed
   if (!GetAddon(ID, localAddon, ADDON_UNKNOWN, false))
@@ -782,24 +816,6 @@ bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
 
   // can't disable an addon that is in use
   if (localAddon->IsInUse())
-    return false;
-
-  // installed PVR addons can always be disabled
-  if (localAddon->Type() == ADDON_PVRDLL ||
-      localAddon->Type() == ADDON_ADSPDLL)
-    return true;
-
-  // installed audio decoder addons can always be disabled
-  if (localAddon->Type() == ADDON_AUDIODECODER)
-    return true;
-
-  // installed audio encoder addons can always be disabled
-  if (localAddon->Type() == ADDON_AUDIOENCODER)
-    return true;
-
-  std::string systemAddonsPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
-  // can't disable system addons
-  if (StringUtils::StartsWith(localAddon->Path(), systemAddonsPath))
     return false;
 
   return true;
@@ -826,6 +842,18 @@ bool CAddonMgr::CanAddonBeInstalled(const AddonPtr& addon)
     return false;
 
   return true;
+}
+
+bool CAddonMgr::CanUninstall(const AddonPtr& addon)
+{
+  return addon && !IsSystemAddon(addon->ID()) &&
+      !StringUtils::StartsWith(addon->Path(), CSpecialProtocol::TranslatePath("special://xbmc/addons"));
+}
+
+bool CAddonMgr::IsSystemAddon(const std::string& id)
+{
+  CSingleLock lock(m_critSection);
+  return std::find(m_systemAddons.begin(), m_systemAddons.end(), id) != m_systemAddons.end();
 }
 
 std::string CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const char *tag)

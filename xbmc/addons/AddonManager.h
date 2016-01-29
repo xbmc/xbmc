@@ -167,6 +167,10 @@ namespace ADDON
     */
     bool CanAddonBeInstalled(const AddonPtr& addon);
 
+    bool CanUninstall(const AddonPtr& addon);
+
+    bool IsSystemAddon(const std::string& id);
+
     bool AddToUpdateBlacklist(const std::string& id);
     bool RemoveFromUpdateBlacklist(const std::string& id);
     bool IsBlacklisted(const std::string& id) const;
@@ -266,6 +270,7 @@ namespace ADDON
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     CCriticalSection m_critSection;
     CAddonDatabase m_database;
+    std::set<std::string> m_systemAddons;
   };
 
 }; /* namespace ADDON */
