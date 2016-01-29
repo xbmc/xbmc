@@ -1575,9 +1575,6 @@
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamPVRManager.cpp">
       <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxPVRClient.cpp">
-      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\TextSearch.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -3226,6 +3223,9 @@
     <ClCompile Include="..\..\xbmc\video\windows\VideoFileItemListModifier.cpp">
       <Filter>video\windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxClient.cpp">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4606,9 +4606,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamPVRManager.h">
       <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxPVRClient.h">
-      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\TextSearch.h">
       <Filter>utils</Filter>
@@ -6253,6 +6250,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\windows\VideoFileItemListModifier.h">
       <Filter>video\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxClient.h">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

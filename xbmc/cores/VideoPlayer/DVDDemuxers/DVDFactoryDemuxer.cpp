@@ -27,7 +27,7 @@
 #include "DVDDemuxFFmpeg.h"
 #include "DVDDemuxBXA.h"
 #include "DVDDemuxCDDA.h"
-#include "DVDDemuxPVRClient.h"
+#include "DVDDemuxClient.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 
@@ -96,7 +96,7 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool
       if (g_PVRClients->GetPlayingClient(client) &&
           client->HandlesDemuxing())
       {
-        std::unique_ptr<CDVDDemuxPVRClient> demuxer(new CDVDDemuxPVRClient());
+        std::unique_ptr<CDVDDemuxClient> demuxer(new CDVDDemuxClient());
         if(demuxer->Open(pInputStream))
           return demuxer.release();
         else

@@ -324,55 +324,11 @@ public:
    * returns opened filename
    */
   virtual std::string GetFileName() = 0;
-  /*
-   * return nr of audio streams, 0 if none
-   */
-  int GetNrOfAudioStreams();
-
-  /*
-   * return nr of video streams, 0 if none
-   */
-  int GetNrOfVideoStreams();
 
   /*
    * return nr of subtitle streams, 0 if none
    */
   int GetNrOfSubtitleStreams();
-
-  /*
-   * return nr of teletext streams, 0 if none
-   */
-  int GetNrOfTeletextStreams();
-
-  /*
-   * return nr of rds streams, 0 if none
-   */
-  const int GetNrOfRadioRDSStreams();
-
-  /*
-   * return the audio stream, or NULL if it does not exist
-   */
-  CDemuxStreamAudio* GetStreamFromAudioId(int iAudioIndex);
-
-  /*
-   * return the video stream, or NULL if it does not exist
-   */
-  CDemuxStreamVideo* GetStreamFromVideoId(int iVideoIndex);
-
-  /*
-   * return the subtitle stream, or NULL if it does not exist
-   */
-  CDemuxStreamSubtitle* GetStreamFromSubtitleId(int iSubtitleIndex);
-
-  /*
-   * return the teletext stream, or NULL if it does not exist
-   */
-  CDemuxStreamTeletext* GetStreamFromTeletextId(int iTeletextIndex);
-
-  /*
-   * return the rds stream, or NULL if it does not exist
-   */
-  const CDemuxStreamRadioRDS* GetStreamFromRadioRDSId(int iRadioRDSIndex);
 
   /*
    * return a user-presentable codec name of the given stream
