@@ -181,6 +181,7 @@ void CEngineStats::GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream)
       info.error = str.m_syncError;
       info.errortime = str.m_errorTime;
       info.state = str.m_syncState;
+      info.rr = str.m_resampleRatio;
       return;
     }
   }
