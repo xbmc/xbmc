@@ -151,6 +151,7 @@ void CEngineStats::GetDelay(AEDelayStatus& status, CActiveAEStream *stream)
   {
     if (str.m_streamId == stream->m_id)
     {
+      CSingleLock lock(stream->m_statsLock);
       float buffertime = str.m_bufferedTime + stream->m_bufferedTime;
       status.delay += buffertime / str.m_resampleRatio;
       return;
@@ -175,6 +176,7 @@ void CEngineStats::GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream)
   {
     if (str.m_streamId == stream->m_id)
     {
+      CSingleLock lock(stream->m_statsLock);
       float buffertime = str.m_bufferedTime + stream->m_bufferedTime;
       status.delay += buffertime / str.m_resampleRatio;
       info.delay = status.GetDelay();
@@ -194,7 +196,16 @@ float CEngineStats::GetCacheTime(CActiveAEStream *stream)
   if (!m_pcmOutput)
     delay = (float)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
 
-  delay += stream->m_bufferedTime;
+  for (auto &str : m_streamStats)
+  {
+    if (str.m_streamId == stream->m_id)
+    {
+      CSingleLock lock(stream->m_statsLock);
+      float buffertime = str.m_bufferedTime + stream->m_bufferedTime;
+      delay += buffertime / str.m_resampleRatio;
+      break;
+    }
+  }
   return delay;
 }
 
@@ -1848,6 +1859,8 @@ bool CActiveAE::RunStages()
       if ((*it)->m_inputBuffers->m_format.m_dataFormat == AE_FMT_RAW)
         buftime = (*it)->m_inputBuffers->m_format.m_streamInfo.GetDuration() / 1000;
       time += buftime * (*it)->m_processingSamples.size();
+      if ((*it)->m_resampleBuffers)
+        time += (*it)->m_resampleBuffers->m_inputSamples.size() * buftime;
       while ((time < MAX_CACHE_LEVEL || (*it)->m_streamIsBuffering) && !(*it)->m_inputBuffers->m_freeSamples.empty())
       {
         buffer = (*it)->m_inputBuffers->GetFreeBuffer();
