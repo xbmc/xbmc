@@ -1996,7 +1996,7 @@ void CApplication::Render()
   }
 
   m_lastFrameTime = XbmcThreads::SystemClockMillis();
-  CTimeUtils::UpdateFrameTime(flip, vsync);
+  CTimeUtils::UpdateFrameTime(flip);
 }
 
 void CApplication::SetStandAlone(bool value)
