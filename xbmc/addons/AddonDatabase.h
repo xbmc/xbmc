@@ -25,6 +25,7 @@
 #include "addons/Addon.h"
 #include "dbwrappers/Database.h"
 #include "FileItem.h"
+#include "AddonBuilder.h"
 
 class CAddonDatabase : public CDatabase
 {
@@ -146,12 +147,16 @@ public:
   /*! Clear internal fields that shouldn't be kept around indefinitely */
   void OnPostUnInstall(const std::string& addonId);
 
+  void SyncInstalled(const std::set<std::string>& ids);
+
+  void GetInstalled(std::vector<ADDON::CAddonBuilder>& addons);
+
 protected:
   virtual void CreateTables();
   virtual void CreateAnalytics();
   virtual void UpdateTables(int version);
   virtual int GetMinSchemaVersion() const { return 15; }
-  virtual int GetSchemaVersion() const { return 20; }
+  virtual int GetSchemaVersion() const { return 21; }
   const char *GetBaseDBName() const { return "Addons"; }
 
   bool GetAddon(int id, ADDON::AddonPtr& addon);

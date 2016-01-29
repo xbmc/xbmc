@@ -498,31 +498,44 @@ bool CAddonMgr::GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enab
   CSingleLock lock(m_critSection);
   if (!m_cp_context)
     return false;
-  cp_status_t status;
-  int num;
-  std::string ext_point(TranslateType(type));
-  cp_plugin_info_t **cpaddons = m_cpluff->get_plugins_info(m_cp_context, &status, &num);
 
-  for(int i=0; i <num; i++)
+  std::vector<CAddonBuilder> builders;
+  m_database.GetInstalled(builders);
+
+  for (auto& builder : builders)
   {
-    //FIXME: hack for skipping special dependency addons (xbmc.python etc.).
-    //Will break if any extension point is added to them
-    cp_extension_t *props = GetFirstExtPoint(cpaddons[i], type);
-    if (props == nullptr)
-      continue;
-    if (enabledOnly && IsAddonDisabled(cpaddons[i]->identifier))
-      continue;
-    AddonPtr addon(Factory(cpaddons[i], type));
-    if (addon)
+    cp_status_t status;
+    cp_plugin_info_t* cp_addon = m_cpluff->get_plugin_info(m_cp_context, builder.GetId().c_str(), &status);
+    if (status == CP_OK && cp_addon)
     {
-      // if the addon has a running instance, grab that
-      AddonPtr runningAddon = addon->GetRunningInstance();
-      if (runningAddon)
-        addon = runningAddon;
-      addons.push_back(addon);
+      if (enabledOnly && IsAddonDisabled(cp_addon->identifier))
+      {
+        m_cpluff->release_info(m_cp_context, cp_addon);
+        continue;
+      }
+
+      //FIXME: hack for skipping special dependency addons (xbmc.python etc.).
+      //Will break if any extension point is added to them
+      cp_extension_t *props = GetFirstExtPoint(cp_addon, type);
+      if (props == nullptr)
+      {
+        m_cpluff->release_info(m_cp_context, cp_addon);
+        continue;
+      }
+
+      AddonPtr addon = Factory(cp_addon, type, builder);
+      m_cpluff->release_info(m_cp_context, cp_addon);
+
+      if (addon)
+      {
+        // if the addon has a running instance, grab that
+        AddonPtr runningAddon = addon->GetRunningInstance();
+        if (runningAddon)
+          addon = runningAddon;
+        addons.push_back(addon);
+      }
     }
   }
-  m_cpluff->release_info(m_cp_context, cpaddons);
   return addons.size() > 0;
 }
 
@@ -645,6 +658,19 @@ void CAddonMgr::FindAddons()
     if (m_cpluff && m_cp_context)
     {
       m_cpluff->scan_plugins(m_cp_context, CP_SP_UPGRADE);
+
+      //Sync with db
+      {
+        std::set<std::string> installed;
+        cp_status_t status;
+        int n;
+        cp_plugin_info_t** cp_addons = m_cpluff->get_plugins_info(m_cp_context, &status, &n);
+        for (int i = 0; i < n; ++i)
+          installed.insert(cp_addons[i]->identifier);
+        m_cpluff->release_info(m_cp_context, cp_addons);
+        m_database.SyncInstalled(installed);
+      }
+
       SetChanged();
     }
   }
