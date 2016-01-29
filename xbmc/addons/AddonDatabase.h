@@ -150,6 +150,10 @@ public:
 
   void GetInstalled(std::vector<ADDON::CAddonBuilder>& addons);
 
+  bool SetLastUpdated(const std::string& addonId, const CDateTime& dateTime);
+  bool SetLastUsed(const std::string& addonId, const CDateTime& dateTime);
+
+
 protected:
   virtual void CreateTables();
   virtual void CreateAnalytics();

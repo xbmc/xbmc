@@ -50,6 +50,10 @@ public:
   void SetExtrainfo(InfoMap extrainfo) { m_props.extrainfo = std::move(extrainfo); }
   void SetType(TYPE type) { m_props.type = type; }
   void SetExtPoint(cp_extension_t* ext) { m_extPoint = ext; }
+  void SetInstallDate(CDateTime installDate) { m_props.installDate = installDate; }
+  void SetLastUpdated(CDateTime lastUpdated) { m_props.lastUpdated = lastUpdated; }
+  void SetLastUsed(CDateTime lastUsed) { m_props.lastUsed = lastUsed; }
+
   const std::string& GetId() const { return m_props.id; }
 
 private:

@@ -84,11 +84,8 @@ void CAddonDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE system (id integer primary key, addonID text)\n");
 
   CLog::Log(LOGINFO, "create installed table");
-  m_pDS->exec("CREATE TABLE installed ("
-      "id INTEGER PRIMARY KEY, "
-      "addonID TEXT UNIQUE, "
-      "enabled BOOLEAN, "
-      "installDate TEXT)\n");
+  m_pDS->exec("CREATE TABLE installed (id INTEGER PRIMARY KEY, addonID TEXT UNIQUE, "
+      "enabled BOOLEAN, installDate TEXT, lastUpdated TEXT, lastUsed TEXT) \n");
 }
 
 void CAddonDatabase::CreateAnalytics()
@@ -132,7 +129,8 @@ void CAddonDatabase::UpdateTables(int version)
   }
   if (version < 21)
   {
-    m_pDS->exec("CREATE TABLE installed (id INTEGER PRIMARY KEY, addonID TEXT UNIQUE, enabled BOOLEAN, installDate TEXT)\n");
+    m_pDS->exec("CREATE TABLE installed (id INTEGER PRIMARY KEY, addonID TEXT UNIQUE, "
+        "enabled BOOLEAN, installDate TEXT, lastUpdated TEXT, lastUsed TEXT) \n");
 
     //Ugly hack incoming! As the addon manager isnt created yet, we need to start up our own copy
     //cpluff to find the currently enabled addons.
@@ -244,6 +242,9 @@ void CAddonDatabase::GetInstalled(std::vector<CAddonBuilder>& addons)
     {
       auto it = addons.emplace(addons.end());
       it->SetId(m_pDS->fv(1).get_asString());
+      it->SetInstallDate(CDateTime::FromDBDateTime(m_pDS->fv(3).get_asString()));
+      it->SetLastUpdated(CDateTime::FromDBDateTime(m_pDS->fv(4).get_asString()));
+      it->SetLastUsed(CDateTime::FromDBDateTime(m_pDS->fv(5).get_asString()));
       m_pDS->next();
     }
     m_pDS->close();
@@ -252,6 +253,46 @@ void CAddonDatabase::GetInstalled(std::vector<CAddonBuilder>& addons)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
+}
+
+
+bool CAddonDatabase::SetLastUpdated(const std::string& addonId, const CDateTime& dateTime)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    m_pDS->exec(PrepareSQL("UPDATE installed SET lastUpdated='%s' WHERE addonID='%s'",
+        dateTime.GetAsDBDateTime().c_str(), addonId.c_str()));
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon '%s'", __FUNCTION__, addonId.c_str());
+  }
+  return false;
+}
+
+bool CAddonDatabase::SetLastUsed(const std::string& addonId, const CDateTime& dateTime)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    auto start = XbmcThreads::SystemClockMillis();
+    m_pDS->exec(PrepareSQL("UPDATE installed SET lastUsed='%s' WHERE addonID='%s'",
+        dateTime.GetAsDBDateTime().c_str(), addonId.c_str()));
+
+    CLog::Log(LOGDEBUG, "CAddonDatabase::SetLastUsed[%s] took %i ms", addonId.c_str(), XbmcThreads::SystemClockMillis() - start);
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon '%s'", __FUNCTION__, addonId.c_str());
+  }
+  return false;
 }
 
 int CAddonDatabase::GetAddonId(const ADDON::AddonPtr& item)

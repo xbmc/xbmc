@@ -95,6 +95,9 @@ public:
   std::string broken;
   InfoMap    extrainfo;
   int        stars;
+  CDateTime installDate;
+  CDateTime lastUpdated;
+  CDateTime lastUsed;
 };
 
 typedef std::vector<class AddonProps> VECADDONPROPS;
@@ -162,8 +165,12 @@ public:
   int Stars() const { return m_props.stars; }
   const std::string Disclaimer() const { return m_props.disclaimer; }
   const std::string Broken() const { return m_props.broken; }
+  CDateTime InstallDate() const override { return m_props.installDate; }
+  CDateTime LastUpdated() const override { return m_props.lastUpdated; }
+  CDateTime LastUsed() const override { return m_props.lastUsed; }
   const InfoMap &ExtraInfo() const { return m_props.extrainfo; }
   const ADDONDEPS &GetDeps() const { return m_props.dependencies; }
+
 
   /*! \brief get the required version of a dependency.
    \param dependencyID the addon ID of the dependency.
