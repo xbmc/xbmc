@@ -2,14 +2,14 @@
 <window>
 	<coordinates>
 		<left>315</left>
-		<top>230</top>
+		<top>220</top>
 	</coordinates>
 	<include>dialogeffect</include>
 	<depth>DepthDialog+</depth>
 	<controls>
 		<include name="DialogBackgroundCommons">
 			<param name="DialogBackgroundWidth" value="650" />
-			<param name="DialogBackgroundHeight" value="240" />
+			<param name="DialogBackgroundHeight" value="260" />
 			<param name="DialogHeaderWidth" value="570" />
 			<param name="DialogHeaderLabel" value="" />
 			<param name="DialogHeaderId" value="1" />
@@ -21,7 +21,7 @@
 			<left>30</left>
 			<top>62</top>
 			<width>590</width>
-			<height>78</height>
+			<height>98</height>
 			<align>left</align>
 			<label>-</label>
 			<font>font13</font>
@@ -30,14 +30,14 @@
 		<control type="progress" id="20">
 			<description>Progressbar</description>
 			<left>30</left>
-			<top>148</top>
+			<top>168</top>
 			<width>590</width>
 			<height>16</height>
 			<info>System.Progressbar</info>
 		</control>
 		<control type="grouplist" id="9000">
 			<left>25</left>
-			<top>175</top>
+			<top>195</top>
 			<width>600</width>
 			<height>40</height>
 			<align>center</align>
