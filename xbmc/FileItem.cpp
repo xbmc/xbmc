@@ -652,6 +652,24 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
 
   if (HasPVRChannelInfoTag())
     GetPVRChannelInfoTag()->ToSortable(sortable, field);
+
+  if (HasAddonInfo())
+  {
+    switch (field)
+    {
+      case FieldInstallDate:
+        sortable[FieldInstallDate] = GetAddonInfo()->InstallDate().GetAsDBDateTime();
+        break;
+      case FieldLastUpdated:
+        sortable[FieldLastUpdated] = GetAddonInfo()->LastUpdated().GetAsDBDateTime();
+        break;
+      case FieldLastUsed:
+        sortable[FieldLastUsed] = GetAddonInfo()->LastUsed().GetAsDBDateTime();
+        break;
+      default:
+        break;
+    }
+  }
 }
 
 void CFileItem::ToSortable(SortItem &sortable, const Fields &fields) const

@@ -19,13 +19,14 @@
  */
 
 #include "GUIViewStateAddonBrowser.h"
+#include "addons/Addon.h"
+#include "addons/AddonManager.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/WindowIDs.h"
 #include "view/ViewState.h"
-#include "addons/Addon.h"
-#include "addons/AddonManager.h"
+#include "utils/URIUtils.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -40,6 +41,15 @@ CGUIViewStateAddonBrowser::CGUIViewStateAddonBrowser(const CFileItemList& items)
   else
   {
     AddSortMethod(SortByLabel, SortAttributeIgnoreFolders, 551, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | Foldername, empty
+
+    if (URIUtils::PathStarts(items.GetPath(), "addons://sources/"))
+      AddSortMethod(SortByLastUsed, 12012, LABEL_MASKS("%L", "%u", "%L", "%u"),
+          SortAttributeIgnoreFolders, SortOrderDescending); //Label, Last used
+
+    if (URIUtils::PathStarts(items.GetPath(), "addons://user/") && items.GetContent() == "addons")
+      AddSortMethod(SortByInstallDate, 12013, LABEL_MASKS("%L", "%i", "%L", "%i"),
+          SortAttributeIgnoreFolders, SortOrderDescending);
+
     SetSortMethod(SortByLabel);
   }
   SetViewAsControl(DEFAULT_VIEW_AUTO);
