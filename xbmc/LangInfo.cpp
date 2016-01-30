@@ -44,7 +44,6 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 
-
 using namespace PVR;
 using namespace KODI::MESSAGING;
 
@@ -407,7 +406,6 @@ bool CLangInfo::Load(const std::string& strLanguage)
   m_strDVDSubtitleLanguage = m_languageAddon->GetDvdSubtitleLanguage();
   m_sortTokens = m_languageAddon->GetSortTokens();
 
-
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   if (pRootElement->ValueStr() != "language")
   {
@@ -569,7 +567,7 @@ void CLangInfo::SetDefaults()
   m_strDVDAudioLanguage = "en";
   m_strDVDSubtitleLanguage = "en";
   m_sortTokens.clear();
-  
+
   m_languageCodeGeneral = "eng";
 }
 
@@ -658,8 +656,8 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
       if (addondb.Open())
       {
         // update the addon repositories to check if there's a matching language addon available for download
-        ADDON::CRepositoryUpdater::GetInstance().CheckForUpdates();
-        ADDON::CRepositoryUpdater::GetInstance().Await();
+        if (ADDON::CRepositoryUpdater::GetInstance().CheckForUpdates())
+          ADDON::CRepositoryUpdater::GetInstance().Await();
 
         ADDON::VECADDONS languageAddons;
         if (addondb.GetAddons(languageAddons, ADDON::ADDON_RESOURCE_LANGUAGE) && !languageAddons.empty())
@@ -767,7 +765,7 @@ const std::string CLangInfo::GetDVDMenuLanguage() const
   std::string code;
   if (!g_LangCodeExpander.ConvertToISO6391(m_currentRegion->m_strLangLocaleName, code))
     code = m_strDVDMenuLanguage;
-  
+
   return code;
 }
 
@@ -777,7 +775,7 @@ const std::string CLangInfo::GetDVDAudioLanguage() const
   std::string code;
   if (!g_LangCodeExpander.ConvertToISO6391(m_audioLanguage, code))
     code = m_strDVDAudioLanguage;
-  
+
   return code;
 }
 
@@ -787,7 +785,7 @@ const std::string CLangInfo::GetDVDSubtitleLanguage() const
   std::string code;
   if (!g_LangCodeExpander.ConvertToISO6391(m_subtitleLanguage, code))
     code = m_strDVDSubtitleLanguage;
-  
+
   return code;
 }
 
