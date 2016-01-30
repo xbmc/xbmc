@@ -482,6 +482,8 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   if (!IsInitialized())
     return INT_MAX;
 
+  unsigned int time = XbmcThreads::SystemClockMillis();
+
   uint8_t *buffer = data[0]+offset*m_format.m_frameSize;
   uint8_t *out_buf = buffer;
   int size = frames * m_format.m_frameSize;
@@ -523,12 +525,17 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
     }
     written = frames * m_format.m_frameSize;     // Be sure to report to AE everything has been written
 
-    m_duration_written += (double)m_format.m_frames / m_format.m_sampleRate;
+    double duration = (double)(written / m_format.m_frameSize) / m_format.m_sampleRate;
+    m_duration_written += duration;
+    unsigned int sleep_ms = (duration * 1000.0) - (XbmcThreads::SystemClockMillis() - time) - 2 /* overhead */;
+    if (sleep_ms > 0)
+      usleep(sleep_ms * 1000.0);
   }
+
 
 #ifdef DEBUG_VERBOSE
   if (m_passthrough)
-    CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::AddPackets written %d(%d)", written, size);
+    CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::AddPackets written %d(%d), tm:%d", written, size, XbmcThreads::SystemClockMillis() - time);
 #endif
 
   return (unsigned int)(written/m_format.m_frameSize);
