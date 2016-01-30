@@ -443,6 +443,14 @@ int VideoPlayerCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 int VideoPlayerCodec::ReadRaw(uint8_t **pBuffer, int *bufferSize)
 {
   m_nDecodedLen = 0;
+  DVDAudioFrame audioframe;
+
+  m_pAudioCodec->Decode(nullptr, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
+  m_pAudioCodec->GetData(audioframe);
+  if (audioframe.nb_frames)
+  {
+    return READ_SUCCESS;
+  }
 
   // VideoPlayer returns a read error on a single invalid packet, while
   // in paplayer READ_ERROR is a fatal error.
@@ -450,7 +458,7 @@ int VideoPlayerCodec::ReadRaw(uint8_t **pBuffer, int *bufferSize)
   int decodeLen = -1;
   for (int tries = 0; decodeLen < 0 && tries < 2; ++tries)
   {
-    if (m_pPacket && m_audioPos >= m_pPacket->iSize)
+    if (m_pPacket)
     {
       CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
       m_audioPos = 0;
@@ -468,13 +476,9 @@ int VideoPlayerCodec::ReadRaw(uint8_t **pBuffer, int *bufferSize)
       {
         return READ_EOF;
       }
-      m_audioPos = 0;
     }
 
-    decodeLen = m_pAudioCodec->Decode(m_pPacket->pData + m_audioPos, m_pPacket->iSize - m_audioPos, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
-
-    if (decodeLen < 0)
-      m_audioPos = m_pPacket->iSize; // skip packet
+    decodeLen = m_pAudioCodec->Decode(m_pPacket->pData, m_pPacket->iSize, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
   }
 
   if (decodeLen < 0)
@@ -485,9 +489,16 @@ int VideoPlayerCodec::ReadRaw(uint8_t **pBuffer, int *bufferSize)
     return READ_ERROR;
   }
 
-  m_audioPos += decodeLen;
-
-  *bufferSize = m_pAudioCodec->GetData(pBuffer);
+  m_pAudioCodec->GetData(audioframe);
+  if (audioframe.nb_frames)
+  {
+    *bufferSize = audioframe.nb_frames;
+    *pBuffer = audioframe.data[0];
+  }
+  else
+  {
+    *bufferSize = 0;
+  }
 
   return READ_SUCCESS;
 }
