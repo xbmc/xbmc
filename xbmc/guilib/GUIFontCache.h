@@ -80,12 +80,8 @@ struct CGUIFontCacheEntry
   const CGUIFontCache<Position, Value> &m_cache;
   CGUIFontCacheKey<Position> m_key;
   TransformMatrix m_matrix;
-
-  /* These need to be declared as mutable to get round the fact that only
-   * const iterators are available. These fields do not affect comparison or
-   * hash functors, so from the container's point of view, they are mutable. */
-  mutable unsigned int m_lastUsedMillis;
-  mutable Value m_value;
+  unsigned int m_lastUsedMillis;
+  Value m_value;
 
   CGUIFontCacheEntry(const CGUIFontCache<Position, Value> &cache, const CGUIFontCacheKey<Position> &key, unsigned int nowMillis) :
     m_cache(cache),
@@ -101,31 +97,9 @@ struct CGUIFontCacheEntry
     m_matrix = key.m_matrix;
   }
 
-  CGUIFontCacheEntry(const CGUIFontCacheEntry &other) :
-    m_cache(other.m_cache),
-    m_key(other.m_key.m_pos,
-          *new vecColors, *new vecText,
-          other.m_key.m_alignment, other.m_key.m_maxPixelWidth,
-          other.m_key.m_scrolling, m_matrix,
-          other.m_key.m_scaleX, other.m_key.m_scaleY),
-    m_lastUsedMillis(other.m_lastUsedMillis),
-    m_value(other.m_value)
-  {
-    m_key.m_colors.assign(other.m_key.m_colors.begin(), other.m_key.m_colors.end());
-    m_key.m_text.assign(other.m_key.m_text.begin(), other.m_key.m_text.end());
-    m_matrix = other.m_key.m_matrix;
-  }
-
-  struct Reassign
-  {
-    Reassign(const CGUIFontCacheKey<Position> &key, unsigned int nowMillis) : m_key(key), m_nowMillis(nowMillis) {}
-    void operator()(CGUIFontCacheEntry &entry);
-  private:
-    const CGUIFontCacheKey<Position> &m_key;
-    unsigned int m_nowMillis;
-  };
-
   ~CGUIFontCacheEntry();
+
+  void Assign(const CGUIFontCacheKey<Position> &key, unsigned int nowMillis);
 };
 
 template<class Position>
@@ -159,7 +133,6 @@ struct CGUIFontCacheKeysMatch
            a.m_scaleY == b.m_scaleY;
   }
 };
-
 
 
 template<class Position, class Value>
