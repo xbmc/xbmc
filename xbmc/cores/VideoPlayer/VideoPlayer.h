@@ -20,6 +20,7 @@
  *
  */
 
+#include <atomic>
 #include <utility>
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
@@ -547,7 +548,7 @@ protected:
   bool m_HasVideo;
   bool m_HasAudio;
 
-  bool m_displayLost;
+  std::atomic<bool> m_displayLost;
 
   // omxplayer variables
   struct SOmxPlayerState m_OmxPlayerState;
