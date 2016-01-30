@@ -56,6 +56,7 @@ public:
   bool m_dataIsLE;
   unsigned int m_dtsPeriod;
   unsigned int m_repeat;
+  unsigned int m_ac3FrameSize;
 };
 
 class CAEStreamParser
