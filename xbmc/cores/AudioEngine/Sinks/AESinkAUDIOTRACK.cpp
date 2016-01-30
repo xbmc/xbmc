@@ -225,7 +225,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         {
           m_encoding              = CJNIAudioFormat::ENCODING_AC3;
           m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
-          m_format.m_frames       = CONSTANT_BUFFER_SIZE_SD;
+          m_format.m_frames       = m_format.m_sampleRate * 0.032;
         }
         else
           m_format.m_dataFormat   = AE_FMT_S16LE;
@@ -236,7 +236,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         {
           m_encoding              = CJNIAudioFormat::ENCODING_E_AC3;
           m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
-          m_format.m_frames       = CONSTANT_BUFFER_SIZE_SD;
+          m_format.m_frames       = m_format.m_sampleRate * (1536.0 / m_format.m_encodedRate);
         }
         else
           m_format.m_dataFormat   = AE_FMT_S16LE;
@@ -247,7 +247,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         {
           m_encoding              = CJNIAudioFormat::ENCODING_DTS;
           m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
-          m_format.m_frames       = CONSTANT_BUFFER_SIZE_SD;
+          m_format.m_frames       = m_format.m_sampleRate * (512.0 / m_format.m_encodedRate);
         }
         else
           m_format.m_dataFormat   = AE_FMT_S16LE;
@@ -323,10 +323,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     {
       m_format.m_frameSize      = 1;
       m_sink_frameSize          = m_format.m_frameSize;
-      if (m_encoding == CJNIAudioFormat::ENCODING_DOLBY_TRUEHD || m_encoding == CJNIAudioFormat::ENCODING_DTS_HD)
-        m_buffer_size           = std::max((unsigned int) 61440, m_buffer_size);
-      else
-        m_buffer_size           = std::max((unsigned int) 16384, m_buffer_size);
+      m_buffer_size             = std::max((unsigned int) m_format.m_frames, m_buffer_size);
     }
     else
     {

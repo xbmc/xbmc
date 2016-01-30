@@ -41,7 +41,8 @@ CDVDAudioCodecPassthroughRaw::CDVDAudioCodecPassthroughRaw(void) :
   m_codec(AE_FMT_INVALID),
   m_frameoffset(0),
   m_framepos(0),
-  m_pktperframe(1)
+  m_pktperframe(1),
+  m_constant_size(0)
 {
 }
 
@@ -120,7 +121,7 @@ void CDVDAudioCodecPassthroughRaw::GetData(DVDAudioFrame &frame)
     }
   }
   m_sampleRate = frame.nb_frames / frame.duration;
-  frame.duration *= 1000.0 * 1000.0;
+  frame.duration *= DVD_TIME_BASE;
 
   frame.sample_rate           = GetSampleRate();
   frame.channel_layout        = GetChannelMap();
@@ -147,31 +148,40 @@ int CDVDAudioCodecPassthroughRaw::GetEncodedSampleRate()
 
 enum AEDataFormat CDVDAudioCodecPassthroughRaw::GetDataFormat()
 {
+  enum AEDataFormat codec = AE_FMT_INVALID;
+  unsigned int pktperframe = 1;
+
   switch(m_info.GetDataType())
   {
     case CAEStreamInfo::STREAM_TYPE_AC3:
-      m_codec = (AEDataFormat)(AE_FMT_AC3 + PT_FORMAT_RAW_CLASS);
+      codec = (AEDataFormat)(AE_FMT_AC3 + PT_FORMAT_RAW_CLASS);
       break;
 
     case CAEStreamInfo::STREAM_TYPE_DTS_512:
     case CAEStreamInfo::STREAM_TYPE_DTS_1024:
     case CAEStreamInfo::STREAM_TYPE_DTS_2048:
     case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
-      m_codec = (AEDataFormat)(AE_FMT_DTS + PT_FORMAT_RAW_CLASS);
+      codec = (AEDataFormat)(AE_FMT_DTS + PT_FORMAT_RAW_CLASS);
       break;
 
     case CAEStreamInfo::STREAM_TYPE_DTSHD:
-      m_codec = (AEDataFormat)(AE_FMT_DTSHD + PT_FORMAT_RAW_CLASS);
+      codec = (AEDataFormat)(AE_FMT_DTSHD + PT_FORMAT_RAW_CLASS);
       break;
 
     case CAEStreamInfo::STREAM_TYPE_EAC3:
-      m_codec = (AEDataFormat)(AE_FMT_EAC3 + PT_FORMAT_RAW_CLASS);
+      codec = (AEDataFormat)(AE_FMT_EAC3 + PT_FORMAT_RAW_CLASS);
       break;
 
     case CAEStreamInfo::STREAM_TYPE_TRUEHD:
-      m_codec = (AEDataFormat)(AE_FMT_TRUEHD + PT_FORMAT_RAW_CLASS);
-      m_pktperframe = 24;
+      codec = (AEDataFormat)(AE_FMT_TRUEHD + PT_FORMAT_RAW_CLASS);
+      pktperframe = 24;
       break;
+  }
+  if (codec != m_codec)
+  {
+    Cleanup();
+    m_codec = codec;
+    m_pktperframe = pktperframe;
   }
 
   return m_codec;
@@ -194,20 +204,7 @@ CAEChannelInfo CDVDAudioCodecPassthroughRaw::GetChannelMap()
 
 void CDVDAudioCodecPassthroughRaw::Dispose()
 {
-  if (m_buffer)
-  {
-    delete[] m_buffer;
-    m_buffer = NULL;
-  }
-  if (m_infobuffer)
-  {
-    delete[] m_infobuffer;
-    m_infobuffer = NULL;
-  }
-
-  m_bufferSize = 0;
-  m_infobufferSize = 0;
-  m_sampleRate = 0;
+  Cleanup();
 }
 
 int CDVDAudioCodecPassthroughRaw::Decode(uint8_t* pData, int iSize)
@@ -215,7 +212,6 @@ int CDVDAudioCodecPassthroughRaw::Decode(uint8_t* pData, int iSize)
   if (iSize <= 0) return 0;
 
   // Do pseudo-encapsulation to make bitrate constant
-  int constant_size = 0;
   unsigned int used = 0;
 
   unsigned int size = m_infobufferSize;
@@ -225,29 +221,27 @@ int CDVDAudioCodecPassthroughRaw::Decode(uint8_t* pData, int iSize)
 #endif
   m_infobufferSize = std::max(m_infobufferSize, size);
 
-  if (m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_TRUEHD || m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_DTSHD)
-    constant_size = CONSTANT_BUFFER_SIZE_HD;
-  else
-    constant_size = CONSTANT_BUFFER_SIZE_SD;
-
-  if (!m_buffer || m_bufferSize != constant_size)
-  {
-    if (m_buffer)
-      delete[] m_buffer;
-    m_bufferSize = constant_size;
-    m_buffer = (uint8_t*)malloc(m_bufferSize);
-    m_frameoffset = m_framepos = 0;
-  }
-
-  if (m_frameoffset + iSize > constant_size)
-  {
-    CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthroughRaw::Decode Error: Frame Buffer too small %d(%d)", m_frameoffset + iSize, m_framepos);
-    return 0;
-  }
-
   m_bufferUsed = 0;
   if (size)
   {
+    if (!m_buffer)
+    {
+      if (m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_TRUEHD || m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_DTSHD)
+        m_constant_size = CONSTANT_BUFFER_SIZE_HD;
+      else
+        m_constant_size = size * 2;
+
+      m_bufferSize = m_constant_size;
+      m_buffer = (uint8_t*)malloc(m_bufferSize);
+      m_frameoffset = m_framepos = 0;
+    }
+
+    if (m_frameoffset + size > m_constant_size)
+    {
+      CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthroughRaw::Decode Error: Frame Buffer too small %d(%d) vs. %d", m_frameoffset + iSize, m_framepos, m_constant_size);
+      return 0;
+    }
+
     memcpy(m_buffer+sizeof(int)+m_frameoffset, m_infobuffer, size);
     m_frameoffset += size;
     m_framepos++;
@@ -276,6 +270,22 @@ int CDVDAudioCodecPassthroughRaw::GetBufferSize()
   return (int)m_info.GetBufferSize();
 }
 
-void CDVDAudioCodecPassthroughRaw::Reset()
+void CDVDAudioCodecPassthroughRaw::Cleanup()
 {
+  if (m_buffer)
+  {
+    delete[] m_buffer;
+    m_buffer = NULL;
+  }
+  if (m_infobuffer)
+  {
+    delete[] m_infobuffer;
+    m_infobuffer = NULL;
+  }
+
+  m_pktperframe = 1;
+  m_bufferSize = 0;
+  m_bufferUsed = 0;
+  m_infobufferSize = 0;
+  m_sampleRate = 0;
 }

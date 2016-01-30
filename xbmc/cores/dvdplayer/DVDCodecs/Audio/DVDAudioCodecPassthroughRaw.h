@@ -39,7 +39,7 @@ public:
   virtual int  Decode(uint8_t* pData, int iSize);
   virtual void GetData(DVDAudioFrame &frame);
   virtual int  GetData(uint8_t** dst);
-  virtual void Reset();
+  virtual void Reset() {}
   virtual int  GetChannels               ();
   virtual int  GetEncodedChannels        ();
   virtual CAEChannelInfo GetChannelMap       ();
@@ -51,6 +51,8 @@ public:
   virtual int  GetBufferSize();
 
 private:
+  void Cleanup();
+
   CDVDStreamInfo     m_hints;
   CAEStreamInfo      m_info;
   uint8_t*           m_buffer;
@@ -63,5 +65,6 @@ private:
   unsigned int       m_pktperframe;
   unsigned int       m_frameoffset;
   unsigned int       m_framepos;
+  unsigned int       m_constant_size;
 };
 
