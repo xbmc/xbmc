@@ -16,7 +16,6 @@
 #ifndef BOOST_UUID_SHA1_H
 #define BOOST_UUID_SHA1_H
 
-#include <boost/static_assert.hpp>
 #include <cstddef>
 
 #ifdef BOOST_NO_STDC_NAMESPACE
@@ -29,8 +28,8 @@ namespace boost {
 namespace uuids {
 namespace detail {
 
-BOOST_STATIC_ASSERT(sizeof(unsigned char)*8 == 8);
-BOOST_STATIC_ASSERT(sizeof(unsigned int)*8 == 32);
+static_assert(sizeof(unsigned char)*8 == 8, "Invalid sizeof(unsigned char)");
+static_assert(sizeof(unsigned int)*8 == 32, "Invalid sizeof(unsigned int)");
 
 inline unsigned int left_rotate(unsigned int x, std::size_t n)
 {
