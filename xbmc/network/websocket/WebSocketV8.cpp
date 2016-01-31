@@ -20,7 +20,8 @@
 
 #include <string>
 #include <sstream>
-#include <boost/uuid/sha1.hpp>
+
+#include <openssl/sha.h>
 
 #include "WebSocketV8.h"
 #include "WebSocket.h"
@@ -30,6 +31,10 @@
 #include "utils/HttpResponse.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+
+#ifdef TARGET_WINDOWS
+#pragma comment(lib, "ssleay32.lib")
+#endif
 
 #define WS_HTTP_METHOD          "GET"
 #define WS_HTTP_TAG             "HTTP/"
@@ -191,14 +196,18 @@ std::string CWebSocketV8::calculateKey(const std::string &key)
   std::string acceptKey = key;
   acceptKey.append(WS_KEY_MAGICSTRING);
 
-  boost::uuids::detail::sha1 hash;
-  hash.process_bytes(acceptKey.c_str(), acceptKey.size());
+  unsigned char sha1digest[SHA_DIGEST_LENGTH]; // 20
+  SHA1((unsigned char*)acceptKey.c_str(), acceptKey.size(), (unsigned char*)&sha1digest);
 
   unsigned int digest[5];
-  hash.get_digest(digest);
-
   for (unsigned int index = 0; index < 5; index++)
+  {
+    digest[index] = (sha1digest[index * 4 + 0]  << 24) |
+                    (sha1digest[index * 4 + 1]  << 16) |
+                    (sha1digest[index * 4 + 2]  << 8)  |
+                     sha1digest[index * 4 + 3];
     digest[index] = Endian_SwapBE32(digest[index]);
+  }
 
   return Base64::Encode((const char*)digest, sizeof(digest));
 }
