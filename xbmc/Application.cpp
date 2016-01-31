@@ -3320,6 +3320,8 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
   {
     // have to be set here due to playstack using this for starting the file
     options.starttime = item.m_lStartOffset / 75.0;
+    if (item.HasVideoInfoTag())
+      options.state = item.GetVideoInfoTag()->m_resumePoint.playerState;
     if (m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0 && m_itemCurrentFile->m_lStartOffset != 0)
       m_itemCurrentFile->m_lStartOffset = STARTOFFSET_RESUME; // to force fullscreen switching
   }
@@ -3337,26 +3339,28 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
       if( item.m_lStartOffset == STARTOFFSET_RESUME )
       {
         options.starttime = 0.0f;
-        CBookmark bookmark;
-        std::string path = item.GetPath();
-        if (item.HasVideoInfoTag() && StringUtils::StartsWith(item.GetVideoInfoTag()->m_strFileNameAndPath, "removable://"))
-          path = item.GetVideoInfoTag()->m_strFileNameAndPath;
-        else if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
-          path = item.GetProperty("original_listitem_url").asString();
-        if(dbs.GetResumeBookMark(path, bookmark))
-        {
-          options.starttime = bookmark.timeInSeconds;
-          options.state = bookmark.playerState;
-        }
-        /*
-         override with information from the actual item if available.  We do this as the VFS (eg plugins)
-         may set the resume point to override whatever XBMC has stored, yet we ignore it until now so that,
-         should the playerState be required, it is fetched from the database.
-         See the note in CGUIWindowVideoBase::ShowResumeMenu.
-         */
         if (item.IsResumePointSet())
+        {
           options.starttime = item.GetCurrentResumeTime();
-        else if (item.HasVideoInfoTag())
+          if (item.HasVideoInfoTag())
+            options.state = item.GetVideoInfoTag()->m_resumePoint.playerState;
+        }
+        else
+        {
+          CBookmark bookmark;
+          std::string path = item.GetPath();
+          if (item.HasVideoInfoTag() && StringUtils::StartsWith(item.GetVideoInfoTag()->m_strFileNameAndPath, "removable://"))
+            path = item.GetVideoInfoTag()->m_strFileNameAndPath;
+          else if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
+            path = item.GetProperty("original_listitem_url").asString();
+          if (dbs.GetResumeBookMark(path, bookmark))
+          {
+            options.starttime = bookmark.timeInSeconds;
+            options.state = bookmark.playerState;
+          }
+        }
+
+        if (options.starttime == 0.0f && item.HasVideoInfoTag())
         {
           // No resume point is set, but check if this item is part of a multi-episode file
           const CVideoInfoTag *tag = item.GetVideoInfoTag();

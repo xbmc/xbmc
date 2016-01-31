@@ -250,6 +250,7 @@ public:
             curr_value.Append(NPT_String::Format("<upnp:lastPlaybackPosition>%ld</upnp:lastPlaybackPosition>",
                                                  (long)item.GetVideoInfoTag()->m_resumePoint.timeInSeconds));
             new_value.Append(NPT_String::Format("<upnp:lastPlaybackPosition>%ld</upnp:lastPlaybackPosition>", time));
+            new_value.Append(NPT_String::Format("<xbmc:lastPlayerState>%s</xbmc:lastPlayerState>", bookmark.playerState.c_str()));
         }
         if (updatePlayCount) {
             CLog::Log(LOGDEBUG, "UPNP: Marking video item %s as watched", path.c_str());
