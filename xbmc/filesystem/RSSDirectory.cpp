@@ -326,7 +326,7 @@ static void ParseItemVoddler(CFileItem* item, SResources& resources, TiXmlElemen
     resources.push_back(res);
   }
   else if(name == "year")
-    vtag->m_iYear = atoi(text.c_str());
+    vtag->SetYear(atoi(text.c_str()));
   else if(name == "rating")
     vtag->SetRating((float)atof(text.c_str()));
   else if(name == "tagline")

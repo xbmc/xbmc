@@ -85,6 +85,10 @@ public:
   virtual void Serialize(CVariant& value) const;
   virtual void ToSortable(SortItem& sortable, Field field) const;
   const CRating GetRating(std::string type = "") const;
+  const bool HasYear() const;
+  const int GetYear() const;
+  const bool HasPremiered() const;
+  const CDateTime& GetPremiered() const;
   const std::string GetCast(bool bIncludeRole = false) const;
   bool HasStreamDetails() const;
   bool IsEmpty() const;
@@ -123,6 +127,9 @@ public:
   void AddRating(CRating rating, const std::string& type = "");
   void SetRating(float rating, const std::string& type = "");
   void SetVotes(int votes, const std::string& type = "");
+  void SetPremiered(CDateTime premiered);
+  void SetPremieredFromDBDate(std::string premieredString);
+  void SetYear(int year);
   void SetArtist(std::vector<std::string> artist);
   void SetSet(std::string set);
   void SetSetOverview(std::string setOverview);
@@ -173,6 +180,7 @@ public:
   std::string m_strOriginalTitle;
   std::string m_strEpisodeGuide;
   CDateTime m_premiered;
+  bool m_bHasPremiered;
   std::string m_strStatus;
   std::string m_strProductionCode;
   CDateTime m_firstAired;

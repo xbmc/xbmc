@@ -608,7 +608,7 @@
                 "playcount", "writer", "studio", "mpaa", "cast", "country",
                 "imdbnumber", "runtime", "set", "showlink", "streamdetails",
                 "top250", "votes", "fanart", "thumbnail", "file", "sorttitle",
-                "resume", "setid", "dateadded", "tag", "art", "userrating", "ratings" ]
+                "resume", "setid", "dateadded", "tag", "art", "userrating", "ratings", "premiered" ]
     }
   },
   "Video.Fields.MovieSet": {
@@ -657,7 +657,7 @@
                 "studio", "year", "plot", "album", "artist",
                 "genre", "track", "streamdetails", "lastplayed",
                 "fanart", "thumbnail", "file", "resume", "dateadded",
-                "tag", "art", "rating", "userrating" ]
+                "tag", "art", "rating", "userrating", "premiered" ]
     }
   },
   "Video.Cast": {
@@ -784,7 +784,8 @@
       "setid": { "$ref": "Library.Id" },
       "tag": { "$ref": "Array.String" },
       "userrating": { "type": "integer" },
-      "ratings": { "type": "Video.Ratings" }
+      "ratings": { "type": "Video.Ratings" },
+      "premiered": { "type": "string" }
     }
   },
   "Video.Details.MovieSet": {
@@ -875,7 +876,8 @@
       "track": { "type": "integer" },
       "tag": { "$ref": "Array.String" },
       "rating": { "type": "number" },
-      "userrating": { "type": "integer" }
+      "userrating": { "type": "integer" },
+      "premiered": { "type": "string" }
     }
   },
   "PVR.Property.Name": {

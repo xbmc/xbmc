@@ -360,11 +360,6 @@ TEST(TestDatabaseUtils, GetField_MediaTypeMusicVideo)
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
-  refstr = StringUtils::Format("musicvideo_view.c%02d",VIDEODB_ID_MUSICVIDEO_YEAR);
-  varstr = DatabaseUtils::GetField(FieldYear, MediaTypeMusicVideo,
-                                   DatabaseQueryPartSelect);
-  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-
   refstr = StringUtils::Format("musicvideo_view.c%02d",VIDEODB_ID_MUSICVIDEO_PLOT);
   varstr = DatabaseUtils::GetField(FieldPlot, MediaTypeMusicVideo,
                                    DatabaseQueryPartSelect);
@@ -484,11 +479,6 @@ TEST(TestDatabaseUtils, GetField_MediaTypeMovie)
 
   refstr = StringUtils::Format("movie_view.c%02d", VIDEODB_ID_CREDITS);
   varstr = DatabaseUtils::GetField(FieldWriter, MediaTypeMovie,
-                                   DatabaseQueryPartSelect);
-  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-
-  refstr = StringUtils::Format("movie_view.c%02d", VIDEODB_ID_YEAR);
-  varstr = DatabaseUtils::GetField(FieldYear, MediaTypeMovie,
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
@@ -995,10 +985,6 @@ TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeMusicVideo)
   varindex = DatabaseUtils::GetFieldIndex(FieldStudio, MediaTypeMusicVideo);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = VIDEODB_ID_MUSICVIDEO_YEAR + 2;
-  varindex = DatabaseUtils::GetFieldIndex(FieldYear, MediaTypeMusicVideo);
-  EXPECT_EQ(refindex, varindex);
-
   refindex = VIDEODB_ID_MUSICVIDEO_PLOT + 2;
   varindex = DatabaseUtils::GetFieldIndex(FieldPlot, MediaTypeMusicVideo);
   EXPECT_EQ(refindex, varindex);
@@ -1043,6 +1029,10 @@ TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeMusicVideo)
   varindex = DatabaseUtils::GetFieldIndex(FieldUserRating, MediaTypeMusicVideo);
   EXPECT_EQ(refindex, varindex);
 
+  refindex = VIDEODB_DETAILS_MUSICVIDEO_PREMIERED;
+  varindex = DatabaseUtils::GetFieldIndex(FieldYear, MediaTypeMusicVideo);
+  EXPECT_EQ(refindex, varindex);
+
   refindex = -1;
   varindex = DatabaseUtils::GetFieldIndex(FieldRandom, MediaTypeMusicVideo);
   EXPECT_EQ(refindex, varindex);
@@ -1078,10 +1068,6 @@ TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeMovie)
 
   refindex = VIDEODB_ID_CREDITS + 2;
   varindex = DatabaseUtils::GetFieldIndex(FieldWriter, MediaTypeMovie);
-  EXPECT_EQ(refindex, varindex);
-
-  refindex = VIDEODB_ID_YEAR + 2;
-  varindex = DatabaseUtils::GetFieldIndex(FieldYear, MediaTypeMovie);
   EXPECT_EQ(refindex, varindex);
 
   refindex = VIDEODB_ID_RUNTIME + 2;
@@ -1146,6 +1132,10 @@ TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeMovie)
 
   refindex = VIDEODB_DETAILS_MOVIE_RATING;
   varindex = DatabaseUtils::GetFieldIndex(FieldRating, MediaTypeMovie);
+  EXPECT_EQ(refindex, varindex);
+
+  refindex = VIDEODB_DETAILS_MOVIE_PREMIERED;
+  varindex = DatabaseUtils::GetFieldIndex(FieldYear, MediaTypeMovie);
   EXPECT_EQ(refindex, varindex);
 
   refindex = -1;

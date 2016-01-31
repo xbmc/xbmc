@@ -201,8 +201,8 @@ void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag, const char *sender,
       switch (item->GetVideoContentType())
       {
       case VIDEODB_CONTENT_MOVIES:
-        if (item->GetVideoInfoTag()->m_iYear > 0)
-          object["item"]["year"] = item->GetVideoInfoTag()->m_iYear;
+        if (item->GetVideoInfoTag()->HasYear())
+          object["item"]["year"] = item->GetVideoInfoTag()->GetYear();
         break;
       case VIDEODB_CONTENT_EPISODES:
         if (item->GetVideoInfoTag()->m_iEpisode >= 0)

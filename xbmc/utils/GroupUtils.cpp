@@ -115,8 +115,8 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
         }
 
         // handle year
-        if (movieInfo->m_iYear > setInfo->m_iYear)
-          setInfo->m_iYear = movieInfo->m_iYear;
+        if (movieInfo->GetYear() > setInfo->GetYear())
+          setInfo->SetYear(movieInfo->GetYear());
 
         // handle lastplayed
         if (movieInfo->m_lastPlayed.IsValid() && movieInfo->m_lastPlayed > setInfo->m_lastPlayed)

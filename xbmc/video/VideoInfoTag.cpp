@@ -66,7 +66,6 @@ void CVideoInfoTag::Reset()
   m_artist.clear();
   m_strTrailer.clear();
   m_iTop250 = 0;
-  m_iYear = 0;
   m_iSeason = -1;
   m_iEpisode = -1;
   m_strUniqueId.clear();
@@ -149,7 +148,6 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     movie->InsertEndChild(epbookmark);
   }
 
-  XMLUtils::SetInt(movie, "year", m_iYear);
   XMLUtils::SetInt(movie, "top250", m_iTop250);
   if (tag == "episodedetails" || tag == "tvshow")
   {
@@ -219,7 +217,10 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   XMLUtils::SetStringArray(movie, "tag", m_tags);
   XMLUtils::SetStringArray(movie, "credits", m_writingCredits);
   XMLUtils::SetStringArray(movie, "director", m_director);
-  XMLUtils::SetDate(movie, "premiered", m_premiered);
+  if (HasPremiered())
+    XMLUtils::SetDate(movie, "premiered", m_premiered);
+  if (HasYear())
+    XMLUtils::SetInt(movie, "year", GetYear());
   XMLUtils::SetString(movie, "status", m_strStatus);
   XMLUtils::SetString(movie, "code", m_strProductionCode);
   XMLUtils::SetDate(movie, "aired", m_firstAired);
@@ -346,6 +347,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_strOriginalTitle;
     ar << m_strEpisodeGuide;
     ar << m_premiered;
+    ar << m_bHasPremiered;
     ar << m_strStatus;
     ar << m_strProductionCode;
     ar << m_firstAired;
@@ -355,7 +357,6 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_playCount;
     ar << m_lastPlayed;
     ar << m_iTop250;
-    ar << m_iYear;
     ar << m_iSeason;
     ar << m_iEpisode;
     ar << m_strUniqueId;
@@ -438,6 +439,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_strOriginalTitle;
     ar >> m_strEpisodeGuide;
     ar >> m_premiered;
+    ar >> m_bHasPremiered;
     ar >> m_strStatus;
     ar >> m_strProductionCode;
     ar >> m_firstAired;
@@ -447,7 +449,6 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_playCount;
     ar >> m_lastPlayed;
     ar >> m_iTop250;
-    ar >> m_iYear;
     ar >> m_iSeason;
     ar >> m_iEpisode;
     ar >> m_strUniqueId;
@@ -549,7 +550,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["playcount"] = m_playCount;
   value["lastplayed"] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::Empty;
   value["top250"] = m_iTop250;
-  value["year"] = m_iYear;
+  value["year"] = m_premiered.GetYear();
   value["season"] = m_iSeason;
   value["episode"] = m_iEpisode;
   value["uniqueid"]["unknown"] = m_strUniqueId;
@@ -635,7 +636,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldPlaycount:                sortable[FieldPlaycount] = m_playCount; break;
   case FieldLastPlayed:               sortable[FieldLastPlayed] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::Empty; break;
   case FieldTop250:                   sortable[FieldTop250] = m_iTop250; break;
-  case FieldYear:                     sortable[FieldYear] = m_iYear; break;
+  case FieldYear:                     sortable[FieldYear] = m_premiered.GetYear(); break;
   case FieldSeason:                   sortable[FieldSeason] = m_iSeason; break;
   case FieldEpisodeNumber:            sortable[FieldEpisodeNumber] = m_iEpisode; break;
   case FieldNumberOfEpisodes:         sortable[FieldNumberOfEpisodes] = m_iEpisode; break;
@@ -676,6 +677,28 @@ const CRating CVideoInfoTag::GetRating(std::string type) const
     return CRating();
 
   return m_ratings.find(type)->second;
+}
+
+const bool CVideoInfoTag::HasYear() const
+{
+  return m_premiered.IsValid();
+}
+
+const int CVideoInfoTag::GetYear() const
+{
+  if (m_premiered.IsValid())
+    return GetPremiered().GetYear();
+  return 0;
+}
+
+const bool CVideoInfoTag::HasPremiered() const
+{
+  return m_bHasPremiered;
+}
+
+const CDateTime& CVideoInfoTag::GetPremiered() const
+{
+  return m_premiered;
 }
 
 const std::string CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
@@ -763,7 +786,6 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   const TiXmlElement* urElement = movie->FirstChildElement("userrating");
   if (urElement && (urElement->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value >= 1)
     m_iUserRating = m_iUserRating / max_value * 10; // Normalise the user Movie Rating to between 1 and 10
-  XMLUtils::GetInt(movie, "year", m_iYear);
   XMLUtils::GetInt(movie, "top250", m_iTop250);
   XMLUtils::GetInt(movie, "season", m_iSeason);
   XMLUtils::GetInt(movie, "episode", m_iEpisode);
@@ -812,7 +834,12 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (XMLUtils::GetString(movie, "filenameandpath", value))
     SetFileNameAndPath(value);
 
-  XMLUtils::GetDate(movie, "premiered", m_premiered);
+  if (!XMLUtils::GetDate(movie, "premiered", m_premiered))
+  {
+    int year;
+    if (XMLUtils::GetInt(movie, "year", year))
+      SetYear(year);
+  }
   
   if (XMLUtils::GetString(movie, "status", value))
     SetStatus(value);
@@ -1189,6 +1216,27 @@ void CVideoInfoTag::SetVotes(int votes, const std::string& type /* = "" */)
     m_ratings[m_strDefaultRating].votes = votes;
   else
     m_ratings[type].votes = votes;
+}
+
+void CVideoInfoTag::SetPremiered(CDateTime premiered)
+{
+  m_premiered = premiered;
+  m_bHasPremiered = premiered.IsValid();
+}
+
+void CVideoInfoTag::SetPremieredFromDBDate(std::string premieredString)
+{
+  CDateTime premiered;
+  premiered.SetFromDBDate(premieredString);
+  SetPremiered(premiered);
+}
+
+void CVideoInfoTag::SetYear(int year)
+{
+  if (m_bHasPremiered)
+    m_premiered.SetDate(year, m_premiered.GetMonth(), m_premiered.GetDay());
+  else
+    m_premiered = CDateTime(year, 1, 1, 0, 0, 0);
 }
 
 void CVideoInfoTag::SetArtist(std::vector<std::string> artist)
