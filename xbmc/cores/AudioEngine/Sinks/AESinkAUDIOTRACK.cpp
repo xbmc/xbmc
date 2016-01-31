@@ -430,7 +430,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   uint32_t head_pos = (uint32_t)m_at_jni->getPlaybackHeadPosition();
   if (!head_pos)
   {
-    status.SetDelay(0);
+    status.SetDelay(m_duration_written);
     return;
   }
 
