@@ -912,11 +912,6 @@ AC_LANG_POP([C++])
 # Check inotify availability
 AC_CHECK_HEADER([sys/inotify.h], AC_DEFINE([HAVE_INOTIFY],[1],[Define if we have inotify]),)
 
-# Checks for boost headers using CXX instead of CC
-AC_LANG_PUSH([C++])
-AC_CHECK_HEADER([boost/circular_buffer.hpp],, AC_MSG_ERROR($missing_library))
-AC_LANG_POP([C++])
-
 # Python
 if test -z "$PYTHON_NOVERSIONCHECK"; then
   AX_PYTHON_DEVEL([>= '2.6'])
