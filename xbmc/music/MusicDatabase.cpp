@@ -3788,8 +3788,10 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     int total = -1;
 
     std::string strSQL = "SELECT %s FROM songview ";
-    if (artistData) // Get data from song and song_artist tables to fully populate songs with artists
-      strSQL = "SELECT %s FROM songview JOIN songartistview on songartistview.idsong = songview.idsong ";
+    if (artistData) 
+      // Get data from song and song_artist tables to fully populate songs with artists
+      // Some songs may not have artists so Left join.
+      strSQL = "SELECT %s FROM songview LEFT JOIN songartistview on songartistview.idsong = songview.idsong ";
 
     Filter extFilter = filter;
     CMusicDbUrl musicUrl;
@@ -3813,15 +3815,22 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     total = (int)strtol(GetSingleValue("SELECT COUNT(1) FROM songview " + strSQLExtra, m_pDS).c_str(), NULL, 10);
 
     // Apply the limiting directly here if there's no special sorting but limiting
-    if (extFilter.limit.empty() &&
-        sortDescription.sortBy == SortByNone &&
-        (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+    bool limited = extFilter.limit.empty() && sortDescription.sortBy == SortByNone &&
+                   (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0);
+    if (limited)
       strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
 
-    if (artistData)
-      strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.*, songartistview.* ") + strSQLExtra;
-    else
+    if (!artistData)
       strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.* ") + strSQLExtra;
+    else
+    {
+      strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.*, songartistview.* ");
+      if (!limited)
+        strSQL += strSQLExtra;
+      else
+        //Apply where clause and limits to songview, then join as mutiple records in result set per song
+        strSQL += " WHERE songview.idsong in (SELECT idsong FROM songview " + strSQLExtra + ")";
+    }
 
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
     // run query
@@ -3883,7 +3892,6 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
         return (items.Size() > 0);
       }
 
-   
     }
     if (!artistCredits.empty())
     {
