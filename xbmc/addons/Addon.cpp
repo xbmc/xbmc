@@ -278,8 +278,6 @@ CAddon::CAddon(const cp_extension_t *ext)
   BuildProfilePath();
   m_userSettingsPath = URIUtils::AddFileToFolder(Profile(), "settings.xml");
   m_hasSettings = true;
-  m_hasStrings = false;
-  m_checkedStrings = false;
   m_settingsLoaded = false;
   m_userSettingsLoaded = false;
 }
@@ -288,8 +286,6 @@ CAddon::CAddon(const cp_plugin_info_t *plugin)
   : m_props(plugin)
 {
   m_hasSettings = false;
-  m_hasStrings = false;
-  m_checkedStrings = true;
   m_settingsLoaded = false;
   m_userSettingsLoaded = false;
 }
@@ -302,8 +298,6 @@ CAddon::CAddon(const AddonProps &props)
   BuildProfilePath();
   m_userSettingsPath = URIUtils::AddFileToFolder(Profile(), "settings.xml");
   m_hasSettings = true;
-  m_hasStrings = false;
-  m_checkedStrings = false;
   m_settingsLoaded = false;
   m_userSettingsLoaded = false;
 }
@@ -319,8 +313,6 @@ CAddon::CAddon(const CAddon &rhs)
   BuildProfilePath();
   m_userSettingsPath = URIUtils::AddFileToFolder(Profile(), "settings.xml");
   m_strLibName  = rhs.m_strLibName;
-  m_hasStrings  = false;
-  m_checkedStrings  = false;
 }
 
 AddonPtr CAddon::Clone() const
@@ -437,33 +429,6 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
       }
     }
   }
-}
-
-/**
- * Language File Handling
- */
-bool CAddon::LoadStrings()
-{
-  // Path where the language strings reside
-  std::string chosenPath = URIUtils::AddFileToFolder(m_props.path, "resources/language/");
-
-  m_hasStrings = m_strings.Load(chosenPath, CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_LANGUAGE));
-  return m_checkedStrings = true;
-}
-
-void CAddon::ClearStrings()
-{
-  // Unload temporary language strings
-  m_strings.Clear();
-  m_hasStrings = false;
-}
-
-std::string CAddon::GetString(uint32_t id)
-{
-  if (!m_hasStrings && ! m_checkedStrings && !LoadStrings())
-     return "";
-
-  return m_strings.Get(id);
 }
 
 /**

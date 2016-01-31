@@ -122,8 +122,6 @@ namespace ADDON
     /*! Returns true if there is any addon with available updates, otherwise false */
     bool HasAvailableUpdates();
 
-    std::string GetString(const std::string &id, const int number);
-
     std::string GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
     static AddonPtr AddonFromProps(AddonProps& props);
     void FindAddons();

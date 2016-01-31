@@ -63,11 +63,12 @@ CContextMenuAddon::CContextMenuAddon(const cp_extension_t *ext)
       std::string parent = CAddonMgr::GetInstance().GetExtValue(item, "parent") == "kodi.core.manage"
           ? CContextMenuManager::MANAGE.m_groupId : CContextMenuManager::MAIN.m_groupId;
 
-      CContextMenuItem menuItem = CContextMenuItem::CreateItem(
-        CAddonMgr::GetInstance().GetExtValue(item, "label"),
-        parent,
-        LibPath(),
-        g_infoManager.Register(visCondition, 0));
+      auto label = CAddonMgr::GetInstance().GetExtValue(item, "label");
+      if (StringUtils::IsNaturalNumber(label))
+        label = g_localizeStrings.GetAddonString(ID(), atoi(label.c_str()));
+
+      CContextMenuItem menuItem = CContextMenuItem::CreateItem(label, parent,LibPath(),
+          g_infoManager.Register(visCondition, 0));
 
       m_items.push_back(menuItem);
     }
@@ -76,8 +77,10 @@ CContextMenuAddon::CContextMenuAddon(const cp_extension_t *ext)
 
 void CContextMenuAddon::ParseMenu(cp_cfg_element_t* elem, const std::string& parent, int& anonGroupCount)
 {
-  auto menuLabel = CAddonMgr::GetInstance().GetExtValue(elem, "label");
   auto menuId = CAddonMgr::GetInstance().GetExtValue(elem, "@id");
+  auto menuLabel = CAddonMgr::GetInstance().GetExtValue(elem, "label");
+  if (StringUtils::IsNaturalNumber(menuLabel))
+    menuLabel = g_localizeStrings.GetAddonString(ID(), atoi(menuLabel.c_str()));
 
   if (menuId.empty())
   {
@@ -99,17 +102,16 @@ void CContextMenuAddon::ParseMenu(cp_cfg_element_t* elem, const std::string& par
   {
     for (const auto& item : items)
     {
-      auto label = CAddonMgr::GetInstance().GetExtValue(item, "label");
       auto visCondition = CAddonMgr::GetInstance().GetExtValue(item, "visible");
       auto library = CAddonMgr::GetInstance().GetExtValue(item, "@library");
+      auto label = CAddonMgr::GetInstance().GetExtValue(item, "label");
+      if (StringUtils::IsNaturalNumber(label))
+        label = g_localizeStrings.GetAddonString(ID(), atoi(label.c_str()));
 
       if (!label.empty() && !library.empty() && !visCondition.empty())
       {
-        auto menu = CContextMenuItem::CreateItem(
-          label,
-          menuId,
-          URIUtils::AddFileToFolder(Path(), library),
-          g_infoManager.Register(visCondition, 0));
+        auto menu = CContextMenuItem::CreateItem(label, menuId,
+            URIUtils::AddFileToFolder(Path(), library), g_infoManager.Register(visCondition, 0));
 
         m_items.push_back(menu);
       }

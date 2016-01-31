@@ -937,7 +937,7 @@ void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CF
     for (unsigned int i = 0; i < hooks->size(); i++)
       if (hooks->at(i).category == cat || hooks->at(i).category == PVR_MENUHOOK_ALL)
       {
-        pDialog->Add(client->GetString(hooks->at(i).iLocalizedStringId));
+        pDialog->Add(g_localizeStrings.GetAddonString(client->ID(), hooks->at(i).iLocalizedStringId));
         hookIDs.push_back(i);
       }
     if (hookIDs.size() > 1)

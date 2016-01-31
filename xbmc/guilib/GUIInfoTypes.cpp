@@ -276,9 +276,9 @@ std::string AddonReplacer(const std::string &str)
 {
   // assumes "addon.id #####"
   size_t length = str.find(" ");
-  std::string id = str.substr(0, length);
+  std::string addonid = str.substr(0, length);
   int stringid = atoi(str.substr(length + 1).c_str());
-  return CAddonMgr::GetInstance().GetString(id, stringid);
+  return g_localizeStrings.GetAddonString(addonid, stringid);
 }
 
 std::string NumberReplacer(const std::string &str)

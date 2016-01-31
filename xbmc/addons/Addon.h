@@ -144,7 +144,6 @@ public:
   virtual std::string GetSetting(const std::string& key);
 
   TiXmlElement* GetSettingsXML();
-  virtual std::string GetString(uint32_t id);
 
   // properties
   TYPE Type() const { return m_props.type; }
@@ -252,11 +251,6 @@ private:
   std::string        m_userSettingsPath;
   void BuildProfilePath();
 
-  virtual bool LoadStrings();
-  virtual void ClearStrings();
-
-  bool m_hasStrings;
-  bool m_checkedStrings;
   bool m_hasSettings;
 
   std::string m_profile;

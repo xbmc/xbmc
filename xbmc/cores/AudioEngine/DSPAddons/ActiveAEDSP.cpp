@@ -421,7 +421,7 @@ bool CActiveAEDSP::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
       if (modeId == AE_DSP_MASTER_MODE_ID_PASSOVER || modeId >= AE_DSP_MASTER_MODE_ID_INTERNAL_TYPES)
         strValue = g_localizeStrings.Get(activeMaster->ModeName());
       else if (CActiveAEDSP::GetInstance().GetAudioDSPAddon(activeMaster->AddonID(), addon))
-        strValue = addon->GetString(activeMaster->ModeName());
+        strValue = g_localizeStrings.GetAddonString(addon->ID(), activeMaster->ModeName());
     }
     break;
   case ADSP_MASTER_INFO:
