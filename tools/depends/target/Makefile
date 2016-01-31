@@ -13,7 +13,7 @@ DEPENDS = \
 	libass libsquish \
 	libmodplug librtmp libxml2 yajl libmicrohttpd mysql libffi \
 	python27 libshairplay \
-	libplist libcec libbluray boost tinyxml dummy-libxbmc \
+	libplist libcec libbluray tinyxml dummy-libxbmc \
 	libamplayer libssh taglib libusb libnfs \
 	pythonmodule-pil pythonmodule-setuptools \
 	libxslt ffmpeg platform crossguid libdcadec giflib
