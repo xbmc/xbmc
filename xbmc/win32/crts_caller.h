@@ -28,8 +28,6 @@
 #include <string>
 #include <vector>
 
-#include <boost/preprocessor/stringize.hpp>
-
 namespace win32_utils
 {
 
@@ -68,7 +66,6 @@ private:
 
 // Call function in all loaded CRTs
 // Function must have same return type and same parameters in all CRTs
-#define CALL_IN_CRTS(function,...) ::win32_utils::crts_caller::call_in_all_crts(BOOST_PP_STRINGIZE(function),&(function),##__VA_ARGS__)
-
+#define CALL_IN_CRTS(function,...) ::win32_utils::crts_caller::call_in_all_crts(#function,&(function),##__VA_ARGS__)
 
 }
