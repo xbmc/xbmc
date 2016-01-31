@@ -1212,6 +1212,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
         format.m_streamInfo.m_channels = 2;
         format.m_streamInfo.m_sampleRate = 48000;
+        format.m_streamInfo.m_ac3FrameSize = m_encoderFormat.m_frames;
         // TODO
         if (m_encoderBuffers && initSink)
         {
