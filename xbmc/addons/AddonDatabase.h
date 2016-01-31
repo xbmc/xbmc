@@ -73,7 +73,6 @@ public:
   std::pair<CDateTime, ADDON::AddonVersion> LastChecked(const std::string& id);
 
   bool Search(const std::string& search, ADDON::VECADDONS& items);
-  static void SetPropertiesFromAddon(const ADDON::AddonPtr& addon, CFileItemPtr& item); 
 
   /*! \brief Disable an addon.
    Sets a flag that this addon has been disabled.  If disabled, it is usually still available on disk.

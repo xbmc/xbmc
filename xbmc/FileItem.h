@@ -28,6 +28,7 @@
 #include <utility>
 #include <vector>
 
+#include "addons/IAddon.h"
 #include "guilib/GUIListItem.h"
 #include "GUIPassword.h"
 #include "threads/CriticalSection.h"
@@ -118,6 +119,7 @@ public:
   CFileItem(const PVR::CPVRRecordingPtr& record);
   CFileItem(const PVR::CPVRTimerInfoTagPtr& timer);
   CFileItem(const CMediaSource& share);
+  CFileItem(std::shared_ptr<const ADDON::IAddon> addonInfo);
   virtual ~CFileItem(void);
   virtual CGUIListItem *Clone() const { return new CFileItem(*this); };
 
@@ -347,6 +349,9 @@ public:
     return m_pictureInfoTag;
   }
 
+  bool HasAddonInfo() const { return m_addonInfo != nullptr; }
+  const std::shared_ptr<const ADDON::IAddon> GetAddonInfo() const { return m_addonInfo; }
+
   CPictureInfoTag* GetPictureInfoTag();
 
   /*!
@@ -530,6 +535,7 @@ private:
   PVR::CPVRTimerInfoTagPtr m_pvrTimerInfoTag;
   PVR::CPVRRadioRDSInfoTagPtr m_pvrRadioRDSInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
+  std::shared_ptr<const ADDON::IAddon> m_addonInfo;
   bool m_bIsAlbum;
 
   CCueDocumentPtr m_cueDocument;

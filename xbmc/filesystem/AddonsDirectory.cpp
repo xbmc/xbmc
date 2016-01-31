@@ -381,7 +381,6 @@ static bool Repos(const CURL& path, CFileItemList &items)
   for (const auto& repo : addons)
   {
     CFileItemPtr item = CAddonsDirectory::FileItemFromAddon(repo, "addons://" + repo->ID(), true);
-    CAddonDatabase::SetPropertiesFromAddon(repo, item);
     items.Add(item);
   }
   items.SetContent("addons");
@@ -490,8 +489,6 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
     itemPath.SetFileName(addon->ID());
     CFileItemPtr pItem = FileItemFromAddon(addon, itemPath.Get(), false);
 
-    CAddonDatabase::SetPropertiesFromAddon(addon,pItem);
-
     AddonPtr localAddon;
     bool installed = CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_UNKNOWN, false);
     bool disabled = CAddonMgr::GetInstance().IsAddonDisabled(addon->ID());
@@ -522,7 +519,9 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon,
   if (!addon)
     return CFileItemPtr();
 
-  CFileItemPtr item(new CFileItem(path, folder));
+  CFileItemPtr item(new CFileItem(addon));
+  item->m_bIsFolder = folder;
+  item->SetPath(path);
 
   std::string strLabel(addon->Name());
   if (CURL(path).GetHostName() == "search")
@@ -533,7 +532,16 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon,
   item->SetIconImage("DefaultAddon.png");
   if (URIUtils::IsInternetStream(addon->FanArt()) || CFile::Exists(addon->FanArt()))
     item->SetArt("fanart", addon->FanArt());
-  CAddonDatabase::SetPropertiesFromAddon(addon, item);
+
+  //TODO: fix hacks that depends on these
+  item->SetProperty("Addon.ID", addon->ID());
+  item->SetProperty("Addon.Name", addon->Name());
+  item->SetProperty("Addon.Version", addon->Version().asString());
+  item->SetProperty("Addon.Summary", addon->Summary());
+  const auto it = addon->Props().extrainfo.find("language");
+  if (it != addon->Props().extrainfo.end())
+    item->SetProperty("Addon.Language", it->second);
+
   return item;
 }
 

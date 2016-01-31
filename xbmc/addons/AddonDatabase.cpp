@@ -759,30 +759,6 @@ bool CAddonDatabase::Search(const std::string& search, VECADDONS& addons)
   return false;
 }
 
-void CAddonDatabase::SetPropertiesFromAddon(const AddonPtr& addon,
-                                           CFileItemPtr& pItem)
-{
-  pItem->SetProperty("Addon.ID", addon->ID());
-  pItem->SetProperty("Addon.Type", TranslateType(addon->Type(),true));
-  pItem->SetProperty("Addon.Name", addon->Name());
-  pItem->SetProperty("Addon.Version", addon->Version().asString());
-  pItem->SetProperty("Addon.Summary", addon->Summary());
-  pItem->SetProperty("Addon.Description", addon->Description());
-  pItem->SetProperty("Addon.Creator", addon->Author());
-  pItem->SetProperty("Addon.Disclaimer", addon->Disclaimer());
-  pItem->SetProperty("Addon.Rating", addon->Stars());
-  std::string starrating = StringUtils::Format("rating%d.png", addon->Stars());
-  pItem->SetProperty("Addon.StarRating",starrating);
-  pItem->SetProperty("Addon.Path", addon->Path());
-  if (addon->Broken()== "DEPSNOTMET")
-    pItem->SetProperty("Addon.Broken", g_localizeStrings.Get(24044));
-  else
-    pItem->SetProperty("Addon.Broken", addon->Broken());
-  const auto it = addon->Props().extrainfo.find("language");
-  if (it != addon->Props().extrainfo.end())
-    pItem->SetProperty("Addon.Language", it->second);
-}
-
 bool CAddonDatabase::DisableAddon(const std::string &addonID, bool disable /* = true */)
 {
   try
