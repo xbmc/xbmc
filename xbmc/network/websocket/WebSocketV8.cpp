@@ -32,6 +32,10 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
+#ifdef TARGET_WINDOWS
+#pragma comment(lib, "ssleay32.lib")
+#endif
+
 #define WS_HTTP_METHOD          "GET"
 #define WS_HTTP_TAG             "HTTP/"
 
