@@ -616,11 +616,13 @@ bool CAddonInstallJob::DoWork()
   CAddonMgr::GetInstance().UnregisterAddon(m_addon->ID());
   CAddonMgr::GetInstance().FindAddons();
 
-  // run any post-install guff
-  CEventLog::GetInstance().Add(
-    EventPtr(new CAddonManagementEvent(m_addon, m_update ? 24065 : 24064)),
-    !IsModal() && CSettings::GetInstance().GetBool(CSettings::SETTING_GENERAL_ADDONNOTIFICATIONS), false);
-
+  AddonPtr local;
+  if (CAddonMgr::GetInstance().GetAddon(m_addon->ID(), local, ADDON_UNKNOWN, false))
+  {
+    CEventLog::GetInstance().Add(
+      EventPtr(new CAddonManagementEvent(local, m_update ? 24065 : 24064)),
+      !IsModal() && CSettings::GetInstance().GetBool(CSettings::SETTING_GENERAL_ADDONNOTIFICATIONS), false);
+  }
   ADDON::OnPostInstall(m_addon, m_update, IsModal());
 
   //Enable it if it was previously disabled
