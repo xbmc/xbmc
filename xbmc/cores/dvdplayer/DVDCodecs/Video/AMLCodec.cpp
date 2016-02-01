@@ -150,11 +150,11 @@ public:
 
     // order matters, so pay attention
     // to codec_para_t in codec_types.h
-    CBitstreamConverter::write_bits(&bs, 32, 0);                   // CODEC_HANDLE handle
-    CBitstreamConverter::write_bits(&bs, 32, 0);                   // CODEC_HANDLE cntl_handle
-    CBitstreamConverter::write_bits(&bs, 32, 0);                   // CODEC_HANDLE sub_handle
+    CBitstreamConverter::write_bits(&bs, 32, -1);                  // CODEC_HANDLE handle, init to invalid
+    CBitstreamConverter::write_bits(&bs, 32, -1);                  // CODEC_HANDLE cntl_handle
+    CBitstreamConverter::write_bits(&bs, 32, -1);                  // CODEC_HANDLE sub_handle
 
-    CBitstreamConverter::write_bits(&bs, 32, 0);                   // CODEC_HANDLE audio_utils_handle
+    CBitstreamConverter::write_bits(&bs, 32, -1);                  // CODEC_HANDLE audio_utils_handle
 
     CBitstreamConverter::write_bits(&bs, 32, p_in->stream_type);   // stream_type_t stream_type
 
@@ -199,6 +199,10 @@ public:
 #else
     // direct struct usage, we do not know which flavor
     // so just use what we get from headers and pray.
+    p_out->handle             = -1; //init to invalid
+    p_out->cntl_handle        = -1;
+    p_out->sub_handle         = -1;
+    p_out->audio_utils_handle = -1;
     p_out->has_video          = 1;
     p_out->noblock            = p_in->noblock;
     p_out->video_pid          = p_in->video_pid;
@@ -1389,6 +1393,10 @@ CAMLCodec::CAMLCodec() : CThread("CAMLCodec")
     m_dll->Load();
   }
   am_private->m_dll = m_dll;
+  am_private->vcodec.handle             = -1; //init to invalid
+  am_private->vcodec.cntl_handle        = -1;
+  am_private->vcodec.sub_handle         = -1;
+  am_private->vcodec.audio_utils_handle = -1;
 }
 
 
