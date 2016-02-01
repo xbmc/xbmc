@@ -177,6 +177,9 @@ public:
 
   void SetRealtime(bool realtime) { m_realtime = realtime; }
 
+  // interfaces
+  virtual IDemux* GetIDemux() { return nullptr; }
+
 protected:
   DVDStreamType m_streamType;
   BitstreamStats m_stats;

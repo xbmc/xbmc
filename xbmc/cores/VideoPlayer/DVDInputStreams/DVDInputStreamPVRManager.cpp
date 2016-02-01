@@ -50,6 +50,7 @@ CDVDInputStreamPVRManager::CDVDInputStreamPVRManager(IVideoPlayer* pPlayer, CFil
   m_eof = true;
   m_ScanTimeout.Set(0);
   m_isOtherStreamHack = false;
+  m_demuxActive = false;
 
   m_StreamProps = new PVR_STREAM_PROPERTIES;
   m_streamAudio = new CDemuxStreamAudio;
@@ -150,6 +151,16 @@ bool CDVDInputStreamPVRManager::Open()
       delete m_pOtherStream;
       m_pOtherStream = NULL;
       return false;
+    }
+  }
+  else
+  {
+    if (URIUtils::IsPVRChannel(url.Get()))
+    {
+      std::shared_ptr<CPVRClient> client;
+      if (g_PVRClients->GetPlayingClient(client) &&
+          client->HandlesDemuxing())
+        m_demuxActive = true;
     }
   }
 
@@ -418,6 +429,14 @@ bool CDVDInputStreamPVRManager::IsOtherStreamHack(void)
 bool CDVDInputStreamPVRManager::IsRealtime()
 {
   return g_PVRClients->IsRealTimeStream();
+}
+
+inline CDVDInputStream::IDemux* CDVDInputStreamPVRManager::GetIDemux()
+{
+  if (m_demuxActive)
+    return this;
+  else
+    return nullptr;
 }
 
 bool CDVDInputStreamPVRManager::OpenDemux()

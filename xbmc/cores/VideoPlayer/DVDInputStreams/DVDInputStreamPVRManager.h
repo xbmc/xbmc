@@ -41,6 +41,7 @@ class CDemuxStreamVideo;
 class CDemuxStreamSubtitle;
 class CDemuxStreamTeletext;
 class CDemuxStreamRadioRDS;
+class IDemux;
 
 class CDVDInputStreamPVRManager
   : public CDVDInputStream
@@ -98,6 +99,7 @@ public:
   void ResetScanTimeout(unsigned int iTimeoutMs) override;
 
   // Demux interface
+  virtual CDVDInputStream::IDemux* GetIDemux() override;
   virtual bool OpenDemux() override;
   virtual DemuxPacket* ReadDemux() override;
   virtual CDemuxStream* GetStream(int iStreamId) override;
@@ -116,6 +118,7 @@ protected:
   XFILE::ILiveTVInterface* m_pLiveTV;
   XFILE::IRecordable* m_pRecordable;
   bool m_eof;
+  bool m_demuxActive;
   std::string m_strContent;
   XbmcThreads::EndTime m_ScanTimeout;
   bool m_isOtherStreamHack;
