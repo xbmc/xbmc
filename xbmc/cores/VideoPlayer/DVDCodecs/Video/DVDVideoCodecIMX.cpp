@@ -1079,13 +1079,15 @@ bool CDVDVideoCodecIMX::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   previous = current;
 #endif
 
-  m_frameCounter++;
-
   if (m_dropState)
   {
     pDvdVideoPicture->iFlags = DVP_FLAG_DROPPED;
-    SAFE_RELEASE(m_currentBuffer);
     m_dropState = false;
+  }
+
+  if (m_frameCounter++ && pDvdVideoPicture->iFlags == DVP_FLAG_DROPPED)
+  {
+    SAFE_RELEASE(m_currentBuffer);
     return true;
   }
 
