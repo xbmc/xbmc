@@ -218,35 +218,33 @@ std::vector<std::string> CNetworkWin32::GetNameServers(void)
 {
   std::vector<std::string> result;
 
-  FIXED_INFO *pFixedInfo;
+  PIP_ADAPTER_ADDRESSES adapterAddresses = NULL;
+  PIP_ADAPTER_ADDRESSES adapter = NULL;
   ULONG ulOutBufLen;
-  IP_ADDR_STRING *pIPAddr;
 
-  pFixedInfo = (FIXED_INFO *) malloc(sizeof (FIXED_INFO));
-  if (pFixedInfo == NULL)
+  if (GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_SKIP_UNICAST | GAA_FLAG_SKIP_ANYCAST | GAA_FLAG_SKIP_MULTICAST | GAA_FLAG_SKIP_FRIENDLY_NAME, NULL, NULL, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
     return result;
 
-  ulOutBufLen = sizeof (FIXED_INFO);
-  if (GetNetworkParams(pFixedInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW)
-  {
-    free(pFixedInfo);
-    pFixedInfo = (FIXED_INFO *) malloc(ulOutBufLen);
-    if (pFixedInfo == NULL)
-      return result;
-  }
+  adapterAddresses = (PIP_ADAPTER_ADDRESSES)malloc(ulOutBufLen);
+  if (adapterAddresses == NULL)
+    return result;
 
-  if (GetNetworkParams(pFixedInfo, &ulOutBufLen) == NO_ERROR)
+  if (GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_SKIP_UNICAST | GAA_FLAG_SKIP_ANYCAST | GAA_FLAG_SKIP_MULTICAST | GAA_FLAG_SKIP_FRIENDLY_NAME, NULL, adapterAddresses, &ulOutBufLen) == NO_ERROR)
   {
-    result.push_back(pFixedInfo->DnsServerList.IpAddress.String);
-    pIPAddr = pFixedInfo->DnsServerList.Next;
-    while(pIPAddr)
+    IP_ADAPTER_DNS_SERVER_ADDRESS *dnsAddress = NULL;
+    for (adapter = adapterAddresses; adapter; adapter = adapter->Next)
     {
-      result.push_back(pIPAddr->IpAddress.String);
-      pIPAddr = pIPAddr->Next;
+      if (adapter->IfType == IF_TYPE_SOFTWARE_LOOPBACK || adapter->OperStatus != IF_OPER_STATUS::IfOperStatusUp)
+        continue;
+      for (dnsAddress = adapter->FirstDnsServerAddress; dnsAddress; dnsAddress = dnsAddress->Next)
+      {
+        std::string strIp = CNetwork::GetIpStr(dnsAddress->Address.lpSockaddr);
+        if (!strIp.empty())
+          result.push_back(strIp);
+      }
     }
-
   }
-  free(pFixedInfo);
+  free(adapterAddresses);
 
   return result;
 }
