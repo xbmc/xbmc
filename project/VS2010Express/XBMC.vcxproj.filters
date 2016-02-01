@@ -2365,9 +2365,6 @@
     <ClCompile Include="..\..\xbmc\utils\test\TestSystemInfo.cpp">
       <Filter>utils\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\test\TestTimeUtils.cpp">
-      <Filter>utils\test</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestURIUtils.cpp">
       <Filter>utils\test</Filter>
     </ClCompile>
