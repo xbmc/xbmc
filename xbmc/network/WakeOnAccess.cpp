@@ -225,7 +225,7 @@ public:
   }
   virtual bool SuccessWaiting () const
   {
-    bool online = g_application.getNetwork().HasInterfaceForIP(m_host);
+    bool online = g_application.getNetwork().HasInterfaceForIP(CDNSNameCache::Lookup(m_host));
 
     if (!online) // setup endtime so we dont return true until network is consistently connected
       m_end.Set (m_settle_time_ms);
@@ -266,7 +266,7 @@ public:
 
   static bool Ping (const CWakeOnAccess::WakeUpEntry& server)
   {
-    return g_application.getNetwork().PingHost(server.host, server.ping_port, 2000, server.ping_mode & 1);
+    return g_application.getNetwork().PingHost(CDNSNameCache::Lookup(server.host), server.ping_port, 2000, server.ping_mode & 1);
   }
 
 private:
