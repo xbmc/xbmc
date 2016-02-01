@@ -43,7 +43,6 @@ SRCS=	\
 	TestStreamUtils.cpp \
 	TestStringUtils.cpp \
 	TestSystemInfo.cpp \
-	TestTimeUtils.cpp \
 	TestURIUtils.cpp \
 	TestUrlOptions.cpp \
 	TestVariant.cpp \
