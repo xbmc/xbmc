@@ -273,40 +273,72 @@ void CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
   // our parse is setup to parse complete frames, so we don't care about outbufs
   if(len >= 0)
   {
-#define CHECK_UPDATE(st, trg, src, invalid) do { \
-      if(src != invalid \
-      && src != st->trg) { \
-        CLog::Log(LOGDEBUG, "%s - {%d} " #trg " changed from %d to %d",  __FUNCTION__, st->iId, st->trg, src); \
-        st->trg = src; \
-        st->changes++; \
-        st->disabled = false; \
-      } \
-    } while(0)
+    if (stream->m_context->profile != st->profile &&
+        stream->m_context->profile != FF_PROFILE_UNKNOWN)
+    {
+      CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - {%d} profile changed from %d to %d", st->iId, st->profile, stream->m_context->profile);
+      st->profile = stream->m_context->profile;
+      st->changes++;
+      st->disabled = false;
+    }
 
-
-    CHECK_UPDATE(st, profile, stream->m_context->profile , FF_PROFILE_UNKNOWN);
-    CHECK_UPDATE(st, level  , stream->m_context->level   , FF_LEVEL_UNKNOWN);
+    if (stream->m_context->level != st->level &&
+        stream->m_context->level != FF_LEVEL_UNKNOWN)
+    {
+      CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - {%d} level changed from %d to %d", st->iId, st->level, stream->m_context->level);
+      st->level = stream->m_context->level;
+      st->changes++;
+      st->disabled = false;
+    }
 
     switch (st->type)
     {
-      case STREAM_AUDIO: {
+      case STREAM_AUDIO:
+      {
         CDemuxStreamAudioClient* sta = static_cast<CDemuxStreamAudioClient*>(st);
-        CHECK_UPDATE(sta, iChannels     , stream->m_context->channels   , 0);
-        CHECK_UPDATE(sta, iSampleRate   , stream->m_context->sample_rate, 0);
+        if (stream->m_context->channels != sta->iChannels &&
+            stream->m_context->channels != 0)
+        {
+          CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - {%d} channels changed from %d to %d", st->iId, sta->iChannels, stream->m_context->channels);
+          sta->iChannels = stream->m_context->channels;
+          sta->changes++;
+          sta->disabled = false;
+        }
+        if (stream->m_context->sample_rate != sta->iSampleRate &&
+            stream->m_context->sample_rate != 0)
+        {
+          CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - {%d} samplerate changed from %d to %d", st->iId, sta->iSampleRate, stream->m_context->sample_rate);
+          sta->iChannels = stream->m_context->sample_rate;
+          sta->changes++;
+          sta->disabled = false;
+        }
         break;
       }
-      case STREAM_VIDEO: {
+      case STREAM_VIDEO:
+      {
         CDemuxStreamVideoClient* stv = static_cast<CDemuxStreamVideoClient*>(st);
-        CHECK_UPDATE(stv, iWidth        , stream->m_context->width , 0);
-        CHECK_UPDATE(stv, iHeight       , stream->m_context->height, 0);
+        if (stream->m_context->width != stv->iWidth &&
+            stream->m_context->width != 0)
+        {
+          CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - {%d} width changed from %d to %d", st->iId, stv->iWidth, stream->m_context->width);
+          stv->iWidth = stream->m_context->width;
+          stv->changes++;
+          stv->disabled = false;
+        }
+        if (stream->m_context->height != stv->iHeight &&
+            stream->m_context->height != 0)
+        {
+          CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - {%d} height changed from %d to %d", st->iId, stv->iHeight, stream->m_context->height);
+          stv->iHeight = stream->m_context->height;
+          stv->changes++;
+          stv->disabled = false;
+        }
         break;
       }
 
       default:
         break;
     }
-
-#undef CHECK_UPDATE
   }
   else
     CLog::Log(LOGDEBUG, "%s - parser returned error %d", __FUNCTION__, len);
