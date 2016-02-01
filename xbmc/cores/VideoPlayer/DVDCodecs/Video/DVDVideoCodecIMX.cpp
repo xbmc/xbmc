@@ -196,7 +196,9 @@ bool CDVDVideoCodecIMX::VpuOpen()
           CLog::Log(LOGERROR, "%s - iMX VPU query mem error (%d).\n", __FUNCTION__, ret);
           goto VpuOpenError;
   }
-  VpuAllocBuffers(&memInfo);
+
+  if (!VpuAllocBuffers(&memInfo))
+    goto VpuOpenError;
 
   m_decOpenParam.nReorderEnable = 1;
 #ifdef IMX_INPUT_FORMAT_I420
