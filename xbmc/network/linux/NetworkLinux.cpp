@@ -567,9 +567,11 @@ bool CNetworkLinux::PingHostImpl(const std::string &target, unsigned int timeout
 #if defined (TARGET_DARWIN_IOS) // no timeout option available
   sprintf(cmd_line, "%s -c 1 %s", ping.c_str(), target.c_str());
 #elif defined (TARGET_DARWIN) || defined (TARGET_FREEBSD)
-  sprintf(cmd_line, "%s -c 1 -%s %d %s", ping.c_str(), isIPv6 ? "i" : "t", timeout_ms / 1000 + (timeout_ms % 1000) != 0, target.c_str());
+  sprintf(cmd_line, "%s -c 1 -%s %d %s >/dev/null 2>&1",
+        ping.c_str(), isIPv6 ? "i" : "t", timeout_ms / 1000 + (timeout_ms % 1000) != 0, target.c_str());
 #else
-  sprintf(cmd_line, "%s -c 1 -w %d %s", ping.c_str(), timeout_ms / 1000 + (timeout_ms % 1000) != 0, target.c_str());
+  sprintf(cmd_line, "%s -c 1 -w %d %s >/dev/null 2>&1",
+        ping.c_str(), timeout_ms / 1000 + (timeout_ms % 1000) != 0, target.c_str());
 #endif
 
   int status = system (cmd_line);
