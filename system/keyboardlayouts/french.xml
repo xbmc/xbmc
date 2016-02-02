@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+Please use English language names instead.
+Default font lacks support for all characters
+-->
+<keyboardlayouts>
+  <layout language="French" layout="AZERTY">
+    <keyboard>
+      <row>1234567890°+</row>
+      <row>azertyuiop^$</row>
+      <row>qsdfghjklmú*</row>
+      <row>wxcvbn,;:!</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>1234567890</row>
+      <row>AZERTYUIOP</row>
+      <row>QSDFGHJKLM</row>
+      <row>WXCVBN?./</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#€§$%^&amp;*(</row>
+      <row>[]{}-_=+;:μ</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~éèáàúùç</row>
+    </keyboard>
+  </layout>
+</keyboardlayouts>
