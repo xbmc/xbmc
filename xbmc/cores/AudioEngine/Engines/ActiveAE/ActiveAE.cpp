@@ -2320,7 +2320,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
       threshold *= 2;
   }
 
-  int timeout = (stream->m_syncState == CAESyncInfo::AESyncState::SYNC_INSYNC) ? 100 : 1000;
+  int timeout = (stream->m_syncState != CAESyncInfo::AESyncState::SYNC_INSYNC) ? 100 : 1000;
   bool newerror = stream->m_syncError.Get(error, timeout);
 
   if (newerror && fabs(error) > threshold && stream->m_syncState == CAESyncInfo::AESyncState::SYNC_INSYNC)
