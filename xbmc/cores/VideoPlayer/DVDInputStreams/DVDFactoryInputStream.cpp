@@ -26,6 +26,7 @@
 #include "DVDInputStreamFFmpeg.h"
 #include "DVDInputStreamPVRManager.h"
 #include "DVDInputStreamRTMP.h"
+#include "InputStreamAddon.h"
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreamBluray.h"
 #endif
@@ -37,11 +38,30 @@
 #include "URL.h"
 #include "filesystem/File.h"
 #include "utils/URIUtils.h"
+#include "addons/AddonManager.h"
+#include "addons/InputStream.h"
 
 
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer, CFileItem fileitem)
 {
   std::string file = fileitem.GetPath();
+
+  ADDON::VECADDONS addons;
+  ADDON::CAddonMgr::GetInstance().GetAddons(addons, ADDON::ADDON_INPUTSTREAM);
+  for (size_t i=0; i<addons.size(); ++i)
+  {
+    std::shared_ptr<ADDON::CInputStream> input(std::static_pointer_cast<ADDON::CInputStream>(addons[i]));
+    ADDON::CInputStream* clone = new ADDON::CInputStream(*input);
+    ADDON_STATUS status = clone->Create();
+    if (status == ADDON_STATUS_OK)
+    {
+      if (clone->Supports(fileitem))
+      {
+        return new CInputStreamAddon(fileitem, clone);
+      }
+      delete clone;
+    }
+  }
 
   if (fileitem.IsDiscImage())
   {

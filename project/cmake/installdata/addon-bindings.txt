@@ -16,6 +16,8 @@ xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_scr_types.h
 xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_vis_dll.h
 xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_vis_types.h
 xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_stream_utils.hpp
+xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_inputstream_dll.h
+xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_inputstream_types.h
 xbmc/addons/kodi-addon-dev-kit/include/kodi/libXBMC_addon.h
 xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_adsp.h
 xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h
