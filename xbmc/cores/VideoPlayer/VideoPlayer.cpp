@@ -1661,7 +1661,11 @@ void CVideoPlayer::CheckStreamChanges(CCurrentStream& current, CDemuxStream* str
     /* if they have, reopen stream */
 
     if (current.hint != CDVDStreamInfo(*stream, true))
-      OpenStream(current, stream->demuxerId, stream->uniqueId , stream->source );
+    {
+      m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
+      m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
+      OpenDefaultStreams(false);
+    }
 
     current.stream = (void*)stream;
     current.changes = stream->changes;
