@@ -79,7 +79,9 @@ namespace XFILE
 
       CDirectoryNode* GetParent() const;
 
-      bool CanCache() const;
+      std::string BuildPath() const;
+
+      virtual bool CanCache() const;
     protected:
       CDirectoryNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent);
       static CDirectoryNode* CreateNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent);
@@ -93,10 +95,6 @@ namespace XFILE
 
       virtual bool GetContent(CFileItemList& items) const;
 
-      std::string BuildPath() const;
-
-    private:
-      void AddQueuingFolder(CFileItemList& items) const;
 
     private:
       NODE_TYPE m_Type;

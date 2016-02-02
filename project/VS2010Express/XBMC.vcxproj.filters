@@ -3220,6 +3220,12 @@
       <Filter>filesystem\VideoDatabaseDirectory</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\InfoScanner.cpp" />
+    <ClCompile Include="..\..\xbmc\music\windows\MusicFileItemListModifier.cpp">
+      <Filter>music\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\windows\VideoFileItemListModifier.cpp">
+      <Filter>video\windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6242,6 +6248,12 @@
       <Filter>filesystem\VideoDatabaseDirectory</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\InfoScanner.h" />
+    <ClInclude Include="..\..\xbmc\music\windows\MusicFileItemListModifier.h">
+      <Filter>music\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\windows\VideoFileItemListModifier.h">
+      <Filter>video\windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">

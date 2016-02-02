@@ -372,6 +372,7 @@
     <ClCompile Include="..\..\xbmc\filesystem\MultiPathFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeGrouped.cpp" />
+    <ClCompile Include="..\..\xbmc\music\windows\MusicFileItemListModifier.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\MusicFileDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\MusicSearchDirectory.cpp" />
@@ -987,6 +988,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\DAVFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ImageFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeGrouped.h" />
+    <ClInclude Include="..\..\xbmc\music\windows\MusicFileItemListModifier.h" />
     <ClInclude Include="..\..\xbmc\filesystem\OverrideDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\OverrideFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ResourceDirectory.h" />
@@ -1603,6 +1605,7 @@
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoBase.cpp" />
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoNav.cpp" />
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoPlaylist.cpp" />
+    <ClCompile Include="..\..\xbmc\video\windows\VideoFileItemListModifier.cpp" />
     <ClCompile Include="..\..\xbmc\view\GUIViewControl.cpp" />
     <ClCompile Include="..\..\xbmc\view\GUIViewState.cpp" />
     <ClCompile Include="..\..\xbmc\view\ViewDatabase.cpp" />
@@ -2232,6 +2235,7 @@
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoBase.h" />
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoNav.h" />
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoPlaylist.h" />
+    <ClInclude Include="..\..\xbmc\video\windows\VideoFileItemListModifier.h" />
     <ClInclude Include="..\..\xbmc\view\GUIViewControl.h" />
     <ClInclude Include="..\..\xbmc\view\GUIViewState.h" />
     <ClInclude Include="..\..\xbmc\view\ViewDatabase.h" />
