@@ -30,6 +30,8 @@ int CJNIAudioFormat::ENCODING_AC3       = 0x00000005;
 int CJNIAudioFormat::ENCODING_E_AC3     = 0x00000006;
 int CJNIAudioFormat::ENCODING_DTS       = 0x00000007;
 int CJNIAudioFormat::ENCODING_DTS_HD    = 0x00000008;
+
+// As of version 22 and Android 5 Nvidia defines this solely for their Shield
 int CJNIAudioFormat::ENCODING_DOLBY_TRUEHD    = 0x00000009;
 
 int CJNIAudioFormat::CHANNEL_OUT_STEREO  = 0x0000000c;
@@ -84,6 +86,9 @@ void CJNIAudioFormat::PopulateStaticFields()
         {
           CJNIAudioFormat::ENCODING_DTS = get_static_field<int>(c, "ENCODING_DTS");
           CJNIAudioFormat::ENCODING_DTS_HD = get_static_field<int>(c, "ENCODING_DTS_HD");
+          // Nvidia Shield v6 firmware uses another ID, which will also be the future ID
+          // though other v23 version would not return a value if we'd use the get_static_field
+          // method to query this value. The hardcoded value can be removed after probably is out
           CJNIAudioFormat::ENCODING_DOLBY_TRUEHD = 0x0000000d;
         }
       }
