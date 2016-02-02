@@ -50,10 +50,10 @@
 #endif
 
 /* current Peripheral API version */
-#define PERIPHERAL_API_VERSION "1.0.18"
+#define PERIPHERAL_API_VERSION "1.0.19"
 
 /* min. Peripheral API version */
-#define PERIPHERAL_MIN_API_VERSION "1.0.18"
+#define PERIPHERAL_MIN_API_VERSION "1.0.19"
 
 /* indicates a joystick has no preference for port number */
 #define NO_PORT_REQUESTED     (-1)
@@ -178,6 +178,7 @@ extern "C"
     unsigned int    hat_count;          /*!< @brief number of hats reported by the driver */
     unsigned int    axis_count;         /*!< @brief number of axes reported by the driver */
     unsigned int    motor_count;        /*!< @brief number of motors reported by the driver */
+    bool            supports_poweroff;  /*!< @brief whether the joystick supports being powered off */
   } ATTRIBUTE_PACKED JOYSTICK_INFO;
 
   typedef enum JOYSTICK_DRIVER_PRIMITIVE_TYPE
@@ -311,6 +312,7 @@ extern "C"
     void             (__cdecl* FreeFeatures)(unsigned int, JOYSTICK_FEATURE*);
     PERIPHERAL_ERROR (__cdecl* MapFeatures)(const JOYSTICK_INFO*, const char*, unsigned int, JOYSTICK_FEATURE*);
     void             (__cdecl* ResetButtonMap)(const JOYSTICK_INFO*, const char*);
+    void             (__cdecl* PowerOffJoystick)(unsigned int);
     ///}
   } PeripheralAddon;
 

@@ -247,7 +247,8 @@ namespace ADDON
       m_buttonCount(0),
       m_hatCount(0),
       m_axisCount(0),
-      m_motorCount(0)
+      m_motorCount(0),
+      m_supportsPowerOff(false)
     {
     }
 
@@ -263,7 +264,8 @@ namespace ADDON
       m_buttonCount(info.button_count),
       m_hatCount(info.hat_count),
       m_axisCount(info.axis_count),
-      m_motorCount(info.motor_count)
+      m_motorCount(info.motor_count),
+      m_supportsPowerOff(info.supports_poweroff)
     {
     }
 
@@ -281,6 +283,7 @@ namespace ADDON
         m_hatCount      = rhs.m_hatCount;
         m_axisCount     = rhs.m_axisCount;
         m_motorCount    = rhs.m_motorCount;
+        m_supportsPowerOff = rhs.m_supportsPowerOff;
       }
       return *this;
     }
@@ -291,6 +294,7 @@ namespace ADDON
     unsigned int       HatCount(void) const      { return m_hatCount; }
     unsigned int       AxisCount(void) const     { return m_axisCount; }
     unsigned int       MotorCount(void) const    { return m_motorCount; }
+    bool               SupportsPowerOff(void) const { return m_supportsPowerOff; }
 
     // Derived property: Counts are unknown if all are zero
     bool AreElementCountsKnown(void) const { return m_buttonCount != 0 || m_hatCount != 0 || m_axisCount != 0; }
@@ -301,6 +305,7 @@ namespace ADDON
     void SetHatCount(unsigned int hatCount)           { m_hatCount      = hatCount; }
     void SetAxisCount(unsigned int axisCount)         { m_axisCount     = axisCount; }
     void SetMotorCount(unsigned int motorCount)       { m_motorCount    = motorCount; }
+    void SetSupportsPowerOff(bool supportsPowerOff)   { m_supportsPowerOff = supportsPowerOff; }
 
     void ToStruct(JOYSTICK_INFO& info) const
     {
@@ -312,6 +317,7 @@ namespace ADDON
       info.hat_count      = m_hatCount;
       info.axis_count     = m_axisCount;
       info.motor_count    = m_motorCount;
+      info.supports_poweroff = m_supportsPowerOff;
 
       std::strcpy(info.provider, m_provider.c_str());
     }
@@ -330,6 +336,7 @@ namespace ADDON
     unsigned int                  m_hatCount;
     unsigned int                  m_axisCount;
     unsigned int                  m_motorCount;
+    bool                          m_supportsPowerOff;
   };
 
   typedef PeripheralVector<Joystick, JOYSTICK_INFO> Joysticks;

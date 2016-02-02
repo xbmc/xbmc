@@ -171,6 +171,12 @@ extern "C"
    * @param controller_id The game controller profile being reset
    */
   void ResetButtonMap(const JOYSTICK_INFO* joystick, const char* controller_id);
+  
+  /*!
+   * @brief Powers off the given joystick if supported
+   * @param index  The joystick's driver index
+   */
+  void PowerOffJoystick(unsigned int index);
 #endif
   ///}
 
@@ -197,6 +203,7 @@ extern "C"
     pClient->FreeFeatures                   = FreeFeatures;
     pClient->MapFeatures                    = MapFeatures;
     pClient->ResetButtonMap                 = ResetButtonMap;
+    pClient->PowerOffJoystick               = PowerOffJoystick;
 #endif
   }
 

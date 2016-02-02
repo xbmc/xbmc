@@ -83,6 +83,7 @@ namespace PERIPHERALS
     unsigned int HatCount(void) const    { return m_hatCount; }
     unsigned int AxisCount(void) const   { return m_axisCount; }
     unsigned int MotorCount(void) const  { return m_motorCount; }
+    bool SupportsPowerOff(void) const    { return m_supportsPowerOff; }
 
     /*!
      * \brief Set joystick properties
@@ -93,6 +94,7 @@ namespace PERIPHERALS
     void SetHatCount(unsigned int hatCount)       { m_hatCount      = hatCount; }
     void SetAxisCount(unsigned int axisCount)     { m_axisCount     = axisCount; }
     void SetMotorCount(unsigned int motorCount); // specialized to update m_features
+    void SetSupportsPowerOff(bool supportsPowerOff) { m_supportsPowerOff = supportsPowerOff; }
 
   protected:
     struct DriverHandler
@@ -107,6 +109,7 @@ namespace PERIPHERALS
     unsigned int                        m_hatCount;
     unsigned int                        m_axisCount;
     unsigned int                        m_motorCount;
+    bool                                m_supportsPowerOff;
     JOYSTICK::CDefaultJoystick          m_defaultInputHandler;
     JOYSTICK::CJoystickMonitor          m_joystickMonitor;
     std::vector<DriverHandler>          m_driverHandlers;
