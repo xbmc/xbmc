@@ -45,7 +45,7 @@ typedef void ( *PFV)(void);
 #define IS_STDIN_STREAM(stream)     (stream != NULL && __IS_STDIN_STREAM(stream))
 #define IS_STDOUT_STREAM(stream)    (stream != NULL && __IS_STDOUT_STREAM(stream))
 #define IS_STDERR_STREAM(stream)    (stream != NULL && __IS_STDERR_STREAM(stream))
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) && _MSC_VER < 1900
 #define IS_VALID_STREAM(stream)     (stream != NULL && (stream->_ptr != NULL))
 #else
 #define IS_VALID_STREAM(stream)     true
@@ -173,8 +173,11 @@ extern "C"
   int dll_open_osfhandle(intptr_t _OSFileHandle, int _Flags);
 #endif
   int dll_setvbuf(FILE *stream, char *buf, int type, size_t size);
+
+#if _MSC_VER < 1900
   int dll_filbuf(FILE *fp);
   int dll_flsbuf(int data, FILE*fp);
+#endif
 
 #if defined(TARGET_ANDROID)
   volatile int * __cdecl dll_errno(void);

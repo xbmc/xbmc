@@ -34,6 +34,7 @@
 #include "utils/JobManager.h"
 #include "utils/log.h"
 #include <algorithm>
+#include <iterator>
 #include <vector>
 
 namespace ADDON
@@ -93,7 +94,7 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
   }
 }
 
-void CRepositoryUpdater::CheckForUpdates(bool showProgress)
+bool CRepositoryUpdater::CheckForUpdates(bool showProgress)
 {
   VECADDONS addons;
   if (CAddonMgr::GetInstance().GetAddons(addons, ADDON_REPOSITORY) && !addons.empty())
@@ -101,7 +102,11 @@ void CRepositoryUpdater::CheckForUpdates(bool showProgress)
     CSingleLock lock(m_criticalSection);
     for (const auto& addon : addons)
       CheckForUpdates(std::static_pointer_cast<ADDON::CRepository>(addon), showProgress);
+
+    return true;
   }
+
+  return false;
 }
 
 static void SetProgressIndicator(CRepositoryUpdateJob* job)

@@ -59,6 +59,8 @@
 #include "utils/FileUtils.h"
 #include "utils/Variant.h"
 
+#include <iterator>
+
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 using namespace XFILE;
 using namespace KODI::MESSAGING;
