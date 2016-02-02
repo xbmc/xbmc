@@ -1174,4 +1174,10 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
       }
     }
   }
+
+  if (ParameterNotNull(parameterObject, "dateadded"))
+  {
+    SetFromDBDateTime(parameterObject["dateadded"], details.m_dateAdded);
+    updatedDetails.insert("dateadded");
+  }
 }
