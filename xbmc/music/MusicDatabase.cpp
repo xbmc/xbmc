@@ -4079,7 +4079,7 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
         strSQL += strSQLExtra;
       else
         //Apply where clause and limits to songview, then join as mutiple records in result set per song
-        strSQL += " WHERE songview.idsong in (SELECT idsong FROM songview " + strSQLExtra + ")";
+        strSQL += " WHERE songview.idsong IN (SELECT idsong FROM (SELECT idsong FROM songview " + strSQLExtra + ") as temp)";
     }
 
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
