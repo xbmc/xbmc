@@ -78,7 +78,10 @@ public:
   XFILE::CFile* GetFileXbmcByStream(FILE* stream);
   static int GetDescriptorByStream(FILE* stream);
   FILE* GetStreamByDescriptor(int fd);
-  static bool DescriptorIsEmulatedFile(int fd);
+  static constexpr bool DescriptorIsEmulatedFile(int fd)
+  {
+    return fd >= FILE_WRAPPER_OFFSET && fd < FILE_WRAPPER_OFFSET + MAX_EMULATED_FILES;
+  }
   static bool StreamIsEmulatedFile(FILE* stream);
 private:
   EmuFileObject m_files[MAX_EMULATED_FILES];
