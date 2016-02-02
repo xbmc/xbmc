@@ -175,6 +175,9 @@ void CGUIControllerWindow::OnInitWindow(void)
     // "Joystick support not found"
     // "Controller configuration is disabled. Install the proper joystick support add-on."
     CGUIDialogOK::ShowAndGetInput(35056, 35057);
+
+    // close the window as there's nothing that can be done
+    Close();
   }
 }
 
