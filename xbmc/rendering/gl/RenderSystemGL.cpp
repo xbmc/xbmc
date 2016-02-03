@@ -106,9 +106,6 @@ bool CRenderSystemGL::InitRenderSystem()
 {
   m_bVSync = false;
   m_iVSyncMode = 0;
-  m_iSwapStamp = 0;
-  m_iSwapTime = 0;
-  m_iSwapRate = 0;
   m_bVsyncInit = false;
   m_maxTextureSize = 2048;
   m_renderCaps = 0;
@@ -293,49 +290,13 @@ bool CRenderSystemGL::IsExtSupported(const char* extension)
   return m_RenderExtensions.find(name) != std::string::npos;
 }
 
-bool CRenderSystemGL::PresentRender(const CDirtyRegionList& dirty)
+void CRenderSystemGL::PresentRender(bool rendered)
 {
   if (!m_bRenderCreated)
-    return false;
+    return;
 
-  if (m_iVSyncMode != 0 && m_iSwapRate != 0)
-  {
-    int64_t curr, diff, freq;
-    curr = CurrentHostCounter();
-    freq = CurrentHostFrequency();
-
-    if(m_iSwapStamp == 0)
-      m_iSwapStamp = curr;
-
-    /* calculate our next swap timestamp */
-    diff = curr - m_iSwapStamp;
-    diff = m_iSwapRate - diff % m_iSwapRate;
-    m_iSwapStamp = curr + diff;
-
-    /* sleep as close as we can before, assume 1ms precision of sleep *
-     * this should always awake so that we are guaranteed the given   *
-     * m_iSwapTime to do our swap                                     */
-    diff = (diff - m_iSwapTime) * 1000 / freq;
-    if (diff > 0)
-      Sleep((DWORD)diff);
-  }
-
-  bool result = PresentRenderImpl(dirty);
+  PresentRenderImpl(rendered);
   m_latencyCounter++;
-
-  if (m_iVSyncMode && m_iSwapRate != 0)
-  {
-    int64_t curr, diff;
-    curr = CurrentHostCounter();
-
-    diff = curr - m_iSwapStamp;
-    m_iSwapStamp = curr;
-
-    if (MathUtils::abs(diff - m_iSwapRate) < MathUtils::abs(diff))
-      CLog::Log(LOGDEBUG, "%s - missed requested swap",__FUNCTION__);
-  }
-
-  return result;
 }
 
 void CRenderSystemGL::SetVSync(bool enable)
@@ -353,7 +314,6 @@ void CRenderSystemGL::SetVSync(bool enable)
 
   m_iVSyncMode   = 0;
   m_iVSyncErrors = 0;
-  m_iSwapRate    = 0;
   m_bVSync       = enable;
   m_bVsyncInit   = true;
 
@@ -361,28 +321,6 @@ void CRenderSystemGL::SetVSync(bool enable)
 
   if (!enable)
     return;
-
-  if (g_advancedSettings.m_ForcedSwapTime != 0.0)
-  {
-    /* some hardware busy wait on swap/glfinish, so we must manually sleep to avoid 100% cpu */
-    double rate = g_graphicsContext.GetFPS();
-    if (rate <= 0.0 || rate > 1000.0)
-    {
-      CLog::Log(LOGWARNING, "Unable to determine a valid horizontal refresh rate, vsync workaround disabled %.2g", rate);
-      m_iSwapRate = 0;
-    }
-    else
-    {
-      int64_t freq;
-      freq = CurrentHostFrequency();
-      m_iSwapRate   = (int64_t)((double)freq / rate);
-      m_iSwapTime   = (int64_t)(0.001 * g_advancedSettings.m_ForcedSwapTime * freq);
-      m_iSwapStamp  = 0;
-      CLog::Log(LOGINFO, "GL: Using artificial vsync sleep with rate %f", rate);
-      if(!m_iVSyncMode)
-        m_iVSyncMode = 1;
-    }
-  }
 
   if (!m_iVSyncMode)
     CLog::Log(LOGERROR, "GL: Vertical Blank Syncing unsupported");
