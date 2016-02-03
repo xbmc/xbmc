@@ -8,20 +8,20 @@ Default font lacks support for all characters
     <keyboard>
       <row>1234567890°+</row>
       <row>azertyuiop^$</row>
-      <row>qsdfghjklmú*</row>
-      <row>wxcvbn,;:!</row>
+      <row>qsdfghjklmù*</row>
+      <row>&lt;wxcvbn,;:!&amp;</row>
     </keyboard>
     <keyboard modifiers="shift">
-      <row>1234567890</row>
-      <row>AZERTYUIOP</row>
-      <row>QSDFGHJKLM</row>
-      <row>WXCVBN?./</row>
+      <row>1234567890@=</row>
+      <row>AZERTYUIOP¨£</row>
+      <row>QSDFGHJKLM%µ</row>
+      <row>&gt;WXCVBN?./§²</row>
     </keyboard>
     <keyboard modifiers="symbol,shift+symbol">
-      <row>)!@#€§$%^&amp;*(</row>
-      <row>[]{}-_=+;:μ</row>
-      <row>'",.&lt;&gt;/?\|</row>
-      <row>`~éèáàúùç</row>
+      <row>()[]{}~&quot;&apos;`-_</row>
+      <row>#|\€¤ÆŒæœüÜÙ</row>
+      <row>àâçéèêëîïôöû</row>
+      <row>ÀÂÇÉÈÊËÎÏÔÖÛ</row>
     </keyboard>
   </layout>
 </keyboardlayouts>
