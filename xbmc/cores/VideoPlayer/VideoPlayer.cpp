@@ -3245,6 +3245,13 @@ void CVideoPlayer::UpdateStreamInfos()
     s.stereo_mode = m_VideoPlayerVideo->GetStereoMode();
     if (s.stereo_mode == "mono")
       s.stereo_mode = "";
+
+    CDemuxStream* stream = m_pDemuxer->GetStream(m_CurrentVideo.id);
+    if (stream && stream->type == STREAM_VIDEO)
+    {
+      s.width = ((CDemuxStreamVideo*)stream)->iWidth;
+      s.height = ((CDemuxStreamVideo*)stream)->iHeight;
+    }
   }
 
   // audio
@@ -3255,6 +3262,12 @@ void CVideoPlayer::UpdateStreamInfos()
     SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, streamId);
     s.bitrate = m_VideoPlayerAudio->GetAudioBitrate();
     s.channels = m_VideoPlayerAudio->GetAudioChannels();
+
+    CDemuxStream* stream = m_pDemuxer->GetStream(m_CurrentAudio.id);
+    if (stream && stream->type == STREAM_AUDIO)
+    {
+      s.codec = m_pDemuxer->GetStreamCodecName(stream->iId);
+    }
   }
 }
 
