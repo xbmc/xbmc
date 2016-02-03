@@ -36,7 +36,7 @@ public:
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
 
 protected:
-  virtual bool PresentRenderImpl(const CDirtyRegionList &dirty);
+  virtual void PresentRenderImpl(bool rendered);
   virtual void SetVSyncImpl(bool enable);  
 };
 

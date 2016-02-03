@@ -198,7 +198,7 @@ bool CRenderSystemGLES::DestroyRenderSystem()
 
   ClearBuffers(0);
   glFinish();
-  PresentRenderImpl(dirtyRegions);
+  PresentRenderImpl(true);
 
   m_bRenderCreated = false;
 
@@ -276,10 +276,10 @@ static int64_t abs64(int64_t a)
   return a;
 }
 
-bool CRenderSystemGLES::PresentRender(const CDirtyRegionList &dirty)
+void CRenderSystemGLES::PresentRender(bool rendered)
 {
   if (!m_bRenderCreated)
-    return false;
+    return;
 
   if (m_iVSyncMode != 0 && m_iSwapRate != 0) 
   {
@@ -303,7 +303,7 @@ bool CRenderSystemGLES::PresentRender(const CDirtyRegionList &dirty)
       Sleep((DWORD)diff);
   }
   
-  bool result = PresentRenderImpl(dirty);
+  PresentRenderImpl(rendered);
   
   if (m_iVSyncMode && m_iSwapRate != 0)
   {
@@ -316,8 +316,6 @@ bool CRenderSystemGLES::PresentRender(const CDirtyRegionList &dirty)
     if (abs64(diff - m_iSwapRate) < abs64(diff))
       CLog::Log(LOGDEBUG, "%s - missed requested swap",__FUNCTION__);
   }
-  
-  return result;
 }
 
 void CRenderSystemGLES::SetVSync(bool enable)
