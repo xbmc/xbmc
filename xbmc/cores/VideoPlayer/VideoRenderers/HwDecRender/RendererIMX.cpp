@@ -186,7 +186,13 @@ bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
       {
         fieldFmt |= IPU_DEINTERLACE_RATE_EN;
         if (flags & RENDER_FLAG_FIELD1)
+        {
           fieldFmt |= IPU_DEINTERLACE_RATE_FRAME1;
+          // CXBMCRenderManager::PresentFields() is swapping field flag for frame1
+          // this makes IPU render same picture as before, just shifted one line.
+          // let's correct this
+          fieldFmt ^= RENDER_FLAG_FIELDMASK;
+        }
       }
     }
 
