@@ -19,6 +19,8 @@
  *
  */
 
+#include "jutils/jutils-details.hpp"
+
 namespace jni
 {
 
@@ -51,6 +53,9 @@ class CJNIAudioFormat
     static int CHANNEL_OUT_BACK_RIGHT;
 
     static int CHANNEL_INVALID;
+
+protected:
+    static void GetStaticValue(jhclass &c, int &field, char *value);
 };
 
 };
