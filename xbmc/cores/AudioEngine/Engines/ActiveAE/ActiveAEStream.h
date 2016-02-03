@@ -22,6 +22,7 @@
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Utils/AELimiter.h"
+#include <atomic>
 
 namespace ActiveAE
 {
@@ -169,6 +170,9 @@ protected:
   CSampleBuffer *m_currentBuffer;
   CSoundPacket *m_remapBuffer;
   IAEResample *m_remapper;
+  double m_lastPts;
+  double m_lastPtsJump;
+  std::atomic_int m_errorInterval;
 
   // only accessed by engine
   CActiveAEBufferPool *m_inputBuffers;
