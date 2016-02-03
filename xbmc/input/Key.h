@@ -412,6 +412,9 @@ public:
   CAction(int actionID, const std::string &name, const CKey &key);
   CAction(int actionID, const std::string &name);
 
+  CAction(const CAction& other) { *this = other; }
+  CAction& operator=(const CAction& rhs);
+
   /*! \brief Identifier of the action
    \return id of the action
    */
