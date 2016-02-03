@@ -22,10 +22,11 @@
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "threads/CriticalSection.h"
+#include "threads/Thread.h"
 
+#include <vector>
 #include <set>
 
-class AERingBuffer;
 namespace jni
 {
 class CJNIAudioTrack;
@@ -47,6 +48,7 @@ public:
   virtual double       GetLatency      ();
   virtual double       GetCacheTotal   ();
   virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset);
+  virtual void         AddPause        (unsigned int millis);
   virtual void         Drain           ();
   static void          EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 
@@ -56,17 +58,27 @@ protected:
 private:
   jni::CJNIAudioTrack  *m_at_jni;
   double                m_duration_written;
-  uint32_t              m_lastHeadPosition;
-  uint32_t              m_ptOffset;
+  unsigned int          m_min_buffer_size;
+  unsigned int          m_lastPlaybackHeadPosition;
+  int64_t               m_offset;
+  // Moving Average computes the weighted average delay over
+  // a fixed size of a vector - current size: 20 values
+  double                GetMovingAverageDelay(double newestdelay);
+  // When AddPause is called the m_pause_counter is counted up
+  // Whenever a new package is added into the sink and the counter is > 0
+  // we sleep for a GetDuration() period
+  unsigned int          m_pause_counter;
+
+  // We maintain our linear weighted average delay counter in here
+  // The n-th value (timely oldest value) is weighted with 1/n
+  // the newest value gets a weight of 1
+  std::vector<double>   m_linearmovingaverage;
 
   static CAEDeviceInfo m_info;
   static std::set<unsigned int>       m_sink_sampleRates;
-  std::vector<double>                 m_smoothedDelayVec;
-  int                                 m_smoothedDelayCount;
 
   AEAudioFormat      m_format;
   double             m_volume;
-  volatile int       m_min_frames;
   int16_t           *m_alignedS16;
   unsigned int       m_sink_frameSize;
   unsigned int       m_sink_sampleRate;
