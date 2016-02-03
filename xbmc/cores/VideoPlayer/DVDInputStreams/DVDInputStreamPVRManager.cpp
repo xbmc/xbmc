@@ -28,6 +28,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "settings/Settings.h"
+#include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 
 #include <assert.h>
 
@@ -49,6 +50,15 @@ CDVDInputStreamPVRManager::CDVDInputStreamPVRManager(IVideoPlayer* pPlayer, CFil
   m_eof = true;
   m_ScanTimeout.Set(0);
   m_isOtherStreamHack = false;
+  m_demuxActive = false;
+
+  m_StreamProps = new PVR_STREAM_PROPERTIES;
+  m_streamAudio = new CDemuxStreamAudio;
+  m_streamVideo = new CDemuxStreamVideo;
+  m_streamSubtitle = new CDemuxStreamSubtitle;
+  m_streamTeletext = new CDemuxStreamTeletext;
+  m_streamRadioRDS = new CDemuxStreamRadioRDS;
+  m_streamDefault = new CDemuxStream;
 }
 
 /************************************************************************
@@ -57,6 +67,14 @@ CDVDInputStreamPVRManager::CDVDInputStreamPVRManager(IVideoPlayer* pPlayer, CFil
 CDVDInputStreamPVRManager::~CDVDInputStreamPVRManager()
 {
   Close();
+
+  delete m_StreamProps;
+  delete m_streamAudio;
+  delete m_streamVideo;
+  delete m_streamSubtitle;
+  delete m_streamTeletext;
+  delete m_streamRadioRDS;
+  delete m_streamDefault;
 }
 
 void CDVDInputStreamPVRManager::ResetScanTimeout(unsigned int iTimeoutMs)
@@ -135,10 +153,21 @@ bool CDVDInputStreamPVRManager::Open()
       return false;
     }
   }
+  else
+  {
+    if (URIUtils::IsPVRChannel(url.Get()))
+    {
+      std::shared_ptr<CPVRClient> client;
+      if (g_PVRClients->GetPlayingClient(client) &&
+          client->HandlesDemuxing())
+        m_demuxActive = true;
+    }
+  }
 
   ResetScanTimeout((unsigned int) CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPLAYBACK_SCANTIME) * 1000);
   CLog::Log(LOGDEBUG, "CDVDInputStreamPVRManager::Open - stream opened: %s", CURL::GetRedacted(transFile).c_str());
 
+  m_StreamProps->iStreamCount = 0;
   return true;
 }
 
@@ -400,4 +429,152 @@ bool CDVDInputStreamPVRManager::IsOtherStreamHack(void)
 bool CDVDInputStreamPVRManager::IsRealtime()
 {
   return g_PVRClients->IsRealTimeStream();
+}
+
+inline CDVDInputStream::IDemux* CDVDInputStreamPVRManager::GetIDemux()
+{
+  if (m_demuxActive)
+    return this;
+  else
+    return nullptr;
+}
+
+bool CDVDInputStreamPVRManager::OpenDemux()
+{
+  PVR_CLIENT client;
+  if (!g_PVRClients->GetPlayingClient(client))
+  {
+    return false;
+  }
+
+  client->GetStreamProperties(m_StreamProps);
+  return true;
+}
+
+DemuxPacket* CDVDInputStreamPVRManager::ReadDemux()
+{
+  PVR_CLIENT client;
+  if (!g_PVRClients->GetPlayingClient(client))
+  {
+    return nullptr;
+  }
+
+  DemuxPacket* pPacket = client->DemuxRead();
+  if (!pPacket)
+  {
+    return nullptr;
+  }
+  else if (pPacket->iStreamId == DMX_SPECIALID_STREAMINFO)
+  {
+    client->GetStreamProperties(m_StreamProps);
+    return pPacket;
+  }
+  else if (pPacket->iStreamId == DMX_SPECIALID_STREAMCHANGE)
+  {
+    client->GetStreamProperties(m_StreamProps);
+  }
+
+  return pPacket;
+}
+
+CDemuxStream* CDVDInputStreamPVRManager::GetStream(int iStreamId)
+{
+  CDemuxStream *ret = m_streamDefault;
+  m_streamDefault->type = STREAM_NONE;
+
+  if (m_StreamProps->stream[iStreamId].iCodecType == XBMC_CODEC_TYPE_AUDIO)
+  {
+    m_streamAudio->iChannels       = m_StreamProps->stream[iStreamId].iChannels;
+    m_streamAudio->iSampleRate     = m_StreamProps->stream[iStreamId].iSampleRate;
+    m_streamAudio->iBlockAlign     = m_StreamProps->stream[iStreamId].iBlockAlign;
+    m_streamAudio->iBitRate        = m_StreamProps->stream[iStreamId].iBitRate;
+    m_streamAudio->iBitsPerSample  = m_StreamProps->stream[iStreamId].iBitsPerSample;
+
+    ret = m_streamAudio;
+  }
+  else if (m_StreamProps->stream[iStreamId].iCodecType == XBMC_CODEC_TYPE_VIDEO)
+  {
+    m_streamVideo->iFpsScale       = m_StreamProps->stream[iStreamId].iFPSScale;
+    m_streamVideo->iFpsRate        = m_StreamProps->stream[iStreamId].iFPSRate;
+    m_streamVideo->iHeight         = m_StreamProps->stream[iStreamId].iHeight;
+    m_streamVideo->iWidth          = m_StreamProps->stream[iStreamId].iWidth;
+    m_streamVideo->fAspect         = m_StreamProps->stream[iStreamId].fAspect;
+    m_streamVideo->stereo_mode     = "mono";
+
+    ret = m_streamVideo;
+  }
+  else if (m_StreamProps->stream[iStreamId].iCodecType == XBMC_CODEC_TYPE_SUBTITLE)
+  {
+    if(m_StreamProps->stream[iStreamId].iIdentifier)
+    {
+      m_streamSubtitle->ExtraData = new uint8_t[4];
+      m_streamSubtitle->ExtraSize = 4;
+      m_streamSubtitle->ExtraData[0] = (m_StreamProps->stream[iStreamId].iIdentifier >> 8) & 0xff;
+      m_streamSubtitle->ExtraData[1] = (m_StreamProps->stream[iStreamId].iIdentifier >> 0) & 0xff;
+      m_streamSubtitle->ExtraData[2] = (m_StreamProps->stream[iStreamId].iIdentifier >> 24) & 0xff;
+      m_streamSubtitle->ExtraData[3] = (m_StreamProps->stream[iStreamId].iIdentifier >> 16) & 0xff;
+    }
+    ret = m_streamSubtitle;
+  }
+  else if (m_StreamProps->stream[iStreamId].iCodecId == AV_CODEC_ID_DVB_TELETEXT)
+  {
+    ret = m_streamTeletext;
+  }
+  else if (m_StreamProps->stream[iStreamId].iCodecType == XBMC_CODEC_TYPE_RDS &&
+           CSettings::GetInstance().GetBool("pvrplayback.enableradiords"))
+  {
+    ret = m_streamRadioRDS;
+  }
+
+  ret->codec = (AVCodecID)m_StreamProps->stream[iStreamId].iCodecId;
+  ret->iId = iStreamId;
+  ret->iPhysicalId = m_StreamProps->stream[iStreamId].iPhysicalId;
+  ret->language[0] = m_StreamProps->stream[iStreamId].strLanguage[0];
+  ret->language[1] = m_StreamProps->stream[iStreamId].strLanguage[1];
+  ret->language[2] = m_StreamProps->stream[iStreamId].strLanguage[2];
+  ret->language[3] = m_StreamProps->stream[iStreamId].strLanguage[3];
+  ret->realtime = true;
+  return ret;
+}
+
+int CDVDInputStreamPVRManager::GetNrOfStreams()
+{
+  return m_StreamProps->iStreamCount;
+}
+
+void CDVDInputStreamPVRManager::SetSpeed(int Speed)
+{
+  PVR_CLIENT client;
+  if (g_PVRClients->GetPlayingClient(client))
+  {
+    client->SetSpeed(Speed);
+  }
+}
+
+bool CDVDInputStreamPVRManager::SeekTime(int timems, bool backwards, double *startpts)
+{
+  PVR_CLIENT client;
+  if (g_PVRClients->GetPlayingClient(client))
+  {
+    return client->SeekTime(timems, backwards, startpts);
+  }
+  return false;
+}
+
+void CDVDInputStreamPVRManager::AbortDemux()
+{
+  PVR_CLIENT client;
+  if (g_PVRClients->GetPlayingClient(client))
+  {
+    client->DemuxAbort();
+  }
+}
+
+void CDVDInputStreamPVRManager::FlushDemux()
+{
+  PVR_CLIENT client;
+  if (g_PVRClients->GetPlayingClient(client))
+  {
+    client->DemuxFlush();
+  }
 }

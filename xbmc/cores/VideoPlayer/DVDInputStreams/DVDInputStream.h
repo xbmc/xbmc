@@ -53,6 +53,9 @@ namespace XFILE
   class CFile;
 }
 
+struct DemuxPacket;
+class CDemuxStream;
+
 class CDVDInputStream
 {
 public:
@@ -107,7 +110,6 @@ public:
     virtual double GetTimeStampCorrection() { return 0.0; };
     virtual bool GetState(std::string &xmlstate) = 0;
     virtual bool SetState(const std::string &xmlstate) = 0;
-
   };
 
   class ISeekable
@@ -116,6 +118,19 @@ public:
     virtual ~ISeekable() {};
     virtual bool CanSeek()  = 0;
     virtual bool CanPause() = 0;
+  };
+
+  class IDemux
+  {
+    public:
+    virtual bool OpenDemux() = 0;
+    virtual DemuxPacket* ReadDemux() = 0;
+    virtual CDemuxStream* GetStream(int iStreamId) = 0;
+    virtual int GetNrOfStreams() = 0;
+    virtual void SetSpeed(int iSpeed) = 0;
+    virtual bool SeekTime(int time, bool backward = false, double* startpts = NULL) = 0;
+    virtual void AbortDemux() = 0;
+    virtual void FlushDemux() = 0;
   };
 
   enum ENextStream
@@ -161,6 +176,9 @@ public:
   virtual bool IsRealtime() { return m_realtime; }
 
   void SetRealtime(bool realtime) { m_realtime = realtime; }
+
+  // interfaces
+  virtual IDemux* GetIDemux() { return nullptr; }
 
 protected:
   DVDStreamType m_streamType;
