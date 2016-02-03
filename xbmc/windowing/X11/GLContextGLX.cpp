@@ -197,7 +197,7 @@ void CGLContextGLX::SetVSync(bool enable, int &mode)
   }
 }
 
-bool CGLContextGLX::SwapBuffers(const CDirtyRegionList& dirty, int &mode)
+void CGLContextGLX::SwapBuffers(int &mode)
 {
   if(mode == 3)
   {
@@ -264,8 +264,6 @@ bool CGLContextGLX::SwapBuffers(const CDirtyRegionList& dirty, int &mode)
   }
   else
     glXSwapBuffers(m_dpy, m_glxWindow);
-
-  return true;
 }
 
 void CGLContextGLX::QueryExtensions()
