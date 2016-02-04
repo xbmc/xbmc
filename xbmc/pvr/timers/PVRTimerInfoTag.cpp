@@ -61,8 +61,6 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   m_bIsRadio            = bRadio;
   m_iMarginStart        = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_MARGINSTART);
   m_iMarginEnd          = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_MARGINEND);
-  m_iGenreType          = 0;
-  m_iGenreSubType       = 0;
   m_StartTime           = CDateTime::GetUTCDateTime();
   m_StopTime            = m_StartTime;
   m_bStartAnyTime       = false;
@@ -122,9 +120,6 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr 
   m_iMaxRecordings      = timer.iMaxRecordings;
   m_iMarginStart        = timer.iMarginStart;
   m_iMarginEnd          = timer.iMarginEnd;
-  m_genre               = StringUtils::Split(CEpg::ConvertGenreIdToString(timer.iGenreType, timer.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
-  m_iGenreType          = timer.iGenreType;
-  m_iGenreSubType       = timer.iGenreSubType;
   m_channel             = channel;
   m_bIsRadio            = channel && channel->IsRadio();
   m_state               = timer.state;
@@ -631,9 +626,6 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTagPtr &tag)
   m_iMarginEnd          = tag->m_iMarginEnd;
   m_iEpgUid             = tag->m_iEpgUid;
   m_epgTag              = tag->m_epgTag;
-  m_genre               = tag->m_genre;
-  m_iGenreType          = tag->m_iGenreType;
-  m_iGenreSubType       = tag->m_iGenreSubType;
   m_strSummary          = tag->m_strSummary;
 
   SetTimerType(tag->m_timerType);
@@ -777,8 +769,6 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTagPtr &tag, b
   newTag->m_iClientChannelUid  = channel->UniqueID();
   newTag->m_iClientId          = channel->ClientID();
   newTag->m_bIsRadio           = channel->IsRadio();
-  newTag->m_iGenreType         = tag->GenreType();
-  newTag->m_iGenreSubType      = tag->GenreSubType();
   newTag->m_channel            = channel;
   newTag->m_iEpgUid            = tag->UniqueBroadcastID();
   newTag->SetStartFromUTC(newStart);
@@ -942,15 +932,8 @@ CEpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bSetTimer) const
           m_epgTag = epg->GetTagBetween(StartAsUTC() - CDateTimeSpan(0, 0, 2, 0), EndAsUTC() + CDateTimeSpan(0, 0, 2, 0));
         }
 
-        if (m_epgTag)
-        {
-          m_genre = m_epgTag->Genre();
-          m_iGenreType = m_epgTag->GenreType();
-          m_iGenreSubType = m_epgTag->GenreSubType();
-
-          if (bSetTimer)
-            m_epgTag->SetTimer(m_iTimerId);
-        }
+        if (m_epgTag && bSetTimer)
+          m_epgTag->SetTimer(m_iTimerId);
       }
     }
   }
