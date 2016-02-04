@@ -52,17 +52,17 @@ namespace PERIPHERALS
   {
   public:
     static CPeripherals &GetInstance();
-    virtual ~CPeripherals(void);
+    virtual ~CPeripherals();
 
     /*!
      * @brief Initialise the peripherals manager.
      */
-    virtual void Initialise(void);
+    virtual void Initialise();
 
     /*!
      * @brief Clear all data known by the peripherals manager.
      */
-    virtual void Clear(void);
+    virtual void Clear();
 
     /*!
      * @brief Get the instance of the peripheral at the given location.
@@ -171,13 +171,13 @@ namespace PERIPHERALS
      * @brief Check whether there's a peripheral that reports to be muted.
      * @return True when at least one peripheral reports to be muted, false otherwise.
      */
-    virtual bool IsMuted(void);
+    virtual bool IsMuted();
 
     /*!
      * @brief Try to toggle the mute status via a peripheral.
      * @return True when this change was handled by a peripheral (and should not be handled by anything else), false otherwise.
      */
-    virtual bool ToggleMute(void);
+    virtual bool ToggleMute();
 
     /*!
      * @brief Try to toggle the playing device state via a peripheral.
@@ -191,13 +191,13 @@ namespace PERIPHERALS
      * @brief Try to mute the audio via a peripheral.
      * @return True when this change was handled by a peripheral (and should not be handled by anything else), false otherwise.
      */
-    virtual bool Mute(void) { return ToggleMute(); } // TODO CEC only supports toggling the mute status at this time
+    virtual bool Mute() { return ToggleMute(); } // TODO CEC only supports toggling the mute status at this time
 
     /*!
      * @brief Try to unmute the audio via a peripheral.
      * @return True when this change was handled by a peripheral (and should not be handled by anything else), false otherwise.
      */
-    virtual bool UnMute(void) { return ToggleMute(); } // TODO CEC only supports toggling the mute status at this time
+    virtual bool UnMute() { return ToggleMute(); } // TODO CEC only supports toggling the mute status at this time
 
     /*!
      * @brief Try to get a keypress from a peripheral.
@@ -214,7 +214,7 @@ namespace PERIPHERALS
      */
     EventRateHandle SetEventScanRate(float rateHz) { return m_eventScanner.SetRate(rateHz); }
 
-    bool SupportsCEC(void) const
+    bool SupportsCEC() const
     {
 #if defined(HAVE_LIBCEC)
       return true;
@@ -240,8 +240,8 @@ namespace PERIPHERALS
     virtual int GetMessageMask() override;
 
   private:
-    CPeripherals(void);
-    bool LoadMappings(void);
+    CPeripherals();
+    bool LoadMappings();
     bool GetMappingForDevice(const CPeripheralBus &bus, PeripheralScanResult& result) const;
     static void GetSettingsFromMappingsFile(TiXmlElement *xmlNode, std::map<std::string, PeripheralDeviceSetting> &m_settings);
 
