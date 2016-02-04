@@ -19,22 +19,26 @@
  */
 #pragma once
 
+#include "addons/AddonManager.h"
 #include "addons/IAddon.h"
 #include "guilib/IWindowManagerCallback.h"
 #include "peripherals/PeripheralTypes.h"
 #include "peripherals/bus/PeripheralBus.h"
 #include "threads/CriticalSection.h"
+#include "utils/Observer.h"
 
 #include <memory>
 #include <string>
 
 namespace PERIPHERALS
 {
-  class CPeripheralBusAddon : public CPeripheralBus
+  class CPeripheralBusAddon : public CPeripheralBus,
+                              public ADDON::IAddonMgrCallback,
+                              public Observer
   {
   public:
     CPeripheralBusAddon(CPeripherals *manager);
-    virtual ~CPeripheralBusAddon(void) { }
+    virtual ~CPeripheralBusAddon(void);
 
     /*!
      * \brief Get peripheral add-on by ID
@@ -66,6 +70,13 @@ namespace PERIPHERALS
     virtual size_t       GetNumberOfPeripherals(void) const override;
     virtual size_t       GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const override;
     virtual void         GetDirectory(const std::string &strPath, CFileItemList &items) const override;
+
+    // implementation of IAddonMgrCallback
+    bool RequestRestart(ADDON::AddonPtr addon, bool datachanged) override;
+    bool RequestRemoval(ADDON::AddonPtr addon) override;
+
+    // implementation of Observer
+    void Notify(const Observable &obs, const ObservableMessage msg) override;
 
     bool SplitLocation(const std::string& strLocation, PeripheralAddonPtr& addon, unsigned int& peripheralIndex) const;
 

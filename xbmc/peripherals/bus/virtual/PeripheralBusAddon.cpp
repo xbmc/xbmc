@@ -36,6 +36,16 @@ using namespace PERIPHERALS;
 CPeripheralBusAddon::CPeripheralBusAddon(CPeripherals *manager) :
     CPeripheralBus("PeripBusAddon", manager, PERIPHERAL_BUS_ADDON)
 {
+  CAddonMgr::GetInstance().RegisterAddonMgrCallback(ADDON_PERIPHERALDLL, this);
+  CAddonMgr::GetInstance().RegisterObserver(this);
+
+  UpdateAddons();
+}
+
+CPeripheralBusAddon::~CPeripheralBusAddon()
+{
+  CAddonMgr::GetInstance().UnregisterObserver(this);
+  CAddonMgr::GetInstance().UnregisterAddonMgrCallback(ADDON_PERIPHERALDLL);
 }
 
 bool CPeripheralBusAddon::GetAddon(const std::string &strId, AddonPtr &addon) const
@@ -82,8 +92,6 @@ unsigned int CPeripheralBusAddon::GetAddonCount(void) const
 
 bool CPeripheralBusAddon::PerformDeviceScan(PeripheralScanResults &results)
 {
-  UpdateAddons();
-
   PeripheralAddonVector addons;
   {
     CSingleLock lock(m_critSection);
@@ -242,6 +250,46 @@ void CPeripheralBusAddon::GetDirectory(const std::string &strPath, CFileItemList
   CSingleLock lock(m_critSection);
   for (const auto& addon : m_addons)
     addon->GetDirectory(strPath, items);
+}
+
+bool CPeripheralBusAddon::RequestRestart(ADDON::AddonPtr addon, bool datachanged)
+{
+  // make sure this is a peripheral addon
+  PeripheralAddonPtr peripheralAddon = std::dynamic_pointer_cast<CPeripheralAddon>(addon);
+  if (peripheralAddon == nullptr)
+    return false;
+
+  if (peripheralAddon->CreateAddon() != ADDON_STATUS_OK)
+  {
+    CSingleLock lock(m_critSection);
+    m_addons.erase(std::remove(m_addons.begin(), m_addons.end(), peripheralAddon), m_addons.end());
+    m_failedAddons.push_back(peripheralAddon);
+  }
+
+  return true;
+}
+
+bool CPeripheralBusAddon::RequestRemoval(ADDON::AddonPtr addon)
+{
+  // make sure this is a peripheral addon
+  PeripheralAddonPtr peripheralAddon = std::dynamic_pointer_cast<CPeripheralAddon>(addon);
+  if (peripheralAddon == nullptr)
+    return false;
+
+  CSingleLock lock(m_critSection);
+  // destroy the peripheral addon
+  peripheralAddon->Destroy();
+
+  // remove the peripheral addon from the list of addons
+  m_addons.erase(std::remove(m_addons.begin(), m_addons.end(), peripheralAddon), m_addons.end());
+
+  return true;
+}
+
+void CPeripheralBusAddon::Notify(const Observable &obs, const ObservableMessage msg)
+{
+  if (msg == ObservableMessageAddons)
+    UpdateAddons();
 }
 
 bool CPeripheralBusAddon::SplitLocation(const std::string& strLocation, PeripheralAddonPtr& addon, unsigned int& peripheralIndex) const
