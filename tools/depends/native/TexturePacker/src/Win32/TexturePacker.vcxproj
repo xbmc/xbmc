@@ -118,11 +118,9 @@
     <ClInclude Include="..\decoder\IDecoder.h" />
     <ClInclude Include="..\decoder\JPGDecoder.h" />
     <ClInclude Include="..\decoder\PNGDecoder.h" />
-    <ClInclude Include="..\Gif.h" />
     <ClInclude Include="..\rgbaimage.h" />
     <ClInclude Include="dirent.h" />
     <ClInclude Include="..\md5.h" />
-    <ClInclude Include="..\SDL_anigif.h" />
     <ClInclude Include="..\..\..\..\..\..\xbmc\guilib\XBTF.h" />
     <ClInclude Include="..\XBTFWriter.h" />
   </ItemGroup>

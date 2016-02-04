@@ -16,7 +16,7 @@ DEPENDS = \
 	libplist libcec libbluray tinyxml dummy-libxbmc \
 	libamplayer libssh taglib libusb libnfs \
 	pythonmodule-pil pythonmodule-setuptools \
-	libxslt ffmpeg platform crossguid libdcadec giflib
+	libxslt ffmpeg platform crossguid libdcadec
 
 FFMPEG_DEPENDS = gnutls libdcadec
 

@@ -38,9 +38,6 @@
 #ifdef _DEBUG_TEXTURES
 #include "utils/TimeUtils.h"
 #endif
-#if defined(HAS_GIFLIB)
-#include "guilib/Gif.h"
-#endif//HAS_GIFLIB
 #if defined(TARGET_DARWIN_IOS)
 #include "windowing/WindowingFactory.h" // for g_Windowing in CGUITextureManager::FreeUnusedTextures
 #endif
