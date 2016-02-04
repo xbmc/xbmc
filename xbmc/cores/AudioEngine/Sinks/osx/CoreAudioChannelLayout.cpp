@@ -22,7 +22,7 @@
 
 #include <AudioToolbox/AudioToolbox.h>
 
-#define MAX_CHANNEL_LABEL 15
+#define MAX_CHANNEL_LABEL 45
 
 const char* g_ChannelLabels[] =
 {
@@ -39,9 +39,32 @@ const char* g_ChannelLabels[] =
   "Back Left",        // kAudioChannelLabel_LeftSurroundDirect
   "Back Right",       // kAudioChannelLabel_RightSurroundDirect
   "Top Center",       // kAudioChannelLabel_TopCenterSurround
+  "Vertical Back Left",    // kAudioChannelLabel_VerticalHeightLeft
+  "Vertical Back Center",  // kAudioChannelLabel_VerticalHeightCenter
+  "Vertical Back Right",   // kAudioChannelLabel_VerticalHeightRight
   "Top Back Left",    // kAudioChannelLabel_VerticalHeightLeft
   "Top Back Center",  // kAudioChannelLabel_VerticalHeightCenter
   "Top Back Right",   // kAudioChannelLabel_VerticalHeightRight
+
+  // gap
+
+  "unused19",  "unused20",  "unused21",  "unused22",  "unused23",  "unused24",  "unused25",
+  "unused26",  "unused27",  "unused28",  "unused29",  "unused30",  "unused31",  "unused32",
+
+  "Rear Left",        // kAudioChannelLabel_RearSurroundLeft
+  "Rear Right",       // kAudioChannelLabel_RearSurroundRight
+  "Left Wide",        // kAudioChannelLabel_LeftWide
+  "Right Wide",       // kAudioChannelLabel_RightWide
+  "LFE2",             // kAudioChannelLabel_LFE2
+  "Left Total",       // kAudioChannelLabel_LeftTotal
+  "Right Total",      // kAudioChannelLabel_RightTotal
+  "HearingImpaired",  // kAudioChannelLabel_HearingImpaired
+  "Narration",        // kAudioChannelLabel_Narration
+  "Mono",             // kAudioChannelLabel_Mono
+  "DialogCentricMix", // kAudioChannelLabel_DialogCentricMix
+  "CenterSurroundDirect", // kAudioChannelLabel_CenterSurroundDirect
+  "Haptic",           // kAudioChannelLabel_Haptic
+
 };
 
 CCoreAudioChannelLayout::CCoreAudioChannelLayout() :
@@ -201,6 +224,10 @@ const char* CCoreAudioChannelLayout::ChannelLayoutToString(AudioChannelLayout& l
   {
     str += "[";
     str += ChannelLabelToString(pLayout->mChannelDescriptions[c].mChannelLabel);
+    if (pLayout->mChannelDescriptions[c].mChannelLabel > MAX_CHANNEL_LABEL)
+    {
+      str += "(" + std::to_string(pLayout->mChannelDescriptions[c].mChannelLabel) + ")";
+    }
     str += "] ";
   }
 
