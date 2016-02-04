@@ -1,0 +1,90 @@
+# Kodi's travis-ci.org integration file
+
+# NOTES:
+# The travis-ci Gods have environmental concerns with verbosity and clang/xcode builds.
+# A nice message is presented in such cases:
+# "The log length has exceeded the limit of 4 MB (this usually means that the test suite is raising the
+# same exception over and over). The job has been terminated"
+#
+# travis-ci has a problem with python 2.7 (see https://github.com/travis-ci/travis-ci/issues/4948) so we mark
+# used language as 'generic' to work around it
+
+# TODO:
+# integrate with slack
+# make it perfect... or not ;-r
+
+
+language: generic
+#  - cpp
+#  - python
+
+# python:
+#  - "2.7"
+
+# Define the build matrix
+#
+# Travis defaults to building on Ubuntu Precise when building on Linux. We need Trusty in order to get up
+# to date versions of cmake and g++.
+#
+matrix:
+  fast_finish: true
+  include:
+    - os: linux
+      dist: trusty    
+      sudo: required
+      compiler: gcc
+
+# Prepare system
+#
+# Prepare the system to install prerequisites or dependencies
+#
+before_install:
+
+# Linux
+#
+# Install team-xbmc/xbmc-ppa-build-depends for some dependencies and ppa:wsnipex/vaapi for libda-dev 1.6.0.
+# Stupid libda-dev 1.3.0 does not work on Trusty.
+#
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
+    sudo add-apt-repository -y ppa:team-xbmc/xbmc-ppa-build-depends
+    && sudo add-apt-repository -y ppa:wsnipex/vaapi
+    && sudo apt-get update -qq; fi
+
+# Install dependencies
+#
+# Install any prerequisites or dependencies necessary to run our builds
+#
+install:
+
+# Linux dependencies
+#
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
+    sudo apt-get install -qq automake autopoint build-essential cmake curl dcadec-dev default-jre gawk gdc
+    gettext git-core gperf libasound2-dev libass-dev libboost-dev libboost-thread-dev libbz2-dev libcap-dev libcdio-dev
+    libcrossguid-dev libcurl3 libcurl4-openssl-dev libdbus-1-dev libfontconfig-dev libegl1-mesa-dev libfreetype6-dev
+    libfribidi-dev libgif-dev libglew-dev libiso9660-dev libjasper-dev libjpeg-dev libltdl-dev liblzo2-dev
+    libmicrohttpd-dev libmodplug-dev libmpeg2-4-dev libmpeg3-dev libmysqlclient-dev libnfs-dev libogg-dev libpcre3-dev
+    libplist-dev libpng-dev libpulse-dev libsdl2-dev libsmbclient-dev libsqlite3-dev libssh-dev libssl-dev libtiff-dev
+    libtag1-dev libtinyxml-dev libtool libudev-dev libusb-dev libva-dev libvdpau-dev libvorbis-dev libvorbisenc2
+    libxml2-dev libxmu-dev libxrandr-dev libxrender-dev libxslt1-dev libxt-dev libyajl-dev mesa-utils nasm pmount
+    python-dev python-imaging python-sqlite swig unzip uuid-dev yasm zip zlib1g-dev; fi
+
+# Prepare builds
+#
+before_script:
+
+# Linux
+#
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+    cd $TRAVIS_BUILD_DIR/
+    && ./bootstrap
+    && ./configure; fi
+
+# Actually build
+#
+script: make -j3
+
+# Disable annoying emails
+#
+notifications:
+  email: false
