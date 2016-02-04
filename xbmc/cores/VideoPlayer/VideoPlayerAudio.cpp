@@ -385,6 +385,7 @@ void CVideoPlayerAudio::Process()
         continue;
       }
 
+      m_audioStats.AddSampleBytes(pPacket->iSize);
       UpdatePlayerInfo();
 
       // loop while no error and decoder produces output
