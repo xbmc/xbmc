@@ -308,7 +308,7 @@ void CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
             stream->m_context->sample_rate != 0)
         {
           CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - {%d} samplerate changed from %d to %d", st->iId, sta->iSampleRate, stream->m_context->sample_rate);
-          sta->iChannels = stream->m_context->sample_rate;
+          sta->iSampleRate = stream->m_context->sample_rate;
           sta->changes++;
           sta->disabled = false;
         }
