@@ -131,11 +131,15 @@ void CPeripherals::Clear()
 {
   m_eventScanner.Stop();
 
+  // avoid deadlocks by copying all busses into a temporary variable and destroying them from there
+  std::vector<PeripheralBusPtr> busses;
   {
     CSingleLock bussesLock(m_critSectionBusses);
     /* delete busses and devices */
+    busses = m_busses;
     m_busses.clear();
   }
+  busses.clear();
 
   {
     CSingleLock mappingsLock(m_critSectionMappings);
