@@ -340,13 +340,6 @@ void CAdvancedSettings::Initialize()
   m_bVirtualShares = true;
   m_bAllowDeferredRendering = true;
 
-//caused lots of jerks
-//#ifdef TARGET_WINDOWS
-//  m_ForcedSwapTime = 2.0;
-//#else
-  m_ForcedSwapTime = 0.0;
-//#endif
-
   m_cpuTempCmd = "";
   m_gpuTempCmd = "";
 #if defined(TARGET_DARWIN)
@@ -817,7 +810,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
   XMLUtils::GetBoolean(pRootElement,"glrectanglehack", m_GLRectangleHack);
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
-  XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
 
   XMLUtils::GetUInt(pRootElement,"restrictcapsmask", m_RestrictCapsMask);
   XMLUtils::GetFloat(pRootElement,"sleepbeforeflip", m_sleepBeforeFlip, 0.0f, 1.0f);

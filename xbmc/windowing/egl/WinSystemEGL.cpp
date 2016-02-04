@@ -441,10 +441,11 @@ bool CWinSystemEGL::IsExtSupported(const char* extension)
   return (m_extensions.find(name) != std::string::npos || CRenderSystemGLES::IsExtSupported(extension));
 }
 
-bool CWinSystemEGL::PresentRenderImpl(const CDirtyRegionList &dirty)
+void CWinSystemEGL::PresentRenderImpl(bool rendered)
 {
+  if (!rendered)
+    return;
   m_egl->SwapBuffers(m_display, m_surface);
-  return true;
 }
 
 void CWinSystemEGL::SetVSyncImpl(bool enable)

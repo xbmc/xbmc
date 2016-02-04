@@ -42,7 +42,7 @@ public:
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual bool WindowedMode() { return CRenderSystemDX::m_useWindowedDX; }
   virtual void NotifyAppFocusChange(bool bGaining);
-  virtual bool PresentRender(const CDirtyRegionList &dirty);
+  virtual void PresentRender(bool rendererd);
 
   std::string GetClipboardText(void);
 
