@@ -1987,8 +1987,7 @@ void CApplication::Render()
       Sleep(singleFrameTime - frameTime);
   }
 
-  if (flip)
-    g_graphicsContext.Flip(dirtyRegions);
+  g_graphicsContext.Flip(flip);
 
   if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
   {

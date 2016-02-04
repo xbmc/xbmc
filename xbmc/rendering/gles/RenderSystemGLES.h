@@ -56,7 +56,7 @@ public:
 
   virtual bool BeginRender();
   virtual bool EndRender();
-  virtual bool PresentRender(const CDirtyRegionList &dirty);
+  virtual bool PresentRender(bool rendered);
   virtual bool ClearBuffers(color_t color);
   virtual bool IsExtSupported(const char* extension);
 
@@ -102,7 +102,7 @@ public:
 
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
-  virtual bool PresentRenderImpl(const CDirtyRegionList &dirty) = 0;
+  virtual void PresentRenderImpl(bool rendered) = 0;
   void CalculateMaxTexturesize();
 
   int        m_iVSyncMode;

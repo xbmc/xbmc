@@ -22,7 +22,6 @@
 
 #if defined(HAVE_X11)
 #include "X11/Xlib.h"
-#include "guilib/DirtyRegion.h"
 
 class CGLContext
 {
@@ -37,7 +36,7 @@ public:
   virtual void Destroy() = 0;
   virtual void Detach() = 0;
   virtual void SetVSync(bool enable, int &mode) = 0;
-  virtual bool SwapBuffers(const CDirtyRegionList& dirty, int &mode) = 0;
+  virtual void SwapBuffers(int &mode) = 0;
   virtual void QueryExtensions() = 0;
   virtual bool IsExtSupported(const char* extension) = 0;
 

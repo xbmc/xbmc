@@ -96,7 +96,7 @@ protected:
   void DeleteDevice();
   void OnDeviceLost();
   void OnDeviceReset();
-  bool PresentRenderImpl(const CDirtyRegionList &dirty);
+  void PresentRenderImpl(bool rendered);
 
   void SetFocusWnd(HWND wnd) { m_hFocusWnd = wnd; }
   void SetDeviceWnd(HWND wnd) { m_hDeviceWnd = wnd; }
