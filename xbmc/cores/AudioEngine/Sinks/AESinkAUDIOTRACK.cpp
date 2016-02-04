@@ -773,7 +773,7 @@ double CAESinkAUDIOTRACK::GetMovingAverageDelay(double newestdelay)
   size_t size = m_linearmovingaverage.size();
   if (size > MOVING_AVERAGE_MAX_MEMBERS)
   {
-    m_linearmovingaverage.erase(m_linearmovingaverage.begin());
+    m_linearmovingaverage.pop_front();
     size--;
   }
   // m_{LWMA}^{(n)}(t) = \frac{2}{n (n+1)} \sum_{i=1}^n i \; x(t-n+i)
