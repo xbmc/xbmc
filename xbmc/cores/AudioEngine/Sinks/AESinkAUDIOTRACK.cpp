@@ -188,7 +188,7 @@ CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
   m_passthrough = false;
   m_min_buffer_size = 0;
   m_lastPlaybackHeadPosition = 0;
-  m_pause_counter = 0;
+  m_pause_time = 0;
 }
 
 CAESinkAUDIOTRACK::~CAESinkAUDIOTRACK()
@@ -209,7 +209,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   m_offset = -1;
   m_lastPlaybackHeadPosition = 0;
   m_linearmovingaverage.clear();
-  m_pause_counter = 0;
+  m_pause_time = 0;
   CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize requested: sampleRate %u; format: %s; channels: %d", format.m_sampleRate, CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_channelLayout.Count());
 
   int stream = CJNIAudioManager::STREAM_MUSIC;
@@ -446,7 +446,7 @@ void CAESinkAUDIOTRACK::Deinitialize()
 
   m_duration_written = 0;
   m_offset = -1;
-  m_pause_counter = 0;
+  m_pause_time = 0;
 
   m_lastPlaybackHeadPosition = 0;
   m_linearmovingaverage.clear();
@@ -490,7 +490,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 
   if (m_passthrough && !m_info.m_wantsIECPassthrough)
   {
-    if (m_pause_counter > 0)
+    if (m_pause_time > 0)
     {
       const double d = GetMovingAverageDelay(GetCacheTotal());
       CLog::Log(LOGDEBUG, "Faking Delay: smooth %lf measured: %lf", d * 1000, GetCacheTotal() * 1000);
@@ -558,11 +558,11 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   int loop_written = 0;
   if (frames)
   {
-    if (m_pause_counter > 0)
+    if (m_pause_time > 0)
     {
       usleep(m_format.m_streamInfo.GetDuration() * 1000);
-      CLog::Log(LOGDEBUG, "Slept: %u", m_pause_counter);
-      m_pause_counter--;
+      CLog::Log(LOGDEBUG, "Sleeptime: %lf left", m_pause_time);
+      m_pause_time -= m_format.m_streamInfo.GetDuration() / 1000.0;
     }
     if (m_at_jni->getPlayState() != CJNIAudioTrack::PLAYSTATE_PLAYING)
       m_at_jni->play();
@@ -634,6 +634,23 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   }
   unsigned int written_frames = (unsigned int) (written/m_format.m_frameSize);
   double time_to_add_ms = 1000.0 * (CurrentHostCounter() - startTime) / CurrentHostFrequency();
+  if (m_passthrough && !m_info.m_wantsIECPassthrough)
+  {
+    // AT does not consume in a blocking way - it runs ahead and blocks
+    // exactly once with the last package for some 100 ms
+    // help it sleeping a bit
+    if (time_to_add_ms < m_format.m_streamInfo.GetDuration() / 2.0)
+    {
+      // leave enough head room for eventualities
+      double extra_sleep = m_format.m_streamInfo.GetDuration() / 4.0;
+      usleep(extra_sleep * 1000);
+      time_to_add_ms += extra_sleep;
+    }
+
+    if (m_pause_time < 0)
+      m_pause_time = 0;
+  }
+
   CLog::Log(LOGDEBUG, "Time needed for add Packet: %lf ms", time_to_add_ms);
   return written_frames;
 }
@@ -646,8 +663,8 @@ void CAESinkAUDIOTRACK::AddPause(unsigned int millis)
   CLog::Log(LOGDEBUG, "AddPause was called with millis: %u and PlayState: %d", millis, m_at_jni->getPlayState());
 
   // we can cache a maximum amount of m_audiotrackbuffer_sec seconds of silence
-  if ((double) m_pause_counter * millis / 1000.0 <= m_audiotrackbuffer_sec)
-    m_pause_counter++;
+  if (m_pause_time + millis / 1000.0 <= m_audiotrackbuffer_sec)
+    m_pause_time += millis / 1000.0;
 
     usleep(millis * 1000);
 }
@@ -661,7 +678,7 @@ void CAESinkAUDIOTRACK::Drain()
   m_at_jni->stop();
   m_duration_written = 0;
   m_offset = -1;
-  m_pause_counter = 0;
+  m_pause_time = 0;
   m_lastPlaybackHeadPosition = 0;
   m_linearmovingaverage.clear();
 }
