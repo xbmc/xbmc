@@ -708,7 +708,7 @@ void CPeripherals::OnSettingChanged(const CSetting *setting)
   {
     // user set language, no longer use the TV's language
     std::vector<CPeripheral *> cecDevices;
-    if (g_peripherals.GetPeripheralsWithFeature(cecDevices, FEATURE_CEC) > 0)
+    if (GetPeripheralsWithFeature(cecDevices, FEATURE_CEC) > 0)
     {
       for (std::vector<CPeripheral *>::iterator it = cecDevices.begin(); it != cecDevices.end(); ++it)
         (*it)->SetSetting("use_tv_menu_language", false);
