@@ -117,6 +117,7 @@ void CPeripherals::Initialise()
 
       return false;
     }), m_busses.end());
+  }
 
   m_eventScanner.Start();
 
@@ -130,8 +131,6 @@ void CPeripherals::Clear()
 
   CSingleLock lock(m_critSection);
   /* delete busses and devices */
-  for (unsigned int iBusPtr = 0; iBusPtr < m_busses.size(); iBusPtr++)
-    delete m_busses.at(iBusPtr);
   m_busses.clear();
 
   /* delete mappings */
@@ -171,20 +170,18 @@ void CPeripherals::TriggerDeviceScan(const PeripheralBusType type /* = PERIPHERA
   }
 }
 
-CPeripheralBus *CPeripherals::GetBusByType(const PeripheralBusType type) const
+PeripheralBusPtr CPeripherals::GetBusByType(const PeripheralBusType type) const
 {
   CSingleLock lock(m_critSection);
-  CPeripheralBus *bus(NULL);
-  for (unsigned int iBusPtr = 0; iBusPtr < m_busses.size(); iBusPtr++)
-  {
-    if (m_busses.at(iBusPtr)->Type() == type)
-    {
-      bus = m_busses.at(iBusPtr);
-      break;
-    }
-  }
 
-  return bus;
+  const auto& bus = std::find_if(m_busses.cbegin(), m_busses.cend(),
+    [type](const PeripheralBusPtr& bus) {
+      return bus->Type() == type;
+    });
+  if (bus != m_busses.cend())
+    return *bus;
+
+  return nullptr;
 }
 
 CPeripheral *CPeripherals::GetPeripheralAtLocation(const std::string &strLocation, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
@@ -210,17 +207,18 @@ bool CPeripherals::HasPeripheralAtLocation(const std::string &strLocation, Perip
   return (GetPeripheralAtLocation(strLocation, busType) != nullptr);
 }
 
-CPeripheralBus *CPeripherals::GetBusWithDevice(const std::string &strLocation) const
+PeripheralBusPtr CPeripherals::GetBusWithDevice(const std::string &strLocation) const
 {
   CSingleLock lock(m_critSection);
-  for (unsigned int iBusPtr = 0; iBusPtr < m_busses.size(); iBusPtr++)
-  {
-    /* return the first bus that matches */
-    if (m_busses.at(iBusPtr)->HasPeripheral(strLocation))
-      return m_busses.at(iBusPtr);
-  }
 
-  return NULL;
+  const auto& bus = std::find_if(m_busses.cbegin(), m_busses.cend(),
+    [&strLocation](const PeripheralBusPtr& bus) {
+    return bus->HasPeripheral(strLocation);
+  });
+  if (bus != m_busses.cend())
+    return *bus;
+
+  return nullptr;
 }
 
 int CPeripherals::GetPeripheralsWithFeature(std::vector<CPeripheral *> &results, const PeripheralFeature feature, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
@@ -707,13 +705,13 @@ bool CPeripherals::GetNextKeypress(float frameTime, CKey &key)
 
 void CPeripherals::ProcessEvents(void)
 {
-  std::vector<CPeripheralBus*> busses;
+  std::vector<PeripheralBusPtr> busses;
   {
     CSingleLock lock(m_critSection);
     busses = m_busses;
   }
 
-  for (CPeripheralBus* bus : busses)
+  for (PeripheralBusPtr& bus : busses)
     bus->ProcessEvents();
 }
 
@@ -721,7 +719,7 @@ PeripheralAddonPtr CPeripherals::GetAddon(const CPeripheral* device)
 {
   PeripheralAddonPtr addon;
 
-  CPeripheralBusAddon* addonBus = static_cast<CPeripheralBusAddon*>(GetBusByType(PERIPHERAL_BUS_ADDON));
+  PeripheralBusAddonPtr addonBus = std::static_pointer_cast<CPeripheralBusAddon>(GetBusByType(PERIPHERAL_BUS_ADDON));
   if (device && addonBus)
   {
     PeripheralBusType busType = device->GetBusType();
@@ -744,7 +742,7 @@ PeripheralAddonPtr CPeripherals::GetAddon(const CPeripheral* device)
 
 void CPeripherals::ResetButtonMaps(const std::string& controllerId)
 {
-  CPeripheralBusAddon* addonBus = static_cast<CPeripheralBusAddon*>(GetBusByType(PERIPHERAL_BUS_ADDON));
+  PeripheralBusAddonPtr addonBus = std::static_pointer_cast<CPeripheralBusAddon>(GetBusByType(PERIPHERAL_BUS_ADDON));
 
   std::vector<CPeripheral*> peripherals;
   GetPeripheralsWithFeature(peripherals, FEATURE_JOYSTICK);

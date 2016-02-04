@@ -55,7 +55,7 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
     {
       if (m_mappedBusType == PERIPHERAL_BUS_ADDON)
       {
-        CPeripheralBusAddon* addonBus = static_cast<CPeripheralBusAddon*>(g_peripherals.GetBusByType(PERIPHERAL_BUS_ADDON));
+        PeripheralBusAddonPtr addonBus = std::static_pointer_cast<CPeripheralBusAddon>(g_peripherals.GetBusByType(PERIPHERAL_BUS_ADDON));
         if (addonBus)
         {
           if (addonBus->InitializeProperties(this))

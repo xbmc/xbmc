@@ -164,7 +164,7 @@ void CGUIControllerWindow::OnInitWindow(void)
   CApplicationMessenger::GetInstance().SendGUIMessage(msgFocus, WINDOW_INVALID, false);
 
   // Check for button mapping support (TODO: remove this)
-  CPeripheralBusAddon* bus = static_cast<CPeripheralBusAddon*>(g_peripherals.GetBusByType(PERIPHERAL_BUS_ADDON));
+  PeripheralBusAddonPtr bus = std::static_pointer_cast<CPeripheralBusAddon>(g_peripherals.GetBusByType(PERIPHERAL_BUS_ADDON));
   if (bus && bus->GetAddonCount() == 0)
   {
     // TODO: Move the XML implementation of button map storage from add-on to

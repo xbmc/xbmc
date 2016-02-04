@@ -19,10 +19,12 @@
  *
  */
 
+#include <memory>
 #include <vector>
-#include "threads/Thread.h"
+
 #include "peripherals/PeripheralTypes.h"
 #include "peripherals/devices/Peripheral.h"
+#include "threads/Thread.h"
 
 class CFileItemList;
 
@@ -177,4 +179,5 @@ namespace PERIPHERALS
     CCriticalSection           m_critSection;
     CEvent                     m_triggerEvent;
   };
+  using PeripheralBusPtr = std::shared_ptr<CPeripheralBus>;
 }

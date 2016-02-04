@@ -85,7 +85,7 @@ namespace PERIPHERALS
      * @param strLocation The location.
      * @return The bus or NULL if no device was found.
      */
-    virtual CPeripheralBus *GetBusWithDevice(const std::string &strLocation) const;
+    virtual PeripheralBusPtr GetBusWithDevice(const std::string &strLocation) const;
 
     /*!
      * @brief Get all peripheral instances that have the given feature.
@@ -144,7 +144,7 @@ namespace PERIPHERALS
      * @param type The bus type.
      * @return The bus or NULL if it wasn't found.
      */
-    virtual CPeripheralBus *GetBusByType(const PeripheralBusType type) const;
+    virtual PeripheralBusPtr GetBusByType(const PeripheralBusType type) const;
 
     /*!
      * @brief Get all fileitems for a path.
@@ -252,7 +252,7 @@ namespace PERIPHERALS
 #if !defined(HAVE_LIBCEC)
     bool                                 m_bMissingLibCecWarningDisplayed;
 #endif
-    std::vector<CPeripheralBus *>        m_busses;
+    std::vector<PeripheralBusPtr>        m_busses;
     std::vector<PeripheralDeviceMapping> m_mappings;
     CEventScanner                        m_eventScanner;
     CCriticalSection                     m_critSection;

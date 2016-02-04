@@ -25,6 +25,7 @@
 #include "peripherals/bus/PeripheralBus.h"
 #include "threads/CriticalSection.h"
 
+#include <memory>
 #include <string>
 
 namespace PERIPHERALS
@@ -81,4 +82,5 @@ namespace PERIPHERALS
     PeripheralAddonVector m_failedAddons;
     CCriticalSection      m_critSection;
   };
+  using PeripheralBusAddonPtr = std::shared_ptr<CPeripheralBusAddon>;
 }
