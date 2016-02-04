@@ -98,25 +98,27 @@ void CPeripherals::Initialise()
   /* load mappings from peripherals.xml */
   LoadMappings();
 
+  {
+    CSingleLock bussesLock(m_critSectionBusses);
 #if defined(HAVE_PERIPHERAL_BUS_USB)
-  m_busses.push_back(std::make_shared<CPeripheralBusUSB>(this));
+    m_busses.push_back(std::make_shared<CPeripheralBusUSB>(this));
 #endif
 #if defined(HAVE_LIBCEC)
-  m_busses.push_back(std::make_shared<CPeripheralBusCEC>(this));
+    m_busses.push_back(std::make_shared<CPeripheralBusCEC>(this));
 #endif
-  m_busses.push_back(std::make_shared<CPeripheralBusAddon>(this));
+    m_busses.push_back(std::make_shared<CPeripheralBusAddon>(this));
 
-  /* initialise all known busses */
-  m_busses.erase(std::remove_if(m_busses.begin(), m_busses.end(),
-    [](PeripheralBusPtr bus) {
-      if (!bus->Initialise())
-      {
-        CLog::Log(LOGERROR, "%s - failed to initialise bus %s", __FUNCTION__, PeripheralTypeTranslator::BusTypeToString(bus->Type()));
-        return true;
-      }
+    /* initialise all known busses */
+    m_busses.erase(std::remove_if(m_busses.begin(), m_busses.end(),
+      [](PeripheralBusPtr bus) {
+        if (!bus->Initialise())
+        {
+          CLog::Log(LOGERROR, "%s - failed to initialise bus %s", __FUNCTION__, PeripheralTypeTranslator::BusTypeToString(bus->Type()));
+          return true;
+        }
 
-      return false;
-    }), m_busses.end());
+        return false;
+      }), m_busses.end());
   }
 
   m_eventScanner.Start();
@@ -129,20 +131,26 @@ void CPeripherals::Clear()
 {
   m_eventScanner.Stop();
 
-  CSingleLock lock(m_critSection);
-  /* delete busses and devices */
-  m_busses.clear();
-
-  /* delete mappings */
-  for (auto& mapping : m_mappings)
   {
-    std::map<std::string, PeripheralDeviceSetting> settings = mapping.m_settings;
-    for (const auto& setting : mapping.m_settings)
-      delete setting.second.m_setting;
-    mapping.m_settings.clear();
+    CSingleLock bussesLock(m_critSectionBusses);
+    /* delete busses and devices */
+    m_busses.clear();
   }
-  m_mappings.clear();
 
+  {
+    CSingleLock mappingsLock(m_critSectionMappings);
+    /* delete mappings */
+    for (auto& mapping : m_mappings)
+    {
+      std::map<std::string, PeripheralDeviceSetting> settings = mapping.m_settings;
+      for (const auto& setting : mapping.m_settings)
+        delete setting.second.m_setting;
+      mapping.m_settings.clear();
+    }
+    m_mappings.clear();
+  }
+
+  CSingleLock lock(m_critSection);
   /* reset class state */
   m_bIsStarted   = false;
   m_bInitialised = false;
@@ -153,7 +161,7 @@ void CPeripherals::Clear()
 
 void CPeripherals::TriggerDeviceScan(const PeripheralBusType type /* = PERIPHERAL_BUS_UNKNOWN */)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_critSectionBusses);
   for (auto& bus : m_busses)
   {
     bool bScan = false;
@@ -172,7 +180,7 @@ void CPeripherals::TriggerDeviceScan(const PeripheralBusType type /* = PERIPHERA
 
 PeripheralBusPtr CPeripherals::GetBusByType(const PeripheralBusType type) const
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_critSectionBusses);
 
   const auto& bus = std::find_if(m_busses.cbegin(), m_busses.cend(),
     [type](const PeripheralBusPtr& bus) {
@@ -186,7 +194,7 @@ PeripheralBusPtr CPeripherals::GetBusByType(const PeripheralBusType type) const
 
 CPeripheral *CPeripherals::GetPeripheralAtLocation(const std::string &strLocation, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_critSectionBusses);
   for (const auto& bus : m_busses)
   {
     /* check whether the bus matches if a bus type other than unknown was passed */
@@ -209,7 +217,7 @@ bool CPeripherals::HasPeripheralAtLocation(const std::string &strLocation, Perip
 
 PeripheralBusPtr CPeripherals::GetBusWithDevice(const std::string &strLocation) const
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_critSectionBusses);
 
   const auto& bus = std::find_if(m_busses.cbegin(), m_busses.cend(),
     [&strLocation](const PeripheralBusPtr& bus) {
@@ -223,7 +231,7 @@ PeripheralBusPtr CPeripherals::GetBusWithDevice(const std::string &strLocation) 
 
 int CPeripherals::GetPeripheralsWithFeature(std::vector<CPeripheral *> &results, const PeripheralFeature feature, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_critSectionBusses);
   int iReturn(0);
   for (const auto& bus : m_busses)
   {
@@ -359,6 +367,8 @@ void CPeripherals::OnDeviceChanged()
 
 bool CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, PeripheralScanResult& result) const
 {
+  CSingleLock lock(m_critSectionMappings);
+
   /* check all mappings in the order in which they are defined in peripherals.xml */
   for (const auto& mapping : m_mappings)
   {
@@ -392,6 +402,8 @@ bool CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, PeripheralScan
 
 void CPeripherals::GetSettingsFromMapping(CPeripheral &peripheral) const
 {
+  CSingleLock lock(m_critSectionMappings);
+
   /* check all mappings in the order in which they are defined in peripherals.xml */
   for (const auto& mapping : m_mappings)
   {
@@ -419,6 +431,8 @@ void CPeripherals::GetSettingsFromMapping(CPeripheral &peripheral) const
 #define SS(x) ((x) ? x : "")
 bool CPeripherals::LoadMappings()
 {
+  CSingleLock lock(m_critSectionMappings);
+
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile("special://xbmc/system/peripherals.xml"))
   {
@@ -570,7 +584,7 @@ void CPeripherals::GetDirectory(const std::string &strPath, CFileItemList &items
   std::string strPathCut = strPath.substr(14);
   std::string strBus = strPathCut.substr(0, strPathCut.find('/'));
 
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_critSectionBusses);
   for (const auto& bus : m_busses)
   {
     if (StringUtils::EqualsNoCase(strBus, "all") ||
@@ -587,7 +601,7 @@ CPeripheral *CPeripherals::GetByPath(const std::string &strPath) const
   std::string strPathCut = strPath.substr(14);
   std::string strBus = strPathCut.substr(0, strPathCut.find('/'));
 
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_critSectionBusses);
   for (const auto& bus : m_busses)
   {
     if (StringUtils::EqualsNoCase(strBus, PeripheralTypeTranslator::BusTypeToString(bus->Type())))

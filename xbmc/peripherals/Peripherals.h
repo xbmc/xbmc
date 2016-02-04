@@ -256,5 +256,7 @@ namespace PERIPHERALS
     std::vector<PeripheralDeviceMapping> m_mappings;
     CEventScanner                        m_eventScanner;
     CCriticalSection                     m_critSection;
+    CCriticalSection                     m_critSectionBusses;
+    CCriticalSection                     m_critSectionMappings;
   };
 }
