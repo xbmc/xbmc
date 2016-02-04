@@ -399,6 +399,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
 
     unsigned int maxWidth = 0;
     unsigned int maxHeight = 0;
+    uint64_t maxMemoryUsage = 91238400;// 1920*1080*4*11 bytes, i.e, a total of approx. 12 full hd frames
 
     auto frame = anim.ReadFrame();
     while (frame)
@@ -411,7 +412,16 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
         maxWidth = std::max(maxWidth, glTexture->GetWidth());
         maxHeight = std::max(maxHeight, glTexture->GetHeight());
       }
-      frame = anim.ReadFrame();
+
+      if (pMap->GetMemoryUsage() <= maxMemoryUsage)
+      {
+        frame = anim.ReadFrame();
+      } 
+      else
+      {
+        CLog::Log(LOGDEBUG, "Memory limit (%" PRIu64 " bytes) exceeded, %i frames extracted from file : %s", (maxMemoryUsage/11)*12,pMap->GetTexture().size(), CURL::GetRedacted(strPath).c_str());
+        break;
+      }
     }
 
     pMap->SetWidth((int)maxWidth);
