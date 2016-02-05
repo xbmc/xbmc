@@ -85,6 +85,11 @@ bool CGUIControllerWindow::OnMessage(CGUIMessage& message)
         ResetController();
         return true;
       }
+      else if (controlId == CONTROL_HELP_BUTTON)
+      {
+        ShowHelp();
+        return true;
+      }
       else if (CONTROL_CONTROLLER_BUTTONS_START <= controlId && controlId < CONTROL_CONTROLLER_BUTTONS_END)
       {
         OnControllerSelected(controlId - CONTROL_CONTROLLER_BUTTONS_START);
@@ -174,7 +179,7 @@ void CGUIControllerWindow::OnInitWindow(void)
 
     // "Joystick support not found"
     // "Controller configuration is disabled. Install the proper joystick support add-on."
-    CGUIDialogOK::ShowAndGetInput(35056, 35057);
+    CGUIDialogOK::ShowAndGetInput(CVariant{35056}, CVariant{35057});
 
     // close the window as there's nothing that can be done
     Close();
@@ -240,4 +245,11 @@ void CGUIControllerWindow::ResetController(void)
 {
   if (m_controllerList)
     m_controllerList->ResetController();
+}
+
+void CGUIControllerWindow::ShowHelp(void)
+{
+  // "Help"
+  // <help text>
+  CGUIDialogOK::ShowAndGetInput(CVariant{10043}, CVariant{35055});
 }

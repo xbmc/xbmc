@@ -46,8 +46,10 @@ namespace GAME
     void OnFeatureFocused(unsigned int featureIndex);
     void OnFeatureSelected(unsigned int featureIndex);
 
+    // Action for the available button
     void GetMoreControllers(void);
     void ResetController(void);
+    void ShowHelp(void);
 
     IControllerList* m_controllerList;
     IFeatureList*    m_featureList;

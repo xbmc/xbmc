@@ -15517,7 +15517,19 @@ msgctxt "#35050"
 msgid "Controller profiles"
 msgstr ""
 
-#empty strings from id 35051 to 35055
+#empty strings from id 35051 to 35054
+
+#. Help text for controller window
+#: xbmc/games/controllers/windows/GUIControllerWindow.cpp
+msgctxt "#35055"
+msgid "Use the keyboard or remote to select a controller profile. Move to the buttons and select the first one. When prompted, press the button on your game controller that best matches what you see on the screen. If you make a mistake you can repeat the process."
+msgstr ""
+
+#. Title of error dialog shown when no joystick add-ons provide button mapping
+#: xbmc/games/controllers/windows/GUIControllerWindow.cpp
+msgctxt "#35056"
+msgid "Joystick support not found"
+msgstr ""
 
 #. Text of error dialog shown when no joystick add-ons provide button mapping
 #: xbmc/games/controllers/windows/GUIControllerWindow.cpp
