@@ -65,22 +65,10 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
     case ADDON_SCRIPT_LYRICS:
     case ADDON_SCRIPT_MODULE:
     case ADDON_SUBTITLE_MODULE:
+    case ADDON_SCRIPT_WEATHER:
       return std::make_shared<CAddon>(std::move(m_props));
     case ADDON_WEB_INTERFACE:
       return CWebinterface::FromExtension(std::move(m_props), m_extPoint);
-    case ADDON_SCRIPT_WEATHER:
-    {
-      // Eden (API v2.0) broke old weather add-ons
-      AddonPtr result(new CAddon(std::move(m_props)));
-      AddonVersion ver1 = result->GetDependencyVersion("xbmc.python");
-      AddonVersion ver2 = AddonVersion("2.0");
-      if (ver1 < ver2)
-      {
-        CLog::Log(LOGINFO,"%s: Weather add-ons for api < 2.0 unsupported (%s)",__FUNCTION__,result->ID().c_str());
-        return AddonPtr();
-      }
-      return result;
-    }
     case ADDON_SERVICE:
       return CService::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_SCRAPER_ALBUMS:
