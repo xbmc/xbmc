@@ -42,7 +42,7 @@ public:
    \param showInstalled whether installed addons should be in the list
    \param showInstallable whether installable addons should be in the list
    \param showMore whether to show the "Get More" button (only makes sense if showInstalled is true and showInstallable is false)
-   \return 1 if an addon was selected, 2 if "Get More" was chosen, or 0 if an error occurred or if the selection process was cancelled
+   \return 1 if an addon was selected or multiple selection was specified, 2 if "Get More" was chosen, 0 if the selection process was cancelled or -1 if an error occurred or 
    */
   static int SelectAddonID(ADDON::TYPE type, std::string &addonID, bool showNone = false, bool showDetails = true, bool showInstalled = true, bool showInstallable = false, bool showMore = true);
   static int SelectAddonID(const std::vector<ADDON::TYPE> &types, std::string &addonID, bool showNone = false, bool showDetails = true, bool showInstalled = true, bool showInstallable = false, bool showMore = true);
@@ -55,7 +55,7 @@ public:
    \param showInstalled whether installed addons should be in the list
    \param showInstallable whether installable addons should be in the list
    \param showMore whether to show the "Get More" button (only makes sense if showInstalled is true and showInstallable is false)
-   \return 1 if an addon was selected or multiple selection was specified, 2 if "Get More" was chosen, or 0 if an error occurred or if the selection process was cancelled
+   \return 1 if an addon was selected or multiple selection was specified, 2 if "Get More" was chosen, 0 if the selection process was cancelled or -1 if an error occurred or 
    */
   static int SelectAddonID(ADDON::TYPE type, std::vector<std::string> &addonIDs, bool showNone = false, bool showDetails = true, bool multipleSelection = true, bool showInstalled = true, bool showInstallable = false, bool showMore = true);
   static int SelectAddonID(const std::vector<ADDON::TYPE> &types, std::vector<std::string> &addonIDs, bool showNone = false, bool showDetails = true, bool multipleSelection = true, bool showInstalled = true, bool showInstallable = false, bool showMore = true);
