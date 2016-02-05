@@ -728,8 +728,6 @@
 		DF2345E415FA639500A934F6 /* UPnPServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2345DF15FA639500A934F6 /* UPnPServer.cpp */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP -I$SRCROOT/lib/libUPnP/Neptune/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Platinum  -I$SRCROOT/lib/libUPnP/Platinum/Source/Extras -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaServer -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaConnect -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaRenderer"; }; };
 		DF2401261B41A26F001E02DA /* ImageResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2401241B41A26E001E02DA /* ImageResource.cpp */; };
 		DF2401271B41A26F001E02DA /* ImageResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2401241B41A26E001E02DA /* ImageResource.cpp */; };
-		DF2863B719918B07008994AB /* Gif.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2863B519918B07008994AB /* Gif.cpp */; };
-		DF2863B819918B07008994AB /* Gif.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2863B519918B07008994AB /* Gif.cpp */; };
 		DF28DF4D17B8379E0077F41A /* ProfilesOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28DF4B17B8379E0077F41A /* ProfilesOperations.cpp */; };
 		DF28DF4E17B8379E0077F41A /* ProfilesOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28DF4B17B8379E0077F41A /* ProfilesOperations.cpp */; };
 		DF28EDA2170E1A11005FA9D2 /* GUIDialogLockSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28ED94170E1A11005FA9D2 /* GUIDialogLockSettings.cpp */; };
@@ -3521,9 +3519,6 @@
 		DF2345E015FA639500A934F6 /* UPnPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPServer.h; sourceTree = "<group>"; };
 		DF2401241B41A26E001E02DA /* ImageResource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImageResource.cpp; sourceTree = "<group>"; };
 		DF2401251B41A26E001E02DA /* ImageResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageResource.h; sourceTree = "<group>"; };
-		DF2863B419918B07008994AB /* DllLibGif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibGif.h; sourceTree = "<group>"; };
-		DF2863B519918B07008994AB /* Gif.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Gif.cpp; sourceTree = "<group>"; };
-		DF2863B619918B07008994AB /* Gif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gif.h; sourceTree = "<group>"; };
 		DF28DF4B17B8379E0077F41A /* ProfilesOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProfilesOperations.cpp; sourceTree = "<group>"; };
 		DF28DF4C17B8379E0077F41A /* ProfilesOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfilesOperations.h; sourceTree = "<group>"; };
 		DF28ED94170E1A11005FA9D2 /* GUIDialogLockSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogLockSettings.cpp; sourceTree = "<group>"; };
@@ -4999,14 +4994,11 @@
 				F558F27A13ABD56600631E12 /* DirtyRegionSolvers.h */,
 				F558F27D13ABD57400631E12 /* DirtyRegionTracker.cpp */,
 				F558F27E13ABD57400631E12 /* DirtyRegionTracker.h */,
-				DF2863B419918B07008994AB /* DllLibGif.h */,
 				39C38CDF1BCD600E000F59F5 /* FFmpegImage.cpp */,
 				39C38CE01BCD600E000F59F5 /* FFmpegImage.h */,
 				18B7C7591294222E009E7A26 /* FrameBufferObject.cpp */,
 				18B7C6FB1294222D009E7A26 /* FrameBufferObject.h */,
 				18B7C6FC1294222D009E7A26 /* Geometry.h */,
-				DF2863B519918B07008994AB /* Gif.cpp */,
-				DF2863B619918B07008994AB /* Gif.h */,
 				18B7C75A1294222E009E7A26 /* GraphicContext.cpp */,
 				18B7C6FD1294222D009E7A26 /* GraphicContext.h */,
 				18B7C6FE1294222D009E7A26 /* gui3d.h */,
@@ -10203,7 +10195,6 @@
 				7CF34D9F1930264A00D543C5 /* AudioEncoder.cpp in Sources */,
 				7C973CFA1B5038580002A874 /* GUIDialogAudioDSPManager.cpp in Sources */,
 				7CF80DC919710DC2003B2B34 /* KeyboardLayout.cpp in Sources */,
-				DF2863B719918B07008994AB /* Gif.cpp in Sources */,
 				B179BD6B1AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.cpp in Sources */,
 				DFD7173B1C09FEC60025D964 /* OSXGNUReplacements.c in Sources */,
 				B179BD6E1AD8EA7B00EA8D49 /* InputCodingTableBasePY.cpp in Sources */,
@@ -11273,7 +11264,6 @@
 				7CF34DA01930264A00D543C5 /* AudioEncoder.cpp in Sources */,
 				395C29F71A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp in Sources */,
 				7CF80DCA19710DC2003B2B34 /* KeyboardLayout.cpp in Sources */,
-				DF2863B819918B07008994AB /* Gif.cpp in Sources */,
 				B179BD6C1AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.cpp in Sources */,
 				B179BD6F1AD8EA7B00EA8D49 /* InputCodingTableBasePY.cpp in Sources */,
 				B179BD721AD8EA7B00EA8D49 /* InputCodingTableFactory.cpp in Sources */,

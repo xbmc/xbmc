@@ -3093,9 +3093,6 @@
     <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryRefreshingJob.cpp">
       <Filter>video\jobs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\Gif.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\messaging\helpers\DialogHelper.cpp">
       <Filter>messaging\helpers</Filter>
     </ClCompile>
@@ -4760,9 +4757,6 @@
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegionTracker.h">
       <Filter>guilib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\DllLibGif.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegion.h">
       <Filter>guilib</Filter>
     </ClInclude>
@@ -6111,9 +6105,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\win32\memcpy_sse2.h">
       <Filter>utils\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\Gif.h">
-      <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\messaging\helpers\DialogHelper.h">
       <Filter>messaging\helpers</Filter>
