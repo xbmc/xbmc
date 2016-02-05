@@ -25,6 +25,7 @@
 #include "IConfigurationWindow.h"
 #include "addons/GUIWindowAddonBrowser.h"
 #include "addons/IAddon.h"
+#include "addons/AddonManager.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/WindowIDs.h"
 #include "messaging/ApplicationMessenger.h"
@@ -137,6 +138,12 @@ bool CGUIControllerWindow::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
+void CGUIControllerWindow::Notify(const Observable &obs, const ObservableMessage msg)
+{
+  if (msg == ObservableMessageAddons)
+    UpdateButtons();
+}
+
 void CGUIControllerWindow::OnInitWindow(void)
 {
   using namespace KODI::MESSAGING;
@@ -184,10 +191,16 @@ void CGUIControllerWindow::OnInitWindow(void)
     // close the window as there's nothing that can be done
     Close();
   }
+
+  UpdateButtons();
+
+  ADDON::CAddonMgr::GetInstance().RegisterObserver(this);
 }
 
 void CGUIControllerWindow::OnDeinitWindow(int nextWindowID)
 {
+  ADDON::CAddonMgr::GetInstance().UnregisterObserver(this);
+
   if (m_controllerList)
   {
     m_controllerList->Deinitialize();
@@ -227,6 +240,14 @@ void CGUIControllerWindow::OnFeatureSelected(unsigned int featureIndex)
 {
   if (m_featureList)
     m_featureList->OnSelect(featureIndex);
+}
+
+void CGUIControllerWindow::UpdateButtons(void)
+{
+  using namespace ADDON;
+
+  VECADDONS addons;
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_GET_MORE, CAddonMgr::GetInstance().GetInstallableAddons(addons, ADDON::ADDON_GAME_CONTROLLER) && !addons.empty());
 }
 
 void CGUIControllerWindow::GetMoreControllers(void)

@@ -20,13 +20,15 @@
 #pragma once
 
 #include "guilib/GUIDialog.h"
+#include "utils/Observer.h"
 
 namespace GAME
 {
   class IControllerList;
   class IFeatureList;
 
-  class CGUIControllerWindow : public CGUIDialog
+  class CGUIControllerWindow : public CGUIDialog,
+                               public Observer
   {
   public:
     CGUIControllerWindow(void);
@@ -34,6 +36,9 @@ namespace GAME
 
     // implementation of CGUIControl via CGUIDialog
     virtual bool OnMessage(CGUIMessage& message) override;
+
+    // implementation of Observer
+    void Notify(const Observable &obs, const ObservableMessage msg) override;
 
   protected:
     // implementation of CGUIWindow via CGUIDialog
@@ -45,6 +50,8 @@ namespace GAME
     void OnControllerSelected(unsigned int controllerIndex);
     void OnFeatureFocused(unsigned int featureIndex);
     void OnFeatureSelected(unsigned int featureIndex);
+
+    void UpdateButtons(void);
 
     // Action for the available button
     void GetMoreControllers(void);
