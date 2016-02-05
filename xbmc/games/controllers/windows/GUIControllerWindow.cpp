@@ -226,8 +226,8 @@ void CGUIControllerWindow::OnControllerFocused(unsigned int controllerIndex)
 
 void CGUIControllerWindow::OnControllerSelected(unsigned int controllerIndex)
 {
-  if (m_controllerList)
-    m_controllerList->OnSelect(controllerIndex);
+  // jump to the feature list
+  SET_CONTROL_FOCUS(CONTROL_FEATURE_BUTTONS_START, 0);
 }
 
 void CGUIControllerWindow::OnFeatureFocused(unsigned int featureIndex)
