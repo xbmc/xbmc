@@ -3228,6 +3228,9 @@ int CVideoPlayer::GetSubtitle()
 
 void CVideoPlayer::UpdateStreamInfos()
 {
+  if (!m_pDemuxer)
+    return;
+
   CSingleLock lock(m_SelectionStreams.m_section);
   int streamId;
   std::string retVal;
