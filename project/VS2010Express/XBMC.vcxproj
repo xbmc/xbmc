@@ -423,6 +423,14 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\test\TestNfsFile.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\tags\test\TestTagLoaderTagLib.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\udf25.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\UDFDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\UDFFile.cpp" />
@@ -875,6 +883,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\test\TestURL.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\test\TestUtil.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -1173,6 +1185,10 @@
     <ClInclude Include="..\..\xbmc\settings\windows\GUIWindowSettingsCategory.h" />
     <ClInclude Include="..\..\xbmc\settings\windows\GUIWindowSettingsScreenCalibration.h" />
     <ClInclude Include="..\..\xbmc\settings\windows\GUIWindowTestPattern.h" />
+    <ClCompile Include="..\..\xbmc\threads\test\TestHelpers.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClInclude Include="..\..\xbmc\utils\ActorProtocol.h" />
     <ClInclude Include="..\..\xbmc\utils\auto_buffer.h" />
     <ClInclude Include="..\..\xbmc\utils\BooleanLogic.h" />
@@ -1295,6 +1311,22 @@
     <ClInclude Include="..\..\xbmc\network\mdns\ZeroconfBrowserMDNS.h" />
     <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralImon.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\AddonsOperations.h" />
+    <ClCompile Include="..\..\xbmc\threads\test\TestAtomics.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\test\TestEvent.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\test\TestSharedSection.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\test\TestThreadLocal.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\ThumbLoader.cpp" />
     <ClCompile Include="..\..\xbmc\utils\ActorProtocol.cpp" />
     <ClCompile Include="..\..\xbmc\utils\auto_buffer.cpp" />
@@ -1337,6 +1369,10 @@
     <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryRefreshingJob.cpp" />
     <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryScanningJob.cpp" />
     <ClCompile Include="..\..\xbmc\video\PlayerController.cpp" />
+    <ClCompile Include="..\..\xbmc\video\test\TestVideoInfoScanner.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\video\videosync\VideoSyncD3D.cpp" />
     <ClCompile Include="..\..\xbmc\video\VideoLibraryQueue.cpp" />
     <ClCompile Include="..\..\xbmc\video\VideoThumbLoader.cpp" />
