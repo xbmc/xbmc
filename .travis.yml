@@ -81,7 +81,10 @@ before_script:
 
 # Actually build
 #
-script: make -j3
+script:
+  - make -j3
+  - make testsuite
+  - ./kodi-test
 
 # Disable annoying emails
 #
