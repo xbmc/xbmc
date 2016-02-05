@@ -35,12 +35,34 @@ extern "C"
 #include "libavutil/pixdesc.h"
 }
 
-struct MemBuffer
+Frame::Frame() :
+  m_pImage(nullptr),
+  m_delay(0),
+  m_imageSize(0),
+  m_height(0),
+  m_width(0)
+{}
+
+
+Frame::Frame(const Frame& src) :
+  m_pImage(nullptr),
+  m_delay(src.m_delay),
+  m_imageSize(src.m_imageSize),
+  m_height(src.m_height),
+  m_width(src.m_width)
 {
-  uint8_t* data;
-  size_t size;
-  size_t pos;
-};
+  if (src.m_pImage)
+  {
+    m_pImage = new unsigned char[m_imageSize];
+    memcpy(m_pImage, src.m_pImage, m_imageSize);
+  }
+}
+
+Frame::~Frame()
+{
+  delete[] m_pImage;
+  m_pImage = nullptr;
+}
 
 struct ThumbDataManagement
 {
@@ -124,44 +146,70 @@ CFFmpegImage::~CFFmpegImage()
   av_frame_free(&m_pFrame);
   // someone could have forgotten to call us
   CleanupLocalOutputBuffer();
+  if (m_ioctx)
+    FreeIOCtx(&m_ioctx);
+  if (m_fctx)
+  {
+    for (unsigned int i = 0; i < m_fctx->nb_streams; i++) {
+      avcodec_close(m_fctx->streams[i]->codec);
+    }
+
+    avformat_close_input(&m_fctx);
+  }
+
+  m_buf.data = nullptr;
+  m_buf.pos = 0;
+  m_buf.size = 0;
 }
 
 bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize,
                                       unsigned int width, unsigned int height)
 {
-  
+    
+  if (!Initialize(buffer, bufSize))
+  {
+    //log
+    return false;
+  }
+
+  av_frame_free(&m_pFrame);
+  m_pFrame = ExtractFrame();
+
+  return !(m_pFrame == nullptr);
+}
+
+bool CFFmpegImage::Initialize(unsigned char* buffer, unsigned int bufSize)
+{
   uint8_t* fbuffer = (uint8_t*)av_malloc(FFMPEG_FILE_BUFFER_SIZE);
   if (!fbuffer)
   {
     CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate FFMPEG_FILE_BUFFER_SIZE");
     return false;
   }
-  MemBuffer buf;
-  buf.data = buffer;
-  buf.size = bufSize;
-  buf.pos = 0;
+  m_buf.data = buffer;
+  m_buf.size = bufSize;
+  m_buf.pos = 0;
 
-  AVIOContext* ioctx = avio_alloc_context(fbuffer, FFMPEG_FILE_BUFFER_SIZE, 0, &buf,
-                                          mem_file_read, NULL, mem_file_seek);
+  m_ioctx = avio_alloc_context(fbuffer, FFMPEG_FILE_BUFFER_SIZE, 0, &m_buf,
+    mem_file_read, NULL, mem_file_seek);
 
-  if (!ioctx)
+  if (!m_ioctx)
   {
     av_free(fbuffer);
     CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate AVIOContext");
     return false;
   }
 
-  AVFormatContext* fctx = avformat_alloc_context();
-  if (!fctx)
+  m_fctx = avformat_alloc_context();
+  if (!m_fctx)
   {
-    av_free(ioctx->buffer);
-    av_free(ioctx);
+    FreeIOCtx(&m_ioctx);
     CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate AVFormatContext");
     return false;
   }
 
-  fctx->pb = ioctx;
-  ioctx->max_packet_size = FFMPEG_FILE_BUFFER_SIZE;
+  m_fctx->pb = m_ioctx;
+  m_ioctx->max_packet_size = FFMPEG_FILE_BUFFER_SIZE;
 
   // Some clients have pngs saved as jpeg or ask us for png but are jpeg
   // mythv throws all mimetypes away and asks us with application/octet-stream
@@ -173,6 +221,8 @@ bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSi
   AVInputFormat* inp = nullptr;
   if (is_jpeg)
     inp = av_find_input_format("jpeg_pipe");
+  else if (m_strMimeType == "image/apng")
+    inp = av_find_input_format("apng");
   else if (is_png)
     inp = av_find_input_format("png_pipe");
   else if (is_tiff)
@@ -188,79 +238,98 @@ bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSi
     inp = av_find_input_format("png_pipe");
   else if (m_strMimeType == "image/tiff")
     inp = av_find_input_format("tiff_pipe");
+  else if (m_strMimeType == "image/gif")
+    inp = av_find_input_format("gif");
 
-  if (avformat_open_input(&fctx, "", inp, NULL) < 0)
+  if (avformat_open_input(&m_fctx, NULL, inp, NULL) < 0)
   {
     CLog::Log(LOGERROR, "Could not find suitable input format: %s", m_strMimeType.c_str());
-    avformat_close_input(&fctx);
-    FreeIOCtx(ioctx);
+    avformat_close_input(&m_fctx);
+    FreeIOCtx(&m_ioctx);
     return false;
   }
 
-  AVCodecContext* codec_ctx = fctx->streams[0]->codec;
+  AVCodecContext* codec_ctx = m_fctx->streams[0]->codec;
   AVCodec* codec = avcodec_find_decoder(codec_ctx->codec_id);
   if (avcodec_open2(codec_ctx, codec, NULL) < 0)
   {
-    avformat_close_input(&fctx);
-    FreeIOCtx(ioctx);
+    avformat_close_input(&m_fctx);
+    FreeIOCtx(&m_ioctx);
     return false;
+  }
+
+  return true;
+}
+
+AVFrame* CFFmpegImage::ExtractFrame()
+{
+  if (!m_fctx || !m_fctx->streams[0])
+  {
+    CLog::LogFunction(LOGERROR, __FUNCTION__, "No valid format context or stream");
+    return nullptr;
   }
 
   AVPacket pkt;
   AVFrame* frame = av_frame_alloc();
-  av_read_frame(fctx, &pkt);
-  int frame_decoded;
-  int ret = avcodec_decode_video2(codec_ctx, frame, &frame_decoded, &pkt);
-  if (ret < 0)
-    CLog::Log(LOGDEBUG, "Error [%d] while decoding frame: %s\n", ret, strerror(AVERROR(ret)));
-
+  int frame_decoded = 0;
+  if (av_read_frame(m_fctx, &pkt) == 0)
+  {
+    int ret = avcodec_decode_video2(m_fctx->streams[0]->codec, frame, &frame_decoded, &pkt);
+    if (ret < 0)
+      CLog::Log(LOGDEBUG, "Error [%d] while decoding frame: %s\n", ret, strerror(AVERROR(ret)));
+  }
   if (frame_decoded != 0)
   {
-    av_frame_free(&m_pFrame);
-    m_pFrame = av_frame_clone(frame);
-
-    if (m_pFrame)
+    if (frame)
     {
-      m_height = m_pFrame->height;
-      m_width = m_pFrame->width;
+      m_frames++;
+      //we need milliseconds
+      av_frame_set_pkt_duration(frame, av_rescale_q(frame->pkt_duration, m_fctx->streams[0]->time_base, AVRational{ 1, 1000 }));
+      m_height = frame->height;
+      m_width = frame->width;
       m_originalWidth = m_width;
       m_originalHeight = m_height;
 
-      const AVPixFmtDescriptor* pixDescriptor = av_pix_fmt_desc_get(static_cast<AVPixelFormat>(m_pFrame->format));
+      const AVPixFmtDescriptor* pixDescriptor = av_pix_fmt_desc_get(static_cast<AVPixelFormat>(frame->format));
       if (pixDescriptor && ((pixDescriptor->flags & (AV_PIX_FMT_FLAG_ALPHA | AV_PIX_FMT_FLAG_PAL)) != 0))
         m_hasAlpha = true;
 
-      AVDictionary* dic = av_frame_get_metadata(m_pFrame);
+      AVDictionary* dic = av_frame_get_metadata(frame);
       AVDictionaryEntry* entry = NULL;
       if (dic)
       {
-          entry = av_dict_get(dic, "Orientation", NULL, AV_DICT_MATCH_CASE);
-          if (entry && entry->value)
-          {
-             int orientation = atoi(entry->value);
-             // only values between including 0 and including 8
-             // http://sylvana.net/jpegcrop/exif_orientation.html
-             if (orientation >= 0 && orientation <= 8)
-               m_orientation = (unsigned int) orientation;
-          }
+        entry = av_dict_get(dic, "Orientation", NULL, AV_DICT_MATCH_CASE);
+        if (entry && entry->value)
+        {
+          int orientation = atoi(entry->value);
+          // only values between including 0 and including 8
+          // http://sylvana.net/jpegcrop/exif_orientation.html
+          if (orientation >= 0 && orientation <= 8)
+            m_orientation = (unsigned int)orientation;
+        }
       }
-    }    
+    }
     else
     {
       CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate a picture data buffer");
       frame_decoded = 0;
     }
   }
-  else
+  else if (m_frames == 0)
+  {
     CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not decode a frame");
+  }
+
+  AVFrame* clone = nullptr;
+  if (frame_decoded)
+  {
+     clone = av_frame_clone(frame);
+  }
 
   av_frame_free(&frame);
   av_free_packet(&pkt);
-  avcodec_close(codec_ctx);
-  avformat_close_input(&fctx);
-  FreeIOCtx(ioctx);
 
-  return (frame_decoded != 0);
+  return clone;
 }
 
 AVPixelFormat CFFmpegImage::ConvertFormats(AVFrame* frame)
@@ -283,10 +352,10 @@ AVPixelFormat CFFmpegImage::ConvertFormats(AVFrame* frame)
   }
 }
 
-void CFFmpegImage::FreeIOCtx(AVIOContext* ioctx)
+void CFFmpegImage::FreeIOCtx(AVIOContext** ioctx)
 {
-  av_free(ioctx->buffer);
-  av_free(ioctx);
+  av_freep(&((*ioctx)->buffer));
+  av_freep(ioctx);
 }
 
 bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsigned int height,
@@ -301,6 +370,11 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
     return false;
   }
 
+  return DecodeFrame(m_pFrame, width, height, pitch, pixels);
+}
+
+bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int height, unsigned int pitch, unsigned char * const pixels)
+{
   AVPicture* pictureRGB = static_cast<AVPicture*>(av_mallocz(sizeof(AVPicture)));
   if (!pictureRGB)
   {
@@ -318,7 +392,7 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
 
   bool needsCopy = false;
   int pixelsSize = pitch * height;
-  if (size == pixelsSize && (int) pitch == pictureRGB->linesize[0])
+  if (size == pixelsSize && (int)pitch == pictureRGB->linesize[0])
   {
     // We can use the pixels buffer directly
     pictureRGB->data[0] = pixels;
@@ -337,22 +411,22 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
 
   // Especially jpeg formats are full range this we need to take care here
   // Input Formats like RGBA are handled correctly automatically
-  AVColorRange range = av_frame_get_color_range(m_pFrame);
-  AVPixelFormat pixFormat = ConvertFormats(m_pFrame);
+  AVColorRange range = av_frame_get_color_range(frame);
+  AVPixelFormat pixFormat = ConvertFormats(frame);
 
   // assumption quadratic maximums e.g. 2048x2048
-  float ratio = m_width / (float) m_height;
+  float ratio = m_width / (float)m_height;
   unsigned int nHeight = m_originalHeight;
   unsigned int nWidth = m_originalWidth;
   if (nHeight > height)
   {
     nHeight = height;
-    nWidth = (unsigned int) (nHeight * ratio + 0.5f);
+    nWidth = (unsigned int)(nHeight * ratio + 0.5f);
   }
   if (nWidth > width)
   {
     nWidth = width;
-    nHeight = (unsigned int) (nWidth / ratio + 0.5f);
+    nHeight = (unsigned int)(nWidth / ratio + 0.5f);
   }
 
   struct SwsContext* context = sws_getContext(m_originalWidth, m_originalHeight, pixFormat,
@@ -368,7 +442,7 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
     sws_setColorspaceDetails(context, inv_table, srcRange, table, dstRange, brightness, contrast, saturation);
   }
 
-  sws_scale(context, m_pFrame->data, m_pFrame->linesize, 0, m_originalHeight,
+  sws_scale(context, frame->data, frame->linesize, 0, m_originalHeight,
     pictureRGB->data, pictureRGB->linesize);
   sws_freeContext(context);
 
@@ -395,6 +469,7 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
   }
   pictureRGB->data[0] = nullptr;
   avpicture_free(pictureRGB);
+  av_free(pictureRGB);
 
   // update width and height original dimensions are kept
   m_height = nHeight;
@@ -596,4 +671,18 @@ void CFFmpegImage::CleanupLocalOutputBuffer()
 {
   av_free(m_outputBuffer);
   m_outputBuffer = nullptr;
+}
+
+std::shared_ptr<Frame> CFFmpegImage::ReadFrame()
+{
+  AVFrame* avframe = ExtractFrame();
+  if (avframe == nullptr)
+    return nullptr;
+  std::shared_ptr<Frame> frame(new Frame());
+  frame->m_delay = (unsigned int)av_frame_get_pkt_duration(avframe);
+  frame->m_pitch = avframe->width * 4;
+  frame->m_pImage = new unsigned char[avframe->height * frame->m_pitch];
+  DecodeFrame(avframe, avframe->width, avframe->height, frame->m_pitch, frame->m_pImage);
+  av_frame_free(&avframe);
+  return frame;
 }
