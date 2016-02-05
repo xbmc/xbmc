@@ -637,6 +637,9 @@ bool CAddonInstallJob::DoWork()
     });
   }
 
+  // notify any observers that add-ons have changed
+  CAddonMgr::GetInstance().NotifyObservers(ObservableMessageAddons);
+
   CEventLog::GetInstance().Add(
     EventPtr(new CAddonManagementEvent(m_addon, m_update ? 24065 : 24064)),
     !IsModal() && CSettings::GetInstance().GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS), false);

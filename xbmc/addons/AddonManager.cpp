@@ -333,7 +333,7 @@ bool CAddonMgr::Init()
     return false;
   }
 
-  FindAddons();
+  FindAddonsAndNotify();
 
   // disable some system addons by default because they are optional
   VECADDONS addons;
@@ -651,8 +651,11 @@ bool CAddonMgr::SetDefault(const TYPE &type, const std::string &addonID)
   return true;
 }
 
-void CAddonMgr::FindAddons()
+bool CAddonMgr::FindAddons()
 {
+  bool result = false;
+  CSingleLock lock(m_critSection);
+  if (m_cpluff && m_cp_context)
   {
     CSingleLock lock(m_critSection);
     if (m_cpluff && m_cp_context)
@@ -674,7 +677,18 @@ void CAddonMgr::FindAddons()
       SetChanged();
     }
   }
+
+  return result;
+}
+
+bool CAddonMgr::FindAddonsAndNotify()
+{
+  if (!FindAddons())
+    return false;
+
   NotifyObservers(ObservableMessageAddons);
+
+  return true;
 }
 
 void CAddonMgr::UnregisterAddon(const std::string& ID)

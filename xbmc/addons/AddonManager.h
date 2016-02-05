@@ -117,7 +117,17 @@ namespace ADDON
 
     std::string GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
     static AddonPtr AddonFromProps(AddonProps& props);
-    void FindAddons();
+
+    /*! \brief Checks for new / updated add-ons
+     \return True if everything went ok, false otherwise
+     */
+    bool FindAddons();
+
+    /*! \brief Checks for new / updated add-ons and notifies all observers
+    \return True if everything went ok, false otherwise
+    */
+    bool FindAddonsAndNotify();
+
     void UnregisterAddon(const std::string& ID);
 
     /*! Hook for clearing internal state after uninstall. */
