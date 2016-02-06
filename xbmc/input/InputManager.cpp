@@ -22,6 +22,7 @@
 
 #include "Application.h"
 #include "InputManager.h"
+#include "input/keyboard/IKeyboardHandler.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "guilib/Geometry.h"
@@ -57,6 +58,8 @@
 #else
 #define MEASURE_FUNCTION
 #endif
+
+#include <algorithm>
 
 #ifdef HAS_EVENT_SERVER
 using EVENTSERVER::CEventServer;
@@ -344,6 +347,7 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
     }
     else
       m_LastKey.Reset();
+    OnKeyUp(m_Keyboard.TranslateKey(newEvent.key.keysym));
     break;
   case XBMC_MOUSEBUTTONDOWN:
   case XBMC_MOUSEBUTTONUP:
@@ -404,6 +408,11 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
 
 bool CInputManager::OnKey(const CKey& key)
 {
+  for (std::vector<KEYBOARD::IKeyboardHandler*>::iterator it = m_keyboardHandlers.begin(); it != m_keyboardHandlers.end(); ++it)
+  {
+    if ((*it)->OnKeyPress(key))
+      return true;
+  }
 
   // Turn the mouse off, as we've just got a keypress from controller or remote
   m_Mouse.SetActive(false);
@@ -545,6 +554,12 @@ bool CInputManager::OnKey(const CKey& key)
     CLog::LogF(LOGDEBUG, "%s pressed, action is %s", m_Keyboard.GetKeyName((int)key.GetButtonCode()).c_str(), action.GetName().c_str());
 
   return ExecuteInputAction(action);
+}
+
+void CInputManager::OnKeyUp(const CKey& key)
+{
+  for (std::vector<KEYBOARD::IKeyboardHandler*>::iterator it = m_keyboardHandlers.begin(); it != m_keyboardHandlers.end(); ++it)
+    (*it)->OnKeyRelease(key);
 }
 
 bool CInputManager::AlwaysProcess(const CAction& action)
@@ -719,4 +734,15 @@ void CInputManager::OnSettingChanged(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_INPUT_ENABLEMOUSE)
     m_Mouse.SetEnabled(dynamic_cast<const CSettingBool*>(setting)->GetValue());
+}
+
+void CInputManager::RegisterKeyboardHandler(KEYBOARD::IKeyboardHandler* handler)
+{
+  if (std::find(m_keyboardHandlers.begin(), m_keyboardHandlers.end(), handler) == m_keyboardHandlers.end())
+    m_keyboardHandlers.push_back(handler);
+}
+
+void CInputManager::UnregisterKeyboardHandler(KEYBOARD::IKeyboardHandler* handler)
+{
+  m_keyboardHandlers.erase(std::remove(m_keyboardHandlers.begin(), m_keyboardHandlers.end(), handler), m_keyboardHandlers.end());
 }

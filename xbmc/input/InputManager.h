@@ -38,6 +38,11 @@
 
 class CKey;
 
+namespace KEYBOARD
+{
+  class IKeyboardHandler;
+}
+
 class CInputManager : public ISettingCallback
 {
 private:
@@ -210,6 +215,9 @@ public:
 
   virtual void OnSettingChanged(const CSetting *setting) override;
 
+  void RegisterKeyboardHandler(KEYBOARD::IKeyboardHandler* handler);
+  void UnregisterKeyboardHandler(KEYBOARD::IKeyboardHandler* handler);
+
 private:
 
   /*! \brief Process keyboard event and translate into an action
@@ -219,6 +227,13 @@ private:
   * \sa CKey
   */
   bool OnKey(const CKey& key);
+
+  /*! \brief Process key up event
+   *
+   * \param CKey details of released key
+   * \sa CKey
+   */
+  void OnKeyUp(const CKey& key);
 
   /*! \brief Determine if an action should be processed or just
   *   cancel the screensaver
@@ -252,4 +267,6 @@ private:
 
   std::vector<CAction> m_queuedActions;
   CCriticalSection     m_actionMutex;
+
+  std::vector<KEYBOARD::IKeyboardHandler*> m_keyboardHandlers;
 };

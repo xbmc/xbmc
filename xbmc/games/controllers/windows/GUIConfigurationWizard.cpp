@@ -23,6 +23,7 @@
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"
 #include "input/joysticks/IJoystickButtonMap.h"
+#include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -205,18 +206,25 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IJoystickButtonMap* buttonM
   return bHandled;
 }
 
+bool CGUIConfigurationWizard::OnKeyPress(const CKey& key)
+{
+  return Abort(false);
+}
+
 void CGUIConfigurationWizard::InstallHooks(void)
 {
   using namespace PERIPHERALS;
 
   g_peripherals.RegisterJoystickButtonMapper(this);
   g_peripherals.RegisterObserver(this);
+  CInputManager::GetInstance().RegisterKeyboardHandler(this);
 }
 
 void CGUIConfigurationWizard::RemoveHooks(void)
 {
   using namespace PERIPHERALS;
 
+  CInputManager::GetInstance().UnregisterKeyboardHandler(this);
   g_peripherals.UnregisterObserver(this);
   g_peripherals.UnregisterJoystickButtonMapper(this);
 }
