@@ -188,7 +188,7 @@ CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
   m_passthrough = false;
   m_min_buffer_size = 0;
   m_lastPlaybackHeadPosition = 0;
-  m_pause_counter = 0;
+  m_pause_time = 0;
 }
 
 CAESinkAUDIOTRACK::~CAESinkAUDIOTRACK()
@@ -209,7 +209,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   m_offset = -1;
   m_lastPlaybackHeadPosition = 0;
   m_linearmovingaverage.clear();
-  m_pause_counter = 0;
+  m_pause_time = 0;
   CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize requested: sampleRate %u; format: %s; channels: %d", format.m_sampleRate, CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_channelLayout.Count());
 
   int stream = CJNIAudioManager::STREAM_MUSIC;
@@ -251,11 +251,17 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         case CAEStreamInfo::STREAM_TYPE_DTSHD:
           m_encoding              = CJNIAudioFormat::ENCODING_DTS_HD;
           m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
+          // Shield v5 workaround
+          if (CJNIAudioManager::GetSDKVersion() == 22 && m_sink_sampleRate > 48000)
+            m_sink_sampleRate = 48000;
           break;
 
         case CAEStreamInfo::STREAM_TYPE_TRUEHD:
           m_encoding              = CJNIAudioFormat::ENCODING_DOLBY_TRUEHD;
           m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
+          // Shield v5 workaround
+          if (CJNIAudioManager::GetSDKVersion() == 22 && m_sink_sampleRate > 48000)
+            m_sink_sampleRate = 48000;
           break;
 
         default:
@@ -343,7 +349,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
            ac3FrameSize = m_format.m_streamInfo.m_ac3FrameSize;
            if (ac3FrameSize == 0)
              ac3FrameSize = 1536; // fallback if not set, e.g. Transcoding
-           m_min_buffer_size = std::max(m_min_buffer_size * 4, ac3FrameSize * 8);
+           m_min_buffer_size = std::max(m_min_buffer_size * 3, ac3FrameSize * 8);
            m_format.m_frames = m_min_buffer_size;
            multiplier = m_min_buffer_size / ac3FrameSize; // int division is wanted
            rawlength_in_seconds = multiplier * m_format.m_streamInfo.GetDuration() / 1000;
@@ -407,7 +413,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       Deinitialize();
       return false;
     }
-    CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize returned: m_sampleRate %u; format:%s; min_buffer_size %u; m_frames %u; m_frameSize %u; channels: %d", m_format.m_sampleRate, CAEUtil::DataFormatToStr(m_format.m_dataFormat), m_min_buffer_size, m_format.m_frames, m_format.m_frameSize, m_format.m_channelLayout.Count());
+    CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize returned: m_sampleRate %u; format:%s; min_buffer_size %u; m_frames %u; m_frameSize %u; channels: %d", m_sink_sampleRate, CAEUtil::DataFormatToStr(m_format.m_dataFormat), m_min_buffer_size, m_format.m_frames, m_format.m_frameSize, m_format.m_channelLayout.Count());
   }
   format = m_format;
 
@@ -446,7 +452,7 @@ void CAESinkAUDIOTRACK::Deinitialize()
 
   m_duration_written = 0;
   m_offset = -1;
-  m_pause_counter = 0;
+  m_pause_time = 0;
 
   m_lastPlaybackHeadPosition = 0;
   m_linearmovingaverage.clear();
@@ -490,7 +496,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 
   if (m_passthrough && !m_info.m_wantsIECPassthrough)
   {
-    if (m_pause_counter > 0)
+    if (m_pause_time > 0)
     {
       const double d = GetMovingAverageDelay(GetCacheTotal());
       CLog::Log(LOGDEBUG, "Faking Delay: smooth %lf measured: %lf", d * 1000, GetCacheTotal() * 1000);
@@ -558,11 +564,11 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   int loop_written = 0;
   if (frames)
   {
-    if (m_pause_counter > 0)
+    if (m_pause_time > 0)
     {
       usleep(m_format.m_streamInfo.GetDuration() * 1000);
-      CLog::Log(LOGDEBUG, "Slept: %u", m_pause_counter);
-      m_pause_counter--;
+      CLog::Log(LOGDEBUG, "Sleeptime: %lf left", m_pause_time);
+      m_pause_time -= m_format.m_streamInfo.GetDuration() / 1000.0;
     }
     if (m_at_jni->getPlayState() != CJNIAudioTrack::PLAYSTATE_PLAYING)
       m_at_jni->play();
@@ -634,6 +640,23 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   }
   unsigned int written_frames = (unsigned int) (written/m_format.m_frameSize);
   double time_to_add_ms = 1000.0 * (CurrentHostCounter() - startTime) / CurrentHostFrequency();
+  if (m_passthrough && !m_info.m_wantsIECPassthrough)
+  {
+    // AT does not consume in a blocking way - it runs ahead and blocks
+    // exactly once with the last package for some 100 ms
+    // help it sleeping a bit
+    if (time_to_add_ms < m_format.m_streamInfo.GetDuration() / 2.0)
+    {
+      // leave enough head room for eventualities
+      double extra_sleep = m_format.m_streamInfo.GetDuration() / 4.0;
+      usleep(extra_sleep * 1000);
+      time_to_add_ms += extra_sleep;
+    }
+
+    if (m_pause_time < 0)
+      m_pause_time = 0;
+  }
+
   CLog::Log(LOGDEBUG, "Time needed for add Packet: %lf ms", time_to_add_ms);
   return written_frames;
 }
@@ -646,8 +669,8 @@ void CAESinkAUDIOTRACK::AddPause(unsigned int millis)
   CLog::Log(LOGDEBUG, "AddPause was called with millis: %u and PlayState: %d", millis, m_at_jni->getPlayState());
 
   // we can cache a maximum amount of m_audiotrackbuffer_sec seconds of silence
-  if ((double) m_pause_counter * millis / 1000.0 <= m_audiotrackbuffer_sec)
-    m_pause_counter++;
+  if (m_pause_time + millis / 1000.0 <= m_audiotrackbuffer_sec)
+    m_pause_time += millis / 1000.0;
 
     usleep(millis * 1000);
 }
@@ -661,7 +684,7 @@ void CAESinkAUDIOTRACK::Drain()
   m_at_jni->stop();
   m_duration_written = 0;
   m_offset = -1;
-  m_pause_counter = 0;
+  m_pause_time = 0;
   m_lastPlaybackHeadPosition = 0;
   m_linearmovingaverage.clear();
 }
@@ -773,7 +796,7 @@ double CAESinkAUDIOTRACK::GetMovingAverageDelay(double newestdelay)
   size_t size = m_linearmovingaverage.size();
   if (size > MOVING_AVERAGE_MAX_MEMBERS)
   {
-    m_linearmovingaverage.erase(m_linearmovingaverage.begin());
+    m_linearmovingaverage.pop_front();
     size--;
   }
   // m_{LWMA}^{(n)}(t) = \frac{2}{n (n+1)} \sum_{i=1}^n i \; x(t-n+i)

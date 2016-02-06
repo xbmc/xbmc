@@ -24,7 +24,7 @@
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 
-#include <vector>
+#include <deque>
 #include <set>
 
 namespace jni
@@ -62,17 +62,16 @@ private:
   unsigned int          m_lastPlaybackHeadPosition;
   int64_t               m_offset;
   // Moving Average computes the weighted average delay over
-  // a fixed size of a vector - current size: 20 values
+  // a fixed size of delay values - current size: 20 values
   double                GetMovingAverageDelay(double newestdelay);
-  // When AddPause is called the m_pause_counter is counted up
-  // Whenever a new package is added into the sink and the counter is > 0
-  // we sleep for a GetDuration() period
-  unsigned int          m_pause_counter;
+  // When AddPause is called the m_pause_time is increased
+  // by the package duration. This is only used for non IEC passthrough
+  double          m_pause_time;
 
   // We maintain our linear weighted average delay counter in here
   // The n-th value (timely oldest value) is weighted with 1/n
   // the newest value gets a weight of 1
-  std::vector<double>   m_linearmovingaverage;
+  std::deque<double>   m_linearmovingaverage;
 
   static CAEDeviceInfo m_info;
   static std::set<unsigned int>       m_sink_sampleRates;
