@@ -25,8 +25,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "peripherals/Peripherals.h"
 #include "settings/lib/Setting.h"
-#include "peripherals/addons/AddonJoystickButtonMapping.h"
-#include "peripherals/addons/AddonJoystickInputHandling.h"
+#include "peripherals/addons/AddonButtonMapping.h"
+#include "peripherals/addons/AddonInputHandling.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
@@ -539,20 +539,20 @@ void CPeripheral::ClearSettings(void)
   m_settings.clear();
 }
 
-void CPeripheral::RegisterJoystickInputHandler(IJoystickInputHandler* handler)
+void CPeripheral::RegisterJoystickInputHandler(IInputHandler* handler)
 {
-  std::map<IJoystickInputHandler*, IJoystickDriverHandler*>::iterator it = m_inputHandlers.find(handler);
+  std::map<IInputHandler*, IDriverHandler*>::iterator it = m_inputHandlers.find(handler);
   if (it == m_inputHandlers.end())
   {
-    CAddonJoystickInputHandling* inputHandling = new CAddonJoystickInputHandling(this, handler);
+    CAddonInputHandling* inputHandling = new CAddonInputHandling(this, handler);
     RegisterJoystickDriverHandler(inputHandling, false);
     m_inputHandlers[handler] = inputHandling;
   }
 }
 
-void CPeripheral::UnregisterJoystickInputHandler(IJoystickInputHandler* handler)
+void CPeripheral::UnregisterJoystickInputHandler(IInputHandler* handler)
 {
-  std::map<IJoystickInputHandler*, IJoystickDriverHandler*>::iterator it = m_inputHandlers.find(handler);
+  std::map<IInputHandler*, IDriverHandler*>::iterator it = m_inputHandlers.find(handler);
   if (it != m_inputHandlers.end())
   {
     UnregisterJoystickDriverHandler(it->second);
@@ -561,20 +561,20 @@ void CPeripheral::UnregisterJoystickInputHandler(IJoystickInputHandler* handler)
   }
 }
 
-void CPeripheral::RegisterJoystickButtonMapper(IJoystickButtonMapper* mapper)
+void CPeripheral::RegisterJoystickButtonMapper(IButtonMapper* mapper)
 {
-  std::map<IJoystickButtonMapper*, IJoystickDriverHandler*>::iterator it = m_buttonMappers.find(mapper);
+  std::map<IButtonMapper*, IDriverHandler*>::iterator it = m_buttonMappers.find(mapper);
   if (it == m_buttonMappers.end())
   {
-    CAddonJoystickButtonMapping* addonMapping = new CAddonJoystickButtonMapping(this, mapper);
+    CAddonButtonMapping* addonMapping = new CAddonButtonMapping(this, mapper);
     RegisterJoystickDriverHandler(addonMapping, false);
     m_buttonMappers[mapper] = addonMapping;
   }
 }
 
-void CPeripheral::UnregisterJoystickButtonMapper(IJoystickButtonMapper* mapper)
+void CPeripheral::UnregisterJoystickButtonMapper(IButtonMapper* mapper)
 {
-  std::map<IJoystickButtonMapper*, IJoystickDriverHandler*>::iterator it = m_buttonMappers.find(mapper);
+  std::map<IButtonMapper*, IDriverHandler*>::iterator it = m_buttonMappers.find(mapper);
   if (it != m_buttonMappers.end())
   {
     UnregisterJoystickDriverHandler(it->second);

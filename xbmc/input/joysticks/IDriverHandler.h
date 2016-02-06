@@ -27,10 +27,10 @@ namespace JOYSTICK
    * \brief Interface defining methods to handle joystick events for raw driver
    *        elements (buttons, hats, axes)
    */
-  class IJoystickDriverHandler
+  class IDriverHandler
   {
   public:
-    virtual ~IJoystickDriverHandler(void) { }
+    virtual ~IDriverHandler(void) { }
 
     /*!
      * \brief Handle button motion

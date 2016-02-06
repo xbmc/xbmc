@@ -19,14 +19,14 @@
  */
 
 #include "PeripheralAddon.h"
-#include "AddonJoystickButtonMap.h"
+#include "AddonButtonMap.h"
 #include "PeripheralAddonTranslator.h"
 #include "addons/AddonManager.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "input/joysticks/DriverPrimitive.h"
-#include "input/joysticks/IJoystickButtonMap.h"
-#include "input/joysticks/IJoystickDriverHandler.h"
+#include "input/joysticks/IButtonMap.h"
+#include "input/joysticks/IDriverHandler.h"
 #include "input/joysticks/JoystickTranslator.h"
 #include "input/joysticks/JoystickUtils.h"
 #include "peripherals/Peripherals.h"
@@ -565,13 +565,13 @@ void CPeripheralAddon::ResetButtonMap(const CPeripheral* device, const std::stri
   catch (std::exception &e) { LogException(e, "ResetButtonMap()"); return; }
 }
 
-void CPeripheralAddon::RegisterButtonMap(CPeripheral* device, IJoystickButtonMap* buttonMap)
+void CPeripheralAddon::RegisterButtonMap(CPeripheral* device, IButtonMap* buttonMap)
 {
   UnregisterButtonMap(buttonMap);
   m_buttonMaps.push_back(std::make_pair(device, buttonMap));
 }
 
-void CPeripheralAddon::UnregisterButtonMap(IJoystickButtonMap* buttonMap)
+void CPeripheralAddon::UnregisterButtonMap(IButtonMap* buttonMap)
 {
   for (auto it = m_buttonMaps.begin(); it != m_buttonMaps.end(); ++it)
   {

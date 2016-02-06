@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "IJoystickDriverHandler.h"
+#include "IDriverHandler.h"
 
 namespace JOYSTICK
 {
@@ -27,10 +27,10 @@ namespace JOYSTICK
    * \brief Monitors joystick input and resets screensaver/shutdown timers
    *        whenever motion occurs.
    */
-  class CJoystickMonitor : public IJoystickDriverHandler
+  class CJoystickMonitor : public IDriverHandler
   {
   public:
-    // implementation of IJoystickDriverHandler
+    // implementation of IDriverHandler
     virtual bool OnButtonMotion(unsigned int buttonIndex, bool bPressed) override;
     virtual bool OnHatMotion(unsigned int hatIndex, HAT_STATE state) override;
     virtual bool OnAxisMotion(unsigned int axisIndex, float position) override;

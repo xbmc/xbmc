@@ -30,12 +30,12 @@ namespace JOYSTICK
    * \brief Button map interface to translate between the driver's raw
    *        button/hat/axis elements and physical joystick features.
    *
-   * \sa IJoystickButtonMapper
+   * \sa IButtonMapper
    */
-  class IJoystickButtonMap
+  class IButtonMap
   {
   public:
-    virtual ~IJoystickButtonMap(void) { }
+    virtual ~IButtonMap(void) { }
 
     /*!
      * \brief The add-on ID of the game controller associated with this button map

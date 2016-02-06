@@ -77,7 +77,7 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
   return bSuccess;
 }
 
-void CPeripheralJoystick::RegisterJoystickDriverHandler(IJoystickDriverHandler* handler, bool bPromiscuous)
+void CPeripheralJoystick::RegisterJoystickDriverHandler(IDriverHandler* handler, bool bPromiscuous)
 {
   CSingleLock lock(m_handlerMutex);
 
@@ -85,7 +85,7 @@ void CPeripheralJoystick::RegisterJoystickDriverHandler(IJoystickDriverHandler* 
   m_driverHandlers.insert(m_driverHandlers.begin(), driverHandler);
 }
 
-void CPeripheralJoystick::UnregisterJoystickDriverHandler(IJoystickDriverHandler* handler)
+void CPeripheralJoystick::UnregisterJoystickDriverHandler(IDriverHandler* handler)
 {
   CSingleLock lock(m_handlerMutex);
 

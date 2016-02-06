@@ -21,7 +21,7 @@
 
 #include "IConfigurationWindow.h"
 #include "input/joysticks/DriverPrimitive.h"
-#include "input/joysticks/IJoystickButtonMapper.h"
+#include "input/joysticks/IButtonMapper.h"
 #include "input/keyboard/IKeyboardHandler.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
@@ -35,7 +35,7 @@
 namespace GAME
 {
   class CGUIConfigurationWizard : public IConfigurationWizard,
-                                  public JOYSTICK::IJoystickButtonMapper,
+                                  public JOYSTICK::IButtonMapper,
                                   public KEYBOARD::IKeyboardHandler,
                                   public Observer,
                                   protected CThread
@@ -50,9 +50,9 @@ namespace GAME
     virtual void OnUnfocus(IFeatureButton* button) override;
     virtual bool Abort(bool bWait = true) override;
 
-    // implementation of IJoystickButtonMapper
+    // implementation of IButtonMapper
     virtual std::string ControllerID(void) const override { return m_strControllerId; }
-    virtual bool MapPrimitive(JOYSTICK::IJoystickButtonMap* buttonMap, const JOYSTICK::CDriverPrimitive& primitive) override;
+    virtual bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap, const JOYSTICK::CDriverPrimitive& primitive) override;
 
     // implementation of IKeyboardHandler
     virtual bool OnKeyPress(const CKey& key) override;

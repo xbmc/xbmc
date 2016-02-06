@@ -18,10 +18,10 @@
  *
  */
 
-#include "AddonJoystickInputHandling.h"
-#include "input/joysticks/generic/GenericJoystickInputHandling.h"
-#include "input/joysticks/IJoystickInputHandler.h"
-#include "peripherals/addons/AddonJoystickButtonMap.h"
+#include "AddonButtonMapping.h"
+#include "input/joysticks/generic/ButtonMapping.h"
+#include "input/joysticks/IButtonMapper.h"
+#include "peripherals/addons/AddonButtonMap.h"
 #include "peripherals/Peripherals.h"
 
 using namespace JOYSTICK;
@@ -31,7 +31,7 @@ using namespace PERIPHERALS;
   #define SATE_DELETE(x)  do { delete (x); (x) = NULL; } while (0)
 #endif
 
-CAddonJoystickInputHandling::CAddonJoystickInputHandling(CPeripheral* peripheral, IJoystickInputHandler* handler)
+CAddonButtonMapping::CAddonButtonMapping(CPeripheral* peripheral, IButtonMapper* mapper)
   : m_driverHandler(NULL)
 {
   PeripheralAddonPtr addon = g_peripherals.GetAddon(peripheral);
@@ -42,21 +42,21 @@ CAddonJoystickInputHandling::CAddonJoystickInputHandling(CPeripheral* peripheral
   }
   else
   {
-    m_buttonMap = new CAddonJoystickButtonMap(peripheral, addon, handler->ControllerID());
+    m_buttonMap = new CAddonButtonMap(peripheral, addon, mapper->ControllerID());
     if (m_buttonMap->Load())
-      m_driverHandler = new CGenericJoystickInputHandling(handler, m_buttonMap);
+      m_driverHandler = new CButtonMapping(mapper, m_buttonMap);
     else
       SAFE_DELETE(m_buttonMap);
   }
 }
 
-CAddonJoystickInputHandling::~CAddonJoystickInputHandling(void)
+CAddonButtonMapping::~CAddonButtonMapping(void)
 {
   delete m_driverHandler;
   delete m_buttonMap;
 }
 
-bool CAddonJoystickInputHandling::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
+bool CAddonButtonMapping::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
 {
   if (m_driverHandler)
     return m_driverHandler->OnButtonMotion(buttonIndex, bPressed);
@@ -64,7 +64,7 @@ bool CAddonJoystickInputHandling::OnButtonMotion(unsigned int buttonIndex, bool 
   return false;
 }
 
-bool CAddonJoystickInputHandling::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
+bool CAddonButtonMapping::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
 {
   if (m_driverHandler)
     return m_driverHandler->OnHatMotion(hatIndex, state);
@@ -72,7 +72,7 @@ bool CAddonJoystickInputHandling::OnHatMotion(unsigned int hatIndex, HAT_STATE s
   return false;
 }
 
-bool CAddonJoystickInputHandling::OnAxisMotion(unsigned int axisIndex, float position)
+bool CAddonButtonMapping::OnAxisMotion(unsigned int axisIndex, float position)
 {
   if (m_driverHandler)
     return m_driverHandler->OnAxisMotion(axisIndex, position);
@@ -80,7 +80,7 @@ bool CAddonJoystickInputHandling::OnAxisMotion(unsigned int axisIndex, float pos
   return false;
 }
 
-void CAddonJoystickInputHandling::ProcessAxisMotions(void)
+void CAddonButtonMapping::ProcessAxisMotions(void)
 {
   if (m_driverHandler)
     m_driverHandler->ProcessAxisMotions();

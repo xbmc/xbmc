@@ -18,9 +18,9 @@
  *
  */
 
-#include "GenericJoystickButtonMapping.h"
+#include "ButtonMapping.h"
 #include "input/joysticks/DriverPrimitive.h"
-#include "input/joysticks/IJoystickButtonMapper.h"
+#include "input/joysticks/IButtonMapper.h"
 #include "input/joysticks/JoystickTranslator.h"
 #include "input/joysticks/JoystickUtils.h"
 #include "threads/SystemClock.h"
@@ -36,7 +36,7 @@ using namespace XbmcThreads;
 #define MAPPING_COOLDOWN_MS  50    // Guard against repeated input
 #define AXIS_THRESHOLD       0.75f // Axis must exceed this value to be mapped
 
-CGenericJoystickButtonMapping::CGenericJoystickButtonMapping(IJoystickButtonMapper* buttonMapper, IJoystickButtonMap* buttonMap)
+CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap)
   : m_buttonMapper(buttonMapper),
     m_buttonMap(buttonMap),
     m_lastAction(0)
@@ -45,7 +45,7 @@ CGenericJoystickButtonMapping::CGenericJoystickButtonMapping(IJoystickButtonMapp
   assert(m_buttonMap != NULL);
 }
 
-bool CGenericJoystickButtonMapping::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
+bool CButtonMapping::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
 {
   if (bPressed)
   {
@@ -60,7 +60,7 @@ bool CGenericJoystickButtonMapping::OnButtonMotion(unsigned int buttonIndex, boo
   return false;
 }
 
-bool CGenericJoystickButtonMapping::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
+bool CButtonMapping::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
 {
   CDriverPrimitive hatPrimitive(hatIndex, static_cast<HAT_DIRECTION>(state));
   if (hatPrimitive.IsValid())
@@ -72,7 +72,7 @@ bool CGenericJoystickButtonMapping::OnHatMotion(unsigned int hatIndex, HAT_STATE
   return false;
 }
 
-bool CGenericJoystickButtonMapping::OnAxisMotion(unsigned int axisIndex, float position)
+bool CButtonMapping::OnAxisMotion(unsigned int axisIndex, float position)
 {
   SEMIAXIS_DIRECTION dir = CJoystickTranslator::PositionToSemiAxisDirection(position);
 
@@ -97,7 +97,7 @@ bool CGenericJoystickButtonMapping::OnAxisMotion(unsigned int axisIndex, float p
   return true;
 }
 
-void CGenericJoystickButtonMapping::ProcessAxisMotions(void)
+void CButtonMapping::ProcessAxisMotions(void)
 {
   for (std::vector<ActivatedAxis>::iterator it = m_activatedAxes.begin(); it != m_activatedAxes.end(); ++it)
   {
@@ -112,7 +112,7 @@ void CGenericJoystickButtonMapping::ProcessAxisMotions(void)
   }
 }
 
-void CGenericJoystickButtonMapping::MapPrimitive(const CDriverPrimitive& primitive)
+void CButtonMapping::MapPrimitive(const CDriverPrimitive& primitive)
 {
   const unsigned int now = SystemClockMillis();
 
@@ -130,13 +130,13 @@ void CGenericJoystickButtonMapping::MapPrimitive(const CDriverPrimitive& primiti
   }
 }
 
-void CGenericJoystickButtonMapping::Activate(const CDriverPrimitive& semiaxis)
+void CButtonMapping::Activate(const CDriverPrimitive& semiaxis)
 {
   if (!IsActive(semiaxis))
     m_activatedAxes.push_back(ActivatedAxis{semiaxis});
 }
 
-void CGenericJoystickButtonMapping::Deactivate(const CDriverPrimitive& semiaxis)
+void CButtonMapping::Deactivate(const CDriverPrimitive& semiaxis)
 {
   m_activatedAxes.erase(std::remove_if(m_activatedAxes.begin(), m_activatedAxes.end(),
     [&semiaxis](const ActivatedAxis& axis)
@@ -145,7 +145,7 @@ void CGenericJoystickButtonMapping::Deactivate(const CDriverPrimitive& semiaxis)
     }), m_activatedAxes.end());
 }
 
-bool CGenericJoystickButtonMapping::IsActive(const CDriverPrimitive& semiaxis)
+bool CButtonMapping::IsActive(const CDriverPrimitive& semiaxis)
 {
   return std::find_if(m_activatedAxes.begin(), m_activatedAxes.end(),
     [&semiaxis](const ActivatedAxis& axis)

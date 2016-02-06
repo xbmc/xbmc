@@ -23,7 +23,7 @@
 #include <utility>
 
 #include "addons/PeripheralAddon.h"
-#include "addons/AddonJoystickButtonMap.h"
+#include "addons/AddonButtonMap.h"
 #include "bus/PeripheralBus.h"
 #include "bus/PeripheralBusUSB.h"
 #include "bus/virtual/PeripheralBusAddon.h"
@@ -770,13 +770,13 @@ void CPeripherals::ResetButtonMaps(const std::string& controllerId)
     PeripheralAddonPtr addon;
     if (addonBus->GetAddonWithButtonMap(peripheral, addon))
     {
-      CAddonJoystickButtonMap buttonMap(peripheral, addon, controllerId);
+      CAddonButtonMap buttonMap(peripheral, addon, controllerId);
       buttonMap.Reset();
     }
   }
 }
 
-void CPeripherals::RegisterJoystickButtonMapper(IJoystickButtonMapper* mapper)
+void CPeripherals::RegisterJoystickButtonMapper(IButtonMapper* mapper)
 {
   std::vector<CPeripheral*> peripherals;
   GetPeripheralsWithFeature(peripherals, FEATURE_JOYSTICK);
@@ -785,7 +785,7 @@ void CPeripherals::RegisterJoystickButtonMapper(IJoystickButtonMapper* mapper)
     peripheral->RegisterJoystickButtonMapper(mapper);
 }
 
-void CPeripherals::UnregisterJoystickButtonMapper(IJoystickButtonMapper* mapper)
+void CPeripherals::UnregisterJoystickButtonMapper(IButtonMapper* mapper)
 {
   std::vector<CPeripheral*> peripherals;
   GetPeripheralsWithFeature(peripherals, FEATURE_JOYSTICK);

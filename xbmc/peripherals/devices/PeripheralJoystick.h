@@ -21,7 +21,7 @@
 
 #include "Peripheral.h"
 #include "input/joysticks/DefaultJoystick.h"
-#include "input/joysticks/IJoystickDriverHandler.h"
+#include "input/joysticks/IDriverHandler.h"
 #include "input/joysticks/JoystickMonitor.h"
 #include "input/joysticks/JoystickTypes.h"
 #include "threads/CriticalSection.h"
@@ -34,7 +34,7 @@
 namespace PERIPHERALS
 {
   class CPeripheralJoystick : public CPeripheral, // TODO: extend CPeripheralHID
-                              public JOYSTICK::IJoystickDriverHandler
+                              public JOYSTICK::IDriverHandler
   {
   public:
     CPeripheralJoystick(const PeripheralScanResult& scanResult);
@@ -43,10 +43,10 @@ namespace PERIPHERALS
 
     // implementation of CPeripheral
     virtual bool InitialiseFeature(const PeripheralFeature feature) override;
-    virtual void RegisterJoystickDriverHandler(IJoystickDriverHandler* handler, bool bPromiscuous) override;
-    virtual void UnregisterJoystickDriverHandler(IJoystickDriverHandler* handler) override;
+    virtual void RegisterJoystickDriverHandler(IDriverHandler* handler, bool bPromiscuous) override;
+    virtual void UnregisterJoystickDriverHandler(IDriverHandler* handler) override;
 
-    // implementation of IJoystickDriverHandler
+    // implementation of IDriverHandler
     virtual bool OnButtonMotion(unsigned int buttonIndex, bool bPressed) override;
     virtual bool OnHatMotion(unsigned int hatIndex, JOYSTICK::HAT_STATE state) override;
     virtual bool OnAxisMotion(unsigned int axisIndex, float position) override;
@@ -84,7 +84,7 @@ namespace PERIPHERALS
   protected:
     struct DriverHandler
     {
-      JOYSTICK::IJoystickDriverHandler* handler;
+      JOYSTICK::IDriverHandler* handler;
       bool                              bPromiscuous;
     };
 

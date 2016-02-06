@@ -32,8 +32,8 @@
 
 namespace JOYSTICK
 {
-  class IJoystickButtonMap;
-  class IJoystickDriverHandler;
+  class IButtonMap;
+  class IDriverHandler;
 }
 
 namespace PERIPHERALS
@@ -86,8 +86,8 @@ namespace PERIPHERALS
     void ResetButtonMap(const CPeripheral* device, const std::string& strControllerId);
     //@}
 
-    void RegisterButtonMap(CPeripheral* device, JOYSTICK::IJoystickButtonMap* buttonMap);
-    void UnregisterButtonMap(JOYSTICK::IJoystickButtonMap* buttonMap);
+    void RegisterButtonMap(CPeripheral* device, JOYSTICK::IButtonMap* buttonMap);
+    void UnregisterButtonMap(JOYSTICK::IButtonMap* buttonMap);
     void RefreshButtonMaps(const std::string& strDeviceName = "", const std::string& strControllerId = "");
 
   protected:
@@ -141,7 +141,7 @@ namespace PERIPHERALS
     std::map<unsigned int, CPeripheral*>  m_peripherals;
 
     /* @brief Button map observers */
-    std::vector<std::pair<CPeripheral*, JOYSTICK::IJoystickButtonMap*> > m_buttonMaps;
+    std::vector<std::pair<CPeripheral*, JOYSTICK::IButtonMap*> > m_buttonMaps;
 
     /* @brief Thread synchronization */
     CCriticalSection    m_critSection;

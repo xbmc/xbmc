@@ -18,7 +18,7 @@
  *
  */
 
-#include "AddonJoystickButtonMap.h"
+#include "AddonButtonMap.h"
 #include "PeripheralAddonTranslator.h"
 #include "input/joysticks/JoystickUtils.h"
 #include "peripherals/devices/Peripheral.h"
@@ -29,7 +29,7 @@
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
-CAddonJoystickButtonMap::CAddonJoystickButtonMap(CPeripheral* device, const PeripheralAddonPtr& addon, const std::string& strControllerId)
+CAddonButtonMap::CAddonButtonMap(CPeripheral* device, const PeripheralAddonPtr& addon, const std::string& strControllerId)
   : m_device(device),
     m_addon(addon),
     m_strControllerId(strControllerId)
@@ -39,12 +39,12 @@ CAddonJoystickButtonMap::CAddonJoystickButtonMap(CPeripheral* device, const Peri
   m_addon->RegisterButtonMap(device, this);
 }
 
-CAddonJoystickButtonMap::~CAddonJoystickButtonMap(void)
+CAddonButtonMap::~CAddonButtonMap(void)
 {
   m_addon->UnregisterButtonMap(this);
 }
 
-bool CAddonJoystickButtonMap::Load(void)
+bool CAddonButtonMap::Load(void)
 {
   m_features.clear();
   m_driverMap.clear();
@@ -65,12 +65,12 @@ bool CAddonJoystickButtonMap::Load(void)
   return true;
 }
 
-void CAddonJoystickButtonMap::Reset(void)
+void CAddonButtonMap::Reset(void)
 {
   m_addon->ResetButtonMap(m_device, m_strControllerId);
 }
 
-bool CAddonJoystickButtonMap::GetFeature(const CDriverPrimitive& primitive, FeatureName& feature)
+bool CAddonButtonMap::GetFeature(const CDriverPrimitive& primitive, FeatureName& feature)
 {
   DriverMap::const_iterator it = m_driverMap.find(primitive);
   if (it != m_driverMap.end())
@@ -82,7 +82,7 @@ bool CAddonJoystickButtonMap::GetFeature(const CDriverPrimitive& primitive, Feat
   return false;
 }
 
-FEATURE_TYPE CAddonJoystickButtonMap::GetFeatureType(const FeatureName& feature)
+FEATURE_TYPE CAddonButtonMap::GetFeatureType(const FeatureName& feature)
 {
   FEATURE_TYPE type = FEATURE_TYPE::UNKNOWN;
 
@@ -93,7 +93,7 @@ FEATURE_TYPE CAddonJoystickButtonMap::GetFeatureType(const FeatureName& feature)
   return type;
 }
 
-bool CAddonJoystickButtonMap::GetScalar(const FeatureName& feature, CDriverPrimitive& primitive)
+bool CAddonButtonMap::GetScalar(const FeatureName& feature, CDriverPrimitive& primitive)
 {
   bool retVal(false);
 
@@ -112,7 +112,7 @@ bool CAddonJoystickButtonMap::GetScalar(const FeatureName& feature, CDriverPrimi
   return retVal;
 }
 
-bool CAddonJoystickButtonMap::AddScalar(const FeatureName& feature, const CDriverPrimitive& primitive)
+bool CAddonButtonMap::AddScalar(const FeatureName& feature, const CDriverPrimitive& primitive)
 {
   if (!primitive.IsValid())
   {
@@ -135,7 +135,7 @@ bool CAddonJoystickButtonMap::AddScalar(const FeatureName& feature, const CDrive
   return m_addon->MapFeatures(m_device, m_strControllerId, m_features);
 }
 
-bool CAddonJoystickButtonMap::GetAnalogStick(const FeatureName& feature,
+bool CAddonButtonMap::GetAnalogStick(const FeatureName& feature,
                                              CDriverPrimitive& up,
                                              CDriverPrimitive& down,
                                              CDriverPrimitive& right,
@@ -161,7 +161,7 @@ bool CAddonJoystickButtonMap::GetAnalogStick(const FeatureName& feature,
   return retVal;
 }
 
-bool CAddonJoystickButtonMap::AddAnalogStick(const FeatureName& feature,
+bool CAddonButtonMap::AddAnalogStick(const FeatureName& feature,
                                              const CDriverPrimitive& up,
                                              const CDriverPrimitive& down,
                                              const CDriverPrimitive& right,
@@ -206,7 +206,7 @@ bool CAddonJoystickButtonMap::AddAnalogStick(const FeatureName& feature,
   return m_addon->MapFeatures(m_device, m_strControllerId, m_features);
 }
 
-bool CAddonJoystickButtonMap::GetAccelerometer(const FeatureName& feature,
+bool CAddonButtonMap::GetAccelerometer(const FeatureName& feature,
                                                CDriverPrimitive& positiveX,
                                                CDriverPrimitive& positiveY,
                                                CDriverPrimitive& positiveZ)
@@ -230,7 +230,7 @@ bool CAddonJoystickButtonMap::GetAccelerometer(const FeatureName& feature,
   return retVal;
 }
 
-bool CAddonJoystickButtonMap::AddAccelerometer(const FeatureName& feature,
+bool CAddonButtonMap::AddAccelerometer(const FeatureName& feature,
                                                const CDriverPrimitive& positiveX,
                                                const CDriverPrimitive& positiveY,
                                                const CDriverPrimitive& positiveZ)
@@ -271,7 +271,7 @@ bool CAddonJoystickButtonMap::AddAccelerometer(const FeatureName& feature,
   return m_addon->MapFeatures(m_device, m_strControllerId, m_features);
 }
 
-CAddonJoystickButtonMap::DriverMap CAddonJoystickButtonMap::CreateLookupTable(const FeatureMap& features)
+CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& features)
 {
   DriverMap driverMap;
 
@@ -324,7 +324,7 @@ CAddonJoystickButtonMap::DriverMap CAddonJoystickButtonMap::CreateLookupTable(co
   return driverMap;
 }
 
-bool CAddonJoystickButtonMap::UnmapPrimitive(const CDriverPrimitive& primitive)
+bool CAddonButtonMap::UnmapPrimitive(const CDriverPrimitive& primitive)
 {
   bool bModified = false;
 
@@ -346,7 +346,7 @@ bool CAddonJoystickButtonMap::UnmapPrimitive(const CDriverPrimitive& primitive)
   return bModified;
 }
 
-bool CAddonJoystickButtonMap::ResetPrimitive(ADDON::JoystickFeature& feature, const ADDON::DriverPrimitive& primitive)
+bool CAddonButtonMap::ResetPrimitive(ADDON::JoystickFeature& feature, const ADDON::DriverPrimitive& primitive)
 {
   bool bModified = false;
 

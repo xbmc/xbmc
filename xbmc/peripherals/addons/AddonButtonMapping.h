@@ -19,33 +19,33 @@
  */
 #pragma once
 
-#include "input/joysticks/IJoystickDriverHandler.h"
+#include "input/joysticks/IDriverHandler.h"
 
 namespace JOYSTICK
 {
-  class IJoystickButtonMap;
-  class IJoystickButtonMapper;
+  class IButtonMap;
+  class IButtonMapper;
 }
 
 namespace PERIPHERALS
 {
   class CPeripheral;
 
-  class CAddonJoystickButtonMapping : public JOYSTICK::IJoystickDriverHandler
+  class CAddonButtonMapping : public JOYSTICK::IDriverHandler
   {
   public:
-    CAddonJoystickButtonMapping(CPeripheral* peripheral, JOYSTICK::IJoystickButtonMapper* mapper);
+    CAddonButtonMapping(CPeripheral* peripheral, JOYSTICK::IButtonMapper* mapper);
 
-    virtual ~CAddonJoystickButtonMapping(void);
+    virtual ~CAddonButtonMapping(void);
 
-    // implementation of IJoystickDriverHandler
+    // implementation of IDriverHandler
     virtual bool OnButtonMotion(unsigned int buttonIndex, bool bPressed) override;
     virtual bool OnHatMotion(unsigned int hatIndex, JOYSTICK::HAT_STATE state) override;
     virtual bool OnAxisMotion(unsigned int axisIndex, float position) override;
     virtual void ProcessAxisMotions(void) override;
 
   private:
-    JOYSTICK::IJoystickDriverHandler* m_driverHandler;
-    JOYSTICK::IJoystickButtonMap*     m_buttonMap;
+    JOYSTICK::IDriverHandler* m_driverHandler;
+    JOYSTICK::IButtonMap*     m_buttonMap;
   };
 }

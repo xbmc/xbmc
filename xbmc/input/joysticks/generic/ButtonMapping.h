@@ -20,14 +20,14 @@
 #pragma once
 
 #include "input/joysticks/DriverPrimitive.h"
-#include "input/joysticks/IJoystickDriverHandler.h"
+#include "input/joysticks/IDriverHandler.h"
 
 #include <vector>
 
 namespace JOYSTICK
 {
-  class IJoystickButtonMap;
-  class IJoystickButtonMapper;
+  class IButtonMap;
+  class IButtonMapper;
 
   /*
    * \brief Generic implementation of a class that provides button mapping by
@@ -38,20 +38,20 @@ namespace JOYSTICK
    * Button mapping commands are deferred for a short while after an axis is
    * activated, and only one command will be invoked per activation.
    */
-  class CGenericJoystickButtonMapping : public IJoystickDriverHandler
+  class CButtonMapping : public IDriverHandler
   {
   public:
     /*
-     * \brief Constructor for CGenericJoystickButtonMapping
+     * \brief Constructor for CButtonMapping
      *
      * \param buttonMapper Carries out button-mapping commands using <buttonMap>
      * \param buttonMap The button map given to <buttonMapper> on each command
      */
-    CGenericJoystickButtonMapping(IJoystickButtonMapper* buttonMapper, IJoystickButtonMap* buttonMap);
+    CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap);
 
-    virtual ~CGenericJoystickButtonMapping(void) { }
+    virtual ~CButtonMapping(void) { }
 
-    // implementation of IJoystickDriverHandler
+    // implementation of IDriverHandler
     virtual bool OnButtonMotion(unsigned int buttonIndex, bool bPressed) override;
     virtual bool OnHatMotion(unsigned int hatIndex, HAT_STATE state) override;
     virtual bool OnAxisMotion(unsigned int axisIndex, float position) override;
@@ -64,8 +64,8 @@ namespace JOYSTICK
     void Deactivate(const CDriverPrimitive& semiAxis);
     bool IsActive(const CDriverPrimitive& semiAxis);
 
-    IJoystickButtonMapper* const m_buttonMapper;
-    IJoystickButtonMap* const    m_buttonMap;
+    IButtonMapper* const m_buttonMapper;
+    IButtonMap* const    m_buttonMap;
 
     struct ActivatedAxis
     {

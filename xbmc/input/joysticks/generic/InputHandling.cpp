@@ -18,30 +18,30 @@
  *
  */
 
-#include "GenericJoystickInputHandling.h"
+#include "InputHandling.h"
 #include "input/joysticks/DriverPrimitive.h"
-#include "input/joysticks/IJoystickButtonMap.h"
-#include "input/joysticks/IJoystickInputHandler.h"
+#include "input/joysticks/IButtonMap.h"
+#include "input/joysticks/IInputHandler.h"
 #include "input/joysticks/JoystickUtils.h"
 
 using namespace JOYSTICK;
 
-CGenericJoystickInputHandling::CGenericJoystickInputHandling(IJoystickInputHandler* handler, IJoystickButtonMap* buttonMap)
+CInputHandling::CInputHandling(IInputHandler* handler, IButtonMap* buttonMap)
  : m_handler(handler),
    m_buttonMap(buttonMap)
 {
 }
 
-CGenericJoystickInputHandling::~CGenericJoystickInputHandling(void)
+CInputHandling::~CInputHandling(void)
 {
 }
 
-bool CGenericJoystickInputHandling::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
+bool CInputHandling::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
 {
   return OnDigitalMotion(CDriverPrimitive(buttonIndex), bPressed);
 }
 
-bool CGenericJoystickInputHandling::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
+bool CInputHandling::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
 {
   bool bHandled = false;
 
@@ -53,7 +53,7 @@ bool CGenericJoystickInputHandling::OnHatMotion(unsigned int hatIndex, HAT_STATE
   return bHandled;
 }
 
-bool CGenericJoystickInputHandling::OnAxisMotion(unsigned int axisIndex, float position)
+bool CInputHandling::OnAxisMotion(unsigned int axisIndex, float position)
 {
   bool bHandled = false;
 
@@ -66,13 +66,13 @@ bool CGenericJoystickInputHandling::OnAxisMotion(unsigned int axisIndex, float p
   return bHandled;
 }
 
-void CGenericJoystickInputHandling::ProcessAxisMotions(void)
+void CInputHandling::ProcessAxisMotions(void)
 {
   for (std::map<FeatureName, FeaturePtr>::iterator it = m_features.begin(); it != m_features.end(); ++it)
     it->second->ProcessMotions();
 }
 
-bool CGenericJoystickInputHandling::OnDigitalMotion(const CDriverPrimitive& source, bool bPressed)
+bool CInputHandling::OnDigitalMotion(const CDriverPrimitive& source, bool bPressed)
 {
   bool bHandled = false;
 
@@ -91,7 +91,7 @@ bool CGenericJoystickInputHandling::OnDigitalMotion(const CDriverPrimitive& sour
   return bHandled;
 }
 
-bool CGenericJoystickInputHandling::OnAnalogMotion(const CDriverPrimitive& source, float magnitude)
+bool CInputHandling::OnAnalogMotion(const CDriverPrimitive& source, float magnitude)
 {
   bool bHandled = false;
 
@@ -110,7 +110,7 @@ bool CGenericJoystickInputHandling::OnAnalogMotion(const CDriverPrimitive& sourc
   return bHandled;
 }
 
-CJoystickFeature* CGenericJoystickInputHandling::CreateFeature(const FeatureName& featureName)
+CJoystickFeature* CInputHandling::CreateFeature(const FeatureName& featureName)
 {
   CJoystickFeature* feature = nullptr;
 

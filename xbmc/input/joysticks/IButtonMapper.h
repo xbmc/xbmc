@@ -24,7 +24,7 @@
 namespace JOYSTICK
 {
   class CDriverPrimitive;
-  class IJoystickButtonMap;
+  class IButtonMap;
 
   /*!
    * \ingroup joysticks
@@ -32,12 +32,12 @@ namespace JOYSTICK
    * \brief Button mapper interface to assign the driver's raw button/hat/axis
    *        elements to physical joystick features using a provided button map.
    *
-   * \sa IJoystickButtonMap
+   * \sa IButtonMap
    */
-  class IJoystickButtonMapper
+  class IButtonMapper
   {
   public:
-    virtual ~IJoystickButtonMapper(void) { }
+    virtual ~IButtonMapper(void) { }
 
     /*!
      * \brief The add-on ID of the game controller associated with this button mapper
@@ -54,6 +54,6 @@ namespace JOYSTICK
      *
      * \return True if action was mapped to a feature
      */
-    virtual bool MapPrimitive(IJoystickButtonMap* buttonMap, const CDriverPrimitive& primitive) = 0;
+    virtual bool MapPrimitive(IButtonMap* buttonMap, const CDriverPrimitive& primitive) = 0;
   };
 }

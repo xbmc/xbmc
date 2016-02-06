@@ -22,7 +22,7 @@
 #include "PeripheralAddon.h" // for FeatureMap
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_utils.hpp"
 #include "input/joysticks/DriverPrimitive.h"
-#include "input/joysticks/IJoystickButtonMap.h"
+#include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/JoystickTypes.h"
 #include "peripherals/PeripheralTypes.h"
 
@@ -30,14 +30,14 @@ namespace PERIPHERALS
 {
   class CPeripheral;
 
-  class CAddonJoystickButtonMap : public JOYSTICK::IJoystickButtonMap
+  class CAddonButtonMap : public JOYSTICK::IButtonMap
   {
   public:
-    CAddonJoystickButtonMap(CPeripheral* device, const PeripheralAddonPtr& addon, const std::string& strControllerId);
+    CAddonButtonMap(CPeripheral* device, const PeripheralAddonPtr& addon, const std::string& strControllerId);
 
-    virtual ~CAddonJoystickButtonMap(void);
+    virtual ~CAddonButtonMap(void);
 
-    // Implementation of IJoystickButtonMap
+    // Implementation of IButtonMap
     virtual std::string ControllerID(void) const override { return m_strControllerId; }
 
     virtual bool Load(void) override;

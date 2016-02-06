@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "IJoystickInputHandler.h"
+#include "IInputHandler.h"
 #include "JoystickTypes.h"
 
 #include <vector>
@@ -31,18 +31,18 @@ namespace JOYSTICK
   class IKeymapHandler;
 
   /*!
-   * \brief Implementation of IJoystickInputHandler for Kodi input
+   * \brief Implementation of IInputHandler for Kodi input
    *
-   * \sa IJoystickInputHandler
+   * \sa IInputHandler
    */
-  class CDefaultJoystick : public JOYSTICK::IJoystickInputHandler
+  class CDefaultJoystick : public JOYSTICK::IInputHandler
   {
   public:
     CDefaultJoystick(void);
 
     virtual ~CDefaultJoystick(void);
 
-    // implementation of IJoystickInputHandler
+    // implementation of IInputHandler
     virtual std::string ControllerID(void) const override;
     virtual bool HasFeature(const FeatureName& feature) const override;
     virtual INPUT_TYPE GetInputType(const FeatureName& feature) const override;

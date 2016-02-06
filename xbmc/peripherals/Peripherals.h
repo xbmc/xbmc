@@ -38,7 +38,7 @@ class CKey;
 
 namespace JOYSTICK
 {
-  class IJoystickButtonMapper;
+  class IButtonMapper;
 }
 
 namespace PERIPHERALS
@@ -230,8 +230,8 @@ namespace PERIPHERALS
 
     virtual void ResetButtonMaps(const std::string& controllerId);
 
-    void RegisterJoystickButtonMapper(JOYSTICK::IJoystickButtonMapper* mapper);
-    void UnregisterJoystickButtonMapper(JOYSTICK::IJoystickButtonMapper* mapper);
+    void RegisterJoystickButtonMapper(JOYSTICK::IButtonMapper* mapper);
+    void UnregisterJoystickButtonMapper(JOYSTICK::IButtonMapper* mapper);
 
     virtual void OnSettingChanged(const CSetting *setting) override;
     virtual void OnSettingAction(const CSetting *setting) override;

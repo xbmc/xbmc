@@ -22,7 +22,7 @@
 #include "games/controllers/guicontrols/GUIFeatureButton.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"
-#include "input/joysticks/IJoystickButtonMap.h"
+#include "input/joysticks/IButtonMap.h"
 #include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
@@ -130,7 +130,7 @@ void CGUIConfigurationWizard::Process(void)
   CLog::Log(LOGDEBUG, "Configuration wizard ended");
 }
 
-bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IJoystickButtonMap* buttonMap, const JOYSTICK::CDriverPrimitive& primitive)
+bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap, const JOYSTICK::CDriverPrimitive& primitive)
 {
   using namespace JOYSTICK;
 

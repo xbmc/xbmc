@@ -28,10 +28,10 @@ namespace JOYSTICK
   /*!
    * \brief Interface for handling input events for game controllers
    */
-  class IJoystickInputHandler
+  class IInputHandler
   {
   public:
-    virtual ~IJoystickInputHandler(void) { }
+    virtual ~IInputHandler(void) { }
 
     /*!
      * \brief The add-on ID of the game controller associated with this input handler

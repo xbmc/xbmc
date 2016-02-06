@@ -26,8 +26,8 @@
 namespace JOYSTICK
 {
   class CDriverPrimitive;
-  class IJoystickInputHandler;
-  class IJoystickButtonMap;
+  class IInputHandler;
+  class IButtonMap;
 
   class CJoystickFeature;
   typedef std::shared_ptr<CJoystickFeature> FeaturePtr;
@@ -40,7 +40,7 @@ namespace JOYSTICK
   class CJoystickFeature
   {
   public:
-    CJoystickFeature(const FeatureName& name, IJoystickInputHandler* handler, IJoystickButtonMap* buttonMap);
+    CJoystickFeature(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap);
     virtual ~CJoystickFeature(void) { }
 
     /*!
@@ -78,14 +78,14 @@ namespace JOYSTICK
 
   protected:
     const FeatureName            m_name;
-    IJoystickInputHandler* const m_handler;
-    IJoystickButtonMap* const    m_buttonMap;
+    IInputHandler* const m_handler;
+    IButtonMap* const    m_buttonMap;
   };
 
   class CScalarFeature : public CJoystickFeature
   {
   public:
-    CScalarFeature(const FeatureName& name, IJoystickInputHandler* handler, IJoystickButtonMap* buttonMap);
+    CScalarFeature(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap);
     virtual ~CScalarFeature(void) { }
 
     // implementation of CJoystickFeature
@@ -169,7 +169,7 @@ namespace JOYSTICK
   class CAnalogStick : public CJoystickFeature
   {
   public:
-    CAnalogStick(const FeatureName& name, IJoystickInputHandler* handler, IJoystickButtonMap* buttonMap);
+    CAnalogStick(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap);
     virtual ~CAnalogStick(void) { }
 
     // implementation of CJoystickFeature
@@ -188,7 +188,7 @@ namespace JOYSTICK
   class CAccelerometer : public CJoystickFeature
   {
   public:
-    CAccelerometer(const FeatureName& name, IJoystickInputHandler* handler, IJoystickButtonMap* buttonMap);
+    CAccelerometer(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap);
     virtual ~CAccelerometer(void) { }
 
     // implementation of CJoystickFeature

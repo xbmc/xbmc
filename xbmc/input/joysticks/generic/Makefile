@@ -1,6 +1,6 @@
-SRCS=GenericJoystickButtonMapping.cpp \
-     GenericJoystickFeatureHandling.cpp \
-     GenericJoystickInputHandling.cpp \
+SRCS=ButtonMapping.cpp \
+     FeatureHandling.cpp \
+     InputHandling.cpp \
 
 LIB=input_joysticks_generic.a
 

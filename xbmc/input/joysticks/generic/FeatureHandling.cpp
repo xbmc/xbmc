@@ -18,10 +18,10 @@
  *
  */
 
-#include "GenericJoystickFeatureHandling.h"
+#include "FeatureHandling.h"
 #include "input/joysticks/DriverPrimitive.h"
-#include "input/joysticks/IJoystickButtonMap.h"
-#include "input/joysticks/IJoystickInputHandler.h"
+#include "input/joysticks/IButtonMap.h"
+#include "input/joysticks/IInputHandler.h"
 #include "utils/log.h"
 
 using namespace JOYSTICK;
@@ -30,7 +30,7 @@ using namespace JOYSTICK;
 
 // --- CJoystickFeature --------------------------------------------------------
 
-CJoystickFeature::CJoystickFeature(const FeatureName& name, IJoystickInputHandler* handler, IJoystickButtonMap* buttonMap) :
+CJoystickFeature::CJoystickFeature(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap) :
   m_name(name),
   m_handler(handler),
   m_buttonMap(buttonMap)
@@ -39,7 +39,7 @@ CJoystickFeature::CJoystickFeature(const FeatureName& name, IJoystickInputHandle
 
 // --- CScalarFeature ----------------------------------------------------------
 
-CScalarFeature::CScalarFeature(const FeatureName& name, IJoystickInputHandler* handler, IJoystickButtonMap* buttonMap) :
+CScalarFeature::CScalarFeature(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap) :
   CJoystickFeature(name, handler, buttonMap),
   m_inputType(handler->GetInputType(name)),
   m_bDigitalState(false),
@@ -112,7 +112,7 @@ bool CScalarFeature::OnAnalogMotion(float magnitude)
 
 // --- CAnalogStick ------------------------------------------------------------
 
-CAnalogStick::CAnalogStick(const FeatureName& name, IJoystickInputHandler* handler, IJoystickButtonMap* buttonMap) :
+CAnalogStick::CAnalogStick(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap) :
   CJoystickFeature(name, handler, buttonMap),
   m_vertState(0.0f),
   m_horizState(0.0f)
@@ -167,7 +167,7 @@ void CAnalogStick::ProcessMotions(void)
 
 // --- CAccelerometer ----------------------------------------------------------
 
-CAccelerometer::CAccelerometer(const FeatureName& name, IJoystickInputHandler* handler, IJoystickButtonMap* buttonMap) :
+CAccelerometer::CAccelerometer(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap) :
   CJoystickFeature(name, handler, buttonMap),
   m_xAxisState(0.0f),
   m_yAxisState(0.0f),

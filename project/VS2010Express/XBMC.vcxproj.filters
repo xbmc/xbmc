@@ -3367,25 +3367,7 @@
     <ClCompile Include="..\..\xbmc\input\joysticks\KeymapHandler.cpp">
       <Filter>input\joysticks</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\input\joysticks\generic\GenericJoystickButtonMapping.cpp">
-      <Filter>input\joysticks\generic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\input\joysticks\generic\GenericJoystickInputHandling.cpp">
-      <Filter>input\joysticks\generic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\input\joysticks\generic\GenericJoystickFeatureHandling.cpp">
-      <Filter>input\joysticks\generic</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\peripherals\addons\PeripheralAddonTranslator.cpp">
-      <Filter>peripherals\addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\peripherals\addons\AddonJoystickButtonMap.cpp">
-      <Filter>peripherals\addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\peripherals\addons\AddonJoystickButtonMapping.cpp">
-      <Filter>peripherals\addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\peripherals\addons\AddonJoystickInputHandling.cpp">
       <Filter>peripherals\addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\peripherals\addons\PeripheralAddon.cpp">
@@ -3447,6 +3429,24 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIScalarFeatureButton.cpp">
       <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\generic\FeatureHandling.cpp">
+      <Filter>input\joysticks\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\generic\InputHandling.cpp">
+      <Filter>input\joysticks\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\generic\ButtonMapping.cpp">
+      <Filter>input\joysticks\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\addons\AddonButtonMapping.cpp">
+      <Filter>peripherals\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\addons\AddonInputHandling.cpp">
+      <Filter>peripherals\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\addons\AddonButtonMap.cpp">
+      <Filter>peripherals\addons</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6557,18 +6557,6 @@
     <ClInclude Include="..\..\xbmc\input\joysticks\DriverPrimitive.h">
       <Filter>input\joysticks</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\input\joysticks\IJoystickButtonMap.h">
-      <Filter>input\joysticks</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\input\joysticks\IJoystickButtonMapper.h">
-      <Filter>input\joysticks</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\input\joysticks\IJoystickDriverHandler.h">
-      <Filter>input\joysticks</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\input\joysticks\IJoystickInputHandler.h">
-      <Filter>input\joysticks</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\input\joysticks\IKeymapHandler.h">
       <Filter>input\joysticks</Filter>
     </ClInclude>
@@ -6587,28 +6575,10 @@
     <ClInclude Include="..\..\xbmc\input\joysticks\KeymapHandler.h">
       <Filter>input\joysticks</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\input\joysticks\generic\GenericJoystickButtonMapping.h">
-      <Filter>input\joysticks\generic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\input\joysticks\generic\GenericJoystickInputHandling.h">
-      <Filter>input\joysticks\generic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\input\joysticks\generic\GenericJoystickFeatureHandling.h">
-      <Filter>input\joysticks\generic</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\DllPeripheral.h">
       <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\peripherals\addons\PeripheralAddonTranslator.h">
-      <Filter>peripherals\addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\peripherals\addons\AddonJoystickButtonMap.h">
-      <Filter>peripherals\addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\peripherals\addons\AddonJoystickButtonMapping.h">
-      <Filter>peripherals\addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\peripherals\addons\AddonJoystickInputHandling.h">
       <Filter>peripherals\addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\peripherals\addons\PeripheralAddon.h">
@@ -6694,6 +6664,36 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIScalarFeatureButton.h">
       <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\generic\ButtonMapping.h">
+      <Filter>input\joysticks\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\generic\FeatureHandling.h">
+      <Filter>input\joysticks\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\generic\InputHandling.h">
+      <Filter>input\joysticks\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\IButtonMapper.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\IDriverHandler.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\IInputHandler.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\IButtonMap.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\addons\AddonButtonMapping.h">
+      <Filter>peripherals\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\addons\AddonInputHandling.h">
+      <Filter>peripherals\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\addons\AddonButtonMap.h">
+      <Filter>peripherals\addons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

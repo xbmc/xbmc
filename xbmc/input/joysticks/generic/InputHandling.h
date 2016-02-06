@@ -19,8 +19,8 @@
  */
 #pragma once
 
-#include "GenericJoystickFeatureHandling.h"
-#include "input/joysticks/IJoystickDriverHandler.h"
+#include "FeatureHandling.h"
+#include "input/joysticks/IDriverHandler.h"
 #include "input/joysticks/JoystickTypes.h"
 
 #include <map>
@@ -28,8 +28,8 @@
 namespace JOYSTICK
 {
   class CDriverPrimitive;
-  class IJoystickInputHandler;
-  class IJoystickButtonMap;
+  class IInputHandler;
+  class IButtonMap;
 
   /*!
    * \brief Class to translate input from the driver into higher-level features
@@ -40,17 +40,17 @@ namespace JOYSTICK
    * etc.
    *
    * A button map is used to translate driver primitives to controller features.
-   * The button map has been abstracted away behind the IJoystickButtonMap
+   * The button map has been abstracted away behind the IButtonMap
    * interface so that it can be provided by an add-on.
    */
-  class CGenericJoystickInputHandling : public IJoystickDriverHandler
+  class CInputHandling : public IDriverHandler
   {
   public:
-    CGenericJoystickInputHandling(IJoystickInputHandler* handler, IJoystickButtonMap* buttonMap);
+    CInputHandling(IInputHandler* handler, IButtonMap* buttonMap);
 
-    virtual ~CGenericJoystickInputHandling(void);
+    virtual ~CInputHandling(void);
 
-    // implementation of IJoystickDriverHandler
+    // implementation of IDriverHandler
     virtual bool OnButtonMotion(unsigned int buttonIndex, bool bPressed) override;
     virtual bool OnHatMotion(unsigned int hatIndex, HAT_STATE state) override;
     virtual bool OnAxisMotion(unsigned int axisIndex, float position) override;
@@ -62,8 +62,8 @@ namespace JOYSTICK
 
     CJoystickFeature* CreateFeature(const FeatureName& featureName);
 
-    IJoystickInputHandler* const m_handler;
-    IJoystickButtonMap* const    m_buttonMap;
+    IInputHandler* const m_handler;
+    IButtonMap* const    m_buttonMap;
 
     std::map<FeatureName, FeaturePtr> m_features;
   };
