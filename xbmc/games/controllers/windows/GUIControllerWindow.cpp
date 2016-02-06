@@ -28,7 +28,6 @@
 #include "addons/AddonManager.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/WindowIDs.h"
-#include "messaging/ApplicationMessenger.h"
 
 // To check for button mapping support
 #include "dialogs/GUIDialogOK.h"
@@ -146,7 +145,6 @@ void CGUIControllerWindow::Notify(const Observable &obs, const ObservableMessage
 
 void CGUIControllerWindow::OnInitWindow(void)
 {
-  using namespace KODI::MESSAGING;
   using namespace PERIPHERALS;
 
   CGUIDialog::OnInitWindow();
@@ -173,7 +171,7 @@ void CGUIControllerWindow::OnInitWindow(void)
 
   // Focus the first controller so that the feature list is loaded properly
   CGUIMessage msgFocus(GUI_MSG_SETFOCUS, GetID(), CONTROL_CONTROLLER_BUTTONS_START);
-  CApplicationMessenger::GetInstance().SendGUIMessage(msgFocus, WINDOW_INVALID, false);
+  OnMessage(msgFocus);
 
   // Check for button mapping support (TODO: remove this)
   PeripheralBusAddonPtr bus = std::static_pointer_cast<CPeripheralBusAddon>(g_peripherals.GetBusByType(PERIPHERAL_BUS_ADDON));
