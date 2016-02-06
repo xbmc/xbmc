@@ -67,6 +67,28 @@ static bool Has71Support()
   return CJNIAudioManager::GetSDKVersion() >= 21;
 }
 
+static int AEStreamFormatToATFormat(const CAEStreamInfo::DataType& dt)
+{
+  switch (dt)
+  {
+    case CAEStreamInfo::STREAM_TYPE_AC3:
+      return CJNIAudioFormat::ENCODING_AC3;
+    case CAEStreamInfo::STREAM_TYPE_DTS_512:
+    case CAEStreamInfo::STREAM_TYPE_DTS_1024:
+    case CAEStreamInfo::STREAM_TYPE_DTS_2048:
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
+      return CJNIAudioFormat::ENCODING_DTS;
+    case CAEStreamInfo::STREAM_TYPE_DTSHD:
+      return CJNIAudioFormat::ENCODING_DTS_HD;
+    case CAEStreamInfo::STREAM_TYPE_EAC3:
+      return CJNIAudioFormat::ENCODING_E_AC3;
+    case CAEStreamInfo::STREAM_TYPE_TRUEHD:
+      return CJNIAudioFormat::ENCODING_DOLBY_TRUEHD;
+    default:
+      return CJNIAudioFormat::ENCODING_PCM_16BIT;
+  }
+}
+
 static AEChannel AUDIOTRACKChannelToAEChannel(int atChannel)
 {
   AEChannel aeChannel;
@@ -228,45 +250,15 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 
     if (!m_info.m_wantsIECPassthrough)
     {
-      switch (m_format.m_streamInfo.m_type)
+      m_encoding = AEStreamFormatToATFormat(m_format.m_streamInfo.m_type);
+      m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
+      if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD ||
+          m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
       {
-        case CAEStreamInfo::STREAM_TYPE_AC3:
-          m_encoding              = CJNIAudioFormat::ENCODING_AC3;
-          m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
-          break;
-
-        case CAEStreamInfo::STREAM_TYPE_EAC3:
-          m_encoding              = CJNIAudioFormat::ENCODING_E_AC3;
-          m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
-          break;
-
-        case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
-        case CAEStreamInfo::STREAM_TYPE_DTS_512:
-        case CAEStreamInfo::STREAM_TYPE_DTS_1024:
-        case CAEStreamInfo::STREAM_TYPE_DTS_2048:
-          m_encoding              = CJNIAudioFormat::ENCODING_DTS;
-          m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
-          break;
-
-        case CAEStreamInfo::STREAM_TYPE_DTSHD:
-          m_encoding              = CJNIAudioFormat::ENCODING_DTS_HD;
-          m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
-          // Shield v5 workaround
-          if (CJNIAudioManager::GetSDKVersion() == 22 && m_sink_sampleRate > 48000)
-            m_sink_sampleRate = 48000;
-          break;
-
-        case CAEStreamInfo::STREAM_TYPE_TRUEHD:
-          m_encoding              = CJNIAudioFormat::ENCODING_DOLBY_TRUEHD;
-          m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
-          // Shield v5 workaround
-          if (CJNIAudioManager::GetSDKVersion() == 22 && m_sink_sampleRate > 48000)
-            m_sink_sampleRate = 48000;
-          break;
-
-        default:
-          m_format.m_dataFormat   = AE_FMT_S16LE;
-          break;
+        m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
+        // Shield v5 workaround
+        if (CJNIAudioManager::GetSDKVersion() == 22 && m_sink_sampleRate > 48000)
+          m_sink_sampleRate = 48000;
       }
     }
     else
