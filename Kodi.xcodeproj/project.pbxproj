@@ -4517,7 +4517,6 @@
 		E38E1E8C0D25F9FD00618676 /* UdpClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdpClient.h; sourceTree = "<group>"; };
 		E38E1E8D0D25F9FD00618676 /* Weather.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Weather.cpp; sourceTree = "<group>"; };
 		E38E1E8E0D25F9FD00618676 /* Weather.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Weather.h; sourceTree = "<group>"; };
-		E38E1E920D25F9FD00618676 /* WindowsShortcut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindowsShortcut.h; sourceTree = "<group>"; };
 		E38E1E930D25F9FD00618676 /* VideoDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoDatabase.cpp; sourceTree = "<group>"; };
 		E38E1E940D25F9FD00618676 /* VideoDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDatabase.h; sourceTree = "<group>"; };
 		E38E1E950D25F9FD00618676 /* VideoInfoScanner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoInfoScanner.cpp; sourceTree = "<group>"; };
@@ -8476,7 +8475,6 @@
 				7CF1FB0A123B1AF000B2CBCB /* Variant.h */,
 				E38E1E8D0D25F9FD00618676 /* Weather.cpp */,
 				E38E1E8E0D25F9FD00618676 /* Weather.h */,
-				E38E1E920D25F9FD00618676 /* WindowsShortcut.h */,
 				F5ED908615538DCE00842059 /* XBMCTinyXML.cpp */,
 				F5ED908715538DCE00842059 /* XBMCTinyXML.h */,
 				18B7C9811294385F009E7A26 /* XMLUtils.cpp */,
