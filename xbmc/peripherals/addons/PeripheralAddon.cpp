@@ -69,6 +69,14 @@ CPeripheralAddon::CPeripheralAddon(ADDON::AddonProps props, bool bProvidesJoysti
 
 CPeripheralAddon::~CPeripheralAddon(void)
 {
+  // delete all peripherals provided by this addon
+  for (const auto& peripheral : m_peripherals)
+    delete peripheral.second;
+  m_peripherals.clear();
+
+  // only clear buttonMaps but don't delete them as they are owned by a CAddonJoystickInputHandling instance
+  m_buttonMaps.clear();
+
   Destroy();
   SAFE_DELETE(m_pInfo);
 }
