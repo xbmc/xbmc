@@ -349,10 +349,10 @@ bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
   case PVR_NEXT_RECORDING_DATETIME:
     CharInfoNextTimerDateTime(strValue);
     break;
-  case PVR_PLAYING_DURATION:
+  case PLAYER_DURATION:
     CharInfoPlayingDuration(strValue);
     break;
-  case PVR_PLAYING_TIME:
+  case PLAYER_TIME:
     CharInfoPlayingTime(strValue);
     break;
   case PVR_NEXT_TIMER:
@@ -497,7 +497,7 @@ int CPVRGUIInfo::TranslateIntInfo(DWORD dwInfo) const
   int iReturn(0);
   CSingleLock lock(m_critSection);
 
-  if (dwInfo == PVR_PLAYING_PROGRESS)
+  if (dwInfo == PLAYER_PROGRESS)
     iReturn = (int) ((float) GetStartTime() / m_iDuration * 100);
   else if (dwInfo == PVR_ACTUAL_STREAM_SIG_PROGR)
     iReturn = (int) ((float) m_qualityInfo.iSignal / 0xFFFF * 100);
