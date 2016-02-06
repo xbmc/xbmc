@@ -32,6 +32,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "guilib/LocalizeStrings.h"
 #include "peripherals/Peripherals.h"
+#include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "profiles/ProfilesManager.h"
 #include "pvr/PVRManager.h"
 #include "settings/SettingAddon.h"
@@ -77,6 +78,14 @@ bool CheckPVRParentalPin(const std::string &condition, const std::string &value,
 bool HasPeripherals(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return PERIPHERALS::g_peripherals.GetNumberOfPeripherals() > 0;
+}
+
+bool SupportsPeripheralControllers(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
+{
+  using namespace PERIPHERALS;
+
+  PeripheralBusAddonPtr bus = std::static_pointer_cast<CPeripheralBusAddon>(g_peripherals.GetBusByType(PERIPHERAL_BUS_ADDON));
+  return bus != nullptr && bus->GetAddonCount() > 0;
 }
 
 bool IsFullscreen(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
@@ -334,6 +343,7 @@ void CSettingConditions::Initialize()
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("checkmasterlock",               CheckMasterLock));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("checkpvrparentalpin",           CheckPVRParentalPin));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("hasperipherals",                HasPeripherals));
+  m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("supportsperipheralcontrollers", SupportsPeripheralControllers));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("isfullscreen",                  IsFullscreen));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("ismasteruser",                  IsMasterUser));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("isusingttfsubtitles",           IsUsingTTFSubtitles));

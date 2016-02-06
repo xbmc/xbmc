@@ -2756,6 +2756,9 @@
         </setting>
         <setting id="input.controllerconfig" type="action" label="35063" help="35064">
           <level>0</level>
+          <dependencies>
+            <dependency type="enable" on="property" name="SupportsPeripheralControllers" />
+          </dependencies>
           <control type="button" format="action" />
         </setting>
       </group>
