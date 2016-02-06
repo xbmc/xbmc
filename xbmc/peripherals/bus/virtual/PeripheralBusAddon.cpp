@@ -46,6 +46,13 @@ CPeripheralBusAddon::~CPeripheralBusAddon()
 {
   CAddonMgr::GetInstance().UnregisterObserver(this);
   CAddonMgr::GetInstance().UnregisterAddonMgrCallback(ADDON_PERIPHERALDLL);
+
+  // stop everything before destroying any (loaded) addons
+  Clear();
+
+  // destroy any (loaded) addons
+  m_failedAddons.clear();
+  m_addons.clear();
 }
 
 bool CPeripheralBusAddon::GetAddon(const std::string &strId, AddonPtr &addon) const
