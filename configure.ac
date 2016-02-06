@@ -1043,7 +1043,7 @@ fi
 AC_LANG_PUSH([C++])
 PKG_CHECK_MODULES([TINYXML], [tinyxml >= 2.6.2],
   [INCLUDES="$INCLUDES $TINYXML_CFLAGS"; LIBS="$LIBS $TINYXML_LIBS"],
-  [AC_RUN_IFELSE(
+  [AC_COMPILE_IFELSE(
    [AC_LANG_SOURCE([[
 #include <stdlib.h>
 #include <tinyxml.h>
