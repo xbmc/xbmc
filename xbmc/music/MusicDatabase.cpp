@@ -4027,7 +4027,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string &baseDir, const Filter &
   return false;
 }
 
-bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription /* = SortDescription() */, bool artistData /* = false*/)
+bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription /* = SortDescription() */, bool artistData /* = false*/, bool cueSheetData /* = true*/)
 {
   if (m_pDB.get() == NULL || m_pDS.get() == NULL)
     return false;
@@ -4038,10 +4038,6 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     int total = -1;
 
     std::string strSQL = "SELECT %s FROM songview ";
-    if (artistData)
-      // Get data from song and song_artist tables to fully populate songs with artists. 
-      //Some songs may not have artists so Left join
-      strSQL = "SELECT %s FROM songview LEFT JOIN songartistview on songartistview.idsong = songview.idsong ";
 
     Filter extFilter = filter;
     CMusicDbUrl musicUrl;
@@ -4070,16 +4066,22 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     if (limited)
       strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
 
-    if (!artistData)
-      strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.* ") + strSQLExtra;
-    else
-    {
-      strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.*, songartistview.* ");
-      if (!limited)
-        strSQL += strSQLExtra;
-      else
+    strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.* ") + strSQLExtra;
+    if (artistData)
+    { // Get data from song and song_artist tables to fully populate songs with artists. 
+      // Some songs may not have artists so Left join
+     if (limited)
+      {
         //Apply where clause and limits to songview, then join as mutiple records in result set per song
-        strSQL += " WHERE songview.idsong in (SELECT idsong FROM songview " + strSQLExtra + ")";
+        strSQL = "SELECT %s FROM (" + strSQL + ") AS sv LEFT JOIN songartistview on songartistview.idsong = sv.idsong";
+        strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "sv.*, songartistview.* ");
+      }
+      else
+      {
+        strSQL = "SELECT %s FROM songview LEFT JOIN songartistview on songartistview.idsong = songview.idsong ";
+        strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.*, songartistview.* ");
+        strSQL += strSQLExtra;
+      }
     }
 
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
@@ -4138,10 +4140,8 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
           if (idSongArtistRole == ROLE_ARTIST)
             artistCredits.push_back(GetArtistCreditFromDataset(record, songArtistOffset));
           else
-            items[items.Size() - 1]->GetMusicInfoTag()->AppendArtistRole(GetArtistRoleFromDataset(record, songArtistOffset));
-              
+            items[items.Size() - 1]->GetMusicInfoTag()->AppendArtistRole(GetArtistRoleFromDataset(record, songArtistOffset));           
         }
-
       }
       catch (...)
       {
@@ -4149,8 +4149,6 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
         CLog::Log(LOGERROR, "%s: out of memory loading query: %s", __FUNCTION__, filter.where.c_str());
         return (items.Size() > 0);
       }
-
-   
     }
     if (!artistCredits.empty())
     {
@@ -4161,11 +4159,12 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     // cleanup
     m_pDS->close();
 
-    // Load some info from embedded cuesheet if present (now only ReplayGain)
-    CueInfoLoader cueLoader;
-    for (int i = 0; i < items.Size(); ++i)
-      cueLoader.Load(LoadCuesheet(items[i]->GetMusicInfoTag()->GetURL()), items[i]);
-
+    if (cueSheetData)
+    { // Load some info from embedded cuesheet if present (now only ReplayGain)
+      CueInfoLoader cueLoader;
+      for (int i = 0; i < items.Size(); ++i)
+        cueLoader.Load(LoadCuesheet(items[i]->GetMusicInfoTag()->GetURL()), items[i]);
+    }
     CLog::Log(LOGDEBUG, "%s(%s) - took %d ms", __FUNCTION__, filter.where.c_str(), XbmcThreads::SystemClockMillis() - time);
     return true;
   }

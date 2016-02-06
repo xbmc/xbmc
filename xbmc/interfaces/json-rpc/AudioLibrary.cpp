@@ -272,8 +272,22 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
   if (!ParseSorting(parameterObject, sorting.sortBy, sorting.sortOrder, sorting.sortAttributes))
     return InvalidParams;
 
+  // Check if any properties from songartistview wanted, only then query artist data for songs
+  // "displayArtist" is held in songview
+  std::set<std::string> checkProperties;
+  checkProperties.insert("artist");
+  checkProperties.insert("artistid");
+  checkProperties.insert("musicbrainzartistid");
+  checkProperties.insert("contributors");
+  checkProperties.insert("displaycomposer");
+  checkProperties.insert("displayconductor");
+  checkProperties.insert("displayorchestra");
+  checkProperties.insert("displaylyricist");
+  std::set<std::string> additionalProperties;
+  bool artistData = CheckForAdditionalProperties(parameterObject["properties"], checkProperties, additionalProperties);
+ 
   CFileItemList items;
-  if (!musicdatabase.GetSongsFullByWhere(musicUrl.ToString(), CDatabase::Filter(), items, sorting, true))
+  if (!musicdatabase.GetSongsFullByWhere(musicUrl.ToString(), CDatabase::Filter(), items, sorting, artistData, false))
     return InternalError; 
 
   JSONRPC_STATUS ret = GetAdditionalSongDetails(parameterObject, items, musicdatabase);
