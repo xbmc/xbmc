@@ -198,7 +198,7 @@ void CAdvancedSettings::Initialize()
   // m_moviesExcludeFromScanRegExps, m_tvshowExcludeFromScanRegExps and
   // m_audioExcludeFromScanRegExps
   m_allExcludeFromScanRegExps.clear();
-  m_allExcludeFromScanRegExps.push_back(".+\\.ite$");  // ignore itunes extras dir
+  m_allExcludeFromScanRegExps.push_back("[\\/].+\\.ite[\\/]");  // ignore itunes extras dir
   m_allExcludeFromScanRegExps.push_back("[\\/]\\.\\_");
   m_allExcludeFromScanRegExps.push_back("\\.DS_Store");
   m_allExcludeFromScanRegExps.push_back("\\.AppleDouble");
