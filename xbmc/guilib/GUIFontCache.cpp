@@ -62,7 +62,7 @@ class CGUIFontCacheImpl
     }
     void UpdateAge(HashIter it, size_t millis)
     {
-      auto range = ageMap.equal_range(millis);
+      auto range = ageMap.equal_range(it->second->m_lastUsedMillis);
       for (auto ageit = range.first; ageit != range.second; ++ageit)
       {
         if (ageit->second == it)
