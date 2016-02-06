@@ -143,9 +143,6 @@ namespace PVR
     void CharInfoService(std::string &strValue) const;
     void CharInfoMux(std::string &strValue) const;
     void CharInfoProvider(std::string &strValue) const;
-    void CharInfoTimeshiftStartTime(std::string &strValue) const;
-    void CharInfoTimeshiftEndTime(std::string &strValue) const;
-    void CharInfoTimeshiftPlayTime(std::string &strValue) const;
 
     /** @name GUIInfoManager data */
     //@{
@@ -195,9 +192,6 @@ namespace PVR
     time_t                          m_iTimeshiftStartTime;
     time_t                          m_iTimeshiftEndTime;
     time_t                          m_iTimeshiftPlayTime;
-    std::string                     m_strTimeshiftStartTime;
-    std::string                     m_strTimeshiftEndTime;
-    std::string                     m_strTimeshiftPlayTime;
 
     CCriticalSection                m_critSection;
 
