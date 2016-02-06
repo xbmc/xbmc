@@ -175,7 +175,7 @@ void CGUIControllerWindow::OnInitWindow(void)
 
   // Check for button mapping support (TODO: remove this)
   PeripheralBusAddonPtr bus = std::static_pointer_cast<CPeripheralBusAddon>(g_peripherals.GetBusByType(PERIPHERAL_BUS_ADDON));
-  if (bus && bus->GetAddonCount() == 0)
+  if (bus && !bus->HasFeature(FEATURE_JOYSTICK))
   {
     // TODO: Move the XML implementation of button map storage from add-on to
     // Kodi while keeping support for add-on button-mapping
