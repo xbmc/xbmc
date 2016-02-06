@@ -32,6 +32,7 @@
 #include "peripherals/Peripherals.h"
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "peripherals/devices/PeripheralJoystick.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
@@ -71,7 +72,20 @@ CPeripheralAddon::~CPeripheralAddon(void)
 {
   // delete all peripherals provided by this addon
   for (const auto& peripheral : m_peripherals)
+  {
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_CONTROLLERPOWEROFF))
+    {
+      // shutdown the joystick if it is supported
+      if (peripheral.second->Type() == PERIPHERAL_JOYSTICK)
+      {
+        CPeripheralJoystick* joystick = static_cast<CPeripheralJoystick*>(peripheral.second);
+        if (joystick->SupportsPowerOff())
+          PowerOffJoystick(peripheral.first);
+      }
+    }
+
     delete peripheral.second;
+  }
   m_peripherals.clear();
 
   // only clear buttonMaps but don't delete them as they are owned by a CAddonJoystickInputHandling instance
