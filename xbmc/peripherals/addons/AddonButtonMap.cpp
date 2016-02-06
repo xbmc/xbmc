@@ -29,19 +29,21 @@
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
-CAddonButtonMap::CAddonButtonMap(CPeripheral* device, const PeripheralAddonPtr& addon, const std::string& strControllerId)
+CAddonButtonMap::CAddonButtonMap(CPeripheral* device, const std::weak_ptr<CPeripheralAddon>& addon, const std::string& strControllerId)
   : m_device(device),
     m_addon(addon),
     m_strControllerId(strControllerId)
 {
-  assert(m_addon.get() != nullptr);
+  auto peripheralAddon = m_addon.lock();
+  assert(peripheralAddon != nullptr);
 
-  m_addon->RegisterButtonMap(device, this);
+  peripheralAddon->RegisterButtonMap(device, this);
 }
 
 CAddonButtonMap::~CAddonButtonMap(void)
 {
-  m_addon->UnregisterButtonMap(this);
+  if (auto addon = m_addon.lock())
+    addon->UnregisterButtonMap(this);
 }
 
 bool CAddonButtonMap::Load(void)
@@ -49,7 +51,9 @@ bool CAddonButtonMap::Load(void)
   m_features.clear();
   m_driverMap.clear();
 
-  bool bSuccess = m_addon->GetFeatures(m_device, m_strControllerId, m_features);
+  bool bSuccess = false;
+  if (auto addon = m_addon.lock())
+    bSuccess = addon->GetFeatures(m_device, m_strControllerId, m_features);
 
   // GetFeatures() was changed to always return false if no features were
   // retrieved. Check here, just in case its contract is changed or violated in
@@ -67,7 +71,8 @@ bool CAddonButtonMap::Load(void)
 
 void CAddonButtonMap::Reset(void)
 {
-  m_addon->ResetButtonMap(m_device, m_strControllerId);
+  if (auto addon = m_addon.lock())
+    addon->ResetButtonMap(m_device, m_strControllerId);
 }
 
 bool CAddonButtonMap::GetFeature(const CDriverPrimitive& primitive, FeatureName& feature)
@@ -132,7 +137,10 @@ bool CAddonButtonMap::AddScalar(const FeatureName& feature, const CDriverPrimiti
 
   m_driverMap = CreateLookupTable(m_features);
 
-  return m_addon->MapFeatures(m_device, m_strControllerId, m_features);
+  if (auto addon = m_addon.lock())
+    return addon->MapFeatures(m_device, m_strControllerId, m_features);
+
+  return false;
 }
 
 bool CAddonButtonMap::GetAnalogStick(const FeatureName& feature,
@@ -203,7 +211,10 @@ bool CAddonButtonMap::AddAnalogStick(const FeatureName& feature,
 
   m_driverMap = CreateLookupTable(m_features);
 
-  return m_addon->MapFeatures(m_device, m_strControllerId, m_features);
+  if (auto addon = m_addon.lock())
+    return addon->MapFeatures(m_device, m_strControllerId, m_features);
+
+  return false;
 }
 
 bool CAddonButtonMap::GetAccelerometer(const FeatureName& feature,
@@ -268,7 +279,10 @@ bool CAddonButtonMap::AddAccelerometer(const FeatureName& feature,
 
   m_driverMap = CreateLookupTable(m_features);
 
-  return m_addon->MapFeatures(m_device, m_strControllerId, m_features);
+  if (auto addon = m_addon.lock())
+    return addon->MapFeatures(m_device, m_strControllerId, m_features);
+
+  return false;
 }
 
 CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& features)
