@@ -67,6 +67,12 @@ static bool Has71Support()
   return CJNIAudioManager::GetSDKVersion() >= 21;
 }
 
+// AMLogic helper for HD Audio
+bool CAESinkAUDIOTRACK::HasAmlHD()
+{
+  return ((CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1) && (CJNIAudioFormat::ENCODING_DTS_HD != -1));
+}
+
 static int AEStreamFormatToATFormat(const CAEStreamInfo::DataType& dt)
 {
   switch (dt)
@@ -247,24 +253,36 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   if (m_format.m_dataFormat == AE_FMT_RAW && !CXBMCApp::IsHeadsetPlugged())
   {
     m_passthrough = true;
+    m_encoding = AEStreamFormatToATFormat(m_format.m_streamInfo.m_type);
+    m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
 
-    if (!m_info.m_wantsIECPassthrough)
+    if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD ||
+        m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
     {
-      m_encoding = AEStreamFormatToATFormat(m_format.m_streamInfo.m_type);
-      m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
-      if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD ||
-          m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
-      {
-        m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
-        // Shield v5 workaround
-        if (CJNIAudioManager::GetSDKVersion() == 22 && m_sink_sampleRate > 48000)
-          m_sink_sampleRate = 48000;
-      }
+      m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
+      // Shield v5 workaround
+      if (!m_info.m_wantsIECPassthrough && CJNIAudioManager::GetSDKVersion() == 22 && m_sink_sampleRate > 48000)
+        m_sink_sampleRate = 48000;
     }
-    else
+    if (m_info.m_wantsIECPassthrough)
     {
       m_format.m_dataFormat     = AE_FMT_S16LE;
-      m_format.m_sampleRate     = m_sink_sampleRate;
+      if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD ||
+          m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+        m_sink_sampleRate = 192000;
+
+      if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_EAC3)
+        m_sink_sampleRate = m_format.m_streamInfo.m_sampleRate;
+
+      // we are running on an old android version
+      // that does neither know AC3, DTS or whatever
+      // we will fallback to 16BIT passthrough
+      if (m_encoding == -1)
+      {
+        m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
+        m_format.m_sampleRate     = m_sink_sampleRate;
+        m_encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
+      }
     }
   }
   else
@@ -361,15 +379,28 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 
       CLog::Log(LOGDEBUG, "Opening Passthrough RAW Format: %s Sink SampleRate: %u", CAEUtil::StreamTypeToStr(m_format.m_streamInfo.m_type), m_sink_sampleRate);
       m_format.m_frameSize = 1;
+      m_sink_frameSize = m_format.m_frameSize;
     }
     else
     {
-      m_min_buffer_size           *= 2;
-      m_format.m_frameSize    = m_format.m_channelLayout.Count() *
-        (CAEUtil::DataFormatToBits(m_format.m_dataFormat) / 8);
-      m_format.m_frames         = (int)(m_min_buffer_size / m_format.m_frameSize) / 2;
+      if (m_passthrough)
+      {
+        m_min_buffer_size *= 2;
+        if (m_sink_sampleRate > 48000)
+          m_min_buffer_size *= (m_sink_sampleRate / 48000); // same amount of buffer in seconds as for 48 khz
+        else if (m_sink_sampleRate < m_format.m_sampleRate) // eac3
+          m_min_buffer_size *= (m_format.m_sampleRate / m_sink_sampleRate);
+      }
+      else
+        m_min_buffer_size *= 2;
+
+      m_format.m_frameSize = m_format.m_channelLayout.Count() * (CAEUtil::DataFormatToBits(m_format.m_dataFormat) / 8);
+      if (m_passthrough)
+        m_sink_frameSize = 2 * CAEUtil::DataFormatToBits(AE_FMT_S16LE) / 8; // sending via 2 channels 2 * 16 / 8 = 4
+      else
+        m_sink_frameSize = m_format.m_frameSize;
+      m_format.m_frames = (int)(m_min_buffer_size / m_format.m_frameSize) / 2;
     }
-    m_sink_frameSize          = m_format.m_frameSize;
 
     if (m_passthrough && !m_info.m_wantsIECPassthrough)
       m_audiotrackbuffer_sec = rawlength_in_seconds;
@@ -484,6 +515,14 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     m_offset = 0;
   }
   uint32_t normHead_pos = head_pos - m_offset;
+
+#if defined(HAS_LIBAMCODEC)
+  if (aml_present() &&
+      (m_encoding == CJNIAudioFormat::ENCODING_DTS_HD ||
+       m_encoding == CJNIAudioFormat::ENCODING_E_AC3 ||
+       m_encoding == CJNIAudioFormat::ENCODING_DOLBY_TRUEHD))
+    normHead_pos /= m_sink_frameSize;  // AML wants sink in 48k but returns pos in 192k
+#endif
 
   if (m_passthrough && !m_info.m_wantsIECPassthrough)
   {
@@ -608,7 +647,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
         }
       }
       else
-        m_duration_written += ((double) loop_written / m_sink_frameSize) / m_format.m_sampleRate;
+        m_duration_written += ((double) loop_written / m_format.m_frameSize) / m_format.m_sampleRate;
 
       // just try again to care for fragmentation
       if (written < size)
@@ -634,7 +673,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   }
   else
   {
-    double time_should_ms = written_frames / (double) m_sink_sampleRate * 1000.0;
+    double time_should_ms = written_frames / (double) m_format.m_sampleRate * 1000.0;
     double time_off = time_should_ms - time_to_add_ms;
     if (time_off > 0 && time_off > time_should_ms / 2.0)
     {
@@ -715,7 +754,16 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     {
       // passthrough
       m_info.m_wantsIECPassthrough = true;
+      m_sink_sampleRates.insert(44100);
       m_sink_sampleRates.insert(48000);
+      if (HasAmlHD())
+      {
+        m_sink_sampleRates.insert(96000);
+        m_sink_sampleRates.insert(192000);
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
+      }
     }
     else
 #endif

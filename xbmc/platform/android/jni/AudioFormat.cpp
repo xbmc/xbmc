@@ -94,6 +94,19 @@ void CJNIAudioFormat::PopulateStaticFields()
         GetStaticValue(c, CJNIAudioFormat::ENCODING_DTS, "ENCODING_DTS");
         GetStaticValue(c, CJNIAudioFormat::ENCODING_DTS_HD, "ENCODING_DTS_HD");
         GetStaticValue(c, CJNIAudioFormat::ENCODING_DOLBY_TRUEHD, "ENCODING_DOLBY_TRUEHD");
+
+        // This is ugly and a nicer solution is needed
+        int value = -1;
+        GetStaticValue(c, value, "ENCODING_DTSHD");
+        if (value != -1)
+          CJNIAudioFormat::ENCODING_DTS_HD = value;
+        GetStaticValue(c, value, "ENCODING_DTSHD_MA");
+        if (value != -1)
+          CJNIAudioFormat::ENCODING_DTS_HD = value;
+
+        GetStaticValue(c, value, "ENCODING_TRUEHD");
+        if (value != -1)
+          CJNIAudioFormat::ENCODING_DOLBY_TRUEHD = value;
       }
     }
   }
