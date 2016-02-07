@@ -478,7 +478,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
   {
     VECADDONS installableAddons;
     CAddonDatabase database;
-    if (database.Open() && database.GetAddons(installableAddons))
+    if (database.Open() && database.GetRepositoryContent(installableAddons))
     {
       for (ADDON::IVECADDONS addon = installableAddons.begin(); addon != installableAddons.end();)
       {
