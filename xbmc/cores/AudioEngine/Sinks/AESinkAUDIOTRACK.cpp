@@ -648,6 +648,16 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
     if (m_pause_time < 0)
       m_pause_time = 0;
   }
+  else
+  {
+    double time_should_ms = written_frames / (double) m_sink_sampleRate * 1000.0;
+    double time_off = time_should_ms - time_to_add_ms;
+    if (time_off > 0 && time_off > time_should_ms / 2.0)
+    {
+      usleep(time_should_ms / 4.0 * 1000);
+      time_to_add_ms += time_should_ms / 4.0;
+    }
+  }
 
   CLog::Log(LOGDEBUG, "Time needed for add Packet: %lf ms", time_to_add_ms);
   return written_frames;
