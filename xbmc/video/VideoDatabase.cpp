@@ -6748,7 +6748,6 @@ bool CVideoDatabase::GetInProgressTvShowsNav(const std::string& strBaseDir, CFil
 {
   Filter filter;
   filter.order = PrepareSQL("c%02d", VIDEODB_ID_TV_TITLE);
-  filter.limit = PrepareSQL("%u", limit ? limit : g_advancedSettings.m_iVideoLibraryRecentlyAddedItems);
   filter.where = "watchedCount != 0 AND totalCount != watchedCount";
   return GetTvShowsByWhere(strBaseDir, filter, items, SortDescription(), getDetails);
 }
