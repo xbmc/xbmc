@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Version Check
 # Addon id: service.xbmc.versioncheck
-# Addon Provider: XBMC Foundation
+# Addon Provider: Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
@@ -28,6 +28,10 @@ msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
 msgstr "Would you like to remove this reminder?"
 
+msgctxt "#32010"
+msgid "You can enable/disable it through add-on settings."
+msgstr "You can enable/disable it through add-on settings."
+
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
 msgstr "Use your package manager(apt) to upgrade."
@@ -48,6 +52,10 @@ msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
 msgstr "Do you want to check the repository for a new version?"
 
+msgctxt "#32016"
+msgid "There is a newer stable Kodi version available."
+msgstr "There is a newer stable Kodi version available."
+
 msgctxt "#32020"
 msgid "General"
 msgstr "General"
@@ -67,3 +75,27 @@ msgstr "Linux: Upgrade complete system"
 msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
 msgstr "Linux: Upgrade using apt"
+
+msgctxt "#32030"
+msgid "A new stable version of Kodi is available."
+msgstr "A new stable version of Kodi is available."
+
+msgctxt "#32031"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Visit http://kodi.tv for more information."
+
+msgctxt "#32032"
+msgid "A new stable version of Kodi is available."
+msgstr "A new stable version of Kodi is available."
+
+msgctxt "#32033"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Visit http://kodi.tv for more information."
+
+msgctxt "#32034"
+msgid "Using %s while %s is available."
+msgstr "Using %s while %s is available."
+
+msgctxt "#32035"
+msgid "It is recommended that you to upgrade to a newer version."
+msgstr "It is recommended that you to upgrade to a newer version."

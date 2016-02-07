@@ -1,10 +1,18 @@
-v0.3.6
+v0.3.17
 - Update version list
 
-v0.3.5
-- fix list
+v0.3.16
+- Update version list
 
-v0.3.4
+v0.3.15
+- Update version list
+
+v0.3.14
+- Updated language files from Transifex
+- Cosmetics
+- Update version list
+
+v0.3.12 to 0.3.4
 - Update version list
 
 v0.3.3
