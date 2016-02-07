@@ -34,14 +34,6 @@ AC_CHECK_LIB([jpeg],[main],, AC_MSG_ERROR("libjpeg not found"))
 AC_CHECK_HEADER([lzo/lzo1x.h],, AC_MSG_ERROR("lzo/lzo1x.h not found"))
 AC_CHECK_LIB([lzo2],[main],, AC_MSG_ERROR("liblzo2 not found"))
 
-# we don't compile with default upstream squish, so we use our own one
-# even on non unified deps platforms
-export PKG_CONFIG_PATH="${abs_top_srcdir}/../../libsquish-native/squish-install/lib/pkgconfig:$PKG_CONFIG_PATH"
-PKG_CHECK_MODULES([SQUISH], [squish],
- [CPPFLAGS="$CPPFLAGS $SQUISH_CFLAGS" LIBS="$LIBS $SQUISH_LIBS"],
- AC_MSG_ERROR("libsquish not found"))
-
-
 AC_SUBST(KODI_SRC_DIR)
 AC_SUBST(STATIC_FLAG)
 AC_SUBST(EXTRA_DEFINES)
