@@ -18,7 +18,6 @@
  *
  */
 
-#include "squish.h"
 #include "system.h"
 #include "TextureBundleXBT.h"
 #include "Texture.h"
@@ -192,7 +191,7 @@ int CTextureBundleXBT::LoadAnim(const std::string& Filename, CBaseTexture*** ppT
 bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name, CXBTFFrame& frame, CBaseTexture** ppTexture)
 {
   // found texture - allocate the necessary buffers
-  squish::u8 *buffer = new squish::u8[(size_t)frame.GetPackedSize()];
+  unsigned char *buffer = new unsigned char [(size_t)frame.GetPackedSize()];
   if (buffer == NULL)
   {
     CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %" PRIu64" bytes)", name.c_str(), frame.GetPackedSize());
@@ -210,7 +209,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name, CXBTFFram
   // check if it's packed with lzo
   if (frame.IsPacked())
   { // unpack
-    squish::u8 *unpacked = new squish::u8[(size_t)frame.GetUnpackedSize()];
+    unsigned char *unpacked = new unsigned char[(size_t)frame.GetUnpackedSize()];
     if (unpacked == NULL)
     {
       CLog::Log(LOGERROR, "Out of memory unpacking texture: %s (need %" PRIu64" bytes)", name.c_str(), frame.GetUnpackedSize());
