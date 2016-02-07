@@ -124,6 +124,23 @@
 		<value condition="!IsEmpty(Window.Property(IsRadio))">$LOCALIZE[19199] - $LOCALIZE[19024]</value>
 		<value>$LOCALIZE[19199] - $LOCALIZE[19023]</value>
 	</variable>
+	<variable name="PVRTimerIcon">
+	  <value condition="ListItem.IsRecording">PVR-IsRecording.png</value>
+	  <value condition="ListItem.HasTimerSchedule + ListItem.TimerHasError">PVR-HasTimerScheduleError.png</value>
+	  <value condition="ListItem.HasTimer + ListItem.TimerHasError">PVR-HasTimerError.png</value>
+	  <value condition="ListItem.HasTimerSchedule + ListItem.TimerHasConflict">PVR-HasTimerScheduleConflict.png</value>
+	  <value condition="ListItem.HasTimer + ListItem.TimerHasConflict">PVR-HasTimerConflict.png</value>
+	  <value condition="ListItem.HasRecording">PVR-HasRecording.png</value>
+	  <value condition="ListItem.HasTimerSchedule + !ListItem.TimerIsActive">PVR-HasTimerScheduleDisabled.png</value>
+	  <value condition="ListItem.HasTimer + !ListItem.TimerIsActive">PVR-HasTimerDisabled.png</value>
+	  <value condition="ListItem.HasTimerSchedule">PVR-HasTimerSchedule.png</value>
+	  <value condition="ListItem.HasTimer">PVR-HasTimer.png</value>
+	</variable>
+	<variable name="PVRTimerLabel">
+	  <value condition="ListItem.IsRecording">$LOCALIZE[19043]</value>
+	  <value condition="ListItem.HasTimer + !ListItem.TimerIsActive">$LOCALIZE[19057]</value>
+	  <value condition="ListItem.HasTimer">$LOCALIZE[31510]</value>
+	</variable>
 	<!-- INCLUDES -->
 	<include name="MusicInfoPanel">
 		<control type="panel" id="50">
