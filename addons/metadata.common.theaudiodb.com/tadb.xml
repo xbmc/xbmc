@@ -78,9 +78,6 @@
 				<expression fixchars="1">strBiography$INFO[tadbartistlanguage]&quot;:&quot;(.*?)&quot;,&quot;</expression>
 			</RegExp>
 			<RegExp input="$$11" output="$$12" dest="2">
-				<RegExp input="$INFO[biogfbsource]" output="&lt;chain function=&quot;GetLastFMFallbackBiographyByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
-					<expression>last.fm</expression>
-				</RegExp>
 				<RegExp input="$INFO[biogfbsource]" output="&lt;chain function=&quot;GetAMGFallbackBiographyByAMGID&quot;&gt;$$9&lt;/chain&gt;" dest="12">
 					<expression>allmusic.com</expression>
 				</RegExp>
@@ -244,9 +241,6 @@
 				<expression fixchars="1">strGenre&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$11" output="$$12" dest="2">
-				<RegExp input="$INFO[genresfbsource]" output="&lt;chain function=&quot;GetLastFMFallbackArtistGenresByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
-					<expression>last.fm</expression>
-				</RegExp>
 				<RegExp input="$INFO[genresfbsource]" output="&lt;chain function=&quot;GetAMGFallbackArtistGenresByAMGID&quot;&gt;$$9&lt;/chain&gt;" dest="12">
 					<expression>allmusic.com</expression>
 				</RegExp>
@@ -301,9 +295,6 @@
 				<expression fixchars="1">strMood&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$11" output="$$12" dest="2">
-				<RegExp input="$INFO[moodsfbsource]" output="&lt;chain function=&quot;GetLastFMFallbackArtistMoodsByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
-					<expression>last.fm</expression>
-				</RegExp>
 				<RegExp input="$INFO[moodsfbsource]" output="&lt;chain function=&quot;GetAMGFallbackArtistMoodsByAMGID&quot;&gt;$$9&lt;/chain&gt;" dest="12">
 					<expression>allmusic.com</expression>
 				</RegExp>
@@ -358,9 +349,6 @@
 				<expression fixchars="1">strStyle&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$11" output="$$12" dest="2">
-				<RegExp input="$INFO[stylesfbsource]" output="&lt;chain function=&quot;GetLastFMFallbackArtistStylesByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
-					<expression>last.fm</expression>
-				</RegExp>
 				<RegExp input="$INFO[stylesfbsource]" output="&lt;chain function=&quot;GetAMGFallbackArtistStylesByAMGID&quot;&gt;$$9&lt;/chain&gt;" dest="12">
 					<expression>allmusic.com</expression>
 				</RegExp>
@@ -534,6 +522,25 @@
 			<expression noclean="1" />
 		</RegExp>
 	</ParseTADBAlbumStyles>
+
+	<GetTADBAlbumThemeByID dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumTheme&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album.php?m=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetTADBAlbumThemeByID>
+	<GetTADBAlbumThemeByMBID dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumTheme&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetTADBAlbumThemeByMBID>
+	<ParseTADBAlbumTheme dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;theme&gt;\1&lt;/theme&gt;" dest="2">
+				<expression noclean="1">strTheme&quot;:&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseTADBAlbumTheme>
 
 	<GetTADBAlbumTracksByID dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumTracks&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/track.php?m=\1&lt;/details&gt;" dest="5">
