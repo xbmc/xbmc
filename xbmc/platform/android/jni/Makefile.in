@@ -58,6 +58,7 @@ SRCS      += Resources.cpp
 SRCS      += PackageItemInfo.cpp
 SRCS      += DisplayMetrics.cpp
 SRCS      += KeyEvent.cpp
+SRCS      += Os.cpp
 
 LIB        = jni.a
 

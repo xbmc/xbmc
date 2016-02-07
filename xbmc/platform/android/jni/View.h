@@ -21,6 +21,7 @@
 
 #include "JNIBase.h"
 #include "List.h"
+#include "Os.h"
 
 class CJNIDisplay;
 
@@ -30,13 +31,15 @@ public:
   CJNIViewInputDeviceMotionRange(const jni::jhobject &object) : CJNIBase(object) {};
  ~CJNIViewInputDeviceMotionRange() {};
 
-  int   getAxis()   const;
-  float getFlat()   const;
-  float getFuzz()   const;
-  float	getMax()    const;
-  float	getMin()    const;
-  float	getRange()  const;
+  int   getAxis() const;
+  float getFlat() const;
+  float getFuzz() const;
+  float	getMax() const;
+  float	getMin() const;
+  float	getRange() const;
+  float getResolution() const;
   int   getSource() const;
+  bool  isFromSource(int source) const;
 
 private:
   CJNIViewInputDeviceMotionRange();
@@ -50,11 +53,24 @@ public:
 
   static const CJNIViewInputDevice getDevice(int id);
 
-  std::string  getName() const;
-  int          getSources() const;
-  const CJNIList<CJNIViewInputDeviceMotionRange> getMotionRanges() const;
-  const CJNIViewInputDeviceMotionRange getMotionRange(int axis) const;
+  int          getControllerNumber() const;
+  std::string  getDescriptor() const;
+  int          getId() const;
   const CJNIViewInputDeviceMotionRange getMotionRange(int axis, int source) const;
+  const CJNIViewInputDeviceMotionRange getMotionRange(int axis) const;
+  const CJNIList<CJNIViewInputDeviceMotionRange> getMotionRanges() const;
+  std::string  getName() const;
+  int          getProductId() const;
+  int          getSources() const;
+  int          getVendorId() const;
+  CJNIOsVibrator getVibrator() const;
+  bool         hasMicrophone() const;
+  bool         isVirtual() const;
+  bool         supportsSource(int source) const;
+
+  static void PopulateStaticFields();
+  static int SOURCE_GAMEPAD;
+  static int SOURCE_JOYSTICK;
 
 private:
   CJNIViewInputDevice();

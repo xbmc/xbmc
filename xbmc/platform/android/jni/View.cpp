@@ -18,7 +18,6 @@
  *
  */
 
-#include "Window.h"
 #include "View.h"
 #include "Display.h"
 
@@ -64,14 +63,29 @@ float	CJNIViewInputDeviceMotionRange::getRange() const
     "getRange", "()F");
 }
 
+float CJNIViewInputDeviceMotionRange::getResolution() const
+{
+  return call_method<jfloat>(m_object,
+    "getResolution", "()F");
+}
+
 int CJNIViewInputDeviceMotionRange::getSource() const
 {
   return call_method<int>(m_object,
     "getSource", "()I");
 }
 
+bool CJNIViewInputDeviceMotionRange::isFromSource(int source) const
+{
+  return call_method<jboolean>(m_object,
+    "isFromSource", "(I)Z",
+    source);
+}
+
 /************************************************************************/
 /************************************************************************/
+int CJNIViewInputDevice::SOURCE_GAMEPAD = 0;
+int CJNIViewInputDevice::SOURCE_JOYSTICK = 0;
 const char *CJNIViewInputDevice::m_classname = "android/view/InputDevice";
 
 const CJNIViewInputDevice CJNIViewInputDevice::getDevice(int id)
@@ -81,16 +95,71 @@ const CJNIViewInputDevice CJNIViewInputDevice::getDevice(int id)
     id);
 }
 
+int CJNIViewInputDevice::getControllerNumber() const
+{
+  return call_method<int>(m_object,
+    "getControllerNumber", "()I");
+}
+
+std::string CJNIViewInputDevice::getDescriptor() const
+{
+  return jcast<std::string>(call_method<jhstring>(m_object,
+    "getDescriptor", "()Ljava/lang/String;"));
+}
+
+int CJNIViewInputDevice::getId() const
+{
+  return call_method<int>(m_object,
+    "getId", "()I");
+}
+
 std::string CJNIViewInputDevice::getName() const
 {
   return jcast<std::string>(call_method<jhstring>(m_object,
     "getName", "()Ljava/lang/String;"));
 }
 
+int CJNIViewInputDevice::getProductId() const
+{
+  return call_method<int>(m_object,
+    "getProductId", "()I");
+}
+
 int CJNIViewInputDevice::getSources() const
 {
   return call_method<int>(m_object,
     "getSources", "()I");
+}
+
+int CJNIViewInputDevice::getVendorId() const
+{
+  return call_method<int>(m_object,
+    "getVendorId", "()I");
+}
+
+CJNIOsVibrator CJNIViewInputDevice::getVibrator() const
+{
+  return call_method<jhobject>(m_object,
+    "getVibrator", "()Landroid/os/Vibrator;");
+}
+
+bool CJNIViewInputDevice::hasMicrophone() const
+{
+  return call_method<jboolean>(m_object,
+    "hasMicrophone", "()Z");
+}
+
+bool CJNIViewInputDevice::isVirtual() const
+{
+  return call_method<jboolean>(m_object,
+    "isVirtual", "()Z");
+}
+
+bool CJNIViewInputDevice::supportsSource(int source) const
+{
+  return call_method<jboolean>(m_object,
+    "supportsSource", "(I)Z",
+    source);
 }
 
 const CJNIList<CJNIViewInputDeviceMotionRange> CJNIViewInputDevice::getMotionRanges() const
@@ -111,6 +180,13 @@ const CJNIViewInputDeviceMotionRange CJNIViewInputDevice::getMotionRange(int axi
   return call_method<jhobject>(m_object,
     "getMotionRange", "(II)Landroid/view/InputDevice$MotionRange;",
     axis, source);
+}
+
+void CJNIViewInputDevice::PopulateStaticFields()
+{
+  jhclass clazz = find_class(m_classname);
+  SOURCE_GAMEPAD = get_static_field<int>(clazz, "SOURCE_GAMEPAD");
+  SOURCE_JOYSTICK = get_static_field<int>(clazz, "SOURCE_JOYSTICK");
 }
 
 /************************************************************************/
