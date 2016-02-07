@@ -1,0 +1,83 @@
+set(SOURCES Addon.cpp
+            AddonBuilder.cpp
+            AddonCallbacksAddon.cpp
+            AddonCallbacksAudioDSP.cpp
+            AddonCallbacksAudioEngine.cpp
+            AddonCallbacksCodec.cpp
+            AddonCallbacks.cpp
+            AddonCallbacksGUI.cpp
+            AddonCallbacksPVR.cpp
+            AddonDatabase.cpp
+            AddonInstaller.cpp
+            AddonManager.cpp
+            AddonStatusHandler.cpp
+            AddonSystemSettings.cpp
+            AddonVersion.cpp
+            AudioDecoder.cpp
+            AudioEncoder.cpp
+            ContextMenuAddon.cpp
+            GUIDialogAddonInfo.cpp
+            GUIDialogAddonSettings.cpp
+            GUIViewStateAddonBrowser.cpp
+            GUIWindowAddonBrowser.cpp
+            ImageResource.cpp
+            LanguageResource.cpp
+            PluginSource.cpp
+            Repository.cpp
+            RepositoryUpdater.cpp
+            Scraper.cpp
+            ScreenSaver.cpp
+            Service.cpp
+            Skin.cpp
+            UISoundsResource.cpp
+            Visualisation.cpp
+            Webinterface.cpp)
+
+set(HEADERS Addon.h
+            AddonBuilder.h
+            AddonCallbacks.h
+            AddonCallbacksAddon.h
+            AddonCallbacksAudioDSP.h
+            AddonCallbacksAudioEngine.h
+            AddonCallbacksCodec.h
+            AddonCallbacksGUI.h
+            AddonCallbacksPVR.h
+            AddonDatabase.h
+            AddonDll.h
+            AddonInstaller.h
+            AddonManager.h
+            AddonStatusHandler.h
+            AddonSystemSettings.h
+            AddonVersion.h
+            AudioDecoder.h
+            AudioEncoder.h
+            ContextMenuAddon.h
+            DllAddon.h
+            DllAudioDSP.h
+            DllLibCPluff.h
+            DllPVRClient.h
+            GUIDialogAddonInfo.h
+            GUIDialogAddonSettings.h
+            GUIViewStateAddonBrowser.h
+            GUIWindowAddonBrowser.h
+            IAddon.h
+            ImageResource.h
+            LanguageResource.h
+            PluginSource.h
+            Repository.h
+            RepositoryUpdater.h
+            Resource.h
+            Scraper.h
+            ScreenSaver.h
+            Service.h
+            Skin.h
+            UISoundsResource.h
+            Visualisation.h
+            Webinterface.h)
+
+core_add_library(addons)
+add_dependencies(addons libcpluff)
+
+if(ENABLE_INTERNAL_FFMPEG)
+  add_dependencies(addons ffmpeg)
+endif()

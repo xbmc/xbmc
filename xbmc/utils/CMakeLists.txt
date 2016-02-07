@@ -1,0 +1,196 @@
+set(SOURCES ActorProtocol.cpp
+            AlarmClock.cpp
+            AliasShortcutUtils.cpp
+            Archive.cpp
+            AsyncFileCopy.cpp
+            auto_buffer.cpp
+            Base64.cpp
+            BitstreamConverter.cpp
+            BitstreamStats.cpp
+            BooleanLogic.cpp
+            CharsetConverter.cpp 
+            CharsetDetection.cpp
+            CPUInfo.cpp
+            Crc32.cpp
+            DatabaseUtils.cpp
+            EndianSwap.cpp
+            Environment.cpp
+            Fanart.cpp
+            FileOperationJob.cpp
+            FileUtils.cpp
+            fstrcmp.c
+            GroupUtils.cpp
+            HTMLUtil.cpp
+            HttpHeader.cpp
+            HttpParser.cpp
+            HttpRangeUtils.cpp
+            HttpResponse.cpp
+            InfoLoader.cpp
+            JobManager.cpp
+            JSONVariantParser.cpp
+            JSONVariantWriter.cpp
+            LabelFormatter.cpp
+            LangCodeExpander.cpp
+            LegacyPathTranslation.cpp
+            Locale.cpp
+            log.cpp
+            md5.cpp
+            Mime.cpp
+            Observer.cpp
+            PerformanceSample.cpp
+            PerformanceStats.cpp
+            POUtils.cpp
+            RecentlyAddedJob.cpp
+            RegExp.cpp
+            rfft.cpp
+            RingBuffer.cpp
+            RssManager.cpp
+            RssReader.cpp
+            ProgressJob.cpp
+            SaveFileStateJob.cpp
+            ScraperParser.cpp
+            ScraperUrl.cpp
+            Screenshot.cpp
+            SeekHandler.cpp
+            SortUtils.cpp
+            Speed.cpp
+            Splash.cpp
+            Stopwatch.cpp
+            StreamDetails.cpp
+            StreamUtils.cpp
+            StringUtils.cpp
+            StringValidation.cpp
+            SysfsUtils.cpp
+            SystemInfo.cpp
+            Temperature.cpp
+            TextSearch.cpp
+            TimeUtils.cpp
+            URIUtils.cpp
+            UrlOptions.cpp
+            Utf8Utils.cpp
+            Variant.cpp
+            Vector.cpp
+            Weather.cpp
+            XBMCTinyXML.cpp
+            XMLUtils.cpp
+            XSLTUtils.cpp)
+
+set(HEADERS ActorProtocol.h
+            AlarmClock.h
+            AliasShortcutUtils.h
+            Archive.h
+            AsyncFileCopy.h
+            auto_buffer.h
+            Base64.h
+            BitstreamConverter.h
+            BitstreamStats.h
+            BooleanLogic.h
+            CharsetConverter.h
+            CharsetDetection.h
+            CPUInfo.h
+            Crc32.h
+            DatabaseUtils.h
+            EndianSwap.h
+            Environment.h
+            Fanart.h
+            FileOperationJob.h
+            FileUtils.h
+            fstrcmp.h
+            GlobalsHandling.h
+            GroupUtils.h
+            HTMLUtil.h
+            HttpHeader.h
+            HttpParser.h
+            HttpRangeUtils.h
+            HttpResponse.h
+            IArchivable.h
+            InfoLoader.h
+            IRssObserver.h
+            ISerializable.h
+            ISortable.h
+            IXmlDeserializable.h
+            Job.h
+            JobManager.h
+            JSONVariantParser.h
+            JSONVariantWriter.h
+            LabelFormatter.h
+            LangCodeExpander.h
+            LegacyPathTranslation.h
+            Locale.h
+            log.h
+            MathUtils.h
+            md5.h
+            Mime.h
+            Observer.h
+            params_check_macros.h
+            PerformanceSample.h
+            PerformanceStats.h
+            POUtils.h
+            ProgressJob.h
+            RecentlyAddedJob.h
+            RegExp.h
+            rfft.h
+            RingBuffer.h
+            RssManager.h
+            RssReader.h
+            SaveFileStateJob.h
+            ScopeGuard.h
+            ScraperParser.h
+            ScraperUrl.h
+            Screenshot.h
+            SeekHandler.h
+            SortUtils.h
+            Speed.h
+            Splash.h
+            Stopwatch.h
+            StreamDetails.h
+            StreamUtils.h
+            StringUtils.h
+            StringValidation.h
+            SysfsUtils.h
+            SystemInfo.h
+            Temperature.h
+            TextSearch.h
+            TimeUtils.h
+            URIUtils.h
+            UrlOptions.h
+            Utf8Utils.h
+            uXstrings.h
+            Variant.h
+            Vector.h
+            Weather.h
+            XBMCTinyXML.h
+            XMLUtils.h
+            XSLTUtils.h)
+
+# The large map trips the clang optimizer
+if(CMAKE_CXX_COMPILER_ID STREQUAL Clang)
+  set_source_files_properties(Mime.cpp PROPERTIES COMPILE_FLAGS -O0)
+endif()
+
+if(NOT CORE_SYSTEM_NAME STREQUAL windows)
+  list(APPEND SOURCES CryptThreading.cpp
+                      GLUtils.cpp)
+  list(APPEND HEADERS CryptThreading.h
+                      GLUtils.h)
+else()
+  set_source_files_properties(fstrcmp.c PROPERTIES LANGUAGE CXX)
+endif()
+
+if(AMLCODEC_FOUND)
+  list(APPEND SOURCES AMLUtils.cpp
+                      ScreenshotAML.cpp)
+  list(APPEND HEADERS AMLUtils.h
+                      ScreenshotAML.h)
+endif()
+
+core_add_library(utils)
+add_dependencies(utils libcpluff)
+
+if(ENABLE_INTERNAL_FFMPEG)
+  add_dependencies(utils ffmpeg)
+endif()
+
+if(ENABLE_INTERNAL_CROSSGUID)
+  add_dependencies(utils crossguid)
+endif()
