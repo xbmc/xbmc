@@ -118,6 +118,10 @@ msgctxt "#31040"
 msgid "Now playing"
 msgstr ""
 
+msgctxt "#31041"
+msgid "Timeshifting"
+msgstr ""
+
 #empty string with id 31041
 
 msgctxt "#31042"
