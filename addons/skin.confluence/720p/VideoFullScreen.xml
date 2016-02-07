@@ -342,7 +342,7 @@
 			<control type="group" id="1">
 				<left>330</left>
 				<top>95r</top>
-				<visible>!VideoPlayer.Content(LiveTV) | [VideoPlayer.Content(LiveTV) + VideoPlayer.HasEpg]</visible>
+				<visible>!VideoPlayer.Content(LiveTV) | [VideoPlayer.Content(LiveTV) + VideoPlayer.HasEpg] | [VideoPlayer.Content(LiveTV) + PVR.IsTimeshift]</visible>
 				<control type="label" id="1">
 					<visible>!VideoPlayer.Content(LiveTV)</visible>
 					<left>0</left>
