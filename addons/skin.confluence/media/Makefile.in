@@ -10,7 +10,7 @@ all: $(TARGET)
 
 $(TARGET): $(IMAGES)
 ifeq (@ARCH@,arm)
-	@TEXTUREPACKER@ -dupecheck -use_none -input . -output $(TARGET)
+	@TEXTUREPACKER@ -dupecheck -disable_dxt -input . -output $(TARGET)
 else
 	@TEXTUREPACKER@ -dupecheck -input . -output $(TARGET)
 
