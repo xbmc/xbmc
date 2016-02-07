@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Version Check
 # Addon id: service.xbmc.versioncheck
-# Addon Provider: XBMC Foundation
+# Addon Provider: Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
@@ -26,19 +26,19 @@ msgstr "Daha fazla bilgi için Kodi.tv adresini ziyaret edin."
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
-msgstr "Bu hatırlatmayı kaldırmak istermisiniz?"
+msgstr "Bu hatırlatmayı kaldırmak ister misiniz?"
 
 msgctxt "#32010"
 msgid "You can enable/disable it through add-on settings."
-msgstr "Eklenti ayarlarından etkinleştir/etkinleştirmeyi kaldırabilirsiniz."
+msgstr "Eklenti ayarlarından etkinleştirip veya devre dışı bırakabilirsiniz."
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
-msgstr "Güncelleme için paket yöneticinizi(apt) kullanabilirsiniz."
+msgstr "Güncelleme için paket yöneticinizi(apt) kullanın."
 
 msgctxt "#32012"
 msgid "A new version is available, do you want to upgrade now?"
-msgstr "Yeni bir versiyon mevcut, şimdi güncellemek istermisiniz?"
+msgstr "Yeni bir sürüm mevcut, şimdi güncellemek ister misiniz?"
 
 msgctxt "#32013"
 msgid "Upgrade successful"
@@ -46,15 +46,15 @@ msgstr "Güncelleme başarılı"
 
 msgctxt "#32014"
 msgid "Do you want to restart Kodi to finish the upgrade?"
-msgstr "Güncellemeyi tamamlamak için Kodi'yi yeniden başlatmak istermisiniz?"
+msgstr "Güncellemeyi tamamlamak için Kodi'yi yeniden başlatmak ister misiniz?"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
-msgstr "Yeni bir versiyon için depoyu kontrol etmek istermisiniz?"
+msgstr "Yeni bir sürüm için depoyu kontrol etmek ister misiniz?"
 
 msgctxt "#32016"
 msgid "There is a newer stable Kodi version available."
-msgstr "Daha yeni stabil bir Kodi versiyonu mevcut."
+msgstr "Daha yeni kararlı bir Kodi sürümü mevcut."
 
 msgctxt "#32020"
 msgid "General"
@@ -62,11 +62,11 @@ msgstr "Genel"
 
 msgctxt "#32021"
 msgid "Enable Kodi version check?"
-msgstr "Kodi versiyon kontrolünü etkinleştir?"
+msgstr "Kodi sürüm kontrolünü etkinleştirmek ister misiniz?"
 
 msgctxt "#32022"
 msgid "Please enter your password"
-msgstr "Lütfen şifrenizi giriniz"
+msgstr "Lütfen parolanızı girin"
 
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
@@ -78,19 +78,19 @@ msgstr "Linux: apt kullanarak güncelle"
 
 msgctxt "#32030"
 msgid "A new stable version of Kodi is available."
-msgstr "Yeni stabil bir Kodi versiyonu mevcut."
+msgstr "Yeni kararlı bir Kodi sürümü mevcut."
 
 msgctxt "#32031"
 msgid "Visit http://kodi.tv for more information."
-msgstr "Daha fazla bilgi için http://kodi.tv ziyaret ediniz."
+msgstr "Daha fazla bilgi için http://kodi.tv adresini ziyaret edin."
 
 msgctxt "#32032"
 msgid "A new stable version of Kodi is available."
-msgstr "Yeni stabil bir Kodi versiyonu mevcut."
+msgstr "Yeni kararlı bir Kodi sürümü mevcut."
 
 msgctxt "#32033"
 msgid "Visit http://kodi.tv for more information."
-msgstr "Daha fazla bilgi için http://kodi.tv ziyaret ediniz."
+msgstr "Daha fazla bilgi için http://kodi.tv adresini ziyaret edin."
 
 msgctxt "#32034"
 msgid "Using %s while %s is available."
@@ -98,4 +98,4 @@ msgstr "%s kullanırken %s mevcut."
 
 msgctxt "#32035"
 msgid "It is recommended that you to upgrade to a newer version."
-msgstr "Daha yeni bir versiyona güncellemeniz tavsiye olunur."
+msgstr "Daha yeni bir sürüme güncellemeniz önerilir."

@@ -25,12 +25,12 @@ import xbmcgui
 import xbmcaddon
 
 ### get addon info
-__addon__        = xbmcaddon.Addon('service.xbmc.versioncheck')
-__addonversion__ = __addon__.getAddonInfo('version')
-__addonname__    = __addon__.getAddonInfo('name')
-__addonpath__    = __addon__.getAddonInfo('path').decode('utf-8')
-__addonprofile__ = xbmc.translatePath( __addon__.getAddonInfo('profile') ).decode('utf-8')
-__icon__         = __addon__.getAddonInfo('icon')
+ADDON        = xbmcaddon.Addon('service.xbmc.versioncheck')
+ADDONVERSION = ADDON.getAddonInfo('version')
+ADDONNAME    = ADDON.getAddonInfo('name')
+ADDONPATH    = ADDON.getAddonInfo('path').decode('utf-8')
+ADDONPROFILE = xbmc.translatePath( ADDON.getAddonInfo('profile') ).decode('utf-8')
+ICON         = ADDON.getAddonInfo('icon')
 
 class Viewer:
     # constants
@@ -52,7 +52,7 @@ class Viewer:
         #get header, text
         heading, text = self.getText()
         # set heading
-        self.window.getControl(self.CONTROL_LABEL).setLabel("%s : %s" % (__addonname__, heading, ))
+        self.window.getControl(self.CONTROL_LABEL).setLabel("%s : %s" % (ADDONNAME, heading, ))
         # set text
         self.window.getControl(self.CONTROL_TEXTBOX).setText(text)
         xbmc.sleep(2000)
@@ -60,9 +60,9 @@ class Viewer:
     def getText(self):
         try:
             if sys.argv[ 1 ] == "gotham-alpha_notice":
-                return "Call to Gotham alpha users", self.readFile(os.path.join(__addonpath__ , "resources/gotham-alpha_notice.txt"))
+                return "Call to Gotham alpha users", self.readFile(os.path.join(ADDONPATH , "resources/gotham-alpha_notice.txt"))
         except Exception, e:
-            xbmc.log(__addonname__ + ': ' + str(e), xbmc.LOGERROR)
+            xbmc.log(ADDONNAME + ': ' + str(e), xbmc.LOGERROR)
         return "", ""
 
     def readFile(self, filename):
@@ -75,12 +75,12 @@ class WebBrowser:
         try:
             url = sys.argv[2]
             # notify user
-            notification(__addonname__, url)
+            notification(ADDONNAME, url)
             xbmc.sleep(100)
             # launch url
             self.launchUrl(url)
         except Exception, e:
-            xbmc.log(__addonname__ + ': ' + str(e), xbmc.LOGERROR)
+            xbmc.log(ADDONNAME + ': ' + str(e), xbmc.LOGERROR)
 
     def launchUrl(self, url):
         import webbrowser
@@ -93,7 +93,7 @@ def Main():
         else:
             Viewer()
     except Exception, e:
-        xbmc.log(__addonname__ + ': ' + str(e), xbmc.LOGERROR)
+        xbmc.log(ADDONNAME + ': ' + str(e), xbmc.LOGERROR)
 
 if (__name__ == "__main__"):
     Main()
