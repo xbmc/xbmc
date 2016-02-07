@@ -338,7 +338,6 @@ lib/cpluff/stamp-h1
 #/tools/depends
 /tools/depends/native/*/*native/
 /tools/depends/native/JsonSchemaBuilder/bin/
-/tools/depends/native/libsquish-native/squish-install/
 /tools/depends/native/TexturePacker/bin/
 /tools/depends/target/ffmpeg/.ffmpeg-installed
 /tools/depends/target/ffmpeg/ffmpeg-*-*.tar.gz

@@ -40,7 +40,6 @@ config.site
 config.site.native
 /native/*/*native/
 /JsonSchemaBuilder/bin/
-/libsquish-native/squish-install/
 /TexturePacker/bin/
 /target/ffmpeg/.ffmpeg-installed
 /target/ffmpeg/ffmpeg-*-*.tar.gz

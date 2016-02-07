@@ -53,7 +53,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;..;..\decoder;..\..\..\..\..\..\xbmc;..\..\..\..\..\..\lib;..\..\..\libsquish-native\src;$(WindowsSDK_IncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..;..\decoder;..\..\..\..\..\..\xbmc;..\..\..\..\..\..\lib;$(WindowsSDK_IncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;TARGET_WINDOWS;_ITERATOR_DEBUG_LEVEL=0;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -64,7 +64,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>..\..\..\..\..\..\project\VS2010Express\libs\squish\Debug\squishd.lib;..\..\..\..\..\..\project\BuildDependencies\lib\jpeg-static.lib;..\..\..\..\..\..\project\BuildDependencies\lib\libpng15d.lib;..\..\..\..\..\..\project\BuildDependencies\lib\libgif-static.lib;..\..\..\..\..\..\project\BuildDependencies\lib\zlibd-static.lib;..\..\..\..\..\..\lib\win32\liblzo\lzo.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\..\..\..\..\project\BuildDependencies\lib\jpeg-static.lib;..\..\..\..\..\..\project\BuildDependencies\lib\libpng15d.lib;..\..\..\..\..\..\project\BuildDependencies\lib\libgif-static.lib;..\..\..\..\..\..\project\BuildDependencies\lib\zlibd-static.lib;..\..\..\..\..\..\lib\win32\liblzo\lzo.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
@@ -77,7 +77,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>.;..;..\decoder;..\..\..\..\..\..\xbmc;..\..\..\..\..\..\lib;..\..\..\libsquish-native\src;$(WindowsSDK_IncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..;..\decoder;..\..\..\..\..\..\xbmc;;$(WindowsSDK_IncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;USE_LZO_PACKING;TARGET_WINDOWS;_ITERATOR_DEBUG_LEVEL=0;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -87,7 +87,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>..\..\..\..\..\..\project\VS2010Express\libs\squish\Release\squish.lib;..\..\..\..\..\..\project\BuildDependencies\lib\jpeg-static.lib;..\..\..\..\..\..\project\BuildDependencies\lib\libpng15.lib;..\..\..\..\..\..\project\BuildDependencies\lib\libgif-static.lib;..\..\..\..\..\..\project\BuildDependencies\lib\zlib-static.lib;..\..\..\..\..\..\lib\win32\liblzo\lzo.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\..\..\..\..\project\BuildDependencies\lib\jpeg-static.lib;..\..\..\..\..\..\project\BuildDependencies\lib\libpng15.lib;..\..\..\..\..\..\project\BuildDependencies\lib\libgif-static.lib;..\..\..\..\..\..\project\BuildDependencies\lib\zlib-static.lib;..\..\..\..\..\..\lib\win32\liblzo\lzo.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libc.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
