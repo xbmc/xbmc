@@ -207,7 +207,7 @@ public:
   CTemperature GetGPUTemperature();
 
   void UpdateFPS();
-  void UpdateAVInfo();
+  void UpdateAVInfo(bool reset = false);
   inline float GetFPS() const { return m_fps; };
 
   void SetNextWindow(int windowID) { m_nextWindowID = windowID; };
@@ -354,6 +354,7 @@ protected:
 
   SPlayerVideoStreamInfo m_videoInfo;
   SPlayerAudioStreamInfo m_audioInfo;
+  bool m_avInfoSet;
 
   CCriticalSection m_critInfo;
 };

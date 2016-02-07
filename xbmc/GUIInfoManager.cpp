@@ -1804,50 +1804,50 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     strLabel = GetVideoLabel(info);
   break;
   case VIDEOPLAYER_VIDEO_CODEC:
-    if(g_application.m_pPlayer->IsPlaying())
+    if(g_application.m_pPlayer->IsPlaying() && m_avInfoSet)
     {
       strLabel = m_videoInfo.videoCodecName;
     }
     break;
   case VIDEOPLAYER_VIDEO_RESOLUTION:
-    if(g_application.m_pPlayer->IsPlaying())
+    if(g_application.m_pPlayer->IsPlaying() && m_avInfoSet)
     {
       return CStreamDetails::VideoDimsToResolutionDescription(m_videoInfo.width, m_videoInfo.height);
     }
     break;
   case VIDEOPLAYER_AUDIO_CODEC:
-    if(g_application.m_pPlayer->IsPlaying())
+    if(g_application.m_pPlayer->IsPlaying() && m_avInfoSet)
     {
       strLabel = m_audioInfo.audioCodecName;
     }
     break;
   case VIDEOPLAYER_VIDEO_ASPECT:
-    if (g_application.m_pPlayer->IsPlaying())
+    if (g_application.m_pPlayer->IsPlaying() && m_avInfoSet)
     {
       strLabel = CStreamDetails::VideoAspectToAspectDescription(m_videoInfo.videoAspectRatio);
     }
     break;
   case VIDEOPLAYER_AUDIO_CHANNELS:
-    if(g_application.m_pPlayer->IsPlaying())
+    if(g_application.m_pPlayer->IsPlaying() && m_avInfoSet)
     {
       if (m_audioInfo.channels > 0)
         strLabel = StringUtils::Format("%i", m_audioInfo.channels);
     }
     break;
   case VIDEOPLAYER_AUDIO_LANG:
-    if(g_application.m_pPlayer->IsPlaying())
+    if(g_application.m_pPlayer->IsPlaying() && m_avInfoSet)
     {
       strLabel = m_audioInfo.language;
     }
     break;
   case VIDEOPLAYER_STEREOSCOPIC_MODE:
-    if(g_application.m_pPlayer->IsPlaying())
+    if(g_application.m_pPlayer->IsPlaying() && m_avInfoSet)
     {
       strLabel = m_videoInfo.stereoMode;
     }
     break;
   case VIDEOPLAYER_SUBTITLES_LANG:
-    if(g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->GetSubtitleVisible())
+    if(g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->GetSubtitleVisible() && m_avInfoSet)
     {
       SPlayerSubtitleStreamInfo info;
       g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);
@@ -2915,7 +2915,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         bReturn = (m_currentFile->GetPVRChannelInfoTag()->GetEPGNow().get() != NULL);
     break;
     case VIDEOPLAYER_IS_STEREOSCOPIC:
-      if(g_application.m_pPlayer->IsPlaying())
+      if(g_application.m_pPlayer->IsPlaying() && m_avInfoSet)
       {
         bReturn = !m_videoInfo.stereoMode.empty();
       }
@@ -4965,9 +4965,16 @@ void CGUIInfoManager::UpdateFPS()
   }
 }
 
-void CGUIInfoManager::UpdateAVInfo()
+void CGUIInfoManager::UpdateAVInfo(bool reset)
 {
-  if(g_application.m_pPlayer->IsPlaying())
+  if (reset)
+  {
+    // Reset gets called by the pvr manager on channel change.
+    // The av info from the old channel should be ignored until
+    // the av info from the new channel is available.
+    m_avInfoSet = false;
+  }
+  else if(g_application.m_pPlayer->IsPlaying())
   {
     if (g_dataCacheCore.HasAVInfoChanges())
     {
@@ -4979,6 +4986,7 @@ void CGUIInfoManager::UpdateAVInfo()
 
       m_videoInfo = video;
       m_audioInfo = audio;
+      m_avInfoSet = true;
     }
   }
 }

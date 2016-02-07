@@ -1365,6 +1365,12 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPrev
   CFileItem* previousFile = m_currentFile;
   m_currentFile = NULL;
 
+  {
+    /* Clear AV info in OSD right before switch */
+    CSingleLock lock(m_critSection);
+    g_infoManager.UpdateAVInfo(true);
+  }
+
   bool bSwitched(false);
 
   // switch channel
