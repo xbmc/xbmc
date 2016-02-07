@@ -24,8 +24,10 @@
   #include "config.h"
 #endif
 #ifdef TARGET_WINDOWS
+#ifndef BUILDING_WITH_CMAKE
 #define TIXML_USE_STL
 #pragma comment(lib, "tinyxmlSTL.lib")
+#endif
 #else
 //compile fix for TinyXml < 2.6.0
 #define DOCUMENT    TINYXML_DOCUMENT

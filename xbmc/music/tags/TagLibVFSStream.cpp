@@ -26,7 +26,7 @@ using namespace XFILE;
 using namespace TagLib;
 using namespace MUSIC_INFO;
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) && !defined(BUILDING_WITH_CMAKE)
 #pragma comment(lib, "tag.lib")
 #endif
 
