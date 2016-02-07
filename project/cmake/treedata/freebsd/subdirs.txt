@@ -1,0 +1,4 @@
+xbmc/linux   linuxsupport
+xbmc/input/linux input/linux
+xbmc/network/linux network/linux
+xbmc/freebsd freebsdsupport
