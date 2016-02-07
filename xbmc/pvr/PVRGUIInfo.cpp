@@ -218,11 +218,11 @@ void CPVRGUIInfo::Process(void)
     Sleep(0);
 
     if (!m_bStop)
-      UpdatePlayingTag();
+      UpdateTimeshift();
     Sleep(0);
 
     if (!m_bStop)
-      UpdateTimeshift();
+      UpdatePlayingTag();
     Sleep(0);
 
     if (!m_bStop)
