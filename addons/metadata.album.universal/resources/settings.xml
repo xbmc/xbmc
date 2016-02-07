@@ -8,7 +8,7 @@
       <setting label="30004" type="labelenum" values="MusicBrainz|allmusic.com|TheAudioDb.com|None" id="albumratingsource" default="MusicBrainz"/>
       <setting label="30005" type="labelenum" values="TheAudioDb.com|allmusic.com|None" id="albumstylessource" default="TheAudioDb.com"/>
       <setting label="30006" type="labelenum" values="TheAudioDb.com|allmusic.com|None" id="albummoodssource" default="TheAudioDb.com"/>
-      <setting label="30007" type="labelenum" values="allmusic.com|None" id="albumthemessource" default="allmusic.com"/>
+      <setting label="30007" type="labelenum" values="TheAudioDb.com|allmusic.com|None" id="albumthemessource" default="TheAudioDb.com"/>
   </category>
 
   <category label="30009">
