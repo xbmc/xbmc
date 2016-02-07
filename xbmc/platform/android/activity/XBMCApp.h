@@ -43,6 +43,7 @@ class CJNIWakeLock;
 class CAESinkAUDIOTRACK;
 class CVariant;
 class IInputDeviceCallbacks;
+class IInputDeviceEventHandler;
 typedef struct _JNIEnv JNIEnv;
 
 struct androidIcon
@@ -135,6 +136,10 @@ public:
   static const CJNIViewInputDevice GetInputDevice(int deviceId);
   static std::vector<int> GetInputDeviceIds();
 
+  static void RegisterInputDeviceEventHandler(IInputDeviceEventHandler* handler);
+  static void UnregisterInputDeviceEventHandler();
+  static bool onInputDeviceEvent(const AInputEvent* event);
+
   static CXBMCApp* get() { return m_xbmcappinstance; }
 
 protected:
@@ -159,6 +164,7 @@ private:
   static bool m_hasFocus;
   static bool m_headsetPlugged;
   static IInputDeviceCallbacks* m_inputDeviceCallbacks;
+  static IInputDeviceEventHandler* m_inputDeviceEventHandler;
   bool m_firstrun;
   bool m_exiting;
   pthread_t m_thread;

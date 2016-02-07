@@ -1,5 +1,6 @@
+#pragma once
 /*
- *      Copyright (C) 2012-2013 Team XBMC
+ *      Copyright (C) 2016 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,20 +19,15 @@
  *
  */
 
-#include <android/input.h>
+struct AInputEvent;
 
-#include "AndroidJoyStick.h"
-#include "platform/android/activity/XBMCApp.h"
-
-bool CAndroidJoyStick::onJoyStickEvent(AInputEvent* event)
+class IInputDeviceEventHandler
 {
-  int32_t source = AInputEvent_getSource(event);
+public:
+  virtual ~IInputDeviceEventHandler() { }
 
-  // only handle input events from a gamepad or joystick
-  if ((source & (AINPUT_SOURCE_GAMEPAD | AINPUT_SOURCE_JOYSTICK)) != 0)
-    return CXBMCApp::onInputDeviceEvent(event);
+  virtual bool OnInputDeviceEvent(const AInputEvent* event) = 0;
 
-  CXBMCApp::android_printf("CAndroidJoyStick::onJoyStickEvent(type = %d, keycode = %d, source = %d): ignoring non-joystick input event",
-                           AInputEvent_getType(event), AKeyEvent_getKeyCode(event), source);
-  return false;
-}
+protected:
+  IInputDeviceEventHandler() { }
+};

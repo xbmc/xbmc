@@ -51,6 +51,7 @@
 #include <android/bitmap.h>
 #include "cores/AudioEngine/AEFactory.h"
 #include "platform/android/activity/IInputDeviceCallbacks.h"
+#include "platform/android/activity/IInputDeviceEventHandler.h"
 #include "platform/android/jni/JNIThreading.h"
 #include "platform/android/jni/BroadcastReceiver.h"
 #include "platform/android/jni/Intent.h"
@@ -102,6 +103,7 @@ int CXBMCApp::m_batteryLevel = 0;
 bool CXBMCApp::m_hasFocus = false;
 bool CXBMCApp::m_headsetPlugged = false;
 IInputDeviceCallbacks* CXBMCApp::m_inputDeviceCallbacks = nullptr;
+IInputDeviceEventHandler* CXBMCApp::m_inputDeviceEventHandler = nullptr;
 CCriticalSection CXBMCApp::m_applicationsMutex;
 std::vector<androidPackage> CXBMCApp::m_applications;
 
@@ -947,4 +949,25 @@ void CXBMCApp::onInputDeviceRemoved(int deviceId)
 
   if (m_inputDeviceCallbacks != nullptr)
     m_inputDeviceCallbacks->OnInputDeviceRemoved(deviceId);
+}
+
+void CXBMCApp::RegisterInputDeviceEventHandler(IInputDeviceEventHandler* handler)
+{
+  if (handler == nullptr)
+    return;
+
+  m_inputDeviceEventHandler = handler;
+}
+
+void CXBMCApp::UnregisterInputDeviceEventHandler()
+{
+  m_inputDeviceEventHandler = nullptr;
+}
+
+bool CXBMCApp::onInputDeviceEvent(const AInputEvent* event)
+{
+  if (m_inputDeviceEventHandler != nullptr)
+    return m_inputDeviceEventHandler->OnInputDeviceEvent(event);
+
+  return false;
 }
