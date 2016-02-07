@@ -1403,6 +1403,9 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPrev
     CLog::Log(LOGNOTICE, "PVRManager - %s - switched to channel '%s'", __FUNCTION__, channel->ChannelName().c_str());
   }
 
+  /* Force OSD update now */
+  m_guiInfo->UpdatePlayingTag();
+
   // announce OnStop and OnPlay. yes, this ain't pretty
   {
     CSingleLock lock(m_critSectionTriggers);

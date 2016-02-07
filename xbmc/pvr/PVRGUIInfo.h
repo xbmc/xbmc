@@ -87,6 +87,11 @@ namespace PVR
     void ResetPlayingTag(void);
 
     /*!
+     * @brief Update the playing EPG tag right now.
+     */
+    void UpdatePlayingTag(void);
+
+    /*!
      * @brief Get the currently playing EPG tag.
      * @return The currently playing EPG tag or NULL if no EPG tag is playing.
      */
@@ -103,7 +108,6 @@ namespace PVR
     void ClearQualityInfo(PVR_SIGNAL_STATUS &qualityInfo);
     void Process(void);
 
-    void UpdatePlayingTag(void);
     void UpdateTimersCache(void);
     void UpdateBackendCache(void);
     void UpdateQualityData(void);
