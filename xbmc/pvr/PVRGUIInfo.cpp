@@ -81,6 +81,8 @@ void CPVRGUIInfo::ResetProperties(void)
   m_iTimerInfoToggleCurrent     = 0;
   m_ToggleShowInfo.SetInfinite();
   m_iDuration                   = 0;
+  m_iDuration                   = 0;
+  m_iPlayTime                   = 0;
   m_bHasNonRecordingTimers      = false;
   m_bIsPlayingTV                = false;
   m_bIsPlayingRadio             = false;
@@ -92,6 +94,9 @@ void CPVRGUIInfo::ResetProperties(void)
   m_iTimeshiftStartTime         = time_t(0);
   m_iTimeshiftEndTime           = time_t(0);
   m_iTimeshiftPlayTime          = time_t(0);
+  m_iStartTime                  = time_t(0);
+  m_iFinishTime                 = time_t(0);
+  m_strTimeshiftDelay.clear();
 
   ResetPlayingTag();
   ClearQualityInfo(m_qualityInfo);
@@ -296,11 +301,18 @@ void CPVRGUIInfo::UpdateTimeshift(void)
   time_t iTimeshiftEndTime = g_PVRClients->GetBufferTimeEnd();
   time_t iTimeshiftPlayTime = g_PVRClients->GetPlayingTime();
 
+  time_t iTimeshiftDelay = iTimeshiftEndTime-iTimeshiftPlayTime;
+  if (iTimeshiftDelay < 0)
+    iTimeshiftDelay = 0;
+
+  std::string strTimeshiftDelay = StringUtils::SecondsToTimeString(iTimeshiftDelay, TIME_FORMAT_GUESS);
+
   CSingleLock lock(m_critSection);
   m_bIsTimeshifting = bIsTimeshifting;
   m_iTimeshiftStartTime = iTimeshiftStartTime;
   m_iTimeshiftEndTime = iTimeshiftEndTime;
   m_iTimeshiftPlayTime = iTimeshiftPlayTime;
+  m_strTimeshiftDelay = strTimeshiftDelay;
 }
 
 bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
@@ -339,6 +351,9 @@ bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
     break;
   case PLAYER_TIME:
     CharInfoPlayingTime(strValue);
+    break;
+  case PLAYER_TIME_REMAINING:
+    CharInfoPlayingTimeRemaining(strValue);
     break;
   case PVR_NEXT_TIMER:
     CharInfoNextTimer(strValue);
@@ -415,8 +430,36 @@ bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
   case PVR_TOTAL_DISKSPACE:
     CharInfoTotalDiskSpace(strValue);
     break;
+  case PVR_TIMESHIFT_DELAY:
+    CharInfoTimeshiftDelay(strValue);
+    break;
   default:
     strValue.clear();
+    bReturn = false;
+    break;
+  }
+
+  return bReturn;
+}
+
+bool CPVRGUIInfo::TranslateTimeInfo(DWORD dwInfo, CDateTime &timeValue) const
+{
+  bool bReturn(true);
+  CSingleLock lock(m_critSection);
+
+  /* PLAYER methods are passed for live tv and radio only
+   * This because we don't want to handle them as regular files
+   * They should include the timeshift and epg info instead */
+  switch(dwInfo)
+  {
+  case PLAYER_START_TIME:
+    timeValue.SetFromUTCDateTime(m_iStartTime);
+    break;
+  case PLAYER_FINISH_TIME:
+    timeValue.SetFromUTCDateTime(m_iFinishTime);
+    break;
+  default:
+    timeValue.Reset();
     bReturn = false;
     break;
   }
@@ -473,8 +516,14 @@ int CPVRGUIInfo::TranslateIntInfo(DWORD dwInfo) const
   int iReturn(0);
   CSingleLock lock(m_critSection);
 
+  /* PLAYER methods are passed for live tv and radio only
+   * This because we don't want to handle them as regular files
+   * They should include the timeshift and epg info instead */
   if (dwInfo == PLAYER_PROGRESS)
-    iReturn = (int) ((float) GetStartTime() / m_iDuration * 100);
+  {
+    if (m_iDuration)
+      iReturn = static_cast<int>(static_cast<float>(m_iPlayTime) / m_iDuration * 100);
+  }
   else if (dwInfo == PVR_ACTUAL_STREAM_SIG_PROGR)
     iReturn = (int) ((float) m_qualityInfo.iSignal / 0xFFFF * 100);
   else if (dwInfo == PVR_ACTUAL_STREAM_SNR_PROGR)
@@ -485,6 +534,20 @@ int CPVRGUIInfo::TranslateIntInfo(DWORD dwInfo) const
       iReturn = static_cast<int>(100 * m_iBackendDiskUsed / m_iBackendDiskTotal);
     else
       iReturn = 0xFF;
+  }
+  else if (dwInfo == PVR_TIMESHIFT_START_PROGR)
+  {
+    if (!m_playingEpgTag)
+      iReturn = 0;
+    else if (m_iDuration)
+      iReturn = static_cast<int>(static_cast<float>((m_iTimeshiftStartTime - m_iStartTime) * 1000) / m_iDuration * 100);
+  }
+  else if (dwInfo == PVR_TIMESHIFT_END_PROGR || dwInfo == PLAYER_PROGRESS_CACHE)
+  {
+    if (!m_playingEpgTag)
+      iReturn = 100;
+    else if (m_iDuration)
+      iReturn = static_cast<int>(static_cast<float>((m_iTimeshiftEndTime - m_iStartTime) * 1000) / m_iDuration * 100);
   }
 
   return iReturn;
@@ -530,6 +593,11 @@ void CPVRGUIInfo::CharInfoNextTimerDateTime(std::string &strValue) const
   strValue = m_strNextRecordingTime;
 }
 
+void CPVRGUIInfo::CharInfoTimeshiftDelay(std::string &strValue) const
+{
+  strValue = m_strTimeshiftDelay;
+}
+
 void CPVRGUIInfo::CharInfoPlayingDuration(std::string &strValue) const
 {
   strValue = StringUtils::SecondsToTimeString(m_iDuration / 1000, TIME_FORMAT_GUESS).c_str();
@@ -537,7 +605,12 @@ void CPVRGUIInfo::CharInfoPlayingDuration(std::string &strValue) const
 
 void CPVRGUIInfo::CharInfoPlayingTime(std::string &strValue) const
 {
-  strValue = StringUtils::SecondsToTimeString(GetStartTime()/1000, TIME_FORMAT_GUESS).c_str();
+  strValue = StringUtils::SecondsToTimeString(GetStartTime() / 1000, TIME_FORMAT_GUESS).c_str();
+}
+
+void CPVRGUIInfo::CharInfoPlayingTimeRemaining(std::string &strValue) const
+{
+  strValue = StringUtils::SecondsToTimeString((m_iDuration - GetStartTime()) / 1000, TIME_FORMAT_GUESS).c_str();
 }
 
 void CPVRGUIInfo::CharInfoNextTimer(std::string &strValue) const
@@ -863,7 +936,7 @@ int CPVRGUIInfo::GetStartTime(void) const
      * "position in ms" = ("current UTC" - "event start UTC") * 1000
      */
     CDateTime current = m_iTimeshiftPlayTime;
-    CDateTime start = m_playingEpgTag ? m_playingEpgTag->StartAsUTC() : m_iTimeshiftStartTime;
+    CDateTime start = m_iStartTime;
     CDateTimeSpan time = current > start ? current - start : CDateTimeSpan(0, 0, 0, 0);
     return (time.GetDays()   * 60 * 60 * 24
          + time.GetHours()   * 60 * 60
@@ -876,11 +949,21 @@ int CPVRGUIInfo::GetStartTime(void) const
   }
 }
 
+CDateTime CPVRGUIInfo::GetTagStartTime(void) const
+{
+  CSingleLock lock(m_critSection);
+  CDateTime start = m_iStartTime;
+  return start;
+}
+
 void CPVRGUIInfo::ResetPlayingTag(void)
 {
   CSingleLock lock(m_critSection);
   m_playingEpgTag.reset();
-  m_iDuration = 0;
+  m_iDuration   = 0;
+  m_iStartTime  = 0;
+  m_iFinishTime = 0;
+  m_iPlayTime   = 0;
 }
 
 CEpgInfoTagPtr CPVRGUIInfo::GetPlayingTag() const
@@ -896,11 +979,12 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
   {
     CEpgInfoTagPtr epgTag(GetPlayingTag());
     CPVRChannelPtr channel;
+
     if (epgTag)
       channel = epgTag->ChannelTag();
 
-    if (!epgTag || !epgTag->IsActive() ||
-        !channel || *channel != *currentChannel)
+    if (!epgTag || !epgTag->IsActive() || !channel || *channel != *currentChannel ||
+        GetDuration() != epgTag->GetDuration() * 1000 || GetTagStartTime() != epgTag->StartAsUTC())
     {
       {
         CSingleLock lock(m_critSection);
@@ -909,14 +993,29 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
         if (newTag)
         {
           m_playingEpgTag = newTag;
-          m_iDuration     = m_playingEpgTag->GetDuration() * 1000;
+
+          CDateTime start = m_playingEpgTag->StartAsUTC();
+          time_t time;
+          start.GetAsTime(time);
+
+          m_iStartTime  = time;
+          m_iFinishTime = m_iStartTime + m_playingEpgTag->GetDuration();
+          m_iDuration   = m_playingEpgTag->GetDuration() * 1000;
         }
         else if (m_iTimeshiftEndTime > m_iTimeshiftStartTime)
         {
-          m_iDuration = (m_iTimeshiftEndTime - m_iTimeshiftStartTime) * 1000;
+          m_iStartTime  = m_iTimeshiftStartTime;
+          m_iFinishTime = m_iTimeshiftEndTime;
+          m_iDuration   = (m_iTimeshiftEndTime - m_iTimeshiftStartTime) * 1000;
         }
       }
       g_PVRManager.UpdateCurrentFile();
+    }
+
+    {
+      /* Playing time should be updated every time */
+      CSingleLock lock(m_critSection);
+      m_iPlayTime  = GetStartTime();
     }
   }
   else
@@ -924,6 +1023,7 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
     CPVRRecordingPtr recording(g_PVRClients->GetPlayingRecording());
     if (recording)
     {
+      // Lock here?
       ResetPlayingTag();
       m_iDuration = recording->GetDuration() * 1000;
     }

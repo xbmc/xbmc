@@ -53,6 +53,7 @@ namespace PVR
 
     bool TranslateBoolInfo(DWORD dwInfo) const;
     bool TranslateCharInfo(DWORD dwInfo, std::string &strValue) const;
+    bool TranslateTimeInfo(DWORD dwInfo, CDateTime &timeValue) const;
     int TranslateIntInfo(DWORD dwInfo) const;
 
     /*!
@@ -66,6 +67,12 @@ namespace PVR
      * @return The position in milliseconds or NULL if no channel is playing.
      */
     int GetStartTime(void) const;
+
+    /*!
+     * @brief Get the start timestamp of the playing LiveTV item.
+     * @return Timestamp in UTC format or NULL if no channel is playing.
+     */
+    CDateTime GetTagStartTime(void) const;
 
     /*!
      * @brief Show the player info.
@@ -118,6 +125,7 @@ namespace PVR
     void CharInfoNextTimerDateTime(std::string &strValue) const;
     void CharInfoPlayingDuration(std::string &strValue) const;
     void CharInfoPlayingTime(std::string &strValue) const;
+    void CharInfoPlayingTimeRemaining(std::string &strValue) const;
     void CharInfoNextTimer(std::string &strValue) const;
     void CharInfoBackendNumber(std::string &strValue) const;
     void CharInfoTotalDiskSpace(std::string &strValue) const;
@@ -143,6 +151,7 @@ namespace PVR
     void CharInfoService(std::string &strValue) const;
     void CharInfoMux(std::string &strValue) const;
     void CharInfoProvider(std::string &strValue) const;
+    void CharInfoTimeshiftDelay(std::string &strValue) const;
 
     /** @name GUIInfoManager data */
     //@{
@@ -170,6 +179,9 @@ namespace PVR
     long long                       m_iBackendDiskTotal;
     long long                       m_iBackendDiskUsed;
     unsigned int                    m_iDuration;
+    unsigned int                    m_iPlayTime;
+    time_t                          m_iStartTime;
+    time_t                          m_iFinishTime;
 
     bool                            m_bHasNonRecordingTimers;
     bool                            m_bIsPlayingTV;
@@ -192,6 +204,7 @@ namespace PVR
     time_t                          m_iTimeshiftStartTime;
     time_t                          m_iTimeshiftEndTime;
     time_t                          m_iTimeshiftPlayTime;
+    std::string                     m_strTimeshiftDelay;
 
     CCriticalSection                m_critSection;
 

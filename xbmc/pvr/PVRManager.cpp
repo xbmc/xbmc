@@ -1433,6 +1433,11 @@ bool CPVRManager::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
   return IsStarted() && m_guiInfo ? m_guiInfo->TranslateCharInfo(dwInfo, strValue) : false;
 }
 
+bool CPVRManager::TranslateTimeInfo(DWORD dwInfo, CDateTime &timeValue) const
+{
+  return IsStarted() && m_guiInfo ? m_guiInfo->TranslateTimeInfo(dwInfo, timeValue) : false;
+}
+
 int CPVRManager::TranslateIntInfo(DWORD dwInfo) const
 {
   return IsStarted() && m_guiInfo ? m_guiInfo->TranslateIntInfo(dwInfo) : 0;
