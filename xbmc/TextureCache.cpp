@@ -102,7 +102,7 @@ bool CTextureCache::CanCacheImageURL(const CURL &url)
   return (url.GetUserName().empty() || url.GetUserName() == "music");
 }
 
-std::string CTextureCache::CheckCachedImage(const std::string &url, bool returnDDS, bool &needsRecaching)
+std::string CTextureCache::CheckCachedImage(const std::string &url, bool &needsRecaching)
 {
   CTextureDetails details;
   std::string path(GetCachedImage(url, details, true));
