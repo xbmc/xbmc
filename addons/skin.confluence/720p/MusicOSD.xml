@@ -258,10 +258,6 @@
 				<visible>!MusicPlayer.Content(LiveTV)</visible>
 				<onclick>PlayerControl(Random)</onclick>
 			</control>
-			<control type="image" id="2300">
-				<width>160</width>
-				<texture>-</texture>
-			</control>
 			<control type="image" id="2400">
 				<width>55</width>
 				<texture>-</texture>
@@ -276,6 +272,15 @@
 				<width>55</width>
 				<texture>-</texture>
 				<visible>!Player.CanRecord</visible>
+			</control>
+			<control type="button" id="705">
+				<width>55</width>
+				<height>55</height>
+				<label>15047</label>
+				<font>-</font>
+				<texturefocus>OSDRateFO.png</texturefocus>
+				<texturenofocus>OSDRateNF.png</texturenofocus>
+				<onclick>setrating</onclick>
 			</control>
 			<control type="button" id="700">
 				<width>55</width>
