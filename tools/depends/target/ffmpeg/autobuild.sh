@@ -25,7 +25,7 @@ FFMPEG_PREFIX=${MYDIR}/ffmpeg-install
 
 BASE_URL=$(grep "BASE_URL=" FFMPEG-VERSION | sed 's/BASE_URL=//g')
 VERSION=$(grep "VERSION=" FFMPEG-VERSION | sed 's/VERSION=//g')
-ARCHIVE=ffmpeg-${VERSION}.tar.gz
+ARCHIVE=ffmpeg-$(echo "${VERSION}" | sed 's/\//-/g').tar.gz
 
 function usage {
   echo "usage $(basename $0) 
@@ -110,7 +110,9 @@ then
   [ "$VERSION" == "$CURVER" ] && exit 0
 fi
 
-[ -f ${ARCHIVE} ] || curl -Ls --create-dirs -f -o ${ARCHIVE} ${BASE_URL}/${VERSION}.tar.gz
+[ -f ${ARCHIVE} ] ||
+  curl -Ls --create-dirs -f -o ${ARCHIVE} ${BASE_URL}/${VERSION}.tar.gz ||
+  { echo "error fetching ${BASE_URL}/${VERSION}.tar.gz" ; exit 3; }
 [ $downloadonly ] && exit 0
 
 [ -d ffmpeg-${VERSION} ] && rm -rf ffmpeg-${VERSION} && rm .ffmpeg-installed >/dev/null 2>&1
@@ -121,9 +123,9 @@ else
   [ -w $(dirname ${FFMPEG_PREFIX}) ] || SUDO="sudo"
 fi
 
-mkdir ffmpeg-${VERSION}
-cd ffmpeg-${VERSION} || exit 2
-tar --strip-components=1 -xf ../${ARCHIVE}
+mkdir -p "ffmpeg-${VERSION}"
+cd "ffmpeg-${VERSION}" || exit 2
+tar --strip-components=1 -xf $MYDIR/${ARCHIVE}
 
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" \
 ./configure --prefix=$FFMPEG_PREFIX \
@@ -168,7 +170,7 @@ make -j ${BUILDTHREADS}
 if [ $? -eq 0 ]
 then
   [ ${SUDO} ] && echo "Root privileges are required to install to ${FFMPEG_PREFIX}"
-  ${SUDO} make install && echo "$VERSION" > ../.ffmpeg-installed
+  ${SUDO} make install && echo "$VERSION" > $MYDIR/.ffmpeg-installed
 else
   echo "ERROR: Building ffmpeg failed"
   exit 1

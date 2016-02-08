@@ -6,7 +6,7 @@ BGPROCESSFILE="$2"
 BASE_URL=$(grep "BASE_URL=" ../../tools/depends/target/ffmpeg/FFMPEG-VERSION | sed 's/BASE_URL=//g')
 VERSION=$(grep "VERSION=" ../../tools/depends/target/ffmpeg/FFMPEG-VERSION | sed 's/VERSION=//g')
 LIBNAME=ffmpeg
-ARCHIVE=$LIBNAME-$VERSION.tar.gz
+ARCHIVE=$LIBNAME-$(echo "${VERSION}" | sed 's/\//-/g').tar.gz
 
 CUR_DIR=`pwd`
 DEPS_DIR=$CUR_DIR/../BuildDependencies
@@ -16,7 +16,7 @@ UNZIP=$CUR_DIR/tools/7z/7za
 
 cd $LIB_DIR
 
-if [ "$1" == "clean" ]
+if [ -n "$1" ] && [ "$1" == "clean" ]
 then
   echo removing $LIBNAME
   if [ -d $LIBNAME ]
@@ -26,13 +26,13 @@ then
 fi
 
 if [ ! -d $LIBNAME ]; then
-  if [ ! -f $VERSION.tar.gz ]; then
-    $WGET --no-check-certificate $BASE_URL/$VERSION.tar.gz -O $VERSION.tar.gz
+  if [ ! -f $ARCHIVE ]; then
+    $WGET --no-check-certificate $BASE_URL/$VERSION.tar.gz -O $ARCHIVE
   fi
-  $UNZIP x -y $VERSION.tar.gz
-  $UNZIP x -y $VERSION.tar
-  mv $LIBNAME-$VERSION $LIBNAME
-  cd $LIBNAME
+  $UNZIP e -y $ARCHIVE
+  mkdir $LIBNAME && cd $LIBNAME
+  $UNZIP x -y ../${ARCHIVE%.gz}
+  mv */* .
 else
   cd $LIBNAME
   if [ -d .libs ]; then
@@ -90,6 +90,7 @@ OPTIONS="
 --enable-libdcadec"
 
 echo configuring $LIBNAME
+[ -x configure ] || chmod +x configure
 ./configure --extra-cflags="-fno-common -I/xbmc/lib/win32/ffmpeg_dxva2 -DNDEBUG" --extra-ldflags="-L/xbmc/system/players/VideoPlayer -L/xbmc/system/players/dvdplayer" ${OPTIONS} &&
 
 make $MAKEFLAGS &&
