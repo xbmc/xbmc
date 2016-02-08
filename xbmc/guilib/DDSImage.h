@@ -38,22 +38,9 @@ public:
 
   bool ReadFile(const std::string &file);
 
-  /*! \brief Create a DDS image file from the given an ARGB buffer
-   \param file name of the file to write
-   \param width width of the pixel buffer
-   \param height height of the pixel buffer
-   \param pitch pitch of the pixel buffer
-   \param argb pixel buffer
-   \param maxMSE maximum mean square error to allow, ignored if 0 (the default)
-   \return true on successful image creation, false otherwise
-   */
-  bool Create(const std::string &file, unsigned int width, unsigned int height, unsigned int pitch, unsigned char const *argb, double maxMSE = 0);
-  
-
 private:
   void Allocate(unsigned int width, unsigned int height, unsigned int format);
   static const char *GetFourCC(unsigned int format);
-  bool WriteFile(const std::string &file) const;
 
   static unsigned int GetStorageRequirements(unsigned int width, unsigned int height, unsigned int format);
   enum {

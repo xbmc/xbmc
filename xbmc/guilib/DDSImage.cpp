@@ -115,33 +115,6 @@ bool CDDSImage::ReadFile(const std::string &inputFile)
   return true;
 }
 
-bool CDDSImage::Create(const std::string &outputFile, unsigned int width, unsigned int height, unsigned int pitch, unsigned char const *brga, double maxMSE)
-{
-  if (!brga)
-    return false;
-
-  // use ARGB
-  Allocate(width, height, XB_FMT_A8R8G8B8);
-  for (unsigned int i = 0; i < height; i++)
-    memcpy(m_data + i * width * 4, brga + i * pitch, std::min(width * 4, pitch));
-
-  return WriteFile(outputFile);
-}
-
-bool CDDSImage::WriteFile(const std::string &outputFile) const
-{
-  // open the file
-  CFile file;
-  if (!file.OpenForWrite(outputFile, true))
-    return false;
-
-  // write the header
-  return file.Write("DDS ", 4) == 4 &&
-    file.Write(&m_desc, sizeof(m_desc)) == sizeof(m_desc) &&
-  // now the data
-    file.Write(m_data, m_desc.linearSize) == m_desc.linearSize;
-}
-
 unsigned int CDDSImage::GetStorageRequirements(unsigned int width, unsigned int height, unsigned int format)
 {
   switch (format)
