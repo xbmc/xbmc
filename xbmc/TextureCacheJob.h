@@ -127,20 +127,6 @@ private:
   std::string    m_cachePath;
 };
 
-/* \brief Job class for creating .dds versions of textures
- */
-class CTextureDDSJob : public CJob
-{
-public:
-  CTextureDDSJob(const std::string &original);
-
-  virtual const char* GetType() const { return kJobTypeDDSCompress; };
-  virtual bool operator==(const CJob *job) const;
-  virtual bool DoWork();
-
-  std::string m_original;
-};
-
 /* \brief Job class for storing the use count of textures
  */
 class CTextureUseCountJob : public CJob
