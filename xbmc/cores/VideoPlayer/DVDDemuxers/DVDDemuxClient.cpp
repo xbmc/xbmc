@@ -377,11 +377,25 @@ DemuxPacket* CDVDDemuxClient::Read()
   return pPacket;
 }
 
-CDemuxStream* CDVDDemuxClient::GetStream(int iStreamId)
+CDemuxStream* CDVDDemuxClient::GetStream(int64_t iStreamId)
 {
   if (iStreamId < 0 || iStreamId >= MAX_STREAMS)
     return nullptr;
   return m_streams[iStreamId];
+}
+
+const std::vector<CDemuxStream*> CDVDDemuxClient::GetStreams() const
+{
+  std::vector<CDemuxStream*> streams;
+
+  for (auto& iter : m_streams)
+  {
+    if (iter != nullptr)
+    {
+      streams.push_back(iter);
+    }
+  }
+  return streams;
 }
 
 void CDVDDemuxClient::RequestStreams()
@@ -565,7 +579,7 @@ std::string CDVDDemuxClient::GetFileName()
     return "";
 }
 
-std::string CDVDDemuxClient::GetStreamCodecName(int iStreamId)
+std::string CDVDDemuxClient::GetStreamCodecName(int64_t iStreamId)
 {
   CDemuxStream *stream = GetStream(iStreamId);
   std::string strName;
