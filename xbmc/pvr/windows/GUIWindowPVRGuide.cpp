@@ -305,6 +305,10 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
               ActionToggleTimer(pItem.get());
               bReturn = true;
               break;
+            case ACTION_PVR_SHOW_TIMER_RULE:
+              ActionShowTimerRule(pItem.get());
+              bReturn = true;
+              break;
             case ACTION_CONTEXT_MENU:
             case ACTION_MOUSE_RIGHT_CLICK:
               OnPopupMenu(iItem);

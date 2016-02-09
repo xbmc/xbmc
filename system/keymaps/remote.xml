@@ -681,6 +681,20 @@
       <nine>number9</nine>
     </remote>
   </RadioChannels>
+  <RadioGuide>
+    <remote>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>number2</two>
+      <three>number3</three>
+      <four>number4</four>
+      <five>number5</five>
+      <six>number6</six>
+      <seven>number7</seven>
+      <eight>number8</eight>
+      <nine>number9</nine>
+    </remote>
+  </RadioGuide>
   <MyTVSettings>
     <remote>
       <back>PreviousMenu</back>

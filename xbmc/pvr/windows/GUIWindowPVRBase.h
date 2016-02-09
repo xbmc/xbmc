@@ -81,6 +81,7 @@ namespace PVR
     static bool AddTimer(CFileItem *item, bool bShowTimerSettings = false);
     static bool AddTimerRule(CFileItem *item, bool bShowTimerSettings = true);
     static bool EditTimer(CFileItem *item);
+    static bool EditTimerRule(CFileItem *item);
     static bool DeleteTimer(CFileItem *item);
     static bool DeleteTimerRule(CFileItem *item);
     static bool StopRecordFile(CFileItem *item);
@@ -92,6 +93,7 @@ namespace PVR
     virtual CPVRChannelGroupPtr GetGroup(void);
     virtual void SetGroup(CPVRChannelGroupPtr group);
 
+    virtual bool ActionShowTimerRule(CFileItem *item);
     virtual bool ActionToggleTimer(CFileItem *item);
     virtual bool ActionPlayChannel(CFileItem *item);
     virtual bool ActionPlayEpg(CFileItem *item, bool bPlayRecording);

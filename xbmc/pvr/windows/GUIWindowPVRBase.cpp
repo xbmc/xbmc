@@ -321,10 +321,7 @@ bool CGUIWindowPVRBase::OnContextButtonEditTimerRule(CFileItem *item, CONTEXT_BU
 
   if (button == CONTEXT_BUTTON_EDIT_TIMER_RULE)
   {
-    CFileItemPtr parentTimer(g_PVRTimers->GetTimerRule(item));
-    if (parentTimer)
-      EditTimer(parentTimer.get());
-
+    EditTimerRule(item);
     bReturn = true;
   }
 
@@ -606,6 +603,15 @@ bool CGUIWindowPVRBase::EditTimer(CFileItem *item)
   return false;
 }
 
+bool CGUIWindowPVRBase::EditTimerRule(CFileItem *item)
+{
+  CFileItemPtr parentTimer(g_PVRTimers->GetTimerRule(item));
+  if (parentTimer)
+    return EditTimer(parentTimer.get());
+
+  return false;
+}
+
 bool CGUIWindowPVRBase::DeleteTimer(CFileItem *item)
 {
   return DeleteTimer(item, false, false);
@@ -837,6 +843,14 @@ bool CGUIWindowPVRBase::ActionInputChannelNumber(int input)
   }
 
   return false;
+}
+
+bool CGUIWindowPVRBase::ActionShowTimerRule(CFileItem *item)
+{
+  if (!g_PVRTimers->GetTimerRule(item))
+    return AddTimerRule(item, true);
+  else
+    return EditTimerRule(item);
 }
 
 bool CGUIWindowPVRBase::ActionToggleTimer(CFileItem *item)
