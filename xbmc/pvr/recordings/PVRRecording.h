@@ -208,7 +208,7 @@ namespace PVR
     unsigned int BroadcastUid(void) const { return m_iEpgEventId; }
 
     /*!
-     * @return channel id associated with this recording or PVR_INVALID_CHANNEL_UID
+     * @return channel id associated with this recording or PVR_CHANNEL_INVALID_UID
      */
     int ChannelUid(void) const { return m_iChannelUid; }
 

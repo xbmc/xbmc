@@ -51,7 +51,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   m_iClientId           = g_PVRClients->GetFirstConnectedClientID();
   m_iClientIndex        = PVR_TIMER_NO_CLIENT_INDEX;
   m_iParentClientIndex  = PVR_TIMER_NO_PARENT;
-  m_iClientChannelUid   = PVR_INVALID_CHANNEL_UID;
+  m_iClientChannelUid   = PVR_CHANNEL_INVALID_UID;
   m_iPriority           = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_DEFAULTPRIORITY);
   m_iLifetime           = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_DEFAULTLIFETIME);
   m_iMaxRecordings      = 0;
@@ -105,7 +105,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr 
     CLog::Log(LOGERROR, "%s: invalid client index supplied by client %d (must be > 0)!", __FUNCTION__, m_iClientId);
 
   m_iParentClientIndex  = timer.iParentClientIndex;
-  m_iClientChannelUid   = channel ? channel->UniqueID() : (timer.iClientChannelUid > 0) ? timer.iClientChannelUid : PVR_INVALID_CHANNEL_UID;
+  m_iClientChannelUid   = channel ? channel->UniqueID() : (timer.iClientChannelUid > 0) ? timer.iClientChannelUid : PVR_CHANNEL_INVALID_UID;
   m_iChannelNumber      = channel ? g_PVRChannelGroups->GetGroupAll(channel->IsRadio())->GetChannelNumber(channel) : 0;
   m_StartTime           = timer.startTime + g_advancedSettings.m_iPVRTimeCorrection;
   m_StopTime            = timer.endTime + g_advancedSettings.m_iPVRTimeCorrection;

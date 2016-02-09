@@ -194,7 +194,7 @@ void CPVRRecording::Reset(void)
   m_iEpgEventId        = EPG_TAG_INVALID_UID;
   m_iSeason            = -1;
   m_iEpisode           = -1;
-  m_iChannelUid        = PVR_INVALID_CHANNEL_UID;
+  m_iChannelUid        = PVR_CHANNEL_INVALID_UID;
 
   m_recordingTime.Reset();
   CVideoInfoTag::Reset();
@@ -444,7 +444,7 @@ void CPVRRecording::CopyClientInfo(CVideoInfoTag *target) const
 
 CPVRChannelPtr CPVRRecording::Channel(void) const
 {
-  if (m_iChannelUid != PVR_INVALID_CHANNEL_UID)
+  if (m_iChannelUid != PVR_CHANNEL_INVALID_UID)
     return g_PVRChannelGroups->GetByUniqueID(m_iChannelUid, m_iClientId);
 
   return CPVRChannelPtr();

@@ -28,8 +28,6 @@
 #include "utils/ISerializable.h"
 #include "utils/Observer.h"
 
-#define PVR_INVALID_CHANNEL_UID -1
-
 class CVariant;
 
 namespace EPG
