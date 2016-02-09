@@ -163,6 +163,11 @@ extern "C" {
   const int EPG_TIMEFRAME_UNLIMITED = -1;
 
   /*!
+   * @brief special PVR_TIMER.iClientChannelUid and PVR_RECORDING.iChannelUid value to indicate that no channel uid is available.
+   */
+  const int PVR_CHANNEL_INVALID_UID = -1; /*!< @brief denotes that no channel uid is avaliable. */
+
+  /*!
    * @brief PVR add-on error codes
    */
   typedef enum
@@ -415,7 +420,7 @@ extern "C" {
                                                                     Kodi and passed the first time to the client. A valid index must be greater than PVR_TIMER_NO_CLIENT_INDEX. */
     unsigned int    iParentClientIndex;                        /*!< @brief (optional) for timers scheduled by a repeating timer, the index of the repeating timer that scheduled this timer (it's PVR_TIMER.iClientIndex value). Use PVR_TIMER_NO_PARENT
                                                                     to indicate that this timer was no scheduled by a repeating timer. */
-    int             iClientChannelUid;                         /*!< @brief (optional) unique identifier of the channel to record on. PVR_TIMER_ANY_CHANNEL will denote "any channel", not a specific one. */
+    int             iClientChannelUid;                         /*!< @brief (optional) unique identifier of the channel to record on. PVR_TIMER_ANY_CHANNEL will denote "any channel", not a specific one. PVR_CHANNEL_INVALID_UID denotes that channel uid is not available.*/
     time_t          startTime;                                 /*!< @brief (optional) start time of the recording in UTC. Instant timers that are sent to the add-on by Kodi will have this value set to 0.*/
     time_t          endTime;                                   /*!< @brief (optional) end time of the recording in UTC. */
     bool            bStartAnyTime;                             /*!< @brief (optional) for EPG based (not Manual) timers indicates startTime does not apply. Default = false */
@@ -473,7 +478,7 @@ extern "C" {
     int    iLastPlayedPosition;                           /*!< @brief (optional) last played position of this recording on the client */
     bool   bIsDeleted;                                    /*!< @brief (optional) shows this recording is deleted and can be undelete */
     unsigned int iEpgEventId;                             /*!< @brief (optional) EPG event id associated with this recording. Valid ids must be greater than EPG_TAG_INVALID_UID. */
-    int    iChannelUid;                                   /*!< @brief (optional) unique identifier of the channel for this recording. */
+    int    iChannelUid;                                   /*!< @brief (optional) unique identifier of the channel for this recording. PVR_CHANNEL_INVALID_UID denotes that channel uid is not available. */
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
   /*!
