@@ -42,6 +42,9 @@ namespace PERIPHERALS
     PERIPHERAL_BUS_RPI,
     PERIPHERAL_BUS_CEC,
     PERIPHERAL_BUS_ADDON,
+#ifdef TARGET_ANDROID
+    PERIPHERAL_BUS_ANDROID,
+#endif
   };
 
   enum PeripheralFeature
@@ -169,6 +172,10 @@ namespace PERIPHERALS
         return "cec";
       case PERIPHERAL_BUS_ADDON:
         return "addon";
+#ifdef TARGET_ANDROID
+      case PERIPHERAL_BUS_ANDROID:
+        return "android";
+#endif
       default:
         return "unknown";
       }
@@ -189,6 +196,10 @@ namespace PERIPHERALS
         return PERIPHERAL_BUS_CEC;
       else if (strTypeLowerCase == "addon")
         return PERIPHERAL_BUS_ADDON;
+#ifdef TARGET_ANDROID
+      else if (strTypeLowerCase == "android")
+        return PERIPHERAL_BUS_ANDROID;
+#endif
 
       return PERIPHERAL_BUS_UNKNOWN;
     };

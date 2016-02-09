@@ -20,6 +20,7 @@
 
 #include "PeripheralJoystick.h"
 #include "peripherals/Peripherals.h"
+#include "peripherals/bus/android/PeripheralBusAndroid.h"
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -64,6 +65,19 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
             CLog::Log(LOGERROR, "CPeripheralJoystick: Invalid location (%s)", m_strLocation.c_str());
         }
       }
+#ifdef TARGET_ANDROID
+      else if (m_mappedBusType == PERIPHERAL_BUS_ANDROID)
+      {
+        CPeripheralBusAndroid* androidBus = dynamic_cast<CPeripheralBusAndroid*>(m_bus);
+        if (androidBus)
+        {
+          if (androidBus->InitializeProperties(this))
+            bSuccess = true;
+          else
+            CLog::Log(LOGERROR, "CPeripheralJoystick: Invalid location (%s)", m_strLocation.c_str());
+        }
+      }
+#endif
     }
   }
 

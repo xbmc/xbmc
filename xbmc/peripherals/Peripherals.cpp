@@ -26,6 +26,9 @@
 #include "addons/AddonButtonMap.h"
 #include "bus/PeripheralBus.h"
 #include "bus/PeripheralBusUSB.h"
+#if defined(TARGET_ANDROID)
+#include "bus/android/PeripheralBusAndroid.h"
+#endif
 #include "bus/virtual/PeripheralBusAddon.h"
 #include "devices/PeripheralBluetooth.h"
 #include "devices/PeripheralCecAdapter.h"
@@ -41,7 +44,6 @@
 #include "dialogs/GUIDialogPeripheralSettings.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "FileItem.h"
-#include "bus/virtual/PeripheralBusAddon.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -107,6 +109,9 @@ void CPeripherals::Initialise()
     m_busses.push_back(std::make_shared<CPeripheralBusCEC>(this));
 #endif
     m_busses.push_back(std::make_shared<CPeripheralBusAddon>(this));
+#if defined(TARGET_ANDROID)
+    m_busses.push_back(std::make_shared<CPeripheralBusAndroid>(this));
+#endif
 
     /* initialise all known busses and run an initial scan for devices */
     for (auto& bus : m_busses)
