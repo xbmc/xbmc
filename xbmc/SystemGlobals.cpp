@@ -18,6 +18,7 @@
  *
  */
 #include "system.h"
+#include "SectionLoader.h"
 #include "cores/DataCacheCore.h"
 #include "GUILargeTextureManager.h"
 #include "guilib/TextureManager.h"
