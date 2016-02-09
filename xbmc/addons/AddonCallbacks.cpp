@@ -42,6 +42,7 @@ CAddonCallbacks::CAddonCallbacks(CAddon* addon)
   m_helperGUI   = NULL;
   m_helperPVR   = NULL;
   m_helperCODEC = NULL;
+  m_helperInputStream = nullptr;
 
   m_callbacks->libBasePath           = strdup(CSpecialProtocol::TranslatePath("special://xbmcbin/addons").c_str());
   m_callbacks->addonData             = this;
@@ -57,6 +58,8 @@ CAddonCallbacks::CAddonCallbacks(CAddon* addon)
   m_callbacks->GUILib_UnRegisterMe   = CAddonCallbacks::GUILib_UnRegisterMe;
   m_callbacks->PVRLib_RegisterMe     = CAddonCallbacks::PVRLib_RegisterMe;
   m_callbacks->PVRLib_UnRegisterMe   = CAddonCallbacks::PVRLib_UnRegisterMe;
+  m_callbacks->INPUTSTREAMLib_RegisterMe = CAddonCallbacks::INPUTSTREAMLib_RegisterMe;
+  m_callbacks->INPUTSTREAMLib_UnRegisterMe = CAddonCallbacks::INPUTSTREAMLib_UnRegisterMe;
 }
 
 CAddonCallbacks::~CAddonCallbacks()
@@ -73,6 +76,8 @@ CAddonCallbacks::~CAddonCallbacks()
   m_helperGUI = NULL;
   delete m_helperPVR;
   m_helperPVR = NULL;
+  delete m_helperInputStream;
+  m_helperInputStream = nullptr;
   free((char*)m_callbacks->libBasePath);
   delete m_callbacks;
   m_callbacks = NULL;
@@ -233,6 +238,32 @@ void CAddonCallbacks::PVRLib_UnRegisterMe(void *addonData, CB_PVRLib *cbTable)
 
   delete addon->m_helperPVR;
   addon->m_helperPVR = NULL;
+}
+
+CB_INPUTSTREAMLib* CAddonCallbacks::INPUTSTREAMLib_RegisterMe(void *addonData)
+{
+  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
+  if (addon == NULL)
+  {
+    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
+    return NULL;
+  }
+
+  addon->m_helperInputStream = new CAddonCallbacksInputStream(addon->m_addon);
+  return addon->m_helperInputStream->GetCallbacks();
+}
+
+void CAddonCallbacks::INPUTSTREAMLib_UnRegisterMe(void *addonData, CB_INPUTSTREAMLib *cbTable)
+{
+  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
+  if (addon == NULL)
+  {
+    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
+    return;
+  }
+
+  delete addon->m_helperInputStream;
+  addon->m_helperInputStream = nullptr;
 }
 
 }; /* namespace ADDON */

@@ -24,11 +24,13 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/libKODI_adsp.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/libKODI_audioengine.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_inputstream.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_adsp_types.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_audioengine_types.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_codec_types.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
+#include "AddonCallbacksInputStream.h"
 
 #ifdef TARGET_WINDOWS
 #ifndef _SSIZE_T_DEFINED
@@ -533,6 +535,8 @@ typedef CB_GUILib* (*XBMCGUILib_RegisterMe)(void *addonData);
 typedef void (*XBMCGUILib_UnRegisterMe)(void *addonData, CB_GUILib *cbTable);
 typedef CB_PVRLib* (*XBMCPVRLib_RegisterMe)(void *addonData);
 typedef void (*XBMCPVRLib_UnRegisterMe)(void *addonData, CB_PVRLib *cbTable);
+typedef CB_INPUTSTREAMLib* (*KODIINPUTSTREAMLib_RegisterMe)(void *addonData);
+typedef void (*KODIINPUTSTREAMLib_UnRegisterMe)(void *addonData, CB_INPUTSTREAMLib *cbTable);
 
 typedef struct AddonCB
 {
@@ -550,6 +554,8 @@ typedef struct AddonCB
   XBMCPVRLib_UnRegisterMe    PVRLib_UnRegisterMe;
   KODIADSPLib_RegisterMe     ADSPLib_RegisterMe;
   KODIADSPLib_UnRegisterMe   ADSPLib_UnRegisterMe;
+  KODIINPUTSTREAMLib_RegisterMe INPUTSTREAMLib_RegisterMe;
+  KODIINPUTSTREAMLib_UnRegisterMe INPUTSTREAMLib_UnRegisterMe;
 } AddonCB;
 
 
@@ -583,6 +589,8 @@ public:
   static void GUILib_UnRegisterMe(void *addonData, CB_GUILib *cbTable);
   static CB_PVRLib* PVRLib_RegisterMe(void *addonData);
   static void PVRLib_UnRegisterMe(void *addonData, CB_PVRLib *cbTable);
+  static CB_INPUTSTREAMLib* INPUTSTREAMLib_RegisterMe(void *addonData);
+  static void INPUTSTREAMLib_UnRegisterMe(void *addonData, CB_INPUTSTREAMLib *cbTable);
 
   CAddonCallbacksAddon *GetHelperAddon() { return m_helperAddon; }
   CAddonCallbacksADSP *GetHelperADSP() { return m_helperADSP; }
@@ -590,6 +598,7 @@ public:
   CAddonCallbacksCodec *GetHelperCodec() { return m_helperCODEC; }
   CAddonCallbacksGUI *GetHelperGUI() { return m_helperGUI; }
   CAddonCallbacksPVR *GetHelperPVR() { return m_helperPVR; }
+  CAddonCallbacksInputStream *GetHelperInputStream() { return m_helperInputStream; }
 
 private:
   AddonCB             *m_callbacks;
@@ -600,6 +609,7 @@ private:
   CAddonCallbacksCodec *m_helperCODEC;
   CAddonCallbacksGUI   *m_helperGUI;
   CAddonCallbacksPVR   *m_helperPVR;
+  CAddonCallbacksInputStream *m_helperInputStream;
 };
 
 }; /* namespace ADDON */
