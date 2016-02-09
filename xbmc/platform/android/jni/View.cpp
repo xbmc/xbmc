@@ -137,7 +137,7 @@ int CJNIViewInputDevice::getVendorId() const
     "getVendorId", "()I");
 }
 
-CJNIOsVibrator CJNIViewInputDevice::getVibrator() const
+const CJNIOsVibrator CJNIViewInputDevice::getVibrator() const
 {
   return call_method<jhobject>(m_object,
     "getVibrator", "()Landroid/os/Vibrator;");

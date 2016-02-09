@@ -50,6 +50,7 @@
 #include "platform/XbmcContext.h"
 #include <android/bitmap.h>
 #include "cores/AudioEngine/AEFactory.h"
+#include "platform/android/activity/IInputDeviceCallbacks.h"
 #include "platform/android/jni/JNIThreading.h"
 #include "platform/android/jni/BroadcastReceiver.h"
 #include "platform/android/jni/Intent.h"
@@ -100,6 +101,7 @@ ANativeWindow* CXBMCApp::m_window = NULL;
 int CXBMCApp::m_batteryLevel = 0;
 bool CXBMCApp::m_hasFocus = false;
 bool CXBMCApp::m_headsetPlugged = false;
+IInputDeviceCallbacks* CXBMCApp::m_inputDeviceCallbacks = nullptr;
 CCriticalSection CXBMCApp::m_applicationsMutex;
 std::vector<androidPackage> CXBMCApp::m_applications;
 
@@ -145,6 +147,7 @@ void CXBMCApp::onStart()
     android_printf("%s: Already running, ignoring request to start", __PRETTY_FUNCTION__);
     return;
   }
+
   pthread_attr_t attr;
   pthread_attr_init(&attr);
   pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
@@ -532,6 +535,18 @@ void CXBMCApp::OnPlayBackEnded()
   ReleaseAudioFocus();
 }
 
+const CJNIViewInputDevice CXBMCApp::GetInputDevice(int deviceId)
+{
+  CJNIInputManager inputManager(getSystemService("input"));
+  return inputManager.getInputDevice(deviceId);
+}
+
+std::vector<int> CXBMCApp::GetInputDeviceIds()
+{
+  CJNIInputManager inputManager(getSystemService("input"));
+  return inputManager.getInputDeviceIds();
+}
+
 std::vector<androidPackage> CXBMCApp::GetApplications()
 {
   CSingleLock lock(m_applicationsMutex);
@@ -895,4 +910,41 @@ const ANativeWindow** CXBMCApp::GetNativeWindow(int timeout)
 
   m_windowCreated.WaitMSec(timeout);
   return (const ANativeWindow**)&m_window;
+}
+
+void CXBMCApp::RegisterInputDeviceCallbacks(IInputDeviceCallbacks* handler)
+{
+  if (handler == nullptr)
+    return;
+
+  m_inputDeviceCallbacks = handler;
+}
+
+void CXBMCApp::UnregisterInputDeviceCallbacks()
+{
+  m_inputDeviceCallbacks = nullptr;
+}
+
+void CXBMCApp::onInputDeviceAdded(int deviceId)
+{
+  CXBMCApp::android_printf("Input device added: %d", deviceId);
+
+  if (m_inputDeviceCallbacks != nullptr)
+    m_inputDeviceCallbacks->OnInputDeviceAdded(deviceId);
+}
+
+void CXBMCApp::onInputDeviceChanged(int deviceId)
+{
+  CXBMCApp::android_printf("Input device changed: %d", deviceId);
+
+  if (m_inputDeviceCallbacks != nullptr)
+    m_inputDeviceCallbacks->OnInputDeviceChanged(deviceId);
+}
+
+void CXBMCApp::onInputDeviceRemoved(int deviceId)
+{
+  CXBMCApp::android_printf("Input device removed: %d", deviceId);
+
+  if (m_inputDeviceCallbacks != nullptr)
+    m_inputDeviceCallbacks->OnInputDeviceRemoved(deviceId);
 }

@@ -63,7 +63,7 @@ public:
   int          getProductId() const;
   int          getSources() const;
   int          getVendorId() const;
-  CJNIOsVibrator getVibrator() const;
+  const CJNIOsVibrator getVibrator() const;
   bool         hasMicrophone() const;
   bool         isVirtual() const;
   bool         supportsSource(int source) const;

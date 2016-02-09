@@ -33,6 +33,7 @@
 #include "platform/android/jni/Activity.h"
 #include "platform/android/jni/BroadcastReceiver.h"
 #include "platform/android/jni/AudioManager.h"
+#include "platform/android/jni/View.h"
 #include "threads/Event.h"
 
 #include "JNIMainActivity.h"
@@ -41,6 +42,7 @@
 class CJNIWakeLock;
 class CAESinkAUDIOTRACK;
 class CVariant;
+class IInputDeviceCallbacks;
 typedef struct _JNIEnv JNIEnv;
 
 struct androidIcon
@@ -57,7 +59,9 @@ struct androidPackage
   int icon;
 };
 
-class CXBMCApp : public IActivityHandler, public CJNIMainActivity, public CJNIBroadcastReceiver, public CJNIAudioManagerAudioFocusChangeListener
+class CXBMCApp : public IActivityHandler, public CJNIMainActivity,
+                 public CJNIBroadcastReceiver,
+                 public CJNIAudioManagerAudioFocusChangeListener
 {
 public:
   CXBMCApp(ANativeActivity *nativeActivity);
@@ -66,6 +70,11 @@ public:
   virtual void onNewIntent(CJNIIntent intent);
   virtual void onVolumeChanged(int volume);
   virtual void onAudioFocusChange(int focusChange);
+
+  // implementation of CJNIInputManagerInputDeviceListener
+  void onInputDeviceAdded(int deviceId) override;
+  void onInputDeviceChanged(int deviceId) override;
+  void onInputDeviceRemoved(int deviceId) override;
 
   bool isValid() { return m_activity != NULL; }
 
@@ -120,6 +129,12 @@ public:
   static void OnPlayBackStopped();
   static void OnPlayBackEnded();
 
+  // input device methods
+  static void RegisterInputDeviceCallbacks(IInputDeviceCallbacks* handler);
+  static void UnregisterInputDeviceCallbacks();
+  static const CJNIViewInputDevice GetInputDevice(int deviceId);
+  static std::vector<int> GetInputDeviceIds();
+
   static CXBMCApp* get() { return m_xbmcappinstance; }
 
 protected:
@@ -143,6 +158,7 @@ private:
   static int m_batteryLevel;
   static bool m_hasFocus;
   static bool m_headsetPlugged;
+  static IInputDeviceCallbacks* m_inputDeviceCallbacks;
   bool m_firstrun;
   bool m_exiting;
   pthread_t m_thread;

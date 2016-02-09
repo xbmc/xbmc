@@ -3,6 +3,7 @@ package org.xbmc.@APP_NAME_LC@;
 import android.app.NativeActivity;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.hardware.input.InputManager;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +20,7 @@ public class Main extends NativeActivity
   private static final String TAG = "@APP_NAME_LC@";
 
   private XBMCSettingsContentObserver mSettingsContentObserver;
+  private XBMCInputDeviceListener mInputDeviceListener;
   private XBMCVideoView mVideoView = null;
   private RelativeLayout mVideoLayout = null;
   private View thisView = null;
@@ -101,6 +103,11 @@ public class Main extends NativeActivity
     mSettingsContentObserver = new XBMCSettingsContentObserver(this, new Handler());
     getApplicationContext().getContentResolver().registerContentObserver(android.provider.Settings.System.CONTENT_URI, true, mSettingsContentObserver );
 
+    // register the InputDeviceListener implementation
+    mInputDeviceListener = new XBMCInputDeviceListener();
+    InputManager manager = (InputManager) getSystemService(INPUT_SERVICE);
+    manager.registerInputDeviceListener(mInputDeviceListener, new Handler());
+
     thisView = getWindow().getDecorView();
     thisView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener()
           {
@@ -176,6 +183,10 @@ public class Main extends NativeActivity
   @Override
   public void onDestroy()
   {
+    // unregister the InputDeviceListener implementation
+    InputManager manager = (InputManager) getSystemService(INPUT_SERVICE);
+    manager.unregisterInputDeviceListener(mInputDeviceListener);
+
     getApplicationContext().getContentResolver().unregisterContentObserver(mSettingsContentObserver);
     super.onDestroy();
   }
