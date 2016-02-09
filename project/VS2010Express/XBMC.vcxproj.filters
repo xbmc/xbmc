@@ -3289,6 +3289,12 @@
     <ClCompile Include="..\..\xbmc\addons\InputStream.cpp">
       <Filter>addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksInputStream.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\InputStreamAddon.cpp">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6387,6 +6393,9 @@
       <Filter>addons\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\InputStream.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksInputStream.h">
       <Filter>addons</Filter>
     </ClInclude>
   </ItemGroup>

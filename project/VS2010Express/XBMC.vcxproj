@@ -188,6 +188,7 @@
     <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAudioEngine.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonCallbacksCodec.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonCallbacksGUI.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksInputStream.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonCallbacksPVR.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonInstaller.cpp" />
@@ -283,6 +284,7 @@
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamPVRManager.cpp" />
     <ClCompile Include="..\..\xbmc\cores\FFmpeg.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\Process\ProcessInfo.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\InputStreamAddon.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\BaseRenderer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\HwDecRender\DXVAHD.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRenderer.cpp" />
@@ -923,6 +925,7 @@
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAudioDSP.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAudioEngine.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacksCodec.h" />
+    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksInputStream.h" />
     <ClInclude Include="..\..\xbmc\addons\AudioDecoder.h" />
     <ClInclude Include="..\..\xbmc\addons\ContextMenuAddon.h" />
     <ClInclude Include="..\..\xbmc\addons\ImageResource.h" />
