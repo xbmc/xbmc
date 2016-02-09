@@ -364,11 +364,8 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
     delete[] pTextures;
     delete[] Delay;
 
-    if (pMap)
-    {
-      m_vecTextures.push_back(pMap);
-      return pMap->GetTexture();
-    }
+    m_vecTextures.push_back(pMap);
+    return pMap->GetTexture();
   }
   else if (StringUtils::EndsWithNoCase(strPath, ".gif") ||
            StringUtils::EndsWithNoCase(strPath, ".apng"))
@@ -387,7 +384,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
     pMap = new CTextureMap(strTextureName, 0, 0, 0);
 
     if (file.LoadFile(strPath, buf) <= 0 ||
-       !anim.Initialize((uint8_t*)buf.get(), buf.size()) || !pMap)
+       !anim.Initialize((uint8_t*)buf.get(), buf.size()))
     {
       CLog::Log(LOGERROR, "Texture manager unable to load file: %s", CURL::GetRedacted(strPath).c_str());
       file.Close();
@@ -426,11 +423,8 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
 
     file.Close();
 
-    if (pMap)
-    {
-      m_vecTextures.push_back(pMap);
-      return pMap->GetTexture();
-    }
+    m_vecTextures.push_back(pMap);
+    return pMap->GetTexture();
   }
 
   CBaseTexture *pTexture = NULL;
