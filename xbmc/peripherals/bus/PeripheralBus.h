@@ -23,13 +23,13 @@
 #include <vector>
 
 #include "peripherals/PeripheralTypes.h"
-#include "peripherals/devices/Peripheral.h"
 #include "threads/Thread.h"
 
 class CFileItemList;
 
 namespace PERIPHERALS
 {
+  class CPeripheral;
   class CPeripherals;
 
   /*!
