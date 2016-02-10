@@ -583,8 +583,8 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
       // if we could not add any data - sleep a bit and retry
       if (loop_written == 0)
       {
-	if (!retried)
-	{
+        if (!retried)
+        {
           retried = true;
           double sleep_time = 0;
           if (m_passthrough && !m_info.m_wantsIECPassthrough)
@@ -600,12 +600,12 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
           bool playing = m_at_jni->getPlayState() == CJNIAudioTrack::PLAYSTATE_PLAYING;
           CLog::Log(LOGDEBUG, "Retried to write onto the sink - slept: %lf playing: %s", sleep_time, playing ? "yes" : "no");
           continue;
-	}
-	else
-	{
-	  CLog::Log(LOGDEBUG, "Repeatedly tried to write onto the sink - giving up");
-	  break;
-	}
+        }
+        else
+        {
+          CLog::Log(LOGDEBUG, "Repeatedly tried to write onto the sink - giving up");
+          break;
+        }
       }
       retried = false; // at least one time there was more than zero data written
       if (m_passthrough && !m_info.m_wantsIECPassthrough)
@@ -625,7 +625,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
 
       // just try again to care for fragmentation
       if (written < size)
-	out_buf = out_buf + loop_written;
+        out_buf = out_buf + loop_written;
 
       loop_written = 0;
     }
