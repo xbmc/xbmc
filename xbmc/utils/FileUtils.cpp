@@ -35,6 +35,9 @@
 #include "URL.h"
 #include "settings/Settings.h"
 #include "utils/Variant.h"
+#if defined(TARGET_DARWIN)
+  #include "platform/darwin/DarwinUtils.h"
+#endif
 
 using namespace XFILE;
 
@@ -225,4 +228,49 @@ CDateTime CFileUtils::GetModificationDate(const std::string& strFileNameAndPath,
     CLog::Log(LOGERROR, "%s unable to extract modification date for file (%s)", __FUNCTION__, strFileNameAndPath.c_str());
   }
   return dateAdded;
+}
+
+bool CFileUtils::ZebraListAccessCheck(const std::string &filePath)
+{
+  // white/black list access checks, disallow exploits
+
+  // no access to the passwords.xml file,
+  // this can expose user/pass of remote servers
+  if (filePath.find("passwords.xml") != std::string::npos)
+  {
+    CLog::Log(LOGDEBUG,"http access denied");
+    return false;
+  }
+
+  // no access to the sources.xml file,
+  // this can expose user/pass of remote servers
+  if (filePath.find("sources.xml") != std::string::npos)
+  {
+    CLog::Log(LOGDEBUG,"http access denied");
+    return false;
+  }
+
+#if defined(TARGET_DARWIN)
+  char *fullpath = realpath(filePath.c_str(), nullptr);
+  if (fullpath)
+  {
+    const std::string testpath = fullpath;
+    free(fullpath);
+
+    // if this is a real path and accesses into user home, allow.
+    std::string userHome = CDarwinUtils::GetUserHomeDirectory();
+    if (testpath.find(userHome) != std::string::npos)
+      return true;
+
+    // if this is a real path and accesses outside app, deny.
+    std::string appRoot = CDarwinUtils::GetOSAppRootFolder();
+    if (testpath.find(appRoot) == std::string::npos)
+    {
+      CLog::Log(LOGDEBUG,"http access denied");
+      return false;
+    }
+  }
+#endif
+
+  return true;
 }
