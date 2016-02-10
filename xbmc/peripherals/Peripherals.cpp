@@ -108,17 +108,12 @@ void CPeripherals::Initialise()
 #endif
     m_busses.push_back(std::make_shared<CPeripheralBusAddon>(this));
 
-    /* initialise all known busses */
-    m_busses.erase(std::remove_if(m_busses.begin(), m_busses.end(),
-      [](PeripheralBusPtr bus) {
-        if (!bus->Initialise())
-        {
-          CLog::Log(LOGERROR, "%s - failed to initialise bus %s", __FUNCTION__, PeripheralTypeTranslator::BusTypeToString(bus->Type()));
-          return true;
-        }
-
-        return false;
-      }), m_busses.end());
+    /* initialise all known busses and run an initial scan for devices */
+    for (auto& bus : m_busses)
+    {
+      bus->Initialise();
+      bus->TriggerDeviceScan();
+    }
   }
 
   m_eventScanner.Start();

@@ -221,24 +221,21 @@ void CPeripheralBus::Process(void)
   m_bIsStarted = false;
 }
 
-bool CPeripheralBus::Initialise(void)
+void CPeripheralBus::Initialise(void)
 {
   CSingleLock lock(m_critSection);
-  if (!m_bIsStarted)
+  if (m_bIsStarted)
+    return;
+
+  m_bIsStarted = true;
+
+  if (m_bNeedsPolling)
   {
-    /* do an initial scan of the bus */
-    m_bIsStarted = ScanForDevices();
-
-    if (m_bIsStarted && m_bNeedsPolling)
-    {
-      lock.Leave();
-      m_triggerEvent.Reset();
-      Create();
-      SetPriority(-1);
-    }
+    lock.Leave();
+    m_triggerEvent.Reset();
+    Create();
+    SetPriority(-1);
   }
-
-  return m_bIsStarted;
 }
 
 void CPeripheralBus::Register(CPeripheral *peripheral)

@@ -115,7 +115,7 @@ namespace PERIPHERALS
     /*!
      * @brief Initialise this bus and start a polling thread if this bus needs polling.
      */
-    virtual bool Initialise(void);
+    virtual void Initialise(void);
 
     /*!
      * @brief Stop the polling thread and clear all known devices on this bus.
