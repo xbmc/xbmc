@@ -187,6 +187,7 @@ static const ActionMapping actions[] =
     { "enter"                    , ACTION_ENTER },
     { "increaserating"           , ACTION_INCREASE_RATING },
     { "decreaserating"           , ACTION_DECREASE_RATING },
+    { "setrating"                , ACTION_SET_RATING },
     { "togglefullscreen"         , ACTION_TOGGLE_FULLSCREEN },
     { "nextscene"                , ACTION_NEXT_SCENE },
     { "previousscene"            , ACTION_PREV_SCENE },
