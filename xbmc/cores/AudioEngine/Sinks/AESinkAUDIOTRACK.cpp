@@ -475,7 +475,6 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   // head_pos does not necessarily start at the beginning
   if (m_offset == -1 && m_at_jni->getPlayState() == CJNIAudioTrack::PLAYSTATE_PLAYING)
   {
-    CLog::Log(LOGDEBUG, "Offset updated to %u", head_pos);
     m_offset = head_pos;
   }
 
@@ -491,7 +490,6 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     if (m_pause_time > 0)
     {
       const double d = GetMovingAverageDelay(GetCacheTotal());
-      CLog::Log(LOGDEBUG, "Faking Delay: smooth %lf measured: %lf", d * 1000, GetCacheTotal() * 1000);
       status.SetDelay(d);
       return;
     }
@@ -499,7 +497,6 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   if (normHead_pos > m_lastPlaybackHeadPosition)
   {
     unsigned int differencehead = normHead_pos - m_lastPlaybackHeadPosition;
-    CLog::Log(LOGDEBUG, "Sink advanced: %u", differencehead);
     m_lastPlaybackHeadPosition = normHead_pos;
   }
 
@@ -514,13 +511,6 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     delay = 0;
 
   const double d = GetMovingAverageDelay(delay);
-
-  CLog::Log(LOGDEBUG, "Calculations duration written: %lf sampleRate: %u gone: %lf", m_duration_written, m_sink_sampleRate, gone);
-
-  bool playing = m_at_jni->getPlayState() == CJNIAudioTrack::PLAYSTATE_PLAYING;
-
-  CLog::Log(LOGDEBUG, "Current-Delay: smoothed: %lf measured: %lf Head Pos: %u Playing: %s", d * 1000, delay * 1000,
-                       normHead_pos, playing ? "yes" : "no");
 
   status.SetDelay(d);
 }
@@ -545,7 +535,6 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
 
   // for debugging only - can be removed if everything is really stable
   uint64_t startTime = CurrentHostCounter();
-  CLog::Log(LOGDEBUG, "Got frames: %u", frames);
 
   uint8_t *buffer = data[0]+offset*m_format.m_frameSize;
   uint8_t *out_buf = buffer;
@@ -559,7 +548,6 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
     if (m_pause_time > 0)
     {
       usleep(m_format.m_streamInfo.GetDuration() * 1000);
-      CLog::Log(LOGDEBUG, "Sleeptime: %lf left", m_pause_time);
       m_pause_time -= m_format.m_streamInfo.GetDuration() / 1000.0;
     }
     if (m_at_jni->getPlayState() != CJNIAudioTrack::PLAYSTATE_PLAYING)
@@ -579,7 +567,6 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
         return INT_MAX;
       }
 
-      CLog::Log(LOGDEBUG, "Size left: %d", size_left);
       // if we could not add any data - sleep a bit and retry
       if (loop_written == 0)
       {
@@ -659,7 +646,6 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
     }
   }
 
-  CLog::Log(LOGDEBUG, "Time needed for add Packet: %lf ms", time_to_add_ms);
   return written_frames;
 }
 
@@ -667,8 +653,6 @@ void CAESinkAUDIOTRACK::AddPause(unsigned int millis)
 {
   if (!m_at_jni)
     return;
-
-  CLog::Log(LOGDEBUG, "AddPause was called with millis: %u and PlayState: %d", millis, m_at_jni->getPlayState());
 
   // we can cache a maximum amount of m_audiotrackbuffer_sec seconds of silence
   if (m_pause_time + millis / 1000.0 <= m_audiotrackbuffer_sec)
