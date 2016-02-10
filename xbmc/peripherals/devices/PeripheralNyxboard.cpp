@@ -25,8 +25,8 @@
 
 using namespace PERIPHERALS;
 
-CPeripheralNyxboard::CPeripheralNyxboard(const PeripheralScanResult& scanResult) :
-  CPeripheralHID(scanResult)
+CPeripheralNyxboard::CPeripheralNyxboard(const PeripheralScanResult& scanResult, CPeripheralBus* bus) :
+  CPeripheralHID(scanResult, bus)
 {
   m_features.push_back(FEATURE_NYXBOARD);
 }

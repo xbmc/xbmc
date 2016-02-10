@@ -29,8 +29,8 @@
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
-CPeripheralJoystick::CPeripheralJoystick(const PeripheralScanResult& scanResult) :
-  CPeripheral(scanResult),
+CPeripheralJoystick::CPeripheralJoystick(const PeripheralScanResult& scanResult, CPeripheralBus* bus) :
+  CPeripheral(scanResult, bus),
   m_requestedPort(JOYSTICK_PORT_UNKNOWN),
   m_buttonCount(0),
   m_hatCount(0),
@@ -55,7 +55,7 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
     {
       if (m_mappedBusType == PERIPHERAL_BUS_ADDON)
       {
-        PeripheralBusAddonPtr addonBus = std::static_pointer_cast<CPeripheralBusAddon>(g_peripherals.GetBusByType(PERIPHERAL_BUS_ADDON));
+        CPeripheralBusAddon* addonBus = dynamic_cast<CPeripheralBusAddon*>(m_bus);
         if (addonBus)
         {
           if (addonBus->InitializeProperties(this))

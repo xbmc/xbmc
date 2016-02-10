@@ -37,7 +37,7 @@ namespace PERIPHERALS
                               public JOYSTICK::IDriverHandler
   {
   public:
-    CPeripheralJoystick(const PeripheralScanResult& scanResult);
+    CPeripheralJoystick(const PeripheralScanResult& scanResult, CPeripheralBus* bus);
 
     virtual ~CPeripheralJoystick(void);
 

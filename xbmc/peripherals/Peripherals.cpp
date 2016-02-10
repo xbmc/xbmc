@@ -278,33 +278,33 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
   switch(mappedResult.m_mappedType)
   {
   case PERIPHERAL_HID:
-    peripheral = new CPeripheralHID(mappedResult);
+    peripheral = new CPeripheralHID(mappedResult, &bus);
     break;
 
   case PERIPHERAL_NIC:
-    peripheral = new CPeripheralNIC(mappedResult);
+    peripheral = new CPeripheralNIC(mappedResult, &bus);
     break;
 
   case PERIPHERAL_DISK:
-    peripheral = new CPeripheralDisk(mappedResult);
+    peripheral = new CPeripheralDisk(mappedResult, &bus);
     break;
 
   case PERIPHERAL_NYXBOARD:
-    peripheral = new CPeripheralNyxboard(mappedResult);
+    peripheral = new CPeripheralNyxboard(mappedResult, &bus);
     break;
 
   case PERIPHERAL_TUNER:
-    peripheral = new CPeripheralTuner(mappedResult);
+    peripheral = new CPeripheralTuner(mappedResult, &bus);
     break;
 
   case PERIPHERAL_BLUETOOTH:
-    peripheral = new CPeripheralBluetooth(mappedResult);
+    peripheral = new CPeripheralBluetooth(mappedResult, &bus);
     break;
 
   case PERIPHERAL_CEC:
 #if defined(HAVE_LIBCEC)
     if (bus.Type() == PERIPHERAL_BUS_CEC)
-      peripheral = new CPeripheralCecAdapter(mappedResult);
+      peripheral = new CPeripheralCecAdapter(mappedResult, &bus);
 #else
     if (!m_bMissingLibCecWarningDisplayed)
     {
@@ -316,11 +316,11 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
     break;
 
   case PERIPHERAL_IMON:
-    peripheral = new CPeripheralImon(mappedResult);
+    peripheral = new CPeripheralImon(mappedResult, &bus);
     break;
 
   case PERIPHERAL_JOYSTICK:
-    peripheral = new CPeripheralJoystick(mappedResult);
+    peripheral = new CPeripheralJoystick(mappedResult, &bus);
     break;
 
   default:

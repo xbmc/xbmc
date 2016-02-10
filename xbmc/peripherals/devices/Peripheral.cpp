@@ -27,6 +27,7 @@
 #include "settings/lib/Setting.h"
 #include "peripherals/addons/AddonButtonMapping.h"
 #include "peripherals/addons/AddonInputHandling.h"
+#include "peripherals/bus/PeripheralBus.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
@@ -43,7 +44,7 @@ struct SortBySettingsOrder
   }
 };
 
-CPeripheral::CPeripheral(const PeripheralScanResult& scanResult) :
+CPeripheral::CPeripheral(const PeripheralScanResult& scanResult, CPeripheralBus* bus) :
   m_type(scanResult.m_mappedType),
   m_busType(scanResult.m_busType),
   m_mappedBusType(scanResult.m_mappedBusType),
@@ -54,7 +55,8 @@ CPeripheral::CPeripheral(const PeripheralScanResult& scanResult) :
   m_strVersionInfo(g_localizeStrings.Get(13205)), // "unknown"
   m_bInitialised(false),
   m_bHidden(false),
-  m_bError(false)
+  m_bError(false),
+  m_bus(bus)
 {
   PeripheralTypeTranslator::FormatHexString(scanResult.m_iVendorId, m_strVendorId);
   PeripheralTypeTranslator::FormatHexString(scanResult.m_iProductId, m_strProductId);
