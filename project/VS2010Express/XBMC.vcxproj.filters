@@ -373,6 +373,15 @@
     <Filter Include="cores\VideoPlayer\VideoRenderers\VideoShaders">
       <UniqueIdentifier>{0dde0eba-c702-41fb-92a8-38cc21839a62}</UniqueIdentifier>
     </Filter>
+    <Filter Include="music\tags\test">
+      <UniqueIdentifier>{085f7e1a-1fab-41f8-a742-03239f7d1f98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\threads">
+      <UniqueIdentifier>{d22fd9e3-f07f-44fa-8482-35654aee48c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="video\test">
+      <UniqueIdentifier>{8902f553-16a5-4b95-802c-c0345ac69f15}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -3222,6 +3231,33 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxClient.cpp">
       <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\tags\test\TestTagLoaderTagLib.cpp">
+      <Filter>music\tags\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\test\TestSharedSection.cpp">
+      <Filter>test\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\test\TestThreadLocal.cpp">
+      <Filter>test\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\test\TestAtomics.cpp">
+      <Filter>test\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\test\TestEvent.cpp">
+      <Filter>test\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\test\TestNfsFile.cpp">
+      <Filter>filesystem\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\test\TestVideoInfoScanner.cpp">
+      <Filter>video\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\test\TestURL.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\test\TestHelpers.h">
+      <Filter>test\threads</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
