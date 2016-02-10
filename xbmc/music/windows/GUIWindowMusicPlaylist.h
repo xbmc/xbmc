@@ -37,7 +37,7 @@ public:
   void MoveItem(int iStart, int iDest);
 
 protected:
-  virtual void GoParentFolder() override {};
+  virtual bool GoParentFolder() override { return false; };
   virtual void UpdateButtons() override;
   virtual void OnItemLoaded(CFileItem* pItem) override;
   virtual bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;

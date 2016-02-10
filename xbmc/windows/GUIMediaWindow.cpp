@@ -213,11 +213,13 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
 bool CGUIMediaWindow::OnBack(int actionID)
 {
   CURL filterUrl(m_strFilterPath);
-  if (actionID == ACTION_NAV_BACK && !m_vecItems->IsVirtualDirectoryRoot() &&
+  if (actionID == ACTION_NAV_BACK &&
+      !m_vecItems->IsVirtualDirectoryRoot() &&
+      !URIUtils::PathEquals(m_vecItems->GetPath(), GetRootPath(), true) &&
      (!URIUtils::PathEquals(m_vecItems->GetPath(), m_startDirectory, true) || (m_canFilterAdvanced && filterUrl.HasOption("filter"))))
   {
-    GoParentFolder();
-    return true;
+    if (GoParentFolder())
+      return true;
   }
   return CGUIWindow::OnBack(actionID);
 }
@@ -502,7 +504,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       if (message.GetParam1() != WINDOW_INVALID)
       { // first time to this window - make sure we set the root path
-        m_startDirectory = returning ? dir : "";
+        m_startDirectory = returning ? dir : GetRootPath();
       }
     }
     break;
@@ -686,7 +688,7 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
   // update the view state's reference to the current items
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), items));
 
-  if (m_guiState.get() && !m_guiState->HideParentDirItems() && !items.GetPath().empty())
+  if (m_guiState.get() && !m_guiState->HideParentDirItems() && items.GetPath() != GetRootPath())
   {
     CFileItemPtr pItem(new CFileItem(".."));
     pItem->SetPath(strParentPath);
@@ -724,33 +726,37 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
   return true;
 }
 
-// \brief Set window to a specific directory
-// \param strDirectory The directory to be displayed in list/thumb control
-// This function calls OnPrepareFileItems()
 bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
 {
   // TODO: OnInitWindow calls Update() before window path has been set properly.
   if (strDirectory == "?")
     return false;
 
+  // The path to load. Empty string is used in various places to denote root, so translate to the
+  // real root path first
+  const std::string path = strDirectory.empty() ? GetRootPath() : strDirectory;
+
   // stores the selected item in history
   SaveSelectedItemInHistory();
 
-  std::string strCurrentDirectory = m_vecItems->GetPath();
-  std::string directory = strDirectory;
+  const std::string previousPath = m_vecItems->GetPath();
+
   // check if the path contains a filter and temporarily remove it
   // so that the retrieved list of items is unfiltered
-  bool canfilter = CanContainFilter(directory);
-  CURL url(directory);
-  if (canfilter && url.HasOption("filter"))
-    directory = RemoveParameterFromPath(directory, "filter");
+  std::string pathNoFilter = path;
+  if (CanContainFilter(pathNoFilter) && CURL(pathNoFilter).HasOption("filter"))
+    pathNoFilter = RemoveParameterFromPath(pathNoFilter, "filter");
 
-  if (!GetDirectory(directory, *m_vecItems))
+  if (!GetDirectory(pathNoFilter, *m_vecItems))
   {
-    CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", url.GetRedacted().c_str());
+    CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", CURL(path).GetRedacted().c_str());
+
+    if (URIUtils::PathEquals(path, GetRootPath()))
+      return false; // Nothing to fallback to
+
     // Try to return to the previous directory, if not the same
     // else fallback to root
-    if (URIUtils::PathEquals(strDirectory, strCurrentDirectory) || !Update(m_history.RemoveParentPath()))
+    if (URIUtils::PathEquals(path, previousPath) || !Update(m_history.RemoveParentPath()))
       Update(""); // Fallback to root
 
     // Return false to be able to eg. show
@@ -762,16 +768,16 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
     m_vecItems->SetLabel(CUtil::GetTitleFromPath(m_vecItems->GetPath(), true));
 
   // check the given path for filter data
-  UpdateFilterPath(strDirectory, *m_vecItems, updateFilterPath);
+  UpdateFilterPath(path, *m_vecItems, updateFilterPath);
     
   // if we're getting the root source listing
   // make sure the path history is clean
-  if (strDirectory.empty())
+  if (URIUtils::PathEquals(path, GetRootPath()))
     m_history.ClearPathHistory();
 
   int iWindow = GetID();
   int showLabel = 0;
-  if (strDirectory.empty())
+  if (URIUtils::PathEquals(path, GetRootPath()))
   {
     if (iWindow == WINDOW_PICTURES)
       showLabel = 997;
@@ -1082,27 +1088,25 @@ void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem)
 }
 
 // \brief The functon goes up one level in the directory tree
-void CGUIMediaWindow::GoParentFolder()
+bool CGUIMediaWindow::GoParentFolder()
 {
+  if (m_vecItems->IsVirtualDirectoryRoot())
+    return false;
+
+  if (URIUtils::PathEquals(m_vecItems->GetPath(), GetRootPath()))
+    return false;
+
   //m_history.DumpPathHistory();
 
-  // remove current directory if its on the stack
-  // there were some issues due some folders having a trailing slash and some not
-  // so just add a trailing slash to all of them for comparison.
-  std::string strPath = m_vecItems->GetPath();
-  URIUtils::AddSlashAtEnd(strPath);
-  std::string strParent = m_history.GetParentPath();
+  const std::string currentPath = m_vecItems->GetPath();
+  std::string parentPath = m_history.GetParentPath();
   // in case the path history is messed up and the current folder is on
   // the stack more than once, keep going until there's nothing left or they
   // dont match anymore.
-  while (!strParent.empty())
+  while (!parentPath.empty() && URIUtils::PathEquals(parentPath, currentPath, true))
   {
-    URIUtils::AddSlashAtEnd(strParent);
-    if (URIUtils::PathEquals(strParent, strPath))
-      m_history.RemoveParentPath();
-    else
-      break;
-    strParent = m_history.GetParentPath();
+    m_history.RemoveParentPath();
+    parentPath = m_history.GetParentPath();
   }
 
   // remove the current filter but only if the parent
@@ -1117,23 +1121,24 @@ void CGUIMediaWindow::GoParentFolder()
       // Refresh() will set updateFilterPath to false
       m_strFilterPath.clear();
       Refresh();
-      return;
+      return true;
     }
   }
 
-  // if vector is not empty, pop parent
-  // if vector is empty, parent is root source listing
+  // pop directory path from the stack
   m_strFilterPath = m_history.GetParentPath(true);
-  strParent = m_history.RemoveParentPath();
-  if (!Update(strParent, false))
-    return;
+  m_history.RemoveParentPath();
+
+  if (!Update(parentPath, false))
+    return false;
 
   // No items to show so go another level up
   if (!m_vecItems->GetPath().empty() && (m_filter.IsEmpty() ? m_vecItems->Size() : m_unfilteredItems->Size()) <= 0)
   {
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(2080), g_localizeStrings.Get(2081));
-    GoParentFolder();
+    return GoParentFolder();
   }
+  return true;
 }
 
 void CGUIMediaWindow::SaveSelectedItemInHistory()
