@@ -66,7 +66,7 @@ private:
   double                GetMovingAverageDelay(double newestdelay);
   // When AddPause is called the m_pause_time is increased
   // by the package duration. This is only used for non IEC passthrough
-  double          m_pause_time;
+  XbmcThreads::EndTime  m_extTimer;
 
   // We maintain our linear weighted average delay counter in here
   // The n-th value (timely oldest value) is weighted with 1/n
