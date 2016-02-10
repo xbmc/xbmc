@@ -35,6 +35,16 @@ env:
   - ADDONS=screensaver
   - ADDONS=visualization
 
+matrix:
+  fast_finish: true
+  allow_failures:
+    - env: ADDONS=adsp
+    - env: ADDONS=audiodecoder
+    - env: ADDONS=audioencoder
+    - env: ADDONS=pvr
+    - env: ADDONS=screensaver
+    - env: ADDONS=visualization
+
 # Prepare system
 #
 # Prepare the system to install prerequisites or dependencies
