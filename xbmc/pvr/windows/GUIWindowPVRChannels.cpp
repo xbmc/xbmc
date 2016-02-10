@@ -343,10 +343,14 @@ bool CGUIWindowPVRChannels::OnContextButtonStartRecord(CFileItem *item, CONTEXT_
 {
   bool bReturn = false;
 
-  if ((button == CONTEXT_BUTTON_START_RECORD) ||
-      (button == CONTEXT_BUTTON_ADD_TIMER))
+  if (button == CONTEXT_BUTTON_START_RECORD)
   {
-    AddTimer(item, button == CONTEXT_BUTTON_ADD_TIMER);
+    AddTimer(item);
+    bReturn = true;
+  }
+  else if (button == CONTEXT_BUTTON_ADD_TIMER)
+  {
+    AddTimerRule(item);
     bReturn = true;
   }
 

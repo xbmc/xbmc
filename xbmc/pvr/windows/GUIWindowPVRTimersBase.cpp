@@ -263,7 +263,7 @@ bool CGUIWindowPVRTimersBase::OnContextButtonActivate(CFileItem *item, CONTEXT_B
     else
       timer->m_state = PVR_TIMER_STATE_DISABLED;
 
-    g_PVRTimers->UpdateTimer(*item);
+    g_PVRTimers->UpdateTimer(timer);
   }
 
   return bReturn;
@@ -373,10 +373,11 @@ bool CGUIWindowPVRTimersBase::ActionShowTimer(CFileItem *item)
   }
   else
   {
-    if (ShowTimerSettings(item) && !item->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
+    const CPVRTimerInfoTagPtr tag(item->GetPVRTimerInfoTag());
+    if (ShowTimerSettings(tag) && !tag->GetTimerType()->IsReadOnly())
     {
       /* Update timer on pvr backend */
-      bReturn = g_PVRTimers->UpdateTimer(*item);
+      bReturn = g_PVRTimers->UpdateTimer(tag);
     }
   }
 
@@ -388,15 +389,12 @@ bool CGUIWindowPVRTimersBase::ShowNewTimerDialog(void)
   bool bReturn(false);
 
   CPVRTimerInfoTagPtr newTimer(new CPVRTimerInfoTag(m_bRadio));
-  CFileItem *newItem = new CFileItem(newTimer);
 
-  if (ShowTimerSettings(newItem))
+  if (ShowTimerSettings(newTimer))
   {
     /* Add timer to backend */
-    bReturn = g_PVRTimers->AddTimer(newItem->GetPVRTimerInfoTag());
+    bReturn = g_PVRTimers->AddTimer(newTimer);
   }
-
-  delete newItem;
 
   return bReturn;
 }

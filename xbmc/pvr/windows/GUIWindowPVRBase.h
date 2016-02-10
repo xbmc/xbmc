@@ -77,8 +77,9 @@ namespace PVR
     static std::string GetSelectedItemPath(bool bRadio);
     static void SetSelectedItemPath(bool bRadio, const std::string &path);
 
-    static bool ShowTimerSettings(CFileItem *item);
-    static bool AddTimer(CFileItem *item, bool bAdvanced);
+    static bool ShowTimerSettings(const CPVRTimerInfoTagPtr &timer);
+    static bool AddTimer(CFileItem *item, bool bShowTimerSettings = false);
+    static bool AddTimerRule(CFileItem *item, bool bShowTimerSettings = true);
     static bool EditTimer(CFileItem *item);
     static bool DeleteTimer(CFileItem *item);
     static bool StopRecordFile(CFileItem *item);
@@ -120,23 +121,24 @@ namespace PVR
   private:
     /*!
      * @brief Open a dialog to confirm timer delete.
-     * @param item the timer to delete.
+     * @param timer the timer to delete.
      * @param bDeleteRule in: ignored
      *                    out, for one shot timer scheduled by a timer rule: true to also delete the timer
      *                    rule that has scheduled this timer, false to only delete the one shot timer.
      *                    out, for one shot timer not scheduled by a timer rule: ignored
      * @return true, to proceed with delete, false otherwise.
      */
-    static bool ConfirmDeleteTimer(CFileItem *item, bool &bDeleteRule);
+    static bool ConfirmDeleteTimer(const CPVRTimerInfoTagPtr &timer, bool &bDeleteRule);
 
     /*!
      * @brief Open a dialog to confirm stop recording.
-     * @param item the recording to stop (actually the timer to delete).
+     * @param timer the recording to stop (actually the timer to delete).
      * @return true, to proceed with delete, false otherwise.
      */
-    static bool ConfirmStopRecording(CFileItem *item);
+    static bool ConfirmStopRecording(const CPVRTimerInfoTagPtr &timer);
 
     static bool DeleteTimer(CFileItem *item, bool bIsRecording);
+    static bool AddTimer(CFileItem *item, bool bCreateRule, bool bShowTimerSettings);
 
     CPVRChannelGroupPtr m_group;
     XbmcThreads::EndTime m_refreshTimeout;

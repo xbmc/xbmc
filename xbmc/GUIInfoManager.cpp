@@ -6214,9 +6214,9 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
           return epgTag->Timer()->IsRecording();
 
         // Search all timers for something that matches the tag
-        CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
-        if (timer && timer->HasPVRTimerInfoTag())
-          return timer->GetPVRTimerInfoTag()->IsRecording();
+        CPVRTimerInfoTagPtr timer = g_PVRTimers->GetTimerForEpgTag(epgTag);
+        if (timer)
+          return timer->IsRecording();
       }
     }
     else if (condition == LISTITEM_INPROGRESS)
@@ -6230,45 +6230,42 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     else if (condition == LISTITEM_HASTIMER)
     {
       if (pItem->HasEPGInfoTag())
-      {
-        CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
-        return (timer && timer->HasPVRTimerInfoTag());
-      }
+        return g_PVRTimers->GetTimerForEpgTag(pItem->GetEPGInfoTag()).get() != nullptr;
     }
     else if (condition == LISTITEM_HASTIMERSCHEDULE)
     {
       if (pItem->HasEPGInfoTag())
       {
-        CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
-        if (timer && timer->HasPVRTimerInfoTag())
-          return timer->GetPVRTimerInfoTag()->GetTimerRuleId() != PVR_TIMER_NO_PARENT;
+        CPVRTimerInfoTagPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem->GetEPGInfoTag());
+        if (timer)
+          return timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT;
       }
     }
     else if (condition == LISTITEM_TIMERISACTIVE)
     {
       if (pItem->HasEPGInfoTag())
       {
-        CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
-        if (timer && timer->HasPVRTimerInfoTag())
-          return timer->GetPVRTimerInfoTag()->IsActive();
+        CPVRTimerInfoTagPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem->GetEPGInfoTag());
+        if (timer)
+          return timer->IsActive();
       }
     }
     else if (condition == LISTITEM_TIMERHASCONFLICT)
     {
       if (pItem->HasEPGInfoTag())
       {
-        CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
-        if (timer && timer->HasPVRTimerInfoTag())
-          return timer->GetPVRTimerInfoTag()->HasConflict();
+        CPVRTimerInfoTagPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem->GetEPGInfoTag());
+        if (timer)
+          return timer->HasConflict();
       }
     }
     else if (condition == LISTITEM_TIMERHASERROR)
     {
       if (pItem->HasEPGInfoTag())
       {
-        CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
-        if (timer && timer->HasPVRTimerInfoTag())
-          return (timer->GetPVRTimerInfoTag()->IsBroken() && !timer->GetPVRTimerInfoTag()->HasConflict());
+        CPVRTimerInfoTagPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem->GetEPGInfoTag());
+        if (timer)
+          return (timer->IsBroken() && !timer->HasConflict());
       }
     }
     else if (condition == LISTITEM_HASRECORDING)

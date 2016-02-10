@@ -605,28 +605,21 @@ bool CPVRTimers::AddTimer(const CPVRTimerInfoTagPtr &item)
   return item->AddToClient();
 }
 
-bool CPVRTimers::DeleteTimer(const CFileItem &item, bool bForce /* = false */, bool bDeleteRule /* = false */)
+bool CPVRTimers::DeleteTimer(const CPVRTimerInfoTagPtr &tag, bool bForce /* = false */, bool bDeleteRule /* = false */)
 {
-  /* Check if a CPVRTimerInfoTag is inside file item */
-  if (!item.IsPVRTimer())
-  {
-    CLog::Log(LOGERROR, "PVRTimers - %s - no TimerInfoTag given", __FUNCTION__);
-    return false;
-  }
-
-  CPVRTimerInfoTagPtr tag = item.GetPVRTimerInfoTag();
   if (!tag)
     return false;
 
   if (bDeleteRule)
   {
     /* delete the timer rule that scheduled this timer. */
-    tag = g_PVRTimers->GetByClient(tag->m_iClientId, tag->GetTimerRuleId());
-    if (!tag)
+    CPVRTimerInfoTagPtr ruleTag = g_PVRTimers->GetByClient(tag->m_iClientId, tag->GetTimerRuleId());
+    if (!ruleTag)
     {
-      CLog::Log(LOGERROR, "PVRTimers - %s - unable to obtain parent timer for given timer", __FUNCTION__);
+      CLog::Log(LOGERROR, "PVRTimers - %s - unable to obtain timer rule for given timer", __FUNCTION__);
       return false;
     }
+    return ruleTag->DeleteFromClient(bForce);
   }
 
   return tag->DeleteFromClient(bForce);
@@ -648,20 +641,9 @@ bool CPVRTimers::RenameTimer(CFileItem &item, const std::string &strNewName)
   return tag->RenameOnClient(strNewName);
 }
 
-bool CPVRTimers::UpdateTimer(CFileItem &item)
+bool CPVRTimers::UpdateTimer(const CPVRTimerInfoTagPtr &item)
 {
-  /* Check if a CPVRTimerInfoTag is inside file item */
-  if (!item.IsPVRTimer())
-  {
-    CLog::Log(LOGERROR, "PVRTimers - %s - no TimerInfoTag given", __FUNCTION__);
-    return false;
-  }
-
-  CPVRTimerInfoTagPtr tag = item.GetPVRTimerInfoTag();
-  if (!tag)
-    return false;
-
-  return tag->UpdateOnClient();
+  return item->UpdateOnClient();
 }
 
 CPVRTimerInfoTagPtr CPVRTimers::GetByClient(int iClientId, unsigned int iClientTimerId) const
@@ -700,11 +682,10 @@ bool CPVRTimers::IsRecordingOnChannel(const CPVRChannel &channel) const
   return false;
 }
 
-CFileItemPtr CPVRTimers::GetTimerForEpgTag(const CFileItem *item) const
+CPVRTimerInfoTagPtr CPVRTimers::GetTimerForEpgTag(const CEpgInfoTagPtr &epgTag) const
 {
-  if (item && item->HasEPGInfoTag() && item->GetEPGInfoTag()->ChannelTag())
+  if (epgTag && epgTag->ChannelTag())
   {
-    const CEpgInfoTagPtr epgTag(item->GetEPGInfoTag());
     const CPVRChannelPtr channel(epgTag->ChannelTag());
     CSingleLock lock(m_critSection);
 
@@ -721,15 +702,13 @@ CFileItemPtr CPVRTimers::GetTimerForEpgTag(const CFileItem *item) const
              timer->StartAsUTC() <= epgTag->StartAsUTC() &&
              timer->EndAsUTC() >= epgTag->EndAsUTC())))
         {
-          CFileItemPtr fileItem(new CFileItem(timer));
-          return fileItem;
+          return timer;
         }
       }
     }
   }
 
-  CFileItemPtr fileItem;
-  return fileItem;
+  return CPVRTimerInfoTagPtr();
 }
 
 CFileItemPtr CPVRTimers::GetTimerRule(const CFileItem *item) const
