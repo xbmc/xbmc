@@ -74,8 +74,8 @@ typedef struct ConnectionHandler
   ConnectionHandler(const std::string& uri)
     : fullUri(uri)
     , isNew(true)
-    , postprocessor(nullptr)
     , requestHandler(nullptr)
+    , postprocessor(nullptr)
     , errorStatus(MHD_HTTP_OK)
   { }
 } ConnectionHandler;

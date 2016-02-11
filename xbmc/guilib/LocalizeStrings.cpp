@@ -72,7 +72,7 @@ static bool LoadXML(const std::string &filename, std::map<uint32_t, LocStr>& str
     }
     pChild = pChild->NextSiblingElement("string");
   }
-  CLog::Log(LOGDEBUG, "LocalizeStrings: loaded %i strings from file %s", strings.size() - originalSize, filename.c_str());
+  CLog::Log(LOGDEBUG, "LocalizeStrings: loaded %lu strings from file %s", strings.size() - originalSize, filename.c_str());
   return true;
 }
 
