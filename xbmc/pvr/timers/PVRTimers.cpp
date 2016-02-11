@@ -679,14 +679,8 @@ CPVRTimerInfoTagPtr CPVRTimers::GetTimerForEpgTag(const CEpgInfoTagPtr &epgTag) 
   return CPVRTimerInfoTagPtr();
 }
 
-CFileItemPtr CPVRTimers::GetTimerRule(const CFileItem *item) const
+CPVRTimerInfoTagPtr CPVRTimers::GetTimerRule(const CPVRTimerInfoTagPtr &timer) const
 {
-  CPVRTimerInfoTagPtr timer;
-  if (item && item->HasEPGInfoTag())
-    timer = item->GetEPGInfoTag()->Timer();
-  else if (item && item->HasPVRTimerInfoTag())
-    timer = item->GetPVRTimerInfoTag();
-
   if (timer)
   {
     unsigned int iRuleId = timer->GetTimerRuleId();
@@ -700,11 +694,25 @@ CFileItemPtr CPVRTimers::GetTimerRule(const CFileItem *item) const
         for (const auto &timersEntry : *tagsEntry.second)
         {
           if (timersEntry->m_iClientId == iClientId && timersEntry->m_iClientIndex == iRuleId)
-            return CFileItemPtr(new CFileItem(timersEntry));
+            return timersEntry;
         }
       }
     }
   }
+  return CPVRTimerInfoTagPtr();
+}
+
+CFileItemPtr CPVRTimers::GetTimerRule(const CFileItem *item) const
+{
+  CPVRTimerInfoTagPtr timer;
+  if (item && item->HasEPGInfoTag())
+    timer = item->GetEPGInfoTag()->Timer();
+  else if (item && item->HasPVRTimerInfoTag())
+    timer = item->GetPVRTimerInfoTag();
+
+  if (timer)
+    return CFileItemPtr(new CFileItem(GetTimerRule(timer)));
+
   return CFileItemPtr();
 }
 

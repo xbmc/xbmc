@@ -84,26 +84,24 @@ void CGUIWindowPVRTimersBase::GetContextButtons(int itemNumber, CContextButtons 
             buttons.Add(CONTEXT_BUTTON_ACTIVATE, 844);    /* Deactivate */
         }
 
-        if (!timerType->IsReadOnly())
+        if (timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT)
         {
-          if (timer->GetTimerRuleId() == PVR_TIMER_NO_PARENT)
-            buttons.Add(CONTEXT_BUTTON_EDIT_TIMER, 21450);  /* Edit */
-          else
-            buttons.Add(CONTEXT_BUTTON_EDIT_TIMER, 19242);  /* Edit timer */
-
-          // As epg-based timers will get it's title from the epg tag, they should not be renamable.
-          if (timer->IsManual())
-            buttons.Add(CONTEXT_BUTTON_RENAME, 118);        /* Rename */
-
-          if (timer->IsRecording())
-            buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059); /* Stop recording */
-          else
-            buttons.Add(CONTEXT_BUTTON_DELETE, 117);        /* Delete */
+          buttons.Add(CONTEXT_BUTTON_EDIT_TIMER_RULE, 19243); /* Edit timer rule */
+          buttons.Add(CONTEXT_BUTTON_DELETE_TIMER_RULE, 19295); /* Delete timer rule */
         }
-      }
 
-      if (timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT)
-        buttons.Add(CONTEXT_BUTTON_EDIT_TIMER_RULE, 19243); /* Edit timer rule */
+        if (timerType && !timerType->IsReadOnly() && timer->GetTimerRuleId() == PVR_TIMER_NO_PARENT)
+          buttons.Add(CONTEXT_BUTTON_EDIT_TIMER, 21450);  /* Edit */
+
+        // As epg-based timers will get it's title from the epg tag, they should not be renamable.
+        if (timer->IsManual() && !timerType->IsReadOnly())
+          buttons.Add(CONTEXT_BUTTON_RENAME, 118);        /* Rename */
+
+        if (timer->IsRecording())
+          buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059); /* Stop recording */
+        else if (timerType && !timerType->IsReadOnly())
+            buttons.Add(CONTEXT_BUTTON_DELETE, 117);      /* Delete */
+      }
 
       if (g_PVRClients->HasMenuHooks(timer->m_iClientId, PVR_MENUHOOK_TIMER))
         buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);    /* PVR client specific action */
@@ -141,6 +139,7 @@ bool CGUIWindowPVRTimersBase::OnContextButton(int itemNumber, CONTEXT_BUTTON but
       OnContextButtonStopRecord(pItem.get(), button) ||
       OnContextButtonEditTimer(pItem.get(), button) ||
       OnContextButtonEditTimerRule(pItem.get(), button) ||
+      OnContextButtonDeleteTimerRule(pItem.get(), button) ||
       OnContextButtonRename(pItem.get(), button) ||
       OnContextButtonInfo(pItem.get(), button) ||
       CGUIWindowPVRBase::OnContextButton(itemNumber, button);

@@ -82,6 +82,7 @@ namespace PVR
     static bool AddTimerRule(CFileItem *item, bool bShowTimerSettings = true);
     static bool EditTimer(CFileItem *item);
     static bool DeleteTimer(CFileItem *item);
+    static bool DeleteTimerRule(CFileItem *item);
     static bool StopRecordFile(CFileItem *item);
 
   protected:
@@ -108,6 +109,7 @@ namespace PVR
 
     bool OnContextButtonEditTimer(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonEditTimerRule(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonDeleteTimerRule(CFileItem *item, CONTEXT_BUTTON button);
 
     virtual void RegisterObservers(void) {};
     virtual void UnregisterObservers(void) {};
@@ -137,7 +139,7 @@ namespace PVR
      */
     static bool ConfirmStopRecording(const CPVRTimerInfoTagPtr &timer);
 
-    static bool DeleteTimer(CFileItem *item, bool bIsRecording);
+    static bool DeleteTimer(CFileItem *item, bool bIsRecording, bool bDeleteRule);
     static bool AddTimer(CFileItem *item, bool bCreateRule, bool bShowTimerSettings);
 
     CPVRChannelGroupPtr m_group;

@@ -59,7 +59,10 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
     if (timer)
     {
       if (timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT)
+      {
         buttons.Add(CONTEXT_BUTTON_EDIT_TIMER_RULE, 19243); /* Edit timer rule */
+        buttons.Add(CONTEXT_BUTTON_DELETE_TIMER_RULE, 19295); /* Delete timer rule */
+      }
 
       const CPVRTimerTypePtr timerType(timer->GetTimerType());
       if (timerType && !timerType->IsReadOnly())
@@ -111,6 +114,7 @@ bool CGUIWindowPVRSearch::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       OnContextButtonEditTimer(pItem.get(), button) ||
       OnContextButtonEditTimerRule(pItem.get(), button) ||
       OnContextButtonDeleteTimer(pItem.get(), button) ||
+      OnContextButtonDeleteTimerRule(pItem.get(), button) ||
       OnContextButtonPlay(pItem.get(), button) ||
       CGUIWindowPVRBase::OnContextButton(itemNumber, button);
 }

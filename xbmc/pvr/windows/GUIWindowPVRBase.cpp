@@ -331,6 +331,22 @@ bool CGUIWindowPVRBase::OnContextButtonEditTimerRule(CFileItem *item, CONTEXT_BU
   return bReturn;
 }
 
+bool CGUIWindowPVRBase::OnContextButtonDeleteTimerRule(CFileItem *item, CONTEXT_BUTTON button)
+{
+  bool bReturn = false;
+
+  if (button == CONTEXT_BUTTON_DELETE_TIMER_RULE)
+  {
+    CFileItemPtr parentTimer(g_PVRTimers->GetTimerRule(item));
+    if (parentTimer)
+      DeleteTimerRule(parentTimer.get());
+
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
 void CGUIWindowPVRBase::SetInvalid()
 {
   if (m_refreshTimeout.IsTimePast())
@@ -540,7 +556,7 @@ bool CGUIWindowPVRBase::AddTimer(CFileItem *item, bool bCreateRule, bool bShowTi
   }
 
   CPVRTimerInfoTagPtr timer(bCreateRule || !epgTag ? nullptr : g_PVRTimers->GetTimerForEpgTag(epgTag));
-  CFileItemPtr        rule (bCreateRule ? g_PVRTimers->GetTimerRule(item) : nullptr);
+  CPVRTimerInfoTagPtr rule (bCreateRule ? g_PVRTimers->GetTimerRule(timer) : nullptr);
   if (timer || rule)
   {
     CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19034}); // "Information", "There is already a timer set for this event"
@@ -573,7 +589,9 @@ bool CGUIWindowPVRBase::EditTimer(CFileItem *item)
   }
   else if (item->IsEPG())
   {
-    timer = g_PVRTimers->GetTimerForEpgTag(item->GetEPGInfoTag());
+    timer = item->GetEPGInfoTag()->Timer();
+    if (!timer)
+      timer = g_PVRTimers->GetTimerForEpgTag(item->GetEPGInfoTag());
   }
 
   if (!timer)
@@ -590,15 +608,20 @@ bool CGUIWindowPVRBase::EditTimer(CFileItem *item)
 
 bool CGUIWindowPVRBase::DeleteTimer(CFileItem *item)
 {
-  return DeleteTimer(item, false);
+  return DeleteTimer(item, false, false);
 }
 
 bool CGUIWindowPVRBase::StopRecordFile(CFileItem *item)
 {
-  return DeleteTimer(item, true);
+  return DeleteTimer(item, true, false);
 }
 
-bool CGUIWindowPVRBase::DeleteTimer(CFileItem *item, bool bIsRecording)
+bool CGUIWindowPVRBase::DeleteTimerRule(CFileItem *item)
+{
+  return DeleteTimer(item, false, true);
+}
+
+bool CGUIWindowPVRBase::DeleteTimer(CFileItem *item, bool bIsRecording, bool bDeleteRule)
 {
   CPVRTimerInfoTagPtr timer;
 
@@ -608,19 +631,23 @@ bool CGUIWindowPVRBase::DeleteTimer(CFileItem *item, bool bIsRecording)
   }
   else if (item->IsEPG())
   {
-    timer = g_PVRTimers->GetTimerForEpgTag(item->GetEPGInfoTag());
-  }
-  else if (item->IsPVRChannel())
-  {
-    CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
-    CEpgInfoTagPtr epgNow(channel->GetEPGNow());
-    if (epgNow)
-      timer = g_PVRTimers->GetTimerForEpgTag(epgNow);
+    timer = item->GetEPGInfoTag()->Timer();
+    if (!timer)
+      timer = g_PVRTimers->GetTimerForEpgTag(item->GetEPGInfoTag());
   }
 
   if (!timer)
   {
     CLog::Log(LOGERROR, "CGUIWindowPVRBase - %s - no timer!", __FUNCTION__);
+    return false;
+  }
+
+  if (bDeleteRule && !timer->IsRepeating())
+    timer = g_PVRTimers->GetTimerRule(timer);
+
+  if (!timer)
+  {
+    CLog::Log(LOGERROR, "CGUIWindowPVRBase - %s - no timer rule!", __FUNCTION__);
     return false;
   }
 
@@ -635,9 +662,9 @@ bool CGUIWindowPVRBase::DeleteTimer(CFileItem *item, bool bIsRecording)
   }
   else
   {
-    bool bDeleteRule(false);
-    if (ConfirmDeleteTimer(timer, bDeleteRule))
-      return g_PVRTimers->DeleteTimer(timer, false, bDeleteRule);
+    bool bAlsoDeleteRule(false);
+    if (ConfirmDeleteTimer(timer, bAlsoDeleteRule))
+      return g_PVRTimers->DeleteTimer(timer, false, bAlsoDeleteRule);
   }
   return false;
 }
@@ -819,7 +846,7 @@ bool CGUIWindowPVRBase::ActionToggleTimer(CFileItem *item)
 
   CPVRTimerInfoTagPtr timer(item->GetEPGInfoTag()->Timer());
   if (timer)
-    return DeleteTimer(item, timer->IsRecording());
+    return DeleteTimer(item, timer->IsRecording(), false);
   else
     return AddTimer(item, false, false);
 }

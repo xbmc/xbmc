@@ -175,6 +175,13 @@ namespace PVR
     /*!
      * Get the timer rule for a given timer tag
      * @param timer The timer to query the timer rule for
+     * @return The timer rule, or null if none was found.
+     */
+    CPVRTimerInfoTagPtr GetTimerRule(const CPVRTimerInfoTagPtr &timer) const;
+
+    /*!
+     * Get the timer rule for a given timer tag
+     * @param item The timer to query the timer rule for
      * @return The timer rule, or an empty fileitemptr if none was found.
      */
     CFileItemPtr GetTimerRule(const CFileItem *item) const;

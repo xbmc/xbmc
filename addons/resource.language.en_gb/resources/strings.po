@@ -9667,6 +9667,8 @@ msgstr ""
 
 #. Label for context menu entry to open settings dialog for a timer rule
 #: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
+#: xbmc/pvr/windows/GUIWindowPVRTimersBase.cpp
 msgctxt "#19243"
 msgid "Edit timer rule"
 msgstr ""
@@ -9936,7 +9938,15 @@ msgctxt "#19294"
 msgid "Delete this recording permanently?"
 msgstr ""
 
-#empty strings from id 19295 to 19498
+#. Label for context menu entry to delete a timer rule
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
+#: xbmc/pvr/windows/GUIWindowPVRTimersBase.cpp
+msgctxt "#19295"
+msgid "Delete timer rule"
+msgstr ""
+
+#empty strings from id 19296 to 19498
 
 #: xbmc/epg/Epg.cpp
 msgctxt "#19499"
