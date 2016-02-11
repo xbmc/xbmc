@@ -95,6 +95,16 @@ CGUIDialogPVRTimerSettings::~CGUIDialogPVRTimerSettings()
 {
 }
 
+bool CGUIDialogPVRTimerSettings::CanBeActivated() const
+{
+  if (!m_timerInfoTag)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::CanBeActivated - no timer info tag");
+    return false;
+  }
+  return true;
+}
+
 void CGUIDialogPVRTimerSettings::SetTimer(CFileItem *item)
 {
   if (item == NULL)
