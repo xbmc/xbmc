@@ -938,7 +938,7 @@ void CTagLoaderTagLib::AddArtistRole(CMusicInfoTag &tag, const std::vector<std::
   if (values.size() % 2 != 0) // Must contain an even number of entries 
     return;
 
-  for (int i = 0; i < values.size() - 1; i += 2)
+  for (unsigned int i = 0; i < values.size() - 1; i += 2)
     tag.AddArtistRole(values[i], StringUtils::Split(values[i + 1], ","));
 }
 
@@ -949,7 +949,7 @@ void CTagLoaderTagLib::AddArtistInstrument(CMusicInfoTag &tag, const std::vector
   // If there is not a pair of brackets then role is "performer" by default, and the whole entry is 
   // taken as artist name.
   
-  for (int i = 0; i < values.size(); ++i)
+  for (unsigned int i = 0; i < values.size(); ++i)
   {
     std::string strRole = "Performer";
     std::string strArtist = values[i];
