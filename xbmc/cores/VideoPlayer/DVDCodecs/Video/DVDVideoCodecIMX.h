@@ -128,7 +128,7 @@ public:
                  uint8_t fieldFmt = 0, CRect *dest = NULL);
 
   // Shows a page vsynced
-  bool ShowPage(int page);
+  bool ShowPage(int page, bool shift = false);
 
   // Returns the visible page
   int  GetCurrentPage() const { return m_fbCurrentPage; }

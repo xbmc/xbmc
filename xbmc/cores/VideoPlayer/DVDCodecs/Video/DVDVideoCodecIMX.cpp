@@ -26,6 +26,7 @@
 #include "utils/log.h"
 #include "DVDClock.h"
 #include "windowing/WindowingFactory.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 
 #include <cassert>
 #include <sys/stat.h>
@@ -1586,7 +1587,7 @@ bool CIMXContext::PushCaptureTask(CIMXBuffer *source, CRect *dest)
   return PushTask(ipu);
 }
 
-bool CIMXContext::ShowPage(int page)
+bool CIMXContext::ShowPage(int page, bool shift)
 {
   if (!m_fbHandle) return false;
   if (page < 0 || page >= m_fbPages) return false;
@@ -1599,7 +1600,7 @@ bool CIMXContext::ShowPage(int page)
 
   m_fbVar.activate = FB_ACTIVATE_VBL;
 
-  m_fbVar.yoffset = (m_fbVar.yres+1)*page;
+  m_fbVar.yoffset = (m_fbVar.yres + 1) * page + !shift;
   if (ioctl(m_fbHandle, FBIOPAN_DISPLAY, &m_fbVar) < 0)
   {
     CLog::Log(LOGWARNING, "Panning failed: %s\n", strerror(errno));
@@ -2096,6 +2097,18 @@ void CIMXContext::StopThread(bool bWait /*= true*/)
     CThread::StopThread(true);
 }
 
+#define MASK1 (IPU_DEINTERLACE_RATE_FRAME1 | RENDER_FLAG_TOP)
+#define MASK2 (IPU_DEINTERLACE_RATE_FRAME1 | RENDER_FLAG_BOT)
+#define VAL1  MASK1
+#define VAL2  RENDER_FLAG_BOT
+
+inline
+bool checkIPUStrideOffset(struct ipu_deinterlace *d)
+{
+  return ((d->field_fmt & MASK1) == VAL1) ||
+         ((d->field_fmt & MASK2) == VAL2);
+}
+
 void CIMXContext::Process()
 {
   bool ret;
@@ -2124,6 +2137,7 @@ void CIMXContext::Process()
       break;
 
     ret = DoTask(*task, (1-m_fbCurrentPage) & m_vsync);
+    bool shift = checkIPUStrideOffset(&task->task.input.deinterlace);
 
     // Free resources
     task->Done();
@@ -2137,7 +2151,7 @@ void CIMXContext::Process()
 
     // Show back buffer
     if (task->task.output.width && ret)
-      ShowPage(1-m_fbCurrentPage);
+      ShowPage(1-m_fbCurrentPage, shift);
   }
 
   // Mark all pending jobs as done
