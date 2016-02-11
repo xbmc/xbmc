@@ -51,25 +51,35 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 
 #define DEFAULT_INFO_STRING_VALUE "unknown"
 
-CPVRClient::CPVRClient(const AddonProps& props) :
-    CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>(props),
+std::unique_ptr<CPVRClient> CPVRClient::FromExtension(AddonProps props, const cp_extension_t* ext)
+{
+  std::string strAvahiType = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@avahi_type");
+  std::string strAvahiIpSetting = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@avahi_ip_setting");
+  std::string strAvahiPortSetting = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@avahi_port_setting");
+  bool bNeedsConfiguration = !(CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@needs_configuration") == "false");
+  return std::unique_ptr<CPVRClient>(new CPVRClient(std::move(props), strAvahiType,
+      strAvahiIpSetting, strAvahiPortSetting, bNeedsConfiguration));
+}
+
+CPVRClient::CPVRClient(AddonProps props)
+  : CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>(std::move(props)),
     m_apiVersion("0.0.0"),
     m_bAvahiServiceAdded(false)
 {
   ResetProperties();
 }
 
-CPVRClient::CPVRClient(const cp_extension_t *ext) :
-    CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>(ext),
+CPVRClient::CPVRClient(AddonProps props, const std::string& strAvahiType, const std::string& strAvahiIpSetting,
+    const std::string& strAvahiPortSetting, bool bNeedsConfiguration)
+  : CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>(std::move(props)),
+    m_strAvahiType(strAvahiType),
+    m_strAvahiIpSetting(strAvahiIpSetting),
+    m_strAvahiPortSetting(strAvahiPortSetting),
+    m_bNeedsConfiguration(bNeedsConfiguration),
     m_apiVersion("0.0.0"),
     m_bAvahiServiceAdded(false)
 {
   ResetProperties();
-
-  m_strAvahiType = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@avahi_type");
-  m_strAvahiIpSetting = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@avahi_ip_setting");
-  m_strAvahiPortSetting = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@avahi_port_setting");
-  m_bNeedsConfiguration = !(CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@needs_configuration") == "false");
 }
 
 CPVRClient::~CPVRClient(void)

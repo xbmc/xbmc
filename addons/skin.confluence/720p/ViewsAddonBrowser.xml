@@ -129,7 +129,7 @@
 					<top>0</top>
 					<width>510</width>
 					<height>15</height>
-					<label>$INFO[ListItem.Property(Addon.Name)]</label>
+					<label>$INFO[ListItem.AddonName]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font13_title</font>
@@ -168,7 +168,7 @@
 						<top>0</top>
 						<width>350</width>
 						<height>25</height>
-						<label fallback="416">$INFO[ListItem.Property(Addon.Creator)]</label>
+						<label fallback="416">$INFO[ListItem.AddonCreator]</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<font>font13</font>
@@ -193,7 +193,7 @@
 						<top>30</top>
 						<width>350</width>
 						<height>25</height>
-						<label fallback="416">$INFO[ListItem.Property(Addon.Version)]</label>
+						<label fallback="416">$INFO[ListItem.AddonVersion]</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<font>font13</font>
@@ -215,7 +215,7 @@
 						<font>font13</font>
 						<align>left</align>
 						<textcolor>white</textcolor>
-						<label>$INFO[ListItem.Property(Addon.Description)]</label>
+						<label>$INFO[ListItem.AddonDescription]</label>
 						<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 					</control>
 				</control>
@@ -262,7 +262,7 @@
 						<colordiffuse>ff333333</colordiffuse>
 						<texture background="true">$INFO[Listitem.Icon]</texture>
 						<aspectratio>keep</aspectratio>
-						<visible>!IsEmpty(ListItem.Property(Addon.broken))</visible>
+						<visible>!IsEmpty(ListItem.AddonBroken)</visible>
 					</control>
 					<control type="label">
 						<left>0</left>
@@ -277,7 +277,7 @@
 						<aligny>center</aligny>
 						<animation effect="rotate" start="0" end="45" center="auto" time="0" condition="true">Conditional</animation>
 						<label>24098</label>
-						<visible>!IsEmpty(ListItem.Property(Addon.broken))</visible>
+						<visible>!IsEmpty(ListItem.AddonBroken)</visible>
 					</control>
 					<control type="label">
 						<left>1</left>
@@ -315,7 +315,7 @@
 						<colordiffuse>ff333333</colordiffuse>
 						<texture background="true">$INFO[Listitem.Icon]</texture>
 						<aspectratio>keep</aspectratio>
-						<visible>!IsEmpty(ListItem.Property(Addon.broken))</visible>
+						<visible>!IsEmpty(ListItem.AddonBroken)</visible>
 					</control>
 					<control type="label">
 						<left>0</left>
@@ -330,7 +330,7 @@
 						<aligny>center</aligny>
 						<animation effect="rotate" start="0" end="45" center="auto" time="0" condition="true">Conditional</animation>
 						<label>24098</label>
-						<visible>!IsEmpty(ListItem.Property(Addon.broken))</visible>
+						<visible>!IsEmpty(ListItem.AddonBroken)</visible>
 					</control>
 					<control type="label">
 						<left>1</left>
@@ -372,7 +372,7 @@
 					<top>0</top>
 					<width>290</width>
 					<height>15</height>
-					<label>$INFO[ListItem.Property(Addon.Name)]</label>
+					<label>$INFO[ListItem.AddonName]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font13_title</font>
@@ -400,7 +400,7 @@
 						<top>0</top>
 						<width>155</width>
 						<height>25</height>
-						<label fallback="416">$INFO[ListItem.Property(Addon.Creator)]</label>
+						<label fallback="416">$INFO[ListItem.AddonCreator]</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<font>font13</font>
@@ -425,7 +425,7 @@
 						<top>30</top>
 						<width>155</width>
 						<height>25</height>
-						<label fallback="416">$INFO[ListItem.Property(Addon.Version)]</label>
+						<label fallback="416">$INFO[ListItem.AddonVersion]</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<font>font13</font>
@@ -447,7 +447,7 @@
 						<font>font13</font>
 						<align>left</align>
 						<textcolor>white</textcolor>
-						<label>$INFO[ListItem.Property(Addon.Description)]</label>
+						<label>$INFO[ListItem.AddonDescription]</label>
 						<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 					</control>
 				</control>

@@ -81,12 +81,12 @@ private:
 class CScraper : public CAddon
 {
 public:
-  CScraper(const AddonProps &props) :
-    CAddon(props), m_fLoaded(false), m_requiressettings(false),
-    m_pathContent(CONTENT_NONE) {}
 
-  CScraper(const cp_extension_t *ext);
-  virtual ~CScraper() {}
+  static std::unique_ptr<CScraper> FromExtension(AddonProps props, const cp_extension_t* ext);
+
+  explicit CScraper(AddonProps props);
+  CScraper(AddonProps props, const std::string& language, bool requiressettings, const CDateTimeSpan& persistence);
+
   virtual AddonPtr Clone() const;
 
   /*! \brief Set the scraper settings for a particular path from an XML string

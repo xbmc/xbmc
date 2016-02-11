@@ -642,6 +642,18 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
             CURL::GetRedacted(strDirectory).c_str());
   CLog::Log(LOGDEBUG,"  ParentPath = [%s]", CURL::GetRedacted(strParentPath).c_str());
 
+  if (pathToUrl.IsProtocol("plugin"))
+  {
+    //Record usage
+    auto& addonId = pathToUrl.GetHostName();
+    auto time = CDateTime::GetCurrentDateTime();
+    CJobManager::GetInstance().Submit([addonId, time](){
+      CAddonDatabase db;
+      if (db.Open())
+        db.SetLastUsed(addonId, time);
+    });
+  }
+
   // see if we can load a previously cached folder
   CFileItemList cachedItems(strDirectory);
   if (!strDirectory.empty() && cachedItems.Load(GetID()))
@@ -895,7 +907,17 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     if (CAddonMgr::GetInstance().GetAddon(url.GetHostName(), addon, ADDON_SCRIPT))
     {
       if (!CScriptInvocationManager::GetInstance().Stop(addon->LibPath()))
+      {
+        auto time = CDateTime::GetCurrentDateTime();
+
         CScriptInvocationManager::GetInstance().ExecuteAsync(addon->LibPath(), addon);
+
+        CJobManager::GetInstance().Submit([addon, time](){
+          CAddonDatabase db;
+          if (db.Open())
+            db.SetLastUsed(addon->ID(), time);
+        });
+      }
       return true;
     }
   }

@@ -1,4 +1,5 @@
 SRCS=Addon.cpp \
+     AddonBuilder.cpp \
      AddonCallbacks.cpp \
      AddonCallbacksAddon.cpp \
      AddonCallbacksAudioDSP.cpp \

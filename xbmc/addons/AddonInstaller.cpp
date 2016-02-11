@@ -515,7 +515,7 @@ bool CAddonInstallJob::DoWork()
   }
 
   std::string installFrom;
-  if (!m_repo || m_repo->Props().libname.empty())
+  if (!m_repo || m_repo->LibPath().empty())
   {
     // Addons are installed by downloading the .zip package on the server to the local
     // packages folder, then extracting from the local .zip package into the addons folder
@@ -625,6 +625,17 @@ bool CAddonInstallJob::DoWork()
 
   //Enable it if it was previously disabled
   CAddonMgr::GetInstance().EnableAddon(m_addon->ID());
+
+  if (m_update)
+  {
+    auto& addon = m_addon;
+    auto time = CDateTime::GetCurrentDateTime();
+    CJobManager::GetInstance().Submit([addon, time](){
+      CAddonDatabase db;
+      if (db.Open())
+        db.SetLastUpdated(addon->ID(), time);
+    });
+  }
 
   CEventLog::GetInstance().Add(
     EventPtr(new CAddonManagementEvent(m_addon, m_update ? 24065 : 24064)),
@@ -865,7 +876,7 @@ bool CAddonUnInstallJob::DoWork()
   //TODO: looks broken. it just calls the repo with the most recent version, not the owner
   RepositoryPtr repoPtr;
   CAddonInstaller::GetRepoForAddon(m_addon->ID(), repoPtr);
-  if (repoPtr != NULL && !repoPtr->Props().libname.empty())
+  if (repoPtr != NULL && !repoPtr->LibPath().empty())
   {
     CFileItemList dummy;
     std::string s = StringUtils::Format("plugin://%s/?action=uninstall&package=%s", repoPtr->ID().c_str(), m_addon->ID().c_str());

@@ -25,6 +25,7 @@
 #include "addons/Addon.h"
 #include "dbwrappers/Database.h"
 #include "FileItem.h"
+#include "AddonBuilder.h"
 
 class CAddonDatabase : public CDatabase
 {
@@ -72,7 +73,6 @@ public:
   std::pair<CDateTime, ADDON::AddonVersion> LastChecked(const std::string& id);
 
   bool Search(const std::string& search, ADDON::VECADDONS& items);
-  static void SetPropertiesFromAddon(const ADDON::AddonPtr& addon, CFileItemPtr& item); 
 
   /*! \brief Disable an addon.
    Sets a flag that this addon has been disabled.  If disabled, it is usually still available on disk.
@@ -146,12 +146,20 @@ public:
   /*! Clear internal fields that shouldn't be kept around indefinitely */
   void OnPostUnInstall(const std::string& addonId);
 
+  void SyncInstalled(const std::set<std::string>& ids);
+
+  void GetInstalled(std::vector<ADDON::CAddonBuilder>& addons);
+
+  bool SetLastUpdated(const std::string& addonId, const CDateTime& dateTime);
+  bool SetLastUsed(const std::string& addonId, const CDateTime& dateTime);
+
+
 protected:
   virtual void CreateTables();
   virtual void CreateAnalytics();
   virtual void UpdateTables(int version);
   virtual int GetMinSchemaVersion() const { return 15; }
-  virtual int GetSchemaVersion() const { return 20; }
+  virtual int GetSchemaVersion() const { return 21; }
   const char *GetBaseDBName() const { return "Addons"; }
 
   bool GetAddon(int id, ADDON::AddonPtr& addon);

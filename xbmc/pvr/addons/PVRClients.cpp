@@ -1302,13 +1302,13 @@ bool CPVRClients::AutoconfigureClients(void)
   bool bReturn(false);
   std::vector<PVR_CLIENT> autoConfigAddons;
   PVR_CLIENT addon;
-  VECADDONS map;
-  CAddonMgr::GetInstance().GetInstalledAddons(map, ADDON_PVRDLL);
 
-  /** get the auto-configurable add-ons */
-  for (VECADDONS::iterator it = map.begin(); it != map.end(); ++it)
   {
-    if (CAddonMgr::GetInstance().IsAddonDisabled((*it)->ID()))
+    VECADDONS map;
+    CAddonMgr::GetInstance().GetDisabledAddons(map, ADDON_PVRDLL);
+
+    /** get the auto-configurable add-ons */
+    for (VECADDONS::iterator it = map.begin(); it != map.end(); ++it)
     {
       addon = std::dynamic_pointer_cast<CPVRClient>(*it);
       if (addon->CanAutoconfigure())

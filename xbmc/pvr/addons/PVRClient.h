@@ -59,8 +59,12 @@ namespace PVR
   class CPVRClient : public ADDON::CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>
   {
   public:
-    CPVRClient(const ADDON::AddonProps& props);
-    CPVRClient(const cp_extension_t *ext);
+    static std::unique_ptr<CPVRClient> FromExtension(ADDON::AddonProps props, const cp_extension_t* ext);
+
+    explicit CPVRClient(ADDON::AddonProps props);
+    CPVRClient(ADDON::AddonProps props, const std::string& strAvahiType,
+        const std::string& strAvahiIpSetting, const std::string& strAvahiPortSetting, bool bNeedsConfiguration);
+
     ~CPVRClient(void);
 
     virtual void OnDisabled();

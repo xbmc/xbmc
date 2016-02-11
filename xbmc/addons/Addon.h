@@ -50,9 +50,12 @@ void OnPostInstall(const AddonPtr& addon, bool update, bool modal);
 void OnPreUnInstall(const AddonPtr& addon);
 void OnPostUnInstall(const AddonPtr& addon);
 
+
 class AddonProps : public ISerializable
 {
 public:
+  AddonProps() : type(ADDON_UNKNOWN), version("0.0.0"), minversion("0.0.0") {};
+
   AddonProps(const std::string &id, TYPE type, const std::string &versionstr, const std::string &minversionstr)
     : id(id)
     , type(type)
@@ -61,11 +64,6 @@ public:
     , stars(0)
   {
   }
-
-  virtual ~AddonProps() {}
-
-  AddonProps(const cp_extension_t *ext);
-  AddonProps(const cp_plugin_info_t *plugin);
 
   bool operator==(const AddonProps &rhs)
   { 
@@ -84,20 +82,22 @@ public:
   std::string license;
   std::string summary;
   std::string description;
-  std::string path;
   std::string libname;
   std::string author;
   std::string source;
-  std::string icon;
+  //TODO: fix parts relying on mutating these
+  mutable std::string path;
+  mutable std::string icon;
+  mutable std::string changelog;
+  mutable std::string fanart;
   std::string disclaimer;
-  std::string changelog;
-  std::string fanart;
   ADDONDEPS dependencies;
   std::string broken;
   InfoMap    extrainfo;
   int        stars;
-private:
-  void BuildDependencies(const cp_plugin_info_t *plugin);
+  CDateTime installDate;
+  CDateTime lastUpdated;
+  CDateTime lastUsed;
 };
 
 typedef std::vector<class AddonProps> VECADDONPROPS;
@@ -105,9 +105,7 @@ typedef std::vector<class AddonProps> VECADDONPROPS;
 class CAddon : public IAddon
 {
 public:
-  CAddon(const AddonProps &addonprops);
-  CAddon(const cp_extension_t *ext);
-  CAddon(const cp_plugin_info_t *plugin);
+  explicit CAddon(AddonProps props);
   virtual ~CAddon() {}
   virtual AddonPtr Clone() const;
 
@@ -149,8 +147,7 @@ public:
   TYPE Type() const { return m_props.type; }
   virtual TYPE FullType() const { return Type(); }
   bool IsType(TYPE type) const { return type == m_props.type; }
-  AddonProps Props() const { return m_props; }
-  AddonProps& Props() { return m_props; }
+  const AddonProps& Props() { return m_props; }
   const std::string ID() const { return m_props.id; }
   const std::string Name() const { return m_props.name; }
   virtual bool IsInUse() const { return false; };
@@ -164,11 +161,16 @@ public:
   const std::string Author() const { return m_props.author; }
   const std::string ChangeLog() const { return m_props.changelog; }
   const std::string FanArt() const { return m_props.fanart; }
-  const std::string Icon() const;
+  const std::string Icon() const { return m_props.icon; };
   int Stars() const { return m_props.stars; }
   const std::string Disclaimer() const { return m_props.disclaimer; }
+  const std::string Broken() const { return m_props.broken; }
+  CDateTime InstallDate() const override { return m_props.installDate; }
+  CDateTime LastUpdated() const override { return m_props.lastUpdated; }
+  CDateTime LastUsed() const override { return m_props.lastUsed; }
   const InfoMap &ExtraInfo() const { return m_props.extrainfo; }
   const ADDONDEPS &GetDeps() const { return m_props.dependencies; }
+
 
   /*! \brief get the required version of a dependency.
    \param dependencyID the addon ID of the dependency.
@@ -202,11 +204,13 @@ public:
   virtual void OnPreUnInstall() {};
   virtual void OnPostUnInstall() {};
   virtual bool CanInstall() { return true; }
+
 protected:
   friend class CAddonCallbacksAddon;
 
   CAddon(const CAddon &rhs); // protected as all copying is handled by Clone()
-  virtual void BuildLibName(const cp_extension_t *ext = NULL);
+
+  void BuildLibName();
 
   /*! \brief Load the default settings and override these with any previously configured user settings
    \param bForce force the load of settings even if they are already loaded (reload)
@@ -240,14 +244,13 @@ protected:
    */
   virtual void SettingsToXML(CXBMCTinyXML &doc) const;
 
+  const AddonProps m_props;
   CXBMCTinyXML      m_addonXmlDoc;
-  std::string       m_strLibName;
   bool              m_settingsLoaded;
   bool              m_userSettingsLoaded;
 
 private:
   friend class CAddonMgr;
-  AddonProps m_props;
   std::string        m_userSettingsPath;
   void BuildProfilePath();
 
@@ -261,8 +264,7 @@ private:
 class CAddonLibrary : public CAddon
 {
 public:
-  CAddonLibrary(const AddonProps &props);
-  CAddonLibrary(const cp_extension_t *ext);
+  explicit CAddonLibrary(AddonProps props);
 
   virtual AddonPtr Clone() const;
 

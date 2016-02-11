@@ -5006,7 +5006,17 @@ msgctxt "#12011"
 msgid "Return to videos window"
 msgstr ""
 
-#empty strings from id 12012 to 12020
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
+msgctxt "#12012"
+msgid "Last used"
+msgstr ""
+
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
+msgctxt "#12013"
+msgid "Install date"
+msgstr ""
+
+#empty strings from id 12014 to 12020
 
 #. Label of various controls for starting playback from the beginning
 #: xbmc/Autorun.cpp

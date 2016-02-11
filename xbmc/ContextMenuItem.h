@@ -20,7 +20,6 @@
  */
 
 #include <map>
-#include "addons/ContextMenuAddon.h"
 #include "addons/IAddon.h"
 #include "dialogs/GUIDialogContextMenu.h"
 
