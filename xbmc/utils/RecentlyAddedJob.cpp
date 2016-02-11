@@ -214,7 +214,7 @@ bool CRecentlyAddedJob::UpdateMusic()
     for (; i < musicItems.Size(); ++i)
     {
       auto item = musicItems.Get(i);
-      std::string   value = StringUtils::Format("%i", i + 1);
+      std::string   value = StringUtils::Format("%d", i + 1);
       
       std::string   strRating;
       std::string   strAlbum  = item->GetMusicInfoTag()->GetAlbum();
@@ -262,11 +262,12 @@ bool CRecentlyAddedJob::UpdateMusic()
   VECALBUMS albums;
   
   if (musicdatabase.GetRecentlyAddedAlbums(albums, NUM_ITEMS))
-  { 
-    for (; i < albums.size(); ++i)
+  {
+    size_t j = 0;
+    for (; j < albums.size(); ++j)
     {
-      auto& album=albums[i];
-      std::string value = StringUtils::Format("%i", i + 1);
+      auto& album=albums[j];
+      std::string value = StringUtils::Format("%lu", j + 1);
       std::string strThumb = musicdatabase.GetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb");
       std::string strFanart = musicdatabase.GetArtistArtForItem(album.idAlbum, MediaTypeAlbum, "fanart");
       std::string strDBpath = StringUtils::Format("musicdb://albums/%li/", album.idAlbum);
@@ -279,6 +280,7 @@ bool CRecentlyAddedJob::UpdateMusic()
       home->SetProperty("LatestAlbum." + value + ".Thumb"   , strThumb);
       home->SetProperty("LatestAlbum." + value + ".Fanart"  , strFanart);
     }
+    i = j;
   }
   for (; i < NUM_ITEMS; ++i)
   {

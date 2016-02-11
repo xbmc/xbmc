@@ -1275,8 +1275,8 @@ bool CGUIWindowVideoNav::ApplyWatchedFilter(CFileItemList &items)
     if (filterWatched)
     {
       if(!item->IsParentFolder() && // Don't delete the go to parent folder
-        (watchMode==WatchedModeWatched   && item->GetVideoInfoTag()->m_playCount == 0
-      || watchMode==WatchedModeUnwatched && item->GetVideoInfoTag()->m_playCount > 0))
+         ((watchMode == WatchedModeWatched   && item->GetVideoInfoTag()->m_playCount == 0) ||
+          (watchMode == WatchedModeUnwatched && item->GetVideoInfoTag()->m_playCount > 0)))
       {
         items.Remove(i);
         i--;
