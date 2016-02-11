@@ -138,6 +138,8 @@
 	</variable>
 	<variable name="PVRTimerLabel">
 	  <value condition="ListItem.IsRecording">$LOCALIZE[19043]</value>
+	  <value condition="ListItem.HasTimer + [ListItem.TimerHasError | ListItem.TimerHasConflict]">$LOCALIZE[31510]</value>
+	  <value condition="ListItem.HasRecording">$LOCALIZE[31512]</value> 
 	  <value condition="ListItem.HasTimer + !ListItem.TimerIsActive">$LOCALIZE[19057]</value>
 	  <value condition="ListItem.HasTimer">$LOCALIZE[31510]</value>
 	</variable>

@@ -623,7 +623,11 @@ msgctxt "#31511"
 msgid "Channel options"
 msgstr ""
 
-#empty strings from id 31512 to 31900
+msgctxt "#31512"
+msgid "Recording present"
+msgstr ""
+
+#empty strings from id 31513 to 31900
 #Weather plugin
 
 msgctxt "#31901"
