@@ -117,7 +117,7 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label]</label>
-						<visible>IsEmpty($VAR[PVRTimerIcon])</visible>
+						<visible>![ListItem.HasTimer | ListItem.HasRecording | ListItem.IsRecording]</visible>
 					</control>
 					<control type="label">
 						<left>150</left>
@@ -130,7 +130,7 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label]</label>
-						<visible>!IsEmpty($VAR[PVRTimerIcon])</visible>
+						<visible>ListItem.HasTimer | ListItem.HasRecording | ListItem.IsRecording</visible>
 					</control>
 				</itemlayout>
 				<focusedlayout height="35" width="410">
@@ -182,7 +182,7 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label]</label>
-						<visible>IsEmpty($VAR[PVRTimerIcon])</visible>
+						<visible>![ListItem.HasTimer | ListItem.HasRecording | ListItem.IsRecording]</visible>
 					</control>
 					<control type="label">
 						<left>150</left>
@@ -195,7 +195,7 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label]</label>
-						<visible>!IsEmpty($VAR[PVRTimerIcon])</visible>
+						<visible>ListItem.HasTimer | ListItem.HasRecording | ListItem.IsRecording</visible>
 					</control>
 				</focusedlayout>
 			</control>
