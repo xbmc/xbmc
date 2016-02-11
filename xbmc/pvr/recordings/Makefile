@@ -1,5 +1,6 @@
 SRCS=PVRRecording.cpp \
-     PVRRecordings.cpp
+     PVRRecordings.cpp \
+     PVRRecordingsPath.cpp
 
 LIB=pvrrecordings.a
 

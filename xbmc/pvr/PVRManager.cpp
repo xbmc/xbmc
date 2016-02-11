@@ -50,6 +50,7 @@
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRGUIInfo.h"
 #include "pvr/recordings/PVRRecordings.h"
+#include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/windows/GUIWindowPVRBase.h"
 #include "settings/lib/Setting.h"
@@ -823,7 +824,7 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
       if (videoDatabase.Open())
       {
         videoDatabase.EraseVideoSettings("pvr://channels/");
-        videoDatabase.EraseVideoSettings("pvr://recordings/");
+        videoDatabase.EraseVideoSettings(CPVRRecordingsPath::PATH_RECORDINGS);
         videoDatabase.Close();
       }
 

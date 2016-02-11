@@ -39,10 +39,6 @@
 #include "addons/include/xbmc_pvr_types.h"
 #include "video/VideoInfoTag.h"
 
-#define PVR_RECORDING_BASE_PATH     "recordings"
-#define PVR_RECORDING_DELETED_PATH  "deleted"
-#define PVR_RECORDING_ACTIVE_PATH   "active"
-
 class CVideoDatabase;
 class CVariant;
 
