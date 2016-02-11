@@ -376,10 +376,10 @@ void CVideoPlayerAudio::Process()
       DemuxPacket* pPacket = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
       bool bPacketDrop  = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
 
-      int len = m_pAudioCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
-      if (len < 0)
+      int consumed = m_pAudioCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
+      if (consumed < 0)
       {
-        CLog::Log(LOGERROR, "CVideoPlayerAudio::DecodeFrame - Decode Error. Skipping audio packet (%d)", len);
+        CLog::Log(LOGERROR, "CVideoPlayerAudio::DecodeFrame - Decode Error. Skipping audio packet (%d)", consumed);
         m_pAudioCodec->Reset();
         pMsg->Release();
         continue;
@@ -395,7 +395,20 @@ void CVideoPlayerAudio::Process()
         m_pAudioCodec->GetData(audioframe);
 
         if (audioframe.nb_frames == 0)
-          break;
+        {
+          if (consumed >= pPacket->iSize)
+            break;
+          int ret = m_pAudioCodec->Decode(pPacket->pData+consumed, pPacket->iSize-consumed, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
+          if (ret < 0)
+          {
+            CLog::Log(LOGERROR, "CVideoPlayerAudio::DecodeFrame - Decode Error. Skipping audio packet (%d)", ret);
+            m_pAudioCodec->Reset();
+            pMsg->Release();
+            break;
+          }
+          consumed += ret;
+          continue;
+        }
 
         audioframe.hasTimestamp = true;
         if (audioframe.pts == DVD_NOPTS_VALUE)
@@ -485,10 +498,10 @@ void CVideoPlayerAudio::Process()
         // guess next pts
         m_audioClock += audioframe.duration;
 
-        int len = m_pAudioCodec->Decode(nullptr, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
-        if (len < 0)
+        int ret = m_pAudioCodec->Decode(nullptr, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
+        if (ret < 0)
         {
-          CLog::Log(LOGERROR, "CVideoPlayerAudio::DecodeFrame - Decode Error. Skipping audio packet (%d)", len);
+          CLog::Log(LOGERROR, "CVideoPlayerAudio::DecodeFrame - Decode Error. Skipping audio packet (%d)", ret);
           m_pAudioCodec->Reset();
           break;
         }
