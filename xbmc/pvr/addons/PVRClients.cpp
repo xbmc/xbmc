@@ -1410,6 +1410,11 @@ bool CPVRClients::UpdateAddons(void)
           addon->NeedsConfiguration() &&
           addon->HasSettings() &&
           !addon->HasUserSettings();
+          
+      if (bDisable)
+      {
+        CLog::Log(LOGDEBUG, "%s - add-on '%s' needs configuration", __FUNCTION__, (*it)->Name().c_str());
+      }
     }
 
     if (bDisable)
