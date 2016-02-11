@@ -147,9 +147,8 @@ public:
   *          A subtitle is relevant if
   *          - it was previously selected, or
   *          - it's an external sub, or
-  *          - it's a forced sub and "original stream's language" was selected, or
-  *          - it's a forced sub and its language matches the audio's language, or
-  *          - it's a default sub, or
+  *          - it's a forced sub and "original stream's language" was selected and audio stream language matches, or
+  *          - it's a default and a forced sub (could lead to users seeing forced subs in a foreign language!), or
   *          - its language matches the preferred subtitle's language (unequal to "original stream's language")
   */
   PredicateSubtitleFilter(std::string& lang)
@@ -175,14 +174,14 @@ public:
       else
         return true;
     }
-      
+
     if(STREAM_SOURCE_MASK(ss.source) == STREAM_SOURCE_DEMUX_SUB || STREAM_SOURCE_MASK(ss.source) == STREAM_SOURCE_TEXT)
       return false;
 
-    if ((ss.flags & CDemuxStream::FLAG_FORCED) && (original || g_LangCodeExpander.CompareISO639Codes(ss.language, audiolang)))
+    if ((ss.flags & CDemuxStream::FLAG_FORCED) && g_LangCodeExpander.CompareISO639Codes(ss.language, audiolang))
       return false;
 
-    if ((ss.flags & CDemuxStream::FLAG_DEFAULT))
+    if ((ss.flags & CDemuxStream::FLAG_FORCED) && (ss.flags & CDemuxStream::FLAG_DEFAULT))
       return false;
 
     if(!original)
@@ -240,7 +239,10 @@ static bool PredicateAudioPriority(const SelectionStream& lh, const SelectionStr
 *          A subtitle lh is 'better than' a subtitle rh (in evaluation order) if
 *          - lh was previously selected, or
 *          - lh is an external sub and rh not, or
-*          - lh is a forced sub and ("original stream's language" was selected or subtitles are off) and rh not, or
+*          - lh is a forced sub and ("original stream's language" was selected or subtitles are off) and audio stream language matches sub language and rh not, or
+*          - lh is a default sub and ("original stream's language" was selected or subtitles are off) and audio stream language matches sub language and rh not, or
+*          - lh is a sub where audio stream language matches sub language and (original stream's language" was selected or subtitles are off) and rh not, or
+*          - lh is a forced sub and a default sub ("original stream's language" was selected or subtitles are off)
 *          - lh is an external sub and its language matches the preferred subtitle's language (unequal to "original stream's language") and rh not, or
 *          - lh is language matches the preferred subtitle's language (unequal to "original stream's language") and rh not, or
 *          - lh is a default sub and rh not
@@ -283,8 +285,15 @@ public:
       PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareISO639Codes(lh.language, audiolang)
                      , rh.flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareISO639Codes(rh.language, audiolang));
 
-      PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_FORCED
-                     , rh.flags & CDemuxStream::FLAG_FORCED);
+      PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT && g_LangCodeExpander.CompareISO639Codes(lh.language, audiolang)
+                     , rh.flags & CDemuxStream::FLAG_DEFAULT && g_LangCodeExpander.CompareISO639Codes(rh.language, audiolang));
+
+      PREDICATE_RETURN(g_LangCodeExpander.CompareISO639Codes(lh.language, audiolang)
+                     , g_LangCodeExpander.CompareISO639Codes(rh.language, audiolang));
+
+      PREDICATE_RETURN(lh.flags & (CDemuxStream::FLAG_FORCED && CDemuxStream::FLAG_DEFAULT)
+                     , rh.flags & (CDemuxStream::FLAG_FORCED && CDemuxStream::FLAG_DEFAULT));
+
     }
 
     std::string subtitle_language = g_langInfo.GetSubtitleLanguage();
