@@ -1,20 +1,11 @@
 # Kodi's travis-ci.org integration file
 
-# NOTES:
-# The travis-ci Gods have environmental concerns with verbosity and clang/xcode builds.
-# A nice message is presented in such cases:
-# "The log length has exceeded the limit of 4 MB (this usually means that the test suite is raising the
-# same exception over and over). The job has been terminated"
-#
-# travis-ci has a problem with python 2.7 (see https://github.com/travis-ci/travis-ci/issues/4948) so we mark
-# used language as 'generic' to work around it
-
 # TODO:
 # integrate with slack
 # make it perfect... or not ;-r
 
 
-language: generic
+language: cpp
 
 # Define the build matrix
 #
@@ -24,7 +15,9 @@ language: generic
 os: linux
 dist: trusty
 sudo: required
-compiler: gcc
+compiler:
+  - gcc
+  - clang
 
 env:
   - BUILD=Kodi
@@ -50,6 +43,9 @@ matrix:
 # Prepare the system to install prerequisites or dependencies
 #
 before_install:
+# Prune non-root Python from PATH. Solves https://github.com/travis-ci/travis-ci/issues/4948
+# see: https://github.com/travis-ci/travis-ci/issues/5326
+  - export PATH=$(echo $PATH | tr ':' "\n" | sed '/\/opt\/python/d' | tr "\n" ":" | sed "s|::|:|g")
 
 # Linux
 #
@@ -89,8 +85,13 @@ before_script:
 #
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$BUILD" == "Kodi" ]]; then
       cd $TRAVIS_BUILD_DIR/ &&
-      ./bootstrap &&
+      ./bootstrap;
+    fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$BUILD" == "Kodi" && "$CXX" == "g++" ]]; then
       ./configure;
+    fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$BUILD" == "Kodi" && "$CXX" == "clang++" ]]; then
+      CXXFLAGS="-Qunused-arguments" ./configure;
     fi
   - if [[ "$BUILD" != "Kodi" ]] && [[ "$ADDONS" == "adsp" || "$ADDONS" == "audiodecoder" || "$ADDONS" == "audioencoder" ||
           "$ADDONS" == "pvr" || "$ADDONS" == "screensaver" || "$ADDONS" == "visualization" ]]; then
