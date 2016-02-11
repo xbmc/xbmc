@@ -652,25 +652,34 @@ bool CPVRTimers::IsRecordingOnChannel(const CPVRChannel &channel) const
 
 CPVRTimerInfoTagPtr CPVRTimers::GetTimerForEpgTag(const CEpgInfoTagPtr &epgTag) const
 {
-  if (epgTag && epgTag->ChannelTag())
+  if (epgTag)
   {
-    const CPVRChannelPtr channel(epgTag->ChannelTag());
-    CSingleLock lock(m_critSection);
+    // already a timer assigned to tag?
+    CPVRTimerInfoTagPtr timer(epgTag->Timer());
+    if (timer)
+      return timer;
 
-    for (MapTags::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
+    // try to find a matching timer for the tag.
+    if (epgTag->ChannelTag())
     {
-      for (VecTimerInfoTag::const_iterator timerIt = it->second->begin(); timerIt != it->second->end(); ++timerIt)
-      {
-        CPVRTimerInfoTagPtr timer = *timerIt;
+      const CPVRChannelPtr channel(epgTag->ChannelTag());
+      CSingleLock lock(m_critSection);
 
-        if (!timer->IsRepeating() &&
-            (timer->GetEpgInfoTag() == epgTag ||
-             (timer->m_iClientChannelUid == channel->UniqueID() &&
-             timer->m_bIsRadio == channel->IsRadio() &&
-             timer->StartAsUTC() <= epgTag->StartAsUTC() &&
-             timer->EndAsUTC() >= epgTag->EndAsUTC())))
+      for (MapTags::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
+      {
+        for (VecTimerInfoTag::const_iterator timerIt = it->second->begin(); timerIt != it->second->end(); ++timerIt)
         {
-          return timer;
+          timer = *timerIt;
+
+          if (!timer->IsRepeating() &&
+              (timer->GetEpgInfoTag() == epgTag ||
+               (timer->m_iClientChannelUid == channel->UniqueID() &&
+               timer->m_bIsRadio == channel->IsRadio() &&
+               timer->StartAsUTC() <= epgTag->StartAsUTC() &&
+               timer->EndAsUTC() >= epgTag->EndAsUTC())))
+          {
+            return timer;
+          }
         }
       }
     }
