@@ -97,14 +97,29 @@ namespace PVR
 
     bool SetDuration(int iDuration);
 
-    static CPVRTimerInfoTagPtr CreateFromEpg(const EPG::CEpgInfoTagPtr &tag, bool bRepeating = false);
+    /*!
+     * @brief create a tag for an instant timer for a given channel
+     * @parame the channel the instant timer is be created for
+     * @return the timer or null if timer could not be created
+     */
+    static CPVRTimerInfoTagPtr CreateInstantTimerTag(const CPVRChannelPtr &channel);
 
     /*!
-     * @return Return corresponding epg info tag, NULL otherwise
+     * @brief create a timer or timer rule for the given epg info tag.
+     * @param tag the epg info tag
+     * @param bCreateRule if true, create a timer rule, create a one shot timer otherwise
+     * @return the timer or null if timer could not be created
+     */
+    static CPVRTimerInfoTagPtr CreateFromEpg(const EPG::CEpgInfoTagPtr &tag, bool bCreateRule = false);
+
+    /*!
+     * @brief get the epg info tag associated with this timer, if any
+     * @return the epg info tag associated with this timer or null if there is no tag
      */
     EPG::CEpgInfoTagPtr GetEpgInfoTag(void) const;
 
     /*!
+     * @brief check whether there is an epg info tag associated with this timer
      * @return True if this timer has a corresponding epg info tag, false otherwise
      */
     bool HasEpgInfoTag() const;

@@ -538,44 +538,12 @@ bool CPVRTimers::InstantTimer(const CPVRChannelPtr &channel)
   if (!g_PVRManager.CheckParentalLock(channel))
     return false;
 
-  CEpgInfoTagPtr epgTag(channel->GetEPGNow());
-  CPVRTimerInfoTagPtr newTimer;
-  if (epgTag)
-    newTimer = CPVRTimerInfoTag::CreateFromEpg(epgTag);
+  CPVRTimerInfoTagPtr newTimer(CPVRTimerInfoTag::CreateInstantTimerTag(channel));
 
-  if (!newTimer)
-  {
-    newTimer.reset(new CPVRTimerInfoTag);
-    /* set the timer data */
-    newTimer->m_iClientIndex      = PVR_TIMER_NO_CLIENT_INDEX;
-    newTimer->m_strTitle          = channel->ChannelName();
-    newTimer->m_strSummary        = g_localizeStrings.Get(19056);
-    newTimer->m_iChannelNumber    = channel->ChannelNumber();
-    newTimer->m_iClientChannelUid = channel->UniqueID();
-    newTimer->m_iClientId         = channel->ClientID();
-    newTimer->m_bIsRadio          = channel->IsRadio();
+  bool bReturn(false);
+  if (newTimer)
+    bReturn = newTimer->AddToClient();
 
-    /* generate summary string */
-    newTimer->m_strSummary = StringUtils::Format("%s %s %s %s %s",
-                                                 newTimer->StartAsLocalTime().GetAsLocalizedDate().c_str(),
-                                                 g_localizeStrings.Get(19159).c_str(),
-                                                 newTimer->StartAsLocalTime().GetAsLocalizedTime("", false).c_str(),
-                                                 g_localizeStrings.Get(19160).c_str(),
-                                                 newTimer->EndAsLocalTime().GetAsLocalizedTime("", false).c_str());
-  }
-
-  CDateTime startTime(0);
-  newTimer->SetStartFromUTC(startTime);
-  newTimer->m_iMarginStart = 0; /* set the start margin to 0 for instant timers */
-
-  int iDuration = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
-  CDateTime endTime = CDateTime::GetUTCDateTime() + CDateTimeSpan(0, 0, iDuration ? iDuration : 120, 0);
-  newTimer->SetEndFromUTC(endTime);
-
-  /* unused only for reference */
-  newTimer->m_strFileNameAndPath = CPVRTimersPath::PATH_NEW;
-
-  bool bReturn = newTimer->AddToClient();
   if (!bReturn)
     CLog::Log(LOGERROR, "PVRTimers - %s - unable to add an instant timer on the client", __FUNCTION__);
 
