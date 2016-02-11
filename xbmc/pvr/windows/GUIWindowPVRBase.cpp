@@ -533,13 +533,13 @@ bool CGUIWindowPVRBase::AddTimer(CFileItem *item, bool bCreateRule, bool bShowTi
   if (!g_PVRManager.CheckParentalLock(channel))
     return false;
 
-  if (!epgTag)
+  if (!epgTag && bCreateRule)
   {
     CLog::Log(LOGERROR, "CGUIWindowPVRBase - %s - no epg tag!", __FUNCTION__);
     return false;
   }
 
-  CPVRTimerInfoTagPtr timer(bCreateRule ? nullptr : g_PVRTimers->GetTimerForEpgTag(epgTag));
+  CPVRTimerInfoTagPtr timer(bCreateRule || !epgTag ? nullptr : g_PVRTimers->GetTimerForEpgTag(epgTag));
   CFileItemPtr        rule (bCreateRule ? g_PVRTimers->GetTimerRule(item) : nullptr);
   if (timer || rule)
   {
@@ -547,7 +547,7 @@ bool CGUIWindowPVRBase::AddTimer(CFileItem *item, bool bCreateRule, bool bShowTi
     return false;
   }
 
-  CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTag::CreateFromEpg(epgTag, bCreateRule);
+  CPVRTimerInfoTagPtr newTimer(epgTag ? CPVRTimerInfoTag::CreateFromEpg(epgTag, bCreateRule) : CPVRTimerInfoTag::CreateInstantTimerTag(channel));
   if (!newTimer)
   {
     CLog::Log(LOGERROR, "CGUIWindowPVRBase - %s - unable to create timer for epg tag!", __FUNCTION__);
