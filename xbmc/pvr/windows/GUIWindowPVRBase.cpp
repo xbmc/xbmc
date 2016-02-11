@@ -543,7 +543,7 @@ bool CGUIWindowPVRBase::AddTimer(CFileItem *item, bool bCreateRule, bool bShowTi
   CFileItemPtr        rule (bCreateRule ? g_PVRTimers->GetTimerRule(item) : nullptr);
   if (timer || rule)
   {
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19034}); // "Information", "Already started recording on this channel"
+    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19034}); // "Information", "There is already a timer set for this event"
     return false;
   }
 

@@ -8650,9 +8650,10 @@ msgctxt "#19033"
 msgid "Information"
 msgstr ""
 
+#. message box text stating that a timer is already set for a given epg event.
 #: xbmc/pvr/windows/GUIWindowPVRBase.cpp
 msgctxt "#19034"
-msgid "Already started recording on this channel"
+msgid "There is already a timer set for this event"
 msgstr ""
 
 msgctxt "#19035"
