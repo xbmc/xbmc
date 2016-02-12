@@ -4037,8 +4037,6 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     unsigned int time = XbmcThreads::SystemClockMillis();
     int total = -1;
 
-    std::string strSQL = "SELECT %s FROM songview ";
-
     Filter extFilter = filter;
     CMusicDbUrl musicUrl;
     SortDescription sorting = sortDescription;
@@ -4066,23 +4064,38 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     if (limited)
       strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
 
-    strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.* ") + strSQLExtra;
+    std::string strSQL;
     if (artistData)
-    { // Get data from song and song_artist tables to fully populate songs with artists. 
-      // Some songs may not have artists so Left join
-     if (limited)
-      {
+    { // Get data from song and song_artist tables to fully populate songs with artists
+      // Some songs may not have artists so Left join.
+      // Bug in SQLite optimiser for left join on views means have to use tables not songartistview
+      if (limited)
         //Apply where clause and limits to songview, then join as mutiple records in result set per song
-        strSQL = "SELECT %s FROM (" + strSQL + ") AS sv LEFT JOIN songartistview on songartistview.idsong = sv.idsong";
-        strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "sv.*, songartistview.* ");
-      }
+        strSQL = "SELECT sv.*, "
+          "song_artist.idArtist AS idArtist, "
+          "song_artist.idRole AS idRole, "
+          "role.strRole AS strRole, "
+          "artist.strArtist AS strArtist, "
+          "artist.strMusicBrainzArtistID AS strMusicBrainzArtistID, "
+          "song_artist.iOrder AS iOrder "
+          "FROM (SELECT songview.* FROM songview " + strSQLExtra + ") AS sv "
+          "LEFT JOIN song_artist on song_artist.idsong = sv.idsong "
+          "LEFT JOIN artist ON song_artist.idArtist = artist.idArtist "
+          "LEFT JOIN role ON song_artist.idRole = role.idRole ";
       else
-      {
-        strSQL = "SELECT %s FROM songview LEFT JOIN songartistview on songartistview.idsong = songview.idsong ";
-        strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.*, songartistview.* ");
-        strSQL += strSQLExtra;
-      }
+        strSQL = "SELECT songview.*, "
+          "song_artist.idArtist AS idArtist, "
+          "song_artist.idRole AS idRole, "
+          "role.strRole AS strRole, "
+          "artist.strArtist AS strArtist, "
+          "artist.strMusicBrainzArtistID AS strMusicBrainzArtistID, "
+          "song_artist.iOrder AS iOrder "
+          "FROM songview LEFT JOIN song_artist ON song_artist.idsong = songview.idsong "
+          "LEFT JOIN artist ON song_artist.idArtist = artist.idArtist "
+          "LEFT JOIN role ON song_artist.idRole = role.idRole " + strSQLExtra;
     }
+    else
+      strSQL = "SELECT songview.* FROM songview " + strSQLExtra;
 
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
     // run query
@@ -4106,7 +4119,7 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
 
     // Get songs from returned rows. If join songartistview then there is a row for every album artist
     items.Reserve(total);
-    int songArtistOffset = song_enumCount;
+    int songArtistOffset = song_enumCount - 1; // Unlike songartistview, not query idsong from song_artist
     int songId = -1;
     VECARTISTCREDITS artistCredits;
     const dbiplus::query_data &data = m_pDS->get_result_set().records;
