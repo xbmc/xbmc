@@ -3794,12 +3794,6 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     unsigned int time = XbmcThreads::SystemClockMillis();
     int total = -1;
 
-    std::string strSQL = "SELECT %s FROM songview ";
-    if (artistData) 
-      // Get data from song and song_artist tables to fully populate songs with artists
-      // Some songs may not have artists so Left join.
-      strSQL = "SELECT %s FROM songview LEFT JOIN songartistview on songartistview.idsong = songview.idsong ";
-
     Filter extFilter = filter;
     CMusicDbUrl musicUrl;
     SortDescription sorting = sortDescription;
@@ -3823,22 +3817,35 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
 
     // Apply the limiting directly here if there's no special sorting but limiting
     bool limited = extFilter.limit.empty() && sortDescription.sortBy == SortByNone &&
-                   (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0);
+      (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0);
     if (limited)
       strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
 
-    if (!artistData)
-      strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.* ") + strSQLExtra;
-    else
-    {
-      strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.*, songartistview.* ");
-      if (!limited)
-        strSQL += strSQLExtra;
-      else
+    std::string strSQL;
+    if (artistData)
+    { // Get data from song and song_artist tables to fully populate songs with artists
+      // Some songs may not have artists so Left join.
+      // Bug in SQLite optimiser for left join on views means have to use tables not songartistview
+      if (limited)
         //Apply where clause and limits to songview, then join as mutiple records in result set per song
-        strSQL += " WHERE songview.idsong IN (SELECT idsong FROM (SELECT idsong FROM songview " + strSQLExtra + ") as temp)";
+        strSQL = "SELECT sv.*, "
+        "song_artist.idArtist AS idArtist, "
+        "artist.strArtist AS strArtist, "
+        "artist.strMusicBrainzArtistID AS strMusicBrainzArtistID "
+        "FROM (SELECT songview.* FROM songview " + strSQLExtra + ") AS sv "
+        "LEFT JOIN song_artist on song_artist.idsong = sv.idsong "
+        "LEFT JOIN artist ON song_artist.idArtist = artist.idArtist ";
+      else
+        strSQL = "SELECT songview.*, "
+        "song_artist.idArtist AS idArtist, "
+        "artist.strArtist AS strArtist, "
+        "artist.strMusicBrainzArtistID AS strMusicBrainzArtistID "
+        "FROM songview LEFT JOIN song_artist on song_artist.idsong = songview.idsong "
+        "LEFT JOIN artist ON song_artist.idArtist = artist.idArtist " + strSQLExtra;
     }
-
+    else
+      strSQL = "SELECT songview.* FROM songview " + strSQLExtra;
+    
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
     // run query
     if (!m_pDS->query(strSQL))
@@ -3888,9 +3895,15 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
           item->m_iprogramCount = ++count;
           items.Add(item);
         }
-        // Get song artist credits
+        // Get song artist credits, API only exposes id, name and mbid fields
         if (artistData)
-          artistCredits.push_back(GetArtistCreditFromDataset(record, songArtistOffset));
+        {
+          CArtistCredit artistCredit;
+          artistCredit.idArtist = record->at(songArtistOffset).get_asInt();
+          artistCredit.m_strArtist = record->at(songArtistOffset + 1).get_asString();
+          artistCredit.m_strMusicBrainzArtistID = record->at(songArtistOffset + 2).get_asString();
+          artistCredits.push_back(artistCredit);
+        }
       }
       catch (...)
       {
@@ -3908,11 +3921,6 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     }
     // cleanup
     m_pDS->close();
-
-    // Load some info from embedded cuesheet if present (now only ReplayGain)
-    CueInfoLoader cueLoader;
-    for (int i = 0; i < items.Size(); ++i)
-      cueLoader.Load(LoadCuesheet(items[i]->GetMusicInfoTag()->GetURL()), items[i]);
 
     CLog::Log(LOGDEBUG, "%s(%s) - took %d ms", __FUNCTION__, filter.where.c_str(), XbmcThreads::SystemClockMillis() - time);
     return true;
