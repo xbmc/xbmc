@@ -63,3 +63,14 @@ int CAndroidFeatures::GetVersion()
   return version;
 }
 
+int CAndroidFeatures::GetCPUCount()
+{
+  static int count = -1;
+
+  if (count == -1)
+  {
+    count = android_getCpuCount();
+  }
+  return count;
+}
+
