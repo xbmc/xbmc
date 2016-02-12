@@ -371,6 +371,7 @@ bool CDirectoryProvider::UpdateSort()
 
   m_currentSort.sortBy = sortMethod;
   m_currentSort.sortOrder = sortOrder;
+  m_currentSort.sortAttributes = SortAttributeIgnoreFolders;
 
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
     m_currentSort.sortAttributes = static_cast<SortAttribute>(m_currentSort.sortAttributes | SortAttributeIgnoreArticle);
