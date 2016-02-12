@@ -161,7 +161,7 @@ void CPVRRecordings::Update(void)
   m_bIsUpdating = true;
   lock.Leave();
 
-  CLog::Log(LOGDEBUG, "CPVRRecordings - %s - updating recordings", __FUNCTION__);
+  CLog::Log(LOGPVR, "CPVRRecordings - %s - updating recordings", __FUNCTION__);
   UpdateFromClients();
 
   lock.Enter();

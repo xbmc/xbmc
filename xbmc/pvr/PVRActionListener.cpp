@@ -112,7 +112,7 @@ bool CPVRActionListener::OnAction(const CAction &action)
               CFileItemPtr fileItem = group->GetLastPlayedChannel(playingChannel->ChannelID());
               if (fileItem && fileItem->HasPVRChannelInfoTag())
               {
-                CLog::Log(LOGDEBUG, "%s - switch to channel number %d", __FUNCTION__, fileItem->GetPVRChannelInfoTag()->ChannelNumber());
+                CLog::Log(LOGPVR, "%s - switch to channel number %d", __FUNCTION__, fileItem->GetPVRChannelInfoTag()->ChannelNumber());
                 CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,static_cast<void*>(
                   new CAction(ACTION_CHANNEL_SWITCH, static_cast<float>(fileItem->GetPVRChannelInfoTag()->ChannelNumber()))));
               }

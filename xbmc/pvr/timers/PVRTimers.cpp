@@ -86,7 +86,7 @@ bool CPVRTimers::Update(void)
     m_bIsUpdating = true;
   }
 
-  CLog::Log(LOGDEBUG, "CPVRTimers - %s - updating timers", __FUNCTION__);
+  CLog::Log(LOGPVR, "CPVRTimers - %s - updating timers", __FUNCTION__);
   CPVRTimers newTimerList;
   std::vector<int> failedClients;
   g_PVRClients->GetTimers(&newTimerList, failedClients);
@@ -175,7 +175,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> 
             timerNotifications.push_back(std::make_pair((*timerIt)->m_iClientId, strMessage));
           }
 
-          CLog::Log(LOGDEBUG,"PVRTimers - %s - updated timer %d on client %d",
+          CLog::Log(LOGPVR,"PVRTimers - %s - updated timer %d on client %d",
               __FUNCTION__, (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
         }
       }
@@ -208,7 +208,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> 
          newTimer->GetNotificationText(strMessage);
          timerNotifications.push_back(std::make_pair(newTimer->m_iClientId, strMessage));
 
-        CLog::Log(LOGDEBUG,"PVRTimers - %s - added timer %d on client %d",
+        CLog::Log(LOGPVR,"PVRTimers - %s - added timer %d on client %d",
             __FUNCTION__, (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
       }
     }
@@ -242,7 +242,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> 
           continue;
         }
 
-        CLog::Log(LOGDEBUG,"PVRTimers - %s - deleted timer %d on client %d",
+        CLog::Log(LOGPVR,"PVRTimers - %s - deleted timer %d on client %d",
             __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
 
         timerNotifications.push_back(std::make_pair(timer->m_iClientId, timer->GetDeletedNotificationText()));
@@ -258,7 +258,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> 
                (!timer->m_bStartAnyTime && timer->StartAsUTC() != it->first))
       {
         /* timer start has changed */
-        CLog::Log(LOGDEBUG,"PVRTimers - %s - changed start time timer %d on client %d",
+        CLog::Log(LOGPVR,"PVRTimers - %s - changed start time timer %d on client %d",
             __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
 
         ClearEpgTagTimer(timer);
@@ -657,7 +657,7 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannelPtr &channel, bool bDele
 
         if (bDeleteActiveItem && bDeleteTimerRuleItem && bChannelsMatch)
         {
-          CLog::Log(LOGDEBUG,"PVRTimers - %s - deleted timer %d on client %d", __FUNCTION__, (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
+          CLog::Log(LOGPVR,"PVRTimers - %s - deleted timer %d on client %d", __FUNCTION__, (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
           bReturn = (*timerIt)->DeleteFromClient(true) || bReturn;
           bChanged = true;
         }
