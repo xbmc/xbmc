@@ -106,6 +106,7 @@ void TestBasicEnvironment::TearDown()
 {
   std::string xbmcTempPath = CSpecialProtocol::TranslatePath("special://temp/");
   XFILE::CDirectory::Remove(xbmcTempPath);
+  CSettings::GetInstance().Uninitialize();
 }
 
 void TestBasicEnvironment::SetUpError()
