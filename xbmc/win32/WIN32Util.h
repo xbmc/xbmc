@@ -89,7 +89,7 @@ public:
   static bool UtilRegOpenKeyEx( const HKEY hKeyParent, const char *const pcKey, const REGSAM rsAccessRights, HKEY *hKey, const bool bReadX64= false );
 
   static bool GetFocussedProcess(std::string &strProcessFile);
-  static void CropSource(CRect& src, CRect& dst, CRect target);
+  static void CropSource(CRect& src, CRect& dst, CRect target, UINT rotation = 0);
 
   static bool IsUsbDevice(const std::wstring &strWdrive);
 

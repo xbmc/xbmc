@@ -415,7 +415,7 @@ unsigned int CD3DTexture::GetMemoryUsage(unsigned int pitch) const
 }
 
 // static methods
-void CD3DTexture::DrawQuad(const CRect &rect, color_t color, CD3DTexture *texture, const CRect *texCoords, SHADER_METHOD options)
+void CD3DTexture::DrawQuad(const CPoint points[4], color_t color, CD3DTexture *texture, const CRect *texCoords, SHADER_METHOD options)
 {
   unsigned numViews = 0;
   ID3D11ShaderResourceView* views = nullptr;
@@ -426,20 +426,32 @@ void CD3DTexture::DrawQuad(const CRect &rect, color_t color, CD3DTexture *textur
     views = texture->GetShaderResource();
   }
 
-  DrawQuad(rect, color, numViews, &views, texCoords, options);
+  DrawQuad(points, color, numViews, &views, texCoords, options);
 }
 
-void CD3DTexture::DrawQuad(const CRect &rect, color_t color, unsigned numViews, ID3D11ShaderResourceView **view, const CRect *texCoords, SHADER_METHOD options)
+void CD3DTexture::DrawQuad(const CRect &rect, color_t color, CD3DTexture *texture, const CRect *texCoords, SHADER_METHOD options)
+{
+  CPoint points[] =
+  {
+    { rect.x1, rect.y1 },
+    { rect.x2, rect.y1 },
+    { rect.x2, rect.y2 },
+    { rect.x1, rect.y2 },
+  };
+  DrawQuad(points, color, texture, texCoords, options);
+}
+
+void CD3DTexture::DrawQuad(const CPoint points[4], color_t color, unsigned numViews, ID3D11ShaderResourceView **view, const CRect *texCoords, SHADER_METHOD options)
 {
   XMFLOAT4 xcolor;
   CD3DHelper::XMStoreColor(&xcolor, color);
   CRect coords = texCoords ? *texCoords : CRect(0.0f, 0.0f, 1.0f, 1.0f);
 
   Vertex verts[4] = {
-    { XMFLOAT3(rect.x1, rect.y1, 0), xcolor, XMFLOAT2(coords.x1, coords.y1), XMFLOAT2(0.0f, 0.0f) },
-    { XMFLOAT3(rect.x2, rect.y1, 0), xcolor, XMFLOAT2(coords.x2, coords.y1), XMFLOAT2(0.0f, 0.0f) },
-    { XMFLOAT3(rect.x2, rect.y2, 0), xcolor, XMFLOAT2(coords.x2, coords.y2), XMFLOAT2(0.0f, 0.0f) },
-    { XMFLOAT3(rect.x1, rect.y2, 0), xcolor, XMFLOAT2(coords.x1, coords.y2), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(points[0].x, points[0].y, 0), xcolor, XMFLOAT2(coords.x1, coords.y1), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(points[1].x, points[1].y, 0), xcolor, XMFLOAT2(coords.x2, coords.y1), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(points[2].x, points[2].y, 0), xcolor, XMFLOAT2(coords.x2, coords.y2), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(points[3].x, points[3].y, 0), xcolor, XMFLOAT2(coords.x1, coords.y2), XMFLOAT2(0.0f, 0.0f) },
   };
 
   CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
@@ -450,6 +462,17 @@ void CD3DTexture::DrawQuad(const CRect &rect, color_t color, unsigned numViews, 
   pGUIShader->DrawQuad(verts[0], verts[1], verts[2], verts[3]);
 }
 
+void CD3DTexture::DrawQuad(const CRect &rect, color_t color, unsigned numViews, ID3D11ShaderResourceView **view, const CRect *texCoords, SHADER_METHOD options)
+{
+  CPoint points[] =
+  {
+    { rect.x1, rect.y1 },
+    { rect.x2, rect.y1 },
+    { rect.x2, rect.y2 },
+    { rect.x1, rect.y2 },
+  };
+  DrawQuad(points, color, numViews, view, texCoords, options);
+}
 
 CD3DEffect::CD3DEffect()
 {
