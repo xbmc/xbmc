@@ -6,7 +6,7 @@
 # MMAL_LIBRARIES - The MMAL libraries
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules (MMAL mmal)
+  pkg_check_modules(MMAL mmal QUIET)
 endif()
 
 if(NOT MMAL_FOUND)
@@ -27,7 +27,7 @@ if(NOT MMAL_FOUND)
 endif()
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(MMAL DEFAULT_MSG MMAL_INCLUDE_DIRS MMAL_LIBRARIES)
+find_package_handle_standard_args(MMAL DEFAULT_MSG MMAL_LIBRARIES MMAL_INCLUDE_DIRS)
 
 list(APPEND MMAL_DEFINITIONS -DHAVE_MMAL=1 -DHAS_MMAL=1)
 
