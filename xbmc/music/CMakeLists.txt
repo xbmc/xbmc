@@ -21,3 +21,7 @@ set(HEADERS Album.h
 
 core_add_library(music)
 add_dependencies(music libcpluff)
+
+if(ENABLE_INTERNAL_FFMPEG)
+  add_dependencies(music ffmpeg)
+endif()

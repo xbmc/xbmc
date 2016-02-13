@@ -12,3 +12,7 @@ set(HEADERS PVRActionListener.h
 
 core_add_library(pvr)
 add_dependencies(pvr libcpluff)
+
+if(ENABLE_INTERNAL_FFMPEG)
+  add_dependencies(pvr ffmpeg)
+endif()

@@ -58,3 +58,7 @@ set(HEADERS GUIDialogBoxBase.h
 
 core_add_library(dialogs)
 add_dependencies(dialogs libcpluff)
+
+if(ENABLE_INTERNAL_FFMPEG)
+  add_dependencies(dialogs ffmpeg)
+endif()

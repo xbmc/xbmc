@@ -67,3 +67,7 @@ set(HEADERS Addon.h
 
 core_add_library(legacy_interface)
 add_dependencies(legacy_interface libcpluff)
+
+if(ENABLE_INTERNAL_FFMPEG)
+  add_dependencies(legacy_interface ffmpeg)
+endif()
