@@ -1,0 +1,12 @@
+xbmc/linux                   linuxsupport
+xbmc/network/linux           network/linux
+xbmc/network/osx             network/osx
+xbmc/peripherals/bus/osx     peripherals/bus/osx
+xbmc/powermanagement/osx     powermanagement/osx
+xbmc/storage/osx             storage/osx
+xbmc/platform/posix          posix
+xbmc/platform/darwin         platform_darwin
+xbmc/platform/darwin/osx     platform_osx
+xbmc/filesystem/posix        filesystem/posix
+xbmc/utils/posix             utils_posix
+xbmc/windowing/osx           windowing/osx

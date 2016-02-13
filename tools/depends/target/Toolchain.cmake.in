@@ -1,3 +1,6 @@
+SET(DEPENDS_PATH "@prefix@/@deps_dir@")
+SET(NATIVEPREFIX "@prefix@/@tool_dir@")
+
 SET(OS "@platform_os@")
 SET(CPU "@use_cpu@")
 SET(PLATFORM "@target_platform@")
@@ -33,20 +36,23 @@ SET(CMAKE_LIBRARY_PATH @prefix@/@deps_dir@/lib:@use_toolchain@/usr/lib/@use_host
 IF("${CORE_SYSTEM_NAME}" STREQUAL "rbpi")
   LIST(APPEND CMAKE_FIND_ROOT_PATH @use_firmware@/opt/vc)
   LIST(APPEND CMAKE_LIBRARY_PATH @use_firmware@/opt/vc/lib)
+  LIST(APPEND CMAKE_INCLUDE_PATH @use_firmware@/opt/vc/include)
 ENDIF()
 
 SET(CMAKE_C_FLAGS "@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include")
 SET(CMAKE_CXX_FLAGS "@platform_cxxflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include")
 SET(CMAKE_CPP_FLAGS "@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include")
+SET(CMAKE_EXE_LINKER_FLAGS "-L@prefix@/@deps_dir@/lib @platform_ldflags@")
 SET(ENV{CFLAGS} ${CMAKE_C_FLAGS})
 SET(ENV{CXXFLAGS} ${CMAKE_CXX_FLAGS})
 SET(ENV{CPPFLAGS} ${CMAKE_CPP_FLAGS})
-SET(ENV{LDFLAGS} "-L@prefix@/@deps_dir@/lib @platform_ldflags@")
+SET(ENV{LDFLAGS} ${CMAKE_EXE_LINKER_FLAGS})
 # search for programs in the build host directories
 SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 # for libraries and headers in the target directories
 SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+SET(ENV{PKG_CONFIG_LIBDIR} @prefix@/@deps_dir@/lib/pkgconfig)
 
 # Binary Addons
 IF(NOT OS STREQUAL "linux")

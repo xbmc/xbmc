@@ -32,7 +32,7 @@
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"
 #include "mysql/errmsg.h"
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) && !defined(BUILDING_WITH_CMAKE)
 #pragma comment(lib, "mysqlclient.lib")
 #endif
 

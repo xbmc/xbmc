@@ -1,0 +1,6 @@
+xbmc/network                           network
+xbmc/network/dacp                      network/dacp
+xbmc/network/httprequesthandler        network/httprequesthandler
+xbmc/network/httprequesthandler/python network/httprequesthandler/python
+xbmc/network/upnp                      network/upnp
+xbmc/network/websocket                 network/websocket

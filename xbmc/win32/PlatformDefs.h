@@ -77,16 +77,16 @@ typedef intptr_t      ssize_t;
 #define BMASK 0x000000ff
 #endif
 
+#if _MSC_VER < 1800
 #ifndef va_copy
 #define va_copy(dst, src) ((dst) = (src))
 #endif
 
-#if _MSC_VER < 1800
 #define lrint(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
 #define llrint(x) ((x) >= 0 ? ((__int64)((x) + 0.5)) : ((__int64)((x) - 0.5)))
-#endif
 
 #define strtoll(p, e, b) _strtoi64(p, e, b)
+#endif
 
 extern "C" char * strptime(const char *buf, const char *fmt, struct tm *tm);
 extern "C" int strverscmp (const char *s1, const char *s2);

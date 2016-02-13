@@ -1,0 +1,4 @@
+xbmc/contrib/kissfft                  kissfft
+tools/depends/native/libsquish-native squish
+lib/libUPnP                           upnp
+lib/libexif                           exif

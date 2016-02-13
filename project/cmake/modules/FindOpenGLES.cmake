@@ -1,0 +1,51 @@
+# - Try to find OpenGLES2
+# Once done this will define
+#
+#  OPENGLES_FOUND        - system has OpenGLES2
+#  OPENGLES_INCLUDE_DIR  - the GLES2 include directory
+#  OPENGLES_LIBRARIES    - Link these to use OpenGLES2
+
+find_package(EMBEDDED)
+find_package(PkgConfig)
+
+if(PKG_CONFIG_FOUND AND NOT PLATFORM STREQUAL "raspberry-pi")
+  pkg_check_modules(OPENGLES glesv2)
+  if(NOT OPENGLES_FOUND AND NOT EMBEDDED_FOUND STREQUAL "EMBEDDED_FOUND-NOTFOUND")
+    set(CMAKE_PREFIX_PATH ${EMBEDDED_FOUND} ${CMAKE_PREFIX_PATH})
+  endif()
+endif()
+
+
+if(NOT OPENGLES_FOUND)
+  if("${CORE_SYSTEM_NAME}" STREQUAL "ios")
+    find_library(OPENGLES_gl_LIBRARY NAMES OpenGLES PATHS ${CMAKE_OSX_SYSROOT}/System/Library PATH_SUFFIXES Frameworks NO_DEFAULT_PATH)
+    set(OPENGLES_INCLUDE_DIRS ${OPENGLES2_gl_LIBRARY}/Headers)
+    set(OPENGLES_egl_LIBRARY ${OPENGLES2_gl_LIBRARY})
+  else()
+    find_path(OPENGLES_INCLUDE_DIRS GLES2/gl2.h)
+    find_library(OPENGLES_gl_LIBRARY NAMES GLESv2)
+    find_library(OPENGLES_egl_LIBRARY NAMES EGL)
+  endif()
+
+  include(FindPackageHandleStandardArgs)
+  find_package_handle_standard_args(OpenGLES DEFAULT_MSG
+    OPENGLES_INCLUDE_DIRS OPENGLES_gl_LIBRARY OPENGLES_egl_LIBRARY)
+
+  set(OPENGLES_LIBRARIES ${OPENGLES2_gl_LIBRARY} ${OPENGLES2_egl_LIBRARY})
+  set(GLES_FOUND 1 CACHE INTERNAL "GLES")
+  set(OPENGLES_FOUND 1 CACHE INTERNAL "GLES")
+  mark_as_advanced(GLES_FOUND OPENGLES_FOUND)
+endif()
+
+if(OPENGLES_FOUND)
+  list(APPEND OPENGLES_DEFINITIONS -DHAVE_LIBGLESV2)
+endif()
+
+mark_as_advanced(
+  OPENGLES_INCLUDE_DIRS
+  OPENGLES_LIBRARIES
+  OPENGLES_gl_LIBRARY
+  OPENGLES_egl_LIBRARY
+  OPENGLES_DEFINITIONS
+)
+
