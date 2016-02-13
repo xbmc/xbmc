@@ -33,7 +33,6 @@
 #include "PlayList.h"
 #include "messaging/ApplicationMessenger.h"
 #include "Application.h"
-#include "interfaces/AnnouncementManager.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "guilib/GUIControl.h"
 #include "input/Key.h"
@@ -41,7 +40,6 @@
 #include "video/VideoReferenceClock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "utils/Variant.h"
 #include "Util.h"
 #include "threads/Event.h"
 #define id _id
@@ -72,162 +70,13 @@ const NSString *MPNowPlayingInfoPropertyPlaybackQueueCount = @"MPNowPlayingInfoP
 #import "IOSEAGLView.h"
 
 #import "XBMCController.h"
+#import "platform/darwin/ios-common/AnnounceReceiver.h"
 #import "IOSScreenManager.h"
 #import "XBMCApplication.h"
 #import "XBMCDebugHelpers.h"
 #import "platform/darwin/AutoPool.h"
 
 XBMCController *g_xbmcController;
-static CEvent screenChangeEvent;
-
-
-// notification messages
-extern NSString* kBRScreenSaverActivated;
-extern NSString* kBRScreenSaverDismissed;
-
-id objectFromVariant(const CVariant &data);
-
-NSArray *arrayFromVariantArray(const CVariant &data)
-{
-  if (!data.isArray())
-    return nil;
-  NSMutableArray *array = [[[NSMutableArray alloc] initWithCapacity:data.size()] autorelease];
-  for (CVariant::const_iterator_array itr = data.begin_array(); itr != data.end_array(); ++itr)
-  {
-    [array addObject:objectFromVariant(*itr)];
-  }
-  return array;
-}
-
-NSDictionary *dictionaryFromVariantMap(const CVariant &data)
-{
-  if (!data.isObject())
-    return nil;
-  NSMutableDictionary *dict = [[[NSMutableDictionary alloc] initWithCapacity:data.size()] autorelease];
-  for (CVariant::const_iterator_map itr = data.begin_map(); itr != data.end_map(); ++itr)
-  {
-    [dict setValue:objectFromVariant(itr->second) forKey:[NSString stringWithUTF8String:itr->first.c_str()]];
-  }
-  return dict;
-}
-
-id objectFromVariant(const CVariant &data)
-{
-  if (data.isNull())
-    return nil;
-  if (data.isString())
-    return [NSString stringWithUTF8String:data.asString().c_str()];
-  if (data.isWideString())
-    return [NSString stringWithCString:(const char *)data.asWideString().c_str() encoding:NSUnicodeStringEncoding];
-  if (data.isInteger())
-    return [NSNumber numberWithLongLong:data.asInteger()];
-  if (data.isUnsignedInteger())
-    return [NSNumber numberWithUnsignedLongLong:data.asUnsignedInteger()];
-  if (data.isBoolean())
-    return [NSNumber numberWithInt:data.asBoolean()?1:0];
-  if (data.isDouble())
-    return [NSNumber numberWithDouble:data.asDouble()];
-  if (data.isArray())
-    return arrayFromVariantArray(data);
-  if (data.isObject())
-    return dictionaryFromVariantMap(data);
-  return nil;
-}
-
-void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
-{
-  LOG(@"AnnounceBridge: [%s], [%s], [%s]", ANNOUNCEMENT::AnnouncementFlagToString(flag), sender, message);
-  NSDictionary *dict = dictionaryFromVariantMap(data);
-  LOG(@"data: %@", dict.description);
-  const std::string msg(message);
-  if (msg == "OnPlay")
-  {
-    NSDictionary *item = [dict valueForKey:@"item"];
-    NSDictionary *player = [dict valueForKey:@"player"];
-    [item setValue:[player valueForKey:@"speed"] forKey:@"speed"];
-    std::string thumb = g_application.CurrentFileItem().GetArt("thumb");
-    if (!thumb.empty())
-    {
-      bool needsRecaching;
-      std::string cachedThumb(CTextureCache::GetInstance().CheckCachedImage(thumb, false, needsRecaching));
-      LOG("thumb: %s, %s", thumb.c_str(), cachedThumb.c_str());
-      if (!cachedThumb.empty())
-      {
-        std::string thumbRealPath = CSpecialProtocol::TranslatePath(cachedThumb);
-        [item setValue:[NSString stringWithUTF8String:thumbRealPath.c_str()] forKey:@"thumb"];
-      }
-    }
-    double duration = g_application.GetTotalTime();
-    if (duration > 0)
-      [item setValue:[NSNumber numberWithDouble:duration] forKey:@"duration"];
-    [item setValue:[NSNumber numberWithDouble:g_application.GetTime()] forKey:@"elapsed"];
-    int current = g_playlistPlayer.GetCurrentSong();
-    if (current >= 0)
-    {
-      [item setValue:[NSNumber numberWithInt:current] forKey:@"current"];
-      [item setValue:[NSNumber numberWithInt:g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).size()] forKey:@"total"];
-    }
-    if (g_application.CurrentFileItem().HasMusicInfoTag())
-    {
-      const std::vector<std::string> &genre = g_application.CurrentFileItem().GetMusicInfoTag()->GetGenre();
-      if (!genre.empty())
-      {
-        NSMutableArray *genreArray = [[NSMutableArray alloc] initWithCapacity:genre.size()];
-        for(std::vector<std::string>::const_iterator it = genre.begin(); it != genre.end(); ++it)
-        {
-          [genreArray addObject:[NSString stringWithUTF8String:it->c_str()]];
-        }
-        [item setValue:genreArray forKey:@"genre"];
-      }
-    }
-    LOG(@"item: %@", item.description);
-    [g_xbmcController performSelectorOnMainThread:@selector(onPlay:) withObject:item  waitUntilDone:NO];
-  }
-  else if (msg == "OnSpeedChanged" || msg == "OnPause")
-  {
-    NSDictionary *item = [dict valueForKey:@"item"];
-    NSDictionary *player = [dict valueForKey:@"player"];
-    [item setValue:[player valueForKey:@"speed"] forKey:@"speed"];
-    [item setValue:[NSNumber numberWithDouble:g_application.GetTime()] forKey:@"elapsed"];
-    LOG(@"item: %@", item.description);
-    [g_xbmcController performSelectorOnMainThread:@selector(OnSpeedChanged:) withObject:item  waitUntilDone:NO];
-    if (msg == "OnPause")
-      [g_xbmcController performSelectorOnMainThread:@selector(onPause:) withObject:[dict valueForKey:@"item"]  waitUntilDone:NO];
-  }
-  else if (msg == "OnStop")
-  {
-    [g_xbmcController performSelectorOnMainThread:@selector(onStop:) withObject:[dict valueForKey:@"item"]  waitUntilDone:NO];
-  }
-}
-
-class AnnounceReceiver : public ANNOUNCEMENT::IAnnouncer
-{
-public:
-  virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
-  {
-    // not all Announce called from xbmc main thread, we need an auto poll here.
-    CCocoaAutoPool pool;
-    AnnounceBridge(flag, sender, message, data);
-  }
-  virtual ~AnnounceReceiver() {}
-  static void init()
-  {
-    if (NULL==g_announceReceiver) {
-      g_announceReceiver = new AnnounceReceiver();
-      ANNOUNCEMENT::CAnnouncementManager::GetInstance().AddAnnouncer(g_announceReceiver);
-    }
-  }
-  static void dealloc()
-  {
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().RemoveAnnouncer(g_announceReceiver);
-    delete g_announceReceiver;
-  }
-private:
-  AnnounceReceiver() {}
-  static AnnounceReceiver *g_announceReceiver;
-};
-
-AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 
 //--------------------------------------------------------------
 //
@@ -765,7 +614,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   [m_window makeKeyAndVisible];
   g_xbmcController = self;  
   
-  AnnounceReceiver::init();
+  CAnnounceReceiver::GetInstance()->Initialize();
 
   return self;
 }
@@ -804,7 +653,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   [m_networkAutoSuspendTimer invalidate];
   [self enableNetworkAutoSuspend:nil];
 
-  AnnounceReceiver::dealloc();
+  CAnnounceReceiver::GetInstance()->DeInitialize();
   [m_glView stopAnimation];
   [m_glView release];
   [m_window release];
