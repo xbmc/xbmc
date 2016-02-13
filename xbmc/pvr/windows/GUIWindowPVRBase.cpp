@@ -87,7 +87,13 @@ std::string CGUIWindowPVRBase::GetSelectedItemPath(bool bRadio)
 
 void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  UpdateSelectedItemPath();
+  if (IsActive())
+  {
+    // Only the active window must set the selected item path which is shared
+    // between all PVR windows, not the last notified window (observer).
+    UpdateSelectedItemPath();
+  }
+
   CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
   CApplicationMessenger::GetInstance().SendGUIMessage(m);
 }
