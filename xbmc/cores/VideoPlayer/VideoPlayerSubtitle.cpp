@@ -27,8 +27,8 @@
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
-#ifdef TARGET_POSIX
-#include "config.h"
+#if defined(HAVE_CONFIG_H)
+  #include "config.h"
 #endif
 
 CVideoPlayerSubtitle::CVideoPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer)
