@@ -1,5 +1,3 @@
-set(SOURCES)
-
 if(MACOSX)
   list(APPEND SOURCES TestAESinkDARWINOSX.cpp)
 endif()

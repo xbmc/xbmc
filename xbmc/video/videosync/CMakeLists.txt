@@ -1,5 +1,3 @@
-set(SOURCES)
-
 set(HEADERS VideoSync.h)
 
 if(CORE_SYSTEM_NAME STREQUAL "rbpi")
