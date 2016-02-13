@@ -59,7 +59,7 @@ endif()
 
 if(WITH_CPU)
   set(CPU ${WITH_CPU})
-else()
+elseif(NOT CMAKE_TOOLCHAIN_FILE)
   set(CPU ${CMAKE_SYSTEM_PROCESSOR})
 endif()
 
