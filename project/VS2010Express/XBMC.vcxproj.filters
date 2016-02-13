@@ -3261,6 +3261,7 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\threads\test\TestHelpers.h">
       <Filter>test\threads</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\recordings\PVRRecordingsPath.cpp">
       <Filter>pvr\recordings</Filter>
     </ClCompile>
@@ -6300,6 +6301,7 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\AddonBuilder.h">
       <Filter>addons</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\recordings\PVRRecordingsPath.h">
       <Filter>pvr\recordings</Filter>
     </ClInclude>
