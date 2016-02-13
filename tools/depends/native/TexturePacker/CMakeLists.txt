@@ -44,12 +44,11 @@ target_include_directories(TexturePacker
                                     ${GIF_INCLUDE_DIR}
                                     ${CORE_SOURCE_DIR}/xbmc
                                     ${CORE_SOURCE_DIR}/xbmc/${PLATFORM_DIR}
-                                    ${CORE_SOURCE_DIR}/tools/depends/native/libsquish-native/src
                                     ${CORE_SOURCE_DIR}/lib
                                     ${CMAKE_CURRENT_SOURCE_DIR}/src
                                     ${CMAKE_CURRENT_SOURCE_DIR}/src/decoder)
 target_link_libraries(TexturePacker
-                      PRIVATE ${SYSTEM_LDFLAGS} squish
+                      PRIVATE ${SYSTEM_LDFLAGS}
                               ${GIF_LIBRARIES}
                               ${PNG_LIBRARIES}
                               ${JPEG_LIBRARIES}
