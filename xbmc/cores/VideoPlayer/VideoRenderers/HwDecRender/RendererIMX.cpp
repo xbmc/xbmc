@@ -29,6 +29,9 @@
 #include "settings/MediaSettings.h"
 #include "windowing/WindowingFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
+
+#define RENDER_FLAG_FIELDS (RENDER_FLAG_FIELD0 | RENDER_FLAG_FIELD1)
 
 CRendererIMX::CRendererIMX()
 {
@@ -54,7 +57,6 @@ bool CRendererIMX::RenderCapture(CRenderCapture* capture)
 void CRendererIMX::AddVideoPictureHW(DVDVideoPicture &picture, int index)
 {
   YUVBUFFER &buf = m_buffers[index];
-  CDVDVideoCodecIMXBuffer *buffer = static_cast<CDVDVideoCodecIMXBuffer*>(buf.hwDec);
 
   buf.hwDec = picture.IMXBuffer;
 
@@ -93,6 +95,11 @@ bool CRendererIMX::Supports(EINTERLACEMETHOD method)
 
 bool CRendererIMX::Supports(EDEINTERLACEMODE mode)
 {
+  if(mode == VS_DEINTERLACEMODE_AUTO
+  || mode == VS_DEINTERLACEMODE_FORCE
+  || mode == VS_DEINTERLACEMODE_OFF)
+    return true;
+
   return false;
 }
 
@@ -120,8 +127,8 @@ bool CRendererIMX::LoadShadersHook()
 {
   CLog::Log(LOGNOTICE, "GL: Using IMXMAP render method");
   m_textureTarget = GL_TEXTURE_2D;
-  m_renderMethod = RENDER_FMT_IMXMAP;
-  return false;
+  m_renderMethod = RENDER_IMXMAP;
+  return true;
 }
 
 bool CRendererIMX::RenderHook(int index)
@@ -171,41 +178,25 @@ bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
     //CLog::Log(LOGDEBUG, "BLIT RECTS: source x1 %f x2 %f y1 %f y2 %f dest x1 %f x2 %f y1 %f y2 %f", srcRect.x1, srcRect.x2, srcRect.y1, srcRect.y2, dstRect.x1, dstRect.x2, dstRect.y1, dstRect.y2);
     g_IMXContext.SetBlitRects(srcRect, dstRect);
 
-    bool topFieldFirst = true;
-
-    // Deinterlacing requested
-    if (flags & RENDER_FLAG_FIELDMASK)
+    uint8_t fieldFmt = 0;
+    if (g_graphicsContext.IsFullScreenVideo())
     {
-      if ((buffer->GetFieldType() == VPU_FIELD_BOTTOM)
-      ||  (buffer->GetFieldType() == VPU_FIELD_BT) )
-        topFieldFirst = false;
-
-      if (flags & RENDER_FLAG_FIELD0)
+      fieldFmt |= flags & RENDER_FLAG_FIELDMASK;
+      if (flags & RENDER_FLAG_FIELDS)
       {
-        // Double rate first frame
-        g_IMXContext.SetDeInterlacing(true);
-        g_IMXContext.SetDoubleRate(true);
-        g_IMXContext.SetInterpolatedFrame(true);
-      }
-      else if (flags & RENDER_FLAG_FIELD1)
-      {
-        // Double rate second frame
-        g_IMXContext.SetDeInterlacing(true);
-        g_IMXContext.SetDoubleRate(true);
-        g_IMXContext.SetInterpolatedFrame(false);
-      }
-      else
-      {
-        // Fast motion
-        g_IMXContext.SetDeInterlacing(true);
-        g_IMXContext.SetDoubleRate(false);
+        fieldFmt |= IPU_DEINTERLACE_RATE_EN;
+        if (flags & RENDER_FLAG_FIELD1)
+        {
+          fieldFmt |= IPU_DEINTERLACE_RATE_FRAME1;
+          // CXBMCRenderManager::PresentFields() is swapping field flag for frame1
+          // this makes IPU render same picture as before, just shifted one line.
+          // let's correct this
+          fieldFmt ^= RENDER_FLAG_FIELDMASK;
+        }
       }
     }
-    // Progressive
-    else
-      g_IMXContext.SetDeInterlacing(false);
 
-    g_IMXContext.BlitAsync(NULL, buffer, topFieldFirst);
+    g_IMXContext.BlitAsync(NULL, buffer, fieldFmt);
   }
 
 #if 0
@@ -218,53 +209,11 @@ bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
 
 bool CRendererIMX::CreateTexture(int index)
 {
-  YV12Image &im     = m_buffers[index].image;
-  YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANE  &plane  = fields[0][0];
-
-  /* Lock buffer to maintain proper ref count */
-  YUVBUFFER &buf = m_buffers[index];
-  CDVDVideoCodecIMXBuffer* buffer = static_cast<CDVDVideoCodecIMXBuffer*>(buf.hwDec);
-  if (buffer)
-    buffer->Lock();
-
-  DeleteTexture(index);
-
-  memset(&im    , 0, sizeof(im));
-  memset(&fields, 0, sizeof(fields));
-
-  im.height = m_sourceHeight;
-  im.width  = m_sourceWidth;
-
-  plane.texwidth  = 0; // Must be actual frame width for pseudo-cropping
-  plane.texheight = 0; // Must be actual frame height for pseudo-cropping
-  plane.pixpertex_x = 1;
-  plane.pixpertex_y = 1;
-
-  glEnable(m_textureTarget);
-  glGenTextures(1, &plane.id);
-  VerifyGLState();
-
-  glBindTexture(m_textureTarget, plane.id);
-
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-  glDisable(m_textureTarget);
   return true;
 }
 
 void CRendererIMX::DeleteTexture(int index)
 {
-  YUVBUFFER &buf = m_buffers[index];
-  YUVPLANE &plane = buf.fields[0][0];
-  CDVDVideoCodecIMXBuffer* buffer = static_cast<CDVDVideoCodecIMXBuffer*>(buf.hwDec);
-
-  if(plane.id && glIsTexture(plane.id))
-    glDeleteTextures(1, &plane.id);
-  plane.id = 0;
-
-  SAFE_RELEASE(buffer);
 }
 
 bool CRendererIMX::UploadTexture(int index)

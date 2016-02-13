@@ -26,6 +26,7 @@
 #include "guilib/Geometry.h"
 #include "DVDVideoCodec.h"
 #include "DVDStreamInfo.h"
+#include "guilib/DispResource.h"
 
 #include <vector>
 #include <linux/ipu.h>
@@ -88,30 +89,28 @@ protected:
 
 // iMX context class that handles all iMX hardware
 // related stuff
-class CIMXContext : private CThread
+class CIMXContext : private CThread, IDispResource
 {
 public:
   CIMXContext();
   ~CIMXContext();
 
-  void RequireConfiguration() { m_checkConfigRequired = true; }
   bool Configure();
-  bool Close();
+  bool TaskRestart();
+  bool CloseDevices();
+  bool OpenDevices();
 
   bool Blank();
   bool Unblank();
   bool SetVSync(bool enable);
 
-  bool IsValid() const { return m_checkConfigRequired == false; }
+  bool IsValid() const { return IsRunning() && m_bFbIsConfigured; }
 
   // Populates a CIMXBuffer with attributes of a page
   bool GetPageInfo(CIMXBuffer *info, int page);
 
   // Blitter configuration
-  void SetDeInterlacing(bool flag);
-  void SetDoubleRate(bool flag);
-  bool DoubleRate() const;
-  void SetInterpolatedFrame(bool flag);
+  bool IsDoubleRate() const { return m_currentFieldFmt & IPU_DEINTERLACE_RATE_EN; }
 
   void SetBlitRects(const CRect &srcRect, const CRect &dstRect);
 
@@ -120,16 +119,16 @@ public:
   // modes LOW_MOTION and MED_MOTION.
   bool Blit(int targetPage, CIMXBuffer *source_p,
             CIMXBuffer *source,
-            bool topBottomFields = true);
+            uint8_t fieldFmt = 0);
 
   // Same as blit but runs in another thread and returns after the task has
   // been queued. BlitAsync renders always to the current backbuffer and
   // swaps the pages.
   bool BlitAsync(CIMXBuffer *source_p, CIMXBuffer *source,
-                 bool topBottomFields = true, CRect *dest = NULL);
+                 uint8_t fieldFmt = 0, CRect *dest = NULL);
 
   // Shows a page vsynced
-  bool ShowPage(int page);
+  bool ShowPage(int page, bool shift = false);
 
   // Returns the visible page
   int  GetCurrentPage() const { return m_fbCurrentPage; }
@@ -143,6 +142,8 @@ public:
   bool PushCaptureTask(CIMXBuffer *source, CRect *dest);
   void *GetCaptureBuffer() const { if (m_bufferCapture) return m_bufferCapture->buf_vaddr; else return NULL; }
   void WaitCapture();
+
+  void OnResetDisplay();
 
 private:
   struct IPUTask
@@ -167,10 +168,17 @@ private:
     struct ipu_task task;
   };
 
+  bool GetFBInfo(const std::string &fbdev, struct fb_var_screeninfo *fbVar);
+
   bool PushTask(const IPUTask &);
   void PrepareTask(IPUTask &ipu, CIMXBuffer *source_p, CIMXBuffer *source,
-                   bool topBottomFields, CRect *dest = NULL);
+                   CRect *dest = NULL);
   bool DoTask(IPUTask &ipu, int targetPage);
+
+  void SetFieldData(uint8_t fieldFmt);
+
+  void Dispose();
+  void MemMap(struct fb_fix_screeninfo *fb_fix = NULL);
 
   virtual void OnStartup();
   virtual void OnExit();
@@ -191,14 +199,14 @@ private:
   uint8_t                       *m_fbVirtAddr;
   struct fb_var_screeninfo       m_fbVar;
   int                            m_ipuHandle;
-  int                            m_currentFieldFmt;
+  uint8_t                        m_currentFieldFmt;
   bool                           m_vsync;
-  bool                           m_deInterlacing;
   CRect                          m_srcRect;
   CRect                          m_dstRect;
   CRectInt                       m_inputRect;
   CRectInt                       m_outputRect;
   CRectInt                      *m_pageCrops;
+  bool                           m_bFbIsConfigured;
 
   CCriticalSection               m_pageSwapLock;
   TaskQueue                      m_input;
@@ -211,8 +219,9 @@ private:
   void                           *m_g2dHandle;
   struct g2d_buf                 *m_bufferCapture;
   bool                           m_CaptureDone;
-  bool                           m_checkConfigRequired;
   static const int               m_fbPages;
+
+  std::string                    m_deviceName;
 };
 
 
@@ -299,6 +308,7 @@ public:
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();
   virtual int  Decode(BYTE *pData, int iSize, double dts, double pts);
+  virtual void SetSkipMode();
   virtual void Reset();
   virtual bool ClearPicture(DVDVideoPicture *pDvdVideoPicture);
   virtual bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
@@ -326,7 +336,8 @@ protected:
   CDecMemInfo                  m_decMemInfo;        // VPU dedicated memory description
   VpuDecHandle                 m_vpuHandle;         // Handle for VPU library calls
   VpuDecInitInfo               m_initInfo;          // Initial info returned from VPU at decoding start
-  bool                         m_dropState;         // Current drop state
+  bool                         m_dropRequest;       // Current drop request
+  bool                         m_dropState;         // Actual drop result
   int                          m_vpuFrameBufferNum; // Total number of allocated frame buffers
   VpuFrameBuffer              *m_vpuFrameBuffers;   // Table of VPU frame buffers description
   CDVDVideoCodecIMXBuffer    **m_outputBuffers;     // Table of VPU output buffers
