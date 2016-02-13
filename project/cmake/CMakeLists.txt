@@ -283,7 +283,7 @@ configure_file(${CORE_SOURCE_DIR}/xbmc/DllPaths_generated.h.in
 add_subdirectory(${CORE_SOURCE_DIR}/xbmc/interfaces/swig build/swig)
 
 # Linker flags
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+if(NOT APPLE AND NOT WIN32)
   set(LD_WHOLEARCHIVE_BEGIN -Wl,--whole-archive)
   set(LD_WHOLEARCHIVE_END -Wl,--no-whole-archive)
 endif()
