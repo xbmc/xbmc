@@ -62,7 +62,7 @@ runBackgroundProcess() {
 
 
 buildProcess() {
-cd $LOCALBUILDDIR
+cd /xbmc/tools/buildsteps/win32
 
 # compile our mingw dlls
 echo "-------------------------------------------------------------------------------"
@@ -79,7 +79,6 @@ echo -ne "\033]0;building FFmpeg $BITS\007"
 echo "-------------------------------------------------"
 echo " building FFmpeg $BITS"
 echo "-------------------------------------------------"
-cd /xbmc/tools/buildsteps/win32
 runBackgroundProcess "./buildffmpeg.sh $MAKECLEAN"
 setfilepath /xbmc/system/players/VideoPlayer
 checkfiles avcodec-56.dll avformat-56.dll avutil-54.dll postproc-53.dll swscale-3.dll avfilter-5.dll swresample-1.dll
@@ -91,8 +90,7 @@ echo -ne "\033]0;building libdvd $BITS\007"
 echo "-------------------------------------------------"
 echo " building libdvd $BITS"
 echo "-------------------------------------------------"
-cd /xbmc/lib/libdvd/
-runBackgroundProcess "./build-xbmc-win32.sh $MAKECLEAN"
+runBackgroundProcess "./buildlibdvd.sh $MAKECLEAN"
 setfilepath /xbmc/system/players/VideoPlayer
 checkfiles libdvdcss-2.dll libdvdnav.dll
 echo "-------------------------------------------------"
