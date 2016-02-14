@@ -16,7 +16,9 @@ DEPENDS = \
 	libplist libcec libbluray tinyxml dummy-libxbmc \
 	libamplayer libssh taglib libusb libnfs \
 	pythonmodule-pil pythonmodule-setuptools \
-	libxslt ffmpeg platform crossguid libdcadec
+	libxslt ffmpeg platform crossguid libdcadec \
+        libdvdread libdvdnav libdvdcss
+
 
 FFMPEG_DEPENDS = gnutls libdcadec
 
@@ -27,10 +29,12 @@ else
 endif
 
 ifeq ($(OS),ios)
-  EXCLUDED_DEPENDS = libcec libusb
-ifeq ($(TARGET_PLATFORM),appletvos)
-  DEPENDS += boblight
-endif
+  EXCLUDED_DEPENDS = libcec libusb libdvdcss
+  ifeq ($(TARGET_PLATFORM),appletvos)
+    DEPENDS += boblight
+  endif
+else
+  DVDREAD_DEPS = libdvdcss
 endif
 
 ifeq ($(OS),osx)
@@ -102,6 +106,8 @@ libxslt: libgcrypt
 ffmpeg: $(ICONV) $(ZLIB) bzip2 libvorbis $(FFMPEG_DEPENDS)
 libcec: platform
 crossguid: $(CROSSGUID_DEPS)
+libdvdnav: libdvdread
+libdvdread: $(DVDREAD_DEPS)
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
