@@ -660,8 +660,10 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
           ADDON::CRepositoryUpdater::GetInstance().Await();
 
         ADDON::VECADDONS languageAddons;
-        if (addondb.GetAddons(languageAddons, ADDON::ADDON_RESOURCE_LANGUAGE) && !languageAddons.empty())
+        if (addondb.GetRepositoryContent(languageAddons) && !languageAddons.empty())
         {
+          languageAddons.erase(std::remove_if(languageAddons.begin(), languageAddons.end(),
+              [](const ADDON:: AddonPtr& addon){ return !addon->IsType(ADDON::ADDON_RESOURCE_LANGUAGE); }), languageAddons.end());
           // try to get the proper language addon by its name from all available language addons
           if (ADDON::CLanguageResource::FindLanguageAddonByName(language, newLanguage, languageAddons))
           {

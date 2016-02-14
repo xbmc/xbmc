@@ -55,6 +55,7 @@ public:
   void SetLastUsed(CDateTime lastUsed) { m_props.lastUsed = lastUsed; }
 
   const std::string& GetId() const { return m_props.id; }
+  const AddonVersion& GetVersion() const { return m_props.version; }
 
 private:
   static std::shared_ptr<IAddon> FromProps(AddonProps addonProps);

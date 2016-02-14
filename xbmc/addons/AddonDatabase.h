@@ -41,8 +41,6 @@ public:
   /*! \brief Get an addon with a specific version and repository. */
   bool GetAddon(const std::string& addonID, const ADDON::AddonVersion& version, const std::string& repoId, ADDON::AddonPtr& addon);
 
-  bool GetAddons(ADDON::VECADDONS& addons, const ADDON::TYPE &type = ADDON::ADDON_UNKNOWN);
-
   /*! Get the addon IDs that has been set to disabled */
   bool GetDisabled(std::vector<std::string>& addons);
 
@@ -63,6 +61,10 @@ public:
    \returns true on success, false on error or if repository have never been synced.
    */
   bool GetRepositoryContent(const std::string& id, ADDON::VECADDONS& addons);
+
+  /*! Get addons across all repositories */
+  bool GetRepositoryContent(ADDON::VECADDONS& addons);
+
   bool SetLastChecked(const std::string& id, const ADDON::AddonVersion& version, const std::string& timestamp);
 
   /*!
@@ -164,7 +166,7 @@ protected:
 
   bool GetAddon(int id, ADDON::AddonPtr& addon);
 
-  /* keep in sync with the select in GetAddon */
+  /* keep in sync with the addon table */
   enum AddonFields
   {
     addon_id=0,
