@@ -790,6 +790,7 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
       }
       if (StringUtils::StartsWithNoCase(CJNIBuild::DEVICE, "foster")) // SATV is ahead of API
       {
+        m_info.m_wantsIECPassthrough = false;
         if (CJNIAudioManager::GetSDKVersion() == 22)
           m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
         m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
