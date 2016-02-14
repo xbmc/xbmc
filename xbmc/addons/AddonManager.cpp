@@ -109,10 +109,7 @@ AddonPtr CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBui
     return nullptr;
 
   if (!PlatformSupportsAddon(plugin))
-  {
-    CLog::Log(LOGWARNING, "CAddonMgr: %s does not support this platform.", plugin->identifier);
     return nullptr;
-  }
 
   cp_extension_t* ext = GetFirstExtPoint(plugin, type);
 
