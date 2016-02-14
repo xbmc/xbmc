@@ -1103,6 +1103,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       m_currDevice.compare(device) != 0 ||
       m_settings.driver.compare(driver) != 0)
   {
+    FlushEngine();
     if (!InitSink())
       return;
     m_settings.driver = driver;
