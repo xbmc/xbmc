@@ -105,6 +105,11 @@ namespace ADDON
 
     bool GetDisabledAddons(VECADDONS& addons, const TYPE& type);
 
+    /*! Get all installable addons */
+    bool GetInstallableAddons(VECADDONS& addons);
+
+    bool GetInstallableAddons(VECADDONS& addons, const TYPE &type);
+
     void AddToUpdateableAddons(AddonPtr &pAddon);
     void RemoveFromUpdateableAddons(AddonPtr &pAddon);    
     bool ReloadSettings(const std::string &id);
