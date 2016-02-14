@@ -194,7 +194,7 @@ void AddonProps::Serialize(CVariant &variant) const
     info["value"] = it->second;
     variant["extrainfo"].push_back(info);
   }
-  variant["rating"] = stars;
+  variant["rating"] = -1;
 }
 
 CAddon::CAddon(AddonProps props)

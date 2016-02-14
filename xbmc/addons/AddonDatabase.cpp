@@ -310,13 +310,13 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
     if (NULL == m_pDS.get()) return -1;
 
     std::string sql = PrepareSQL("insert into addon (id, type, name, summary,"
-                               "description, stars, path, icon, changelog, "
+                               "description, path, icon, changelog, "
                                "fanart, addonID, version, author, disclaimer, minversion)"
-                               " values(NULL, '%s', '%s', '%s', '%s', %i,"
+                               " values(NULL, '%s', '%s', '%s', '%s',"
                                "'%s', '%s', '%s', '%s', '%s','%s','%s','%s','%s')",
                                TranslateType(addon->Type(),false).c_str(),
                                addon->Name().c_str(), addon->Summary().c_str(),
-                               addon->Description().c_str(),addon->Stars(),
+                               addon->Description().c_str(),
                                addon->Path().c_str(), addon->Icon().c_str(),
                                addon->ChangeLog().c_str(),addon->FanArt().c_str(),
                                addon->ID().c_str(), addon->Version().asString().c_str(),

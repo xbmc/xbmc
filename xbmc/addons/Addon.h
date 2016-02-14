@@ -61,7 +61,6 @@ public:
     , type(type)
     , version(versionstr)
     , minversion(minversionstr)
-    , stars(0)
   {
   }
 
@@ -93,8 +92,7 @@ public:
   std::string disclaimer;
   ADDONDEPS dependencies;
   std::string broken;
-  InfoMap    extrainfo;
-  int        stars;
+  InfoMap extrainfo;
   CDateTime installDate;
   CDateTime lastUpdated;
   CDateTime lastUsed;
@@ -162,7 +160,6 @@ public:
   const std::string ChangeLog() const { return m_props.changelog; }
   const std::string FanArt() const { return m_props.fanart; }
   const std::string Icon() const { return m_props.icon; };
-  int Stars() const { return m_props.stars; }
   const std::string Disclaimer() const { return m_props.disclaimer; }
   const std::string Broken() const { return m_props.broken; }
   CDateTime InstallDate() const override { return m_props.installDate; }
@@ -210,8 +207,6 @@ protected:
 
   CAddon(const CAddon &rhs); // protected as all copying is handled by Clone()
 
-  void BuildLibName();
-
   /*! \brief Load the default settings and override these with any previously configured user settings
    \param bForce force the load of settings even if they are already loaded (reload)
    \return true if settings exist, false otherwise
@@ -257,7 +252,6 @@ private:
   bool m_hasSettings;
 
   std::string m_profile;
-  CLocalizeStrings  m_strings;
   std::map<std::string, std::string> m_settings;
 };
 

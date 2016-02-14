@@ -108,7 +108,6 @@ namespace ADDON
     virtual const std::string FanArt() const =0;
     virtual const std::string Author() const =0;
     virtual const std::string Icon() const =0;
-    virtual int  Stars() const =0;
     virtual const std::string Disclaimer() const =0;
     virtual const std::string Broken() const =0;
     virtual CDateTime InstallDate() const =0;
