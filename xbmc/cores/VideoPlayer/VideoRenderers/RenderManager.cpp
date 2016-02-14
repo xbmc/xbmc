@@ -802,7 +802,10 @@ bool CRenderManager::RenderCaptureGetPixels(unsigned int captureId, unsigned int
     
     CSingleExit exitlock(m_captCritSect);
     if (!it->second->GetEvent().WaitMSec(millis))
+    {
+      m_captureWaitCounter--;
       return false;
+    }
   }
 
   m_captureWaitCounter--;
