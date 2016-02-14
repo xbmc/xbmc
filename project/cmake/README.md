@@ -72,14 +72,14 @@ cmake --build . -- VERBOSE=1 -j$(nproc)  # or: make VERBOSE=1 -j$(nproc)
 ./kodi.bin
 ```
 
-`CMAKE_BUILD_TYPE` defaults to `Debug`.
+`CMAKE_BUILD_TYPE` defaults to `Release`.
 
 ### Windows with NMake Makefiles
 
 ```
 cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release <KODI_SRC>/project/cmake/
 cmake --build .  # or: nmake
-./kodi.bin
+kodi.exe
 ```
 
 ### Windows with Visual Studio project files
@@ -87,7 +87,7 @@ cmake --build .  # or: nmake
 ```
 cmake -G "Visual Studio 12" <KODI_SRC>/project/cmake/
 cmake --build . --config "Debug"  # or: Build solution with Visual Studio
-KODI_HOME=%CD% Debug/kodi.bin
+set KODI_HOME="%CD%" && Debug\kodi.exe
 ```
 
 ### OSX with GNU Makefiles
