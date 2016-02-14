@@ -54,6 +54,7 @@ public:
 
 protected:
   static bool IsSupported(int sampleRateInHz, int channelConfig, int audioFormat);
+  static bool HasAmlHD();
 
 private:
   jni::CJNIAudioTrack  *m_at_jni;
