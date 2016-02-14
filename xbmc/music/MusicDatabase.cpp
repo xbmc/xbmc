@@ -5394,7 +5394,7 @@ bool CMusicDatabase::GetScraperForPath(const std::string& strPath, ADDON::Scrape
         ADDON::AddonPtr addon;
         if (!scraperUUID.empty() && ADDON::CAddonMgr::GetInstance().GetAddon(scraperUUID, addon) && addon)
         {
-          info = std::dynamic_pointer_cast<ADDON::CScraper>(addon->Clone());
+          info = std::dynamic_pointer_cast<ADDON::CScraper>(addon);
           if (!info)
             return false;
           // store this path's settings
@@ -5406,7 +5406,7 @@ bool CMusicDatabase::GetScraperForPath(const std::string& strPath, ADDON::Scrape
         ADDON::AddonPtr defaultScraper;
         if (ADDON::CAddonMgr::GetInstance().GetDefault(type, defaultScraper))
         {
-          info = std::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone());
+          info = std::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper);
         }
       }
     }

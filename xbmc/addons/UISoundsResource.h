@@ -28,7 +28,6 @@ class CUISoundsResource : public CResource
 {
 public:
   CUISoundsResource(AddonProps props) : CResource(std::move(props)) {};
-  virtual AddonPtr Clone() const;
   virtual bool IsAllowed(const std::string &file) const;
   virtual bool IsInUse() const;
   virtual void OnPostInstall(bool update, bool modal);

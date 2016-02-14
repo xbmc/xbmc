@@ -54,11 +54,6 @@ using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
-AddonPtr CRepository::Clone() const
-{
-  return AddonPtr(new CRepository(*this));
-}
-
 std::unique_ptr<CRepository> CRepository::FromExtension(AddonProps props, const cp_extension_t* ext)
 {
   DirList dirs;

@@ -49,8 +49,6 @@ namespace ADDON
     explicit CRepository(AddonProps props) : CAddon(std::move(props)) {};
     CRepository(AddonProps props, DirList dirs);
 
-    virtual AddonPtr Clone() const;
-
     /*! \brief Get the md5 hash for an addon.
      \param the addon in question.
      \return the md5 hash for the given addon, empty if non exists.

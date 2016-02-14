@@ -32,8 +32,6 @@ class CResource : public CAddon
 public:
   virtual ~CResource() { }
 
-  virtual AddonPtr Clone() const = 0;
-
   virtual bool IsAllowed(const std::string &file) const = 0;
 
   virtual std::string GetFullPath(const std::string &filePath) const

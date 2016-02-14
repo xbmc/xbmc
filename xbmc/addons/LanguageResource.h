@@ -43,8 +43,6 @@ public:
       const std::string& dvdLanguageSubtitle,
       const std::set<std::string>& sortTokens);
 
-  virtual AddonPtr Clone() const;
-
   virtual bool IsInUse() const;
 
   virtual void OnPostInstall(bool update, bool modal);

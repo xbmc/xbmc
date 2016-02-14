@@ -105,7 +105,6 @@ class CAddon : public IAddon
 public:
   explicit CAddon(AddonProps props);
   virtual ~CAddon() {}
-  virtual AddonPtr Clone() const;
 
   /*! \brief Check whether the this addon can be configured or not
    \return true if the addon has settings, false otherwise
@@ -205,8 +204,6 @@ public:
 protected:
   friend class CAddonCallbacksAddon;
 
-  CAddon(const CAddon &rhs); // protected as all copying is handled by Clone()
-
   /*! \brief Load the default settings and override these with any previously configured user settings
    \param bForce force the load of settings even if they are already loaded (reload)
    \return true if settings exist, false otherwise
@@ -259,8 +256,6 @@ class CAddonLibrary : public CAddon
 {
 public:
   explicit CAddonLibrary(AddonProps props);
-
-  virtual AddonPtr Clone() const;
 
 private:
   TYPE SetAddonType();

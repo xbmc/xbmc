@@ -123,8 +123,6 @@ public:
       float effectsSlowDown,
       bool debugging);
 
-  virtual AddonPtr Clone() const;
-
   /*! \brief Load resultion information from directories in Path().
    */
   void Start();

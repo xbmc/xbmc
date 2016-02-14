@@ -198,11 +198,6 @@ CSkinInfo::CSkinInfo(
   m_version = GetDependencyVersion("xbmc.gui");
 }
 
-AddonPtr CSkinInfo::Clone() const
-{
-  return AddonPtr(new CSkinInfo(*this));
-}
-
 struct closestRes
 {
   closestRes(const RESOLUTION_INFO &target) : m_target(target) { };

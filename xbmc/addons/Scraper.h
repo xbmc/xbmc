@@ -87,8 +87,6 @@ public:
   explicit CScraper(AddonProps props);
   CScraper(AddonProps props, const std::string& language, bool requiressettings, const CDateTimeSpan& persistence);
 
-  virtual AddonPtr Clone() const;
-
   /*! \brief Set the scraper settings for a particular path from an XML string
    Loads the default and user settings (if not already loaded) and, if the given XML string is non-empty,
    overrides the user settings with the XML.

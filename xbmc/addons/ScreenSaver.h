@@ -34,7 +34,6 @@ public:
   explicit CScreenSaver(const char *addonID);
 
   virtual ~CScreenSaver() {}
-  virtual AddonPtr Clone() const;
   virtual bool IsInUse() const;
 
   // Things that MUST be supplied by the child classes

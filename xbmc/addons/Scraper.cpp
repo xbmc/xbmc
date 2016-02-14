@@ -180,20 +180,6 @@ CScraper::CScraper(AddonProps props, const std::string& language, bool requiress
 {
 }
 
-AddonPtr CScraper::Clone() const
-{
-  return AddonPtr(new CScraper(*this));
-}
-
-CScraper::CScraper(const CScraper &rhs)
-  : CAddon(rhs), m_fLoaded(false),
-    m_language(rhs.m_language),
-    m_requiressettings(rhs.m_requiressettings),
-    m_persistence(rhs.m_persistence),
-    m_pathContent(rhs.m_pathContent)
-{
-}
-
 bool CScraper::Supports(const CONTENT_TYPE &content) const
 {
   return Type() == ScraperTypeFromContent(content);

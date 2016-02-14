@@ -89,7 +89,6 @@ namespace ADDON
   {
   public:
     virtual ~IAddon() {};
-    virtual AddonPtr Clone() const =0;
     virtual TYPE Type() const =0;
     virtual TYPE FullType() const =0;
     virtual bool IsType(TYPE type) const =0;
