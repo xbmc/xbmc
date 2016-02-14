@@ -100,7 +100,21 @@ TEST_F(TestAddonFactory, ShouldReturnDependencyInfoWhenNoExtensions)
 }
 
 
-TEST_F(TestAddonFactory, IconPathShouldBeBuildtFromPluginPath)
+TEST_F(TestAddonFactory, ShouldAcceptUnversionedDependencies)
+{
+  cp_plugin_import_t import{(char*)"a.b", nullptr, 0};
+  plugin.extensions = nullptr;
+  plugin.num_extensions = 0;
+  plugin.num_imports = 1;
+  plugin.imports = &import;
+
+  ADDONDEPS expected = {{"a.b", {AddonVersion{"0.0.0"}, false}}};
+  auto addon = CAddonMgr::Factory(&plugin, ADDON_UNKNOWN);
+  EXPECT_EQ(expected, addon->GetDeps());
+}
+
+
+TEST_F(TestAddonFactory, IconPathShouldBeBuiltFromPluginPath)
 {
   plugin.plugin_path = strdup("a/b");;
   auto addon = CAddonMgr::Factory(&plugin, ADDON_UNKNOWN);

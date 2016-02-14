@@ -167,9 +167,12 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
     ADDONDEPS dependencies;
     for (unsigned int i = 0; i < plugin->num_imports; ++i)
     {
-      if (plugin->imports[i].plugin_id && plugin->imports[i].version)
-        dependencies.insert(std::make_pair(std::string(plugin->imports[i].plugin_id),
-            std::make_pair(AddonVersion(plugin->imports[i].version), plugin->imports[i].optional != 0)));
+      if (plugin->imports[i].plugin_id)
+      {
+        std::string id(plugin->imports[i].plugin_id);
+        AddonVersion version(plugin->imports[i].version ? plugin->imports[i].version : "0.0.0");
+        dependencies.emplace(std::move(id), std::make_pair(version, plugin->imports[i].optional != 0));
+      }
     }
     builder.SetDependencies(std::move(dependencies));
   }
