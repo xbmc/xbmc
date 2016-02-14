@@ -164,7 +164,11 @@ bool CDVDDemuxClient::Open(CDVDInputStream* pInput)
   if (!m_IDemux)
     return false;
 
-  return m_IDemux->OpenDemux();
+  if (!m_IDemux->OpenDemux())
+    return false;
+
+  RequestStreams();
+  return true;
 }
 
 void CDVDDemuxClient::Dispose()
@@ -427,6 +431,13 @@ void CDVDDemuxClient::RequestStreams()
       st->iBlockAlign     = source->iBlockAlign;
       st->iBitRate        = source->iBitRate;
       st->iBitsPerSample  = source->iBitsPerSample;
+      if (source->ExtraSize > 0 && source->ExtraData)
+      {
+        st->ExtraData = new uint8_t[source->ExtraSize];
+        st->ExtraSize = source->ExtraSize;
+        for (unsigned int j=0; j<source->ExtraSize; j++)
+          st->ExtraData[j] = source->ExtraData[j];
+      }
       m_streams[i] = st;
       st->m_parser_split = true;
       st->changes++;
@@ -463,6 +474,13 @@ void CDVDDemuxClient::RequestStreams()
       st->iWidth          = source->iWidth;
       st->fAspect         = source->fAspect;
       st->stereo_mode     = "mono";
+      if (source->ExtraSize > 0 && source->ExtraData)
+      {
+        st->ExtraData = new uint8_t[source->ExtraSize];
+        st->ExtraSize = source->ExtraSize;
+        for (unsigned int j=0; j<source->ExtraSize; j++)
+          st->ExtraData[j] = source->ExtraData[j];
+      }
       m_streams[i] = st;
       st->m_parser_split = true;
     }
