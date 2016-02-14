@@ -119,28 +119,10 @@ void CJNIMainActivity::_doFrame(JNIEnv *env, jobject context, jlong frameTimeNan
     m_appInstance->doFrame(frameTimeNanos);
 }
 
-CJNISurface CJNIMainActivity::getVideoViewSurface()
+CJNIRect CJNIMainActivity::getDisplayRect()
 {
   return call_method<jhobject>(m_context,
-                               "getVideoViewSurface", "()Landroid/view/Surface;");
-}
-
-void CJNIMainActivity::clearVideoView()
-{
-  call_method<void>(m_context,
-                    "clearVideoView", "()V");
-}
-
-CJNIRect CJNIMainActivity::getVideoViewSurfaceRect()
-{
-  return call_method<jhobject>(m_context,
-                               "getVideoViewSurfaceRect", "()Landroid/graphics/Rect;");
-}
-
-void CJNIMainActivity::setVideoViewSurfaceRect(int l, int t, int r, int b)
-{
-  call_method<void>(m_context,
-                    "setVideoViewSurfaceRect", "(IIII)V", l, t, r, b);
+                               "getDisplayRect", "()Landroid/graphics/Rect;");
 }
 
 void CJNIMainActivity::registerMediaButtonEventReceiver()

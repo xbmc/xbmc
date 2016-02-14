@@ -22,7 +22,6 @@
 #include <androidjni/Activity.h>
 #include <androidjni/InputManager.h>
 #include <androidjni/Rect.h>
-#include <androidjni/Surface.h>
 
 class CJNIMainActivity : public CJNIActivity, public CJNIInputManagerInputDeviceListener
 {
@@ -46,11 +45,8 @@ public:
   static void registerMediaButtonEventReceiver();
   static void unregisterMediaButtonEventReceiver();
 
-  CJNISurface getVideoViewSurface();
-  void clearVideoView();
-  CJNIRect getVideoViewSurfaceRect();
-  void setVideoViewSurfaceRect(int l, int t, int r, int b);
-
+  CJNIRect getDisplayRect();
+  
 private:
   static CJNIMainActivity *m_appInstance;
 

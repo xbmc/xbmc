@@ -182,6 +182,7 @@ CDVDMediaCodecInfo::CDVDMediaCodecInfo(
   , AMediaCodec* codec
   , std::shared_ptr<CJNISurfaceTexture> &surfacetexture
   , std::shared_ptr<CDVDMediaCodecOnFrameAvailable> &frameready
+  , std::shared_ptr<CJNIXBMCVideoView> &videoview
 )
 : m_refs(1)
 , m_valid(true)
@@ -192,6 +193,7 @@ CDVDMediaCodecInfo::CDVDMediaCodecInfo(
 , m_codec(codec)
 , m_surfacetexture(surfacetexture)
 , m_frameready(frameready)
+, m_videoview(videoview)
 {
   // paranoid checks
   assert(m_index >= 0);
@@ -328,18 +330,15 @@ void CDVDMediaCodecInfo::RenderUpdate(const CRect &SrcRect, const CRect &DestRec
 {
   CSingleLock lock(m_section);
 
-  static CRect cur_rect;
-
   if (!m_valid)
     return;
 
-  if (DestRect != cur_rect)
+  if (DestRect != m_videoview->getSurfaceRect())
   {
     CRect adjRect = CXBMCApp::MapRenderToDroid(DestRect);
-    CXBMCApp::get()->setVideoViewSurfaceRect(adjRect.x1, adjRect.y1, adjRect.x2, adjRect.y2);
+    m_videoview->setSurfaceRect(adjRect);
     CLog::Log(LOGDEBUG, "RenderUpdate: Dest - %f+%f-%fx%f", DestRect.x1, DestRect.y1, DestRect.Width(), DestRect.Height());
     CLog::Log(LOGDEBUG, "RenderUpdate: Adj  - %f+%f-%fx%f", adjRect.x1, adjRect.y1, adjRect.Width(), adjRect.Height());
-    cur_rect = DestRect;
 
     // setVideoViewSurfaceRect is async, so skip rendering this frame
     ReleaseOutputBuffer(false);
@@ -363,6 +362,8 @@ CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(CProcessInfo &p
 , m_fpsDuration(0)
 , m_lastPTS(-1)
 , m_bitstream(nullptr)
+, m_jnivideoview(nullptr)
+, m_jnisurface(nullptr)
 , m_render_sw(false)
 , m_render_surface(surface_render)
 , m_mpeg2_sequence(nullptr)
@@ -608,9 +609,19 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
   if (m_render_surface)
   {
-    m_jnivideosurface = CXBMCApp::get()->getVideoViewSurface();
-    if (!m_jnivideosurface)
+    m_jnivideoview.reset(CJNIXBMCVideoView::createVideoView(this));
+    if (!m_jnivideoview || !m_jnivideoview->waitForSurface(500))
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec: VideoView creation failed!!");
       goto FAIL;
+    }
+
+    m_jnivideosurface = m_jnivideoview->getSurface();
+    if (!m_jnivideosurface)
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec: VideoView getSurface failed!!");
+      goto FAIL;
+    }
     m_surface = ANativeWindow_fromSurface(xbmc_jnienv(), m_jnivideosurface.get_raw());
   }
 
@@ -739,6 +750,11 @@ FAIL:
     m_crypto = nullptr;
   }
 
+  if (m_jnivideoview)
+  {
+    m_jnivideoview->release();
+    m_jnivideoview.reset();
+  }
   if (m_codec)
   {
     AMediaCodec_delete(m_codec);
@@ -783,10 +799,12 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
     ANativeWindow_release(m_surface);
   m_surface = nullptr;
 
-  //if (m_render_surface)
-  //  CXBMCApp::get()->clearVideoView();
-
   m_InstanceGuard.exchange(false);
+  if (m_render_surface)
+  {
+    m_jnivideoview->release();
+    m_jnivideoview.reset();
+  }
 
   SAFE_DELETE(m_bitstream);
 
@@ -1178,7 +1196,7 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
       }
       if (i == m_inflight.size())
         m_inflight.push_back(
-          new CDVDMediaCodecInfo(index, m_textureId, m_codec, m_surfaceTexture, m_frameAvailable)
+          new CDVDMediaCodecInfo(index, m_textureId, m_codec, m_surfaceTexture, m_frameAvailable, m_jnivideoview)
         );
       m_lastInflight = i;
       m_videobuffer.hwPic = m_inflight[i]->Retain();
@@ -1532,4 +1550,16 @@ void CDVDVideoCodecAndroidMediaCodec::UpdateFpsDuration()
   m_processInfo.SetVideoFps(static_cast<float>(m_hints.fpsrate) / m_hints.fpsscale);
 
   CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::UpdateFpsDuration fpsRate:%u fpsscale:%u, fpsDur:%u", m_hints.fpsrate, m_hints.fpsscale, m_fpsDuration);
+}
+
+void CDVDVideoCodecAndroidMediaCodec::surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height)
+{
+}
+
+void CDVDVideoCodecAndroidMediaCodec::surfaceCreated(CJNISurfaceHolder holder)
+{
+}
+
+void CDVDVideoCodecAndroidMediaCodec::surfaceDestroyed(CJNISurfaceHolder holder)
+{
 }
