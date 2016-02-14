@@ -1034,7 +1034,10 @@ const std::map<std::string, SortBy> sortMethods = {
   { "channel",          SortByChannel },
   { "channelnumber",    SortByChannelNumber },
   { "datetaken",        SortByDateTaken },
-  { "userrating",       SortByUserRating }
+  { "userrating",       SortByUserRating },
+  { "installdate",      SortByInstallDate },
+  { "lastupdated",      SortByLastUpdated },
+  { "lastused",         SortByLastUsed },
 };
 
 SortBy SortUtils::SortMethodFromString(const std::string& sortMethod)
