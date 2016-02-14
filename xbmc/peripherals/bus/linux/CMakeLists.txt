@@ -1,6 +1,3 @@
-set(SOURCES)
-set(HEADERS)
-
 if(UDEV_FOUND)
   list(APPEND SOURCES PeripheralBusUSBLibUdev.cpp)
   list(APPEND HEADERS PeripheralBusUSBLibUdev.h)

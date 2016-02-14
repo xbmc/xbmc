@@ -35,3 +35,7 @@ set(HEADERS AddonBuiltins.h
 
 core_add_library(interfaces_builtins)
 add_dependencies(interfaces_builtins libcpluff)
+
+if(ENABLE_INTERNAL_FFMPEG)
+  add_dependencies(interfaces_builtins ffmpeg)
+endif()

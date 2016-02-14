@@ -38,3 +38,7 @@ if(SDL_FOUND)
 endif()
 
 core_add_library(input)
+
+if(ENABLE_INTERNAL_FFMPEG)
+  add_dependencies(input ffmpeg)
+endif()
