@@ -63,6 +63,7 @@ std::unique_ptr<CPVRClient> CPVRClient::FromExtension(AddonProps props, const cp
 
 CPVRClient::CPVRClient(AddonProps props)
   : CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>(std::move(props)),
+    m_bNeedsConfiguration(false),
     m_apiVersion("0.0.0"),
     m_bAvahiServiceAdded(false)
 {
