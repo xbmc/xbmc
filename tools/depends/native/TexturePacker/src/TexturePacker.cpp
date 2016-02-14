@@ -287,9 +287,8 @@ void Usage()
   puts("  -input <dir>     Input directory. Default: current dir");
   puts("  -output <dir>    Output directory/filename. Default: Textures.xpr");
   puts("  -dupecheck       Enable duplicate file detection. Reduces output file size. Default: off");
-  puts("  -use_lzo         Use lz0 packing.     Default: on");
-  puts("  -use_dxt         Use DXT compression. Default: on");
-  puts("  -use_none        Use No  compression. Default: off");
+  puts("  -disable_lzo     Disable lz0 packing");
+  puts("  -disable_dxt     Disable DXT compression");
 }
 
 static bool checkDupe(struct MD5Context* ctx,
@@ -466,18 +465,14 @@ int main(int argc, char* argv[])
       while ((c = (char *)strchr(OutputFilename.c_str(), '\\')) != NULL) *c = '/';
 #endif
     }
-    else if (!platform_stricmp(args[i], "-use_none"))
+    else if (!platform_stricmp(args[i], "-disable_dxt"))
     {
       flags &= ~FLAGS_USE_DXT;
     }
-    else if (!platform_stricmp(args[i], "-use_dxt"))
-    {
-      flags |= FLAGS_USE_DXT;
-    }
 #ifdef USE_LZO_PACKING
-    else if (!platform_stricmp(args[i], "-use_lzo"))
+    else if (!platform_stricmp(args[i], "-disable_lzo"))
     {
-      flags |= FLAGS_USE_LZO;
+      flags &= ~FLAGS_USE_LZO;
     }
 #endif
     else
