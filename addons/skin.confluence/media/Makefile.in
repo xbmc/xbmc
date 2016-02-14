@@ -9,12 +9,7 @@ all: $(TARGET)
 .PHONY: force
 
 $(TARGET): $(IMAGES)
-ifeq (@ARCH@,arm)
-	@TEXTUREPACKER@ -dupecheck -use_none -input . -output $(TARGET)
-else
 	@TEXTUREPACKER@ -dupecheck -input . -output $(TARGET)
-
-endif
 
 clean:
 	rm -f $(TARGET)

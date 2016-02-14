@@ -74,7 +74,6 @@ set(INCLUDES ${CORE_SOURCE_DIR}
              ${CORE_SOURCE_DIR}/xbmc
              ${CORE_SOURCE_DIR}/xbmc/${PLATFORM_DIR}
              ${CORE_SOURCE_DIR}/xbmc/cores/VideoPlayer
-             ${CORE_SOURCE_DIR}/tools/depends/native/libsquish-native/src
              ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR})
 
 find_package(PkgConfig)
@@ -83,7 +82,6 @@ if(CMAKE_CROSSCOMPILING)
     message(STATUS "CMAKE_CROSSCOMPILING: ${CMAKE_CROSSCOMPILING}")
     set(PKG_CONFIG_FOUND TRUE)
   endif()
-  core_require_dep(Squish)
 endif()
 
 find_package(Threads REQUIRED)

@@ -21,7 +21,6 @@
 #include "TextureCacheJob.h"
 #include "TextureCache.h"
 #include "guilib/Texture.h"
-#include "guilib/DDSImage.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -68,7 +67,7 @@ bool CTextureCacheJob::DoWork()
 
   // check whether we need cache the job anyway
   bool needsRecaching = false;
-  std::string path(CTextureCache::GetInstance().CheckCachedImage(m_url, false, needsRecaching));
+  std::string path(CTextureCache::GetInstance().CheckCachedImage(m_url, needsRecaching));
   if (!path.empty() && !needsRecaching)
     return false;
   return CacheTexture();
@@ -247,38 +246,6 @@ std::string CTextureCacheJob::GetImageHash(const std::string &url)
   }
   CLog::Log(LOGDEBUG, "%s - unable to stat url %s", __FUNCTION__, CURL::GetRedacted(url).c_str());
   return "";
-}
-
-CTextureDDSJob::CTextureDDSJob(const std::string &original):
-  m_original(original)
-{
-}
-
-bool CTextureDDSJob::operator==(const CJob* job) const
-{
-  if (strcmp(job->GetType(),GetType()) == 0)
-  {
-    const CTextureDDSJob* ddsJob = dynamic_cast<const CTextureDDSJob*>(job);
-    if (ddsJob && ddsJob->m_original == m_original)
-      return true;
-  }
-  return false;
-}
-
-bool CTextureDDSJob::DoWork()
-{
-  if (URIUtils::HasExtension(m_original, ".dds"))
-    return false;
-  CBaseTexture *texture = CBaseTexture::LoadFromFile(m_original);
-  if (texture)
-  { // convert to DDS
-    CDDSImage dds;
-    CLog::Log(LOGDEBUG, "Creating DDS version of: %s", m_original.c_str());
-    bool ret = dds.Create(URIUtils::ReplaceExtension(m_original, ".dds"), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(), texture->GetPixels(), 40);
-    delete texture;
-    return ret;
-  }
-  return false;
 }
 
 CTextureUseCountJob::CTextureUseCountJob(const std::vector<CTextureDetails> &textures) : m_textures(textures)
