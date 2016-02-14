@@ -22,7 +22,8 @@ if(NOT WIN32)
                                         --prefix=<INSTALL_DIR>
                                         --host=${ARCH}
                                         CFLAGS=${defines}
-                                        LDFLAGS=${ldflags})
+                                        LDFLAGS=${ldflags}
+                      BUILD_COMMAND make V=1)
   set(ldflags "${ldflags};-lexpat")
   core_link_library(${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/cpluff/lib/libcpluff.a
                     system/libcpluff libcpluff extras "${ldflags}")
