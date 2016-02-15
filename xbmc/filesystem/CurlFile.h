@@ -24,6 +24,7 @@
 #include <map>
 #include <string>
 #include "utils/HttpHeader.h"
+#include "Proxy.h"
 
 namespace XCURL
 {
@@ -37,15 +38,6 @@ namespace XFILE
   class CCurlFile : public IFile
   {
     public:
-      typedef enum
-      {
-        PROXY_HTTP = 0,
-        PROXY_SOCKS4,
-        PROXY_SOCKS4A,
-        PROXY_SOCKS5,
-        PROXY_SOCKS5_REMOTE,
-      } ProxyType;
-    
       CCurlFile();
       virtual ~CCurlFile();
       virtual bool Open(const CURL& url);
