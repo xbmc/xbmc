@@ -415,7 +415,7 @@ static const EFormatMap g_format_map[] = {
 ,  { AV_PIX_FMT_UYVY422,     RENDER_FMT_UYVY422    }
 ,  { AV_PIX_FMT_YUYV422,     RENDER_FMT_YUYV422    }
 ,  { AV_PIX_FMT_VAAPI_VLD,   RENDER_FMT_VAAPI      }
-,  { AV_PIX_FMT_DXVA2_VLD,   RENDER_FMT_DXVA       }
+,  { AV_PIX_FMT_D3D11VA_VLD, RENDER_FMT_DXVA       }
 ,  { AV_PIX_FMT_NONE     ,   RENDER_FMT_NONE       }
 };
 
