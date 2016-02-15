@@ -4025,7 +4025,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string &baseDir, const Filter &
   return false;
 }
 
-bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription /* = SortDescription() */, bool artistData /* = false*/)
+bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription /* = SortDescription() */, bool artistData /* = false*/, bool cueSheetData /* = true*/)
 {
   if (m_pDB.get() == NULL || m_pDS.get() == NULL)
     return false;
@@ -4034,12 +4034,6 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
   {
     unsigned int time = XbmcThreads::SystemClockMillis();
     int total = -1;
-
-    std::string strSQL = "SELECT %s FROM songview ";
-    if (artistData)
-      // Get data from song and song_artist tables to fully populate songs with artists. 
-      //Some songs may not have artists so Left join
-      strSQL = "SELECT %s FROM songview LEFT JOIN songartistview on songartistview.idsong = songview.idsong ";
 
     Filter extFilter = filter;
     CMusicDbUrl musicUrl;
@@ -4068,17 +4062,38 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     if (limited)
       strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
 
-    if (!artistData)
-      strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.* ") + strSQLExtra;
-    else
-    {
-      strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.*, songartistview.* ");
-      if (!limited)
-        strSQL += strSQLExtra;
-      else
+    std::string strSQL;
+    if (artistData)
+    { // Get data from song and song_artist tables to fully populate songs with artists
+      // Some songs may not have artists so Left join.
+      // Bug in SQLite optimiser for left join on views means have to use tables not songartistview
+      if (limited)
         //Apply where clause and limits to songview, then join as mutiple records in result set per song
-        strSQL += " WHERE songview.idsong in (SELECT idsong FROM songview " + strSQLExtra + ")";
+        strSQL = "SELECT sv.*, "
+          "song_artist.idArtist AS idArtist, "
+          "song_artist.idRole AS idRole, "
+          "role.strRole AS strRole, "
+          "artist.strArtist AS strArtist, "
+          "artist.strMusicBrainzArtistID AS strMusicBrainzArtistID, "
+          "song_artist.iOrder AS iOrder "
+          "FROM (SELECT songview.* FROM songview " + strSQLExtra + ") AS sv "
+          "LEFT JOIN song_artist on song_artist.idsong = sv.idsong "
+          "LEFT JOIN artist ON song_artist.idArtist = artist.idArtist "
+          "LEFT JOIN role ON song_artist.idRole = role.idRole ";
+      else
+        strSQL = "SELECT songview.*, "
+          "song_artist.idArtist AS idArtist, "
+          "song_artist.idRole AS idRole, "
+          "role.strRole AS strRole, "
+          "artist.strArtist AS strArtist, "
+          "artist.strMusicBrainzArtistID AS strMusicBrainzArtistID, "
+          "song_artist.iOrder AS iOrder "
+          "FROM songview LEFT JOIN song_artist ON song_artist.idsong = songview.idsong "
+          "LEFT JOIN artist ON song_artist.idArtist = artist.idArtist "
+          "LEFT JOIN role ON song_artist.idRole = role.idRole " + strSQLExtra;
     }
+    else
+      strSQL = "SELECT songview.* FROM songview " + strSQLExtra;
 
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
     // run query
@@ -4102,7 +4117,7 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
 
     // Get songs from returned rows. If join songartistview then there is a row for every album artist
     items.Reserve(total);
-    int songArtistOffset = song_enumCount;
+    int songArtistOffset = song_enumCount - 1; // Unlike songartistview, not query idsong from song_artist
     int songId = -1;
     VECARTISTCREDITS artistCredits;
     const dbiplus::query_data &data = m_pDS->get_result_set().records;
@@ -4136,10 +4151,8 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
           if (idSongArtistRole == ROLE_ARTIST)
             artistCredits.push_back(GetArtistCreditFromDataset(record, songArtistOffset));
           else
-            items[items.Size() - 1]->GetMusicInfoTag()->AppendArtistRole(GetArtistRoleFromDataset(record, songArtistOffset));
-              
+            items[items.Size() - 1]->GetMusicInfoTag()->AppendArtistRole(GetArtistRoleFromDataset(record, songArtistOffset));           
         }
-
       }
       catch (...)
       {
@@ -4147,8 +4160,6 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
         CLog::Log(LOGERROR, "%s: out of memory loading query: %s", __FUNCTION__, filter.where.c_str());
         return (items.Size() > 0);
       }
-
-   
     }
     if (!artistCredits.empty())
     {
@@ -4159,11 +4170,12 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     // cleanup
     m_pDS->close();
 
-    // Load some info from embedded cuesheet if present (now only ReplayGain)
-    CueInfoLoader cueLoader;
-    for (int i = 0; i < items.Size(); ++i)
-      cueLoader.Load(LoadCuesheet(items[i]->GetMusicInfoTag()->GetURL()), items[i]);
-
+    if (cueSheetData)
+    { // Load some info from embedded cuesheet if present (now only ReplayGain)
+      CueInfoLoader cueLoader;
+      for (int i = 0; i < items.Size(); ++i)
+        cueLoader.Load(LoadCuesheet(items[i]->GetMusicInfoTag()->GetURL()), items[i]);
+    }
     CLog::Log(LOGDEBUG, "%s(%s) - took %d ms", __FUNCTION__, filter.where.c_str(), XbmcThreads::SystemClockMillis() - time);
     return true;
   }
