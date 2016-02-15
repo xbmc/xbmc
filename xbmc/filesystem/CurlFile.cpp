@@ -428,7 +428,7 @@ CCurlFile::CCurlFile()
   m_password = "";
   m_httpauth = "";
   m_cipherlist = "";
-  m_proxytype = PROXY_HTTP;
+  m_proxytype = CProxy::ProxyHttp;
   m_state = new CReadState();
   m_oldState = NULL;
   m_skipshout = false;
@@ -766,7 +766,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         m_proxyuserpass = CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME);
         m_proxyuserpass += ":" + CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD);
       }
-      m_proxytype = (ProxyType)CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYTYPE);
+      m_proxytype = (CProxy::Type)CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYTYPE);
       CLog::Log(LOGDEBUG, "Using proxy %s, type %d", m_proxy.c_str(), proxyType2CUrlProxyType[m_proxytype]);
     }
 
