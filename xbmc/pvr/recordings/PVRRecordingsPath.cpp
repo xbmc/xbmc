@@ -96,6 +96,7 @@ void CPVRRecordingsPath::Init(const std::string &strPath)
   const std::vector<std::string> segments = URIUtils::SplitPath(strVarPath);
 
   m_bValid  = ((segments.size() >= 3) && // at least pvr://recordings/[active|deleted]
+               StringUtils::StartsWith(strVarPath, "pvr://") &&
                (segments.at(1) == "recordings") &&
                ((segments.at(2) == "active") || (segments.at(2) == "deleted")));
   m_bRoot   = (m_bValid && (segments.size() == 3));
