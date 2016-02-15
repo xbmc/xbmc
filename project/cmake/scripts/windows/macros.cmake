@@ -108,7 +108,6 @@ endfunction()
 #   entrypoint Shader entry point
 # On return:
 #   FXC_FILE is set to the name of the generated header file.
-find_program(FXC fxc)
 function(add_shader_dx target hlsl profile entrypoint)
   get_filename_component(file ${hlsl} NAME_WE)
   add_custom_command(OUTPUT ${file}.h
