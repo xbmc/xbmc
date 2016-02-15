@@ -56,6 +56,7 @@ namespace PVR
 
   private:
     void Init(const std::string &strPath);
+    static std::string TrimSlashes(const std::string &strString);
 
     bool m_bValid;
     bool m_bRoot;

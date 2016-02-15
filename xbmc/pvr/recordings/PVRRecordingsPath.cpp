@@ -53,9 +53,9 @@ CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted,
   m_bRoot(false),
   m_bActive(!bDeleted)
 {
-  std::string strDirectoryN;
-  if (!strDirectory.empty() && strDirectory != "/")
-    strDirectoryN = StringUtils::Format("%s/", strDirectory.c_str());
+  std::string strDirectoryN(TrimSlashes(strDirectory));
+  if (!strDirectoryN.empty())
+    strDirectoryN = StringUtils::Format("%s/", strDirectoryN.c_str());
 
   std::string strTitleN(strTitle);
   StringUtils::Replace(strTitleN, '/', ' ');
@@ -91,8 +91,7 @@ CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted,
 
 void CPVRRecordingsPath::Init(const std::string &strPath)
 {
-  std::string strVarPath(strPath);
-  URIUtils::RemoveSlashAtEnd(strVarPath);
+  std::string strVarPath(TrimSlashes(strPath));
 
   const std::vector<std::string> segments = URIUtils::SplitPath(strVarPath);
 
@@ -108,10 +107,10 @@ void CPVRRecordingsPath::Init(const std::string &strPath)
   {
     size_t paramStart = m_path.find(", TV");
     if (paramStart == std::string::npos)
-      m_directoryPath = strVarPath.substr(m_bActive ? PATH_ACTIVE_RECORDINGS.size(): PATH_DELETED_RECORDINGS.size());
+      m_directoryPath = strVarPath.substr(m_bActive ? PATH_ACTIVE_RECORDINGS.size() : PATH_DELETED_RECORDINGS.size());
     else
     {
-      size_t dirStart = m_bActive ? PATH_ACTIVE_RECORDINGS.size(): PATH_DELETED_RECORDINGS.size();
+      size_t dirStart = m_bActive ? PATH_ACTIVE_RECORDINGS.size() : PATH_DELETED_RECORDINGS.size();
       m_directoryPath = strVarPath.substr(dirStart, paramStart - dirStart);
       m_params = strVarPath.substr(paramStart);
     }
@@ -123,12 +122,7 @@ void CPVRRecordingsPath::Init(const std::string &strPath)
 std::string CPVRRecordingsPath::GetSubDirectoryPath(const std::string &strPath) const
 {
   std::string strReturn;
-
-  std::string strUsePath(strPath);
-  while (!strUsePath.empty() && strUsePath.at(0) == '/')
-    strUsePath.erase(0, 1);
-
-  URIUtils::RemoveSlashAtEnd(strUsePath);
+  std::string strUsePath(TrimSlashes(strPath));
 
   /* adding "/" to make sure that base matches the complete folder name and not only parts of it */
   if (!m_directoryPath.empty() && (strUsePath.size() <= m_directoryPath.size() || !StringUtils::StartsWith(strUsePath, m_directoryPath + "/")))
@@ -165,17 +159,45 @@ const std::string CPVRRecordingsPath::GetTitle() const
 
 void CPVRRecordingsPath::AppendSegment(const std::string &strSegment)
 {
+  if (!m_bValid || strSegment.empty() || strSegment == "/")
+    return;
+
+  std::string strVarSegment(TrimSlashes(strSegment));
+
+  if (!m_directoryPath.empty() && m_directoryPath.back() != '/')
+    m_directoryPath.push_back('/');
+
   m_directoryPath += strSegment;
 
   size_t paramStart = m_path.find(", TV");
   if (paramStart == std::string::npos)
   {
+    if (!m_path.empty() && m_path.back() != '/')
+      m_path.push_back('/');
+
     // append the segment
     m_path += strSegment;
   }
   else
   {
+    if (m_path.back() != '/')
+      m_path.insert(paramStart, "/");
+
     // insert the segment between end of current directory path and parameters
     m_path.insert(paramStart, strSegment);
   }
+
+  m_bRoot = false;
+}
+
+std::string CPVRRecordingsPath::TrimSlashes(const std::string &strString)
+{
+  std::string strTrimmed(strString);
+  while (!strTrimmed.empty() && strTrimmed.front() == '/')
+    strTrimmed.erase(0, 1);
+
+  while (!strTrimmed.empty() && strTrimmed.back() == '/')
+    strTrimmed.pop_back();
+
+  return strTrimmed;
 }
