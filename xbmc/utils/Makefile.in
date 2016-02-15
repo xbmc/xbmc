@@ -43,6 +43,7 @@ SRCS += PerformanceStats.cpp
 SRCS += posix/PosixInterfaceForCLog.cpp
 SRCS += POUtils.cpp
 SRCS += ProgressJob.cpp
+SRCS += Proxy.cpp
 SRCS += RecentlyAddedJob.cpp
 SRCS += RegExp.cpp
 SRCS += rfft.cpp
