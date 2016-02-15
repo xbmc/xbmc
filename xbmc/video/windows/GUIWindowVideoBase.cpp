@@ -1127,62 +1127,67 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
   CLog::Log(LOGDEBUG, "%s %s", __FUNCTION__, CURL::GetRedacted(item.GetPath()).c_str());
 
 
-  CPVRRecordingsPath path(item.GetPath());
-  if (path.IsValid() && path.IsActive())
+  // TODO: delete entire block in v18
+  // m_strStreamURL is deprecated
+  if (item.IsPVR())
   {
-    if (!g_PVRManager.IsStarted())
-      return false;
-
-    /* For recordings we check here for a available stream URL */
-    CFileItemPtr tag = g_PVRRecordings->GetByPath(item.GetPath());
-    if (tag && tag->HasPVRRecordingInfoTag() && !tag->GetPVRRecordingInfoTag()->m_strStreamURL.empty())
+    CPVRRecordingsPath path(item.GetPath());
+    if (path.IsValid() && path.IsActive())
     {
-      std::string stream = tag->GetPVRRecordingInfoTag()->m_strStreamURL;
+      if (!g_PVRManager.IsStarted())
+        return false;
 
-      /* Isolate the folder from the filename */
-      size_t found = stream.find_last_of("/");
-      if (found == std::string::npos)
-        found = stream.find_last_of("\\");
-
-      if (found != std::string::npos)
+      /* For recordings we check here for a available stream URL */
+      CFileItemPtr tag = g_PVRRecordings->GetByPath(item.GetPath());
+      if (tag && tag->HasPVRRecordingInfoTag() && !tag->GetPVRRecordingInfoTag()->m_strStreamURL.empty())
       {
-        /* Check here for asterix at the begin of the filename */
-        if (stream[found+1] == '*')
+        std::string stream = tag->GetPVRRecordingInfoTag()->m_strStreamURL;
+
+        /* Isolate the folder from the filename */
+        size_t found = stream.find_last_of("/");
+        if (found == std::string::npos)
+          found = stream.find_last_of("\\");
+
+        if (found != std::string::npos)
         {
-          /* Create a "stack://" url with all files matching the extension */
-          std::string ext = URIUtils::GetExtension(stream);
-          std::string dir = stream.substr(0, found).c_str();
-
-          CFileItemList items;
-          CDirectory::GetDirectory(dir, items);
-          items.Sort(SortByFile, SortOrderAscending);
-
-          std::vector<int> stack;
-          for (int i = 0; i < items.Size(); ++i)
+          /* Check here for asterix at the begin of the filename */
+          if (stream[found+1] == '*')
           {
-            if (URIUtils::HasExtension(items[i]->GetPath(), ext))
-              stack.push_back(i);
+            /* Create a "stack://" url with all files matching the extension */
+            std::string ext = URIUtils::GetExtension(stream);
+            std::string dir = stream.substr(0, found).c_str();
+
+            CFileItemList items;
+            CDirectory::GetDirectory(dir, items);
+            items.Sort(SortByFile, SortOrderAscending);
+
+            std::vector<int> stack;
+            for (int i = 0; i < items.Size(); ++i)
+            {
+              if (URIUtils::HasExtension(items[i]->GetPath(), ext))
+                stack.push_back(i);
+            }
+
+            if (stack.size() > 0)
+            {
+              /* If we have a stack change the path of the item to it */
+              CStackDirectory dir;
+              std::string stackPath = dir.ConstructStackPath(items, stack);
+              item.SetPath(stackPath);
+            }
           }
-
-          if (stack.size() > 0)
+          else
           {
-            /* If we have a stack change the path of the item to it */
-            CStackDirectory dir;
-            std::string stackPath = dir.ConstructStackPath(items, stack);
-            item.SetPath(stackPath);
+            /* If no asterix is present play only the given stream URL */
+            item.SetPath(stream);
           }
         }
         else
         {
-          /* If no asterix is present play only the given stream URL */
-          item.SetPath(stream);
+          CLog::Log(LOGERROR, "CGUIWindowTV: Can't open recording, no valid filename!");
+          CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19036});
+          return false;
         }
-      }
-      else
-      {
-        CLog::Log(LOGERROR, "CGUIWindowTV: Can't open recording, no valid filename!");
-        CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19036});
-        return false;
       }
     }
   }
