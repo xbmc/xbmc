@@ -33,9 +33,9 @@ constexpr kodi_iobuf* FileDescriptor(FILE& f)
   return static_cast<kodi_iobuf*>(f._Placeholder);
 }
 #else
-constexpr FILE* FileDescriptor(FILE* f)
+constexpr FILE* FileDescriptor(FILE& f)
 {
-  return f;
+  return &f;
 }
 #endif
 }
