@@ -39,11 +39,6 @@ CImageResource::CImageResource(AddonProps props, std::string type)
 {
 }
 
-AddonPtr CImageResource::Clone() const
-{
-  return AddonPtr(new CImageResource(*this));
-}
-
 void CImageResource::OnPreUnInstall()
 {
   CURL xbtUrl;

@@ -37,7 +37,6 @@ public:
   explicit CImageResource(AddonProps props) : CResource(std::move(props)) {};
   CImageResource(AddonProps props, std::string type);
 
-  virtual AddonPtr Clone() const;
   virtual void OnPreUnInstall();
 
   virtual bool IsAllowed(const std::string &file) const;

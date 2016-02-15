@@ -35,7 +35,6 @@ public:
   explicit CPluginSource(AddonProps props);
   CPluginSource(AddonProps props, const std::string& provides);
 
-  virtual AddonPtr Clone() const;
   virtual TYPE FullType() const;
   virtual bool IsType(TYPE type) const;
   bool Provides(const Content& content) const

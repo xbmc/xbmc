@@ -48,7 +48,6 @@ namespace ADDON
     //FIXME: does shallow pointer copy. no copy assignment op
     CAddonDll(const CAddonDll<TheDll, TheStruct, TheProps> &rhs);
     virtual ~CAddonDll();
-    virtual AddonPtr Clone() const;
     virtual ADDON_STATUS GetStatus();
 
     // addon settings
@@ -121,12 +120,6 @@ CAddonDll<TheDll, TheStruct, TheProps>::~CAddonDll()
 {
   if (m_initialized)
     Destroy();
-}
-
-template<class TheDll, typename TheStruct, typename TheProps>
-AddonPtr CAddonDll<TheDll, TheStruct, TheProps>::Clone() const
-{
-  return AddonPtr(new CAddonDll<TheDll, TheStruct, TheProps>(*this));
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>

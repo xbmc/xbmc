@@ -57,7 +57,6 @@ namespace ADDON
         bool tracks, std::string codecName, std::string strExt);
 
     virtual ~CAudioDecoder() {}
-    virtual AddonPtr Clone() const;
 
     // Things that MUST be supplied by the child classes
     bool Init(const std::string& strFile, unsigned int filecache);

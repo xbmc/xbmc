@@ -226,8 +226,6 @@ namespace ADDON
     static void FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder);
 
   private:
-    void LoadAddons(const std::string &path,
-                    std::map<std::string, AddonPtr>& unresolved);
 
     /* libcpluff */
     cp_context_t *m_cp_context;

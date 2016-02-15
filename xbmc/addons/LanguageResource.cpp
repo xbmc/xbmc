@@ -126,11 +126,6 @@ CLanguageResource::CLanguageResource(
     m_sortTokens(sortTokens)
 { }
 
-AddonPtr CLanguageResource::Clone() const
-{
-  return AddonPtr(new CLanguageResource(*this));
-}
-
 bool CLanguageResource::IsInUse() const
 {
   return StringUtils::EqualsNoCase(CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_LANGUAGE), ID());

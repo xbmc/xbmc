@@ -61,7 +61,6 @@ public:
     , type(type)
     , version(versionstr)
     , minversion(minversionstr)
-    , stars(0)
   {
   }
 
@@ -93,8 +92,7 @@ public:
   std::string disclaimer;
   ADDONDEPS dependencies;
   std::string broken;
-  InfoMap    extrainfo;
-  int        stars;
+  InfoMap extrainfo;
   CDateTime installDate;
   CDateTime lastUpdated;
   CDateTime lastUsed;
@@ -107,7 +105,6 @@ class CAddon : public IAddon
 public:
   explicit CAddon(AddonProps props);
   virtual ~CAddon() {}
-  virtual AddonPtr Clone() const;
 
   /*! \brief Check whether the this addon can be configured or not
    \return true if the addon has settings, false otherwise
@@ -162,7 +159,6 @@ public:
   const std::string ChangeLog() const { return m_props.changelog; }
   const std::string FanArt() const { return m_props.fanart; }
   const std::string Icon() const { return m_props.icon; };
-  int Stars() const { return m_props.stars; }
   const std::string Disclaimer() const { return m_props.disclaimer; }
   const std::string Broken() const { return m_props.broken; }
   CDateTime InstallDate() const override { return m_props.installDate; }
@@ -207,10 +203,6 @@ public:
 
 protected:
   friend class CAddonCallbacksAddon;
-
-  CAddon(const CAddon &rhs); // protected as all copying is handled by Clone()
-
-  void BuildLibName();
 
   /*! \brief Load the default settings and override these with any previously configured user settings
    \param bForce force the load of settings even if they are already loaded (reload)
@@ -257,7 +249,6 @@ private:
   bool m_hasSettings;
 
   std::string m_profile;
-  CLocalizeStrings  m_strings;
   std::map<std::string, std::string> m_settings;
 };
 
@@ -265,8 +256,6 @@ class CAddonLibrary : public CAddon
 {
 public:
   explicit CAddonLibrary(AddonProps props);
-
-  virtual AddonPtr Clone() const;
 
 private:
   TYPE SetAddonType();

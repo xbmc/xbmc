@@ -194,7 +194,7 @@ void AddonProps::Serialize(CVariant &variant) const
     info["value"] = it->second;
     variant["extrainfo"].push_back(info);
   }
-  variant["rating"] = stars;
+  variant["rating"] = -1;
 }
 
 CAddon::CAddon(AddonProps props)
@@ -205,23 +205,6 @@ CAddon::CAddon(AddonProps props)
   m_hasSettings = true;
   m_settingsLoaded = false;
   m_userSettingsLoaded = false;
-}
-
-CAddon::CAddon(const CAddon &rhs)
-  : m_props(rhs.m_props),
-    m_settings(rhs.m_settings)
-{
-  m_addonXmlDoc = rhs.m_addonXmlDoc;
-  m_settingsLoaded = rhs.m_settingsLoaded;
-  m_userSettingsLoaded = rhs.m_userSettingsLoaded;
-  m_hasSettings = rhs.m_hasSettings;
-  BuildProfilePath();
-  m_userSettingsPath = URIUtils::AddFileToFolder(Profile(), "settings.xml");
-}
-
-AddonPtr CAddon::Clone() const
-{
-  return AddonPtr(new CAddon(*this));
 }
 
 bool CAddon::MeetsVersion(const AddonVersion &version) const
@@ -502,11 +485,6 @@ CAddonLibrary::CAddonLibrary(AddonProps props)
   : CAddon(std::move(props))
   , m_addonType(SetAddonType())
 {
-}
-
-AddonPtr CAddonLibrary::Clone() const
-{
-  return AddonPtr(new CAddonLibrary(*this));
 }
 
 TYPE CAddonLibrary::SetAddonType()

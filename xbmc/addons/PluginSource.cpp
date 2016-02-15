@@ -51,11 +51,6 @@ CPluginSource::CPluginSource(AddonProps props, const std::string& provides)
   SetProvides(provides);
 }
 
-AddonPtr CPluginSource::Clone() const
-{
-  return AddonPtr(new CPluginSource(*this));
-}
-
 void CPluginSource::SetProvides(const std::string &content)
 {
   if (!content.empty())

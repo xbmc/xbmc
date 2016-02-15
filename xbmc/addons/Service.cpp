@@ -42,11 +42,6 @@ CService::CService(AddonProps props, TYPE type, START_OPTION startOption)
   BuildServiceType();
 }
 
-AddonPtr CService::Clone() const
-{
-  return AddonPtr(new CService(*this));
-}
-
 bool CService::Start()
 {
   bool ret = true;

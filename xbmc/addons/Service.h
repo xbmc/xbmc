@@ -43,7 +43,6 @@ namespace ADDON
 
     explicit CService(AddonProps props) : CAddon(std::move(props)), m_type(UNKNOWN), m_startOption(LOGIN) {}
     CService(AddonProps props, TYPE type, START_OPTION startOption);
-    virtual AddonPtr Clone() const;
 
     bool Start();
     bool Stop();

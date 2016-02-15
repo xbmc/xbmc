@@ -36,7 +36,6 @@ namespace ADDON
     explicit CAudioEncoder(AddonProps props) : AudioEncoderDll(std::move(props)), m_context{nullptr} {};
     CAudioEncoder(AddonProps props, std::string extension);
     virtual ~CAudioEncoder() {}
-    virtual AddonPtr Clone() const;
 
     // Things that MUST be supplied by the child classes
     bool Init(audioenc_callbacks &callbacks);

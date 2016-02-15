@@ -128,9 +128,7 @@ namespace XBMCAddon
       else if (strcmpi(id, "profile") == 0)
         return pAddon->Profile();
       else if (strcmpi(id, "stars") == 0)
-      {
-        return StringUtils::Format("%d", pAddon->Stars());
-      }
+        return StringUtils::Format("-1");
       else if (strcmpi(id, "summary") == 0)
         return pAddon->Summary();
       else if (strcmpi(id, "type") == 0)

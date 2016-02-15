@@ -48,9 +48,6 @@ namespace ADDON
     std::string GetEntryPoint(const std::string &path) const;
     std::string GetBaseLocation() const;
 
-    // specializations of CAddon
-    virtual AddonPtr Clone() const;
-
   private:
     WebinterfaceType m_type;
     std::string m_entryPoint;
