@@ -1303,7 +1303,9 @@ msgctxt "#294"
 msgid "Create bookmark"
 msgstr ""
 
-#empty string with id 295
+msgctxt "#295"
+msgid "Rename bookmark"
+msgstr ""
 
 msgctxt "#296"
 msgid "Clear bookmarks"
@@ -3194,7 +3196,15 @@ msgctxt "#751"
 msgid "Removing source"
 msgstr ""
 
-#empty strings from id 752 to 753
+#: xbmc/dialogs/GUIDialogVideoBookmarks.cpp
+msgctxt "#752"
+msgid "Removing all bookmarks"
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogVideoBookmarks.cpp
+msgctxt "#753"
+msgid "Removing bookmark"
+msgstr ""
 
 msgctxt "#754"
 msgid "Add program link"

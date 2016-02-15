@@ -33,6 +33,7 @@ void CBookmark::Reset()
   totalTimeInSeconds = 0.0f;
   partNumber = 0;
   type = STANDARD;
+  bookmarkName = std::string();
 }
 
 bool CBookmark::IsSet() const

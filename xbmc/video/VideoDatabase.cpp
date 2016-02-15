@@ -99,7 +99,7 @@ bool CVideoDatabase::Open()
 void CVideoDatabase::CreateTables()
 {
   CLog::Log(LOGINFO, "create bookmark table");
-  m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds double, totalTimeInSeconds double, thumbNailImage text, player text, playerState text, type integer)\n");
+  m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds double, totalTimeInSeconds double, thumbNailImage text, player text, playerState text, type integer, bookmarkName text)\n");
 
   CLog::Log(LOGINFO, "create settings table");
   m_pDS->exec("CREATE TABLE settings ( idFile integer, Deinterlace bool,"
@@ -2871,6 +2871,7 @@ void CVideoDatabase::GetBookMarksForFile(const std::string& strFilenameAndPath, 
         bookmark.thumbNailImage = m_pDS->fv("thumbNailImage").get_asString();
         bookmark.playerState = m_pDS->fv("playerState").get_asString();
         bookmark.player = m_pDS->fv("player").get_asString();
+        bookmark.bookmarkName = m_pDS->fv("bookmarkName").get_asString();
         bookmark.type = type;
         if (type == CBookmark::EPISODE)
         {
@@ -2979,9 +2980,9 @@ void CVideoDatabase::AddBookMarkToFile(const std::string& strFilenameAndPath, co
     }
     // update or insert depending if it existed before
     if (idBookmark >= 0 )
-      strSQL=PrepareSQL("update bookmark set timeInSeconds = %f, totalTimeInSeconds = %f, thumbNailImage = '%s', player = '%s', playerState = '%s' where idBookmark = %i", bookmark.timeInSeconds, bookmark.totalTimeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), idBookmark);
+      strSQL=PrepareSQL("update bookmark set timeInSeconds = %f, totalTimeInSeconds = %f, thumbNailImage = '%s', player = '%s', playerState = '%s', bookmarkName ='%s' where idBookmark = %i", bookmark.timeInSeconds, bookmark.totalTimeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), bookmark.bookmarkName.c_str(), idBookmark);
     else
-      strSQL=PrepareSQL("insert into bookmark (idBookmark, idFile, timeInSeconds, totalTimeInSeconds, thumbNailImage, player, playerState, type) values(NULL,%i,%f,%f,'%s','%s','%s', %i)", idFile, bookmark.timeInSeconds, bookmark.totalTimeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), (int)type);
+      strSQL=PrepareSQL("insert into bookmark (idBookmark, idFile, timeInSeconds, totalTimeInSeconds, thumbNailImage, player, playerState, bookmarkName, type) values(NULL,%i,%f,%f,'%s','%s','%s','%s',%i)", idFile, bookmark.timeInSeconds, bookmark.totalTimeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), bookmark.bookmarkName.c_str(), (int)type);
 
     m_pDS->exec(strSQL);
   }
@@ -4905,11 +4906,16 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE settings ADD VideoStream integer");
     m_pDS->exec("ALTER TABLE streamdetails ADD strVideoLanguage text");
   }
+
+  if (iVersion < 104)
+  { // add bookmarkName to bookmark table
+    m_pDS->exec("ALTER TABLE bookmark ADD bookmarkName text");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 103;
+  return 104;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)

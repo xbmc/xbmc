@@ -44,6 +44,7 @@ public:
   std::string thumbNailImage;
   std::string playerState;
   std::string player;
+  std::string bookmarkName;
   long seasonNumber;
   long episodeNumber;
 
