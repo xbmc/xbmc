@@ -40,6 +40,7 @@ set(SOURCES ActorProtocol.cpp
             PerformanceSample.cpp
             PerformanceStats.cpp
             POUtils.cpp
+            Proxy.cpp
             RecentlyAddedJob.cpp
             RegExp.cpp
             rfft.cpp
