@@ -41,6 +41,23 @@ using namespace JSONRPC;
 using namespace XFILE;
 using namespace KODI::MESSAGING;
 
+JSONRPC_STATUS CAudioLibrary::GetProperties(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CVariant properties = CVariant(CVariant::VariantTypeObject);
+  for (CVariant::const_iterator_array it = parameterObject["properties"].begin_array(); it != parameterObject["properties"].end_array(); it++)
+  {
+    std::string propertyName = it->asString();
+    CVariant property;
+    if (propertyName == "missingartistid")
+      property = (int)BLANKARTIST_ID;
+
+    properties[propertyName] = property;
+  }
+
+  result = properties;
+  return OK;
+}
+
 JSONRPC_STATUS CAudioLibrary::GetArtists(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CMusicDatabase musicdatabase;
@@ -86,6 +103,7 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const std::string &method, ITransportLa
     return InvalidParams;
 
   CFileItemList items;
+  musicdatabase.SetTranslateBlankArtist(false);  
   if (!musicdatabase.GetArtistsNav(musicUrl.ToString(), items, albumArtistsOnly, genreID, albumID, songID, CDatabase::Filter(), sorting))
     return InternalError;
 

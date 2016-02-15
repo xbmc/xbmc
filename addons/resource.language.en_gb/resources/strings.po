@@ -18561,3 +18561,9 @@ msgstr ""
 msgctxt "#38041"
 msgid "Mixer"
 msgstr "" 
+
+#. Missing artist name
+#: music/MusicDatabase.cpp
+msgctxt "#38042"
+msgid "[Missing]"
+msgstr ""

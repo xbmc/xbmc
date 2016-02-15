@@ -639,6 +639,16 @@
       }
     }
   },
+  "AudioLibrary.GetProperties": {
+    "type": "method",
+    "description": "Retrieves the values of the music library properties",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [      
+      { "name": "properties", "type": "array", "uniqueItems": true, "required": true, "items": { "$ref": "Audio.Property.Name" } }
+    ],
+    "returns":  { "$ref": "Audio.Property.Value", "required": true }
+  },
   "AudioLibrary.GetArtists": {
     "type": "method",
     "description": "Retrieve all artists",
