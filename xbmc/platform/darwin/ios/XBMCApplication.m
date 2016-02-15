@@ -257,19 +257,17 @@ __attribute__((constructor)) static void HookKeyboard(void)
 }
 //---------------- HOOK FOR BT KEYBOARD CURSORS KEYS END----------------
 
+static void SigPipeHandler(int s)
+{
+  NSLog(@"We Got a Pipe Single :%d____________", s);
+}
+
 int main(int argc, char *argv[]) {
   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];	
   int retVal = 0;
   
-  // Block SIGPIPE
-  // SIGPIPE repeatably kills us, turn it off
-  {
-    sigset_t set;
-    sigemptyset(&set);
-    sigaddset(&set, SIGPIPE);
-    sigprocmask(SIG_BLOCK, &set, NULL);
-  }
-  
+  signal(SIGPIPE, SigPipeHandler);  
+
   @try
   {
     retVal = UIApplicationMain(argc,argv,@"UIApplication",@"XBMCApplicationDelegate");

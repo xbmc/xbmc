@@ -2599,7 +2599,7 @@
             </dependency>
           </dependencies>
         </setting>
-        <setting id="audiooutput.dspresetdb" type="action" label="334" help="36439">
+        <setting id="audiooutput.dspresetdb" type="action" label="14082" help="36439">
           <level>1</level>
           <control type="button" format="action" />
           <dependencies>
@@ -2913,6 +2913,11 @@
           <dependencies>
             <dependency type="enable" setting="general.addonupdates">0</dependency>
           </dependencies>
+        </setting>
+        <setting id="addons.unknownsources" type="boolean" label="36615" help="36616">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
         </setting>
       </group>
       <group id="2">

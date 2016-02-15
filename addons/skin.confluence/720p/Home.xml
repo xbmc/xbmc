@@ -175,16 +175,16 @@
 					<bordersize>4</bordersize>
 				</control>
 				<control type="image">
-					<left>360</left>
+					<left>365</left>
 					<top>5</top>
-					<width>30</width>
+					<width>25</width>
 					<height>25</height>
 					<aspectratio>keep</aspectratio>
 					<texture>PVR-IsRecording.png</texture>
 				</control>
 				<control type="label">
 					<description>Is Recording Header label</description>
-					<left>-50</left>
+					<left>-45</left>
 					<top>5</top>
 					<height>25</height>
 					<width>400</width>
@@ -1250,7 +1250,7 @@
 				<shadowcolor>black</shadowcolor>
 				<label>$INFO[System.Date]</label>
 				<include>Window_OpenClose_Animation</include>
-				<animation effect="slide" start="0,0" end="-40,0" time="75" condition="Window.IsVisible(Mutebug)">conditional</animation>
+				<animation effect="slide" start="0,0" end="-40,0" time="75" condition="Player.Muted">conditional</animation>
 			</control>
 		</control>
 	</controls>

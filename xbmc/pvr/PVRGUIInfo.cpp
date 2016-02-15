@@ -901,13 +901,13 @@ int CPVRGUIInfo::GetDuration(void) const
 int CPVRGUIInfo::GetStartTime(void) const
 {
   CSingleLock lock(m_critSection);
-  if (m_playingEpgTag)
+  if (m_playingEpgTag || m_iTimeshiftStartTime)
   {
     /* Calculate here the position we have of the running live TV event.
      * "position in ms" = ("current UTC" - "event start UTC") * 1000
      */
-    CDateTime current = g_PVRClients->GetPlayingTime();
-    CDateTime start = m_playingEpgTag->StartAsUTC();
+    CDateTime current = m_iTimeshiftPlayTime;
+    CDateTime start = m_playingEpgTag ? m_playingEpgTag->StartAsUTC() : m_iTimeshiftStartTime;
     CDateTimeSpan time = current > start ? current - start : CDateTimeSpan(0, 0, 0, 0);
     return (time.GetDays()   * 60 * 60 * 24
          + time.GetHours()   * 60 * 60
@@ -954,6 +954,10 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
         {
           m_playingEpgTag = newTag;
           m_iDuration     = m_playingEpgTag->GetDuration() * 1000;
+        }
+        else if (m_iTimeshiftEndTime > m_iTimeshiftStartTime)
+        {
+          m_iDuration = (m_iTimeshiftEndTime - m_iTimeshiftStartTime) * 1000;
         }
       }
       g_PVRManager.UpdateCurrentFile();

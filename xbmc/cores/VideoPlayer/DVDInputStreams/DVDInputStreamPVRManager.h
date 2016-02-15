@@ -35,24 +35,33 @@ class IRecordable;
 }
 
 class IVideoPlayer;
+struct PVR_STREAM_PROPERTIES;
+class CDemuxStreamAudio;
+class CDemuxStreamVideo;
+class CDemuxStreamSubtitle;
+class CDemuxStreamTeletext;
+class CDemuxStreamRadioRDS;
+class IDemux;
 
 class CDVDInputStreamPVRManager
   : public CDVDInputStream
   , public CDVDInputStream::IDisplayTime
   , public CDVDInputStream::ISeekable
+  , public CDVDInputStream::IDemux
 {
 public:
   CDVDInputStreamPVRManager(IVideoPlayer* pPlayer, CFileItem& fileitem);
   virtual ~CDVDInputStreamPVRManager();
-  virtual bool Open();
-  virtual void Close();
-  virtual int Read(uint8_t* buf, int buf_size);
-  virtual int64_t Seek(int64_t offset, int whence);
-  virtual bool Pause(double dTime) { return false; }
-  virtual bool IsEOF();
-  virtual int64_t GetLength();
+  virtual bool Open() override;
+  virtual void Close() override;
+  virtual int Read(uint8_t* buf, int buf_size) override;
+  virtual int64_t Seek(int64_t offset, int whence) override;
+  virtual bool Pause(double dTime) override { return false; }
+  virtual bool IsEOF() override;
+  virtual int64_t GetLength() override;
 
-  virtual ENextStream NextStream();
+  virtual ENextStream NextStream() override;
+  virtual bool IsRealtime() override;
 
   bool IsOtherStreamHack(void);
   bool SelectChannelByNumber(unsigned int iChannel);
@@ -61,14 +70,14 @@ public:
   bool PrevChannel(bool preview = false);
   PVR::CPVRChannelPtr GetSelectedChannel();
 
-  int GetTotalTime();
-  int GetTime();
+  int GetTotalTime() override;
+  int GetTime() override;
 
   bool CanRecord();
   bool IsRecording();
   bool Record(bool bOnOff);
-  bool CanSeek();
-  bool CanPause();
+  bool CanSeek() override;
+  bool CanPause() override;
   void Pause(bool bPaused);
 
   bool UpdateItem(CFileItem& item);
@@ -87,7 +96,18 @@ public:
   /* returns m_pOtherStream */
   CDVDInputStream* GetOtherStream();
 
-  void ResetScanTimeout(unsigned int iTimeoutMs);
+  void ResetScanTimeout(unsigned int iTimeoutMs) override;
+
+  // Demux interface
+  virtual CDVDInputStream::IDemux* GetIDemux() override;
+  virtual bool OpenDemux() override;
+  virtual DemuxPacket* ReadDemux() override;
+  virtual CDemuxStream* GetStream(int iStreamId) override;
+  virtual int GetNrOfStreams() override;
+  virtual void SetSpeed(int iSpeed) override;
+  virtual bool SeekTime(int time, bool backward = false, double* startpts = NULL) override;
+  virtual void AbortDemux() override;
+  virtual void FlushDemux() override;
 
 protected:
   bool CloseAndOpen(const char* strFile);
@@ -98,9 +118,17 @@ protected:
   XFILE::ILiveTVInterface* m_pLiveTV;
   XFILE::IRecordable* m_pRecordable;
   bool m_eof;
+  bool m_demuxActive;
   std::string m_strContent;
   XbmcThreads::EndTime m_ScanTimeout;
   bool m_isOtherStreamHack;
+  PVR_STREAM_PROPERTIES *m_StreamProps;
+  CDemuxStreamAudio *m_streamAudio;
+  CDemuxStreamVideo *m_streamVideo;
+  CDemuxStreamSubtitle *m_streamSubtitle;
+  CDemuxStreamTeletext *m_streamTeletext;
+  CDemuxStreamRadioRDS *m_streamRadioRDS;
+  CDemuxStream *m_streamDefault;
 };
 
 

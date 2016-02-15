@@ -419,11 +419,11 @@ void CWinSystemIOS::DeinitDisplayLink(void)
 //------------DispalyLink stuff end
 //--------------------------------------------------------------
 
-bool CWinSystemIOS::PresentRenderImpl(const CDirtyRegionList &dirty)
+void CWinSystemIOS::PresentRenderImpl(bool rendered)
 {
   //glFlush;
-  [g_xbmcController presentFramebuffer];
-  return true;
+  if (rendered)
+    [g_xbmcController presentFramebuffer];
 }
 
 void CWinSystemIOS::SetVSyncImpl(bool enable)

@@ -22,6 +22,7 @@
 #include "addons/AddonSystemSettings.h"
 #include "addons/RepositoryUpdater.h"
 #include "guilib/GUIWindowManager.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
 
 
@@ -34,7 +35,7 @@ CAddonSystemSettings& CAddonSystemSettings::GetInstance()
   return inst;
 }
 
-void  CAddonSystemSettings::OnSettingAction(const CSetting* setting)
+void CAddonSystemSettings::OnSettingAction(const CSetting* setting)
 {
   if (setting->GetId() == CSettings::SETTING_ADDONS_MANAGE_DEPENDENCIES)
   {
@@ -46,6 +47,18 @@ void  CAddonSystemSettings::OnSettingAction(const CSetting* setting)
     std::vector<std::string> params{"addons://running/", "return"};
     g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
   }
-};
+}
+
+void CAddonSystemSettings::OnSettingChanged(const CSetting* setting)
+{
+  using namespace KODI::MESSAGING::HELPERS;
+
+  if (setting->GetId() == CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES
+    && CSettings::GetInstance().GetBool(CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES)
+    && ShowYesNoDialogText(19098, 36618) != DialogResponse::YES)
+  {
+    CSettings::GetInstance().SetBool(CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES, false);
+  }
+}
 
 }

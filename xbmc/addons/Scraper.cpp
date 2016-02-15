@@ -126,50 +126,57 @@ static void CheckScraperError(const TiXmlElement *pxeRoot)
   throw CScraperError(sTitle, sMessage);
 }
 
-CScraper::CScraper(const cp_extension_t *ext) : CAddon(ext), m_fLoaded(false)
+std::unique_ptr<CScraper> CScraper::FromExtension(AddonProps props, const cp_extension_t* ext)
 {
-  if (ext)
-  {
-    m_language = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@language");
-    m_requiressettings = CAddonMgr::GetInstance().GetExtValue(ext->configuration,"@requiressettings") == "true";
-    std::string persistence = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@cachepersistence");
-    if (!persistence.empty())
-      m_persistence.SetFromTimeString(persistence);
-  }
-  switch (Type())
+  std::string language = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@language");
+  bool requiressettings = CAddonMgr::GetInstance().GetExtValue(ext->configuration,"@requiressettings") == "true";
+
+  CDateTimeSpan persistence;
+  std::string tmp = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@cachepersistence");
+  if (!tmp.empty())
+    persistence.SetFromTimeString(tmp);
+
+  CONTENT_TYPE pathContent(CONTENT_NONE);
+  switch (props.type)
   {
     case ADDON_SCRAPER_ALBUMS:
-      m_pathContent = CONTENT_ALBUMS;
+      pathContent = CONTENT_ALBUMS;
       break;
     case ADDON_SCRAPER_ARTISTS:
-      m_pathContent = CONTENT_ARTISTS;
+      pathContent = CONTENT_ARTISTS;
       break;
     case ADDON_SCRAPER_MOVIES:
-      m_pathContent = CONTENT_MOVIES;
+      pathContent = CONTENT_MOVIES;
       break;
     case ADDON_SCRAPER_MUSICVIDEOS:
-      m_pathContent = CONTENT_MUSICVIDEOS;
+      pathContent = CONTENT_MUSICVIDEOS;
       break;
     case ADDON_SCRAPER_TVSHOWS:
-      m_pathContent = CONTENT_TVSHOWS;
+      pathContent = CONTENT_TVSHOWS;
       break;
     default:
-      m_pathContent = CONTENT_NONE;
+      pathContent = CONTENT_NONE;
       break;
   }
+
+  return std::unique_ptr<CScraper>(new CScraper(std::move(props), language, requiressettings, persistence));
 }
 
-AddonPtr CScraper::Clone() const
+CScraper::CScraper(AddonProps props)
+  : CAddon(std::move(props)),
+    m_fLoaded(false),
+    m_requiressettings(false),
+    m_pathContent(CONTENT_NONE)
 {
-  return AddonPtr(new CScraper(*this));
 }
 
-CScraper::CScraper(const CScraper &rhs)
-  : CAddon(rhs), m_fLoaded(false),
-    m_language(rhs.m_language),
-    m_requiressettings(rhs.m_requiressettings),
-    m_persistence(rhs.m_persistence),
-    m_pathContent(rhs.m_pathContent)
+CScraper::CScraper(AddonProps props, const std::string& language, bool requiressettings, const CDateTimeSpan& persistence)
+  : CAddon(std::move(props)),
+    m_fLoaded(false),
+    m_language(language),
+    m_requiressettings(requiressettings),
+    m_persistence(persistence),
+    m_pathContent(CONTENT_NONE)
 {
 }
 

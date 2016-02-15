@@ -1,0 +1,73 @@
+set(SOURCES AddonCallback.cpp
+            AddonClass.cpp
+            Addon.cpp
+            AddonUtils.cpp
+            CallbackFunction.cpp
+            CallbackHandler.cpp
+            Control.cpp
+            Dialog.cpp
+            File.cpp
+            InfoTagMusic.cpp
+            InfoTagRadioRDS.cpp
+            InfoTagVideo.cpp
+            Keyboard.cpp
+            LanguageHook.cpp
+            ListItem.cpp
+            ModuleXbmc.cpp
+            ModuleXbmcgui.cpp
+            ModuleXbmcplugin.cpp
+            ModuleXbmcvfs.cpp
+            Monitor.cpp
+            Player.cpp
+            PlayList.cpp
+            String.cpp
+            Window.cpp
+            WindowDialog.cpp
+            WindowDialogMixin.cpp
+            WindowXML.cpp)
+
+set(HEADERS Addon.h
+            AddonCallback.h
+            AddonClass.h
+            AddonString.h
+            AddonUtils.h
+            Alternative.h
+            aojsonrpc.h
+            CallbackFunction.h
+            CallbackHandler.h
+            Control.h
+            Dialog.h
+            Dictionary.h
+            Exception.h
+            File.h
+            InfoTagMusic.h
+            InfoTagRadioRDS.h
+            InfoTagVideo.h
+            Keyboard.h
+            LanguageHook.h
+            List.h
+            ListItem.h
+            ModuleXbmc.h
+            ModuleXbmcgui.h
+            ModuleXbmcplugin.h
+            ModuleXbmcvfs.h
+            Monitor.h
+            Player.h
+            PlayList.h
+            RenderCapture.h
+            Stat.h
+            swighelper.h
+            Tuple.h
+            Window.h
+            WindowDialog.h
+            WindowDialogMixin.h
+            WindowException.h
+            WindowInterceptor.h
+            WindowXML.h)
+
+core_add_library(legacy_interface)
+add_dependencies(legacy_interface libcpluff)
+
+if(ENABLE_INTERNAL_FFMPEG)
+  add_dependencies(legacy_interface ffmpeg)
+endif()

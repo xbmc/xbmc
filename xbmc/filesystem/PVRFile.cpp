@@ -23,6 +23,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/recordings/PVRRecordings.h"
+#include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/addons/PVRClients.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -67,7 +68,7 @@ bool CPVRFile::Open(const CURL& url)
       return false;
     }
   }
-  else if (StringUtils::StartsWith(strURL, "pvr://recordings/active"))
+  else if (CPVRRecordingsPath(strURL).IsActive())
   {
     CFileItemPtr tag = g_PVRRecordings->GetByPath(strURL);
     if (tag && tag->HasPVRRecordingInfoTag())
@@ -84,7 +85,7 @@ bool CPVRFile::Open(const CURL& url)
       return false;
     }
   }
-  else if (StringUtils::StartsWith(strURL, "pvr://recordings/deleted/"))
+  else if (CPVRRecordingsPath(strURL).IsDeleted())
   {
     CLog::Log(LOGNOTICE, "PVRFile - Playback of deleted recordings is not possible (%s)", strURL.c_str());
     return false;

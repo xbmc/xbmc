@@ -35,6 +35,7 @@
 #include "FileItem.h"
 #include "filesystem/AddonsDirectory.h"
 #include "addons/AddonInstaller.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
 #include "settings/MediaSourceSettings.h"
 #include "utils/StringUtils.h"
@@ -222,13 +223,23 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem, const std::string &player)
   CFileItemPtr item = m_vecItems->Get(iItem);
   if (item->GetPath() == "addons://install/")
   {
-    // pop up filebrowser to grab an installed folder
-    VECSOURCES shares = *CMediaSourceSettings::GetInstance().GetSources("files");
-    g_mediaManager.GetLocalDrives(shares);
-    g_mediaManager.GetNetworkLocations(shares);
-    std::string path;
-    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "*.zip", g_localizeStrings.Get(24041), path))
-      CAddonInstaller::GetInstance().InstallFromZip(path);
+    using namespace KODI::MESSAGING::HELPERS;
+
+    if (!CSettings::GetInstance().GetBool(CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES))
+    {
+      if (ShowYesNoDialogText(13106, 36617, 186, 10004) == DialogResponse::YES)
+        g_windowManager.ActivateWindow(WINDOW_SETTINGS_SYSTEM, "addons");
+    }
+    else
+    {
+      // pop up filebrowser to grab an installed folder
+      VECSOURCES shares = *CMediaSourceSettings::GetInstance().GetSources("files");
+      g_mediaManager.GetLocalDrives(shares);
+      g_mediaManager.GetNetworkLocations(shares);
+      std::string path;
+      if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "*.zip", g_localizeStrings.Get(24041), path))
+        CAddonInstaller::GetInstance().InstallFromZip(path);
+    }
     return true;
   }
   if (item->GetPath() == "addons://update_all/")
@@ -336,7 +347,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFile
       {
         for (int i = items.Size() - 1; i >= 0; i--)
         {
-          if (!items[i]->GetProperty("Addon.Broken").empty())
+          if (items[i]->GetAddonInfo() && !items[i]->GetAddonInfo()->Broken().empty())
           {
             //check if it's installed
             AddonPtr addon;
@@ -457,7 +468,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
       else if (*type == ADDON_VIDEO)
         CAddonsDirectory::GetScriptsAndPlugins("video", typeAddons);
       else
-        CAddonMgr::GetInstance().GetAddons(*type, typeAddons);
+        CAddonMgr::GetInstance().GetAddons(typeAddons, *type);
 
       addons.insert(addons.end(), typeAddons.begin(), typeAddons.end());
     }
@@ -467,7 +478,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
   {
     VECADDONS installableAddons;
     CAddonDatabase database;
-    if (database.Open() && database.GetAddons(installableAddons))
+    if (database.Open() && database.GetRepositoryContent(installableAddons))
     {
       for (ADDON::IVECADDONS addon = installableAddons.begin(); addon != installableAddons.end();)
       {

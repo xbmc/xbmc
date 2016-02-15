@@ -43,19 +43,15 @@
 
 using namespace XFILE;
 
-#define CONTROL_IMAGE            3
-#define CONTROL_TEXTAREA         4
-
-#define CONTROL_BTN_TRACKS       5
 #define CONTROL_BTN_REFRESH      6
 #define CONTROL_USERRATING       7
 #define CONTROL_BTN_GET_THUMB   10
-#define  CONTROL_BTN_GET_FANART 12
+#define CONTROL_BTN_GET_FANART  12
 
 #define CONTROL_LIST            50
 
 CGUIDialogMusicInfo::CGUIDialogMusicInfo(void)
-    : CGUIDialog(WINDOW_DIALOG_MUSIC_INFO, "DialogAlbumInfo.xml")
+    : CGUIDialog(WINDOW_DIALOG_MUSIC_INFO, "DialogMusicInfo.xml")
     , m_albumItem(new CFileItem)
 {
   m_bRefresh = false;
@@ -120,11 +116,6 @@ bool CGUIDialogMusicInfo::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_BTN_GET_THUMB)
       {
         OnGetThumb();
-      }
-      else if (iControl == CONTROL_BTN_TRACKS)
-      {
-        m_bViewReview = !m_bViewReview;
-        Update();
       }
       else if (iControl == CONTROL_LIST)
       {
@@ -284,59 +275,21 @@ void CGUIDialogMusicInfo::Update()
 {
   if (m_bArtistInfo)
   {
-    CONTROL_ENABLE(CONTROL_BTN_GET_FANART);
+    SET_CONTROL_VISIBLE(CONTROL_BTN_GET_FANART);
+    SET_CONTROL_HIDDEN(CONTROL_USERRATING);
 
-    SetLabel(CONTROL_TEXTAREA, m_artist.strBiography);
     CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_albumSongs);
     OnMessage(message);
 
-    if (GetControl(CONTROL_BTN_TRACKS)) // if no CONTROL_BTN_TRACKS found - allow skinner full visibility control over CONTROL_TEXTAREA and CONTROL_LIST
-    {
-      if (m_bViewReview)
-      {
-        SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
-        SET_CONTROL_HIDDEN(CONTROL_LIST);
-        SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 21888);
-      }
-      else
-      {
-        SET_CONTROL_VISIBLE(CONTROL_LIST);
-        SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
-        SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 21887);
-      }
-    }
   }
   else
   {
-    CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
+    SET_CONTROL_VISIBLE(CONTROL_USERRATING);
+    SET_CONTROL_HIDDEN(CONTROL_BTN_GET_FANART);
 
-    SetLabel(CONTROL_TEXTAREA, m_album.strReview);
     CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_albumSongs);
     OnMessage(message);
 
-    if (GetControl(CONTROL_BTN_TRACKS)) // if no CONTROL_BTN_TRACKS found - allow skinner full visibility control over CONTROL_TEXTAREA and CONTROL_LIST
-    {
-      if (m_bViewReview)
-      {
-        SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
-        SET_CONTROL_HIDDEN(CONTROL_LIST);
-        SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 182);
-      }
-      else
-      {
-        SET_CONTROL_VISIBLE(CONTROL_LIST);
-        SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
-        SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 183);
-      }
-    }
-  }
-  // update the thumbnail
-  const CGUIControl* pControl = GetControl(CONTROL_IMAGE);
-  if (pControl)
-  {
-    CGUIImage* pImageControl = (CGUIImage*)pControl;
-    pImageControl->FreeResources();
-    pImageControl->SetFileName(m_albumItem->GetArt("thumb"));
   }
 
   // disable the GetThumb button if the user isn't allowed it
@@ -347,7 +300,7 @@ void CGUIDialogMusicInfo::SetLabel(int iControl, const std::string& strLabel)
 {
   if (strLabel.empty())
   {
-    SET_CONTROL_LABEL(iControl, (iControl == CONTROL_TEXTAREA) ? (m_bArtistInfo?547:414) : 416);
+    SET_CONTROL_LABEL(iControl, 416);
   }
   else
   {
@@ -357,6 +310,16 @@ void CGUIDialogMusicInfo::SetLabel(int iControl, const std::string& strLabel)
 
 void CGUIDialogMusicInfo::OnInitWindow()
 {
+  SET_CONTROL_LABEL(CONTROL_BTN_REFRESH, 184);
+  SET_CONTROL_LABEL(CONTROL_USERRATING, 38023);
+  SET_CONTROL_LABEL(CONTROL_BTN_GET_THUMB, 13405);
+  SET_CONTROL_LABEL(CONTROL_BTN_GET_FANART, 20413);
+
+  if (m_bArtistInfo)
+    SET_CONTROL_HIDDEN(CONTROL_USERRATING);
+  else
+    SET_CONTROL_HIDDEN(CONTROL_BTN_GET_FANART);
+
   CGUIDialog::OnInitWindow();
 }
 

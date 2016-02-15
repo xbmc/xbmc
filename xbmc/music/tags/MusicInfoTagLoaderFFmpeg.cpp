@@ -84,23 +84,27 @@ bool CMusicInfoTagLoaderFFmpeg::Load(const std::string& strFileName, CMusicInfoT
     return false;
   }
 
-  AVDictionaryEntry* avtag=NULL;
+  auto&& ParseTag = [&tag](AVDictionaryEntry* avtag)
+                          {
+                            if (strcasecmp(avtag->key, "title") == 0)
+                              tag.SetTitle(avtag->value);
+                            else if (strcasecmp(avtag->key, "artist") == 0)
+                              tag.SetArtist(avtag->value);
+                            else if (strcasecmp(avtag->key, "album") == 0)
+                              tag.SetAlbum(avtag->value);
+                            else if (strcasecmp(avtag->key, "part_number") == 0 ||
+                                strcasecmp(avtag->key, "track") == 0)
+                              tag.SetTrackNumber(strtol(avtag->value, nullptr, 10));
+                          };
+
+  AVDictionaryEntry* avtag=nullptr;
   while ((avtag = av_dict_get(fctx->metadata, "", avtag, AV_DICT_IGNORE_SUFFIX)))
-  {
-    if (StringUtils::EqualsNoCase(URIUtils::GetExtension(strFileName), ".mka") ||
-        StringUtils::EqualsNoCase(URIUtils::GetExtension(strFileName), ".dsf"))
-    {
-      if (strcasecmp(avtag->key, "title") == 0)
-        tag.SetTitle(avtag->value);
-      else if (strcasecmp(avtag->key, "artist") == 0)
-        tag.SetArtist(avtag->value);
-      else if (strcasecmp(avtag->key, "album") == 0)
-        tag.SetAlbum(avtag->value);
-      else if (strcasecmp(avtag->key, "part_number") == 0 ||
-               strcasecmp(avtag->key, "track") == 0)
-        tag.SetTrackNumber(strtol(avtag->value, NULL, 10));
-    }
-  }
+    ParseTag(avtag);
+
+  const AVStream* st = fctx->streams[0];
+  if (st)
+    while ((avtag = av_dict_get(st->metadata, "", avtag, AV_DICT_IGNORE_SUFFIX)))
+      ParseTag(avtag);
 
   if (!tag.GetTitle().empty())
     tag.SetLoaded(true);

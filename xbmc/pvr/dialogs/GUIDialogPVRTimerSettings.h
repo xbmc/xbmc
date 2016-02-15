@@ -44,6 +44,8 @@ namespace PVR
     CGUIDialogPVRTimerSettings();
     virtual ~CGUIDialogPVRTimerSettings();
 
+    virtual bool CanBeActivated() const;
+
     void SetTimer(CFileItem *item);
 
   protected:

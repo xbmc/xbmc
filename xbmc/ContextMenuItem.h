@@ -20,7 +20,6 @@
  */
 
 #include <map>
-#include "addons/ContextMenuAddon.h"
 #include "addons/IAddon.h"
 #include "dialogs/GUIDialogContextMenu.h"
 
@@ -32,7 +31,7 @@ namespace ADDON
 class CContextMenuItem
 {
 public:
-  std::string GetLabel() const;
+  const std::string& GetLabel() const { return m_label; }
   bool IsVisible(const CFileItemPtr& item) const;
   bool IsParentOf(const CContextMenuItem& menuItem) const;
   bool IsGroup() const;

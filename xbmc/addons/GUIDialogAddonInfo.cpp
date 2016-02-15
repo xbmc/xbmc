@@ -61,8 +61,8 @@ using namespace XFILE;
 
 CGUIDialogAddonInfo::CGUIDialogAddonInfo(void)
   : CGUIDialog(WINDOW_DIALOG_ADDON_INFO, "DialogAddonInfo.xml"),
-  m_jobid(0),
   m_addonEnabled(false),
+  m_jobid(0),
   m_changelog(false)
 {
   m_item = CFileItemPtr(new CFileItem);
@@ -180,7 +180,7 @@ void CGUIDialogAddonInfo::UpdateControls()
   bool isInstalled = NULL != m_localAddon.get();
   m_addonEnabled = m_localAddon && !CAddonMgr::GetInstance().IsAddonDisabled(m_localAddon->ID());
   bool canDisable = isInstalled && CAddonMgr::GetInstance().CanAddonBeDisabled(m_localAddon->ID());
-  bool canInstall = !isInstalled && m_item->GetProperty("Addon.Broken").empty();
+  bool canInstall = !isInstalled && m_addon && m_addon->Broken().empty();
   bool isRepo = (isInstalled && m_localAddon->Type() == ADDON_REPOSITORY) || (m_addon && m_addon->Type() == ADDON_REPOSITORY);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canDisable || canInstall);
@@ -368,7 +368,7 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
 
   VECADDONS addons;
   std::vector<std::string> deps;
-  CAddonMgr::GetInstance().GetAllAddons(addons);
+  CAddonMgr::GetInstance().GetAddons(addons);
   for (VECADDONS::const_iterator it  = addons.begin();
        it != addons.end();++it)
   {

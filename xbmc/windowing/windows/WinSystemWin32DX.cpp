@@ -38,15 +38,16 @@ CWinSystemWin32DX::~CWinSystemWin32DX()
 
 }
 
-bool CWinSystemWin32DX::PresentRender(const CDirtyRegionList& dirty)
+void CWinSystemWin32DX::PresentRender(bool rendered)
 {
-  bool result = PresentRenderImpl(dirty);
+  if (rendered)
+    PresentRenderImpl(rendered);
+
   if (m_delayDispReset && m_dispResetTimer.IsTimePast())
   {
     m_delayDispReset = false;
     CWinSystemWin32::OnDisplayReset();
   }
-  return result;
 }
 
 bool CWinSystemWin32DX::UseWindowedDX(bool fullScreen)

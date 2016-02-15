@@ -1,0 +1,4 @@
+xbmc/peripherals                peripherals
+xbmc/peripherals/bus            peripherals/bus
+xbmc/peripherals/devices        peripherals/devices
+xbmc/peripherals/dialogs        peripherals/dialogs

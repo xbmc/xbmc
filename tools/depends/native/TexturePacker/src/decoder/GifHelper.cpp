@@ -263,28 +263,19 @@ bool GifHelper::GcbToFrame(GifFrame &frame, unsigned int imgIdx)
   {
 #if GIFLIB_MAJOR == 5
     GraphicsControlBlock gcb;
-    if (!DGifSavedExtensionToGCB(m_gif, imgIdx, &gcb))
+    if (DGifSavedExtensionToGCB(m_gif, imgIdx, &gcb))
     {
-      fprintf(stderr, "Gif::GcbToFrame(): Could not read GraphicsControlBlock of frame %d in file %s\n",
-        imgIdx, m_filename.c_str()), GifErrorString(m_gif->Error);
-      return false;
+      // delay in ms
+      frame.m_delay = gcb.DelayTime * 10;
+      frame.m_disposal = gcb.DisposalMode;
+      transparent = gcb.TransparentColor;
     }
-    // delay in ms
-    frame.m_delay = gcb.DelayTime * 10;
-    frame.m_disposal = gcb.DisposalMode;
-    transparent = gcb.TransparentColor;
 #else
     ExtensionBlock* extb = m_gif->SavedImages[imgIdx].ExtensionBlocks;
     while (extb && extb->Function != GRAPHICS_EXT_FUNC_CODE)
       extb++;
 
-    if (!extb || extb->ByteCount != 4)
-    {
-      fprintf(stderr, "Gif::GcbToFrame() : Could not read GraphicsControlBlock of frame %d in file %s\n",
-        imgIdx, m_filename.c_str());
-      return false;
-    }
-    else
+    if (extb && extb->ByteCount == 4)
     {
       uint8_t low = static_cast<uint8_t>(extb->Bytes[1]);
       uint8_t high = static_cast<uint8_t>(extb->Bytes[2]);
@@ -297,7 +288,6 @@ bool GifHelper::GcbToFrame(GifFrame &frame, unsigned int imgIdx)
       else
         transparent = -1;
     }
-
 #endif
   }
 

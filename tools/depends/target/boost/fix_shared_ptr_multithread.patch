@@ -1,8 +1,0 @@
---- boost/config/user.hpp.orig	2014-01-20 11:45:10.048976867 +0100
-+++ boost/config/user.hpp	2014-01-20 11:45:34.244568535 +0100
-@@ -121,4 +121,4 @@
- // #define BOOST_WHATEVER_NO_LIB
-  
- 
--
-+#define BOOST_SP_USE_SPINLOCK

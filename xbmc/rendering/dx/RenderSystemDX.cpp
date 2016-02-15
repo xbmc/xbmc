@@ -1108,15 +1108,23 @@ bool CRenderSystemDX::CreateStates()
   return true;
 }
 
-bool CRenderSystemDX::PresentRenderImpl(const CDirtyRegionList &dirty)
+void CRenderSystemDX::PresentRenderImpl(bool rendered)
 {
   HRESULT hr;
 
+  if (!rendered)
+    return;
+  
   if (!m_bRenderCreated || m_resizeInProgress)
-    return false;
+    return;
 
   if (m_nDeviceStatus != S_OK)
-    return false;
+  {
+    // if DXGI_STATUS_OCCLUDED occurred we just clear command queue and return
+    if (m_nDeviceStatus == DXGI_STATUS_OCCLUDED)
+      FinishCommandList(false);
+    return;
+  }
 
   if ( m_stereoMode == RENDER_STEREO_MODE_INTERLACED
     || m_stereoMode == RENDER_STEREO_MODE_CHECKERBOARD)
@@ -1149,7 +1157,7 @@ bool CRenderSystemDX::PresentRenderImpl(const CDirtyRegionList &dirty)
   if (DXGI_ERROR_DEVICE_REMOVED == hr)
   {
     CLog::Log(LOGDEBUG, "%s - device removed", __FUNCTION__);
-    return false;
+    return;
   }
 
   if (DXGI_ERROR_INVALID_CALL == hr)
@@ -1162,14 +1170,12 @@ bool CRenderSystemDX::PresentRenderImpl(const CDirtyRegionList &dirty)
   if (FAILED(hr))
   {
     CLog::Log(LOGDEBUG, "%s - Present failed. %s", __FUNCTION__, GetErrorDescription(hr).c_str());
-    return false;
+    return;
   }
 
   // after present swapchain unbinds RT view from immediate context, need to restore it because it can be used by something else
   if (m_pContext == m_pImdContext)
     m_pContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_depthStencilView);
-
-  return true;
 }
 
 bool CRenderSystemDX::BeginRender()
@@ -1214,8 +1220,7 @@ bool CRenderSystemDX::BeginRender()
     if (m_nDeviceStatus != oldStatus)
       CLog::Log(LOGDEBUG, "DXGI_STATUS_OCCLUDED");
     // Status OCCLUDED is not an error and not handled by FAILED macro, 
-    // but if it occurs we should not render anything, so just return false
-    return false;
+    // but if it occurs we should not render anything, this status will be accounted on present stage
   }
 
   if (FAILED(m_nDeviceStatus))

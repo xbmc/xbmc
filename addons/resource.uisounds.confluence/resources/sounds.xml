@@ -19,7 +19,7 @@
 
 <!-- To map a sound to a window, add a block like this to <windows>:        -->
 <!--    <window>                                                            -->
-<!--      <name>infodialog</name>                                           -->
+<!--      <name>notification</name>                                         -->
 <!--      <activate>notify.wav</activate>                                   -->
 <!--      <deactivate>out.wav</deactivate>                                  -->
 <!--    </window>                                                           -->
@@ -74,7 +74,7 @@
 
   <windows>
     <window>
-      <name>infodialog</name>
+      <name>notification</name>
       <activate>notify.wav</activate>
       <deactivate>out.wav</deactivate>
     </window>

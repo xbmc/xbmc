@@ -1279,7 +1279,7 @@ float COMXAudio::GetDelay()
   if (m_last_pts != DVD_NOPTS_VALUE && m_av_clock)
     stamp = m_av_clock->OMXMediaTime();
   // if possible the delay is current media time - time of last submitted packet
-  if (stamp != DVD_NOPTS_VALUE)
+  if (stamp != DVD_NOPTS_VALUE && stamp != 0.0)
   {
     ret = (m_last_pts - stamp) * (1.0 / DVD_TIME_BASE);
   }

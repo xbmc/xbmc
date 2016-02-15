@@ -35,23 +35,6 @@ class CVideoPlayer;
 class CDVDAudioCodec;
 class CDVDAudioCodec;
 
-#define DECODE_FLAG_DROP    1
-#define DECODE_FLAG_RESYNC  2
-#define DECODE_FLAG_ERROR   4
-#define DECODE_FLAG_ABORT   8
-
-class CPTSInputQueue
-{
-private:
-  typedef std::list<std::pair<int64_t, double> >::iterator IT;
-  std::list<std::pair<int64_t, double> > m_list;
-  CCriticalSection m_sync;
-public:
-  void   Add(int64_t bytes, double pts);
-  double Get(int64_t bytes, bool consume);
-  void   Flush();
-};
-
 class CVideoPlayerAudio : public CThread, public IDVDStreamPlayerAudio
 {
 public:
@@ -86,8 +69,6 @@ public:
   // holds stream information for current playing stream
   CDVDStreamInfo m_streaminfo;
 
-  CPTSInputQueue  m_ptsInput;
-
   double GetCurrentPts()                            { CSingleLock lock(m_info_section); return m_info.pts; }
 
   bool IsStalled() const                            { return m_stalled;  }
@@ -99,8 +80,6 @@ protected:
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
-
-  int DecodeFrame(DVDAudioFrame &audioframe);
 
   void UpdatePlayerInfo();
   void OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec);

@@ -77,7 +77,7 @@ target_link_libraries(gtest_main gtest)
 #
 # They are not built by default.  To build them, set the
 # gtest_build_samples option to ON.  You can do it by running ccmake
-# or specifying the -Dbuild_gtest_samples=ON flag when running cmake.
+# or specifying the -Dgtest_build_samples=ON flag when running cmake.
 
 if (gtest_build_samples)
   cxx_executable(sample1_unittest samples gtest_main samples/sample1.cc)
@@ -124,6 +124,8 @@ if (gtest_build_tests)
     test/gtest-param-test2_test.cc)
   cxx_test(gtest-port_test gtest_main)
   cxx_test(gtest_pred_impl_unittest gtest_main)
+  cxx_test(gtest_premature_exit_test gtest
+    test/gtest_premature_exit_test.cc)
   cxx_test(gtest-printers_test gtest_main)
   cxx_test(gtest_prod_test gtest_main
     test/production.cc)

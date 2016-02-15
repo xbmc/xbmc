@@ -28,17 +28,6 @@ namespace ADDON
   class CRepository : public CAddon
   {
   public:
-    virtual AddonPtr Clone() const;
-    CRepository(const AddonProps& props);
-    CRepository(const cp_extension_t *props);
-    virtual ~CRepository();
-
-    /*! \brief Get the md5 hash for an addon.
-     \param the addon in question.
-     \return the md5 hash for the given addon, empty if non exists.
-     */
-    std::string GetAddonHash(const AddonPtr& addon) const;
-
     struct DirInfo
     {
       DirInfo() : version("0.0.0"), compressed(false), zipped(false), hashes(false) {}
@@ -52,14 +41,24 @@ namespace ADDON
     };
 
     typedef std::vector<DirInfo> DirList;
+
     DirList m_dirs;
+
+    static std::unique_ptr<CRepository> FromExtension(AddonProps props, const cp_extension_t* ext);
+
+    explicit CRepository(AddonProps props) : CAddon(std::move(props)) {};
+    CRepository(AddonProps props, DirList dirs);
+
+    /*! \brief Get the md5 hash for an addon.
+     \param the addon in question.
+     \return the md5 hash for the given addon, empty if non exists.
+     */
+    std::string GetAddonHash(const AddonPtr& addon) const;
 
     static bool Parse(const DirInfo& dir, VECADDONS& addons);
     static std::string FetchChecksum(const std::string& url);
 
   private:
-    CRepository(const CRepository &rhs);
-
     static bool FetchIndex(const std::string& url, VECADDONS& addons);
   };
 

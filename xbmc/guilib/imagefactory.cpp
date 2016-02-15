@@ -21,9 +21,6 @@
 #include "imagefactory.h"
 #include "guilib/FFmpegImage.h"
 #include "utils/Mime.h"
-#if defined(HAS_GIFLIB)
-#include "guilib/Gif.h"
-#endif//HAS_GIFLIB
 
 IImage* ImageFactory::CreateLoader(const std::string& strFileName)
 {
@@ -41,10 +38,5 @@ IImage* ImageFactory::CreateLoader(const CURL& url)
 
 IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
 {
-#if defined(HAS_GIFLIB)
-  if (strMimeType == "image/gif")
-    return new Gif();
-#endif//HAS_GIFLIB
-
   return new CFFmpegImage(strMimeType);
 }

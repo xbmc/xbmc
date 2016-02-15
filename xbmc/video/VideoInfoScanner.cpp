@@ -236,12 +236,6 @@ namespace VIDEO
     g_windowManager.SendThreadMessage(msg);
   }
 
-  bool CVideoInfoScanner::IsExcluded(const std::string& strDirectory) const
-  {
-    std::string noMediaFile = URIUtils::AddFileToFolder(strDirectory, ".nomedia");
-    return CFile::Exists(noMediaFile);
-  }
-
   bool CVideoInfoScanner::DoScan(const std::string& strDirectory)
   {
     if (m_handle)
@@ -271,14 +265,8 @@ namespace VIDEO
     const std::vector<std::string> &regexps = content == CONTENT_TVSHOWS ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
                                                          : g_advancedSettings.m_moviesExcludeFromScanRegExps;
 
-    if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
+    if (IsExcluded(strDirectory, regexps))
       return true;
-
-    if (IsExcluded(strDirectory))
-    {
-      CLog::Log(LOGWARNING, "Skipping item '%s' with '.nomedia' file in parent directory, it won't be added to the library.", CURL::GetRedacted(strDirectory).c_str());
-      return true;
-    }
 
     bool ignoreFolder = !m_scanAll && settings.noupdate;
     if (content == CONTENT_NONE || ignoreFolder)
@@ -1246,14 +1234,12 @@ namespace VIDEO
         movieDetails.m_iDbId = lResult;
         movieDetails.m_type = MediaTypeEpisode;
         movieDetails.m_strShowTitle = showInfo ? showInfo->m_strTitle : "";
-        if (movieDetails.m_fEpBookmark > 0)
+        if (movieDetails.m_EpBookmark.timeInSeconds > 0)
         {
           movieDetails.m_strFileNameAndPath = pItem->GetPath();
-          CBookmark bookmark;
-          bookmark.timeInSeconds = movieDetails.m_fEpBookmark;
-          bookmark.seasonNumber = movieDetails.m_iSeason;
-          bookmark.episodeNumber = movieDetails.m_iEpisode;
-          m_database.AddBookMarkForEpisode(movieDetails, bookmark);
+          movieDetails.m_EpBookmark.seasonNumber = movieDetails.m_iSeason;
+          movieDetails.m_EpBookmark.episodeNumber = movieDetails.m_iEpisode;
+          m_database.AddBookMarkForEpisode(movieDetails, movieDetails.m_EpBookmark);
         }
       }
     }

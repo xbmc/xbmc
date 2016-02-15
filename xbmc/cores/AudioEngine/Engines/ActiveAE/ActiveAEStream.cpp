@@ -35,9 +35,10 @@ using namespace ActiveAE;
 #define AE (*((CActiveAE*)CAEFactory::GetEngine()))
 
 
-CActiveAEStream::CActiveAEStream(AEAudioFormat *format)
+CActiveAEStream::CActiveAEStream(AEAudioFormat *format, unsigned int streamid)
 {
   m_format = *format;
+  m_id = streamid;
   m_bufferedTime = 0;
   m_currentBuffer = NULL;
   m_drain = false;
@@ -66,6 +67,9 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat *format)
   m_matrixEncoding = AV_MATRIX_ENCODING_NONE;
   m_audioServiceType = AV_AUDIO_SERVICE_TYPE_MAIN;
   m_pClock = NULL;
+  m_lastPts = 0;
+  m_lastPtsJump = 0;
+  m_errorInterval = 1000;
 }
 
 CActiveAEStream::~CActiveAEStream()
@@ -205,15 +209,15 @@ double CActiveAEStream::CalcResampleRatio(double error)
   double proportional = 0.0;
 
   double proportionaldiv = 2.0;
-  proportional = error / 1000 / proportionaldiv;
+  proportional = error / m_errorInterval / proportionaldiv;
 
   double clockspeed = 1.0;
   if (m_pClock)
     clockspeed = m_pClock->GetClockSpeed();
 
   double ret = 1.0 / clockspeed + proportional + m_resampleIntegral;
-//  CLog::Log(LOGNOTICE,"----- error: %f, rr: %f, prop: %f, int: %f",
-//                      error, ret, proportional, m_resampleIntegral);
+  //CLog::Log(LOGNOTICE,"----- error: %f, rr: %f, prop: %f, int: %f",
+  //                    error, ret, proportional, m_resampleIntegral);
   return ret;
 }
 
@@ -253,6 +257,22 @@ unsigned int CActiveAEStream::AddData(uint8_t* const *data, unsigned int offset,
 
       if (!copied)
       {
+        if (pts < m_lastPts)
+        {
+          if (m_lastPtsJump != 0)
+          {
+            int diff = pts - m_lastPtsJump;
+            if (diff > m_errorInterval)
+            {
+              diff += 1000;
+              diff = std::min(diff, 6000);
+              CLog::Log(LOGNOTICE, "CActiveAEStream::AddData - messy timestamps, increasing interval for measuring average error to %d ms", diff);
+              m_errorInterval = diff;
+            }
+          }
+          m_lastPtsJump = pts;
+        }
+        m_lastPts = pts;
         m_currentBuffer->timestamp = pts;
         m_currentBuffer->pkt_start_offset = m_currentBuffer->pkt->nb_samples;
       }
@@ -265,7 +285,7 @@ unsigned int CActiveAEStream::AddData(uint8_t* const *data, unsigned int offset,
 
       bool rawPktComplete = false;
       {
-        CSingleLock lock(*m_statsLock);
+        CSingleLock lock(m_statsLock);
         if (m_format.m_dataFormat != AE_FMT_RAW)
         {
           m_currentBuffer->pkt->nb_samples += minFrames;
@@ -296,6 +316,8 @@ unsigned int CActiveAEStream::AddData(uint8_t* const *data, unsigned int offset,
       {
         m_currentBuffer = *((CSampleBuffer**)msg->data);
         m_currentBuffer->timestamp = 0;
+        m_currentBuffer->pkt->nb_samples = 0;
+        m_currentBuffer->pkt->pause_burst_ms = 0;
         msg->Release();
         DecFreeBuffers();
         continue;

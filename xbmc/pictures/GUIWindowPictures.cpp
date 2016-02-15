@@ -79,7 +79,7 @@ void CGUIWindowPictures::OnInitWindow()
     {
       if (wndw && wndw->GetCurrentSlide())
         m_viewControl.SetSelectedItem(wndw->GetCurrentSlide()->GetPath());
-      m_iSelectedItem = m_viewControl.GetSelectedItem();
+      SaveSelectedItemInHistory();
     }
     m_slideShowStarted = false;
   }
@@ -296,7 +296,7 @@ bool CGUIWindowPictures::GetDirectory(const std::string &strDirectory, CFileItem
   if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("pictures"), &label))
     items.SetLabel(label);
 
-  if (items.GetContent().empty() && !items.IsVirtualDirectoryRoot())
+  if (items.GetContent().empty() && !items.IsVirtualDirectoryRoot() && !items.IsPlugin())
     items.SetContent("images");
   return true;
 }

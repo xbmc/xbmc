@@ -32,6 +32,7 @@
 #include "StringUtils.h"
 #include "URIUtils.h"
 #include "guilib/LocalizeStrings.h"
+#include "Variant.h"
 
 #include <cassert>
 
@@ -107,7 +108,7 @@ using namespace MUSIC_INFO;
  *  *t - Date Taken (suitable for Pictures)
  */
 
-#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWacdprt"
+#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWacdiprtuv"
 
 CLabelFormatter::CLabelFormatter(const std::string &mask, const std::string &mask2)
 {
@@ -346,6 +347,18 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
   case 't': // Date Taken
     if (pic && pic->GetDateTimeTaken().IsValid())
       value = pic->GetDateTimeTaken().GetAsLocalizedDate();
+    break;
+  case 'i': // Install date
+    if (item->HasAddonInfo())
+      value = item->GetAddonInfo()->InstallDate().GetAsLocalizedDateTime();
+    break;
+  case 'u': // Last used
+    if (item->HasAddonInfo())
+      value = item->GetAddonInfo()->LastUsed().GetAsLocalizedDateTime();
+    break;
+  case 'v': // Last updated
+    if (item->HasAddonInfo())
+      value = item->GetAddonInfo()->LastUpdated().GetAsLocalizedDateTime();
     break;
   }
   if (!value.empty())

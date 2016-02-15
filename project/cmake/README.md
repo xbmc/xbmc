@@ -1,0 +1,137 @@
+# Kodi CMake based buildsystem
+
+This files describes Kodi's CMake based buildsystem. CMake is a cross-platform
+tool for generating makefiles as well as project files used by IDEs.
+
+The current version of the buildsystem is capable of building the main Kodi
+executable (but no packaging or dependency management yet) for the following
+platforms:
+
+- Linux (GNU Makefiles)
+- Windows (NMake Makefiles, Visual Studio 12 (2013))
+- OSX (GNU Makefiles, Xcode)
+
+Before building Kodi with CMake, please ensure that you have the platform
+specific dependencies installed.
+
+While the legacy build systems typically used in-source builds it's recommended
+to use out-of-source builds with CMake. The necessary runtime dependencies such
+as dlls, skins and configuration files are copied over to the build directory
+automatically.
+
+## Dependency installation
+
+### Linux
+
+The dependencies required to build on Linux can be found in
+[docs/README.xxx](https://github.com/xbmc/xbmc/tree/master/docs).
+
+### Windows
+
+For Windows the dependencies can be found in the
+[Wiki](http://kodi.wiki/view/HOW-TO:Compile_Kodi_for_Windows) (Step 1-4).
+
+On Windows, the CMake based buildsystem requires that the binary dependencies
+are downloaded using `DownloadBuildDeps.bat` and `DownloadMingwBuildEnv.bat`
+and that the mingw libs (ffmpeg, libdvd and others) are built using
+`make-mingwlibs.bat`.
+
+### OSX
+
+For OSX the required dependencies can be found in
+[docs/README.osx](https://github.com/xbmc/xbmc/tree/master/docs/README.osx).
+
+On OSX it is necessary to build the dependencies in `tools/depends` using
+`./bootstrap && ./configure --host=<PLATFORM> && make`. The other steps such
+as `make -C tools/depends/target/xbmc` and `make xcode_depends` are not needed
+as these steps are covered already by the CMake project.
+
+## Building Kodi
+
+This section lists the necessary commands for building Kodi with CMake.
+CMake supports different generators that can be classified into two categories:
+single- and multiconfiguration generators.
+
+A single configuration generator (GNU/NMake Makefiles) generates project files
+for a single build type (e.g. Debug, Release) specified at configure time.
+Multi configuration generators (Visual Studio, Xcode) allow to specify the
+build type at compile time.
+
+All examples below are for out-of-source builds with Kodi checked out to
+`<KODI_SRC>`:
+
+```
+mkdir kodi-build && cd kodi-build
+```
+
+### Linux with GNU Makefiles
+
+```
+cmake <KODI_SRC>/project/cmake/
+cmake --build . -- VERBOSE=1 -j$(nproc)  # or: make VERBOSE=1 -j$(nproc)
+./kodi.bin
+```
+
+`CMAKE_BUILD_TYPE` defaults to `Debug`.
+
+### Windows with NMake Makefiles
+
+```
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release <KODI_SRC>/project/cmake/
+cmake --build .  # or: nmake
+./kodi.bin
+```
+
+### Windows with Visual Studio project files
+
+```
+cmake -G "Visual Studio 12" <KODI_SRC>/project/cmake/
+cmake --build . --config "Debug"  # or: Build solution with Visual Studio
+KODI_HOME=%CD% Debug/kodi.bin
+```
+
+### OSX with GNU Makefiles
+
+```
+cmake -DCMAKE_TOOLCHAIN_FILE=<KODI_SRC>/tools/depends/target/Toolchain.cmake <KODI_SRC>/project/cmake/
+cmake --build . -- VERBOSE=1 -j$(sysctl -n hw.ncpu)  # or: make VERBOSE=1 -j$(sysctl -n hw.ncpu)
+./kodi.bin
+```
+
+### OSX with Xcode project files
+
+```
+cmake -DCMAKE_TOOLCHAIN_FILE=<KODI_SRC>/tools/depends/target/Toolchain.cmake -G "Xcode" <KODI_SRC>/project/cmake/
+cmake --build . --config "Release" -- -verbose -jobs $(sysctl -n hw.ncpu)  # or: Build solution with Xcode
+KODI_HOME=$(pwd) ./Release/kodi.bin
+```
+
+## Extra targets
+
+When using the makefile builds a few extra targets are defined:
+
+- `make check` builds and executes the test suite.
+
+## Debugging the build
+
+This section covers some tips that can be useful for debugging a CMake
+based build.
+
+### Verbosity (show compiler and linker parameters)
+
+In order to see the exact compiler commands `make` and `nmake` can be
+executed with a `VERBOSE=1` parameter.
+
+On Windows, this is unfortunately not enough because `nmake` uses
+temporary files to workaround `nmake`'s command string length limitations.
+In order to see verbose output the file
+[Modules/Platform/Windows.cmake](https://github.com/Kitware/CMake/blob/master/Modules/Platform/Windows.cmake#L40)
+in the local CMake installation has to be adapted by uncommenting these
+lines:
+
+```
+# uncomment these out to debug nmake and borland makefiles
+#set(CMAKE_START_TEMP_FILE "")
+#set(CMAKE_END_TEMP_FILE "")
+#set(CMAKE_VERBOSE_MAKEFILE 1)
+```

@@ -22,6 +22,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 #include "utils/XMLUtils.h"
 #include "utils/MathUtils.h"
 #include "FileItem.h"
@@ -56,6 +57,33 @@ CAlbum::CAlbum(const CFileItem& item)
 
   if (!tag.GetMusicBrainzAlbumArtistID().empty())
   { // have musicbrainz artist info, so use it
+    // Establish tag consistency - do the number of musicbrainz ids and number of names in hints or artist match
+    if (tag.GetMusicBrainzAlbumArtistID().size() != musicBrainAlbumArtistHints.size() &&
+      tag.GetMusicBrainzAlbumArtistID().size() != tag.GetAlbumArtist().size())
+    {
+      // Tags mis-match - report it and then try to fix
+      CLog::Log(LOGDEBUG, "Mis-match in song file albumartist tags: %i mbid %i name album: %s %s",
+        (int)tag.GetMusicBrainzAlbumArtistID().size(), (int)tag.GetAlbumArtist().size(), strAlbum.c_str(), strArtistDesc.c_str());
+      /*
+      Most likey we have no hints and a single artist name like "Artist1 feat. Artist2"
+      or "Composer; Conductor, Orchestra, Soloist" or "Artist1/Artist2" where the
+      expected single item separator (default = space-slash-space) as not been used.
+      Comma and slash (no spaces) are poor delimiters as could be in name e.g. AC/DC,
+      but here treat them as such in attempt to find artist names.
+      */
+      if (tag.GetAlbumArtist().size() == 1)
+      {
+        std::vector<std::string> names;
+        if (tag.GetAlbumArtist()[0].find(" feat. ") != std::string::npos)
+          names = StringUtils::Split(tag.GetAlbumArtist()[0], " feat. ");
+        else
+          names = StringUtils::SplitMulti(tag.GetAlbumArtist()[0], "/;:|#,");
+        //If we have extracted the right number of names then use them as hints
+        if (tag.GetMusicBrainzAlbumArtistID().size() == names.size())
+          musicBrainAlbumArtistHints = names;
+      }
+    }
+
     for (size_t i = 0; i < tag.GetMusicBrainzAlbumArtistID().size(); i++)
     {
       std::string artistId = tag.GetMusicBrainzAlbumArtistID()[i];
@@ -66,7 +94,8 @@ CAlbum::CAlbum(const CFileItem& item)
          If not found, we try and use the mbrainz <-> name matching from the artists fields
          If still not found, try and use the same index of the albumartist field.
          If still not found, use the mbrainzid and hope we later on can update that entry
-         */
+         If we have more names than musicbrainz id they are ingored, but raise a warning.
+      */
 
       if (i < musicBrainAlbumArtistHints.size())
         artistName = musicBrainAlbumArtistHints[i];
@@ -90,8 +119,7 @@ CAlbum::CAlbum(const CFileItem& item)
       if (artistName.empty())
         artistName = artistId;
 
-      CArtistCredit artistCredit(artistName, tag.GetMusicBrainzAlbumArtistID()[i]);
-      artistCredits.push_back(artistCredit);
+      artistCredits.emplace_back(StringUtils::Trim(artistName), tag.GetMusicBrainzAlbumArtistID()[i]);
     }
   }
   else

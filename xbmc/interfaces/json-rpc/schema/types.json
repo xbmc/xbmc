@@ -885,7 +885,7 @@
   "PVR.Fields.Channel": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "enum": [ "thumbnail", "channeltype", "hidden", "locked", "channel", "lastplayed", "broadcastnow", "broadcastnext" ]
+      "enum": [ "thumbnail", "channeltype", "hidden", "locked", "channel", "lastplayed", "broadcastnow", "broadcastnext", "uniqueid"]
     }
   },
   "PVR.Details.Channel": {
@@ -899,7 +899,8 @@
       "thumbnail": { "type": "string" },
       "lastplayed": { "type": "string" },
       "broadcastnow": { "$ref": "PVR.Details.Broadcast" },
-      "broadcastnext": { "$ref": "PVR.Details.Broadcast" }
+      "broadcastnext": { "$ref": "PVR.Details.Broadcast" },
+      "uniqueid": { "type": "integer", "required": true }
     }
   },
   "PVR.Details.ChannelGroup": {

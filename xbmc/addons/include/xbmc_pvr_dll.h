@@ -635,6 +635,12 @@ extern "C"
   bool IsTimeshifting();
 
   /*!
+   *  Check for real-time streaming
+   *  @return true if current stream is real-time
+   */
+  bool IsRealTimeStream();
+
+  /*!
    * Called by XBMC to assign the function pointers of this add-on to pClient.
    * @param pClient The struct to assign the function pointers to.
    */
@@ -721,6 +727,7 @@ extern "C"
     pClient->GetBackendHostname             = GetBackendHostname;
 
     pClient->IsTimeshifting                 = IsTimeshifting;
+    pClient->IsRealTimeStream               = IsRealTimeStream;
   };
 };
 

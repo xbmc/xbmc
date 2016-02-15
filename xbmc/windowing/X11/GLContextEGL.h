@@ -33,7 +33,7 @@ public:
   virtual void Destroy();
   virtual void Detach();
   virtual void SetVSync(bool enable, int &mode);
-  virtual bool SwapBuffers(const CDirtyRegionList& dirty, int &mode);
+  virtual void SwapBuffers(int &mode);
   virtual void QueryExtensions();
   virtual bool IsExtSupported(const char* extension);
   XVisualInfo* GetVisual();

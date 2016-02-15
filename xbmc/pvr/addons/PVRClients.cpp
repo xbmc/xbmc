@@ -937,7 +937,7 @@ void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CF
     for (unsigned int i = 0; i < hooks->size(); i++)
       if (hooks->at(i).category == cat || hooks->at(i).category == PVR_MENUHOOK_ALL)
       {
-        pDialog->Add(client->GetString(hooks->at(i).iLocalizedStringId));
+        pDialog->Add(g_localizeStrings.GetAddonString(client->ID(), hooks->at(i).iLocalizedStringId));
         hookIDs.push_back(i);
       }
     if (hookIDs.size() > 1)
@@ -1302,13 +1302,13 @@ bool CPVRClients::AutoconfigureClients(void)
   bool bReturn(false);
   std::vector<PVR_CLIENT> autoConfigAddons;
   PVR_CLIENT addon;
-  VECADDONS map;
-  CAddonMgr::GetInstance().GetAddons(ADDON_PVRDLL, map, false);
 
-  /** get the auto-configurable add-ons */
-  for (VECADDONS::iterator it = map.begin(); it != map.end(); ++it)
   {
-    if (CAddonMgr::GetInstance().IsAddonDisabled((*it)->ID()))
+    VECADDONS map;
+    CAddonMgr::GetInstance().GetDisabledAddons(map, ADDON_PVRDLL);
+
+    /** get the auto-configurable add-ons */
+    for (VECADDONS::iterator it = map.begin(); it != map.end(); ++it)
     {
       addon = std::dynamic_pointer_cast<CPVRClient>(*it);
       if (addon->CanAutoconfigure())
@@ -1386,7 +1386,7 @@ bool CPVRClients::UpdateAddons(void)
 {
   VECADDONS addons;
   PVR_CLIENT addon;
-  bool bReturn(CAddonMgr::GetInstance().GetAddons(ADDON_PVRDLL, addons, true));
+  bool bReturn(CAddonMgr::GetInstance().GetAddons(addons, ADDON_PVRDLL));
   size_t usableClients;
   bool bDisable(false);
 
@@ -1421,7 +1421,7 @@ bool CPVRClients::UpdateAddons(void)
   }
 
   if ((!bReturn || usableClients == 0) && !m_bNoAddonWarningDisplayed &&
-      !CAddonMgr::GetInstance().HasAddons(ADDON_PVRDLL, false) &&
+      !CAddonMgr::GetInstance().HasInstalledAddons(ADDON_PVRDLL) &&
       (g_PVRManager.IsStarted() || g_PVRManager.IsInitialising()))
   {
     // No PVR add-ons could be found
@@ -1453,6 +1453,19 @@ bool CPVRClients::GetClient(const std::string &strId, AddonPtr &addon) const
       addon = itr->second;
       return true;
     }
+  }
+  return false;
+}
+
+bool CPVRClients::SupportsTimers() const
+{
+  PVR_CLIENTMAP clients;
+  GetConnectedClients(clients);
+
+  for (const auto &entry : clients)
+  {
+    if (entry.second->SupportsTimers())
+      return true;
   }
   return false;
 }
@@ -1757,5 +1770,13 @@ time_t CPVRClients::GetBufferTimeEnd() const
   }
 
   return time;
+}
+
+bool CPVRClients::IsRealTimeStream(void) const
+{
+  PVR_CLIENT client;
+  if (GetPlayingClient(client))
+    return client->IsRealTimeStream();
+  return false;
 }
 

@@ -140,7 +140,12 @@ int CJNIAudioTrack::write(char* audioData, int offsetInBytes, int sizeInBytes)
       written *= sizeof(float);
     }
     else
-      written = call_method<int>(m_object, "write", "([BII)I", m_buffer, offsetInBytes, sizeInBytes);
+    {
+      if (CJNIBase::GetSDKVersion() >= 23)
+        written = call_method<int>(m_object, "write", "([BII)I", m_buffer, offsetInBytes, sizeInBytes, CJNIAudioTrack::WRITE_BLOCKING);
+      else
+	written = call_method<int>(m_object, "write", "([BII)I", m_buffer, offsetInBytes, sizeInBytes);
+    }
   }
 
   return written;
@@ -159,6 +164,14 @@ int CJNIAudioTrack::getPlayState()
 int CJNIAudioTrack::getPlaybackHeadPosition()
 {
   return call_method<int>(m_object, "getPlaybackHeadPosition", "()I");
+}
+
+// Can be used in v23 for comparing with the opened buffer amount
+int CJNIAudioTrack::getBufferSizeInFrames()
+{
+  if (CJNIBase::GetSDKVersion() >= 23)
+    return call_method<int>(m_object, "getBufferSizeInFrames", "()I");
+  return -1;
 }
 
 int CJNIAudioTrack::getMinBufferSize(int sampleRateInHz, int channelConfig, int audioFormat)

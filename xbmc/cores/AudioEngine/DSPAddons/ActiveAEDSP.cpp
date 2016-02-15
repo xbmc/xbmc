@@ -421,7 +421,7 @@ bool CActiveAEDSP::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
       if (modeId == AE_DSP_MASTER_MODE_ID_PASSOVER || modeId >= AE_DSP_MASTER_MODE_ID_INTERNAL_TYPES)
         strValue = g_localizeStrings.Get(activeMaster->ModeName());
       else if (CActiveAEDSP::GetInstance().GetAudioDSPAddon(activeMaster->AddonID(), addon))
-        strValue = addon->GetString(activeMaster->ModeName());
+        strValue = g_localizeStrings.GetAddonString(addon->ID(), activeMaster->ModeName());
     }
     break;
   case ADSP_MASTER_INFO:
@@ -706,7 +706,7 @@ bool CActiveAEDSP::UpdateAddons(void)
 {
   VECADDONS addons;
   AE_DSP_ADDON dspAddon;
-  bool bReturn(CAddonMgr::GetInstance().GetAddons(ADDON_ADSPDLL, addons, true));
+  bool bReturn(CAddonMgr::GetInstance().GetAddons(addons, ADDON_ADSPDLL));
   size_t usableAddons;
 
   if (bReturn)
@@ -730,7 +730,7 @@ bool CActiveAEDSP::UpdateAddons(void)
   }
 
   if ((!bReturn || usableAddons == 0) && !m_noAddonWarningDisplayed &&
-      !CAddonMgr::GetInstance().HasAddons(ADDON_ADSPDLL, false) &&
+      !CAddonMgr::GetInstance().HasInstalledAddons(ADDON_ADSPDLL) &&
       IsActivated())
   {
     // No audio DSP add-ons could be found

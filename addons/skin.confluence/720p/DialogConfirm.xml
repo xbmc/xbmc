@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<coordinates>
+		<left>315</left>
+		<top>220</top>
+	</coordinates>
+	<include>dialogeffect</include>
+	<depth>DepthDialog+</depth>
+	<controls>
+		<include name="DialogBackgroundCommons">
+			<param name="DialogBackgroundWidth" value="650" />
+			<param name="DialogBackgroundHeight" value="260" />
+			<param name="DialogHeaderWidth" value="570" />
+			<param name="DialogHeaderLabel" value="" />
+			<param name="DialogHeaderId" value="1" />
+			<param name="CloseButtonLeft" value="560" />
+			<param name="CloseButtonNav" value="9000" />
+		</include>
+		<control type="textbox" id="9">
+			<description>text</description>
+			<left>30</left>
+			<top>62</top>
+			<width>590</width>
+			<height>98</height>
+			<align>left</align>
+			<label>-</label>
+			<font>font13</font>
+			<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+		</control>
+		<control type="progress" id="20">
+			<description>Progressbar</description>
+			<left>30</left>
+			<top>168</top>
+			<width>590</width>
+			<height>16</height>
+			<info>System.Progressbar</info>
+		</control>
+		<control type="grouplist" id="9000">
+			<left>25</left>
+			<top>195</top>
+			<width>600</width>
+			<height>40</height>
+			<align>center</align>
+			<itemgap>0</itemgap>
+			<orientation>horizontal</orientation>
+			<control type="button" id="11">
+				<description>OK button</description>
+				<width>200</width>
+				<height>40</height>
+				<label>107</label>
+				<font>font12_title</font>
+				<textcolor>white</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<align>center</align>
+			</control>
+			<control type="button" id="10">
+				<description>Cancel button</description>
+				<width>200</width>
+				<height>40</height>
+				<label>106</label>
+				<font>font12_title</font>
+				<textcolor>white</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<align>center</align>
+			</control>
+			<control type="button" id="12">
+				<description>Custom button</description>
+				<width>200</width>
+				<height>40</height>
+				<label>106</label>
+				<font>font12_title</font>
+				<textcolor>white</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<align>center</align>
+			</control>
+		</control>
+	</controls>
+</window>

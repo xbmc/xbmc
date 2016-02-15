@@ -56,6 +56,7 @@ public:
   bool m_dataIsLE;
   unsigned int m_dtsPeriod;
   unsigned int m_repeat;
+  unsigned int m_ac3FrameSize;
 };
 
 class CAEStreamParser
@@ -79,6 +80,7 @@ public:
   bool IsLittleEndian() { return m_info.m_dataIsLE; }
   unsigned int GetBufferSize() { return m_bufferSize; }
   CAEStreamInfo& GetStreamInfo() { return m_info; }
+  void Reset();
 
 private:
   uint8_t m_buffer[MAX_IEC61937_PACKET];

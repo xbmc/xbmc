@@ -401,6 +401,21 @@ std::string ByRelevance(SortAttribute attributes, const SortItem &values)
   return StringUtils::Format("%i", (int)values.at(FieldRelevance).asInteger());
 }
 
+std::string ByInstallDate(SortAttribute attributes, const SortItem &values)
+{
+  return values.at(FieldInstallDate).asString();
+}
+
+std::string ByLastUpdated(SortAttribute attributes, const SortItem &values)
+{
+  return values.at(FieldLastUpdated).asString();
+}
+
+std::string ByLastUsed(SortAttribute attributes, const SortItem &values)
+{
+  return values.at(FieldLastUsed).asString();
+}
+
 bool preliminarySort(const SortItem &left, const SortItem &right, bool handleFolder, bool &result, std::wstring &labelLeft, std::wstring &labelRight)
 {
   // make sure both items have the necessary data to do the sorting
@@ -581,6 +596,9 @@ std::map<SortBy, SortUtils::SortPreparator> fillPreparators()
   preparators[SortByChannelNumber]            = ByChannelNumber;
   preparators[SortByDateTaken]                = ByDateTaken;
   preparators[SortByRelevance]                = ByRelevance;
+  preparators[SortByInstallDate]              = ByInstallDate;
+  preparators[SortByLastUpdated]              = ByLastUpdated;
+  preparators[SortByLastUsed]                 = ByLastUsed;
 
   return preparators;
 }
@@ -660,6 +678,9 @@ std::map<SortBy, Fields> fillSortingFields()
   sortingFields[SortByChannelNumber].insert(FieldChannelNumber);
   sortingFields[SortByDateTaken].insert(FieldDateTaken);
   sortingFields[SortByRelevance].insert(FieldRelevance);
+  sortingFields[SortByInstallDate].insert(FieldInstallDate);
+  sortingFields[SortByLastUpdated].insert(FieldLastUpdated);
+  sortingFields[SortByLastUsed].insert(FieldLastUsed);
   sortingFields.insert(std::pair<SortBy, Fields>(SortByRandom, Fields()));
 
   return sortingFields;
@@ -1013,7 +1034,10 @@ const std::map<std::string, SortBy> sortMethods = {
   { "channel",          SortByChannel },
   { "channelnumber",    SortByChannelNumber },
   { "datetaken",        SortByDateTaken },
-  { "userrating",       SortByUserRating }
+  { "userrating",       SortByUserRating },
+  { "installdate",      SortByInstallDate },
+  { "lastupdated",      SortByLastUpdated },
+  { "lastused",         SortByLastUsed },
 };
 
 SortBy SortUtils::SortMethodFromString(const std::string& sortMethod)

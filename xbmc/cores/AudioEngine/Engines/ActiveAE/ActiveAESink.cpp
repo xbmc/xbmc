@@ -213,7 +213,7 @@ bool CActiveAESink::NeedIECPacking()
       }
     }
   }
-  return false;
+  return true;
 }
 
 enum SINK_STATES
@@ -868,6 +868,11 @@ void CActiveAESink::OpenSink()
   m_sampleOfSilence.pkt->nb_samples = m_sampleOfSilence.pkt->max_nb_samples;
   if (!passthrough)
     GenerateNoise();
+  else
+  {
+    m_sampleOfSilence.pkt->nb_samples = 0;
+    m_sampleOfSilence.pkt->pause_burst_ms = m_sinkFormat.m_streamInfo.GetDuration();
+  }
 
   m_swapState = CHECK_SWAP;
 }
@@ -897,31 +902,53 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
   unsigned int written = 0;
   std::unique_ptr<uint8_t[]> mergebuffer;
   uint8_t* p_mergebuffer = NULL;
+  AEDelayStatus status;
 
-  if (m_requestedFormat.m_dataFormat == AE_FMT_RAW && frames > 0  && samples->pool)
+  if (m_requestedFormat.m_dataFormat == AE_FMT_RAW)
   {
     if (m_needIecPack)
     {
-      if (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD && frames == 61440)
+      if (frames > 0)
       {
-        int offset;
-        int len;
-        m_packer->GetBuffer();
-        for (int i=0; i<24; i++)
+        m_packer->Reset();
+        if (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
         {
-          offset = i*2560;
-          len = (*(buffer[0] + offset+2560-2) << 8) + *(buffer[0] + offset+2560-1);
-          m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0] + offset, len);
+          if (frames == 61440)
+          {
+            int offset;
+            int len;
+            m_packer->GetBuffer();
+            for (int i=0; i<24; i++)
+            {
+              offset = i*2560;
+              len = (*(buffer[0] + offset+2560-2) << 8) + *(buffer[0] + offset+2560-1);
+              m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0] + offset, len);
+            }
+          }
+          else
+          {
+            m_extError = true;
+            CLog::Log(LOGERROR, "CActiveAESink::OutputSamples - incomplete TrueHD buffer");
+            return 0;
+          }
         }
+        else
+          m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0], frames);
+      }
+      else if (samples->pkt->pause_burst_ms > 0)
+      {
+        // construct a pause burst
+        m_packer->PackPause(m_sinkFormat.m_streamInfo, samples->pkt->pause_burst_ms);
       }
       else
-        m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0], frames);
+        m_packer->Reset();
 
       unsigned int size = m_packer->GetSize();
       packBuffer = m_packer->GetBuffer();
       buffer = &packBuffer;
       totalFrames = size / m_sinkFormat.m_frameSize;
       frames = totalFrames;
+
       switch(m_swapState)
       {
         case SKIP_SWAP:
@@ -958,13 +985,19 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
         totalFrames = size / m_sinkFormat.m_frameSize;
         frames = totalFrames;
       }
+      if (samples->pkt->pause_burst_ms > 0)
+      {
+        m_sink->AddPause(samples->pkt->pause_burst_ms);
+        m_sink->GetDelay(status);
+        m_stats->UpdateSinkDelay(status, samples->pool ? 1 : 0);
+        return status.delay * 1000;
+      }
     }
   }
 
-  AEDelayStatus status;
   int framesOrPackets;
 
-  while(frames > 0)
+  while (frames > 0)
   {
     maxFrames = std::min(frames, m_sinkFormat.m_frames);
     written = m_sink->AddPackets(buffer, maxFrames, totalFrames - frames);
@@ -1005,8 +1038,8 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
       m_stats->UpdateSinkDelay(status, samples->pool ? written : 0);
   }
 
-  if (m_requestedFormat.m_dataFormat == AE_FMT_RAW && samples->pool)
-    m_stats->UpdateSinkDelay(status, 1);
+  if (m_requestedFormat.m_dataFormat == AE_FMT_RAW)
+    m_stats->UpdateSinkDelay(status, samples->pool ? 1 : 0);
 
   return status.delay * 1000;
 }

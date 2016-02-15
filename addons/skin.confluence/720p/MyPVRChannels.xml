@@ -18,29 +18,11 @@
 			<include>Window_OpenClose_Animation</include>
 			<include>VisibleFadeEffect</include>
 			<control type="group">
-				<visible>![!IsEmpty(Window.Property(IsRadio)) + System.GetBool(PVRPlayback.EnableRadioRDS) + !Skin.HasSetting(HideEPGwithRDS)]</visible>
 				<control type="image">
 					<left>50</left>
 					<top>60</top>
 					<width>450</width>
 					<height>600</height>
-					<texture border="15">ContentPanel.png</texture>
-				</control>
-			</control>
-			<control type="group">
-				<visible>!IsEmpty(Window.Property(IsRadio)) + System.GetBool(PVRPlayback.EnableRadioRDS) + !Skin.HasSetting(HideEPGwithRDS)</visible>
-				<control type="image">
-					<left>50</left>
-					<top>60</top>
-					<width>450</width>
-					<height>420</height>
-					<texture border="15">ContentPanel.png</texture>
-				</control>
-				<control type="image">
-					<left>50</left>
-					<top>480</top>
-					<width>450</width>
-					<height>180</height>
 					<texture border="15">ContentPanel.png</texture>
 				</control>
 			</control>
@@ -99,7 +81,7 @@
 				<top>5</top>
 				<width>680</width>
 				<height>390</height>
-				<texture fallback="special://skin/backgrounds/tv.jpg">$INFO[Skin.String(Home_Custom_Back_TV_Folder)]</texture>
+				<texture>special://skin/backgrounds/tv.jpg</texture>
 				<include>VisibleFadeEffect</include>
 				<visible>!Player.HasVideo</visible>
 			</control>
@@ -141,7 +123,7 @@
 			<control type="group">
 				<left>530</left>
 				<top>490</top>
-				<visible>Control.IsVisible(50) + !RDS.HasRDS</visible>
+				<visible>![Control.IsVisible(50) + !IsEmpty(Window.Property(IsRadio)) + System.GetBool(PVRPlayback.EnableRadioRDS) + !Skin.HasSetting(HideEPGwithRDS) + RDS.HasRDS]</visible>
 				<control type="label">
 					<left>0</left>
 					<top>0</top>
@@ -447,7 +429,7 @@
 			<control type="group">
 				<left>530</left>
 				<top>490</top>
-				<visible>RDS.HasRDS</visible>
+				<visible>Control.IsVisible(50) + !IsEmpty(Window.Property(IsRadio)) + System.GetBool(PVRPlayback.EnableRadioRDS) + !Skin.HasSetting(HideEPGwithRDS) + RDS.HasRDS</visible>
 				<control type="image">
 					<left>580</left>
 					<top>-3</top>

@@ -103,6 +103,7 @@ public:
    */
   static std::vector<std::string> Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings = 0);
   static std::vector<std::string> Split(const std::string& input, const char delimiter, size_t iMaxStrings = 0);
+  static std::vector<std::string> SplitMulti(const std::string& input, const char* delimiters, size_t iMaxStrings = 0);
   static int FindNumber(const std::string& strInput, const std::string &strFind);
   static int64_t AlphaNumericCompare(const wchar_t *left, const wchar_t *right);
   static long TimeStringToSeconds(const std::string &timeString);

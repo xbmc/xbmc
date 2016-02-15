@@ -30,7 +30,6 @@
 
 #define DLL_PATH_LIBRTMP       "@RTMP_SONAME@"
 #define DLL_PATH_LIBNFS        "@NFS_SONAME@"
-#define DLL_PATH_LIBGIF        "@GIF_SONAME@"
 
 #define DLL_PATH_LIBPLIST      "@PLIST_SONAME@"
 #define DLL_PATH_LIBSHAIRPLAY  "@SHAIRPLAY_SONAME@"
@@ -47,13 +46,6 @@
 
 /* libbluray */
 #define DLL_PATH_LIBBLURAY     "@BLURAY_SONAME@"
-
-/* wayland */
-#define DLL_PATH_WAYLAND_CLIENT "@WAYLAND_CLIENT_LIBRARY_SONAME@"
-#define DLL_PATH_WAYLAND_EGL "@WAYLAND_EGL_LIBRARY_SONAME@"
-
-/* xkbcommon */
-#define DLL_PATH_XKBCOMMON "@XKBCOMMON_LIBRARY_SONAME@"
 
 /* sse4 */
 #define DLL_PATH_LIBSSE4      "special://xbmcbin/system/libsse4-@ARCH@.so"

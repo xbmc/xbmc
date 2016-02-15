@@ -507,7 +507,7 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
       }
       else if (CActiveAEDSP::GetInstance().GetAudioDSPAddon(m_MasterModes[m_streamTypeUsed][i]->AddonID(), addon))
       {
-        m_ModeList.push_back(make_pair(addon->GetString(m_MasterModes[m_streamTypeUsed][i]->ModeName()), modeId));
+        m_ModeList.push_back(make_pair(g_localizeStrings.GetAddonString(addon->ID(), m_MasterModes[m_streamTypeUsed][i]->ModeName()), modeId));
         if (!AddonMasterModeSetupPresent)
           AddonMasterModeSetupPresent = m_MasterModes[m_streamTypeUsed][i]->HasSettingsDialog();
       }
@@ -760,7 +760,7 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
             break;
           case AE_DSP_MODE_TYPE_MASTER_PROCESS:
             group = AddGroup(category, 15084, -1, true, true);
-            label = addon->GetString(m_ActiveModes[i]->ModeName());
+            label = g_localizeStrings.GetAddonString(addon->ID(), m_ActiveModes[i]->ModeName());
             break;
           case AE_DSP_MODE_TYPE_PRE_PROCESS:
             if (!foundPreProcess)
@@ -768,7 +768,7 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
               foundPreProcess = true;
               group = AddGroup(category, 15085, -1, true, true);
             }
-            label = addon->GetString(m_ActiveModes[i]->ModeName());
+            label = g_localizeStrings.GetAddonString(addon->ID(), m_ActiveModes[i]->ModeName());
             break;
           case AE_DSP_MODE_TYPE_POST_PROCESS:
             if (!foundPostProcess)
@@ -776,11 +776,11 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
               foundPostProcess = true;
               group = AddGroup(category, 15086, -1, true, true);
             }
-            label = addon->GetString(m_ActiveModes[i]->ModeName());
+            label = g_localizeStrings.GetAddonString(addon->ID(), m_ActiveModes[i]->ModeName());
             break;
           default:
           {
-            label += addon->GetString(m_ActiveModes[i]->ModeName());
+            label += g_localizeStrings.GetAddonString(addon->ID(), m_ActiveModes[i]->ModeName());
             label += " - ";
             label += addon->GetFriendlyName();
           }
@@ -919,7 +919,7 @@ std::string CGUIDialogAudioDSPSettings::GetSettingsLabel(CSetting *pSetting)
         ptr = strtol(settingId.substr(19).c_str(), NULL, 0);
 
       if (ptr >= 0 && CActiveAEDSP::GetInstance().GetAudioDSPAddon(m_Menus[ptr].addonId, addon))
-        return addon->GetString(m_Menus[ptr].hook.iLocalizedStringId);
+        return g_localizeStrings.GetAddonString(addon->ID(), m_Menus[ptr].hook.iLocalizedStringId);
     }
   }
 
@@ -959,7 +959,7 @@ void CGUIDialogAudioDSPSettings::GetAudioDSPMenus(CSettingGroup *group, AE_DSP_M
     AE_DSP_ADDON addon;
     if (CActiveAEDSP::GetInstance().GetAudioDSPAddon(m_Menus[i].addonId, addon) && category == m_Menus[i].hook.category)
     {
-      std::string modeName = addon->GetString(m_Menus[i].hook.iLocalizedStringId);
+      std::string modeName = g_localizeStrings.GetAddonString(addon->ID(), m_Menus[i].hook.iLocalizedStringId);
       if (modeName.empty())
         modeName = g_localizeStrings.Get(15041);
 

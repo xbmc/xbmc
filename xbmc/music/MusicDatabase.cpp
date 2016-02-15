@@ -753,7 +753,6 @@ bool CMusicDatabase::GetSong(int idSong, CSong& song)
     {
       const dbiplus::sql_record* const record = m_pDS.get()->get_sql_record();
 
-      int idSongArtist = record->at(songArtistOffset + artistCredit_idArtist).get_asInt();
       int idSongArtistRole = record->at(songArtistOffset + artistCredit_idRole).get_asInt();
       if (idSongArtistRole == ROLE_ARTIST)
         song.artistCredits.push_back(GetArtistCreditFromDataset(record, songArtistOffset));
@@ -1043,7 +1042,6 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
           songs.insert(idSong);
         }
 
-        int idSongArtist = record->at(songArtistOffset + artistCredit_idArtist).get_asInt();
         int idSongArtistRole = record->at(songArtistOffset + artistCredit_idRole).get_asInt();
         //By query order song is the last one appened to the album song vector.                
         if (idSongArtistRole == ROLE_ARTIST)
@@ -4038,8 +4036,10 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     int total = -1;
 
     std::string strSQL = "SELECT %s FROM songview ";
-    if (artistData) // Get data from song and song_artist tables to fully populate songs with artists
-      strSQL = "SELECT %s FROM songview JOIN songartistview on songartistview.idsong = songview.idsong ";
+    if (artistData)
+      // Get data from song and song_artist tables to fully populate songs with artists. 
+      //Some songs may not have artists so Left join
+      strSQL = "SELECT %s FROM songview LEFT JOIN songartistview on songartistview.idsong = songview.idsong ";
 
     Filter extFilter = filter;
     CMusicDbUrl musicUrl;
@@ -4063,15 +4063,22 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     total = (int)strtol(GetSingleValue("SELECT COUNT(1) FROM songview " + strSQLExtra, m_pDS).c_str(), NULL, 10);
 
     // Apply the limiting directly here if there's no special sorting but limiting
-    if (extFilter.limit.empty() &&
-        sortDescription.sortBy == SortByNone &&
-        (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+    bool limited = extFilter.limit.empty() && sortDescription.sortBy == SortByNone &&
+      (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0);
+    if (limited)
       strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
 
-    if (artistData)
-      strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.*, songartistview.* ") + strSQLExtra;
-    else
+    if (!artistData)
       strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.* ") + strSQLExtra;
+    else
+    {
+      strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.*, songartistview.* ");
+      if (!limited)
+        strSQL += strSQLExtra;
+      else
+        //Apply where clause and limits to songview, then join as mutiple records in result set per song
+        strSQL += " WHERE songview.idsong in (SELECT idsong FROM songview " + strSQLExtra + ")";
+    }
 
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
     // run query
@@ -5387,7 +5394,7 @@ bool CMusicDatabase::GetScraperForPath(const std::string& strPath, ADDON::Scrape
         ADDON::AddonPtr addon;
         if (!scraperUUID.empty() && ADDON::CAddonMgr::GetInstance().GetAddon(scraperUUID, addon) && addon)
         {
-          info = std::dynamic_pointer_cast<ADDON::CScraper>(addon->Clone());
+          info = std::dynamic_pointer_cast<ADDON::CScraper>(addon);
           if (!info)
             return false;
           // store this path's settings
@@ -5399,7 +5406,7 @@ bool CMusicDatabase::GetScraperForPath(const std::string& strPath, ADDON::Scrape
         ADDON::AddonPtr defaultScraper;
         if (ADDON::CAddonMgr::GetInstance().GetDefault(type, defaultScraper))
         {
-          info = std::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone());
+          info = std::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper);
         }
       }
     }

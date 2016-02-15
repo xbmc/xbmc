@@ -124,6 +124,7 @@ protected:
   double            m_decoderPts;
   int               m_speed;
   int               m_codecControlFlags;
+  bool              m_dropState;
 
   CCriticalSection m_sharedSection;
   MMAL_COMPONENT_T *m_dec;

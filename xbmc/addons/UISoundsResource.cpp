@@ -27,11 +27,6 @@
 namespace ADDON
 {
 
-AddonPtr CUISoundsResource::Clone() const
-{
-  return AddonPtr(new CUISoundsResource(*this));
-}
-
 bool CUISoundsResource::IsAllowed(const std::string& file) const
 {
   return StringUtils::EqualsNoCase(file, "sounds.xml")

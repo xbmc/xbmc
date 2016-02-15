@@ -108,17 +108,20 @@ unsigned int CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
     return 0;
 
   CAESyncInfo info = m_pAudioStream->GetSyncInfo();
-  unsigned int newTime = info.errortime;
-  if (info.state == CAESyncInfo::SYNC_ACTIVE)
+  if (info.state == CAESyncInfo::SYNC_INSYNC)
+  {
+    unsigned int newTime = info.errortime;
+    if (newTime != m_syncErrorTime)
+    {
+      m_syncErrorTime = info.errortime;
+      m_syncError = info.error / 1000 * DVD_TIME_BASE;
+      m_resampleRatio = info.rr;
+    }
+  }
+  else
   {
     m_syncErrorTime = 0;
     m_syncError = 0.0;
-  }
-  else if (newTime != m_syncErrorTime)
-  {
-    m_syncErrorTime = info.errortime;
-    m_syncError = info.error / 1000 * DVD_TIME_BASE;
-    m_resampleRatio = info.rr;
   }
 
   //Calculate a timeout when this definitely should be done

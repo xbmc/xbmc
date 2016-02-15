@@ -56,6 +56,7 @@
 #include "utils/Variant.h"
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
+#include "pvr/recordings/PVRRecordingsPath.h"
 #include "utils/URIUtils.h"
 #include "GUIUserMessages.h"
 #include "storage/MediaManager.h"
@@ -1125,7 +1126,9 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
   }
   CLog::Log(LOGDEBUG, "%s %s", __FUNCTION__, CURL::GetRedacted(item.GetPath()).c_str());
 
-  if (StringUtils::StartsWith(item.GetPath(), "pvr://recordings/active/"))
+
+  CPVRRecordingsPath path(item.GetPath());
+  if (path.IsValid() && path.IsActive())
   {
     if (!g_PVRManager.IsStarted())
       return false;

@@ -515,7 +515,7 @@ bool CAddonInstallJob::DoWork()
   }
 
   std::string installFrom;
-  if (!m_repo || m_repo->Props().libname.empty())
+  if (!m_repo || m_repo->LibPath().empty())
   {
     // Addons are installed by downloading the .zip package on the server to the local
     // packages folder, then extracting from the local .zip package into the addons folder
@@ -612,15 +612,34 @@ bool CAddonInstallJob::DoWork()
   CAddonMgr::GetInstance().UnregisterAddon(m_addon->ID());
   CAddonMgr::GetInstance().FindAddons();
 
-  // run any post-install guff
-  CEventLog::GetInstance().Add(
-    EventPtr(new CAddonManagementEvent(m_addon, m_update ? 24065 : 24064)),
-    !IsModal() && CSettings::GetInstance().GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS), false);
+  if (!CAddonMgr::GetInstance().GetAddon(m_addon->ID(), m_addon, ADDON_UNKNOWN, false))
+  {
+    CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to reload addon", m_addon->ID().c_str());
+    return false;
+  }
+
+  g_localizeStrings.LoadAddonStrings(URIUtils::AddFileToFolder(m_addon->Path(), "resources/language/"),
+      CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_LANGUAGE), m_addon->ID());
 
   ADDON::OnPostInstall(m_addon, m_update, IsModal());
 
   //Enable it if it was previously disabled
   CAddonMgr::GetInstance().EnableAddon(m_addon->ID());
+
+  if (m_update)
+  {
+    auto& addon = m_addon;
+    auto time = CDateTime::GetCurrentDateTime();
+    CJobManager::GetInstance().Submit([addon, time](){
+      CAddonDatabase db;
+      if (db.Open())
+        db.SetLastUpdated(addon->ID(), time);
+    });
+  }
+
+  CEventLog::GetInstance().Add(
+    EventPtr(new CAddonManagementEvent(m_addon, m_update ? 24065 : 24064)),
+    !IsModal() && CSettings::GetInstance().GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS), false);
 
   // and we're done!
   MarkFinished();
@@ -857,7 +876,7 @@ bool CAddonUnInstallJob::DoWork()
   //TODO: looks broken. it just calls the repo with the most recent version, not the owner
   RepositoryPtr repoPtr;
   CAddonInstaller::GetRepoForAddon(m_addon->ID(), repoPtr);
-  if (repoPtr != NULL && !repoPtr->Props().libname.empty())
+  if (repoPtr != NULL && !repoPtr->LibPath().empty())
   {
     CFileItemList dummy;
     std::string s = StringUtils::Format("plugin://%s/?action=uninstall&package=%s", repoPtr->ID().c_str(), m_addon->ID().c_str());

@@ -459,6 +459,11 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
   {
   case XBMC_KEYDOWN:
   {
+    if (m_LastKey.GetButtonCode() & CKey::MODIFIER_LONG)
+    {
+      // Do not repeat long presses
+      break;
+    }
     m_Keyboard.ProcessKeyDown(newEvent.key.keysym);
     CKey key = m_Keyboard.TranslateKey(newEvent.key.keysym);
     if (!CButtonTranslator::GetInstance().HasLonpressMapping(g_windowManager.GetActiveWindowID(), key))
@@ -480,8 +485,13 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
   case XBMC_KEYUP:
     m_Keyboard.ProcessKeyUp();
     if (m_LastKey.GetButtonCode() != KEY_INVALID && !(m_LastKey.GetButtonCode() & CKey::MODIFIER_LONG))
-      OnKey(m_LastKey);
-    m_LastKey.Reset();
+    {
+      CKey key = m_LastKey;
+      m_LastKey.Reset();  // OnKey is reentrant; need to do this before entering
+      OnKey(key);
+    }
+    else
+      m_LastKey.Reset();
     break;
   case XBMC_MOUSEBUTTONDOWN:
   case XBMC_MOUSEBUTTONUP:

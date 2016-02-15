@@ -20,6 +20,7 @@
  *
  */
 
+#include <atomic>
 #include <utility>
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
@@ -226,7 +227,7 @@ public:
   void             Update  (CDVDInputStream* input, CDVDDemux* demuxer, std::string filename2 = "");
 };
 
-class CVideoPlayer : public IPlayer, public CThread, public IVideoPlayer, public IDispResource
+class CVideoPlayer : public IPlayer, public CThread, public IVideoPlayer, public IDispResource, public IRenderMsg
 {
 public:
   CVideoPlayer(IPlayerCallback& callback);
@@ -302,7 +303,6 @@ public:
   virtual int GetSourceBitrate();
   virtual bool GetStreamDetails(CStreamDetails &details);
   virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
-  virtual void UpdateStreamInfos();
 
   virtual std::string GetPlayerState();
   virtual bool SetPlayerState(const std::string& state);
@@ -361,6 +361,7 @@ protected:
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
+  virtual void VideoParamsChange() override;
 
   void CreatePlayers();
   void DestroyPlayers();
@@ -414,7 +415,7 @@ protected:
   void SynchronizePlayers(unsigned int sources);
   void SynchronizeDemuxer(unsigned int timeout);
   void CheckAutoSceneSkip();
-  void CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket);
+  bool CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket);
   bool CheckSceneSkip(CCurrentStream& current);
   bool CheckPlayerInit(CCurrentStream& current);
   void UpdateCorrection(DemuxPacket* pkt, double correction);
@@ -435,6 +436,7 @@ protected:
 
   void UpdateApplication(double timeout);
   void UpdatePlayState(double timeout);
+  void UpdateStreamInfos();
 
   double m_UpdateApplication;
 
@@ -546,7 +548,7 @@ protected:
   bool m_HasVideo;
   bool m_HasAudio;
 
-  bool m_displayLost;
+  std::atomic<bool> m_displayLost;
 
   // omxplayer variables
   struct SOmxPlayerState m_OmxPlayerState;

@@ -11,7 +11,6 @@ SRCS=GUIDialogBoxBase.cpp \
      GUIDialogKeyboardGeneric.cpp \
      GUIDialogMediaFilter.cpp \
      GUIDialogMediaSource.cpp \
-     GUIDialogMuteBug.cpp \
      GUIDialogNumeric.cpp \
      GUIDialogOK.cpp \
      GUIDialogPlayEject.cpp \

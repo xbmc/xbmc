@@ -156,7 +156,6 @@ then build.
 
 If you have selected a specific OSX SDK Version in step 3.2 then you might need
 to adapt the active target to use the same OSX SDK version. Else build will fail
-(you will see a lot of errors with at least non-found boost/shared_ptr.hpp).
 
 The build process will take a long time when building the first time.
 You can see the progress in "Build Results". There are a large number of static

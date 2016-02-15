@@ -56,6 +56,9 @@ config.log
 
 # osx specifics
 /build/
+/kodi.build/
+/Debug/
+/Release/
 .DS_Store
 *.dSYM
 ._*
@@ -63,9 +66,15 @@ config.log
 *.pbxuser
 *project.xcworkspace
 *xcuserdata
-
 .libs/
 .deps/
+
+# CMake project files
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+CTestTestfile.cmake
+cmake_install.cmake
 
 # Eclipse project files. Not needed as they are generated in two clicks if needed.
 .settings
@@ -89,7 +98,8 @@ config.log
 /build-aux/missing
 /build-aux/ltmain.sh
 /autotools
-/BUILD
+/BUILD/
+
 /kodi.log
 /kodi.old.log
 /Makefile.depend
@@ -257,6 +267,7 @@ lib/cpluff/stamp-h1
 /project/VS2010Express/*.metaproj
 /project/VS2010Express/*.metaproj.tmp
 /project/VS2010Express/.vs
+/project/VS2010Express/XBMC for Windows.VC.opendb
 
 # /skin/
 /skin/Confluence/media/Textures.xbt
@@ -269,7 +280,6 @@ lib/cpluff/stamp-h1
 /system/libexif.dll
 /system/libexpat.dll
 /system/libidn-11.dll
-/system/libgif.dll
 /system/libssh2.dll
 /system/libssl32.dll
 /system/ssh.dll
@@ -328,7 +338,6 @@ lib/cpluff/stamp-h1
 #/tools/depends
 /tools/depends/native/*/*native/
 /tools/depends/native/JsonSchemaBuilder/bin/
-/tools/depends/native/libsquish-native/squish-install/
 /tools/depends/native/TexturePacker/bin/
 /tools/depends/target/ffmpeg/.ffmpeg-installed
 /tools/depends/target/ffmpeg/ffmpeg-*-*.tar.gz
@@ -490,10 +499,6 @@ lib/cpluff/stamp-h1
 # /xbmc/windowing/
 /xbmc/windowing/Makefile
 /xbmc/windowing/egl/Makefile
-/xbmc/windowing/tests/wayland/xbmc_wayland_test_client_protocol.h
-/xbmc/windowing/tests/wayland/xbmc_wayland_test_protocol.c
-/xbmc/windowing/tests/wayland/xbmc_wayland_test_server_protocol.h
-/xbmc/windowing/tests/wayland/Makefile
 
 # /lib/libdvd/
 /lib/libdvd/Makefile
@@ -650,6 +655,9 @@ lib/cpluff/stamp-h1
 
 /pvr-addons
 /adsp-addons
+
+# Doxygen generated files
+/docs/html
 
 # files removed in Jarvis
 /addons/visualization.dxspectrum/*

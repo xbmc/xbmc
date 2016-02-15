@@ -52,7 +52,7 @@ public:
 
 protected:
   virtual bool SetWindow(int width, int height, bool fullscreen, const std::string &output, int *winstate = NULL);
-  virtual bool PresentRenderImpl(const CDirtyRegionList& dirty);
+  virtual void PresentRenderImpl(bool rendered);
   virtual void SetVSyncImpl(bool enable);
   virtual bool RefreshGLContext(bool force);
   virtual XVisualInfo* GetVisual();

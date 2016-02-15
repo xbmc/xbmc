@@ -1,0 +1,1 @@
+../linux/pathsetup.cmake

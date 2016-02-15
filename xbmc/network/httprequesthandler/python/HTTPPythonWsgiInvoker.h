@@ -52,7 +52,7 @@ protected:
 
 private:
   static std::map<std::string, std::string> createCgiEnvironment(const HTTPPythonRequest* httpRequest, ADDON::AddonPtr addon);
-  static void addWsgiEnvironment(HTTPPythonRequest* request, void* environ);
+  static void addWsgiEnvironment(HTTPPythonRequest* request, void* environment);
 
   XBMCAddon::xbmcwsgi::WsgiResponse* m_wsgiResponse;
 };

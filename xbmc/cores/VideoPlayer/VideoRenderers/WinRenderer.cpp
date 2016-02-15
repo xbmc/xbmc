@@ -218,7 +218,6 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   ManageDisplay();
 
   SelectRenderMethod();
-  ManageTextures();
   m_bConfigured = true;
 
   return true;
@@ -320,6 +319,7 @@ void CWinRenderer::Update()
   if (!m_bConfigured) 
     return;
   ManageDisplay();
+  ManageTextures();
 }
 
 void CWinRenderer::RenderUpdate(bool clear, unsigned int flags, unsigned int alpha)
@@ -1065,6 +1065,9 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
 
 EINTERLACEMETHOD CWinRenderer::AutoInterlaceMethod()
 {
+  if (m_renderMethod == RENDER_DXVA)
+    return VS_INTERLACEMETHOD_RENDER_BOB;
+
   return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
 }
 

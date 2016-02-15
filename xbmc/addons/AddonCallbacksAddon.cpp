@@ -278,10 +278,8 @@ char* CAddonCallbacksAddon::GetLocalizedString(const void* addonData, long dwCod
   CAddonCallbacksAddon* addonHelper = helper->GetHelperAddon();
 
   std::string string;
-  if (dwCode >= 30000 && dwCode <= 30999)
-    string = addonHelper->m_addon->GetString(dwCode).c_str();
-  else if (dwCode >= 32000 && dwCode <= 32999)
-    string = addonHelper->m_addon->GetString(dwCode).c_str();
+  if ((dwCode >= 30000 && dwCode <= 30999) || (dwCode >= 32000 && dwCode <= 32999))
+    string = g_localizeStrings.GetAddonString(addonHelper->m_addon->ID(), dwCode).c_str();
   else
     string = g_localizeStrings.Get(dwCode).c_str();
 
@@ -536,9 +534,15 @@ bool CAddonCallbacksAddon::RemoveDirectory(const void* addonData, const char *st
 }
 
 static void CFileItemListToVFSDirEntries(VFSDirEntry* entries,
+                                         unsigned int num_entries,
                                          const CFileItemList& items)
 {
-  for (int i=0;i<items.Size();++i)
+  if (!entries)
+    return;
+
+  int toCopy = std::min(num_entries, (unsigned int)items.Size());
+
+  for (int i=0;i<toCopy;++i)
   {
     entries[i].label = strdup(items[i]->GetLabel().c_str());
     entries[i].path = strdup(items[i]->GetPath().c_str());
@@ -568,7 +572,7 @@ bool CAddonCallbacksAddon::GetDirectory(const void* addonData, const char *strPa
     *items = nullptr;
   }
 
-  CFileItemListToVFSDirEntries(*items, fileItems);
+  CFileItemListToVFSDirEntries(*items, *num_items, fileItems);
   return true;
 }
 

@@ -49,11 +49,19 @@ class CMMALRenderer;
 class CLinuxRenderer;
 class CLinuxRendererGL;
 class CLinuxRendererGLES;
+class CRenderManager;
+
+class IRenderMsg
+{
+  friend CRenderManager;
+protected:
+  virtual void VideoParamsChange() = 0;
+};
 
 class CRenderManager
 {
 public:
-  CRenderManager(CDVDClock &clock);
+  CRenderManager(CDVDClock &clock, IRenderMsg *player);
   ~CRenderManager();
 
   // Functions called from render thread
@@ -239,6 +247,7 @@ protected:
   CEvent m_flushEvent;
   double m_clock_framefinish;
   CDVDClock &m_dvdClock;
+  IRenderMsg *m_playerPort;
 
   void RenderCapture(CRenderCapture* capture);
   void RemoveCaptures();

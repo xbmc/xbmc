@@ -151,6 +151,11 @@ namespace PVR
         || m_state == PVR_TIMER_STATE_ERROR;
     }
 
+    /*!
+     * @return True if this timer won't result in a recording because it is in conflict with another timer or live stream, false otherwise
+     */
+    bool HasConflict(void) const { return m_state == PVR_TIMER_STATE_CONFLICT_NOK; }
+
     bool IsRecording(void) const { return m_state == PVR_TIMER_STATE_RECORDING; }
 
     /*!

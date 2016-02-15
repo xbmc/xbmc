@@ -66,21 +66,9 @@ void CEngineStats::AddSamples(int samples, std::list<CActiveAEStream*> &streams)
   CSingleLock lock(m_lock);
   m_bufferedSamples += samples;
 
-  //update buffered time of streams
-  std::list<CActiveAEStream*>::iterator it;
-  for(it=streams.begin(); it!=streams.end(); ++it)
+  for (auto stream : streams)
   {
-    float delay = 0;
-    std::deque<CSampleBuffer*>::iterator itBuf;
-    for(itBuf=(*it)->m_processingSamples.begin(); itBuf!=(*it)->m_processingSamples.end(); ++itBuf)
-    {
-      if (m_pcmOutput)
-        delay += (float)(*itBuf)->pkt->nb_samples / (*itBuf)->pkt->config.sample_rate;
-      else
-        delay += m_sinkFormat.m_streamInfo.GetDuration() / 1000;
-    }
-    delay += (*it)->m_resampleBuffers->GetDelay();
-    (*it)->m_bufferedTime = delay;
+    UpdateStream(stream);
   }
 }
 
@@ -94,6 +82,65 @@ void CEngineStats::GetDelay(AEDelayStatus& status)
     status.delay += (double)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
 }
 
+void CEngineStats::AddStream(unsigned int streamid)
+{
+  StreamStats stream;
+  stream.m_streamId = streamid;
+  stream.m_bufferedTime = 0;
+  stream.m_resampleRatio = 1.0;
+  stream.m_syncError = 0;
+  stream.m_syncState = CAESyncInfo::AESyncState::SYNC_OFF;
+  m_streamStats.push_back(stream);
+}
+
+void CEngineStats::RemoveStream(unsigned int streamid)
+{
+  for (auto it = m_streamStats.begin(); it != m_streamStats.end(); ++it)
+  {
+    if (it->m_streamId == streamid)
+    {
+      m_streamStats.erase(it);
+      return;
+    }
+  }
+}
+
+void CEngineStats::UpdateStream(CActiveAEStream *stream)
+{
+  CSingleLock lock(m_lock);
+  for (auto &str : m_streamStats)
+  {
+    if (str.m_streamId == stream->m_id)
+    {
+      float delay = 0;
+      str.m_syncState = stream->m_syncState;
+      str.m_syncError = stream->m_syncError.GetLastError(str.m_errorTime);
+      if (stream->m_resampleBuffers)
+      {
+        str.m_resampleRatio = stream->m_resampleBuffers->m_resampleRatio;
+        delay += stream->m_resampleBuffers->GetDelay();
+      }
+      else
+      {
+        str.m_resampleRatio = 1.0;
+      }
+
+      CSingleLock lock(stream->m_statsLock);
+      std::deque<CSampleBuffer*>::iterator itBuf;
+      for(itBuf=stream->m_processingSamples.begin(); itBuf!=stream->m_processingSamples.end(); ++itBuf)
+      {
+        if (m_pcmOutput)
+          delay += (float)(*itBuf)->pkt->nb_samples / (*itBuf)->pkt->config.sample_rate;
+        else
+          delay += m_sinkFormat.m_streamInfo.GetDuration() / 1000;
+      }
+      str.m_bufferedTime = delay;
+      stream->m_bufferedTime = 0;
+      break;
+    }
+  }
+}
+
 // this is used to sync a/v so we need to add sink latency here
 void CEngineStats::GetDelay(AEDelayStatus& status, CActiveAEStream *stream)
 {
@@ -105,8 +152,16 @@ void CEngineStats::GetDelay(AEDelayStatus& status, CActiveAEStream *stream)
   else
     status.delay += (double)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
 
-  if (stream->m_resampleBuffers)
-    status.delay += stream->m_bufferedTime / stream->m_resampleBuffers->m_resampleRatio;
+  for (auto &str : m_streamStats)
+  {
+    if (str.m_streamId == stream->m_id)
+    {
+      CSingleLock lock(stream->m_statsLock);
+      float buffertime = str.m_bufferedTime + stream->m_bufferedTime;
+      status.delay += buffertime / str.m_resampleRatio;
+      return;
+    }
+  }
 }
 
 // this is used to sync a/v so we need to add sink latency here
@@ -121,21 +176,21 @@ void CEngineStats::GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream)
     status.delay += (double)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
 
   status.delay += m_sinkLatency;
-  if (stream->m_resampleBuffers)
-    status.delay += stream->m_bufferedTime / stream->m_resampleBuffers->m_resampleRatio;
 
-  info.delay = status.GetDelay();
-  info.error = stream->m_syncError.GetLastError(info.errortime);
-  info.state = CAESyncInfo::SYNC_OFF;
-  if (stream->m_resampleBuffers)
-    info.rr = stream->m_resampleBuffers->m_resampleRatio;
-
-  if (stream->m_pClock)
+  for (auto &str : m_streamStats)
   {
-    if (stream->m_syncClock)
-      info.state = CAESyncInfo::SYNC_ACTIVE;
-    else
-      info.state = CAESyncInfo::SYNC_PLAY;
+    if (str.m_streamId == stream->m_id)
+    {
+      CSingleLock lock(stream->m_statsLock);
+      float buffertime = str.m_bufferedTime + stream->m_bufferedTime;
+      status.delay += buffertime / str.m_resampleRatio;
+      info.delay = status.GetDelay();
+      info.error = str.m_syncError;
+      info.errortime = str.m_errorTime;
+      info.state = str.m_syncState;
+      info.rr = str.m_resampleRatio;
+      return;
+    }
   }
 }
 
@@ -146,7 +201,16 @@ float CEngineStats::GetCacheTime(CActiveAEStream *stream)
   if (!m_pcmOutput)
     delay = (float)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
 
-  delay += stream->m_bufferedTime;
+  for (auto &str : m_streamStats)
+  {
+    if (str.m_streamId == stream->m_id)
+    {
+      CSingleLock lock(stream->m_statsLock);
+      float buffertime = str.m_bufferedTime + stream->m_bufferedTime;
+      delay += buffertime / str.m_resampleRatio;
+      break;
+    }
+  }
   return delay;
 }
 
@@ -222,6 +286,7 @@ CActiveAE::CActiveAE() :
   m_sinkHasVolume = false;
   m_aeGUISoundForce = false;
   m_stats.Reset(44100, true);
+  m_streamIdGen = 0;
 }
 
 CActiveAE::~CActiveAE()
@@ -547,7 +612,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEControlProtocol::RESUMESTREAM:
           stream = *(CActiveAEStream**)msg->data;
           if (stream->m_paused)
-            stream->m_syncClock = CActiveAEStream::STARTSYNC;
+            stream->m_syncState = CAESyncInfo::AESyncState::SYNC_START;
           stream->m_paused = false;
           streaming = true;
           m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::STREAMING, &streaming, sizeof(bool));
@@ -793,7 +858,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           CActiveAEStream *stream;
           stream = *(CActiveAEStream**)msg->data;
           stream->m_paused = false;
-          stream->m_syncClock = CActiveAEStream::STARTSYNC;
+          stream->m_syncState = CAESyncInfo::AESyncState::SYNC_START;
           m_state = AE_TOP_CONFIGURED_PLAY;
           m_extTimeout = 0;
           return;
@@ -1038,6 +1103,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       m_currDevice.compare(device) != 0 ||
       m_settings.driver.compare(driver) != 0)
   {
+    FlushEngine();
     if (!InitSink())
       return;
     m_settings.driver = driver;
@@ -1147,6 +1213,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
         format.m_streamInfo.m_channels = 2;
         format.m_streamInfo.m_sampleRate = 48000;
+        format.m_streamInfo.m_ac3FrameSize = m_encoderFormat.m_frames;
         // TODO
         if (m_encoderBuffers && initSink)
         {
@@ -1319,18 +1386,17 @@ CActiveAEStream* CActiveAE::CreateStream(MsgStreamNew *streamMsg)
 
   // create the stream
   CActiveAEStream *stream;
-  stream = new CActiveAEStream(&streamMsg->format);
+  stream = new CActiveAEStream(&streamMsg->format, m_streamIdGen++);
   stream->m_streamPort = new CActiveAEDataProtocol("stream",
                              &stream->m_inMsgEvent, &m_outMsgEvent);
 
   // create buffer pool
   stream->m_inputBuffers = NULL; // create in Configure when we know the sink format
   stream->m_resampleBuffers = NULL; // create in Configure when we know the sink format
-  stream->m_statsLock = m_stats.GetLock();
   stream->m_fadingSamples = 0;
   stream->m_started = false;
   stream->m_resampleMode = 0;
-  stream->m_syncClock = CActiveAEStream::STARTSYNC;
+  stream->m_syncState = CAESyncInfo::AESyncState::SYNC_OFF;
 
   if (streamMsg->options & AESTREAM_PAUSED)
   {
@@ -1349,6 +1415,7 @@ CActiveAEStream* CActiveAE::CreateStream(MsgStreamNew *streamMsg)
   stream->m_pClock = streamMsg->clock;
 
   m_streams.push_back(stream);
+  m_stats.AddStream(stream->m_id);
 
   return stream;
 }
@@ -1370,6 +1437,7 @@ void CActiveAE::DiscardStream(CActiveAEStream *stream)
       if ((*it)->m_resampleBuffers)
         m_discardBufferPools.push_back((*it)->m_resampleBuffers);
       CLog::Log(LOGDEBUG, "CActiveAE::DiscardStream - audio stream deleted");
+      m_stats.RemoveStream((*it)->m_id);
       delete (*it)->m_streamPort;
       delete (*it);
       it = m_streams.erase(it);
@@ -1392,13 +1460,16 @@ void CActiveAE::SFlushStream(CActiveAEStream *stream)
   stream->m_streamPort->Purge();
   stream->m_bufferedTime = 0.0;
   stream->m_paused = false;
-  stream->m_syncClock = CActiveAEStream::STARTSYNC;
+  stream->m_syncState = CAESyncInfo::AESyncState::SYNC_START;
+  stream->m_syncError.Flush();
 
   // flush the engine if we only have a single stream
   if (m_streams.size() == 1)
   {
     FlushEngine();
   }
+
+  m_stats.UpdateStream(stream);
 }
 
 void CActiveAE::FlushEngine()
@@ -1792,7 +1863,8 @@ bool CActiveAE::RunStages()
     if (!(*it)->m_drain)
     {
       float buftime = (float)(*it)->m_inputBuffers->m_format.m_frames / (*it)->m_inputBuffers->m_format.m_sampleRate;
-      time += buftime * (*it)->m_processingSamples.size();
+      if ((*it)->m_inputBuffers->m_format.m_dataFormat == AE_FMT_RAW)
+        buftime = (*it)->m_inputBuffers->m_format.m_streamInfo.GetDuration() / 1000;
       while ((time < MAX_CACHE_LEVEL || (*it)->m_streamIsBuffering) && !(*it)->m_inputBuffers->m_freeSamples.empty())
       {
         buffer = (*it)->m_inputBuffers->GetFreeBuffer();
@@ -1900,6 +1972,7 @@ bool CActiveAE::RunStages()
         if (!(*it)->m_resampleBuffers->m_outputSamples.empty())
         {
           CSampleBuffer *tmp = SyncStream(*it);
+          m_stats.UpdateStream(*it);
           if (tmp)
           {
             if (!out)
@@ -2172,6 +2245,7 @@ bool CActiveAE::RunStages()
         {
           (*it)->m_started = true;
           buffer = SyncStream(*it);
+          m_stats.UpdateStream(*it);
           if (!buffer)
           {
             buffer = (*it)->m_resampleBuffers->m_outputSamples.front();
@@ -2229,16 +2303,9 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   if (!stream->m_pClock)
     return ret;
 
-  if (m_mode == MODE_RAW)
+  if (stream->m_syncState == CAESyncInfo::AESyncState::SYNC_START)
   {
-    // TODO
-    // implement pause bursts for passthrough, until then we need to exit here
-    stream->m_syncClock = CActiveAEStream::INSYNC;
-  }
-
-  if (stream->m_syncClock == CActiveAEStream::STARTSYNC)
-  {
-    stream->m_syncClock = CActiveAEStream::MUTE;
+    stream->m_syncState = CAESyncInfo::AESyncState::SYNC_MUTE;
     stream->m_syncError.Flush(100);
     stream->m_resampleBuffers->m_resampleRatio = 1.0;
     stream->m_resampleIntegral = 0;
@@ -2255,45 +2322,49 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
       threshold *= 2;
   }
 
-  bool newerror = stream->m_syncError.Get(error, stream->m_syncClock ? 100 : 1000);
+  int timeout = (stream->m_syncState != CAESyncInfo::AESyncState::SYNC_INSYNC) ? 100 : (int)stream->m_errorInterval;
+  bool newerror = stream->m_syncError.Get(error, timeout);
 
-  // TODO: delete if passthrough ever gets a proper sync method
-  // for now I recommend to every one just not to use it, it has zero advantage anyway
-  if (m_mode == MODE_RAW)
+  if (newerror && fabs(error) > threshold && stream->m_syncState == CAESyncInfo::AESyncState::SYNC_INSYNC)
   {
-    return ret;
-  }
-
-  if (newerror && fabs(error) > threshold && stream->m_syncClock == CActiveAEStream::INSYNC)
-  {
-    stream->m_syncClock = CActiveAEStream::ADJUST;
+    stream->m_syncState = CAESyncInfo::AESyncState::SYNC_ADJUST;
     stream->m_resampleBuffers->m_resampleRatio = 1.0;
     stream->m_resampleIntegral = 0;
     stream->m_lastSyncError = error;
     CLog::Log(LOGDEBUG,"ActiveAE::SyncStream - average error %f above threshold of %f", error, threshold);
   }
-  else if (newerror && stream->m_syncClock == CActiveAEStream::MUTE)
+  else if (newerror && stream->m_syncState == CAESyncInfo::AESyncState::SYNC_MUTE)
   {
-    stream->m_syncClock = CActiveAEStream::ADJUST;
+    stream->m_syncState = CAESyncInfo::AESyncState::SYNC_ADJUST;
     stream->m_lastSyncError = error;
     CLog::Log(LOGDEBUG,"ActiveAE::SyncStream - average error of %f, start adjusting", error);
   }
 
-  if (stream->m_syncClock == CActiveAEStream::MUTE)
+  if (stream->m_syncState == CAESyncInfo::AESyncState::SYNC_MUTE)
   {
     CSampleBuffer *buf = stream->m_resampleBuffers->m_outputSamples.front();
-    for(int i=0; i<buf->pkt->planes; i++)
+    if (m_mode == MODE_RAW)
     {
-      memset(buf->pkt->data[i], 0, buf->pkt->linesize);
+      buf->pkt->nb_samples = 0;
+      buf->pkt->pause_burst_ms = stream->m_resampleBuffers->m_format.m_streamInfo.GetDuration();
+    }
+    else
+    {
+      for(int i=0; i<buf->pkt->planes; i++)
+      {
+        memset(buf->pkt->data[i], 0, buf->pkt->linesize);
+      }
     }
   }
-  else if (stream->m_syncClock == CActiveAEStream::ADJUST)
+  else if (stream->m_syncState == CAESyncInfo::AESyncState::SYNC_ADJUST)
   {
     if (error > 0)
     {
       ret = m_silenceBuffers->GetFreeBuffer();
       if (ret)
       {
+        ret->pkt->nb_samples = 0;
+        ret->pkt->pause_burst_ms = 0;
         int framesToDelay = error / 1000 * ret->pkt->config.sample_rate;
         if (framesToDelay > ret->pkt->max_nb_samples)
           framesToDelay = ret->pkt->max_nb_samples;
@@ -2305,12 +2376,31 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
             framesToDelay = 0;
         }
         ret->pkt->nb_samples = framesToDelay;
-        for(int i=0; i<ret->pkt->planes; i++)
+        if (m_mode == MODE_RAW)
         {
-          memset(ret->pkt->data[i], 0, ret->pkt->linesize);
+          ret->pkt->nb_samples = 0;
+          ret->pkt->pause_burst_ms = error;
+          if (error > stream->m_format.m_streamInfo.GetDuration())
+            ret->pkt->pause_burst_ms = stream->m_format.m_streamInfo.GetDuration();
+
+          stream->m_syncError.Correction(-ret->pkt->pause_burst_ms);
+          error -= ret->pkt->pause_burst_ms;
         }
-        stream->m_syncError.Correction(-framesToDelay*1000/ret->pkt->config.sample_rate);
-        error -= framesToDelay*1000/ret->pkt->config.sample_rate;
+        else
+        {
+          stream->m_syncError.Correction(-framesToDelay*1000/ret->pkt->config.sample_rate);
+          error -= framesToDelay*1000/ret->pkt->config.sample_rate;
+          for(int i=0; i<ret->pkt->planes; i++)
+          {
+            memset(ret->pkt->data[i], 0, ret->pkt->linesize);
+          }
+        }
+
+        if (!ret->pkt->nb_samples & !ret->pkt->pause_burst_ms)
+        {
+          ret->Return();
+          ret = nullptr;
+        }
       }
     }
     else
@@ -2326,28 +2416,40 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
         else
           framesToSkip = 0;
       }
-      int bytesToSkip = framesToSkip*buf->pkt->bytes_per_sample;
-      for(int i=0; i<buf->pkt->planes; i++)
+      if (m_mode == MODE_RAW)
       {
-        memmove(buf->pkt->data[i], buf->pkt->data[i]+bytesToSkip, buf->pkt->linesize - bytesToSkip);
+        if (-error > stream->m_format.m_streamInfo.GetDuration() / 2)
+        {
+          stream->m_syncError.Correction(stream->m_format.m_streamInfo.GetDuration());
+          error += stream->m_format.m_streamInfo.GetDuration();
+          buf->pkt->nb_samples = 0;
+        }
       }
-      buf->pkt->nb_samples -= framesToSkip;
-      stream->m_syncError.Correction(framesToSkip*1000/buf->pkt->config.sample_rate);
-      error += framesToSkip*1000/buf->pkt->config.sample_rate;
+      else
+      {
+        int bytesToSkip = framesToSkip*buf->pkt->bytes_per_sample;
+        for(int i=0; i<buf->pkt->planes; i++)
+        {
+          memmove(buf->pkt->data[i], buf->pkt->data[i]+bytesToSkip, buf->pkt->linesize - bytesToSkip);
+        }
+        buf->pkt->nb_samples -= framesToSkip;
+        stream->m_syncError.Correction(framesToSkip*1000/buf->pkt->config.sample_rate);
+        error += framesToSkip*1000/buf->pkt->config.sample_rate;
+      }
     }
 
     if (fabs(error) < 30)
     {
       if (stream->m_lastSyncError > threshold * 2)
       {
-        stream->m_syncClock = CActiveAEStream::MUTE;
+        stream->m_syncState = CAESyncInfo::AESyncState::SYNC_MUTE;
         stream->m_syncError.Flush(100);
         CLog::Log(LOGDEBUG,"ActiveAE::SyncStream - average error %f, last average error: %f", error, stream->m_lastSyncError);
         stream->m_lastSyncError = error;
       }
       else
       {
-        stream->m_syncClock = CActiveAEStream::INSYNC;
+        stream->m_syncState = CAESyncInfo::AESyncState::SYNC_INSYNC;
         stream->m_syncError.Flush(1000);
         stream->m_resampleIntegral = 0;
         stream->m_resampleBuffers->m_resampleRatio = 1.0;
@@ -2358,7 +2460,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
     return ret;
   }
 
-  if (!newerror || stream->m_syncClock != CActiveAEStream::INSYNC)
+  if (!newerror || stream->m_syncState != CAESyncInfo::AESyncState::SYNC_INSYNC)
     return ret;
 
   if (stream->m_resampleMode)
@@ -2610,6 +2712,7 @@ bool CActiveAE::IsSettingVisible(const std::string &settingId)
     AEAudioFormat format;
     format.m_dataFormat = AE_FMT_RAW;
     format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_TRUEHD;
+    format.m_streamInfo.m_sampleRate = 192000;
     if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), format) &&
         CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
       return true;

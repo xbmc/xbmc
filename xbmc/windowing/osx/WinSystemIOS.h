@@ -75,7 +75,7 @@ public:
           bool IsBackgrounded() const { return m_bIsBackgrounded; }
 
 protected:
-  virtual bool PresentRenderImpl(const CDirtyRegionList &dirty);
+  virtual void PresentRenderImpl(bool rendered);
   virtual void SetVSyncImpl(bool enable);
 
   void        *m_glView; // EAGLView opaque

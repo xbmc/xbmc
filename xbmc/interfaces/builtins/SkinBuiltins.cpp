@@ -205,7 +205,7 @@ static int SetPath(const std::vector<std::string>& params)
     }
   }
 
-  if (CGUIDialogFileBrowser::ShowAndGetDirectory(localShares, g_localizeStrings.Get(1031), value))
+  if (CGUIDialogFileBrowser::ShowAndGetDirectory(localShares, g_localizeStrings.Get(657), value))
     CSkinSettings::GetInstance().SetString(string, value);
 
   CSettings::GetInstance().Save();

@@ -219,6 +219,8 @@ std::string CKeyboardStat::GetKeyName(int KeyID)
     keyname.append("win-");
   if (KeyID & CKey::MODIFIER_META)
     keyname.append("meta-");
+  if (KeyID & CKey::MODIFIER_LONG)
+    keyname.append("long-");
 
 // Now get the key name
 

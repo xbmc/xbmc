@@ -373,6 +373,18 @@
     <Filter Include="cores\VideoPlayer\VideoRenderers\VideoShaders">
       <UniqueIdentifier>{0dde0eba-c702-41fb-92a8-38cc21839a62}</UniqueIdentifier>
     </Filter>
+    <Filter Include="music\tags\test">
+      <UniqueIdentifier>{085f7e1a-1fab-41f8-a742-03239f7d1f98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\threads">
+      <UniqueIdentifier>{d22fd9e3-f07f-44fa-8482-35654aee48c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="video\test">
+      <UniqueIdentifier>{8902f553-16a5-4b95-802c-c0345ac69f15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\test">
+      <UniqueIdentifier>{a1795e15-75aa-4cfe-b5a3-4dab057dfe0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -817,9 +829,6 @@
       <Filter>dialogs</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogMediaSource.cpp">
-      <Filter>dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\dialogs\GUIDialogMuteBug.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogNumeric.cpp">
@@ -1407,9 +1416,6 @@
     <ClCompile Include="..\..\xbmc\utils\SystemInfo.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\TimeSmoother.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\TimeUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -1580,9 +1586,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamPVRManager.cpp">
       <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxPVRClient.cpp">
-      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\TextSearch.cpp">
       <Filter>utils</Filter>
@@ -2371,12 +2374,6 @@
     <ClCompile Include="..\..\xbmc\utils\test\TestSystemInfo.cpp">
       <Filter>utils\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\test\TestTimeSmoother.cpp">
-      <Filter>utils\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\test\TestTimeUtils.cpp">
-      <Filter>utils\test</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestURIUtils.cpp">
       <Filter>utils\test</Filter>
     </ClCompile>
@@ -3108,9 +3105,6 @@
     <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryRefreshingJob.cpp">
       <Filter>video\jobs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\Gif.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\messaging\helpers\DialogHelper.cpp">
       <Filter>messaging\helpers</Filter>
     </ClCompile>
@@ -3230,6 +3224,58 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeInProgressTvShows.cpp">
       <Filter>filesystem\VideoDatabaseDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\InfoScanner.cpp" />
+    <ClCompile Include="..\..\xbmc\music\windows\MusicFileItemListModifier.cpp">
+      <Filter>music\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\windows\VideoFileItemListModifier.cpp">
+      <Filter>video\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxClient.cpp">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\tags\test\TestTagLoaderTagLib.cpp">
+      <Filter>music\tags\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\test\TestSharedSection.cpp">
+      <Filter>test\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\test\TestThreadLocal.cpp">
+      <Filter>test\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\test\TestAtomics.cpp">
+      <Filter>test\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\test\TestEvent.cpp">
+      <Filter>test\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\test\TestNfsFile.cpp">
+      <Filter>filesystem\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\test\TestVideoInfoScanner.cpp">
+      <Filter>video\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\test\TestURL.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\test\TestHelpers.h">
+      <Filter>test\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\recordings\PVRRecordingsPath.cpp">
+      <Filter>pvr\recordings</Filter>
+    </ClCompile>
+     <ClCompile Include="..\..\xbmc\addons\AddonBuilder.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\test\TestAddonBuilder.cpp">
+      <Filter>addons\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\test\TestAddonFactory.cpp">
+      <Filter>addons\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\test\TestAddonVersion.cpp">
+      <Filter>addons\test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3768,9 +3814,6 @@
       <Filter>dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMediaSource.h">
-      <Filter>dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMuteBug.h">
       <Filter>dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogNumeric.h">
@@ -4426,9 +4469,6 @@
     <ClInclude Include="..\..\xbmc\utils\SystemInfo.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\utils\TimeSmoother.h">
-      <Filter>utils</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\TimeUtils.h">
       <Filter>utils</Filter>
     </ClInclude>
@@ -4618,9 +4658,6 @@
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamPVRManager.h">
       <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxPVRClient.h">
-      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\TextSearch.h">
       <Filter>utils</Filter>
     </ClInclude>
@@ -4772,9 +4809,6 @@
       <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegionTracker.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\DllLibGif.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegion.h">
@@ -6126,9 +6160,6 @@
     <ClInclude Include="..\..\xbmc\utils\win32\memcpy_sse2.h">
       <Filter>utils\win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\Gif.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\messaging\helpers\DialogHelper.h">
       <Filter>messaging\helpers</Filter>
     </ClInclude>
@@ -6257,6 +6288,22 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeInProgressTvShows.h">
       <Filter>filesystem\VideoDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\InfoScanner.h" />
+    <ClInclude Include="..\..\xbmc\music\windows\MusicFileItemListModifier.h">
+      <Filter>music\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\windows\VideoFileItemListModifier.h">
+      <Filter>video\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxClient.h">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AddonBuilder.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\recordings\PVRRecordingsPath.h">
+      <Filter>pvr\recordings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

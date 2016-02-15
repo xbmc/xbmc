@@ -22,8 +22,8 @@
 #include <list>
 #include <memory>
 #include "Addon.h"
+#include "ContextMenuItem.h"
 
-class CContextMenuItem;
 typedef struct cp_cfg_element_t cp_cfg_element_t;
 
 
@@ -32,14 +32,17 @@ namespace ADDON
   class CContextMenuAddon : public CAddon
   {
   public:
-    CContextMenuAddon(const cp_extension_t *ext);
-    CContextMenuAddon(const AddonProps &props);
-    virtual ~CContextMenuAddon();
+    static std::unique_ptr<CContextMenuAddon> FromExtension(AddonProps props, const cp_extension_t* ext);
+
+    explicit CContextMenuAddon(AddonProps props) : CAddon(std::move(props)) {}
+    CContextMenuAddon(AddonProps props, std::vector<CContextMenuItem> items);
 
     std::vector<CContextMenuItem> GetItems();
 
   private:
-    void ParseMenu(cp_cfg_element_t* elem, const std::string& parent, int& anonGroupCount);
+    static void ParseMenu(const AddonProps& props, cp_cfg_element_t* elem, const std::string& parent,
+        int& anonGroupCount, std::vector<CContextMenuItem>& items);
+
     std::vector<CContextMenuItem> m_items;
   };
 

@@ -32,10 +32,9 @@
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"
 #include "mysql/errmsg.h"
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) && !defined(BUILDING_WITH_CMAKE)
 #pragma comment(lib, "mysqlclient.lib")
 #endif
-
 
 #define MYSQL_OK          0
 #define ER_BAD_DB_ERROR   1049
@@ -163,11 +162,11 @@ int MysqlDatabase::connect(bool create_new) {
     if (conn == NULL) {
       conn = mysql_init(conn);
       mysql_ssl_set(
-        conn, 
-        key.empty() ? NULL : key.c_str(), 
-        cert.empty() ? NULL : cert.c_str(), 
-        ca.empty() ? NULL : ca.c_str(), 
-        capath.empty() ? NULL : capath.c_str(), 
+        conn,
+        key.empty() ? NULL : key.c_str(),
+        cert.empty() ? NULL : cert.c_str(),
+        ca.empty() ? NULL : ca.c_str(),
+        capath.empty() ? NULL : capath.c_str(),
         ciphers.empty() ? NULL : ciphers.c_str());
     }
 
@@ -649,7 +648,6 @@ struct StrAccum {
 #define FLAG_INTERN  2     /* True if for internal use only */
 #define FLAG_STRING  4     /* Allow infinity precision */
 
-
 /*
 ** The following table is searched linearly, so it is good to put the
 ** most frequently used conversion types first.
@@ -722,8 +720,6 @@ void MysqlDatabase::appendSpace(StrAccum *pAccum, int N) {
 #endif
 
 #define etBUFSIZE MYSQL_PRINT_BUF_SIZE  /* Size of the output buffer */
-
-
 
 /*
 ** The maximum length of a TEXT or BLOB in bytes.   This also
@@ -893,7 +889,6 @@ void MysqlDatabase::mysqlVXPrintf(
       }
     }
     zExtra = 0;
-
 
     /* Limit the precision to prevent overflowing buf[] during conversion */
     if( precision>etBUFSIZE-40 && (infop->flags & FLAG_STRING)==0 ){
@@ -1328,7 +1323,6 @@ char *MysqlDatabase::mysql_vmprintf(const char *zFormat, va_list ap) {
   return z;
 }
 
-
 //************* MysqlDataset implementation ***************
 
 MysqlDataset::MysqlDataset():Dataset() {
@@ -1337,7 +1331,6 @@ MysqlDataset::MysqlDataset():Dataset() {
   errmsg = NULL;
   autorefresh = false;
 }
-
 
 MysqlDataset::MysqlDataset(MysqlDatabase *newDb):Dataset(newDb) {
   haveError = false;
@@ -1350,12 +1343,9 @@ MysqlDataset::~MysqlDataset() {
    if (errmsg) free(errmsg);
  }
 
-
 void MysqlDataset::set_autorefresh(bool val) {
     autorefresh = val;
 }
-
-
 
 //--------- protected functions implementation -----------------//
 
@@ -1410,7 +1400,6 @@ void MysqlDataset::make_edit() {
   make_query(update_sql);
 }
 
-
 void MysqlDataset::make_deletion() {
   make_query(delete_sql);
 }
@@ -1444,7 +1433,6 @@ void MysqlDataset::fill_fields() {
   for (unsigned int i = 0; i < ncols; i++)
     (*fields_object)[i].val = "";
 }
-
 
 //------------- public functions implementation -----------------//
 bool MysqlDataset::dropIndex(const char *table, const char *index)
@@ -1499,7 +1487,7 @@ int MysqlDataset::exec(const std::string &sql) {
   }
 
   // force the charset and collation to UTF-8
-  if ( ci_find(qry, "CREATE TABLE") != std::string::npos 
+  if ( ci_find(qry, "CREATE TABLE") != std::string::npos
     || ci_find(qry, "CREATE TEMPORARY TABLE") != std::string::npos )
   {
     // If CREATE TABLE ... SELECT Syntax is used we need to add the encoding after the table before the select
@@ -1533,7 +1521,6 @@ int MysqlDataset::exec() {
 const void* MysqlDataset::getExecRes() {
   return &exec_res;
 }
-
 
 bool MysqlDataset::query(const std::string &query) {
   if(!handle()) throw DbErrors("No Database Connection");
@@ -1659,7 +1646,6 @@ void MysqlDataset::close() {
   active = false;
 }
 
-
 void MysqlDataset::cancel() {
   if ((ds_state == dsInsert) || (ds_state==dsEdit))
   {
@@ -1670,21 +1656,17 @@ void MysqlDataset::cancel() {
   }
 }
 
-
 int MysqlDataset::num_rows() {
   return result.records.size();
 }
-
 
 bool MysqlDataset::eof() {
   return feof;
 }
 
-
 bool MysqlDataset::bof() {
   return fbof;
 }
-
 
 void MysqlDataset::first() {
   Dataset::first();

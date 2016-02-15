@@ -49,6 +49,7 @@ public:
   void SetCanCancel(bool bCanCancel);
 
 protected:
+  virtual void OnInitWindow();
   virtual int GetDefaultLabelID(int controlId) const;
   virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 

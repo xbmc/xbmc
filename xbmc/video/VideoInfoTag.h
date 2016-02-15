@@ -197,7 +197,7 @@ public:
   int m_iIdRating;
   std::string m_strDefaultRating;
   int m_iUserRating;
-  float m_fEpBookmark;
+  CBookmark m_EpBookmark;
   int m_iBookmarkId;
   int m_iIdShow;
   int m_iIdSeason;
@@ -208,7 +208,7 @@ public:
   MediaType m_type;
   int m_duration; ///< duration in seconds
   int m_relevance; // Used for actors' number of appearances
-  bool m_hasDetails;
+  int m_parsedDetails;
 
 private:
   /* \brief Parse our native XML format for video info.

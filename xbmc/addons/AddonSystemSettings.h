@@ -34,6 +34,7 @@ class CAddonSystemSettings : public ISettingCallback
 public:
   static CAddonSystemSettings& GetInstance();
   void OnSettingAction(const CSetting* setting) override;
+  void OnSettingChanged(const CSetting* setting) override;
 
 private:
   CAddonSystemSettings() = default;

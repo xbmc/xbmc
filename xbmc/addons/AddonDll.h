@@ -43,11 +43,11 @@ namespace ADDON
   class CAddonDll : public CAddon, public ANNOUNCEMENT::IAnnouncer
   {
   public:
-    CAddonDll(const AddonProps &props);
-    CAddonDll(const cp_extension_t *ext);
+    CAddonDll(AddonProps props);
+
+    //FIXME: does shallow pointer copy. no copy assignment op
     CAddonDll(const CAddonDll<TheDll, TheStruct, TheProps> &rhs);
     virtual ~CAddonDll();
-    virtual AddonPtr Clone() const;
     virtual ADDON_STATUS GetStatus();
 
     // addon settings
@@ -90,21 +90,8 @@ namespace ADDON
   };
 
 template<class TheDll, typename TheStruct, typename TheProps>
-CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
-  : CAddon(ext),
-    m_bIsChild(false)
-{
-  m_pStruct     = NULL;
-  m_initialized = false;
-  m_pDll        = NULL;
-  m_pInfo       = NULL;
-  m_pHelpers    = NULL;
-  m_needsavedsettings = false;
-}
-
-template<class TheDll, typename TheStruct, typename TheProps>
-CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const AddonProps &props)
-  : CAddon(props),
+CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(AddonProps props)
+  : CAddon(std::move(props)),
     m_bIsChild(false)
 {
   m_pStruct     = NULL;
@@ -136,12 +123,6 @@ CAddonDll<TheDll, TheStruct, TheProps>::~CAddonDll()
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
-AddonPtr CAddonDll<TheDll, TheStruct, TheProps>::Clone() const
-{
-  return AddonPtr(new CAddonDll<TheDll, TheStruct, TheProps>(*this));
-}
-
-template<class TheDll, typename TheStruct, typename TheProps>
 bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
 {
   if (m_pDll)
@@ -154,7 +135,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
   }
   else
   {
-    std::string extension = URIUtils::GetExtension(m_strLibName);
+    std::string extension = URIUtils::GetExtension(LibPath());
     strFileName = "special://temp/" + ID() + "-%03d" + extension;
     strFileName = CUtil::GetNextFilename(strFileName, 100);
 
@@ -171,7 +152,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
   if (!XFILE::CFile::Exists(strFileName))
   {
     std::string tempbin = getenv("XBMC_ANDROID_LIBS");
-    strFileName = tempbin + "/" + m_strLibName;
+    strFileName = tempbin + "/" + m_props.libname;
   }
 #endif
   if (!XFILE::CFile::Exists(strFileName))
@@ -182,7 +163,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
     strFileName = tempbin + strFileName;
     if (!XFILE::CFile::Exists(strFileName))
     {
-      CLog::Log(LOGERROR, "ADDON: Could not locate %s", m_strLibName.c_str());
+      CLog::Log(LOGERROR, "ADDON: Could not locate %s", m_props.libname.c_str());
       return false;
     }
   }

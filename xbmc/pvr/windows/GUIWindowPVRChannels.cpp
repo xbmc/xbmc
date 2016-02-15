@@ -85,7 +85,7 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
 
   if (channel->IsRecording())
     buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);  /* Stop recording */
-  else
+  else if (g_PVRClients->SupportsTimers(channel->ClientID()))
     buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);   /* Record */
 
   if (ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())

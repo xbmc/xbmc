@@ -2879,6 +2879,7 @@ msgid "Browse for playlist"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+#: xbmc/interfaces/builtins/SkinBuiltins.cpp
 msgctxt "#657"
 msgid "Browse for folder"
 msgstr ""
@@ -5005,7 +5006,17 @@ msgctxt "#12011"
 msgid "Return to videos window"
 msgstr ""
 
-#empty strings from id 12012 to 12020
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
+msgctxt "#12012"
+msgid "Last used"
+msgstr ""
+
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
+msgctxt "#12013"
+msgid "Install date"
+msgstr ""
+
+#empty strings from id 12014 to 12020
 
 #. Label of various controls for starting playback from the beginning
 #: xbmc/Autorun.cpp
@@ -5594,6 +5605,7 @@ msgstr ""
 #: xbmc/peripherals/bus/PeripheralBus.cpp
 #: system/settings/settings.xml
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+#: xbmc/addons/GUIWindowAddonBrowser.cpp
 msgctxt "#13106"
 msgid "Disabled"
 msgstr ""
@@ -7096,7 +7108,11 @@ msgctxt "#14081"
 msgid "File lists"
 msgstr ""
 
-#empty string with id 14082
+#. Label of button in Settings -> Audio output to clear the audio DSP database.
+#: system/settings/settings.xml
+msgctxt "#14082"
+msgid "Reset the Audio DSP database..."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14083"
@@ -8838,8 +8854,13 @@ msgctxt "#19097"
 msgid "Enter the name for the recording"
 msgstr ""
 
+#: xbmc/addons/AddonSystemSettings.cpp
+#: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
+#: xbmc/pvr/channels/PVRChannelGroupInternal.cpp
+#: xbmc/pvr/PVRManager.cpp
+#: xbmc/settings/dialogs/GUIDialogAudioDSPManager.cpp:
 msgctxt "#19098"
-msgid "Warning"
+msgid "Warning!"
 msgstr ""
 
 #: xbmc/pvr/PVRGUIInfo.cpp
@@ -9649,7 +9670,7 @@ msgstr ""
 #. DialogOK for no installed ADSP add-on available
 #: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
 msgctxt "#19274"
-msgid "You need a add-on installed for the process of audio DSP signal. System becomes disabled."
+msgid "You need an add-on installed to be able to use audio digital signal processing (DSP)."
 msgstr ""
 
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
@@ -12239,9 +12260,7 @@ msgctxt "#21397"
 msgid "High quality pixel shader v2"
 msgstr ""
 
-msgctxt "#21398"
-msgid "Enable playlist at startup"
-msgstr ""
+#empty string with id 21398
 
 msgctxt "#21399"
 msgid "Use tween animations"
@@ -15204,8 +15223,8 @@ msgstr ""
 
 #empty strings from id 34409 to 34999
 
-#: addons/skin.confluence/720p/DialogPeripheralManager.xml
 #: system/settings/settings.xml
+#: xbmc/peripherals/Peripherals.cpp
 msgctxt "#35000"
 msgid "Peripherals"
 msgstr ""
@@ -15270,34 +15289,7 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr ""
 
-#empty strings from id 35103 to 35499
-
-#: Unknown
-msgctxt "#35500"
-msgid "Location"
-msgstr ""
-
-#: addons/skin.confluence/720p/DialogPeripheralManager.xml
-msgctxt "#35501"
-msgid "Class"
-msgstr ""
-
-#: Unknown
-msgctxt "#35502"
-msgid "Name"
-msgstr ""
-
-#: addons/skin.confluence/720p/DialogPeripheralManager.xml
-msgctxt "#35503"
-msgid "Vendor"
-msgstr ""
-
-#: addons/skin.confluence/720p/DialogPeripheralManager.xml
-msgctxt "#35504"
-msgid "Product ID"
-msgstr ""
-
-#empty strings from id 35505 to 35999
+#empty strings from id 35103 to 35999
 
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 msgctxt "#36000"
@@ -17426,10 +17418,10 @@ msgctxt "#36438"
 msgid "Enables digital signal processing (DSP) of audio channels specified by the speaker configuration."
 msgstr ""
 
-#. Description of setting "System -> Audio output -> Reset the Audio DSP database..." with label 311
+#. Description of setting "System -> Audio output -> Reset the Audio DSP database..." with label 14082
 #: system/settings/settings.xml
 msgctxt "#36439"
-msgid "All data (add-on settings and audio DSP manager settings) in the audio DSP database is being erased."
+msgid "All data (add-on settings and audio DSP manager settings) in the audio DSP database will be erased."
 msgstr ""
 
 #. Used in confirm on dialog to erase database
@@ -17814,7 +17806,31 @@ msgctxt "#36614"
 msgid "Show add-ons that are currently running in the background."
 msgstr ""
 
-#empty strings from id 36615 to 36899
+#. Label of a setting or option referring to the source/origin of e.g. add-ons.
+#: system/settings/settings.xml
+msgctxt "#36615"
+msgid "Unknown sources"
+msgstr ""
+
+#. Description of setting "System -> Add-ons -> Unknown sources" with label #36615
+#: system/settings/settings.xml
+msgctxt "#36616"
+msgid "Allow installation of add-ons from unknown sources."
+msgstr ""
+
+#. Text in warning dialog when attempting to install add-ons from zip file.
+#: xbmc/addons/GUIWindowAddonBrowser.cpp
+msgctxt "#36617"
+msgid "For security, installation of add-ons from unknown sources is disabled."
+msgstr ""
+
+#. Text in confirm dialog when enabling setting "System -> Add-ons -> Unknown sources"
+#: xbmc/addons/AddonSystemSettings.cpp
+msgctxt "#36618"
+msgid "Add-ons will be given access to personal data stored on this device. By allowing, you agree that you are solely responsible for any loss of data, unwanted behaviour, or damage to your device. Proceed?"
+msgstr ""
+
+#empty strings from id 36619 to 36899
 
 #: xbmc/media/MediaType.cpp
 msgctxt "#36900"

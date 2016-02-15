@@ -898,6 +898,14 @@ void CGUIEPGGridContainer::UpdateItems(CFileItemList *items)
   FreeItemsMemory();
   UpdateLayout();
 
+  /* check for invalid start and end time */
+  if (m_gridStart >= m_gridEnd)
+  {
+    // default to start "now minus 30 minutes" and end "start plus one page".
+    m_gridStart = CDateTime::GetCurrentDateTime().GetAsUTCDateTime() - CDateTimeSpan(0, 0, 30, 0);
+    m_gridEnd = m_gridStart + CDateTimeSpan(0, 0, m_blocksPerPage * MINSPERBLOCK, 0);
+  }
+
   /* Create Ruler items */
   CDateTime ruler; ruler.SetFromUTCDateTime(m_gridStart);
   CDateTime rulerEnd; rulerEnd.SetFromUTCDateTime(m_gridEnd);
@@ -913,28 +921,10 @@ void CGUIEPGGridContainer::UpdateItems(CFileItemList *items)
     m_rulerItems.push_back(rulerItem);
   }
 
-  /* check for invalid start and end time */
-  if (m_gridStart >= m_gridEnd)
-  {
-    CLog::Log(LOGERROR, "CGUIEPGGridContainer - %s - invalid start and end time set", __FUNCTION__);
-    CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), GetParentID()); // message the window
-    SendWindowMessage(msg);
-    return;
-  }
-
   CDateTimeSpan gridDuration = m_gridEnd - m_gridStart;
   m_blocks = (gridDuration.GetDays()*24*60 + gridDuration.GetHours()*60 + gridDuration.GetMinutes()) / MINSPERBLOCK;
   if (m_blocks >= MAXBLOCKS)
     m_blocks = MAXBLOCKS;
-
-  /* if less than one page, can't display grid */
-  if (m_blocks < m_blocksPerPage)
-  {
-    CLog::Log(LOGERROR, "CGUIEPGGridContainer - %s - Less than one page of data available.", __FUNCTION__);
-    CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), GetParentID()); // message the window
-    SendWindowMessage(msg);
-    return;
-  }
 
   CDateTimeSpan blockDuration;
   blockDuration.SetDateTimeSpan(0, 0, MINSPERBLOCK, 0);
