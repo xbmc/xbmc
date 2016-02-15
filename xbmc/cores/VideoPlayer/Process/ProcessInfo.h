@@ -1,7 +1,5 @@
-#pragma once
-
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2016 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,32 +17,17 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-  #include "config.h"
-#endif
+#include "cores/IPlayer.h"
 
-#include <string>
-#include <vector>
-#include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
-
-// 0x100000 is the video starting range
-
-// 0x200000 is the audio starting range
-
-// special options that can be passed to a codec
-class CDVDCodecOption
+class CProcessInfo
 {
 public:
-  CDVDCodecOption(const std::string& name, const std::string& value) : m_name(name), m_value(value) {}
-  std::string m_name;
-  std::string m_value;
-};
+  static CProcessInfo* CreateInstance();
+  virtual ~CProcessInfo();
+  EINTERLACEMETHOD GetFallbackDeintMethod();
 
-class CDVDCodecOptions
-{
-public:
-  std::vector<CDVDCodecOption> m_keys;
-  std::vector<ERenderFormat> m_formats;
-  const void *m_opaque_pointer;
+protected:
+  CProcessInfo();
 };

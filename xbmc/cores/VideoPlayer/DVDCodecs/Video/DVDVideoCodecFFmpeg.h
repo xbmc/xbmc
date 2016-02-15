@@ -57,7 +57,7 @@ public:
     virtual void SetCodecControl(int flags) {};
   };
 
-  CDVDVideoCodecFFmpeg();
+  CDVDVideoCodecFFmpeg(CProcessInfo &processInfo);
   virtual ~CDVDVideoCodecFFmpeg();
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();

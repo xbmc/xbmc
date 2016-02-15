@@ -129,7 +129,7 @@ CDVDOverlayCodec* CDVDFactoryCodec::OpenCodec(CDVDOverlayCodec* pCodec, CDVDStre
 }
 
 
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const CRenderInfo &info)
+CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProcessInfo &processInfo, const CRenderInfo &info)
 {
   CDVDVideoCodec* pCodec = nullptr;
   CDVDCodecOptions options;
@@ -178,7 +178,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 
   std::string value = StringUtils::Format("%d", info.max_buffer_size);
   options.m_keys.push_back(CDVDCodecOption("surfaces", value));
-  pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, options);
+  pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(processInfo), hint, options);
   if (pCodec)
     return pCodec;
 

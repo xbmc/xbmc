@@ -227,6 +227,8 @@ public:
   void             Update  (CDVDInputStream* input, CDVDDemux* demuxer, std::string filename2 = "");
 };
 
+class CProcessInfo;
+
 class CVideoPlayer : public IPlayer, public CThread, public IVideoPlayer, public IDispResource, public IRenderMsg
 {
 public:
@@ -447,6 +449,7 @@ protected:
   XbmcThreads::EndTime m_cachingTimer;
   CFileItem    m_item;
   XbmcThreads::EndTime m_ChannelEntryTimeOut;
+  CProcessInfo *m_processInfo;
 
   CCurrentStream m_CurrentAudio;
   CCurrentStream m_CurrentVideo;

@@ -1,0 +1,8 @@
+INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/VideoPlayer
+
+SRCS  = ProcessInfo.cpp
+
+LIB = Process.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

@@ -2211,6 +2211,7 @@ OUTPUT_FILES="Makefile \
     xbmc/cores/VideoPlayer/DVDCodecs/Video/Makefile \
     xbmc/cores/VideoPlayer/DVDDemuxers/Makefile \
     xbmc/cores/VideoPlayer/DVDSubtitles/Makefile \
+    xbmc/cores/VideoPlayer/Process/Makefile \
     xbmc/cores/AudioEngine/Makefile \
     xbmc/cores/paplayer/Makefile \
     xbmc/cores/omxplayer/Makefile \

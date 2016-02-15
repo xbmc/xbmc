@@ -181,7 +181,7 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avct
   return avcodec_default_get_format(avctx, fmt);
 }
 
-CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
+CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo)
 {
   m_pCodecContext = nullptr;
   m_pFrame = nullptr;
@@ -414,14 +414,17 @@ void CDVDVideoCodecFFmpeg::SetFilters()
   EDEINTERLACEMODE mDeintMode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
   EINTERLACEMETHOD mInt = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
 
+  if (mInt != VS_INTERLACEMETHOD_DEINTERLACE && mInt != VS_INTERLACEMETHOD_DEINTERLACE_HALF)
+    mInt = m_processInfo.GetFallbackDeintMethod();
+
   unsigned int filters = 0;
 
   if (mDeintMode != VS_DEINTERLACEMODE_OFF)
   {
-    if(mInt == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
-      filters = FILTER_DEINTERLACE_ANY | FILTER_DEINTERLACE_HALFED;
-    else
+    if (mInt == VS_INTERLACEMETHOD_DEINTERLACE)
       filters = FILTER_DEINTERLACE_ANY;
+    else if (mInt == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
+      filters = FILTER_DEINTERLACE_ANY | FILTER_DEINTERLACE_HALFED;
 
     if (mDeintMode == VS_DEINTERLACEMODE_AUTO && filters)
       filters |= FILTER_DEINTERLACE_FLAGGED;
