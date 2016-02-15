@@ -30,6 +30,7 @@
 #include <vector>
 #include <climits>
 #include <cassert>
+#include <sstream>
 
 #ifdef TARGET_POSIX
 #include <errno.h>
@@ -406,6 +407,7 @@ CCurlFile::~CCurlFile()
 
 CCurlFile::CCurlFile()
  : m_writeOffset(0)
+ , m_proxy()
  , m_overflowBuffer(NULL)
  , m_overflowSize(0)
 {
@@ -428,7 +430,6 @@ CCurlFile::CCurlFile()
   m_password = "";
   m_httpauth = "";
   m_cipherlist = "";
-  m_proxytype = CProxy::ProxyHttp;
   m_state = new CReadState();
   m_oldState = NULL;
   m_skipshout = false;
@@ -607,13 +608,20 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   if (g_advancedSettings.m_curlDisableIPV6)
     g_curlInterface.easy_setopt(h, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 
-  if (m_proxy.length() > 0)
+  if (m_proxy)
   {
-    g_curlInterface.easy_setopt(h, CURLOPT_PROXY, m_proxy.c_str());
-    g_curlInterface.easy_setopt(h, CURLOPT_PROXYTYPE, proxyType2CUrlProxyType[m_proxytype]);
-    if (m_proxyuserpass.length() > 0)
-      g_curlInterface.easy_setopt(h, CURLOPT_PROXYUSERPWD, m_proxyuserpass.c_str());
-
+    std::ostringstream hostport;
+    if (!m_proxy.GetHost().empty()) {
+      hostport << m_proxy.GetHost();
+      if (m_proxy.GetPort())
+        hostport << ':' << m_proxy.GetPort();
+    }
+    g_curlInterface.easy_setopt(h, CURLOPT_PROXY, hostport.str().c_str());
+    g_curlInterface.easy_setopt(h, CURLOPT_PROXYTYPE, proxyType2CUrlProxyType[m_proxy.GetType()]);
+    const std::string userpass =
+      m_proxy.GetUser() + std::string(":") + m_proxy.GetPassword();
+    if (!userpass.empty())
+      g_curlInterface.easy_setopt(h, CURLOPT_PROXYUSERPWD, userpass.c_str());
   }
   if (m_customrequest.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_CUSTOMREQUEST, m_customrequest.c_str());
@@ -758,17 +766,19 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     if (s.GetBool(CSettings::SETTING_NETWORK_USEHTTPPROXY)
         && !s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER).empty()
         && s.GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT) > 0
-        && m_proxy.empty())
+        && !m_proxy)
     {
-      m_proxy = s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER);
-      m_proxy += StringUtils::Format(":%d", s.GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT));
-      if (s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME).length() > 0 && m_proxyuserpass.empty())
+      m_proxy.SetHost(s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER));
+      m_proxy.SetPort(s.GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT));
+      if (s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME).length() > 0
+          && m_proxy.GetUser().empty()
+	  && m_proxy.GetPassword().empty())
       {
-        m_proxyuserpass = s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME);
-        m_proxyuserpass += ":" + s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD);
+        m_proxy.SetUser(s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME));
+        m_proxy.SetPassword(s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD));
       }
-      m_proxytype = (CProxy::Type)s.GetInt(CSettings::SETTING_NETWORK_HTTPPROXYTYPE);
-      CLog::Log(LOGDEBUG, "Using proxy %s, type %d", m_proxy.c_str(), proxyType2CUrlProxyType[m_proxytype]);
+      m_proxy.SetType((CProxy::Type)s.GetInt(CSettings::SETTING_NETWORK_HTTPPROXYTYPE));
+      CLog::Log(LOGDEBUG, "Using proxy %s, type %d", m_proxy.GetHost().c_str(), proxyType2CUrlProxyType[m_proxy.GetType()]);
     }
 
     // get username and password
