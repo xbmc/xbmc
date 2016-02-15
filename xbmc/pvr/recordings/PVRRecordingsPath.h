@@ -55,7 +55,6 @@ namespace PVR
     void AppendSegment(const std::string &strSegment);
 
   private:
-    void Init(const std::string &strPath);
     static std::string TrimSlashes(const std::string &strString);
 
     bool m_bValid;
