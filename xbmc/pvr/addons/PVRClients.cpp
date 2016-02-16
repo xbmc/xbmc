@@ -795,6 +795,26 @@ PVR_ERROR CPVRClients::GetEPGForChannel(const CPVRChannelPtr &channel, CEpg *epg
   return error;
 }
 
+PVR_ERROR CPVRClients::SetEPGTimeFrame(int iDays)
+{
+  PVR_ERROR error(PVR_ERROR_NO_ERROR);
+  PVR_CLIENTMAP clients;
+  GetConnectedClients(clients);
+
+  for (const auto &client : clients)
+  {
+    PVR_ERROR currentError = client.second->SetEPGTimeFrame(iDays);
+    if (currentError != PVR_ERROR_NOT_IMPLEMENTED &&
+        currentError != PVR_ERROR_NO_ERROR)
+    {
+      error = currentError;
+      CLog::Log(LOGERROR, "PVR - %s - cannot set epg time frame for client '%d': %s",__FUNCTION__, client.first, CPVRClient::ToString(error));
+    }
+  }
+
+  return error;
+}
+
 PVR_ERROR CPVRClients::GetChannels(CPVRChannelGroupInternal *group)
 {
   PVR_ERROR error(PVR_ERROR_NO_ERROR);

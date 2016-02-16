@@ -15289,7 +15289,33 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr ""
 
-#empty strings from id 35103 to 35999
+#empty strings from id 35103 to 35504
+
+#. connection state "host unreachable"
+#: xbmc/addons/AddonCallbacksPVR.cpp
+msgctxt "#35505"
+msgid "Server is unreachable."
+msgstr ""
+
+#. connection state "server type mismatch" (reachable, but maybe an HTTP server where an FTP server is expected)
+#: xbmc/addons/AddonCallbacksPVR.cpp
+msgctxt "#35506"
+msgid "Server does not respond properly."
+msgstr ""
+
+#. connection state "client - server version mismatch (reachable, but maybe server version to low)"
+#: xbmc/addons/AddonCallbacksPVR.cpp
+msgctxt "#35507"
+msgid "Server version is not compatible."
+msgstr ""
+
+#. connection state "access denied" (e.g. due to wrong credentials)
+#: xbmc/addons/AddonCallbacksPVR.cpp
+msgctxt "#35508"
+msgid "Access denied."
+msgstr ""
+
+#empty strings from id 35509 to 35999
 
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 msgctxt "#36000"
@@ -15436,6 +15462,7 @@ msgid "When the TV is switched off"
 msgstr ""
 
 #: xbmc/addons/addonstatushandler.cpp
+#: xbmc/addons/AddonCallbacksPVR.cpp
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 msgctxt "#36030"
 msgid "Connection lost"
@@ -15456,7 +15483,10 @@ msgctxt "#36033"
 msgid "Action when switching to another source"
 msgstr ""
 
-#empty string with id 36034
+#: xbmc/addons/AddonCallbacksPVR.cpp
+msgctxt "#36034"
+msgid "Connection established"
+msgstr ""
 
 #. adjust refreshrate
 #: system/settings/settings.xml

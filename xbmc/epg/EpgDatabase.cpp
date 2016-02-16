@@ -235,7 +235,7 @@ int CEpgDatabase::Get(CEpg &epg)
 
         int iBroadcastUID = m_pDS->fv("iBroadcastUid").get_asInt();
         // Compat: null value for broadcast uid changed from numerical -1 to 0 with PVR Addon API v4.0.0
-        newTag->m_iUniqueBroadcastID = iBroadcastUID == -1 ? PVR_TIMER_NO_EPG_UID : iBroadcastUID;
+        newTag->m_iUniqueBroadcastID = iBroadcastUID == -1 ? EPG_TAG_INVALID_UID : iBroadcastUID;
 
         newTag->m_iBroadcastId       = m_pDS->fv("idBroadcast").get_asInt();
         newTag->m_strTitle           = m_pDS->fv("sTitle").get_asString().c_str();

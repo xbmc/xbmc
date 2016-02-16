@@ -29,6 +29,7 @@ namespace PVR
 
 namespace ADDON
 {
+struct EpgEventStateChange;
 
 /*!
  * Callbacks for a PVR add-on to XBMC.
@@ -156,8 +157,30 @@ public:
    */
   static DemuxPacket* PVRAllocateDemuxPacket(void* addonData, int iDataSize = 0);
 
+  /*!
+   * @brief Notify a state change for a PVR backend connection
+   * @param addonData A pointer to the add-on.
+   * @param strConnectionString The connection string reported by the backend that can be displayed in the UI.
+   * @param newState The new state.
+   * @param strMessage A localized addon-defined string representing the new state, that can be displayed
+   *        in the UI or NULL if the Kodi-defined default string for the new state shall be displayed.
+   */
+  static void PVRConnectionStateChange(void* addonData, const char* strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage);
+
+  /*!
+   * @brief Notify a state change for an EPG event
+   * @param addonData A pointer to the add-on.
+   * @param tag The EPG event.
+   * @param iUniqueChannelId The unique id of the channel for the EPG event
+   * @param newState The new state.
+   * @param newState The new state. For EPG_EVENT_CREATED and EPG_EVENT_UPDATED, tag must be filled with all available
+   *        event data, not just a delta. For EPG_EVENT_DELETED, it is sufficient to fill EPG_TAG.iUniqueBroadcastId
+   */
+  static void PVREpgEventStateChange(void* addonData, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState);
+
 private:
   static PVR::CPVRClient* GetPVRClient(void* addonData);
+  static void UpdateEpgEvent(const EpgEventStateChange &ch, bool bQueued);
 
   CB_PVRLib    *m_callbacks; /*!< callback addresses */
   CAddon       *m_addon;     /*!< the addon */

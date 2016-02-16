@@ -22,6 +22,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/timers/PVRTimers.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -51,7 +52,7 @@ CEpgInfoTag::CEpgInfoTag(void) :
     m_iSeriesNumber(0),
     m_iEpisodeNumber(0),
     m_iEpisodePart(0),
-    m_iUniqueBroadcastID(0),
+    m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
     m_iYear(0),
     m_epg(NULL),
     m_iFlags(EPG_TAG_FLAG_UNDEFINED)
@@ -68,7 +69,7 @@ CEpgInfoTag::CEpgInfoTag(CEpg *epg, PVR::CPVRChannelPtr pvrChannel, const std::s
     m_iSeriesNumber(0),
     m_iEpisodeNumber(0),
     m_iEpisodePart(0),
-    m_iUniqueBroadcastID(0),
+    m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
     m_iYear(0),
     m_strIconPath(strIconPath),
     m_epg(epg),
@@ -88,7 +89,7 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
     m_iSeriesNumber(0),
     m_iEpisodeNumber(0),
     m_iEpisodePart(0),
-    m_iUniqueBroadcastID(0),
+    m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
     m_epg(NULL)
 {
   m_startTime = (data.startTime + g_advancedSettings.m_iPVRTimeCorrection);
@@ -712,9 +713,9 @@ const int CEpgInfoTag::EpgID(void) const
   return m_epg ? m_epg->EpgID() : -1;
 }
 
-void CEpgInfoTag::SetTimer(CPVRTimerInfoTagPtr timer)
+void CEpgInfoTag::SetTimer(unsigned int iTimerId)
 {
-  m_timer = timer;
+  m_timer = g_PVRTimers->GetById(iTimerId);
 }
 
 void CEpgInfoTag::ClearTimer(void)

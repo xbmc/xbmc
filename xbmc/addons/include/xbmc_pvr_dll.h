@@ -52,16 +52,18 @@ extern "C"
   /*!
    * Get the XBMC_GUI_API_VERSION that was used to compile this add-on.
    * Used to check if this add-on is compatible with XBMC.
-   * @return The XBMC_GUI_API_VERSION that was used to compile this add-on.
+   * @return The XBMC_GUI_API_VERSION that was used to compile this add-on or empty string if this add-on does not depend on Kodi GUI API.
    * @remarks Valid implementation required.
+   * @note see libKODI_guilib.h about related parts
    */
   const char* GetGUIAPIVersion(void);
 
   /*!
    * Get the XBMC_GUI_MIN_API_VERSION that was used to compile this add-on.
    * Used to check if this add-on is compatible with XBMC.
-   * @return The XBMC_GUI_MIN_API_VERSION that was used to compile this add-on.
+   * @return The XBMC_GUI_MIN_API_VERSION that was used to compile this add-on or empty string if this add-on does not depend on Kodi GUI API.
    * @remarks Valid implementation required.
+   * @note see libKODI_guilib.h about related parts
    */
   const char* GetMininumGUIAPIVersion(void);
 
@@ -434,12 +436,6 @@ extern "C"
   long long LengthLiveStream(void);
 
   /*!
-   * @return The channel number on the backend of the live stream that's currently being read.
-   * @remarks Required if bHandlesInputStream or bHandlesDemuxing is set to true. Return -1 if this add-on won't provide this function.
-   */
-  int GetCurrentClientChannel(void);
-
-  /*!
    * Switch to another channel. Only to be called when a live stream has already been opened.
    * @param channel The channel to switch to.
    * @return True if the switch was successful, false otherwise.
@@ -641,6 +637,17 @@ extern "C"
   bool IsRealTimeStream();
 
   /*!
+   * Tell the client the time frame to use when notifying epg events back to Kodi. The client might push epg events asynchronously
+   * to Kodi using the callback function EpgEventStateChange. To be able to only push events that are actually of interest for Kodi,
+   * client needs to know about the epg time frame Kodi uses. Kodi calls this function once after the client add-on has been sucessfully
+   * initialized and then everytime the time frame value changes.
+   * @param iDays number of days from "now". EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all epg events, regardless of event times.
+   * @return PVR_ERROR_NO_ERROR if new value was successfully set.
+   * @remarks Required if bSupportsEPG is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   */
+  PVR_ERROR SetEPGTimeFrame(int iDays);
+
+  /*!
    * Called by XBMC to assign the function pointers of this add-on to pClient.
    * @param pClient The struct to assign the function pointers to.
    */
@@ -697,7 +704,6 @@ extern "C"
     pClient->SeekLiveStream                 = SeekLiveStream;
     pClient->PositionLiveStream             = PositionLiveStream;
     pClient->LengthLiveStream               = LengthLiveStream;
-    pClient->GetCurrentClientChannel        = GetCurrentClientChannel;
     pClient->SwitchChannel                  = SwitchChannel;
     pClient->SignalStatus                   = SignalStatus;
     pClient->GetLiveStreamURL               = GetLiveStreamURL;
@@ -728,6 +734,8 @@ extern "C"
 
     pClient->IsTimeshifting                 = IsTimeshifting;
     pClient->IsRealTimeStream               = IsRealTimeStream;
+
+    pClient->SetEPGTimeFrame                = SetEPGTimeFrame;
   };
 };
 

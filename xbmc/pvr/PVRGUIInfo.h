@@ -121,9 +121,6 @@ namespace PVR
     void CharInfoNextTimer(std::string &strValue) const;
     void CharInfoBackendNumber(std::string &strValue) const;
     void CharInfoTotalDiskSpace(std::string &strValue) const;
-    void CharInfoVideoBR(std::string &strValue) const;
-    void CharInfoAudioBR(std::string &strValue) const;
-    void CharInfoDolbyBR(std::string &strValue) const;
     void CharInfoSignal(std::string &strValue) const;
     void CharInfoSNR(std::string &strValue) const;
     void CharInfoBER(std::string &strValue) const;

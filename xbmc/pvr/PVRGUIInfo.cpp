@@ -358,15 +358,6 @@ bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
   case PVR_NEXT_TIMER:
     CharInfoNextTimer(strValue);
     break;
-  case PVR_ACTUAL_STREAM_VIDEO_BR:
-    CharInfoVideoBR(strValue);
-    break;
-  case PVR_ACTUAL_STREAM_AUDIO_BR:
-    CharInfoAudioBR(strValue);
-    break;
-  case PVR_ACTUAL_STREAM_DOLBY_BR:
-    CharInfoDolbyBR(strValue);
-    break;
   case PVR_ACTUAL_STREAM_SIG:
     CharInfoSignal(strValue);
     break;
@@ -602,21 +593,6 @@ void CPVRGUIInfo::CharInfoBackendNumber(std::string &strValue) const
 void CPVRGUIInfo::CharInfoTotalDiskSpace(std::string &strValue) const
 {
   strValue = StringUtils::SizeToString(m_iBackendDiskTotal).c_str();
-}
-
-void CPVRGUIInfo::CharInfoVideoBR(std::string &strValue) const
-{
-  strValue = StringUtils::Format("%.2f Mbit/s", m_qualityInfo.dVideoBitrate);
-}
-
-void CPVRGUIInfo::CharInfoAudioBR(std::string &strValue) const
-{
-  strValue = StringUtils::Format("%.0f kbit/s", m_qualityInfo.dAudioBitrate);
-}
-
-void CPVRGUIInfo::CharInfoDolbyBR(std::string &strValue) const
-{
-  strValue = StringUtils::Format("%.0f kbit/s", m_qualityInfo.dDolbyBitrate);
 }
 
 void CPVRGUIInfo::CharInfoSignal(std::string &strValue) const

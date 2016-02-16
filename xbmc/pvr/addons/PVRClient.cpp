@@ -162,6 +162,7 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_menuhooks.clear();
   m_timertypes.clear();
   m_bReadyToUse           = false;
+  m_connectionState       = PVR_CONNECTION_STATE_UNKNOWN;
   m_iClientId             = iClientId;
   m_strBackendVersion     = DEFAULT_INFO_STRING_VALUE;
   m_strConnectionString   = DEFAULT_INFO_STRING_VALUE;
@@ -194,6 +195,8 @@ ADDON_STATUS CPVRClient::Create(int iClientId)
   catch (std::exception &e) { LogException(e, __FUNCTION__); }
 
   m_bReadyToUse = bReadyToUse;
+
+  SetEPGTimeFrame(CSettings::GetInstance().GetInt(CSettings::SETTING_EPG_DAYSTODISPLAY));
 
   return status;
 }
@@ -235,6 +238,20 @@ void CPVRClient::ReCreate(void)
 bool CPVRClient::ReadyToUse(void) const
 {
   return m_bReadyToUse;
+}
+
+void CPVRClient::SetConnectionState(PVR_CONNECTION_STATE state)
+{
+  if (m_connectionState != state)
+  {
+    m_connectionState = state;
+
+    if (state == PVR_CONNECTION_STATE_CONNECTED)
+    {
+      CLog::Log(LOGDEBUG, "PVRClient - %s - refetching addon properties", __FUNCTION__);
+      GetAddonProperties();
+    }
+  }
 }
 
 int CPVRClient::GetID(void) const
@@ -325,8 +342,8 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIM
   strncpy(addonTimer.strSummary, xbmcTimer.m_strSummary.c_str(), sizeof(addonTimer.strSummary) - 1);
   addonTimer.iMarginStart              = xbmcTimer.m_iMarginStart;
   addonTimer.iMarginEnd                = xbmcTimer.m_iMarginEnd;
-  addonTimer.iGenreType                = xbmcTimer.m_iGenreType;
-  addonTimer.iGenreSubType             = xbmcTimer.m_iGenreSubType;
+  addonTimer.iGenreType                = epgTag ? epgTag->GenreType() : 0;
+  addonTimer.iGenreSubType             = epgTag ? epgTag->GenreSubType() : 0;
 }
 
 /*!
@@ -385,7 +402,8 @@ bool CPVRClient::CheckAPIVersion(void)
   try { guiVersion = AddonVersion(m_pStruct->GetGUIAPIVersion()); }
   catch (std::exception &e) { LogException(e, "GetGUIAPIVersion()"); return false;  }
 
-  if (!IsCompatibleGUIAPIVersion(minVersion, guiVersion))
+  /* Only do the check, if add-on depends on GUI API. */
+  if (!guiVersion.empty() && !IsCompatibleGUIAPIVersion(minVersion, guiVersion))
   {
     CLog::Log(LOGERROR, "PVR - Add-on '%s' is using an incompatible GUI API version. XBMC minimum GUI API version = '%s', add-on GUI API version '%s'", Name().c_str(), minVersion.asString().c_str(), guiVersion.asString().c_str());
     return false;
@@ -782,6 +800,29 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannelPtr &channel, CEpg *epg,
         addonChannel,
         start ? start - g_advancedSettings.m_iPVRTimeCorrection : 0,
         end ? end - g_advancedSettings.m_iPVRTimeCorrection : 0);
+
+    LogError(retVal, __FUNCTION__);
+  }
+  catch (std::exception &e)
+  {
+    LogException(e, __FUNCTION__);
+  }
+
+  return retVal;
+}
+
+PVR_ERROR CPVRClient::SetEPGTimeFrame(int iDays)
+{
+  if (!m_bReadyToUse)
+    return PVR_ERROR_SERVER_ERROR;
+
+  if (!m_addonCapabilities.bSupportsEPG)
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
+  PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
+  try
+  {
+    retVal = m_pStruct->SetEPGTimeFrame(iDays);
 
     LogError(retVal, __FUNCTION__);
   }
@@ -1383,16 +1424,6 @@ int64_t CPVRClient::GetStreamLength(void)
   {
     try { return m_pStruct->LengthRecordedStream(); }
     catch (std::exception &e) { LogException(e, "LengthRecordedStream()"); }
-  }
-  return -EINVAL;
-}
-
-int CPVRClient::GetCurrentClientChannel(void)
-{
-  if (IsPlayingLiveStream())
-  {
-    try { return m_pStruct->GetCurrentClientChannel(); }
-    catch (std::exception &e) { LogException(e, __FUNCTION__); }
   }
   return -EINVAL;
 }

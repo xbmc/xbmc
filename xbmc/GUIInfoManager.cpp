@@ -742,9 +742,6 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "actstreamsnr",             PVR_ACTUAL_STREAM_SNR },
                                   { "actstreamber",             PVR_ACTUAL_STREAM_BER },
                                   { "actstreamunc",             PVR_ACTUAL_STREAM_UNC },
-                                  { "actstreamvideobitrate",    PVR_ACTUAL_STREAM_VIDEO_BR },
-                                  { "actstreamaudiobitrate",    PVR_ACTUAL_STREAM_AUDIO_BR },
-                                  { "actstreamdolbybitrate",    PVR_ACTUAL_STREAM_DOLBY_BR },
                                   { "actstreamprogrsignal",     PVR_ACTUAL_STREAM_SIG_PROGR },
                                   { "actstreamprogrsnr",        PVR_ACTUAL_STREAM_SNR_PROGR },
                                   { "actstreamisencrypted",     PVR_ACTUAL_STREAM_ENCRYPTED },
@@ -1604,9 +1601,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_ACTUAL_STREAM_SNR_PROGR:
   case PVR_ACTUAL_STREAM_BER:
   case PVR_ACTUAL_STREAM_UNC:
-  case PVR_ACTUAL_STREAM_VIDEO_BR:
-  case PVR_ACTUAL_STREAM_AUDIO_BR:
-  case PVR_ACTUAL_STREAM_DOLBY_BR:
   case PVR_ACTUAL_STREAM_CRYPTION:
   case PVR_ACTUAL_STREAM_SERVICE:
   case PVR_ACTUAL_STREAM_MUX:
@@ -2925,7 +2919,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case VIDEOPLAYER_CAN_RESUME_LIVE_TV:
       if (m_currentFile->HasPVRRecordingInfoTag())
       {
-        EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(m_currentFile->GetPVRRecordingInfoTag()->EpgEvent());
+        EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(m_currentFile->GetPVRRecordingInfoTag()->Channel(), m_currentFile->GetPVRRecordingInfoTag()->BroadcastUid());
         bReturn = (epgTag && epgTag->IsActive() && epgTag->ChannelTag());
       }
       break;

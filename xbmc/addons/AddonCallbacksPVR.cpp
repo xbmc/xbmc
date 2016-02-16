@@ -22,9 +22,11 @@
 #include "AddonCallbacksPVR.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
+#include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "settings/Settings.h"
 
 #include "epg/EpgContainer.h"
 #include "pvr/PVRManager.h"
@@ -62,6 +64,8 @@ CAddonCallbacksPVR::CAddonCallbacksPVR(CAddon* addon)
   m_callbacks->AllocateDemuxPacket        = PVRAllocateDemuxPacket;
   m_callbacks->TransferChannelGroup       = PVRTransferChannelGroup;
   m_callbacks->TransferChannelGroupMember = PVRTransferChannelGroupMember;
+  m_callbacks->ConnectionStateChange      = PVRConnectionStateChange;
+  m_callbacks->EpgEventStateChange        = PVREpgEventStateChange;
 }
 
 CAddonCallbacksPVR::~CAddonCallbacksPVR()
@@ -312,6 +316,153 @@ void CAddonCallbacksPVR::PVRFreeDemuxPacket(void *addonData, DemuxPacket* pPacke
 DemuxPacket* CAddonCallbacksPVR::PVRAllocateDemuxPacket(void *addonData, int iDataSize)
 {
   return CDVDDemuxUtils::AllocateDemuxPacket(iDataSize);
+}
+
+void CAddonCallbacksPVR::PVRConnectionStateChange(void* addonData, const char* strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage)
+{
+  CPVRClient *client = GetPVRClient(addonData);
+  if (!client || !strConnectionString)
+  {
+    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    return;
+  }
+
+  const PVR_CONNECTION_STATE prevState(client->GetConnectionState());
+  if (prevState == newState)
+    return;
+
+  CLog::Log(LOGDEBUG, "PVR - %s - state for connection '%s' on client '%s' changed from '%d' to '%d'", __FUNCTION__, strConnectionString, client->Name().c_str(), prevState, newState);
+
+  client->SetConnectionState(newState);
+
+  int iMsg(-1);
+  bool bError(true);
+  bool bNotify(true);
+
+  switch (newState)
+  {
+    case PVR_CONNECTION_STATE_SERVER_UNREACHABLE:
+      iMsg = 35505; // Server is unreachable
+      break;
+    case PVR_CONNECTION_STATE_SERVER_MISMATCH:
+      iMsg = 35506; // Server does not respond properly
+      break;
+    case PVR_CONNECTION_STATE_VERSION_MISMATCH:
+      iMsg = 35507; // Server version is not compatible
+      break;
+    case PVR_CONNECTION_STATE_ACCESS_DENIED:
+      iMsg = 35508; // Access denied
+      break;
+    case PVR_CONNECTION_STATE_CONNECTED:
+      iMsg = 36034; // Connection established
+      bError = false;
+      // No notification for the first successful connect.
+      bNotify = (prevState != PVR_CONNECTION_STATE_UNKNOWN);
+      break;
+    case PVR_CONNECTION_STATE_DISCONNECTED:
+      iMsg = 36030; // Connection lost
+      break;
+    default:
+      CLog::Log(LOGERROR, "PVR - %s - unknown connection state", __FUNCTION__);
+      return;
+  }
+
+  // Use addon-supplied message, if present
+  std::string strMsg;
+  if (strMessage && strlen(strMessage) > 0)
+    strMsg = strMessage;
+  else
+    strMsg = g_localizeStrings.Get(iMsg);
+
+  // Notify user.
+  if (bNotify && !CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMANAGER_HIDECONNECTIONLOSTWARNING))
+    CGUIDialogKaiToast::QueueNotification(
+      bError ? CGUIDialogKaiToast::Error : CGUIDialogKaiToast::Info, client->Name().c_str(), strMsg, 5000, true);
+
+  // Write event log entry.
+  CEventLog::GetInstance().Add(EventPtr(new CNotificationEvent(
+    client->Name(), strMsg, client->Icon(), bError ? EventLevel::Error : EventLevel::Information)));
+}
+
+typedef struct EpgEventStateChange
+{
+  int             iClientId;
+  unsigned int    iUniqueChannelId;
+  CEpgInfoTagPtr  event;
+  EPG_EVENT_STATE state;
+
+  EpgEventStateChange(int _iClientId, unsigned int _iUniqueChannelId, EPG_TAG *_event, EPG_EVENT_STATE _state)
+  : iClientId(_iClientId),
+    iUniqueChannelId(_iUniqueChannelId),
+    event(new CEpgInfoTag(*_event)),
+    state(_state) {}
+
+} EpgEventStateChange;
+
+void CAddonCallbacksPVR::UpdateEpgEvent(const EpgEventStateChange &ch, bool bQueued)
+{
+  const CPVRChannelPtr channel(g_PVRChannelGroups->GetByUniqueID(ch.iUniqueChannelId, ch.iClientId));
+  if (channel)
+  {
+    const CEpgPtr epg(channel->GetEPG());
+    if (epg)
+    {
+      if (!epg->UpdateEntry(ch.event, ch.state))
+        CLog::Log(LOGERROR, "PVR - %s - epg update failed for %sevent change (%d)",
+                  __FUNCTION__, bQueued ? "queued " : "", ch.event->UniqueBroadcastID());
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "PVR - %s - channel '%s' does not have an EPG! Unable to deliver %sevent change (%d)!",
+                __FUNCTION__, channel->ChannelName().c_str(), bQueued ? "queued " : "", ch.event->UniqueBroadcastID());
+    }
+  }
+  else
+    CLog::Log(LOGERROR, "PVR - %s - invalid channel (%d)! Unable to deliver %sevent change (%d)!",
+              __FUNCTION__, ch.iUniqueChannelId, bQueued ? "queued " : "", ch.event->UniqueBroadcastID());
+}
+
+void CAddonCallbacksPVR::PVREpgEventStateChange(void* addonData, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState)
+{
+  CPVRClient *client = GetPVRClient(addonData);
+  if (!client || !tag)
+  {
+    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    return;
+  }
+
+  CLog::Log(LOGDEBUG, "PVR - %s - state for epg event '%d' on channel '%d' on client '%s' changed to '%d'.",
+            __FUNCTION__, tag->iUniqueBroadcastId, iUniqueChannelId, client->Name().c_str(), newState);
+
+  static CCriticalSection queueMutex;
+  static std::vector<EpgEventStateChange> queuedChanges;
+
+  // during Kodi startup, addons may push updates very early, even before EPGs are ready to use.
+  if (g_PVRManager.EpgsCreated())
+  {
+    {
+      // deliver queued changes, if any. discard event if delivery fails.
+      CSingleLock lock(queueMutex);
+      if (!queuedChanges.empty())
+        CLog::Log(LOGNOTICE, "PVR - %s - processing %ld queued epg event changes.", __FUNCTION__, queuedChanges.size());
+
+      while (!queuedChanges.empty())
+      {
+        auto it = queuedChanges.begin();
+        UpdateEpgEvent(*it, true);
+        queuedChanges.erase(it);
+      }
+    }
+
+    // deliver current change.
+    UpdateEpgEvent(EpgEventStateChange(client->GetID(), iUniqueChannelId, tag, newState), false);
+  }
+  else
+  {
+    // queue for later delivery.
+    CSingleLock lock(queueMutex);
+    queuedChanges.push_back(EpgEventStateChange(client->GetID(), iUniqueChannelId, tag, newState));
+  }
 }
 
 }; /* namespace ADDON */
