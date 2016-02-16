@@ -493,6 +493,36 @@ bool CAddonMgr::GetDisabledAddons(VECADDONS& addons, const TYPE& type)
   return false;
 }
 
+bool CAddonMgr::GetInstallableAddons(VECADDONS& addons)
+{
+  return GetInstallableAddons(addons, ADDON_UNKNOWN);
+}
+
+bool CAddonMgr::GetInstallableAddons(VECADDONS& addons, const TYPE &type)
+{
+  CSingleLock lock(m_critSection);
+
+  // get all addons
+  VECADDONS installableAddons;
+  if (!m_database.GetRepositoryContent(installableAddons))
+    return false;
+
+  // go through all addons and remove all that are already installed
+  for (const auto& addon : installableAddons)
+  {
+    // check if the addon matches the provided addon type
+    if (type != ADDON::ADDON_UNKNOWN && addon->Type() != type && !addon->IsType(type))
+      continue;
+
+    if (!CanAddonBeInstalled(addon))
+      continue;
+
+    addons.push_back(addon);
+  }
+
+  return true;
+}
+
 bool CAddonMgr::GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enabledOnly)
 {
   CSingleLock lock(m_critSection);
