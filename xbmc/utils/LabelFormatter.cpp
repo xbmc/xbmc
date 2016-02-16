@@ -349,16 +349,16 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
       value = pic->GetDateTimeTaken().GetAsLocalizedDate();
     break;
   case 'i': // Install date
-    if (item->HasAddonInfo())
-      value = item->GetAddonInfo()->InstallDate().GetAsLocalizedDateTime();
+    if (item->HasAddonInfo() && item->GetAddonInfo()->InstallDate().IsValid())
+      value = item->GetAddonInfo()->InstallDate().GetAsLocalizedDate();
     break;
   case 'u': // Last used
-    if (item->HasAddonInfo())
-      value = item->GetAddonInfo()->LastUsed().GetAsLocalizedDateTime();
+    if (item->HasAddonInfo() && item->GetAddonInfo()->LastUsed().IsValid())
+      value = item->GetAddonInfo()->LastUsed().GetAsLocalizedDate();
     break;
   case 'v': // Last updated
-    if (item->HasAddonInfo())
-      value = item->GetAddonInfo()->LastUpdated().GetAsLocalizedDateTime();
+    if (item->HasAddonInfo() && item->GetAddonInfo()->LastUpdated().IsValid())
+      value = item->GetAddonInfo()->LastUpdated().GetAsLocalizedDate();
     break;
   }
   if (!value.empty())
