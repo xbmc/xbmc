@@ -657,25 +657,22 @@ bool CAddonMgr::FindAddons()
   CSingleLock lock(m_critSection);
   if (m_cpluff && m_cp_context)
   {
-    CSingleLock lock(m_critSection);
-    if (m_cpluff && m_cp_context)
+    result = true;
+    m_cpluff->scan_plugins(m_cp_context, CP_SP_UPGRADE);
+
+    //Sync with db
     {
-      m_cpluff->scan_plugins(m_cp_context, CP_SP_UPGRADE);
-
-      //Sync with db
-      {
-        std::set<std::string> installed;
-        cp_status_t status;
-        int n;
-        cp_plugin_info_t** cp_addons = m_cpluff->get_plugins_info(m_cp_context, &status, &n);
-        for (int i = 0; i < n; ++i)
-          installed.insert(cp_addons[i]->identifier);
-        m_cpluff->release_info(m_cp_context, cp_addons);
-        m_database.SyncInstalled(installed);
-      }
-
-      SetChanged();
+      std::set<std::string> installed;
+      cp_status_t status;
+      int n;
+      cp_plugin_info_t** cp_addons = m_cpluff->get_plugins_info(m_cp_context, &status, &n);
+      for (int i = 0; i < n; ++i)
+        installed.insert(cp_addons[i]->identifier);
+      m_cpluff->release_info(m_cp_context, cp_addons);
+      m_database.SyncInstalled(installed);
     }
+
+    SetChanged();
   }
 
   return result;
