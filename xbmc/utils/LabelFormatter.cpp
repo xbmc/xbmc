@@ -108,7 +108,7 @@ using namespace MUSIC_INFO;
  *  *t - Date Taken (suitable for Pictures)
  */
 
-#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWacdiprtuv"
+#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWacdiprstuv"
 
 CLabelFormatter::CLabelFormatter(const std::string &mask, const std::string &mask2)
 {
@@ -347,6 +347,10 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
   case 't': // Date Taken
     if (pic && pic->GetDateTimeTaken().IsValid())
       value = pic->GetDateTimeTaken().GetAsLocalizedDate();
+    break;
+  case 's': // Addon status
+    if (item->HasProperty("Addon.Status"))
+      value = item->GetProperty("Addon.Status").asString();
     break;
   case 'i': // Install date
     if (item->HasAddonInfo() && item->GetAddonInfo()->InstallDate().IsValid())

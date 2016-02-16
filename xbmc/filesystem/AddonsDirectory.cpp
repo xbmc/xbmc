@@ -528,7 +528,6 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon,
     strLabel = StringUtils::Format("%s - %s", TranslateType(addon->Type(), true).c_str(), addon->Name().c_str());
   item->SetLabel(strLabel);
   item->SetArt("thumb", addon->Icon());
-  item->SetLabelPreformated(true);
   item->SetIconImage("DefaultAddon.png");
   if (URIUtils::IsInternetStream(addon->FanArt()) || CFile::Exists(addon->FanArt()))
     item->SetArt("fanart", addon->FanArt());

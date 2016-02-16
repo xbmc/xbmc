@@ -61,11 +61,6 @@ public:
   static int SelectAddonID(const std::vector<ADDON::TYPE> &types, std::vector<std::string> &addonIDs, bool showNone = false, bool showDetails = true, bool multipleSelection = true, bool showInstalled = true, bool showInstallable = false, bool showMore = true);
   
 protected:
-  /* \brief set label2 of an item based on the Addon.Status property
-   \param item the item to update
-   */
-  void SetItemLabel2(CFileItemPtr item);
-
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
   virtual bool OnClick(int iItem, const std::string &player = "") override;
@@ -76,6 +71,7 @@ protected:
 
 private:
   void SetProperties();
+  void UpdateStatus(const CFileItemPtr& item);
   CProgramThumbLoader m_thumbLoader;
 };
 
