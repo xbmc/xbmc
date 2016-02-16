@@ -225,6 +225,13 @@ namespace PVR
     bool TranslateBoolInfo(DWORD dwInfo) const;
 
     /*!
+     * @brief Get a GUIInfoManager timestamp.
+     * @param dwInfo The timestamp to get.
+     * @return The requested timestamp or false if it wasn't found.
+     */
+    bool TranslateTimeInfo(DWORD dwInfo, CDateTime &timeValue) const;
+
+    /*!
      * @brief Show the player info.
      * @param iTimeout Hide the player info after iTimeout seconds.
      * @todo not really the right place for this :-)

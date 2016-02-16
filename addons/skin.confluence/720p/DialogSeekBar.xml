@@ -248,6 +248,28 @@
 				<textureslidernibfocus>osd_slider_nib.png</textureslidernibfocus>
 				<visible>Player.Seeking</visible>
 			</control>
+			<control type="slider" id="1">
+				<description>Timeshift start marker</description>
+				<left>20</left>
+				<top>46</top>
+				<width>240</width>
+				<height>8</height>
+				<texturesliderbar>seekslider.png</texturesliderbar>
+				<textureslidernib>timeshift_marker_nib.png</textureslidernib>
+				<info>PVR.timeshiftstartprogr</info>
+				<visible>IntegerGreaterThan(PVR.timeshiftstartprogr,0) + PVR.IsTimeshift</visible>
+			</control>
+			<control type="slider" id="1">
+				<description>Timeshift stop marker</description>
+				<left>20</left>
+				<top>46</top>
+				<width>240</width>
+				<height>8</height>
+				<texturesliderbar>seekslider.png</texturesliderbar>
+				<textureslidernib flipx="true">timeshift_marker_nib.png</textureslidernib>
+				<info>PVR.timeshiftendprogr</info>
+				<visible>!IntegerGreaterThan(PVR.timeshiftendprogr,99) + PVR.IsTimeshift</visible>
+			</control>
 		</control>
 	</controls>
 </window>

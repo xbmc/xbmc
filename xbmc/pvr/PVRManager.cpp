@@ -1366,6 +1366,12 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPrev
   CFileItem* previousFile = m_currentFile;
   m_currentFile = NULL;
 
+  {
+    /* Clear AV info in OSD right before switch */
+    CSingleLock lock(m_critSection);
+    g_infoManager.UpdateAVInfo(true);
+  }
+
   bool bSwitched(false);
 
   // switch channel
@@ -1404,6 +1410,9 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPrev
     CLog::Log(LOGNOTICE, "PVRManager - %s - switched to channel '%s'", __FUNCTION__, channel->ChannelName().c_str());
   }
 
+  /* Force OSD update now */
+  m_guiInfo->UpdatePlayingTag();
+
   // announce OnStop and OnPlay. yes, this ain't pretty
   {
     CSingleLock lock(m_critSectionTriggers);
@@ -1432,6 +1441,11 @@ bool CPVRManager::TranslateBoolInfo(DWORD dwInfo) const
 bool CPVRManager::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
 {
   return IsStarted() && m_guiInfo ? m_guiInfo->TranslateCharInfo(dwInfo, strValue) : false;
+}
+
+bool CPVRManager::TranslateTimeInfo(DWORD dwInfo, CDateTime &timeValue) const
+{
+  return IsStarted() && m_guiInfo ? m_guiInfo->TranslateTimeInfo(dwInfo, timeValue) : false;
 }
 
 int CPVRManager::TranslateIntInfo(DWORD dwInfo) const

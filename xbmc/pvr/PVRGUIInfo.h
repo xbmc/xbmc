@@ -53,6 +53,7 @@ namespace PVR
 
     bool TranslateBoolInfo(DWORD dwInfo) const;
     bool TranslateCharInfo(DWORD dwInfo, std::string &strValue) const;
+    bool TranslateTimeInfo(DWORD dwInfo, CDateTime &timeValue) const;
     int TranslateIntInfo(DWORD dwInfo) const;
 
     /*!
@@ -68,6 +69,12 @@ namespace PVR
     int GetStartTime(void) const;
 
     /*!
+     * @brief Get the start timestamp of the playing LiveTV item.
+     * @return Timestamp in UTC format or NULL if no channel is playing.
+     */
+    CDateTime GetTagStartTime(void) const;
+
+    /*!
      * @brief Show the player info.
      * @param iTimeout Hide the player info after iTimeout seconds.
      * @todo not really the right place for this :-)
@@ -78,6 +85,11 @@ namespace PVR
      * @brief Clear the playing EPG tag.
      */
     void ResetPlayingTag(void);
+
+    /*!
+     * @brief Update the playing EPG tag right now.
+     */
+    void UpdatePlayingTag(void);
 
     /*!
      * @brief Get the currently playing EPG tag.
@@ -96,7 +108,6 @@ namespace PVR
     void ClearQualityInfo(PVR_SIGNAL_STATUS &qualityInfo);
     void Process(void);
 
-    void UpdatePlayingTag(void);
     void UpdateTimersCache(void);
     void UpdateBackendCache(void);
     void UpdateQualityData(void);
@@ -118,6 +129,7 @@ namespace PVR
     void CharInfoNextTimerDateTime(std::string &strValue) const;
     void CharInfoPlayingDuration(std::string &strValue) const;
     void CharInfoPlayingTime(std::string &strValue) const;
+    void CharInfoPlayingTimeRemaining(std::string &strValue) const;
     void CharInfoNextTimer(std::string &strValue) const;
     void CharInfoBackendNumber(std::string &strValue) const;
     void CharInfoTotalDiskSpace(std::string &strValue) const;
@@ -143,9 +155,7 @@ namespace PVR
     void CharInfoService(std::string &strValue) const;
     void CharInfoMux(std::string &strValue) const;
     void CharInfoProvider(std::string &strValue) const;
-    void CharInfoTimeshiftStartTime(std::string &strValue) const;
-    void CharInfoTimeshiftEndTime(std::string &strValue) const;
-    void CharInfoTimeshiftPlayTime(std::string &strValue) const;
+    void CharInfoTimeshiftDelay(std::string &strValue) const;
 
     /** @name GUIInfoManager data */
     //@{
@@ -173,6 +183,9 @@ namespace PVR
     long long                       m_iBackendDiskTotal;
     long long                       m_iBackendDiskUsed;
     unsigned int                    m_iDuration;
+    unsigned int                    m_iPlayTime;
+    time_t                          m_iStartTime;
+    time_t                          m_iFinishTime;
 
     bool                            m_bHasNonRecordingTimers;
     bool                            m_bIsPlayingTV;
@@ -195,9 +208,7 @@ namespace PVR
     time_t                          m_iTimeshiftStartTime;
     time_t                          m_iTimeshiftEndTime;
     time_t                          m_iTimeshiftPlayTime;
-    std::string                     m_strTimeshiftStartTime;
-    std::string                     m_strTimeshiftEndTime;
-    std::string                     m_strTimeshiftPlayTime;
+    std::string                     m_strTimeshiftDelay;
 
     CCriticalSection                m_critSection;
 

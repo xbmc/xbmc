@@ -732,9 +732,6 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "isplayingtv",              PVR_IS_PLAYING_TV },
                                   { "isplayingradio",           PVR_IS_PLAYING_RADIO },
                                   { "isplayingrecording",       PVR_IS_PLAYING_RECORDING },
-                                  { "duration",                 PVR_PLAYING_DURATION },
-                                  { "time",                     PVR_PLAYING_TIME },
-                                  { "progress",                 PVR_PLAYING_PROGRESS },
                                   { "actstreamclient",          PVR_ACTUAL_STREAM_CLIENT },
                                   { "actstreamdevice",          PVR_ACTUAL_STREAM_DEVICE },
                                   { "actstreamstatus",          PVR_ACTUAL_STREAM_STATUS },
@@ -753,10 +750,9 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "actstreammux",             PVR_ACTUAL_STREAM_MUX },
                                   { "actstreamprovidername",    PVR_ACTUAL_STREAM_PROVIDER },
                                   { "istimeshift",              PVR_IS_TIMESHIFTING },
-                                  { "timeshiftstart",           PVR_TIMESHIFT_START_TIME },
-                                  { "timeshiftend",             PVR_TIMESHIFT_END_TIME },
-                                  { "timeshiftcur",             PVR_TIMESHIFT_PLAY_TIME },
-                                  { "timeshiftprogress",        PVR_TIMESHIFT_PROGRESS }};
+                                  { "timeshiftstartprogr",      PVR_TIMESHIFT_START_PROGR },
+                                  { "timeshiftendprogr",        PVR_TIMESHIFT_END_PROGR },
+                                  { "timeshiftdelay",           PVR_TIMESHIFT_DELAY }};
 
 const infomap adsp[] =           {{ "isactive",                 ADSP_IS_ACTIVE },
                                   { "hasinputresample",         ADSP_HAS_INPUT_RESAMPLE },
@@ -1592,9 +1588,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_BACKEND_NUMBER:
   case PVR_TOTAL_DISKSPACE:
   case PVR_NEXT_TIMER:
-  case PVR_PLAYING_DURATION:
-  case PVR_PLAYING_TIME:
-  case PVR_PLAYING_PROGRESS:
   case PVR_ACTUAL_STREAM_CLIENT:
   case PVR_ACTUAL_STREAM_DEVICE:
   case PVR_ACTUAL_STREAM_STATUS:
@@ -1611,9 +1604,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_ACTUAL_STREAM_SERVICE:
   case PVR_ACTUAL_STREAM_MUX:
   case PVR_ACTUAL_STREAM_PROVIDER:
-  case PVR_TIMESHIFT_START_TIME:
-  case PVR_TIMESHIFT_END_TIME:
-  case PVR_TIMESHIFT_PLAY_TIME:
+  case PVR_TIMESHIFT_DELAY:
     g_PVRManager.TranslateCharInfo(info, strLabel);
     break;
   case ADSP_ACTIVE_STREAM_TYPE:
@@ -1829,50 +1820,50 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     strLabel = GetVideoLabel(info);
   break;
   case VIDEOPLAYER_VIDEO_CODEC:
-    if(g_application.m_pPlayer->IsPlaying())
+    if(g_application.m_pPlayer->IsPlaying() && m_avInfoSet)
     {
       strLabel = m_videoInfo.videoCodecName;
     }
     break;
   case VIDEOPLAYER_VIDEO_RESOLUTION:
-    if(g_application.m_pPlayer->IsPlaying())
+    if(g_application.m_pPlayer->IsPlaying() && m_avInfoSet)
     {
       return CStreamDetails::VideoDimsToResolutionDescription(m_videoInfo.width, m_videoInfo.height);
     }
     break;
   case VIDEOPLAYER_AUDIO_CODEC:
-    if(g_application.m_pPlayer->IsPlaying())
+    if(g_application.m_pPlayer->IsPlaying() && m_avInfoSet)
     {
       strLabel = m_audioInfo.audioCodecName;
     }
     break;
   case VIDEOPLAYER_VIDEO_ASPECT:
-    if (g_application.m_pPlayer->IsPlaying())
+    if (g_application.m_pPlayer->IsPlaying() && m_avInfoSet)
     {
       strLabel = CStreamDetails::VideoAspectToAspectDescription(m_videoInfo.videoAspectRatio);
     }
     break;
   case VIDEOPLAYER_AUDIO_CHANNELS:
-    if(g_application.m_pPlayer->IsPlaying())
+    if(g_application.m_pPlayer->IsPlaying() && m_avInfoSet)
     {
       if (m_audioInfo.channels > 0)
         strLabel = StringUtils::Format("%i", m_audioInfo.channels);
     }
     break;
   case VIDEOPLAYER_AUDIO_LANG:
-    if(g_application.m_pPlayer->IsPlaying())
+    if(g_application.m_pPlayer->IsPlaying() && m_avInfoSet)
     {
       strLabel = m_audioInfo.language;
     }
     break;
   case VIDEOPLAYER_STEREOSCOPIC_MODE:
-    if(g_application.m_pPlayer->IsPlaying())
+    if(g_application.m_pPlayer->IsPlaying() && m_avInfoSet)
     {
       strLabel = m_videoInfo.stereoMode;
     }
     break;
   case VIDEOPLAYER_SUBTITLES_LANG:
-    if(g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->GetSubtitleVisible())
+    if(g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->GetSubtitleVisible() && m_avInfoSet)
     {
       SPlayerSubtitleStreamInfo info;
       g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);
@@ -2361,16 +2352,34 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
           {
           case PLAYER_PROGRESS:
             {
-              const CEpgInfoTagPtr tag(GetEpgInfoTag());
-              if (tag)
-                value = static_cast<int>(tag->ProgressPercentage());
+              if (IsPlayerChannelPreviewActive())
+              {
+                CEpgInfoTagPtr currentTag(GetEpgInfoTag());
+                if (currentTag)
+                  value = static_cast<int>(currentTag->ProgressPercentage());
+              }
+              else if (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio())
+              {
+                /* Let the PVR manager handle the active channel (includes timeshift) */
+                value = g_PVRManager.TranslateIntInfo(info);
+              }
               else
                 value = static_cast<int>(g_application.GetPercentage());
               break;
             }
           case PLAYER_PROGRESS_CACHE:
-            value = (int)(g_application.GetCachePercentage());
-            break;
+            {
+              if (IsPlayerChannelPreviewActive())
+                value = 0;
+              else if (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio())
+              {
+                /* Let the PVR manager handle the active channel (includes timeshift) */
+                value = g_PVRManager.TranslateIntInfo(info);
+              }
+              else
+                value = (int)(g_application.GetCachePercentage());
+              break;
+            }
           case PLAYER_SEEKBAR:
             value = (int)GetSeekPercent();
             break;
@@ -2416,11 +2425,11 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
     case SYSTEM_CPU_USAGE:
       value = g_cpuInfo.getUsedPercentage();
       return true;
-    case PVR_PLAYING_PROGRESS:
     case PVR_ACTUAL_STREAM_SIG_PROGR:
     case PVR_ACTUAL_STREAM_SNR_PROGR:
     case PVR_BACKEND_DISKSPACE_PROGR:
-    case PVR_TIMESHIFT_PROGRESS:
+    case PVR_TIMESHIFT_START_PROGR:
+    case PVR_TIMESHIFT_END_PROGR:
       value = g_PVRManager.TranslateIntInfo(info);
       return true;
     case SYSTEM_BATTERY_LEVEL:
@@ -2623,7 +2632,12 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
   else if (condition >= PVR_CONDITIONS_START && condition <= PVR_CONDITIONS_END)
-    bReturn = g_PVRManager.TranslateBoolInfo(condition);
+  {
+    if (condition == PVR_IS_TIMESHIFTING && IsPlayerChannelPreviewActive())
+      bReturn = false;
+    else
+      bReturn = g_PVRManager.TranslateBoolInfo(condition);
+  }
   else if (condition >= ADSP_CONDITIONS_START && condition <= ADSP_CONDITIONS_END)
     bReturn = ActiveAE::CActiveAEDSP::GetInstance().TranslateBoolInfo(condition);
   else if (condition == SYSTEM_INTERNET_STATE)
@@ -2917,7 +2931,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         bReturn = (m_currentFile->GetPVRChannelInfoTag()->GetEPGNow().get() != NULL);
     break;
     case VIDEOPLAYER_IS_STEREOSCOPIC:
-      if(g_application.m_pPlayer->IsPlaying())
+      if(g_application.m_pPlayer->IsPlaying() && m_avInfoSet)
       {
         bReturn = !m_videoInfo.stereoMode.empty();
       }
@@ -3523,39 +3537,69 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
     if (item) // If we got a valid item, do the lookup
       return GetItemImage(item.get(), info.m_info, fallback); // Image prioritizes images over labels (in the case of music item ratings for instance)
   }
-  else if (info.m_info == PLAYER_TIME)
+  else if (info.m_info == PLAYER_TIME        || info.m_info == PLAYER_TIME_REMAINING || info.m_info == PLAYER_DURATION ||
+           info.m_info == PLAYER_FINISH_TIME || info.m_info == PLAYER_START_TIME)
   {
-    return GetCurrentPlayTime((TIME_FORMAT)info.GetData1());
-  }
-  else if (info.m_info == PLAYER_TIME_REMAINING)
-  {
-    return GetCurrentPlayTimeRemaining((TIME_FORMAT)info.GetData1());
-  }
-  else if (info.m_info == PLAYER_FINISH_TIME)
-  {
-    CDateTime time;
-    CEpgInfoTagPtr currentTag(GetEpgInfoTag());
-    if (currentTag)
-      time = currentTag->EndAsLocalTime();
+    if (!IsPlayerChannelPreviewActive() && (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()))
+    {
+      /* Let the PVR manager handle the active channel (includes timeshift) */
+      switch (info.m_info)
+      {
+        case PLAYER_START_TIME:
+        case PLAYER_FINISH_TIME:
+        {
+          CDateTime time;
+          g_PVRManager.TranslateTimeInfo(info.m_info, time);
+          return LocalizeTime(time, (TIME_FORMAT)info.GetData1());
+        }
+        default:
+        {
+          std::string time;
+          g_PVRManager.TranslateCharInfo(info.m_info, time);
+          return time;
+        }
+      }
+    }
     else
     {
-      time = CDateTime::GetCurrentDateTime();
-      time += CDateTimeSpan(0, 0, 0, GetPlayTimeRemaining());
+      switch (info.m_info)
+      {
+        case PLAYER_START_TIME:
+        {
+          CDateTime time;
+          CEpgInfoTagPtr currentTag(GetEpgInfoTag());
+          if (currentTag)
+            time = currentTag->StartAsLocalTime();
+          else
+          {
+            time = CDateTime::GetCurrentDateTime();
+            time -= CDateTimeSpan(0, 0, 0, (int)GetPlayTime());
+          }
+          return LocalizeTime(time, (TIME_FORMAT)info.GetData1());
+        }
+        case PLAYER_FINISH_TIME:
+        {
+          CDateTime time;
+          CEpgInfoTagPtr currentTag(GetEpgInfoTag());
+          if (currentTag)
+            time = currentTag->EndAsLocalTime();
+          else
+          {
+            time = CDateTime::GetCurrentDateTime();
+            time += CDateTimeSpan(0, 0, 0, GetPlayTimeRemaining());
+          }
+          return LocalizeTime(time, (TIME_FORMAT)info.GetData1());
+        }
+        case PLAYER_TIME:
+          return GetCurrentPlayTime((TIME_FORMAT)info.GetData1());
+        case PLAYER_TIME_REMAINING:
+          return GetCurrentPlayTimeRemaining((TIME_FORMAT)info.GetData1());
+        case PLAYER_DURATION:
+          return GetDuration((TIME_FORMAT)info.GetData1());
+        default:
+          return "";
+      }
     }
-    return LocalizeTime(time, (TIME_FORMAT)info.GetData1());
-  }
-  else if (info.m_info == PLAYER_START_TIME)
-  {
-    CDateTime time;
-    CEpgInfoTagPtr currentTag(GetEpgInfoTag());
-    if (currentTag)
-      time = currentTag->StartAsLocalTime();
-    else
-    {
-      time = CDateTime::GetCurrentDateTime();
-      time -= CDateTimeSpan(0, 0, 0, (int)GetPlayTime());
-    }
-    return LocalizeTime(time, (TIME_FORMAT)info.GetData1());
   }
   else if (info.m_info == PLAYER_TIME_SPEED)
   {
@@ -3565,10 +3609,6 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
     else
       strTime = GetCurrentPlayTime();
     return strTime;
-  }
-  else if (info.m_info == PLAYER_DURATION)
-  {
-    return GetDuration((TIME_FORMAT)info.GetData1());
   }
   else if (info.m_info == PLAYER_SEEKTIME)
   {
@@ -4950,9 +4990,16 @@ void CGUIInfoManager::UpdateFPS()
   }
 }
 
-void CGUIInfoManager::UpdateAVInfo()
+void CGUIInfoManager::UpdateAVInfo(bool reset)
 {
-  if(g_application.m_pPlayer->IsPlaying())
+  if (reset)
+  {
+    // Reset gets called by the pvr manager on channel change.
+    // The av info from the old channel should be ignored until
+    // the av info from the new channel is available.
+    m_avInfoSet = false;
+  }
+  else if(g_application.m_pPlayer->IsPlaying())
   {
     if (g_dataCacheCore.HasAVInfoChanges())
     {
@@ -4964,6 +5011,7 @@ void CGUIInfoManager::UpdateAVInfo()
 
       m_videoInfo = video;
       m_audioInfo = audio;
+      m_avInfoSet = true;
     }
   }
 }
