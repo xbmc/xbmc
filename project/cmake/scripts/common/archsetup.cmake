@@ -59,8 +59,16 @@ endif()
 
 if(WITH_CPU)
   set(CPU ${WITH_CPU})
-else()
+elseif(NOT CMAKE_TOOLCHAIN_FILE)
   set(CPU ${CMAKE_SYSTEM_PROCESSOR})
+endif()
+
+if(CMAKE_TOOLCHAIN_FILE)
+  if(NOT EXISTS "${CMAKE_TOOLCHAIN_FILE}")
+    message(FATAL_ERROR "Toolchain file ${CMAKE_TOOLCHAIN_FILE} does not exist.")
+  elseif(NOT DEPENDS_PATH OR NOT NATIVEPREFIX)
+    message(FATAL_ERROR "Toolchain did not define DEPENDS_PATH or NATIVEPREFIX. Possibly outdated depends.")
+  endif()
 endif()
 
 # system specific arch setup

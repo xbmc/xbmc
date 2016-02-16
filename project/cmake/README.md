@@ -26,6 +26,12 @@ automatically.
 The dependencies required to build on Linux can be found in
 [docs/README.xxx](https://github.com/xbmc/xbmc/tree/master/docs).
 
+### Raspberry Pi
+
+The cross compilation environment for the Raspberry Pi as well as the
+dependencies have to be installed as explained in
+[docs/README.raspberrypi](https://github.com/xbmc/xbmc/tree/master/docs/README.raspberrypi).
+
 ### Windows
 
 For Windows the dependencies can be found in the
@@ -73,6 +79,13 @@ cmake --build . -- VERBOSE=1 -j$(nproc)  # or: make VERBOSE=1 -j$(nproc)
 ```
 
 `CMAKE_BUILD_TYPE` defaults to `Debug`.
+
+### Raspberry Pi with GNU Makefiles
+
+```
+cmake -DCMAKE_TOOLCHAIN_FILE=<KODI_SRC>/tools/depends/target/Toolchain.cmake <KODI_SRC>/project/cmake/
+cmake --build . -- VERBOSE=1 -j$(nproc)  # or: make VERBOSE=1 -j$(nproc)
+```
 
 ### Windows with NMake Makefiles
 

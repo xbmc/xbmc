@@ -39,7 +39,7 @@ if(GLES_FOUND)
                       OverlayRendererGL.h)
 endif()
 
-if(ARCH STREQUAL arm)
+if(ARCH MATCHES arm)
   list(APPEND SOURCES yuv2rgb.neon.S)
   list(APPEND HEADERS yuv2rgb.neon.h)
 endif()
