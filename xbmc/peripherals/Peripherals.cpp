@@ -33,6 +33,7 @@
 #include "devices/PeripheralNyxboard.h"
 #include "devices/PeripheralTuner.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogPeripheralSettings.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "FileItem.h"
@@ -707,7 +708,7 @@ void CPeripherals::OnSettingChanged(const CSetting *setting)
   {
     // user set language, no longer use the TV's language
     std::vector<CPeripheral *> cecDevices;
-    if (g_peripherals.GetPeripheralsWithFeature(cecDevices, FEATURE_CEC) > 0)
+    if (GetPeripheralsWithFeature(cecDevices, FEATURE_CEC) > 0)
     {
       for (std::vector<CPeripheral *>::iterator it = cecDevices.begin(); it != cecDevices.end(); ++it)
         (*it)->SetSetting("use_tv_menu_language", false);
@@ -744,6 +745,15 @@ void CPeripherals::OnSettingAction(const CSetting *setting)
       if (iPos >= 0)
       {
         CFileItemPtr pItem = items.Get(iPos);
+
+        // show an error if the peripheral doesn't have any settings
+        CPeripheral *peripheral = GetByPath(pItem->GetPath());
+        if (peripheral == nullptr || peripheral->GetSettings().empty())
+        {
+          CGUIDialogOK::ShowAndGetInput(CVariant{35000}, CVariant{35004});
+          continue;
+        }
+
         CGUIDialogPeripheralSettings *pSettingsDialog = (CGUIDialogPeripheralSettings *)g_windowManager.GetWindow(WINDOW_DIALOG_PERIPHERAL_SETTINGS);
         if (pItem && pSettingsDialog)
         {
