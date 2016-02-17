@@ -54,6 +54,7 @@
 #include "URL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "utils/Proxy.h"
 #include "utils/RegExp.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
@@ -1564,6 +1565,37 @@ bool CFileItem::IsURL(const CURL& url) const
 bool CFileItem::IsPath(const std::string& path, bool ignoreURLOptions /* = false */) const
 {
   return URIUtils::PathEquals(m_strPath, path, false, ignoreURLOptions);
+}
+
+CProxy CFileItem::GetProxy() const
+{
+  CProxy proxy;
+  if (HasProperty("proxy.type"))
+  {
+    const std::string value = GetProperty("proxy.type").asString();
+    if (value == "http")
+      proxy.SetType(CProxy::ProxyHttp);
+    else if (value == "socks4")
+      proxy.SetType(CProxy::ProxySocks4);
+    else if (value == "socks4a")
+      proxy.SetType(CProxy::ProxySocks4A);
+    else if (value == "socks5")
+      proxy.SetType(CProxy::ProxySocks5);
+    else if (value == "socks5-remote")
+      proxy.SetType(CProxy::ProxySocks5Remote);
+    else
+      CLog::Log(LOGERROR,"Invalid proxy type \"%s\"", value.c_str());
+  }
+  if (HasProperty("proxy.host"))
+    proxy.SetHost(GetProperty("proxy.host").asString());
+  if (HasProperty("proxy.port"))
+    proxy.SetPort(GetProperty("proxy.port").asInteger());
+  if (HasProperty("proxy.user"))
+    proxy.SetUser(GetProperty("proxy.user").asString());
+  if (HasProperty("proxy.password"))
+    proxy.SetPassword(GetProperty("proxy.password").asString());
+
+  return proxy;
 }
 
 void CFileItem::SetCueDocument(const CCueDocumentPtr& cuePtr)

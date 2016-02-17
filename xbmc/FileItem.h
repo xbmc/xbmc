@@ -36,6 +36,7 @@
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
 #include "utils/SortUtils.h"
+#include "utils/Proxy.h"
 #include "XBDateTime.h"
 
 namespace MUSIC_INFO
@@ -129,6 +130,8 @@ public:
   const std::string &GetPath() const { return m_strPath; };
   void SetPath(const std::string &path) { m_strPath = path; };
   bool IsPath(const std::string& path, bool ignoreURLOptions = false) const;
+
+  CProxy GetProxy() const;
 
   /*! \brief reset class to it's default values as per construction.
    Free's all allocated memory.
