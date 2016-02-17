@@ -20,6 +20,7 @@
 
 #include "DVDDemuxFFmpeg.h"
 
+#include <sstream>
 #include <utility>
 
 #include "commons/Exception.h"
@@ -601,6 +602,9 @@ void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
 
 AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
 {
+  const CDVDInputStreamFFmpeg *const input =
+    dynamic_cast<CDVDInputStreamFFmpeg*>(m_pInput);
+
   const CURL url = m_pInput->GetURL();
   AVDictionary *options = NULL;
 
@@ -638,6 +642,33 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
       av_dict_set(&options, "cookies", cookies.c_str(), 0);
 
   }
+
+  if (input)
+  {
+    const std::string host = input->GetProxyHost();
+    if (!host.empty() && input->GetProxyType() == "http")
+    {
+      std::ostringstream urlStream;
+
+      const uint16_t port = input->GetProxyPort();
+      const std::string user = input->GetProxyUser();
+      const std::string password = input->GetProxyPassword();
+
+      urlStream << "http://";
+
+      if (!user.empty()) {
+        urlStream << user;
+        if (!password.empty())
+          urlStream << ":" << password;
+        urlStream << "@";
+      }
+
+      urlStream << host << ':' << port;
+
+      av_dict_set(&options, "http_proxy", urlStream.str().c_str(), 0);
+    }
+  }
+
   return options;
 }
 
