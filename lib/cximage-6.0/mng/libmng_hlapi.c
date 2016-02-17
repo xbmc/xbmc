@@ -2434,6 +2434,8 @@ mng_retcode MNG_DECL mng_display_resume (mng_handle hHandle)
         pData->bSuspended = MNG_FALSE; /* now reset this flag */  
                                        /* and continue reading */
         iRetcode = mng_read_graphic (pData);
+        if (iRetcode)
+          return iRetcode;
 
         if (pData->bEOF)               /* already at EOF ? */
         {
