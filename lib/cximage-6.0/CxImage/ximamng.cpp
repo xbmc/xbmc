@@ -253,6 +253,8 @@ bool CxImageMNG::Decode(CxFile *hFile)
 		// read all
 		while(pData->bReading){
 			retval = mng_display_resume(hmng);
+			if (retval != MNG_NEEDTIMERWAIT)
+				break;
 			info.nNumFrames++;
 		}
 
