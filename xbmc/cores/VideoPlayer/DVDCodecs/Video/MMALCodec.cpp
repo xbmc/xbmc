@@ -145,7 +145,6 @@ CMMALVideo::~CMMALVideo()
 
   if (m_dec_input && m_dec_input->is_enabled)
     mmal_port_disable(m_dec_input);
-  m_dec_input = NULL;
 
   if (m_dec_output && m_dec_output->is_enabled)
     mmal_port_disable(m_dec_output);
@@ -162,8 +161,9 @@ CMMALVideo::~CMMALVideo()
       mmal_component_disable(m_dec);
 
   if (m_dec_input_pool)
-    mmal_pool_destroy(m_dec_input_pool);
+    mmal_port_pool_destroy(m_dec_input, m_dec_input_pool);
   m_dec_input_pool = NULL;
+  m_dec_input = NULL;
 
   if (m_deint)
     mmal_component_destroy(m_deint);
