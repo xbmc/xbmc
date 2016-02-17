@@ -54,8 +54,6 @@ struct OpenMaxVideoBufferHolder;
 class CDVDMediaCodecInfo;
 class CDVDVideoCodecIMXBuffer;
 class CMMALVideoBuffer;
-class CDVDAmlogicInfo;
-
 
 // should be entirely filled by all codecs
 struct DVDVideoPicture
@@ -98,10 +96,6 @@ struct DVDVideoPicture
 
     struct {
       CMMALVideoBuffer *MMALBuffer;
-    };
-
-    struct {
-      CDVDAmlogicInfo *amlcodec;
     };
 
   };
