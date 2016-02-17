@@ -30,12 +30,10 @@ typedef struct am_private_t am_private_t;
 
 class DllLibAmCodec;
 
-class IVPClockCallback;
-
 class CAMLCodec : public CThread
 {
 public:
-  CAMLCodec(IVPClockCallback* clock);
+  CAMLCodec();
   virtual ~CAMLCodec();
 
   bool          OpenDecoder(CDVDStreamInfo &hints);
@@ -54,7 +52,6 @@ protected:
   virtual void  Process();
 
 private:
-  double        GetPlayerPtsSeconds();
   void          SetVideoPtsSeconds(double pts);
   void          ShowMainVideo(const bool show);
   void          SetVideoZoom(const float zoom);
@@ -89,5 +86,5 @@ private:
   int              m_contrast;
   int              m_brightness;
 
-  IVPClockCallback* m_clock;
+  double m_player_pts;
 };

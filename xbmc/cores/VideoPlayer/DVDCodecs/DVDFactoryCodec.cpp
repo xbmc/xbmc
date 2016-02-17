@@ -40,6 +40,10 @@
 #include "Video/DVDVideoCodecIMX.h"
 #endif
 #include "Video/MMALCodec.h"
+#if defined(HAS_LIBAMCODEC)
+#include "utils/AMLUtils.h"
+#include "Video/DVDVideoCodecAmlogic.h"
+#endif
 #if defined(TARGET_ANDROID)
 #include "Video/DVDVideoCodecAndroidMediaCodec.h"
 #include "platform/android/activity/AndroidFeatures.h"
@@ -139,6 +143,14 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 
   if (!hint.software)
   {
+#if defined(HAS_LIBAMCODEC)
+    // Amlogic can be present on multiple platforms (Linux, Android)
+    // try this first. if it does not open, we still try other hw decoders
+    pCodec = OpenCodec(new CDVDVideoCodecAmlogic(), hint, options);
+    if (pCodec)
+      return pCodec;
+#endif
+
 #if defined(HAS_IMXVPU)
     pCodec = OpenCodec(new CDVDVideoCodecIMX(), hint, options);
 #elif defined(HAVE_VIDEOTOOLBOXDECODER)

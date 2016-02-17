@@ -32,7 +32,6 @@ class CBitstreamParser;
 class CBitstreamConverter;
 
 class CDVDVideoCodecAmlogic;
-class IVPClockCallback;
 
 class CDVDAmlogicInfo
 {
@@ -59,7 +58,7 @@ class CDVDVideoCodecAmlogic : public CDVDVideoCodec
   friend class CDVDAmlogicInfo;
 
 public:
-  CDVDVideoCodecAmlogic(IVPClockCallback* clock);
+  CDVDVideoCodecAmlogic();
   virtual ~CDVDVideoCodecAmlogic();
 
   // Required overrides
@@ -81,7 +80,6 @@ protected:
   void            FrameRateTracking(uint8_t *pData, int iSize, double dts, double pts);
   void            RemoveInfo(CDVDAmlogicInfo* info);
 
-  IVPClockCallback* m_clock;
   CAMLCodec      *m_Codec;
   std::set<CDVDAmlogicInfo*> m_inflight;
   const char     *m_pFormatName;
