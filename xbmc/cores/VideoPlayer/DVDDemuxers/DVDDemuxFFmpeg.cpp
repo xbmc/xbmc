@@ -20,6 +20,7 @@
 
 #include "DVDDemuxFFmpeg.h"
 
+#include <sstream>
 #include <utility>
 
 #include "commons/Exception.h"
@@ -638,6 +639,31 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromURL(const CURL &url)
       av_dict_set(&options, "cookies", cookies.c_str(), 0);
 
   }
+
+  const CProxy proxy = url.GetProxy();
+  if (proxy)
+  {
+    if (proxy.GetType() == CProxy::ProxyHttp)
+    {
+      std::ostringstream urlStream;
+
+      urlStream << "http://";
+
+      if (!proxy.GetUser().empty()) {
+        urlStream << proxy.GetUser();
+	if (!proxy.GetPassword().empty())
+          urlStream << ":" << proxy.GetPassword();
+        urlStream << "@";
+      }
+
+      urlStream << proxy.GetHost();
+      if (proxy.GetPort())
+        urlStream << ':' << proxy.GetPort();
+
+      av_dict_set(&options, "http_proxy", urlStream.str().c_str(), 0);
+    }
+  }
+
   return options;
 }
 
