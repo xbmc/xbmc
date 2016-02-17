@@ -20,6 +20,7 @@
 
 #include "DVDDemuxFFmpeg.h"
 
+#include <sstream>
 #include <utility>
 
 #include "commons/Exception.h"
@@ -638,6 +639,30 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
       av_dict_set(&options, "cookies", cookies.c_str(), 0);
 
   }
+
+  const std::string host = m_pInput->GetProxyHost();
+  if (!host.empty() && m_pInput->GetProxyType() == PROXY_HTTP)
+  {
+    std::ostringstream urlStream;
+
+    const uint16_t port = m_pInput->GetProxyPort();
+    const std::string user = m_pInput->GetProxyUser();
+    const std::string password = m_pInput->GetProxyPassword();
+
+    urlStream << "http://";
+
+    if (!user.empty()) {
+      urlStream << user;
+      if (!password.empty())
+        urlStream << ":" << password;
+      urlStream << "@";
+    }
+
+    urlStream << host << ':' << port;
+
+    av_dict_set(&options, "http_proxy", urlStream.str().c_str(), 0);
+  }
+
   return options;
 }
 
