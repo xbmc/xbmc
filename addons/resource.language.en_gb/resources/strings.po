@@ -1303,9 +1303,7 @@ msgctxt "#294"
 msgid "Create bookmark"
 msgstr ""
 
-msgctxt "#295"
-msgid "Rename bookmark"
-msgstr ""
+#empty string with id 295
 
 msgctxt "#296"
 msgid "Clear bookmarks"
@@ -3196,15 +3194,7 @@ msgctxt "#751"
 msgid "Removing source"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogVideoBookmarks.cpp
-msgctxt "#752"
-msgid "Removing all bookmarks"
-msgstr ""
-
-#: xbmc/dialogs/GUIDialogVideoBookmarks.cpp
-msgctxt "#753"
-msgid "Removing bookmark"
-msgstr ""
+#empty strings from id 752 to 753
 
 msgctxt "#754"
 msgid "Add program link"
@@ -18329,3 +18319,18 @@ msgstr ""
 msgctxt "#38041"
 msgid "Mixer"
 msgstr "" 
+
+#: xbmc/video/dialogs/GUIDialogVideoBookmarks.cpp
+msgctxt "#38042"
+msgid "Rename bookmark"
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogVideoBookmarks.cpp
+msgctxt "#38043"
+msgid "Removing all bookmarks"
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogVideoBookmarks.cpp
+msgctxt "#38044"
+msgid "Removing bookmark"
+msgstr ""
