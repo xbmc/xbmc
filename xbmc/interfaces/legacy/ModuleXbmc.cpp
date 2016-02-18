@@ -72,10 +72,7 @@ namespace XBMCAddon
      *****************************************************************/
     void log(const char* msg, int level)
     {
-      // check for a valid loglevel
-      if (level < LOGDEBUG || level > LOGNONE)
-        level = LOGDEBUG;
-      CLog::Log(level, "%s", msg);
+      CLog::Log(LOGADDONS, "%s", msg);
     }
 
     void shutdown()
@@ -553,6 +550,6 @@ namespace XBMCAddon
     int getISO_639_2(){ return CLangCodeExpander::ISO_639_2; }
     int getENGLISH_NAME() { return CLangCodeExpander::ENGLISH_NAME; }
 
-    const int lLOGDEBUG = LOGDEBUG;
+    const int lLOGADDONS = LOGADDONS;
   }
 }
