@@ -17,9 +17,9 @@ We currently recommend Ubuntu "Trusty Tahr" (14.04) 64Bit. This is what our cont
 integration system "jenkins" is using.
 Additionally, building from OSX Snow Leopard or Mavericks (others on your own risk ;) ) is working (see 3.1).
 
-NOTE TO NEW USERS: All lines that are prefixed with the '#'
+NOTE TO NEW USERS: All lines that are prefixed with the '$'
 character are commands that need to be typed into a terminal window /
-console (similar to the command prompt for Windows). Note that the '#'
+console (similar to the command prompt for Windows). Note that the '$'
 character itself should NOT be typed as part of the command.
 
 -----------------------------------------------------------------------------
