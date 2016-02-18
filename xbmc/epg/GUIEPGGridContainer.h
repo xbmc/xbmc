@@ -66,10 +66,8 @@ namespace EPG
     const int GetNumChannels()   { return m_channels; };
     virtual int GetSelectedItem() const;
     const int GetSelectedChannel() const;
-    void SetSelectedChannel(int channelIndex);
     CFileItemPtr GetSelectedChannelItem() const;
     PVR::CPVRChannelPtr GetChannel(int iIndex);
-    void SetSelectedBlock(int blockIndex);
     virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 
     virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
@@ -100,7 +98,7 @@ namespace EPG
     bool OnClick(int actionID);
     bool SelectItemFromPoint(const CPoint &point, bool justGrid = true);
 
-    void SetChannel(int channel);
+    void SetChannel(int channel, bool bFindClosestItem = true);
     void SetBlock(int block);
     void ChannelScroll(int amount);
     void ProgrammesScroll(int amount);
@@ -123,6 +121,8 @@ namespace EPG
 
     void ScrollToBlockOffset(int offset);
     void ScrollToChannelOffset(int offset);
+    void GoToBlock(int blockIndex);
+    void GoToChannel(int channelIndex);
     void UpdateScrollOffset(unsigned int currentTime);
     void ProcessItem(float posX, float posY, CGUIListItem *item, CGUIListItem *&lastitem, bool focused, CGUIListItemLayout* normallayout, CGUIListItemLayout* focusedlayout, unsigned int currentTime, CDirtyRegionList &dirtyregions, float resize = -1.0f);
     void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
@@ -177,8 +177,6 @@ namespace EPG
     void UpdateItems(CFileItemList *items);
 
     EPG::CEpgInfoTagPtr GetSelectedEpgInfoTag() const;
-    int GetBlock(const EPG::CEpgInfoTagPtr &tag, int channel) const;
-    int GetChannel(const EPG::CEpgInfoTagPtr &tag) const;
 
     int m_rulerUnit; //! number of blocks that makes up one element of the ruler
     int m_channels;
