@@ -28,6 +28,7 @@
 
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
+#include <atomic>
 
 extern "C" {
 #include "libavcodec/avcodec.h"
@@ -41,7 +42,7 @@ class CDVDClock;
 class CDVDAudio : IAEClockCallback
 {
 public:
-  CDVDAudio(volatile bool& bStop, CDVDClock *clock);
+  CDVDAudio(CDVDClock *clock);
   ~CDVDAudio();
 
   void SetVolume(float fVolume);
@@ -63,6 +64,7 @@ public:
   void SetResampleMode(int mode);
   void Flush();
   void Drain();
+  void AbortAddPackets();
 
   void SetSpeed(int iSpeed);
   void SetResampleRatio(double ratio);
@@ -86,6 +88,6 @@ protected:
   CAEChannelInfo m_channelLayout;
   bool m_bPaused;
 
-  volatile bool& m_bStop;
+  std::atomic_bool m_bAbort;
   CDVDClock *m_pClock;
 };

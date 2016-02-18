@@ -28,7 +28,7 @@
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "settings/MediaSettings.h"
 
-CDVDAudio::CDVDAudio(volatile bool &bStop, CDVDClock *clock) : m_bStop(bStop), m_pClock(clock)
+CDVDAudio::CDVDAudio(CDVDClock *clock) : m_pClock(clock)
 {
   m_pAudioStream = NULL;
   m_bPassthrough = false;
@@ -102,6 +102,8 @@ void CDVDAudio::Destroy()
 
 unsigned int CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
 {
+  m_bAbort = false;
+
   CSingleLock lock (m_critSection);
 
   if(!m_pAudioStream)
@@ -151,7 +153,7 @@ unsigned int CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
     lock.Leave();
     Sleep(1);
     lock.Enter();
-  } while (!m_bStop);
+  } while (!m_bAbort);
 
   m_playingPts = audioframe.pts + audioframe.duration - GetDelay();
   m_timeOfPts = CDVDClock::GetAbsoluteClock();
@@ -219,8 +221,9 @@ double CDVDAudio::GetDelay()
 
 void CDVDAudio::Flush()
 {
-  CSingleLock lock (m_critSection);
+  m_bAbort = true;
 
+  CSingleLock lock (m_critSection);
   if (m_pAudioStream)
   {
     m_pAudioStream->Flush();
@@ -229,6 +232,11 @@ void CDVDAudio::Flush()
   m_playingPts = DVD_NOPTS_VALUE;
   m_syncError = 0.0;
   m_syncErrorTime = 0;
+}
+
+void CDVDAudio::AbortAddPackets()
+{
+  m_bAbort = true;
 }
 
 bool CDVDAudio::IsValidFormat(const DVDAudioFrame &audioframe)

@@ -60,7 +60,7 @@ CVideoPlayerAudio::CVideoPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent
 : CThread("VideoPlayerAudio")
 , m_messageQueue("audio")
 , m_messageParent(parent)
-, m_dvdAudio((bool&)m_bStop, pClock)
+, m_dvdAudio(pClock)
 {
   m_pClock = pClock;
   m_pAudioCodec = NULL;
@@ -583,6 +583,8 @@ void CVideoPlayerAudio::Flush(bool sync)
 {
   m_messageQueue.Flush();
   m_messageQueue.Put( new CDVDMsgBool(CDVDMsg::GENERAL_FLUSH, sync), 1);
+
+  m_dvdAudio.AbortAddPackets();
 }
 
 void CVideoPlayerAudio::WaitForBuffers()
