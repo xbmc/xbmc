@@ -501,13 +501,13 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
     if (installed)
       pItem->SetProperty("Addon.Status", g_localizeStrings.Get(305));
     if (disabled)
-      pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24023));
-    if (addon->Broken() == "DEPSNOTMET")
-      pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24049));
-    else if (!addon->Broken().empty())
-      pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24098));
+      pItem->SetProperty("Addon.Status", g_localizeStrings.Get(24023));
     if (hasUpdate)
-      pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24068));
+      pItem->SetProperty("Addon.Status", g_localizeStrings.Get(24068));
+    if (addon->Broken() == "DEPSNOTMET")
+      pItem->SetProperty("Addon.Status", g_localizeStrings.Get(24049));
+    else if (!addon->Broken().empty())
+      pItem->SetProperty("Addon.Status", g_localizeStrings.Get(24098));
 
     items.Add(pItem);
   }
@@ -528,7 +528,6 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon,
     strLabel = StringUtils::Format("%s - %s", TranslateType(addon->Type(), true).c_str(), addon->Name().c_str());
   item->SetLabel(strLabel);
   item->SetArt("thumb", addon->Icon());
-  item->SetLabelPreformated(true);
   item->SetIconImage("DefaultAddon.png");
   if (URIUtils::IsInternetStream(addon->FanArt()) || CFile::Exists(addon->FanArt()))
     item->SetArt("fanart", addon->FanArt());

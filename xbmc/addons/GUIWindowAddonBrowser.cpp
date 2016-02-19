@@ -138,7 +138,7 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
           CFileItemPtr item = m_vecItems->Get(i);
           if (item->GetProperty("Addon.ID") == message.GetStringParam())
           {
-            SetItemLabel2(item);
+            UpdateStatus(item);
             return true;
           }
         }
@@ -369,14 +369,16 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFile
   }
 
   for (int i = 0; i < items.Size(); ++i)
-    SetItemLabel2(items[i]);
+    UpdateStatus(items[i]);
 
   return result;
 }
 
-void CGUIWindowAddonBrowser::SetItemLabel2(CFileItemPtr item)
+void CGUIWindowAddonBrowser::UpdateStatus(const CFileItemPtr& item)
 {
-  if (!item || item->m_bIsFolder) return;
+  if (!item || item->m_bIsFolder)
+    return;
+
   unsigned int percent;
   if (CAddonInstaller::GetInstance().GetProgress(item->GetProperty("Addon.ID").asString(), percent))
   {
@@ -386,9 +388,6 @@ void CGUIWindowAddonBrowser::SetItemLabel2(CFileItemPtr item)
   }
   else
     item->ClearProperty("Addon.Downloading");
-  item->SetLabel2(item->GetProperty("Addon.Status").asString());
-  // to avoid the view state overriding label 2
-  item->SetLabelPreformated(true);
 }
 
 bool CGUIWindowAddonBrowser::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
