@@ -112,14 +112,6 @@ public:
     virtual bool SetState(const std::string &xmlstate) = 0;
   };
 
-  class ISeekable
-  {
-    public:
-    virtual ~ISeekable() {};
-    virtual bool CanSeek()  = 0;
-    virtual bool CanPause() = 0;
-  };
-
   class IDemux
   {
     public:
@@ -155,6 +147,8 @@ public:
   virtual void Abort() {}
   virtual int GetBlockSize() { return 0; }
   virtual void ResetScanTimeout(unsigned int iTimeoutMs) { }
+  virtual bool CanSeek() { return true; }
+  virtual bool CanPause() { return true; }
 
   /*! \brief Indicate expected read rate in bytes per second.
    *  This could be used to throttle caching rate. Should

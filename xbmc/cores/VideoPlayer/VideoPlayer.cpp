@@ -4692,11 +4692,8 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       state.hasMenu = true;
     }
 
-    if (CDVDInputStream::ISeekable* ptr = dynamic_cast<CDVDInputStream::ISeekable*>(m_pInputStream))
-    {
-      state.canpause = ptr->CanPause();
-      state.canseek  = ptr->CanSeek();
-    }
+    state.canpause = m_pInputStream->CanPause();
+    state.canseek = m_pInputStream->CanSeek();
   }
 
   if (m_Edl.HasCut())

@@ -46,7 +46,6 @@ class IDemux;
 class CDVDInputStreamPVRManager
   : public CDVDInputStream
   , public CDVDInputStream::IDisplayTime
-  , public CDVDInputStream::ISeekable
   , public CDVDInputStream::IDemux
 {
 public:
