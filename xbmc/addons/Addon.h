@@ -204,6 +204,7 @@ public:
   virtual bool CanInstall() { return true; }
 protected:
   friend class CAddonCallbacksAddon;
+  friend class CBinaryAddon;
 
   CAddon(const CAddon &rhs); // protected as all copying is handled by Clone()
   virtual void BuildLibName(const cp_extension_t *ext = NULL);

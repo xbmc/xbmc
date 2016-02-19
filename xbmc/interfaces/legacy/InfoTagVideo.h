@@ -27,6 +27,30 @@ namespace XBMCAddon
 {
   namespace xbmc
   {
+
+    /**
+     * \defgroup python_InfoTagVideo InfoTagVideo
+     * \ingroup python_xbmc
+     * @{
+     * @brief <b>Kodi's video info tag class.</b>
+     *
+     * To get video info tag data of currently played source.
+     *
+     * @note Info tag load is only be possible from present player class.
+     *
+     *
+     *--------------------------------------------------------------------------
+     *
+     * <b>Example:</b>
+     * @code{.py}
+     * ...
+     * tag = xbmc.Player().getVideoInfoTag()
+     *
+     * title = tag.getTitle()
+     * file  = tag.getFile()
+     * ...
+     * @endcode
+     */
     class InfoTagVideo : public AddonClass
     {
     private:
@@ -40,87 +64,249 @@ namespace XBMCAddon
       virtual ~InfoTagVideo();
 
       /**
-       * getDirector() - returns a string.
+       * \ingroup python_InfoTagVideo
+       * @brief Get [film director](https://en.wikipedia.org/wiki/Film_director)
+       * who has made the film (if present).
+       *
+       * @return [string] Film director name.
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       String getDirector();
+
       /**
-       * getWritingCredits() - returns a string.
+       * \ingroup python_InfoTagVideo
+       * @brief Get the writing credits if present from video info tag.
+       *
+       * @return [string] Writing credits
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       String getWritingCredits();
+
       /**
-       * getGenre() - returns a string.
+       * \ingroup python_InfoTagVideo
+       * @brief To get the [Video Genre](https://en.wikipedia.org/wiki/Film_genre)
+       * if available.
+       *
+       * @return [string] Genre name
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       String getGenre();
+
       /**
-       * getTagLine() - returns a string.
+       * \ingroup python_InfoTagVideo
+       * @brief Get video tag line if available.
+       *
+       * @return [string] Video tag line
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       String getTagLine();
+
       /**
-       * getPlotOutline() - returns a string.
+       * \ingroup python_InfoTagVideo
+       * @brief Get the outline plot of the video if present.
+       *
+       * @return [string] Outline plot
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       String getPlotOutline();
+
       /**
-       * getPlot() - returns a string.
+       * \ingroup python_InfoTagVideo
+       * @brief Get the plot of the video if present.
+       *
+       * @return [string] Plot
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       String getPlot();
+
       /**
-       * getPictureURL() - returns a string.
+       * \ingroup python_InfoTagVideo
+       * @brief Get a picture URL of the video to show as screenshot.
+       *
+       * @return [string] Picture URL
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       String getPictureURL();
+
       /**
-       * getTitle() - returns a string.
+       * \ingroup python_InfoTagVideo
+       * @brief Get the video title.
+       *
+       * @return [string] Video title
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       String getTitle();
+
       /**
-       * getVotes() - returns a string.
+       * \ingroup python_InfoTagVideo
+       * @brief Get the video votes if available from video info tag.
+       *
+       * @return [string] Votes
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       String getVotes();
+
       /**
-       * getCast() - returns a string.
+       * \ingroup python_InfoTagVideo
+       * @brief To get the cast of the video when available.
+       *
+       * @return [string] Video casts
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       String getCast();
+
       /**
-       * getFile() - returns a string.
+       * \ingroup python_InfoTagVideo
+       * @brief To get the video file name.
+       *
+       * @return [string] File name
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       String getFile();
+
       /**
-       * getPath() - returns a string.
+       * \ingroup python_InfoTagVideo
+       * @brief To get the path where the video is stored.
+       *
+       * @return [string] Path
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       String getPath();
+
       /**
-       * getIMDBNumber() - returns a string.
+       * \ingroup python_InfoTagVideo
+       * @brief To get the [IMDb](https://en.wikipedia.org/wiki/Internet_Movie_Database)
+       * number of the video (if present).
+       *
+       * @return [string] IMDb number
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       String getIMDBNumber();
+
       /**
-       * getYear() - returns an integer.
+       * \ingroup python_InfoTagVideo
+       * @brief Get production year of video if present.
+       *
+       * @return [integer] Production Year
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       int getYear();
+
       /**
-       * getRating() - returns a float (double where supported)
+       * \ingroup python_InfoTagVideo
+       * @brief Get the video rating if present as float (double where supported).
+       *
+       * @return [float] The rating of the video
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       double getRating();
 
       /**
-       * getPlayCount() -- returns a integer.\n
+       * \ingroup python_InfoTagVideo
+       * @brief To get the number of plays of the video.
+       *
+       * @return [integer] Play Count
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       int getPlayCount();
 
       /**
-       * getLastPlayed() -- returns a string.\n
+       * \ingroup python_InfoTagVideo
+       * @brief Get the last played date / time as string.
+       *
+       * @return [string] Last played date / time
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       String getLastPlayed();
+
       /**
-       * getOriginalTitle() - returns a string.
+       * \ingroup python_InfoTagVideo
+       * @brief To get the original title of the video.
+       *
+       * @return [string] Original title
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       String getOriginalTitle();
+
       /**
-       * getPremiered() - returns a string.
+       * \ingroup python_InfoTagVideo
+       * @brief To get [premiered](https://en.wikipedia.org/wiki/Premiere) date
+       * of the video, if available.
+       *
+       * @return [string]
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       String getPremiered();
+
       /**
-       * getFirstAired() - returns a string.
+       * \ingroup python_InfoTagVideo
+       * @brief Returns first aired date as string from info tag.
+       *
+       * @return [string] First aired date
+       *
+       *
+       *------------------------------------------------------------------------
+       *
        */
       String getFirstAired();
     };
+    //@}
   }
 }

@@ -25,7 +25,8 @@
 #include "DllAddon.h"
 #include "AddonManager.h"
 #include "AddonStatusHandler.h"
-#include "AddonCallbacks.h"
+#include "addons/binary/ExceptionHandling.h"
+#include "addons/binary/callbacks/AddonCallbacks.h"
 #include "utils/URIUtils.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
@@ -64,7 +65,6 @@ namespace ADDON
     void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
 
   protected:
-    void HandleException(std::exception &e, const char* context);
     bool Initialized() { return m_initialized; }
     virtual bool LoadSettings();
     TheStruct* m_pStruct;
@@ -251,10 +251,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::Create()
       new CAddonStatusHandler(ID(), status, "", false);
     }
   }
-  catch (std::exception &e)
-  {
-    HandleException(e, "m_pDll->Create");
-  }
+  HANDLE_ADDON_EXCEPTION
 
   return status;
 }
@@ -289,10 +286,7 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Stop()
       CLog::Log(LOGINFO, "ADDON: Dll Stopped - %s", Name().c_str());
     }
   }
-  catch (std::exception &e)
-  {
-    HandleException(e, "m_pDll->Stop");
-  }
+  HANDLE_ADDON_EXCEPTION
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
@@ -309,10 +303,8 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
       m_pDll->Unload();
     }
   }
-  catch (std::exception &e)
-  {
-    HandleException(e, "m_pDll->Unload");
-  }
+  HANDLE_ADDON_EXCEPTION
+
   delete m_pHelpers;
   m_pHelpers = NULL;
   free(m_pStruct);
@@ -337,15 +329,14 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::DllLoaded(void) const
 template<class TheDll, typename TheStruct, typename TheProps>
 ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::GetStatus()
 {
+  ADDON_STATUS status = ADDON_STATUS_UNKNOWN;
   try
   {
-    return m_pDll->GetStatus();
+    status = m_pDll->GetStatus();
   }
-  catch (std::exception &e)
-  {
-    HandleException(e, "m_pDll->GetStatus()");
-  }
-  return ADDON_STATUS_UNKNOWN;
+  HANDLE_ADDON_EXCEPTION
+
+  return status;
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
@@ -366,11 +357,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadSettings()
     DllUtils::StructToVec(entries, &sSet, &vSet);
     m_pDll->FreeSettings();
   }
-  catch (std::exception &e)
-  {
-    HandleException(e, "m_pDll->GetSettings()");
-    return false;
-  }
+  HANDLE_ADDON_EXCEPTION
 
   if (vSet.size())
   {
@@ -544,19 +531,7 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Announce(ANNOUNCEMENT::Announcement
   {
     m_pDll->Announce(ANNOUNCEMENT::AnnouncementFlagToString(flag), sender, message, &data);
   }
-  catch (std::exception &e)
-  {
-    HandleException(e, "m_pDll->Announce()");
-  }
-}
-
-template<class TheDll, typename TheStruct, typename TheProps>
-void CAddonDll<TheDll, TheStruct, TheProps>::HandleException(std::exception &e, const char* context)
-{
-  m_initialized = false;
-  m_pDll->Unload();
-  CLog::Log(LOGERROR, "ADDON: Dll %s, throws an exception '%s' during %s. Contact developer '%s' with bug reports", Name().c_str(), e.what(), context, Author().c_str());
+  HANDLE_ADDON_EXCEPTION
 }
 
 }; /* namespace ADDON */
-

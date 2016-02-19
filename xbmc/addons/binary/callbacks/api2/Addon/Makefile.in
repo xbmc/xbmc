@@ -1,0 +1,16 @@
+INCLUDES+=-I@abs_top_srcdir@/addons/library.kodi.addon
+
+CXXFLAGS+=-fPIC
+
+SRCS=AddonCB_General.cpp \
+     AddonCB_Audio.cpp \
+     AddonCB_Codec.cpp \
+     AddonCB_Directory.cpp \
+     AddonCB_File.cpp \
+     AddonCB_General.cpp \
+     AddonCB_Network.cpp \
+
+LIB=addon-callbacks-addon.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

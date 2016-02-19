@@ -22,9 +22,9 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string>
-#include "../../../xbmc/addons/include/xbmc_addon_types.h"
-#include "../../../addons/library.xbmc.addon/libXBMC_addon.h"
-#include "../../../xbmc/addons/AddonCallbacks.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_addon_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libXBMC_addon.h"
+#include "addons/binary/callbacks/Addon/api-level-1/AddonCallbacksAddon.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -36,6 +36,7 @@
 
 using namespace std;
 using namespace ADDON;
+using namespace AddOnLIB::V1;
 
 extern "C"
 {
@@ -47,7 +48,7 @@ DLLEXPORT void* XBMC_register_me(void *hdl)
     fprintf(stderr, "libXBMC_addon-ERROR: XBMC_register_me is called with NULL handle !!!\n");
   else
   {
-    cb = ((AddonCB*)hdl)->AddOnLib_RegisterMe(((AddonCB*)hdl)->addonData);
+    cb = (CB_AddOnLib*)((AddonCB*)hdl)->AddOnLib_RegisterMe(((AddonCB*)hdl)->addonData);
     if (!cb)
       fprintf(stderr, "libXBMC_addon-ERROR: XBMC_register_me can't get callback table from XBMC !!!\n");
   }

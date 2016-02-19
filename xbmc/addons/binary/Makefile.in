@@ -1,0 +1,7 @@
+SRCS=BinaryAddonManager.cpp \
+     ExceptionHandling.cpp \
+
+LIB=addon-manager.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

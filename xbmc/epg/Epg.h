@@ -281,7 +281,7 @@ namespace EPG
      * @param bUpdateDatabase If set to true, this event will be persisted in the database.
      * @return True if it was updated successfully, false otherwise.
      */
-    bool UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase = false);
+    bool UpdateEntry(const V2::KodiAPI::EPG_TAG *data, bool bUpdateDatabase = false);
 
     /*!
      * @return True if this is an EPG table for a radio channel, false otherwise.

@@ -1,0 +1,209 @@
+/*! @page Python_Audio_addon Python - Audio AddOn
+
+\tableofcontents
+
+
+\section Python_Audio_addon_section1 Introduction
+
+This tutorial will explain how to write your first Kodi/XBMC audio plugin Add-on
+
+
+---------------------------------------------------------------------------------
+
+\section Python_Audio_addon_section2 Tools
+
+Assuming you have already followed the Hello World Add-on you will have a text
+editor already setup. Since we are dealing with audio this time its probably a
+good idea to have a music player setup. We recommend another great open source
+project for this:
+
+- VLC http://www.videolan.org/vlc/
+
+
+---------------------------------------------------------------------------------
+
+\section Python_Audio_addon_section3 Installing
+
+For this example we will use a nice basic video Add-on tutorials You can find
+the source-code here:
+
+- https://github.com/zag2me/plugin.audio.example
+
+You can either download as a zip and install both of these inside the kodi GUI
+from the install from zip feature. Or extract the zip into your userdata/add-ons
+folder (If you do it this way, you will have to download the beautiful soup
+module manually as well).
+
+
+---------------------------------------------------------------------------------
+
+\section Python_Audio_addon_section4 Testing
+
+You can first give the add-on a test run by going to:
+`System >> Add-Ons >> Enabled Add-Ons >> Audio Add-Ons >> Example` Kodi audio
+Plugin. You should now be able to listen to some test tracks hosted from an
+internet web server.
+
+|                                        |
+|----------------------------------------|
+| \image html Audio_Addon_tutorial_1.jpg |
+
+
+---------------------------------------------------------------------------------
+
+\section Python_Audio_addon_section5 Explanation
+
+So whats happening in this add-on?
+
+Basically the Add-on is checking a website for the hosted audio files and
+artwork. In this example we are directly linking to the mp3 files, but
+there are possibilities for dynamic content and scraping of just about any
+online source
+
+Once the audio link is sent to Kodi, our music player takes over and buffers,
+then plays the track just like any other media.
+
+
+---------------------------------------------------------------------------------
+
+\section Python_Audio_addon_section6 Structure
+
+| File          | Description                                                   |
+|---------------|---------------------------------------------------------------|
+| default.py    | This is the actual python code for your Add-On
+| addon.xml     | This is the Add-Ons metadata
+| icon.png      | A PNG icon for the add-on. It can be 256x256 or 512x512 pixels big. Try to make it look nice!
+| Readme.md     | The readme text file with a description of the Add-on and install instructions. This shows on the front of the GitHub page and helps users to understand your Add-on before downloading.
+
+
+---------------------------------------------------------------------------------
+
+\section Python_Audio_addon_section7 The Code
+
+So now we come to the actual Add-On code, this is where most of your Add-on is
+written and is a simple text file containing python code.
+
+First we initialize the Add-on and import and bits we need. Notice we are using
+a special web page parsing module called Beautiful Soup.
+
+~~~~~~~~~~~~~{.py}
+       import os
+       import sys
+       import urllib
+       import urlparse
+       import xbmcaddon
+       import xbmcgui
+       import xbmcplugin
+       import requests
+       from bs4 import BeautifulSoup
+~~~~~~~~~~~~~
+
+Now we do check the base URL...
+
+~~~~~~~~~~~~~{.py}
+  def build_url(query):
+        base_url = sys.argv[0]
+        return base_url + '?' + urllib.urlencode(query)
+~~~~~~~~~~~~~
+
+Here we set the download source page using the Beautiful soup module
+
+~~~~~~~~~~~~~{.py}
+  def get_page(url):
+       # download the source HTML for the page using requests
+       # and parse the page using BeautifulSoup
+       return BeautifulSoup(requests.get(url).text, 'html.parser')
+~~~~~~~~~~~~~
+
+The sample below is specific for the page we are scraping you will need to view
+the source of the page(s) you are planning to scrape to find the content you
+want to display this will return all the
+`<a> elements on the page: <a href="some_url">some_text</a>`
+
+~~~~~~~~~~~~~{.py}
+  def parse_page(page):
+      songs = {}
+      index = 1
+
+      for item in page.find_all('a'):
+          # the item contains a link to an album cover
+          if item['href'].find('.jpg') > 1:
+              # format the url for the album cover to include the site url and url encode any spaces
+              album_cover = '{0}{1}'.format(sample_page, item['href'].replace(' ', '%20'))
+          # the item contains a link to a song containing '.mp3'
+          if item['href'].find('.mp3') > 1:
+              # update dictionary with the album cover url, song filename, and song url
+              songs.update({index: {'album_cover': album_cover, 'title': item['href'], 'url': '{0}{1}'.format(sample_page, item['href'])}})
+              index += 1
+      return songs
+~~~~~~~~~~~~~
+
+And now iterate over the contents of the dictionary songs to build the list
+
+~~~~~~~~~~~~~{.py}
+  def build_song_list(songs):
+      song_list = []
+      for song in songs:
+          # create a list item using the song filename for the label
+          li = xbmcgui.ListItem(label=songs[song]['title'], thumbnailImage=songs[song]['album_cover'])
+          # set the fanart to the albumc cover
+          li.setProperty('fanart_image', songs[song]['album_cover'])
+          # set the list item to playable
+          li.setProperty('IsPlayable', 'true')
+          # build the plugin url for Kodi
+          # Example: plugin://plugin.audio.example/?url=http%3A%2F%2Fwww.theaudiodb.com%2Ftestfiles%2F01-pablo_perez-your_ad_here.mp3&mode=stream&title=01-pablo_perez-your_ad_here.mp3
+          url = build_url({'mode': 'stream', 'url': songs[song]['url'], 'title': songs[song]['title']})
+          # add the current list item to a list
+          song_list.append((url, li, False))
+      # add list to Kodi per Martijn
+      # http://forum.kodi.tv/showthread.php?tid=209948&pid=2094170#pid2094170
+      xbmcplugin.addDirectoryItems(addon_handle, song_list, len(song_list))
+      # set the content of the directory
+      xbmcplugin.setContent(addon_handle, 'songs')
+      xbmcplugin.endOfDirectory(addon_handle)
+~~~~~~~~~~~~~
+
+And now we set the path of the song to a list item
+
+~~~~~~~~~~~~~{.py}
+  def play_song(url):
+      play_item = xbmcgui.ListItem(path=url)
+      xbmcplugin.setResolvedUrl(addon_handle, True, listitem=play_item)
+~~~~~~~~~~~~~
+
+And here we grab the HTML page and launch the Add-on and display the list of songs
+
+~~~~~~~~~~~~~{.py}
+  def main():
+      args = urlparse.parse_qs(sys.argv[2][1:])
+      mode = args.get('mode', None)
+      if mode is None:
+          page = get_page(sample_page)
+          content = parse_page(page)
+          build_song_list(content)
+      elif mode[0] == 'stream':
+          play_song(args['url'][0])
+~~~~~~~~~~~~~
+
+Now we tell Kodi what page to parse and launch the Add-on
+
+~~~~~~~~~~~~~{.py}
+  if __name__ == '__main__':
+      sample_page = 'http://www.theaudiodb.com/testfiles/'
+      addon_handle = int(sys.argv[1])
+      main()
+~~~~~~~~~~~~~
+
+---------------------------------------------------------------------------------
+
+\section Python_Audio_addon_section8 Final Thoughts
+
+Writing a Audio Add-on is actually pretty simple once you get the basic structure
+correct. You can scrape most online sources with Regex, or host your own music
+on the web.
+
+If you have any questions about this tutorial, feel free to discuss it on our
+forums here http://forum.kodi.tv/showthread.php?tid=256329 .
+
+
+*/

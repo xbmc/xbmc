@@ -54,6 +54,31 @@ static int RipCD(const std::vector<std::string>& params)
   return 0;
 }
 
+// Note: For new Texts with komma add a "\" before!!! Is used for table text.
+// field change and brings conflicts is not unseted on text!
+//
+/// \page page_List_of_built_in_functions
+/// \section built_in_functions_9 Optical container built-in's
+///
+/// -----------------------------------------------------------------------------
+///
+/// \table_start
+///   \table_h2_l{
+///     Function,
+///     Description }
+///   \table_row2_l{
+///     <b>`EjectTray`</b>
+///     ,
+///     Either opens or closes the DVD tray\, depending on its current state.
+///   }
+///   \table_row2_l{
+///     <b>`RipCD`</b>
+///     ,
+///     Will rip the inserted CD from the DVD-ROM drive.
+///   }
+/// \table_end
+///
+
 CBuiltins::CommandMap COpticalBuiltins::GetOperations() const
 {
   return {

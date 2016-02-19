@@ -1,0 +1,115 @@
+/*!
+\page Submit_a_patch Submit a patch
+
+\tableofcontents
+
+Kodi is a non-profit open source hobby project that is developed by volunteers
+in their spare time without any monetary gain. The team of developers working
+on Kodi encourage anyone submit source code patches for bug-fixes, new
+features/functions or improvements to existing ones. Any and all contributions
+to the source code are appreciated, though please understand that there is no
+guarantee that your patch will be accepted and implemented into Kodi. If you
+wish to have input from Kodi developers prior to implementing a feature or
+improvement, please open a discussion on the kodi forums. Lastly, understand
+that it may take us a little while to review your patch, so please be
+patient - clean and well documented code will most likely be looked at sooner
+than messy or undocumented code.
+
+
+@note We know our rules place a burden on you the submitter, but rest assured
+that maintaining a large, complex software project is even harder, so please
+accept the rules that have been set before you here. These rules are there
+for a reason, we cannot afford to spend too much of our time fixing buggy,
+broken or outdated patches. The closer you follow our rules the higher is the
+likelihood that your patch will be accepted.
+
+\section Submit_a_patch_sect1 Code submissions
+
+Please submit all code submissions as a "pull request" to the Kodi Github -
+see the section below for information on how to create a pull request. Then
+to get some attention please also post a new thread in the development-section
+of our forums describing the patch. Doing so allows for a more open discussion
+with the whole Kodi community including non-developers about possible
+improvements/enhancements or additions and bugs/fixes. Note that any code you
+submit will be (c) Team XBMC.
+
+\subsection Submit_a_patch_sect1_1 Minimum requirements
+
+We currently do not have any other minimum requirements other than the code
+being under LGPL or GPL license, that it is clean and that any comments and
+documentation be accurate and in English.
+
+\subsection Submit_a_patch_sect1_2 Code documentation
+
+Though not yet a standard in all Kodi source code, please try and document at
+least the "public" portions of your code using doxygen inline comments. If you
+are submitting a new feature or function, please also add a small "readme.txt"
+to the the patch describing the use of feature that may be used as a basis for
+user documentation in the wiki later. You are most welcome to format this up
+for the wiki after the patch is submitted.
+
+\subsection Submit_a_patch_sect1_3 Code guide-lines and formatting conventions
+
+Please consult:
+ - Main page: [Official:Code guidelines and formatting conventions](http://kodi.wiki/view/Official:Code_guidelines_and_formatting_conventions)
+
+All code should strive to be platform agnostic - Kodi is multi-platform software,
+thus any single platform-specific features should be discussed with Kodi team
+members before being implemented. Major features should ideally be developed in
+a separate branch or in small increments so that other members have the
+opportunity to review the code and comment on it during development.
+
+\subsection Submit_a_patch_sect1_4 Patch format
+
+Please do not send complete files. These need to be diffed by hand to see the
+changes, which makes reviews harder and less likely to occur. Besides as soon
+as one of the files changes, your version becomes harder to apply, thus reducing
+its chances of being accepted. Please follow these simple rules when making
+patch for Kodi:
+
+1. Use git to its full potential. The best thing is to fork the Kodi project on
+   [Kodi github](https://github.com/xbmc/xbmc), branch from there, and develop
+   your patch on top of HEAD. See the
+   [excellent documentation at github](https://help.github.com/) for help with
+   this.
+2. Make sure you keep each commit as simple as possible as well as self-contained.
+   i.e. a commit series that builds at each commit and builds up the functionality
+   required is much nicer than a single huge commit that changes lots of things at
+   once.
+3. When you're changing functions that require re-indenting, it's best to do the
+   functionality change in one commit, with a second commit for the cosmetic
+   re-indenting.
+4. Check your commits for unnecessary cosmetic changes such as whitespace changes,
+   particularly for whitespace at end of line.
+5. Doxy and new functions added, particularly if they're to the public API of a
+   class. Doxy classes as well if necessary. The important thing is what the
+   function is supposed to do, what parameter values are (plus any default values)
+   and what the return code is.
+6. Make sure you maintain const'ness where reasonable.
+7. If you implement new features or modify the behaviour of existing features,
+   please do not forget to also point out whether any changes are required in the
+   wiki documentation, and ideally perform these changes once your patch series is
+   accepted.
+8. When you're done, push to your github repo and do a pull request against the
+   main Kodi repository. See the
+   [excellent documentation at github](https://help.github.com/) for more
+   information.
+9. Give us a few days to react. We try to review patches as quickly as possible,
+   but unfortunately we are constantly overloaded with work, be it Kodi-related or
+   from our day to day lives. If your patch seems to be ignored, post a reminder
+   asking for opinions in the forum's development section or as a reply to the
+   original patch ticket, mentioning that you got ignored - we are interested in
+   your work and will eventually either accept it or reject it with an
+   explanation of what we liked and disliked about your patch. Note that we will
+   often ask you to make changes to your patch to make it acceptable before we
+   commit it, so please implement those changes, and update your branch with the
+   changes made as you go. Some of these changes may seem trivial, but the less
+   work we need to do, the faster it'll hit GIT.
+10. Enjoy developing for Kodi :)
+
+\section Submit_a_patch_sect2 External Links
+
+- [Software releases and good patching practice](http://en.tldp.org/HOWTO/Software-Release-Practice-HOWTO/index.html) HOW-TO great guide for best practice for patches.
+
+
+*/

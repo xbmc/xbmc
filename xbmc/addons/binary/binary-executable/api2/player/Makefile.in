@@ -1,0 +1,9 @@
+SRCS=AddonExe_Player_InfoTagMusic.cpp \
+     AddonExe_Player_InfoTagVideo.cpp \
+     AddonExe_Player_Player.cpp \
+     AddonExe_Player_PlayList.cpp \
+
+LIB=player-exe.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

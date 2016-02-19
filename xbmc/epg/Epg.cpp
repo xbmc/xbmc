@@ -22,7 +22,7 @@
 
 #include <utility>
 
-#include "addons/include/xbmc_epg_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_epg_types.h"
 #include "EpgContainer.h"
 #include "EpgDatabase.h"
 #include "guilib/LocalizeStrings.h"
@@ -720,7 +720,7 @@ const std::string &CEpg::ConvertGenreIdToString(int iID, int iSubID)
   return g_localizeStrings.Get(iLabelId);
 }
 
-bool CEpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
+bool CEpg::UpdateEntry(const V2::KodiAPI::EPG_TAG *data, bool bUpdateDatabase /* = false */)
 {
   if (!data)
     return false;

@@ -664,7 +664,6 @@ namespace PVR
     bool CanPlayChannel(const CPVRChannelPtr &channel) const;
 
     bool LogError(const PVR_ERROR error, const char *strMethod) const;
-    void LogException(const std::exception &e, const char *strFunctionName) const;
 
     bool                   m_bReadyToUse;          /*!< true if this add-on is connected to the backend, false otherwise */
     PVR_MENUHOOKS          m_menuhooks;            /*!< the menu hooks for this add-on */

@@ -1,0 +1,10 @@
+SRCS=AddonExe_Addon_Codec.cpp \
+     AddonExe_Addon_General.cpp \
+     AddonExe_Addon_Network.cpp \
+     AddonExe_Addon_SoundPlay.cpp \
+     AddonExe_Addon_VFSUtils.cpp \
+
+LIB=addon-exe.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

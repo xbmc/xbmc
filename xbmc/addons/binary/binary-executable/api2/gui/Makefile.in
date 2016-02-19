@@ -1,0 +1,29 @@
+SRCS=AddonExe_GUI_ControlButton.cpp \
+     AddonExe_GUI_ControlEdit.cpp \
+     AddonExe_GUI_ControlFadeLabel.cpp \
+     AddonExe_GUI_ControlImage.cpp \
+     AddonExe_GUI_ControlLabel.cpp \
+     AddonExe_GUI_ControlProgress.cpp \
+     AddonExe_GUI_ControlRadioButton.cpp \
+     AddonExe_GUI_ControlRendering.cpp \
+     AddonExe_GUI_ControlSettingsSlider.cpp \
+     AddonExe_GUI_ControlSlider.cpp \
+     AddonExe_GUI_ControlSpin.cpp \
+     AddonExe_GUI_ControlTextBox.cpp \
+     AddonExe_GUI_DialogExtendedProgress.cpp \
+     AddonExe_GUI_DialogFileBrowser.cpp \
+     AddonExe_GUI_DialogKeyboard.cpp \
+     AddonExe_GUI_DialogNumeric.cpp \
+     AddonExe_GUI_DialogOK.cpp \
+     AddonExe_GUI_DialogProgress.cpp \
+     AddonExe_GUI_DialogSelect.cpp \
+     AddonExe_GUI_DialogTextViewer.cpp \
+     AddonExe_GUI_DialogYesNo.cpp \
+     AddonExe_GUI_General.cpp \
+     AddonExe_GUI_ListItem.cpp \
+     AddonExe_GUI_Window.cpp \
+
+LIB=gui-exe.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

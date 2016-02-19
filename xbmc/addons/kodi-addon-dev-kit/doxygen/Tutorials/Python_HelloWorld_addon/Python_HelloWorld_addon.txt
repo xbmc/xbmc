@@ -1,0 +1,183 @@
+/*! @page Python_HelloWorld_addon Python - HelloWorld AddOn
+
+\tableofcontents
+
+\section Python_HelloWorld_section1 Introduction
+This tutorial will explain how to write your first Kodi/XBMC script add-on!
+
+In case you want to write a plugin addon, please use this tutorial: http://kodi.wiki/view/Audio-video_add-on_tutorial
+
+
+---------------------------------------------------------------------------------
+
+\section Python_HelloWorld_section2 Tools
+
+I'd advise using a text editor for your first add-on, something like notepad++ or
+sublime are good due to their text syntaxing. Also make sure you have a version
+of Kodi installed on your development environment.
+
+- URL = http://www.sublimetext.com
+- URL = http://notepad-plus-plus.org
+- URL = https://atom.io
+
+
+---------------------------------------------------------------------------------
+
+\section Python_HelloWorld_section3 Installing
+
+For this example we use the official "Hello World" add-on. You can find the
+source-code here:
+- https://github.com/zag2me/script.hello.world
+
+... and you can download the zip file (for installation in Kodi) here:
+- https://github.com/zag2me/script.hello.world/archive/master.zip
+
+
+---------------------------------------------------------------------------------
+
+\section Python_HelloWorld_section4 Testing
+
+You can first give the add-on a test run by going to:
+`System >> Add-Ons >> Enabled Add-Ons >> Program Add-Ons >> Hello World`.
+You should now see a popup with 3 lines of text.
+
+|                             |
+|-----------------------------|
+| \image html Helloworld3.jpg |
+
+
+---------------------------------------------------------------------------------
+
+\section Python_HelloWorld_section5 Modifying the Add-On
+
+Each time we want to change the add-on you can simply go to the appdata folder
+and live edit it! No need to even close Kodi. This will allow you to quickly
+test your add-on modifications. On windows this will be in:
+<b>C:\\Users\\user\\AppData\\Roaming\\XBMC\\addons\\script.hello.world</b>
+
+|                             |
+|-----------------------------|
+| \image html Helloworld2.jpg |
+
+
+---------------------------------------------------------------------------------
+
+\section Python_HelloWorld_section6 Structure
+
+| File          | Description                                                   |
+|---------------|---------------------------------------------------------------|
+| addon.py      | This is the actual python code for your Add-On
+| addon.xml     | This is the Add-Ons metadata
+| changelog.txt | This is a text file with any change-log information in it. We advise updating this on each release.
+| icon.png      | A PNG icon for the add-on. It can be 256x256 or 512x512 pixels big. Try to make it look nice!
+| LICENSE.txt   | Another text file with the Add-On license text.
+
+|                             |
+|-----------------------------|
+| \image html Helloworld2.jpg |
+
+
+---------------------------------------------------------------------------------
+
+\section Python_HelloWorld_section7 Metadata
+
+As we can see from the screenshot below the `addon.xml` is pretty simple. The main
+things you want to look at are on the first line of the XML. It's all pretty
+self-explanatory, just change the fields to your Add-On ID, name, version, and
+author before you start. The Add-On ID will have to be unique so try to think of
+a good name here separated by full stops.
+
+The "Requires" section lets Kodi know what extra Add-On code to import. Since our
+Add-On is simple we only need the basic "xbmc.python" Add-On.
+
+The "extension point" simple tells Kodi what type of Add-On you have created. In
+this case it's an "executable" which we put inside the `<provides>` field.
+
+The final section is the extension metadata, again it's all pretty
+self-explanatory. You can add descriptions, summary and license information in
+here. You can also add links to the forum thread, source code and email help
+users who need support for your Add-On.
+
+|                             |
+|-----------------------------|
+| \image html Helloworld4.png |
+
+
+---------------------------------------------------------------------------------
+
+\section Python_HelloWorld_section8 The Code
+
+So now we come to the actual Add-On code, this is where most of your Add-on is
+written and is a simple text file containing python code. It's contained in a
+file called "addon.py".
+
+If at this stage you want to learn how to program python, take a look at this
+excellent website http://www.codecademy.com/en/tracks/python
+
+The first 2 lines simply import the code necessary to run an Add-On and display
+something using the Kodi GUI.
+
+The next 2 lines of code explain to the system that it's an Add-On and to show
+the name.
+
+Lines 7,8 and 9 are where the real magic starts to happen, here we are assigning
+3 strings to 3 different variables (line1, line2 and line3).
+
+The final line of code now displays all these variables in a popup box inside
+the Kodi GUI using the "xbmcgui.Dialog" function. It also displays the Add-On
+name in the Popup boxs title and has an OK button.
+
+|                             |
+|-----------------------------|
+| \image html Helloworld1.png |
+
+
+---------------------------------------------------------------------------------
+
+\section Python_HelloWorld_section9 Changing the code
+
+Hopefully by now you have managed to run the Add-On, understand the structure and
+can see what the code can do. Now lets trying changing it a little!
+
+Since we already have the Add-on installed we can go directly to the Kodi
+userdata folder and edit the python directly. You can also have Kodi open at this
+time ready to run the Add-on when required. Just switch between your text editor
+and Kodi any time.
+
+Now open up the addon.py file from your userdata folder and lets change what the
+text says.
+
+~~~~~~~~~~~~~{.py}
+line1 = "Goodbye World!"
+line2 = "And welcome back"
+line3 = "My own Add-On!"
+~~~~~~~~~~~~~
+
+Click save on your text editor and now try running the Add-On inside Kodi. You
+should see the new text appear right before your eyes.
+
+Congratulations! you are now an XBMC/Kodi developer!!
+
+
+---------------------------------------------------------------------------------
+
+\section Python_HelloWorld_section10 Final Thoughts
+
+Obviously this is just a simple Add-On tutorial and you can do much, much more as
+most Kodi commands are accessible from this python interface. You can also extend
+Kodi with things like the JSON interface.
+
+If you have any questions about this tutorial, feel free to discuss it on our
+forums here: http://forum.kodi.tv/showthread.php?tid=209948
+
+
+---------------------------------------------------------------------------------
+
+\section Python_HelloWorld_section11 Extra info
+
+You can find a little extra info on this page for different methods of using the
+GUI Hello World.
+
+http://kodi.wiki/view/GUI_Tutorial
+
+*/

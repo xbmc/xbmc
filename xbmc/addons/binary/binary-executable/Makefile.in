@@ -1,0 +1,13 @@
+SRCS=BinaryAddon.cpp \
+     BinaryAddonStatus.cpp \
+     SharedMemory.cpp \
+     SharedMemoryPosix.cpp \
+     SharedMemoryWindows.cpp \
+     requestpacket.cpp \
+     responsepacket.cpp \
+     tools.cpp \
+
+LIB=binary-executable.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

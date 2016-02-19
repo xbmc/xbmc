@@ -2276,6 +2276,14 @@ OUTPUT_FILES="Makefile \
     Makefile.include \
     addons/skin.confluence/media/Makefile \
     xbmc/Makefile \
+    xbmc/addons/binary/Makefile \
+    xbmc/addons/binary/callbacks/Makefile \
+    xbmc/addons/binary/callbacks/api2/Makefile \
+    xbmc/addons/binary/callbacks/api2/Addon/Makefile \
+    xbmc/addons/binary/callbacks/api2/AudioEngine/Makefile \
+    xbmc/addons/binary/callbacks/api2/GUI/Makefile \
+    xbmc/addons/binary/callbacks/api2/PVR/Makefile \
+    xbmc/addons/binary/callbacks/api2/Player/Makefile \
     xbmc/cdrip/Makefile \
     xbmc/cores/Makefile \
     xbmc/cores/VideoPlayer/VideoRenderers/Makefile \

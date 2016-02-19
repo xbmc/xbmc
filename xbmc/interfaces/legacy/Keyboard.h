@@ -33,23 +33,35 @@ namespace XBMCAddon
     XBMCCOMMONS_STANDARD_EXCEPTION(KeyboardException);
 
     /**
-     * Keyboard class.\n
-     * \n
-     * Keyboard([default, heading, hidden]) -- Creates a new Keyboard object with default text\n
-     *                                 heading and hidden input flag if supplied.\n
-     * \n
-     * default        : [opt] string - default text entry.\n
-     * heading        : [opt] string - keyboard heading.\n
-     * hidden         : [opt] boolean - True for hidden text entry.\n
-     * \n
-     * example:\n
-     *   - kb = xbmc.Keyboard('default', 'heading', True)
-     *   - kb.setDefault('password') # optional
-     *   - kb.setHeading('Enter password') # optional
-     *   - kb.setHiddenInput(True) # optional
-     *   - kb.doModal()
-     *   - if (kb.isConfirmed()):
-     *   -   text = kb.getText()
+     * \defgroup python_keyboard Keyboard
+     * \ingroup python_xbmc
+     * @{
+     * @brief <b>Kodi's keyboard class.</b>
+     *
+     * <b><c>xbmc.Keyboard([default, heading, hidden])</c></b>
+     *
+     * Creates a new Keyboard object with default text
+     * heading and hidden input flag if supplied.
+     *
+     * @param default    : [opt] string - default text entry.
+     * @param heading    : [opt] string - keyboard heading.
+     * @param hidden     : [opt] boolean - True for hidden text entry.
+     *
+     *
+     *--------------------------------------------------------------------------
+     *
+     * <b>Example:</b>
+     * @code{.py}
+     * ..
+     * kb = xbmc.Keyboard('default', 'heading', True)
+     * kb.setDefault('password') # optional
+     * kb.setHeading('Enter password') # optional
+     * kb.setHiddenInput(True) # optional
+     * kb.doModal()
+     * if (kb.isConfirmed()):
+     *   text = kb.getText()
+     * ..
+     * @endcode
      */
     class Keyboard : public AddonClass
     {
@@ -66,66 +78,116 @@ namespace XBMCAddon
       virtual ~Keyboard();
 
       /**
-       * doModal([autoclose]) -- Show keyboard and wait for user action.\n
-       * \n
-       * autoclose      : [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)\n
-       * \n
-       * example:
-       *   - kb.doModal(30000)
+       * \ingroup python_keyboard
+       * Show keyboard and wait for user action.
+       *
+       * @param autoclose      : [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)
+       *
+       *
+       *------------------------------------------------------------------------
+       *
+       * <b>Example:</b>
+       * @code{.py}
+       * ..
+       * kb.doModal(30000)
+       * ..
+       * @endcode
        */
       void doModal(int autoclose = 0);
 
       // setDefault() Method
       /**
-       * setDefault(default) -- Set the default text entry.\n
-       * \n
-       * default        : string - default text entry.\n
-       * \n
-       * example:
-       *   - kb.setDefault('password')
+       * \ingroup python_keyboard
+       * Set the default text entry.
+       *
+       * @param line        : string - default text entry.
+       *
+       *
+       *------------------------------------------------------------------------
+       *
+       * <b>Example:</b>
+       * @code{.py}
+       * ..
+       * kb.setDefault('password')
+       * ..
+       * @endcode
        */
       void setDefault(const String& line = emptyString);
 
       /**
-       * setHiddenInput(hidden) -- Allows hidden text entry.\n
-       * \n
-       * hidden        : boolean - True for hidden text entry.\n
-       * example:
-       *   - kb.setHiddenInput(True)
+       * \ingroup python_keyboard
+       * Allows hidden text entry.
+       *
+       * @param hidden        : boolean - True for hidden text entry.
+       *
+       *
+       *------------------------------------------------------------------------
+       *
+       * <b>Example:</b>
+       * @code{.py}
+       * ..
+       * kb.setHiddenInput(True)
+       * ..
+       * @endcode
        */
       void setHiddenInput(bool hidden = false);
 
       // setHeading() Method
       /**
-       * setHeading(heading) -- Set the keyboard heading.\n
-       * \n
-       * heading        : string - keyboard heading.\n
-       * \n
-       * example:
-       *   - kb.setHeading('Enter password')
+       * \ingroup python_keyboard
+       * Set the keyboard heading.
+       *
+       * @param heading        : string - keyboard heading.
+       *
+       *
+       *------------------------------------------------------------------------
+       *
+       * <b>Example:</b>
+       * @code{.py}
+       * ..
+       * kb.setHeading('Enter password')
+       * ..
+       * @endcode
        */
       void setHeading(const String& heading);
 
       // getText() Method
       /**
-       * getText() -- Returns the user input as a string.\n
-       * \n
-       * *Note, This will always return the text entry even if you cancel the keyboard.\n
-       *        Use the isConfirmed() method to check if user cancelled the keyboard.\n
-       * \n
-       * example:
-       *   - text = kb.getText()
+       * \ingroup python_keyboard
+       * Returns the user input as a string.\n
+       *
+       * @note This will always return the text entry even if you cancel the keyboard.
+       *       Use the isConfirmed() method to check if user cancelled the keyboard.
+       *
+       *
+       *------------------------------------------------------------------------
+       *
+       * <b>Example:</b>
+       * @code{.py}
+       * ..
+       * text = kb.getText()
+       * ..
+       * @endcode
        */
       String getText();
 
       // isConfirmed() Method
       /**
-       * isConfirmed() -- Returns False if the user cancelled the input.\n
-       * \n
-       * example:
-       *   - if (kb.isConfirmed()):
+       * \ingroup python_keyboard
+       * Returns False if the user cancelled the input.
+       *
+       *
+       *------------------------------------------------------------------------
+       *
+       * <b>Example:</b>
+       * @code{.py}
+       * ..
+       * if (kb.isConfirmed()):
+       *   ..
+       * @endcode
        */
       bool isConfirmed();
     };
+    //@}
   }
 }

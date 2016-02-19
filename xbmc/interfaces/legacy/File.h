@@ -34,13 +34,31 @@ namespace XBMCAddon
   namespace xbmcvfs
   {
 
-    /**
-     * File class.\n
-     * \n
-     * 'w' - opt open for write\n
-     * example:\n
-     *  f = xbmcvfs.File(file, ['w'])\n
-     */
+    //
+    /// \defgroup python_file File
+    /// \ingroup python_xbmcvfs
+    /// @{
+    /// @brief <b>Kodi's file class.</b>
+    ///
+    /// <b><c>xbmcvfs.File(filepath, [mode])</c></b>
+    ///
+    /// @param[in] filepath             string Selected file path
+    /// @param[in] mode                 [opt] string Additional mode options
+    ///   |  Mode  | Description                     |
+    ///   |:------:|:--------------------------------|
+    ///   |   w    | Open for write                  |
+    ///
+    ///
+    ///
+    ///--------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// f = xbmcvfs.File(file, ['w'])
+    /// ..
+    /// ~~~~~~~~~~~~~
+    //
     class File : public AddonClass
     {
       XFILE::CFile* file;
@@ -56,81 +74,132 @@ namespace XBMCAddon
 
       inline ~File() { delete file; }
 
-      /**
-       * read(bytes)\n
-       * \n
-       * bytes : how many bytes to read [opt]- if not set it will read the whole file\n
-       *\n
-       * returns: string\n
-       * \n
-       * example:\n
-       *  f = xbmcvfs.File(file)\n
-       *  b = f.read()\n
-       *  f.close()\n
-       */
-      inline String read(unsigned long numBytes = 0) 
-      { 
+      ///
+      /// \ingroup python_file
+      /// @brief Read file parts as string.
+      ///
+      /// @param[in] bytes              [opt] How many bytes to read - if not
+      ///                               set it will read the whole file
+      /// @return                       string
+      ///
+      ///
+      ///--------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// f = xbmcvfs.File(file)
+      /// b = f.read()
+      /// f.close()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      inline String read(unsigned long numBytes = 0)
+      {
         XbmcCommons::Buffer b = readBytes(numBytes);
         return b.getString(numBytes == 0 ? b.remaining() : std::min((unsigned long)b.remaining(),numBytes));
       }
 
-      /**
-       * readBytes(numbytes)\n
-       * \n
-       * numbytes : how many bytes to read [opt]- if not set it will read the whole file\n
-       *\n
-       * returns: bytearray\n
-       * \n
-       * example:\n
-       *  f = xbmcvfs.File(file)\n
-       *  b = f.read()\n
-       *  f.close()\n
-       */
+      ///
+      /// \ingroup python_file
+      /// @brief Read bytes from file.
+      ///
+      /// @param[in] numbytes           How many bytes to read [opt]- if not set
+      ///                               it will read the whole file
+      /// @return                       bytearray
+      ///
+      ///
+      ///--------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// f = xbmcvfs.File(file)
+      /// b = f.read()
+      /// f.close()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
       XbmcCommons::Buffer readBytes(unsigned long numBytes = 0);
 
-      /**
-       * write(buffer)\n
-       * \n
-       * buffer : buffer to write to file\n
-       *\n
-       * returns: true on success.\n
-       * \n
-       * example:\n
-       *  f = xbmcvfs.File(file, 'w', True)\n
-       *  result = f.write(buffer)\n
-       *  f.close()\n
-       */
+      ///
+      /// \ingroup python_file
+      /// @brief To write given data in file.
+      ///
+      /// @param[in] buffer             Buffer to write to file
+      /// @return                       True on success.
+      ///
+      ///
+      ///--------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// f = xbmcvfs.File(file, 'w', True)
+      /// result = f.write(buffer)
+      /// f.close()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
       bool write(XbmcCommons::Buffer& buffer);
 
-      /**
-       * size()\n
-       * \n
-       * example:\n
-       *  f = xbmcvfs.File(file)\n
-       *  s = f.size()\n
-       *  f.close()\n
-       */
+      ///
+      /// \ingroup python_file
+      /// @brief Get the file size.
+      ///
+      /// @return                       The file size
+      ///
+      ///
+      ///--------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// f = xbmcvfs.File(file)
+      /// s = f.size()
+      /// f.close()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
       inline long long size() { DelayedCallGuard dg(languageHook); return file->GetLength(); }
 
-      /**
-       * seek()\n
-       * \n
-       * FilePosition : position in the file\n
-       * Whence : where in a file to seek from[0 begining, 1 current , 2 end possition]\n
-       * example:\n
-       *  f = xbmcvfs.File(file)\n
-       *  result = f.seek(8129, 0)\n
-       *  f.close()\n
-       */
+      ///
+      /// \ingroup python_file
+      /// @brief Seek to position in file.
+      ///
+      /// @param[in] seekBytes          position in the file
+      /// @param[in] iWhence            where in a file to seek from[0 begining,
+      ///                               1 current , 2 end possition]
+      ///
+      ///
+      ///--------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// f = xbmcvfs.File(file)
+      /// result = f.seek(8129, 0)
+      /// f.close()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
       inline long long seek(long long seekBytes, int iWhence) { DelayedCallGuard dg(languageHook); return file->Seek(seekBytes,iWhence); }
 
-      /**
-       * close()\n
-       * \n
-       * example:\n
-       *  f = xbmcvfs.File(file)\n
-       *  f.close()\n
-       */
+      ///
+      /// \ingroup python_file
+      /// @brief Close opened file.
+      ///
+      ///
+      ///--------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// f = xbmcvfs.File(file)
+      /// f.close()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
       inline void close() { DelayedCallGuard dg(languageHook); file->Close(); }
 
 #ifndef SWIG
@@ -138,5 +207,6 @@ namespace XBMCAddon
 #endif
 
     };
+    //@}
   }
 }

@@ -18,12 +18,12 @@
  *
  */
 
-#include "../../../addons/library.kodi.guilib/libKODI_guilib.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
-#include "addons/AddonCallbacks.h"
+#include "addons/binary/callbacks/GUI/AddonCallbacksGUIBase.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -32,6 +32,8 @@
 #define DLLEXPORT
 #endif
 
+using namespace ADDON;
+using namespace GUILIB::V1;
 using namespace std;
 
 extern "C"
@@ -44,7 +46,7 @@ DLLEXPORT void* GUI_register_me(void *hdl)
     fprintf(stderr, "libXBMC_gui-ERROR: GUILib_register_me is called with NULL handle !!!\n");
   else
   {
-    cb = ((AddonCB*)hdl)->GUILib_RegisterMe(((AddonCB*)hdl)->addonData);
+    cb = (GUILIB::V1::CB_GUILib*)((AddonCB*)hdl)->GUILib_RegisterMe(((AddonCB*)hdl)->addonData);
     if (!cb)
       fprintf(stderr, "libXBMC_gui-ERROR: GUILib_register_me can't get callback table from XBMC !!!\n");
   }

@@ -21,7 +21,7 @@
 
 #include "AddonDll.h"
 #include "cores/AudioEngine/Interfaces/IAudioCallback.h"
-#include "include/xbmc_vis_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_vis_types.h"
 #include "guilib/IRenderingCallback.h"
 #include "utils/rfft.h"
 

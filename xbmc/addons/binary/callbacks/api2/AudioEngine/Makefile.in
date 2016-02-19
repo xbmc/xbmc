@@ -1,0 +1,10 @@
+INCLUDES+=-I@abs_top_srcdir@/addons/library.kodi.audioengine \
+          -I@abs_top_srcdir@/addons/library.kodi.addon
+
+SRCS=AudioEngineCB_General.cpp \
+     AudioEngineCB_Stream.cpp \
+
+LIB=addon-callbacks-audioengine.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

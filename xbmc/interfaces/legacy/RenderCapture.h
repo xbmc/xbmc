@@ -32,6 +32,16 @@ namespace XBMCAddon
   {
     XBMCCOMMONS_STANDARD_EXCEPTION(RenderCaptureException);
 
+    //
+    /// \defgroup python_xbmc_RenderCapture RenderCapture
+    /// \ingroup python_xbmc
+    /// @{
+    /// @brief <b>Kodi's render capture class.</b>
+    ///
+    ///
+    ///--------------------------------------------------------------------------
+    ///
+    //
     class RenderCapture : public AddonClass
     {
       unsigned int m_captureId;
@@ -53,40 +63,57 @@ namespace XBMCAddon
         delete [] m_buffer;
       }
 
-      /**
-       * getWidth() -- returns width of captured image as set during\n
-       *     RenderCapture.capture(). Returns 0 prior to calling capture.\n
-       */
+      ///
+      /// \ingroup python_xbmc_RenderCapture
+      /// @brief Get width
+      ///
+      /// To get width of captured image as set during RenderCapture.capture().
+      /// Returns 0 prior to calling capture.
+      ///
+      /// @return                        Width or 0 prior to calling capture
+      ///
       inline int getWidth() { return m_width; }
 
-      /**
-       * getHeight() -- returns height of captured image as set during\n
-       *     RenderCapture.capture(). Returns 0 prior to calling capture.\n
-       */
+      ///
+      /// \ingroup python_xbmc_RenderCapture
+      /// @brief Get height
+      ///
+      /// To get height of captured image as set during RenderCapture.capture().
+      /// Returns 0 prior to calling capture.
+      ///
+      /// @return                        height or 0 prior to calling capture
       inline int getHeight() { return m_height; }
 
-      /**
-       * getAspectRatio() -- returns aspect ratio of currently displayed video.\n
-       *     This may be called prior to calling RenderCapture.capture().\n
-       */
+      ///
+      /// \ingroup python_xbmc_RenderCapture
+      /// @brief Get aspect ratio of currently displayed video.
+      ///
+      /// @return                        Aspect ratio
+      /// @warning This may be called prior to calling RenderCapture.capture().
+      ///
       inline float getAspectRatio() { return g_application.m_pPlayer->GetRenderAspectRatio(); }
 
-      /**
-       * getImageFormat() -- returns format of captured image: 'BGRA'.
-       */
+      ///
+      /// \ingroup python_xbmc_RenderCapture
+      /// @brief Get image format
+      ///
+      /// @return                        Format of captured image: 'BGRA'
+      ///
       inline const char* getImageFormat()
       {
         return "BGRA";
       }
 
-      // RenderCapture_GetImage
-      /**
-       * getImage([msecs]) -- returns captured image as a bytearray.
-       *
-       * msecs    : Milliseconds to wait. Waits 1000ms if not specified.
-       * 
-       * The size of the image is m_width * m_height * 4
-       */
+      ///
+      /// \ingroup python_xbmc_RenderCapture
+      /// @brief Returns captured image as a bytearray.
+      ///
+      /// @param[in] msecs               [opt] Milliseconds to wait. Waits
+      ///                                1000ms if not specified
+      /// @return                        Captured image as a bytearray
+      ///
+      /// @note The size of the image is m_width * m_height * 4
+      ///
       inline XbmcCommons::Buffer getImage(unsigned int msecs = 0)
       {
         if (!GetPixels(msecs))
@@ -96,12 +123,13 @@ namespace XBMCAddon
         return XbmcCommons::Buffer(m_buffer, size);
       }
 
-      /**
-       * capture(width, height) -- issue capture request.
-       * 
-       * width    : Width capture image should be rendered to\n
-       * height   : Height capture image should should be rendered to\n
-       */
+      ///
+      /// \ingroup python_xbmc_RenderCapture
+      /// @brief Issue capture request.
+      ///
+      /// @param[in] width               Width capture image should be rendered to
+      /// @param[in] height              Height capture image should should be rendered to
+      ///
       inline void capture(int width, int height)
       {
         if (m_buffer)
@@ -125,5 +153,6 @@ namespace XBMCAddon
 #endif
 
     };
+    //@}
   }
 }

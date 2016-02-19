@@ -23,173 +23,301 @@
 #include "ListItem.h"
 #include "swighelper.h"
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 namespace XBMCAddon
 {
   namespace xbmcplugin
   {
-    /**
-     * addDirectoryItem(handle, url, listitem [,isFolder, totalItems]) -- Callback function to pass directory contents back to XBMC.
-     *  - Returns a bool for successful completion.
-     * 
-     * handle      : integer - handle the plugin was started with.\n
-     * url         : string - url of the entry. would be plugin:// for another virtual directory\n
-     * listitem    : ListItem - item to add.\n
-     * isFolder    : [opt] bool - True=folder / False=not a folder(default).\n
-     * totalItems  : [opt] integer - total number of items that will be passed.(used for progressbar)\n
-     * 
-     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
-     *        Once you use a keyword, all following arguments require the keyword.\n
-     * 
-     * example:
-     *   - if not xbmcplugin.addDirectoryItem(int(sys.argv[1]), 'F:\\Trailers\\300.mov', listitem, totalItems=50): break
-     */
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+    //
+    /// \defgroup python_xbmcplugin Library - xbmcplugin
+    /// @{
+    /// @brief <b>Plugin functions on Kodi.</b>
+    ///
+    /// Offers classes and functions that allow a developer to present
+    /// information through Kodi's standard menu structure. While plugins don't
+    /// have the same flexibility as scripts, they boast significantly quicker
+    /// development time and a more consistent user experience.
+    //
+
+    ///
+    /// \ingroup python_xbmcplugin
+    /// Callback function to pass directory contents back to Kodi.
+    ///
+    /// @param[in] handle               integer - handle the plugin was started
+    ///                                 with.
+    /// @param[in] url                  string - url of the entry. would be
+    ///                                 `plugin://` for another virtual directory
+    /// @param[in] listitem             ListItem - item to add.
+    /// @param[in] isFolder             [opt] bool - True=folder / False=not a
+    ///                                 folder(default).
+    /// @param[in] totalItems           [opt] integer - total number of items
+    ///                                 that will be passed.(used for progressbar)
+    /// @return                         Returns a bool for successful completion.
+    ///
+    /// @note You can use the above as keywords for arguments and skip certain
+    ///       optional arguments. Once you use a keyword, all following arguments
+    ///       require the keyword.
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// if not xbmcplugin.addDirectoryItem(int(sys.argv[1]), 'F:\\Trailers\\300.mov', listitem, totalItems=50): break
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
     bool addDirectoryItem(int handle, const String& url, const XBMCAddon::xbmcgui::ListItem* listitem,
                           bool isFolder = false, int totalItems = 0);
 
-    /**
-     * addDirectoryItems(handle, items [,totalItems]) -- Callback function to pass directory contents back to Kodi as a list.
-     *  - Returns a bool for successful completion.
-     * 
-     * handle      : integer - handle the plugin was started with.\n
-     * items       : List - list of (url, listitem[, isFolder]) as a tuple to add.\n
-     * totalItems  : [opt] integer - total number of items that will be passed.(used for progressbar)\n
-     * 
-     *        Large lists benefit over using the standard addDirectoryItem()
-     *        You may call this more than once to add items in chunks
-     * 
-     * example:
-     *   - if not xbmcplugin.addDirectoryItems(int(sys.argv[1]), [(url, listitem, False,)]: raise
-     */
-    bool addDirectoryItems(int handle, 
-                           const std::vector<Tuple<String,const XBMCAddon::xbmcgui::ListItem*,bool> >& items, 
+    ///
+    /// \ingroup python_xbmcplugin
+    /// Callback function to pass directory contents back to Kodi as a list.
+    ///
+    /// @param[in] handle               integer - handle the plugin was started
+    ///                                 with.
+    /// @param[in] items                List - list of (url, listitem[, isFolder])
+    ///                                 as a tuple to add.
+    /// @param[in] totalItems           [opt] integer - total number of items
+    ///                                 that will be passed.(used for progressbar)
+    /// @return                         Returns a bool for successful completion.
+    ///
+    /// @remark Large lists benefit over using the standard addDirectoryItem().
+    /// You may call this more than once to add items in chunks.
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// if not xbmcplugin.addDirectoryItems(int(sys.argv[1]), [(url, listitem, False,)]: raise
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    bool addDirectoryItems(int handle,
+                           const std::vector<Tuple<String,const XBMCAddon::xbmcgui::ListItem*,bool> >& items,
                            int totalItems = 0);
 
-    /**
-     * endOfDirectory(handle[, succeeded, updateListing, cacheToDisc]) -- Callback function to tell Kodi that the end of the directory listing in a virtualPythonFolder module is reached.
-     * 
-     * handle           : integer - handle the plugin was started with.\n
-     * succeeded        : [opt] bool - True=script completed successfully(Default)/False=Script did not.\n
-     * updateListing    : [opt] bool - True=this folder should update the current listing/False=Folder is a subfolder(Default).\n
-     * cacheToDisc      : [opt] bool - True=Folder will cache if extended time(default)/False=this folder will never cache to disc.
-     * 
-     * example:
-     *   - xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=False)
-     */
-    void endOfDirectory(int handle, bool succeeded = true, bool updateListing = false, 
+    ///
+    /// \ingroup python_xbmcplugin
+    /// Callback function to tell Kodi that the end of the directory listing in
+    /// a virtualPythonFolder module is reached.
+    ///
+    /// @param[in] handle               integer - handle the plugin was started
+    ///                                 with.
+    /// @param[in] succeeded            [opt] bool - True=script completed
+    ///                                 successfully(Default)/False=Script did not.
+    /// @param[in] updateListing        [opt] bool - True=this folder should
+    ///                                 update the current listing/False=Folder
+    ///                                 is a subfolder(Default).
+    /// @param[in] cacheToDisc          [opt] bool - True=Folder will cache if
+    ///                                 extended time(default)/False=this folder
+    ///                                 will never cache to disc.
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=False)
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    void endOfDirectory(int handle, bool succeeded = true, bool updateListing = false,
                         bool cacheToDisc = true);
 
-    /**
-     * setResolvedUrl(handle, succeeded, listitem) -- Callback function to tell Kodi that the file plugin has been resolved to a url
-     * 
-     * handle           : integer - handle the plugin was started with.\n
-     * succeeded        : bool - True=script completed successfully/False=Script did not.\n
-     * listitem         : ListItem - item the file plugin resolved to for playback.
-     * 
-     * example:
-     *   - xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem)
-     */
+    ///
+    /// \ingroup python_xbmcplugin
+    /// Callback function to tell Kodi that the file plugin has been resolved to
+    /// a url
+    ///
+    /// @param[in] handle               integer - handle the plugin was started
+    ///                                 with.
+    /// @param[in] succeeded            bool - True=script completed
+    ///                                 successfully/False=Script did not.
+    /// @param[in] listitem             ListItem - item the file plugin resolved
+    ///                                 to for playback.
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem)
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
     void setResolvedUrl(int handle, bool succeeded, const XBMCAddon::xbmcgui::ListItem* listitem);
 
-    /**
-     * addSortMethod(handle, sortMethod [,label2Mask]) -- Adds a sorting method for the media list.
-     * 
-     * handle      : integer - handle the plugin was started with.\n
-     * sortMethod  : integer - see available sort methods at the bottom (or see SortFileItem.h).\n
-     * label2Mask  : [opt] string - the label mask to use for the second label.  Defaults to '%D'
-     *               - applies to:
-     *                           - SORT_METHOD_NONE, SORT_METHOD_UNSORTED, SORT_METHOD_VIDEO_TITLE,
-     *                           - SORT_METHOD_TRACKNUM, SORT_METHOD_FILE, SORT_METHOD_TITLE,
-     *                           - SORT_METHOD_TITLE_IGNORE_THE, SORT_METHOD_LABEL,
-     *                           - SORT_METHOD_LABEL_IGNORE_THE, SORT_METHOD_VIDEO_SORT_TITLE,
-     *                           - SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, SORT_METHOD_FULLPATH,
-     *                           - SORT_METHOD_LABEL_IGNORE_FOLDERS, SORT_METHOD_CHANNEL
-     *  *Note: to add multiple sort methods just call the method multiple times.
-     *
-     * example:
-     *   - xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORTMETHOD_DATEADDED)
-     */
+    ///
+    /// \ingroup python_xbmcplugin
+    /// Adds a sorting method for the media list.
+    ///
+    /// @param[in] handle               integer - handle the plugin was started
+    ///                                 with.
+    /// @param[in] sortMethod           integer - see available
+    ///                                 \ref python_xbmcplugin_sort_method "here on List of sort methods".
+    /// @param[in] label2Mask           [opt] string - the label mask to use for
+    ///                                 the second label.  Defaults to `%%D`
+    ///
+    /// @note to add multiple sort methods just call the method multiple times.
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORTMETHOD_DATEADDED)
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
     void addSortMethod(int handle, int sortMethod, const String& label2Mask = emptyString);
 
-    /**
-     * getSetting(handle, id) -- Returns the value of a setting as a string.
-     * 
-     * handle    : integer - handle the plugin was started with.\n
-     * id        : string - id of the setting that the module needs to access.
-     * 
-     * *Note, You can use the above as a keyword.
-     * 
-     * example:
-     *   - apikey = xbmcplugin.getSetting(int(sys.argv[1]), 'apikey')
-     */
+    ///
+    /// \ingroup python_xbmcplugin
+    /// Returns the value of a setting as a string.
+    ///
+    /// @param[in] handle               integer - handle the plugin was started
+    ///                                 with.
+    /// @param[in] id                   string - id of the setting that the
+    ///                                 module needs to access.
+    /// @return                         Setting value as string
+    ///
+    /// @note You can use the above as a keyword.
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// apikey = xbmcplugin.getSetting(int(sys.argv[1]), 'apikey')
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
     String getSetting(int handle, const char* id);
 
-    /**
-     * setSetting(handle, id, value) -- Sets a plugin setting for the current running plugin.
-     * 
-     * handle    : integer - handle the plugin was started with.\n
-     * id        : string - id of the setting that the module needs to access.\n
-     * value     : string or unicode - value of the setting.
-     * 
-     * example:
-     *   - xbmcplugin.setSetting(int(sys.argv[1]), id='username', value='teamxbmc')
-     */
+    ///
+    /// \ingroup python_xbmcplugin
+    /// Sets a plugin setting for the current running plugin.
+    ///
+    /// @param[in] handle    : integer - handle the plugin was started with.
+    /// @param[in] id        : string - id of the setting that the module needs to access.
+    /// @param[in] value     : string or unicode - value of the setting.
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// xbmcplugin.setSetting(int(sys.argv[1]), id='username', value='teamxbmc')
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
     void setSetting(int handle, const String& id, const String& value);
 
-    /**
-     * setContent(handle, content) -- Sets the plugins content.
-     * 
-     * handle      : integer - handle the plugin was started with.\n
-     * content     : string - content type (eg. movies)
-     * 
-     *  *Note:  content: files, songs, artists, albums, movies, tvshows, episodes, musicvideos
-     * 
-     * example:
-     *   - xbmcplugin.setContent(int(sys.argv[1]), 'movies')
-     */
+    ///
+    /// \ingroup python_xbmcplugin
+    /// Sets the plugins content.
+    ///
+    /// @param[in] handle      : integer - handle the plugin was started with.
+    /// @param[in] content     : string - content type (eg. movies)
+    ///
+    /// @par Available content strings
+    /// |          |          |          |          |
+    /// |:--------:|:--------:|:--------:|:--------:|
+    /// |  files   |  songs   | artists  | albums
+    /// | movies   | tvshows  | episodes | musicvideos
+    ///
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// xbmcplugin.setContent(int(sys.argv[1]), 'movies')
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
     void setContent(int handle, const char* content);
 
-    /**
-     * setPluginCategory(handle, category) -- Sets the plugins name for skins to display.
-     * 
-     * handle      : integer - handle the plugin was started with.\n
-     * category    : string or unicode - plugins sub category.
-     * 
-     * example:
-     *   - xbmcplugin.setPluginCategory(int(sys.argv[1]), 'Comedy')
-     */
+    ///
+    /// \ingroup python_xbmcplugin
+    /// Sets the plugins name for skins to display.
+    ///
+    /// @param[in] handle      : integer - handle the plugin was started with.
+    /// @param[in] category    : string or unicode - plugins sub category.
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// xbmcplugin.setPluginCategory(int(sys.argv[1]), 'Comedy')
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
     void setPluginCategory(int handle, const String& category);
 
-    /**
-     * setPluginFanart(handle, image, color1, color2, color3) -- Sets the plugins fanart and color for skins to display.
-     * 
-     * handle      : integer - handle the plugin was started with.\n
-     * image       : [opt] string - path to fanart image.\n
-     * color1      : [opt] hexstring - color1. (e.g. '0xFFFFFFFF')\n
-     * color2      : [opt] hexstring - color2. (e.g. '0xFFFF3300')\n
-     * color3      : [opt] hexstring - color3. (e.g. '0xFF000000')
-     * 
-     * example:
-     *   - xbmcplugin.setPluginFanart(int(sys.argv[1]), 'special://home/addons/plugins/video/Apple movie trailers II/fanart.png', color2='0xFFFF3300')
-     */
-    void setPluginFanart(int handle, const char* image = NULL, 
+    ///
+    /// \ingroup python_xbmcplugin
+    /// Sets the plugins fanart and color for skins to display.
+    ///
+    /// @param[in] handle      : integer - handle the plugin was started with.
+    /// @param[in] image       : [opt] string - path to fanart image.
+    /// @param[in] color1      : [opt] hexstring - color1. (e.g. '0xFFFFFFFF')
+    /// @param[in] color2      : [opt] hexstring - color2. (e.g. '0xFFFF3300')
+    /// @param[in] color3      : [opt] hexstring - color3. (e.g. '0xFF000000')
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// xbmcplugin.setPluginFanart(int(sys.argv[1]), 'special://home/addons/plugins/video/Apple movie trailers II/fanart.png', color2='0xFFFF3300')
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    void setPluginFanart(int handle, const char* image = NULL,
                          const char* color1 = NULL,
                          const char* color2 = NULL,
                          const char* color3 = NULL);
 
-    /**
-     * setProperty(handle, key, value) -- Sets a container property for this plugin.
-     * 
-     * handle      : integer - handle the plugin was started with.\n
-     * key         : string - property name.\n
-     * value       : string or unicode - value of property.
-     * 
-     * *Note, Key is NOT case sensitive.
-     * 
-     * example:
-     *   - xbmcplugin.setProperty(int(sys.argv[1]), 'Emulator', 'M.A.M.E.')
-     */
+    ///
+    /// \ingroup python_xbmcplugin
+    /// Sets a container property for this plugin.
+    ///
+    /// @param[in] handle      : integer - handle the plugin was started with.
+    /// @param[in] key         : string - property name.
+    /// @param[in] value       : string or unicode - value of property.
+    ///
+    /// @note Key is NOT case sensitive.
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// xbmcplugin.setProperty(int(sys.argv[1]), 'Emulator', 'M.A.M.E.')
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
     void setProperty(int handle, const char* key, const String& value);
+    ///@}
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
     SWIG_CONSTANT(int,SORT_METHOD_NONE);
     SWIG_CONSTANT(int,SORT_METHOD_LABEL);
     SWIG_CONSTANT(int,SORT_METHOD_LABEL_IGNORE_THE);
@@ -235,3 +363,4 @@ namespace XBMCAddon
     SWIG_CONSTANT(int,SORT_METHOD_SONG_USER_RATING);
   }
 }
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */

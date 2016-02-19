@@ -35,6 +35,7 @@
 #include <dlfcn.h>
 #include "filesystem/SpecialProtocol.h"
 #endif
+#include "addons/binary/ExceptionHandling.h"
 
 using namespace MUSIC_INFO;
 using namespace ADDON;
@@ -91,11 +92,7 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
     {
       m_pStruct->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile.c_str());
     }
-    catch (std::exception e)
-    {
-      HandleException(e, "m_pStruct->Start() (CVisualisation::Create)");
-      return false;
-    }
+    HANDLE_ADDON_EXCEPTION
 
     m_hasPresets = GetPresets();
 
@@ -123,10 +120,7 @@ void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample
     {
       m_pStruct->Start(iChannels, iSamplesPerSec, iBitsPerSample, strSongName.c_str());
     }
-    catch (std::exception e)
-    {
-      HandleException(e, "m_pStruct->Start (CVisualisation::Start)");
-    }
+    HANDLE_ADDON_EXCEPTION
   }
 }
 
@@ -143,10 +137,7 @@ void CVisualisation::AudioData(const float* pAudioData, int iAudioDataLength, fl
     {
       m_pStruct->AudioData(pAudioData, iAudioDataLength, pFreqData, iFreqDataLength);
     }
-    catch (std::exception e)
-    {
-      HandleException(e, "m_pStruct->AudioData (CVisualisation::AudioData)");
-    }
+    HANDLE_ADDON_EXCEPTION
   }
 }
 
@@ -159,10 +150,7 @@ void CVisualisation::Render()
     {
       m_pStruct->Render();
     }
-    catch (std::exception e)
-    {
-      HandleException(e, "m_pStruct->Render (CVisualisation::Render)");
-    }
+    HANDLE_ADDON_EXCEPTION
   }
 }
 
@@ -183,10 +171,7 @@ void CVisualisation::GetInfo(VIS_INFO *info)
     {
       m_pStruct->GetInfo(info);
     }
-    catch (std::exception e)
-    {
-      HandleException(e, "m_pStruct->GetInfo (CVisualisation::GetInfo)");
-    }
+    HANDLE_ADDON_EXCEPTION
   }
 }
 
@@ -227,13 +212,13 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
 
         return m_pStruct->OnAction(action, &track);
       }
-      return m_pStruct->OnAction((int)action, param);
+      else
+      {
+        return m_pStruct->OnAction((int)action, param);
+      }
     }
   }
-  catch (std::exception e)
-  {
-    HandleException(e, "m_pStruct->OnAction (CVisualisation::OnAction)");
-  }
+  HANDLE_ADDON_EXCEPTION
   return false;
 }
 
@@ -363,11 +348,8 @@ bool CVisualisation::GetPresets()
   {
     entries = m_pStruct->GetPresets(&presets);
   }
-  catch (std::exception e)
-  {
-    HandleException(e, "m_pStruct->OnAction (CVisualisation::GetPresets)");
-    return false;
-  }
+  HANDLE_ADDON_EXCEPTION
+
   if (presets && entries > 0)
   {
     for (unsigned i=0; i < entries; i++)

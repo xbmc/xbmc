@@ -43,6 +43,8 @@ class CVariant;
  the settings manager and registering all the callbacks, handlers and custom
  setting types.
  \sa CSettingsManager
+ \WARNING: During add of new setting, confirm allowance for add-on, if not
+ allowed add a check to 'AddonCB_General.cpp' on function 'CAddonCB_General::get_setting'
  */
 class CSettings : public CSettingCreator, public CSettingControlCreator
 {
@@ -213,7 +215,7 @@ public:
   static const std::string SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUP;
   static const std::string SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME;
   static const std::string SETTING_PVRPARENTAL_ENABLED;
-  static const std::string SETTING_PVRPARENTAL_PIN;
+  static const std::string SETTING_PVRPARENTAL_PIN; //< Not allowed to add-on
   static const std::string SETTING_PVRPARENTAL_DURATION;
   static const std::string SETTING_PVRCLIENT_MENUHOOK;
   static const std::string SETTING_PVRTIMERS_HIDEDISABLEDTIMERS;
@@ -263,7 +265,7 @@ public:
   static const std::string SETTING_WEATHER_CURRENTLOCATION;
   static const std::string SETTING_WEATHER_ADDON;
   static const std::string SETTING_WEATHER_ADDONSETTINGS;
-  static const std::string SETTING_SERVICES_DEVICENAME;
+  static const std::string SETTING_SERVICES_DEVICENAME; //< Group 'SETTING_SERVICES_...' not allowed to add-on
   static const std::string SETTING_SERVICES_UPNPSERVER;
   static const std::string SETTING_SERVICES_UPNPANNOUNCE;
   static const std::string SETTING_SERVICES_UPNPLOOKFOREXTERNALSUBTITLES;
@@ -287,7 +289,7 @@ public:
   static const std::string SETTING_SERVICES_USEAIRPLAYPASSWORD;
   static const std::string SETTING_SERVICES_AIRPLAYPASSWORD;
   static const std::string SETTING_SERVICES_AIRPLAYVIDEOSUPPORT;
-  static const std::string SETTING_SMB_WINSSERVER;
+  static const std::string SETTING_SMB_WINSSERVER; //< Group 'SETTING_SMB_...' not allowed to add-on
   static const std::string SETTING_SMB_WORKGROUP;
   static const std::string SETTING_VIDEOSCREEN_MONITOR;
   static const std::string SETTING_VIDEOSCREEN_SCREEN;
@@ -329,7 +331,7 @@ public:
   static const std::string SETTING_INPUT_APPLEREMOTEMODE;
   static const std::string SETTING_INPUT_APPLEREMOTEALWAYSON;
   static const std::string SETTING_INPUT_APPLEREMOTESEQUENCETIME;
-  static const std::string SETTING_NETWORK_USEHTTPPROXY;
+  static const std::string SETTING_NETWORK_USEHTTPPROXY; //< Group 'SETTING_NETWORK_...' not allowed to add-on
   static const std::string SETTING_NETWORK_HTTPPROXYTYPE;
   static const std::string SETTING_NETWORK_HTTPPROXYSERVER;
   static const std::string SETTING_NETWORK_HTTPPROXYPORT;
@@ -347,10 +349,10 @@ public:
   static const std::string SETTING_EVENTLOG_ENABLED;
   static const std::string SETTING_EVENTLOG_ENABLED_NOTIFICATIONS;
   static const std::string SETTING_EVENTLOG_SHOW;
-  static const std::string SETTING_MASTERLOCK_LOCKCODE;
+  static const std::string SETTING_MASTERLOCK_LOCKCODE; //< Not allowed to add-on
   static const std::string SETTING_MASTERLOCK_STARTUPLOCK;
   static const std::string SETTING_MASTERLOCK_MAXRETRIES;
-  static const std::string SETTING_CACHE_HARDDISK;
+  static const std::string SETTING_CACHE_HARDDISK; //< Group 'SETTING_CACHE...' not allowed to add-on
   static const std::string SETTING_CACHEVIDEO_DVDROM;
   static const std::string SETTING_CACHEVIDEO_LAN;
   static const std::string SETTING_CACHEVIDEO_INTERNET;

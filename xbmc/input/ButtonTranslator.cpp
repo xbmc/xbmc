@@ -63,6 +63,12 @@ typedef struct
   int target;
 } WindowMapping;
 
+/**
+ * @warning During string or action id changes do also a rework on add-on
+ * system header ./xbmc/addons/kodi-addon-dev-kit/kodi/gui.api2/definitions.h
+ * (Is in different place to allow independent usage to Kodi) about help text
+ * and maybe on defination also the translate function of them!
+ */
 static const ActionMapping actions[] =
 {
     { "left"                     , ACTION_MOVE_LEFT },

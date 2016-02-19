@@ -23,7 +23,7 @@
 #include <string>
 
 #include "XBDateTime.h"
-#include "addons/include/xbmc_pvr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/api2/definitions.hpp"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "utils/ISerializable.h"
@@ -65,7 +65,7 @@ namespace EPG
      * @brief Create a new EPG infotag with 'data' as content.
      * @param data The tag's content.
      */
-    CEpgInfoTag(const EPG_TAG &data);
+    CEpgInfoTag(const V2::KodiAPI::EPG_TAG &data);
 
     // Prevent copy construction, even for CEpgInfoTag instances and friends.
     // Note: Only declared, but intentionally not implemented
@@ -406,7 +406,7 @@ namespace EPG
     /*!
      * @brief status function to extract IsSeries boolean from EPG iFlags bitfield
      */
-    bool IsSeries() const { return (m_iFlags & EPG_TAG_FLAG_IS_SERIES) > 0; }
+    bool IsSeries() const { return (m_iFlags & V2::KodiAPI::EPG_TAG_FLAG_IS_SERIES) > 0; } 
 
   private:
 

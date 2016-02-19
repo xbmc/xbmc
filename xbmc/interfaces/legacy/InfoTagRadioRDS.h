@@ -27,9 +27,31 @@ namespace XBMCAddon
 {
   namespace xbmc
   {
-    /**
-     * InfoTagRadioRDS class.\n
-     */
+    //
+    /// \defgroup python_InfoTagRadioRDS InfoTagRadioRDS
+    /// \ingroup python_xbmc
+    /// @{
+    /// @brief <b>Kodi's radio RDS info tag class.</b>
+    ///
+    /// To get radio RDS info tag data of currently played PVR radio channel source.
+    ///
+    /// @note Info tag load is only be possible from present player class.\n
+    /// Also is all the data variable from radio channels and not known on begining
+    /// of radio receiving.
+    ///
+    ///
+    ///--------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ...
+    /// tag = xbmc.Player().getRadioRDSInfoTag()
+    ///
+    /// title  = tag.getTitle()
+    /// artist = tag.getArtist()
+    /// ...
+    /// ~~~~~~~~~~~~~
+    //
     class InfoTagRadioRDS : public AddonClass
     {
     private:
@@ -42,124 +64,239 @@ namespace XBMCAddon
       InfoTagRadioRDS();
       virtual ~InfoTagRadioRDS();
 
-      /**
-       * getTitle() -- returns a string.\n
-       */
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Title of the item on the air; i.e. song title.
+      ///
+      /// @return Title
+      ///
       String getTitle();
-      /**
-       * getBand() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Band of the item on air.
+      ///
+      /// @return Band
+      ///
       String getBand();
-      /**
-       * getArtist() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Artist of the item on air.
+      ///
+      /// @return Artist
+      ///
       String getArtist();
-      /**
-       * getComposer() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Get the Composer of the music.
+      ///
+      /// @return Composer
+      ///
       String getComposer();
-      /**
-       * getConductor() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Get the Conductor of the Band.
+      ///
+      /// @return Conductor
+      ///
       String getConductor();
-      /**
-       * getAlbum() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Album of item on air.
+      ///
+      /// @return Album name
+      ///
       String getAlbum();
-      /**
-       * getComment() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Get Comment text from channel.
+      ///
+      /// @return Comment
+      ///
       String getComment();
-      /**
-       * getAlbumTrackNumber() -- returns a integer.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Get the album track number of currently sended music.
+      ///
+      /// @return Track Number
+      ///
       int getAlbumTrackNumber();
-      /**
-       * getInfoNews() -- returns an string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Get News informations.
+      ///
+      /// @return News Information
+      ///
       String getInfoNews();
-      /**
-       * getInfoNewsLocal() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Get Local news informations.
+      ///
+      /// @return Local News Information
+      ///
       String getInfoNewsLocal();
-      /**
-       * getInfoSport() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Get Sport informations.
+      ///
+      /// @return Sport Information
+      ///
       String getInfoSport();
-      /**
-       * getInfoStock() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Get Stock informations.
+      ///
+      /// @return Stock Information
+      ///
       String getInfoStock();
-      /**
-       * getInfoWeather() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Get Weather informations.
+      ///
+      /// @return Weather Information
+      ///
       String getInfoWeather();
-      /**
-       * getInfoHoroscope() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Get Horoscope informations.
+      ///
+      /// @return Horoscope Information
+      ///
       String getInfoHoroscope();
-      /**
-       * getInfoCinema() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Get Cinema informations.
+      ///
+      /// @return Cinema Information
+      ///
       String getInfoCinema();
-      /**
-       * getInfoLottery() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Get Lottery informations.
+      ///
+      /// @return Lottery Information
+      ///
       String getInfoLottery();
-      /**
-       * getInfoOther() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Get other informations.
+      ///
+      /// @return Other Information
+      ///
       String getInfoOther();
-      /**
-       * getEditorialStaff() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Get Editorial Staff names.
+      ///
+      /// @return Editorial Staff
+      ///
       String getEditorialStaff();
-      /**
-       * getProgStation() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Name describing station.
+      ///
+      /// @return Program Station
+      ///
       String getProgStation();
-      /**
-       * getProgStyle() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief The the radio channel style currently used.
+      ///
+      /// @return Program Style
+      ///
       String getProgStyle();
-      /**
-       * getProgHost() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Host of current radio show.
+      ///
+      /// @return Program Host
+      ///
       String getProgHost();
-      /**
-       * getProgWebsite() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Link to URL (web page) for radio station homepage.
+      ///
+      /// @return Program Website
+      ///
       String getProgWebsite();
-      /**
-       * getProgNow() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Current radio program show.
+      ///
+      /// @return Program Now
+      ///
       String getProgNow();
-      /**
-       * getProgNext() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Next program show.
+      ///
+      /// @return Program Next
+      ///
       String getProgNext();
-      /**
-       * getPhoneHotline() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Telephone number of the radio station's hotline.
+      ///
+      /// @return Phone Hotline
+      ///
       String getPhoneHotline();
-      /**
-       * getEMailHotline() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Email address of the radio station's studio.
+      ///
+      /// @return EMail Hotline
+      ///
       String getEMailHotline();
-      /**
-       * getPhoneStudio() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Telephone number of the radio station's studio.
+      ///
+      /// @return Phone Studio
+      ///
       String getPhoneStudio();
-      /**
-       * getEMailStudio() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief Email address of radio station studio.
+      ///
+      /// @return EMail Studio
+      ///
       String getEMailStudio();
-      /**
-       * getSMSStudio() -- returns a string.\n
-       */
+
+      ///
+      /// @ingroup python_InfoTagRadioRDS
+      /// @brief SMS (Text Messaging) number for studio.
+      ///
+      /// @return SMS Studio
+      ///
       String getSMSStudio();
 
     };
+    //@}
   }
 }
-

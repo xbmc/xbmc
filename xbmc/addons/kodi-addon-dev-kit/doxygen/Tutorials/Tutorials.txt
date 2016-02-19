@@ -1,0 +1,48 @@
+/*! @page Tutorials Tutorials
+
+\tableofcontents
+
+- \subpage Tutorials_cpp
+- \subpage Tutorials_Python
+- \subpage Tutorials_various
+
+*/
+
+--------------------------------------------------------------------------------
+
+/*! @page Tutorials_cpp Binary C++ Tutorials
+
+\tableofcontents
+
+
+*/
+
+--------------------------------------------------------------------------------
+
+/*! @page Tutorials_Python Python Tutorials
+
+\tableofcontents
+
+|                                                                                         |
+|:---------------------------------------------------------------------------------------:|
+| \subpage Python_HelloWorld_addon    \image html 60px-Translation_-_Noun_project_987.png |
+| \subpage Python_General_addon       \image html Addons-icon.png                         |
+| \subpage Python_Audio_addon         \image html Music-icon.png                          |
+| \subpage Python_Video_addon         \image html Video-icon.png                          |
+| \subpage Python_Visualisation_addon \image html Visualisation-icon.jpg                  |
+| \subpage Python_3rd_Party_Tutorials \image html 60px-Video.png                          |
+
+*/
+
+--------------------------------------------------------------------------------
+
+/*! @page Tutorials_various Various Tutorials
+
+\tableofcontents
+
+- \subpage Git_usage
+- \subpage Submit_a_patch
+- \subpage Doxygen_On_Addon
+
+
+*/

@@ -1,0 +1,7 @@
+SRCS=AddonExe_AudioEngine_General.cpp \
+     AddonExe_AudioEngine_Stream.cpp \
+
+LIB=audioengine-exe.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

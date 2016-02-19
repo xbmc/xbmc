@@ -1,0 +1,8 @@
+SRCS=AddonExe_PVR_General.cpp \
+     AddonExe_PVR_Transfer.cpp \
+     AddonExe_PVR_Trigger.cpp \
+
+LIB=pvr-exe.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

@@ -555,6 +555,82 @@ const std::string CPictureInfoTag::GetInfo(int info) const
 
 int CPictureInfoTag::TranslateString(const std::string &info)
 {
+  // todo: find a better way to include this, without extra list here of strings.
+  ///
+  /// @addtogroup kodi_pictures_infotag
+  /// \memberof python_xbmcgui_listitem
+  /// Picture info labels
+  ///
+  /// @warning Currently are only SLIDE_RESOLUTION (resolution) and SLIDE_EXIF_DATE_TIME (exiftime)
+  /// supported to send from add-on to Kodi. The other are only working for read process from Kodi
+  /// itself!
+  ///
+  /// @{
+  ///
+  /// | Picture string value        | Enumerator                    | Description                              |
+  /// |-----------------------------|-------------------------------|------------------------------------------|
+  /// | filename                    | SLIDE_FILE_NAME               | To get the file name info label          |
+  /// | path                        | SLIDE_FILE_PATH               | To get path name                         |
+  /// | filesize                    | SLIDE_FILE_SIZE               | Get the size of the file                 |
+  /// | filedate                    | SLIDE_FILE_DATE               | Get the creation date of the file        |
+  /// | slideindex                  | SLIDE_INDEX                   |                                          |
+  /// | resolution                  | SLIDE_RESOLUTION              | Picture resolution                       |
+  /// | slidecomment                | SLIDE_COMMENT                 | |
+  /// | colour                      | SLIDE_COLOUR                  | |
+  /// | process                     | SLIDE_PROCESS                 | |
+  /// | exiftime                    | SLIDE_EXIF_DATE_TIME          | |
+  /// | exifdate                    | SLIDE_EXIF_DATE               | |
+  /// | longexiftime                | SLIDE_EXIF_LONG_DATE_TIME     | |
+  /// | longexifdate                | SLIDE_EXIF_LONG_DATE          | |
+  /// | exifdescription             | SLIDE_EXIF_DESCRIPTION        | |
+  /// | cameramake                  | SLIDE_EXIF_CAMERA_MAKE        | |
+  /// | cameramodel                 | SLIDE_EXIF_CAMERA_MODEL       | |
+  /// | exifcomment                 | SLIDE_EXIF_COMMENT            | |
+  /// | exifsoftware                | SLIDE_EXIF_SOFTWARE           | |
+  /// | aperture                    | SLIDE_EXIF_APERTURE           | |
+  /// | focallength                 | SLIDE_EXIF_FOCAL_LENGTH       | |
+  /// | focusdistance               | SLIDE_EXIF_FOCUS_DIST         | |
+  /// | exposure                    | SLIDE_EXIF_EXPOSURE           | |
+  /// | exposuretime                | SLIDE_EXIF_EXPOSURE_TIME      | |
+  /// | exposurebias                | SLIDE_EXIF_EXPOSURE_BIAS      | |
+  /// | exposuremode                | SLIDE_EXIF_EXPOSURE_MODE      | |
+  /// | flashused                   | SLIDE_EXIF_FLASH_USED         | |
+  /// | whitebalance                | SLIDE_EXIF_WHITE_BALANCE      | |
+  /// | lightsource                 | SLIDE_EXIF_LIGHT_SOURCE       | |
+  /// | meteringmode                | SLIDE_EXIF_METERING_MODE      | |
+  /// | isoequivalence              | SLIDE_EXIF_ISO_EQUIV          | |
+  /// | digitalzoom                 | SLIDE_EXIF_DIGITAL_ZOOM       | |
+  /// | ccdwidth                    | SLIDE_EXIF_CCD_WIDTH          | |
+  /// | orientation                 | SLIDE_EXIF_ORIENTATION        | |
+  /// | supplementalcategories      | SLIDE_IPTC_SUP_CATEGORIES     | |
+  /// | keywords                    | SLIDE_IPTC_KEYWORDS           | |
+  /// | caption                     | SLIDE_IPTC_CAPTION            | |
+  /// | author                      | SLIDE_IPTC_AUTHOR             | |
+  /// | headline                    | SLIDE_IPTC_HEADLINE           | |
+  /// | specialinstructions         | SLIDE_IPTC_SPEC_INSTR         | |
+  /// | category                    | SLIDE_IPTC_CATEGORY           | |
+  /// | byline                      | SLIDE_IPTC_BYLINE             | |
+  /// | bylinetitle                 | SLIDE_IPTC_BYLINE_TITLE       | |
+  /// | credit                      | SLIDE_IPTC_CREDIT             | |
+  /// | source                      | SLIDE_IPTC_SOURCE             | |
+  /// | copyrightnotice             | SLIDE_IPTC_COPYRIGHT_NOTICE   | |
+  /// | objectname                  | SLIDE_IPTC_OBJECT_NAME        | |
+  /// | city                        | SLIDE_IPTC_CITY               | |
+  /// | state                       | SLIDE_IPTC_STATE              | |
+  /// | country                     | SLIDE_IPTC_COUNTRY            | |
+  /// | transmissionreference       | SLIDE_IPTC_TX_REFERENCE       | |
+  /// | iptcdate                    | SLIDE_IPTC_DATE               | |
+  /// | urgency                     | SLIDE_IPTC_URGENCY            | |
+  /// | countrycode                 | SLIDE_IPTC_COUNTRY_CODE       | |
+  /// | referenceservice            | SLIDE_IPTC_REF_SERVICE        | |
+  /// | latitude                    | SLIDE_EXIF_GPS_LATITUDE       | |
+  /// | longitude                   | SLIDE_EXIF_GPS_LONGITUDE      | |
+  /// | altitude                    | SLIDE_EXIF_GPS_ALTITUDE       | |
+  /// | timecreated                 | SLIDE_IPTC_TIMECREATED        | |
+  /// | sublocation                 | SLIDE_IPTC_SUBLOCATION        | |
+  /// | imagetype                   | SLIDE_IPTC_IMAGETYPE          | Used image type                          |
+  /// @}
+
   if (StringUtils::EqualsNoCase(info, "filename")) return SLIDE_FILE_NAME;
   else if (StringUtils::EqualsNoCase(info, "path")) return SLIDE_FILE_PATH;
   else if (StringUtils::EqualsNoCase(info, "filesize")) return SLIDE_FILE_SIZE;

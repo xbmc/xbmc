@@ -27,11 +27,15 @@ namespace XBMCAddon
 {
   namespace xbmc
   {
-    /**
-     * Monitor class.
-     * 
-     * Monitor() -- Creates a new Monitor to notify addon about changes.
-     */
+
+    ///
+    /// \ingroup python_xbmc
+    /// \defgroup python_monitor Monitor
+    /// @{
+    /// @brief <b>Kodi's monitor class.</b>
+    ///
+    /// Creates a new monitor to notify addon about changes.
+    ///
     class Monitor : public AddonCallback
     {
       String Id;
@@ -66,119 +70,149 @@ namespace XBMCAddon
       void OnAbortRequested();
 #endif
 
-      /**
-       * onSettingsChanged() -- onSettingsChanged method.\n
-       * \n
-       * Will be called when addon settings are changed\n
-       */
+      ///
+      /// \ingroup python_monitor
+      /// @brief onSettingsChanged method.
+      ///
+      /// Will be called when addon settings are changed
+      ///
       virtual void    onSettingsChanged() { XBMC_TRACE; }
 
-      /**
-       * onScreensaverActivated() -- onScreensaverActivated method.\n
-       * \n
-       * Will be called when screensaver kicks in\n
-       */
+      ///
+      /// \ingroup python_monitor
+      /// @brief onScreensaverActivated method.
+      ///
+      /// Will be called when screensaver kicks in
+      ///
       virtual void    onScreensaverActivated() { XBMC_TRACE; }
 
-      /**
-       * onScreensaverDeactivated() -- onScreensaverDeactivated method.\n
-       * \n
-       * Will be called when screensaver goes off\n
-       */
+      ///
+      /// \ingroup python_monitor
+      /// @brief onScreensaverDeactivated method.
+      ///
+      /// Will be called when screensaver goes off
+      ///
       virtual void    onScreensaverDeactivated() { XBMC_TRACE; }
 
-      /**
-       * onDPMSActivated() -- onDPMSActivated method.\n
-       * \n
-       * Will be called when energysaving/DPMS gets active\n
-       */
+      ///
+      /// \ingroup python_monitor
+      /// @brief onDPMSActivated method.
+      ///
+      /// Will be called when energysaving/DPMS gets active
+      ///
       virtual void    onDPMSActivated() { XBMC_TRACE; }
 
-      /**
-       * onDPMSDeactivated() -- onDPMSDeactivated method.\n
-       * \n
-       * Will be called when energysaving/DPMS is turned off\n
-       */
+      ///
+      /// \ingroup python_monitor
+      /// @brief onDPMSDeactivated method.
+      ///
+      /// Will be called when energysaving/DPMS is turned off
+      ///
       virtual void    onDPMSDeactivated() { XBMC_TRACE; }
 
-      /**
-       * onScanStarted(library) -- onScanStarted method.\n
-       *\n
-       * library : video/music as string\n
-       *\n
-       * Will be called when library scan has started and return video or music to indicate which library is being scanned\n
-       */
+      ///
+      /// \ingroup python_monitor
+      /// @brief onScanStarted method.
+      ///
+      /// @param[in] library             Video / music as string
+      ///
+      ///
+      /// @note Will be called when library clean has ended and return video or
+      /// music to indicate which library is being scanned
+      ///
       virtual void    onScanStarted(const String library) { XBMC_TRACE; }
 
-      /**
-       * onScanFinished(library) -- onScanFinished method.\n
-       * \n
-       * library : video/music as string\n
-       * \n
-       * Will be called when library scan has ended and return video or music to indicate which library has been scanned\n
-       */
+      ///
+      /// \ingroup python_monitor
+      /// onScanFinished method.
+      ///
+      /// @param[in] library             Video / music as string
+      ///
+      ///
+      /// @note Will be called when library clean has ended and return video or
+      /// music to indicate which library has been scanned
+      ///
       virtual void    onScanFinished(const String library) { XBMC_TRACE; }
 
-      /**
-       * onDatabaseScanStarted(database) -- Deprecated, use onScanStarted().
-       */
+      ///
+      /// \ingroup python_monitor
+      /// @warning Deprecated, use onScanStarted().
+      ///
       virtual void    onDatabaseScanStarted(const String database) { XBMC_TRACE; }
 
-      /**
-       * onDatabaseUpdated(database) -- Deprecated, use onScanFinished().
-       */
+      ///
+      /// \ingroup python_monitor
+      /// @warning Deprecated, use onScanFinished().
+      ///
       virtual void    onDatabaseUpdated(const String database) { XBMC_TRACE; }
 
-      /**
-       * onCleanStarted(library) -- onCleanStarted method.\n
-       * \n
-       * library : video/music as string\n
-       * \n
-       * Will be called when library clean has started and return video or music to indicate which library is being cleaned\n
-       */
+      ///
+      /// \ingroup python_monitor
+      /// @brief onCleanStarted method.
+      ///
+      /// @param[in] library             Video / music as string
+      ///
+      ///
+      /// @note Will be called when library clean has ended and return video or
+      /// music to indicate which library has been cleaned
+      ///
       virtual void    onCleanStarted(const String library) { XBMC_TRACE; }
 
-      /**
-       * onCleanFinished(library) -- onCleanFinished method.\n
-       * \n
-       * library : video/music as string\n
-       * \n
-       * Will be called when library clean has ended and return video or music to indicate which library has been cleaned\n
-       */
+      ///
+      /// \ingroup python_monitor
+      /// @brief onCleanFinished method.
+      ///
+      /// @param[in] library             Video / music as string
+      ///
+      ///
+      /// @note Will be called when library clean has ended and return video or
+      /// music to indicate which library has been finished
+      ///
       virtual void    onCleanFinished(const String library) { XBMC_TRACE; }
 
-      /**
-       * onAbortRequested() -- Deprecated, use waitForAbort() to be notified about this event.\n
-       */
+      ///
+      /// \ingroup python_monitor
+      /// @warning Deprecated, use waitForAbort() to be notified about this event.
+      ///
       virtual void    onAbortRequested() { XBMC_TRACE; }
 
-      /**
-       * onNotification(sender, method, data) -- onNotification method.\n
-       *\n
-       * sender : sender of the notification\n
-       * method : name of the notification\n
-       * data   : JSON-encoded data of the notification\n
-       *\n
-       * Will be called when Kodi receives or sends a notification\n
-       */
+      ///
+      /// \ingroup python_monitor
+      /// @brief onNotification method.
+      ///
+      /// @param[in] sender              Sender of the notification
+      /// @param[in] method              Name of the notification
+      /// @param[in] data                JSON-encoded data of the notification
+      ///
+      /// @note Will be called when Kodi receives or sends a notification
+      ///
       virtual void    onNotification(const String sender, const String method, const String data) { XBMC_TRACE; }
 
-      /**
-       * waitForAbort([timeout]) -- Block until abort is requested, or until timeout occurs. If an
-       *                            abort requested have already been made, return immediately.
-       *
-       * Returns True when abort have been requested, False if a timeout is given and the operation times out.
-       *
-       * timeout : [opt] float - timeout in seconds. Default: no timeout.\n
-       */
+      ///
+      /// \ingroup python_monitor
+      /// @brief Wait for Abort
+      ///
+      /// Block until abort is requested, or until timeout occurs. If an
+      /// abort requested have already been made, return immediately.
+      ///
+      /// @param[in] timeout             [opt] float - timeout in seconds.
+      ///                                Default: no timeout.
+      /// @return                        True when abort have been requested,
+      ///                                False if a timeout is given and the
+      ///                                operation times out.
+      ///
       bool waitForAbort(double timeout = -1);
 
-      /**
-       * abortRequested() -- Returns True if abort has been requested.
-       */
+      ///
+      /// \ingroup python_monitor
+      /// @brief Returns True if abort has been requested.
+      ///
+      /// @return                        True if requested
+      ///
       bool abortRequested();
 
       virtual ~Monitor();
     };
+    /** @} */
   }
 };

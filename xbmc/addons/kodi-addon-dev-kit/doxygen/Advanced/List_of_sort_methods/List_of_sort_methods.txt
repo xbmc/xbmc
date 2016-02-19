@@ -1,0 +1,9 @@
+/*!
+\defgroup List_of_sort_methods List of sort methods
+\ingroup general_parts
+@{
+
+\tableofcontents
+
+@}
+*/

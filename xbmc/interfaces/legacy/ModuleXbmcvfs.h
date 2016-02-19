@@ -24,100 +24,184 @@
 #include "Tuple.h"
 #include <vector>
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 namespace XBMCAddon
 {
-
   namespace xbmcvfs
   {
-    /**
-     * copy(source, destination) -- copy file to destination, returns true/false.
-     * 
-     * source          : file to copy.\n
-     * destination     : destination file
-     * 
-     * example:
-     *   - success = xbmcvfs.copy(source, destination)
-     */
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+    //
+    /// \defgroup python_xbmcvfs Library - xbmcvfs
+    /// @{
+    /// @brief <b>Virtual file system functions on Kodi.</b>
+    ///
+    /// Offers classes and functions offers acces to the Virtual File Server
+    /// (VFS) which you can use to manipulate files and folders.
+    //
+
+    ///
+    /// \ingroup python_xbmcvfs
+    /// Copy file to destination, returns true/false.
+    ///
+    /// @param[in] source                file to copy.
+    /// @param[in] destination           destination file
+    /// @return                          True if successed
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// success = xbmcvfs.copy(source, destination)
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
     bool copy(const String& strSource, const String& strDestnation);
 
-    // delete a file
-    /**
-     * delete(file)
-     * 
-     * file        : file to delete
-     * 
-     * example:
-     *   - xbmcvfs.delete(file)
-     */
+    ///
+    /// \ingroup python_xbmcvfs
+    /// @brief Delete a file
+    ///
+    /// @param[in] file                  File to delete
+    /// @return                          True if successed
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// xbmcvfs.delete(file)
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
     bool deleteFile(const String& file);
 
-    /**
-     * rename(file, newFileName)
-     * 
-     * file        : file to rename\n
-     * newFileName : new filename, including the full path
-     *
-     * *Note, moving files between different filesystem (eg. local to nfs://) is not possible on\n
-     *        all platforms. You may have to do it manually by using the copy and deleteFile functions.\n
-     * 
-     * example:
-     *   - success = xbmcvfs.rename(file,newFileName)
-     */
-    // rename a file
+    ///
+    /// \ingroup python_xbmcvfs
+    /// @brief Rename a file
+    ///
+    /// @param[in] file                  File to rename
+    /// @param[in] newFileName           New filename, including the full path
+    /// @return                          True if successed
+    ///
+    /// @note Moving files between different filesystem (eg. local to nfs://) is not possible on
+    ///       all platforms. You may have to do it manually by using the copy and deleteFile functions.
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// success = xbmcvfs.rename(file,newFileName)
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
     bool rename(const String& file, const String& newFile);
 
-    /**
-     * exists(path)
-     * 
-     * path        : file or folder (folder must end with slash or backslash)
-     * 
-     * example:
-     *   - success = xbmcvfs.exists(path)
-     */
-    // check for a file or folder existance, mimics Pythons os.path.exists()
+    ///
+    /// \ingroup python_xbmcvfs
+    /// @brief Check for a file or folder existance
+    ///
+    /// @param[in] path                  File or folder (folder must end with
+    ///                                  slash or backslash)
+    /// @return                          True if successed
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// success = xbmcvfs.exists(path)
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
     bool exists(const String& path);
 
-    /**
-     * mkdir(path) -- Create a folder.
-     * 
-     * path        : folder
-     * 
-     * example:
-     *  - success = xbmcvfs.mkdir(path)
-     */
-    // make a directory
+    ///
+    /// \ingroup python_xbmcvfs
+    /// @brief Create a folder.
+    ///
+    /// @param[in] path                  Folder to create
+    /// @return                          True if successed
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// success = xbmcvfs.mkdir(path)
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
     bool mkdir(const String& path);
 
-    /**
-     * mkdirs(path) -- Create folder(s) - it will create all folders in the path.
-     * 
-     * path        : folder
-     * 
-     * example:
-     *  - success = xbmcvfs.mkdirs(path)
-     */
-    // make all directories along the path
+    ///
+    /// \ingroup python_xbmcvfs
+    /// @brief Make all directories along the path
+    ///
+    /// Create folder(s) - it will create all folders in the path.
+    ///
+    /// @param[in] path                  Folders to create
+    /// @return                          True if successed
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// success = xbmcvfs.mkdirs(path)
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
     bool mkdirs(const String& path);
 
-    /**
-     * rmdir(path) -- Remove a folder.
-     * 
-     * path        : folder
-     * 
-     * example:
-     *  - success = xbmcvfs.rmdir(path)
-     */
+    ///
+    /// \ingroup python_xbmcvfs
+    /// @brief Remove a folder.
+    ///
+    /// @param[in] path                  Folder to remove
+    /// @return                          True if successed
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// success = xbmcvfs.rmdir(path)
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
     bool rmdir(const String& path, bool force = false);
 
-    /**
-     * listdir(path) -- lists content of a folder.
-     * 
-     * path        : folder 
-     * 
-     * example:
-     *  - dirs, files = xbmcvfs.listdir(path)
-     */
+    ///
+    /// \ingroup python_xbmcvfs
+    /// @brief Lists content of a folder.
+    ///
+    /// @param[in] path                  Folder to get list from
+    /// @return                          Directory content list
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// dirs, files = xbmcvfs.listdir(path)
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
     Tuple<std::vector<String>, std::vector<String> > listdir(const String& path);
+    //@}
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   }
 }
-
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */

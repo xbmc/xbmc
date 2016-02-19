@@ -1,0 +1,18 @@
+#ifdef DOXYGEN_SHOULD_SKIP_THIS
+/*!
+On functions defined input variable <b><tt>controlId</tt> (GUI control identifier)</b>
+is the on window.xml defined value behind type added with <tt><b>id="..."</b></tt> and
+used to identify for changes there and on callbacks.
+
+@code{.xml}
+  <control type="label" id="31">
+    <description>Title Label</description>
+    ...
+  </control>
+  <control type="progress" id="32">
+    <description>progress control</description>
+    ...
+  </control>
+@endcode
+*/
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */

@@ -1,0 +1,51 @@
+/*! @page Python_Visualisation_addon Python - Visualisation AddOn
+
+\tableofcontents
+
+
+\section Python_Visualisation_addon_section1 Introduction
+
+This tutorial will explain how to write your first Kodi/XBMC Visualisation Add-on.
+
+|                         |
+|-------------------------|
+| \image html Vortex3.png |
+
+
+---------------------------------------------------------------------------------
+
+\section Python_Visualisation_addon_section2 Tools
+
+Visualisations are quite complicated so you probably want to have a graphics
+editing package such as GIMP (https://www.gimp.org) installed for when you need
+to resize or crop textures or image backgrounds.
+
+Video editing software may also be useful but that is beyond the scope of this
+tutorial.
+
+
+---------------------------------------------------------------------------------
+
+\section Python_Visualisation_addon_section3 Installing
+
+Since we don't have a full "HOW TO" guide for this yet (please feel free to sign
+up to the wiki and edit this page) we will just show some source code of other
+visulisations for now.
+
+- https://github.com/vdb86/screensaver.digitalclock
+- https://github.com/wsnipex/visualization.projectm
+
+You can either download as a zip and install both of these inside the kodi GUI
+from the install from zip feature. Or extract the zip into your userdata/add-ons
+folder.
+
+
+---------------------------------------------------------------------------------
+
+\section Python_Visualisation_addon_section4 Extra info
+
+Check out the forum section for Screensavers and Visualisations
+
+- http://forum.kodi.tv/forumdisplay.php?fid=38
+
+*/

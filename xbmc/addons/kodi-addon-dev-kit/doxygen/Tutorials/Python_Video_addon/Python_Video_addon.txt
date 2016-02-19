@@ -1,0 +1,350 @@
+/*! @page Python_Video_addon Python - Video AddOn
+
+\tableofcontents
+
+\section Python_Video_addon_section1 Introduction
+
+This tutorial will explain how to write your first Kodi/XBMC video plugin Add-on
+
+
+---------------------------------------------------------------------------------
+
+\section Python_Video_addon_section2 Tools
+
+Assuming you have already followed the Hello World Add-on you will have a text
+editor already setup. Since we are dealing with videos this time its probably a
+good idea to have a video player setup. We recommend another great open source
+project for this.
+
+- VLC http://www.videolan.org/vlc/
+
+
+---------------------------------------------------------------------------------
+
+\section Python_Video_addon_section3 Installing
+
+For this example we will use 2 nice basic video Add-on tutorials You can find the
+source-code here:
+
+https://github.com/romanvm/plugin.video.example
+
+You can either download as a zip and install both of these inside the kodi GUI
+from the install from zip feature. Or extract the zip into your userdata/add-ons
+folder.
+
+
+---------------------------------------------------------------------------------
+
+\section Python_Video_addon_section4 Testing
+
+You can first give the add-on a test run by going to:
+`System >> Add-Ons >> Enabled Add-Ons >> Video Add-Ons >> Example` Kodi video
+Plugin. You should now be able to watch some test videos hosted from an internet
+web server.
+
+|                                |
+|--------------------------------|
+| \image html Videotutorial1.jpg |
+
+
+---------------------------------------------------------------------------------
+
+\section Python_Video_addon_section5 Explanation
+
+So whats happening in this add-on?
+
+Basically the Add-on is checking a website for the hosted videos. In this example
+we are directly linking to the videos, but there are possibilities for dynamic
+content and scraping of just about any online source.
+
+Once the video link is sent to Kodi, our video player takes over and buffers,
+then plays the video just like any other media.
+
+
+---------------------------------------------------------------------------------
+
+\section Python_Video_addon_section6 Structure
+
+| File        | Description                                                     |
+|-------------|-----------------------------------------------------------------|
+| main.py     | This is the actual python code for your Add-On
+| addon.xml   | This is the Add-Ons metadata
+| icon.png    | A PNG icon for the add-on. It can be 256x256 or 512x512 pixels big. Try to make it look nice!
+| Readme.md   | The readme text file with a description of the Add-on and install instructions. This shows on the front of the GitHub page and helps users to understand your Add-on before downloading.
+
+
+---------------------------------------------------------------------------------
+
+\section Python_Video_addon_section7 The Code
+
+So now we come to the actual Add-On code, this is where most of your Add-on is
+written and is a simple text file containing python code.
+
+First we initialize the Add-on and import and bits we need
+~~~~~~~~~~~~~{.py}
+     import sys
+     from urlparse import parse_qsl
+     import xbmcgui
+     import xbmcplugin
+~~~~~~~~~~~~~
+
+Now we do something else...
+~~~~~~~~~~~~~{.py}
+     # Get the plugin url in plugin:// notation.
+     __url__ = sys.argv[0]
+     # Get the plugin handle as an integer number.
+     __handle__ = int(sys.argv[1])
+~~~~~~~~~~~~~
+
+Here we use a fixed set of properties simply for demonstrating purposes. In a
+<b>"real life"</b> plugin you will need to get info and links to video 
+files / streams from some web-site or online service.
+~~~~~~~~~~~~~{.py}
+VIDEOS = {'Animals': [{'name': 'Crab',
+                       'thumb': 'http://www.vidsplay.com/vids/crab.jpg',
+                       'video': 'http://www.vidsplay.com/vids/crab.mp4',
+                       'genre': 'Animals'},
+                      {'name': 'Alligator',
+                       'thumb': 'http://www.vidsplay.com/vids/alligator.jpg',
+                       'video': 'http://www.vidsplay.com/vids/alligator.mp4',
+                       'genre': 'Animals'},
+                      {'name': 'Turtle',
+                       'thumb': 'http://www.vidsplay.com/vids/turtle.jpg',
+                       'video': 'http://www.vidsplay.com/vids/turtle.mp4',
+                       'genre': 'Animals'}
+                      ],
+            'Cars': [{'name': 'Postal Truck',
+                      'thumb': 'http://www.vidsplay.com/vids/us_postal.jpg',
+                      'video': 'http://www.vidsplay.com/vids/us_postal.mp4',
+                      'genre': 'Cars'},
+                     {'name': 'Traffic',
+                      'thumb': 'http://www.vidsplay.com/vids/traffic1.jpg',
+                      'video': 'http://www.vidsplay.com/vids/traffic1.avi',
+                      'genre': 'Cars'},
+                     {'name': 'Traffic Arrows',
+                      'thumb': 'http://www.vidsplay.com/vids/traffic_arrows.jpg',
+                      'video': 'http://www.vidsplay.com/vids/traffic_arrows.mp4',
+                      'genre': 'Cars'}
+                     ],
+            'Food': [{'name': 'Chicken',
+                      'thumb': 'http://www.vidsplay.com/vids/chicken.jpg',
+                      'video': 'http://www.vidsplay.com/vids/bbqchicken.mp4',
+                      'genre': 'Food'},
+                     {'name': 'Hamburger',
+                      'thumb': 'http://www.vidsplay.com/vids/hamburger.jpg',
+                      'video': 'http://www.vidsplay.com/vids/hamburger.mp4',
+                      'genre': 'Food'},
+                     {'name': 'Pizza',
+                      'thumb': 'http://www.vidsplay.com/vids/pizza.jpg',
+                      'video': 'http://www.vidsplay.com/vids/pizza.mp4',
+                      'genre': 'Food'}
+                     ]}
+~~~~~~~~~~~~~
+
+And now we define something else...
+~~~~~~~~~~~~~{.py}
+def get_categories():
+         """
+         Get the list of video categories.
+         Here you can insert some parsing code that retrieves
+         the list of video categories (e.g. 'Movies', 'TV-shows', 'Documentaries' etc.)
+         from some site or server.
+         :return: list
+         """
+         return VIDEOS.keys()
+~~~~~~~~~~~~~
+
+And now we define something else...
+~~~~~~~~~~~~~{.py}
+def get_videos(category):
+    """
+    Get the list of videofiles/streams.
+    Here you can insert some parsing code that retrieves
+    the list of videostreams in a given category from some site or server.
+    :param category: str
+    :return: list
+    """
+    return VIDEOS[category]
+~~~~~~~~~~~~~
+
+And now we define the list of categories
+~~~~~~~~~~~~~{.py}
+def list_categories():
+    """
+    Create the list of video categories in the Kodi interface.
+    :return: None
+    """
+    # Get video categories
+    categories = get_categories()
+    # Create a list for our items.
+    listing = []
+    # Iterate through categories
+    for category in categories:
+        # Create a list item with a text label and a thumbnail image.
+        list_item = xbmcgui.ListItem(label=category, thumbnailImage=VIDEOS[category][0]['thumb'])
+        # Set a fanart image for the list item.
+        # Here we use the same image as the thumbnail for simplicity's sake.
+        list_item.setProperty('fanart_image', VIDEOS[category][0]['thumb'])
+        # Set additional info for the list item.
+        # Here we use a category name for both properties for for simplicity's sake.
+        # setInfo allows to set various information for an item.
+        # For available properties see the following link:
+        # http://mirrors.xbmc.org/docs/python-docs/15.x-isengard/xbmcgui.html#ListItem-setInfo
+        list_item.setInfo('video', {'title': category, 'genre': category})
+        # Create a URL for the plugin recursive callback.
+        # Example: plugin://plugin.video.example/?action=listing&category=Animals
+        url = '{0}?action=listing&category={1}'.format(__url__, category)
+        # is_folder = True means that this item opens a sub-list of lower level items.
+        is_folder = True
+        # Add our item to the listing as a 3-element tuple.
+        listing.append((url, list_item, is_folder))
+    # Add our listing to Kodi.
+    # Large lists and/or slower systems benefit from adding all items at once via addDirectoryItems
+    # instead of adding one by ove via addDirectoryItem.
+    xbmcplugin.addDirectoryItems(__handle__, listing, len(listing))
+    # Add a sort method for the virtual folder items (alphabetically, ignore articles)
+    xbmcplugin.addSortMethod(__handle__, xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE)
+    # Finish creating a virtual folder.
+    xbmcplugin.endOfDirectory(__handle__)
+~~~~~~~~~~~~~
+
+And here we list the videos
+~~~~~~~~~~~~~{.py}
+def list_videos(category):
+    """
+    Create the list of playable videos in the Kodi interface.
+    :param category: str
+    :return: None
+    """
+    # Get the list of videos in the category.
+    videos = get_videos(category)
+    # Create a list for our items.
+    listing = []
+    # Iterate through videos.
+    for video in videos:
+        # Create a list item with a text label and a thumbnail image.
+        list_item = xbmcgui.ListItem(label=video['name'], thumbnailImage=video['thumb'])
+        # Set a fanart image for the list item.
+        # Here we use the same image as the thumbnail for simplicity's sake.
+        list_item.setProperty('fanart_image', video['thumb'])
+        # Set additional info for the list item.
+        list_item.setInfo('video', {'title': video['name'], 'genre': video['genre']})
+        # Set 'IsPlayable' property to 'true'.
+        # This is mandatory for playable items!
+        list_item.setProperty('IsPlayable', 'true')
+        # Create a URL for the plugin recursive callback.
+        # Example: plugin://plugin.video.example/?action=play&video=http://www.vidsplay.com/vids/crab.mp4
+        url = '{0}?action=play&video={1}'.format(__url__, video['video'])
+        # Add the list item to a virtual Kodi folder.
+        # is_folder = False means that this item won't open any sub-list.
+        is_folder = False
+        # Add our item to the listing as a 3-element tuple.
+        listing.append((url, list_item, is_folder))
+    # Add our listing to Kodi.
+    # Large lists and/or slower systems benefit from adding all items at once via addDirectoryItems
+    # instead of adding one by ove via addDirectoryItem.
+    xbmcplugin.addDirectoryItems(__handle__, listing, len(listing))
+    # Add a sort method for the virtual folder items (alphabetically, ignore articles)
+    xbmcplugin.addSortMethod(__handle__, xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE)
+    # Finish creating a virtual folder.
+    xbmcplugin.endOfDirectory(__handle__)
+~~~~~~~~~~~~~
+
+Now we tell Kodi how to find the video path to play the videos
+~~~~~~~~~~~~~{.py}
+def play_video(path):
+    """
+    Play a video by the provided path.
+    :param path: str
+    :return: None
+    """
+    # Create a playable item with a path to play.
+    play_item = xbmcgui.ListItem(path=path)
+    # Pass the item to the Kodi player.
+    xbmcplugin.setResolvedUrl(__handle__, True, listitem=play_item)
+~~~~~~~~~~~~~
+
+This is the router function
+~~~~~~~~~~~~~{.py}
+def router(paramstring):
+    """
+    Router function that calls other functions
+    depending on the provided paramstring
+    :param paramstring:
+    :return:
+    """
+    # Parse a URL-encoded paramstring to the dictionary of
+    # {<parameter>: <value>} elements
+    params = dict(parse_qsl(paramstring[1:]))
+    # Check the parameters passed to the plugin
+    if params:
+        if params['action'] == 'listing':
+            # Display the list of videos in a provided category.
+            list_videos(params['category'])
+        elif params['action'] == 'play':
+            # Play a video from a provided URL.
+            play_video(params['video'])
+    else:
+        # If the plugin is called from Kodi UI without any parameters,
+        # display the list of video categories
+        list_categories()
+~~~~~~~~~~~~~
+
+Call the router function
+~~~~~~~~~~~~~{.py}
+if __name__ == '__main__':
+    # Call the router function and pass the plugin call parameters to it.
+    router(sys.argv[2])
+~~~~~~~~~~~~~
+
+---------------------------------------------------------------------------------
+
+\section Python_Video_addon_section8 Changing the code
+
+Hopefully by now you have managed to run the Add-On, understand the structure and
+can see what the code can do. Now lets trying changing it a little!
+
+Since we already have the Add-on installed we can go directly to the Kodi
+userdata folder and edit the python directly. You can also have Kodi open at this
+time ready to run the Add-on when required. Just switch between your text editor
+and Kodi any time.
+
+Now open up the main.py file from your userdata folder and lets change what the
+text says.
+
+~~~~~~~~~~~~~{.py}
+                'Cars': [{'name': 'Postal Truck',
+                     'thumb': 'http://www.vidsplay.com/vids/us_postal.jpg',
+                     'video': 'http://www.vidsplay.com/vids/us_postal.mp4',
+                     'genre': 'Cars'},
+~~~~~~~~~~~~~
+
+Try changing some of the links to another jpeg file or hosted online video.
+Also try to change the genre and see how that effects the view in Kodi.
+
+Click save on your text editor and now try running the Add-On inside Kodi. You
+should see the new video links and navigation right away.
+
+Congratulations! you've just played an online video from your very own Video
+Add-on.
+
+
+---------------------------------------------------------------------------------
+
+\section Python_Video_addon_section9 Final Thoughts
+
+Writing a Video Add-on is actually pretty simple once you get the basic structure
+correct. You can scrape most online sources with Regex, or host your own videos
+on the web. You can also play youtube clips or vevo videos using some additional
+easy to use modules.
+
+If you have any questions about this tutorial, feel free to discuss it on our
+forums here: http://forum.kodi.tv/showthread.php?tid=248774
+
+---------------------------------------------------------------------------------
+
+\section Python_Video_addon_section10 Extra info
+
+Just a reminder... **IMPORTANT!!!!!!!** Do not mix tabs and spaces in python
+
+*/

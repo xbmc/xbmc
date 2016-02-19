@@ -1,0 +1,302 @@
+/*! @page Python_General_addon Python - General AddOn
+
+\tableofcontents
+
+This page will outline the basics of creating your first Python add-on for Kodi.
+It assumes you're at least familiar with the basics of Python (or at least,
+programming in general). If not, we recommend visiting the
+[Python tutorial](http://docs.python.org/2/tutorial/) first, and then returning
+here.
+
+
+---------------------------------------------------------------------------------
+
+\section Python_General_addon_section1 Before we get started
+
+- See also: [Add-on structure](http://kodi.wiki/view/Add-on_structure)
+
+The first step to making an add-on is to put the basic structure in place. Make
+sure your directory is properly named, e.g. `plugin.video.my-addon`, and that you
+have a properly-constructed [addon.xml](http://kodi.wiki/view/Addon.xml) file.
+Once these are done, you can get started writing the actual code for your add-on!
+
+
+---------------------------------------------------------------------------------
+
+\section Python_General_addon_section2 Hello, World!
+
+The simplest form of Python add-on is one that gets run, adds some list items,
+and exits to let Kodi take over the navigation; people who have written
+server-side code for the web should be familiar with how this works. (More
+complex add-ons can process user input in real-time, but we'll discuss those
+later.) Let's start by looking at an extremely basic example script:
+
+~~~~~~~~~~~~~{.py}
+  import sys
+  import xbmcgui
+  import xbmcplugin
+
+  addon_handle = int(sys.argv[1])
+
+  xbmcplugin.setContent(addon_handle, 'movies')
+
+  url = 'http://localhost/some_video.mkv'
+  li = xbmcgui.ListItem('My First Video!', iconImage='DefaultVideo.png')
+  xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li)
+
+  xbmcplugin.endOfDirectory(addon_handle)
+~~~~~~~~~~~~~
+
+While not particularly exciting, this shows the minimal amount of code you need
+to get an Kodi add-on up and running in Python. First, we get the add-on's
+process handle from `sys.argv[1]`. We need this to tell Kodi who we are. Next,
+we tell Kodi that we're going to show a list of `'movies'`. There are other
+options, like `'audio'` or `'episodes'`; these just change some details of how Kodi
+presents your add-on.
+
+The most important part is that we create an `xbmcgui.ListItem` with the name and
+icon we want (`'DefaultVideo.png'` comes from the Kodi skin), set it to be a video
+item, and then add it to the directory. Once we're done adding items, we need to
+be sure to call `xbmcplugin.endOfDirectory` to let Kodi know we're done!
+
+
+--------------------------------------------------------------------------------
+
+\section Python_General_addon_section3 Navigating between pages
+
+While the first example might be enough for extremely simple add-ons, most
+add-ons will want to have the ability to navigate between different pages.
+Most add-ons are designed to imitate a folder hierarchy where opening folder
+items shows a different list of items, and going "up" returns you to the
+parent folder.
+
+
+\subsection Python_General_addon_section3_sub1 Retrieving arguments
+
+As we saw in the first example, Kodi passes some arguments to us via sys.argv.
+This is important, since it's what will let us tailor the output on the add-on
+based on user input. Remember, much like a web site, each folder (or page) in
+an Kodi add-on is the result of a separate invocation of our script. The
+arguments available to us are:
+
+| Index | Description                                                          |
+|:-----:|:---------------------------------------------------------------------|
+|   0	  | The base URL of your add-on, e.g. 'plugin://plugin.video.myaddon/'   |
+|   1	  | The process handle for this add-on, as a numeric string              |
+|   2	  | The query string passed to your add-on, e.g. '?foo=bar&baz=quux'     |
+
+Of particular interest is `sys.argv[2]`, which is what we'll generally use to
+show different things in the add-on.
+
+
+\subsubsection Python_General_addon_section3_sub1_sub1 Multiple content types
+
+- See also: [Addon.xml#<provides> element](http://kodi.wiki/view/Addon.xml#.3Cprovides.3E_element)
+
+If your add-on provides multiple content types, e.g. `audio` and `video`, when
+the user invokes your add-on from the add-on list, Kodi will add a `content_type`
+parameter to your add-on's query string. For example: <c>'?content_type=audio'</c>.
+This will allow you to modify the output depending on what context your add-on
+was invoked in.
+
+
+\subsection Python_General_addon_section3_sub2 Passing arguments
+
+Now that we know how to retrieve the arguments passed to our add-on, we'll have
+to actually pass some along to it. Generally speaking, this involves creating a
+folder `ListItem` with a URL back to your add-on; then the next invocation of the
+add-on will parse those arguments and do something with them. Let's look at
+another brief example that adds some folders to let the user navigate between
+different pages of the add-on:
+
+~~~~~~~~~~~~~{.py}
+  import sys
+  import urllib
+  import urlparse
+  import xbmcgui
+  import xbmcplugin
+
+  base_url = sys.argv[0]
+  addon_handle = int(sys.argv[1])
+  args = urlparse.parse_qs(sys.argv[2][1:])
+
+  xbmcplugin.setContent(addon_handle, 'movies')
+
+  def build_url(query):
+      return base_url + '?' + urllib.urlencode(query)
+
+  mode = args.get('mode', None)
+
+  if mode is None:
+      url = build_url({'mode': 'folder', 'foldername': 'Folder One'})
+      li = xbmcgui.ListItem('Folder One', iconImage='DefaultFolder.png')
+      xbmcplugin.addDirectoryItem(handle=addon_handle, url=url,
+                                  listitem=li, isFolder=True)
+
+      url = build_url({'mode': 'folder', 'foldername': 'Folder Two'})
+      li = xbmcgui.ListItem('Folder Two', iconImage='DefaultFolder.png')
+      xbmcplugin.addDirectoryItem(handle=addon_handle, url=url,
+                                  listitem=li, isFolder=True)
+
+      xbmcplugin.endOfDirectory(addon_handle)
+
+  elif mode[0] == 'folder':
+      foldername = args['foldername'][0]
+      url = 'http://localhost/some_video.mkv'
+      li = xbmcgui.ListItem(foldername + ' Video', iconImage='DefaultVideo.png')
+      xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li)
+      xbmcplugin.endOfDirectory(addon_handle)
+~~~~~~~~~~~~~
+
+As you can see, many parts of our code are very similar to the first example.
+There are a few important additions, however. First, we want to respond to
+the arguments supplied to our script, so we parse the query string with:
+
+~~~~~~~~~~~~~{.py}
+  urlparse.parse_qs(sys.argv[2][1:])
+~~~~~~~~~~~~~
+
+We skip the first character, since it's always <c>'?'</c>. This will give us a dict
+of lists; for example, <c>'?foo=bar&foo=baz&quux=spam'</c> would be converted to
+<c>{'foo': ['bar', 'baz'], 'quux': ['spam']}</c>. With this information, we can
+tailor the output of our add-on to the supplied arguments.
+
+We also need to be able to create links back to our add-on in order to display
+related pages (e.g. subfolders). We can do this by creating an `xbmc.ListItem`,
+passing `isFolder=True`, and setting the URL of the item to point back to our
+add-on. We create the URL in the helper function `build_url()`, which gives us a
+URL that looks something like:
+
+~~~~~~~~~~~~~
+  plugin://plugin.video.myaddon/?mode=folder&foldername=Folder+One
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+
+\section Python_General_addon_section4 Working with user settings
+
+  - See also: [Add-on settings](http://kodi.wiki/view/Add-on_settings)
+
+Your add-on may require some configurable options for the user (e.g. login
+credentials for a service). These can be stored as settings. To use settings
+with your add-on, you'll need to make a file defining the settings in
+`resources/settings.xml`. For example:
+
+~~~~~~~~~~~~~{.xml}
+  <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+  <settings>
+      <setting id="my_setting" type="bool" default="true" label="My Setting"/>
+  </settings>
+~~~~~~~~~~~~~
+
+This will allow the user to open the settings for your add-on and modify this
+setting as needed. Then, in your add-on, you can retrieve or set this setting
+with the following code:
+
+~~~~~~~~~~~~~{.py}
+  my_addon = xbmcaddon.Addon()
+  my_setting = my_addon.getSetting('my_setting') # returns the string 'true' or 'false'
+  my_addon.setSetting('my_setting', 'false')
+~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+
+\section Python_General_addon_section5 Showing additional metadata
+
+We've already seen how to show some basic metadata, like the icon image and the
+type of the item (`'video'` in our case). However, there are many more pieces of
+metadata that Kodi understands, and adding them can make life easier on your
+users. We'll take a look at some of the more important ones. You can also find
+a full list in the \ref python "Python documentation"
+for \ref python_xbmcgui_listitem "xbmcgui.ListItem".
+
+\subsection Python_General_addon_section5_sub1 Icons, thumbnails and artwork
+
+Our previous examples already showed how to set an icon, but you can also set a
+thumbnail, fanart (full-screen background images) and other artwork. They can be
+set with the `ListItem.setArt` method:
+
+~~~~~~~~~~~~~{.py}
+  li = xbmcgui.ListItem(label='My video')
+  li.setIconImage('icon.png')
+  li.setArt({'thumb': 'thumbnail.jpg', 'poster': 'poster.jpg' 'fanart': 'fanart.jpg'})
+~~~~~~~~~~~~~
+
+@note In Kodi Isengard and earlier the <c>'icon'</c> type is not available for setArt.
+You must use `ListItem.setIconImage(...)`
+
+If you'd prefer to show the default fanart from your add-on, you can get the
+path to that image from the \ref python_xbmcaddon "xbmcaddon.Addon" object:
+
+~~~~~~~~~~~~~{.py}
+  my_addon = xbmcaddon.Addon('plugin.video.myaddon')
+  # ...
+  li.setArt({'fanart': my_addon.getAddonInfo('fanart')})
+~~~~~~~~~~~~~
+
+\subsection Python_General_addon_section5_sub2 Info labels
+
+Kodi also lets you add useful information about each list item, like the cast,
+episode number, play count, and duration. The specific fields available depend
+on whether your list item is video, audio, or a picture. In all cases though,
+the format is roughly the same. For example, to add info labels to a movie,
+you might do the following:
+
+~~~~~~~~~~~~~{.py}
+  info = {
+      'genre': 'Horror',
+      'year': 1979,
+      'title': 'Alien',
+  }
+  li.setInfo('video', info)
+~~~~~~~~~~~~~
+
+For a full list of the available info labels, consult the documentation for
+\ref XBMCAddon::xbmcgui::ListItem::setInfo "ListItem.setInfo".
+
+
+\subsection Python_General_addon_section5_sub3 Stream info
+
+In addition to metadata about the file's contents, you can add information
+about the audio/video streams themselves. For a video, you might do the
+following:
+
+~~~~~~~~~~~~~{.py}
+  video_info = {
+      'codec': 'h264',
+      'aspect': 1.78,
+      'width': 1280,
+      'height': 720,
+  }
+  li.addStreamInfo('video', video_info)
+  li.addStreamInfo('audio', {'codec': 'dts', 'language': 'en', 'channels': 2})
+  li.addStreamInfo('subtitle', {'language': 'en'})
+~~~~~~~~~~~~~
+
+For complete documentation about this function, see
+\ref XBMCAddon::xbmcgui::ListItem::addStreamInfo "ListItem.addStreamInfo".
+
+
+--------------------------------------------------------------------------------
+
+\section Python_General_addon_section6 Adding context menus
+
+In addition to the default action for a list item (e.g. playing the video), your
+add-on can provide additional actions for an item in the context menu. Note that
+this only applies to list items in your add-on. Currently, you're not able to
+modify the context menu for movies in the user's library. To add a context menu
+item, you need to give it a label and a \ref list_of_build_in_functions_section1
+"built-in function" as a string:
+
+~~~~~~~~~~~~~{.py}
+  li.addContextMenuItems([ ('Refresh', 'Container.Refresh'),
+                           ('Go up', 'Action(ParentDir)') ])
+~~~~~~~~~~~~~
+
+You can also elect to show *only* your context menu items:
+~~~~~~~~~~~~~{.py}
+  li.addContextMenuItems([ ('Refresh', 'Container.Refresh') ], replaceItems=True)
+~~~~~~~~~~~~~
+
+*/

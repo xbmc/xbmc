@@ -24,9 +24,8 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string>
-#include "../../../addons/library.xbmc.pvr/libXBMC_pvr.h"
-#include "addons/AddonCallbacks.h"
-#include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libXBMC_pvr.h"
+#include "addons/binary/callbacks/PVR/api-level-1/AddonCallbacksPVR.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -35,6 +34,8 @@
 #define DLLEXPORT
 #endif
 
+using namespace ADDON;
+using namespace PVRLIB::V1;
 using namespace std;
 
 extern "C"
@@ -47,7 +48,7 @@ DLLEXPORT void* PVR_register_me(void *hdl)
     fprintf(stderr, "libXBMC_pvr-ERROR: PVRLib_register_me is called with NULL handle !!!\n");
   else
   {
-    cb = ((AddonCB*)hdl)->PVRLib_RegisterMe(((AddonCB*)hdl)->addonData);
+    cb = (PVRLIB::V1::CB_PVRLib*)((AddonCB*)hdl)->PVRLib_RegisterMe(((AddonCB*)hdl)->addonData);
     if (!cb)
       fprintf(stderr, "libXBMC_pvr-ERROR: PVRLib_register_me can't get callback table from XBMC !!!\n");
   }

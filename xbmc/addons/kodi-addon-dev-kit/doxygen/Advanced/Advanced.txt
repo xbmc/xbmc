@@ -1,0 +1,19 @@
+
+
+
+/*! @page Advanced Advanced
+
+
+
+Development definations and general (Code type independent) parts
+-----------------------------------------------------------------
+- \subpage page_built_in_scripting
+- \subpage page_List_of_built_in_functions
+
+Help instructions
+-----------------------------------------------------------------
+- \subpage kodi_addon_key_action_ids
+- \subpage List_of_sort_methods
+
+
+*/

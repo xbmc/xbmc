@@ -1,0 +1,12 @@
+INCLUDES+=-I@abs_top_srcdir@/addons/library.kodi.addon \
+          -I@abs_top_srcdir@/addons/library.kodi.audioengine \
+          -I@abs_top_srcdir@/addons/library.kodi.guilib \
+          -I@abs_top_srcdir@/addons/library.kodi.pvr \
+
+SRCS=AddonCallbacks.cpp \
+     AddonCallbacksAddonBase.cpp \
+
+LIB=addon-callbacks.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

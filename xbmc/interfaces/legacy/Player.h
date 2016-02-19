@@ -47,11 +47,27 @@ namespace XBMCAddon
     //  queuing and handling of asynchronous callbacks is done internal to
     //  this class.
 
-    /**
-     * Player class.
-     * 
-     * Player() -- Creates a new Player class.
-     */
+    //
+    /// \defgroup python_Player Player
+    /// \ingroup python_xbmc
+    /// @{
+    /// @brief <b>Kodi's player class.</b>
+    ///
+    /// <b><c>xbmc.Player()</c></b>
+    ///
+    /// To become and create the class to play something.
+    ///
+    ///
+    ///
+    ///--------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ...
+    /// xbmc.Player().play(url, listitem, windowed)
+    /// ...
+    /// ~~~~~~~~~~~~~
+    //
     class Player : public AddonCallback, public IPlayerCallback
     {
     private:
@@ -63,305 +79,474 @@ namespace XBMCAddon
       void playCurrent(bool windowed = false);
 
     public:
-#ifndef SWIG
-	  static PlayParameter defaultPlayParameter;
+#if !defined SWIG && !defined DOXYGEN_SHOULD_SKIP_THIS
+      static PlayParameter defaultPlayParameter;
 #endif
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
       // Construct a Player proxying the given generated binding. The 
       //  construction of a Player needs to identify whether or not any 
       //  callbacks will be executed asynchronously or not.
       Player(int playerCore = 0);
       virtual ~Player(void);
+#endif
 
-      /**
-       * play([item, listitem, windowed, startpos]) -- Play this item.\n
-       * \n
-       * item           : [opt] string - filename, url or playlist.\n
-       * listitem       : [opt] listitem - used with setInfo() to set different infolabels.\n
-       * windowed       : [opt] bool - true=play video windowed, false=play users preference.(default)\n
-       * startpos       : [opt] int - starting position when playing a playlist. Default = -1\n
-       * \n
-       * *Note, If item is not given then the Player will try to play the current item\n
-       *        in the current playlist.\n
-       * \n
-       *        You can use the above as keywords for arguments and skip certain optional arguments.\n
-       *        Once you use a keyword, all following arguments require the keyword.\n
-       * \n
-       * example:\n
-       *   - listitem = xbmcgui.ListItem('Ironman')\n
-       *   - listitem.setInfo('video', {'Title': 'Ironman', 'Genre': 'Science Fiction'})\n
-       *   - xbmc.Player().play(url, listitem, windowed)\n
-       *   - xbmc.Player().play(playlist, listitem, windowed, startpos)\n
-       */
-      void play(const PlayParameter& item = Player::defaultPlayParameter, 
-                const XBMCAddon::xbmcgui::ListItem* listitem = NULL, bool windowed = false, int startpos = -1);
+      ///
+      /// \ingroup python_Player
+      /// @brief Play a item.
+      ///
+      /// @param[in] item                [opt] string - filename, url or
+      ///                                playlist.
+      /// @param[in] listitem            [opt] listitem - used with setInfo() to
+      ///                                set different infolabels.
+      /// @param[in] windowed            [opt] bool - true=play video windowed,
+      ///                                false=play users preference.(default)
+      /// @param[in] startpos            [opt] int - starting position when
+      ///                                playing a playlist. Default = -1
+      ///
+      /// @note If item is not given then the Player will try to play the current
+      ///      item in the current playlist.\n
+      ///       \n
+      ///       You can use the above as keywords for arguments and skip certain.
+      ///      optional arguments.\n
+      ///       Once you use a keyword, all following arguments require the keyword.
+      ///
+      ///
+      ///
+      ///--------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// listitem = xbmcgui.ListItem('Ironman')
+      /// listitem.setInfo('video', {'Title': 'Ironman', 'Genre': 'Science Fiction'})
+      /// xbmc.Player().play(url, listitem, windowed)
+      /// xbmc.Player().play(playlist, listitem, windowed, startpos)
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      void play(const PlayParameter& item = Player::defaultPlayParameter,
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+                const XBMCAddon::xbmcgui::
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+                ListItem* listitem = NULL,
+                bool windowed = false,
+                int startpos = -1);
 
-      /**
-       * stop() -- Stop playing.
-       */
+      ///
+      /// \ingroup python_Player
+      /// @brief Stop playing.
+      ///
       void stop();
 
-      /**
-       * pause() -- Pause or resume playing if already paused.
-       */
+      ///
+      /// \ingroup python_Player
+      /// @brief Pause or resume playing if already paused.
+      ///
       void pause();
 
-      /**
-       * playnext() -- Play next item in playlist.
-       */
+      ///
+      /// \ingroup python_Player
+      /// @brief Play next item in playlist.
+      ///
       void playnext();
 
-      /**
-       * playprevious() -- Play previous item in playlist.
-       */
+      ///
+      /// \ingroup python_Player
+      /// @brief Play previous item in playlist.
+      ///
       void playprevious();
 
-      /**
-       * playselected() -- Play a certain item from the current playlist.
-       */
+      ///
+      /// \ingroup python_Player
+      /// @brief Play a certain item from the current playlist.
+      ///
       void playselected(int selected);
 
-      /**
-       * onPlayBackStarted() -- onPlayBackStarted method.
-       * 
-       * Will be called when Kodi starts playing a file
-       */
-      // Player_OnPlayBackStarted
+      //
+      /// @defgroup python_PlayerCB Callback functions from Kodi to Add-On
+      /// \ingroup python_Player
+      /// @{
+      /// @brief __Callback functions.__
+      ///
+      /// Functions to handle control callbacks from Kodi to Add-On.
+      ///
+      /// ------------------------------------------------------------------------
+      ///
+      /// @link python_Player Go back to normal functions from player@endlink
+      //
+
+      ///
+      /// \ingroup python_PlayerCB
+      /// @brief onPlayBackStarted method.
+      ///
+      /// Will be called when Kodi starts playing a file.
+      ///
+      /// @param[in] self                Own base class pointer
+      ///
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
       virtual void onPlayBackStarted();
+#else
+      void onPlayBackStarted(void* self); // Python function style as doxygen part (not used to build!)
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-
-      /**
-       * onPlayBackEnded() -- onPlayBackEnded method.
-       * 
-       * Will be called when Kodi stops playing a file
-       */
-      // Player_OnPlayBackEnded
+      ///
+      /// \ingroup python_PlayerCB
+      /// @brief onPlayBackEnded method.
+      ///
+      /// Will be called when Kodi stops playing a file.
+      ///
+      /// @param[in] self                Own base class pointer
+      ///
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
       virtual void onPlayBackEnded();
+#else
+      void onPlayBackEnded(void* self); // Python function style as doxygen part (not used to build!)
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-      /**
-       * onPlayBackStopped() -- onPlayBackStopped method.
-       * 
-       * Will be called when user stops Kodi playing a file
-       */
-      // Player_OnPlayBackStopped
+      ///
+      /// \ingroup python_PlayerCB
+      /// @brief onPlayBackStopped method.
+      ///
+      /// Will be called when user stops Kodi playing a file.
+      ///
+      /// @param[in] self                Own base class pointer
+      ///
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
       virtual void onPlayBackStopped();
+#else
+      void onPlayBackStopped(void* self); // Python function style as doxygen part (not used to build!)
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-      /**
-       * onPlayBackPaused() -- onPlayBackPaused method.
-       * 
-       * Will be called when user pauses a playing file
-       */
-      // Player_OnPlayBackPaused
+      ///
+      /// \ingroup python_PlayerCB
+      /// @brief onPlayBackPaused method.
+      ///
+      /// Will be called when user pauses a playing file.
+      ///
+      /// @param[in] self                Own base class pointer
+      ///
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
       virtual void onPlayBackPaused();
+#else
+      void onPlayBackPaused(void* self); // Python function style as doxygen part (not used to build!)
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-      /**
-       * onPlayBackResumed() -- onPlayBackResumed method.
-       * 
-       * Will be called when user resumes a paused file
-       */
-      // Player_OnPlayBackResumed
+      ///
+      /// \ingroup python_PlayerCB
+      /// @brief onPlayBackResumed method.
+      ///
+      /// Will be called when user resumes a paused file.
+      ///
+      /// @param[in] self                Own base class pointer
+      ///
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
       virtual void onPlayBackResumed();
+#else
+      void onPlayBackResumed(void* self); // Python function style as doxygen part (not used to build!)
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-      /**
-       * onQueueNextItem() -- onQueueNextItem method.
-       * 
-       * Will be called when user queues the next item
-       */
+      ///
+      /// \ingroup python_PlayerCB
+      /// @brief onQueueNextItem method.
+      ///
+      /// Will be called when user queues the next item.
+      ///
+      /// @param[in] self                Own base class pointer
+      ///
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
       virtual void onQueueNextItem();
+#else
+      void onQueueNextItem(void* self); // Python function style as doxygen part (not used to build!)
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-      /**
-       * onPlayBackSpeedChanged(speed) -- onPlayBackSpeedChanged method.
-       * 
-       * speed          : integer - current speed of player.
-       * 
-       * *Note, negative speed means player is rewinding, 1 is normal playback speed.
-       * 
-       * Will be called when players speed changes. (eg. user FF/RW)
-       */
+      ///
+      /// \ingroup python_PlayerCB
+      /// @brief onPlayBackSpeedChanged method.
+      ///
+      /// Will be called when players speed changes (eg. user FF/RW).
+      ///
+      /// @param[in] self                Own base class pointer
+      /// @param[in] speed               [integer] Current speed of player
+      ///
+      /// @note Negative speed means player is rewinding, 1 is normal playback
+      /// speed.
+      ///
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
       virtual void onPlayBackSpeedChanged(int speed);
+#else
+      void onPlayBackSpeedChanged(void* self, int speed); // Python function style as doxygen part (not used to build!)
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-      /**
-       * onPlayBackSeek(time, seekOffset) -- onPlayBackSeek method.
-       * 
-       * time           : integer - time to seek to.\n
-       * seekOffset     : integer - ?.
-       * 
-       * Will be called when user seeks to a time
-       */
+      ///
+      /// \ingroup python_PlayerCB
+      /// @brief onPlayBackSeek method.
+      ///
+      /// Will be called when user seeks to a time.
+      ///
+      /// @param[in] self                Own base class pointer
+      /// @param[in] time                [integer] Time to seek to
+      /// @param[in] seekOffset          [integer] ?
+      ///
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
       virtual void onPlayBackSeek(int time, int seekOffset);
+#else
+      void onPlayBackSeek(void* self, int time, int seekOffset); // Python function style as doxygen part (not used to build!)
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-      /**
-       * onPlayBackSeekChapter(chapter) -- onPlayBackSeekChapter method.
-       * 
-       * chapter        : integer - chapter to seek to.
-       * 
-       * Will be called when user performs a chapter seek
-       */
+      ///
+      /// \ingroup python_PlayerCB
+      /// @brief onPlayBackSeekChapter method.
+      ///
+      /// Will be called when user performs a chapter seek.
+      ///
+      /// @param[in] self                Own base class pointer
+      /// @param[in] chapter             [integer] Chapter to seek to
+      ///
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
       virtual void onPlayBackSeekChapter(int chapter);
+#else
+      void onPlayBackSeekChapter(void* self, int chapter); // Python function style as doxygen part (not used to build!)
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+      /// @}
 
-      /**
-       * isPlaying() -- returns True is Kodi is playing a file.
-       */
-      // Player_IsPlaying
+      ///
+      /// \ingroup python_Player
+      /// @brief Check Kodi is playing something.
+      ///
+      /// @return                        True if Kodi is playing a file.
+      ///
       bool isPlaying();
 
-      /**
-       * isPlayingAudio() -- returns True is Kodi is playing an audio file.
-       */
-      // Player_IsPlayingAudio
+      ///
+      /// \ingroup python_Player
+      /// @brief Check for playing audio.
+      ///
+      /// @return                        True if Kodi is playing an audio file.
+      ///
       bool isPlayingAudio();
 
-      /**
-       * isPlayingVideo() -- returns True if Kodi is playing a video.
-       */
-      // Player_IsPlayingVideo
+      ///
+      /// \ingroup python_Player
+      /// @brief Check for playing video.
+      ///
+      /// @return                        True if Kodi is playing a video.
+      ///
       bool isPlayingVideo();
 
-      /**
-       * isPlayingRDS() -- returns True if xbmc is playing a radio data system (RDS).
-       */
-      // Player_IsPlayingRDS
+      ///
+      /// \ingroup python_Player
+      /// @brief Check for playing radio data system (RDS).
+      ///
+      /// @return                        True if kodi is playing a radio data
+      ///                                system (RDS).
+      ///
       bool isPlayingRDS();
 
-      /**
-       * getPlayingFile() -- returns the current playing file as a string.\n
-       * Note: For LiveTV, returns a pvr:// url which is not translatable to an OS specific file or external url\n
-       * \n
-       * Throws: Exception, if player is not playing a file.\n
-       */
-      // Player_GetPlayingFile
+      ///
+      /// \ingroup python_Player
+      /// @brief Returns the current playing file as a string.
+      ///
+      /// @note For LiveTV, returns a __pvr://__ url which is not translatable
+      /// to an OS specific file or external url.
+      ///
+      /// @return                        Playing filename
+      /// @throws Exception, if player is not playing a file.
+      ///
       String getPlayingFile();
 
-      /**
-       * getTime() -- Returns the current time of the current playing media as fractional seconds.
-       * 
-       * Throws: Exception, if player is not playing a file.
-       */
-      // Player_GetTime
+      ///
+      /// \ingroup python_Player
+      /// @brief Get playing time.
+      ///
+      /// Returns the current time of the current playing media as fractional seconds.
+      ///
+      /// @return                        Current time as fractional seconds
+      /// @throws Exception              If player is not playing a file.
+      ///
       double getTime();
 
-      /**
-       * seekTime() -- Seeks the specified amount of time as fractional seconds.
-       *               The time specified is relative to the beginning of the
-       *               currently playing media file.
-       * 
-       * Throws: Exception, if player is not playing a file.
-       */
-      // Player_SeekTime
+      ///
+      /// \ingroup python_Player
+      /// @brief Seek time.
+      ///
+      /// Seeks the specified amount of time as fractional seconds.
+      /// The time specified is relative to the beginning of the currently.
+      /// playing media file.
+      ///
+      /// @param[in] seekTime            Time to seek as fractional seconds
+      /// @throws Exception              If player is not playing a file.
+      ///
       void seekTime(double seekTime);
 
-      /**
-       * setSubtitles() -- set subtitle file and enable subtitlesn
-       */
-      // Player_SetSubtitles
+      ///
+      /// \ingroup python_Player
+      /// @brief Set subtitle file and enable subtitles.
+      ///
+      /// @param[in] subtitleFile        File to use as source ofsubtitles
+      ///
       void setSubtitles(const char* subtitleFile);
 
-      // Player_ShowSubtitles
-      /**
-       * showSubtitles(visible) -- enable/disable subtitles
-       * 
-       * visible        : boolean - True for visible subtitles.
-       *
-       * example:
-       * - xbmc.Player().showSubtitles(True)
-       */
+      ///
+      /// \ingroup python_Player
+      /// @brief Enable / disable subtitles.
+      ///
+      /// @param[in] visible             [boolean] True for visible subtitles.
+      ///
+      ///
+      ///--------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// xbmc.Player().showSubtitles(True)
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
       void showSubtitles(bool bVisible);
 
-      /**
-       * getSubtitles() -- get subtitle stream name
-       */
-      // Player_GetSubtitles
+      ///
+      /// \ingroup python_Player
+      /// @brief Get subtitle stream name.
+      ///
+      /// @return                        Stream name
+      ///
       String getSubtitles();
 
-      /**
-       * DisableSubtitles() -- disable subtitles
-       */
-      // Player_DisableSubtitles
+      ///
+      /// \ingroup python_Player
+      /// @brief Disable subtitles.
+      ///
       void disableSubtitles();
 
-      // Player_getAvailableSubtitleStreams
-      /**
-       * getAvailableSubtitleStreams() -- get Subtitle stream names
-       */
+      ///
+      /// \ingroup python_Player
+      /// @brief Get Subtitle stream names.
+      ///
+      /// @return                        List of subtitle streams as name
+      ///
       std::vector<String> getAvailableSubtitleStreams();
 
-      // Player_setSubtitleStream
-      /**
-       * setSubtitleStream(stream) -- set Subtitle Stream 
-       * 
-       * stream           : int
-       * 
-       * example:
-       *   - setSubtitleStream(1)
-       */
+      ///
+      /// \ingroup python_Player
+      /// @brief Set Subtitle Stream.
+      ///
+      /// @param[in] iStream             [int] Subtitle stream to select for play
+      ///
+      ///
+      ///--------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// xbmc.Player().setSubtitleStream(1)
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
       void setSubtitleStream(int iStream);
 
-      /**
-       * getVideoInfoTag() -- returns the VideoInfoTag of the current playing Movie.
-       * 
-       * Throws: Exception, if player is not playing a file or current file is not a movie file.
-       */
+      ///
+      /// \ingroup python_Player
+      /// @brief To get video info tag.
+      ///
+      /// Returns the VideoInfoTag of the current playing Movie.
+      ///
+      /// @return                        Video info tag
+      /// @throws Exception              If player is not playing a file or
+      ///                                current file is not a movie file.
+      ///
       InfoTagVideo* getVideoInfoTag();
 
-      /**
-       * getMusicInfoTag() -- returns the MusicInfoTag of the current playing 'Song'.
-       * 
-       * Throws: Exception, if player is not playing a file or current file is not a music file.
-       */
-      // Player_GetMusicInfoTag
+      ///
+      /// \ingroup python_Player
+      /// @brief To get music info tag.
+      ///
+      /// Returns the MusicInfoTag of the current playing 'Song'.
+      ///
+      /// @return                        Music info tag
+      /// @throws Exception              If player is not playing a file or
+      ///                                current file is not a music file.
+      ///
       InfoTagMusic* getMusicInfoTag();
 
-      /**
-       * getRadioRDSInfoTag() -- returns the RadioRDSInfoTag of the current playing 'Radio Song if present'.
-       *
-       * Throws: Exception, if player is not playing a file or current file is not a rds file.
-       */
-      // Player_GetRadioRDSInfoTag
+      ///
+      /// \ingroup python_Player
+      /// @brief To get Radio RDS info tag
+      ///
+      /// Returns the RadioRDSInfoTag of the current playing 'Radio Song if.
+      /// present'.
+      ///
+      /// @return                        Radio RDS info tag
+      /// @throws Exception              If player is not playing a file or
+      ///                                current file is not a rds file.
+      ///
       InfoTagRadioRDS* getRadioRDSInfoTag() throw (PlayerException);
 
-      /**
-       * getTotalTime() -- Returns the total time of the current playing media in
-       *                   seconds.  This is only accurate to the full second.
-       *
-       * Throws: Exception, if player is not playing a file.
-       */
+      ///
+      /// \ingroup python_Player
+      /// @brief To get total playing time.
+      ///
+      /// Returns the total time of the current playing media in seconds.
+      /// This is only accurate to the full second.
+      ///
+      /// @return                        Total time of the current playing media
+      /// @throws Exception              If player is not playing a file.
+      ///
       double getTotalTime();
 
-      // Player_getAvailableAudioStreams
-      /**
-       * getAvailableAudioStreams() -- get Audio stream names
-       */
+      ///
+      /// \ingroup python_Player
+      /// @brief Get Audio stream names
+      ///
+      /// @return                        List of audio streams as name
+      ///
       std::vector<String> getAvailableAudioStreams();
 
-      /**
-       * setAudioStream(stream) -- set Audio Stream.
-       * 
-       * stream           : int
-       * 
-       * example:
-       * 
-       *    - setAudioStream(1)
-       */
+      ///
+      /// \ingroup python_Player
+      /// @brief Set Audio Stream.
+      ///
+      /// @param[in] iStream             [int] Audio stream to select for play
+      ///
+      ///
+      ///--------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// xbmc.Player().setAudioStream(1)
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
       void setAudioStream(int iStream);
 
-      // Player_getAvailableVideoStreams
-      /**
-      * getAvailableVideoStreams() -- get Video stream names
-      */
+      ///
+      /// \ingroup python_Player
+      /// @brief Get Video stream names
+      ///
+      /// @return                        List of video streams as name
+      ///
       std::vector<String> getAvailableVideoStreams();
 
-      /**
-      * setVideoStream(stream) -- set Video Stream.
-      *
-      * stream           : int
-      *
-      * example:
-      *
-      *    - setVideoStream(1)
-      */
+      ///
+      /// \ingroup python_Player
+      /// @brief Set Video Stream.
+      ///
+      /// @param[in] iStream             [int] Video stream to select for play
+      ///
+      ///
+      ///--------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// xbmc.Player().setVideoStream(1)
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
       void setVideoStream(int iStream);
 
-#ifndef SWIG
+#if !defined SWIG && !defined DOXYGEN_SHOULD_SKIP_THIS
       SWIGHIDDENVIRTUAL void OnPlayBackStarted();
       SWIGHIDDENVIRTUAL void OnPlayBackEnded();
       SWIGHIDDENVIRTUAL void OnPlayBackStopped();

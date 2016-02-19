@@ -27,9 +27,29 @@ namespace XBMCAddon
 {
   namespace xbmc
   {
-    /**
-     * InfoTagMusic class.\n
-     */
+    //
+    /// \defgroup python_InfoTagMusic InfoTagMusic
+    /// \ingroup python_xbmc
+    /// @{
+    /// @brief <b>Kodi's music info tag class.</b>
+    ///
+    /// To get music info tag data of currently played source.
+    ///
+    /// @note Info tag load is only be possible from present player class.
+    ///
+    ///
+    ///--------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ...
+    /// tag = xbmc.Player().getMusicInfoTag()
+    ///
+    /// title = tag.getTitle()
+    /// url   = tag.getURL()
+    /// ...
+    /// ~~~~~~~~~~~~~
+    //
     class InfoTagMusic : public AddonClass
     {
     private:
@@ -42,67 +62,187 @@ namespace XBMCAddon
       InfoTagMusic();
       virtual ~InfoTagMusic();
 
-      /**
-       * getURL() -- returns a string.\n
-       */
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief Returns url of source as string from music info tag.
+      ///
+      /// @return [string] Url of source
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      ///
       String getURL();
-      /**
-       * getTitle() -- returns a string.\n
-       */
+
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief Returns the title from music as string on info tag.
+      ///
+      /// @return [string] Music title
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      ///
       String getTitle();
-      /**
-       * getArtist() -- returns a string.\n
-       */
+
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief Returns the artist from music as string if present.
+      ///
+      /// @return [string] Music artist
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      ///
       String getArtist();
-      /**
-       * getAlbum() -- returns a string.\n
-       */
+
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief Returns the album from music tag as string if present.
+      ///
+      /// @return [string] Music album name
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      ///
       String getAlbum();
-      /**
-       * getAlbumArtist() -- returns a string.\n
-       */
+
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief Returns the album artist from music tag as string if present.
+      ///
+      /// @return [string] Music album artist name
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      ///
       String getAlbumArtist();
-      /**
-       * getGenre() -- returns a string.\n
-       */
+
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief Returns the genre name from music tag as string if present.
+      ///
+      /// @return [string] Genre name
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      ///
       String getGenre();
-      /**
-       * getDuration() -- returns an integer.\n
-       */
+
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief Returns the duration of music as integer from info tag.
+      ///
+      /// @return [integer] Duration
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      ///
       int getDuration();
-      /**
-       * getTrack() -- returns an integer.\n
-       */
+
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief Returns the track number (if present) from music info tag as integer.
+      ///
+      /// @return [integer] Track number
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      ///
       int getTrack();
-      /**
-       * getDisc() -- returns an integer.\n
-       */
+
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief Returns the disk number (if present) from music info tag as
+      /// integer.
+      ///
+      /// @return [integer] Disc number
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      ///
       int getDisc();
-      /**
-       * getReleaseDate() -- returns a string.\n
-       */
+
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief Returns the release date as string from music info tag (if present).
+      ///
+      /// @return [string] Release date
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      ///
       String getReleaseDate();
-      /**
-       * getListeners() -- returns an integer.\n
-       */
+
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief Returns the listeners as integer from music info tag.
+      ///
+      /// @return [integer] Listeners
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      ///
       int getListeners();
-      /**
-       * getPlayCount() -- returns an integer.\n
-       */
+
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief Returns the number of carried out playbacks.
+      ///
+      /// @return [integer] Playback count
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      ///
       int getPlayCount();
-      /**
-       * getLastPlayed() -- returns a string.\n
-       */
+
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief Returns last played time as string from music info tag.
+      ///
+      /// @return [string] Last played date / time on tag
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      ///
       String getLastPlayed();
-      /**
-       * getComment() -- returns a string.\n
-       */
+
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief Returns comment as string from music info tag.
+      ///
+      /// @return [string] Comment on tag
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      ///
       String getComment();
-      /**
-       * getLyrics() -- returns a string.\n
-       */
+
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief Returns a string from lyrics.
+      ///
+      /// @return [string] Lyrics on tag
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      ///
       String getLyrics();
     };
+    //@}
   }
 }
-  

@@ -1,0 +1,32 @@
+INCLUDES+=-I@abs_top_srcdir@/addons/library.kodi.guilib \
+          -I@abs_top_srcdir@/addons/library.kodi.addon
+
+SRCS=AddonGUIControlButton.cpp \
+     AddonGUIControlEdit.cpp \
+     AddonGUIControlFadeLabel.cpp \
+     AddonGUIControlImage.cpp \
+     AddonGUIControlLabel.cpp \
+     AddonGUIControlProgress.cpp \
+     AddonGUIControlRadioButton.cpp \
+     AddonGUIControlRendering.cpp \
+     AddonGUIControlSettingsSlider.cpp \
+     AddonGUIControlSlider.cpp \
+     AddonGUIControlSpin.cpp \
+     AddonGUIControlTextBox.cpp \
+     AddonGUIDialogExtendedProgressBar.cpp \
+     AddonGUIDialogFileBrowser.cpp \
+     AddonGUIDialogKeyboard.cpp \
+     AddonGUIDialogNumeric.cpp \
+     AddonGUIDialogOK.cpp \
+     AddonGUIDialogProgress.cpp \
+     AddonGUIDialogSelect.cpp \
+     AddonGUIDialogTextViewer.cpp \
+     AddonGUIDialogYesNo.cpp \
+     AddonGUIGeneral.cpp \
+     AddonGUIListItem.cpp \
+     AddonGUIWindow.cpp \
+
+LIB=addon-callbacks-gui.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

@@ -18,7 +18,7 @@
  *
  */
 
-#include "addons/include/xbmc_pvr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
@@ -35,6 +35,9 @@
 
 using namespace EPG;
 using namespace PVR;
+using namespace V2::KodiAPI; // namespace here used direct to prevent translation
+                             // on highest one, place here need to change on api
+                             // level changes.
 
 CEpgInfoTagPtr CEpgInfoTag::CreateDefaultTag()
 {
@@ -54,7 +57,7 @@ CEpgInfoTag::CEpgInfoTag(void) :
     m_iUniqueBroadcastID(0),
     m_iYear(0),
     m_epg(NULL),
-    m_iFlags(EPG_TAG_FLAG_UNDEFINED)
+    m_iFlags(V2::KodiAPI::EPG_TAG_FLAG_UNDEFINED) // Namespace entry here can be removed after remove of level 1
 {
 }
 
@@ -72,13 +75,13 @@ CEpgInfoTag::CEpgInfoTag(CEpg *epg, PVR::CPVRChannelPtr pvrChannel, const std::s
     m_iYear(0),
     m_strIconPath(strIconPath),
     m_epg(epg),
-    m_iFlags(EPG_TAG_FLAG_UNDEFINED),
+    m_iFlags(V2::KodiAPI::EPG_TAG_FLAG_UNDEFINED), // Namespace entry here can be removed after remove of level 1
     m_pvrChannel(pvrChannel)
 {
   UpdatePath();
 }
 
-CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
+CEpgInfoTag::CEpgInfoTag(const V2::KodiAPI::EPG_TAG &data) :
     m_bNotify(false),
     m_iBroadcastId(-1),
     m_iGenreType(0),

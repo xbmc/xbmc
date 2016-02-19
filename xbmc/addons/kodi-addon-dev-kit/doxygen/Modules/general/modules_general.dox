@@ -1,0 +1,15 @@
+/// \defgroup kodi_addon_key_action_ids Addon action Id's
+/// \ingroup general_parts CAddonGUIWindow_callbacks
+
+/// \defgroup kodi_pictures_infotag Picture info labels
+/// \ingroup general_parts python_xbmcgui_listitem CAddonGUIListItem
+
+/*!
+
+\defgroup general_parts General Development parts
+\brief \htmlonly
+      <h3><span  style="text-decoration: underline;"><span  style="font-style: italic;"><span
+               style="color: rgb(102, 102, 102);">General Add-On Development parts</span></span></span></h3>
+       \endhtmlonly
+
+*/

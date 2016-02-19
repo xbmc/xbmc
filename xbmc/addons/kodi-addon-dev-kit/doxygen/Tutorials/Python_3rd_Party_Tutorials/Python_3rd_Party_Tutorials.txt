@@ -1,0 +1,28 @@
+/*! @page Python_3rd_Party_Tutorials Python - 3rd Party Tutorials
+
+\tableofcontents
+
+Below you will find some 3rd party links to Kodi Add-on tutorials
+
+---------------------------------------------------------------------------------
+
+\section Python_3rd_party_section1 3rd Party Add-on Tutorial Links
+
+- http://xbmc-plugin-dev.blogspot.co.uk/2013/06/our-first-plugin.html
+- http://www.element14.com/community/community/raspberry-pi/blog/2013/06/26/creating-an-xmbc-plugin-hello-world
+- http://t0mm0.github.io/xbmc-urlresolver/tutorials/resolverplugin/index.html
+- https://github.com/romanvm/plugin.video.example
+
+
+---------------------------------------------------------------------------------
+
+\section Python_3rd_party_section2 Magazine Add-on Developer Guides
+
+- Linux User & Developer - Issue 131, 2013
+  - http://www.greatdigitalmags.com/view/linuxuser&developer/2589/linux-user-and-developer-issue-131
+
+|                                        |
+|----------------------------------------|
+| \image html LinuxMag.jpg               |
+
+*/

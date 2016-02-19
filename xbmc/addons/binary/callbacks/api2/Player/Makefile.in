@@ -1,0 +1,11 @@
+CXXFLAGS+=-fPIC
+
+SRCS=PlayerCB_AddonPlayList.cpp \
+     PlayerCB_AddonPlayer.cpp \
+     PlayerCB_InfoTagMusic.cpp \
+     PlayerCB_InfoTagVideo.cpp \
+
+LIB=addon-callbacks-player.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

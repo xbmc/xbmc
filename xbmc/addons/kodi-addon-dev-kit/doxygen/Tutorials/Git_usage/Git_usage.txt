@@ -1,0 +1,146 @@
+/*!
+\page Git_usage Git usage
+
+\tableofcontents
+
+\section Git_usage_sect1 Git windows guide
+
+The guide for Windows users is located here: Git Usage Windows
+
+\section Git_usage_sect2 Clone the Kodi main repository
+
+Kodi now uses git as its Software Configuration Management (SCM) framework. The
+main repository is located at github.
+
+For read only access
+~~~~~~~~~~~~~{.sh}
+  $ git clone git://github.com/xbmc/xbmc.git
+~~~~~~~~~~~~~
+
+If you are a developer, clone the repository.
+~~~~~~~~~~~~~{.sh}
+  $ git clone git@github.com:xbmc/xbmc.git
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+\section Git_usage_sect3 Fetch old branches and extra history
+
+The following is ONLY useful for developers who wish to see extended Kodi
+history. Everyone else should stop here. Run this command from your tree. It
+requires git 1.6.5 or higher:
+
+~~~~~~~~~~~~~{.sh}
+  $ git fetch origin refs/old/heads/*:refs/remotes/svn-migration/* refs/replace/*:refs/replace/*
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+\section Git_usage_sect4 Platform Settings
+
+\subsection Git_usage_sect4_1 Case Insensitive File Systems
+
+Git wants to run under a case sensitive file system but under OSX and Windows,
+the file system might be case insensitive. Make sure that core.ignorecase
+is properly set. Check with:
+
+~~~~~~~~~~~~~{.sh}
+  $ git config --list
+~~~~~~~~~~~~~
+
+if not set:
+~~~~~~~~~~~~~{.sh}
+  $ git config --global core.ignorecase true
+~~~~~~~~~~~~~
+
+\subsection Git_usage_sect4_2 Line Endings
+
+Windows users MUST use the git autocrlf feature. This is set by default by
+tortoise. If it's not set, you can do so manually:
+
+~~~~~~~~~~~~~{.sh}
+  $ git config --system core.autocrlf true
+~~~~~~~~~~~~~
+
+Linux and OSX users should set autocrlf to 'input'
+~~~~~~~~~~~~~{.sh}
+  $ git config --global core.autocrlf input
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+\section Git_usage_sect5 Updating
+
+When updating from the main git repository (by default git will call this
+'origin'), you should always rebase on top of your history, unless you know what
+ you're doing.
+
+Always use
+~~~~~~~~~~~~~{.sh}
+  $ git pull --rebase
+~~~~~~~~~~~~~
+
+A safe bet is to set this to be done automatically.
+
+~~~~~~~~~~~~~{.sh}
+  $ git config branch.master.rebase true
+~~~~~~~~~~~~~
+
+\section Git_usage_sect6 Pushing
+
+Please use
+~~~~~~~~~~~~~{.sh}
+  $ git log
+~~~~~~~~~~~~~
+
+to look at the log before pushing. If there are merge commits that you don't
+understand, please ask for help before pushing.
+Never EVER force a push (non-fast-forward commit) to mainline. Ever. Doing so
+will result in your push privileges being revoked.
+
+--------------------------------------------------------------------------------
+\section Git_usage_sect7 Merging
+
+Always use the --log option to add a description of what commits are being
+merged. You can (and should) set this as a default:
+
+~~~~~~~~~~~~~{.sh}
+  $ git config merge.log true
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+\section Git_usage_sect8 Advanced
+
+\subsection Git_usage_sect8_1 Maintaining a rebased version of a merge branch
+
+A long-lived feature branch involving a bunch of developers at some point needs
+merging to mainline. During the review stage, this typically involves someone
+taking the time to rebase the feature branch on mainline so that the changes are
+easier to review for others, with a pull request being made. Review will
+inevitably result in fix commits being required, and where many developers are
+involved this can be messy if constantly rebased (as devs are working against a
+moving target). An alternative is to have 2 branches: The first rebased branch
+changes to the development branch with fixup commits being applied. A second
+branch is then created which is identical to the first, just rebased down. In
+order to maintain this arrangement, you need to be able to apply the top N
+commits from the development branch onto the rebased branch to ensure it's
+kept up to date. This can be done as follows:
+
+~~~~~~~~~~~~~{.sh}
+  $ git checkout feature_branch
+  $ git checkout -b feature_rebase
+  $ # ... do rebase ...
+  $ git diff feature_branch                                     # ensure your rebase hasn't dropped something.
+  $ git checkout feature_branch
+  $ git tag -f feature_last_rebase                              # so you know when you last rebased.
+  $ # ... more commits on top of feature_branch ...
+  $ git checkout feature_rebase
+  $ git checkout -b tmp                                         # create a temporary branch
+  $ git branch -f feature_rebase feature_branch                 # move feature_rebase to the HEAD of feature_branch
+  $ git rebase --onto tmp feature_last_rebase feature_rebase    # rebase changes from the last rebase on top of feature_branch
+  $ git diff feature_branch                                     # ensure your rebased branch contains all the commits you want
+  $ git branch -d tmp
+  $ # ... do rebase ...
+~~~~~~~~~~~~~
+
+You then just rinse/repeat until all issues are ironed out. feature_rebase is
+then what is pulled into master nice and cleanly.
+
+*/
