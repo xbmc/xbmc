@@ -42,6 +42,8 @@ public:
   virtual bool IsEOF();
   virtual int64_t GetLength();
 
+  CDVDInputStream::IPosTime* GetIPosTime() override { return this; }
+
   CCriticalSection m_RTMPSection;
 
 protected:

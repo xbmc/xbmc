@@ -69,6 +69,7 @@ public:
   bool PrevChannel(bool preview = false);
   PVR::CPVRChannelPtr GetSelectedChannel();
 
+  CDVDInputStream::IDisplayTime* GetIDisplayTime() override { return this; }
   int GetTotalTime() override;
   int GetTime() override;
 

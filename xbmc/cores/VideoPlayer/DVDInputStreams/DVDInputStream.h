@@ -173,6 +173,8 @@ public:
 
   // interfaces
   virtual IDemux* GetIDemux() { return nullptr; }
+  virtual IPosTime* GetIPosTime() { return nullptr; }
+  virtual IDisplayTime* GetIDisplayTime() { return nullptr; }
 
 protected:
   DVDStreamType m_streamType;

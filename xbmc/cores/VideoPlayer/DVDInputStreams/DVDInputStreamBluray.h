@@ -101,8 +101,11 @@ public:
   int64_t GetChapterPos(int ch);
   bool SeekChapter(int ch);
 
+  CDVDInputStream::IDisplayTime* GetIDisplayTime() override { return this; }
   int GetTotalTime();
   int GetTime();
+
+  CDVDInputStream::IPosTime* GetIPosTime() override { return this; }
   bool PosTime(int ms);
 
   void GetStreamInfo(int pid, char* language);

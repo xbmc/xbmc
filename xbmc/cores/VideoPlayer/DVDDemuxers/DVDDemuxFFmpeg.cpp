@@ -922,7 +922,7 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
   m_pkt.result = -1;
   av_free_packet(&m_pkt.pkt);
 
-  CDVDInputStream::IPosTime* ist = dynamic_cast<CDVDInputStream::IPosTime*>(m_pInput);
+  CDVDInputStream::IPosTime* ist = m_pInput->GetIPosTime();
   if (ist)
   {
     if (!ist->PosTime(time))
