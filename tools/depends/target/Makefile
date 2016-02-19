@@ -89,7 +89,7 @@ libcdio: $(ICONV)
 libplist: libxml2 $(ZLIB)
 libbluray: $(ICONV) libxml2
 libssh: libgcrypt openssl $(ZLIB)
-mysql: openssl
+mysql: openssl $(ZLIB)
 libzip: $(ZLIB)
 libpng: $(ZLIB)
 openssl: $(ZLIB)
