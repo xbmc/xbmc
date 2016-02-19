@@ -43,7 +43,7 @@ class CDVDInputStreamBluray
   : public CDVDInputStream
   , public CDVDInputStream::IDisplayTime
   , public CDVDInputStream::IChapter
-  , public CDVDInputStream::ISeekTime
+  , public CDVDInputStream::IPosTime
   , public CDVDInputStream::IMenus
 {
 public:
@@ -103,7 +103,7 @@ public:
 
   int GetTotalTime();
   int GetTime();
-  bool SeekTime(int ms);
+  bool PosTime(int ms);
 
   void GetStreamInfo(int pid, char* language);
 

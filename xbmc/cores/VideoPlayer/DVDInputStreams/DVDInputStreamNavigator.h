@@ -104,7 +104,7 @@ class CDVDInputStreamNavigator
   : public CDVDInputStream
   , public CDVDInputStream::IDisplayTime
   , public CDVDInputStream::IChapter
-  , public CDVDInputStream::ISeekTime
+  , public CDVDInputStream::IPosTime
   , public CDVDInputStream::IMenus
 {
 public:
@@ -173,7 +173,7 @@ public:
 
   float GetVideoAspectRatio();
 
-  bool SeekTime(int iTimeInMsec); //seek within current pg(c)
+  bool PosTime(int iTimeInMsec); //seek within current pg(c)
 
   std::string GetDVDTitleString();
   std::string GetDVDSerialString();

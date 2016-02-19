@@ -68,11 +68,11 @@ public:
     virtual int GetTime() = 0;
   };
 
-  class ISeekTime
+  class IPosTime
   {
     public:
-    virtual ~ISeekTime() {};
-    virtual bool SeekTime(int ms) = 0;
+    virtual ~IPosTime() {};
+    virtual bool PosTime(int ms) = 0;
   };
 
   class IChapter

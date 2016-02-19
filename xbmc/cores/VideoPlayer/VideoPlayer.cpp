@@ -2430,7 +2430,7 @@ void CVideoPlayer::HandleMessages()
         // increasing steadily. For seeking we need to determine the boundaries and offset
         // of the desired segment. With the current approach calculated time may point
         // to nirvana
-        if(dynamic_cast<CDVDInputStream::ISeekTime*>(m_pInputStream) == NULL)
+        if(dynamic_cast<CDVDInputStream::IPosTime*>(m_pInputStream) == NULL)
           time += DVD_TIME_TO_MSEC(m_offset_pts - m_State.time_offset);
 
         CLog::Log(LOGDEBUG, "demuxer seek to: %d", time);
