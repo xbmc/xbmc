@@ -209,11 +209,6 @@ void CVideoPlayerAudio::CloseStream(bool bWaitForBuffers)
 
 void CVideoPlayerAudio::OnStartup()
 {
-  m_decode.Release();
-
-#ifdef TARGET_WINDOWS
-  CoInitializeEx(NULL, COINIT_MULTITHREADED);
-#endif
 }
 
 void CVideoPlayerAudio::UpdatePlayerInfo()
@@ -317,7 +312,6 @@ void CVideoPlayerAudio::Process()
     {
       if (m_pAudioCodec)
         m_pAudioCodec->Reset();
-      m_decode.Release();
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
     {
@@ -334,8 +328,6 @@ void CVideoPlayerAudio::Process()
 
       if (m_pAudioCodec)
         m_pAudioCodec->Reset();
-
-      m_decode.Release();
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_EOF))
     {
