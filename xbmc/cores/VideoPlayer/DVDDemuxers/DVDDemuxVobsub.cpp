@@ -246,3 +246,15 @@ bool CDVDDemuxVobsub::ParseTimestamp(SState& state, char* line)
   m_Timestamps.push_back(timestamp);
   return true;
 }
+
+void CDVDDemuxVobsub::EnableStream(int id, bool enable)
+{
+  for (auto &stream : m_Streams)
+  {
+    if (stream->iId == id)
+    {
+      stream->m_discard = !enable;
+      break;
+    }
+  }
+}

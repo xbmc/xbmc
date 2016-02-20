@@ -1601,7 +1601,8 @@ void CVideoPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
     ProcessRadioRDSData(pStream, pPacket);
   else
   {
-    pStream->SetDiscard(AVDISCARD_ALL);
+    if (m_pDemuxer)
+      m_pDemuxer->EnableStream(pStream->iId, false);
     CDVDDemuxUtils::FreeDemuxPacket(pPacket); // free it since we won't do anything with it
   }
 }
@@ -3442,7 +3443,7 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int iStream, int source, 
     stream = m_pSubtitleDemuxer->GetStream(iStream);
     if(!stream || stream->disabled)
       return false;
-    stream->SetDiscard(AVDISCARD_NONE);
+    m_pSubtitleDemuxer->EnableStream(iStream, true);
 
     hint.Assign(*stream, true);
   }
@@ -3465,7 +3466,7 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int iStream, int source, 
     stream = m_pDemuxer->GetStream(iStream);
     if(!stream || stream->disabled)
       return false;
-    stream->SetDiscard(AVDISCARD_NONE);
+    m_pDemuxer->EnableStream(iStream, true);
 
     hint.Assign(*stream, true);
 
@@ -3526,7 +3527,6 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int iStream, int source, 
       /* mark stream as disabled, to disallaw further attempts*/
       CLog::Log(LOGWARNING, "%s - Unsupported stream %d. Stream disabled.", __FUNCTION__, stream->iId);
       stream->disabled = true;
-      stream->SetDiscard(AVDISCARD_ALL);
     }
   }
 

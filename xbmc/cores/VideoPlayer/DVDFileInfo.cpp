@@ -196,7 +196,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
       if(pStream->type == STREAM_VIDEO && !(pStream->flags & AV_DISPOSITION_ATTACHED_PIC))
         nVideoStream = i;
       else
-        pStream->SetDiscard(AVDISCARD_ALL);
+        pDemuxer->EnableStream(pStream->iId, false);
     }
   }
 
