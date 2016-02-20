@@ -1245,6 +1245,11 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         outputFormat.m_channelLayout.ResolveChannels(m_sinkFormat.m_channelLayout);
       }
 
+      // internally we use ffmpeg layouts, means that layout won't change in resample
+      // stage. preserve correct layout for sink stage where remapping is done
+      uint64_t avlayout = CAEUtil::GetAVChannelLayout(outputFormat.m_channelLayout);
+      outputFormat.m_channelLayout = CAEUtil::GetAEChannelLayout(avlayout);
+
       // TODO: adjust to decoder
       sinkInputFormat = outputFormat;
     }
