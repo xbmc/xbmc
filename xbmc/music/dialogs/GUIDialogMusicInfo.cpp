@@ -20,7 +20,6 @@
 
 #include "GUIDialogMusicInfo.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/GUIImage.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "GUIPassword.h"
@@ -31,7 +30,6 @@
 #include "FileItem.h"
 #include "profiles/ProfilesManager.h"
 #include "storage/MediaManager.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
@@ -52,13 +50,16 @@ using namespace XFILE;
 
 CGUIDialogMusicInfo::CGUIDialogMusicInfo(void)
     : CGUIDialog(WINDOW_DIALOG_MUSIC_INFO, "DialogMusicInfo.xml")
-    , m_albumItem(new CFileItem)
+      , m_albumItem(new CFileItem)
 {
   m_bRefresh = false;
   m_albumSongs = new CFileItemList;
   m_loadType = KEEP_IN_MEMORY;
   m_startUserrating = -1;
   m_needsUpdate = false;
+  m_bViewReview = false;
+  m_hasUpdatedThumb = false; 
+  m_bArtistInfo = false;
 }
 
 CGUIDialogMusicInfo::~CGUIDialogMusicInfo(void)
@@ -83,8 +84,8 @@ bool CGUIDialogMusicInfo::OnMessage(CGUIMessage& message)
         }
       }
 
-      CGUIMessage message(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
-      OnMessage(message);
+      CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
+      OnMessage(msg);
       m_albumSongs->Clear();
     }
     break;
@@ -125,7 +126,7 @@ bool CGUIDialogMusicInfo::OnMessage(CGUIMessage& message)
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
           g_windowManager.SendMessage(msg);
           int iItem = msg.GetParam1();
-          if (iItem < 0 || iItem >= (int)m_albumSongs->Size())
+          if (iItem < 0 || iItem >= static_cast<int>(m_albumSongs->Size()))
             break;
           CFileItemPtr item = m_albumSongs->Get(iItem);
           OnSearch(item.get());
@@ -226,7 +227,7 @@ void CGUIDialogMusicInfo::SetArtist(const CArtist& artist, const std::string &pa
   m_albumSongs->SetContent("artists");
 }
 
-void CGUIDialogMusicInfo::SetSongs(const VECSONGS &songs)
+void CGUIDialogMusicInfo::SetSongs(const VECSONGS &songs) const
 {
   m_albumSongs->Clear();
   for (unsigned int i = 0; i < songs.size(); i++)
@@ -329,7 +330,7 @@ void CGUIDialogMusicInfo::OnInitWindow()
   CGUIDialog::OnInitWindow();
 }
 
-void CGUIDialogMusicInfo::SetUserrating(int userrating)
+void CGUIDialogMusicInfo::SetUserrating(int userrating) const
 {
   if (userrating < 0) userrating = 0;
   if (userrating > 10) userrating = 10;
@@ -598,11 +599,14 @@ void CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(VECSOURCES &sources, c
   }
 }
 
-void CGUIDialogMusicInfo::OnSetUserrating()
+void CGUIDialogMusicInfo::OnSetUserrating() const
 {
-  CGUIDialogSelect *dialog = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect *dialog = static_cast<CGUIDialogSelect *>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
   if (dialog)
   {
+    // If we refresh and then try to set the rating there will be an items already here...
+    dialog->Reset();
+
     dialog->SetHeading(CVariant{ 38023 });
     dialog->Add(g_localizeStrings.Get(38022));
     for (int i = 1; i <= 10; i++)

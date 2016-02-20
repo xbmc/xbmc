@@ -35,29 +35,29 @@ class CGUIDialogMusicInfo :
 public:
   CGUIDialogMusicInfo(void);
   virtual ~CGUIDialogMusicInfo(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
+  bool OnMessage(CGUIMessage& message) override;
+  bool OnAction(const CAction &action) override;
   void SetAlbum(const CAlbum& album, const std::string &path);
   void SetArtist(const CArtist& artist, const std::string &path);
   bool NeedRefresh() const { return m_bRefresh; };
   bool NeedsUpdate() const { return m_needsUpdate; };
   bool HasUpdatedThumb() const { return m_hasUpdatedThumb; };
 
-  virtual bool HasListItems() const { return true; };
-  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
+  bool HasListItems() const override { return true; };
+  CFileItemPtr GetCurrentListItem(int offset = 0) override;
   const CFileItemList& CurrentDirectory() const { return *m_albumSongs; };
   static void AddItemPathToFileBrowserSources(VECSOURCES &sources, const CFileItem &item);
 protected:
-  virtual void OnInitWindow();
+  void OnInitWindow() override;
   void Update();
   void SetLabel(int iControl, const std::string& strLabel);
   void OnGetThumb();
   void OnGetFanart();
-  void SetSongs(const VECSONGS &songs);
-  void SetDiscography();
+  void SetSongs(const VECSONGS &songs) const;
+  void SetDiscography() const;
   void OnSearch(const CFileItem* pItem);
-  void OnSetUserrating();
-  void SetUserrating(int userrating);
+  void OnSetUserrating() const;
+  void SetUserrating(int userrating) const;
 
   CAlbum m_album;
   CArtist m_artist;
