@@ -907,7 +907,7 @@ void CRenderManager::SetViewMode(int iViewMode)
   m_playerPort->VideoParamsChange();
 }
 
-void CRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, double pts /* = 0 */, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
+void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double timestamp /* = 0LL*/, double pts /* = 0 */, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
 {
   { CSingleLock lock(m_statelock);
 
@@ -1310,7 +1310,7 @@ EINTERLACEMETHOD CRenderManager::AutoInterlaceMethodInternal(EINTERLACEMETHOD mI
   return mInt;
 }
 
-int CRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
+int CRenderManager::WaitForBuffer(volatile std::atomic_bool&bStop, int timeout)
 {
   CSingleLock lock(m_presentlock);
 

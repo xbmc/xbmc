@@ -101,6 +101,7 @@ CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock
 
 CVideoPlayerVideo::~CVideoPlayerVideo()
 {
+  m_bAbortOutput = true;
   StopThread();
   g_VideoReferenceClock.Stop();
 }
@@ -207,7 +208,8 @@ void CVideoPlayerVideo::CloseStream(bool bWaitForBuffers)
   // wait for decode_video thread to end
   CLog::Log(LOGNOTICE, "waiting for video thread to exit");
 
-  StopThread(); // will set this->m_bStop to true
+  m_bAbortOutput = true;
+  StopThread();
 
   m_messageQueue.End();
 
@@ -695,6 +697,7 @@ void CVideoPlayerVideo::Flush(bool sync)
   /* be disposed of before we flush */
   m_messageQueue.Flush();
   m_messageQueue.Put(new CDVDMsgBool(CDVDMsg::GENERAL_FLUSH, sync), 1);
+  m_bAbortOutput = true;
 }
 
 #ifdef HAS_VIDEO_PLAYBACK
@@ -763,6 +766,8 @@ std::string CVideoPlayerVideo::GetStereoMode()
 
 int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 {
+  m_bAbortOutput = false;
+
   /* picture buffer is not allowed to be modified in this call */
   DVDVideoPicture picture(*src);
   DVDVideoPicture* pPicture = &picture;
@@ -929,7 +934,7 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   // don't wait when going ff
   if (m_speed > DVD_PLAYSPEED_NORMAL)
     maxWaitTime = std::max(DVD_TIME_TO_MSEC(iSleepTime), 0);
-  int buffer = m_renderManager.WaitForBuffer(m_bStop, maxWaitTime);
+  int buffer = m_renderManager.WaitForBuffer(m_bAbortOutput, maxWaitTime);
   if (buffer < 0)
   {
     m_droppingStats.AddOutputDropGain(pts, 1/m_fFrameRate);
@@ -941,7 +946,7 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   int index = m_renderManager.AddVideoPicture(*pPicture);
 
   // video device might not be done yet
-  while (index < 0 && !CThread::m_bStop &&
+  while (index < 0 && !m_bAbortOutput &&
          CDVDClock::GetAbsoluteClock(false) < iCurrentClock + iSleepTime + DVD_MSEC_TO_TIME(500) )
   {
     Sleep(1);
@@ -954,7 +959,7 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     return EOS_DROPPED;
   }
 
-  m_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, pts_org, -1, mDisplayField);
+  m_renderManager.FlipPage(m_bAbortOutput, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, pts_org, -1, mDisplayField);
 
   return result;
 }
