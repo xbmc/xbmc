@@ -569,3 +569,11 @@ void CDVDDemuxClient::SetSpeed (int speed)
     m_IDemux->SetSpeed(speed);
   }
 }
+
+void CDVDDemuxClient::EnableStream(int id, bool enable)
+{
+  if (m_IDemux)
+  {
+    m_IDemux->EnableStream(id, enable);
+  }
+}

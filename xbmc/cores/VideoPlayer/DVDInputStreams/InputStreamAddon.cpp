@@ -186,6 +186,14 @@ CDemuxStream* CInputStreamAddon::GetStream(int iStreamId)
   return m_addon->GetStream(iStreamId);
 }
 
+void CInputStreamAddon::EnableStream(int iStreamId, bool enable)
+{
+  if (!m_addon)
+    return;
+
+  return m_addon->EnableStream(iStreamId, enable);
+}
+
 int CInputStreamAddon::GetNrOfStreams()
 {
   if (!m_addon)

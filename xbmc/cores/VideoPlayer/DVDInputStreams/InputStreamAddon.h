@@ -74,6 +74,7 @@ public:
   virtual bool OpenDemux() override;
   virtual DemuxPacket* ReadDemux() override;
   virtual CDemuxStream* GetStream(int iStreamId) override;
+  virtual void EnableStream(int iStreamId, bool enable) override;
   virtual int GetNrOfStreams() override;
   virtual void SetSpeed(int iSpeed) override;
   virtual bool SeekTime(int time, bool backward = false, double* startpts = NULL) override;
