@@ -35,7 +35,8 @@ dependencies have to be installed as explained in
 ### Windows
 
 For Windows the dependencies can be found in the
-[Wiki](http://kodi.wiki/view/HOW-TO:Compile_Kodi_for_Windows) (Step 1-4).
+[Wiki](http://kodi.wiki/view/HOW-TO:Compile_Kodi_for_Windows) (Step 1-4). If not already available on your pc, you should
+install the [Windows Software Development Kit (SDK)](https://dev.windows.com/en-us/downloads/sdk-archive) for your Windows version. This is required for HLSL shader offline compiling with the [Effect-Compiler Tool](https://msdn.microsoft.com/de-de/library/windows/desktop/bb232919(v=vs.85).aspx) (fxc.exe).
 
 On Windows, the CMake based buildsystem requires that the binary dependencies
 are downloaded using `DownloadBuildDeps.bat` and `DownloadMingwBuildEnv.bat`
@@ -78,7 +79,7 @@ cmake --build . -- VERBOSE=1 -j$(nproc)  # or: make VERBOSE=1 -j$(nproc)
 ./kodi.bin
 ```
 
-`CMAKE_BUILD_TYPE` defaults to `Debug`.
+`CMAKE_BUILD_TYPE` defaults to `Release`.
 
 ### Raspberry Pi with GNU Makefiles
 
@@ -92,7 +93,7 @@ cmake --build . -- VERBOSE=1 -j$(nproc)  # or: make VERBOSE=1 -j$(nproc)
 ```
 cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release <KODI_SRC>/project/cmake/
 cmake --build .  # or: nmake
-./kodi.bin
+kodi.exe
 ```
 
 ### Windows with Visual Studio project files
@@ -100,7 +101,7 @@ cmake --build .  # or: nmake
 ```
 cmake -G "Visual Studio 12" <KODI_SRC>/project/cmake/
 cmake --build . --config "Debug"  # or: Build solution with Visual Studio
-KODI_HOME=%CD% Debug/kodi.bin
+set KODI_HOME="%CD%" && Debug\kodi.exe
 ```
 
 ### OSX with GNU Makefiles
