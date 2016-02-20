@@ -337,6 +337,7 @@ void CVideoPlayerVideo::Process()
       m_picture.iFlags &= ~DVP_FLAG_ALLOCATED;
       m_packets.clear();
       m_droppingStats.Reset();
+      m_syncState = IDVDStreamPlayer::SYNC_STARTING;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (CVideoPlayerVideo::Flush())
     {

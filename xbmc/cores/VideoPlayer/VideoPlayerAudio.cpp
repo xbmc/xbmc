@@ -312,6 +312,7 @@ void CVideoPlayerAudio::Process()
     {
       if (m_pAudioCodec)
         m_pAudioCodec->Reset();
+      m_syncState = IDVDStreamPlayer::SYNC_STARTING;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
     {
