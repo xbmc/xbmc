@@ -237,7 +237,7 @@ void CGUIDialogMusicInfo::SetSongs(const VECSONGS &songs)
   }
 }
 
-void CGUIDialogMusicInfo::SetDiscography()
+void CGUIDialogMusicInfo::SetDiscography() const
 {
   m_albumSongs->Clear();
   CMusicDatabase database;
@@ -246,10 +246,16 @@ void CGUIDialogMusicInfo::SetDiscography()
   std::vector<int> albumsByArtist;
   database.GetAlbumsByArtist(m_artist.idArtist, albumsByArtist);
 
-  for (unsigned int i=0;i<m_artist.discography.size();++i)
+  // Sort the discography by year
+  auto discography = m_artist.discography;
+  std::sort(discography.begin(), discography.end(), [](const std::pair<std::string, std::string> &left, const std::pair<std::string, std::string> &right) {
+    return left.second < right.second;
+  });
+
+  for (unsigned int i=0; i < discography.size(); ++i)
   {
-    CFileItemPtr item(new CFileItem(m_artist.discography[i].first));
-    item->SetLabel2(m_artist.discography[i].second);
+    CFileItemPtr item(new CFileItem(discography[i].first));
+    item->SetLabel2(discography[i].second);
 
     int idAlbum = -1;
     for (std::vector<int>::const_iterator album = albumsByArtist.begin(); album != albumsByArtist.end(); ++album)
