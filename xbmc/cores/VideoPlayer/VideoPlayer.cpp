@@ -955,6 +955,25 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
   }
   if(!valid)
     CloseStream(m_CurrentRadioRDS, false);
+
+  // disable demux streams
+  if (m_item.IsRemote() && m_pDemuxer)
+  {
+    for (auto &stream : m_SelectionStreams.m_Streams)
+    {
+      if (STREAM_SOURCE_MASK(stream.source) == STREAM_SOURCE_DEMUX)
+      {
+        if (stream.id != m_CurrentVideo.id &&
+            stream.id != m_CurrentAudio.id &&
+            stream.id != m_CurrentSubtitle.id &&
+            stream.id != m_CurrentTeletext.id &&
+            stream.id != m_CurrentRadioRDS.id)
+        {
+          m_pDemuxer->EnableStream(stream.id, false);
+        }
+      }
+    }
+  }
 }
 
 bool CVideoPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
