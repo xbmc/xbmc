@@ -74,6 +74,8 @@ endif()
 # system specific arch setup
 include(${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/archsetup.cmake)
 
+message(STATUS "Core system type: ${CORE_SYSTEM_NAME}")
+message(STATUS "Platform: ${PLATFORM}")
 message(STATUS "CPU: ${CPU}, ARCH: ${ARCH}")
 
 check_type(string std::u16string HAVE_STD__U16_STRING)

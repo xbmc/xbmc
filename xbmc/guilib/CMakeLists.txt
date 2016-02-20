@@ -183,7 +183,7 @@ if(OPENGL_FOUND)
                       TextureGL.h)
 endif()
 
-if(GLES_FOUND)
+if(OPENGLES_FOUND)
   list(APPEND SOURCES GUIFontTTFGL.cpp
                       GUIShader.cpp
                       GUITextureGLES.cpp

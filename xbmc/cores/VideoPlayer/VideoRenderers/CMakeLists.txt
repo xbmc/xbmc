@@ -32,7 +32,7 @@ if(OPENGL_FOUND)
                       LinuxRendererGL.h)
 endif()
 
-if(GLES_FOUND)
+if(OPENGLES_FOUND)
   list(APPEND SOURCES LinuxRendererGLES.cpp
                       OverlayRendererGL.cpp)
   list(APPEND HEADERS LinuxRendererGLES.h

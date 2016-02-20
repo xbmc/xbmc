@@ -10,7 +10,7 @@ if(CORE_SYSTEM_NAME STREQUAL windows)
                       YUV2RGBShader.h)
 endif()
 
-if(OPENGL_FOUND OR GLES_FOUND)
+if(OPENGL_FOUND OR OPENGLES_FOUND)
   list(APPEND SOURCES GLSLOutput.cpp
                       VideoFilterShader.cpp
                       YUV2RGBShader.cpp)

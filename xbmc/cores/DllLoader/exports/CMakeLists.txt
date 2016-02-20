@@ -20,7 +20,7 @@ elseif(NOT CORE_SYSTEM_NAME STREQUAL windows)
 
   if(CORE_SYSTEM_NAME STREQUAL android)
     add_custom_target(patchdef ALL echo \"-L${CMAKE_INSTALL_PREFIX}/lib/dummy-libxbmc/ -lxbmc\" >> wrapper.def)
-    add_dependencies(patchdef wrapper.def)
+    add_dependencies(patchdef wrapper.def xbmc)
   endif()
 
   add_dependencies(wrapper.def wrapper)

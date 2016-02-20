@@ -33,6 +33,11 @@ set(HEADERS AddonBuiltins.h
             SystemBuiltins.h
             WeatherBuiltins.h)
 
+if(CORE_SYSTEM_NAME STREQUAL android)
+  list(APPEND SOURCES AndroidBuiltins.cpp)
+  list(APPEND HEADERS AndroidBuiltins.h)
+endif()
+
 core_add_library(interfaces_builtins)
 add_dependencies(interfaces_builtins libcpluff)
 
