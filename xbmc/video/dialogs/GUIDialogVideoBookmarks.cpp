@@ -111,8 +111,8 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_CLEAR_BOOKMARKS)
       {
         if (m_bookmarks.size() > 0 &&
-           CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(752), "", g_localizeStrings.Get(750), ""))
-          ClearBookmarks();
+           CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(38043), "", g_localizeStrings.Get(750), ""))
+           ClearBookmarks();
       }
       else if (iControl == CONTROL_ADD_EPISODE_BOOKMARK)
       {
@@ -126,7 +126,7 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
         if (iAction == ACTION_DELETE_ITEM)
         {
           if (m_bookmarks.size() > 0 &&
-             CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(753), "", g_localizeStrings.Get(750), ""))
+             CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(38044), "", g_localizeStrings.Get(750), ""))
             Delete(iItem);
         }
         else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
@@ -189,7 +189,7 @@ void CGUIDialogVideoBookmarks::OnPopupMenu(int item)
   (*m_vecItems)[item]->Select(true);
   
   CContextButtons choices;
-  choices.Add(1, 295); // "Rename bookmark"
+  choices.Add(1, 38042); // "Rename bookmark"
   choices.Add(2, (m_bookmarks[item].type == CBookmark::EPISODE ? 20405 : 20404)); // "Remove episode bookmark" or "Remove bookmark"
   
   int button = CGUIDialogContextMenu::ShowAndGetChoice(choices);
@@ -202,7 +202,7 @@ void CGUIDialogVideoBookmarks::OnPopupMenu(int item)
 
   if (button == 2)
     if (m_bookmarks.size() > 0 &&
-       CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(753), "", g_localizeStrings.Get(750), ""))
+       CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(38044), "", g_localizeStrings.Get(750), ""))
       Delete(item);
 }
 
@@ -214,7 +214,7 @@ void CGUIDialogVideoBookmarks::Rename(int item)
       return;
 
     std::string bmName = m_bookmarks[item].bookmarkName;
-    if (CGUIKeyboardFactory::ShowAndGetInput(bmName, g_localizeStrings.Get(295), true))
+    if (CGUIKeyboardFactory::ShowAndGetInput(bmName, g_localizeStrings.Get(38042), true))
     {
       m_bookmarks[item].bookmarkName = bmName;
     }
