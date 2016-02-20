@@ -565,16 +565,16 @@ void CMMALRenderer::UnInitMMAL()
   {
     mmal_port_flush(m_vout_input);
     mmal_port_disable(m_vout_input);
-    m_vout_input = NULL;
   }
 
   ReleaseBuffers();
 
   if (m_vout_input_pool)
   {
-    mmal_pool_destroy(m_vout_input_pool);
+    mmal_port_pool_destroy(m_vout_input, m_vout_input_pool);
     m_vout_input_pool = NULL;
   }
+  m_vout_input = NULL;
 
   if (m_vout)
   {
