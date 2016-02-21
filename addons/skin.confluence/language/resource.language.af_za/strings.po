@@ -26,7 +26,7 @@ msgstr "Krag opsies"
 
 msgctxt "#31004"
 msgid "Working..."
-msgstr "Besig..."
+msgstr "Werk..."
 
 msgctxt "#31005"
 msgid "Hide information"
@@ -58,7 +58,7 @@ msgstr "Bladsy"
 
 msgctxt "#31025"
 msgid "Items"
-msgstr "Voorwerpe"
+msgstr "Items"
 
 msgctxt "#31026"
 msgid "Misc options"
@@ -74,7 +74,7 @@ msgstr "Plakkaat omvouing"
 
 msgctxt "#31029"
 msgid "Fanart"
-msgstr "Aanhanger Kuns"
+msgstr "Ondersteunerkuns"
 
 msgctxt "#31031"
 msgid "Pic thumbs"
@@ -102,15 +102,15 @@ msgstr "SPEEL"
 
 msgctxt "#31043"
 msgid "PAUSED"
-msgstr "POUSEER"
+msgstr "GEPOUSEER"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
-msgstr "SPEEL VINNIG VORENTOE"
+msgstr "VINNIG VORENTOE"
 
 msgctxt "#31045"
 msgid "REWIND"
-msgstr "SPEEL AGTERUIT"
+msgstr "TERUGDRAAI"
 
 msgctxt "#31046"
 msgid "SEEKING"
@@ -118,11 +118,11 @@ msgstr "SOEK"
 
 msgctxt "#31048"
 msgid "Visualisation presets"
-msgstr "Visualisering voorafinstelling"
+msgstr "Visualisering voorafinstellings"
 
 msgctxt "#31049"
 msgid "End time"
-msgstr "End tyd"
+msgstr "Eind tyd"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
@@ -154,7 +154,7 @@ msgstr "Huidige speellys"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
-msgstr "Hierdie lêer is gestapel, selekteer die deel van waar jy wil speel."
+msgstr "Hierdie lêer is gestapel, selekteer die deel van waar af jy wil speel."
 
 msgctxt "#31061"
 msgid "Current selected"
@@ -178,7 +178,7 @@ msgstr "Speel lokprente in 'n venster [COLOR=grey3](Video inligting dialoog alle
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
-msgstr "Diverse Opsies"
+msgstr "Diverse opsies"
 
 msgctxt "#31107"
 msgid "Hide flagging read from video filenames [COLOR=grey3](e.g. Blu-ray, HD-DVD)[/COLOR]"
@@ -190,11 +190,11 @@ msgstr "Versteek hoof kieslys knoppies"
 
 msgctxt "#31109"
 msgid "Enable custom background"
-msgstr "Stel verpersoonlikte agtergrond in staat"
+msgstr "Stel pasgemaakte agtergrond in staat"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr "Agtergrond soeklys:"
+msgstr "Agtergrond pad:"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -218,7 +218,7 @@ msgstr "Tuis bladsy programme subkieslys"
 
 msgctxt "#31119"
 msgid "Hide background fanart"
-msgstr "Versteek agtergrond aanhanger kuns"
+msgstr "Versteek agtergrond ondersteunerkuns"
 
 msgctxt "#31122"
 msgid "Hide EPG if RDS is present on channel window"
@@ -238,7 +238,7 @@ msgstr "Lirieke"
 
 msgctxt "#31129"
 msgid "Hide fanart in full screen visualisation"
-msgstr "Versteek aanhanger kuns in vol skerm visualisering "
+msgstr "Versteek ondersteunerkuns in vol skerm visualisering "
 
 msgctxt "#31132"
 msgid "Lyrics add-on"
@@ -258,11 +258,11 @@ msgstr "Tuis bladsy \"Prente\" subkieslys"
 
 msgctxt "#31140"
 msgid "Music OSD"
-msgstr "Musiek OSV"
+msgstr "Musiek OSD"
 
 msgctxt "#31141"
 msgid "Video OSD"
-msgstr "Video OSV"
+msgstr "Video OSD"
 
 msgctxt "#31142"
 msgid "Settings level"
@@ -306,7 +306,7 @@ msgstr "Data verskaffer"
 
 msgctxt "#31307"
 msgid "Hide fanart"
-msgstr "Versteek aanhanger kuns"
+msgstr "Versteek ondersteunerkuns"
 
 msgctxt "#31308"
 msgid "Movie details"
@@ -322,7 +322,7 @@ msgstr "Snit nommer"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
-msgstr "Aanhanger kuns prentjie[CR][CR]Nie beskikbaar[CR][CR] Kliek knoppie om te stel"
+msgstr "Ondersteunerkuns prent[CR][CR]Nie beskikbaar[CR][CR] Kliek knoppie om te stel"
 
 msgctxt "#31312"
 msgid "Current scraper"
@@ -338,7 +338,7 @@ msgstr "Inhoud deursoek opsies"
 
 msgctxt "#31317"
 msgid "Set fanart path"
-msgstr "Stel aanhanger kuns pad"
+msgstr "Stel ondersteunerkuns pad"
 
 msgctxt "#31319"
 msgid "Selected profile"
@@ -370,7 +370,7 @@ msgstr "Onlangs bygevoeg"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
-msgstr "[B]Tydhouer gestel![/B] [COLOR=grey2] - Stelsel automatiese afskakeling in[/COLOR]"
+msgstr "[B]Tydhouer gestel![/B] [COLOR=grey2] - Outomatiese stelsel afskakeling in[/COLOR]"
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]movie trailer"
@@ -394,11 +394,11 @@ msgstr "Vinnig vorentoe"
 
 msgctxt "#31354"
 msgid "Rewind"
-msgstr "Speel Agteruit"
+msgstr "Terugdraai"
 
 msgctxt "#31355"
 msgid "Movie menu"
-msgstr "Rolprent kieslys"
+msgstr "Fliek kieslys"
 
 msgctxt "#31356"
 msgid "Download subtitles"
@@ -406,23 +406,23 @@ msgstr "Laai onderskrifte af"
 
 msgctxt "#31360"
 msgid "Watch as 2D"
-msgstr "Kyk in 2D"
+msgstr "Kyk as 2D"
 
 msgctxt "#31361"
 msgid "Change mode"
-msgstr "Verander wyse"
+msgstr "Verander modus"
 
 msgctxt "#31362"
 msgid "Enabled"
-msgstr "Geaktifeer"
+msgstr "In staat gestel"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Standaard tema"
+msgstr "Verstek oortreksel"
 
 msgctxt "#31391"
 msgid "Skin default with no caps"
-msgstr "Bestek oortreksel met geen hoofletters"
+msgstr "Verstek oortreksel met geen hoofletters"
 
 msgctxt "#31392"
 msgid "Arial based"
@@ -430,39 +430,39 @@ msgstr "Antenna gebasseer"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]KONFIGUREER VOORKOMS VERSTELLINGS[/B][CR][CR]Verander die tema · Stel taal en streek · Verander lêer lyste opsies[CR]Stel 'n skermskut op"
+msgstr "[B]STEL VOORKOMS VERSTELLINGS OP[/B][CR][CR]Verander die oortreksel · Stel taal en streek · Verander lêer lyste opsies[CR]Stel 'n skermskut op"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]KONFIGUREER VIDEO VERSTELLINGS[/B][CR][CR]Beheer jou video lys · Stel video terugspeel opsies · Verander video lys opsies[CR]Stel onderskrif font"
+msgstr "[B]STEL VIDEO VERSTELLINGS OP[/B][CR][CR]Bestuur jou video biblioteek · Stel video terugspeel opsies · Verander video lys opsies[CR]Stel onderskrif skrif"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
-msgstr "[B]KONFIGUREER MUSIEK VERSTELLINGS[/B][CR][CR]Bestuur jou musiek biblioteek · Stel musiek terugspeel opsies · Verander musiek lys opsies[CR]Stel liedjie voorlegging op"
+msgstr "[B]STEL MUSIEK VERSTELLINGS OP[/B][CR][CR]Bestuur jou musiek biblioteek · Stel musiek terugspeel opsies · Verander musiek lys opsies[CR]Stel liedjie voorlegging op"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
-msgstr "[B]KONFIGUREER PRENT VERSTELLINGS[/B][CR][CR]Stel prent lys opsies · Konfigureer skyfievertoning"
+msgstr "[B]STEL PRENT VERSTELLINGS OP[/B][CR][CR]Stel prent lys opsies · Stel skyfievertoning op"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set various cities to collect weather information"
-msgstr "[B]KONFIGUREER WEER VERSTELLINGS[/B][CR][CR]Stel verskeie stede om weer inligting te versamel"
+msgstr "[B]STEL WEER VERSTELLINGS OP[/B][CR][CR]Stel verskeie stede om weer inligting te versamel"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B]KONFIGUREER STELSEL VERSTELLINGS[/B][CR][CR]Stel op en kalibreer skerms · Konfigureer klank uitvoer · Stel afstandbeheerders op[CR]Stel krag bespaar opsies · Stel ontfouting in staat · Stel hoof slot op"
+msgstr "[B]STEL STELSEL VERSTELLINGS OP[/B][CR][CR]Stel op en kalibreer skerms · Stel klank uitvoer op · Stel afstandbeheerders op[CR]Stel krag bespaar opsies · Stel ontfouting in staat · Stel hoof slot op"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from kodi.tv[CR]Modify add-on settings"
-msgstr "[B]KONFIGUREER BYVOEGSELS[/B][CR][CR]Bestuur jou geïnstalleerde byvoegsels · Soek en installeer byvoegsels vanaf kodi.tv[CR]Verander byvoegsel verstellings"
+msgstr "[B]STEL BYVOEGSELS OP[/B][CR][CR]Bestuur jou geïnstalleerde byvoegsels · Blaai vir en installeer byvoegsels vanaf kodi.tv[CR]Verander byvoegsel verstellings"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]VERANDER TV VERSTELLINGS[/B][CR][CR]Verander vol skerm inligting - Beheer EPG data verstellings"
+msgstr "[B]STEL TV VERSTELLINGS OP[/B][CR][CR]Verander vol skerm inligting - Bestuur EPG data verstellings"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]KONFIGUREER DIENS VERSTELLINGS[/B][CR][CR]Stel beheer van Kodi via UPnP en HTTP op · Konfigureer lêer deling[CR]Stel Zeroconf in staat · Konfigureer AirPlay"
+msgstr "[B]STEL DIENS VERSTELLINGS OP[/B][CR][CR]Stel beheer van Kodi via UPnP en HTTP op · Stel lêer deling op[CR]Stel Zeroconf in staat · Stel AirPlay op"
 
 msgctxt "#31411"
 msgid "First run help..."
@@ -470,7 +470,7 @@ msgstr "Eerste lopie hulp..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section. To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"OK\" to close this dialogue. It will not appear again."
-msgstr "Hierdie duimgids beteken dat daar 'n kieslys af na die kant van hierdie venster is wat ekstra opsies vir hierdie seksie bevat. Vir toegang tot die kieslys, navigeer na links met jou afstandbeheer of sleutelbord, of plaas jou muis aanwyser oor die duimgids.[CR][CR]Klik \"OK\" om hierdie dialoog toe te maak. Dit sal nie weer verskyn nie."
+msgstr "Hierdie duimgids beteken dat daar 'n kieslys af na die kant van hierdie venster is wat ekstra opsies vir hierdie seksie bevat. Vir toegang tot die kieslys, navigeer na links met jou afstandbeheer of sleutelbord, of plaas jou muis aanwyser oor die duimgids.[CR][CR]Kliek \"OK\" om hierdie dialoog toe te maak. Dit sal nie weer verskyn nie."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -482,15 +482,15 @@ msgstr "Teken In"
 
 msgctxt "#31421"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Selekteer jou Kodi gebruiker profiel[CR]om in te teken en voort te gaan"
+msgstr "Selekteer jou Kodi gebruikers profiel[CR]om in te teken en voort te gaan"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
-msgstr "Wys of versteek die in teken bladsy wanneer die program begin"
+msgstr "Wys of versteek die inteken bladsy wanneer die program begin"
 
 msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."
-msgstr "Kies die profiel wat gebriuk moet word wanneer die program begin as die in teken bladsy onaktief is."
+msgstr "Kies die profiel wat gebriuk moet word met program begin wanneer die inteken skerm nie in staat gestel is nie."
 
 msgctxt "#31501"
 msgid "Scheduled time"
@@ -578,11 +578,11 @@ msgstr "VIDEOS"
 
 msgctxt "#31954"
 msgid "MOVIES"
-msgstr "ROLPRENTE"
+msgstr "FLIEKS"
 
 msgctxt "#31955"
 msgid "TV SHOWS"
-msgstr "TV PROGRAMME"
+msgstr "TV VERTONINGS"
 
 msgctxt "#31956"
 msgid "MUSIC"
@@ -594,7 +594,7 @@ msgstr "PROGRAMME"
 
 msgctxt "#31958"
 msgid "PLAY DISC"
-msgstr "SPEEL OPTIESE SKYF"
+msgstr "SPEEL SKYF"
 
 msgctxt "#31959"
 msgid "SYSTEM"

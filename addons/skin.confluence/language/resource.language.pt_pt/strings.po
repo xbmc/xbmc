@@ -126,11 +126,11 @@ msgstr "Hora de fim"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Ordem: Ascendente"
+msgstr "Ordem crescente"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Ordem: Descendente"
+msgstr "Ordem decrescente"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -242,7 +242,7 @@ msgstr "Ocultar fanart em ecrã completo"
 
 msgctxt "#31132"
 msgid "Lyrics add-on"
-msgstr "Extra de letras"
+msgstr "Add-on de letras"
 
 msgctxt "#31134"
 msgid "Home page \"Videos\" submenu"
@@ -306,7 +306,7 @@ msgstr "Fornecedor de dados"
 
 msgctxt "#31307"
 msgid "Hide fanart"
-msgstr "Ocultar Fanart"
+msgstr "Ocultar fanart"
 
 msgctxt "#31308"
 msgid "Movie details"
@@ -322,7 +322,7 @@ msgstr "Número da faixa"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
-msgstr "Imagem Fanart[CR][CR]indisponível[CR][CR]Clique no botão para definir"
+msgstr "Imagem fanart[CR][CR]não disponível[CR][CR]Clique no botão para definir"
 
 msgctxt "#31312"
 msgid "Current scraper"
@@ -350,7 +350,7 @@ msgstr "Última vez ligado"
 
 msgctxt "#31322"
 msgid "Aired"
-msgstr "Transmitido"
+msgstr "Exibido"
 
 msgctxt "#31325"
 msgid "Playlist options"
@@ -366,15 +366,15 @@ msgstr "Resolução"
 
 msgctxt "#31328"
 msgid "Recently added"
-msgstr "Adicionados recentemente"
+msgstr "Adições recentes"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
-msgstr "[B]Temporizador definido![/B] [COLOR=grey2] - Sistema vai desligar-se em[/COLOR]"
+msgstr "[B]Temporizador definido![/B] [COLOR=grey2] - O sistema vai desligar-se em[/COLOR]"
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]movie trailer"
-msgstr "Clique no botão para reproduzir[CR][CR]o trailer do filme"
+msgstr "Clique no botão para[CR][CR]reproduzir o trailer do filme"
 
 msgctxt "#31331"
 msgid "Album details"
@@ -454,7 +454,7 @@ msgstr "[B]Configurar definições do sistema[/B][CR][CR]Configurar e calibrar e
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from kodi.tv[CR]Modify add-on settings"
-msgstr "[B]Configurar extras[/B][CR][CR]Gerir extras instalados · Procurar e instalar extras a partir de kodi.tv[CR]Alterar definições de extras"
+msgstr "[B]Configurar add-ons[/B][CR][CR]Gerir add-ons instalados · Procurar e instalar add-ons a partir de kodi.tv[CR]Alterar definições de add-ons"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -510,7 +510,7 @@ msgstr "Renomear grupo"
 
 msgctxt "#31505"
 msgid "Delete group"
-msgstr "Remover grupo"
+msgstr "Apagar grupo"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
@@ -554,7 +554,7 @@ msgstr "Possibilidade de precipitação"
 
 msgctxt "#31909"
 msgid "Fetching forecast info..."
-msgstr "A obterprevisões meteorológicas..."
+msgstr "A obter previsões meteorológicas..."
 
 msgctxt "#31910"
 msgid "Maps"

@@ -44,6 +44,10 @@ msgctxt "#31025"
 msgid "Items"
 msgstr "موضوعات"
 
+msgctxt "#31026"
+msgid "Misc options"
+msgstr "سایر تنظیمات"
+
 msgctxt "#31027"
 msgid "Location"
 msgstr "مکان"

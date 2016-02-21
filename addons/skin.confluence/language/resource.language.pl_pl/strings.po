@@ -490,7 +490,7 @@ msgstr "Określa widoczność ekranu logowania podczas uruchomienia."
 
 msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."
-msgstr "Wybierz profil, który będzie używany w przypadku wyłączenia ekranu logowania."
+msgstr "Wybierz profil, który będzie używany w przypadku dezaktywacji ekranu logowania."
 
 msgctxt "#31501"
 msgid "Scheduled time"
