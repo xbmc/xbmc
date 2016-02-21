@@ -26,22 +26,23 @@
 
 class CDVDInputStreamRTMP 
   : public CDVDInputStream
-  , public CDVDInputStream::ISeekTime
-  , public CDVDInputStream::ISeekable
+  , public CDVDInputStream::IPosTime
 {
 public:
   CDVDInputStreamRTMP(CFileItem &fileitem);
   virtual ~CDVDInputStreamRTMP();
-  virtual bool    Open();
-  virtual void    Close();
-  virtual int     Read(uint8_t* buf, int buf_size);
+  virtual bool Open();
+  virtual void Close();
+  virtual int Read(uint8_t* buf, int buf_size);
   virtual int64_t Seek(int64_t offset, int whence);
-  bool            SeekTime(int iTimeInMsec);
-  bool            CanSeek()  { return m_canSeek; }
-  bool            CanPause() { return m_canPause; }
-  virtual bool    Pause(double dTime);
-  virtual bool    IsEOF();
+  bool PosTime(int iTimeInMsec);
+  bool CanSeek()  { return m_canSeek; }
+  bool CanPause() { return m_canPause; }
+  virtual bool Pause(double dTime);
+  virtual bool IsEOF();
   virtual int64_t GetLength();
+
+  CDVDInputStream::IPosTime* GetIPosTime() override { return this; }
 
   CCriticalSection m_RTMPSection;
 

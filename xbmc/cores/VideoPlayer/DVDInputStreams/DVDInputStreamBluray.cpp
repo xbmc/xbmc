@@ -900,7 +900,7 @@ int CDVDInputStreamBluray::GetTime()
   return (int)(m_dll->bd_tell_time(m_bd) / 90);
 }
 
-bool CDVDInputStreamBluray::SeekTime(int ms)
+bool CDVDInputStreamBluray::PosTime(int ms)
 {
   if(m_dll->bd_seek_time(m_bd, ms * 90) < 0)
     return false;

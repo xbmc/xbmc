@@ -233,7 +233,7 @@ int64_t CDVDInputStreamRTMP::Seek(int64_t offset, int whence)
     return -1;
 }
 
-bool CDVDInputStreamRTMP::SeekTime(int iTimeInMsec)
+bool CDVDInputStreamRTMP::PosTime(int iTimeInMsec)
 {
   CLog::Log(LOGNOTICE, "RTMP Seek to %i requested", iTimeInMsec);
   CSingleLock lock(m_RTMPSection);
