@@ -69,7 +69,7 @@ install:
 # Linux dependencies
 #
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$BUILD" == "Kodi" ]]; then
-      sudo apt-get install -qq automake autopoint build-essential cmake curl dcadec-dev default-jre gawk gdc
+      sudo apt-get install -qq automake autopoint build-essential cmake curl dcadec-dev default-jre gawk gdb gdc
       gettext git-core gperf libasound2-dev libass-dev libbz2-dev libcap-dev libcdio-dev libcrossguid-dev libcurl3
       libcurl4-openssl-dev libdbus-1-dev libfontconfig-dev libegl1-mesa-dev libfreetype6-dev libfribidi-dev libgif-dev
       libiso9660-dev libjpeg-dev libltdl-dev liblzo2-dev libmicrohttpd-dev libmodplug-dev libmysqlclient-dev libnfs-dev
@@ -86,6 +86,7 @@ before_script:
 # Linux
 #
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$BUILD" == "Kodi" ]]; then
+      ulimit -c unlimited -S;
       if [[ "$TOOLS" == "Autotools" ]]; then
         cd $TRAVIS_BUILD_DIR &&
         ./bootstrap;
@@ -96,9 +97,9 @@ before_script:
     fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$BUILD" == "Kodi" && "$CXX" == "g++" ]]; then
       if [[ "$TOOLS" == "Autotools" ]]; then
-        ./configure;
+        ./configure --enable-debug;
       elif [[ "$TOOLS" == "CMake" ]]; then
-        cmake ../project/cmake;
+        cmake -DCMAKE_BUILD_TYPE=Debug ../project/cmake;
       fi
     fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$BUILD" == "Kodi" && "$CXX" == "clang++" ]]; then
@@ -136,6 +137,12 @@ script:
       mkdir -p build &&
       cmake -DADDONS_TO_BUILD="$ADDONS".* -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=../addons $TRAVIS_BUILD_DIR/project/cmake/addons &&
       make -j3;
+    fi
+
+after_failure:
+  - COREFILE=$(find . -maxdepth 1 -name "core*" | head -n 1)
+  - if [[ -f "$COREFILE" ]]; then
+      gdb -c "$COREFILE" kodi-test -ex "thread apply all bt" -ex "set pagination 0" -batch;
     fi
 
 # Disable annoying emails
