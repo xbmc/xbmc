@@ -1136,14 +1136,16 @@ bool CDecoder::Supports(enum AVPixelFormat fmt)
 
 void CDecoder::RelBuffer(uint8_t *data)
 {
-  CSingleLock lock(m_section);
-  ID3D11VideoDecoderOutputView* view = (ID3D11VideoDecoderOutputView*)(uintptr_t)data;
-
-  if (!m_surface_context->IsValid(view))
   {
-    CLog::Log(LOGWARNING, "%s - return of invalid surface", __FUNCTION__);
+    CSingleLock lock(m_section);
+    ID3D11VideoDecoderOutputView* view = (ID3D11VideoDecoderOutputView*)(uintptr_t)data;
+
+    if (!m_surface_context->IsValid(view))
+    {
+      CLog::Log(LOGWARNING, "%s - return of invalid surface", __FUNCTION__);
+    }
+    m_surface_context->ClearReference(view);
   }
-  m_surface_context->ClearReference(view);
 
   IHardwareDecoder::Release();
 }
