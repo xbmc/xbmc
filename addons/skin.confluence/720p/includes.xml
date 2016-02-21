@@ -38,6 +38,10 @@
 	<constant name="DepthFloor">-0.20</constant>
 	<constant name="DepthSideBlade">0.15</constant>
 	<!-- VARIABLES -->
+	<variable name="ContentPanel">
+		<value condition="Skin.HasSetting(SolidContentPanel)">ContentPanel2.png</value>
+		<value>ContentPanel.png</value>
+	</variable>
 	<variable name="MusicInfoHeader">
 		<value condition="Container.Content(Artists)">$INFO[ListItem.Artist]</value>
 		<value condition="Container.Content(Albums)">$INFO[ListItem.Album]</value>

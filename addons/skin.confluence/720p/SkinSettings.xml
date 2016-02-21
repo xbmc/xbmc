@@ -31,7 +31,7 @@
 				<top>5</top>
 				<width>1090</width>
 				<height>630</height>
-				<texture border="15">ContentPanel.png</texture>
+				<texture border="15">$VAR[ContentPanel]</texture>
 			</control>
 			<control type="image">
 				<left>5</left>
@@ -272,6 +272,18 @@
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 						<onclick>Skin.ToggleSetting(HideEPGwithRDS)</onclick>
 						<selected>Skin.HasSetting(HideEPGwithRDS)</selected>
+					</control>
+					<control type="radiobutton" id="118">
+						<width>750</width>
+						<height>40</height>
+						<font>font13</font>
+						<label>31114</label>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+						<onclick>Skin.ToggleSetting(SolidContentPanel)</onclick>
+						<selected>Skin.HasSetting(SolidContentPanel)</selected>
 					</control>
 					<control type="label" id="106">
 						<width>750</width>

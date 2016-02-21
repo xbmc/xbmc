@@ -391,7 +391,7 @@
 				<top>0</top>
 				<width>920</width>
 				<height>410</height>
-				<texture border="20">ContentPanel.png</texture>
+				<texture border="20">$VAR[ContentPanel]</texture>
 			</control>
 			<control type="label">
 				<left>40</left>
