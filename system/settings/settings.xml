@@ -2298,6 +2298,7 @@
       </group>
     </category>
     <category id="smb" label="1200" help="36346">
+      <requirement>HAS_FILESYSTEM_SMB</requirement>
       <group id="1">
         <setting id="smb.winsserver" type="string" label="1207" help="36347">
           <level>2</level>
