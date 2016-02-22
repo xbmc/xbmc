@@ -782,8 +782,6 @@ int CDVDVideoCodecIMX::Decode(BYTE *pData, int iSize, double dts, double pts)
       if (m_frameReported)
         m_bytesToBeConsumed += inData.nSize;
 
-      SetSkipMode();
-
       ret = VPU_DecDecodeBuf(m_vpuHandle, &inData, &decRet);
 #ifdef IMX_PROFILE_BUFFERS
       unsigned long long dec_single_call = XbmcThreads::SystemClockMillis()-before_dec;
