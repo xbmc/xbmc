@@ -658,6 +658,14 @@ bool CAddonDatabase::IsAddonDisabled(const CStdString &addonID)
   return false;
 }
 
+bool CAddonDatabase::IsSystemPVRAddonEnabled(const CStdString &addonID)
+{
+  CStdString strWhereClause = PrepareSQL("addonID = '%s'", addonID.c_str());
+  CStdString strEnabled = GetSingleValue("pvrenabled", "id", strWhereClause);
+
+  return !strEnabled.IsEmpty();
+}
+
 CStdString CAddonDatabase::IsAddonBroken(const CStdString &addonID)
 {
   try

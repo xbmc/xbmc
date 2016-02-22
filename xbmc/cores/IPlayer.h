@@ -30,6 +30,11 @@ class TiXmlElement;
 class CStreamDetails;
 class CAction;
 
+namespace PVR
+{
+  class CPVRChannel;
+}
+
 class IPlayerCallback
 {
 public:
@@ -170,6 +175,7 @@ public:
   
   virtual CStdString GetPlayingTitle() { return ""; };
 
+  virtual bool SwitchChannel(const PVR::CPVRChannel &channel) { return false; }
 protected:
   IPlayerCallback& m_callback;
 };

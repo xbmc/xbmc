@@ -283,6 +283,8 @@ void CGUIDialogNumeric::FrameMove()
 
 void CGUIDialogNumeric::OnNumber(unsigned int num)
 {
+  ResetAutoClose();
+
   if (m_mode == INPUT_NUMBER || m_mode == INPUT_PASSWORD)
   {
     m_number += num + '0';
@@ -566,16 +568,19 @@ bool CGUIDialogNumeric::ShowAndGetIPAddress(CStdString &IPAddress, const CStdStr
   return true;
 }
 
-bool CGUIDialogNumeric::ShowAndGetNumber(CStdString& strInput, const CStdString &strHeading)
+bool CGUIDialogNumeric::ShowAndGetNumber(CStdString& strInput, const CStdString &strHeading, unsigned int iAutoCloseTimeoutMs /* = 0 */)
 {
   // Prompt user for password input
   CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
   pDialog->SetHeading( strHeading );
 
   pDialog->SetMode(INPUT_NUMBER, (void *)&strInput);
+  if (iAutoCloseTimeoutMs)
+    pDialog->SetAutoClose(iAutoCloseTimeoutMs);
+
   pDialog->DoModal();
 
-  if (!pDialog->IsConfirmed() || pDialog->IsCanceled())
+  if (!pDialog->IsAutoClosed() && (!pDialog->IsConfirmed() || pDialog->IsCanceled()))
     return false;
   pDialog->GetOutput(&strInput);
   return true;

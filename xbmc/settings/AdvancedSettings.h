@@ -249,6 +249,14 @@ class CAdvancedSettings
 
     int m_iMythMovieLength;         // minutes
 
+    int m_iEpgLingerTime;           // minutes
+    int m_iEpgUpdateCheckInterval;  // seconds
+    int m_iEpgCleanupInterval;      // seconds
+    int m_iEpgActiveTagCheckInterval; // seconds
+    int m_iEpgRetryInterruptedUpdateInterval; // seconds
+    bool m_bEpgDisplayUpdatePopup;
+    bool m_bEpgDisplayIncrementalUpdatePopup;
+
     // EDL Commercial Break
     bool m_bEdlMergeShortCommBreaks;
     int m_iEdlMaxCommBreakLength;   // seconds
@@ -297,11 +305,21 @@ class CAdvancedSettings
     CStdString m_gpuTempCmd;
     int m_bgInfoLoaderMaxThreads;
 
+    /* PVR/TV related advanced settings */
+    int m_iPVRTimeCorrection;     /*!< @brief correct all times (epg tags, timer tags, recording tags) by this amount of minutes. defaults to 0. */
+    int m_iPVRInfoToggleInterval; /*!< @brief if there are more than 1 pvr gui info item available (e.g. multiple recordings active at the same time), use this toggle delay in milliseconds. defaults to 3000. */
+    bool m_bPVRShowEpgInfoOnEpgItemSelect; /*!< @brief when selecting an EPG fileitem, show the EPG info dialog if this setting is true. start playback on the selected channel if false */
+    int m_iPVRMinVideoCacheLevel;      /*!< @brief cache up to this level in the video buffer buffer before resuming playback if the buffers run dry */
+    int m_iPVRMinAudioCacheLevel;      /*!< @brief cache up to this level in the audio buffer before resuming playback if the buffers run dry */
+    bool m_bPVRCacheInDvdPlayer; /*!< @brief true to use "CACHESTATE_PVR" in CDVDPlayer (default) */
+
     bool m_measureRefreshrate; //when true the videoreferenceclock will measure the refreshrate when direct3d is used
                                //otherwise it will use the windows refreshrate
 
     DatabaseSettings m_databaseMusic; // advanced music database setup
     DatabaseSettings m_databaseVideo; // advanced video database setup
+    DatabaseSettings m_databaseTV;    // advanced tv database setup
+    DatabaseSettings m_databaseEpg;   /*!< advanced EPG database setup */
 
     bool m_guiVisualizeDirtyRegions;
     int  m_guiAlgorithmDirtyRegions;

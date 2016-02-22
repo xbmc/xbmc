@@ -51,6 +51,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual CStdString GetDescription() const;
   virtual float GetWidth() const;
+  virtual void SetWidth(float width);
   virtual CRect CalcRenderRegion() const;
  
   const CLabelInfo& GetLabelInfo() const { return m_label.GetLabelInfo(); };

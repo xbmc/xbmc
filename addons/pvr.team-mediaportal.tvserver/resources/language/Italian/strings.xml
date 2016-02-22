@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Nome del server Mediaportal</string>
+    <string id="30001">Porta del plugin Mediaportal di XBMC</string>
+    <string id="30002">Solo Free-to-air</string>
+    <string id="30003">Includi Radio</string>
+
+    <string id="30005">Timeout per la connessione (s)</string>
+    <string id="30006">Importa solo canali TV dal gruppo</string>
+    <string id="30007">Importa solo canali radio dal gruppo</string>
+    <string id="30008">Converti il nome del server nell'indirizzo IP</string>
+    <string id="30009">EPG: Leggi le stringhe dei generi (lento)</string>
+    <string id="30010">Tempo di attesa dopo il tuning di un canale (ms)</string>
+    <string id="30011">Registra direttamente (nessuno streaming)</string>
+    <string id="30012">Cartella di salvataggio per Mediaportal</string>
+
+    <!-- category labels -->
+    <string id="30040">Connessione</string>
+    <string id="30041">MediaPortal</string>
+
+    <!-- on-screen error messages -->
+    <string id="30050">La tua versione di TVServerXBMC v%s è troppo vecchia. Per favore, aggiornala a v%s o superiore!</string>
+    <string id="30051">La tua versione di TVServerXBMC è troppo vecchia. Per favore, aggiornala a v%s o superiore!</string>
+</strings>

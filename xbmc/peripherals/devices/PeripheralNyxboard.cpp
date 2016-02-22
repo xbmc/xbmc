@@ -28,6 +28,8 @@
 using namespace PERIPHERALS;
 using namespace std;
 
+#define NYBOARD_POWER_BUTTON_KEYSYM 0x9f
+
 CPeripheralNyxboard::CPeripheralNyxboard(const PeripheralType type, const PeripheralBusType busType, const CStdString &strLocation, const CStdString &strDeviceName, int iVendorId, int iProductId) :
   CPeripheralHID(type, busType, strLocation, strDeviceName, iVendorId, iProductId)
 {
@@ -54,6 +56,12 @@ bool CPeripheralNyxboard::LookupSymAndUnicode(XBMC_keysym &keysym, uint8_t *key,
     /* 'user' key pressed */
     CLog::Log(LOGDEBUG, "%s - 'user' key pressed", __FUNCTION__);
     strCommand = GetSettingString("key_user");
+  }
+  else if (keysym.sym == NYBOARD_POWER_BUTTON_KEYSYM && keysym.mod == XBMCKMOD_NONE)
+  {
+    /* 'power' key pressed */
+    CLog::Log(LOGDEBUG, "%s - 'power' key pressed", __FUNCTION__);
+    strCommand = GetSettingString("key_power");
   }
 
   if (!strCommand.IsEmpty())

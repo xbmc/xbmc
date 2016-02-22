@@ -49,7 +49,7 @@ public:
   static bool ShowAndGetTime(SYSTEMTIME &time, const CStdString &heading);
   static bool ShowAndGetDate(SYSTEMTIME &date, const CStdString &heading);
   static bool ShowAndGetIPAddress(CStdString &IPAddress, const CStdString &heading);
-  static bool ShowAndGetNumber(CStdString& strInput, const CStdString &strHeading);
+  static bool ShowAndGetNumber(CStdString& strInput, const CStdString &strHeading, unsigned int iAutoCloseTimeoutMs = 0);
   static bool ShowAndGetSeconds(CStdString& timeString, const CStdString &heading);
 
 protected:

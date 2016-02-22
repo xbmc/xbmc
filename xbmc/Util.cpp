@@ -43,6 +43,7 @@
 #include "Util.h"
 #include "addons/Addon.h"
 #include "storage/IoSupport.h"
+#include "filesystem/PVRDirectory.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/DirectoryCache.h"
@@ -560,6 +561,39 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
     }
   }
 #endif
+}
+
+bool CUtil::IsPVR(const CStdString& strFile)
+{
+  return strFile.Left(4).Equals("pvr:");
+}
+
+bool CUtil::IsHTSP(const CStdString& strFile)
+{
+  return strFile.Left(5).Equals("htsp:");
+}
+
+bool CUtil::IsLiveTV(const CStdString& strFile)
+{
+  if (strFile.Left(14).Equals("pvr://channels"))
+    return true;
+
+  if(URIUtils::IsTuxBox(strFile)
+  || URIUtils::IsVTP(strFile)
+  || URIUtils::IsHDHomeRun(strFile)
+  || URIUtils::IsHTSP(strFile)
+  || strFile.Left(4).Equals("sap:"))
+    return true;
+
+  if (URIUtils::IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile))
+    return true;
+
+  return false;
+}
+
+bool CUtil::IsTVRecording(const CStdString& strFile)
+{
+  return strFile.Left(15).Equals("pvr://recording");
 }
 
 bool CUtil::IsPicture(const CStdString& strFile)
@@ -1896,6 +1930,8 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
     return true;
   if (URIUtils::IsSmb(strPath))
     return true;
+  if (CUtil::IsTVRecording(strPath))
+    return CPVRDirectory::SupportsFileOperations(strPath);
   if (URIUtils::IsNfs(strPath))
     return true;
   if (URIUtils::IsAfp(strPath))

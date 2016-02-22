@@ -20,6 +20,10 @@
  */
 
 #include "SortFileItem.h"
+#include "video/VideoInfoTag.h"
+#include "pvr/channels/PVRChannel.h"
+#include "epg/Epg.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
 #include "music/tags/MusicInfoTag.h"
@@ -27,6 +31,8 @@
 #include "URL.h"
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
+
+using namespace PVR;
 
 #define RETURN_IF_NULL(x,y) if ((x) == NULL) { CLog::Log(LOGWARNING, "%s, sort item is null", __FUNCTION__); return y; }
 
@@ -481,6 +487,18 @@ void SSortFileItem::ByProductionCode(CFileItemPtr &item)
 {
   if (!item) return;
   item->SetSortLabel(item->GetVideoInfoTag()->m_strProductionCode);
+}
+
+void SSortFileItem::ByChannel(CFileItemPtr &item)
+{
+  if (!item) return;
+
+  if (item->IsEPG() || item->IsPVRChannel())
+  {
+    CPVRChannel *channel = item->GetPVRChannelInfoTag();
+    if (channel)
+      item->SetSortLabel(channel->ChannelName());
+  }
 }
 
 void SSortFileItem::ByBitrate(CFileItemPtr &item)

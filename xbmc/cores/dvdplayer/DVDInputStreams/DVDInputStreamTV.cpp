@@ -21,8 +21,9 @@
 
 #include "DVDInputStreamTV.h"
 #include "filesystem/MythFile.h"
-#include "filesystem/VTPFile.h"
 #include "filesystem/Slingbox.h"
+#include "filesystem/VTPFile.h"
+#include "pvr/channels/PVRChannel.h"
 #include "URL.h"
 
 using namespace XFILE;
@@ -137,19 +138,19 @@ int CDVDInputStreamTV::GetStartTime()
   return m_pLiveTV->GetStartTime();
 }
 
-bool CDVDInputStreamTV::NextChannel()
+bool CDVDInputStreamTV::NextChannel(bool preview/* = false*/)
 {
   if(!m_pLiveTV) return false;
   return m_pLiveTV->NextChannel();
 }
 
-bool CDVDInputStreamTV::PrevChannel()
+bool CDVDInputStreamTV::PrevChannel(bool preview/* = false*/)
 {
   if(!m_pLiveTV) return false;
   return m_pLiveTV->PrevChannel();
 }
 
-bool CDVDInputStreamTV::SelectChannel(unsigned int channel)
+bool CDVDInputStreamTV::SelectChannelByNumber(unsigned int channel)
 {
   if(!m_pLiveTV) return false;
   return m_pLiveTV->SelectChannel(channel);

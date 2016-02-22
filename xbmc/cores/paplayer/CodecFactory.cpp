@@ -65,7 +65,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
   else if (strFileType.Equals("wav"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("dts") || strFileType.Equals("ac3") ||
-           strFileType.Equals("m4a") || strFileType.Equals("aac"))
+           strFileType.Equals("m4a") || strFileType.Equals("aac") ||
+           strFileType.Equals("pvr"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("wv"))
     return new DVDPlayerCodec();

@@ -2399,7 +2399,7 @@
   <string id="36011">CEC 포트를 찾을 수 없습니다. 수동으로 설정하세요.</string>
   <string id="36012">CEC 어댑터를 찾을 수 없음.</string>
   <string id="36013">지원하지 않는 libcec 인터페이스 버전입니다. %d 가 XBMC가 지원하는 버전보다 높습니다 (%d)</string>
-  <string id="36014">TV가 꺼지면 PC를 대기모드로 전환</string>
+  <string id="36014"></string>
   <string id="36015">HDMI 포트 번호</string>
   <string id="36016">연결됨</string>
   <string id="36017">어댑터가 확인되었으나 libcec를 사용할 수 없습니다</string>

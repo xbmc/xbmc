@@ -21,6 +21,8 @@
 
 #include "GUIViewStateVideo.h"
 #include "PlayListPlayer.h"
+#include "filesystem/PluginDirectory.h"
+#include "filesystem/PVRDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIBaseContainer.h"

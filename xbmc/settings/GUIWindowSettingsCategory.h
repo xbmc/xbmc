@@ -57,6 +57,8 @@ protected:
   void FillInStartupWindow(CSetting *pSetting);
   void FillInViewModes(CSetting *pSetting, int windowID);
   void FillInSortMethods(CSetting *pSetting, int windowID);
+  void FillInEpgGuideView(CSetting *pSetting);
+  void FillInPvrStartLastChannel(CSetting *pSetting);
 
   void FillInSkinThemes(CSetting *pSetting);
   void FillInSkinColors(CSetting *pSetting);

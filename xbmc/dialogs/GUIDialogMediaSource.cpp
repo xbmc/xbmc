@@ -28,6 +28,8 @@
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "filesystem/Directory.h"
+#include "filesystem/PluginDirectory.h"
+#include "filesystem/PVRDirectory.h"
 #include "GUIDialogYesNo.h"
 #include "FileItem.h"
 #include "settings/Settings.h"
@@ -263,6 +265,14 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.strPath = "sap://";
     share1.strName = "SAP Streams";
     extraShares.push_back(share1);
+
+    // add the recordings dir as needed
+    if (CPVRDirectory::HasRecordings())
+    {
+      share1.strPath = "pvr://recordings/";
+      share1.strName = g_localizeStrings.Get(19017); // TV Recordings
+      extraShares.push_back(share1);
+    }
   }
   else if (m_type == "pictures")
   {

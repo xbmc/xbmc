@@ -2364,7 +2364,7 @@
 
   <string id="36012">CEC アダプタの初期化に失敗しました。設定を見直してください。</string>
   <string id="36013">この libCEC インターフェースバージョンは未サポートです。%d は、XBMC がサポートするバージョン %d より大きいバージョン番号です。</string>
-  <string id="36014">TV の電源が落とされたら PC をスタンバイモードにする</string>
+  <string id="36014"></string>
   <string id="36015">HDMI ポート番号</string>
   <string id="36016">接続完了</string> <!-- max. 13 characters -->
   <string id="36017">アダプタはありますが libCEC がありません</string>

@@ -106,7 +106,7 @@ public:
    */
   virtual void FrameMove() {};
 
-  void Close(bool forceClose = false, int nextWindowID = 0, bool enableSound = true);
+  void Close(bool forceClose = false, int nextWindowID = 0, bool enableSound = true, bool bWait = true);
 
   // OnAction() is called by our window manager.  We should process any messages
   // that should be handled at the window level in the derived classes, and any

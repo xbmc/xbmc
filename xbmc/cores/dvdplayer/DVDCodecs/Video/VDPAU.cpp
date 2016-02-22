@@ -531,7 +531,8 @@ bool CVDPAU::Supports(VdpVideoMixerFeature feature)
 bool CVDPAU::Supports(EINTERLACEMETHOD method)
 {
   if(method == VS_INTERLACEMETHOD_VDPAU_BOB
-  || method == VS_INTERLACEMETHOD_AUTO)
+  || method == VS_INTERLACEMETHOD_AUTO
+  || method == VS_INTERLACEMETHOD_AUTO_ION)
     return true;
 
   for(SInterlaceMapping* p = g_interlace_mapping; p->method != VS_INTERLACEMETHOD_NONE; p++)
@@ -657,8 +658,21 @@ void CVDPAU::SetDeinterlacing()
   }
   else
   {
-    if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
-    ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF)
+    if (method == VS_INTERLACEMETHOD_AUTO_ION)
+    {
+      if (vid_height <= 576)
+      {
+        VdpBool enabled[]={1,1,0};
+        vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
+      }
+      else if (vid_height > 576)
+      {
+        VdpBool enabled[]={1,0,0};
+        vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
+      }
+    }
+    else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
+         ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF)
     {
       VdpBool enabled[]={1,0,0};
       vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
@@ -1387,14 +1401,16 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     if (mode == VS_DEINTERLACEMODE_FORCE
     || (mode == VS_DEINTERLACEMODE_AUTO && m_DVDVideoPics.front().iFlags & DVP_FLAG_INTERLACED))
     {
-      if((method == VS_INTERLACEMETHOD_VDPAU_BOB
+      if((method == VS_INTERLACEMETHOD_AUTO_ION
+      ||  method == VS_INTERLACEMETHOD_VDPAU_BOB
       ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
       ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
       ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL
       ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF
       ||  method == VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE ))
       {
-        if(method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
+        if((method == VS_INTERLACEMETHOD_AUTO_ION && vid_height > 576)
+        || method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
         || method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF
         || avctx->skip_frame == AVDISCARD_NONREF)
           m_mixerstep = 0;

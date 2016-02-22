@@ -1,0 +1,426 @@
+diff -NaurwB wirbelscan-0.0.5-pre11e/common.h wirbelscan-patched/common.h
+--- wirbelscan-0.0.5-pre11e/common.h	2010-03-17 11:32:34.000000000 +0100
++++ wirbelscan-patched/common.h	2010-04-19 00:55:36.000000000 +0200
+@@ -11,16 +11,7 @@
+ 
+ #include <linux/types.h>
+ #include <sys/ioctl.h>
+-
+-typedef enum scantype {
+-  DVB_TERR    = 0,
+-  DVB_CABLE   = 1,
+-  DVB_SAT     = 2,
+-  PVRINPUT    = 3,
+-  PVRINPUT_FM = 4,
+-  DVB_ATSC    = 5,
+-} scantype_t;
+-
++#include "wirbelscanservice.h"
+ 
+ 
+ /* generic functions */
+diff -NaurwB wirbelscan-0.0.5-pre11e/dvb_wrapper.c wirbelscan-patched/dvb_wrapper.c
+--- wirbelscan-0.0.5-pre11e/dvb_wrapper.c	2010-03-18 11:06:33.000000000 +0100
++++ wirbelscan-patched/dvb_wrapper.c	2010-04-23 03:59:28.000000000 +0200
+@@ -1,5 +1,4 @@
+ 
+-#include <linux/dvb/frontend.h> //either API version 3.2 or 5.0
+ #include <linux/dvb/version.h>
+ #include <vdr/dvbdevice.h>
+ #include <vdr/channels.h>
+diff -NaurwB wirbelscan-0.0.5-pre11e/menusetup.c wirbelscan-patched/menusetup.c
+--- wirbelscan-0.0.5-pre11e/menusetup.c	2010-03-17 13:10:15.000000000 +0100
++++ wirbelscan-patched/menusetup.c	2010-04-23 03:59:41.000000000 +0200
+@@ -7,7 +7,6 @@
+  */
+ 
+ 
+-#include <linux/dvb/frontend.h>
+ #include <vdr/menuitems.h>
+ #include <vdr/device.h>
+ #include <vdr/config.h>
+@@ -39,6 +38,7 @@
+ cOsdItem      * ChanNew         = NULL;
+ cOsdItem      * ChanAll         = NULL;
+ cOsdItem      * ScanType        = NULL;
++sRemoteMenuScanning * RemoteMenuScanning = NULL;
+ 
+ #define LOGLEN 8
+ cOsdItem      * LogMsg[LOGLEN];
+diff -NaurwB wirbelscan-0.0.5-pre11e/menusetup.h wirbelscan-patched/menusetup.h
+--- wirbelscan-0.0.5-pre11e/menusetup.h	2010-03-17 11:32:34.000000000 +0100
++++ wirbelscan-patched/menusetup.h	2010-04-23 02:04:08.000000000 +0200
+@@ -49,6 +49,16 @@
+ bool DoScan (int DVB_Type);
+ void DoStop (void);
+ 
++struct sRemoteMenuScanning {
++  void (*SetPercentage)(int percent);
++  void (*SetSignalStrength)(int strenght, bool locked);
++  void (*SetDeviceInfo)(const char *Info);
++  void (*SetTransponder)(const char *Info);
++  void (*NewChannel)(const char *Name, bool isRadio, bool isEncrypted, bool isHD);
++  void (*IsFinished)();
++  void (*SetStatus)(int status);
++};
++
+ class cWirbelscan {
+  private:
+  public:
+@@ -91,5 +101,6 @@
+     void AddLogMsg(const char * Msg);
+ };
+ extern cMenuScanning * MenuScanning;
++extern sRemoteMenuScanning * RemoteMenuScanning;
+ 
+ #endif
+diff -NaurwB wirbelscan-0.0.5-pre11e/scanfilter.c wirbelscan-patched/scanfilter.c
+--- wirbelscan-0.0.5-pre11e/scanfilter.c	2010-03-17 11:32:34.000000000 +0100
++++ wirbelscan-patched/scanfilter.c	2010-04-23 01:55:30.000000000 +0200
+@@ -1000,6 +1000,8 @@
+                     dlog(4, "      SDT: old %s", *PrintChannel(channel));
+                     channel->SetName(pn, ps, pp);
+                     dlog(2, "      Upd: %s", *PrintChannel(channel));
++                    if (RemoteMenuScanning)
++                      RemoteMenuScanning->NewChannel(channel->Name(), (channel->Vpid() == 0 && (channel->Apid(0) != 0 || channel->Dpid(0) != 0)), channel->Ca() != 0, sd->getServiceType() == 0x19);
+                     }
+                   }
+                 else {
+@@ -1009,6 +1011,8 @@
+                     transponder->CopyTransponderData(Channel());
+                     dlog(3, "   SDT: Add: %s", *PrintTransponder(transponder));
+                     NewTransponders.Add(transponder);
++                    if (RemoteMenuScanning)
++                      RemoteMenuScanning->NewChannel(channel->Name(), (channel->Vpid() == 0 && (channel->Apid(0) != 0 || channel->Dpid(0) != 0)), channel->Ca() != 0, sd->getServiceType() == 0x19);
+                     }
+                   dlog(2, "   SDT: Add %s", *PrintChannel(channel));
+                   }
+diff -NaurwB wirbelscan-0.0.5-pre11e/scanner.c wirbelscan-patched/scanner.c
+--- wirbelscan-0.0.5-pre11e/scanner.c	2010-03-18 10:52:52.000000000 +0100
++++ wirbelscan-patched/scanner.c	2010-04-23 04:04:27.000000000 +0200
+@@ -289,6 +289,8 @@
+     }
+ 
+   dlog(1, "%s", *PrintChannel(channel));
++  if (RemoteMenuScanning)
++    RemoteMenuScanning->NewChannel(channel->Name(), false, false, false);
+   Channels.IncBeingEdited();
+   Channels.Add(channel);
+   Channels.DecBeingEdited();
+@@ -358,6 +360,7 @@
+        if ((dev = GetPreferredDevice(aChannel)) == NULL) {
+          dlog(0, "No device available - exiting!");
+          if (MenuScanning) MenuScanning->SetStatus((status = 2));
++         if (RemoteMenuScanning) RemoteMenuScanning->SetStatus((status = 2));
+          DeleteAndNull(aChannel);
+          return;
+          }
+@@ -366,6 +369,7 @@
+        GetTerrCapabilities(dev->CardIndex(), &crAuto, &modAuto, &invAuto, &bwAuto, &hAuto, &tmAuto, &gAuto);
+        dlog(1, "frontend %s supports", *GetFeName(dev->CardIndex()));
+        if (MenuScanning) MenuScanning->SetDeviceInfo(cString::sprintf("%s", *GetFeName(dev->CardIndex())));
++       if (RemoteMenuScanning) RemoteMenuScanning->SetDeviceInfo(*cString::sprintf("%s", *GetFeName(dev->CardIndex())));
+ 
+        if (invAuto) {
+          dlog(1, "INVERSION_AUTO");
+@@ -439,6 +443,7 @@
+        if ((dev = GetPreferredDevice(aChannel)) == NULL) {
+          dlog(0, "No device available - exiting!");
+          if (MenuScanning) MenuScanning->SetStatus((status = 2));
++         if (RemoteMenuScanning) RemoteMenuScanning->SetStatus((status = 2));
+          DeleteAndNull(aChannel);
+          return;
+          }
+@@ -447,6 +452,7 @@
+        GetCableCapabilities(dev->CardIndex(), &crAuto, &modAuto, &invAuto);
+        dlog(1, "frontend %s supports", *GetFeName(dev->CardIndex()));
+        if (MenuScanning) MenuScanning->SetDeviceInfo(cString::sprintf("%s", *GetFeName(dev->CardIndex())));
++       if (RemoteMenuScanning) RemoteMenuScanning->SetDeviceInfo(*cString::sprintf("%s", *GetFeName(dev->CardIndex())));
+        if (invAuto) {
+          dlog(1, "INVERSION_AUTO");
+          caps_inversion = INVERSION_AUTO;
+@@ -526,6 +532,7 @@
+        #endif
+          dlog(0, "No DVB-S2 device available - trying fallback to DVB-S");
+          if (MenuScanning) MenuScanning->SetStatus(3);
++         if (RemoteMenuScanning) RemoteMenuScanning->SetStatus(3);
+ //         SetSatTransponderDataFromVDR(aChannel, cSource::FromString(sat_list[this_channellist].source_id), 11112, eHorizontal, 27500, eCoderate56, eSatModulationQpsk, eDvbs, eRolloff35);
+          SetSatTransponderDataFromDVB(aChannel,
+                                       cSource::FromString(sat_list[this_channellist].source_id),
+@@ -536,6 +543,7 @@
+          if ((dev = GetPreferredDevice(aChannel)) == NULL) {
+            dlog(0, "No device available - exiting!");
+            if (MenuScanning) MenuScanning->SetStatus((status = 2));
++           if (RemoteMenuScanning) RemoteMenuScanning->SetStatus((status = 2));
+            DeleteAndNull(aChannel);
+            return;
+            }
+@@ -545,6 +553,7 @@
+        GetSatCapabilities(dev->CardIndex(), &crAuto, &modAuto, &roAuto, &s2Support);
+        dlog(1, "frontend %s supports", *GetFeName(dev->CardIndex()));
+        if (MenuScanning) MenuScanning->SetDeviceInfo(cString::sprintf("%s", *GetFeName(dev->CardIndex())));
++       if (RemoteMenuScanning) RemoteMenuScanning->SetDeviceInfo(*cString::sprintf("%s", *GetFeName(dev->CardIndex())));
+        caps_inversion = INVERSION_AUTO;
+        if (crAuto) {
+          dlog(1, "FEC_AUTO");
+@@ -578,6 +587,7 @@
+        if ((dev = GetPreferredDevice(aChannel)) == NULL) {
+          dlog(0, "No device available - exiting!");
+          if (MenuScanning) MenuScanning->SetStatus((status = 2));
++         if (RemoteMenuScanning) RemoteMenuScanning->SetStatus((status = 2));
+          DeleteAndNull(aChannel);
+          return;
+          }
+@@ -586,6 +596,7 @@
+        GetAtscCapabilities(dev->CardIndex(), &crAuto, &modAuto, &invAuto, &vsbSupport, &qamSupport);
+        dlog(1, "frontend %s supports", *GetFeName(dev->CardIndex()));
+        if (MenuScanning) MenuScanning->SetDeviceInfo(cString::sprintf("%s", *GetFeName(dev->CardIndex())));
++       if (RemoteMenuScanning)  RemoteMenuScanning->SetDeviceInfo(*cString::sprintf("%s", *GetFeName(dev->CardIndex())));
+        if (invAuto) {
+          dlog(1, "INVERSION_AUTO\n");
+          caps_inversion = INVERSION_AUTO;
+@@ -660,6 +671,7 @@
+        #endif
+          dlog(0, "No device available - exiting! (pvrinput not running?)");
+          if (MenuScanning) MenuScanning->SetStatus((status = 2));
++         if (RemoteMenuScanning) RemoteMenuScanning->SetStatus((status = 2));
+          DeleteAndNull(aChannel);
+          return;
+          }
+@@ -707,6 +719,8 @@
+          }
+        if (MenuScanning)
+          MenuScanning->SetDeviceInfo(cString::sprintf("%s", vcap.card));
++       if (RemoteMenuScanning)
++         RemoteMenuScanning->SetDeviceInfo(*cString::sprintf("%s", vcap.card));
+        dev->DetachAllReceivers();
+        break;
+        }
+@@ -716,6 +730,7 @@
+     } // end switch type
+ 
+   if (MenuScanning) MenuScanning->SetStatus(1);
++  if (RemoteMenuScanning) RemoteMenuScanning->SetStatus(1);
+ 
+   //count channels.
+ 
+@@ -933,6 +948,11 @@
+                                              type, (lastChannel - thisChannel));
+             MenuScanning->SetTransponder(aChannel);
+             }
++          if (RemoteMenuScanning)
++          {
++            RemoteMenuScanning->SetPercentage((int) (thisChannel * 100) / lastChannel);
++            RemoteMenuScanning->SetTransponder(*PrintTransponder(aChannel));
++            }
+           dev->SwitchChannel(aChannel, false);
+           SwReceiver = new cSwReceiver::cSwReceiver(aChannel);
+           dev->AttachReceiver(SwReceiver);
+@@ -952,6 +972,7 @@
+                  lock = false;
+ 
+                if (MenuScanning) MenuScanning->SetStr(GetFrontendStrength(dev->CardIndex()), lock);
++               if (RemoteMenuScanning) RemoteMenuScanning->SetSignalStrength(GetFrontendStrength(dev->CardIndex()), lock);
+                if (! lock) {
+                  continue;
+                  }
+@@ -971,6 +992,8 @@
+                  cChannel *     newChannel = new cChannel;
+                  if (MenuScanning)
+                    MenuScanning->SetStr(s, true);
++                 if (RemoteMenuScanning)
++                   RemoteMenuScanning->SetSignalStrength(s, true);
+ 
+                  newChannel->Parse(*aChannel->ToText());
+                  newChannel->SetName(*channelname, *shortname, (const char *) "analog");
+@@ -988,6 +1011,8 @@
+                else {
+                  if (MenuScanning)
+                    MenuScanning->SetStr(0, false);
++                 if (RemoteMenuScanning)
++                   RemoteMenuScanning->SetSignalStrength(0, false);
+                  }
+                break;
+                }
+@@ -1108,6 +1133,13 @@
+ 
+ stop:
+   if (MenuScanning) MenuScanning->SetStatus((status = 0));
++  if (RemoteMenuScanning)
++  {
++    RemoteMenuScanning->SetStatus((status = 0));
++    RemoteMenuScanning->IsFinished();
++    delete RemoteMenuScanning;
++    RemoteMenuScanning = NULL;
++  }
+   dlog(3, "leaving scanner");
+   Cancel(0);
+   }
+diff -NaurwB wirbelscan-0.0.5-pre11e/statemachine.c wirbelscan-patched/statemachine.c
+--- wirbelscan-0.0.5-pre11e/statemachine.c	2010-03-17 11:32:34.000000000 +0100
++++ wirbelscan-patched/statemachine.c	2010-04-22 17:07:02.000000000 +0200
+@@ -129,6 +129,11 @@
+            MenuScanning->SetTransponder(Transponder);
+            MenuScanning->SetProgress(-1, DVB_TERR, -1);
+            }
++         if (RemoteMenuScanning)
++         {
++           RemoteMenuScanning->SetPercentage(-1);
++           RemoteMenuScanning->SetTransponder(*PrintTransponder(Transponder));
++           }
+ 
+          ScannedTransponder = new cChannel(* Transponder);
+          ScannedTransponders.Add(ScannedTransponder);
+@@ -143,6 +148,8 @@
+            }
+          if (MenuScanning)
+            MenuScanning->SetStr(GetFrontendStrength(dev->CardIndex()), dev->HasLock(1));
++         if (RemoteMenuScanning)
++           RemoteMenuScanning->SetSignalStrength(GetFrontendStrength(dev->CardIndex()), dev->HasLock(1));
+          break;
+ 
+        case eNextTransponder:
+diff -NaurwB wirbelscan-0.0.5-pre11e/wirbelscan.c wirbelscan-patched/wirbelscan.c
+--- wirbelscan-0.0.5-pre11e/wirbelscan.c	2010-03-17 11:32:34.000000000 +0100
++++ wirbelscan-patched/wirbelscan.c	2010-04-23 03:17:50.000000000 +0200
+@@ -9,6 +9,8 @@
+ #include <vdr/plugin.h>
+ #include <vdr/i18n.h>
+ #include "menusetup.h"
++#include "countries.h"
++#include "satellites.h"
+ #if VDRVERSNUM < 10507
+ #include "i18n.h"
+ #endif
+@@ -141,7 +143,69 @@
+ 
+ bool cPluginWirbelscan::Service(const char *Id, void *Data)
+ {
+-  // Handle custom service requests from other plugins
++  if (strcmp(Id,"WirbelScanService-DoScan-v1.0") == 0)
++  {
++    if (Data)
++    {
++      WirbelScanService_DoScan_v1_0 *svc = (WirbelScanService_DoScan_v1_0*)Data;
++
++      Wirbelscan.scanflags        = svc->scan_tv        ? SCAN_TV         : 0;
++      Wirbelscan.scanflags       |= svc->scan_radio     ? SCAN_RADIO      : 0;
++      Wirbelscan.scanflags       |= svc->scan_scrambled ? SCAN_SCRAMBLED  : 0;
++      Wirbelscan.scanflags       |= svc->scan_fta       ? SCAN_FTA        : 0;
++      Wirbelscan.scanflags       |= svc->scan_hd        ? SCAN_HD         : 0;
++      Wirbelscan.CountryIndex     = svc->CountryIndex;
++      Wirbelscan.DVBC_Inversion   = svc->DVBC_Inversion;
++      Wirbelscan.DVBC_Symbolrate  = svc->DVBC_Symbolrate;
++      Wirbelscan.DVBC_QAM         = svc->DVBC_QAM;
++      Wirbelscan.DVBT_Inversion   = svc->DVBT_Inversion;
++      Wirbelscan.SatIndex         = svc->SatIndex;
++      Wirbelscan.ATSC_type        = svc->ATSC_Type;
++
++      RemoteMenuScanning = new sRemoteMenuScanning;
++      RemoteMenuScanning->SetPercentage = svc->SetPercentage;
++      RemoteMenuScanning->SetSignalStrength = svc->SetSignalStrength;
++      RemoteMenuScanning->SetDeviceInfo = svc->SetDeviceInfo;
++      RemoteMenuScanning->SetTransponder = svc->SetTransponder;
++      RemoteMenuScanning->NewChannel = svc->NewChannel;
++      RemoteMenuScanning->IsFinished = svc->IsFinished;
++      RemoteMenuScanning->SetStatus = svc->SetStatus;
++
++      return DoScan(svc->type);
++    }
++  }
++  else if (strcmp(Id,"WirbelScanService-StopScan-v1.0") == 0)
++  {
++    DoStop();
++    return true;
++  }
++  else if (strcmp(Id,"WirbelScanService-GetCountries-v1.0") == 0)
++  {
++    if (Data)
++    {
++      WirbelScanService_GetCountries_v1_0 SetCountry = (WirbelScanService_GetCountries_v1_0) Data;
++      for (int i=0; i < COUNTRY::country_count(); i++)
++      {
++        SetCountry(COUNTRY::country_list[i].id, COUNTRY::country_list[i].short_name, COUNTRY::country_list[i].full_name);
++      }
++      return true;
++    }
++  }
++  else if (strcmp(Id,"WirbelScanService-GetSatellites-v1.0") == 0)
++  {
++    if (Data)
++    {
++      WirbelScanService_GetSatellites_v1_0 SetSatellite = (WirbelScanService_GetSatellites_v1_0) Data;
++      for (int i=0; i < sat_count(); i++)
++      {
++        SetSatellite(sat_list[i].id, sat_list[i].short_name, sat_list[i].full_name);
++      }
++      return true;
++    }
++
++    return true;
++  }
++
+   return false;
+ }
+ 
+diff -NaurwB wirbelscan-0.0.5-pre11e/wirbelscanservice.h wirbelscan-patched/wirbelscanservice.h
+--- wirbelscan-0.0.5-pre11e/wirbelscanservice.h	1970-01-01 01:00:00.000000000 +0100
++++ wirbelscan-patched/wirbelscanservice.h	2010-04-23 02:03:56.000000000 +0200
+@@ -0,0 +1,57 @@
++/*
++ * wirbelscan.c: A plugin for the Video Disk Recorder
++ *
++ * See the README file for copyright information and how to reach the author.
++ *
++ * $Id$
++ */
++
++#ifndef __WIRBELSCAN_SERVICE_H
++#define __WIRBELSCAN_SERVICE_H
++
++typedef enum scantype
++{
++  DVB_TERR    = 0,
++  DVB_CABLE   = 1,
++  DVB_SAT     = 2,
++  PVRINPUT    = 3,
++  PVRINPUT_FM = 4,
++  DVB_ATSC    = 5,
++} scantype_t;
++
++typedef void (*WirbelScanService_GetCountries_v1_0)(int index, const char *isoName, const char *longName);
++typedef void (*WirbelScanService_GetSatellites_v1_0)(int index, const char *shortName, const char *longName);
++
++struct WirbelScanService_DoScan_v1_0
++{
++  scantype_t  type;
++
++  bool        scan_tv;
++  bool        scan_radio;
++  bool        scan_fta;
++  bool        scan_scrambled;
++  bool        scan_hd;
++
++  int         CountryIndex;
++
++  int         DVBC_Inversion;
++  int         DVBC_Symbolrate;
++  int         DVBC_QAM;
++
++  int         DVBT_Inversion;
++
++  int         SatIndex;
++
++  int         ATSC_Type;
++
++  void (*SetPercentage)(int percent);
++  void (*SetSignalStrength)(int strenght, bool locked);
++  void (*SetDeviceInfo)(const char *Info);
++  void (*SetTransponder)(const char *Info);
++  void (*NewChannel)(const char *Name, bool isRadio, bool isEncrypted, bool isHD);
++  void (*IsFinished)();
++  void (*SetStatus)(int status);
++};
++
++#endif //__WIRBELSCAN_SERVICE_H
++

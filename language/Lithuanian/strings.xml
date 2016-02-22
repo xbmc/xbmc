@@ -2399,11 +2399,11 @@
   <string id="36007">Įjungti maitinimą įrenginiuose, paleidžiant XBMC</string>
   <string id="36008">Išjungti maitinimą įrenginiuose, sustabdant XBMC</string>
   <string id="36009">Patalpinkite prietaisus laukimo režime, kai aktyvi ekrano užsklanda</string>
-  <string id="36010">Nustatyti kaip neaktyvų šaltinį kai sustabdomas XBMC</string>
+  <string id="36010"></string>
   <string id="36011">Nepavyko aptikti CEC prievado. Nustatyti jį rankiniu būdu.</string>
   <string id="36012">Nepavyko aptikti CEC adapterio.</string>
   <string id="36013">Nepalaikomas 'libec' sąsajos versija.%d atsisiuskite naujesnę  XBMC versiją (%d)</string>
-  <string id="36014">Kompiuterį budėjimo režimu, kai televizorius yra išjungtas</string>
+  <string id="36014"></string>
   <string id="36015">HDMI prievado numeris</string>
   <string id="36016">Sujungtas</string> <!-- max. 13 characters -->
   <string id="36017">Adapteris rastas, bet Libcec nėra</string>

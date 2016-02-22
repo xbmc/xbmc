@@ -108,6 +108,10 @@ public:
   void StopUPnPRenderer();
   void StartUPnPServer();
   void StopUPnPServer();
+  void StartPVRManager();
+  void StartEPGManager(void);
+  void StopPVRManager();
+  void StopEPGManager(void);
   bool StartEventServer();
   bool StopEventServer(bool bWait, bool promptuser);
   void RefreshEventServer();
@@ -153,6 +157,8 @@ public:
   bool OnAppCommand(const CAction &action);
   bool OnAction(const CAction &action);
   void CheckShutdown();
+  void InhibitIdleShutdown(bool inhibit);
+  bool IsIdleShutdownInhibited() const;
   // Checks whether the screensaver and / or DPMS should become active.
   void CheckScreenSaverAndDPMS();
   void CheckPlayingProgress();
@@ -310,6 +316,8 @@ protected:
   CStopWatch m_slowTimer;
   CStopWatch m_screenSaverTimer;
   CStopWatch m_shutdownTimer;
+
+  bool m_bInhibitIdleShutdown;
 
   DPMSSupport* m_dpms;
   bool m_dpmsIsActive;

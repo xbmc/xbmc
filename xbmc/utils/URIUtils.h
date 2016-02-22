@@ -68,6 +68,7 @@ public:
   static bool IsISO9660(const CStdString& strFile);
   static bool IsLastFM(const CStdString& strFile);
   static bool IsLiveTV(const CStdString& strFile);
+  static bool IsPVRRecording(const CStdString& strFile);
   static bool IsMultiPath(const CStdString& strPath);
   static bool IsMusicDb(const CStdString& strFile);
   static bool IsMythTV(const CStdString& strFile);

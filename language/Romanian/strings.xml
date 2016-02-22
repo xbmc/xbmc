@@ -2399,7 +2399,7 @@
   <string id="36011">Portul CEC nu poate fi detectat. Setați-l manual.</string>
   <string id="36012">Adaptorul CEC nu poate fi detectat.</string>
   <string id="36013">Versiune interfață libcec nesuportată. %d este mai mare decât versiunea pe care XBMC o suportă (%d)</string>
-  <string id="36014">Pune acest calculator în repaus când televizorul este oprit</string>
+  <string id="36014"></string>
   <string id="36015">Număr port HDMI</string>
   <string id="36016">Conectat</string> <!-- max. 13 characters -->
   <string id="36017">Adaptor găsit, dar librăria libcec nu este disponibilă</string>

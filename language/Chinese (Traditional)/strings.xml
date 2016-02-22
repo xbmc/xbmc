@@ -2197,7 +2197,7 @@
   <string id="36011">無法偵測CEC連接埠。請手動設定。</string>
   <string id="36012">無法偵測CEC配接器</string>
   <string id="36013">不支援的 libcec 介面版本。 %d 大於XBMC支援的版本 (%d)</string>
-  <string id="36014">如果關掉這台電視，讓這台電腦進入待機模式</string>
+  <string id="36014"></string>
   <string id="36015">HDMI連接埠編號</string>
   <string id="36016">已連接</string>
   <string id="36017">找到配接器，但無法取得 libcec</string>

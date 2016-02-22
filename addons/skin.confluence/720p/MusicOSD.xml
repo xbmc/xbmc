@@ -306,8 +306,8 @@
 				<height>45</height>
 				<label>264</label>
 				<font>-</font>
-				<texturefocus>OSDRecordFO.png</texturefocus>
-				<texturenofocus>OSDRecordNF.png</texturenofocus>
+				<texturefocus>OSDRecordOffFO.png</texturefocus>
+				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
 				<onleft>703</onleft>
 				<onright>600</onright>
 				<onup>1000</onup>

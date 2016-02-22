@@ -140,7 +140,7 @@ int64_t CVTPFile::Seek(int64_t pos, int whence)
   return -1;
 }
 
-bool CVTPFile::NextChannel()
+bool CVTPFile::NextChannel(bool preview/* = false*/)
 {
   if(m_session == NULL)
     return false;
@@ -166,7 +166,7 @@ bool CVTPFile::NextChannel()
   return false;
 }
 
-bool CVTPFile::PrevChannel()
+bool CVTPFile::PrevChannel(bool preview/* = false*/)
 {
   if(m_session == NULL)
     return false;

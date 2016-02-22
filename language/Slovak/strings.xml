@@ -2204,7 +2204,7 @@
   <string id="36011">Nepodarilo sa zistiť CEC port. Nastavte ho manuálne.</string>
   <string id="36012">Nepodarilo sa zistiť CEC adaptér.</string>
   <string id="36013">Nepodporovaná verzia libcec rozhrania. %d je vyššia ako XBMC podporuje (%d)</string>
-  <string id="36014">Aktivovať pohotovstný režim PC pri vypnutí TV</string>
+  <string id="36014"></string>
   <string id="36015">HDMI portu</string>
   <string id="36016">Pripojené</string>
   <string id="36017">Adaptér nájdený, libcec nie je dostupný</string>

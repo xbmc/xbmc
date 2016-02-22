@@ -2408,7 +2408,7 @@
   <string id="36011">CEC portu algılanamadı. El ile ayarla.</string>
   <string id="36012">CEC bağdaştırıcısı algılanamadı.</string>
   <string id="36013">Desteklenmeyen libcec arabirim sürümü. %d is greater than the version XBMC supports (%d)</string>
-  <string id="36014">Televizyon kapatılınca bilgisayarı bekleme moduna geçir</string>
+  <string id="36014"></string>
   <string id="36015">HDMI port numarası</string>
   <string id="36016">Bağlandı</string> <!-- max. 13 characters -->
   <string id="36017">Bağdaştırıcı bulundu, fakat libcec kullanılamıyor</string>

@@ -284,6 +284,7 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
       CDemuxStreamAudio* a;
       CDemuxStreamVideo* v;
       CDemuxStreamSubtitle* s;
+      CDemuxStreamTeletext* t;
     } st;
 
     CLog::Log(LOGDEBUG, "CDVDDemuxHTSP::SubscriptionStart - id: %d, type: %s", index, type);
@@ -320,6 +321,9 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
     } else if(!strcmp(type, "TEXTSUB")) {
       st.s = new CDemuxStreamSubtitle();
       st.s->codec = CODEC_ID_TEXT;
+    } else if(!strcmp(type, "TELETEXT")) {
+      st.t = new CDemuxStreamTeletext();
+      st.t->codec = CODEC_ID_DVB_TELETEXT;
     } else {
       continue;
     }

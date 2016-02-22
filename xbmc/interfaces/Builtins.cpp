@@ -111,11 +111,14 @@ const BUILT_IN commands[] = {
   { "Quit",                       false,  "Quit XBMC" },
   { "Hibernate",                  false,  "Hibernates the system" },
   { "Suspend",                    false,  "Suspends the system" },
+  { "InhibitIdleShutdown",        false,  "Inhibit idle shutdown" },
+  { "AllowIdleShutdown",          false,  "Allow idle shutdown" },
   { "RestartApp",                 false,  "Restart XBMC" },
   { "Minimize",                   false,  "Minimize XBMC" },
   { "Reset",                      false,  "Reset the xbox (warm reboot)" },
   { "Mastermode",                 false,  "Control master mode" },
   { "ActivateWindow",             true,   "Activate the specified window" },
+  { "ActivateWindowAndFocus",     true,   "Activate the specified window and sets focus to the specified id" },
   { "ReplaceWindow",              true,   "Replaces the current window with the new one" },
   { "TakeScreenshot",             false,  "Takes a Screenshot" },
   { "RunScript",                  true,   "Run the specified script" },
@@ -271,6 +274,11 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     g_application.getApplicationMessenger().Quit();
   }
+  else if (execute.Equals("inhibitidleshutdown"))
+  {
+    bool inhibit = (params.size() == 1 && params[0].Equals("true"));
+    g_application.getApplicationMessenger().InhibitIdleShutdown(inhibit);
+  }
   else if (execute.Equals("minimize"))
   {
     g_application.getApplicationMessenger().Minimize();
@@ -349,6 +357,39 @@ int CBuiltins::Execute(const CStdString& execString)
     int subItem = (params.size() > 1) ? atol(params[1].c_str())+1 : 0;
     CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(), controlID, subItem);
     g_windowManager.SendMessage(msg);
+  }
+  else if ((execute.Equals("activatewindowandfocus")) && params.size())
+  {
+    CStdString strWindow = params[0];
+
+    // confirm the window destination is valid prior to switching
+    int iWindow = CButtonTranslator::TranslateWindow(strWindow);
+    if (iWindow != WINDOW_INVALID)
+    {
+      // disable the screensaver
+      g_application.WakeUpScreenSaverAndDPMS();
+#if defined(__APPLE__) && defined(__arm__)
+      if (params[0].Equals("shutdownmenu"))
+        CBuiltins::Execute("Quit");
+#endif
+      vector<CStdString> dummy;
+      g_windowManager.ActivateWindow(iWindow, dummy, !execute.Equals("activatewindow"));
+
+      unsigned int iPtr = 1;
+      while (params.size() > iPtr + 1)
+      {
+        CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(),
+            atol(params[iPtr].c_str()),
+            (params.size() >= iPtr + 2) ? atol(params[iPtr + 1].c_str())+1 : 0);
+        g_windowManager.SendMessage(msg);
+        iPtr += 2;
+      }
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "ActivateWindowAndFocus called with invalid destination window: %s", strWindow.c_str());
+      return false;
+    }
   }
 #ifdef HAS_PYTHON
   else if (execute.Equals("runscript") && params.size())

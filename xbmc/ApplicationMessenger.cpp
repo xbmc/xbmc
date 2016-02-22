@@ -53,6 +53,8 @@
 #elif defined __APPLE__
 #include "CocoaInterface.h"
 #endif
+#include "addons/AddonCallbacks.h"
+#include "addons/AddonCallbacksGUI.h"
 #include "storage/MediaManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
@@ -71,6 +73,9 @@
 #include "utils/JobManager.h"
 #include "storage/DetectDVDType.h"
 
+#include "pvr/PVRManager.h"
+
+using namespace PVR;
 using namespace std;
 
 CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay)
@@ -244,7 +249,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
       break;
 
-case TMSG_POWERDOWN:
+    case TMSG_POWERDOWN:
       {
         g_application.Stop(EXITCODE_POWERDOWN);
         g_powerManager.Powerdown();
@@ -259,12 +264,14 @@ case TMSG_POWERDOWN:
 
     case TMSG_HIBERNATE:
       {
+        g_PVRManager.SetWakeupCommand();
         g_powerManager.Hibernate();
       }
       break;
 
     case TMSG_SUSPEND:
       {
+        g_PVRManager.SetWakeupCommand();
         g_powerManager.Suspend();
       }
       break;
@@ -283,6 +290,12 @@ case TMSG_POWERDOWN:
         g_application.Stop(EXITCODE_RESTARTAPP);
 #endif
         // TODO
+      }
+      break;
+
+    case TMSG_INHIBITIDLESHUTDOWN:
+      {
+        g_application.InhibitIdleShutdown((bool)pMsg->dwParam1);
       }
       break;
 
@@ -675,6 +688,15 @@ case TMSG_POWERDOWN:
       }
       break;
 
+    case TMSG_GUI_ADDON_DIALOG:
+      {
+        if (pMsg->lpVoid)
+        { // TODO: This is ugly - really these python dialogs should just be normal XBMC dialogs
+          ((ADDON::CGUIAddonWindowDialog *) pMsg->lpVoid)->Show_Internal(pMsg->dwParam2 > 0);
+        }
+      }
+      break;
+
     case TMSG_GUI_PYTHON_DIALOG:
       {
         if (pMsg->lpVoid)
@@ -868,10 +890,10 @@ void CApplicationMessenger::PlayFile(const CFileItem &item, bool bRestart /*= fa
   SendMessage(tMsg, false);
 }
 
-void CApplicationMessenger::MediaStop()
+void CApplicationMessenger::MediaStop(bool bWait /* = true */)
 {
   ThreadMessage tMsg = {TMSG_MEDIA_STOP};
-  SendMessage(tMsg, true);
+  SendMessage(tMsg, bWait);
 }
 
 void CApplicationMessenger::MediaPause()
@@ -1073,6 +1095,12 @@ void CApplicationMessenger::Reset()
 void CApplicationMessenger::RestartApp()
 {
   ThreadMessage tMsg = {TMSG_RESTARTAPP};
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::InhibitIdleShutdown(bool inhibit)
+{
+  ThreadMessage tMsg = {TMSG_INHIBITIDLESHUTDOWN, (DWORD)inhibit};
   SendMessage(tMsg);
 }
 

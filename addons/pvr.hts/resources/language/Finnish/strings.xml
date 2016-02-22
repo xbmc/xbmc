@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Tvheadend-palvelimen nimi tai IP-osoite</string>
+    <string id="30001">HTTP-portti</string>
+    <string id="30002">HTSP-portti</string>
+    <string id="30003">Käyttäjänimi</string>
+    <string id="30004">Salasana</string>
+    <string id="30006">Yhteyden aikakatkaisu sekunneissa</string>
+    <string id="30007">Vastauksen aikakatkaisu sekunneissa</string>
+
+    <!-- notifications -->
+    <string id="30500">Yhteys katkaistu palvelimeen '%s'</string>
+    <string id="30501">Yhdistetty palvelimeen '%s'</string>
+</strings>
