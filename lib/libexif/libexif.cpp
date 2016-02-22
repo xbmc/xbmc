@@ -31,13 +31,3 @@ bool process_jpeg(const char *filename, ExifInfo_t *exifInfo, IPTCInfo_t *iptcIn
 #ifdef __cplusplus
 }
 #endif
-
-#ifndef _DLL
-int main(int argc, char* argv[])
-{
-  ExifInfo_t exifInfo;
-  IPTCInfo_t iptcInfo;
-  process_jpeg("C:\\Documents and Settings\\jcmarsha\\My Documents\\My Pictures\\396179226_f09242e21e_o.jpg", &exifInfo, &iptcInfo);
-	return 0;
-}
-#endif
