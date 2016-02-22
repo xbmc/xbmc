@@ -29,7 +29,6 @@
 
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
-#include "utils/URIUtils.h"
 #include "aojsonrpc.h"
 #ifndef TARGET_WINDOWS
 #include "XTimeUtils.h"
@@ -72,10 +71,7 @@ namespace XBMCAddon
      *****************************************************************/
     void log(const char* msg, int level)
     {
-      // check for a valid loglevel
-      if (level < LOGDEBUG || level > LOGNONE)
-        level = LOGDEBUG;
-      CLog::Log(level, "%s", msg);
+      CLog::Log(LOGADDONS, "%s", msg);
     }
 
     void shutdown()
@@ -138,7 +134,7 @@ namespace XBMCAddon
       XbmcThreads::EndTime endTime(timemillis);
       while (!endTime.IsTimePast())
       {
-        LanguageHook* lh = NULL;
+        LanguageHook* lh;
         {
           DelayedCallGuard dcguard;
           lh = dcguard.getLanguageHook(); // borrow this
@@ -147,7 +143,7 @@ namespace XBMCAddon
             nextSleep = 100; // only sleep for 100 millis
           ::Sleep(nextSleep);
         }
-        if (lh != NULL)
+        if (lh != nullptr)
           lh->MakePendingCalls();
       }
     }
@@ -183,8 +179,7 @@ namespace XBMCAddon
         {
           if (region)
           {
-            std::string region = "-" + g_langInfo.GetCurrentRegion();
-            return (lang += region);
+            return (lang += "-" + g_langInfo.GetCurrentRegion());
           }
           return lang;
         }
@@ -194,9 +189,8 @@ namespace XBMCAddon
           g_LangCodeExpander.ConvertToISO6391(lang, langCode);
           if (region)
           {
-            std::string region = g_langInfo.GetRegionLocale();
             std::string region2Code;
-            g_LangCodeExpander.ConvertToISO6391(region, region2Code);
+            g_LangCodeExpander.ConvertToISO6391(g_langInfo.GetRegionLocale(), region2Code);
             region2Code = "-" + region2Code;
             return (langCode += region2Code);
           }
@@ -208,9 +202,8 @@ namespace XBMCAddon
           g_LangCodeExpander.ConvertToISO6392T(lang, langCode);
           if (region)
           {
-            std::string region = g_langInfo.GetRegionLocale();
             std::string region3Code;
-            g_LangCodeExpander.ConvertToISO6392T(region, region3Code);
+            g_LangCodeExpander.ConvertToISO6392T(g_langInfo.GetRegionLocale(), region3Code);
             region3Code = "-" + region3Code;
             return (langCode += region3Code);
           }
@@ -246,41 +239,9 @@ namespace XBMCAddon
       MEMORYSTATUSEX stat;
       stat.dwLength = sizeof(MEMORYSTATUSEX);
       GlobalMemoryStatusEx(&stat);
-      return (long)(stat.ullAvailPhys  / ( 1024 * 1024 ));
+      return static_cast<long>(stat.ullAvailPhys  / ( 1024 * 1024 ));
     }
 
-    // getCpuTemp() method
-    // ## Doesn't work right, use getInfoLabel('System.CPUTemperature') instead.
-    /*PyDoc_STRVAR(getCpuTemp__doc__,
-      "getCpuTemp() -- Returns the current cpu temperature as an integer."
-      ""
-      "example:"
-      "  - cputemp = xbmc.getCpuTemp()");
-
-      PyObject* XBMC_GetCpuTemp(PyObject *self, PyObject *args)
-      {
-      unsigned short cputemp;
-      unsigned short cpudec;
-
-      _outp(0xc004, (0x4c<<1)|0x01);
-      _outp(0xc008, 0x01);
-      _outpw(0xc000, _inpw(0xc000));
-      _outp(0xc002, (0) ? 0x0b : 0x0a);
-      while ((_inp(0xc000) & 8));
-      cputemp = _inpw(0xc006);
-
-      _outp(0xc004, (0x4c<<1)|0x01);
-      _outp(0xc008, 0x10);
-      _outpw(0xc000, _inpw(0xc000));
-      _outp(0xc002, (0) ? 0x0b : 0x0a);
-      while ((_inp(0xc000) & 8));
-      cpudec = _inpw(0xc006);
-
-      if (cpudec<10) cpudec = cpudec * 100;
-      if (cpudec<100) cpudec = cpudec *10;
-
-      return PyInt_FromLong((long)(cputemp + cpudec / 1000.0f));
-      }*/
 
     String getInfoLabel(const char* cLine)
     {
@@ -367,7 +328,7 @@ namespace XBMCAddon
       XBMC_TRACE;
       Crc32 crc;
       crc.ComputeFromLowerCase(path);
-      return StringUtils::Format("%08x.tbn", (unsigned __int32)crc);
+      return StringUtils::Format("%08x.tbn", static_cast<unsigned __int32>(crc));
     }
 
     String makeLegalFilename(const String& filename, bool fatX)
@@ -479,7 +440,7 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       DelayedCallGuard dg;
-      return g_application.StartServer((CApplication::ESERVERS)iTyp, bStart != 0, bWait != 0);
+      return g_application.StartServer(static_cast<CApplication::ESERVERS>(iTyp), bStart != 0, bWait != 0);
     }
 
     void audioSuspend()
@@ -553,6 +514,6 @@ namespace XBMCAddon
     int getISO_639_2(){ return CLangCodeExpander::ISO_639_2; }
     int getENGLISH_NAME() { return CLangCodeExpander::ENGLISH_NAME; }
 
-    const int lLOGDEBUG = LOGDEBUG;
+    const int lLOGADDONS = LOGADDONS;
   }
 }
