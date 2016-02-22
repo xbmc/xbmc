@@ -27,7 +27,7 @@
 				<top>5</top>
 				<width>1090</width>
 				<height>630</height>
-				<texture border="15">ContentPanel.png</texture>
+				<texture border="15">$VAR[ContentPanel]</texture>
 			</control>
 			<control type="image">
 				<left>5</left>

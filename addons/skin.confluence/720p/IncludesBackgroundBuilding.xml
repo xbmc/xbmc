@@ -86,7 +86,7 @@
 					<top>60</top>
 					<width>750</width>
 					<height>600</height>
-					<texture border="15">ContentPanel.png</texture>
+					<texture border="15">$VAR[ContentPanel]</texture>
 				</control>
 				<control type="image">
 					<left>50</left>
@@ -104,7 +104,7 @@
 					<top>60</top>
 					<width>640</width>
 					<height>600</height>
-					<texture border="15">ContentPanel.png</texture>
+					<texture border="15">$VAR[ContentPanel]</texture>
 				</control>
 				<control type="image">
 					<left>50</left>
@@ -118,7 +118,7 @@
 					<top>60</top>
 					<width>530</width>
 					<height>600</height>
-					<texture border="15">ContentPanel.png</texture>
+					<texture border="15">$VAR[ContentPanel]</texture>
 				</control>
 				<control type="image">
 					<left>700</left>
@@ -136,7 +136,7 @@
 					<top>60</top>
 					<width>840</width>
 					<height>600</height>
-					<texture border="15">ContentPanel.png</texture>
+					<texture border="15">$VAR[ContentPanel]</texture>
 				</control>
 				<control type="image">
 					<left>50</left>
@@ -150,7 +150,7 @@
 					<top>60</top>
 					<width>330</width>
 					<height>600</height>
-					<texture border="15">ContentPanel.png</texture>
+					<texture border="15">$VAR[ContentPanel]</texture>
 				</control>
 				<control type="image">
 					<left>900</left>
@@ -168,7 +168,7 @@
 					<top>50</top>
 					<width>1180</width>
 					<height>610</height>
-					<texture border="15">ContentPanel.png</texture>
+					<texture border="15">$VAR[ContentPanel]</texture>
 				</control>
 				<control type="image">
 					<left>50</left>
@@ -186,7 +186,7 @@
 					<top>230</top>
 					<width>640</width>
 					<height>430</height>
-					<texture border="15">ContentPanel.png</texture>
+					<texture border="15">$VAR[ContentPanel]</texture>
 				</control>
 				<control type="image">
 					<left>50</left>
@@ -200,7 +200,7 @@
 					<top>230</top>
 					<width>550</width>
 					<height>430</height>
-					<texture border="15">ContentPanel.png</texture>
+					<texture border="15">$VAR[ContentPanel]</texture>
 				</control>
 				<control type="image">
 					<left>700</left>
@@ -218,7 +218,7 @@
 					<top>60</top>
 					<width>1130</width>
 					<height>600</height>
-					<texture border="15">ContentPanel.png</texture>
+					<texture border="15">$VAR[ContentPanel]</texture>
 				</control>
 				<control type="image">
 					<left>75</left>
@@ -236,7 +236,7 @@
 					<top>60</top>
 					<width>490</width>
 					<height>600</height>
-					<texture border="15">ContentPanel.png</texture>
+					<texture border="15">$VAR[ContentPanel]</texture>
 				</control>
 				<control type="image">
 					<left>50</left>
@@ -250,7 +250,7 @@
 					<top>60</top>
 					<width>680</width>
 					<height>600</height>
-					<texture border="15">ContentPanel.png</texture>
+					<texture border="15">$VAR[ContentPanel]</texture>
 				</control>
 				<control type="image">
 					<left>550</left>
@@ -268,7 +268,7 @@
 					<top>60</top>
 					<width>400</width>
 					<height>600</height>
-					<texture border="15">ContentPanel.png</texture>
+					<texture border="15">$VAR[ContentPanel]</texture>
 				</control>
 				<control type="image">
 					<left>50</left>
@@ -282,7 +282,7 @@
 					<top>60</top>
 					<width>770</width>
 					<height>600</height>
-					<texture border="15">ContentPanel.png</texture>
+					<texture border="15">$VAR[ContentPanel]</texture>
 				</control>
 				<control type="image">
 					<left>460</left>

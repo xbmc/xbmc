@@ -24,7 +24,7 @@
 					<top>60</top>
 					<width>840</width>
 					<height>600</height>
-					<texture border="15">ContentPanel.png</texture>
+					<texture border="15">$VAR[ContentPanel]</texture>
 				</control>
 				<control type="image">
 					<left>50</left>
@@ -38,7 +38,7 @@
 					<top>60</top>
 					<width>330</width>
 					<height>600</height>
-					<texture border="15">ContentPanel.png</texture>
+					<texture border="15">$VAR[ContentPanel]</texture>
 				</control>
 				<control type="image">
 					<left>900</left>

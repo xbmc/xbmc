@@ -49,7 +49,7 @@
 					<top>0</top>
 					<width>500</width>
 					<height>620</height>
-					<texture border="20">ContentPanel.png</texture>
+					<texture border="20">$VAR[ContentPanel]</texture>
 				</control>
 				<control type="image">
 					<left>0</left>
@@ -409,7 +409,7 @@
 					<top>0</top>
 					<width>650</width>
 					<height>620</height>
-					<texture border="20">ContentPanel.png</texture>
+					<texture border="20">$VAR[ContentPanel]</texture>
 				</control>
 				<control type="image">
 					<left>0</left>
