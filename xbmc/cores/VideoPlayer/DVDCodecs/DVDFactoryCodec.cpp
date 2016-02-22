@@ -157,7 +157,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
 #elif defined(HAVE_LIBOPENMAX)
     pCodec = OpenCodec(new CDVDVideoCodecOpenMax(), hint, options);
 #elif defined(HAS_MMAL)
-    pCodec = OpenCodec(new CMMALVideo(), hint, options);
+    pCodec = OpenCodec(new CMMALVideo(processInfo), hint, options);
 #endif
     if (pCodec)
       return pCodec;
