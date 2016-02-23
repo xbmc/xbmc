@@ -55,7 +55,7 @@
 				<shadowcolor>black</shadowcolor>
 				<label>$INFO[System.Time]</label>
 				<animation effect="slide" start="0,0" end="-30,0" time="0" condition="Player.Muted">conditional</animation>
-				<animation effect="slide" start="0,0" end="-70,0" time="0" condition="Window.IsVisible(VideoOSD)">conditional</animation>
+				<animation effect="slide" start="0,0" end="-70,0" time="0" condition="system.getbool(input.enablemouse) + Window.IsVisible(VideoOSD)">conditional</animation>
 			</control>
 			<control type="image" id="1">
 				<left>-20</left>
