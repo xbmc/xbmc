@@ -106,7 +106,8 @@ namespace PVR
 class CCurrentStream
 {
 public:
-  int id;     // demuxerid of current playing stream
+  int64_t demuxerId; // demuxer's id of current playing stream
+  int id;     // id of current playing stream
   int source;
   double dts;    // last dts from demuxer, used to find disncontinuities
   double dur;    // last frame expected duration
@@ -179,6 +180,7 @@ typedef struct SelectionStream
   CDemuxStream::EFlags flags = CDemuxStream::FLAG_NONE;
   int          source = 0;
   int          id = 0;
+  int64_t      demuxerId = -1;
   std::string  codec;
   int          channels = 0;
   int          bitrate = 0;
@@ -205,9 +207,9 @@ public:
   std::vector<SelectionStream> m_Streams;
   CCriticalSection m_section;
 
-  int              IndexOf (StreamType type, int source, int id) const;
+  int              IndexOf (StreamType type, int source, int64_t demuxerId, int id) const;
   int              IndexOf (StreamType type, const CVideoPlayer& p) const;
-  int              Count   (StreamType type) const { return IndexOf(type, STREAM_SOURCE_NONE, -1) + 1; }
+  int              Count   (StreamType type) const { return IndexOf(type, STREAM_SOURCE_NONE, -1, -1) + 1; }
   int              CountSource(StreamType type, StreamSource source) const;
   SelectionStream& Get     (StreamType type, int index);
   bool             Get     (StreamType type, CDemuxStream::EFlags flag, SelectionStream& out);
@@ -364,7 +366,7 @@ protected:
   void CreatePlayers();
   void DestroyPlayers();
 
-  bool OpenStream(CCurrentStream& current, int iStream, int source, bool reset = true);
+  bool OpenStream(CCurrentStream& current, int64_t demuxerId, int iStream, int source, bool reset = true);
   bool OpenAudioStream(CDVDStreamInfo& hint, bool reset = true);
   bool OpenVideoStream(CDVDStreamInfo& hint, bool reset = true);
   bool OpenSubtitleStream(CDVDStreamInfo& hint);

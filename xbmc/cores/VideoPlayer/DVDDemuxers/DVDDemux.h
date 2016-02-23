@@ -77,6 +77,7 @@ public:
   {
     uniqueId = 0;
     dvdNavId = 0;
+    demuxerId = -1;
     codec = (AVCodecID)0; // AV_CODEC_ID_NONE
     codec_fourcc = 0;
     profile = FF_PROFILE_UNKNOWN;
@@ -104,6 +105,7 @@ public:
 
   int uniqueId;          // unique stream id
   int dvdNavId;
+  int64_t demuxerId; // id of the associated demuxer
   AVCodecID codec;
   unsigned int codec_fourcc; // if available
   int profile; // encoder profile of the stream reported by the decoder. used to qualify hw decoders.
@@ -232,7 +234,7 @@ class CDVDDemux
 {
 public:
 
-  CDVDDemux() {}
+  CDVDDemux() : m_demuxerId(NewGuid()) {}
   virtual ~CDVDDemux() {}
 
 
@@ -306,7 +308,7 @@ public:
   /*
    * returns the stream or NULL on error
    */
-  virtual CDemuxStream* GetStream(int iStreamId) const = 0;
+  virtual CDemuxStream* GetStream(int64_t demuxerId, int iStreamId) const { return GetStream(iStreamId); };
 
   virtual std::vector<CDemuxStream*> GetStreams() const = 0;
 
@@ -328,23 +330,44 @@ public:
   /*
    * return a user-presentable codec name of the given stream
    */
-  virtual std::string GetStreamCodecName(int iStreamId) { return ""; };
+  virtual std::string GetStreamCodecName(int64_t demuxerId, int iStreamId) { return GetStreamCodecName(iStreamId); };
 
   /*
   * return true if demuxer supports enabling at a specific PTS
   */
-  virtual bool SupportsEnableAtPTS() { return false; };
+  virtual bool SupportsEnableAtPTS(int64_t demuxerId) { return SupportsEnableAtPTS(); };
 
   /*
    * enable / disable demux stream
    */
-  virtual void EnableStream(int id, bool enable) {};
+  virtual void EnableStream(int64_t demuxerId, int id, bool enable) { EnableStream(id, enable); };
 
   /*
   * enable / disable demux stream at given PTS
   */
-  virtual void EnableStreamAtPTS(int id, uint64_t pts) {};
+  virtual void EnableStreamAtPTS(int64_t demuxerId, int id, uint64_t pts) { EnableStreamAtPTS(id, pts); };
+
+  /*
+  * return the id of the demuxer
+  */
+  int64_t GetDemuxerId() { return m_demuxerId; };
 
 protected:
+  virtual void EnableStream(int id, bool enable) {};
+  virtual void EnableStreamAtPTS(int id, uint64_t pts) {};
+  virtual bool SupportsEnableAtPTS() { return false; };
+  virtual CDemuxStream* GetStream(int iStreamId) const = 0;
+  virtual std::string GetStreamCodecName(int iStreamId) { return ""; };
+
   int GetNrOfStreams(StreamType streamType);
+
+  int64_t m_demuxerId;
+
+private:
+
+  int64_t NewGuid()
+  {
+    static int64_t guid = 0;
+    return guid++;
+  }
 };

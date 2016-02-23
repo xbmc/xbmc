@@ -345,7 +345,7 @@ bool CSelectionStreams::Get(StreamType type, CDemuxStream::EFlags flag, Selectio
   return false;
 }
 
-int CSelectionStreams::IndexOf(StreamType type, int source, int id) const
+int CSelectionStreams::IndexOf(StreamType type, int source, int64_t demuxerId, int id) const
 {
   CSingleLock lock(m_section);
   int count = -1;
@@ -358,7 +358,7 @@ int CSelectionStreams::IndexOf(StreamType type, int source, int id) const
       continue;
     if(id < 0)
       continue;
-    if(m_Streams[i].id == id)
+    if(m_Streams[i].id == id && m_Streams[i].demuxerId == demuxerId)
       return count;
   }
   if(id < 0)
@@ -379,19 +379,19 @@ int CSelectionStreams::IndexOf(StreamType type, const CVideoPlayer& p) const
     else if(type == STREAM_SUBTITLE)
       id = ((CDVDInputStreamNavigator*)p.m_pInputStream)->GetActiveSubtitleStream();
 
-    return IndexOf(type, STREAM_SOURCE_NAV, id);
+    return IndexOf(type, STREAM_SOURCE_NAV, -1, id);
   }
 
   if(type == STREAM_AUDIO)
-    return IndexOf(type, p.m_CurrentAudio.source, p.m_CurrentAudio.id);
+    return IndexOf(type, p.m_CurrentAudio.source, p.m_CurrentAudio.demuxerId, p.m_CurrentAudio.id);
   else if(type == STREAM_VIDEO)
-    return IndexOf(type, p.m_CurrentVideo.source, p.m_CurrentVideo.id);
+    return IndexOf(type, p.m_CurrentVideo.source, p.m_CurrentVideo.demuxerId, p.m_CurrentVideo.id);
   else if(type == STREAM_SUBTITLE)
-    return IndexOf(type, p.m_CurrentSubtitle.source, p.m_CurrentSubtitle.id);
+    return IndexOf(type, p.m_CurrentSubtitle.source, p.m_CurrentSubtitle.demuxerId, p.m_CurrentSubtitle.id);
   else if(type == STREAM_TELETEXT)
-    return IndexOf(type, p.m_CurrentTeletext.source, p.m_CurrentTeletext.id);
+    return IndexOf(type, p.m_CurrentTeletext.source, p.m_CurrentTeletext.demuxerId, p.m_CurrentTeletext.id);
   else if(type == STREAM_RADIO_RDS)
-    return IndexOf(type, p.m_CurrentRadioRDS.source, p.m_CurrentRadioRDS.id);
+    return IndexOf(type, p.m_CurrentRadioRDS.source, p.m_CurrentRadioRDS.demuxerId, p.m_CurrentRadioRDS.id);
 
   return -1;
 }
@@ -418,7 +418,7 @@ int CSelectionStreams::Source(StreamSource source, std::string filename)
 void CSelectionStreams::Update(SelectionStream& s)
 {
   CSingleLock lock(m_section);
-  int index = IndexOf(s.type, s.source, s.id);
+  int index = IndexOf(s.type, s.source, s.demuxerId, s.id);
   if(index >= 0)
   {
     SelectionStream& o = Get(s.type, index);
@@ -516,12 +516,13 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       s.source   = source;
       s.type     = stream->type;
       s.id       = stream->uniqueId;
+      s.demuxerId = stream->demuxerId;
       s.language = g_LangCodeExpander.ConvertToISO6392T(stream->language);
       s.flags    = stream->flags;
       s.filename = demuxer->GetFileName();
       s.filename2 = filename2;
       s.name = stream->GetStreamName();
-      s.codec    = demuxer->GetStreamCodecName(stream->uniqueId);
+      s.codec    = demuxer->GetStreamCodecName(stream->demuxerId, stream->uniqueId);
       s.channels = 0; // Default to 0. Overwrite if STREAM_AUDIO below.
       if(stream->type == STREAM_VIDEO)
       {
@@ -894,7 +895,7 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
   valid   = false;
   for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
-    if(OpenStream(m_CurrentVideo, it->id, it->source, reset))
+    if(OpenStream(m_CurrentVideo, it->demuxerId, it->id, it->source, reset))
       valid = true;
   }
   if(!valid)
@@ -909,7 +910,7 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
 
   for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
-    if(OpenStream(m_CurrentAudio, it->id, it->source, reset))
+    if(OpenStream(m_CurrentAudio, it->demuxerId, it->id, it->source, reset))
       valid = true;
   }
   if(!valid)
@@ -926,7 +927,7 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
   CloseStream(m_CurrentSubtitle, false);
   for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
-    if(OpenStream(m_CurrentSubtitle, it->id, it->source))
+    if(OpenStream(m_CurrentSubtitle, it->demuxerId, it->id, it->source))
     {
       valid = true;
       if(!psp.relevant(*it))
@@ -946,7 +947,7 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
   valid   = false;
   for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
-    if(OpenStream(m_CurrentTeletext, it->id, it->source))
+    if(OpenStream(m_CurrentTeletext, it->demuxerId, it->id, it->source))
       valid = true;
   }
   if(!valid)
@@ -957,7 +958,7 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
   valid   = false;
   for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
-    if(OpenStream(m_CurrentRadioRDS, it->id, it->source))
+    if(OpenStream(m_CurrentRadioRDS, it->demuxerId, it->id, it->source))
       valid = true;
   }
   if(!valid)
@@ -976,7 +977,7 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
             stream.id != m_CurrentTeletext.id &&
             stream.id != m_CurrentRadioRDS.id)
         {
-          m_pDemuxer->EnableStream(stream.id, false);
+          m_pDemuxer->EnableStream(stream.demuxerId, stream.id, false);
         }
       }
     }
@@ -997,7 +998,7 @@ bool CVideoPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
       if(packet->iStreamId < 0)
         return true;
 
-      stream = m_pSubtitleDemuxer->GetStream(packet->iStreamId);
+      stream = m_pSubtitleDemuxer->GetStream(packet->demuxerId, packet->iStreamId);
       if (!stream)
       {
         CLog::Log(LOGERROR, "%s - Error demux packet doesn't belong to a valid stream", __FUNCTION__);
@@ -1051,7 +1052,7 @@ bool CVideoPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
 
     if(m_pDemuxer)
     {
-      stream = m_pDemuxer->GetStream(packet->iStreamId);
+      stream = m_pDemuxer->GetStream(packet->demuxerId, packet->iStreamId);
       if (!stream)
       {
         CLog::Log(LOGERROR, "%s - Error demux packet doesn't belong to a valid stream", __FUNCTION__);
@@ -1078,7 +1079,7 @@ bool CVideoPlayer::IsValidStream(CCurrentStream& stream)
     return true;
   if(source == STREAM_SOURCE_DEMUX_SUB)
   {
-    CDemuxStream* st = m_pSubtitleDemuxer->GetStream(stream.id);
+    CDemuxStream* st = m_pSubtitleDemuxer->GetStream(stream.demuxerId, stream.id);
     if(st == NULL || st->disabled)
       return false;
     if(st->type != stream.type)
@@ -1087,7 +1088,7 @@ bool CVideoPlayer::IsValidStream(CCurrentStream& stream)
   }
   if(source == STREAM_SOURCE_DEMUX)
   {
-    CDemuxStream* st = m_pDemuxer->GetStream(stream.id);
+    CDemuxStream* st = m_pDemuxer->GetStream(stream.demuxerId, stream.id);
     if(st == NULL || st->disabled)
       return false;
     if(st->type != stream.type)
@@ -1145,13 +1146,14 @@ bool CVideoPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
       return true;
     if(current.type == STREAM_SUBTITLE && stream->dvdNavId == m_dvd.iSelectedSPUStream)
       return true;
-    if(current.type == STREAM_VIDEO && current.id < 0)
+    if(current.type == STREAM_VIDEO    && current.id < 0)
       return true;
   }
   else
   {
     if(stream->source == current.source &&
-       stream->uniqueId == current.id)
+       stream->uniqueId == current.id &&
+       stream->demuxerId == current.demuxerId)
       return false;
 
     if(stream->type != current.type)
@@ -1173,7 +1175,7 @@ void CVideoPlayer::CheckBetterStream(CCurrentStream& current, CDemuxStream* stre
     CloseStream(current, true);
 
   if (IsBetterStream(current, stream))
-    OpenStream(current, stream->uniqueId, stream->source);
+    OpenStream(current, stream->demuxerId, stream->uniqueId, stream->source);
 }
 
 void CVideoPlayer::Process()
@@ -1306,7 +1308,7 @@ void CVideoPlayer::Process()
     if (m_omxplayer_mode && OMXDoProcessing(m_OmxPlayerState, m_playSpeed, m_VideoPlayerVideo, m_VideoPlayerAudio, m_CurrentAudio, m_CurrentVideo, m_HasVideo, m_HasAudio, m_renderManager))
     {
       CloseStream(m_CurrentVideo, false);
-      OpenStream(m_CurrentVideo, m_CurrentVideo.id, m_CurrentVideo.source);
+      OpenStream(m_CurrentVideo, m_CurrentVideo.demuxerId, m_CurrentVideo.id, m_CurrentVideo.source);
       if (m_State.canseek)
         m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true, true, true));
     }
@@ -1603,6 +1605,7 @@ bool CVideoPlayer::CheckDelayedChannelEntry(void)
 bool CVideoPlayer::CheckIsCurrent(CCurrentStream& current, CDemuxStream* stream, DemuxPacket* pkg)
 {
   if(current.id     == pkg->iStreamId
+  && current.demuxerId == stream->demuxerId
   && current.source == stream->source
   && current.type   == stream->type)
     return true;
@@ -1628,7 +1631,7 @@ void CVideoPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
   else
   {
     if (m_pDemuxer)
-      m_pDemuxer->EnableStream(pStream->uniqueId, false);
+      m_pDemuxer->EnableStream(pStream->demuxerId, pStream->uniqueId, false);
     CDVDDemuxUtils::FreeDemuxPacket(pPacket); // free it since we won't do anything with it
   }
 }
@@ -1642,7 +1645,7 @@ void CVideoPlayer::CheckStreamChanges(CCurrentStream& current, CDemuxStream* str
     /* if they have, reopen stream */
 
     if (current.hint != CDVDStreamInfo(*stream, true))
-      OpenStream(current, stream->uniqueId, stream->source );
+      OpenStream(current, stream->demuxerId, stream->uniqueId , stream->source );
 
     current.stream = (void*)stream;
     current.changes = stream->changes;
@@ -2544,10 +2547,10 @@ void CVideoPlayer::HandleMessages()
           else
           {
             CloseStream(m_CurrentAudio, false);
-            OpenStream(m_CurrentAudio, st.id, st.source);
+            OpenStream(m_CurrentAudio, st.demuxerId, st.id, st.source);
             AdaptForcedSubtitles();
             
-            if (!m_pDemuxer || !m_pDemuxer->SupportsEnableAtPTS())
+            if (!m_pDemuxer || !m_pDemuxer->SupportsEnableAtPTS(st.demuxerId))
               m_messenger.Put(new CDVDMsgPlayerSeek((int) GetTime(), true, true, true, true, true));
             else
               m_CurrentAudio.avsync = CCurrentStream::AV_SYNC_CONT;
@@ -2573,7 +2576,7 @@ void CVideoPlayer::HandleMessages()
           else
           {
             CloseStream(m_CurrentVideo, false);
-            OpenStream(m_CurrentVideo, st.id, st.source);
+            OpenStream(m_CurrentVideo, st.demuxerId, st.id, st.source);
             m_messenger.Put(new CDVDMsgPlayerSeek((int)GetTime(), true, true, true, true, true));
           }
         }
@@ -2597,7 +2600,7 @@ void CVideoPlayer::HandleMessages()
           else
           {
             CloseStream(m_CurrentSubtitle, false);
-            OpenStream(m_CurrentSubtitle, st.id, st.source);
+            OpenStream(m_CurrentSubtitle, st.demuxerId, st.id, st.source);
           }
         }
       }
@@ -3248,7 +3251,7 @@ void CVideoPlayer::UpdateStreamInfos()
     if (s.stereo_mode == "mono")
       s.stereo_mode = "";
 
-    CDemuxStream* stream = m_pDemuxer->GetStream(m_CurrentVideo.id);
+    CDemuxStream* stream = m_pDemuxer->GetStream(m_CurrentVideo.demuxerId, m_CurrentVideo.id);
     if (stream && stream->type == STREAM_VIDEO)
     {
       s.width = ((CDemuxStreamVideo*)stream)->iWidth;
@@ -3265,10 +3268,10 @@ void CVideoPlayer::UpdateStreamInfos()
     s.bitrate = m_VideoPlayerAudio->GetAudioBitrate();
     s.channels = m_VideoPlayerAudio->GetAudioChannels();
 
-    CDemuxStream* stream = m_pDemuxer->GetStream(m_CurrentAudio.id);
+    CDemuxStream* stream = m_pDemuxer->GetStream(m_CurrentAudio.demuxerId, m_CurrentAudio.id);
     if (stream && stream->type == STREAM_AUDIO)
     {
-      s.codec = m_pDemuxer->GetStreamCodecName(stream->uniqueId);
+      s.codec = m_pDemuxer->GetStreamCodecName(stream->demuxerId, stream->uniqueId);
     }
   }
 }
@@ -3430,7 +3433,7 @@ void CVideoPlayer::ToFFRW(int iSpeed)
   SetPlaySpeed(iSpeed * DVD_PLAYSPEED_NORMAL);
 }
 
-bool CVideoPlayer::OpenStream(CCurrentStream& current, int iStream, int source, bool reset)
+bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iStream, int source, bool reset /*= true*/)
 {
   CDemuxStream* stream = NULL;
   CDVDStreamInfo hint;
@@ -3439,7 +3442,7 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int iStream, int source, 
 
   if(STREAM_SOURCE_MASK(source) == STREAM_SOURCE_DEMUX_SUB)
   {
-    int index = m_SelectionStreams.IndexOf(current.type, source, iStream);
+    int index = m_SelectionStreams.IndexOf(current.type, source, demuxerId, iStream);
     if(index < 0)
       return false;
     SelectionStream st = m_SelectionStreams.Get(current.type, index);
@@ -3461,20 +3464,20 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int iStream, int source, 
     pts += m_offset_pts;
     if (!m_pSubtitleDemuxer->SeekTime((int)(1000.0 * pts / (double)DVD_TIME_BASE)))
         CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %f", __FUNCTION__, pts);
-    stream = m_pSubtitleDemuxer->GetStream(iStream);
+    stream = m_pSubtitleDemuxer->GetStream(demuxerId, iStream);
     if(!stream || stream->disabled)
       return false;
     
-    if (!m_pSubtitleDemuxer->SupportsEnableAtPTS())
-      m_pSubtitleDemuxer->EnableStream(iStream, true);
+    if (!m_pSubtitleDemuxer->SupportsEnableAtPTS(demuxerId))
+      m_pSubtitleDemuxer->EnableStream(demuxerId, iStream, true);
     else
-      m_pSubtitleDemuxer->EnableStreamAtPTS(iStream, DVD_MSEC_TO_TIME(GetTime()));
+      m_pSubtitleDemuxer->EnableStreamAtPTS(demuxerId, iStream, DVD_MSEC_TO_TIME(GetTime()));
 
     hint.Assign(*stream, true);
   }
   else if(STREAM_SOURCE_MASK(source) == STREAM_SOURCE_TEXT)
   {
-    int index = m_SelectionStreams.IndexOf(current.type, source, iStream);
+    int index = m_SelectionStreams.IndexOf(current.type, source, demuxerId, iStream);
     if(index < 0)
       return false;
 
@@ -3488,14 +3491,14 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int iStream, int source, 
     if(!m_pDemuxer)
       return false;
 
-    stream = m_pDemuxer->GetStream(iStream);
+    stream = m_pDemuxer->GetStream(demuxerId, iStream);
     if(!stream || stream->disabled)
       return false;
 
-    if (!m_pDemuxer->SupportsEnableAtPTS())
-      m_pDemuxer->EnableStream(iStream, true);
+    if (!m_pDemuxer->SupportsEnableAtPTS(demuxerId))
+      m_pDemuxer->EnableStream(demuxerId, iStream, true);
     else
-      m_pDemuxer->EnableStreamAtPTS(iStream, DVD_MSEC_TO_TIME(GetTime()));
+      m_pDemuxer->EnableStreamAtPTS(demuxerId, iStream, DVD_MSEC_TO_TIME(GetTime()));
 
     hint.Assign(*stream, true);
 
@@ -3540,6 +3543,7 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int iStream, int source, 
   if (res)
   {
     current.id      = iStream;
+    current.demuxerId = demuxerId;
     current.source  = source;
     current.hint    = hint;
     current.stream  = (void*)stream;
@@ -3710,7 +3714,7 @@ bool CVideoPlayer::AdaptForcedSubtitles()
     {
       if (it->flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareISO639Codes(it->language, as.language))
       {
-        if(OpenStream(m_CurrentSubtitle, it->id, it->source))
+        if(OpenStream(m_CurrentSubtitle, it->demuxerId, it->id, it->source))
         {
           valid = true;
           SetSubtitleVisibleInternal(true);
@@ -3775,7 +3779,7 @@ bool CVideoPlayer::CloseStream(CCurrentStream& current, bool bWaitForBuffers)
     SetCaching(CACHESTATE_DONE);
 
   if (m_pDemuxer && STREAM_SOURCE_MASK(current.source) == STREAM_SOURCE_DEMUX)
-    m_pDemuxer->EnableStream(current.id, false);
+    m_pDemuxer->EnableStream(current.demuxerId, current.id, false);
 
   IDVDStreamPlayer* player = GetStreamPlayer(current.player);
   if(player)
@@ -4584,7 +4588,9 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
       if (sub->type != STREAM_SUBTITLE)
         continue;
 
-      int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), sub->uniqueId);
+      int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE,
+        m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename),
+        sub->demuxerId, sub->uniqueId);
       SelectionStream& stream = m_SelectionStreams.Get(STREAM_SUBTITLE, index);
 
       if (stream.name.empty())
@@ -4597,7 +4603,8 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
         stream.flags = static_cast<CDemuxStream::EFlags>(info.flag);
     }
 
-    return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), 0);
+    return m_SelectionStreams.IndexOf(STREAM_SUBTITLE,
+      m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), -1, 0);
   }
   if(ext == ".sub")
   {
@@ -4619,7 +4626,7 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
     s.flags = static_cast<CDemuxStream::EFlags>(info.flag);
 
   m_SelectionStreams.Update(s);
-  return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, s.source, s.id);
+  return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, s.source, s.demuxerId, s.id);
 }
 
 void CVideoPlayer::UpdatePlayState(double timeout)
