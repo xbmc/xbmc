@@ -115,6 +115,7 @@ public:
   {
     NEWSOUND = 0,
     PLAYSOUND,
+    ISPLAYINGSOUND,
     FREESOUND,
     NEWSTREAM,
     FREESTREAM,
@@ -277,6 +278,7 @@ public:
 
 protected:
   void PlaySound(CActiveAESound *sound);
+  bool IsPlayingSound();
   uint8_t **AllocSoundSample(SampleConfig &config, int &samples, int &bytes_per_sample, int &planes, int &linesize);
   void FreeSoundSample(uint8_t **data);
   void GetDelay(AEDelayStatus& status, CActiveAEStream *stream) { m_stats.GetDelay(status, stream); }
