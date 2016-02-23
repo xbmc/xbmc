@@ -3855,12 +3855,12 @@ void CApplication::LoadVideoSettings(const CFileItem& item)
   CVideoDatabase dbs;
   if (dbs.Open())
   {
-    CLog::Log(LOGDEBUG, "Loading settings for %s", item.GetPath().c_str());
-    
+    CLog::Log(LOGDEBUG, "Loading settings for %s", CURL::GetRedacted(item.GetPath()).c_str());
+
     // Load stored settings if they exist, otherwise use default
     if (!dbs.GetVideoSettings(item, CMediaSettings::GetInstance().GetCurrentVideoSettings()))
       CMediaSettings::GetInstance().GetCurrentVideoSettings() = CMediaSettings::GetInstance().GetDefaultVideoSettings();
-    
+
     dbs.Close();
   }
 }
