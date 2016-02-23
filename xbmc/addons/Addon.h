@@ -51,7 +51,7 @@ void OnPreUnInstall(const AddonPtr& addon);
 void OnPostUnInstall(const AddonPtr& addon);
 
 
-class AddonProps : public ISerializable
+class AddonProps
 {
 public:
   AddonProps() : type(ADDON_UNKNOWN), version("0.0.0"), minversion("0.0.0") {};
@@ -70,8 +70,6 @@ public:
            && (*this).type == rhs.type
            && (*this).version == rhs.version;
   }
-  
-  void Serialize(CVariant &variant) const;
 
   std::string id;
   TYPE type;
