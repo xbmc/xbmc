@@ -258,6 +258,10 @@
 				<visible>!MusicPlayer.Content(LiveTV)</visible>
 				<onclick>PlayerControl(Random)</onclick>
 			</control>
+			<control type="image" id="2300">
+				<width>105</width>
+				<texture>-</texture>
+			</control>
 			<control type="image" id="2400">
 				<width>55</width>
 				<texture>-</texture>
