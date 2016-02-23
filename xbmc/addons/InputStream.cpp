@@ -109,12 +109,14 @@ bool CInputStream::Open(CFileItem &fileitem)
 {
   INPUTSTREAM props;
   props.m_nCountInfoValues = 0;
+  std::vector<std::string> values;
   for (auto &key : m_fileItemProps)
   {
     if (fileitem.GetProperty(key).isNull())
       continue;
     props.m_ListItemProperties[props.m_nCountInfoValues].m_strKey = key.c_str();
-    props.m_ListItemProperties[props.m_nCountInfoValues].m_strValue = fileitem.GetProperty(key).asString().c_str();
+    values.push_back(fileitem.GetProperty(key).asString());
+    props.m_ListItemProperties[props.m_nCountInfoValues].m_strValue = values.back().c_str();
     props.m_nCountInfoValues++;
   }
   props.m_strURL = fileitem.GetPath().c_str();
