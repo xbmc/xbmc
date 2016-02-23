@@ -243,7 +243,11 @@ lib/cpluff/stamp-h1
 /project/BuildDependencies/downloads2
 /project/BuildDependencies/include
 /project/BuildDependencies/lib
-/project/BuildDependencies/msys
+/project/BuildDependencies/msys32
+/project/BuildDependencies/msys64
+/project/BuildDependencies/local32
+/project/BuildDependencies/local64
+/project/BuildDependencies/build
 /project/BuildDependencies/scripts/tmp
 /project/BuildDependencies/src
 /project/BuildDependencies/bin/swig

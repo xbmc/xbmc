@@ -5,11 +5,13 @@ SET cur_dir=%CD%
 SET base_dir=%cur_dir%\..\..
 SET builddeps_dir=%cur_dir%\..\..\project\BuildDependencies
 SET bin_dir=%builddeps_dir%\bin
-SET msys_bin_dir=%builddeps_dir%\msys\bin
+SET msys_dir=%builddeps_dir%\msys64
+IF NOT EXIST %msys_dir% (SET msys_dir=%builddeps_dir%\msys32)
+SET awk_exe=%msys_dir%\usr\bin\awk.exe
 REM read the version values from version.txt
-FOR /f %%i IN ('%msys_bin_dir%\awk.exe "/APP_NAME/ {print $2}" %base_dir%\version.txt') DO SET APP_NAME=%%i
-FOR /f %%i IN ('%msys_bin_dir%\awk.exe "/COMPANY_NAME/ {print $2}" %base_dir%\version.txt') DO SET COMPANY=%%i
-FOR /f %%i IN ('%msys_bin_dir%\awk.exe "/WEBSITE/ {print $2}" %base_dir%\version.txt') DO SET WEBSITE=%%i
+FOR /f %%i IN ('%awk_exe% "/APP_NAME/ {print $2}" %base_dir%\version.txt') DO SET APP_NAME=%%i
+FOR /f %%i IN ('%awk_exe% "/COMPANY_NAME/ {print $2}" %base_dir%\version.txt') DO SET COMPANY=%%i
+FOR /f %%i IN ('%awk_exe% "/WEBSITE/ {print $2}" %base_dir%\version.txt') DO SET WEBSITE=%%i
 
 rem ----Usage----
 rem BuildSetup [clean|noclean]
@@ -107,9 +109,9 @@ set WORKSPACE=%CD%\..\..
     )
     rem only use sh to please jenkins
     IF %useshell%==sh (
-      call ..\..\tools\buildsteps\win32\make-mingwlibs.bat sh noprompt
+      call ..\..\tools\buildsteps\win32\make-mingwlibs.bat sh noprompt %buildmode%
     ) ELSE (
-      call ..\..\tools\buildsteps\win32\make-mingwlibs.bat noprompt
+      call ..\..\tools\buildsteps\win32\make-mingwlibs.bat noprompt %buildmode%
     )
     IF EXIST errormingw (
       set DIETEXT="failed to build mingw libs"
