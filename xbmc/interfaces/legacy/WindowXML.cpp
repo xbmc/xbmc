@@ -256,7 +256,7 @@ namespace XBMCAddon
       A(UpdateButtons());
     }
 
-    void WindowXML::setProperty(const String& key, const String& value)
+    void WindowXML::setContainerProperty(const String& key, const String& value)
     {
       XBMC_TRACE;
       A(m_vecItems)->SetProperty(key, value);

@@ -140,7 +140,7 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL void clearList();
 
       /**
-       * setProperty(key, value) -- Sets a container property, similar to an infolabel.
+       * setContainerProperty(key, value) -- Sets a container property, similar to an infolabel.
        * 
        * key            : string - property name.\n
        * value          : string or unicode - value of property.
@@ -150,9 +150,9 @@ namespace XBMCAddon
        *        Once you use a keyword, all following arguments require the keyword.
        * 
        * example:\n
-       *   - self.setProperty('Category', 'Newest')
+       *   - self.setContainerProperty('Category', 'Newest')
        */
-      SWIGHIDDENVIRTUAL void setProperty(const String &strProperty, const String &strValue);
+      SWIGHIDDENVIRTUAL void setContainerProperty(const String &strProperty, const String &strValue);
 
 #ifndef SWIG
       // CGUIWindow
