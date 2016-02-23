@@ -138,8 +138,6 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       return CLanguageResource::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_RESOURCE_UISOUNDS:
       return std::make_shared<CUISoundsResource>(std::move(m_props));
-    case ADDON_VIZ_LIBRARY:
-      return std::make_shared<CAddonLibrary>(std::move(m_props));
     case ADDON_REPOSITORY:
       return CRepository::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_CONTEXT_ITEM:
@@ -186,8 +184,6 @@ AddonPtr CAddonBuilder::FromProps(AddonProps addonProps)
 #endif
     case ADDON_SCREENSAVER:
       return AddonPtr(new CScreenSaver(std::move(addonProps)));
-    case ADDON_VIZ_LIBRARY:
-      return AddonPtr(new CAddonLibrary(std::move(addonProps)));
     case ADDON_PVRDLL:
       return AddonPtr(new PVR::CPVRClient(std::move(addonProps)));
     case ADDON_ADSPDLL:
