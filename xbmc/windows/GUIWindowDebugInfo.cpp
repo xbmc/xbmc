@@ -39,7 +39,7 @@ CGUIWindowDebugInfo::CGUIWindowDebugInfo(void)
   : CGUIDialog(WINDOW_DEBUG_INFO, "", DialogModalityType::MODELESS)
 {
   m_needsScaling = false;
-  m_layout = NULL;
+  m_layout = nullptr;
   m_renderOrder = RENDER_ORDER_WINDOW_DEBUG;
 }
 
@@ -60,7 +60,7 @@ bool CGUIWindowDebugInfo::OnMessage(CGUIMessage &message)
   if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
   {
     delete m_layout;
-    m_layout = NULL;
+    m_layout = nullptr;
   }
   return CGUIDialog::OnMessage(message);
 }
@@ -73,8 +73,8 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
 
   static int yShift = 20;
   static int xShift = 40;
-  static unsigned int lastShift = time(NULL);
-  time_t now = time(NULL);
+  static unsigned int lastShift = time(nullptr);
+  time_t now = time(nullptr);
   if (now - lastShift > 10)
   {
     yShift *= -1;
@@ -144,7 +144,7 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
       point.y *= g_graphicsContext.GetGUIScaleY();
       g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
     }
-    info += StringUtils::Format("Mouse: (%d,%d)  ", (int)point.x, (int)point.y);
+    info += StringUtils::Format("Mouse: (%d,%d)  ", static_cast<int>(point.x), static_cast<int>(point.y));
     if (window)
     {
       CGUIControl *control = window->GetFocusedControl();
