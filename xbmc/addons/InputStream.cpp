@@ -316,6 +316,18 @@ CDemuxStream* CInputStream::GetStream(int iStreamId)
   return nullptr;
 }
 
+std::vector<CDemuxStream*> CInputStream::GetStreams() const
+{
+  std::vector<CDemuxStream*> streams;
+
+  for (auto &stream : m_streams)
+  {
+    streams.push_back(stream.second);
+  }
+
+  return streams;
+}
+
 void CInputStream::EnableStream(int iStreamId, bool enable)
 {
   std::map<int, CDemuxStream*>::iterator it = m_streams.find(iStreamId);

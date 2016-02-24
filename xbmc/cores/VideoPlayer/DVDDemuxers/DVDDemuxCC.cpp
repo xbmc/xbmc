@@ -113,6 +113,19 @@ CDemuxStream* CDVDDemuxCC::GetStream(int iStreamId) const
   return const_cast<CDemuxStreamSubtitle*>(&m_streams[iStreamId]);
 }
 
+std::vector<CDemuxStream*> CDVDDemuxCC::GetStreams() const
+{
+  std::vector<CDemuxStream*> streams;
+
+  int num = GetNrOfStreams();
+  for (int i = 0; i < num; ++i)
+  {
+    streams.push_back(const_cast<CDemuxStreamSubtitle*>(&m_streams[i]));
+  }
+
+  return streams;
+}
+
 int CDVDDemuxCC::GetNrOfStreams() const
 {
   return m_streams.size();

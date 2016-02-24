@@ -42,6 +42,7 @@ public:
   virtual bool          SeekTime(int time, bool backwords, double* startpts = NULL);
   virtual void          SetSpeed(int speed) {}
   virtual CDemuxStream* GetStream(int index) const override { return m_Streams[index]; }
+  virtual std::vector<CDemuxStream*> GetStreams() const override;
   virtual int           GetNrOfStreams() const override { return m_Streams.size(); }
   virtual int           GetStreamLength()    { return 0; }
   virtual std::string   GetFileName()        { return m_Filename; }

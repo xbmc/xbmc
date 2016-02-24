@@ -178,6 +178,16 @@ DemuxPacket* CInputStreamAddon::ReadDemux()
   return m_addon->ReadDemux();
 }
 
+std::vector<CDemuxStream*> CInputStreamAddon::GetStreams() const
+{
+  std::vector<CDemuxStream*> streams;
+
+  if (!m_addon)
+    return streams;
+
+  return m_addon->GetStreams();
+}
+
 CDemuxStream* CInputStreamAddon::GetStream(int iStreamId) const
 {
   if (!m_addon)

@@ -24,6 +24,7 @@
 * for DESCRIPTION see 'DVDInputStreamPVRManager.cpp'
 */
 
+#include <vector>
 #include "DVDInputStream.h"
 #include "FileItem.h"
 #include "threads/SystemClock.h"
@@ -103,6 +104,7 @@ public:
   virtual bool OpenDemux() override;
   virtual DemuxPacket* ReadDemux() override;
   virtual CDemuxStream* GetStream(int iStreamId) const override;
+  virtual std::vector<CDemuxStream*> GetStreams() const override;
   virtual int GetNrOfStreams() const override;
   virtual void SetSpeed(int iSpeed) override;
   virtual bool SeekTime(int time, bool backward = false, double* startpts = NULL) override;
@@ -112,7 +114,7 @@ public:
 
 protected:
   bool CloseAndOpen(const char* strFile);
-
+  void UpdateStreamMap();
   IVideoPlayer* m_pPlayer;
   CDVDInputStream* m_pOtherStream;
   XFILE::IFile* m_pFile;
@@ -124,12 +126,7 @@ protected:
   XbmcThreads::EndTime m_ScanTimeout;
   bool m_isOtherStreamHack;
   PVR_STREAM_PROPERTIES *m_StreamProps;
-  CDemuxStreamAudio *m_streamAudio;
-  CDemuxStreamVideo *m_streamVideo;
-  CDemuxStreamSubtitle *m_streamSubtitle;
-  CDemuxStreamTeletext *m_streamTeletext;
-  CDemuxStreamRadioRDS *m_streamRadioRDS;
-  CDemuxStream *m_streamDefault;
+  std::map<int, std::shared_ptr<CDemuxStream>> m_streamMap;
 };
 
 

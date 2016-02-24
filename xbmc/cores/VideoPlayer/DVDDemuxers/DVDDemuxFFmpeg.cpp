@@ -1000,6 +1000,16 @@ CDemuxStream* CDVDDemuxFFmpeg::GetStream(int iStreamId) const
     return NULL;
 }
 
+std::vector<CDemuxStream*> CDVDDemuxFFmpeg::GetStreams() const
+{
+  std::vector<CDemuxStream*> streams;
+
+  for (auto& iter : m_streams)
+    streams.push_back(iter.second);
+
+  return streams;
+}
+
 /**
  * @brief Finds stream based on ffmpeg index
  */

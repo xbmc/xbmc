@@ -169,6 +169,18 @@ CDemuxStream* CDVDDemuxCDDA::GetStream(int iStreamId) const
   return m_stream;
 }
 
+std::vector<CDemuxStream*> CDVDDemuxCDDA::GetStreams() const
+{
+  std::vector<CDemuxStream*> streams;
+
+  if (m_stream != nullptr)
+  {
+    streams.push_back(m_stream);
+  }
+
+  return streams;
+}
+
 int CDVDDemuxCDDA::GetNrOfStreams() const
 {
   return (m_stream == NULL ? 0 : 1);

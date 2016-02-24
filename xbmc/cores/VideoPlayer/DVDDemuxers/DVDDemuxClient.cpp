@@ -332,14 +332,27 @@ CDemuxStream* CDVDDemuxClient::GetStream(int iStreamId) const
   return m_streams[iStreamId];
 }
 
+std::vector<CDemuxStream*> CDVDDemuxClient::GetStreams() const
+{
+  std::vector<CDemuxStream*> streams;
+
+  for (auto iter : m_streams)
+  {
+    if (iter != nullptr)
+    {
+      streams.push_back(iter);
+    }
+  }
+
+  return streams;
+}
+
 void CDVDDemuxClient::RequestStreams()
 {
-  int nbStreams = m_IDemux->GetNrOfStreams();
-
-  int i;
-  for (i = 0; i < nbStreams; ++i)
+  int i = -1;
+  for (auto stream : m_IDemux->GetStreams())
   {
-    CDemuxStream *stream = m_IDemux->GetStream(i);
+    ++i;
     if (!stream)
     {
       CLog::Log(LOGERROR, "CDVDDemuxClient::RequestStreams - invalid stream at pos %d", i);
@@ -499,6 +512,7 @@ void CDVDDemuxClient::RequestStreams()
         m_streams[i]->iPhysicalId,
         m_streams[i]->codec);
   }
+  ++i;
   // check if we need to dispose any streams no longer in props
   for (int j = i; j < MAX_STREAMS; j++)
   {
