@@ -40,7 +40,7 @@ if "%usemirror%"=="yes" (
     echo -------------------------------------------------------------------------------
     echo. Downloading will be performed from mirror %KODI_MIRROR%
     echo -------------------------------------------------------------------------------
-    set KODI_MIRROR=%KODI_MIRROR%/build-deps/win32/msys2
+    set MSYS_MIRROR=%KODI_MIRROR%/build-deps/win32/msys2
 )
 
 set downloaddir=%instdir%\downloads2
@@ -83,7 +83,7 @@ if exist "%downloaddir%\%msysfile%" GOTO unpack
     set msysurl=http://sourceforge.net/projects/msys2/files/Base/%arch%/%msysfile%/download
     if %usemirror%==yes (
         ::download msys2 from our mirror
-        set msysurl=%KODI_MIRROR%/%msysfile%
+        set msysurl=%MSYS_MIRROR%/%msysfile%
     )
     %instdir%\bin\wget --tries=20 --retry-connrefused --waitretry=2 --no-check-certificate -c -O %downloaddir%\%msysfile% %msysurl%
     if errorlevel == 1 (
@@ -157,7 +157,7 @@ if not "%usemirror%"=="yes" GOTO rebase
         set filename=%instdir%\%msys2%\etc\pacman.d\mirrorlist.%%f
         set oldfile=!filename!.old
         if not exist !oldfile! if exist !filename! (
-            set mirror=%KODI_MIRROR%/repos/%%f
+            set mirror=%MSYS_MIRROR%/repos/%%f
             if %%f==msys set mirror=!mirror!2/$arch
             move !filename! !oldfile!>nul
             for /F "usebackq delims=" %%a in (!oldfile!) do (
@@ -518,7 +518,8 @@ if %build32%==no GOTO loginProfile64
     )
 
 :loadlocals32
-set pkgbaseurl=%KODI_MIRROR%/locals
+if "%MSYS_MIRROR%" == "" goto end
+set pkgbaseurl=%MSYS_MIRROR%/locals
 
 echo.-------------------------------------------------------------------------------
 echo.Download precompiled libs
