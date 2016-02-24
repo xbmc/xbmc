@@ -177,11 +177,14 @@ void CGUIDialogAddonInfo::OnInitWindow()
 
 void CGUIDialogAddonInfo::UpdateControls()
 {
+  if (!m_item)
+    return;
+
   bool isInstalled = NULL != m_localAddon.get();
   m_addonEnabled = m_localAddon && !CAddonMgr::GetInstance().IsAddonDisabled(m_localAddon->ID());
   bool canDisable = isInstalled && CAddonMgr::GetInstance().CanAddonBeDisabled(m_localAddon->ID());
-  bool canInstall = !isInstalled && m_addon && m_addon->Broken().empty();
-  bool isRepo = (isInstalled && m_localAddon->Type() == ADDON_REPOSITORY) || (m_addon && m_addon->Type() == ADDON_REPOSITORY);
+  bool canInstall = !isInstalled && m_item->GetAddonInfo()->Broken().empty();
+  bool isRepo = (isInstalled && m_localAddon->Type() == ADDON_REPOSITORY) || (m_item->GetAddonInfo()->Type() == ADDON_REPOSITORY);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canDisable || canInstall);
   SET_CONTROL_LABEL(CONTROL_BTN_INSTALL, isInstalled ? 24037 : 24038);
@@ -298,7 +301,7 @@ void CGUIDialogAddonInfo::OnUpdate()
       CAddonInstaller::GetInstance().InstallFromZip(StringUtils::Format("special://home/addons/packages/%s-%s.zip",
           m_localAddon->ID().c_str(), selected.first.asString().c_str()));
     else
-      CAddonInstaller::GetInstance().Install(m_addon->ID(), selected.first, selected.second);
+      CAddonInstaller::GetInstance().Install(m_item->GetAddonInfo()->ID(), selected.first, selected.second);
   }
 }
 
@@ -320,10 +323,10 @@ void CGUIDialogAddonInfo::OnInstall()
   if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
     return;
 
-  if (!m_addon)
+  if (!m_item->GetAddonInfo())
     return;
 
-  CAddonInstaller::GetInstance().InstallOrUpdate(m_addon->ID());
+  CAddonInstaller::GetInstance().InstallOrUpdate(m_item->GetAddonInfo()->ID());
   Close();
 }
 
@@ -438,11 +441,7 @@ void CGUIDialogAddonInfo::OnSettings()
 void CGUIDialogAddonInfo::OnChangeLog()
 {
   CGUIDialogTextViewer* pDlgInfo = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
-  std::string name;
-  if (m_addon)
-    name = m_addon->Name();
-  else if (m_localAddon)
-    name = m_localAddon->Name();
+  std::string name = m_localAddon ? m_localAddon->Name() : m_item->GetAddonInfo()->Name();
   pDlgInfo->SetHeading(g_localizeStrings.Get(24054)+" - "+name);
   if (m_item->GetProperty("Addon.Changelog").empty())
   {
@@ -453,7 +452,7 @@ void CGUIDialogAddonInfo::OnChangeLog()
       items.Add(CFileItemPtr(new CFileItem(m_localAddon->ChangeLog(),false)));
     }
     else
-      items.Add(CFileItemPtr(new CFileItem(m_addon->ChangeLog(),false)));
+      items.Add(CFileItemPtr(new CFileItem(m_item->GetAddonInfo()->ChangeLog(),false)));
     items[0]->Select(true);
     m_jobid = CJobManager::GetInstance().AddJob(
       new CFileOperationJob(CFileOperationJob::ActionCopy,items,
@@ -469,6 +468,9 @@ void CGUIDialogAddonInfo::OnChangeLog()
 
 bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
 {
+  if (!item)
+    return false;
+
   CGUIDialogAddonInfo* dialog = (CGUIDialogAddonInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_INFO);
   if (!dialog)
     return false;
@@ -481,15 +483,12 @@ bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
 
 bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
 {
-  *m_item = *item;
+  if (!item || !item->HasAddonInfo())
+    return false;
+
+  m_item = item;
   m_localAddon.reset();
-  m_addon.reset();
-
-  CAddonMgr::GetInstance().GetAddon(item->GetProperty("Addon.ID").asString(), m_localAddon, ADDON_UNKNOWN, false);
-
-  CAddonDatabase database;
-  database.Open();
-  database.GetAddon(item->GetProperty("Addon.ID").asString(), m_addon);
+  CAddonMgr::GetInstance().GetAddon(item->GetAddonInfo()->ID(), m_localAddon, ADDON_UNKNOWN, false);
   return true;
 }
 
