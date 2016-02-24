@@ -417,6 +417,14 @@ CCPUInfo::CCPUInfo(void)
 #if defined(TARGET_ANDROID)
     if (CAndroidFeatures::GetCPUCount() > m_cpuCount)
     {
+      for (int i = m_cpuCount; i < CAndroidFeatures::GetCPUCount(); i++)
+      {
+        // Copy info from cpu 0
+        CoreInfo core(m_cores[0]);
+        core.m_id = i;
+        m_cores[core.m_id] = core;
+      }
+
       m_cpuCount = CAndroidFeatures::GetCPUCount();
     }
 #endif
