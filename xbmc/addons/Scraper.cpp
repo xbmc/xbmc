@@ -128,7 +128,6 @@ static void CheckScraperError(const TiXmlElement *pxeRoot)
 
 std::unique_ptr<CScraper> CScraper::FromExtension(AddonProps props, const cp_extension_t* ext)
 {
-  std::string language = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@language");
   bool requiressettings = CAddonMgr::GetInstance().GetExtValue(ext->configuration,"@requiressettings") == "true";
 
   CDateTimeSpan persistence;
@@ -155,11 +154,10 @@ std::unique_ptr<CScraper> CScraper::FromExtension(AddonProps props, const cp_ext
       pathContent = CONTENT_TVSHOWS;
       break;
     default:
-      pathContent = CONTENT_NONE;
       break;
   }
 
-  return std::unique_ptr<CScraper>(new CScraper(std::move(props), language, requiressettings, persistence));
+  return std::unique_ptr<CScraper>(new CScraper(std::move(props), requiressettings, persistence, pathContent));
 }
 
 CScraper::CScraper(AddonProps props)
@@ -170,13 +168,12 @@ CScraper::CScraper(AddonProps props)
 {
 }
 
-CScraper::CScraper(AddonProps props, const std::string& language, bool requiressettings, const CDateTimeSpan& persistence)
+CScraper::CScraper(AddonProps props, bool requiressettings, CDateTimeSpan persistence, CONTENT_TYPE pathContent)
   : CAddon(std::move(props)),
     m_fLoaded(false),
-    m_language(language),
     m_requiressettings(requiressettings),
     m_persistence(persistence),
-    m_pathContent(CONTENT_NONE)
+    m_pathContent(pathContent)
 {
 }
 
