@@ -101,7 +101,7 @@ static const dxva2_mode_t dxva2_modes[] = {
 
     /* HEVC / H.265 */
     { "HEVC / H.265 variable-length decoder, main",   &D3D11_DECODER_PROFILE_HEVC_VLD_MAIN,   AV_CODEC_ID_HEVC },
-    { "HEVC / H.265 variable-length decoder, main10", &D3D11_DECODER_PROFILE_HEVC_VLD_MAIN10, 0 },
+    { "HEVC / H.265 variable-length decoder, main10", &D3D11_DECODER_PROFILE_HEVC_VLD_MAIN10, AV_CODEC_ID_HEVC },
 
 #ifdef FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO
     /* Intel specific modes (only useful on older GPUs) */
@@ -207,79 +207,6 @@ static const dxva2_mode_t *dxva2_find_mode(const GUID *guid)
             return &dxva2_modes[i];
     }
     return nullptr;
-}
-
-//-----------------------------------------------------------------------------
-// DXVA to D3D11 Video API Wrapper
-//-----------------------------------------------------------------------------
-
-CDXVADecoderWrapper::CDXVADecoderWrapper(ID3D11VideoContext* pContext, ID3D11VideoDecoder* pDecoder)
-  : m_refs(1), m_pContext(pContext), m_pDecoder(pDecoder)
-{
-  assert(pContext != nullptr);
-  assert(pDecoder != nullptr);
-  m_pContext->AddRef();
-  m_pDecoder->AddRef();
-};
-
-CDXVADecoderWrapper::~CDXVADecoderWrapper()
-{
-  SAFE_RELEASE(m_pContext);
-  SAFE_RELEASE(m_pDecoder);
-};
-
-STDMETHODIMP_(ULONG) CDXVADecoderWrapper::AddRef(void) 
-{
-  return AtomicIncrement(&m_refs); 
-}
-
-STDMETHODIMP_(ULONG) CDXVADecoderWrapper::Release(void)
-{
-  long refs = AtomicDecrement(&m_refs);
-  assert(refs >= 0);
-  if (refs == 0) delete this;
-  return refs;
-};
-
-STDMETHODIMP CDXVADecoderWrapper::GetBuffer(UINT BufferType, void **ppBuffer, UINT *pBufferSize)
-{
-  return m_pContext->GetDecoderBuffer(m_pDecoder, (D3D11_VIDEO_DECODER_BUFFER_TYPE)BufferType, pBufferSize, ppBuffer);
-};
-
-STDMETHODIMP CDXVADecoderWrapper::ReleaseBuffer(UINT BufferType)
-{
-  return m_pContext->ReleaseDecoderBuffer(m_pDecoder, (D3D11_VIDEO_DECODER_BUFFER_TYPE)BufferType);
-};
-
-STDMETHODIMP CDXVADecoderWrapper::BeginFrame(IDirect3DSurface9 *pRenderTarget, void *pvPVPData)
-{
-  return m_pContext->DecoderBeginFrame(m_pDecoder, reinterpret_cast<ID3D11VideoDecoderOutputView*>(pRenderTarget), 0, pvPVPData);
-};
-
-STDMETHODIMP CDXVADecoderWrapper::EndFrame(HANDLE *pHandleComplete)
-{
-  return m_pContext->DecoderEndFrame(m_pDecoder);
-};
-
-STDMETHODIMP CDXVADecoderWrapper::Execute(const DXVA2_DecodeExecuteParams *pExecuteParams)
-{
-  D3D11_VIDEO_DECODER_BUFFER_DESC buffer[4];
-  for (size_t i = 0; i < pExecuteParams->NumCompBuffers; i++)
-  {
-    ZeroMemory(&buffer[i], sizeof(D3D11_VIDEO_DECODER_BUFFER_DESC));
-    buffer[i].BufferType      = (D3D11_VIDEO_DECODER_BUFFER_TYPE)pExecuteParams->pCompressedBuffers[i].CompressedBufferType;
-    buffer[i].BufferIndex     = pExecuteParams->pCompressedBuffers[i].BufferIndex;
-    buffer[i].DataOffset      = pExecuteParams->pCompressedBuffers[i].DataOffset;
-    buffer[i].DataSize        = pExecuteParams->pCompressedBuffers[i].DataSize;
-    buffer[i].FirstMBaddress  = pExecuteParams->pCompressedBuffers[i].FirstMBaddress;
-    buffer[i].NumMBsInBuffer  = pExecuteParams->pCompressedBuffers[i].NumMBsInBuffer;
-    buffer[i].Width           = pExecuteParams->pCompressedBuffers[i].Width;
-    buffer[i].Height          = pExecuteParams->pCompressedBuffers[i].Height;
-    buffer[i].Stride          = pExecuteParams->pCompressedBuffers[i].Stride;
-    buffer[i].ReservedBits    = pExecuteParams->pCompressedBuffers[i].ReservedBits;
-    buffer[i].pIV             = pExecuteParams->pCompressedBuffers[i].pvPVPState;
-  }
-  return m_pContext->SubmitDecoderBuffers(m_pDecoder, pExecuteParams->NumCompBuffers, buffer);
 }
 
 //-----------------------------------------------------------------------------
@@ -401,7 +328,7 @@ void CDXVAContext::QueryCaps()
   }
 }
 
-bool CDXVAContext::GetInputAndTarget(int codec, GUID &inGuid, DXGI_FORMAT &outFormat)
+bool CDXVAContext::GetInputAndTarget(int codec, bool bHighBitdepth, GUID &inGuid, DXGI_FORMAT &outFormat)
 {
   outFormat = DXGI_FORMAT_UNKNOWN;
 
@@ -414,13 +341,26 @@ bool CDXVAContext::GetInputAndTarget(int codec, GUID &inGuid, DXGI_FORMAT &outFo
 
     for (unsigned i = 0; i < m_input_count && outFormat == DXGI_FORMAT_UNKNOWN; i++)
     {
-      if (!IsEqualGUID(m_input_list[i], *mode->guid))
+      bool supported = IsEqualGUID(m_input_list[i], *mode->guid);
+      if (codec == AV_CODEC_ID_HEVC)
+      {
+        if (bHighBitdepth && !IsEqualGUID(m_input_list[i], D3D11_DECODER_PROFILE_HEVC_VLD_MAIN10))
+          supported = false;
+        else if (!bHighBitdepth && IsEqualGUID(m_input_list[i], D3D11_DECODER_PROFILE_HEVC_VLD_MAIN10))
+          supported = false;
+      }
+      if (!supported)
         continue;
 
       CLog::Log(LOGDEBUG, "DXVA - trying '%s'", mode->name);
       for (unsigned j = 0; render_targets_dxgi[j] != DXGI_FORMAT_UNKNOWN && outFormat == DXGI_FORMAT_UNKNOWN; j++)
       {
         BOOL supported;
+        if (bHighBitdepth && render_targets_dxgi[j] != DXGI_FORMAT_P010 && render_targets_dxgi[j] != DXGI_FORMAT_P016)
+          continue;
+        if (!bHighBitdepth && (render_targets_dxgi[j] == DXGI_FORMAT_P010 || render_targets_dxgi[j] == DXGI_FORMAT_P016))
+          continue;
+
         HRESULT res = m_service->CheckVideoDecoderFormat(&m_input_list[i], render_targets_dxgi[j], &supported);
         if (FAILED(res))
         {
@@ -533,7 +473,7 @@ bool CDXVAContext::CreateSurfaces(D3D11_VIDEO_DECODER_DESC format, unsigned int 
   return SUCCEEDED(hr);
 }
 
-bool CDXVAContext::CreateDecoder(D3D11_VIDEO_DECODER_DESC *format, const D3D11_VIDEO_DECODER_CONFIG *config, CDXVADecoderWrapper **decoder)
+bool CDXVAContext::CreateDecoder(D3D11_VIDEO_DECODER_DESC *format, const D3D11_VIDEO_DECODER_CONFIG *config, ID3D11VideoDecoder **decoder, ID3D11VideoContext **context)
 {
   CSingleLock lock(m_section);
 
@@ -546,8 +486,9 @@ bool CDXVAContext::CreateDecoder(D3D11_VIDEO_DECODER_DESC *format, const D3D11_V
       HRESULT res = m_service->CreateVideoDecoder(format, config, &pDecoder);
       if (!FAILED(res))
       {
-        *decoder = new CDXVADecoderWrapper(m_vcontext, pDecoder);
-        SAFE_RELEASE(pDecoder);
+        *decoder = pDecoder;
+        *context = m_vcontext;
+        m_vcontext->AddRef();
         return true;
       }
     }
@@ -755,15 +696,16 @@ CDecoder::CDecoder()
   m_state     = DXVA_OPEN;
   m_device    = nullptr;
   m_decoder   = nullptr;
+  m_vcontext  = nullptr;
   m_refs         = 0;
   m_shared       = 0;
   m_surface_context = nullptr;
   m_presentPicture = nullptr;
   m_dxva_context = nullptr;
   memset(&m_format, 0, sizeof(m_format));
-  m_context          = (dxva_context*)calloc(1, sizeof(dxva_context));
-  m_context->cfg     = reinterpret_cast<DXVA2_ConfigPictureDecode*>(calloc(1, sizeof(DXVA2_ConfigPictureDecode)));
-  m_context->surface = reinterpret_cast<IDirect3DSurface9**>(calloc(32, sizeof(IDirect3DSurface9*)));
+  m_context          = (AVD3D11VAContext*)calloc(1, sizeof(AVD3D11VAContext));
+  m_context->cfg     = reinterpret_cast<D3D11_VIDEO_DECODER_CONFIG*>(calloc(1, sizeof(D3D11_VIDEO_DECODER_CONFIG)));
+  m_context->surface = reinterpret_cast<ID3D11VideoDecoderOutputView**>(calloc(32, sizeof(ID3D11VideoDecoderOutputView*)));
   m_surface_alignment = 16;
   g_Windowing.Register(this);
 }
@@ -774,7 +716,7 @@ CDecoder::~CDecoder()
   g_Windowing.Unregister(this);
   Close();
   free(m_context->surface);
-  free(const_cast<DXVA2_ConfigPictureDecode*>(m_context->cfg)); // yes this is foobar
+  free(m_context->cfg);
   free(m_context);
 }
 
@@ -792,6 +734,7 @@ void CDecoder::Close()
 {
   CSingleLock lock(m_section);
   SAFE_RELEASE(m_decoder);
+  SAFE_RELEASE(m_vcontext);
   SAFE_RELEASE(m_surface_context);
   SAFE_RELEASE(m_presentPicture);
   memset(&m_format, 0, sizeof(m_format));
@@ -896,7 +839,8 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
   if (!CDXVAContext::EnsureContext(&m_dxva_context, this))
     return false;
 
-  if (!m_dxva_context->GetInputAndTarget(avctx->codec_id, m_format.Guid, m_format.OutputFormat))
+  bool bHighBitdepth = (avctx->codec_id == AV_CODEC_ID_HEVC && (avctx->sw_pix_fmt == AV_PIX_FMT_YUV420P10 || avctx->profile == FF_PROFILE_HEVC_MAIN_10));
+  if (!m_dxva_context->GetInputAndTarget(avctx->codec_id, bHighBitdepth, m_format.Guid, m_format.OutputFormat))
   {
     CLog::Log(LOGDEBUG, "DXVA - unable to find an input/output format combination");
     return false;
@@ -941,12 +885,8 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
   else
     m_surface_alignment = 16;
 
-
-  D3D11_VIDEO_DECODER_CONFIG config = {0};
-  if (!m_dxva_context->GetConfig(&m_format, config))
+  if (!m_dxva_context->GetConfig(&m_format, *m_context->cfg))
     return false;
-
-  memcpy((void *)m_context->cfg, &config, sizeof(DXVA2_ConfigPictureDecode));
 
   m_surface_context = new CSurfaceContext();
 
@@ -1082,7 +1022,7 @@ int CDecoder::Check(AVCodecContext* avctx)
   data.pPrivateOutputData    = &status;
   data.PrivateOutputDataSize = avctx->codec_id == AV_CODEC_ID_H264 ? sizeof(DXVA_Status_H264) : sizeof(DXVA_Status_VC1);
   HRESULT hr;
-  if (FAILED(hr = m_dxva_context->GetVideoContext()->DecoderExtension(m_decoder->m_pDecoder, &data)))
+  if (FAILED(hr = m_dxva_context->GetVideoContext()->DecoderExtension(m_decoder, &data)))
   {
     CLog::Log(LOGWARNING, "DXVA - failed to get decoder status - 0x%08X", hr);
     return VC_ERROR;
@@ -1104,32 +1044,34 @@ int CDecoder::Check(AVCodecContext* avctx)
 bool CDecoder::OpenDecoder()
 {
   SAFE_RELEASE(m_decoder);
+  SAFE_RELEASE(m_vcontext);
   m_context->decoder = nullptr;
+  m_context->video_context = nullptr;
 
   m_context->surface_count = m_refs + 1 + 1 + m_shared; // refs + 1 decode + 1 libavcodec safety + processor buffer
 
   CLog::Log(LOGDEBUG, "DXVA - allocating %d surfaces with format %d", m_context->surface_count, m_format.OutputFormat);
 
-  if (!m_dxva_context->CreateSurfaces(m_format, m_context->surface_count, m_surface_alignment, 
-                                      reinterpret_cast<ID3D11VideoDecoderOutputView**>(m_context->surface)))
+  if (!m_dxva_context->CreateSurfaces(m_format, m_context->surface_count, m_surface_alignment, m_context->surface))
     return false;
 
   for(unsigned i = 0; i < m_context->surface_count; i++)
   {
-    m_surface_context->AddSurface(reinterpret_cast<ID3D11VideoDecoderOutputView*>(m_context->surface[i]));
+    m_surface_context->AddSurface(m_context->surface[i]);
   }
 
-  if (!m_dxva_context->CreateDecoder(&m_format, reinterpret_cast<D3D11_VIDEO_DECODER_CONFIG*>((DXVA2_ConfigPictureDecode*)m_context->cfg), &m_decoder))
+  if (!m_dxva_context->CreateDecoder(&m_format, m_context->cfg, &m_decoder, &m_vcontext))
     return false;
 
   m_context->decoder = m_decoder;
+  m_context->video_context = m_vcontext;
 
   return true;
 }
 
 bool CDecoder::Supports(enum AVPixelFormat fmt)
 {
-  if(fmt == AV_PIX_FMT_DXVA2_VLD)
+  if(fmt == AV_PIX_FMT_D3D11VA_VLD)
     return true;
   return false;
 }
