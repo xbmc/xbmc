@@ -42,7 +42,7 @@ do_wget() {
 
 do_makeinstall() {
   make -j"$cpuCount" "$@"
-  make -j"$cpuCount" install
+  make install
 }
 
 do_makelib() {
