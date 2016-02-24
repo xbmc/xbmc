@@ -107,7 +107,7 @@ namespace XBMCAddon
       if (!XFILE::CFile::Exists(strSkinPath))
       {
         std::string str("none");
-        ADDON::AddonProps props(str, ADDON::ADDON_SKIN, "", "");
+        ADDON::AddonProps props(str, ADDON::ADDON_SKIN);
         ADDON::CSkinInfo::TranslateResolution(defaultRes, res);
 
         // Check for the matching folder for the skin in the fallback skins folder

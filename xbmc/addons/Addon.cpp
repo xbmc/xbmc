@@ -146,8 +146,8 @@ const std::string GetIcon(const ADDON::TYPE& type)
 CAddon::CAddon(AddonProps props)
   : m_props(std::move(props))
 {
-  BuildProfilePath();
-  m_userSettingsPath = URIUtils::AddFileToFolder(Profile(), "settings.xml");
+  m_profilePath = StringUtils::Format("special://profile/addon_data/%s/", ID().c_str());
+  m_userSettingsPath = URIUtils::AddFileToFolder(m_profilePath, "settings.xml");
   m_hasSettings = true;
   m_settingsLoaded = false;
   m_userSettingsLoaded = false;
@@ -318,11 +318,6 @@ void CAddon::SettingsToXML(CXBMCTinyXML &doc) const
 TiXmlElement* CAddon::GetSettingsXML()
 {
   return m_addonXmlDoc.RootElement();
-}
-
-void CAddon::BuildProfilePath()
-{
-  m_profile = StringUtils::Format("special://profile/addon_data/%s/", ID().c_str());
 }
 
 const std::string CAddon::LibPath() const

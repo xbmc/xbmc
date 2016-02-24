@@ -274,7 +274,7 @@ GUIHANDLE CAddonCallbacksGUI::Window_New(void *addonData, const char *xmlFilenam
   {
     //FIXME make this static method of current skin?
     std::string str("none");
-    AddonProps props(str, ADDON_SKIN, str, str);
+    AddonProps props(str, ADDON_SKIN);
     std::string basePath = URIUtils::AddFileToFolder(guiHelper->m_addon->Path(), "resources");
     basePath = URIUtils::AddFileToFolder(basePath, "skins");
     basePath = URIUtils::AddFileToFolder(basePath, defaultSkin);

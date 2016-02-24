@@ -33,7 +33,7 @@ namespace ADDON
 {
 
 CScreenSaver::CScreenSaver(const char *addonID)
-    : ADDON::CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>(AddonProps(addonID, ADDON_UNKNOWN, "", ""))
+    : ADDON::CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>(AddonProps(addonID, ADDON_UNKNOWN))
 {
 }
 
