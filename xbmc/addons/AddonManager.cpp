@@ -125,14 +125,6 @@ AddonPtr CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBui
     if (libname.empty())
       libname = CAddonMgr::GetInstance().GetPlatformLibraryName(ext->configuration);
     builder.SetLibName(libname);
-
-    {
-      //TODO: figure out wtf this is and remove it from here
-      /* Check if user directories need to be created */
-      const cp_cfg_element_t* settings = CAddonMgr::GetInstance().GetExtElement(ext->configuration, "settings");
-      if (settings)
-        CheckUserDirs(settings);
-    }
   }
 
   FillCpluffMetadata(plugin, builder);
@@ -204,36 +196,6 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
     if (CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "nochangelog") == "true")
       builder.SetChangelog("");
   }
-}
-
-bool CAddonMgr::CheckUserDirs(const cp_cfg_element_t *settings)
-{
-  if (!settings)
-    return false;
-
-  const cp_cfg_element_t *userdirs = CAddonMgr::GetInstance().GetExtElement((cp_cfg_element_t *)settings, "userdirs");
-  if (!userdirs)
-    return false;
-
-  ELEMENTS elements;
-  if (!CAddonMgr::GetInstance().GetExtElements((cp_cfg_element_t *)userdirs, "userdir", elements))
-    return false;
-
-  ELEMENTS::iterator itr = elements.begin();
-  while (itr != elements.end())
-  {
-    std::string path = CAddonMgr::GetInstance().GetExtValue(*itr++, "@path");
-    if (!CDirectory::Exists(path))
-    {
-      if (!CUtil::CreateDirectoryEx(path))
-      {
-        CLog::Log(LOGERROR, "CAddonMgr::CheckUserDirs: Unable to create directory %s.", path.c_str());
-        return false;
-      }
-    }
-  }
-
-  return true;
 }
 
 CAddonMgr::CAddonMgr()

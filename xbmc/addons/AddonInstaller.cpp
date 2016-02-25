@@ -515,7 +515,6 @@ bool CAddonInstallJob::DoWork()
   }
 
   std::string installFrom;
-  if (!m_repo || m_repo->LibPath().empty())
   {
     // Addons are installed by downloading the .zip package on the server to the local
     // packages folder, then extracting from the local .zip package into the addons folder
@@ -599,7 +598,6 @@ bool CAddonInstallJob::DoWork()
 
       installFrom = archivedFiles[0]->GetPath();
     }
-    m_repo.reset();
   }
 
   // run any pre-install functions
@@ -790,19 +788,6 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
   SetProgress(0);
 
   // now that we have all our dependencies, we can install our add-on
-  if (repo != NULL)
-  {
-    CFileItemList dummy;
-    std::string s = StringUtils::Format("plugin://%s/?action=install&package=%s&version=%s", repo->ID().c_str(),
-                                        m_addon->ID().c_str(), m_addon->Version().asString().c_str());
-    if (!CDirectory::GetDirectory(s, dummy))
-    {
-      CLog::Log(LOGERROR, "CAddonInstallJob[%s]: installation of repository failed", m_addon->ID().c_str());
-      ReportInstallError(m_addon->ID(), m_addon->ID());
-      return false;
-    }
-  }
-  else
   {
     std::string addonFolder = installFrom;
     URIUtils::RemoveSlashAtEnd(addonFolder);
@@ -876,27 +861,14 @@ bool CAddonUnInstallJob::DoWork()
 {
   ADDON::OnPreUnInstall(m_addon);
 
-  //TODO: looks broken. it just calls the repo with the most recent version, not the owner
-  RepositoryPtr repoPtr;
-  CAddonInstaller::GetRepoForAddon(m_addon->ID(), repoPtr);
-  if (repoPtr != NULL && !repoPtr->LibPath().empty())
-  {
-    CFileItemList dummy;
-    std::string s = StringUtils::Format("plugin://%s/?action=uninstall&package=%s", repoPtr->ID().c_str(), m_addon->ID().c_str());
-    if (!CDirectory::GetDirectory(s, dummy))
-      return false;
-  }
-  else
-  {
-    //Unregister addon with the manager to ensure nothing tries
-    //to interact with it while we are uninstalling.
-    CAddonMgr::GetInstance().UnregisterAddon(m_addon->ID());
+  //Unregister addon with the manager to ensure nothing tries
+  //to interact with it while we are uninstalling.
+  CAddonMgr::GetInstance().UnregisterAddon(m_addon->ID());
 
-    if (!DeleteAddon(m_addon->Path()))
-    {
-      CLog::Log(LOGERROR, "CAddonUnInstallJob[%s]: could not delete addon data.", m_addon->ID().c_str());
-      return false;
-    }
+  if (!DeleteAddon(m_addon->Path()))
+  {
+    CLog::Log(LOGERROR, "CAddonUnInstallJob[%s]: could not delete addon data.", m_addon->ID().c_str());
+    return false;
   }
 
   ClearFavourites();

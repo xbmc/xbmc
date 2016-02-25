@@ -79,7 +79,6 @@ static const TypeMapping types[] =
    {"xbmc.metadata.scraper.library",     ADDON_SCRAPER_LIBRARY,     24083, "DefaultAddonInfoLibrary.png" },
    {"xbmc.ui.screensaver",               ADDON_SCREENSAVER,         24008, "DefaultAddonScreensaver.png" },
    {"xbmc.player.musicviz",              ADDON_VIZ,                 24010, "DefaultAddonVisualization.png" },
-   {"visualization-library",             ADDON_VIZ_LIBRARY,         24084, "" },
    {"xbmc.python.pluginsource",          ADDON_PLUGIN,              24005, "" },
    {"xbmc.python.script",                ADDON_SCRIPT,              24009, "" },
    {"xbmc.python.weather",               ADDON_SCRIPT_WEATHER,      24027, "DefaultAddonWeather.png" },
@@ -473,26 +472,6 @@ void OnPreUnInstall(const AddonPtr& addon)
 void OnPostUnInstall(const AddonPtr& addon)
 {
   addon->OnPostUnInstall();
-}
-
-
-/**
- * CAddonLibrary
- *
- */
-
-CAddonLibrary::CAddonLibrary(AddonProps props)
-  : CAddon(std::move(props))
-  , m_addonType(SetAddonType())
-{
-}
-
-TYPE CAddonLibrary::SetAddonType()
-{
-  if (Type() == ADDON_VIZ_LIBRARY)
-    return ADDON_VIZ;
-  else
-    return ADDON_UNKNOWN;
 }
 
 } /* namespace ADDON */

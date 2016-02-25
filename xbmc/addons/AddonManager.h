@@ -253,8 +253,6 @@ namespace ADDON
      */
     static bool PlatformSupportsAddon(const cp_plugin_info_t *info);
 
-    static bool CheckUserDirs(const cp_cfg_element_t *element);
-
     bool GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enabledOnly);
 
     // private construction, and no assignements; use the provided singleton methods
