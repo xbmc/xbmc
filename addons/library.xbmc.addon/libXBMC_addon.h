@@ -27,6 +27,12 @@
 #include <stdint.h>
 #include <stdarg.h>
 
+#if defined(BUILD_KODI_ADDON)
+#include "IFileTypes.h"
+#else
+#include "filesystem/IFileTypes.h"
+#endif
+
 struct VFSDirEntry;
 
 #ifdef _WIN32                   // windows
@@ -36,14 +42,14 @@ typedef intptr_t      ssize_t;
 #endif // !_SSIZE_T_DEFINED
 
 #if defined(BUILD_KODI_ADDON)
-	#include "p8-platform/windows/dlfcn-win32.h"
+#include "p8-platform/windows/dlfcn-win32.h"
 #else
-	#include "dlfcn-win32.h"
+#include "dlfcn-win32.h"
 #endif
 
 #define ADDON_DLL               "\\library.xbmc.addon\\libXBMC_addon" ADDON_HELPER_EXT
 #define ADDON_HELPER_EXT        ".dll"
-#else
+#else // windows
 // the ADDON_HELPER_ARCH is the platform dependend name which is used
 // as part of the name of dynamic addon libraries. It has to match the 
 // strings which are set in configure.ac for the "ARCH" variable.
@@ -232,6 +238,10 @@ namespace ADDON
         dlsym(m_libXBMC_addon, "XBMC_get_file_length");
       if (XBMC_get_file_length == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+      XBMC_get_file_download_speed = (double(*)(void* HANDLE, void* CB, void* file))
+        dlsym(m_libXBMC_addon, "XBMC_get_file_download_speed");
+      if (XBMC_get_file_download_speed == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
       XBMC_close_file = (void (*)(void* HANDLE, void* CB, void* file))
         dlsym(m_libXBMC_addon, "XBMC_close_file");
       if (XBMC_close_file == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
@@ -275,6 +285,18 @@ namespace ADDON
       XBMC_free_directory = (void (*)(void* HANDLE, void* CB, VFSDirEntry* items, unsigned int num_items))
         dlsym(m_libXBMC_addon, "XBMC_free_directory");
       if (XBMC_free_directory == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_curl_create = (void* (*)(void *HANDLE, void* CB, const char* strURL))
+        dlsym(m_libXBMC_addon, "XBMC_curl_create");
+      if (XBMC_curl_create == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_curl_add_option = (bool (*)(void *HANDLE, void* CB, void *file, XFILE::CURLOPTIONTYPE type, const char* name, const char *value))
+        dlsym(m_libXBMC_addon, "XBMC_curl_add_option");
+      if (XBMC_curl_add_option == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_curl_open = (bool (*)(void *HANDLE, void* CB, void *file, unsigned int flags))
+        dlsym(m_libXBMC_addon, "XBMC_curl_open");
+      if (XBMC_curl_open == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
       m_Callbacks = XBMC_register_me(m_Handle);
       return m_Callbacks != NULL;
@@ -485,6 +507,16 @@ namespace ADDON
     }
 
     /*!
+    * @brief Get the download speed of an open file if available.
+    * @param file The file to get the size for.
+    * @return The download speed in seconds.
+    */
+    double GetFileDownloadSpeed(void* file)
+    {
+      return XBMC_get_file_download_speed(m_Handle, m_Callbacks, file);
+    }
+
+    /*!
      * @brief Close an open file.
      * @param file The file handle to close.
      */
@@ -598,6 +630,37 @@ namespace ADDON
       return XBMC_free_directory(m_Handle, m_Callbacks, items, num_items);
     }
 
+    /*!
+    * @brief Create a Curl representation
+    * @param strURL the URL of the Type.
+    */
+    void* CURLCreate(const char* strURL)
+    {
+      return XBMC_curl_create(m_Handle, m_Callbacks, strURL);
+    }
+
+    /*!
+    * @brief Adds options to the curl file created with CURLCeate
+    * @param file file pointer to the file returned by CURLCeate
+    * @param type option type to set
+    * @param name name of the option
+    * @param value value of the option
+    */
+    bool CURLAddOption(void* file, XFILE::CURLOPTIONTYPE type, const char* name, const char * value)
+    {
+      return XBMC_curl_add_option(m_Handle, m_Callbacks, file, type, name, value);
+    }
+
+    /*!
+    * @brief Opens the curl file created with CURLCeate
+    * @param file file pointer to the file returned by CURLCeate
+    * @param flags one or more bitwise or combinded flags form XFILE
+    */
+    bool CURLOpen(void* file, unsigned int flags)
+    {
+      return XBMC_curl_open(m_Handle, m_Callbacks, file, flags);
+    }
+
   protected:
     void* (*XBMC_register_me)(void *HANDLE);
     void (*XBMC_unregister_me)(void *HANDLE, void* CB);
@@ -619,6 +682,7 @@ namespace ADDON
     int (*XBMC_truncate_file)(void *HANDLE, void* CB, void* file, int64_t iSize);
     int64_t (*XBMC_get_file_position)(void *HANDLE, void* CB, void* file);
     int64_t (*XBMC_get_file_length)(void *HANDLE, void* CB, void* file);
+    double(*XBMC_get_file_download_speed)(void *HANDLE, void* CB, void* file);
     void (*XBMC_close_file)(void *HANDLE, void* CB, void* file);
     int (*XBMC_get_file_chunk_size)(void *HANDLE, void* CB, void* file);
     bool (*XBMC_file_exists)(void *HANDLE, void* CB, const char *strFileName, bool bUseCache);
@@ -630,6 +694,10 @@ namespace ADDON
     bool (*XBMC_remove_directory)(void *HANDLE, void* CB, const char* strPath);
     bool (*XBMC_get_directory)(void *HANDLE, void* CB, const char* strPath, const char* mask, VFSDirEntry** items, unsigned int* num_items);
     void (*XBMC_free_directory)(void *HANDLE, void* CB, VFSDirEntry* items, unsigned int num_items);
+    void* (*XBMC_curl_create)(void *HANDLE, void* CB, const char* strURL);
+    bool (*XBMC_curl_add_option)(void *HANDLE, void* CB, void *file, XFILE::CURLOPTIONTYPE type, const char* name, const char *value);
+    bool (*XBMC_curl_open)(void *m_Handle, void *m_Callbacks, void *file, unsigned int flags);
+
   private:
     void *m_libXBMC_addon;
     void *m_Handle;

@@ -120,6 +120,7 @@ public:
    * It can also be used to indicate a file system is non buffered *
    * but accepts any read size, have it return the value 1         */
   virtual int  GetChunkSize() {return 0;}
+  virtual double GetDownloadSpeed(){ return 0.0f; };
 
   virtual bool SkipNext(){return false;}
 

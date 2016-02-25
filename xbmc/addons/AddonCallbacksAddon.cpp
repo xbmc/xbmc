@@ -32,6 +32,7 @@
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 #include "addons/include/kodi_vfs_types.h"
+#include "URL.h"
 
 using namespace XFILE;
 
@@ -63,6 +64,7 @@ CAddonCallbacksAddon::CAddonCallbacksAddon(CAddon* addon)
   m_callbacks->TruncateFile       = TruncateFile;
   m_callbacks->GetFilePosition    = GetFilePosition;
   m_callbacks->GetFileLength      = GetFileLength;
+  m_callbacks->GetFileDownloadSpeed = GetFileDownloadSpeed;
   m_callbacks->CloseFile          = CloseFile;
   m_callbacks->GetFileChunkSize   = GetFileChunkSize;
   m_callbacks->FileExists         = FileExists;
@@ -75,6 +77,10 @@ CAddonCallbacksAddon::CAddonCallbacksAddon(CAddon* addon)
   m_callbacks->RemoveDirectory    = RemoveDirectory;
   m_callbacks->GetDirectory       = GetDirectory;
   m_callbacks->FreeDirectory      = FreeDirectory;
+
+  m_callbacks->CURLCreate         = CURLCreate;
+  m_callbacks->CURLAddOption      = CURLAddOption;
+  m_callbacks->CURLOpen           = CURLOpen;
 }
 
 CAddonCallbacksAddon::~CAddonCallbacksAddon()
@@ -436,6 +442,19 @@ int64_t CAddonCallbacksAddon::GetFileLength(const void* addonData, void* file)
   return cfile->GetLength();
 }
 
+double CAddonCallbacksAddon::GetFileDownloadSpeed(const void* addonData, void* file)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*)addonData;
+  if (!helper)
+    return 0.0f;
+
+  CFile* cfile = (CFile*)file;
+  if (!cfile)
+    return 0.0f;
+
+  return cfile->GetDownloadSpeed();
+}
+
 void CAddonCallbacksAddon::CloseFile(const void* addonData, void* file)
 {
   CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
@@ -588,6 +607,47 @@ void CAddonCallbacksAddon::FreeDirectory(const void* addonData, VFSDirEntry* ite
     free(items[i].path);
   }
   delete[] items;
+}
+
+void* CAddonCallbacksAddon::CURLCreate(const void* addonData, const char* strURL)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*)addonData;
+  if (!helper)
+    return nullptr;
+
+  CFile* file = new CFile;
+  if (file->CURLCreate(strURL))
+    return ((void*)file);
+
+  delete file;
+
+  return nullptr;
+}
+
+bool CAddonCallbacksAddon::CURLAddOption(const void* addonData, void* file, XFILE::CURLOPTIONTYPE type, const char* name, const char * value)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*)addonData;
+  if (!helper)
+    return false;
+
+  CFile* cfile = (CFile*)file;
+  if (!cfile)
+    return false;
+
+  return cfile->CURLAddOption(type, name, value);
+}
+
+bool CAddonCallbacksAddon::CURLOpen(const void* addonData, void* file, unsigned int flags)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*)addonData;
+  if (!helper)
+    return false;
+
+  CFile* cfile = (CFile*)file;
+  if (!cfile)
+    return false;
+
+  return cfile->CURLOpen(flags);
 }
 
 }; /* namespace ADDON */

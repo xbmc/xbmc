@@ -63,6 +63,7 @@ namespace XFILE
       virtual std::string GetContent()                           { return m_state->m_httpheader.GetValue("content-type"); }
       virtual int IoControl(EIoControl request, void* param);
       virtual std::string GetContentCharset(void)                { return GetServerReportedCharset(); }
+      virtual double GetDownloadSpeed();
 
       bool Post(const std::string& strURL, const std::string& strPostData, std::string& strHTML);
       bool Get(const std::string& strURL, std::string& strHTML);
@@ -79,6 +80,7 @@ namespace XFILE
       void SetCustomRequest(const std::string &request)          { m_customrequest = request; }
       void UseOldHttpVersion(bool bUse)                          { m_useOldHttpVersion = bUse; }
       void SetContentEncoding(const std::string& encoding)       { m_contentencoding = encoding; }
+      void SetAcceptEncoding(const std::string& encoding)        { m_acceptencoding = encoding; }
       void SetAcceptCharset(const std::string& charset)          { m_acceptCharset = charset; }
       void SetTimeout(int connecttimeout)                        { m_connecttimeout = connecttimeout; }
       void SetLowSpeedTime(int lowspeedtime)                     { m_lowspeedtime = lowspeedtime; }
@@ -169,6 +171,7 @@ namespace XFILE
       ProxyType       m_proxytype;
       std::string     m_customrequest;
       std::string     m_contentencoding;
+      std::string     m_acceptencoding;
       std::string     m_acceptCharset;
       std::string     m_ftpauth;
       std::string     m_ftpport;

@@ -57,6 +57,7 @@ public:
   static int TruncateFile(const void* addonData, void* file, int64_t iSize);
   static int64_t GetFilePosition(const void* addonData, void* file);
   static int64_t GetFileLength(const void* addonData, void* file);
+  static double GetFileDownloadSpeed(const void* addonData, void* file);
   static void CloseFile(const void* addonData, void* file);
   static int GetFileChunkSize(const void* addonData, void* file);
   static bool FileExists(const void* addonData, const char *strFileName, bool bUseCache);
@@ -68,6 +69,9 @@ public:
   static bool RemoveDirectory(const void* addonData, const char *strPath);
   static bool GetDirectory(const void* addondata, const char* strPath, const char* mask, VFSDirEntry** items, unsigned int* num_items);
   static void FreeDirectory(const void* addondata, VFSDirEntry* items, unsigned int num_items);
+  static void* CURLCreate(const void* addonData, const char* strURL);
+  static bool CURLAddOption(const void* addonData, void* curl, XFILE::CURLOPTIONTYPE type, const char* name, const char * value);
+  static bool CURLOpen(const void* addonData, void* curl, unsigned int flags);
 
 private:
   CB_AddOnLib  *m_callbacks; /*!< callback addresses */
