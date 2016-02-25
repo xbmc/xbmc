@@ -152,6 +152,30 @@ static int ActivateAndFocus(const std::vector<std::string>& params)
   return 1;
 }
 
+/*! \brief Executes a built-in function after a specified number of milliseconds.
+ *  \param params The parameters.
+ *  \details param[0] = The name of the timeout
+ *           param[1] = The built-in function to execute
+ *           param[2] = The time to wait in millis before the command gets executed
+ *           param[3] = Should the timer repeat the execution until it'll be canceled
+ */
+static int Timer(const std::vector<std::string>& params)
+{
+  float seconds = static_cast<float>(atoi(params[2].c_str())) / 1000;
+  bool repeat = (params.size() > 3 && StringUtils::EqualsNoCase(params[3], "true"));
+
+  // no negative times are allowed
+  if (seconds < 0)
+    return 0;
+
+  if (g_alarmClock.IsRunning())
+    g_alarmClock.Stop(params[0], true);
+
+  g_alarmClock.Start(params[0], seconds, params[1], true, repeat);
+
+  return 0;
+}
+
 /*! \brief Start an alarm clock
  *  \param params The parameters.
  *  \details param[0] = name
@@ -216,6 +240,16 @@ static int CancelAlarm(const std::vector<std::string>& params)
        StringUtils::EqualsNoCase(params[1], "silent")));
   g_alarmClock.Stop(params[0],silent);
 
+  return 0;
+}
+
+/*! \brief Cancel the timer
+ *  \param params The parameters.
+ *  \details params[0] = The name of the timer
+ */
+static int CancelTimer(const std::vector<std::string>& params)
+{
+  g_alarmClock.Stop(params[0], true);
   return 0;
 }
 
@@ -588,6 +622,8 @@ CBuiltins::CommandMap CGUIBuiltins::GetOperations() const
            {"action",                         {"Executes an action for the active window (same as in keymap)", 1, Action}},
            {"cancelalarm",                    {"Cancels an alarm", 1, CancelAlarm}},
            {"alarmclock",                     {"Prompt for a length of time and start an alarm clock", 2, AlarmClock}},
+           {"timer",                          {"Executes a built-in command after a specified number of milliseconds", 3, Timer}},
+           {"canceltimer",                    {"Cancels the timer", 1, CancelTimer}},
            {"activatewindow",                 {"Activate the specified window", 1, ActivateWindow<false>}},
            {"activatewindowandfocus",         {"Activate the specified window and sets focus to the specified id", 1, ActivateAndFocus<false>}},
            {"clearproperty",                  {"Clears a window property for the current focused window/dialog (key,value)", 1, ClearProperty}},
