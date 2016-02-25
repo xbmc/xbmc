@@ -578,7 +578,7 @@
                 "imdbnumber", "premiered", "votes", "lastplayed",
                 "fanart", "thumbnail", "file", "originaltitle",
                 "sorttitle", "episodeguide", "season", "watchedepisodes",
-                "dateadded", "tag", "art", "userrating", "ratings" ]
+                "dateadded", "tag", "art", "userrating", "ratings", "runtime" ]
     }
   },
   "Video.Fields.Season": {
@@ -776,7 +776,8 @@
       "season": { "type": "integer" },
       "tag": { "$ref": "Array.String" },
       "userrating": { "type": "integer" },
-      "ratings": { "type": "Video.Ratings" }
+      "ratings": { "type": "Video.Ratings" },
+      "runtime": { "type": "integer", "description": "Runtime in seconds" }
     }
   },
   "Video.Details.Season": {
