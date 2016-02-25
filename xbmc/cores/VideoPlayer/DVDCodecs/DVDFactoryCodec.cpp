@@ -27,9 +27,6 @@
 #include "Overlay/DVDOverlayCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 
-#if defined(TARGET_DARWIN_OSX)
-#include "Video/DVDVideoCodecVDA.h"
-#endif
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
 #include "Video/DVDVideoCodecVideoToolBox.h"
 #include "utils/SystemInfo.h"
