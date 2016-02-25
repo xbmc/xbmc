@@ -52,7 +52,7 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
   {
     std::shared_ptr<ADDON::CInputStream> input(std::static_pointer_cast<ADDON::CInputStream>(addons[i]));
     ADDON::CInputStream* clone = new ADDON::CInputStream(*input);
-    ADDON_STATUS status = clone->Create();
+    ADDON_STATUS status = clone->Supports(fileitem) ? clone->Create() : ADDON_STATUS_PERMANENT_FAILURE;
     if (status == ADDON_STATUS_OK)
     {
       if (clone->Supports(fileitem))
