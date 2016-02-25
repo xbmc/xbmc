@@ -47,7 +47,7 @@ private:
 };
 }
 
-CZeroconfBrowserAvahi::CZeroconfBrowserAvahi() : mp_client ( 0 ), mp_poll ( 0 ), m_shutdown(false), m_thread_id(0)
+CZeroconfBrowserAvahi::CZeroconfBrowserAvahi() : mp_client ( 0 ), mp_poll ( 0 )
 {
   if ( ! ( mp_poll = avahi_threaded_poll_new() ) )
   {
@@ -74,27 +74,8 @@ CZeroconfBrowserAvahi::~CZeroconfBrowserAvahi()
   CLog::Log ( LOGDEBUG, "CZeroconfAvahi::~CZeroconfAvahi() Going down! cleaning up..." );
   if ( mp_poll )
   {
-    //normally we would stop the avahi thread here and do our work, but
-    //it looks like this does not work -> www.avahi.org/ticket/251
-    //so instead of calling
-    //avahi_threaded_poll_stop(mp_poll);
-    //we set m_shutdown=true, post an event and wait for it to stop itself
-    struct timeval tv = { 0, 0 }; //TODO: does tv survive the thread?
-    AvahiTimeout* lp_timeout;
-    {
-      ScopedEventLoopBlock l_block(mp_poll);
-      const AvahiPoll* cp_apoll = avahi_threaded_poll_get(mp_poll);
-      m_shutdown = true;
-      lp_timeout = cp_apoll->timeout_new(cp_apoll,
-                                         &tv,
-                                         shutdownCallback,
-                                         this);
-    }
-
-    //now wait for the thread to stop
-    assert(m_thread_id);
-    pthread_join(m_thread_id, NULL);
-    avahi_threaded_poll_get(mp_poll)->timeout_free(lp_timeout);
+    //stop avahi polling thread
+    avahi_threaded_poll_stop(mp_poll);
   }
   //free the client (frees all browsers, groups, ...)
   if ( mp_client )
@@ -207,15 +188,6 @@ bool CZeroconfBrowserAvahi::doResolveService ( CZeroconfBrowser::ZeroconfService
 void CZeroconfBrowserAvahi::clientCallback ( AvahiClient* fp_client, AvahiClientState f_state, void* fp_data )
 {
   CZeroconfBrowserAvahi* p_instance = static_cast<CZeroconfBrowserAvahi*> ( fp_data );
-
-  //store our thread ID and check for shutdown -> check details in destructor
-  p_instance->m_thread_id = pthread_self();
-  if (p_instance->m_shutdown)
-  {
-    avahi_threaded_poll_quit(p_instance->mp_poll);
-    return;
-  }
-
   switch ( f_state )
   {
     case AVAHI_CLIENT_S_RUNNING:
@@ -402,17 +374,6 @@ AvahiServiceBrowser* CZeroconfBrowserAvahi::createServiceBrowser ( const std::st
                 avahi_strerror ( avahi_client_errno ( fp_client ) ), fcr_service_type.c_str() );
   }
   return ret;
-}
-
-
-void CZeroconfBrowserAvahi::shutdownCallback(AvahiTimeout *fp_e, void *fp_data)
-{
-  CZeroconfBrowserAvahi* p_instance = static_cast<CZeroconfBrowserAvahi*>(fp_data);
-  //should only be called on shutdown
-  if (p_instance->m_shutdown)
-  {
-    avahi_threaded_poll_quit(p_instance->mp_poll);
-  }
 }
 
 #endif //HAS_AVAHI
