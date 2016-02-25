@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string>
-#include "../../../addons/library.kodi.adsp/libKODI_adsp.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_adsp.h"
 #include "addons/AddonCallbacks.h"
 
 #ifdef _WIN32

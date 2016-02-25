@@ -20,7 +20,7 @@
 */
 
 #include "DynamicDll.h"
-#include "addons/include/xbmc_addon_cpp_dll.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_addon_cpp_dll.h"
 
 template <typename TheStruct, typename Props>
 class DllAddonInterface

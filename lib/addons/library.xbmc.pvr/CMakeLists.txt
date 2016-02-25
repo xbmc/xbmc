@@ -6,5 +6,5 @@ target_include_directories(XBMC_pvr PRIVATE
                            ${CMAKE_CURRENT_SOURCE_DIR}
                            ${CORE_SOURCE_DIR}/addons/library.xbmc.addon
                            ${CORE_SOURCE_DIR}/xbmc
-                           ${CORE_SOURCE_DIR}/xbmc/addons/include
+                           ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include
                            ${CORE_SOURCE_DIR}/xbmc/cores/VideoPlayer/DVDDemuxers)

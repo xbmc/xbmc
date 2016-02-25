@@ -18,7 +18,7 @@
  *
  */
 
-#include "../../../addons/library.kodi.guilib/libKODI_guilib.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h"
 
 #include <stdio.h>
 #include <stdlib.h>

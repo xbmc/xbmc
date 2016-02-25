@@ -20,7 +20,7 @@
  */
 
 #include "AddonCallbacks.h"
-#include "include/kodi_adsp_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/kodi_adsp_types.h"
 
 namespace ActiveAE
 {

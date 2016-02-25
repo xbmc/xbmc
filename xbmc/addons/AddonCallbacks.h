@@ -21,14 +21,14 @@
 
 #include <stdint.h>
 
-#include "../../addons/library.kodi.guilib/libKODI_guilib.h"
-#include "../../addons/library.kodi.adsp/libKODI_adsp.h"
-#include "../../addons/library.kodi.audioengine/libKODI_audioengine.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_adsp.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_audioengine.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/kodi_adsp_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/kodi_audioengine_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_codec_types.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
-#include "addons/include/kodi_adsp_types.h"
-#include "addons/include/kodi_audioengine_types.h"
-#include "addons/include/xbmc_pvr_types.h"
-#include "addons/include/xbmc_codec_types.h"
 
 #ifdef TARGET_WINDOWS
 #ifndef _SSIZE_T_DEFINED

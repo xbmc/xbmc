@@ -140,7 +140,6 @@
 		1DE0443515828F4B005DDB4D /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1DE0443315828F4B005DDB4D /* Exception.cpp */; };
 		228FA65D1C53F9D50023BBF0 /* InfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 228FA65C1C53F9D50023BBF0 /* InfoScanner.cpp */; };
 		228FA65E1C53F9D50023BBF0 /* InfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 228FA65C1C53F9D50023BBF0 /* InfoScanner.cpp */; };
-		2A1A5A6C1BDEAA6D0084702D /* NOTE in Resources */ = {isa = PBXBuildFile; fileRef = 2A1A5A5D1BDEAA6D0084702D /* NOTE */; };
 		2A7B2BDC1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; };
 		2A7B2BDD1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; };
 		2AC7EB5A1C21F6BA00BDAA95 /* GUIWindowPVRTimerRules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7EB561C21F6BA00BDAA95 /* GUIWindowPVRTimerRules.cpp */; };
@@ -2503,26 +2502,6 @@
 		1DE0443415828F4B005DDB4D /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exception.h; path = commons/Exception.h; sourceTree = "<group>"; };
 		228FA65B1C53F9D50023BBF0 /* InfoScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoScanner.h; sourceTree = "<group>"; };
 		228FA65C1C53F9D50023BBF0 /* InfoScanner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfoScanner.cpp; sourceTree = "<group>"; };
-		2A1A5A581BDEAA6D0084702D /* kodi_adsp_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodi_adsp_dll.h; sourceTree = "<group>"; };
-		2A1A5A591BDEAA6D0084702D /* kodi_adsp_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodi_adsp_types.h; sourceTree = "<group>"; };
-		2A1A5A5A1BDEAA6D0084702D /* kodi_audiodec_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodi_audiodec_dll.h; sourceTree = "<group>"; };
-		2A1A5A5B1BDEAA6D0084702D /* kodi_audiodec_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodi_audiodec_types.h; sourceTree = "<group>"; };
-		2A1A5A5C1BDEAA6D0084702D /* kodi_audioengine_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kodi_audioengine_types.h; sourceTree = "<group>"; };
-		2A1A5A5D1BDEAA6D0084702D /* NOTE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NOTE; sourceTree = "<group>"; };
-		2A1A5A5E1BDEAA6D0084702D /* xbmc_addon_cpp_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_addon_cpp_dll.h; sourceTree = "<group>"; };
-		2A1A5A5F1BDEAA6D0084702D /* xbmc_addon_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_addon_dll.h; sourceTree = "<group>"; };
-		2A1A5A601BDEAA6D0084702D /* xbmc_addon_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_addon_types.h; sourceTree = "<group>"; };
-		2A1A5A611BDEAA6D0084702D /* xbmc_audioenc_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_audioenc_dll.h; sourceTree = "<group>"; };
-		2A1A5A621BDEAA6D0084702D /* xbmc_audioenc_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_audioenc_types.h; sourceTree = "<group>"; };
-		2A1A5A631BDEAA6D0084702D /* xbmc_codec_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_codec_types.h; sourceTree = "<group>"; };
-		2A1A5A641BDEAA6D0084702D /* xbmc_epg_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_epg_types.h; sourceTree = "<group>"; };
-		2A1A5A651BDEAA6D0084702D /* xbmc_pvr_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_pvr_dll.h; sourceTree = "<group>"; };
-		2A1A5A661BDEAA6D0084702D /* xbmc_pvr_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_pvr_types.h; sourceTree = "<group>"; };
-		2A1A5A671BDEAA6D0084702D /* xbmc_scr_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_scr_dll.h; sourceTree = "<group>"; };
-		2A1A5A681BDEAA6D0084702D /* xbmc_scr_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_scr_types.h; sourceTree = "<group>"; };
-		2A1A5A691BDEAA6D0084702D /* xbmc_stream_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xbmc_stream_utils.hpp; sourceTree = "<group>"; };
-		2A1A5A6A1BDEAA6D0084702D /* xbmc_vis_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_vis_dll.h; sourceTree = "<group>"; };
-		2A1A5A6B1BDEAA6D0084702D /* xbmc_vis_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmc_vis_types.h; sourceTree = "<group>"; };
 		2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRSettings.cpp; sourceTree = "<group>"; };
 		2A7B2BDE1BD6F18B00044BCD /* PVRSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRSettings.h; sourceTree = "<group>"; };
 		2AC7EB561C21F6BA00BDAA95 /* GUIWindowPVRTimerRules.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowPVRTimerRules.cpp; sourceTree = "<group>"; };
@@ -4562,7 +4541,7 @@
 		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
 		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfOSX.cpp; sourceTree = "<group>"; };
 		E47252BF175115F9001C1AAA /* Codesign.command */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = Codesign.command; sourceTree = "<group>"; };
-		E4991089174D0D2600741B6D /* Kodi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kodi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4991089174D0D2600741B6D /* Kodi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Kodi.app; path = .app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E499108B174D0D2600741B6D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		E499108D174D0D2600741B6D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		E499108F174D0D2600741B6D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
@@ -4615,6 +4594,33 @@
 		E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptXbmcFile.cpp; sourceTree = "<group>"; };
 		EC720A8D155091BB00FFD782 /* ilog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ilog.cpp; path = commons/ilog.cpp; sourceTree = "<group>"; };
 		EC720A8E155091BB00FFD782 /* ilog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ilog.h; path = commons/ilog.h; sourceTree = "<group>"; };
+		EDE8C70C1C7F615800A86ECC /* NOTE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = NOTE; path = "kodi-addon-dev-kit/include/NOTE"; sourceTree = "<group>"; };
+		EDE8C70D1C7F618500A86ECC /* kodi_adsp_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_adsp_dll.h; path = "kodi-addon-dev-kit/include/kodi/kodi_adsp_dll.h"; sourceTree = "<group>"; };
+		EDE8C70E1C7F618500A86ECC /* kodi_adsp_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_adsp_types.h; path = "kodi-addon-dev-kit/include/kodi/kodi_adsp_types.h"; sourceTree = "<group>"; };
+		EDE8C70F1C7F618500A86ECC /* kodi_audiodec_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_audiodec_dll.h; path = "kodi-addon-dev-kit/include/kodi/kodi_audiodec_dll.h"; sourceTree = "<group>"; };
+		EDE8C7101C7F618500A86ECC /* kodi_audiodec_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_audiodec_types.h; path = "kodi-addon-dev-kit/include/kodi/kodi_audiodec_types.h"; sourceTree = "<group>"; };
+		EDE8C7111C7F618500A86ECC /* kodi_audioengine_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_audioengine_types.h; path = "kodi-addon-dev-kit/include/kodi/kodi_audioengine_types.h"; sourceTree = "<group>"; };
+		EDE8C7121C7F618500A86ECC /* kodi_vfs_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_vfs_types.h; path = "kodi-addon-dev-kit/include/kodi/kodi_vfs_types.h"; sourceTree = "<group>"; };
+		EDE8C7131C7F618500A86ECC /* libKODI_adsp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libKODI_adsp.h; path = "kodi-addon-dev-kit/include/kodi/libKODI_adsp.h"; sourceTree = "<group>"; };
+		EDE8C7141C7F618500A86ECC /* libKODI_audioengine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libKODI_audioengine.h; path = "kodi-addon-dev-kit/include/kodi/libKODI_audioengine.h"; sourceTree = "<group>"; };
+		EDE8C7151C7F618500A86ECC /* libKODI_guilib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libKODI_guilib.h; path = "kodi-addon-dev-kit/include/kodi/libKODI_guilib.h"; sourceTree = "<group>"; };
+		EDE8C7161C7F618500A86ECC /* libXBMC_addon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libXBMC_addon.h; path = "kodi-addon-dev-kit/include/kodi/libXBMC_addon.h"; sourceTree = "<group>"; };
+		EDE8C7171C7F618500A86ECC /* libXBMC_codec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libXBMC_codec.h; path = "kodi-addon-dev-kit/include/kodi/libXBMC_codec.h"; sourceTree = "<group>"; };
+		EDE8C7181C7F618500A86ECC /* libXBMC_pvr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libXBMC_pvr.h; path = "kodi-addon-dev-kit/include/kodi/libXBMC_pvr.h"; sourceTree = "<group>"; };
+		EDE8C7191C7F618500A86ECC /* xbmc_addon_cpp_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_addon_cpp_dll.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_addon_cpp_dll.h"; sourceTree = "<group>"; };
+		EDE8C71A1C7F618500A86ECC /* xbmc_addon_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_addon_dll.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_addon_dll.h"; sourceTree = "<group>"; };
+		EDE8C71B1C7F618500A86ECC /* xbmc_addon_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_addon_types.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_addon_types.h"; sourceTree = "<group>"; };
+		EDE8C71C1C7F618500A86ECC /* xbmc_audioenc_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_audioenc_dll.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_audioenc_dll.h"; sourceTree = "<group>"; };
+		EDE8C71D1C7F618500A86ECC /* xbmc_audioenc_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_audioenc_types.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_audioenc_types.h"; sourceTree = "<group>"; };
+		EDE8C71E1C7F618500A86ECC /* xbmc_codec_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_codec_types.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_codec_types.h"; sourceTree = "<group>"; };
+		EDE8C71F1C7F618500A86ECC /* xbmc_epg_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_epg_types.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_epg_types.h"; sourceTree = "<group>"; };
+		EDE8C7201C7F618500A86ECC /* xbmc_pvr_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_pvr_dll.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_pvr_dll.h"; sourceTree = "<group>"; };
+		EDE8C7211C7F618500A86ECC /* xbmc_pvr_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_pvr_types.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"; sourceTree = "<group>"; };
+		EDE8C7221C7F618500A86ECC /* xbmc_scr_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_scr_dll.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_scr_dll.h"; sourceTree = "<group>"; };
+		EDE8C7231C7F618500A86ECC /* xbmc_scr_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_scr_types.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_scr_types.h"; sourceTree = "<group>"; };
+		EDE8C7241C7F618500A86ECC /* xbmc_stream_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = xbmc_stream_utils.hpp; path = "kodi-addon-dev-kit/include/kodi/xbmc_stream_utils.hpp"; sourceTree = "<group>"; };
+		EDE8C7251C7F618500A86ECC /* xbmc_vis_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_vis_dll.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_vis_dll.h"; sourceTree = "<group>"; };
+		EDE8C7261C7F618500A86ECC /* xbmc_vis_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_vis_types.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_vis_types.h"; sourceTree = "<group>"; };
 		F500E35517F3412C004FC217 /* WinEvents.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WinEvents.cpp; sourceTree = "<group>"; };
 		F500E35917F34132004FC217 /* WinEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinEvents.h; sourceTree = "<group>"; };
 		F502BFDA160F34B900C96C76 /* CallbackHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CallbackHandler.cpp; path = python/CallbackHandler.cpp; sourceTree = "<group>"; };
@@ -4913,9 +4919,9 @@
 		18B49FF01152BEEB001AF8A6 /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				EDE8C7091C7F60C200A86ECC /* kodi-addon-dev-kit */,
 				9A999F1B1C67B77600E4E0D5 /* AddonBuilder.cpp */,
 				9A999F1C1C67B77600E4E0D5 /* AddonBuilder.h */,
-				2A1A5A571BDEAA6D0084702D /* include */,
 				7C226E3C1BA5F61C00185CE0 /* AddonCallbacksAudioEngine.cpp */,
 				7C226E3D1BA5F61C00185CE0 /* AddonCallbacksAudioEngine.h */,
 				7C973CE31B50378E0002A874 /* AddonCallbacksAudioDSP.cpp */,
@@ -5326,33 +5332,6 @@
 				1DAFDB7B16DFDCA7007F8C68 /* PeripheralBusCEC.h */,
 			);
 			path = virtual;
-			sourceTree = "<group>";
-		};
-		2A1A5A571BDEAA6D0084702D /* include */ = {
-			isa = PBXGroup;
-			children = (
-				2A1A5A581BDEAA6D0084702D /* kodi_adsp_dll.h */,
-				2A1A5A591BDEAA6D0084702D /* kodi_adsp_types.h */,
-				2A1A5A5A1BDEAA6D0084702D /* kodi_audiodec_dll.h */,
-				2A1A5A5B1BDEAA6D0084702D /* kodi_audiodec_types.h */,
-				2A1A5A5C1BDEAA6D0084702D /* kodi_audioengine_types.h */,
-				2A1A5A5D1BDEAA6D0084702D /* NOTE */,
-				2A1A5A5E1BDEAA6D0084702D /* xbmc_addon_cpp_dll.h */,
-				2A1A5A5F1BDEAA6D0084702D /* xbmc_addon_dll.h */,
-				2A1A5A601BDEAA6D0084702D /* xbmc_addon_types.h */,
-				2A1A5A611BDEAA6D0084702D /* xbmc_audioenc_dll.h */,
-				2A1A5A621BDEAA6D0084702D /* xbmc_audioenc_types.h */,
-				2A1A5A631BDEAA6D0084702D /* xbmc_codec_types.h */,
-				2A1A5A641BDEAA6D0084702D /* xbmc_epg_types.h */,
-				2A1A5A651BDEAA6D0084702D /* xbmc_pvr_dll.h */,
-				2A1A5A661BDEAA6D0084702D /* xbmc_pvr_types.h */,
-				2A1A5A671BDEAA6D0084702D /* xbmc_scr_dll.h */,
-				2A1A5A681BDEAA6D0084702D /* xbmc_scr_types.h */,
-				2A1A5A691BDEAA6D0084702D /* xbmc_stream_utils.hpp */,
-				2A1A5A6A1BDEAA6D0084702D /* xbmc_vis_dll.h */,
-				2A1A5A6B1BDEAA6D0084702D /* xbmc_vis_types.h */,
-			);
-			path = include;
 			sourceTree = "<group>";
 		};
 		38F4E56013CCCB3B00664821 /* platform */ = {
@@ -8661,6 +8640,56 @@
 			name = commons;
 			sourceTree = "<group>";
 		};
+		EDE8C7091C7F60C200A86ECC /* kodi-addon-dev-kit */ = {
+			isa = PBXGroup;
+			children = (
+				EDE8C70A1C7F60F100A86ECC /* include */,
+			);
+			name = "kodi-addon-dev-kit";
+			sourceTree = "<group>";
+		};
+		EDE8C70A1C7F60F100A86ECC /* include */ = {
+			isa = PBXGroup;
+			children = (
+				EDE8C70C1C7F615800A86ECC /* NOTE */,
+				EDE8C70B1C7F610000A86ECC /* kodi */,
+			);
+			name = include;
+			sourceTree = "<group>";
+		};
+		EDE8C70B1C7F610000A86ECC /* kodi */ = {
+			isa = PBXGroup;
+			children = (
+				EDE8C70D1C7F618500A86ECC /* kodi_adsp_dll.h */,
+				EDE8C70E1C7F618500A86ECC /* kodi_adsp_types.h */,
+				EDE8C70F1C7F618500A86ECC /* kodi_audiodec_dll.h */,
+				EDE8C7101C7F618500A86ECC /* kodi_audiodec_types.h */,
+				EDE8C7111C7F618500A86ECC /* kodi_audioengine_types.h */,
+				EDE8C7121C7F618500A86ECC /* kodi_vfs_types.h */,
+				EDE8C7131C7F618500A86ECC /* libKODI_adsp.h */,
+				EDE8C7141C7F618500A86ECC /* libKODI_audioengine.h */,
+				EDE8C7151C7F618500A86ECC /* libKODI_guilib.h */,
+				EDE8C7161C7F618500A86ECC /* libXBMC_addon.h */,
+				EDE8C7171C7F618500A86ECC /* libXBMC_codec.h */,
+				EDE8C7181C7F618500A86ECC /* libXBMC_pvr.h */,
+				EDE8C7191C7F618500A86ECC /* xbmc_addon_cpp_dll.h */,
+				EDE8C71A1C7F618500A86ECC /* xbmc_addon_dll.h */,
+				EDE8C71B1C7F618500A86ECC /* xbmc_addon_types.h */,
+				EDE8C71C1C7F618500A86ECC /* xbmc_audioenc_dll.h */,
+				EDE8C71D1C7F618500A86ECC /* xbmc_audioenc_types.h */,
+				EDE8C71E1C7F618500A86ECC /* xbmc_codec_types.h */,
+				EDE8C71F1C7F618500A86ECC /* xbmc_epg_types.h */,
+				EDE8C7201C7F618500A86ECC /* xbmc_pvr_dll.h */,
+				EDE8C7211C7F618500A86ECC /* xbmc_pvr_types.h */,
+				EDE8C7221C7F618500A86ECC /* xbmc_scr_dll.h */,
+				EDE8C7231C7F618500A86ECC /* xbmc_scr_types.h */,
+				EDE8C7241C7F618500A86ECC /* xbmc_stream_utils.hpp */,
+				EDE8C7251C7F618500A86ECC /* xbmc_vis_dll.h */,
+				EDE8C7261C7F618500A86ECC /* xbmc_vis_types.h */,
+			);
+			name = kodi;
+			sourceTree = "<group>";
+		};
 		F563529F16E53FE900D21BAD /* dialogs */ = {
 			isa = PBXGroup;
 			children = (
@@ -8957,7 +8986,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2A1A5A6C1BDEAA6D0084702D /* NOTE in Resources */,
 				DFFA440119104C1300C3923B /* AppIcon29x29.png in Resources */,
 				DFD7175A1C0A031B0025D964 /* InfoPlist.strings in Resources */,
 				DFD717591C0A031B0025D964 /* Default-Landscape-736h@3x.png in Resources */,

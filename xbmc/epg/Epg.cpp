@@ -22,7 +22,7 @@
 
 #include <utility>
 
-#include "addons/include/xbmc_epg_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_epg_types.h"
 #include "EpgContainer.h"
 #include "EpgDatabase.h"
 #include "guilib/LocalizeStrings.h"

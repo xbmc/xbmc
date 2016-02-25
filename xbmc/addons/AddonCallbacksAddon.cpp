@@ -31,8 +31,8 @@
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
-#include "addons/include/kodi_vfs_types.h"
 #include "URL.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/kodi_vfs_types.h"
 
 using namespace XFILE;
 
