@@ -149,9 +149,13 @@ bool CZeroconfBrowserAvahi::doRemoveServiceType ( const std::string& fcr_service
     }
     m_browsers.erase ( it );
     //remove this serviceType from the list of discovered services
-    for ( tDiscoveredServices::iterator it = m_discovered_services.begin(); it != m_discovered_services.end(); ++it )
-      if ( it->first.GetType() == fcr_service_type )
-        m_discovered_services.erase ( it++ );
+    for (auto itr = m_discovered_services.begin(); itr != m_discovered_services.end();)
+    {
+      if (itr->first.GetType() == fcr_service_type)
+        itr = m_discovered_services.erase(itr);
+      else
+        ++itr;
+    }
   }
   return true;
 }
