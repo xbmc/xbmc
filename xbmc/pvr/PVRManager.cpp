@@ -366,6 +366,9 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
 
 void CPVRManager::Cleanup(void)
 {
+  if (m_addons)
+    m_addons->Unload();
+
   CSingleLock lock(m_critSection);
 
   SAFE_DELETE(m_addons);
