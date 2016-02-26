@@ -311,7 +311,7 @@ void CMusicDatabase::CreateViews()
               "        album.iUserrating, "
               "        album.iVotes, "
               "        bCompilation, "
-              "        (SELECT MIN(song.iTimesPlayed) FROM song WHERE song.idAlbum = album.idAlbum) AS iTimesPlayed, "
+              "        (SELECT AVG(song.iTimesPlayed) FROM song WHERE song.idAlbum = album.idAlbum) AS iTimesPlayed, "
               "        strReleaseType, "
               "        (SELECT MAX(song.dateAdded) FROM song WHERE song.idAlbum = album.idAlbum) AS dateAdded, "
               "        (SELECT MAX(song.lastplayed) FROM song WHERE song.idAlbum = album.idAlbum) AS lastplayed "
