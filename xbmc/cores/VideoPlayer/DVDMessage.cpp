@@ -82,7 +82,6 @@ bool CDVDMsgGeneralSynchronize::Wait(unsigned int milliseconds, unsigned int sou
     }
     if (timeout.IsTimePast())
     {
-      CLog::Log(LOGERROR, "CDVDMsgGeneralSynchronize - timeout");
       return false; /* request timeout, should be retried */
     }
   }
