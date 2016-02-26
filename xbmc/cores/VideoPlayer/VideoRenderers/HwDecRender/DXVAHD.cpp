@@ -678,10 +678,10 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11Vi
   // don't apply any color range conversion, this will be fixed at later stage.
   D3D11_VIDEO_PROCESSOR_COLOR_SPACE colorSpace = {};
   colorSpace.Usage         = 0;  // 0 - playback, 1 - video processing
-  colorSpace.RGB_Range     = 0;  // 0 - 0-255, 1 - 16-235
+  colorSpace.RGB_Range     = g_Windowing.UseLimitedColor() ? 1 : 0;  // 0 - 0-255, 1 - 16-235
   colorSpace.YCbCr_Matrix  = 1;  // 0 - BT.601, 1 = BT.709
   colorSpace.YCbCr_xvYCC   = 1;  // 0 - Conventional YCbCr, 1 - xvYCC
-  colorSpace.Nominal_Range = 2;  // 2 - 0-255, 1 = 16-235, 0 - undefined
+  colorSpace.Nominal_Range = 0;  // 2 - 0-255, 1 = 16-235, 0 - undefined
 
   m_pVideoContext->VideoProcessorSetOutputColorSpace(m_pVideoProcessor, &colorSpace);
 
