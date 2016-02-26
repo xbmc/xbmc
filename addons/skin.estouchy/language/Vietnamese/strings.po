@@ -1,0 +1,297 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Vietnamese (http://www.transifex.com/projects/p/xbmc-skins/language/vi/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: vi\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Cài đặt audio"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Caps[CR]Lock"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Lựa chọn trình diễn"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "Bộ preset trình diễn"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Menu ngữ cảnh"
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr "Toàn màn hình"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Đang chạy..."
+
+msgctxt "#31010"
+msgid "Currently logged in as"
+msgstr "Đang đăng nhập với tên"
+
+msgctxt "#31011"
+msgid "N/A"
+msgstr "N/A"
+
+msgctxt "#31012"
+msgid "Music - Files"
+msgstr "Nhạc - Files"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Trang"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Các mục"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Thông tin"
+
+msgctxt "#31031"
+msgid "Info Wide"
+msgstr "Mở rộng"
+
+msgctxt "#31040"
+msgid "Now Playing"
+msgstr "Đang chơi"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "ĐANG CHƠI"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "DỪNG"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "TUA NHANH"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "TUA LÙI"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Kết thúc"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Sắp xếp: Tăng dần"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Sắp xếp: Giảm dần"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Mở playlist"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Lưu playlist"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Đóng playlist"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "File nhạc trên hệ thống"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Playlist hiện tại"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "File này là một gói, hãy chọn phần mà ban muốn chơi."
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "Lùi"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Đường dẫn"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "View"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Nhiệt độ hiện giờ"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Cập nhật cuối cùng"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Nhà cung cấp dữ liệu"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Bộ nhớ chiếm:"
+
+msgctxt "#31312"
+msgid "Current Scraper"
+msgstr "Trình thu thập hiện tại"
+
+msgctxt "#31313"
+msgid "Choose a Scraper"
+msgstr "Chọn trình thu thập"
+
+msgctxt "#31314"
+msgid "Content Scanning Options"
+msgstr "Lựa chọn quét nội dung"
+
+msgctxt "#31319"
+msgid "Currently available Kodi user profiles"
+msgstr "Các profile sử dụng Kodi"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Lần truy cập cuối"
+
+msgctxt "#31321"
+msgid "Karaoke Song Selector"
+msgstr "Trình chọn bài hát karaoke"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Đã phát"
+
+msgctxt "#31325"
+msgid "Playlist Options"
+msgstr "Thiết lập playlist"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Tạm dừng"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Dừng"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Tua nhanh"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Tua lùi"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Menu Video"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Tải phụ đề"
+
+msgctxt "#31357"
+msgid "Image Info"
+msgstr "Thông tin ảnh"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Skin mặc định"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Theo chuẩn Arial"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Thay đổi skin · Đặt ngôn ngữ và vùng · Thay đổi cách liệt kê file · Cài đặt trình bảo vệ màn hình"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "Quản lý thư viện video · Đặt chế độ chơi video · Thay đổi cách liệt kê video · Đặt font phụ đề"
+
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission · Set karaoke options"
+msgstr "Quản lý thư viện nhạc · Đặt chế độ chơi nhạc · Thay đổi cách liệt kê nhạc · Cài đặt gửi lấy thông tin nhạc · Đặt chế độ karaoke"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "Đặt cách liệt kê hình ảnh · Tuỳ chỉnh trình chiếu ảnh"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "Đặt ba thành phố để thu thập thông tin thời tiết"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "Cài đặt điều khiển Kodi thông qua UPnP và HTTP · Tuỳ chỉnh chia sẻ file · Đặt cách truy cập Internet"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "Cài đặt và điều chỉnh màn hình · Tuỳ chỉnh đầu ra Audio · Cài đặt bộ điều khiển từ xa · Đặt cách tiết kiệm năng lượng · Bật chế độ tìm sửa lỗi · Đặt khoá chủ"
+
+msgctxt "#31407"
+msgid "Setup the skin · Add and remove home menu items · Change skin backgrounds"
+msgstr "Cài đặt skin · Thêm và bỏ các mục con của menu bắt đầu · Thay đổi hình nền của skin"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Chọn profile Kodi[CR]để tiếp tục đăng nhập"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "Link nhanh cho Add-on trên trang bắt đầu"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "Các lựa chọn khác"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "Thông tin và các nút cho màn hình bắt đầu của thời tiết"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Phím nhanh add-on"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "TV trực tuyến"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Thêm nhóm"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Đổi tên nhóm"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Xoá nhóm"

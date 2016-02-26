@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="skin.estouchy" version="1.0.0" name="Estouchy" provider-name="Team Kodi">
+	<requires>
+		<import addon="xbmc.gui" version="5.11.0"/>
+	</requires>
+	<extension point="xbmc.gui.skin" debugging="false">
+		<res width="1280" height="960" aspect="4:3" folder="xml"/>
+		<res width="1706" height="960" aspect="16:9" default="true" folder="xml"/>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en">Skin for touchscreen devices</summary>
+		<description lang="en">Skin designed to be used on touchscreen devices like tablets and smartphones</description>
+		<platform>all</platform>
+		<license>Creative Commons Attribution-Share Alike 3.0 United States</license>
+		<forum>http://forum.kodi.tv/forumdisplay.php?fid=261</forum>
+		<website></website>
+		<email></email>
+		<source>https://github.com/xbmc/skin.estouchy/</source>
+	</extension>
+</addon>

@@ -1,0 +1,333 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Thai (http://www.transifex.com/projects/p/xbmc-skins/language/th/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: th\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "การตั้งค่า เสียง"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Caps[CR]Lock"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "ตัวเลือก การแสดงแสงสี"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "ชุดรูปแบบ การแสดงแสงสี"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "เมนูเนื้อหา"
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr "เต็มหน้าจอ"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "ทำงานอยู่..."
+
+msgctxt "#31010"
+msgid "Currently logged in as"
+msgstr "เข้าระบบในฐานะ"
+
+msgctxt "#31011"
+msgid "N/A"
+msgstr "N/A"
+
+msgctxt "#31012"
+msgid "Music - Files"
+msgstr "แฟ้ม - เพลง"
+
+msgctxt "#31013"
+msgid "Recent Movies"
+msgstr "ภาพยนตร์ ล่าสุด"
+
+msgctxt "#31014"
+msgid "Recent Episodes"
+msgstr "ตอน ล่าสุด"
+
+msgctxt "#31016"
+msgid "Recent Albums"
+msgstr "อัลบั้ม ล่าสุด"
+
+msgctxt "#31017"
+msgid "Volume Muted"
+msgstr "ปิดเสียงแล้ว"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "หน้า"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "รายการ"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "ข้อมูล รายชื่อ "
+
+msgctxt "#31031"
+msgid "Info Wide"
+msgstr "ข้อมูล แบบกว้าง"
+
+msgctxt "#31040"
+msgid "Now Playing"
+msgstr "ขณะนี้กำลังเล่น"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "กำลังเล่น"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "หยุดชั่วขณะ"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "ไปหน้าแบบเร็ว"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "เล่นกลับเร็ว"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "เวลาสิ้นสุด"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "เรียง: น้อยไปมาก"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "เรียง: มากไปน้อย"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "เปิด รายการเล่น"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "บันทึก รายการเล่น"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "ปิด รายการเล่น"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "แฟ้ม เพลงของระบบ"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "รายการเล่น ปัจจุบัน"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "แฟ้มนี้ซ้อนกันอยู่, เลือกส่วนที่คุณต้องการจะเล่นจาก."
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "ย้อนกลับ"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "ที่ตั้ง"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "มุมมอง"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "อุณหภูมิปัจจุบัน"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "อัพเดท ล่าสุด"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "ผู้ให้บริการ ข้อมูล"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "หน่วยความจำที่ใช้"
+
+msgctxt "#31312"
+msgid "Current Scraper"
+msgstr "ตัวดึงข้อมูล ที่ใช้อยู่"
+
+msgctxt "#31313"
+msgid "Choose a Scraper"
+msgstr "เลือก ตัวดึงข้อมูล"
+
+msgctxt "#31314"
+msgid "Content Scanning Options"
+msgstr "ตัวเลือก การสำรวจเนื้อหา"
+
+msgctxt "#31319"
+msgid "Currently available Kodi user profiles"
+msgstr "โปรไฟล์ผู้ใช้ Kodi ที่มีในปัจจุบัน"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "เข้าสู่ระบบ ล่าสุด"
+
+msgctxt "#31321"
+msgid "Karaoke Song Selector"
+msgstr "ตัวเลือกเพลง คาราโอเกะ"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "ออกอากาศ"
+
+msgctxt "#31325"
+msgid "Playlist Options"
+msgstr "ตัวเลือก รายการเล่น"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "หยุดชั่วขณะ"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "หยุด"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "ไปหน้าแบบเร็ว"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "เล่นกลับเร็ว"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "เมนู วิดีโอ"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "ดาวน์โหลด คำบรรยาย"
+
+msgctxt "#31357"
+msgid "Image Info"
+msgstr "ข้อมูล รูปภาพ"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "หน้าตาพื้นฐาน"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "ใช้ฟ้อนท์ Arial"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "เปลี่ยนหน้าตา · กำหนดภาษาและภูมิภาค · เปลี่ยนตัวเลือกการแสดงรายการแฟ้ม · ตั้งค่าการพักหน้าจอ"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "จัดการคลังข้อมูลวิดีโอ · กำหนดตัวเลือกการเล่นวิดีโอ · เปลี่ยนตัวเลือกการแสดงรายการวิดีโอ · กำหนดแบบอักษรคำบรรยาย"
+
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission · Set karaoke options"
+msgstr "จัดการคลังข้อมูลเพลง · กำหนดตัวเลือกการเล่นเพลง · เปลี่ยนตัวเลือกการแสดงรายการเพลง · ตั้งค่าการส่งเพลง · กำหนดตัวเลือกคาราโอเกะ"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "กำหนดตัวเลือกแสดงรายการภาพ · ตั้งค่าการแสดงสไลด์"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "กำหนดสามเมือง เพื่อเก็บรวบรวมข้อมูลสภาพอากาศ"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "ตั้งค่าการควบคุม Kodi ผ่าน UPnP และ HTTP · กำหนดค่าใช้แฟ้มร่วมกัน · กำหนดตัวเลือกการเข้าถึงอินเทอร์เน็ต"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "ตั้งค่าและปรับเทียบจอแสดงผล · กำหนดค่าส่งออกเสียง · ตั้งค่าการควบคุมด้วยรีโมท · กำหนดตัวเลือกการประหยัดพลังงาน · เปิดใช้การแก้ไขข้อบกพร่อง · ตั้งค่าล็อคหลัก"
+
+msgctxt "#31407"
+msgid "Setup the skin · Add and remove home menu items · Change skin backgrounds"
+msgstr "ตั้งค่าหน้าตา · เพิ่มและลบรายการเมนูหลัก · เปลี่ยนพื้นหลังของหน้าตา"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "เลือกโปรไฟล์ผู้ใช้ Kodi ของคุณ[CR]เพื่อเข้าระบบและดำเนินการต่อไป"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "ปุ่มหมวดหมู่ หน้าหลัก"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "หน้าหลัก เชื่อมโยงด่วนไปยังส่วนเสริม"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "ตัวเลือกอื่นๆ"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "หน้าจอหลัก ปุ่มและข้อมูลสภาพอากาศ"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "ทางลัด ส่วนเสริม"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "ใช้พื้นหลังที่กำหนดเอง"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "พื้นหลัง:"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "ทีวี สด"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "ซ่อน พื้นหลังการเล่นวิดีโอ"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "ซ่อน พื้นหลังการแสดงแสงสี"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "เพิ่มกลุ่ม"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "เปลี่ยนชื่อกลุ่ม"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "ลบกลุ่ม"

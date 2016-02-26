@@ -1,0 +1,361 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Lithuanian (http://www.transifex.com/projects/p/xbmc-skins/language/lt/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: lt\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Garso parametrai"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Caps[CR]Lock"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Vizualizacijos opcija"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "Vizualizacijos parinktys"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Kontekstinis meniu"
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr "Visame ekrane"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Veikia..."
+
+msgctxt "#31010"
+msgid "Currently logged in as"
+msgstr "Šiuo metu prisijungęs kaip"
+
+msgctxt "#31011"
+msgid "N/A"
+msgstr "N/A"
+
+msgctxt "#31012"
+msgid "Music - Files"
+msgstr "Muzikos - Failai"
+
+msgctxt "#31013"
+msgid "Recent Movies"
+msgstr "Naujausi filmai"
+
+msgctxt "#31014"
+msgid "Recent Episodes"
+msgstr "Naujausi epizodai"
+
+msgctxt "#31016"
+msgid "Recent Albums"
+msgstr "Naujausi albumai"
+
+msgctxt "#31017"
+msgid "Volume Muted"
+msgstr "Garsas pritylditas"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Puslapis"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Objektas"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Informacijos sąrašas"
+
+msgctxt "#31031"
+msgid "Info Wide"
+msgstr "Plati informacija"
+
+msgctxt "#31040"
+msgid "Now Playing"
+msgstr "Dabar atkuriama"
+
+msgctxt "#31041"
+msgid "Last updated:"
+msgstr "Atnaujinta:"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "ATKŪRIMAS"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "PRISTABDYTI"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "PRASUKTI PIRMYN"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "PRASUKTI ATGAL"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Pabaigos laikas"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Rūš.: Didėjimo tvarka"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Rūš.: Mažėjimo tvarka"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Atidaryti grojaraštį"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Įšsaugoti grojaraštį"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Uždaryti grojaraštį"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Sistemos garso failai"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Aktualus grojaraštis"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Tai sujungtas failas, pasirinkite norimą dalį peržiūrai"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "Atgal"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Vieta"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "Peržiūrėti"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Dabartinė temperatūra"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Paskutinis atnaujinimas"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Duomenų teikėjas"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Išnaudota atminties:"
+
+msgctxt "#31312"
+msgid "Current Scraper"
+msgstr "Aktualus Scraper"
+
+msgctxt "#31313"
+msgid "Choose a Scraper"
+msgstr "Pasirinkti Scraper"
+
+msgctxt "#31314"
+msgid "Content Scanning Options"
+msgstr "Nuskaitomo turinio parinktys"
+
+msgctxt "#31319"
+msgid "Currently available Kodi user profiles"
+msgstr "Šiuo metu esami Kodi vartotojo profiliai"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Paskutinis prisijungimas"
+
+msgctxt "#31321"
+msgid "Karaoke Song Selector"
+msgstr "Karaoke dainų selektorius"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Rodomas"
+
+msgctxt "#31325"
+msgid "Playlist Options"
+msgstr "Grojaraščio parinktys"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Pauzė"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Stabdyti"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Prasukti pirmyn"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Prasukti atgal"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Video meniu"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Atsisiųsti subtitrus"
+
+msgctxt "#31357"
+msgid "Image Info"
+msgstr "Paveikslėlio informacija"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Kaip yra"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Arial pagrindu"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Keisti išvaizdą · Nustatyti kalbą ir regioną · Keisti failų sąrašo parinktis · Nustatyti ekrano užsklandą"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "Tvarkyti video biblioteką · Nustatyti vaizdo atkūrimo parinktis · Keisti vaizdo sąrašo parinktis · Nustatyti subtitrų šriftus"
+
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission · Set karaoke options"
+msgstr "Tvarkyti biblioteką · Nustatyti muzikos grojimo parinktis · Keisti muzikos sąrašo parinktis · Sąranka dainai(-oms) · Nustatyti karaoke pateikimo parinktis"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "Nustatyti nuotraukų sąrašo parinktis · Konfigūruoti skaidrių peržiūrą"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "Nustatyti tris miestus, gauti informacijai apie orus"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "Nustatyti kontrolę Kodi per UPnP ir HTTP  · Konfigūruoti failo pasidalijimą · Nustatyti interneto prieigos parinktis"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "Nustatyti ir/arba kalibruoti monitorių · Konfigūruoti garso išvestis · Nustatyti nuotolinį valdymą · Nustatyti galios taupymo variantus · Įgalinti derinimą · Sąranka: Naudotojas ir laptažodis"
+
+msgctxt "#31407"
+msgid "Setup the skin · Add and remove home menu items · Change skin backgrounds"
+msgstr "Nustatyti išvaizdą · Pridėkite ir/arba šalinti namų menių elementus · Keisti išvaizdos fonus"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Pasirinkite Kodi vartotojo profilį[CR]įeikitei į sistemą ir tęskite."
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "Titulinio meniu kategorijos mygtukai"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "Pagrindinis priedų puslapio greitos nuorodos"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "Įvairūs nustatymai"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "Pagrindinio ekrano orų informacija ir mygtukas"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Priedų trumpinys"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SINCHRONIZUOTI"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Naudoti savą foną"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Fonas:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Konfigūruoti TV nustatymus · Pakeisti viso ekrano informaciją · Tvarkyti EPG duomenų nustatymus"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "Televizija"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Slėpti vaizdo foną"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Slėpti vizualizacijos foną"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Kanalo nustatymai"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Galimos grupės"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Pridėti grupę"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Pervadinti grupę"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Pašalinti grupę"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Rodyti paslėptus"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Rodyti pašalintus"

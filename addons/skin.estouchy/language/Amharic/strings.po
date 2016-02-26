@@ -1,0 +1,237 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Amharic (http://www.transifex.com/projects/p/xbmc-skins/language/am/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: am\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "ድምፅ ማሰናጃዎች"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Caps[CR]Lock"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "የ አገባብ ዝርዝር"
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr "በሙሉ መመልከቻ ዘዴ"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "በመስራት ላይ "
+
+msgctxt "#31010"
+msgid "Currently logged in as"
+msgstr "አሁን የገቡት እንደ"
+
+msgctxt "#31011"
+msgid "N/A"
+msgstr "N/A"
+
+msgctxt "#31012"
+msgid "Music - Files"
+msgstr "የሙዚቃ ፋይሎች"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "ገጽ"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "እቃዎች"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "የመረጃ ዝርዝር"
+
+msgctxt "#31040"
+msgid "Now Playing"
+msgstr "አሁን የሚጫወተው"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "የሚጫወተው"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ማቆሚያ"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "ወደ ፊት ማሳለፊያ"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "ወደ ኋላ ማሳለፊያ"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "መጨረሻው ጊዜ"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "መለያ እየጨመረ በሚሄድ"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "መለያ እየቀነሰ በሚሄድ"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "ዝርዝሮችን መክፈቻ"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "ዝርዝሮችን ማስቀመጫ"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "ዝርዝሮችን መዝጊያ"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "የስርአቱ ሙዚቃ ፋይሎች"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "አሁን የሚጫወተው ዝርዝር"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "ይህ ፋይል በጣም ትልቅ ነው ማጫወት የሚፈልጉትን ክፍል ይምረጡ"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "ወደ ኋላ"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "አካባቢ "
+
+msgctxt "#31202"
+msgid "View"
+msgstr "መመልከቻ"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "የአሁኑ የአየር ንብረት "
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "መጨረሻ የተሻሻለው"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "ዳታ አቅራቢ "
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "የተጠቀሙት Memory:"
+
+msgctxt "#31314"
+msgid "Content Scanning Options"
+msgstr "ይዞታዎችን ማሰሻ ምርጫዎች "
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "መጨረሻ የገባው"
+
+msgctxt "#31321"
+msgid "Karaoke Song Selector"
+msgstr "ካሪዮኪ ዘፈን መራጭ"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "የተላለፈ"
+
+msgctxt "#31325"
+msgid "Playlist Options"
+msgstr "የሚያጫውቱት ምርጫዎች "
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "ማቆሚያ"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "ማቆሚያ"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "ወደ ፊት ማሳለፊያ"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "ወደ ኋላ ማሳለፊያ"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "የቪዲዮ ዝርዝር"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "ንዑስ አርእስቶች ማውረጃ "
+
+msgctxt "#31357"
+msgid "Image Info"
+msgstr "የምስል መረጃ"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "መደበኛ "
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Arial based"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "ይምረጡ የ እርስዎን  Kodi ተጠቃሚ ገጽታ[CR]ለ መግባት እና ለመቀጠል"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "የ ቤት ገጽ ተጨ-ማሪ ፈጣን አገናኞች"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "የተለያዩ ምርጫዎች"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "አቋራጭ መጨ-መሪያ "
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "ቲቪ በቀጥታ "
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "ቡድን መጨመሪያ"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "ቡድን እንደገና መሰየሚያ"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "ቡድን ማጥፊያ"

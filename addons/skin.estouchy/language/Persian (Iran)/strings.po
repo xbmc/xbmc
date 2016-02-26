@@ -1,0 +1,201 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Persian (Iran) (http://www.transifex.com/projects/p/xbmc-skins/language/fa_IR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fa_IR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr "تمام صفحه"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "در حال کار..."
+
+msgctxt "#31012"
+msgid "Music - Files"
+msgstr "موسیقی - فایل ها"
+
+msgctxt "#31013"
+msgid "Recent Movies"
+msgstr "ویدئوهای تازه"
+
+msgctxt "#31014"
+msgid "Recent Episodes"
+msgstr "قسمتهای جدید"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "صفحه"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "موضوعات"
+
+msgctxt "#31040"
+msgid "Now Playing"
+msgstr "در حال پخش"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "در حال پخش"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "مکث شده"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "حرکت سریع به جلو"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "حرکت سریع به عقب"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "زمان اتمام"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "مرتب سازی صعودی"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "مرتب سازی نزولی"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "باز کردن لیست پخش"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "ذخیره لیست پخش"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "بستن لیست پخش"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "سیستم فایل های موسیقی"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "لیست پخش فعلی"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "این فایل چند بخشی است, قسمت مورد نظر را برای پخش انتخاب کنید."
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "مکان"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "دمای کنونی"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "آخرین بروزرسانی"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "ارائه دهنده اطلاعات"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "میزان استفاده حافظه:"
+
+msgctxt "#31312"
+msgid "Current Scraper"
+msgstr "سرویس دریافت اطلاعات کنونی"
+
+msgctxt "#31313"
+msgid "Choose a Scraper"
+msgstr "سرویس دریافت اطلاعات را انتخاب کنید"
+
+msgctxt "#31314"
+msgid "Content Scanning Options"
+msgstr "انتخاب های جستجوی اجزاء"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "آخرین ورود"
+
+msgctxt "#31321"
+msgid "Karaoke Song Selector"
+msgstr "انتخاب آهنگ کاراوکه"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "پخش شده"
+
+msgctxt "#31325"
+msgid "Playlist Options"
+msgstr "گزینه های لیست پخش"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "مکث"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "توقف"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "جلو رفتن سریع"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "بازکشت"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "دانلود زیر نویس ها"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "پیش فرض پوسته"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "بر اساس فونت Arial"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "جهت ورود و ادامه کار، کاربر kodi را انتخاب نمایید."
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "تلویزیون زنده"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "مخفی کردن پس زمینه های ویدئویی"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "افزودن گروه جدید"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "تغییر نام گروه"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "حذف گروه"

@@ -1,0 +1,361 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/xbmc-skins/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Geluidsinstellingen"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Caps[CR]Lock"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Visualisatie Opties"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "Visualisatie voorinstellingen"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Context Menu"
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr "Volledig Scherm"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Bezig..."
+
+msgctxt "#31010"
+msgid "Currently logged in as"
+msgstr "Momenteel ingelogd als"
+
+msgctxt "#31011"
+msgid "N/A"
+msgstr "N/A"
+
+msgctxt "#31012"
+msgid "Music - Files"
+msgstr "Muziek - Bestanden"
+
+msgctxt "#31013"
+msgid "Recent Movies"
+msgstr "Recente Films"
+
+msgctxt "#31014"
+msgid "Recent Episodes"
+msgstr "Recente Afleveringen"
+
+msgctxt "#31016"
+msgid "Recent Albums"
+msgstr "Recente Albums"
+
+msgctxt "#31017"
+msgid "Volume Muted"
+msgstr "Volume Gedempt"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Pagina"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Items"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Info Lijst"
+
+msgctxt "#31031"
+msgid "Info Wide"
+msgstr "Info Breed"
+
+msgctxt "#31040"
+msgid "Now Playing"
+msgstr "Speelt nu"
+
+msgctxt "#31041"
+msgid "Last updated:"
+msgstr "Laatste update:"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "AFSPELEND"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "GEPAUZEERD"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "VOORUITSPOELEN"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "TERUGSPOELEN"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Eind tijd"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Sorteren: Oplopend"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Sorteren: Aflopend"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Open afspeellijst"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Save afspeellijst"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Sluit afspeellijst"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Systeem muziekbestanden"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Huidige afspeellijst"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Dit bestand bestaat uit meerdere delen, selecteer het gedeelte vanaf waar u wilt afspelen."
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "Terug"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Locatie"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "Bekijken"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Huidige temperatuur"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Laatste update"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Data provider"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Geheugen-verbruik:"
+
+msgctxt "#31312"
+msgid "Current Scraper"
+msgstr "Huidige Scraper"
+
+msgctxt "#31313"
+msgid "Choose a Scraper"
+msgstr "Kies een Scraper"
+
+msgctxt "#31314"
+msgid "Content Scanning Options"
+msgstr "Inhoudsscan opties"
+
+msgctxt "#31319"
+msgid "Currently available Kodi user profiles"
+msgstr "Beschikbare Kodi gebruikersprofielen"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Laatste login"
+
+msgctxt "#31321"
+msgid "Karaoke Song Selector"
+msgstr "Karaoke liedjeskiezer"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Uitgezonden"
+
+msgctxt "#31325"
+msgid "Playlist Options"
+msgstr "Playlist Opties"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Pauze"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Stop"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Vooruitspoelen"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Terugspoelen"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Video Menu"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Ondertitels downloaden"
+
+msgctxt "#31357"
+msgid "Image Info"
+msgstr "Afbeelding Info"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Standaard Skin"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Arial lettertype"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Verander je Skin · Instellen van Taal en Land · Verander bestandslijst opties · Stel een screensaver in"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "Manage je video bibliotheek · Afspeelopties voor Video · Verander videolijst opties · Stel ondertitel font in"
+
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission · Set karaoke options"
+msgstr "Beheer je Muziek bibliotheek · Afspeelopties voor Muziek · Verander Muzieklijst opties · Stel liedjesaanbod in · Stel karaokeopties in"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "Stel fotolijst opties in · Configureer diashow"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "Stel drie steden in om weerinformatie te verzamelen"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "Instellingen voor bedienen Kodi via UPnP en HTTP  · nstellingen voor delen van bestanden · Internet instellingen"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "Instellen en kalibreren van scherm · Configureer geluidsuitgang · Instellen van afstandsbediening · Instellingen voor energiebesparing · Zet debugging aan · Instellingen voor vergrendeling"
+
+msgctxt "#31407"
+msgid "Setup the skin · Add and remove home menu items · Change skin backgrounds"
+msgstr "Instellingen voor Confluence Skin · Toevoegen en verwijderen van Home menu items · Verander skin achtergrond"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Kies je Kodi gebruikersprofiel[CR]om door te gaan"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "Begin menu categorie knoppen"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "Beginpagina add-on snelkoppelingen"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "Diverse opties"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "Beginscherm weerinformatie en knop"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Add-on snelkoppelingen"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SYNC"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Gebruik aangepaste achtergrond"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Achtergrond:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Configureer TV instellingen · Verander volledig scherm info · beer EPG data instellingen"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "Live TV"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "In achtergrond spelende video verbergen"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Verberg visualisatie achtergrond"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Kanaal instellingen"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Beschikbare groepen"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Groep toevoegen"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Groep hernoemen"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Groep verwijderen"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Toon verborgen"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Toon verwijderde"
