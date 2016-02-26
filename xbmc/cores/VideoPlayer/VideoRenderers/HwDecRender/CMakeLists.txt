@@ -28,7 +28,7 @@ if(MMAL_FOUND)
   list(APPEND HEADERS MMALRenderer.h)
 endif()
 
-if(AMLCODEC_FOUND)
+if(AML_FOUND)
   list(APPEND SOURCES RendererAML.cpp)
   list(APPEND HEADERS RendererAML.h)
 endif()

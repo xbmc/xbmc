@@ -1,20 +1,45 @@
-# - Try to find libusb
-# Once done this will define
+#.rst:
+# FindLibUSB
+# ----------
+# Finds the USB library
 #
-# USB_FOUND - system has libusb
-# USB_INCLUDE_DIRS - the libusb include directory
-# USB_LIBRARIES - The libusb libraries
+# This will will define the following variables::
+#
+# LIBUSB_FOUND - system has LibUSB
+# LIBUSB_INCLUDE_DIRS - the USB include directory
+# LIBUSB_LIBRARIES - the USB libraries
+#
+# and the following imported targets::
+#
+#   LibUSB::LibUSB   - The USB library
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules (usb libusb)
-  list(APPEND USB_INCLUDE_DIRS ${USB_INCLUDEDIR})
-else()
-  find_path(USB_INCLUDE_DIRS usb.h)
-  find_library(USB_LIBRARIES usb)
+  pkg_check_modules(PC_LIBUSB libusb QUIET)
 endif()
 
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(LibUSB DEFAULT_MSG USB_INCLUDE_DIRS USB_LIBRARIES)
+find_path(LIBUSB_INCLUDE_DIR usb.h
+                             PATHS ${PC_LIBUSB_INCLUDEDIR})
+find_library(LIBUSB_LIBRARY NAMES usb
+                            PATHS ${PC_LIBUSB_INCLUDEDIR})
+set(LIBUSB_VERSION ${PC_LIBUSB_VERSION})
 
-list(APPEND USB_DEFINITIONS -DUSE_LIBUSB=1)
-mark_as_advanced(USB_INCLUDE_DIRS USB_LIBRARIES USB_DEFINITIONS)
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(LIBUSB
+                                  REQUIRED_VARS LIBUSB_LIBRARY LIBUSB_INCLUDE_DIR
+                                  VERSION_VAR LIBUSB_VERSION)
+
+if(LIBUSB_FOUND)
+  set(LIBUSB_INCLUDE_DIRS ${LIBUSB_INCLUDE_DIR})
+  set(LIBUSB_LIBRARIES ${LIBUSB_LIBRARY})
+  set(LIBUSB_DEFINITIONS -DUSE_LIBUSB=1)
+
+  if(NOT TARGET LibUSB::LibUSB)
+    add_library(LibUSB::LibUSB UNKNOWN IMPORTED)
+    set_target_properties(LibUSB::LibUSB PROPERTIES
+                                         IMPORTED_LOCATION "${LIBUSB_LIBRARY}"
+                                         INTERFACE_INCLUDE_DIRECTORIES "${LIBUSB_INCLUDE_DIR}"
+                                         INTERFACE_COMPILE_DEFINITIONS USE_LIBUSB=1)
+  endif()
+endif()
+
+mark_as_advanced(USB_INCLUDE_DIR USB_LIBRARY)

@@ -1,3 +1,7 @@
+if(NOT CMAKE_TOOLCHAIN_FILE)
+  message(FATAL_ERROR "CMAKE_TOOLCHAIN_FILE required for android. See ${PROJECT_SOURCE_DIR}/README.md")
+endif()
+
 set(ARCH_DEFINES -DTARGET_POSIX -DTARGET_LINUX -D_LINUX -DTARGET_ANDROID)
 set(SYSTEM_DEFINES -D__STDC_CONSTANT_MACROS -D_FILE_DEFINED
                    -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64)
@@ -18,3 +22,7 @@ set(FFMPEG_OPTS --enable-cross-compile --cpu=cortex-a9 --arch=arm --target-os=li
 set(ENABLE_SDL OFF)
 set(ENABLE_X11 OFF)
 set(ENABLE_EGL ON)
+set(ENABLE_AML ON)
+set(ENABLE_OPTICAL OFF)
+
+list(APPEND DEPLIBS android log jnigraphics)

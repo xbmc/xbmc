@@ -57,6 +57,12 @@ function(find_soname lib)
                   OUTPUT_VARIABLE ${lib}_FILENAME)
   string(REPLACE "LOAD " "" ${lib}_FILENAME "${${lib}_FILENAME}")
   string(STRIP "${${lib}_FILENAME}" ${lib}_FILENAME)
+  if(NOT ${lib}_FILENAME)
+    execute_process(COMMAND ${CMAKE_C_COMPILER} -nostdlib -o /dev/null -Wl,-t ${link_lib}
+                    OUTPUT_QUIET
+                    ERROR_VARIABLE _TMP_FILENAME)
+    string(REGEX MATCH ".*lib${liblow}.so" ${lib}_FILENAME ${_TMP_FILENAME})
+  endif()
   if(${lib}_FILENAME)
     execute_process(COMMAND objdump -p ${${lib}_FILENAME}
                     COMMAND grep SONAME.*${liblow}

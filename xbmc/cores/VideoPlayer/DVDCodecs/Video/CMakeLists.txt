@@ -9,7 +9,7 @@ if(NOT ENABLE_EXTERNAL_LIBAV)
   list(APPEND HEADERS DVDVideoPPFFmpeg.h)
 endif()
 
-if(AMLCODEC_FOUND)
+if(AML_FOUND)
   list(APPEND SOURCES AMLCodec.cpp
                       DVDVideoCodecAmlogic.cpp)
   list(APPEND HEADERS AMLCodec.h

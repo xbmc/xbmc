@@ -39,6 +39,11 @@ IF("${CORE_SYSTEM_NAME}" STREQUAL "rbpi")
   LIST(APPEND CMAKE_INCLUDE_PATH @use_firmware@/opt/vc/include)
 ENDIF()
 
+# add Android directories
+IF("${CORE_SYSTEM_NAME}" STREQUAL "android")
+  LIST(APPEND NDKROOT @use_ndk@)
+ENDIF()
+
 SET(CMAKE_C_FLAGS "@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include")
 SET(CMAKE_CXX_FLAGS "@platform_cxxflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include")
 SET(CMAKE_CPP_FLAGS "@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include")

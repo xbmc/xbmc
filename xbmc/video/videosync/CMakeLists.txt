@@ -30,4 +30,6 @@ if(CORE_SYSTEM_NAME STREQUAL "ios")
   list(APPEND HEADERS VideoSyncIos.h)
 endif()
 
-core_add_library(video_sync)
+if(SOURCES AND HEADERS)
+  core_add_library(video_sync)
+endif()

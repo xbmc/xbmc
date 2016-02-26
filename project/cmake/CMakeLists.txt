@@ -97,6 +97,9 @@ if(NOT WIN32)
 else()
   list(APPEND required_deps D3DX11Effects)
 endif()
+if(CORE_SYSTEM_NAME STREQUAL android)
+  list(APPEND required_deps Zip)
+endif()
 
 # Optional dependencies
 set(optional_deps MicroHttpd MySqlClient SSH
@@ -184,6 +187,7 @@ if(NOT WIN32)
     if(OPENGLES_FOUND)
       core_optional_dep(EGL ENABLE_EGL)
       core_optional_dep(OMX ENABLE_OMX)
+      core_optional_dep(AML ENABLE_AML)
       core_optional_dep(X ENABLE_X11)
       core_optional_dep(Sdl)
     endif()
@@ -280,8 +284,13 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/system/players/VideoPlayer)
 add_custom_target(wrap-libraries ALL DEPENDS ${WRAP_FILES})
 
 set(LIBCEC_SONAME "${CEC_SONAME}")
-configure_file(${CORE_SOURCE_DIR}/xbmc/DllPaths_generated.h.in
-               ${CORE_BUILD_DIR}/DllPaths_generated.h @ONLY)
+if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL android)
+  configure_file(${CORE_SOURCE_DIR}/xbmc/DllPaths_generated.h.in
+                 ${CORE_BUILD_DIR}/DllPaths_generated.h @ONLY)
+elseif(CORE_SYSTEM_NAME STREQUAL android)
+  configure_file(${CORE_SOURCE_DIR}/xbmc/DllPaths_generated_android.h.in
+                 ${CORE_BUILD_DIR}/DllPaths_generated_android.h @ONLY)
+endif()
 
 # Codegen
 add_subdirectory(${CORE_SOURCE_DIR}/xbmc/interfaces/swig build/swig)
