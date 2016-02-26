@@ -227,6 +227,7 @@ protected:
 
   int                  m_neededBuffers;
   unsigned int         m_frameIdx;
+  CRenderCapture*      m_capture = nullptr;
 };
 
 #else
