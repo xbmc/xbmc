@@ -44,7 +44,6 @@ character itself should NOT be typed as part of the command.
     $ cd $HOME
     $ git clone git://github.com/xbmc/xbmc.git Kodi
     $ cd Kodi
-    $ git submodule update --init addons/skin.re-touched
 
 -----------------------------------------------------------------------------
 3.1 Install Xcode

@@ -264,8 +264,8 @@
 /****************
  * default skin
  ****************/
-#if defined(HAS_TOUCH_SKIN) && defined(TARGET_DARWIN_IOS)
-#define DEFAULT_SKIN          "skin.re-touched"
+#if defined(TARGET_DARWIN_IOS)
+#define DEFAULT_SKIN          "skin.estouchy"
 #else
 #define DEFAULT_SKIN          "skin.estuary"
 #endif

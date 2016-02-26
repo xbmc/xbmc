@@ -26,6 +26,7 @@
   <addon>script.module.pil</addon>
   <addon>service.xbmc.versioncheck</addon>
   <addon>skin.estuary</addon>
+  <addon>skin.estouchy</addon>
   <addon>webinterface.default</addon>
   <addon>xbmc.addon</addon>
   <addon>xbmc.audioencoder</addon>
