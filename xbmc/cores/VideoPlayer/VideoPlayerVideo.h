@@ -52,7 +52,6 @@ public:
   };
   std::deque<CGain> m_gain;
   double m_totalGain;
-  double m_lastDecoderPts;
   double m_lastPts;
   unsigned int m_lateFrames;
   unsigned int m_dropRequests;
@@ -117,7 +116,7 @@ protected:
 
   void ResetFrameRateCalc();
   void CalcFrameRate();
-  int CalcDropRequirement(double pts, bool updateOnly);
+  int CalcDropRequirement(double pts);
 
   double m_iVideoDelay;
   double m_iSubtitleDelay;
@@ -141,7 +140,6 @@ protected:
   bool m_bAllowFullscreen;
   bool m_bRenderSubs;
   float m_fForcedAspectRatio;
-  int m_iNrOfPicturesNotToSkip;
   int m_speed;
   bool m_stalled;
   IDVDStreamPlayer::ESyncState m_syncState;

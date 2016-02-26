@@ -273,16 +273,19 @@ public:
   /**
    * For calculation of dropping requirements player asks for some information.
    * - pts : right after decoder, used to detect gaps (dropped frames in decoder)
-   * - droppedPics : indicates if decoder has dropped a picture
+   * - droppedFrames : indicates if decoder has dropped a frame
+   *                 -1 means that decoder has no info on this.
+   * - skippedPics : indicates if postproc has skipped a already decoded picture
    *                 -1 means that decoder has no info on this.
    *
    * If codec does not implement this method, pts of decoded frame at input
    * video player is used. In case decoder does post-proc and de-interlacing there
    * may be quite some frames queued up between exit decoder and entry player.
    */
-  virtual bool GetCodecStats(double &pts, int &droppedPics)
+  virtual bool GetCodecStats(double &pts, int &droppedFrames, int &skippedPics)
   {
-    droppedPics = -1;
+    droppedFrames = -1;
+    skippedPics = -1;
     return false;
   }
 

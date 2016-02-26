@@ -207,7 +207,9 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
   m_decoderPts = DVD_NOPTS_VALUE;
   m_codecControlFlags = 0;
   m_requestSkipDeint = false;
-  m_skippedDeint = 0; //silence coverity uninitialized warning, is set elsewhere
+  m_skippedDeint = 0;
+  m_droppedFrames = 0;
+  m_interlaced = false;
 }
 
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
@@ -556,6 +558,10 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
 
   if (!iGotPicture)
   {
+    m_droppedFrames++;
+    if (m_interlaced)
+      m_droppedFrames++;
+
     if (m_pHardware && (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
     {
       int result;
@@ -571,6 +577,11 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
     m_started = true;
     m_iLastKeyframe = m_pCodecContext->has_b_frames + 2;
   }
+
+  if (m_pDecodedFrame->interlaced_frame)
+    m_interlaced = true;
+  else
+    m_interlaced = false;
 
   /* put a limit on convergence count to avoid huge mem usage on streams without keyframes */
   if (m_iLastKeyframe > 300)
@@ -642,7 +653,10 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
 void CDVDVideoCodecFFmpeg::Reset()
 {
   m_started = false;
+  m_interlaced = false;
   m_decoderPts = DVD_NOPTS_VALUE;
+  m_skippedDeint = 0;
+  m_droppedFrames = 0;
   m_iLastKeyframe = m_pCodecContext->has_b_frames;
   avcodec_flush_buffers(m_pCodecContext);
 
@@ -774,10 +788,8 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
   if (m_requestSkipDeint)
   {
     pDvdVideoPicture->iFlags |= DVD_CODEC_CTRL_SKIPDEINT;
-    m_skippedDeint = 1;
+    m_skippedDeint++;
   }
-  else
-    m_skippedDeint = 0;
 
   m_requestSkipDeint = false;
   pDvdVideoPicture->iFlags |= m_codecControlFlags;
@@ -967,17 +979,25 @@ unsigned CDVDVideoCodecFFmpeg::GetAllowedReferences()
     return 0;
 }
 
-bool CDVDVideoCodecFFmpeg::GetCodecStats(double &pts, int &droppedPics)
+bool CDVDVideoCodecFFmpeg::GetCodecStats(double &pts, int &droppedFrames, int &skippedPics)
 {
   if (m_decoderPts != DVD_NOPTS_VALUE)
     pts = m_decoderPts;
   else
     pts = m_dts;
 
-  if (m_skippedDeint)
-    droppedPics = m_skippedDeint;
+  if (m_droppedFrames)
+    droppedFrames = m_droppedFrames;
   else
-    droppedPics = -1;
+    droppedFrames = -1;
+  m_droppedFrames = 0;
+
+  if (m_skippedDeint)
+    skippedPics = m_skippedDeint;
+  else
+    skippedPics = -1;
+  m_skippedDeint = 0;
+
   return true;
 }
 

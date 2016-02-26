@@ -1328,10 +1328,6 @@ void CVideoPlayer::Process()
           !m_SelectionStreams.m_Streams.empty())
         OpenDefaultStreams();
 
-      // never allow first frames after open to be skipped
-      if( m_VideoPlayerVideo->IsInited() )
-        m_VideoPlayerVideo->SendMessage(new CDVDMsg(CDVDMsg::VIDEO_NOSKIP));
-
       UpdateApplication(0);
       UpdatePlayState(0);
     }
@@ -3821,7 +3817,6 @@ void CVideoPlayer::FlushBuffers(bool queued, double pts, bool accurate, bool syn
   {
     m_VideoPlayerAudio->SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
     m_VideoPlayerVideo->SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
-    m_VideoPlayerVideo->SendMessage(new CDVDMsg(CDVDMsg::VIDEO_NOSKIP));
     m_VideoPlayerSubtitle->SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
     m_VideoPlayerTeletext->SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
     m_VideoPlayerRadioRDS->SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
