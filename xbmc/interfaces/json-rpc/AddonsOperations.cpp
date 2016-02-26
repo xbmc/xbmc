@@ -206,13 +206,52 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITrans
   return ACK;
 }
 
+static CVariant Serialize(const AddonPtr& addon)
+{
+  CVariant variant;
+  variant["addonid"] = addon->ID();
+  variant["type"] = ADDON::TranslateType(addon->Type(), false);
+  variant["name"] = addon->Name();
+  variant["version"] = addon->Version().asString();
+  variant["summary"] = addon->Summary();
+  variant["description"] = addon->Description();
+  variant["path"] = addon->Path();
+  variant["author"] = addon->Author();
+  variant["thumbnail"] = addon->Icon();
+  variant["disclaimer"] = addon->Disclaimer();
+  variant["fanart"] = addon->FanArt();
+
+  variant["dependencies"] = CVariant(CVariant::VariantTypeArray);
+  for (const auto& kv : addon->GetDeps())
+  {
+    CVariant dep(CVariant::VariantTypeObject);
+    dep["addonid"] = kv.first;
+    dep["version"] = kv.second.first.asString();
+    dep["optional"] = kv.second.second;
+    variant["dependencies"].push_back(std::move(dep));
+  }
+  if (addon->Broken().empty())
+    variant["broken"] = false;
+  else
+    variant["broken"] = addon->Broken();
+  variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
+  for (const auto& kv : addon->ExtraInfo())
+  {
+    CVariant info(CVariant::VariantTypeObject);
+    info["key"] = kv.first;
+    info["value"] = kv.second;
+    variant["extrainfo"].push_back(std::move(info));
+  }
+  variant["rating"] = -1;
+  return variant;
+}
+
 void CAddonsOperations::FillDetails(AddonPtr addon, const CVariant& fields, CVariant &result, CAddonDatabase &addondb, bool append /* = false */)
 {
   if (addon.get() == NULL)
     return;
   
-  CVariant addonInfo;
-  addon->Props().Serialize(addonInfo);
+  CVariant addonInfo = Serialize(addon);
 
   CVariant object;
   object["addonid"] = addonInfo["addonid"];

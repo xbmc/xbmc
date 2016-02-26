@@ -51,32 +51,16 @@ void OnPreUnInstall(const AddonPtr& addon);
 void OnPostUnInstall(const AddonPtr& addon);
 
 
-class AddonProps : public ISerializable
+class AddonProps
 {
 public:
-  AddonProps() : type(ADDON_UNKNOWN), version("0.0.0"), minversion("0.0.0") {};
-
-  AddonProps(const std::string &id, TYPE type, const std::string &versionstr, const std::string &minversionstr)
-    : id(id)
-    , type(type)
-    , version(versionstr)
-    , minversion(minversionstr)
-  {
-  }
-
-  bool operator==(const AddonProps &rhs)
-  { 
-    return    (*this).id == rhs.id
-           && (*this).type == rhs.type
-           && (*this).version == rhs.version;
-  }
-  
-  void Serialize(CVariant &variant) const;
+  AddonProps() : type(ADDON_UNKNOWN) {};
+  AddonProps(std::string id, TYPE type) : id(std::move(id)), type(type) {}
 
   std::string id;
   TYPE type;
-  AddonVersion version;
-  AddonVersion minversion;
+  AddonVersion version{"0.0.0"};
+  AddonVersion minversion{"0.0.0"};
   std::string name;
   std::string license;
   std::string summary;
@@ -98,7 +82,6 @@ public:
   CDateTime lastUsed;
 };
 
-typedef std::vector<class AddonProps> VECADDONPROPS;
 
 class CAddon : public IAddon
 {
@@ -153,7 +136,7 @@ public:
   const std::string Summary() const { return m_props.summary; }
   const std::string Description() const { return m_props.description; }
   const std::string Path() const { return m_props.path; }
-  const std::string Profile() const { return m_profile; }
+  const std::string Profile() const { return m_profilePath; }
   const std::string LibPath() const;
   const std::string Author() const { return m_props.author; }
   const std::string ChangeLog() const { return m_props.changelog; }
@@ -202,8 +185,6 @@ public:
   virtual bool CanInstall() { return true; }
 
 protected:
-  friend class CAddonCallbacksAddon;
-
   /*! \brief Load the default settings and override these with any previously configured user settings
    \param bForce force the load of settings even if they are already loaded (reload)
    \return true if settings exist, false otherwise
@@ -242,13 +223,10 @@ protected:
   bool              m_userSettingsLoaded;
 
 private:
-  friend class CAddonMgr;
-  std::string        m_userSettingsPath;
-  void BuildProfilePath();
-
   bool m_hasSettings;
 
-  std::string m_profile;
+  std::string m_profilePath;
+  std::string m_userSettingsPath;
   std::map<std::string, std::string> m_settings;
 };
 

@@ -551,13 +551,21 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& repoId, VECADDONS& 
 
     auto start = XbmcThreads::SystemClockMillis();
 
+    if (!repoId.empty())
+    {
+      // Report failure if repository has not been correctly fetched.
+      m_pDS->query(PrepareSQL("SELECT repo.id FROM repo WHERE repo.addonId='%s' AND "
+          "repo.checksum IS NOT NULL AND repo.checksum != ''", repoId.c_str()));
+      if (m_pDS->eof())
+        return false;
+    }
+
     std::string commonConstraint = PrepareSQL(
         "JOIN addonlinkrepo ON addon.id=addonlinkrepo.idAddon "
-        "JOIN repo ON addonlinkrepo.idRepo=repo.id "
-        "WHERE repo.checksum IS NOT NULL AND repo.checksum != ''");
+        "JOIN repo ON addonlinkrepo.idRepo=repo.id ");
 
     if (!repoId.empty())
-      commonConstraint += PrepareSQL(" AND repo.addonId='%s'", repoId.c_str());
+      commonConstraint += PrepareSQL(" WHERE repo.addonId='%s'", repoId.c_str());
 
     commonConstraint += PrepareSQL(" ORDER BY addon.addonID");
 

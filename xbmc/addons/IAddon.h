@@ -133,9 +133,6 @@ namespace ADDON
 
   protected:
     virtual bool LoadSettings(bool bForce = false) =0;
-
-  private:
-    friend class CAddonMgr;
   };
 };
 

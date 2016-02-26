@@ -143,64 +143,11 @@ const std::string GetIcon(const ADDON::TYPE& type)
   return "";
 }
 
-void AddonProps::Serialize(CVariant &variant) const
-{
-  variant["addonid"] = id;
-  variant["type"] = TranslateType(type);
-  variant["version"] = version.asString();
-  variant["minversion"] = minversion.asString();
-  variant["name"] = name;
-  variant["license"] = license;
-  variant["summary"] = summary;
-  variant["description"] = description;
-  variant["path"] = path;
-  variant["libname"] = libname;
-  variant["author"] = author;
-  variant["source"] = source;
-
-  if (CURL::IsFullPath(icon))
-    variant["icon"] = icon;
-  else
-    variant["icon"] = URIUtils::AddFileToFolder(path, icon);
-
-  variant["thumbnail"] = variant["icon"];
-  variant["disclaimer"] = disclaimer;
-  variant["changelog"] = changelog;
-
-  if (CURL::IsFullPath(fanart))
-    variant["fanart"] = fanart;
-  else
-    variant["fanart"] = URIUtils::AddFileToFolder(path, fanart);
-
-  variant["dependencies"] = CVariant(CVariant::VariantTypeArray);
-  for (ADDONDEPS::const_iterator it = dependencies.begin(); it != dependencies.end(); ++it)
-  {
-    CVariant dep(CVariant::VariantTypeObject);
-    dep["addonid"] = it->first;
-    dep["version"] = it->second.first.asString();
-    dep["optional"] = it->second.second;
-    variant["dependencies"].push_back(dep);
-  }
-  if (broken.empty())
-    variant["broken"] = false;
-  else
-    variant["broken"] = broken;
-  variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
-  for (InfoMap::const_iterator it = extrainfo.begin(); it != extrainfo.end(); ++it)
-  {
-    CVariant info(CVariant::VariantTypeObject);
-    info["key"] = it->first;
-    info["value"] = it->second;
-    variant["extrainfo"].push_back(info);
-  }
-  variant["rating"] = -1;
-}
-
 CAddon::CAddon(AddonProps props)
   : m_props(std::move(props))
 {
-  BuildProfilePath();
-  m_userSettingsPath = URIUtils::AddFileToFolder(Profile(), "settings.xml");
+  m_profilePath = StringUtils::Format("special://profile/addon_data/%s/", ID().c_str());
+  m_userSettingsPath = URIUtils::AddFileToFolder(m_profilePath, "settings.xml");
   m_hasSettings = true;
   m_settingsLoaded = false;
   m_userSettingsLoaded = false;
@@ -371,11 +318,6 @@ void CAddon::SettingsToXML(CXBMCTinyXML &doc) const
 TiXmlElement* CAddon::GetSettingsXML()
 {
   return m_addonXmlDoc.RootElement();
-}
-
-void CAddon::BuildProfilePath()
-{
-  m_profile = StringUtils::Format("special://profile/addon_data/%s/", ID().c_str());
 }
 
 const std::string CAddon::LibPath() const
