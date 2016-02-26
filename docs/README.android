@@ -76,7 +76,7 @@ f. Once you have your hdd image with case sensitive hfs+ file system do all step
    example the hdd image is mounted on /Volumes/android-dev.
     $ ./configure --with-tarballs=/Users/Shared/xbmc-depends/tarballs --host=arm-linux-androideabi \
                   --with-sdk-path=/Volumes/android-dev/android/android-sdk-macosx \
-                  --with-ndk=/Volumes/android-dev/android/android-ndk-r10d \
+                  --with-ndk=/Volumes/android-dev/android/android-ndk-r10e \
                   --with-toolchain=/Volumes/android-dev/android/android-toolchain-arm/android-17 \
                   --prefix=/Volumes/android-dev/android/xbmc-depends
 
@@ -89,7 +89,7 @@ download the latest version for your operating system. The NDK
 can be downloaded from http://developer.android.com/tools/sdk/ndk/
 
 [NOTICE] Compiling Kodi for Android requires Android NDK
-         Revision at least 10d. For the SDK just use the latest available.
+         Revision at least 10e. For the SDK just use the latest available.
          It will work.
 
 After downloading the SDK and NDK extract the files contained in the
@@ -97,7 +97,7 @@ archives to your harddisk. For our example we are extracting in the following
 directories (this matches the example from tools/depends/README as well):
 
 NDK (referenced as <android-ndk> from now on):
-/opt/android-ndk-r10d
+/opt/android-ndk-r10e
 
 TOOLCHAIN (arm) (referenced as <android-toolchain-arm> from now on):
 /opt/arm-linux-androideabi-4.8-vanilla/android-17
