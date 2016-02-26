@@ -48,6 +48,9 @@
 #if defined(TARGET_DARWIN_IOS)
 #include "video/videosync/VideoSyncIos.h"
 #endif
+#if defined(TARGET_ANDROID)
+#include "video/videosync/VideoSyncAndroid.h"
+#endif
 
 CVideoReferenceClock::CVideoReferenceClock() : CThread("RefClock")
 {
@@ -124,6 +127,8 @@ void CVideoReferenceClock::Process()
     m_pVideoSync = new CVideoSyncPi();
 #elif defined(HAS_IMXVPU)
     m_pVideoSync = new CVideoSyncIMX();
+#elif defined(TARGET_ANDROID)
+    m_pVideoSync = new CVideoSyncAndroid();
 #endif
 
     if (m_pVideoSync)

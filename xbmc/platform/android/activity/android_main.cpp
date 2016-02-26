@@ -105,6 +105,13 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
     };
     env->RegisterNatives(cMain, &mOnNewIntent, 1);
 
+    JNINativeMethod mDoFrame = {
+      "_doFrame",
+      "(J)V",
+      (void*)&CJNIMainActivity::_doFrame
+    };
+    env->RegisterNatives(cMain, &mDoFrame, 1);
+
     JNINativeMethod mCallNative = {
       "_callNative",
       "(JJ)V",
