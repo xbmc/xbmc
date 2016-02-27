@@ -456,6 +456,21 @@ static int ToggleDirty(const std::vector<std::string>&)
 ///     @param[in] loop                  Send "loop" to loop the alarm.
 ///   }
 ///   \table_row2_l{
+///     <b>`Timer(name\,function\,waitTime[\,repeat)]`</b>
+///     ,
+///     Executes a built-in function after a specified number of milliseconds.
+///     @param[in] name                  The name of the timeout
+///     @param[in] function              The built-in function to execute
+///     @param[in] waitTime              The time to wait in millis before the command gets executed
+///     @param[in] repeat                Should the timer repeat the execution until it'll be canceled (optional)
+///   }
+///   \table_row2_l{
+///     <b>`CancelTimer(name)`</b>
+///     ,
+///     Cancels the timer
+///     @params[in] name                 The name of the timeout
+///   }
+///   \table_row2_l{
 ///     <b>`ActivateWindow(window[\,dir])`</b>
 ///     ,
 ///     Opens the given window. The parameter window can either be the window's id\,
