@@ -149,6 +149,66 @@ static int WakeOnLAN(const std::vector<std::string>& params)
   return 0;
 }
 
+// Note: For new Texts with comma add a "\" before!!! Is used for table text.
+//
+/// \page page_List_of_built_in_functions
+/// \section built_in_functions_3 Application built-in's
+///
+/// -----------------------------------------------------------------------------
+///
+/// \table_start
+///   \table_h2_l{
+///     Function,
+///     Description }
+///   \table_row2_l{
+///     <b>`Extract(url [\, dest])`</b>
+///     ,
+///     Extracts a specified archive to an optionally specified 'absolute' path.
+///     @param[in] url                   The archive URL.
+///     @param[in] dest                  Destination path (optional).
+///             @note If not given\, extracts to folder with archive.
+///   }
+///   \table_row2_l{
+///     <b>`Mute`</b>
+///     ,
+///     Mutes (or unmutes) the volume.
+///   }
+///   \table_row2_l{
+///     <b>`NotifyAll(sender\, data [\, json])`</b>
+///     ,
+///     Notify all connected clients
+///     @param[in] sender                 Sender.
+///     @param[in] data                   Data.
+///     @param[in] json                   JSON with extra parameters (optional).
+///   }
+///   \table_row2_l{
+///     <b>`SetVolume(percent[\,showvolumebar])`</b>
+///     ,
+///     Sets the volume to the percentage specified. Optionally\, show the Volume
+///     Dialog in Kodi when setting the volume.
+///     @param[in] percent               Volume level.
+///     @param[in] showvolumebar         Add "showVolumeBar" to show volume bar (optional).
+///   }
+///   \table_row2_l{
+///     <b>`Skin.ToggleDebug`</b>
+///     ,
+///     Toggles skin debug info on/off
+///   }
+///   \table_row2_l{
+///     <b>`ToggleDPMS`</b>
+///     ,
+///     Toggle DPMS mode manually
+///   }
+///   \table_row2_l{
+///     <b>`WakeOnLan(mac)`</b>
+///     ,
+///     Sends the wake-up packet to the broadcast address for the specified MAC
+///     address (Format: FF:FF:FF:FF:FF:FF or FF-FF-FF-FF-FF-FF).
+///     @param[in] mac                   The MAC of the host to wake.
+///   }
+///  \table_end
+///
+
 CBuiltins::CommandMap CApplicationBuiltins::GetOperations() const
 {
   return {
