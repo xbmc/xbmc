@@ -54,6 +54,8 @@ endif()
 if(MMAL_FOUND)
   list(APPEND SOURCES MMALCodec.cpp)
   list(APPEND HEADERS MMALCodec.h)
+  list(APPEND SOURCES MMALFFmpeg.cpp)
+  list(APPEND HEADERS MMALFFmpeg.h)
 endif()
 
 if(IMX_FOUND)

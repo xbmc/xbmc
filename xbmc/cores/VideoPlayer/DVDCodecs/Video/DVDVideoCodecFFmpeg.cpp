@@ -60,6 +60,9 @@
 #ifdef TARGET_DARWIN_OSX
 #include "VDA.h"
 #endif
+#ifdef HAS_MMAL
+#include "MMALFFmpeg.h"
+#endif
 #include "utils/StringUtils.h"
 
 extern "C" {
@@ -174,6 +177,21 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avct
         dec->Release();
     }
 #endif
+
+#ifdef HAS_MMAL
+    if (*cur == AV_PIX_FMT_YUV420P)
+    {
+      MMAL::CDecoder* dec = new MMAL::CDecoder();
+      ctx->m_pCodecContext->hwaccel_context = (void *)ctx->m_options.m_opaque_pointer;
+      if(dec->Open(avctx, ctx->m_pCodecContext, *cur, ctx->m_uSurfacesCount))
+      {
+        ctx->SetHardware(dec);
+        return *cur;
+      }
+      else
+        dec->Release();
+    }
+#endif
     cur++;
   }
 
@@ -271,6 +289,9 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 #ifdef TARGET_DARWIN_OSX
     if(CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDA))
       tryhw = true;
+#endif
+#ifdef HAS_MMAL
+    tryhw = true;
 #endif
     if (tryhw && m_decoderState == STATE_NONE)
     {
