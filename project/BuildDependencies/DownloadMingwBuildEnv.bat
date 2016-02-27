@@ -112,8 +112,8 @@ if not exist %instdir%\%msys2%\usr\bin\msys-2.0.dll (
 	)
 
 :minttySettings
-if exist %instdir%\%msys2%\home\%USERNAME%\.minttyrc GOTO updatemirrors
-if not exist %instdir%\%msys2%\home\%USERNAME% mkdir %instdir%\%msys2%\home\%USERNAME%
+if exist "%instdir%\%msys2%\home\%USERNAME%\.minttyrc" GOTO updatemirrors
+if not exist "%instdir%\%msys2%\home\%USERNAME%" mkdir "%instdir%\%msys2%\home\%USERNAME%"
     (
         echo.BoldAsFont=no
         echo.BackgroundColour=57,57,57
@@ -144,7 +144,7 @@ if not exist %instdir%\%msys2%\home\%USERNAME% mkdir %instdir%\%msys2%\home\%USE
         echo.BoldMagenta=158,111,254
         echo.BoldCyan=163,186,191
         echo.BoldWhite=248,248,242
-        )>>%instdir%\%msys2%\home\%USERNAME%\.minttyrc
+        )>>"%instdir%\%msys2%\home\%USERNAME%\.minttyrc"
 
 :updatemirrors
 if not "%usemirror%"=="yes" GOTO rebase
