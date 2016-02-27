@@ -233,6 +233,7 @@ protected:
   unsigned int         m_destHeight;
   int                  m_neededBuffers;
   unsigned int         m_frameIdx;
+  CRenderCapture*      m_capture = nullptr;
 };
 
 #else
