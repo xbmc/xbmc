@@ -9,7 +9,7 @@
 		<top>0</top>
 	</coordinates>
 	<controls>
-		<control type="button" id="1000">
+		<control type="button">
 			<description>Close Window button</description>
 			<left>84r</left>
 			<top>0</top>
@@ -21,13 +21,9 @@
 			<onclick>FullScreen</onclick>
 			<texturefocus>DialogCloseButton-focus.png</texturefocus>
 			<texturenofocus>DialogCloseButton.png</texturenofocus>
-			<onleft>1000</onleft>
-			<onright>1000</onright>
-			<onup>100</onup>
-			<ondown>100</ondown>
 			<animation effect="fade" time="150">VisibleChange</animation>
 			<animation effect="slide" start="0,0" end="-30,0" time="0" condition="Player.Muted">conditional</animation>
-			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(PVRRadioRDSInfo) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>
+			<visible>system.getbool(input.enablemouse) + ![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(PVRRadioRDSInfo) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>
 		</control>
 		<control type="slider" id="87">
 			<depth>DepthOSD+</depth>
@@ -48,8 +44,6 @@
 		<control type="grouplist" id="100">
 			<left>325</left>
 			<top>60r</top>
-			<onup>1000</onup>
-			<ondown>1000</ondown>
 			<orientation>horizontal</orientation>
 			<itemgap>0</itemgap>
 			<animation effect="fade" time="150">VisibleChange</animation>
@@ -186,8 +180,6 @@
 					<texturenofocus>-</texturenofocus>
 					<onleft>605</onleft>
 					<onright>607</onright>
-					<onup>1000</onup>
-					<ondown>1000</ondown>
 					<onclick>PlayerControl(Repeat)</onclick>
 				</control>
 				<control type="image">

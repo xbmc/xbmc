@@ -9,7 +9,7 @@
 		<top>0</top>
 	</coordinates>
 	<controls>
-		<control type="button" id="1000">
+		<control type="button">
 			<description>Close Window button</description>
 			<left>84r</left>
 			<top>0</top>
@@ -21,13 +21,9 @@
 			<onclick>FullScreen</onclick>
 			<texturefocus>DialogCloseButton-focus.png</texturefocus>
 			<texturenofocus>DialogCloseButton.png</texturenofocus>
-			<onleft>1000</onleft>
-			<onright>1000</onright>
-			<onup>100</onup>
-			<ondown>100</ondown>
 			<animation effect="slide" start="0,0" end="-30,0" time="0" condition="Player.Muted">conditional</animation>
 			<animation effect="fade" time="150">VisibleChange</animation>
-			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(VideoBookmarks)]</visible>
+			<visible>system.getbool(input.enablemouse) + ![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(VideoBookmarks)]</visible>
 		</control>
 		<control type="slider" id="87">
 			<depth>DepthOSD+</depth>
@@ -52,7 +48,6 @@
 			<itemgap>0</itemgap>
 			<animation effect="fade" time="150">VisibleChange</animation>
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)]</visible>
-			<onup>1000</onup>
 			<control type="button" id="300">
 				<width>55</width>
 				<height>55</height>
@@ -196,7 +191,6 @@
 				<texturefocus>OSDStereoscopicFO.png</texturefocus>
 				<texturenofocus>OSDStereoscopicNF.png</texturenofocus>
 				<onup>501</onup>
-				<ondown>1000</ondown>
 			</control>
 			<control type="button" id="250">
 				<width>55</width>
@@ -206,7 +200,6 @@
 				<texturefocus>OSDSubtitlesFO.png</texturefocus>
 				<texturenofocus>OSDSubtitlesNF.png</texturenofocus>
 				<onup>404</onup>
-				<ondown>1000</ondown>
 			</control>
 			<control type="button" id="251">
 				<width>55</width>
@@ -215,8 +208,6 @@
 				<font>-</font>
 				<texturefocus>OSDVideoFO.png</texturefocus>
 				<texturenofocus>OSDVideoNF.png</texturenofocus>
-				<onup>1000</onup>
-				<ondown>1000</ondown>
 				<onclick>ActivateWindow(OSDVideoSettings)</onclick>
 			</control>
 			<control type="togglebutton" id="252">
@@ -229,8 +220,6 @@
 				<usealttexture>system.getbool(audiooutput.dspaddonsenabled)</usealttexture>
 				<alttexturefocus>OSDDSPAudioFO.png</alttexturefocus>
 				<alttexturenofocus>OSDDSPAudioNF.png</alttexturenofocus>
-				<onup>1000</onup>
-				<ondown>1000</ondown>
 				<onclick>ActivateWindow(OSDAudioSettings)</onclick>
 			</control>
 			<control type="button" id="253">
@@ -240,8 +229,6 @@
 				<font>-</font>
 				<texturefocus>OSDBookmarksFO.png</texturefocus>
 				<texturenofocus>OSDBookmarksNF.png</texturenofocus>
-				<onup>1000</onup>
-				<ondown>1000</ondown>
 				<onclick>ActivateWindow(VideoBookmarks)</onclick>
 				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
@@ -252,8 +239,6 @@
 				<font>-</font>
 				<texturefocus>OSDDvdFO.png</texturefocus>
 				<texturenofocus>OSDDvdNF.png</texturenofocus>
-				<onup>1000</onup>
-				<ondown>1000</ondown>
 				<onclick>PlayerControl(ShowVideoMenu)</onclick>
 				<visible>!VideoPlayer.Content(LiveTV) + VideoPlayer.HasMenu</visible>
 			</control>
