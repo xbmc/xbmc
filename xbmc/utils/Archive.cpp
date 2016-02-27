@@ -18,11 +18,16 @@
  *
  */
 
-#include <algorithm>
-#include <cstring>
 #include "Archive.h"
-#include "IArchivable.h"
+
+#include <cstdint>
+#include <cstring>
+
+#include <algorithm>
+#include <stdexcept>
+
 #include "filesystem/File.h"
+#include "IArchivable.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -31,6 +36,11 @@
 #endif
 
 using namespace XFILE;
+
+//arbitrarily chosen, should be plenty big enough for our strings
+//without causing random bad things happening
+//not very bad, just tiny bad
+#define MAX_STRING_SIZE 100*1024*1024
 
 CArchive::CArchive(CFile* pFile, int mode)
 {
@@ -134,16 +144,25 @@ CArchive& CArchive::operator<<(char c)
 
 CArchive& CArchive::operator<<(const std::string& str)
 {
-  *this << str.size();
+  auto size = static_cast<uint32_t>(str.size());
+  if (size > MAX_STRING_SIZE)
+    throw std::out_of_range("String too large, over 100MB");
 
-  return streamout(str.data(), str.size() * sizeof(char));
+  *this << size;
+
+  return streamout(str.data(), size * sizeof(char));
 }
 
 CArchive& CArchive::operator<<(const std::wstring& wstr)
 {
-  *this << wstr.size();
+  if (wstr.size() > MAX_STRING_SIZE)
+    throw std::out_of_range("String too large, over 100MB");
 
-  return streamout(wstr.data(), wstr.size() * sizeof(wchar_t));
+  auto size = static_cast<uint32_t>(wstr.size());
+
+  *this << size;
+
+  return streamout(wstr.data(), size * sizeof(wchar_t));
 }
 
 CArchive& CArchive::operator<<(const SYSTEMTIME& time)
@@ -205,7 +224,11 @@ CArchive& CArchive::operator<<(const CVariant& variant)
 
 CArchive& CArchive::operator<<(const std::vector<std::string>& strArray)
 {
-  *this << strArray.size();
+  if (std::numeric_limits<uint32_t>::max() < strArray.size())
+    throw std::out_of_range("Array too large, over 2^32 in size");
+
+  *this << static_cast<uint32_t>(strArray.size());
+
   for (size_t index = 0; index < strArray.size(); index++)
     *this << strArray.at(index);
 
@@ -214,7 +237,11 @@ CArchive& CArchive::operator<<(const std::vector<std::string>& strArray)
 
 CArchive& CArchive::operator<<(const std::vector<int>& iArray)
 {
-  *this << iArray.size();
+  if (std::numeric_limits<uint32_t>::max() < iArray.size())
+    throw std::out_of_range("Array too large, over 2^32 in size");
+
+  *this << static_cast<uint32_t>(iArray.size());
+
   for (size_t index = 0; index < iArray.size(); index++)
     *this << iArray.at(index);
 
@@ -223,8 +250,11 @@ CArchive& CArchive::operator<<(const std::vector<int>& iArray)
 
 CArchive& CArchive::operator>>(std::string& str)
 {
-  size_t iLength = 0;
+  uint32_t iLength = 0;
   *this >> iLength;
+
+  if (iLength > MAX_STRING_SIZE)
+    throw std::out_of_range("String too large, over 100MB");
 
   char *s = new char[iLength];
   streamin(s, iLength * sizeof(char));
@@ -236,10 +266,13 @@ CArchive& CArchive::operator>>(std::string& str)
 
 CArchive& CArchive::operator>>(std::wstring& wstr)
 {
-  size_t iLength = 0;
+  uint32_t iLength = 0;
   *this >> iLength;
 
-  wchar_t * const p = new wchar_t[iLength];
+  if (iLength > MAX_STRING_SIZE)
+    throw std::out_of_range("String too large, over 100MB");
+
+  const auto p = new wchar_t[iLength];
   streamin(p, iLength * sizeof(wchar_t));
   wstr.assign(p, iLength);
   delete[] p;
@@ -346,14 +379,14 @@ CArchive& CArchive::operator>>(CVariant& variant)
 
 CArchive& CArchive::operator>>(std::vector<std::string>& strArray)
 {
-  size_t size;
+  uint32_t size;
   *this >> size;
   strArray.clear();
-  for (size_t index = 0; index < size; index++)
+  for (uint32_t index = 0; index < size; index++)
   {
     std::string str;
     *this >> str;
-    strArray.push_back(str);
+    strArray.push_back(std::move(str));
   }
 
   return *this;
@@ -361,10 +394,10 @@ CArchive& CArchive::operator>>(std::vector<std::string>& strArray)
 
 CArchive& CArchive::operator>>(std::vector<int>& iArray)
 {
-  size_t size;
+  uint32_t size;
   *this >> size;
   iArray.clear();
-  for (size_t index = 0; index < size; index++)
+  for (uint32_t index = 0; index < size; index++)
   {
     int i;
     *this >> i;

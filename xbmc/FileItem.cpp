@@ -876,7 +876,6 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
   if(IsInternetStream())
     always_type = EFILEFOLDER_TYPE_ONCLICK;
 
-
   if(types & always_type)
   {
     if(IsSmartPlayList()
@@ -902,7 +901,6 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
 
   return false;
 }
-
 
 bool CFileItem::IsSmartPlayList() const
 {
@@ -1379,7 +1377,7 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   {
     if (m_videoInfoTag->m_iDbId != -1 && item->m_videoInfoTag->m_iDbId != -1)
       return ((m_videoInfoTag->m_iDbId == item->m_videoInfoTag->m_iDbId) &&
-        (m_videoInfoTag->m_type == item->m_videoInfoTag->m_type));        
+        (m_videoInfoTag->m_type == item->m_videoInfoTag->m_type));
   }
   if (IsMusicDb() && HasMusicInfoTag())
   {
@@ -1472,7 +1470,7 @@ void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
     m_strPath = video.m_strFileNameAndPath;
     m_bIsFolder = false;
   }
-  
+
   *GetVideoInfoTag() = video;
   if (video.m_iSeason == 0)
     SetProperty("isspecial", "true");
@@ -1643,13 +1641,13 @@ bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
       {
         if (song.strAlbum.empty() && !tag.GetAlbum().empty())
           song.strAlbum = tag.GetAlbum();
-        //Pass album artist to final MusicInfoTag object via setting song album artist vector. 
+        //Pass album artist to final MusicInfoTag object via setting song album artist vector.
         if (song.GetAlbumArtist().empty() && !tag.GetAlbumArtist().empty())
-          song.SetAlbumArtist(tag.GetAlbumArtist());        
+          song.SetAlbumArtist(tag.GetAlbumArtist());
         if (song.genre.empty() && !tag.GetGenre().empty())
           song.genre = tag.GetGenre();
         //Pass artist to final MusicInfoTag object via setting song artist description string only.
-        //Artist credits not used during loading from cue sheet. 
+        //Artist credits not used during loading from cue sheet.
         if (song.strArtistDesc.empty() && !tag.GetArtistString().empty())
           song.strArtistDesc = tag.GetArtistString();
         if (tag.GetDiscNumber())
@@ -1683,7 +1681,6 @@ bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
   }
   return tracksFound != 0;
 }
-
 
 /////////////////////////////////////////////////////////////////////////////////
 /////
@@ -2433,7 +2430,7 @@ void CFileItemList::StackFolders()
       // 1. rars and zips may be on slow sources? is this supposed to be allowed?
       if( !item->IsRemote()
         || item->IsSmb()
-        || item->IsNfs() 
+        || item->IsNfs()
         || URIUtils::IsInRAR(item->GetPath())
         || URIUtils::IsInZIP(item->GetPath())
         || URIUtils::IsOnLAN(item->GetPath())
@@ -2676,15 +2673,23 @@ void CFileItemList::StackFiles()
 bool CFileItemList::Load(int windowID)
 {
   CFile file;
-  if (file.Open(GetDiscFileCache(windowID)))
+  auto path = GetDiscFileCache(windowID);
+  try
   {
-    CArchive ar(&file, CArchive::load);
-    ar >> *this;
-    CLog::Log(LOGDEBUG,"Loading items: %i, directory: %s sort method: %i, ascending: %s", Size(), CURL::GetRedacted(GetPath()).c_str(), m_sortDescription.sortBy,
-      m_sortDescription.sortOrder == SortOrderAscending ? "true" : "false");
-    ar.Close();
-    file.Close();
-    return true;
+    if (file.Open(path))
+    {
+      CArchive ar(&file, CArchive::load);
+      ar >> *this;
+      CLog::Log(LOGDEBUG,"Loading items: %i, directory: %s sort method: %i, ascending: %s", Size(), CURL::GetRedacted(GetPath()).c_str(), m_sortDescription.sortBy,
+        m_sortDescription.sortOrder == SortOrderAscending ? "true" : "false");
+      ar.Close();
+      file.Close();
+      return true;
+    }
+  }
+  catch(std::out_of_range ex)
+  {
+    CLog::Log(LOGERROR, "Corrupt archive: %s", CURL::GetRedacted(path).c_str());
   }
 
   return false;

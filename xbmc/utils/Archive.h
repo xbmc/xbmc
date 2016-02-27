@@ -41,9 +41,9 @@ public:
 
   /* CArchive support storing and loading of all C basic integer types
    * C basic types was chosen instead of fixed size ints (int16_t - int64_t) to support all integer typedefs
-   * For example size_t can be typedef of unsigned int, long or long long depending on platform 
-   * while int32_t and int64_t are usually unsigned short, int or long long, but not long 
-   * and even if int and long can have same binary representation they are different types for compiler 
+   * For example size_t can be typedef of unsigned int, long or long long depending on platform
+   * while int32_t and int64_t are usually unsigned short, int or long long, but not long
+   * and even if int and long can have same binary representation they are different types for compiler
    * According to section 5.2.4.2.1 of C99 http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf
    * minimal size of short int is 16 bits
    * minimal size of int is 16 bits (usually 32 or 64 bits, larger or equal to short int)
