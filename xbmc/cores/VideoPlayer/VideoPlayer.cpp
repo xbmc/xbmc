@@ -528,6 +528,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       {
         s.width = ((CDemuxStreamVideo*)stream)->iWidth;
         s.height = ((CDemuxStreamVideo*)stream)->iHeight;
+        s.stereo_mode = ((CDemuxStreamVideo*)stream)->stereo_mode;
       }
       if(stream->type == STREAM_AUDIO)
       {
