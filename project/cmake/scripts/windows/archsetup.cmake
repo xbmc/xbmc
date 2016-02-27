@@ -12,6 +12,8 @@ set(PRECOMPILEDHEADER_DIR ${PROJECT_BINARY_DIR}/${CORE_BUILD_CONFIG}/objs)
 
 set(CMAKE_SYSTEM_NAME Windows)
 list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../../lib/win32)
+list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../../lib/win32/ffmpeg)
+list(APPEND CMAKE_SYSTEM_LIBRARY_PATH ${PROJECT_SOURCE_DIR}/../../lib/win32/ffmpeg/bin)
 list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../BuildDependencies)
 set(CONFIGURATION_LIBDIR lib/${CORE_BUILD_CONFIG}-vc120)
 set(CONFIGURATION_LIBDIR_RELEASE lib/Release-vc120)
@@ -50,7 +52,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
 
 # For #pragma comment(lib X)
 # TODO: It would certainly be better to handle these libraries via CMake modules.
-link_directories(${PROJECT_SOURCE_DIR}/../../lib/win32/ffmpeg/.libs
+link_directories(${PROJECT_SOURCE_DIR}/../../lib/win32/ffmpeg/bin
                  ${PROJECT_SOURCE_DIR}/../BuildDependencies/lib
                  ${PROJECT_SOURCE_DIR}/../BuildDependencies/${CONFIGURATION_LIBDIR})
 
