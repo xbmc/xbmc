@@ -97,12 +97,6 @@ static bool IsDependecyType(TYPE type)
   return dependencyTypes.find(type) != dependencyTypes.end();
 }
 
-static bool IsSystemAddon(const AddonPtr& addon)
-{
-  return StringUtils::StartsWith(addon->Path(), CSpecialProtocol::TranslatePath("special://xbmc/addons"));
-}
-
-
 static bool IsUserInstalled(const AddonPtr& addon)
 {
   return std::find_if(dependencyTypes.begin(), dependencyTypes.end(),
@@ -112,7 +106,7 @@ static bool IsUserInstalled(const AddonPtr& addon)
 
 static bool IsOrphaned(const AddonPtr& addon, const VECADDONS& all)
 {
-  if (IsSystemAddon(addon) || IsUserInstalled(addon))
+  if (CAddonMgr::GetInstance().IsSystemAddon(addon->ID()) || IsUserInstalled(addon))
     return false;
 
   for (const AddonPtr& other : all)

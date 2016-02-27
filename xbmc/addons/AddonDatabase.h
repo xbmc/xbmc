@@ -42,7 +42,7 @@ public:
   bool GetAddon(const std::string& addonID, const ADDON::AddonVersion& version, const std::string& repoId, ADDON::AddonPtr& addon);
 
   /*! Get the addon IDs that has been set to disabled */
-  bool GetDisabled(std::vector<std::string>& addons);
+  bool GetDisabled(std::set<std::string>& addons);
 
   bool GetAvailableVersions(const std::string& addonId,
       std::vector<std::pair<ADDON::AddonVersion, std::string>>& versionsInfo);
@@ -106,7 +106,7 @@ public:
 
   bool BlacklistAddon(const std::string& addonID);
   bool RemoveAddonFromBlacklist(const std::string& addonID);
-  bool GetBlacklisted(std::vector<std::string>& addons);
+  bool GetBlacklisted(std::set<std::string>& addons);
 
   /*! \brief Store an addon's package filename and that file's hash for future verification
       \param  addonID         id of the addon we're adding a package for
@@ -135,16 +135,6 @@ public:
   */
   bool RemovePackage(const std::string& packageFileName);
 
-  /*! \brief allow adding a system addon like PVR or AUDIODECODER
-      \param addonID id of the addon
-  */
-  bool AddSystemAddon(const std::string &addonID);
-
-  /*! \brief check if system addon is registered
-      \param addonID id of the addon
-  */
-  bool IsSystemAddonRegistered(const std::string &addonID);
-
   /*! Clear internal fields that shouldn't be kept around indefinitely */
   void OnPostUnInstall(const std::string& addonId);
 
@@ -161,7 +151,7 @@ protected:
   virtual void CreateAnalytics();
   virtual void UpdateTables(int version);
   virtual int GetMinSchemaVersion() const { return 15; }
-  virtual int GetSchemaVersion() const { return 21; }
+  virtual int GetSchemaVersion() const { return 22; }
   const char *GetBaseDBName() const { return "Addons"; }
 
   bool GetAddon(int id, ADDON::AddonPtr& addon);

@@ -184,9 +184,10 @@ void CGUIDialogAddonInfo::UpdateControls()
   m_addonEnabled = m_localAddon && !CAddonMgr::GetInstance().IsAddonDisabled(m_localAddon->ID());
   bool canDisable = isInstalled && CAddonMgr::GetInstance().CanAddonBeDisabled(m_localAddon->ID());
   bool canInstall = !isInstalled && m_item->GetAddonInfo()->Broken().empty();
+  bool canUninstall = m_localAddon && CAddonMgr::GetInstance().CanUninstall(m_localAddon);
   bool isRepo = (isInstalled && m_localAddon->Type() == ADDON_REPOSITORY) || (m_item->GetAddonInfo()->Type() == ADDON_REPOSITORY);
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canDisable || canInstall);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canInstall || canUninstall);
   SET_CONTROL_LABEL(CONTROL_BTN_INSTALL, isInstalled ? 24037 : 24038);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_ENABLE, canDisable);

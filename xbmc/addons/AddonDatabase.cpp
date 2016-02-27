@@ -80,9 +80,6 @@ void CAddonDatabase::CreateTables()
   CLog::Log(LOGINFO, "create package table");
   m_pDS->exec("CREATE TABLE package (id integer primary key, addonID text, filename text, hash text)\n");
 
-  CLog::Log(LOGINFO, "create system table");
-  m_pDS->exec("CREATE TABLE system (id integer primary key, addonID text)\n");
-
   CLog::Log(LOGINFO, "create installed table");
   m_pDS->exec("CREATE TABLE installed (id INTEGER PRIMARY KEY, addonID TEXT UNIQUE, "
       "enabled BOOLEAN, installDate TEXT, lastUpdated TEXT, lastUsed TEXT) \n");
@@ -184,6 +181,10 @@ void CAddonDatabase::UpdateTables(int version)
 
     m_pDS->exec("DROP TABLE disabled");
   }
+  if (version < 22)
+  {
+    m_pDS->exec("DROP TABLE system");
+  }
 }
 
 void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids)
@@ -217,7 +218,7 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids)
     BeginMultipleExecute();
     for (const auto& id : added)
       m_pDS->exec(PrepareSQL("INSERT INTO installed(addonID, enabled, installDate) "
-          "VALUES('%s', 1, '%s')", id.c_str(), now.c_str()));
+          "VALUES('%s', 0, '%s')", id.c_str(), now.c_str()));
 
     for (const auto& id : removed)
       m_pDS->exec(PrepareSQL("DELETE FROM installed WHERE addonID='%s'", id.c_str()));
@@ -921,7 +922,7 @@ bool CAddonDatabase::IsAddonDisabled(const std::string &addonID)
   return false;
 }
 
-bool CAddonDatabase::GetDisabled(std::vector<std::string>& addons)
+bool CAddonDatabase::GetDisabled(std::set<std::string>& addons)
 {
   try
   {
@@ -932,7 +933,7 @@ bool CAddonDatabase::GetDisabled(std::vector<std::string>& addons)
     m_pDS->query(sql);
     while (!m_pDS->eof())
     {
-      addons.push_back(m_pDS->fv(0).get_asString());
+      addons.insert(m_pDS->fv(0).get_asString());
       m_pDS->next();
     }
     m_pDS->close();
@@ -945,7 +946,7 @@ bool CAddonDatabase::GetDisabled(std::vector<std::string>& addons)
   return false;
 }
 
-bool CAddonDatabase::GetBlacklisted(std::vector<std::string>& addons)
+bool CAddonDatabase::GetBlacklisted(std::set<std::string>& addons)
 {
   try
   {
@@ -956,7 +957,7 @@ bool CAddonDatabase::GetBlacklisted(std::vector<std::string>& addons)
     m_pDS->query(sql);
     while (!m_pDS->eof())
     {
-      addons.push_back(m_pDS->fv(0).get_asString());
+      addons.insert(m_pDS->fv(0).get_asString());
       m_pDS->next();
     }
     m_pDS->close();
@@ -1034,52 +1035,6 @@ bool CAddonDatabase::RemovePackage(const std::string& packageFileName)
 {
   std::string sql = PrepareSQL("delete from package where filename='%s'", packageFileName.c_str());
   return ExecuteQuery(sql);
-}
-
-bool CAddonDatabase::AddSystemAddon(const std::string &addonID)
-{
-  try
-  {
-    if (NULL == m_pDB.get())
-      return false;
-    if (NULL == m_pDS.get())
-      return false;
-
-    if (!IsSystemAddonRegistered(addonID)) // Enabled
-    {
-      std::string sql = PrepareSQL("insert into system(id, addonID) values(NULL, '%s')", addonID.c_str());
-      m_pDS->exec(sql);
-      return true;
-    }
-    return false; // already registered or failed query
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed on addon '%s'", __FUNCTION__, addonID.c_str());
-  }
-  return false;
-}
-
-bool CAddonDatabase::IsSystemAddonRegistered(const std::string &addonID)
-{
-  try
-  {
-    if (NULL == m_pDB.get())
-      return false;
-    if (NULL == m_pDS.get())
-      return false;
-
-    std::string sql = PrepareSQL("select id from system where addonID='%s'", addonID.c_str());
-    m_pDS->query(sql);
-    bool ret = !m_pDS->eof();
-    m_pDS->close();
-    return ret;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, addonID.c_str());
-  }
-  return false;
 }
 
 void CAddonDatabase::OnPostUnInstall(const std::string& addonId)
