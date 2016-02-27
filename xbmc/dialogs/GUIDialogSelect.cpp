@@ -31,8 +31,10 @@
 #define CONTROL_EXTRA_BUTTON    5
 #define CONTROL_CANCEL_BUTTON   7
 
-CGUIDialogSelect::CGUIDialogSelect(void)
-    : CGUIDialogBoxBase(WINDOW_DIALOG_SELECT, "DialogSelect.xml"),
+CGUIDialogSelect::CGUIDialogSelect() : CGUIDialogSelect(WINDOW_DIALOG_SELECT) {}
+
+CGUIDialogSelect::CGUIDialogSelect(int windowId)
+    : CGUIDialogBoxBase(windowId, "DialogSelect.xml"),
     m_bButtonEnabled(false),
     m_bButtonPressed(false),
     m_buttonLabel(-1),
@@ -109,8 +111,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
               for (int i = 0 ; i < m_vecList->Size() ; i++)
                 m_vecList->Get(i)->Select(false);
               item->Select(true);
-              m_bConfirmed = true;
-              Close();
+              OnSelect(iSelected);
             }
           }
         }
@@ -154,6 +155,12 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
   }
 
   return CGUIDialogBoxBase::OnMessage(message);
+}
+
+void CGUIDialogSelect::OnSelect(int idx)
+{
+  m_bConfirmed = true;
+  Close();
 }
 
 bool CGUIDialogSelect::OnBack(int actionID)
