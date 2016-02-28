@@ -1,3 +1,4 @@
+addons/kodi.adsp/*
 addons/kodi.audiodecoder/*
 addons/kodi.resource/*
 addons/kodi.vfs/*
@@ -8,6 +9,7 @@ addons/xbmc.gui/*
 addons/xbmc.metadata/*
 addons/xbmc.pvr/*
 addons/xbmc.python/*
+addons/xbmc.webinterface/*
 addons/library.xbmc.addon/*
 addons/library.xbmc.codec/*
 addons/library.xbmc.gui/*
