@@ -25,7 +25,7 @@
   <addon>screensaver.xbmc.builtin.dim</addon>
   <addon>script.module.pil</addon>
   <addon>service.xbmc.versioncheck</addon>
-  <addon>skin.confluence</addon>
+  <addon>skin.estuary</addon>
   <addon>webinterface.default</addon>
   <addon>xbmc.addon</addon>
   <addon>xbmc.audioencoder</addon>

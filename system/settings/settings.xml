@@ -5,7 +5,7 @@
       <group id="1">
         <setting id="lookandfeel.skin" type="addon" label="166" help="36103">
           <level>0</level>
-          <default>skin.confluence</default>
+          <default>skin.estuary</default>
           <constraints>
             <addontype>xbmc.gui.skin</addontype>
           </constraints>
