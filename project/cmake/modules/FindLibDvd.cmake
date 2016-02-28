@@ -99,7 +99,7 @@ if(NOT WIN32)
   set(LIBDVD_FOUND 1 CACHE BOOL "libdvd found" FORCE)
 else()
   # Dynamically loaded on Windows
-  find_path(LIBDVD_INCLUDE_DIR dvdcss/dvdcss.h PATHS ${CORE_SOURCE_DIR}/lib/libdvd)
+  find_path(LIBDVD_INCLUDE_DIR dvdcss/dvdcss.h PATHS ${CORE_SOURCE_DIR}/lib/libdvd/include)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(LIBDVD REQUIRED_VARS LIBDVD_INCLUDE_DIR)
