@@ -321,8 +321,9 @@ void CDVDMediaCodecInfo::RenderUpdate(const CRect &SrcRect, const CRect &DestRec
 
 /*****************************************************************************/
 /*****************************************************************************/
-CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(bool surface_render)
-: m_formatname("mediacodec")
+CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(CProcessInfo &processInfo, bool surface_render)
+: CDVDVideoCodec(processInfo)
+, m_formatname("mediacodec")
 , m_opened(false)
 , m_surface(NULL)
 , m_textureId(0)

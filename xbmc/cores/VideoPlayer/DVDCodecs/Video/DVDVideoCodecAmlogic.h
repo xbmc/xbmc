@@ -58,7 +58,7 @@ class CDVDVideoCodecAmlogic : public CDVDVideoCodec
   friend class CDVDAmlogicInfo;
 
 public:
-  CDVDVideoCodecAmlogic();
+  CDVDVideoCodecAmlogic(CProcessInfo &processInfo);
   virtual ~CDVDVideoCodecAmlogic();
 
   // Required overrides
