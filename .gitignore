@@ -114,8 +114,8 @@ cmake_install.cmake
 
 # /addons/
 /addons/packages
-/addons/skin.confluence/media/Makefile
-/addons/skin.confluence/media/Textures.xbt
+/addons/skin.estuary/media/Makefile
+/addons/skin.estuary/media/*.xbt
 /addons/skin.pm3-hd/media/Textures.xbt
 /addons/visualization.itunes/iTunes.mvis
 /addons/script.module.pil/
