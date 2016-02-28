@@ -192,7 +192,7 @@ set WORKSPACE=%CD%\..\..
   Echo addons\repository.pvr-osx64.xbmc.org\>>exclude.txt
   rem Exclude skins as they're copied by their own script
   Echo addons\skin.re-touched\>>exclude.txt
-  Echo addons\skin.confluence\>>exclude.txt
+  Echo addons\skin.estuary\>>exclude.txt
   
   md BUILD_WIN32\application
 
@@ -228,8 +228,8 @@ set WORKSPACE=%CD%\..\..
   )
 
   ECHO ------------------------------------------------------------
-  ECHO Building Confluence Skin...
-  cd ..\..\addons\skin.confluence
+  ECHO Building Estuary Skin...
+  cd ..\..\addons\skin.estuary
   call build.bat > NUL
   cd %build_path%
   

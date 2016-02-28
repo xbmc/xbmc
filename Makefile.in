@@ -196,8 +196,8 @@ LIBADDON_DIRS=\
 	lib/addons/library.xbmc.pvr \
 	lib/addons/library.kodi.guilib \
 
-CONFLUENCE_MEDIA=addons/skin.confluence/media
-SKIN_DIRS=$(CONFLUENCE_MEDIA)
+ESTUARY_MEDIA=addons/skin.estuary/media
+SKIN_DIRS=$(ESTUARY_MEDIA)
 
 ifeq (@USE_TOUCH_SKIN@,1)
 TOUCH_SKIN_MEDIA=addons/skin.re-touched/media
@@ -283,7 +283,7 @@ config.status: configure
 # skin textures
 ifeq (@USE_TEXTUREPACKER@,1)
 skins: @TEXTUREPACKER@
-	 $(MAKE) -C $(CONFLUENCE_MEDIA)
+	 $(MAKE) -C $(ESTUARY_MEDIA)
 ifeq (@USE_TOUCH_SKIN@,1)
 	 $(MAKE) -C $(TOUCH_SKIN_MEDIA)
 endif

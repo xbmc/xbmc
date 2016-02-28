@@ -259,7 +259,7 @@ core_add_optional_subdirs_from_filelist(${PROJECT_SOURCE_DIR}/treedata/optional/
 copy_files_from_filelist_to_buildtree(${PROJECT_SOURCE_DIR}/installdata/common/*.txt
                                       ${PROJECT_SOURCE_DIR}/installdata/${CORE_SYSTEM_NAME}/*.txt)
 
-list(APPEND SKINS "${CORE_SOURCE_DIR}/addons/skin.confluence\;${CORE_SOURCE_DIR}")
+list(APPEND SKINS "${CORE_SOURCE_DIR}/addons/skin.estuary\;${CORE_SOURCE_DIR}")
 
 # These are skins that are copied into place from the source tree
 foreach(skin ${SKINS})
