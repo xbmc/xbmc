@@ -4,13 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 
-
 set(ffmpeg_conf "")
-#if(CMAKE_BUILD_TYPE STREQUAL "Release")
-  #  list(APPEND ffmpeg_conf --enable-optimizations)
-  #else()
-  #  list(APPEND ffmpeg_conf --disable-optimizations)
-  #endif()
 
 if(CROSSCOMPILING)
   set(pkgconf "PKG_CONFIG_LIBDIR=${DEPENDS_PATH}/lib/pkgconfig")
@@ -21,19 +15,33 @@ if(CROSSCOMPILING)
   message(STATUS "CROSS: ${ffmpeg_conf}")
 endif()
 
-if(CPU MATCHES "arm")
-  list(APPEND ffmpeg_conf --disable-armv5te --disable-armv6t2)
-elseif(CPU MATCHES "mips")
-  list(APPEND ffmpeg_conf --disable-mips32r2 --disable-mipsdspr1 --disable-mipsdspr2)
-endif()
-
-if(CORE_SYSTEM_NAME STREQUAL "android")
-  if(CPU MATCHES "arm")
+if(CORE_SYSTEM_NAME STREQUAL linux)
+  list(APPEND ffmpeg_conf --enable-vdpau --enable-vaapi
+                          --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis)
+elseif(CORE_SYSTEM_NAME STREQUAL android)
+  if(CPU MATCHES arm)
     list(APPEND ffmpeg_conf --cpu=cortex-a9)
   else()
     list(APPEND ffmpeg_conf --cpu=i686 --disable-mmx)
   endif()
   list(APPEND ffmpeg_conf --target-os=linux)
+elseif(CORE_SYSTEM_NAME STREQUAL ios)
+  if(NOT CPU MATCHES arm64)
+    list(APPEND ffmpeg_conf --cpu=cortex-a8)
+  endif()
+  list(APPEND ffmpeg_conf --disable-decoder=mpeg_xvmc --disable-vda --disable-crystalhd
+                          --target-os=darwin)
+elseif(CORE_SYSTEM_NAME STREQUAL osx)
+  list(APPEND ffmpeg_conf --disable-outdev=sdl
+                          --disable-decoder=mpeg_xvmc --enable-vda --disable-crystalhd --disable-videotoolbox
+                          --target-os=darwin
+                          --disable-securetransport)
+endif()
+
+if(CPU MATCHES arm)
+  list(APPEND ffmpeg_conf --enable-pic --disable-armv5te --disable-armv6t2)
+elseif(CPU MATCHES mips)
+  list(APPEND ffmpeg_conf --disable-mips32r2 --disable-mipsdspr1 --disable-mipsdspr2)
 endif()
 
 find_package(GnuTls)
@@ -51,36 +59,30 @@ include(ExternalProject)
 externalproject_add(ffmpeg
                     SOURCE_DIR ${CMAKE_SOURCE_DIR}
                     CONFIGURE_COMMAND ${pkgconf} <SOURCE_DIR>/configure
-                      --disable-muxers
-                      --enable-zlib
-                      --enable-bzlib
+                      --prefix=${CMAKE_INSTALL_PREFIX}
+                      --extra-version="kodi-${FFMPEG_VER}"
+                      --disable-devices
+                      --disable-doc
+                      --disable-ffplay
+                      --disable-ffmpeg
+                      --disable-ffprobe
+                      --disable-ffserver
+                      --disable-sdl
+                      --enable-gpl
+                      --enable-runtime-cpudetect
+                      --enable-postproc
+                      --enable-pthreads
                       --enable-muxer=spdif
                       --enable-muxer=adts
                       --enable-muxer=asf
                       --enable-muxer=ipod
-                      --disable-encoders
                       --enable-encoder=ac3
                       --enable-encoder=aac
                       --enable-encoder=wmav2
-                      --disable-decoder=mpeg_xvmc
-                      --disable-devices
-                      --disable-ffprobe
-                      --disable-ffplay
-                      --disable-ffserver
-                      --disable-ffmpeg
-                      --disable-crystalhd
-                      --enable-static
-                      --disable-shared
-                      --disable-doc
-                      --enable-postproc
-                      --enable-gpl
-                      --enable-vdpau
-                      --enable-vaapi
                       --enable-protocol=http
-                      --enable-pthreads
-                      --enable-runtime-cpudetect
-                      --enable-pic
-                      --prefix=${CMAKE_INSTALL_PREFIX}
+                      --enable-libdcadec
+                      --enable-encoder=png
+                      --enable-encoder=mjpeg
                       ${ffmpeg_conf}
                     BUILD_COMMAND make ${PARALLEL_FLAGS})
 
