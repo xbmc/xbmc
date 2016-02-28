@@ -448,16 +448,6 @@ bool CVideoSurfaces::HasRefs()
 // VAAPI
 //-----------------------------------------------------------------------------
 
-// settings codecs mapping
-DVDCodecAvailableType g_vaapi_available[] = {
-  { AV_CODEC_ID_H263, CSettings::SETTING_VIDEOPLAYER_USEVAAPIMPEG4.c_str() },
-  { AV_CODEC_ID_MPEG4, CSettings::SETTING_VIDEOPLAYER_USEVAAPIMPEG4.c_str() },
-  { AV_CODEC_ID_WMV3, CSettings::SETTING_VIDEOPLAYER_USEVAAPIVC1.c_str() },
-  { AV_CODEC_ID_VC1, CSettings::SETTING_VIDEOPLAYER_USEVAAPIVC1.c_str() },
-  { AV_CODEC_ID_MPEG2VIDEO, CSettings::SETTING_VIDEOPLAYER_USEVAAPIMPEG2.c_str() },
-};
-const size_t settings_count = sizeof(g_vaapi_available) / sizeof(DVDCodecAvailableType);
-
 CDecoder::CDecoder() : m_vaapiOutput(&m_inMsgEvent)
 {
   m_vaapiConfig.videoSurfaces = &m_videoSurfaces;
@@ -497,7 +487,14 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
   }
 
   // check if user wants to decode this format with VAAPI
-  if (CDVDVideoCodec::IsCodecDisabled(g_vaapi_available, settings_count, avctx->codec_id))
+  std::map<AVCodecID, std::string> settings_map = {
+    { AV_CODEC_ID_H263, CSettings::SETTING_VIDEOPLAYER_USEVAAPIMPEG4 },
+    { AV_CODEC_ID_MPEG4, CSettings::SETTING_VIDEOPLAYER_USEVAAPIMPEG4 },
+    { AV_CODEC_ID_WMV3, CSettings::SETTING_VIDEOPLAYER_USEVAAPIVC1 },
+    { AV_CODEC_ID_VC1, CSettings::SETTING_VIDEOPLAYER_USEVAAPIVC1 },
+    { AV_CODEC_ID_MPEG2VIDEO, CSettings::SETTING_VIDEOPLAYER_USEVAAPIMPEG2 },
+  };
+  if (CDVDVideoCodec::IsCodecDisabled(settings_map, avctx->codec_id))
     return false;
 
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))

@@ -18,7 +18,9 @@
  *
  */
 
-#include "config.h"
+#if defined(HAVE_CONFIG_H)
+  #include "config.h"
+#endif
 
 #if defined(TARGET_DARWIN_OSX)
 #include "system_gl.h"

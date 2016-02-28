@@ -60,24 +60,15 @@ bool CDVDVideoCodec::IsSettingVisible(const std::string &condition, const std::s
   return true;
 }
 
-bool CDVDVideoCodec::IsCodecDisabled(DVDCodecAvailableType* map, unsigned int size, AVCodecID id)
+bool CDVDVideoCodec::IsCodecDisabled(const std::map<AVCodecID, std::string> &map, AVCodecID id)
 {
-  int index = -1;
-  for (unsigned int i = 0; i < size; ++i)
+  auto codec = map.find(id);
+  if (codec != map.end())
   {
-    if (map[i].codec == id)
-    {
-      index = (int) i;
-      break;
-    }
-  }
-  if (index > -1)
-  {
-    return (!CSettings::GetInstance().GetBool(map[index].setting) ||
+    return (!CSettings::GetInstance().GetBool(codec->second) ||
             !CDVDVideoCodec::IsSettingVisible("unused", "unused",
-                                              CSettings::GetInstance().GetSetting(map[index].setting),
+                                              CSettings::GetInstance().GetSetting(codec->second),
                                               NULL));
   }
-
   return false; // don't disable what we don't have
 }

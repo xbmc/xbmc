@@ -1,4 +1,5 @@
 xbmc/linux                 linuxsupport
+xbmc/linux/sse4            sse4
 xbmc/input/linux           input/linux
 xbmc/input/touch           input/touch
 xbmc/input/touch/generic   input/touch/generic

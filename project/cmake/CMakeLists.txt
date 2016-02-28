@@ -272,6 +272,9 @@ add_custom_target(pack-skins ALL
                   DEPENDS TexturePacker::TexturePacker export-files ${XBT_FILES})
 
 core_link_library(exif system/libexif)
+if(CORE_SYSTEM_NAME STREQUAL linux)
+  core_link_library(sse4 system/libsse4)
+endif()
 
 core_link_library(XBMC_addon addons/library.xbmc.addon/libXBMC_addon)
 core_link_library(XBMC_codec addons/library.xbmc.codec/libXBMC_codec)
