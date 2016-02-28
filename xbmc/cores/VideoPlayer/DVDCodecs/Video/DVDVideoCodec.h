@@ -29,14 +29,9 @@ extern "C" {
 
 #include <vector>
 #include <string>
+#include <map>
 
 class CSetting;
-
-struct DVDCodecAvailableType
-{
-  AVCodecID codec;
-  const char* setting;
-};
 
 // when modifying these structures, make sure you update all codecs accordingly
 #define FRAME_TYPE_UNDEF 0
@@ -268,7 +263,7 @@ public:
   /**
    * Interact with user settings so that user disabled codecs are disabled
    */
-  static bool IsCodecDisabled(DVDCodecAvailableType* map, unsigned int size, AVCodecID id);
+  static bool IsCodecDisabled(const std::map<AVCodecID, std::string> &map, AVCodecID id);
 
   /**
    * For calculation of dropping requirements player asks for some information.

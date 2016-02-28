@@ -45,16 +45,6 @@ using namespace VDPAU;
 
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
-// settings codecs mapping
-DVDCodecAvailableType g_vdpau_available[] = {
-  { AV_CODEC_ID_H263, CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG4.c_str() },
-  { AV_CODEC_ID_MPEG4, CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG4.c_str() },
-  { AV_CODEC_ID_WMV3, CSettings::SETTING_VIDEOPLAYER_USEVDPAUVC1.c_str() },
-  { AV_CODEC_ID_VC1, CSettings::SETTING_VIDEOPLAYER_USEVDPAUVC1.c_str() },
-  { AV_CODEC_ID_MPEG2VIDEO, CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG2.c_str() },
-};
-const size_t settings_count = sizeof(g_vdpau_available) / sizeof(DVDCodecAvailableType);
-
 CDecoder::Desc decoder_profiles[] = {
 {"MPEG1",        VDP_DECODER_PROFILE_MPEG1},
 {"MPEG2_SIMPLE", VDP_DECODER_PROFILE_MPEG2_SIMPLE},
@@ -494,7 +484,14 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
   // nvidia is whitelisted despite for mpeg-4 we need to query user settings
   if ((gpuvendor.compare(0, 6, "nvidia") != 0)  || (avctx->codec_id == AV_CODEC_ID_MPEG4) || (avctx->codec_id == AV_CODEC_ID_H263))
   {
-    if (CDVDVideoCodec::IsCodecDisabled(g_vdpau_available, settings_count, avctx->codec_id))
+    std::map<AVCodecID, std::string> settings_map = {
+      { AV_CODEC_ID_H263, CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG4 },
+      { AV_CODEC_ID_MPEG4, CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG4 },
+      { AV_CODEC_ID_WMV3, CSettings::SETTING_VIDEOPLAYER_USEVDPAUVC1 },
+      { AV_CODEC_ID_VC1, CSettings::SETTING_VIDEOPLAYER_USEVDPAUVC1 },
+      { AV_CODEC_ID_MPEG2VIDEO, CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG2 },
+    };
+    if (CDVDVideoCodec::IsCodecDisabled(settings_map, avctx->codec_id))
       return false;
   }
 
