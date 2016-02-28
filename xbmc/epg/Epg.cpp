@@ -329,22 +329,37 @@ bool CEpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
     return false;
 
   CEpgInfoTagPtr tag(new CEpgInfoTag(*data));
-  return UpdateEntry(tag, bUpdateDatabase);
+  return UpdateEntry(tag, true, bUpdateDatabase);
 }
 
-bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, bool bUpdateDatabase /* = false */)
+bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, bool bNotifyObeservers, bool bUpdateDatabase /* = false */)
 {
   CSingleLock lock(m_critSection);
   auto it = m_tags.find(tag->StartAsUTC());
   EPG_EVENT_STATE state = (it == m_tags.end()) ? EPG_EVENT_CREATED : EPG_EVENT_UPDATED;
-  return UpdateEntry(tag, state, it, bUpdateDatabase);
+
+  if (UpdateEntry(tag, state, it, bUpdateDatabase) && bNotifyObeservers)
+  {
+    SetChanged();
+    lock.Leave();
+    NotifyObservers(ObservableMessageEpg);
+    return true;
+  }
+  return false;
 }
 
 bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, EPG_EVENT_STATE newState, bool bUpdateDatabase /* = false */)
 {
   CSingleLock lock(m_critSection);
   auto it = m_tags.end();
-  return UpdateEntry(tag, newState, it, bUpdateDatabase);
+  if (UpdateEntry(tag, newState, it, bUpdateDatabase))
+  {
+    SetChanged();
+    lock.Leave();
+    NotifyObservers(ObservableMessageEpg);
+    return true;
+  }
+  return false;
 }
 
 bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, EPG_EVENT_STATE newState, std::map<CDateTime, CEpgInfoTagPtr>::iterator &eit, bool bUpdateDatabase /* = false */)
@@ -403,6 +418,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, EPG_EVENT_STATE newState, std:
       CLog::Log(LOGERROR, "EPG - %s - Error: EPG_EVENT_DELETED: uid %d not found.", __FUNCTION__, tag->UniqueBroadcastID());
       return false;
     }
+
     return true;
   }
   else
@@ -460,7 +476,7 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
 #endif
   /* copy over tags */
   for (std::map<CDateTime, CEpgInfoTagPtr>::const_iterator it = epg.m_tags.begin(); it != epg.m_tags.end(); ++it)
-    UpdateEntry(it->second, bStoreInDb);
+    UpdateEntry(it->second, false, bStoreInDb);
 
 #if EPG_DEBUGGING
   CLog::Log(LOGDEBUG, "EPG - %s - %" PRIuS" entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());

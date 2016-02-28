@@ -215,10 +215,11 @@ namespace EPG
     /*!
      * @brief Update an entry in this EPG.
      * @param tag The tag to update.
+     * @param bNotifyObservers True if observers should be notified
      * @param bUpdateDatabase If set to true, this event will be persisted in the database.
      * @return True if it was updated successfully, false otherwise.
      */
-    bool UpdateEntry(const CEpgInfoTagPtr &tag, bool bUpdateDatabase = false);
+    bool UpdateEntry(const CEpgInfoTagPtr &tag, bool bNotifyObservers, bool bUpdateDatabase = false);
 
     /*!
      * @brief Update an entry in this EPG.
