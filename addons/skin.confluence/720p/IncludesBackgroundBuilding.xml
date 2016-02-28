@@ -130,6 +130,47 @@
 			</control>
 			<control type="group">
 				<include>VisibleFadeEffect</include>
+				<visible>Control.IsVisible(507)</visible>
+				<control type="image">
+					<left>50</left>
+					<top>60</top>
+					<width>640</width>
+					<height>600</height>
+					<texture border="15">ContentPanel.png</texture>
+				</control>
+				<control type="image">
+					<left>50</left>
+					<top>652</top>
+					<width>640</width>
+					<height>64</height>
+					<texture border="15">ContentPanelMirror.png</texture>
+				</control>
+				<control type="image">
+					<visible>Container.Content(Movies)</visible>
+					<left>700</left>
+					<top>170</top>
+					<width>550</width>
+					<height>490</height>
+					<texture border="15">ContentPanel.png</texture>
+				</control>
+				<control type="image">
+					<visible>!Container.Content(Movies)</visible>
+					<left>700</left>
+					<top>230</top>
+					<width>550</width>
+					<height>430</height>
+					<texture border="15">ContentPanel.png</texture>
+				</control>
+				<control type="image">
+					<left>700</left>
+					<top>652</top>
+					<width>550</width>
+					<height>64</height>
+					<texture border="15">ContentPanelMirror.png</texture>
+				</control>
+			</control>
+			<control type="group">
+				<include>VisibleFadeEffect</include>
 				<visible>Control.IsVisible(551) | Control.IsVisible(560) | Control.IsVisible(511) | Control.IsVisible(506) | Control.IsVisible(513)</visible>
 				<control type="image">
 					<left>50</left>

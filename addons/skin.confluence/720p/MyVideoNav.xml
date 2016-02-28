@@ -2,7 +2,7 @@
 <window>
 	<defaultcontrol always="true">50</defaultcontrol>
 	<menucontrol>9000</menucontrol>
-	<views>50,51,500,550,551,560,501,508,504,503,515,505,511</views>
+	<views>50,51,500,550,551,560,501,508,504,503,515,507,505,511</views>
 	<onload condition="!Skin.HasSetting(FirstTimeRun)">ActivateWindow(1112)</onload>
 	<controls>
 		<include>CommonBackground</include>
@@ -26,6 +26,8 @@
 			<!-- view id = 515 -->
 			<include>MediaListView4</include>
 			<!-- view id = 505 -->
+			<include>MediaListView5</include>
+			<!-- view id = 507 -->
 			<include>WideIconView</include>
 			<!-- view id = 511 -->
 			<include>MusicVideoInfoListView</include>
