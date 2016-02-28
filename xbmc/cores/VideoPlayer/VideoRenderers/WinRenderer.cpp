@@ -211,7 +211,7 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
-  RESOLUTION_INFO res = g_graphicsContext.GetResInfo(RES_DESKTOP);
+  RESOLUTION_INFO res = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
   m_destWidth = res.iWidth;
   m_destHeight = res.iHeight;
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
