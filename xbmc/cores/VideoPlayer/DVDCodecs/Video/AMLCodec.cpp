@@ -1676,6 +1676,10 @@ void CAMLCodec::CloseDecoder()
   SysfsUtils::SetInt("/sys/class/tsync/enable", 1);
 
   ShowMainVideo(false);
+
+  // add a little delay after closing in case
+  // we are reopened too fast.
+  usleep(500 * 1000);
 }
 
 void CAMLCodec::Reset()
@@ -1724,7 +1728,6 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
 
   if (pData)
   {
-    m_player_pts = pts;
     am_private->am_pkt.data = pData;
     am_private->am_pkt.data_size = iSize;
 
@@ -1794,10 +1797,6 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
   if (iSize < 20)
     target_timesize = 2.0;
 
-  // keep hw buffered demux above 1 second
-  if (GetTimeSize() < target_timesize && m_speed == DVD_PLAYSPEED_NORMAL)
-    return VC_BUFFER;
-
   // wait until we get a new frame or 25ms,
   if (m_old_pictcnt == m_cur_pictcnt)
     m_ready_event.WaitMSec(25);
@@ -1809,11 +1808,18 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
   {
     m_old_pictcnt++;
     rtn = VC_PICTURE;
+
+    if (pts > 0.0)
+      m_player_pts = pts + m_start_pts - (am_private->am_pkt.lastpts - m_cur_pts);
+
     // we got a new pict, try and keep hw buffered demux above 2 seconds.
-    // this, combined with the above 1 second check, keeps hw buffered demux between 1 and 2 seconds.
     // we also check to make sure we keep from filling hw buffer.
     if (GetTimeSize() < 2.0 && GetDataSize() < m_vbufsize/3)
       rtn |= VC_BUFFER;
+
+    // keep hw buffered demux above 1 second
+    if (GetTimeSize() < target_timesize && m_speed == DVD_PLAYSPEED_NORMAL)
+      rtn = VC_BUFFER;
   }
 /*
   CLog::Log(LOGDEBUG, "CAMLCodec::Decode: "
