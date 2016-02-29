@@ -2950,7 +2950,7 @@ void CVideoPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
   if (!m_State.canseek)
     return;
 
-  if (bLargeStep && bChapterOverride && GetChapter() > 0)
+  if (bLargeStep && bChapterOverride && GetChapter() > 0 && GetChapterCount() > 1)
   {
     if (!bPlus)
     {
