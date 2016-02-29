@@ -100,11 +100,6 @@ public:
     delete [] ExtraData;
   }
 
-  virtual std::string GetStreamInfo()
-  {
-    return "";
-  }
-
   virtual std::string GetStreamName();
 
   virtual void      SetDiscard(AVDiscard discard);
@@ -222,7 +217,6 @@ public:
   {
     type = STREAM_TELETEXT;
   }
-  virtual std::string GetStreamInfo();
 };
 
 class CDemuxStreamRadioRDS : public CDemuxStream
@@ -232,7 +226,6 @@ public:
   {
     type = STREAM_RADIO_RDS;
   }
-  virtual std::string GetStreamInfo();
 };
 
 class CDVDDemux

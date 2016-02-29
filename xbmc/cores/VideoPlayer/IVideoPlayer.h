@@ -56,8 +56,6 @@ struct SPlayerState
     recording     = false;
     canpause      = false;
     canseek       = false;
-    demux_video   = "";
-    demux_audio   = "";
     cache_bytes   = 0;
     cache_level   = 0.0;
     cache_delay   = 0.0;
@@ -85,9 +83,6 @@ struct SPlayerState
 
   bool canpause;            // pvr: can pause the current playing item
   bool canseek;             // pvr: can seek in the current playing item
-
-  std::string demux_video;
-  std::string demux_audio;
 
   int64_t cache_bytes;   // number of bytes current's cached
   double  cache_level;   // current estimated required cache level

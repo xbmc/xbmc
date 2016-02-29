@@ -68,7 +68,6 @@ class CDemuxStreamVideoClient
 {
 public:
   CDemuxStreamVideoClient() {}
-  virtual std::string GetStreamInfo() override;
 };
 
 class CDemuxStreamAudioClient
@@ -77,7 +76,6 @@ class CDemuxStreamAudioClient
 {
 public:
   CDemuxStreamAudioClient() {}
-  virtual std::string GetStreamInfo() override;
 };
 
 class CDemuxStreamSubtitleClient
@@ -86,61 +84,7 @@ class CDemuxStreamSubtitleClient
 {
 public:
   CDemuxStreamSubtitleClient() {}
-  virtual std::string GetStreamInfo() override;
 };
-
-std::string CDemuxStreamVideoClient::GetStreamInfo()
-{
-  std::string strInfo;
-  switch (codec)
-  {
-    case AV_CODEC_ID_MPEG2VIDEO:
-      strInfo = "mpeg2video";
-      break;
-    case AV_CODEC_ID_H264:
-      strInfo = "h264";
-      break;
-    case AV_CODEC_ID_HEVC:
-      strInfo = "hevc";
-      break;
-    default:
-      break;
-  }
-
-  return strInfo;
-}
-
-std::string CDemuxStreamAudioClient::GetStreamInfo()
-{
-  std::string strInfo;
-  switch (codec)
-  {
-    case AV_CODEC_ID_AC3:
-      strInfo = "ac3";
-      break;
-    case AV_CODEC_ID_EAC3:
-      strInfo = "eac3";
-      break;
-    case AV_CODEC_ID_MP2:
-      strInfo = "mpeg2audio";
-      break;
-    case AV_CODEC_ID_AAC:
-      strInfo = "aac";
-      break;
-    case AV_CODEC_ID_DTS:
-      strInfo = "dts";
-      break;
-    default:
-      break;
-  }
-
-  return strInfo;
-}
-
-std::string CDemuxStreamSubtitleClient::GetStreamInfo()
-{
-  return "";
-}
 
 CDVDDemuxClient::CDVDDemuxClient() : CDVDDemux()
 {
