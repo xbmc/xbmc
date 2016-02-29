@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol>1000</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<coordinates>
+		<left>0</left>
+		<top>0</top>
+		<origin x="735" y="400">Window.IsActive(Home)</origin>
+	</coordinates>
+	<controls>
+		<control type="image">
+			<left>-1920</left>
+			<top>-1080</top>
+			<width>5760</width>
+			<height>3240</height>
+			<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+			<texture colordiffuse="B0FFFFFF">colors/black.png</texture>
+		</control>
+		<control type="image" id="999">
+			<description>background image</description>
+			<left>0</left>
+			<top>0</top>
+			<width>450</width>
+			<height>830</height>
+			<texture border="2">dialogs/dialog-bg-solid.png</texture>
+		</control>
+		<control type="grouplist" id="996">
+			<description>grouplist for context buttons</description>
+			<left>0</left>
+			<top>30</top>
+			<width>450</width>
+			<height max="780">auto</height>
+			<usecontrolcoords>true</usecontrolcoords>
+		</control>
+		<control type="button" id="1000">
+			<description>button template</description>
+			<left>2</left>
+			<top>-</top>
+			<width>446</width>
+			<height>60</height>
+			<font>fontContextMenu</font>
+			<align>center</align>
+			<texturefocus>lists/focus.png</texturefocus>
+			<texturenofocus>lists/separator.png</texturenofocus>
+		</control>
+		<include name="UpDownArrows">
+			<param name="container_id" value="996" />
+			<param name="posx" value="201" />
+			<param name="up_posy" value="-40" />
+			<param name="down_posy" value="840" />
+		</include>
+	</controls>
+</window>

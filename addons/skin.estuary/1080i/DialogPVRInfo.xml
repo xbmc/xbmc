@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<controls>
+		<control type="group">
+			<include>OpenClose_Left</include>
+			<control type="image">
+				<left>114</left>
+				<top>186</top>
+				<width>461</width>
+				<height>461</height>
+				<aspectratio>keep</aspectratio>
+				<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+				<bordersize>4</bordersize>
+				<texture fallback="DefaultTVShowsSquare.png">$INFO[ListItem.Icon]</texture>
+			</control>
+			<control type="image">
+				<left>90</left>
+				<top>650</top>
+				<width>509</width>
+				<height>258</height>
+				<texture border="22">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="label">
+				<left>130</left>
+				<top>700</top>
+				<width>1030</width>
+				<height>30</height>
+				<font>font24_title</font>
+				<label>$INFO[Listitem.ChannelName]</label>
+				<aligny>center</aligny>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="textbox">
+				<left>130</left>
+				<top>740</top>
+				<width>1030</width>
+				<height>150</height>
+				<font>font12</font>
+				<label>$INFO[ListItem.StartTime] - $INFO[ListItem.EndTime] ($INFO[ListItem.Duration])[CR]$INFO[ListItem.StartDate]</label>
+				<aligny>top</aligny>
+				<shadowcolor>black</shadowcolor>
+			</control>
+		</control>
+		<control type="group">
+			<top>180</top>
+			<left>50</left>
+			<include>OpenClose_Right</include>
+			<control type="button" id="61">
+				<left>600</left>
+				<top>-18</top>
+				<width>1170</width>
+				<height>509</height>
+				<font>-</font>
+				<onleft>61</onleft>
+				<onright>61</onright>
+				<ondown>9000</ondown>
+				<onup>49</onup>
+				<onclick>SetProperty(TextViewer_Header,$LOCALIZE[207],home)</onclick>
+				<onclick>SetProperty(TextViewer_Text,$ESCINFO[ListItem.Plot],home)</onclick>
+				<onclick>ActivateWindow(1102)</onclick>
+			</control>
+			<control type="textbox" id="400">
+				<left>660</left>
+				<top>80</top>
+				<width>1050</width>
+				<height>368</height>
+				<align>justify</align>
+				<font>font12</font>
+				<label>$INFO[ListItem.Season, [COLOR button_focus]S[/COLOR]]$INFO[ListItem.Episode, [COLOR button_focus]E[/COLOR],: ]$INFO[ListItem.EpisodeName,[B],[/B][CR]]$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]:[/COLOR] ,[CR]]$INFO[ListItem.Writer,[COLOR button_focus]$LOCALIZE[20417]:[/COLOR] ,[CR]]$INFO[ListItem.Director,[COLOR button_focus]$LOCALIZE[20339]:[/COLOR] ,[CR]]$INFO[ListItem.Cast,[COLOR button_focus]$LOCALIZE[206]:[/COLOR] ,[CR]][CR]$INFO[ListItem.Plot]</label>
+				<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+			</control>
+			<control type="label">
+				<description>header label</description>
+				<left>660</left>
+				<top>20</top>
+				<width>1050</width>
+				<height>30</height>
+				<font>font30_title</font>
+				<label>$INFO[Listitem.Title]</label>
+				<aligny>center</aligny>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="grouplist" id="9000">
+				<left>600</left>
+				<top>588</top>
+				<width>1170</width>
+				<height>160</height>
+				<itemgap>10</itemgap>
+				<align>center</align>
+				<orientation>horizontal</orientation>
+				<defaultcontrol>5</defaultcontrol>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+				<onup>49</onup>
+				<ondown>49</ondown>
+				<include name="InfoDialogButton">
+					<param name="id" value="5" />
+					<param name="icon" value="icons/infodialogs/launch.png" />
+					<param name="label" value="$LOCALIZE[19165]" />
+					<param name="visible" value="Window.IsActive(PVRGuideInfo)" />
+				</include>
+				<include name="InfoDialogButton">
+					<param name="id" value="4" />
+					<param name="icon" value="icons/infodialogs/similar.png" />
+					<param name="label" value="$LOCALIZE[19003]" />
+					<param name="visible" value="Window.IsActive(PVRGuideInfo)" />
+				</include>
+				<include name="InfoDialogButton">
+					<param name="id" value="8" />
+					<param name="icon" value="icons/infodialogs/play_record.png" />
+					<param name="label" value="$LOCALIZE[19687]" />
+					<param name="visible" value="Window.IsActive(PVRGuideInfo)" />
+				</include>
+				<include name="InfoDialogButton">
+					<param name="id" value="6" />
+					<param name="icon" value="icons/infodialogs/record.png" />
+					<param name="visible" value="Window.IsActive(PVRGuideInfo)" />
+				</include>
+				<include name="InfoDialogButton">
+					<param name="id" value="5010" />
+					<param name="icon" value="icons/infodialogs/play_record.png" />
+					<param name="label" value="$LOCALIZE[19687]" />
+					<param name="onclick_1" value="Dialog.close(PVRRecordingInfo,true)" />
+					<param name="onclick_2" value="Action(select)" />
+					<param name="visible" value="Window.IsActive(PVRRecordingInfo)" />
+				</include>
+				<include name="InfoDialogButton">
+					<param name="id" value="440" />
+					<param name="icon" value="icons/infodialogs/trailer.png" />
+					<param name="label" value="$LOCALIZE[31114]" />
+					<param name="onclick_1" value="Action(close)" />
+					<param name="onclick_2" value="RunScript(script.extendedinfo,info=youtubebrowser,id=$INFO[ListItem.Title])" />
+					<param name="visible" value="System.hasAddon(script.extendedinfo)" />
+				</include>
+			</control>
+		</control>
+		<include name="InfoDialogTopBarInfo">
+			<param name="main_label" value="$INFO[ListItem.ChannelName]" />
+			<param name="sub_label" value="$INFO[ListItem.Title]$INFO[ListItem.Season, [COLOR button_focus]S[/COLOR]]$INFO[ListItem.Episode, [COLOR button_focus]E[/COLOR]]" />
+		</include>
+	</controls>
+</window>

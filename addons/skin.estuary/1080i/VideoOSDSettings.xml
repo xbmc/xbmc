@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window>
+	<defaultcontrol>5</defaultcontrol>
+	<include>OpenClose_Left</include>
+	<depth>DepthOSD+</depth>
+	<controls>
+		<control type="button" id="22001">
+			<description>background close area</description>
+			<left>0</left>
+			<top>0</top>
+			<width>1920</width>
+			<height>800</height>
+			<texturefocus>-</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<onclick>Action(close)</onclick>
+		</control>
+		<control type="group">
+			<visible>!Window.IsActive(sliderdialog)</visible>
+			<include>Visible_Left</include>
+			<control type="image">
+				<left>-40</left>
+				<width>820</width>
+				<height>1080</height>
+				<texture>lists/panel.png</texture>
+			</control>
+			<control type="image">
+				<description>Dialog Header image</description>
+				<left>0</left>
+				<top>0</top>
+				<width>689</width>
+				<height>70</height>
+				<texture colordiffuse="button_focus" border="2">colors/white70.png</texture>
+			</control>
+			<control type="label" id="2">
+				<description>header label</description>
+				<textoffsetx>70</textoffsetx>
+				<left>-30</left>
+				<top>0</top>
+				<width>689</width>
+				<height>70</height>
+				<font>font20_title</font>
+				<aligny>center</aligny>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="button">
+				<description>logo</description>
+				<left>619</left>
+				<top>11</top>
+				<width>48</width>
+				<height>48</height>
+				<texturefocus colordiffuse="EEFFFFFF">icons/logo.png</texturefocus>
+				<texturenofocus colordiffuse="EEFFFFFF">icons/logo.png</texturenofocus>
+				<onclick>Action(close)</onclick>
+			</control>
+			<control type="grouplist" id="5">
+				<left>0</left>
+				<top>100</top>
+				<width>688</width>
+				<height>1020</height>
+				<onup>5</onup>
+				<ondown>5</ondown>
+			</control>
+		</control>
+		<control type="sliderex" id="13">
+			<height>60</height>
+			<width>688</width>
+			<textoffsetx>30</textoffsetx>
+			<texturefocus>lists/focus.png</texturefocus>
+			<texturenofocus>lists/separator.png</texturenofocus>
+			<font>font12</font>
+		</control>
+		<control type="button" id="7">
+			<width>688</width>
+			<height>60</height>
+			<textoffsetx>30</textoffsetx>
+			<texturefocus>lists/focus.png</texturefocus>
+			<texturenofocus>lists/separator.png</texturenofocus>
+			<font>font12</font>
+		</control>
+		<control type="radiobutton" id="8">
+			<width>688</width>
+			<textwidth>550</textwidth>
+			<height>60</height>
+			<textoffsetx>30</textoffsetx>
+			<texturefocus>lists/focus.png</texturefocus>
+			<texturenofocus>lists/separator.png</texturenofocus>
+			<font>font12</font>
+			<radioposx>572</radioposx>
+		</control>
+		<control type="spincontrolex" id="9">
+			<width>688</width>
+			<height>60</height>
+			<textoffsetx>30</textoffsetx>
+			<texturefocus>lists/focus.png</texturefocus>
+			<texturenofocus>lists/separator.png</texturenofocus>
+			<font>font12</font>
+		</control>
+	</controls>
+</window>

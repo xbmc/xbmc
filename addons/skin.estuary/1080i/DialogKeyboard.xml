@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">300</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthDialog+</depth>
+	<coordinates>
+		<left>155</left>
+		<top>186</top>
+	</coordinates>
+	<controls>
+		<control type="group">
+			<include>Animation_DialogPopupVisible</include>
+			<visible>!Window.IsVisible(numericinput)</visible>
+			<animation type="Conditional" condition="Control.HasFocus(502)">
+				<effect type="slide" start="0,0" end="0,894" time="700" tween="cubic" easing="inout" />
+			</animation>
+			<animation type="Conditional" condition="!Control.HasFocus(502) + System.HasAddon(plugin.program.autocompletion)">
+				<effect type="slide" start="0,0" end="0,-80" time="700" tween="cubic" easing="inout" />
+			</animation>
+			<include name="DialogBackgroundCommons">
+				<param name="DialogBackgroundWidth" value="1610" />
+				<param name="DialogBackgroundHeight" value="709" />
+				<param name="DialogHeaderLabel" value="" />
+				<param name="DialogHeaderId" value="311" />
+			</include>
+			<control type="image">
+				<description>background image</description>
+				<left>0</left>
+				<top>70</top>
+				<width>1610</width>
+				<height>800</height>
+				<texture border="2">dialogs/dialog-bg-solid.png</texture>
+				<visible>IntegerGreaterThan(Container(9010).NumItems,0) | Control.IsVisible(313)</visible>
+			</control>
+			<control type="image">
+				<description>background image</description>
+				<left>44</left>
+				<top>94</top>
+				<width>1522</width>
+				<height>60</height>
+				<texture colordiffuse="32FFFFFF" border="2">colors/white.png</texture>
+			</control>
+			<control type="edit" id="312">
+				<description>Edit Text</description>
+				<left>50</left>
+				<top>73</top>
+				<width>1510</width>
+				<height>100</height>
+				<font>font16</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>button_focus</textcolor>
+				<texturefocus>-</texturefocus>
+				<texturenofocus>-</texturenofocus>
+			</control>
+			<control type="group">
+				<left>26</left>
+				<top>160</top>
+				<!-- 1st row -->
+				<control type="grouplist">
+					<itemgap>-20</itemgap>
+					<orientation>horizontal</orientation>
+					<control type="button" id="309">
+						<description>Layout button</description>
+						<width>290</width>
+						<height>125</height>
+						<onup>300</onup>
+						<ondown>302</ondown>
+						<textoffsetx>20</textoffsetx>
+						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
+						<align>center</align>
+						<aligny>center</aligny>
+					</control>
+					<control type="button" id="100">
+						<description>(0,0) key button</description>
+						<onup>32</onup>
+						<ondown>120</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="101">
+						<description>(0,1) key button</description>
+						<onup>32</onup>
+						<ondown>121</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="102">
+						<description>(0,2) key button</description>
+						<onup>32</onup>
+						<ondown>122</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="103">
+						<description>(0,3) key button</description>
+						<onup>32</onup>
+						<ondown>123</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="104">
+						<description>(0,4) key button</description>
+						<onup>8</onup>
+						<ondown>124</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="105">
+						<description>(0,5) key button</description>
+						<onup>8</onup>
+						<ondown>125</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="106">
+						<description>(0,6) key button</description>
+						<onup>305</onup>
+						<ondown>126</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="107">
+						<description>(0,7) key button</description>
+						<onup>306</onup>
+						<ondown>127</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="108">
+						<description>(0,8) key button</description>
+						<onup>501</onup>
+						<ondown>128</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="109">
+						<description>(0,9) key button</description>
+						<onup>501</onup>
+						<ondown>129</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="110">
+						<description>(0,10) key button</description>
+						<onup>308</onup>
+						<ondown>130</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="111">
+						<description>(0,11) key button</description>
+						<onup>308</onup>
+						<ondown>131</ondown>
+						<include>KeyboardButton</include>
+					</control>
+				</control>
+				<!-- 2nd row -->
+				<control type="grouplist">
+					<orientation>horizontal</orientation>
+					<top>100</top>
+					<itemgap>-20</itemgap>
+					<control type="togglebutton" id="302">
+						<description>SHIFT button</description>
+						<width>290</width>
+						<height>125</height>
+						<onup>309</onup>
+						<ondown>303</ondown>
+						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
+						<label>$LOCALIZE[20178]</label>
+						<altlabel>[B][UPPERCASE]$LOCALIZE[20178][/UPPERCASE][/B]</altlabel>
+						<align>center</align>
+						<aligny>center</aligny>
+					</control>
+					<control type="button" id="120">
+						<description>(1,0) key button</description>
+						<onup>100</onup>
+						<ondown>140</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="121">
+						<description>(1,1) key button</description>
+						<onup>101</onup>
+						<ondown>141</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="122">
+						<description>(1,2) key button</description>
+						<onup>102</onup>
+						<ondown>142</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="123">
+						<description>(1,3) key button</description>
+						<onup>103</onup>
+						<ondown>143</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="124">
+						<description>(1,4) key button</description>
+						<onup>104</onup>
+						<ondown>144</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="125">
+						<description>(1,5) key button</description>
+						<onup>105</onup>
+						<ondown>145</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="126">
+						<description>(1,6) key button</description>
+						<onup>106</onup>
+						<ondown>146</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="127">
+						<description>(1,7) key button</description>
+						<onup>107</onup>
+						<ondown>147</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="128">
+						<description>(1,8) key button</description>
+						<onup>108</onup>
+						<ondown>148</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="129">
+						<description>(1,9) key button</description>
+						<onup>109</onup>
+						<ondown>149</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="130">
+						<description>(1,10) key button</description>
+						<onup>110</onup>
+						<ondown>150</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="131">
+						<description>(1,11) key button</description>
+						<onup>111</onup>
+						<ondown>151</ondown>
+						<include>KeyboardButton</include>
+					</control>
+				</control>
+				<!-- 3rd row -->
+				<control type="grouplist">
+					<top>200</top>
+					<orientation>horizontal</orientation>
+					<itemgap>-20</itemgap>
+					<control type="togglebutton" id="303">
+						<description>CAPS LOCK button</description>
+						<width>290</width>
+						<height>125</height>
+						<label>$LOCALIZE[20179]</label>
+						<altlabel>[B][UPPERCASE]$LOCALIZE[20179][/UPPERCASE][/B]</altlabel>
+						<onup>302</onup>
+						<ondown>307</ondown>
+						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
+						<align>center</align>
+						<aligny>center</aligny>
+					</control>
+					<control type="button" id="140">
+						<description>(2,0) key button</description>
+						<onup>120</onup>
+						<ondown>160</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="141">
+						<description>(2,1) key button</description>
+						<onup>121</onup>
+						<ondown>161</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="142">
+						<description>(2,2) key button</description>
+						<onup>122</onup>
+						<ondown>162</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="143">
+						<description>(2,3) key button</description>
+						<onup>123</onup>
+						<ondown>163</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="144">
+						<description>(2,4) key button</description>
+						<onup>124</onup>
+						<ondown>164</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="145">
+						<description>(2,5) key button</description>
+						<onup>125</onup>
+						<ondown>165</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="146">
+						<description>(2,6) key button</description>
+						<onup>126</onup>
+						<ondown>166</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="147">
+						<description>(2,7) key button</description>
+						<onup>127</onup>
+						<ondown>167</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="148">
+						<description>(2,8) key button</description>
+						<onup>128</onup>
+						<ondown>168</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="149">
+						<description>(2,9) key button</description>
+						<onup>129</onup>
+						<ondown>169</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="150">
+						<description>(2,10) key button</description>
+						<onup>130</onup>
+						<ondown>170</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="151">
+						<description>(2,11) key button</description>
+						<onup>131</onup>
+						<ondown>171</ondown>
+						<include>KeyboardButton</include>
+					</control>
+				</control>
+				<!-- 4th row -->
+				<control type="grouplist">
+					<top>300</top>
+					<itemgap>-20</itemgap>
+					<orientation>horizontal</orientation>
+					<control type="button" id="307">
+						<description>IP Input button</description>
+						<width>155</width>
+						<height>125</height>
+						<onup>303</onup>
+						<ondown>300</ondown>
+						<label>IP</label>
+						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
+						<align>center</align>
+						<aligny>center</aligny>
+					</control>
+					<control type="togglebutton" id="304">
+						<description>Symbols button</description>
+						<width>155</width>
+						<height>125</height>
+						<label>@#!*</label>
+						<altlabel>ABC</altlabel>
+						<onup>303</onup>
+						<ondown>300</ondown>
+						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
+						<align>center</align>
+						<aligny>center</aligny>
+					</control>
+					<control type="button" id="160">
+						<description>(3,0) key button</description>
+						<onup>140</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="161">
+						<description>(3,1) key button</description>
+						<onup>141</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="162">
+						<description>(3,2) key button</description>
+						<onup>142</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="163">
+						<description>(3,3) key button</description>
+						<onup>143</onup>
+						<ondown>8</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="164">
+						<description>(3,4) key button</description>
+						<onup>144</onup>
+						<ondown>8</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="165">
+						<description>(3,5) key button</description>
+						<onup>145</onup>
+						<ondown>8</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="166">
+						<description>(3,6) key button</description>
+						<onup>146</onup>
+						<ondown>305</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="167">
+						<description>(3,7) key button</description>
+						<onup>147</onup>
+						<ondown>306</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="168">
+						<description>(3,8) key button</description>
+						<onup>148</onup>
+						<ondown>501</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="169">
+						<description>(3,9) key button</description>
+						<onup>149</onup>
+						<ondown>501</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="170">
+						<description>(3,10) key button</description>
+						<onup>150</onup>
+						<ondown>308</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="171">
+						<description>(3,11) key button</description>
+						<onup>151</onup>
+						<ondown>308</ondown>
+						<include>KeyboardButton</include>
+					</control>
+				</control>
+				<!-- 5th row -->
+				<control type="grouplist">
+					<top>400</top>
+					<itemgap>-20</itemgap>
+					<orientation>horizontal</orientation>
+					<control type="button" id="300">
+						<description>DONE button</description>
+						<width>290</width>
+						<height>125</height>
+						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
+						<label>$LOCALIZE[20177]</label>
+						<align>center</align>
+						<aligny>center</aligny>
+						<onup>304</onup>
+						<ondown condition="!System.HasAddon(plugin.program.autocompletion)">309</ondown>
+						<ondown condition="System.HasAddon(plugin.program.autocompletion)">9010</ondown>
+					</control>
+					<control type="button" id="32">
+						<description>SPACE button</description>
+						<width>335</width>
+						<height>125</height>
+						<label>$LOCALIZE[20182]</label>
+						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
+						<align>center</align>
+						<aligny>center</aligny>
+						<onup>161</onup>
+						<ondown condition="!System.HasAddon(plugin.program.autocompletion)">101</ondown>
+						<ondown condition="System.HasAddon(plugin.program.autocompletion)">9010</ondown>
+					</control>
+					<control type="button" id="8">
+						<description>BACKSPACE button</description>
+						<width>335</width>
+						<height>125</height>
+						<label>$LOCALIZE[20181]</label>
+						<onup>164</onup>
+						<ondown condition="!System.HasAddon(plugin.program.autocompletion)">104</ondown>
+						<ondown condition="System.HasAddon(plugin.program.autocompletion)">9010</ondown>
+						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
+						<align>center</align>
+						<aligny>center</aligny>
+					</control>
+					<control type="button" id="305">
+						<description>previous button</description>
+						<label>&lt;</label>
+						<width>125</width>
+						<height>125</height>
+						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font16</font>
+						<onup>166</onup>
+						<ondown condition="!System.HasAddon(plugin.program.autocompletion)">106</ondown>
+						<ondown condition="System.HasAddon(plugin.program.autocompletion)">9010</ondown>
+					</control>
+					<control type="button" id="306">
+						<description>next button</description>
+						<label>&gt;</label>
+						<width>125</width>
+						<height>125</height>
+						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font16</font>
+						<onup>167</onup>
+						<ondown condition="!System.HasAddon(plugin.program.autocompletion)">107</ondown>
+						<ondown condition="System.HasAddon(plugin.program.autocompletion)">9010</ondown>
+					</control>
+					<control type="button" id="501">
+						<description>hide button</description>
+						<width>230</width>
+						<height>125</height>
+						<label>Hide</label>
+						<align>center</align>
+						<aligny>center</aligny>
+						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
+						<onclick>SetFocus(502)</onclick>
+						<onup>169</onup>
+						<ondown condition="!System.HasAddon(plugin.program.autocompletion)">109</ondown>
+						<ondown condition="System.HasAddon(plugin.program.autocompletion)">9010</ondown>
+					</control>
+					<control type="button" id="308">
+						<description>Cancel button</description>
+						<width>230</width>
+						<height>125</height>
+						<label>$LOCALIZE[222]</label>
+						<align>center</align>
+						<aligny>center</aligny>
+						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
+						<onclick>Close</onclick>
+						<onup>171</onup>
+						<ondown condition="!System.HasAddon(plugin.program.autocompletion)">111</ondown>
+						<ondown condition="System.HasAddon(plugin.program.autocompletion)">9010</ondown>
+					</control>
+				</control>
+			</control>
+			<control type="panel" id="9010">
+				<left>20</left>
+				<top>665</top>
+				<width>1560</width>
+				<height>400</height>
+				<scrolltime tween="cubic" easing="out">500</scrolltime>
+				<orientation>vertical</orientation>
+				<onleft>9010</onleft>
+				<onright>9010</onright>
+				<onup>32</onup>
+				<ondown>noop</ondown>
+				<visible>!Control.IsVisible(313)</visible>
+				<itemlayout width="520" height="60">
+					<control type="image">
+						<top>0</top>
+						<width>520</width>
+						<height>90</height>
+						<texture border="40">buttons/dialogbutton-nofo.png</texture>
+					</control>
+					<control type="label">
+						<left>40</left>
+						<top>0</top>
+						<width>440</width>
+						<height>90</height>
+						<label>$INFO[ListItem.Label]</label>
+						<font>font12</font>
+						<shadowcolor>text_shadow</shadowcolor>
+						<aligny>center</aligny>
+					</control>
+				</itemlayout>
+				<focusedlayout width="520" height="60">
+					<control type="group">
+						<control type="image">
+							<top>0</top>
+							<width>520</width>
+							<height>90</height>
+							<texture border="40">buttons/dialogbutton-nofo.png</texture>
+						</control>
+						<control type="image">
+							<width>520</width>
+							<height>90</height>
+							<texture border="40">buttons/dialogbutton-fo.png</texture>
+							<animation effect="fade" start="0" end="100" time="200">Focus</animation>
+							<animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+						</control>
+						<control type="label">
+							<left>40</left>
+							<top>0</top>
+							<width>440</width>
+							<height>90</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>font12</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<aligny>center</aligny>
+						</control>
+					</control>
+				</focusedlayout>
+				<content>$VAR[AutoCompletionContentVar]</content>
+			</control>
+			<control type="label" id="313">
+				<left>60</left>
+				<top>690</top>
+				<width>1480</width>
+				<height>90</height>
+				<label>$INFO[ListItem.Label]</label>
+				<font>font16</font>
+				<shadowcolor>text_shadow</shadowcolor>
+				<aligny>center</aligny>
+			</control>
+			<control type="group">
+				<visible>Control.IsVisible(313)</visible>
+				<control type="image">
+					<left>20</left>
+					<top>690</top>
+					<width>1560</width>
+					<height>90</height>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				<control type="image">
+					<left>20</left>
+					<top>770</top>
+					<width>1560</width>
+					<height>90</height>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				<control type="label" id="314">
+					<left>60</left>
+					<top>770</top>
+					<width>1480</width>
+					<height>90</height>
+					<label>$INFO[ListItem.Label]</label>
+					<font>font16</font>
+					<shadowcolor>text_shadow</shadowcolor>
+					<aligny>center</aligny>
+				</control>
+			</control>
+		</control>
+		<control type="button" id="502">
+			<description>hide button</description>
+			<include>HiddenObject</include>
+			<onup>501</onup>
+			<ondown>501</ondown>
+			<onleft>501</onleft>
+			<onright>501</onright>
+			<onclick>SetFocus(501)</onclick>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <defaultcontrol>3</defaultcontrol>
+    <include>Animation_DialogPopupOpenClose</include>
+    <controls>
+        <control type="group">
+            <left>100</left>
+            <top>200</top>
+            <include name="DialogBackgroundCommons">
+                <param name="DialogBackgroundWidth" value="1720" />
+                <param name="DialogBackgroundHeight" value="690" />
+                <param name="DialogHeaderLabel" value="$LOCALIZE[35058]" />
+                <param name="DialogHeaderId" value="2" />
+            </include>
+                <control type="label">
+                    <description>Controller types heading</description>
+                    <top>90</top>
+                    <left>15</left>
+                    <width>330</width>
+                    <height>25</height>
+                    <font>font12</font>
+                    <label>$LOCALIZE[35050]</label>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <textcolor>blue</textcolor>
+                    <shadowcolor>black</shadowcolor>
+                </control>
+                <control type="image">
+                    <left>-5</left>
+                    <top>110</top>
+                    <width>370</width>
+                    <height>582</height>
+                    <texture border="40">buttons/dialogbutton-nofo.png</texture>
+                </control>
+                <control type="grouplist" id="3">
+                    <description>Controller types grouplist</description>
+                    <left>15</left>
+                    <top>130</top>
+                    <width>330</width>
+                    <height>540</height>
+                    <onleft>9001</onleft>
+                    <onright>5</onright>
+                    <onup>3</onup>
+                    <ondown>3</ondown>
+                </control>
+                <control type="button" id="10">
+                    <description>Default controller types button</description>
+                    <height>60</height>
+                    <width>330</width>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <font>font12_title</font>
+                    <texturefocus>lists/focus.png</texturefocus>
+                    <texturenofocus>lists/separator.png</texturenofocus>
+                </control>
+                <control type="gamecontroller" id="31">
+                    <left>390</left>
+                    <top>210</top>
+                    <width>547</width>
+                    <height>343</height>
+                </control>
+                <control type="label">
+                    <description>Feature types heading</description>
+                    <top>90</top>
+                    <left>995</left>
+                    <width>330</width>
+                    <height>25</height>
+                    <font>font12</font>
+                    <label>$LOCALIZE[35059]</label>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <textcolor>blue</textcolor>
+                    <shadowcolor>black</shadowcolor>
+                </control>
+                <control type="image">
+                    <left>975</left>
+                    <top>110</top>
+                    <width>370</width>
+                    <height>582</height>
+                    <texture border="40">buttons/dialogbutton-nofo.png</texture>
+                </control>
+                <control type="grouplist" id="5">
+                    <description>Feature types grouplist</description>
+                    <left>995</left>
+                    <top>130</top>
+                    <width>330</width>
+                    <height>540</height>
+                    <onleft>3</onleft>
+                    <onright>61</onright>
+                    <onup>5</onup>
+                    <ondown>5</ondown>
+                    <pagecontrol>61</pagecontrol>
+                </control>
+                <control type="scrollbar" id="61">
+                    <left>1330</left>
+                    <top>130</top>
+                    <width>12</width>
+                    <height>540</height>
+                    <onleft>5</onleft>
+                    <onright>9001</onright>
+                    <orientation>vertical</orientation>
+                </control>
+                <control type="button" id="7">
+                    <description>Default feature types button</description>
+                    <height>60</height>
+                    <width>330</width>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <font>font12_title</font>
+                    <texturefocus>lists/focus.png</texturefocus>
+                    <texturenofocus>lists/separator.png</texturenofocus>
+                </control>
+            <control type="grouplist" id="9001">
+                <left>1360</left>
+                <top>110</top>
+                <onleft>5</onleft>
+                <onright>3</onright>
+                <itemgap>-20</itemgap>
+                <include name="DefaultDialogButton">
+                    <param name="width" value="350" />
+                    <param name="id" value="20" />
+                    <param name="label" value="$LOCALIZE[21452]" />
+                </include>
+                <include name="DefaultDialogButton">
+                    <param name="width" value="350" />
+                    <param name="id" value="19" />
+                    <param name="label" value="$LOCALIZE[10035]" />
+                </include>
+                <include name="DefaultDialogButton">
+                    <param name="width" value="350" />
+                    <param name="id" value="18" />
+                    <param name="label" value="$LOCALIZE[186]" />
+                </include>
+            </control>
+        </control>
+    </controls>
+</window>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window type="dialog" id="1108">
+	<visible>Player.ShowInfo + !System.HasModalDialog + VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo)</visible>
+	<defaultcontrol>-</defaultcontrol>
+	<animation effect="fade" start="0" end="100" time="100">WindowOpen</animation>
+	<animation effect="fade" start="100" end="0" time="100">WindowClose</animation>
+	<depth>DepthOSD</depth>
+	<controls>
+		<control type="image">
+			<left>10</left>
+			<top>830</top>
+			<width>1900</width>
+			<height>240</height>
+			<texture border="40">buttons/dialogbutton-nofo.png</texture>
+		</control>
+		<control type="image">
+			<left>30</left>
+			<top>850</top>
+			<width>200</width>
+			<height>200</height>
+			<aspectratio aligny="center">keep</aspectratio>
+			<texture>$INFO[Player.Art(thumb)]</texture>
+		</control>
+		<control type="textbox">
+			<left>260</left>
+			<top>960</top>
+			<width>200</width>
+			<height>80</height>
+			<label>$INFO[VideoPlayer.ChannelName]</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>font12</font>
+		</control>
+		<control type="label">
+			<left>250</left>
+			<top>860</top>
+			<width>220</width>
+			<height>100</height>
+			<label>$INFO[VideoPlayer.ChannelNumberLabel]</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>WeatherTemp</font>
+		</control>
+		<control type="label">
+			<left>530</left>
+			<top>870</top>
+			<width>1300</width>
+			<height>25</height>
+			<label>$INFO[VideoPlayer.Title]</label>
+			<aligny>center</aligny>
+			<font>font30</font>
+		</control>
+		<control type="progress">
+			<animation effect="fade" end="0" time="200">WindowClose</animation>
+			<left>530</left>
+			<top>922</top>
+			<width>1320</width>
+			<height>15</height>
+			<info>Player.ProgressCache</info>
+			<texturebg border="3" colordiffuse="00FFFFFF">colors/white50.png</texturebg>
+			<midtexture colordiffuse="button_focus">colors/white50.png</midtexture>
+			<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
+		</control>
+		<control type="progress" id="23">
+			<animation effect="fade" end="0" time="200">WindowClose</animation>
+			<left>530</left>
+			<top>922</top>
+			<width>1320</width>
+			<height>15</height>
+			<info>Player.Progress</info>
+			<texturebg border="3" colordiffuse="80FFFFFF">colors/white50.png</texturebg>
+			<midtexture colordiffuse="button_focus">colors/white50.png</midtexture>
+		</control>
+		<control type="label">
+			<left>530</left>
+			<top>955</top>
+			<width>1300</width>
+			<height>25</height>
+			<label>[COLOR button_focus]$INFO[VideoPlayer.NextStartTime]$INFO[VideoPlayer.NextEndTime, - ,: ][/COLOR]$INFO[VideoPlayer.NextTitle]</label>
+			<aligny>center</aligny>
+		</control>
+		<control type="grouplist">
+			<left>1260</left>
+			<top>990</top>
+			<width>600</width>
+			<height>100</height>
+			<align>right</align>
+			<orientation>horizontal</orientation>
+			<itemgap>10</itemgap>
+			<include name="MediaFlag">
+				<param name="texture" value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]" />
+			</include>
+			<include name="MediaFlag">
+				<param name="texture" value="$INFO[VideoPlayer.AudioCodec,flags/audiocodec/,.png]" />
+			</include>
+			<include name="MediaFlag">
+				<param name="texture" value="$INFO[VideoPlayer.VideoAspect,flags/aspectratio/,.png]" />
+			</include>
+			<include name="MediaFlag">
+				<param name="texture" value="$INFO[VideoPlayer.VideoCodec,flags/videocodec/,.png]" />
+			</include>
+		</control>
+	</controls>
+</window>

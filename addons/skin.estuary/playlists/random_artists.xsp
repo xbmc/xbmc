@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<smartplaylist type="artists">
+    <name>Random artists</name>
+    <match>all</match>
+    <limit>10</limit>
+    <order direction="ascending">random</order>
+</smartplaylist>

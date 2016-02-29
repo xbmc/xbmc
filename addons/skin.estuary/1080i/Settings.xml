@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<controls>
+		<include>DefaultBackground</include>
+		<include name="SettingsPanel">
+			<param name="content" value="SettingsItems" />
+		</include>
+		<include name="TopBar">
+			<param name="breadcrumbs_label" value="$LOCALIZE[5]" />
+			<param name="breadcrumbs_icon" value="icons/settings/settings.png" />
+		</include>
+		<include>BottomBar</include>
+	</controls>
+</window>
