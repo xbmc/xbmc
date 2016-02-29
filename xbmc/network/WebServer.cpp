@@ -771,7 +771,7 @@ int CWebServer::CreateFileDownloadResponse(const std::shared_ptr<IHTTPRequestHan
   std::shared_ptr<XFILE::CFile> file = std::make_shared<XFILE::CFile>();
   std::string filePath = handler->GetResponseFile();
 
-  if (!file->Open(filePath, READ_NO_CACHE))
+  if (!file->Open(filePath, XFILE::READ_NO_CACHE))
   {
     CLog::Log(LOGERROR, "WebServer: Failed to open %s", filePath.c_str());
     return SendErrorResponse(request.connection, MHD_HTTP_NOT_FOUND, request.method);

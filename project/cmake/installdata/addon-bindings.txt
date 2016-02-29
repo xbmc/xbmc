@@ -23,3 +23,4 @@ addons/library.xbmc.pvr/libXBMC_pvr.h
 addons/library.xbmc.codec/libXBMC_codec.h
 xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h
 xbmc/cores/AudioEngine/Utils/AEChannelData.h
+xbmc/filesystem/IFileTypes.h
