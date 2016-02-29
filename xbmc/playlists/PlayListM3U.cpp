@@ -226,7 +226,7 @@ void CPlayListM3U::Save(const std::string& strFileName) const
   file.Close();
 }
 
-std::string CPlayListM3U::GetBestBandwidthStream(const std::string &strFileName, size_t bandwidth)
+CURL CPlayListM3U::GetBestBandwidthStream(const CURL &url, size_t bandwidth)
 {
   // we may be passed a playlist that does not contain playlists of different
   // bitrates (eg: this playlist is really the HLS video). So, default the
@@ -237,20 +237,17 @@ std::string CPlayListM3U::GetBestBandwidthStream(const std::string &strFileName,
 
   // open the file, and if it fails, return
   CFile file;
-  if (!file.Open(strFileName) )
+  if (!file.Open(url))
   {
     file.Close();
-    return strFileName;
+    return url;
   }
 
-  // get protocol options if they were set, so we can restore them again at the end
-  CURL playlistUrl(strFileName);
-  
   // and set the fallback value
-  CURL subStreamUrl = CURL(strFileName);
+  CURL subStreamUrl(url);
   
   // determine the base
-  CURL basePlaylistUrl(URIUtils::GetParentPath(strFileName));
+  CURL basePlaylistUrl(URIUtils::GetParentPath(url.Get()));
   basePlaylistUrl.SetOptions("");
   basePlaylistUrl.SetProtocolOptions("");
   std::string basePart = basePlaylistUrl.Get();
@@ -303,8 +300,8 @@ std::string CPlayListM3U::GetBestBandwidthStream(const std::string &strFileName,
   }
 
   // if any protocol options were set, restore them
-  subStreamUrl.SetProtocolOptions(playlistUrl.GetProtocolOptions());
-  return subStreamUrl.Get();
+  subStreamUrl.SetProtocolOptions(url.GetProtocolOptions());
+  return subStreamUrl;
 }
 
 std::map< std::string, std::string > CPlayListM3U::ParseStreamLine(const std::string &streamLine)
