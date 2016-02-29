@@ -503,6 +503,10 @@ CDemuxStream* CDVDInputStreamPVRManager::GetStream(int iStreamId)
 
     ret = m_streamVideo;
   }
+  else if (m_StreamProps->stream[iStreamId].iCodecId == AV_CODEC_ID_DVB_TELETEXT)
+  {
+    ret = m_streamTeletext;
+  }
   else if (m_StreamProps->stream[iStreamId].iCodecType == XBMC_CODEC_TYPE_SUBTITLE)
   {
     if(m_StreamProps->stream[iStreamId].iIdentifier)
@@ -515,10 +519,6 @@ CDemuxStream* CDVDInputStreamPVRManager::GetStream(int iStreamId)
       m_streamSubtitle->ExtraData[3] = (m_StreamProps->stream[iStreamId].iIdentifier >> 16) & 0xff;
     }
     ret = m_streamSubtitle;
-  }
-  else if (m_StreamProps->stream[iStreamId].iCodecId == AV_CODEC_ID_DVB_TELETEXT)
-  {
-    ret = m_streamTeletext;
   }
   else if (m_StreamProps->stream[iStreamId].iCodecType == XBMC_CODEC_TYPE_RDS &&
            CSettings::GetInstance().GetBool("pvrplayback.enableradiords"))
