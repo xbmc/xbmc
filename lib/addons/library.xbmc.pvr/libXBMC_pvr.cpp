@@ -24,8 +24,8 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string>
-#include "../../../addons/library.xbmc.pvr/libXBMC_pvr.h"
 #include "addons/AddonCallbacks.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libXBMC_pvr.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
 
 #ifdef _WIN32

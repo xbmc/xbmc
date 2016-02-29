@@ -50,7 +50,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\..\..\..\xbmc\addons\include;..\..\..\..\..\xbmc\addons;..\..\..\..\..\xbmc\cores\VideoPlayer\DVDDemuxers;..\..\..\..\..\xbmc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi;..\..\..\..\..\xbmc\addons;..\..\..\..\..\xbmc\cores\VideoPlayer\DVDDemuxers;..\..\..\..\..\xbmc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>VDR_EXPORTS;_WIN32PC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <PrecompiledHeader>
@@ -62,7 +62,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\..\..\..\xbmc\addons\include;..\..\..\..\..\xbmc\addons;..\..\..\..\..\xbmc\cores\VideoPlayer\DVDDemuxers;..\..\..\..\..\xbmc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi;..\..\..\..\..\xbmc\addons;..\..\..\..\..\xbmc\cores\VideoPlayer\DVDDemuxers;..\..\..\..\..\xbmc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>HAS_SDL;_USRDLL;XBMC_VDR_EXPORTS;_WIN32PC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <PrecompiledHeader>
@@ -76,7 +76,7 @@
     <ClCompile Include="..\..\libXBMC_addon.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\addons\library.xbmc.addon\libXBMC_addon.h" />
+    <ClInclude Include="..\..\..\..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\libXBMC_addon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -19,7 +19,7 @@
 #pragma once
 
 #include "AddonDll.h"
-#include "include/xbmc_audioenc_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_audioenc_types.h"
 #include "cdrip/IEncoder.h"
 
 typedef DllAddon<AudioEncoder, AUDIOENC_PROPS> DllAudioEncoder;

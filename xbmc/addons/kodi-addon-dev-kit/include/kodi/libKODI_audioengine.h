@@ -25,16 +25,15 @@
 #include <string.h>
 #include <vector>
 
+#include "kodi_audioengine_types.h"
 #ifdef BUILD_KODI_ADDON
   #include "kodi/AudioEngine/AEChannelData.h"
   #include "kodi/AudioEngine/AEChannelInfo.h"
   #include "kodi/AudioEngine/AEStreamData.h"
-  #include "kodi/AudioEngine/kodi_audioengine_types.h"
 #else
   #include "cores/AudioEngine/Utils/AEChannelData.h"
   #include "cores/AudioEngine/Utils/AEChannelInfo.h"
   #include "cores/AudioEngine/Utils/AEStreamData.h"
-  #include "addons/include/kodi_audioengine_types.h"
 #endif
 
 #include "libXBMC_addon.h"

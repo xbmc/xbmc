@@ -19,7 +19,7 @@
 #pragma once
 
 #include "AddonDll.h"
-#include "include/kodi_audiodec_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/kodi_audiodec_types.h"
 #include "cores/paplayer/ICodec.h"
 #include "music/tags/ImusicInfoTagLoader.h"
 #include "filesystem/MusicFileDirectory.h"
