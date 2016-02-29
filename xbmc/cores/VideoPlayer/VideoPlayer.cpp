@@ -50,6 +50,7 @@
 #include "DVDDemuxers/DVDDemuxCC.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "xbmc/utils/PerformanceSample.h"
 #else
@@ -571,18 +572,18 @@ void CVideoPlayer::CreatePlayers()
   if (m_omxplayer_mode)
   {
 #ifdef HAS_OMXPLAYER
-    m_VideoPlayerVideo = new OMXPlayerVideo(&m_OmxPlayerState.av_clock, &m_overlayContainer, m_messenger, m_renderManager);
-    m_VideoPlayerAudio = new OMXPlayerAudio(&m_OmxPlayerState.av_clock, m_messenger);
+    m_VideoPlayerVideo = new OMXPlayerVideo(&m_OmxPlayerState.av_clock, &m_overlayContainer, m_messenger, m_renderManager, *m_processInfo);
+    m_VideoPlayerAudio = new OMXPlayerAudio(&m_OmxPlayerState.av_clock, m_messenger, *m_processInfo);
 #endif
   }
   else
   {
-    m_VideoPlayerVideo = new CVideoPlayerVideo(&m_clock, &m_overlayContainer, m_messenger, m_renderManager);
-    m_VideoPlayerAudio = new CVideoPlayerAudio(&m_clock, m_messenger);
+    m_VideoPlayerVideo = new CVideoPlayerVideo(&m_clock, &m_overlayContainer, m_messenger, m_renderManager, *m_processInfo);
+    m_VideoPlayerAudio = new CVideoPlayerAudio(&m_clock, m_messenger, *m_processInfo);
   }
-  m_VideoPlayerSubtitle = new CVideoPlayerSubtitle(&m_overlayContainer);
-  m_VideoPlayerTeletext = new CDVDTeletextData();
-  m_VideoPlayerRadioRDS = new CDVDRadioRDSData();
+  m_VideoPlayerSubtitle = new CVideoPlayerSubtitle(&m_overlayContainer, *m_processInfo);
+  m_VideoPlayerTeletext = new CDVDTeletextData(*m_processInfo);
+  m_VideoPlayerRadioRDS = new CDVDRadioRDSData(*m_processInfo);
   m_players_created = true;
 }
 
@@ -649,6 +650,7 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_omxplayer_mode                     = false;
 #endif
 
+  m_processInfo = CProcessInfo::CreateInstance();
   CreatePlayers();
 
   m_displayLost = false;

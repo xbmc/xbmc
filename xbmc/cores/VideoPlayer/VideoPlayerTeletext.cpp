@@ -88,8 +88,9 @@ signed int CDVDTeletextTools::deh24(unsigned char *p)
 }
 
 
-CDVDTeletextData::CDVDTeletextData()
+CDVDTeletextData::CDVDTeletextData(CProcessInfo &processInfo)
 : CThread("DVDTeletextData")
+, IDVDStreamPlayer(processInfo)
 , m_messageQueue("teletext")
 {
   m_speed = DVD_PLAYSPEED_NORMAL;

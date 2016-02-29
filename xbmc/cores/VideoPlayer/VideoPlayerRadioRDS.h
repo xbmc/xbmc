@@ -43,7 +43,7 @@ class CDVDStreamInfo;
 class CDVDRadioRDSData : public CThread, public IDVDStreamPlayer
 {
 public:
-  CDVDRadioRDSData();
+  CDVDRadioRDSData(CProcessInfo &processInfo);
   virtual ~CDVDRadioRDSData();
 
   bool CheckStream(CDVDStreamInfo &hints);

@@ -22,6 +22,7 @@
 
 #include "system.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
 
 extern "C" {
 #include "libavcodec/avcodec.h"
@@ -170,7 +171,7 @@ class CDVDCodecOptions;
 class CDVDVideoCodec
 {
 public:
-  CDVDVideoCodec() {}
+  CDVDVideoCodec(CProcessInfo &processInfo) : m_processInfo(processInfo) {}
   virtual ~CDVDVideoCodec() {}
 
   /**
@@ -314,4 +315,7 @@ public:
    * Decoder request to re-open
    */
   virtual void Reopen() {};
+
+protected:
+  CProcessInfo &m_processInfo;
 };

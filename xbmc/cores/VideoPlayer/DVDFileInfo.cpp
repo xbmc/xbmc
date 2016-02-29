@@ -20,6 +20,7 @@
 
 #include <string>
 #include <cstdlib>
+#include <memory>
 #include "threads/SystemClock.h"
 #include "DVDFileInfo.h"
 #include "FileItem.h"
@@ -45,6 +46,7 @@
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "DVDDemuxers/DVDDemuxVobsub.h"
+#include "Process/ProcessInfo.h"
 
 #include "libavcodec/avcodec.h"
 #include "libswscale/swscale.h"
@@ -204,6 +206,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
   if (nVideoStream != -1)
   {
     CDVDVideoCodec *pVideoCodec;
+    std::unique_ptr<CProcessInfo> pProcessInfo(CProcessInfo::CreateInstance());
 
     CDVDStreamInfo hint(*pDemuxer->GetStream(nVideoStream), true);
     hint.software = true;
@@ -212,11 +215,11 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
     {
       // libmpeg2 is not thread safe so use ffmepg for mpeg2/mpeg1 thumb extraction
       CDVDCodecOptions dvdOptions;
-      pVideoCodec = CDVDFactoryCodec::OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions);
+      pVideoCodec = CDVDFactoryCodec::OpenCodec(new CDVDVideoCodecFFmpeg(*pProcessInfo), hint, dvdOptions);
     }
     else
     {
-      pVideoCodec = CDVDFactoryCodec::CreateVideoCodec( hint );
+      pVideoCodec = CDVDFactoryCodec::CreateVideoCodec(hint, *pProcessInfo);
     }
 
     if (pVideoCodec)

@@ -511,8 +511,9 @@ static unsigned short crc16_ccitt(const unsigned char *data, int len, bool skipf
 
 /// --- CDVDRadioRDSData ------------------------------------------------------------
 
-CDVDRadioRDSData::CDVDRadioRDSData()
+CDVDRadioRDSData::CDVDRadioRDSData(CProcessInfo &processInfo)
   : CThread("DVDRDSData")
+  , IDVDStreamPlayer(processInfo)
   , m_speed(DVD_PLAYSPEED_NORMAL)
   , m_messageQueue("rds")
 {

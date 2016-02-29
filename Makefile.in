@@ -20,7 +20,8 @@ VideoPlayer_ARCHIVES=xbmc/cores/VideoPlayer/VideoPlayer.a \
                    xbmc/cores/VideoPlayer/DVDCodecs/Video/Video.a \
                    xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemuxers.a \
                    xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreams.a \
-                   xbmc/cores/VideoPlayer/DVDSubtitles/DVDSubtitles.a
+                   xbmc/cores/VideoPlayer/DVDSubtitles/DVDSubtitles.a \
+                   xbmc/cores/VideoPlayer/Process/Process.a
 
 DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/addons/addons.a \

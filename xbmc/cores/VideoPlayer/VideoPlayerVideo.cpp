@@ -61,8 +61,10 @@ public:
 CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock
                                 ,CDVDOverlayContainer* pOverlayContainer
                                 ,CDVDMessageQueue& parent
-                                ,CRenderManager& renderManager)
+                                ,CRenderManager& renderManager
+                                ,CProcessInfo &processInfo)
 : CThread("VideoPlayerVideo")
+, IDVDStreamPlayerVideo(processInfo)
 , m_messageQueue("video")
 , m_messageParent(parent)
 , m_renderManager(renderManager)
@@ -129,7 +131,7 @@ bool CVideoPlayerVideo::OpenStream( CDVDStreamInfo &hint )
     return false;
 
   CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
-  CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, info);
+  CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo, info);
   if(!codec)
   {
     CLog::Log(LOGERROR, "Unsupported video codec");

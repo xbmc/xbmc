@@ -27,9 +27,6 @@
 #include "Overlay/DVDOverlayCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 
-#if defined(TARGET_DARWIN_OSX)
-#include "Video/DVDVideoCodecVDA.h"
-#endif
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
 #include "Video/DVDVideoCodecVideoToolBox.h"
 #include "utils/SystemInfo.h"
@@ -129,7 +126,7 @@ CDVDOverlayCodec* CDVDFactoryCodec::OpenCodec(CDVDOverlayCodec* pCodec, CDVDStre
 }
 
 
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const CRenderInfo &info)
+CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProcessInfo &processInfo, const CRenderInfo &info)
 {
   CDVDVideoCodec* pCodec = nullptr;
   CDVDCodecOptions options;
@@ -146,21 +143,21 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #if defined(HAS_LIBAMCODEC)
     // Amlogic can be present on multiple platforms (Linux, Android)
     // try this first. if it does not open, we still try other hw decoders
-    pCodec = OpenCodec(new CDVDVideoCodecAmlogic(), hint, options);
+    pCodec = OpenCodec(new CDVDVideoCodecAmlogic(processInfo), hint, options);
     if (pCodec)
       return pCodec;
 #endif
 
 #if defined(HAS_IMXVPU)
-    pCodec = OpenCodec(new CDVDVideoCodecIMX(), hint, options);
+    pCodec = OpenCodec(new CDVDVideoCodecIMX(processInfo), hint, options);
 #elif defined(HAVE_VIDEOTOOLBOXDECODER)
-    pCodec = OpenCodec(new CDVDVideoCodecVideoToolBox(), hint, options);
+    pCodec = OpenCodec(new CDVDVideoCodecVideoToolBox(processInfo), hint, options);
 #elif defined(TARGET_ANDROID)
-    pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(), hint, options);
+    pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(processInfo), hint, options);
 #elif defined(HAVE_LIBOPENMAX)
-    pCodec = OpenCodec(new CDVDVideoCodecOpenMax(), hint, options);
+    pCodec = OpenCodec(new CDVDVideoCodecOpenMax(processInfo), hint, options);
 #elif defined(HAS_MMAL)
-    pCodec = OpenCodec(new CMMALVideo(), hint, options);
+    pCodec = OpenCodec(new CMMALVideo(processInfo), hint, options);
 #endif
     if (pCodec)
       return pCodec;
@@ -178,7 +175,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 
   std::string value = StringUtils::Format("%d", info.max_buffer_size);
   options.m_keys.push_back(CDVDCodecOption("surfaces", value));
-  pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, options);
+  pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(processInfo), hint, options);
   if (pCodec)
     return pCodec;
 

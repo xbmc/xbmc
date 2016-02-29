@@ -65,7 +65,7 @@ private:
 class CMMALVideo : public CDVDVideoCodec
 {
 public:
-  CMMALVideo();
+  CMMALVideo(CProcessInfo &processInfo);
   virtual ~CMMALVideo();
 
   // Required overrides
