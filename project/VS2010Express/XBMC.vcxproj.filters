@@ -385,6 +385,9 @@
     <Filter Include="addons\test">
       <UniqueIdentifier>{a1795e15-75aa-4cfe-b5a3-4dab057dfe0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="cores\Process">
+      <UniqueIdentifier>{45ab3e06-b8d3-44f5-994e-d6130258c99c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -3265,7 +3268,7 @@
     <ClCompile Include="..\..\xbmc\pvr\recordings\PVRRecordingsPath.cpp">
       <Filter>pvr\recordings</Filter>
     </ClCompile>
-     <ClCompile Include="..\..\xbmc\addons\AddonBuilder.cpp">
+    <ClCompile Include="..\..\xbmc\addons\AddonBuilder.cpp">
       <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\test\TestAddonBuilder.cpp">
@@ -3276,6 +3279,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\test\TestAddonVersion.cpp">
       <Filter>addons\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\Process\ProcessInfo.cpp">
+      <Filter>cores\Process</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6304,6 +6310,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\recordings\PVRRecordingsPath.h">
       <Filter>pvr\recordings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\Process\ProcessInfo.h">
+      <Filter>cores\Process</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
