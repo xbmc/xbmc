@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <string>
 #include "utils/auto_buffer.h"
+#include "utils/Proxy.h"
 #include "IFileTypes.h"
 #include "PlatformDefs.h"
 #include "URL.h"
@@ -63,6 +64,9 @@ public:
   bool CURLCreate(const std::string &url);
   bool CURLAddOption(XFILE::CURLOPTIONTYPE type, const char* name, const char * value);
   bool CURLOpen(unsigned int flags);
+
+  void SetProxy(const CProxy &proxy) { m_proxy = proxy; };
+  const CProxy& GetProxy() const { return m_proxy; };
 
   bool Open(const CURL& file, const unsigned int flags = 0);
   bool OpenForWrite(const CURL& file, bool bOverWrite = false);
@@ -174,6 +178,7 @@ public:
 private:
   unsigned int        m_flags;
   CURL                m_curl;
+  CProxy              m_proxy;
   IFile*              m_pFile;
   CFileStreamBuffer*  m_pBuffer;
   BitstreamStats*     m_bitStreamStats;

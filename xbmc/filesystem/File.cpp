@@ -291,6 +291,8 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
     if (!m_pFile)
       return false;
 
+    m_pFile->SetProxy(m_proxy);
+
     try
     {
       if (!m_pFile->Open(url))
