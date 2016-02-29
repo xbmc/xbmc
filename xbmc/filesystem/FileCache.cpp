@@ -166,10 +166,8 @@ bool CFileCache::Open(const CURL& url)
 
   CLog::Log(LOGDEBUG,"CFileCache::Open - opening <%s> using cache", url.GetFileName().c_str());
 
-  m_sourcePath = url.Get();
-
   // opening the source file.
-  if (!m_source.Open(m_sourcePath, READ_NO_CACHE | READ_TRUNCATED | READ_CHUNKED))
+  if (!m_source.Open(url, READ_NO_CACHE | READ_TRUNCATED | READ_CHUNKED))
   {
     CLog::Log(LOGERROR,"%s - failed to open source <%s>", __FUNCTION__, url.GetRedacted().c_str());
     Close();
