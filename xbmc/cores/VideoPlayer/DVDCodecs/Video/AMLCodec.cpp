@@ -1416,7 +1416,6 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
 #endif
 
   m_speed = DVD_PLAYSPEED_NORMAL;
-  m_1st_pts = 0;
   m_cur_pts = 0;
   m_player_pts = 0;
   m_cur_pictcnt = 0;
@@ -1677,6 +1676,10 @@ void CAMLCodec::CloseDecoder()
   SysfsUtils::SetInt("/sys/class/tsync/enable", 1);
 
   ShowMainVideo(false);
+
+  // add a little delay after closing in case
+  // we are reopened too fast.
+  usleep(500 * 1000);
 }
 
 void CAMLCodec::Reset()
@@ -1712,7 +1715,6 @@ void CAMLCodec::Reset()
   SysfsUtils::SetInt("/sys/class/video/blackout_policy", blackout_policy);
 
   // reset some interal vars
-  m_1st_pts = 0;
   m_cur_pts = 0;
   m_cur_pictcnt = 0;
   m_old_pictcnt = 0;
@@ -1726,7 +1728,6 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
 
   if (pData)
   {
-    m_player_pts = pts;
     am_private->am_pkt.data = pData;
     am_private->am_pkt.data_size = iSize;
 
@@ -1788,14 +1789,6 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
       // Decoder got stuck; Reset
       Reset();
     }
-
-    // if we seek, then GetTimeSize is wrong as
-    // reports lastpts - cur_pts and hw decoder has
-    // not started outputing new pts values yet.
-    // so we grab the 1st pts sent into driver and
-    // use that to calc GetTimeSize.
-    if (m_1st_pts == 0)
-      m_1st_pts = am_private->am_pkt.lastpts;
   }
 
   // if we have still frames, demux size will be small
@@ -1804,10 +1797,6 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
   if (iSize < 20)
     target_timesize = 2.0;
 
-  // keep hw buffered demux above 1 second
-  if (GetTimeSize() < target_timesize && m_speed == DVD_PLAYSPEED_NORMAL)
-    return VC_BUFFER;
-
   // wait until we get a new frame or 25ms,
   if (m_old_pictcnt == m_cur_pictcnt)
     m_ready_event.WaitMSec(25);
@@ -1815,17 +1804,22 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
   // we must return VC_BUFFER or VC_PICTURE,
   // default to VC_BUFFER.
   int rtn = VC_BUFFER;
-  m_player_pts = DVD_NOPTS_VALUE;
   if (m_old_pictcnt != m_cur_pictcnt)
   {
     m_old_pictcnt++;
     rtn = VC_PICTURE;
-    m_player_pts = pts;
+
+    if (pts > 0.0)
+      m_player_pts = pts + m_start_pts - (am_private->am_pkt.lastpts - m_cur_pts);
+
     // we got a new pict, try and keep hw buffered demux above 2 seconds.
-    // this, combined with the above 1 second check, keeps hw buffered demux between 1 and 2 seconds.
     // we also check to make sure we keep from filling hw buffer.
     if (GetTimeSize() < 2.0 && GetDataSize() < m_vbufsize/3)
       rtn |= VC_BUFFER;
+
+    // keep hw buffered demux above 1 second
+    if (GetTimeSize() < target_timesize && m_speed == DVD_PLAYSPEED_NORMAL)
+      rtn = VC_BUFFER;
   }
 /*
   CLog::Log(LOGDEBUG, "CAMLCodec::Decode: "
@@ -1848,12 +1842,7 @@ bool CAMLCodec::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   if (m_speed == DVD_PLAYSPEED_NORMAL)
     pDvdVideoPicture->pts = m_player_pts;
   else
-  {
-    if (m_cur_pts == 0)
-      pDvdVideoPicture->pts = (double)m_1st_pts / PTS_FREQ * DVD_TIME_BASE;
-    else
-      pDvdVideoPicture->pts = (double)m_cur_pts / PTS_FREQ * DVD_TIME_BASE;
-  }
+    pDvdVideoPicture->pts = (double)m_cur_pts / PTS_FREQ * DVD_TIME_BASE;
 
   return true;
 }
@@ -1906,13 +1895,7 @@ double CAMLCodec::GetTimeSize()
   if (!m_opened)
     return 0;
 
-  // if m_cur_pts is zero, hw decoder was not started yet
-  // so we use the pts of the 1st demux packet that was send
-  // to hw decoder to calc timesize.
-  if (m_cur_pts == 0)
-    m_timesize = (double)(am_private->am_pkt.lastpts - m_1st_pts) / PTS_FREQ;
-  else
-    m_timesize = (double)(am_private->am_pkt.lastpts - m_cur_pts) / PTS_FREQ;
+  m_timesize = (float)(am_private->am_pkt.lastpts - m_cur_pts)/PTS_FREQ;
 
   // lie to VideoPlayer, it is hardcoded to a max of 8 seconds,
   // if you buffer more than 8 seconds, it goes nuts.
