@@ -4,7 +4,7 @@
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
+ *  it under the terms of the GNU General Pcoublic License as published by
  *  the Free Software Foundation; either version 2, or (at your option)
  *  any later version.
  *
@@ -170,6 +170,7 @@ namespace XFILE
       ProxyType       m_proxytype;
       std::string     m_customrequest;
       std::string     m_contentencoding;
+      std::string     m_acceptencoding;
       std::string     m_acceptCharset;
       std::string     m_ftpauth;
       std::string     m_ftpport;
