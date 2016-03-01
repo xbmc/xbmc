@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window type="dialog" id="1109">
+    <visible>Window.IsActive(videoosd) | Window.IsActive(fullscreeninfo) | [Player.ShowInfo + !System.HasModalDialog + VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo)]</visible>
+    <depth>DepthOSD</depth>
+    <animation effect="fade" start="0" end="100" time="100">WindowOpen</animation>
+    <animation effect="fade" start="100" end="0" time="100">WindowClose</animation>
+    <controls>
+        <include name="TopBar">
+            <param name="time_sublabel" value="$INFO[Player.FinishTime,$LOCALIZE[31080]: ]" />
+            <param name="breadcrumbs_icon" value="icons/settings/video.png" />
+        </include>
+        <include name="InfoDialogTopBarInfo">
+            <param name="main_label" value="$INFO[VideoPlayer.Title]$INFO[VideoPlayer.Year, ([COLOR button_focus],[/COLOR])]" />
+            <param name="sub_label" value="$VAR[OSDSubLabelVar]" />
+        </include>
+    </controls>
+</window>

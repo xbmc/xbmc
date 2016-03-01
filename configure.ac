@@ -2212,7 +2212,7 @@ fi
 
 OUTPUT_FILES="Makefile \
     Makefile.include \
-    addons/skin.confluence/media/Makefile \
+    addons/skin.estuary/media/Makefile \
     xbmc/Makefile \
     xbmc/cdrip/Makefile \
     xbmc/cores/Makefile \

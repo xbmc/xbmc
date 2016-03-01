@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">9</defaultcontrol>
+	<coordinates>
+		<left>100</left>
+		<top>140</top>
+	</coordinates>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<include name="DialogBackgroundCommons">
+			<param name="DialogBackgroundWidth" value="1720" />
+			<param name="DialogBackgroundHeight" value="800" />
+			<param name="DialogHeaderLabel" value="-" />
+			<param name="DialogHeaderId" value="20" />
+		</include>
+		<control type="grouplist" id="9">
+			<description>button area</description>
+			<left>20</left>
+			<top>70</top>
+			<width>330</width>
+			<height>700</height>
+			<itemgap>-25</itemgap>
+			<align>left</align>
+			<orientation>vertical</orientation>
+			<onleft>9001</onleft>
+			<onright>2</onright>
+			<onup>9</onup>
+			<ondown>9</ondown>
+		</control>
+		<include name="UpDownArrows">
+			<param name="container_id" value="2" />
+			<param name="posx" value="830" />
+			<param name="up_posy" value="-42" />
+			<param name="down_posy" value="814" />
+		</include>
+		<control type="image">
+			<left>330</left>
+			<top>70</top>
+			<width>1100</width>
+			<height>722</height>
+			<texture border="40">buttons/dialogbutton-nofo.png</texture>
+		</control>
+		<control type="grouplist" id="2">
+			<description>control area</description>
+			<left>350</left>
+			<top>90</top>
+			<width>1060</width>
+			<height>680</height>
+			<onup>2</onup>
+			<ondown>2</ondown>
+			<onleft>9</onleft>
+			<onright>9001</onright>
+		</control>
+		<control type="grouplist" id="9001">
+			<left>1410</left>
+			<top>-160</top>
+			<width>300</width>
+			<height>700</height>
+			<itemgap>-15</itemgap>
+			<align>center</align>
+			<orientation>vertical</orientation>
+			<onup>9001</onup>
+			<ondown>9001</ondown>
+			<onleft>2</onleft>
+			<onright>9</onright>
+			<include name="DefaultDialogButton">
+				<param name="id" value="10" />
+				<param name="label" value="$LOCALIZE[186]" />
+			</include>
+			<include name="DefaultDialogButton">
+				<param name="id" value="11" />
+				<param name="label" value="$LOCALIZE[222]" />
+			</include>
+			<include name="DefaultDialogButton">
+				<param name="id" value="12" />
+				<param name="label" value="$LOCALIZE[409]" />
+			</include>
+		</control>
+		<control type="button" id="13">
+			<description>Default Category Button</description>
+			<height>120</height>
+			<width>320</width>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>font12_title</font>
+		</control>
+		<control type="button" id="3">
+			<description>Default Button</description>
+			<include>DefaultSettingButton</include>
+		</control>
+		<control type="radiobutton" id="4">
+			<description>Default RadioButton</description>
+			<include>DefaultSettingButton</include>
+			<textwidth>900</textwidth>
+		</control>
+		<control type="spincontrolex" id="5">
+			<description>Default spincontrolex</description>
+			<include>DefaultSettingButton</include>
+			<textwidth>900</textwidth>
+		</control>
+		<control type="label" id="7">
+			<height>60</height>
+			<font>font12</font>
+			<label>-</label>
+			<textoffsetx>40</textoffsetx>
+			<textoffsety>20</textoffsety>
+			<textcolor>button_focus</textcolor>
+			<shadowcolor>black</shadowcolor>
+			<aligny>bottom</aligny>
+		</control>
+		<control type="image" id="6">
+			<!-- todo -->
+			<description>Default Seperator</description>
+			<height>20</height>
+			<!-- 			<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
+			 -->
+		</control>
+		<control type="sliderex" id="8">
+			<description>Default Slider</description>
+			<include>DefaultSettingButton</include>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">50</defaultcontrol>
+	<menucontrol>9000</menucontrol>
+	<views>50</views>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<description>Timers group</description>
+			<visible>Control.IsVisible(50)</visible>
+			<control type="group">
+				<include>OpenClose_Left</include>
+				<left>110</left>
+				<top>180</top>
+				<control type="image">
+					<description>background image</description>
+					<left>-20</left>
+					<top>-20</top>
+					<width>1090</width>
+					<height>746</height>
+					<texture border="22">dialogs/dialog-bg.png</texture>
+				</control>
+				<control type="list" id="50">
+					<left>0</left>
+					<top>0</top>
+					<width>1050</width>
+					<height>700</height>
+					<onup>50</onup>
+					<ondown>50</ondown>
+					<onleft>9000</onleft>
+					<onright>73</onright>
+					<pagecontrol>73</pagecontrol>
+					<scrolltime>200</scrolltime>
+					<itemlayout height="100">
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>1700</width>
+							<height>101</height>
+							<texture border="5">lists/separator.png</texture>
+						</control>
+						<control type="label">
+							<left>30</left>
+							<top>0</top>
+							<width>250</width>
+							<height>100</height>
+							<font>font24_title</font>
+							<aligny>center</aligny>
+							<visible>IsEmpty(ListItem.Date)</visible>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="group">
+							<visible>!IsEmpty(ListItem.Date)</visible>
+							<control type="label">
+								<left>30</left>
+								<top>10</top>
+								<width>680</width>
+								<height>100</height>
+								<aligny>top</aligny>
+								<label>$INFO[ListItem.ChannelName][COLOR button_focus]$INFO[ListItem.Label, - ][/COLOR]</label>
+							</control>
+							<control type="label">
+								<left>30</left>
+								<top>50</top>
+								<width>680</width>
+								<height>100</height>
+								<font>font12</font>
+								<aligny>top</aligny>
+								<label>$INFO[ListItem.Date]</label>
+							</control>
+							<control type="textbox">
+								<left>690</left>
+								<top>13</top>
+								<width>260</width>
+								<height>70</height>
+								<font>font12</font>
+								<align>right</align>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.Timertype]</label>
+							</control>
+							<control type="image">
+								<left>940</left>
+								<top>13</top>
+								<width>120</width>
+								<height>75</height>
+								<texture>$VAR[TVTimerRadioButtonTexture]</texture>
+								<visible>!IsEmpty(ListItem.ChannelName)</visible>
+							</control>
+						</control>
+					</itemlayout>
+					<focusedlayout height="100">
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>1700</width>
+							<height>101</height>
+							<texture>lists/focus.png</texture>
+							<visible>Control.HasFocus(50)</visible>
+						</control>
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>1700</width>
+							<height>101</height>
+							<texture border="5">lists/separator.png</texture>
+							<visible>!Control.HasFocus(50)</visible>
+						</control>
+						<control type="label">
+							<left>30</left>
+							<top>0</top>
+							<width>250</width>
+							<height>100</height>
+							<font>font24_title</font>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<visible>IsEmpty(ListItem.Date)</visible>
+						</control>
+						<control type="group">
+							<visible>!IsEmpty(ListItem.Date)</visible>
+							<control type="label">
+								<left>30</left>
+								<top>10</top>
+								<width>680</width>
+								<height>100</height>
+								<aligny>top</aligny>
+								<label>$INFO[ListItem.ChannelName]$INFO[ListItem.Label, - ]</label>
+							</control>
+							<control type="label">
+								<left>30</left>
+								<top>50</top>
+								<width>680</width>
+								<height>100</height>
+								<font>font12</font>
+								<aligny>top</aligny>
+								<label>$INFO[ListItem.Date]</label>
+							</control>
+							<control type="textbox">
+								<left>690</left>
+								<top>13</top>
+								<width>260</width>
+								<height>70</height>
+								<font>font12</font>
+								<align>right</align>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.Timertype]</label>
+							</control>
+							<control type="image">
+								<left>940</left>
+								<top>13</top>
+								<width>120</width>
+								<height>75</height>
+								<texture>$VAR[TVTimerRadioButtonTexture]</texture>
+								<visible>!IsEmpty(ListItem.ChannelName)</visible>
+							</control>
+						</control>
+					</focusedlayout>
+				</control>
+				<control type="scrollbar" id="73">
+					<left>1055</left>
+					<top>0</top>
+					<width>12</width>
+					<height>706</height>
+					<onleft>50</onleft>
+					<onright>103</onright>
+					<orientation>vertical</orientation>
+				</control>
+			</control>
+			<control type="group">
+				<left>1220</left>
+				<top>180</top>
+				<visible>!IsEmpty(ListItem.Date)</visible>
+				<include>Visible_Right</include>
+				<include>OpenClose_Right</include>
+				<include name="PVRInfoPanel">
+					<param name="bottom_label1" value="$INFO[PVR.NextTimer]" />
+					<param name="bottom_label2" value="" />
+				</include>
+			</control>
+		</control>
+		<control type="group">
+			<include>MediaMenuCommon</include>
+			<include>PVRSideBar</include>
+		</control>
+		<include name="TopBar">
+			<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRTimerVar]" />
+			<param name="breadcrumbs_icon" value="icons/settings/tvguide.png" />
+		</include>
+		<include>BottomBar</include>
+	</controls>
+</window>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol>5</defaultcontrol>
+	<coordinates>
+		<left>320</left>
+		<top>165</top>
+	</coordinates>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<include name="DialogBackgroundCommons">
+			<param name="DialogBackgroundWidth" value="1280" />
+			<param name="DialogBackgroundHeight" value="750" />
+			<param name="DialogHeaderLabel" value="$LOCALIZE[20043]" />
+			<param name="DialogHeaderId" value="2" />
+		</include>
+		<control type="grouplist" id="5">
+			<description>control area</description>
+			<left>20</left>
+			<top>80</top>
+			<width>940</width>
+			<height>660</height>
+			<itemgap>-20</itemgap>
+			<onleft>9001</onleft>
+			<onright>9001</onright>
+		</control>
+		<control type="button" id="7">
+			<description>Default Button</description>
+			<include>SettingsItemCommon</include>
+		</control>
+		<control type="radiobutton" id="8">
+			<description>Default RadioButton</description>
+			<include>SettingsItemCommon</include>
+		</control>
+		<control type="spincontrolex" id="9">
+			<description>Default SpinControlex</description>
+			<include>SettingsItemCommon</include>
+		</control>
+		<control type="image" id="11">
+			<description>separator image</description>
+			<height>20</height>
+			<texture>lists/separator.png</texture>
+		</control>
+		<control type="label" id="14">
+			<description>Default Label</description>
+			<include>DefaultSettingLabel</include>
+		</control>
+		<control type="grouplist" id="9001">
+			<left>960</left>
+			<top>82</top>
+			<orientation>vertical</orientation>
+			<width>500</width>
+			<align>left</align>
+			<itemgap>-10</itemgap>
+			<onleft>5</onleft>
+			<onright>5</onright>
+			<include name="DefaultDialogButton">
+				<param name="id" value="28" />
+				<param name="label" value="$LOCALIZE[186]" />
+			</include>
+			<include name="DefaultDialogButton">
+				<param name="id" value="29" />
+				<param name="label" value="$LOCALIZE[222]" />
+			</include>
+		</control>
+	</controls>
+</window>

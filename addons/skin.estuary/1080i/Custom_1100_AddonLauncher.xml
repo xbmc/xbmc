@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="1100">
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<controls>
+		<include>DefaultBackground</include>
+		<include name="SettingsPanel">
+			<param name="content" value="AddonLauncherItems" />
+		</include>
+		<include name="TopBar">
+			<param name="breadcrumbs_label" value="$LOCALIZE[24001]" />
+			<param name="breadcrumbs_icon" value="icons/settings/addons.png" />
+		</include>
+		<include name="InfoList">
+			<param name="path" value="addons://outdated/" />
+			<param name="height" value="1" />
+			<param name="width" value="1" />
+			<param name="list_id" value="8000" />
+			<param name="item_label" value="" />
+		</include>
+		<include>BottomBar</include>
+	</controls>
+</window>

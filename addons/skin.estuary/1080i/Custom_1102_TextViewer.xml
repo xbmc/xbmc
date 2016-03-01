@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window type="dialog" id="1102">
+	<defaultcontrol always="true">3000</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<control type="group">
+			<left>260</left>
+			<top>150</top>
+			<include name="DialogBackgroundCommons">
+				<param name="DialogBackgroundWidth" value="1400" />
+				<param name="DialogBackgroundHeight" value="770" />
+				<param name="DialogHeaderLabel" value="$INFO[Window(home).Property(TextViewer_Header)]" />
+				<param name="DialogHeaderId" value="1" />
+			</include>
+			<control type="textbox" id="2000">
+				<left>40</left>
+				<top>85</top>
+				<width>1320</width>
+				<height>675</height>
+				<shadowcolor>black</shadowcolor>
+				<pagecontrol>3000</pagecontrol>
+				<font>font16</font>
+				<label>$INFO[Window(home).Property(TextViewer_Text)]</label>
+			</control>
+			<control type="scrollbar" id="3000">
+				<include>HiddenObject</include>
+				<ondown>3000</ondown>
+				<onup>3000</onup>
+			</control>
+		</control>
+		<control type="button">
+			<left>936</left>
+			<top>113</top>
+			<width>48</width>
+			<height>20</height>
+			<onclick>SetFocus(3000)</onclick>
+			<onclick>Up</onclick>
+			<texturefocus colordiffuse="button_focus" flipy="true">overlays/arrowdown.png</texturefocus>
+			<texturenofocus colordiffuse="button_focus" flipy="true">overlays/arrowdown.png</texturenofocus>
+			<visible>Control.IsVisible(3000) + IntegerGreaterThan(Container(2000).CurrentPage,1)</visible>
+			<animation delay="80" effect="fade" time="120">VisibleChange</animation>
+		</control>
+		<control type="button">
+			<left>936</left>
+			<top>940</top>
+			<width>48</width>
+			<height>20</height>
+			<onclick>SetFocus(3000)</onclick>
+			<onclick>Down</onclick>
+			<texturefocus colordiffuse="button_focus">overlays/arrowdown.png</texturefocus>
+			<texturenofocus colordiffuse="button_focus">overlays/arrowdown.png</texturenofocus>
+			<visible>Control.IsVisible(3000) + !StringCompare(Container(2000).CurrentPage,Container(2000).NumPages)</visible>
+			<animation delay="80" effect="fade" time="120">VisibleChange</animation>
+		</control>
+	</controls>
+</window>

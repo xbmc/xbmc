@@ -267,5 +267,5 @@
 #if defined(HAS_TOUCH_SKIN) && defined(TARGET_DARWIN_IOS)
 #define DEFAULT_SKIN          "skin.re-touched"
 #else
-#define DEFAULT_SKIN          "skin.confluence"
+#define DEFAULT_SKIN          "skin.estuary"
 #endif

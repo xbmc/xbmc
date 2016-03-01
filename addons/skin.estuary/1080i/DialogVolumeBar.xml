@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window>
+    <zorder>4</zorder>
+    <controls>
+        <control type="progress" id="20">
+            <include>HiddenObject</include>
+            <info>Player.Volume</info>
+        </control>
+        <control type="group">
+            <visible>!Window.IsActive(startup)</visible>
+            <left>1820</left>
+            <top>0</top>
+            <animation effect="fade" start="0" end="100" time="150">WindowOpen</animation>
+            <animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
+            <control type="image">
+                <left>6</left>
+                <top>-11</top>
+                <width>100</width>
+                <height>100</height>
+                <texture colordiffuse="button_focus">dialogs/extendedprogress/loading-back.png</texture>
+                <animation effect="fade" start="100" end="0" delay="300" time="500" tween="sine" condition="Player.Muted">Conditional</animation>
+            </control>
+            <control type="image">
+                <left>6</left>
+                <top>-11</top>
+                <width>100</width>
+                <height>100</height>
+                <texture>dialogs/volume/progress/p$INFO[Control.GetLabel(20)].png</texture>
+                <animation effect="fade" start="100" end="0" delay="300" time="500" tween="sine" condition="Player.Muted">Conditional</animation>
+            </control>
+            <control type="image">
+                <left>37</left>
+                <top>19</top>
+                <width>40</width>
+                <height>40</height>
+                <texture colordiffuse="white">$VAR[VolumeIconVar]</texture>
+            </control>
+        </control>
+    </controls>
+</window>

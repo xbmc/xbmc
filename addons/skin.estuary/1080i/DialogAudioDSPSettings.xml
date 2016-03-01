@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol>5</defaultcontrol>
+	<coordinates>
+		<left>200</left>
+		<top>100</top>
+	</coordinates>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<control type="group">
+			<animation effect="fade" start="100" end="0" time="400" condition="Window.IsVisible(SliderDialog)">Conditional</animation>
+			<include name="DialogBackgroundCommons">
+				<param name="DialogBackgroundWidth" value="1520" />
+				<param name="DialogBackgroundHeight" value="870" />
+				<param name="DialogHeaderLabel" value="" />
+				<param name="DialogHeaderId" value="2" />
+			</include>
+			<control type="image">
+				<left>10</left>
+				<top>80</top>
+				<width>1200</width>
+				<height>790</height>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+			</control>
+			<include name="UpDownArrows">
+				<param name="container_id" value="5" />
+				<param name="posx" value="565" />
+				<param name="up_posy" value="-40" />
+				<param name="down_posy" value="890" />
+			</include>
+			<control type="grouplist" id="5">
+				<animation effect="slide" start="0,0" end="5,0" time="0" condition="!Control.IsVisible(60)">Conditional</animation>
+				<description>control area</description>
+				<left>24</left>
+				<top>100</top>
+				<width>1160</width>
+				<height>750</height>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+				<onup>5</onup>
+				<ondown>5</ondown>
+			</control>
+			<control type="label">
+				<description>info label</description>
+				<left>40</left>
+				<top>540</top>
+				<width>720</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$INFO[ADSP.MasterInfo]</label>
+				<aligny>center</aligny>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="image">
+				<description>Audio DSP Image</description>
+				<left>555</left>
+				<top>540</top>
+				<width>85</width>
+				<height>35</height>
+				<aspectratio align="center">keep</aspectratio>
+				<visible>!IsEmpty(ADSP.MasterOwnIcon)</visible>
+				<texture>$INFO[ADSP.MasterOwnIcon]</texture>
+			</control>
+			<control type="grouplist">
+				<orientation>horizontal</orientation>
+				<left>1240</left>
+				<top>805</top>
+				<itemgap>5</itemgap>
+				<width>1720</width>
+				<include name="MediaFlag">
+					<param name="texture" value="$VAR[AudioDSPIconVar]" />
+				</include>
+				<include name="MediaFlag">
+					<param name="texture" value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]" />
+				</include>
+			</control>
+			<control type="label">
+				<description>type label</description>
+				<left>1200</left>
+				<top>725</top>
+				<width>300</width>
+				<height>70</height>
+				<font>font13_title</font>
+				<label>$LOCALIZE[15042][CR][COLOR white]$INFO[ADSP.DetectedStreamType][/COLOR]</label>
+				<aligny>center</aligny>
+				<align>center</align>
+				<textcolor>grey2</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+		</control>
+		<control type="button" id="7">
+			<include>DefaultSettingButton</include>
+		</control>
+		<control type="radiobutton" id="8">
+			<include>DefaultSettingButton</include>
+		</control>
+		<control type="spincontrolex" id="9">
+			<include>DefaultSettingButton</include>
+		</control>
+		<control type="image" id="11">
+			<description>separator image</description>
+			<height>3</height>
+			<texture colordiffuse="AAAAAAAA" border="3">dialogs/separator-grey.png</texture>
+		</control>
+		<control type="edit" id="12">
+			<include>DefaultSettingButton</include>
+		</control>
+		<control type="sliderex" id="13">
+			<include>DefaultSettingButton</include>
+		</control>
+		<control type="label" id="14">
+			<description>Default Label</description>
+			<include>DefaultSettingLabel</include>
+		</control>
+	</controls>
+</window>

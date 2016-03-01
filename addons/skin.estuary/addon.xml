@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="skin.estuary" version="0.5.0" name="Estuary" provider-name="phil65, Piers">
+	<requires>
+		<import addon="xbmc.gui" version="5.11.0"/>
+	</requires>
+	<extension point="xbmc.gui.skin" debugging="false">
+		<res width="1920" height="1080" aspect="16:9" default="true" folder="1080i" />
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en_GB">Estuary skin by phil65 and Piers. (Kodi's default skin)</summary>
+		<description lang="en_GB">Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use.</description>
+		<disclaimer lang="en_GB">Estuary is the default skin for Kodi, removing it may cause issues</disclaimer>
+		<platform>all</platform>
+		<license>CC BY-SA 4.0, GNU GENERAL PUBLIC LICENSE Version 2.0</license>
+		<forum>http://forum.kodi.tv/</forum>
+		<source>https://github.com/xbmc/skin.estuary/</source>
+	</extension>
+</addon>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">20</defaultcontrol>
+	<coordinates>
+		<left>250</left>
+		<top>120</top>
+	</coordinates>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<include name="DialogBackgroundCommons">
+			<param name="DialogBackgroundWidth" value="1420" />
+			<param name="DialogBackgroundHeight" value="725" />
+			<param name="DialogHeaderLabel" value="$LOCALIZE[20333]" />
+			<param name="DialogHeaderId" value="1" />
+		</include>
+		<control type="label">
+			<description>Content Picker Header</description>
+			<left>60</left>
+			<top>60</top>
+			<width>320</width>
+			<height>100</height>
+			<font>font12</font>
+			<label>$LOCALIZE[20344]</label>
+			<aligny>center</aligny>
+			<textcolor>button_focus</textcolor>
+			<shadowcolor>black</shadowcolor>
+		</control>
+		<control type="group" id="7000">
+			<control type="grouplist" id="8000">
+				<left>30</left>
+				<top>120</top>
+				<orientation>vertical</orientation>
+				<onup>5</onup>
+				<ondown>5</ondown>
+				<onright>9001</onright>
+				<onleft>9001</onleft>
+				<itemgap>-25</itemgap>
+				<control type="button" id="20">
+					<description>Content type button</description>
+					<include>SettingsItemCommon</include>
+					<width>1050</width>
+				</control>
+				<control type="button" id="21">
+					<description>Default Button</description>
+					<include>SettingsItemCommon</include>
+					<width>1050</width>
+				</control>
+				<control type="button" id="22">
+					<description>Default Button</description>
+					<include>SettingsItemCommon</include>
+					<width>1050</width>
+					<label>$LOCALIZE[31087]</label>
+				</control>
+			</control>
+			<control type="label">
+				<left>60</left>
+				<top>335</top>
+				<width>320</width>
+				<height>100</height>
+				<font>font12</font>
+				<label>$LOCALIZE[31088]</label>
+				<aligny>center</aligny>
+				<textcolor>button_focus</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="grouplist" id="5">
+				<description>control area</description>
+				<left>30</left>
+				<top>395</top>
+				<width>1050</width>
+				<height>400</height>
+				<itemgap>-25</itemgap>
+				<onup>22</onup>
+				<ondown>20</ondown>
+				<onright>9001</onright>
+				<onleft>9001</onleft>
+			</control>
+		</control>
+		<control type="button" id="7">
+			<description>Default Button</description>
+			<include>SettingsItemCommon</include>
+		</control>
+		<control type="radiobutton" id="8">
+			<description>Default RadioButton</description>
+			<include>SettingsItemCommon</include>
+		</control>
+		<control type="grouplist" id="9001">
+			<orientation>vertical</orientation>
+			<top>120</top>
+			<left>1090</left>
+			<width>1200</width>
+			<itemgap>-20</itemgap>
+			<align>left</align>
+			<onleft>7000</onleft>
+			<onright>7000</onright>
+			<include name="DefaultDialogButton">
+				<param name="id" value="28" />
+				<param name="label" value="$LOCALIZE[186]" />
+			</include>
+			<include name="DefaultDialogButton">
+				<param name="id" value="29" />
+				<param name="label" value="$LOCALIZE[222]" />
+			</include>
+		</control>
+	</controls>
+</window>
