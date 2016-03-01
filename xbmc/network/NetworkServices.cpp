@@ -398,6 +398,9 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
 #ifdef HAS_JSONRPC
     if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_ESENABLED))
     {
+      if (!StopJSONRPCServer(true))
+        return false;
+
       if (!StartJSONRPCServer())
       {
         CGUIDialogOK::ShowAndGetInput(CVariant{33103}, CVariant{33100});
