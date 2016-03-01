@@ -2,14 +2,6 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=android
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-#fetch submodules
-cd $WORKSPACE
-if test -d $WORKSPACE/addons/skin.re-touched
-then
-rm -r $WORKSPACE/addons/skin.re-touched
-fi
-git submodule update --init $WORKSPACE/addons/skin.re-touched
-
 #build binary addons before building xbmc...
 #make sure that binary_addons don't clean the native tools
 #here (e.x. on release builds where pathChanged always returns 1

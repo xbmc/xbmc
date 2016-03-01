@@ -209,9 +209,6 @@ void CSettingConditions::Initialize()
 #ifdef HAS_SDL_JOYSTICK
   m_simpleConditions.insert("has_sdl_joystick");
 #endif
-#ifdef HAS_TOUCH_SKIN
-  m_simpleConditions.insert("has_touch_skin");
-#endif
 #ifdef HAS_TIME_SERVER
   m_simpleConditions.insert("has_time_server");
 #endif

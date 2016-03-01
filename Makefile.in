@@ -199,10 +199,8 @@ LIBADDON_DIRS=\
 ESTUARY_MEDIA=addons/skin.estuary/media
 SKIN_DIRS=$(ESTUARY_MEDIA)
 
-ifeq (@USE_TOUCH_SKIN@,1)
-TOUCH_SKIN_MEDIA=addons/skin.re-touched/media
-SKIN_DIRS+=$(TOUCH_SKIN_MEDIA)
-endif
+ESTOUCHY_MEDIA=addons/skin.estouchy/media
+SKIN_DIRS+=$(ESTOUCHY_MEDIA)
 
 LIBS=@LIBS@
 CFLAGS=@CFLAGS@
@@ -284,9 +282,7 @@ config.status: configure
 ifeq (@USE_TEXTUREPACKER@,1)
 skins: @TEXTUREPACKER@
 	 $(MAKE) -C $(ESTUARY_MEDIA)
-ifeq (@USE_TOUCH_SKIN@,1)
-	 $(MAKE) -C $(TOUCH_SKIN_MEDIA)
-endif
+	 $(MAKE) -C $(ESTOUCHY_MEDIA)
 else
 skins:
 endif

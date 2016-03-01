@@ -1,0 +1,349 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Turkish (http://www.transifex.com/projects/p/xbmc-skins/language/tr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Ses Ayarları"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Caps[CR]Lock"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Görsel Öğe Seçenekleri"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "Görsel Öğe Önayarları"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Kabuk Menü"
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr "Tam ekran"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Çalışıyor..."
+
+msgctxt "#31010"
+msgid "Currently logged in as"
+msgstr "Şu olarak giriş yapıldı"
+
+msgctxt "#31011"
+msgid "N/A"
+msgstr "N/A"
+
+msgctxt "#31012"
+msgid "Music - Files"
+msgstr "Müzik - Dosyalar"
+
+msgctxt "#31013"
+msgid "Recent Movies"
+msgstr "En Son Filmler"
+
+msgctxt "#31014"
+msgid "Recent Episodes"
+msgstr "En Son Diziler"
+
+msgctxt "#31016"
+msgid "Recent Albums"
+msgstr "En Son Albümler"
+
+msgctxt "#31017"
+msgid "Volume Muted"
+msgstr "Ses Kapalı"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Sayfa"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Nesne"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Bilgi Listesi"
+
+msgctxt "#31031"
+msgid "Info Wide"
+msgstr "Geniş Bilgi"
+
+msgctxt "#31040"
+msgid "Now Playing"
+msgstr "Şimdi Yürütülüyor"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "OYNATILIYOR"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "DURAKLATILDI"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "İLERİ SAR"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "GERİ SAR"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Bitiş Zamanı"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Sırala: Artan"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Sırala: Azalan"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Çalma listesini aç"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Çalma listesini kaydet"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Çalma listesini kapat"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Sistem müzik dosyaları"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Geçerli çalma listesi"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Bu dosya istiflendi, oynatmak istediğiniz bölümü seçin."
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "Geri"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Konum"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "Görünüm"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Mevcut Sıcaklık"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Son Güncelleme"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Veri sağlayıcı"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Kullanılan Bellek:"
+
+msgctxt "#31312"
+msgid "Current Scraper"
+msgstr "Geçerli Scraper"
+
+msgctxt "#31313"
+msgid "Choose a Scraper"
+msgstr "Scraper Seç"
+
+msgctxt "#31314"
+msgid "Content Scanning Options"
+msgstr "İçerik Tarama Seçenekleri"
+
+msgctxt "#31319"
+msgid "Currently available Kodi user profiles"
+msgstr "Uygun Kodi kullanıcı profilleri"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Son Giriş Yapan"
+
+msgctxt "#31321"
+msgid "Karaoke Song Selector"
+msgstr "Karaoke Şarkı Seçici"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Gösterim"
+
+msgctxt "#31325"
+msgid "Playlist Options"
+msgstr "Çalma Listesi Seçenekleri"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Duraklat"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Durdur"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "İleri Sar"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Geri Sar"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Video Menüsü"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Altyazıları İndir"
+
+msgctxt "#31357"
+msgid "Image Info"
+msgstr "Resim Bilgisi"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Dış görünüm varsayılanı"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Arial tabanlı"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Dış görünümü değiştir · Bölge ve dili ayarla · Dosya listeleme ayarlarını değiştir · Bir ekran koruyucu ayarla"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "Video kitaplığınızı yönetin · Video oynatma seçeneklerini belirle · Video listeleme seçeneklerini değiştir · Altyazı yazı tiplerini belirle"
+
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission · Set karaoke options"
+msgstr "Müzik kütüphanesini yönet · Müzik oynatma seçeneklerini belirle · Müzik listeleme seçeneklerini değiştir · Şarkı sunumu kurulumu · Karaoke seçeneklerini belirle"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "Fotoğraf listeleme seçeneklerini belirle · Slayt gösterilerini yapılandır"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "Hava durumu bilgisi almak için üç şehir seçin"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "UPnP ve HTTP üzerinden Kodi kontrolü ayarları · Dosya paylaşımını yapılandır · İnternet erişimi seçeneklerini ayarla"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "Ekranları kur ve kalibre et · Ses çıkışını yapılandır · Uzaktan yönetimi kur · Güç tasarruf seçeneklerini belirle · Hata ayıklamayı etkinleştir · Yönetici kilidini kur"
+
+msgctxt "#31407"
+msgid "Setup the skin · Add and remove home menu items · Change skin backgrounds"
+msgstr "Dış görünüm kurulumu · Ana menü nesneleri ekle ve kaldır · Dış görünüm arkaplanlarını değiştir"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Oturum açıp devam etmek için[CR]Kodi kullanıcı profilinizi seçin"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "Ev Menüsü Kategori Butonları"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "Anasayfa Eklenti Hızlı Bağlantılar"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "Çeşitli Seçenekler"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "Ana Ekran Hava Durumu Bilgisi ve düğmesi"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Eklenti Kısayolu"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "EŞİTLEME"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Özel Arkaplan Kullan"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Arkaplan:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "TV ayarlarını yapılandır · Tam ekran bilgisini değiştir · EPG veri ayarlarını yönet"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "Canlı TV"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Video arkaplanı gizle"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Görselleştirme arkaplanını gizle"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Kanal ayarları"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Kullanılabilir gruplar"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Grup Ekle"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Grubu Yeniden Adlandır"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Grubu Sil"

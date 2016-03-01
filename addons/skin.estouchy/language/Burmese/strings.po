@@ -1,0 +1,141 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Burmese (http://www.transifex.com/projects/p/xbmc-skins/language/my/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: my\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr "စခရင်မျက်နှာပြင်အပြည့်"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "အလုပ်လုပ်နေသည်"
+
+msgctxt "#31012"
+msgid "Music - Files"
+msgstr "ဂီတ-ဖိုင်များ"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "စာမျက်နှာ"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "အမျိုးအစားများ"
+
+msgctxt "#31040"
+msgid "Now Playing"
+msgstr "ယခုဖွင့်နေပါသည်။"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "ဖွင့်ထားပါသည်။"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ခဏရပ်မည်"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "အရှေ့သို့အနည်းငယ်ရစ်မည်"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "အဆုံးသတ်ချိန်"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "သီချင်းစာရင်းကိုဖွင့်မည်"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "သီချင်းစာရင်းကိုသိမ်းမည်"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "သီချင်းစာရင်းကိုပိတ်မည်"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "ယခုသီချင်းစာရင်း"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "တည်နေရာ"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "နောက်ဆုံး Update ဖြစ်ခဲ့စဉ်"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "အချက်အလက်များထောက်ပံ့သူ"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "အသုံးပြုထားသော Memory -"
+
+msgctxt "#31312"
+msgid "Current Scraper"
+msgstr "Current Scraper"
+
+msgctxt "#31313"
+msgid "Choose a Scraper"
+msgstr " Scraper တစ်ခုကိုရွေးမည်"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "နောက်ဆုံးဝင်ခဲ့ချိန်"
+
+msgctxt "#31321"
+msgid "Karaoke Song Selector"
+msgstr "ကာရာအိုကေ သီချင်းရွေးချယ်ခြင်း"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "ခဏရပ်မည်"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "လုံး၀ရပ်မည်"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "အရှေ့သို့အနည်းငယ်ရစ်မည်"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "နောက်သို့အနည်းငယ်ရစ်မည်"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "စာတန်းထိုးများကို ဒေါင်းလုတ်ဆွဲမည်"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "Live TV"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "အုပ်စုပေါင်းထည့်မည်"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "အုပ်စုအမည်ပြောင်းမည်"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "အုပ်စုဖျက်မည်"

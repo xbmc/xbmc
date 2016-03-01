@@ -191,8 +191,8 @@ set WORKSPACE=%CD%\..\..
   Echo addons\repository.pvr-osx32.xbmc.org\>>exclude.txt
   Echo addons\repository.pvr-osx64.xbmc.org\>>exclude.txt
   rem Exclude skins as they're copied by their own script
-  Echo addons\skin.re-touched\>>exclude.txt
   Echo addons\skin.estuary\>>exclude.txt
+  Echo addons\skin.estouchy\>>exclude.txt
   
   md BUILD_WIN32\application
 
@@ -232,13 +232,11 @@ set WORKSPACE=%CD%\..\..
   cd ..\..\addons\skin.estuary
   call build.bat > NUL
   cd %build_path%
-  
-  IF EXIST  ..\..\addons\skin.re-touched\build.bat (
-    ECHO Building Touch Skin...
-    cd ..\..\addons\skin.re-touched
-    call build.bat > NUL
-    cd %build_path%
-  )
+
+  ECHO Building Estouchy Skin...
+  cd ..\..\addons\skin.estouchy
+  call build.bat > NUL
+  cd %build_path%
   
   rem restore color and title, some scripts mess these up
   COLOR 1B

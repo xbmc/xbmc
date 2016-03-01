@@ -1,0 +1,353 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Hebrew (http://www.transifex.com/projects/p/xbmc-skins/language/he/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: he\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "הגדרות שמע"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Caps[CR]Lock"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "אפשרויות חיזוי"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "קביעוני חיזוי"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "תפריט משני"
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr "מסך מלא"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "עסוק..."
+
+msgctxt "#31010"
+msgid "Currently logged in as"
+msgstr "מחובר כעת בתור"
+
+msgctxt "#31011"
+msgid "N/A"
+msgstr "לא זמין"
+
+msgctxt "#31012"
+msgid "Music - Files"
+msgstr "מוזיקה - קבצים"
+
+msgctxt "#31013"
+msgid "Recent Movies"
+msgstr "סרטים אחרונים"
+
+msgctxt "#31014"
+msgid "Recent Episodes"
+msgstr "פרקים אחרונים"
+
+msgctxt "#31016"
+msgid "Recent Albums"
+msgstr "אלבומים אחרונים"
+
+msgctxt "#31017"
+msgid "Volume Muted"
+msgstr "מושתק"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "עמוד"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "פריטים"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "רשימת מידע"
+
+msgctxt "#31031"
+msgid "Info Wide"
+msgstr "מידע רחב"
+
+msgctxt "#31040"
+msgid "Now Playing"
+msgstr "מנגן כעת"
+
+msgctxt "#31041"
+msgid "Last updated:"
+msgstr "עודכן לאחרונה:"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "מנגן"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "מושהה"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "הרצה קדימה"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "הרצה אחורה"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "זמן סיום"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "סדר מיון: עולה"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "סדר מיון: יורד"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "פתיחת רשימת ניגון"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "שמירת רשימת ניגון"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "סגירת רשימת ניגון"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "קבצי מוזיקת מערכת"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "רשימת ניגון נוכחית"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "קובץ זה שייך לערימה. יש לבחור חלק ממנו יתחיל הניגון."
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "אחורה"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "מיקום"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "תצוגה"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "טמפ' נוכחית"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "עודכן לאחרונה"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "ספק מידע"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "זכרון בשימוש:"
+
+msgctxt "#31312"
+msgid "Current Scraper"
+msgstr "סקרייפר נוכחי"
+
+msgctxt "#31313"
+msgid "Choose a Scraper"
+msgstr "בחירת סקרייפר"
+
+msgctxt "#31314"
+msgid "Content Scanning Options"
+msgstr "אפשרויות סריקת תוכן"
+
+msgctxt "#31319"
+msgid "Currently available Kodi user profiles"
+msgstr "חשבונות משתמש Kodi זמינים"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "חובר לאחרונה"
+
+msgctxt "#31321"
+msgid "Karaoke Song Selector"
+msgstr "בוחר שיר קריוקי"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "שודר"
+
+msgctxt "#31325"
+msgid "Playlist Options"
+msgstr "אפשרויות רשימת ניגון"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "השהיה"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "עצירה"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "הרצה קדימה"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "הרצה אחורה"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "תפריט וידאו"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "הורדת כתוביות"
+
+msgctxt "#31357"
+msgid "Image Info"
+msgstr "פרטי תמונה"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "ברירת מחדל של המעטפת"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "מבוסס Arial"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "החלפת מעטפת · בחירת שפה ואזור זמן · שינוי אפשרויות תצוגת קבצים · הגדרת שומר מסך"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "ניהול ספריית הווידאו · קביעת העדפות ניגון וידאו · שינוי אפשרויות תצוגת קבצי וידאו · הגדרת גופן כתוביות"
+
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission · Set karaoke options"
+msgstr "ניהול ספריית המוזיקה · קביעת העדפות ניגון מוזיקה · שינוי אפשרויות תצוגת קבצי מוזיקה · הגדרת אפשרויות קריוקי"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "הגדרת אפשרויות תצוגת קבצי תמונה · הגדרת אפשרויות מצגת תמונה"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "בחירת עד שלוש ערים עבורן תוצג תחזית מזג אוויר"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "הגדרות שליטה על Kodi דרך UPnP ו־HTTP · הגדרות שיתוף קבצים · הפעלת Zeroconf · הגדרות AirPlay"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "הגדרת וכיול התקני תצוגה · הגדרת התקן פלט שמע · הגדרת שלט רחוק · קביעת העדפות חיסכון בחשמל · הפעלת יומן רישום מורחב · הגדרת קוד נעילה ראשי"
+
+msgctxt "#31407"
+msgid "Setup the skin · Add and remove home menu items · Change skin backgrounds"
+msgstr "הגדרת המעטפת · הוספת והסרת פריטי תפריט מסך הבית · שינוי רקעי המעטפת"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "יש לבחור חשבון משתמש Kodi[CR]להתחברות והמשך"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "כפתורי קטגוריות מסך הבית"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "קישורים מהירים להרחבות במסך הבית"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "אפשרויות שונות"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "מידע וכפתור מזג אוויר במסך הבית"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "קיצור דרך להרחבה"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "סנכרון"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "השתמש ברקע מותאם אישית"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "רקע:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "שינוי הגדרות טלוויזיה · שינוי המידע המוצג במסך מלא · ניהול הגדרות נתוני לוח השידורים"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "טלוויזיה חיה"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "אל תציג וידאו ברקע"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "אל תציג חיזוי ברקע"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "הגדרות ערוץ"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "קבוצות זמינות"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "הוספת קבוצה"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "שינוי שם קבוצה"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "מחיקת קבוצה"

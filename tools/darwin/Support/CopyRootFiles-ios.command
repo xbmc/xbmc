@@ -17,7 +17,7 @@ SYNC="rsync -aq --exclude .git* --exclude .DS_Store* --exclude *.dll --exclude *
 SKINSYNC="rsync -aq --exclude .git* --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.*  --exclude *.bat"
 
 # rsync command for including everything but the skins
-ADDONSYNC="rsync -aq --no-links --exclude .git* --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude addons/skin.estuary --exclude addons/skin.re-touched"
+ADDONSYNC="rsync -aq --no-links --exclude .git* --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude addons/skin.estuary --exclude addons/skin.estouchy"
 
 # binary name is Kodi but we build Kodi.bin so to get a clean binary each time
 mv $TARGET_BUILD_DIR/$TARGET_NAME/$APP_NAME.bin $TARGET_BUILD_DIR/$TARGET_NAME/$APP_NAME
@@ -35,16 +35,15 @@ ${SYNC} "$SRCROOT/xbmc/platform/darwin/Credits.html"  "$TARGET_BUILD_DIR/$TARGET
 ${ADDONSYNC} "$SRCROOT/addons"  "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome"
 ${SYNC} "$SRCROOT/media"    "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome"
 
-# sync touch skin if it exists
-if [ -f "$SRCROOT/addons/skin.re-touched/addon.xml" ]; then
+# sync skin.estouchy
 SYNCSKIN_A=${SKINSYNC}
-if [ -f "$SRCROOT/addons/skin.re-touched/media/Textures.xbt" ]; then
+if [ -f "$SRCROOT/addons/skin.estouchy/media/Textures.xbt" ]; then
 SYNCSKIN_A="${SKINSYNC} --exclude *.png --exclude *.jpg"
 fi
-${SYNCSKIN_A} "$SRCROOT/addons/skin.re-touched"    "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
-${SYNC} "$SRCROOT/addons/skin.re-touched/background"   "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.re-touched"
-${SYNC} "$SRCROOT/addons/skin.re-touched/icon.png"   "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.re-touched"
-fi
+${SYNCSKIN_A} "$SRCROOT/addons/skin.estouchy"    "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
+${SYNC} "$SRCROOT/addons/skin.estouchy/background"   "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.estouchy"
+${SYNC} "$SRCROOT/addons/skin.estouchy/icon.png"   "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.estouchy"
+${SYNC} "$SRCROOT/addons/skin.estouchy/fanart.jpg"   "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.estouchy"
 
 # sync skin.estuary
 SYNCSKIN_B=${SKINSYNC}

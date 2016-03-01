@@ -1,0 +1,317 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Skins\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Slovak (http://www.transifex.com/projects/p/xbmc-skins/language/sk/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sk\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Audio nastavenia"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Caps[CR]Lock"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Možnosti vizualizácie"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "Predvoľby vizualizácií"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Kontextové menu"
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr "Celá obrazovka"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Pracuje sa..."
+
+msgctxt "#31010"
+msgid "Currently logged in as"
+msgstr "Momentálne prihlásený ako"
+
+msgctxt "#31011"
+msgid "N/A"
+msgstr "Nedostupný"
+
+msgctxt "#31012"
+msgid "Music - Files"
+msgstr "Hudba - Súbory"
+
+msgctxt "#31013"
+msgid "Recent Movies"
+msgstr "Najnovšie filmy"
+
+msgctxt "#31014"
+msgid "Recent Episodes"
+msgstr "Najnovšie epizódy"
+
+msgctxt "#31016"
+msgid "Recent Albums"
+msgstr "Najnovšie albumy"
+
+msgctxt "#31017"
+msgid "Volume Muted"
+msgstr "Zvuk vypnutý"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Strana"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Položiek"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Zoznam informácií"
+
+msgctxt "#31031"
+msgid "Info Wide"
+msgstr "Rozšírené informácie"
+
+msgctxt "#31040"
+msgid "Now Playing"
+msgstr "Práve hrá"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "PREHRÁVA"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "PAUZA"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "RÝCHLO VPRED"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "SPÄŤ"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Čas konca"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Triediť: Vzostupne"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Triediť: Zostupne"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Otvoriť playlist"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Uložiť playlist"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Zatvoriť playlist"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Systémové hudobné súbory"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Aktuálny playlist"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Tento súbor je zlúčený, vyberte si ktorú časť chcete prehrať."
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "Späť"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Poloha"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "Zobrazenie"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Aktuálna teplota"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Naposledy aktualizované"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Poskytovateľ dát"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Použitá pamäť:"
+
+msgctxt "#31312"
+msgid "Current Scraper"
+msgstr "Aktuálny sťahovač"
+
+msgctxt "#31313"
+msgid "Choose a Scraper"
+msgstr "Vyber sťahovač"
+
+msgctxt "#31314"
+msgid "Content Scanning Options"
+msgstr "Možnosti vyhľadávania obsahu"
+
+msgctxt "#31319"
+msgid "Currently available Kodi user profiles"
+msgstr "Momentálne dostupné Kodi užívateľské profily"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Posledný prihlásený"
+
+msgctxt "#31321"
+msgid "Karaoke Song Selector"
+msgstr "Výber Karaoke skladby"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Vysielané"
+
+msgctxt "#31325"
+msgid "Playlist Options"
+msgstr "Možnosti playlistu"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Pauza"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Stop"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Dopredu"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Dozadu"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Video menu"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Stiahnuť titulky"
+
+msgctxt "#31357"
+msgid "Image Info"
+msgstr "Info o obrázku"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Predvolený vzhľad"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Arial"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Zmeniť vzhľad · Nastaviť jazyk a región · Zmeniť možnosti výpisu súborov · Nastaviť šetrič obrazovky"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "Spravovať zbierku videí · Nastaviť možnosti prehrávania videa · Zmeniť možnosti výpisu videí · Nastaviť font tituliek"
+
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission · Set karaoke options"
+msgstr "Spravovať zbierku hudby · Nastaviť možnosti prehrávania hudby · Zmeniť možnosti výpisu hudby · Nastaviť odosielanie pesničiek · Nastaviť možnosti karaoke"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "Zmeniť možnosti výpisu obrázkov · Nastaviť prezentáciu"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "Nastavte tri mestá pre zber dát o počasí"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "Nastaviť možnosti ovládania Kodi cez UPnP alebo HTTP · Nastaviť zdieľanie súborov · Nastaviť možnosti prístupu na internet "
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "Nastaviť a kalibrovať obrazovku · Nastaviť zvukový výstup · Nastaviť diaľkové ovládanie · Nastaviť možnosti úspory energie · Povoliť ladenie · Nastaviť rodičovský zámok"
+
+msgctxt "#31407"
+msgid "Setup the skin · Add and remove home menu items · Change skin backgrounds"
+msgstr "Nastaviť vzhľad ·  Pridať a odobrať položky hlavného menu ·  Zmeniť pozadie vzhľadu"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Prihlásenie užívateľa[CR]Pokračujte výberom profilu"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "Tlačidlá kategórií hlavného menu"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "Rýchle odkazy rozšírení Úvodnej obrazovky"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "Rôzne nastavenia"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "Tlačítko a informácie o počasí Úvodnej obrazovky"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Odkaz Rozšírení"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "Živé TV vysielanie"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Pridať skupinu"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Premenovať skupinu"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Odstrániť skupinu"
