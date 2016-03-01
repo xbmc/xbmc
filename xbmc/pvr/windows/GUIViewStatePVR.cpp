@@ -33,6 +33,7 @@ CGUIViewStateWindowPVRChannels::CGUIViewStateWindowPVRChannels(const int windowI
 {
   AddSortMethod(SortByChannelNumber, 549, LABEL_MASKS("%L", "%I", "%L", ""));
   AddSortMethod(SortByLabel, 551, LABEL_MASKS("%L", "%I", "%L", ""));
+  AddSortMethod(SortByLastPlayed, 568, LABEL_MASKS( "%L", "%p", "%L", "%p")); // FileName, LastPlayed | Foldername, LastPlayed
 
   // Default sorting
   SetSortMethod(SortByChannelNumber);
