@@ -153,7 +153,7 @@ std::string CRepository::GetAddonHash(const AddonPtr& addon) const
 bool CRepository::FetchIndex(const std::string& url, VECADDONS& addons)
 {
   XFILE::CCurlFile http;
-  http.SetContentEncoding("gzip");
+  http.SetAcceptEncoding("gzip");
 
   std::string content;
   if (!http.Get(url, content))

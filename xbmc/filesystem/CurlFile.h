@@ -79,7 +79,6 @@ namespace XFILE
       void SetStreamProxy(const std::string &proxy, ProxyType type);
       void SetCustomRequest(const std::string &request)          { m_customrequest = request; }
       void UseOldHttpVersion(bool bUse)                          { m_useOldHttpVersion = bUse; }
-      void SetContentEncoding(const std::string& encoding)       { m_contentencoding = encoding; }
       void SetAcceptEncoding(const std::string& encoding)        { m_acceptencoding = encoding; }
       void SetAcceptCharset(const std::string& charset)          { m_acceptCharset = charset; }
       void SetTimeout(int connecttimeout)                        { m_connecttimeout = connecttimeout; }
@@ -170,7 +169,6 @@ namespace XFILE
       std::string     m_proxyuserpass;
       ProxyType       m_proxytype;
       std::string     m_customrequest;
-      std::string     m_contentencoding;
       std::string     m_acceptencoding;
       std::string     m_acceptCharset;
       std::string     m_ftpauth;
