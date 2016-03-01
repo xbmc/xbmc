@@ -595,7 +595,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
 
   // setup Accept-Encoding if requested
   if (m_acceptencoding.length() > 0)
-    g_curlInterface.easy_setopt(h, CURLOPT_ACCEPT_ENCODING, m_contentencoding.c_str());
+    g_curlInterface.easy_setopt(h, CURLOPT_ACCEPT_ENCODING, m_acceptencoding.c_str());
 
   if (!m_useOldHttpVersion && !m_acceptCharset.empty())
     SetRequestHeader("Accept-Charset", m_acceptCharset);
