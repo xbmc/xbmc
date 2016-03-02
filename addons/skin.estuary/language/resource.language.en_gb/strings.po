@@ -656,3 +656,8 @@ msgstr ""
 msgctxt "#31125"
 msgid "Press up for actor info"
 msgstr ""
+
+#: /1080i/DialogVideoInfo.xml:558
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr ""

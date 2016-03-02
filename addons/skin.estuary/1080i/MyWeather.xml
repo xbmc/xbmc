@@ -44,7 +44,6 @@
 			<top>0</top>
 			<include>OpenClose_Left</include>
 			<control type="image">
-				<description>Menu Panel</description>
 				<left>-20</left>
 				<top>138</top>
 				<width>380</width>
@@ -115,7 +114,6 @@
 			<visible>Container(300).HasFocus(3)</visible>
 			<include>Visible_Right_Delayed</include>
 			<control type="image">
-				<description>Menu Panel</description>
 				<left>90</left>
 				<top>138</top>
 				<width>1370</width>
@@ -307,7 +305,6 @@
 			<visible>Container(300).HasFocus(2)</visible>
 			<include>Visible_Right_Delayed</include>
 			<control type="image">
-				<description>Menu Panel</description>
 				<left>90</left>
 				<top>138</top>
 				<width>1370</width>

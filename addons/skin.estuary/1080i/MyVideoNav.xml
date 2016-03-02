@@ -20,7 +20,6 @@
 		</control>
 		<include>View_502_FanArt</include>
 		<control type="group">
-			<visible>Container.Content(movies) | Container.Content(episodes)</visible>
 			<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 			<include>MediaFlags</include>
@@ -119,38 +118,41 @@
 				<fadetime>300</fadetime>
 				<texture background="true" fallback="DefaultFolder.png">$VAR[ListInfoBoxImageVar]</texture>
 			</control>
-			<control type="image">
-				<right>113</right>
-				<top>838</top>
-				<width>463</width>
-				<height>46</height>
-				<texture colordiffuse="B0FFFFFF">colors/black.png</texture>
-			</control>
-			<control type="grouplist">
-				<top>845</top>
-				<right>90</right>
-				<orientation>horizontal</orientation>
-				<width>470</width>
-				<include name="InfoFlag">
-					<param name="visible" value="!IsEmpty(ListItem.Year)" />
-					<param name="icon" value="lists/year.png" />
-					<param name="label" value="$INFO[ListItem.Year]" />
-				</include>
-				<include name="InfoFlag">
-					<param name="visible" value="!IsEmpty(ListItem.duration)" />
-					<param name="icon" value="frame/clock.png" />
-					<param name="label" value="$INFO[ListItem.Duration,, min]" />
-				</include>
-				<include name="InfoFlag">
-					<param name="visible" value="!IsEmpty(ListItem.Property(TotalEpisodes))" />
-					<param name="icon" value="lists/played-total.png" />
-					<param name="label" value="$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]" />
-				</include>
-				<include name="InfoFlag">
-					<param name="visible" value="!IsEmpty(ListItem.rating)" />
-					<param name="icon" value="lists/rating.png" />
-					<param name="label" value="$INFO[ListItem.Rating]" />
-				</include>
+			<control type="group">
+				<visible>!ListItem.IsCollection</visible>
+				<control type="image">
+					<right>113</right>
+					<top>838</top>
+					<width>463</width>
+					<height>46</height>
+					<texture colordiffuse="B0FFFFFF">colors/black.png</texture>
+				</control>
+				<control type="grouplist">
+					<top>845</top>
+					<right>90</right>
+					<orientation>horizontal</orientation>
+					<width>470</width>
+					<include name="InfoFlag">
+						<param name="visible" value="!IsEmpty(ListItem.Year)" />
+						<param name="icon" value="lists/year.png" />
+						<param name="label" value="$INFO[ListItem.Year]" />
+					</include>
+					<include name="InfoFlag">
+						<param name="visible" value="!IsEmpty(ListItem.duration)" />
+						<param name="icon" value="frame/clock.png" />
+						<param name="label" value="$INFO[ListItem.Duration,, min]" />
+					</include>
+					<include name="InfoFlag">
+						<param name="visible" value="!IsEmpty(ListItem.Property(TotalEpisodes))" />
+						<param name="icon" value="lists/played-total.png" />
+						<param name="label" value="$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]" />
+					</include>
+					<include name="InfoFlag">
+						<param name="visible" value="!IsEmpty(ListItem.rating)" />
+						<param name="icon" value="lists/rating.png" />
+						<param name="label" value="$INFO[ListItem.Rating]" />
+					</include>
+				</control>
 			</control>
 		</control>
 		<control type="group">

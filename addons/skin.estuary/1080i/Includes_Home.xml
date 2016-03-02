@@ -788,8 +788,10 @@
 	<include name="WidgetListText">
 		<param name="height">405</param>
 		<param name="arrow_posy">200</param>
-		<param name="item_limit">8</param>
+		<param name="item_limit">12</param>
 		<param name="icon">icons/defaulticons/$INFO[ListItem.Icon]</param>
+		<param name="sortby">label</param>
+		<param name="sortorder">ascending</param>
 		<definition>
 			<control type="group">
 				<description>Square Widget including header and arrows</description>
@@ -908,7 +910,7 @@
 							</control>
 						</control>
 					</focusedlayout>
-					<content target="$PARAM[widget_target]" limit="$PARAM[item_limit]">$PARAM[content_path]</content>
+					<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[widget_target]" limit="$PARAM[item_limit]">$PARAM[content_path]</content>
 				</control>
 			</control>
 		</definition>
@@ -1105,7 +1107,6 @@
 				<preloaditems>1</preloaditems>
 				<itemlayout width="273" height="400">
 					<control type="image">
-						<description>Menu Panel</description>
 						<left>0</left>
 						<top>20</top>
 						<width>260</width>
@@ -1113,7 +1114,6 @@
 						<texture border="40">buttons/button-nofo.png</texture>
 					</control>
 					<control type="image">
-						<description>Menu Panel</description>
 						<left>60</left>
 						<top>130</top>
 						<width>130</width>
@@ -1154,7 +1154,6 @@
 							<effect type="zoom" start="107" end="100" time="200" tween="sine" easing="inout" center="110,130" />
 						</animation>
 						<control type="image">
-							<description>Menu Panel</description>
 							<left>0</left>
 							<top>20</top>
 							<width>260</width>
@@ -1162,7 +1161,6 @@
 							<texture border="40">buttons/button-nofo.png</texture>
 						</control>
 						<control type="image">
-							<description>Menu Panel</description>
 							<left>0</left>
 							<top>20</top>
 							<width>260</width>
@@ -1172,7 +1170,6 @@
 							<visible>Control.HasFocus($PARAM[list_id])</visible>
 						</control>
 						<control type="image">
-							<description>Menu Panel</description>
 							<left>60</left>
 							<top>130</top>
 							<width>130</width>

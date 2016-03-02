@@ -29,14 +29,13 @@
 				<texture border="40">buttons/dialogbutton-nofo.png</texture>
 			</control>
 			<control type="label">
-				<description>Menu Panel</description>
 				<left>30</left>
 				<top>-90</top>
 				<textoffsetx>20</textoffsetx>
 				<aligny>center</aligny>
 				<width>1858</width>
 				<height>60</height>
-				<label>$VAR[OSDHelpTextVar]</label>
+				<label>$VAR[VideoOSDHelpTextVar]</label>
 			</control>
 			<control type="label">
 				<left>30</left>
@@ -123,7 +122,6 @@
 				<onleft>606</onleft>
 				<onright>600</onright>
 				<control type="radiobutton" id="70011">
-					<label>$LOCALIZE[19033]</label>
 					<include name="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/information.png"/>
 					</include>
@@ -146,7 +144,6 @@
 					<visible>VideoPlayer.Content(livetv)</visible>
 				</control>
 				<control type="radiobutton" id="700">
-					<label>$LOCALIZE[298]</label>
 					<include name="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/bookmarks.png"/>
 					</include>
@@ -154,7 +151,6 @@
 					<visible>!VideoPlayer.Content(livetv)</visible>
 				</control>
 				<control type="radiobutton" id="804">
-					<label>$LOCALIZE[31092]</label>
 					<include name="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/home.png"/>
 					</include>
@@ -173,12 +169,16 @@
 					<include name="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/settings-subtitle.png"/>
 					</include>
-					<label>$LOCALIZE[209]</label>
 					<onclick condition="VideoPlayer.HasSubtitles">showsubtitles</onclick>
 					<visible>VideoPlayer.HasSubtitles</visible>
 				</control>
+				<control type="radiobutton" id="255">
+					<include name="OSDButton">
+						<param name="texture" value="osd/fullscreen/buttons/stereoscopic.png"/>
+					</include>
+					<visible>VideoPlayer.IsStereoscopic</visible>
+				</control>
 				<control type="radiobutton" id="70043">
-					<label>$LOCALIZE[31091]</label>
 					<include name="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/settings.png"/>
 					</include>
