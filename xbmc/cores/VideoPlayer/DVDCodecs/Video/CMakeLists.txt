@@ -41,10 +41,8 @@ if(VAAPI_FOUND)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL darwin)
-  list(APPEND SOURCES DVDVideoCodecVDA.cpp
-                      VDA.cpp)
-  list(APPEND HEADERS DVDVideoCodecVDA.h
-                      VDA.h)
+  list(APPEND SOURCES VDA.cpp)
+  list(APPEND HEADERS VDA.h)
 endif()
 
 if(VTB_FOUND)
