@@ -3074,22 +3074,6 @@ bool CVideoPlayer::SeekScene(bool bPlus)
   return false;
 }
 
-void CVideoPlayer::GetAudioInfo(std::string& strAudioInfo)
-{
-  { CSingleLock lock(m_StateSection);
-    strAudioInfo = StringUtils::Format("D(%s)", m_State.demux_audio.c_str());
-  }
-  strAudioInfo += StringUtils::Format("\nP(%s)", m_VideoPlayerAudio->GetPlayerInfo().c_str());
-}
-
-void CVideoPlayer::GetVideoInfo(std::string& strVideoInfo)
-{
-  { CSingleLock lock(m_StateSection);
-    strVideoInfo = StringUtils::Format("D(%s)", m_State.demux_video.c_str());
-  }
-  strVideoInfo += StringUtils::Format("\nP(%s)", m_VideoPlayerVideo->GetPlayerInfo().c_str());
-}
-
 void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
 {
   if (!m_bStop)
@@ -4701,24 +4685,6 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   if(state.time_total <= 0)
     state.canseek  = false;
-
-  if (m_CurrentAudio.id >= 0 && m_pDemuxer)
-  {
-    CDemuxStream* pStream = m_pDemuxer->GetStream(m_CurrentAudio.id);
-    if (pStream && pStream->type == STREAM_AUDIO)
-      state.demux_audio = ((CDemuxStreamAudio*)pStream)->GetStreamInfo();
-  }
-  else
-    state.demux_audio = "";
-
-  if (m_CurrentVideo.id >= 0 && m_pDemuxer)
-  {
-    CDemuxStream* pStream = m_pDemuxer->GetStream(m_CurrentVideo.id);
-    if (pStream && pStream->type == STREAM_VIDEO)
-      state.demux_video = ((CDemuxStreamVideo*)pStream)->GetStreamInfo();
-  }
-  else
-    state.demux_video = "";
 
   double level, delay, offset;
   if(GetCachingTimes(level, delay, offset))

@@ -380,20 +380,7 @@ void CGUIWindowFullScreen::FrameMove()
   if (m_showCodec)
   {
     // show audio codec info
-    std::string strAudio, strVideo, strGeneral;
-    g_application.m_pPlayer->GetAudioInfo(strAudio);
-    {
-      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
-      msg.SetLabel(strAudio);
-      OnMessage(msg);
-    }
-    // show video codec info
-    g_application.m_pPlayer->GetVideoInfo(strVideo);
-    {
-      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
-      msg.SetLabel(strVideo);
-      OnMessage(msg);
-    }
+    std::string strGeneral;
     // show general info
     g_application.m_pPlayer->GetGeneralInfo(strGeneral);
     {

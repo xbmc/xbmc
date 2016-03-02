@@ -20,16 +20,6 @@
 
 #include "DVDDemux.h"
 
-std::string CDemuxStreamTeletext::GetStreamInfo()
-{
-  return "Teletext Data Stream";
-}
-
-std::string CDemuxStreamRadioRDS::GetStreamInfo()
-{
-  return "Radio Data Stream (RDS)";
-}
-
 std::string CDemuxStreamAudio::GetStreamType()
 {
   char sInfo[64] = {0};

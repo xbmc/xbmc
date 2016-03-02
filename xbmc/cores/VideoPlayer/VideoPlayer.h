@@ -253,8 +253,6 @@ public:
   virtual void SetVolume(float nVolume)                         { m_VideoPlayerAudio->SetVolume(nVolume); }
   virtual void SetMute(bool bOnOff)                             { m_VideoPlayerAudio->SetMute(bOnOff); }
   virtual void SetDynamicRangeCompression(long drc)             { m_VideoPlayerAudio->SetDynamicRangeCompression(drc); }
-  virtual void GetAudioInfo(std::string& strAudioInfo);
-  virtual void GetVideoInfo(std::string& strVideoInfo);
   virtual void GetGeneralInfo(std::string& strVideoInfo);
   virtual bool CanRecord();
   virtual bool IsRecording();

@@ -683,20 +683,6 @@ void CApplicationPlayer::GetSubtitleCapabilities(std::vector<int> &subCaps)
     player->GetSubtitleCapabilities(subCaps);
 }
 
-void CApplicationPlayer::GetAudioInfo(std::string& strAudioInfo)
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->GetAudioInfo(strAudioInfo);
-}
-
-void CApplicationPlayer::GetVideoInfo(std::string& strVideoInfo)
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->GetVideoInfo(strVideoInfo);
-}
-
 void CApplicationPlayer::GetGeneralInfo(std::string& strVideoInfo)
 {
   std::shared_ptr<IPlayer> player = GetInternal();

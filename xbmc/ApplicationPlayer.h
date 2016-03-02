@@ -111,7 +111,6 @@ public:
   bool  ControlsVolume() const;
   void  DoAudioWork();
   void  GetAudioCapabilities(std::vector<int> &audioCaps);
-  void  GetAudioInfo(std::string& strAudioInfo);
   int   GetAudioStream();
   int   GetAudioStreamCount();
   void  GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
@@ -140,7 +139,6 @@ public:
   std::string GetRadioText(unsigned int line);
   int64_t GetTime() const;
   int64_t GetTotalTime() const;
-  void  GetVideoInfo(std::string& strVideoInfo);
   int   GetVideoStream();
   int   GetVideoStreamCount();
   void  GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info);

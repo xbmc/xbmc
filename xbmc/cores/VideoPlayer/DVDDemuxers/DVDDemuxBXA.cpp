@@ -37,10 +37,6 @@ public:
     , m_codec(codec)
 
   {}
-  void GetStreamInfo(std::string& strInfo)
-  {
-    strInfo = StringUtils::Format("%s", m_codec.c_str());
-  }
 };
 
 CDVDDemuxBXA::CDVDDemuxBXA() : CDVDDemux()

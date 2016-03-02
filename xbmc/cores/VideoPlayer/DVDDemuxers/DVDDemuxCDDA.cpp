@@ -28,11 +28,6 @@
 class CDemuxStreamAudioCDDA
   : public CDemuxStreamAudio
 {
-public:
-  void GetStreamInfo(std::string& strInfo)
-  {
-    strInfo = "pcm";
-  }
 };
 
 CDVDDemuxCDDA::CDVDDemuxCDDA() : CDVDDemux()
