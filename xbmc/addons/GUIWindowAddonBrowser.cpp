@@ -139,6 +139,7 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
           if (item->GetProperty("Addon.ID") == message.GetStringParam())
           {
             UpdateStatus(item);
+            FormatAndSort(*m_vecItems);
             return true;
           }
         }
