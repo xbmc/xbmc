@@ -118,7 +118,7 @@ inline void convert_yuv420_nv12(uint8_t *const src[], const int srcStride[], int
           *d++ = *v++;
         }
       }
-      else
+      else if (i < chromaWidth)
       {
         xmm0 = _mm_load_si128((__m128i*)(v + i));
         xmm1 = _mm_load_si128((__m128i*)(u + i));
