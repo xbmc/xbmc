@@ -346,7 +346,7 @@ if(ENABLE_X11 AND XRANDR_FOUND)
 endif()
 
 # XBMCHelper
-if(APPLE)
+if(CORE_SYSTEM_TYPE STREQUAL darwin)
   add_subdirectory(${CORE_SOURCE_DIR}/tools/EventClients/Clients/OSXRemote build/XBMCHelper)
 endif()
 
