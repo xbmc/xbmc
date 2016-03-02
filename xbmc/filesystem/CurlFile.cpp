@@ -589,13 +589,9 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   else
     g_curlInterface.easy_setopt(h, CURLOPT_FTP_SKIP_PASV_IP, 1);
 
-  // setup Content-Encoding if requested
-  if( m_contentencoding.length() > 0 )
-    g_curlInterface.easy_setopt(h, CURLOPT_ENCODING, m_contentencoding.c_str());
-
   // setup Accept-Encoding if requested
   if (m_acceptencoding.length() > 0)
-    g_curlInterface.easy_setopt(h, CURLOPT_ACCEPT_ENCODING, m_contentencoding.c_str());
+    g_curlInterface.easy_setopt(h, CURLOPT_ACCEPT_ENCODING, m_acceptencoding.c_str());
 
   if (!m_useOldHttpVersion && !m_acceptCharset.empty())
     SetRequestHeader("Accept-Charset", m_acceptCharset);
@@ -802,9 +798,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
           SetUserAgent(value);
         else if (name == "cookie")
           SetCookie(value);
-        else if (name == "encoding")
-          SetContentEncoding(value);
-        else if (name == "acceptencoding")
+        else if (name == "acceptencoding" || name == "encoding")
           SetAcceptEncoding(value);
         else if (name == "noshout" && value == "true")
           m_skipshout = true;
@@ -985,7 +979,7 @@ bool CCurlFile::Open(const CURL& url)
   // since we can't know the stream size up front if we're gzipped/deflated
   // flag the stream with an unknown file size rather than the compressed
   // file size.
-  if (!m_contentencoding.empty())
+  if (!m_acceptencoding.empty())
     m_state->m_fileSize = 0;
 
   // check if this stream is a shoutcast stream. sometimes checking the protocol line is not enough so examine other headers as well.
