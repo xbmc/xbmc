@@ -45,7 +45,8 @@ static const char * mountBL[] = {
   "/mnt/media_rw/extSdCard",
   "/mnt/media_rw/sdcard",
   "/mnt/media_rw/usbdisk",
-  "/storage/emulated"
+  "/storage/emulated",
+  "/mnt/runtime"
 };
 static const char * deviceWL[] = {
   "/dev/block/vold",
