@@ -325,7 +325,7 @@ DemuxPacket* CDVDDemuxClient::Read()
   return pPacket;
 }
 
-CDemuxStream* CDVDDemuxClient::GetStream(int iStreamId)
+CDemuxStream* CDVDDemuxClient::GetStream(int iStreamId) const
 {
   if (iStreamId < 0 || iStreamId >= MAX_STREAMS)
     return nullptr;

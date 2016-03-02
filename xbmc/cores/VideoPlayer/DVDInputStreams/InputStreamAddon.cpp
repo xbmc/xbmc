@@ -178,7 +178,7 @@ DemuxPacket* CInputStreamAddon::ReadDemux()
   return m_addon->ReadDemux();
 }
 
-CDemuxStream* CInputStreamAddon::GetStream(int iStreamId)
+CDemuxStream* CInputStreamAddon::GetStream(int iStreamId) const
 {
   if (!m_addon)
     return nullptr;

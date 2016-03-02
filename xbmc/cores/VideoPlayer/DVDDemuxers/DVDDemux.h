@@ -305,7 +305,7 @@ public:
   /*
    * returns the stream or NULL on error, starting from 0
    */
-  virtual CDemuxStream* GetStream(int iStreamId) = 0;
+  virtual CDemuxStream* GetStream(int iStreamId) const = 0;
 
   /*
    * return nr of streams, 0 if none

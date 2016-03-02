@@ -67,7 +67,7 @@ public:
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL) { return false; }
   void SetSpeed(int iSpeed) {};
   int GetStreamLength() { return (int)m_header.durationMs; }
-  CDemuxStream* GetStream(int iStreamId);
+  CDemuxStream* GetStream(int iStreamId) const override;
   int GetNrOfStreams() const override;
   std::string GetFileName();
   virtual std::string GetStreamCodecName(int iStreamId) override;

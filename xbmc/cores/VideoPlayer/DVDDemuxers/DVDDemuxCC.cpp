@@ -108,9 +108,9 @@ CDVDDemuxCC::~CDVDDemuxCC()
   Dispose();
 }
 
-CDemuxStream* CDVDDemuxCC::GetStream(int iStreamId)
+CDemuxStream* CDVDDemuxCC::GetStream(int iStreamId) const
 {
-  return &m_streams[iStreamId];
+  return const_cast<CDemuxStreamSubtitle*>(&m_streams[iStreamId]);
 }
 
 int CDVDDemuxCC::GetNrOfStreams() const

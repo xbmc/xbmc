@@ -102,7 +102,7 @@ public:
   virtual CDVDInputStream::IDemux* GetIDemux() override;
   virtual bool OpenDemux() override;
   virtual DemuxPacket* ReadDemux() override;
-  virtual CDemuxStream* GetStream(int iStreamId) override;
+  virtual CDemuxStream* GetStream(int iStreamId) const override;
   virtual int GetNrOfStreams() const override;
   virtual void SetSpeed(int iSpeed) override;
   virtual bool SeekTime(int time, bool backward = false, double* startpts = NULL) override;

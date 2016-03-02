@@ -992,7 +992,7 @@ int CDVDDemuxFFmpeg::GetStreamLength()
 /**
  * @brief Finds stream based on demuxer index
  */
-CDemuxStream* CDVDDemuxFFmpeg::GetStream(int iStreamId)
+CDemuxStream* CDVDDemuxFFmpeg::GetStream(int iStreamId) const
 {
   if(iStreamId >= 0 && (size_t)iStreamId < m_stream_index.size())
     return m_stream_index[iStreamId]->second;

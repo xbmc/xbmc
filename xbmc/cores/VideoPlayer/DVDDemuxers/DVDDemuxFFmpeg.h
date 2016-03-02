@@ -103,7 +103,7 @@ public:
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
   bool SeekByte(int64_t pos);
   int GetStreamLength();
-  CDemuxStream* GetStream(int iStreamId);
+  CDemuxStream* GetStream(int iStreamId) const override;
   int GetNrOfStreams() const override;
 
   bool SeekChapter(int chapter, double* startpts = NULL);

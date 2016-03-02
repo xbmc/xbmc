@@ -158,7 +158,7 @@ DemuxPacket* CDVDDemuxBXA::Read()
   return pPacket;
 }
 
-CDemuxStream* CDVDDemuxBXA::GetStream(int iStreamId)
+CDemuxStream* CDVDDemuxBXA::GetStream(int iStreamId) const
 {
   if(iStreamId != 0)
     return NULL;

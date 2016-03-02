@@ -161,7 +161,7 @@ int CDVDDemuxCDDA::GetStreamLength()
   return (int)track_mseconds;
 }
 
-CDemuxStream* CDVDDemuxCDDA::GetStream(int iStreamId)
+CDemuxStream* CDVDDemuxCDDA::GetStream(int iStreamId) const
 {
   if(iStreamId != 0)
     return NULL;
