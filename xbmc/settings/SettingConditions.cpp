@@ -215,6 +215,9 @@ void CSettingConditions::Initialize()
 #ifdef HAS_WEB_SERVER
   m_simpleConditions.insert("has_web_server");
 #endif
+#ifdef HAS_FILESYSTEM_SMB
+  m_simpleConditions.insert("has_filesystem_smb");
+#endif
 #ifdef HAS_ZEROCONF
   m_simpleConditions.insert("has_zeroconf");
 #endif
