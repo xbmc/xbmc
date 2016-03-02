@@ -126,10 +126,18 @@
 		<value>$INFO[ListItem.Art(fanart)]</value>
 	</variable>
 	<variable name="AddonsLabel2Var">
-		<value condition="!IsEmpty(ListItem.AddonBroken)">[COLOR invalid]$INFO[ListItem.AddonBroken][/COLOR]</value>
-		<value condition="!IsEmpty(ListItem.Property(addon.status)) + !Stringcompare(ListItem.Property(addon.status),$LOCALIZE[305])">[COLOR white]$INFO[ListItem.Property(addon.status)][/COLOR]</value>
-		<value condition="ListItem.Property(addon.isinstalled)">[COLOR button_focus]$INFO[ListItem.AddonCreator,, - ]$INFO[ListItem.AddonVersion][/COLOR]</value>
+		<value condition="ListItem.Property(addon.downloading)">$INFO[ListItem.Property(addon.status)]</value>
+		<value condition="!Stringcompare(Container.SortMethod,$LOCALIZE[551])">$INFO[ListItem.Label2]</value>
 		<value>$INFO[ListItem.AddonCreator,, - ]$INFO[ListItem.AddonVersion]</value>
+	</variable>
+	<variable name="AddonsListIconVar">
+<!-- 		<value condition="!IsEmpty(ListItem.AddonBroken)">icons/infodialogs/update.png</value>
+		<value condition="!IsEmpty(ListItem.Property(addon.orphaned))">icons/infodialogs/update.png</value> -->
+		<value condition="ListItem.IsParentFolder">-</value>
+		<value condition="ListItem.Property(addon.downloading)">icons/infodialogs/install.png</value>
+		<value condition="ListItem.Property(addon.hasupdate)">icons/infodialogs/update.png</value>
+		<value condition="ListItem.Property(addon.isinstalled)">OverlayWatched.png</value>
+		<value>OverlayUnwatched.png</value>
 	</variable>
 	<variable name="AudioDSPIconVar">
 		<value condition="!IsEmpty(ADSP.MasterOverrideIcon)">$INFO[ADSP.MasterOverrideIcon]</value>
@@ -177,7 +185,7 @@
 		<value condition="Player.Seeking">$INFO[Player.SeekTime]$INFO[Player.Duration, / ]</value>
 		<value>$INFO[Player.Time]$INFO[Player.Duration, / ]</value>
 	</variable>
-	<variable name="OSDHelpTextVar">
+	<variable name="VideoOSDHelpTextVar">
 		<value condition="Control.HasFocus(87) + Player.Rewinding">$LOCALIZE[31050]</value>
 		<value condition="Control.HasFocus(87) + Player.Forwarding">$LOCALIZE[31051]</value>
 		<value condition="Control.HasFocus(70011)">$LOCALIZE[20060]</value>
@@ -190,10 +198,18 @@
 		<value condition="Control.HasFocus(70040)">$LOCALIZE[19019]</value>
 		<value condition="Control.HasFocus(70041)">$LOCALIZE[19069]</value>
 		<value condition="Control.HasFocus(70043)">$LOCALIZE[5]</value>
+		<value condition="Control.HasFocus(255)">$LOCALIZE[36501]</value>
 		<value condition="Control.HasFocus(606)">$LOCALIZE[264]</value>
 		<value condition="ControlGroup(201).HasFocus + Player.SeekEnabled">$LOCALIZE[31049]</value>
 		<value condition="Player.SeekEnabled">$LOCALIZE[31054]</value>
 		<value condition="!Player.SeekEnabled">$LOCALIZE[36044]</value>
+	</variable>
+	<variable name="MusicOSDHelpTextVar">
+		<value condition="Control.HasFocus(620)">$LOCALIZE[31033]$INFO[MusicPlayer.UserRating, : ]</value>
+		<value condition="Control.HasFocus(704)">$LOCALIZE[486]$INFO[Playlist.Repeat, : ]</value>
+		<value condition="Control.HasFocus(607)">$LOCALIZE[590]$INFO[Playlist.Random, : ]</value>
+		<value condition="Control.HasFocus(703)">$LOCALIZE[24013]</value>
+		<value condition="Control.HasFocus(5000)">$LOCALIZE[10004]</value>
 	</variable>
 	<variable name="DSPManagerHelpTextVar">
 		<value condition="Control.HasFocus(20)">$INFO[Container(20).ListItem.Property(Description)]</value>

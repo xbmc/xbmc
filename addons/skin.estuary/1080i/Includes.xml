@@ -1169,14 +1169,13 @@
 	<include name="TopWeatherIcon">
 		<control type="button">
 			<include>BreadcrumbsLabel</include>
-			<animation effect="fade" time="300">VisibleChange</animation>
 			<texturefocus>-</texturefocus>
 			<texturenofocus>-</texturenofocus>
 			<aligny>top</aligny>
 			<textoffsetx>0</textoffsetx>
 			<onclick>ActivateWindow(weather)</onclick>
 			<label>$INFO[Window(Weather).Property(Current.Temperature)]$INFO[System.TemperatureUnits]</label>
-			<visible>Weather.IsFetched + ![stringcompare(Weather.FanartCode,na) + substring(Weather.Conditions,/)]</visible>
+			<visible>Skin.HasSetting(show_weatherinfo) + Weather.IsFetched + ![stringcompare(Weather.FanartCode,na) + substring(Weather.Conditions,/)]</visible>
 		</control>
 		<control type="image">
 			<top>4</top>
@@ -1185,8 +1184,7 @@
 			<fadetime>300</fadetime>
 			<aspectratio align="left">keep</aspectratio>
 			<texture colordiffuse="button_focus">weather/small/$INFO[Weather.FanartCode].png</texture>
-			<animation effect="fade" time="300">VisibleChange</animation>
-			<visible>Weather.IsFetched + ![stringcompare(Weather.FanartCode,na) + substring(Weather.Conditions,/)]</visible>
+			<visible>Skin.HasSetting(show_weatherinfo) + Weather.IsFetched + ![stringcompare(Weather.FanartCode,na) + substring(Weather.Conditions,/)]</visible>
 		</control>
 	</include>
 	<include name="BreadcrumbsLabel">

@@ -95,7 +95,7 @@
 						<top>0</top>
 						<width>74</width>
 						<height>74</height>
-						<label>$LOCALIZE[486]$INFO[Playlist.Repeat, : ]</label>
+						<label></label>
 						<font>-</font>
 						<texturefocus>-</texturefocus>
 						<texturenofocus>-</texturenofocus>
@@ -130,7 +130,7 @@
 					<texturenofocus>-</texturenofocus>
 					<radioposx>0</radioposx>
 					<radioposy>0</radioposy>
-					<label>$LOCALIZE[590]$INFO[Playlist.Random, : ]</label>
+					<label></label>
 					<animation center="62,62" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back">Focus</animation>
 					<selected>Playlist.IsRandom</selected>
 					<visible>!MusicPlayer.Content(LiveTV)</visible>
@@ -153,79 +153,70 @@
 					<onclick>ActivateWindow(1105)</onclick>
 				</control>
 			</control>
-				<control type="radiobutton" id="500">
-					<include name="OSDButton">
-						<param name="texture" value="-"/>
-					</include>
-				</control>
-			<control type="group">
-				<top>-20</top>
-				<control type="label">
-					<left>30</left>
-					<top>60</top>
-					<width>1858</width>
-					<height>75</height>
-					<align>center</align>
-					<aligny>bottom</aligny>
-					<label>$INFO[Player.Time]$INFO[Player.Duration, / ]</label>
-					<font>font30</font>
-					<shadowcolor>black</shadowcolor>
-					<textcolor>white</textcolor>
-				</control>
-				<control type="button" id="87">
-					<include>HiddenObject</include>
-					<onup condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</onup>
-					<onup>201</onup>
-					<ondown condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</ondown>
-					<ondown>201</ondown>
-					<onright>PlayerControl(Forward)</onright>
-					<onleft>PlayerControl(Rewind)</onleft>
-					<visible>Player.SeekEnabled</visible>
-					<onclick condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</onclick>
-				</control>
-				<control type="slider">
-					<left>30</left>
-					<top>-20</top>
-					<width>1858</width>
-					<height>50</height>
-					<onup>8010</onup>
-					<ondown>650</ondown>
-					<controloffsetx>75</controloffsetx>
-					<controloffsety>0</controloffsety>
-					<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
-					<textureslidernib>osd/progress/nub_bar.png</textureslidernib>
-					<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernibfocus>
-					<info>Player.Progress</info>
-					<action>seek</action>
-					<visible>!Control.HasFocus(87)</visible>
-				</control>
-				<!-- <control type="slider" id="401">
-					 <description>Seek Slider</description>
-					 <left>20</left>
-					 <top>42</top>
-					 <width>1858</width>
-					 <height>12</height>
-					 <texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
-					 <textureslidernib>osd/progress/nub_bar.png</textureslidernib>
-					 <textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernibfocus>
-					 <visible>Player.Seeking</visible>
-					 </control> -->
-				<control type="slider">
-					<left>30</left>
-					<top>-20</top>
-					<width>1858</width>
-					<height>50</height>
-					<onup>8010</onup>
-					<ondown>650</ondown>
-					<controloffsetx>75</controloffsetx>
-					<controloffsety>0</controloffsety>
-					<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
-					<textureslidernib colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernib>
-					<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernibfocus>
-					<info>Player.Progress</info>
-					<action>seek</action>
-					<visible>Control.HasFocus(87)</visible>
-				</control>
+			<control type="label">
+				<left>30</left>
+				<top>40</top>
+				<width>1858</width>
+				<height>75</height>
+				<align>center</align>
+				<aligny>bottom</aligny>
+				<label>$INFO[Player.Time]$INFO[Player.Duration, / ]</label>
+				<font>font30</font>
+				<shadowcolor>black</shadowcolor>
+				<textcolor>white</textcolor>
+			</control>
+			<control type="label">
+				<right>30</right>
+				<top>-90</top>
+				<textoffsetx>20</textoffsetx>
+				<aligny>center</aligny>
+				<align>right</align>
+				<width>1858</width>
+				<height>60</height>
+				<label>$VAR[MusicOSDHelpTextVar]</label>
+			</control>
+			<control type="button" id="87">
+				<include>HiddenObject</include>
+				<onup condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</onup>
+				<onup>201</onup>
+				<ondown condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</ondown>
+				<ondown>201</ondown>
+				<onright>PlayerControl(Forward)</onright>
+				<onleft>PlayerControl(Rewind)</onleft>
+				<visible>Player.SeekEnabled</visible>
+				<onclick condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</onclick>
+			</control>
+			<control type="slider">
+				<left>30</left>
+				<top>-40</top>
+				<width>1858</width>
+				<height>50</height>
+				<onup>8010</onup>
+				<ondown>650</ondown>
+				<controloffsetx>75</controloffsetx>
+				<controloffsety>0</controloffsety>
+				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
+				<textureslidernib>osd/progress/nub_bar.png</textureslidernib>
+				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernibfocus>
+				<info>Player.Progress</info>
+				<action>seek</action>
+				<visible>!Control.HasFocus(87)</visible>
+			</control>
+			<control type="slider">
+				<left>30</left>
+				<top>-40</top>
+				<width>1858</width>
+				<height>50</height>
+				<onup>8010</onup>
+				<ondown>650</ondown>
+				<controloffsetx>75</controloffsetx>
+				<controloffsety>0</controloffsety>
+				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
+				<textureslidernib colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernib>
+				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernibfocus>
+				<info>Player.Progress</info>
+				<action>seek</action>
+				<visible>Control.HasFocus(87)</visible>
 			</control>
 		</control>
 	</controls>

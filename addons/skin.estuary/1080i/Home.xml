@@ -1039,7 +1039,7 @@
 						<item>
 							<label>$LOCALIZE[2]</label>
 							<label2>$LOCALIZE[133]: $INFO[Window(Home).Property(Music.ArtistsCount)]</label2>
-							<onclick>ActivateWindow(Music)</onclick>
+							<onclick>ActivateWindow(Music,root,return)</onclick>
 							<thumb>icons/home/music.png</thumb>
 							<property name="id">music</property>
 							<visible>!Skin.HasSetting(HomeMenuNoMusicButton)</visible>

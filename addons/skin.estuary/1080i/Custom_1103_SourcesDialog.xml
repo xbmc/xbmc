@@ -21,6 +21,7 @@
 			<textcolor>button_focus</textcolor>
 			<align>center</align>
 			<aligny>center</aligny>
+			<font>font12</font>
 			<label>$LOCALIZE[31062]</label>
 		</control>
 		<control type="list" id="5000">

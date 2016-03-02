@@ -364,11 +364,18 @@
 				<texture>lists/focus.png</texture>
 				<visible>Control.hasFocus(55)</visible>
 			</control>
+			<control type="image">
+				<left>15</left>
+				<top>15</top>
+				<width>40</width>
+				<height>40</height>
+				<texture>$VAR[AddonsListIconVar]</texture>
+			</control>
 			<control type="label">
-				<left>35</left>
+				<left>75</left>
 				<top>0</top>
 				<height>70</height>
-				<width>860</width>
+				<width>820</width>
 				<aligny>center</aligny>
 				<scroll>true</scroll>
 				<label>$INFO[ListItem.Label]</label>
@@ -393,14 +400,21 @@
 				<height>71</height>
 				<texture border="90,3,90,3">lists/separator.png</texture>
 			</control>
+			<control type="image">
+				<left>15</left>
+				<top>15</top>
+				<width>40</width>
+				<height>40</height>
+				<texture>$VAR[AddonsListIconVar]</texture>
+			</control>
 			<control type="label">
-				<left>35</left>
+				<left>75</left>
 				<top>0</top>
 				<height>70</height>
-				<width>960</width>
+				<width>820</width>
 				<aligny>center</aligny>
+				<scroll>true</scroll>
 				<label>$INFO[ListItem.Label]</label>
-				<shadowcolor>text_shadow</shadowcolor>
 			</control>
 			<control type="label">
 				<left>590</left>
