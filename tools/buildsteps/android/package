@@ -2,6 +2,11 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=android
 . $WORKSPACE/tools/buildsteps/defaultenv
 
+# Temporarily disabled because packaging not implement for CMake
+if [ "$CMAKE_BUILD" = true ]; then
+  exit 0
+fi
+
 if [ "x$BUILD_OBB" == "xtrue" ]
 then
   cd $WORKSPACE;make apk-obb-unsigned
