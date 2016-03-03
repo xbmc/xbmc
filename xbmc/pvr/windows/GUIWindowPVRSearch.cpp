@@ -90,7 +90,6 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
   }
 
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
-  CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);
 }
 
 void CGUIWindowPVRSearch::OnWindowLoaded()

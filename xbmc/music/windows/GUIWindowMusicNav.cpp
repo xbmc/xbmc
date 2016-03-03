@@ -54,7 +54,6 @@
 #include "utils/Variant.h"
 #include "Util.h"
 #include "URL.h"
-#include "ContextMenuManager.h"
 #include "storage/MediaManager.h"
 
 using namespace XFILE;
@@ -601,8 +600,6 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
   // noncontextual buttons
 
   CGUIWindowMusicBase::GetNonContextButtons(buttons);
-
-  CContextMenuManager::GetInstance().AddVisibleItems(item, buttons);
 }
 
 bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

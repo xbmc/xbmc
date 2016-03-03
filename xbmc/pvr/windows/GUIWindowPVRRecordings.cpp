@@ -169,8 +169,6 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
 
   if (!isDeletedRecording)
     CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
-
-  CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);
 }
 
 bool CGUIWindowPVRRecordings::OnAction(const CAction &action)

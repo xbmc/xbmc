@@ -43,7 +43,6 @@
 #include "interfaces/AnnouncementManager.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
-#include "ContextMenuManager.h"
 #include "GUIWindowSlideShow.h"
 
 #define CONTROL_BTNVIEWASICONS      2
@@ -493,8 +492,6 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
     }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
-
-  CContextMenuManager::GetInstance().AddVisibleItems(item, buttons);
 }
 
 bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

@@ -1517,29 +1517,40 @@ void CGUIMediaWindow::SetupShares()
   }
 }
 
-bool CGUIMediaWindow::OnPopupMenu(int iItem)
+bool CGUIMediaWindow::OnPopupMenu(int itemIdx)
 {
-  // popup the context menu
-  // grab our context menu
+  if (itemIdx < 0 || itemIdx >= m_vecItems->Size())
+    return false;
+
+  auto item = m_vecItems->Get(itemIdx);
+  if (!item)
+    return false;
+
+  //Construct the list with core menu on top, legacy menu in the middle and addons on bottom.
   CContextButtons buttons;
-  GetContextButtons(iItem, buttons);
+  auto menuItems = CContextMenuManager::GetInstance().GetItems(*item, CContextMenuManager::MAIN);
+  for (const auto& menu : menuItems)
+    buttons.emplace_back(-buttons.size(), menu->GetLabel(*item));
 
-  if (buttons.size())
-  {
-    // mark the item
-    if (iItem >= 0 && iItem < m_vecItems->Size())
-      m_vecItems->Get(iItem)->Select(true);
+  int legacyMenuStart = buttons.size();
+  GetContextButtons(itemIdx, buttons);
 
-    int choice = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
+  int addonMenuStart = buttons.size();
+  auto addonItems = CContextMenuManager::GetInstance().GetAddonItems(*item, CContextMenuManager::MAIN);
+  for (const auto& menu : addonItems)
+    buttons.emplace_back(-buttons.size(), menu->GetLabel(*item));
 
-    // deselect our item
-    if (iItem >= 0 && iItem < m_vecItems->Size())
-      m_vecItems->Get(iItem)->Select(false);
+  int idx = CGUIDialogContextMenu::Show(buttons);
+  if (idx < 0 || idx >= buttons.size())
+    return false;
 
-    if (choice >= 0)
-      return OnContextButton(iItem, (CONTEXT_BUTTON)choice);
-  }
-  return false;
+  if (idx < legacyMenuStart)
+    return CONTEXTMENU::LoopFrom(*menuItems[idx], item);
+
+  if (idx >= addonMenuStart)
+    return CONTEXTMENU::LoopFrom(*addonItems[idx - addonMenuStart], item);
+
+  return OnContextButton(itemIdx, static_cast<CONTEXT_BUTTON>(buttons[idx].first));
 }
 
 void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons)
@@ -1644,8 +1655,6 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   default:
     break;
   }
-  if (button >= CONTEXT_BUTTON_FIRST_ADDON)
-    return CContextMenuManager::GetInstance().OnClick(button, m_vecItems->Get(itemNumber));
   return false;
 }
 

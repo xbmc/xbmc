@@ -28,7 +28,6 @@
 #include "settings/MediaSourceSettings.h"
 #include "input/Key.h"
 #include "utils/StringUtils.h"
-#include "ContextMenuManager.h"
 
 #define CONTROL_BTNVIEWASICONS 2
 #define CONTROL_BTNSORTBY      3
@@ -117,8 +116,6 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
     }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
-
-  CContextMenuManager::GetInstance().AddVisibleItems(item, buttons);
 }
 
 bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
