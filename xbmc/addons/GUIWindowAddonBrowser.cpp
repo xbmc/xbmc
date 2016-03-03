@@ -161,55 +161,6 @@ void CGUIWindowAddonBrowser::SetProperties()
     lastUpdated.GetAsLocalizedDateTime() : g_localizeStrings.Get(21337));
 }
 
-void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber, CContextButtons& buttons)
-{
-  if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
-    return;
-
-  CFileItemPtr pItem = m_vecItems->Get(itemNumber);
-  std::string addonId = pItem->GetProperty("Addon.ID").asString();
-  if (!addonId.empty())
-  {
-    buttons.Add(CONTEXT_BUTTON_INFO, 24003);
-
-    AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON_UNKNOWN, false) && addon->HasSettings())
-      buttons.Add(CONTEXT_BUTTON_SETTINGS, 24020);
-    if (CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON_REPOSITORY))
-      buttons.Add(CONTEXT_BUTTON_CHECK_FOR_UPDATES, 24034);
-  }
-
-  CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);
-}
-
-bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
-{
-  CFileItemPtr pItem = m_vecItems->Get(itemNumber);
-
-  std::string addonId = pItem->GetProperty("Addon.ID").asString();
-  if (!addonId.empty())
-  {
-    if (button == CONTEXT_BUTTON_INFO)
-    {
-      return CGUIDialogAddonInfo::ShowForItem(pItem);
-    }
-    else if (button == CONTEXT_BUTTON_SETTINGS)
-    {
-      AddonPtr addon;
-      if (CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON_UNKNOWN, false))
-        return CGUIDialogAddonSettings::ShowAndGetInput(addon);
-    }
-    else if (button == CONTEXT_BUTTON_CHECK_FOR_UPDATES)
-    {
-      AddonPtr addon;
-      if (CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON_REPOSITORY))
-        CRepositoryUpdater::GetInstance().CheckForUpdates(std::static_pointer_cast<CRepository>(addon), true);
-    }
-  }
-
-  return CGUIMediaWindow::OnContextButton(itemNumber, button);
-}
-
 class UpdateAddons : public IRunnable
 {
   virtual void Run()

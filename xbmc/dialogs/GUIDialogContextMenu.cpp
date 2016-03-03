@@ -258,13 +258,6 @@ void CGUIDialogContextMenu::GetContextButtons(const std::string &type, const CFi
       bool isAddon = ADDON::TranslateContent(url.GetProtocol()) != CONTENT_NONE;
       if (!share->m_ignore && !isAddon)
         buttons.Add(CONTEXT_BUTTON_EDIT_SOURCE, 1027); // Edit Source
-      else
-      {
-        ADDON::AddonPtr plugin;
-        if (ADDON::CAddonMgr::GetInstance().GetAddon(url.GetHostName(), plugin))
-        if (plugin->HasSettings())
-          buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045); // Plugin Settings
-      }
       if (type != "video")
         buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // Set as Default
       if (!share->m_ignore && !isAddon)

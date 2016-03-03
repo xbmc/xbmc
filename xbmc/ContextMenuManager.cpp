@@ -23,6 +23,7 @@
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "addons/ContextMenuAddon.h"
+#include "addons/ContextMenus.h"
 #include "addons/IAddon.h"
 #include "utils/log.h"
 
@@ -52,6 +53,12 @@ void CContextMenuManager::Init()
   if (CAddonMgr::GetInstance().GetAddons(addons, ADDON_CONTEXT_ITEM))
     for (const auto& addon : addons)
       Register(std::static_pointer_cast<CContextMenuAddon>(addon));
+
+  m_items = {
+      std::make_shared<CONTEXTMENU::CAddonInfo>(),
+      std::make_shared<CONTEXTMENU::CAddonSettings>(),
+      std::make_shared<CONTEXTMENU::CCheckForUpdates>(),
+  };
 }
 
 void CContextMenuManager::Register(const ContextItemAddonPtr& cm)

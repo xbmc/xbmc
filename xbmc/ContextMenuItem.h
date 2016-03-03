@@ -21,7 +21,12 @@
 
 #include <map>
 #include "addons/IAddon.h"
-#include "dialogs/GUIDialogContextMenu.h"
+#include "addons/AddonManager.h"
+#include "addons/Repository.h"
+#include "addons/RepositoryUpdater.h"
+#include "addons/GUIDialogAddonInfo.h"
+#include "addons/GUIDialogAddonSettings.h"
+
 
 namespace ADDON
 {

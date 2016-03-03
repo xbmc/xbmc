@@ -3961,11 +3961,6 @@ msgctxt "#1044"
 msgid "Set plug-in thumb"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogContextMenu.cpp
-msgctxt "#1045"
-msgid "Add-on settings"
-msgstr ""
-
 msgctxt "#1046"
 msgid "Access points"
 msgstr ""
@@ -13458,6 +13453,7 @@ msgctxt "#24002"
 msgid "Add-on options"
 msgstr ""
 
+#: xbmc/addons/ContextMenus.h
 msgctxt "#24003"
 msgid "Add-on information"
 msgstr ""
@@ -13611,8 +13607,9 @@ msgctxt "#24033"
 msgid "Install from repository"
 msgstr ""
 
-#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: addons/skin.estuary/1080i/AddonBrowser.xml
+#: xbmc/addons/ContextMenus.h
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24034"
 msgid "Check for updates"
 msgstr ""

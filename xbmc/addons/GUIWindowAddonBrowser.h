@@ -61,8 +61,6 @@ public:
   static int SelectAddonID(const std::vector<ADDON::TYPE> &types, std::vector<std::string> &addonIDs, bool showNone = false, bool showDetails = true, bool multipleSelection = true, bool showInstalled = true, bool showInstallable = false, bool showMore = true);
   
 protected:
-  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
-  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
   virtual bool OnClick(int iItem, const std::string &player = "") override;
   virtual void UpdateButtons() override;
   virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;

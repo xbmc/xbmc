@@ -587,9 +587,6 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
                       && (item->IsPlayList() || item->IsSmartPlayList()))
         buttons.Add(CONTEXT_BUTTON_DELETE, 117);
 
-      if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
-        buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
-
       if (!item->IsReadOnly() && CSettings::GetInstance().GetBool("filelists.allowfiledeletion"))
       {
         buttons.Add(CONTEXT_BUTTON_DELETE, 117);

@@ -199,6 +199,7 @@
     <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\Peripheral\AddonCallbacksPeripheral.cpp" />
     <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\PVR\AddonCallbacksPVR.cpp" />
     <ClCompile Include="..\..\xbmc\addons\ContextMenuAddon.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\ContextMenus.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AudioDecoder.cpp" />
     <ClCompile Include="..\..\xbmc\addons\GUIDialogAddonInfo.cpp" />
     <ClCompile Include="..\..\xbmc\addons\GUIDialogAddonSettings.cpp" />
@@ -972,6 +973,7 @@
     <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\PVR\AddonCallbacksPVR.h" />
     <ClInclude Include="..\..\xbmc\addons\binary\interfaces\IAddonInterface.h" />
     <ClInclude Include="..\..\xbmc\addons\ContextMenuAddon.h" />
+    <ClInclude Include="..\..\xbmc\addons\ContextMenus.h" />
     <ClInclude Include="..\..\xbmc\addons\DllPeripheral.h" />
     <ClInclude Include="..\..\xbmc\addons\ImageResource.h" />
     <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_adsp_dll.h" />

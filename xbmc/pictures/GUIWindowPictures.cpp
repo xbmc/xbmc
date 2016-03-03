@@ -463,8 +463,6 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
     {
       if (item)
       {
-        if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
-          buttons.Add(CONTEXT_BUTTON_INFO, 24003); // Add-on info
         if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR() || item->IsScript()))
         {
           buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
@@ -482,9 +480,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
         }
       }
 
-      if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
-        buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
-      else
+      if (!item->IsPlugin() && !item->IsScript() && !m_vecItems->IsPlugin())
       {
         buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
         buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
