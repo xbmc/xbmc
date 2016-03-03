@@ -301,7 +301,7 @@ private:
 class CDVDVideoCodecIMX : public CDVDVideoCodec
 {
 public:
-  CDVDVideoCodecIMX();
+  CDVDVideoCodecIMX(CProcessInfo &processInfo);
   virtual ~CDVDVideoCodecIMX();
 
   // Methods from CDVDVideoCodec which require overrides
