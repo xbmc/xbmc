@@ -477,7 +477,7 @@ DemuxPacket* CDVDInputStreamPVRManager::ReadDemux()
   return pPacket;
 }
 
-CDemuxStream* CDVDInputStreamPVRManager::GetStream(int iStreamId)
+CDemuxStream* CDVDInputStreamPVRManager::GetStream(int iStreamId) const
 {
   CDemuxStream *ret = m_streamDefault;
   m_streamDefault->type = STREAM_NONE;

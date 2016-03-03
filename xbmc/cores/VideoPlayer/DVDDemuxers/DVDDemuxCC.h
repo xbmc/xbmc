@@ -39,7 +39,7 @@ public:
   virtual void SetSpeed(int iSpeed) {};
   virtual int GetStreamLength() {return 0;};
   virtual CDemuxStream* GetStream(int iStreamId);
-  virtual int GetNrOfStreams();
+  virtual int GetNrOfStreams() const;
   virtual std::string GetFileName() {return "";};
 
   DemuxPacket* Read(DemuxPacket *packet);

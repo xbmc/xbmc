@@ -310,7 +310,7 @@ public:
   /*
    * return nr of streams, 0 if none
    */
-  virtual int GetNrOfStreams() = 0;
+  virtual int GetNrOfStreams() const = 0;
 
   /*
    * returns opened filename

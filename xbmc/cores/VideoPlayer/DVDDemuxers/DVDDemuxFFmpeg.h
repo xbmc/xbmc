@@ -104,7 +104,7 @@ public:
   bool SeekByte(int64_t pos);
   int GetStreamLength();
   CDemuxStream* GetStream(int iStreamId);
-  int GetNrOfStreams();
+  int GetNrOfStreams() const override;
 
   bool SeekChapter(int chapter, double* startpts = NULL);
   int GetChapterCount();

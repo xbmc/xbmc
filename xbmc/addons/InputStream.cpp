@@ -302,7 +302,7 @@ void CInputStream::DisposeStreams()
   m_streams.clear();
 }
 
-int CInputStream::GetNrOfStreams()
+int CInputStream::GetNrOfStreams() const
 {
   return m_streams.size();
 }

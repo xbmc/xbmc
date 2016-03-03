@@ -113,7 +113,7 @@ CDemuxStream* CDVDDemuxCC::GetStream(int iStreamId)
   return &m_streams[iStreamId];
 }
 
-int CDVDDemuxCC::GetNrOfStreams()
+int CDVDDemuxCC::GetNrOfStreams() const
 {
   return m_streams.size();
 }

@@ -513,7 +513,7 @@ void CDVDDemuxClient::RequestStreams()
   }
 }
 
-int CDVDDemuxClient::GetNrOfStreams()
+int CDVDDemuxClient::GetNrOfStreams() const
 {
   int i = 0;
   while (i < MAX_STREAMS && m_streams[i])

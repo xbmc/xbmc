@@ -169,7 +169,7 @@ CDemuxStream* CDVDDemuxCDDA::GetStream(int iStreamId)
   return m_stream;
 }
 
-int CDVDDemuxCDDA::GetNrOfStreams()
+int CDVDDemuxCDDA::GetNrOfStreams() const
 {
   return (m_stream == NULL ? 0 : 1);
 }

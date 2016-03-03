@@ -68,7 +68,7 @@ public:
   void SetSpeed(int iSpeed) {};
   int GetStreamLength() { return (int)m_header.durationMs; }
   CDemuxStream* GetStream(int iStreamId);
-  int GetNrOfStreams();
+  int GetNrOfStreams() const override;
   std::string GetFileName();
   virtual std::string GetStreamCodecName(int iStreamId) override;
 

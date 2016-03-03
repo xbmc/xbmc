@@ -103,7 +103,7 @@ public:
   virtual bool OpenDemux() override;
   virtual DemuxPacket* ReadDemux() override;
   virtual CDemuxStream* GetStream(int iStreamId) override;
-  virtual int GetNrOfStreams() override;
+  virtual int GetNrOfStreams() const override;
   virtual void SetSpeed(int iSpeed) override;
   virtual bool SeekTime(int time, bool backward = false, double* startpts = NULL) override;
   virtual void AbortDemux() override;

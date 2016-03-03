@@ -194,7 +194,7 @@ void CInputStreamAddon::EnableStream(int iStreamId, bool enable)
   return m_addon->EnableStream(iStreamId, enable);
 }
 
-int CInputStreamAddon::GetNrOfStreams()
+int CInputStreamAddon::GetNrOfStreams() const
 {
   if (!m_addon)
     return 0;

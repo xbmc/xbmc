@@ -1012,7 +1012,7 @@ CDemuxStream* CDVDDemuxFFmpeg::GetStreamInternal(int iId)
     return it->second;
 }
 
-int CDVDDemuxFFmpeg::GetNrOfStreams()
+int CDVDDemuxFFmpeg::GetNrOfStreams() const
 {
   return m_stream_index.size();
 }
