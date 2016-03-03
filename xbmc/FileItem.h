@@ -631,8 +631,9 @@ public:
   int GetObjectCount() const;
   void FilterCueItems();
   void RemoveExtensions();
+  void SetIgnoreURLOptions(bool ignoreURLOptions);
   void SetFastLookup(bool fastLookup);
-  bool Contains(const std::string& fileName, bool ignoreURLOptions = false) const;
+  bool Contains(const std::string& fileName) const;
   bool GetFastLookup() const { return m_fastLookup; };
 
   /*! \brief stack a CFileItemList
@@ -728,6 +729,7 @@ private:
 
   VECFILEITEMS m_items;
   MAPFILEITEMS m_map;
+  bool m_ignoreURLOptions;
   bool m_fastLookup;
   SortDescription m_sortDescription;
   bool m_sortIgnoreFolders;
