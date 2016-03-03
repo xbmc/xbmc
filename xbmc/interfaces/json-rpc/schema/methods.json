@@ -649,6 +649,20 @@
     ],
     "returns":  { "$ref": "Audio.Property.Value", "required": true }
   },
+  "Files.SetFileDetails": {
+    "type": "method",
+    "description": "Update the given specific file with the given details",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      { "name": "file", "type": "string", "required": true, "description": "Full path to the file" },
+      { "name": "media", "$ref": "Files.Media", "required": true, "description": "File type to update correct database. Currently only \"video\" is supported." },
+      { "name": "playcount", "$ref": "Optional.Integer" },
+      { "name": "lastplayed", "$ref": "Optional.String", "description": "Setting a valid lastplayed without a playcount will force playcount to 1." },
+      { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null }
+    ],
+    "returns": "string"
+  },
   "AudioLibrary.GetArtists": {
     "type": "method",
     "description": "Retrieve all artists. For backward compatibility by default this implicity does not include those that only contribute other roles, however absolutely all artists can be returned using allroles=true",
