@@ -40,7 +40,7 @@ CRendererIMX::CRendererIMX()
 
 CRendererIMX::~CRendererIMX()
 {
-
+  UnInit();
 }
 
 bool CRendererIMX::RenderCapture(CRenderCapture* capture)
@@ -214,6 +214,7 @@ bool CRendererIMX::CreateTexture(int index)
 
 void CRendererIMX::DeleteTexture(int index)
 {
+  ReleaseBuffer(index);
 }
 
 bool CRendererIMX::UploadTexture(int index)
