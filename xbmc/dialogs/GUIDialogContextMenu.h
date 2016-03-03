@@ -178,10 +178,12 @@ public:
   static void GetContextButtons(const std::string &type, const CFileItemPtr& item, CContextButtons &buttons);
   static bool OnContextButton(const std::string &type, const CFileItemPtr& item, CONTEXT_BUTTON button);
 
-  /*! \brief Show the context menu with the given choices
-   \param choices the choices available for the user.
-   \return -1 if no choice is made, else the chosen option.
+  /*! Show the context menu with the given choices and return the index of the selected item,
+    or -1 if cancelled.
    */
+  static int Show(const CContextButtons& choices);
+
+  /*! Legacy method that returns the context menu id, or -1 on cancel */
   static int ShowAndGetChoice(const CContextButtons &choices);
 
 protected:

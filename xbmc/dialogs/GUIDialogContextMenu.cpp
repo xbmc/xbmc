@@ -88,7 +88,7 @@ bool CGUIDialogContextMenu::OnMessage(CGUIMessage &message)
   if (message.GetMessage() == GUI_MSG_CLICKED)
   { // someone has been clicked - deinit...
     if (message.GetSenderId() >= BUTTON_START && message.GetSenderId() <= BUTTON_END)
-      m_clickedButton = (int)m_buttons[message.GetSenderId() - BUTTON_START].first;
+      m_clickedButton = message.GetSenderId() - BUTTON_START;
     Close();
     return true;
   }
@@ -669,6 +669,21 @@ void CGUIDialogContextMenu::SwitchMedia(const std::string& strType, const std::s
   }
 }
 
+int CGUIDialogContextMenu::Show(const CContextButtons& choices)
+{
+  auto dialog = static_cast<CGUIDialogContextMenu*>(g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU));
+  if (!dialog)
+    return -1;
+
+  dialog->m_buttons = choices;
+  dialog->Initialize();
+  dialog->SetInitialVisibility();
+  dialog->SetupButtons();
+  dialog->PositionAtCurrentFocus();
+  dialog->Open();
+  return dialog->m_clickedButton;
+}
+
 int CGUIDialogContextMenu::ShowAndGetChoice(const CContextButtons &choices)
 {
   if (choices.empty())
@@ -683,7 +698,10 @@ int CGUIDialogContextMenu::ShowAndGetChoice(const CContextButtons &choices)
     pMenu->SetupButtons();
     pMenu->PositionAtCurrentFocus();
     pMenu->Open();
-    return pMenu->m_clickedButton;
+
+    int idx = pMenu->m_clickedButton;
+    if (idx != -1)
+      return choices[idx].first;
   }
   return -1;
 }

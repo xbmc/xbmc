@@ -29,9 +29,9 @@
 #include "utils/StringUtils.h"
 
 
-bool CContextMenuItem::IsVisible(const CFileItemPtr& item) const
+bool CContextMenuItem::IsVisible(const CFileItem& item) const
 {
-  return IsGroup() || (item && m_condition && m_condition->Get(item.get()));
+  return IsGroup() || (m_condition && m_condition->Get(&item));
 }
 
 bool CContextMenuItem::IsParentOf(const CContextMenuItem& other) const
