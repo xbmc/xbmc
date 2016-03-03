@@ -88,7 +88,7 @@ find_package(Threads REQUIRED)
 list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 
 # Required dependencies
-set(required_deps Sqlite3 FreeType PCRE Cpluff
+set(required_deps Sqlite3 FreeType PCRE Cpluff LibDvd
                   TinyXML Python Yajl Xslt
                   JPEG Lzo2 Fribidi TagLib FFMPEG CrossGUID)
 if(NOT WIN32)
@@ -153,10 +153,6 @@ endif()
 
 if(ENABLE_NONFREE)
   list(APPEND DEP_DEFINES "-DHAVE_XBMC_NONFREE=1")
-endif()
-
-if(ENABLE_DVDCSS)
-  core_require_dep(LibDvd)
 endif()
 
 if(ENABLE_OPTICAL)

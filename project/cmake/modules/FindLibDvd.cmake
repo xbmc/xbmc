@@ -69,6 +69,10 @@ if(NOT WIN32)
   core_link_library(${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.a
                     system/players/VideoPlayer/libdvdread dvdread)
 
+  if(ENABLE_DVDCSS)
+    set(DVDNAV_LIBS -ldvdcss)
+  endif(ENABLE_DVDCSS)
+
   ExternalProject_ADD(dvdnav URL ${libdvdnav_BASE_URL}/archive/${libdvdnav_VER}.tar.gz
                              PREFIX ${CORE_BUILD_DIR}/libdvd
                              UPDATE_COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
@@ -84,7 +88,7 @@ if(NOT WIN32)
                                         "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
                                         "DVDREAD_CFLAGS=${DVDREAD_CFLAGS}"
                                         "DVDREAD_LIBS=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.a"
-                                        "LIBS=-ldvdcss")
+                                        "LIBS=${DVDNAV_LIBS}")
   add_dependencies(dvdnav dvdread)
   core_link_library(${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdnav.a
                     system/players/VideoPlayer/libdvdnav dvdnav)
