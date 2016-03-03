@@ -904,13 +904,6 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       VIDEO::SScanSettings settings;
       GetScraperForItem(item.get(), info, settings);
 
-      if (info && info->Content() == CONTENT_TVSHOWS)
-        buttons.Add(CONTEXT_BUTTON_INFO, item->m_bIsFolder ? 20351 : 20352);
-      else if (info && info->Content() == CONTENT_MUSICVIDEOS)
-        buttons.Add(CONTEXT_BUTTON_INFO,20393);
-      else if (info && info->Content() == CONTENT_MOVIES)
-        buttons.Add(CONTEXT_BUTTON_INFO, 13346);
-
       // can we update the database?
       if (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
       {

@@ -1035,10 +1035,6 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_RESUME_ITEM:
     return OnFileAction(itemNumber, SELECT_ACTION_RESUME, "");
 
-  case CONTEXT_BUTTON_INFO:
-    OnItemInfo(itemNumber);
-    return true;
-
   case CONTEXT_BUTTON_STOP_SCANNING:
     {
       g_application.StopVideoScan();

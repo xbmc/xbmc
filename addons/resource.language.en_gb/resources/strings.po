@@ -6234,7 +6234,7 @@ msgstr ""
 
 #: xbmc/video/jobs/VideoLibraryRefreshingJob.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
-#: xbmc/video/windows/GUIWindowVideoNav.cpp
+#: xbmc/video/ContextMenus.h
 msgctxt "#13346"
 msgid "Movie information"
 msgstr ""
@@ -11630,13 +11630,13 @@ msgid "%.1f (%i votes)"
 msgstr ""
 
 #: xbmc/video/jobs/VideoLibraryRefreshingJob.cpp
-#: xbmc/video/windows/GUIWindowVideoNav.cpp
+#: xbmc/video/ContextMenus.h
 msgctxt "#20351"
 msgid "TV show information"
 msgstr ""
 
 #: xbmc/video/jobs/VideoLibraryRefreshingJob.cpp
-#: xbmc/video/windows/GUIWindowVideoNav.cpp
+#: xbmc/video/ContextMenus.h
 msgctxt "#20352"
 msgid "Episode information"
 msgstr ""
@@ -11839,7 +11839,7 @@ msgstr ""
 
 #: xbmc/music/windows/GUIWindowMusicNav.cpp
 #: xbmc/video/jobs/VideoLibraryRefreshingJob.cpp
-#: xbmc/video/windows/GUIWindowVideoNav.cpp
+#: xbmc/video/ContextMenus.h
 msgctxt "#20393"
 msgid "Music video information"
 msgstr ""

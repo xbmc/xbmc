@@ -1,4 +1,5 @@
 set(SOURCES Bookmark.cpp
+            ContextMenus.cpp
             FFmpegVideoDecoder.cpp
             GUIViewStateVideo.cpp
             PlayerController.cpp
@@ -13,6 +14,7 @@ set(SOURCES Bookmark.cpp
             VideoThumbLoader.cpp)
 
 set(HEADERS Bookmark.h
+            ContextMenus.h
             Episode.h
             FFmpegVideoDecoder.h
             GUIViewStateVideo.h

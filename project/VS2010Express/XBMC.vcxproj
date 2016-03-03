@@ -1759,6 +1759,7 @@
     <ClCompile Include="..\..\xbmc\utils\XBMCTinyXML.cpp" />
     <ClCompile Include="..\..\xbmc\utils\XMLUtils.cpp" />
     <ClCompile Include="..\..\xbmc\video\Bookmark.cpp" />
+    <ClCompile Include="..\..\xbmc\video\ContextMenus.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogFullScreenInfo.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogSubtitles.cpp" />
@@ -2382,6 +2383,7 @@
     <ClInclude Include="..\..\xbmc\utils\XBMCTinyXML.h" />
     <ClInclude Include="..\..\xbmc\utils\XMLUtils.h" />
     <ClInclude Include="..\..\xbmc\video\Bookmark.h" />
+    <ClInclude Include="..\..\xbmc\video\ContextMenus.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogFullScreenInfo.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogSubtitles.h" />

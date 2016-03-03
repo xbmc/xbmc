@@ -1497,6 +1497,9 @@
     <ClCompile Include="..\..\xbmc\video\Bookmark.cpp">
       <Filter>video</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\ContextMenus.cpp">
+      <Filter>video</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\video\GUIViewStateVideo.cpp">
       <Filter>video</Filter>
     </ClCompile>
@@ -4668,6 +4671,9 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\Bookmark.h">
+      <Filter>video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\ContextMenus.h">
       <Filter>video</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\GUIViewStateVideo.h">

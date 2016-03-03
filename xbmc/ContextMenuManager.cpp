@@ -25,6 +25,7 @@
 #include "addons/ContextMenuAddon.h"
 #include "addons/ContextMenus.h"
 #include "addons/IAddon.h"
+#include "video/ContextMenus.h"
 #include "utils/log.h"
 
 using namespace ADDON;
@@ -58,6 +59,10 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CAddonInfo>(),
       std::make_shared<CONTEXTMENU::CAddonSettings>(),
       std::make_shared<CONTEXTMENU::CCheckForUpdates>(),
+      std::make_shared<CONTEXTMENU::CEpisodeInfo>(),
+      std::make_shared<CONTEXTMENU::CMovieInfo>(),
+      std::make_shared<CONTEXTMENU::CMusicVideoInfo>(),
+      std::make_shared<CONTEXTMENU::CTVShowInfo>(),
   };
 }
 
