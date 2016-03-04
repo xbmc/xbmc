@@ -818,31 +818,23 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
       if (SUCCEEDED(hr))
       {
         m_pSwapChain1->QueryInterface(__uuidof(IDXGISwapChain), reinterpret_cast<void**>(&m_pSwapChain));
+        // this hackish way to disable stereo in windowed mode:
+        // - restart presenting, 0 in sync interval discards current frame also
+        // - wait until new frame will be drawn
+        // sleep value possible depends on hardware m.b. need a setting in as.xml
+        if (m_useWindowedDX && !bHWStereoEnabled && m_bHWStereoEnabled)
+        {
+          DXGI_PRESENT_PARAMETERS presentParams = {};
+          presentParams.DirtyRectsCount = 0;
+          presentParams.pDirtyRects = NULL;
+          presentParams.pScrollRect = NULL;
+          m_pSwapChain1->Present1(0, DXGI_PRESENT_RESTART, &presentParams);
+
+          Sleep(100);
+        }
         m_bHWStereoEnabled = bHWStereoEnabled;
       }
       dxgiFactory2->Release();
-
-      // this hackish way to disable stereo in windowed mode:
-      // - restart presenting, 0 in sync interval discards current frame also
-      // - wait until new frame will be drawn
-      // sleep value possible depends on hardware m.b. need a setting in as.xml
-      if (!bHWStereoEnabled && m_useWindowedDX && bNeedRecreate)
-      {
-        DXGI_PRESENT_PARAMETERS presentParams = {};
-        presentParams.DirtyRectsCount = 0;
-        presentParams.pDirtyRects = NULL;
-        presentParams.pScrollRect = NULL;
-        m_pSwapChain1->Present1(0, DXGI_PRESENT_RESTART, &presentParams);
-
-        Sleep(100);
-      }
-
-      // when transition from/to stereo mode trigger display reset event
-      if (bNeedRecreate)
-      {
-        OnDisplayLost();
-        OnDeviceReset();
-      }
     }
     else
     {
@@ -963,6 +955,13 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
 
   if (bRestoreRTView)
     m_pContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_depthStencilView);
+
+  // trigger display reset event when transition from/to stereo mode occured
+  if (bNeedRecreate)
+  {
+    OnDisplayLost();
+    OnDeviceReset();
+  }
 
   m_resizeInProgress = false;
   m_bResizeRequred = false;
