@@ -117,6 +117,16 @@ namespace XBMCAddon
       return infoTag->m_strIMDBNumber;
     }
 
+    int InfoTagVideo::getSeason()
+    {
+      return infoTag->m_iSeason;
+    }
+
+    int InfoTagVideo::getEpisode()
+    {
+      return infoTag->m_iEpisode;
+    }
+
     int InfoTagVideo::getYear()
     {
       return infoTag->m_iYear;

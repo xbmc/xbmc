@@ -100,6 +100,14 @@ namespace XBMCAddon
        */
       String getIMDBNumber();
       /**
+       * getSeason() - returns an integer.
+       */
+      int getSeason();
+      /**
+       * getEpisode() - returns an integer.
+       */
+      int getEpisode();
+      /**
        * getYear() - returns an integer.
        */
       int getYear();
