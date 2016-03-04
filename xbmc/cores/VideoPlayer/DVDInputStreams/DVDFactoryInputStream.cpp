@@ -27,6 +27,7 @@
 #include "DVDInputStreamPVRManager.h"
 #include "DVDInputStreamRTMP.h"
 #include "InputStreamAddon.h"
+#include "InputStreamMultiSource.h"
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreamBluray.h"
 #endif
@@ -40,11 +41,23 @@
 #include "utils/URIUtils.h"
 #include "addons/AddonManager.h"
 #include "addons/InputStream.h"
+#include "Util.h"
 
 
-CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer, CFileItem fileitem)
+CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer, CFileItem fileitem, bool scanforextaudio)
 {
   std::string file = fileitem.GetPath();
+  if (scanforextaudio)
+  {
+    // find any available external audio tracks
+    std::vector<std::string> filenames;
+    filenames.push_back(file);
+    CUtil::ScanForExternalAudio(file, filenames);
+    if (filenames.size() >= 2)
+    {
+      return CreateInputStream(pPlayer, fileitem, filenames);
+    }
+  }
 
   ADDON::VECADDONS addons;
   ADDON::CAddonMgr::GetInstance().GetAddons(addons, ADDON::ADDON_INPUTSTREAM);
@@ -135,4 +148,9 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
 
   // our file interface handles all these types of streams
   return (new CDVDInputStreamFile(fileitem));
+}
+
+CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer, CFileItem fileitem, const std::vector<std::string>& filenames)
+{
+  return (new CInputStreamMultiSource(pPlayer, fileitem, filenames));
 }

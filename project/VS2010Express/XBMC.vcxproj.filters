@@ -3304,6 +3304,9 @@
     <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\Addon\AddonCallbacksAddon.cpp">
       <Filter>addons\binary\interfaces\api1\Addon</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\InputStreamMultiSource.cpp">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\AudioDSP\AddonCallbacksAudioDSP.cpp">
       <Filter>addons\binary\interfaces\api1\AudioDSP</Filter>
     </ClCompile>
@@ -6341,6 +6344,9 @@
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\Process\ProcessInfo.h">
       <Filter>cores\Process</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\InputStreamMultiSource.h">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_adsp_dll.h">
       <Filter>addons\include</Filter>
     </ClInclude>
@@ -6412,6 +6418,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\AudioDSP\AddonCallbacksAudioDSP.h">
       <Filter>addons\binary\interfaces\api1\AudioDSP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\InputStreamMultiStreams.h">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxPacket.h">
       <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
