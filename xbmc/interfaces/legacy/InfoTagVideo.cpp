@@ -82,6 +82,11 @@ namespace XBMCAddon
       return infoTag->m_strTitle;
     }
 
+    String InfoTagVideo::getMediaType()
+    {
+      return infoTag->m_type;
+    }
+
     String InfoTagVideo::getVotes()
     {
       return StringUtils::Format("%i", infoTag->GetRating().votes);

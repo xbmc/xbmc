@@ -72,6 +72,10 @@ namespace XBMCAddon
        */
       String getTitle();
       /**
+       * getMediaType() - returns a string.
+       */
+      String getMediaType();
+      /**
        * getVotes() - returns a string.
        */
       String getVotes();
