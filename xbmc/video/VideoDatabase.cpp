@@ -2773,8 +2773,14 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
     }
 
     // update the runtime information, if empty
-    if (details.GetVideoDuration())
+    int duration = details.GetVideoDuration();
+    if (duration)
     {
+      // episodes files can point to more than one episode so we use the average length
+      m_pDS->query(PrepareSQL("SELECT COUNT(*) FROM episode WHERE idFile = %i", idFile));
+      if (!m_pDS->eof() && m_pDS->fv(0).get_asInt() > 1)
+        duration = duration / m_pDS->fv(0).get_asInt();
+      m_pDS->close();
       std::vector<std::pair<std::string, int> > tables;
       tables.push_back(std::make_pair("movie", VIDEODB_ID_RUNTIME));
       tables.push_back(std::make_pair("episode", VIDEODB_ID_EPISODE_RUNTIME));
@@ -2782,7 +2788,7 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
       for (std::vector<std::pair<std::string, int> >::iterator i = tables.begin(); i != tables.end(); ++i)
       {
         std::string sql = PrepareSQL("update %s set c%02d=%d where idFile=%d and c%02d=''",
-                                    i->first.c_str(), i->second, details.GetVideoDuration(), idFile, i->second);
+                                    i->first.c_str(), i->second, duration, idFile, i->second);
         m_pDS->exec(sql);
       }
     }
@@ -4905,11 +4911,22 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE settings ADD VideoStream integer");
     m_pDS->exec("ALTER TABLE streamdetails ADD strVideoLanguage text");
   }
+
+  if (iVersion < 104)
+  {
+    m_pDS->query(PrepareSQL("SELECT GROUP_CONCAT(episode.idEpisode), episode.c%02d, COUNT(episode.idFile) FROM episode JOIN streamdetails ON streamdetails.idFile = episode.idFile AND streamdetails.iStreamType = 0 WHERE episode.c%02d = streamdetails.iVideoDuration GROUP BY episode.idFile HAVING COUNT(episode.idFile)>1", VIDEODB_ID_EPISODE_RUNTIME, VIDEODB_ID_EPISODE_RUNTIME));
+    while (!m_pDS->eof())
+    {
+      m_pDS2->exec(PrepareSQL("UPDATE episode SET c%02d = %i WHERE idEpisode IN (%s)", VIDEODB_ID_EPISODE_RUNTIME, m_pDS->fv(1).get_asInt() / m_pDS->fv(2).get_asInt(), m_pDS->fv(0).get_asString().c_str()));
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 103;
+  return 104;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
