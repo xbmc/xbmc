@@ -2961,6 +2961,7 @@ msgctxt "#657"
 msgid "Browse for folder"
 msgstr ""
 
+#: xbmc/music/ContextMenus.h
 msgctxt "#658"
 msgid "Song information"
 msgstr ""
@@ -5022,6 +5023,7 @@ msgctxt "#10522"
 msgid "Now playing - Videos"
 msgstr ""
 
+#: xbmc/music/ContextMenus.h
 msgctxt "#10523"
 msgid "Album information"
 msgstr ""
@@ -6255,6 +6257,7 @@ msgctxt "#13350"
 msgid "Current playlist"
 msgstr ""
 
+#: Not used anymore. Use #10523 instead.
 msgctxt "#13351"
 msgid "Album information"
 msgstr ""
@@ -13175,6 +13178,7 @@ msgctxt "#21890"
 msgid "Select artist"
 msgstr ""
 
+#: xbmc/music/ContextMenus.h
 msgctxt "#21891"
 msgid "Artist information"
 msgstr ""

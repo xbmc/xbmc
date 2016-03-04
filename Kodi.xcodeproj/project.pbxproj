@@ -718,6 +718,8 @@
 		9A999F1E1C67B77600E4E0D5 /* AddonBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A999F1B1C67B77600E4E0D5 /* AddonBuilder.cpp */; };
 		9AA7E3E81C972CF4000B7863 /* ContextMenus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9AA7E3E61C972CF4000B7863 /* ContextMenus.cpp */; };
 		9AA7E3E91C972CF4000B7863 /* ContextMenus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9AA7E3E61C972CF4000B7863 /* ContextMenus.cpp */; };
+		9ABFE7A11C972D60002F1318 /* ContextMenus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ABFE79F1C972D60002F1318 /* ContextMenus.cpp */; };
+		9ABFE7A21C972D60002F1318 /* ContextMenus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ABFE79F1C972D60002F1318 /* ContextMenus.cpp */; };
 		9AC167B61C5ED478004F0C29 /* MusicFileItemListModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9AC167B41C5ED478004F0C29 /* MusicFileItemListModifier.cpp */; };
 		9AC167B71C5ED478004F0C29 /* MusicFileItemListModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9AC167B41C5ED478004F0C29 /* MusicFileItemListModifier.cpp */; };
 		AE32174218313ADF0003FAFC /* XSLTUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */; };
@@ -3451,6 +3453,8 @@
 		9A999F1C1C67B77600E4E0D5 /* AddonBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonBuilder.h; sourceTree = "<group>"; };
 		9AA7E3E61C972CF4000B7863 /* ContextMenus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContextMenus.cpp; sourceTree = "<group>"; };
 		9AA7E3E71C972CF4000B7863 /* ContextMenus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextMenus.h; sourceTree = "<group>"; };
+		9ABFE79F1C972D60002F1318 /* ContextMenus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContextMenus.cpp; sourceTree = "<group>"; };
+		9ABFE7A01C972D60002F1318 /* ContextMenus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextMenus.h; sourceTree = "<group>"; };
 		9AC167B41C5ED478004F0C29 /* MusicFileItemListModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicFileItemListModifier.cpp; sourceTree = "<group>"; };
 		9AC167B51C5ED478004F0C29 /* MusicFileItemListModifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicFileItemListModifier.h; sourceTree = "<group>"; };
 		AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XSLTUtils.cpp; sourceTree = "<group>"; };
@@ -5364,6 +5368,8 @@
 		18B7C853129423A7009E7A26 /* music */ = {
 			isa = PBXGroup;
 			children = (
+				9ABFE79F1C972D60002F1318 /* ContextMenus.cpp */,
+				9ABFE7A01C972D60002F1318 /* ContextMenus.h */,
 				431376A812D640B500680C15 /* dialogs */,
 				431376CC12D6421A00680C15 /* infoscanner */,
 				18B7C854129423A7009E7A26 /* tags */,
@@ -10363,6 +10369,7 @@
 				C84828CF156CFCD8005A996F /* GUIDialogPVRGuideSearch.cpp in Sources */,
 				C84828D0156CFCD8005A996F /* GUIDialogPVRRecordingInfo.cpp in Sources */,
 				C84828D1156CFCD8005A996F /* GUIDialogPVRTimerSettings.cpp in Sources */,
+				9ABFE7A11C972D60002F1318 /* ContextMenus.cpp in Sources */,
 				C84828D4156CFCD8005A996F /* PVRDatabase.cpp in Sources */,
 				C84828D5156CFCD8005A996F /* PVRGUIInfo.cpp in Sources */,
 				C84828D6156CFCD8005A996F /* PVRManager.cpp in Sources */,
@@ -11801,6 +11808,7 @@
 				DFD717291C09EDD70025D964 /* MessagePrinter.cpp in Sources */,
 				7CCDA834192756250074CF51 /* NptSystem.cpp in Sources */,
 				7CCDA83D192756250074CF51 /* NptThreads.cpp in Sources */,
+				9ABFE7A21C972D60002F1318 /* ContextMenus.cpp in Sources */,
 				7CCDA846192756250074CF51 /* NptTime.cpp in Sources */,
 				7CCDA84F192756250074CF51 /* NptTls.cpp in Sources */,
 				7CCDA852192756250074CF51 /* NptUri.cpp in Sources */,

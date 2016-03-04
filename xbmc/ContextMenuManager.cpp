@@ -25,6 +25,7 @@
 #include "addons/ContextMenuAddon.h"
 #include "addons/ContextMenus.h"
 #include "addons/IAddon.h"
+#include "music/ContextMenus.h"
 #include "video/ContextMenus.h"
 #include "utils/log.h"
 
@@ -63,6 +64,9 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CMovieInfo>(),
       std::make_shared<CONTEXTMENU::CMusicVideoInfo>(),
       std::make_shared<CONTEXTMENU::CTVShowInfo>(),
+      std::make_shared<CONTEXTMENU::CAlbumInfo>(),
+      std::make_shared<CONTEXTMENU::CArtistInfo>(),
+      std::make_shared<CONTEXTMENU::CSongInfo>(),
       std::make_shared<CONTEXTMENU::CMarkWatched>(),
       std::make_shared<CONTEXTMENU::CMarkUnWatched>(),
   };

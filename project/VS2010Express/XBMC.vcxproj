@@ -719,6 +719,7 @@
     <ClCompile Include="..\..\xbmc\messaging\helpers\DialogHelper.cpp" />
     <ClCompile Include="..\..\xbmc\music\Album.cpp" />
     <ClCompile Include="..\..\xbmc\music\Artist.cpp" />
+    <ClCompile Include="..\..\xbmc\music\ContextMenus.cpp" />
     <ClCompile Include="..\..\xbmc\music\CueInfoLoader.cpp" />
     <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogMusicInfo.cpp" />
     <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogMusicOSD.cpp" />
@@ -1107,6 +1108,7 @@
     <ClInclude Include="..\..\xbmc\input\joysticks\IButtonMapper.h" />
     <ClInclude Include="..\..\xbmc\input\joysticks\IDriverHandler.h" />
     <ClInclude Include="..\..\xbmc\input\joysticks\IInputHandler.h" />
+    <ClInclude Include="..\..\xbmc\music\ContextMenus.h" />
     <ClInclude Include="..\..\xbmc\music\windows\MusicFileItemListModifier.h" />
     <ClInclude Include="..\..\xbmc\filesystem\OverrideDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\OverrideFile.h" />

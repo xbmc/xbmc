@@ -516,7 +516,6 @@ void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons 
       if (players.size() > 1)
         buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
 
-      buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
       if (XFILE::CFavouritesDirectory::IsFavourite(item.get(), GetID()))
         buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite
       else

@@ -931,12 +931,6 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     OnItemInfo(itemNumber);
     return true;
 
-  case CONTEXT_BUTTON_SONG_INFO:
-    {
-      ShowSongInfo(item.get());
-      return true;
-    }
-
   case CONTEXT_BUTTON_EDIT:
     {
       std::string playlist = item->IsPlayList() ? item->GetPath() : m_vecItems->GetPath(); // save path as activatewindow will destroy our items

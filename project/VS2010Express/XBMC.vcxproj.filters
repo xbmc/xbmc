@@ -843,6 +843,9 @@
     <ClCompile Include="..\..\xbmc\music\Artist.cpp">
       <Filter>music</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\ContextMenus.cpp">
+      <Filter>music</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\music\GUIViewStateMusic.cpp">
       <Filter>music</Filter>
     </ClCompile>
@@ -6730,6 +6733,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\BinaryAddonCache.h">
       <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\ContextMenus.h">
+      <Filter>music</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
