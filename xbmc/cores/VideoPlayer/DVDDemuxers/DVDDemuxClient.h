@@ -42,10 +42,11 @@ public:
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL) override;
   void SetSpeed(int iSpeed) override;
   int GetStreamLength() override { return 0; }
-  CDemuxStream* GetStream(int iStreamId) override;
+  CDemuxStream* GetStream(int64_t iStreamId) override;
+  const std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams() override;
   std::string GetFileName() override;
-  virtual std::string GetStreamCodecName(int iStreamId) override;
+  virtual std::string GetStreamCodecName(int64_t iStreamId) override;
 
 protected:
   void RequestStreams();

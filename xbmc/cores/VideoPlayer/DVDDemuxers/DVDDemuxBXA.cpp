@@ -132,7 +132,7 @@ DemuxPacket* CDVDDemuxBXA::Read()
   }
 
   pPacket->iSize = m_pInput->Read(pPacket->pData, BXA_READ_SIZE);
-  pPacket->iStreamId = 0;
+  pPacket->iStreamId = m_stream->iId;
 
   if(pPacket->iSize < 1)
   {
@@ -158,12 +158,24 @@ DemuxPacket* CDVDDemuxBXA::Read()
   return pPacket;
 }
 
-CDemuxStream* CDVDDemuxBXA::GetStream(int iStreamId)
+CDemuxStream* CDVDDemuxBXA::GetStream(int64_t iStreamId)
 {
   if(iStreamId != 0)
     return NULL;
 
   return m_stream;
+}
+
+const std::vector<CDemuxStream*> CDVDDemuxBXA::GetStreams() const
+{
+  std::vector<CDemuxStream*> streams;
+
+  if (m_stream != nullptr)
+  {
+    streams.push_back(m_stream);
+  }
+
+  return streams;
 }
 
 int CDVDDemuxBXA::GetNrOfStreams()
@@ -179,9 +191,9 @@ std::string CDVDDemuxBXA::GetFileName()
     return "";
 }
 
-std::string CDVDDemuxBXA::GetStreamCodecName(int iStreamId)
+std::string CDVDDemuxBXA::GetStreamCodecName(int64_t iStreamId)
 {
-  if (m_stream && iStreamId == 0)
+  if (m_stream && iStreamId == m_stream->iId)
     return "BXA";
   else
     return "";

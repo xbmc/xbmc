@@ -103,7 +103,8 @@ public:
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
   bool SeekByte(int64_t pos);
   int GetStreamLength();
-  CDemuxStream* GetStream(int iStreamId);
+  CDemuxStream* GetStream(int64_t iStreamId) override;
+  const std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams();
 
   bool SeekChapter(int chapter, double* startpts = NULL);
@@ -111,7 +112,7 @@ public:
   int GetChapter();
   void GetChapterName(std::string& strChapterName, int chapterIdx=-1);
   int64_t GetChapterPos(int chapterIdx=-1);
-  virtual std::string GetStreamCodecName(int iStreamId) override;
+  virtual std::string GetStreamCodecName(int64_t iStreamId) override;
 
   bool Aborted();
 
@@ -146,7 +147,7 @@ protected:
 
   CCriticalSection m_critSection;
   std::map<int, CDemuxStream*> m_streams;
-  std::vector<std::map<int, CDemuxStream*>::iterator> m_stream_index;
+  std::map<int64_t, std::map<int, CDemuxStream*>::iterator> m_stream_index;
 
   AVIOContext* m_ioContext;
 

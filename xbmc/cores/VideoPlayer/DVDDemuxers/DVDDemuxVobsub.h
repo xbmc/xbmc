@@ -41,7 +41,8 @@ public:
   virtual DemuxPacket*  Read();
   virtual bool          SeekTime(int time, bool backwords, double* startpts = NULL);
   virtual void          SetSpeed(int speed) {}
-  virtual CDemuxStream* GetStream(int index) { return m_Streams[index]; }
+  virtual CDemuxStream* GetStream(int64_t iStreamId) override;
+  virtual const std::vector<CDemuxStream*> GetStreams() const;
   virtual int           GetNrOfStreams()     { return m_Streams.size(); }
   virtual int           GetStreamLength()    { return 0; }
   virtual std::string   GetFileName()        { return m_Filename; }
@@ -76,6 +77,7 @@ private:
   std::vector<STimestamp>            m_Timestamps;
   std::vector<STimestamp>::iterator  m_Timestamp;
   std::vector<CStream*> m_Streams;
+  std::map<int64_t, std::vector<CStream*>::iterator> m_stream_index;
   int m_source;
 
   typedef struct SState

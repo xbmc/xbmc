@@ -40,6 +40,26 @@ CDVDDemuxVobsub::~CDVDDemuxVobsub()
     delete m_Streams[i];
   }
   m_Streams.clear();
+  m_stream_index.clear();
+}
+
+CDemuxStream* CDVDDemuxVobsub::GetStream(int64_t iStreamId)
+{
+  auto it = m_stream_index.find(iStreamId);
+  if (it == m_stream_index.end())
+    return nullptr;
+
+  return *(it->second);
+}
+
+const std::vector<CDemuxStream*> CDVDDemuxVobsub::GetStreams() const
+{
+  std::vector<CDemuxStream*> streams;
+
+  for (auto iter : m_Streams)
+    streams.push_back(iter);
+
+  return streams;
 }
 
 bool CDVDDemuxVobsub::Open(const std::string& filename, int source, const std::string& subfilename)
@@ -163,7 +183,7 @@ DemuxPacket* CDVDDemuxVobsub::Read()
   if(!packet)
     return NULL;
 
-  packet->iStreamId = current->id;
+  packet->iStreamId = m_Streams[current->id]->iId;
   packet->pts = current->pts;
   packet->dts = current->pts;
 
@@ -214,11 +234,11 @@ bool CDVDDemuxVobsub::ParseId(SState& state, char* line)
     stream->iPhysicalId = -1;
 
   stream->codec = AV_CODEC_ID_DVD_SUBTITLE;
-  stream->iId = m_Streams.size();
   stream->source = m_source;
 
-  state.id = stream->iId;
-  m_Streams.push_back(stream.release());
+  state.id = m_Streams.size(); 
+  int64_t index = stream->iId;
+  m_stream_index[index] =  m_Streams.insert(m_Streams.end(), stream.release());
   return true;
 }
 

@@ -27,7 +27,7 @@
 {
   unsigned char* pData;   // data
   int iSize;     // data size
-  int iStreamId; // integer representing the stream index
+  int64_t iStreamId; // integer representing the stream index
   int iGroupId;  // the group this data belongs to, used to group data from different streams together
 
   double pts; // pts in DVD_TIME_BASE
