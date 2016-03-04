@@ -485,6 +485,8 @@ void CDVDDemuxClient::RequestStreams()
     }
 
     m_streams[i]->codec = stream->codec;
+    m_streams[i]->codecName = stream->codecName;
+    m_streams[i]->bandwidth = stream->bandwidth;
     m_streams[i]->iId = i;
     m_streams[i]->iPhysicalId = stream->iPhysicalId;
     for (int j=0; j<4; j++)
