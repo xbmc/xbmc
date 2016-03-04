@@ -72,6 +72,10 @@ namespace XBMCAddon
        */
       String getTitle();
       /**
+       * getTVShowTitle() - returns a string.
+       */
+      String getTVShowTitle();
+      /**
        * getMediaType() - returns a string.
        */
       String getMediaType();
