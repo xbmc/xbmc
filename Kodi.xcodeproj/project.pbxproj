@@ -392,6 +392,8 @@
 		7C973CFB1B5038580002A874 /* GUIDialogAudioDSPSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C973CF81B5038580002A874 /* GUIDialogAudioDSPSettings.cpp */; };
 		7C99B6A4133D342100FC2B16 /* CircularCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B6A2133D342100FC2B16 /* CircularCache.cpp */; };
 		7C99B7951340723F00FC2B16 /* GUIDialogPlayEject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B7931340723F00FC2B16 /* GUIDialogPlayEject.cpp */; };
+		7CA220071C921F74000FA3CD /* DemuxMultiSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CA220051C921F74000FA3CD /* DemuxMultiSource.cpp */; };
+		7CA220081C921F74000FA3CD /* DemuxMultiSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CA220051C921F74000FA3CD /* DemuxMultiSource.cpp */; };
 		7CAA20511079C8160096DE39 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */; };
 		7CAA25351085963B0096DE39 /* PasswordManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA25331085963B0096DE39 /* PasswordManager.cpp */; };
 		7CAA469019427AED00008885 /* PosixDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA468E19427AED00008885 /* PosixDirectory.cpp */; };
@@ -2862,6 +2864,8 @@
 		7C99B6A3133D342100FC2B16 /* CircularCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircularCache.h; sourceTree = "<group>"; };
 		7C99B7931340723F00FC2B16 /* GUIDialogPlayEject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPlayEject.cpp; sourceTree = "<group>"; };
 		7C99B7941340723F00FC2B16 /* GUIDialogPlayEject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPlayEject.h; sourceTree = "<group>"; };
+		7CA220051C921F74000FA3CD /* DemuxMultiSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DemuxMultiSource.cpp; sourceTree = "<group>"; };
+		7CA220061C921F74000FA3CD /* DemuxMultiSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemuxMultiSource.h; sourceTree = "<group>"; };
 		7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseRenderer.cpp; sourceTree = "<group>"; };
 		7CAA20501079C8160096DE39 /* BaseRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseRenderer.h; sourceTree = "<group>"; };
 		7CAA205B107AFC280096DE39 /* Job.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Job.h; sourceTree = "<group>"; };
@@ -7694,6 +7698,8 @@
 		E38E15480D25F9F900618676 /* DVDDemuxers */ = {
 			isa = PBXGroup;
 			children = (
+				7CA220061C921F74000FA3CD /* DemuxMultiSource.h */,
+				7CA220051C921F74000FA3CD /* DemuxMultiSource.cpp */,
 				7C4CED9F1C5E681E00BAD6CE /* DVDDemuxPacket.h */,
 				7CFC08361C5BA7D0000E5E73 /* DVDDemuxClient.cpp */,
 				7CFC08371C5BA7D0000E5E73 /* DVDDemuxClient.h */,
@@ -10052,6 +10058,7 @@
 				C84828E2156CFCD8005A996F /* GUIWindowPVRRecordings.cpp in Sources */,
 				C84828E3156CFCD8005A996F /* GUIWindowPVRSearch.cpp in Sources */,
 				C84828E4156CFCD8005A996F /* GUIWindowPVRTimers.cpp in Sources */,
+				7CA220071C921F74000FA3CD /* DemuxMultiSource.cpp in Sources */,
 				C84828F5156CFD5E005A996F /* Epg.cpp in Sources */,
 				C84828F6156CFD5E005A996F /* EpgContainer.cpp in Sources */,
 				C84828F7156CFD5E005A996F /* EpgDatabase.cpp in Sources */,
@@ -10860,6 +10867,7 @@
 				E4991351174E5EBE00741B6D /* FavouritesOperations.cpp in Sources */,
 				E4991352174E5EBE00741B6D /* FileItemHandler.cpp in Sources */,
 				E4991353174E5EBE00741B6D /* FileOperations.cpp in Sources */,
+				7CA220081C921F74000FA3CD /* DemuxMultiSource.cpp in Sources */,
 				E4991354174E5EBE00741B6D /* GUIOperations.cpp in Sources */,
 				E4991355174E5EBE00741B6D /* InputOperations.cpp in Sources */,
 				E4991356174E5EBE00741B6D /* JSONRPC.cpp in Sources */,

@@ -30,6 +30,7 @@ class IDVDPlayer;
 
 class InputStreamMultiStreams : public CDVDInputStream
 {
+  friend class CDemuxMultiSource;
 
 public:
   InputStreamMultiStreams(DVDStreamType type, CFileItem& fileitem)
