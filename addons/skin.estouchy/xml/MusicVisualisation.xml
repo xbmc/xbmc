@@ -2,7 +2,7 @@
 <window>
 	<defaultcontrol>-</defaultcontrol>
 	<onload>ActivateWindow(MusicOSD)</onload>
-	<onunload>ClearProperty(DropdownMenuVisible,Home)</onunload>
+	<onunload>ClearProperty(PopupMenuVisible,Home)</onunload>
 	<controls>
 		<control type="image">
 			<description>fanart</description>

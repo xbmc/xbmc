@@ -30,68 +30,84 @@
 			<include>VisibleFadeEffect</include>
 		</control>
 		<control type="group">
-			<posx>0</posx>
+			<posx>300</posx>
 			<posy>10</posy>
 			<include>VisibleFadeEffect</include>
 			<include>16x9_xPos_Relocation</include>
-			<visible>![Window.IsVisible(busydialog) | Window.IsVisible(extendedprogressdialog) | Window.IsVisible(Notification) | Window.IsVisible(volumebar) | Window.IsVisible(1112)]</visible>
-			<control type="label">
-				<posx>250</posx>
-				<posy>0</posy>
-				<width>180</width>
-				<height>32</height>
-				<font>font20_title</font>
-				<aligny>center</aligny>
-				<label>$INFO[Player.Time(hh:mm:ss)]</label>
+			<visible>![Window.IsVisible(busydialog) | Window.IsVisible(extendedprogressdialog) | Window.IsVisible(Notification) | Window.IsVisible(volumebar)]</visible>
+			<control type="button">
+				<description>Volume Button</description>
+				<posx>0</posx>
+				<posy>10</posy>
+				<width>40</width>
+				<height>40</height>
+				<label>-</label>
+				<texturenofocus>osd_volume.png</texturenofocus>
+				<texturefocus colordiffuse="blue">osd_volume.png</texturefocus>
+				<onclick>ActivateWindow(1112)</onclick>
 			</control>
-			<control type="label">
-				<posx>250</posx>
-				<posy>0</posy>
-				<width>780</width>
-				<height>32</height>
-				<font>font20_title</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<label>$VAR[SeekLabel]</label>
-			</control>
-			<control type="label">
-				<posx>1030</posx>
-				<posy>0</posy>
-				<width>180</width>
-				<height>32</height>
-				<font>font20_title</font>
-				<align>right</align>
-				<aligny>center</aligny>
-				<label>$INFO[Player.Duration(hh:mm:ss)]</label>
-			</control>
-			<control type="progress">
-				<description>Progressbar</description>
-				<posx>250</posx>
-				<posy>40</posy>
-				<width>780</width>
-				<height>12</height>
-				<info>Player.Cache</info>
-				<midtexture colordiffuse="grey2">white.png</midtexture>
-				<texturebg>-</texturebg>
-			</control>
-			<control type="progress">
-				<description>Progressbar</description>
-				<posx>250</posx>
-				<posy>40</posy>
-				<width>780</width>
-				<height>12</height>
-				<info>Player.Progress</info>
-			</control>
-			<control type="slider" id="87">
-				<description>Seek Slider</description>
-				<posx>250</posx>
-				<posy>30</posy>
-				<width>780</width>
-				<height>32</height>
-				<action>seek</action>
-				<texturesliderbar>-</texturesliderbar>
-				<textureslidernib>-</textureslidernib>
-				<textureslidernibfocus>-</textureslidernibfocus>
+			<control type="group">
+				<posx>64</posx>
+				<include>VisibleFadeEffect</include>
+				<visible>!Window.IsVisible(1112)</visible>
+				<control type="label">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>180</width>
+					<height>32</height>
+					<font>font20_title</font>
+					<aligny>center</aligny>
+					<label>$INFO[Player.Time(hh:mm:ss)]</label>
+				</control>
+				<control type="label">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>552</width>
+					<height>32</height>
+					<font>font20_title</font>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>$VAR[SeekLabel]</label>
+				</control>
+				<control type="label">
+					<posx>552</posx>
+					<posy>0</posy>
+					<width>180</width>
+					<height>32</height>
+					<font>font20_title</font>
+					<align>right</align>
+					<aligny>center</aligny>
+					<label>$INFO[Player.Duration(hh:mm:ss)]</label>
+				</control>
+				<control type="progress">
+					<description>Progressbar</description>
+					<posx>0</posx>
+					<posy>40</posy>
+					<width>552</width>
+					<height>12</height>
+					<info>Player.Cache</info>
+					<midtexture colordiffuse="grey2">white.png</midtexture>
+					<texturebg>-</texturebg>
+				</control>
+				<control type="progress">
+					<description>Progressbar</description>
+					<posx>0</posx>
+					<posy>40</posy>
+					<width>552</width>
+					<height>12</height>
+					<info>Player.Progress</info>
+				</control>
+				<control type="slider" id="87">
+					<description>Seek Slider</description>
+					<posx>0</posx>
+					<posy>30</posy>
+					<width>552</width>
+					<height>32</height>
+					<action>seek</action>
+					<texturesliderbar>-</texturesliderbar>
+					<textureslidernib>-</textureslidernib>
+					<textureslidernibfocus>-</textureslidernibfocus>
+				</control>
 			</control>
 		</control>
 		<control type="group">
@@ -117,6 +133,13 @@
 				<texturenofocus>icon_dialog_close.png</texturenofocus>
 			</control>
 		</control>
+		<control type="image">
+			<posx>0</posx>
+			<posy>80r</posy>
+			<include>ScreenWidth</include>
+			<height>80</height>
+			<texture flipy="true">header.png</texture>
+		</control>
 		<control type="group">
 			<posx>0</posx>
 			<posy>230r</posy>
@@ -135,25 +158,25 @@
 					<description>cover image</description>
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>150</width>
-					<height>150</height>
+					<width>230</width>
+					<height>230</height>
 					<texture>$VAR[OSDImage]</texture>
 					<aspectratio>keep</aspectratio>
 					<fadetime>IconCrossfadeTime</fadetime>
 				</control>
 				<control type="label">
-					<posx>170</posx>
-					<posy>5</posy>
-					<width>920</width>
+					<posx>250</posx>
+					<posy>10</posy>
+					<width>750</width>
 					<height>25</height>
 					<align>left</align>
-					<font>font20</font>
+					<font>font25</font>
 					<label>$VAR[OSDLabel1]</label>
 				</control>
 				<control type="label">
-					<posx>200</posx>
-					<posy>38</posy>
-					<width>1080</width>
+					<posx>280</posx>
+					<posy>50</posy>
+					<width>720</width>
 					<height>30</height>
 					<font>font30_title</font>
 					<align>left</align>
@@ -161,42 +184,42 @@
 					<label>$VAR[OSDLabel2]</label>
 				</control>
 				<control type="label">
-					<posx>170</posx>
-					<posy>70</posy>
-					<width>1110</width>
+					<posx>250</posx>
+					<posy>85</posy>
+					<width>750</width>
 					<height>25</height>
 					<align>left</align>
-					<font>font20</font>
+					<font>font24</font>
 					<label>$VAR[OSDLabel3]</label>
 				</control>
 				<control type="group">
-					<posx>170</posx>
-					<posy>100</posy>
-					<width>600</width>
-					<height>48</height>
+					<posx>275r</posx>
+					<posy>30</posy>
+					<width>275</width>
+					<height>100</height>
 					<visible>Window.IsVisible(MusicOSD)</visible>
 					<control type="image">
-						<description>Audio Codec Image</description>
+						<description>Rating</description>
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>100</width>
-						<height>44</height>
-						<texture>$INFO[MusicPlayer.Codec,flagging/audio/,.png]</texture>
-					</control>
-					<control type="image">
-						<description>Rating</description>
-						<posx>115</posx>
-						<posy>8</posy>
 						<width>256</width>
 						<height>32</height>
 						<texture fallback="rating/0.png">$INFO[MusicPlayer.UserRating,rating/,.png]</texture>
 					</control>
+					<control type="image">
+						<description>Audio Codec Image</description>
+						<posx>156</posx>
+						<posy>32</posy>
+						<width>100</width>
+						<height>44</height>
+						<texture>$INFO[MusicPlayer.Codec,flagging/audio/,.png]</texture>
+					</control>
 				</control>
 				<control type="group">
-					<posx>170</posx>
-					<posy>100</posy>
-					<width>600</width>
-					<height>48</height>
+					<posx>230r</posx>
+					<posy>30</posy>
+					<width>250</width>
+					<height>100</height>
 					<visible>Window.IsVisible(VideoOSD)</visible>
 					<control type="image">
 						<description>Video Codec Image</description>
@@ -216,16 +239,16 @@
 					</control>
 					<control type="image">
 						<description>Audio Codec Image</description>
-						<posx>230</posx>
-						<posy>0</posy>
+						<posx>0</posx>
+						<posy>40</posy>
 						<width>100</width>
 						<height>44</height>
 						<texture>$INFO[VideoPlayer.AudioCodec,flagging/audio/,.png]</texture>
 					</control>
 					<control type="image">
 						<description>Audio Codec Image</description>
-						<posx>345</posx>
-						<posy>0</posy>
+						<posx>115</posx>
+						<posy>40</posy>
 						<width>100</width>
 						<height>44</height>
 						<texture>$INFO[VideoPlayer.AudioChannels,flagging/audio/,.png]</texture>
@@ -243,7 +266,7 @@
 				</control>
 				<control type="label">
 					<posx>20r</posx>
-					<posy>115</posy>
+					<posy>122</posy>
 					<width>840</width>
 					<height>25</height>
 					<label>$VAR[OSDLabel5]</label>
@@ -255,13 +278,6 @@
 		</control>
 		<control type="group">
 			<posy>80r</posy>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<include>ScreenWidth</include>
-				<height>80</height>
-				<texture flipy="true">header.png</texture>
-			</control>
 			<control type="grouplist">
 				<posx>0</posx>
 				<posy>15</posy>
@@ -328,8 +344,8 @@
 				</control>
 			</control>
 		</control>
-		<include>MediaSubMenu</include>
-		<include name="DropdownMenu">
+		<include>BottomMenu</include>
+		<include name="PopupMenu">
 			<param name="panel-posy">0</param>
 			<param name="panel-height">560</param>
 		</include>

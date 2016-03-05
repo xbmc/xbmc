@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<defaultcontrol allways="true">6</defaultcontrol>
-	<onunload>ClearProperty(DropdownMenuVisible,Home)</onunload>
+	<onunload>ClearProperty(PopupMenuVisible,Home)</onunload>
 	<controls>
 		<include>CommonBackground</include>
-		<include>CommonBackgroundOverlay</include>
+		<include>Header</include>
 		<include>CommonNowPlaying</include>
+		<include>Footer</include>
 		<control type="label">
 			<description>Window label</description>
 			<include>MediaWindowTitleCommons</include>
@@ -279,7 +280,7 @@
 		</control>
 		<control type="panel" id="9002">
 			<include>VisibleFadeEffect</include>
-			<include>SubMenuCommonLayout</include>
+			<include>BottomMenuLayout</include>
 			<content>
 				<item>
 					<label>31200</label>
@@ -293,7 +294,7 @@
 				</item>
 			</content>
 		</control>
-		<include name="DropdownMenu">
+		<include name="PopupMenu">
 			<param name="panel-posy">320</param>
 			<param name="panel-height">240</param>
 		</include>

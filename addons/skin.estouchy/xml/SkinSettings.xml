@@ -3,9 +3,9 @@
 	<defaultcontrol>91</defaultcontrol>
 	<controls>
 		<include>CommonBackground</include>
-		<include>CommonBackgroundOverlay</include>
+		<include>Header</include>
 		<include>CommonNowPlaying</include>
-		<include>ScrollBarCommons</include>
+		<include>Header</include>
 		<control type="label">
 			<description>Window label</description>
 			<include>MediaWindowTitleCommons</include>
@@ -13,7 +13,7 @@
 		</control>
 		<control type="panel" id="9002">
 			<include>VisibleFadeEffect</include>
-			<include>SubMenuCommonLayout</include>
+			<include>BottomMenuLayout</include>
 			<content>
 				<item>
 					<label>31200</label>
@@ -542,5 +542,6 @@
 				</control>
 			</control>
 		</control>
+		<include>ScrollBarCommons</include>
 	</controls>
 </window>

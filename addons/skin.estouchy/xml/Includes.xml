@@ -48,6 +48,10 @@
 		<value condition="!IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
 		<value condition="IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Icon]</value>
 	</variable>
+	<variable name="PVRListLabel">
+		<value condition="![Window.IsVisible(TVChannels) | Window.IsVisible(RadioChannels)]">$INFO[ListItem.Label]</value>
+		<value condition="Window.IsVisible(TVChannels) | Window.IsVisible(RadioChannels)">$INFO[ListItem.Title]</value>
+	</variable>
 	<variable name="PVRSection">
 		<value condition="Window.IsVisible(TVChannels) | Window.IsVisible(TVGuide) | Window.IsVisible(TVRecordings) | Window.IsVisible(TVTimers) | Window.IsVisible(TVTimerRules) | Window.IsVisible(TVSearch)">$LOCALIZE[31556]</value>
 		<value condition="Window.IsVisible(RadioChannels) | Window.IsVisible(RadioGuide) | Window.IsVisible(RadioRecordings) | Window.IsVisible(RadioTimers) | Window.IsVisible(RadioTimerRules) | Window.IsVisible(RadioSearch)">$LOCALIZE[19021]</value>
@@ -79,6 +83,10 @@
 		<value condition="Player.Forwarding8x | Player.Rewinding8x">8x</value>
 		<value condition="Player.Forwarding16x | Player.Rewinding16x">16x</value>
 		<value condition="Player.Forwarding32x | Player.Rewinding32x">32x</value>
+	</variable>
+	<variable name="MediaPlayingTitle">
+		<value condition="Player.HasAudio">[B]$INFO[MusicPlayer.Title][/B]</value>
+		<value condition="Player.HasVideo">[B]$INFO[VideoPlayer.Title][/B]</value>
 	</variable>
 
 	<include name="ScreenWidth">
@@ -178,7 +186,7 @@
 			<visible>[!IsEmpty(ListItem.Art(fanart)) + !Player.HasMedia] | [!Skin.HasSetting(HideVizBackground) + Player.HasAudio] | [!Skin.HasSetting(HideVideoBackground) + Player.HasVideo + !Window.IsVisible(TVChannels) + !Window.IsVisible(RadioChannels) + !Window.IsVisible(TVGuide) + !Window.IsVisible(RadioGuide) + !Window.IsVisible(TVSearch) + !Window.IsVisible(RadioSearch) + !Window.IsVisible(TVTimers) + !Window.IsVisible(RadioTimers) + !Window.IsVisible(TVTimerRules) + !Window.IsVisible(RadioTimerRules) + !Window.IsVisible(TVRecordings) + !Window.IsVisible(RadioRecordings)]</visible>
 		</control>
 	</include>
-	<include name="CommonBackgroundOverlay">
+	<include name="Header">
 		<control type="group">
 			<include>VisibleFadeEffect</include>
 			<control type="image">
@@ -208,42 +216,19 @@
 				<texture>kodi_logo.png</texture>
 				<include>VisibleFadeEffect</include>
 			</control>
-			<control type="image">
-				<posx>0</posx>
-				<posy>80r</posy>
-				<include>ScreenWidth</include>
-				<height>80</height>
-				<texture flipy="true">header.png</texture>
-			</control>
-			<control type="rss">
-				<posx>0</posx>
-				<posy>58r</posy>
-				<height>30</height>
-				<include>ScreenWidth</include>
-				<font>font24_title</font>
-				<urlset>1</urlset>
-				<textcolor>white</textcolor>
-				<titlecolor>blue</titlecolor>
-				<headlinecolor>FFC0C0C0</headlinecolor>
-				<include>Window_OpenClose_Animation</include>
-				<visible>Window.IsVisible(Home)</visible>
-			</control>
-			<control type="image">
-				<description>Window label Position Image</description>
-				<posx>10</posx>
-				<posy>58r</posy>
-				<width>40</width>
-				<height>40</height>
-				<aspectratio>keep</aspectratio>
-				<texture>$VAR[Breadcrumb-Icon]</texture>
-				<colordiffuse>blue</colordiffuse>
-				<visible>!Window.IsVisible(Home)</visible>
-				<animation effect="fade" time="200" condition="Window.Previous(Home)">WindowOpen</animation>
-				<animation effect="fade" time="200" condition="Window.Next(Home)">WindowClose</animation>
-			</control>
+		</control>
+		<control type="button">
+			<posx>370r</posx>
+			<posy>16</posy>
+			<height>45</height>
+			<width>145</width>
+			<font>-</font>
+			<texturefocus>-</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<onclick>ActivateWindow(weather)</onclick>
+			<visible>!IsEmpty(Window(Weather).Property(Current.Temperature)) + !Player.HasMedia</visible>
 		</control>
 		<control type="grouplist">
-			<!-- weather & time -->
 			<include>VisibleFadeEffect</include>
 			<posx>415r</posx>
 			<posy>16</posy>
@@ -272,8 +257,43 @@
 			</control>
 		</control>
 	</include>
+	<include name="Footer">
+		<control type="image">
+			<posx>0</posx>
+			<posy>80r</posy>
+			<include>ScreenWidth</include>
+			<height>80</height>
+			<texture flipy="true">header.png</texture>
+		</control>
+		<control type="rss">
+			<posx>0</posx>
+			<posy>58r</posy>
+			<height>30</height>
+			<include>ScreenWidth</include>
+			<font>font24_title</font>
+			<urlset>1</urlset>
+			<textcolor>white</textcolor>
+			<titlecolor>blue</titlecolor>
+			<headlinecolor>FFC0C0C0</headlinecolor>
+			<include>Window_OpenClose_Animation</include>
+			<visible>Window.IsVisible(Home)</visible>
+		</control>
+		<control type="image">
+			<description>Window Icon</description>
+			<posx>10</posx>
+			<posy>58r</posy>
+			<width>40</width>
+			<height>40</height>
+			<aspectratio>keep</aspectratio>
+			<texture>$VAR[Breadcrumb-Icon]</texture>
+			<colordiffuse>blue</colordiffuse>
+			<visible>!Window.IsVisible(Home)</visible>
+			<animation effect="fade" time="200" condition="Window.Previous(Home)">WindowOpen</animation>
+			<animation effect="fade" time="200" condition="Window.Next(Home)">WindowClose</animation>
+		</control>
+	</include>
 	<include name="WeatherIcon">
-		<control type="button">
+		<control type="label">
 			<description>Weather label</description>
 			<height>45</height>
 			<width>100</width>
@@ -281,13 +301,10 @@
 			<textcolor>white</textcolor>
 			<align>right</align>
 			<animation effect="fade" time="300">VisibleChange</animation>
-			<texturefocus>-</texturefocus>
-			<texturenofocus>-</texturenofocus>
 			<aligny>center</aligny>
 			<textoffsetx>0</textoffsetx>
-			<onclick>ActivateWindow(weather)</onclick>
 			<label>$INFO[Window(Weather).Property(Current.Temperature)]$INFO[System.TemperatureUnits]</label>
-			<visible>!IsEmpty(Window(Weather).Property(Current.Temperature))</visible>
+			<visible>!IsEmpty(Window(Weather).Property(Current.Temperature)) + !Player.HasMedia</visible>
 		</control>
 		<control type="image">
 			<description>Weather</description>
@@ -297,7 +314,7 @@
 			<aspectratio align="left">keep</aspectratio>
 			<texture colordiffuse="blue">weather/$INFO[Window(Weather).Property(Current.FanartCode)].png</texture>
 			<animation effect="fade" time="300">VisibleChange</animation>
-			<visible>!IsEmpty(Window(Weather).Property(Current.Temperature))</visible>
+			<visible>!IsEmpty(Window(Weather).Property(Current.Temperature)) + !Player.HasMedia</visible>
 		</control>
 	</include>
 	<include name="BehindDialogFadeOut">
@@ -314,7 +331,7 @@
 	<include name="MediaWindowTitleCommons">
 		<posx>65</posx>
 		<posy>70r</posy>
-		<width>610</width>
+		<width>730</width>
 		<height>64</height>
 		<align>left</align>
 		<aligny>center</aligny>
@@ -381,7 +398,7 @@
 			<texturenofocus>icon_dialog_close.png</texturenofocus>
 		</control>
 	</include>
-	<include name="MediaSubMenu">
+	<include name="BottomMenu">
 		<control type="button" id="2">
 			<description>View button needed for panel below to work</description>
 			<visible>false</visible>
@@ -396,21 +413,27 @@
 		</control>
 		<control type="panel" id="9002">
 			<include>VisibleFadeEffect</include>
-			<include>SubMenuCommonLayout</include>
+			<include>BottomMenuLayout</include>
 			<content>
+				<item>
+					<label>31200</label>
+					<onclick condition="Window.IsVisible(MusicOSD) | Window.IsVisible(VideoOSD)">Dialog.Close(all,true)</onclick>
+					<onclick>ParentDir</onclick>
+					<icon>icon_button_back.png</icon>
+				</item>
 				<item>
 					<label>587</label>
 					<onclick condition="!Container.CanFilterAdvanced">SendClick(19)</onclick>
 					<onclick condition="Container.CanFilterAdvanced">Filter</onclick>
 					<icon>icon_button_filter.png</icon>
-					<visible>!Container.Filtered + ![Window.IsVisible(TVChannels) | Window.IsVisible(RadioChannels) | Window.IsVisible(TVRecordings) | Window.IsVisible(RadioRecordings) | Window.IsVisible(TVTimers) | Window.IsVisible(RadioTimers) | Window.IsVisible(TVTimerRules) | Window.IsVisible(RadioTimerRules) | Window.IsVisible(TVSearch) | Window.IsVisible(RadioSearch) | Window.IsVisible(MusicOSD) | Window.IsVisible(VideoOSD)]</visible>
+					<visible>!Container.Filtered + ![Window.IsVisible(TVChannels) | Window.IsVisible(RadioChannels) | Window.IsVisible(TVRecordings) | Window.IsVisible(RadioRecordings) | Window.IsVisible(TVTimers) | Window.IsVisible(RadioTimers) | Window.IsVisible(TVTimerRules) | Window.IsVisible(RadioTimerRules) | Window.IsVisible(TVSearch) | Window.IsVisible(RadioSearch) | Window.IsVisible(MusicOSD) | Window.IsVisible(VideoOSD) | Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist)]</visible>
 				</item>
 				<item>
 					<label>587</label>
 					<onclick condition="!Container.CanFilterAdvanced">SendClick(19)</onclick>
 					<onclick condition="Container.CanFilterAdvanced">Filter</onclick>
 					<icon>icon_button_filtered.png</icon>
-					<visible>Container.Filtered + ![Window.IsVisible(TVChannels) | Window.IsVisible(RadioChannels) | Window.IsVisible(TVRecordings) | Window.IsVisible(RadioRecordings) | Window.IsVisible(TVTimers) | Window.IsVisible(RadioTimers) | Window.IsVisible(TVTimerRules) | Window.IsVisible(RadioTimerRules) | Window.IsVisible(TVSearch) | Window.IsVisible(RadioSearch) | Window.IsVisible(MusicOSD) | Window.IsVisible(VideoOSD)]</visible>
+					<visible>Container.Filtered + ![Window.IsVisible(TVChannels) | Window.IsVisible(RadioChannels) | Window.IsVisible(TVRecordings) | Window.IsVisible(RadioRecordings) | Window.IsVisible(TVTimers) | Window.IsVisible(RadioTimers) | Window.IsVisible(TVTimerRules) | Window.IsVisible(RadioTimerRules) | Window.IsVisible(TVSearch) | Window.IsVisible(RadioSearch) | Window.IsVisible(MusicOSD) | Window.IsVisible(VideoOSD) | Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist)]</visible>
 				</item>
 				<item>
 					<label>587</label>
@@ -423,30 +446,19 @@
 					<onclick condition="![Window.IsVisible(TVGuide) | Window.IsVisible(RadioGuide)]">Container.NextViewMode</onclick>
 					<onclick condition="Window.IsVisible(TVGuide) | Window.IsVisible(RadioGuide)">SendClick(2)</onclick>
 					<icon>icon_button_view.png</icon>
-					<visible>![Window.IsVisible(TVChannels) | Window.IsVisible(RadioChannels) | Window.IsVisible(TVRecordings) | Window.IsVisible(RadioRecordings) | Window.IsVisible(TVTimers) | Window.IsVisible(RadioTimers) | Window.IsVisible(TVTimerRules) | Window.IsVisible(RadioTimerRules) | Window.IsVisible(TVSearch) | Window.IsVisible(RadioSearch) | Window.IsVisible(MusicOSD) | Window.IsVisible(VideoOSD)]</visible>
-				</item>
-				<item>
-					<label>31200</label>
-					<onclick condition="Window.IsVisible(MusicOSD) | Window.IsVisible(VideoOSD)">Dialog.Close(all,true)</onclick>
-					<onclick>ParentDir</onclick>
-					<icon>icon_button_back.png</icon>
-				</item>
-				<item>
-					<label>1036</label>
-					<onclick>ActivateWindow(Favourites)</onclick>
-					<icon>icon_button_favourites.png</icon>
-					<visible>![Window.IsVisible(MusicOSD) | Window.IsVisible(VideoOSD)]</visible>
+					<visible>![Window.IsVisible(TVChannels) | Window.IsVisible(RadioChannels) | Window.IsVisible(TVRecordings) | Window.IsVisible(RadioRecordings) | Window.IsVisible(TVTimers) | Window.IsVisible(RadioTimers) | Window.IsVisible(TVTimerRules) | Window.IsVisible(RadioTimerRules) | Window.IsVisible(TVSearch) | Window.IsVisible(RadioSearch) | Window.IsVisible(MusicOSD) | Window.IsVisible(VideoOSD) | Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist)]</visible>
 				</item>
 				<item>
 					<label>5</label>
-					<onclick condition="IsEmpty(Window(Home).Property(DropdownMenuVisible))">SetProperty(DropdownMenuVisible,Show,Home)</onclick>
-					<onclick condition="!IsEmpty(Window(Home).Property(DropdownMenuVisible))">ClearProperty(DropdownMenuVisible,Home)</onclick>
+					<onclick condition="IsEmpty(Window(Home).Property(PopupMenuVisible))">SetProperty(PopupMenuVisible,Show,Home)</onclick>
+					<onclick condition="!IsEmpty(Window(Home).Property(PopupMenuVisible))">ClearProperty(PopupMenuVisible,Home)</onclick>
 					<icon>icon_button_settings.png</icon>
+					<visible>![Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist)]</visible>
 				</item>
 			</content>
 		</control>
 	</include>
-	<include name="SubMenuCommonLayout">
+	<include name="BottomMenuLayout">
 		<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(Home)">WindowClose</animation>
 		<animation effect="fade" end="100" start="0" time="300" condition="Window.Previous(Home)">WindowOpen</animation>
 		<animation effect="slide" start="0,0" end="120,0" time="0" condition="StringCompare(Container(9002).NumItems,5)">conditional</animation>
@@ -552,11 +564,11 @@
 	</include>
 	<include name="CommonNowPlaying">
 		<control type="group">
-			<posx>390</posx>
+			<posx>300</posx>
 			<posy>0</posy>
 			<include>VisibleFadeEffect</include>
 			<include>16x9_xPos_Relocation</include>
-			<visible>Player.HasMedia + ![Window.IsVisible(busydialog) | Window.IsVisible(Notification) | Window.IsVisible(volumebar) | Window.IsVisible(1112)]</visible>
+			<visible>Player.HasMedia + ![Window.IsVisible(busydialog) | Window.IsVisible(Notification) | Window.IsVisible(volumebar)]</visible>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>
@@ -565,9 +577,28 @@
 				<texture border="2">separator.png</texture>
 				<colordiffuse>FF464646</colordiffuse>
 			</control>
+			<control type="button">
+				<description>Volume Button</description>
+				<posx>13</posx>
+				<posy>20</posy>
+				<width>40</width>
+				<height>40</height>
+				<label>-</label>
+				<texturenofocus>osd_volume.png</texturenofocus>
+				<texturefocus colordiffuse="blue">osd_volume.png</texturefocus>
+				<onclick>ActivateWindow(1112)</onclick>
+			</control>
+			<control type="image">
+				<posx>64</posx>
+				<posy>0</posy>
+				<width>2</width>
+				<height>78</height>
+				<texture border="2">separator.png</texture>
+				<colordiffuse>FF464646</colordiffuse>
+			</control>
 			<control type="togglebutton">
 				<description>Play Button</description>
-				<posx>13</posx>
+				<posx>77</posx>
 				<posy>20</posy>
 				<width>40</width>
 				<height>40</height>
@@ -580,104 +611,107 @@
 				<onclick>PlayerControl(Play)</onclick>
 			</control>
 			<control type="image">
-				<posx>64</posx>
+				<posx>128</posx>
 				<posy>0</posy>
 				<width>2</width>
 				<height>78</height>
 				<texture border="2">separator.png</texture>
 				<colordiffuse>FF464646</colordiffuse>
 			</control>
-			<control type="progress">
-				<description>Progressbar</description>
-				<posx>66</posx>
-				<posy>73</posy>
-				<width>368</width>
-				<height>5</height>
-				<info>Player.Progress</info>
-				<texturebg colordiffuse="grey3">white.png</texturebg>
-				<midtexture colordiffuse="blue">white.png</midtexture>
-			</control>
-			<control type="button">
-				<posx>76</posx>
-				<posy>0</posy>
-				<width>348</width>
-				<height>80</height>
-				<texturefocus>-</texturefocus>
-				<texturenofocus>-</texturenofocus>
-				<onclick condition="Player.HasAudio">ActivateWindow(Visualisation)</onclick>
-				<onclick condition="Player.HasVideo">ActivateWindow(FullscreenVideo)</onclick>
-			</control>
-			<control type="fadelabel">
-				<posx>70</posx>
-				<posy>16</posy>
-				<width>360</width>
-				<height>20</height>
-				<scrollout>false</scrollout>
-				<pauseatend>3000</pauseatend>
-				<label>[B]$INFO[MusicPlayer.Title]$INFO[VideoPlayer.Title][/B]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<font>font20</font>
-				<textcolor>blue</textcolor>
-			</control>
-			<control type="fadelabel">
-				<posx>70</posx>
-				<posy>45</posy>
-				<width>360</width>
-				<height>15</height>
-				<scrollout>false</scrollout>
-				<pauseatend>3000</pauseatend>
-				<label>[B]$INFO[MusicPlayer.Artist][/B]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<font>font20</font>
-				<textcolor>white</textcolor>
-				<visible>Player.HasAudio</visible>
-			</control>
-			<control type="fadelabel">
-				<posx>70</posx>
-				<posy>45</posy>
-				<width>360</width>
-				<height>15</height>
-				<scrollout>false</scrollout>
-				<pauseatend>3000</pauseatend>
-				<label>[B]$INFO[VideoPlayer.Year] - $INFO[VideoPlayer.Duration][/B]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<font>font20</font>
-				<textcolor>white</textcolor>
-				<visible>Player.HasVideo + VideoPlayer.Content(Movies)</visible>
-			</control>
-			<control type="fadelabel">
-				<posx>70</posx>
-				<posy>45</posy>
-				<width>360</width>
-				<height>15</height>
-				<scrollout>false</scrollout>
-				<pauseatend>3000</pauseatend>
-				<label>[B]$INFO[VideoPlayer.TVShowTitle][/B]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<font>font20</font>
-				<textcolor>white</textcolor>
-				<visible>Player.HasVideo + VideoPlayer.Content(Episodes)</visible>
-			</control>
-			<control type="fadelabel">
-				<posx>70</posx>
-				<posy>45</posy>
-				<width>360</width>
-				<height>15</height>
-				<scrollout>false</scrollout>
-				<pauseatend>3000</pauseatend>
-				<label>[B]$INFO[VideoPlayer.Artist][/B]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<font>font20</font>
-				<textcolor>white</textcolor>
-				<visible>Player.HasVideo + VideoPlayer.Content(MusicVideos)</visible>
+			<control type="group">
+				<visible>!Window.IsVisible(1112)</visible>
+				<control type="progress">
+					<description>Progressbar</description>
+					<posx>130</posx>
+					<posy>73</posy>
+					<width>420</width>
+					<height>5</height>
+					<info>Player.Progress</info>
+					<texturebg colordiffuse="grey3">white.png</texturebg>
+					<midtexture colordiffuse="blue">white.png</midtexture>
+				</control>
+				<control type="button">
+					<posx>140</posx>
+					<posy>0</posy>
+					<width>400</width>
+					<height>80</height>
+					<texturefocus>-</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<onclick condition="Player.HasAudio">ActivateWindow(Visualisation)</onclick>
+					<onclick condition="Player.HasVideo">ActivateWindow(FullscreenVideo)</onclick>
+				</control>
+				<control type="fadelabel">
+					<posx>134</posx>
+					<posy>16</posy>
+					<width>412</width>
+					<height>20</height>
+					<scrollout>false</scrollout>
+					<pauseatend>3000</pauseatend>
+					<label>$VAR[MediaPlayingTitle]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font20</font>
+					<textcolor>blue</textcolor>
+				</control>
+				<control type="fadelabel">
+					<posx>134</posx>
+					<posy>45</posy>
+					<width>412</width>
+					<height>15</height>
+					<scrollout>false</scrollout>
+					<pauseatend>3000</pauseatend>
+					<label>[B]$INFO[MusicPlayer.Artist][/B]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font20</font>
+					<textcolor>white</textcolor>
+					<visible>Player.HasAudio</visible>
+				</control>
+				<control type="fadelabel">
+					<posx>134</posx>
+					<posy>45</posy>
+					<width>412</width>
+					<height>15</height>
+					<scrollout>false</scrollout>
+					<pauseatend>3000</pauseatend>
+					<label>[B]$INFO[VideoPlayer.Year] - $INFO[VideoPlayer.Duration][/B]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font20</font>
+					<textcolor>white</textcolor>
+					<visible>Player.HasVideo + VideoPlayer.Content(Movies)</visible>
+				</control>
+				<control type="fadelabel">
+					<posx>134</posx>
+					<posy>45</posy>
+					<width>412</width>
+					<height>15</height>
+					<scrollout>false</scrollout>
+					<pauseatend>3000</pauseatend>
+					<label>[B]$INFO[VideoPlayer.TVShowTitle][/B]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font20</font>
+					<textcolor>white</textcolor>
+					<visible>Player.HasVideo + VideoPlayer.Content(Episodes)</visible>
+				</control>
+				<control type="fadelabel">
+					<posx>134</posx>
+					<posy>45</posy>
+					<width>412</width>
+					<height>15</height>
+					<scrollout>false</scrollout>
+					<pauseatend>3000</pauseatend>
+					<label>[B]$INFO[VideoPlayer.Artist][/B]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font20</font>
+					<textcolor>white</textcolor>
+					<visible>Player.HasVideo + VideoPlayer.Content(MusicVideos)</visible>
+				</control>
 			</control>
 			<control type="image">
-				<posx>434</posx>
+				<posx>550</posx>
 				<posy>0</posy>
 				<width>2</width>
 				<height>78</height>
@@ -686,17 +720,36 @@
 			</control>
 			<control type="button">
 				<description>Next Button</description>
-				<posx>447</posx>
+				<posx>563</posx>
 				<posy>20</posy>
 				<width>40</width>
 				<height>40</height>
 				<label>-</label>
 				<texturenofocus>osd_next.png</texturenofocus>
-				<texturefocus colordiffuse="blue">osd_ext.png</texturefocus>
+				<texturefocus colordiffuse="blue">osd_next.png</texturefocus>
 				<onclick>PlayerControl(Next)</onclick>
 			</control>
 			<control type="image">
-				<posx>498</posx>
+				<posx>614</posx>
+				<posy>0</posy>
+				<width>2</width>
+				<height>78</height>
+				<texture border="2">separator.png</texture>
+				<colordiffuse>FF464646</colordiffuse>
+			</control>
+			<control type="button">
+				<description>Stop Button</description>
+				<posx>627</posx>
+				<posy>20</posy>
+				<width>40</width>
+				<height>40</height>
+				<label>-</label>
+				<texturenofocus>osd_stop.png</texturenofocus>
+				<texturefocus colordiffuse="blue">osd_stop.png</texturefocus>
+				<onclick>PlayerControl(Stop)</onclick>
+			</control>
+			<control type="image">
+				<posx>678</posx>
 				<posy>0</posy>
 				<width>2</width>
 				<height>78</height>
@@ -734,7 +787,7 @@
 			</control>
 		</control>
 	</include>
-	<include name="MediaBladeLeft">
+	<include name="SideMenu">
 		<control type="group">
 			<posx>0</posx>
 			<posy>80</posy>
@@ -1036,9 +1089,9 @@
 		<align>center</align>
 		<aligny>center</aligny>
 	</include>
-	<include name="DropdownMenu">
+	<include name="PopupMenu">
 		<control type="group">
-			<visible>!IsEmpty(Window(Home).Property(DropdownMenuVisible))</visible>
+			<visible>!IsEmpty(Window(Home).Property(PopupMenuVisible))</visible>
 			<include>VisibleFadeEffect</include>
 			<animation effect="fade" time="250">WindowClose</animation>
 			<control type="button">
@@ -1049,7 +1102,7 @@
 				<height>960</height>
 				<texturenofocus>-</texturenofocus>
 				<texturefocus>-</texturefocus>
-				<onclick>ClearProperty(DropdownMenuVisible,Home)</onclick>
+				<onclick>ClearProperty(PopupMenuVisible,Home)</onclick>
 			</control>
 			<control type="group">
 				<posx>360r</posx>
@@ -1196,7 +1249,7 @@
 			<textwidth>240</textwidth>
 			<label>589</label>
 			<include>MenuButtonCommonValues</include>
-			<onclick>ClearProperty(DropdownMenuVisible,Home)</onclick>
+			<onclick>ClearProperty(PopupMenuVisible,Home)</onclick>
 		</control>
 		<control type="button" id="1467">
 			<description>Current Playlist</description>
@@ -1309,13 +1362,13 @@
 			<description>Slideshow</description>
 			<include>MenuButtonCommonValues</include>
 			<label>108</label>
-			<onclick>ClearProperty(DropdownMenuVisible,Home)</onclick>
+			<onclick>ClearProperty(PopupMenuVisible,Home)</onclick>
 		</control>
 		<control type="button" id="7">
 			<description>Recersive Slideshow</description>
 			<include>MenuButtonCommonValues</include>
 			<label>361</label>
-			<onclick>ClearProperty(DropdownMenuVisible,Home)</onclick>
+			<onclick>ClearProperty(PopupMenuVisible,Home)</onclick>
 		</control>
 		<control type="radiobutton" id="9">
 			<description>Randomize Toggle</description>

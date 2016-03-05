@@ -14,28 +14,28 @@
 			<visible>![Window.IsVisible(Notification) | Window.IsVisible(VolumeBar)]</visible>
 		</control>
 		<control type="group">
-			<posx>390</posx>
+			<posx>430</posx>
 			<posy>0</posy>
-			<width>500</width>
+			<width>420</width>
 			<height>78</height>
 			<include>16x9_xPos_Relocation</include>
 			<visible>![Window.IsVisible(Notification) | Window.IsVisible(VolumeBar)]</visible>
 			<control type="label">
 				<description>label</description>
-				<posx>0</posx>
+				<posx>20</posx>
 				<posy>10</posy>
 				<height>58</height>
-				<width>500</width>
+				<width>400</width>
 				<label>13376</label>
 				<font>font20_title</font>
 				<aligny>center</aligny>
 			</control>
 			<control type="label">
 				<description>Volumelabel</description>
-				<posx>500</posx>
+				<posx>400</posx>
 				<posy>10</posy>
 				<height>58</height>
-				<width>500</width>
+				<width>400</width>
 				<label>$INFO[Control.GetLabel(1)]</label>
 				<font>font20_title</font>
 				<align>right</align>
@@ -45,7 +45,7 @@
 				<description>Volume</description>
 				<posx>0</posx>
 				<posy>68</posy>
-				<width>500</width>
+				<width>420</width>
 				<height>10</height>
 				<texturebg colordiffuse="grey3">white.png</texturebg>
 				<midtexture colordiffuse="blue">white.png</midtexture>
@@ -55,7 +55,7 @@
 				<description>Volume Slider</description>
 				<posx>0</posx>
 				<posy>10</posy>
-				<width>500</width>
+				<width>420</width>
 				<height>80</height>
  				<info>Player.Volume</info>
 				<action>Volume</action>
