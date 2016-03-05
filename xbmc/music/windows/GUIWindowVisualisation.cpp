@@ -92,7 +92,6 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
       if (!m_bShowPreset)
       {
         m_lockedTimer.StartZero();
-        g_infoManager.SetShowCodec(true);
       }
       passToVis = true;
     }
@@ -101,7 +100,6 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     {
       if (!m_lockedTimer.IsRunning() || m_bShowPreset)
         m_bShowPreset = !m_bShowPreset;
-      g_infoManager.SetShowCodec(m_bShowPreset);
       return true;
     }
     break;
@@ -180,7 +178,6 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       }
 
       // hide or show the preset button(s)
-      g_infoManager.SetShowCodec(m_bShowPreset);
       g_infoManager.SetShowInfo(true);  // always show the info initially.
       CGUIWindow::OnMessage(message);
       if (g_infoManager.GetCurrentSongTag())
@@ -246,10 +243,6 @@ void CGUIWindowVisualisation::FrameMove()
   if (m_lockedTimer.IsRunning() && m_lockedTimer.GetElapsedSeconds() > START_FADE_LENGTH)
   {
     m_lockedTimer.Stop();
-    if (!m_bShowPreset)
-    {
-      g_infoManager.SetShowCodec(false);
-    }
   }
   CGUIWindow::FrameMove();
 }
