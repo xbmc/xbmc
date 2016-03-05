@@ -7,8 +7,8 @@ set(SOURCES DVDFactoryInputStream.cpp
             DVDInputStreamPVRManager.cpp
             DVDInputStreamRTMP.cpp
             DVDInputStreamStack.cpp
-            InputStreamAddon.cpp
-            DVDStateSerializer.cpp)
+            DVDStateSerializer.cpp
+            InputStreamAddon.cpp)
 
 set(HEADERS DVDFactoryInputStream.h
             DVDInputStream.h
@@ -22,7 +22,8 @@ set(HEADERS DVDFactoryInputStream.h
             InputStreamAddon.h
             DVDStateSerializer.h
             DllDvdNav.h
-            DllLibRTMP.h)
+            DllLibRTMP.h
+            InputStreamAddon.h)
 
 if(BLURAY_FOUND)
   list(APPEND SOURCES DVDInputStreamBluray.cpp)
