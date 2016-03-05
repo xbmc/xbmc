@@ -71,6 +71,9 @@ if(CMAKE_TOOLCHAIN_FILE)
   endif()
 endif()
 
+# Main cpp
+set(CORE_MAIN_SOURCE ${CORE_SOURCE_DIR}/xbmc/platform/posix/main.cpp)
+
 # system specific arch setup
 include(${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/archsetup.cmake)
 

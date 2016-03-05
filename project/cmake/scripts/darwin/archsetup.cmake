@@ -2,6 +2,10 @@ if(NOT CMAKE_TOOLCHAIN_FILE)
   message(FATAL_ERROR "CMAKE_TOOLCHAIN_FILE required for darwin. See ${PROJECT_SOURCE_DIR}/README.md")
 endif()
 
+set(CORE_MAIN_SOURCE ${CORE_SOURCE_DIR}/xbmc/platform/posix/main.cpp
+                     ${CORE_SOURCE_DIR}/xbmc/platform/darwin/osx/SDLMain.mm
+                     ${CORE_SOURCE_DIR}/xbmc/platform/darwin/osx/SDLMain.h)
+
 set(ARCH_DEFINES -D_LINUX -DTARGET_POSIX -DTARGET_DARWIN)
 if(CORE_SYSTEM_NAME STREQUAL "darwin")
   list(APPEND ARCH_DEFINES -DTARGET_DARWIN_OSX)

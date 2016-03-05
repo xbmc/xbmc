@@ -306,7 +306,7 @@ endif()
 set(OTHER_FILES README.md)
 
 # main binary
-add_executable(${APP_NAME_LC} ${CORE_SOURCE_DIR}/xbmc/platform/posix/main.cpp $<TARGET_OBJECTS:compileinfo> "${RESOURCES}" ${OTHER_FILES})
+add_executable(${APP_NAME_LC} ${CORE_MAIN_SOURCE} $<TARGET_OBJECTS:compileinfo> "${RESOURCES}" ${OTHER_FILES})
 target_link_libraries(${APP_NAME_LC} ${SYSTEM_LDFLAGS} ${LD_WHOLEARCHIVE_BEGIN} ${core_DEPENDS} ${LD_WHOLEARCHIVE_END}
                       ${DEPLIBS} ${CMAKE_DL_LIBS})
 add_dependencies(${APP_NAME_LC} export-files)
