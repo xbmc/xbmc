@@ -42,6 +42,11 @@ namespace XBMCAddon
       delete infoTag;
     }
 
+    int InfoTagVideo::getDbId()
+    {
+      return infoTag->m_iDbId;
+    }
+
     String InfoTagVideo::getDirector()
     {
       return StringUtils::Join(infoTag->m_director, g_advancedSettings.m_videoItemSeparator);

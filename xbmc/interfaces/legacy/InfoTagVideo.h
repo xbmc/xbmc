@@ -40,6 +40,10 @@ namespace XBMCAddon
       virtual ~InfoTagVideo();
 
       /**
+       * getDbId() - returns an integer.
+       */
+      int getDbId();
+      /**
        * getDirector() - returns a string.
        */
       String getDirector();
