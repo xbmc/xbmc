@@ -27,7 +27,7 @@
 // What sound does a python screensaver make?
 #define SCRIPT_ALARM "sssssscreensaver"
 
-#define SCRIPT_TIMEOUT 5 // seconds
+#define SCRIPT_TIMEOUT 15 // seconds
 
 namespace ADDON
 {
@@ -108,6 +108,10 @@ void CScreenSaver::Destroy()
 #ifdef HAS_PYTHON
   if (URIUtils::HasExtension(LibPath(), ".py"))
   {
+    /* FIXME: This is a hack but a proper fix is non-trivial. Basically this code
+     * makes sure the addon gets terminated after we've moved out of the screensaver window.
+     * If we don't do this, we may simply lockup.
+     */
     g_alarmClock.Start(SCRIPT_ALARM, SCRIPT_TIMEOUT, "StopScript(" + LibPath() + ")", true, false);
     return;
   }
