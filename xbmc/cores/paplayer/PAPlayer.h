@@ -60,7 +60,6 @@ public:
   virtual void SetDynamicRangeCompression(long drc);
   virtual void GetAudioInfo( std::string& strAudioInfo) {}
   virtual void GetVideoInfo( std::string& strVideoInfo) {}
-  virtual void GetGeneralInfo( std::string& strVideoInfo) {}
   virtual void ToFFRW(int iSpeed = 0);
   virtual int GetCacheLevel() const;
   virtual int64_t GetTotalTime();

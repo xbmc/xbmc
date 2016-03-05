@@ -4967,11 +4967,6 @@ bool CVideoPlayer::RenderCaptureGetPixels(unsigned int captureId, unsigned int m
   return m_renderManager.RenderCaptureGetPixels(captureId, millis, buffer, size);
 }
 
-std::string CVideoPlayer::GetRenderVSyncState()
-{
-  return m_renderManager.GetVSyncState();
-}
-
 void CVideoPlayer::VideoParamsChange()
 {
   m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_AVCHANGE));

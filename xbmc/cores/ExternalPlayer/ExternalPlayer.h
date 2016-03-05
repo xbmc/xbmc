@@ -55,7 +55,6 @@ public:
   virtual void SetBrightness(bool bPlus) {}
   virtual void SetHue(bool bPlus) {}
   virtual void SetSaturation(bool bPlus) {}
-  virtual void GetGeneralInfo(std::string& strVideoInfo);
   virtual void SwitchToNextAudioLanguage();
   virtual bool CanRecord() { return false; }
   virtual bool IsRecording() { return false; }

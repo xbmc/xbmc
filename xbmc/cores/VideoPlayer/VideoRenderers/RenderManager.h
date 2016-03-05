@@ -99,7 +99,6 @@ public:
   static float GetMaximumFPS();
   double GetDisplayLatency() { return m_displayLatency; }
   int GetSkippedFrames()  { return m_QueueSkip; }
-  std::string GetVSyncState();
 
   // Functions called from mplayer
   /**
@@ -170,8 +169,8 @@ protected:
   bool Configure();
   void CreateRenderer();
   void DeleteRenderer();
-
   void ManageCaptures();
+  std::string GetVSyncState();
 
   CBaseRenderer *m_pRenderer;
   OVERLAY::CRenderer m_overlays;
