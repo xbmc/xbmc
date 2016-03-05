@@ -5954,7 +5954,16 @@ bool CMusicDatabase::GetArtistArtForItem(int mediaId, const std::string &mediaTy
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS2.get()) return false; // using dataset 2 as we're likely called in loops on dataset 1
 
-    std::string sql = PrepareSQL("SELECT type,url FROM art WHERE media_id=(SELECT idArtist from %s_artist WHERE id%s=%i AND iOrder=0) AND media_type='artist'", mediaType.c_str(), mediaType.c_str(), mediaId);
+    std::string sql;
+    if (mediaType == MediaTypeAlbum)
+      sql = PrepareSQL("SELECT type, url FROM art WHERE media_id=(SELECT idArtist FROM album_artist "
+                       "WHERE idAlbum=%i AND iOrder=0) AND media_type='artist'", 
+                       mediaId);
+    else
+      //Select first "artist" only from song_artist, no other roles.
+      sql = PrepareSQL("SELECT type, url FROM art WHERE media_id=(SELECT idArtist FROM song_artist "
+                       "WHERE idSong=%i AND idRole=%i AND iOrder=0) AND media_type='artist'", 
+                       mediaId, ROLE_ARTIST);
     m_pDS2->query(sql);
     while (!m_pDS2->eof())
     {
@@ -5973,7 +5982,16 @@ bool CMusicDatabase::GetArtistArtForItem(int mediaId, const std::string &mediaTy
 
 std::string CMusicDatabase::GetArtistArtForItem(int mediaId, const std::string &mediaType, const std::string &artType)
 {
-  std::string query = PrepareSQL("SELECT url FROM art WHERE media_id=(SELECT idArtist from %s_artist WHERE id%s=%i AND iOrder=0) AND media_type='artist' AND type='%s'", mediaType.c_str(), mediaType.c_str(), mediaId, artType.c_str());
+  std::string query;
+  if (mediaType == MediaTypeAlbum)
+    query = PrepareSQL("SELECT url FROM art WHERE media_id=(SELECT idArtist FROM album_artist "
+                       "WHERE idAlbum=%i AND iOrder=0) AND media_type='artist' AND type='%s'", 
+                       mediaId, artType.c_str());
+  else
+    //Select first "artist" only from song_artist, no other roles.
+    query = PrepareSQL("SELECT url FROM art WHERE media_id=(SELECT idArtist FROM song_artist "
+                       "WHERE idSong=%i AND idRole=%i AND iOrder=0) AND media_type='artist' AND type='%s'", 
+                       mediaId, ROLE_ARTIST, artType.c_str());
   return GetSingleValue(query, m_pDS2);
 }
 
