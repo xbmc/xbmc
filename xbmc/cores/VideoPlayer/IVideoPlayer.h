@@ -136,7 +136,6 @@ class IDVDStreamPlayerVideo : public IDVDStreamPlayer
 public:
   IDVDStreamPlayerVideo(CProcessInfo &processInfo) : IDVDStreamPlayer(processInfo) {};
   ~IDVDStreamPlayerVideo() {}
-  float GetRelativeUsage() { return 0.0f; }
   virtual bool OpenStream(CDVDStreamInfo &hint) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
   virtual bool StepFrame() { return false; };
@@ -173,7 +172,6 @@ class IDVDStreamPlayerAudio : public IDVDStreamPlayer
 public:
   IDVDStreamPlayerAudio(CProcessInfo &processInfo) : IDVDStreamPlayer(processInfo) {};
   ~IDVDStreamPlayerAudio() {}
-  float GetRelativeUsage() { return 0.0f; }
   virtual bool OpenStream(CDVDStreamInfo &hints) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
   virtual void SetSpeed(int speed) = 0;
