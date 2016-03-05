@@ -7,7 +7,8 @@ set(SOURCES BaseRenderer.cpp
             OverlayRendererUtil.cpp
             RenderCapture.cpp
             RenderFlags.cpp
-            RenderManager.cpp)
+            RenderManager.cpp
+            DebugRenderer.cpp)
 
 set(HEADERS BaseRenderer.h
             OverlayRenderer.h
@@ -16,7 +17,8 @@ set(HEADERS BaseRenderer.h
             RenderCapture.h
             RenderFlags.h
             RenderFormats.h
-            RenderManager.h)
+            RenderManager.h
+            DebugRenderer.h)
 
 if(CORE_SYSTEM_NAME STREQUAL windows)
   list(APPEND SOURCES WinRenderer.cpp

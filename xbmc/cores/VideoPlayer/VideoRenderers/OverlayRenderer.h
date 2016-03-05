@@ -82,7 +82,7 @@ namespace OVERLAY {
     virtual ~CRenderer();
 
     void AddOverlay(CDVDOverlay* o, double pts, int index);
-    void Render(int idx);
+    virtual void Render(int idx);
     void Flush();
     void Release(int idx);
     bool HasOverlay(int idx);

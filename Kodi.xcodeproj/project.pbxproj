@@ -389,6 +389,8 @@
 		7CAA25351085963B0096DE39 /* PasswordManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA25331085963B0096DE39 /* PasswordManager.cpp */; };
 		7CAA469019427AED00008885 /* PosixDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA468E19427AED00008885 /* PosixDirectory.cpp */; };
 		7CAA469119427AED00008885 /* PosixDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA468E19427AED00008885 /* PosixDirectory.cpp */; };
+		7CAA57471C8AF6C20032A326 /* DebugRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA57451C8AF6C20032A326 /* DebugRenderer.cpp */; };
+		7CAA57481C8AF6C20032A326 /* DebugRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA57451C8AF6C20032A326 /* DebugRenderer.cpp */; };
 		7CBEBB8412912BA400431822 /* fstrcmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CBEBB8212912BA300431822 /* fstrcmp.c */; };
 		7CC30DB116291A5C003E7579 /* MusicThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC30DAF16291A5C003E7579 /* MusicThumbLoader.cpp */; };
 		7CC30DC016291C2C003E7579 /* VideoThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC30DBE16291C2C003E7579 /* VideoThumbLoader.cpp */; };
@@ -2867,6 +2869,8 @@
 		7CAA25381085971C0096DE39 /* ScraperUrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScraperUrl.h; sourceTree = "<group>"; };
 		7CAA468E19427AED00008885 /* PosixDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PosixDirectory.cpp; sourceTree = "<group>"; };
 		7CAA468F19427AED00008885 /* PosixDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PosixDirectory.h; sourceTree = "<group>"; };
+		7CAA57451C8AF6C20032A326 /* DebugRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DebugRenderer.cpp; sourceTree = "<group>"; };
+		7CAA57461C8AF6C20032A326 /* DebugRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DebugRenderer.h; sourceTree = "<group>"; };
 		7CBEBB8212912BA300431822 /* fstrcmp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fstrcmp.c; sourceTree = "<group>"; };
 		7CC30DAF16291A5C003E7579 /* MusicThumbLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicThumbLoader.cpp; sourceTree = "<group>"; };
 		7CC30DB016291A5C003E7579 /* MusicThumbLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicThumbLoader.h; sourceTree = "<group>"; };
@@ -7816,6 +7820,8 @@
 				E38E166B0D25F9FA00618676 /* VideoShaders */,
 				7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */,
 				7CAA20501079C8160096DE39 /* BaseRenderer.h */,
+				7CAA57461C8AF6C20032A326 /* DebugRenderer.h */,
+				7CAA57451C8AF6C20032A326 /* DebugRenderer.cpp */,
 				E38E165F0D25F9FA00618676 /* LinuxRendererGL.cpp */,
 				E38E16600D25F9FA00618676 /* LinuxRendererGL.h */,
 				E4991588174E68D700741B6D /* LinuxRendererGLES.cpp */,
@@ -9642,6 +9648,7 @@
 				7CCA95BF1BC6E6670091D308 /* RendererVDA.cpp in Sources */,
 				431AE5DA109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */,
 				7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */,
+				7CAA57471C8AF6C20032A326 /* DebugRenderer.cpp in Sources */,
 				7C4B64A71C86F712000E1F74 /* InputStreamAddon.cpp in Sources */,
 				F592568810FBF2E100D2C91D /* ConvolutionKernels.cpp in Sources */,
 				F5DC87E2110A287400EE1B15 /* RingBuffer.cpp in Sources */,
@@ -10997,6 +11004,7 @@
 				E4991452174E605900741B6D /* FileOperationJob.cpp in Sources */,
 				E4991453174E605900741B6D /* FileUtils.cpp in Sources */,
 				E4991454174E605900741B6D /* GLUtils.cpp in Sources */,
+				7CAA57481C8AF6C20032A326 /* DebugRenderer.cpp in Sources */,
 				7CCA95C01BC6E6670091D308 /* RendererVDA.cpp in Sources */,
 				E4991455174E605900741B6D /* GroupUtils.cpp in Sources */,
 				E4991457174E605900741B6D /* HTMLUtil.cpp in Sources */,

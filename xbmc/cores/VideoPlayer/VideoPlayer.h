@@ -359,6 +359,7 @@ protected:
   virtual void OnExit();
   virtual void Process();
   virtual void VideoParamsChange() override;
+  virtual void GetDebugInfo(std::string &audio, std::string &video, std::string &general) override;
 
   void CreatePlayers();
   void DestroyPlayers();

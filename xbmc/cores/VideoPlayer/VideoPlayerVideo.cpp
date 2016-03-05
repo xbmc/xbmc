@@ -938,9 +938,9 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 std::string CVideoPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "fr:"     << std::fixed << std::setprecision(3) << m_fFrameRate;
-  s << ", vq:"   << std::setw(2) << std::min(99,GetLevel()) << "%";
+  s << "vq:"   << std::setw(2) << std::min(99,GetLevel()) << "%";
   s << ", Mb/s:" << std::fixed << std::setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
+  s << ", fr:"     << std::fixed << std::setprecision(3) << m_fFrameRate;
   s << ", drop:" << m_iDroppedFrames;
   s << ", skip:" << m_renderManager.GetSkippedFrames();
 

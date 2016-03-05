@@ -1,6 +1,6 @@
 /*
- *  Copyright (C) 2005-2013 Team XBMC
- *  http://xbmc.org
+ *      Copyright (C) 2005-2016 Team XBMC
+ *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,33 +23,26 @@
 #include "OverlayRenderer.h"
 #include <string>
 
-enum SubtitleAlign
-{
-  SUBTITLE_ALIGN_MANUAL         = 0,
-  SUBTITLE_ALIGN_BOTTOM_INSIDE,
-  SUBTITLE_ALIGN_BOTTOM_OUTSIDE,
-  SUBTITLE_ALIGN_TOP_INSIDE,
-  SUBTITLE_ALIGN_TOP_OUTSIDE
-};
-
-class CGUITextLayout;
 class CDVDOverlayText;
 
-namespace OVERLAY {
-
-class COverlayText : public COverlay
+class CDebugRenderer
 {
 public:
-  COverlayText() {}
-  COverlayText(CDVDOverlayText* src);
-  virtual ~COverlayText();
-  virtual void Render(SRenderState& state);
-  virtual void PrepareRender(const std::string &font, int color, int height, int style);
-  virtual CGUITextLayout* GetFontLayout(const std::string &font, int color, int height, int style);
+  CDebugRenderer();
+  virtual ~CDebugRenderer();
+  void SetInfo(std::string &info1, std::string &info2, std::string &info3, std::string &info4);
+  void Render(CRect &src, CRect &dst, CRect &view);
+  void Flush();
 
-  CGUITextLayout* m_layout;
-  std::string m_text;
-  int m_subalign;
+protected:
+
+  class CRenderer : public OVERLAY::CRenderer
+  {
+  public:
+    void Render(int idx) override;
+  };
+
+  std::string m_strDebug[4];
+  CDVDOverlayText *m_overlay[4];
+  CRenderer m_overlayRenderer;
 };
-
-}
