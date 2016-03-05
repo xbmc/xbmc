@@ -194,6 +194,11 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
       strcpy((char*) settingValue, addonHelper->m_addon->Path().c_str());
       return true;
     }
+    else if (strcasecmp(strSettingName, "__addonname__") == 0)
+    {
+      strcpy((char*)settingValue, addonHelper->m_addon->Name().c_str());
+      return true;
+    }
 
     if (!addonHelper->m_addon->ReloadSettings())
     {

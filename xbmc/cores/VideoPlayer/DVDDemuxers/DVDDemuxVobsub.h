@@ -47,6 +47,7 @@ public:
   virtual std::string   GetFileName()        { return m_Filename; }
 
   bool                  Open(const std::string& filename, int source, const std::string& subfilename);
+  virtual void EnableStream(int id, bool enable) override;
 
 private:
   class CStream
@@ -54,12 +55,10 @@ private:
   {
   public:
     CStream(CDVDDemuxVobsub* parent)
-      : m_discard(AVDISCARD_NONE), m_parent(parent)
+      : m_discard(false), m_parent(parent)
     {}
-    virtual void      SetDiscard(AVDiscard discard) { m_discard = discard; }
-    virtual AVDiscard GetDiscard()                  { return m_discard; }
 
-    AVDiscard        m_discard;
+    bool m_discard;
     CDVDDemuxVobsub* m_parent;
   };
 

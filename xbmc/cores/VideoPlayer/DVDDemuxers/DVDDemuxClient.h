@@ -46,6 +46,7 @@ public:
   int GetNrOfStreams() override;
   std::string GetFileName() override;
   virtual std::string GetStreamCodecName(int iStreamId) override;
+  virtual void EnableStream(int id, bool enable) override;
 
 protected:
   void RequestStreams();

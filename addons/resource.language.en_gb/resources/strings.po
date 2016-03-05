@@ -13683,7 +13683,10 @@ msgctxt "#24047"
 msgid "This add-on can't be uninstalled"
 msgstr ""
 
-#empty string with id 24048
+#: xbmc/addons/Addon.cpp
+msgctxt "#24048"
+msgid "VideoPlayer InputStream"
+msgstr ""
 
 #: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24049"

@@ -41,6 +41,7 @@ enum DVDStreamType
   DVDSTREAM_TYPE_MPLS   = 10,
   DVDSTREAM_TYPE_BLURAY = 11,
   DVDSTREAM_TYPE_PVRMANAGER = 12,
+  DVDSTREAM_TYPE_ADDON = 13
 };
 
 #define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
@@ -118,6 +119,7 @@ public:
     virtual bool OpenDemux() = 0;
     virtual DemuxPacket* ReadDemux() = 0;
     virtual CDemuxStream* GetStream(int iStreamId) = 0;
+    virtual void EnableStream(int iStreamId, bool enable) = 0;
     virtual int GetNrOfStreams() = 0;
     virtual void SetSpeed(int iSpeed) = 0;
     virtual bool SeekTime(int time, bool backward = false, double* startpts = NULL) = 0;

@@ -23,6 +23,7 @@
 #include "addons/AudioEncoder.h"
 #include "addons/ContextMenuAddon.h"
 #include "addons/ImageResource.h"
+#include "addons/InputStream.h"
 #include "addons/LanguageResource.h"
 #include "addons/PluginSource.h"
 #include "addons/Repository.h"
@@ -84,6 +85,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
     case ADDON_ADSPDLL:
     case ADDON_AUDIOENCODER:
     case ADDON_AUDIODECODER:
+    case ADDON_INPUTSTREAM:
     { // begin temporary platform handling for Dlls
       // ideally platforms issues will be handled by C-Pluff
       // this is not an attempt at a solution
@@ -127,6 +129,8 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
         return CAudioEncoder::FromExtension(std::move(m_props), m_extPoint);
       else if (type == ADDON_AUDIODECODER)
         return CAudioDecoder::FromExtension(std::move(m_props), m_extPoint);
+      else if (type == ADDON_INPUTSTREAM)
+        return CInputStream::FromExtension(std::move(m_props), m_extPoint);
       else
         return std::make_shared<CScreenSaver>(std::move(m_props));;
     }
@@ -202,6 +206,8 @@ AddonPtr CAddonBuilder::FromProps(AddonProps addonProps)
       return AddonPtr(new CRepository(std::move(addonProps)));
     case ADDON_CONTEXT_ITEM:
       return AddonPtr(new CContextMenuAddon(std::move(addonProps)));
+    case ADDON_INPUTSTREAM:
+      return AddonPtr(new CInputStream(std::move(addonProps)));
     default:
       break;
   }

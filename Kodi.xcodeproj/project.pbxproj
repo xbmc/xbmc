@@ -296,6 +296,12 @@
 		7C4458BD161E203800A905F6 /* Screenshot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4458BB161E203800A905F6 /* Screenshot.cpp */; };
 		7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
 		7C4705AE12EF584C00369E51 /* AddonInstaller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4705AC12EF584C00369E51 /* AddonInstaller.cpp */; };
+		7C4B649F1C86F6BD000E1F74 /* AddonCallbacksInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4B649D1C86F6BC000E1F74 /* AddonCallbacksInputStream.cpp */; };
+		7C4B64A01C86F6BD000E1F74 /* AddonCallbacksInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4B649D1C86F6BC000E1F74 /* AddonCallbacksInputStream.cpp */; };
+		7C4B64A31C86F6D8000E1F74 /* InputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4B64A11C86F6D8000E1F74 /* InputStream.cpp */; };
+		7C4B64A41C86F6D8000E1F74 /* InputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4B64A11C86F6D8000E1F74 /* InputStream.cpp */; };
+		7C4B64A71C86F712000E1F74 /* InputStreamAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4B64A51C86F712000E1F74 /* InputStreamAddon.cpp */; };
+		7C4B64A81C86F712000E1F74 /* InputStreamAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4B64A51C86F712000E1F74 /* InputStreamAddon.cpp */; };
 		7C4E6F721829AA9700F1068F /* GUIDialogSubtitles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E6F701829AA9700F1068F /* GUIDialogSubtitles.cpp */; };
 		7C4E6F731829AA9700F1068F /* GUIDialogSubtitles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E6F701829AA9700F1068F /* GUIDialogSubtitles.cpp */; };
 		7C525DF5195E2D8100BE3482 /* SaveFileStateJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C525DF4195E2D8100BE3482 /* SaveFileStateJob.cpp */; };
@@ -2722,6 +2728,12 @@
 		7C45DBE810F325C400D4BBF3 /* DAVDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAVDirectory.h; sourceTree = "<group>"; };
 		7C4705AC12EF584C00369E51 /* AddonInstaller.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonInstaller.cpp; sourceTree = "<group>"; };
 		7C4705AD12EF584C00369E51 /* AddonInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonInstaller.h; sourceTree = "<group>"; };
+		7C4B649D1C86F6BC000E1F74 /* AddonCallbacksInputStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonCallbacksInputStream.cpp; sourceTree = "<group>"; };
+		7C4B649E1C86F6BC000E1F74 /* AddonCallbacksInputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonCallbacksInputStream.h; sourceTree = "<group>"; };
+		7C4B64A11C86F6D8000E1F74 /* InputStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputStream.cpp; sourceTree = "<group>"; };
+		7C4B64A21C86F6D8000E1F74 /* InputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputStream.h; sourceTree = "<group>"; };
+		7C4B64A51C86F712000E1F74 /* InputStreamAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputStreamAddon.cpp; sourceTree = "<group>"; };
+		7C4B64A61C86F712000E1F74 /* InputStreamAddon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputStreamAddon.h; sourceTree = "<group>"; };
 		7C4CED9F1C5E681E00BAD6CE /* DVDDemuxPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemuxPacket.h; sourceTree = "<group>"; };
 		7C4E6F701829AA9700F1068F /* GUIDialogSubtitles.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSubtitles.cpp; sourceTree = "<group>"; };
 		7C4E6F711829AA9700F1068F /* GUIDialogSubtitles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSubtitles.h; sourceTree = "<group>"; };
@@ -4541,7 +4553,7 @@
 		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
 		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfOSX.cpp; sourceTree = "<group>"; };
 		E47252BF175115F9001C1AAA /* Codesign.command */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = Codesign.command; sourceTree = "<group>"; };
-		E4991089174D0D2600741B6D /* Kodi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Kodi.app; path = .app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4991089174D0D2600741B6D /* Kodi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kodi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E499108B174D0D2600741B6D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		E499108D174D0D2600741B6D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		E499108F174D0D2600741B6D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
@@ -4920,6 +4932,8 @@
 			isa = PBXGroup;
 			children = (
 				EDE8C7091C7F60C200A86ECC /* kodi-addon-dev-kit */,
+				7C4B649D1C86F6BC000E1F74 /* AddonCallbacksInputStream.cpp */,
+				7C4B649E1C86F6BC000E1F74 /* AddonCallbacksInputStream.h */,
 				9A999F1B1C67B77600E4E0D5 /* AddonBuilder.cpp */,
 				9A999F1C1C67B77600E4E0D5 /* AddonBuilder.h */,
 				7C226E3C1BA5F61C00185CE0 /* AddonCallbacksAudioEngine.cpp */,
@@ -4969,6 +4983,8 @@
 				18B49FFB1152BFA5001AF8A6 /* IAddon.h */,
 				DF2401241B41A26E001E02DA /* ImageResource.cpp */,
 				DF2401251B41A26E001E02DA /* ImageResource.h */,
+				7C4B64A11C86F6D8000E1F74 /* InputStream.cpp */,
+				7C4B64A21C86F6D8000E1F74 /* InputStream.h */,
 				395C2A071A9F06EB00EBC7AD /* LanguageResource.cpp */,
 				395C2A081A9F06EB00EBC7AD /* LanguageResource.h */,
 				183FDF8811AF0B0500B81E9C /* PluginSource.cpp */,
@@ -7697,6 +7713,8 @@
 		E38E15570D25F9FA00618676 /* DVDInputStreams */ = {
 			isa = PBXGroup;
 			children = (
+				7C4B64A51C86F712000E1F74 /* InputStreamAddon.cpp */,
+				7C4B64A61C86F712000E1F74 /* InputStreamAddon.h */,
 				E38E15670D25F9FA00618676 /* dvdnav */,
 				E38E15580D25F9FA00618676 /* DllDvdNav.h */,
 				E38E15590D25F9FA00618676 /* DVDFactoryInputStream.cpp */,
@@ -9246,6 +9264,7 @@
 				E38E1FA90D25F9FD00618676 /* VideoPlayerSubtitle.cpp in Sources */,
 				395C2A141A9F072400EBC7AD /* ResourceFile.cpp in Sources */,
 				E38E1FAA0D25F9FD00618676 /* VideoPlayerVideo.cpp in Sources */,
+				7C4B649F1C86F6BD000E1F74 /* AddonCallbacksInputStream.cpp in Sources */,
 				DF91E93E1C0A26350011084D /* SDLMain.mm in Sources */,
 				E38E1FAB0D25F9FD00618676 /* DVDStreamInfo.cpp in Sources */,
 				E38E1FAC0D25F9FD00618676 /* DVDFactorySubtitle.cpp in Sources */,
@@ -9623,6 +9642,7 @@
 				7CCA95BF1BC6E6670091D308 /* RendererVDA.cpp in Sources */,
 				431AE5DA109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */,
 				7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */,
+				7C4B64A71C86F712000E1F74 /* InputStreamAddon.cpp in Sources */,
 				F592568810FBF2E100D2C91D /* ConvolutionKernels.cpp in Sources */,
 				F5DC87E2110A287400EE1B15 /* RingBuffer.cpp in Sources */,
 				F5F244651110DC6B009126C6 /* FileOperationJob.cpp in Sources */,
@@ -9827,6 +9847,7 @@
 				F5E1053F140AA38100175026 /* PeripheralHID.cpp in Sources */,
 				F5E10540140AA38100175026 /* PeripheralNIC.cpp in Sources */,
 				F5E10541140AA38100175026 /* PeripheralNyxboard.cpp in Sources */,
+				7C4B64A31C86F6D8000E1F74 /* InputStream.cpp in Sources */,
 				39520F911C3174EE00272121 /* AddonSystemSettings.cpp in Sources */,
 				F5E10542140AA38100175026 /* PeripheralTuner.cpp in Sources */,
 				F5E10544140AA38100175026 /* GUIDialogPeripheralSettings.cpp in Sources */,
@@ -10698,6 +10719,7 @@
 				E4991319174E5DAD00741B6D /* GUITextureGL.cpp in Sources */,
 				E499131A174E5DAD00741B6D /* GUITextureGLES.cpp in Sources */,
 				E499131B174E5DAD00741B6D /* GUIToggleButtonControl.cpp in Sources */,
+				7C4B64A41C86F6D8000E1F74 /* InputStream.cpp in Sources */,
 				E499131C174E5DAD00741B6D /* GUIVideoControl.cpp in Sources */,
 				E499131D174E5DAD00741B6D /* GUIVisualisationControl.cpp in Sources */,
 				E499131E174E5DAD00741B6D /* GUIWindow.cpp in Sources */,
@@ -10895,6 +10917,7 @@
 				E49913F5174E5FB000741B6D /* PVRChannelGroup.cpp in Sources */,
 				E49913F6174E5FB000741B6D /* PVRChannelGroupInternal.cpp in Sources */,
 				E49913F7174E5FB000741B6D /* PVRChannelGroups.cpp in Sources */,
+				7C4B64A01C86F6BD000E1F74 /* AddonCallbacksInputStream.cpp in Sources */,
 				E49913F8174E5FB000741B6D /* PVRChannelGroupsContainer.cpp in Sources */,
 				E49913F9174E5FB000741B6D /* GUIDialogPVRChannelManager.cpp in Sources */,
 				E49913FA174E5FB000741B6D /* GUIDialogPVRChannelsOSD.cpp in Sources */,
@@ -11164,6 +11187,7 @@
 				F55BA71017AB2293002A36D1 /* RenderFlags.cpp in Sources */,
 				F59EED7F17AD5174005BB7C6 /* ApplicationPlayer.cpp in Sources */,
 				DF28DF4E17B8379E0077F41A /* ProfilesOperations.cpp in Sources */,
+				7C4B64A81C86F712000E1F74 /* InputStreamAddon.cpp in Sources */,
 				DF29BCE91B5D911800904347 /* AddonEvent.cpp in Sources */,
 				DFD882F717DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */,
 				DFD882E817DD189E001516FE /* StringValidation.cpp in Sources */,
