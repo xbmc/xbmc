@@ -20,9 +20,9 @@
  *
  */
 
-#include "threads/Atomics.h"
 #include <assert.h>
 #include <vector>
+#include <atomic>
 
 enum DVDOverlayType
 {
@@ -68,7 +68,7 @@ public:
   */
   CDVDOverlay* Acquire()
   {
-    AtomicIncrement(&m_references);
+    m_references++;
     return this;
   }
 
@@ -77,7 +77,7 @@ public:
   */
   long Release()
   {
-    long count = AtomicDecrement(&m_references);
+    long count = m_references--;
     if (count == 0)
       delete this;
     return count;
@@ -108,7 +108,7 @@ protected:
   DVDOverlayType m_type;
 
 private:
-  long m_references;
+  std::atomic_int m_references;
 };
 
 typedef std::vector<CDVDOverlay*> VecOverlays;
