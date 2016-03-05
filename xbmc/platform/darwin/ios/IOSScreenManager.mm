@@ -27,7 +27,7 @@
 #include "settings/DisplaySettings.h"
 #include "threads/Event.h"
 #include "Application.h"
-#include "WindowingFactory.h"
+#include "windowing/WindowingFactory.h"
 #include "settings/DisplaySettings.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "platform/darwin/DarwinUtils.h"

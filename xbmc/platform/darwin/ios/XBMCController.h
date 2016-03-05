@@ -23,8 +23,8 @@
 #import <OpenGLES/ES2/gl.h>
 #import <AudioToolbox/AudioToolbox.h>
 
-#import "XBMC_events.h"
-#include "XBMC_keysym.h"
+#import "windowing/XBMC_events.h"
+#include "input/XBMC_keysym.h"
 
 @class IOSEAGLView;
 
