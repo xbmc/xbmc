@@ -24,6 +24,7 @@
 #include "epg/EpgInfoTag.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "messaging/ApplicationMessenger.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
@@ -39,6 +40,7 @@
 
 using namespace PVR;
 using namespace EPG;
+using namespace KODI::MESSAGING;
 
 #define CONTROL_BTN_FIND                4
 #define CONTROL_BTN_SWITCH              5
@@ -141,20 +143,24 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(CGUIMessage &message)
       if (message.GetSenderId() == CONTROL_BTN_PLAY_RECORDING && epgTag->HasRecording())
         ret = g_application.PlayFile(CFileItem(epgTag->Recording()), "videoplayer");
       else if (epgTag->HasPVRChannel())
-        ret = g_application.PlayFile(CFileItem(epgTag->ChannelTag()), "videoplayer");
-    }
-    else
-      ret = PLAYBACK_FAIL;
+      {
+        CPVRChannelPtr channel = epgTag->ChannelTag();
+        // try a fast switch
+        bool bSwitchSuccessful = false;
+        if ((g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) &&
+            (channel->IsRadio() == g_PVRManager.IsPlayingRadio()))
+        {
+          if (channel->StreamURL().empty())
+            bSwitchSuccessful = g_application.m_pPlayer->SwitchChannel(channel);
+        }
 
-    if (ret == PLAYBACK_FAIL)
-    {
-      std::string msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), g_localizeStrings.Get(19029).c_str()); // Channel could not be played. Check the log for details.
-      CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{std::move(msg)});
+        if (!bSwitchSuccessful)
+        {
+          CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(channel)), "videoplayer");
+        }
+      }
     }
-    else if (ret == PLAYBACK_OK)
-    {
-      bReturn = true;
-    }
+    bReturn = true;
   }
 
   return bReturn;
