@@ -59,8 +59,8 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
       {
         return new CInputStreamAddon(fileitem, clone);
       }
-      delete clone;
     }
+    delete clone;
   }
 
   if (fileitem.IsDiscImage())
