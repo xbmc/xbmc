@@ -591,3 +591,11 @@ void CDVDDemuxClient::EnableStream(int id, bool enable)
     m_IDemux->EnableStream(id, enable);
   }
 }
+
+void CDVDDemuxClient::EnableStreamAtPTS(int id, uint64_t pts)
+{
+  if (m_IDemux)
+  {
+    m_IDemux->EnableStreamAtPTS(id, pts);
+  }
+}

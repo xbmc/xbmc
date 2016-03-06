@@ -331,9 +331,19 @@ public:
   virtual std::string GetStreamCodecName(int iStreamId) { return ""; };
 
   /*
+  * return true if demuxer supports enabling at a specific PTS
+  */
+  virtual bool SupportsEnableAtPTS() { return false; };
+
+  /*
    * enable / disable demux stream
    */
   virtual void EnableStream(int id, bool enable) {};
+
+  /*
+  * enable / disable demux stream at given PTS
+  */
+  virtual void EnableStreamAtPTS(int id, uint64_t pts) {};
 
 protected:
   int GetNrOfStreams(StreamType streamType);
