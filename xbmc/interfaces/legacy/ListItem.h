@@ -33,6 +33,7 @@
 #include "commons/Exception.h"
 #include "InfoTagVideo.h"
 #include "InfoTagMusic.h"
+#include "InfoTagPicture.h"
 
 
 namespace XBMCAddon
@@ -1016,6 +1017,22 @@ namespace XBMCAddon
       getMusicInfoTag();
 #else
       xbmc::InfoTagMusic* getMusicInfoTag();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ getPictureInfoTag() }
+      ///-----------------------------------------------------------------------
+      /// Returns the PictureInfoTag for this item.
+      ///
+      /// @return     picture info tag
+      ///-----------------------------------------------------------------------
+      /// @python_v17 New method added.
+      ///
+      getPictureInfoTag();
+#else
+      xbmc::InfoTagPicture* getPictureInfoTag();
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

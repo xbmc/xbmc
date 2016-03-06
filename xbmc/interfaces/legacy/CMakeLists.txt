@@ -10,6 +10,7 @@ set(SOURCES AddonCallback.cpp
             InfoTagMusic.cpp
             InfoTagRadioRDS.cpp
             InfoTagVideo.cpp
+            InfoTagPicture.cpp
             Keyboard.cpp
             LanguageHook.cpp
             ListItem.cpp
@@ -43,6 +44,7 @@ set(HEADERS Addon.h
             InfoTagMusic.h
             InfoTagRadioRDS.h
             InfoTagVideo.h
+            InfoTagPicture.h
             Keyboard.h
             LanguageHook.h
             List.h

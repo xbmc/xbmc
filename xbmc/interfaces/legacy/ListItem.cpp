@@ -797,5 +797,14 @@ namespace XBMCAddon
         return new xbmc::InfoTagMusic(*item->GetMusicInfoTag());
       return new xbmc::InfoTagMusic();
     }
+
+    xbmc::InfoTagPicture* ListItem::getPictureInfoTag()
+    {
+      LOCKGUI;
+      if (item->HasPictureInfoTag())
+        return new xbmc::InfoTagPicture(*item->GetPictureInfoTag());
+      return new xbmc::InfoTagPicture();
+    }
+
   }
 }
