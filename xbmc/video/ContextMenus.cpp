@@ -44,4 +44,34 @@ bool CVideoInfo::Execute(const CFileItemPtr& item) const
   return false;
 }
 
+bool CMarkWatched::IsVisible(const CFileItem& item) const
+{
+  if (!item.HasVideoInfoTag())
+    return false;
+  if (item.m_bIsFolder) //Only allow db content to be updated recursively
+    return item.IsVideoDb();
+  return item.GetVideoInfoTag()->m_playCount == 0;
+}
+
+bool CMarkWatched::Execute(const CFileItemPtr& item) const
+{
+  CVideoLibraryQueue::GetInstance().MarkAsWatched(item, true);
+  return true;
+}
+
+bool CMarkUnWatched::IsVisible(const CFileItem& item) const
+{
+  if (!item.HasVideoInfoTag())
+    return false;
+  if (item.m_bIsFolder) //Only allow db content to be updated recursively
+    return item.IsVideoDb();
+  return item.GetVideoInfoTag()->m_playCount > 0;
+}
+
+bool CMarkUnWatched::Execute(const CFileItemPtr& item) const
+{
+  CVideoLibraryQueue::GetInstance().MarkAsWatched(item, false);
+  return true;
+}
+
 }

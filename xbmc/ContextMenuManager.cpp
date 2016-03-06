@@ -63,6 +63,8 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CMovieInfo>(),
       std::make_shared<CONTEXTMENU::CMusicVideoInfo>(),
       std::make_shared<CONTEXTMENU::CTVShowInfo>(),
+      std::make_shared<CONTEXTMENU::CMarkWatched>(),
+      std::make_shared<CONTEXTMENU::CMarkUnWatched>(),
   };
 }
 

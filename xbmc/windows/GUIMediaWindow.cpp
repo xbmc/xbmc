@@ -1604,14 +1604,6 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   switch (button)
   {
-  case CONTEXT_BUTTON_MARK_WATCHED:
-  case CONTEXT_BUTTON_MARK_UNWATCHED:
-    {
-      CFileItemPtr item = m_vecItems->Get(itemNumber);
-      m_viewControl.SetSelectedItem(m_viewControl.GetSelectedItem() + 1);
-      CVideoLibraryQueue::GetInstance().MarkAsWatched(item, (button == CONTEXT_BUTTON_MARK_WATCHED));
-      return true;
-    }
   case CONTEXT_BUTTON_ADD_FAVOURITE:
     {
       CFileItemPtr item = m_vecItems->Get(itemNumber);

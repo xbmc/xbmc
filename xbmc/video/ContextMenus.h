@@ -22,6 +22,7 @@
 #include "ContextMenuItem.h"
 #include "guilib/GUIWindowManager.h"
 #include "video/windows/GUIWindowVideoNav.h"
+#include "VideoLibraryQueue.h"
 
 namespace CONTEXTMENU
 {
@@ -55,4 +56,19 @@ struct CMovieInfo : CVideoInfo
 {
   CMovieInfo() : CVideoInfo(MediaTypeMovie) {}
 };
+
+struct CMarkWatched : CStaticContextMenuAction
+{
+  CMarkWatched() : CStaticContextMenuAction(16103) {}
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const CFileItemPtr& item) const override;
+};
+
+struct CMarkUnWatched : CStaticContextMenuAction
+{
+  CMarkUnWatched() : CStaticContextMenuAction(16104) {}
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const CFileItemPtr& item) const override;
+};
+
 }
