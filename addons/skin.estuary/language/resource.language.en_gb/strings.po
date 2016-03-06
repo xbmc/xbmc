@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, piers
+# Addon Provider: phil65, Piers
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -236,9 +236,7 @@ msgstr ""
 
 #: /1080i/SmartPlaylistEditor.xml:126
 msgctxt "#31043"
-msgid ""
-"Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from "
-"your database which apply to your chosen rules."
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
 msgstr ""
 
 #: /1080i/DialogPVRGroupManager.xml:31
@@ -543,9 +541,7 @@ msgstr ""
 
 #: /1080i/Home.xml:134 /1080i/Home.xml:228
 msgctxt "#31104"
-msgid ""
-"Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a "
-"media source and configure it. After the source has been added and indexed you will be able to browse your library. "
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library. "
 msgstr ""
 
 #: /1080i/Home.xml:468
@@ -620,16 +616,12 @@ msgstr ""
 
 #: /1080i/Home.xml:415
 msgctxt "#31119"
-msgid ""
-"You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your "
-"Kodi experience."
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
 msgstr ""
 
 #: /1080i/Home.xml:769
 msgctxt "#31120"
-msgid ""
-"You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up "
-"your location."
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
 msgstr ""
 
 #: /1080i/Home.xml:770
