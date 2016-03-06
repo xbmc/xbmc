@@ -100,7 +100,7 @@
 							<font>font24_title</font>
 							<align>right</align>
 							<aligny>center</aligny>
-							<visible>Container.Content(movies)</visible>
+							<visible>Stringcompare(Listitem.dbtype,movie)</visible>
 							<label>$INFO[ListItem.Year]</label>
 						</control>
 						<control type="image">
@@ -192,7 +192,7 @@
 									<font>font24_title</font>
 									<align>right</align>
 									<aligny>center</aligny>
-									<visible>Container.Content(movies)</visible>
+									<visible>Stringcompare(Listitem.dbtype,movie)</visible>
 									<label>$INFO[ListItem.Year]</label>
 								</control>
 								<control type="image">

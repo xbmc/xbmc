@@ -132,6 +132,13 @@
 					<onclick>SendClick(28)</onclick>
 					<visible>Window.IsActive(MyPVRChannels.xml) | Window.IsActive(MyPVRGuide.xml)</visible>
 				</control>
+				<control type="radiobutton" id="6060">
+					<include>MediaMenuItemsCommon</include>
+					<label>$LOCALIZE[31127]</label>
+					<selected>Skin.HasSetting(pvr_iconlist)</selected>
+					<onclick>Skin.ToggleSetting(pvr_iconlist)</onclick>
+					<visible>Window.IsActive(MyPVRChannels.xml)</visible>
+				</control>
 				<control type="button" id="6053">
 					<include>MediaMenuItemsCommon</include>
 					<label>$LOCALIZE[31022]</label>

@@ -53,7 +53,7 @@
 				<top>90</top>
 				<width>580</width>
 				<height>30</height>
-				<textcolor>grey2</textcolor>
+				<textcolor>grey</textcolor>
 				<label>$INFO[Container(11).ListItem.StartDate]</label>
 				<align>center</align>
 				<aligny>center</aligny>

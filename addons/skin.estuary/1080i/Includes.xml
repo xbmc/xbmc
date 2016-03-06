@@ -210,7 +210,7 @@
 					<height>30</height>
 					<font>font10</font>
 					<aligny>center</aligny>
-					<textcolor>grey2</textcolor>
+					<textcolor>grey</textcolor>
 					<label>$INFO[ListItem.Property(Name)]</label>
 				</control>
 			</itemlayout>
@@ -255,7 +255,7 @@
 					<height>30</height>
 					<font>font10</font>
 					<aligny>center</aligny>
-					<textcolor>grey2</textcolor>
+					<textcolor>grey</textcolor>
 					<label>$INFO[ListItem.Property(Name)]</label>
 				</control>
 			</focusedlayout>
@@ -738,11 +738,6 @@
 				<icon>icons/settings/weather.png</icon>
 			</item>
 			<item>
-				<label>$LOCALIZE[24001]</label>
-				<onclick>ActivateWindow(AddonBrowser,root)</onclick>
-				<icon>icons/settings/addons.png</icon>
-			</item>
-			<item>
 				<label>$LOCALIZE[14036]</label>
 				<onclick>ActivateWindow(ServiceSettings)</onclick>
 				<icon>icons/settings/network.png</icon>
@@ -760,12 +755,17 @@
 			<item>
 				<label>$LOCALIZE[13200]</label>
 				<onclick>ActivateWindow(Profiles)</onclick>
-				<icon>icons/settings/appearance.png</icon>
+				<icon>icons/settings/profiles.png</icon>
 			</item>
 			<item>
 				<label>$LOCALIZE[138]</label>
 				<onclick>ActivateWindow(systeminfo)</onclick>
 				<icon>icons/settings/sysinfo.png</icon>
+			</item>
+			<item>
+				<label>$LOCALIZE[20077]</label>
+				<onclick>ActivateWindow(SkinSettings)</onclick>
+				<icon>icons/settings/skin.png</icon>
 			</item>
 		</content>
 	</include>

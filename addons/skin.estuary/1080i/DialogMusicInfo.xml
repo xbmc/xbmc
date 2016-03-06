@@ -30,7 +30,7 @@
 				</control>
 			</control>
 			<control type="group">
-				<visible>StringCompare(Container(50).NumItems,0)</visible>
+				<visible>StringCompare(Container(50).NumItems,0) + IsEmpty(Control.GetLabel(400))</visible>
 				<top>160</top>
 				<control type="button" id="130">
 					<left>586</left>
@@ -76,8 +76,22 @@
 				</control>
 			</control>
 			<control type="group">
-				<visible>!StringCompare(Container(50).NumItems,0)</visible>
+				<visible>!StringCompare(Container(50).NumItems,0) | !IsEmpty(Control.GetLabel(400))</visible>
 				<top>454</top>
+				<control type="button" id="130">
+					<onup>50</onup>
+					<ondown>9000</ondown>
+					<left>586</left>
+					<top>-295</top>
+					<width>1254</width>
+					<height>320</height>
+					<textoffsetx>40</textoffsetx>
+					<textoffsety>20</textoffsety>
+					<aligny>bottom</aligny>
+					<font>font_textbox</font>
+					<label>-</label>
+					<visible>StringCompare(Container(50).NumItems,0)</visible>
+				</control>
 				<control type="button" id="130">
 					<onup>50</onup>
 					<ondown>9000</ondown>
@@ -90,34 +104,37 @@
 					<font>font_textbox</font>
 					<label>-</label>
 				</control>
-				<control type="image">
-					<left>614</left>
-					<top>30</top>
-					<width>1194</width>
-					<height>260</height>
-					<aspectratio aligny="top">scale</aspectratio>
-					<texture fallback="special://skin/extras/home-images/music.jpg">$INFO[ListItem.Art(fanart)]</texture>
-					<visible>IsEmpty(Control.GetLabel(400))</visible>
-				</control>
 				<control type="group">
-					<visible>IsEmpty(Control.GetLabel(400)) + IsEmpty(ListItem.Art(fanart))</visible>
+					<animation effect="slide" start="0,0" end="0,-295" time="0" condition="StringCompare(Container(50).NumItems,0)">Conditional</animation>
+					<visible>[!StringCompare(Container(50).NumItems,0) + IsEmpty(Control.GetLabel(400))] | [StringCompare(Container(50).NumItems,0) + !IsEmpty(Control.GetLabel(400))]</visible>
 					<control type="image">
 						<left>614</left>
 						<top>30</top>
 						<width>1194</width>
 						<height>260</height>
-						<aspectratio>scale</aspectratio>
-						<texture colordiffuse="AAFFFFFF">colors/black.png</texture>
+						<aspectratio aligny="top">scale</aspectratio>
+						<texture fallback="special://skin/extras/home-images/music.jpg">$INFO[ListItem.Art(fanart)]</texture>
 					</control>
-					<control type="textbox">
-						<left>614</left>
-						<top>30</top>
-						<width>1194</width>
-						<height>260</height>
-						<align>center</align>
-						<aligny>center</aligny>
-						<font>font30_title</font>
-						<label>$LOCALIZE[19055]</label>
+					<control type="group">
+						<visible>IsEmpty(ListItem.Art(fanart))</visible>
+						<control type="image">
+							<left>614</left>
+							<top>30</top>
+							<width>1194</width>
+							<height>260</height>
+							<aspectratio>scale</aspectratio>
+							<texture colordiffuse="AAFFFFFF">colors/black.png</texture>
+						</control>
+						<control type="textbox">
+							<left>614</left>
+							<top>30</top>
+							<width>1194</width>
+							<height>260</height>
+							<align>center</align>
+							<aligny>center</aligny>
+							<font>font30_title</font>
+							<label>$LOCALIZE[19055]</label>
+						</control>
 					</control>
 				</control>
 			</control>
@@ -278,7 +295,7 @@
 				<orientation>horizontal</orientation>
 				<control type="group" id="420">
 					<width>262</width>
-					<visible>Container.Content(albums) | Container.Content(songs)</visible>
+					<visible>Stringcompare(ListItem.DBType,album) | Stringcompare(ListItem.DBType,song)</visible>
 					<control type="button" id="7">
 						<include name="VideoInfoButtonsCommon">
 							<param name="icon" value="" />
@@ -316,7 +333,7 @@
 					<enable>!IsEmpty(ListItem.Art(fanart))</enable>
 					<onclick>SetProperty(fanart,$ESCINFO[ListItem.Art(fanart)],home)</onclick>
 					<onclick>ActivateWindow(1104)</onclick>
-					<visible>Container.Content(artists) | Container.Content(albums)</visible>
+					<visible>Stringcompare(ListItem.DBType,artist) | Stringcompare(ListItem.DBType,album)</visible>
 				</control>
 				<include name="InfoDialogButton">
 					<param name="id" value="6" />
@@ -340,8 +357,8 @@
 					</include>
 					<onclick>Action(close)</onclick>
 					<visible>System.hasAddon(script.extendedinfo)</visible>
-					<onclick condition="!Container.Content(songs)">RunScript(script.extendedinfo,info=youtubebrowser,id=$INFO[ListItem.Artist] $INFO[ListItem.Album])</onclick>
-					<onclick condition="Container.Content(songs)">RunScript(script.extendedinfo,info=youtubebrowser,id=$INFO[ListItem.Artist] $INFO[ListItem.Title])</onclick>
+					<onclick condition="!Stringcompare(ListItem.DBType,song)">RunScript(script.extendedinfo,info=youtubebrowser,id=$INFO[ListItem.Artist] $INFO[ListItem.Album])</onclick>
+					<onclick condition="Stringcompare(ListItem.DBType,song)">RunScript(script.extendedinfo,info=youtubebrowser,id=$INFO[ListItem.Artist] $INFO[ListItem.Title])</onclick>
 				</control>
 			</control>
 			<include name="LeftRightArrows">
@@ -353,7 +370,7 @@
 			</include>
 		</control>
 		<control type="group">
-			<visible>Container.Content(artists)</visible>
+			<visible>Stringcompare(ListItem.DBType,artist)</visible>
 			<include name="InfoDialogTopBarInfo">
 				<param name="main_label" value="$INFO[ListItem.Artist]" />
 				<param name="sub_label" value="$INFO[ListItem.Genre]" />
@@ -361,7 +378,7 @@
 			</include>
 		</control>
 		<control type="group">
-			<visible>Container.Content(albums)</visible>
+			<visible>Stringcompare(ListItem.DBType,album)</visible>
 			<include name="InfoDialogTopBarInfo">
 				<param name="main_label" value="$INFO[ListItem.Album]$INFO[ListItem.Year, ([COLOR button_focus],[/COLOR])]" />
 				<param name="sub_label" value="$INFO[ListItem.Artist]" />
@@ -369,7 +386,7 @@
 			</include>
 		</control>
 		<control type="group">
-			<visible>Container.Content(songs) + !Window.IsActive(musicinformation)</visible>
+			<visible>Stringcompare(ListItem.DBType,song) + !Window.IsActive(musicinformation)</visible>
 			<include name="InfoDialogTopBarInfo">
 				<param name="main_label" value="[COLOR button_focus]$INFO[ListItem.TrackNumber]. [/COLOR]$INFO[ListItem.Title]" />
 				<param name="sub_label" value="$INFO[ListItem.Artist,, - ]$INFO[ListItem.Album]$INFO[ListItem.Year, ([COLOR button_focus],[/COLOR])]" />

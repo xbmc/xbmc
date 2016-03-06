@@ -31,6 +31,7 @@
 			<control type="label">
 				<left>30</left>
 				<top>-90</top>
+				<align>right</align>
 				<textoffsetx>20</textoffsetx>
 				<aligny>center</aligny>
 				<width>1858</width>

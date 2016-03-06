@@ -61,14 +61,13 @@
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="label">
-						<left>90</left>
+						<left>135</left>
 						<top>0</top>
 						<height>70</height>
 						<width>555</width>
 						<align>right</align>
 						<aligny>center</aligny>
 						<font>font12</font>
-						<animation effect="slide" end="40,0" time="0" condition="IsEmpty(ListItem.VideoResolution) + !ListItem.IsCollection">conditional</animation>
 						<label>$VAR[ListLabel2Var]</label>
 						<animation effect="fade" start="70" end="100" time="300" reversible="false">Focus</animation>
 						<shadowcolor>text_shadow</shadowcolor>
@@ -91,14 +90,6 @@
 						<animation effect="fade" time="150">VisibleChange</animation>
 						<visible>!Control.HasFocus(50)</visible>
 					</control>
-					<control type="image">
-						<left>657</left>
-						<top>22</top>
-						<width>40</width>
-						<height>26</height>
-						<animation effect="fade" start="70" end="100" time="300" reversible="false">Focus</animation>
-						<texture>$VAR[MediaInfoOverlayVar]</texture>
-					</control>
 				</focusedlayout>
 				<itemlayout height="70" condition="Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons)">
 					<control type="image">
@@ -118,14 +109,13 @@
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="label">
-						<left>90</left>
+						<left>135</left>
 						<top>0</top>
 						<height>70</height>
 						<width>555</width>
 						<align>right</align>
 						<aligny>center</aligny>
 						<font>font12</font>
-						<animation effect="slide" end="40,0" time="0" condition="IsEmpty(ListItem.VideoResolution) + !ListItem.IsCollection">conditional</animation>
 						<label>$VAR[ListLabel2Var]</label>
 						<textcolor>grey</textcolor>
 						<shadowcolor>text_shadow</shadowcolor>
@@ -137,13 +127,6 @@
 						<height>32</height>
 						<texture colordiffuse="grey">$VAR[ListWatchedIconVar]</texture>
 					</control>
-					<control type="image">
-						<left>657</left>
-						<top>22</top>
-						<width>40</width>
-						<height>26</height>
-						<texture colordiffuse="grey">$VAR[MediaInfoOverlayVar]</texture>
-					</control>
 				</itemlayout>
 			</control>
 			<control type="scrollbar" id="60">
@@ -152,7 +135,7 @@
 				<width>12</width>
 				<height>706</height>
 				<onleft>50</onleft>
-				<onright>4301</onright>
+				<onright>50</onright>
 				<orientation>vertical</orientation>
 			</control>
 		</control>

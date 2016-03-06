@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<defaultcontrol always="true">10</defaultcontrol>
-	<backgroundcolor>FF000000</backgroundcolor>
+	<backgroundcolor>background</backgroundcolor>
 	<views>10,11,12,13</views>
 	<menucontrol>9000</menucontrol>
 	<controls>
@@ -29,7 +29,7 @@
 					<height>510</height>
 					<pagecontrol>10</pagecontrol>
 					<scrolltime tween="quadratic" easing="out">200</scrolltime>
-					<timeblocks>35</timeblocks>
+					<timeblocks>36</timeblocks>
 					<rulerunit>6</rulerunit>
 					<onleft>9000</onleft>
 					<onup>10</onup>
@@ -98,29 +98,24 @@
 							<height>58</height>
 							<texture border="3" fallback="windows/pvr/epg-genres/0.png">$INFO[ListItem.Property(GenreType),windows/pvr/epg-genres/,.png]</texture>
 						</control>
-						<control type="image" id="2">
-							<width>58</width>
-							<height>58</height>
-							<texture border="8">buttons/thumbnail_focused.png</texture>
-							<visible>ListItem.HasTimer | ListItem.HasTimerSchedule</visible>
-						</control>
-						<control type="image" id="2">
-							<width>58</width>
-							<height>58</height>
-							<texture border="8" colordiffuse="red">buttons/thumbnail_focused.png</texture>
-							<visible>ListItem.IsRecording</visible>
-						</control>
 						<control type="label" id="1">
 							<left>6</left>
 							<top>0</top>
 							<width>50</width>
-							<height>58</height>
+							<height>36</height>
 							<aligny>center</aligny>
-							<font>font10</font>
+							<font>font10_title</font>
 							<label>$INFO[ListItem.Label]</label>
 						</control>
+						<control type="image">
+							<left>6</left>
+							<top>32</top>
+							<width>20</width>
+							<height>20</height>
+							<texture>$VAR[PVRTimerIcon]</texture>
+						</control>
 					</itemlayout>
-					<focusedlayout height="58" width="58">
+					<focusedlayout height="58" width="60">
 						<control type="image" id="2">
 							<top>2</top>
 							<left>2</left>
@@ -128,6 +123,11 @@
 							<height>54</height>
 							<texture>lists/focus.png</texture>
 							<visible>Control.HasFocus(10)</visible>
+						</control>
+						<control type="image" id="2">
+							<width>58</width>
+							<height>58</height>
+							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
 						</control>
 						<control type="image" id="2">
 							<width>58</width>
@@ -140,22 +140,17 @@
 							<left>6</left>
 							<top>0</top>
 							<width>50</width>
-							<height>58</height>
+							<height>36</height>
 							<aligny>center</aligny>
-							<font>font10</font>
+							<font>font10_title</font>
 							<label>$INFO[ListItem.Label]</label>
 						</control>
-						<control type="image" id="2">
-							<width>58</width>
-							<height>58</height>
-							<texture border="8">buttons/thumbnail_focused.png</texture>
-							<visible>ListItem.HasTimer | ListItem.HasTimerSchedule</visible>
-						</control>
-						<control type="image" id="2">
-							<width>58</width>
-							<height>58</height>
-							<texture border="8" colordiffuse="red">buttons/thumbnail_focused.png</texture>
-							<visible>ListItem.IsRecording</visible>
+						<control type="image">
+							<left>6</left>
+							<top>32</top>
+							<width>20</width>
+							<height>20</height>
+							<texture>$VAR[PVRTimerIcon]</texture>
 						</control>
 					</focusedlayout>
 				</control>
@@ -343,7 +338,7 @@
 		</control>
 		<include name="TopBar">
 			<param name="breadcrumbs_label" value="$INFO[Control.GetLabel(29)] - $INFO[Control.GetLabel(30)]" />
-			<param name="breadcrumbs_icon" value="icons/settings/livetv.png" />
+			<param name="breadcrumbs_icon" value="icons/settings/tvguide.png" />
 		</include>
 		<include name="BottomBar">
 			<param name="PageLabel" value="$INFO[Container.NumItems,$LOCALIZE[19019]: ]" />
