@@ -286,6 +286,7 @@
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\Process\ProcessInfo.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\InputStreamAddon.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\BaseRenderer.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\DebugRenderer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\HwDecRender\DXVAHD.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRenderer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRendererDX.cpp" />
@@ -1008,6 +1009,7 @@
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxClient.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\Process\ProcessInfo.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\BaseRenderer.h" />
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\DebugRenderer.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\HwDecRender\DXVAHD.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRenderer.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRendererDX.h" />
