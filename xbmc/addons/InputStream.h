@@ -53,6 +53,7 @@ namespace ADDON
     bool HasDisplayTime() { return m_caps.m_supportsIDisplayTime; };
     bool CanPause() { return m_caps.m_supportsPause; };
     bool CanSeek() { return m_caps.m_supportsSeek; };
+    bool CanEnableAtPTS() { return m_caps.m_supportsEnableAtPTS; };
 
     // IDisplayTime
     int GetTotalTime();
@@ -71,6 +72,7 @@ namespace ADDON
     void FlushDemux();
     void SetSpeed(int iSpeed);
     void EnableStream(int iStreamId, bool enable);
+    void EnableStreamAtPTS(int iStreamId, uint64_t pts);
 
     // stream
     int ReadStream(uint8_t* buf, unsigned int size);
