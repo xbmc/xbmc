@@ -1,0 +1,53 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Albanian (Albania) (http://www.transifex.com/projects/p/kodi-main/language/sq_AL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sq_AL\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Parashikimi"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Rikthe"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Në Arial"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Azhornuar së Fundmi"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Opcionet e Energjisë"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Informacionet  e albumit"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Grupi i kanaleve"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Subtitra lokal në dispozicion"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"

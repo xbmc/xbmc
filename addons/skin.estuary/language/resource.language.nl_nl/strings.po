@@ -1,0 +1,109 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Dutch (Netherlands) (http://www.transifex.com/projects/p/kodi-main/language/nl_NL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl_NL\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Nu afspelend"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Voorspelling"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Acties"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Overige opties"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Laatst ingelogd op"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Terugspoelen"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Vooruitspoelen"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Afspeellijst opties"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Voeg groep toe"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Hernoem groep"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Verwijder Groep"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Gebaseerd op Arial"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Laatst bijgewerkt"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Energiebeheer"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Albuminformatie"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Songtekst add-on"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Kanaal groep"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Opties inhoudsscanner"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Download ondertitels"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Lokale ondertitel beschikbaar"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Kanaal opties"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Selecteer jouw Kodi Gebruikersprofiel[CR]om in te loggen en door te gaan"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"
