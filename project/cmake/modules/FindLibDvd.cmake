@@ -79,15 +79,15 @@ if(NOT WIN32)
                              CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
                                         --target=${ARCH}
                                         --host=${ARCH}
-                                        --disable-shared
                                         --enable-static
+                                        --disable-shared
                                         --with-pic
                                         --prefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd
                                         "${EXTRA_FLAGS}"
                                         "LDFLAGS=${CMAKE_LD_FLAGS} -L${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib"
                                         "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
                                         "DVDREAD_CFLAGS=${DVDREAD_CFLAGS}"
-                                        "DVDREAD_LIBS=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.a"
+                                        "DVDREAD_LIBS=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.la"
                                         "LIBS=${DVDNAV_LIBS}")
   add_dependencies(dvdnav dvdread)
   core_link_library(${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdnav.a
