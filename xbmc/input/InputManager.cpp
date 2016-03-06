@@ -459,13 +459,13 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
   {
   case XBMC_KEYDOWN:
   {
-    if (m_LastKey.GetButtonCode() & CKey::MODIFIER_LONG)
+    m_Keyboard.ProcessKeyDown(newEvent.key.keysym);
+    CKey key = m_Keyboard.TranslateKey(newEvent.key.keysym);
+    if (key.GetButtonCode() == m_LastKey.GetButtonCode() && m_LastKey.GetButtonCode() & CKey::MODIFIER_LONG)
     {
       // Do not repeat long presses
       break;
     }
-    m_Keyboard.ProcessKeyDown(newEvent.key.keysym);
-    CKey key = m_Keyboard.TranslateKey(newEvent.key.keysym);
     if (!CButtonTranslator::GetInstance().HasLonpressMapping(g_windowManager.GetActiveWindowID(), key))
     {
       m_LastKey.Reset();
