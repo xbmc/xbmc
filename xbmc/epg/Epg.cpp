@@ -329,7 +329,7 @@ bool CEpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
     return false;
 
   CEpgInfoTagPtr tag(new CEpgInfoTag(*data));
-  return UpdateEntry(tag, true, bUpdateDatabase);
+  return UpdateEntry(tag, false, bUpdateDatabase);
 }
 
 bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, bool bNotifyObeservers, bool bUpdateDatabase /* = false */)
