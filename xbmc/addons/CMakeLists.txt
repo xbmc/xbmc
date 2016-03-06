@@ -6,6 +6,7 @@ set(SOURCES Addon.cpp
             AddonCallbacksCodec.cpp
             AddonCallbacks.cpp
             AddonCallbacksGUI.cpp
+            AddonCallbacksInputStream.cpp
             AddonCallbacksPVR.cpp
             AddonDatabase.cpp
             AddonInstaller.cpp
@@ -21,6 +22,7 @@ set(SOURCES Addon.cpp
             GUIViewStateAddonBrowser.cpp
             GUIWindowAddonBrowser.cpp
             ImageResource.cpp
+            InputStream.cpp
             LanguageResource.cpp
             PluginSource.cpp
             Repository.cpp
@@ -41,6 +43,7 @@ set(HEADERS Addon.h
             AddonCallbacksAudioEngine.h
             AddonCallbacksCodec.h
             AddonCallbacksGUI.h
+            AddonCallbacksInputStream.h
             AddonCallbacksPVR.h
             AddonDatabase.h
             AddonDll.h
@@ -62,6 +65,7 @@ set(HEADERS Addon.h
             GUIWindowAddonBrowser.h
             IAddon.h
             ImageResource.h
+            InputStream.h
             LanguageResource.h
             PluginSource.h
             Repository.h
