@@ -3,8 +3,9 @@
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<controls>
 		<include>CommonBackground</include>
-		<include>CommonBackgroundOverlay</include>
+		<include>Header</include>
 		<include>CommonNowPlaying</include>
+		<include>Footer</include>
 		<control type="label">
 			<description>Window label</description>
 			<include>MediaWindowTitleCommons</include>
@@ -12,27 +13,22 @@
 		</control>
 		<control type="panel" id="9002">
 			<include>VisibleFadeEffect</include>
-			<include>SubMenuCommonLayout</include>
+			<include>BottomMenuLayout</include>
 			<content>
+				<item>
+					<label>31200</label>
+					<onclick>Back</onclick>
+					<icon>icon_button_back.png</icon>
+				</item>
 				<item>
 					<label>13200</label>
 					<onclick>ActivateWindow(Profiles)</onclick>
 					<icon>icon_button_profile.png</icon>
 				</item>
 				<item>
-					<label>7</label>
-					<onclick>ActivateWindow(FileManager)</onclick>
-					<icon>icon_button_filemanager.png</icon>
-				</item>
-				<item>
 					<label>130</label>
 					<onclick>ActivateWindow(SystemInfo)</onclick>
 					<icon>icon_button_systeminfo.png</icon>
-				</item>
-				<item>
-					<label>31200</label>
-					<onclick>Back</onclick>
-					<icon>icon_button_back.png</icon>
 				</item>
 				<item>
 					<label>1036</label>

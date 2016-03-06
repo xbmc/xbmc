@@ -2,12 +2,13 @@
 <window>
 	<defaultcontrol always="true">50</defaultcontrol>
 	<views>50</views>
-	<onunload>ClearProperty(DropdownMenuVisible,Home)</onunload>
+	<onunload>ClearProperty(PopupMenuVisible,Home)</onunload>
 	<controls>
 		<include>CommonBackground</include>
-		<include>MediaBladeLeft</include>
-		<include>CommonBackgroundOverlay</include>
+		<include>SideMenu</include>
+		<include>Header</include>
 		<include>CommonNowPlaying</include>
+		<include>Footer</include>
 		<control type="label">
 			<description>Window label</description>
 			<include>MediaWindowTitleCommons</include>
@@ -27,8 +28,8 @@
 			</include>
 		</control>
 		<include>ScrollBarCommons</include>
-		<include>MediaSubMenu</include>
-		<include name="DropdownMenu">
+		<include>BottomMenu</include>
+		<include name="PopupMenu">
 			<param name="panel-posy">240</param>
 			<param name="panel-height">360</param>
 		</include>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
  <defaultcontrol>-</defaultcontrol>
-	<onunload>ClearProperty(DropdownMenuVisible,Home)</onunload>
+	<onunload>ClearProperty(PopupMenuVisible,Home)</onunload>
 	<controls>
 		<!-- codec info -->
 		<control type="group" id="0">

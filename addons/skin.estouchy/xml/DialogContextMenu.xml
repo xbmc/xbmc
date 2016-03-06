@@ -9,7 +9,6 @@
 	<controls>
 		<include>BehindDialogFadeOut</include>
 		<control type="image">
-			<description>Header Background</description>
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>400</width>

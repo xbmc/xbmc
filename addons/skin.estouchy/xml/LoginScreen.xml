@@ -3,8 +3,9 @@
 	<defaultcontrol></defaultcontrol>
 	<controls>
 		<include>CommonBackground</include>
-		<include>CommonBackgroundOverlay</include>
+		<include>Header</include>
 		<include>CommonNowPlaying</include>
+		<include>Footer</include>
 		<control type="label">
 			<description>Window label</description>
 			<include>MediaWindowTitleCommons</include>
@@ -130,7 +131,7 @@
 		</control>
 		<control type="panel" id="9002">
 			<include>VisibleFadeEffect</include>
-			<include>SubMenuCommonLayout</include>
+			<include>BottomMenuLayout</include>
 			<content>
 				<item>
 					<label>13012</label>

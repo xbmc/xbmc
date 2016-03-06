@@ -47,7 +47,7 @@
 					<selectedcolor>selected</selectedcolor>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>$INFO[ListItem.Label]</label>
+					<label>$VAR[PVRListLabel]</label>
 				</control>
 				<control type="label">
 					<posx>100</posx>
@@ -117,7 +117,7 @@
 					<selectedcolor>selected</selectedcolor>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>$INFO[ListItem.Label]</label>
+					<label>$VAR[PVRListLabel]</label>
 				</control>
 				<control type="label">
 					<posx>100</posx>

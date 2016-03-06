@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<defaultcontrol>3</defaultcontrol>
-	<onunload>ClearProperty(DropdownMenuVisible,Home)</onunload>
+	<onunload>ClearProperty(PopupMenuVisible,Home)</onunload>
 	<controls>
 		<include>CommonBackground</include>
-		<include>CommonBackgroundOverlay</include>
+		<include>Header</include>
 		<include>CommonNowPlaying</include>
 		<include>ScrollBarCommons</include>
+		<include>Footer</include>
 		<control type="label">
 			<description>Window label</description>
 			<include>MediaWindowTitleCommons</include>
@@ -14,7 +15,7 @@
 		</control>
 		<control type="panel" id="9002">
 			<include>VisibleFadeEffect</include>
-			<include>SubMenuCommonLayout</include>
+			<include>BottomMenuLayout</include>
 			<content>
 				<item>
 					<label>31200</label>
@@ -28,8 +29,8 @@
 				</item>
 				<item>
 					<label>5</label>
-					<onclick condition="IsEmpty(Window(Home).Property(DropdownMenuVisible))">SetProperty(DropdownMenuVisible,Show,Home)</onclick>
-					<onclick condition="!IsEmpty(Window(Home).Property(DropdownMenuVisible))">ClearProperty(DropdownMenuVisible,Home)</onclick>
+					<onclick condition="IsEmpty(Window(Home).Property(PopupMenuVisible))">SetProperty(PopupMenuVisible,Show,Home)</onclick>
+					<onclick condition="!IsEmpty(Window(Home).Property(PopupMenuVisible))">ClearProperty(PopupMenuVisible,Home)</onclick>
 					<icon>icon_button_settings.png</icon>
 				</item>
 			</content>
@@ -181,7 +182,7 @@
 			<font>-</font>
 			<visible>false</visible>
 		</control>
-		<include name="DropdownMenu">
+		<include name="PopupMenu">
 			<param name="panel-posy">400</param>
 			<param name="panel-height">160</param>
 		</include>

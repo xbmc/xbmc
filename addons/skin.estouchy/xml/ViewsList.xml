@@ -179,7 +179,7 @@
 					<height>62</height>
 					<texture background="true">$VAR[PosterThumb]</texture>
 					<aspectratio>keep</aspectratio>
-					<visible>Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | [Container.Content(Addons) + !ListItem.IsFolder] | Container.Content(Actors) | Container.Content(Sets) | [Window.IsVisible(Pictures) + !IsEmpty(Container.FolderPath)]</visible>
+					<visible>Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | [Container.Content(Addons) + !ListItem.IsFolder] | Container.Content(Actors) | Container.Content(Sets) | [Window.IsVisible(Pictures) + !IsEmpty(Container.FolderPath)]</visible>
 				</control>
 				<control type="image">
 					<posx>4</posx>

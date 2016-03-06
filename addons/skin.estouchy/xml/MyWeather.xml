@@ -3,8 +3,9 @@
 	<defaultcontrol always="true">50</defaultcontrol>
 	<controls>
 		<include>CommonBackground</include>
-		<include>CommonBackgroundOverlay</include>
+		<include>Header</include>
 		<include>CommonNowPlaying</include>
+		<include>Footer</include>
 		<control type="label">
 			<description>Window label</description>
 			<include>MediaWindowTitleCommons</include>
@@ -502,8 +503,13 @@
 		<include>ScrollBarCommons</include>
 		<control type="panel" id="9002">
 			<include>VisibleFadeEffect</include>
-			<include>SubMenuCommonLayout</include>
+			<include>BottomMenuLayout</include>
 			<content>
+				<item>
+					<label>31200</label>
+					<onclick>ParentDir</onclick>
+					<icon>icon_button_back.png</icon>
+				</item>
 				<item>
 					<label>184</label>
 					<onclick>Weather.Refresh</onclick>
@@ -513,11 +519,6 @@
 					<label>31201</label>
 					<onclick>Weather.LocationNext</onclick>
 					<icon>icon_button_city.png</icon>
-				</item>
-				<item>
-					<label>31200</label>
-					<onclick>ParentDir</onclick>
-					<icon>icon_button_back.png</icon>
 				</item>
 				<item>
 					<label>1036</label>
