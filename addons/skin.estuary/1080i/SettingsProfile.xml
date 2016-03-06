@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <window>
 	<defaultcontrol always="true">9000</defaultcontrol>
-	<backgroundcolor>FF000000</backgroundcolor>
+	<backgroundcolor>background</backgroundcolor>
 	<controls>
 		<include>DefaultBackground</include>
 		<control type="group">

@@ -125,7 +125,7 @@
 					<width>1160</width>
 					<height>40</height>
 					<label>$VAR[ListSubLabelVar]</label>
-					<animation effect="slide" start="0,0" end="70,0" time="0" condition="Container.Content(tvshows) | Container.Content(seasons)">Conditional</animation>
+					<animation effect="slide" start="0,0" end="70,0" time="0" condition="Stringcompare(ListItem.DBType,tvshow) | Stringcompare(ListItem.DBType,season)">Conditional</animation>
 					<font>font30_title</font>
 					<textcolor>button_focus</textcolor>
 					<shadowcolor>text_shadow</shadowcolor>

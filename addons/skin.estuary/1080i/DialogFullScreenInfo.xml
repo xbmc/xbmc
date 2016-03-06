@@ -172,7 +172,7 @@
 					<height>25</height>
 					<font>font14</font>
 					<label>$INFO[VideoPlayer.Artist]$INFO[VideoPlayer.Album, - ]</label>
-					<textcolor>grey2</textcolor>
+					<textcolor>grey</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<visible>VideoPlayer.Content(MusicVideos)</visible>
 				</control>

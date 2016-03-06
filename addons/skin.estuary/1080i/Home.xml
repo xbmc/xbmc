@@ -3,7 +3,7 @@
 	<menucontrol>9000</menucontrol>
 	<defaultcontrol>9000</defaultcontrol>
 <!-- 	<onload condition="ControlGroup(700).HasFocus">SetFocus(9000,0)</onload>
- -->	<backgroundcolor>FF000000</backgroundcolor>
+ -->	<backgroundcolor>background</backgroundcolor>
 	<controls>
 		<control type="button" id="20000">
 			<include>HiddenObject</include>
@@ -33,6 +33,7 @@
 			<visible>!Player.HasMedia</visible>
 		</control>
 		<control type="group" id="2000">
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(musicinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation)">Conditional</animation>
 			<animation type="Conditional" condition="Control.IsVisible(20000)" reversible="false">
 				<effect type="slide" end="0,20" time="60" tween="sine" />
 				<effect type="slide" end="0,-20" time="180" tween="sine" delay="80" />
@@ -812,28 +813,32 @@
 			<param name="breadcrumbs_label" value="" />
 			<param name="breadcrumbs_icon" value="" />
 		</include>
-		<control type="image">
-			<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
-			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-			<left>20</left>
-			<top>10</top>
-			<aspectratio>keep</aspectratio>
-			<width>56</width>
-			<height>56</height>
-			<texture colordiffuse="button_focus">icons/logo.png</texture>
-		</control>
-		<control type="image">
-			<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
-			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-			<left>60</left>
-			<top>20</top>
-			<aspectratio>keep</aspectratio>
-			<width>192</width>
-			<height>36</height>
-			<texture>icons/logo-text.png</texture>
+		<control type="group">
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(musicinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation)">Conditional</animation>
+			<control type="image">
+				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+				<left>20</left>
+				<top>10</top>
+				<aspectratio>keep</aspectratio>
+				<width>56</width>
+				<height>56</height>
+				<texture colordiffuse="button_focus">icons/logo.png</texture>
+			</control>
+			<control type="image">
+				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+				<left>60</left>
+				<top>20</top>
+				<aspectratio>keep</aspectratio>
+				<width>192</width>
+				<height>36</height>
+				<texture>icons/logo-text.png</texture>
+			</control>
 		</control>
 		<include>BottomBar</include>
 		<control type="group">
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(musicinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation)">Conditional</animation>
 			<include>OpenClose_Left</include>
 			<control type="radiobutton" id="900">
 				<left>37</left>
@@ -858,7 +863,7 @@
 				<textureradioofffocus>icons/search.png</textureradioofffocus>
 				<textureradiooffnofocus>icons/search.png</textureradiooffnofocus>
 			</control>
-			<control type="fadelabel">
+			<control type="label">
 				<left>77</left>
 				<top>91</top>
 				<width>520</width>
@@ -868,9 +873,6 @@
 				<scrollout>false</scrollout>
 				<pauseatend>5000</pauseatend>
 				<label>$LOCALIZE[31001]...</label>
-				<label>$LOCALIZE[31002]...</label>
-				<label>$LOCALIZE[31003]...</label>
-				<label>$LOCALIZE[31004]...</label>
 			</control>
 			<control type="group">
 				<left>53</left>
@@ -1124,6 +1126,7 @@
 			</control>
 		</control>
 		<control type="radiobutton" id="14200">
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(musicinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation)">Conditional</animation>
 			<top>995</top>
 			<left>35</left>
 			<width>420</width>
@@ -1149,6 +1152,7 @@
 			<visible>Player.hasMedia</visible>
 		</control>
 		<control type="rss">
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(musicinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation)">Conditional</animation>
 			<left>0</left>
 			<top>1041</top>
 			<height>30</height>

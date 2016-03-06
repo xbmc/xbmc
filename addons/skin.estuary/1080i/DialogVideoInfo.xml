@@ -7,6 +7,7 @@
 			<left>106</left>
 			<animation effect="fade" start="100" end="0" time="0">WindowClose</animation>
 			<visible>!Container.Content(files)</visible>
+			<include condition="Window.IsActive(home)">OpenClose_Left</include>
 			<control type="image">
 				<top>-16</top>
 				<left>-16</left>
@@ -15,7 +16,7 @@
 				<texture>colors/black.png</texture>
 				<bordertexture border="20">overlays/shadow.png</bordertexture>
 				<bordersize>20</bordersize>
-				<animation effect="fade" start="0" end="100" time="100" delay="300">WindowOpen</animation>
+				<animation effect="fade" start="0" end="100" time="100" delay="300" condition="!Window.IsActive(home)">WindowOpen</animation>
 			</control>
 			<control type="image">
 				<left>4</left>
@@ -24,10 +25,10 @@
 				<height>701</height>
 				<aspectratio>scale</aspectratio>
 				<texture fallback="DefaultVideo.png">$VAR[PosterVar]</texture>
-				<animation effect="fade" start="0" end="100" time="0" delay="300">WindowOpen</animation>
+				<animation effect="fade" start="0" end="100" time="0" delay="300" condition="!Window.IsActive(home)">WindowOpen</animation>
 			</control>
 			<control type="group">
-				<visible>Container.Content(episodes) + !IsEmpty(ListItem.Thumb)</visible>
+				<visible>Stringcompare(ListItem.DBType,episode) + !IsEmpty(ListItem.Thumb)</visible>
 				<control type="image">
 					<left>4</left>
 					<top>4</top>
@@ -35,7 +36,7 @@
 					<height>701</height>
 					<aspectratio>stretch</aspectratio>
 					<texture colordiffuse="AAFFFFFF" fallback="DefaultVideo.png">colors/black.png</texture>
-					<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
+					<animation effect="fade" start="0" end="100" time="300" delay="300" condition="!Window.IsActive(home)">WindowOpen</animation>
 				</control>
 				<control type="image">
 					<left>14</left>
@@ -44,7 +45,7 @@
 					<height>701</height>
 					<aspectratio>keep</aspectratio>
 					<texture>$INFO[ListItem.Thumb]</texture>
-					<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
+					<animation effect="fade" start="0" end="100" time="300" delay="300" condition="!Window.IsActive(home)">WindowOpen</animation>
 					<bordertexture border="20">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
@@ -141,7 +142,8 @@
 				<orientation>vertical</orientation>
 				<left>730</left>
 				<top>488</top>
-				<itemgap>-5</itemgap>
+				<height>310</height>
+				<itemgap>-8</itemgap>
 				<ondown>5000</ondown>
 				<onup>50</onup>
 				<onright>140</onright>
@@ -277,7 +279,7 @@
 				<height>370</height>
 				<onleft>50</onleft>
 				<onright>50</onright>
-				<onup condition="System.hasAddon(script.extendedinfo)">RunScript(script.extendedinfo,info=extendedactorinfo,name=$INFO[Container(50).ListItem.Label])</onup>
+				<onup condition="System.hasAddon(script.extendedinfo) + Control.HasFocus(50)">RunScript(script.extendedinfo,info=extendedactorinfo,name=$INFO[Container(50).ListItem.Label])</onup>
 				<onup condition="!System.hasAddon(script.extendedinfo)">InstallAddon(script.extendedinfo)</onup>
 				<ondown>140</ondown>
 				<scrolltime>200</scrolltime>
@@ -427,7 +429,7 @@
 					<param name="label" value="$LOCALIZE[31090]" />
 					<param name="onclick_1" value="Action(close)" />
 					<param name="onclick_2" value="RunScript(script.extendedinfo,info=youtubebrowser,id=$INFO[ListItem.Title] $INFO[ListItem.Year])" />
-					<param name="visible" value="System.hasAddon(script.extendedinfo) + Container.Content(movies) + !Control.IsVisible(11)" />
+					<param name="visible" value="System.hasAddon(script.extendedinfo) + Stringcompare(ListItem.DBType,movie) + !Control.IsVisible(11)" />
 				</include>
 				<control type="group" id="400">
 					<width>262</width>

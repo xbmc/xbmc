@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <colors>
-<!-- All others -->
+	<color name="background">FF000000</color>
 	<color name="black">FF000000</color>
 	<color name="white">FFF0F0F0</color>
-	<color name="total_white">FFFFFFFF</color>
-	<color name="brightred">FFC80000</color>
 	<color name="grey">FFA0A0A0</color>
-	<color name="grey2">FF999999</color>
 	<color name="blue">FFb61414</color>
 	<color name="red">FFCE4421</color>
-	<color name="bluegrey">FFC6C6C8</color>
-	<color name="darkgrey">FF2C2C2C</color>
 	<color name="button_focus">FFD71717</color>
 	<color name="text_shadow">22000000</color>
 	<color name="border_alpha">60FFFFFF</color>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <window>
 	<defaultcontrol>-</defaultcontrol>
-	<backgroundcolor>FF000000</backgroundcolor>
+	<backgroundcolor>background</backgroundcolor>
 	<controls>
 		<control type="visualisation">
 			<include>FullScreenDimensions</include>
@@ -178,48 +178,6 @@
 				<param name="breadcrumbs_label" value="$LOCALIZE[250]" />
 				<param name="breadcrumbs_icon" value="icons/settings/music.png" />
 			</include>
-		</control>
-		<control type="group" id="0">
-			<visible>Player.ShowCodec</visible>
-			<animation effect="fade" time="400" tween="cubic" reversible="true">VisibleChange</animation>
-			<control type="image">
-				<left>30</left>
-				<top>10</top>
-				<width>1858</width>
-				<height>130</height>
-				<texture colordiffuse="B0FFFFFF">colors/black.png</texture>
-				<animation effect="fade" start="100" end="90" time="40" condition="true">Conditional</animation>
-			</control>
-			<control type="label">
-				<left>75</left>
-				<top>20</top>
-				<label>$INFO[musicplayer.Codec,$LOCALIZE[21446]: ,]$INFO[musicplayer.Bitrate, • $LOCALIZE[623]: ,kbps]$INFO[musicplayer.bitspersample, • $LOCALIZE[612]: ,bit]$INFO[musicplayer.Samplerate, • $LOCALIZE[613]: ,kHz]$INFO[musicplayer.Channels, • $LOCALIZE[21444]: ]</label>
-				<label>-</label>
-				<font>font12</font>
-			</control>
-			<control type="label">
-				<left>75</left>
-				<top>55</top>
-				<label>$INFO[Visualisation.Name] [I][COLOR=button_focus]($LOCALIZE[20166])[/COLOR][/I] • fps: $INFO[System.FPS]</label>
-				<label>-</label>
-				<font>font12</font>
-				<visible>Visualisation.Locked</visible>
-			</control>
-			<control type="label">
-				<left>75</left>
-				<top>55</top>
-				<label>$INFO[Visualisation.Name] • fps: $INFO[System.FPS]</label>
-				<label>-</label>
-				<font>font12</font>
-				<visible>!Visualisation.Locked</visible>
-			</control>
-			<control type="label">
-				<left>75</left>
-				<top>90</top>
-				<label>$LOCALIZE[13388]: $INFO[Visualisation.Preset]</label>
-				<label>-</label>
-				<font>font12</font>
-			</control>
 		</control>
 	</controls>
 </window>

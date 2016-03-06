@@ -23,22 +23,12 @@ msgstr ""
 
 #: /1080i/Home.xml:775
 msgctxt "#31001"
-msgid "Find movies"
+msgid "Search"
 msgstr ""
 
-#: /1080i/Home.xml:776
+#: /1080i/SkinSettings.xml:125
 msgctxt "#31002"
-msgid "Find episodes"
-msgstr ""
-
-#: /1080i/Home.xml:777
-msgctxt "#31003"
-msgid "Find music"
-msgstr ""
-
-#: /1080i/Home.xml:778
-msgctxt "#31004"
-msgid "Find actors"
+msgid "Show media fanart as background"
 msgstr ""
 
 #: /1080i/Home.xml:75
@@ -652,4 +642,14 @@ msgstr ""
 #: /1080i/DialogVideoInfo.xml:558
 msgctxt "#31126"
 msgid "Press OK to read plot"
+msgstr ""
+
+#: /1080i/Includes_MediaMenu.xml:137
+msgctxt "#31127"
+msgid "Show icons"
+msgstr ""
+
+#: /1080i/Variables.xml:30
+msgctxt "#31128"
+msgid "Contributors"
 msgstr ""

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<defaultcontrol>9000</defaultcontrol>
-	<backgroundcolor>FF000000</backgroundcolor>
+	<backgroundcolor>background</backgroundcolor>
 	<controls>
 		<include>DefaultBackground</include>
 		<control type="group">
@@ -107,19 +107,26 @@
 						<selected>Skin.HasSetting(show_mediaflags)</selected>
 					</control>
 					<control type="radiobutton" id="605">
+						<label>$LOCALIZE[31002]</label>
+						<width>1256</width>
+						<include>DefaultSettingButton</include>
+						<onclick>Skin.ToggleSetting(no_fanart)</onclick>
+						<selected>Skin.HasSetting(no_fanart)</selected>
+					</control>
+					<control type="radiobutton" id="606">
 						<label>$LOCALIZE[31108]</label>
 						<width>1256</width>
 						<include>DefaultSettingButton</include>
 						<onclick>Skin.ToggleSetting(use_custom_bg)</onclick>
 						<selected>Skin.HasSetting(use_custom_bg)</selected>
 					</control>
-					<control type="button" id="606">
+					<control type="button" id="607">
 						<label>$LOCALIZE[31109]</label>
 						<label2>$INFO[Skin.String(custom_background)]</label2>
 						<width>1256</width>
 						<include>DefaultSettingButton</include>
 						<onclick>Skin.SetImage(custom_background)</onclick>
-						<enable>Skin.HasSetting(use_custom_bg)</enable>
+						<enable>!Skin.HasSetting(use_custom_bg)</enable>
 					</control>
 				</control>
 				<control type="grouplist" id="610">
