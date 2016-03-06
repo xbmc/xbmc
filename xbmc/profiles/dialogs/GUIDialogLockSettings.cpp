@@ -49,7 +49,7 @@
 #define SETTING_LOCK_ADDONMANAGER   "lock.addonmanager"
 
 CGUIDialogLockSettings::CGUIDialogLockSettings()
-    : CGUIDialogSettingsManualBase(WINDOW_DIALOG_LOCK_SETTINGS, "LockSettings.xml"),
+    : CGUIDialogSettingsManualBase(WINDOW_DIALOG_LOCK_SETTINGS, "DialogSettings.xml"),
       m_changed(false),
       m_details(true),
       m_conditionalDetails(false),
@@ -229,6 +229,9 @@ void CGUIDialogLockSettings::SetupView()
     setLockCodeLabel();
     setDetailSettingsEnabled(m_locks.mode != LOCK_MODE_EVERYONE);
   }
+  SET_CONTROL_HIDDEN(CONTROL_SETTINGS_CUSTOM_BUTTON);
+  SET_CONTROL_LABEL(CONTROL_SETTINGS_OKAY_BUTTON, 186);
+  SET_CONTROL_LABEL(CONTROL_SETTINGS_CANCEL_BUTTON, 222);
 }
 
 void CGUIDialogLockSettings::InitializeSettings()

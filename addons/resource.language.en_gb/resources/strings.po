@@ -4679,6 +4679,7 @@ msgstr ""
 #: xbmc/addons/GUIDialogAddonSettings.cpp
 #: xbmc/guilib/WindowIDs.h
 #: addons/skin.estuary/1080i/AddonBrowser.xml
+#: xbmc/settings/dialogs/GUIDialogContentSettings.cpp
 msgctxt "#10004"
 msgid "Settings"
 msgstr ""
@@ -11487,7 +11488,10 @@ msgctxt "#20321"
 msgid "Scanning albums using %s"
 msgstr ""
 
-#empty string with id 20322
+#: xbmc/settings/dialogs/GUIDialogContentSettings.cpp
+msgctxt "#20322"
+msgid "Content scanning options"
+msgstr ""
 
 #: xbmc/video/windows/GUIWindowVideoNav.cpp
 msgctxt "#20323"
