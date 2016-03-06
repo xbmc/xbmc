@@ -296,19 +296,14 @@ endif()
 # Codegen
 add_subdirectory(${CORE_SOURCE_DIR}/xbmc/interfaces/swig build/swig)
 
-# Linker flags
-if(NOT APPLE AND NOT WIN32)
-  set(LD_WHOLEARCHIVE_BEGIN -Wl,--whole-archive)
-  set(LD_WHOLEARCHIVE_END -Wl,--no-whole-archive)
-endif()
-
 # Other files (IDE)
 set(OTHER_FILES README.md)
 
 # main binary
 add_executable(${APP_NAME_LC} ${CORE_MAIN_SOURCE} $<TARGET_OBJECTS:compileinfo> "${RESOURCES}" ${OTHER_FILES})
-target_link_libraries(${APP_NAME_LC} ${SYSTEM_LDFLAGS} ${LD_WHOLEARCHIVE_BEGIN} ${core_DEPENDS} ${LD_WHOLEARCHIVE_END}
-                      ${DEPLIBS} ${CMAKE_DL_LIBS})
+whole_archive(_MAIN_LIBRARIES ${core_DEPENDS})
+target_link_libraries(${APP_NAME_LC} ${SYSTEM_LDFLAGS} ${_MAIN_LIBRARIES} ${DEPLIBS} ${CMAKE_DL_LIBS})
+unset(_MAIN_LIBRARIES)
 add_dependencies(${APP_NAME_LC} export-files)
 if(NOT WIN32)
   set_target_properties(${APP_NAME_LC} PROPERTIES SUFFIX ".bin")
@@ -320,8 +315,9 @@ endif()
 # testing
 copy_files_from_filelist_to_buildtree(${PROJECT_SOURCE_DIR}/installdata/test-reference-data.txt 1)
 add_executable(${APP_NAME_LC}-test EXCLUDE_FROM_ALL ${CORE_SOURCE_DIR}/xbmc/test/xbmc-test.cpp $<TARGET_OBJECTS:compileinfo>)
-target_link_libraries(${APP_NAME_LC}-test ${SYSTEM_LDFLAGS} ${LD_WHOLEARCHIVE_BEGIN} ${core_DEPENDS} gtest ${test_archives} ${LD_WHOLEARCHIVE_END}
-                      ${DEPLIBS} ${CMAKE_DL_LIBS})
+whole_archive(_TEST_LIBRARIES ${core_DEPENDS} gtest ${test_archives})
+target_link_libraries(${APP_NAME_LC}-test ${SYSTEM_LDFLAGS} ${_TEST_LIBRARIES} ${DEPLIBS} ${CMAKE_DL_LIBS})
+unset(_TEST_LIBRARIES)
 add_dependencies(${APP_NAME_LC}-test export-files)
 
 # make test and make check (cannot be executed when cross compiling)
