@@ -69,7 +69,7 @@ bool CInputStream::Supports(CFileItem &fileitem)
     return false;
 
   if (!m_pStruct)
-    return false;
+    return true;
 
   std::string pathList;
   try
