@@ -182,6 +182,13 @@ int MysqlDatabase::connect(bool create_new) {
                                  NULL,
                                  compression ? CLIENT_COMPRESS : 0) != NULL)
     {
+      static bool showed_ver_info = false;
+      if (!showed_ver_info)
+      {
+        CLog::Log(LOGINFO, "MYSQL: Connected to version %s", mysql_get_server_info(conn));
+        showed_ver_info = true;
+      }
+
       // disable mysql autocommit since we handle it
       //mysql_autocommit(conn, false);
 
