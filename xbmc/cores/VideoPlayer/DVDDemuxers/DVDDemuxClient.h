@@ -20,6 +20,7 @@
  */
 
 #include "DVDDemux.h"
+#include <vector>
 
 extern "C" {
 #include "libavcodec/avcodec.h"
@@ -42,8 +43,9 @@ public:
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL) override;
   void SetSpeed(int iSpeed) override;
   int GetStreamLength() override { return 0; }
-  CDemuxStream* GetStream(int iStreamId) override;
-  int GetNrOfStreams() override;
+  CDemuxStream* GetStream(int iStreamId) const override;
+  std::vector<CDemuxStream*> GetStreams() const override;
+  int GetNrOfStreams() const override;
   std::string GetFileName() override;
   virtual std::string GetStreamCodecName(int iStreamId) override;
   virtual void EnableStream(int id, bool enable) override;

@@ -487,7 +487,6 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
   else if(demuxer)
   {
     std::string filename = demuxer->GetFileName();
-    int count = demuxer->GetNrOfStreams();
     int source;
     if(input) /* hack to know this is sub decoder */
       source = Source(STREAM_SOURCE_DEMUX, filename);
@@ -496,9 +495,8 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
     else
       source = Source(STREAM_SOURCE_VIDEOMUX, filename);
 
-    for(int i=0;i<count;i++)
+    for (auto stream : demuxer->GetStreams())
     {
-      CDemuxStream* stream = demuxer->GetStream(i);
       /* skip streams with no type */
       if (stream->type == STREAM_NONE)
         continue;
@@ -4563,9 +4561,12 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
     ExternalStreamInfo info;
     CUtil::GetExternalStreamDetailsFromFilename(m_item.GetPath(), vobsubfile, info);
 
-    for (int i = 0; i < v.GetNrOfSubtitleStreams(); ++i)
+    for (auto sub : v.GetStreams())
     {
-      int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), i);
+      if (sub->type != STREAM_SUBTITLE)
+        continue;
+
+      int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), sub->iId);
       SelectionStream& stream = m_SelectionStreams.Get(STREAM_SUBTITLE, index);
 
       if (stream.name.empty())

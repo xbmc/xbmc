@@ -62,8 +62,9 @@ namespace ADDON
     bool PosTime(int ms);
 
     // demux
-    int GetNrOfStreams();
+    int GetNrOfStreams() const;
     CDemuxStream* GetStream(int iStreamId);
+    std::vector<CDemuxStream*> GetStreams() const;
     DemuxPacket* ReadDemux();
     bool SeekTime(int time, bool backward, double* startpts);
     void AbortDemux();

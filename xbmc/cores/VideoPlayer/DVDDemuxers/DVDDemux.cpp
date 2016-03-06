@@ -53,17 +53,21 @@ std::string CDemuxStreamAudio::GetStreamType()
   return sInfo;
 }
 
-int CDVDDemux::GetNrOfSubtitleStreams()
+int CDVDDemux::GetNrOfStreams(StreamType streamType)
 {
   int iCounter = 0;
 
-  for (int i = 0; i < GetNrOfStreams(); i++)
+  for (auto pStream : GetStreams())
   {
-    CDemuxStream* pStream = GetStream(i);
-    if (pStream->type == STREAM_SUBTITLE) iCounter++;
+    if (pStream && pStream->type == streamType) iCounter++;
   }
 
   return iCounter;
+}
+
+int CDVDDemux::GetNrOfSubtitleStreams()
+{
+  return GetNrOfStreams(STREAM_SUBTITLE);
 }
 
 std::string CDemuxStream::GetStreamName()

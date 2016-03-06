@@ -21,6 +21,7 @@
  */
 
 #include <string>
+#include <vector>
 #include "system.h"
 #include "DVDDemuxPacket.h"
 
@@ -303,14 +304,16 @@ public:
   virtual int GetStreamLength() = 0;
 
   /*
-   * returns the stream or NULL on error, starting from 0
+   * returns the stream or NULL on error
    */
-  virtual CDemuxStream* GetStream(int iStreamId) = 0;
+  virtual CDemuxStream* GetStream(int iStreamId) const = 0;
+
+  virtual std::vector<CDemuxStream*> GetStreams() const = 0;
 
   /*
    * return nr of streams, 0 if none
    */
-  virtual int GetNrOfStreams() = 0;
+  virtual int GetNrOfStreams() const = 0;
 
   /*
    * returns opened filename
@@ -331,4 +334,7 @@ public:
    * enable / disable demux stream
    */
   virtual void EnableStream(int id, bool enable) {};
+
+protected:
+  int GetNrOfStreams(StreamType streamType);
 };

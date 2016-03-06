@@ -138,12 +138,12 @@ bool VideoPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
 
   CDemuxStream* pStream = NULL;
   m_nAudioStream = -1;
-  for (int i = 0; i < m_pDemuxer->GetNrOfStreams(); i++)
+  for (auto stream : m_pDemuxer->GetStreams())
   {
-    pStream = m_pDemuxer->GetStream(i);
-    if (pStream && pStream->type == STREAM_AUDIO)
+    if (stream && stream->type == STREAM_AUDIO)
     {
-      m_nAudioStream = i;
+      m_nAudioStream = stream->iId;
+      pStream = stream;
       break;
     }
   }

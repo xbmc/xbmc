@@ -103,8 +103,9 @@ public:
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
   bool SeekByte(int64_t pos);
   int GetStreamLength();
-  CDemuxStream* GetStream(int iStreamId);
-  int GetNrOfStreams();
+  CDemuxStream* GetStream(int iStreamId) const override;
+  std::vector<CDemuxStream*> GetStreams() const override;
+  int GetNrOfStreams() const override;
 
   bool SeekChapter(int chapter, double* startpts = NULL);
   int GetChapterCount();

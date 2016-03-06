@@ -187,14 +187,13 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
   }
 
   int nVideoStream = -1;
-  for (int i = 0; i < pDemuxer->GetNrOfStreams(); i++)
+  for (CDemuxStream* pStream : pDemuxer->GetStreams())
   {
-    CDemuxStream* pStream = pDemuxer->GetStream(i);
     if (pStream)
     {
       // ignore if it's a picture attachment (e.g. jpeg artwork)
       if(pStream->type == STREAM_VIDEO && !(pStream->flags & AV_DISPOSITION_ATTACHED_PIC))
-        nVideoStream = i;
+        nVideoStream = pStream->iId;
       else
         pDemuxer->EnableStream(pStream->iId, false);
     }
@@ -399,9 +398,8 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
   details.Reset();
 
   const CURL pathToUrl(path);
-  for (int iStream=0; iStream<pDemux->GetNrOfStreams(); iStream++)
+  for (CDemuxStream* stream : pDemux->GetStreams())
   {
-    CDemuxStream *stream = pDemux->GetStream(iStream);
     if (stream->type == STREAM_VIDEO && !(stream->flags & AV_DISPOSITION_ATTACHED_PIC))
     {
       CStreamDetailVideo *p = new CStreamDetailVideo();
@@ -410,7 +408,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
       p->m_fAspect = ((CDemuxStreamVideo *)stream)->fAspect;
       if (p->m_fAspect == 0.0f)
         p->m_fAspect = (float)p->m_iWidth / p->m_iHeight;
-      p->m_strCodec = pDemux->GetStreamCodecName(iStream);
+      p->m_strCodec = pDemux->GetStreamCodecName(stream->iId);
       p->m_iDuration = pDemux->GetStreamLength();
       p->m_strStereoMode = ((CDemuxStreamVideo *)stream)->stereo_mode;
       p->m_strLanguage = ((CDemuxStreamVideo *)stream)->language;
@@ -444,7 +442,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
       CStreamDetailAudio *p = new CStreamDetailAudio();
       p->m_iChannels = ((CDemuxStreamAudio *)stream)->iChannels;
       p->m_strLanguage = stream->language;
-      p->m_strCodec = pDemux->GetStreamCodecName(iStream);
+      p->m_strCodec = pDemux->GetStreamCodecName(stream->iId);
       details.AddStream(p);
       retVal = true;
     }
@@ -489,10 +487,9 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const std::string &path, CStream
 
     int count = v.GetNrOfStreams();
 
-    for(int i = 0; i < count; i++)
+    for(CDemuxStream* stream : v.GetStreams())
     {
       CStreamDetailSubtitle *dsub = new CStreamDetailSubtitle();
-      CDemuxStream* stream = v.GetStream(i);
       std::string lang = stream->language;
       dsub->m_strLanguage = g_LangCodeExpander.ConvertToISO6392T(lang);
       details.AddStream(dsub);

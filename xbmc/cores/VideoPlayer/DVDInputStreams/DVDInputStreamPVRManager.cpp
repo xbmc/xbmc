@@ -53,12 +53,6 @@ CDVDInputStreamPVRManager::CDVDInputStreamPVRManager(IVideoPlayer* pPlayer, CFil
   m_demuxActive = false;
 
   m_StreamProps = new PVR_STREAM_PROPERTIES;
-  m_streamAudio = new CDemuxStreamAudio;
-  m_streamVideo = new CDemuxStreamVideo;
-  m_streamSubtitle = new CDemuxStreamSubtitle;
-  m_streamTeletext = new CDemuxStreamTeletext;
-  m_streamRadioRDS = new CDemuxStreamRadioRDS;
-  m_streamDefault = new CDemuxStream;
 }
 
 /************************************************************************
@@ -68,13 +62,8 @@ CDVDInputStreamPVRManager::~CDVDInputStreamPVRManager()
 {
   Close();
 
+  m_streamMap.clear();
   delete m_StreamProps;
-  delete m_streamAudio;
-  delete m_streamVideo;
-  delete m_streamSubtitle;
-  delete m_streamTeletext;
-  delete m_streamRadioRDS;
-  delete m_streamDefault;
 }
 
 void CDVDInputStreamPVRManager::ResetScanTimeout(unsigned int iTimeoutMs)
@@ -171,7 +160,7 @@ bool CDVDInputStreamPVRManager::Open()
   return true;
 }
 
-// close file and reset everyting
+// close file and reset everything
 void CDVDInputStreamPVRManager::Close()
 {
   if (m_pOtherStream)
@@ -448,6 +437,7 @@ bool CDVDInputStreamPVRManager::OpenDemux()
   }
 
   client->GetStreamProperties(m_StreamProps);
+  UpdateStreamMap();
   return true;
 }
 
@@ -472,72 +462,36 @@ DemuxPacket* CDVDInputStreamPVRManager::ReadDemux()
   else if (pPacket->iStreamId == DMX_SPECIALID_STREAMCHANGE)
   {
     client->GetStreamProperties(m_StreamProps);
+    UpdateStreamMap();
   }
 
   return pPacket;
 }
 
-CDemuxStream* CDVDInputStreamPVRManager::GetStream(int iStreamId)
+CDemuxStream* CDVDInputStreamPVRManager::GetStream(int iStreamId) const
 {
-  CDemuxStream *ret = m_streamDefault;
-  m_streamDefault->type = STREAM_NONE;
-
-  if (m_StreamProps->stream[iStreamId].iCodecType == XBMC_CODEC_TYPE_AUDIO)
+  auto stream = m_streamMap.find(iStreamId);
+  if (stream != m_streamMap.end())
   {
-    m_streamAudio->iChannels       = m_StreamProps->stream[iStreamId].iChannels;
-    m_streamAudio->iSampleRate     = m_StreamProps->stream[iStreamId].iSampleRate;
-    m_streamAudio->iBlockAlign     = m_StreamProps->stream[iStreamId].iBlockAlign;
-    m_streamAudio->iBitRate        = m_StreamProps->stream[iStreamId].iBitRate;
-    m_streamAudio->iBitsPerSample  = m_StreamProps->stream[iStreamId].iBitsPerSample;
-
-    ret = m_streamAudio;
+    return stream->second.get();
   }
-  else if (m_StreamProps->stream[iStreamId].iCodecType == XBMC_CODEC_TYPE_VIDEO)
-  {
-    m_streamVideo->iFpsScale       = m_StreamProps->stream[iStreamId].iFPSScale;
-    m_streamVideo->iFpsRate        = m_StreamProps->stream[iStreamId].iFPSRate;
-    m_streamVideo->iHeight         = m_StreamProps->stream[iStreamId].iHeight;
-    m_streamVideo->iWidth          = m_StreamProps->stream[iStreamId].iWidth;
-    m_streamVideo->fAspect         = m_StreamProps->stream[iStreamId].fAspect;
-    m_streamVideo->stereo_mode     = "mono";
-
-    ret = m_streamVideo;
-  }
-  else if (m_StreamProps->stream[iStreamId].iCodecId == AV_CODEC_ID_DVB_TELETEXT)
-  {
-    ret = m_streamTeletext;
-  }
-  else if (m_StreamProps->stream[iStreamId].iCodecType == XBMC_CODEC_TYPE_SUBTITLE)
-  {
-    if(m_StreamProps->stream[iStreamId].iIdentifier)
-    {
-      m_streamSubtitle->ExtraData = new uint8_t[4];
-      m_streamSubtitle->ExtraSize = 4;
-      m_streamSubtitle->ExtraData[0] = (m_StreamProps->stream[iStreamId].iIdentifier >> 8) & 0xff;
-      m_streamSubtitle->ExtraData[1] = (m_StreamProps->stream[iStreamId].iIdentifier >> 0) & 0xff;
-      m_streamSubtitle->ExtraData[2] = (m_StreamProps->stream[iStreamId].iIdentifier >> 24) & 0xff;
-      m_streamSubtitle->ExtraData[3] = (m_StreamProps->stream[iStreamId].iIdentifier >> 16) & 0xff;
-    }
-    ret = m_streamSubtitle;
-  }
-  else if (m_StreamProps->stream[iStreamId].iCodecType == XBMC_CODEC_TYPE_RDS &&
-           CSettings::GetInstance().GetBool("pvrplayback.enableradiords"))
-  {
-    ret = m_streamRadioRDS;
-  }
-
-  ret->codec = (AVCodecID)m_StreamProps->stream[iStreamId].iCodecId;
-  ret->iId = iStreamId;
-  ret->iPhysicalId = m_StreamProps->stream[iStreamId].iPhysicalId;
-  ret->language[0] = m_StreamProps->stream[iStreamId].strLanguage[0];
-  ret->language[1] = m_StreamProps->stream[iStreamId].strLanguage[1];
-  ret->language[2] = m_StreamProps->stream[iStreamId].strLanguage[2];
-  ret->language[3] = m_StreamProps->stream[iStreamId].strLanguage[3];
-  ret->realtime = true;
-  return ret;
+  else
+    return nullptr;
 }
 
-int CDVDInputStreamPVRManager::GetNrOfStreams()
+std::vector<CDemuxStream*> CDVDInputStreamPVRManager::GetStreams() const
+{
+  std::vector<CDemuxStream*> streams;
+
+  for (auto& st : m_streamMap)
+  {
+    streams.push_back(st.second.get());
+  }
+
+  return streams;
+}
+
+int CDVDInputStreamPVRManager::GetNrOfStreams() const
 {
   return m_StreamProps->iStreamCount;
 }
@@ -576,5 +530,77 @@ void CDVDInputStreamPVRManager::FlushDemux()
   if (g_PVRClients->GetPlayingClient(client))
   {
     client->DemuxFlush();
+  }
+}
+
+void CDVDInputStreamPVRManager::UpdateStreamMap()
+{
+  m_streamMap.clear();
+  int num = GetNrOfStreams();
+
+  for (int i = 0; i < num; ++i)
+  {
+    PVR_STREAM_PROPERTIES::PVR_STREAM stream = m_StreamProps->stream[i];
+
+    std::shared_ptr<CDemuxStream> dStream = std::make_shared<CDemuxStream>();
+    if (stream.iCodecType == XBMC_CODEC_TYPE_AUDIO)
+    {
+      std::shared_ptr<CDemuxStreamAudio> streamAudio = std::make_shared<CDemuxStreamAudio>();
+      streamAudio->iChannels = stream.iChannels;
+      streamAudio->iSampleRate = stream.iSampleRate;
+      streamAudio->iBlockAlign = stream.iBlockAlign;
+      streamAudio->iBitRate = stream.iBitRate;
+      streamAudio->iBitsPerSample = stream.iBitsPerSample;
+
+      dStream = streamAudio;
+    }
+    else if (stream.iCodecType == XBMC_CODEC_TYPE_VIDEO)
+    {
+      std::shared_ptr<CDemuxStreamVideo> streamVideo = std::make_shared<CDemuxStreamVideo>();
+      streamVideo->iFpsScale = stream.iFPSScale;
+      streamVideo->iFpsRate = stream.iFPSRate;
+      streamVideo->iHeight = stream.iHeight;
+      streamVideo->iWidth = stream.iWidth;
+      streamVideo->fAspect = stream.fAspect;
+      streamVideo->stereo_mode = "mono";
+
+      dStream = streamVideo;
+    }
+    else if (stream.iCodecId == AV_CODEC_ID_DVB_TELETEXT)
+    {
+      std::shared_ptr<CDemuxStreamTeletext> streamTeletext = std::make_shared<CDemuxStreamTeletext>();
+      dStream = streamTeletext;
+    }
+    else if (stream.iCodecType == XBMC_CODEC_TYPE_SUBTITLE)
+    {
+      std::shared_ptr<CDemuxStreamSubtitle> streamSubtitle = std::make_shared<CDemuxStreamSubtitle>();
+      if (stream.iIdentifier)
+      {
+        streamSubtitle->ExtraData = new uint8_t[4];
+        streamSubtitle->ExtraSize = 4;
+        streamSubtitle->ExtraData[0] = (stream.iIdentifier >> 8) & 0xff;
+        streamSubtitle->ExtraData[1] = (stream.iIdentifier >> 0) & 0xff;
+        streamSubtitle->ExtraData[2] = (stream.iIdentifier >> 24) & 0xff;
+        streamSubtitle->ExtraData[3] = (stream.iIdentifier >> 16) & 0xff;
+      }
+      dStream = streamSubtitle;
+    }
+    else if (stream.iCodecType == XBMC_CODEC_TYPE_RDS &&
+      CSettings::GetInstance().GetBool("pvrplayback.enableradiords"))
+    {
+      std::shared_ptr<CDemuxStreamRadioRDS> streamRadioRDS = std::make_shared<CDemuxStreamRadioRDS>();
+      dStream = streamRadioRDS;
+    }
+
+    dStream->codec = (AVCodecID)stream.iCodecId;
+    dStream->iId = stream.iPhysicalId;
+    dStream->iPhysicalId = stream.iPhysicalId;
+    dStream->language[0] = stream.strLanguage[0];
+    dStream->language[1] = stream.strLanguage[1];
+    dStream->language[2] = stream.strLanguage[2];
+    dStream->language[3] = stream.strLanguage[3];
+    dStream->realtime = true;
+
+    m_streamMap[stream.iPhysicalId] = dStream;
   }
 }

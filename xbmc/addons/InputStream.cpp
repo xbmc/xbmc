@@ -302,7 +302,7 @@ void CInputStream::DisposeStreams()
   m_streams.clear();
 }
 
-int CInputStream::GetNrOfStreams()
+int CInputStream::GetNrOfStreams() const
 {
   return m_streams.size();
 }
@@ -314,6 +314,18 @@ CDemuxStream* CInputStream::GetStream(int iStreamId)
     return it->second;
 
   return nullptr;
+}
+
+std::vector<CDemuxStream*> CInputStream::GetStreams() const
+{
+  std::vector<CDemuxStream*> streams;
+
+  for (auto &stream : m_streams)
+  {
+    streams.push_back(stream.second);
+  }
+
+  return streams;
 }
 
 void CInputStream::EnableStream(int iStreamId, bool enable)

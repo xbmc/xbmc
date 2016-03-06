@@ -992,12 +992,22 @@ int CDVDDemuxFFmpeg::GetStreamLength()
 /**
  * @brief Finds stream based on demuxer index
  */
-CDemuxStream* CDVDDemuxFFmpeg::GetStream(int iStreamId)
+CDemuxStream* CDVDDemuxFFmpeg::GetStream(int iStreamId) const
 {
   if(iStreamId >= 0 && (size_t)iStreamId < m_stream_index.size())
     return m_stream_index[iStreamId]->second;
   else
     return NULL;
+}
+
+std::vector<CDemuxStream*> CDVDDemuxFFmpeg::GetStreams() const
+{
+  std::vector<CDemuxStream*> streams;
+
+  for (auto& iter : m_streams)
+    streams.push_back(iter.second);
+
+  return streams;
 }
 
 /**
@@ -1012,7 +1022,7 @@ CDemuxStream* CDVDDemuxFFmpeg::GetStreamInternal(int iId)
     return it->second;
 }
 
-int CDVDDemuxFFmpeg::GetNrOfStreams()
+int CDVDDemuxFFmpeg::GetNrOfStreams() const
 {
   return m_stream_index.size();
 }
