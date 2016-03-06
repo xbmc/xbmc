@@ -318,14 +318,16 @@ else()
 endif()
 
 # testing
-if(NOT CMAKE_CROSSCOMPILING) # Cannot execute tests when cross compiling
-  copy_files_from_filelist_to_buildtree(${PROJECT_SOURCE_DIR}/installdata/test-reference-data.txt 1)
-  add_executable(${APP_NAME_LC}-test EXCLUDE_FROM_ALL ${CORE_SOURCE_DIR}/xbmc/test/xbmc-test.cpp $<TARGET_OBJECTS:compileinfo>)
-  target_link_libraries(${APP_NAME_LC}-test ${SYSTEM_LDFLAGS} ${LD_WHOLEARCHIVE_BEGIN} ${core_DEPENDS} gtest ${test_archives} ${LD_WHOLEARCHIVE_END}
-                        ${DEPLIBS} ${CMAKE_DL_LIBS})
+copy_files_from_filelist_to_buildtree(${PROJECT_SOURCE_DIR}/installdata/test-reference-data.txt 1)
+add_executable(${APP_NAME_LC}-test EXCLUDE_FROM_ALL ${CORE_SOURCE_DIR}/xbmc/test/xbmc-test.cpp $<TARGET_OBJECTS:compileinfo>)
+target_link_libraries(${APP_NAME_LC}-test ${SYSTEM_LDFLAGS} ${LD_WHOLEARCHIVE_BEGIN} ${core_DEPENDS} gtest ${test_archives} ${LD_WHOLEARCHIVE_END}
+                      ${DEPLIBS} ${CMAKE_DL_LIBS})
+add_dependencies(${APP_NAME_LC}-test export-files)
+
+# make test and make check (cannot be executed when cross compiling)
+if(NOT CMAKE_CROSSCOMPILING)
   enable_testing()
   gtest_add_tests(${APP_NAME_LC}-test "" ${test_sources})
-  add_dependencies(${APP_NAME_LC}-test export-files)
   add_custom_target(check ${CMAKE_CTEST_COMMAND} WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
   add_dependencies(check ${APP_NAME_LC}-test)
 
