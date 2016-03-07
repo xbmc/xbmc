@@ -198,6 +198,7 @@ public:
   void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
   void SetShowInfo(bool showinfo) { m_playerShowInfo = showinfo; };
   bool GetShowInfo() const { return m_playerShowInfo; }
+  void ToggleShowCodec() { m_playerShowCodec = !m_playerShowCodec; };
   bool ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; return m_playerShowInfo; };
   bool IsPlayerChannelPreviewActive() const;
 
@@ -323,6 +324,7 @@ protected:
   unsigned int m_AfterSeekTimeout;
   int m_seekOffset;
   bool m_playerShowTime;
+  bool m_playerShowCodec;
   bool m_playerShowInfo;
 
   // FPS counters

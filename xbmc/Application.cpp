@@ -2132,6 +2132,13 @@ bool CApplication::OnAction(const CAction &action)
     return true;
   }
 
+  // codec info : Shows the current song, video or picture codec information
+  if (action.GetID() == ACTION_SHOW_CODEC)
+  {
+    g_infoManager.ToggleShowCodec();
+    return true;
+  }
+
   if ((action.GetID() == ACTION_INCREASE_RATING || action.GetID() == ACTION_DECREASE_RATING) && m_pPlayer->IsPlayingAudio())
   {
     const CMusicInfoTag *tag = g_infoManager.GetCurrentSongTag();

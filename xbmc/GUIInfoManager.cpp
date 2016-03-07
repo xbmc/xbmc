@@ -143,6 +143,7 @@ CGUIInfoManager::CGUIInfoManager(void) :
   m_frameCounter = 0;
   m_lastFPSTime = 0;
   m_playerShowTime = false;
+  m_playerShowCodec = false;
   m_playerShowInfo = false;
   m_fps = 0.0f;
   ResetLibraryBools();
@@ -2585,6 +2586,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 
   else if (condition == PLAYER_SHOWINFO)
     bReturn = m_playerShowInfo;
+  else if (condition == PLAYER_SHOWCODEC)
+    bReturn = m_playerShowCodec;
   else if (condition == PLAYER_IS_CHANNEL_PREVIEW_ACTIVE)
     bReturn = IsPlayerChannelPreviewActive();
   else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
