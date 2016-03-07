@@ -24,6 +24,7 @@
 #include "DVDFactoryDemuxer.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #include "utils/log.h"
+#include "Util.h"
 
 
 CDemuxMultiSource::CDemuxMultiSource()
@@ -137,6 +138,8 @@ bool CDemuxMultiSource::Open(CDVDInputStream* pInput)
     }
     else
     {
+      SetMissingStreamDetails(demuxer);
+
       m_demuxerMap[demuxer->GetDemuxerId()] = demuxer;
       m_DemuxerToInputStreamMap[demuxer] = *iter;
       m_pDemuxers.push_back(demuxer);
@@ -211,4 +214,31 @@ bool CDemuxMultiSource::SeekTime(int time, bool backwords, double* startpts)
   }
   m_demuxerQueue = demuxerQueue;
   return ret;
+}
+
+void CDemuxMultiSource::SetMissingStreamDetails(DemuxPtr demuxer)
+{
+  std::string baseFileName = m_pInput->GetFileName();
+  std::string fileName = demuxer->GetFileName();
+  for (auto& stream : demuxer->GetStreams())
+  {
+    ExternalStreamInfo info;
+    CUtil::GetExternalStreamDetailsFromFilename(baseFileName, fileName, info);
+
+    if (stream->flags == CDemuxStream::FLAG_NONE)
+    {
+      stream->flags = static_cast<CDemuxStream::EFlags>(info.flag);
+    }
+    if (stream->language[0] == '\0')
+    {
+      size_t len = info.language.size();
+      for (size_t i = 0; i < 3; ++i)
+      {
+        if (i < len)
+        {
+          stream->language[i] = info.language.at(i);
+        }
+      }
+    }
+  }
 }
