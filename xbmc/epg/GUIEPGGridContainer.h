@@ -65,9 +65,8 @@ namespace EPG
     virtual std::string GetDescription() const;
     const int GetNumChannels()   { return m_channels; };
     virtual int GetSelectedItem() const;
-    const int GetSelectedChannel() const;
     CFileItemPtr GetSelectedChannelItem() const;
-    PVR::CPVRChannelPtr GetChannel(int iIndex);
+    PVR::CPVRChannelPtr GetSelectedChannel();
     virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 
     virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);

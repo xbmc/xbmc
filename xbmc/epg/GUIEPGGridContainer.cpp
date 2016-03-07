@@ -1442,15 +1442,18 @@ bool CGUIEPGGridContainer::OnMouseWheel(char wheel, const CPoint &point)
   return true;
 }
 
-CPVRChannelPtr CGUIEPGGridContainer::GetChannel(int iIndex)
+CPVRChannelPtr CGUIEPGGridContainer::GetSelectedChannel()
 {
-  if (iIndex >= 0 && (size_t) iIndex < m_channelItems.size())
+  CFileItemPtr fileItem;
   {
-    CFileItemPtr fileItem = m_channelItems[iIndex];
-    if (fileItem->HasPVRChannelInfoTag())
-      return fileItem->GetPVRChannelInfoTag();
+    CSingleLock lock(m_critSection);
+    if (m_channelCursor + m_channelOffset < m_channels)
+      fileItem = m_channelItems[m_channelCursor + m_channelOffset];
   }
-  
+
+  if (fileItem && fileItem->HasPVRChannelInfoTag())
+    return fileItem->GetPVRChannelInfoTag();
+
   return CPVRChannelPtr();
 }
 
@@ -1472,11 +1475,6 @@ int CGUIEPGGridContainer::GetSelectedItem() const
       return i;
   }
   return -1;
-}
-
-const int CGUIEPGGridContainer::GetSelectedChannel() const
-{
-  return m_channelCursor + m_channelOffset;
 }
 
 CFileItemPtr CGUIEPGGridContainer::GetSelectedChannelItem() const
