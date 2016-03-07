@@ -1415,7 +1415,6 @@ std::string CUtil::GetDefaultFolderThumb(const std::string &folderThumb)
 void CUtil::GetSkinThemes(std::vector<std::string>& vecTheme)
 {
   static const std::string TexturesXbt = "Textures.xbt";
-  static const std::string TexturesXpr = "Textures.xpr";
 
   std::string strPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
   CFileItemList items;
@@ -1428,8 +1427,7 @@ void CUtil::GetSkinThemes(std::vector<std::string>& vecTheme)
     {
       std::string strExtension = URIUtils::GetExtension(pItem->GetPath());
       std::string strLabel = pItem->GetLabel();
-      if ((strExtension == ".xpr" && !StringUtils::EqualsNoCase(strLabel, TexturesXpr)) ||
-          (strExtension == ".xbt" && !StringUtils::EqualsNoCase(strLabel, TexturesXbt)))
+      if ((strExtension == ".xbt" && !StringUtils::EqualsNoCase(strLabel, TexturesXbt)))
         vecTheme.push_back(StringUtils::Left(strLabel, strLabel.size() - strExtension.size()));
     }
     else

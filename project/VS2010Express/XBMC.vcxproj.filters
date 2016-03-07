@@ -1068,9 +1068,6 @@
     <ClCompile Include="..\..\xbmc\guilib\TextureBundleXBT.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\TextureBundleXPR.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\VisibleEffect.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -4080,9 +4077,6 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\TextureBundleXBT.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\TextureBundleXPR.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\TransformMatrix.h">

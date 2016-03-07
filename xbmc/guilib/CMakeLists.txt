@@ -70,7 +70,6 @@ set(SOURCES DDSImage.cpp
             StereoscopicsManager.cpp
             TextureBundle.cpp
             TextureBundleXBT.cpp
-            TextureBundleXPR.cpp
             Texture.cpp
             TextureManager.cpp
             VisibleEffect.cpp
@@ -163,7 +162,6 @@ set(HEADERS DDSImage.h
             Texture.h
             TextureBundle.h
             TextureBundleXBT.h
-            TextureBundleXPR.h
             TextureManager.h
             TransformMatrix.h
             Tween.h
