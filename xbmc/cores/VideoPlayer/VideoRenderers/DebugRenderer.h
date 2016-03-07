@@ -39,6 +39,7 @@ protected:
   class CRenderer : public OVERLAY::CRenderer
   {
   public:
+    CRenderer();
     void Render(int idx) override;
   };
 

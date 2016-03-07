@@ -114,5 +114,6 @@ namespace OVERLAY {
     std::map<unsigned int, COverlay*> m_textureCache;
     static unsigned int m_textureid;
     CRect m_rv, m_rs, m_rd;
+    std::string m_font, m_fontBorder;
   };
 }
