@@ -237,6 +237,7 @@ extern "C" {
   {
     const char* strUserPath;           /*!< @brief path to the user profile */
     const char* strClientPath;         /*!< @brief path to this add-on */
+    int iEpgMaxDays;                   /*!< @brief if > EPG_TIMEFRAME_UNLIMITED, in async epg mode, deliver only events in the range from 'end time > now' to 'start time < now + iEpgMaxDays. EPG_TIMEFRAME_UNLIMITED, notify all events. */
   } PVR_PROPERTIES;
 
   /*!
