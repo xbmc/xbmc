@@ -55,6 +55,7 @@ protected:
   virtual void OnSettingAction(const CSetting *setting);
 
   // specialization of CGUIDialogSettingsBase
+  bool AllowResettingSettings() const override { return false; }
   virtual void Save() { }
   virtual void SetupView();
 
