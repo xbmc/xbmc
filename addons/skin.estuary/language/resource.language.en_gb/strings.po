@@ -31,6 +31,8 @@ msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr ""
 
+#empty strings from id 31003 to 31004
+
 #: /1080i/Home.xml:75
 msgctxt "#31005"
 msgid "In-progress movies"
