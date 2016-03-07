@@ -574,14 +574,14 @@ void CDVDInputStreamPVRManager::UpdateStreamMap()
     else if (stream.iCodecType == XBMC_CODEC_TYPE_SUBTITLE)
     {
       std::shared_ptr<CDemuxStreamSubtitle> streamSubtitle = std::make_shared<CDemuxStreamSubtitle>();
-      if (stream.iIdentifier)
+      if (stream.iSubtitleInfo)
       {
         streamSubtitle->ExtraData = new uint8_t[4];
         streamSubtitle->ExtraSize = 4;
-        streamSubtitle->ExtraData[0] = (stream.iIdentifier >> 8) & 0xff;
-        streamSubtitle->ExtraData[1] = (stream.iIdentifier >> 0) & 0xff;
-        streamSubtitle->ExtraData[2] = (stream.iIdentifier >> 24) & 0xff;
-        streamSubtitle->ExtraData[3] = (stream.iIdentifier >> 16) & 0xff;
+        streamSubtitle->ExtraData[0] = (stream.iSubtitleInfo >> 8) & 0xff;
+        streamSubtitle->ExtraData[1] = (stream.iSubtitleInfo >> 0) & 0xff;
+        streamSubtitle->ExtraData[2] = (stream.iSubtitleInfo >> 24) & 0xff;
+        streamSubtitle->ExtraData[3] = (stream.iSubtitleInfo >> 16) & 0xff;
       }
       dStream = streamSubtitle;
     }
@@ -593,13 +593,13 @@ void CDVDInputStreamPVRManager::UpdateStreamMap()
     }
 
     dStream->codec = (AVCodecID)stream.iCodecId;
-    dStream->uniqueId = stream.iPhysicalId;
+    dStream->uniqueId = stream.iPID;
     dStream->language[0] = stream.strLanguage[0];
     dStream->language[1] = stream.strLanguage[1];
     dStream->language[2] = stream.strLanguage[2];
     dStream->language[3] = stream.strLanguage[3];
     dStream->realtime = true;
 
-    m_streamMap[stream.iPhysicalId] = dStream;
+    m_streamMap[stream.iPID] = dStream;
   }
 }

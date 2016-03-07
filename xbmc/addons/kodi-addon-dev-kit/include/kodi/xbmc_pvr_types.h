@@ -269,11 +269,11 @@ extern "C" {
     unsigned int iStreamCount;
     struct PVR_STREAM
     {
-      unsigned int      iPhysicalId;        /*!< @brief (required) physical index */
+      unsigned int      iPID;               /*!< @brief (required) PID */
       xbmc_codec_type_t iCodecType;         /*!< @brief (required) codec type this stream */
       xbmc_codec_id_t   iCodecId;           /*!< @brief (required) codec id of this stream */
       char              strLanguage[4];     /*!< @brief (required) language id */
-      int               iIdentifier;        /*!< @brief (required) stream id */
+      int               iSubtitleInfo;      /*!< @brief (required) Subtitle Info */
       int               iFPSScale;          /*!< @brief (required) scale of 1000 and a rate of 29970 will result in 29.97 fps */
       int               iFPSRate;           /*!< @brief (required) FPS rate */
       int               iHeight;            /*!< @brief (required) height of the stream reported by the demuxer */
