@@ -1,0 +1,105 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Burmese (Myanmar) (http://www.transifex.com/projects/p/kodi-main/language/my_MM/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: my_MM\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "အလုပ်လုပ်နေသည်"
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "ရုပ်ရှင်များ"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "အပိုင်းများ"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "အယ်လဘမ်များ"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "စာမျက်နှာ"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "ဝင်ရန်"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "အရှေ့သို့အနည်းငယ်ရစ်မည်"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "အဆုံးသတ်ချိန်"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "သီချင်းစာရင်းကိုဖွင့်မည်"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "သီချင်းစာရင်းကိုသိမ်းမည်"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "သီချင်းစာရင်းကိုပိတ်မည်"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "ယခုသီချင်းစာရင်း"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "တည်နေရာ"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "နောက်ဆုံး Update ဖြစ်ခဲ့စဉ်"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "အချက်အလက်များထောက်ပံ့သူ"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "အသုံးပြုထားသော Memory -"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "နောက်ဆုံးဝင်ခဲ့ချိန်"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "စာတန်းထိုးများကို ဒေါင်းလုတ်ဆွဲမည်"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "Live TV"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "အုပ်စုပေါင်းထည့်မည်"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "အုပ်စုအမည်ပြောင်းမည်"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "အုပ်စုဖျက်မည်"

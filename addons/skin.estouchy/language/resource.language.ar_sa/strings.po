@@ -1,0 +1,225 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Arabic (Saudi Arabia) (http://www.transifex.com/projects/p/kodi-main/language/ar_SA/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar_SA\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "اعدادات الصوت"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "قفل الأحرف الكبيرة[CR]"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "خيارات المؤثرات البصرية"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "المؤثرات البصرية المسبقة"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "القائمة"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "...جاري التشغيل"
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "الأفلام"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "الحلقات"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "ألبومات"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "الصفحة"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "قائمة المعلومات"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "تسجيل الدخول"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "تقديم سريع"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "إرجاع"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "وقت الانتهاء"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "الترتيب: تصاعدي"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "الترتيب: تنازلي"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "فتح قائمة التشغيل"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "حفظ قائمة التشغيل"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "إغلاق قائمة التشغيل"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "ملفات موسيقى النظام"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "قائمة التشغيل الحالية"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "خلف"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "الموقع"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "عرض"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "درجة الحرارة الحالية"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "اخر تحديث"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr ": مزود البيانات"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "الذاكرة المستخدمة:"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "آخر تسجيل دخول في"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "تم بثه"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "قائمة الفيديو"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "تحميل الترجمات"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "القالب الإفتراضي"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Arial based"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "تغيير القالب. ضبط اللغة و المنطقة. تغيير خيارات إدراج الملف. إعداد شاشة التوقف"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "إدارة مكتبة الفيديو الخاصة بك. ضبط خيارات تشغيل الفيديو. تغيير خيارات إدراج الفيديو. ضبط خطوط الترجمة"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "ضبط خيارات إدراج الصورة. إعداد عرض الشرائح"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "حدد ثلاث مدن ليتم جمع معلومات الطقس"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "إعداد التحكم بـKodi عبر UPnP و HTTP. ضبط مشاركة الملفات. تحديد خيارات الوصول للإنترنت"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "إعداد و معايرة العروض. تكوين مخرج الصوت. إعداد التحكم عن بعد. إعداد خيارات توفير الطاقة. تمكين التصحيح. إعداد قفل رئيسي"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "للدخول والإستمرارا [CR]Kodi  حدد ملفك الشخصي الخاص بـ"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "أزرار تصنيف القائمة الرئيسية"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "روابط سريعة لصفحة الإضافة الرئيسية"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "خيارات متنوعة"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "زر و شاشة معلومات الطقس الرئيسية"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "اختصار إصافة"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "تي في مباشر"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "إضافة مجموعة"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "إعادة تسمية مجموعة"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "حذف مجموعة"

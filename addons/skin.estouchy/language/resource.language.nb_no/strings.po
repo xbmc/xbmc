@@ -1,0 +1,229 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/projects/p/kodi-main/language/nb_NO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nb_NO\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Lydinstillinger"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Caps[CR]Lock"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Visualiseringsalternativer"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "Visualiseringsforvalg"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Hurtigmeny"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Arbeider..."
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "Filmer"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "Episoder"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "Album"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Side"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Infoliste"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "Innlogging"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "Spol framover"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "Spol bakover"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Ferdig klokken"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Sorter: Stigende"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Sorter: Synkende"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Åpne spilleliste"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Lagre spilleliste"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Lukk spilleliste"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Systemmusikkfiler"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Nåværende spilleliste"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "Tilbake"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Sted"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "Visning"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Været nå"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Sist oppdatert"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Datatilbyder"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Brukt minne:"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Sist innlogget"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Sendt"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Videomeny"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Hent undertekster"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Standard for skallet"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Arial-basert"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Bytt skall · Velg språl og region · Endre innstillinger for filvisning· Innstillinger for skjermsparer"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "Organiser ditt videobibliotek · Endre innstillinger for videoavspilling· Endre video visningsalternativer · Endre undertekst font"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "Sett opp bildevisning · Konfigurer bildefremvisning"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "Velg inntil tre byer for innsamling av værinformasjon"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "Sett opp kontroll av Kodi via UPnP og HTTP - Konfigurer fildeling - Sett opp tilgang fra internett"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "Sett opp og kalibrer skjermer - Konfigurer lydutgang - Sett opp fjernkontroller - Endre strømsparingsinnstillinger - Aktiver feilsøking - Sett en hovedlås"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Velg din Kodi brukerprofil[CR]for å logge inn og fortsette"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "Hjemmeny kategoriknapper"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "Hurtilinker til tilegg for hjemmeny"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "Diverse instillinger"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "Hjemmeskjermens vær-informasjon og knapp"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Snarvei"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "Live TV"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Skjul videobakgrunn"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Legg til gruppe"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Gi nytt navn på gruppe"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Slett gruppe"

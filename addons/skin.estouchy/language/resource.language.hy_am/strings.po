@@ -1,0 +1,137 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Armenian (Armenia) (http://www.transifex.com/projects/p/kodi-main/language/hy_AM/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hy_AM\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Ընթացքում է ..."
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "Ֆիլմեր"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "Ալբոմներ"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Էջ"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "Մուտք"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "ԱՌԱՋ"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "ՀԵՏԴԱՐՁ"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Վերջ"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Աճողական"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Նվազող"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Բացել նվագացանկը"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Հիշել նվագացանկը"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Փակել նվագացանկը"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Համակարգի երաժշտական ֆայլեր"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Ընթացիկ նվագացանկ"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Տեղը"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Ընթացիկ ջերմաստիճան"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Վերջին թարմացումներ"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Տվյալների մատակարար"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Օգտագործված է հիշողություն:"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Վերջին այցելությունը"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Եթերում է"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Ներբեռնել ենթավերնագրերը"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Հիմնական տեսք"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Arial-հիմքով"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Ընտրել Kodi-ի օգտատիրոջ պրոֆիլը[CR]՝մուտք գործելու և շարունակելու համար"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "TV հիմա"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Ավելացնել խումբ"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Վերանվանել խումբը"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Ջնջել խումբը"
