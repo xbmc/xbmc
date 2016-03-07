@@ -2340,11 +2340,6 @@ msgctxt "#522"
 msgid "Remove source"
 msgstr ""
 
-#: xbmc/windows/GUIWindowFileManager.cpp
-msgctxt "#523"
-msgid "Switch media"
-msgstr ""
-
 msgctxt "#524"
 msgid "Select playlist"
 msgstr ""

@@ -1010,7 +1010,6 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   if (item >= 0 && pItem->m_bIsFolder && !pItem->IsParentFolder())
     choices.Add(CONTROL_BTNCALCSIZE, 13393);
   choices.Add(CONTROL_BTNGOTOROOT, 20128);
-  choices.Add(CONTROL_BTNSWITCHMEDIA, 523);
   if (CJobManager::GetInstance().IsProcessing("filemanager"))
     choices.Add(CONTROL_BTNCANCELJOB, 167);
 
@@ -1078,11 +1077,6 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   if (btnid == CONTROL_BTNGOTOROOT)
   {
     Update(list,"");
-    return;
-  }
-  if (btnid == CONTROL_BTNSWITCHMEDIA)
-  {
-    CGUIDialogContextMenu::SwitchMedia("files", m_vecItems[list]->GetPath());
     return;
   }
   if (btnid == CONTROL_BTNCANCELJOB)
