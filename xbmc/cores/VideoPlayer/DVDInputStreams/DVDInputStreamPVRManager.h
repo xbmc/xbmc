@@ -115,6 +115,7 @@ public:
 protected:
   bool CloseAndOpen(const char* strFile);
   void UpdateStreamMap();
+  std::shared_ptr<CDemuxStream> GetStreamInternal(int iStreamId);
   IVideoPlayer* m_pPlayer;
   CDVDInputStream* m_pOtherStream;
   XFILE::IFile* m_pFile;
