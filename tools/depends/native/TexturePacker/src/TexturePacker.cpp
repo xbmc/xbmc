@@ -228,7 +228,6 @@ void Usage()
   puts("  -help            Show this screen.");
   puts("  -input <dir>     Input directory. Default: current dir");
   puts("  -output <dir>    Output directory/filename. Default: Textures.xbt");
-  puts("  -dupecheck       Enable duplicate file detection. Reduces output file size. Default: off");
   puts("  -disable_lzo     Disable lz0 packing");
 }
 
@@ -259,7 +258,7 @@ static bool checkDupe(struct MD5Context* ctx,
   return false;
 }
 
-int createBundle(const std::string& InputDir, const std::string& OutputFile, double maxMSE, unsigned int flags, bool dupecheck)
+int createBundle(const std::string& InputDir, const std::string& OutputFile, double maxMSE, unsigned int flags)
 {
   CXBTFWriter writer(OutputFile);
   if (!writer.Create())
@@ -274,11 +273,6 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
 
   std::vector<CXBTFFile> files = writer.GetFiles();
   dupes.resize(files.size());
-  if (!dupecheck)
-  {
-    for (unsigned int i=0;i<dupes.size();++i)
-      dupes[i] = i;
-  }
 
   for (size_t i = 0; i < files.size(); i++)
   {
@@ -305,21 +299,18 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
 
     printf("%s\n", output.c_str());
     bool skip=false;
-    if (dupecheck)
-    {
-      for (unsigned int j = 0; j < frames.frameList.size(); j++)
-        MD5Update(&ctx,
-          (const uint8_t*)frames.frameList[j].rgbaImage.pixels,
-          frames.frameList[j].rgbaImage.height * frames.frameList[j].rgbaImage.pitch);
+    for (unsigned int j = 0; j < frames.frameList.size(); j++)
+      MD5Update(&ctx,
+        (const uint8_t*)frames.frameList[j].rgbaImage.pixels,
+        frames.frameList[j].rgbaImage.height * frames.frameList[j].rgbaImage.pitch);
 
-      if (checkDupe(&ctx,hashes,dupes,i))
-      {
-        printf("****  duplicate of %s\n", files[dupes[i]].GetPath().c_str());
-        file.GetFrames().insert(file.GetFrames().end(),
-                                files[dupes[i]].GetFrames().begin(),
-                                files[dupes[i]].GetFrames().end());
-        skip = true;
-      }
+    if (checkDupe(&ctx,hashes,dupes,i))
+    {
+      printf("****  duplicate of %s\n", files[dupes[i]].GetPath().c_str());
+      file.GetFrames().insert(file.GetFrames().end(),
+                              files[dupes[i]].GetFrames().begin(),
+                              files[dupes[i]].GetFrames().end());
+      skip = true;
     }
 
     if (!skip)
@@ -363,7 +354,6 @@ int main(int argc, char* argv[])
 #endif
   bool valid = false;
   unsigned int flags = 0;
-  bool dupecheck = false;
   CmdLineArgs args(argc, (const char**)argv);
 
   // setup some defaults, lzo packing,
@@ -391,10 +381,6 @@ int main(int argc, char* argv[])
     {
       InputDir = args[++i];
       valid = true;
-    }
-    else if (!strcmp(args[i], "-dupecheck"))
-    {
-      dupecheck = true;
     }
     else if (!platform_stricmp(args[i], "-output") || !platform_stricmp(args[i], "-o"))
     {
@@ -429,6 +415,6 @@ int main(int argc, char* argv[])
 
   double maxMSE = 1.5;    // HQ only please
   DecoderManager::InstantiateDecoders();
-  createBundle(InputDir, OutputFilename, maxMSE, flags, dupecheck);
+  createBundle(InputDir, OutputFilename, maxMSE, flags);
   DecoderManager::FreeDecoders();
 }

@@ -11,7 +11,7 @@ Echo exclude.txt>>exclude.txt
 
 ECHO ----------------------------------------
 ECHO Creating XBT File...
-START /B /WAIT ..\..\Tools\TexturePacker\TexturePacker -dupecheck -input media -output ..\..\project\Win32BuildSetup\BUILD_WIN32\addons\skin.estouchy\media\Textures.xbt
+START /B /WAIT ..\..\Tools\TexturePacker\TexturePacker -input media -output ..\..\project\Win32BuildSetup\BUILD_WIN32\addons\skin.estouchy\media\Textures.xbt
 
 ECHO ----------------------------------------
 ECHO XBT Texture Files Created...
