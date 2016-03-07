@@ -27,10 +27,10 @@
 
 #import "Application.h"
 #import "FileItem.h"
-#import "MusicInfoTag.h"
+#import "music/tags/MusicInfoTag.h"
 #import "TextureCache.h"
-#import "SpecialProtocol.h"
-#import "PlayList.h"
+#import "filesystem/SpecialProtocol.h"
+#import "playlists/PlayList.h"
 
 #import "threads/Atomics.h"
 #import "platform/darwin/ios-common/AnnounceReceiver.h"

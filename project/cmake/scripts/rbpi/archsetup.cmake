@@ -3,7 +3,7 @@ if(NOT CMAKE_TOOLCHAIN_FILE)
 endif()
 
 set(ARCH_DEFINES -DTARGET_POSIX -DTARGET_LINUX -D_LINUX -D_ARMEL -DTARGET_RASPBERRY_PI
-                 -DHAS_EGL -DHAS_EGLGLES -DHAS_OMXPLAYER -DHAVE_OMXLIB)
+                 -DHAS_OMXPLAYER -DHAVE_OMXLIB)
 set(SYSTEM_DEFINES -D__STDC_CONSTANT_MACROS -D_FILE_DEFINED
                    -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64)
 set(PLATFORM_DIR linux)
@@ -14,12 +14,12 @@ set(CMAKE_SYSTEM_NAME Linux)
 if(WITH_ARCH)
   set(ARCH ${WITH_ARCH})
 else()
-  if(CPU STREQUAL "arm1176jzf-s")
+  if(CPU STREQUAL arm1176jzf-s)
     set(ARCH arm-linux-gnueabihf)
   elseif(CPU MATCHES "cortex-a7")
     set(ARCH arm-linux-gnueabihf)
   else()
-    message(WARNING "unknown CPU: ${CPU}")
+    message(SEND_ERROR "Unknown CPU: ${CPU}")
   endif()
 endif()
 

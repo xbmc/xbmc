@@ -25,7 +25,7 @@
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
-#include "DVDCodecUtils.h"
+#include "DVDCodecs/DVDCodecUtils.h"
 #include "DVDVideoCodecVideoToolBox.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"

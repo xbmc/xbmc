@@ -27,6 +27,8 @@ option(ENABLE_CEC         "Enable CEC support?" ON)
 if(UNIX)
   if(NOT APPLE)
     option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" ON)
+  else()
+    option(ENABLE_VTB "Enable VTB support?" OFF)
   endif()
   option(FFMPEG_PATH        "Path to external ffmpeg?" "")
   option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
@@ -88,7 +90,7 @@ find_package(Threads REQUIRED)
 list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 
 # Required dependencies
-set(required_deps Sqlite3 FreeType PCRE Cpluff
+set(required_deps Sqlite3 FreeType PCRE Cpluff LibDvd
                   TinyXML Python Yajl Xslt
                   JPEG Lzo2 Fribidi TagLib FFMPEG CrossGUID)
 if(NOT WIN32)
@@ -155,10 +157,6 @@ if(ENABLE_NONFREE)
   list(APPEND DEP_DEFINES "-DHAVE_XBMC_NONFREE=1")
 endif()
 
-if(ENABLE_DVDCSS)
-  core_require_dep(LibDvd)
-endif()
-
 if(ENABLE_OPTICAL)
   list(APPEND DEP_DEFINES -DHAS_DVD_DRIVE)
   core_require_dep(Cdio)
@@ -169,6 +167,10 @@ if(ENABLE_AIRTUNES)
   if(SHAIRPLAY_FOUND)
     core_require_dyload_dep(Shairplay)
   endif()
+endif()
+
+if(ENABLE_VTB)
+  list(APPEND DEP_DEFINES -DHAVE_VIDEOTOOLBOXDECODER=1)
 endif()
 
 if(NOT WIN32)
@@ -294,19 +296,14 @@ endif()
 # Codegen
 add_subdirectory(${CORE_SOURCE_DIR}/xbmc/interfaces/swig build/swig)
 
-# Linker flags
-if(NOT APPLE AND NOT WIN32)
-  set(LD_WHOLEARCHIVE_BEGIN -Wl,--whole-archive)
-  set(LD_WHOLEARCHIVE_END -Wl,--no-whole-archive)
-endif()
-
 # Other files (IDE)
 set(OTHER_FILES README.md)
 
 # main binary
-add_executable(${APP_NAME_LC} ${CORE_SOURCE_DIR}/xbmc/platform/posix/main.cpp $<TARGET_OBJECTS:compileinfo> "${RESOURCES}" ${OTHER_FILES})
-target_link_libraries(${APP_NAME_LC} ${SYSTEM_LDFLAGS} ${LD_WHOLEARCHIVE_BEGIN} ${core_DEPENDS} ${LD_WHOLEARCHIVE_END}
-                      ${DEPLIBS} ${CMAKE_DL_LIBS})
+add_executable(${APP_NAME_LC} ${CORE_MAIN_SOURCE} $<TARGET_OBJECTS:compileinfo> "${RESOURCES}" ${OTHER_FILES})
+whole_archive(_MAIN_LIBRARIES ${core_DEPENDS})
+target_link_libraries(${APP_NAME_LC} ${SYSTEM_LDFLAGS} ${_MAIN_LIBRARIES} ${DEPLIBS} ${CMAKE_DL_LIBS})
+unset(_MAIN_LIBRARIES)
 add_dependencies(${APP_NAME_LC} export-files)
 if(NOT WIN32)
   set_target_properties(${APP_NAME_LC} PROPERTIES SUFFIX ".bin")
@@ -316,14 +313,17 @@ else()
 endif()
 
 # testing
-if(NOT CMAKE_CROSSCOMPILING) # Cannot execute tests when cross compiling
-  copy_files_from_filelist_to_buildtree(${PROJECT_SOURCE_DIR}/installdata/test-reference-data.txt 1)
-  add_executable(${APP_NAME_LC}-test EXCLUDE_FROM_ALL ${CORE_SOURCE_DIR}/xbmc/test/xbmc-test.cpp $<TARGET_OBJECTS:compileinfo>)
-  target_link_libraries(${APP_NAME_LC}-test ${SYSTEM_LDFLAGS} ${LD_WHOLEARCHIVE_BEGIN} ${core_DEPENDS} gtest ${test_archives} ${LD_WHOLEARCHIVE_END}
-                        ${DEPLIBS} ${CMAKE_DL_LIBS})
+copy_files_from_filelist_to_buildtree(${PROJECT_SOURCE_DIR}/installdata/test-reference-data.txt 1)
+add_executable(${APP_NAME_LC}-test EXCLUDE_FROM_ALL ${CORE_SOURCE_DIR}/xbmc/test/xbmc-test.cpp $<TARGET_OBJECTS:compileinfo>)
+whole_archive(_TEST_LIBRARIES ${core_DEPENDS} gtest ${test_archives})
+target_link_libraries(${APP_NAME_LC}-test ${SYSTEM_LDFLAGS} ${_TEST_LIBRARIES} ${DEPLIBS} ${CMAKE_DL_LIBS})
+unset(_TEST_LIBRARIES)
+add_dependencies(${APP_NAME_LC}-test export-files)
+
+# make test and make check (cannot be executed when cross compiling)
+if(NOT CMAKE_CROSSCOMPILING)
   enable_testing()
   gtest_add_tests(${APP_NAME_LC}-test "" ${test_sources})
-  add_dependencies(${APP_NAME_LC}-test export-files)
   add_custom_target(check ${CMAKE_CTEST_COMMAND} WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
   add_dependencies(check ${APP_NAME_LC}-test)
 
@@ -344,7 +344,7 @@ if(ENABLE_X11 AND XRANDR_FOUND)
 endif()
 
 # XBMCHelper
-if(APPLE)
+if(CORE_SYSTEM_TYPE STREQUAL darwin)
   add_subdirectory(${CORE_SOURCE_DIR}/tools/EventClients/Clients/OSXRemote build/XBMCHelper)
 endif()
 

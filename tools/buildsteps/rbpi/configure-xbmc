@@ -2,5 +2,9 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=rbpi
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-cd $WORKSPACE
-make -C tools/buildsteps/rbpi -f config-xbmc-makefile
+if [ "$CMAKE_BUILD" = true ]; then
+  make -C $WORKSPACE/tools/depends/target/cmakebuildsys
+else
+  cd $WORKSPACE
+  make -C tools/buildsteps/rbpi -f config-xbmc-makefile
+fi
