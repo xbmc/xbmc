@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Práve hrá"
 
+msgctxt "#31001"
+msgid "Search"
+msgstr "Hľadať"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Predpoveď"

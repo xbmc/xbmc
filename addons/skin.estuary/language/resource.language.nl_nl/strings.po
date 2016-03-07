@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Nu afspelend"
 
+msgctxt "#31001"
+msgid "Search"
+msgstr "Zoeken"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Voorspelling"
@@ -87,6 +91,10 @@ msgstr "Kanaal groep"
 msgctxt "#31088"
 msgid "Content scanning options"
 msgstr "Opties inhoudsscanner"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Beschikbare groepen"
 
 msgctxt "#31091"
 msgid "Download subtitles"

@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Í spilun"
 
+msgctxt "#31001"
+msgid "Search"
+msgstr "Leita"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Veðurspá"
@@ -87,6 +91,10 @@ msgstr "Rásarhópur"
 msgctxt "#31088"
 msgid "Content scanning options"
 msgstr "Stillingar fyrir skönnun innihalds"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Tiltækir hópar"
 
 msgctxt "#31091"
 msgid "Download subtitles"

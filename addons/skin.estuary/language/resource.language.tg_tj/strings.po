@@ -16,6 +16,10 @@ msgstr ""
 "Language: tg_TJ\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#31001"
+msgid "Search"
+msgstr "Ҷустуҷӯ"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Пешгӯии обу ҳаво"

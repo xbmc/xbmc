@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Сега се възпроизвежда"
 
+msgctxt "#31001"
+msgid "Search"
+msgstr "Търсене"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Прогноза"
@@ -87,6 +91,10 @@ msgstr "Група канали"
 msgctxt "#31088"
 msgid "Content scanning options"
 msgstr "Настройки за сканиране на съдържанието"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Налични групи"
 
 msgctxt "#31091"
 msgid "Download subtitles"

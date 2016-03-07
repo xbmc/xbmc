@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Reproducindo"
 
+msgctxt "#31001"
+msgid "Search"
+msgstr "Buscar"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Predición"
@@ -87,6 +91,10 @@ msgstr "Canle do Grupo"
 msgctxt "#31088"
 msgid "Content scanning options"
 msgstr "Opcións de escaneado de contidos"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Grupos dispoñíbeis"
 
 msgctxt "#31091"
 msgid "Download subtitles"

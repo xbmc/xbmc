@@ -16,6 +16,10 @@ msgstr ""
 "Language: en_AU\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#31001"
+msgid "Search"
+msgstr "Search"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Forecast"
@@ -47,6 +51,10 @@ msgstr "Album info"
 msgctxt "#31085"
 msgid "Channel Group"
 msgstr "Channel Group"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Available groups"
 
 msgctxt "#31096"
 msgid "Local subtitle available"

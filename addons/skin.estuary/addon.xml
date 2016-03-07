@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estuary" version="0.6.1" name="Estuary" provider-name="phil65, Piers">
+<addon id="skin.estuary" version="0.6.2" name="Estuary" provider-name="phil65, Piers">
 	<requires>
 		<import addon="xbmc.gui" version="5.11.0"/>
 	</requires>
@@ -7,9 +7,23 @@
 		<res width="1920" height="1080" aspect="16:9" default="true" folder="1080i" />
 	</extension>
 	<extension point="xbmc.addon.metadata">
+		<summary lang="cs_CZ">Estary skin od phil65 a Piers. (Výchozí skin Kodi)</summary>
+		<summary lang="de_DE">Estuary skin by phil65 and Piers. (Kodi Standardskin)</summary>
 		<summary lang="en_GB">Estuary skin by phil65 and Piers. (Kodi's default skin)</summary>
+		<summary lang="fr_FR">Estuary, un habillage par phil65 et Piers (habillage d'origine de Kodi).</summary>
+		<summary lang="lt_LT">Estuary teminė išvaizda, kurią sukūrė phil65 ir Piers. (Numatytoji Kodi teminė išvaizda)</summary>
+		<summary lang="pt_BR">Skin Esturay por phil65 e Piers. (Skin padrão do Kodi)</summary>
+		<description lang="cs_CZ">Estuary je výchozí skin pro Kodi 17.0 a výše. Jeho snahou je zjednodušit používání Kodi pro nové uživatele.</description>
 		<description lang="en_GB">Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use.</description>
+		<description lang="fr_FR">Estuary est l'habillage d'origine pour Kodi 17.0 et supérieur. Il est facile à comprendre et à utiliser pour les utilisateurs novices de Kodi..</description>
+		<description lang="lt_LT">Estuary yra numatytoji Kodi 17.0 ir aukštesnių versijų teminė išvaizda. Jos tikslas tapti lengvai suprantama ir naudojama naujiems Kodi vartotojams.</description>
+		<description lang="pt_BR">Estuary é a skin padrão para o Kodi 17.0 e acima. Objetiva ser fácil para usuários que iniciam no Kodi pela primeira vez, facilitando aprendizagem de uso do mesmo.</description>
+		<disclaimer lang="cs_CZ">Estuary je výchozí skin pro Kodi, jeho odebráním může dojít k potížím.</disclaimer>
+		<disclaimer lang="de_DE">Estuary ist der Standardskin von Kodi. Ein Entfernen des Skins kann Probleme verursachen.</disclaimer>
 		<disclaimer lang="en_GB">Estuary is the default skin for Kodi, removing it may cause issues</disclaimer>
+		<disclaimer lang="fr_FR">Estuary est l'habillage d'origine de Kodi, le retirer peut créer des problèmes</disclaimer>
+		<disclaimer lang="lt_LT">Estuary yra numatytoji Kodi teminė išvaizda, jos pašalinimas gali sukelti problemų</disclaimer>
+		<disclaimer lang="pt_BR">Estuary é a skin padrão para o Kodi, removendo-a pode causar problemas</disclaimer>
 		<platform>all</platform>
 		<license>CC BY-SA 4.0, GNU GENERAL PUBLIC LICENSE Version 2.0</license>
 		<forum>http://forum.kodi.tv/</forum>

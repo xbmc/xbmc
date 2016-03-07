@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "S'està reproduint"
 
+msgctxt "#31001"
+msgid "Search"
+msgstr "Cerca"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Predicció"

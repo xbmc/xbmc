@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "지금 재생 중"
 
+msgctxt "#31001"
+msgid "Search"
+msgstr "찾기"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "예보"
@@ -87,6 +91,10 @@ msgstr "채널 그룹"
 msgctxt "#31088"
 msgid "Content scanning options"
 msgstr "콘텐츠 탐색 옵션"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "사용 가능한 그룹"
 
 msgctxt "#31091"
 msgid "Download subtitles"

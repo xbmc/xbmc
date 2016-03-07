@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Trenutno se reproducira"
 
+msgctxt "#31001"
+msgid "Search"
+msgstr "Pretraživanje"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Prognoza"

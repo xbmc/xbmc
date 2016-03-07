@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "正在播放"
 
+msgctxt "#31001"
+msgid "Search"
+msgstr "搜索"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "天气预报"
@@ -87,6 +91,10 @@ msgstr "频道组"
 msgctxt "#31088"
 msgid "Content scanning options"
 msgstr "内容扫描选项"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "可用组"
 
 msgctxt "#31091"
 msgid "Download subtitles"

@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Nyt toistetaan"
 
+msgctxt "#31001"
+msgid "Search"
+msgstr "Etsi"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Ennuste"
@@ -87,6 +91,10 @@ msgstr "Kanavaryhmä"
 msgctxt "#31088"
 msgid "Content scanning options"
 msgstr "Sisällön hakuasetukset"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Saatavilla olevat ryhmät"
 
 msgctxt "#31091"
 msgid "Download subtitles"

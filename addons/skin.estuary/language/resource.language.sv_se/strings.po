@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Spelas nu"
 
+msgctxt "#31001"
+msgid "Search"
+msgstr "Sök"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Prognos"
@@ -87,6 +91,10 @@ msgstr "Kanalgrupp"
 msgctxt "#31088"
 msgid "Content scanning options"
 msgstr "Alternativ för innehållsskanning"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Tillgängliga grupper"
 
 msgctxt "#31091"
 msgid "Download subtitles"

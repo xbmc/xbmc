@@ -20,6 +20,26 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Τώρα εκτελείται"
 
+msgctxt "#31001"
+msgid "Search"
+msgstr "Αναζήτηση"
+
+msgctxt "#31005"
+msgid "In-progress movies"
+msgstr "Ταινίες σε εξέλιξη"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "τυχαίες ταινείες"
+
+msgctxt "#31008"
+msgid "In-progress TV Shows"
+msgstr "Τηλεοπτικές σειρές σε εξέλιξη"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Ταινείες σε εξέλιξη"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Πρόγνωση"
@@ -87,6 +107,10 @@ msgstr "Γκρουπ Καναλιών"
 msgctxt "#31088"
 msgid "Content scanning options"
 msgstr "Επιλογές Σάρωσης Περιεχομένου"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Διαθέσιμα γκρουπ"
 
 msgctxt "#31091"
 msgid "Download subtitles"
