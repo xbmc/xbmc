@@ -6413,6 +6413,9 @@
     <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\AudioDSP\AddonCallbacksAudioDSP.h">
       <Filter>addons\binary\interfaces\api1\AudioDSP</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxPacket.h">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\AudioEngine\AddonCallbacksAudioEngine.h">
       <Filter>addons\binary\interfaces\api1\AudioEngine</Filter>
     </ClInclude>

@@ -1014,6 +1014,7 @@
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxCDDA.h" />
     <ClInclude Include="..\..\xbmc\cores\FFmpeg.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxClient.h" />
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxPacket.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\Process\ProcessInfo.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\BaseRenderer.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\DebugRenderer.h" />
