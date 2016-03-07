@@ -3180,6 +3180,9 @@
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\BaseRenderer.cpp">
       <Filter>cores\VideoPlayer\VideoRenderers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\DebugRenderer.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRenderer.cpp">
       <Filter>cores\VideoPlayer\VideoRenderers</Filter>
     </ClCompile>
@@ -6254,6 +6257,9 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\BaseRenderer.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\DebugRenderer.h">
       <Filter>cores\VideoPlayer\VideoRenderers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRenderer.h">

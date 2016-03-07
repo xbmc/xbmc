@@ -170,8 +170,21 @@ void CRenderer::Render(int idx)
   int subalign = CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
   for (std::vector<COverlay*>::iterator it = render.begin(); it != render.end(); ++it)
   {
-    COverlay* o = *it;
-    o->PrepareRender();
+    COverlay* o = nullptr;
+    COverlayText *text = dynamic_cast<COverlayText*>(*it);
+    if (text)
+    {
+      text->PrepareRender(CSettings::GetInstance().GetString(CSettings::SETTING_SUBTITLES_FONT),
+                          CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_COLOR),
+                          CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_HEIGHT),
+                          CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_STYLE));
+      o = text;
+    }
+    else
+    {
+      o = *it;
+      o->PrepareRender();
+    }
     total_height += o->m_height;
   }
 

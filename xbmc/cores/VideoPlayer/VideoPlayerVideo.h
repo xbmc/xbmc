@@ -144,7 +144,6 @@ protected:
   int m_speed;
   bool m_stalled;
   IDVDStreamPlayer::ESyncState m_syncState;
-  std::string m_codecname;
   std::atomic_bool m_bAbortOutput;
 
   BitstreamStats m_videoStats;

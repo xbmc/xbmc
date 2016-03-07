@@ -253,7 +253,6 @@ public:
   virtual void SetVolume(float nVolume)                         { m_VideoPlayerAudio->SetVolume(nVolume); }
   virtual void SetMute(bool bOnOff)                             { m_VideoPlayerAudio->SetMute(bOnOff); }
   virtual void SetDynamicRangeCompression(long drc)             { m_VideoPlayerAudio->SetDynamicRangeCompression(drc); }
-  virtual void GetGeneralInfo(std::string& strVideoInfo);
   virtual bool CanRecord();
   virtual bool IsRecording();
   virtual bool CanPause();
@@ -334,8 +333,6 @@ public:
   virtual void RenderCaptureRelease(unsigned int captureId);
   virtual bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size);
 
-  virtual std::string GetRenderVSyncState();
-
   // IDispResource interface
   virtual void OnLostDisplay();
   virtual void OnResetDisplay();
@@ -362,6 +359,7 @@ protected:
   virtual void OnExit();
   virtual void Process();
   virtual void VideoParamsChange() override;
+  virtual void GetDebugInfo(std::string &audio, std::string &video, std::string &general) override;
 
   void CreatePlayers();
   void DestroyPlayers();
@@ -437,6 +435,7 @@ protected:
   void UpdateApplication(double timeout);
   void UpdatePlayState(double timeout);
   void UpdateStreamInfos();
+  void GetGeneralInfo(std::string& strVideoInfo);
 
   double m_UpdateApplication;
 

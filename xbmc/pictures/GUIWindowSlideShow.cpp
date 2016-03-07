@@ -228,7 +228,6 @@ bool CGUIWindowSlideShow::IsPlaying() const
 
 void CGUIWindowSlideShow::Reset()
 {
-  g_infoManager.SetShowCodec(false);
   m_bSlideShow = false;
   m_bShuffled = false;
   m_bPause = false;

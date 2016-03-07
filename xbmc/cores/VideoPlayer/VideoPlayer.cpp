@@ -3123,12 +3123,9 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
           strBuf += StringUtils::Format(" %d sec", DVD_TIME_TO_SEC(m_State.cache_delay));
       }
 
-      strGeneralInfo = StringUtils::Format("C( a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s amp:% 5.2f )"
+      strGeneralInfo = StringUtils::Format("C( a/v:% 6.3f%s, %s amp:% 5.2f )"
           , dDiff
           , strEDL.c_str()
-          , (int)(CThread::GetRelativeUsage()*100)
-          , (int)(m_VideoPlayerAudio->GetRelativeUsage()*100)
-          , (int)(m_VideoPlayerVideo->GetRelativeUsage()*100)
           , strBuf.c_str()
           , m_VideoPlayerAudio->GetDynamicRangeAmplification());
     }
@@ -3143,8 +3140,6 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
       if( apts != DVD_NOPTS_VALUE && vpts != DVD_NOPTS_VALUE )
         dDiff = (apts - vpts) / DVD_TIME_BASE;
 
-      std::string strEDL = StringUtils::Format(", edl:%s", m_Edl.GetInfo().c_str());
-
       std::string strBuf;
       CSingleLock lock(m_StateSection);
       if(m_State.cache_bytes >= 0)
@@ -3156,13 +3151,9 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
           strBuf += StringUtils::Format(" %d sec", DVD_TIME_TO_SEC(m_State.cache_delay));
       }
 
-      strGeneralInfo = StringUtils::Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s )"
+      strGeneralInfo = StringUtils::Format("Player: ad:% 6.3f, a/v:% 6.3f, %s"
                                            , dDelay
                                            , dDiff
-                                           , strEDL.c_str()
-                                           , (int)(CThread::GetRelativeUsage()*100)
-                                           , (int)(m_VideoPlayerAudio->GetRelativeUsage()*100)
-                                           , (int)(m_VideoPlayerVideo->GetRelativeUsage()*100)
                                            , strBuf.c_str());
     }
   }
@@ -4388,6 +4379,9 @@ bool CVideoPlayer::OnAction(const CAction &action)
       }
       else
         break;
+    case ACTION_SHOW_CODEC:
+      m_renderManager.ToggleDebug();
+      break;
   }
 
   // return false to inform the caller we didn't handle the message
@@ -4967,14 +4961,16 @@ bool CVideoPlayer::RenderCaptureGetPixels(unsigned int captureId, unsigned int m
   return m_renderManager.RenderCaptureGetPixels(captureId, millis, buffer, size);
 }
 
-std::string CVideoPlayer::GetRenderVSyncState()
-{
-  return m_renderManager.GetVSyncState();
-}
-
 void CVideoPlayer::VideoParamsChange()
 {
   m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_AVCHANGE));
+}
+
+void CVideoPlayer::GetDebugInfo(std::string &audio, std::string &video, std::string &general)
+{
+  audio = m_VideoPlayerAudio->GetPlayerInfo();
+  video = m_VideoPlayerVideo->GetPlayerInfo();
+  GetGeneralInfo(general);
 }
 
 // IDispResource interface

@@ -100,7 +100,6 @@ public:
   void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags = 0);
   void RenderCaptureRelease(unsigned int captureId);
   bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size);
-  std::string GetRenderVSyncState();
   bool IsExternalPlaying();
 
   // proxy calls
@@ -122,7 +121,6 @@ public:
   int64_t GetChapterPos(int chapterIdx=-1);
   void  GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods);
   void  GetDeinterlaceModes(std::vector<int> &deinterlaceModes);
-  void  GetGeneralInfo(std::string& strVideoInfo);
   float GetPercentage() const;
   std::string GetPlayerState();
   std::string GetPlayingTitle();
