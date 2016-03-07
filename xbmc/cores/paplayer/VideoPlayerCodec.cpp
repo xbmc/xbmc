@@ -142,7 +142,7 @@ bool VideoPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
   {
     if (stream && stream->type == STREAM_AUDIO)
     {
-      m_nAudioStream = stream->iId;
+      m_nAudioStream = stream->uniqueId;
       pStream = stream;
       break;
     }

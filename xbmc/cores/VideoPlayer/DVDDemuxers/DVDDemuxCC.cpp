@@ -110,7 +110,12 @@ CDVDDemuxCC::~CDVDDemuxCC()
 
 CDemuxStream* CDVDDemuxCC::GetStream(int iStreamId) const
 {
-  return const_cast<CDemuxStreamSubtitle*>(&m_streams[iStreamId]);
+  for (int i=0; i<GetNrOfStreams(); i++)
+  {
+    if (m_streams[i].uniqueId == iStreamId)
+      return const_cast<CDemuxStreamSubtitle*>(&m_streams[i]);
+  }
+  return nullptr;
 }
 
 std::vector<CDemuxStream*> CDVDDemuxCC::GetStreams() const
@@ -320,8 +325,7 @@ void CDVDDemuxCC::Handler(int service, void *userdata)
     CDemuxStreamSubtitle stream;
     strcpy(stream.language, "cc");
     stream.codec = AV_CODEC_ID_TEXT;
-    stream.iPhysicalId = service;
-    stream.iId = idx;
+    stream.uniqueId = service;
     ctx->m_streams.push_back(stream);
 
     streamdata data;

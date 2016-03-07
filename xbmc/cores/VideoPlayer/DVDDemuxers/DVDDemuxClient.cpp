@@ -224,7 +224,7 @@ void CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
     if (stream->m_context->profile != st->profile &&
         stream->m_context->profile != FF_PROFILE_UNKNOWN)
     {
-      CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - {%d} profile changed from %d to %d", st->iId, st->profile, stream->m_context->profile);
+      CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - {%d} profile changed from %d to %d", st->uniqueId, st->profile, stream->m_context->profile);
       st->profile = stream->m_context->profile;
       st->changes++;
       st->disabled = false;
@@ -233,7 +233,7 @@ void CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
     if (stream->m_context->level != st->level &&
         stream->m_context->level != FF_LEVEL_UNKNOWN)
     {
-      CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - {%d} level changed from %d to %d", st->iId, st->level, stream->m_context->level);
+      CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - {%d} level changed from %d to %d", st->uniqueId, st->level, stream->m_context->level);
       st->level = stream->m_context->level;
       st->changes++;
       st->disabled = false;
@@ -247,7 +247,7 @@ void CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
         if (stream->m_context->channels != sta->iChannels &&
             stream->m_context->channels != 0)
         {
-          CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - {%d} channels changed from %d to %d", st->iId, sta->iChannels, stream->m_context->channels);
+          CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - {%d} channels changed from %d to %d", st->uniqueId, sta->iChannels, stream->m_context->channels);
           sta->iChannels = stream->m_context->channels;
           sta->changes++;
           sta->disabled = false;
@@ -255,7 +255,7 @@ void CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
         if (stream->m_context->sample_rate != sta->iSampleRate &&
             stream->m_context->sample_rate != 0)
         {
-          CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - {%d} samplerate changed from %d to %d", st->iId, sta->iSampleRate, stream->m_context->sample_rate);
+          CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - {%d} samplerate changed from %d to %d", st->uniqueId, sta->iSampleRate, stream->m_context->sample_rate);
           sta->iSampleRate = stream->m_context->sample_rate;
           sta->changes++;
           sta->disabled = false;
@@ -268,7 +268,7 @@ void CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
         if (stream->m_context->width != stv->iWidth &&
             stream->m_context->width != 0)
         {
-          CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - {%d} width changed from %d to %d", st->iId, stv->iWidth, stream->m_context->width);
+          CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - {%d} width changed from %d to %d", st->uniqueId, stv->iWidth, stream->m_context->width);
           stv->iWidth = stream->m_context->width;
           stv->changes++;
           stv->disabled = false;
@@ -276,7 +276,7 @@ void CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
         if (stream->m_context->height != stv->iHeight &&
             stream->m_context->height != 0)
         {
-          CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - {%d} height changed from %d to %d", st->iId, stv->iHeight, stream->m_context->height);
+          CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - {%d} height changed from %d to %d", st->uniqueId, stv->iHeight, stream->m_context->height);
           stv->iHeight = stream->m_context->height;
           stv->changes++;
           stv->disabled = false;
@@ -327,9 +327,12 @@ DemuxPacket* CDVDDemuxClient::Read()
 
 CDemuxStream* CDVDDemuxClient::GetStream(int iStreamId) const
 {
-  if (iStreamId < 0 || iStreamId >= MAX_STREAMS)
-    return nullptr;
-  return m_streams[iStreamId];
+  for (int i=0; i<GetNrOfStreams(); i++)
+  {
+    if (m_streams[i]->uniqueId == iStreamId)
+      return m_streams[i];
+  }
+  return nullptr;
 }
 
 std::vector<CDemuxStream*> CDVDDemuxClient::GetStreams() const
@@ -500,16 +503,14 @@ void CDVDDemuxClient::RequestStreams()
     m_streams[i]->codec = stream->codec;
     m_streams[i]->codecName = stream->codecName;
     m_streams[i]->bandwidth = stream->bandwidth;
-    m_streams[i]->iId = i;
-    m_streams[i]->iPhysicalId = stream->iPhysicalId;
+    m_streams[i]->uniqueId = stream->uniqueId;
     for (int j=0; j<4; j++)
       m_streams[i]->language[j] = stream->language[j];
 
     m_streams[i]->realtime = stream->realtime;
 
-    CLog::Log(LOGDEBUG,"CDVDDemuxClient::RequestStreams(): added/updated stream %d:%d with codec_id %d",
-        m_streams[i]->iId,
-        m_streams[i]->iPhysicalId,
+    CLog::Log(LOGDEBUG,"CDVDDemuxClient::RequestStreams(): added/updated stream %d with codec_id %d",
+        m_streams[i]->uniqueId,
         m_streams[i]->codec);
   }
   ++i;
@@ -518,9 +519,8 @@ void CDVDDemuxClient::RequestStreams()
   {
     if (m_streams[j])
     {
-      CLog::Log(LOGDEBUG,"CDVDDemuxClient::RequestStreams(): disposed stream %d:%d with codec_id %d",
-          m_streams[j]->iId,
-          m_streams[j]->iPhysicalId,
+      CLog::Log(LOGDEBUG,"CDVDDemuxClient::RequestStreams(): disposed stream %d with codec_id %d",
+          m_streams[j]->uniqueId,
           m_streams[j]->codec);
       DisposeStream(j);
     }

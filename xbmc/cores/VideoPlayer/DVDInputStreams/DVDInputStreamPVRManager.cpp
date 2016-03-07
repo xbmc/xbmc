@@ -593,8 +593,7 @@ void CDVDInputStreamPVRManager::UpdateStreamMap()
     }
 
     dStream->codec = (AVCodecID)stream.iCodecId;
-    dStream->iId = stream.iPhysicalId;
-    dStream->iPhysicalId = stream.iPhysicalId;
+    dStream->uniqueId = stream.iPhysicalId;
     dStream->language[0] = stream.strLanguage[0];
     dStream->language[1] = stream.strLanguage[1];
     dStream->language[2] = stream.strLanguage[2];

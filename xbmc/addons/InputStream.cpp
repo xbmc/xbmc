@@ -217,7 +217,7 @@ void CInputStream::UpdateStreams()
     return;
   }
 
-  for (int i=0; i<streamIDs.m_streamCount; i++)
+  for (unsigned int i=0; i<streamIDs.m_streamCount; i++)
   {
     INPUTSTREAM_INFO stream;
     try
@@ -273,11 +273,10 @@ void CInputStream::UpdateStreams()
     else
       continue;
 
-    demuxStream->iId = i;
     demuxStream->codec = codec->id;
     demuxStream->bandwidth = stream.m_Bandwidth;
     demuxStream->codecName = stream.m_codecInternalName;
-    demuxStream->iPhysicalId = streamIDs.m_streamIds[i];
+    demuxStream->uniqueId = streamIDs.m_streamIds[i];
     demuxStream->language[0] = stream.m_language[0];
     demuxStream->language[1] = stream.m_language[1];
     demuxStream->language[2] = stream.m_language[2];
@@ -291,7 +290,7 @@ void CInputStream::UpdateStreams()
         demuxStream->ExtraData[j] = stream.m_ExtraData[j];
     }
 
-    m_streams[i] = demuxStream;
+    m_streams[demuxStream->uniqueId] = demuxStream;
   }
 }
 
@@ -336,7 +335,7 @@ void CInputStream::EnableStream(int iStreamId, bool enable)
 
   try
   {
-    m_pStruct->EnableStream(it->second->iPhysicalId, enable);
+    m_pStruct->EnableStream(it->second->uniqueId, enable);
   }
   catch (std::exception &e)
   {
@@ -352,7 +351,7 @@ void CInputStream::EnableStreamAtPTS(int iStreamId, uint64_t pts)
 
   try
   {
-    m_pStruct->EnableStreamAtPTS(it->second->iPhysicalId, pts);
+    m_pStruct->EnableStreamAtPTS(it->second->uniqueId, pts);
   }
   catch (std::exception &e)
   {
@@ -386,16 +385,6 @@ DemuxPacket* CInputStream::ReadDemux()
     UpdateStreams();
   }
 
-  int id = 0;;
-  for (auto &stream : m_streams)
-  {
-    if (stream.second->iPhysicalId == pPacket->iStreamId)
-    {
-      pPacket->iStreamId = id;
-      return pPacket;
-    }
-    id++;
-  }
   return pPacket;
 }
 

@@ -506,13 +506,13 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       SelectionStream s;
       s.source   = source;
       s.type     = stream->type;
-      s.id       = stream->iId;
+      s.id       = stream->uniqueId;
       s.language = g_LangCodeExpander.ConvertToISO6392T(stream->language);
       s.flags    = stream->flags;
       s.filename = demuxer->GetFileName();
       s.filename2 = filename2;
       s.name = stream->GetStreamName();
-      s.codec    = demuxer->GetStreamCodecName(stream->iId);
+      s.codec    = demuxer->GetStreamCodecName(stream->uniqueId);
       s.channels = 0; // Default to 0. Overwrite if STREAM_AUDIO below.
       if(stream->type == STREAM_VIDEO)
       {
@@ -1086,9 +1086,9 @@ bool CVideoPlayer::IsValidStream(CCurrentStream& stream)
 
     if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     {
-      if(stream.type == STREAM_AUDIO    && st->iPhysicalId != m_dvd.iSelectedAudioStream)
+      if(stream.type == STREAM_AUDIO    && st->dvdNavId != m_dvd.iSelectedAudioStream)
         return false;
-      if(stream.type == STREAM_SUBTITLE && st->iPhysicalId != m_dvd.iSelectedSPUStream)
+      if(stream.type == STREAM_SUBTITLE && st->dvdNavId != m_dvd.iSelectedSPUStream)
         return false;
     }
 
@@ -1127,22 +1127,22 @@ bool CVideoPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
       return false;
 
     source_type = STREAM_SOURCE_MASK(stream->source);
-    if(source_type  != STREAM_SOURCE_DEMUX
-    || stream->type != current.type
-    || stream->iId  == current.id)
+    if(source_type  != STREAM_SOURCE_DEMUX ||
+       stream->type != current.type ||
+       stream->uniqueId  == current.id)
       return false;
 
-    if(current.type == STREAM_AUDIO    && stream->iPhysicalId == m_dvd.iSelectedAudioStream)
+    if(current.type == STREAM_AUDIO && stream->dvdNavId == m_dvd.iSelectedAudioStream)
       return true;
-    if(current.type == STREAM_SUBTITLE && stream->iPhysicalId == m_dvd.iSelectedSPUStream)
+    if(current.type == STREAM_SUBTITLE && stream->dvdNavId == m_dvd.iSelectedSPUStream)
       return true;
-    if(current.type == STREAM_VIDEO    && current.id < 0)
+    if(current.type == STREAM_VIDEO && current.id < 0)
       return true;
   }
   else
   {
-    if(stream->source == current.source
-    && stream->iId    == current.id)
+    if(stream->source == current.source &&
+       stream->uniqueId == current.id)
       return false;
 
     if(stream->type != current.type)
@@ -1164,7 +1164,7 @@ void CVideoPlayer::CheckBetterStream(CCurrentStream& current, CDemuxStream* stre
     CloseStream(current, true);
 
   if (IsBetterStream(current, stream))
-    OpenStream(current, stream->iId, stream->source);
+    OpenStream(current, stream->uniqueId, stream->source);
 }
 
 void CVideoPlayer::Process()
@@ -1619,7 +1619,7 @@ void CVideoPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
   else
   {
     if (m_pDemuxer)
-      m_pDemuxer->EnableStream(pStream->iId, false);
+      m_pDemuxer->EnableStream(pStream->uniqueId, false);
     CDVDDemuxUtils::FreeDemuxPacket(pPacket); // free it since we won't do anything with it
   }
 }
@@ -1633,7 +1633,7 @@ void CVideoPlayer::CheckStreamChanges(CCurrentStream& current, CDemuxStream* str
     /* if they have, reopen stream */
 
     if (current.hint != CDVDStreamInfo(*stream, true))
-      OpenStream(current, stream->iId, stream->source );
+      OpenStream(current, stream->uniqueId, stream->source );
 
     current.stream = (void*)stream;
     current.changes = stream->changes;
@@ -3259,7 +3259,7 @@ void CVideoPlayer::UpdateStreamInfos()
     CDemuxStream* stream = m_pDemuxer->GetStream(m_CurrentAudio.id);
     if (stream && stream->type == STREAM_AUDIO)
     {
-      s.codec = m_pDemuxer->GetStreamCodecName(stream->iId);
+      s.codec = m_pDemuxer->GetStreamCodecName(stream->uniqueId);
     }
   }
 }
@@ -3545,7 +3545,7 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int iStream, int source, 
     if(stream)
     {
       /* mark stream as disabled, to disallaw further attempts*/
-      CLog::Log(LOGWARNING, "%s - Unsupported stream %d. Stream disabled.", __FUNCTION__, stream->iId);
+      CLog::Log(LOGWARNING, "%s - Unsupported stream %d. Stream disabled.", __FUNCTION__, stream->uniqueId);
       stream->disabled = true;
     }
   }
@@ -4575,7 +4575,7 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
       if (sub->type != STREAM_SUBTITLE)
         continue;
 
-      int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), sub->iId);
+      int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), sub->uniqueId);
       SelectionStream& stream = m_SelectionStreams.Get(STREAM_SUBTITLE, index);
 
       if (stream.name.empty())

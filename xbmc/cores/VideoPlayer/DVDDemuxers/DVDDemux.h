@@ -75,8 +75,8 @@ class CDemuxStream
 public:
   CDemuxStream()
   {
-    iId = 0;
-    iPhysicalId = 0;
+    uniqueId = 0;
+    dvdNavId = 0;
     codec = (AVCodecID)0; // AV_CODEC_ID_NONE
     codec_fourcc = 0;
     profile = FF_PROFILE_UNKNOWN;
@@ -102,8 +102,8 @@ public:
 
   virtual std::string GetStreamName();
 
-  int iId;         // most of the time starting from 0
-  int iPhysicalId; // id
+  int uniqueId;          // unique stream id
+  int dvdNavId;
   AVCodecID codec;
   unsigned int codec_fourcc; // if available
   int profile; // encoder profile of the stream reported by the decoder. used to qualify hw decoders.

@@ -125,9 +125,8 @@ protected:
   friend class CDemuxStreamSubtitleFFmpeg;
 
   int ReadFrame(AVPacket *packet);
-  CDemuxStream* AddStream(int iId);
-  void AddStream(int iId, CDemuxStream* stream);
-  CDemuxStream* GetStreamInternal(int iStreamId);
+  CDemuxStream* AddStream(int streamIdx);
+  void AddStream(int streamIdx, CDemuxStream* stream);
   void CreateStreams(unsigned int program = UINT_MAX);
   void DisposeStreams();
   void ParsePacket(AVPacket *pkt);
@@ -147,7 +146,6 @@ protected:
 
   CCriticalSection m_critSection;
   std::map<int, CDemuxStream*> m_streams;
-  std::vector<std::map<int, CDemuxStream*>::iterator> m_stream_index;
 
   AVIOContext* m_ioContext;
 
