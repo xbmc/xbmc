@@ -4,12 +4,13 @@ XBMC_PLATFORM_DIR=osx64
 
 # Temporarily disabled because packaging not implement for CMake
 if [ "$CMAKE_BUILD" = true ]; then
-  exit 0
+  cd $WORKSPACE/build;make -j$BUILDTHREADS dmg
+  cd $WORKSPACE/build/tools/darwin/packaging/osx/
+else
+  cd $WORKSPACE/tools/darwin/packaging/osx/; sh ./mkdmg-osx.sh $Configuration
 fi
 
-cd $WORKSPACE/tools/darwin/packaging/osx/; sh ./mkdmg-osx.sh $Configuration
-
 #rename for upload
-#e.x. kodi-20130314-8c2fb31-Frodo-x86_64.dmg 
+#e.x. kodi-20130314-8c2fb31-Frodo-x86_64.dmg
 UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-x86_64.dmg"
-mv *.dmg $UPLOAD_FILENAME
+mv *.dmg $WORKSPACE/tools/darwin/packaging/osx/$UPLOAD_FILENAME
