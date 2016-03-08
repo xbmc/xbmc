@@ -143,7 +143,7 @@ void CGUIWindowPVRGuide::UpdateSelectedItemPath()
     CGUIEPGGridContainer *epgGridContainer = (CGUIEPGGridContainer*) GetControl(m_viewControl.GetCurrentControl());
     if (epgGridContainer)
     {
-      CPVRChannelPtr channel(epgGridContainer->GetChannel(epgGridContainer->GetSelectedChannel()));
+      CPVRChannelPtr channel(epgGridContainer->GetSelectedChannel());
       if (channel)
         SetSelectedItemPath(m_bRadio, channel->Path());
     }

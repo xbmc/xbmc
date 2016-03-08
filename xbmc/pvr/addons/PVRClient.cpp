@@ -159,6 +159,7 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_pInfo->strUserPath    = m_strUserPath.c_str();
   m_strClientPath         = CSpecialProtocol::TranslatePath(Path());
   m_pInfo->strClientPath  = m_strClientPath.c_str();
+  m_pInfo->iEpgMaxDays    = CSettings::GetInstance().GetInt(CSettings::SETTING_EPG_DAYSTODISPLAY);
   m_menuhooks.clear();
   m_timertypes.clear();
   m_bReadyToUse           = false;
@@ -195,9 +196,6 @@ ADDON_STATUS CPVRClient::Create(int iClientId)
   catch (std::exception &e) { LogException(e, __FUNCTION__); }
 
   m_bReadyToUse = bReadyToUse;
-
-  SetEPGTimeFrame(CSettings::GetInstance().GetInt(CSettings::SETTING_EPG_DAYSTODISPLAY));
-
   return status;
 }
 
