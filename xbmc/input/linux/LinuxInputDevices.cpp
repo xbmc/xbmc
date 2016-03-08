@@ -707,7 +707,7 @@ bool CLinuxInputDevice::mtAbsEvent(const struct input_event& levt)
   case ABS_MT_POSITION_X:
     if (m_mt_currentSlot < TOUCH_MAX_POINTERS)
     {
-      m_mt_x[m_mt_currentSlot] = levt.value;
+      m_mt_x[m_mt_currentSlot] = (int)((float)levt.value * g_advancedSettings.m_screenAlign_xStretchFactor) + g_advancedSettings.m_screenAlign_xOffset; // stretch and shift touch x coordinates
       if (m_mt_event[m_mt_currentSlot] == TouchInputUnchanged)
         m_mt_event[m_mt_currentSlot] = TouchInputMove;
     }
@@ -716,7 +716,7 @@ bool CLinuxInputDevice::mtAbsEvent(const struct input_event& levt)
   case ABS_MT_POSITION_Y:
     if (m_mt_currentSlot < TOUCH_MAX_POINTERS)
     {
-      m_mt_y[m_mt_currentSlot] = levt.value;
+      m_mt_y[m_mt_currentSlot] = (int)((float)levt.value * g_advancedSettings.m_screenAlign_yStretchFactor) + g_advancedSettings.m_screenAlign_yOffset; // stretch and shift touch y coordinates;
       if (m_mt_event[m_mt_currentSlot] == TouchInputUnchanged)
         m_mt_event[m_mt_currentSlot] = TouchInputMove;
     }
