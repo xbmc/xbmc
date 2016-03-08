@@ -231,6 +231,16 @@ extern "C" {
   } PVR_CONNECTION_STATE;
 
   /*!
+   * @brief PVR recording channel types
+   */
+  typedef enum
+  {
+    PVR_RECORDING_CHANNEL_TYPE_UNKNOWN = 0, /*!< @brief unknown */
+    PVR_RECORDING_CHANNEL_TYPE_TV      = 1, /*!< @brief TV channel */
+    PVR_RECORDING_CHANNEL_TYPE_RADIO   = 2, /*!< @brief radio channel */
+  } PVR_RECORDING_CHANNEL_TYPE;
+
+  /*!
    * @brief Properties passed to the Create() method of an add-on.
    */
   typedef struct PVR_PROPERTIES
@@ -480,6 +490,7 @@ extern "C" {
     bool   bIsDeleted;                                    /*!< @brief (optional) shows this recording is deleted and can be undelete */
     unsigned int iEpgEventId;                             /*!< @brief (optional) EPG event id associated with this recording. Valid ids must be greater than EPG_TAG_INVALID_UID. */
     int    iChannelUid;                                   /*!< @brief (optional) unique identifier of the channel for this recording. PVR_CHANNEL_INVALID_UID denotes that channel uid is not available. */
+    PVR_RECORDING_CHANNEL_TYPE channelType;               /*!< @brief (optional) channel type. Set to PVR_RECORDING_CHANNEL_TYPE_UNKNOWN if the type cannot be determined. */
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
   /*!
