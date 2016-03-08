@@ -1440,7 +1440,9 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   am_private->video_height     = hints.height;
   am_private->video_codec_id   = hints.codec;
   am_private->video_codec_tag  = hints.codec_tag;
-  am_private->video_pid        = hints.pid;
+
+  // FIXME
+  // am_private->video_pid        = hints.pid;
 
   // handle video ratio
   AVRational video_ratio       = av_d2q(1, SHRT_MAX);
@@ -1521,8 +1523,8 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
     am_private->video_codec_type = codec_tag_to_vdec_type(am_private->video_codec_id);
 
   CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder "
-    "hints.width(%d), hints.height(%d), hints.codec(%d), hints.codec_tag(%d), hints.pid(%d)",
-    hints.width, hints.height, hints.codec, hints.codec_tag, hints.pid);
+    "hints.width(%d), hints.height(%d), hints.codec(%d), hints.codec_tag(%d)",
+    hints.width, hints.height, hints.codec, hints.codec_tag);
   CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.fpsrate(%d), hints.fpsscale(%d), hints.rfpsrate(%d), hints.rfpsscale(%d), video_rate(%d)",
     hints.fpsrate, hints.fpsscale, hints.rfpsrate, hints.rfpsscale, am_private->video_rate);
   CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.aspect(%f), video_ratio.num(%d), video_ratio.den(%d)",
