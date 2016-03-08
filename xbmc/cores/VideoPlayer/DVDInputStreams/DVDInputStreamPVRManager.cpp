@@ -533,19 +533,37 @@ void CDVDInputStreamPVRManager::FlushDemux()
   }
 }
 
+std::shared_ptr<CDemuxStream> CDVDInputStreamPVRManager::GetStreamInternal(int iStreamId)
+{
+  auto stream = m_streamMap.find(iStreamId);
+  if (stream != m_streamMap.end())
+  {
+    return stream->second;
+  }
+  else
+    return nullptr;
+}
+
 void CDVDInputStreamPVRManager::UpdateStreamMap()
 {
-  m_streamMap.clear();
-  int num = GetNrOfStreams();
+  std::map<int, std::shared_ptr<CDemuxStream>> m_newStreamMap;
 
+  int num = GetNrOfStreams();
   for (int i = 0; i < num; ++i)
   {
     PVR_STREAM_PROPERTIES::PVR_STREAM stream = m_StreamProps->stream[i];
 
-    std::shared_ptr<CDemuxStream> dStream = std::make_shared<CDemuxStream>();
+    std::shared_ptr<CDemuxStream> dStream = GetStreamInternal(stream.iPID);
+
     if (stream.iCodecType == XBMC_CODEC_TYPE_AUDIO)
     {
-      std::shared_ptr<CDemuxStreamAudio> streamAudio = std::make_shared<CDemuxStreamAudio>();
+      std::shared_ptr<CDemuxStreamAudio> streamAudio;
+
+      if (dStream)
+        streamAudio = std::dynamic_pointer_cast<CDemuxStreamAudio>(dStream);
+      if (!streamAudio)
+        streamAudio = std::make_shared<CDemuxStreamAudio>();
+
       streamAudio->iChannels = stream.iChannels;
       streamAudio->iSampleRate = stream.iSampleRate;
       streamAudio->iBlockAlign = stream.iBlockAlign;
@@ -556,7 +574,13 @@ void CDVDInputStreamPVRManager::UpdateStreamMap()
     }
     else if (stream.iCodecType == XBMC_CODEC_TYPE_VIDEO)
     {
-      std::shared_ptr<CDemuxStreamVideo> streamVideo = std::make_shared<CDemuxStreamVideo>();
+      std::shared_ptr<CDemuxStreamVideo> streamVideo;
+
+      if (dStream)
+        streamVideo = std::dynamic_pointer_cast<CDemuxStreamVideo>(dStream);
+      if (!streamVideo)
+        streamVideo = std::make_shared<CDemuxStreamVideo>();
+
       streamVideo->iFpsScale = stream.iFPSScale;
       streamVideo->iFpsRate = stream.iFPSRate;
       streamVideo->iHeight = stream.iHeight;
@@ -568,39 +592,60 @@ void CDVDInputStreamPVRManager::UpdateStreamMap()
     }
     else if (stream.iCodecId == AV_CODEC_ID_DVB_TELETEXT)
     {
-      std::shared_ptr<CDemuxStreamTeletext> streamTeletext = std::make_shared<CDemuxStreamTeletext>();
+      std::shared_ptr<CDemuxStreamTeletext> streamTeletext;
+
+      if (dStream)
+        streamTeletext = std::dynamic_pointer_cast<CDemuxStreamTeletext>(dStream);
+      if (!streamTeletext)
+        streamTeletext = std::make_shared<CDemuxStreamTeletext>();
+
       dStream = streamTeletext;
     }
     else if (stream.iCodecType == XBMC_CODEC_TYPE_SUBTITLE)
     {
-      std::shared_ptr<CDemuxStreamSubtitle> streamSubtitle = std::make_shared<CDemuxStreamSubtitle>();
-      if (stream.iIdentifier)
+      std::shared_ptr<CDemuxStreamSubtitle> streamSubtitle;
+
+      if (dStream)
+        streamSubtitle = std::dynamic_pointer_cast<CDemuxStreamSubtitle>(dStream);
+      if (!streamSubtitle)
+        streamSubtitle = std::make_shared<CDemuxStreamSubtitle>();
+
+      if (stream.iSubtitleInfo)
       {
         streamSubtitle->ExtraData = new uint8_t[4];
         streamSubtitle->ExtraSize = 4;
-        streamSubtitle->ExtraData[0] = (stream.iIdentifier >> 8) & 0xff;
-        streamSubtitle->ExtraData[1] = (stream.iIdentifier >> 0) & 0xff;
-        streamSubtitle->ExtraData[2] = (stream.iIdentifier >> 24) & 0xff;
-        streamSubtitle->ExtraData[3] = (stream.iIdentifier >> 16) & 0xff;
+        streamSubtitle->ExtraData[0] = (stream.iSubtitleInfo >> 8) & 0xff;
+        streamSubtitle->ExtraData[1] = (stream.iSubtitleInfo >> 0) & 0xff;
+        streamSubtitle->ExtraData[2] = (stream.iSubtitleInfo >> 24) & 0xff;
+        streamSubtitle->ExtraData[3] = (stream.iSubtitleInfo >> 16) & 0xff;
       }
       dStream = streamSubtitle;
     }
     else if (stream.iCodecType == XBMC_CODEC_TYPE_RDS &&
       CSettings::GetInstance().GetBool("pvrplayback.enableradiords"))
     {
-      std::shared_ptr<CDemuxStreamRadioRDS> streamRadioRDS = std::make_shared<CDemuxStreamRadioRDS>();
+      std::shared_ptr<CDemuxStreamRadioRDS> streamRadioRDS;
+
+      if (dStream)
+        streamRadioRDS = std::dynamic_pointer_cast<CDemuxStreamRadioRDS>(dStream);
+      if (!streamRadioRDS)
+        streamRadioRDS = std::make_shared<CDemuxStreamRadioRDS>();
+
       dStream = streamRadioRDS;
     }
+    else
+      dStream = std::make_shared<CDemuxStream>();
 
     dStream->codec = (AVCodecID)stream.iCodecId;
-    dStream->iId = stream.iPhysicalId;
-    dStream->iPhysicalId = stream.iPhysicalId;
+    dStream->uniqueId = stream.iPID;
     dStream->language[0] = stream.strLanguage[0];
     dStream->language[1] = stream.strLanguage[1];
     dStream->language[2] = stream.strLanguage[2];
     dStream->language[3] = stream.strLanguage[3];
     dStream->realtime = true;
 
-    m_streamMap[stream.iPhysicalId] = dStream;
+    m_newStreamMap[stream.iPID] = dStream;
   }
+
+  m_streamMap = m_newStreamMap;
 }

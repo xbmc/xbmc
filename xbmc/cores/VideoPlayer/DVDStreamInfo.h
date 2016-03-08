@@ -50,6 +50,7 @@ public:
 
   AVCodecID codec;
   StreamType type;
+  int uniqueId;
   bool realtime;
   int flags;
   bool software;  //force software decoding
@@ -73,7 +74,6 @@ public:
   bool forced_aspect; // aspect is forced from container
   int orientation; // orientation of the video in degress counter clockwise
   int bitsperpixel;
-  int pid;
   std::string stereo_mode; // stereoscopic 3d mode
 
   // AUDIO

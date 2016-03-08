@@ -837,12 +837,13 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
   if (bReturnEmpty && !pPacket)
     pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
 
-  if (!pPacket) return NULL;
+  if (!pPacket)
+    return nullptr;
 
   // check streams, can we make this a bit more simple?
   if (pPacket && pPacket->iStreamId >= 0)
   {
-    CDemuxStream *stream = GetStreamInternal(pPacket->iStreamId);
+    CDemuxStream *stream = GetStream(pPacket->iStreamId);
     if (!stream ||
         stream->pPrivate != m_pFormatContext->streams[pPacket->iStreamId] ||
         stream->codec != m_pFormatContext->streams[pPacket->iStreamId]->codec->codec_id)
@@ -875,8 +876,8 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
       CDVDDemuxUtils::FreeDemuxPacket(pPacket);
       return NULL;
     }
-    // set continuous stream id for player
-    pPacket->iStreamId = stream->iId;
+
+    pPacket->iStreamId = stream->uniqueId;
   }
   return pPacket;
 }
@@ -990,14 +991,15 @@ int CDVDDemuxFFmpeg::GetStreamLength()
 }
 
 /**
- * @brief Finds stream based on demuxer index
+ * @brief Finds stream based on unique id
  */
 CDemuxStream* CDVDDemuxFFmpeg::GetStream(int iStreamId) const
 {
-  if(iStreamId >= 0 && (size_t)iStreamId < m_stream_index.size())
-    return m_stream_index[iStreamId]->second;
-  else
-    return NULL;
+  auto it = m_streams.find(iStreamId);
+  if (it != m_streams.end())
+    return it->second;
+
+  return nullptr;
 }
 
 std::vector<CDemuxStream*> CDVDDemuxFFmpeg::GetStreams() const
@@ -1010,21 +1012,9 @@ std::vector<CDemuxStream*> CDVDDemuxFFmpeg::GetStreams() const
   return streams;
 }
 
-/**
- * @brief Finds stream based on ffmpeg index
- */
-CDemuxStream* CDVDDemuxFFmpeg::GetStreamInternal(int iId)
-{
-  std::map<int, CDemuxStream*>::iterator it = m_streams.find(iId);
-  if (it == m_streams.end())
-    return NULL;
-  else
-    return it->second;
-}
-
 int CDVDDemuxFFmpeg::GetNrOfStreams() const
 {
-  return m_stream_index.size();
+  return m_streams.size();
 }
 
 double CDVDDemuxFFmpeg::SelectAspect(AVStream* st, bool& forced)
@@ -1082,7 +1072,9 @@ void CDVDDemuxFFmpeg::CreateStreams(unsigned int program)
     {
       // add streams from selected program
       for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)
+      {
         AddStream(m_pFormatContext->programs[m_program]->stream_index[i]);
+      }
     }
   }
   else
@@ -1102,12 +1094,11 @@ void CDVDDemuxFFmpeg::DisposeStreams()
   for(it = m_streams.begin(); it != m_streams.end(); ++it)
     delete it->second;
   m_streams.clear();
-  m_stream_index.clear();
 }
 
-CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
+CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
 {
-  AVStream* pStream = m_pFormatContext->streams[iId];
+  AVStream* pStream = m_pFormatContext->streams[streamIdx];
   if (pStream)
   {
     CDemuxStream* stream = NULL;
@@ -1330,29 +1321,29 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
       switch(stream->codec)
       {
         case AV_CODEC_ID_AC3:
-          stream->iPhysicalId = pStream->id - 128;
+          stream->dvdNavId = pStream->id - 128;
           break;
         case AV_CODEC_ID_DTS:
-          stream->iPhysicalId = pStream->id - 136;
+          stream->dvdNavId = pStream->id - 136;
           break;
         case AV_CODEC_ID_MP2:
-          stream->iPhysicalId = pStream->id - 448;
+          stream->dvdNavId = pStream->id - 448;
           break;
         case AV_CODEC_ID_PCM_S16BE:
-          stream->iPhysicalId = pStream->id - 160;
+          stream->dvdNavId = pStream->id - 160;
           break;
         case AV_CODEC_ID_DVD_SUBTITLE:
-          stream->iPhysicalId = pStream->id - 0x20;
+          stream->dvdNavId = pStream->id - 0x20;
           break;
         default:
-          stream->iPhysicalId = pStream->id & 0x1f;
+          stream->dvdNavId = pStream->id & 0x1f;
           break;
       }
     }
-    else
-      stream->iPhysicalId = pStream->id;
 
-    AddStream(iId, stream);
+    stream->uniqueId = pStream->index;
+
+    AddStream(stream->uniqueId, stream);
     return stream;
   }
   else
@@ -1362,27 +1353,23 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
 /**
  * @brief Adds or updates a demux stream based in ffmpeg id
  */
-void CDVDDemuxFFmpeg::AddStream(int iId, CDemuxStream* stream)
+void CDVDDemuxFFmpeg::AddStream(int streamIdx, CDemuxStream* stream)
 {
   std::pair<std::map<int, CDemuxStream*>::iterator, bool> res;
 
-  res = m_streams.insert(std::make_pair(iId, stream));
-  if(res.second)
+  res = m_streams.insert(std::make_pair(streamIdx, stream));
+  if (res.second)
   {
     /* was new stream */
-    stream->iId = m_stream_index.size();
-    m_stream_index.push_back(res.first);
+    stream->uniqueId = streamIdx;
   }
   else
   {
-    /* replace old stream, keeping old index */
-    stream->iId = res.first->second->iId;
-
     delete res.first->second;
     res.first->second = stream;
   }
   if(g_advancedSettings.m_logLevel > LOG_LEVEL_NORMAL)
-    CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::AddStream(%d, ...) -> %d", iId, stream->iId);
+    CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::AddStream ID: %d", streamIdx);
 }
 
 
@@ -1562,10 +1549,11 @@ bool CDVDDemuxFFmpeg::IsProgramChange()
   for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)
   {
     int idx = m_pFormatContext->programs[m_program]->stream_index[i];
-    CDemuxStream *stream = GetStreamInternal(idx);
+    int id = m_pFormatContext->streams[idx]->id;
+    CDemuxStream *stream = GetStream(id);
     if (!stream)
       return true;
-    if (m_pFormatContext->streams[idx]->codec->codec_id != stream->codec)
+    if (m_pFormatContext->streams[id]->codec->codec_id != stream->codec)
       return true;
   }
   return false;
@@ -1611,7 +1599,7 @@ std::string CDVDDemuxFFmpeg::ConvertCodecToInternalStereoMode(const std::string 
 void CDVDDemuxFFmpeg::ParsePacket(AVPacket *pkt)
 {
   AVStream *st = m_pFormatContext->streams[pkt->stream_index];
-  CDemuxStream *stream = GetStreamInternal(pkt->stream_index);
+  CDemuxStream *stream = GetStream(st->id);
 
   // if the stream is new, tell ffmpeg to parse the stream
   if (!stream && !st->parser)

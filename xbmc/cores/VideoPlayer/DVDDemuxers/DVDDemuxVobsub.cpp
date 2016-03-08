@@ -218,16 +218,16 @@ bool CDVDDemuxVobsub::ParseId(SState& state, char* line)
   {
     line+=6;
     while(*line == ' ') line++;
-    stream->iPhysicalId = atoi(line);
+    stream->uniqueId = atoi(line);
   }
   else
-    stream->iPhysicalId = -1;
+    stream->uniqueId = -1;
 
   stream->codec = AV_CODEC_ID_DVD_SUBTITLE;
-  stream->iId = m_Streams.size();
+  stream->uniqueId = m_Streams.size();
   stream->source = m_source;
 
-  state.id = stream->iId;
+  state.id = stream->uniqueId;
   m_Streams.push_back(stream.release());
   return true;
 }
@@ -261,7 +261,7 @@ void CDVDDemuxVobsub::EnableStream(int id, bool enable)
 {
   for (auto &stream : m_Streams)
   {
-    if (stream->iId == id)
+    if (stream->uniqueId == id)
     {
       stream->m_discard = !enable;
       break;

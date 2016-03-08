@@ -4634,7 +4634,6 @@
 		EDE8C7211C7F618500A86ECC /* xbmc_pvr_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_pvr_types.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"; sourceTree = "<group>"; };
 		EDE8C7221C7F618500A86ECC /* xbmc_scr_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_scr_dll.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_scr_dll.h"; sourceTree = "<group>"; };
 		EDE8C7231C7F618500A86ECC /* xbmc_scr_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_scr_types.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_scr_types.h"; sourceTree = "<group>"; };
-		EDE8C7241C7F618500A86ECC /* xbmc_stream_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = xbmc_stream_utils.hpp; path = "kodi-addon-dev-kit/include/kodi/xbmc_stream_utils.hpp"; sourceTree = "<group>"; };
 		EDE8C7251C7F618500A86ECC /* xbmc_vis_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_vis_dll.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_vis_dll.h"; sourceTree = "<group>"; };
 		EDE8C7261C7F618500A86ECC /* xbmc_vis_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_vis_types.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_vis_types.h"; sourceTree = "<group>"; };
 		F500E35517F3412C004FC217 /* WinEvents.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WinEvents.cpp; sourceTree = "<group>"; };
@@ -8707,7 +8706,6 @@
 				EDE8C7211C7F618500A86ECC /* xbmc_pvr_types.h */,
 				EDE8C7221C7F618500A86ECC /* xbmc_scr_dll.h */,
 				EDE8C7231C7F618500A86ECC /* xbmc_scr_types.h */,
-				EDE8C7241C7F618500A86ECC /* xbmc_stream_utils.hpp */,
 				EDE8C7251C7F618500A86ECC /* xbmc_vis_dll.h */,
 				EDE8C7261C7F618500A86ECC /* xbmc_vis_types.h */,
 			);

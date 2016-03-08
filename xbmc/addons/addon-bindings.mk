@@ -19,7 +19,6 @@ BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_scr_dll.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_scr_types.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_vis_dll.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_vis_types.h
-BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_stream_utils.hpp
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/libXBMC_addon.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_adsp.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_audioengine.h
