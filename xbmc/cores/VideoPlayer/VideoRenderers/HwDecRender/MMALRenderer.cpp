@@ -62,11 +62,6 @@ CRenderInfo CMMALRenderer::GetRenderInfo()
   return info;
 }
 
-static void vout_control_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
-{
-  mmal_buffer_header_release(buffer);
-}
-
 void CMMALRenderer::vout_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
 {
   assert(!(buffer->flags & MMAL_BUFFER_HEADER_FLAG_TRANSMISSION_FAILED));
@@ -110,13 +105,6 @@ bool CMMALRenderer::init_vout(ERenderFormat format, bool opaque)
     return false;
   }
 
-  m_vout->control->userdata = (struct MMAL_PORT_USERDATA_T *)this;
-  status = mmal_port_enable(m_vout->control, vout_control_port_cb);
-  if(status != MMAL_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "%s::%s Failed to enable vout control port (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-    return false;
-  }
   m_vout_input = m_vout->input[0];
   m_vout_input->userdata = (struct MMAL_PORT_USERDATA_T *)this;
   MMAL_ES_FORMAT_T *es_format = m_vout_input->format;
@@ -409,7 +397,6 @@ void CMMALRenderer::UnInitMMAL()
   if (m_vout)
   {
     mmal_component_disable(m_vout);
-    mmal_port_disable(m_vout->control);
   }
 
   if (m_vout_input)
