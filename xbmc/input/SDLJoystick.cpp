@@ -66,6 +66,13 @@ void CJoystick::Initialize()
   SetDeadzone(g_advancedSettings.m_controllerDeadzone);
 
   // joysticks will be loaded once SDL sees them
+#ifdef HAS_SDL_JOYSTICK
+#ifndef HAS_SDL
+  for(int i=0; i<SDL_NumJoysticks(); i++) {
+    AddJoystick(i);
+  }
+#endif
+#endif
 }
 
 void CJoystick::AddJoystick(int joyIndex)
