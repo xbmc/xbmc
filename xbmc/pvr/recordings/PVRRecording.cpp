@@ -114,6 +114,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_bIsDeleted                     = recording.bIsDeleted;
   m_iEpgEventId                    = recording.iEpgEventId;
   m_iChannelUid                    = recording.iChannelUid;
+  m_bRadio                         = recording.channelType == PVR_RECORDING_CHANNEL_TYPE_RADIO; // everything else is considered TV
 }
 
 bool CPVRRecording::operator ==(const CPVRRecording& right) const
@@ -142,7 +143,8 @@ bool CPVRRecording::operator ==(const CPVRRecording& right) const
        m_iRecordingId       == right.m_iRecordingId &&
        m_bIsDeleted         == right.m_bIsDeleted &&
        m_iEpgEventId        == right.m_iEpgEventId &&
-       m_iChannelUid        == right.m_iChannelUid);
+       m_iChannelUid        == right.m_iChannelUid &&
+       m_bRadio             == right.m_bRadio);
 }
 
 bool CPVRRecording::operator !=(const CPVRRecording& right) const
@@ -166,6 +168,7 @@ void CPVRRecording::Serialize(CVariant& value) const
   value["deleted"] = m_bIsDeleted;
   value["epgevent"] = m_iEpgEventId;
   value["channeluid"] = m_iChannelUid;
+  value["radio"] = m_bRadio;
 
   if (!value.isMember("art"))
     value["art"] = CVariant(CVariant::VariantTypeObject);
@@ -195,6 +198,7 @@ void CPVRRecording::Reset(void)
   m_iSeason            = -1;
   m_iEpisode           = -1;
   m_iChannelUid        = PVR_CHANNEL_INVALID_UID;
+  m_bRadio             = false;
 
   m_recordingTime.Reset();
   CVideoInfoTag::Reset();
@@ -374,6 +378,7 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   m_bIsDeleted        = tag.m_bIsDeleted;
   m_iEpgEventId       = tag.m_iEpgEventId;
   m_iChannelUid       = tag.m_iChannelUid;
+  m_bRadio            = tag.m_bRadio;
 
   if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId))
     m_playCount       = tag.m_playCount;
@@ -416,7 +421,7 @@ void CPVRRecording::UpdatePath(void)
   else
   {
     m_strFileNameAndPath = CPVRRecordingsPath(
-      m_bIsDeleted, m_strDirectory, m_strTitle, m_iSeason, m_iEpisode, m_iYear, m_strShowTitle, m_strChannelName, m_recordingTime);
+      m_bIsDeleted, m_bRadio, m_strDirectory, m_strTitle, m_iSeason, m_iEpisode, m_iYear, m_strShowTitle, m_strChannelName, m_recordingTime);
   }
 }
 

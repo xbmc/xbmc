@@ -203,6 +203,12 @@ namespace PVR
     bool IsDeleted() const { return m_bIsDeleted; }
 
     /*!
+     * @brief Check whether this is a tv or radio recording
+     * @return true if this is a radio recording, false if this is a tv recording
+     */
+    bool IsRadio() const { return m_bRadio; }
+
+    /*!
      * @return Broadcast id of the EPG event associated with this recording or EPG_TAG_INVALID_UID
      */
     unsigned int BroadcastUid(void) const { return m_iEpgEventId; }
@@ -236,6 +242,7 @@ namespace PVR
     bool         m_bIsDeleted;    /*!< set if entry is a deleted recording which can be undelete */
     unsigned int m_iEpgEventId;   /*!< epg broadcast id associated with this recording */
     int          m_iChannelUid;   /*!< channel uid associated with this recording */
+    bool         m_bRadio;        /*!< radio or tv recording */
 
     void UpdatePath(void);
     void DisplayError(PVR_ERROR err) const;
