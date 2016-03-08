@@ -21,6 +21,7 @@
 #include "system.h"
 #include "RenderManager.h"
 #include "RenderFlags.h"
+#include "guilib/GraphicContext.h"
 #include "video/VideoReferenceClock.h"
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"
@@ -32,7 +33,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
-#include "guilib/GUIFontManager.h"
 
 #if defined(HAS_GL)
 #include "LinuxRendererGL.h"
@@ -579,8 +579,6 @@ void CRenderManager::UnInit()
 
   m_overlays.Flush();
   m_debugRenderer.Flush();
-  g_fontManager.Unload("__subtitle__");
-  g_fontManager.Unload("__subtitleborder__");
 
   DeleteRenderer();
 

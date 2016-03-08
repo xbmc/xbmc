@@ -97,6 +97,12 @@ void CDebugRenderer::Flush()
   m_overlayRenderer.Flush();
 }
 
+CDebugRenderer::CRenderer::CRenderer() : OVERLAY::CRenderer()
+{
+  m_font = "__debug__";
+  m_fontBorder = "__debugborder__";
+}
+
 void CDebugRenderer::CRenderer::Render(int idx)
 {
   std::vector<COverlay*> render;
@@ -114,7 +120,7 @@ void CDebugRenderer::CRenderer::Render(int idx)
 
     COverlayText *text = dynamic_cast<COverlayText*>(o);
     if (text)
-      text->PrepareRender("arial.ttf", 1, 16, 0);
+      text->PrepareRender("arial.ttf", 1, 16, 0, m_font, m_fontBorder);
 
     o->m_pos = COverlay::POSITION_ABSOLUTE;
     o->m_align = COverlay::ALIGN_SCREEN;
