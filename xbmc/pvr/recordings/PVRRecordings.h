@@ -79,7 +79,6 @@ namespace PVR
     bool HasDeletedTVRecordings() const;
     int GetNumRadioRecordings() const;
     bool HasDeletedRadioRecordings() const;
-    int GetRecordings(CFileItemList* results, bool bDeleted = false);
 
     /**
      * Deletes the item in question, be it a directory or a file

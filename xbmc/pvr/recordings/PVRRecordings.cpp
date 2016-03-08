@@ -195,24 +195,6 @@ bool CPVRRecordings::HasDeletedRadioRecordings() const
   return m_bDeletedRadioRecordings;
 }
 
-int CPVRRecordings::GetRecordings(CFileItemList* results, bool bDeleted) // @@@ TODO radio?
-{
-  CSingleLock lock(m_critSection);
-
-  int iRecCount = 0;
-  for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
-  {
-    if (it->second->IsDeleted() != bDeleted)
-      continue;
-
-    CFileItemPtr pFileItem(new CFileItem(it->second));
-    results->Add(pFileItem);
-    iRecCount++;
-  }
-
-  return iRecCount;
-}
-
 bool CPVRRecordings::Delete(const CFileItem& item)
 {
   return item.m_bIsFolder ? DeleteDirectory(item) : DeleteRecording(item);
