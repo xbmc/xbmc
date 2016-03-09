@@ -318,6 +318,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "haspvr",           SYSTEM_HAS_PVR },
                                   { "startupwindow",    SYSTEM_STARTUP_WINDOW },
                                   { "stereoscopicmode", SYSTEM_STEREOSCOPIC_MODE },
+                                  { "stereoscopicmodestring", SYSTEM_STEREOSCOPIC_MODE_STRING },
                                   { "hasadsp",          SYSTEM_HAS_ADSP }};
 
 const infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
@@ -2179,9 +2180,16 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     strLabel = CSysInfo::GetDeviceName();
     break;
   case SYSTEM_STEREOSCOPIC_MODE:
+  case SYSTEM_STEREOSCOPIC_MODE_STRING:
     {
-      int stereoMode = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE);
-      strLabel = StringUtils::Format("%i", stereoMode);
+      RENDER_STEREO_MODE stereoMode = CStereoscopicsManager::GetInstance().GetStereoMode();
+      if (info == SYSTEM_STEREOSCOPIC_MODE)
+        strLabel = StringUtils::Format("%i", static_cast<int>(stereoMode));
+      else if (info == SYSTEM_STEREOSCOPIC_MODE_STRING)
+      {
+        strLabel = CStereoscopicsManager::GetInstance().ConvertGuiStereoModeToString(stereoMode);
+        CLog::Log(LOGDEBUG, "stereoMode=%i strLabel=%s", stereoMode, strLabel.c_str()); // XXX
+      }
     }
     break;
 
