@@ -1502,10 +1502,9 @@ bool CPVRManager::CanSystemPowerdown(bool bAskUser /*= true*/) const
             const CDateTime now(CDateTime::GetUTCDateTime());
             const CDateTime start(cause->StartAsUTC());
             const CDateTimeSpan prestart(0, 0, cause->MarginStart(), 0);
-            const CDateTimeSpan prewakeup(0, 0, CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPOWERMANAGEMENT_PREWAKEUP), 0);
 
             CDateTimeSpan diff(start - now);
-            diff -= prestart - prewakeup;
+            diff -= prestart;
             int mins = diff.GetSecondsTotal() / 60;
 
             std::string dueStr;
