@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2014 Team KODI
+ *      Copyright (C) 2014-2016 Team KODI
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  *
  */
 
-#include "AddonCallbacks.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_adsp_types.h"
+#include "addons/binary/interfaces/AddonInterfaces.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_adsp.h"
 
 namespace ActiveAE
 {
@@ -29,17 +29,63 @@ namespace ActiveAE
 
 namespace ADDON
 {
+  class CAddon;
+}
+
+namespace V1
+{
+namespace KodiAPI
+{
+
+namespace AudioDSP
+{
+
+typedef void (*ADSPAddMenuHook)(void *addonData, AE_DSP_MENUHOOK *hook);
+typedef void (*ADSPRemoveMenuHook)(void *addonData, AE_DSP_MENUHOOK *hook);
+typedef void (*ADSPRegisterMode)(void *addonData, AE_DSP_MODES::AE_DSP_MODE *mode);
+typedef void (*ADSPUnregisterMode)(void *addonData, AE_DSP_MODES::AE_DSP_MODE *mode);
+
+typedef ADSPHANDLE (*ADSPSoundPlay_GetHandle)(void *addonData, const char *filename);
+typedef void (*ADSPSoundPlay_ReleaseHandle)(void *addonData, ADSPHANDLE handle);
+typedef void (*ADSPSoundPlay_Play)(void *addonData, ADSPHANDLE handle);
+typedef void (*ADSPSoundPlay_Stop)(void *addonData, ADSPHANDLE handle);
+typedef bool (*ADSPSoundPlay_IsPlaying)(void *addonData, ADSPHANDLE handle);
+typedef void (*ADSPSoundPlay_SetChannel)(void *addonData, ADSPHANDLE handle, AE_DSP_CHANNEL channel);
+typedef AE_DSP_CHANNEL (*ADSPSoundPlay_GetChannel)(void *addonData, ADSPHANDLE handle);
+typedef void (*ADSPSoundPlay_SetVolume)(void *addonData, ADSPHANDLE handle, float volume);
+typedef float (*ADSPSoundPlay_GetVolume)(void *addonData, ADSPHANDLE handle);
+
+typedef struct CB_ADSPLib
+{
+  ADSPAddMenuHook               AddMenuHook;
+  ADSPRemoveMenuHook            RemoveMenuHook;
+  ADSPRegisterMode              RegisterMode;
+  ADSPUnregisterMode            UnregisterMode;
+
+  ADSPSoundPlay_GetHandle       SoundPlay_GetHandle;
+  ADSPSoundPlay_ReleaseHandle   SoundPlay_ReleaseHandle;
+  ADSPSoundPlay_Play            SoundPlay_Play;
+  ADSPSoundPlay_Stop            SoundPlay_Stop;
+  ADSPSoundPlay_IsPlaying       SoundPlay_IsPlaying;
+  ADSPSoundPlay_SetChannel      SoundPlay_SetChannel;
+  ADSPSoundPlay_GetChannel      SoundPlay_GetChannel;
+  ADSPSoundPlay_SetVolume       SoundPlay_SetVolume;
+  ADSPSoundPlay_GetVolume       SoundPlay_GetVolume;
+} CB_ADSPLib;
 
 /*!
  * Callbacks for a audio DSP add-on to KODI.
  *
  * Also translates the addon's C structures to KODI's C++ structures.
  */
-class CAddonCallbacksADSP
+class CAddonCallbacksADSP : public ADDON::IAddonInterface
 {
 public:
-  CAddonCallbacksADSP(CAddon* addon);
-  ~CAddonCallbacksADSP(void);
+  CAddonCallbacksADSP(ADDON::CAddon* addon);
+  virtual ~CAddonCallbacksADSP(void);
+
+  static int APILevel() { return 1; }
+  static std::string Version() { return KODI_AE_DSP_API_VERSION; }
 
   /*!
    * @return The callback table.
@@ -146,10 +192,12 @@ public:
   //@}
 
 private:
-  static ActiveAE::CActiveAEDSPAddon* GetAudioDSPAddon(void* addonData);
+  static ::ActiveAE::CActiveAEDSPAddon* GetAudioDSPAddon(void* addonData);
 
   CB_ADSPLib   *m_callbacks; /*!< callback addresses */
-  CAddon       *m_addon;     /*!< the addon */
 };
 
-}; /* namespace ADDON */
+}; /* namespace AudioDSP */
+
+}; /* namespace KodiAPI */
+}; /* namespace V1 */

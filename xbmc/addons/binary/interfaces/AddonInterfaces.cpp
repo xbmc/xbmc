@@ -1,6 +1,7 @@
 /*
  *      Copyright (C) 2012-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2015-2016 Team KODI
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,257 +14,287 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with KODI; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#include "Addon.h"
-#include "AddonCallbacks.h"
-#include "AddonCallbacksAddon.h"
-#include "AddonCallbacksAudioDSP.h"
-#include "AddonCallbacksAudioEngine.h"
-#include "AddonCallbacksCodec.h"
-#include "AddonCallbacksGUI.h"
-#include "AddonCallbacksPVR.h"
+#include "AddonInterfaces.h"
+
+#include "addons/Addon.h"
+
+#include "addons/binary/interfaces/api1/Addon/AddonCallbacksAddon.h"
+#include "addons/binary/interfaces/api1/AudioDSP/AddonCallbacksAudioDSP.h"
+#include "addons/binary/interfaces/api1/AudioEngine/AddonCallbacksAudioEngine.h"
+#include "addons/binary/interfaces/api1/Codec/AddonCallbacksCodec.h"
+#include "addons/binary/interfaces/api1/GUI/AddonCallbacksGUI.h"
+#include "addons/binary/interfaces/api1/GUI/AddonGUIWindow.h"
+#include "addons/binary/interfaces/api1/InputStream/AddonCallbacksInputStream.h"
+#include "addons/binary/interfaces/api1/PVR/AddonCallbacksPVR.h"
 #include "filesystem/SpecialProtocol.h"
+#include "messaging/ApplicationMessenger.h"
 #include "utils/log.h"
+
+using namespace KODI::MESSAGING;
 
 namespace ADDON
 {
 
-CAddonCallbacks::CAddonCallbacks(CAddon* addon)
+CAddonInterfaces::CAddonInterfaces(CAddon* addon)
+  : m_callbacks(new AddonCB),
+    m_addon(addon),
+    m_helperAddOn(nullptr),
+    m_helperAudioEngine(nullptr),
+    m_helperGUI(nullptr),
+    m_helperPVR(nullptr),
+    m_helperADSP(nullptr),
+    m_helperCODEC(nullptr),
+    m_helperInputStream(nullptr)
 {
-  m_addon       = addon;
-  m_callbacks   = new AddonCB;
-  m_helperAddon = NULL;
-  m_helperADSP  = NULL;
-  m_helperAudioEngine = NULL;
-  m_helperGUI   = NULL;
-  m_helperPVR   = NULL;
-  m_helperCODEC = NULL;
-  m_helperInputStream = nullptr;
+  m_callbacks->libBasePath                  = strdup(CSpecialProtocol::TranslatePath("special://xbmcbin/addons").c_str());
+  m_callbacks->addonData                    = this;
 
-  m_callbacks->libBasePath           = strdup(CSpecialProtocol::TranslatePath("special://xbmcbin/addons").c_str());
-  m_callbacks->addonData             = this;
-  m_callbacks->AddOnLib_RegisterMe   = CAddonCallbacks::AddOnLib_RegisterMe;
-  m_callbacks->AddOnLib_UnRegisterMe = CAddonCallbacks::AddOnLib_UnRegisterMe;
-  m_callbacks->ADSPLib_RegisterMe    = CAddonCallbacks::ADSPLib_RegisterMe;
-  m_callbacks->ADSPLib_UnRegisterMe  = CAddonCallbacks::ADSPLib_UnRegisterMe;
-  m_callbacks->AudioEngineLib_RegisterMe    = CAddonCallbacks::AudioEngineLib_RegisterMe;
-  m_callbacks->AudioEngineLib_UnRegisterMe  = CAddonCallbacks::AudioEngineLib_UnRegisterMe;
-  m_callbacks->CODECLib_RegisterMe   = CAddonCallbacks::CODECLib_RegisterMe;
-  m_callbacks->CODECLib_UnRegisterMe = CAddonCallbacks::CODECLib_UnRegisterMe;
-  m_callbacks->GUILib_RegisterMe     = CAddonCallbacks::GUILib_RegisterMe;
-  m_callbacks->GUILib_UnRegisterMe   = CAddonCallbacks::GUILib_UnRegisterMe;
-  m_callbacks->PVRLib_RegisterMe     = CAddonCallbacks::PVRLib_RegisterMe;
-  m_callbacks->PVRLib_UnRegisterMe   = CAddonCallbacks::PVRLib_UnRegisterMe;
-  m_callbacks->INPUTSTREAMLib_RegisterMe = CAddonCallbacks::INPUTSTREAMLib_RegisterMe;
-  m_callbacks->INPUTSTREAMLib_UnRegisterMe = CAddonCallbacks::INPUTSTREAMLib_UnRegisterMe;
+  m_callbacks->AddOnLib_RegisterMe          = CAddonInterfaces::AddOnLib_RegisterMe;
+  m_callbacks->AddOnLib_UnRegisterMe        = CAddonInterfaces::AddOnLib_UnRegisterMe;
+  m_callbacks->AudioEngineLib_RegisterMe    = CAddonInterfaces::AudioEngineLib_RegisterMe;
+  m_callbacks->AudioEngineLib_UnRegisterMe  = CAddonInterfaces::AudioEngineLib_UnRegisterMe;
+  m_callbacks->GUILib_RegisterMe            = CAddonInterfaces::GUILib_RegisterMe;
+  m_callbacks->GUILib_UnRegisterMe          = CAddonInterfaces::GUILib_UnRegisterMe;
+  m_callbacks->PVRLib_RegisterMe            = CAddonInterfaces::PVRLib_RegisterMe;
+  m_callbacks->PVRLib_UnRegisterMe          = CAddonInterfaces::PVRLib_UnRegisterMe;
+  m_callbacks->ADSPLib_RegisterMe           = CAddonInterfaces::ADSPLib_RegisterMe;
+  m_callbacks->ADSPLib_UnRegisterMe         = CAddonInterfaces::ADSPLib_UnRegisterMe;
+  m_callbacks->CodecLib_RegisterMe          = CAddonInterfaces::CodecLib_RegisterMe;
+  m_callbacks->CodecLib_UnRegisterMe        = CAddonInterfaces::CodecLib_UnRegisterMe;
+  m_callbacks->INPUTSTREAMLib_RegisterMe    = CAddonInterfaces::INPUTSTREAMLib_RegisterMe;
+  m_callbacks->INPUTSTREAMLib_UnRegisterMe  = CAddonInterfaces::INPUTSTREAMLib_UnRegisterMe;
 }
 
-CAddonCallbacks::~CAddonCallbacks()
+CAddonInterfaces::~CAddonInterfaces()
 {
-  delete m_helperAddon;
-  m_helperAddon = NULL;
-  delete m_helperADSP;
-  m_helperADSP = NULL;
-  delete m_helperAudioEngine;
-  m_helperAudioEngine = NULL;
-  delete m_helperCODEC;
-  m_helperCODEC = NULL;
-  delete m_helperGUI;
-  m_helperGUI = NULL;
-  delete m_helperPVR;
-  m_helperPVR = NULL;
-  delete m_helperInputStream;
-  m_helperInputStream = nullptr;
+  delete static_cast<V1::KodiAPI::AddOn::CAddonCallbacksAddon*>(m_helperAddOn);
+  delete static_cast<V1::KodiAPI::AudioEngine::CAddonCallbacksAudioEngine*>(m_helperAudioEngine);
+  delete static_cast<V1::KodiAPI::PVR::CAddonCallbacksPVR*>(m_helperPVR);
+  delete static_cast<V1::KodiAPI::GUI::CAddonCallbacksGUI*>(m_helperGUI);
+  delete static_cast<V1::KodiAPI::AudioDSP::CAddonCallbacksADSP*>(m_helperADSP);
+  delete static_cast<V1::KodiAPI::Codec::CAddonCallbacksCodec*>(m_helperCODEC);
+  delete static_cast<V1::KodiAPI::InputStream::CAddonCallbacksInputStream*>(m_helperInputStream);
+
   free((char*)m_callbacks->libBasePath);
   delete m_callbacks;
-  m_callbacks = NULL;
 }
 
-CB_AddOnLib* CAddonCallbacks::AddOnLib_RegisterMe(void *addonData)
+/*\_____________________________________________________________________________
+\*/
+
+void* CAddonInterfaces::AddOnLib_RegisterMe(void *addonData)
 {
-  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
-  if (addon == NULL)
+  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
+  if (addon == nullptr)
   {
-    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
-    return NULL;
+    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
+    return nullptr;
   }
 
-  addon->m_helperAddon = new CAddonCallbacksAddon(addon->m_addon);
-  return addon->m_helperAddon->GetCallbacks();
+  addon->m_helperAddOn = new V1::KodiAPI::AddOn::CAddonCallbacksAddon(addon->m_addon);
+  return static_cast<V1::KodiAPI::AddOn::CAddonCallbacksAddon*>(addon->m_helperAddOn)->GetCallbacks();
 }
 
-void CAddonCallbacks::AddOnLib_UnRegisterMe(void *addonData, CB_AddOnLib *cbTable)
+void CAddonInterfaces::AddOnLib_UnRegisterMe(void *addonData, void *cbTable)
 {
-  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
-  if (addon == NULL)
+  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
+  if (addon == nullptr)
   {
-    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
+    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
-  delete addon->m_helperAddon;
-  addon->m_helperAddon = NULL;
+  delete static_cast<V1::KodiAPI::AddOn::CAddonCallbacksAddon*>(addon->m_helperAddOn);
+  addon->m_helperAddOn = nullptr;
 }
 
-CB_ADSPLib* CAddonCallbacks::ADSPLib_RegisterMe(void *addonData)
+/*\_____________________________________________________________________________
+\*/
+void* CAddonInterfaces::AudioEngineLib_RegisterMe(void *addonData)
 {
-  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
-  if (addon == NULL)
+  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
+  if (addon == nullptr)
   {
-    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
-    return NULL;
+    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
+    return nullptr;
   }
 
-  addon->m_helperADSP = new CAddonCallbacksADSP(addon->m_addon);
-  return addon->m_helperADSP->GetCallbacks();
+  addon->m_helperAudioEngine = new V1::KodiAPI::AudioEngine::CAddonCallbacksAudioEngine(addon->m_addon);
+  return static_cast<V1::KodiAPI::AudioEngine::CAddonCallbacksAudioEngine*>(addon->m_helperAudioEngine)->GetCallbacks();
 }
 
-void CAddonCallbacks::ADSPLib_UnRegisterMe(void *addonData, CB_ADSPLib *cbTable)
+void CAddonInterfaces::AudioEngineLib_UnRegisterMe(void *addonData, void *cbTable)
 {
-  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
-  if (addon == NULL)
+  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
+  if (addon == nullptr)
   {
-    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
+    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
-  delete addon->m_helperADSP;
-  addon->m_helperADSP = NULL;
+  delete static_cast<V1::KodiAPI::AudioEngine::CAddonCallbacksAudioEngine*>(addon->m_helperAudioEngine);
+  addon->m_helperAudioEngine = nullptr;
 }
-
-CB_AudioEngineLib* CAddonCallbacks::AudioEngineLib_RegisterMe(void *addonData)
+/*\_____________________________________________________________________________
+\*/
+void* CAddonInterfaces::GUILib_RegisterMe(void *addonData)
 {
-  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
-  if (addon == NULL)
+  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
+  if (addon == nullptr)
   {
-    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
-    return NULL;
+    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
+    return nullptr;
   }
 
-  addon->m_helperAudioEngine = new CAddonCallbacksAudioEngine(addon->m_addon);
-  return addon->m_helperAudioEngine->GetCallbacks();
+  addon->m_helperGUI = new V1::KodiAPI::GUI::CAddonCallbacksGUI(addon->m_addon);
+  return static_cast<V1::KodiAPI::GUI::CAddonCallbacksGUI*>(addon->m_helperGUI)->GetCallbacks();
 }
 
-void CAddonCallbacks::AudioEngineLib_UnRegisterMe(void *addonData, CB_AudioEngineLib *cbTable)
+void CAddonInterfaces::GUILib_UnRegisterMe(void *addonData, void *cbTable)
 {
-  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
-  if (addon == NULL)
+  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
+  if (addon == nullptr)
   {
-    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
+    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
-  delete addon->m_helperAudioEngine;
-  addon->m_helperAudioEngine = NULL;
+  delete static_cast<V1::KodiAPI::GUI::CAddonCallbacksGUI*>(addon->m_helperGUI);
+  addon->m_helperGUI = nullptr;
 }
-
-
-CB_CODECLib* CAddonCallbacks::CODECLib_RegisterMe(void *addonData)
+/*\_____________________________________________________________________________
+\*/
+void* CAddonInterfaces::PVRLib_RegisterMe(void *addonData)
 {
-  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
-  if (addon == NULL)
+  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
+  if (addon == nullptr)
   {
-    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
-    return NULL;
+    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
+    return nullptr;
   }
 
-  addon->m_helperCODEC = new CAddonCallbacksCodec(addon->m_addon);
-  return addon->m_helperCODEC->GetCallbacks();
+  addon->m_helperPVR = new V1::KodiAPI::PVR::CAddonCallbacksPVR(addon->m_addon);
+  return static_cast<V1::KodiAPI::PVR::CAddonCallbacksPVR*>(addon->m_helperPVR)->GetCallbacks();
 }
 
-void CAddonCallbacks::CODECLib_UnRegisterMe(void *addonData, CB_CODECLib *cbTable)
+void CAddonInterfaces::PVRLib_UnRegisterMe(void *addonData, void *cbTable)
 {
-  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
-  if (addon == NULL)
+  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
+  if (addon == nullptr)
   {
-    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
+    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
-  delete addon->m_helperCODEC;
-  addon->m_helperCODEC = NULL;
+  delete static_cast<V1::KodiAPI::PVR::CAddonCallbacksPVR*>(addon->m_helperPVR);
+  addon->m_helperPVR = nullptr;
 }
-
-CB_GUILib* CAddonCallbacks::GUILib_RegisterMe(void *addonData)
+/*\_____________________________________________________________________________
+\*/
+void* CAddonInterfaces::ADSPLib_RegisterMe(void *addonData)
 {
-  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
-  if (addon == NULL)
+  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
+  if (addon == nullptr)
   {
-    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
-    return NULL;
+    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
+    return nullptr;
   }
 
-  addon->m_helperGUI = new CAddonCallbacksGUI(addon->m_addon);
-  return addon->m_helperGUI->GetCallbacks();
+  addon->m_helperADSP = new V1::KodiAPI::AudioDSP::CAddonCallbacksADSP(addon->m_addon);
+  return static_cast<V1::KodiAPI::AudioDSP::CAddonCallbacksADSP*>(addon->m_helperADSP)->GetCallbacks();
 }
 
-void CAddonCallbacks::GUILib_UnRegisterMe(void *addonData, CB_GUILib *cbTable)
+void CAddonInterfaces::ADSPLib_UnRegisterMe(void *addonData, void *cbTable)
 {
-  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
-  if (addon == NULL)
+  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
+  if (addon == nullptr)
   {
-    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
+    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
-  delete addon->m_helperGUI;
-  addon->m_helperGUI = NULL;
+  delete static_cast<V1::KodiAPI::AudioDSP::CAddonCallbacksADSP*>(addon->m_helperADSP);
+  addon->m_helperADSP = nullptr;
 }
-
-CB_PVRLib* CAddonCallbacks::PVRLib_RegisterMe(void *addonData)
+/*\_____________________________________________________________________________
+\*/
+void* CAddonInterfaces::CodecLib_RegisterMe(void *addonData)
 {
-  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
-  if (addon == NULL)
+  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
+  if (addon == nullptr)
   {
-    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
-    return NULL;
+    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
+    return nullptr;
   }
 
-  addon->m_helperPVR = new CAddonCallbacksPVR(addon->m_addon);
-  return addon->m_helperPVR->GetCallbacks();
+  addon->m_helperCODEC = new V1::KodiAPI::Codec::CAddonCallbacksCodec(addon->m_addon);
+  return static_cast<V1::KodiAPI::Codec::CAddonCallbacksCodec*>(addon->m_helperCODEC)->GetCallbacks();
 }
 
-void CAddonCallbacks::PVRLib_UnRegisterMe(void *addonData, CB_PVRLib *cbTable)
+void CAddonInterfaces::CodecLib_UnRegisterMe(void *addonData, void *cbTable)
 {
-  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
-  if (addon == NULL)
+  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
+  if (addon == nullptr)
   {
-    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
+    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
-  delete addon->m_helperPVR;
-  addon->m_helperPVR = NULL;
+  delete static_cast<V1::KodiAPI::Codec::CAddonCallbacksCodec*>(addon->m_helperCODEC);
+  addon->m_helperCODEC = nullptr;
 }
-
-CB_INPUTSTREAMLib* CAddonCallbacks::INPUTSTREAMLib_RegisterMe(void *addonData)
+/*\_____________________________________________________________________________
+\*/
+void* CAddonInterfaces::INPUTSTREAMLib_RegisterMe(void *addonData)
 {
-  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
-  if (addon == NULL)
+  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
+  if (addon == nullptr)
   {
-    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
-    return NULL;
+    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
+    return nullptr;
   }
 
-  addon->m_helperInputStream = new CAddonCallbacksInputStream(addon->m_addon);
-  return addon->m_helperInputStream->GetCallbacks();
+  addon->m_helperInputStream = new V1::KodiAPI::InputStream::CAddonCallbacksInputStream(addon->m_addon);
+  return static_cast<V1::KodiAPI::InputStream::CAddonCallbacksInputStream*>(addon->m_helperInputStream)->GetCallbacks();
 }
 
-void CAddonCallbacks::INPUTSTREAMLib_UnRegisterMe(void *addonData, CB_INPUTSTREAMLib *cbTable)
+void CAddonInterfaces::INPUTSTREAMLib_UnRegisterMe(void *addonData, void* cbTable)
 {
-  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
-  if (addon == NULL)
+  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
+  if (addon == nullptr)
   {
-    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
+    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
-  delete addon->m_helperInputStream;
+  delete static_cast<V1::KodiAPI::InputStream::CAddonCallbacksInputStream*>(addon->m_helperInputStream);
   addon->m_helperInputStream = nullptr;
+}
+/*\_____________________________________________________________________________
+\*/
+void CAddonInterfaces::OnApplicationMessage(ThreadMessage* pMsg)
+{
+  switch (pMsg->dwMessage)
+  {
+  case TMSG_GUI_ADDON_DIALOG:
+  {
+    if (pMsg->lpVoid)
+    { // TODO: This is ugly - really these binary add-on dialogs should just be normal Kodi dialogs
+      switch (pMsg->param1)
+      {
+      case 1:
+        static_cast<V1::KodiAPI::GUI::CGUIAddonWindowDialog*>(pMsg->lpVoid)->Show_Internal(pMsg->param2 > 0);
+        break;
+      };
+    }
+  }
+  break;
+  }
 }
 
 }; /* namespace ADDON */

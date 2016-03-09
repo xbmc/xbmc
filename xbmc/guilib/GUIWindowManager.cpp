@@ -139,7 +139,7 @@
 #include "settings/dialogs/GUIDialogAudioDSPSettings.h"
 
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
-#include "addons/AddonCallbacksGUI.h"
+#include "addons/binary/interfaces/AddonInterfaces.h"
 
 using namespace PVR;
 using namespace PERIPHERALS;
@@ -869,8 +869,8 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
   case TMSG_GUI_ADDON_DIALOG:
   {
     if (pMsg->lpVoid)
-    { // TODO: This is ugly - really these python dialogs should just be normal XBMC dialogs
-      static_cast<ADDON::CGUIAddonWindowDialog *>(pMsg->lpVoid)->Show_Internal(pMsg->param2 > 0);
+    {
+      ADDON::CAddonInterfaces::OnApplicationMessage(pMsg);
     }
   }
   break;

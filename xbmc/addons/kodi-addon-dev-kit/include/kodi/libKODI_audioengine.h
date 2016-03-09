@@ -311,11 +311,6 @@ public:
   * @param ratio the new sample rate ratio, calculated by ((double)desiredRate / (double)GetSampleRate())
   */
   virtual void SetResampleRatio(double Ratio);
-  
-  /**
-  * Sginal a clock change
-  */
-  virtual void Discontinuity();
 
   private:
     AEStreamHandle  *m_StreamHandle;

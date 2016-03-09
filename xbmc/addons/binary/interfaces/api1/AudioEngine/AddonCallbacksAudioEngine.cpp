@@ -18,21 +18,28 @@
  *
  */
 
+#include "system.h"
 #include "AddonCallbacksAudioEngine.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/kodi_audioengine_types.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/AudioEngine/Utils/AEChannelData.h"
 #include "utils/log.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_audioengine_types.h"
 
-namespace ADDON
+using namespace ADDON;
+
+namespace V1
+{
+namespace KodiAPI
+{
+  
+namespace AudioEngine
 {
 
 CAddonCallbacksAudioEngine::CAddonCallbacksAudioEngine(CAddon* addon)
+  : ADDON::IAddonInterface(addon, APILevel(), Version()),
+    m_callbacks(new CB_AudioEngineLib)
 {
-  m_addon     = addon;
-  m_callbacks = new CB_AudioEngineLib;
-
   // write KODI audio DSP specific add-on function addresses to callback table
   m_callbacks->MakeStream           = AudioEngine_MakeStream;
   m_callbacks->FreeStream           = AudioEngine_FreeStream;
@@ -394,4 +401,7 @@ void CAddonCallbacksAudioEngine::AEStream_SetResampleRatio(void *AddonData, AESt
   ((IAEStream*)StreamHandle)->SetResampleRatio(Ratio);
 }
 
-}; /* namespace ADDON */
+}; /* namespace AudioEngine */
+
+}; /* namespace KodiAPI */
+}; /* namespace V1 */

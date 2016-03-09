@@ -1,6 +1,7 @@
 /*
  *      Copyright (C) 2012-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2015-2016 Team KODI
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,12 +14,12 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with KODI; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#include "Addon.h"
+#include "addons/Addon.h"
 
 #include <utility>
 
@@ -29,9 +30,16 @@ extern "C" {
 #include "libavcodec/avcodec.h"
 }
 
+using namespace ADDON;
 
-namespace ADDON
+namespace V1
 {
+namespace KodiAPI
+{
+
+namespace Codec
+{
+
 class CCodecIds
 {
 public:
@@ -94,10 +102,9 @@ private:
 };
 
 CAddonCallbacksCodec::CAddonCallbacksCodec(CAddon* addon)
+  : ADDON::IAddonInterface(addon, APILevel(), Version()),
+    m_callbacks(new CB_CodecLib)
 {
-  m_addon     = addon;
-  m_callbacks = new CB_CODECLib;
-
   /* write XBMC addon-on specific add-on function addresses to the callback table */
   m_callbacks->GetCodecByName   = GetCodecByName;
 }
@@ -114,5 +121,7 @@ xbmc_codec_t CAddonCallbacksCodec::GetCodecByName(const void* addonData, const c
   return CCodecIds::GetInstance().GetCodecByName(strCodecName);
 }
 
-}; /* namespace ADDON */
+}; /* namespace Codec */
 
+}; /* namespace KodiAPI */
+}; /* namespace V1 */

@@ -1,7 +1,8 @@
 #pragma once
 /*
  *      Copyright (C) 2012-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2015-2016 Team KODI
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -14,33 +15,50 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with KODI; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#include "AddonCallbacks.h"
+#include "addons/binary/interfaces/AddonInterfaces.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libXBMC_codec.h"
 
-namespace ADDON
+namespace V1
+{
+namespace KodiAPI
 {
 
-class CAddonCallbacksCodec
+namespace Codec
+{
+
+typedef xbmc_codec_t (*CODECGetCodecByName)(const void* addonData, const char* strCodecName);
+
+typedef struct CB_CODEC
+{
+  CODECGetCodecByName   GetCodecByName;
+} CB_CodecLib;
+
+class CAddonCallbacksCodec : public ADDON::IAddonInterface
 {
 public:
-  CAddonCallbacksCodec(CAddon* addon);
-  ~CAddonCallbacksCodec();
+  CAddonCallbacksCodec(ADDON::CAddon* addon);
+  virtual ~CAddonCallbacksCodec();
+
+  static int APILevel() { return 1; }
+  static std::string Version() { return "0.0.1"; }
 
   /*!
    * @return The callback table.
    */
-  CB_CODECLib *GetCallbacks() { return m_callbacks; }
+  CB_CodecLib *GetCallbacks() { return m_callbacks; }
 
   static xbmc_codec_t GetCodecByName(const void* addonData, const char* strCodecName);
 
 private:
-  CB_CODECLib*                           m_callbacks; /*!< callback addresses */
-  CAddon*                                m_addon;     /*!< the add-on */
+  CB_CodecLib*                           m_callbacks; /*!< callback addresses */
 };
 
-}; /* namespace ADDON */
+}; /* namespace Codec */
 
+}; /* namespace KoidAPI */
+}; /* namespace V1 */

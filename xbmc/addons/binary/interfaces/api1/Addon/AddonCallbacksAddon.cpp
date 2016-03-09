@@ -1,6 +1,7 @@
 /*
  *      Copyright (C) 2012-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2015-2016 Team KODI
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,13 +14,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with KODI; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "Application.h"
-#include "Addon.h"
+#include "addons/Addon.h"
 #include "AddonCallbacksAddon.h"
 #include "utils/log.h"
 #include "LangInfo.h"
@@ -34,16 +35,21 @@
 #include "URL.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_vfs_types.h"
 
+using namespace ADDON;
 using namespace XFILE;
 
-namespace ADDON
+namespace V1
+{
+namespace KodiAPI
+{
+
+namespace AddOn
 {
 
 CAddonCallbacksAddon::CAddonCallbacksAddon(CAddon* addon)
+  : ADDON::IAddonInterface(addon, APILevel(), Version()),
+    m_callbacks(new CB_AddOnLib)
 {
-  m_addon     = addon;
-  m_callbacks = new CB_AddOnLib;
-
   /* write XBMC addon-on specific add-on function addresses to the callback table */
   m_callbacks->Log                = AddOnLog;
   m_callbacks->QueueNotification  = QueueNotification;
@@ -91,14 +97,14 @@ CAddonCallbacksAddon::~CAddonCallbacksAddon()
 
 void CAddonCallbacksAddon::AddOnLog(void *addonData, const addon_log_t addonLogLevel, const char *strMessage)
 {
-  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* addon = (CAddonInterfaces*) addonData;
   if (addon == NULL || strMessage == NULL)
   {
     CLog::Log(LOGERROR, "CAddonCallbacksAddon - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
-  CAddonCallbacksAddon* addonHelper = addon->GetHelperAddon();
+  CAddonCallbacksAddon* addonHelper = static_cast<CAddonCallbacksAddon*>(addon->AddOnLib_GetHelper());
 
   try
   {
@@ -132,14 +138,14 @@ void CAddonCallbacksAddon::AddOnLog(void *addonData, const addon_log_t addonLogL
 
 void CAddonCallbacksAddon::QueueNotification(void *addonData, const queue_msg_t type, const char *strMessage)
 {
-  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* addon = (CAddonInterfaces*) addonData;
   if (addon == NULL || strMessage == NULL)
   {
     CLog::Log(LOGERROR, "CAddonCallbacksAddon - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
-  CAddonCallbacksAddon* addonHelper = addon->GetHelperAddon();
+  CAddonCallbacksAddon* addonHelper = static_cast<CAddonCallbacksAddon*>(addon->AddOnLib_GetHelper());
 
   try
   {
@@ -176,14 +182,14 @@ bool CAddonCallbacksAddon::WakeOnLan(const char *mac)
 
 bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSettingName, void *settingValue)
 {
-  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* addon = (CAddonInterfaces*) addonData;
   if (addon == NULL || strSettingName == NULL || settingValue == NULL)
   {
     CLog::Log(LOGERROR, "CAddonCallbacksAddon - %s - called with a null pointer", __FUNCTION__);
     return false;
   }
 
-  CAddonCallbacksAddon* addonHelper = addon->GetHelperAddon();
+  CAddonCallbacksAddon* addonHelper = static_cast<CAddonCallbacksAddon*>(addon->AddOnLib_GetHelper());
 
   try
   {
@@ -282,11 +288,11 @@ char* CAddonCallbacksAddon::UnknownToUTF8(const char *strSource)
 
 char* CAddonCallbacksAddon::GetLocalizedString(const void* addonData, long dwCode)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
-  if (!helper || g_application.m_bStop)
+  CAddonInterfaces* addon = (CAddonInterfaces*) addonData;
+  if (!addon || g_application.m_bStop)
     return NULL;
 
-  CAddonCallbacksAddon* addonHelper = helper->GetHelperAddon();
+  CAddonCallbacksAddon* addonHelper = static_cast<CAddonCallbacksAddon*>(addon->AddOnLib_GetHelper());
 
   std::string string;
   if ((dwCode >= 30000 && dwCode <= 30999) || (dwCode >= 32000 && dwCode <= 32999))
@@ -300,7 +306,7 @@ char* CAddonCallbacksAddon::GetLocalizedString(const void* addonData, long dwCod
 
 char* CAddonCallbacksAddon::GetDVDMenuLanguage(const void* addonData)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return NULL;
 
@@ -317,7 +323,7 @@ void CAddonCallbacksAddon::FreeString(const void* addonData, char* str)
 
 void* CAddonCallbacksAddon::OpenFile(const void* addonData, const char* strFileName, unsigned int flags)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return NULL;
 
@@ -331,7 +337,7 @@ void* CAddonCallbacksAddon::OpenFile(const void* addonData, const char* strFileN
 
 void* CAddonCallbacksAddon::OpenFileForWrite(const void* addonData, const char* strFileName, bool bOverwrite)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return NULL;
 
@@ -345,7 +351,7 @@ void* CAddonCallbacksAddon::OpenFileForWrite(const void* addonData, const char* 
 
 ssize_t CAddonCallbacksAddon::ReadFile(const void* addonData, void* file, void* lpBuf, size_t uiBufSize)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return 0;
 
@@ -358,7 +364,7 @@ ssize_t CAddonCallbacksAddon::ReadFile(const void* addonData, void* file, void* 
 
 bool CAddonCallbacksAddon::ReadFileString(const void* addonData, void* file, char *szLine, int iLineLength)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return false;
 
@@ -371,7 +377,7 @@ bool CAddonCallbacksAddon::ReadFileString(const void* addonData, void* file, cha
 
 ssize_t CAddonCallbacksAddon::WriteFile(const void* addonData, void* file, const void* lpBuf, size_t uiBufSize)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return -1;
 
@@ -384,7 +390,7 @@ ssize_t CAddonCallbacksAddon::WriteFile(const void* addonData, void* file, const
 
 void CAddonCallbacksAddon::FlushFile(const void* addonData, void* file)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return;
 
@@ -397,7 +403,7 @@ void CAddonCallbacksAddon::FlushFile(const void* addonData, void* file)
 
 int64_t CAddonCallbacksAddon::SeekFile(const void* addonData, void* file, int64_t iFilePosition, int iWhence)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return 0;
 
@@ -410,7 +416,7 @@ int64_t CAddonCallbacksAddon::SeekFile(const void* addonData, void* file, int64_
 
 int CAddonCallbacksAddon::TruncateFile(const void* addonData, void* file, int64_t iSize)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return 0;
 
@@ -423,7 +429,7 @@ int CAddonCallbacksAddon::TruncateFile(const void* addonData, void* file, int64_
 
 int64_t CAddonCallbacksAddon::GetFilePosition(const void* addonData, void* file)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return 0;
 
@@ -436,7 +442,7 @@ int64_t CAddonCallbacksAddon::GetFilePosition(const void* addonData, void* file)
 
 int64_t CAddonCallbacksAddon::GetFileLength(const void* addonData, void* file)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return 0;
 
@@ -449,7 +455,7 @@ int64_t CAddonCallbacksAddon::GetFileLength(const void* addonData, void* file)
 
 double CAddonCallbacksAddon::GetFileDownloadSpeed(const void* addonData, void* file)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*)addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*)addonData;
   if (!helper)
     return 0.0f;
 
@@ -462,7 +468,7 @@ double CAddonCallbacksAddon::GetFileDownloadSpeed(const void* addonData, void* f
 
 void CAddonCallbacksAddon::CloseFile(const void* addonData, void* file)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return;
 
@@ -476,7 +482,7 @@ void CAddonCallbacksAddon::CloseFile(const void* addonData, void* file)
 
 int CAddonCallbacksAddon::GetFileChunkSize(const void* addonData, void* file)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return 0;
 
@@ -489,16 +495,16 @@ int CAddonCallbacksAddon::GetFileChunkSize(const void* addonData, void* file)
 
 bool CAddonCallbacksAddon::FileExists(const void* addonData, const char *strFileName, bool bUseCache)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return false;
 
   return CFile::Exists(strFileName, bUseCache);
 }
 
-int CAddonCallbacksAddon::StatFile(const void* addonData, const char *strFileName, struct __stat64* buffer)
+int CAddonCallbacksAddon::StatFile(const void* addonData, const char *strFileName, struct ::__stat64* buffer)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return -1;
 
@@ -507,7 +513,7 @@ int CAddonCallbacksAddon::StatFile(const void* addonData, const char *strFileNam
 
 bool CAddonCallbacksAddon::DeleteFile(const void* addonData, const char *strFileName)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return false;
 
@@ -516,7 +522,7 @@ bool CAddonCallbacksAddon::DeleteFile(const void* addonData, const char *strFile
 
 bool CAddonCallbacksAddon::CanOpenDirectory(const void* addonData, const char* strURL)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return false;
 
@@ -526,7 +532,7 @@ bool CAddonCallbacksAddon::CanOpenDirectory(const void* addonData, const char* s
 
 bool CAddonCallbacksAddon::CreateDirectory(const void* addonData, const char *strPath)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return false;
 
@@ -535,7 +541,7 @@ bool CAddonCallbacksAddon::CreateDirectory(const void* addonData, const char *st
 
 bool CAddonCallbacksAddon::DirectoryExists(const void* addonData, const char *strPath)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return false;
 
@@ -544,7 +550,7 @@ bool CAddonCallbacksAddon::DirectoryExists(const void* addonData, const char *st
 
 bool CAddonCallbacksAddon::RemoveDirectory(const void* addonData, const char *strPath)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return false;
 
@@ -577,7 +583,7 @@ static void CFileItemListToVFSDirEntries(VFSDirEntry* entries,
 
 bool CAddonCallbacksAddon::GetDirectory(const void* addonData, const char *strPath, const char* mask, VFSDirEntry** items, unsigned int* num_items)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return false;
 
@@ -602,11 +608,11 @@ bool CAddonCallbacksAddon::GetDirectory(const void* addonData, const char *strPa
 
 void CAddonCallbacksAddon::FreeDirectory(const void* addonData, VFSDirEntry* items, unsigned int num_items)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
   if (!helper)
     return;
 
-  for (unsigned int i=0;i<num_items;++i)
+  for (unsigned int i = 0; i < num_items; ++i)
   {
     free(items[i].label);
     free(items[i].path);
@@ -616,7 +622,7 @@ void CAddonCallbacksAddon::FreeDirectory(const void* addonData, VFSDirEntry* ite
 
 void* CAddonCallbacksAddon::CURLCreate(const void* addonData, const char* strURL)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*)addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*)addonData;
   if (!helper)
     return nullptr;
 
@@ -631,7 +637,7 @@ void* CAddonCallbacksAddon::CURLCreate(const void* addonData, const char* strURL
 
 bool CAddonCallbacksAddon::CURLAddOption(const void* addonData, void* file, XFILE::CURLOPTIONTYPE type, const char* name, const char * value)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*)addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*)addonData;
   if (!helper)
     return false;
 
@@ -644,7 +650,7 @@ bool CAddonCallbacksAddon::CURLAddOption(const void* addonData, void* file, XFIL
 
 bool CAddonCallbacksAddon::CURLOpen(const void* addonData, void* file, unsigned int flags)
 {
-  CAddonCallbacks* helper = (CAddonCallbacks*)addonData;
+  CAddonInterfaces* helper = (CAddonInterfaces*)addonData;
   if (!helper)
     return false;
 
@@ -655,4 +661,7 @@ bool CAddonCallbacksAddon::CURLOpen(const void* addonData, void* file, unsigned 
   return cfile->CURLOpen(flags);
 }
 
-}; /* namespace ADDON */
+}; /* namespace AddOn */
+
+}; /* namespace KodiAPI */
+}; /* namespace V1 */

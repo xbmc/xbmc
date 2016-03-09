@@ -86,6 +86,8 @@ typedef intptr_t      ssize_t;
 #include <sys/stat.h>
 #endif
 
+struct __stat64;
+
 #ifdef LOG_DEBUG
 #undef LOG_DEBUG
 #endif

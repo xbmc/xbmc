@@ -1,6 +1,7 @@
 /*
  *      Copyright (C) 2012-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2015-2016 Team KODI
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,41 +14,46 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with KODI; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#include "Application.h"
 #include "AddonCallbacksPVR.h"
+
+#include "Application.h"
+#include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "epg/EpgContainer.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "settings/Settings.h"
-
-#include "epg/EpgContainer.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClient.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
-#include "pvr/addons/PVRClient.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
+#include "settings/Settings.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
 
+using namespace ADDON;
 using namespace PVR;
 using namespace EPG;
 
-namespace ADDON
+namespace V1
+{
+namespace KodiAPI
+{
+
+namespace PVR
 {
 
 CAddonCallbacksPVR::CAddonCallbacksPVR(CAddon* addon)
+  : ADDON::IAddonInterface(addon, APILevel(), Version()),
+    m_callbacks(new CB_PVRLib)
 {
-  m_addon     = addon;
-  m_callbacks = new CB_PVRLib;
-
   /* write XBMC PVR specific add-on function addresses to callback table */
   m_callbacks->TransferEpgEntry           = PVRTransferEpgEntry;
   m_callbacks->TransferChannelEntry       = PVRTransferChannelEntry;
@@ -76,14 +82,14 @@ CAddonCallbacksPVR::~CAddonCallbacksPVR()
 
 CPVRClient *CAddonCallbacksPVR::GetPVRClient(void *addonData)
 {
-  CAddonCallbacks *addon = static_cast<CAddonCallbacks *>(addonData);
-  if (!addon || !addon->GetHelperPVR())
+  CAddonInterfaces *addon = static_cast<CAddonInterfaces *>(addonData);
+  if (!addon || !addon->PVRLib_GetHelper())
   {
     CLog::Log(LOGERROR, "PVR - %s - called with a null pointer", __FUNCTION__);
     return NULL;
   }
 
-  return dynamic_cast<CPVRClient *>(addon->GetHelperPVR()->m_addon);
+  return dynamic_cast<CPVRClient *>(static_cast<CAddonCallbacksPVR*>(addon->PVRLib_GetHelper())->m_addon);
 }
 
 void CAddonCallbacksPVR::PVRTransferChannelGroup(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group)
@@ -119,7 +125,7 @@ void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const AD
     CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
     return;
   }
-  
+
   CPVRClient *client      = GetPVRClient(addonData);
   CPVRChannelGroup *group = static_cast<CPVRChannelGroup *>(handle->dataAddress);
   if (!member || !client || !group)
@@ -465,4 +471,7 @@ void CAddonCallbacksPVR::PVREpgEventStateChange(void* addonData, EPG_TAG* tag, u
   }
 }
 
-}; /* namespace ADDON */
+}; /* namespace PVR */
+
+}; /* namespace KodiAPI */
+}; /* namespace V1 */

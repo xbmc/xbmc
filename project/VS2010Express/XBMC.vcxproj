@@ -182,18 +182,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\addons\AddonBuilder.cpp" />
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacks.cpp" />
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAddon.cpp" />
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAudioDSP.cpp" />
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAudioEngine.cpp" />
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksCodec.cpp" />
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksGUI.cpp" />
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksInputStream.cpp" />
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksPVR.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonInstaller.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonSystemSettings.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonVersion.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\AddonInterfaces.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\Addon\AddonCallbacksAddon.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\AudioDSP\AddonCallbacksAudioDSP.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\AudioEngine\AddonCallbacksAudioEngine.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\Codec\AddonCallbacksCodec.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonCallbacksGUI.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonGUIRenderingControl.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonGUIWindow.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\InputStream\AddonCallbacksInputStream.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\PVR\AddonCallbacksPVR.cpp" />
     <ClCompile Include="..\..\xbmc\addons\ContextMenuAddon.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AudioDecoder.cpp" />
     <ClCompile Include="..\..\xbmc\addons\GUIDialogAddonInfo.cpp" />
@@ -923,11 +925,18 @@
     <ClCompile Include="..\..\xbmc\TextureDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\DatabaseManager.cpp" />
     <ClInclude Include="..\..\xbmc\addons\AddonBuilder.h" />
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAudioDSP.h" />
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAudioEngine.h" />
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksCodec.h" />
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksInputStream.h" />
     <ClInclude Include="..\..\xbmc\addons\AudioDecoder.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\AddonInterfaces.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\Addon\AddonCallbacksAddon.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\AudioDSP\AddonCallbacksAudioDSP.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\AudioEngine\AddonCallbacksAudioEngine.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\Codec\AddonCallbacksCodec.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonCallbacksGUI.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonGUIRenderingControl.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonGUIWindow.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\InputStream\AddonCallbacksInputStream.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\PVR\AddonCallbacksPVR.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\IAddonInterface.h" />
     <ClInclude Include="..\..\xbmc\addons\ContextMenuAddon.h" />
     <ClInclude Include="..\..\xbmc\addons\ImageResource.h" />
     <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_adsp_dll.h" />
@@ -1863,10 +1872,6 @@
     <ClCompile Include="..\..\xbmc\platform\XbmcContext.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacks.h" />
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAddon.h" />
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksGUI.h" />
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksPVR.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonDatabase.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonInstaller.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonSystemSettings.h" />

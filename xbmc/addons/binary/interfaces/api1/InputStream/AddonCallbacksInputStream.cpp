@@ -18,18 +18,23 @@
  *
  */
 
-
+#include "addons/Addon.h"
 #include "AddonCallbacksInputStream.h"
 
+using namespace ADDON;
 
-namespace ADDON
+namespace V1
+{
+namespace KodiAPI
 {
 
-CAddonCallbacksInputStream::CAddonCallbacksInputStream(CAddon* addon)
+namespace InputStream
 {
-  m_addon     = addon;
-  m_callbacks = new CB_INPUTSTREAMLib;
 
+CAddonCallbacksInputStream::CAddonCallbacksInputStream(ADDON::CAddon* addon)
+  : ADDON::IAddonInterface(addon, APILevel(), Version()),
+    m_callbacks(new CB_INPUTSTREAMLib)
+{
   m_callbacks->FreeDemuxPacket = InputStreamFreeDemuxPacket;
   m_callbacks->AllocateDemuxPacket = InputStreamAllocateDemuxPacket;
 }
@@ -50,4 +55,7 @@ DemuxPacket* CAddonCallbacksInputStream::InputStreamAllocateDemuxPacket(void *ad
   return CDVDDemuxUtils::AllocateDemuxPacket(iDataSize);
 }
 
-}; /* namespace ADDON */
+}; /* namespace InputStream */
+
+}; /* namespace KodiAPI */
+}; /* namespace V1 */

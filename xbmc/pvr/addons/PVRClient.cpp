@@ -19,6 +19,7 @@
  */
 
 #include "Application.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h"
 #include "epg/Epg.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"

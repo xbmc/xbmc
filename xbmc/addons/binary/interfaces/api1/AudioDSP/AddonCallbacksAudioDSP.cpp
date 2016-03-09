@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014 Team KODI
+ *      Copyright (C) 2014-2016 Team KODI
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,25 +19,31 @@
  */
 
 #include "Application.h"
-#include "AddonCallbacksAudioDSP.h"
-#include "settings/AdvancedSettings.h"
-#include "utils/log.h"
+#include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSPMode.h"
 #include "cores/AudioEngine/Interfaces/AESound.h"
-#include "cores/AudioEngine/AEFactory.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "settings/AdvancedSettings.h"
+#include "utils/log.h"
 
+#include "AddonCallbacksAudioDSP.h"
+
+using namespace ADDON;
 using namespace ActiveAE;
 
-namespace ADDON
+namespace V1
+{
+namespace KodiAPI
 {
 
-CAddonCallbacksADSP::CAddonCallbacksADSP(CAddon* addon)
+namespace AudioDSP
 {
-  m_addon     = addon;
-  m_callbacks = new CB_ADSPLib;
 
+CAddonCallbacksADSP::CAddonCallbacksADSP(ADDON::CAddon* addon)
+  : ADDON::IAddonInterface(addon, APILevel(), Version()),
+    m_callbacks(new CB_ADSPLib)
+{
   /* write KODI audio DSP specific add-on function addresses to callback table */
   m_callbacks->AddMenuHook                = ADSPAddMenuHook;
   m_callbacks->RemoveMenuHook             = ADSPRemoveMenuHook;
@@ -63,14 +69,14 @@ CAddonCallbacksADSP::~CAddonCallbacksADSP()
 
 CActiveAEDSPAddon *CAddonCallbacksADSP::GetAudioDSPAddon(void *addonData)
 {
-  CAddonCallbacks *addon = static_cast<CAddonCallbacks *>(addonData);
+  CAddonInterfaces *addon = static_cast<CAddonInterfaces *>(addonData);
   if (!addon || !addon->GetHelperADSP())
   {
     CLog::Log(LOGERROR, "Audio DSP - %s - called with a null pointer", __FUNCTION__);
     return NULL;
   }
 
-  return dynamic_cast<CActiveAEDSPAddon *>(addon->GetHelperADSP()->m_addon);
+  return dynamic_cast<CActiveAEDSPAddon*>(static_cast<CAddonCallbacksADSP*>(addon->GetHelperADSP())->m_addon);
 }
 
 void CAddonCallbacksADSP::ADSPAddMenuHook(void *addonData, AE_DSP_MENUHOOK *hook)
@@ -269,4 +275,7 @@ float CAddonCallbacksADSP::ADSPSoundPlay_GetVolume(void *addonData, ADSPHANDLE h
   return ((IAESound*)handle)->GetVolume();
 }
 
-}; /* namespace ADDON */
+}; /* namespace AudioDSP */
+
+}; /* namespace KodiAPI */
+}; /* namespace V1 */
