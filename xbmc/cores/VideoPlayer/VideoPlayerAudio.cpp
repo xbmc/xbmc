@@ -396,7 +396,6 @@ void CVideoPlayerAudio::Process()
           {
             CLog::Log(LOGERROR, "CVideoPlayerAudio::DecodeFrame - Decode Error. Skipping audio packet (%d)", ret);
             m_pAudioCodec->Reset();
-            pMsg->Release();
             break;
           }
           consumed += ret;
