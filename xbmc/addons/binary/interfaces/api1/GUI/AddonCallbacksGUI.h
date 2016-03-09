@@ -1,7 +1,8 @@
 #pragma once
 /*
  *      Copyright (C) 2012-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2015-2016 Team KODI
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -14,112 +15,25 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with KODI; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#include <stdint.h>
-
+#include "addons/binary/interfaces/AddonInterfaces.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_adsp.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_audioengine.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_inputstream.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_adsp_types.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_audioengine_types.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_codec_types.h"
-#include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
-#include "AddonCallbacksInputStream.h"
 
-#ifdef TARGET_WINDOWS
-#ifndef _SSIZE_T_DEFINED
-typedef intptr_t ssize_t;
-#define _SSIZE_T_DEFINED
-#endif // !_SSIZE_T_DEFINED
-#endif // TARGET_WINDOWS
-
-struct VFSDirEntry;
-
-typedef void (*AddOnLogCallback)(void *addonData, const ADDON::addon_log_t loglevel, const char *msg);
-typedef void (*AddOnQueueNotification)(void *addonData, const ADDON::queue_msg_t type, const char *msg);
-typedef bool (*AddOnWakeOnLan)(const char* mac);
-typedef bool (*AddOnGetSetting)(void *addonData, const char *settingName, void *settingValue);
-typedef char* (*AddOnUnknownToUTF8)(const char *sourceDest);
-typedef char* (*AddOnGetLocalizedString)(const void* addonData, long dwCode);
-typedef char* (*AddOnGetDVDMenuLanguage)(const void* addonData);
-typedef void (*AddOnFreeString)(const void* addonData, char* str);
-
-typedef void* (*AddOnOpenFile)(const void* addonData, const char* strFileName, unsigned int flags);
-typedef void* (*AddOnOpenFileForWrite)(const void* addonData, const char* strFileName, bool bOverWrite);
-typedef ssize_t (*AddOnReadFile)(const void* addonData, void* file, void* lpBuf, size_t uiBufSize);
-typedef bool (*AddOnReadFileString)(const void* addonData, void* file, char *szLine, int iLineLength);
-typedef ssize_t (*AddOnWriteFile)(const void* addonData, void* file, const void* lpBuf, size_t uiBufSize);
-typedef void (*AddOnFlushFile)(const void* addonData, void* file);
-typedef int64_t (*AddOnSeekFile)(const void* addonData, void* file, int64_t iFilePosition, int iWhence);
-typedef int (*AddOnTruncateFile)(const void* addonData, void* file, int64_t iSize);
-typedef int64_t (*AddOnGetFilePosition)(const void* addonData, void* file);
-typedef int64_t (*AddOnGetFileLength)(const void* addonData, void* file);
-typedef double(*AddOnGetFileDownloadSpeed)(const void* addonData, void* file);
-typedef void (*AddOnCloseFile)(const void* addonData, void* file);
-typedef int (*AddOnGetFileChunkSize)(const void* addonData, void* file);
-typedef bool (*AddOnFileExists)(const void* addonData, const char *strFileName, bool bUseCache);
-typedef int (*AddOnStatFile)(const void* addonData, const char *strFileName, struct __stat64* buffer);
-typedef bool (*AddOnDeleteFile)(const void* addonData, const char *strFileName);
-typedef bool (*AddOnCanOpenDirectory)(const void* addonData, const char* strURL);
-typedef bool (*AddOnCreateDirectory)(const void* addonData, const char *strPath);
-typedef bool (*AddOnDirectoryExists)(const void* addonData, const char *strPath);
-typedef bool (*AddOnRemoveDirectory)(const void* addonData, const char *strPath);
-typedef bool (*AddOnGetDirectory)(const void* addonData, const char *strPath, const char* mask, VFSDirEntry** items, unsigned int* num_items);
-typedef void (*AddOnFreeDirectory)(const void* addonData, VFSDirEntry* items, unsigned int num_items);
-typedef void* (*AddOnCURLCreate)(const void* addonData, const char* strURL);
-typedef bool(*AddOnCURLAddOption)(const void* addonData, void* file, XFILE::CURLOPTIONTYPE type, const char* name, const char * value);
-typedef bool(*AddOnCURLOpen)(const void* addonData, void* file, unsigned int flags);
-
-typedef struct CB_AddOn
+namespace ADDON
 {
-  AddOnLogCallback        Log;
-  AddOnQueueNotification  QueueNotification;
-  AddOnWakeOnLan          WakeOnLan;
-  AddOnGetSetting         GetSetting;
-  AddOnUnknownToUTF8      UnknownToUTF8;
-  AddOnGetLocalizedString GetLocalizedString;
-  AddOnGetDVDMenuLanguage GetDVDMenuLanguage;
-  AddOnFreeString         FreeString;
+  class CAddon;
+};
 
-  AddOnOpenFile               OpenFile;
-  AddOnOpenFileForWrite       OpenFileForWrite;
-  AddOnReadFile               ReadFile;
-  AddOnReadFileString         ReadFileString;
-  AddOnWriteFile              WriteFile;
-  AddOnFlushFile              FlushFile;
-  AddOnSeekFile               SeekFile;
-  AddOnTruncateFile           TruncateFile;
-  AddOnGetFilePosition        GetFilePosition;
-  AddOnGetFileLength          GetFileLength;
-  AddOnGetFileDownloadSpeed   GetFileDownloadSpeed;
-  AddOnCloseFile              CloseFile;
-  AddOnGetFileChunkSize       GetFileChunkSize;
-  AddOnFileExists             FileExists;
-  AddOnStatFile               StatFile;
-  AddOnDeleteFile             DeleteFile;
-  AddOnCanOpenDirectory       CanOpenDirectory;
-  AddOnCreateDirectory        CreateDirectory;
-  AddOnDirectoryExists        DirectoryExists;
-  AddOnRemoveDirectory        RemoveDirectory;
-  AddOnGetDirectory           GetDirectory;
-  AddOnFreeDirectory          FreeDirectory;
-  AddOnCURLCreate             CURLCreate;
-  AddOnCURLAddOption          CURLAddOption;
-  AddOnCURLOpen               CURLOpen;
-} CB_AddOnLib;
-
-typedef xbmc_codec_t (*CODECGetCodecByName)(const void* addonData, const char* strCodecName);
-
-typedef struct CB_CODEC
+namespace V1
 {
-  CODECGetCodecByName   GetCodecByName;
-} CB_CODECLib;
+namespace KodiAPI
+{
+namespace GUI
+{
 
 typedef void (*GUILock)();
 typedef void (*GUIUnlock)();
@@ -382,234 +296,154 @@ typedef struct CB_GUILib
   GUIDialog_Select                                    Dialog_Select;
 } CB_GUILib;
 
-typedef void (*ADSPAddMenuHook)(void *addonData, AE_DSP_MENUHOOK *hook);
-typedef void (*ADSPRemoveMenuHook)(void *addonData, AE_DSP_MENUHOOK *hook);
-typedef void (*ADSPRegisterMode)(void *addonData, AE_DSP_MODES::AE_DSP_MODE *mode);
-typedef void (*ADSPUnregisterMode)(void *addonData, AE_DSP_MODES::AE_DSP_MODE *mode);
-
-typedef ADSPHANDLE (*ADSPSoundPlay_GetHandle)(void *addonData, const char *filename);
-typedef void (*ADSPSoundPlay_ReleaseHandle)(void *addonData, ADSPHANDLE handle);
-typedef void (*ADSPSoundPlay_Play)(void *addonData, ADSPHANDLE handle);
-typedef void (*ADSPSoundPlay_Stop)(void *addonData, ADSPHANDLE handle);
-typedef bool (*ADSPSoundPlay_IsPlaying)(void *addonData, ADSPHANDLE handle);
-typedef void (*ADSPSoundPlay_SetChannel)(void *addonData, ADSPHANDLE handle, AE_DSP_CHANNEL channel);
-typedef AE_DSP_CHANNEL (*ADSPSoundPlay_GetChannel)(void *addonData, ADSPHANDLE handle);
-typedef void (*ADSPSoundPlay_SetVolume)(void *addonData, ADSPHANDLE handle, float volume);
-typedef float (*ADSPSoundPlay_GetVolume)(void *addonData, ADSPHANDLE handle);
-
-typedef struct CB_ADSPLib
-{
-  ADSPAddMenuHook               AddMenuHook;
-  ADSPRemoveMenuHook            RemoveMenuHook;
-  ADSPRegisterMode              RegisterMode;
-  ADSPUnregisterMode            UnregisterMode;
-
-  ADSPSoundPlay_GetHandle       SoundPlay_GetHandle;
-  ADSPSoundPlay_ReleaseHandle   SoundPlay_ReleaseHandle;
-  ADSPSoundPlay_Play            SoundPlay_Play;
-  ADSPSoundPlay_Stop            SoundPlay_Stop;
-  ADSPSoundPlay_IsPlaying       SoundPlay_IsPlaying;
-  ADSPSoundPlay_SetChannel      SoundPlay_SetChannel;
-  ADSPSoundPlay_GetChannel      SoundPlay_GetChannel;
-  ADSPSoundPlay_SetVolume       SoundPlay_SetVolume;
-  ADSPSoundPlay_GetVolume       SoundPlay_GetVolume;
-} CB_ADSPLib;
-
-// ---------------------------------------
-// libKODI_audioengine definitions
-// ---------------------------------------
-typedef AEStreamHandle* (*AudioEngine_MakeStream)(AudioEngineFormat Format, unsigned int Options);
-typedef void            (*AudioEngine_FreeStream)(AEStreamHandle *stream);
-typedef bool            (*AudioEngine_GetCurrentSinkFormat)(void *addonData, AudioEngineFormat *SinkFormat);
-
-// Audio Engine Stream definitions
-typedef unsigned int            (*AudioEngine_Stream_GetSpace)(void *addonData, AEStreamHandle *handle);
-typedef unsigned int            (*AudioEngine_Stream_AddData)(void *addonData, AEStreamHandle *handle, uint8_t* const *Data, unsigned int Offset, unsigned int Frames);
-typedef double                  (*AudioEngine_Stream_GetDelay)(void *addonData, AEStreamHandle *handle);
-typedef bool                    (*AudioEngine_Stream_IsBuffering)(void *addonData, AEStreamHandle *handle);
-typedef double                  (*AudioEngine_Stream_GetCacheTime)(void *addonData, AEStreamHandle *handle);
-typedef double                  (*AudioEngine_Stream_GetCacheTotal)(void *addonData, AEStreamHandle *handle);
-typedef void                    (*AudioEngine_Stream_Pause)(void *addonData, AEStreamHandle *handle);
-typedef void                    (*AudioEngine_Stream_Resume)(void *addonData, AEStreamHandle *handle);
-typedef void                    (*AudioEngine_Stream_Drain)(void *addonData, AEStreamHandle *handle, bool Wait);
-typedef bool                    (*AudioEngine_Stream_IsDraining)(void *addonData, AEStreamHandle *handle);
-typedef bool                    (*AudioEngine_Stream_IsDrained)(void *addonData, AEStreamHandle *handle);
-typedef void                    (*AudioEngine_Stream_Flush)(void *addonData, AEStreamHandle *handle);
-typedef float                   (*AudioEngine_Stream_GetVolume)(void *addonData, AEStreamHandle *handle);
-typedef void                    (*AudioEngine_Stream_SetVolume)(void *addonData, AEStreamHandle *handle, float Volume);
-typedef float                   (*AudioEngine_Stream_GetAmplification)(void *addonData, AEStreamHandle *handle);
-typedef void                    (*AudioEngine_Stream_SetAmplification)(void *addonData, AEStreamHandle *handle, float Amplify);
-typedef const unsigned int      (*AudioEngine_Stream_GetFrameSize)(void *addonData, AEStreamHandle *handle);
-typedef const unsigned int      (*AudioEngine_Stream_GetChannelCount)(void *addonData, AEStreamHandle *handle);
-typedef const unsigned int      (*AudioEngine_Stream_GetSampleRate)(void *addonData, AEStreamHandle *handle);
-typedef const AEDataFormat      (*AudioEngine_Stream_GetDataFormat)(void *addonData, AEStreamHandle *handle);
-typedef double                  (*AudioEngine_Stream_GetResampleRatio)(void *addonData, AEStreamHandle *handle);
-typedef void                    (*AudioEngine_Stream_SetResampleRatio)(void *addonData, AEStreamHandle *handle, double Ratio);
-typedef void                    (*AudioEngine_Stream_Discontinuity)(void *addonData, AEStreamHandle *handle);
-
-typedef struct CB_AudioEngineLib
-{
-  AudioEngine_MakeStream                    MakeStream;
-  AudioEngine_FreeStream                    FreeStream;
-  AudioEngine_GetCurrentSinkFormat          GetCurrentSinkFormat;
-
-  // AudioEngine stream callbacks
-  AudioEngine_Stream_GetSpace               AEStream_GetSpace;
-  AudioEngine_Stream_AddData                AEStream_AddData;
-  AudioEngine_Stream_GetDelay               AEStream_GetDelay;
-  AudioEngine_Stream_IsBuffering            AEStream_IsBuffering;
-  AudioEngine_Stream_GetCacheTime           AEStream_GetCacheTime;
-  AudioEngine_Stream_GetCacheTotal          AEStream_GetCacheTotal;
-  AudioEngine_Stream_Pause                  AEStream_Pause;
-  AudioEngine_Stream_Resume                 AEStream_Resume;
-  AudioEngine_Stream_Drain                  AEStream_Drain;
-  AudioEngine_Stream_IsDraining             AEStream_IsDraining;
-  AudioEngine_Stream_IsDrained              AEStream_IsDrained;
-  AudioEngine_Stream_Flush                  AEStream_Flush;
-  AudioEngine_Stream_GetVolume              AEStream_GetVolume;
-  AudioEngine_Stream_SetVolume              AEStream_SetVolume;
-  AudioEngine_Stream_GetAmplification       AEStream_GetAmplification;
-  AudioEngine_Stream_SetAmplification       AEStream_SetAmplification;
-  AudioEngine_Stream_GetFrameSize           AEStream_GetFrameSize;
-  AudioEngine_Stream_GetChannelCount        AEStream_GetChannelCount;
-  AudioEngine_Stream_GetSampleRate          AEStream_GetSampleRate;
-  AudioEngine_Stream_GetDataFormat          AEStream_GetDataFormat;
-  AudioEngine_Stream_GetResampleRatio       AEStream_GetResampleRatio;
-  AudioEngine_Stream_SetResampleRatio       AEStream_SetResampleRatio;
-  AudioEngine_Stream_Discontinuity          AEStream_Discontinuity;
-} CB_AudioEngineLib;
-
-typedef void (*PVRTransferEpgEntry)(void *userData, const ADDON_HANDLE handle, const EPG_TAG *epgentry);
-typedef void (*PVRTransferChannelEntry)(void *userData, const ADDON_HANDLE handle, const PVR_CHANNEL *chan);
-typedef void (*PVRTransferTimerEntry)(void *userData, const ADDON_HANDLE handle, const PVR_TIMER *timer);
-typedef void (*PVRTransferRecordingEntry)(void *userData, const ADDON_HANDLE handle, const PVR_RECORDING *recording);
-typedef void (*PVRAddMenuHook)(void *addonData, PVR_MENUHOOK *hook);
-typedef void (*PVRRecording)(void *addonData, const char *Name, const char *FileName, bool On);
-typedef void (*PVRTriggerChannelUpdate)(void *addonData);
-typedef void (*PVRTriggerTimerUpdate)(void *addonData);
-typedef void (*PVRTriggerRecordingUpdate)(void *addonData);
-typedef void (*PVRTriggerChannelGroupsUpdate)(void *addonData);
-typedef void (*PVRTriggerEpgUpdate)(void *addonData, unsigned int iChannelUid);
-
-typedef void (*PVRTransferChannelGroup)(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group);
-typedef void (*PVRTransferChannelGroupMember)(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member);
-
-typedef void (*PVRFreeDemuxPacket)(void *addonData, DemuxPacket* pPacket);
-typedef DemuxPacket* (*PVRAllocateDemuxPacket)(void *addonData, int iDataSize);
-
-typedef void (*PVRConnectionStateChange)(void* addonData, const char* strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage);
-typedef void (*PVREpgEventStateChange)(void* addonData, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState);
-
-typedef struct CB_PVRLib
-{
-  PVRTransferEpgEntry           TransferEpgEntry;
-  PVRTransferChannelEntry       TransferChannelEntry;
-  PVRTransferTimerEntry         TransferTimerEntry;
-  PVRTransferRecordingEntry     TransferRecordingEntry;
-  PVRAddMenuHook                AddMenuHook;
-  PVRRecording                  Recording;
-  PVRTriggerChannelUpdate       TriggerChannelUpdate;
-  PVRTriggerTimerUpdate         TriggerTimerUpdate;
-  PVRTriggerRecordingUpdate     TriggerRecordingUpdate;
-  PVRTriggerChannelGroupsUpdate TriggerChannelGroupsUpdate;
-  PVRTriggerEpgUpdate           TriggerEpgUpdate;
-  PVRFreeDemuxPacket            FreeDemuxPacket;
-  PVRAllocateDemuxPacket        AllocateDemuxPacket;
-  PVRTransferChannelGroup       TransferChannelGroup;
-  PVRTransferChannelGroupMember TransferChannelGroupMember;
-  PVRConnectionStateChange      ConnectionStateChange;
-  PVREpgEventStateChange        EpgEventStateChange;
-
-} CB_PVRLib;
-
-
-typedef CB_AddOnLib* (*XBMCAddOnLib_RegisterMe)(void *addonData);
-typedef void (*XBMCAddOnLib_UnRegisterMe)(void *addonData, CB_AddOnLib *cbTable);
-typedef CB_ADSPLib* (*KODIADSPLib_RegisterMe)(void *addonData);
-typedef void (*KODIADSPLib_UnRegisterMe)(void *addonData, CB_ADSPLib *cbTable);
-typedef CB_AudioEngineLib* (*KODIAudioEngineLib_RegisterMe)(void *addonData);
-typedef void (*KODIAudioEngineLib_UnRegisterMe)(void *addonData, CB_AudioEngineLib *cbTable);
-typedef CB_CODECLib* (*XBMCCODECLib_RegisterMe)(void *addonData);
-typedef void (*XBMCCODECLib_UnRegisterMe)(void *addonData, CB_CODECLib *cbTable);
-typedef CB_GUILib* (*XBMCGUILib_RegisterMe)(void *addonData);
-typedef void (*XBMCGUILib_UnRegisterMe)(void *addonData, CB_GUILib *cbTable);
-typedef CB_PVRLib* (*XBMCPVRLib_RegisterMe)(void *addonData);
-typedef void (*XBMCPVRLib_UnRegisterMe)(void *addonData, CB_PVRLib *cbTable);
-typedef CB_INPUTSTREAMLib* (*KODIINPUTSTREAMLib_RegisterMe)(void *addonData);
-typedef void (*KODIINPUTSTREAMLib_UnRegisterMe)(void *addonData, CB_INPUTSTREAMLib *cbTable);
-
-typedef struct AddonCB
-{
-  const char                *libBasePath;                  ///> Never, never change this!!!
-  void                      *addonData;
-  XBMCAddOnLib_RegisterMe    AddOnLib_RegisterMe;
-  XBMCAddOnLib_UnRegisterMe  AddOnLib_UnRegisterMe;
-  KODIAudioEngineLib_RegisterMe   AudioEngineLib_RegisterMe;
-  KODIAudioEngineLib_UnRegisterMe AudioEngineLib_UnRegisterMe;
-  XBMCCODECLib_RegisterMe    CODECLib_RegisterMe;
-  XBMCCODECLib_UnRegisterMe  CODECLib_UnRegisterMe;
-  XBMCGUILib_RegisterMe      GUILib_RegisterMe;
-  XBMCGUILib_UnRegisterMe    GUILib_UnRegisterMe;
-  XBMCPVRLib_RegisterMe      PVRLib_RegisterMe;
-  XBMCPVRLib_UnRegisterMe    PVRLib_UnRegisterMe;
-  KODIADSPLib_RegisterMe     ADSPLib_RegisterMe;
-  KODIADSPLib_UnRegisterMe   ADSPLib_UnRegisterMe;
-  KODIINPUTSTREAMLib_RegisterMe INPUTSTREAMLib_RegisterMe;
-  KODIINPUTSTREAMLib_UnRegisterMe INPUTSTREAMLib_UnRegisterMe;
-} AddonCB;
-
-
-namespace ADDON
-{
-
-class CAddon;
-class CAddonCallbacksAddon;
-class CAddonCallbacksADSP;
-class CAddonCallbacksAudioEngine;
-class CAddonCallbacksCodec;
-class CAddonCallbacksGUI;
-class CAddonCallbacksPVR;
-
-class CAddonCallbacks
+class CAddonCallbacksGUI : public ADDON::IAddonInterface
 {
 public:
-  CAddonCallbacks(CAddon* addon);
-  ~CAddonCallbacks();
-  AddonCB *GetCallbacks() { return m_callbacks; }
+  CAddonCallbacksGUI(ADDON::CAddon* addon);
+  virtual ~CAddonCallbacksGUI();
 
-  static CB_AddOnLib* AddOnLib_RegisterMe(void *addonData);
-  static void AddOnLib_UnRegisterMe(void *addonData, CB_AddOnLib *cbTable);
-  static CB_ADSPLib* ADSPLib_RegisterMe(void *addonData);
-  static void ADSPLib_UnRegisterMe(void *addonData, CB_ADSPLib *cbTable);
-  static CB_AudioEngineLib* AudioEngineLib_RegisterMe(void *addonData);
-  static void AudioEngineLib_UnRegisterMe(void *addonData, CB_AudioEngineLib *cbTable);
-  static CB_CODECLib* CODECLib_RegisterMe(void *addonData);
-  static void CODECLib_UnRegisterMe(void *addonData, CB_CODECLib *cbTable);
-  static CB_GUILib* GUILib_RegisterMe(void *addonData);
-  static void GUILib_UnRegisterMe(void *addonData, CB_GUILib *cbTable);
-  static CB_PVRLib* PVRLib_RegisterMe(void *addonData);
-  static void PVRLib_UnRegisterMe(void *addonData, CB_PVRLib *cbTable);
-  static CB_INPUTSTREAMLib* INPUTSTREAMLib_RegisterMe(void *addonData);
-  static void INPUTSTREAMLib_UnRegisterMe(void *addonData, CB_INPUTSTREAMLib *cbTable);
+  static int APILevel() { return 1; }
+  static std::string Version() { return KODI_GUILIB_API_VERSION; }
 
-  CAddonCallbacksAddon *GetHelperAddon() { return m_helperAddon; }
-  CAddonCallbacksADSP *GetHelperADSP() { return m_helperADSP; }
-  CAddonCallbacksAudioEngine *GetHelperAudioEngine() { return m_helperAudioEngine; }
-  CAddonCallbacksCodec *GetHelperCodec() { return m_helperCODEC; }
-  CAddonCallbacksGUI *GetHelperGUI() { return m_helperGUI; }
-  CAddonCallbacksPVR *GetHelperPVR() { return m_helperPVR; }
-  CAddonCallbacksInputStream *GetHelperInputStream() { return m_helperInputStream; }
+  /**! \name General Functions */
+  CB_GUILib *GetCallbacks() { return m_callbacks; }
+
+  static void         Lock();
+  static void         Unlock();
+  static int          GetScreenHeight();
+  static int          GetScreenWidth();
+  static int          GetVideoResolution();
+
+  static GUIHANDLE    Window_New(void *addonData, const char *xmlFilename, const char *defaultSkin, bool forceFallback, bool asDialog);
+  static void         Window_Delete(void *addonData, GUIHANDLE handle);
+  static void         Window_SetCallbacks(void *addonData, GUIHANDLE handle, GUIHANDLE clienthandle, bool (*initCB)(GUIHANDLE), bool (*clickCB)(GUIHANDLE, int), bool (*focusCB)(GUIHANDLE, int), bool (*onActionCB)(GUIHANDLE handle, int));
+  static bool         Window_Show(void *addonData, GUIHANDLE handle);
+  static bool         Window_Close(void *addonData, GUIHANDLE handle);
+  static bool         Window_DoModal(void *addonData, GUIHANDLE handle);
+  static bool         Window_SetFocusId(void *addonData, GUIHANDLE handle, int iControlId);
+  static int          Window_GetFocusId(void *addonData, GUIHANDLE handle);
+  static bool         Window_SetCoordinateResolution(void *addonData, GUIHANDLE handle, int res);
+  static void         Window_SetProperty(void *addonData, GUIHANDLE handle, const char *key, const char *value);
+  static void         Window_SetPropertyInt(void *addonData, GUIHANDLE handle, const char *key, int value);
+  static void         Window_SetPropertyBool(void *addonData, GUIHANDLE handle, const char *key, bool value);
+  static void         Window_SetPropertyDouble(void *addonData, GUIHANDLE handle, const char *key, double value);
+  static const char * Window_GetProperty(void *addonData, GUIHANDLE handle, const char *key);
+  static int          Window_GetPropertyInt(void *addonData, GUIHANDLE handle, const char *key);
+  static bool         Window_GetPropertyBool(void *addonData, GUIHANDLE handle, const char *key);
+  static double       Window_GetPropertyDouble(void *addonData, GUIHANDLE handle, const char *key);
+  static void         Window_ClearProperties(void *addonData, GUIHANDLE handle);
+  static int          Window_GetListSize(void *addonData, GUIHANDLE handle);
+  static void         Window_ClearList(void *addonData, GUIHANDLE handle);
+  static GUIHANDLE    Window_AddItem(void *addonData, GUIHANDLE handle, GUIHANDLE item, int itemPosition);
+  static GUIHANDLE    Window_AddStringItem(void *addonData, GUIHANDLE handle, const char *itemName, int itemPosition);
+  static void         Window_RemoveItem(void *addonData, GUIHANDLE handle, int itemPosition);
+  static GUIHANDLE    Window_GetListItem(void *addonData, GUIHANDLE handle, int listPos);
+  static void         Window_SetCurrentListPosition(void *addonData, GUIHANDLE handle, int listPos);
+  static int          Window_GetCurrentListPosition(void *addonData, GUIHANDLE handle);
+  static GUIHANDLE    Window_GetControl_Spin(void *addonData, GUIHANDLE handle, int controlId);
+  static GUIHANDLE    Window_GetControl_Button(void *addonData, GUIHANDLE handle, int controlId);
+  static GUIHANDLE    Window_GetControl_RadioButton(void *addonData, GUIHANDLE handle, int controlId);
+  static GUIHANDLE    Window_GetControl_Edit(void *addonData, GUIHANDLE handle, int controlId);
+  static GUIHANDLE    Window_GetControl_Progress(void *addonData, GUIHANDLE handle, int controlId);
+  static GUIHANDLE    Window_GetControl_RenderAddon(void *addonData, GUIHANDLE handle, int controlId);
+  static void         Window_SetControlLabel(void *addonData, GUIHANDLE handle, int controlId, const char *label);
+  static void         Window_MarkDirtyRegion(void *addonData, GUIHANDLE handle);
+  static void         Control_Spin_SetVisible(void *addonData, GUIHANDLE spinhandle, bool yesNo);
+  static void         Control_Spin_SetText(void *addonData, GUIHANDLE spinhandle, const char *label);
+  static void         Control_Spin_Clear(void *addonData, GUIHANDLE spinhandle);
+  static void         Control_Spin_AddLabel(void *addonData, GUIHANDLE spinhandle, const char *label, int iValue);
+  static int          Control_Spin_GetValue(void *addonData, GUIHANDLE spinhandle);
+  static void         Control_Spin_SetValue(void *addonData, GUIHANDLE spinhandle, int iValue);
+  static void         Control_RadioButton_SetVisible(void *addonData, GUIHANDLE handle, bool yesNo);
+  static void         Control_RadioButton_SetText(void *addonData, GUIHANDLE handle, const char *label);
+  static void         Control_RadioButton_SetSelected(void *addonData, GUIHANDLE handle, bool yesNo);
+  static bool         Control_RadioButton_IsSelected(void *addonData, GUIHANDLE handle);
+  static void         Control_Progress_SetPercentage(void *addonData, GUIHANDLE handle, float fPercent);
+  static float        Control_Progress_GetPercentage(void *addonData, GUIHANDLE handle);
+  static void         Control_Progress_SetInfo(void *addonData, GUIHANDLE handle, int iInfo);
+  static int          Control_Progress_GetInfo(void *addonData, GUIHANDLE handle);
+  static const char * Control_Progress_GetDescription(void *addonData, GUIHANDLE handle);
+
+  static GUIHANDLE    Window_GetControl_Slider(void *addonData, GUIHANDLE handle, int controlId);
+  static void         Control_Slider_SetVisible(void *addonData, GUIHANDLE handle, bool yesNo);
+  static const char * Control_Slider_GetDescription(void *addonData, GUIHANDLE handle);
+  static void         Control_Slider_SetIntRange(void *addonData, GUIHANDLE handle, int iStart, int iEnd);
+  static void         Control_Slider_SetIntValue(void *addonData, GUIHANDLE handle, int iValue);
+  static int          Control_Slider_GetIntValue(void *addonData, GUIHANDLE handle);
+  static void         Control_Slider_SetIntInterval(void *addonData, GUIHANDLE handle, int iInterval);
+  static void         Control_Slider_SetPercentage(void *addonData, GUIHANDLE handle, float fPercent);
+  static float        Control_Slider_GetPercentage(void *addonData, GUIHANDLE handle);
+  static void         Control_Slider_SetFloatRange(void *addonData, GUIHANDLE handle, float fStart, float fEnd);
+  static void         Control_Slider_SetFloatValue(void *addonData, GUIHANDLE handle, float fValue);
+  static float        Control_Slider_GetFloatValue(void *addonData, GUIHANDLE handle);
+  static void         Control_Slider_SetFloatInterval(void *addonData, GUIHANDLE handle, float fInterval);
+
+  static GUIHANDLE    Window_GetControl_SettingsSlider(void *addonData, GUIHANDLE handle, int controlId);
+  static void         Control_SettingsSlider_SetVisible(void *addonData, GUIHANDLE handle, bool yesNo);
+  static void         Control_SettingsSlider_SetText(void *addonData, GUIHANDLE handle, const char *label);
+  static const char * Control_SettingsSlider_GetDescription(void *addonData, GUIHANDLE handle);
+  static void         Control_SettingsSlider_SetIntRange(void *addonData, GUIHANDLE handle, int iStart, int iEnd);
+  static void         Control_SettingsSlider_SetIntValue(void *addonData, GUIHANDLE handle, int iValue);
+  static int          Control_SettingsSlider_GetIntValue(void *addonData, GUIHANDLE handle);
+  static void         Control_SettingsSlider_SetIntInterval(void *addonData, GUIHANDLE handle, int iInterval);
+  static void         Control_SettingsSlider_SetPercentage(void *addonData, GUIHANDLE handle, float fPercent);
+  static float        Control_SettingsSlider_GetPercentage(void *addonData, GUIHANDLE handle);
+  static void         Control_SettingsSlider_SetFloatRange(void *addonData, GUIHANDLE handle, float fStart, float fEnd);
+  static void         Control_SettingsSlider_SetFloatValue(void *addonData, GUIHANDLE handle, float fValue);
+  static float        Control_SettingsSlider_GetFloatValue(void *addonData, GUIHANDLE handle);
+  static void         Control_SettingsSlider_SetFloatInterval(void *addonData, GUIHANDLE handle, float fInterval);
+
+  static GUIHANDLE    ListItem_Create(void *addonData, const char *label, const char *label2, const char *iconImage, const char *thumbnailImage, const char *path);
+  static const char * ListItem_GetLabel(void *addonData, GUIHANDLE handle);
+  static void         ListItem_SetLabel(void *addonData, GUIHANDLE handle, const char *label);
+  static const char * ListItem_GetLabel2(void *addonData, GUIHANDLE handle);
+  static void         ListItem_SetLabel2(void *addonData, GUIHANDLE handle, const char *label);
+  static void         ListItem_SetIconImage(void *addonData, GUIHANDLE handle, const char *image);
+  static void         ListItem_SetThumbnailImage(void *addonData, GUIHANDLE handle, const char *image);
+  static void         ListItem_SetInfo(void *addonData, GUIHANDLE handle, const char *info);
+  static void         ListItem_SetProperty(void *addonData, GUIHANDLE handle, const char *key, const char *value);
+  static const char * ListItem_GetProperty(void *addonData, GUIHANDLE handle, const char *key);
+  static void         ListItem_SetPath(void *addonData, GUIHANDLE handle, const char *path);
+  static void         RenderAddon_SetCallbacks(void *addonData, GUIHANDLE handle, GUIHANDLE clienthandle, bool (*createCB)(GUIHANDLE,int,int,int,int,void*), void (*renderCB)(GUIHANDLE), void (*stopCB)(GUIHANDLE), bool (*dirtyCB)(GUIHANDLE));
+  static void         RenderAddon_Delete(void *addonData, GUIHANDLE handle);
+  static void         RenderAddon_MarkDirty(void *addonData, GUIHANDLE handle);
+
+  static bool         Dialog_Keyboard_ShowAndGetInput(char &aTextString, unsigned int iMaxStringSize, bool allowEmptyResult, unsigned int autoCloseMs);
+  static bool         Dialog_Keyboard_ShowAndGetInputWithHead(char &aTextString, unsigned int iMaxStringSize, const char *heading, bool allowEmptyResult, bool hiddenInput, unsigned int autoCloseMs);
+  static bool         Dialog_Keyboard_ShowAndGetNewPassword(char &strNewPassword, unsigned int iMaxStringSize, unsigned int autoCloseMs);
+  static bool         Dialog_Keyboard_ShowAndGetNewPasswordWithHead(char &newPassword, unsigned int iMaxStringSize, const char *strHeading, bool allowEmptyResult, unsigned int autoCloseMs);
+  static bool         Dialog_Keyboard_ShowAndVerifyNewPassword(char &strNewPassword, unsigned int iMaxStringSize, unsigned int autoCloseMs);
+  static bool         Dialog_Keyboard_ShowAndVerifyNewPasswordWithHead(char &strNewPassword, unsigned int iMaxStringSize, const char *strHeading, bool allowEmpty, unsigned int autoCloseMs);
+  static int          Dialog_Keyboard_ShowAndVerifyPassword(char &strPassword, unsigned int iMaxStringSize, const char *strHeading, int iRetries, unsigned int autoCloseMs);
+  static bool         Dialog_Keyboard_ShowAndGetFilter(char &aTextString, unsigned int iMaxStringSize, bool searching, unsigned int autoCloseMs);
+  static bool         Dialog_Keyboard_SendTextToActiveKeyboard(const char *aTextString, bool closeKeyboard);
+  static bool         Dialog_Keyboard_isKeyboardActivated();
+
+  static bool         Dialog_Numeric_ShowAndVerifyNewPassword(char &strNewPasswor, unsigned int iMaxStringSized);
+  static int          Dialog_Numeric_ShowAndVerifyPassword(char &strPassword, unsigned int iMaxStringSize, const char *strHeading, int iRetries);
+  static bool         Dialog_Numeric_ShowAndVerifyInput(char &strPassword, unsigned int iMaxStringSize, const char *strHeading, bool bGetUserInput);
+  static bool         Dialog_Numeric_ShowAndGetTime(tm &time, const char *strHeading);
+  static bool         Dialog_Numeric_ShowAndGetDate(tm &date, const char *strHeading);
+  static bool         Dialog_Numeric_ShowAndGetIPAddress(char &strIPAddress, unsigned int iMaxStringSize, const char *strHeading);
+  static bool         Dialog_Numeric_ShowAndGetNumber(char &strInput, unsigned int iMaxStringSize, const char *strHeading, unsigned int iAutoCloseTimeoutMs);
+  static bool         Dialog_Numeric_ShowAndGetSeconds(char &timeString, unsigned int iMaxStringSize, const char *strHeading);
+
+  static bool         Dialog_FileBrowser_ShowAndGetFile(const char *directory, const char *mask, const char *heading, char &path, unsigned int iMaxStringSize, bool useThumbs, bool useFileDirectories, bool singleList);
+
+  static void         Dialog_OK_ShowAndGetInputSingleText(const char *heading, const char *text);
+  static void         Dialog_OK_ShowAndGetInputLineText(const char *heading, const char *line0, const char *line1, const char *line2);
+
+  static bool         Dialog_YesNo_ShowAndGetInputSingleText(const char *heading, const char *text, bool& bCanceled, const char *noLabel, const char *yesLabel);
+  static bool         Dialog_YesNo_ShowAndGetInputLineText(const char *heading, const char *line0, const char *line1, const char *line2, const char *noLabel, const char *yesLabel);
+  static bool         Dialog_YesNo_ShowAndGetInputLineButtonText(const char *heading, const char *line0, const char *line1, const char *line2, bool &bCanceled, const char *noLabel, const char *yesLabel);
+
+  static void         Dialog_TextViewer(const char *heading, const char *text);
+  static int          Dialog_Select(const char *heading, const char *entries[], unsigned int size, int selected);
 
 private:
-  AddonCB             *m_callbacks;
-  CAddon              *m_addon;
-  CAddonCallbacksAddon *m_helperAddon;
-  CAddonCallbacksADSP  *m_helperADSP;
-  CAddonCallbacksAudioEngine  *m_helperAudioEngine;
-  CAddonCallbacksCodec *m_helperCODEC;
-  CAddonCallbacksGUI   *m_helperGUI;
-  CAddonCallbacksPVR   *m_helperPVR;
-  CAddonCallbacksInputStream *m_helperInputStream;
+  CB_GUILib    *m_callbacks;
 };
 
-}; /* namespace ADDON */
+}; /* namespace GUI */
+}; /* namespace KodiAPI */
+}; /* namespace V1 */

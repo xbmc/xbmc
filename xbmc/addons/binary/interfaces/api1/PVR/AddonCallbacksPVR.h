@@ -1,7 +1,8 @@
 #pragma once
 /*
  *      Copyright (C) 2012-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2015-2016 Team KODI
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -14,12 +15,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with KODI; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#include "AddonCallbacks.h"
+#include "addons/binary/interfaces/AddonInterfaces.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_epg_types.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 
 namespace PVR
@@ -29,6 +31,58 @@ namespace PVR
 
 namespace ADDON
 {
+  class CAddon;
+};
+
+namespace V1
+{
+namespace KodiAPI
+{
+namespace PVR
+{
+
+typedef void (*PVRTransferEpgEntry)(void *userData, const ADDON_HANDLE handle, const EPG_TAG *epgentry);
+typedef void (*PVRTransferChannelEntry)(void *userData, const ADDON_HANDLE handle, const PVR_CHANNEL *chan);
+typedef void (*PVRTransferTimerEntry)(void *userData, const ADDON_HANDLE handle, const PVR_TIMER *timer);
+typedef void (*PVRTransferRecordingEntry)(void *userData, const ADDON_HANDLE handle, const PVR_RECORDING *recording);
+typedef void (*PVRAddMenuHook)(void *addonData, PVR_MENUHOOK *hook);
+typedef void (*PVRRecording)(void *addonData, const char *Name, const char *FileName, bool On);
+typedef void (*PVRTriggerChannelUpdate)(void *addonData);
+typedef void (*PVRTriggerTimerUpdate)(void *addonData);
+typedef void (*PVRTriggerRecordingUpdate)(void *addonData);
+typedef void (*PVRTriggerChannelGroupsUpdate)(void *addonData);
+typedef void (*PVRTriggerEpgUpdate)(void *addonData, unsigned int iChannelUid);
+
+typedef void (*PVRTransferChannelGroup)(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group);
+typedef void (*PVRTransferChannelGroupMember)(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member);
+
+typedef void (*PVRFreeDemuxPacket)(void *addonData, DemuxPacket* pPacket);
+typedef DemuxPacket* (*PVRAllocateDemuxPacket)(void *addonData, int iDataSize);
+
+typedef void (*PVRConnectionStateChange)(void* addonData, const char* strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage);
+typedef void (*PVREpgEventStateChange)(void* addonData, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState);
+
+typedef struct CB_PVRLib
+{
+  PVRTransferEpgEntry           TransferEpgEntry;
+  PVRTransferChannelEntry       TransferChannelEntry;
+  PVRTransferTimerEntry         TransferTimerEntry;
+  PVRTransferRecordingEntry     TransferRecordingEntry;
+  PVRAddMenuHook                AddMenuHook;
+  PVRRecording                  Recording;
+  PVRTriggerChannelUpdate       TriggerChannelUpdate;
+  PVRTriggerTimerUpdate         TriggerTimerUpdate;
+  PVRTriggerRecordingUpdate     TriggerRecordingUpdate;
+  PVRTriggerChannelGroupsUpdate TriggerChannelGroupsUpdate;
+  PVRTriggerEpgUpdate           TriggerEpgUpdate;
+  PVRFreeDemuxPacket            FreeDemuxPacket;
+  PVRAllocateDemuxPacket        AllocateDemuxPacket;
+  PVRTransferChannelGroup       TransferChannelGroup;
+  PVRTransferChannelGroupMember TransferChannelGroupMember;
+  PVRConnectionStateChange      ConnectionStateChange;
+  PVREpgEventStateChange        EpgEventStateChange;
+} CB_PVRLib;
+
 struct EpgEventStateChange;
 
 /*!
@@ -36,11 +90,14 @@ struct EpgEventStateChange;
  *
  * Also translates the addon's C structures to XBMC's C++ structures.
  */
-class CAddonCallbacksPVR
+class CAddonCallbacksPVR : public ADDON::IAddonInterface
 {
 public:
-  CAddonCallbacksPVR(CAddon* addon);
-  ~CAddonCallbacksPVR(void);
+  CAddonCallbacksPVR(ADDON::CAddon* addon);
+  virtual ~CAddonCallbacksPVR(void);
+
+  static int APILevel() { return 1; }
+  static std::string Version() { return XBMC_PVR_API_VERSION; }
 
   /*!
    * @return The callback table.
@@ -179,11 +236,12 @@ public:
   static void PVREpgEventStateChange(void* addonData, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState);
 
 private:
-  static PVR::CPVRClient* GetPVRClient(void* addonData);
+  static ::PVR::CPVRClient* GetPVRClient(void* addonData);
   static void UpdateEpgEvent(const EpgEventStateChange &ch, bool bQueued);
 
   CB_PVRLib    *m_callbacks; /*!< callback addresses */
-  CAddon       *m_addon;     /*!< the addon */
 };
 
-}; /* namespace ADDON */
+}; /* namespace PVR */
+}; /* namespace V1 */
+}; /* namespace PVRLIB */

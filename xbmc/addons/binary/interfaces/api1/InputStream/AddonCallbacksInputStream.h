@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2012-2016 Team XBMC
  *      http://www.xbmc.org
@@ -18,9 +19,17 @@
  *
  */
 
-#pragma once
-
+#include "addons/binary/interfaces/AddonInterfaces.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_inputstream.h"
+
+namespace V1
+{
+namespace KodiAPI
+{
+
+namespace InputStream
+{
 
 typedef void (*InputStreamFreeDemuxPacket)(void *addonData, DemuxPacket* pPacket);
 typedef DemuxPacket* (*InputStreamAllocateDemuxPacket)(void *addonData, int iDataSize);
@@ -31,16 +40,13 @@ typedef struct CB_INPUTSTREAMLib
   InputStreamAllocateDemuxPacket AllocateDemuxPacket;
 } CB_INPUTSTREAMLib;
 
-namespace ADDON
-{
-
 class CAddon;
 
-class CAddonCallbacksInputStream
+class CAddonCallbacksInputStream : public ADDON::IAddonInterface
 {
 public:
-  CAddonCallbacksInputStream(CAddon* addon);
-  ~CAddonCallbacksInputStream();
+  CAddonCallbacksInputStream(ADDON::CAddon* addon);
+  virtual ~CAddonCallbacksInputStream();
 
   /*!
    * @return The callback table.
@@ -64,7 +70,9 @@ public:
 
 private:
   CB_INPUTSTREAMLib* m_callbacks; /*!< callback addresses */
-  CAddon* m_addon;                /*!< the add-on */
 };
 
-}; /* namespace ADDON */
+}; /* namespace InputStream */
+
+}; /* namespace KoidAPI */
+}; /* namespace V1 */

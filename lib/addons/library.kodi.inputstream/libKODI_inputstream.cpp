@@ -24,7 +24,7 @@
 #include <stdarg.h>
 #include <string>
 #include "addons/kodi-addon-dev-kit/include/kodi/libKODI_inputstream.h"
-#include "addons/AddonCallbacks.h"
+#include "addons/binary/interfaces/api1/InputStream/AddonCallbacksInputStream.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -34,6 +34,7 @@
 #endif
 
 using namespace std;
+using namespace V1::KodiAPI::InputStream;
 
 extern "C"
 {
@@ -45,7 +46,7 @@ DLLEXPORT void* INPUTSTREAM_register_me(void *hdl)
     fprintf(stderr, "libKODI_inputstream-ERROR: %s is called with NULL handle\n", __FUNCTION__);
   else
   {
-    cb = ((AddonCB*)hdl)->INPUTSTREAMLib_RegisterMe(((AddonCB*)hdl)->addonData);
+    cb = (CB_INPUTSTREAMLib*)((AddonCB*)hdl)->INPUTSTREAMLib_RegisterMe(((AddonCB*)hdl)->addonData);
     if (!cb)
       fprintf(stderr, "libKODI_inputstream--ERROR: %s can't get callback table from KODI\n", __FUNCTION__);
   }

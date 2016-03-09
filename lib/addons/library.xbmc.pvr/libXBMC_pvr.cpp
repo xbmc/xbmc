@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string>
-#include "addons/AddonCallbacks.h"
+#include "addons/binary/interfaces/api1/PVR/AddonCallbacksPVR.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/libXBMC_pvr.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
 
@@ -36,6 +36,7 @@
 #endif
 
 using namespace std;
+using namespace V1::KodiAPI::PVR;
 
 extern "C"
 {
@@ -47,7 +48,7 @@ DLLEXPORT void* PVR_register_me(void *hdl)
     fprintf(stderr, "libXBMC_pvr-ERROR: PVRLib_register_me is called with NULL handle !!!\n");
   else
   {
-    cb = ((AddonCB*)hdl)->PVRLib_RegisterMe(((AddonCB*)hdl)->addonData);
+    cb = (CB_PVRLib*)((AddonCB*)hdl)->PVRLib_RegisterMe(((AddonCB*)hdl)->addonData);
     if (!cb)
       fprintf(stderr, "libXBMC_pvr-ERROR: PVRLib_register_me can't get callback table from XBMC !!!\n");
   }

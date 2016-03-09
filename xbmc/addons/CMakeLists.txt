@@ -1,13 +1,5 @@
 set(SOURCES Addon.cpp
             AddonBuilder.cpp
-            AddonCallbacksAddon.cpp
-            AddonCallbacksAudioDSP.cpp
-            AddonCallbacksAudioEngine.cpp
-            AddonCallbacksCodec.cpp
-            AddonCallbacks.cpp
-            AddonCallbacksGUI.cpp
-            AddonCallbacksInputStream.cpp
-            AddonCallbacksPVR.cpp
             AddonDatabase.cpp
             AddonInstaller.cpp
             AddonManager.cpp
@@ -37,14 +29,6 @@ set(SOURCES Addon.cpp
 
 set(HEADERS Addon.h
             AddonBuilder.h
-            AddonCallbacks.h
-            AddonCallbacksAddon.h
-            AddonCallbacksAudioDSP.h
-            AddonCallbacksAudioEngine.h
-            AddonCallbacksCodec.h
-            AddonCallbacksGUI.h
-            AddonCallbacksInputStream.h
-            AddonCallbacksPVR.h
             AddonDatabase.h
             AddonDll.h
             AddonInstaller.h

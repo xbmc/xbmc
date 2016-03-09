@@ -388,8 +388,32 @@
     <Filter Include="cores\Process">
       <UniqueIdentifier>{45ab3e06-b8d3-44f5-994e-d6130258c99c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="addons\include">
-      <UniqueIdentifier>{353ba04b-a59a-4fb3-90d0-630277d5305b}</UniqueIdentifier>
+    <Filter Include="addons\binary">
+      <UniqueIdentifier>{0840727e-72bd-4092-a230-5a1b0a582346}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces">
+      <UniqueIdentifier>{c3d7bd79-2535-4e6e-a518-04fe52d63af7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1">
+      <UniqueIdentifier>{e8906622-ec29-4c0a-9c78-3707434c249f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\Addon">
+      <UniqueIdentifier>{713565a3-6312-41cc-b933-8bb825e7b92b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\AudioDSP">
+      <UniqueIdentifier>{9d29c165-ad4c-4aa5-8b5a-cea7bd1a4518}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\AudioEngine">
+      <UniqueIdentifier>{0427f795-7a94-42cc-a428-24f793ec1e9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\GUI">
+      <UniqueIdentifier>{81553ed3-d668-4b18-b634-1b0d5895eaff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\PVR">
+      <UniqueIdentifier>{86920521-ee04-41f2-b7fc-4b00051c1357}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\Codec">
+      <UniqueIdentifier>{c9f0b2a1-0169-4c0f-9f9f-15e08a659a5d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1695,18 +1719,6 @@
     <ClCompile Include="..\..\xbmc\pvr\addons\PVRClients.cpp">
       <Filter>pvr\addons</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacks.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAddon.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksGUI.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksPVR.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayEject.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
@@ -2708,9 +2720,6 @@
     <ClCompile Include="..\..\xbmc\interfaces\python\PythonInvoker.cpp">
       <Filter>interfaces\python</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksCodec.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\ProfilesOperations.cpp">
       <Filter>interfaces\json-rpc</Filter>
     </ClCompile>
@@ -2893,9 +2902,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\DSPAddons\ActiveAEDSPProcess.cpp">
       <Filter>cores\AudioEngine\DSPAddons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAudioDSP.cpp">
-      <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\HttpRangeUtils.cpp">
       <Filter>utils</Filter>
@@ -3162,9 +3168,6 @@
     <ClCompile Include="..\..\xbmc\interfaces\builtins\WeatherBuiltins.cpp">
       <Filter>interfaces\builtins</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAudioEngine.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\input\InputCodingTableKorean.cpp">
       <Filter>input</Filter>
     </ClCompile>
@@ -3286,6 +3289,7 @@
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\Process\ProcessInfo.cpp">
       <Filter>cores\Process</Filter>
     </ClCompile>
+<<<<<<< c6b201a8ade5ab0e3eea677cae5b6ea55139839f
     <ClCompile Include="..\..\xbmc\addons\InputStream.cpp">
       <Filter>addons</Filter>
     </ClCompile>
@@ -3294,6 +3298,33 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\InputStreamAddon.cpp">
       <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\PVR\AddonCallbacksPVR.cpp">
+      <Filter>addons\binary\interfaces\api1\PVR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonCallbacksGUI.cpp">
+      <Filter>addons\binary\interfaces\api1\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\Codec\AddonCallbacksCodec.cpp">
+      <Filter>addons\binary\interfaces\api1\Codec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\AudioEngine\AddonCallbacksAudioEngine.cpp">
+      <Filter>addons\binary\interfaces\api1\AudioEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\AudioDSP\AddonCallbacksAudioDSP.cpp">
+      <Filter>addons\binary\interfaces\api1\AudioDSP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\Addon\AddonCallbacksAddon.cpp">
+      <Filter>addons\binary\interfaces\api1\Addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\AddonInterfaces.cpp">
+      <Filter>addons\binary\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonGUIRenderingControl.cpp">
+      <Filter>addons\binary\interfaces\api1\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonGUIWindow.cpp">
+      <Filter>addons\binary\interfaces\api1\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4781,18 +4812,6 @@
     <ClInclude Include="..\..\xbmc\pvr\addons\PVRClients.h">
       <Filter>pvr\addons</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacks.h">
-      <Filter>addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAddon.h">
-      <Filter>addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksGUI.h">
-      <Filter>addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksPVR.h">
-      <Filter>addons</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogPlayEject.h">
       <Filter>dialogs</Filter>
     </ClInclude>
@@ -5726,9 +5745,6 @@
     <ClInclude Include="..\..\xbmc\interfaces\generic\ILanguageInvocationHandler.h">
       <Filter>interfaces\generic</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksCodec.h">
-      <Filter>addons</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\ProfilesOperations.h">
       <Filter>interfaces\json-rpc</Filter>
     </ClInclude>
@@ -5946,9 +5962,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\DSPAddons\ActiveAEDSPProcess.h">
       <Filter>cores\AudioEngine\DSPAddons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAudioDSP.h">
-      <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\DllAudioDSP.h">
       <Filter>addons</Filter>
@@ -6229,9 +6242,6 @@
     <ClInclude Include="..\..\xbmc\interfaces\builtins\WeatherBuiltins.h">
       <Filter>interfaces\builtins</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAudioEngine.h">
-      <Filter>addons</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEStreamData.h">
       <Filter>cores\AudioEngine\Utils</Filter>
     </ClInclude>
@@ -6397,6 +6407,36 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacksInputStream.h">
       <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\AddonInterfaces.h">
+      <Filter>addons\binary\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\IAddonInterface.h">
+      <Filter>addons\binary\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\PVR\AddonCallbacksPVR.h">
+      <Filter>addons\binary\interfaces\api1\PVR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonCallbacksGUI.h">
+      <Filter>addons\binary\interfaces\api1\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\Codec\AddonCallbacksCodec.h">
+      <Filter>addons\binary\interfaces\api1\Codec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\AudioEngine\AddonCallbacksAudioEngine.h">
+      <Filter>addons\binary\interfaces\api1\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\AudioDSP\AddonCallbacksAudioDSP.h">
+      <Filter>addons\binary\interfaces\api1\AudioDSP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\Addon\AddonCallbacksAddon.h">
+      <Filter>addons\binary\interfaces\api1\Addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonGUIRenderingControl.h">
+      <Filter>addons\binary\interfaces\api1\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonGUIWindow.h">
+      <Filter>addons\binary\interfaces\api1\GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

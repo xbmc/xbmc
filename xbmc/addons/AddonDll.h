@@ -25,7 +25,7 @@
 #include "DllAddon.h"
 #include "AddonManager.h"
 #include "AddonStatusHandler.h"
-#include "AddonCallbacks.h"
+#include "addons/binary/interfaces/AddonInterfaces.h"
 #include "utils/URIUtils.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
@@ -69,7 +69,7 @@ namespace ADDON
     virtual bool LoadSettings();
     TheStruct* m_pStruct;
     TheProps*     m_pInfo;
-    CAddonCallbacks* m_pHelpers;
+    CAddonInterfaces* m_pHelpers;
     bool m_bIsChild;
 
   private:
@@ -206,7 +206,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::Create()
 
   /* Allocate the helper function class to allow crosstalk over
      helper libraries */
-  m_pHelpers = new CAddonCallbacks(this);
+  m_pHelpers = new CAddonInterfaces(this);
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */

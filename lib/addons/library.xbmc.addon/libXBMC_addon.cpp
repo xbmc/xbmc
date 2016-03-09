@@ -22,9 +22,10 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string>
-#include "addons/AddonCallbacks.h"
+#include <sys/stat.h>
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_addon_types.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/libXBMC_addon.h"
+#include "addons/binary/interfaces/api1/Addon/AddonCallbacksAddon.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -36,6 +37,7 @@
 
 using namespace std;
 using namespace ADDON;
+using namespace V1::KodiAPI::AddOn;
 
 extern "C"
 {
@@ -47,7 +49,7 @@ DLLEXPORT void* XBMC_register_me(void *hdl)
     fprintf(stderr, "libXBMC_addon-ERROR: XBMC_register_me is called with NULL handle !!!\n");
   else
   {
-    cb = ((AddonCB*)hdl)->AddOnLib_RegisterMe(((AddonCB*)hdl)->addonData);
+    cb = (CB_AddOnLib*)((AddonCB*)hdl)->AddOnLib_RegisterMe(((AddonCB*)hdl)->addonData);
     if (!cb)
       fprintf(stderr, "libXBMC_addon-ERROR: XBMC_register_me can't get callback table from XBMC !!!\n");
   }
@@ -236,7 +238,7 @@ DLLEXPORT bool XBMC_file_exists(void *hdl, void* cb, const char *strFileName, bo
   return ((CB_AddOnLib*)cb)->FileExists(((AddonCB*)hdl)->addonData, strFileName, bUseCache);
 }
 
-DLLEXPORT int XBMC_stat_file(void *hdl, void* cb, const char *strFileName, struct ::__stat64* buffer)
+DLLEXPORT int XBMC_stat_file(void *hdl, void* cb, const char *strFileName, struct __stat64* buffer)
 {
   if (cb == NULL)
     return -1;
