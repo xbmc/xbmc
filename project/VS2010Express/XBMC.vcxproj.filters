@@ -3289,7 +3289,6 @@
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\Process\ProcessInfo.cpp">
       <Filter>cores\Process</Filter>
     </ClCompile>
-<<<<<<< c6b201a8ade5ab0e3eea677cae5b6ea55139839f
     <ClCompile Include="..\..\xbmc\addons\InputStream.cpp">
       <Filter>addons</Filter>
     </ClCompile>
