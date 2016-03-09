@@ -7,6 +7,7 @@ xbmc/addons/binary/interfaces/api1/AudioEngine  api1AddonCallbacks_AudioEngine
 xbmc/addons/binary/interfaces/api1/Codec        api1AddonCallbacks_Codec
 xbmc/addons/binary/interfaces/api1/GUI          api1AddonCallbacks_GUI
 xbmc/addons/binary/interfaces/api1/InputStream  api1AddonCallbacks_InputStream
+xbmc/addons/binary/interfaces/api1/Peripheral   api1AddonCallbacks_Peripheral
 xbmc/addons/binary/interfaces/api1/PVR          api1AddonCallbacks_PVR
 xbmc/commons                                    commons
 xbmc/cdrip                                      cdrip
@@ -15,6 +16,8 @@ xbmc/dialogs                                    dialogs
 xbmc/epg                                        epg
 xbmc/guilib                                     guilib
 xbmc/input                                      input
+xbmc/input/joysticks                            input/joysticks
+xbmc/input/joysticks/generic                    input/joysticks/generic
 xbmc/listproviders                              listproviders
 xbmc/media                                      media
 xbmc/messaging                                  messaging
