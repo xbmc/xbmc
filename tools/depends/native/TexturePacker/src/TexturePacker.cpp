@@ -227,7 +227,7 @@ void Usage()
   puts("Usage:");
   puts("  -help            Show this screen.");
   puts("  -input <dir>     Input directory. Default: current dir");
-  puts("  -output <dir>    Output directory/filename. Default: Textures.xpr");
+  puts("  -output <dir>    Output directory/filename. Default: Textures.xbt");
   puts("  -dupecheck       Enable duplicate file detection. Reduces output file size. Default: off");
   puts("  -disable_lzo     Disable lz0 packing");
 }

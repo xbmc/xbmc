@@ -548,7 +548,6 @@
     <ClCompile Include="..\..\xbmc\guilib\Texture.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\TextureBundle.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\TextureBundleXBT.cpp" />
-    <ClCompile Include="..\..\xbmc\guilib\TextureBundleXPR.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\TextureDX.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\TextureManager.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\VisibleEffect.cpp" />
@@ -2013,7 +2012,6 @@
     <ClInclude Include="..\..\xbmc\guilib\Texture.h" />
     <ClInclude Include="..\..\xbmc\guilib\TextureBundle.h" />
     <ClInclude Include="..\..\xbmc\guilib\TextureBundleXBT.h" />
-    <ClInclude Include="..\..\xbmc\guilib\TextureBundleXPR.h" />
     <ClInclude Include="..\..\xbmc\guilib\TextureDX.h" />
     <ClInclude Include="..\..\xbmc\guilib\TextureManager.h" />
     <ClInclude Include="..\..\xbmc\guilib\TransformMatrix.h" />

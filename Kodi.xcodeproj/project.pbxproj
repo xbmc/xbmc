@@ -99,7 +99,6 @@
 		18B7C7F41294222E009E7A26 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79F1294222E009E7A26 /* Texture.cpp */; };
 		18B7C7F51294222E009E7A26 /* TextureBundle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7A01294222E009E7A26 /* TextureBundle.cpp */; };
 		18B7C7F61294222E009E7A26 /* TextureBundleXBT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7A11294222E009E7A26 /* TextureBundleXBT.cpp */; };
-		18B7C7F71294222E009E7A26 /* TextureBundleXPR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7A21294222E009E7A26 /* TextureBundleXPR.cpp */; };
 		18B7C7F81294222E009E7A26 /* TextureDX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7A31294222E009E7A26 /* TextureDX.cpp */; };
 		18B7C7F91294222E009E7A26 /* TextureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7A41294222E009E7A26 /* TextureGL.cpp */; };
 		18B7C7FA1294222E009E7A26 /* TextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7A51294222E009E7A26 /* TextureManager.cpp */; };
@@ -1708,7 +1707,6 @@
 		E4991328174E5DAD00741B6D /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C79F1294222E009E7A26 /* Texture.cpp */; };
 		E4991329174E5DAD00741B6D /* TextureBundle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7A01294222E009E7A26 /* TextureBundle.cpp */; };
 		E499132A174E5DAD00741B6D /* TextureBundleXBT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7A11294222E009E7A26 /* TextureBundleXBT.cpp */; };
-		E499132B174E5DAD00741B6D /* TextureBundleXPR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7A21294222E009E7A26 /* TextureBundleXPR.cpp */; };
 		E499132C174E5DAD00741B6D /* TextureDX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7A31294222E009E7A26 /* TextureDX.cpp */; };
 		E499132D174E5DAD00741B6D /* TextureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7A41294222E009E7A26 /* TextureGL.cpp */; };
 		E499132E174E5DAD00741B6D /* TextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7A51294222E009E7A26 /* TextureManager.cpp */; };
@@ -2352,7 +2350,6 @@
 		18B7C7481294222E009E7A26 /* Texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Texture.h; sourceTree = "<group>"; };
 		18B7C7491294222E009E7A26 /* TextureBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureBundle.h; sourceTree = "<group>"; };
 		18B7C74A1294222E009E7A26 /* TextureBundleXBT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureBundleXBT.h; sourceTree = "<group>"; };
-		18B7C74B1294222E009E7A26 /* TextureBundleXPR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureBundleXPR.h; sourceTree = "<group>"; };
 		18B7C74C1294222E009E7A26 /* TextureDX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureDX.h; sourceTree = "<group>"; };
 		18B7C74D1294222E009E7A26 /* TextureGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureGL.h; sourceTree = "<group>"; };
 		18B7C74E1294222E009E7A26 /* TextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureManager.h; sourceTree = "<group>"; };
@@ -2433,7 +2430,6 @@
 		18B7C79F1294222E009E7A26 /* Texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Texture.cpp; sourceTree = "<group>"; };
 		18B7C7A01294222E009E7A26 /* TextureBundle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureBundle.cpp; sourceTree = "<group>"; };
 		18B7C7A11294222E009E7A26 /* TextureBundleXBT.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureBundleXBT.cpp; sourceTree = "<group>"; };
-		18B7C7A21294222E009E7A26 /* TextureBundleXPR.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureBundleXPR.cpp; sourceTree = "<group>"; };
 		18B7C7A31294222E009E7A26 /* TextureDX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureDX.cpp; sourceTree = "<group>"; };
 		18B7C7A41294222E009E7A26 /* TextureGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureGL.cpp; sourceTree = "<group>"; };
 		18B7C7A51294222E009E7A26 /* TextureManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureManager.cpp; sourceTree = "<group>"; };
@@ -5189,8 +5185,6 @@
 				18B7C7491294222E009E7A26 /* TextureBundle.h */,
 				18B7C7A11294222E009E7A26 /* TextureBundleXBT.cpp */,
 				18B7C74A1294222E009E7A26 /* TextureBundleXBT.h */,
-				18B7C7A21294222E009E7A26 /* TextureBundleXPR.cpp */,
-				18B7C74B1294222E009E7A26 /* TextureBundleXPR.h */,
 				18B7C7A31294222E009E7A26 /* TextureDX.cpp */,
 				18B7C74C1294222E009E7A26 /* TextureDX.h */,
 				18B7C7A41294222E009E7A26 /* TextureGL.cpp */,
@@ -9763,7 +9757,6 @@
 				18B7C7F41294222E009E7A26 /* Texture.cpp in Sources */,
 				18B7C7F51294222E009E7A26 /* TextureBundle.cpp in Sources */,
 				18B7C7F61294222E009E7A26 /* TextureBundleXBT.cpp in Sources */,
-				18B7C7F71294222E009E7A26 /* TextureBundleXPR.cpp in Sources */,
 				18B7C7F81294222E009E7A26 /* TextureDX.cpp in Sources */,
 				18B7C7F91294222E009E7A26 /* TextureGL.cpp in Sources */,
 				18B7C7FA1294222E009E7A26 /* TextureManager.cpp in Sources */,
@@ -10743,7 +10736,6 @@
 				397877D61AAAF87700F98A45 /* Speed.cpp in Sources */,
 				DF6F52AF1AF6D03F001BC57D /* dacp.cpp in Sources */,
 				E499132A174E5DAD00741B6D /* TextureBundleXBT.cpp in Sources */,
-				E499132B174E5DAD00741B6D /* TextureBundleXPR.cpp in Sources */,
 				E499132C174E5DAD00741B6D /* TextureDX.cpp in Sources */,
 				E499132D174E5DAD00741B6D /* TextureGL.cpp in Sources */,
 				E499132E174E5DAD00741B6D /* TextureManager.cpp in Sources */,
