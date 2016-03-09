@@ -5,9 +5,9 @@ DEPS= ../../Makefile.include.in Makefile
 
 # lib name, version
 LIBNAME=libtool
-VERSION=2.2.6
+VERSION=2.4.6
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE)a.tar.gz
+ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
@@ -25,9 +25,6 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	-rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-ifeq ($(HAS_LIBCRYSTAX),1)
-	cd $(PLATFORM); patch -p0 < ../fix-libcrystax.patch
-endif
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
