@@ -957,7 +957,6 @@
     <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_pvr_types.h" />
     <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_scr_dll.h" />
     <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_scr_types.h" />
-    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_stream_utils.hpp" />
     <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_vis_dll.h" />
     <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_vis_types.h" />
     <ClInclude Include="..\..\xbmc\addons\InputStream.h" />
