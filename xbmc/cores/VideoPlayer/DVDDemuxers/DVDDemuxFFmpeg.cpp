@@ -1549,11 +1549,10 @@ bool CDVDDemuxFFmpeg::IsProgramChange()
   for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)
   {
     int idx = m_pFormatContext->programs[m_program]->stream_index[i];
-    int id = m_pFormatContext->streams[idx]->id;
-    CDemuxStream *stream = GetStream(id);
+    CDemuxStream *stream = GetStream(idx);
     if (!stream)
       return true;
-    if (m_pFormatContext->streams[id]->codec->codec_id != stream->codec)
+    if (m_pFormatContext->streams[idx]->codec->codec_id != stream->codec)
       return true;
   }
   return false;
