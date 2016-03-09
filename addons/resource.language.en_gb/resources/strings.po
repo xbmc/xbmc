@@ -4965,14 +4965,11 @@ msgctxt "#10500"
 msgid "Music / Playlist"
 msgstr ""
 
-#: xbmc/guilib/WindowIDs.h
-msgctxt "#10501"
-msgid "Music / Files"
-msgstr ""
+#empty string with id 10501
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10502"
-msgid "Music / Library"
+msgid "Music"
 msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
