@@ -61,7 +61,7 @@ public:
   double GetSyncError();
   void SetSyncErrorCorrection(double correction);
   double GetResampleRatio();
-  void SetResampleMode(int mode);
+  void SetResampleMode(int mode, float plladjust);
   void Flush();
   void Drain();
   void AbortAddPackets();

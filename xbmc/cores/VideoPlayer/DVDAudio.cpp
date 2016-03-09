@@ -319,12 +319,12 @@ double CDVDAudio::GetResampleRatio()
   return m_resampleRatio;
 }
 
-void CDVDAudio::SetResampleMode(int mode)
+void CDVDAudio::SetResampleMode(int mode, float plladjust)
 {
   CSingleLock lock (m_critSection);
   if(m_pAudioStream)
   {
-    m_pAudioStream->SetResampleMode(mode);
+    m_pAudioStream->SetResampleMode(mode, plladjust);
   }
 }
 

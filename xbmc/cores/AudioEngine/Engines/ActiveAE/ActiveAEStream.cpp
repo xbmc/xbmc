@@ -503,11 +503,12 @@ void CActiveAEStream::SetResampleRatio(double ratio)
   m_streamResampleRatio = ratio;
 }
 
-void CActiveAEStream::SetResampleMode(int mode)
+void CActiveAEStream::SetResampleMode(int mode, float plladjust)
 {
-  if (mode != m_streamResampleMode)
-    AE.SetStreamResampleMode(this, mode);
+  if (mode != m_streamResampleMode || plladjust != m_streamPllAdjust)
+    AE.SetStreamResampleMode(this, mode, plladjust);
   m_streamResampleMode = mode;
+  m_streamPllAdjust = plladjust;
 }
 
 void CActiveAEStream::SetFFmpegInfo(int profile, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type)

@@ -18562,3 +18562,35 @@ msgstr ""
 msgctxt "#38041"
 msgid "Mixer"
 msgstr "" 
+
+#. Description of setting "System -> Audio Ouput -> A/V sync method" with label #38200
+#: system/settings/settings.xml
+msgctxt "#38200"
+msgid "PLL adustment to maintain audio/video sync"
+msgstr ""
+
+#. Description of setting "Videos -> Playback -> A/V sync method" with label #38201
+#: system/settings/settings.xml
+msgctxt "#38201"
+msgid "Allows sync adjustment without resampling. Lower the settings if you get audio/video dropouts."
+msgstr ""
+
+msgctxt "#38202"
+msgid "Off"
+msgstr ""
+
+msgctxt "#38203"
+msgid "Low"
+msgstr ""
+
+msgctxt "#38204"
+msgid "Medium"
+msgstr ""
+
+msgctxt "#38205"
+msgid "High"
+msgstr ""
+
+msgctxt "#38206"
+msgid "Max"
+msgstr ""

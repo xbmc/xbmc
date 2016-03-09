@@ -137,7 +137,7 @@ public:
   
   virtual double GetResampleRatio();
   virtual void SetResampleRatio(double ratio);
-  virtual void SetResampleMode(int mode);
+  virtual void SetResampleMode(int mode, float plladjust);
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnRegisterAudioCallback();
   virtual void FadeVolume(float from, float to, unsigned int time);
@@ -154,6 +154,7 @@ protected:
   float m_streamAmplify;
   double m_streamResampleRatio;
   int m_streamResampleMode;
+  float m_streamPllAdjust;
   unsigned int m_streamSpace;
   bool m_streamDraining;
   bool m_streamDrained;
@@ -194,6 +195,7 @@ protected:
   int m_fadingTime;
   int m_profile;
   int m_resampleMode;
+  float m_pllAdjust;
   double m_resampleIntegral;
   enum AVMatrixEncoding m_matrixEncoding;
   enum AVAudioServiceType m_audioServiceType;

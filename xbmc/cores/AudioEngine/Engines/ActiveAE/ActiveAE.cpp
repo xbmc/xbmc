@@ -34,6 +34,10 @@ using namespace ActiveAE;
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 
+#if defined(TARGET_RASPBERRY_PI)
+#include "linux/RBP.h"
+#endif
+
 #define MAX_CACHE_LEVEL 0.4   // total cache time of stream in seconds
 #define MAX_WATER_LEVEL 0.2   // buffered time after stream stages in seconds
 #define MAX_BUFFER_TIME 0.1   // max time of a buffer in seconds
@@ -367,11 +371,12 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::APPFOCUSED, msg->data, sizeof(bool));
           return;
         case CActiveAEControlProtocol::STREAMRESAMPLEMODE:
-          MsgStreamParameter *par;
-          par = (MsgStreamParameter*)msg->data;
+          MsgStreamResample *par;
+          par = (MsgStreamResample*)msg->data;
           if (par->stream)
           {
-            par->stream->m_resampleMode = par->parameter.int_par;
+            par->stream->m_resampleMode = par->mode;
+            par->stream->m_pllAdjust = par->plladjust;
             par->stream->m_resampleIntegral = 0.0;
           }
           return;
@@ -2468,7 +2473,16 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   if (!newerror || stream->m_syncState != CAESyncInfo::AESyncState::SYNC_INSYNC)
     return ret;
 
-  if (stream->m_resampleMode)
+  if (stream->m_pllAdjust > 0)  // pll adjust
+  {
+#if defined(TARGET_RASPBERRY_PI)
+    double e = std::max(std::min(error / 50.0, 1.0), -1.0);
+    double m_plladjust = 1.0 + e * stream->m_pllAdjust;
+    double m_last_plladjust = g_RBP.AdjustHDMIClock(m_plladjust);
+    CLog::Log(LOGDEBUG, "CDVDPlayerAudio::%s pll:%.5f (%.5f) error:%.6f e:%.6f a:%f", __FUNCTION__, m_plladjust, m_last_plladjust, error, e * stream->m_pllAdjust, stream->m_pllAdjust );
+#endif
+  }
+  else if (stream->m_resampleMode)
   {
     if (stream->m_resampleBuffers)
     {
@@ -3321,13 +3335,14 @@ void CActiveAE::SetStreamResampleRatio(CActiveAEStream *stream, double ratio)
                                      &msg, sizeof(MsgStreamParameter));
 }
 
-void CActiveAE::SetStreamResampleMode(CActiveAEStream *stream, int mode)
+void CActiveAE::SetStreamResampleMode(CActiveAEStream *stream, int mode, float plladjust)
 {
-  MsgStreamParameter msg;
+  MsgStreamResample msg;
   msg.stream = stream;
-  msg.parameter.int_par = mode;
+  msg.mode = mode;
+  msg.plladjust = plladjust;
   m_controlPort.SendOutMessage(CActiveAEControlProtocol::STREAMRESAMPLEMODE,
-                               &msg, sizeof(MsgStreamParameter));
+                               &msg, sizeof(MsgStreamResample));
 }
 
 void CActiveAE::SetStreamFFmpegInfo(CActiveAEStream *stream, int profile, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type)

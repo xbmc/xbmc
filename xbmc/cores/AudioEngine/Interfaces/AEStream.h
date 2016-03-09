@@ -41,6 +41,14 @@ public:
 class CAESyncInfo
 {
 public:
+  CAESyncInfo()
+  {
+    delay = 0.0;
+    error = 0.0;
+    rr = 1.0;
+    errortime = 0;
+    state = SYNC_OFF;
+  }
   double delay;
   double error;
   double rr;
@@ -231,7 +239,7 @@ public:
   /**
    * Sets the resamplling on/ff
    */
-  virtual void SetResampleMode(int mode) = 0;
+  virtual void SetResampleMode(int mode, float plladjust) = 0;
 
   /**
    * Registers the audio callback to call with each block of data, this is used by Audio Visualizations
