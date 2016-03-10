@@ -78,6 +78,7 @@ bool CInputStream::Supports(CFileItem &fileitem)
   }
   catch (std::exception &e)
   {
+    CLog::Log(LOGERROR, "CInputStream::Supports - could not get a list of paths. Reason: %s", e.what());
     return false;
   }
 
@@ -128,7 +129,7 @@ bool CInputStream::Open(CFileItem &fileitem)
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "CInputStream::Open - could not open stream");
+    CLog::Log(LOGERROR, "CInputStream::Open - could not open stream. Reason: %s", e.what());
     return false;
   }
 
@@ -144,7 +145,7 @@ void CInputStream::Close()
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "CInputStream::Close - could not close stream");
+    CLog::Log(LOGERROR, "CInputStream::Close - could not close stream. Reason: %s", e.what());
   }
 }
 
@@ -158,7 +159,7 @@ int CInputStream::GetTotalTime()
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "CInputStream::GetTotalTime - error");
+    CLog::Log(LOGERROR, "CInputStream::GetTotalTime - error. Reason: %s", e.what());
   }
   return ret;
 }
@@ -172,7 +173,7 @@ int CInputStream::GetTime()
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "CInputStream::GetTime - error");;
+    CLog::Log(LOGERROR, "CInputStream::GetTime - error. Reason: %s", e.what());
   }
   return ret;
 }
@@ -187,7 +188,7 @@ bool CInputStream::PosTime(int ms)
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "CInputStream::PosTime - error");;
+    CLog::Log(LOGERROR, "CInputStream::PosTime - error. Reason: %s", e.what());
   }
   return ret;
 }
@@ -205,7 +206,7 @@ void CInputStream::UpdateStreams()
   catch (std::exception &e)
   {
     DisposeStreams();
-    CLog::Log(LOGERROR, "CInputStream::UpdateStreams - error GetStreamIds");
+    CLog::Log(LOGERROR, "CInputStream::UpdateStreams - error GetStreamIds. Reason: %s", e.what());
     return;
   }
 
@@ -225,7 +226,7 @@ void CInputStream::UpdateStreams()
     catch (std::exception &e)
     {
       DisposeStreams();
-      CLog::Log(LOGERROR, "CInputStream::GetTotalTime - error GetStream");
+      CLog::Log(LOGERROR, "CInputStream::GetTotalTime - error GetStream. Reason: %s", e.what());
       return;
     }
 
@@ -337,7 +338,7 @@ void CInputStream::EnableStream(int iStreamId, bool enable)
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "CInputStream::EnableStream - error");;
+    CLog::Log(LOGERROR, "CInputStream::EnableStream - error. Reason: %s", e.what());
   }
 }
 
@@ -353,7 +354,7 @@ void CInputStream::EnableStreamAtPTS(int iStreamId, uint64_t pts)
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "CInputStream::EnableStreamAtPTS - error");;
+    CLog::Log(LOGERROR, "CInputStream::EnableStreamAtPTS - error. Reason: %s", e.what());
   }
 }
 
@@ -366,7 +367,7 @@ DemuxPacket* CInputStream::ReadDemux()
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "CInputStream::ReadDemux - error");
+    CLog::Log(LOGERROR, "CInputStream::ReadDemux - error. Reason: %s", e.what());
     return nullptr;
   }
 
@@ -395,7 +396,7 @@ bool CInputStream::SeekTime(int time, bool backward, double* startpts)
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "CInputStream::SeekTime - error");;
+    CLog::Log(LOGERROR, "CInputStream::SeekTime - error. Reason: %s", e.what());
   }
   return ret;
 }
@@ -408,7 +409,7 @@ void CInputStream::AbortDemux()
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "CInputStream::AbortDemux - error");;
+    CLog::Log(LOGERROR, "CInputStream::AbortDemux - error. Reason: %s", e.what());
   }
 }
 
@@ -420,7 +421,7 @@ void CInputStream::FlushDemux()
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "CInputStream::FlushDemux - error");;
+    CLog::Log(LOGERROR, "CInputStream::FlushDemux - error. Reason: %s", e.what());
   }
 }
 
@@ -432,7 +433,7 @@ void CInputStream::SetSpeed(int iSpeed)
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "CInputStream::SetSpeed - error");;
+    CLog::Log(LOGERROR, "CInputStream::SetSpeed - error. Reason: %s", e.what());
   }
 }
 
@@ -445,7 +446,7 @@ int CInputStream::ReadStream(uint8_t* buf, unsigned int size)
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "CInputStream::ReadStream - error");;
+    CLog::Log(LOGERROR, "CInputStream::ReadStream - error. Reason: %s", e.what());
   }
   return ret;
 }
@@ -459,7 +460,7 @@ int64_t CInputStream::SeekStream(int64_t offset, int whence)
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "CInputStream::SeekStream - error");;
+    CLog::Log(LOGERROR, "CInputStream::SeekStream - error. Reason: %s", e.what());
   }
   return ret;
 }
@@ -473,7 +474,7 @@ int64_t CInputStream::PositionStream()
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "CInputStream::PositionStream - error");;
+    CLog::Log(LOGERROR, "CInputStream::PositionStream - error. Reason: %s", e.what());
   }
   return ret;
 }
@@ -487,7 +488,7 @@ int64_t CInputStream::LengthStream()
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "CInputStream::LengthStream - error");;
+    CLog::Log(LOGERROR, "CInputStream::LengthStream - error. Reason: %s", e.what());
   }
   return ret;
 }
@@ -500,7 +501,7 @@ void CInputStream::PauseStream(double time)
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "CInputStream::PauseStream - error");;
+    CLog::Log(LOGERROR, "CInputStream::PauseStream - error. Reason: %s", e.what());
   }
 }
 
@@ -513,7 +514,7 @@ bool CInputStream::IsRealTimeStream()
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "CInputStream::IsRealTimeStream - error");;
+    CLog::Log(LOGERROR, "CInputStream::IsRealTimeStream - error. Reason: %s", e.what());
   }
   return ret;
 }
