@@ -21,8 +21,6 @@
 #include "addons/Addon.h"
 #include "AddonCallbacksInputStream.h"
 
-using namespace ADDON;
-
 namespace V1
 {
 namespace KodiAPI
