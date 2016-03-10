@@ -33,12 +33,12 @@
 				<ondown>55</ondown>
 				<viewtype label="$LOCALIZE[31107]">list</viewtype>
 				<visible>Container.Content(artists) | Container.Content(albums) | Container.Content(songs) | Container.Content(addons) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed) | Container.Content(musicvideos)</visible>
-				<focusedlayout height="70" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed)">
+				<focusedlayout height="63" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed)">
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
 						<width>1096</width>
-						<height>71</height>
+						<height>63</height>
 						<texture border="90,3,90,3">lists/separator.png</texture>
 						<visible>!Control.HasFocus(55)</visible>
 					</control>
@@ -46,14 +46,14 @@
 						<left>0</left>
 						<top>0</top>
 						<width>1396</width>
-						<height>69</height>
+						<height>63</height>
 						<texture>lists/focus.png</texture>
 						<visible>Control.HasFocus(55)</visible>
 					</control>
 					<control type="label">
 						<left>13</left>
 						<top>2</top>
-						<height>70</height>
+						<height>63</height>
 						<width>70</width>
 						<aligny>center</aligny>
 						<font>font12</font>
@@ -64,9 +64,10 @@
 					<control type="label">
 						<left>95</left>
 						<top>0</top>
-						<height>70</height>
+						<height>63</height>
 						<width>960</width>
 						<aligny>center</aligny>
+						<font>fontContextMenu</font>
 						<scroll>true</scroll>
 						<label>$INFO[ListItem.Label]</label>
 						<shadowcolor>text_shadow</shadowcolor>
@@ -74,7 +75,7 @@
 					<control type="label">
 						<left>90</left>
 						<top>0</top>
-						<height>70</height>
+						<height>63</height>
 						<width>1090</width>
 						<align>right</align>
 						<aligny>center</aligny>
@@ -103,18 +104,18 @@
 						<visible>!Control.HasFocus(55)</visible>
 					</control>
 				</focusedlayout>
-				<itemlayout height="70" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed)">
+				<itemlayout height="63" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed)">
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
 						<width>1396</width>
-						<height>71</height>
+						<height>63</height>
 						<texture border="90,3,90,3">lists/separator.png</texture>
 					</control>
 					<control type="label">
 						<left>13</left>
 						<top>2</top>
-						<height>70</height>
+						<height>63</height>
 						<width>70</width>
 						<aligny>center</aligny>
 						<font>font12</font>
@@ -125,16 +126,17 @@
 					<control type="label">
 						<left>95</left>
 						<top>0</top>
-						<height>70</height>
+						<height>63</height>
 						<width>960</width>
 						<aligny>center</aligny>
+						<font>fontContextMenu</font>
 						<label>$INFO[ListItem.Label]</label>
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="label">
 						<left>90</left>
 						<top>0</top>
-						<height>70</height>
+						<height>63</height>
 						<width>1090</width>
 						<align>right</align>
 						<aligny>center</aligny>
@@ -158,120 +160,27 @@
 		</control>
 	</include>
 	<include name="SongsListLayout">
-		<focusedlayout height="70" condition="Container.Content(songs) + !Skin.HasSetting(small_list)">
+		<focusedlayout height="63" condition="Container.Content(songs)">
 			<control type="image">
 				<left>0</left>
 				<top>0</top>
 				<width>1096</width>
-				<height>71</height>
+				<height>63</height>
 				<texture border="90,3,90,3">lists/separator.png</texture>
 			</control>
 			<control type="image">
 				<left>0</left>
 				<top>0</top>
 				<width>1396</width>
-				<height>69</height>
+				<height>63</height>
 				<texture>lists/focus.png</texture>
 				<visible>Control.hasFocus(55)</visible>
 			</control>
 			<control type="label">
 				<left>12</left>
 				<top>-2</top>
-				<height>70</height>
+				<height>63</height>
 				<width>70</width>
-				<align>center</align>
-				<aligny>center</aligny>
-				<font>font30_title</font>
-				<label>$INFO[ListItem.TrackNumber]</label>
-				<textcolor>button_focus</textcolor>
-				<shadowcolor>text_shadow</shadowcolor>
-			</control>
-			<control type="label">
-				<left>95</left>
-				<top>0</top>
-				<height>70</height>
-				<width>860</width>
-				<aligny>center</aligny>
-				<scroll>true</scroll>
-				<label>$VAR[SongTitleVar]</label>
-				<shadowcolor>text_shadow</shadowcolor>
-			</control>
-			<control type="label">
-				<left>90</left>
-				<top>0</top>
-				<height>70</height>
-				<width>1090</width>
-				<align>right</align>
-				<aligny>center</aligny>
-				<font>font12</font>
-				<label>$INFO[ListItem.Label2]</label>
-				<textcolor>grey</textcolor>
-				<shadowcolor>text_shadow</shadowcolor>
-			</control>
-		</focusedlayout>
-		<itemlayout height="70" condition="Container.Content(songs) + !Skin.HasSetting(small_list)">
-			<control type="image">
-				<left>0</left>
-				<top>0</top>
-				<width>1396</width>
-				<height>71</height>
-				<texture border="90,3,90,3">lists/separator.png</texture>
-			</control>
-			<control type="label">
-				<left>12</left>
-				<top>-2</top>
-				<height>70</height>
-				<width>70</width>
-				<align>center</align>
-				<aligny>center</aligny>
-				<font>font30_title</font>
-				<label>$INFO[ListItem.TrackNumber]</label>
-				<textcolor>button_focus</textcolor>
-				<shadowcolor>text_shadow</shadowcolor>
-			</control>
-			<control type="label">
-				<left>95</left>
-				<top>0</top>
-				<height>70</height>
-				<width>960</width>
-				<aligny>center</aligny>
-				<label>$VAR[SongTitleVar]</label>
-				<shadowcolor>text_shadow</shadowcolor>
-			</control>
-			<control type="label">
-				<left>90</left>
-				<top>0</top>
-				<height>70</height>
-				<width>1090</width>
-				<align>right</align>
-				<aligny>center</aligny>
-				<font>font12</font>
-				<label>$INFO[ListItem.Label2]</label>
-				<textcolor>grey</textcolor>
-				<shadowcolor>text_shadow</shadowcolor>
-			</control>
-		</itemlayout>
-		<focusedlayout height="50" condition="Container.Content(songs) + Skin.HasSetting(small_list)">
-			<control type="image">
-				<left>0</left>
-				<top>0</top>
-				<width>1096</width>
-				<height>50</height>
-				<texture border="90,3,90,3">lists/separator.png</texture>
-			</control>
-			<control type="image">
-				<left>0</left>
-				<top>0</top>
-				<width>1396</width>
-				<height>50</height>
-				<texture>lists/focus.png</texture>
-				<visible>Control.hasFocus(55)</visible>
-			</control>
-			<control type="label">
-				<left>12</left>
-				<top>-2</top>
-				<height>50</height>
-				<width>52</width>
 				<align>center</align>
 				<aligny>center</aligny>
 				<font>font24_title</font>
@@ -282,18 +191,18 @@
 			<control type="label">
 				<left>95</left>
 				<top>0</top>
-				<height>50</height>
+				<height>63</height>
 				<width>860</width>
 				<aligny>center</aligny>
 				<scroll>true</scroll>
+				<font>fontContextMenu</font>
 				<label>$VAR[SongTitleVar]</label>
-				<font>font12</font>
 				<shadowcolor>text_shadow</shadowcolor>
 			</control>
 			<control type="label">
 				<left>90</left>
 				<top>0</top>
-				<height>50</height>
+				<height>63</height>
 				<width>1090</width>
 				<align>right</align>
 				<aligny>center</aligny>
@@ -303,19 +212,19 @@
 				<shadowcolor>text_shadow</shadowcolor>
 			</control>
 		</focusedlayout>
-		<itemlayout height="50" condition="Container.Content(songs) + Skin.HasSetting(small_list)">
+		<itemlayout height="63" condition="Container.Content(songs)">
 			<control type="image">
 				<left>0</left>
 				<top>0</top>
 				<width>1396</width>
-				<height>50</height>
+				<height>63</height>
 				<texture border="90,3,90,3">lists/separator.png</texture>
 			</control>
 			<control type="label">
 				<left>12</left>
 				<top>-2</top>
-				<height>50</height>
-				<width>52</width>
+				<height>63</height>
+				<width>70</width>
 				<align>center</align>
 				<aligny>center</aligny>
 				<font>font24_title</font>
@@ -326,17 +235,17 @@
 			<control type="label">
 				<left>95</left>
 				<top>0</top>
-				<height>50</height>
+				<height>63</height>
 				<width>960</width>
 				<aligny>center</aligny>
+				<font>fontContextMenu</font>
 				<label>$VAR[SongTitleVar]</label>
-				<font>font12</font>
 				<shadowcolor>text_shadow</shadowcolor>
 			</control>
 			<control type="label">
 				<left>90</left>
 				<top>0</top>
-				<height>50</height>
+				<height>63</height>
 				<width>1090</width>
 				<align>right</align>
 				<aligny>center</aligny>
@@ -348,19 +257,19 @@
 		</itemlayout>
 	</include>
 	<include name="AddonsListLayout">
-		<focusedlayout height="70" condition="Container.Content(addons)">
+		<focusedlayout height="63" condition="Container.Content(addons)">
 			<control type="image">
 				<left>0</left>
 				<top>0</top>
 				<width>1096</width>
-				<height>71</height>
+				<height>63</height>
 				<texture border="90,3,90,3">lists/separator.png</texture>
 			</control>
 			<control type="image">
 				<left>0</left>
 				<top>0</top>
 				<width>1396</width>
-				<height>69</height>
+				<height>63</height>
 				<texture>lists/focus.png</texture>
 				<visible>Control.hasFocus(55)</visible>
 			</control>
@@ -374,16 +283,17 @@
 			<control type="label">
 				<left>75</left>
 				<top>0</top>
-				<height>70</height>
+				<height>63</height>
 				<width>820</width>
 				<aligny>center</aligny>
 				<scroll>true</scroll>
+				<font>fontContextMenu</font>
 				<label>$INFO[ListItem.Label]</label>
 			</control>
 			<control type="label">
 				<left>590</left>
 				<top>0</top>
-				<height>70</height>
+				<height>63</height>
 				<width>590</width>
 				<align>right</align>
 				<aligny>center</aligny>
@@ -392,12 +302,12 @@
 				<label>$VAR[AddonsLabel2Var]</label>
 			</control>
 		</focusedlayout>
-		<itemlayout height="70" condition="Container.Content(addons)">
+		<itemlayout height="63" condition="Container.Content(addons)">
 			<control type="image">
 				<left>0</left>
 				<top>0</top>
 				<width>1396</width>
-				<height>71</height>
+				<height>63</height>
 				<texture border="90,3,90,3">lists/separator.png</texture>
 			</control>
 			<control type="image">
@@ -410,16 +320,17 @@
 			<control type="label">
 				<left>75</left>
 				<top>0</top>
-				<height>70</height>
+				<height>63</height>
 				<width>820</width>
 				<aligny>center</aligny>
 				<scroll>true</scroll>
+				<font>fontContextMenu</font>
 				<label>$INFO[ListItem.Label]</label>
 			</control>
 			<control type="label">
 				<left>590</left>
 				<top>0</top>
-				<height>70</height>
+				<height>63</height>
 				<width>590</width>
 				<align>right</align>
 				<aligny>center</aligny>

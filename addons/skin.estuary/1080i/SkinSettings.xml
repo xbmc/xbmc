@@ -111,7 +111,7 @@
 						<width>1256</width>
 						<include>DefaultSettingButton</include>
 						<onclick>Skin.ToggleSetting(no_fanart)</onclick>
-						<selected>Skin.HasSetting(no_fanart)</selected>
+						<selected>!Skin.HasSetting(no_fanart)</selected>
 					</control>
 					<control type="radiobutton" id="606">
 						<label>$LOCALIZE[31108]</label>
@@ -126,7 +126,7 @@
 						<width>1256</width>
 						<include>DefaultSettingButton</include>
 						<onclick>Skin.SetImage(custom_background)</onclick>
-						<enable>!Skin.HasSetting(use_custom_bg)</enable>
+						<enable>Skin.HasSetting(use_custom_bg)</enable>
 					</control>
 				</control>
 				<control type="grouplist" id="610">
@@ -188,6 +188,18 @@
 						<selected>!Skin.HasSetting(HomeMenuNoWeatherButton)</selected>
 						<onclick>Skin.ToggleSetting(HomeMenuNoWeatherButton)</onclick>
 					</control>
+				</control>
+				<control type="textbox" id="6">
+					<description>description area</description>
+					<left>480</left>
+					<top>810</top>
+					<width>1150</width>
+					<height>83</height>
+					<font>font12</font>
+					<align>justify</align>
+					<textcolor>button_focus</textcolor>
+					<label>Some help text. Some help text. Some help text. Some help text.</label>
+					<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
 				</control>
 			</control>
 		</control>

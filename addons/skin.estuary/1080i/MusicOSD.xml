@@ -42,7 +42,7 @@
 					<textureradioonnofocus>osd/fullscreen/buttons/play.png</textureradioonnofocus>
 					<textureradioofffocus colordiffuse="button_focus">osd/fullscreen/buttons/pause.png</textureradioofffocus>
 					<textureradiooffnofocus>osd/fullscreen/buttons/pause.png</textureradiooffnofocus>
-					<texturefocus colordiffuse="button_focus">osd/buttons/focus.png</texturefocus>
+					<texturefocus>-</texturefocus>
 					<width>125</width>
 					<animation center="62,62" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back">Focus</animation>
 					<height>123</height>
@@ -121,7 +121,7 @@
 					<textureradiooffnofocus>osd/fullscreen/buttons/random-off.png</textureradiooffnofocus>
 					<textureradioondisabled colordiffuse="disabled">osd/fullscreen/buttons/random-on.png</textureradioondisabled>
 					<textureradiooffdisabled colordiffuse="disabled">osd/fullscreen/buttons/random-off.png</textureradiooffdisabled>
-					<texturefocus colordiffuse="button_focus">osd/buttons/focus.png</texturefocus>
+					<texturefocus>-</texturefocus>
 					<width>125</width>
 					<height>123</height>
 					<radiowidth>74</radiowidth>
@@ -188,32 +188,32 @@
 			</control>
 			<control type="slider">
 				<left>30</left>
-				<top>-40</top>
+				<top>-30</top>
 				<width>1858</width>
-				<height>50</height>
+				<height>30</height>
 				<onup>8010</onup>
 				<ondown>650</ondown>
 				<controloffsetx>75</controloffsetx>
 				<controloffsety>0</controloffsety>
-				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
-				<textureslidernib>osd/progress/nub_bar.png</textureslidernib>
-				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernibfocus>
+				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
+				<textureslidernib>osd/progress/nub_leftright.png</textureslidernib>
+				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
 				<info>Player.Progress</info>
 				<action>seek</action>
 				<visible>!Control.HasFocus(87)</visible>
 			</control>
 			<control type="slider">
 				<left>30</left>
-				<top>-40</top>
+				<top>-30</top>
 				<width>1858</width>
-				<height>50</height>
+				<height>30</height>
 				<onup>8010</onup>
 				<ondown>650</ondown>
 				<controloffsetx>75</controloffsetx>
 				<controloffsety>0</controloffsety>
-				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
-				<textureslidernib colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernib>
-				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernibfocus>
+				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
+				<textureslidernib colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernib>
+				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
 				<info>Player.Progress</info>
 				<action>seek</action>
 				<visible>Control.HasFocus(87)</visible>

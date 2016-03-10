@@ -145,6 +145,11 @@
 		<value condition="Player.HasVideo">$INFO[VideoPlayer.AudioCodec,flags/audiocodec/,.png]</value>
 		<value condition="Player.HasAudio">$INFO[MusicPlayer.Codec,flags/audiocodec/,.png]</value>
 	</variable>
+	<variable name="ResolutionFlagVar">
+		<value condition="ListItem.IsStereoscopic">flags/videoresolution/3D.png</value>
+		<value condition="IntegerGreaterThan(ListItem.VideoResolution,1080)">flags/videoresolution/4K.png</value>
+		<value>$INFO[ListItem.VideoResolution,flags/videoresolution/,.png]</value>
+	</variable>
 	<variable name="BannerVar">
 		<value condition="!IsEmpty(ListItem.Art(banner))">$INFO[ListItem.Art(banner)]</value>
 		<value>$INFO[ListItem.Art(tvshow.banner)]</value>
@@ -187,11 +192,8 @@
 		<value>$INFO[Player.Time]$INFO[Player.Duration, / ]</value>
 	</variable>
 	<variable name="VideoOSDHelpTextVar">
-		<value condition="Control.HasFocus(87) + Player.Rewinding">$LOCALIZE[31050]</value>
-		<value condition="Control.HasFocus(87) + Player.Forwarding">$LOCALIZE[31051]</value>
+		<value condition="Control.HasFocus(87) + [Player.Rewinding | Player.Forwarding]">$LOCALIZE[31050]</value>
 		<value condition="Control.HasFocus(70011)">$LOCALIZE[20060]</value>
-		<value condition="Control.HasFocus(701)">$LOCALIZE[13396]</value>
-		<value condition="Control.HasFocus(702)">$LOCALIZE[13395]</value>
 		<value condition="Control.HasFocus(700)">$LOCALIZE[298]</value>
 		<value condition="Control.HasFocus(703)">$LOCALIZE[31106]</value>
 		<value condition="Control.HasFocus(704)">$LOCALIZE[24012]</value>
@@ -201,9 +203,7 @@
 		<value condition="Control.HasFocus(70043)">$LOCALIZE[5]</value>
 		<value condition="Control.HasFocus(255)">$LOCALIZE[36501]</value>
 		<value condition="Control.HasFocus(606)">$LOCALIZE[264]</value>
-		<value condition="ControlGroup(201).HasFocus + Player.SeekEnabled">$LOCALIZE[31049]</value>
-		<value condition="Player.SeekEnabled">$LOCALIZE[31054]</value>
-		<value condition="!Player.SeekEnabled">$LOCALIZE[36044]</value>
+		<value condition="ControlGroup(6000).HasFocus + Player.SeekEnabled">$LOCALIZE[31054]</value>
 	</variable>
 	<variable name="MusicOSDHelpTextVar">
 		<value condition="Control.HasFocus(620)">$LOCALIZE[31033]$INFO[MusicPlayer.UserRating, : ]</value>
@@ -223,11 +223,6 @@
 		<value condition="player.passthrough">dialogs/volume/volume.png</value>
 		<value condition="Player.Muted">dialogs/volume/mute.png</value>
 		<value>dialogs/volume/volume1.png</value>
-	</variable>
-	<variable name="MediaInfoOverlayVar">
-		<value condition="ListItem.IsCollection">icons/lists/Set.png</value>
-		<value condition="ListItem.IsStereoscopic">icons/lists/3D.png</value>
-		<value>$INFO[ListItem.VideoResolution,icons/lists/,.png]</value>
 	</variable>
 	<variable name="ListSubLabelVar">
 		<value condition="ListItem.IsCollection">$INFO[Container(5000).NumItems]</value>
@@ -263,12 +258,14 @@
 		<value condition="!IsEmpty(Container(8200).ListItem.Art(fanart)) + Control.HasFocus(8200)">$INFO[Container(8200).ListItem.Art(fanart)]</value>
 		<value condition="!IsEmpty(Container(8300).ListItem.Art(fanart)) + Control.HasFocus(8300)">$INFO[Container(8300).ListItem.Art(fanart)]</value>
 		<value condition="!IsEmpty(Container(8400).ListItem.Art(fanart)) + Control.HasFocus(8400)">$INFO[Container(8400).ListItem.Art(fanart)]</value>
+		<value condition="!IsEmpty(Container(8500).ListItem.Art(fanart)) + Control.HasFocus(8500)">$INFO[Container(8500).ListItem.Art(fanart)]</value>
 		<value condition="!IsEmpty(Container(15100).ListItem.Property(FanartCode)) + Control.HasFocus(15100)">$INFO[Skin.String(WeatherFanart.path)]$INFO[Container(15100).ListItem.Property(FanartCode)]</value>
 		<value condition="!IsEmpty(Container(15200).ListItem.Property(FanartCode)) + Control.HasFocus(15200)">$INFO[Skin.String(WeatherFanart.path)]$INFO[Container(15200).ListItem.Property(FanartCode)]</value>
 		<value>-</value>
 	</variable>
 	<variable name="MediaFanartVar">
 		<value condition="Skin.HasSetting(no_fanart)">$VAR[GlobalFanartVar]</value>
+		<value condition="Window.IsActive(pictures) + IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.FolderPath]</value>
 		<value condition="!IsEmpty(Container.Art(tvshow.fanart))">$INFO[Container.Art(tvshow.fanart)]</value>
 		<value condition="!IsEmpty(Container.Art(artist.fanart))">$INFO[Container.Art(artist.fanart)]</value>
 		<value condition="!IsEmpty(Container.Art(fanart))">$INFO[Container.Art(fanart)]</value>
@@ -282,6 +279,7 @@
 		<value condition="ListItem.IsPlaying">overlays/watched/OverlayPlaying-List.png</value>
 <!-- 		<value condition="Container.Content(files) + SubString(ListItem.Icon,Default,left)">$INFO[ListItem.Icon,icons/defaulticons/]</value>
  -->		<value condition="ListItem.IsParentFolder">-</value>
+			<value condition="ListItem.IsResumable">overlays/watched/resume.png</value>
 		<value condition="!IsEmpty(ListItem.Overlay)">$INFO[ListItem.Overlay]</value>
  -->		<value>OverlayUnwatched.png</value>
 	</variable>

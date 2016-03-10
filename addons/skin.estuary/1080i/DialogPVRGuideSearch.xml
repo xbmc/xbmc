@@ -3,13 +3,13 @@
 	<defaultcontrol always="true">9</defaultcontrol>
 	<coordinates>
 		<left>100</left>
-		<top>65</top>
+		<top>150</top>
 	</coordinates>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
 		<include name="DialogBackgroundCommons">
 			<param name="DialogBackgroundWidth" value="1720" />
-			<param name="DialogBackgroundHeight" value="900" />
+			<param name="DialogBackgroundHeight" value="780" />
 			<param name="DialogHeaderLabel" value="$LOCALIZE[19142]" />
 			<param name="DialogHeaderId" value="2" />
 		</include>
@@ -40,7 +40,7 @@
 			<left>10</left>
 			<top>210</top>
 			<width>1400</width>
-			<height>680</height>
+			<height>548</height>
 			<texture border="40">buttons/dialogbutton-nofo.png</texture>
 		</control>
 		<control type="grouplist" id="5000">
@@ -54,65 +54,49 @@
 			<control type="radiobutton" id="10">
 				<description>Include Description</description>
 				<width>670</width>
-				<include name="DefaultSettingButton">
-					<param name="height" value="75" />
-				</include>
+				<include>DefaultSettingButton</include>
 				<label>$LOCALIZE[19134]</label>
 			</control>
 			<control type="radiobutton" id="11">
 				<description>Case Sensitive</description>
 				<width>670</width>
-				<include name="DefaultSettingButton">
-					<param name="height" value="75" />
-				</include>
+				<include>DefaultSettingButton</include>
 				<label>$LOCALIZE[19135]</label>
 			</control>
 			<control type="edit" id="14">
 				<description>Start Date</description>
 				<width>670</width>
-				<include name="DefaultSettingButton">
-					<param name="height" value="75" />
-				</include>
+				<include>DefaultSettingButton</include>
 				<label>$LOCALIZE[19128]</label>
 			</control>
 			<control type="edit" id="15">
 				<description>Stop Date</description>
 				<width>670</width>
-				<include name="DefaultSettingButton">
-					<param name="height" value="75" />
-				</include>
+				<include>DefaultSettingButton</include>
 				<label>$LOCALIZE[19129]</label>
 			</control>
 			<control type="spincontrolex" id="18">
 				<description>Genre</description>
 				<width>670</width>
-				<include name="DefaultSettingButton">
-					<param name="height" value="75" />
-				</include>
+				<include>DefaultSettingButton</include>
 				<label>$LOCALIZE[515]</label>
 			</control>
 			<control type="radiobutton" id="20">
 				<description>Include unknown Genres</description>
 				<width>670</width>
-				<include name="DefaultSettingButton">
-					<param name="height" value="75" />
-				</include>
+				<include>DefaultSettingButton</include>
 				<label>$LOCALIZE[19132]</label>
 			</control>
 			<control type="radiobutton" id="22">
 				<description>FTA only</description>
 				<width>670</width>
-				<include name="DefaultSettingButton">
-					<param name="height" value="75" />
-				</include>
+				<include>DefaultSettingButton</include>
 				<label>$LOCALIZE[19123]</label>
 			</control>
 			<control type="radiobutton" id="24">
 				<description>Ignore Timers</description>
 				<width>670</width>
-				<include name="DefaultSettingButton">
-					<param name="height" value="75" />
-				</include>
+				<include>DefaultSettingButton</include>
 				<label>$LOCALIZE[19124]</label>
 			</control>
 		</control>
@@ -125,65 +109,49 @@
 			<control type="spincontrolex" id="12">
 				<description>Min Duration</description>
 				<width>670</width>
-				<include name="DefaultSettingButton">
-					<param name="height" value="75" />
-				</include>
+				<include>DefaultSettingButton</include>
 				<label>$LOCALIZE[19130]</label>
 			</control>
 			<control type="spincontrolex" id="13">
 				<description>Max Duration</description>
 				<width>670</width>
-				<include name="DefaultSettingButton">
-					<param name="height" value="75" />
-				</include>
+				<include>DefaultSettingButton</include>
 				<label>$LOCALIZE[19131]</label>
 			</control>
 			<control type="edit" id="16">
 				<description>Start time</description>
 				<width>670</width>
-				<include name="DefaultSettingButton">
-					<param name="height" value="75" />
-				</include>
+				<include>DefaultSettingButton</include>
 				<label>$LOCALIZE[19126]</label>
 			</control>
 			<control type="edit" id="17">
 				<description>Stop time</description>
 				<width>670</width>
-				<include name="DefaultSettingButton">
-					<param name="height" value="75" />
-				</include>
+				<include>DefaultSettingButton</include>
 				<label>$LOCALIZE[19127]</label>
 			</control>
 			<control type="radiobutton" id="19">
 				<description>avoid repeats</description>
 				<width>670</width>
-				<include name="DefaultSettingButton">
-					<param name="height" value="75" />
-				</include>
+				<include>DefaultSettingButton</include>
 				<label>$LOCALIZE[19121]</label>
 			</control>
 			<control type="spincontrolex" id="21">
 				<description>Groups</description>
 				<width>670</width>
-				<include name="DefaultSettingButton">
-					<param name="height" value="75" />
-				</include>
+				<include>DefaultSettingButton</include>
 				<label>$LOCALIZE[19141]</label>
 			</control>
 			<control type="spincontrolex" id="23">
 				<description>Channels</description>
 				<width>670</width>
-				<include name="DefaultSettingButton">
-					<param name="height" value="75" />
-				</include>
+				<include>DefaultSettingButton</include>
 				<label>$LOCALIZE[19148]</label>
 			</control>
 			<control type="radiobutton" id="27">
 				<description>Ignore Recordings</description>
 				<width>670</width>
-				<include name="DefaultSettingButton">
-					<param name="height" value="75" />
-				</include>
+				<include>DefaultSettingButton</include>
 				<label>$LOCALIZE[19125]</label>
 			</control>
 		</control>

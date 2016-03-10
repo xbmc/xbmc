@@ -36,10 +36,6 @@
 					<left>586</left>
 					<width>1254</width>
 					<height>520</height>
-					<textoffsetx>40</textoffsetx>
-					<textoffsety>20</textoffsety>
-					<aligny>bottom</aligny>
-					<font>font_textbox</font>
 					<onup>50</onup>
 					<ondown>9000</ondown>
 					<label>-</label>
@@ -85,10 +81,6 @@
 					<top>-295</top>
 					<width>1254</width>
 					<height>320</height>
-					<textoffsetx>40</textoffsetx>
-					<textoffsety>20</textoffsety>
-					<aligny>bottom</aligny>
-					<font>font_textbox</font>
 					<label>-</label>
 					<visible>StringCompare(Container(50).NumItems,0)</visible>
 				</control>
@@ -98,10 +90,6 @@
 					<left>586</left>
 					<width>1254</width>
 					<height>320</height>
-					<textoffsetx>40</textoffsetx>
-					<textoffsety>20</textoffsety>
-					<aligny>bottom</aligny>
-					<font>font_textbox</font>
 					<label>-</label>
 				</control>
 				<control type="group">

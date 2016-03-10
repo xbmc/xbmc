@@ -31,11 +31,19 @@ msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr ""
 
-#empty strings from id 31003 to 31004
+#: /1080i/DialogVideoInfo.xml:431
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr ""
 
-#: /1080i/Home.xml:75
+#: /1080i/VideoOSD.xml:409
+msgctxt "#31004"
+msgid "Change mode"
+msgstr ""
+
+#: /1080i/VideoOSD.xml:416
 msgctxt "#31005"
-msgid "In-progress movies"
+msgid "Watch as 2D"
 msgstr ""
 
 #: /1080i/Home.xml:93
@@ -263,12 +271,12 @@ msgstr ""
 
 #: /1080i/Variables.xml:120
 msgctxt "#31050"
-msgid "Press [B]Down[/B] to stop, or [B]Right[/B] to fast-forward"
+msgid "Press [B]OK[/B] to stop"
 msgstr ""
 
-#: /1080i/Variables.xml:121
+#: /1080i/VideoOSD.xml:361
 msgctxt "#31051"
-msgid "Press [B]Down[/B] to stop, or [B]Left[/B] to rewind"
+msgid "Toggle language"
 msgstr ""
 
 #: /1080i/Includes.xml:1102
@@ -571,9 +579,9 @@ msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
 msgstr ""
 
-#: /1080i/MyMusicNav.xml:78
+#: /1080i/VideoOSD.xml:322
 msgctxt "#31112"
-msgid "Small list"
+msgid "Toggle audio stream"
 msgstr ""
 
 #: /1080i/Custom_1107_SearchDialog.xml:32

@@ -109,7 +109,7 @@
 						<top>275</top>
 						<width>305</width>
 						<height>100</height>
-						<font>font12</font>
+						<font>font10</font>
 						<textcolor>grey</textcolor>
 						<align>center</align>
 						<aligny>top</aligny>
@@ -117,11 +117,11 @@
 					</control>
 					<control type="label">
 						<left>10</left>
-						<top>305</top>
+						<top>300</top>
 						<width>305</width>
 						<height>100</height>
 						<textcolor>grey</textcolor>
-						<font>font12</font>
+						<font>font10</font>
 						<align>center</align>
 						<aligny>top</aligny>
 						<label fallback="13170">$INFO[ListItem.Label2]</label>
@@ -159,17 +159,17 @@
 						<width>305</width>
 						<height>100</height>
 						<textcolor>grey</textcolor>
-						<font>font12</font>
+						<font>font10</font>
 						<align>center</align>
 						<aligny>top</aligny>
 						<label>$LOCALIZE[31029]:</label>
 					</control>
 					<control type="label">
 						<left>10</left>
-						<top>305</top>
+						<top>300</top>
 						<width>305</width>
 						<height>100</height>
-						<font>font12</font>
+						<font>font10</font>
 						<textcolor>grey</textcolor>
 						<align>center</align>
 						<aligny>top</aligny>

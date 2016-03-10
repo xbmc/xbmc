@@ -93,7 +93,7 @@
 							<visible>Stringcompare(Listitem.dbtype,tvshow)</visible>
 						</control>
 						<control type="label">
-							<left>444</left>
+							<left>514</left>
 							<top>662</top>
 							<width>1160</width>
 							<height>20</height>
@@ -102,15 +102,6 @@
 							<aligny>center</aligny>
 							<visible>Stringcompare(Listitem.dbtype,movie)</visible>
 							<label>$INFO[ListItem.Year]</label>
-						</control>
-						<control type="image">
-							<right>35</right>
-							<top>649</top>
-							<width>50</width>
-							<height>50</height>
-							<aspectratio>keep</aspectratio>
-							<animation effect="fade" start="70" end="100" time="300" reversible="false">Focus</animation>
-							<texture>$VAR[MediaInfoOverlayVar]</texture>
 						</control>
 					</itemlayout>
 					<focusedlayout width="1700" height="690">
@@ -185,7 +176,7 @@
 									<label>$INFO[ListItem.Label]</label>
 								</control>
 								<control type="label">
-									<left>444</left>
+									<left>514</left>
 									<top>662</top>
 									<width>1160</width>
 									<height>20</height>
@@ -194,15 +185,6 @@
 									<aligny>center</aligny>
 									<visible>Stringcompare(Listitem.dbtype,movie)</visible>
 									<label>$INFO[ListItem.Year]</label>
-								</control>
-								<control type="image">
-									<right>35</right>
-									<top>649</top>
-									<width>50</width>
-									<height>50</height>
-									<aspectratio>keep</aspectratio>
-									<animation effect="fade" start="70" end="100" time="300" reversible="false">Focus</animation>
-									<texture>$VAR[MediaInfoOverlayVar]</texture>
 								</control>
 							</control>
 						</control>
@@ -223,46 +205,39 @@
 					<animation type="Visible">
 						<effect type="fade" start="0" end="100" delay="800" time="300" />
 					</animation>
-					<control type="image">
-						<left>30</left>
-						<top>664</top>
-						<width>32</width>
-						<height>32</height>
-						<texture>lists/rating.png</texture>
-						<visible>!IsEmpty(ListItem.RatingAndVotes)</visible>
-					</control>
-					<control type="label">
-						<left>76</left>
-						<top>661</top>
-						<width>230</width>
-						<height>32</height>
-						<font>font12</font>
-						<label>$INFO[ListItem.RatingAndVotes]</label>
-					</control>
-					<control type="image">
-						<right>135</right>
-						<top>663</top>
-						<width>32</width>
-						<height>32</height>
-						<texture>lists/played-total.png</texture>
-						<visible>Stringcompare(Listitem.dbtype,tvshow)</visible>
-					</control>
-					<control type="label">
-						<right>197</right>
-						<top>667</top>
-						<width>800</width>
-						<height>20</height>
-						<font>font24_title</font>
-						<align>right</align>
-						<aligny>center</aligny>
-						<label>$VAR[BannerLabel2Var]</label>
+					<control type="grouplist">
+						<top>660</top>
+						<left>40</left>
+						<orientation>horizontal</orientation>
+						<width>380</width>
+						<align>center</align>
+						<include name="InfoFlag">
+							<param name="visible" value="!IsEmpty(ListItem.duration)" />
+							<param name="icon" value="frame/clock.png" />
+							<param name="label" value="$INFO[ListItem.Duration,, min]" />
+						</include>
+						<include name="InfoFlag">
+							<param name="visible" value="!IsEmpty(ListItem.Property(TotalEpisodes))" />
+							<param name="icon" value="lists/played-total.png" />
+							<param name="label" value="$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]" />
+						</include>
+						<include name="InfoFlag">
+							<param name="visible" value="!IsEmpty(ListItem.Year) + IsEmpty(ListItem.Premiered)" />
+							<param name="icon" value="lists/year.png" />
+							<param name="label" value="$INFO[ListItem.Year]" />
+						</include>
+						<include name="InfoFlag">
+							<param name="visible" value="!IsEmpty(ListItem.Premiered)" />
+							<param name="icon" value="lists/year.png" />
+							<param name="label" value="$INFO[ListItem.Premiered]" />
+						</include>
 					</control>
 					<control type="textbox">
 						<left>30</left>
 						<top>35</top>
 						<width>420</width>
 						<height>598</height>
-						<font>font_textbox</font>
+						<font>font12</font>
 						<autoscroll time="3000" delay="7000" repeat="5000">true</autoscroll>
 						<label>$INFO[ListItem.Tagline,[COLOR button_focus][B],[/B][/COLOR][CR]]$INFO[ListItem.Plot]</label>
 					</control>

@@ -33,12 +33,12 @@
 				<ondown>50</ondown>
 				<viewtype label="535">list</viewtype>
 				<visible>Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes)</visible>
-				<focusedlayout height="70" condition="Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons)">
+				<focusedlayout height="63" condition="Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons)">
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
 						<width>710</width>
-						<height>71</height>
+						<height>63</height>
 						<texture border="90,3,90,3">lists/separator.png</texture>
 						<visible>!Control.HasFocus(50)</visible>
 					</control>
@@ -53,17 +53,18 @@
 					<control type="label">
 						<left>70</left>
 						<top>0</top>
-						<height>70</height>
+						<height>63</height>
 						<width>560</width>
 						<aligny>center</aligny>
 						<scroll>true</scroll>
+						<font>fontContextMenu</font>
 						<label>$INFO[ListItem.Label]</label>
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="label">
 						<left>135</left>
 						<top>0</top>
-						<height>70</height>
+						<height>63</height>
 						<width>555</width>
 						<align>right</align>
 						<aligny>center</aligny>
@@ -91,27 +92,28 @@
 						<visible>!Control.HasFocus(50)</visible>
 					</control>
 				</focusedlayout>
-				<itemlayout height="70" condition="Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons)">
+				<itemlayout height="63" condition="Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons)">
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
 						<width>710</width>
-						<height>71</height>
+						<height>63</height>
 						<texture border="90,3,90,3">lists/separator.png</texture>
 					</control>
 					<control type="label">
 						<left>70</left>
 						<top>0</top>
-						<height>70</height>
+						<height>63</height>
 						<width>560</width>
 						<aligny>center</aligny>
+						<font>fontContextMenu</font>
 						<label>$INFO[ListItem.Label]</label>
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="label">
 						<left>135</left>
 						<top>0</top>
-						<height>70</height>
+						<height>63</height>
 						<width>555</width>
 						<align>right</align>
 						<aligny>center</aligny>
@@ -169,6 +171,7 @@
 		<control type="group">
 			<visible>!Window.IsActive(addoninformation)</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
+			<animation effect="fade" start="100" end="0" time="0" condition="Control.IsVisible(500) + Container.Content(addons)">Conditional</animation>
 			<control type="image">
 				<left>90</left>
 				<top>650</top>

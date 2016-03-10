@@ -424,6 +424,14 @@
 					<param name="visible" value="!IsEmpty(ListItem.Trailer) + ![substring(Container.FolderPath,plugin://) + substring(Container.FolderPath,trailer)]" />
 				</include>
 				<include name="InfoDialogButton">
+					<param name="id" value="441" />
+					<param name="icon" value="icons/infodialogs/cinema.png" />
+					<param name="onclick_1" value="Dialog.Close(MovieInformation)" />
+					<param name="onclick_2" value="RunScript(script.cinemavision,experience)" />
+					<param name="label" value="$LOCALIZE[31003]" />
+					<param name="visible" value="System.HasAddon(script.cinemavision) + [Stringcompare(ListItem.DBType,movie) | Stringcompare(ListItem.DBType,tvshow) | Stringcompare(ListItem.DBType,season) | Stringcompare(ListItem.DBType,episode)]" />
+				</include>
+				<include name="InfoDialogButton">
 					<param name="id" value="440" />
 					<param name="icon" value="icons/infodialogs/trailer.png" />
 					<param name="label" value="$LOCALIZE[31090]" />
