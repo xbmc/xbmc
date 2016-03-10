@@ -551,6 +551,16 @@
       "displaylyricist": { "type": "string"}
     }
   },
+  "Audio.Property.Name": {
+    "type": "string",
+    "enum": [ "missingartistid" ]
+  },
+  "Audio.Property.Value": {
+    "type": "object",
+    "properties": {
+      "missingartistid": { "$ref": "Library.Id" }
+    }
+  },
   "Video.Fields.Movie": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",

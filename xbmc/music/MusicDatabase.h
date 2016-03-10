@@ -257,6 +257,7 @@ public:
 
   int  AddArtist(const std::string& strArtist, const std::string& strMusicBrainzArtistID);
   bool GetArtist(int idArtist, CArtist& artist, bool fetchAll = true);
+  bool GetArtistExists(int idArtist);
   int  UpdateArtist(int idArtist,
                     const std::string& strArtist, const std::string& strMusicBrainzArtistID,
                     const std::string& strBorn, const std::string& strFormed,
@@ -265,6 +266,8 @@ public:
                     const std::string& strBiography, const std::string& strDied,
                     const std::string& strDisbanded, const std::string& strYearsActive,
                     const std::string& strImage, const std::string& strFanart);
+  bool GetTranslateBlankArtist() { return m_translateBlankArtist; }
+  void SetTranslateBlankArtist(bool translate) { m_translateBlankArtist = translate; }
   bool HasArtistBeenScraped(int idArtist);
   bool ClearArtistLastScrapedTime(int idArtist);
   int  AddArtistDiscography(int idArtist, const std::string& strAlbum, const std::string& strYear);
@@ -528,6 +531,8 @@ private:
   bool SearchAlbums(const std::string& search, CFileItemList &albums);
   bool SearchSongs(const std::string& strSearch, CFileItemList &songs);
   int GetSongIDFromPath(const std::string &filePath);
+
+  bool m_translateBlankArtist;
 
   // Fields should be ordered as they
   // appear in the songview
