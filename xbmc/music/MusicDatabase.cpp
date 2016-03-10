@@ -1508,7 +1508,7 @@ int CMusicDatabase::GetRoleByName(const std::string& strRole)
     if (NULL == m_pDS.get()) return false;
 
     std::string strSQL;
-    strSQL = PrepareSQL("SELECT idRole FROM Role WHERE strRole like '%s'", strRole.c_str());
+    strSQL = PrepareSQL("SELECT idRole FROM role WHERE strRole like '%s'", strRole.c_str());
     // run query
     if (!m_pDS->query(strSQL)) return false;
     int iRowsFound = m_pDS->num_rows();
@@ -4745,10 +4745,10 @@ void CMusicDatabase::UpdateTables(int version)
         strSQL = PrepareSQL("UPDATE discography SET idArtist = %i WHERE idArtist = %i", idArtist, BLANKARTIST_ID);
         m_pDS->exec(strSQL);
         // Drop temp indices
-        m_pDS->exec("DROP INDEX idxSongArtist2");
-        m_pDS->exec("DROP INDEX idxAlbumArtist2");
-        m_pDS->exec("DROP INDEX idxDiscography");
-        m_pDS->exec("DROP INDEX ix_art");
+        m_pDS->exec("DROP INDEX idxSongArtist2 ON song_artist");
+        m_pDS->exec("DROP INDEX idxAlbumArtist2 ON album_artist");
+        m_pDS->exec("DROP INDEX idxDiscography ON discography");
+        m_pDS->exec("DROP INDEX ix_art ON art");
       }
       catch (...)
       {
@@ -4814,8 +4814,8 @@ void CMusicDatabase::UpdateTables(int version)
       }
     }
     //Remove temp indices, full analyics for database created later
-    m_pDS->exec("DROP INDEX idxSongArtist1");
-    m_pDS->exec("DROP INDEX idxAlbumArtist1");
+    m_pDS->exec("DROP INDEX idxSongArtist1 ON song_artist");
+    m_pDS->exec("DROP INDEX idxAlbumArtist1 ON album_artist");
   }
 }
 
