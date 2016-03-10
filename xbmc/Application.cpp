@@ -1860,7 +1860,6 @@ void CApplication::Render()
   bool hasRendered = false;
   bool limitFrames = false;
   unsigned int singleFrameTime = 40; // default limit 25 fps
-  bool vsync = true;
 
   // Whether externalplayer is playing and we're unfocused
   bool extPlayerActive = m_pPlayer->IsExternalPlaying() && !m_AppFocused;
@@ -1912,7 +1911,6 @@ void CApplication::Render()
   else if (vsync_mode != VSYNC_DRIVER)
   {
     g_Windowing.SetVSync(false);
-    vsync = false;
   }
 
   if (m_bPresentFrame && m_pPlayer->IsPlaying() && !m_pPlayer->IsPaused())
