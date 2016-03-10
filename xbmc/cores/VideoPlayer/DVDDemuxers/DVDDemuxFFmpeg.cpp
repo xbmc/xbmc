@@ -1601,7 +1601,7 @@ std::string CDVDDemuxFFmpeg::ConvertCodecToInternalStereoMode(const std::string 
 void CDVDDemuxFFmpeg::ParsePacket(AVPacket *pkt)
 {
   AVStream *st = m_pFormatContext->streams[pkt->stream_index];
-  CDemuxStream *stream = GetStream(st->id);
+  CDemuxStream *stream = GetStream(pkt->stream_index);
 
   // if the stream is new, tell ffmpeg to parse the stream
   if (!stream && !st->parser)
