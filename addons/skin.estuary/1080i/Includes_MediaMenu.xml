@@ -150,7 +150,7 @@
 					<include>MediaMenuItemsCommon</include>
 					<label>$LOCALIZE[31032]</label>
 					<label2>[B]$INFO[Container.SortOrder][/B]</label2>
-					<onclick>Container.SortDirection</onclick>
+					<onclick>Container.SetSortDirection</onclick>
 					<visible>!Window.IsActive(MyPVRGuide.xml)</visible>
 				</control>
 				<control type="button" id="6051">

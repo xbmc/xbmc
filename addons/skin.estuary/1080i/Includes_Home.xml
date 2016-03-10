@@ -325,18 +325,19 @@
 								<animation effect="fade" start="0" end="70" time="50">Focus</animation>
 							</control>
 							<control type="label">
-								<left>20</left>
-								<top>244</top>
-								<width>160</width>
+								<left>10</left>
+								<top>242</top>
+								<width>180</width>
+								<scroll>true</scroll>
 								<label>$INFO[ListItem.Label]</label>
 								<font>font10</font>
 								<shadowcolor>text_shadow</shadowcolor>
 								<align>center</align>
 							</control>
 							<control type="label">
-								<left>20</left>
+								<left>10</left>
 								<top>266</top>
-								<width>160</width>
+								<width>180</width>
 								<label>$INFO[ListItem.Rating,, [COLOR=44FFFFFF]/[/COLOR] ]$INFO[ListItem.Year]</label>
 								<font>font10</font>
 								<textcolor>button_focus</textcolor>
@@ -520,7 +521,7 @@
 						</control>
 						<control type="label">
 							<left>30</left>
-							<top>255</top>
+							<top>253</top>
 							<width>288</width>
 							<label>$PARAM[second_label]</label>
 							<font>font10</font>
@@ -584,9 +585,10 @@
 							</control>
 							<control type="label">
 								<left>30</left>
-								<top>255</top>
+								<top>253</top>
 								<width>288</width>
 								<label>$PARAM[second_label]</label>
+								<scroll>true</scroll>
 								<font>font10</font>
 								<shadowcolor>text_shadow</shadowcolor>
 								<align>center</align>
@@ -595,6 +597,7 @@
 								<left>30</left>
 								<top>279</top>
 								<width>288</width>
+								<scroll>true</scroll>
 								<label>$INFO[ListItem.TVShowTitle]</label>
 								<font>font10</font>
 								<shadowcolor>text_shadow</shadowcolor>
@@ -622,7 +625,7 @@
 		<param name="sub_label">$INFO[ListItem.Label]</param>
 		<param name="sortby"></param>
 		<param name="sortorder">ascending</param>
-		<param name="main_label">$INFO[ListItem.Year,[COLOR button_focus], - [/COLOR]]$INFO[ListItem.Artist]$INFO[ListItem.AddonVersion,[COLOR button_focus],[/COLOR]]</param>
+		<param name="main_label">$INFO[ListItem.Year,[COLOR button_focus], - [/COLOR]]$INFO[ListItem.Artist]</param>
 		<definition>
 			<control type="group">
 				<description>Square Widget including header and arrows</description>
@@ -681,7 +684,7 @@
 							</control>
 							<control type="label">
 								<left>20</left>
-								<top>240</top>
+								<top>238</top>
 								<width>260</width>
 								<label>$PARAM[sub_label]</label>
 								<font>font10</font>
@@ -690,7 +693,7 @@
 							</control>
 							<control type="label">
 								<left>20</left>
-								<top>264</top>
+								<top>266</top>
 								<width>260</width>
 								<label>$PARAM[main_label]</label>
 								<font>font10</font>
@@ -740,27 +743,29 @@
 									<texture colordiffuse="AAFFFFFF">colors/black.png</texture>
 								</control>
 								<control type="label">
-									<left>20</left>
-									<top>240</top>
-									<width>260</width>
+									<left>10</left>
+									<top>238</top>
+									<width>280</width>
 									<label>$PARAM[sub_label]</label>
 									<font>font10</font>
+									<scroll>true</scroll>
 									<shadowcolor>text_shadow</shadowcolor>
 									<align>center</align>
 								</control>
 								<control type="label">
-									<left>20</left>
-									<top>264</top>
-									<width>260</width>
+									<left>10</left>
+									<top>266</top>
+									<width>280</width>
 									<font>font10</font>
+									<scroll>true</scroll>
 									<label>$PARAM[main_label]</label>
 									<shadowcolor>text_shadow</shadowcolor>
 									<align>center</align>
 								</control>
 								<control type="textbox">
-									<left>20</left>
+									<left>10</left>
 									<top>240</top>
-									<width>260</width>
+									<width>280</width>
 									<height>60</height>
 									<aligny>center</aligny>
 									<label>$PARAM[single_label]</label>

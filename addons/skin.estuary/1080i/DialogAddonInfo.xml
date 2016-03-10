@@ -9,8 +9,6 @@
 				<top>162</top>
 				<width>1000</width>
 				<height>509</height>
-				<aligny>bottom</aligny>
-				<font>font_textbox</font>
 				<label>-</label>
 			</control>
 			<control type="label">

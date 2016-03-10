@@ -396,6 +396,9 @@
 						<param name="list_id" value="8100"/>
 						<param name="onup_id" value="8900"/>
 						<param name="ondown_id" value="8200"/>
+						<param name="single_label" value="$INFO[ListItem.Label]"/>
+						<param name="main_label" value=""/>
+						<param name="sub_label" value=""/>
 					</include>
 					<include name="WidgetListSquare">
 						<param name="content_path" value="addons://sources/audio/"/>
@@ -406,6 +409,9 @@
 						<param name="list_id" value="8200"/>
 						<param name="onup_id" value="8100"/>
 						<param name="ondown_id" value="8300"/>
+						<param name="single_label" value="$INFO[ListItem.Label]"/>
+						<param name="main_label" value=""/>
+						<param name="sub_label" value=""/>
 					</include>
 					<include name="WidgetListSquare">
 						<param name="content_path" value="addons://sources/executable/"/>
@@ -416,6 +422,9 @@
 						<param name="list_id" value="8300"/>
 						<param name="onup_id" value="8200"/>
 						<param name="ondown_id" value="8400"/>
+						<param name="single_label" value="$INFO[ListItem.Label]"/>
+						<param name="main_label" value=""/>
+						<param name="sub_label" value=""/>
 					</include>
 					<include name="WidgetListSquare">
 						<param name="content_path" value="androidapp://sources/apps/"/>
@@ -426,6 +435,9 @@
 						<param name="list_id" value="8400"/>
 						<param name="onup_id" value="8300"/>
 						<param name="ondown_id" value="8500"/>
+						<param name="single_label" value="$INFO[ListItem.Label]"/>
+						<param name="main_label" value=""/>
+						<param name="sub_label" value=""/>
 					</include>
 					<include name="WidgetListSquare">
 						<param name="content_path" value="addons://sources/image/"/>
@@ -436,6 +448,9 @@
 						<param name="list_id" value="8500"/>
 						<param name="onup_id" value="8400"/>
 						<param name="ondown_id" value="20001"/>
+						<param name="single_label" value="$INFO[ListItem.Label]"/>
+						<param name="main_label" value=""/>
+						<param name="sub_label" value=""/>
 					</include>
 					<include name="ImageWidget">
 						<param name="image_path" value="special://skin/extras/home-images/add-ons.jpg"/>
@@ -557,7 +572,7 @@
 						<param name="item7_vis" value="False" />
 						<param name="item8_vis" value="False" />
 					</include>
-					<include name="WidgetListChannels">
+					<include name="WidgetListChannels" condition="PVR.HasTVChannels">
 						<param name="content_path" value="pvr://channels/tv/All channels/"/>
 						<param name="widget_header" value="$LOCALIZE[31016]"/>
 						<param name="widget_target" value="pvr"/>
@@ -637,7 +652,7 @@
 						<param name="item7_vis" value="False" />
 						<param name="item8_vis" value="False" />
 					</include>
-					<include name="WidgetListChannels">
+					<include name="WidgetListChannels" condition="PVR.HasRadioChannels">
 						<param name="content_path" value="pvr://channels/radio/All channels/"/>
 						<param name="widget_header" value="$LOCALIZE[31018]"/>
 						<param name="widget_target" value="files"/>
@@ -729,27 +744,27 @@
 							<left>540</left>
 							<orientation>horizontal</orientation>
 							<include name="WeatherIcon">
-								<param name="label" value="$INFO[Window(weather).Property(Current.Wind)]" />
+								<param name="label" value="Window(weather).Property(Current.Wind)" />
 								<param name="texture" value="icons/weather/wind.png" />
 								<param name="header" value="404" />
 							</include>
 							<include name="WeatherIcon">
-								<param name="label" value="$INFO[Window(weather).Property(Current.Humidity)]" />
+								<param name="label" value="Window(weather).Property(Current.Humidity)" />
 								<param name="texture" value="icons/weather/humidity.png" />
 								<param name="header" value="406" />
 							</include>
 							<include name="WeatherIcon">
-								<param name="label" value="$INFO[Window(weather).Property(Current.Precipitation)]" />
+								<param name="label" value="Window(weather).Property(Current.Precipitation)" />
 								<param name="texture" value="icons/weather/rain.png" />
 								<param name="header" value="33021" />
 							</include>
 							<include name="WeatherIcon">
-								<param name="label" value="$INFO[Window(weather).Property(Today.Sunrise)]" />
+								<param name="label" value="Window(weather).Property(Today.Sunrise)" />
 								<param name="texture" value="icons/weather/sunrise.png" />
 								<param name="header" value="405" />
 							</include>
 							<include name="WeatherIcon">
-								<param name="label" value="$INFO[Window(weather).Property(Today.Sunset)]" />
+								<param name="label" value="Window(weather).Property(Today.Sunset)" />
 								<param name="texture" value="icons/weather/sunset.png" />
 								<param name="header" value="403" />
 							</include>
@@ -1048,7 +1063,6 @@
 						</item>
 						<item>
 							<label>$LOCALIZE[19020]</label>
-							<label2>$INFO[Pvr.BackendChannels,$LOCALIZE[19019]: ]</label2>
 							<onclick>ActivateWindow(TVChannels)</onclick>
 							<thumb>icons/home/livetv.png</thumb>
 							<property name="id">livetv</property>
@@ -1056,7 +1070,6 @@
 						</item>
 						<item>
 							<label>$LOCALIZE[19021]</label>
-							<label2>$INFO[Pvr.BackendChannels,$LOCALIZE[19019]: ]</label2>
 							<onclick>ActivateWindow(RadioChannels)</onclick>
 							<thumb>icons/home/radio.png</thumb>
 							<property name="id">radio</property>
@@ -1085,7 +1098,6 @@
 						</item>
 						<item>
 							<label>$LOCALIZE[8]</label>
-							<label2>$INFO[Window(Weather).Property(WeatherProvider)]</label2>
 							<onclick>ActivateWindow(Weather)</onclick>
 							<thumb>icons/home/weather.png</thumb>
 							<property name="id">weather</property>

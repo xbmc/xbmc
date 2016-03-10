@@ -203,6 +203,7 @@
 					<width>auto</width>
 					<height>50</height>
 					<aligny>bottom</aligny>
+					<font>font12</font>
 					<textoffsety>10</textoffsety>
 					<label>$LOCALIZE[144]</label>
 					<shadowcolor>black</shadowcolor>
@@ -212,6 +213,7 @@
 					<height>50</height>
 					<aligny>bottom</aligny>
 					<textoffsety>10</textoffsety>
+					<font>font12</font>
 					<width>auto</width>
 					<textcolor>button_focus</textcolor>
 					<shadowcolor>black</shadowcolor>
@@ -220,7 +222,7 @@
 			<control type="grouplist">
 				<description>Build date</description>
 				<itemgap>10</itemgap>
-				<top>765</top>
+				<top>755</top>
 				<align>left</align>
 				<left>900</left>
 				<orientation>horizontal</orientation>
@@ -229,11 +231,13 @@
 					<width>auto</width>
 					<height>25</height>
 					<label>$LOCALIZE[174]</label>
+					<font>font12</font>
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="label" id="53">
 					<description>Kodi Build Date</description>
 					<width>auto</width>
+					<font>font12</font>
 					<textcolor>button_focus</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>

@@ -120,24 +120,15 @@
 					<shadowcolor>text_shadow</shadowcolor>
 				</control>
 				<control type="label">
-					<right>200</right>
+					<right>130</right>
 					<top>400</top>
 					<width>1160</width>
 					<height>40</height>
 					<label>$VAR[ListSubLabelVar]</label>
-					<animation effect="slide" start="0,0" end="70,0" time="0" condition="Stringcompare(ListItem.DBType,tvshow) | Stringcompare(ListItem.DBType,season)">Conditional</animation>
 					<font>font30_title</font>
 					<textcolor>button_focus</textcolor>
 					<shadowcolor>text_shadow</shadowcolor>
 					<align>right</align>
-				</control>
-				<control type="image">
-					<right>130</right>
-					<top>410</top>
-					<width>48</width>
-					<height>48</height>
-					<aspectratio>keep</aspectratio>
-					<texture>$VAR[MediaInfoOverlayVar]</texture>
 				</control>
 				<control type="grouplist">
 					<orientation>vertical</orientation>

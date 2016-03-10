@@ -72,13 +72,6 @@
 				<include name="MediaMenuListCommon">
 					<param name="viewtype_button_vis" value="Container.Content(artists) | Container.Content(albums) | Container.Content(musicvideos) | Container.Content(addons)" />
 				</include>
-				<control type="radiobutton" id="710">
-					<label>$LOCALIZE[31112]</label>
-					<include>MediaMenuItemsCommon</include>
-					<onclick>Skin.ToggleSetting(small_list)</onclick>
-					<selected>Skin.HasSetting(small_list)</selected>
-					<visible>Container.Content(songs)</visible>
-				</control>
 				<control type="label" id="203">
 					<description>Actions</description>
 					<include>MediaMenuLabelCommon</include>

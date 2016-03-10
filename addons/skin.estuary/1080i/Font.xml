@@ -5,19 +5,12 @@
 		<font>
 			<name>font10</name>
 			<filename>Lato-Regular.ttf</filename>
-			<size>23</size>
+			<size>24</size>
 		</font>
 		<font>
 			<name>font12</name>
 			<filename>Lato-Regular.ttf</filename>
 			<size>25</size>
-		</font>
-		<font>
-			<name>font_textbox</name>
-			<filename>Lato-Regular.ttf</filename>
-			<size>27</size>
-			<aspect>0.9</aspect>
-			<linespacing>1.17</linespacing>
 		</font>
 		<font>
 			<name>font13</name>
@@ -97,7 +90,7 @@
 		</font>
 		<font>
 			<name>Mono30</name>
-			<filename>Anonymous Pro.ttf</filename>
+			<filename>AnonymousPro.ttf</filename>
 			<size>30</size>
 		</font>
 	</fontset>

@@ -68,7 +68,7 @@
 				<control type="label">
 					<left>5</left>
 					<top>0</top>
-					<width>70</width>
+					<width>80</width>
 					<height>110</height>
 					<font>font24_title</font>
 					<align>center</align>
@@ -86,7 +86,7 @@
 					<visible>ListItem.IsRecording</visible>
 				</control>
 				<control type="label">
-					<left>80</left>
+					<left>90</left>
 					<top>5</top>
 					<width>350</width>
 					<height>40</height>
@@ -94,7 +94,7 @@
 					<label>$INFO[ListItem.Label]</label>
 				</control>
 				<control type="label">
-					<left>80</left>
+					<left>90</left>
 					<top>46</top>
 					<width>350</width>
 					<height>20</height>
@@ -105,7 +105,7 @@
 					<visible>IsEmpty(Listitem.Icon)</visible>
 				</control>
 				<control type="label">
-					<left>80</left>
+					<left>90</left>
 					<top>46</top>
 					<width>300</width>
 					<height>20</height>
@@ -116,7 +116,7 @@
 					<visible>!IsEmpty(Listitem.Icon)</visible>
 				</control>
 				<control type="label">
-					<left>80</left>
+					<left>90</left>
 					<top>75</top>
 					<width>90</width>
 					<height>20</height>
@@ -178,7 +178,7 @@
 				<control type="label">
 					<left>5</left>
 					<top>0</top>
-					<width>70</width>
+					<width>80</width>
 					<height>110</height>
 					<font>font24_title</font>
 					<align>center</align>
@@ -196,7 +196,7 @@
 					<visible>ListItem.IsRecording</visible>
 				</control>
 				<control type="label">
-					<left>80</left>
+					<left>90</left>
 					<top>5</top>
 					<width>350</width>
 					<height>40</height>
@@ -204,7 +204,7 @@
 					<label>$INFO[ListItem.Label]</label>
 				</control>
 				<control type="label">
-					<left>80</left>
+					<left>90</left>
 					<top>46</top>
 					<width>350</width>
 					<height>20</height>
@@ -215,7 +215,7 @@
 					<visible>IsEmpty(Listitem.Icon)</visible>
 				</control>
 				<control type="label">
-					<left>80</left>
+					<left>90</left>
 					<top>46</top>
 					<width>300</width>
 					<height>20</height>
@@ -226,7 +226,7 @@
 					<visible>!IsEmpty(Listitem.Icon)</visible>
 				</control>
 				<control type="label">
-					<left>80</left>
+					<left>90</left>
 					<top>75</top>
 					<width>90</width>
 					<height>20</height>

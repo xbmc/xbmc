@@ -5,9 +5,7 @@
 	<views>50,52,53,54,55,500</views>
 	<menucontrol>9000</menucontrol>
 	<controls>
-		<include name="DefaultBackground">
-			<param name="fanart" value="$INFO[ListItem.FolderPath]" />
-		</include>
+		<include>DefaultBackground</include>
 		<include>CommonScrollbars</include>
 		<control type="group" id="100">
 			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(addoninformation) | Window.IsActive(pictureinfo)">Conditional</animation>
