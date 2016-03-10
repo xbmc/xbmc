@@ -2338,7 +2338,7 @@ bool CApplication::OnAction(const CAction &action)
       if (!player.empty())
       {
         item.m_lStartOffset = (int)(GetTime() * 75);
-        PlayFile(item, player, true);
+        PlayFile(std::move(item), player, true);
       }
     }
     else
@@ -2348,8 +2348,7 @@ bool CApplication::OnAction(const CAction &action)
       std::string player = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(players);
       if (!player.empty())
       {
-        CFileItem item;
-        PlayFile(item, player, false);
+        PlayFile(CFileItem(), player, false);
       }
     }
   }
@@ -3205,11 +3204,11 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
   return PLAYBACK_FAIL;
 }
 
-PlayBackRet CApplication::PlayFile(const CFileItem& item, const std::string& player, bool bRestart)
+PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bool bRestart)
 {
   // Ensure the MIME type has been retrieved for http:// and shout:// streams
   if (item.GetMimeType().empty())
-    const_cast<CFileItem&>(item).FillInMimeType();
+    item.FillInMimeType();
 
   if (!bRestart)
   {
@@ -3258,7 +3257,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, const std::string& pla
   { // we modify the item so that it becomes a real URL
     CFileItem item_new(item);
     if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new))
-      return PlayFile(item_new, player, false);
+      return PlayFile(std::move(item_new), player, false);
     return PLAYBACK_FAIL;
   }
 
@@ -3275,7 +3274,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, const std::string& pla
   {
     CFileItem item_new(item);
     if (XFILE::CUPnPDirectory::GetResource(item.GetURL(), item_new))
-      return PlayFile(item_new, player, false);
+      return PlayFile(std::move(item_new), player, false);
     return PLAYBACK_FAIL;
   }
 #endif
