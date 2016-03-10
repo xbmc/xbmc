@@ -70,7 +70,7 @@ private:
   CB_INPUTSTREAMLib* m_callbacks; /*!< callback addresses */
 };
 
-}; /* namespace InputStream */
+} /* namespace InputStream */
 
-}; /* namespace KoidAPI */
-}; /* namespace V1 */
+} /* namespace KoidAPI */
+} /* namespace V1 */
