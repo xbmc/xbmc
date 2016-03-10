@@ -66,6 +66,7 @@ protected:
   void ClearBookmarks();
   static bool AddEpisodeBookmark();
   static bool AddBookmark(CVideoInfoTag *tag=NULL);
+  void Rename(int item);
   void Delete(int item);
   void Clear();
   void OnRefreshList();

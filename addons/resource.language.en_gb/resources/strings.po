@@ -18562,3 +18562,18 @@ msgstr ""
 msgctxt "#38041"
 msgid "Mixer"
 msgstr "" 
+
+#: xbmc/video/dialogs/GUIDialogVideoBookmarks.cpp
+msgctxt "#38042"
+msgid "Rename bookmark"
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogVideoBookmarks.cpp
+msgctxt "#38043"
+msgid "Removing all bookmarks"
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogVideoBookmarks.cpp
+msgctxt "#38044"
+msgid "Removing bookmark"
+msgstr ""
