@@ -40,8 +40,6 @@ typedef struct CB_INPUTSTREAMLib
   InputStreamAllocateDemuxPacket AllocateDemuxPacket;
 } CB_INPUTSTREAMLib;
 
-class CAddon;
-
 class CAddonCallbacksInputStream : public ADDON::IAddonInterface
 {
 public:
