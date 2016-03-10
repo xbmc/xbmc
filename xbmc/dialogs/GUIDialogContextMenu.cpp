@@ -229,11 +229,6 @@ void CGUIDialogContextMenu::GetContextButtons(const std::string &type, const CFi
   {
     if (item->IsDVD() || item->IsCDDA())
     {
-      // We need to check if there is a detected is inserted!
-      buttons.Add(CONTEXT_BUTTON_PLAY_DISC, 341); // Play CD/DVD!
-      if (CGUIWindowVideoBase::HasResumeItemOffset(item.get()))
-        buttons.Add(CONTEXT_BUTTON_RESUME_DISC, CGUIWindowVideoBase::GetResumeString(*(item.get())));     // Resume Disc
-
       buttons.Add(CONTEXT_BUTTON_EJECT_DISC, 13391);  // Eject/Load CD/DVD!
     }
     else // Must be HDD
@@ -317,12 +312,6 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
     return g_mediaManager.Eject(item->GetPath());
 
 #ifdef HAS_DVD_DRIVE
-  case CONTEXT_BUTTON_PLAY_DISC:
-    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), true, true); // restart
-
-  case CONTEXT_BUTTON_RESUME_DISC:
-    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), true, false); // resume
-
   case CONTEXT_BUTTON_EJECT_DISC:
     g_mediaManager.ToggleTray(g_mediaManager.TranslateDevicePath(item->GetPath())[0]);
 #endif

@@ -19,6 +19,8 @@
  */
 
 #include "ContextMenus.h"
+#include "Application.h"
+#include "Autorun.h"
 
 
 namespace CONTEXTMENU
@@ -73,5 +75,62 @@ bool CMarkUnWatched::Execute(const CFileItemPtr& item) const
   CVideoLibraryQueue::GetInstance().MarkAsWatched(item, false);
   return true;
 }
+
+std::string CResume::GetLabel(const CFileItem& item) const
+{
+  return CGUIWindowVideoBase::GetResumeString(item);
+}
+
+bool CResume::IsVisible(const CFileItem& item) const
+{
+  return CGUIWindowVideoBase::HasResumeItemOffset(&item);
+}
+
+static void SetPathAndPlay(CFileItem&& item)
+{
+  if (item.IsVideoDb())
+  {
+    item.SetProperty("original_listitem_url", item.GetPath());
+    item.SetPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
+  }
+  g_application.PlayFile(item, "");
+}
+
+bool CResume::Execute(const CFileItemPtr& item) const
+{
+#ifdef HAS_DVD_DRIVE
+  if (item->IsDVD() || item->IsCDDA())
+    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), true, false);
+#endif
+
+  CFileItem cpy(*item);
+  cpy.m_lStartOffset = STARTOFFSET_RESUME;
+  SetPathAndPlay(std::move(cpy));
+  return true;
+};
+
+std::string CPlay::GetLabel(const CFileItem& item) const
+{
+  if (CGUIWindowVideoBase::HasResumeItemOffset(&item))
+    return g_localizeStrings.Get(12023);
+  return g_localizeStrings.Get(208);
+}
+
+bool CPlay::IsVisible(const CFileItem& item) const
+{
+  if (item.m_bIsFolder)
+    return false; //TODO: implement
+  return item.IsVideo() || item.IsDVD() || item.IsCDDA();
+}
+
+bool CPlay::Execute(const CFileItemPtr& item) const
+{
+#ifdef HAS_DVD_DRIVE
+  if (item->IsDVD() || item->IsCDDA())
+    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), true, true);
+#endif
+  SetPathAndPlay(CFileItem(*item));
+  return true;
+};
 
 }

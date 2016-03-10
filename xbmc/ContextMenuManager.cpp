@@ -57,6 +57,8 @@ void CContextMenuManager::Init()
       Register(std::static_pointer_cast<CContextMenuAddon>(addon));
 
   m_items = {
+      std::make_shared<CONTEXTMENU::CResume>(),
+      std::make_shared<CONTEXTMENU::CPlay>(),
       std::make_shared<CONTEXTMENU::CAddonInfo>(),
       std::make_shared<CONTEXTMENU::CAddonSettings>(),
       std::make_shared<CONTEXTMENU::CCheckForUpdates>(),
