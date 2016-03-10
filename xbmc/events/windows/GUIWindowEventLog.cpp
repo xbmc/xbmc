@@ -168,10 +168,7 @@ void CGUIWindowEventLog::GetContextButtons(int itemNumber, CContextButtons &butt
   if (eventPtr == nullptr)
     return;
 
-  buttons.Add(CONTEXT_BUTTON_INFO, g_localizeStrings.Get(19033));
   buttons.Add(CONTEXT_BUTTON_DELETE, g_localizeStrings.Get(1210));
-  if (eventPtr->CanExecute())
-    buttons.Add(CONTEXT_BUTTON_ACTIVATE, eventPtr->GetExecutionLabel());
 }
 
 bool CGUIWindowEventLog::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -185,14 +182,8 @@ bool CGUIWindowEventLog::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   switch (button)
   {
-  case CONTEXT_BUTTON_INFO:
-    return OnSelect(item);
-
   case CONTEXT_BUTTON_DELETE:
     return OnDelete(item);
-
-  case CONTEXT_BUTTON_ACTIVATE:
-    return OnExecute(item);
 
   default:
     break;
