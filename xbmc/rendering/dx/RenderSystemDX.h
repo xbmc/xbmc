@@ -112,6 +112,11 @@ protected:
   void CheckInterlasedStereoView(void);
   void SetMaximumFrameLatency(uint8_t latency = -1);
 
+  bool GetStereoEnabled() const;
+  bool GetDisplayStereoEnabled() const;
+  void SetDisplayStereoEnabled(bool enable);
+  void UpdateDisplayStereoStatus(bool isfirst = false);
+
   virtual void Register(ID3DResource *resource);
   virtual void Unregister(ID3DResource *resource);
   virtual void UpdateMonitor() {};
@@ -172,6 +177,8 @@ protected:
 #ifdef _DEBUG
   ID3D11Debug*                m_d3dDebug = NULL;
 #endif
+  bool                        m_bDefaultStereoEnabled;
+  bool                        m_bStereoEnabled;
 };
 
 #endif
