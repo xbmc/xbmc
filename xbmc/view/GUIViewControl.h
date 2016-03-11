@@ -52,6 +52,7 @@ public:
   bool HasControl(int controlID) const;
   int GetNextViewMode(int direction = 1) const;
   int GetViewModeNumber(int number) const;
+  int GetViewModeCount() const;
   int GetViewModeByID(int id) const;
 
   int GetCurrentControl() const;
