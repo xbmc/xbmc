@@ -134,6 +134,9 @@ Audio decoders:
 Audio encoders:
     audioencoder.flac, audioencoder.lame, audioencoder.vorbis, audioencoder.wav
 
+Inputstream addons:
+    inputstream.mpd
+
 PVR addons:
     pvr.argustv, pvr.demo, pvr.dvblink, pvr.dvbviewer, pvr.filmon, pvr.hdhomerun, pvr.hts, pvr.iptvsimple,
     pvr.mediaportal.tvserver,pvr.mythtv, pvr.nextpvr, pvr.njoy, pvr.pctv, pvr.stalker, pvr.vbox, pvr.vdr.vnsi,
