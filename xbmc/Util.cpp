@@ -2145,6 +2145,29 @@ std::string CUtil::GetVobSubIdxFromSub(const std::string& vobSub)
   return std::string();
 }
 
+
+void CUtil::ScanForExternalAudio(const std::string& videoPath, std::vector<std::string>& vecAudio)
+{
+  CFileItem item(videoPath, false);
+  if ( item.IsInternetStream()
+   ||  item.IsPlayList()
+   ||  item.IsLiveTV()
+   || !item.IsVideo()) 
+    return;
+
+  std::string strBasePath;
+  std::string strAudio;  
+
+  GetVideoBasePathAndFileName(videoPath, strBasePath, strAudio);
+  
+  CFileItemList items;
+  const std::vector<std::string> common_sub_dirs = { "audio", "tracks"};
+  GetItemsToScan(strBasePath, g_advancedSettings.GetMusicExtensions(), common_sub_dirs, items);
+
+  std::vector<std::string> exts = StringUtils::Split(g_advancedSettings.GetMusicExtensions(), "|");
+  ScanPathsForAssociatedItems(strAudio, items, exts, vecAudio);
+}
+
 bool CUtil::CanBindPrivileged()
 {
 #ifdef TARGET_POSIX

@@ -1,4 +1,5 @@
-set(SOURCES DVDDemux.cpp
+set(SOURCES DemuxMultiSource.cpp
+            DVDDemux.cpp
             DVDDemuxBXA.cpp
             DVDDemuxCC.cpp
             DVDDemuxCDDA.cpp
@@ -8,7 +9,8 @@ set(SOURCES DVDDemux.cpp
             DVDDemuxVobsub.cpp
             DVDFactoryDemuxer.cpp)
 
-set(HEADERS DVDDemux.h
+set(HEADERS DemuxMultiSource.h
+            DVDDemux.h
             DVDDemuxBXA.h
             DVDDemuxCC.h
             DVDDemuxCDDA.h

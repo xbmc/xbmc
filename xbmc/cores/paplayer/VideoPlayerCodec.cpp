@@ -138,11 +138,13 @@ bool VideoPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
 
   CDemuxStream* pStream = NULL;
   m_nAudioStream = -1;
+  int64_t demuxerId = -1;
   for (auto stream : m_pDemuxer->GetStreams())
   {
     if (stream && stream->type == STREAM_AUDIO)
     {
       m_nAudioStream = stream->uniqueId;
+      demuxerId = stream->demuxerId;
       pStream = stream;
       break;
     }
@@ -239,7 +241,7 @@ bool VideoPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
   {
     m_bitRate = (int)(((m_pInputStream->GetLength()*1000) / m_TotalTime) * 8);
   }
-  m_CodecName = m_pDemuxer->GetStreamCodecName(m_nAudioStream);
+  m_CodecName = m_pDemuxer->GetStreamCodecName(demuxerId, m_nAudioStream);
 
   m_needConvert = false;
   if (NeedConvert(m_srcFormat.m_dataFormat))

@@ -392,6 +392,8 @@
 		7C973CFB1B5038580002A874 /* GUIDialogAudioDSPSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C973CF81B5038580002A874 /* GUIDialogAudioDSPSettings.cpp */; };
 		7C99B6A4133D342100FC2B16 /* CircularCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B6A2133D342100FC2B16 /* CircularCache.cpp */; };
 		7C99B7951340723F00FC2B16 /* GUIDialogPlayEject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B7931340723F00FC2B16 /* GUIDialogPlayEject.cpp */; };
+		7CA220071C921F74000FA3CD /* DemuxMultiSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CA220051C921F74000FA3CD /* DemuxMultiSource.cpp */; };
+		7CA220081C921F74000FA3CD /* DemuxMultiSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CA220051C921F74000FA3CD /* DemuxMultiSource.cpp */; };
 		7CAA20511079C8160096DE39 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */; };
 		7CAA25351085963B0096DE39 /* PasswordManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA25331085963B0096DE39 /* PasswordManager.cpp */; };
 		7CAA469019427AED00008885 /* PosixDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA468E19427AED00008885 /* PosixDirectory.cpp */; };
@@ -632,6 +634,8 @@
 		7CF80DCA19710DC2003B2B34 /* KeyboardLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF80DC719710DC2003B2B34 /* KeyboardLayout.cpp */; };
 		7CFC08381C5BA7D0000E5E73 /* DVDDemuxClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CFC08361C5BA7D0000E5E73 /* DVDDemuxClient.cpp */; };
 		7CFC08391C5BA7D0000E5E73 /* DVDDemuxClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CFC08361C5BA7D0000E5E73 /* DVDDemuxClient.cpp */; };
+		80204F121C91CD3600E8C88B /* InputStreamMultiSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 80204F0F1C91CD3600E8C88B /* InputStreamMultiSource.cpp */; };
+		80204F131C91CD3600E8C88B /* InputStreamMultiSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 80204F0F1C91CD3600E8C88B /* InputStreamMultiSource.cpp */; };
 		815EE6350E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE6330E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp */; };
 		83E0B2490F7C95FF0091643F /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83E0B2480F7C95FF0091643F /* Atomics.cpp */; };
 		880DBE4E0DC223FF00E26B71 /* MediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE4B0DC223FF00E26B71 /* MediaSource.cpp */; };
@@ -2860,6 +2864,8 @@
 		7C99B6A3133D342100FC2B16 /* CircularCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircularCache.h; sourceTree = "<group>"; };
 		7C99B7931340723F00FC2B16 /* GUIDialogPlayEject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPlayEject.cpp; sourceTree = "<group>"; };
 		7C99B7941340723F00FC2B16 /* GUIDialogPlayEject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPlayEject.h; sourceTree = "<group>"; };
+		7CA220051C921F74000FA3CD /* DemuxMultiSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DemuxMultiSource.cpp; sourceTree = "<group>"; };
+		7CA220061C921F74000FA3CD /* DemuxMultiSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemuxMultiSource.h; sourceTree = "<group>"; };
 		7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseRenderer.cpp; sourceTree = "<group>"; };
 		7CAA20501079C8160096DE39 /* BaseRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseRenderer.h; sourceTree = "<group>"; };
 		7CAA205B107AFC280096DE39 /* Job.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Job.h; sourceTree = "<group>"; };
@@ -3258,6 +3264,9 @@
 		7CF80DC819710DC2003B2B34 /* KeyboardLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardLayout.h; sourceTree = "<group>"; };
 		7CFC08361C5BA7D0000E5E73 /* DVDDemuxClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxClient.cpp; sourceTree = "<group>"; };
 		7CFC08371C5BA7D0000E5E73 /* DVDDemuxClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemuxClient.h; sourceTree = "<group>"; };
+		80204F0F1C91CD3600E8C88B /* InputStreamMultiSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputStreamMultiSource.cpp; sourceTree = "<group>"; };
+		80204F101C91CD3600E8C88B /* InputStreamMultiSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputStreamMultiSource.h; sourceTree = "<group>"; };
+		80204F111C91CD3600E8C88B /* InputStreamMultiStreams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputStreamMultiStreams.h; sourceTree = "<group>"; };
 		815EE6330E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamRTMP.cpp; sourceTree = "<group>"; };
 		815EE6340E17F1DC009FBE3C /* DVDInputStreamRTMP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamRTMP.h; sourceTree = "<group>"; };
 		82F6F0EA16F269BB0081CC3C /* Buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Buffer.h; path = commons/Buffer.h; sourceTree = "<group>"; };
@@ -7689,6 +7698,8 @@
 		E38E15480D25F9F900618676 /* DVDDemuxers */ = {
 			isa = PBXGroup;
 			children = (
+				7CA220061C921F74000FA3CD /* DemuxMultiSource.h */,
+				7CA220051C921F74000FA3CD /* DemuxMultiSource.cpp */,
 				7C4CED9F1C5E681E00BAD6CE /* DVDDemuxPacket.h */,
 				7CFC08361C5BA7D0000E5E73 /* DVDDemuxClient.cpp */,
 				7CFC08371C5BA7D0000E5E73 /* DVDDemuxClient.h */,
@@ -7737,6 +7748,9 @@
 				815EE6340E17F1DC009FBE3C /* DVDInputStreamRTMP.h */,
 				E38E15740D25F9FA00618676 /* DVDStateSerializer.cpp */,
 				E38E15750D25F9FA00618676 /* DVDStateSerializer.h */,
+				80204F0F1C91CD3600E8C88B /* InputStreamMultiSource.cpp */,
+				80204F101C91CD3600E8C88B /* InputStreamMultiSource.h */,
+				80204F111C91CD3600E8C88B /* InputStreamMultiStreams.h */,
 			);
 			path = DVDInputStreams;
 			sourceTree = "<group>";
@@ -9338,6 +9352,7 @@
 				E38E1F8F0D25F9FD00618676 /* DVDVideoPPFFmpeg.cpp in Sources */,
 				E38E1F910D25F9FD00618676 /* DVDDemux.cpp in Sources */,
 				7C8E023A1BA35D0B0072E8B2 /* PlayerBuiltins.cpp in Sources */,
+				80204F121C91CD3600E8C88B /* InputStreamMultiSource.cpp in Sources */,
 				E38E1F940D25F9FD00618676 /* DVDDemuxUtils.cpp in Sources */,
 				E38E1F970D25F9FD00618676 /* DVDDemuxSPU.cpp in Sources */,
 				E38E1F980D25F9FD00618676 /* DVDFactoryInputStream.cpp in Sources */,
@@ -10043,6 +10058,7 @@
 				C84828E2156CFCD8005A996F /* GUIWindowPVRRecordings.cpp in Sources */,
 				C84828E3156CFCD8005A996F /* GUIWindowPVRSearch.cpp in Sources */,
 				C84828E4156CFCD8005A996F /* GUIWindowPVRTimers.cpp in Sources */,
+				7CA220071C921F74000FA3CD /* DemuxMultiSource.cpp in Sources */,
 				C84828F5156CFD5E005A996F /* Epg.cpp in Sources */,
 				C84828F6156CFD5E005A996F /* EpgContainer.cpp in Sources */,
 				C84828F7156CFD5E005A996F /* EpgDatabase.cpp in Sources */,
@@ -10513,6 +10529,7 @@
 				F597B05C18A804E0005AADAE /* DVDVideoCodec.cpp in Sources */,
 				E49911E4174E5D3700741B6D /* DVDInputStreamNavigator.cpp in Sources */,
 				E49911E5174E5D3700741B6D /* DVDInputStreamPVRManager.cpp in Sources */,
+				80204F131C91CD3600E8C88B /* InputStreamMultiSource.cpp in Sources */,
 				E49911E6174E5D3700741B6D /* DVDInputStreamRTMP.cpp in Sources */,
 				E49911E8174E5D3700741B6D /* DVDStateSerializer.cpp in Sources */,
 				E49911E9174E5D3E00741B6D /* DVDSubtitleParserSSA.cpp in Sources */,
@@ -10850,6 +10867,7 @@
 				E4991351174E5EBE00741B6D /* FavouritesOperations.cpp in Sources */,
 				E4991352174E5EBE00741B6D /* FileItemHandler.cpp in Sources */,
 				E4991353174E5EBE00741B6D /* FileOperations.cpp in Sources */,
+				7CA220081C921F74000FA3CD /* DemuxMultiSource.cpp in Sources */,
 				E4991354174E5EBE00741B6D /* GUIOperations.cpp in Sources */,
 				E4991355174E5EBE00741B6D /* InputOperations.cpp in Sources */,
 				E4991356174E5EBE00741B6D /* JSONRPC.cpp in Sources */,

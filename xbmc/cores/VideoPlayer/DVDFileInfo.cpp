@@ -187,15 +187,19 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
   }
 
   int nVideoStream = -1;
+  int64_t demuxerId = -1;
   for (CDemuxStream* pStream : pDemuxer->GetStreams())
   {
     if (pStream)
     {
       // ignore if it's a picture attachment (e.g. jpeg artwork)
-      if(pStream->type == STREAM_VIDEO && !(pStream->flags & AV_DISPOSITION_ATTACHED_PIC))
+      if (pStream->type == STREAM_VIDEO && !(pStream->flags & AV_DISPOSITION_ATTACHED_PIC))
+      {
         nVideoStream = pStream->uniqueId;
+        demuxerId = pStream->demuxerId;
+      }
       else
-        pDemuxer->EnableStream(pStream->uniqueId, false);
+        pDemuxer->EnableStream(pStream->demuxerId, pStream->uniqueId, false);
     }
   }
 
@@ -207,7 +211,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
     CDVDVideoCodec *pVideoCodec;
     std::unique_ptr<CProcessInfo> pProcessInfo(CProcessInfo::CreateInstance());
 
-    CDVDStreamInfo hint(*pDemuxer->GetStream(nVideoStream), true);
+    CDVDStreamInfo hint(*pDemuxer->GetStream(demuxerId, nVideoStream), true);
     hint.software = true;
 
     if (hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_MPEG1VIDEO)
@@ -408,7 +412,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
       p->m_fAspect = ((CDemuxStreamVideo *)stream)->fAspect;
       if (p->m_fAspect == 0.0f)
         p->m_fAspect = (float)p->m_iWidth / p->m_iHeight;
-      p->m_strCodec = pDemux->GetStreamCodecName(stream->uniqueId);
+      p->m_strCodec = pDemux->GetStreamCodecName(stream->demuxerId, stream->uniqueId);
       p->m_iDuration = pDemux->GetStreamLength();
       p->m_strStereoMode = ((CDemuxStreamVideo *)stream)->stereo_mode;
       p->m_strLanguage = ((CDemuxStreamVideo *)stream)->language;
@@ -442,7 +446,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
       CStreamDetailAudio *p = new CStreamDetailAudio();
       p->m_iChannels = ((CDemuxStreamAudio *)stream)->iChannels;
       p->m_strLanguage = stream->language;
-      p->m_strCodec = pDemux->GetStreamCodecName(stream->uniqueId);
+      p->m_strCodec = pDemux->GetStreamCodecName(stream->demuxerId, stream->uniqueId);
       details.AddStream(p);
       retVal = true;
     }
