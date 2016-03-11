@@ -24,6 +24,7 @@ set(SOURCES Activity.cpp
             File.cpp
             Intent.cpp
             IntentFilter.cpp
+            InputManager.cpp
             JNIBase.cpp
             JNIThreading.cpp
             jutils.cpp
@@ -87,6 +88,7 @@ set(HEADERS Activity.h
             Environment.h
             File.h
             IntentFilter.h
+            InputManager.h
             Intent.h
             JNIBase.h
             JNIThreading.h
