@@ -24,6 +24,7 @@
 
 #include "FileItem.h"
 #include "filesystem/File.h"
+#include "GUIDialogContextMenu.h"
 #include "GUIDialogSmartPlaylistRule.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
@@ -128,6 +129,8 @@ bool CGUIDialogSmartPlaylistEditor::OnMessage(CGUIMessage& message)
         OnGroupBy();
       else if (iControl == CONTROL_GROUP_MIXED)
         OnGroupMixed();
+      else if (iControl == CONTROL_RULE_LIST && (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK))
+        OnPopupMenu(GetSelectedItem());
       else
         return CGUIDialog::OnMessage(message);
       return true;
@@ -181,6 +184,27 @@ bool CGUIDialogSmartPlaylistEditor::OnMessage(CGUIMessage& message)
     break;
   }
   return CGUIDialog::OnMessage(message);
+}
+
+void CGUIDialogSmartPlaylistEditor::OnPopupMenu(int item)
+{
+  if (item < 0 || item >= m_ruleLabels->Size())
+    return;
+  if (m_playlist.m_ruleCombination.m_rules.size() == 1 && m_playlist.m_ruleCombination.m_rules[0]->m_field == FieldNone)
+    return;
+  // highlight the item
+  m_ruleLabels->Get(item)->Select(true);
+
+  CContextButtons choices;
+  choices.Add(1, 15015);
+
+  int button = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+
+  // unhighlight the item
+  m_ruleLabels->Get(item)->Select(false);
+
+  if (button == 1)
+    OnRuleRemove(item);
 }
 
 void CGUIDialogSmartPlaylistEditor::OnRuleList(int item)
