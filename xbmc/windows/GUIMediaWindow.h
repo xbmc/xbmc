@@ -48,6 +48,7 @@ public:
   virtual void OnInitWindow();
   virtual bool IsMediaWindow() const { return true; }
   int GetViewContainerID() const { return m_viewControl.GetCurrentControl(); }
+  int GetViewCount() const { return m_viewControl.GetViewModeCount(); };
   virtual bool HasListItems() const { return true; }
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 

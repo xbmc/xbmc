@@ -455,6 +455,7 @@ const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
                                   { "foldername",       CONTAINER_FOLDERNAME },
                                   { "pluginname",       CONTAINER_PLUGINNAME },
                                   { "viewmode",         CONTAINER_VIEWMODE },
+                                  { "viewcount",        CONTAINER_VIEWCOUNT },
                                   { "totaltime",        CONTAINER_TOTALTIME },
                                   { "totalwatched",     CONTAINER_TOTALWATCHED },
                                   { "totalunwatched",   CONTAINER_TOTALUNWATCHED },
@@ -1997,6 +1998,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       }
       break;
     }
+  case CONTAINER_VIEWCOUNT:
   case CONTAINER_VIEWMODE:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
@@ -2004,7 +2006,12 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       {
         const CGUIControl *control = window->GetControl(window->GetViewContainerID());
         if (control && control->IsContainer())
-          strLabel = ((IGUIContainer *)control)->GetLabel();
+        {
+          if (info == CONTAINER_VIEWMODE)
+            strLabel = ((IGUIContainer *)control)->GetLabel();
+          else if (info == CONTAINER_VIEWCOUNT)
+            strLabel = StringUtils::Format("%i", window->GetViewCount());
+        }
       }
       break;
     }
