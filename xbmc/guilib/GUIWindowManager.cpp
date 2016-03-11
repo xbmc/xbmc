@@ -1423,6 +1423,20 @@ bool CGUIWindowManager::IsWindowActive(int id, bool ignoreClosing /* = true */) 
   return false; // window isn't active
 }
 
+bool CGUIWindowManager::HasInfoDialog() const
+{
+  // run through the dialogs
+  CSingleLock lock(g_graphicsContext);
+  for (ciDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
+  {
+    CGUIWindow *window = *it;
+    if (window->IsInfoDialog())
+      return true;
+  }
+  return false; // window isn't active
+}
+
+
 bool CGUIWindowManager::IsWindowActive(const std::string &xmlFile, bool ignoreClosing /* = true */) const
 {
   CSingleLock lock(g_graphicsContext);

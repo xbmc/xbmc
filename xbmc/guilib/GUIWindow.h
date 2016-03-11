@@ -149,6 +149,7 @@ public:
   virtual bool IsDialog() const { return false; };
   virtual bool IsDialogRunning() const { return false; };
   virtual bool IsModalDialog() const { return false; };
+  virtual bool IsInfoDialog() const { return false;};
   virtual bool IsMediaWindow() const { return false; };
   virtual bool HasListItems() const { return false; };
   virtual bool IsSoundEnabled() const { return true; };

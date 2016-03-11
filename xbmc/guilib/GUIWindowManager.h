@@ -164,6 +164,7 @@ public:
   bool HasModalDialog(const std::vector<DialogModalityType>& types = std::vector<DialogModalityType>()) const;
   bool HasDialogOnScreen() const;
   bool IsWindowActive(int id, bool ignoreClosing = true) const;
+  bool HasInfoDialog() const;
   bool IsWindowVisible(int id) const;
   bool IsWindowTopMost(int id) const;
   bool IsWindowActive(const std::string &xmlFile, bool ignoreClosing = true) const;

@@ -32,6 +32,7 @@ public:
   virtual ~CGUIDialogPictureInfo(void);
   void SetPicture(CFileItem *item);
   virtual void FrameMove();
+  virtual bool IsInfoDialog() const override { return true; };
 
 protected:
   virtual void OnInitWindow();
