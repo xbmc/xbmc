@@ -39,6 +39,7 @@ namespace PVR
     virtual ~CGUIDialogPVRGuideInfo(void);
     virtual bool OnMessage(CGUIMessage& message);
     virtual bool HasListItems() const { return true; };
+    virtual bool IsInfoDialog() const override { return true; };
     virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 
     void SetProgInfo(const CFileItem *item);

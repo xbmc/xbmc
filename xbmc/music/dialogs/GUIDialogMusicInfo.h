@@ -44,6 +44,7 @@ public:
   bool HasUpdatedThumb() const { return m_hasUpdatedThumb; };
 
   bool HasListItems() const override { return true; };
+  virtual bool IsInfoDialog() const override { return true; };
   CFileItemPtr GetCurrentListItem(int offset = 0) override;
   const CFileItemList& CurrentDirectory() const { return *m_albumSongs; };
   static void AddItemPathToFileBrowserSources(VECSOURCES &sources, const CFileItem &item);

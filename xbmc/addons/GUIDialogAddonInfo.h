@@ -36,7 +36,7 @@ public:
   
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return m_item; }
   virtual bool HasListItems() const { return true; }
-
+  virtual bool IsInfoDialog() const override { return true; };
   static bool ShowForItem(const CFileItemPtr& item);
 
   // job callback
