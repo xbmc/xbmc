@@ -281,6 +281,7 @@ SectionEnd
 !include /nonfatal "audiodecoder-addons.nsi"
 !include /nonfatal "audioencoder-addons.nsi"
 !include /nonfatal "audiodsp-addons.nsi"
+!include /nonfatal "inputstream-addons.nsi"
 !include /nonfatal "pvr-addons.nsi"
 !include /nonfatal "skin-addons.nsi"
 !include /nonfatal "screensaver-addons.nsi"
