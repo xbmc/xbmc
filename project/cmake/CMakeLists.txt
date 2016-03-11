@@ -280,6 +280,7 @@ core_link_library(XBMC_codec addons/library.xbmc.codec/libXBMC_codec)
 core_link_library(KODI_guilib addons/library.kodi.guilib/libKODI_guilib)
 core_link_library(KODI_adsp addons/library.kodi.adsp/libKODI_adsp)
 core_link_library(XBMC_pvr   addons/library.xbmc.pvr/libXBMC_pvr)
+core_link_library(KODI_peripheral addons/library.kodi.peripheral/libKODI_peripheral)
 
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/system/players/VideoPlayer)
 add_custom_target(wrap-libraries ALL DEPENDS ${WRAP_FILES})

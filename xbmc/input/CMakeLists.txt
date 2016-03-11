@@ -32,11 +32,6 @@ set(HEADERS ButtonTranslator.h
             XBMC_mouse.h
             XBMC_vkeys.h)
 
-if(SDL_FOUND)
-  list(APPEND SOURCES SDLJoystick.cpp)
-  list(APPEND HEADERS SDLJoystick.h)
-endif()
-
 core_add_library(input)
 
 if(ENABLE_INTERNAL_FFMPEG)
