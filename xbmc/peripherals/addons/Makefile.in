@@ -1,0 +1,10 @@
+SRCS  = AddonButtonMap.cpp
+SRCS += AddonButtonMapping.cpp
+SRCS += AddonInputHandling.cpp
+SRCS += PeripheralAddon.cpp
+SRCS += PeripheralAddonTranslator.cpp
+
+LIB = peripheral-addons.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

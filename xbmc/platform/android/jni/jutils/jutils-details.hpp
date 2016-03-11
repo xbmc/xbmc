@@ -78,6 +78,52 @@ struct jcast_helper<std::vector<T>, jobjectArray>
 };
 
 template <>
+struct jcast_helper<std::vector<int>, jintArray>
+{
+    static std::vector<int> cast(jintArray const &v)
+    {
+        JNIEnv *env = xbmc_jnienv();
+        jsize size = 0;
+        if(v)
+            size = env->GetArrayLength(v);
+
+        std::vector<int> vec;
+        vec.reserve(size);
+
+        int *elements = env->GetIntArrayElements(v, NULL);
+        for (int i = 0; i < size; i++)
+        {
+            vec.emplace_back(elements[i]);
+        }
+        env->ReleaseIntArrayElements(v, elements, JNI_ABORT);
+        return vec;
+    }
+};
+
+template <>
+struct jcast_helper<std::vector<int64_t>, jlongArray>
+{
+    static std::vector<int64_t> cast(jlongArray const &v)
+    {
+        JNIEnv *env = xbmc_jnienv();
+        jsize size = 0;
+        if(v)
+            size = env->GetArrayLength(v);
+
+        std::vector<int64_t> vec;
+        vec.reserve(size);
+
+        int64_t *elements = env->GetLongArrayElements(v, NULL);
+        for (int i = 0; i < size; i++)
+        {
+            vec.emplace_back(elements[i]);
+        }
+        env->ReleaseLongArrayElements(v, elements, JNI_ABORT);
+        return vec;
+    }
+};
+
+template <>
 struct jcast_helper<std::vector<float>, jfloatArray>
 {
     static std::vector<float> cast(jfloatArray const &v)
@@ -136,6 +182,24 @@ struct jcast_helper<std::vector<T>, jhobjectArray>
     static std::vector<T> cast(jhobjectArray const &v)
     {
         return jcast_helper<std::vector<T>, jobjectArray>::cast(v.get());
+    }
+};
+
+template <>
+struct jcast_helper<std::vector<int>, jhintArray>
+{
+    static std::vector<int> cast(jhintArray const &v)
+    {
+        return jcast_helper<std::vector<int>, jintArray>::cast(v.get());
+    }
+};
+
+template <>
+struct jcast_helper<std::vector<int64_t>, jhlongArray>
+{
+    static std::vector<int64_t> cast(jhlongArray const &v)
+    {
+        return jcast_helper<std::vector<int64_t>, jlongArray>::cast(v.get());
     }
 };
 

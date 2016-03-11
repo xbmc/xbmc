@@ -3,6 +3,7 @@ xbmc/input/touch                        input/touch
 xbmc/input/touch/generic                input/touch/generic
 xbmc/network/linux                      network/linux
 xbmc/peripherals/bus/linux              peripherals/bus/linux
+xbmc/peripherals/bus/android            peripherals/bus/android
 xbmc/powermanagement/android            powermanagement/android
 xbmc/storage/android                    storage/android
 xbmc/filesystem/posix                   filesystem/posix

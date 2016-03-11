@@ -11,7 +11,7 @@ EC_DIRS= \
 
 DVDPCODECS_DIRS= \
 	lib \
-	lib/libdvd 
+	lib/libdvd
 
 VideoPlayer_ARCHIVES=xbmc/cores/VideoPlayer/VideoPlayer.a \
                    xbmc/cores/VideoPlayer/DVDCodecs/DVDCodecs.a \
@@ -32,6 +32,7 @@ DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/addons/binary/interfaces/api1/Codec/addon-callbacks-codec.a \
                    xbmc/addons/binary/interfaces/api1/GUI/addon-callbacks-gui.a \
                    xbmc/addons/binary/interfaces/api1/InputStream/addon-callbacks-inputstream.a \
+                   xbmc/addons/binary/interfaces/api1/Peripheral/addon-callbacks-peripheral.a \
                    xbmc/addons/binary/interfaces/api1/PVR/addon-callbacks-pvr.a \
                    xbmc/cdrip/cdrip.a \
                    xbmc/contrib/kissfft/kissfft.a \
@@ -53,6 +54,9 @@ DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/filesystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
                    xbmc/filesystem/VideoDatabaseDirectory/videodatabasedirectory.a \
                    xbmc/filesystem/filesystem.a \
+                   xbmc/games/controllers/controllers.a \
+                   xbmc/games/controllers/guicontrols/controllerguicontrols.a \
+                   xbmc/games/controllers/windows/controllerwindows.a \
                    xbmc/guilib/guilib.a \
                    xbmc/input/input.a \
                    xbmc/interfaces/builtins/builtins.a \
@@ -76,6 +80,7 @@ DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/network/dacp/dacp.a \
                    xbmc/network/websocket/websocket.a \
                    xbmc/network/network.a \
+                   xbmc/peripherals/addons/peripheral-addons.a \
                    xbmc/peripherals/bus/peripheral-bus.a \
                    xbmc/peripherals/devices/peripheral-devices.a \
                    xbmc/peripherals/dialogs/peripheral-dialogs.a \
@@ -153,6 +158,8 @@ INSTALL_FILTER += .*repository\.pvr-ios\.xbmc\.org.*
 INSTALL_FILTER += .*repository\.pvr-win32\.xbmc\.org.*
 INSTALL_FILTER += .*repository\.pvr-osx.*\.xbmc\.org.*
 ifeq (@USE_ANDROID@,1)
+DIRECTORY_ARCHIVES += xbmc/input/joysticks/input_joysticks.a
+DIRECTORY_ARCHIVES += xbmc/input/joysticks/generic/input_joysticks_generic.a
 DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
 DIRECTORY_ARCHIVES += xbmc/input/touch/input_touch.a
 DIRECTORY_ARCHIVES += xbmc/input/touch/generic/input_touch_generic.a
@@ -161,6 +168,8 @@ DIRECTORY_ARCHIVES += xbmc/powermanagement/android/powermanagement_android.a
 DIRECTORY_ARCHIVES += xbmc/storage/android/storage_android.a
 DIRECTORY_ARCHIVES += xbmc/windowing/X11/windowing_X11.a
 else
+DIRECTORY_ARCHIVES += xbmc/input/joysticks/input_joysticks.a
+DIRECTORY_ARCHIVES += xbmc/input/joysticks/generic/input_joysticks_generic.a
 DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
 DIRECTORY_ARCHIVES += xbmc/input/touch/input_touch.a
 DIRECTORY_ARCHIVES += xbmc/input/touch/generic/input_touch_generic.a
@@ -203,7 +212,8 @@ LIBADDON_DIRS=\
 	lib/addons/library.xbmc.codec \
 	lib/addons/library.xbmc.pvr \
 	lib/addons/library.kodi.guilib \
-	lib/addons/library.kodi.inputstream
+	lib/addons/library.kodi.inputstream \
+	lib/addons/library.kodi.peripheral \
 
 ESTUARY_MEDIA=addons/skin.estuary/media
 SKIN_DIRS=$(ESTUARY_MEDIA)
@@ -325,6 +335,7 @@ libaddon: exports
 	$(MAKE) -C lib/addons/library.kodi.audioengine
 	$(MAKE) -C lib/addons/library.xbmc.codec
 	$(MAKE) -C lib/addons/library.kodi.guilib
+	$(MAKE) -C lib/addons/library.kodi.peripheral
 	$(MAKE) -C lib/addons/library.xbmc.pvr
 	$(MAKE) -C lib/addons/library.kodi.inputstream
 dvdpcodecs: dllloader

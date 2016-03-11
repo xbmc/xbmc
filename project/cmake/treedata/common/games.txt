@@ -1,0 +1,3 @@
+xbmc/games/controllers             games/controllers
+xbmc/games/controllers/guicontrols games/controllers/guicontrols
+xbmc/games/controllers/windows     games/controllers/windows

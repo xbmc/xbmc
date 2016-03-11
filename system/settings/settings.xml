@@ -2754,11 +2754,12 @@
           <control type="toggle" />
           <default>true</default>
         </setting>
-        <setting id="input.enablejoystick" type="boolean" label="35100" help="36378">
-          <requirement>HAS_SDL_JOYSTICK</requirement>
+        <setting id="input.controllerconfig" type="action" label="35063" help="35064">
           <level>0</level>
-          <default>true</default>
-          <control type="toggle" />
+          <dependencies>
+            <dependency type="enable" on="property" name="SupportsPeripheralControllers" />
+          </dependencies>
+          <control type="button" format="action" />
         </setting>
       </group>
     </category>

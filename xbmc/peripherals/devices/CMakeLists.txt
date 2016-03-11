@@ -3,6 +3,7 @@ set(SOURCES Peripheral.cpp
             PeripheralDisk.cpp
             PeripheralHID.cpp
             PeripheralImon.cpp
+            PeripheralJoystick.cpp
             PeripheralNIC.cpp
             PeripheralNyxboard.cpp
             PeripheralTuner.cpp)
@@ -12,6 +13,7 @@ set(HEADERS Peripheral.h
             PeripheralDisk.h
             PeripheralHID.h
             PeripheralImon.h
+            PeripheralJoystick.h
             PeripheralNIC.h
             PeripheralNyxboard.h
             PeripheralTuner.h)

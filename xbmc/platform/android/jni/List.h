@@ -28,8 +28,8 @@ public:
   CJNIList(const jni::jhobject &object) : CJNIBase(object){};
   ~CJNIList(){};
 
-  T   get(int index);
-  int size();
+  T   get(int index) const;
+  int size() const;
 
 private:
   CJNIList();

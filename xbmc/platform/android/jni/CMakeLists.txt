@@ -38,6 +38,7 @@ set(SOURCES Activity.cpp
             MediaFormat.cpp
             MediaStore.cpp
             NetworkInfo.cpp
+            Os.cpp
             PackageItemInfo.cpp
             PackageManager.cpp
             PowerManager.cpp
@@ -102,6 +103,7 @@ set(HEADERS Activity.h
             MediaFormat.h
             MediaStore.h
             NetworkInfo.h
+            Os.h
             PackageItemInfo.h
             PackageManager.h
             PowerManager.h

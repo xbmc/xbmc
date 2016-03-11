@@ -34,6 +34,8 @@
 #include "addons/Visualisation.h"
 #include "addons/Webinterface.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSPAddon.h"
+#include "games/controllers/Controller.h"
+#include "peripherals/addons/PeripheralAddon.h"
 #include "pvr/addons/PVRClient.h"
 
 
@@ -86,6 +88,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
     case ADDON_AUDIOENCODER:
     case ADDON_AUDIODECODER:
     case ADDON_INPUTSTREAM:
+    case ADDON_PERIPHERALDLL:
     { // begin temporary platform handling for Dlls
       // ideally platforms issues will be handled by C-Pluff
       // this is not an attempt at a solution
@@ -131,8 +134,11 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
         return CAudioDecoder::FromExtension(std::move(m_props), m_extPoint);
       else if (type == ADDON_INPUTSTREAM)
         return CInputStream::FromExtension(std::move(m_props), m_extPoint);
-      else
-        return std::make_shared<CScreenSaver>(std::move(m_props));;
+      else if (type == ADDON_SCREENSAVER)
+        return std::make_shared<CScreenSaver>(std::move(m_props));
+      else if (type == ADDON_PERIPHERALDLL)
+        return PERIPHERALS::CPeripheralAddon::FromExtension(std::move(m_props), m_extPoint);
+      break;
     }
     case ADDON_SKIN:
       return CSkinInfo::FromExtension(std::move(m_props), m_extPoint);
@@ -146,6 +152,8 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       return CRepository::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_CONTEXT_ITEM:
       return CContextMenuAddon::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_GAME_CONTROLLER:
+      return GAME::CController::FromExtension(std::move(m_props), m_extPoint);
     default:
       break;
   }
@@ -208,6 +216,10 @@ AddonPtr CAddonBuilder::FromProps(AddonProps addonProps)
       return AddonPtr(new CContextMenuAddon(std::move(addonProps)));
     case ADDON_INPUTSTREAM:
       return AddonPtr(new CInputStream(std::move(addonProps)));
+    case ADDON_PERIPHERALDLL:
+      return AddonPtr(new PERIPHERALS::CPeripheralAddon(std::move(addonProps), false, false)); // TODO
+    case ADDON_GAME_CONTROLLER:
+      return AddonPtr(new GAME::CController(std::move(addonProps)));
     default:
       break;
   }

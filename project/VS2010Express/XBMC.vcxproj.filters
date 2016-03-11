@@ -421,6 +421,33 @@
     <Filter Include="addons\binary\interfaces\api1\PVR">
       <UniqueIdentifier>{c3708f40-3139-4ee9-b8f6-c6bcc22bb1c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="input\joysticks">
+      <UniqueIdentifier>{5d8049b8-4689-4ff0-bf4f-1f0a308e5b44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="input\joysticks\generic">
+      <UniqueIdentifier>{80a8356f-f3be-46b5-be2e-714a42764ee1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="peripherals\addons">
+      <UniqueIdentifier>{15c34cc2-9101-4038-9df4-4357d83a9d0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="peripherals\bus\virtual">
+      <UniqueIdentifier>{6b33e5ae-5edf-4c33-b87f-3ee9115eb01d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\Peripheral">
+      <UniqueIdentifier>{bc7eb8ab-3f2e-4346-8546-7243b658fa30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="games">
+      <UniqueIdentifier>{336d29fc-9a49-40a8-9295-a8d1062c540c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="games\controllers">
+      <UniqueIdentifier>{d0ae0c22-0869-416b-92c7-aa1dc14a58be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="games\controllers\guicontrols">
+      <UniqueIdentifier>{891f4e3d-e135-4ea9-8571-2b6ad3b1622d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="games\controllers\windows">
+      <UniqueIdentifier>{9e3dd585-08e1-4dae-bc21-05e49697ef94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -2223,9 +2250,6 @@
     <ClCompile Include="..\..\xbmc\utils\RecentlyAddedJob.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\input\windows\WINJoystick.cpp">
-      <Filter>input\windows</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\ImageFile.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -3336,6 +3360,99 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\binary\interfaces\AddonInterfaces.cpp">
       <Filter>addons\binary\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\DriverPrimitive.cpp">
+      <Filter>input\joysticks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\JoystickMonitor.cpp">
+      <Filter>input\joysticks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\JoystickTranslator.cpp">
+      <Filter>input\joysticks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\KeymapHandler.cpp">
+      <Filter>input\joysticks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\addons\PeripheralAddonTranslator.cpp">
+      <Filter>peripherals\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\addons\PeripheralAddon.cpp">
+      <Filter>peripherals\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\bus\virtual\PeripheralBusAddon.cpp">
+      <Filter>peripherals\bus\virtual</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralJoystick.cpp">
+      <Filter>peripherals\devices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\EventScanner.cpp">
+      <Filter>peripherals</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\EventScanRate.cpp">
+      <Filter>peripherals</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\Peripheral\AddonCallbacksPeripheral.cpp">
+      <Filter>addons\binary\interfaces\api1\Peripheral</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\Controller.cpp">
+      <Filter>games\controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\ControllerFeature.cpp">
+      <Filter>games\controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\ControllerLayout.cpp">
+      <Filter>games\controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\ControllerTranslator.cpp">
+      <Filter>games\controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\DefaultJoystick.cpp">
+      <Filter>input\joysticks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIGameController.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\windows\GUIConfigurationWizard.cpp">
+      <Filter>games\controllers\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\windows\GUIControllerList.cpp">
+      <Filter>games\controllers\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\windows\GUIControllerWindow.cpp">
+      <Filter>games\controllers\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\windows\GUIFeatureList.cpp">
+      <Filter>games\controllers\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIAnalogStickButton.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIControllerButton.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIFeatureButton.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIScalarFeatureButton.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\generic\FeatureHandling.cpp">
+      <Filter>input\joysticks\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\generic\InputHandling.cpp">
+      <Filter>input\joysticks\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\generic\ButtonMapping.cpp">
+      <Filter>input\joysticks\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\addons\AddonButtonMapping.cpp">
+      <Filter>peripherals\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\addons\AddonInputHandling.cpp">
+      <Filter>peripherals\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\addons\AddonButtonMap.cpp">
+      <Filter>peripherals\addons</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5358,9 +5475,6 @@
     <ClInclude Include="..\..\xbmc\utils\RecentlyAddedJob.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\input\windows\WINJoystick.h">
-      <Filter>input\windows</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\ImageFile.h">
       <Filter>filesystem</Filter>
     </ClInclude>
@@ -6457,6 +6571,147 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\binary\interfaces\IAddonInterface.h">
       <Filter>addons\binary\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\DriverPrimitive.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\IKeymapHandler.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\JoystickMonitor.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\JoystickTranslator.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\JoystickTypes.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\JoystickUtils.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\KeymapHandler.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\DllPeripheral.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\addons\PeripheralAddonTranslator.h">
+      <Filter>peripherals\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\addons\PeripheralAddon.h">
+      <Filter>peripherals\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\bus\virtual\PeripheralBusAddon.h">
+      <Filter>peripherals\bus\virtual</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralJoystick.h">
+      <Filter>peripherals\devices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\EventScanner.h">
+      <Filter>peripherals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\EventScanRate.h">
+      <Filter>peripherals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\Peripheral\AddonCallbacksPeripheral.h">
+      <Filter>addons\binary\interfaces\api1\Peripheral</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_peripheral_callbacks.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_peripheral_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_peripheral_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_peripheral_utils.hpp">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerTranslator.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerTypes.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\Controller.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerDefinitions.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerFeature.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerLayout.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\DefaultJoystick.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIGameController.h">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIFeatureList.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\IConfigurationWindow.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIConfigurationWizard.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIControllerDefines.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIControllerList.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIControllerWindow.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIAnalogStickButton.h">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIControllerButton.h">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIFeatureButton.h">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIScalarFeatureButton.h">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\generic\ButtonMapping.h">
+      <Filter>input\joysticks\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\generic\FeatureHandling.h">
+      <Filter>input\joysticks\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\generic\InputHandling.h">
+      <Filter>input\joysticks\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\IButtonMapper.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\IDriverHandler.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\IInputHandler.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\IButtonMap.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\addons\AddonButtonMapping.h">
+      <Filter>peripherals\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\addons\AddonInputHandling.h">
+      <Filter>peripherals\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\addons\AddonButtonMap.h">
+      <Filter>peripherals\addons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
