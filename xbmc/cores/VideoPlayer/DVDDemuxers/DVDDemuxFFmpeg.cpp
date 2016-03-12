@@ -622,9 +622,9 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromURL(const CURL &url)
         av_dict_set(&options, "user-agent", value.c_str(), 0);
         hasUserAgent = true;
       }
-      else if (name != "auth" && name != "encoding")
-        // all other protocol options can be added as http header.
-        headers.append(it->first).append(": ").append(value).append("\r\n");
+      // we don't add blindly all options to headers anymore
+      // if anybody wants to pass options to ffmpeg, explicitly prefix those
+      // to be identified here
     }
     if (!hasUserAgent)
       // set default xbmc user-agent.
