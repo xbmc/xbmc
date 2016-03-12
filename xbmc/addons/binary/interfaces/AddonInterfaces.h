@@ -146,4 +146,4 @@ namespace ADDON
     void*     m_helperPeripheral;
   };
 
-}; /* namespace ADDON */
+} /* namespace ADDON */

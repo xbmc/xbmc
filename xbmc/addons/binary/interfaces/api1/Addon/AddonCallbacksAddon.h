@@ -169,7 +169,7 @@ private:
   CB_AddOnLib  *m_callbacks; /*!< callback addresses */
 };
 
-}; /* namespace AddOn */
+} /* namespace AddOn */
 
-}; /* namespace KodiAPI */
-}; /* namespace V1 */
+} /* namespace KodiAPI */
+} /* namespace V1 */

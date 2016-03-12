@@ -26,7 +26,7 @@
 namespace ADDON
 {
   class CAddon;
-};
+}
 
 namespace V1
 {
@@ -441,6 +441,6 @@ private:
   CB_GUILib    *m_callbacks;
 };
 
-}; /* namespace GUI */
-}; /* namespace KodiAPI */
-}; /* namespace V1 */
+} /* namespace GUI */
+} /* namespace KodiAPI */
+} /* namespace V1 */

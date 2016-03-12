@@ -19,7 +19,6 @@
  *
  */
 
-//#include "system.h"
 #include "AddonCallbacksGUI.h"
 #include "AddonGUIRenderingControl.h"
 #include "AddonGUIWindow.h"
@@ -1916,6 +1915,6 @@ int CAddonCallbacksGUI::Dialog_Select(const char *heading, const char *entries[]
 }
 //@}
 
-}; /* namespace GUI */
-}; /* namespace KodiAPI */
-}; /* namespace V1 */
+} /* namespace GUI */
+} /* namespace KodiAPI */
+} /* namespace V1 */

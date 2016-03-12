@@ -55,7 +55,7 @@ private:
   CB_CodecLib*                           m_callbacks; /*!< callback addresses */
 };
 
-}; /* namespace Codec */
+} /* namespace Codec */
 
-}; /* namespace KoidAPI */
-}; /* namespace V1 */
+} /* namespace KoidAPI */
+} /* namespace V1 */

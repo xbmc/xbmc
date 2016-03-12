@@ -40,8 +40,6 @@ typedef struct CB_INPUTSTREAMLib
   InputStreamAllocateDemuxPacket AllocateDemuxPacket;
 } CB_INPUTSTREAMLib;
 
-class CAddon;
-
 class CAddonCallbacksInputStream : public ADDON::IAddonInterface
 {
 public:
@@ -72,7 +70,7 @@ private:
   CB_INPUTSTREAMLib* m_callbacks; /*!< callback addresses */
 };
 
-}; /* namespace InputStream */
+} /* namespace InputStream */
 
-}; /* namespace KoidAPI */
-}; /* namespace V1 */
+} /* namespace KoidAPI */
+} /* namespace V1 */

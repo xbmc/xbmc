@@ -401,7 +401,7 @@ void CAddonCallbacksAudioEngine::AEStream_SetResampleRatio(void *AddonData, AESt
   ((IAEStream*)StreamHandle)->SetResampleRatio(Ratio);
 }
 
-}; /* namespace AudioEngine */
+} /* namespace AudioEngine */
 
-}; /* namespace KodiAPI */
-}; /* namespace V1 */
+} /* namespace KodiAPI */
+} /* namespace V1 */

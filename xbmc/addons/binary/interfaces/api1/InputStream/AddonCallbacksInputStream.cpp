@@ -21,8 +21,6 @@
 #include "addons/Addon.h"
 #include "AddonCallbacksInputStream.h"
 
-using namespace ADDON;
-
 namespace V1
 {
 namespace KodiAPI
@@ -55,7 +53,7 @@ DemuxPacket* CAddonCallbacksInputStream::InputStreamAllocateDemuxPacket(void *ad
   return CDVDDemuxUtils::AllocateDemuxPacket(iDataSize);
 }
 
-}; /* namespace InputStream */
+} /* namespace InputStream */
 
-}; /* namespace KodiAPI */
-}; /* namespace V1 */
+} /* namespace KodiAPI */
+} /* namespace V1 */

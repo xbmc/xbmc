@@ -270,7 +270,7 @@ private:
   CB_AudioEngineLib   *m_callbacks; /*!< callback addresses */
 };
 
-}; /* namespace AudioEngine */
+} /* namespace AudioEngine */
 
-}; /* namespace KodiAPI */
-}; /* namespace V1 */
+} /* namespace KodiAPI */
+} /* namespace V1 */

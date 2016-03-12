@@ -194,7 +194,7 @@ private:
   CB_ADSPLib   *m_callbacks; /*!< callback addresses */
 };
 
-}; /* namespace AudioDSP */
+} /* namespace AudioDSP */
 
-}; /* namespace KodiAPI */
-}; /* namespace V1 */
+} /* namespace KodiAPI */
+} /* namespace V1 */

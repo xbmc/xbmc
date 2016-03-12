@@ -353,6 +353,6 @@ void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)
   }
 }
 
-}; /* namespace GUI */
-}; /* namespace KodiAPI */
-}; /* namespace V1 */
+} /* namespace GUI */
+} /* namespace KodiAPI */
+} /* namespace V1 */

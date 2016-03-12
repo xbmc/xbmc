@@ -121,7 +121,7 @@ xbmc_codec_t CAddonCallbacksCodec::GetCodecByName(const void* addonData, const c
   return CCodecIds::GetInstance().GetCodecByName(strCodecName);
 }
 
-}; /* namespace Codec */
+} /* namespace Codec */
 
-}; /* namespace KodiAPI */
-}; /* namespace V1 */
+} /* namespace KodiAPI */
+} /* namespace V1 */
