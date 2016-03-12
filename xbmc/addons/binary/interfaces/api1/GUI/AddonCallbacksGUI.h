@@ -302,9 +302,6 @@ public:
   CAddonCallbacksGUI(ADDON::CAddon* addon);
   virtual ~CAddonCallbacksGUI();
 
-  static int APILevel() { return 1; }
-  static std::string Version() { return KODI_GUILIB_API_VERSION; }
-
   /**! \name General Functions */
   CB_GUILib *GetCallbacks() { return m_callbacks; }
 

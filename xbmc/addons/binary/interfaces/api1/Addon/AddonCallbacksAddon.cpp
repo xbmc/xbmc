@@ -47,7 +47,7 @@ namespace AddOn
 {
 
 CAddonCallbacksAddon::CAddonCallbacksAddon(CAddon* addon)
-  : ADDON::IAddonInterface(addon, APILevel(), Version()),
+  : ADDON::IAddonInterface(addon, 1, KODI_ADDON_API_VERSION),
     m_callbacks(new CB_AddOnLib)
 {
   /* write XBMC addon-on specific add-on function addresses to the callback table */

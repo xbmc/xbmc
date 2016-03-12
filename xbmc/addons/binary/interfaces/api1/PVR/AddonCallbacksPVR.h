@@ -96,9 +96,6 @@ public:
   CAddonCallbacksPVR(ADDON::CAddon* addon);
   virtual ~CAddonCallbacksPVR(void);
 
-  static int APILevel() { return 1; }
-  static std::string Version() { return XBMC_PVR_API_VERSION; }
-
   /*!
    * @return The callback table.
    */

@@ -101,6 +101,9 @@ struct __stat64;
 #undef LOG_ERROR
 #endif
 
+/* current addon API version */
+#define KODI_ADDON_API_VERSION "1.0.0"
+
 namespace ADDON
 {
   typedef enum addon_log

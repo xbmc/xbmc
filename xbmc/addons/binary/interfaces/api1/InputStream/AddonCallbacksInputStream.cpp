@@ -32,7 +32,7 @@ namespace InputStream
 {
 
 CAddonCallbacksInputStream::CAddonCallbacksInputStream(ADDON::CAddon* addon)
-  : ADDON::IAddonInterface(addon, APILevel(), Version()),
+  : ADDON::IAddonInterface(addon, 1, KODI_INPUTSTREAM_API_VERSION),
     m_callbacks(new CB_INPUTSTREAMLib)
 {
   m_callbacks->FreeDemuxPacket = InputStreamFreeDemuxPacket;

@@ -124,9 +124,6 @@ public:
   CAddonCallbacksAddon(ADDON::CAddon* addon);
   virtual ~CAddonCallbacksAddon();
 
-  static int APILevel()        { return 1; }
-  static std::string Version() { return "0.0.1"; }
-
   /*!
    * @return The callback table.
    */
