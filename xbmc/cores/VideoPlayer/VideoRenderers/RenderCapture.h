@@ -164,6 +164,35 @@ class CRenderCapture : public CRenderCaptureDispmanX
     CRenderCapture() {};
 };
 
+#elif defined(HAS_LIBAMCODEC)
+#include "xbmc/linux/AmVideoCap.h"
+#include "xbmc/utils/AMLUtils.h"
+
+class CRenderCaptureAml : public CRenderCaptureBase
+{
+  public:
+    CRenderCaptureAml();
+    ~CRenderCaptureAml();
+
+    int   GetCaptureFormat();
+
+    void  BeginRender();
+    void  EndRender();
+    void  ReadOut();
+
+    void* GetRenderBuffer();
+  private:
+    CAmVideoCap *m_pVideoCap;
+};
+
+//used instead of typedef CRenderCaptureGL CRenderCapture
+//since C++ doesn't allow you to forward declare a typedef
+class CRenderCapture : public CRenderCaptureAml
+{
+  public:
+    CRenderCapture() {};
+};
+
 #elif defined(HAS_GL) || defined(HAS_GLES)
 #include "system_gl.h"
 

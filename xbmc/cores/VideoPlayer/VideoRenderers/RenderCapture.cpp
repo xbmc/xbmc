@@ -130,6 +130,60 @@ void CRenderCaptureDispmanX::ReadOut()
 {
 }
 
+#elif defined(HAS_LIBAMCODEC)
+
+CRenderCaptureAml::CRenderCaptureAml()
+{
+  if (amcodec_runing())
+    m_pVideoCap = new CAmVideoCap();
+}
+
+CRenderCaptureAml::~CRenderCaptureAml()
+{
+  delete[] m_pixels;
+  if (amcodec_runing())
+    delete m_pVideoCap;
+}
+
+int CRenderCaptureAml::GetCaptureFormat()
+{
+  return CAPTUREFORMAT_BGRA;
+}
+
+void CRenderCaptureAml::BeginRender()
+{
+  if (m_bufferSize != m_width * m_height * 4)
+  {
+    m_bufferSize = m_width * m_height * 4;
+    delete[] m_pixels;
+    m_pixels = new uint8_t[m_bufferSize];
+  }
+
+  if (amcodec_runing())
+  {
+    if (m_pVideoCap->CaptureVideoFrame(m_width, m_height, m_pixels))
+      SetState(CAPTURESTATE_DONE);
+    else
+      SetState(CAPTURESTATE_FAILED);
+  }
+}
+
+void CRenderCaptureAml::EndRender()
+{
+  if (amcodec_runing())
+    m_pVideoCap->CancelCapture();
+  SetState(CAPTURESTATE_DONE);
+}
+
+void* CRenderCaptureAml::GetRenderBuffer()
+{
+  return m_pixels;
+}
+
+void CRenderCaptureAml::ReadOut()
+{
+}
+
 #elif defined(HAS_GL) || defined(HAS_GLES)
 
 CRenderCaptureGL::CRenderCaptureGL()

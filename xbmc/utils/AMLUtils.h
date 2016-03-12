@@ -51,3 +51,4 @@ bool aml_support_h264_4k2k();
 void aml_set_audio_passthrough(bool passthrough);
 bool aml_IsHdmiConnected();
 bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res);
+bool amcodec_runing();
