@@ -172,7 +172,7 @@ CEpgPtr CPVRChannel::GetEPG(void) const
       iEpgId = m_iEpgId;
   }
 
-  return iEpgId > 0 ? g_EpgContainer.GetById(iEpgId) : NULL;
+  return (iEpgId > 0 && g_EpgContainer.IsStarted()) ? g_EpgContainer.GetById(iEpgId) : NULL;
 }
 
 bool CPVRChannel::UpdateFromClient(const CPVRChannelPtr &channel)

@@ -474,7 +474,8 @@ void CPVRManager::Stop(void)
   SetState(ManagerStateStopping);
 
   /* stop the EPG updater, since it might be using the pvr add-ons */
-  g_EpgContainer.Stop();
+  if (g_EpgContainer.IsStarted())
+    g_EpgContainer.Stop();
 
   CLog::Log(LOGNOTICE, "PVRManager - stopping");
 
