@@ -806,8 +806,6 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
           m_seekable = false;
         else if (name == "accept-charset")
           SetAcceptCharset(value);
-        else if (name == "httpproxy")
-          SetStreamProxy(value, PROXY_HTTP);
         else if (name == "sslcipherlist")
           m_cipherlist = value;
         else if (name == "connection-timeout")
@@ -825,17 +823,6 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     m_url = url2.GetWithoutUserDetails();
   else
     m_url = url2.Get();
-}
-
-void CCurlFile::SetStreamProxy(const std::string &proxy, ProxyType type)
-{
-  CURL url(proxy);
-  m_proxy = url.GetWithoutUserDetails();
-  m_proxyuserpass = url.GetUserName();
-  if (!url.GetPassWord().empty())
-    m_proxyuserpass += ":" + url.GetPassWord();
-  m_proxytype = type;
-  CLog::Log(LOGDEBUG, "Overriding proxy from URL parameter: %s, type %d", m_proxy.c_str(), proxyType2CUrlProxyType[m_proxytype]);
 }
 
 bool CCurlFile::Post(const std::string& strURL, const std::string& strPostData, std::string& strHTML)
