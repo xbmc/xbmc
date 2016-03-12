@@ -32,7 +32,7 @@ namespace PVR
 namespace ADDON
 {
   class CAddon;
-};
+}
 
 namespace V1
 {
@@ -239,6 +239,6 @@ private:
   CB_PVRLib    *m_callbacks; /*!< callback addresses */
 };
 
-}; /* namespace PVR */
-}; /* namespace V1 */
-}; /* namespace PVRLIB */
+} /* namespace PVR */
+} /* namespace V1 */
+} /* namespace PVRLIB */

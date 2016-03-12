@@ -88,6 +88,6 @@ bool CGUIAddonRenderingControl::IsDirty()
   return ret;
 }
 
-}; /* namespace GUI */
-}; /* namespace KodiAPI */
-}; /* namespace V1 */
+} /* namespace GUI */
+} /* namespace KodiAPI */
+} /* namespace V1 */

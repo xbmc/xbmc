@@ -53,7 +53,7 @@ DemuxPacket* CAddonCallbacksInputStream::InputStreamAllocateDemuxPacket(void *ad
   return CDVDDemuxUtils::AllocateDemuxPacket(iDataSize);
 }
 
-}; /* namespace InputStream */
+} /* namespace InputStream */
 
-}; /* namespace KodiAPI */
-}; /* namespace V1 */
+} /* namespace KodiAPI */
+} /* namespace V1 */

@@ -53,6 +53,6 @@ protected:
   int m_refCount;
 };
 
-}; /* namespace GUI */
-}; /* namespace KodiAPI */
-}; /* namespace V1 */
+} /* namespace GUI */
+} /* namespace KodiAPI */
+} /* namespace V1 */

@@ -49,4 +49,4 @@ namespace ADDON
     const std::string m_version;
   };
 
-}; /* namespace ADDON */
+} /* namespace ADDON */

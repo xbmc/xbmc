@@ -471,7 +471,7 @@ void CAddonCallbacksPVR::PVREpgEventStateChange(void* addonData, EPG_TAG* tag, u
   }
 }
 
-}; /* namespace PVR */
+} /* namespace PVR */
 
-}; /* namespace KodiAPI */
-}; /* namespace V1 */
+} /* namespace KodiAPI */
+} /* namespace V1 */

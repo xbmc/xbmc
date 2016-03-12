@@ -661,7 +661,7 @@ bool CAddonCallbacksAddon::CURLOpen(const void* addonData, void* file, unsigned 
   return cfile->CURLOpen(flags);
 }
 
-}; /* namespace AddOn */
+} /* namespace AddOn */
 
-}; /* namespace KodiAPI */
-}; /* namespace V1 */
+} /* namespace KodiAPI */
+} /* namespace V1 */

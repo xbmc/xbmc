@@ -329,4 +329,4 @@ void CAddonInterfaces::OnApplicationMessage(ThreadMessage* pMsg)
   }
 }
 
-}; /* namespace ADDON */
+} /* namespace ADDON */

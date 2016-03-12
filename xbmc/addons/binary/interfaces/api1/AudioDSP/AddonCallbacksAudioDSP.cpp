@@ -275,7 +275,7 @@ float CAddonCallbacksADSP::ADSPSoundPlay_GetVolume(void *addonData, ADSPHANDLE h
   return ((IAESound*)handle)->GetVolume();
 }
 
-}; /* namespace AudioDSP */
+} /* namespace AudioDSP */
 
-}; /* namespace KodiAPI */
-}; /* namespace V1 */
+} /* namespace KodiAPI */
+} /* namespace V1 */
