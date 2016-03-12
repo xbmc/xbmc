@@ -72,6 +72,26 @@ void CGUIWindowPVRRecordings::OnWindowLoaded()
   CONTROL_SELECT(CONTROL_BTNGROUPITEMS);
 }
 
+bool CGUIWindowPVRRecordings::OnClick(int iItem, const std::string &player)
+{
+  if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return true;
+    CFileItemPtr pItem = m_vecItems->Get(iItem);
+
+  if (pItem->IsParentFolder())
+  {
+    CPVRRecordingsPath path(m_vecItems->GetPath());
+    if (path.IsRecordingsRoot())
+    {
+      // don't call CGUIWindowPVRBase as it will attempt to go to the parent folder which we don't want.
+      CLog::Log(LOGDEBUG, "PVR - %s - back to home folder", __FUNCTION__);
+      g_windowManager.ActivateWindow(WINDOW_HOME);
+      return true;
+    }
+  }
+
+  return CGUIMediaWindow::OnClick(iItem, player);
+}
+
 std::string CGUIWindowPVRRecordings::GetDirectoryPath(void)
 {
   const std::string basePath = CPVRRecordingsPath(m_bShowDeletedRecordings);

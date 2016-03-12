@@ -45,6 +45,7 @@ namespace PVR
     virtual void ResetObservers(void) override;
 
   protected:
+    virtual bool OnClick(int iItem, const std::string &player = "");
     virtual std::string GetDirectoryPath(void) override;
     virtual void OnPrepareFileItems(CFileItemList &items) override;
 
