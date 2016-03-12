@@ -40,6 +40,9 @@
 #define INPUTSTREAM_HELPER_DLL "/library.kodi.inputstream/" INPUTSTREAM_HELPER_DLL_NAME
 #endif
 
+/* current input stream API version */
+#define KODI_INPUTSTREAM_API_VERSION "1.0.0"
+
 class CHelper_libKODI_inputstream
 {
 public:

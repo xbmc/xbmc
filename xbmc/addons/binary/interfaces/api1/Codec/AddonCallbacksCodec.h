@@ -44,9 +44,6 @@ public:
   CAddonCallbacksCodec(ADDON::CAddon* addon);
   virtual ~CAddonCallbacksCodec();
 
-  static int APILevel() { return 1; }
-  static std::string Version() { return "0.0.1"; }
-
   /*!
    * @return The callback table.
    */

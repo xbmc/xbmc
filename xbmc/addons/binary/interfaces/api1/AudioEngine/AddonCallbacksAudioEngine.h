@@ -102,9 +102,6 @@ public:
   CAddonCallbacksAudioEngine(ADDON::CAddon* Addon);
   virtual ~CAddonCallbacksAudioEngine();
 
-  static int APILevel() { return 1; }
-  static std::string Version() { return KODI_AUDIOENGINE_API_VERSION; }
-
   /*!
    * @return The callback table.
    */

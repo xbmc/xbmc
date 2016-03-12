@@ -84,9 +84,6 @@ public:
   CAddonCallbacksADSP(ADDON::CAddon* addon);
   virtual ~CAddonCallbacksADSP(void);
 
-  static int APILevel() { return 1; }
-  static std::string Version() { return KODI_AE_DSP_API_VERSION; }
-
   /*!
    * @return The callback table.
    */

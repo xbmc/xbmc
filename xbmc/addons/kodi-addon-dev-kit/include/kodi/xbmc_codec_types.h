@@ -24,6 +24,9 @@
 extern "C" {
 #endif
 
+/* current codec API version */
+#define KODI_CODEC_API_VERSION "1.0.0"
+
 typedef unsigned int xbmc_codec_id_t;
 
 typedef enum

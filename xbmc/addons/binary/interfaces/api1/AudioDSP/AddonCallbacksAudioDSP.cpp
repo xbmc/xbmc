@@ -41,7 +41,7 @@ namespace AudioDSP
 {
 
 CAddonCallbacksADSP::CAddonCallbacksADSP(ADDON::CAddon* addon)
-  : ADDON::IAddonInterface(addon, APILevel(), Version()),
+  : ADDON::IAddonInterface(addon, 1, KODI_AE_DSP_API_VERSION),
     m_callbacks(new CB_ADSPLib)
 {
   /* write KODI audio DSP specific add-on function addresses to callback table */

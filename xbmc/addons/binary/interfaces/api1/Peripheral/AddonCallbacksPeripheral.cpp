@@ -37,7 +37,7 @@ namespace Peripheral
 {
 
 CAddonCallbacksPeripheral::CAddonCallbacksPeripheral(ADDON::CAddon* addon)
-  : ADDON::IAddonInterface(addon, APILevel(), Version()),
+  : ADDON::IAddonInterface(addon, 1, PERIPHERAL_API_VERSION),
     m_callbacks(new CB_PeripheralLib)
 {
   /* write XBMC peripheral specific add-on function addresses to callback table */
