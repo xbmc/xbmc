@@ -436,20 +436,21 @@ bool CProcessorHD::CreateSurfaces()
   return true;
 }
 
-CRenderPicture *CProcessorHD::Convert(DVDVideoPicture* picture)
+CRenderPicture *CProcessorHD::Convert(DVDVideoPicture &picture)
 {
-  // RENDER_FMT_YUV420P -> DXGI_FORMAT_NV12
-  // RENDER_FMT_YUV420P10 -> DXGI_FORMAT_P010
-  // RENDER_FMT_YUV420P16 -> DXGI_FORMAT_P016
-  if ( picture->format != RENDER_FMT_YUV420P
-    && picture->format != RENDER_FMT_YUV420P10
-    && picture->format != RENDER_FMT_YUV420P16)
+  if ( picture.format != RENDER_FMT_YUV420P
+    && picture.format != RENDER_FMT_YUV420P10
+    && picture.format != RENDER_FMT_YUV420P16
+    && picture.format != RENDER_FMT_DXVA)
   {
     CLog::Log(LOGERROR, "%s - colorspace not supported by processor, skipping frame.", __FUNCTION__);
     return nullptr;
   }
 
-  ID3D11View* pView = m_context->GetFree(nullptr);
+  if (picture.format == RENDER_FMT_DXVA)
+    return picture.dxva->Acquire();
+
+  ID3D11View *pView = m_context->GetFree(nullptr);
   if (!pView)
   {
     CLog::Log(LOGERROR, "%s - no free video surface", __FUNCTION__);
@@ -478,14 +479,15 @@ CRenderPicture *CProcessorHD::Convert(DVDVideoPicture* picture)
   uint8_t*  dst[] = { pData, pData + m_texDesc.Height * rectangle.RowPitch };
   int dstStride[] = { rectangle.RowPitch, rectangle.RowPitch };
 
-  if (picture->format == RENDER_FMT_YUV420P)
+  if (picture.format == RENDER_FMT_YUV420P)
   {
-    convert_yuv420_nv12(picture->data, picture->iLineSize, picture->iHeight, picture->iWidth, dst, dstStride);
+    convert_yuv420_nv12(picture.data, picture.iLineSize, picture.iHeight, picture.iWidth, dst, dstStride);
   }
-  else
+  else if(picture.format == RENDER_FMT_YUV420P10
+       || picture.format == RENDER_FMT_YUV420P16)
   {
-    convert_yuv420_p01x(picture->data, picture->iLineSize, picture->iHeight, picture->iWidth, dst, dstStride
-                      , picture->format == RENDER_FMT_YUV420P10 ? 10 : 16);
+    convert_yuv420_p01x(picture.data, picture.iLineSize, picture.iHeight, picture.iWidth, dst, dstStride
+                      , picture.format == RENDER_FMT_YUV420P10 ? 10 : 16);
   }
   pContext->Unmap(pResource, subresource);
   SAFE_RELEASE(pResource);

@@ -81,8 +81,8 @@ public:
   virtual bool IsConfigured() = 0;
   virtual int GetImage(YV12Image *image, int source = -1, bool readonly = false) = 0;
   virtual void ReleaseImage(int source, bool preserve = false) = 0;
-  virtual bool AddVideoPicture(DVDVideoPicture* picture, int index) { return false; }
   virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index) {};
+  virtual bool IsPictureHW(DVDVideoPicture &picture) { return false; };
   virtual void FlipPage(int source) = 0;
   virtual void PreInit() = 0;
   virtual void UnInit() = 0;
