@@ -19,7 +19,6 @@
  *
  */
 
-//#include "system.h"
 #include "AddonCallbacksGUI.h"
 #include "AddonGUIRenderingControl.h"
 #include "AddonGUIWindow.h"
