@@ -39,7 +39,10 @@ CPVRRecordings::CPVRRecordings(void) :
     m_bIsUpdating(false),
     m_iLastId(0),
     m_bGroupItems(true),
-    m_bHasDeleted(false)
+    m_bDeletedTVRecordings(false),
+    m_bDeletedRadioRecordings(false),
+    m_iTVRecordings(0),
+    m_iRadioRecordings(0)
 {
   m_database.Open();
 }
@@ -86,11 +89,15 @@ void CPVRRecordings::GetSubDirectories(const CPVRRecordingsPath &recParentPath, 
   // Only active recordings are fetched to provide sub directories.
   // Not applicable for deleted view which is supposed to be flattened.
   std::set<CFileItemPtr> unwatchedFolders;
+  bool bRadio = recParentPath.IsRadio();
 
   for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
   {
     CPVRRecordingPtr current = it->second;
     if (current->IsDeleted())
+      continue;
+
+    if (current->IsRadio() != bRadio)
       continue;
 
     const std::string strCurrent = recParentPath.GetSubDirectoryPath(current->m_strDirectory);
@@ -119,9 +126,9 @@ void CPVRRecordings::GetSubDirectories(const CPVRRecordingsPath &recParentPath, 
     }
     else
     {
-      pFileItem=results->Get(strFilePath);
+      pFileItem = results->Get(strFilePath);
       if (pFileItem->m_dateTime<current->RecordingTimeAsLocalTime())
-        pFileItem->m_dateTime  = current->RecordingTimeAsLocalTime();
+        pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
     }
 
     if (current->m_playCount == 0)
@@ -164,34 +171,28 @@ void CPVRRecordings::Update(void)
   NotifyObservers(ObservableMessageRecordings);
 }
 
-int CPVRRecordings::GetNumRecordings()
+int CPVRRecordings::GetNumTVRecordings() const
 {
   CSingleLock lock(m_critSection);
-  return m_recordings.size();
+  return m_iTVRecordings;
 }
 
-bool CPVRRecordings::HasDeletedRecordings()
+bool CPVRRecordings::HasDeletedTVRecordings() const
 {
   CSingleLock lock(m_critSection);
-  return m_bHasDeleted;
+  return m_bDeletedTVRecordings;
 }
 
-int CPVRRecordings::GetRecordings(CFileItemList* results, bool bDeleted)
+int CPVRRecordings::GetNumRadioRecordings() const
 {
   CSingleLock lock(m_critSection);
+  return m_iRadioRecordings;
+}
 
-  int iRecCount = 0;
-  for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
-  {
-    if (it->second->IsDeleted() != bDeleted)
-      continue;
-
-    CFileItemPtr pFileItem(new CFileItem(it->second));
-    results->Add(pFileItem);
-    iRecCount++;
-  }
-
-  return iRecCount;
+bool CPVRRecordings::HasDeletedRadioRecordings() const
+{
+  CSingleLock lock(m_critSection);
+  return m_bDeletedRadioRecordings;
 }
 
 bool CPVRRecordings::Delete(const CFileItem& item)
@@ -330,8 +331,10 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
     {
       CPVRRecordingPtr current = it->second;
 
-      // skip items that are not members of the target directory
-      if (!IsDirectoryMember(strDirectory, current->m_strDirectory) || current->IsDeleted() != recPath.IsDeleted())
+      // Omit recordings not matching criteria
+      if (!IsDirectoryMember(strDirectory, current->m_strDirectory) ||
+          current->IsDeleted() != recPath.IsDeleted() ||
+          current->IsRadio() != recPath.IsRadio())
         continue;
 
       if (m_database.IsOpen())
@@ -410,13 +413,15 @@ CFileItemPtr CPVRRecordings::GetByPath(const std::string &path)
   CPVRRecordingsPath recPath(path);
   if (recPath.IsValid())
   {
-    // Check directory name is for deleted recordings
     bool bDeleted = recPath.IsDeleted();
+    bool bRadio   = recPath.IsRadio();
 
     for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
     {
       CPVRRecordingPtr current = it->second;
-      if (!URIUtils::PathEquals(path, current->m_strFileNameAndPath) || bDeleted != current->IsDeleted())
+      // Omit recordings not matching criteria
+      if (!URIUtils::PathEquals(path, current->m_strFileNameAndPath) ||
+          bDeleted != current->IsDeleted() || bRadio != current->IsRadio())
         continue;
 
       CFileItemPtr fileItem(new CFileItem(current));
@@ -442,7 +447,10 @@ CPVRRecordingPtr CPVRRecordings::GetById(int iClientId, const std::string &strRe
 void CPVRRecordings::Clear()
 {
   CSingleLock lock(m_critSection);
-  m_bHasDeleted = false;
+  m_bDeletedTVRecordings = false;
+  m_bDeletedRadioRecordings = false;
+  m_iTVRecordings = 0;
+  m_iRadioRecordings = 0;
   m_recordings.clear();
 }
 
@@ -451,7 +459,12 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
   CSingleLock lock(m_critSection);
 
   if (tag->IsDeleted())
-    m_bHasDeleted = true;
+  {
+    if (tag->IsRadio())
+      m_bDeletedRadioRecordings = true;
+    else
+      m_bDeletedTVRecordings = true;
+  }
 
   CPVRRecordingPtr newTag = GetById(tag->m_iClientId, tag->m_strRecordingId);
   if (newTag)
@@ -474,6 +487,10 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
     }
     newTag->m_iRecordingId = ++m_iLastId;
     m_recordings.insert(std::make_pair(CPVRRecordingUid(newTag->m_iClientId, newTag->m_strRecordingId), newTag));
+    if (newTag->IsRadio())
+      m_iRadioRecordings++;
+    else
+      m_iTVRecordings++;
   }
 }
 

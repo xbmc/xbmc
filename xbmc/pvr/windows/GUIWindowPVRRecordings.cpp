@@ -74,7 +74,7 @@ void CGUIWindowPVRRecordings::OnWindowLoaded()
 
 std::string CGUIWindowPVRRecordings::GetDirectoryPath(void)
 {
-  const std::string basePath = CPVRRecordingsPath(m_bShowDeletedRecordings);
+  const std::string basePath = CPVRRecordingsPath(m_bShowDeletedRecordings, m_bRadio);
   return StringUtils::StartsWith(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath() : basePath;
 }
 
@@ -228,7 +228,7 @@ void CGUIWindowPVRRecordings::UpdateButtons(void)
   CGUIRadioButtonControl *btnShowDeleted = (CGUIRadioButtonControl*) GetControl(CONTROL_BTNSHOWDELETED);
   if (btnShowDeleted)
   {
-    btnShowDeleted->SetVisible(g_PVRRecordings->HasDeletedRecordings());
+    btnShowDeleted->SetVisible(m_bRadio ? g_PVRRecordings->HasDeletedRadioRecordings() : g_PVRRecordings->HasDeletedTVRecordings());
     btnShowDeleted->SetSelected(m_bShowDeletedRecordings);
   }
 

@@ -42,7 +42,10 @@ namespace PVR
     unsigned int                 m_iLastId;
     bool                         m_bGroupItems;
     CVideoDatabase               m_database;
-    bool                         m_bHasDeleted;
+    bool                         m_bDeletedTVRecordings;
+    bool                         m_bDeletedRadioRecordings;
+    unsigned int                 m_iTVRecordings;
+    unsigned int                 m_iRadioRecordings;
 
     virtual void UpdateFromClients(void);
     virtual std::string TrimSlashes(const std::string &strOrig) const;
@@ -72,9 +75,10 @@ namespace PVR
      */
     void Update(void);
 
-    int GetNumRecordings();
-    bool HasDeletedRecordings();
-    int GetRecordings(CFileItemList* results, bool bDeleted = false);
+    int GetNumTVRecordings() const;
+    bool HasDeletedTVRecordings() const;
+    int GetNumRadioRecordings() const;
+    bool HasDeletedRadioRecordings() const;
 
     /**
      * Deletes the item in question, be it a directory or a file

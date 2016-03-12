@@ -29,12 +29,14 @@ namespace PVR
   {
   public:
     static const std::string PATH_RECORDINGS;
-    static const std::string PATH_ACTIVE_RECORDINGS;
-    static const std::string PATH_DELETED_RECORDINGS;
+    static const std::string PATH_ACTIVE_TV_RECORDINGS;
+    static const std::string PATH_ACTIVE_RADIO_RECORDINGS;
+    static const std::string PATH_DELETED_TV_RECORDINGS;
+    static const std::string PATH_DELETED_RADIO_RECORDINGS;
 
     CPVRRecordingsPath(const std::string &strPath);
-    CPVRRecordingsPath(bool bDeleted);
-    CPVRRecordingsPath(bool bDeleted,
+    CPVRRecordingsPath(bool bDeleted, bool bRadio);
+    CPVRRecordingsPath(bool bDeleted, bool bRadio,
                        const std::string &strDirectory, const std::string &strTitle,
                        int iSeason, int iEpisode, int iYear,
                        const std::string &strSubtitle, const std::string &strChannelName,
@@ -48,6 +50,8 @@ namespace PVR
     bool IsRecordingsRoot() const { return m_bRoot; }
     bool IsActive() const { return m_bActive; }
     bool IsDeleted() const { return !IsActive(); }
+    bool IsRadio() const { return m_bRadio; }
+    bool IsTV() const { return !IsRadio(); }
     std::string GetDirectoryPath() const { return m_directoryPath; }
     std::string GetSubDirectoryPath(const std::string &strPath) const;
 
@@ -56,10 +60,12 @@ namespace PVR
 
   private:
     static std::string TrimSlashes(const std::string &strString);
+    size_t GetDirectoryPathPosition() const;
 
     bool m_bValid;
     bool m_bRoot;
     bool m_bActive;
+    bool m_bRadio;
     std::string m_directoryPath;
     std::string m_params;
     std::string m_path;

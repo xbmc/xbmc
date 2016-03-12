@@ -27,21 +27,25 @@
 
 using namespace PVR;
 
-const std::string CPVRRecordingsPath::PATH_RECORDINGS         = "pvr://recordings/";
-const std::string CPVRRecordingsPath::PATH_ACTIVE_RECORDINGS  = "pvr://recordings/active/";
-const std::string CPVRRecordingsPath::PATH_DELETED_RECORDINGS = "pvr://recordings/deleted/";
+const std::string CPVRRecordingsPath::PATH_RECORDINGS               = "pvr://recordings/";
+const std::string CPVRRecordingsPath::PATH_ACTIVE_TV_RECORDINGS     = "pvr://recordings/tv/active/";
+const std::string CPVRRecordingsPath::PATH_ACTIVE_RADIO_RECORDINGS  = "pvr://recordings/radio/active/";
+const std::string CPVRRecordingsPath::PATH_DELETED_TV_RECORDINGS    = "pvr://recordings/tv/deleted/";
+const std::string CPVRRecordingsPath::PATH_DELETED_RADIO_RECORDINGS = "pvr://recordings/radio/deleted/";
 
 CPVRRecordingsPath::CPVRRecordingsPath(const std::string &strPath)
 {
   std::string strVarPath(TrimSlashes(strPath));
   const std::vector<std::string> segments = URIUtils::SplitPath(strVarPath);
 
-  m_bValid  = ((segments.size() >= 3) && // at least pvr://recordings/[active|deleted]
+  m_bValid  = ((segments.size() >= 4) && // at least pvr://recordings/[tv|radio]/[active|deleted]
                StringUtils::StartsWith(strVarPath, "pvr://") &&
                (segments.at(1) == "recordings") &&
-               ((segments.at(2) == "active") || (segments.at(2) == "deleted")));
-  m_bRoot   = (m_bValid && (segments.size() == 3));
-  m_bActive = (m_bValid && (segments.at(2) == "active"));
+               ((segments.at(2) == "tv") || (segments.at(2) == "radio")) &&
+               ((segments.at(3) == "active") || (segments.at(3) == "deleted")));
+  m_bRoot   = (m_bValid && (segments.size() == 4));
+  m_bRadio  = (m_bValid && (segments.at(2) == "radio"));
+  m_bActive = (m_bValid && (segments.at(3) == "active"));
 
   if (m_bRoot)
     strVarPath.append("/");
@@ -49,10 +53,10 @@ CPVRRecordingsPath::CPVRRecordingsPath(const std::string &strPath)
   {
     size_t paramStart = m_path.find(", TV");
     if (paramStart == std::string::npos)
-      m_directoryPath = strVarPath.substr(m_bActive ? PATH_ACTIVE_RECORDINGS.size() : PATH_DELETED_RECORDINGS.size());
+      m_directoryPath = strVarPath.substr(GetDirectoryPathPosition());
     else
     {
-      size_t dirStart = m_bActive ? PATH_ACTIVE_RECORDINGS.size() : PATH_DELETED_RECORDINGS.size();
+      size_t dirStart = GetDirectoryPathPosition();
       m_directoryPath = strVarPath.substr(dirStart, paramStart - dirStart);
       m_params = strVarPath.substr(paramStart);
     }
@@ -61,22 +65,24 @@ CPVRRecordingsPath::CPVRRecordingsPath(const std::string &strPath)
   m_path = strVarPath;
 }
 
-CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted)
+CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted, bool bRadio)
 : m_bValid(true),
   m_bRoot(true),
   m_bActive(!bDeleted),
-  m_path(StringUtils::Format("pvr://recordings/%s/", bDeleted ? "deleted" : "active"))
+  m_bRadio(bRadio),
+  m_path(StringUtils::Format("pvr://recordings/%s/%s/", bRadio ? "radio" : "tv", bDeleted ? "deleted" : "active"))
 {
 }
 
-CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted,
+CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted, bool bRadio,
                        const std::string &strDirectory, const std::string &strTitle,
                        int iSeason, int iEpisode, int iYear,
                        const std::string &strSubtitle, const std::string &strChannelName,
                        const CDateTime &recordingTime)
 : m_bValid(true),
   m_bRoot(false),
-  m_bActive(!bDeleted)
+  m_bActive(!bDeleted),
+  m_bRadio(bRadio)
 {
   std::string strDirectoryN(TrimSlashes(strDirectory));
   if (!strDirectoryN.empty())
@@ -111,7 +117,7 @@ CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted,
                                         strDirectoryN.c_str(), strTitleN.c_str(), strSeasonEpisodeN.c_str(),
                                         strYearN.c_str(), strSubtitleN.c_str());
   m_params = StringUtils::Format(", TV%s, %s.pvr", strChannelNameN.c_str(), recordingTime.GetAsSaveString().c_str());
-  m_path   = StringUtils::Format("pvr://recordings/%s/%s%s", bDeleted ? "deleted" : "active", m_directoryPath.c_str(), m_params.c_str());
+  m_path   = StringUtils::Format("pvr://recordings/%s/%s/%s%s", bRadio ? "radio" : "tv", bDeleted ? "deleted" : "active", m_directoryPath.c_str(), m_params.c_str());
 }
 
 std::string CPVRRecordingsPath::GetSubDirectoryPath(const std::string &strPath) const
@@ -195,4 +201,23 @@ std::string CPVRRecordingsPath::TrimSlashes(const std::string &strString)
     strTrimmed.pop_back();
 
   return strTrimmed;
+}
+
+size_t CPVRRecordingsPath::GetDirectoryPathPosition() const
+{
+  if (m_bActive)
+  {
+    if (m_bRadio)
+      return PATH_ACTIVE_RADIO_RECORDINGS.size();
+    else
+      return PATH_ACTIVE_TV_RECORDINGS.size();
+  }
+  else
+  {
+    if (m_bRadio)
+      return PATH_DELETED_RADIO_RECORDINGS.size();
+    else
+      return PATH_DELETED_TV_RECORDINGS.size();
+  }
+  // unreachable
 }
