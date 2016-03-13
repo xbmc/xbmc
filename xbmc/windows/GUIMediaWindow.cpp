@@ -1819,7 +1819,7 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
   // The idea here is to ensure we have something to focus if our file list
   // is empty.  As such, this check MUST be last and ignore the hide parent
   // fileitems settings.
-  if (m_vecItems->IsEmpty())
+  if (m_vecItems->IsEmpty() && !m_history.GetParentPath().empty())
   {
     CFileItemPtr pItem(new CFileItem(".."));
     pItem->SetPath(m_history.GetParentPath());
