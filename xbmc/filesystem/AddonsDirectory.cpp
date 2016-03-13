@@ -411,16 +411,66 @@ static bool Repos(const CURL& path, CFileItemList &items)
   return true;
 }
 
+static void RootDirectory(CFileItemList& items)
+{
+  items.SetLabel(g_localizeStrings.Get(24033));
+  {
+    CFileItemPtr item(new CFileItem("addons://user/", true));
+    item->SetLabel(g_localizeStrings.Get(24998));
+    item->SetIconImage("DefaultAddonsInstalled.png");
+    items.Add(item);
+  }
+  if (CAddonMgr::GetInstance().HasAvailableUpdates())
+  {
+    CFileItemPtr item(new CFileItem("addons://outdated/", true));
+    item->SetLabel(g_localizeStrings.Get(24043));
+    item->SetIconImage("DefaultAddonsUpdates.png");
+    items.Add(item);
+  }
+  if (CAddonInstaller::GetInstance().IsDownloading())
+  {
+    CFileItemPtr item(new CFileItem("addons://downloading/", true));
+    item->SetLabel(g_localizeStrings.Get(24067));
+    item->SetIconImage("DefaultNetwork.png");
+    items.Add(item);
+  }
+  if (CAddonMgr::GetInstance().HasAddons(ADDON_REPOSITORY))
+  {
+    CFileItemPtr item(new CFileItem("addons://repos/", true));
+    item->SetLabel(g_localizeStrings.Get(24033));
+    item->SetIconImage("DefaultAddonsRepo.png");
+    items.Add(item);
+  }
+  {
+    CFileItemPtr item(new CFileItem("addons://install/", false));
+    item->SetLabel(g_localizeStrings.Get(24041));
+    item->SetIconImage("DefaultAddonsZip.png");
+    items.Add(item);
+  }
+  {
+    CFileItemPtr item(new CFileItem("addons://search/", true));
+    item->SetLabel(g_localizeStrings.Get(137));
+    item->SetIconImage("DefaultAddonsSearch.png");
+    items.Add(item);
+  }
+}
+
 bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   std::string tmp(url.Get());
   URIUtils::RemoveSlashAtEnd(tmp);
   CURL path(tmp);
   const std::string endpoint = path.GetHostName();
+  items.ClearItems();
   items.ClearProperties();
   items.SetPath(path.Get());
 
-  if (endpoint == "user")
+  if (endpoint.empty())
+  {
+    RootDirectory(items);
+    return true;
+  }
+  else if (endpoint == "user")
   {
     UserInstalledAddons(path, items);
     return true;

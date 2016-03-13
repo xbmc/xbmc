@@ -46,11 +46,3 @@ std::string CGUIViewStateEventLog::GetExtensions()
 {
   return "";
 }
-
-VECSOURCES& CGUIViewStateEventLog::GetSources()
-{
-  m_sources.clear();
-
-  return CGUIViewState::GetSources();
-}
-

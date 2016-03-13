@@ -77,12 +77,6 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
-      m_rootDir.AllowNonLocalSources(false);
-
-      // is this the first time the window is opened?
-      if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
-        m_vecItems->SetPath("");
-
       SetProperties();
     }
     break;
@@ -358,15 +352,6 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFile
         }
       }
     }
-  }
-
-  if (strDirectory.empty() && CAddonInstaller::GetInstance().IsDownloading())
-  {
-    CFileItemPtr item(new CFileItem("addons://downloading/", true));
-    item->SetLabel(g_localizeStrings.Get(24067));
-    item->SetLabelPreformated(true);
-    item->SetIconImage("DefaultNetwork.png");
-    items.Add(item);
   }
 
   for (int i = 0; i < items.Size(); ++i)
