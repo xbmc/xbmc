@@ -56,17 +56,6 @@
 #include "utils/XBMCTinyXML.h"
 #include "ServiceBroker.h"
 
-#ifdef HAS_VISUALISATION
-#include "Visualisation.h"
-#endif
-#ifdef HAS_SCREENSAVER
-#include "ScreenSaver.h"
-#endif
-
-#include "addons/PVRClient.h"
-#include "games/controllers/Controller.h"
-#include "peripherals/addons/PeripheralAddon.h"
-
 using namespace XFILE;
 
 namespace ADDON
