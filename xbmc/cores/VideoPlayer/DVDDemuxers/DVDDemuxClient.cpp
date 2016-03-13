@@ -62,36 +62,16 @@ public:
   bool m_parser_split;
 };
 
-class CDemuxStreamVideoClient
-: public CDemuxStreamVideo
-, public CDemuxStreamClientInternal
+template <class T>
+class CDemuxStreamClientInternalTpl : public CDemuxStreamClientInternal, public T
 {
-public:
-  CDemuxStreamVideoClient() {}
-};
-
-class CDemuxStreamAudioClient
-: public CDemuxStreamAudio
-, public CDemuxStreamClientInternal
-{
-public:
-  CDemuxStreamAudioClient() {}
-};
-
-class CDemuxStreamSubtitleClient
-: public CDemuxStreamSubtitle
-, public CDemuxStreamClientInternal
-{
-public:
-  CDemuxStreamSubtitleClient() {}
 };
 
 CDVDDemuxClient::CDVDDemuxClient() : CDVDDemux()
 {
   m_pInput = nullptr;
   m_IDemux = nullptr;
-  for (int i = 0; i < MAX_STREAMS; i++)
-    m_streams[i] = nullptr;
+  m_streams.clear();
 }
 
 CDVDDemuxClient::~CDVDDemuxClient()
@@ -123,18 +103,9 @@ void CDVDDemuxClient::Dispose()
   m_IDemux = nullptr;
 }
 
-void CDVDDemuxClient::DisposeStream(int iStreamId)
-{
-  if (iStreamId < 0 || iStreamId >= MAX_STREAMS)
-    return;
-  delete m_streams[iStreamId];
-  m_streams[iStreamId] = nullptr;
-}
-
 void CDVDDemuxClient::DisposeStreams()
 {
-  for (int i=0; i< MAX_STREAMS; i++)
-    DisposeStream(i);
+  m_streams.clear();
 }
 
 void CDVDDemuxClient::Reset()
@@ -158,7 +129,7 @@ void CDVDDemuxClient::Flush()
 
 void CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
 {
-  CDemuxStream* st = m_streams[pkt->iStreamId];
+  CDemuxStream* st = GetStream(pkt->iStreamId);
   if (st == nullptr)
     return;
 
@@ -243,7 +214,7 @@ void CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
     {
       case STREAM_AUDIO:
       {
-        CDemuxStreamAudioClient* sta = static_cast<CDemuxStreamAudioClient*>(st);
+        CDemuxStreamClientInternalTpl<CDemuxStreamAudio>* sta = static_cast<CDemuxStreamClientInternalTpl<CDemuxStreamAudio>*>(st);
         if (stream->m_context->channels != sta->iChannels &&
             stream->m_context->channels != 0)
         {
@@ -264,7 +235,7 @@ void CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
       }
       case STREAM_VIDEO:
       {
-        CDemuxStreamVideoClient* stv = static_cast<CDemuxStreamVideoClient*>(st);
+        CDemuxStreamClientInternalTpl<CDemuxStreamVideo>* stv = static_cast<CDemuxStreamClientInternalTpl<CDemuxStreamVideo>*>(st);
         if (stream->m_context->width != stv->iWidth &&
             stream->m_context->width != 0)
         {
@@ -316,7 +287,6 @@ DemuxPacket* CDVDDemuxClient::Read()
     RequestStreams();
   }
   else if (pPacket->iStreamId >= 0 &&
-           pPacket->iStreamId < MAX_STREAMS &&
            m_streams[pPacket->iStreamId])
   {
     ParsePacket(pPacket);
@@ -327,24 +297,20 @@ DemuxPacket* CDVDDemuxClient::Read()
 
 CDemuxStream* CDVDDemuxClient::GetStream(int iStreamId) const
 {
-  for (int i=0; i<GetNrOfStreams(); i++)
-  {
-    if (m_streams[i]->uniqueId == iStreamId)
-      return m_streams[i];
-  }
-  return nullptr;
+  auto stream = m_streams.find(iStreamId);
+  if (stream == m_streams.end())
+    return nullptr;
+
+  return stream->second.get();
 }
 
 std::vector<CDemuxStream*> CDVDDemuxClient::GetStreams() const
 {
   std::vector<CDemuxStream*> streams;
 
-  for (auto iter : m_streams)
+  for (auto &iter : m_streams)
   {
-    if (iter != nullptr)
-    {
-      streams.push_back(iter);
-    }
+    streams.push_back(iter.second.get());
   }
 
   return streams;
@@ -352,187 +318,213 @@ std::vector<CDemuxStream*> CDVDDemuxClient::GetStreams() const
 
 void CDVDDemuxClient::RequestStreams()
 {
-  int i = -1;
+  std::map<int, std::shared_ptr<CDemuxStream>> m_newStreamMap;
+
   for (auto stream : m_IDemux->GetStreams())
   {
-    ++i;
     if (!stream)
     {
-      CLog::Log(LOGERROR, "CDVDDemuxClient::RequestStreams - invalid stream at pos %d", i);
+      CLog::Log(LOGERROR, "CDVDDemuxClient::RequestStreams - invalid stream");
       DisposeStreams();
       return;
     }
+
+    std::shared_ptr<CDemuxStream> dStream = GetStreamInternal(stream->uniqueId);
 
     if (stream->type == STREAM_AUDIO)
     {
       CDemuxStreamAudio *source = dynamic_cast<CDemuxStreamAudio*>(stream);
       if (!source)
       {
-        CLog::Log(LOGERROR, "CDVDDemuxClient::RequestStreams - invalid audio stream at pos %d", i);
+        CLog::Log(LOGERROR, "CDVDDemuxClient::RequestStreams - invalid audio stream with id %d", stream->uniqueId);
         DisposeStreams();
         return;
       }
-      CDemuxStreamAudioClient* st = nullptr;
-      if (m_streams[i])
+
+      std::shared_ptr<CDemuxStreamClientInternalTpl<CDemuxStreamAudio>> streamAudio;
+      if (dStream)
+        streamAudio = std::dynamic_pointer_cast<CDemuxStreamClientInternalTpl<CDemuxStreamAudio>>(dStream);
+      if (!streamAudio || streamAudio->codec != source->codec)
       {
-        st = dynamic_cast<CDemuxStreamAudioClient*>(m_streams[i]);
-        if (!st || (st->codec != source->codec))
-          DisposeStream(i);
+        streamAudio.reset(new CDemuxStreamClientInternalTpl<CDemuxStreamAudio>());
+        streamAudio->m_parser = av_parser_init(source->codec);
+        if (streamAudio->m_parser)
+          streamAudio->m_parser->flags |= PARSER_FLAG_COMPLETE_FRAMES;
       }
-      if (!m_streams[i])
-      {
-        st = new CDemuxStreamAudioClient();
-        st->m_parser = av_parser_init(source->codec);
-        if(st->m_parser)
-          st->m_parser->flags |= PARSER_FLAG_COMPLETE_FRAMES;
-      }
-      st->iChannels       = source->iChannels;
-      st->iSampleRate     = source->iSampleRate;
-      st->iBlockAlign     = source->iBlockAlign;
-      st->iBitRate        = source->iBitRate;
-      st->iBitsPerSample  = source->iBitsPerSample;
+
+      streamAudio->iChannels       = source->iChannels;
+      streamAudio->iSampleRate     = source->iSampleRate;
+      streamAudio->iBlockAlign     = source->iBlockAlign;
+      streamAudio->iBitRate        = source->iBitRate;
+      streamAudio->iBitsPerSample  = source->iBitsPerSample;
       if (source->ExtraSize > 0 && source->ExtraData)
       {
-        st->ExtraData = new uint8_t[source->ExtraSize];
-        st->ExtraSize = source->ExtraSize;
+        streamAudio->ExtraData = new uint8_t[source->ExtraSize];
+        streamAudio->ExtraSize = source->ExtraSize;
         for (unsigned int j=0; j<source->ExtraSize; j++)
-          st->ExtraData[j] = source->ExtraData[j];
+          streamAudio->ExtraData[j] = source->ExtraData[j];
       }
-      m_streams[i] = st;
-      st->m_parser_split = true;
-      st->changes++;
+      streamAudio->m_parser_split = true;
+      streamAudio->changes++;
+      m_newStreamMap[stream->uniqueId] = streamAudio;
+      dStream = streamAudio;
     }
     else if (stream->type == STREAM_VIDEO)
     {
       CDemuxStreamVideo *source = dynamic_cast<CDemuxStreamVideo*>(stream);
+
       if (!source)
       {
-        CLog::Log(LOGERROR, "CDVDDemuxClient::RequestStreams - invalid video stream at pos %d", i);
+        CLog::Log(LOGERROR, "CDVDDemuxClient::RequestStreams - invalid audio stream with id %d", stream->uniqueId);
         DisposeStreams();
         return;
       }
-      CDemuxStreamVideoClient* st = nullptr;
-      if (m_streams[i])
+
+      std::shared_ptr<CDemuxStreamClientInternalTpl<CDemuxStreamVideo>> streamVideo;
+      if (dStream)
+        streamVideo = std::dynamic_pointer_cast<CDemuxStreamClientInternalTpl<CDemuxStreamVideo>>(dStream);
+      if (!streamVideo || streamVideo->codec != source->codec ||
+          streamVideo->iWidth != source->iWidth || streamVideo->iHeight != source->iHeight)
       {
-        st = dynamic_cast<CDemuxStreamVideoClient*>(m_streams[i]);
-        if (!st
-            || (st->codec != source->codec)
-            || (st->iWidth != source->iWidth)
-            || (st->iHeight != source->iHeight))
-          DisposeStream(i);
+        streamVideo.reset(new CDemuxStreamClientInternalTpl<CDemuxStreamVideo>());
+        streamVideo->m_parser = av_parser_init(source->codec);
+        if (streamVideo->m_parser)
+          streamVideo->m_parser->flags |= PARSER_FLAG_COMPLETE_FRAMES;
       }
-      if (!m_streams[i])
-      {
-        st = new CDemuxStreamVideoClient();
-        st->m_parser = av_parser_init(source->codec);
-        if(st->m_parser)
-          st->m_parser->flags |= PARSER_FLAG_COMPLETE_FRAMES;
-      }
-      st->iFpsScale       = source->irFpsScale;
-      st->iFpsRate        = source->irFpsRate;
-      st->iHeight         = source->iHeight;
-      st->iWidth          = source->iWidth;
-      st->fAspect         = source->fAspect;
-      st->stereo_mode     = "mono";
+
+      streamVideo->iFpsScale       = source->irFpsScale;
+      streamVideo->iFpsRate        = source->irFpsRate;
+      streamVideo->iHeight         = source->iHeight;
+      streamVideo->iWidth          = source->iWidth;
+      streamVideo->fAspect         = source->fAspect;
+      streamVideo->stereo_mode     = "mono";
       if (source->ExtraSize > 0 && source->ExtraData)
       {
-        st->ExtraData = new uint8_t[source->ExtraSize];
-        st->ExtraSize = source->ExtraSize;
+        streamVideo->ExtraData = new uint8_t[source->ExtraSize];
+        streamVideo->ExtraSize = source->ExtraSize;
         for (unsigned int j=0; j<source->ExtraSize; j++)
-          st->ExtraData[j] = source->ExtraData[j];
+          streamVideo->ExtraData[j] = source->ExtraData[j];
       }
-      m_streams[i] = st;
-      st->m_parser_split = true;
+      streamVideo->m_parser_split = true;
+      streamVideo->changes++;
+      m_newStreamMap[stream->uniqueId] = streamVideo;
+      dStream = streamVideo;
     }
     else if (stream->type == STREAM_SUBTITLE)
     {
       CDemuxStreamSubtitle *source = dynamic_cast<CDemuxStreamSubtitle*>(stream);
+
       if (!source)
       {
-        CLog::Log(LOGERROR, "CDVDDemuxClient::RequestStreams - invalid subtitle stream at pos %d", i);
+        CLog::Log(LOGERROR, "CDVDDemuxClient::RequestStreams - invalid audio stream with id %d", stream->uniqueId);
         DisposeStreams();
         return;
       }
-      CDemuxStreamSubtitleClient* st = nullptr;
-      if (m_streams[i])
+
+      std::shared_ptr<CDemuxStreamClientInternalTpl<CDemuxStreamSubtitle>> streamSubtitle;
+      if (dStream)
+        streamSubtitle = std::dynamic_pointer_cast<CDemuxStreamClientInternalTpl<CDemuxStreamSubtitle>>(dStream);
+      if (!streamSubtitle || streamSubtitle->codec != source->codec)
       {
-        st = dynamic_cast<CDemuxStreamSubtitleClient*>(m_streams[i]);
-        if (!st || (st->codec != source->codec))
-          DisposeStream(i);
+        streamSubtitle.reset(new CDemuxStreamClientInternalTpl<CDemuxStreamSubtitle>());
+        streamSubtitle->m_parser = av_parser_init(source->codec);
+        if (streamSubtitle->m_parser)
+          streamSubtitle->m_parser->flags |= PARSER_FLAG_COMPLETE_FRAMES;
       }
-      if (!m_streams[i])
-      {
-        st = new CDemuxStreamSubtitleClient();
-      }
+
       if (source->ExtraSize == 4)
       {
-        st->ExtraData = new uint8_t[4];
-        st->ExtraSize = 4;
+        streamSubtitle->ExtraData = new uint8_t[4];
+        streamSubtitle->ExtraSize = 4;
         for (int j=0; j<4; j++)
-          st->ExtraData[j] = source->ExtraData[j];
+          streamSubtitle->ExtraData[j] = source->ExtraData[j];
       }
-      m_streams[i] = st;
+      m_newStreamMap[stream->uniqueId] = streamSubtitle;
+      dStream = streamSubtitle;
     }
     else if (stream->type == STREAM_TELETEXT)
     {
-      if (m_streams[i])
+      CDemuxStreamTeletext *source = dynamic_cast<CDemuxStreamTeletext*>(stream);
+
+      if (!source)
       {
-        if (m_streams[i]->codec != stream->codec)
-          DisposeStream(i);
+        CLog::Log(LOGERROR, "CDVDDemuxClient::RequestStreams - invalid audio stream with id %d", stream->uniqueId);
+        DisposeStreams();
+        return;
       }
-      if (!m_streams[i])
-        m_streams[i] = new CDemuxStreamTeletext();
+
+      std::shared_ptr<CDemuxStreamClientInternalTpl<CDemuxStreamTeletext>> streamTeletext;
+      if (dStream)
+        streamTeletext = std::dynamic_pointer_cast<CDemuxStreamClientInternalTpl<CDemuxStreamTeletext>>(dStream);
+      if (!streamTeletext || streamTeletext->codec != source->codec)
+      {
+        streamTeletext.reset(new CDemuxStreamClientInternalTpl<CDemuxStreamTeletext>());
+      }
+
+      m_newStreamMap[stream->uniqueId] = streamTeletext;
+      dStream = streamTeletext;
     }
     else if (stream->type == STREAM_RADIO_RDS)
     {
-      if (m_streams[i])
+      CDemuxStreamRadioRDS *source = dynamic_cast<CDemuxStreamRadioRDS*>(stream);
+
+      if (!source)
       {
-        if (m_streams[i]->codec != stream->codec)
-          DisposeStream(i);
+        CLog::Log(LOGERROR, "CDVDDemuxClient::RequestStreams - invalid audio stream with id %d", stream->uniqueId);
+        DisposeStreams();
+        return;
       }
-      if (!m_streams[i])
-        m_streams[i] = new CDemuxStreamRadioRDS();
+
+      std::shared_ptr<CDemuxStreamClientInternalTpl<CDemuxStreamRadioRDS>> streamRDS;
+      if (dStream)
+        streamRDS = std::dynamic_pointer_cast<CDemuxStreamClientInternalTpl<CDemuxStreamRadioRDS>>(dStream);
+      if (!streamRDS || streamRDS->codec != source->codec)
+      {
+        streamRDS.reset(new CDemuxStreamClientInternalTpl<CDemuxStreamRadioRDS>());
+      }
+
+      m_newStreamMap[stream->uniqueId] = streamRDS;
+      dStream = streamRDS;
     }
     else
     {
-      if (m_streams[i])
-        DisposeStream(i);
-      m_streams[i] = new CDemuxStream();
+      std::shared_ptr<CDemuxStreamClientInternalTpl<CDemuxStream>> streamGen;
+      streamGen = std::make_shared<CDemuxStreamClientInternalTpl<CDemuxStream>>();
+      m_newStreamMap[stream->uniqueId] = streamGen;
+      dStream = streamGen;
     }
 
-    m_streams[i]->codec = stream->codec;
-    m_streams[i]->codecName = stream->codecName;
-    m_streams[i]->bandwidth = stream->bandwidth;
-    m_streams[i]->uniqueId = stream->uniqueId;
+    dStream->uniqueId = stream->uniqueId;
+    dStream->codec = stream->codec;
+    dStream->codecName = stream->codecName;
+    dStream->bandwidth = stream->bandwidth;
+    dStream->uniqueId = stream->uniqueId;
     for (int j=0; j<4; j++)
-      m_streams[i]->language[j] = stream->language[j];
+      dStream->language[j] = stream->language[j];
 
-    m_streams[i]->realtime = stream->realtime;
+    dStream->realtime = stream->realtime;
 
     CLog::Log(LOGDEBUG,"CDVDDemuxClient::RequestStreams(): added/updated stream %d with codec_id %d",
-        m_streams[i]->uniqueId,
-        m_streams[i]->codec);
+        dStream->uniqueId,
+        dStream->codec);
   }
-  ++i;
-  // check if we need to dispose any streams no longer in props
-  for (int j = i; j < MAX_STREAMS; j++)
+  m_streams = m_newStreamMap;
+}
+
+std::shared_ptr<CDemuxStream> CDVDDemuxClient::GetStreamInternal(int iStreamId)
+{
+  auto stream = m_streams.find(iStreamId);
+  if (stream != m_streams.end())
   {
-    if (m_streams[j])
-    {
-      CLog::Log(LOGDEBUG,"CDVDDemuxClient::RequestStreams(): disposed stream %d with codec_id %d",
-          m_streams[j]->uniqueId,
-          m_streams[j]->codec);
-      DisposeStream(j);
-    }
+    return stream->second;
   }
+  else
+    return nullptr;
 }
 
 int CDVDDemuxClient::GetNrOfStreams() const
 {
-  int i = 0;
-  while (i < MAX_STREAMS && m_streams[i])
-    i++;
-  return i;
+  return m_streams.size();
 }
 
 std::string CDVDDemuxClient::GetFileName()
