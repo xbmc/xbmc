@@ -1236,17 +1236,28 @@ int CRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   if (!m_pRenderer)
     return -1;
 
-  // TODO: this is a Windows onl thing and should go away
-  if(m_pRenderer->AddVideoPicture(&pic, index))
-    return 1;
-
   YV12Image image;
   if (m_pRenderer->GetImage(&image, index) < 0)
     return -1;
 
-  if(pic.format == RENDER_FMT_YUV420P
-  || pic.format == RENDER_FMT_YUV420P10
-  || pic.format == RENDER_FMT_YUV420P16)
+  if(pic.format == RENDER_FMT_VDPAU
+  || pic.format == RENDER_FMT_VDPAU_420
+  || pic.format == RENDER_FMT_OMXEGL
+  || pic.format == RENDER_FMT_CVBREF
+  || pic.format == RENDER_FMT_VAAPI
+  || pic.format == RENDER_FMT_VAAPINV12
+  || pic.format == RENDER_FMT_MEDIACODEC
+  || pic.format == RENDER_FMT_MEDIACODECSURFACE
+  || pic.format == RENDER_FMT_AML
+  || pic.format == RENDER_FMT_IMXMAP
+  || pic.format == RENDER_FMT_MMAL
+  || m_pRenderer->IsPictureHW(pic))
+  {
+    m_pRenderer->AddVideoPictureHW(pic, index);
+  }
+  else if(pic.format == RENDER_FMT_YUV420P
+       || pic.format == RENDER_FMT_YUV420P10
+       || pic.format == RENDER_FMT_YUV420P16)
   {
     CDVDCodecUtils::CopyPicture(&image, &pic);
   }
@@ -1259,18 +1270,6 @@ int CRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   {
     CDVDCodecUtils::CopyYUV422PackedPicture(&image, &pic);
   }
-  else if(pic.format == RENDER_FMT_VDPAU
-       || pic.format == RENDER_FMT_VDPAU_420
-       || pic.format == RENDER_FMT_OMXEGL
-       || pic.format == RENDER_FMT_CVBREF
-       || pic.format == RENDER_FMT_VAAPI
-       || pic.format == RENDER_FMT_VAAPINV12
-       || pic.format == RENDER_FMT_MEDIACODEC
-       || pic.format == RENDER_FMT_MEDIACODECSURFACE
-       || pic.format == RENDER_FMT_AML
-       || pic.format == RENDER_FMT_IMXMAP
-       || pic.format == RENDER_FMT_MMAL)
-    m_pRenderer->AddVideoPictureHW(pic, index);
 
   m_pRenderer->ReleaseImage(index, false);
 
