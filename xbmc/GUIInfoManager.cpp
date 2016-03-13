@@ -188,6 +188,18 @@ typedef struct
   int  val;
 } infomap;
 
+const infomap string_bools[] =   {{ "isempty",          STRING_IS_EMPTY },
+                                  { "isequal",          STRING_IS_EQUAL },
+                                  { "startswith",       STRING_STARTS_WITH },
+                                  { "endswith",         STRING_ENDS_WITH },
+                                  { "contains",         STRING_CONTAINS }};
+
+const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
+                                  { "isgreater",        INTEGER_GREATER_THAN },
+                                  { "isgreaterorequal", INTEGER_GREATER_OR_EQUAL },
+                                  { "isless",           INTEGER_LESS_THAN },
+                                  { "islessorequal",    INTEGER_LESS_OR_EQUAL }};
+
 const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },           // bools from here
                                   { "hasaudio",         PLAYER_HAS_AUDIO },
                                   { "hasvideo",         PLAYER_HAS_VIDEO },
@@ -951,8 +963,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
 {
   /* We need to disable caching in INFO::InfoBool::Get if either of the following are true:
    *  1. if condition is between LISTITEM_START and LISTITEM_END
-   *  2. if condition is STRING_IS_EMPTY, STRING_COMPARE, STRING_STR, INTEGER_GREATER_THAN and the
-   *     corresponding label is between LISTITEM_START and LISTITEM_END
+   *  2. if condition is string or integer the corresponding label is between LISTITEM_START and LISTITEM_END
    *  This is achieved by setting the bool pointed at by listItemDependent, either here or in a recursive call
    */
   // trim whitespaces
@@ -972,6 +983,9 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       return SYSTEM_ALWAYS_FALSE;
     else if (cat.name == "true" || cat.name == "yes")
       return SYSTEM_ALWAYS_TRUE;
+
+    // deprecated begin
+    // should be removed before L*** v18
     if (cat.name == "isempty" && cat.num_params() == 1)
       return AddMultiInfo(GUIInfo(STRING_IS_EMPTY, TranslateSingleString(cat.param(), listItemDependent)));
     else if (cat.name == "stringcompare" && cat.num_params() == 2)
@@ -1011,11 +1025,52 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       }
       return AddMultiInfo(GUIInfo(STRING_STR, info, compareString));
     }
+    // deprecated end
   }
   else if (info.size() == 2)
   {
     const Property &prop = info[1];
-    if (cat.name == "player")
+    if (cat.name == "string")
+    {
+      if (prop.name == "isempty")
+      {
+        return AddMultiInfo(GUIInfo(STRING_IS_EMPTY, TranslateSingleString(prop.param(), listItemDependent)));
+      }
+      else if (prop.num_params() == 2)
+      {
+        for (size_t i = 0; i < sizeof(string_bools) / sizeof(infomap); i++)
+        {
+          if (prop.name == string_bools[i].str)
+          {
+            int data1 = TranslateSingleString(prop.param(0), listItemDependent);
+            // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
+            std::string label = CGUIInfoLabel::GetLabel(prop.param(1));
+            StringUtils::ToLower(label);
+            // 'true', 'false', 'yes', 'no' are valid strings, do not resolve them to SYSTEM_ALWAYS_TRUE or SYSTEM_ALWAYS_FALSE
+            if (label != "true" && label != "false" && label != "yes" && label != "no")
+            {
+              int data2 = TranslateSingleString(prop.param(1), listItemDependent);
+              if (data2 > 0)
+                return AddMultiInfo(GUIInfo(string_bools[i].val, data1, -data2));
+            }
+            return AddMultiInfo(GUIInfo(string_bools[i].val, data1, ConditionalStringParameter(label)));
+          }
+        }
+      }
+    }
+    if (cat.name == "integer")
+    {
+      for (size_t i = 0; i < sizeof(integer_bools) / sizeof(infomap); i++)
+      {
+        if (prop.name == integer_bools[i].str)
+        {
+          int data1 = TranslateSingleString(prop.param(0), listItemDependent);
+          int data2 = atoi(prop.param(1).c_str());
+          return AddMultiInfo(GUIInfo(integer_bools[i].val, data1, data2));
+        }
+      }
+    }
+    else if (cat.name == "player")
     {
       for (size_t i = 0; i < sizeof(player_labels) / sizeof(infomap); i++)
       {
@@ -3040,7 +3095,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         else
           bReturn = GetImage(info.GetData1(), contextWindow).empty();
         break;
-      case STRING_COMPARE:
+      case STRING_COMPARE: // STRING_COMPARE is deprecated - should be removed before L*** v18
+      case STRING_IS_EQUAL:
         {
           std::string compare;
           if (info.GetData2() < 0) // info labels are stored with negative numbers
@@ -3061,15 +3117,16 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             bReturn = StringUtils::EqualsNoCase(GetImage(info.GetData1(), contextWindow), compare);
         }
         break;
+      case INTEGER_IS_EQUAL:
       case INTEGER_GREATER_THAN:
+      case INTEGER_GREATER_OR_EQUAL:
+      case INTEGER_LESS_THAN:
+      case INTEGER_LESS_OR_EQUAL:
         {
           int integer;
-          if (GetInt(integer, info.GetData1(), contextWindow, item))
-            bReturn = integer > info.GetData2();
-          else
+          if (!GetInt(integer, info.GetData1(), contextWindow, item))
           {
             std::string value;
-
             if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
               value = GetItemImage((const CFileItem *)item, info.GetData1());
             else
@@ -3077,16 +3134,31 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
 
             // Handle the case when a value contains time separator (:). This makes IntegerGreaterThan
             // useful for Player.Time* members without adding a separate set of members returning time in seconds
-            if ( value.find_first_of( ':' ) != value.npos )
-              bReturn = StringUtils::TimeStringToSeconds( value ) > info.GetData2();
+            if (value.find_first_of( ':' ) != value.npos)
+              integer = StringUtils::TimeStringToSeconds(value);
             else
-              bReturn = atoi( value.c_str() ) > info.GetData2();
+              integer = atoi(value.c_str());
           }
+
+          // compare
+          if (condition == INTEGER_IS_EQUAL)
+            bReturn = integer == info.GetData2();
+          else if (condition == INTEGER_GREATER_THAN)
+            bReturn = integer > info.GetData2();
+          else if (condition == INTEGER_GREATER_OR_EQUAL)
+            bReturn = integer >= info.GetData2();
+          else if (condition == INTEGER_LESS_THAN)
+            bReturn = integer < info.GetData2();
+          else if (condition == INTEGER_LESS_OR_EQUAL)
+            bReturn = integer <= info.GetData2();
         }
         break;
-      case STRING_STR:
-      case STRING_STR_LEFT:
-      case STRING_STR_RIGHT:
+      case STRING_STR:          // STRING_STR is deprecated - should be removed before L*** v18
+      case STRING_STR_LEFT:     // STRING_STR_LEFT is deprecated - should be removed before L*** v18
+      case STRING_STR_RIGHT:    // STRING_STR_RIGHT is deprecated - should be removed before L*** v18
+      case STRING_STARTS_WITH:
+      case STRING_ENDS_WITH:
+      case STRING_CONTAINS:
         {
           std::string compare = m_stringParameters[info.GetData2()];
           // our compare string is already in lowercase, so lower case our label as well
@@ -3102,9 +3174,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             label = GetImage(info.GetData1(), contextWindow);
             StringUtils::ToLower(label);
           }
-          if (condition == STRING_STR_LEFT)
+          if (condition == STRING_STR_LEFT || condition == STRING_STARTS_WITH)
             bReturn = StringUtils::StartsWith(label, compare);
-          else if (condition == STRING_STR_RIGHT)
+          else if (condition == STRING_STR_RIGHT || condition == STRING_ENDS_WITH)
             bReturn = StringUtils::EndsWith(label, compare);
           else
             bReturn = label.find(compare) != std::string::npos;
