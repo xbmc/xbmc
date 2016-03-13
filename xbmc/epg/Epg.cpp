@@ -332,7 +332,7 @@ bool CEpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
   return UpdateEntry(tag, false, bUpdateDatabase);
 }
 
-bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, bool bNotifyObeservers, bool bUpdateDatabase /* = false */)
+bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, bool bNotifyObservers, bool bUpdateDatabase /* = false */)
 {
   CSingleLock lock(m_critSection);
   auto it = m_tags.find(tag->StartAsUTC());
@@ -340,7 +340,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, bool bNotifyObeservers, bool b
 
   if (UpdateEntry(tag, state, it, bUpdateDatabase))
   {
-    if (bNotifyObeservers)
+    if (bNotifyObservers)
     {
       SetChanged();
       lock.Leave();
