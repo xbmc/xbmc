@@ -21,6 +21,8 @@
 
 #include "input/joysticks/IDriverHandler.h"
 
+#include <memory>
+
 namespace JOYSTICK
 {
   class IButtonMap;
@@ -45,7 +47,7 @@ namespace PERIPHERALS
     virtual void ProcessAxisMotions(void) override;
 
   private:
-    JOYSTICK::IDriverHandler* m_driverHandler;
-    JOYSTICK::IButtonMap*     m_buttonMap;
+    std::unique_ptr<JOYSTICK::IDriverHandler> m_driverHandler;
+    std::unique_ptr<JOYSTICK::IButtonMap>     m_buttonMap;
   };
 }
