@@ -338,11 +338,14 @@ bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, bool bNotifyObeservers, bool b
   auto it = m_tags.find(tag->StartAsUTC());
   EPG_EVENT_STATE state = (it == m_tags.end()) ? EPG_EVENT_CREATED : EPG_EVENT_UPDATED;
 
-  if (UpdateEntry(tag, state, it, bUpdateDatabase) && bNotifyObeservers)
+  if (UpdateEntry(tag, state, it, bUpdateDatabase))
   {
-    SetChanged();
-    lock.Leave();
-    NotifyObservers(ObservableMessageEpg);
+    if (bNotifyObeservers)
+    {
+      SetChanged();
+      lock.Leave();
+      NotifyObservers(ObservableMessageEpg);
+    }
     return true;
   }
   return false;
