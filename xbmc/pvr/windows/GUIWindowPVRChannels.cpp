@@ -52,10 +52,9 @@ CGUIWindowPVRChannels::CGUIWindowPVRChannels(bool bRadio) :
 {
 }
 
-void CGUIWindowPVRChannels::ResetObservers(void)
+void CGUIWindowPVRChannels::RegisterObservers(void)
 {
   CSingleLock lock(m_critSection);
-  UnregisterObservers();
   g_EpgContainer.RegisterObserver(this);
   g_PVRTimers->RegisterObserver(this);
   g_infoManager.RegisterObserver(this);
@@ -245,15 +244,13 @@ bool CGUIWindowPVRChannels::OnMessage(CGUIMessage& message)
         case ObservableMessageEpgActiveItem:
         case ObservableMessageCurrentItem:
         {
-          if (IsActive())
-            SetInvalid();
+          SetInvalid();
           bReturn = true;
           break;
         }
         case ObservableMessageChannelGroupReset:
         {
-          if (IsActive())
-            Refresh(true);
+          Refresh(true);
           bReturn = true;
           break;
         }

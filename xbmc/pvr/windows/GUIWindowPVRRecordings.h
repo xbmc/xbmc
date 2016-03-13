@@ -41,12 +41,12 @@ namespace PVR
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
     virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
     virtual void UpdateButtons(void) override;
-    void UnregisterObservers(void);
-    virtual void ResetObservers(void) override;
 
   protected:
     virtual std::string GetDirectoryPath(void) override;
     virtual void OnPrepareFileItems(CFileItemList &items) override;
+    virtual void RegisterObservers(void) override;
+    virtual void UnregisterObservers(void) override;
 
   private:
     bool ActionDeleteRecording(CFileItem *item);

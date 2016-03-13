@@ -85,6 +85,13 @@ std::string CGUIWindowPVRBase::GetSelectedItemPath(bool bRadio)
   return m_selectedItemPaths[bRadio];
 }
 
+void CGUIWindowPVRBase::ResetObservers(void)
+{
+  UnregisterObservers();
+  if (IsActive())
+    RegisterObservers();
+}
+
 void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage msg)
 {
   if (IsActive())
@@ -181,11 +188,15 @@ void CGUIWindowPVRBase::OnInitWindow(void)
 
   // mark item as selected by channel path
   m_viewControl.SetSelectedItem(GetSelectedItemPath(m_bRadio));
+
+  RegisterObservers();
 }
 
 void CGUIWindowPVRBase::OnDeinitWindow(int nextWindowID)
 {
+  UnregisterObservers();
   UpdateSelectedItemPath();
+  CGUIMediaWindow::OnDeinitWindow(nextWindowID);
 }
 
 bool CGUIWindowPVRBase::OnMessage(CGUIMessage& message)
