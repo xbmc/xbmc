@@ -112,14 +112,17 @@ static int SelectBool(const std::vector<std::string>& params)
 
   CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   pDlgSelect->Reset();
-  pDlgSelect->SetHeading(CVariant{g_localizeStrings.Get(424)});
+  pDlgSelect->SetHeading(CVariant{g_localizeStrings.Get(atoi(params[0].c_str()))});
 
-  for (unsigned int i = 0 ; i < params.size() ; i++)
+  for (unsigned int i = 1 ; i < params.size() ; i++)
   {
-    std::vector<std::string> values = StringUtils::Split(params[i], '|');
-    std::string label = g_localizeStrings.Get(atoi(values[0].c_str()));
-    settings.push_back(std::make_pair(label,values[1].c_str()));
-    pDlgSelect->Add(label);
+    if (params[i].find('|') != std::string::npos)
+    {
+      std::vector<std::string> values = StringUtils::Split(params[i], '|');
+      std::string label = g_localizeStrings.Get(atoi(values[0].c_str()));
+      settings.push_back(std::make_pair(label, values[1].c_str()));
+      pDlgSelect->Add(label);
+    }
   }
 
   pDlgSelect->Open();
@@ -581,7 +584,7 @@ CBuiltins::CommandMap CSkinBuiltins::GetOperations() const
            {"skin.reset",         {"Resets a skin setting to default", 1, SkinReset}},
            {"skin.resetsettings", {"Resets all skin settings", 0, SkinResetAll}},
            {"skin.setaddon",      {"Prompts and set an addon", 2, SetAddon}},
-           {"skin.selectbool",    {"Prompts and set a skin setting", 1, SelectBool}},
+           {"skin.selectbool",    {"Prompts and set a skin setting", 2, SelectBool}},
            {"skin.setbool",       {"Sets a skin setting on", 1, SetBool}},
            {"skin.setfile",       {"Prompts and sets a file", 1, SetFile}},
            {"skin.setimage",      {"Prompts and sets a skin image", 1, SetImage}},
