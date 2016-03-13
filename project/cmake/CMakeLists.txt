@@ -277,9 +277,10 @@ endif()
 
 core_link_library(XBMC_addon addons/library.xbmc.addon/libXBMC_addon)
 core_link_library(XBMC_codec addons/library.xbmc.codec/libXBMC_codec)
-core_link_library(KODI_guilib addons/library.kodi.guilib/libKODI_guilib)
+core_link_library(XBMC_pvr addons/library.xbmc.pvr/libXBMC_pvr)
 core_link_library(KODI_adsp addons/library.kodi.adsp/libKODI_adsp)
-core_link_library(XBMC_pvr   addons/library.xbmc.pvr/libXBMC_pvr)
+core_link_library(KODI_audioengine addons/library.kodi.audioengine/libKODI_audioengine)
+core_link_library(KODI_guilib addons/library.kodi.guilib/libKODI_guilib)
 core_link_library(KODI_inputstream addons/library.kodi.inputstream/libKODI_inputstream)
 core_link_library(KODI_peripheral addons/library.kodi.peripheral/libKODI_peripheral)
 
