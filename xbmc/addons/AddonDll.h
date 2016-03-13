@@ -67,6 +67,7 @@ namespace ADDON
     void HandleException(std::exception &e, const char* context);
     bool Initialized() { return m_initialized; }
     virtual bool LoadSettings();
+    static uint32_t GetChildCount() { static uint32_t childCounter = 0; return childCounter++; }
     TheStruct* m_pStruct;
     TheProps*     m_pInfo;
     CAddonInterfaces* m_pHelpers;
@@ -135,12 +136,26 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
   }
   else
   {
-    std::string extension = URIUtils::GetExtension(LibPath());
-    strFileName = "special://temp/" + ID() + "-%03d" + extension;
-    strFileName = CUtil::GetNextFilename(strFileName, 100);
+    std::string libPath = LibPath();
+    if (!XFILE::CFile::Exists(libPath))
+    {
+      std::string temp = CSpecialProtocol::TranslatePath("special://xbmc/");
+      std::string tempbin = CSpecialProtocol::TranslatePath("special://xbmcbin/");
+      libPath.erase(0, temp.size());
+      libPath = tempbin + libPath;
+      if (!XFILE::CFile::Exists(libPath))
+      {
+        CLog::Log(LOGERROR, "ADDON: Could not locate %s", m_props.libname.c_str());
+        return false;
+      }
+    }
 
-    if (!XFILE::CFile::Exists(strFileName))
-      XFILE::CFile::Copy(LibPath(), strFileName);
+    std::stringstream childcount;
+    childcount << GetChildCount();
+    std::string extension = URIUtils::GetExtension(libPath);
+    strFileName = "special://temp/" + ID() + "-" + childcount.str() + extension;
+
+    XFILE::CFile::Copy(libPath, strFileName);
 
     CLog::Log(LOGNOTICE, "ADDON: Loaded virtual child addon %s", strFileName.c_str());
   }
