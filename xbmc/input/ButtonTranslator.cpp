@@ -335,6 +335,7 @@ static const ActionMapping windows[] =
     { "mediasettings"            , WINDOW_SETTINGS_MEDIA },
     { "interfacesettings"        , WINDOW_SETTINGS_INTERFACE },
     { "appearancesettings"       , WINDOW_SETTINGS_INTERFACE },	// backward compatibility to v16
+    { "gamesettings"             , WINDOW_SETTINGS_MYGAMES },
     { "videoplaylist"            , WINDOW_VIDEO_PLAYLIST },
     { "loginscreen"              , WINDOW_LOGIN_SCREEN },
     { "profiles"                 , WINDOW_SETTINGS_PROFILES },

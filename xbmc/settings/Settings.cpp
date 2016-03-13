@@ -33,6 +33,7 @@
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "filesystem/File.h"
+#include "games/GameSettings.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIFontManager.h"
@@ -622,6 +623,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterCallback(&g_passwordManager);
   m_settingsManager->UnregisterCallback(&CRssManager::GetInstance());
   m_settingsManager->UnregisterCallback(&ADDON::CRepositoryUpdater::GetInstance());
+  m_settingsManager->UnregisterCallback(&GAME::CGameSettings::GetInstance());
 #if defined(TARGET_LINUX)
   m_settingsManager->UnregisterCallback(&g_timezone);
 #endif // defined(TARGET_LINUX)
@@ -1205,6 +1207,9 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
   m_settingsManager->RegisterCallback(&CWakeOnAccess::GetInstance(), settingSet);
+
+  settingSet.clear();
+  m_settingsManager->RegisterCallback(&GAME::CGameSettings::GetInstance(), settingSet);
 }
 
 bool CSettings::Reset()

@@ -7887,6 +7887,7 @@ msgctxt "#15015"
 msgid "Remove"
 msgstr ""
 
+#: system/settings/settings.xml
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
 msgctxt "#15016"
 msgid "Games"
@@ -16266,7 +16267,15 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr ""
 
-#empty strings from id 35103 to 35504
+#empty strings from id 35103 to 35199
+
+#. This string is an early meme from the late 1990's that made fun of the poor translation in the 16-bit game Zero Wing from the late 1980's. DO NOT TRANSLATE!
+#: system/settings/settings.xml
+msgctxt "#35200"
+msgid "ALL YOUR BASE ARE BELONG[CR]TO US"
+msgstr ""
+
+#empty strings from id 35201 to 35504
 
 #. connection state "host unreachable"
 #: xbmc/addons/AddonCallbacksPVR.cpp

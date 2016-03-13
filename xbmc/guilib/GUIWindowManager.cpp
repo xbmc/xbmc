@@ -411,6 +411,7 @@ bool CGUIWindowManager::DestroyWindows()
     Remove(WINDOW_SETTINGS_PLAYER);
     Remove(WINDOW_SETTINGS_MEDIA);
     Remove(WINDOW_SETTINGS_INTERFACE);
+    Remove(WINDOW_SETTINGS_MYGAMES);
     Remove(WINDOW_DIALOG_KAI_TOAST);
 
     Remove(WINDOW_DIALOG_SEEK_BAR);

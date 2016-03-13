@@ -129,6 +129,11 @@
 					<icon>icons/settings/network.png</icon>
 				</item>
 				<item>
+					<label>$LOCALIZE[15016]</label>
+					<onclick>ActivateWindow(GameSettings)</onclick>
+					<icon>icons/settings/games.png</icon>
+				</item>
+				<item>
 					<label>$LOCALIZE[14207]</label>
 					<onclick>ActivateWindow(InterfaceSettings)</onclick>
 					<icon>icons/settings/interface.png</icon>

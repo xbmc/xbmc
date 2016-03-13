@@ -36,6 +36,7 @@
 #define WINDOW_SETTINGS_SERVICE           10018
 
 #define WINDOW_SETTINGS_MYPVR             10021
+#define WINDOW_SETTINGS_MYGAMES           10022
 
 #define WINDOW_VIDEO_NAV                  10025
 #define WINDOW_VIDEO_PLAYLIST             10028
