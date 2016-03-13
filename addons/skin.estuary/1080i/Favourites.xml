@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<window type="dialog" id="134">
+<window>
 	<defaultcontrol always="true">450</defaultcontrol>
+	<views>450</views>
 	<coordinates>
 		<left>210</left>
 		<top>150</top>
