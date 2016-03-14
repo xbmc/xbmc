@@ -21,6 +21,7 @@
 #include "utils/log.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "utils/RegExp.h"
+#include "utils/URIUtils.h"
 
 namespace ADDON
 {
@@ -119,6 +120,7 @@ bool CInputStream::Open(CFileItem &fileitem)
     props.m_nCountInfoValues++;
   }
   props.m_strURL = fileitem.GetPath().c_str();
+  props.m_libFolder = URIUtils::GetDirectory(m_parentLib).c_str();
 
   bool ret = false;
   try
