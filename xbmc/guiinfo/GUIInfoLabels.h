@@ -331,11 +331,23 @@
 #define VISUALISATION_HAS_PRESETS   404
 
 #define STRING_IS_EMPTY             410
-#define STRING_COMPARE              411
-#define STRING_STR                  412
-#define INTEGER_GREATER_THAN        413
-#define STRING_STR_LEFT             414
-#define STRING_STR_RIGHT            415
+#define STRING_IS_EQUAL             411
+#define STRING_STARTS_WITH          412
+#define STRING_ENDS_WITH            413
+#define STRING_CONTAINS             414
+// deprecated begin
+// should be removed before L*** v18
+#define STRING_COMPARE              415
+#define STRING_STR                  416
+#define STRING_STR_LEFT             418
+#define STRING_STR_RIGHT            419
+// deprecated end
+
+#define INTEGER_IS_EQUAL            450
+#define INTEGER_GREATER_THAN        451
+#define INTEGER_GREATER_OR_EQUAL    452
+#define INTEGER_LESS_THAN           453
+#define INTEGER_LESS_OR_EQUAL       454
 
 #define SKIN_BOOL                   600
 #define SKIN_STRING                 601
