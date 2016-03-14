@@ -159,6 +159,11 @@ void COverlayText::PrepareRender(const std::string &font, int color, int height,
   if (!m_layout)
     m_layout = GetFontLayout(font, color, height, style, fontcache, fontbordercache);
 
+  if (m_layout == NULL)
+  {
+    CLog::Log(LOGERROR, "COverlayText::PrepareRender - GetFontLayout failed for font %s", font.c_str());
+    return;
+  }
   RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
   float width_max = (float)res.Overscan.right - res.Overscan.left;
   m_layout->Update(m_text, width_max * 0.9f, false, true); // true to force LTR reading order (most Hebrew subs are this format)
