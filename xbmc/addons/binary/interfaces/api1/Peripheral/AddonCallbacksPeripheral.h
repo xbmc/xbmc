@@ -21,8 +21,6 @@
 
 #include "addons/binary/interfaces/AddonInterfaces.h"
 
-struct CB_PeripheralLib;
-
 namespace PERIPHERALS { class CPeripheralAddon; }
 
 namespace V1
@@ -34,7 +32,7 @@ namespace Peripheral
 {
 
 /*!
- * Callbacks for a peripheral add-on to XBMC
+ * Callbacks for a peripheral add-on to Kodi
  */
 class CAddonCallbacksPeripheral : public ADDON::IAddonInterface
 {
@@ -56,7 +54,7 @@ private:
   CB_PeripheralLib*  m_callbacks; /*!< callback addresses */
 };
 
-} /* namespace InputStream */
+} /* namespace Peripheral */
 
 } /* namespace KoidAPI */
 } /* namespace V1 */

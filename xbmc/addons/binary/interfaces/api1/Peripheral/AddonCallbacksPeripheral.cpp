@@ -19,10 +19,8 @@
  */
 
 #include "AddonCallbacksPeripheral.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_callbacks.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/addons/PeripheralAddon.h"
-#include "peripherals/devices/Peripheral.h"
 #include "utils/log.h"
 
 using namespace ADDON;
@@ -40,7 +38,7 @@ CAddonCallbacksPeripheral::CAddonCallbacksPeripheral(ADDON::CAddon* addon)
   : ADDON::IAddonInterface(addon, 1, PERIPHERAL_API_VERSION),
     m_callbacks(new CB_PeripheralLib)
 {
-  /* write XBMC peripheral specific add-on function addresses to callback table */
+  /* write Kodi peripheral specific add-on function addresses to callback table */
   m_callbacks->TriggerScan               = TriggerScan;
   m_callbacks->RefreshButtonMaps         = RefreshButtonMaps;
 }
@@ -77,7 +75,7 @@ void CAddonCallbacksPeripheral::RefreshButtonMaps(void* addonData, const char* d
   peripheralAddon->RefreshButtonMaps(deviceName ? deviceName : "", controllerId ? controllerId : "");
 }
 
-} /* namespace InputStream */
+} /* namespace Peripheral */
 
 } /* namespace KodiAPI */
 } /* namespace V1 */

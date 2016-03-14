@@ -18,8 +18,6 @@
  *
  */
 
-//#include "addons/AddonCallbacks.h"
-//#include "addons/include/kodi_peripheral_types.h"
 #include "addons/binary/interfaces/AddonInterfaces.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_callbacks.h"
 
