@@ -72,6 +72,7 @@ namespace ADDON
     TheProps*     m_pInfo;
     CAddonInterfaces* m_pHelpers;
     bool m_bIsChild;
+    std::string m_parentLib;
 
   private:
     TheDll* m_pDll;
@@ -101,6 +102,7 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(AddonProps props)
   m_pInfo       = NULL;
   m_pHelpers    = NULL;
   m_needsavedsettings = false;
+  m_parentLib.clear();
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
@@ -114,6 +116,7 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const CAddonDll<TheDll, TheStr
   m_pInfo             = rhs.m_pInfo;
   m_pHelpers          = rhs.m_pHelpers;
   m_needsavedsettings = rhs.m_needsavedsettings;
+  m_parentLib = rhs.m_parentLib;
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
@@ -157,6 +160,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
 
     XFILE::CFile::Copy(libPath, strFileName);
 
+    m_parentLib = libPath;
     CLog::Log(LOGNOTICE, "ADDON: Loaded virtual child addon %s", strFileName.c_str());
   }
 
