@@ -67,6 +67,8 @@ extern "C" {
       const char *m_strKey;
       const char *m_strValue;
     } m_ListItemProperties[MAX_INFO_COUNT];
+
+    const char *m_libFolder;
   } INPUTSTREAM;
 
   /*!
