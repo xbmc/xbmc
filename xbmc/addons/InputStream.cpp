@@ -120,7 +120,9 @@ bool CInputStream::Open(CFileItem &fileitem)
     props.m_nCountInfoValues++;
   }
   props.m_strURL = fileitem.GetPath().c_str();
-  props.m_libFolder = URIUtils::GetDirectory(m_parentLib).c_str();
+  
+  std::string libFolder = URIUtils::GetDirectory(m_parentLib);
+  props.m_libFolder = libFolder.c_str();
 
   bool ret = false;
   try
