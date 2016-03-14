@@ -1469,7 +1469,8 @@
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
       { "name": "userrating", "$ref": "Optional.Integer" },
       { "name": "ratings", "$ref": "Video.Ratings" },
-      { "name": "dateadded", "$ref": "Optional.String" }
+      { "name": "dateadded", "$ref": "Optional.String" },
+      { "name": "runtime", "$ref": "Optional.Integer", "description": "Runtime in seconds" }
     ],
     "returns": "string"
   },

@@ -50,7 +50,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "GUIPassword.h"
 #include "interfaces/AnnouncementManager.h"
-#include "messaging/ApplicationMessenger.h"
 #include "playlists/SmartPlayList.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
@@ -147,7 +146,7 @@ void CVideoDatabase::CreateTables()
   for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
     columns += StringUtils::Format(",c%02d text", i);
 
-  columns += ", userrating integer)";
+  columns += ", userrating integer, duration INTEGER)";
   m_pDS->exec(columns);
 
   CLog::Log(LOGINFO, "create episode table");
@@ -2484,6 +2483,10 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, CVideoInfoTag &details
     sql += PrepareSQL(", userrating = %i", details.m_iUserRating);
   else
     sql += ", userrating = NULL";  
+  if (details.m_duration > 0)
+    sql += PrepareSQL(", duration = %i", details.m_duration);
+  else
+    sql += ", duration = NULL";
   sql += PrepareSQL(" WHERE idShow=%i", idTvShow);
   if (ExecuteQuery(sql))
   {
@@ -3734,6 +3737,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   details.AddRating(record->at(VIDEODB_DETAILS_TVSHOW_RATING).get_asFloat(),
     record->at(VIDEODB_DETAILS_TVSHOW_VOTES).get_asInt(),
     record->at(VIDEODB_DETAILS_TVSHOW_RATING_TYPE).get_asString());
+  details.m_duration = record->at(VIDEODB_DETAILS_TVSHOW_DURATION).get_asInt();
 
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
@@ -4905,11 +4909,35 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE settings ADD VideoStream integer");
     m_pDS->exec("ALTER TABLE streamdetails ADD strVideoLanguage text");
   }
+
+  if (iVersion < 104)
+  {
+    m_pDS->exec("ALTER TABLE tvshow ADD duration INTEGER");
+
+    std::string sql = PrepareSQL( "SELECT episode.idShow, MAX(episode.c%02d) "
+                                  "FROM episode "
+
+                                  "LEFT JOIN streamdetails "
+                                  "ON streamdetails.idFile = episode.idFile "
+                                  "AND streamdetails.iStreamType = 0 " // only grab video streams
+
+                                  "WHERE episode.c%02d <> streamdetails.iVideoDuration "
+                                  "OR streamdetails.iVideoDuration IS NULL "
+                                  "GROUP BY episode.idShow", VIDEODB_ID_EPISODE_RUNTIME, VIDEODB_ID_EPISODE_RUNTIME);
+
+    m_pDS->query(sql);
+    while (!m_pDS->eof())
+    {
+      m_pDS2->exec(PrepareSQL("UPDATE tvshow SET duration=%i WHERE idShow=%i", m_pDS->fv(1).get_asInt(), m_pDS->fv(0).get_asInt()));
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 103;
+  return 104;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
