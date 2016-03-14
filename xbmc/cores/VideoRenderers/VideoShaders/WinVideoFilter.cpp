@@ -897,14 +897,28 @@ void CConvolutionShaderSeparable::SetStepParams(UINT iPass)
 }
 
 //==========================================================
+#define SHADER_SOURCE(...) #__VA_ARGS__
 
 bool CTestShader::Create()
 {
-  std::string effectString = "special://xbmc/system/shaders/testshader.fx";
+  std::string strShader = SHADER_SOURCE(
+    float4 TEST() : SV_TARGET
+    {
+      return float4(0.0, 0.0, 0.0, 0.0);
+    }
 
-  if(!LoadEffect(effectString, nullptr))
+    technique11 TEST_T
+    {
+      pass P0
+      {
+        SetPixelShader(CompileShader(ps_4_0_level_9_1, TEST()));
+      }
+    };
+  );
+
+  if (!m_effect.Create(strShader, nullptr))
   {
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to load shader %s.", effectString.c_str());
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to create test shader: %s", strShader.c_str());
     return false;
   }
   return true;
