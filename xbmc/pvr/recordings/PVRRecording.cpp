@@ -114,7 +114,34 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_bIsDeleted                     = recording.bIsDeleted;
   m_iEpgEventId                    = recording.iEpgEventId;
   m_iChannelUid                    = recording.iChannelUid;
-  m_bRadio                         = recording.channelType == PVR_RECORDING_CHANNEL_TYPE_RADIO; // everything else is considered TV
+
+  //  As the channel a recording was done on (probably long time ago) might no longer be
+  //  available today prefer addon-supplied channel type (tv/radio) over channel attribute.
+  if (recording.channelType != PVR_RECORDING_CHANNEL_TYPE_UNKNOWN)
+  {
+    m_bRadio = recording.channelType == PVR_RECORDING_CHANNEL_TYPE_RADIO;
+  }
+  else
+  {
+    const CPVRChannelPtr channel(Channel());
+    if (channel)
+    {
+      m_bRadio = channel->IsRadio();
+    }
+    else
+    {
+      bool bSupportsRadio(g_PVRClients->SupportsRadio(m_iClientId));
+      if (bSupportsRadio && g_PVRClients->SupportsTV(m_iClientId))
+      {
+        CLog::Log(LOGWARNING,"CPVRRecording::CPVRRecording - unable to determine channel type. Defaulting to TV.");
+        m_bRadio = false; // Assume TV.
+      }
+      else
+      {
+        m_bRadio = bSupportsRadio;
+      }
+    }
+  }
 }
 
 bool CPVRRecording::operator ==(const CPVRRecording& right) const
