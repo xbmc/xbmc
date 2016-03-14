@@ -106,6 +106,21 @@ static enum AVPixelFormat PixelFormatFromFormat(ERenderFormat format)
   return AV_PIX_FMT_NONE;
 }
 
+bool CWinRenderer::HandlesRenderFormat(ERenderFormat format)
+{
+  if(format == RENDER_FMT_DXVA
+  || format == RENDER_FMT_YUV420P
+  || format == RENDER_FMT_YUV420P10
+  || format == RENDER_FMT_YUV420P16
+  || format == RENDER_FMT_NV12
+  || format == RENDER_FMT_UYVY422
+  || format == RENDER_FMT_YUYV422)
+  {
+    return true;
+  }
+  return false;
+}
+
 void CWinRenderer::ManageTextures()
 {
   if( m_NumYV12Buffers < m_neededBuffers )
@@ -211,9 +226,6 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
-  RESOLUTION_INFO res = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
-  m_destWidth = res.iWidth;
-  m_destHeight = res.iHeight;
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
   ManageDisplay();
 
@@ -534,6 +546,10 @@ void CWinRenderer::SelectPSVideoFilter()
 
 void CWinRenderer::UpdatePSVideoFilter()
 {
+  RESOLUTION_INFO res = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
+  m_destWidth = res.iWidth;
+  m_destHeight = res.iHeight;
+
   SAFE_DELETE(m_scalerShader);
 
   if (m_bUseHQScaler)

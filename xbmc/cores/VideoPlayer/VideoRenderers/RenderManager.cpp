@@ -337,7 +337,7 @@ bool CRenderManager::Configure()
   CSingleLock lock2(m_presentlock);
   CSingleLock lock3(m_datalock);
 
-  if (m_pRenderer && m_pRenderer->GetRenderFormat() != m_format)
+  if (m_pRenderer && !m_pRenderer->HandlesRenderFormat(m_format))
   {
     DeleteRenderer();
   }
@@ -724,10 +724,10 @@ void CRenderManager::CreateRenderer()
 
 void CRenderManager::DeleteRenderer()
 {
-  CLog::Log(LOGDEBUG, "%s - deleting renderer", __FUNCTION__);
-
   if (m_pRenderer)
   {
+    CLog::Log(LOGDEBUG, "%s - deleting renderer", __FUNCTION__);
+
     delete m_pRenderer;
     m_pRenderer = NULL;
   }
