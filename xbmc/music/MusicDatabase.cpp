@@ -6380,7 +6380,7 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
     if (option != options.end())
       filter.AppendWhere(PrepareSQL(
         "songview.idSong IN (SELECT song_artist.idSong FROM song_artist JOIN artist ON artist.idArtist = song_artist.idArtist "
-        "WHERE artist.strArtist like '%s' %s) OR" // song artists
+        "WHERE artist.strArtist like '%s' %s) OR " // song artists
         "songview.idSong IN (SELECT song.idSong FROM song JOIN album_artist ON song.idAlbum=album_artist.idAlbum "
         "JOIN artist ON artist.idArtist = album_artist.idArtist WHERE artist.strArtist like '%s')", // album artists
         option->second.asString().c_str(), strRoleSQL.c_str(), option->second.asString().c_str()));
