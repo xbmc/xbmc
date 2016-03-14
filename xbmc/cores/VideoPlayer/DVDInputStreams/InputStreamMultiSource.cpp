@@ -106,10 +106,8 @@ CDVDInputStream::ENextStream CInputStreamMultiSource::NextStream()
     if (next != NEXTSTREAM_NONE)
       return next;
   }
-  if (!eOF)
-    return NEXTSTREAM_RETRY;
 
-  return NEXTSTREAM_NONE;
+  return NEXTSTREAM_RETRY;
 }
 
 bool CInputStreamMultiSource::Open()
