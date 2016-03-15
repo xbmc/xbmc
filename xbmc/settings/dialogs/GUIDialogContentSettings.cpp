@@ -334,8 +334,8 @@ void CGUIDialogContentSettings::InitializeSettings()
   if (subsetting != NULL)
     subsetting->SetParent(SETTING_SCRAPER_LIST);
 
-  group = AddGroup(category, 20322);
-  if (category == NULL)
+  CSettingGroup *groupDetails = AddGroup(category, 20322);
+  if (groupDetails == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogContentSettings: unable to setup scanning settings");
     return;
@@ -344,18 +344,18 @@ void CGUIDialogContentSettings::InitializeSettings()
   {
     case CONTENT_TVSHOWS:
     {
-      AddToggle(group, SETTING_CONTAINS_SINGLE_ITEM, 20379, 0, m_containsSingleItem, false, m_showScanSettings);
-      AddToggle(group, SETTING_NO_UPDATING, 20432, 0, m_noUpdating, false, m_showScanSettings);
+      AddToggle(groupDetails, SETTING_CONTAINS_SINGLE_ITEM, 20379, 0, m_containsSingleItem, false, m_showScanSettings);
+      AddToggle(groupDetails, SETTING_NO_UPDATING, 20432, 0, m_noUpdating, false, m_showScanSettings);
       break;
     }
 
     case CONTENT_MOVIES:
     case CONTENT_MUSICVIDEOS:
     {
-      AddToggle(group, SETTING_USE_DIRECTORY_NAMES, m_content == CONTENT_MOVIES ? 20329 : 20330, 0, m_useDirectoryNames, false, m_showScanSettings);
-      CSettingBool *settingScanRecursive = AddToggle(group, SETTING_SCAN_RECURSIVE, 20346, 0, m_scanRecursive, false, m_showScanSettings);
-      CSettingBool *settingContainsSingleItem = AddToggle(group, SETTING_CONTAINS_SINGLE_ITEM, 20383, 0, m_containsSingleItem, false, m_showScanSettings);
-      AddToggle(group, SETTING_NO_UPDATING, 20432, 0, m_noUpdating, false, m_showScanSettings);
+      AddToggle(groupDetails, SETTING_USE_DIRECTORY_NAMES, m_content == CONTENT_MOVIES ? 20329 : 20330, 0, m_useDirectoryNames, false, m_showScanSettings);
+      CSettingBool *settingScanRecursive = AddToggle(groupDetails, SETTING_SCAN_RECURSIVE, 20346, 0, m_scanRecursive, false, m_showScanSettings);
+      CSettingBool *settingContainsSingleItem = AddToggle(groupDetails, SETTING_CONTAINS_SINGLE_ITEM, 20383, 0, m_containsSingleItem, false, m_showScanSettings);
+      AddToggle(groupDetails, SETTING_NO_UPDATING, 20432, 0, m_noUpdating, false, m_showScanSettings);
       
       // define an enable dependency with (m_useDirectoryNames && !m_containsSingleItem) || !m_useDirectoryNames
       CSettingDependency dependencyScanRecursive(SettingDependencyTypeEnable, m_settingsManager);
@@ -387,7 +387,7 @@ void CGUIDialogContentSettings::InitializeSettings()
 
     case CONTENT_NONE:
     default:
-      AddToggle(group, SETTING_EXCLUDE, 20380, 0, m_exclude, false, !m_showScanSettings);
+      AddToggle(groupDetails, SETTING_EXCLUDE, 20380, 0, m_exclude, false, !m_showScanSettings);
       break;
   }
 }
