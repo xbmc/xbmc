@@ -169,7 +169,6 @@ protected:
   IDXGIFactory1*              m_dxgiFactory;
   ID3D11Device*               m_pD3DDev;
   IDXGIAdapter1*              m_adapter;
-  int                         m_adapterIndex;
   IDXGIOutput*                m_pOutput;
   ID3D11DeviceContext*        m_pContext;
   ID3D11DeviceContext*        m_pImdContext;

@@ -49,52 +49,50 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_DIRECTX;
 
-  m_hFocusWnd   = NULL;
-  m_hDeviceWnd  = NULL;
+  m_hFocusWnd = nullptr;
+  m_hDeviceWnd = nullptr;
   m_nBackBufferWidth  = 0;
   m_nBackBufferHeight = 0;
   m_bFullScreenDevice = false;
-  m_bVSync          = true;
-  m_nDeviceStatus   = S_OK;
-  m_inScene         = false;
-  m_needNewDevice   = false;
+  m_bVSync = true;
+  m_nDeviceStatus = S_OK;
+  m_inScene = false;
+  m_needNewDevice = false;
   m_resizeInProgress = false;
-  m_screenHeight    = 0;
-  m_systemFreq      = CurrentHostFrequency();
-
+  m_screenHeight = 0;
+  m_systemFreq = CurrentHostFrequency();
   m_defaultD3DUsage = D3D11_USAGE_DEFAULT;
-
   m_featureLevel = D3D_FEATURE_LEVEL_11_1;
   m_driverType = D3D_DRIVER_TYPE_HARDWARE;
-  m_adapter = NULL;
-  m_adapterIndex = -1;
-  m_pOutput = NULL;
-  m_dxgiFactory = NULL;
-  m_pD3DDev = NULL;
-  m_pImdContext = NULL;
-  m_pContext = NULL;
+  m_adapter = nullptr;
+  m_pOutput = nullptr;
+  m_dxgiFactory = nullptr;
+  m_pD3DDev = nullptr;
+  m_pImdContext = nullptr;
+  m_pContext = nullptr;
 
-  m_pSwapChain = NULL;
-  m_pSwapChain1 = NULL;
-  m_pRenderTargetView = NULL;
-  m_depthStencilState = NULL;
-  m_depthStencilView = NULL;
-  m_BlendEnableState = NULL;
-  m_BlendDisableState = NULL;
+  m_pSwapChain = nullptr;
+  m_pSwapChain1 = nullptr;
+  m_pRenderTargetView = nullptr;
+  m_depthStencilState = nullptr;
+  m_depthStencilView = nullptr;
+  m_BlendEnableState = nullptr;
+  m_BlendDisableState = nullptr;
   m_BlendEnabled = false;
-  m_RSScissorDisable = NULL;
-  m_RSScissorEnable = NULL;
+  m_RSScissorDisable = nullptr;
+  m_RSScissorEnable = nullptr;
   m_ScissorsEnabled = false;
 
-  m_pTextureRight = NULL;
-  m_pRenderTargetViewRight = NULL;
-  m_pShaderResourceViewRight = NULL;
-  m_pGUIShader = NULL;
+  m_pTextureRight = nullptr;
+  m_pRenderTargetViewRight = nullptr;
+  m_pShaderResourceViewRight = nullptr;
+  m_pGUIShader = nullptr;
   m_bResizeRequred = false;
   m_bHWStereoEnabled = false;
   ZeroMemory(&m_cachedMode, sizeof(m_cachedMode));
   ZeroMemory(&m_viewPort, sizeof(m_viewPort));
   ZeroMemory(&m_scissor, sizeof(CRect));
+  ZeroMemory(&m_adapterDesc, sizeof(DXGI_ADAPTER_DESC));
 }
 
 CRenderSystemDX::~CRenderSystemDX()
@@ -139,33 +137,31 @@ void CRenderSystemDX::SetMonitor(HMONITOR monitor)
   IDXGIAdapter1*  pAdapter;
   for (unsigned i = 0; m_dxgiFactory->EnumAdapters1(i, &pAdapter) != DXGI_ERROR_NOT_FOUND; ++i)
   {
+    DXGI_ADAPTER_DESC1 adaperDesc;
+    pAdapter->GetDesc1(&adaperDesc);
+
     IDXGIOutput* pOutput;
     for (unsigned j = 0; pAdapter->EnumOutputs(j, &pOutput) != DXGI_ERROR_NOT_FOUND; ++j)
     {
-      if (FAILED(pOutput->GetDesc(&outputDesc)))
-        break;
-
+      pOutput->GetDesc(&outputDesc);
       if (outputDesc.Monitor == monitor)
       {
+        CLog::Log(LOGDEBUG, __FUNCTION__" - Selected %S output. ", outputDesc.DeviceName);
+
         // update monitor info
         SAFE_RELEASE(m_pOutput);
         m_pOutput = pOutput;
 
-        CLog::Log(LOGDEBUG, __FUNCTION__" - Selected %S output. ", outputDesc.DeviceName);
-
         // check if adapter is changed
-        if (m_adapterIndex != i)
+        if ( m_adapterDesc.AdapterLuid.HighPart != adaperDesc.AdapterLuid.HighPart 
+          || m_adapterDesc.AdapterLuid.LowPart != adaperDesc.AdapterLuid.LowPart)
         {
-          pAdapter->GetDesc(&m_adapterDesc);
-
           CLog::Log(LOGDEBUG, __FUNCTION__" - Selected %S adapter. ", m_adapterDesc.Description);
 
+          pAdapter->GetDesc(&m_adapterDesc);
           SAFE_RELEASE(m_adapter);
           m_adapter = pAdapter;
-
           m_needNewDevice = true;
-          m_adapterIndex = i;
-
           return;
         }
 
@@ -182,7 +178,7 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
   if (!m_pD3DDev)
     return false;
 
-  if (m_hDeviceWnd != NULL)
+  if (m_hDeviceWnd != nullptr)
   {
     HMONITOR hMonitor = MonitorFromWindow(m_hDeviceWnd, MONITOR_DEFAULTTONULL);
     if (hMonitor)
@@ -507,7 +503,6 @@ bool CRenderSystemDX::CreateDevice()
   CSingleLock lock(m_resourceSection);
 
   HRESULT hr;
-
   SAFE_RELEASE(m_pD3DDev);
 
   D3D_FEATURE_LEVEL featureLevels[] =
@@ -526,9 +521,9 @@ bool CRenderSystemDX::CreateDevice()
 #ifdef _DEBUG
   createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
-
+  D3D_DRIVER_TYPE driverType = m_adapter == nullptr ? D3D_DRIVER_TYPE_HARDWARE : D3D_DRIVER_TYPE_UNKNOWN;
   // we should specify D3D_DRIVER_TYPE_UNKNOWN if create device with specified adapter.
-  hr = D3D11CreateDevice(m_adapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, createDeviceFlags, featureLevels, ARRAYSIZE(featureLevels), 
+  hr = D3D11CreateDevice(m_adapter, driverType, nullptr, createDeviceFlags, featureLevels, ARRAYSIZE(featureLevels),
                          D3D11_SDK_VERSION, &m_pD3DDev, &m_featureLevel, &m_pImdContext);
 
   if (FAILED(hr))
@@ -537,7 +532,7 @@ bool CRenderSystemDX::CreateDevice()
     CLog::Log(LOGDEBUG, "%s - First try to create device failed with error: %s.", __FUNCTION__, GetErrorDescription(hr).c_str());
     CLog::Log(LOGDEBUG, "%s - Trying to create device with lowest feature level: %#x.", __FUNCTION__, featureLevels[1]);
 
-    hr = D3D11CreateDevice(m_adapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, createDeviceFlags, &featureLevels[1], ARRAYSIZE(featureLevels) - 1,
+    hr = D3D11CreateDevice(m_adapter, driverType, nullptr, createDeviceFlags, &featureLevels[1], ARRAYSIZE(featureLevels) - 1,
                            D3D11_SDK_VERSION, &m_pD3DDev, &m_featureLevel, &m_pImdContext);
     if (FAILED(hr))
     {
@@ -546,7 +541,7 @@ bool CRenderSystemDX::CreateDevice()
       CLog::Log(LOGDEBUG, "%s - Trying to create device without video API support.", __FUNCTION__);
 
       createDeviceFlags &= ~D3D11_CREATE_DEVICE_VIDEO_SUPPORT;
-      hr = D3D11CreateDevice(m_adapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, createDeviceFlags, &featureLevels[1], ARRAYSIZE(featureLevels) - 1,
+      hr = D3D11CreateDevice(m_adapter, driverType, nullptr, createDeviceFlags, &featureLevels[1], ARRAYSIZE(featureLevels) - 1,
                              D3D11_SDK_VERSION, &m_pD3DDev, &m_featureLevel, &m_pImdContext);
       if (SUCCEEDED(hr))
         CLog::Log(LOGNOTICE, "%s - Your video driver doesn't support DirectX 11 Video Acceleration API. Application is not be able to use hardware video processing and decoding", __FUNCTION__);
@@ -557,6 +552,42 @@ bool CRenderSystemDX::CreateDevice()
   {
     CLog::Log(LOGERROR, "%s - D3D11 device creation failure with error %s.", __FUNCTION__, GetErrorDescription(hr).c_str());
     return false;
+  }
+
+  if (!m_adapter)
+  {
+    // get adapter from device if it was not detected previously
+    IDXGIDevice1* pDXGIDevice = nullptr;
+    if (SUCCEEDED(m_pD3DDev->QueryInterface(__uuidof(IDXGIDevice1), reinterpret_cast<void**>(&pDXGIDevice))))
+    {
+      IDXGIAdapter *pAdapter = nullptr;
+      if (SUCCEEDED(pDXGIDevice->GetAdapter(&pAdapter)))
+      {
+        hr = pAdapter->QueryInterface(__uuidof(IDXGIAdapter1), reinterpret_cast<void**>(&m_adapter));
+        SAFE_RELEASE(pAdapter);
+        if (FAILED(hr))
+          return false;
+
+        m_adapter->GetDesc(&m_adapterDesc);
+        CLog::Log(LOGDEBUG, __FUNCTION__" - Selected %S adapter. ", m_adapterDesc.Description);
+      }
+      SAFE_RELEASE(pDXGIDevice);
+    }
+  }
+
+  if (!m_adapter)
+  {
+    CLog::Log(LOGERROR, "%s - Failed to find adapter.", __FUNCTION__);
+    return false;
+  }
+
+  SAFE_RELEASE(m_dxgiFactory);
+  m_adapter->GetParent(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(&m_dxgiFactory));
+
+  if (!m_pOutput)
+  {
+    HMONITOR hMonitor = MonitorFromWindow(m_hDeviceWnd, MONITOR_DEFAULTTONULL);
+    SetMonitor(hMonitor);
   }
 
   if ( g_advancedSettings.m_bAllowDeferredRendering 
