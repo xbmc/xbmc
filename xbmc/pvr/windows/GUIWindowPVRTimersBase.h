@@ -40,8 +40,10 @@ namespace PVR
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
     bool Update(const std::string &strDirectory, bool updateFilterPath = true);
     void UpdateButtons(void);
-    void UnregisterObservers(void);
-    void ResetObservers(void);
+
+  protected:
+    virtual void RegisterObservers(void);
+    virtual void UnregisterObservers(void);
 
   private:
     bool ActionDeleteTimer(CFileItem *item);

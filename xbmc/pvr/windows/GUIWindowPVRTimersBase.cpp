@@ -44,20 +44,19 @@ CGUIWindowPVRTimersBase::CGUIWindowPVRTimersBase(bool bRadio, int id, const std:
 {
 }
 
+void CGUIWindowPVRTimersBase::RegisterObservers(void)
+{
+  CSingleLock lock(m_critSection);
+  g_PVRTimers->RegisterObserver(this);
+  g_infoManager.RegisterObserver(this);
+}
+
 void CGUIWindowPVRTimersBase::UnregisterObservers(void)
 {
   CSingleLock lock(m_critSection);
   if (g_PVRTimers)
     g_PVRTimers->UnregisterObserver(this);
   g_infoManager.UnregisterObserver(this);
-}
-
-void CGUIWindowPVRTimersBase::ResetObservers(void)
-{
-  CSingleLock lock(m_critSection);
-  UnregisterObservers();
-  g_PVRTimers->RegisterObserver(this);
-  g_infoManager.RegisterObserver(this);
 }
 
 void CGUIWindowPVRTimersBase::GetContextButtons(int itemNumber, CContextButtons &buttons)
@@ -233,15 +232,13 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage &message)
         case ObservableMessageEpgActiveItem:
         case ObservableMessageCurrentItem:
         {
-          if (IsActive())
-            SetInvalid();
+          SetInvalid();
           bReturn = true;
           break;
         }
         case ObservableMessageTimersReset:
         {
-          if (IsActive())
-            Refresh(true);
+          Refresh(true);
           bReturn = true;
           break;
         }

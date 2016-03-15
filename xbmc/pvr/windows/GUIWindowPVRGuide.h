@@ -38,8 +38,6 @@ namespace PVR
     virtual bool OnAction(const CAction &action) override;
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
-    virtual void ResetObservers(void) override;
-    void UnregisterObservers(void);
     virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
     virtual void UpdateButtons(void) override;
 
@@ -47,6 +45,8 @@ namespace PVR
     virtual void UpdateSelectedItemPath() override;
     virtual std::string GetDirectoryPath(void) override { return ""; }
     virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
+    virtual void RegisterObservers(void) override;
+    virtual void UnregisterObservers(void) override;
 
   private:
     bool SelectPlayingFile(void);

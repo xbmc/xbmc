@@ -437,9 +437,6 @@ void CAddonCallbacksPVR::PVREpgEventStateChange(void* addonData, EPG_TAG* tag, u
     return;
   }
 
-  CLog::Log(LOGDEBUG, "PVR - %s - state for epg event '%d' on channel '%d' on client '%s' changed to '%d'.",
-            __FUNCTION__, tag->iUniqueBroadcastId, iUniqueChannelId, client->Name().c_str(), newState);
-
   static CCriticalSection queueMutex;
   static std::vector<EpgEventStateChange> queuedChanges;
 

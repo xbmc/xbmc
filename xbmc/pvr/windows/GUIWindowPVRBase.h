@@ -68,10 +68,11 @@ namespace PVR
     virtual bool OnAction(const CAction &action) override;
     virtual bool OnBack(int actionID) override;
     virtual bool OpenGroupSelectionDialog(void);
-    virtual void ResetObservers(void) {};
     virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
     virtual void SetInvalid() override;
     virtual bool CanBeActivated() const override;
+
+    void ResetObservers(void);
 
     static std::string GetSelectedItemPath(bool bRadio);
     static void SetSelectedItemPath(bool bRadio, const std::string &path);
@@ -106,6 +107,9 @@ namespace PVR
 
     bool OnContextButtonEditTimer(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonEditTimerRule(CFileItem *item, CONTEXT_BUTTON button);
+
+    virtual void RegisterObservers(void) {};
+    virtual void UnregisterObservers(void) {};
 
     static CCriticalSection m_selectedItemPathsLock;
     static std::string m_selectedItemPaths[2];

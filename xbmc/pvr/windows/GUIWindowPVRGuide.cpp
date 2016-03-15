@@ -65,9 +65,8 @@ void CGUIWindowPVRGuide::OnInitWindow()
   CGUIWindowPVRBase::OnInitWindow();
 }
 
-void CGUIWindowPVRGuide::ResetObservers(void)
+void CGUIWindowPVRGuide::RegisterObservers(void)
 {
-  UnregisterObservers();
   g_EpgContainer.RegisterObserver(this);
 }
 
@@ -364,7 +363,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
         {
           m_bUpdateRequired = true;
           // do not allow more than MAX_UPDATE_FREQUENCY updates
-          if (IsActive() && m_nextUpdateTimeout.IsTimePast())
+          if (m_nextUpdateTimeout.IsTimePast())
           {
             Refresh(true);
             m_nextUpdateTimeout.Set(MAX_UPDATE_FREQUENCY);
@@ -374,7 +373,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
         }
         case ObservableMessageEpgActiveItem:
         {
-          if (IsActive() && m_viewControl.GetCurrentControl() != GUIDE_VIEW_TIMELINE)
+          if (m_viewControl.GetCurrentControl() != GUIDE_VIEW_TIMELINE)
             SetInvalid();
           else
             m_bUpdateRequired = true;

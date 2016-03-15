@@ -332,17 +332,20 @@ bool CEpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
   return UpdateEntry(tag, false, bUpdateDatabase);
 }
 
-bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, bool bNotifyObeservers, bool bUpdateDatabase /* = false */)
+bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, bool bNotifyObservers, bool bUpdateDatabase /* = false */)
 {
   CSingleLock lock(m_critSection);
   auto it = m_tags.find(tag->StartAsUTC());
   EPG_EVENT_STATE state = (it == m_tags.end()) ? EPG_EVENT_CREATED : EPG_EVENT_UPDATED;
 
-  if (UpdateEntry(tag, state, it, bUpdateDatabase) && bNotifyObeservers)
+  if (UpdateEntry(tag, state, it, bUpdateDatabase))
   {
-    SetChanged();
-    lock.Leave();
-    NotifyObservers(ObservableMessageEpg);
+    if (bNotifyObservers)
+    {
+      SetChanged();
+      lock.Leave();
+      NotifyObservers(ObservableMessageEpg);
+    }
     return true;
   }
   return false;
