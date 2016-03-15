@@ -138,6 +138,7 @@ protected:
   void SetFullScreenInternal();
   void GetClosestDisplayModeToCurrent(IDXGIOutput* output, DXGI_MODE_DESC* outCurrentDisplayMode, bool useCached = false);
   void CheckInterlasedStereoView(void);
+  void SetMaximumFrameLatency(uint32_t latency);
 
   virtual void UpdateMonitor() {};
 
