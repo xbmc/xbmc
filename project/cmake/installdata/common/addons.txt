@@ -4,7 +4,6 @@ addons/game.controller.default/*
 addons/kodi.adsp/*
 addons/kodi.audiodecoder/*
 addons/kodi.game/*
-addons/kodi.guilib/*
 addons/kodi.inputstream/*
 addons/kodi.peripheral/*
 addons/kodi.resource/*
@@ -12,7 +11,6 @@ addons/xbmc.audioencoder/*
 addons/xbmc.codec/*
 addons/xbmc.core/*
 addons/xbmc.gui/*
-addons/xbmc.json/*
 addons/xbmc.metadata/*
 addons/xbmc.pvr/*
 addons/xbmc.python/*
