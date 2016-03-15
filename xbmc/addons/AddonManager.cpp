@@ -328,6 +328,8 @@ bool CAddonMgr::Init()
   }
 
   m_database.Open();
+  m_installedBuilders.clear();
+  m_database.GetInstalled(m_installedBuilders);
   FindAddonsAndNotify();
 
   //Ensure critical add-ons are installed and enabled
@@ -515,8 +517,7 @@ bool CAddonMgr::GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enab
   if (!m_cp_context)
     return false;
 
-  std::vector<CAddonBuilder> builders;
-  m_database.GetInstalled(builders);
+  std::vector<CAddonBuilder> builders(m_installedBuilders);
 
   for (auto& builder : builders)
   {
@@ -686,6 +687,8 @@ bool CAddonMgr::FindAddons()
         installed.insert(cp_addons[i]->identifier);
       m_cpluff->release_info(m_cp_context, cp_addons);
       m_database.SyncInstalled(installed);
+      m_installedBuilders.clear();
+      m_database.GetInstalled(m_installedBuilders);
     }
 
     // Reload caches
