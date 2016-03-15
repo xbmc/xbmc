@@ -29,7 +29,7 @@
 			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 			<animation effect="fade" time="400">VisibleChange</animation>
-			<imagepath background="true" colordiffuse="20FFFFFF">$VAR[HomeFanartVar]</imagepath>
+			<imagepath background="true" colordiffuse="40FFFFFF">$VAR[HomeFanartVar]</imagepath>
 			<visible>!Player.HasMedia</visible>
 		</control>
 		<control type="group" id="2000">
@@ -145,7 +145,7 @@
 				</control>
 			</control>
 			<control type="group" id="6000">
-				<visible>Stringcompare(Container(9000).ListItem.Property(id),tv)</visible>
+				<visible>Stringcompare(Container(9000).ListItem.Property(id),tvshows)</visible>
 				<include>Visible_Right_Delayed</include>
 				<control type="button" id="6888">
 					<width>1</width>
@@ -464,7 +464,7 @@
 				</control>
 			</control>
 			<control type="group" id="11000">
-				<visible>Stringcompare(Container(9000).ListItem.Property(id),videos)</visible>
+				<visible>Stringcompare(Container(9000).ListItem.Property(id),video)</visible>
 				<include>Visible_Right_Delayed</include>
 				<control type="button" id="11888">
 					<width>1</width>
@@ -743,6 +743,8 @@
 							<top>215</top>
 							<left>540</left>
 							<orientation>horizontal</orientation>
+							<align>justify</align>
+							<itemgap>-50</itemgap>
 							<include name="WeatherIcon">
 								<param name="label" value="Window(weather).Property(Current.Wind)" />
 								<param name="texture" value="icons/weather/wind.png" />
@@ -906,10 +908,10 @@
 					<height>671</height>
 					<pagecontrol>70</pagecontrol>
 					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),movies) + Control.IsVisible(5000)">5000</onright>
-					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),tv) + Control.IsVisible(6000)">6000</onright>
+					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),tvshows) + Control.IsVisible(6000)">6000</onright>
 					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),music) + Control.IsVisible(7000)">7000</onright>
 					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),addons) + Control.IsVisible(8000)">8000</onright>
-					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),videos) + Control.IsVisible(11000)">11000</onright>
+					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),video) + Control.IsVisible(11000)">11000</onright>
 					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),livetv) + Control.IsVisible(12000)">12000</onright>
 					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),radio) + Control.IsVisible(13000)">13000</onright>
 					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),weather) + Control.IsVisible(15000)">15000</onright>
@@ -1050,7 +1052,7 @@
 							<onclick condition="Library.HasContent(tvshows)">ActivateWindow(Videos,TVShowTitles,return)</onclick>
 							<onclick condition="!Library.HasContent(tvshows)">ActivateWindow(Videos,Files,return)</onclick>
 							<thumb>icons/home/tv.png</thumb>
-							<property name="id">tv</property>
+							<property name="id">tvshows</property>
 							<visible>!Skin.HasSetting(HomeMenuNoTVShowButton)</visible>
 						</item>
 						<item>
@@ -1093,7 +1095,7 @@
 							<label>$LOCALIZE[3]</label>
 							<onclick>ActivateWindow(Videos,root)</onclick>
 							<thumb>icons/home/videos.png</thumb>
-							<property name="id">videos</property>
+							<property name="id">video</property>
 							<visible>!Skin.HasSetting(HomeMenuNoVideosButton)</visible>
 						</item>
 						<item>

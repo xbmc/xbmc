@@ -69,18 +69,19 @@
 			<include>MediaMenuCommon</include>
 			<control type="grouplist" id="9000">
 				<top>90</top>
-				<include name="MediaMenuListCommon">
-					<param name="viewtype_button_vis" value="Container.Content(artists) | Container.Content(albums) | Container.Content(musicvideos) | Container.Content(addons)" />
-				</include>
+				<include>MediaMenuListCommon</include>
 				<control type="label" id="203">
 					<description>Actions</description>
 					<include>MediaMenuLabelCommon</include>
 					<label>$LOCALIZE[31020]</label>
 				</control>
-				<control type="button" id="619">
+				<control type="togglebutton" id="619">
 					<include>MediaMenuItemsCommon</include>
-					<label>$VAR[LibraryScanLabelVar]</label>
+					<label>$LOCALIZE[653]</label>
 					<onclick>UpdateLibrary(music)</onclick>
+					<visible>!Container.Content(addons)</visible>
+					<altlabel>$LOCALIZE[13353]</altlabel>
+					<usealttexture>library.isscanningmusic</usealttexture>
 				</control>
 				<control type="radiobutton" id="16">
 					<label>$LOCALIZE[589]</label>
@@ -98,6 +99,12 @@
 					<onclick>ActivateWindow(addonbrowser,addons://more/audio/,return)</onclick>
 					<visible>Container.Content(addons)</visible>
 				</control>
+				<control type="button" id="624">
+					<include>MediaMenuItemsCommon</include>
+					<label>$LOCALIZE[10140]</label>
+					<onclick>Addon.OpenSettings($INFO[Container.PluginName])</onclick>
+					<visible>!IsEmpty(Container.PluginName)</visible>
+				</control>
 				<control type="button" id="622">
 					<include>MediaMenuItemsCommon</include>
 					<label>$LOCALIZE[31117]</label>
@@ -112,6 +119,8 @@
 			<param name="breadcrumbs_label" value="$LOCALIZE[2]" />
 			<param name="breadcrumbs_icon" value="icons/settings/music.png" />
 		</include>
-		<include>BottomBar</include>
+		<include name="BottomBar">
+			<param name="info_visible" value="true" />
+		</include>
 	</controls>
 </window>

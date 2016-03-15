@@ -5,6 +5,9 @@
     <rule field="numwatched" operator="is">
         <value>0</value>
     </rule>
+    <rule field="numepisodes" operator="greaterthan">
+        <value>0</value>
+    </rule>
     <limit>10</limit>
     <order direction="ascending">random</order>
 </smartplaylist>

@@ -98,12 +98,7 @@ msgstr ""
 
 #: /1080i/Home.xml:374
 msgctxt "#31016"
-msgid "Favourite channels"
-msgstr ""
-
-#: /1080i/Home.xml:435
-msgctxt "#31017"
-msgid "Recent channels"
+msgid "Recently played channels"
 msgstr ""
 
 #: /1080i/Home.xml:443
@@ -541,7 +536,7 @@ msgstr ""
 
 #: /1080i/Home.xml:134 /1080i/Home.xml:228
 msgctxt "#31104"
-msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library. "
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
 msgstr ""
 
 #: /1080i/Home.xml:468
@@ -662,4 +657,19 @@ msgstr ""
 #: /1080i/Variables.xml:30
 msgctxt "#31128"
 msgid "Contributors"
+msgstr ""
+
+#: /1080i/Variables.xml:229
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr ""
+
+#: /1080i/Variables.xml:230
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr ""
+
+#: /1080i/SkinSettings.xml:117
+msgctxt "#31131"
+msgid "Choose home fanart pack"
 msgstr ""

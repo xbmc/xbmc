@@ -414,7 +414,7 @@
 				<scrolltime tween="quadratic">200</scrolltime>
 				<include name="InfoDialogButton">
 					<param name="id" value="8" />
-					<param name="icon" value="icons/infodialogs/launch.png" />
+					<param name="icon" value="icons/infodialogs/play.png" />
 					<param name="label" value="$LOCALIZE[208]" />
 				</include>
 				<include name="InfoDialogButton">

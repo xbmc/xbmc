@@ -5,14 +5,14 @@
 		<control type="group">
 			<include>OpenClose_Right</include>
 			<control type="button">
-				<left>815</left>
+				<left>840</left>
 				<top>162</top>
 				<width>1000</width>
 				<height>509</height>
 				<label>-</label>
 			</control>
 			<control type="label">
-				<left>865</left>
+				<left>890</left>
 				<top>200</top>
 				<width>900</width>
 				<height>396</height>
@@ -22,15 +22,15 @@
 				<textcolor>button_focus</textcolor>
 			</control>
 			<control type="grouplist" id="9000">
-				<left>88</left>
+				<left>90</left>
 				<top>770</top>
-				<width>1920</width>
+				<width>1740</width>
 				<height>768</height>
 				<onleft>9000</onleft>
 				<onright>9000</onright>
 				<onup>9000</onup>
 				<ondown>9000</ondown>
-				<align>left</align>
+				<align>center</align>
 				<itemgap>-18</itemgap>
 				<orientation>horizontal</orientation>
 				<include name="InfoDialogButton">
@@ -59,43 +59,32 @@
 					<radioposy>14</radioposy>
 					<radiowidth>100</radiowidth>
 					<font>font12</font>
+					<visible>Control.IsEnabled(13)</visible>
 				</control>
 				<include name="InfoDialogButton">
 					<param name="id" value="10" />
 					<param name="icon" value="icons/infodialogs/changelog.png" />
 					<param name="label" value="$LOCALIZE[24036]" />
 				</include>
-				<include name="InfoDialogButton">
+				<include name="InfoDialogToggleButton">
 					<param name="id" value="7" />
-					<param name="icon" value="icons/infodialogs/disable.png" />
-					<param name="label" value="$LOCALIZE[24021]" />
+					<param name="icon_on" value="icons/infodialogs/enabled.png" />
+					<param name="icon_off" value="icons/infodialogs/disable.png" />
+					<param name="selected" value="ListItem.Property(addon.isenabled)" />
+					<param name="label" value="" />
 				</include>
-				<control type="radiobutton" id="6">
-					<width>262</width>
-					<height>140</height>
-					<align>center</align>
-					<aligny>top</aligny>
-					<texturefocus border="40">buttons/button-theme-fo.png</texturefocus>
-					<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
-					<textoffsetx>35</textoffsetx>
-					<textoffsety>76</textoffsety>
-					<radioposx>110</radioposx>
-					<radioposy>14</radioposy>
-					<radiowidth>44</radiowidth>
-					<font>font12</font>
-					<textureradioonfocus colordiffuse="D0FFFFFF">icons/infodialogs/uninstall.png</textureradioonfocus>
-					<textureradioonnofocus colordiffuse="D0FFFFFF">icons/infodialogs/uninstall.png</textureradioonnofocus>
-					<textureradioondisabled colordiffuse="disabled">icons/infodialogs/uninstall.png</textureradioondisabled>
-					<textureradioofffocus colordiffuse="D0FFFFFF">icons/infodialogs/install.png</textureradioofffocus>
-					<textureradiooffnofocus colordiffuse="D0FFFFFF">icons/infodialogs/install.png</textureradiooffnofocus>
-					<textureradiooffdisabled colordiffuse="disabled">icons/infodialogs/install.png</textureradiooffdisabled>
-					<selected>ListItem.Property(addon.isinstalled) | !Window.IsActive(addonbrowser)</selected>
-				</control>
+				<include name="InfoDialogToggleButton">
+					<param name="id" value="6" />
+					<param name="icon_on" value="icons/infodialogs/uninstall.png" />
+					<param name="icon_off" value="icons/infodialogs/install.png" />
+					<param name="selected" value="ListItem.Property(addon.isinstalled) | !Window.IsActive(addonbrowser)" />
+					<param name="label" value="" />
+				</include>
 			</control>
 		</control>
 		<control type="group">
 			<include>OpenClose_Left</include>
-			<visible>Window.IsActive(eventlog) | Window.IsActive(home)</visible>
+			<visible>Window.IsActive(eventlog) | Window.IsActive(home) | Window.IsActive(1100)</visible>
 			<include>Visible_Left</include>
 			<include>ListThumbInfoPanel</include>
 		</control>

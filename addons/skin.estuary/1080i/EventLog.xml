@@ -10,30 +10,32 @@
 				<include>OpenClose_Left</include>
 				<orientation>vertical</orientation>
 				<itemgap>-8.5</itemgap>
-				<left>110</left>
+				<left>90</left>
 				<top>162</top>
 				<onup>9000</onup>
 				<ondown>9000</ondown>
 				<onleft>50</onleft>
 				<onright>50</onright>
+				<usecontrolcoords>true</usecontrolcoords>
 				<control type="togglebutton" id="4">
-					<width>350</width>
-					<height>199</height>
+					<width>420</width>
+					<height>110</height>
 					<align>center</align>
 					<aligny>top</aligny>
 					<font>font12</font>
 					<textoffsetx>20</textoffsetx>
-					<textoffsety>130</textoffsety>
+					<textoffsety>35</textoffsety>
 					<label>$LOCALIZE[31032]: $LOCALIZE[584]</label>
 					<altlabel>$LOCALIZE[31032]: $LOCALIZE[585]</altlabel>
 				</control>
 				<control type="group" id="4100">
 					<height>0</height>
 					<control type="image">
-						<top>-150</top>
+						<posx>40</posx>
+						<top>-68</top>
 						<width>350</width>
-						<height>70</height>
-						<aspectratio>keep</aspectratio>
+						<height>40</height>
+						<aspectratio align="left">keep</aspectratio>
 						<texture>icons/eventlog/order.png</texture>
 					</control>
 				</control>
@@ -43,21 +45,35 @@
 					<param name="label" value="" />
 					<param name="icon" value="icons/eventlog/settings.png" />
 				</include>
-				<include name="PlaylistWindowButton">
-					<param name="control_id" value="22" />
-					<param name="onclick" value="" />
-					<param name="label" value="$LOCALIZE[190]" />
-					<param name="icon" value="icons/eventlog/levels.png" />
-				</include>
+				<control type="radiobutton" id="22">
+					<width>420</width>
+					<height>110</height>
+					<align>center</align>
+					<aligny>top</aligny>
+					<font>font12</font>
+					<textoffsetx>20</textoffsetx>
+					<textoffsety>35</textoffsety>
+					<radioposx>-1</radioposx>
+				</control>
 				<include name="PlaylistWindowButton">
 					<param name="control_id" value="20" />
 					<param name="onclick" value="" />
 					<param name="label" value="$LOCALIZE[192]" />
 					<param name="icon" value="DefaultIconError.png" />
 				</include>
+				<control type="image">
+					<left>40</left>
+					<top>0</top>
+					<width>340</width>
+					<height>360</height>
+					<aspectratio aligny="bottom">keep</aspectratio>
+					<texture fallback="DefaultVideo.png">$INFO[ListItem.Icon]</texture>
+					<bordertexture border="20">overlays/shadow.png</bordertexture>
+					<bordersize>20</bordersize>
+				</control>
 			</control>
 			<control type="group">
-				<left>250</left>
+				<left>300</left>
 				<visible>Control.IsVisible(50)</visible>
 				<include>OpenClose_Right</include>
 				<control type="image">
@@ -71,7 +87,7 @@
 					<left>230</left>
 					<top>182</top>
 					<width>1260</width>
-					<height>9000</height>
+					<height>700</height>
 					<onleft>9000</onleft>
 					<onright>60</onright>
 					<onup>50</onup>
@@ -79,19 +95,19 @@
 					<viewtype label="535">list</viewtype>
 					<pagecontrol>60</pagecontrol>
 					<scrolltime>200</scrolltime>
-					<itemlayout height="115" width="1260">
+					<itemlayout height="90" width="1260">
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
 							<width>1260</width>
-							<height>115</height>
+							<height>90</height>
 							<texture border="90,3,90,3">lists/separator.png</texture>
 						</control>
 						<control type="image">
 							<left>5</left>
 							<top>5</top>
-							<width>105</width>
-							<height>105</height>
+							<width>80</width>
+							<height>80</height>
 							<texture border="4" fallback="DefaultAddon.png">$INFO[Listitem.Icon]</texture>
 							<aspectratio>scale</aspectratio>
 							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
@@ -101,25 +117,26 @@
 							<left>125</left>
 							<top>0</top>
 							<width>870</width>
-							<height>50</height>
+							<height>35</height>
 							<aligny>center</aligny>
-							<label>[B]$INFO[ListItem.Label][/B]</label>
+							<font>font12</font>
+							<label>$INFO[ListItem.Label]</label>
 						</control>
 						<control type="textbox">
 							<left>125</left>
-							<top>40</top>
+							<top>34</top>
 							<width>870</width>
-							<height>70</height>
-							<font>font10</font>
+							<height>60</height>
+							<font>font10_title</font>
 							<textcolor>grey</textcolor>
-							<aligny>center</aligny>
+							<aligny>top</aligny>
 							<label>$INFO[ListItem.Property(Event.Description)]</label>
 						</control>
 						<control type="label">
 							<left>125</left>
 							<top>0</top>
 							<width>1120</width>
-							<height>50</height>
+							<height>35</height>
 							<font>font12</font>
 							<textcolor>button_focus</textcolor>
 							<align>right</align>
@@ -127,12 +144,12 @@
 							<label>$INFO[ListItem.Label2]</label>
 						</control>
 					</itemlayout>
-					<focusedlayout height="115" width="1260">
+					<focusedlayout height="90" width="1260">
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
 							<width>1260</width>
-							<height>115</height>
+							<height>90</height>
 							<texture border="90,3,90,3">lists/separator.png</texture>
 							<visible>!Control.HasFocus(50)</visible>
 						</control>
@@ -140,15 +157,15 @@
 							<left>0</left>
 							<top>0</top>
 							<width>1260</width>
-							<height>115</height>
+							<height>90</height>
 							<texture>lists/focus.png</texture>
 							<visible>Control.HasFocus(50)</visible>
 						</control>
 						<control type="image">
 							<left>5</left>
 							<top>5</top>
-							<width>105</width>
-							<height>105</height>
+							<width>80</width>
+							<height>80</height>
 							<texture border="4" fallback="DefaultAddon.png">$INFO[Listitem.Icon]</texture>
 							<aspectratio>scale</aspectratio>
 							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
@@ -158,25 +175,26 @@
 							<left>125</left>
 							<top>0</top>
 							<width>870</width>
-							<height>50</height>
+							<height>35</height>
 							<aligny>center</aligny>
-							<label>[B]$INFO[ListItem.Label][/B]</label>
+							<font>font12</font>
+							<label>$INFO[ListItem.Label]</label>
 						</control>
 						<control type="textbox">
 							<left>125</left>
-							<top>40</top>
+							<top>34</top>
 							<width>870</width>
-							<height>70</height>
-							<font>font10</font>
+							<height>60</height>
+							<font>font10_title</font>
 							<textcolor>grey</textcolor>
-							<aligny>center</aligny>
+							<aligny>top</aligny>
 							<label>$INFO[ListItem.Property(Event.Description)]</label>
 						</control>
 						<control type="label">
 							<left>125</left>
 							<top>0</top>
 							<width>1120</width>
-							<height>50</height>
+							<height>35</height>
 							<font>font12</font>
 							<textcolor>button_focus</textcolor>
 							<align>right</align>
@@ -185,20 +203,20 @@
 						</control>
 					</focusedlayout>
 				</control>
-				<include name="UpDownArrows">
-					<param name="container_id" value="50" />
-					<param name="visible" value="!System.HasModalDialog" />
-				</include>
-				<control type="scrollbar" id="60">
-					<right>0</right>
-					<top>80</top>
-					<width>12</width>
-					<height>920</height>
-					<onleft>50</onleft>
-					<onright>9000</onright>
-					<orientation>vertical</orientation>
-					<visible>Control.IsVisible(50)</visible>
-				</control>
+			</control>
+			<include name="UpDownArrows">
+				<param name="container_id" value="50" />
+				<param name="visible" value="!System.HasModalDialog" />
+			</include>
+			<control type="scrollbar" id="60">
+				<right>0</right>
+				<top>80</top>
+				<width>12</width>
+				<height>920</height>
+				<onleft>50</onleft>
+				<onright>9000</onright>
+				<orientation>vertical</orientation>
+				<visible>Control.IsVisible(50)</visible>
 			</control>
 		</control>
 		<include name="TopBar">

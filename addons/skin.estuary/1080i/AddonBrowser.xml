@@ -25,9 +25,7 @@
 			<include>MediaMenuCommon</include>
 			<control type="grouplist" id="9000">
 				<top>90</top>
-				<include name="MediaMenuListCommon">
-					<param name="viewtype_button_vis" value="False" />
-				</include>
+				<include>MediaMenuListCommon</include>
 				<control type="label" id="201">
 					<include>MediaMenuLabelCommon</include>
 					<label>$LOCALIZE[31021]</label>
@@ -61,7 +59,9 @@
 			<param name="breadcrumbs_label" value="$LOCALIZE[24001]" />
 			<param name="breadcrumbs_icon" value="icons/settings/addons.png" />
 		</include>
-		<include>BottomBar</include>
+		<include name="BottomBar">
+			<param name="info_visible" value="true" />
+		</include>
 		<control type="group">
 			<top>1002</top>
 			<visible>ControlGroup(9000).HasFocus | Control.HasFocus(6130)</visible>

@@ -113,6 +113,15 @@
 						<onclick>Skin.ToggleSetting(no_fanart)</onclick>
 						<selected>!Skin.HasSetting(no_fanart)</selected>
 					</control>
+					<control type="button" id="608">
+						<label>$LOCALIZE[31131]</label>
+						 <label2>$INFO[Skin.String(HomeFanart.name)]</label2>
+						<width>1256</width>
+						<include>DefaultSettingButton</include>
+						<onclick condition="System.HasAddon(script.image.resource.select)">RunScript(script.image.resource.select,property=HomeFanart&amp;type=resource.images.skinbackgrounds)</onclick>
+						<onclick condition="!System.HasAddon(script.image.resource.select)">InstallAddon(script.image.resource.select)</onclick>
+						<enable>!Skin.HasSetting(no_fanart)</enable>
+					</control>
 					<control type="radiobutton" id="606">
 						<label>$LOCALIZE[31108]</label>
 						<width>1256</width>
@@ -198,7 +207,7 @@
 					<font>font12</font>
 					<align>justify</align>
 					<textcolor>button_focus</textcolor>
-					<label>Some help text. Some help text. Some help text. Some help text.</label>
+					<label>$VAR[SkinSettingsHelpTextVar]</label>
 					<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
 				</control>
 			</control>

@@ -20,7 +20,6 @@
 			<effect type="zoom" start="100" end="80" center="960,540" easing="in" tween="back" time="240" />
 			<effect type="fade" start="100" end="0" time="240" />
 		</animation>
-		<depth>DepthDialog</depth>
 	</include>
 	<include name="Visible_Fade">
 		<animation effect="fade" end="100" time="200">Visible</animation>
