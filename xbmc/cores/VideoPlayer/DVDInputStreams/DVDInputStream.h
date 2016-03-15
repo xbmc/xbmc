@@ -118,6 +118,7 @@ public:
   class IDemux
   {
     public:
+    virtual ~IDemux() {}
     virtual bool OpenDemux() = 0;
     virtual DemuxPacket* ReadDemux() = 0;
     virtual CDemuxStream* GetStream(int iStreamId) const = 0;
