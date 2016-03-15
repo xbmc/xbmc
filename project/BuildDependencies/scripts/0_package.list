@@ -8,7 +8,7 @@
 ;PLEASE KEEP THIS LIST IN ALPHABETICAL ORDER!
 bzip2-1.0.5-win32.7z
 crossguid-8f399e-win32-vc140.7z
-curl-7.46.0-win32-vc140.7z
+curl-7.47.1-win32-vc140.7z
 dnssd-541-win32.zip
 doxygen-1.8.2-win32.7z
 fontconfig-2.8.0-win32.7z
@@ -45,7 +45,7 @@ pillow-3.1.0-win32-vc140.7z
 python-2.7.11-win32-vc140.7z
 sqlite-3.10.2-win32-vc140.7z
 swig-2.0.7-win32-1.7z
-taglib-1.10-win32-vc120.7z
+taglib-1.10-win32-vc140.7z
 texturepacker-1.1.0-win32.7z
-tinyxml-2.6.2_3-win32-vc120.7z
-zlib-1.2.8-win32-vc140.7z
+tinyxmlstl-2.6.2-win32-vc140.7z
+zlib-1.2.8-win32-vc140-v2.7z

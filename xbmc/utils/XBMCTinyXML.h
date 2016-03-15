@@ -31,6 +31,7 @@
 #else
 #pragma comment(lib, "tinyxmlSTL.lib")
 #endif
+#endif
 #else
 //compile fix for TinyXml < 2.6.0
 #define DOCUMENT    TINYXML_DOCUMENT

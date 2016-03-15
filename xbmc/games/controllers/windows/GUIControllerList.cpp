@@ -19,6 +19,10 @@
  */
 
 #include "GUIControllerList.h"
+
+#include <assert.h>
+#include <iterator>
+
 #include "GUIControllerDefines.h"
 #include "GUIControllerWindow.h"
 #include "GUIFeatureList.h"
@@ -32,8 +36,6 @@
 #include "guilib/GUIWindow.h"
 #include "input/joysticks/DefaultJoystick.h" // for DEFAULT_CONTROLLER_ID
 #include "peripherals/Peripherals.h"
-
-#include <assert.h>
 
 using namespace ADDON;
 using namespace GAME;
