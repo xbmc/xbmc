@@ -112,6 +112,7 @@ protected:
   void CheckInterlasedStereoView(void);
   void Register(ID3DResource *resource);
   void Unregister(ID3DResource *resource);
+  void SetMaximumFrameLatency(uint32_t latency);
 
   virtual void UpdateMonitor() {};
   virtual void OnDisplayLost() {};

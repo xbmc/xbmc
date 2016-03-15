@@ -390,6 +390,10 @@ void CRenderSystemDX::SetFullScreenInternal()
     }
   }
 
+  // in windowed mode DWM uses triple buffering in any case. 
+  // for FSEM we use double buffering
+  SetMaximumFrameLatency(2 - m_useWindowedDX);
+
   // wait until switching screen state is done
   if (m_bResizeRequred)
   {
@@ -625,16 +629,9 @@ bool CRenderSystemDX::CreateDevice()
     pMultiThreading->Release();
   }
 
-  IDXGIDevice1* pDXGIDevice = NULL;
-  if (SUCCEEDED(m_pD3DDev->QueryInterface(__uuidof(IDXGIDevice1), reinterpret_cast<void**>(&pDXGIDevice))))
-  {
-    // Not sure the following actually does something but this exists in dx9 implementation
-    pDXGIDevice->SetGPUThreadPriority(7);
-    // Ensure that DXGI does not queue more than one frame at a time. This both reduces
-    // latency and ensures that the application will only render after each VSync
-    pDXGIDevice->SetMaximumFrameLatency(1);
-    SAFE_RELEASE(pDXGIDevice);
-  }
+  // in windowed mode DWM uses triple buffering in any case. 
+  // for FSEM we use double buffering
+  SetMaximumFrameLatency(2 - m_useWindowedDX);
 
 #ifdef _DEBUG
   if (SUCCEEDED(m_pD3DDev->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&m_d3dDebug))))
@@ -1731,6 +1728,19 @@ void CRenderSystemDX::FinishCommandList(bool bExecute /*= true*/)
     m_pImdContext->ExecuteCommandList(pCommandList, false);
 
   SAFE_RELEASE(pCommandList);
+}
+
+void CRenderSystemDX::SetMaximumFrameLatency(uint32_t latency)
+{
+  if (!m_pD3DDev)
+    return;
+
+  IDXGIDevice1* pDXGIDevice = nullptr;
+  if (SUCCEEDED(m_pD3DDev->QueryInterface(__uuidof(IDXGIDevice1), reinterpret_cast<void**>(&pDXGIDevice))))
+  {
+    pDXGIDevice->SetMaximumFrameLatency(latency);
+    SAFE_RELEASE(pDXGIDevice);
+  }
 }
 
 #endif
