@@ -55,7 +55,7 @@
 				<onup>50</onup>
 				<ondown>50</ondown>
 				<orientation>horizontal</orientation>
-				<visible>Control.IsVisible(51) | Control.IsVisible(53)</visible>
+				<visible>Control.IsVisible(51) | Control.IsVisible(53) | Control.IsVisible(502)</visible>
 				<animation effect="fade" start="0" end="100" time="200" delay="300">Visible</animation>
 				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
 				<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
@@ -384,7 +384,7 @@
 		</control>
 	</include>
 	<include name="MediaFlag">
-		<param name="width">110</param>
+		<param name="width">115</param>
 		<param name="height">60</param>
 		<definition>
 			<control type="image">
@@ -419,10 +419,10 @@
 			<width>1720</width>
 			<align>right</align>
 			<include name="MediaFlag">
-				<param name="texture" value="$VAR[ResolutionFlagVar]" />
+				<param name="texture" value="$INFO[ListItem.VideoAspect,flags/aspectratio/,.png]" />
 			</include>
 			<include name="MediaFlag">
-				<param name="texture" value="$INFO[ListItem.VideoAspect,flags/aspectratio/,.png]" />
+				<param name="texture" value="$VAR[ResolutionFlagVar]" />
 			</include>
 		</control>
 	</include>
@@ -609,52 +609,6 @@
 			</focusedlayout>
 			<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[container_target]">$PARAM[container_path]</content>
 		</control>
-	</include>
-	<include name="PlaylistWindowButtons">
-		<param name="width">350</param>
-		<definition>
-			<control type="group">
-				<include>OpenClose_Left</include>
-				<control type="grouplist" id="700">
-					<orientation>vertical</orientation>
-					<itemgap>-9</itemgap>
-					<left>100</left>
-					<top>165</top>
-					<onup>700</onup>
-					<ondown>700</ondown>
-					<onleft>50</onleft>
-					<onright>50</onright>
-					<include name="PlaylistWindowButton">
-						<param name="control_id" value="20" />
-						<param name="onclick" value="" />
-						<param name="label" value="$LOCALIZE[191]$INFO[Playlist.Random, : ]" />
-						<param name="icon" value="osd/fullscreen/buttons/random-on.png" />
-						<param name="width" value="$PARAM[width]" />
-					</include>
-					<include name="PlaylistWindowButton">
-						<param name="control_id" value="26" />
-						<param name="onclick" value="" />
-						<param name="label" value="" />
-						<param name="icon" value="osd/fullscreen/buttons/repeat-all.png" />
-						<param name="width" value="$PARAM[width]" />
-					</include>
-					<include name="PlaylistWindowButton">
-						<param name="control_id" value="21" />
-						<param name="onclick" value="" />
-						<param name="label" value="$LOCALIZE[190]" />
-						<param name="icon" value="icons/playlist/save.png" />
-						<param name="width" value="$PARAM[width]" />
-					</include>
-					<include name="PlaylistWindowButton">
-						<param name="control_id" value="22" />
-						<param name="onclick" value="" />
-						<param name="label" value="$LOCALIZE[192]" />
-						<param name="icon" value="DefaultIconError.png" />
-						<param name="width" value="$PARAM[width]" />
-					</include>
-				</control>
-			</control>
-		</definition>
 	</include>
 	<include name="InfoDialogTopBarInfo">
 		<param name="id">33333</param>
@@ -960,48 +914,47 @@
 					<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
 					<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 				</control>
-				<control type="grouplist">
-					<description>Right side of top bar</description>
-					<right>85</right>
-					<width>500</width>
-					<height>100</height>
-					<align>right</align>
-					<orientation>horizontal</orientation>
-					<usecontrolcoords>true</usecontrolcoords>
-					<animation effect="fade" start="0" end="100" time="300" condition="Window.IsActive(fullscreenvideo)">WindowOpen</animation>
-					<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(screencalibration) | Window.IsActive(fullscreenvideo)">WindowClose</animation>
-					<animation effect="fade" time="150">VisibleChange</animation>
-					<visible>!Window.IsVisible(extendedprogressdialog)</visible>
-					<include condition="Skin.HasSetting(show_weatherinfo) | Window.IsActive(skinsettings)">TopWeatherIcon</include>
-					<control type="label">
-						<include>BreadcrumbsLabel</include>
-						<label>$INFO[System.Time]</label>
-					</control>
-				</control>
 				<control type="group">
 					<visible>!Window.IsVisible(extendedprogressdialog)</visible>
 					<animation effect="fade" time="150">VisibleChange</animation>
 					<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(screencalibration) | Window.IsActive(fullscreenvideo)">WindowClose</animation>
-					<control type="image">
-						<right>25</right>
-						<top>20</top>
-						<height>40</height>
-						<width>40</width>
-						<texture colordiffuse="button_focus">frame/clock.png</texture>
-						<animation effect="fade" time="300">Visible</animation>
-						<animation effect="fade" time="150">Hidden</animation>
-						<aspectratio>keep</aspectratio>
-						<visible>!Window.IsActive(volumebar)</visible>
-					</control>
-					<control type="label">
-						<top>40</top>
-						<label>$PARAM[time_sublabel]</label>
-						<font>font10</font>
-						<left>1340</left>
-						<shadowcolor>text_shadow</shadowcolor>
-						<height>100</height>
+					<animation effect="fade" start="0" end="100" time="300" condition="Window.IsActive(fullscreenvideo)">WindowOpen</animation>
+					<control type="grouplist">
+						<description>Right side of top bar</description>
+						<right>85</right>
 						<width>500</width>
+						<height>100</height>
 						<align>right</align>
+						<orientation>horizontal</orientation>
+						<usecontrolcoords>true</usecontrolcoords>
+						<include condition="Skin.HasSetting(show_weatherinfo) | Window.IsActive(skinsettings)">TopWeatherIcon</include>
+						<control type="label">
+							<include>BreadcrumbsLabel</include>
+							<label>$INFO[System.Time]</label>
+						</control>
+					</control>
+					<control type="group">
+						<control type="image">
+							<right>25</right>
+							<top>20</top>
+							<height>40</height>
+							<width>40</width>
+							<texture colordiffuse="button_focus">frame/clock.png</texture>
+							<animation effect="fade" time="300">Visible</animation>
+							<animation effect="fade" time="150">Hidden</animation>
+							<aspectratio>keep</aspectratio>
+							<visible>!Window.IsActive(volumebar)</visible>
+						</control>
+						<control type="label">
+							<top>40</top>
+							<label>$PARAM[time_sublabel]</label>
+							<font>font10</font>
+							<left>1340</left>
+							<shadowcolor>text_shadow</shadowcolor>
+							<height>100</height>
+							<width>500</width>
+							<align>right</align>
+						</control>
 					</control>
 				</control>
 			</control>
@@ -1072,6 +1025,7 @@
 	</include>
 	<include name="BottomBar">
 		<param name="PageLabel">$VAR[BottomBarPageLabel]</param>
+		<param name="info_visible">False</param>
 		<definition>
 			<control type="group">
 				<depth>DepthBars</depth>
@@ -1086,7 +1040,7 @@
 					<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(screencalibration) | Window.IsActive(fullscreenvideo)">WindowClose</animation>
 				</control>
 				<control type="group">
-					<visible>Window.IsMedia + !Window.IsActive(eventlog) + !Window.IsActive(musicplaylisteditor) + !Window.IsActive(MyPlaylist.xml)</visible>
+					<visible>$PARAM[info_visible]</visible>
 					<visible>!System.HasModalDialog</visible>
 					<animation effect="fade" time="400">VisibleChange</animation>
 					<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>

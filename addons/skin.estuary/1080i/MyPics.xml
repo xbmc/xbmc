@@ -202,9 +202,7 @@
 			<include>MediaMenuCommon</include>
 			<control type="grouplist" id="9000">
 				<top>90</top>
-				<include name="MediaMenuListCommon">
-					<param name="viewtype_button_vis" value="Container.Content(images) | Container.Content(addons)" />
-				</include>
+				<include>MediaMenuListCommon</include>
 				<control type="label" id="203">
 					<description>Actions</description>
 					<include>MediaMenuLabelCommon</include>
@@ -229,6 +227,12 @@
 					<onclick condition="!System.HasAddon(script.maps.browser)">InstallAddon(script.maps.browser)</onclick>
 					<visible>Container.Content(images) + IsEmpty(Container.PluginName)</visible>
 				</control>
+				<control type="button" id="624">
+					<include>MediaMenuItemsCommon</include>
+					<label>$LOCALIZE[10140]</label>
+					<onclick>Addon.OpenSettings($INFO[Container.PluginName])</onclick>
+					<visible>!IsEmpty(Container.PluginName)</visible>
+				</control>
 				<control type="button" id="621">
 					<description>Get more</description>
 					<include>MediaMenuItemsCommon</include>
@@ -243,6 +247,8 @@
 			<param name="breadcrumbs_label" value="$LOCALIZE[1213]" />
 			<param name="breadcrumbs_icon" value="icons/settings/pictures.png" />
 		</include>
-		<include>BottomBar</include>
+		<include name="BottomBar">
+			<param name="info_visible" value="true" />
+		</include>
 	</controls>
 </window>
