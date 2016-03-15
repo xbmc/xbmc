@@ -2946,7 +2946,7 @@ bool CMusicDatabase::CleanupArtists()
     m_pDS->exec("CREATE TEMPORARY TABLE tmp_delartists (idArtist integer)");
     m_pDS->exec("INSERT INTO tmp_delartists select idArtist from song_artist");
     m_pDS->exec("INSERT INTO tmp_delartists select idArtist from album_artist");
-    m_pDS->exec(PrepareSQL("INSERT INTO tmp_delartists VALUES(%i)')", BLANKARTIST_ID));
+    m_pDS->exec(PrepareSQL("INSERT INTO tmp_delartists VALUES(%i)", BLANKARTIST_ID));
     m_pDS->exec("delete from artist where idArtist not in (select idArtist from tmp_delartists)");
     m_pDS->exec("DROP TABLE tmp_delartists");
 
