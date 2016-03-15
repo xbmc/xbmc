@@ -2152,6 +2152,7 @@ void CUtil::ScanForExternalAudio(const std::string& videoPath, std::vector<std::
   if ( item.IsInternetStream()
    ||  item.IsPlayList()
    ||  item.IsLiveTV()
+   ||  item.IsPVR()
    || !item.IsVideo()) 
     return;
 
