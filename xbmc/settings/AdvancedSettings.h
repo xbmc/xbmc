@@ -136,6 +136,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_VideoPlayerIgnoreDTSinWAV;
     float m_limiterHold;
     float m_limiterRelease;
+    int m_volumeSteps;
 
     bool  m_omxDecodeStartWithValidFrame;
 

@@ -117,6 +117,7 @@ void CAdvancedSettings::Initialize()
   //default hold time of 25 ms, this allows a 20 hertz sine to pass undistorted
   m_limiterHold = 0.025f;
   m_limiterRelease = 0.1f;
+  m_volumeSteps = 90;
 
   m_seekSteps = { 10, 30, 60, 180, 300, 600, 1800 };
 
@@ -489,6 +490,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
     XMLUtils::GetFloat(pElement, "limiterhold", m_limiterHold, 0.0f, 100.0f);
     XMLUtils::GetFloat(pElement, "limiterrelease", m_limiterRelease, 0.001f, 100.0f);
+    XMLUtils::GetInt(pElement, "volumesteps", m_volumeSteps, 10, 90);
   }
 
   pElement = pRootElement->FirstChildElement("omx");
