@@ -1,0 +1,1 @@
+mingw-rt http://mirrors.xbmc.org/build-deps/win32/mingw-msys/mingwrt-3.20-mingw32-dll.tar.gz

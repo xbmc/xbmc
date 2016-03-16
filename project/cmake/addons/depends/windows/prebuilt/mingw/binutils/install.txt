@@ -1,0 +1,4 @@
+bin/* mingw/bin
+mingw32/* mingw/mingw32
+include/* mingw/include
+lib/* mingw/lib

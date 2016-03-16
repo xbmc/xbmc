@@ -1,0 +1,1 @@
+yasm-1.2.0-win32.exe mingw/bin mingw/bin/yasm.exe

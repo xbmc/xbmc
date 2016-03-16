@@ -1,0 +1,1 @@
+gcc-c++ http://mirrors.xbmc.org/build-deps/win32/mingw-msys/gcc-c++-4.6.2-1-mingw32-bin.tar.lzma

@@ -1,0 +1,2 @@
+bin/* mingw/bin
+share/* mingw/share

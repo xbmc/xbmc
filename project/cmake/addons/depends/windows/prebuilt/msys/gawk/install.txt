@@ -1,0 +1,3 @@
+bin/* msys/bin
+sbin/* msys/sbin
+share/* msys/share

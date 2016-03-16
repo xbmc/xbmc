@@ -1,0 +1,1 @@
+pthreads http://mirrors.xbmc.org/build-deps/win32/mingw-msys/pthreads-w32-2.9.0-mingw32-pre-20110507-2-dev.tar.lzma

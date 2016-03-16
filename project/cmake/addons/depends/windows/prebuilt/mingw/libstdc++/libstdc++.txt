@@ -1,0 +1,1 @@
+libstdc++ http://mirrors.xbmc.org/build-deps/win32/mingw-msys/libstdc++-4.6.2-1-mingw32-dll-6.tar.lzma

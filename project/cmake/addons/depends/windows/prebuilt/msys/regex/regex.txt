@@ -1,0 +1,1 @@
+regex http://mirrors.xbmc.org/build-deps/win32/mingw-msys/libregex-1.20090805-2-msys-1.0.13-dll-1.tar.lzma

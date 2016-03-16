@@ -1,0 +1,1 @@
+sed http://mirrors.xbmc.org/build-deps/win32/mingw-msys/sed-4.2.1-2-msys-1.0.13-bin.tar.lzma

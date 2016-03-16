@@ -1,0 +1,1 @@
+bin/pr.exe msys/bin

@@ -1,0 +1,1 @@
+binutils http://mirrors.xbmc.org/build-deps/win32/mingw-msys/binutils-2.22-1-mingw32-bin.tar.lzma

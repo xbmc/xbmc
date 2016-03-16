@@ -1,0 +1,1 @@
+rxvt http://mirrors.xbmc.org/build-deps/win32/mingw-msys/rxvt-2.7.2-3-msys-1.0.14-bin.tar.lzma

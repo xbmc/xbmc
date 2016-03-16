@@ -1,4 +1,4 @@
-find_program(7ZIP_EXECUTABLE NAMES 7z.exe
+find_program(7ZIP_EXECUTABLE NAMES 7z 7za 7z.exe 7za.exe
              HINTS PATHS "c:/Program Files/7-Zip")
 
 include(FindPackageHandleStandardArgs)

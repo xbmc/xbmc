@@ -1,0 +1,1 @@
+make http://mirrors.xbmc.org/build-deps/win32/mingw-msys/make-3.82-5-mingw32-bin.tar.lzma

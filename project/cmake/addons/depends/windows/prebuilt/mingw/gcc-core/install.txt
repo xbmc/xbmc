@@ -1,0 +1,3 @@
+lib/gcc/mingw32/4.6.2/* mingw/lib/gcc/mingw32/4.6.2
+libexec/gcc/mingw32/4.6.2/* mingw/libexec/gcc/mingw32/4.6.2
+bin/* mingw/bin

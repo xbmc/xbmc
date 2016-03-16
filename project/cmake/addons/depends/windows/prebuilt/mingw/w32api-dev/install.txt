@@ -1,0 +1,2 @@
+include/* mingw/include
+lib/* mingw/lib

@@ -1,0 +1,1 @@
+automake_msys http://mirrors.xbmc.org/build-deps/win32/mingw-msys/automake-1.11.1-1-msys-1.0.13-bin.tar.lzma

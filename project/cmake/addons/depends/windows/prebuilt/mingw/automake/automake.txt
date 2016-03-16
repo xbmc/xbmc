@@ -1,0 +1,1 @@
+automake http://mirrors.xbmc.org/build-deps/win32/mingw-msys/automake1.11-1.11.1-1-mingw32-bin.tar.lzma

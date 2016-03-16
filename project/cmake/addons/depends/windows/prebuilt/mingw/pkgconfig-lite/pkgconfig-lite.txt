@@ -1,0 +1,1 @@
+pkgconfig-lite http://mirrors.xbmc.org/build-deps/win32/mingw-msys/pkg-config-lite-0.28-1_bin-win32.zip

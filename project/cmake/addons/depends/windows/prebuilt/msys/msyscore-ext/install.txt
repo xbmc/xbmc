@@ -1,0 +1,2 @@
+*.bat msys
+bin/* msys/bin

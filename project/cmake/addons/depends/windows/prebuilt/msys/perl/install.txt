@@ -1,0 +1,2 @@
+bin/* msys/bin
+lib/* msys/lib

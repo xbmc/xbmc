@@ -1,0 +1,1 @@
+xz http://mirrors.xbmc.org/build-deps/win32/mingw-msys/xz-4.999.9beta_20100401-1-msys-1.0.13-bin.tar.gz

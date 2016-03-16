@@ -1,0 +1,5 @@
+@ECHO OFF
+SETLOCAL
+
+SET PATH=%PATH%;@MINGW_PATH@/bin
+@CMD@.exe %*
