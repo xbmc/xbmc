@@ -42,26 +42,6 @@ public:
   ContextMenuView GetAddonItems(const CFileItem& item, const CContextMenuItem& root = MAIN) const;
 
   /*!
-   * Deprecated.
-   * \param id - id of the context button clicked on.
-   * \param item - the selected file item.
-   * \return true on success, otherwise false.
-   */
-  bool OnClick(unsigned int id, const CFileItemPtr& item);
-
-  /*!
-   * Deprecated.
-   * \brief Adds all registered context item to the list.
-   * \param item - the currently selected item.
-   * \param list - the context menu.
-   * \param root - the context menu responsible for this call.
-   */
-  void AddVisibleItems(
-    const CFileItemPtr& item,
-    CContextButtons& list,
-    const CContextMenuItem& root = MAIN) const;
-
-  /*!
    * \brief Adds a context item to this manager.
    * NOTE: only 'enabled' context addons should be added.
    */
@@ -84,14 +64,9 @@ private:
     const CContextMenuItem& root,
     const CFileItem& fileItem) const;
 
-  /*! Deprecated. */
-  std::vector<std::pair<unsigned int, CContextMenuItem>> GetAddonItemsWithId(const CFileItem& fileItem,
-      const CContextMenuItem& root = CContextMenuManager::MAIN) const;
-
   CCriticalSection m_criticalSection;
-  std::vector<std::pair<unsigned int, CContextMenuItem>> m_addonItems;
+  std::vector<CContextMenuItem> m_addonItems;
   std::vector<std::shared_ptr<IContextMenuItem>> m_items;
-  unsigned int m_nextButtonId;
 };
 
 namespace CONTEXTMENU

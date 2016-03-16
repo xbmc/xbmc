@@ -31,14 +31,12 @@
 
 using namespace ADDON;
 
-typedef std::pair<unsigned int, CContextMenuItem> Item;
 
 const CContextMenuItem CContextMenuManager::MAIN = CContextMenuItem::CreateGroup("", "", "kodi.core.main", "");
 const CContextMenuItem CContextMenuManager::MANAGE = CContextMenuItem::CreateGroup("", "", "kodi.core.manage", "");
 
 
 CContextMenuManager::CContextMenuManager()
-  : m_nextButtonId(CONTEXT_BUTTON_FIRST_ADDON)
 {
   Init();
 }
@@ -82,17 +80,9 @@ void CContextMenuManager::Register(const ContextItemAddonPtr& cm)
   CSingleLock lock(m_criticalSection);
   for (const auto& menuItem : cm->GetItems())
   {
-    auto existing = std::find_if(m_addonItems.begin(), m_addonItems.end(),
-        [&](const Item& kv){ return kv.second == menuItem; });
-    if (existing != m_addonItems.end())
-    {
-      existing->second = menuItem;
-    }
-    else
-    {
-      m_addonItems.push_back(std::make_pair(m_nextButtonId, menuItem));
-      ++m_nextButtonId;
-    }
+    auto it = std::find(m_addonItems.begin(), m_addonItems.end(), menuItem);
+    if (it == m_addonItems.end())
+      m_addonItems.push_back(menuItem);
   }
 }
 
@@ -106,11 +96,11 @@ bool CContextMenuManager::Unregister(const ContextItemAddonPtr& cm)
   CSingleLock lock(m_criticalSection);
 
   auto it = std::remove_if(m_addonItems.begin(), m_addonItems.end(),
-    [&](const Item& kv)
+    [&](const CContextMenuItem& item)
     {
-      if (kv.second.IsGroup())
+      if (item.IsGroup())
         return false; //keep in case other items use them
-      return std::find(menuItems.begin(), menuItems.end(), kv.second) != menuItems.end();
+      return std::find(menuItems.begin(), menuItems.end(), item) != menuItems.end();
     }
   );
   m_addonItems.erase(it, m_addonItems.end());
@@ -127,85 +117,11 @@ bool CContextMenuManager::IsVisible(
   {
     CSingleLock lock(m_criticalSection);
     return std::any_of(m_addonItems.begin(), m_addonItems.end(),
-        [&](const Item& kv){ return menuItem.IsParentOf(kv.second) && kv.second.IsVisible(fileItem); });
+        [&](const CContextMenuItem& other){ return menuItem.IsParentOf(other) && other.IsVisible(fileItem); });
   }
 
   return menuItem.IsVisible(fileItem);
 }
-
-void CContextMenuManager::AddVisibleItems(
-  const CFileItemPtr& fileItem, CContextButtons& list, const CContextMenuItem& root /* = CContextMenuItem::MAIN */) const
-{
-  if (!fileItem)
-    return;
-
-  auto menuItems = GetAddonItemsWithId(*fileItem, root);
-  for (const auto& kv : menuItems)
-    list.emplace_back(kv.first, kv.second.GetLabel(*fileItem));
-}
-
-std::vector<std::pair<unsigned int, CContextMenuItem>> CContextMenuManager::GetAddonItemsWithId(
-    const CFileItem& fileItem, const CContextMenuItem& root /* = CContextMenuItem::MAIN */) const
-{
-  using value_type = std::pair<unsigned int, CContextMenuItem>;
-  std::vector<value_type> result;
-
-  {
-    CSingleLock lock(m_criticalSection);
-    for (const auto& kv : m_addonItems)
-      if (IsVisible(kv.second, root, fileItem))
-        result.push_back(kv);
-  }
-
-  if (&root == &MAIN || &root == &MANAGE)
-  {
-    std::sort(result.begin(), result.end(),
-        [&](const value_type& lhs, const value_type& rhs)
-        {
-          return lhs.second.GetLabel(fileItem) < rhs.second.GetLabel(fileItem);
-        }
-    );
-  }
-  return result;
-}
-
-bool CContextMenuManager::OnClick(unsigned int id, const CFileItemPtr& item)
-{
-  if (!item)
-    return false;
-
-  CSingleLock lock(m_criticalSection);
-
-  auto it = std::find_if(m_addonItems.begin(), m_addonItems.end(),
-      [id](const Item& kv){ return kv.first == id; });
-  if (it == m_addonItems.end())
-  {
-    CLog::Log(LOGERROR, "CContextMenuManager: unknown button id '%u'", id);
-    return false;
-  }
-
-  CContextMenuItem menuItem = it->second;
-  lock.Leave();
-  if (menuItem.IsGroup())
-  {
-    CLog::Log(LOGDEBUG, "CContextMenuManager: showing group '%s'", menuItem.ToString().c_str());
-    CContextButtons choices;
-    AddVisibleItems(item, choices, menuItem);
-    if (choices.empty())
-    {
-      CLog::Log(LOGERROR, "CContextMenuManager: no items in group '%s'", menuItem.ToString().c_str());
-      return false;
-    }
-    int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
-    if (choice == -1)
-      return false;
-
-    return OnClick(choice, item);
-  }
-
-  return menuItem.Execute(item);
-}
-
 
 ContextMenuView CContextMenuManager::GetItems(const CFileItem& fileItem, const CContextMenuItem& root /*= MAIN*/) const
 {
@@ -223,8 +139,22 @@ ContextMenuView CContextMenuManager::GetItems(const CFileItem& fileItem, const C
 ContextMenuView CContextMenuManager::GetAddonItems(const CFileItem& fileItem, const CContextMenuItem& root /*= MAIN*/) const
 {
   ContextMenuView result;
-  for (const auto& kv : GetAddonItemsWithId(fileItem, root))
-    result.emplace_back(new CContextMenuItem(kv.second));
+  {
+    CSingleLock lock(m_criticalSection);
+    for (const auto& menu : m_addonItems)
+      if (IsVisible(menu, root, fileItem))
+        result.emplace_back(new CContextMenuItem(menu));
+  }
+
+  if (&root == &MAIN || &root == &MANAGE)
+  {
+    std::sort(result.begin(), result.end(),
+        [&](const ContextMenuView::value_type& lhs, const ContextMenuView::value_type& rhs)
+        {
+          return lhs->GetLabel(fileItem) < rhs->GetLabel(fileItem);
+        }
+    );
+  }
   return result;
 }
 

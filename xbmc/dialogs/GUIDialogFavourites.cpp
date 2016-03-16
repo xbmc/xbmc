@@ -133,7 +133,12 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
   choices.Add(5, 20019);
 
   CFileItemPtr itemPtr = m_favourites->Get(item);
-  CContextMenuManager::GetInstance().AddVisibleItems(itemPtr, choices);
+
+  //temporary workaround until the context menu ids are removed
+  const int addonItemOffset = 10000;
+  auto addonItems = CContextMenuManager::GetInstance().GetAddonItems(*itemPtr);
+  for (int i = 0; i < addonItems.size(); ++i)
+    choices.Add(addonItemOffset + i, addonItems[i]->GetLabel(*itemPtr));
 
   int button = CGUIDialogContextMenu::ShowAndGetChoice(choices);
 
@@ -150,8 +155,8 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
     OnRename(item);
   else if (button == 5)
     OnSetThumb(item);
-  else if (button >= CONTEXT_BUTTON_FIRST_ADDON)
-    CContextMenuManager::GetInstance().OnClick(button, itemPtr);
+  else if (button >= addonItemOffset)
+    CONTEXTMENU::LoopFrom(*addonItems.at(button - addonItemOffset), itemPtr);
 }
 
 void CGUIDialogFavourites::OnMoveItem(int item, int amount)
