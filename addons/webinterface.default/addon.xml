@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.2.28"
+  version="2.2.29"
   name="Default webinterface"
   provider-name="Team-Kodi">
   <requires>
@@ -38,7 +38,7 @@
     <summary lang="gl_ES">Interface web do equipo de Kodi. (Interface web predefinida de Kodi)</summary>
     <summary lang="he_IL">ממשק הדפדפן הרשמי של Kodi. (ברירת המחדל)</summary>
     <summary lang="hr_HR">Tim Kodi Web sučelje. (Kodijevo uobičajeno web sučelje)</summary>
-    <summary lang="hu_HU">Az Kodi csapat Webes kezelőfelülete (Kodi alapértelmezett webes kezelőfelülete)</summary>
+    <summary lang="hu_HU">A Kodi csapat Webes kezelőfelülete (Kodi alapértelmezett webes kezelőfelülete)</summary>
     <summary lang="id_ID">Antar Muka Web Tim Kodi. (Antar muka web bawaan Kodi)</summary>
     <summary lang="is_IS">Team-Kodi Vefviðmót. (Sjálfgefið vefviðmót á Kodi)</summary>
     <summary lang="it_IT">Interfaccia Web del Team-Kodi. (Interfaccia web di default per Kodi)</summary>
@@ -101,7 +101,7 @@
     <description lang="gl_ES">Interface web predefinida para Kodi, deseñada para dispositivos de todas as resolucións</description>
     <description lang="he_IL">ממשק דפדפן ברירת המחדל עבור Kodi; מותאם למכשירים בעלי אבחנות שונות</description>
     <description lang="hr_HR">Uobičajeno web sučelje za Kodi; Dizajnirano za uređaje svih razlučivosti</description>
-    <description lang="hu_HU">Az Kodi alapértelmezett webes kezelőfelülete; Minden felbontásra alkalmas</description>
+    <description lang="hu_HU">A Kodi alapértelmezett webes kezelőfelülete; Minden felbontásra alkalmas</description>
     <description lang="hy_AM">Նախնական տեսք Kodi-ի համար; Նախատեսված է բոլոր կրիչների համար</description>
     <description lang="id_ID">Antar muka web bawaan bagi Kodi; Dirancang untuk perangkat dengan semua resolusi</description>
     <description lang="is_IS">Sjálfgefið vefviðmót fyrir Kodi; Hannað fyrir tæki með allskonar upplausnir</description>
