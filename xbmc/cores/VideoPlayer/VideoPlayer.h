@@ -145,6 +145,7 @@ public:
   void Clear()
   {
     id = -1;
+    demuxerId = -1;
     source = STREAM_SOURCE_NONE;
     dts = DVD_NOPTS_VALUE;
     dur = DVD_NOPTS_VALUE;
