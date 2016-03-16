@@ -21,6 +21,7 @@
 #include "ContextMenus.h"
 #include "Application.h"
 #include "Autorun.h"
+#include "video/dialogs/GUIDialogVideoInfo.h"
 
 
 namespace CONTEXTMENU
@@ -36,14 +37,8 @@ bool CVideoInfo::IsVisible(const CFileItem& item) const
 
 bool CVideoInfo::Execute(const CFileItemPtr& item) const
 {
-  auto window = static_cast<CGUIWindowVideoNav*>(g_windowManager.GetWindow(WINDOW_VIDEO_NAV));
-  if (window)
-  {
-    ADDON::ScraperPtr info;
-    window->OnItemInfo(item.get(), info);
-    return true;
-  }
-  return false;
+  CGUIDialogVideoInfo::ShowFor(*item);
+  return true;
 }
 
 bool CMarkWatched::IsVisible(const CFileItem& item) const

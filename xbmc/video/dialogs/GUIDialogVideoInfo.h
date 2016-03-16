@@ -65,6 +65,9 @@ public:
   static bool ManageVideoItemArtwork(const CFileItemPtr &item, const MediaType &type);
 
   static std::string GetLocalizedVideoType(const std::string &strType);
+
+  static void ShowFor(const CFileItem& item);
+
 protected:
   virtual void OnInitWindow();
   void Update();

@@ -37,6 +37,7 @@
 #include "utils/StringUtils.h"
 #include "TextureCache.h"
 #include "music/MusicThumbLoader.h"
+#include "music/windows/GUIWindowMusicNav.h"
 #include "filesystem/Directory.h"
 
 using namespace XFILE;
@@ -624,3 +625,9 @@ void CGUIDialogMusicInfo::OnSetUserrating() const
   }
 }
 
+void CGUIDialogMusicInfo::ShowFor(CFileItem item)
+{
+  auto window = static_cast<CGUIWindowMusicNav*>(g_windowManager.GetWindow(WINDOW_MUSIC_NAV));
+  if (window)
+    window->OnItemInfo(&item);
+}
