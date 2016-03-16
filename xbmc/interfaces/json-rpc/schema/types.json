@@ -483,13 +483,12 @@
       "additionalProperties": false
     }
   },
-  "Audio.Artist.SongGenres": {
+  "Audio.Details.Genres": {
     "type": "array",
     "items": { "type": "object",
-      "description": "The various genres of one or more songs by an artist",
       "properties": {
-        "songgenreid": { "$ref": "Library.Id", "required": true },
-        "songgenre": { "type": "string" }
+        "genreid": { "$ref": "Library.Id", "required": true },
+        "title": { "type": "string" }
 	  }
     }
   },
@@ -533,7 +532,7 @@
       "compilationartist": { "type": "boolean" },
       "musicbrainzartistid": { "type": "string" },
       "roles": {"$ref": "Audio.Artist.Roles"},
-      "songgenres": {"$ref": "Audio.Artist.SongGenres"},
+      "songgenres": {"$ref": "Audio.Details.Genres"},
       "isalbumartist": { "type": "boolean" }
     }
   },

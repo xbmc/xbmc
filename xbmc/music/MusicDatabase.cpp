@@ -1772,8 +1772,8 @@ bool CMusicDatabase::GetGenresByArtist(int idArtist, CFileItem* item)
     while (!m_pDS->eof())
     {
       CVariant genreObj;
-      genreObj["songgenre"] = m_pDS->fv("strGenre").get_asString();
-      genreObj["songgenreid"] = m_pDS->fv("idGenre").get_asInt();
+      genreObj["title"] = m_pDS->fv("strGenre").get_asString();
+      genreObj["genreid"] = m_pDS->fv("idGenre").get_asInt();
       artistSongGenres.push_back(genreObj);
       m_pDS->next();
     }
