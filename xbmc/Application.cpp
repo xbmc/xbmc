@@ -2388,7 +2388,7 @@ bool CApplication::OnAction(const CAction &action)
 #if defined(TARGET_ANDROID)
       float step = (VOLUME_MAXIMUM - VOLUME_MINIMUM) / CXBMCApp::GetMaxSystemVolume();
 #else
-      float step   = (VOLUME_MAXIMUM - VOLUME_MINIMUM) / VOLUME_CONTROL_STEPS;
+      float step   = (VOLUME_MAXIMUM - VOLUME_MINIMUM) / g_advancedSettings.m_volumeSteps;
 
       if (action.GetRepeat())
         step *= action.GetRepeat() * 50; // 50 fps
