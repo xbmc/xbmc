@@ -528,6 +528,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       {
         s.width = ((CDemuxStreamVideo*)stream)->iWidth;
         s.height = ((CDemuxStreamVideo*)stream)->iHeight;
+        s.stereo_mode = ((CDemuxStreamVideo*)stream)->stereo_mode;
       }
       if(stream->type == STREAM_AUDIO)
       {
@@ -3244,15 +3245,14 @@ void CVideoPlayer::UpdateStreamInfos()
     s.aspect_ratio = m_renderManager.GetAspectRatio();
     CRect viewRect;
     m_renderManager.GetVideoRect(s.SrcRect, s.DestRect, viewRect);
-    s.stereo_mode = m_VideoPlayerVideo->GetStereoMode();
-    if (s.stereo_mode == "mono")
-      s.stereo_mode = "";
-
     CDemuxStream* stream = m_pDemuxer->GetStream(m_CurrentVideo.demuxerId, m_CurrentVideo.id);
     if (stream && stream->type == STREAM_VIDEO)
     {
       s.width = ((CDemuxStreamVideo*)stream)->iWidth;
       s.height = ((CDemuxStreamVideo*)stream)->iHeight;
+      s.stereo_mode = m_VideoPlayerVideo->GetStereoMode();
+      if (s.stereo_mode == "mono")
+        s.stereo_mode = "";
     }
   }
 
