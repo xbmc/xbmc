@@ -20,6 +20,14 @@ msgctxt "#31001"
 msgid "Search"
 msgstr "Chwilio"
 
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Newid modd"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Gwylio mewn 2D"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Rhagolygon"

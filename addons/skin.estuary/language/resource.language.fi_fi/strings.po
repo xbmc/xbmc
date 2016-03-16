@@ -24,6 +24,26 @@ msgctxt "#31001"
 msgid "Search"
 msgstr "Etsi"
 
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Vaihda tilaa"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Katso 2D:nä"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Satunnaiset elokuvat"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Katsomattomat elokuvat"
+
+msgctxt "#31008"
+msgid "In-progress TV Shows"
+msgstr "Käynnissä olevat TV-ohjelmat"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Ennuste"
@@ -67,6 +87,22 @@ msgstr "Poista ryhmä"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial pohjainen"
+
+msgctxt "#31064"
+msgid "unwatched"
+msgstr "katsomaton"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Videosoittolista"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Musiikkisoittolista"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Tapahtumaloki"
 
 msgctxt "#31069"
 msgid "Last Updated"

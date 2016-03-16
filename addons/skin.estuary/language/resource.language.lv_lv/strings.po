@@ -20,6 +20,14 @@ msgctxt "#31001"
 msgid "Search"
 msgstr "Meklēšana"
 
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Mainīt režīmu"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Skatīties 2D"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Prognoze"

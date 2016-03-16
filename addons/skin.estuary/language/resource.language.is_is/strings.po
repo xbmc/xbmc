@@ -24,6 +24,14 @@ msgctxt "#31001"
 msgid "Search"
 msgstr "Leita"
 
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Breyta ham"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Horfa á í 2D"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Veðurspá"

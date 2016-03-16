@@ -24,9 +24,21 @@ msgctxt "#31001"
 msgid "Search"
 msgstr "Buscar"
 
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Mostrar fanart de mídia como imagem de fundo."
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Modo cinema"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Alterar modo"
+
 msgctxt "#31005"
-msgid "In-progress movies"
-msgstr "Filmes em progresso"
+msgid "Watch as 2D"
+msgstr "Assistir como 2D"
 
 msgctxt "#31006"
 msgid "Random movies"
@@ -67,14 +79,6 @@ msgstr "Álbuns por ouvir"
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Gravações recentes"
-
-msgctxt "#31016"
-msgid "Favourite channels"
-msgstr "Canais favoritos"
-
-msgctxt "#31017"
-msgid "Recent channels"
-msgstr "Canais recentes"
 
 msgctxt "#31018"
 msgid "Most played channels"
@@ -205,12 +209,12 @@ msgid "Press [B]Up[/B] to rewind or fast-forward"
 msgstr "Pressione [B]Acima[/B] para retroceder ou retroceder rapidamente"
 
 msgctxt "#31050"
-msgid "Press [B]Down[/B] to stop, or [B]Right[/B] to fast-forward"
-msgstr "Pressione [B]Baixo[/B] para parar, ou [B]Direita[/B] para avançar rapidamente"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Aperte [B]OK[/B] para parar"
 
 msgctxt "#31051"
-msgid "Press [B]Down[/B] to stop, or [B]Left[/B] to rewind"
-msgstr "Pressione [B]Baixo[/B] para parar, ou [B]Esquerda[/B] para retroceder"
+msgid "Toggle language"
+msgstr "Alterar língua"
 
 msgctxt "#31052"
 msgid "filtered"
@@ -420,10 +424,6 @@ msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Entre com o texto aqui..."
 
-msgctxt "#31104"
-msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library. "
-msgstr "Sua coleção atualmente está vazia. Para ter seus itens pessoais em modo coleção, entre na seção \"Arquivos\", adicione uma fonte de vídeo e configure-o. Após a fonte ser adicionada e tiver sido indexada, você sera capaz de navegar em sua coleção."
-
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
 msgstr "Adicione fontes de vídeo e configure o tipo de conteúdo apropriado para poder adicionar seus itens na coleção."
@@ -453,8 +453,8 @@ msgid "View your personal pictures or download one of the many image add-ons fro
 msgstr "Visualizar suas imagens pessoais ou transferir um dos muitos addons de imagens disponíveis no repositório oficial."
 
 msgctxt "#31112"
-msgid "Small list"
-msgstr "Lista pequena"
+msgid "Toggle audio stream"
+msgstr "Alterar canal de áudio"
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -511,3 +511,11 @@ msgstr "Pressione acima para informação do ator"
 msgctxt "#31126"
 msgid "Press OK to read plot"
 msgstr "Pressione OK para ler sinopse"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Mostrar ícones"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Contribuidores"

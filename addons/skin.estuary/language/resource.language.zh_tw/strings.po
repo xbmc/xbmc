@@ -24,6 +24,14 @@ msgctxt "#31001"
 msgid "Search"
 msgstr "搜尋"
 
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "更改設定"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "以 2D 模式觀賞"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "預報"

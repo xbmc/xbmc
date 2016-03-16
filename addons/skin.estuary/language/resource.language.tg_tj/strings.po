@@ -20,6 +20,14 @@ msgctxt "#31001"
 msgid "Search"
 msgstr "Ҷустуҷӯ"
 
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Тағйир додани ҳолат"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Тамошо кардан дар 2D"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Пешгӯии обу ҳаво"

@@ -24,6 +24,14 @@ msgctxt "#31001"
 msgid "Search"
 msgstr "חיפוש"
 
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "שינוי מצב"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "צפייה כ־2D"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "תחזית"

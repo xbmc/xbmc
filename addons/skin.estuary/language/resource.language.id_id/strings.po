@@ -24,6 +24,14 @@ msgctxt "#31001"
 msgid "Search"
 msgstr "Cari"
 
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Rubah Modus"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Tonton sebagai 2D"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Ramalan"

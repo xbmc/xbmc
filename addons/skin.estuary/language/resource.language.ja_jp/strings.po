@@ -20,6 +20,14 @@ msgctxt "#31001"
 msgid "Search"
 msgstr "検索"
 
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "モードを変更"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "2D で観る"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "予報"

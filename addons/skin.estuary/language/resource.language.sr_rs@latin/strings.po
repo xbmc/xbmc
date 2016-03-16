@@ -24,6 +24,66 @@ msgctxt "#31001"
 msgid "Search"
 msgstr "Pretraga"
 
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Prikaži slike ljubitelja kao pozadinu"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Bioskopski režim"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Promeni režim"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Gledaj kao 2D"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Nasumični filmovi"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Neodgledani filmovi"
+
+msgctxt "#31008"
+msgid "In-progress TV Shows"
+msgstr "TV Serije u toku"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Preuzmi ikonice"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Filmovi u toku"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Najslušaniji albumi"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Nasumični albumi"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Nasumični izvođači"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Nepreslušani albumi"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Skorašnji snimci"
+
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr "Najslušaniji kanali"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Prognoza"
@@ -35,6 +95,18 @@ msgstr "Akcije"
 msgctxt "#31021"
 msgid "Misc options"
 msgstr "Ostale opcije"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Poređaj po"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Prikaz"
+
+msgctxt "#31024"
+msgid "Next tracks"
+msgstr "Sledeće pesme"
 
 msgctxt "#31029"
 msgid "Last logged in"
