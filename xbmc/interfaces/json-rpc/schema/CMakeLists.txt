@@ -23,9 +23,6 @@ add_custom_target(generate_json_header ALL
                   DEPENDS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ServiceDescription.h
                           ${CMAKE_BINARY_DIR}/addons/xbmc.json/addon.xml)
 
-list(APPEND install_data addons/xbmc.json/addon.xml)
-set(install_data ${install_data} PARENT_SCOPE)
-
 if(BOOTSTRAP_IN_TREE)
   add_dependencies(generate_json_header JsonSchemaBuilder::JsonSchemaBuilder)
 endif()

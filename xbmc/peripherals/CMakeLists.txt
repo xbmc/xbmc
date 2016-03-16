@@ -8,3 +8,4 @@ set(HEADERS EventScanRate.h
             PeripheralTypes.h)
 
 core_add_library(peripherals)
+add_dependencies(peripherals libcpluff)

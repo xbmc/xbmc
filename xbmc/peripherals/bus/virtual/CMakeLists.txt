@@ -8,3 +8,4 @@ if(CEC_FOUND)
 endif()
 
 core_add_library(peripheral_bus_virtual)
+add_dependencies(peripheral_bus_virtual libcpluff)
