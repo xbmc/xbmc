@@ -30,13 +30,13 @@
 class TiXmlElement;
 class CVariant;
 
-typedef enum
+enum class InfoTagType
 {
   VIDEO,
   AUDIO,
   PICTURE,
   PROGRAM
-} InfoTagType;
+};
 
 class CDirectoryProvider :
   public IListProvider,
