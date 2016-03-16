@@ -908,6 +908,14 @@ bool URIUtils::IsPVRChannel(const std::string& strFile)
   return StringUtils::StartsWithNoCase(strFile2, "pvr://channels");
 }
 
+bool URIUtils::IsPVRGuideItem(const std::string& strFile)
+{
+  if (IsStack(strFile))
+    return IsPVRGuideItem(CStackDirectory::GetFirstStackedFile(strFile));
+  
+  return StringUtils::StartsWithNoCase(strFile, "pvr://guide");
+}
+
 bool URIUtils::IsDAV(const std::string& strFile)
 {
   if (IsStack(strFile))
