@@ -44,6 +44,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "Berfungsi..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Baru-baru Ini"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "Cereka"
@@ -67,6 +71,10 @@ msgstr "Senarai Maklumat"
 msgctxt "#31038"
 msgid "Login"
 msgstr "Daftar Masuk"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Dikemaskini:"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -152,6 +160,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Muat Turun Sarikata"
 
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teleteks"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Lalai Kulit"
@@ -168,6 +180,10 @@ msgctxt "#31401"
 msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
 msgstr "Urus pustaka video anda · Tetapkan pilihan main balik video · Ubah pilihan penyenaraian video · Tetapkan fon sarikata"
 
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
+msgstr "Urus pustaka muzik anda · Tetapkan pilihan main balik muzik · Ubah pilihan penyenaraian muzik · Pasang penyerahan lagu"
+
 msgctxt "#31403"
 msgid "Set picture listing options · Configure slideshows"
 msgstr "Tetapkan pilihan penyenaraian gambar · Konfigur paparan slaid"
@@ -183,6 +199,10 @@ msgstr "Persediaan kawalan Kodi melalui UPnP dan HTTP · Konfigur perkongsian fa
 msgctxt "#31406"
 msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
 msgstr "Sedia dan tentukur paparan · Konfigur output audio · Persediaan kawalan jauh · Tetapkan pilihan penjimatan kuasa · Benarkan penyahpepijatan · Persediaan kunci master"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Urus tambahan terpasang anda · Layar dan pasang tambahan dari kodi.tv · Ubahsuai tetapan tambahan"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -255,3 +275,31 @@ msgstr "Namakan Semula Kumpulan"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Padam Kumpulan"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Tunjuk tersembunyi"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Tunjuk dipadam"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Jalan Kali Pertama"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Terdapat dua perkara yang perlu diketahui berkenaan menavigasi Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Fungsi logo Kodi sebagai butang 'RUMAH'. Bilamana anda menyentuhnya, anda akan kembali ke skrin rumah."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Bila anda memainkan audio atau video, tajuk item akan muncul di bahagian atas skrin. Menyentuhnya akan membawa anda ke pengvisualan berskrin penuh atau tetingkap video."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Kini Memainkan Tajuk..."

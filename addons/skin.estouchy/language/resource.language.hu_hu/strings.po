@@ -44,6 +44,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "Dolgozom..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Új"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "Filmek"
@@ -67,6 +71,10 @@ msgstr "Infó lista"
 msgctxt "#31038"
 msgid "Login"
 msgstr "Bejelentkezés"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Frissítve:"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -152,6 +160,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Felirat letöltése"
 
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teletext"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Felszín alapértelmezése"
@@ -166,7 +178,11 @@ msgstr "Felszín választás · Nyelv és régió beállítás · Fájllista be�
 
 msgctxt "#31401"
 msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Filmkönyvtár beállítása · Filmlejátszási opciók · Filmlistázási opciók · Feliratok betűtípusa"
+msgstr "Filmkönyvtár kezelése · Filmlejátszási opciók · Filmlistázási opciók · Feliratok betűtípusa"
+
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
+msgstr "Zenekönyvtár kezelése · Zenelejátszási opciók · Zenelistázási opciók · Zenebeküldés beállítása"
 
 msgctxt "#31403"
 msgid "Set picture listing options · Configure slideshows"
@@ -183,6 +199,10 @@ msgstr "Az Kodi beállítása UPnP-n és HTTP-n történő eléréshez · Fájlm
 msgctxt "#31406"
 msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
 msgstr "Kijelző beállítása / kalibrálása · Hangkimenet beállítása · Távvzérlés beállítása · Energiagazdálkodási opciók · Debug · Mesterzár beállítása"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Telepített kiegészítők kezelése · Kiegészítők böngészése és telepítése a kodi.tv-ről · Kiegészítőbeállítások módosítása"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -255,3 +275,31 @@ msgstr "Csoport átnevezése"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Csoport törlése"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Rejtettek megjelenítése"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Töröltek megjelenítése"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Első indítás"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Két dolgot kell tudni az Estouchy navigációjáról"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "A Kodi logó „OTTHON” gombként működik. Amikor megérinted, viszzakerülsz a kezdőképernyőre."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Amikor hangot vagy videót játszol le, az elem címe a képernyő tetején jelenik meg. A megérintése a teljes képernyős vizualizációhoz vagy a videóablakhoz vezet."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Most játszott cím…"

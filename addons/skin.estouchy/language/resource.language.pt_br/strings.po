@@ -44,6 +44,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "Trabalhando..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Recente"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "Filmes"
@@ -67,6 +71,10 @@ msgstr "Lista Info"
 msgctxt "#31038"
 msgid "Login"
 msgstr "Login"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Atualizado:"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -172,6 +180,10 @@ msgctxt "#31401"
 msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
 msgstr "Gerencie sua coleção de vídeo · Definir opções de reprodução de vídeo · Alterar as opções de listagem Vídeo · Setar fontes para legendas"
 
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
+msgstr "Gerencia sua coleção de músicas - Ajustes as opções de reprodução de música - Altere as opções de listar músicas - Submenu ajustes de música"
+
 msgctxt "#31403"
 msgid "Set picture listing options · Configure slideshows"
 msgstr "Defina as opções de listagem de imagens · Configure slideshows"
@@ -187,6 +199,10 @@ msgstr "Controle de configuração do Kodi através de UPnP e HTTP · Configure 
 msgctxt "#31406"
 msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
 msgstr "Configurar e calibrar displays · Configurar saída de áudio · Configurar controles remotos · Setar opções poupar energia · Ligar debugging · Configurar bloqueio Master"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Gerencie seus addons instalados. Navegue e instale addons via repositório do kodi.tv - Altere ajustes dos addons"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -259,3 +275,31 @@ msgstr "Renomear Grupo"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Apagar Grupo"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Mostrar oculto"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Mostrar deletado"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Primeira execução"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Existem 2 situações que precisam saber sobre como navegar na Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "As funções do logotipo do Kodi atua como um botão \"HOME\". Sempre que você tocá-lo, você será levado de volta à tela inicial."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Quando você estiver reproduzindo áudio ou vídeo, o título do item aparece no topo da tela. Tocá-lo irá levá-lo para a visualização em tela cheia ou janela de vídeo."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Reproduzindo Agora Título..."

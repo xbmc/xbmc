@@ -34,7 +34,7 @@ msgstr "Options de visualisation"
 
 msgctxt "#31006"
 msgid "Visualization Presets"
-msgstr "Présélections de visualisation"
+msgstr "Préréglages de visualisation"
 
 msgctxt "#31007"
 msgid "Context Menu"
@@ -70,7 +70,7 @@ msgstr "Liste d'infos"
 
 msgctxt "#31038"
 msgid "Login"
-msgstr "Connexion"
+msgstr "Identification"
 
 msgctxt "#31039"
 msgid "Updated:"
@@ -206,7 +206,7 @@ msgstr "Gestion des extensions installées · Parcours et installation des exten
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Sélectionner le profil utilisateur Kodi[CR]pour se connecter et continuer"
+msgstr "Sélectionner le profil utilisateur Kodi[CR]pour s'identifier et poursuivre"
 
 msgctxt "#31500"
 msgid "Home Menu Catagory Buttons"

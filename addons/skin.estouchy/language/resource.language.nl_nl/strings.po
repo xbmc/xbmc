@@ -44,6 +44,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "Bezig..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Recent"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "Speelfilms"
@@ -66,7 +70,11 @@ msgstr "Info Lijst"
 
 msgctxt "#31038"
 msgid "Login"
-msgstr "Log-in"
+msgstr "Inloggen"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Geüpdated:"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -94,7 +102,7 @@ msgstr "Open afspeellijst"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Save afspeellijst"
+msgstr "Bewaar afspeellijst"
 
 msgctxt "#31057"
 msgid "Close playlist"
@@ -126,11 +134,11 @@ msgstr "Huidige temperatuur"
 
 msgctxt "#31301"
 msgid "Last Updated"
-msgstr "Laatste update"
+msgstr "Laatst geüpdatet"
 
 msgctxt "#31303"
 msgid "Data provider"
-msgstr "Data provider"
+msgstr "Gegevens aanbieder"
 
 msgctxt "#31309"
 msgid "Memory Used:"
@@ -152,6 +160,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Ondertitels downloaden"
 
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teletekst"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Standaard Skin"
@@ -162,15 +174,19 @@ msgstr "Arial lettertype"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
-msgstr "Verander je Skin · Instellen van Taal en Land · Verander bestandslijst opties · Stel een screensaver in"
+msgstr "Verander je Skin · Instellen van Taal en Land · Verander bestandslijst opties · Stel een schermbeveiliging in"
 
 msgctxt "#31401"
 msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Manage je video bibliotheek · Afspeelopties voor Video · Verander videolijst opties · Stel ondertitel font in"
+msgstr "Beheer je video bibliotheek · Afspeelopties voor Video · Verander videolijst opties · Stel ondertitel lettertype in"
+
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
+msgstr "Beheer uw muziekbibliotheek · Configureer muziekafspeelopties · Wijzig muziek lijst opties - Configureer nummer indienen"
 
 msgctxt "#31403"
 msgid "Set picture listing options · Configure slideshows"
-msgstr "Stel fotolijst opties in · Configureer diashow"
+msgstr "Stel fotolijst opties in · Configureer diavoorstelling"
 
 msgctxt "#31404"
 msgid "Set three cities to collect weather information"
@@ -178,15 +194,19 @@ msgstr "Stel drie steden in om weerinformatie te verzamelen"
 
 msgctxt "#31405"
 msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Instellingen voor bedienen Kodi via UPnP en HTTP  · nstellingen voor delen van bestanden · Internet instellingen"
+msgstr "Instellingen voor bedienen Kodi via UPnP en HTTP  · instellingen voor delen van bestanden · Internet instellingen"
 
 msgctxt "#31406"
 msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
 msgstr "Instellen en kalibreren van scherm · Configureer geluidsuitgang · Instellen van afstandsbediening · Instellingen voor energiebesparing · Zet debugging aan · Instellingen voor vergrendeling"
 
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Beheer uw geïnstalleerde add-ons · Zoek naar en installeer add-ons van Kodi.tv - Wijzig add-on instellingen"
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Kies je Kodi gebruikersprofiel[CR]om door te gaan"
+msgstr "Kies je Kodi gebruikersprofiel[CR]om in te loggen en door te gaan"
 
 msgctxt "#31500"
 msgid "Home Menu Catagory Buttons"
@@ -222,7 +242,7 @@ msgstr "Achtergrond:"
 
 msgctxt "#31555"
 msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
-msgstr "Configureer TV instellingen · Verander volledig scherm info · beer EPG data instellingen"
+msgstr "Configureer TV instellingen · Verander volledig scherm info · beheer EPG gegens instellingen"
 
 msgctxt "#31556"
 msgid "Live TV"
@@ -230,7 +250,7 @@ msgstr "Live TV"
 
 msgctxt "#31557"
 msgid "Hide video background"
-msgstr "In achtergrond spelende video verbergen"
+msgstr "Verberg video achtergrond"
 
 msgctxt "#31558"
 msgid "Hide visualization background"
@@ -263,3 +283,23 @@ msgstr "Toon verborgen"
 msgctxt "#31565"
 msgid "Show deleted"
 msgstr "Toon verwijderde"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Eerste sessie"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Er zijn twee dingen om te weten over navigatie bij Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Het Kodi logo functioneert als een 'HOME' knop. Wanneer u deze aanraakt wordt u terug gebracht naar het startscherm."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Wanneer u audio of video afspeelt dan zal de item titel verschijnen bovenaan het scherm. Deze aanraken brengt u naar de scherm vullende weergave of video scherm."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Nu spelende titel..."

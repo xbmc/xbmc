@@ -44,6 +44,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "Pracuje sa..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Nedávne"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "Filmy"
@@ -67,6 +71,10 @@ msgstr "Zoznam informácií"
 msgctxt "#31038"
 msgid "Login"
 msgstr "Prihlasovavie meno"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Aktualizované:"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -152,6 +160,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Stiahnuť titulky"
 
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teletext"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Predvolený vzhľad"
@@ -168,6 +180,10 @@ msgctxt "#31401"
 msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
 msgstr "Spravovať zbierku videí · Nastaviť možnosti prehrávania videa · Zmeniť možnosti výpisu videí · Nastaviť font tituliek"
 
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
+msgstr "Správa hudobnej knižnice · Nastavenie volieb prehrávania hudby · Zmena volieb prehrávania hudby · Služby pre odosielanie informácií o prehrávaných skladbách"
+
 msgctxt "#31403"
 msgid "Set picture listing options · Configure slideshows"
 msgstr "Zmeniť možnosti výpisu obrázkov · Nastaviť prezentáciu"
@@ -183,6 +199,10 @@ msgstr "Nastaviť možnosti ovládania Kodi cez UPnP alebo HTTP · Nastaviť zdi
 msgctxt "#31406"
 msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
 msgstr "Nastaviť a kalibrovať obrazovku · Nastaviť zvukový výstup · Nastaviť diaľkové ovládanie · Nastaviť možnosti úspory energie · Povoliť ladenie · Nastaviť rodičovský zámok"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Správa nainštalovaných doplnkov · Prezeranie a inštalácia doplnkov z kodi.tv · Úprava nastavení doplnkov"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -208,9 +228,41 @@ msgctxt "#31551"
 msgid "Add-on Shortcut"
 msgstr "Odkaz Rozšírení"
 
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SYNCHRONIZOVAŤ"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Použiť vlastné pozadie"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Pozadie:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Upraviť nastavenia TV · Zmeniť informácie na celej obrazovke · Spravovať nastavenia údajov EPG"
+
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "Živé TV vysielanie"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Skyť video v pozadí"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Skryť vizualizačné pozadie"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Nastavenia kanálov"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Dostupné skupiny"
 
 msgctxt "#31561"
 msgid "Add Group"
@@ -223,3 +275,31 @@ msgstr "Premenovať skupinu"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Odstrániť skupinu"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Ukázať skryté"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Ukázať vymazané"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Prvé spustenie"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "O navigácii v Estouchy musíte vedieť dve veci"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Logo Kodi funguje ako tlačidlo „DOMOV“. Kedykoľvek sa ho dotknete, zobrazí sa domovská obrazovka."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Počas prehrávania zvuku alebo videa sa v hornej časti obrazovky zobrazí názov prehrávaného prvku. Ak sa ho dotknete, aktivujete vizualizáciu na celej obrazovke alebo okno s prehrávaním videa."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Práve sa prehráva titul..."

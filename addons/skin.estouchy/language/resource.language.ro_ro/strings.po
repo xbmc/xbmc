@@ -122,7 +122,7 @@ msgstr "Vizualizează"
 
 msgctxt "#31300"
 msgid "Current Temp"
-msgstr "Temperatură curentă"
+msgstr "Temperatură actuală"
 
 msgctxt "#31301"
 msgid "Last Updated"

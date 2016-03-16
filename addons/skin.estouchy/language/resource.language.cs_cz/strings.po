@@ -44,6 +44,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "Pracuji..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Nedávné"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "Filmy"
@@ -176,6 +180,10 @@ msgctxt "#31401"
 msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
 msgstr "Spravovat vaši knihovnu videa · Nastavit možnosti přehrávání videa · Změnit možnosti výpisu videa · Nastavit font titulků"
 
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
+msgstr "Spravuj hudební knihovnu · Nastav možnosti přehrávání hudby · Změň možnosti hudebních seznamů · Nastav odesílání skladeb"
+
 msgctxt "#31403"
 msgid "Set picture listing options · Configure slideshows"
 msgstr "Nastavit možnosti výpisu obrázků · Nastavit promítání"
@@ -220,6 +228,10 @@ msgctxt "#31551"
 msgid "Add-on Shortcut"
 msgstr "Zkratka rozšíření"
 
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SYNCHRONIZUJ"
+
 msgctxt "#31553"
 msgid "Use Custom Background"
 msgstr "Použít vlastní pozadí"
@@ -227,6 +239,10 @@ msgstr "Použít vlastní pozadí"
 msgctxt "#31554"
 msgid "Background:"
 msgstr "Pozadí:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Konfiguruj nastavení TV · Změň celoobrazovkové info · Spravuj nastaveni EPG"
 
 msgctxt "#31556"
 msgid "Live TV"

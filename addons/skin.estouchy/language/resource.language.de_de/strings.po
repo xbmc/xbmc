@@ -68,6 +68,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Anmeldung"
 
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Aktualisiert:"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "SCHNELL VORSPULEN"
