@@ -11,13 +11,13 @@ all: TEXTURES
 .PHONY: force
 
 TEXTURES:
-	@TEXTUREPACKER@ -dupecheck -input . -output $(TARGET)
-	@TEXTUREPACKER@ -dupecheck -input ../themes/curial -output $(TARGET_CURIAL)
-	@TEXTUREPACKER@ -dupecheck -input ../themes/green -output $(TARGET_GREEN)
-	@TEXTUREPACKER@ -dupecheck -input ../themes/orange -output $(TARGET_ORANGE)
-	@TEXTUREPACKER@ -dupecheck -input ../themes/pink -output $(TARGET_PINK)
-	@TEXTUREPACKER@ -dupecheck -input ../themes/maroon -output $(TARGET_MAROON)
-	@TEXTUREPACKER@ -dupecheck -input ../themes/charcoal -output $(TARGET_CHARCOAL)
+	@TEXTUREPACKER@ -input . -output $(TARGET)
+	@TEXTUREPACKER@ -input ../themes/curial -output $(TARGET_CURIAL)
+	@TEXTUREPACKER@ -input ../themes/green -output $(TARGET_GREEN)
+	@TEXTUREPACKER@ -input ../themes/orange -output $(TARGET_ORANGE)
+	@TEXTUREPACKER@ -input ../themes/pink -output $(TARGET_PINK)
+	@TEXTUREPACKER@ -input ../themes/maroon -output $(TARGET_MAROON)
+	@TEXTUREPACKER@ -input ../themes/charcoal -output $(TARGET_CHARCOAL)
 
 clean:
 	rm -f $(TARGET)

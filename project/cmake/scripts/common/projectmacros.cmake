@@ -14,7 +14,6 @@ function(pack_xbt input output)
                      COMMAND TexturePacker::TexturePacker
                      ARGS    -input ${input}
                              -output ${output}
-                             -dupecheck
                      DEPENDS ${MEDIA_FILES})
   list(APPEND XBT_FILES ${output})
   set(XBT_FILES ${XBT_FILES} PARENT_SCOPE)
