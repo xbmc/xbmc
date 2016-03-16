@@ -365,6 +365,23 @@ endif()
 
 include(scripts/${CORE_SYSTEM_NAME}/install.cmake)
 
+# Prepare add-on build env
+foreach(binding ${addon_bindings})
+  get_filename_component(file ${binding} NAME)
+  set(BINDING_TARGET ${CORE_BUILD_DIR}/include/${APP_NAME_LC}/${file})
+  configure_file(${binding} ${BINDING_TARGET} COPYONLY)
+endforeach()
+
+set(APP_LIB_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/${APP_NAME_LC})
+set(APP_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include/${APP_NAME_LC})
+set(CXX11_SWITCH "-std=c++11")
+configure_file(${PROJECT_SOURCE_DIR}/kodi-config.cmake.in
+               ${CORE_BUILD_DIR}/lib/${APP_NAME_LC}/${APP_NAME_LC}-config.cmake @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/scripts/common/addon-helpers.cmake
+               ${CORE_BUILD_DIR}/lib/${APP_NAME_LC}/addon-helpers.cmake COPYONLY)
+configure_file(${PROJECT_SOURCE_DIR}/scripts/common/addoptions.cmake
+               ${CORE_BUILD_DIR}/lib/${APP_NAME_LC}/addoptions.cmake COPYONLY)
+
 # Status
 message(STATUS "#---- CONFIGURATION ----#")
 foreach(msg ${final_message})
