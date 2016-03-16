@@ -14,13 +14,22 @@ else()
   set(USE_OPENGLES 0)
 endif()
 
-configure_file(${CORE_SOURCE_DIR}/project/cmake/${APP_NAME_LC}-config.cmake.in
-               ${CORE_BUILD_DIR}/${APP_NAME_LC}-config.cmake @ONLY)
-
 configure_file(${CORE_SOURCE_DIR}/tools/Linux/kodi.sh.in
                ${CORE_BUILD_DIR}/scripts/${APP_NAME_LC} @ONLY)
 configure_file(${CORE_SOURCE_DIR}/tools/Linux/kodi-standalone.sh.in
                ${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-standalone @ONLY)
+
+# cmake config
+set(APP_LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib/${APP_NAME_LC})
+set(APP_PREFIX ${CMAKE_INSTALL_PREFIX})
+set(APP_INCLUDE_DIR ${CMAKE_INSTALL_PREFIX}/include/${APP_NAME_LC})
+set(CXX11_SWITCH "-std=c++11")
+configure_file(${PROJECT_SOURCE_DIR}/kodi-config.cmake.in
+               ${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-config.cmake @ONLY)
+install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-config.cmake
+              ${PROJECT_SOURCE_DIR}/scripts/common/addoptions.cmake
+              ${PROJECT_SOURCE_DIR}/scripts/common/addon-helpers.cmake
+        DESTINATION lib/${APP_NAME_LC})
 
 install(TARGETS ${APP_NAME_LC} DESTINATION ${libdir}/kodi)
 if(ENABLE_X11 AND XRANDR_FOUND)
@@ -34,14 +43,6 @@ install(FILES ${addon_bindings} DESTINATION ${includedir}/kodi)
 if(NOT EXISTS ${includedir}/xbmc)
 install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC}/ xbmc WORKING_DIRECTORY ${includedir})")
 endif()
-
-install(FILES ${cmake_files} 
-        DESTINATION ${libdir}/kodi)
-install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}-config.cmake
-        DESTINATION ${libdir}/${APP_NAME_LC})
-install(FILES ${CORE_SOURCE_DIR}/project/cmake/xbmc-config.cmake.in
-        RENAME xbmc-config.cmake
-        DESTINATION ${libdir}/${APP_NAME_LC})
 
 install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}
                  ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-standalone

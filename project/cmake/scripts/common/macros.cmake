@@ -370,6 +370,7 @@ macro(core_find_versions)
 
   set(APP_NAME ${APP_APP_NAME}) # inconsistency in upstream
   string(TOLOWER ${APP_APP_NAME} APP_NAME_LC)
+  string(TOUPPER ${APP_APP_NAME} APP_NAME_UC)
   set(COMPANY_NAME ${APP_COMPANY_NAME})
   set(APP_VERSION ${APP_VERSION_MAJOR}.${APP_VERSION_MINOR})
   if(APP_VERSION_TAG)
