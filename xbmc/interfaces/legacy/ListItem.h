@@ -190,6 +190,7 @@ namespace XBMCAddon
        *     - date          : string (%d.%m.%Y / 01.01.2009) - file date
        * - Video Values:
        *     - genre         : string (Comedy)
+       *     - country       : string (Germany)
        *     - year          : integer (2009)
        *     - episode       : integer (4)
        *     - season        : integer (1)
