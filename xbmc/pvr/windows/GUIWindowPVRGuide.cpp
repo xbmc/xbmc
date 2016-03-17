@@ -132,7 +132,6 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
   }
 
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
-  CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);
 }
 
 void CGUIWindowPVRGuide::UpdateSelectedItemPath()

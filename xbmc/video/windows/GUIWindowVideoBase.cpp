@@ -758,7 +758,8 @@ std::string CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
   GetResumeItemOffset(&item, startOffset, startPart);
   if (startOffset > 0)
   {
-    resumeString = StringUtils::Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(startOffset/75).c_str());
+    resumeString = StringUtils::Format(g_localizeStrings.Get(12022).c_str(),
+        StringUtils::SecondsToTimeString(startOffset/75, TIME_FORMAT_HH_MM_SS).c_str());
     if (startPart > 0)
     {
       std::string partString = StringUtils::Format(g_localizeStrings.Get(23051).c_str(), startPart);
@@ -855,9 +856,6 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
         }
       }
 
-      if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
-        buttons.Add(CONTEXT_BUTTON_INFO,24003); // Add-on info
-
       if (!item->m_bIsFolder && !(item->IsPlayList() && !g_advancedSettings.m_playlistAsFolders))
       { // get players
         std::vector<std::string> players;
@@ -876,13 +874,6 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
         buttons.Add(CONTEXT_BUTTON_PLAY_PARTYMODE, 15216); // Play in Partymode
       }
 
-      // if autoresume is enabled then add restart video button
-      // check to see if the Resume Video button is applicable
-      // only if the video is NOT a DVD (in that case the resume button will be added by CGUIDialogContextMenu::GetContextButtons)
-      if (!item->IsDVD() && HasResumeItemOffset(item.get()))
-      {
-        buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, GetResumeString(*(item.get())));     // Resume Video
-      }
       //if the item isn't a folder or script, is a member of a list rather than a single item
       //and we're not on the last element of the list, 
       //then add add either 'play from here' or 'play only this' depending on default behaviour
@@ -1029,17 +1020,6 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_PLAY_PARTYMODE:
     g_partyModeManager.Enable(PARTYMODECONTEXT_VIDEO, m_vecItems->Get(itemNumber)->GetPath());
-    return true;
-
-  case CONTEXT_BUTTON_RESTART_ITEM:
-    OnRestartItem(itemNumber);
-    return true;
-
-  case CONTEXT_BUTTON_RESUME_ITEM:
-    return OnFileAction(itemNumber, SELECT_ACTION_RESUME, "");
-
-  case CONTEXT_BUTTON_INFO:
-    OnItemInfo(itemNumber);
     return true;
 
   case CONTEXT_BUTTON_STOP_SCANNING:

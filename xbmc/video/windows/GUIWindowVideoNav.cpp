@@ -48,9 +48,9 @@
 #include "utils/Variant.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "video/VideoInfoScanner.h"
+#include "video/VideoLibraryQueue.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "pvr/recordings/PVRRecording.h"
-#include "ContextMenuManager.h"
 
 #include <utility>
 
@@ -92,10 +92,12 @@ bool CGUIWindowVideoNav::OnAction(const CAction &action)
     CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
     if (pItem->IsParentFolder())
       return false;
-    if (pItem && pItem->GetVideoInfoTag()->m_playCount == 0)
-      return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_WATCHED);
-    if (pItem && pItem->GetVideoInfoTag()->m_playCount > 0)
-      return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_UNWATCHED);
+
+    if (pItem && pItem->HasAddonInfo())
+    {
+      CVideoLibraryQueue::GetInstance().MarkAsWatched(pItem, pItem->GetVideoInfoTag()->m_playCount == 0);
+      return true;
+    }
   }
   return CGUIWindowVideoBase::OnAction(action);
 }
@@ -905,37 +907,9 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       VIDEO::SScanSettings settings;
       GetScraperForItem(item.get(), info, settings);
 
-      if (info && info->Content() == CONTENT_TVSHOWS)
-        buttons.Add(CONTEXT_BUTTON_INFO, item->m_bIsFolder ? 20351 : 20352);
-      else if (info && info->Content() == CONTENT_MUSICVIDEOS)
-        buttons.Add(CONTEXT_BUTTON_INFO,20393);
-      else if (info && info->Content() == CONTENT_MOVIES)
-        buttons.Add(CONTEXT_BUTTON_INFO, 13346);
-
       // can we update the database?
       if (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
       {
-        if (!item->IsPlugin() && !item->IsScript() && !item->IsLiveTV() && !item->IsAddonsPath() &&
-            item->GetPath() != "sources://video/" &&
-            item->GetPath() != "special://videoplaylists/" &&
-            !StringUtils::StartsWith(item->GetPath(), "newsmartplaylist://") &&
-            !StringUtils::StartsWith(item->GetPath(), "newplaylist://") &&
-            !StringUtils::StartsWith(item->GetPath(), "newtag://"))
-        {
-          if (item->m_bIsFolder)
-          {
-            // Have both options for folders since we don't know whether all childs are watched/unwatched
-            buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
-            buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
-          }
-          else
-          {
-            if (item->GetOverlayImage() == "OverlayWatched.png")
-              buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
-            else
-              buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
-          }
-        }
         if (!g_application.IsVideoScanning() && item->IsVideoDb() && item->HasVideoInfoTag() &&
            (item->GetVideoInfoTag()->m_type == MediaTypeMovie ||          // movies
             item->GetVideoInfoTag()->m_type == MediaTypeTvShow ||         // tvshows
@@ -986,10 +960,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
             buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
         }
       }
-      if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
-        buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
     }
-    CContextMenuManager::GetInstance().AddVisibleItems(item, buttons);
   }
 }
 
@@ -1018,9 +989,6 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CONTEXT_BUTTON ret = (CONTEXT_BUTTON)CGUIDialogVideoInfo::ManageVideoItem(item);
       if (ret >= 0)
       {
-        if (ret == CONTEXT_BUTTON_MARK_WATCHED)
-          m_viewControl.SetSelectedItem(itemNumber + 1);
-
         Refresh(true);
         if (ret == CONTEXT_BUTTON_DELETE)
         {

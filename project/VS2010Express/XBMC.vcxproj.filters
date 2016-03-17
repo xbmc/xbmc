@@ -795,6 +795,9 @@
     <ClCompile Include="..\..\xbmc\addons\ContextMenuAddon.cpp">
       <Filter>addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\ContextMenus.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\Scraper.cpp">
       <Filter>addons</Filter>
     </ClCompile>
@@ -838,6 +841,9 @@
       <Filter>music</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\music\Artist.cpp">
+      <Filter>music</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\ContextMenus.cpp">
       <Filter>music</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\music\GUIViewStateMusic.cpp">
@@ -1492,6 +1498,9 @@
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\video\Bookmark.cpp">
+      <Filter>video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\ContextMenus.cpp">
       <Filter>video</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\video\GUIViewStateVideo.cpp">
@@ -3891,6 +3900,9 @@
     <ClInclude Include="..\..\xbmc\addons\ContextMenuAddon.h">
       <Filter>addons</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\ContextMenus.h">
+      <Filter>addons</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\DllAddon.h">
       <Filter>addons</Filter>
     </ClInclude>
@@ -4662,6 +4674,9 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\Bookmark.h">
+      <Filter>video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\ContextMenus.h">
       <Filter>video</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\GUIViewStateVideo.h">
@@ -6718,6 +6733,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\BinaryAddonCache.h">
       <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\ContextMenus.h">
+      <Filter>music</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2961,6 +2961,7 @@ msgctxt "#657"
 msgid "Browse for folder"
 msgstr ""
 
+#: xbmc/music/ContextMenus.h
 msgctxt "#658"
 msgid "Song information"
 msgstr ""
@@ -3959,11 +3960,6 @@ msgstr ""
 
 msgctxt "#1044"
 msgid "Set plug-in thumb"
-msgstr ""
-
-#: xbmc/dialogs/GUIDialogContextMenu.cpp
-msgctxt "#1045"
-msgid "Add-on settings"
 msgstr ""
 
 msgctxt "#1046"
@@ -5027,6 +5023,7 @@ msgctxt "#10522"
 msgid "Now playing - Videos"
 msgstr ""
 
+#: xbmc/music/ContextMenus.h
 msgctxt "#10523"
 msgid "Album information"
 msgstr ""
@@ -5121,7 +5118,12 @@ msgctxt "#12022"
 msgid "Resume from %s"
 msgstr ""
 
-#empty strings from id 12023 to 12309
+#: xbmc/video/ContextMenus.cpp
+msgctxt "#12023"
+msgid "Play from beginning"
+msgstr ""
+
+#empty strings from id 12024 to 12309
 
 #: addons/skin.estuary/1080i/DialogNumeric.xml
 #: skin.estouchy
@@ -6239,7 +6241,7 @@ msgstr ""
 
 #: xbmc/video/jobs/VideoLibraryRefreshingJob.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
-#: xbmc/video/windows/GUIWindowVideoNav.cpp
+#: xbmc/video/ContextMenus.h
 msgctxt "#13346"
 msgid "Movie information"
 msgstr ""
@@ -6260,6 +6262,7 @@ msgctxt "#13350"
 msgid "Current playlist"
 msgstr ""
 
+#: Not used anymore. Use #10523 instead.
 msgctxt "#13351"
 msgid "Album information"
 msgstr ""
@@ -11635,13 +11638,13 @@ msgid "%.1f (%i votes)"
 msgstr ""
 
 #: xbmc/video/jobs/VideoLibraryRefreshingJob.cpp
-#: xbmc/video/windows/GUIWindowVideoNav.cpp
+#: xbmc/video/ContextMenus.h
 msgctxt "#20351"
 msgid "TV show information"
 msgstr ""
 
 #: xbmc/video/jobs/VideoLibraryRefreshingJob.cpp
-#: xbmc/video/windows/GUIWindowVideoNav.cpp
+#: xbmc/video/ContextMenus.h
 msgctxt "#20352"
 msgid "Episode information"
 msgstr ""
@@ -11844,7 +11847,7 @@ msgstr ""
 
 #: xbmc/music/windows/GUIWindowMusicNav.cpp
 #: xbmc/video/jobs/VideoLibraryRefreshingJob.cpp
-#: xbmc/video/windows/GUIWindowVideoNav.cpp
+#: xbmc/video/ContextMenus.h
 msgctxt "#20393"
 msgid "Music video information"
 msgstr ""
@@ -13180,6 +13183,7 @@ msgctxt "#21890"
 msgid "Select artist"
 msgstr ""
 
+#: xbmc/music/ContextMenus.h
 msgctxt "#21891"
 msgid "Artist information"
 msgstr ""
@@ -13458,6 +13462,7 @@ msgctxt "#24002"
 msgid "Add-on options"
 msgstr ""
 
+#: xbmc/addons/ContextMenus.h
 msgctxt "#24003"
 msgid "Add-on information"
 msgstr ""
@@ -13611,8 +13616,9 @@ msgctxt "#24033"
 msgid "Install from repository"
 msgstr ""
 
-#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: addons/skin.estuary/1080i/AddonBrowser.xml
+#: xbmc/addons/ContextMenus.h
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24034"
 msgid "Check for updates"
 msgstr ""

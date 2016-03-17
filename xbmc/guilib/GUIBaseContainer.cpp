@@ -19,6 +19,7 @@
  */
 
 #include "GUIBaseContainer.h"
+#include "ContextMenuManager.h"
 #include "utils/CharsetConverter.h"
 #include "GUIInfoManager.h"
 #include "utils/TimeUtils.h"
@@ -348,16 +349,26 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
         return CGUIControl::OnAction(action);
       }
     }
-    break;
-
-  case ACTION_SHOW_INFO:
+  case ACTION_CONTEXT_MENU:
+    if (m_listProvider)
     {
-      if (OnInfo())
+      int selected = GetSelectedItem();
+      if (selected >= 0 && selected < m_items.size())
+      {
+        CFileItemPtr fileItem = std::dynamic_pointer_cast<CFileItem>(m_items[selected]);
+        if (fileItem)
+          CONTEXTMENU::ShowFor(fileItem);
         return true;
-      else if (action.GetID())
-        return OnClick(action.GetID());
+      }
     }
     break;
+  case ACTION_SHOW_INFO:
+    if (OnInfo())
+      return true;
+    else if (action.GetID())
+      return OnClick(action.GetID());
+    else
+      return false;
 
   case ACTION_FIRST_PAGE:
     SelectItem(0);
@@ -369,17 +380,11 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
     return true;
 
   case ACTION_NEXT_LETTER:
-    {
-      OnNextLetter();
-      return true;
-    }
-    break;
+    OnNextLetter();
+    return true;
   case ACTION_PREV_LETTER:
-    {
-      OnPrevLetter();
-      return true;
-    }
-    break;
+    OnPrevLetter();
+    return true;
   case ACTION_JUMP_SMS2:
   case ACTION_JUMP_SMS3:
   case ACTION_JUMP_SMS4:
@@ -388,19 +393,13 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
   case ACTION_JUMP_SMS7:
   case ACTION_JUMP_SMS8:
   case ACTION_JUMP_SMS9:
-    {
-      OnJumpSMS(action.GetID() - ACTION_JUMP_SMS2 + 2);
-      return true;
-    }
-    break;
+    OnJumpSMS(action.GetID() - ACTION_JUMP_SMS2 + 2);
+    return true;
 
   default:
-    if (action.GetID())
-    {
-      return OnClick(action.GetID());
-    }
+    break;
   }
-  return false;
+  return action.GetID() && OnClick(action.GetID());
 }
 
 bool CGUIBaseContainer::OnMessage(CGUIMessage& message)

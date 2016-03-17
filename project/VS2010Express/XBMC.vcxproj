@@ -199,6 +199,7 @@
     <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\Peripheral\AddonCallbacksPeripheral.cpp" />
     <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\PVR\AddonCallbacksPVR.cpp" />
     <ClCompile Include="..\..\xbmc\addons\ContextMenuAddon.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\ContextMenus.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AudioDecoder.cpp" />
     <ClCompile Include="..\..\xbmc\addons\GUIDialogAddonInfo.cpp" />
     <ClCompile Include="..\..\xbmc\addons\GUIDialogAddonSettings.cpp" />
@@ -718,6 +719,7 @@
     <ClCompile Include="..\..\xbmc\messaging\helpers\DialogHelper.cpp" />
     <ClCompile Include="..\..\xbmc\music\Album.cpp" />
     <ClCompile Include="..\..\xbmc\music\Artist.cpp" />
+    <ClCompile Include="..\..\xbmc\music\ContextMenus.cpp" />
     <ClCompile Include="..\..\xbmc\music\CueInfoLoader.cpp" />
     <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogMusicInfo.cpp" />
     <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogMusicOSD.cpp" />
@@ -972,6 +974,7 @@
     <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\PVR\AddonCallbacksPVR.h" />
     <ClInclude Include="..\..\xbmc\addons\binary\interfaces\IAddonInterface.h" />
     <ClInclude Include="..\..\xbmc\addons\ContextMenuAddon.h" />
+    <ClInclude Include="..\..\xbmc\addons\ContextMenus.h" />
     <ClInclude Include="..\..\xbmc\addons\DllPeripheral.h" />
     <ClInclude Include="..\..\xbmc\addons\ImageResource.h" />
     <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_adsp_dll.h" />
@@ -1105,6 +1108,7 @@
     <ClInclude Include="..\..\xbmc\input\joysticks\IButtonMapper.h" />
     <ClInclude Include="..\..\xbmc\input\joysticks\IDriverHandler.h" />
     <ClInclude Include="..\..\xbmc\input\joysticks\IInputHandler.h" />
+    <ClInclude Include="..\..\xbmc\music\ContextMenus.h" />
     <ClInclude Include="..\..\xbmc\music\windows\MusicFileItemListModifier.h" />
     <ClInclude Include="..\..\xbmc\filesystem\OverrideDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\OverrideFile.h" />
@@ -1757,6 +1761,7 @@
     <ClCompile Include="..\..\xbmc\utils\XBMCTinyXML.cpp" />
     <ClCompile Include="..\..\xbmc\utils\XMLUtils.cpp" />
     <ClCompile Include="..\..\xbmc\video\Bookmark.cpp" />
+    <ClCompile Include="..\..\xbmc\video\ContextMenus.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogFullScreenInfo.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogSubtitles.cpp" />
@@ -2380,6 +2385,7 @@
     <ClInclude Include="..\..\xbmc\utils\XBMCTinyXML.h" />
     <ClInclude Include="..\..\xbmc\utils\XMLUtils.h" />
     <ClInclude Include="..\..\xbmc\video\Bookmark.h" />
+    <ClInclude Include="..\..\xbmc\video\ContextMenus.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogFullScreenInfo.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogSubtitles.h" />

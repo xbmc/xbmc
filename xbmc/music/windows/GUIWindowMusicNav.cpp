@@ -46,7 +46,6 @@
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
-#include "settings/AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/log.h"
@@ -54,7 +53,6 @@
 #include "utils/Variant.h"
 #include "Util.h"
 #include "URL.h"
-#include "ContextMenuManager.h"
 #include "storage/MediaManager.h"
 
 using namespace XFILE;
@@ -482,32 +480,6 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       CGUIWindowMusicBase::GetContextButtons(itemNumber, buttons);
 
       CMusicDatabaseDirectory dir;
-      // enable music info button on an album or on a song.
-      if (item->IsAudio() && !item->IsPlayList() && !item->IsSmartPlayList() &&
-          !item->m_bIsFolder)
-        buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658);
-      else if (item->IsVideoDb())
-      {
-        if (!item->m_bIsFolder) // music video
-         buttons.Add(CONTEXT_BUTTON_INFO, 20393);
-        if (StringUtils::StartsWithNoCase(item->GetPath(), "videodb://musicvideos/artists/") && item->m_bIsFolder)
-        {
-          long idArtist = m_musicdatabase.GetArtistByName(m_vecItems->Get(itemNumber)->GetLabel());
-          if (idArtist > - 1)
-            buttons.Add(CONTEXT_BUTTON_INFO,21891);
-        }
-      }
-      else if (!inPlaylists && (dir.HasAlbumInfo(item->GetPath())||
-                                dir.IsArtistDir(item->GetPath())   )      &&
-               !dir.IsAllItem(item->GetPath()) && !item->IsParentFolder() &&
-               !item->IsPlugin() && !item->IsScript() &&
-               !StringUtils::StartsWithNoCase(item->GetPath(), "musicsearch://"))
-      {
-        if (dir.IsArtistDir(item->GetPath()))
-          buttons.Add(CONTEXT_BUTTON_INFO, 21891);
-        else
-          buttons.Add(CONTEXT_BUTTON_INFO, 13351);
-      }
 
       // enable query all albums button only in album view
       if (dir.HasAlbumInfo(item->GetPath()) && !dir.IsAllItem(item->GetPath()) &&
@@ -574,10 +546,6 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       }
       if (item->HasVideoInfoTag() && !item->m_bIsFolder)
       {
-        if (item->GetVideoInfoTag()->m_playCount > 0)
-          buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
-        else
-          buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
         if ((CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !item->IsPlugin())
         {
           buttons.Add(CONTEXT_BUTTON_RENAME, 16105);
@@ -587,9 +555,6 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       if (inPlaylists && URIUtils::GetFileName(item->GetPath()) != "PartyMode.xsp"
                       && (item->IsPlayList() || item->IsSmartPlayList()))
         buttons.Add(CONTEXT_BUTTON_DELETE, 117);
-
-      if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
-        buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
 
       if (!item->IsReadOnly() && CSettings::GetInstance().GetBool("filelists.allowfiledeletion"))
       {
@@ -601,8 +566,6 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
   // noncontextual buttons
 
   CGUIWindowMusicBase::GetNonContextButtons(buttons);
-
-  CContextMenuManager::GetInstance().AddVisibleItems(item, buttons);
 }
 
 bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

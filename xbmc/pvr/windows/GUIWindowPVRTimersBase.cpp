@@ -111,7 +111,6 @@ void CGUIWindowPVRTimersBase::GetContextButtons(int itemNumber, CContextButtons 
   }
 
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
-  CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);
 }
 
 bool CGUIWindowPVRTimersBase::OnAction(const CAction &action)

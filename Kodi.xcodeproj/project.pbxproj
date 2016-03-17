@@ -710,10 +710,16 @@
 		8883CEA70DD81807004E8B72 /* DVDSubtitleParserSSA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CEA30DD81807004E8B72 /* DVDSubtitleParserSSA.cpp */; };
 		8883CEA80DD81807004E8B72 /* DVDSubtitlesLibass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CEA50DD81807004E8B72 /* DVDSubtitlesLibass.cpp */; };
 		889B4D8E0E0EF86C00FAD25E /* RSSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 889B4D8C0E0EF86C00FAD25E /* RSSDirectory.cpp */; };
+		9A2FAD6A1C972BE10049652A /* ContextMenus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A2FAD681C972BE10049652A /* ContextMenus.cpp */; };
+		9A2FAD6B1C972BE10049652A /* ContextMenus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A2FAD681C972BE10049652A /* ContextMenus.cpp */; };
 		9A7368511C401F5F00CA169F /* DirectoryNodeInProgressTvShows.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A73684F1C401F5F00CA169F /* DirectoryNodeInProgressTvShows.cpp */; };
 		9A7368521C401F5F00CA169F /* DirectoryNodeInProgressTvShows.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A73684F1C401F5F00CA169F /* DirectoryNodeInProgressTvShows.cpp */; };
 		9A999F1D1C67B77600E4E0D5 /* AddonBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A999F1B1C67B77600E4E0D5 /* AddonBuilder.cpp */; };
 		9A999F1E1C67B77600E4E0D5 /* AddonBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A999F1B1C67B77600E4E0D5 /* AddonBuilder.cpp */; };
+		9AA7E3E81C972CF4000B7863 /* ContextMenus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9AA7E3E61C972CF4000B7863 /* ContextMenus.cpp */; };
+		9AA7E3E91C972CF4000B7863 /* ContextMenus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9AA7E3E61C972CF4000B7863 /* ContextMenus.cpp */; };
+		9ABFE7A11C972D60002F1318 /* ContextMenus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ABFE79F1C972D60002F1318 /* ContextMenus.cpp */; };
+		9ABFE7A21C972D60002F1318 /* ContextMenus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9ABFE79F1C972D60002F1318 /* ContextMenus.cpp */; };
 		9AC167B61C5ED478004F0C29 /* MusicFileItemListModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9AC167B41C5ED478004F0C29 /* MusicFileItemListModifier.cpp */; };
 		9AC167B71C5ED478004F0C29 /* MusicFileItemListModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9AC167B41C5ED478004F0C29 /* MusicFileItemListModifier.cpp */; };
 		AE32174218313ADF0003FAFC /* XSLTUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */; };
@@ -3439,10 +3445,16 @@
 		889B4D8D0E0EF86C00FAD25E /* RSSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSSDirectory.h; sourceTree = "<group>"; };
 		88ECB6580DE013C4003396A7 /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = /System/Library/Frameworks/DiskArbitration.framework; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* Kodi */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Kodi; sourceTree = BUILT_PRODUCTS_DIR; };
+		9A2FAD681C972BE10049652A /* ContextMenus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContextMenus.cpp; sourceTree = "<group>"; };
+		9A2FAD691C972BE10049652A /* ContextMenus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextMenus.h; sourceTree = "<group>"; };
 		9A73684F1C401F5F00CA169F /* DirectoryNodeInProgressTvShows.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeInProgressTvShows.cpp; sourceTree = "<group>"; };
 		9A7368501C401F5F00CA169F /* DirectoryNodeInProgressTvShows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeInProgressTvShows.h; sourceTree = "<group>"; };
 		9A999F1B1C67B77600E4E0D5 /* AddonBuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonBuilder.cpp; sourceTree = "<group>"; };
 		9A999F1C1C67B77600E4E0D5 /* AddonBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonBuilder.h; sourceTree = "<group>"; };
+		9AA7E3E61C972CF4000B7863 /* ContextMenus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContextMenus.cpp; sourceTree = "<group>"; };
+		9AA7E3E71C972CF4000B7863 /* ContextMenus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextMenus.h; sourceTree = "<group>"; };
+		9ABFE79F1C972D60002F1318 /* ContextMenus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContextMenus.cpp; sourceTree = "<group>"; };
+		9ABFE7A01C972D60002F1318 /* ContextMenus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextMenus.h; sourceTree = "<group>"; };
 		9AC167B41C5ED478004F0C29 /* MusicFileItemListModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicFileItemListModifier.cpp; sourceTree = "<group>"; };
 		9AC167B51C5ED478004F0C29 /* MusicFileItemListModifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicFileItemListModifier.h; sourceTree = "<group>"; };
 		AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XSLTUtils.cpp; sourceTree = "<group>"; };
@@ -5091,6 +5103,8 @@
 		18B49FF01152BEEB001AF8A6 /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				9A2FAD681C972BE10049652A /* ContextMenus.cpp */,
+				9A2FAD691C972BE10049652A /* ContextMenus.h */,
 				EDED2E7D1C878BDF000F5E80 /* binary */,
 				EDE8C7091C7F60C200A86ECC /* kodi-addon-dev-kit */,
 				9A999F1B1C67B77600E4E0D5 /* AddonBuilder.cpp */,
@@ -5354,6 +5368,8 @@
 		18B7C853129423A7009E7A26 /* music */ = {
 			isa = PBXGroup;
 			children = (
+				9ABFE79F1C972D60002F1318 /* ContextMenus.cpp */,
+				9ABFE7A01C972D60002F1318 /* ContextMenus.h */,
 				431376A812D640B500680C15 /* dialogs */,
 				431376CC12D6421A00680C15 /* infoscanner */,
 				18B7C854129423A7009E7A26 /* tags */,
@@ -5929,6 +5945,8 @@
 		43FAC85D12D62F4300F67914 /* video */ = {
 			isa = PBXGroup;
 			children = (
+				9AA7E3E61C972CF4000B7863 /* ContextMenus.cpp */,
+				9AA7E3E71C972CF4000B7863 /* ContextMenus.h */,
 				3994425F1A8DD920006C39E9 /* jobs */,
 				43FAC88612D6363B00F67914 /* dialogs */,
 				DFA0E8C619FD6BFC00269A92 /* videosync */,
@@ -10351,6 +10369,7 @@
 				C84828CF156CFCD8005A996F /* GUIDialogPVRGuideSearch.cpp in Sources */,
 				C84828D0156CFCD8005A996F /* GUIDialogPVRRecordingInfo.cpp in Sources */,
 				C84828D1156CFCD8005A996F /* GUIDialogPVRTimerSettings.cpp in Sources */,
+				9ABFE7A11C972D60002F1318 /* ContextMenus.cpp in Sources */,
 				C84828D4156CFCD8005A996F /* PVRDatabase.cpp in Sources */,
 				C84828D5156CFCD8005A996F /* PVRGUIInfo.cpp in Sources */,
 				C84828D6156CFCD8005A996F /* PVRManager.cpp in Sources */,
@@ -10510,6 +10529,7 @@
 				DFA8157E16713B1200E4E597 /* WakeOnAccess.cpp in Sources */,
 				7C973CFB1B5038580002A874 /* GUIDialogAudioDSPSettings.cpp in Sources */,
 				DF529BAE1741697B00523FB4 /* Environment.cpp in Sources */,
+				9A2FAD6A1C972BE10049652A /* ContextMenus.cpp in Sources */,
 				DFE4095B17417FDF00473BD9 /* LegacyPathTranslation.cpp in Sources */,
 				39C38CCA1BBFF1EE000F59F5 /* InputCodingTableKorean.cpp in Sources */,
 				0E3036EC1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */,
@@ -10641,6 +10661,7 @@
 				228FA65D1C53F9D50023BBF0 /* InfoScanner.cpp in Sources */,
 				7CCDA78E192756250074CF51 /* NptBufferedStreams.cpp in Sources */,
 				7CCDA797192756250074CF51 /* NptCommon.cpp in Sources */,
+				9AA7E3E81C972CF4000B7863 /* ContextMenus.cpp in Sources */,
 				7CCDA7A0192756250074CF51 /* NptConsole.cpp in Sources */,
 				7CCDA7A3192756250074CF51 /* NptCrypto.cpp in Sources */,
 				7CCDA7A6192756250074CF51 /* NptDataBuffer.cpp in Sources */,
@@ -11266,6 +11287,7 @@
 				68AE5C0E1C92437900C4D527 /* GUIFeatureList.cpp in Sources */,
 				E499139D174E5F0E00741B6D /* GUIViewStateMusic.cpp in Sources */,
 				E499139E174E5F0E00741B6D /* MusicDatabase.cpp in Sources */,
+				9A2FAD6B1C972BE10049652A /* ContextMenus.cpp in Sources */,
 				E499139F174E5F0E00741B6D /* MusicDbUrl.cpp in Sources */,
 				E49913A0174E5F0E00741B6D /* MusicInfoLoader.cpp in Sources */,
 				E49913A1174E5F0E00741B6D /* MusicThumbLoader.cpp in Sources */,
@@ -11596,6 +11618,7 @@
 				E4991554174E656E00741B6D /* CallbackFunction.cpp in Sources */,
 				E4991555174E656E00741B6D /* CallbackHandler.cpp in Sources */,
 				E4991556174E656E00741B6D /* Control.cpp in Sources */,
+				9AA7E3E91C972CF4000B7863 /* ContextMenus.cpp in Sources */,
 				E4991557174E656E00741B6D /* Dialog.cpp in Sources */,
 				DFEA4B521B5271EE00562321 /* ActiveAEDSPAddon.cpp in Sources */,
 				E4991558174E656E00741B6D /* File.cpp in Sources */,
@@ -11785,6 +11808,7 @@
 				DFD717291C09EDD70025D964 /* MessagePrinter.cpp in Sources */,
 				7CCDA834192756250074CF51 /* NptSystem.cpp in Sources */,
 				7CCDA83D192756250074CF51 /* NptThreads.cpp in Sources */,
+				9ABFE7A21C972D60002F1318 /* ContextMenus.cpp in Sources */,
 				7CCDA846192756250074CF51 /* NptTime.cpp in Sources */,
 				7CCDA84F192756250074CF51 /* NptTls.cpp in Sources */,
 				7CCDA852192756250074CF51 /* NptUri.cpp in Sources */,
