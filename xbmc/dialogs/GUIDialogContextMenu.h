@@ -57,7 +57,6 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_VIEW_SLIDESHOW,
                       CONTEXT_BUTTON_RECURSIVE_SLIDESHOW,
                       CONTEXT_BUTTON_REFRESH_THUMBS,
-                      CONTEXT_BUTTON_SWITCH_MEDIA,
                       CONTEXT_BUTTON_MOVE_ITEM,
                       CONTEXT_BUTTON_MOVE_HERE,
                       CONTEXT_BUTTON_CANCEL_MOVE,
@@ -173,7 +172,6 @@ public:
   virtual void SetPosition(float posX, float posY);
 
   static bool SourcesMenu(const std::string &strType, const CFileItemPtr& item, float posX, float posY);
-  static void SwitchMedia(const std::string& strType, const std::string& strPath);
 
   static void GetContextButtons(const std::string &type, const CFileItemPtr& item, CContextButtons &buttons);
   static bool OnContextButton(const std::string &type, const CFileItemPtr& item, CONTEXT_BUTTON button);

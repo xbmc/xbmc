@@ -648,27 +648,6 @@ void CGUIDialogContextMenu::ClearDefault(const std::string &strType)
   SetDefault(strType, "");
 }
 
-void CGUIDialogContextMenu::SwitchMedia(const std::string& strType, const std::string& strPath)
-{
-  // create menu
-  CContextButtons choices;
-  if (strType != "music")
-    choices.Add(WINDOW_MUSIC_FILES, 2);
-  if (strType != "video")
-    choices.Add(WINDOW_VIDEO_FILES, 3);
-  if (strType != "pictures")
-    choices.Add(WINDOW_PICTURES, 1);
-  if (strType != "files")
-    choices.Add(WINDOW_FILES, 7);
-
-  int window = ShowAndGetChoice(choices);
-  if (window >= 0)
-  {
-    CUtil::DeleteDirectoryCache();
-    g_windowManager.ChangeActiveWindow(window, strPath);
-  }
-}
-
 int CGUIDialogContextMenu::ShowAndGetChoice(const CContextButtons &choices)
 {
   if (choices.empty())

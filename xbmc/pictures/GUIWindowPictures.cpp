@@ -488,7 +488,6 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
       else
       {
         buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
-        buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
       }
     }
   }
@@ -531,9 +530,6 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
   case CONTEXT_BUTTON_GOTO_ROOT:
     Update("");
-    return true;
-  case CONTEXT_BUTTON_SWITCH_MEDIA:
-    CGUIDialogContextMenu::SwitchMedia("pictures", m_vecItems->GetPath());
     return true;
   default:
     break;
