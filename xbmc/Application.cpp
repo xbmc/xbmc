@@ -2793,6 +2793,8 @@ bool CApplication::Cleanup()
   {
     g_windowManager.DestroyWindows();
 
+    m_binaryAddonCache.Deinit();
+
     CAddonMgr::GetInstance().DeInit();
 
     CLog::Log(LOGNOTICE, "closing down remote control service");
