@@ -62,5 +62,7 @@ protected:
   CDVDInputStream* m_pInput;
   CDVDInputStream::IDemux *m_IDemux;
   std::map<int, std::shared_ptr<CDemuxStream>> m_streams;
+  int m_displayTime;
+  double m_dtsAtDisplayTime;
 };
 

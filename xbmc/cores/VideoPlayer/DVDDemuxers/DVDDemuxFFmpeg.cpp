@@ -498,6 +498,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   if (skipCreateStreams && GetNrOfStreams() == 0)
     m_program = 0;
 
+  m_displayTime = 0;
+  m_dtsAtDisplayTime = DVD_NOPTS_VALUE;
+
   return true;
 }
 
@@ -553,6 +556,9 @@ void CDVDDemuxFFmpeg::Flush()
 
   m_pkt.result = -1;
   av_free_packet(&m_pkt.pkt);
+
+  m_displayTime = 0;
+  m_dtsAtDisplayTime = DVD_NOPTS_VALUE;
 }
 
 void CDVDDemuxFFmpeg::Abort()
@@ -801,6 +807,25 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         pPacket->pts = ConvertTimestamp(m_pkt.pkt.pts, stream->time_base.den, stream->time_base.num);
         pPacket->dts = ConvertTimestamp(m_pkt.pkt.dts, stream->time_base.den, stream->time_base.num);
         pPacket->duration =  DVD_SEC_TO_TIME((double)m_pkt.pkt.duration * stream->time_base.num / stream->time_base.den);
+
+        CDVDInputStream::IDisplayTime *inputStream = m_pInput->GetIDisplayTime();
+        if (inputStream)
+        {
+          int dispTime = inputStream->GetTime();
+          if (m_displayTime != dispTime)
+          {
+            m_displayTime = dispTime;
+            if (pPacket->dts != DVD_NOPTS_VALUE)
+            {
+              m_dtsAtDisplayTime = pPacket->dts;
+            }
+          }
+          if (m_dtsAtDisplayTime != DVD_NOPTS_VALUE && pPacket->dts != DVD_NOPTS_VALUE)
+          {
+            pPacket->dispTime = m_displayTime;
+            pPacket->dispTime += DVD_TIME_TO_MSEC(pPacket->dts - m_dtsAtDisplayTime);
+          }
+        }
 
         // used to guess streamlength
         if (pPacket->dts != DVD_NOPTS_VALUE && (pPacket->dts > m_currentPts || m_currentPts == DVD_NOPTS_VALUE))

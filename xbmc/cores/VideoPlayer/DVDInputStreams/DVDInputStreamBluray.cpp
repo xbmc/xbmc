@@ -601,6 +601,7 @@ void CDVDInputStreamBluray::ProcessEvent() {
 
 int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
 {
+  m_dispTimeBeforeRead = (int)(m_dll->bd_tell_time(m_bd) / 90);
   if(m_navmode)
   {
     int result = 0;
@@ -897,7 +898,7 @@ int CDVDInputStreamBluray::GetTotalTime()
 
 int CDVDInputStreamBluray::GetTime()
 {
-  return (int)(m_dll->bd_tell_time(m_bd) / 90);
+  return m_dispTimeBeforeRead;
 }
 
 bool CDVDInputStreamBluray::PosTime(int ms)

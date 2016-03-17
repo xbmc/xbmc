@@ -78,6 +78,7 @@ DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
     pPacket->dts       = DVD_NOPTS_VALUE;
     pPacket->pts       = DVD_NOPTS_VALUE;
     pPacket->iStreamId = -1;
+    pPacket->dispTime = 0;
   }
   catch(...)
   {

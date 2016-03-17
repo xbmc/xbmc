@@ -92,6 +92,9 @@ bool CDVDDemuxClient::Open(CDVDInputStream* pInput)
     return false;
 
   RequestStreams();
+
+  m_displayTime = 0;
+  m_dtsAtDisplayTime = DVD_NOPTS_VALUE;
   return true;
 }
 
@@ -125,6 +128,9 @@ void CDVDDemuxClient::Flush()
 {
   if (m_IDemux)
     m_IDemux->FlushDemux();
+
+  m_displayTime = 0;
+  m_dtsAtDisplayTime = DVD_NOPTS_VALUE;
 }
 
 void CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
@@ -292,6 +298,24 @@ DemuxPacket* CDVDDemuxClient::Read()
     ParsePacket(pPacket);
   }
 
+  CDVDInputStream::IDisplayTime *inputStream = m_pInput->GetIDisplayTime();
+  if (inputStream)
+  {
+    int dispTime = inputStream->GetTime();
+    if (m_displayTime != dispTime)
+    {
+      m_displayTime = dispTime;
+      if (pPacket->dts != DVD_NOPTS_VALUE)
+      {
+        m_dtsAtDisplayTime = pPacket->dts;
+      }
+    }
+    if (m_dtsAtDisplayTime != DVD_NOPTS_VALUE && pPacket->dts != DVD_NOPTS_VALUE)
+    {
+      pPacket->dispTime = m_displayTime;
+      pPacket->dispTime += DVD_TIME_TO_MSEC(pPacket->dts - m_dtsAtDisplayTime);
+    }
+  }
   return pPacket;
 }
 
@@ -563,6 +587,8 @@ bool CDVDDemuxClient::SeekTime(int timems, bool backwards, double *startpts)
 {
   if (m_IDemux)
   {
+    m_displayTime = 0;
+    m_dtsAtDisplayTime = DVD_NOPTS_VALUE;
     return m_IDemux->SeekTime(timems, backwards, startpts);
   }
   return false;
