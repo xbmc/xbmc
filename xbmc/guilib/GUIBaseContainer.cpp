@@ -19,7 +19,6 @@
  */
 
 #include "GUIBaseContainer.h"
-#include "ContextMenuManager.h"
 #include "utils/CharsetConverter.h"
 #include "GUIInfoManager.h"
 #include "utils/TimeUtils.h"
@@ -355,9 +354,7 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
       int selected = GetSelectedItem();
       if (selected >= 0 && selected < m_items.size())
       {
-        CFileItemPtr fileItem = std::dynamic_pointer_cast<CFileItem>(m_items[selected]);
-        if (fileItem)
-          CONTEXTMENU::ShowFor(fileItem);
+        m_listProvider->OnContextMenu(m_items[selected]);
         return true;
       }
     }

@@ -24,6 +24,7 @@
 #include <utility>
 
 #include "addons/GUIDialogAddonInfo.h"
+#include "ContextMenuManager.h"
 #include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "filesystem/FavouritesDirectory.h"
@@ -328,6 +329,12 @@ bool CDirectoryProvider::OnInfo(const CGUIListItemPtr& item)
     return true;
   }
   return false;
+}
+
+bool CDirectoryProvider::OnContextMenu(const CGUIListItemPtr& item)
+{
+  auto fileItem = std::static_pointer_cast<CFileItem>(item);
+  return CONTEXTMENU::ShowFor(fileItem);
 }
 
 bool CDirectoryProvider::IsUpdating() const

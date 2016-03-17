@@ -34,6 +34,7 @@ public:
   virtual void Fetch(std::vector<CGUIListItemPtr> &items) const;
   virtual bool OnClick(const CGUIListItemPtr &item);
   bool OnInfo(const CGUIListItemPtr &item) override { return false; }
+  bool OnContextMenu(const CGUIListItemPtr &item) override { return false; }
   virtual void SetDefaultItem(int item, bool always);
   virtual int  GetDefaultItem() const;
   virtual bool AlwaysFocusDefaultItem() const;
