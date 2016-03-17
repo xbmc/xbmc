@@ -140,7 +140,7 @@
 					<width>880</width>
 					<height>60</height>
 					<texture border="40,0,40,5">list_nofocus.png</texture>
-					<visible>!IsEmpty(Control.GetLabel(2))</visible>
+					<visible>!String.IsEmpty(Control.GetLabel(2))</visible>
 				</control>
 				<control type="label" id="2">
 					<description>Label 2</description>
@@ -159,7 +159,7 @@
 					<width>880</width>
 					<height>60</height>
 					<texture border="40,0,40,5">list_nofocus.png</texture>
-					<visible>!IsEmpty(Control.GetLabel(3))</visible>
+					<visible>!String.IsEmpty(Control.GetLabel(3))</visible>
 				</control>
 				<control type="label" id="3">
 					<description>Label 3</description>
@@ -178,7 +178,7 @@
 					<width>880</width>
 					<height>60</height>
 					<texture border="40,0,40,5">list_nofocus.png</texture>
-					<visible>!IsEmpty(Control.GetLabel(4))</visible>
+					<visible>!String.IsEmpty(Control.GetLabel(4))</visible>
 				</control>
 				<control type="label" id="4">
 					<description>Label 4</description>
@@ -197,7 +197,7 @@
 					<width>880</width>
 					<height>60</height>
 					<texture border="40,0,40,5">list_nofocus.png</texture>
-					<visible>!IsEmpty(Control.GetLabel(5))</visible>
+					<visible>!String.IsEmpty(Control.GetLabel(5))</visible>
 				</control>
 				<control type="label" id="5">
 					<description>Label 5</description>
@@ -216,7 +216,7 @@
 					<width>880</width>
 					<height>60</height>
 					<texture border="40,0,40,5">list_nofocus.png</texture>
-					<visible>!IsEmpty(Control.GetLabel(6))</visible>
+					<visible>!String.IsEmpty(Control.GetLabel(6))</visible>
 				</control>
 				<control type="label" id="6">
 					<description>Label 6</description>
@@ -235,7 +235,7 @@
 					<width>880</width>
 					<height>60</height>
 					<texture border="40,0,40,5">list_nofocus.png</texture>
-					<visible>!IsEmpty(Control.GetLabel(7))</visible>
+					<visible>!String.IsEmpty(Control.GetLabel(7))</visible>
 				</control>
 				<control type="label" id="7">
 					<description>Label 7</description>
@@ -254,7 +254,7 @@
 					<width>880</width>
 					<height>60</height>
 					<texture border="40,0,40,5">list_nofocus.png</texture>
-					<visible>!IsEmpty(Control.GetLabel(8))</visible>
+					<visible>!String.IsEmpty(Control.GetLabel(8))</visible>
 				</control>
 				<control type="label" id="8">
 					<description>Label 8</description>
@@ -273,7 +273,7 @@
 					<width>880</width>
 					<height>60</height>
 					<texture border="40,0,40,5">list_nofocus.png</texture>
-					<visible>!IsEmpty(Control.GetLabel(9))</visible>
+					<visible>!String.IsEmpty(Control.GetLabel(9))</visible>
 				</control>
 				<control type="label" id="9">
 					<description>Label 9</description>
@@ -292,7 +292,7 @@
 					<width>880</width>
 					<height>60</height>
 					<texture border="40,0,40,5">list_nofocus.png</texture>
-					<visible>!IsEmpty(Control.GetLabel(10))</visible>
+					<visible>!String.IsEmpty(Control.GetLabel(10))</visible>
 				</control>
 				<control type="label" id="10">
 					<description>Label 10</description>
@@ -311,7 +311,7 @@
 					<width>880</width>
 					<height>60</height>
 					<texture border="40,0,40,5">list_nofocus.png</texture>
-					<visible>!IsEmpty(Control.GetLabel(11))</visible>
+					<visible>!String.IsEmpty(Control.GetLabel(11))</visible>
 				</control>
 				<control type="label" id="11">
 					<description>Label 11</description>

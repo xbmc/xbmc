@@ -247,7 +247,7 @@
 			<control type="group">
 				<posx>600</posx>
 				<posy>130</posy>
-				<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day0.Title))</visible>
+				<visible>Weather.IsFetched + !String.IsEmpty(Window.Property(Day0.Title))</visible>
 				<control type="image">
 					<posx>20</posx>
 					<posy>20</posy>
@@ -303,7 +303,7 @@
 							<align>center</align>
 							<aligny>center</aligny>
 							<label>[COLOR=grey]$LOCALIZE[419][/COLOR][CR][B]$INFO[ListItem.Property(HighTemp)][/B]$INFO[ListItem.Property(TempUnits)]</label>
-							<visible>!IsEmpty(ListItem.Property(HighTemp))</visible>
+							<visible>!String.IsEmpty(ListItem.Property(HighTemp))</visible>
 						</control>
 						<control type="label">
 							<posx>210</posx>
@@ -315,7 +315,7 @@
 							<align>center</align>
 							<aligny>center</aligny>
 							<label>[COLOR=grey]$LOCALIZE[418][/COLOR][CR][B]$INFO[ListItem.Property(LowTemp)][/B]$INFO[ListItem.Property(TempUnits)]</label>
-							<visible>!IsEmpty(ListItem.Property(HighTemp))</visible>
+							<visible>!String.IsEmpty(ListItem.Property(HighTemp))</visible>
 						</control>
 						<control type="textbox">
 							<posx>20</posx>
@@ -364,7 +364,7 @@
 							<align>center</align>
 							<aligny>center</aligny>
 							<label>[COLOR=grey]$LOCALIZE[419][/COLOR][CR][B]$INFO[ListItem.Property(HighTemp)][/B]$INFO[ListItem.Property(TempUnits)]</label>
-							<visible>!IsEmpty(ListItem.Property(HighTemp))</visible>
+							<visible>!String.IsEmpty(ListItem.Property(HighTemp))</visible>
 						</control>
 						<control type="label">
 							<posx>210</posx>
@@ -376,7 +376,7 @@
 							<align>center</align>
 							<aligny>center</aligny>
 							<label>[COLOR=grey]$LOCALIZE[418][/COLOR][CR][B]$INFO[ListItem.Property(LowTemp)][/B]$INFO[ListItem.Property(TempUnits)]</label>
-							<visible>!IsEmpty(ListItem.Property(HighTemp))</visible>
+							<visible>!String.IsEmpty(ListItem.Property(HighTemp))</visible>
 						</control>
 						<control type="textbox">
 							<posx>20</posx>
@@ -404,7 +404,7 @@
 							<property name="Outlook">$INFO[Window.Property(Day0.Outlook)]</property>
 							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
 							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day0.Title))</visible>
+							<visible>Weather.IsFetched + !String.IsEmpty(Window.Property(Day0.Title))</visible>
 						</item>
 						<item>
 							<label>$INFO[Window.Property(Day1.Title)]</label>
@@ -414,7 +414,7 @@
 							<property name="Outlook">$INFO[Window.Property(Day1.Outlook)]</property>
 							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
 							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day1.Title))</visible>
+							<visible>Weather.IsFetched + !String.IsEmpty(Window.Property(Day1.Title))</visible>
 						</item>
 						<item>
 							<label>$INFO[Window.Property(Day2.Title)]</label>
@@ -424,7 +424,7 @@
 							<property name="Outlook">$INFO[Window.Property(Day2.Outlook)]</property>
 							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
 							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day2.Title))</visible>
+							<visible>Weather.IsFetched + !String.IsEmpty(Window.Property(Day2.Title))</visible>
 						</item>
 						<item>
 							<label>$INFO[Window.Property(Day3.Title)]</label>
@@ -434,7 +434,7 @@
 							<property name="Outlook">$INFO[Window.Property(Day3.Outlook)]</property>
 							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
 							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day3.Title))</visible>
+							<visible>Weather.IsFetched + !String.IsEmpty(Window.Property(Day3.Title))</visible>
 						</item>
 						<item>
 							<label>$INFO[Window.Property(Day4.Title)]</label>
@@ -444,7 +444,7 @@
 							<property name="Outlook">$INFO[Window.Property(Day4.Outlook)]</property>
 							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
 							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day4.Title))</visible>
+							<visible>Weather.IsFetched + !String.IsEmpty(Window.Property(Day4.Title))</visible>
 						</item>
 						<item>
 							<label>$INFO[Window.Property(Day5.Title)]</label>
@@ -454,7 +454,7 @@
 							<property name="Outlook">$INFO[Window.Property(Day5.Outlook)]</property>
 							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
 							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day5.Title))</visible>
+							<visible>Weather.IsFetched + !String.IsEmpty(Window.Property(Day5.Title))</visible>
 						</item>
 						<item>
 							<label>$INFO[Window.Property(Day6.Title)]</label>
@@ -464,7 +464,7 @@
 							<property name="Outlook">$INFO[Window.Property(Day6.Outlook)]</property>
 							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
 							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day6.Title))</visible>
+							<visible>Weather.IsFetched + !String.IsEmpty(Window.Property(Day6.Title))</visible>
 						</item>
 						<item>
 							<label>$INFO[Window.Property(Day7.Title)]</label>
@@ -474,7 +474,7 @@
 							<property name="Outlook">$INFO[Window.Property(Day7.Outlook)]</property>
 							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
 							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day7.Title))</visible>
+							<visible>Weather.IsFetched + !String.IsEmpty(Window.Property(Day7.Title))</visible>
 						</item>
 						<item>
 							<label>$INFO[Window.Property(Day8.Title)]</label>
@@ -484,7 +484,7 @@
 							<property name="Outlook">$INFO[Window.Property(Day8.Outlook)]</property>
 							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
 							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day8.Title))</visible>
+							<visible>Weather.IsFetched + !String.IsEmpty(Window.Property(Day8.Title))</visible>
 						</item>
 						<item>
 							<label>$INFO[Window.Property(Day9.Title)]</label>
@@ -494,7 +494,7 @@
 							<property name="Outlook">$INFO[Window.Property(Day9.Outlook)]</property>
 							<property name="TempUnits">$INFO[System.TemperatureUnits]</property>
 							<onclick>noop</onclick>
-							<visible>Weather.IsFetched + !IsEmpty(Window.Property(Day9.Title))</visible>
+							<visible>Weather.IsFetched + !String.IsEmpty(Window.Property(Day9.Title))</visible>
 						</item>
 					</content>
 				</control>

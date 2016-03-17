@@ -45,8 +45,8 @@
 		<value condition="Window.IsVisible(VideoOSD)">$LOCALIZE[31049] $INFO[Player.FinishTime]</value>
 	</variable>
 	<variable name="PosterThumb">
-		<value condition="!IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
-		<value condition="IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Icon]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
+		<value condition="String.IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Icon]</value>
 	</variable>
 	<variable name="PVRListLabel">
 		<value condition="![Window.IsVisible(TVChannels) | Window.IsVisible(RadioChannels)]">$INFO[ListItem.Label]</value>
@@ -75,7 +75,7 @@
 		<value condition="Player.Seeking + !Player.DisplayAfterSeek">[UPPERCASE]$LOCALIZE[773][/UPPERCASE]</value>
 		<value condition="Player.Seeking">$INFO[Player.SeekTime]</value>
 		<value condition="Player.DisplayAfterSeek + ![Player.Forwarding | Player.Rewinding]">[UPPERCASE]$LOCALIZE[773][/UPPERCASE] $INFO[Player.SeekOffset]</value>
-		<value condition="!IsEmpty(Player.SeekStepSize) + ![Player.Forwarding | Player.Rewinding]">[UPPERCASE]$LOCALIZE[773][/UPPERCASE] $INFO[Player.SeekStepSize]</value>
+		<value condition="!String.IsEmpty(Player.SeekStepSize) + ![Player.Forwarding | Player.Rewinding]">[UPPERCASE]$LOCALIZE[773][/UPPERCASE] $INFO[Player.SeekStepSize]</value>
 	</variable>
 	<variable name="Speed">
 		<value condition="Player.Forwarding2x | Player.Rewinding2x">2x</value>
@@ -90,8 +90,8 @@
 	</variable>
 
 	<include name="ScreenWidth">
-		<include condition="StringCompare(Skin.AspectRatio,16:9)">ScreenWidth-16x9</include>
-		<include condition="StringCompare(Skin.AspectRatio,4:3)">ScreenWidth-4x3</include>
+		<include condition="String.IsEqual(Skin.AspectRatio,16:9)">ScreenWidth-16x9</include>
+		<include condition="String.IsEqual(Skin.AspectRatio,4:3)">ScreenWidth-4x3</include>
 	</include>
 
 	<include name="ScreenWidth-16x9">
@@ -183,7 +183,7 @@
 			<texture>black.png</texture>
 			<colordiffuse>70000000</colordiffuse>
 			<include>VisibleFadeEffect</include>
-			<visible>[!IsEmpty(ListItem.Art(fanart)) + !Player.HasMedia] | [!Skin.HasSetting(HideVizBackground) + Player.HasAudio] | [!Skin.HasSetting(HideVideoBackground) + Player.HasVideo + !Window.IsVisible(TVChannels) + !Window.IsVisible(RadioChannels) + !Window.IsVisible(TVGuide) + !Window.IsVisible(RadioGuide) + !Window.IsVisible(TVSearch) + !Window.IsVisible(RadioSearch) + !Window.IsVisible(TVTimers) + !Window.IsVisible(RadioTimers) + !Window.IsVisible(TVTimerRules) + !Window.IsVisible(RadioTimerRules) + !Window.IsVisible(TVRecordings) + !Window.IsVisible(RadioRecordings)]</visible>
+			<visible>[!String.IsEmpty(ListItem.Art(fanart)) + !Player.HasMedia] | [!Skin.HasSetting(HideVizBackground) + Player.HasAudio] | [!Skin.HasSetting(HideVideoBackground) + Player.HasVideo + !Window.IsVisible(TVChannels) + !Window.IsVisible(RadioChannels) + !Window.IsVisible(TVGuide) + !Window.IsVisible(RadioGuide) + !Window.IsVisible(TVSearch) + !Window.IsVisible(RadioSearch) + !Window.IsVisible(TVTimers) + !Window.IsVisible(RadioTimers) + !Window.IsVisible(TVTimerRules) + !Window.IsVisible(RadioTimerRules) + !Window.IsVisible(TVRecordings) + !Window.IsVisible(RadioRecordings)]</visible>
 		</control>
 	</include>
 	<include name="Header">
@@ -226,7 +226,7 @@
 			<texturefocus>-</texturefocus>
 			<texturenofocus>-</texturenofocus>
 			<onclick>ActivateWindow(weather)</onclick>
-			<visible>!IsEmpty(Window(Weather).Property(Current.Temperature)) + !Player.HasMedia</visible>
+			<visible>!String.IsEmpty(Window(Weather).Property(Current.Temperature)) + !Player.HasMedia</visible>
 		</control>
 		<control type="grouplist">
 			<include>VisibleFadeEffect</include>
@@ -304,7 +304,7 @@
 			<aligny>center</aligny>
 			<textoffsetx>0</textoffsetx>
 			<label>$INFO[Window(Weather).Property(Current.Temperature)]$INFO[System.TemperatureUnits]</label>
-			<visible>!IsEmpty(Window(Weather).Property(Current.Temperature)) + !Player.HasMedia</visible>
+			<visible>!String.IsEmpty(Window(Weather).Property(Current.Temperature)) + !Player.HasMedia</visible>
 		</control>
 		<control type="image">
 			<description>Weather</description>
@@ -314,7 +314,7 @@
 			<aspectratio align="left">keep</aspectratio>
 			<texture colordiffuse="blue">weather/$INFO[Window(Weather).Property(Current.FanartCode)].png</texture>
 			<animation effect="fade" time="300">VisibleChange</animation>
-			<visible>!IsEmpty(Window(Weather).Property(Current.Temperature)) + !Player.HasMedia</visible>
+			<visible>!String.IsEmpty(Window(Weather).Property(Current.Temperature)) + !Player.HasMedia</visible>
 		</control>
 	</include>
 	<include name="BehindDialogFadeOut">
@@ -355,7 +355,7 @@
 			<visible>Control.IsVisible(60) + ![[Window.IsVisible(TVGuide) | Window.IsVisible(RadioGuide)] + Control.IsVisible(10)]</visible>
 			<animation effect="slide" start="40,0" end="0,0" time="400">Visible</animation>
 			<animation effect="slide" start="0,0" end="40,0" time="400">Hidden</animation>
-			<animation effect="slide" start="0,0" end="-7,0" time="0" condition="StringCompare(Skin.AspectRatio,4:3)">Conditional</animation>
+			<animation effect="slide" start="0,0" end="-7,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
 			<control type="scrollbar" id="60">
 				<posx>8</posx>
 				<posy>40</posy>
@@ -450,8 +450,8 @@
 				</item>
 				<item>
 					<label>5</label>
-					<onclick condition="IsEmpty(Window(Home).Property(PopupMenuVisible))">SetProperty(PopupMenuVisible,Show,Home)</onclick>
-					<onclick condition="!IsEmpty(Window(Home).Property(PopupMenuVisible))">ClearProperty(PopupMenuVisible,Home)</onclick>
+					<onclick condition="String.IsEmpty(Window(Home).Property(PopupMenuVisible))">SetProperty(PopupMenuVisible,Show,Home)</onclick>
+					<onclick condition="!String.IsEmpty(Window(Home).Property(PopupMenuVisible))">ClearProperty(PopupMenuVisible,Home)</onclick>
 					<icon>icon_button_settings.png</icon>
 					<visible>![Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist)]</visible>
 				</item>
@@ -461,11 +461,11 @@
 	<include name="BottomMenuLayout">
 		<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(Home)">WindowClose</animation>
 		<animation effect="fade" end="100" start="0" time="300" condition="Window.Previous(Home)">WindowOpen</animation>
-		<animation effect="slide" start="0,0" end="120,0" time="0" condition="StringCompare(Container(9002).NumItems,5)">conditional</animation>
-		<animation effect="slide" start="0,0" end="240,0" time="0" condition="StringCompare(Container(9002).NumItems,4)">conditional</animation>
-		<animation effect="slide" start="0,0" end="360,0" time="0" condition="StringCompare(Container(9002).NumItems,3)">conditional</animation>
-		<animation effect="slide" start="0,0" end="480,0" time="0" condition="StringCompare(Container(9002).NumItems,2)">conditional</animation>
-		<animation effect="slide" start="0,0" end="600,0" time="0" condition="StringCompare(Container(9002).NumItems,1)">conditional</animation>
+		<animation effect="slide" start="0,0" end="120,0" time="0" condition="String.IsEqual(Container(9002).NumItems,5)">conditional</animation>
+		<animation effect="slide" start="0,0" end="240,0" time="0" condition="String.IsEqual(Container(9002).NumItems,4)">conditional</animation>
+		<animation effect="slide" start="0,0" end="360,0" time="0" condition="String.IsEqual(Container(9002).NumItems,3)">conditional</animation>
+		<animation effect="slide" start="0,0" end="480,0" time="0" condition="String.IsEqual(Container(9002).NumItems,2)">conditional</animation>
+		<animation effect="slide" start="0,0" end="600,0" time="0" condition="String.IsEqual(Container(9002).NumItems,1)">conditional</animation>
 		<posx>730r</posx>
 		<posy>78r</posy>
 		<width>802</width>
@@ -761,7 +761,7 @@
 	<include name="ScrollOffsetLabel">
 		<control type="group">
 			<include>16x9_xPos_Relocation</include>
-			<visible>Container.Scrolling + [StringCompare(Container.SortMethod,$LOCALIZE[551]) | StringCompare(Container.SortMethod,$LOCALIZE[561]) | StringCompare(Container.SortMethod,$LOCALIZE[558]) | StringCompare(Container.SortMethod,$LOCALIZE[557]) | StringCompare(Container.SortMethod,$LOCALIZE[556])]</visible>
+			<visible>Container.Scrolling + [String.IsEqual(Container.SortMethod,$LOCALIZE[551]) | String.IsEqual(Container.SortMethod,$LOCALIZE[561]) | String.IsEqual(Container.SortMethod,$LOCALIZE[558]) | String.IsEqual(Container.SortMethod,$LOCALIZE[557]) | String.IsEqual(Container.SortMethod,$LOCALIZE[556])]</visible>
 			<animation effect="fade" time="100">Visible</animation>
 			<animation effect="fade" time="300">Hidden</animation>
 			<posx>600</posx>
@@ -861,7 +861,7 @@
 					</item>
 					<item>
 						<label>-</label>
-						<onclick>ActivateWindow(Videos)</onclick>
+						<onclick>ActivateWindow(Video,Root,Return)</onclick>
 						<icon>icon_menu_videos.png</icon>
 						<visible>!Skin.HasSetting(HideHomeButtonVideo)</visible>
 					</item>
@@ -899,7 +899,7 @@
 				<width>$PARAM[list-width]</width>
 				<height>620</height>
 				<texture>panel.png</texture>
-				<animation effect="slide" start="0,0" end="-20,0" time="0" condition="StringCompare(Skin.AspectRatio,4:3)">Conditional</animation>
+				<animation effect="slide" start="0,0" end="-20,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
 			</control>
 			<control type="image">
 				<description>Menu Panel</description>
@@ -908,7 +908,7 @@
 				<width>$PARAM[list-width]</width>
 				<height>620</height>
 				<texture>panel.png</texture>
-				<animation effect="slide" start="0,0" end="-104,0" time="0" condition="StringCompare(Skin.AspectRatio,4:3)">Conditional</animation>
+				<animation effect="slide" start="0,0" end="-104,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
 			</control>
 			<control type="image">
 				<posx>40</posx>
@@ -916,11 +916,11 @@
 				<width>$PARAM[list-width]</width>
 				<height>155</height>
 				<texture border="40,0,40,5">list_nofocus.png</texture>
-				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!IntegerGreaterThan(Container(9000).NumItems,2)">conditional</animation>
-				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!IntegerGreaterThan(Container(9000).NumItems,4)">conditional</animation>
-				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!IntegerGreaterThan(Container(9000).NumItems,6)">conditional</animation>
-				<animation effect="slide" start="0,0" end="-20,0" time="0" condition="StringCompare(Skin.AspectRatio,4:3)">Conditional</animation>
-				<visible>!IntegerGreaterThan(Container(9000).NumItems,6)</visible>
+				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!Integer.IsGreater(Container(9000).NumItems,2)">conditional</animation>
+				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!Integer.IsGreater(Container(9000).NumItems,4)">conditional</animation>
+				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!Integer.IsGreater(Container(9000).NumItems,6)">conditional</animation>
+				<animation effect="slide" start="0,0" end="-20,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
+				<visible>!Integer.IsGreater(Container(9000).NumItems,6)</visible>
 			</control>
 			<control type="image">
 				<posx>540</posx>
@@ -928,11 +928,11 @@
 				<width>$PARAM[list-width]</width>
 				<height>155</height>
 				<texture border="40,0,40,5">list_nofocus.png</texture>
-				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!IntegerGreaterThan(Container(9000).NumItems,2)">conditional</animation>
-				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!IntegerGreaterThan(Container(9000).NumItems,4)">conditional</animation>
-				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!IntegerGreaterThan(Container(9000).NumItems,6)">conditional</animation>
-				<animation effect="slide" start="0,0" end="-104,0" time="0" condition="StringCompare(Skin.AspectRatio,4:3)">Conditional</animation>
-				<visible>!IntegerGreaterThan(Container(9000).NumItems,6)</visible>
+				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!Integer.IsGreater(Container(9000).NumItems,2)">conditional</animation>
+				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!Integer.IsGreater(Container(9000).NumItems,4)">conditional</animation>
+				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!Integer.IsGreater(Container(9000).NumItems,6)">conditional</animation>
+				<animation effect="slide" start="0,0" end="-104,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
+				<visible>!Integer.IsGreater(Container(9000).NumItems,6)</visible>
 			</control>
 			<control type="panel" id="9000">
 				<posx>40</posx>
@@ -946,10 +946,10 @@
 				<pagecontrol>-</pagecontrol>
 				<scrolltime>300</scrolltime>
 				<orientation>vertical</orientation>
-				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!IntegerGreaterThan(Container(9000).NumItems,2)">conditional</animation>
-				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!IntegerGreaterThan(Container(9000).NumItems,4)">conditional</animation>
-				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!IntegerGreaterThan(Container(9000).NumItems,6)">conditional</animation>
-				<animation effect="slide" start="0,0" end="-20,0" time="0" condition="StringCompare(Skin.AspectRatio,4:3)">Conditional</animation>
+				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!Integer.IsGreater(Container(9000).NumItems,2)">conditional</animation>
+				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!Integer.IsGreater(Container(9000).NumItems,4)">conditional</animation>
+				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!Integer.IsGreater(Container(9000).NumItems,6)">conditional</animation>
+				<animation effect="slide" start="0,0" end="-20,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
 				<itemlayout height="155" width="$PARAM[layout-width]">
 					<control type="image">
 						<posx>$PARAM[icon-posx-left]</posx>
@@ -1037,7 +1037,7 @@
 		</item>
 		<item id="3">
 			<label>20342</label>
-			<onclick>ActivateWindow(Videos,MovieTitles,Return)</onclick>
+			<onclick>ActivateWindow(Video,MovieTitles,Return)</onclick>
 			<icon>icon_menu_movies.png</icon>
 			<thumb>-</thumb>
 			<visible>Library.HasContent(Movies)</visible>
@@ -1045,7 +1045,7 @@
 		</item>
 		<item id="4">
 			<label>20343</label>
-			<onclick>ActivateWindow(Videos,TVShowTitles,Return)</onclick>
+			<onclick>ActivateWindow(Video,TVShowTitles,Return)</onclick>
 			<icon>icon_menu_tvshows.png</icon>
 			<thumb>-</thumb>
 			<visible>Library.HasContent(TVShows)</visible>
@@ -1053,7 +1053,7 @@
 		</item>
 		<item id="5">
 			<label>3</label>
-			<onclick>ActivateWindow(Videos)</onclick>
+			<onclick>ActivateWindow(Video,Root,Return)</onclick>
 			<icon>icon_menu_videos.png</icon>
 			<thumb>-</thumb>
 			<visible>!Skin.HasSetting(HideHomeButtonVideo)</visible>
@@ -1091,7 +1091,7 @@
 	</include>
 	<include name="PopupMenu">
 		<control type="group">
-			<visible>!IsEmpty(Window(Home).Property(PopupMenuVisible))</visible>
+			<visible>!String.IsEmpty(Window(Home).Property(PopupMenuVisible))</visible>
 			<include>VisibleFadeEffect</include>
 			<animation effect="fade" time="250">WindowClose</animation>
 			<control type="button">
@@ -1256,7 +1256,7 @@
 			<include>MenuButtonCommonValues</include>
 			<label>13350</label>
 			<onclick>ActivateWindow(musicplaylist)</onclick>
-			<visible>!StringCompare(Playlist.Length(music),0)</visible>
+			<visible>!String.IsEqual(Playlist.Length(music),0)</visible>
 		</control>
 	</include>
 	<include name="MusicOSDMenu">
@@ -1398,45 +1398,45 @@
 			<include>MenuButtonCommonValues</include>
 			<label>19019</label>
 			<onclick condition="Window.IsVisible(TVChannels) | Window.IsVisible(RadioChannels)">NextChannelGroup</onclick>
-			<onclick condition="IsEmpty(Window.Property(IsRadio))">ReplaceWindow(TVChannels)</onclick>
-			<onclick condition="!IsEmpty(Window.Property(IsRadio))">ReplaceWindow(RadioChannels)</onclick>
+			<onclick condition="String.IsEmpty(Window.Property(IsRadio))">ReplaceWindow(TVChannels)</onclick>
+			<onclick condition="!String.IsEmpty(Window.Property(IsRadio))">ReplaceWindow(RadioChannels)</onclick>
 		</control>
 		<control type="button" id="202">
 			<include>MenuButtonCommonValues</include>
 			<label>22020</label>
 			<onclick condition="Window.IsVisible(TVGuide) | Window.IsVisible(RadioGuide)">NextChannelGroup</onclick>
-			<onclick condition="IsEmpty(Window.Property(IsRadio))">ReplaceWindow(TVGuide)</onclick>
-			<onclick condition="!IsEmpty(Window.Property(IsRadio))">ReplaceWindow(RadioGuide)</onclick>
+			<onclick condition="String.IsEmpty(Window.Property(IsRadio))">ReplaceWindow(TVGuide)</onclick>
+			<onclick condition="!String.IsEmpty(Window.Property(IsRadio))">ReplaceWindow(RadioGuide)</onclick>
 		</control>
 		<control type="button" id="203">
 			<include>MenuButtonCommonValues</include>
 			<label>19163</label>
-			<onclick condition="IsEmpty(Window.Property(IsRadio))">ReplaceWindow(TVRecordings)</onclick>
-			<onclick condition="!IsEmpty(Window.Property(IsRadio))">ReplaceWindow(RadioRecordings)</onclick>
+			<onclick condition="String.IsEmpty(Window.Property(IsRadio))">ReplaceWindow(TVRecordings)</onclick>
+			<onclick condition="!String.IsEmpty(Window.Property(IsRadio))">ReplaceWindow(RadioRecordings)</onclick>
 		</control>
 		<control type="button" id="204">
 			<include>MenuButtonCommonValues</include>
 			<label>19040</label>
-			<onclick condition="IsEmpty(Window.Property(IsRadio))">ReplaceWindow(TVTimers)</onclick>
-			<onclick condition="!IsEmpty(Window.Property(IsRadio))">ReplaceWindow(RadioTimers)</onclick>
+			<onclick condition="String.IsEmpty(Window.Property(IsRadio))">ReplaceWindow(TVTimers)</onclick>
+			<onclick condition="!String.IsEmpty(Window.Property(IsRadio))">ReplaceWindow(RadioTimers)</onclick>
 		</control>
 		<control type="button" id="205">
 			<include>MenuButtonCommonValues</include>
 			<label>19138</label>
-			<onclick condition="IsEmpty(Window.Property(IsRadio))">ReplaceWindow(TVTimerRules)</onclick>
-			<onclick condition="!IsEmpty(Window.Property(IsRadio))">ReplaceWindow(RadioTimerRules)</onclick>
+			<onclick condition="String.IsEmpty(Window.Property(IsRadio))">ReplaceWindow(TVTimerRules)</onclick>
+			<onclick condition="!String.IsEmpty(Window.Property(IsRadio))">ReplaceWindow(RadioTimerRules)</onclick>
 		</control>
 		<control type="button" id="206">
 			<include>MenuButtonCommonValues</include>
 			<label>137</label>
-			<onclick condition="IsEmpty(Window.Property(IsRadio))">ReplaceWindow(TVSearch)</onclick>
-			<onclick condition="!IsEmpty(Window.Property(IsRadio))">ReplaceWindow(RadioSearch)</onclick>
+			<onclick condition="String.IsEmpty(Window.Property(IsRadio))">ReplaceWindow(TVSearch)</onclick>
+			<onclick condition="!String.IsEmpty(Window.Property(IsRadio))">ReplaceWindow(RadioSearch)</onclick>
 		</control>
 		<control type="button" id="207">
 			<include>MenuButtonCommonValues</include>
 			<label>$VAR[PVRSwitch]</label>
-			<onclick condition="IsEmpty(Window.Property(IsRadio))">ReplaceWindow(RadioChannels)</onclick>
-			<onclick condition="!IsEmpty(Window.Property(IsRadio))">ReplaceWindow(TVChannels)</onclick>
+			<onclick condition="String.IsEmpty(Window.Property(IsRadio))">ReplaceWindow(RadioChannels)</onclick>
+			<onclick condition="!String.IsEmpty(Window.Property(IsRadio))">ReplaceWindow(TVChannels)</onclick>
 		</control>
 		<control type="radiobutton" id="6">
 			<textwidth>240</textwidth>
@@ -1512,7 +1512,7 @@
 			<include>MenuButtonCommonValues</include>
 			<label>13350</label>
 			<onclick>ActivateWindow(videoplaylist)</onclick>
-			<visible>!StringCompare(Playlist.Length(video),0)</visible>
+			<visible>!String.IsEqual(Playlist.Length(video),0)</visible>
 		</control>
 	</include>
 	<include name="VideoOSDMenu">
@@ -1604,7 +1604,7 @@
 		</control>
 	</include>
 	<include name="16x9_xPos_Relocation">
-		<animation effect="slide" start="0,0" end="213,0" time="0" condition="StringCompare(Skin.AspectRatio,16:9)">conditional</animation>
+		<animation effect="slide" start="0,0" end="213,0" time="0" condition="String.IsEqual(Skin.AspectRatio,16:9)">conditional</animation>
 	</include>
 	<include name="Window_OpenClose_Animation">
 		<animation effect="fade" time="250">WindowOpen</animation>

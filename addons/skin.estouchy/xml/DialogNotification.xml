@@ -18,9 +18,9 @@
 			</control>
 			<control type="fadelabel" id="401">
 				<description>Line 1 Label</description>
-				<posx>0</posx>
+				<posx>78</posx>
 				<posy>20</posy>
-				<width>500</width>
+				<width>422</width>
 				<height>15</height>
 				<font>font18_title</font>
 				<align>center</align>
@@ -30,9 +30,9 @@
 			</control>
 			<control type="fadelabel" id="402">
 				<description>Line 2 Label</description>
-				<posx>0</posx>
+				<posx>78</posx>
 				<posy>42</posy>
-				<width>500</width>
+				<width>422</width>
 				<height>20</height>
 				<font>font20</font>
 				<align>center</align>

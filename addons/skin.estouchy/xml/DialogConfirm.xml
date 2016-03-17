@@ -38,9 +38,9 @@
 		</control>
 		<control type="textbox" id="9">
 			<posx>20</posx>
-			<posy>82</posy>
+			<posy>72</posy>
 			<width>660</width>
-			<height>110</height>
+			<height>138</height>
 			<label>-</label>
 			<font>font22</font>
 		</control>

@@ -194,7 +194,7 @@
 					<aligny>center</aligny>
 					<font>font20_title</font>
 					<textcolor>selected</textcolor>
-					<visible>IsEmpty(ListItem.AddonBroken)</visible>
+					<visible>String.IsEmpty(ListItem.AddonBroken)</visible>
 				</control>
 				<control type="textbox">
 					<description>Disclaimer</description>
@@ -206,7 +206,7 @@
 					<label fallback="231">$INFO[ListItem.AddonDisclaimer]</label>
 					<textcolor>selected</textcolor>
 					<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
-					<visible>IsEmpty(ListItem.AddonBroken)</visible>
+					<visible>String.IsEmpty(ListItem.AddonBroken)</visible>
 				</control>
 				<control type="label">
 					<description>Broken label</description>
@@ -220,7 +220,7 @@
 					<aligny>center</aligny>
 					<font>font20_title</font>
 					<textcolor>selected</textcolor>
-					<visible>!IsEmpty(ListItem.AddonBroken)</visible>
+					<visible>!String.IsEmpty(ListItem.AddonBroken)</visible>
 				</control>
 				<control type="textbox">
 					<description>Reason label</description>
@@ -234,7 +234,7 @@
 					<aligny>center</aligny>
 					<textcolor>selected</textcolor>
 					<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
-					<visible>!IsEmpty(ListItem.AddonBroken)</visible>
+					<visible>!String.IsEmpty(ListItem.AddonBroken)</visible>
 				</control>
 			</control>
 		</control>

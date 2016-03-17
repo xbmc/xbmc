@@ -14,9 +14,9 @@
 			<pagecontrol>60</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<preloaditems>4</preloaditems>
-			<animation effect="slide" start="0,0" end="-1,0" time="0" condition="StringCompare(Skin.AspectRatio,4:3)">Conditional</animation>
-			<animation effect="slide" start="0,0" end="-1,0" time="0" condition="StringCompare(Skin.AspectRatio,16:9) + Container.Content(Episodes)">Conditional</animation>
-			<animation effect="slide" start="0,0" end="28,0" time="0" condition="StringCompare(Skin.AspectRatio,4:3) + Container.Content(Episodes)">Conditional</animation>
+			<animation effect="slide" start="0,0" end="-1,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
+			<animation effect="slide" start="0,0" end="-1,0" time="0" condition="String.IsEqual(Skin.AspectRatio,16:9) + Container.Content(Episodes)">Conditional</animation>
+			<animation effect="slide" start="0,0" end="28,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3) + Container.Content(Episodes)">Conditional</animation>
 			<itemlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(MusicVideos)" height="250" width="218">
 				<control type="image">
 					<posx>10</posx>
@@ -32,7 +32,7 @@
 					<height>200</height>
 					<texture background="true">$INFO[Listitem.Icon]</texture>
 					<aspectratio>scale</aspectratio>
-					<visible>Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | Container.Content(Addons) | Container.Content(Actors) | Container.Content(Sets) | [Window.IsVisible(Pictures) + !IsEmpty(Container.FolderPath)]</visible>
+					<visible>Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | Container.Content(Addons) | Container.Content(Actors) | Container.Content(Sets) | [Window.IsVisible(Pictures) + !String.IsEmpty(Container.FolderPath)]</visible>
 				</control>
 				<control type="image">
 					<posx>67</posx>
@@ -41,7 +41,7 @@
 					<height>86</height>
 					<texture background="true">defaulticons/$INFO[Listitem.Icon]</texture>
 					<aspectratio>keep</aspectratio>
-					<visible>[Container.Content() + !Window.IsVisible(Pictures)] | Container.Content(Files) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | [Window.IsVisible(Pictures) + IsEmpty(Container.FolderPath)]</visible>
+					<visible>[Container.Content() + !Window.IsVisible(Pictures)] | Container.Content(Files) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | [Window.IsVisible(Pictures) + String.IsEmpty(Container.FolderPath)]</visible>
 				</control>
 				<control type="image">
 					<posx>10</posx>
@@ -68,7 +68,7 @@
 					<height>30</height>
 					<aspectratio>keep</aspectratio>
 					<texture>OverlayWatched.png</texture>
-					<visible>Window.IsVisible(AddonBrowser) + stringcompare(ListItem.Label2,$LOCALIZE[305])</visible>
+					<visible>Window.IsVisible(AddonBrowser) + String.IsEqual(ListItem.Label2,$LOCALIZE[305])</visible>
 				</control>
 			</itemlayout>
 			<focusedlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(MusicVideos)" height="250" width="218">
@@ -86,7 +86,7 @@
 					<height>200</height>
 					<texture background="true">$INFO[Listitem.Icon]</texture>
 					<aspectratio>scale</aspectratio>
-					<visible>Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | Container.Content(Addons) | Container.Content(Actors) | Container.Content(Sets) | [Window.IsVisible(Pictures) + !IsEmpty(Container.FolderPath)]</visible>
+					<visible>Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | Container.Content(Addons) | Container.Content(Actors) | Container.Content(Sets) | [Window.IsVisible(Pictures) + !String.IsEmpty(Container.FolderPath)]</visible>
 				</control>
 				<control type="image">
 					<posx>67</posx>
@@ -95,7 +95,7 @@
 					<height>86</height>
 					<texture background="true">defaulticons/$INFO[Listitem.Icon]</texture>
 					<aspectratio>keep</aspectratio>
-					<visible>[Container.Content() + !Window.IsVisible(Pictures)] | Container.Content(Files) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | [Window.IsVisible(Pictures) + IsEmpty(Container.FolderPath)]</visible>
+					<visible>[Container.Content() + !Window.IsVisible(Pictures)] | Container.Content(Files) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | [Window.IsVisible(Pictures) + String.IsEmpty(Container.FolderPath)]</visible>
 				</control>
 				<control type="image">
 					<posx>10</posx>
@@ -122,7 +122,7 @@
 					<height>30</height>
 					<aspectratio>keep</aspectratio>
 					<texture>OverlayWatched.png</texture>
-					<visible>Window.IsVisible(AddonBrowser) + stringcompare(ListItem.Label2,$LOCALIZE[305])</visible>
+					<visible>Window.IsVisible(AddonBrowser) + String.IsEqual(ListItem.Label2,$LOCALIZE[305])</visible>
 				</control>
 			</focusedlayout>
 			<itemlayout condition="Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows)" height="375" width="218">
