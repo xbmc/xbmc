@@ -4,6 +4,7 @@
   <addon>kodi.adsp</addon>
   <addon>kodi.audiodecoder</addon>
   <addon>kodi.guilib</addon>
+  <addon>kodi.inputstream</addon>
   <addon>kodi.resource</addon>
   <addon>metadata.album.universal</addon>
   <addon>metadata.artists.universal</addon>
