@@ -363,7 +363,16 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
     }
     break;
   case ACTION_SHOW_INFO:
-    if (OnInfo())
+    if (m_listProvider)
+    {
+      int selected = GetSelectedItem();
+      if (selected >= 0 && selected < m_items.size())
+      {
+        m_listProvider->OnInfo(m_items[selected]);
+        return true;
+      }
+    }
+    else if (OnInfo())
       return true;
     else if (action.GetID())
       return OnClick(action.GetID());

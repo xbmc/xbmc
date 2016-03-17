@@ -23,12 +23,14 @@
 #include <memory>
 #include <utility>
 
+#include "addons/GUIDialogAddonInfo.h"
 #include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "filesystem/FavouritesDirectory.h"
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "music/dialogs/GUIDialogMusicInfo.h"
 #include "music/MusicThumbLoader.h"
 #include "pictures/PictureThumbLoader.h"
 #include "settings/Settings.h"
@@ -39,6 +41,9 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "video/VideoThumbLoader.h"
+#include "video/dialogs/GUIDialogVideoInfo.h"
+
+
 
 using namespace XFILE;
 using namespace ANNOUNCEMENT;
@@ -301,6 +306,25 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
     CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);
     message.SetStringParam(execute);
     g_windowManager.SendMessage(message);
+    return true;
+  }
+  return false;
+}
+
+bool CDirectoryProvider::OnInfo(const CGUIListItemPtr& item)
+{
+  auto fileItem = std::static_pointer_cast<CFileItem>(item);
+
+  if (fileItem->HasAddonInfo())
+    return CGUIDialogAddonInfo::ShowForItem(fileItem);
+  else if (fileItem->HasVideoInfoTag())
+  {
+    CGUIDialogVideoInfo::ShowFor(*fileItem.get());
+    return true;
+  }
+  else if (fileItem->HasMusicInfoTag())
+  {
+    CGUIDialogMusicInfo::ShowFor(*fileItem.get());
     return true;
   }
   return false;

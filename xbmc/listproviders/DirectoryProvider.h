@@ -59,6 +59,7 @@ public:
   virtual void Fetch(std::vector<CGUIListItemPtr> &items) const;
   virtual void Reset(bool immediately = false);
   virtual bool OnClick(const CGUIListItemPtr &item);
+  bool OnInfo(const CGUIListItemPtr &item) override;
   virtual bool IsUpdating() const;
 
   // callback from directory job
