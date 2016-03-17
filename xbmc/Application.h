@@ -27,6 +27,7 @@
 #include "guilib/Resolution.h"
 #include "utils/GlobalsHandling.h"
 #include "messaging/IMessageTarget.h"
+#include "addons/BinaryAddonCache.h"
 
 #include <map>
 #include <memory>
@@ -388,6 +389,8 @@ public:
    \param listener The listener to unregister
    */
   void UnregisterActionListener(IActionListener *listener);
+
+  ADDON::CBinaryAddonCache m_binaryAddonCache;
 
 protected:
   virtual bool OnSettingsSaving() const override;

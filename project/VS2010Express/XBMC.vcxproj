@@ -186,6 +186,7 @@
     <ClCompile Include="..\..\xbmc\addons\AddonInstaller.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonSystemSettings.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonVersion.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\BinaryAddonCache.cpp" />
     <ClCompile Include="..\..\xbmc\addons\binary\interfaces\AddonInterfaces.cpp" />
     <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\Addon\AddonCallbacksAddon.cpp" />
     <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\AudioDSP\AddonCallbacksAudioDSP.cpp" />
@@ -957,6 +958,7 @@
     <ClCompile Include="..\..\xbmc\DatabaseManager.cpp" />
     <ClInclude Include="..\..\xbmc\addons\AddonBuilder.h" />
     <ClInclude Include="..\..\xbmc\addons\AudioDecoder.h" />
+    <ClInclude Include="..\..\xbmc\addons\BinaryAddonCache.h" />
     <ClInclude Include="..\..\xbmc\addons\binary\interfaces\AddonInterfaces.h" />
     <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\Addon\AddonCallbacksAddon.h" />
     <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\AudioDSP\AddonCallbacksAudioDSP.h" />
