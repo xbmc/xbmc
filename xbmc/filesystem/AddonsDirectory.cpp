@@ -522,6 +522,13 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   {
     return GetSearchResults(path, items);
   }
+  else if (endpoint == "downloading")
+  {
+    VECADDONS addons;
+    CAddonInstaller::GetInstance().GetInstallList(addons);
+    CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(24067));
+    return true;
+  }
   else if (endpoint == "more")
   {
     std::string type = path.GetFileName();
