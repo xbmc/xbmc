@@ -27,7 +27,7 @@ namespace ADDON
 
 CBinaryAddonCache::~CBinaryAddonCache()
 {
-  CAddonMgr::GetInstance().UnregisterObserver(this);
+  Deinit();
 }
 
 void CBinaryAddonCache::Init()
@@ -35,6 +35,11 @@ void CBinaryAddonCache::Init()
   m_addonsToCache = {ADDON_AUDIODECODER, ADDON_INPUTSTREAM};
   CAddonMgr::GetInstance().RegisterObserver(this);
   Update();
+}
+
+void CBinaryAddonCache::Deinit()
+{
+  CAddonMgr::GetInstance().UnregisterObserver(this);
 }
 
 void CBinaryAddonCache::GetAddons(VECADDONS& addons, const TYPE& type)

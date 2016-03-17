@@ -33,6 +33,7 @@ class CBinaryAddonCache : public Observer
 public:
   virtual ~CBinaryAddonCache();
   void Init();
+  void Deinit();
   void GetAddons(VECADDONS& addons, const TYPE& type);
   virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
 
