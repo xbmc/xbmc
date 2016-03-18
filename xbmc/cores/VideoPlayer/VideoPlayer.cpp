@@ -2462,7 +2462,7 @@ void CVideoPlayer::HandleMessages()
         // of the desired segment. With the current approach calculated time may point
         // to nirvana
         if (m_pInputStream->GetIPosTime() == nullptr)
-          time += DVD_TIME_TO_MSEC(m_State.time_offset);
+          time -= DVD_TIME_TO_MSEC(m_State.time_offset);
 
         CLog::Log(LOGDEBUG, "demuxer seek to: %d", time);
         if (m_pDemuxer && m_pDemuxer->SeekTime(time, msg.GetBackward(), &start))
