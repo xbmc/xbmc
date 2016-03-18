@@ -949,7 +949,8 @@ void CGUIWindowPVRBase::UpdateButtons(void)
 
 void CGUIWindowPVRBase::UpdateSelectedItemPath()
 {
-  if (!m_viewControl.GetSelectedItemPath().empty()) {
+  if (!m_viewControl.GetSelectedItemPath().empty())
+  {
     CSingleLock lock(m_selectedItemPathsLock);
     m_selectedItemPaths[m_bRadio] = m_viewControl.GetSelectedItemPath();
   }
