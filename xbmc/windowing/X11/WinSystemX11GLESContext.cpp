@@ -110,18 +110,14 @@ bool CWinSystemX11GLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& r
 
 bool CWinSystemX11GLESContext::DestroyWindowSystem()
 {
-  bool ret;
   m_pGLContext->Destroy();
-  ret = CWinSystemX11::DestroyWindowSystem();
-  return ret;
+  return CWinSystemX11::DestroyWindowSystem();
 }
 
 bool CWinSystemX11GLESContext::DestroyWindow()
 {
-  bool ret;
   m_pGLContext->Detach();
-  ret = CWinSystemX11::DestroyWindow();
-  return ret;
+  return CWinSystemX11::DestroyWindow();
 }
 
 XVisualInfo* CWinSystemX11GLESContext::GetVisual()
