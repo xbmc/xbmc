@@ -72,13 +72,15 @@ public:
   static CContextMenuItem CreateGroup(
     const std::string& label,
     const std::string& parent,
-    const std::string& groupId);
+    const std::string& groupId,
+    const std::string& addonId);
 
   static CContextMenuItem CreateItem(
     const std::string& label,
     const std::string& parent,
     const std::string& library,
-    const INFO::InfoPtr& condition);
+    const INFO::InfoPtr& condition,
+    const std::string& addonId);
 
   friend class ADDON::CContextMenuAddon;
 
@@ -88,5 +90,5 @@ private:
   std::string m_groupId;
   std::string m_library;
   INFO::InfoPtr m_condition;
-  ADDON::AddonPtr m_addon;
+  std::string m_addonId; // The owner of this menu item
 };

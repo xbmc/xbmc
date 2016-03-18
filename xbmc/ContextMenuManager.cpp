@@ -33,8 +33,8 @@ using namespace ADDON;
 
 typedef std::pair<unsigned int, CContextMenuItem> Item;
 
-const CContextMenuItem CContextMenuManager::MAIN = CContextMenuItem::CreateGroup("", "", "kodi.core.main");
-const CContextMenuItem CContextMenuManager::MANAGE = CContextMenuItem::CreateGroup("", "", "kodi.core.manage");
+const CContextMenuItem CContextMenuManager::MAIN = CContextMenuItem::CreateGroup("", "", "kodi.core.main", "");
+const CContextMenuItem CContextMenuManager::MANAGE = CContextMenuItem::CreateGroup("", "", "kodi.core.manage", "");
 
 
 CContextMenuManager::CContextMenuManager()
