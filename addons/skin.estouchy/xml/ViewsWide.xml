@@ -80,9 +80,9 @@
 					<width>200</width>
 					<height>25</height>
 					<aspectratio align="left">keep</aspectratio>
-					<texture fallback="rating/0.png">$INFO[ListItem.Rating,rating/,.png]</texture>
+					<texture fallback="rating/0.png">$INFO[ListItem.UserRating,rating/,.png]</texture>
 					<animation effect="slide" start="0,0" end="60,0" time="0" condition="Container.Content(TVShows) | container.Content(Seasons)">Conditional</animation>
-					<visible>!StringCompare(ListItem.Label,..)</visible>
+					<visible>!String.IsEqual(ListItem.Label,..)</visible>
 				</control>
 				<control type="image">
 					<posx>100r</posx>
@@ -183,9 +183,9 @@
 					<width>200</width>
 					<height>25</height>
 					<aspectratio align="left">keep</aspectratio>
-					<texture fallback="rating/0.png">$INFO[ListItem.Rating,rating/,.png]</texture>
+					<texture fallback="rating/0.png">$INFO[ListItem.UserRating,rating/,.png]</texture>
 					<animation effect="slide" start="0,0" end="60,0" time="0" condition="Container.Content(TVShows) | container.Content(Seasons)">Conditional</animation>
-					<visible>!StringCompare(ListItem.Label,..)</visible>
+					<visible>!String.IsEqual(ListItem.Label,..)</visible>
 				</control>
 				<control type="image">
 					<posx>100r</posx>
@@ -300,7 +300,7 @@
 					<height>25</height>
 					<aspectratio align="left">keep</aspectratio>
 					<texture fallback="rating/0.png">$INFO[ListItem.Rating,rating/,.png]</texture>
-					<visible>!StringCompare(ListItem.Label,..)</visible>
+					<visible>!String.IsEqual(ListItem.Label,..)</visible>
 				</control>
 				<control type="image">
 					<posx>100r</posx>
@@ -406,7 +406,7 @@
 					<height>25</height>
 					<aspectratio align="left">keep</aspectratio>
 					<texture fallback="rating/0.png">$INFO[ListItem.Rating,rating/,.png]</texture>
-					<visible>!StringCompare(ListItem.Label,..)</visible>
+					<visible>!String.IsEqual(ListItem.Label,..)</visible>
 				</control>
 				<control type="image">
 					<posx>100r</posx>
@@ -513,7 +513,7 @@
 					<height>25</height>
 					<aspectratio align="left">keep</aspectratio>
 					<texture fallback="rating/0.png">$INFO[ListItem.Rating,rating/,.png]</texture>
-					<visible>!StringCompare(ListItem.Label,..) + Container.Content(Albums)</visible>
+					<visible>!String.IsEqual(ListItem.Label,..) + Container.Content(Albums)</visible>
 				</control>
 				<control type="image">
 					<description>Rating value</description>
@@ -523,7 +523,7 @@
 					<height>25</height>
 					<aspectratio align="left">keep</aspectratio>
 					<texture fallback="rating/0.png">$INFO[ListItem.UserRating,rating/,.png]</texture>
-					<visible>!StringCompare(ListItem.Label,..) + Container.Content(Songs)</visible>
+					<visible>!String.IsEqual(ListItem.Label,..) + Container.Content(Songs)</visible>
 				</control>
 				<control type="textbox">
 					<posx>250</posx>
@@ -553,7 +553,7 @@
 					<font>font25</font>
 					<align>justify</align>
 					<label>$INFO[ListItem.Comment]</label>
-					<visible>Container.Content(Songs) + !IsEmpty(ListItem.Comment)</visible>
+					<visible>Container.Content(Songs) + !String.IsEmpty(ListItem.Comment)</visible>
 				</control>
 				<control type="textbox">
 					<posx>250</posx>
@@ -563,7 +563,7 @@
 					<font>font25</font>
 					<align>justify</align>
 					<label>$INFO[ListItem.Album,$LOCALIZE[558]: ][CR]$INFO[ListItem.Tracknumber,$LOCALIZE[554]: ][CR]$INFO[ListItem.Duration,$LOCALIZE[180]: ]</label>
-					<visible>Container.Content(Songs) + IsEmpty(ListItem.Comment)</visible>
+					<visible>Container.Content(Songs) + String.IsEmpty(ListItem.Comment)</visible>
 				</control>
 			</itemlayout>
 			<focusedlayout condition="Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs)" height="240" width="$PARAM[panel-width]">
@@ -636,7 +636,7 @@
 					<height>25</height>
 					<aspectratio align="left">keep</aspectratio>
 					<texture fallback="rating/0.png">$INFO[ListItem.Rating,rating/,.png]</texture>
-					<visible>!StringCompare(ListItem.Label,..) + Container.Content(Albums)</visible>
+					<visible>!String.IsEqual(ListItem.Label,..) + Container.Content(Albums)</visible>
 				</control>
 				<control type="image">
 					<description>Rating value</description>
@@ -646,7 +646,7 @@
 					<height>25</height>
 					<aspectratio align="left">keep</aspectratio>
 					<texture fallback="rating/0.png">$INFO[ListItem.UserRating,rating/,.png]</texture>
-					<visible>!StringCompare(ListItem.Label,..) + Container.Content(Songs)</visible>
+					<visible>!String.IsEqual(ListItem.Label,..) + Container.Content(Songs)</visible>
 				</control>
 				<control type="textbox">
 					<posx>250</posx>
@@ -678,7 +678,7 @@
 					<align>justify</align>
 					<label>$INFO[ListItem.Comment]</label>
 					<autoscroll delay="2000" time="2000" repeat="2000">True</autoscroll>
-					<visible>Container.Content(Songs) + !IsEmpty(ListItem.Comment)</visible>
+					<visible>Container.Content(Songs) + !String.IsEmpty(ListItem.Comment)</visible>
 				</control>
 				<control type="textbox">
 					<posx>250</posx>
@@ -689,7 +689,7 @@
 					<align>justify</align>
 					<label>$INFO[ListItem.Album,$LOCALIZE[558]: ][CR]$INFO[ListItem.Tracknumber,$LOCALIZE[554]: ][CR]$INFO[ListItem.Duration,$LOCALIZE[180]: ]</label>
 					<autoscroll delay="2000" time="2000" repeat="2000">True</autoscroll>
-					<visible>Container.Content(Songs) + IsEmpty(ListItem.Comment)</visible>
+					<visible>Container.Content(Songs) + String.IsEmpty(ListItem.Comment)</visible>
 				</control>
 			</focusedlayout>
 			<itemlayout condition="Container.Content(Addons)" height="240" width="$PARAM[panel-width]">

@@ -8,7 +8,7 @@
 			<width>500</width>
 			<height>78</height>
 			<include>16x9_xPos_Relocation</include>
-			<visible>![Window.IsVisible(Notification) | Window.IsVisible(BusyDialog) | Window.IsVisible(VolumeBar) | Window.IsVisible(1112) | Window.IsVisible(Visualisation)] | Window.IsVisible(FullscreenVideo)</visible>
+			<visible>![Window.IsVisible(Notification) | Window.IsVisible(BusyDialog) | Window.IsVisible(VolumeBar) | Window.IsVisible(1112) | Window.IsVisible(Visualisation) | Window.IsVisible(FullscreenVideo)]</visible>
 			<control type="fadelabel" id="30">
 				<posx>0</posx>
 				<posy>10</posy>

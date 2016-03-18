@@ -130,7 +130,7 @@
 						<align>center</align>
 						<aligny>center</aligny>
 						<label>$LOCALIZE[31320]</label>
-						<visible>!IsEmpty(ListItem.Label2)</visible>
+						<visible>!String.IsEmpty(ListItem.Label2)</visible>
 					</control>
 					<control type="label">
 						<posx>10</posx>
@@ -183,7 +183,7 @@
 						<align>center</align>
 						<aligny>center</aligny>
 						<label>$LOCALIZE[31320]</label>
-						<visible>!IsEmpty(ListItem.Label2)</visible>
+						<visible>!String.IsEmpty(ListItem.Label2)</visible>
 					</control>
 					<control type="label">
 						<posx>10</posx>

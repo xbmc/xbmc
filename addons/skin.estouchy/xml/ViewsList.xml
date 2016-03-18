@@ -37,7 +37,7 @@
 					<height>62</height>
 					<texture background="true">$VAR[PosterThumb]</texture>
 					<aspectratio>keep</aspectratio>
-					<visible>Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | [Container.Content(Addons) + !ListItem.IsFolder] | Container.Content(Actors) | Container.Content(Sets) | [Window.IsVisible(Pictures) + !IsEmpty(Container.FolderPath)]</visible>
+					<visible>Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | [Container.Content(Addons) + !ListItem.IsFolder] | Container.Content(Actors) | Container.Content(Sets) | [Window.IsVisible(Pictures) + !String.IsEmpty(Container.FolderPath)]</visible>
 				</control>
 				<control type="image">
 					<posx>4</posx>
@@ -46,7 +46,7 @@
 					<height>62</height>
 					<texture background="true">defaulticons/$INFO[Listitem.Icon]</texture>
 					<aspectratio>keep</aspectratio>
-					<visible>[Container.Content() + !Window.IsVisible(Pictures)] | Container.Content(Files) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | [Container.Content(Addons) + ListItem.IsFolder] | [Window.IsVisible(Pictures) + IsEmpty(Container.FolderPath)]</visible>
+					<visible>[Container.Content() + !Window.IsVisible(Pictures)] | Container.Content(Files) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | [Container.Content(Addons) + ListItem.IsFolder] | [Window.IsVisible(Pictures) + String.IsEmpty(Container.FolderPath)]</visible>
 				</control>
 				<control type="label">
 					<posx>75</posx>
@@ -82,7 +82,7 @@
 					<aspectratio align="left">keep</aspectratio>
 					<texture fallback="rating/0.png">$INFO[ListItem.Rating,rating/,.png]</texture>
 					<animation effect="slide" start="0" end ="100,0" time="0" condition="Container.Content(Albums)">Conditional</animation>
-					<visible>[Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Albums)] + !SubString(ListItem.Label,..)</visible>
+					<visible>[Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Albums)] + !String.Contains(ListItem.Label,..)</visible>
 				</control>
 				<control type="image">
 					<description>Rating value</description>
@@ -92,7 +92,7 @@
 					<height>25</height>
 					<aspectratio align="left">keep</aspectratio>
 					<texture fallback="rating/0.png">$INFO[ListItem.UserRating,rating/,.png]</texture>
-					<visible>Container.Content(Songs) + !SubString(ListItem.Label,..)</visible>
+					<visible>Container.Content(Songs) + !String.Contains(ListItem.Label,..)</visible>
 				</control>
 				<control type="image">
 					<posx>110r</posx>
@@ -138,7 +138,7 @@
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.AddonStatus,, - ]$INFO[ListItem.AddonVersion]</label>
 					<animation effect="slide" start="0" end ="60,0" time="0" condition="True">Conditional</animation>
-					<visible>Window.IsVisible(AddonBrowser) + !stringcompare(ListItem.AddonStatus,$LOCALIZE[305])</visible>
+					<visible>Window.IsVisible(AddonBrowser) + !String.IsEqual(ListItem.AddonStatus,$LOCALIZE[305])</visible>
 				</control>
 				<control type="label">
 					<posx>$PARAM[label2-posx]</posx>
@@ -151,7 +151,7 @@
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.AddonVersion]</label>
 					<animation effect="slide" start="0" end ="60,0" time="0" condition="True">Conditional</animation>
-					<visible>Window.IsVisible(AddonBrowser) + stringcompare(ListItem.AddonStatus,$LOCALIZE[305])</visible>
+					<visible>Window.IsVisible(AddonBrowser) + String.IsEqual(ListItem.AddonStatus,$LOCALIZE[305])</visible>
 				</control>
 				<control type="image">
 					<posx>50r</posx>
@@ -160,7 +160,7 @@
 					<height>30</height>
 					<aspectratio>keep</aspectratio>
 					<texture>OverlayWatched.png</texture>
-					<visible>Window.IsVisible(AddonBrowser) + stringcompare(ListItem.Label2,$LOCALIZE[305])</visible>
+					<visible>Window.IsVisible(AddonBrowser) + String.IsEqual(ListItem.Label2,$LOCALIZE[305])</visible>
 				</control>
 			</itemlayout>
 			<focusedlayout height="70" width="$PARAM[panel-width]" condition="!Window.IsVisible(EventLog)">
@@ -179,7 +179,7 @@
 					<height>62</height>
 					<texture background="true">$VAR[PosterThumb]</texture>
 					<aspectratio>keep</aspectratio>
-					<visible>Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | [Container.Content(Addons) + !ListItem.IsFolder] | Container.Content(Actors) | Container.Content(Sets) | [Window.IsVisible(Pictures) + !IsEmpty(Container.FolderPath)]</visible>
+					<visible>Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | [Container.Content(Addons) + !ListItem.IsFolder] | Container.Content(Actors) | Container.Content(Sets) | [Window.IsVisible(Pictures) + !String.IsEmpty(Container.FolderPath)]</visible>
 				</control>
 				<control type="image">
 					<posx>4</posx>
@@ -188,7 +188,7 @@
 					<height>62</height>
 					<texture background="true">defaulticons/$INFO[Listitem.Icon]</texture>
 					<aspectratio>keep</aspectratio>
-					<visible>[Container.Content() + !Window.IsVisible(Pictures)] | Container.Content(Files) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | [Container.Content(Addons) + ListItem.IsFolder] | [Window.IsVisible(Pictures) + IsEmpty(Container.FolderPath)]</visible>
+					<visible>[Container.Content() + !Window.IsVisible(Pictures)] | Container.Content(Files) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | [Container.Content(Addons) + ListItem.IsFolder] | [Window.IsVisible(Pictures) + String.IsEmpty(Container.FolderPath)]</visible>
 				</control>
 				<control type="label">
 					<posx>75</posx>
@@ -224,7 +224,7 @@
 					<aspectratio align="left">keep</aspectratio>
 					<texture fallback="rating/0.png">$INFO[ListItem.Rating,rating/]</texture>
 					<animation effect="slide" start="0" end ="100,0" time="0" condition="Container.Content(Albums)">Conditional</animation>
-					<visible>[Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Albums)] + !SubString(ListItem.Label,..)</visible>
+					<visible>[Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Albums)] + !String.Contains(ListItem.Label,..)</visible>
 				</control>
 				<control type="image">
 					<description>Rating value</description>
@@ -234,7 +234,7 @@
 					<height>25</height>
 					<aspectratio align="left">keep</aspectratio>
 					<texture fallback="rating/0.png">$INFO[ListItem.UserRating,rating/]</texture>
-					<visible>Container.Content(Songs) + !SubString(ListItem.Label,..)</visible>
+					<visible>Container.Content(Songs) + !String.Contains(ListItem.Label,..)</visible>
 				</control>
 				<control type="image">
 					<posx>110r</posx>
@@ -280,7 +280,7 @@
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.AddonStatus,, - ]$INFO[ListItem.AddonVersion]</label>
 					<animation effect="slide" start="0" end ="60,0" time="0" condition="True">Conditional</animation>
-					<visible>Window.IsVisible(AddonBrowser) + !stringcompare(ListItem.AddonStatus,$LOCALIZE[305])</visible>
+					<visible>Window.IsVisible(AddonBrowser) + !String.IsEqual(ListItem.AddonStatus,$LOCALIZE[305])</visible>
 				</control>
 				<control type="label">
 					<posx>$PARAM[label2-posx]</posx>
@@ -293,7 +293,7 @@
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.AddonVersion]</label>
 					<animation effect="slide" start="0" end ="60,0" time="0" condition="True">Conditional</animation>
-					<visible>Window.IsVisible(AddonBrowser) + stringcompare(ListItem.AddonStatus,$LOCALIZE[305])</visible>
+					<visible>Window.IsVisible(AddonBrowser) + String.IsEqual(ListItem.AddonStatus,$LOCALIZE[305])</visible>
 				</control>
 				<control type="image">
 					<posx>50r</posx>
@@ -302,7 +302,7 @@
 					<height>30</height>
 					<aspectratio>keep</aspectratio>
 					<texture>OverlayWatched.png</texture>
-					<visible>Window.IsVisible(AddonBrowser) + stringcompare(ListItem.Label2,$LOCALIZE[305])</visible>
+					<visible>Window.IsVisible(AddonBrowser) + String.IsEqual(ListItem.Label2,$LOCALIZE[305])</visible>
 				</control>
 			</focusedlayout>
 			<itemlayout height="90" width="$PARAM[panel-width]" condition="Window.IsVisible(EventLog)">

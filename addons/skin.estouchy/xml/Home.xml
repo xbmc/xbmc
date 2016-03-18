@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<defaultcontrol always="true">9000</defaultcontrol>
-	<onload condition="IsEmpty(Skin.String(FirstRun))">ActivateWindow(1111)</onload>
+	<onload condition="String.IsEmpty(Skin.String(FirstRun))">ActivateWindow(1111)</onload>
 	<controls>
 		<control type="label">
 			<posx>-10</posx>
@@ -16,8 +16,8 @@
 		<include>Footer</include>
 		<control type="group">
 			<include>Window_OpenClose_Animation</include>
-			<animation effect="slide" start="0,0" end="106,0" time="0" condition="StringCompare(Skin.AspectRatio,4:3)">Conditional</animation>
-			<visible>Library.HasContent(Movies) | Library.HasContent(TVShows) | Library.HasContent(Music) | IntegerGreaterThan(Container(2400).NumItems,0)</visible>
+			<animation effect="slide" start="0,0" end="106,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
+			<visible>Library.HasContent(Movies) | Library.HasContent(TVShows) | Library.HasContent(Music) | Integer.IsGreater(Container(2400).NumItems,0)</visible>
 			<control type="button">
 				<posx>509r</posx>
 				<posy>120</posy>
@@ -122,15 +122,15 @@
 						<onclick>Control.Move(9010,1)</onclick>
 						<icon>-</icon>
 						<thumb>-</thumb>
-						<visible>IntegerGreaterThan(Container(2400).NumItems,0)</visible>
+						<visible>Integer.IsGreater(Container(2400).NumItems,0)</visible>
 					</item>
 				</content>
 			</control>
 		</control>
 		<control type="group">
-			<animation effect="slide" start="0,0" end="212,0" time="0" condition="StringCompare(Skin.AspectRatio,16:9) + !Library.HasContent(Movies) + !Library.HasContent(TVShows) + !Library.HasContent(Music) + !IntegerGreaterThan(Container(2400).NumItems,0)">Conditional</animation>
-			<animation effect="slide" start="0,0" end="323,0" time="0" condition="StringCompare(Skin.AspectRatio,4:3) + !Library.HasContent(Movies) + !Library.HasContent(TVShows) + !Library.HasContent(Music) + !IntegerGreaterThan(Container(2400).NumItems,0)">Conditional</animation>
-			<include condition="StringCompare(Skin.AspectRatio,16:9)" name="HomeMenu">
+			<animation effect="slide" start="0,0" end="212,0" time="0" condition="String.IsEqual(Skin.AspectRatio,16:9) + !Library.HasContent(Movies) + !Library.HasContent(TVShows) + !Library.HasContent(Music) + !Integer.IsGreater(Container(2400).NumItems,0)">Conditional</animation>
+			<animation effect="slide" start="0,0" end="323,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3) + !Library.HasContent(Movies) + !Library.HasContent(TVShows) + !Library.HasContent(Music) + !Integer.IsGreater(Container(2400).NumItems,0)">Conditional</animation>
+			<include condition="String.IsEqual(Skin.AspectRatio,16:9)" name="HomeMenu">
 				<param name="panel-width">1000</param>
 				<param name="layout-width">500</param>
 				<param name="list-width">480</param>
@@ -142,7 +142,7 @@
 				<param name="iconback-posx">383</param>
 				<param name="iconback-width">98</param>
 			</include>
-			<include condition="StringCompare(Skin.AspectRatio,4:3)" name="HomeMenu">
+			<include condition="String.IsEqual(Skin.AspectRatio,4:3)" name="HomeMenu">
 				<param name="panel-width">832</param>
 				<param name="layout-width">416</param>
 				<param name="list-width">400</param>
@@ -160,9 +160,9 @@
 				<posy>185r</posy>
 				<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(Home)">WindowClose</animation>
 				<animation effect="fade" end="100" start="0" time="300" condition="Window.Previous(Home)">WindowOpen</animation>
-				<animation effect="slide" start="0,0" end="60,0" time="0" condition="StringCompare(Container(9002).NumItems,4)">conditional</animation>
-				<animation effect="slide" start="0,0" end="120,0" time="0" condition="StringCompare(Container(9002).NumItems,3)">conditional</animation>
-				<animation effect="slide" start="0,0" end="-100,0" time="0" condition="StringCompare(Skin.AspectRatio,4:3)">Conditional</animation>
+				<animation effect="slide" start="0,0" end="60,0" time="0" condition="String.IsEqual(Container(9002).NumItems,4)">conditional</animation>
+				<animation effect="slide" start="0,0" end="120,0" time="0" condition="String.IsEqual(Container(9002).NumItems,3)">conditional</animation>
+				<animation effect="slide" start="0,0" end="-100,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
 				<width>802</width>
 				<height>120</height>
 				<onleft>9002</onleft>
@@ -218,7 +218,7 @@
 						<label>20126</label>
 						<onclick>System.LogOff</onclick>
 						<icon>icon_button_logoff.png</icon>
-						<visible>System.HasLoginScreen | IntegerGreaterThan(System.ProfileCount,1)</visible>
+						<visible>System.HasLoginScreen | Integer.IsGreater(System.ProfileCount,1)</visible>
 					</item>
 					<item>
 						<label>5</label>
@@ -244,11 +244,11 @@
 				</content>
 			</control>
 		</control>
-		<include condition="StringCompare(Skin.AspectRatio,16:9)" name="HomeRecentlyAddedInfo">
+		<include condition="String.IsEqual(Skin.AspectRatio,16:9)" name="HomeRecentlyAddedInfo">
 			<param name="group-posx">640r</param>
 			<param name="panel-width">630</param>
 		</include>
-		<include condition="StringCompare(Skin.AspectRatio,4:3)" name="HomeRecentlyAddedInfo">
+		<include condition="String.IsEqual(Skin.AspectRatio,4:3)" name="HomeRecentlyAddedInfo">
 			<param name="group-posx">430r</param>
 			<param name="panel-width">420</param>
 		</include>

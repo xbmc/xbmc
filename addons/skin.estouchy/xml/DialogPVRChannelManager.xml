@@ -22,7 +22,7 @@
 			<include>WindowTitleCommons</include>
 			<width>1130</width>
 			<label>$LOCALIZE[19199] - $LOCALIZE[19023]</label>
-			<visible>IsEmpty(Window.Property(IsRadio))</visible>
+			<visible>String.IsEmpty(Window.Property(IsRadio))</visible>
 		</control>
 		<control type="label">
 			<posx>20</posx>
@@ -30,7 +30,7 @@
 			<include>WindowTitleCommons</include>
 			<width>1130</width>
 			<label>$LOCALIZE[19199] - $LOCALIZE[19024]</label>
-			<visible>!IsEmpty(Window.Property(IsRadio))</visible>
+			<visible>!String.IsEmpty(Window.Property(IsRadio))</visible>
 		</control>
 		<control type="group">
 			<posx>1060</posx>
@@ -269,7 +269,7 @@
 				<description>TV/Radio Button</description>
 				<width>250</width>
 				<include>ButtonInfoDialogsCommonValues</include>
-				<usealttexture>!IsEmpty(Window.Property(IsRadio))</usealttexture>
+				<usealttexture>!String.IsEmpty(Window.Property(IsRadio))</usealttexture>
 				<alttexturefocus>list_focus.png</alttexturefocus>
 				<alttexturenofocus>button_nofocus.png</alttexturenofocus>
 				<label>19024</label>

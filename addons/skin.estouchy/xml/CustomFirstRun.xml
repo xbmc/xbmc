@@ -121,7 +121,7 @@
 			<height>85</height>
 			<texture>defaulticons/DefaultFolderBack.png</texture>
 			<animation effect="rotate" start="0" end="-45" center="auto" condition="true">Conditional</animation>
-			<animation effect="slide" start="0,0" end="-170,160" time="0" condition="StringCompare(Skin.AspectRatio,16:9)">conditional</animation>
+			<animation effect="slide" start="0,0" end="-170,160" time="0" condition="String.IsEqual(Skin.AspectRatio,16:9)">conditional</animation>
 		</control>
 		<control type="label">
 			<posx>-85</posx>
@@ -132,7 +132,7 @@
 			<label>$NUMBER[1]</label>
 			<align>center</align>
 			<aligny>center</aligny>
-			<animation effect="slide" start="0,0" end="-213,0" time="0" condition="StringCompare(Skin.AspectRatio,16:9)">conditional</animation>
+			<animation effect="slide" start="0,0" end="-213,0" time="0" condition="String.IsEqual(Skin.AspectRatio,16:9)">conditional</animation>
 		</control>
 		<control type="image">
 			<posx>317</posx>
