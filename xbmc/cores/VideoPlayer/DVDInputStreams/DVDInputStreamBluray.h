@@ -102,8 +102,8 @@ public:
   bool SeekChapter(int ch);
 
   CDVDInputStream::IDisplayTime* GetIDisplayTime() override { return this; }
-  int GetTotalTime();
-  int GetTime();
+  int GetTotalTime() override;
+  int GetTime() override;
 
   CDVDInputStream::IPosTime* GetIPosTime() override { return this; }
   bool PosTime(int ms);
@@ -137,6 +137,7 @@ protected:
   uint32_t            m_angle;
   bool                m_menu;
   bool                m_navmode;
+  int m_dispTimeBeforeRead;
 
   typedef std::shared_ptr<CDVDOverlayImage> SOverlay;
   typedef std::list<SOverlay>                 SOverlays;

@@ -2146,6 +2146,8 @@ void CVideoPlayer::UpdateTimestamps(CCurrentStream& current, DemuxPacket* pPacke
     current.dur = 0.1 * (current.dur * 9 + (dts - current.dts));
 
   current.dts = dts;
+
+  current.dispTime = pPacket->dispTime;
 }
 
 static void UpdateLimits(double& minimum, double& maximum, double dts)
@@ -4628,12 +4630,13 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
 
 void CVideoPlayer::UpdatePlayState(double timeout)
 {
-  if(m_State.timestamp != 0
-  && m_State.timestamp + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
+  if(m_State.timestamp != 0 &&
+     m_State.timestamp + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
     return;
 
   SPlayerState state(m_State);
 
+  state.dts = DVD_NOPTS_VALUE;
   if (m_CurrentVideo.dts != DVD_NOPTS_VALUE)
     state.dts = m_CurrentVideo.dts;
   else if (m_CurrentAudio.dts != DVD_NOPTS_VALUE)
@@ -4662,7 +4665,6 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     }
 
     state.time = DVD_TIME_TO_MSEC(m_clock.GetClock(false));
-    state.time_offset = 0;
     state.time_total = m_pDemuxer->GetStreamLength();
   }
 
@@ -4686,10 +4688,20 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     {
       if (state.dts != DVD_NOPTS_VALUE)
       {
-        state.time_offset += DVD_MSEC_TO_TIME(pDisplayTime->GetTime()) - state.dts;
-        state.time += DVD_TIME_TO_MSEC(state.time_offset);
+        int dispTime = 0;
+        if (m_CurrentVideo.dispTime)
+          dispTime = m_CurrentVideo.dispTime;
+        else if (m_CurrentAudio.dispTime)
+          dispTime = m_CurrentAudio.dispTime;
+
+        state.time_offset = DVD_MSEC_TO_TIME(dispTime) - state.dts;
       }
+      state.time += DVD_TIME_TO_MSEC(state.time_offset);
       state.time_total = pDisplayTime->GetTotalTime();
+    }
+    else
+    {
+      state.time_offset = 0;
     }
 
     if (CDVDInputStream::IMenus* ptr = dynamic_cast<CDVDInputStream::IMenus*>(m_pInputStream))

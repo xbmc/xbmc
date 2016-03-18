@@ -111,6 +111,7 @@ public:
   int source;
   double dts;    // last dts from demuxer, used to find disncontinuities
   double dur;    // last frame expected duration
+  int dispTime; // display time from input stream
   CDVDStreamInfo hint;   // stream hints, used to notice stream changes
   void* stream; // pointer or integer, identifying stream playing. if it changes stream changed
   int changes; // remembered counter from stream to track codec changes
