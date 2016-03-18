@@ -1,10 +1,13 @@
 <addons>
   <addon>audioencoder.xbmc.builtin.aac</addon>
   <addon>audioencoder.xbmc.builtin.wma</addon>
+  <addon>game.controller.default</addon>
   <addon>kodi.adsp</addon>
   <addon>kodi.audiodecoder</addon>
+  <addon>kodi.game</addon>
   <addon>kodi.guilib</addon>
   <addon>kodi.inputstream</addon>
+  <addon>kodi.peripheral</addon>
   <addon>kodi.resource</addon>
   <addon>metadata.album.universal</addon>
   <addon>metadata.artists.universal</addon>
