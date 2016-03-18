@@ -27,11 +27,7 @@
 #include <sys/stat.h>
 
 #if defined (TARGET_WINDOWS)
-#if defined (_DEBUG)
-#pragma comment(lib, "zlibd.lib")
-#else
 #pragma comment(lib, "zlib.lib")
-#endif
 #endif
 #define ZIP_CACHE_LIMIT 4*1024*1024
 
