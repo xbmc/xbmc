@@ -224,6 +224,7 @@ Section "${APP_NAME}" SecAPP
   SetOutPath "$INSTDIR\addons"
   File /r "${app_root}\application\addons\*.*"
   File /r "${app_root}\addons\peripheral.*"
+  File /r "${app_root}\addons\skin.*"
   SetOutPath "$INSTDIR\media"
   File /r "${app_root}\application\media\*.*"
   SetOutPath "$INSTDIR\system"
@@ -284,7 +285,7 @@ SectionEnd
 !include /nonfatal "audiodsp-addons.nsi"
 !include /nonfatal "inputstream-addons.nsi"
 !include /nonfatal "pvr-addons.nsi"
-!include /nonfatal "skin-addons.nsi"
+;!include /nonfatal "skin-addons.nsi"
 !include /nonfatal "screensaver-addons.nsi"
 !include /nonfatal "visualization-addons.nsi"
 
