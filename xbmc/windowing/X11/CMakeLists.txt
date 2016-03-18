@@ -1,5 +1,6 @@
 set(SOURCES GLContextEGL.cpp
             GLContextGLX.cpp
+            GLContext.cpp
             WinSystemX11.cpp
             WinSystemX11GLContext.cpp
             WinSystemX11GLESContext.cpp

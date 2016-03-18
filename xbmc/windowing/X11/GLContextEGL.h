@@ -35,7 +35,6 @@ public:
   virtual void SetVSync(bool enable, int &mode);
   virtual void SwapBuffers(int &mode);
   virtual void QueryExtensions();
-  virtual bool IsExtSupported(const char* extension);
   XVisualInfo* GetVisual();
   EGLDisplay m_eglDisplay;
   EGLSurface m_eglSurface;

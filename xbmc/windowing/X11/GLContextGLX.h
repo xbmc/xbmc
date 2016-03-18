@@ -34,7 +34,6 @@ public:
   virtual void SetVSync(bool enable, int &mode);
   virtual void SwapBuffers(int &mode);
   virtual void QueryExtensions();
-  virtual bool IsExtSupported(const char* extension);
   GLXWindow m_glxWindow;
   GLXContext m_glxContext;
 protected:
