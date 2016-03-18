@@ -29,12 +29,6 @@
 #include "FileItem.h"
 #include "threads/SystemClock.h"
 
-namespace XFILE {
-class IFile;
-class ILiveTVInterface;
-class IRecordable;
-}
-
 class IVideoPlayer;
 struct PVR_STREAM_PROPERTIES;
 class CDemuxStreamAudio;
@@ -115,12 +109,10 @@ public:
 protected:
   bool CloseAndOpen(const char* strFile);
   void UpdateStreamMap();
+  std::string ThisIsAHack(const std::string& pathFile);
   std::shared_ptr<CDemuxStream> GetStreamInternal(int iStreamId);
   IVideoPlayer* m_pPlayer;
   CDVDInputStream* m_pOtherStream;
-  XFILE::IFile* m_pFile;
-  XFILE::ILiveTVInterface* m_pLiveTV;
-  XFILE::IRecordable* m_pRecordable;
   bool m_eof;
   bool m_demuxActive;
   std::string m_strContent;
@@ -128,6 +120,7 @@ protected:
   bool m_isOtherStreamHack;
   PVR_STREAM_PROPERTIES *m_StreamProps;
   std::map<int, std::shared_ptr<CDemuxStream>> m_streamMap;
+  bool m_isRecording;
 };
 
 

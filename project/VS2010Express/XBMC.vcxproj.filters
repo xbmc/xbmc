@@ -1647,9 +1647,6 @@
     <ClCompile Include="..\..\xbmc\filesystem\PVRDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\PVRFile.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\Observer.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -4835,9 +4832,6 @@
     <ClInclude Include="..\..\xbmc\epg\EpgInfoTag.h">
       <Filter>epg</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\PVRFile.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\PVRDirectory.h">
       <Filter>filesystem</Filter>
     </ClInclude>
@@ -5130,9 +5124,6 @@
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\IFileDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\ILiveTV.h">
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\iso9660.h">

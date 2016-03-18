@@ -778,7 +778,6 @@
 		C84828FE156CFDC3005A996F /* GUIDialogExtendedProgressBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828FC156CFDC3005A996F /* GUIDialogExtendedProgressBar.cpp */; };
 		C8482901156CFE4B005A996F /* Observer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84828FF156CFE4B005A996F /* Observer.cpp */; };
 		C8482909156CFF24005A996F /* PVRDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8482905156CFF24005A996F /* PVRDirectory.cpp */; };
-		C848290A156CFF24005A996F /* PVRFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8482907156CFF24005A996F /* PVRFile.cpp */; };
 		C8482910156CFFA0005A996F /* DVDInputStreamPVRManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C848290E156CFFA0005A996F /* DVDInputStreamPVRManager.cpp */; };
 		C848291F156D003E005A996F /* TextSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C848291D156D003E005A996F /* TextSearch.cpp */; };
 		C84BF7341349BB74006D6FC9 /* JSONServiceDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84BF7321349BB74006D6FC9 /* JSONServiceDescription.cpp */; };
@@ -1657,7 +1656,6 @@
 		E49912A0174E5D9900741B6D /* PlaylistFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17420D25F9FA00618676 /* PlaylistFileDirectory.cpp */; };
 		E49912A1174E5D9900741B6D /* PluginDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17440D25F9FA00618676 /* PluginDirectory.cpp */; };
 		E49912A2174E5D9900741B6D /* PVRDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8482905156CFF24005A996F /* PVRDirectory.cpp */; };
-		E49912A3174E5D9900741B6D /* PVRFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8482907156CFF24005A996F /* PVRFile.cpp */; };
 		E49912A4174E5D9900741B6D /* RarDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17460D25F9FA00618676 /* RarDirectory.cpp */; };
 		E49912A5174E5D9900741B6D /* RarFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6811444A8B0007C6459 /* RarFile.cpp */; };
 		E49912A6174E5D9900741B6D /* RarManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17480D25F9FA00618676 /* RarManager.cpp */; };
@@ -3557,8 +3555,6 @@
 		C8482900156CFE4B005A996F /* Observer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Observer.h; sourceTree = "<group>"; };
 		C8482905156CFF24005A996F /* PVRDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRDirectory.cpp; sourceTree = "<group>"; };
 		C8482906156CFF24005A996F /* PVRDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRDirectory.h; sourceTree = "<group>"; };
-		C8482907156CFF24005A996F /* PVRFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRFile.cpp; sourceTree = "<group>"; };
-		C8482908156CFF24005A996F /* PVRFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRFile.h; sourceTree = "<group>"; };
 		C848290E156CFFA0005A996F /* DVDInputStreamPVRManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamPVRManager.cpp; sourceTree = "<group>"; };
 		C848290F156CFFA0005A996F /* DVDInputStreamPVRManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamPVRManager.h; sourceTree = "<group>"; };
 		C848291D156D003E005A996F /* TextSearch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextSearch.cpp; sourceTree = "<group>"; };
@@ -8273,8 +8269,6 @@
 				E38E17450D25F9FA00618676 /* PluginDirectory.h */,
 				C8482905156CFF24005A996F /* PVRDirectory.cpp */,
 				C8482906156CFF24005A996F /* PVRDirectory.h */,
-				C8482907156CFF24005A996F /* PVRFile.cpp */,
-				C8482908156CFF24005A996F /* PVRFile.h */,
 				E38E17460D25F9FA00618676 /* RarDirectory.cpp */,
 				E38E17470D25F9FA00618676 /* RarDirectory.h */,
 				DF93D6811444A8B0007C6459 /* RarFile.cpp */,
@@ -10397,7 +10391,6 @@
 				DFC6F4C11AFF7E300039A7FA /* rfft.cpp in Sources */,
 				7CD4F7EC1C60DBC10015214B /* VideoFileItemListModifier.cpp in Sources */,
 				C8482909156CFF24005A996F /* PVRDirectory.cpp in Sources */,
-				C848290A156CFF24005A996F /* PVRFile.cpp in Sources */,
 				C8482910156CFFA0005A996F /* DVDInputStreamPVRManager.cpp in Sources */,
 				C848291F156D003E005A996F /* TextSearch.cpp in Sources */,
 				18E7CACB1578C26D001D4554 /* CDDARipJob.cpp in Sources */,
@@ -11053,7 +11046,6 @@
 				E49912A1174E5D9900741B6D /* PluginDirectory.cpp in Sources */,
 				E49912A2174E5D9900741B6D /* PVRDirectory.cpp in Sources */,
 				395C29DC1A98A11C00EBC7AD /* WsgiResponse.cpp in Sources */,
-				E49912A3174E5D9900741B6D /* PVRFile.cpp in Sources */,
 				E49912A4174E5D9900741B6D /* RarDirectory.cpp in Sources */,
 				E49912A5174E5D9900741B6D /* RarFile.cpp in Sources */,
 				E49912A6174E5D9900741B6D /* RarManager.cpp in Sources */,
