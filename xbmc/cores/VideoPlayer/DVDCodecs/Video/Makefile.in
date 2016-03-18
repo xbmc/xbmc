@@ -33,7 +33,7 @@ SRCS += DVDVideoCodecAndroidMediaCodec.cpp
 endif
 
 ifeq (@USE_MMAL@,1)
-SRCS += MMALCodec.cpp
+SRCS += MMALCodec.cpp MMALFFmpeg.cpp
 endif
 
 LIB=Video.a

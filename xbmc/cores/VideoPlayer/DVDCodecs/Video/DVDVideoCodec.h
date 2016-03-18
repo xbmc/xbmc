@@ -49,7 +49,7 @@ class COpenMaxVideo;
 struct OpenMaxVideoBufferHolder;
 class CDVDMediaCodecInfo;
 class CDVDVideoCodecIMXBuffer;
-class CMMALVideoBuffer;
+class CMMALBuffer;
 class CDVDAmlogicInfo;
 
 
@@ -93,7 +93,7 @@ struct DVDVideoPicture
     };
 
     struct {
-      CMMALVideoBuffer *MMALBuffer;
+      CMMALBuffer *MMALBuffer;
     };
 
     struct {

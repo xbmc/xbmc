@@ -924,7 +924,7 @@ if test "$use_gles" = "yes"; then
       AC_DEFINE([HAVE_LIBEGL],[1],["Define to 1 if you have the `EGL' library (-lEGL)."])
       AC_DEFINE([HAVE_LIBGLESV2],[1],["Define to 1 if you have the `GLESv2' library (-lGLESv2)."])
       AC_MSG_RESULT(== WARNING: OpenGLES support is assumed.)
-      LIBS="$LIBS -lEGL -lGLESv2 -lbcm_host -lvcos -lvchiq_arm -lmmal -lmmal_core -lmmal_util"
+      LIBS="$LIBS -lEGL -lGLESv2 -lbcm_host -lvcos -lvchiq_arm -lmmal -lmmal_core -lmmal_util -lvcsm"
     else
       AC_CHECK_LIB([EGL],   [main],, AC_MSG_ERROR($missing_library))
       AC_CHECK_LIB([GLESv2],[main],, AC_MSG_ERROR($missing_library))
