@@ -30,7 +30,6 @@ public:
   CGLContext(Display *dpy)
   {
     m_dpy = dpy;
-    m_extensions = "";
   }
   virtual ~CGLContext() {};
   virtual bool Refresh(bool force, int screen, Window glWindow, bool &newContext) = 0;
