@@ -84,12 +84,12 @@ protected:
 
   std::string m_RenderExtensions;
 
-  int        m_glslMajor;
-  int        m_glslMinor;
+  int        m_glslMajor = 0;
+  int        m_glslMinor = 0;
   
   GLint      m_viewPort[4];
 
-  uint8_t m_latencyCounter;
+  uint8_t m_latencyCounter = 0;
 };
 
 #endif // RENDER_SYSTEM_H

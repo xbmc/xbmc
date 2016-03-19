@@ -38,9 +38,6 @@
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_OPENGL;
-  m_glslMajor = 0;
-  m_glslMinor = 0;
-  m_latencyCounter = 0;
 }
 
 CRenderSystemGL::~CRenderSystemGL()
