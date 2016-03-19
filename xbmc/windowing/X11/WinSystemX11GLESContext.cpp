@@ -11,7 +11,6 @@
 
 CWinSystemX11GLESContext::CWinSystemX11GLESContext()
 {
-  m_pGLContext = NULL;
 }
 
 CWinSystemX11GLESContext::~CWinSystemX11GLESContext()

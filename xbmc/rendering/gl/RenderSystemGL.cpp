@@ -38,9 +38,6 @@
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_OPENGL;
-  m_glslMajor = 0;
-  m_glslMinor = 0;
-  m_latencyCounter = 0;
 }
 
 CRenderSystemGL::~CRenderSystemGL()
@@ -643,7 +640,7 @@ void CRenderSystemGL::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW 
 
 }
 
-bool CRenderSystemGL::SupportsStereo(RENDER_STEREO_MODE mode)
+bool CRenderSystemGL::SupportsStereo(RENDER_STEREO_MODE mode) const
 {
   switch(mode)
   {

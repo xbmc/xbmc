@@ -50,8 +50,6 @@ static const char* ShaderNames[SM_ESHADERCOUNT] =
 
 CRenderSystemGLES::CRenderSystemGLES()
  : CRenderSystemBase()
- , m_pGUIshader(0)
- , m_method(SM_DEFAULT)
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_OPENGLES;
 }
@@ -652,7 +650,7 @@ GLint CRenderSystemGLES::GUIShaderGetBrightness()
   return -1;
 }
 
-bool CRenderSystemGLES::SupportsStereo(RENDER_STEREO_MODE mode)
+bool CRenderSystemGLES::SupportsStereo(RENDER_STEREO_MODE mode) const
 {
   switch(mode)
   {
