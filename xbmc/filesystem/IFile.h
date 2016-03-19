@@ -49,6 +49,7 @@
 #include "IFileTypes.h"
 
 class CURL;
+class CProxy;
 
 namespace XFILE
 {
@@ -132,6 +133,8 @@ public:
 
   virtual std::string GetContent()                           { return "application/octet-stream"; }
   virtual std::string GetContentCharset(void)                { return ""; }
+
+  virtual void SetProxy(const CProxy &proxy) {};
 };
 
 class CRedirectException
