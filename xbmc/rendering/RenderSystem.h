@@ -146,7 +146,7 @@ public:
   bool SupportsBGRA() const;
   bool SupportsBGRAApple() const;
   bool SupportsNPOT(bool dxt) const;
-  bool SupportsStereo(RENDER_STEREO_MODE mode) const;
+  virtual bool SupportsStereo(RENDER_STEREO_MODE mode) const;
   unsigned int GetMaxTextureSize() const { return m_maxTextureSize; }
   unsigned int GetMinDXTPitch() const { return m_minDXTPitch; }
   unsigned int GetRenderQuirks() const { return m_renderQuirks; }
