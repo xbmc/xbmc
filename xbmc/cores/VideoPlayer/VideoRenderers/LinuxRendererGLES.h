@@ -25,7 +25,7 @@
 
 #include "system_gl.h"
 
-#include "xbmc/guilib/FrameBufferObject.h"
+#include "xbmc/guilib/FrameBufferObjectGLES.h"
 #include "xbmc/guilib/Shader.h"
 #include "settings/VideoSettings.h"
 #include "RenderFlags.h"
@@ -197,7 +197,7 @@ protected:
   virtual bool RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha) { return false; }
   virtual int  GetImageHook(YV12Image *image, int source = AUTOSOURCE, bool readonly = false) { return NOSOURCE; }
 
-  CFrameBufferObject m_fbo;
+  CFrameBufferObjectGLES m_fbo;
 
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;

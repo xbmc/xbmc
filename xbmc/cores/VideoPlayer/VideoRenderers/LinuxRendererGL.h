@@ -25,7 +25,7 @@
 #ifdef HAS_GL
 #include "system_gl.h"
 
-#include "guilib/FrameBufferObject.h"
+#include "guilib/FrameBufferObjectGL.h"
 #include "guilib/Shader.h"
 #include "settings/VideoSettings.h"
 #include "RenderFlags.h"
@@ -190,7 +190,7 @@ protected:
 
   struct
   {
-    CFrameBufferObject fbo;
+    CFrameBufferObjectGL fbo;
     float width, height;
   } m_fbo;
 
