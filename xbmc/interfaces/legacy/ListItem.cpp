@@ -470,6 +470,13 @@ namespace XBMCAddon
             item->GetMusicInfoTag()->SetMusicBrainzAlbumArtistID(StringUtils::Split(value, g_advancedSettings.m_musicItemSeparator));
           else if (key == "comment")
             item->GetMusicInfoTag()->SetComment(value);
+          else if (key == "mediatype")
+          {
+            if (CMediaTypes::IsValidMediaType(value))
+              item->GetMusicInfoTag()->SetType(value);
+            else
+              CLog::Log(LOGWARNING, "Invalid media type \"%s\"", value.c_str());
+          }
           else if (key == "date")
           {
             if (strlen(value.c_str()) == 10)
