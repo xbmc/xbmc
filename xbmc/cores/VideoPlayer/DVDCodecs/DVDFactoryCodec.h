@@ -20,9 +20,7 @@
  *
  */
 
-#include <vector>
 #include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
-#include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 
 class CDVDVideoCodec;
