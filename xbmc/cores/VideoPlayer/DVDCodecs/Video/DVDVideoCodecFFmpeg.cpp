@@ -582,9 +582,12 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
 
   if (!iGotPicture)
   {
-    m_droppedFrames++;
-    if (m_interlaced)
+    if (pData)
+    {
       m_droppedFrames++;
+      if (m_interlaced)
+        m_droppedFrames++;
+    }
 
     if (m_pHardware && (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
     {
