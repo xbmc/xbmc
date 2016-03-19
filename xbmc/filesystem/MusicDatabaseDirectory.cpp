@@ -178,6 +178,9 @@ bool CMusicDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
     case NODE_TYPE_GENRE:
       strLabel = g_localizeStrings.Get(135); // Genres
       break;
+    case NODE_TYPE_ROLE:
+      strLabel = g_localizeStrings.Get(38033); // Roles
+      break;
     case NODE_TYPE_ARTIST:
       strLabel = g_localizeStrings.Get(133); // Artists
       break;
@@ -270,6 +273,8 @@ std::string CMusicDatabaseDirectory::GetIcon(const std::string &strDirectory)
       return "DefaultMusicArtists.png";
   case NODE_TYPE_GENRE:
       return "DefaultMusicGenres.png";
+  case NODE_TYPE_ROLE:
+    return "DefaultMusicArtists.png";
   case NODE_TYPE_TOP100:
       return "DefaultMusicTop100.png";
   case NODE_TYPE_ALBUM:

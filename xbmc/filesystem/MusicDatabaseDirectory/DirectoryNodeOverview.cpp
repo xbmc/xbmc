@@ -39,6 +39,7 @@ namespace XFILE
                                 { NODE_TYPE_ALBUM_RECENTLY_ADDED,  "recentlyaddedalbums",  359 },
                                 { NODE_TYPE_ALBUM_RECENTLY_PLAYED, "recentlyplayedalbums", 517 },
                                 { NODE_TYPE_ALBUM_COMPILATIONS,    "compilations",         521 },
+                                { NODE_TYPE_ROLE,                  "roles",              38033 },
                               };
   };
 };
