@@ -754,19 +754,20 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
   else if( url2.IsProtocol("http")
        ||  url2.IsProtocol("https"))
   {
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_NETWORK_USEHTTPPROXY)
-        && !CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER).empty()
-        && CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT) > 0
+    const CSettings &s = CSettings::GetInstance();
+    if (s.GetBool(CSettings::SETTING_NETWORK_USEHTTPPROXY)
+        && !s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER).empty()
+        && s.GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT) > 0
         && m_proxy.empty())
     {
-      m_proxy = CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER);
-      m_proxy += StringUtils::Format(":%d", CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT));
-      if (CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME).length() > 0 && m_proxyuserpass.empty())
+      m_proxy = s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER);
+      m_proxy += StringUtils::Format(":%d", s.GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT));
+      if (s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME).length() > 0 && m_proxyuserpass.empty())
       {
-        m_proxyuserpass = CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME);
-        m_proxyuserpass += ":" + CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD);
+        m_proxyuserpass = s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME);
+        m_proxyuserpass += ":" + s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD);
       }
-      m_proxytype = (ProxyType)CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYTYPE);
+      m_proxytype = (ProxyType)s.GetInt(CSettings::SETTING_NETWORK_HTTPPROXYTYPE);
       CLog::Log(LOGDEBUG, "Using proxy %s, type %d", m_proxy.c_str(), proxyType2CUrlProxyType[m_proxytype]);
     }
 
