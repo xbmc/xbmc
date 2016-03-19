@@ -861,6 +861,17 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
         }
         m_bHWStereoEnabled = bHWStereoEnabled;
       }
+      else if (bHWStereoEnabled)
+      {
+        // switch to stereo mode failed, create mono swapchain
+        CLog::Log(LOGERROR, "%s - Creating swap chain failed with error: %s.", __FUNCTION__, GetErrorDescription(hr).c_str());
+
+        scDesc1.Stereo = false;
+        hr = dxgiFactory2->CreateSwapChainForHwnd(m_pD3DDev, m_hFocusWnd, &scDesc1, &scFSDesc, NULL, &m_pSwapChain1);
+
+        // fallback to split_horisontal mode.
+        g_graphicsContext.SetStereoMode(RENDER_STEREO_MODE_SPLIT_HORIZONTAL);
+      }
       dxgiFactory2->Release();
     }
     else
