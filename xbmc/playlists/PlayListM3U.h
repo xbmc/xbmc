@@ -21,6 +21,8 @@
 #include "URL.h"
 #include "PlayList.h"
 
+#include "utils/Proxy.h"
+
 namespace PLAYLIST
 {
 class CPlayListM3U :
@@ -32,7 +34,7 @@ public:
   virtual bool Load(const std::string& strFileName);
   virtual void Save(const std::string& strFileName) const;
 
-  static CURL GetBestBandwidthStream(const CURL &url, size_t bandwidth);
+  static CURL GetBestBandwidthStream(const CURL &url, size_t bandwidth, const CProxy &proxy = CProxy());
 
 protected:
 

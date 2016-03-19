@@ -226,7 +226,7 @@ void CPlayListM3U::Save(const std::string& strFileName) const
   file.Close();
 }
 
-CURL CPlayListM3U::GetBestBandwidthStream(const CURL &url, size_t bandwidth)
+CURL CPlayListM3U::GetBestBandwidthStream(const CURL &url, size_t bandwidth, const CProxy &proxy)
 {
   // we may be passed a playlist that does not contain playlists of different
   // bitrates (eg: this playlist is really the HLS video). So, default the
@@ -237,6 +237,7 @@ CURL CPlayListM3U::GetBestBandwidthStream(const CURL &url, size_t bandwidth)
 
   // open the file, and if it fails, return
   CFile file;
+  file.SetProxy(proxy);
   if (!file.Open(url))
   {
     file.Close();
