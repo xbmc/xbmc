@@ -385,7 +385,7 @@ Section "VS2010 C++ re-distributable Package (x86)" SEC_VCREDIST2
   SectionIn 1 2 #section is in install type Full 
   SetOutPath "$TEMP\vc2010"
   File "${app_root}\..\dependencies\vcredist\2010\vcredist_x86.exe"
-  ExecWait '"$TEMP\vc2010\vcredist_x86.exe" /q' $VSRedistSetupError
+  ExecWait '"$TEMP\vc2010\vcredist_x86.exe" /q /norestart' $VSRedistSetupError
   RMDir /r "$TEMP\vc2010"
   DetailPrint "Finished VS2010 re-distributable setup"
 SectionEnd
@@ -395,7 +395,7 @@ DetailPrint "Running VS2013 re-distributable setup..."
   SectionIn 1 2 #section is in install type Full
   SetOutPath "$TEMP\vc2013"
   File "${app_root}\..\dependencies\vcredist\2013\vcredist_x86.exe"
-  ExecWait '"$TEMP\vc2013\vcredist_x86.exe" /q' $VSRedistSetupError
+  ExecWait '"$TEMP\vc2013\vcredist_x86.exe" /install /quiet /norestart' $VSRedistSetupError
   RMDir /r "$TEMP\vc2013"
   DetailPrint "Finished VS2013 re-distributable setup"
   SetOutPath "$INSTDIR"
@@ -406,7 +406,7 @@ DetailPrint "Running VS2015 re-distributable setup..."
   SectionIn 1 2 #section is in install type Full
   SetOutPath "$TEMP\vc2015"
   File "${app_root}\..\dependencies\vcredist\2015\vcredist_x86.exe"
-  ExecWait '"$TEMP\vc2015\vcredist_x86.exe" /q' $VSRedistSetupError
+  ExecWait '"$TEMP\vc2015\vcredist_x86.exe" /install /quiet /norestart' $VSRedistSetupError
   RMDir /r "$TEMP\vc2015"
   DetailPrint "Finished VS2015 re-distributable setup"
   SetOutPath "$INSTDIR"
