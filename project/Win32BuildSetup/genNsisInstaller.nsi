@@ -223,7 +223,7 @@ Section "${APP_NAME}" SecAPP
   File "${app_root}\application\*.*"
   SetOutPath "$INSTDIR\addons"
   File /r "${app_root}\application\addons\*.*"
-  File /r "${app_root}\addons\peripheral.*"
+  File /nonfatal /r "${app_root}\addons\peripheral.*"
   File /r "${app_root}\addons\skin.*"
   SetOutPath "$INSTDIR\media"
   File /r "${app_root}\application\media\*.*"
