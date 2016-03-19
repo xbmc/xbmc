@@ -110,13 +110,14 @@ protected:
   void SetFullScreenInternal();
   void GetClosestDisplayModeToCurrent(IDXGIOutput* output, DXGI_MODE_DESC* outCurrentDisplayMode, bool useCached = false);
   void CheckInterlasedStereoView(void);
-  void Register(ID3DResource *resource);
-  void Unregister(ID3DResource *resource);
   void SetMaximumFrameLatency(uint32_t latency);
 
+  virtual void Register(ID3DResource *resource);
+  virtual void Unregister(ID3DResource *resource);
   virtual void UpdateMonitor() {};
   virtual void OnDisplayLost() {};
   virtual void OnDisplayReset() {};
+  virtual void OnDisplayBack() {};
 
   // our adapter could change as we go
   bool                        m_needNewDevice;

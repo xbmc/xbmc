@@ -310,6 +310,7 @@ void CRenderSystemDX::SetFullScreenInternal()
   {
     CLog::Log(LOGDEBUG, "%s - Switching swap chain to windowed mode.", __FUNCTION__);
 
+    OnDisplayLost();
     hr = m_pSwapChain->SetFullscreenState(false, NULL);
     if (SUCCEEDED(hr))
       m_bResizeRequred = true;
@@ -331,6 +332,7 @@ void CRenderSystemDX::SetFullScreenInternal()
       // swap chain requires to change FS mode after resize or transition from windowed to full-screen.
       CLog::Log(LOGDEBUG, "%s - Switching swap chain to fullscreen state.", __FUNCTION__);
 
+      OnDisplayLost();
       hr = m_pSwapChain->SetFullscreenState(true, m_pOutput);
       if (SUCCEEDED(hr))
         m_bResizeRequred = true;
@@ -339,9 +341,9 @@ void CRenderSystemDX::SetFullScreenInternal()
     }
     SAFE_RELEASE(pOutput);
 
-    // do not change modes if hw stereo
-    if (g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED)
-      return;
+    // do not change modes if hw stereo enabled
+    if (m_bHWStereoEnabled)
+      goto end;
 
     DXGI_SWAP_CHAIN_DESC scDesc;
     m_pSwapChain->GetDesc(&scDesc);
@@ -380,6 +382,9 @@ void CRenderSystemDX::SetFullScreenInternal()
       // change monitor resolution (in fullscreen mode) to required mode
       CLog::Log(LOGDEBUG, "%s - Switching mode to %dx%d@%0.3f.", __FUNCTION__, matchedMode.Width, matchedMode.Height, matchedRefreshRate);
 
+      if (!m_bResizeRequred)
+        OnDisplayLost();
+
       hr = m_pSwapChain->ResizeTarget(&matchedMode);
       if (SUCCEEDED(hr))
         m_bResizeRequred = true;
@@ -387,18 +392,10 @@ void CRenderSystemDX::SetFullScreenInternal()
         CLog::Log(LOGERROR, "%s - Failed to switch output mode: %s", __FUNCTION__, GetErrorDescription(hr).c_str());
     }
   }
-
+end:
   // in windowed mode DWM uses triple buffering in any case. 
   // for FSEM we use double buffering
   SetMaximumFrameLatency(2 - m_useWindowedDX);
-
-  // wait until switching screen state is done
-  if (m_bResizeRequred)
-  {
-    OnDisplayLost();
-    DXWait(m_pD3DDev, m_pImdContext);
-    OnDisplayReset();
-  }
 }
 
 bool CRenderSystemDX::IsFormatSupport(DXGI_FORMAT format, unsigned int usage)
@@ -994,12 +991,8 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   if (bRestoreRTView)
     m_pContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_depthStencilView);
 
-  // trigger display reset event when transition from/to stereo mode occured
-  if (bNeedRecreate)
-  {
-    OnDisplayLost();
-    OnDeviceReset();
-  }
+  if (m_bResizeRequred)
+    OnDisplayBack();
 
   m_resizeInProgress = false;
   m_bResizeRequred = false;
