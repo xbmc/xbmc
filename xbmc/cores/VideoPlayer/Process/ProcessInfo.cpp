@@ -19,30 +19,3 @@
  */
 
 #include "ProcessInfo.h"
-
-// Override for platform ports
-#if !defined(PLATFORM_OVERRIDE)
-
-CProcessInfo* CProcessInfo::CreateInstance()
-{
-  return new CProcessInfo();
-}
-
-#endif
-
-
-// base class definitions
-CProcessInfo::CProcessInfo()
-{
-
-}
-
-CProcessInfo::~CProcessInfo()
-{
-
-}
-
-EINTERLACEMETHOD CProcessInfo::GetFallbackDeintMethod()
-{
-  return VS_INTERLACEMETHOD_DEINTERLACE;
-}

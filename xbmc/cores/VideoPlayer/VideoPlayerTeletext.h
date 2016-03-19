@@ -30,7 +30,7 @@ class CDVDStreamInfo;
 class CDVDTeletextData : public CThread, public IDVDStreamPlayer
 {
 public:
-  CDVDTeletextData(CProcessInfo &processInfo);
+  CDVDTeletextData();
   ~CDVDTeletextData();
 
   bool CheckStream(CDVDStreamInfo &hints);

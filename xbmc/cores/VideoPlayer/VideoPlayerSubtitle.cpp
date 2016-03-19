@@ -31,8 +31,7 @@
   #include "config.h"
 #endif
 
-CVideoPlayerSubtitle::CVideoPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer, CProcessInfo &processInfo)
-: IDVDStreamPlayer(processInfo)
+CVideoPlayerSubtitle::CVideoPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer)
 {
   m_pOverlayContainer = pOverlayContainer;
 

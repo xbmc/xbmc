@@ -65,8 +65,8 @@ public:
   CDVDStreamInfo      m_hints;
 };
 
-OMXPlayerAudio::OMXPlayerAudio(OMXClock *av_clock, CDVDMessageQueue& parent, CProcessInfo &processInfo)
-: CThread("OMXPlayerAudio"), IDVDStreamPlayerAudio(processInfo)
+OMXPlayerAudio::OMXPlayerAudio(OMXClock *av_clock, CDVDMessageQueue& parent)
+: CThread("OMXPlayerAudio"),
 , m_messageQueue("audio")
 , m_messageParent(parent)
 {

@@ -23,7 +23,6 @@
 #include "DVDStreamInfo.h"
 #include "DVDMessageQueue.h"
 #include "DVDClock.h"
-#include "cores/VideoPlayer/Process/ProcessInfo.h"
 
 #define VideoPlayer_AUDIO    1
 #define VideoPlayer_VIDEO    2
@@ -109,7 +108,6 @@ public:
 class IDVDStreamPlayer
 {
 public:
-  IDVDStreamPlayer(CProcessInfo &processInfo) : m_processInfo(processInfo) {};
   virtual ~IDVDStreamPlayer() {}
   virtual bool OpenStream(CDVDStreamInfo &hint) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
@@ -125,8 +123,6 @@ public:
     SYNC_WAITSYNC,
     SYNC_INSYNC
   };
-protected:
-  CProcessInfo &m_processInfo;
 };
 
 class CDVDVideoCodec;
@@ -134,7 +130,6 @@ class CDVDVideoCodec;
 class IDVDStreamPlayerVideo : public IDVDStreamPlayer
 {
 public:
-  IDVDStreamPlayerVideo(CProcessInfo &processInfo) : IDVDStreamPlayer(processInfo) {};
   ~IDVDStreamPlayerVideo() {}
   virtual bool OpenStream(CDVDStreamInfo &hint) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
@@ -170,7 +165,6 @@ class CDVDAudioCodec;
 class IDVDStreamPlayerAudio : public IDVDStreamPlayer
 {
 public:
-  IDVDStreamPlayerAudio(CProcessInfo &processInfo) : IDVDStreamPlayer(processInfo) {};
   ~IDVDStreamPlayerAudio() {}
   virtual bool OpenStream(CDVDStreamInfo &hints) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;

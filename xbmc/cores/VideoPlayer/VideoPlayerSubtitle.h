@@ -36,7 +36,7 @@ class CDVDOverlayCodec;
 class CVideoPlayerSubtitle : public IDVDStreamPlayer
 {
 public:
-  CVideoPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer, CProcessInfo &processInfo);
+  CVideoPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer);
   ~CVideoPlayerSubtitle();
 
   void Process(double pts, double offset);

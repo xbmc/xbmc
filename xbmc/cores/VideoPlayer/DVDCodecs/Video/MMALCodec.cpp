@@ -76,7 +76,7 @@ CMMALVideoBuffer::~CMMALVideoBuffer()
 #undef CLASSNAME
 #define CLASSNAME "CMMALVideo"
 
-CMMALVideo::CMMALVideo(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo)
+CMMALVideo::CMMALVideo()
 {
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s %p", CLASSNAME, __func__, this);

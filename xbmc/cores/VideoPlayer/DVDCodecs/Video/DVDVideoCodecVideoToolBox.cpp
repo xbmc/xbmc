@@ -974,7 +974,7 @@ bool validate_avcC_spc(uint8_t *extradata, uint32_t extrasize, int32_t *max_ref_
 //-----------------------------------------------------------------------------------
 DllVideoToolBoxInterface *CDVDVideoCodecVideoToolBox::m_pLibVTB = NULL;
 
-CDVDVideoCodecVideoToolBox::CDVDVideoCodecVideoToolBox(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo)
+CDVDVideoCodecVideoToolBox::CDVDVideoCodecVideoToolBox()
 {
   m_fmt_desc    = NULL;
   m_vt_session  = NULL;
