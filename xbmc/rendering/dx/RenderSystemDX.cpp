@@ -367,6 +367,14 @@ void CRenderSystemDX::SetFullScreenInternal()
     toMatchMode.Format = scDesc.BufferDesc.Format;
     toMatchMode.Scaling = scDesc.BufferDesc.Scaling;
     toMatchMode.ScanlineOrdering = scDesc.BufferDesc.ScanlineOrdering;
+    // force switch to 1080p23 before hardware stereo
+    if (RENDER_STEREO_MODE_HARDWAREBASED == g_graphicsContext.GetStereoMode())
+    {
+      toMatchMode.RefreshRate.Numerator = 24000;
+      toMatchMode.RefreshRate.Denominator = 1001;
+      toMatchMode.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_PROGRESSIVE;
+      m_refreshRate = RATIONAL_TO_FLOAT(toMatchMode.RefreshRate);
+    }
 
     // find closest mode
     m_pOutput->FindClosestMatchingMode(&toMatchMode, &matchedMode, m_pD3DDev);
