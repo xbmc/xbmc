@@ -57,7 +57,8 @@ bool CDVDInputStreamFFmpeg::Open()
     if(bandwidth <= 0)
       bandwidth = INT_MAX;
     const CURL playlist_url = m_item.GetURL();
-    const CURL selected = PLAYLIST::CPlayListM3U::GetBestBandwidthStream(playlist_url, bandwidth);
+    const CProxy proxy = m_item.GetProxy();
+    const CURL selected = PLAYLIST::CPlayListM3U::GetBestBandwidthStream(playlist_url, bandwidth, proxy);
     if (selected.Get().compare(playlist_url.Get()) != 0)
     {
       CLog::Log(LOGINFO, "CDVDInputStreamFFmpeg: Auto-selecting %s based on configured bandwidth.", selected.Get().c_str());
