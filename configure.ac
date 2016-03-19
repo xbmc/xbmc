@@ -586,7 +586,6 @@ case $host in
      use_libcec=no
      use_vtbdecoder=yes
      use_optical_drive=no
-     use_dvdcss=no
      use_gles=yes
      use_cpu=cortex-a8
      ARCH="arm-osx"
