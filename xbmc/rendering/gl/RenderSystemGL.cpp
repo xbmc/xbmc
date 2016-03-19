@@ -643,7 +643,7 @@ void CRenderSystemGL::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW 
 
 }
 
-bool CRenderSystemGL::SupportsStereo(RENDER_STEREO_MODE mode)
+bool CRenderSystemGL::SupportsStereo(RENDER_STEREO_MODE mode) const
 {
   switch(mode)
   {

@@ -78,7 +78,7 @@ public:
 
   virtual void ApplyHardwareTransform(const TransformMatrix &matrix);
   virtual void RestoreHardwareTransform();
-  virtual bool SupportsStereo(RENDER_STEREO_MODE mode);
+  virtual bool SupportsStereo(RENDER_STEREO_MODE mode) const;
 
   virtual bool TestRender();
 
