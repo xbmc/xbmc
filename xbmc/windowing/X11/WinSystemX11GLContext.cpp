@@ -37,7 +37,6 @@
 
 CWinSystemX11GLContext::CWinSystemX11GLContext()
 {
-  m_pGLContext = NULL;
 }
 
 CWinSystemX11GLContext::~CWinSystemX11GLContext()

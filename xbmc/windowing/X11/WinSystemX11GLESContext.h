@@ -53,7 +53,7 @@ protected:
   virtual bool RefreshGLContext(bool force);
   XVisualInfo* GetVisual() override;
 
-  CGLContextEGL *m_pGLContext;
+  CGLContextEGL *m_pGLContext = nullptr;
   bool m_newGlContext;
 };
 
