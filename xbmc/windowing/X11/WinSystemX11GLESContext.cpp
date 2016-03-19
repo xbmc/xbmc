@@ -53,11 +53,10 @@ bool CWinSystemX11GLESContext::SetWindow(int width, int height, bool fullscreen,
   CWinSystemX11::SetWindow(width, height, fullscreen, output, &newwin);
   if (newwin)
   {
-    CDirtyRegionList dr;
     RefreshGLContext(m_currentOutput.compare(output) != 0);
     XSync(m_dpy, FALSE);
     g_graphicsContext.Clear(0);
-    g_graphicsContext.Flip(dr);
+    g_graphicsContext.Flip(true);
     ResetVSync();
 
     m_windowDirty = false;
