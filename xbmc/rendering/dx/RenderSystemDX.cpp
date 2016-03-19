@@ -192,10 +192,8 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
 
   if (!m_needNewDevice)
   {
-    CreateWindowSizeDependentResources();
     SetFullScreenInternal();
-    if (m_bResizeRequred)
-      CreateWindowSizeDependentResources();
+    CreateWindowSizeDependentResources();
   }
   else 
   {
@@ -804,6 +802,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
     DXWait(m_pD3DDev, m_pImdContext);
   }
 
+  uint32_t scFlags = m_useWindowedDX ? 0 : DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
   if (!m_pSwapChain)
   {
     CLog::Log(LOGDEBUG, "%s - Creating swapchain in %s mode.", __FUNCTION__, bHWStereoEnabled ? "Stereoscopic 3D" : "Mono");
@@ -823,7 +822,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
       scDesc1.AlphaMode   = DXGI_ALPHA_MODE_UNSPECIFIED;
       scDesc1.Stereo      = bHWStereoEnabled;
       scDesc1.SwapEffect  = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-      scDesc1.Flags       = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+      scDesc1.Flags       = scFlags;
 
       scDesc1.SampleDesc.Count = 1;
       scDesc1.SampleDesc.Quality = 0;
@@ -863,7 +862,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
       scDesc.OutputWindow = m_hFocusWnd;
       scDesc.Windowed     = m_useWindowedDX;
       scDesc.SwapEffect   = DXGI_SWAP_EFFECT_SEQUENTIAL;
-      scDesc.Flags        = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+      scDesc.Flags        = scFlags;
 
       scDesc.BufferDesc.Width   = m_nBackBufferWidth;
       scDesc.BufferDesc.Height  = m_nBackBufferHeight;
@@ -889,7 +888,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   else
   {
     // resize swap chain buffers with preserving the existing buffer count and format.
-    hr = m_pSwapChain->ResizeBuffers(scDesc.BufferCount, m_nBackBufferWidth, m_nBackBufferHeight, scDesc.BufferDesc.Format, scDesc.Flags);
+    hr = m_pSwapChain->ResizeBuffers(scDesc.BufferCount, m_nBackBufferWidth, m_nBackBufferHeight, scDesc.BufferDesc.Format, scFlags);
     if (FAILED(hr))
     {
       CLog::Log(LOGERROR, "%s - Failed to resize buffers (%s).", __FUNCTION__, GetErrorDescription(hr).c_str());
@@ -1170,9 +1169,9 @@ bool CRenderSystemDX::PresentRenderImpl(const CDirtyRegionList &dirty)
 
   if (DXGI_ERROR_INVALID_CALL == hr)
   {
-    m_bResizeRequred = true;
-    if (CreateWindowSizeDependentResources())
-      hr = S_OK;
+    SetFullScreenInternal();
+    CreateWindowSizeDependentResources();
+    hr = S_OK;
   }
 
   if (FAILED(hr))
@@ -1221,9 +1220,9 @@ bool CRenderSystemDX::BeginRender()
     break;
   case DXGI_ERROR_INVALID_CALL: // application provided invalid parameter data. Try to return after resize buffers
     CLog::Log(LOGERROR, "DXGI_ERROR_INVALID_CALL");
-    m_bResizeRequred = true;
-    if (CreateWindowSizeDependentResources())
-      m_nDeviceStatus = S_OK;
+    SetFullScreenInternal();
+    CreateWindowSizeDependentResources();
+    m_nDeviceStatus = S_OK;
     break;
   case DXGI_STATUS_OCCLUDED: // decide what we should do when windows content is not visible
     // do not spam to log file
