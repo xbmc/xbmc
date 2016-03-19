@@ -53,8 +53,3 @@ std::string CDVDInputStream::GetFileName()
   url.SetProtocolOptions("");
   return url.Get();
 }
-
-CURL CDVDInputStream::GetURL()
-{
-  return m_item.GetURL();
-}
