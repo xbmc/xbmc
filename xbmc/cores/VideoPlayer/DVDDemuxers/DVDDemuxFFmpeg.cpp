@@ -230,9 +230,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   {
     // special stream type that makes avformat handle file opening
     // allows internal ffmpeg protocols to be used
-    CURL url = m_pInput->GetURL();
+    AVDictionary *options = GetFFMpegOptionsFromInput();
 
-    AVDictionary *options = GetFFMpegOptionsFromURL(url);
+    CURL url = m_pInput->GetURL();
 
     int result=-1;
     if (url.IsProtocol("mms"))
@@ -599,9 +599,9 @@ void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
   }
 }
 
-AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromURL(const CURL &url)
+AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
 {
-
+  const CURL url = m_pInput->GetURL();
   AVDictionary *options = NULL;
 
   if (url.IsProtocol("http") || url.IsProtocol("https"))
