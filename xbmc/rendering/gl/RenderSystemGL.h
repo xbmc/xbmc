@@ -35,39 +35,39 @@ public:
   CRenderSystemGL();
   virtual ~CRenderSystemGL();
   virtual void CheckOpenGLQuirks();
-  virtual bool InitRenderSystem();
-  virtual bool DestroyRenderSystem();
-  virtual bool ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate);
+  bool InitRenderSystem() override;
+  bool DestroyRenderSystem() override;
+  bool ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate) override;
 
-  virtual bool BeginRender();
-  virtual bool EndRender();
-  virtual void PresentRender(bool rendered);
-  virtual bool ClearBuffers(color_t color);
-  virtual bool IsExtSupported(const char* extension);
+  bool BeginRender() override;
+  bool EndRender() override;
+  void PresentRender(bool rendered) override;
+  bool ClearBuffers(color_t color) override;
+  bool IsExtSupported(const char* extension) override;
 
-  virtual void SetVSync(bool vsync);
-  virtual void ResetVSync() { m_bVsyncInit = false; }
-  virtual void FinishPipeline();
+  void SetVSync(bool vsync) override;
+  void ResetVSync() { m_bVsyncInit = false; }
+  void FinishPipeline() override;
 
-  virtual void SetViewPort(CRect& viewPort);
-  virtual void GetViewPort(CRect& viewPort);
+  void SetViewPort(CRect& viewPort) override;
+  void GetViewPort(CRect& viewPort) override;
 
-  virtual void SetScissors(const CRect &rect);
-  virtual void ResetScissors();
+  void SetScissors(const CRect &rect) override;
+  void ResetScissors() override;
 
-  virtual void CaptureStateBlock();
-  virtual void ApplyStateBlock();
+  void CaptureStateBlock() override;
+  void ApplyStateBlock() override;
 
-  virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.0f);
+  void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.0f) override;
 
-  virtual void ApplyHardwareTransform(const TransformMatrix &matrix);
-  virtual void RestoreHardwareTransform();
-  virtual void SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view);
-  virtual bool SupportsStereo(RENDER_STEREO_MODE mode) const;
+  void ApplyHardwareTransform(const TransformMatrix &matrix) override;
+  void RestoreHardwareTransform() override;
+  void SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view) override;
+  bool SupportsStereo(RENDER_STEREO_MODE mode) const override;
 
-  virtual bool TestRender();
+  bool TestRender() override;
 
-  virtual void Project(float &x, float &y, float &z);
+  void Project(float &x, float &y, float &z) override;
 
   virtual void GetGLSLVersion(int& major, int& minor);
 
