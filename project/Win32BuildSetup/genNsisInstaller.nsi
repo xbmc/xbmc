@@ -223,7 +223,8 @@ Section "${APP_NAME}" SecAPP
   File "${app_root}\application\*.*"
   SetOutPath "$INSTDIR\addons"
   File /r "${app_root}\application\addons\*.*"
-  File /r "${app_root}\addons\peripheral.*"
+  File /nonfatal /r "${app_root}\addons\peripheral.*"
+  File /r "${app_root}\addons\skin.*"
   SetOutPath "$INSTDIR\media"
   File /r "${app_root}\application\media\*.*"
   SetOutPath "$INSTDIR\system"
@@ -284,7 +285,7 @@ SectionEnd
 !include /nonfatal "audiodsp-addons.nsi"
 !include /nonfatal "inputstream-addons.nsi"
 !include /nonfatal "pvr-addons.nsi"
-!include /nonfatal "skin-addons.nsi"
+;!include /nonfatal "skin-addons.nsi"
 !include /nonfatal "screensaver-addons.nsi"
 !include /nonfatal "visualization-addons.nsi"
 
@@ -384,7 +385,7 @@ Section "VS2010 C++ re-distributable Package (x86)" SEC_VCREDIST2
   SectionIn 1 2 #section is in install type Full 
   SetOutPath "$TEMP\vc2010"
   File "${app_root}\..\dependencies\vcredist\2010\vcredist_x86.exe"
-  ExecWait '"$TEMP\vc2010\vcredist_x86.exe" /q' $VSRedistSetupError
+  ExecWait '"$TEMP\vc2010\vcredist_x86.exe" /q /norestart' $VSRedistSetupError
   RMDir /r "$TEMP\vc2010"
   DetailPrint "Finished VS2010 re-distributable setup"
 SectionEnd
@@ -394,7 +395,7 @@ DetailPrint "Running VS2013 re-distributable setup..."
   SectionIn 1 2 #section is in install type Full
   SetOutPath "$TEMP\vc2013"
   File "${app_root}\..\dependencies\vcredist\2013\vcredist_x86.exe"
-  ExecWait '"$TEMP\vc2013\vcredist_x86.exe" /q' $VSRedistSetupError
+  ExecWait '"$TEMP\vc2013\vcredist_x86.exe" /install /quiet /norestart' $VSRedistSetupError
   RMDir /r "$TEMP\vc2013"
   DetailPrint "Finished VS2013 re-distributable setup"
   SetOutPath "$INSTDIR"
@@ -405,7 +406,7 @@ DetailPrint "Running VS2015 re-distributable setup..."
   SectionIn 1 2 #section is in install type Full
   SetOutPath "$TEMP\vc2015"
   File "${app_root}\..\dependencies\vcredist\2015\vcredist_x86.exe"
-  ExecWait '"$TEMP\vc2015\vcredist_x86.exe" /q' $VSRedistSetupError
+  ExecWait '"$TEMP\vc2015\vcredist_x86.exe" /install /quiet /norestart' $VSRedistSetupError
   RMDir /r "$TEMP\vc2015"
   DetailPrint "Finished VS2015 re-distributable setup"
   SetOutPath "$INSTDIR"
