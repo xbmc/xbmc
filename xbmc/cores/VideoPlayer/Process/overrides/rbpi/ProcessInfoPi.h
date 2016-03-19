@@ -26,7 +26,7 @@ class CProcessInfoPi : public CProcessInfo
 {
 public:
   virtual ~CProcessInfoPi();
-  EINTERLACEMETHOD GetFallbackDeintMethod();
+  EINTERLACEMETHOD GetFallbackDeintMethod() override;
 
 //protected:
   CProcessInfoPi();
