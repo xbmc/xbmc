@@ -23,8 +23,6 @@
 
 #pragma once
 
-#if defined(HAVE_LIBGL)
-
 #include "system.h"
 #include "system_gl.h"
 #include "rendering/RenderSystem.h"
@@ -93,7 +91,5 @@ protected:
 
   uint8_t m_latencyCounter;
 };
-
-#endif // HAVE_LIBGL
 
 #endif // RENDER_SYSTEM_H
