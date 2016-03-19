@@ -69,6 +69,12 @@ namespace ADDON
     bool Init();
     void DeInit();
 
+    CAddonMgr();
+    CAddonMgr(const CAddonMgr&);
+    CAddonMgr const& operator=(CAddonMgr const&);
+    virtual ~CAddonMgr();
+
+
     IAddonMgrCallback* GetCallbackForType(TYPE type);
     bool RegisterAddonMgrCallback(TYPE type, IAddonMgrCallback* cb);
     void UnregisterAddonMgrCallback(TYPE type);
@@ -258,12 +264,6 @@ namespace ADDON
     static bool PlatformSupportsAddon(const cp_plugin_info_t *info);
 
     bool GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enabledOnly);
-
-    // private construction, and no assignements; use the provided singleton methods
-    CAddonMgr();
-    CAddonMgr(const CAddonMgr&);
-    CAddonMgr const& operator=(CAddonMgr const&);
-    virtual ~CAddonMgr();
 
     std::set<std::string> m_disabled;
     std::set<std::string> m_updateBlacklist;

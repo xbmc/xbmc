@@ -53,6 +53,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "ServiceBroker.h"
 
 #ifdef HAS_VISUALISATION
 #include "Visualisation.h"
@@ -238,8 +239,7 @@ CAddonMgr::~CAddonMgr()
 
 CAddonMgr &CAddonMgr::GetInstance()
 {
-  static CAddonMgr sAddonMgr;
-  return sAddonMgr;
+  return CServiceBroker::GetAddonMgr();
 }
 
 IAddonMgrCallback* CAddonMgr::GetCallbackForType(TYPE type)
@@ -314,7 +314,7 @@ bool CAddonMgr::Init()
   }
 
   status = m_cpluff->register_logger(m_cp_context, cp_logger,
-      &CAddonMgr::GetInstance(), clog_to_cp(g_advancedSettings.m_logLevel));
+      this, clog_to_cp(g_advancedSettings.m_logLevel));
   if (status != CP_OK)
   {
     CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_logger() returned status: %i", status);
@@ -470,7 +470,7 @@ bool CAddonMgr::GetDisabledAddons(VECADDONS& addons)
 bool CAddonMgr::GetDisabledAddons(VECADDONS& addons, const TYPE& type)
 {
   VECADDONS all;
-  if (CAddonMgr::GetInstance().GetInstalledAddons(all, type))
+  if (GetInstalledAddons(all, type))
   {
     std::copy_if(all.begin(), all.end(), std::back_inserter(addons),
         [this](const AddonPtr& addon){ return IsAddonDisabled(addon->ID()); });

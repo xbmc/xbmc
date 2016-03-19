@@ -657,14 +657,11 @@ bool CApplication::Create()
   CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(&g_pythonParser, ".py");
 #endif // HAS_PYTHON
 
-  // start-up Addons Framework
-  // currently bails out if either cpluff Dll is unavailable or system dir can not be scanned
-  if (!CAddonMgr::GetInstance().Init())
+  m_ServiceManager.reset(new CServiceManager());
+  if (!m_ServiceManager->Init())
   {
-    CLog::Log(LOGFATAL, "CApplication::Create: Unable to start CAddonMgr");
     return false;
   }
-  m_binaryAddonCache.Init();
 
   // Create the Mouse, Keyboard, Remote, and Joystick devices
   // Initialize after loading settings to get joystick deadzone setting
@@ -2793,10 +2790,6 @@ bool CApplication::Cleanup()
   {
     g_windowManager.DestroyWindows();
 
-    m_binaryAddonCache.Deinit();
-
-    CAddonMgr::GetInstance().DeInit();
-
     CLog::Log(LOGNOTICE, "closing down remote control service");
     CInputManager::GetInstance().DisableRemoteControl();
 
@@ -2845,6 +2838,13 @@ bool CApplication::Cleanup()
 
     delete m_network;
     m_network = NULL;
+
+    // Cleanup was called more than once on exit during my tests
+    if (m_ServiceManager)
+    {
+      m_ServiceManager->Deinit();
+      m_ServiceManager.reset();
+    }
 
     return true;
   }

@@ -43,7 +43,8 @@
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 #include "URL.h"
-#include "Application.h"
+#include "ServiceBroker.h"
+#include "addons/BinaryAddonCache.h"
 #include "addons/AudioDecoder.h"
 
 using namespace ADDON;
@@ -67,7 +68,8 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   if (!strExtension.empty())
   {
     VECADDONS codecs;
-    g_application.m_binaryAddonCache.GetAddons(codecs, ADDON_AUDIODECODER);
+    CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
+    addonCache.GetAddons(codecs, ADDON_AUDIODECODER);
     for (size_t i=0;i<codecs.size();++i)
     {
       std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));

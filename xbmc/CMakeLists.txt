@@ -23,6 +23,8 @@ set(SOURCES Application.cpp
             PlayListPlayer.cpp
             PartyModeManager.cpp
             SectionLoader.cpp
+            ServiceBroker.cpp
+            ServiceManager.cpp
             SystemGlobals.cpp
             TextureCache.cpp
             TextureCacheJob.cpp
@@ -65,6 +67,8 @@ set(HEADERS AppParamParser.h
             PasswordManager.h
             PlayListPlayer.h
             SectionLoader.h
+            ServiceBroker.h
+            ServiceManager.h
             SortFileItem.h
             TextureCache.h
             TextureCacheJob.h

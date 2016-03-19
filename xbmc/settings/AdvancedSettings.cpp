@@ -28,6 +28,7 @@
 #include "addons/AudioDecoder.h"
 #include "addons/IAddon.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "LangInfo.h"
@@ -1355,7 +1356,8 @@ std::string CAdvancedSettings::GetMusicExtensions() const
   std::string result(m_musicExtensions);
 
   VECADDONS codecs;
-  g_application.m_binaryAddonCache.GetAddons(codecs, ADDON_AUDIODECODER);
+  CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
+  addonCache.GetAddons(codecs, ADDON_AUDIODECODER);
   for (size_t i=0;i<codecs.size();++i)
   {
     std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));

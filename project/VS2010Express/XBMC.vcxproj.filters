@@ -3463,6 +3463,8 @@
     <ClCompile Include="..\..\xbmc\addons\BinaryAddonCache.cpp">
       <Filter>addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\ServiceBroker.cpp" />
+    <ClCompile Include="..\..\xbmc\ServiceManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6728,6 +6730,8 @@
     <ClInclude Include="..\..\xbmc\music\ContextMenus.h">
       <Filter>music</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\ServiceBroker.h" />
+    <ClInclude Include="..\..\xbmc\ServiceManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
