@@ -19,28 +19,3 @@
  */
 
 #include "ProcessInfo.h"
-
-CProcessInfo* CProcessInfo::CreateInstance()
-{
-  return new CProcessInfo();
-}
-
-// base class definitions
-CProcessInfo::CProcessInfo()
-{
-
-}
-
-CProcessInfo::~CProcessInfo()
-{
-
-}
-
-EINTERLACEMETHOD CProcessInfo::GetFallbackDeintMethod()
-{
-#ifdef TARGET_RASPBERRY_PI
-  return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
-#else
-  return VS_INTERLACEMETHOD_DEINTERLACE;
-#endif
-}

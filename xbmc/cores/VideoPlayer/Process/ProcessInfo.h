@@ -21,13 +21,11 @@
 
 #include "cores/IPlayer.h"
 
-class CProcessInfo
+namespace ProcessInfo
 {
-public:
-  static CProcessInfo* CreateInstance();
-  virtual ~CProcessInfo();
-  EINTERLACEMETHOD GetFallbackDeintMethod();
-
-protected:
-  CProcessInfo();
+#ifdef TARGET_RASPBERRY_PI
+  static const EINTERLACEMETHOD fallback_deinterlace_method = VS_INTERLACEMETHOD_DEINTERLACE_HALF;
+#else
+  static const EINTERLACEMETHOD fallback_deinterlace_method = VS_INTERLACEMETHOD_DEINTERLACE;
+#endif
 };

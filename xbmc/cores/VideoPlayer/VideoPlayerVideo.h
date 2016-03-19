@@ -63,8 +63,7 @@ public:
   CVideoPlayerVideo(CDVDClock* pClock
                  ,CDVDOverlayContainer* pOverlayContainer
                  ,CDVDMessageQueue& parent
-                 ,CRenderManager& renderManager,
-                 CProcessInfo &processInfo);
+                 ,CRenderManager& renderManager);
   virtual ~CVideoPlayerVideo();
 
   bool OpenStream(CDVDStreamInfo &hint);

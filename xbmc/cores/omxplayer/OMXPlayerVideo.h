@@ -88,7 +88,7 @@ protected:
   virtual void Process();
 private:
 public:
-  OMXPlayerVideo(OMXClock *av_clock, CDVDOverlayContainer* pOverlayContainer, CDVDMessageQueue& parent, CRenderManager& renderManager, CProcessInfo &processInfo);
+  OMXPlayerVideo(OMXClock *av_clock, CDVDOverlayContainer* pOverlayContainer, CDVDMessageQueue& parent, CRenderManager& renderManager);
   ~OMXPlayerVideo();
   bool OpenStream(CDVDStreamInfo &hints);
   void SendMessage(CDVDMsg* pMsg, int priority = 0) { m_messageQueue.Put(pMsg, priority); }

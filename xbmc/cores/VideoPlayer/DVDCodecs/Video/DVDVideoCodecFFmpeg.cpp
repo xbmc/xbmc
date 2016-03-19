@@ -47,6 +47,7 @@
 
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "VDPAU.h"
@@ -199,7 +200,7 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avct
   return avcodec_default_get_format(avctx, fmt);
 }
 
-CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo)
+CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg()
 {
   m_pCodecContext = nullptr;
   m_pFrame = nullptr;
@@ -438,7 +439,7 @@ void CDVDVideoCodecFFmpeg::SetFilters()
   EINTERLACEMETHOD mInt = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
 
   if (mInt != VS_INTERLACEMETHOD_DEINTERLACE && mInt != VS_INTERLACEMETHOD_DEINTERLACE_HALF)
-    mInt = m_processInfo.GetFallbackDeintMethod();
+    mInt = ProcessInfo::fallback_deinterlace_method;
 
   unsigned int filters = 0;
 

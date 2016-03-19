@@ -403,7 +403,7 @@ bool CDVDVideoCodecIMX::VpuAllocFrameBuffers()
   return true;
 }
 
-CDVDVideoCodecIMX::CDVDVideoCodecIMX(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo)
+CDVDVideoCodecIMX::CDVDVideoCodecIMX()
 {
   m_pFormatName = "iMX-xxx";
   m_vpuHandle = 0;
