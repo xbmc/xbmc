@@ -28,13 +28,12 @@ class CGLContextGLX : public CGLContext
 {
 public:
   CGLContextGLX(Display *dpy);
-  virtual bool Refresh(bool force, int screen, Window glWindow, bool &newContext);
-  virtual void Destroy();
-  virtual void Detach();
-  virtual void SetVSync(bool enable, int &mode);
-  virtual void SwapBuffers(int &mode);
-  virtual void QueryExtensions();
-  virtual bool IsExtSupported(const char* extension);
+  bool Refresh(bool force, int screen, Window glWindow, bool &newContext) override;
+  void Destroy() override;
+  void Detach() override;
+  void SetVSync(bool enable, int &mode) override;
+  void SwapBuffers(int &mode) override;
+  void QueryExtensions() override;
   GLXWindow m_glxWindow;
   GLXContext m_glxContext;
 protected:

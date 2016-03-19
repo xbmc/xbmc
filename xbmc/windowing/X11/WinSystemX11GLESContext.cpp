@@ -53,11 +53,10 @@ bool CWinSystemX11GLESContext::SetWindow(int width, int height, bool fullscreen,
   CWinSystemX11::SetWindow(width, height, fullscreen, output, &newwin);
   if (newwin)
   {
-    CDirtyRegionList dr;
     RefreshGLContext(m_currentOutput.compare(output) != 0);
     XSync(m_dpy, FALSE);
     g_graphicsContext.Clear(0);
-    g_graphicsContext.Flip(dr);
+    g_graphicsContext.Flip(true);
     ResetVSync();
 
     m_windowDirty = false;
@@ -110,18 +109,14 @@ bool CWinSystemX11GLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& r
 
 bool CWinSystemX11GLESContext::DestroyWindowSystem()
 {
-  bool ret;
   m_pGLContext->Destroy();
-  ret = CWinSystemX11::DestroyWindowSystem();
-  return ret;
+  return CWinSystemX11::DestroyWindowSystem();
 }
 
 bool CWinSystemX11GLESContext::DestroyWindow()
 {
-  bool ret;
   m_pGLContext->Detach();
-  ret = CWinSystemX11::DestroyWindow();
-  return ret;
+  return CWinSystemX11::DestroyWindow();
 }
 
 XVisualInfo* CWinSystemX11GLESContext::GetVisual()

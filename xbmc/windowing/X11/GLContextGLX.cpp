@@ -295,15 +295,4 @@ void CGLContextGLX::QueryExtensions()
     m_glXSwapIntervalEXT = NULL;
 }
 
-bool CGLContextGLX::IsExtSupported(const char* extension)
-{
-  std::string name;
-
-  name  = " ";
-  name += extension;
-  name += " ";
-
-  return m_extensions.find(name) != std::string::npos;
-}
-
 #endif

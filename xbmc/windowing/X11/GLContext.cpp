@@ -17,34 +17,21 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
-#pragma once
+#include "system.h"
 
 #if defined(HAVE_X11)
-#include "X11/Xlib.h"
-#include <string>
 
-class CGLContext
+#include "GLContext.h"
+
+bool CGLContext::IsExtSupported(const char* extension) const
 {
-public:
-  CGLContext(Display *dpy)
-  {
-    m_dpy = dpy;
-  }
-  virtual ~CGLContext() {};
-  virtual bool Refresh(bool force, int screen, Window glWindow, bool &newContext) = 0;
-  virtual void Destroy() = 0;
-  virtual void Detach() = 0;
-  virtual void SetVSync(bool enable, int &mode) = 0;
-  virtual void SwapBuffers(int &mode) = 0;
-  virtual void QueryExtensions() = 0;
-  bool IsExtSupported(const char* extension) const;
+  std::string name;
 
-  std::string ExtPrefix(){ return m_extPrefix; };
-  std::string m_extPrefix;
-  std::string m_extensions;
+  name  = " ";
+  name += extension;
+  name += " ";
 
-  Display *m_dpy;
-};
+  return m_extensions.find(name) != std::string::npos;
+}
 
 #endif
