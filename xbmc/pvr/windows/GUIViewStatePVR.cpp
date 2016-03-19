@@ -22,6 +22,7 @@
 #include "settings/Settings.h"
 #include "view/ViewStateSettings.h"
 
+#include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/timers/PVRTimers.h"
 
 #include "GUIViewStatePVR.h"
@@ -32,6 +33,7 @@ CGUIViewStateWindowPVRChannels::CGUIViewStateWindowPVRChannels(const int windowI
 {
   AddSortMethod(SortByChannelNumber, 549, LABEL_MASKS("%L", "%I", "%L", ""));
   AddSortMethod(SortByLabel, 551, LABEL_MASKS("%L", "%I", "%L", ""));
+  AddSortMethod(SortByLastPlayed, 568, LABEL_MASKS( "%L", "%p", "%L", "%p")); // FileName, LastPlayed | Foldername, LastPlayed
 
   // Default sorting
   SetSortMethod(SortByChannelNumber);
@@ -64,7 +66,7 @@ void CGUIViewStateWindowPVRRecordings::SaveViewState(void)
 
 bool CGUIViewStateWindowPVRRecordings::HideParentDirItems(void)
 {
-  return (CGUIViewState::HideParentDirItems() || m_items.GetPath() == "pvr://recordings/active/" || m_items.GetPath() == "pvr://recordings/deleted/");
+  return (CGUIViewState::HideParentDirItems() || CPVRRecordingsPath(m_items.GetPath()).IsRecordingsRoot());
 }
 
 CGUIViewStateWindowPVRGuide::CGUIViewStateWindowPVRGuide(const int windowId, const CFileItemList& items) : CGUIViewStatePVR(windowId, items)

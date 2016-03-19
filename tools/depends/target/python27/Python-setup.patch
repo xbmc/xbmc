@@ -1,0 +1,76 @@
+--- setup.py.orig	2015-10-07 16:32:16.219083585 +0200
++++ setup.py	2015-10-07 16:41:48.563085871 +0200
+@@ -320,6 +320,9 @@
+             self.announce('WARNING: skipping import check for Cygwin-based "%s"'
+                 % ext.name)
+             return
++        #if os.environ.get('CROSS_COMPILE_TARGET') == 'yes':
++        #    return
++	
+         ext_filename = os.path.join(
+             self.build_lib,
+             self.get_ext_filename(self.get_ext_fullname(ext.name)))
+@@ -331,27 +334,30 @@
+         try:
+             imp.load_dynamic(ext.name, ext_filename)
+         except ImportError, why:
+-            self.failed.append(ext.name)
+-            self.announce('*** WARNING: renaming "%s" since importing it'
+-                          ' failed: %s' % (ext.name, why), level=3)
+-            assert not self.inplace
+-            basename, tail = os.path.splitext(ext_filename)
+-            newname = basename + "_failed" + tail
+-            if os.path.exists(newname):
+-                os.remove(newname)
+-            os.rename(ext_filename, newname)
+-
+-            # XXX -- This relies on a Vile HACK in
+-            # distutils.command.build_ext.build_extension().  The
+-            # _built_objects attribute is stored there strictly for
+-            # use here.
+-            # If there is a failure, _built_objects may not be there,
+-            # so catch the AttributeError and move on.
+-            try:
+-                for filename in self._built_objects:
+-                    os.remove(filename)
+-            except AttributeError:
+-                self.announce('unable to remove files (ignored)')
++            if os.environ.get('CROSS_COMPILE_TARGET') != "yes":
++                self.failed.append(ext.name)
++                self.announce('*** WARNING: renaming "%s" since importing it'
++                              ' failed: %s' % (ext.name, why), level=3)
++                assert not self.inplace
++                basename, tail = os.path.splitext(ext_filename)
++                newname = basename + "_failed" + tail
++                if os.path.exists(newname):
++                    os.remove(newname)
++                os.rename(ext_filename, newname)
++
++                # XXX -- This relies on a Vile HACK in
++                # distutils.command.build_ext.build_extension().  The
++                # _built_objects attribute is stored there strictly for
++                # use here.
++                # If there is a failure, _built_objects may not be there,
++                # so catch the AttributeError and move on.
++                try:
++                    for filename in self._built_objects:
++                        os.remove(filename)
++                except AttributeError:
++                    self.announce('unable to remove files (ignored)')
++            else:
++                self.announce('WARNING: "%s" failed importing, ignored because we are cross-compiling' % ext.name)
+         except:
+             exc_type, why, tb = sys.exc_info()
+             self.announce('*** WARNING: importing extension "%s" '
+
+--- Modules/makesetup.orig	2015-10-08 09:53:38.787333151 +0200
++++ Modules/makesetup	2015-10-08 11:28:50.939355966 +0200
+@@ -212,6 +212,7 @@
+ 			objs="$objs $obj"
+ 			case $src in
+ 			glmodule.c) ;;
++                       # _*io.c) src='$(srcdir)/'"$srcdir/_io/$(echo $src| tr -d "_")";;
+ 			/*) ;;
+ 			\$*) ;;
+ 			*) src='$(srcdir)/'"$srcdir/$src";;
+

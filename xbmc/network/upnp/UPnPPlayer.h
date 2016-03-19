@@ -54,7 +54,6 @@ public:
   virtual void SetVolume(float volume);
   virtual void GetAudioInfo(std::string& strAudioInfo) {};
   virtual void GetVideoInfo(std::string& strVideoInfo) {};
-  virtual void GetGeneralInfo(std::string& strVideoInfo) {};
   virtual bool CanRecord() { return false;};
   virtual bool IsRecording() { return false;};
   virtual bool Record(bool bOnOff) { return false;};

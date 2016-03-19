@@ -68,4 +68,13 @@
       </group>
     </category>
   </section>
+  <section id="appearance">
+    <category id="lookandfeel">
+      <group id="1">
+        <setting id="lookandfeel.skin" type="addon">
+          <default>skin.estouchy</default>
+        </setting>
+      </group>
+    </category>
+  </section>
 </settings>

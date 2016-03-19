@@ -22,16 +22,80 @@
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Utils/AELimiter.h"
+#include <atomic>
 
 namespace ActiveAE
 {
+
+class CSyncError
+{
+public:
+  CSyncError()
+  {
+    Flush();
+  }
+  void Add(double error)
+  {
+    m_buffer += error;
+    m_count++;
+  }
+
+  void Flush(int interval = 100)
+  {
+    m_buffer = 0.0f;
+    m_lastError = 0.0;
+    m_count  = 0;
+    m_timer.Set(interval);
+  }
+
+  bool Get(double& error, int interval = 100)
+  {
+    if(m_timer.IsTimePast())
+    {
+      error = Get();
+      Flush(interval);
+      m_lastError = error;
+      return true;
+    }
+    else
+    {
+      error = m_lastError;
+      return false;
+    }
+  }
+
+  double GetLastError(unsigned int &time)
+  {
+    time = m_timer.GetStartTime();
+    return m_lastError;
+  }
+
+  void Correction(double correction)
+  {
+    m_lastError += correction;
+  }
+
+protected:
+  double Get()
+  {
+    if(m_count)
+      return m_buffer / m_count;
+    else
+      return 0.0;
+  }
+  double m_buffer;
+  double m_lastError;
+  int m_count;
+  XbmcThreads::EndTime m_timer;
+};
+
 
 class CActiveAEStream : public IAEStream
 {
 protected:
   friend class CActiveAE;
   friend class CEngineStats;
-  CActiveAEStream(AEAudioFormat *format);
+  CActiveAEStream(AEAudioFormat *format, unsigned int streamid);
   virtual ~CActiveAEStream();
   void FadingFinished();
   void IncFreeBuffers();
@@ -39,12 +103,13 @@ protected:
   void ResetFreeBuffers();
   void InitRemapper();
   void RemapBuffer();
+  double CalcResampleRatio(double error);
 
 public:
   virtual unsigned int GetSpace();
   virtual unsigned int AddData(uint8_t* const *data, unsigned int offset, unsigned int frames, double pts = 0.0);
   virtual double GetDelay();
-  virtual int64_t GetPlayingPTS();
+  virtual CAESyncInfo GetSyncInfo();
   virtual bool IsBuffering();
   virtual double GetCacheTime();
   virtual double GetCacheTotal();
@@ -68,26 +133,27 @@ public:
   virtual const unsigned int GetChannelCount() const;
   
   virtual const unsigned int GetSampleRate() const ;
-  virtual const unsigned int GetEncodedSampleRate() const;
   virtual const enum AEDataFormat GetDataFormat() const;
   
   virtual double GetResampleRatio();
-  virtual bool SetResampleRatio(double ratio);
+  virtual void SetResampleRatio(double ratio);
+  virtual void SetResampleMode(int mode);
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnRegisterAudioCallback();
   virtual void FadeVolume(float from, float to, unsigned int time);
   virtual bool IsFading();
   virtual void RegisterSlave(IAEStream *stream);
-  virtual void Discontinuity();
   virtual bool HasDSP();
 
 protected:
 
+  unsigned int m_id;
   AEAudioFormat m_format;
   float m_streamVolume;
   float m_streamRgain;
   float m_streamAmplify;
   double m_streamResampleRatio;
+  int m_streamResampleMode;
   unsigned int m_streamSpace;
   bool m_streamDraining;
   bool m_streamDrained;
@@ -98,12 +164,15 @@ protected:
   bool m_bypassDSP;
   IAEStream *m_streamSlave;
   CCriticalSection m_streamLock;
+  CCriticalSection m_statsLock;
   uint8_t *m_leftoverBuffer;
   int m_leftoverBytes;
   CSampleBuffer *m_currentBuffer;
   CSoundPacket *m_remapBuffer;
   IAEResample *m_remapper;
-  int m_clockId;
+  double m_lastPts;
+  double m_lastPtsJump;
+  std::atomic_int m_errorInterval;
 
   // only accessed by engine
   CActiveAEBufferPool *m_inputBuffers;
@@ -111,7 +180,6 @@ protected:
   std::deque<CSampleBuffer*> m_processingSamples;
   CActiveAEDataProtocol *m_streamPort;
   CEvent m_inMsgEvent;
-  CCriticalSection *m_statsLock;
   bool m_drain;
   bool m_paused;
   bool m_started;
@@ -125,9 +193,15 @@ protected:
   float m_fadingTarget;
   int m_fadingTime;
   int m_profile;
+  int m_resampleMode;
+  double m_resampleIntegral;
   enum AVMatrixEncoding m_matrixEncoding;
   enum AVAudioServiceType m_audioServiceType;
   bool m_forceResampler;
+  IAEClockCallback *m_pClock;
+  CSyncError m_syncError;
+  double m_lastSyncError;
+  CAESyncInfo::AESyncState m_syncState;
 };
 }
 

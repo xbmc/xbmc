@@ -18,9 +18,10 @@
 <!--       <obc45>Stop</obc45>         -->
 <!--    </universalremote>            -->
 
-<!-- Note that the action can be a built-in function.                 -->
-<!--  eg <B>ActivateWindow(MyMusic)</B>                         -->
-<!-- would automatically go to My Music on the press of the B button. -->
+<!-- Note that the action can be a built-in function.                                         -->
+<!--  eg <B>ActivateWindow(MyMusic)</B>                                                       -->
+<!-- would automatically go to My Music on the press of the B button.                         -->
+<!-- An empty action removes the corresponding mapping from the default keymap                -->
 
 <!-- Joysticks / Gamepads:                                                                    -->
 <!--   See the sample PS3 controller configuration below for the format.                      -->
@@ -385,7 +386,7 @@
   </MyVideoPlaylist>
   <VirtualKeyboard>
     <remote>
-      <back>BackSpace</back>
+      <back>Back</back>
       <star>Shift</star>
       <hash>Symbols</hash>
       <zero>Number0</zero>
@@ -426,7 +427,7 @@
       <eight>Number8</eight>
       <nine>Number9</nine>
       <enter>Enter</enter>
-      <back>BackSpace</back>
+      <back>Back</back>
     </remote>
   </NumericInput>
   <Weather>
@@ -606,6 +607,16 @@
       <rootmenu>Close</rootmenu>
       <start>Close</start>
       <playlist>Close</playlist>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>number2</two>
+      <three>number3</three>
+      <four>number4</four>
+      <five>number5</five>
+      <six>number6</six>
+      <seven>number7</seven>
+      <eight>number8</eight>
+      <nine>number9</nine>
     </remote>
   </PVROSDChannels>
   <PVROSDGuide>
@@ -616,8 +627,60 @@
       <rootmenu>Close</rootmenu>
       <start>Close</start>
       <guide>Close</guide>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>number2</two>
+      <three>number3</three>
+      <four>number4</four>
+      <five>number5</five>
+      <six>number6</six>
+      <seven>number7</seven>
+      <eight>number8</eight>
+      <nine>number9</nine>
     </remote>
   </PVROSDGuide>
+  <TVChannels>
+    <remote>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>number2</two>
+      <three>number3</three>
+      <four>number4</four>
+      <five>number5</five>
+      <six>number6</six>
+      <seven>number7</seven>
+      <eight>number8</eight>
+      <nine>number9</nine>
+    </remote>
+  </TVChannels>
+  <TVGuide>
+    <remote>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>number2</two>
+      <three>number3</three>
+      <four>number4</four>
+      <five>number5</five>
+      <six>number6</six>
+      <seven>number7</seven>
+      <eight>number8</eight>
+      <nine>number9</nine>
+    </remote>
+  </TVGuide>
+  <RadioChannels>
+    <remote>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>number2</two>
+      <three>number3</three>
+      <four>number4</four>
+      <five>number5</five>
+      <six>number6</six>
+      <seven>number7</seven>
+      <eight>number8</eight>
+      <nine>number9</nine>
+    </remote>
+  </RadioChannels>
   <MyTVSettings>
     <remote>
       <back>PreviousMenu</back>

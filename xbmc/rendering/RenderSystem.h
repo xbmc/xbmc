@@ -102,12 +102,13 @@ public:
 
   virtual bool BeginRender() = 0;
   virtual bool EndRender() = 0;
-  virtual bool PresentRender(const CDirtyRegionList& dirty) = 0;
+  virtual void PresentRender(bool rendered) = 0;
   virtual bool ClearBuffers(color_t color) = 0;
   virtual bool IsExtSupported(const char* extension) = 0;
 
   virtual void SetVSync(bool vsync) = 0;
   bool GetVSync() { return m_bVSync; }
+  virtual void FinishPipeline() {};
 
   virtual void SetViewPort(CRect& viewPort) = 0;
   virtual void GetViewPort(CRect& viewPort) = 0;

@@ -21,7 +21,7 @@
 #include "CompileInfo.h"
 #include <cstddef>
 
-#if defined(TARGET_WINDOWS) && !defined(_DEBUG)
+#if defined(TARGET_WINDOWS) && !defined(BUILDING_WITH_CMAKE) && !defined(_DEBUG)
 #include "../git_revision.h" // generated file
 #endif
 
@@ -48,7 +48,7 @@ const char* CCompileInfo::GetSuffix()
 
 const char* CCompileInfo::GetSCMID()
 {
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) && !defined(BUILDING_WITH_CMAKE)
 #ifdef GIT_REV
   return GIT_REV;
 #else

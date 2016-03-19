@@ -19,7 +19,7 @@
 #pragma once
 
 #include "AddonDll.h"
-#include "include/xbmc_audioenc_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_audioenc_types.h"
 #include "cdrip/IEncoder.h"
 
 typedef DllAddon<AudioEncoder, AUDIOENC_PROPS> DllAudioEncoder;
@@ -31,10 +31,11 @@ namespace ADDON
   class CAudioEncoder : public AudioEncoderDll, public IEncoder
   {
   public:
-    CAudioEncoder(const AddonProps &props) : AudioEncoderDll(props), m_context{nullptr} {};
-    CAudioEncoder(const cp_extension_t *ext);
+    static std::unique_ptr<CAudioEncoder> FromExtension(AddonProps, const cp_extension_t* ext);
+
+    explicit CAudioEncoder(AddonProps props) : AudioEncoderDll(std::move(props)), m_context{nullptr} {};
+    CAudioEncoder(AddonProps props, std::string extension);
     virtual ~CAudioEncoder() {}
-    virtual AddonPtr Clone() const;
 
     // Things that MUST be supplied by the child classes
     bool Init(audioenc_callbacks &callbacks);

@@ -72,10 +72,15 @@ using namespace KODI::MESSAGING;
 
 static float zoomamount[10] = { 1.0f, 1.2f, 1.5f, 2.0f, 2.8f, 4.0f, 6.0f, 9.0f, 13.5f, 20.0f };
 
-CBackgroundPicLoader::CBackgroundPicLoader() : CThread("BgPicLoader")
+CBackgroundPicLoader::CBackgroundPicLoader()
+  : CThread("BgPicLoader")
+  , m_iPic{0}
+  , m_iSlideNumber{0}
+  , m_maxWidth{0}
+  , m_maxHeight{0}
+  , m_isLoading{false}
+  , m_pCallback{nullptr}
 {
-  m_pCallback = NULL;
-  m_isLoading = false;
 }
 
 CBackgroundPicLoader::~CBackgroundPicLoader()
@@ -148,6 +153,7 @@ CGUIWindowSlideShow::CGUIWindowSlideShow(void)
   m_slides = new CFileItemList;
   m_Resolution = RES_INVALID;
   m_loadType = KEEP_IN_MEMORY;
+  m_bLoadNextPic = false;
   Reset();
 }
 
@@ -222,7 +228,6 @@ bool CGUIWindowSlideShow::IsPlaying() const
 
 void CGUIWindowSlideShow::Reset()
 {
-  g_infoManager.SetShowCodec(false);
   m_bSlideShow = false;
   m_bShuffled = false;
   m_bPause = false;
@@ -256,10 +261,6 @@ void CGUIWindowSlideShow::OnDeinitWindow(int nextWindowID)
     //FIXME: Use GUI resolution for now
     //g_graphicsContext.SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution(), TRUE);
   }
-
-  //   Reset();
-  if (nextWindowID != WINDOW_PICTURES)
-    m_ImageLib.Unload();
 
   if (nextWindowID != WINDOW_FULLSCREEN_VIDEO)
   {
@@ -930,8 +931,6 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
         m_Resolution = g_graphicsContext.GetVideoResolution();
 
       CGUIWindow::OnMessage(message);
-      if (message.GetParam1() != WINDOW_PICTURES)
-        m_ImageLib.Load();
 
       // turn off slideshow if we only have 1 image
       if (m_slides->Size() <= 1)
@@ -1110,7 +1109,7 @@ bool CGUIWindowSlideShow::PlayVideo()
     return false;
   CLog::Log(LOGDEBUG, "Playing current video slide %s", item->GetPath().c_str());
   m_bPlayingVideo = true;
-  PlayBackRet ret = g_application.PlayFile(*item);
+  PlayBackRet ret = g_application.PlayFile(*item, "");
   if (ret == PLAYBACK_OK)
     return true;
   if (ret == PLAYBACK_FAIL)

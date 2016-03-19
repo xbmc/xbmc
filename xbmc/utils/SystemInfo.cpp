@@ -47,14 +47,14 @@
 #include "utils/CharsetConverter.h"
 #endif
 #if defined(TARGET_DARWIN)
-#include "osx/DarwinUtils.h"
-#include "osx/CocoaInterface.h"
+#include "platform/darwin/DarwinUtils.h"
+#include "platform/darwin/osx/CocoaInterface.h"
 #endif
 #include "powermanagement/PowerManager.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 #if defined(TARGET_ANDROID)
-#include "android/jni/Build.h"
+#include "platform/android/jni/Build.h"
 #include "utils/AMLUtils.h"
 #endif
 
@@ -1009,7 +1009,7 @@ const std::string& CSysInfo::GetKernelCpuFamily(void)
 
 int CSysInfo::GetXbmcBitness(void)
 {
-#if defined (__aarch64__) || defined(__arm64__) || defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || defined(_M_X64) || \
+#if defined (__aarch64__) || defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || defined(_M_X64) || \
   defined(_M_AMD64) || defined(__ppc64__) || defined(__mips64)
   return 64;
 #elif defined(__thumb__) || defined(_M_ARMT) || defined(__arm__) || defined(_M_ARM) || defined(__mips__) || defined(mips) || defined(__mips) || defined(i386) || \

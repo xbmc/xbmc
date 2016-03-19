@@ -32,10 +32,12 @@
 #define wcstoll  _wcstoi64
 #define wcstoull _wcstoui64
 #else // TARGET_WINDOWS
+#if !defined(TARGET_DARWIN)
 #define strtoll(str, endptr, base)  (int64_t)strtod(str, endptr)
 #define strtoull(str, endptr, base) (uint64_t)strtod(str, endptr)
 #define wcstoll(str, endptr, base)  (int64_t)wcstod(str, endptr)
 #define wcstoull(str, endptr, base) (uint64_t)wcstod(str, endptr)
+#endif
 #endif // TARGET_WINDOWS
 #endif // strtoll
 

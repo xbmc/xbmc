@@ -28,7 +28,7 @@
  * The recording information tag holds data about name, length, recording time
  * and so on of recorded stream stored on the backend.
  *
- * The filename string is used to by the PVRManager and passed to DVDPlayer
+ * The filename string is used to by the PVRManager and passed to VideoPlayer
  * to stream data from the backend to Kodi.
  *
  * It is a also CVideoInfoTag and some of his variables must be set!
@@ -36,12 +36,8 @@
  */
 
 #include "XBDateTime.h"
-#include "addons/include/xbmc_pvr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "video/VideoInfoTag.h"
-
-#define PVR_RECORDING_BASE_PATH     "recordings"
-#define PVR_RECORDING_DELETED_PATH  "deleted"
-#define PVR_RECORDING_ACTIVE_PATH   "active"
 
 class CVideoDatabase;
 class CVariant;
@@ -207,19 +203,30 @@ namespace PVR
     bool IsDeleted() const { return m_bIsDeleted; }
 
     /*!
-     * @return Broadcast id of the EPG event associated with this recording
+     * @brief Check whether this is a tv or radio recording
+     * @return true if this is a radio recording, false if this is a tv recording
      */
-    unsigned int EpgEvent(void) const { return m_iEpgEventId; }
+    bool IsRadio() const { return m_bRadio; }
+
+    /*!
+     * @return Broadcast id of the EPG event associated with this recording or EPG_TAG_INVALID_UID
+     */
+    unsigned int BroadcastUid(void) const { return m_iEpgEventId; }
+
+    /*!
+     * @return channel id associated with this recording or PVR_CHANNEL_INVALID_UID
+     */
+    int ChannelUid(void) const { return m_iChannelUid; }
 
     /*!
      * @return Get the channel on which this recording is/was running
-     * @note Only works if the recording has an EPG id provided by the add-on
+     * @note Only works if the recording has a channel uid provided by the add-on
      */
     CPVRChannelPtr Channel(void) const;
 
     /*!
      * @return True while the recording is running
-     * @note Only works if the recording has an EPG id provided by the add-on
+     * @note Only works if the recording has a channel uid and an EPG id provided by the add-on
      */
     bool IsBeingRecorded(void) const;
 
@@ -234,6 +241,8 @@ namespace PVR
     bool         m_bGotMetaData;
     bool         m_bIsDeleted;    /*!< set if entry is a deleted recording which can be undelete */
     unsigned int m_iEpgEventId;   /*!< epg broadcast id associated with this recording */
+    int          m_iChannelUid;   /*!< channel uid associated with this recording */
+    bool         m_bRadio;        /*!< radio or tv recording */
 
     void UpdatePath(void);
     void DisplayError(PVR_ERROR err) const;

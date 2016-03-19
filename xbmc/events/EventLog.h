@@ -60,7 +60,7 @@ public:
   std::string EventLevelToString(EventLevel level);
   EventLevel EventLevelFromString(const std::string& level);
 
-  void ShowFullEventLog(EventLevel level = EventLevelBasic, bool includeHigherLevels = true);
+  void ShowFullEventLog(EventLevel level = EventLevel::Basic, bool includeHigherLevels = true);
 
 protected:
   CEventLog() { }

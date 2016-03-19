@@ -22,7 +22,7 @@
 
 #include "CoreAudioHelpers.h"
 #include "utils/log.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 
 bool CCoreAudioHardware::GetAutoHogMode()
 {

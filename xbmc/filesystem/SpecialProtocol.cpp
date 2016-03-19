@@ -34,8 +34,6 @@
 #include "utils/StringUtils.h"
 #endif
 
-std::map<std::string, std::string> CSpecialProtocol::m_pathMap;
-
 void CSpecialProtocol::SetProfilePath(const std::string &dir)
 {
   SetPath("profile", dir);
@@ -75,6 +73,11 @@ void CSpecialProtocol::SetMasterProfilePath(const std::string &dir)
 void CSpecialProtocol::SetTempPath(const std::string &dir)
 {
   SetPath("temp", dir);
+}
+
+void CSpecialProtocol::SetLogPath(const std::string &dir)
+{
+  SetPath("logpath", dir);
 }
 
 bool CSpecialProtocol::ComparePath(const std::string &path1, const std::string &path2)
@@ -146,9 +149,6 @@ std::string CSpecialProtocol::TranslatePath(const CURL &url)
     translatedPath = URIUtils::AddFileToFolder(CUtil::VideoPlaylistsLocation(), FileName);
   else if (RootDir == "skin")
     translatedPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), FileName);
-  else if (RootDir == "logpath")
-    translatedPath = URIUtils::AddFileToFolder(g_advancedSettings.m_logFolder, FileName);
-
 
   // from here on, we have our "real" special paths
   else if (RootDir == "xbmc" ||
@@ -158,7 +158,8 @@ std::string CSpecialProtocol::TranslatePath(const CURL &url)
            RootDir == "temp" ||
            RootDir == "profile" ||
            RootDir == "masterprofile" ||
-           RootDir == "frameworks")
+           RootDir == "frameworks" ||
+           RootDir == "logpath")
   {
     std::string basePath = GetPath(RootDir);
     if (!basePath.empty())
@@ -248,6 +249,7 @@ void CSpecialProtocol::LogPaths()
   CLog::Log(LOGNOTICE, "special://masterprofile/ is mapped to: %s", GetPath("masterprofile").c_str());
   CLog::Log(LOGNOTICE, "special://home/ is mapped to: %s", GetPath("home").c_str());
   CLog::Log(LOGNOTICE, "special://temp/ is mapped to: %s", GetPath("temp").c_str());
+  CLog::Log(LOGNOTICE, "special://logpath/ is mapped to: %s", GetPath("logpath").c_str());
   //CLog::Log(LOGNOTICE, "special://userhome/ is mapped to: %s", GetPath("userhome").c_str());
   if (!CUtil::GetFrameworksPath().empty())
     CLog::Log(LOGNOTICE, "special://frameworks/ is mapped to: %s", GetPath("frameworks").c_str());

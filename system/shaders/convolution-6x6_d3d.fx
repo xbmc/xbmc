@@ -22,6 +22,7 @@ texture2D g_Texture;
 texture2D g_KernelTexture;
 float2    g_StepXY;
 float2    g_viewPort;
+float2    g_colorRange;
 
 SamplerState RGBSampler : IMMUTABLE
 {
@@ -37,6 +38,12 @@ SamplerState KernelSampler : IMMUTABLE
   Filter   = MIN_MAG_MIP_LINEAR;
 };
 
+struct VS_INPUT
+{
+  float4 Position   : POSITION;
+  float2 TextureUV  : TEXCOORD0;
+};
+
 struct VS_OUTPUT
 {
   float2 TextureUV  : TEXCOORD0;
@@ -46,7 +53,7 @@ struct VS_OUTPUT
 //
 // VS for rendering in screen space
 //
-VS_OUTPUT VS(VS_OUTPUT In)
+VS_OUTPUT VS(VS_INPUT In)
 {
   VS_OUTPUT output  = (VS_OUTPUT)0;
   output.Position.x =  (In.Position.x / (g_viewPort.x  / 2.0)) - 1;
@@ -113,7 +120,7 @@ float4 CONVOLUTION6x6(in float2 TextureUV  : TEXCOORD0) : SV_TARGET
 		getLine(ypos2.y, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.b +
 		getLine(ypos2.z, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.b;
 
-  return float4(rgb, 1.0f);
+  return float4(g_colorRange.x + g_colorRange.y * saturate(rgb), 1.0);
 }
 
 technique11 SCALER_T

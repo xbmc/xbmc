@@ -100,7 +100,7 @@ static int PlayOffset(const std::vector<std::string>& params)
     g_playlistPlayer.PlayNext(pos);
   // we start playing the 'other' playlist so we need to use play to initialize the player state
   else
-    g_playlistPlayer.Play(pos);
+    g_playlistPlayer.Play(pos, "");
 
   return 0;
 }
@@ -320,7 +320,7 @@ static int PlayerControl(const std::vector<std::string>& params)
     if (channel)
     {
       CFileItem playItem(channel);
-      if (!g_application.PlayMedia(playItem, channel->IsRadio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
+      if (!g_application.PlayMedia(playItem, "", channel->IsRadio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
       {
         CLog::Log(LOGERROR, "ResumeLiveTv could not play channel: %s", channel->ChannelName().c_str());
         return false;
@@ -442,7 +442,7 @@ static int PlayMedia(const std::vector<std::string>& params)
     g_playlistPlayer.ClearPlaylist(playlist);
     g_playlistPlayer.Add(playlist, items);
     g_playlistPlayer.SetCurrentPlaylist(playlist);
-    g_playlistPlayer.Play(playOffset);
+    g_playlistPlayer.Play(playOffset, "");
   }
   else
   {
@@ -451,7 +451,7 @@ static int PlayMedia(const std::vector<std::string>& params)
     g_playlistPlayer.SetCurrentPlaylist(playlist);
 
     // play media
-    if (!g_application.PlayMedia(item, playlist))
+    if (!g_application.PlayMedia(item, "", playlist))
     {
       CLog::Log(LOGERROR, "PlayMedia could not play media: %s", params[0].c_str());
       return false;
@@ -467,8 +467,7 @@ static int PlayMedia(const std::vector<std::string>& params)
  */
 static int PlayWith(const std::vector<std::string>& params)
 {
-  g_application.m_eForcedNextPlayer = CPlayerCoreFactory::GetInstance().GetPlayerCore(params[0]);
-  g_application.OnAction(CAction(ACTION_PLAYER_PLAY));
+  g_application.OnAction(CAction(ACTION_PLAYER_PLAY, params[0]));
 
   return 0;
 }
@@ -485,10 +484,91 @@ static int Seek(const std::vector<std::string>& params)
   return 0;
 }
 
+// Note: For new Texts with comma add a "\" before!!! Is used for table text.
+//
+/// \page page_List_of_built_in_functions
+/// \section built_in_functions_12 Player built-in's
+///
+/// -----------------------------------------------------------------------------
+///
+/// \table_start
+///   \table_h2_l{
+///     Function,
+///     Description }
+///   \table_row2_l{
+///     <b>`PlaysDisc(parm)`</b>\n
+///     <b>`PlayDVD(param)`</b>(deprecated)
+///     ,
+///     Plays the inserted disc\, like CD\, DVD or Blu-ray\, in the disc drive.
+///     @param[in] param                 "restart" to restart from resume point (optional)
+///   }
+///   \table_row2_l{
+///     <b>`PlayerControl(command[\,param])`</b>
+///     ,
+///     Allows control of music and videos. The command may be one of Play\, Stop\,
+///     Forward\, Rewind\, Next\, Previous\, BigSkipForward\, BigSkipBackward\,
+///     SmallSkipForward\, SmallSkipBackward\, Random\, RandomOn\, RandomOff\,
+///     Repeat\, RepeatOne\, RepeatAll\, RepeatOff\, Partymode(music) or
+///     Partymode(video) or Partymode(path to .xsp file)\, and Record. Play will
+///     either pause\, resume\, or stop ffwding or rewinding. Random toggles random
+///     playback and Repeat cycles through the repeat modes (these both take an
+///     optional second parameter\, Notify\, that notifies the user of the new
+///     state). Partymode(music/video) toggles the appropriate partymode\,
+///     defaults to music if no parameter is given\, besides the default music or
+///     video partymode you can also pass a path to a custom smartplaylist (.xsp)
+///     as parameter.
+///     @param[in] control               Control to execute.
+///     @param[in] param                 "notify" to notify user (optional\, certain controls).
+///   }
+///   \table_row2_l{
+///     <b>`Playlist.Clear`</b>
+///     ,
+///     Clear the current playlist
+///     @param[in]                       (ignored)
+///   }
+///   \table_row2_l{
+///     <b>`Playlist.PlayOffset(positionType[\,position])`</b>
+///     ,
+///     Start playing from a particular offset in the playlist 
+///     @param[in] positionType          Position in playlist or playlist type.
+///     @param[in] position              Position in playlist if params[0] is playlist type (optional).
+///   }
+///   \table_row2_l{
+///     <b>`PlayMedia(media[\,isdir][\,1]\,[playoffset=xx])`</b>
+///     ,
+///     Plays the media. This can be a playlist\, music\, or video file\, directory\,
+///     plugin or an Url. The optional parameter "\,isdir" can be used for playing
+///     a directory. "\,1" will start a video in a preview window\, instead of
+///     fullscreen. If media is a playlist\, you can use playoffset=xx where xx is
+///     the position to start playback from.
+///     @param[in] media                 URL to media to play (optional).
+///     @param[in] isdir                 Set "isdir" if media is a directory (optional).
+///     @param[in] fullscreen            Set "1" to start playback in fullscreen (optional).
+///     @param[in] resume                Set "resume" to force resuming (optional).
+///     @param[in] noresume              Set "noresume" to force not resuming (optional).
+///     @param[in] playeroffset          Set "playoffset=<offset>" to start playback from a given position in a playlist (optional).
+///   }
+///   \table_row2_l{
+///     <b>`PlayWith(core)`</b>
+///     ,
+///     Play the selected item with the specified player core.
+///     @param[in] core                  Name of playback core.
+///   }
+///   \table_row2_l{
+///     <b>`Seek(seconds)`</b>
+///     ,
+///     Seeks to the specified relative amount of seconds within the current
+///     playing media. A negative value will seek backward and a positive value forward.
+///     @param[in] seconds               Number of seconds to seek.
+///   }
+/// \table_end
+///
+
 CBuiltins::CommandMap CPlayerBuiltins::GetOperations() const
 {
   return {
-           {"playdvd",             {"Plays the inserted CD or DVD media from the DVD-ROM Drive!", 0, PlayDVD}},
+           {"playdisc",            {"Plays the inserted disc, like CD, DVD or Blu-ray, in the disc drive.", 0, PlayDVD}},
+           {"playdvd",             {"Plays the inserted disc, like CD, DVD or Blu-ray, in the disc drive.", 0, PlayDVD}},
            {"playlist.clear",      {"Clear the current playlist", 0, ClearPlaylist}},
            {"playlist.playoffset", {"Start playing from a particular offset in the playlist", 1, PlayOffset}},
            {"playercontrol",       {"Control the music or video player", 1, PlayerControl}},

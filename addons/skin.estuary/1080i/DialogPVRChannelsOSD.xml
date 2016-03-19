@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">11</defaultcontrol>
+	<coordinates>
+		<left>1300</left>
+		<top>40</top>
+	</coordinates>
+	<include>OpenClose_Right</include>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<left>-20</left>
+			<top>-20</top>
+			<width>620</width>
+			<height>1040</height>
+			<texture border="22">dialogs/dialog-bg.png</texture>
+		</control>
+		<control type="image">
+			<description>Dialog Header image</description>
+			<left>0</left>
+			<top>0</top>
+			<width>580</width>
+			<height>70</height>
+			<texture colordiffuse="button_focus" border="2">colors/white70.png</texture>
+		</control>
+		<control type="label" id="2">
+			<description>header label</description>
+			<textoffsetx>40</textoffsetx>
+			<top>0</top>
+			<width>580</width>
+			<height>70</height>
+			<font>font13_title</font>
+			<aligny>center</aligny>
+			<label>$INFO[VideoPlayer.ChannelGroup]</label>
+			<shadowcolor>black</shadowcolor>
+		</control>
+		<control type="label">
+			<description>header label</description>
+			<left>40</left>
+			<top>0</top>
+			<width>530</width>
+			<height>70</height>
+			<font>font13_title</font>
+			<label>$INFO[System.Time]</label>
+			<align>right</align>
+			<aligny>center</aligny>
+			<shadowcolor>black</shadowcolor>
+		</control>
+		<control type="list" id="11">
+			<left>0</left>
+			<top>70</top>
+			<width>580</width>
+			<height>880</height>
+			<onleft>PreviousChannelGroup</onleft>
+			<onright>60</onright>
+			<onup>11</onup>
+			<ondown>11</ondown>
+			<pagecontrol>60</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="110" width="580">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>580</width>
+					<height>110</height>
+					<texture border="40">lists/separator.png</texture>
+				</control>
+				<control type="label">
+					<left>5</left>
+					<top>0</top>
+					<width>80</width>
+					<height>110</height>
+					<font>font24_title</font>
+					<align>center</align>
+					<aligny>center</aligny>
+					<textcolor>grey</textcolor>
+					<info>ListItem.ChannelNumberLabel</info>
+				</control>
+				<control type="image">
+					<left>5</left>
+					<top>10</top>
+					<width>70</width>
+					<height>24</height>
+					<aspectratio>keep</aspectratio>
+					<texture>windows/pvr/record.png</texture>
+					<visible>ListItem.IsRecording</visible>
+				</control>
+				<control type="label">
+					<left>90</left>
+					<top>5</top>
+					<width>350</width>
+					<height>40</height>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+				<control type="label">
+					<left>90</left>
+					<top>46</top>
+					<width>350</width>
+					<height>20</height>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Title]</label>
+					<visible>IsEmpty(Listitem.Icon)</visible>
+				</control>
+				<control type="label">
+					<left>90</left>
+					<top>46</top>
+					<width>300</width>
+					<height>20</height>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Title]</label>
+					<visible>!IsEmpty(Listitem.Icon)</visible>
+				</control>
+				<control type="label">
+					<left>90</left>
+					<top>75</top>
+					<width>90</width>
+					<height>20</height>
+					<font>font10_title</font>
+					<textcolor>button_focus</textcolor>
+					<selectedcolor>button_focus</selectedcolor>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.StartTime]</label>
+					<visible>ListItem.HasEpg</visible>
+				</control>
+				<control type="progress">
+					<description>Progressbar</description>
+					<left>160</left>
+					<top>80</top>
+					<width>180</width>
+					<height>12</height>
+					<colordiffuse>88FFFFFF</colordiffuse>
+					<info>ListItem.Progress</info>
+					<visible>ListItem.HasEpg</visible>
+				</control>
+				<control type="label">
+					<left>355</left>
+					<top>75</top>
+					<width>90</width>
+					<height>20</height>
+					<font>font10_title</font>
+					<textcolor>button_focus</textcolor>
+					<selectedcolor>button_focus</selectedcolor>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.EndTime]</label>
+					<visible>ListItem.HasEpg</visible>
+				</control>
+				<control type="image">
+					<left>480</left>
+					<top>15</top>
+					<width>80</width>
+					<height>80</height>
+					<texture>$INFO[ListItem.Icon]</texture>
+					<aspectratio>keep</aspectratio>
+				</control>
+			</itemlayout>
+			<focusedlayout height="110" width="580">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>580</width>
+					<height>110</height>
+					<texture border="40">lists/separator.png</texture>
+					<visible>!Control.HasFocus(11)</visible>
+				</control>
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>580</width>
+					<height>110</height>
+					<texture>lists/focus.png</texture>
+					<visible>Control.HasFocus(11)</visible>
+				</control>
+				<control type="label">
+					<left>5</left>
+					<top>0</top>
+					<width>80</width>
+					<height>110</height>
+					<font>font24_title</font>
+					<align>center</align>
+					<aligny>center</aligny>
+					<textcolor>grey</textcolor>
+					<info>ListItem.ChannelNumberLabel</info>
+				</control>
+				<control type="image">
+					<left>5</left>
+					<top>10</top>
+					<width>70</width>
+					<height>24</height>
+					<aspectratio>keep</aspectratio>
+					<texture>windows/pvr/record.png</texture>
+					<visible>ListItem.IsRecording</visible>
+				</control>
+				<control type="label">
+					<left>90</left>
+					<top>5</top>
+					<width>350</width>
+					<height>40</height>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+				<control type="label">
+					<left>90</left>
+					<top>46</top>
+					<width>350</width>
+					<height>20</height>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Title]</label>
+					<visible>IsEmpty(Listitem.Icon)</visible>
+				</control>
+				<control type="label">
+					<left>90</left>
+					<top>46</top>
+					<width>300</width>
+					<height>20</height>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Title]</label>
+					<visible>!IsEmpty(Listitem.Icon)</visible>
+				</control>
+				<control type="label">
+					<left>90</left>
+					<top>75</top>
+					<width>90</width>
+					<height>20</height>
+					<font>font10_title</font>
+					<textcolor>button_focus</textcolor>
+					<selectedcolor>button_focus</selectedcolor>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.StartTime]</label>
+					<visible>ListItem.HasEpg</visible>
+				</control>
+				<control type="progress">
+					<description>Progressbar</description>
+					<left>160</left>
+					<top>80</top>
+					<width>180</width>
+					<height>12</height>
+					<colordiffuse>88FFFFFF</colordiffuse>
+					<info>ListItem.Progress</info>
+					<visible>ListItem.HasEpg</visible>
+				</control>
+				<control type="label">
+					<left>355</left>
+					<top>75</top>
+					<width>90</width>
+					<height>20</height>
+					<font>font10_title</font>
+					<textcolor>button_focus</textcolor>
+					<selectedcolor>button_focus</selectedcolor>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.EndTime]</label>
+					<visible>ListItem.HasEpg</visible>
+				</control>
+				<control type="image">
+					<left>480</left>
+					<top>15</top>
+					<width>80</width>
+					<height>80</height>
+					<texture>$INFO[ListItem.Icon]</texture>
+					<aspectratio>keep</aspectratio>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="scrollbar" id="60">
+			<left>585</left>
+			<top>70</top>
+			<width>12</width>
+			<height>932</height>
+			<onleft>11</onleft>
+			<onright>NextChannelGroup</onright>
+			<ondown>61</ondown>
+			<onup>61</onup>
+			<orientation>vertical</orientation>
+		</control>
+		<control type="label">
+			<description>Page Count Label</description>
+			<left>110</left>
+			<top>960</top>
+			<width>450</width>
+			<height>20</height>
+			<font>font12</font>
+			<textcolor>grey</textcolor>
+			<align>right</align>
+			<aligny>center</aligny>
+			<label>[COLOR=button_focus]$INFO[Container(11).NumItems][/COLOR] $LOCALIZE[19019] - $LOCALIZE[31035] [COLOR=button_focus]$INFO[Container(11).CurrentPage]/$INFO[Container(11).NumPages][/COLOR]</label>
+		</control>
+		<control type="label">
+			<description>Page Count Label</description>
+			<left>20</left>
+			<top>960</top>
+			<width>450</width>
+			<height>20</height>
+			<font>font12</font>
+			<textcolor>grey</textcolor>
+			<aligny>center</aligny>
+			<label>[COLOR button_focus][B]&lt;&gt;[/B][/COLOR]  Groups</label>
+		</control>
+	</controls>
+</window>

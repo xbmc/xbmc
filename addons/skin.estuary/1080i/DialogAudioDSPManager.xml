@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog">
+	<zorder>1</zorder>
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<coordinates>
+		<left>70</left>
+		<top>140</top>
+	</coordinates>
+	<controls>
+		<include name="DialogBackgroundCommons">
+			<param name="DialogBackgroundWidth" value="1780" />
+			<param name="DialogBackgroundHeight" value="700" />
+			<param name="DialogHeaderLabel" value="$LOCALIZE[15020]" />
+			<param name="DialogHeaderId" value="2" />
+		</include>
+		<control type="list" id="9000">
+			<description>processing mode selection list</description>
+			<left>0</left>
+			<top>105</top>
+			<width>330</width>
+			<height>700</height>
+			<onup>9000</onup>
+			<ondown>200</ondown>
+			<onleft>9001</onleft>
+			<onright>20</onright>
+			<orientation>vertical</orientation>
+			<scrolltime tween="sine" easing="out">200</scrolltime>
+			<itemlayout width="330" height="110">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>330</width>
+					<height>130</height>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				<control type="label">
+					<left>0</left>
+					<top>0</top>
+					<width>330</width>
+					<height>130</height>
+					<textcolor>grey</textcolor>
+					<font>font12_title</font>
+					<aligny>center</aligny>
+					<align>center</align>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+			</itemlayout>
+			<focusedlayout width="330" height="110">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>330</width>
+					<height>130</height>
+					<animation effect="fade" start="100" end="20" time="200" condition="!Control.HasFocus(9000)">Conditional</animation>
+					<texture border="40">buttons/dialogbutton-fo.png</texture>
+				</control>
+				<control type="label">
+					<left>0</left>
+					<top>0</top>
+					<width>330</width>
+					<height>130</height>
+					<font>font12_title</font>
+					<aligny>center</aligny>
+					<align>center</align>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+			</focusedlayout>
+			<content>
+				<item id="91">
+					<label>$LOCALIZE[15057]</label>
+					<label2>$LOCALIZE[15114]</label2>
+					<onclick>noop</onclick>
+					<property name="currentMode">InputResampling</property>
+				</item>
+				<item id="92">
+					<label>$LOCALIZE[15058]</label>
+					<label2>$LOCALIZE[15113]</label2>
+					<onclick>noop</onclick>
+					<property name="currentMode">Preprocessing</property>
+				</item>
+				<item id="93">
+					<label>$LOCALIZE[15059]</label>
+					<label2>$LOCALIZE[15115]</label2>
+					<onclick>noop</onclick>
+					<property name="currentMode">Masterprocessing</property>
+				</item>
+				<item id="94">
+					<label>$LOCALIZE[15060]</label>
+					<label2>$LOCALIZE[15117]</label2>
+					<onclick>noop</onclick>
+					<property name="currentMode">Postprocessing</property>
+				</item>
+				<item id="95">
+					<label>$LOCALIZE[15061]</label>
+					<label2>$LOCALIZE[15116]</label2>
+					<onclick>noop</onclick>
+					<property name="currentMode">OutputResampling</property>
+				</item>
+			</content>
+		</control>
+		<control type="group" id="200">
+			<description>available- and active mode lists</description>
+			<top>90</top>
+			<control type="group">
+				<left>320</left>
+				<description>available modes group</description>
+				<include name="AudioDSPModeList">
+					<param name="sublabel" value="$LOCALIZE[15050]: $INFO[Container(20).NumItems]" />
+					<param name="scrollbar_id" value="60" />
+					<param name="list_id" value="20" />
+					<param name="onright" value="21" />
+					<param name="onleft" value="9000" />
+				</include>
+			</control>
+			<control type="group">
+				<description>active modes group</description>
+				<left>810</left>
+				<top>0</top>
+				<include name="AudioDSPModeList">
+					<param name="sublabel" value="$LOCALIZE[15051]: $INFO[Container(21).NumItems]" />
+					<param name="scrollbar_id" value="61" />
+					<param name="list_id" value="21" />
+					<param name="onright" value="9001" />
+					<param name="onleft" value="60" />
+				</include>
+			</control>
+		</control>
+		<control type="grouplist" id="9001">
+			<left>1300</left>
+			<top>105</top>
+			<itemgap>-20</itemgap>
+			<onleft>61</onleft>
+			<onright>9000</onright>
+			<control type="radiobutton" id="22">
+				<width>470</width>
+				<height>90</height>
+				<label>$LOCALIZE[15064]</label>
+				<font>font12_title</font>
+				<textoffsetx>40</textoffsetx>
+				<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+				<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+			</control>
+			<include name="DefaultDialogButton">
+				<param name="id" value="23" />
+				<param name="label" value="$LOCALIZE[14070]" />
+				<param name="width" value="470" />
+			</include>
+			<include name="DefaultDialogButton">
+				<param name="id" value="24" />
+				<param name="label" value="$LOCALIZE[15066]" />
+				<param name="width" value="470" />
+			</include>
+		</control>
+		<control type="textbox">
+			<description>current mode description label</description>
+			<left>1325</left>
+			<top>350</top>
+			<width>420</width>
+			<height>300</height>
+			<font>font12</font>
+			<aligny>top</aligny>
+			<label>$VAR[DSPManagerHelpTextVar]</label>
+		</control>
+	</controls>
+</window>

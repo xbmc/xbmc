@@ -59,7 +59,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
     return NULL;
 
   VECADDONS codecs;
-  CAddonMgr::GetInstance().GetAddons(ADDON_AUDIODECODER, codecs);
+  CAddonMgr::GetInstance().GetAddons(codecs, ADDON_AUDIODECODER);
   for (size_t i=0;i<codecs.size();++i)
   {
     std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));
@@ -101,7 +101,8 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
     CMusicInfoTagLoaderSHN *pTagLoader = new CMusicInfoTagLoaderSHN();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
-  else if (strExtension == "mka" || strExtension == "dsf")
+  else if (strExtension == "mka" || strExtension == "dsf" ||
+           strExtension == "dff" || strExtension == "opus")
     return new CMusicInfoTagLoaderFFmpeg();
 
   return NULL;

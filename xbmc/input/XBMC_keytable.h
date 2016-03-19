@@ -1,6 +1,8 @@
+#pragma once
+
 /*
- *      Copyright (C) 2007-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2007-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,13 +15,10 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
-#ifndef _XBMC_keytable_h
-#define _XBMC_keytable_h
 
 typedef struct struct_XBMCKEYTABLE
 {
@@ -52,4 +51,3 @@ bool KeyTableLookupUnicode(uint16_t unicode, XBMCKEYTABLE* keytable);
 bool KeyTableLookupSymAndUnicode(uint16_t sym, uint16_t unicode, XBMCKEYTABLE* keytable);
 bool KeyTableLookupVKeyName(uint32_t vkey, XBMCKEYTABLE* keytable);
 
-#endif /* _XBMC_keytable_h */

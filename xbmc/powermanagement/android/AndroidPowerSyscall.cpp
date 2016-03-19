@@ -21,7 +21,7 @@
 #if defined (TARGET_ANDROID)
 
 #include "AndroidPowerSyscall.h"
-#include "android/activity/XBMCApp.h"
+#include "platform/android/activity/XBMCApp.h"
 
 CAndroidPowerSyscall::CAndroidPowerSyscall()
 { }

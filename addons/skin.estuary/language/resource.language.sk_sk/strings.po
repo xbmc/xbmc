@@ -1,0 +1,521 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Slovak (Slovakia) (http://www.transifex.com/projects/p/kodi-main/language/sk_SK/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sk_SK\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Prehráva sa"
+
+msgctxt "#31001"
+msgid "Search"
+msgstr "Hľadať"
+
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Zobraziť fanart médií ako pozadie"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Režim kina"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Zmeniť režim"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Pozerať ako 2D"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Náhodné filmy"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Nepozreté filmy"
+
+msgctxt "#31008"
+msgid "In-progress TV Shows"
+msgstr "Rozpozerané TV seriály"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Prevziať ikony"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Rozpozerané filmy"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Najprehrávanejšie albumy"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Náhodné albumy"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Náhodní interpreti"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Neprehraté albumy"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Nedávne nahrávky"
+
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr "Najsledovanejšie kanály"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Predpoveď"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Akcie"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Ďalšie možnosti"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Usporiadať podľa"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "TypZobrazenia"
+
+msgctxt "#31024"
+msgid "Next tracks"
+msgstr "Nasledujúce skladby"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "Nenašli sa žiadne obľúbené. Akúkoľvek položku z prehľadov médií môžete pridať do tohto zoznamu použitím kontextovej ponuky."
+
+msgctxt "#31026"
+msgid "Go to albums"
+msgstr "Prejsť na albumy"
+
+msgctxt "#31027"
+msgid "Go to songs"
+msgstr "Prejsť na skladby"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Zobraziť fanart"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Posledné prihlásenie"
+
+msgctxt "#31030"
+msgid "Memory used"
+msgstr "Použitá pamäť"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Informácie o verzii"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Poradie"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Vaše hodnotenie"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Rozšírené informácie"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Stránky"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "Položky"
+
+msgctxt "#31037"
+msgid "Tracklist"
+msgstr "Zoznam skladieb"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Pretočiť dozadu"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Pretočiť dopredu"
+
+msgctxt "#31040"
+msgid "Cancel update"
+msgstr "Zrušiť aktualizáciu"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Výrobca fotoaparátu"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Možnosti zoznamu skladieb"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "Nastavte typ a pridajte pravidlá pre vytvorenie inteligentného zoznamu skladieb. Tieto zoznamy skladieb sú dynamické a zahŕňajú všetky položky médií z vašej databázy, ktoré zodpovedajú zvoleným pravidlám."
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Pridať skupinu"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Premenovať skupinu"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Odstrániť skupinu"
+
+msgctxt "#31047"
+msgid "Read more..."
+msgstr "Čítať viac..."
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "K dispozícii"
+
+msgctxt "#31049"
+msgid "Press [B]Up[/B] to rewind or fast-forward"
+msgstr "Stlačte [B]nahor[/B] pre rýchle pretáčanie dozadu alebo dopredu"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Stlačte [B]OK[/B] pre zastavenie"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Prepnúť jazyk"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "filtrované"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Písmo založené na Arial"
+
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Stlačte [B]doľava[/B] pre rýchle pretáčanie dozadu alebo [B]doprava[/B] pre rýchle pretáčanie dopredu"
+
+msgctxt "#31055"
+msgid "Subtitle download"
+msgstr "Prevzatie titulkov"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Prejsť na zoznam skladieb"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Zobraziť prihlasovaciu obrazovku pri spustení"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Automatické prihlásenie pri spustení"
+
+msgctxt "#31059"
+msgid "Updates available"
+msgstr "K dispozícii sú aktualizácie"
+
+msgctxt "#31060"
+msgid "minutes"
+msgstr "minúty"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Položky hlavnej ponuky"
+
+msgctxt "#31062"
+msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
+msgstr "Odkazy k sekcii \"Súbory\" každého typu média. Prejdite tam, ak chcete pridať ďalšie zdroje pre vaše databázy."
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Sekcie"
+
+msgctxt "#31064"
+msgid "unwatched"
+msgstr "nepozreté"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Zoznam stôp videí"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Hudobný zoznam skladieb"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Denník udalostí"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Vybrať predvoľby"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Naposledy aktualizované"
+
+msgctxt "#31070"
+msgid "Add media sources"
+msgstr "Pridať zdroje médií"
+
+msgctxt "#31071"
+msgid "by"
+msgstr "od"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Možnosti napájania"
+
+msgctxt "#31073"
+msgid "Titles"
+msgstr "Názvy"
+
+msgctxt "#31074"
+msgid "Library root"
+msgstr "Hlavný adresár knižnice"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Filmové kolekcie"
+
+msgctxt "#31076"
+msgid "Play optical disc"
+msgstr "Prehrať optický disk"
+
+msgctxt "#31077"
+msgid "Previous location"
+msgstr "Predchádzajúce umiestnenie"
+
+msgctxt "#31078"
+msgid "Next location"
+msgstr "Nasledujúce umiestnenie"
+
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Obsadenie nie je k dispozícii"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Končí v"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Informácie o albume"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Doplnok textov skladieb"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Nastavenia doplnku textov skladieb"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Nastavenia vizualizácií"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Skupina kanálov"
+
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "Metadáta"
+
+msgctxt "#31087"
+msgid "Provider settings"
+msgstr "Nastavenia poskytovateľa"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Možnosti vyhľadávania obsahu"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Dostupné skupiny"
+
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "Vyhľadať upútavku"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Prevziať titulky"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Ponuka videa"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Zobraziť počasie v hornej lište"
+
+msgctxt "#31094"
+msgid "Show media flags for movies / episodes / music videos"
+msgstr "Zobrazovať vlastnosti médií pre filmy / epizódy / hudobné videá"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Použiť animácie kĺzania"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Miestne titulky sú k dispozícii"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Možnosti kanálu"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Zvoľte si profil používateľa Kodi[CR]pre prihlásenie a pokračovanie"
+
+msgctxt "#31099"
+msgid "Icon Wall"
+msgstr "Ikony"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"
+
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "Info nástenka"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Nástenka"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Sem zadajte text..."
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "Pridajte zdroje videí a nastavte správny typ obsahu pre naplnenie vašich knižníc videí."
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teletext"
+
+msgctxt "#31107"
+msgid "WideList"
+msgstr "Široký zoznam"
+
+msgctxt "#31108"
+msgid "Use custom global background"
+msgstr "Použiť vlastné globálne pozadie"
+
+msgctxt "#31109"
+msgid "Choose image path"
+msgstr "Vybrať cestu k obrázku"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "Vstúpiť do sekcie súborov"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Zobrazte vaše osobné obrázky alebo si prevezmite jeden z mnohých obrázkových doplnkov z oficiálneho repozitára."
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Prepnúť zvukovú stopu"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Hľadať v miestnej knižnici"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Hľadať na YouTube"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "Hľadať na TheMovieDB"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Odobrať túto položku hlavnej ponuky"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "Upraviť uzly"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Vstúpiť do prehliadača doplnkov"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "Zatiaľ nemáte nainštalované žiadne doplnky. Navštívte náš prehliadač doplnkov, preskúmajte našu kolekciu a vylepšite si váš Kodi zážitok."
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "Zatiaľ ste nenastavili poskytovateľa dát o počasí. Aby bolo možné zobraziť informácie o počasí, zvoľte si poskytovateľa a vašu polohu."
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Nastaviť poskytovateľa počasia"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Nepozreté TV seriály"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Rovnaký režisér"
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "Zobraziť obrázky na mape"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Stlačte nahor pre zobrazenie informácií o hercovi"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Stlačte OK pre zobrazenie deja"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Zobraziť ikony"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Prispievatelia"

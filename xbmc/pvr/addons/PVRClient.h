@@ -59,8 +59,12 @@ namespace PVR
   class CPVRClient : public ADDON::CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>
   {
   public:
-    CPVRClient(const ADDON::AddonProps& props);
-    CPVRClient(const cp_extension_t *ext);
+    static std::unique_ptr<CPVRClient> FromExtension(ADDON::AddonProps props, const cp_extension_t* ext);
+
+    explicit CPVRClient(ADDON::AddonProps props);
+    CPVRClient(ADDON::AddonProps props, const std::string& strAvahiType,
+        const std::string& strAvahiIpSetting, const std::string& strAvahiPortSetting, bool bNeedsConfiguration);
+
     ~CPVRClient(void);
 
     virtual void OnDisabled();
@@ -98,9 +102,21 @@ namespace PVR
     void ReCreate(void);
 
     /*!
-     * @return True if this instance is initialised, false otherwise.
+     * @return True if this instance is initialised (ADDON_Create returned true), false otherwise.
      */
     bool ReadyToUse(void) const;
+
+    /*!
+     * @brief Gets the backend connection state.
+     * @return the backend connection state.
+     */
+    PVR_CONNECTION_STATE GetConnectionState(void) const { return m_connectionState; }
+
+    /*!
+     * @brief Sets the backend connection state.
+     * @param state the new backend connection state.
+     */
+    void SetConnectionState(PVR_CONNECTION_STATE state);
 
     /*!
      * @return The ID of this instance.
@@ -222,6 +238,15 @@ namespace PVR
      * @return PVR_ERROR_NO_ERROR if the table has been fetched successfully.
      */
     PVR_ERROR GetEPGForChannel(const CPVRChannelPtr &channel, EPG::CEpg *epg, time_t start = 0, time_t end = 0, bool bSaveInDb = false);
+
+    /*!
+     * Tell the client the time frame to use when notifying epg events back to Kodi. The client might push epg events asynchronously
+     * to Kodi using the callback function EpgEventStateChange. To be able to only push events that are actually of interest for Kodi,
+     * client needs to know about the epg time frame Kodi uses.
+     * @param iDays number of days from "now". EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all epg events, regardless of event times.
+     * @return PVR_ERROR_NO_ERROR if new value was successfully set.
+     */
+    PVR_ERROR SetEPGTimeFrame(int iDays);
 
     //@}
     /** @name PVR channel group methods */
@@ -440,11 +465,6 @@ namespace PVR
     void PauseStream(bool bPaused);
 
     /*!
-     * @return The channel number on the server of the live stream that's currently being read.
-     */
-    int GetCurrentClientChannel(void);
-
-    /*!
      * @brief Switch to another channel. Only to be called when a live stream has already been opened.
      * @param channel The channel to switch to.
      * @return True if the switch was successful, false otherwise.
@@ -593,6 +613,11 @@ namespace PVR
      */
     bool Autoconfigure(void);
 
+    /*!
+     * @brief is real-time stream?
+     */
+    bool IsRealTimeStream() const;
+
   private:
     /*!
      * @brief Checks whether the provided API version is compatible with XBMC
@@ -661,23 +686,18 @@ namespace PVR
     bool LogError(const PVR_ERROR error, const char *strMethod) const;
     void LogException(const std::exception &e, const char *strFunctionName) const;
 
-    bool                   m_bReadyToUse;          /*!< true if this add-on is connected to the backend, false otherwise */
-    std::string            m_strHostName;          /*!< the host name */
+    bool                   m_bReadyToUse;          /*!< true if this add-on is initialised (ADDON_Create returned true), false otherwise */
+    PVR_CONNECTION_STATE   m_connectionState;      /*!< the backend connection state */
     PVR_MENUHOOKS          m_menuhooks;            /*!< the menu hooks for this add-on */
     CPVRTimerTypes         m_timertypes;           /*!< timer types supported by this backend */
     int                    m_iClientId;            /*!< database ID of the client */
 
     /* cached data */
     std::string            m_strBackendName;       /*!< the cached backend version */
-    bool                   m_bGotBackendName;      /*!< true if the backend name has already been fetched */
     std::string            m_strBackendVersion;    /*!< the cached backend version */
-    bool                   m_bGotBackendVersion;   /*!< true if the backend version has already been fetched */
     std::string            m_strConnectionString;  /*!< the cached connection string */
-    bool                   m_bGotConnectionString; /*!< true if the connection string has already been fetched */
     std::string            m_strFriendlyName;      /*!< the cached friendly name */
-    bool                   m_bGotFriendlyName;     /*!< true if the friendly name has already been fetched */
     PVR_ADDON_CAPABILITIES m_addonCapabilities;     /*!< the cached add-on capabilities */
-    bool                   m_bGotAddonCapabilities; /*!< true if the add-on capabilities have already been fetched */
     std::string            m_strBackendHostname;    /*!< the cached backend hostname */
 
     /* stored strings to make sure const char* members in PVR_PROPERTIES stay valid */

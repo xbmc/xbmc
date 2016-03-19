@@ -27,23 +27,11 @@
 #include "interfaces/python/ContextItemAddonInvoker.h"
 #include "interfaces/python/XBPython.h"
 #include "utils/StringUtils.h"
-#include <boost/lexical_cast.hpp>
 
 
-std::string CContextMenuItem::GetLabel() const
+bool CContextMenuItem::IsVisible(const CFileItem& item) const
 {
-  if (!m_addon)
-    return "";
-
-  if (StringUtils::IsNaturalNumber(m_label))
-    return m_addon->GetString(boost::lexical_cast<int>(m_label.c_str()));
-
-  return m_label;
-}
-
-bool CContextMenuItem::IsVisible(const CFileItemPtr& item) const
-{
-  return IsGroup() || (item && m_condition && m_condition->Get(item.get()));
+  return IsGroup() || (m_condition && m_condition->Get(&item));
 }
 
 bool CContextMenuItem::IsParentOf(const CContextMenuItem& other) const

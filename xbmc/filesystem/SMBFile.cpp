@@ -27,12 +27,14 @@
 #include "PasswordManager.h"
 #include "SMBDirectory.h"
 #include <libsmbclient.h>
+#include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "Util.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/TimeUtils.h"
 #include "commons/Exception.h"
 
@@ -97,10 +99,12 @@ void CSMB::Init()
     // http://us1.samba.org/samba/docs/man/manpages-3/libsmbclient.7.html
     // http://us1.samba.org/samba/docs/man/manpages-3/smb.conf.5.html
     char smb_conf[MAX_PATH];
-    snprintf(smb_conf, sizeof(smb_conf), "%s/.smb", getenv("HOME"));
+    std::string home = CSpecialProtocol::TranslatePath("special://home");
+    URIUtils::RemoveSlashAtEnd(home);
+    snprintf(smb_conf, sizeof(smb_conf), "%s/.smb", home.c_str());
     if (mkdir(smb_conf, 0755) == 0)
     {
-      snprintf(smb_conf, sizeof(smb_conf), "%s/.smb/smb.conf", getenv("HOME"));
+      snprintf(smb_conf, sizeof(smb_conf), "%s/.smb/smb.conf", home.c_str());
       FILE* f = fopen(smb_conf, "w");
       if (f != NULL)
       {
@@ -116,7 +120,7 @@ void CSMB::Init()
         fprintf(f, "\tlanman auth = yes\n");
 
         fprintf(f, "\tsocket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=65536 SO_SNDBUF=65536\n");      
-        fprintf(f, "\tlock directory = %s/.smb/\n", getenv("HOME"));
+        fprintf(f, "\tlock directory = %s/.smb/\n", home.c_str());
 
         // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
         // if no WINS server has been specified the wins method will be ignored.
@@ -172,8 +176,8 @@ void CSMB::Init()
     m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;
     // we need to strdup these, they will get free'ed on smbc_free_context
     if (CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
-      m_context->workgroup = strdup(CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).c_str()));
-    m_context->user = strdup("guest"));
+      m_context->workgroup = strdup(CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());
+    m_context->user = strdup("guest");
 #endif
 
     // initialize samba and do some hacking into the settings
@@ -332,7 +336,7 @@ bool CSMBFile::Open(const CURL& url)
   // if a file matches the if below return false, it can't exist on a samba share.
   if (!IsValidFile(url.GetFileName()))
   {
-      CLog::Log(LOGNOTICE,"SMBFile->Open: Bad URL : '%s'",url.GetFileName().c_str());
+      CLog::Log(LOGNOTICE,"SMBFile->Open: Bad URL : '%s'",url.GetRedacted().c_str());
       return false;
   }
   m_url = url;
@@ -344,7 +348,7 @@ bool CSMBFile::Open(const CURL& url)
   std::string strFileName;
   m_fd = OpenFile(url, strFileName);
 
-  CLog::Log(LOGDEBUG,"CSMBFile::Open - opened %s, fd=%d",url.GetFileName().c_str(), m_fd);
+  CLog::Log(LOGDEBUG,"CSMBFile::Open - opened %s, fd=%d",url.GetRedacted().c_str(), m_fd);
   if (m_fd == -1)
   {
     // write error to logfile
@@ -605,7 +609,7 @@ bool CSMBFile::OpenForWrite(const CURL& url, bool bOverWrite)
 
   if (bOverWrite)
   {
-    CLog::Log(LOGWARNING, "SMBFile::OpenForWrite() called with overwriting enabled! - %s", strFileName.c_str());
+    CLog::Log(LOGWARNING, "SMBFile::OpenForWrite() called with overwriting enabled! - %s", CURL::GetRedacted(strFileName).c_str());
     m_fd = smbc_creat(strFileName.c_str(), 0);
   }
   else
@@ -616,7 +620,7 @@ bool CSMBFile::OpenForWrite(const CURL& url, bool bOverWrite)
   if (m_fd == -1)
   {
     // write error to logfile
-    CLog::Log(LOGERROR, "SMBFile->Open: Unable to open file : '%s'\nunix_err:'%x' error : '%s'", strFileName.c_str(), errno, strerror(errno));
+    CLog::Log(LOGERROR, "SMBFile->Open: Unable to open file : '%s'\nunix_err:'%x' error : '%s'", CURL::GetRedacted(strFileName).c_str(), errno, strerror(errno));
     return false;
   }
 

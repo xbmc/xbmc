@@ -19,15 +19,17 @@
  *
  */
 
+#include <memory>
 #include <vector>
-#include "threads/Thread.h"
+
 #include "peripherals/PeripheralTypes.h"
-#include "peripherals/devices/Peripheral.h"
+#include "threads/Thread.h"
 
 class CFileItemList;
 
 namespace PERIPHERALS
 {
+  class CPeripheral;
   class CPeripherals;
 
   /*!
@@ -113,7 +115,7 @@ namespace PERIPHERALS
     /*!
      * @brief Initialise this bus and start a polling thread if this bus needs polling.
      */
-    virtual bool Initialise(void);
+    virtual void Initialise(void);
 
     /*!
      * @brief Stop the polling thread and clear all known devices on this bus.
@@ -149,6 +151,11 @@ namespace PERIPHERALS
 
     virtual bool IsInitialised(void) const { return m_bInitialised; }
 
+    /*!
+     * \brief Poll for events
+     */
+    virtual void ProcessEvents(void) { }
+
   protected:
     virtual void Process(void);
     virtual bool ScanForDevices(void);
@@ -172,4 +179,5 @@ namespace PERIPHERALS
     CCriticalSection           m_critSection;
     CEvent                     m_triggerEvent;
   };
+  using PeripheralBusPtr = std::shared_ptr<CPeripheralBus>;
 }

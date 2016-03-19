@@ -1,0 +1,225 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/kodi-main/language/zh_TW/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "音訊設定"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "大寫鎖定"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "視覺效果選項"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "視覺效果預設"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "內容功能表"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "處理中..."
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "電影"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "影集"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "專輯"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "頁"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "訊息列表"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "登入"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "快轉"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "倒轉"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "結束時間"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "排序：遞增"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "排序：遞減"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "打開播放列表"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "保存播放列表"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "關閉播放列表"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "系統音樂檔案"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "目前播放列表"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "返回"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "位置"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "檢視"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "現在溫度"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "最後更新"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "資料提供者"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "已使用記憶體："
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "上次登入在"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "首播"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "視訊選單"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "下載字幕"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "主題預設"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "基於 Arial"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "改變佈景主題 · 設定語言和地區 · 修改檔案列表選項 · 設定螢幕保護程式"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "管理視訊資料庫 · 設定視訊播放選項 · 修改視訊列表選項 · 設定字幕字型"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "設定圖片制表選項 · 設置投影片播放"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "設定三個要收集天氣資訊的城市"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "設定透過 UPnP 或 HTTP 來控制 Kodi· 設定檔案共享· 設定網際網路存取選項"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "設定並校正顯示器 · 設置音訊輸出 · 設定遠端遙控 · 設定省電選項 · 啟用除錯 · 設定主密碼"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "選擇您的 Kodi 使用者設定檔[CR]登入並繼續"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "首頁附加元件快速連結"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "其他選項"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "首頁天氣資訊與按鈕"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "附加元件捷徑"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "電視"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "隱藏影片背景"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "新增群組"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "重新命名群組"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "刪除群組"

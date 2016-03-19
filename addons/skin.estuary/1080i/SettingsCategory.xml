@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol>3</defaultcontrol>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<left>110</left>
+			<include>OpenClose_Left</include>
+			<control type="image">
+				<left>-20</left>
+				<top>138</top>
+				<width>440</width>
+				<height>792</height>
+				<texture border="22">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="grouplist" id="3">
+				<description>button area</description>
+				<left>0</left>
+				<top>160</top>
+				<width>400</width>
+				<height>700</height>
+				<usecontrolcoords>true</usecontrolcoords>
+				<onleft>5</onleft>
+				<onright>5</onright>
+				<onup>3</onup>
+				<ondown>20</ondown>
+			</control>
+			<control type="button" id="10">
+				<description>Default Category Button</description>
+				<left>2</left>
+				<height>75</height>
+				<width>396</width>
+				<textoffsetx>20</textoffsetx>
+				<aligny>center</aligny>
+				<font>font13_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>lists/focus.png</texturefocus>
+				<texturenofocus border="2">lists/separator.png</texturenofocus>
+			</control>
+			<control type="radiobutton" id="20">
+				<width>400</width>
+				<left>0</left>
+				<top>792</top>
+				<height>120</height>
+				<aligny>center</aligny>
+				<onclick>SettingsLevelChange</onclick>
+				<textoffsetx>100</textoffsetx>
+				<textoffsety>0</textoffsety>
+				<texturefocus border="40">buttons/button-theme-fo.png</texturefocus>
+				<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
+				<radioposx>40</radioposx>
+				<radioposy>0</radioposy>
+				<radiowidth>40</radiowidth>
+				<radioheight>40</radioheight>
+				<onleft>5</onleft>
+				<onright>5</onright>
+				<onup>3</onup>
+				<ondown>3</ondown>
+				<textureradioonfocus>icons/settings.png</textureradioonfocus>
+				<textureradioonnofocus>icons/settings.png</textureradioonnofocus>
+				<textureradioofffocus>icons/settings.png</textureradioofffocus>
+				<textureradiooffnofocus>icons/settings.png</textureradiooffnofocus>
+			</control>
+		</control>
+		<control type="group">
+			<left>110</left>
+			<include>OpenClose_Right</include>
+			<control type="image">
+				<left>420</left>
+				<top>138</top>
+				<width>1300</width>
+				<height>792</height>
+				<texture border="22">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="image">
+				<description>Dialog Header image</description>
+				<left>442</left>
+				<top>802</top>
+				<width>1256</width>
+				<height>3</height>
+				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
+			</control>
+			<control type="grouplist" id="5">
+				<description>control area</description>
+				<left>442</left>
+				<top>160</top>
+				<width>1256</width>
+				<height>640</height>
+				<onleft>3</onleft>
+				<onright>3</onright>
+				<onup>5</onup>
+				<ondown>5</ondown>
+			</control>
+			<control type="textbox" id="6">
+				<description>description area</description>
+				<left>480</left>
+				<top>810</top>
+				<width>1150</width>
+				<height>90</height>
+				<font>font12</font>
+				<align>justify</align>
+				<textcolor>button_focus</textcolor>
+				<autoscroll time="3000" delay="5000" repeat="5000">true</autoscroll>
+			</control>
+		</control>
+		<control type="button" id="7">
+			<description>Default Button</description>
+			<width>1256</width>
+			<include>DefaultSettingButton</include>
+		</control>
+		<control type="radiobutton" id="8">
+			<description>Default RadioButton</description>
+			<width>1256</width>
+			<include>DefaultSettingButton</include>
+		</control>
+		<control type="spincontrolex" id="9">
+			<description>Default SpinControlex</description>
+			<width>1256</width>
+			<include>DefaultSettingButton</include>
+			<aligny>center</aligny>
+		</control>
+		<control type="sliderex" id="13">
+			<description>Default Slider</description>
+			<width>1256</width>
+			<include>DefaultSettingButton</include>
+			<aligny>center</aligny>
+		</control>
+		<control type="image" id="11">
+			<description>separator image</description>
+			<height>3</height>
+			<texture colordiffuse="AAAAAAAA" border="3">dialogs/separator-grey.png</texture>
+		</control>
+		<control type="label" id="14">
+			<description>Default Label</description>
+			<width>1256</width>
+			<textoffsetx>45</textoffsetx>
+			<top>0</top>
+			<height>50</height>
+			<label>-</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>font12_title</font>
+			<textcolor>grey</textcolor>
+			<shadowcolor>black</shadowcolor>
+		</control>
+		<include name="UpDownArrows">
+			<param name="container_id" value="5" />
+			<param name="posx" value="1141" />
+			<param name="up_posy" value="105" />
+			<param name="down_posy" value="940" />
+			<param name="visible" value="!System.HasModalDialog" />
+		</include>
+		<control type="image">
+			<description>Section header image</description>
+			<left>20</left>
+			<top>3</top>
+			<width>35</width>
+			<height>35</height>
+			<aspectratio>keep</aspectratio>
+			<texture>icon_system.png</texture>
+		</control>
+		<include name="TopBar">
+			<param name="breadcrumbs_label" value="$LOCALIZE[5]$INFO[Control.GetLabel(2), / ]" />
+			<param name="breadcrumbs_icon" value="$VAR[SettingsSectionIcon]" />
+		</include>
+		<include>BottomBar</include>
+		<control type="label" id="2">
+			<description>breadcrumbs label</description>
+			<visible>False</visible>
+		</control>
+	</controls>
+</window>

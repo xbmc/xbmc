@@ -42,12 +42,9 @@ namespace XBMCAddon
     {
       iPlayList = PLAYLIST_MUSIC;
 
-      if (_playerCore == EPC_DVDPLAYER ||
-          _playerCore == EPC_MPLAYER ||
-          _playerCore == EPC_PAPLAYER)
-        playerCore = (EPLAYERCORES)_playerCore;
-      else
-        playerCore = EPC_NONE;
+      if (_playerCore != 0)
+        CLog::Log(LOGERROR, "xbmc.Player: Requested non-default player. This behavior is deprecated, plugins may no longer specify a player");
+
 
       // now that we're done, register hook me into the system
       if (languageHook)
@@ -91,9 +88,6 @@ namespace XBMCAddon
         // set fullscreen or windowed
         CMediaSettings::GetInstance().SetVideoStartWindowed(windowed);
 
-        // force a playercore before playing
-        g_application.m_eForcedNextPlayer = playerCore;
-
         const AddonClass::Ref<xbmcgui::ListItem> listitem(plistitem);
 
         if (listitem.isSet())
@@ -120,9 +114,6 @@ namespace XBMCAddon
       // set fullscreen or windowed
       CMediaSettings::GetInstance().SetVideoStartWindowed(windowed);
 
-      // force a playercore before playing
-      g_application.m_eForcedNextPlayer = playerCore;
-
       // play current file in playlist
       if (g_playlistPlayer.GetCurrentPlaylist() != iPlayList)
         g_playlistPlayer.SetCurrentPlaylist(iPlayList);
@@ -137,9 +128,6 @@ namespace XBMCAddon
       {
         // set fullscreen or windowed
         CMediaSettings::GetInstance().SetVideoStartWindowed(windowed);
-
-        // force a playercore before playing
-        g_application.m_eForcedNextPlayer = playerCore;
 
         // play a python playlist (a playlist from playlistplayer.cpp)
         iPlayList = playlist->getPlayListId();
@@ -168,8 +156,6 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       DelayedCallGuard dc(languageHook);
-      // force a playercore before playing
-      g_application.m_eForcedNextPlayer = playerCore;
 
       CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_NEXT);
     }
@@ -178,8 +164,6 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       DelayedCallGuard dc(languageHook);
-      // force a playercore before playing
-      g_application.m_eForcedNextPlayer = playerCore;
 
       CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_PREV);
     }
@@ -188,8 +172,6 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       DelayedCallGuard dc(languageHook);
-      // force a playercore before playing
-      g_application.m_eForcedNextPlayer = playerCore;
 
       if (g_playlistPlayer.GetCurrentPlaylist() != iPlayList)
       {
@@ -510,7 +492,31 @@ namespace XBMCAddon
         if(iStream < streamCount)
           g_application.m_pPlayer->SetAudioStream(iStream);
       }
-    }  
+    }
+
+    std::vector<String> Player::getAvailableVideoStreams()
+    {
+      int streamCount = g_application.m_pPlayer->GetVideoStreamCount();
+      std::vector<String> ret(streamCount);
+      for (int iStream = 0; iStream < streamCount; ++iStream)
+      {
+        SPlayerVideoStreamInfo info;
+        g_application.m_pPlayer->GetVideoStreamInfo(iStream, info);
+
+        if (info.language.length() > 0)
+          ret[iStream] = info.language;
+        else
+          ret[iStream] = info.name;
+      }
+      return ret;
+    }
+
+    void Player::setVideoStream(int iStream)
+    {
+      int streamCount = g_application.m_pPlayer->GetVideoStreamCount();
+      if (iStream < streamCount)
+        g_application.m_pPlayer->SetVideoStream(iStream);
+    }
   }
 }
 

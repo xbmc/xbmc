@@ -26,7 +26,6 @@
 #include "settings/DisplaySettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
-#include "cores/VideoRenderers/RenderManager.h"
 #include "windowing/WindowingFactory.h"
 #include "TextureManager.h"
 #include "input/InputManager.h"
@@ -328,20 +327,18 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
   Lock();
   m_bFullScreenVideo = bOnOff;
 
-#if defined(HAS_VIDEO_PLAYBACK)
   if(m_bFullScreenRoot)
   {
     bool allowDesktopRes = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_ALWAYS;
-    if(m_bFullScreenVideo || (!allowDesktopRes && g_application.m_pPlayer->IsPlayingVideo()))
-      SetVideoResolution(g_renderManager.GetResolution());
-    else if(CDisplaySettings::GetInstance().GetCurrentResolution() > RES_DESKTOP)
+    if (m_bFullScreenVideo || (!allowDesktopRes && g_application.m_pPlayer->IsPlayingVideo()))
+      SetVideoResolution(g_application.m_pPlayer->GetRenderResolution());
+    else if (CDisplaySettings::GetInstance().GetCurrentResolution() > RES_DESKTOP)
       SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution());
     else
       SetVideoResolution(RES_DESKTOP);
   }
   else
     SetVideoResolution(RES_WINDOW);
-#endif
 
   Unlock();
 }
@@ -400,21 +397,6 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
     return;
   }
 
-  //only pause when switching monitor resolution/refreshrate,
-  //not when switching between fullscreen and windowed or when resizing the window
-  if ((res != RES_DESKTOP && res != RES_WINDOW) || (lastRes != RES_DESKTOP && lastRes != RES_WINDOW))
-  {
-    //pause the player during the refreshrate change
-    int delay = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_PAUSEAFTERREFRESHCHANGE);
-    if (delay > 0 && CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF && g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPausedPlayback())
-    {
-      g_application.m_pPlayer->Pause();
-      KODI::MESSAGING::ThreadMessage msg{TMSG_MEDIA_UNPAUSE};
-      CDelayedMessage* pauseMessage = new CDelayedMessage(msg, delay * 100);
-      pauseMessage->Create(true);
-    }
-  }
-
   if (res >= RES_DESKTOP)
   {
     g_advancedSettings.m_fullScreen = true;
@@ -429,30 +411,6 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
   Lock();
 
   RESOLUTION_INFO info_org  = CDisplaySettings::GetInstance().GetResolutionInfo(res);
-  RESOLUTION_INFO info_last = CDisplaySettings::GetInstance().GetResolutionInfo(lastRes);
-
-  RENDER_STEREO_MODE stereo_mode = m_stereoMode;
-
-  // if the new resolution is an actual stereo mode, switch to that
-  // if the old resolution was an actual stereo mode and renderer is still in old 3D mode, switch to no 3d mode
-  if (info_org.dwFlags & D3DPRESENTFLAG_MODE3DTB)
-    stereo_mode = RENDER_STEREO_MODE_SPLIT_HORIZONTAL;
-  else if (info_org.dwFlags & D3DPRESENTFLAG_MODE3DSBS)
-    stereo_mode = RENDER_STEREO_MODE_SPLIT_VERTICAL;
-  else if ((info_last.dwFlags & D3DPRESENTFLAG_MODE3DTB)
-        && m_stereoMode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
-    stereo_mode = RENDER_STEREO_MODE_OFF;
-  else if ((info_last.dwFlags & D3DPRESENTFLAG_MODE3DSBS)
-        && m_stereoMode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
-    stereo_mode = RENDER_STEREO_MODE_OFF;
-
-  if(stereo_mode != m_stereoMode)
-  {
-    m_stereoView     = RENDER_STEREO_VIEW_OFF;
-    m_stereoMode     = stereo_mode;
-    m_nextStereoMode = stereo_mode;
-    CSettings::GetInstance().SetInt(CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE, (int)m_stereoMode);
-  }
 
   RESOLUTION_INFO info_mod = GetResInfo(res);
 
@@ -484,7 +442,6 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
   SetStereoView(RENDER_STEREO_VIEW_OFF);
 
   // update anyone that relies on sizing information
-  g_renderManager.Recover();
   CInputManager::GetInstance().SetMouseResolution(info_org.iWidth, info_org.iHeight, 1, 1);
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
 
@@ -992,26 +949,14 @@ float CGraphicContext::GetFPS() const
   return 60.0f;
 }
 
-void CGraphicContext::BeginPaint(bool lock)
-{
-  if (lock) Lock();
-}
-
-void CGraphicContext::EndPaint(bool lock)
-{
-  if (lock) Unlock();
-}
-
 bool CGraphicContext::IsFullScreenRoot () const
 {
   return m_bFullScreenRoot;
 }
 
-bool CGraphicContext::ToggleFullScreenRoot ()
+void CGraphicContext::ToggleFullScreen()
 {
-  RESOLUTION uiRes;  ///< resolution to save - not necessarily the same as the one we switch to (e.g. during video playback)
-  RESOLUTION videoRes;
-  bool setVideoRes = false;
+  RESOLUTION uiRes;
 
   if (m_bFullScreenRoot)
   {
@@ -1023,34 +968,9 @@ bool CGraphicContext::ToggleFullScreenRoot ()
       uiRes = CDisplaySettings::GetInstance().GetCurrentResolution();
     else
       uiRes = (RESOLUTION) g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
-
-#if defined(HAS_VIDEO_PLAYBACK)
-    if (IsCalibrating())
-    {
-      /* we need to trick renderer that we are fullscreen already so it gives us a valid value */
-      m_bFullScreenRoot = true;
-      uiRes = g_renderManager.GetResolution();
-      m_bFullScreenRoot = false;
-    }
-    // if video is playing we need to switch to resolution chosen by RenderManager
-    if (IsFullScreenVideo())
-    {
-      m_bFullScreenRoot = true;
-      videoRes = g_renderManager.GetResolution();
-      m_bFullScreenRoot = false;
-      setVideoRes = true;
-    }
-#endif
   }
 
   CDisplaySettings::GetInstance().SetCurrentResolution(uiRes, true);
-
-  if (setVideoRes)
-  {
-    SetVideoResolution(videoRes);
-  }
-
-  return m_bFullScreenRoot;
 }
 
 void CGraphicContext::SetMediaDir(const std::string &strMediaDir)
@@ -1059,9 +979,9 @@ void CGraphicContext::SetMediaDir(const std::string &strMediaDir)
   m_strMediaDir = strMediaDir;
 }
 
-void CGraphicContext::Flip(const CDirtyRegionList& dirty)
+void CGraphicContext::Flip(bool rendered)
 {
-  g_Windowing.PresentRender(dirty);
+  g_Windowing.PresentRender(rendered);
 
   if(m_stereoMode != m_nextStereoMode)
   {

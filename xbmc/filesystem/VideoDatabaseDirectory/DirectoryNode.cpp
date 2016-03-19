@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2016 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -30,20 +30,16 @@
 #include "DirectoryNodeTvShowsOverview.h"
 #include "DirectoryNodeSeasons.h"
 #include "DirectoryNodeEpisodes.h"
+#include "DirectoryNodeInProgressTvShows.h"
 #include "DirectoryNodeRecentlyAddedMovies.h"
 #include "DirectoryNodeRecentlyAddedEpisodes.h"
 #include "DirectoryNodeMusicVideosOverview.h"
 #include "DirectoryNodeRecentlyAddedMusicVideos.h"
 #include "DirectoryNodeTitleMusicVideos.h"
-#include "video/VideoInfoTag.h"
 #include "URL.h"
-#include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "utils/StringUtils.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/Variant.h"
 #include "video/VideoDatabase.h"
-#include "settings/Settings.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
@@ -141,13 +137,15 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const std::string& st
     return new CDirectoryNodeMusicVideosOverview(strName,pParent);
   case NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS:
     return new CDirectoryNodeRecentlyAddedMusicVideos(strName,pParent);
+  case NODE_TYPE_INPROGRESS_TVSHOWS:
+    return new CDirectoryNodeInProgressTvShows(strName,pParent);
   case NODE_TYPE_TITLE_MUSICVIDEOS:
     return new CDirectoryNodeTitleMusicVideos(strName,pParent);
   default:
     break;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 //  Current node name
@@ -200,7 +198,7 @@ std::string CDirectoryNode::BuildPath() const
     array.insert(array.begin(), m_strName);
 
   CDirectoryNode* pParent=m_pParent;
-  while (pParent != NULL)
+  while (pParent != nullptr)
   {
     const std::string& strNodeName=pParent->GetName();
     if (!strNodeName.empty())
@@ -210,7 +208,7 @@ std::string CDirectoryNode::BuildPath() const
   }
 
   std::string strPath="videodb://";
-  for (int i = 0; i < (int)array.size(); ++i)
+  for (int i = 0; i < static_cast<int>(array.size()); ++i)
     strPath += array[i]+"/";
 
   std::string options = m_options.GetOptionsString();
@@ -236,7 +234,7 @@ void CDirectoryNode::CollectQueryParams(CQueryParams& params) const
   params.SetQueryParam(m_Type, m_strName);
 
   CDirectoryNode* pParent=m_pParent;
-  while (pParent != NULL)
+  while (pParent != nullptr)
   {
     params.SetQueryParam(pParent->GetType(), pParent->GetName());
     pParent = pParent->GetParent();
@@ -265,7 +263,6 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
     bSuccess = pNode->GetContent(items);
     if (bSuccess)
     {
-      AddQueuingFolder(items);
       if (CanCache())
         items.SetCacheToDisc(CFileItemList::CACHE_ALWAYS);
     }
@@ -276,83 +273,6 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
   }
 
   return bSuccess;
-}
-
-//  Add an "* All ..." folder to the CFileItemList
-//  depending on the child node
-void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
-{
-  CFileItemPtr pItem;
-
-  // always show "all" items by default
-  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWALLITEMS))
-    return;
-
-  // no need for "all" item when only one item
-  if (items.GetObjectCount() <= 1)
-    return;
-
-  CVideoDbUrl videoUrl;
-  if (!videoUrl.FromString(BuildPath()))
-    return;
-
-  // hack - as the season node might return episodes
-  std::unique_ptr<CDirectoryNode> pNode(ParseURL(items.GetPath()));
-
-  switch (pNode->GetChildType())
-  {
-    case NODE_TYPE_SEASONS:
-      {
-        std::string strLabel = g_localizeStrings.Get(20366);
-        pItem.reset(new CFileItem(strLabel));  // "All Seasons"
-        videoUrl.AppendPath("-1/");
-        pItem->SetPath(videoUrl.ToString());
-        // set the number of watched and unwatched items accordingly
-        int watched = 0;
-        int unwatched = 0;
-        for (int i = 0; i < items.Size(); i++)
-        {
-          CFileItemPtr item = items[i];
-          watched += (int)item->GetProperty("watchedepisodes").asInteger();
-          unwatched += (int)item->GetProperty("unwatchedepisodes").asInteger();
-        }
-        pItem->SetProperty("totalepisodes", watched + unwatched);
-        pItem->SetProperty("numepisodes", watched + unwatched); // will be changed later to reflect watchmode setting
-        pItem->SetProperty("watchedepisodes", watched);
-        pItem->SetProperty("unwatchedepisodes", unwatched);
-        if (items.Size() && items[0]->GetVideoInfoTag())
-        {
-          *pItem->GetVideoInfoTag() = *items[0]->GetVideoInfoTag();
-          pItem->GetVideoInfoTag()->m_iSeason = -1;
-        }
-        pItem->GetVideoInfoTag()->m_strTitle = strLabel;
-        pItem->GetVideoInfoTag()->m_iEpisode = watched + unwatched;
-        pItem->GetVideoInfoTag()->m_playCount = (unwatched == 0) ? 1 : 0;
-        CVideoDatabase db;
-        if (db.Open())
-        {
-          pItem->GetVideoInfoTag()->m_iDbId = db.GetSeasonId(pItem->GetVideoInfoTag()->m_iIdShow, -1);
-          db.Close();
-        }
-        pItem->GetVideoInfoTag()->m_type = MediaTypeSeason;
-      }
-      break;
-    case NODE_TYPE_MUSICVIDEOS_ALBUM:
-      pItem.reset(new CFileItem(g_localizeStrings.Get(15102)));  // "All Albums"
-      videoUrl.AppendPath("-1/");
-      pItem->SetPath(videoUrl.ToString());
-      break;
-    default:
-      break;
-  }
-
-  if (pItem)
-  {
-    pItem->m_bIsFolder = true;
-    pItem->SetSpecialSort(g_advancedSettings.m_bVideoLibraryAllItemsOnBottom ? SortSpecialOnBottom : SortSpecialOnTop);
-    pItem->SetCanQueue(false);
-    items.Add(pItem);
-  }
 }
 
 bool CDirectoryNode::CanCache() const

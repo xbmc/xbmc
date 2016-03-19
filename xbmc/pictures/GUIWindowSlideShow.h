@@ -26,7 +26,6 @@
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "SlideShowPicture.h"
-#include "DllImageLib.h"
 #include "utils/SortUtils.h"
 
 class CFileItemList;
@@ -153,7 +152,6 @@ private:
   CBackgroundPicLoader* m_pBackgroundLoader;
   int m_iLastFailedNextSlide;
   bool m_bLoadNextPic;
-  DllImageLib m_ImageLib;
   RESOLUTION m_Resolution;
   CCriticalSection m_slideSection;
   std::string m_strExtensions;

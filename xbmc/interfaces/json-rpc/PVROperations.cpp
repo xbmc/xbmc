@@ -72,7 +72,7 @@ JSONRPC_STATUS CPVROperations::GetChannelGroups(const std::string &method, ITran
 
   int start, end;
 
-  std::vector<CPVRChannelGroupPtr> groupList = channelGroups->GetMembers();
+  std::vector<CPVRChannelGroupPtr> groupList = channelGroups->GetMembers(true);
   HandleLimits(parameterObject, result, groupList.size(), start, end);
   for (int index = start; index < end; index++)
     FillChannelGroupDetails(groupList.at(index), parameterObject, result["channelgroups"], true);
@@ -163,8 +163,8 @@ JSONRPC_STATUS CPVROperations::GetBroadcasts(const std::string &method, ITranspo
   if (channel == NULL)
     return InvalidParams;
 
-  CEpg *channelEpg = channel->GetEPG();
-  if (channelEpg == NULL)
+  CEpgPtr channelEpg = channel->GetEPG();
+  if (!channelEpg)
     return InternalError;
 
   CFileItemList programFull;
@@ -335,6 +335,108 @@ JSONRPC_STATUS CPVROperations::GetTimerDetails(const std::string &method, ITrans
   HandleFileItem("timerid", false, "timerdetails", CFileItemPtr(new CFileItem(timer)), parameterObject, parameterObject["properties"], result, false);
 
   return OK;
+}
+
+CFileItemPtr CPVROperations::GetBroadcastFromBroadcastid(unsigned int broadcastid)
+{
+  EpgSearchFilter filter;
+  filter.Reset();
+  filter.m_iUniqueBroadcastId = broadcastid;
+
+  CFileItemList broadcasts;
+  int resultSize = g_EpgContainer.GetEPGSearch(broadcasts, filter);
+
+  if (resultSize != 1)
+    return CFileItemPtr();
+
+  return broadcasts.Get(0);
+}
+
+JSONRPC_STATUS CPVROperations::AddTimer(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  if (!g_PVRManager.IsStarted())
+    return FailedToExecute;
+
+  CFileItemPtr broadcast = CPVROperations::GetBroadcastFromBroadcastid(parameterObject["broadcastid"].asUnsignedInteger());
+  if (!broadcast)
+    return InvalidParams;
+
+  if (!broadcast->HasEPGInfoTag())
+    return InvalidParams;
+
+  CEpgInfoTagPtr epgTag = broadcast->GetEPGInfoTag();
+
+  if (!epgTag)
+    return InvalidParams;
+
+  bool repeating = parameterObject["repeating"].asBoolean(false);
+
+  if (epgTag->HasTimer())
+    return InvalidParams;
+
+  CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTag::CreateFromEpg(epgTag, repeating);
+  if (newTimer)
+  {
+    if (g_PVRTimers->AddTimer(newTimer))
+      return ACK;
+  }
+  return FailedToExecute;
+}
+
+
+JSONRPC_STATUS CPVROperations::DeleteTimer(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  if (!g_PVRManager.IsStarted())
+    return FailedToExecute;
+
+  CPVRTimers* timers = g_PVRTimers;
+
+  CPVRTimerInfoTagPtr timer = timers->GetById(parameterObject["timerid"].asInteger());
+  if (!timer)
+    return InvalidParams;
+
+  bool repeating = parameterObject["repeating"].asBoolean(false);
+
+  if (timers->DeleteTimer(timer, false, repeating))
+    return ACK;
+
+  return FailedToExecute;
+}
+
+JSONRPC_STATUS CPVROperations::ToggleTimer(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  if (!g_PVRManager.IsStarted())
+    return FailedToExecute;
+
+  CFileItemPtr broadcast = CPVROperations::GetBroadcastFromBroadcastid(parameterObject["broadcastid"].asUnsignedInteger());
+  if (!broadcast)
+    return InvalidParams;
+
+  if (!broadcast->HasEPGInfoTag())
+    return InvalidParams;
+
+  CEpgInfoTagPtr epgTag = broadcast->GetEPGInfoTag();
+
+  if (!epgTag)
+    return InvalidParams;
+
+  bool repeating = parameterObject["repeating"].asBoolean(false);
+  bool sentOkay = false;
+  if (epgTag->HasTimer())
+  {
+    CFileItemPtr timerTag = g_PVRTimers->GetTimerForEpgTag(broadcast.get());
+    sentOkay = g_PVRTimers->DeleteTimer( *timerTag , false, repeating);
+  }
+  else
+  {
+    CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTag::CreateFromEpg(epgTag, repeating);
+    sentOkay = g_PVRTimers->AddTimer(newTimer);
+  }
+
+  if (sentOkay)
+    return ACK;
+
+  return FailedToExecute;
 }
 
 JSONRPC_STATUS CPVROperations::GetRecordings(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)

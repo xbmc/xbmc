@@ -58,6 +58,19 @@ public:
 class DllLibCPluff : public DllDynamic, DllLibCPluffInterface
 {
   DECLARE_DLL_WRAPPER(DllLibCPluff, DLL_PATH_CPLUFF)
+
+  DllLibCPluff(const DllLibCPluff&) = delete;
+  DllLibCPluff& operator=(const DllDynamic&) = delete;
+
+  DllLibCPluff(DllLibCPluff&&);
+  DllLibCPluff& operator=(DllLibCPluff&&);
+
+  virtual ~DllLibCPluff()
+  {
+    if (IsLoaded())
+      destroy();
+  }
+
   DEFINE_METHOD0(const char*,         get_version)
   DEFINE_METHOD1(void,                set_fatal_error_handler,  (cp_fatal_error_func_t p1))
   DEFINE_METHOD0(cp_status_t,         init)

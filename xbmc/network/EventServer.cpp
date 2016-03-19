@@ -157,6 +157,9 @@ void CEventServer::Run()
   CSocketListener listener;
   int packetSize = 0;
 
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_ESALLINTERFACES))
+    any_addr.SetAddress("127.0.0.1");  // only listen on localhost
+
   CLog::Log(LOGNOTICE, "ES: Starting UDP Event server on %s:%d", any_addr.Address(), m_iPort);
 
   Cleanup();

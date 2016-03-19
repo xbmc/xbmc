@@ -41,12 +41,13 @@ public:
 
   virtual bool BeginRender();
   virtual bool EndRender();
-  virtual bool PresentRender(const CDirtyRegionList& dirty);
+  virtual void PresentRender(bool rendered);
   virtual bool ClearBuffers(color_t color);
   virtual bool IsExtSupported(const char* extension);
 
   virtual void SetVSync(bool vsync);
   virtual void ResetVSync() { m_bVsyncInit = false; }
+  virtual void FinishPipeline();
 
   virtual void SetViewPort(CRect& viewPort);
   virtual void GetViewPort(CRect& viewPort);
@@ -74,14 +75,11 @@ public:
 
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
-  virtual bool PresentRenderImpl(const CDirtyRegionList& dirty) = 0;
+  virtual void PresentRenderImpl(bool rendered) = 0;
   void CalculateMaxTexturesize();
 
   int        m_iVSyncMode;
   int        m_iVSyncErrors;
-  int64_t    m_iSwapStamp;
-  int64_t    m_iSwapRate;
-  int64_t    m_iSwapTime;
   bool       m_bVsyncInit;
   int        m_width;
   int        m_height;
@@ -92,6 +90,8 @@ protected:
   int        m_glslMinor;
   
   GLint      m_viewPort[4];
+
+  uint8_t m_latencyCounter;
 };
 
 #endif // HAVE_LIBGL

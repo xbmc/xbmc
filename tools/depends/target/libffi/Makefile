@@ -3,14 +3,16 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libffi
-VERSION=3.0.11
+VERSION=3.2.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
 CONFIGURE= ./configure --prefix=$(PREFIX) --disable-shared --disable-builddir 
 ifeq ($(OS), ios)
+ifneq ($(CPU), arm64)
 CONFIGURE+=CCASFLAGS=-no-integrated-as
+endif
 endif
 
 
@@ -24,7 +26,6 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p0 < ../01_ios_arm_align_fix.patch
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)

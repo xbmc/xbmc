@@ -47,7 +47,7 @@ namespace PVR
     virtual void OnInitWindow();
 
     bool ActionStartTimer(const EPG::CEpgInfoTagPtr &tag);
-    bool ActionCancelTimer(CFileItemPtr timer);
+    bool ActionCancelTimer(const CFileItemPtr &timer);
 
     bool OnClickButtonOK(CGUIMessage &message);
     bool OnClickButtonRecord(CGUIMessage &message);

@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -589,9 +589,9 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   else
     g_curlInterface.easy_setopt(h, CURLOPT_FTP_SKIP_PASV_IP, 1);
 
-  // setup Content-Encoding if requested
-  if( m_contentencoding.length() > 0 )
-    g_curlInterface.easy_setopt(h, CURLOPT_ENCODING, m_contentencoding.c_str());
+  // setup Accept-Encoding if requested
+  if (m_acceptencoding.length() > 0)
+    g_curlInterface.easy_setopt(h, CURLOPT_ACCEPT_ENCODING, m_acceptencoding.c_str());
 
   if (!m_useOldHttpVersion && !m_acceptCharset.empty())
     SetRequestHeader("Accept-Charset", m_acceptCharset);
@@ -777,7 +777,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     // handle any protocol options
     std::map<std::string, std::string> options;
     url2.GetProtocolOptions(options);
-    if (options.size() > 0)
+    if (!options.empty())
     {
       // set xbmc headers
       for (std::map<std::string,std::string>::const_iterator it = options.begin(); it != options.end(); ++it)
@@ -798,16 +798,14 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
           SetUserAgent(value);
         else if (name == "cookie")
           SetCookie(value);
-        else if (name == "encoding")
-          SetContentEncoding(value);
+        else if (name == "acceptencoding" || name == "encoding")
+          SetAcceptEncoding(value);
         else if (name == "noshout" && value == "true")
           m_skipshout = true;
         else if (name == "seekable" && value == "0")
           m_seekable = false;
         else if (name == "accept-charset")
           SetAcceptCharset(value);
-        else if (name == "httpproxy")
-          SetStreamProxy(value, PROXY_HTTP);
         else if (name == "sslcipherlist")
           m_cipherlist = value;
         else if (name == "connection-timeout")
@@ -825,17 +823,6 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     m_url = url2.GetWithoutUserDetails();
   else
     m_url = url2.Get();
-}
-
-void CCurlFile::SetStreamProxy(const std::string &proxy, ProxyType type)
-{
-  CURL url(proxy);
-  m_proxy = url.GetWithoutUserDetails();
-  m_proxyuserpass = url.GetUserName();
-  if (!url.GetPassWord().empty())
-    m_proxyuserpass += ":" + url.GetPassWord();
-  m_proxytype = type;
-  CLog::Log(LOGDEBUG, "Overriding proxy from URL parameter: %s, type %d", m_proxy.c_str(), proxyType2CUrlProxyType[m_proxytype]);
 }
 
 bool CCurlFile::Post(const std::string& strURL, const std::string& strPostData, std::string& strHTML)
@@ -900,7 +887,7 @@ bool CCurlFile::Download(const std::string& strURL, const std::string& strFileNa
     return false;
   }
   ssize_t written = 0;
-  if (strData.size() > 0)
+  if (!strData.empty())
     written = file.Write(strData.c_str(), strData.size());
 
   if (pdwSize != NULL)
@@ -979,7 +966,7 @@ bool CCurlFile::Open(const CURL& url)
   // since we can't know the stream size up front if we're gzipped/deflated
   // flag the stream with an unknown file size rather than the compressed
   // file size.
-  if (m_contentencoding.size() > 0)
+  if (!m_acceptencoding.empty())
     m_state->m_fileSize = 0;
 
   // check if this stream is a shoutcast stream. sometimes checking the protocol line is not enough so examine other headers as well.
@@ -1844,4 +1831,11 @@ int CCurlFile::IoControl(EIoControl request, void* param)
     return m_seekable ? 1 : 0;
 
   return -1;
+}
+
+double CCurlFile::GetDownloadSpeed()
+{
+  double res = 0.0f;
+  g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_SPEED_DOWNLOAD, &res);
+  return res;
 }

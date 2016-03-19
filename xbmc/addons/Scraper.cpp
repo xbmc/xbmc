@@ -1,22 +1,23 @@
 /*
-*      Copyright (C) 2005-2013 Team XBMC
-*      http://xbmc.org
-*
-*  This Program is free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2, or (at your option)
-*  any later version.
-*
-*  This Program is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-*  GNU General Public License for more details.
-*
-*  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, see
-*  <http://www.gnu.org/licenses/>.
-*
-*/
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Kodi; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
+ *
+ */
+
 #include "Scraper.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
@@ -125,50 +126,54 @@ static void CheckScraperError(const TiXmlElement *pxeRoot)
   throw CScraperError(sTitle, sMessage);
 }
 
-CScraper::CScraper(const cp_extension_t *ext) : CAddon(ext), m_fLoaded(false)
+std::unique_ptr<CScraper> CScraper::FromExtension(AddonProps props, const cp_extension_t* ext)
 {
-  if (ext)
-  {
-    m_language = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@language");
-    m_requiressettings = CAddonMgr::GetInstance().GetExtValue(ext->configuration,"@requiressettings") == "true";
-    std::string persistence = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@cachepersistence");
-    if (!persistence.empty())
-      m_persistence.SetFromTimeString(persistence);
-  }
-  switch (Type())
+  bool requiressettings = CAddonMgr::GetInstance().GetExtValue(ext->configuration,"@requiressettings") == "true";
+
+  CDateTimeSpan persistence;
+  std::string tmp = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@cachepersistence");
+  if (!tmp.empty())
+    persistence.SetFromTimeString(tmp);
+
+  CONTENT_TYPE pathContent(CONTENT_NONE);
+  switch (props.type)
   {
     case ADDON_SCRAPER_ALBUMS:
-      m_pathContent = CONTENT_ALBUMS;
+      pathContent = CONTENT_ALBUMS;
       break;
     case ADDON_SCRAPER_ARTISTS:
-      m_pathContent = CONTENT_ARTISTS;
+      pathContent = CONTENT_ARTISTS;
       break;
     case ADDON_SCRAPER_MOVIES:
-      m_pathContent = CONTENT_MOVIES;
+      pathContent = CONTENT_MOVIES;
       break;
     case ADDON_SCRAPER_MUSICVIDEOS:
-      m_pathContent = CONTENT_MUSICVIDEOS;
+      pathContent = CONTENT_MUSICVIDEOS;
       break;
     case ADDON_SCRAPER_TVSHOWS:
-      m_pathContent = CONTENT_TVSHOWS;
+      pathContent = CONTENT_TVSHOWS;
       break;
     default:
-      m_pathContent = CONTENT_NONE;
       break;
   }
+
+  return std::unique_ptr<CScraper>(new CScraper(std::move(props), requiressettings, persistence, pathContent));
 }
 
-AddonPtr CScraper::Clone() const
+CScraper::CScraper(AddonProps props)
+  : CAddon(std::move(props)),
+    m_fLoaded(false),
+    m_requiressettings(false),
+    m_pathContent(CONTENT_NONE)
 {
-  return AddonPtr(new CScraper(*this));
 }
 
-CScraper::CScraper(const CScraper &rhs)
-  : CAddon(rhs), m_fLoaded(false),
-    m_language(rhs.m_language),
-    m_requiressettings(rhs.m_requiressettings),
-    m_persistence(rhs.m_persistence),
-    m_pathContent(rhs.m_pathContent)
+CScraper::CScraper(AddonProps props, bool requiressettings, CDateTimeSpan persistence, CONTENT_TYPE pathContent)
+  : CAddon(std::move(props)),
+    m_fLoaded(false),
+    m_requiressettings(requiressettings),
+    m_persistence(persistence),
+    m_pathContent(pathContent)
 {
 }
 
@@ -332,7 +337,7 @@ std::string CScraper::InternalRun(const std::string& function,
   unsigned int i;
   for (i=0;i<scrURL.m_url.size();++i)
   {
-    if (!CScraperUrl::Get(scrURL.m_url[i],m_parser.m_param[i],http,ID()) || m_parser.m_param[i].size() == 0)
+    if (!CScraperUrl::Get(scrURL.m_url[i],m_parser.m_param[i],http,ID()) || m_parser.m_param[i].empty())
       return "";
   }
   // put the 'extra' parameterts into the parser parameter list too

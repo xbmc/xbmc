@@ -1,0 +1,11 @@
+--- config/ac-macros/ssl.m4.orig	2016-02-14 13:47:23.792296242 +0000
++++ config/ac-macros/ssl.m4	2016-02-14 13:47:05.464296846 +0000
+@@ -111,7 +111,7 @@
+   #
+   # Try to link with openSSL libs in <location>
+   #
+-  openssl_libs="-L$location/lib/ -lssl -lcrypto"
++  openssl_libs="-L$location/lib/ -lssl -lcrypto -lz -ldl"
+   MYSQL_CHECK_SSL_DIR([$openssl_includes], [$openssl_libs])
+ 
+   if test "$mysql_ssl_found" == "no"

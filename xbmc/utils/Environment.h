@@ -80,7 +80,7 @@ public:
   static int unsetenv(const std::string &name);
 
   /**
-   * \fn static int CEnvironment:putenv(const std::string &envstring);
+   * \fn static int CEnvironment::putenv(const std::string &envstring);
    * \brief Adds/modifies/deletes environment variable.
    * \param envstring The variable-value string in form 'var=value'. If set to 'var=' or 'var', then variable 
    * 					will be deleted from the environment.

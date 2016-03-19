@@ -1,11 +1,18 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile samba_android.patch
+DEPS= ../../Makefile.include Makefile samba_android.patch no_fork_and_exec.patch
 
 # lib name, version
 LIBNAME=samba
 VERSION=3.6.12
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+
+ifeq ($(OS), ios)
+ifeq ($(CPU), arm64)
+# clang issue with optimizing out functions
+CONFIGURE_EXTRAS= --without-libmsrpc samba_cv_optimize_out_funcation_calls=no ac_cv_func_yp_get_default_domain=no
+endif
+endif
 
 CONFIGURE= cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) \
@@ -41,6 +48,9 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p0 < ../samba_android.patch
+endif
+ifeq ($(TARGET_PLATFORM),appletvos)
+	cd $(PLATFORM); patch -p0 < ../no_fork_and_exec.patch
 endif
 	cd $(PLATFORM)/source3; $(CONFIGURE)
 

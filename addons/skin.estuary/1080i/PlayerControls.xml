@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">201</defaultcontrol>
+	<visible>Player.HasMedia + Window.IsActive(PlayerControls) + !Window.IsActive(FullscreenVideo) + !Window.IsActive(Visualisation)</visible>
+	<coordinates>
+		<left>402</left>
+		<top>335</top>
+	</coordinates>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<include name="DialogBackgroundCommons">
+			<param name="DialogBackgroundWidth" value="1115" />
+			<param name="DialogBackgroundHeight" value="380" />
+			<param name="DialogHeaderLabel" value="16003" />
+			<param name="DialogHeaderId" value="" />
+		</include>
+		<control type="group">
+			<left>20</left>
+			<top>70</top>
+			<control type="label">
+				<top>0</top>
+				<width>780</width>
+				<height>40</height>
+				<label>$VAR[PlayerLabel1]</label>
+				<font>font30_title</font>
+				<shadowcolor>black</shadowcolor>
+				<textcolor>button_focus</textcolor>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<top>56</top>
+				<width>780</width>
+				<height>40</height>
+				<label>$VAR[PlayerLabel2]</label>
+				<font>font24_title</font>
+				<shadowcolor>black</shadowcolor>
+				<textcolor>button_focus</textcolor>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<top>100</top>
+				<width>780</width>
+				<height>40</height>
+				<label>$VAR[PlayerLabel3]</label>
+				<font>font30_title</font>
+				<shadowcolor>black</shadowcolor>
+				<textcolor>grey</textcolor>
+				<scroll>true</scroll>
+			</control>
+		</control>
+		<control type="group">
+			<top>255</top>
+			<control type="label">
+				<left>800</left>
+				<top>70</top>
+				<width>315</width>
+				<height>75</height>
+				<align>center</align>
+				<aligny>bottom</aligny>
+				<label>$INFO[Player.Time]$INFO[Player.Duration, / ]</label>
+				<font>font14</font>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="progress">
+				<animation effect="fade" end="0" time="200">WindowClose</animation>
+				<left>0</left>
+				<top>-10</top>
+				<width>800</width>
+				<height>30</height>
+				<info>Player.ProgressCache</info>
+				<texturebg border="3" colordiffuse="00FFFFFF">colors/white50.png</texturebg>
+				<midtexture colordiffuse="button_focus">colors/white50.png</midtexture>
+				<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
+			</control>
+			<control type="progress" id="23">
+				<animation effect="fade" end="0" time="200">WindowClose</animation>
+				<left>0</left>
+				<top>-10</top>
+				<width>800</width>
+				<height>30</height>
+				<info>Player.Progress</info>
+				<texturebg border="3" colordiffuse="80FFFFFF">colors/white50.png</texturebg>
+				<midtexture colordiffuse="button_focus">colors/white50.png</midtexture>
+			</control>
+			<control type="button" id="87">
+				<include>HiddenObject</include>
+				<onup condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</onup>
+				<onup>201</onup>
+				<ondown condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</ondown>
+				<ondown>201</ondown>
+				<onright>PlayerControl(Forward)</onright>
+				<onleft>PlayerControl(Rewind)</onleft>
+				<visible>Player.SeekEnabled</visible>
+				<onclick condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</onclick>
+			</control>
+			<control type="slider">
+				<left>0</left>
+				<top>-20</top>
+				<width>800</width>
+				<height>50</height>
+				<onup>8010</onup>
+				<ondown>650</ondown>
+				<controloffsetx>75</controloffsetx>
+				<controloffsety>0</controloffsety>
+				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
+				<textureslidernib>osd/progress/nub_bar.png</textureslidernib>
+				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernibfocus>
+				<info>Player.Progress</info>
+				<action>seek</action>
+				<visible>!Control.HasFocus(87)</visible>
+			</control>
+			<control type="slider">
+				<left>0</left>
+				<top>-20</top>
+				<width>800</width>
+				<height>50</height>
+				<onup>8010</onup>
+				<ondown>650</ondown>
+				<controloffsetx>75</controloffsetx>
+				<controloffsety>0</controloffsety>
+				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
+				<textureslidernib colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernib>
+				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernibfocus>
+				<info>Player.Progress</info>
+				<action>seek</action>
+				<visible>Control.HasFocus(87)</visible>
+			</control>
+		</control>
+		<control type="grouplist" id="201">
+			<left>-20</left>
+			<top>270</top>
+			<width>1920</width>
+			<height>135</height>
+			<align>left</align>
+			<itemgap>-20</itemgap>
+			<scrolltime tween="sine">200</scrolltime>
+			<orientation>horizontal</orientation>
+			<onup>87</onup>
+			<control type="radiobutton" id="600">
+				<include name="OSDButton">
+					<param name="texture" value="osd/fullscreen/buttons/previous.png"/>
+				</include>
+				<onclick>PlayerControl(Previous)</onclick>
+				<visible>!VideoPlayer.Content(livetv)</visible>
+			</control>
+			<control type="radiobutton" id="602">
+				<textureradioonfocus colordiffuse="button_focus">osd/fullscreen/buttons/play.png</textureradioonfocus>
+				<textureradioonnofocus>osd/fullscreen/buttons/play.png</textureradioonnofocus>
+				<textureradioofffocus colordiffuse="button_focus">osd/fullscreen/buttons/pause.png</textureradioofffocus>
+				<textureradiooffnofocus>osd/fullscreen/buttons/pause.png</textureradiooffnofocus>
+				<texturefocus>-</texturefocus>
+				<width>125</width>
+				<animation center="62,62" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back">Focus</animation>
+				<height>123</height>
+				<radiowidth>80</radiowidth>
+				<radioheight>80</radioheight>
+				<font>-</font>
+				<texturenofocus>-</texturenofocus>
+				<selected>Player.Paused</selected>
+				<onclick>PlayerControl(Play)</onclick>
+			</control>
+			<control type="radiobutton" id="603">
+				<include name="OSDButton">
+					<param name="texture" value="osd/fullscreen/buttons/stop.png"/>
+				</include>
+				<onclick>PlayerControl(Stop)</onclick>
+			</control>
+			<control type="radiobutton" id="605">
+				<include name="OSDButton">
+					<param name="texture" value="osd/fullscreen/buttons/next.png"/>
+				</include>
+				<onclick>PlayerControl(Next)</onclick>
+				<visible>!VideoPlayer.Content(livetv) + [IntegerGreaterThan(Playlist.Length(video),1) | IntegerGreaterThan(Playlist.Length(music),1)]</visible>
+			</control>
+			<control type="group" id="699">
+				<width>125</width>
+				<height>125</height>
+				<visible>Player.HasAudio + !MusicPlayer.Content(LiveTV)</visible>
+				<control type="button" id="704">
+					<left>0</left>
+					<top>0</top>
+					<width>74</width>
+					<height>74</height>
+					<label>$LOCALIZE[486]$INFO[Playlist.Repeat, : ]</label>
+					<font>-</font>
+					<texturefocus>-</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<onleft>605</onleft>
+					<onright>607</onright>
+					<onup>1000</onup>
+					<ondown>1000</ondown>
+					<onclick>PlayerControl(Repeat)</onclick>
+				</control>
+				<control type="image">
+					<left>40</left>
+					<top>25</top>
+					<width>74</width>
+					<height>74</height>
+					<animation center="37,37" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back" condition="Control.HasFocus(704)">Conditional</animation>
+					<texture colordiffuse="$VAR[RepeatButtonColordiffuseVar]">$VAR[PlayerControlsRepeatImageVar]</texture>
+				</control>
+			</control>
+			<control type="radiobutton" id="607">
+				<textureradioonfocus colordiffuse="button_focus">osd/fullscreen/buttons/random-on.png</textureradioonfocus>
+				<textureradioonnofocus>osd/fullscreen/buttons/random-on.png</textureradioonnofocus>
+				<textureradioofffocus colordiffuse="button_focus">osd/fullscreen/buttons/random-off.png</textureradioofffocus>
+				<textureradiooffnofocus>osd/fullscreen/buttons/random-off.png</textureradiooffnofocus>
+				<textureradioondisabled colordiffuse="disabled">osd/fullscreen/buttons/random-on.png</textureradioondisabled>
+				<textureradiooffdisabled colordiffuse="disabled">osd/fullscreen/buttons/random-off.png</textureradiooffdisabled>
+				<texturefocus>-</texturefocus>
+				<width>125</width>
+				<height>123</height>
+				<radiowidth>74</radiowidth>
+				<radioheight>74</radioheight>
+				<font>-</font>
+				<texturenofocus>-</texturenofocus>
+				<radioposx>0</radioposx>
+				<radioposy>0</radioposy>
+				<label>$LOCALIZE[590]$INFO[Playlist.Random, : ]</label>
+				<animation center="62,62" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back">Focus</animation>
+				<selected>Playlist.IsRandom</selected>
+				<visible>Player.HasAudio + !MusicPlayer.Content(LiveTV)</visible>
+				<onclick>PlayerControl(Random)</onclick>
+			</control>
+		</control>
+		<control type="videowindow">
+			<left>810</left>
+			<top>75</top>
+			<width>295</width>
+			<height>250</height>
+			<visible>Player.HasVideo</visible>
+		</control>
+		<control type="image">
+			<left>833</left>
+			<top>75</top>
+			<width>250</width>
+			<height>250</height>
+			<fadetime>400</fadetime>
+			<texture fallback="DefaultAlbumCover.png" border="2">$INFO[MusicPlayer.Cover]</texture>
+			<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+			<bordersize>4</bordersize>
+			<visible>Player.HasAudio</visible>
+		</control>
+	</controls>
+</window>

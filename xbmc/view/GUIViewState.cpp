@@ -145,6 +145,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId == WINDOW_TV_TIMERS)
     return new CGUIViewStateWindowPVRTimers(windowId, items);
 
+  if (windowId == WINDOW_TV_TIMER_RULES)
+    return new CGUIViewStateWindowPVRTimers(windowId, items);
+
   if (windowId == WINDOW_TV_SEARCH)
     return new CGUIViewStateWindowPVRSearch(windowId, items);
 
@@ -158,6 +161,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
     return new CGUIViewStateWindowPVRGuide(windowId, items);
 
   if (windowId == WINDOW_RADIO_TIMERS)
+    return new CGUIViewStateWindowPVRTimers(windowId, items);
+
+  if (windowId == WINDOW_RADIO_TIMER_RULES)
     return new CGUIViewStateWindowPVRTimers(windowId, items);
 
   if (windowId == WINDOW_RADIO_SEARCH)
@@ -212,7 +218,7 @@ SortOrder CGUIViewState::GetSortOrder() const
 int CGUIViewState::GetSortOrderLabel() const
 {
   if (m_currentSortMethod >= 0 && m_currentSortMethod < (int)m_sortMethods.size())
-    if (m_sortMethods[m_currentSortMethod].m_sortDescription.sortOrder == SortOrderAscending)
+    if (m_sortMethods[m_currentSortMethod].m_sortDescription.sortOrder == SortOrderDescending)
       return 585;
 
   return 584; // default sort order label 'Ascending'

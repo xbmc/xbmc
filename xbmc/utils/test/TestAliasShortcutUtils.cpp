@@ -23,7 +23,7 @@
 #include "test/TestUtils.h"
 
 #if defined(TARGET_DARWIN_OSX)
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #endif
 #include "gtest/gtest.h"
 
@@ -42,24 +42,24 @@ TEST(TestAliasShortcutUtils, IsAliasShortcut)
 
   // create alias from a pointing to /Volumes
   CDarwinUtils::CreateAliasShortcut(alias, "/Volumes");
-  EXPECT_TRUE(IsAliasShortcut(alias));
+  EXPECT_TRUE(IsAliasShortcut(alias, true));
   XFILE::CFile::Delete(alias);
 
   // volumes is not a shortcut but a dir
-  EXPECT_FALSE(IsAliasShortcut("/Volumes"));
+  EXPECT_FALSE(IsAliasShortcut("/Volumes", true));
 #endif
 
   // a regular file is not a shortcut
-  EXPECT_FALSE(IsAliasShortcut(noalias));
+  EXPECT_FALSE(IsAliasShortcut(noalias, false));
   XBMC_DELETETEMPFILE(tmpFile);
 
   // empty string is not an alias
   std::string emptyString;
-  EXPECT_FALSE(IsAliasShortcut(emptyString));
+  EXPECT_FALSE(IsAliasShortcut(emptyString, false));
 
   // non-existent file is no alias
   std::string nonExistingFile="/IDontExistsNormally/somefile.txt";
-  EXPECT_FALSE(IsAliasShortcut(nonExistingFile));
+  EXPECT_FALSE(IsAliasShortcut(nonExistingFile, false));
 }
 
 TEST(TestAliasShortcutUtils, TranslateAliasShortcut)

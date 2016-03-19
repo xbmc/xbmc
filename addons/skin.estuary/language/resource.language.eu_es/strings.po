@@ -1,0 +1,65 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Basque (Spain) (http://www.transifex.com/projects/p/kodi-main/language/eu_ES/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: eu_ES\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31001"
+msgid "Search"
+msgstr "Bilatu"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Ikusi 2D bezala"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Iragarpena"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Akzioak"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Atzera"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Azken eguneraketa"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Indar aukerak"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Albumaren info"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Kate taldea"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Deskargatu azpitituluak"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Azpititulu lokala erabilgarri"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"

@@ -25,10 +25,10 @@
 
 #include "PVRRecording.h"
 
-#define PVR_ALL_RECORDINGS_PATH_EXTENSION "-1"
-
 namespace PVR
 {
+  class CPVRRecordingsPath;
+
   class CPVRRecordings : public Observable
   {
   private:
@@ -42,13 +42,15 @@ namespace PVR
     unsigned int                 m_iLastId;
     bool                         m_bGroupItems;
     CVideoDatabase               m_database;
-    bool                         m_bHasDeleted;
+    bool                         m_bDeletedTVRecordings;
+    bool                         m_bDeletedRadioRecordings;
+    unsigned int                 m_iTVRecordings;
+    unsigned int                 m_iRadioRecordings;
 
     virtual void UpdateFromClients(void);
     virtual std::string TrimSlashes(const std::string &strOrig) const;
-    virtual const std::string GetDirectoryFromPath(const std::string &strPath, const std::string &strBase) const;
     virtual bool IsDirectoryMember(const std::string &strDirectory, const std::string &strEntryDirectory) const;
-    virtual void GetSubDirectories(const std::string &strBase, CFileItemList *results);
+    virtual void GetSubDirectories(const CPVRRecordingsPath &recParentPath, CFileItemList *results);
 
     /**
      * @brief recursively deletes all recordings in the specified directory
@@ -73,9 +75,10 @@ namespace PVR
      */
     void Update(void);
 
-    int GetNumRecordings();
-    bool HasDeletedRecordings();
-    int GetRecordings(CFileItemList* results, bool bDeleted = false);
+    int GetNumTVRecordings() const;
+    bool HasDeletedTVRecordings() const;
+    int GetNumRadioRecordings() const;
+    bool HasDeletedRadioRecordings() const;
 
     /**
      * Deletes the item in question, be it a directory or a file

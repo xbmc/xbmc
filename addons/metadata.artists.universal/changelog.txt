@@ -1,3 +1,6 @@
+[B]3.6.2[/B]
+Update author name
+
 [B]3.6.1[/B]
 Fixed: Won't scrape MBID randomly
 

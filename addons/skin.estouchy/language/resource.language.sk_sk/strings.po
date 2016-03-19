@@ -1,0 +1,305 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Slovak (Slovakia) (http://www.transifex.com/projects/p/kodi-main/language/sk_SK/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sk_SK\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Audio nastavenia"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Caps[CR]Lock"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Možnosti vizualizácie"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "Predvoľby vizualizácií"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Kontextové menu"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Pracuje sa..."
+
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Nedávne"
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "Filmy"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "Epizódy"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "Albumy"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Strana"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Zoznam informácií"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "Prihlasovavie meno"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Aktualizované:"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "RÝCHLO VPRED"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "SPÄŤ"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Čas konca"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Triediť: Vzostupne"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Triediť: Zostupne"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Otvoriť playlist"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Uložiť playlist"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Zatvoriť playlist"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Systémové hudobné súbory"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Aktuálny playlist"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "Späť"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Poloha"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "Zobrazenie"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Aktuálna teplota"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Naposledy aktualizované"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Poskytovateľ dát"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Použitá pamäť:"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Posledný prihlásený"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Vysielané"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Video menu"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Stiahnuť titulky"
+
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teletext"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Predvolený vzhľad"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Arial"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Zmeniť vzhľad · Nastaviť jazyk a región · Zmeniť možnosti výpisu súborov · Nastaviť šetrič obrazovky"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "Spravovať zbierku videí · Nastaviť možnosti prehrávania videa · Zmeniť možnosti výpisu videí · Nastaviť font tituliek"
+
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
+msgstr "Správa hudobnej knižnice · Nastavenie volieb prehrávania hudby · Zmena volieb prehrávania hudby · Služby pre odosielanie informácií o prehrávaných skladbách"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "Zmeniť možnosti výpisu obrázkov · Nastaviť prezentáciu"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "Nastavte tri mestá pre zber dát o počasí"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "Nastaviť možnosti ovládania Kodi cez UPnP alebo HTTP · Nastaviť zdieľanie súborov · Nastaviť možnosti prístupu na internet "
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "Nastaviť a kalibrovať obrazovku · Nastaviť zvukový výstup · Nastaviť diaľkové ovládanie · Nastaviť možnosti úspory energie · Povoliť ladenie · Nastaviť rodičovský zámok"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Správa nainštalovaných doplnkov · Prezeranie a inštalácia doplnkov z kodi.tv · Úprava nastavení doplnkov"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Prihlásenie užívateľa[CR]Pokračujte výberom profilu"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "Tlačidlá kategórií hlavného menu"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "Rýchle odkazy rozšírení Úvodnej obrazovky"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "Rôzne nastavenia"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "Tlačítko a informácie o počasí Úvodnej obrazovky"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Odkaz Rozšírení"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SYNCHRONIZOVAŤ"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Použiť vlastné pozadie"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Pozadie:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Upraviť nastavenia TV · Zmeniť informácie na celej obrazovke · Spravovať nastavenia údajov EPG"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "Živé TV vysielanie"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Skyť video v pozadí"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Skryť vizualizačné pozadie"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Nastavenia kanálov"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Dostupné skupiny"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Pridať skupinu"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Premenovať skupinu"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Odstrániť skupinu"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Ukázať skryté"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Ukázať vymazané"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Prvé spustenie"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "O navigácii v Estouchy musíte vedieť dve veci"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Logo Kodi funguje ako tlačidlo „DOMOV“. Kedykoľvek sa ho dotknete, zobrazí sa domovská obrazovka."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Počas prehrávania zvuku alebo videa sa v hornej časti obrazovky zobrazí názov prehrávaného prvku. Ak sa ho dotknete, aktivujete vizualizáciu na celej obrazovke alebo okno s prehrávaním videa."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Práve sa prehráva titul..."

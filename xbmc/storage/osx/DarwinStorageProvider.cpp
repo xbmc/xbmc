@@ -29,8 +29,9 @@
 #include <DiskArbitration/DiskArbitration.h>
 #include <IOKit/storage/IOCDMedia.h>
 #include <IOKit/storage/IODVDMedia.h>
+#include "platform/darwin/DarwinUtils.h"  
 #endif
-#include "osx/CocoaInterface.h"
+#include "platform/darwin/osx/CocoaInterface.h"
 
 bool CDarwinStorageProvider::m_event = false;
 
@@ -62,6 +63,9 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   share.strName = "Volumes";
   share.m_ignore = true;
   localDrives.push_back(share);
+  
+  if (CDarwinUtils::IsLion())  
+   return; //temp workaround for crash in Cocoa_GetVolumeNameFromMountPoint on 10.7.x  
 
   // This will pick up all local non-removable disks including the Root Disk.
   DASessionRef session = DASessionCreate(kCFAllocatorDefault);
@@ -106,6 +110,10 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 void CDarwinStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 {
 #if defined(TARGET_DARWIN_OSX)
+
+  if (CDarwinUtils::IsLion())  
+    return; //temp workaround for crash in Cocoa_GetVolumeNameFromMountPoint on 10.7.x  
+
   DASessionRef session = DASessionCreate(kCFAllocatorDefault);
   if (session)
   {

@@ -51,6 +51,16 @@ using namespace PVR;
 CGUIDialogPVRRadioRDSInfo::CGUIDialogPVRRadioRDSInfo(void)
   : CGUIDialog(WINDOW_DIALOG_PVR_RADIO_RDS_INFO, "DialogPVRRadioRDSInfo.xml")
   , m_rdsItem(new CFileItem)
+  , m_InfoPresent(false)
+  , m_LabelInfoNewsPresent(false)
+  , m_LabelInfoNewsLocalPresent(false)
+  , m_LabelInfoWeatherPresent(false)
+  , m_LabelInfoLotteryPresent(false)
+  , m_LabelInfoSportPresent(false)
+  , m_LabelInfoStockPresent(false)
+  , m_LabelInfoOtherPresent(false)
+  , m_LabelInfoCinemaPresent(false)
+  , m_LabelInfoHoroscopePresent(false)
 {
 }
 

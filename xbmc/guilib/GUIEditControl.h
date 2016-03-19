@@ -31,6 +31,7 @@
 #include "GUIButtonControl.h"
 #include "utils/Stopwatch.h"
 #include "utils/StringValidation.h"
+#include "utils/Variant.h"
 
 /*!
  \ingroup controls
@@ -75,7 +76,7 @@ public:
   unsigned int GetCursorPosition() const;
   void SetCursorPosition(unsigned int iPosition);
 
-  void SetInputType(INPUT_TYPE type, int heading);
+  void SetInputType(INPUT_TYPE type, CVariant heading);
 
   void SetTextChangeActions(const CGUIAction& textChangeActions) { m_textChangeActions = textChangeActions; };
 
@@ -119,7 +120,7 @@ protected:
   unsigned int m_cursorPos;
   unsigned int m_cursorBlink;
 
-  int m_inputHeading;
+  std::string m_inputHeading;
   INPUT_TYPE m_inputType;
   bool m_isMD5;
 

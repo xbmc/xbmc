@@ -212,7 +212,7 @@ void CGUIMultiSelectTextControl::OnRight()
 // movement functions (callable from lists)
 bool CGUIMultiSelectTextControl::MoveLeft()
 {
-  CGUIAction action = GetNavigateAction(ACTION_MOVE_LEFT);
+  CGUIAction action = GetAction(ACTION_MOVE_LEFT);
   if (m_selectedItem > 0)
     ScrollToItem(m_selectedItem - 1);
   else if (GetNumSelectable() && action.GetNavigation() && action.GetNavigation() == m_controlID)
@@ -224,7 +224,7 @@ bool CGUIMultiSelectTextControl::MoveLeft()
 
 bool CGUIMultiSelectTextControl::MoveRight()
 {
-  CGUIAction action = GetNavigateAction(ACTION_MOVE_RIGHT);
+  CGUIAction action = GetAction(ACTION_MOVE_RIGHT);
   if (GetNumSelectable() && m_selectedItem < GetNumSelectable() - 1)
     ScrollToItem(m_selectedItem + 1);
   else if (action.GetNavigation() && action.GetNavigation() == m_controlID)

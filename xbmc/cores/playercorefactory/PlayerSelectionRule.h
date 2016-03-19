@@ -31,16 +31,13 @@ public:
   CPlayerSelectionRule(TiXmlElement* rule);
   virtual ~CPlayerSelectionRule();
 
-  //bool Matches(const CFileItem& item) const;
-  //std::string GetPlayerName() const;
-  void GetPlayers(const CFileItem& item, VECPLAYERCORES &vecCores);
+  void GetPlayers(const CFileItem& item, std::vector<std::string>&validPlayers, std::vector<std::string>&players);
 
 private:
   static int GetTristate(const char* szValue);
   static bool CompileRegExp(const std::string& str, CRegExp& regExp);
   static bool MatchesRegExp(const std::string& str, CRegExp& regExp);
   void Initialize(TiXmlElement* pRule);
-  PLAYERCOREID GetPlayerCore();
 
   std::string m_name;
 
@@ -67,7 +64,6 @@ private:
   std::string m_videoAspect;
 
   std::string m_playerName;
-  PLAYERCOREID m_playerCoreId;
 
   std::vector<CPlayerSelectionRule *> vecSubRules;
 };

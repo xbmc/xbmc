@@ -72,7 +72,7 @@
 #include "utils/URIUtils.h"
 #endif
 #if defined(TARGET_ANDROID)
-#include "android/loader/AndroidDyload.h"
+#include "platform/android/loader/AndroidDyload.h"
 #elif !defined(TARGET_WINDOWS)
 #include <dlfcn.h>
 #endif
@@ -114,7 +114,7 @@ extern "C" void __stdcall init_emu_environ()
   // python
 #if defined(TARGET_WINDOWS)
   // fill our array with the windows system vars
-  LPTSTR lpszVariable; 
+  LPTSTR lpszVariable;
   LPTCH lpvEnv;
   lpvEnv = GetEnvironmentStrings();
   if (lpvEnv != NULL)
@@ -139,8 +139,8 @@ extern "C" void __stdcall init_emu_environ()
   // check if we are running as real xbmc.app or just binary
   if (!CUtil::GetFrameworksPath(true).empty())
   {
-    // using external python, it's build looking for xxx/lib/python2.6
-    // so point it to frameworks which is where python2.6 is located
+    // using external python, it's build looking for xxx/lib/python2.7
+    // so point it to frameworks which is where python2.7 is located
     dll_putenv(std::string("PYTHONPATH=" +
       CSpecialProtocol::TranslatePath("special://frameworks")).c_str());
     dll_putenv(std::string("PYTHONHOME=" +
@@ -162,7 +162,7 @@ extern "C" void __stdcall init_emu_environ()
 
 #if defined(TARGET_ANDROID)
   std::string apkPath = getenv("XBMC_ANDROID_APK");
-  apkPath += "/assets/python2.6";
+  apkPath += "/assets/python2.7";
   dll_putenv(std::string("PYTHONHOME=" + apkPath).c_str());
   dll_putenv("PYTHONOPTIMIZE=");
   dll_putenv("PYTHONNOUSERSITE=1");
@@ -567,7 +567,6 @@ extern "C"
     return NULL;
   }
 
-
   int dll_read(int fd, void* buffer, unsigned int uiSize)
   {
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
@@ -583,7 +582,7 @@ extern "C"
              err != ECONNRESET && err != ENOTCONN && err != ETIMEDOUT &&
              err != ENOBUFS && err != ENOMEM && err != ENXIO))
           errno = EIO; // exact errno is unknown or incorrect, use default error number
-        
+
         return -1;
       }
       return ret;
@@ -1762,7 +1761,6 @@ extern "C"
     return pdup;
   }
 
-
   //Critical Section has been fixed in EMUkernel32.cpp
 
   int dll_initterm(PFV * start, PFV * end)        //pncrt.dll
@@ -2064,8 +2062,6 @@ extern "C"
     return added ? 0 : -1;
   }
 
-
-
   char* dll_getenv(const char* szKey)
   {
     char* value = NULL;
@@ -2223,6 +2219,7 @@ extern "C"
 #endif
   }
 
+#if _MSC_VER < 1900
   int dll_filbuf(FILE *fp)
   {
     if (fp == NULL)
@@ -2281,6 +2278,7 @@ extern "C"
 #endif
   }
 
+#endif
   // this needs to be wrapped, since dll's have their own file
   // descriptor list, but we always use app's list with our wrappers
   int __cdecl dll_open_osfhandle(intptr_t _OSFileHandle, int _Flags)

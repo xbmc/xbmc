@@ -80,7 +80,6 @@ private:
   bool m_bStartup;
   bool m_bAutorun;
   DWORD m_dwTrayState;
-  DWORD m_dwTrayCount;
   DWORD m_dwLastTrayState;
 
   static std::string m_diskLabel;

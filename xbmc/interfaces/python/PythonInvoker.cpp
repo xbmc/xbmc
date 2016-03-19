@@ -202,7 +202,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
         "modules installed to python path as fallback. This behaviour will be removed in future "
         "version.", GetId());
     ADDON::VECADDONS addons;
-    ADDON::CAddonMgr::GetInstance().GetAddons(ADDON::ADDON_SCRIPT_MODULE, addons);
+    ADDON::CAddonMgr::GetInstance().GetAddons(addons, ADDON::ADDON_SCRIPT_MODULE);
     for (unsigned int i = 0; i < addons.size(); ++i)
       addPath(CSpecialProtocol::TranslatePath(addons[i]->LibPath()));
   }

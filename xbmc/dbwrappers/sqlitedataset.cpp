@@ -192,6 +192,7 @@ int SqliteDatabase::setErr(int err_code, const char * qry){
     break;
   default : error = "Undefined SQLite error";
   }
+  error = "[" + db + "] " + error;
   error += "\nQuery: ";
   error += qry;
   error += "\n";
@@ -320,7 +321,7 @@ int SqliteDatabase::drop_analytics(void) {
   result_set res;
 
   CLog::Log(LOGDEBUG, "Cleaning indexes from database %s at %s", db.c_str(), host.c_str());
-  sprintf(sqlcmd, "SELECT name FROM sqlite_master WHERE type == 'index'");
+  sprintf(sqlcmd, "SELECT name FROM sqlite_master WHERE type == 'index' AND sql IS NOT NULL");
   if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
 
   for (size_t i=0; i < res.records.size(); i++) {
@@ -371,7 +372,7 @@ long SqliteDatabase::nextid(const char* sname) {
   if ((last_err = sqlite3_exec(getHandle(),sqlcmd,&callback,&res,NULL)) != SQLITE_OK) {
     return DB_UNEXPECTED_RESULT;
     }
-  if (res.records.size() == 0) {
+  if (res.records.empty()) {
     id = 1;
     sprintf(sqlcmd,"insert into %s (nextid,seq_name) values (%d,'%s')",sequence_table.c_str(),id,sname);
     if ((last_err = sqlite3_exec(conn,sqlcmd,NULL,NULL,NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
@@ -533,7 +534,7 @@ void SqliteDataset::make_deletion() {
 
 void SqliteDataset::fill_fields() {
   //cout <<"rr "<<result.records.size()<<"|" << frecno <<"\n";
-  if ((db == NULL) || (result.record_header.size() == 0) || (result.records.size() < (unsigned int)frecno)) return;
+  if ((db == NULL) || (result.record_header.empty()) || (result.records.size() < (unsigned int)frecno)) return;
 
   if (fields_object->size() == 0) // Filling columns name
   {

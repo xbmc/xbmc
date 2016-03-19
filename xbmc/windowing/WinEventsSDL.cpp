@@ -29,14 +29,11 @@
 #include "settings/DisplaySettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#ifdef HAS_SDL_JOYSTICK
-#include "input/SDLJoystick.h"
-#endif
 #include "input/InputManager.h"
 #include "input/MouseStat.h"
 #include "WindowingFactory.h"
 #if defined(TARGET_DARWIN)
-#include "osx/CocoaInterface.h"
+#include "platform/darwin/osx/CocoaInterface.h"
 #endif
 
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN) && !defined(TARGET_ANDROID)
@@ -231,19 +228,6 @@ bool CWinEventsSDL::MessagePump()
         if (!g_application.m_bStop) 
           CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
         break;
-
-#ifdef HAS_SDL_JOYSTICK
-      case SDL_JOYBUTTONUP:
-      case SDL_JOYBUTTONDOWN:
-      case SDL_JOYAXISMOTION:
-      case SDL_JOYBALLMOTION:
-      case SDL_JOYHATMOTION:
-      case SDL_JOYDEVICEADDED:
-      case SDL_JOYDEVICEREMOVED:
-        CInputManager::GetInstance().UpdateJoystick(event);
-        ret = true;
-        break;
-#endif
 
       case SDL_ACTIVEEVENT:
         //If the window was inconified or restored

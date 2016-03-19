@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window type="dialog" id="134">
+	<defaultcontrol always="true">450</defaultcontrol>
+	<coordinates>
+		<left>210</left>
+		<top>150</top>
+	</coordinates>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<include name="DialogBackgroundCommons">
+			<param name="DialogBackgroundWidth" value="1500" />
+			<param name="DialogBackgroundHeight" value="800" />
+			<param name="DialogHeaderLabel" value="$LOCALIZE[1036]" />
+			<param name="DialogHeaderId" value="2" />
+		</include>
+		<include name="UpDownArrows">
+			<param name="container_id" value="450" />
+			<param name="posx" value="726" />
+			<param name="up_posy" value="-40" />
+			<param name="down_posy" value="820" />
+		</include>
+		<control type="scrollbar" id="60">
+			<left>1465</left>
+			<top>100</top>
+			<width>12</width>
+			<height>670</height>
+			<onleft>450</onleft>
+			<onright>450</onright>
+			<orientation>vertical</orientation>
+		</control>
+		<control type="panel" id="450">
+			<left>35</left>
+			<top>100</top>
+			<width>1600</width>
+			<height>700</height>
+			<onleft>60</onleft>
+			<onright>60</onright>
+			<onup>450</onup>
+			<ondown>450</ondown>
+			<preloaditems>2</preloaditems>
+			<pagecontrol>60</pagecontrol>
+			<scrolltime tween="sine">200</scrolltime>
+			<orientation>vertical</orientation>
+			<itemlayout width="365" height="350">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>320</width>
+					<height>320</height>
+					<aspectratio>scale</aspectratio>
+					<texture border="4" fallback="DefaultAddon.png">$INFO[ListItem.Art(thumb)]</texture>
+					<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+					<bordersize>4</bordersize>
+				</control>
+				<control type="image">
+					<left>4</left>
+					<top>276</top>
+					<width>312</width>
+					<height>40</height>
+					<aspectratio>scale</aspectratio>
+					<texture colordiffuse="A0FFFFFF">colors/black.png</texture>
+				</control>
+				<control type="label">
+					<left>4</left>
+					<top>276</top>
+					<width>312</width>
+					<height>40</height>
+					<align>center</align>
+					<font>font12</font>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+			</itemlayout>
+			<focusedlayout width="365" height="350">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>320</width>
+					<height>320</height>
+					<aspectratio>scale</aspectratio>
+					<texture border="4" fallback="DefaultAddon.png">$INFO[ListItem.Art(thumb)]</texture>
+					<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+					<bordersize>4</bordersize>
+				</control>
+				<control type="image">
+					<left>4</left>
+					<top>276</top>
+					<width>312</width>
+					<height>40</height>
+					<aspectratio>scale</aspectratio>
+					<texture colordiffuse="A0FFFFFF">colors/black.png</texture>
+				</control>
+				<control type="label">
+					<left>4</left>
+					<top>276</top>
+					<width>312</width>
+					<height>40</height>
+					<align>center</align>
+					<font>font12</font>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>320</width>
+					<height>320</height>
+					<texture background="true" border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="textbox">
+			<left>300</left>
+			<top>200</top>
+			<width>900</width>
+			<height>300</height>
+			<aligny>center</aligny>
+			<align>center</align>
+			<label>$LOCALIZE[31025]</label>
+			<font>font30_title</font>
+			<visible>Stringcompare(Container(450).NumItems,0)</visible>
+		</control>
+	</controls>
+</window>

@@ -39,6 +39,7 @@
 #include "utils/URIUtils.h"
 #include "windowing/WindowingFactory.h"
 #include "Application.h"
+#include <algorithm>
 #include <cassert>
 
 #ifdef _DEBUG
@@ -77,7 +78,6 @@ static void limit_calls_leave()
 #endif
 #define CLASSNAME "COMXImage"
 
-using namespace std;
 using namespace XFILE;
 
 COMXImage::COMXImage()
@@ -177,12 +177,12 @@ bool COMXImage::ClampLimits(unsigned int &width, unsigned int &height, unsigned 
   }
 
   if (gui_width)
-    max_width = min(max_width, gui_width);
+    max_width = std::min(max_width, gui_width);
   if (gui_height)
-    max_height = min(max_height, gui_height);
+    max_height = std::min(max_height, gui_height);
 
-  max_width  = min(max_width, 2048U);
-  max_height = min(max_height, 2048U);
+  max_width  = std::min(max_width, 2048U);
+  max_height = std::min(max_height, 2048U);
 
   width = m_width;
   height = m_height;

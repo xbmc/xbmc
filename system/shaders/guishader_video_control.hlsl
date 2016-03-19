@@ -40,7 +40,5 @@ float4 PS(PS_INPUT input) : SV_TARGET
   current.a = input.color.a;
   current.rgb += specular.rgb - 0.5;
 
-  return current;
+  return adjustColorRange(current);
 }
-
-

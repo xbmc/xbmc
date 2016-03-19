@@ -32,6 +32,11 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../02-fixandroid.patch
 	cd $(PLATFORM); autoreconf -vif
 	cd $(PLATFORM); $(CONFIGURE)
+ifeq ($(CPU),arm64)
+	cd $(PLATFORM); patch -p0 < ../03-fixtvos.patch
+	cd $(PLATFORM); sed -ie "s|-bind_at_load||" ./libtool
+	cd $(PLATFORM); sed -ie "s|-bind_at_load||" ./ltmain.sh
+endif
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)
@@ -43,7 +48,14 @@ ifeq ($(OS),android)
 	$(RPL) -e "libboblight.so.0" "libboblight.so\x00\x00" $(PLATFORM)/src/.libs/libboblight.so
 	-$(READELF) --dynamic $(PLATFORM)/src/.libs/libboblight.so | grep ibrary
 endif
+ifeq ($(OS),ios)
+ifeq ($(TARGET_PLATFORM),appletvos)
+	#deploy into source tree for tvos - we distribute libboblight with the bundle...
+	cp $(PLATFORM)/src/.libs/libboblight.0.dylib $(XBMCROOT)/system/libboblight-tvos.0.dylib
+endif
+else
 	echo "libboblight isn't a dependency of XBMC and won't be installed"
+endif
 	touch $@
 clean:
 	$(MAKE) -C $(PLATFORM) clean

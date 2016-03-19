@@ -103,7 +103,7 @@ bool DPMSSupport::DisablePowerSaving()
 
 ///////// Platform-specific support
 
-#if defined(HAS_GLX)
+#if defined(HAVE_X11)
 //// X Windows
 
 // Here's a sad story: our Windows-inspired BOOL type from linux/PlatformDefs.h

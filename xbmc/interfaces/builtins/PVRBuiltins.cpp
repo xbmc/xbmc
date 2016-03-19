@@ -53,6 +53,37 @@ static int SearchMissingIcons(const std::vector<std::string>& params)
   return 0;
 }
 
+// Note: For new Texts with comma add a "\" before!!! Is used for table text.
+//
+/// \page page_List_of_built_in_functions
+/// \section built_in_functions_10 PVR built-in's
+///
+/// -----------------------------------------------------------------------------
+///
+/// \table_start
+///   \table_h2_l{
+///     Function,
+///     Description }
+///   \table_row2_l{
+///     <b>`PVR.StartManager`</b>\n
+///     <b>`StartPVRManager`</b> (deprecated)
+///     ,
+///     (Re)Starts the PVR manager
+///   }
+///   \table_row2_l{
+///     <b>`PVR.StartManager`</b>\n
+///     <b>`StopPVRManager`</b> (deprecated)
+///     ,
+///     Stops the PVR manager
+///   }
+///   \table_row2_l{
+///     <b>`PVR.SearchMissingChannelIcons`</b>
+///     ,
+///     Will start a search for missing channel icons
+///   }
+/// \table_end
+///
+
 CBuiltins::CommandMap CPVRBuiltins::GetOperations() const
 {
   return {

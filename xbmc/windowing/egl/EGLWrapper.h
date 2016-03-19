@@ -64,8 +64,6 @@ public:
   bool GetConfigAttrib(EGLDisplay display, EGLConfig config, EGLint attribute, EGLint *value);
   bool SurfaceAttrib(EGLDisplay display, EGLSurface surface, EGLint  attribute, EGLint  value);
 
-  bool TrustSurfaceSize();
-
   static void* GetProcAddress(const char* function);
 
 private:

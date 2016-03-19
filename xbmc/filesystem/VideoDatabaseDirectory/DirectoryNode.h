@@ -1,7 +1,7 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2016 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -54,7 +54,8 @@ namespace XFILE
       NODE_TYPE_MUSICVIDEOS_ALBUM,
       NODE_TYPE_SETS,
       NODE_TYPE_COUNTRY,
-      NODE_TYPE_TAGS
+      NODE_TYPE_TAGS,
+      NODE_TYPE_INPROGRESS_TVSHOWS
     } NODE_TYPE;
 
     typedef struct {
@@ -78,7 +79,9 @@ namespace XFILE
 
       CDirectoryNode* GetParent() const;
 
-      bool CanCache() const;
+      std::string BuildPath() const;
+
+      virtual bool CanCache() const;
     protected:
       CDirectoryNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent);
       static CDirectoryNode* CreateNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent);
@@ -92,10 +95,6 @@ namespace XFILE
 
       virtual bool GetContent(CFileItemList& items) const;
 
-      std::string BuildPath() const;
-
-    private:
-      void AddQueuingFolder(CFileItemList& items) const;
 
     private:
       NODE_TYPE m_Type;

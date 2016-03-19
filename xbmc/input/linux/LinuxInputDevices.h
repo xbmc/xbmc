@@ -102,6 +102,7 @@ public:
   size_t Size() { return m_devices.size(); }
 private:
   CCriticalSection m_devicesListLock;
+  bool IsUdevJoystick(const char *devpath);
   bool CheckDevice(const char *device);
   std::vector<CLinuxInputDevice*> m_devices;
   bool m_bReInitialize;

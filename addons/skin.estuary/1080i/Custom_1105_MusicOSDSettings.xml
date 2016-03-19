@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog" id="1105">
+	<defaultcontrol always="true">5000</defaultcontrol>
+	<coordinates>
+		<left>660</left>
+		<top>220</top>
+	</coordinates>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<include name="DialogBackgroundCommons">
+			<param name="DialogBackgroundWidth" value="600" />
+			<param name="DialogBackgroundHeight" value="550" />
+			<param name="DialogHeaderLabel" value="$LOCALIZE[5]" />
+			<param name="DialogHeaderId" value="" />
+		</include>
+		<control type="list" id="5000">
+			<left>2</left>
+			<top>107</top>
+			<width>596</width>
+			<height>660</height>
+			<onup>5000</onup>
+			<ondown>5000</ondown>
+			<onleft>99</onleft>
+			<onright>61</onright>
+			<include name="DefaultSimpleListLayout">
+				<param name="width" value="600" />
+				<param name="list_id" value="5000" />
+				<param name="align" value="center" />
+			</include>
+			<content>
+				<item>
+					<label>$LOCALIZE[250]: [COLOR button_focus]$INFO[Visualisation.Name][/COLOR]</label>
+					<onclick>Dialog.Close(all)</onclick>
+					<onclick>SendClick(500)</onclick>
+				</item>
+				<item>
+					<label>$LOCALIZE[31084]</label>
+					<onclick>Addon.Default.OpenSettings(xbmc.player.musicviz)</onclick>
+				</item>
+				<item>
+					<label>$LOCALIZE[31068]</label>
+					<onclick>ActivateWindow(visualisationpresetlist)</onclick>
+					<visible>Visualisation.HasPresets</visible>
+				</item>
+				<item>
+					<label>$LOCALIZE[31082]: [COLOR button_focus]$INFO[Skin.String(LyricScript_Path)][/COLOR]</label>
+					<onclick>Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)</onclick>
+				</item>
+				<item>
+					<label>$LOCALIZE[31083]</label>
+					<onclick>Addon.OpenSettings($INFO[Skin.String(LyricScript_Path)])</onclick>
+					<visible>!IsEmpty(Skin.String(LyricScript_Path))</visible>
+				</item>
+			</content>
+		</control>
+	</controls>
+</window>

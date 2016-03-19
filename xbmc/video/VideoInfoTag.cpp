@@ -47,7 +47,6 @@ void CVideoInfoTag::Reset()
   m_strShowTitle.clear();
   m_strOriginalTitle.clear();
   m_strSortTitle.clear();
-  m_strVotes.clear();
   m_cast.clear();
   m_strSet.clear();
   m_iSetId = -1;
@@ -73,7 +72,8 @@ void CVideoInfoTag::Reset()
   m_strUniqueId.clear();
   m_iSpecialSortSeason = -1;
   m_iSpecialSortEpisode = -1;
-  m_fRating = 0.0f;
+  m_strDefaultRating = "default";
+  m_ratings.clear();
   m_iUserRating = 0;
   m_iDbId = -1;
   m_iFileId = -1;
@@ -86,7 +86,8 @@ void CVideoInfoTag::Reset()
   m_namedSeasons.clear();
   m_streamDetails.Reset();
   m_playCount = 0;
-  m_fEpBookmark = 0;
+  m_EpBookmark.Reset();
+  m_EpBookmark.type = CBookmark::EPISODE;
   m_basePath.clear();
   m_parentPathID = -1;
   m_resumePoint.Reset();
@@ -95,6 +96,8 @@ void CVideoInfoTag::Reset()
   m_iIdSeason = -1;
   m_dateAdded.Reset();
   m_type.clear();
+  m_relevance = -1;
+  m_parsedDetails = 0;
 }
 
 bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathInfo, const TiXmlElement *additionalNode)
@@ -114,9 +117,38 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     XMLUtils::SetString(movie, "showtitle", m_strShowTitle);
   if (!m_strSortTitle.empty())
     XMLUtils::SetString(movie, "sorttitle", m_strSortTitle);
-  XMLUtils::SetFloat(movie, "rating", m_fRating);
+  if (!m_ratings.empty())
+  {
+    TiXmlElement ratings("ratings");
+    for (const auto& it : m_ratings)
+    {
+      TiXmlElement rating("rating");
+      rating.SetAttribute("name", it.first.c_str());
+      XMLUtils::SetFloat(&rating, "value", it.second.rating);
+      XMLUtils::SetInt(&rating, "votes", it.second.votes);
+      if (it.first == m_strDefaultRating)
+        rating.SetAttribute("default", "true");
+      ratings.InsertEndChild(rating);
+    }
+    movie->InsertEndChild(ratings);
+  }
   XMLUtils::SetInt(movie, "userrating", m_iUserRating);
-  XMLUtils::SetFloat(movie, "epbookmark", m_fEpBookmark);
+
+  if (m_EpBookmark.timeInSeconds > 0)
+  {
+    TiXmlElement epbookmark("episodebookmark");
+    XMLUtils::SetFloat(&epbookmark, "position", (float)m_EpBookmark.timeInSeconds);
+    if (!m_EpBookmark.playerState.empty())
+    {
+      TiXmlElement playerstate("playerstate");
+      CXBMCTinyXML doc;
+      doc.Parse(m_EpBookmark.playerState);
+      playerstate.InsertEndChild(*doc.RootElement());
+      epbookmark.InsertEndChild(playerstate);
+    }
+    movie->InsertEndChild(epbookmark);
+  }
+
   XMLUtils::SetInt(movie, "year", m_iYear);
   XMLUtils::SetInt(movie, "top250", m_iTop250);
   if (tag == "episodedetails" || tag == "tvshow")
@@ -132,7 +164,6 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     XMLUtils::SetInt(movie, "track", m_iTrack);
     XMLUtils::SetString(movie, "album", m_strAlbum);
   }
-  XMLUtils::SetString(movie, "votes", m_strVotes);
   XMLUtils::SetString(movie, "outline", m_strPlotOutline);
   XMLUtils::SetString(movie, "plot", m_strPlot);
   XMLUtils::SetString(movie, "tagline", m_strTagLine);
@@ -290,7 +321,6 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_fanart.m_xml;
     ar << m_strTitle;
     ar << m_strSortTitle;
-    ar << m_strVotes;
     ar << m_studio;
     ar << m_strTrailer;
     ar << (int)m_cast.size();
@@ -329,7 +359,14 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_iSeason;
     ar << m_iEpisode;
     ar << m_strUniqueId;
-    ar << m_fRating;
+    ar << (int)m_ratings.size();
+    for (const auto& i : m_ratings)
+    {
+      ar << i.first;
+      ar << (i.first == m_strDefaultRating);
+      ar << i.second.rating;
+      ar << i.second.votes;
+    }
     ar << m_iUserRating;
     ar << m_iDbId;
     ar << m_iFileId;
@@ -345,7 +382,8 @@ void CVideoInfoTag::Archive(CArchive& ar)
       ar << namedSeason.first;
       ar << namedSeason.second;
     }
-    ar << m_fEpBookmark;
+    ar << m_EpBookmark.playerState;
+    ar << m_EpBookmark.timeInSeconds;
     ar << m_basePath;
     ar << m_parentPathID;
     ar << m_resumePoint.timeInSeconds;
@@ -369,7 +407,6 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_fanart.m_xml;
     ar >> m_strTitle;
     ar >> m_strSortTitle;
-    ar >> m_strVotes;
     ar >> m_studio;
     ar >> m_strTrailer;
     int iCastSize;
@@ -414,7 +451,21 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_iSeason;
     ar >> m_iEpisode;
     ar >> m_strUniqueId;
-    ar >> m_fRating;
+    int iRatingSize;
+    ar >> iRatingSize;
+    for (int i = 0; i < iRatingSize; ++i)
+    {
+      CRating rating;
+      std::string name;
+      bool defaultRating;
+      ar >> name;
+      ar >> defaultRating;
+      ar >> rating.rating;
+      ar >> rating.votes;
+      AddRating(rating, name);
+      if (defaultRating)
+        m_strDefaultRating = name;
+    }
     ar >> m_iUserRating;
     ar >> m_iDbId;
     ar >> m_iFileId;
@@ -435,8 +486,8 @@ void CVideoInfoTag::Archive(CArchive& ar)
       ar >> seasonName;
       m_namedSeasons.insert(std::make_pair(seasonNumber, seasonName));
     }
-
-    ar >> m_fEpBookmark;
+    ar >> m_EpBookmark.playerState;
+    ar >> m_EpBookmark.timeInSeconds;
     ar >> m_basePath;
     ar >> m_parentPathID;
     ar >> m_resumePoint.timeInSeconds;
@@ -461,7 +512,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["plotoutline"] = m_strPlotOutline;
   value["plot"] = m_strPlot;
   value["title"] = m_strTitle;
-  value["votes"] = m_strVotes;
+  value["votes"] = StringUtils::Format("%i", GetRating().votes);
   value["studio"] = m_studio;
   value["trailer"] = m_strTrailer;
   value["cast"] = CVariant(CVariant::VariantTypeArray);
@@ -502,7 +553,18 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["season"] = m_iSeason;
   value["episode"] = m_iEpisode;
   value["uniqueid"]["unknown"] = m_strUniqueId;
-  value["rating"] = m_fRating;
+  value["rating"] = GetRating().rating;
+  value["ratings"] = CVariant(CVariant::VariantTypeArray);
+  for (const auto& i : m_ratings)
+  {
+    CVariant rating;
+    rating["name"] = i.first;
+    rating["rating"] = i.second.rating;
+    rating["votes"] = i.second.votes;
+    if (i.first == m_strDefaultRating)
+      rating["default"] = true;
+    value["ratings"].push_back(rating);
+  }
   value["userrating"] = m_iUserRating;
   value["dbid"] = m_iDbId;
   value["fileid"] = m_iFileId;
@@ -540,7 +602,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
       sortable[FieldTitle] = title;
     break;
   }
-  case FieldVotes:                    sortable[FieldVotes] = m_strVotes; break;
+  case FieldVotes:                    sortable[FieldVotes] = GetRating().votes; break;
   case FieldStudio:                   sortable[FieldStudio] = m_studio; break;
   case FieldTrailer:                  sortable[FieldTrailer] = m_strTrailer; break;
   case FieldSet:                      sortable[FieldSet] = m_strSet; break;
@@ -580,7 +642,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldNumberOfWatchedEpisodes:  sortable[FieldNumberOfWatchedEpisodes] = m_iEpisode; break;
   case FieldEpisodeNumberSpecialSort: sortable[FieldEpisodeNumberSpecialSort] = m_iSpecialSortEpisode; break;
   case FieldSeasonSpecialSort:        sortable[FieldSeasonSpecialSort] = m_iSpecialSortSeason; break;
-  case FieldRating:                   sortable[FieldRating] = m_fRating; break;
+  case FieldRating:                   sortable[FieldRating] = GetRating().rating; break;
   case FieldUserRating:               sortable[FieldUserRating] = m_iUserRating; break;
   case FieldId:                       sortable[FieldId] = m_iDbId; break;
   case FieldTrackNumber:              sortable[FieldTrackNumber] = m_iTrack; break;
@@ -600,8 +662,20 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldInProgress:               sortable[FieldInProgress] = m_resumePoint.IsPartWay(); break;
   case FieldDateAdded:                sortable[FieldDateAdded] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::Empty; break;
   case FieldMediaType:                sortable[FieldMediaType] = m_type; break;
+  case FieldRelevance:                sortable[FieldRelevance] = m_relevance; break;
   default: break;
   }
+}
+
+const CRating CVideoInfoTag::GetRating(std::string type) const
+{
+  if (type.empty())
+    type = m_strDefaultRating;
+
+  if (m_ratings.find(type) == m_ratings.end())
+    return CRating();
+
+  return m_ratings.find(type)->second;
 }
 
 const std::string CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
@@ -622,6 +696,7 @@ const std::string CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
 void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
 {
   std::string value;
+  float fValue;
 
   if (XMLUtils::GetString(movie, "title", value))
     SetTitle(value);
@@ -635,15 +710,56 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (XMLUtils::GetString(movie, "sorttitle", value))
     SetSortTitle(value);
 
-  XMLUtils::GetFloat(movie, "rating", m_fRating);
-  XMLUtils::GetInt(movie, "userrating", m_iUserRating);
-  XMLUtils::GetFloat(movie, "epbookmark", m_fEpBookmark);
-  int max_value = 10;
-  const TiXmlElement* rElement = movie->FirstChildElement("rating");
-  if (rElement && (rElement->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value>=1)
+  const TiXmlElement* node = movie->FirstChildElement("ratings");
+  if (node)
   {
-    m_fRating = m_fRating / max_value * 10; // Normalise the Movie Rating to between 1 and 10
+    for (const TiXmlElement* child = node->FirstChildElement("rating"); child != nullptr; child = child->NextSiblingElement("rating"))
+    {
+      CRating r;
+      std::string name;
+      if (child->QueryStringAttribute("name", &name) != TIXML_SUCCESS)
+        name = "default";
+      XMLUtils::GetFloat(child, "value", r.rating);
+      XMLUtils::GetInt(child, "votes", r.votes);
+      int max_value = 10;
+      if ((child->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value >= 1)
+        r.rating = r.rating / max_value * 10; // Normalise the Movie Rating to between 1 and 10
+      AddRating(r, name);
+      bool isDefault = false;
+      if ((child->QueryBoolAttribute("default", &isDefault) == TIXML_SUCCESS) && isDefault)
+        m_strDefaultRating = name;
+    }
   }
+  else if (XMLUtils::GetFloat(movie, "rating", fValue))
+  {
+    CRating r(fValue, 0);
+    if (XMLUtils::GetString(movie, "votes", value))
+      r.votes = StringUtils::ReturnDigits(value);
+    int max_value = 10;
+    const TiXmlElement* rElement = movie->FirstChildElement("rating");
+    if (rElement && (rElement->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value >= 1)
+      r.rating = r.rating / max_value * 10; // Normalise the Movie Rating to between 1 and 10
+    AddRating(r, "default");
+    m_strDefaultRating = "default";
+  }
+  XMLUtils::GetInt(movie, "userrating", m_iUserRating);
+
+  const TiXmlElement *epbookmark = movie->FirstChildElement("episodebookmark");
+  if (epbookmark)
+  {
+    XMLUtils::GetDouble(epbookmark, "position", m_EpBookmark.timeInSeconds);
+    const TiXmlElement *playerstate = epbookmark->FirstChildElement("playerstate");
+    if (playerstate)
+    {
+      const TiXmlElement *value = playerstate->FirstChildElement();
+      if (value)
+        m_EpBookmark.playerState << *value;
+    }
+  }
+  else
+    XMLUtils::GetDouble(movie, "epbookmark", m_EpBookmark.timeInSeconds);
+
+  int max_value = 10;
   const TiXmlElement* urElement = movie->FirstChildElement("userrating");
   if (urElement && (urElement->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value >= 1)
     m_iUserRating = m_iUserRating / max_value * 10; // Normalise the user Movie Rating to between 1 and 10
@@ -664,8 +780,6 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     m_iSpecialSortSeason = after;
     m_iSpecialSortEpisode = 0x1000; // should be more than any realistic episode number
   }
-  if (XMLUtils::GetString(movie, "votes", value))
-    SetVotes(value);
 
   if (XMLUtils::GetString(movie, "outline", value))
     SetPlotOutline(value);
@@ -775,7 +889,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   }
 
   // cast
-  const TiXmlElement* node = movie->FirstChildElement("actor");
+  node = movie->FirstChildElement("actor");
   if (node && node->FirstChild() && prioritise)
     m_cast.clear();
   while (node)
@@ -890,9 +1004,12 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         XMLUtils::GetInt(nodeDetail, "durationinseconds", p->m_iDuration);
         if (XMLUtils::GetString(nodeDetail, "stereomode", value))
           p->m_strStereoMode = StringUtils::Trim(value);
+        if (XMLUtils::GetString(nodeDetail, "language", value))
+          p->m_strLanguage = StringUtils::Trim(value);
 
         StringUtils::ToLower(p->m_strCodec);
         StringUtils::ToLower(p->m_strStereoMode);
+        StringUtils::ToLower(p->m_strLanguage);
         m_streamDetails.AddStream(p);
       }
       nodeDetail = NULL;
@@ -1045,9 +1162,33 @@ void CVideoInfoTag::SetPictureURL(CScraperUrl &pictureURL)
   m_strPictureURL = pictureURL;
 }
 
-void CVideoInfoTag::SetVotes(std::string votes)
+void CVideoInfoTag::AddRating(float rating, int votes, const std::string& type /* = "" */)
 {
-  m_strVotes = Trim(std::move(votes));
+  AddRating(CRating(rating, votes), type);
+}
+
+void CVideoInfoTag::AddRating(CRating rating, const std::string& type /* = "" */)
+{
+  if (type.empty())
+    m_ratings[m_strDefaultRating] = rating;
+  else
+    m_ratings[type] = rating;
+}
+
+void CVideoInfoTag::SetRating(float rating, const std::string& type /* = "" */)
+{
+  if (type.empty())
+    m_ratings[m_strDefaultRating].rating = rating;
+  else
+    m_ratings[type].rating = rating;
+}
+
+void CVideoInfoTag::SetVotes(int votes, const std::string& type /* = "" */)
+{
+  if (type.empty())
+    m_ratings[m_strDefaultRating].votes = votes;
+  else
+    m_ratings[type].votes = votes;
 }
 
 void CVideoInfoTag::SetArtist(std::vector<std::string> artist)
@@ -1143,6 +1284,15 @@ void CVideoInfoTag::SetUniqueId(std::string uniqueId)
 void CVideoInfoTag::SetNamedSeasons(std::map<int, std::string> namedSeasons)
 {
   m_namedSeasons = std::move(namedSeasons);
+}
+
+void CVideoInfoTag::SetUserrating(int userrating)
+{
+  //This value needs to be between 0-10 - 0 will unset the userrating
+  userrating = std::max(userrating, 0);
+  userrating = std::min(userrating, 10);
+
+  m_iUserRating = userrating;
 }
 
 std::string CVideoInfoTag::Trim(std::string &&value)

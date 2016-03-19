@@ -82,7 +82,7 @@
 #define GUI_MSG_VISUALISATION_ACTION    GUI_MSG_USER + 120 // request the vis perform an action
 #define GUI_MSG_VISUALISATION_RELOAD    GUI_MSG_USER + 121 // request the vis to reload
 
-#define GUI_MSG_VIDEO_MENU_STARTED      GUI_MSG_USER + 21 // sent by dvdplayer on entry to the menu
+#define GUI_MSG_VIDEO_MENU_STARTED      GUI_MSG_USER + 21 // sent by VideoPlayer on entry to the menu
 
 //  Message is sent by built-in function to alert the playlist window
 //  that the user has initiated Random playback

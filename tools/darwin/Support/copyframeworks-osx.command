@@ -70,7 +70,7 @@ cp -f "$TARGET_BUILD_DIR/$APP_NAME" "$TARGET_BINARY"
 echo "Creating icon"
 iconutil -c icns --output "$TARGET_CONTENTS/Resources/kodi.icns" "$SRCROOT/tools/darwin/packaging/media/osx/icon.iconset"
 
-cp -f "$SRCROOT/xbmc/osx/Info.plist" "$TARGET_CONTENTS/"
+cp -f "$SRCROOT/xbmc/platform/darwin/osx/Info.plist" "$TARGET_CONTENTS/"
 
 # Copy all of XBMC's dylib dependencies and rename their locations to inside the Framework
 echo "Checking $TARGET_BINARY dylib dependencies"
@@ -81,14 +81,14 @@ for a in $(otool -LX "$TARGET_BINARY"  | grep "$EXTERNAL_LIBS" | awk ' { print $
 	install_name_tool -change "$a" "$DYLIB_NAMEPATH/$(basename $a)" "$TARGET_BINARY"
 done
 
-echo "Package $EXTERNAL_LIBS/lib/python2.6"
+echo "Package $EXTERNAL_LIBS/lib/python2.7"
 mkdir -p "$TARGET_CONTENTS/Libraries/lib"
 PYTHONSYNC="rsync -aq --exclude .DS_Store --exclude *.a --exclude *.exe --exclude test --exclude tests"
-${PYTHONSYNC} "$EXTERNAL_LIBS/lib/python2.6" "$TARGET_FRAMEWORKS/lib/"
-rm -rf "$TARGET_FRAMEWORKS/lib/python2.6/config"
+${PYTHONSYNC} "$EXTERNAL_LIBS/lib/python2.7" "$TARGET_FRAMEWORKS/lib/"
+rm -rf "$TARGET_FRAMEWORKS/lib/python2.7/config"
 
-echo "Checking $TARGET_FRAMEWORKS/lib/python2.6 *.so for dylib dependencies"
-check_xbmc_dylib_depends "$TARGET_FRAMEWORKS"/lib/python2.6 "*.so"
+echo "Checking $TARGET_FRAMEWORKS/lib/python2.7 *.so for dylib dependencies"
+check_xbmc_dylib_depends "$TARGET_FRAMEWORKS"/lib/python2.7 "*.so"
 
 echo "Checking $XBMC_HOME/system *.so for dylib dependencies"
 check_xbmc_dylib_depends "$XBMC_HOME"/system "*.so"

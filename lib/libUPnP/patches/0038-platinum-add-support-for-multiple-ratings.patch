@@ -1,0 +1,63 @@
+From 77ba91ac8815c150c7e4537a3622df52bd811cef Mon Sep 17 00:00:00 2001
+From: phate89 <phates89@gmail.com>
+Date: Sat, 26 Sep 2015 11:16:57 +0200
+Subject: [PATCH] platinum: add support for multiple ratings
+
+---
+ .../Platinum/Source/Devices/MediaServer/PltMediaItem.cpp      | 11 +++++++----
+ .../Platinum/Source/Devices/MediaServer/PltMediaItem.h        |  2 +-
+ 2 files changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+index 01ef6e9..96839e4 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+@@ -258,7 +258,7 @@ PLT_MediaObject::Reset()
+ 
+     m_XbmcInfo.date_added = "";
+     m_XbmcInfo.rating = 0.0f;
+-    m_XbmcInfo.votes = "";
++    m_XbmcInfo.votes = 0;
+     m_XbmcInfo.artwork.Clear();
+     m_XbmcInfo.unique_identifier = "";
+     m_XbmcInfo.countries.Clear();
+@@ -590,9 +590,9 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
+     }
+ 
+     // xbmc votes
+-    if (mask & PLT_FILTER_MASK_XBMC_VOTES && !m_XbmcInfo.votes.IsEmpty()) {
++    if (mask & PLT_FILTER_MASK_XBMC_VOTES && m_XbmcInfo.votes != 0) {
+         didl += "<xbmc:votes>";
+-        PLT_Didl::AppendXmlEscape(didl, m_XbmcInfo.votes);
++        didl += NPT_String::Format("%i", m_XbmcInfo.votes);
+         didl += "</xbmc:votes>";
+     }
+ 
+@@ -841,7 +841,10 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
+     if (NPT_FAILED(str.ToFloat(floatValue))) floatValue = 0.0;
+     m_XbmcInfo.rating = floatValue;
+ 
+-    PLT_XmlHelper::GetChildText(entry, "votes", m_XbmcInfo.votes, didl_namespace_xbmc, 256);
++    PLT_XmlHelper::GetChildText(entry, "votes", str, didl_namespace_xbmc, 256);
++    NPT_Int32 intValue;
++    if (NPT_FAILED(str.ToInteger(intValue))) intValue = 0;
++    m_XbmcInfo.votes = intValue;
+ 
+     children.Clear();
+     PLT_XmlHelper::GetChildren(entry, children, "artwork", didl_namespace_xbmc);
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
+index 98d47d8..5712b9a 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
+@@ -167,7 +167,7 @@ public:
+ typedef struct {
+   NPT_String date_added;
+   NPT_Float rating;
+-  NPT_String votes;
++  NPT_Int32 votes;
+   PLT_Artworks artwork;
+   NPT_String unique_identifier;
+   NPT_List<NPT_String> countries;
+-- 
+2.5.3.windows.1
+

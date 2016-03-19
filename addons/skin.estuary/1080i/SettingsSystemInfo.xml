@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">95</defaultcontrol>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<left>90</left>
+			<top>90</top>
+			<include>OpenClose_Left</include>
+			<control type="image">
+				<left>-20</left>
+				<top>50</top>
+				<width>440</width>
+				<height>570</height>
+				<texture border="22">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="grouplist" id="9000">
+				<left>0</left>
+				<top>70</top>
+				<width>400</width>
+				<height>540</height>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<control type="button" id="95">
+					<description>Button Summary Values</description>
+					<include name="DefaultSettingButton">
+						<param name="height" value="88" />
+					</include>
+					<width>400</width>
+					<label>$LOCALIZE[20037]</label>
+				</control>
+				<control type="button" id="94">
+					<description>Button Storage</description>
+					<include name="DefaultSettingButton">
+						<param name="height" value="88" />
+					</include>
+					<width>400</width>
+					<label>$LOCALIZE[13277]</label>
+				</control>
+				<control type="button" id="96">
+					<description>Button Network</description>
+					<include name="DefaultSettingButton">
+						<param name="height" value="88" />
+					</include>
+					<width>400</width>
+					<label>$LOCALIZE[13279]</label>
+				</control>
+				<control type="button" id="97">
+					<description>Button Video</description>
+					<include name="DefaultSettingButton">
+						<param name="height" value="88" />
+					</include>
+					<width>400</width>
+					<label>$LOCALIZE[13280]</label>
+				</control>
+				<control type="button" id="98">
+					<description>Button Hardware</description>
+					<include name="DefaultSettingButton">
+						<param name="height" value="88" />
+					</include>
+					<width>400</width>
+					<label>$LOCALIZE[13281]</label>
+				</control>
+				<control type="button" id="99">
+					<description>Button PVR</description>
+					<include name="DefaultSettingButton">
+						<param name="height" value="88" />
+					</include>
+					<width>400</width>
+					<label>$LOCALIZE[19191]</label>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<left>90</left>
+			<top>70</top>
+			<include>OpenClose_Right</include>
+			<control type="image">
+				<left>420</left>
+				<top>70</top>
+				<width>1300</width>
+				<height>570</height>
+				<texture border="22">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="image">
+				<left>-20</left>
+				<top>630</top>
+				<width>1740</width>
+				<height>232</height>
+				<texture border="22">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="grouplist">
+				<left>480</left>
+				<top>105</top>
+				<orientation>vertical</orientation>
+				<control type="label" id="2">
+					<height>45</height>
+					<width>1220</width>
+					<font>Mono30</font>
+				</control>
+				<control type="label" id="3">
+					<height>45</height>
+					<width>1220</width>
+					<font>Mono30</font>
+				</control>
+				<control type="label" id="4">
+					<height>45</height>
+					<width>1220</width>
+					<font>Mono30</font>
+				</control>
+				<control type="label" id="5">
+					<height>45</height>
+					<width>1220</width>
+					<font>Mono30</font>
+				</control>
+				<control type="label" id="6">
+					<height>45</height>
+					<width>1220</width>
+					<font>Mono30</font>
+				</control>
+				<control type="label" id="7">
+					<height>45</height>
+					<width>1220</width>
+					<font>Mono30</font>
+				</control>
+				<control type="label" id="8">
+					<height>45</height>
+					<width>1220</width>
+					<font>Mono30</font>
+				</control>
+				<control type="label" id="9">
+					<height>45</height>
+					<width>1220</width>
+					<font>Mono30</font>
+				</control>
+				<control type="label" id="10">
+					<height>45</height>
+					<width>1220</width>
+					<font>Mono30</font>
+				</control>
+				<control type="label" id="11">
+					<height>45</height>
+					<width>1220</width>
+					<font>Mono30</font>
+				</control>
+			</control>
+			<control type="grouplist">
+				<left>60</left>
+				<top>630</top>
+				<orientation>vertical</orientation>
+				<control type="label">
+					<description>CPU Text</description>
+					<width>700</width>
+					<height>80</height>
+					<label>$LOCALIZE[13271] $INFO[System.CPUUsage]</label>
+					<aligny>top</aligny>
+					<textoffsety>40</textoffsety>
+					<shadowcolor>black</shadowcolor>
+					<font>font12_title</font>
+				</control>
+				<control type="progress">
+					<description>CPU BAR</description>
+					<width>700</width>
+					<height>16</height>
+					<info>System.CPUUsage</info>
+				</control>
+				<control type="label">
+					<description>Memory Text</description>
+					<width>700</width>
+					<height>40</height>
+					<label>$LOCALIZE[31030]: $INFO[system.memory(used)] [B]/[/B] $INFO[system.memory(total)] [B]-[/B] $INFO[system.memory(used.percent)]</label>
+					<aligny>center</aligny>
+					<shadowcolor>black</shadowcolor>
+					<font>font12_title</font>
+				</control>
+				<control type="progress">
+					<description>Memory BAR</description>
+					<width>700</width>
+					<height>16</height>
+					<info>system.memory(used)</info>
+				</control>
+			</control>
+			<control type="label">
+				<top>665</top>
+				<left>900</left>
+				<width>auto</width>
+				<height>50</height>
+				<aligny>bottom</aligny>
+				<textoffsety>10</textoffsety>
+				<label>[B]$LOCALIZE[31031]:[/B]</label>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="grouplist">
+				<description>Kodi build version</description>
+				<itemgap>10</itemgap>
+				<top>715</top>
+				<left>900</left>
+				<align>left</align>
+				<height>45</height>
+				<orientation>horizontal</orientation>
+				<control type="label">
+					<description>Build label</description>
+					<width>auto</width>
+					<height>50</height>
+					<aligny>bottom</aligny>
+					<font>font12</font>
+					<textoffsety>10</textoffsety>
+					<label>$LOCALIZE[144]</label>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label" id="52">
+					<description>Kodi Build Version</description>
+					<height>50</height>
+					<aligny>bottom</aligny>
+					<textoffsety>10</textoffsety>
+					<font>font12</font>
+					<width>auto</width>
+					<textcolor>button_focus</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+			</control>
+			<control type="grouplist">
+				<description>Build date</description>
+				<itemgap>10</itemgap>
+				<top>755</top>
+				<align>left</align>
+				<left>900</left>
+				<orientation>horizontal</orientation>
+				<control type="label">
+					<description>kodi Compiled Text</description>
+					<width>auto</width>
+					<height>25</height>
+					<label>$LOCALIZE[174]</label>
+					<font>font12</font>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label" id="53">
+					<description>Kodi Build Date</description>
+					<width>auto</width>
+					<font>font12</font>
+					<textcolor>button_focus</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+			</control>
+		</control>
+		<include name="TopBar">
+			<param name="breadcrumbs_label" value="$LOCALIZE[130]" />
+			<param name="breadcrumbs_icon" value="icons/settings/system.png" />
+		</include>
+		<include>BottomBar</include>
+	</controls>
+</window>

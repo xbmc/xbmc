@@ -241,8 +241,8 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
         {
           CTextureDetails details;
           details.file = relativeCacheFile;
-          details.width = g_advancedSettings.GetThumbSize();
-          details.height = g_advancedSettings.GetThumbSize();
+          details.width = g_advancedSettings.m_imageRes;
+          details.height = g_advancedSettings.m_imageRes;
           CTextureCache::GetInstance().AddCachedTexture(thumb, details);
           db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
           pItem->SetArt("thumb", CTextureCache::GetCachedPath(relativeCacheFile));

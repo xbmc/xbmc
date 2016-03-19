@@ -133,14 +133,11 @@ bool CSkinSettingBool::SerializeSetting(TiXmlElement* element) const
   return true;
 }
 
-CSkinInfo::CSkinInfo(const AddonProps &props, const RESOLUTION_INFO &resolution)
-  : CAddon(props), m_defaultRes(resolution), m_version(""), m_effectsSlowDown(1.f), m_debugging(false)
+std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(AddonProps props, const cp_extension_t* ext)
 {
-}
+  RESOLUTION_INFO defaultRes = RESOLUTION_INFO();
+  std::vector<RESOLUTION_INFO> resolutions;
 
-CSkinInfo::CSkinInfo(const cp_extension_t *ext)
-  : CAddon(ext), m_version(""), m_effectsSlowDown(1.f)
-{
   ELEMENTS elements;
   if (CAddonMgr::GetInstance().GetExtElements(ext->configuration, "res", elements))
   {
@@ -160,8 +157,8 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
         RESOLUTION_INFO res(width, height, aspect, folder);
         res.strId = strAspect; // for skin usage, store aspect string in strId
         if (defRes)
-          m_defaultRes = res;
-        m_resolutions.push_back(res);
+          defaultRes = res;
+        resolutions.push_back(res);
       }
     }
   }
@@ -170,28 +167,35 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
     std::string defaultWide = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@defaultwideresolution");
     if (defaultWide.empty())
       defaultWide = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@defaultresolution");
-    TranslateResolution(defaultWide, m_defaultRes);
+    TranslateResolution(defaultWide, defaultRes);
   }
 
+  float effectsSlowDown(1.f);
   std::string str = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@effectslowdown");
   if (!str.empty())
-    m_effectsSlowDown = (float)atof(str.c_str());
+    effectsSlowDown = (float)atof(str.c_str());
 
-  m_debugging = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@debugging") == "true";
+  bool debugging = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@debugging") == "true";
 
-  LoadStartupWindows(ext);
+  return std::unique_ptr<CSkinInfo>(new CSkinInfo(std::move(props), defaultRes, resolutions,
+      effectsSlowDown, debugging));
+}
 
-  // figure out the version
+CSkinInfo::CSkinInfo(
+    AddonProps props,
+    const RESOLUTION_INFO& resolution,
+    const std::vector<RESOLUTION_INFO>& resolutions,
+    float effectsSlowDown,
+    bool debugging)
+    : CAddon(std::move(props)),
+      m_defaultRes(resolution),
+      m_resolutions(resolutions),
+      m_version(""),
+      m_effectsSlowDown(effectsSlowDown),
+      m_debugging(debugging)
+{
+  LoadStartupWindows(nullptr);
   m_version = GetDependencyVersion("xbmc.gui");
-}
-
-CSkinInfo::~CSkinInfo()
-{
-}
-
-AddonPtr CSkinInfo::Clone() const
-{
-  return AddonPtr(new CSkinInfo(*this));
 }
 
 struct closestRes
@@ -487,11 +491,11 @@ void CSkinInfo::SettingOptionsSkinThemesFiller(const CSetting *setting, std::vec
   URIUtils::RemoveExtension(settingValue);
   current = "SKINDEFAULT";
 
-  // there is a default theme (just Textures.xpr/xbt)
-  // any other *.xpr|*.xbt files are additional themes on top of this one.
+  // there is a default theme (just Textures.xbt)
+  // any other *.xbt files are additional themes on top of this one.
 
   // add the default Label
-  list.push_back(make_pair(g_localizeStrings.Get(15109), "SKINDEFAULT")); // the standard Textures.xpr/xbt will be used
+  list.push_back(make_pair(g_localizeStrings.Get(15109), "SKINDEFAULT")); // the standard Textures.xbt will be used
 
   // search for themes in the current skin!
   std::vector<std::string> vecTheme;
@@ -707,7 +711,7 @@ bool CSkinInfo::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /* = 
   const TiXmlElement *rootElement = doc.RootElement();
   if (rootElement == nullptr || rootElement->ValueStr().compare(XML_SETTINGS) != 0)
   {
-    CLog::Log(LOGWARNING, "CSkinInfo: no <skinsettings> tag found");
+    CLog::Log(LOGWARNING, "CSkinInfo: no <settings> tag found");
     return false;
   }
 
@@ -736,7 +740,7 @@ void CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
   TiXmlNode *settingsNode = doc.InsertEndChild(rootElement);
   if (settingsNode == NULL)
   {
-    CLog::Log(LOGWARNING, "CSkinInfo: could not create <skinsettings> tag");
+    CLog::Log(LOGWARNING, "CSkinInfo: could not create <settings> tag");
     return;
   }
 

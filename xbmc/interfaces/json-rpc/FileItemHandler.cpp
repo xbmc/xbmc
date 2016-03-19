@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -187,7 +187,7 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
 
 void CFileItemHandler::FillDetails(const ISerializable *info, const CFileItemPtr &item, std::set<std::string> &fields, CVariant &result, CThumbLoader *thumbLoader /* = NULL */)
 {
-  if (info == NULL || fields.size() == 0)
+  if (info == NULL || fields.empty())
     return;
 
   CVariant serialization;
@@ -293,7 +293,7 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
     {
       if (item->HasPVRChannelInfoTag() && item->GetPVRChannelInfoTag()->ChannelID() > 0)
          object[ID] = item->GetPVRChannelInfoTag()->ChannelID();
-      else if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->UniqueBroadcastID() > 0)
+      else if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->UniqueBroadcastID() > EPG_TAG_INVALID_UID)
          object[ID] = item->GetEPGInfoTag()->UniqueBroadcastID();
       else if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag()->m_iRecordingId > 0)
          object[ID] = item->GetPVRRecordingInfoTag()->m_iRecordingId;

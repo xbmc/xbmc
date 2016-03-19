@@ -9,10 +9,17 @@ VERSION=1.23
 SOURCE=$(APPNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
+ifeq ($(NATIVE_OS),osx)
+# https://openradar.appspot.com/radar?id=6160634819379200
+PLATFORM_CONFIGURE="gl_cv_func_getcwd_abort_bug=no"
+endif
+
 export LIBTOOL=builds/unix/libtool
 export PATH:=$(PREFIX)/bin:$(PATH)
 CONFIGURE=./configure --prefix=$(PREFIX) \
---program-transform-name=s/tar/gtar/ --disable-dependency-tracking ac_cv_func_fdopendir=no
+  --program-transform-name=s/tar/gtar/   \
+  --disable-dependency-tracking ac_cv_func_fdopendir=no \
+  $(PLATFORM_CONFIGURE)
 
 APP=$(SOURCE)/src/tar
 APPBIN=$(PREFIX)/bin/tar

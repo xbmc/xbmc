@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="SmallThumbInfoFlag">
+		<control type="group">
+			<top>$PARAM[posy]</top>
+			<control type="image">
+				<top>0</top>
+				<right>41</right>
+				<width>70</width>
+				<height>32</height>
+				<fadetime>300</fadetime>
+				<aspectratio align="center">keep</aspectratio>
+				<texture>$PARAM[icon]</texture>
+			</control>
+			<control type="label">
+				<right>41</right>
+				<top>35</top>
+				<width>70</width>
+				<height>32</height>
+				<align>center</align>
+				<font>font10</font>
+				<selectedcolor>white</selectedcolor>
+				<label fallback="-">$INFO[$PARAM[infolabel]]</label>
+			</control>
+		</control>
+	</include>
+	<include name="View_500_SmallThumb">
+		<include name="UpDownArrows">
+			<param name="container_id" value="500" />
+			<param name="visible" value="!System.HasModalDialog" />
+		</include>
+		<control type="group">
+			<include>OpenClose_Right</include>
+			<left>100</left>
+			<top>172</top>
+			<visible>Control.IsVisible(500)</visible>
+			<include>Visible_Right</include>
+			<control type="panel" id="500">
+				<left>0</left>
+				<top>0</top>
+				<width>1800</width>
+				<height>720</height>
+				<onleft>9000</onleft>
+				<onright>531</onright>
+				<onup>500</onup>
+				<ondown>500</ondown>
+				<viewtype label="31102">icon</viewtype>
+				<preloaditems>2</preloaditems>
+				<pagecontrol>531</pagecontrol>
+				<scrolltime tween="cubic" easing="out">500</scrolltime>
+				<visible>Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(artists) | Container.Content(albums) | Container.Content(musicvideos) | Container.Content(addons)</visible>
+				<itemlayout height="360" width="300" condition="Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons)">
+					<control type="image">
+						<left>0</left>
+						<top>-1</top>
+						<width>256</width>
+						<height>362</height>
+						<texture fallback="DefaultVideo.png" background="true">$VAR[ListPosterVar]</texture>
+						<bordertexture border="20">overlays/shadow.png</bordertexture>
+						<bordersize>20</bordersize>
+						<animation effect="slide" end="-15,0" time="0" condition="true">Conditional</animation>
+					</control>
+					<control type="group">
+						<left>170</left>
+						<top>20</top>
+						<include>UserRatingCircle</include>
+					</control>
+				</itemlayout>
+				<focusedlayout height="360" width="300" condition="Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons)">
+					<control type="group">
+						<animation effect="slide" start="0,0" end="-40,0" time="300">Focus</animation>
+						<animation effect="slide" start="-40,0" end="0,0" time="125">UnFocus</animation>
+						<control type="image">
+							<left>1</left>
+							<top>15</top>
+							<width>220</width>
+							<height>330</height>
+							<texture border="2" fallback="DefaultVideo.png" background="true">$VAR[ListPosterVar]</texture>
+							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordersize>4</bordersize>
+						</control>
+						<control type="group">
+							<left>170</left>
+							<top>20</top>
+							<include>UserRatingCircle</include>
+						</control>
+					</control>
+					<control type="group">
+						<top>15</top>
+						<animation type="Focus">
+							<effect type="slide" start="0,0" end="-40,0" time="300" />
+							<effect type="fade" start="0" end="100" time="300" />
+						</animation>
+						<animation effect="fade" start="100" end="0" time="0">UnFocus</animation>
+						<control type="image">
+							<left>1</left>
+							<width>220</width>
+							<height>330</height>
+							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+						</control>
+						<control type="image">
+							<left>5</left>
+							<top>260</top>
+							<width>212</width>
+							<height>66</height>
+							<texture>colors/black.png</texture>
+							<animation effect="fade" start="0" end="70" time="50">Focus</animation>
+						</control>
+						<control type="textbox">
+							<left>15</left>
+							<top>260</top>
+							<width>192</width>
+							<height>65</height>
+							<font>font10</font>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+					</control>
+					<control type="image">
+						<top>15</top>
+						<right>42</right>
+						<width>70</width>
+						<height>330</height>
+						<fadetime>300</fadetime>
+						<texture colordiffuse="button_focus">colors/white.png</texture>
+						<animation effect="zoom" start="0,100" end="100,100" time="250" center="auto">Focus</animation>
+						<animation effect="zoom" start="100,100" end="0,100" time="125" center="auto" delay="50">UnFocus</animation>
+					</control>
+					<control type="group">
+						<top>15</top>
+						<animation effect="fade" start="0" end="100" time="200" delay="250">Focus</animation>
+						<animation effect="fade" start="100" end="0" time="50">UnFocus</animation>
+						<include name="SmallThumbInfoFlag">
+							<param name="icon" value="lists/rating.png" />
+							<param name="infolabel" value="ListItem.Rating" />
+							<param name="posy" value="20" />
+						</include>
+						<include name="SmallThumbInfoFlag">
+							<param name="icon" value="lists/year.png" />
+							<param name="infolabel" value="ListItem.Year" />
+							<param name="posy" value="140" />
+						</include>
+						<control type="image">
+							<right>52</right>
+							<top>260</top>
+							<width>48</width>
+							<height>48</height>
+							<texture>$VAR[ListWatchedIconVar]</texture>
+						</control>
+					</control>
+				</focusedlayout>
+				<itemlayout height="360" width="450" condition="Container.content(episodes)">
+					<control type="image">
+						<left>-10</left>
+						<top>-2</top>
+						<width>400</width>
+						<height>362</height>
+						<texture border="40">buttons/button-nofo.png</texture>
+					</control>
+					<control type="image">
+						<left>11</left>
+						<top>19</top>
+						<width>356</width>
+						<height>230</height>
+						<texture fallback="DefaultVideo.png" background="true">$VAR[ListInfoBoxImageVar]</texture>
+						<aspectratio>scale</aspectratio>
+					</control>
+					<control type="label">
+						<left>21</left>
+						<top>270</top>
+						<width>336</width>
+						<height>20</height>
+						<font>font30_title</font>
+						<selectedcolor>white</selectedcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Season]$INFO[ListItem.Episode,x]</label>
+					</control>
+					<control type="label">
+						<left>21</left>
+						<top>309</top>
+						<width>336</width>
+						<height>20</height>
+						<font>font12</font>
+						<selectedcolor>white</selectedcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>$VAR[SongTitleVar]</label>
+					</control>
+					<control type="group">
+						<visible>!IsEmpty(ListItem.label2)</visible>
+						<visible>!Stringcompare(Container.SortMethod,$LOCALIZE[38018]) + !Stringcompare(Container.SortMethod,$LOCALIZE[20359]) + !Stringcompare(Container.SortMethod,$LOCALIZE[551])</visible>
+						<control type="image">
+							<left>11</left>
+							<top>19</top>
+							<width>356</width>
+							<height>32</height>
+							<texture colordiffuse="B0FFFFFF">colors/black.png</texture>
+						</control>
+						<control type="label">
+							<left>15</left>
+							<top>20</top>
+							<width>352</width>
+							<height>25</height>
+							<font>font12</font>
+							<selectedcolor>button_focus</selectedcolor>
+							<textcolor>button_focus</textcolor>
+							<aligny>center</aligny>
+							<label fallback="-">$INFO[ListItem.Label2]</label>
+						</control>
+					</control>
+					<control type="group">
+						<left>330</left>
+						<top>15</top>
+						<include>UserRatingCircle</include>
+					</control>
+				</itemlayout>
+				<focusedlayout height="360" width="450" condition="Container.content(episodes)">
+					<control type="group">
+						<animation effect="slide" start="0,0" end="-40,0" time="300">Focus</animation>
+						<animation effect="slide" start="-40,0" end="0,0" time="125">UnFocus</animation>
+						<control type="image">
+							<left>-10</left>
+							<top>-2</top>
+							<width>400</width>
+							<height>362</height>
+							<texture border="40">buttons/button-nofo.png</texture>
+						</control>
+						<control type="image">
+							<left>11</left>
+							<top>19</top>
+							<width>356</width>
+							<height>230</height>
+							<texture border="2" fallback="DefaultVideo.png" background="true">$VAR[ListInfoBoxImageVar]</texture>
+							<aspectratio>scale</aspectratio>
+						</control>
+						<control type="label">
+							<left>21</left>
+							<top>270</top>
+							<width>336</width>
+							<height>20</height>
+							<font>font30_title</font>
+							<selectedcolor>white</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Season]$INFO[ListItem.Episode,x]</label>
+						</control>
+						<control type="label">
+							<left>21</left>
+							<top>309</top>
+							<width>336</width>
+							<height>20</height>
+							<font>font12</font>
+							<selectedcolor>white</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$VAR[SongTitleVar]</label>
+						</control>
+						<control type="group">
+							<visible>!IsEmpty(ListItem.label2)</visible>
+							<visible>!Stringcompare(Container.SortMethod,$LOCALIZE[38018]) + !Stringcompare(Container.SortMethod,$LOCALIZE[20359]) + !Stringcompare(Container.SortMethod,$LOCALIZE[551])</visible>
+							<control type="image">
+								<left>11</left>
+								<top>19</top>
+								<width>356</width>
+								<height>32</height>
+								<texture colordiffuse="B0FFFFFF">colors/black.png</texture>
+							</control>
+							<control type="label">
+								<left>15</left>
+								<top>20</top>
+								<width>352</width>
+								<height>25</height>
+								<font>font12</font>
+								<selectedcolor>button_focus</selectedcolor>
+								<textcolor>button_focus</textcolor>
+								<aligny>center</aligny>
+								<label fallback="-">$INFO[ListItem.Label2]</label>
+							</control>
+						</control>
+						<control type="group">
+							<left>330</left>
+							<top>15</top>
+							<include>UserRatingCircle</include>
+						</control>
+						<control type="image">
+							<left>4</left>
+							<top>11</top>
+							<width>370</width>
+							<height>333</height>
+							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+						</control>
+					</control>
+					<control type="image">
+						<right>32</right>
+						<top>12</top>
+						<width>70</width>
+						<height>330</height>
+						<fadetime>300</fadetime>
+						<texture colordiffuse="button_focus">colors/white.png</texture>
+						<animation effect="zoom" start="0,100" end="100,100" time="250" center="auto">Focus</animation>
+						<animation effect="zoom" start="100,100" end="0,100" time="125" center="auto" delay="50">UnFocus</animation>
+					</control>
+					<control type="group">
+						<top>12</top>
+						<right>-10</right>
+						<animation effect="fade" start="0" end="100" time="200" delay="250">Focus</animation>
+						<animation effect="fade" start="100" end="0" time="50">UnFocus</animation>
+						<include name="SmallThumbInfoFlag">
+							<param name="icon" value="lists/rating.png" />
+							<param name="infolabel" value="ListItem.Rating" />
+							<param name="posy" value="20" />
+						</include>
+						<include name="SmallThumbInfoFlag">
+							<param name="icon" value="lists/year.png" />
+							<param name="infolabel" value="ListItem.Year" />
+							<param name="posy" value="140" />
+						</include>
+						<control type="image">
+							<top>260</top>
+							<right>52</right>
+							<width>48</width>
+							<height>48</height>
+							<texture>$VAR[ListWatchedIconVar]</texture>
+						</control>
+					</control>
+				</focusedlayout>
+				<itemlayout height="360" width="350" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(musicvideos) | Container.Content(addons)">
+					<include>InfoWallMusicLayout</include>
+				</itemlayout>
+				<focusedlayout height="360" width="350" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(musicvideos) | Container.Content(addons)">
+					<control type="group">
+						<animation effect="zoom" start="100" end="105" time="200" tween="sine" easing="inout" center="160,180">Focus</animation>
+						<animation effect="zoom" start="105" end="100" time="200" tween="sine" easing="inout" center="160,180">UnFocus</animation>
+						<include>InfoWallMusicLayout</include>
+						<control type="image">
+							<left>15</left>
+							<top>5</top>
+							<width>288</width>
+							<height>348</height>
+							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+							<animation effect="fade" start="100" end="0" time="200">Unfocus</animation>
+						</control>
+					</control>
+				</focusedlayout>
+			</control>
+		</control>
+	</include>
+</includes>

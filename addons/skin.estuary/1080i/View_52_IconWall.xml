@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="View_52_IconWall">
+		<include name="UpDownArrows">
+			<param name="container_id" value="52" />
+			<param name="visible" value="!System.HasModalDialog" />
+		</include>
+		<control type="group">
+			<visible>Control.IsVisible(52)</visible>
+			<include>OpenClose_Right</include>
+			<include>Visible_Right</include>
+			<control type="panel" id="52">
+				<left>100</left>
+				<top>163</top>
+				<width>1760</width>
+				<height>744</height>
+				<onleft>9000</onleft>
+				<onright>531</onright>
+				<pagecontrol>531</pagecontrol>
+				<onup>52</onup>
+				<ondown>52</ondown>
+				<scrolltime tween="cubic" easing="out">500</scrolltime>
+				<visible>Container.Content() | Container.Content(tags) | Container.Content(years) | Container.Content(genres) | Container.Content(countries) | Container.Content(studios) | Container.Content(playlists) | Container.Content(unknown)</visible>
+				<viewtype label="31099">icon</viewtype>
+				<itemlayout height="248" width="440" condition="Container.Content() | Container.Content(unknown) | Container.Content(tags) | Container.Content(files) | Container.Content(playlists) | [Container.Content(studios) + System.HasAddon(resource.images.studios.white)]">
+					<control type="group">
+						<top>2</top>
+						<control type="image">
+							<width>400</width>
+							<height>245</height>
+							<texture border="40">buttons/button-nofo.png</texture>
+						</control>
+						<control type="image">
+							<left>120</left>
+							<top>20</top>
+							<width>160</width>
+							<height>130</height>
+							<texture fallback="icons/defaulticons/DefaultStudios.png">$VAR[IconWallThumbVar]</texture>
+							<aspectratio>keep</aspectratio>
+							<align>center</align>
+						</control>
+						<control type="image">
+							<left>19</left>
+							<top>149</top>
+							<width>359</width>
+							<height>75</height>
+							<texture colordiffuse="border_alpha">colors/black.png</texture>
+						</control>
+						<control type="image">
+							<left>329</left>
+							<top>24</top>
+							<width>50</width>
+							<height>50</height>
+							<aspectratio>keep</aspectratio>
+							<texture>$INFO[ListItem.Overlay]</texture>
+							<visible>!SubString(ListItem.Overlay,watched.png,right)</visible>
+						</control>
+						<control type="textbox">
+							<left>25</left>
+							<top>146</top>
+							<width>350</width>
+							<height>74</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>font12</font>
+							<align>center</align>
+							<aligny>center</aligny>
+						</control>
+					</control>
+				</itemlayout>
+				<focusedlayout height="248" width="440" condition="Container.Content() | Container.Content(unknown) | Container.Content(tags) | Container.Content(files) | Container.Content(playlists) | [Container.Content(studios) + System.HasAddon(resource.images.studios.white)]">
+					<control type="group">
+						<depth>DepthContentPopout</depth>
+						<animation type="Focus" reversible="false">
+							<effect type="zoom" center="auto" start="100" end="108" time="250" tween="sine" />
+						</animation>
+						<animation type="UnFocus" reversible="false">
+							<effect type="zoom" center="auto" start="108" end="100" time="150" tween="sine" />
+						</animation>
+						<top>2</top>
+						<control type="image">
+							<width>400</width>
+							<height>245</height>
+							<texture border="40">buttons/button-nofo.png</texture>
+						</control>
+						<control type="image">
+							<width>400</width>
+							<height>245</height>
+							<texture border="40">buttons/button-theme-fo.png</texture>
+							<animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+						</control>
+						<control type="image">
+							<left>120</left>
+							<top>20</top>
+							<width>160</width>
+							<height>130</height>
+							<texture fallback="icons/defaulticons/DefaultStudios.png">$VAR[IconWallThumbVar]</texture>
+							<aspectratio>keep</aspectratio>
+							<align>center</align>
+						</control>
+						<control type="image">
+							<left>329</left>
+							<top>24</top>
+							<width>50</width>
+							<height>50</height>
+							<aspectratio>keep</aspectratio>
+							<texture>$INFO[ListItem.Overlay]</texture>
+							<visible>!SubString(ListItem.Overlay,watched.png,right)</visible>
+						</control>
+						<control type="image">
+							<left>19</left>
+							<top>149</top>
+							<width>359</width>
+							<height>75</height>
+							<texture colordiffuse="border_alpha">colors/black.png</texture>
+						</control>
+						<control type="textbox">
+							<left>25</left>
+							<top>146</top>
+							<width>350</width>
+							<height>74</height>
+							<font>font12</font>
+							<label>$INFO[ListItem.Label]</label>
+							<align>center</align>
+							<aligny>center</aligny>
+						</control>
+					</control>
+				</focusedlayout>
+				<itemlayout height="124" width="348" condition="Container.Content(genres) | Container.Content(years) | Container.Content(countries) | [Container.Content(studios) + !System.HasAddon(resource.images.studios.white)]">
+					<control type="group">
+						<control type="image">
+							<width>330</width>
+							<height>124</height>
+							<texture border="40">buttons/button-nofo.png</texture>
+						</control>
+						<control type="textbox">
+							<left>30</left>
+							<top>22</top>
+							<width>270</width>
+							<height>80</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>font12</font>
+							<align>center</align>
+							<aligny>center</aligny>
+							<textcolor>white</textcolor>
+						</control>
+					</control>
+				</itemlayout>
+				<focusedlayout height="124" width="348" condition="Container.Content(genres) | Container.Content(years) | Container.Content(countries) | [Container.Content(studios) + !System.HasAddon(resource.images.studios.white)]">
+					<control type="group">
+						<animation type="Focus" reversible="false">
+							<effect type="zoom" center="auto" start="100" end="108" time="250" tween="sine" />
+						</animation>
+						<animation type="UnFocus" reversible="false">
+							<effect type="zoom" center="auto" start="108" end="100" time="150" tween="sine" />
+						</animation>
+						<control type="image">
+							<width>330</width>
+							<height>124</height>
+							<texture border="40">buttons/button-nofo.png</texture>
+						</control>
+						<control type="image">
+							<width>330</width>
+							<height>124</height>
+							<texture border="40">buttons/button-theme-fo.png</texture>
+							<animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+						</control>
+						<control type="textbox">
+							<left>30</left>
+							<top>22</top>
+							<width>270</width>
+							<height>80</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>font12</font>
+							<align>center</align>
+							<aligny>center</aligny>
+						</control>
+					</control>
+				</focusedlayout>
+			</control>
+		</control>
+	</include>
+</includes>

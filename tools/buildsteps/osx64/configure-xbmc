@@ -2,4 +2,8 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=osx64
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-make -C $WORKSPACE/tools/depends/target/xbmc
+if [ "$CMAKE_BUILD" = true ]; then
+  make -C $WORKSPACE/tools/depends/target/cmakebuildsys
+else
+  make -C $WORKSPACE/tools/depends/target/xbmc
+fi

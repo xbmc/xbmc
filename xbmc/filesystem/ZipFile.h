@@ -44,7 +44,12 @@ namespace XFILE
     virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
     virtual void Close();
 
+    //NOTE: gzip doesn't work. use DecompressGzip() instead
     int UnpackFromMemory(std::string& strDest, const std::string& strInput, bool isGZ=false);
+
+    /*! Decompress gzip encoded buffer in-memory */
+    static bool DecompressGzip(const std::string& in, std::string& out);
+
   private:
     bool InitDecompress();
     bool FillBuffer();

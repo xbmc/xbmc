@@ -59,6 +59,12 @@ typedef enum {
   FieldVirtualFolder,
   FieldRandom,
   FieldDateTaken,
+  FieldAudioCount,
+  FieldSubtitleCount,
+
+  FieldInstallDate,
+  FieldLastUpdated,
+  FieldLastUsed,
 
   // fields retrievable from the database
   FieldId,
@@ -78,6 +84,7 @@ typedef enum {
   FieldInProgress,
   FieldRating,
   FieldComment,
+  FieldRole,
   FieldDateAdded,
   FieldTvShowTitle,
   FieldPlot,
@@ -127,6 +134,7 @@ typedef enum {
   FieldDied,
   FieldStereoMode,
   FieldUserRating,
+  FieldRelevance, // Used for actors' appearences
   FieldMax
 } Field;
 

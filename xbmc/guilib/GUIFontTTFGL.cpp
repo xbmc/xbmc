@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -177,7 +177,7 @@ void CGUIFontTTFGL::LastEnd()
   glEnableVertexAttribArray(colLoc);
   glEnableVertexAttribArray(tex0Loc);
 
-  if (m_vertex.size() > 0)
+  if (!m_vertex.empty())
   {
     // Deal with vertices that had to use software clipping
     std::vector<SVertex> vecVertices( 6 * (m_vertex.size() / 4) );
@@ -203,7 +203,7 @@ void CGUIFontTTFGL::LastEnd()
 
     glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
   }
-  if (m_vertexTrans.size() > 0)
+  if (!m_vertexTrans.empty())
   {
     // Deal with the vertices that can be hardware clipped and therefore translated
 
@@ -232,7 +232,7 @@ void CGUIFontTTFGL::LastEnd()
       glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glMatrixModview.Get());
 
       // Bind the buffer to the OpenGL context's GL_ARRAY_BUFFER binding point
-      glBindBuffer(GL_ARRAY_BUFFER, (GLuint) m_vertexTrans[i].vertexBuffer->bufferHandle);
+      glBindBuffer(GL_ARRAY_BUFFER, m_vertexTrans[i].vertexBuffer->bufferHandle);
 
       // Do the actual drawing operation, split into groups of characters no
       // larger than the pre-determined size of the element array
@@ -285,7 +285,7 @@ CVertexBuffer CGUIFontTTFGL::CreateVertexBuffer(const std::vector<SVertex> &vert
   // Unbind GL_ARRAY_BUFFER
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-  return CVertexBuffer((void *) bufferHandle, vertices.size() / 4, this);
+  return CVertexBuffer(bufferHandle, vertices.size() / 4, this);
 }
 
 void CGUIFontTTFGL::DestroyVertexBuffer(CVertexBuffer &buffer) const

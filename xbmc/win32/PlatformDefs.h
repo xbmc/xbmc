@@ -1,9 +1,8 @@
-#ifndef __PLATFORM_DEFS_H__
-#define __PLATFORM_DEFS_H__
+#pragma once
 
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +15,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -41,7 +40,9 @@ typedef intptr_t      ssize_t;
 #define SSIZE_MAX INTPTR_MAX
 #endif // !SSIZE_MAX
 
+#if _MSC_VER < 1900
 #define snprintf _snprintf
+#endif
 #define ftello64 _ftelli64
 #define fseeko64 _fseeki64
 #ifndef strcasecmp
@@ -76,16 +77,16 @@ typedef intptr_t      ssize_t;
 #define BMASK 0x000000ff
 #endif
 
+#if _MSC_VER < 1800
 #ifndef va_copy
 #define va_copy(dst, src) ((dst) = (src))
 #endif
 
-#if _MSC_VER < 1800
 #define lrint(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
 #define llrint(x) ((x) >= 0 ? ((__int64)((x) + 0.5)) : ((__int64)((x) - 0.5)))
-#endif
 
 #define strtoll(p, e, b) _strtoi64(p, e, b)
+#endif
 
 extern "C" char * strptime(const char *buf, const char *fmt, struct tm *tm);
 extern "C" int strverscmp (const char *s1, const char *s2);
@@ -96,6 +97,4 @@ extern "C" char * strcasestr(const char* haystack, const char* needle);
 #define PRIuS       "Iu"
 #endif
 #endif // TARGET_WINDOWS
-
-#endif //__PLATFORM_DEFS_H__
 

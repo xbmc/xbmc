@@ -9,7 +9,7 @@ endif
 
 SRCS  = AudioDecoder.cpp
 SRCS += CodecFactory.cpp
-SRCS += DVDPlayerCodec.cpp
+SRCS += VideoPlayerCodec.cpp
 SRCS += PAPlayer.cpp
 
 LIB = paplayer.a

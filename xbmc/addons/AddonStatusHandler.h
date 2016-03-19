@@ -21,7 +21,7 @@
 
 #include "threads/Thread.h"
 #include "IAddon.h"
-#include "include/xbmc_addon_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_addon_types.h"
 #include "threads/CriticalSection.h"
 #include <string>
 

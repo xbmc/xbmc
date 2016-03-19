@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Version Check
 # Addon id: service.xbmc.versioncheck
-# Addon Provider: XBMC Foundation
+# Addon Provider: Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
@@ -16,6 +16,50 @@ msgstr ""
 "Language: fi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#32013"
+msgid "Upgrade successful"
+msgstr "Päivitys onnistui"
+
+msgctxt "#32014"
+msgid "Do you want to restart Kodi to finish the upgrade?"
+msgstr "Haluatko käynnistää Kodin viimeistellääksesi päivityksen?"
+
+msgctxt "#32016"
+msgid "There is a newer stable Kodi version available."
+msgstr "Kodista on saatavilla uudempi stable-versio."
+
 msgctxt "#32020"
 msgid "General"
 msgstr "Yleinen"
+
+msgctxt "#32021"
+msgid "Enable Kodi version check?"
+msgstr "Kytke Kodin version tarkistus?"
+
+msgctxt "#32022"
+msgid "Please enter your password"
+msgstr "Ole hyvä ja syötä salasanasi"
+
+msgctxt "#32030"
+msgid "A new stable version of Kodi is available."
+msgstr "Uusi stable-versio on saatavilla Kodista."
+
+msgctxt "#32031"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Käy http://kodi.tv saadaksesi lisätietoa"
+
+msgctxt "#32032"
+msgid "A new stable version of Kodi is available."
+msgstr "Uusi stable-versio on saatavilla Kodista."
+
+msgctxt "#32033"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Käy http://kodi.tv saadaksesi lisätietoa"
+
+msgctxt "#32034"
+msgid "Using %s while %s is available."
+msgstr "Käytät %s , mutta %s on saatavilla."
+
+msgctxt "#32035"
+msgid "It is recommended that you to upgrade to a newer version."
+msgstr "On suositeltavaa, että päivität uudempaan versioon."

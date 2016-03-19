@@ -20,12 +20,11 @@
 
 #pragma once
 
-#include "cores/VideoRenderers/RenderManager.h"
-#include "cores/VideoRenderers/RenderCapture.h"
 #include "AddonClass.h"
 #include "LanguageHook.h"
 #include "Exception.h"
 #include "commons/Buffer.h"
+#include "Application.h"
 
 namespace XBMCAddon
 {
@@ -35,95 +34,94 @@ namespace XBMCAddon
 
     class RenderCapture : public AddonClass
     {
-      CRenderCapture* m_capture;
+      unsigned int m_captureId;
+      unsigned int m_width;
+      unsigned int m_height;
+      uint8_t *m_buffer;
+
     public:
-      inline RenderCapture() : m_capture(g_renderManager.AllocRenderCapture()) {}
-      inline virtual ~RenderCapture() { g_renderManager.ReleaseRenderCapture(m_capture); }
+      inline RenderCapture()
+      {
+        m_captureId = UINT_MAX;
+        m_buffer = nullptr;
+        m_width = 0;
+        m_height = 0;
+      }
+      inline virtual ~RenderCapture()
+      {
+        g_application.m_pPlayer->RenderCaptureRelease(m_captureId);
+        delete [] m_buffer;
+      }
 
       /**
        * getWidth() -- returns width of captured image as set during\n
        *     RenderCapture.capture(). Returns 0 prior to calling capture.\n
        */
-      inline int getWidth() { return m_capture->GetWidth(); }
+      inline int getWidth() { return m_width; }
 
       /**
        * getHeight() -- returns height of captured image as set during\n
        *     RenderCapture.capture(). Returns 0 prior to calling capture.\n
        */
-      inline int getHeight() { return m_capture->GetHeight(); }
-
-      /**
-       * getCaptureState() -- returns processing state of capture request.
-       *
-       * The returned value could be compared against the following constants:
-       * - xbmc.CAPTURE_STATE_WORKING  : Capture request in progress.
-       * - xbmc.CAPTURE_STATE_DONE     : Capture request done. The image could be retrieved with getImage()
-       * - xbmc.CAPTURE_STATE_FAILED   : Capture request failed.
-       */
-      inline int getCaptureState() { return m_capture->GetUserState(); }
+      inline int getHeight() { return m_height; }
 
       /**
        * getAspectRatio() -- returns aspect ratio of currently displayed video.\n
        *     This may be called prior to calling RenderCapture.capture().\n
        */
-      inline float getAspectRatio() { return g_renderManager.GetAspectRatio(); }
+      inline float getAspectRatio() { return g_application.m_pPlayer->GetRenderAspectRatio(); }
 
       /**
-       * getImageFormat() -- returns format of captured image: 'BGRA' or 'RGBA'.
+       * getImageFormat() -- returns format of captured image: 'BGRA'.
        */
       inline const char* getImageFormat()
       {
-        return m_capture->GetCaptureFormat() == CAPTUREFORMAT_BGRA ? "BGRA" :
-          (m_capture->GetCaptureFormat() == CAPTUREFORMAT_RGBA ? "RGBA" : NULL);
+        return "BGRA";
       }
 
       // RenderCapture_GetImage
       /**
-       * getImage() -- returns captured image as a bytearray.
+       * getImage([msecs]) -- returns captured image as a bytearray.
+       *
+       * msecs    : Milliseconds to wait. Waits 1000ms if not specified.
        * 
-       * The size of the image is getWidth() * getHeight() * 4
+       * The size of the image is m_width * m_height * 4
        */
-      inline XbmcCommons::Buffer getImage()
+      inline XbmcCommons::Buffer getImage(unsigned int msecs = 0)
       {
-        if (GetUserState() != CAPTURESTATE_DONE)
-          throw RenderCaptureException("illegal user state");
-        size_t size = getWidth() * getHeight() * 4;
-        return XbmcCommons::Buffer(this->GetPixels(), size);
+        if (!GetPixels(msecs))
+          return XbmcCommons::Buffer(0);
+
+        size_t size = m_width * m_height * 4;
+        return XbmcCommons::Buffer(m_buffer, size);
       }
 
       /**
-       * capture(width, height [, flags]) -- issue capture request.
+       * capture(width, height) -- issue capture request.
        * 
        * width    : Width capture image should be rendered to\n
        * height   : Height capture image should should be rendered to\n
-       * flags    : Optional. Flags that control the capture processing.
-       * 
-       * The value for 'flags' could be or'ed from the following constants:
-       * - xbmc.CAPTURE_FLAG_CONTINUOUS    : after a capture is done, issue a new capture request immediately
-       * - xbmc.CAPTURE_FLAG_IMMEDIATELY   : read out immediately when capture() is called, this can cause a busy wait
        */
-      inline void capture(int width, int height, int flags = 0)
+      inline void capture(int width, int height)
       {
-        g_renderManager.Capture(m_capture, (unsigned int)width, (unsigned int)height, flags);
-      }
-
-      /**
-       * waitForCaptureStateChangeEvent([msecs]) -- wait for capture state change event.
-       * 
-       * msecs     : Milliseconds to wait. Waits forever if not specified.
-       * 
-       * The method will return 1 if the Event was triggered. Otherwise it will return 0.
-       */
-      inline int waitForCaptureStateChangeEvent(unsigned int msecs = 0)
-      {
-        DelayedCallGuard dg(languageHook);
-        return msecs ? m_capture->GetEvent().WaitMSec(msecs) : m_capture->GetEvent().Wait();
+        if (m_buffer)
+        {
+          g_application.m_pPlayer->RenderCaptureRelease(m_captureId);
+          delete [] m_buffer;
+        }
+        m_captureId = g_application.m_pPlayer->RenderCaptureAlloc();
+        m_width = width;
+        m_height = height;
+        m_buffer = new uint8_t[m_width*m_height*4];
+        g_application.m_pPlayer->RenderCapture(m_captureId, m_width, m_height, CAPTUREFLAG_CONTINUOUS);
       }
 
 // hide these from swig
 #ifndef SWIG
-      inline uint8_t*     GetPixels() { return m_capture->GetPixels();   }
-      inline ECAPTURESTATE GetUserState() { return m_capture->GetUserState();  }
+      inline bool GetPixels(unsigned int msec)
+      {
+        return g_application.m_pPlayer->RenderCaptureGetPixels(m_captureId, msec, m_buffer, m_width*m_height*4);
+      }
 #endif
 
     };

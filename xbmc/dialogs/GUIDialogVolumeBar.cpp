@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogVolumeBar.h"
+#include "Application.h"
 #include "input/Key.h"
 
 #define VOLUME_BAR_DISPLAY_TIME 1000L
@@ -27,7 +28,6 @@ CGUIDialogVolumeBar::CGUIDialogVolumeBar(void)
   : CGUIDialog(WINDOW_DIALOG_VOLUME_BAR, "DialogVolumeBar.xml", DialogModalityType::MODELESS)
 {
   m_loadType = LOAD_ON_GUI_INIT;
-  SetAutoClose(VOLUME_BAR_DISPLAY_TIME);
 }
 
 CGUIDialogVolumeBar::~CGUIDialogVolumeBar(void)
@@ -35,10 +35,18 @@ CGUIDialogVolumeBar::~CGUIDialogVolumeBar(void)
 
 bool CGUIDialogVolumeBar::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN || action.GetID() == ACTION_VOLUME_SET)
-  { // reset the timer, as we've changed the volume level
-    SetAutoClose(VOLUME_BAR_DISPLAY_TIME);
-    return true;
+  if (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN || action.GetID() == ACTION_VOLUME_SET || action.GetID() == ACTION_MUTE)
+  {
+    if (g_application.IsMuted() || g_application.GetVolume(false) <= VOLUME_MINIMUM)
+    { // cancel the timer, dialog needs to stay visible
+      CancelAutoClose();
+      return true;
+    }
+    else
+    { // reset the timer, as we've changed the volume level
+      SetAutoClose(VOLUME_BAR_DISPLAY_TIME);
+      return true;
+    }
   }
   return CGUIDialog::OnAction(action);
 }

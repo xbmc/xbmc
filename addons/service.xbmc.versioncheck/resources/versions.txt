@@ -3,6 +3,33 @@
     "releases": {
         "stable": [
             {
+                "major": "15",
+                "minor": "2",
+                "tag": "stable",
+                "tagversion":"",
+                "revision": "20151019-02e7013",
+                "extrainfo": "final",
+                "addon_support": "yes"
+            },
+            {
+                "major": "15",
+                "minor": "1",
+                "tag": "stable",
+                "tagversion":"",
+                "revision": "20150816-f4dda26",
+                "extrainfo": "final",
+                "addon_support": "yes"
+            },
+            {
+                "major": "15",
+                "minor": "0",
+                "tag": "stable",
+                "tagversion":"",
+                "revision": "20150721-2f34a0c",
+                "extrainfo": "final",
+                "addon_support": "yes"
+            },
+            {
                 "major": "14",
                 "minor": "2",
                 "tag": "stable",
@@ -122,6 +149,60 @@
         ],
         "releasecandidate": [
             {
+                "major": "16",
+                "minor": "0",
+                "tag": "releasecandidate",
+                "tagversion":"3",
+                "revision": "20160204-b587e98",
+                "extrainfo": "RC3",
+                "addon_support": "yes"
+            },
+            {
+                "major": "16",
+                "minor": "0",
+                "tag": "releasecandidate",
+                "tagversion":"2",
+                "revision": "20160128-46175d6",
+                "extrainfo": "RC2",
+                "addon_support": "yes"
+            },
+            {
+                "major": "16",
+                "minor": "0",
+                "tag": "releasecandidate",
+                "tagversion":"1",
+                "revision": "20160120-981b7dd",
+                "extrainfo": "RC1",
+                "addon_support": "yes"
+            },
+            {
+                "major": "15",
+                "minor": "2",
+                "tag": "releasecandidate",
+                "tagversion":"2",
+                "revision": "20150920-4ed3eb6",
+                "extrainfo": "RC2",
+                "addon_support": "yes"
+            },
+            {
+                "major": "15",
+                "minor": "2",
+                "tag": "releasecandidate",
+                "tagversion":"1",
+                "revision": "20150828-59716ca",
+                "extrainfo": "RC1",
+                "addon_support": "yes"
+            },
+            {
+                "major": "15",
+                "minor": "1",
+                "tag": "releasecandidate",
+                "tagversion":"1",
+                "revision": "20150810-31c22e4",
+                "extrainfo": "RC1",
+                "addon_support": "yes"
+            },
+            {
                 "major": "15",
                 "minor": "0",
                 "tag": "releasecandidate",
@@ -240,6 +321,46 @@
             }
         ],
         "beta": [
+            {
+                "major": "16",
+                "minor": "0",
+                "tag": "beta",
+                "tagversion":"5",
+                "revision": "20160110-9d9a153",
+                "addon_support": "yes"
+            },
+            {
+                "major": "16",
+                "minor": "0",
+                "tag": "beta",
+                "tagversion":"4",
+                "revision": "20151213-a724f29",
+                "addon_support": "yes"
+            },
+            {
+                "major": "16",
+                "minor": "0",
+                "tag": "beta",
+                "tagversion":"3",
+                "revision": "20151205-85a0a13",
+                "addon_support": "yes"
+            },
+            {
+                "major": "16",
+                "minor": "0",
+                "tag": "beta",
+                "tagversion":"2",
+                "revision": "20151121-98e0275",
+                "addon_support": "yes"
+            },
+            {
+                "major": "16",
+                "minor": "0",
+                "tag": "beta",
+                "tagversion":"1",
+                "revision": "20151113-9c7322e",
+                "addon_support": "yes"
+            },
             {
                 "major": "15",
                 "minor": "0",
@@ -442,6 +563,30 @@
             }
         ],
         "alpha": [
+            {
+                "major": "16",
+                "minor": "0",
+                "tag": "alpha",
+                "tagversion":"3",
+                "revision": "20151001-ca8d08c",
+                "addon_support": "yes"
+            },
+            {
+                "major": "16",
+                "minor": "0",
+                "tag": "alpha",
+                "tagversion":"2",
+                "revision": "20150831-b4afc20",
+                "addon_support": "yes"
+            },
+            {
+                "major": "16",
+                "minor": "0",
+                "tag": "alpha",
+                "tagversion":"1",
+                "revision": "20150801-c5f806e",
+                "addon_support": "yes"
+            },
             {
                 "major": "15",
                 "minor": "0",

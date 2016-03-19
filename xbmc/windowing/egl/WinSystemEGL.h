@@ -59,7 +59,6 @@ public:
   virtual void  Register(IDispResource *resource);
   virtual void  Unregister(IDispResource *resource);
 
-  virtual bool  Support3D(int width, int height, uint32_t mode)     const;
   virtual bool  ClampToGUIDisplayLimits(int &width, int &height);
 
   EGLConfig     GetEGLConfig();
@@ -67,7 +66,7 @@ public:
   EGLDisplay    GetEGLDisplay();
   EGLContext    GetEGLContext();
 protected:
-  virtual bool  PresentRenderImpl(const CDirtyRegionList &dirty);
+  virtual void  PresentRenderImpl(bool rendered);
   virtual void  SetVSyncImpl(bool enable);
 
   bool          CreateWindow(RESOLUTION_INFO &res);
@@ -79,6 +78,7 @@ protected:
   EGLSurface            m_surface;
   EGLContext            m_context;
   EGLConfig             m_config;
+  RENDER_STEREO_MODE    m_stereo_mode;
 
   CEGLWrapper           *m_egl;
   std::string           m_extensions;

@@ -55,6 +55,7 @@ public:
 protected:
   bool m_readonly;
   float m_sar;
+  bool m_show;
   bool ModeToResolution(std::string mode, RESOLUTION_INFO *res) const;
   bool FindMatchingResolution(const RESOLUTION_INFO &res, const std::vector<RESOLUTION_INFO> &resolutions);
   float GetMonitorSAR();

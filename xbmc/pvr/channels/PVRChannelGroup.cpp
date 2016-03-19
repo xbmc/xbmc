@@ -890,9 +890,13 @@ bool CPVRChannelGroup::Persist(void)
   bool bReturn(true);
   CSingleLock lock(m_critSection);
 
-  /* don't persist until the group is fully loaded and has changes */
-  if (!HasChanges() || !m_bLoaded)
+  /* only persist if the group has changes and is fully loaded or never has been saved before */
+  if (!HasChanges() || (!m_bLoaded && m_iGroupId != -1))
     return bReturn;
+
+  // Mark newly created groups as loaded so future updates will also be persisted...
+  if (m_iGroupId == -1)
+    m_bLoaded = true;
 
   if (CPVRDatabase *database = GetPVRDatabase())
   {
@@ -1068,7 +1072,6 @@ int CPVRChannelGroup::GetEPGSearch(CFileItemList &results, const EpgSearchFilter
 int CPVRChannelGroup::GetEPGNowOrNext(CFileItemList &results, bool bGetNext) const
 {
   int iInitialSize = results.Size();
-  CEpg* epg;
   CEpgInfoTagPtr epgNext;
   CPVRChannelPtr channel;
   CSingleLock lock(m_critSection);
@@ -1076,7 +1079,7 @@ int CPVRChannelGroup::GetEPGNowOrNext(CFileItemList &results, bool bGetNext) con
   for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::const_iterator it = m_sortedMembers.begin(); it != m_sortedMembers.end(); ++it)
   {
     channel = (*it).channel;
-    epg = channel->GetEPG();
+    CEpgPtr epg = channel->GetEPG();
     if (epg && !channel->IsHidden())
     {
       epgNext = bGetNext ? epg->GetTagNext() : epg->GetTagNow();
@@ -1097,7 +1100,6 @@ int CPVRChannelGroup::GetEPGNowOrNext(CFileItemList &results, bool bGetNext) con
 int CPVRChannelGroup::GetEPGAll(CFileItemList &results, bool bIncludeChannelsWithoutEPG /* = false */) const
 {
   int iInitialSize = results.Size();
-  CEpg* epg;
   CEpgInfoTagPtr epgTag;
   CPVRChannelPtr channel;
   CSingleLock lock(m_critSection);
@@ -1109,8 +1111,8 @@ int CPVRChannelGroup::GetEPGAll(CFileItemList &results, bool bIncludeChannelsWit
     {
       int iAdded = 0;
 
-      epg = channel->GetEPG();
-      if (epg != NULL)
+      CEpgPtr epg = channel->GetEPG();
+      if (epg)
       {
         // XXX channel pointers aren't set in some occasions. this works around the issue, but is not very nice
         epg->SetChannel(channel);
@@ -1133,14 +1135,14 @@ int CPVRChannelGroup::GetEPGAll(CFileItemList &results, bool bIncludeChannelsWit
 CDateTime CPVRChannelGroup::GetEPGDate(EpgDateType epgDateType) const
 {
   CDateTime date;
-  CEpg* epg;
+  CEpgPtr epg;
   CPVRChannelPtr channel;
   CSingleLock lock(m_critSection);
 
   for (PVR_CHANNEL_GROUP_MEMBERS::const_iterator it = m_members.begin(); it != m_members.end(); ++it)
   {
     channel = it->second.channel;
-    if (!channel->IsHidden() && (epg = channel->GetEPG()) != NULL)
+    if (!channel->IsHidden() && (epg = channel->GetEPG()))
     {
       CDateTime epgDate;
       switch (epgDateType)

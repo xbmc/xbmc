@@ -19,10 +19,11 @@
  */
 
 #include "PVRFile.h"
-#include "cores/dvdplayer/DVDInputStreams/DVDInputStream.h"
+#include "cores/VideoPlayer/DVDInputStreams/DVDInputStream.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/recordings/PVRRecordings.h"
+#include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/addons/PVRClients.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -34,7 +35,6 @@ using namespace PVR;
 CPVRFile::CPVRFile()
 {
   m_isPlayRecording = false;
-  m_playingItem     = -1;
 }
 
 CPVRFile::~CPVRFile()
@@ -68,7 +68,7 @@ bool CPVRFile::Open(const CURL& url)
       return false;
     }
   }
-  else if (StringUtils::StartsWith(strURL, "pvr://recordings/active"))
+  else if (CPVRRecordingsPath(strURL).IsActive())
   {
     CFileItemPtr tag = g_PVRRecordings->GetByPath(strURL);
     if (tag && tag->HasPVRRecordingInfoTag())
@@ -85,7 +85,7 @@ bool CPVRFile::Open(const CURL& url)
       return false;
     }
   }
-  else if (StringUtils::StartsWith(strURL, "pvr://recordings/deleted/"))
+  else if (CPVRRecordingsPath(strURL).IsDeleted())
   {
     CLog::Log(LOGNOTICE, "PVRFile - Playback of deleted recordings is not possible (%s)", strURL.c_str());
     return false;
@@ -162,7 +162,6 @@ bool CPVRFile::NextChannel(bool preview/* = false*/)
    */
   if (g_PVRManager.ChannelUp(&newchannel, preview))
   {
-    m_playingItem = newchannel;
     return true;
   }
   else
@@ -187,7 +186,6 @@ bool CPVRFile::PrevChannel(bool preview/* = false*/)
    */
   if (g_PVRManager.ChannelDown(&newchannel, preview))
   {
-    m_playingItem = newchannel;
     return true;
   }
   else
@@ -196,7 +194,7 @@ bool CPVRFile::PrevChannel(bool preview/* = false*/)
   }
 }
 
-bool CPVRFile::SelectChannel(unsigned int channel)
+bool CPVRFile::SelectChannelById(unsigned int channelid)
 {
   if (m_isPlayRecording)
   {
@@ -207,9 +205,8 @@ bool CPVRFile::SelectChannel(unsigned int channel)
     return true;
   }
 
-  if (g_PVRManager.ChannelSwitch(channel))
+  if (g_PVRManager.ChannelSwitchById(channelid))
   {
-    m_playingItem = channel;
     return true;
   }
   else

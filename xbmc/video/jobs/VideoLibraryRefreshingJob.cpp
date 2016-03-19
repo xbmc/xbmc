@@ -166,7 +166,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
             selectDialog->Open();
 
             // check if the user has chosen one of the results
-            int selectedItem = selectDialog->GetSelectedLabel();
+            int selectedItem = selectDialog->GetSelectedItem();
             if (selectedItem >= 0)
               scraperUrl = itemResultList.at(selectedItem);
             // the user hasn't chosen one of the results and but has chosen to manually enter a title to use
@@ -233,7 +233,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     {
       // for a tvshow we need to handle all paths of it
       std::vector<std::string> tvshowPaths;
-      if (MediaTypes::IsMediaType(m_item->GetVideoInfoTag()->m_type, MediaTypeTvShow) && m_refreshAll &&
+      if (CMediaTypes::IsMediaType(m_item->GetVideoInfoTag()->m_type, MediaTypeTvShow) && m_refreshAll &&
           db.GetPathsLinkedToTvShow(m_item->GetVideoInfoTag()->m_iDbId, tvshowPaths))
       {
         for (const auto& tvshowPath : tvshowPaths)

@@ -1,9 +1,8 @@
-#ifndef __PLATFORM_DEFS_H__
-#define __PLATFORM_DEFS_H__
+#pragma once
 
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +15,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -161,11 +160,7 @@
 #define __int64   long long
 #define __uint64  unsigned long long
 
-#if defined(__x86_64__) || defined(__powerpc__) || defined(__ppc__) || defined (__arm__) || defined(__mips__) // should this be powerpc64 only?
 #define __stdcall
-#else /* !__x86_64__ */
-#define __stdcall   __attribute__((__stdcall__))
-#endif /* __x86_64__ */
 #define __cdecl
 #define WINBASEAPI
 #define NTAPI       __stdcall
@@ -665,7 +660,4 @@ typedef struct tWAVEFORMATEXTENSIBLE
 
 
 #endif
-
-#endif //__PLATFORM_DEFS_H__
-
 

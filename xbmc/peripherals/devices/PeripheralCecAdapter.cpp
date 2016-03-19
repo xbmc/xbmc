@@ -32,6 +32,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "settings/AdvancedSettings.h"
+#include "utils/JobManager.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 
@@ -81,8 +82,8 @@ class DllLibCEC : public DllDynamic, DllLibCECInterface
   END_METHOD_RESOLVE()
 };
 
-CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralScanResult& scanResult) :
-  CPeripheralHID(scanResult),
+CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralScanResult& scanResult, CPeripheralBus* bus) :
+  CPeripheralHID(scanResult, bus),
   CThread("CECAdapter"),
   m_dll(NULL),
   m_cecAdapter(NULL)
@@ -734,7 +735,12 @@ int CPeripheralCecAdapter::CecAlert(void *cbParam, const libcec_alert alert, con
   }
 
   if (bReopenConnection)
-    adapter->ReopenConnection();
+  {
+    // Reopen the connection asynchronously. Otherwise a deadlock may occure.
+    // Reconnect means destruction and recreation of our libcec instance, but libcec
+    // calls this callback function synchronously and must not be destroyed meanwhile.
+    adapter->ReopenConnection(true);
+  }
 
   return 1;
 }
@@ -1667,8 +1673,35 @@ void CPeripheralCecAdapter::OnDeviceRemoved(void)
   m_bDeviceRemoved = true;
 }
 
-bool CPeripheralCecAdapter::ReopenConnection(void)
+namespace PERIPHERALS
 {
+
+class CPeripheralCecAdapterReopenJob : public CJob
+{
+public:
+  CPeripheralCecAdapterReopenJob(CPeripheralCecAdapter *adapter)
+    : m_adapter(adapter) {}
+  virtual ~CPeripheralCecAdapterReopenJob() {}
+
+  bool DoWork(void)
+  {
+    return m_adapter->ReopenConnection(false);
+  }
+
+private:
+  CPeripheralCecAdapter *m_adapter;
+};
+
+};
+
+bool CPeripheralCecAdapter::ReopenConnection(bool bAsync /* = false */)
+{
+  if (bAsync)
+  {
+    CJobManager::GetInstance().AddJob(new CPeripheralCecAdapterReopenJob(this), nullptr, CJob::PRIORITY_NORMAL);
+    return true;
+  }
+
   // stop running thread
   {
     CSingleLock lock(m_critSection);

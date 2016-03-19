@@ -19,13 +19,14 @@
  */
 
 #include "GUIViewStateAddonBrowser.h"
+#include "addons/Addon.h"
+#include "addons/AddonManager.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/WindowIDs.h"
 #include "view/ViewState.h"
-#include "addons/Addon.h"
-#include "addons/AddonManager.h"
+#include "utils/URIUtils.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -39,7 +40,16 @@ CGUIViewStateAddonBrowser::CGUIViewStateAddonBrowser(const CFileItemList& items)
   }
   else
   {
-    AddSortMethod(SortByLabel, SortAttributeIgnoreFolders, 551, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | Foldername, empty
+    AddSortMethod(SortByLabel, SortAttributeIgnoreFolders, 551, LABEL_MASKS("%L", "%s", "%L", "%s"));
+
+    if (URIUtils::PathStarts(items.GetPath(), "addons://sources/"))
+      AddSortMethod(SortByLastUsed, 12012, LABEL_MASKS("%L", "%u", "%L", "%u"),
+          SortAttributeIgnoreFolders, SortOrderDescending); //Label, Last used
+
+    if (URIUtils::PathStarts(items.GetPath(), "addons://user/") && items.GetContent() == "addons")
+      AddSortMethod(SortByInstallDate, 12013, LABEL_MASKS("%L", "%i", "%L", "%i"),
+          SortAttributeIgnoreFolders, SortOrderDescending);
+
     SetSortMethod(SortByLabel);
   }
   SetViewAsControl(DEFAULT_VIEW_AUTO);
@@ -65,22 +75,25 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     CMediaSource share;
     share.strPath = "addons://user/";
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    share.m_strThumbnailImage = "DefaultAddonsInstalled.png";
     share.strName = g_localizeStrings.Get(24998);
     m_sources.push_back(share);
   }
-  if (CAddonMgr::GetInstance().HasOutdatedAddons())
+  if (CAddonMgr::GetInstance().HasAvailableUpdates())
   {
     CMediaSource share;
     share.strPath = "addons://outdated/";
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    share.m_strThumbnailImage = "DefaultAddonsUpdates.png";
     share.strName = g_localizeStrings.Get(24043); // "Available updates"
     m_sources.push_back(share);
   }
-  if (CAddonMgr::GetInstance().HasAddons(ADDON_REPOSITORY, true))
+  if (CAddonMgr::GetInstance().HasAddons(ADDON_REPOSITORY))
   {
     CMediaSource share;
     share.strPath = "addons://repos/";
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    share.m_strThumbnailImage = "DefaultAddonsRepo.png";
     share.strName = g_localizeStrings.Get(24033);
     m_sources.push_back(share);
   }
@@ -88,6 +101,7 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     CMediaSource share;
     share.strPath = "addons://install/";
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    share.m_strThumbnailImage = "DefaultAddonsZip.png";
     share.strName = g_localizeStrings.Get(24041);
     m_sources.push_back(share);
   }
@@ -95,14 +109,8 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     CMediaSource share;
     share.strPath = "addons://search/";
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    share.m_strThumbnailImage = "DefaultAddonsSearch.png";
     share.strName = g_localizeStrings.Get(137);
-    m_sources.push_back(share);
-  }
-  {
-    CMediaSource share;
-    share.strPath = "addons://manage/";
-    share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-    share.strName = g_localizeStrings.Get(24992);
     m_sources.push_back(share);
   }
 

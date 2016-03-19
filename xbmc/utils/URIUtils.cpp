@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -140,9 +140,9 @@ void URIUtils::RemoveExtension(std::string& strFileName)
     strFileMask += "|" + g_advancedSettings.m_videoExtensions;
     strFileMask += "|" + g_advancedSettings.m_subtitlesExtensions;
 #if defined(TARGET_DARWIN)
-    strFileMask += "|.py|.xml|.milk|.xpr|.xbt|.cdg|.app|.applescript|.workflow";
+    strFileMask += "|.py|.xml|.milk|.xbt|.cdg|.app|.applescript|.workflow";
 #else
-    strFileMask += "|.py|.xml|.milk|.xpr|.xbt|.cdg";
+    strFileMask += "|.py|.xml|.milk|.xbt|.cdg";
 #endif
     strFileMask += "|";
 
@@ -360,9 +360,9 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
     if(strFile.rfind('/') == std::string::npos)
       return false;
   }
-  else if (strFile.size() == 0)
+  else if (strFile.empty())
   {
-    if (url.GetHostName().size() > 0)
+    if (!url.GetHostName().empty())
     {
       // we have an share with only server or workgroup name
       // set hostname to "" and return true to get back to root
@@ -522,10 +522,20 @@ bool URIUtils::PathStarts(const std::string& url, const char *start)
   return StringUtils::StartsWith(url, start);
 }
 
-bool URIUtils::PathEquals(const std::string& url, const std::string &start, bool ignoreTrailingSlash /* = false */)
+bool URIUtils::PathEquals(const std::string& url, const std::string &start, bool ignoreTrailingSlash /* = false */, bool ignoreURLOptions /* = false */)
 {
-  std::string path1 = url;
-  std::string path2 = start;
+  std::string path1, path2;
+  if (ignoreURLOptions)
+  {
+    path1 = CURL(url).GetWithoutOptions();
+    path2 = CURL(start).GetWithoutOptions();
+  }
+  else
+  {
+    path1 = url;
+    path2 = start;
+  }
+
   if (ignoreTrailingSlash)
   {
     RemoveSlashAtEnd(path1);
@@ -774,12 +784,10 @@ bool URIUtils::IsArchive(const std::string& strFile)
 
 bool URIUtils::IsSpecial(const std::string& strFile)
 {
-  std::string strFile2(strFile);
-
   if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+    return IsSpecial(CStackDirectory::GetFirstStackedFile(strFile));
 
-  return IsProtocol(strFile2, "special");
+  return IsProtocol(strFile, "special");
 }
 
 bool URIUtils::IsPlugin(const std::string& strFile)
@@ -870,32 +878,34 @@ bool URIUtils::IsHTTP(const std::string& strFile)
 
 bool URIUtils::IsUDP(const std::string& strFile)
 {
-  std::string strFile2(strFile);
-
   if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+    return IsUDP(CStackDirectory::GetFirstStackedFile(strFile));
 
-  return IsProtocol(strFile2, "udp");
+  return IsProtocol(strFile, "udp");
 }
 
 bool URIUtils::IsTCP(const std::string& strFile)
 {
-  std::string strFile2(strFile);
-
   if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+    return IsTCP(CStackDirectory::GetFirstStackedFile(strFile));
 
-  return IsProtocol(strFile2, "tcp");
+  return IsProtocol(strFile, "tcp");
 }
 
 bool URIUtils::IsPVRChannel(const std::string& strFile)
 {
-  std::string strFile2(strFile);
-
   if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+    return IsPVRChannel(CStackDirectory::GetFirstStackedFile(strFile));
 
-  return StringUtils::StartsWithNoCase(strFile2, "pvr://channels");
+  return StringUtils::StartsWithNoCase(strFile, "pvr://channels");
+}
+
+bool URIUtils::IsPVRGuideItem(const std::string& strFile)
+{
+  if (IsStack(strFile))
+    return IsPVRGuideItem(CStackDirectory::GetFirstStackedFile(strFile));
+
+  return StringUtils::StartsWithNoCase(strFile, "pvr://guide");
 }
 
 bool URIUtils::IsDAV(const std::string& strFile)
@@ -959,8 +969,7 @@ bool URIUtils::IsLiveTV(const std::string& strFile)
   std::string strFileWithoutSlash(strFile);
   RemoveSlashAtEnd(strFileWithoutSlash);
 
-  if (IsProtocol(strFile, "sap")
-  ||(StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") && !PathStarts(strFileWithoutSlash, "pvr://recordings")))
+  if (StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") && !PathStarts(strFileWithoutSlash, "pvr://recordings"))
     return true;
 
   return false;

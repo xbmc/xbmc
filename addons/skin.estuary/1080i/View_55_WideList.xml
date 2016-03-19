@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="View_55_WideList">
+		<include name="UpDownArrows">
+			<param name="container_id" value="55" />
+			<param name="visible" value="!System.HasModalDialog" />
+		</include>
+		<control type="group">
+			<include>OpenClose_Right</include>
+			<left>603</left>
+			<top>182</top>
+			<visible>Control.IsVisible(55)</visible>
+			<include>Visible_Right</include>
+			<control type="image">
+				<description>background image</description>
+				<left>-20</left>
+				<top>-20</top>
+				<width>1254</width>
+				<height>746</height>
+				<texture border="22">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="list" id="55">
+				<left>2</left>
+				<top>3</top>
+				<width>1210</width>
+				<height>700</height>
+				<scrolltime tween="cubic" easing="out">500</scrolltime>
+				<orientation>vertical</orientation>
+				<pagecontrol>531</pagecontrol>
+				<onleft>9000</onleft>
+				<onright>531</onright>
+				<onup>55</onup>
+				<ondown>55</ondown>
+				<viewtype label="$LOCALIZE[31107]">list</viewtype>
+				<visible>Container.Content(artists) | Container.Content(albums) | Container.Content(songs) | Container.Content(addons) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed) | Container.Content(musicvideos)</visible>
+				<focusedlayout height="63" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed)">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>1096</width>
+						<height>63</height>
+						<texture border="90,3,90,3">lists/separator.png</texture>
+						<visible>!Control.HasFocus(55)</visible>
+					</control>
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>1396</width>
+						<height>63</height>
+						<texture>lists/focus.png</texture>
+						<visible>Control.HasFocus(55)</visible>
+					</control>
+					<control type="label">
+						<left>13</left>
+						<top>2</top>
+						<height>63</height>
+						<width>70</width>
+						<aligny>center</aligny>
+						<font>font12</font>
+						<label>$INFO[ListItem.Year]</label>
+						<textcolor>button_focus</textcolor>
+						<shadowcolor>text_shadow</shadowcolor>
+					</control>
+					<control type="label">
+						<left>95</left>
+						<top>0</top>
+						<height>63</height>
+						<width>960</width>
+						<aligny>center</aligny>
+						<font>fontContextMenu</font>
+						<scroll>true</scroll>
+						<label>$INFO[ListItem.Label]</label>
+						<shadowcolor>text_shadow</shadowcolor>
+					</control>
+					<control type="label">
+						<left>90</left>
+						<top>0</top>
+						<height>63</height>
+						<width>1090</width>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>font12</font>
+						<label>$INFO[ListItem.Label2]</label>
+						<textcolor>grey</textcolor>
+						<shadowcolor>text_shadow</shadowcolor>
+					</control>
+					<control type="image">
+						<left>21</left>
+						<top>20</top>
+						<width>32</width>
+						<height>32</height>
+						<visible>IsEmpty(ListItem.Year)</visible>
+						<texture>$VAR[ListWatchedIconVar]</texture>
+						<animation effect="fade" start="30" end="100" time="300" reversible="false">Focus</animation>
+					</control>
+					<control type="image">
+						<left>21</left>
+						<top>20</top>
+						<width>32</width>
+						<visible>IsEmpty(ListItem.Year)</visible>
+						<height>32</height>
+						<texture colordiffuse="button_focus">$VAR[ListWatchedIconVar]</texture>
+						<animation effect="fade" start="0" end="100" time="300" reversible="false">Focus</animation>
+						<visible>!Control.HasFocus(55)</visible>
+					</control>
+				</focusedlayout>
+				<itemlayout height="63" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed)">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>1396</width>
+						<height>63</height>
+						<texture border="90,3,90,3">lists/separator.png</texture>
+					</control>
+					<control type="label">
+						<left>13</left>
+						<top>2</top>
+						<height>63</height>
+						<width>70</width>
+						<aligny>center</aligny>
+						<font>font12</font>
+						<label>$INFO[ListItem.Year]</label>
+						<textcolor>button_focus</textcolor>
+						<shadowcolor>text_shadow</shadowcolor>
+					</control>
+					<control type="label">
+						<left>95</left>
+						<top>0</top>
+						<height>63</height>
+						<width>960</width>
+						<aligny>center</aligny>
+						<font>fontContextMenu</font>
+						<label>$INFO[ListItem.Label]</label>
+						<shadowcolor>text_shadow</shadowcolor>
+					</control>
+					<control type="label">
+						<left>90</left>
+						<top>0</top>
+						<height>63</height>
+						<width>1090</width>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>font12</font>
+						<label>$INFO[ListItem.Label2]</label>
+						<textcolor>grey</textcolor>
+						<shadowcolor>text_shadow</shadowcolor>
+					</control>
+					<control type="image">
+						<left>21</left>
+						<top>20</top>
+						<visible>IsEmpty(ListItem.Year) + IsEmpty(ListItem.AddonVersion)</visible>
+						<width>32</width>
+						<height>32</height>
+						<texture colordiffuse="grey">$VAR[ListWatchedIconVar]</texture>
+					</control>
+				</itemlayout>
+				<include condition="Window.IsActive(musiclibrary) | Window.IsActive(musicfiles)">SongsListLayout</include>
+				<include>AddonsListLayout</include>
+			</control>
+		</control>
+	</include>
+	<include name="SongsListLayout">
+		<focusedlayout height="63" condition="Container.Content(songs)">
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>1096</width>
+				<height>63</height>
+				<texture border="90,3,90,3">lists/separator.png</texture>
+			</control>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>1396</width>
+				<height>63</height>
+				<texture>lists/focus.png</texture>
+				<visible>Control.hasFocus(55)</visible>
+			</control>
+			<control type="label">
+				<left>12</left>
+				<top>-2</top>
+				<height>63</height>
+				<width>70</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<label>$INFO[ListItem.TrackNumber]</label>
+				<textcolor>button_focus</textcolor>
+				<shadowcolor>text_shadow</shadowcolor>
+			</control>
+			<control type="label">
+				<left>95</left>
+				<top>0</top>
+				<height>63</height>
+				<width>860</width>
+				<aligny>center</aligny>
+				<scroll>true</scroll>
+				<font>fontContextMenu</font>
+				<label>$VAR[SongTitleVar]</label>
+				<shadowcolor>text_shadow</shadowcolor>
+			</control>
+			<control type="label">
+				<left>90</left>
+				<top>0</top>
+				<height>63</height>
+				<width>1090</width>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<label>$INFO[ListItem.Label2]</label>
+				<textcolor>grey</textcolor>
+				<shadowcolor>text_shadow</shadowcolor>
+			</control>
+		</focusedlayout>
+		<itemlayout height="63" condition="Container.Content(songs)">
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>1396</width>
+				<height>63</height>
+				<texture border="90,3,90,3">lists/separator.png</texture>
+			</control>
+			<control type="label">
+				<left>12</left>
+				<top>-2</top>
+				<height>63</height>
+				<width>70</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<label>$INFO[ListItem.TrackNumber]</label>
+				<textcolor>button_focus</textcolor>
+				<shadowcolor>text_shadow</shadowcolor>
+			</control>
+			<control type="label">
+				<left>95</left>
+				<top>0</top>
+				<height>63</height>
+				<width>960</width>
+				<aligny>center</aligny>
+				<font>fontContextMenu</font>
+				<label>$VAR[SongTitleVar]</label>
+				<shadowcolor>text_shadow</shadowcolor>
+			</control>
+			<control type="label">
+				<left>90</left>
+				<top>0</top>
+				<height>63</height>
+				<width>1090</width>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<label>$INFO[ListItem.Label2]</label>
+				<textcolor>grey</textcolor>
+				<shadowcolor>text_shadow</shadowcolor>
+			</control>
+		</itemlayout>
+	</include>
+	<include name="AddonsListLayout">
+		<focusedlayout height="63" condition="Container.Content(addons)">
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>1096</width>
+				<height>63</height>
+				<texture border="90,3,90,3">lists/separator.png</texture>
+			</control>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>1396</width>
+				<height>63</height>
+				<texture>lists/focus.png</texture>
+				<visible>Control.hasFocus(55)</visible>
+			</control>
+			<control type="image">
+				<left>15</left>
+				<top>15</top>
+				<width>40</width>
+				<height>40</height>
+				<texture>$VAR[AddonsListIconVar]</texture>
+			</control>
+			<control type="label">
+				<left>75</left>
+				<top>0</top>
+				<height>63</height>
+				<width>820</width>
+				<aligny>center</aligny>
+				<scroll>true</scroll>
+				<font>fontContextMenu</font>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="label">
+				<left>590</left>
+				<top>0</top>
+				<height>63</height>
+				<width>590</width>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<label>$VAR[AddonsLabel2Var]</label>
+			</control>
+		</focusedlayout>
+		<itemlayout height="63" condition="Container.Content(addons)">
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>1396</width>
+				<height>63</height>
+				<texture border="90,3,90,3">lists/separator.png</texture>
+			</control>
+			<control type="image">
+				<left>15</left>
+				<top>15</top>
+				<width>40</width>
+				<height>40</height>
+				<texture>$VAR[AddonsListIconVar]</texture>
+			</control>
+			<control type="label">
+				<left>75</left>
+				<top>0</top>
+				<height>63</height>
+				<width>820</width>
+				<aligny>center</aligny>
+				<scroll>true</scroll>
+				<font>fontContextMenu</font>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="label">
+				<left>590</left>
+				<top>0</top>
+				<height>63</height>
+				<width>590</width>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<label>$VAR[AddonsLabel2Var]</label>
+				<textcolor>grey</textcolor>
+				<shadowcolor>text_shadow</shadowcolor>
+			</control>
+		</itemlayout>
+	</include>
+</includes>

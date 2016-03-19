@@ -1,0 +1,229 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Croatian (Croatia) (http://www.transifex.com/projects/p/kodi-main/language/hr_HR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hr_HR\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Zvučne postavke"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Velika[CR]slova"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Mogućnosti vizualizacije"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "Predlošci vizualizacije"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Dodatni izbornik"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Obrađivanje..."
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "Filmovi"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "Epizode"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "Albumi"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Stranica"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Popis informacija"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "Prijava"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "PREMOTAVANJE UNAPRIJED"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "PREMOTAVANJE UNAZAD"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Vrijeme završetka"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Razvrstaj: Rastući"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Razvrstaj: Padajući"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Otvori popis izvođenja"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Spremi popis izvođenja"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Zatvori popis izvođenja"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Glazbene datoteke sustava"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Trenutni popis izvođenja"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "Nazad"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Lokacija"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "Pogled"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Trenutna temp."
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Posljednje ažuriranje"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Pružatelj podataka"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Korištenje memorije:"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Posljednji put prijavljeni"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Emitirano"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Video izbornik"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Preuzmi podnaslove"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Zadana presvlaka"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Temeljeno na Arialu"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Promijenite presvlaku · Postavite jezik i regiju · Izmijenite mogućnosti popisa datoteka   · Postavite čuvara zaslona"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "UpravljaJte Vašom videotekom · Postavite mogućnosti video reprodukcije · Promijenite mogućnosti popisa video snimki · Postavite slova podnaslova"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "Promijenite mogućnosti popisa slika · Podesite slikovnu prezentaciju"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "Postavite tri grada za prikupljanje vremenskih informacija"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "Postavite upravljanje Kodi-om putem UPnP-a i HTTP-a · Uredite dijeljenje datoteka ·  Postavite mogućnosti pristupa Internetu"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "Postavite i kalibrirajte zaslon · Podesite zvučni izlaz · Postavite daljinsko upravljanje · Postavite mogućnosti uštede energije · Omogućite otklanjanje grešaka · Postavite glavno zaključavanje"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Odaberite svoj Kodi korisnički profil[CR]za prijavu i nastavite"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "Kategorija Tipki u početnom Izborniku"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "Brze poveznice početne stranice"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "Ostale mogućnosti"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "Vremenske informacije i tipka početnog zaslona"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Prečac dodataka"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "TV uživo"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Sakrij video pozadinu"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Dodaj grupu"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Preimenuj grupu"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Obriši grupu"

@@ -83,7 +83,7 @@
 #endif // HAS_WEB_SERVER
 
 #if defined(TARGET_DARWIN_OSX)
-#include "osx/XBMCHelper.h"
+#include "platform/darwin/osx/XBMCHelper.h"
 #endif
 
 using namespace KODI::MESSAGING;
@@ -455,6 +455,13 @@ bool CNetworkServices::OnSettingUpdate(CSetting* &setting, const char *oldSettin
         !CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_WEBSERVERPASSWORD).empty())
       return true;
   }
+  if (settingId == CSettings::SETTING_SERVICES_WEBSERVERPORT)
+  {
+    // if webserverport is default but webserver is activated then treat it as altered
+    // and don't change the port to new value
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_WEBSERVER))
+      return true;
+  }
   return false;
 }
 
@@ -512,7 +519,6 @@ bool CNetworkServices::StartWebserver()
   if (IsWebserverRunning())
     return true;
 
-  CLog::Log(LOGNOTICE, "Webserver: Starting...");
   if (!m_webserver.Start(webPort, CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_WEBSERVERUSERNAME), CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_WEBSERVERPASSWORD)))
     return false;
 
@@ -546,14 +552,12 @@ bool CNetworkServices::StopWebserver()
   if (!IsWebserverRunning())
     return true;
 
-  CLog::Log(LOGNOTICE, "Webserver: Stopping...");
   if (!m_webserver.Stop() || m_webserver.IsStarted())
   {
     CLog::Log(LOGWARNING, "Webserver: Failed to stop.");
     return false;
   }
   
-  CLog::Log(LOGNOTICE, "Webserver: Stopped...");
 #ifdef HAS_ZEROCONF
 #ifdef HAS_WEB_INTERFACE
   CZeroconf::GetInstance()->RemoveService("servers.webserver");
@@ -738,7 +742,6 @@ bool CNetworkServices::StartEventServer()
     return false;
   }
 
-  CLog::Log(LOGNOTICE, "ES: Starting event server");
   server->StartServer();
 
   return true;

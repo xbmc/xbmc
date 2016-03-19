@@ -28,17 +28,17 @@ public:
   CGUIWindowVideoPlaylist(void);
   virtual ~CGUIWindowVideoPlaylist(void);
 
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
-  virtual bool OnBack(int actionID);
+  virtual bool OnMessage(CGUIMessage& message) override;
+  virtual bool OnAction(const CAction &action) override;
+  virtual bool OnBack(int actionID) override;
 
 protected:
-  virtual bool OnPlayMedia(int iItem);
-  virtual void UpdateButtons();
+  virtual bool OnPlayMedia(int iItem, const std::string &player = "") override;
+  virtual void UpdateButtons() override;
   void MarkPlaying();
 
-  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
-  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
 
   void OnMove(int iItem, int iAction);
 

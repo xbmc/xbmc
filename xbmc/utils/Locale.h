@@ -23,7 +23,7 @@
 #include <string>
 
 /*!
- \brief Class representing a full locale of the form [language[_territory][.codeset][@modifier]].
+ \brief Class representing a full locale of the form `[language[_territory][.codeset][@modifier]]`.
  */
 class CLocale
 {
@@ -78,7 +78,7 @@ public:
    \brief Returns the full string representation of the locale.
 
    \details The format of the string representation is
-   [language[_territory][.codeset][@modifier]] where the language is
+   `[language[_territory][.codeset][@modifier]]` where the language is
    represented as a (lower-case) two character ISO 639-1 code and the territory
    is represented as a (upper-case) two character ISO 3166-1 Alpha-2 code.
    */
@@ -87,7 +87,7 @@ public:
    \brief Returns the full string representation of the locale in lowercase.
 
    \details The format of the string representation is
-   [language[_territory][.codeset][@modifier]] where the language is
+   `language[_territory][.codeset][@modifier]]` where the language is
    represented as a two character ISO 639-1 code and the territory is
    represented as a two character ISO 3166-1 Alpha-2 code.
    */
@@ -96,7 +96,7 @@ public:
    \brief Returns the short string representation of the locale.
 
    \details The format of the short string representation is
-   [language[_territory] where the language is represented as a (lower-case)
+   `[language[_territory]` where the language is represented as a (lower-case)
    two character ISO 639-1 code and the territory is represented as a
    (upper-case) two character ISO 3166-1 Alpha-2 code.
    */
@@ -105,7 +105,7 @@ public:
    \brief Returns the short string representation of the locale in lowercase.
 
    \details The format of the short string representation is
-   [language[_territory] where the language is represented as a two character
+   `[language[_territory]` where the language is represented as a two character
    ISO 639-1 code and the territory is represented as a two character
    ISO 3166-1 Alpha-2 code.
    */

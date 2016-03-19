@@ -2,6 +2,7 @@ SRCS=GUIWindowFullScreen.cpp \
      GUIWindowVideoBase.cpp \
      GUIWindowVideoNav.cpp \
      GUIWindowVideoPlaylist.cpp \
+     VideoFileItemListModifier.cpp \
 
 LIB=videowindows.a
 

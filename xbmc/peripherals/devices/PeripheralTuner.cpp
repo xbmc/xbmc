@@ -22,8 +22,8 @@
 
 using namespace PERIPHERALS;
 
-CPeripheralTuner::CPeripheralTuner(const PeripheralScanResult& scanResult) :
-  CPeripheral(scanResult)
+CPeripheralTuner::CPeripheralTuner(const PeripheralScanResult& scanResult, CPeripheralBus* bus) :
+  CPeripheral(scanResult, bus)
 {
   m_features.push_back(FEATURE_TUNER);
 }

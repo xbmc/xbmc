@@ -1,0 +1,265 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Icelandic (Iceland) (http://www.transifex.com/projects/p/kodi-main/language/is_IS/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: is_IS\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Hljóðstillingar"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Caps[CR]Lock"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Myndskreyting valmöguleikar"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "Myndskreyting forstillingar"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Samhengisvalmynd"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Vinnur..."
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "Kvikmyndir"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "Þættir"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "Hljómplötur"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Síða"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Upplýsingalisti"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "Innskrá"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "HRATT ÁFRAM"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "TIL BAKA"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Lokatími"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Raða: Hækkandi"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Raða: Lækkandi"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Opna spilunarlista"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Vista spilunarlista"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Loka spilunarlista"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Kerfi tónlistarskrár"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Núverandi spilunarlisti"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "Til baka"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Staðsetning"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "Sýn"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Hitastig"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Síðast uppfært"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Uppruni gagna"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Minni í notkun:"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Síðasta innskráning"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Sýnt"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Myndefnis valmynd"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Niðurhala þýðingartextum"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Sjálfgildi útlits"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Byggt á Arial"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Breyta útlitinu · Breyta tungumáli og landssvæði · Breyta útliti skráarlista · Velja skjáhvílu"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "Vinna með myndefnissafn · Stillingar á myndefnisafspilun · Breyta útliti myndefnislista · Velja leturgerð þýðingartexta"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "Breyta útliti myndalista · Stilla myndasýningar"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "Velja allt að þrjár borgin til að safna veðurupplýsingum um"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "Stýring á Kodi með UPnP og HTTP · Stilla skráardeilingu · Stilla tengingu við internetið"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "Setja upp og stilla skjái · Stilla hljóðúttak · Stilla fjarstýringar · Stilla orkusparnaðar möguleika · Virkja kembiúttak · Setja upp notendalæsingar"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Veldu Kodi notanda[CR]til að skrá inn og hala áfram"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "Flokkahnappar á upphafsmynd"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "Tenglar í viðbætur á upphafsmynd"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "Ýmsir valmöguleikar"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "Veðurupplýsingar og hnappur á upphafsmynd"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Tengill á viðbót"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SAMHÆFA"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Nota sérsniðinn bakgrunn"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Bakgrunnur:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Skilgreina stillingar sjónvarps - Breyta upplýsingum á fullum skjá. - Meðhöndla gögn stafræns dagskrárvísis"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "Sjónvarp bein útsending"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Fela lifandi bakgrunn"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Fela myndhrif í bakgrunni"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Stillingar rásar"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Tiltækir hópar"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Bæta við hópi"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Endurnefna hóp"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Eyða hópi"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Sýna falið"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Sýna eytt"

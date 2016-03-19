@@ -99,11 +99,19 @@ public:
   CDateTime(int year, int month, int day, int hour, int minute, int second);
   virtual ~CDateTime() {}
 
-  bool SetFromDateString(const std::string &date);
-
   static CDateTime GetCurrentDateTime();
   static CDateTime GetUTCDateTime();
   static int MonthStringToMonthNum(const std::string& month);
+
+  static CDateTime FromDBDateTime(const std::string &dateTime);
+  static CDateTime FromDateString(const std::string &date);
+  static CDateTime FromDBDate(const std::string &date);
+  static CDateTime FromDBTime(const std::string &time);
+  static CDateTime FromW3CDate(const std::string &date);
+  static CDateTime FromW3CDateTime(const std::string &date, bool ignoreTimezone = false);
+  static CDateTime FromUTCDateTime(const CDateTime &dateTime);
+  static CDateTime FromUTCDateTime(const time_t &dateTime);
+  static CDateTime FromRFC1123DateTime(const std::string &dateTime);
 
   const CDateTime& operator =(const SYSTEMTIME& right);
   const CDateTime& operator =(const FILETIME& right);
@@ -171,6 +179,8 @@ public:
   bool SetDateTime(int year, int month, int day, int hour, int minute, int second);
   bool SetDate(int year, int month, int day);
   bool SetTime(int hour, int minute, int second);
+
+  bool SetFromDateString(const std::string &date);
   bool SetFromDBDate(const std::string &date);
   bool SetFromDBTime(const std::string &time);
   bool SetFromW3CDate(const std::string &date);

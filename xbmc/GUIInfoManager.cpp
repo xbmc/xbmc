@@ -96,11 +96,11 @@
 #include "cores/IPlayer.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSPProcess.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "cores/VideoRenderers/BaseRenderer.h"
+#include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "interfaces/info/InfoExpression.h"
 
 #if defined(TARGET_DARWIN_OSX)
-#include "osx/smc.h"
+#include "platform/darwin/osx/smc.h"
 #include "linux/LinuxResourceCounter.h"
 static CLinuxResourceCounter m_resourceCounter;
 #endif
@@ -113,6 +113,20 @@ using namespace ADDON;
 using namespace PVR;
 using namespace INFO;
 using namespace EPG;
+
+class CSetCurrentItemJob : public CJob
+{
+  CFileItemPtr m_itemCurrentFile;
+public:
+  CSetCurrentItemJob(const CFileItemPtr item) : m_itemCurrentFile(item) { }
+  ~CSetCurrentItemJob(void) {}
+
+  bool DoWork(void)
+  {
+    g_infoManager.SetCurrentItemJob(m_itemCurrentFile);
+    return true;
+  }
+};
 
 CGUIInfoManager::CGUIInfoManager(void) :
     Observable()
@@ -129,7 +143,6 @@ CGUIInfoManager::CGUIInfoManager(void) :
   m_frameCounter = 0;
   m_lastFPSTime = 0;
   m_playerShowTime = false;
-  m_playerShowCodec = false;
   m_playerShowInfo = false;
   m_fps = 0.0f;
   ResetLibraryBools();
@@ -175,6 +188,18 @@ typedef struct
   int  val;
 } infomap;
 
+const infomap string_bools[] =   {{ "isempty",          STRING_IS_EMPTY },
+                                  { "isequal",          STRING_IS_EQUAL },
+                                  { "startswith",       STRING_STARTS_WITH },
+                                  { "endswith",         STRING_ENDS_WITH },
+                                  { "contains",         STRING_CONTAINS }};
+
+const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
+                                  { "isgreater",        INTEGER_GREATER_THAN },
+                                  { "isgreaterorequal", INTEGER_GREATER_OR_EQUAL },
+                                  { "isless",           INTEGER_LESS_THAN },
+                                  { "islessorequal",    INTEGER_LESS_OR_EQUAL }};
+
 const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },           // bools from here
                                   { "hasaudio",         PLAYER_HAS_AUDIO },
                                   { "hasvideo",         PLAYER_HAS_VIDEO },
@@ -214,7 +239,6 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   { "chapter",          PLAYER_CHAPTER },
                                   { "chaptercount",     PLAYER_CHAPTERCOUNT },
                                   { "chaptername",      PLAYER_CHAPTERNAME },
-                                  { "starrating",       PLAYER_STAR_RATING },
                                   { "folderpath",       PLAYER_PATH },
                                   { "filenameandpath",  PLAYER_FILEPATH },
                                   { "filename",         PLAYER_FILENAME },
@@ -283,6 +307,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "screenheight",     SYSTEM_SCREEN_HEIGHT },
                                   { "currentwindow",    SYSTEM_CURRENT_WINDOW },
                                   { "currentcontrol",   SYSTEM_CURRENT_CONTROL },
+                                  { "currentcontrolid", SYSTEM_CURRENT_CONTROL_ID },
                                   { "dvdlabel",         SYSTEM_DVD_LABEL },
                                   { "internetstate",    SYSTEM_INTERNET_STATE },
                                   { "osversioninfo",    SYSTEM_OS_VERSION_INFO },
@@ -349,7 +374,11 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "codec",            MUSICPLAYER_CODEC },
                                   { "discnumber",       MUSICPLAYER_DISC_NUMBER },
                                   { "rating",           MUSICPLAYER_RATING },
+                                  { "ratingandvotes",   MUSICPLAYER_RATING_AND_VOTES },
+                                  { "userrating",       MUSICPLAYER_USER_RATING },
+                                  { "votes",            MUSICPLAYER_VOTES },
                                   { "comment",          MUSICPLAYER_COMMENT },
+                                  { "mood",             MUSICPLAYER_MOOD },
                                   { "lyrics",           MUSICPLAYER_LYRICS },
                                   { "playlistplaying",  MUSICPLAYER_PLAYLISTPLAYING },
                                   { "exists",           MUSICPLAYER_EXISTS },
@@ -438,13 +467,15 @@ const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
                                   { "foldername",       CONTAINER_FOLDERNAME },
                                   { "pluginname",       CONTAINER_PLUGINNAME },
                                   { "viewmode",         CONTAINER_VIEWMODE },
+                                  { "viewcount",        CONTAINER_VIEWCOUNT },
                                   { "totaltime",        CONTAINER_TOTALTIME },
                                   { "totalwatched",     CONTAINER_TOTALWATCHED },
                                   { "totalunwatched",   CONTAINER_TOTALUNWATCHED },
                                   { "hasthumb",         CONTAINER_HAS_THUMB },
                                   { "sortmethod",       CONTAINER_SORT_METHOD },
                                   { "sortorder",        CONTAINER_SORT_ORDER },
-                                  { "showplot",         CONTAINER_SHOWPLOT }};
+                                  { "showplot",         CONTAINER_SHOWPLOT },
+                                  { "showtitle",        CONTAINER_SHOWTITLE }};
 
 const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
                                   { "onprevious",       CONTAINER_MOVE_PREVIOUS },
@@ -486,6 +517,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "albumartist",      LISTITEM_ALBUM_ARTIST },
                                   { "year",             LISTITEM_YEAR },
                                   { "genre",            LISTITEM_GENRE },
+                                  { "contributors",     LISTITEM_CONTRIBUTORS },
+                                  { "contributorandrole", LISTITEM_CONTRIBUTOR_AND_ROLE },
                                   { "director",         LISTITEM_DIRECTOR },
                                   { "filename",         LISTITEM_FILENAME },
                                   { "filenameandpath",  LISTITEM_FILENAME_AND_PATH },
@@ -497,6 +530,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "ratingandvotes",   LISTITEM_RATING_AND_VOTES },
                                   { "userrating",       LISTITEM_USER_RATING },
                                   { "votes",            LISTITEM_VOTES },
+                                  { "mood",             LISTITEM_MOOD },
                                   { "programcount",     LISTITEM_PROGRAM_COUNT },
                                   { "duration",         LISTITEM_DURATION },
                                   { "isselected",       LISTITEM_ISSELECTED },
@@ -574,8 +608,10 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "tagline",          LISTITEM_TAGLINE },
                                   { "top250",           LISTITEM_TOP250 },
                                   { "trailer",          LISTITEM_TRAILER },
-                                  { "starrating",       LISTITEM_STAR_RATING },
                                   { "sortletter",       LISTITEM_SORT_LETTER },
+                                  { "tag",              LISTITEM_TAG },
+                                  { "set",              LISTITEM_SET },
+                                  { "setid",            LISTITEM_SETID },
                                   { "videocodec",       LISTITEM_VIDEO_CODEC },
                                   { "videoresolution",  LISTITEM_VIDEO_RESOLUTION },
                                   { "videoaspect",      LISTITEM_VIDEO_ASPECT },
@@ -586,6 +622,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "isresumable",      LISTITEM_IS_RESUMABLE},
                                   { "percentplayed",    LISTITEM_PERCENT_PLAYED},
                                   { "isfolder",         LISTITEM_IS_FOLDER },
+                                  { "isparentfolder",   LISTITEM_IS_PARENTFOLDER },
                                   { "iscollection",     LISTITEM_IS_COLLECTION },
                                   { "originaltitle",    LISTITEM_ORIGINALTITLE },
                                   { "lastplayed",       LISTITEM_LASTPLAYED },
@@ -624,7 +661,22 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "imdbnumber",       LISTITEM_IMDBNUMBER },
                                   { "episodename",      LISTITEM_EPISODENAME },
                                   { "timertype",        LISTITEM_TIMERTYPE },
-                                  { "epgeventtitle",    LISTITEM_EPG_EVENT_TITLE }};
+                                  { "epgeventtitle",    LISTITEM_EPG_EVENT_TITLE },
+                                  { "timerisactive",    LISTITEM_TIMERISACTIVE },
+                                  { "timerhaserror",    LISTITEM_TIMERHASERROR },
+                                  { "timerhasconflict", LISTITEM_TIMERHASCONFLICT },
+                                  { "addonname",        LISTITEM_ADDON_NAME },
+                                  { "addonversion",     LISTITEM_ADDON_VERSION },
+                                  { "addoncreator",     LISTITEM_ADDON_CREATOR },
+                                  { "addonsummary",     LISTITEM_ADDON_SUMMARY },
+                                  { "addondescription", LISTITEM_ADDON_DESCRIPTION },
+                                  { "addondisclaimer",  LISTITEM_ADDON_DISCLAIMER },
+                                  { "addonbroken",      LISTITEM_ADDON_BROKEN },
+                                  { "addontype",        LISTITEM_ADDON_TYPE },
+                                  { "addoninstalldate", LISTITEM_ADDON_INSTALL_DATE },
+                                  { "addonlastupdated", LISTITEM_ADDON_LAST_UPDATED },
+                                  { "addonlastused",    LISTITEM_ADDON_LAST_USED },
+};
 
 const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
                                   { "preset",           VISUALISATION_PRESET },
@@ -642,6 +694,7 @@ const infomap skin_labels[] =    {{ "currenttheme",     SKIN_THEME },
                                   {"aspectratio",       SKIN_ASPECT_RATIO}};
 
 const infomap window_bools[] =   {{ "ismedia",          WINDOW_IS_MEDIA },
+                                  { "is",               WINDOW_IS },
                                   { "isactive",         WINDOW_IS_ACTIVE },
                                   { "istopmost",        WINDOW_IS_TOPMOST },
                                   { "isvisible",        WINDOW_IS_VISIBLE },
@@ -702,9 +755,6 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "actstreamsnr",             PVR_ACTUAL_STREAM_SNR },
                                   { "actstreamber",             PVR_ACTUAL_STREAM_BER },
                                   { "actstreamunc",             PVR_ACTUAL_STREAM_UNC },
-                                  { "actstreamvideobitrate",    PVR_ACTUAL_STREAM_VIDEO_BR },
-                                  { "actstreamaudiobitrate",    PVR_ACTUAL_STREAM_AUDIO_BR },
-                                  { "actstreamdolbybitrate",    PVR_ACTUAL_STREAM_DOLBY_BR },
                                   { "actstreamprogrsignal",     PVR_ACTUAL_STREAM_SIG_PROGR },
                                   { "actstreamprogrsnr",        PVR_ACTUAL_STREAM_SNR_PROGR },
                                   { "actstreamisencrypted",     PVR_ACTUAL_STREAM_ENCRYPTED },
@@ -914,8 +964,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
 {
   /* We need to disable caching in INFO::InfoBool::Get if either of the following are true:
    *  1. if condition is between LISTITEM_START and LISTITEM_END
-   *  2. if condition is STRING_IS_EMPTY, STRING_COMPARE, STRING_STR, INTEGER_GREATER_THAN and the
-   *     corresponding label is between LISTITEM_START and LISTITEM_END
+   *  2. if condition is string or integer the corresponding label is between LISTITEM_START and LISTITEM_END
    *  This is achieved by setting the bool pointed at by listItemDependent, either here or in a recursive call
    */
   // trim whitespaces
@@ -931,21 +980,28 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
   const Property &cat = info[0];
   if (info.size() == 1)
   { // single category
-    if (cat.name == "false" || cat.name == "no" || cat.name == "off")
+    if (cat.name == "false" || cat.name == "no")
       return SYSTEM_ALWAYS_FALSE;
-    else if (cat.name == "true" || cat.name == "yes" || cat.name == "on")
+    else if (cat.name == "true" || cat.name == "yes")
       return SYSTEM_ALWAYS_TRUE;
+
+    // deprecated begin
+    // should be removed before L*** v18
     if (cat.name == "isempty" && cat.num_params() == 1)
       return AddMultiInfo(GUIInfo(STRING_IS_EMPTY, TranslateSingleString(cat.param(), listItemDependent)));
     else if (cat.name == "stringcompare" && cat.num_params() == 2)
     {
       int info = TranslateSingleString(cat.param(0), listItemDependent);
-      int info2 = TranslateSingleString(cat.param(1), listItemDependent);
-      if (info2 > 0)
-        return AddMultiInfo(GUIInfo(STRING_COMPARE, info, -info2));
       // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
       std::string label = CGUIInfoLabel::GetLabel(cat.param(1));
       StringUtils::ToLower(label);
+      // 'true', 'false', 'yes', 'no' are valid strings, do not resolve them to SYSTEM_ALWAYS_TRUE or SYSTEM_ALWAYS_FALSE
+      if (label != "true" && label != "false" && label != "yes" && label != "no")
+      {
+        int info2 = TranslateSingleString(cat.param(1), listItemDependent);
+        if (info2 > 0)
+          return AddMultiInfo(GUIInfo(STRING_COMPARE, info, -info2));
+      }
       int compareString = ConditionalStringParameter(label);
       return AddMultiInfo(GUIInfo(STRING_COMPARE, info, compareString));
     }
@@ -970,11 +1026,52 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       }
       return AddMultiInfo(GUIInfo(STRING_STR, info, compareString));
     }
+    // deprecated end
   }
   else if (info.size() == 2)
   {
     const Property &prop = info[1];
-    if (cat.name == "player")
+    if (cat.name == "string")
+    {
+      if (prop.name == "isempty")
+      {
+        return AddMultiInfo(GUIInfo(STRING_IS_EMPTY, TranslateSingleString(prop.param(), listItemDependent)));
+      }
+      else if (prop.num_params() == 2)
+      {
+        for (size_t i = 0; i < sizeof(string_bools) / sizeof(infomap); i++)
+        {
+          if (prop.name == string_bools[i].str)
+          {
+            int data1 = TranslateSingleString(prop.param(0), listItemDependent);
+            // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
+            std::string label = CGUIInfoLabel::GetLabel(prop.param(1));
+            StringUtils::ToLower(label);
+            // 'true', 'false', 'yes', 'no' are valid strings, do not resolve them to SYSTEM_ALWAYS_TRUE or SYSTEM_ALWAYS_FALSE
+            if (label != "true" && label != "false" && label != "yes" && label != "no")
+            {
+              int data2 = TranslateSingleString(prop.param(1), listItemDependent);
+              if (data2 > 0)
+                return AddMultiInfo(GUIInfo(string_bools[i].val, data1, -data2));
+            }
+            return AddMultiInfo(GUIInfo(string_bools[i].val, data1, ConditionalStringParameter(label)));
+          }
+        }
+      }
+    }
+    if (cat.name == "integer")
+    {
+      for (size_t i = 0; i < sizeof(integer_bools) / sizeof(infomap); i++)
+      {
+        if (prop.name == integer_bools[i].str)
+        {
+          int data1 = TranslateSingleString(prop.param(0), listItemDependent);
+          int data2 = atoi(prop.param(1).c_str());
+          return AddMultiInfo(GUIInfo(integer_bools[i].val, data1, data2));
+        }
+      }
+    }
+    else if (cat.name == "player")
     {
       for (size_t i = 0; i < sizeof(player_labels) / sizeof(infomap); i++)
       {
@@ -1126,6 +1223,8 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         else if (cat == "moviesets") return LIBRARY_HAS_MOVIE_SETS;
         else if (cat == "singles") return LIBRARY_HAS_SINGLES;
         else if (cat == "compilations") return LIBRARY_HAS_COMPILATIONS;
+        else if (cat == "role" && prop.num_params() > 1)
+          return AddMultiInfo(GUIInfo(LIBRARY_HAS_ROLE, ConditionalStringParameter(prop.param(1)), 0));
       }
     }
     else if (cat.name == "musicplayer")
@@ -1436,20 +1535,30 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
 
 int CGUIInfoManager::TranslateListItem(const Property &info)
 {
+  if (info.num_params() == 1)
+  {
+    if (info.name == "property")
+    {
+      // properties are stored case sensitive in m_listItemProperties, but lookup is insensitive in CGUIListItem::GetProperty
+      if (StringUtils::EqualsNoCase(info.param(), "fanart_image"))
+        return AddListItemProp("fanart", LISTITEM_ART_OFFSET);
+      return AddListItemProp(info.param());
+    }
+    if (info.name == "art")
+      return AddListItemProp(info.param(), LISTITEM_ART_OFFSET);
+    if (info.name == "ratings")
+      return AddListItemProp(info.param(), LISTITEM_RATING_OFFSET);
+    if (info.name == "votes")
+      return AddListItemProp(info.param(), LISTITEM_VOTES_OFFSET);
+    if (info.name == "ratingandvotes")
+      return AddListItemProp(info.param(), LISTITEM_RATING_AND_VOTES_OFFSET);
+  }
+
   for (size_t i = 0; i < sizeof(listitem_labels) / sizeof(infomap); i++) // these ones don't have or need an id
   {
     if (info.name == listitem_labels[i].str)
       return listitem_labels[i].val;
   }
-  if (info.name == "property" && info.num_params() == 1)
-  {
-    // properties are stored case sensitive in m_listItemProperties, but lookup is insensitive in CGUIListItem::GetProperty
-    if (StringUtils::EqualsNoCase(info.param(), "fanart_image"))
-      return AddListItemProp("fanart", LISTITEM_ART_OFFSET);
-    return AddListItemProp(info.param());
-  }
-  if (info.name == "art" && info.num_params() == 1)
-    return AddListItemProp(info.param(), LISTITEM_ART_OFFSET);
   return 0;
 }
 
@@ -1499,6 +1608,11 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       return "";
 
     std::string property = m_listitemProperties[info - LISTITEM_PROPERTY_START-MUSICPLAYER_PROPERTY_OFFSET];
+    if (StringUtils::StartsWithNoCase(property, "Role.") && m_currentFile->HasMusicInfoTag())
+    { // "Role.xxxx" properties are held in music tag
+      property.erase(0, 5); //Remove Role.
+      return m_currentFile->GetMusicInfoTag()->GetArtistStringForRole(property);
+    }
     return m_currentFile->GetProperty(property).asString();
   }
 
@@ -1547,9 +1661,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_ACTUAL_STREAM_SNR_PROGR:
   case PVR_ACTUAL_STREAM_BER:
   case PVR_ACTUAL_STREAM_UNC:
-  case PVR_ACTUAL_STREAM_VIDEO_BR:
-  case PVR_ACTUAL_STREAM_AUDIO_BR:
-  case PVR_ACTUAL_STREAM_DOLBY_BR:
   case PVR_ACTUAL_STREAM_CRYPTION:
   case PVR_ACTUAL_STREAM_SERVICE:
   case PVR_ACTUAL_STREAM_MUX:
@@ -1678,7 +1789,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
           return m_currentFile->GetVideoInfoTag()->m_strTitle;
         if (m_currentFile->HasMusicInfoTag() && !m_currentFile->GetMusicInfoTag()->GetTitle().empty())
           return m_currentFile->GetMusicInfoTag()->GetTitle();
-        // don't have the title, so use dvdplayer, label, or drop down to title from path
+        // don't have the title, so use VideoPlayer, label, or drop down to title from path
         if (!g_application.m_pPlayer->GetPlayingTitle().empty())
           return g_application.m_pPlayer->GetPlayingTitle();
         if (!m_currentFile->GetLabel().empty())
@@ -1708,7 +1819,11 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case MUSICPLAYER_CODEC:
   case MUSICPLAYER_DISC_NUMBER:
   case MUSICPLAYER_RATING:
+  case MUSICPLAYER_RATING_AND_VOTES:
+  case MUSICPLAYER_USER_RATING:
   case MUSICPLAYER_COMMENT:
+  case MUSICPLAYER_CONTRIBUTORS:
+  case MUSICPLAYER_CONTRIBUTOR_AND_ROLE:
   case MUSICPLAYER_LYRICS:
   case MUSICPLAYER_CHANNEL_NAME:
   case MUSICPLAYER_CHANNEL_NUMBER:
@@ -1801,9 +1916,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VIDEOPLAYER_AUDIO_LANG:
     if(g_application.m_pPlayer->IsPlaying())
     {
-      SPlayerAudioStreamInfo info;
-      g_application.m_pPlayer->GetAudioStreamInfo(CURRENT_STREAM, info);
-      strLabel = info.language;
+      strLabel = m_audioInfo.language;
     }
     break;
   case VIDEOPLAYER_STEREOSCOPIC_MODE:
@@ -1941,6 +2054,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       }
       break;
     }
+  case CONTAINER_VIEWCOUNT:
   case CONTAINER_VIEWMODE:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
@@ -1948,7 +2062,12 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       {
         const CGUIControl *control = window->GetControl(window->GetViewContainerID());
         if (control && control->IsContainer())
-          strLabel = ((IGUIContainer *)control)->GetLabel();
+        {
+          if (info == CONTAINER_VIEWMODE)
+            strLabel = ((IGUIContainer *)control)->GetLabel();
+          else if (info == CONTAINER_VIEWCOUNT)
+            strLabel = StringUtils::Format("%i", window->GetViewCount());
+        }
       }
       break;
     }
@@ -1976,10 +2095,16 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     return GetMultiInfoLabel(GUIInfo(info), contextWindow);
     break;
   case CONTAINER_SHOWPLOT:
+  case CONTAINER_SHOWTITLE:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
-        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("showplot").asString();
+      {
+        if (info == CONTAINER_SHOWPLOT)
+          return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("showplot").asString();
+        else if (info == CONTAINER_SHOWTITLE)
+          return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("showtitle").asString();
+      }
     }
     break;
   case CONTAINER_TOTALTIME:
@@ -2060,13 +2185,19 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     strLabel = StringUtils::Format("%i", CSettings::GetInstance().GetInt(CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW));
     break;
   case SYSTEM_CURRENT_CONTROL:
+  case SYSTEM_CURRENT_CONTROL_ID:
     {
       CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
       if (window)
       {
         CGUIControl *control = window->GetFocusedControl();
         if (control)
-          strLabel = control->GetDescription();
+        {
+          if (info == SYSTEM_CURRENT_CONTROL_ID)
+            strLabel = StringUtils::Format("%i", control->GetID());
+          else if (info == SYSTEM_CURRENT_CONTROL)
+            strLabel = control->GetDescription();
+        }
       }
     }
     break;
@@ -2295,15 +2426,14 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
           switch( info )
           {
           case PLAYER_PROGRESS:
-            if (IsPlayerChannelPreviewActive())
             {
-              CEpgInfoTagPtr tag(GetEpgInfoTag());
+              const CEpgInfoTagPtr tag(GetEpgInfoTag());
               if (tag)
-                value = tag->ProgressPercentage();
+                value = static_cast<int>(tag->ProgressPercentage());
+              else
+                value = static_cast<int>(g_application.GetPercentage());
+              break;
             }
-            else
-              value = (int)(g_application.GetPercentage());
-            break;
           case PLAYER_PROGRESS_CACHE:
             value = (int)(g_application.GetCachePercentage());
             break;
@@ -2396,12 +2526,12 @@ INFO::InfoPtr CGUIInfoManager::Register(const std::string &expression, int conte
   return m_bools.back();
 }
 
-bool CGUIInfoManager::EvaluateBool(const std::string &expression, int contextWindow)
+bool CGUIInfoManager::EvaluateBool(const std::string &expression, int contextWindow /* = 0 */, const CGUIListItemPtr &item /* = NULL */)
 {
   bool result = false;
   INFO::InfoPtr info = Register(expression, contextWindow);
   if (info)
-    result = info->Get();
+    result = info->Get(item.get());
   return result;
 }
 
@@ -2441,7 +2571,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = (pWindow && pWindow->IsMediaWindow());
   }
   else if (condition == PLAYER_MUTED)
-    bReturn = g_application.IsMuted();
+    bReturn = (g_application.IsMuted() || g_application.GetVolume(false) <= VOLUME_MINIMUM);
   else if (condition >= LIBRARY_HAS_MUSIC && condition <= LIBRARY_HAS_COMPILATIONS)
     bReturn = GetLibraryBool(condition);
   else if (condition == LIBRARY_IS_SCANNING)
@@ -2524,8 +2654,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 
   else if (condition == PLAYER_SHOWINFO)
     bReturn = m_playerShowInfo;
-  else if (condition == PLAYER_SHOWCODEC)
-    bReturn = m_playerShowCodec;
   else if (condition == PLAYER_IS_CHANNEL_PREVIEW_ACTIVE)
     bReturn = IsPlayerChannelPreviewActive();
   else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
@@ -2861,7 +2989,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case VIDEOPLAYER_CAN_RESUME_LIVE_TV:
       if (m_currentFile->HasPVRRecordingInfoTag())
       {
-        EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(m_currentFile->GetPVRRecordingInfoTag()->EpgEvent());
+        EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(m_currentFile->GetPVRRecordingInfoTag()->Channel(), m_currentFile->GetPVRRecordingInfoTag()->BroadcastUid());
         bReturn = (epgTag && epgTag->IsActive() && epgTag->ChannelTag());
       }
       break;
@@ -2974,7 +3102,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         else
           bReturn = GetImage(info.GetData1(), contextWindow).empty();
         break;
-      case STRING_COMPARE:
+      case STRING_COMPARE: // STRING_COMPARE is deprecated - should be removed before L*** v18
+      case STRING_IS_EQUAL:
         {
           std::string compare;
           if (info.GetData2() < 0) // info labels are stored with negative numbers
@@ -2995,15 +3124,16 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             bReturn = StringUtils::EqualsNoCase(GetImage(info.GetData1(), contextWindow), compare);
         }
         break;
+      case INTEGER_IS_EQUAL:
       case INTEGER_GREATER_THAN:
+      case INTEGER_GREATER_OR_EQUAL:
+      case INTEGER_LESS_THAN:
+      case INTEGER_LESS_OR_EQUAL:
         {
           int integer;
-          if (GetInt(integer, info.GetData1(), contextWindow, item))
-            bReturn = integer > info.GetData2();
-          else
+          if (!GetInt(integer, info.GetData1(), contextWindow, item))
           {
             std::string value;
-
             if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
               value = GetItemImage((const CFileItem *)item, info.GetData1());
             else
@@ -3011,16 +3141,31 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
 
             // Handle the case when a value contains time separator (:). This makes IntegerGreaterThan
             // useful for Player.Time* members without adding a separate set of members returning time in seconds
-            if ( value.find_first_of( ':' ) != value.npos )
-              bReturn = StringUtils::TimeStringToSeconds( value ) > info.GetData2();
+            if (value.find_first_of( ':' ) != value.npos)
+              integer = StringUtils::TimeStringToSeconds(value);
             else
-              bReturn = atoi( value.c_str() ) > info.GetData2();
+              integer = atoi(value.c_str());
           }
+
+          // compare
+          if (condition == INTEGER_IS_EQUAL)
+            bReturn = integer == info.GetData2();
+          else if (condition == INTEGER_GREATER_THAN)
+            bReturn = integer > info.GetData2();
+          else if (condition == INTEGER_GREATER_OR_EQUAL)
+            bReturn = integer >= info.GetData2();
+          else if (condition == INTEGER_LESS_THAN)
+            bReturn = integer < info.GetData2();
+          else if (condition == INTEGER_LESS_OR_EQUAL)
+            bReturn = integer <= info.GetData2();
         }
         break;
-      case STRING_STR:
-      case STRING_STR_LEFT:
-      case STRING_STR_RIGHT:
+      case STRING_STR:          // STRING_STR is deprecated - should be removed before L*** v18
+      case STRING_STR_LEFT:     // STRING_STR_LEFT is deprecated - should be removed before L*** v18
+      case STRING_STR_RIGHT:    // STRING_STR_RIGHT is deprecated - should be removed before L*** v18
+      case STRING_STARTS_WITH:
+      case STRING_ENDS_WITH:
+      case STRING_CONTAINS:
         {
           std::string compare = m_stringParameters[info.GetData2()];
           // our compare string is already in lowercase, so lower case our label as well
@@ -3036,9 +3181,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             label = GetImage(info.GetData1(), contextWindow);
             StringUtils::ToLower(label);
           }
-          if (condition == STRING_STR_LEFT)
+          if (condition == STRING_STR_LEFT || condition == STRING_STARTS_WITH)
             bReturn = StringUtils::StartsWith(label, compare);
-          else if (condition == STRING_STR_RIGHT)
+          else if (condition == STRING_STR_RIGHT || condition == STRING_ENDS_WITH)
             bReturn = StringUtils::EndsWith(label, compare);
           else
             bReturn = label.find(compare) != std::string::npos;
@@ -3114,6 +3259,15 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           if (window && StringUtils::EqualsNoCase(URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), m_stringParameters[info.GetData2()]))
             bReturn = true;
         }
+        break;
+      case WINDOW_IS:
+        if (info.GetData1())
+        {
+          CGUIWindow *window = g_windowManager.GetWindow(contextWindow);
+          bReturn = (window && window->GetID() == static_cast<int>(info.GetData1()));
+        }
+        else
+          CLog::Log(LOGERROR, "The window id is required.");
         break;
       case WINDOW_IS_VISIBLE:
         if (info.GetData1())
@@ -3348,6 +3502,32 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             bReturn = g_playlistPlayer.GetRepeat(playlistid) == PLAYLIST::REPEAT_ONE;
         }
         break;
+      case LIBRARY_HAS_ROLE:
+      {
+        std::string strRole = m_stringParameters[info.GetData1()];
+        // Find value for role if already stored
+        int artistcount = -1;
+        for (const auto &role : m_libraryRoleCounts)
+        {
+          if (StringUtils::EqualsNoCase(strRole, role.first))
+          {
+            artistcount = role.second;
+            break;
+          }
+        }
+        // Otherwise get from DB and store
+        if (artistcount < 0)
+        {
+          CMusicDatabase db;
+          if (db.Open())
+          {
+            artistcount = db.GetArtistCountForRole(strRole);
+            db.Close();
+            m_libraryRoleCounts.push_back(std::make_pair(strRole, artistcount));
+          }
+        }
+        bReturn = artistcount > 0;
+      }
     }
   }
   return (info.m_info < 0) ? !bReturn : bReturn;
@@ -3658,7 +3838,7 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
   {
     std::string thumb = CProfilesManager::GetInstance().GetCurrentProfile().getThumb();
     if (thumb.empty())
-      thumb = "unknown-user.png";
+      thumb = "DefaultUser.png";
     return thumb;
   }
   else if (info == MUSICPLAYER_COVER)
@@ -3667,16 +3847,6 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
     if (fallback)
       *fallback = "DefaultAlbumCover.png";
     return m_currentFile->HasArt("thumb") ? m_currentFile->GetArt("thumb") : "DefaultAlbumCover.png";
-  }
-  else if (info == MUSICPLAYER_RATING)
-  {
-    if (!g_application.m_pPlayer->IsPlayingAudio()) return "";
-    return GetItemImage(m_currentFile, LISTITEM_RATING);
-  }
-  else if (info == PLAYER_STAR_RATING)
-  {
-    if (!g_application.m_pPlayer->IsPlaying()) return "";
-    return GetItemImage(m_currentFile, LISTITEM_STAR_RATING);
   }
   else if (info == VIDEOPLAYER_COVER)
   {
@@ -3688,7 +3858,7 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
     else return m_currentMovieThumb;
   }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
-          info == LISTITEM_OVERLAY || info == LISTITEM_RATING || info == LISTITEM_STAR_RATING)
+          info == LISTITEM_OVERLAY)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
     if (window)
@@ -4123,6 +4293,7 @@ std::string CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
 {
   if (!item->HasMusicInfoTag()) return "";
   const CMusicInfoTag &tag = *item->GetMusicInfoTag();
+
   switch (info)
   {
   case MUSICPLAYER_TITLE:
@@ -4132,10 +4303,10 @@ std::string CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
     if (tag.GetAlbum().size()) { return tag.GetAlbum(); }
     break;
   case MUSICPLAYER_ARTIST:
-    if (tag.GetArtist().size()) { return tag.GetArtistString(); }
+    if (tag.GetArtistString().size()) { return tag.GetArtistString(); }
     break;
   case MUSICPLAYER_ALBUM_ARTIST:
-    if (tag.GetAlbumArtist().size()) { return tag.GetAlbumArtistString(); }
+    if (tag.GetAlbumArtistString().size()) { return tag.GetAlbumArtistString(); }
     break;
   case MUSICPLAYER_YEAR:
     if (tag.GetYear()) { return tag.GetYearString(); }
@@ -4159,8 +4330,32 @@ std::string CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
     return GetItemLabel(item, LISTITEM_DISC_NUMBER);
   case MUSICPLAYER_RATING:
     return GetItemLabel(item, LISTITEM_RATING);
+  case MUSICPLAYER_RATING_AND_VOTES:
+  {
+    std::string strRatingAndVotes;
+    if (m_currentFile->GetMusicInfoTag()->GetRating() > 0.f)
+    {
+      if (m_currentFile->GetMusicInfoTag()->GetRating() > 0)
+        strRatingAndVotes = StringUtils::Format("%.1f",
+          m_currentFile->GetMusicInfoTag()->GetRating());
+      else
+        strRatingAndVotes = StringUtils::Format(g_localizeStrings.Get(20350).c_str(),
+          m_currentFile->GetMusicInfoTag()->GetRating(),
+          m_currentFile->GetMusicInfoTag()->GetVotes());
+    }
+    return strRatingAndVotes;
+  }
+  break;
+  case MUSICPLAYER_USER_RATING:
+    return GetItemLabel(item, LISTITEM_USER_RATING);
   case MUSICPLAYER_COMMENT:
     return GetItemLabel(item, LISTITEM_COMMENT);
+  case MUSICPLAYER_MOOD:
+    return GetItemLabel(item, LISTITEM_MOOD);
+  case MUSICPLAYER_CONTRIBUTORS:
+    return GetItemLabel(item, LISTITEM_CONTRIBUTORS);
+  case MUSICPLAYER_CONTRIBUTOR_AND_ROLE:
+    return GetItemLabel(item, LISTITEM_CONTRIBUTOR_AND_ROLE);
   case MUSICPLAYER_DURATION:
     return GetItemLabel(item, LISTITEM_DURATION);
   case MUSICPLAYER_CHANNEL_NAME:
@@ -4369,24 +4564,25 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_RATING:
       {
         std::string strRating;
-        if (m_currentFile->GetVideoInfoTag()->m_fRating > 0.f)
-          strRating = StringUtils::Format("%.1f", m_currentFile->GetVideoInfoTag()->m_fRating);
+        float rating = m_currentFile->GetVideoInfoTag()->GetRating().rating;
+        if (rating > 0.f)
+          strRating = StringUtils::Format("%.1f", rating);
         return strRating;
       }
       break;
     case VIDEOPLAYER_RATING_AND_VOTES:
       {
         std::string strRatingAndVotes;
-        if (m_currentFile->GetVideoInfoTag()->m_fRating > 0.f)
+        CRating rating = m_currentFile->GetVideoInfoTag()->GetRating();
+        if (rating.rating > 0.f)
         {
-          if (m_currentFile->GetVideoInfoTag()->m_strVotes.empty())
+          if (rating.votes == 0)
             strRatingAndVotes = StringUtils::Format("%.1f",
-                                                    m_currentFile->GetVideoInfoTag()->m_fRating);
+                                                    rating.rating);
           else
-            strRatingAndVotes = StringUtils::Format("%.1f (%s %s)",
-                                                    m_currentFile->GetVideoInfoTag()->m_fRating,
-                                                    m_currentFile->GetVideoInfoTag()->m_strVotes.c_str(),
-                                                    g_localizeStrings.Get(20350).c_str());
+            strRatingAndVotes = StringUtils::Format(g_localizeStrings.Get(20350).c_str(),
+                                                    rating.rating,
+                                                    rating.votes);
         }
         return strRatingAndVotes;
       }
@@ -4399,7 +4595,8 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
       return strUserRating;
     }
     case VIDEOPLAYER_VOTES:
-      return m_currentFile->GetVideoInfoTag()->m_strVotes;
+      return StringUtils::Format("%i",
+        m_currentFile->GetVideoInfoTag()->GetRating().votes);
     case VIDEOPLAYER_YEAR:
       {
         std::string strYear;
@@ -4548,7 +4745,7 @@ int CGUIInfoManager::GetPlayTimeRemaining() const
 
 float CGUIInfoManager::GetSeekPercent() const
 {
-  if (g_infoManager.GetTotalPlayTime() == 0)
+  if (GetTotalPlayTime() == 0)
     return 0.0f;
 
   float percentPlayTime = static_cast<float>(GetPlayTime()) / GetTotalPlayTime() * 0.1f;
@@ -4580,22 +4777,28 @@ void CGUIInfoManager::ResetCurrentItem()
   m_currentMovieDuration = "";
 }
 
-void CGUIInfoManager::SetCurrentItem(CFileItem &item)
+void CGUIInfoManager::SetCurrentItem(const CFileItemPtr item)
+{
+  CSetCurrentItemJob *job = new CSetCurrentItemJob(item);
+  CJobManager::GetInstance().AddJob(job, NULL);
+}
+
+void CGUIInfoManager::SetCurrentItemJob(const CFileItemPtr item)
 {
   ResetCurrentItem();
 
-  if (item.IsAudio())
-    SetCurrentSong(item);
+  if (item->IsAudio())
+    SetCurrentSong(*item);
   else
-    SetCurrentMovie(item);
+    SetCurrentMovie(*item);
 
-  if (item.HasPVRRadioRDSInfoTag())
-    m_currentFile->SetPVRRadioRDSInfoTag(item.GetPVRRadioRDSInfoTag());
-  if (item.HasEPGInfoTag())
-    m_currentFile->SetEPGInfoTag(item.GetEPGInfoTag());
-  else if (item.HasPVRChannelInfoTag())
+  if (item->HasPVRRadioRDSInfoTag())
+    m_currentFile->SetPVRRadioRDSInfoTag(item->GetPVRRadioRDSInfoTag());
+  if (item->HasEPGInfoTag())
+    m_currentFile->SetEPGInfoTag(item->GetEPGInfoTag());
+  else if (item->HasPVRChannelInfoTag())
   {
-    CEpgInfoTagPtr tag(item.GetPVRChannelInfoTag()->GetEPGNow());
+    CEpgInfoTagPtr tag(item->GetPVRChannelInfoTag()->GetEPGNow());
     if (tag)
       m_currentFile->SetEPGInfoTag(tag);
   }
@@ -4837,7 +5040,7 @@ void CGUIInfoManager::UpdateAVInfo()
       SPlayerVideoStreamInfo video;
       SPlayerAudioStreamInfo audio;
 
-      g_application.m_pPlayer->GetVideoStreamInfo(video);
+      g_application.m_pPlayer->GetVideoStreamInfo(CURRENT_STREAM, video);
       g_application.m_pPlayer->GetAudioStreamInfo(CURRENT_STREAM, audio);
 
       m_videoInfo = video;
@@ -4963,9 +5166,41 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     return item->GetArt(art);
   }
 
+  if (info >= LISTITEM_PROPERTY_START + LISTITEM_RATING_OFFSET && info - (LISTITEM_PROPERTY_START + LISTITEM_RATING_OFFSET) < (int)m_listitemProperties.size())
+  { // grab the rating
+    std::string rating = m_listitemProperties[info - (LISTITEM_PROPERTY_START + LISTITEM_RATING_OFFSET)];
+    return StringUtils::Format("%.1f", item->GetVideoInfoTag()->GetRating(rating).rating);
+  }
+
+  if (info >= LISTITEM_PROPERTY_START + LISTITEM_VOTES_OFFSET && info - (LISTITEM_PROPERTY_START + LISTITEM_VOTES_OFFSET) < (int)m_listitemProperties.size())
+  { // grab the votes
+    std::string votes = m_listitemProperties[info - (LISTITEM_PROPERTY_START + LISTITEM_VOTES_OFFSET)];
+    return StringUtils::Format("%i", item->GetVideoInfoTag()->GetRating(votes).votes);
+  }
+
+  if (info >= LISTITEM_PROPERTY_START + LISTITEM_RATING_AND_VOTES_OFFSET && info - (LISTITEM_PROPERTY_START + LISTITEM_RATING_AND_VOTES_OFFSET) < (int)m_listitemProperties.size())
+  { // grab the rating and the votes
+    std::string ratingName = m_listitemProperties[info - (LISTITEM_PROPERTY_START + LISTITEM_RATING_AND_VOTES_OFFSET)];
+    CRating rating = item->GetVideoInfoTag()->GetRating(ratingName);
+
+    if (rating.rating <= 0.f)
+      return "";
+    
+    if (rating.votes == 0)
+      return StringUtils::Format("%.1f", rating.rating);
+    else
+      return StringUtils::Format(g_localizeStrings.Get(20350).c_str(), rating.rating, rating.votes);
+  }
+
   if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
-  { // grab the property
+  { 
     std::string property = m_listitemProperties[info - LISTITEM_PROPERTY_START];
+    if (StringUtils::StartsWithNoCase(property, "Role.") && item->HasMusicInfoTag())
+    { // "Role.xxxx" properties are held in music tag
+      property.erase(0, 5); //Remove Role.
+      return item->GetMusicInfoTag()->GetArtistStringForRole(property);
+    }
+    // grab the property
     return item->GetProperty(property).asString();
   }
 
@@ -5070,6 +5305,14 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_ALBUM_ARTIST:
     if (item->HasMusicInfoTag())
       return item->GetMusicInfoTag()->GetAlbumArtistString();
+    break;
+  case LISTITEM_CONTRIBUTORS:
+    if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->HasContributors())
+      return item->GetMusicInfoTag()->GetContributorsText();
+    break;
+  case LISTITEM_CONTRIBUTOR_AND_ROLE:
+    if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->HasContributors())
+      return item->GetMusicInfoTag()->GetContributorsAndRolesText();
     break;
   case LISTITEM_DIRECTOR:
     if (item->HasPVRChannelInfoTag())
@@ -5196,27 +5439,41 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_RATING:
     {
       std::string rating;
-      if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
-        rating = StringUtils::Format("%.1f", item->GetVideoInfoTag()->m_fRating);
-      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > '0')
-      { // song rating.  Images will probably be better than numbers for this in the long run
-        rating.assign(1, item->GetMusicInfoTag()->GetRating());
-      }
+      float r = 0.f;
+      if (item->HasVideoInfoTag()) // movie rating
+        r = item->GetVideoInfoTag()->GetRating().rating;
+      if (r > 0.f)
+        rating = StringUtils::Format("%.1f", r);
+      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > 0.f) // song rating
+        rating = StringUtils::Format("%.1f", item->GetMusicInfoTag()->GetRating());
       return rating;
     }
   case LISTITEM_RATING_AND_VOTES:
-    {
-      if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
+  {
+      CRating r(0.f, 0);
+      if (item->HasVideoInfoTag()) // video rating & votes
+        r = item->GetVideoInfoTag()->GetRating();
+      if (r.rating > 0.f)
       {
         std::string strRatingAndVotes;
-        if (item->GetVideoInfoTag()->m_strVotes.empty())
+        if (r.votes == 0)
           strRatingAndVotes = StringUtils::Format("%.1f",
-                                                  item->GetVideoInfoTag()->m_fRating);
+                                                  r.rating);
         else
-          strRatingAndVotes = StringUtils::Format("%.1f (%s %s)",
-                                                  item->GetVideoInfoTag()->m_fRating,
-                                                  item->GetVideoInfoTag()->m_strVotes.c_str(),
-                                                  g_localizeStrings.Get(20350).c_str());
+          strRatingAndVotes = StringUtils::Format(g_localizeStrings.Get(20350).c_str(),
+                                                  r.rating,
+                                                  r.votes);
+        return strRatingAndVotes;
+      }
+      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > 0.f) // music rating & votes
+      {
+        std::string strRatingAndVotes;
+        if (item->GetMusicInfoTag()->GetVotes() <= 0)
+          strRatingAndVotes = StringUtils::Format("%.1f", item->GetMusicInfoTag()->GetRating());
+        else
+          strRatingAndVotes = StringUtils::Format(g_localizeStrings.Get(20350).c_str(),
+            item->GetMusicInfoTag()->GetRating(),
+            item->GetMusicInfoTag()->GetVotes());
         return strRatingAndVotes;
       }
     }
@@ -5224,14 +5481,19 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_USER_RATING:
     {
       std::string strUserRating;
-      if (item->GetVideoInfoTag()->m_iUserRating > 0)
+      if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iUserRating > 0)
         strUserRating = StringUtils::Format("%i", item->GetVideoInfoTag()->m_iUserRating);
+      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetUserrating() > 0)
+        strUserRating = StringUtils::Format("%i", item->GetMusicInfoTag()->GetUserrating());
       return strUserRating;
     }
     break;
   case LISTITEM_VOTES:
     if (item->HasVideoInfoTag())
-      return item->GetVideoInfoTag()->m_strVotes;
+      return StringUtils::Format("%i",
+                                 item->GetVideoInfoTag()->GetRating().votes);
+    else if (item->HasMusicInfoTag())
+      return StringUtils::Format("%i", item->GetMusicInfoTag()->GetVotes());
     break;
   case LISTITEM_PROGRAM_COUNT:
     {
@@ -5394,6 +5656,10 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (item->HasMusicInfoTag())
       return item->GetMusicInfoTag()->GetComment();
     break;
+  case LISTITEM_MOOD:
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetMood();
+    break;
   case LISTITEM_ACTUAL_ICON:
     return item->GetIconImage();
   case LISTITEM_ICON:
@@ -5502,6 +5768,22 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       StringUtils::ToUpper(character);
       g_charsetConverter.wToUTF8(character, letter);
       return letter;
+    }
+    break;
+  case LISTITEM_TAG:
+    if (item->HasVideoInfoTag())
+      return StringUtils::Join(item->GetVideoInfoTag()->m_tags, g_advancedSettings.m_videoItemSeparator);
+    break;
+  case LISTITEM_SET:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strSet;
+    break;
+  case LISTITEM_SETID:
+    if (item->HasVideoInfoTag())
+    {
+      int iSetId = item->GetVideoInfoTag()->m_iSetId;
+      if (iSetId > 0)
+        return StringUtils::Format("%d", iSetId);
     }
     break;
   case LISTITEM_VIDEO_CODEC:
@@ -5744,6 +6026,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_DBTYPE:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_type;
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetType();
     break;
   case LISTITEM_DBID:
     if (item->HasVideoInfoTag())
@@ -5798,7 +6082,56 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         return item->GetPVRTimerInfoTag()->GetTypeAsString();
     }
     break;
+  case LISTITEM_ADDON_NAME:
+    if (item->HasAddonInfo())
+      return item->GetAddonInfo()->Name();
+    break;
+  case LISTITEM_ADDON_VERSION:
+    if (item->HasAddonInfo())
+      return item->GetAddonInfo()->Version().asString();
+    break;
+  case LISTITEM_ADDON_CREATOR:
+    if (item->HasAddonInfo())
+      return item->GetAddonInfo()->Author();
+    break;
+  case LISTITEM_ADDON_SUMMARY:
+    if (item->HasAddonInfo())
+      return item->GetAddonInfo()->Summary();
+    break;
+  case LISTITEM_ADDON_DESCRIPTION:
+    if (item->HasAddonInfo())
+      return item->GetAddonInfo()->Description();
+    break;
+  case LISTITEM_ADDON_DISCLAIMER:
+    if (item->HasAddonInfo())
+      return item->GetAddonInfo()->Disclaimer();
+    break;
+  case LISTITEM_ADDON_BROKEN:
+    if (item->HasAddonInfo())
+    {
+      if (item->GetAddonInfo()->Broken() == "DEPSNOTMET")
+        return g_localizeStrings.Get(24044);
+      return item->GetAddonInfo()->Broken();
+    }
+    break;
+  case LISTITEM_ADDON_TYPE:
+    if (item->HasAddonInfo())
+      return ADDON::TranslateType(item->GetAddonInfo()->Type(),true);
+    break;
+  case LISTITEM_ADDON_INSTALL_DATE:
+    if (item->HasAddonInfo())
+      return item->GetAddonInfo()->InstallDate().GetAsLocalizedDateTime();
+    break;
+  case LISTITEM_ADDON_LAST_UPDATED:
+    if (item->HasAddonInfo() && item->GetAddonInfo()->LastUpdated().IsValid())
+      return item->GetAddonInfo()->LastUpdated().GetAsLocalizedDateTime();
+    break;
+  case LISTITEM_ADDON_LAST_USED:
+    if (item->HasAddonInfo() && item->GetAddonInfo()->LastUsed().IsValid())
+      return item->GetAddonInfo()->LastUsed().GetAsLocalizedDateTime();
+    break;
   }
+
   return "";
 }
 
@@ -5806,32 +6139,6 @@ std::string CGUIInfoManager::GetItemImage(const CFileItem *item, int info, std::
 {
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
     return GetSkinVariableString(info, true, item);
-
-  switch (info)
-  {
-  case LISTITEM_RATING:  // old song rating format
-    {
-      if (item->HasMusicInfoTag())
-      {
-        return StringUtils::Format("songrating%c.png", item->GetMusicInfoTag()->GetRating());
-      }
-    }
-    break;
-  case LISTITEM_STAR_RATING:
-    {
-      std::string rating;
-      if (item->HasVideoInfoTag())
-      { // rating for videos is assumed 0..10, so convert to 0..5
-        rating = StringUtils::Format("rating%ld.png", (long)((item->GetVideoInfoTag()->m_fRating * 0.5f) + 0.5f));
-      }
-      else if (item->HasMusicInfoTag())
-      { // song rating.
-        rating = StringUtils::Format("rating%c.png", item->GetMusicInfoTag()->GetRating());
-      }
-      return rating;
-    }
-    break;
-  }  /* switch (info) */
 
   return GetItemLabel(item, info, fallback);
 }
@@ -5862,6 +6169,14 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     return item->IsSelected();
   else if (condition == LISTITEM_IS_FOLDER)
     return item->m_bIsFolder;
+  else if (condition == LISTITEM_IS_PARENTFOLDER)
+  {
+    if (item->IsFileItem())
+    {
+      const CFileItem *pItem = (const CFileItem *)item;
+      return pItem->IsParentFolder();
+    }
+  }
   else if (condition == LISTITEM_IS_RESUMABLE)
   {
     if (item->IsFileItem())
@@ -5894,9 +6209,9 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       {
         CEpgInfoTagPtr epgTag = pItem->GetEPGInfoTag();
 
-        // Check if the tag has a currently active recording associated
-        if (epgTag->HasRecording() && epgTag->IsActive())
-          return true;
+        // Check if the tag has a currently recording timer associated
+        if (epgTag->HasTimer())
+          return epgTag->Timer()->IsRecording();
 
         // Search all timers for something that matches the tag
         CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
@@ -5917,8 +6232,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       if (pItem->HasEPGInfoTag())
       {
         CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
-        if (timer && timer->HasPVRTimerInfoTag())
-          return timer->GetPVRTimerInfoTag()->IsActive();
+        return (timer && timer->HasPVRTimerInfoTag());
       }
     }
     else if (condition == LISTITEM_HASTIMERSCHEDULE)
@@ -5926,8 +6240,35 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       if (pItem->HasEPGInfoTag())
       {
         CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
-        if (timer && timer->HasPVRTimerInfoTag() && timer->GetPVRTimerInfoTag()->GetTimerScheduleId() != PVR_TIMER_NO_PARENT)
+        if (timer && timer->HasPVRTimerInfoTag())
+          return timer->GetPVRTimerInfoTag()->GetTimerRuleId() != PVR_TIMER_NO_PARENT;
+      }
+    }
+    else if (condition == LISTITEM_TIMERISACTIVE)
+    {
+      if (pItem->HasEPGInfoTag())
+      {
+        CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
+        if (timer && timer->HasPVRTimerInfoTag())
           return timer->GetPVRTimerInfoTag()->IsActive();
+      }
+    }
+    else if (condition == LISTITEM_TIMERHASCONFLICT)
+    {
+      if (pItem->HasEPGInfoTag())
+      {
+        CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
+        if (timer && timer->HasPVRTimerInfoTag())
+          return timer->GetPVRTimerInfoTag()->HasConflict();
+      }
+    }
+    else if (condition == LISTITEM_TIMERHASERROR)
+    {
+      if (pItem->HasEPGInfoTag())
+      {
+        CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
+        if (timer && timer->HasPVRTimerInfoTag())
+          return (timer->GetPVRTimerInfoTag()->IsBroken() && !timer->GetPVRTimerInfoTag()->HasConflict());
       }
     }
     else if (condition == LISTITEM_HASRECORDING)
@@ -6166,6 +6507,7 @@ void CGUIInfoManager::ResetLibraryBools()
   m_libraryHasMovieSets = -1;
   m_libraryHasSingles = -1;
   m_libraryHasCompilations = -1;
+  m_libraryRoleCounts.clear();
 }
 
 bool CGUIInfoManager::GetLibraryBool(int condition)
@@ -6313,13 +6655,6 @@ bool CGUIInfoManager::ConditionsChangedValues(const std::map<INFO::InfoPtr, bool
   return false;
 }
 
-bool CGUIInfoManager::IsPlayerOSDActive() const
-{
-  return m_playerShowInfo &&
-         (g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD) ||
-          g_windowManager.IsWindowActive(WINDOW_DIALOG_MUSIC_OSD));
-}
-
 bool CGUIInfoManager::IsPlayerChannelPreviewActive() const
 {
   return m_playerShowInfo &&
@@ -6376,13 +6711,14 @@ void CGUIInfoManager::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
     auto item = static_cast<CFileItem*>(pMsg->lpVoid);
     if (!item)
       return;
+
+    CFileItemPtr itemptr(item);
     if (pMsg->param1 == 1 && item->HasMusicInfoTag()) // only grab music tag
       SetCurrentSongTag(*item->GetMusicInfoTag());
     else if (pMsg->param1 == 2 && item->HasVideoInfoTag()) // only grab video tag
       SetCurrentVideoTag(*item->GetVideoInfoTag());
     else
-      SetCurrentItem(*item);
-    delete item;
+      SetCurrentItem(itemptr);
   }
   break;
 

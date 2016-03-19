@@ -127,6 +127,7 @@ public:
   virtual bool OnAction(const CAction &action);
   
   virtual bool OnBack(int actionID);
+  virtual bool OnInfo(int actionID) { return false; };
 
   /*! \brief Clear the background (if necessary) prior to rendering the window
    */
@@ -153,6 +154,8 @@ public:
   virtual bool IsSoundEnabled() const { return true; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return CFileItemPtr(); };
   virtual int GetViewContainerID() const { return 0; };
+  virtual int GetViewCount() const { return 0; };
+  virtual bool CanBeActivated() const { return true; };
   virtual bool IsActive() const;
   void SetCoordsRes(const RESOLUTION_INFO &res) { m_coordsRes = res; };
   const RESOLUTION_INFO &GetCoordsRes() const { return m_coordsRes; };
@@ -250,7 +253,7 @@ protected:
   int m_renderOrder;      // for render order of dialogs
 
   /*! \brief Grabs the window's top,left position in skin coordinates
-   The window origin may change based on <origin> tag conditions in the skin.
+   The window origin may change based on `<origin>` tag conditions in the skin.
 
    \return the window's origin in skin coordinates
    */

@@ -28,6 +28,7 @@
 #include <utility>
 #include <vector>
 
+#include "addons/IAddon.h"
 #include "guilib/GUIListItem.h"
 #include "GUIPassword.h"
 #include "threads/CriticalSection.h"
@@ -118,6 +119,7 @@ public:
   CFileItem(const PVR::CPVRRecordingPtr& record);
   CFileItem(const PVR::CPVRTimerInfoTagPtr& timer);
   CFileItem(const CMediaSource& share);
+  CFileItem(std::shared_ptr<const ADDON::IAddon> addonInfo);
   virtual ~CFileItem(void);
   virtual CGUIListItem *Clone() const { return new CFileItem(*this); };
 
@@ -126,7 +128,7 @@ public:
   bool IsURL(const CURL& url) const;
   const std::string &GetPath() const { return m_strPath; };
   void SetPath(const std::string &path) { m_strPath = path; };
-  bool IsPath(const std::string& path) const;
+  bool IsPath(const std::string& path, bool ignoreURLOptions = false) const;
 
   /*! \brief reset class to it's default values as per construction.
    Free's all allocated memory.
@@ -175,7 +177,6 @@ public:
    */
   bool IsAudio() const;
 
-  bool IsKaraoke() const;
   bool IsCUESheet() const;
   bool IsInternetStream(const bool bStrictCheck = false) const;
   bool IsPlayList() const;
@@ -348,6 +349,9 @@ public:
     return m_pictureInfoTag;
   }
 
+  bool HasAddonInfo() const { return m_addonInfo != nullptr; }
+  const std::shared_ptr<const ADDON::IAddon> GetAddonInfo() const { return m_addonInfo; }
+
   CPictureInfoTag* GetPictureInfoTag();
 
   /*!
@@ -467,6 +471,13 @@ public:
    \param video video details to use and set
    */
   void SetFromVideoInfoTag(const CVideoInfoTag &video);
+
+  /*! \brief Sets details using the information from the CMusicInfoTag object
+  Sets the musicinfotag and uses its information to set the label and path.
+  \param music music details to use and set
+  */
+  void SetFromMusicInfoTag(const MUSIC_INFO::CMusicInfoTag &music);
+
   /*! \brief Sets details using the information from the CAlbum object
    Sets the album in the music info tag and uses its information to set the
    label and album-specific properties.
@@ -524,6 +535,7 @@ private:
   PVR::CPVRTimerInfoTagPtr m_pvrTimerInfoTag;
   PVR::CPVRRadioRDSInfoTagPtr m_pvrRadioRDSInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
+  std::shared_ptr<const ADDON::IAddon> m_addonInfo;
   bool m_bIsAlbum;
 
   CCueDocumentPtr m_cueDocument;
@@ -619,6 +631,7 @@ public:
   int GetObjectCount() const;
   void FilterCueItems();
   void RemoveExtensions();
+  void SetIgnoreURLOptions(bool ignoreURLOptions);
   void SetFastLookup(bool fastLookup);
   bool Contains(const std::string& fileName) const;
   bool GetFastLookup() const { return m_fastLookup; };
@@ -716,6 +729,7 @@ private:
 
   VECFILEITEMS m_items;
   MAPFILEITEMS m_map;
+  bool m_ignoreURLOptions;
   bool m_fastLookup;
   SortDescription m_sortDescription;
   bool m_sortIgnoreFolders;

@@ -40,6 +40,10 @@ namespace XBMCAddon
       virtual ~InfoTagVideo();
 
       /**
+       * getDbId() - returns an integer.
+       */
+      int getDbId();
+      /**
        * getDirector() - returns a string.
        */
       String getDirector();
@@ -72,6 +76,14 @@ namespace XBMCAddon
        */
       String getTitle();
       /**
+       * getTVShowTitle() - returns a string.
+       */
+      String getTVShowTitle();
+      /**
+       * getMediaType() - returns a string.
+       */
+      String getMediaType();
+      /**
        * getVotes() - returns a string.
        */
       String getVotes();
@@ -91,6 +103,14 @@ namespace XBMCAddon
        * getIMDBNumber() - returns a string.
        */
       String getIMDBNumber();
+      /**
+       * getSeason() - returns an integer.
+       */
+      int getSeason();
+      /**
+       * getEpisode() - returns an integer.
+       */
+      int getEpisode();
       /**
        * getYear() - returns an integer.
        */

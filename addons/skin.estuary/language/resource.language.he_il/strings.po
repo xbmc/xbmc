@@ -1,0 +1,125 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Hebrew (Israel) (http://www.transifex.com/projects/p/kodi-main/language/he_IL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: he_IL\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "מנגן כעת"
+
+msgctxt "#31001"
+msgid "Search"
+msgstr "חיפוש"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "שינוי מצב"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "צפייה כ־2D"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "תחזית"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "פעולות"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "אפשרויות שונות"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "חובר לאחרונה"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "הרצה אחורה"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "הרצה קדימה"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "אפשרויות רשימת ניגון"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "הוספת קבוצה"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "שינוי שם קבוצה"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "מחיקת קבוצה"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "מבוסס Arial"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "עודכן לאחרונה"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "אפשרויות חשמל"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "פרטי אלבום"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "הרחבת מילות שירים"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "קבוצת ערוצים"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "הגדרות סריקת תוכן"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "קבוצות זמינות"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "הורדת כתוביות"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "כתובית מקומית זמינה"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "אפשרויות ערוץ"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "יש לבחור חשבון משתמש Kodi[CR]להתחברות והמשך"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"

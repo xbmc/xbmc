@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="panel" id="9000">
+			<left>92</left>
+			<top>140</top>
+			<width>1850</width>
+			<height>819</height>
+			<onleft>9000</onleft>
+			<onright>9000</onright>
+			<onup>9000</onup>
+			<ondown>9000</ondown>
+			<include>OpenClose_Right</include>
+			<itemlayout height="270" width="440">
+				<control type="image">
+					<width>400</width>
+					<height>250</height>
+					<texture border="40">buttons/button-nofo.png</texture>
+				</control>
+				<control type="image">
+					<left>19</left>
+					<top>179</top>
+					<width>359</width>
+					<height>50</height>
+					<texture colordiffuse="border_alpha">colors/black.png</texture>
+				</control>
+				<control type="image">
+					<left>80</left>
+					<top>10</top>
+					<width>240</width>
+					<height>240</height>
+					<texture>$INFO[ListItem.Icon]</texture>
+					<align>center</align>
+				</control>
+				<control type="label">
+					<left>0</left>
+					<top>185</top>
+					<width>400</width>
+					<height>400</height>
+					<font>font12</font>
+					<label>$INFO[ListItem.Label]</label>
+					<align>center</align>
+				</control>
+			</itemlayout>
+			<focusedlayout height="270" width="440">
+				<control type="group">
+					<depth>DepthContentPopout</depth>
+					<animation type="Focus" reversible="false">
+						<effect type="zoom" center="auto" start="100" end="108" time="250" tween="sine" />
+					</animation>
+					<animation type="UnFocus" reversible="false">
+						<effect type="zoom" center="auto" start="108" end="100" time="250" tween="sine" />
+					</animation>
+					<control type="image">
+						<width>400</width>
+						<height>250</height>
+						<texture border="40">buttons/button-nofo.png</texture>
+					</control>
+					<control type="image">
+						<width>400</width>
+						<height>250</height>
+						<texture border="40">buttons/button-theme-fo.png</texture>
+						<animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+					</control>
+					<control type="image">
+						<left>19</left>
+						<top>179</top>
+						<width>359</width>
+						<height>50</height>
+						<texture colordiffuse="border_alpha">colors/black.png</texture>
+					</control>
+					<control type="image">
+						<left>80</left>
+						<top>10</top>
+						<width>240</width>
+						<height>240</height>
+						<texture>$INFO[ListItem.Icon]</texture>
+						<align>center</align>
+					</control>
+					<control type="label">
+						<left>0</left>
+						<top>185</top>
+						<width>400</width>
+						<height>400</height>
+						<font>font12</font>
+						<label>$INFO[ListItem.Label]</label>
+						<align>center</align>
+					</control>
+				</control>
+			</focusedlayout>
+			<content>
+				<item>
+					<label>$LOCALIZE[20094]</label>
+					<onclick>ActivateWindow(1103)</onclick>
+					<icon>icons/settings/filemanager.png</icon>
+				</item>
+				<item>
+					<label>$LOCALIZE[480]</label>
+					<onclick>ActivateWindow(AppearanceSettings)</onclick>
+					<icon>icons/settings/appearance.png</icon>
+				</item>^
+				<item>
+					<label>$LOCALIZE[157]</label>
+					<onclick>ActivateWindow(VideosSettings)</onclick>
+					<icon>icons/settings/video.png</icon>
+				</item>
+				<item>
+					<label>$LOCALIZE[2]</label>
+					<onclick>ActivateWindow(MusicSettings)</onclick>
+					<icon>icons/settings/music.png</icon>
+				</item>
+				<item>
+					<label>$LOCALIZE[1]</label>
+					<onclick>ActivateWindow(PicturesSettings)</onclick>
+					<icon>icons/settings/pictures.png</icon>
+				</item>
+				<item>
+					<label>$LOCALIZE[8]</label>
+					<onclick>ActivateWindow(WeatherSettings)</onclick>
+					<icon>icons/settings/weather.png</icon>
+				</item>
+				<item>
+					<label>$LOCALIZE[14036]</label>
+					<onclick>ActivateWindow(ServiceSettings)</onclick>
+					<icon>icons/settings/network.png</icon>
+				</item>
+				<item>
+					<label>$LOCALIZE[13000]</label>
+					<onclick>ActivateWindow(SystemSettings)</onclick>
+					<icon>icons/settings/system.png</icon>
+				</item>
+				<item>
+					<label>$LOCALIZE[19020]</label>
+					<onclick>ActivateWindow(PVRSettings)</onclick>
+					<icon>icons/settings/livetv.png</icon>
+				</item>
+				<item>
+					<label>$LOCALIZE[13200]</label>
+					<onclick>ActivateWindow(Profiles)</onclick>
+					<icon>icons/settings/profiles.png</icon>
+				</item>
+				<item>
+					<label>$LOCALIZE[138]</label>
+					<onclick>ActivateWindow(systeminfo)</onclick>
+					<icon>icons/settings/sysinfo.png</icon>
+				</item>
+				<item>
+					<label>$LOCALIZE[20077]</label>
+					<onclick>ActivateWindow(SkinSettings)</onclick>
+					<icon>icons/settings/skin.png</icon>
+				</item>
+			</content>
+		</control>
+		<include name="TopBar">
+			<param name="breadcrumbs_label" value="$LOCALIZE[5]" />
+			<param name="breadcrumbs_icon" value="icons/settings/settings.png" />
+		</include>
+		<include>BottomBar</include>
+	</controls>
+</window>

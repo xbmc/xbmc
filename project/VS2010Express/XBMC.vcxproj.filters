@@ -7,31 +7,31 @@
     <Filter Include="cores">
       <UniqueIdentifier>{d9048f15-4226-45a0-bd7d-c4f326b8c232}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cores\dvdplayer">
+    <Filter Include="cores\VideoPlayer">
       <UniqueIdentifier>{b7e0c19a-163b-43a8-bc50-47f0f220c225}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cores\dvdplayer\DVDCodecs">
+    <Filter Include="cores\VideoPlayer\DVDCodecs">
       <UniqueIdentifier>{f72e399a-b2f5-4f77-a680-797306b37afe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cores\dvdplayer\DVDCodecs\Audio">
+    <Filter Include="cores\VideoPlayer\DVDCodecs\Audio">
       <UniqueIdentifier>{5bee29f5-b152-4416-9413-0bed2a669575}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cores\dvdplayer\DVDCodecs\Video">
+    <Filter Include="cores\VideoPlayer\DVDCodecs\Video">
       <UniqueIdentifier>{09e9057e-7017-4f3d-b5d3-2f5e9a23a53c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cores\dvdplayer\DVDCodecs\Overlay">
+    <Filter Include="cores\VideoPlayer\DVDCodecs\Overlay">
       <UniqueIdentifier>{cc80e830-cd3b-4790-9d73-b727b997efdc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cores\dvdplayer\DVDDemuxers">
+    <Filter Include="cores\VideoPlayer\DVDDemuxers">
       <UniqueIdentifier>{59ff29b6-c2b5-4ed8-a80c-e5dd130802a7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cores\dvdplayer\DVDInputStreams">
+    <Filter Include="cores\VideoPlayer\DVDInputStreams">
       <UniqueIdentifier>{15bea9e8-7473-4e72-93b1-c403d491160d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cores\dvdplayer\DVDHeaders">
+    <Filter Include="cores\VideoPlayer\DVDHeaders">
       <UniqueIdentifier>{9b9c3d13-56db-4db5-98a3-4402ee3b4ff9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cores\dvdplayer\DVDSubtitles">
+    <Filter Include="cores\VideoPlayer\DVDSubtitles">
       <UniqueIdentifier>{83ae8e22-c3a0-45c6-bbc2-29d0bb180e2d}</UniqueIdentifier>
     </Filter>
     <Filter Include="cores\paplayer">
@@ -45,12 +45,6 @@
     </Filter>
     <Filter Include="cores\DllLoader\exports\util">
       <UniqueIdentifier>{111c81df-dc5e-4b93-a21f-c2171434952b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="cores\VideoRenderers">
-      <UniqueIdentifier>{09e513b1-adc6-4af0-b0f3-966b8240fad5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="cores\VideoRenderers\Shaders">
-      <UniqueIdentifier>{041be182-9ec3-4c1b-abfc-d92f6802e7ca}</UniqueIdentifier>
     </Filter>
     <Filter Include="cores\ExternalPlayer">
       <UniqueIdentifier>{f98cb00a-d64b-4af9-a386-78bb2be8213d}</UniqueIdentifier>
@@ -91,6 +85,15 @@
     <Filter Include="playlists">
       <UniqueIdentifier>{084b5eb0-c9c9-444b-a2ee-dcb4f9537d35}</UniqueIdentifier>
     </Filter>
+    <Filter Include="platform">
+      <UniqueIdentifier>{90dd91e6-b726-4f88-803a-84156a663713}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platform\posix">
+      <UniqueIdentifier>{4af60343-ab33-42c9-8752-b7898e9b5b86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platform\win32">
+      <UniqueIdentifier>{9312ce72-49ff-422a-8e3a-05c0a2a534d5}</UniqueIdentifier>
+    </Filter>
     <Filter Include="powermanagement">
       <UniqueIdentifier>{b203de13-ce8c-4b43-9a87-a05e68fbad13}</UniqueIdentifier>
     </Filter>
@@ -111,9 +114,6 @@
     </Filter>
     <Filter Include="windowing">
       <UniqueIdentifier>{dbf79aa0-53a6-4bec-855b-e8d2cbb73689}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="music\karaoke">
-      <UniqueIdentifier>{9d2be696-b6dd-4be1-aa8c-260816b48c12}</UniqueIdentifier>
     </Filter>
     <Filter Include="cdrip">
       <UniqueIdentifier>{d0d6c121-8cef-4bf9-aba5-bff57ae46e26}</UniqueIdentifier>
@@ -316,7 +316,7 @@
     <Filter Include="video\videosync">
       <UniqueIdentifier>{9775d5c0-c640-4606-a625-e6cdcf9f959e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cores\dvdplayer\DVDCodecs\Overlay\contrib">
+    <Filter Include="cores\VideoPlayer\DVDCodecs\Overlay\contrib">
       <UniqueIdentifier>{43526341-7b96-462d-9f71-685e426251ec}</UniqueIdentifier>
     </Filter>
     <Filter Include="cores\AudioEngine\DSPAddons">
@@ -349,12 +349,6 @@
     <Filter Include="network\dacp">
       <UniqueIdentifier>{33ec4ead-1923-47c2-8a7f-44561adaebf3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="main">
-      <UniqueIdentifier>{e8f91abe-5d75-4a38-b576-8d971f5fa64b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="main\win32">
-      <UniqueIdentifier>{b2cf6073-0796-485b-a2f8-0b54851262b3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="messaging">
       <UniqueIdentifier>{378b3a72-20d2-4482-8dbb-91f041290ceb}</UniqueIdentifier>
     </Filter>
@@ -370,6 +364,90 @@
     <Filter Include="interfaces\builtins">
       <UniqueIdentifier>{248ffbc4-43f5-4aaf-b259-2dd4f840fcef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="cores\VideoPlayer\VideoRenderers">
+      <UniqueIdentifier>{218ad38b-7c2e-45f4-a7cc-c337e0365386}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\VideoPlayer\VideoRenderers\HwDecRender">
+      <UniqueIdentifier>{6571cd13-5b1a-4bbb-bd72-80f4b4432818}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\VideoPlayer\VideoRenderers\VideoShaders">
+      <UniqueIdentifier>{0dde0eba-c702-41fb-92a8-38cc21839a62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="music\tags\test">
+      <UniqueIdentifier>{085f7e1a-1fab-41f8-a742-03239f7d1f98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\threads">
+      <UniqueIdentifier>{d22fd9e3-f07f-44fa-8482-35654aee48c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="video\test">
+      <UniqueIdentifier>{8902f553-16a5-4b95-802c-c0345ac69f15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\test">
+      <UniqueIdentifier>{a1795e15-75aa-4cfe-b5a3-4dab057dfe0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\Process">
+      <UniqueIdentifier>{45ab3e06-b8d3-44f5-994e-d6130258c99c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include">
+      <UniqueIdentifier>{353ba04b-a59a-4fb3-90d0-630277d5305b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary">
+      <UniqueIdentifier>{7e9ec20b-4be7-4724-84d1-4db46fd59066}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces">
+      <UniqueIdentifier>{a697a64f-fd0e-47b8-b5cd-b97c3682aafd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1">
+      <UniqueIdentifier>{766a713d-c6fe-4200-a040-749023a13831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\Addon">
+      <UniqueIdentifier>{58b266a7-3b69-420e-a453-096606ba7025}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\AudioDSP">
+      <UniqueIdentifier>{5e8ea5bd-7ae5-4c79-8799-6b0b2e467641}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\AudioEngine">
+      <UniqueIdentifier>{46f9b975-d582-439f-9f92-0ec9cccdaafd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\Codec">
+      <UniqueIdentifier>{abafaa85-cfd4-477a-9b99-4b2d4f91ed35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\GUI">
+      <UniqueIdentifier>{300ee331-e0b8-4028-a2d3-7ddffdefa1d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\InputStream">
+      <UniqueIdentifier>{b13a0591-86af-4316-9f4e-d41efcf87de5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\PVR">
+      <UniqueIdentifier>{c3708f40-3139-4ee9-b8f6-c6bcc22bb1c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="input\joysticks">
+      <UniqueIdentifier>{5d8049b8-4689-4ff0-bf4f-1f0a308e5b44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="input\joysticks\generic">
+      <UniqueIdentifier>{80a8356f-f3be-46b5-be2e-714a42764ee1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="peripherals\addons">
+      <UniqueIdentifier>{15c34cc2-9101-4038-9df4-4357d83a9d0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="peripherals\bus\virtual">
+      <UniqueIdentifier>{6b33e5ae-5edf-4c33-b87f-3ee9115eb01d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\Peripheral">
+      <UniqueIdentifier>{bc7eb8ab-3f2e-4346-8546-7243b658fa30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="games">
+      <UniqueIdentifier>{336d29fc-9a49-40a8-9295-a8d1062c540c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="games\controllers">
+      <UniqueIdentifier>{d0ae0c22-0869-416b-92c7-aa1dc14a58be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="games\controllers\guicontrols">
+      <UniqueIdentifier>{891f4e3d-e135-4ea9-8571-2b6ad3b1622d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="games\controllers\windows">
+      <UniqueIdentifier>{9e3dd585-08e1-4dae-bc21-05e49697ef94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -384,170 +462,155 @@
     <ClCompile Include="..\..\xbmc\win32\WindowHelper.cpp">
       <Filter>win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DummyVideoPlayer.cpp">
-      <Filter>cores</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDAudio.cpp">
+      <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDAudio.cpp">
-      <Filter>cores\dvdplayer</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDClock.cpp">
+      <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDClock.cpp">
-      <Filter>cores\dvdplayer</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxSPU.cpp">
+      <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxSPU.cpp">
-      <Filter>cores\dvdplayer</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxVobsub.cpp">
+      <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxVobsub.cpp">
-      <Filter>cores\dvdplayer</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDFileInfo.cpp">
+      <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDFileInfo.cpp">
-      <Filter>cores\dvdplayer</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDMessage.cpp">
+      <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDMessage.cpp">
-      <Filter>cores\dvdplayer</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDMessageQueue.cpp">
+      <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDMessageQueue.cpp">
-      <Filter>cores\dvdplayer</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDOverlayContainer.cpp">
+      <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDOverlayContainer.cpp">
-      <Filter>cores\dvdplayer</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoPlayer.cpp">
+      <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDOverlayRenderer.cpp">
-      <Filter>cores\dvdplayer</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerAudio.cpp">
+      <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayer.cpp">
-      <Filter>cores\dvdplayer</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerRadioRDS.cpp">
+      <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayerAudio.cpp">
-      <Filter>cores\dvdplayer</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerSubtitle.cpp">
+      <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayerRadioRDS.cpp">
-      <Filter>cores\dvdplayer</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerTeletext.cpp">
+      <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayerSubtitle.cpp">
-      <Filter>cores\dvdplayer</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerVideo.cpp">
+      <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayerTeletext.cpp">
-      <Filter>cores\dvdplayer</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDStreamInfo.cpp">
+      <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayerVideo.cpp">
-      <Filter>cores\dvdplayer</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDTSCorrection.cpp">
+      <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDStreamInfo.cpp">
-      <Filter>cores\dvdplayer</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\Edl.cpp">
+      <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDTSCorrection.cpp">
-      <Filter>cores\dvdplayer</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\DVDCodecUtils.cpp">
+      <Filter>cores\VideoPlayer\DVDCodecs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\Edl.cpp">
-      <Filter>cores\dvdplayer</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\DVDFactoryCodec.cpp">
+      <Filter>cores\VideoPlayer\DVDCodecs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\DVDCodecUtils.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Audio\DVDAudioCodecFFmpeg.cpp">
+      <Filter>cores\VideoPlayer\DVDCodecs\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\DVDFactoryCodec.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Video\DVDVideoCodecFFmpeg.cpp">
+      <Filter>cores\VideoPlayer\DVDCodecs\Video</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecFFmpeg.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Video\DVDVideoPPFFmpeg.cpp">
+      <Filter>cores\VideoPlayer\DVDCodecs\Video</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodecFFmpeg.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Video\DXVA.cpp">
+      <Filter>cores\VideoPlayer\DVDCodecs\Video</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodecLibMpeg2.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\DVDOverlayCodec.cpp">
+      <Filter>cores\VideoPlayer\DVDCodecs\Overlay</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoPPFFmpeg.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\DVDOverlayCodecFFmpeg.cpp">
+      <Filter>cores\VideoPlayer\DVDCodecs\Overlay</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVA.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\DVDOverlayCodecSSA.cpp">
+      <Filter>cores\VideoPlayer\DVDCodecs\Overlay</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodec.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\DVDOverlayCodecText.cpp">
+      <Filter>cores\VideoPlayer\DVDCodecs\Overlay</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecFFmpeg.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\DVDOverlayCodecTX3G.cpp">
+      <Filter>cores\VideoPlayer\DVDCodecs\Overlay</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecSSA.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemux.cpp">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecText.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxFFmpeg.cpp">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecTX3G.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxUtils.cpp">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemux.cpp">
-      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDFactoryDemuxer.cpp">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxFFmpeg.cpp">
-      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDFactoryInputStream.cpp">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxShoutcast.cpp">
-      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStream.cpp">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxUtils.cpp">
-      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamFFmpeg.cpp">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDFactoryDemuxer.cpp">
-      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamFile.cpp">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDFactoryInputStream.cpp">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamMemory.cpp">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStream.cpp">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamNavigator.cpp">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamFFmpeg.cpp">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamRTMP.cpp">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamFile.cpp">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDStateSerializer.cpp">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamHttp.cpp">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDFactorySubtitle.cpp">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMemory.cpp">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleLineCollection.cpp">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.cpp">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleParserMicroDVD.cpp">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamRTMP.cpp">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleParserMPL2.cpp">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDStateSerializer.cpp">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleParserSami.cpp">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDFactorySubtitle.cpp">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleParserSSA.cpp">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleLineCollection.cpp">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleParserSubrip.cpp">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMicroDVD.cpp">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleParserVplayer.cpp">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMPL2.cpp">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitlesLibass.cpp">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSami.cpp">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSSA.cpp">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSubrip.cpp">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserVplayer.cpp">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitlesLibass.cpp">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleStream.cpp">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleStream.cpp">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\AudioDecoder.cpp">
       <Filter>cores\paplayer</Filter>
@@ -555,7 +618,7 @@
     <ClCompile Include="..\..\xbmc\cores\paplayer\CodecFactory.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\paplayer\DVDPlayerCodec.cpp">
+    <ClCompile Include="..\..\xbmc\cores\paplayer\VideoPlayerCodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\PAPlayer.cpp">
@@ -602,36 +665,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\util\EmuFileWrapper.cpp">
       <Filter>cores\DllLoader\exports\util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\BaseRenderer.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRenderer.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererDX.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererUtil.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderFlags.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderManager.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\WinRenderer.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\DXVAHD.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\ConvolutionKernels.cpp">
-      <Filter>cores\VideoRenderers\Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\YUV2RGBShader.cpp">
-      <Filter>cores\VideoRenderers\Shaders</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.cpp">
       <Filter>cores\ExternalPlayer</Filter>
@@ -762,6 +795,9 @@
     <ClCompile Include="..\..\xbmc\addons\ContextMenuAddon.cpp">
       <Filter>addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\ContextMenus.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\Scraper.cpp">
       <Filter>addons</Filter>
     </ClCompile>
@@ -783,17 +819,14 @@
     <ClCompile Include="..\..\xbmc\addons\PluginSource.cpp">
       <Filter>addons</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.cpp">
-      <Filter>cores\VideoRenderers\Shaders</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleTagMicroDVD.cpp">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagMicroDVD.cpp">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleTagSami.cpp">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagSami.cpp">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamBluray.cpp">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamBluray.cpp">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\Service.cpp">
       <Filter>addons</Filter>
@@ -804,43 +837,13 @@
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
-    <ClCompile Include="..\..\xbmc\music\karaoke\GUIDialogKaraokeSongSelector.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\GUIWindowKaraokeLyrics.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokelyrics.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokelyricscdg.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokelyricsfactory.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokelyricsmanager.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokelyricstext.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokelyricstextkar.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokelyricstextlrc.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokelyricstextustar.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokewindowbackground.cpp">
-      <Filter>music\karaoke</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\music\Album.cpp">
       <Filter>music</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\music\Artist.cpp">
+      <Filter>music</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\ContextMenus.cpp">
       <Filter>music</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\music\GUIViewStateMusic.cpp">
@@ -897,9 +900,6 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogMediaSource.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\dialogs\GUIDialogMuteBug.cpp">
-      <Filter>dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogNumeric.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
@@ -942,7 +942,9 @@
     <ClCompile Include="..\..\xbmc\Application.cpp" />
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\SystemGlobals.cpp" />
-    <ClCompile Include="..\..\xbmc\xbmc.cpp" />
+    <ClCompile Include="..\..\xbmc\platform\xbmc.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\D3DResource.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -1127,9 +1129,6 @@
       <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\TextureBundleXBT.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\TextureBundleXPR.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\VisibleEffect.cpp">
@@ -1483,9 +1482,6 @@
     <ClCompile Include="..\..\xbmc\utils\SystemInfo.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\TimeSmoother.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\TimeUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -1502,6 +1498,9 @@
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\video\Bookmark.cpp">
+      <Filter>video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\ContextMenus.cpp">
       <Filter>video</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\video\GUIViewStateVideo.cpp">
@@ -1627,6 +1626,9 @@
     <ClCompile Include="..\..\xbmc\addons\AddonInstaller.cpp">
       <Filter>addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\AddonSystemSettings.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\epg\Epg.cpp">
       <Filter>epg</Filter>
     </ClCompile>
@@ -1651,11 +1653,8 @@
     <ClCompile Include="..\..\xbmc\utils\Observer.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamPVRManager.cpp">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxPVRClient.cpp">
-      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamPVRManager.cpp">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\TextSearch.cpp">
       <Filter>utils</Filter>
@@ -1741,9 +1740,6 @@
     <ClCompile Include="..\..\xbmc\pvr\PVRManager.cpp">
       <Filter>pvr</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\windows\GUIViewStatePVR.cpp">
       <Filter>pvr\windows</Filter>
     </ClCompile>
@@ -1764,18 +1760,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\addons\PVRClients.cpp">
       <Filter>pvr\addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacks.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAddon.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksGUI.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksPVR.cpp">
-      <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayEject.cpp">
       <Filter>dialogs</Filter>
@@ -1827,9 +1811,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\ApplicationOperations.cpp">
       <Filter>interfaces\json-rpc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\JpegIO.cpp">
-      <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\info\SkinVariable.cpp">
       <Filter>interfaces\info</Filter>
@@ -2044,12 +2025,6 @@
     <ClCompile Include="..\..\xbmc\filesystem\RSSDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\SAPDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\SAPFile.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\SFTPDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -2128,11 +2103,15 @@
     <ClCompile Include="..\..\xbmc\MediaSource.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\XbmcContext.cpp" />
+    <ClCompile Include="..\..\xbmc\platform\XbmcContext.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\POUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\XbmcContext.cpp" />
+    <ClCompile Include="..\..\xbmc\platform\XbmcContext.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\network\ZeroconfBrowser.cpp">
       <Filter>network</Filter>
     </ClCompile>
@@ -2181,8 +2160,8 @@
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AEDeviceInfo.cpp">
       <Filter>cores\AudioEngine\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.cpp">
+      <Filter>cores\VideoPlayer\DVDCodecs\Audio</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GraphicContext.cpp">
       <Filter>guilib</Filter>
@@ -2280,9 +2259,6 @@
     <ClCompile Include="..\..\xbmc\utils\RecentlyAddedJob.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\input\windows\WINJoystick.cpp">
-      <Filter>input\windows</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\ImageFile.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -2300,9 +2276,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\DatabaseUtils.cpp">
       <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\karaoke\karaokevideobackground.cpp">
-      <Filter>music\karaoke</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\EndianSwap.cpp">
       <Filter>utils</Filter>
@@ -2453,12 +2426,6 @@
       <Filter>utils\test</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestSystemInfo.cpp">
-      <Filter>utils\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\test\TestTimeSmoother.cpp">
-      <Filter>utils\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\test\TestTimeUtils.cpp">
       <Filter>utils\test</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestURIUtils.cpp">
@@ -2626,8 +2593,8 @@
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\AddonsOperations.cpp">
       <Filter>interfaces\json-rpc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxBXA.cpp">
-      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxBXA.cpp">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogMediaFilter.cpp">
       <Filter>dialogs</Filter>
@@ -2669,9 +2636,6 @@
       <Filter>view</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\imagefactory.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\cximage.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\DAVFile.cpp">
@@ -2777,8 +2741,8 @@
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\FavouritesOperations.cpp">
       <Filter>interfaces\json-rpc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxCDDA.cpp">
-      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxCDDA.cpp">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\Environment.cpp">
       <Filter>utils</Filter>
@@ -2794,9 +2758,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\PythonInvoker.cpp">
       <Filter>interfaces\python</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksCodec.cpp">
-      <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\ProfilesOperations.cpp">
       <Filter>interfaces\json-rpc</Filter>
@@ -2872,9 +2833,6 @@
     <ClCompile Include="..\..\xbmc\utils\CharsetDetection.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererGUI.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\SettingsOperations.cpp">
       <Filter>interfaces\json-rpc</Filter>
     </ClCompile>
@@ -2893,8 +2851,8 @@
     <ClCompile Include="..\..\xbmc\utils\XSLTUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodec.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Video\DVDVideoCodec.cpp">
+      <Filter>cores\VideoPlayer\DVDCodecs\Video</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\FFmpeg.cpp">
       <Filter>cores</Filter>
@@ -2957,14 +2915,14 @@
     <ClCompile Include="..\..\xbmc\filesystem\OverrideFile.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\contrib\cc_decoder.c">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay\contrib</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\contrib\cc_decoder.c">
+      <Filter>cores\VideoPlayer\DVDCodecs\Overlay\contrib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\contrib\cc_decoder708.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay\contrib</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\contrib\cc_decoder708.cpp">
+      <Filter>cores\VideoPlayer\DVDCodecs\Overlay\contrib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxCC.cpp">
-      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxCC.cpp">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\settings\AudioDSPSettings.cpp">
       <Filter>settings</Filter>
@@ -2983,9 +2941,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\DSPAddons\ActiveAEDSPProcess.cpp">
       <Filter>cores\AudioEngine\DSPAddons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAudioDSP.cpp">
-      <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\HttpRangeUtils.cpp">
       <Filter>utils</Filter>
@@ -3138,14 +3093,14 @@
     <ClCompile Include="..\..\xbmc\pictures\PictureScalingAlgorithm.cpp">
       <Filter>pictures</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\main\main.cpp">
-      <Filter>main</Filter>
+    <ClCompile Include="..\..\xbmc\platform\posix\main.cpp">
+      <Filter>platform\posix</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\main\win32\WinMain.cpp">
-      <Filter>main\win32</Filter>
+    <ClCompile Include="..\..\xbmc\platform\win32\WinMain.cpp">
+      <Filter>platform\win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\main\win32\MessagePrinter.cpp">
-      <Filter>main\win32</Filter>
+    <ClCompile Include="..\..\xbmc\platform\win32\MessagePrinter.cpp">
+      <Filter>platform\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\messaging\ApplicationMessenger.cpp">
       <Filter>messaging</Filter>
@@ -3197,9 +3152,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryRefreshingJob.cpp">
       <Filter>video\jobs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\Gif.cpp">
-      <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\messaging\helpers\DialogHelper.cpp">
       <Filter>messaging\helpers</Filter>
@@ -3255,14 +3207,264 @@
     <ClCompile Include="..\..\xbmc\interfaces\builtins\WeatherBuiltins.cpp">
       <Filter>interfaces\builtins</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAudioEngine.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\input\InputCodingTableKorean.cpp">
       <Filter>input</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderFFmpeg.cpp">
       <Filter>music\tags</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\PVRSettings.cpp">
+      <Filter>pvr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\BaseRenderer.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\DebugRenderer.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRenderer.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRendererDX.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRendererGUI.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRendererUtil.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\RenderCapture.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\RenderFlags.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\RenderManager.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\WinRenderer.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\HwDecRender\DXVAHD.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers\HwDecRender</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\VideoShaders\WinVideoFilter.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers\VideoShaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\Resolution.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\VideoShaders\ConvolutionKernels.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers\VideoShaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\VideoShaders\YUV2RGBShader.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers\VideoShaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\FFmpegImage.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVRTimerRules.cpp">
+      <Filter>pvr\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVRTimersBase.cpp">
+      <Filter>pvr\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeInProgressTvShows.cpp">
+      <Filter>filesystem\VideoDatabaseDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\InfoScanner.cpp" />
+    <ClCompile Include="..\..\xbmc\music\windows\MusicFileItemListModifier.cpp">
+      <Filter>music\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\windows\VideoFileItemListModifier.cpp">
+      <Filter>video\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxClient.cpp">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\tags\test\TestTagLoaderTagLib.cpp">
+      <Filter>music\tags\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\test\TestSharedSection.cpp">
+      <Filter>test\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\test\TestThreadLocal.cpp">
+      <Filter>test\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\test\TestAtomics.cpp">
+      <Filter>test\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\test\TestEvent.cpp">
+      <Filter>test\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\test\TestNfsFile.cpp">
+      <Filter>filesystem\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\test\TestVideoInfoScanner.cpp">
+      <Filter>video\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\test\TestURL.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\test\TestHelpers.h">
+      <Filter>test\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\recordings\PVRRecordingsPath.cpp">
+      <Filter>pvr\recordings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\AddonBuilder.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\test\TestAddonBuilder.cpp">
+      <Filter>addons\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\test\TestAddonFactory.cpp">
+      <Filter>addons\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\test\TestAddonVersion.cpp">
+      <Filter>addons\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\Process\ProcessInfo.cpp">
+      <Filter>cores\Process</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\InputStream.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\InputStreamAddon.cpp">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\Addon\AddonCallbacksAddon.cpp">
+      <Filter>addons\binary\interfaces\api1\Addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\InputStreamMultiSource.cpp">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\AudioDSP\AddonCallbacksAudioDSP.cpp">
+      <Filter>addons\binary\interfaces\api1\AudioDSP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DemuxMultiSource.cpp">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\AudioEngine\AddonCallbacksAudioEngine.cpp">
+      <Filter>addons\binary\interfaces\api1\AudioEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\Codec\AddonCallbacksCodec.cpp">
+      <Filter>addons\binary\interfaces\api1\Codec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\InputStream\AddonCallbacksInputStream.cpp">
+      <Filter>addons\binary\interfaces\api1\InputStream</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonCallbacksGUI.cpp">
+      <Filter>addons\binary\interfaces\api1\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonGUIRenderingControl.cpp">
+      <Filter>addons\binary\interfaces\api1\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonGUIWindow.cpp">
+      <Filter>addons\binary\interfaces\api1\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\PVR\AddonCallbacksPVR.cpp">
+      <Filter>addons\binary\interfaces\api1\PVR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\AddonInterfaces.cpp">
+      <Filter>addons\binary\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\DriverPrimitive.cpp">
+      <Filter>input\joysticks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\JoystickMonitor.cpp">
+      <Filter>input\joysticks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\JoystickTranslator.cpp">
+      <Filter>input\joysticks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\KeymapHandler.cpp">
+      <Filter>input\joysticks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\addons\PeripheralAddonTranslator.cpp">
+      <Filter>peripherals\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\addons\PeripheralAddon.cpp">
+      <Filter>peripherals\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\bus\virtual\PeripheralBusAddon.cpp">
+      <Filter>peripherals\bus\virtual</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralJoystick.cpp">
+      <Filter>peripherals\devices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\EventScanner.cpp">
+      <Filter>peripherals</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\EventScanRate.cpp">
+      <Filter>peripherals</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\Peripheral\AddonCallbacksPeripheral.cpp">
+      <Filter>addons\binary\interfaces\api1\Peripheral</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\Controller.cpp">
+      <Filter>games\controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\ControllerFeature.cpp">
+      <Filter>games\controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\ControllerLayout.cpp">
+      <Filter>games\controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\ControllerTranslator.cpp">
+      <Filter>games\controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\DefaultJoystick.cpp">
+      <Filter>input\joysticks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIGameController.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\windows\GUIConfigurationWizard.cpp">
+      <Filter>games\controllers\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\windows\GUIControllerList.cpp">
+      <Filter>games\controllers\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\windows\GUIControllerWindow.cpp">
+      <Filter>games\controllers\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\windows\GUIFeatureList.cpp">
+      <Filter>games\controllers\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIAnalogStickButton.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIControllerButton.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIFeatureButton.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIScalarFeatureButton.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\generic\FeatureHandling.cpp">
+      <Filter>input\joysticks\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\generic\InputHandling.cpp">
+      <Filter>input\joysticks\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\generic\ButtonMapping.cpp">
+      <Filter>input\joysticks\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\addons\AddonButtonMapping.cpp">
+      <Filter>peripherals\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\addons\AddonInputHandling.cpp">
+      <Filter>peripherals\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\addons\AddonButtonMap.cpp">
+      <Filter>peripherals\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\BinaryAddonCache.cpp">
+      <Filter>addons</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3278,239 +3480,224 @@
     <ClInclude Include="..\..\xbmc\win32\WindowHelper.h">
       <Filter>win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DummyVideoPlayer.h">
-      <Filter>cores</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\IPlayer.h">
       <Filter>cores</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDAudio.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDAudio.h">
+      <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDClock.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDClock.h">
+      <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxSPU.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxSPU.h">
+      <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxVobsub.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxVobsub.h">
+      <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDFileInfo.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDFileInfo.h">
+      <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDMessage.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDMessage.h">
+      <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDMessageQueue.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDMessageQueue.h">
+      <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDOverlayContainer.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDOverlayContainer.h">
+      <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDOverlayRenderer.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoPlayer.h">
+      <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayer.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerAudio.h">
+      <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayerAudio.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerRadioRDS.h">
+      <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayerRadioRDS.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerSubtitle.h">
+      <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayerSubtitle.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerTeletext.h">
+      <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayerTeletext.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerVideo.h">
+      <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayerVideo.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDStreamInfo.h">
+      <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDStreamInfo.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDTSCorrection.h">
+      <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDTSCorrection.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\Edl.h">
+      <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Edl.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\IVideoPlayer.h">
+      <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\IDVDPlayer.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\DVDCodecs.h">
+      <Filter>cores\VideoPlayer\DVDCodecs</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\DVDCodecs.h">
-      <Filter>cores\dvdplayer\DVDCodecs</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\DVDCodecUtils.h">
+      <Filter>cores\VideoPlayer\DVDCodecs</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\DVDCodecUtils.h">
-      <Filter>cores\dvdplayer\DVDCodecs</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\DVDFactoryCodec.h">
+      <Filter>cores\VideoPlayer\DVDCodecs</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\DVDFactoryCodec.h">
-      <Filter>cores\dvdplayer\DVDCodecs</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Audio\DVDAudioCodec.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodec.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Audio\DVDAudioCodecFFmpeg.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecFFmpeg.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Video\DllLibMpeg2.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Video</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DllLibMpeg2.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Video\DVDVideoCodec.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Video</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodec.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Video\DVDVideoCodecFFmpeg.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Video</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodecFFmpeg.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Video\DVDVideoPPFFmpeg.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Video</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodecLibMpeg2.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Video\DXVA.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Video</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoPPFFmpeg.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\DVDOverlay.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Overlay</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVA.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\DVDOverlayCodec.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Overlay</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlay.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\DVDOverlayCodecFFmpeg.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Overlay</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodec.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\DVDOverlayCodecSSA.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Overlay</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecFFmpeg.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\DVDOverlayCodecText.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Overlay</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecSSA.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\DVDOverlayCodecTX3G.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Overlay</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecText.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\DVDOverlayImage.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Overlay</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecTX3G.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\DVDOverlaySpu.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Overlay</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayImage.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\DVDOverlaySSA.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Overlay</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlaySpu.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\DVDOverlayText.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Overlay</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlaySSA.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemux.h">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayText.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxFFmpeg.h">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemux.h">
-      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxUtils.h">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxFFmpeg.h">
-      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDFactoryDemuxer.h">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxShoutcast.h">
-      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DllDvdNav.h">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxUtils.h">
-      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDFactoryInputStream.h">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDFactoryDemuxer.h">
-      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStream.h">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DllDvdNav.h">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamFFmpeg.h">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDFactoryInputStream.h">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamFile.h">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStream.h">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamMemory.h">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamFFmpeg.h">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamNavigator.h">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamFile.h">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamRTMP.h">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamHttp.h">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDStateSerializer.h">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMemory.h">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\dvdnav\dvd_types.h">
+      <Filter>cores\VideoPlayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.h">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\dvdnav\dvdnav.h">
+      <Filter>cores\VideoPlayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamRTMP.h">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\dvdnav\dvdnav_events.h">
+      <Filter>cores\VideoPlayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDStateSerializer.h">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\dvdnav\dvdnav_internal.h">
+      <Filter>cores\VideoPlayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvd_types.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\dvdnav\ifo_types.h">
+      <Filter>cores\VideoPlayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvdnav.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\dvdnav\nav_types.h">
+      <Filter>cores\VideoPlayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvdnav_events.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\dvdnav\remap.h">
+      <Filter>cores\VideoPlayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvdnav_internal.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\dvdnav\vm.h">
+      <Filter>cores\VideoPlayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\ifo_types.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\dvdnav\vmcmd.h">
+      <Filter>cores\VideoPlayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\nav_types.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DllLibass.h">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\remap.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDFactorySubtitle.h">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\vm.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleLineCollection.h">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\vmcmd.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleParser.h">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DllLibass.h">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleParserMicroDVD.h">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDFactorySubtitle.h">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleParserMPL2.h">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleLineCollection.h">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleParserSami.h">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParser.h">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleParserSSA.h">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMicroDVD.h">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleParserSubrip.h">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMPL2.h">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleParserVplayer.h">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSami.h">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitlesLibass.h">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSSA.h">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSubrip.h">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserVplayer.h">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitlesLibass.h">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleStream.h">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleStream.h">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\AudioDecoder.h">
       <Filter>cores\paplayer</Filter>
@@ -3518,7 +3705,7 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\CodecFactory.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DVDPlayerCodec.h">
+    <ClInclude Include="..\..\xbmc\cores\paplayer\VideoPlayerCodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\ICodec.h">
@@ -3577,36 +3764,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DllLoader\exports\util\EmuFileWrapper.h">
       <Filter>cores\DllLoader\exports\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\BaseRenderer.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRenderer.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererDX.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererUtil.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\RenderFlags.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\RenderManager.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\WinRenderer.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\DXVAHD.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\ConvolutionKernels.h">
-      <Filter>cores\VideoRenderers\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\YUV2RGBShader.h">
-      <Filter>cores\VideoRenderers\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.h">
       <Filter>cores\ExternalPlayer</Filter>
@@ -3743,6 +3900,9 @@
     <ClInclude Include="..\..\xbmc\addons\ContextMenuAddon.h">
       <Filter>addons</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\ContextMenus.h">
+      <Filter>addons</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\DllAddon.h">
       <Filter>addons</Filter>
     </ClInclude>
@@ -3770,59 +3930,20 @@
     <ClInclude Include="..\..\xbmc\addons\PluginSource.h">
       <Filter>addons</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.h">
-      <Filter>cores\VideoRenderers\Shaders</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleTagMicroDVD.h">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagMicroDVD.h">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDSubtitles\DVDSubtitleTagSami.h">
+      <Filter>cores\VideoPlayer\DVDSubtitles</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagSami.h">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamBluray.h">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamBluray.h">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\Service.h">
       <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIDialog.h">
       <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\cdgdata.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\GUIDialogKaraokeSongSelector.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\GUIWindowKaraokeLyrics.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokelyrics.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokelyricscdg.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokelyricsfactory.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokelyricsmanager.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokelyricstext.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokelyricstextkar.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokelyricstextlrc.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokelyricstextustar.h">
-      <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokewindowbackground.h">
-      <Filter>music\karaoke</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\Album.h">
       <Filter>music</Filter>
@@ -3885,9 +4006,6 @@
       <Filter>dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMediaSource.h">
-      <Filter>dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMuteBug.h">
       <Filter>dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogNumeric.h">
@@ -4135,9 +4253,6 @@
     <ClInclude Include="..\..\xbmc\guilib\TextureBundleXBT.h">
       <Filter>guilib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\TextureBundleXPR.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\TransformMatrix.h">
       <Filter>guilib</Filter>
     </ClInclude>
@@ -4326,9 +4441,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\windows\NetworkWin32.h">
       <Filter>network\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pictures\DllImageLib.h">
-      <Filter>pictures</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pictures\DllLibExif.h">
       <Filter>pictures</Filter>
@@ -4546,9 +4658,6 @@
     <ClInclude Include="..\..\xbmc\utils\SystemInfo.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\utils\TimeSmoother.h">
-      <Filter>utils</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\TimeUtils.h">
       <Filter>utils</Filter>
     </ClInclude>
@@ -4565,6 +4674,9 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\Bookmark.h">
+      <Filter>video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\ContextMenus.h">
       <Filter>video</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\GUIViewStateVideo.h">
@@ -4705,6 +4817,9 @@
     <ClInclude Include="..\..\xbmc\addons\AddonInstaller.h">
       <Filter>addons</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AddonSystemSettings.h">
+      <Filter>addons</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\epg\EpgSearchFilter.h">
       <Filter>epg</Filter>
     </ClInclude>
@@ -4732,11 +4847,8 @@
     <ClInclude Include="..\..\xbmc\utils\Observer.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamPVRManager.h">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxPVRClient.h">
-      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\DVDInputStreamPVRManager.h">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\TextSearch.h">
       <Filter>utils</Filter>
@@ -4822,9 +4934,6 @@
     <ClInclude Include="..\..\xbmc\pvr\PVRManager.h">
       <Filter>pvr</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRTimers.h">
       <Filter>pvr\windows</Filter>
     </ClInclude>
@@ -4848,18 +4957,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\addons\PVRClients.h">
       <Filter>pvr\addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacks.h">
-      <Filter>addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAddon.h">
-      <Filter>addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksGUI.h">
-      <Filter>addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksPVR.h">
-      <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogPlayEject.h">
       <Filter>dialogs</Filter>
@@ -4894,9 +4991,6 @@
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegionTracker.h">
       <Filter>guilib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\DllLibGif.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegion.h">
       <Filter>guilib</Filter>
     </ClInclude>
@@ -4917,9 +5011,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\ApplicationOperations.h">
       <Filter>interfaces\json-rpc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\JpegIO.h">
-      <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\info\SkinVariable.h">
       <Filter>interfaces\info</Filter>
@@ -5104,12 +5195,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\RSSDirectory.h">
       <Filter>filesystem</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\SAPDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\SAPFile.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\SFTPDirectory.h">
       <Filter>filesystem</Filter>
     </ClInclude>
@@ -5167,7 +5252,9 @@
     <ClInclude Include="..\..\xbmc\filesystem\ZipFile.h">
       <Filter>filesystem</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\XbmcContext.h" />
+    <ClInclude Include="..\..\xbmc\platform\XbmcContext.h">
+      <Filter>platform</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\MemBufferCache.h">
       <Filter>filesystem</Filter>
     </ClInclude>
@@ -5306,8 +5393,8 @@
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEDeviceInfo.h">
       <Filter>cores\AudioEngine\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Audio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\TextureManager.h">
       <Filter>guilib</Filter>
@@ -5405,9 +5492,6 @@
     <ClInclude Include="..\..\xbmc\BackgroundInfoLoader.h" />
     <ClInclude Include="..\..\xbmc\utils\RecentlyAddedJob.h">
       <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\input\windows\WINJoystick.h">
-      <Filter>input\windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\ImageFile.h">
       <Filter>filesystem</Filter>
@@ -5614,8 +5698,8 @@
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\AddonsOperations.h">
       <Filter>interfaces\json-rpc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxBXA.h">
-      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxBXA.h">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\Screenshot.h">
       <Filter>utils</Filter>
@@ -5643,12 +5727,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\imagefactory.h">
       <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\cximage.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\karaoke\karaokevideobackground.h">
-      <Filter>music\karaoke</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\FFmpegVideoDecoder.h">
       <Filter>video</Filter>
@@ -5786,8 +5864,8 @@
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\FavouritesOperations.h">
       <Filter>interfaces\json-rpc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxCDDA.h">
-      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxCDDA.h">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\Environment.h">
       <Filter>utils</Filter>
@@ -5809,9 +5887,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\generic\ILanguageInvocationHandler.h">
       <Filter>interfaces\generic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksCodec.h">
-      <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\ProfilesOperations.h">
       <Filter>interfaces\json-rpc</Filter>
@@ -5906,9 +5981,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\CharsetDetection.h">
       <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererGUI.h">
-      <Filter>cores\VideoRenderers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\SettingsOperations.h">
       <Filter>interfaces\json-rpc</Filter>
@@ -6007,14 +6079,14 @@
     <ClInclude Include="..\..\xbmc\filesystem\OverrideFile.h">
       <Filter>filesystem</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\contrib\cc_decoder.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay\contrib</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\contrib\cc_decoder.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Overlay\contrib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\contrib\cc_decoder708.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Overlay\contrib</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Overlay\contrib\cc_decoder708.h">
+      <Filter>cores\VideoPlayer\DVDCodecs\Overlay\contrib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxCC.h">
-      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxCC.h">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\AudioDSPSettings.h">
       <Filter>settings</Filter>
@@ -6033,9 +6105,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\DSPAddons\ActiveAEDSPProcess.h">
       <Filter>cores\AudioEngine\DSPAddons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAudioDSP.h">
-      <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\DllAudioDSP.h">
       <Filter>addons</Filter>
@@ -6178,8 +6247,8 @@
     <ClInclude Include="..\..\xbmc\pictures\PictureScalingAlgorithm.h">
       <Filter>pictures</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\main\win32\MessagePrinter.h">
-      <Filter>main\win32</Filter>
+    <ClInclude Include="..\..\xbmc\platform\MessagePrinter.h">
+      <Filter>platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\messaging\ApplicationMessenger.h">
       <Filter>messaging</Filter>
@@ -6262,9 +6331,6 @@
     <ClInclude Include="..\..\xbmc\utils\win32\memcpy_sse2.h">
       <Filter>utils\win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\Gif.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\messaging\helpers\DialogHelper.h">
       <Filter>messaging\helpers</Filter>
     </ClInclude>
@@ -6319,9 +6385,6 @@
     <ClInclude Include="..\..\xbmc\interfaces\builtins\WeatherBuiltins.h">
       <Filter>interfaces\builtins</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAudioEngine.h">
-      <Filter>addons</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEStreamData.h">
       <Filter>cores\AudioEngine\Utils</Filter>
     </ClInclude>
@@ -6333,6 +6396,346 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTagLoaderFFmpeg.h">
       <Filter>music\tags</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\PVRSettings.h">
+      <Filter>pvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\DispResource.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\BaseRenderer.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\DebugRenderer.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRenderer.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRendererDX.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRendererGUI.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRendererUtil.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\RenderCapture.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\RenderFlags.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\RenderFormats.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\RenderManager.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\WinRenderer.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\HwDecRender\DXVAHD.h">
+      <Filter>cores\VideoPlayer\VideoRenderers\HwDecRender</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\VideoShaders\WinVideoFilter.h">
+      <Filter>cores\VideoPlayer\VideoRenderers\VideoShaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\VideoShaders\ConvolutionKernels.h">
+      <Filter>cores\VideoPlayer\VideoRenderers\VideoShaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\VideoShaders\YUV2RGBShader.h">
+      <Filter>cores\VideoPlayer\VideoRenderers\VideoShaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\FFmpegImage.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRTimerRules.h">
+      <Filter>pvr\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRTimersBase.h">
+      <Filter>pvr\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeInProgressTvShows.h">
+      <Filter>filesystem\VideoDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\InfoScanner.h" />
+    <ClInclude Include="..\..\xbmc\music\windows\MusicFileItemListModifier.h">
+      <Filter>music\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\windows\VideoFileItemListModifier.h">
+      <Filter>video\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxClient.h">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AddonBuilder.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\recordings\PVRRecordingsPath.h">
+      <Filter>pvr\recordings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\Process\ProcessInfo.h">
+      <Filter>cores\Process</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\InputStreamMultiSource.h">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DemuxMultiSource.h">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_adsp_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_adsp_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_audiodec_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_audiodec_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_audioengine_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_inputstream_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_inputstream_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_vfs_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_addon_cpp_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_addon_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_addon_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_audioenc_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_audioenc_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_codec_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_epg_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_pvr_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_pvr_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_scr_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_scr_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_vis_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_vis_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\InputStream.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\Addon\AddonCallbacksAddon.h">
+      <Filter>addons\binary\interfaces\api1\Addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\AudioDSP\AddonCallbacksAudioDSP.h">
+      <Filter>addons\binary\interfaces\api1\AudioDSP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\InputStreamMultiStreams.h">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxPacket.h">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\AudioEngine\AddonCallbacksAudioEngine.h">
+      <Filter>addons\binary\interfaces\api1\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\Codec\AddonCallbacksCodec.h">
+      <Filter>addons\binary\interfaces\api1\Codec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\InputStream\AddonCallbacksInputStream.h">
+      <Filter>addons\binary\interfaces\api1\InputStream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonCallbacksGUI.h">
+      <Filter>addons\binary\interfaces\api1\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonGUIRenderingControl.h">
+      <Filter>addons\binary\interfaces\api1\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonGUIWindow.h">
+      <Filter>addons\binary\interfaces\api1\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\PVR\AddonCallbacksPVR.h">
+      <Filter>addons\binary\interfaces\api1\PVR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\AddonInterfaces.h">
+      <Filter>addons\binary\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\IAddonInterface.h">
+      <Filter>addons\binary\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\DriverPrimitive.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\IKeymapHandler.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\JoystickMonitor.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\JoystickTranslator.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\JoystickTypes.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\JoystickUtils.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\KeymapHandler.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\DllPeripheral.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\addons\PeripheralAddonTranslator.h">
+      <Filter>peripherals\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\addons\PeripheralAddon.h">
+      <Filter>peripherals\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\bus\virtual\PeripheralBusAddon.h">
+      <Filter>peripherals\bus\virtual</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralJoystick.h">
+      <Filter>peripherals\devices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\EventScanner.h">
+      <Filter>peripherals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\EventScanRate.h">
+      <Filter>peripherals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\Peripheral\AddonCallbacksPeripheral.h">
+      <Filter>addons\binary\interfaces\api1\Peripheral</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_peripheral_callbacks.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_peripheral_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_peripheral_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_peripheral_utils.hpp">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerTranslator.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerTypes.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\Controller.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerDefinitions.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerFeature.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerLayout.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\DefaultJoystick.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIGameController.h">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIFeatureList.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\IConfigurationWindow.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIConfigurationWizard.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIControllerDefines.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIControllerList.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIControllerWindow.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIAnalogStickButton.h">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIControllerButton.h">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIFeatureButton.h">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIScalarFeatureButton.h">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\generic\ButtonMapping.h">
+      <Filter>input\joysticks\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\generic\FeatureHandling.h">
+      <Filter>input\joysticks\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\generic\InputHandling.h">
+      <Filter>input\joysticks\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\IButtonMapper.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\IDriverHandler.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\IInputHandler.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\IButtonMap.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\addons\AddonButtonMapping.h">
+      <Filter>peripherals\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\addons\AddonInputHandling.h">
+      <Filter>peripherals\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\addons\AddonButtonMap.h">
+      <Filter>peripherals\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\BinaryAddonCache.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\ContextMenus.h">
+      <Filter>music</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

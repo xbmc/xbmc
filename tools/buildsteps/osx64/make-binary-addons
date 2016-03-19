@@ -8,8 +8,8 @@ XBMC_PLATFORM_DIR=osx64
 rm -f $WORKSPACE/project/cmake/$FAILED_BUILD_FILENAME
 
 ALL_BINARY_ADDONS_BUILT="1"
-#only build binary addons if something in the addons metadata changed
-if [ "$(pathChanged $WORKSPACE/project/cmake)" == "1" ]
+#only build binary addons when requested by env/jenkins
+if [ "$BUILD_BINARY_ADDONS" == "true" ]
 then
   for addon in $BINARY_ADDONS
   do

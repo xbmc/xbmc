@@ -28,7 +28,6 @@
 #define CONTROL_HEADING 1
 #define CONTROL_LINES_START 2
 #define CONTROL_TEXTBOX     9
-#define CONTROL_CHOICES_START 10
 
 CGUIDialogBoxBase::CGUIDialogBoxBase(int id, const std::string &xmlFile)
     : CGUIDialog(id, xmlFile)

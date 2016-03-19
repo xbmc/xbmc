@@ -47,9 +47,6 @@
 #ifdef HAS_FILESYSTEM
 #include "ISOFile.h"
 #endif
-#ifdef HAS_FILESYSTEM_SAP
-#include "SAPFile.h"
-#endif
 #ifdef HAS_PVRCLIENTS
 #include "PVRFile.h"
 #endif
@@ -167,9 +164,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #else
     else if (url.IsProtocol("smb")) return new CSMBFile();
 #endif
-#endif
-#ifdef HAS_FILESYSTEM_SAP
-    else if (url.IsProtocol("sap")) return new CSAPFile();
 #endif
 #ifdef HAS_PVRCLIENTS
     else if (url.IsProtocol("pvr")) return new CPVRFile();

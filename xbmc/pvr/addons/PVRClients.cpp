@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2012-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2012-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -56,7 +56,6 @@ CPVRClients::CPVRClients(void) :
     m_playingClientId(-EINVAL),
     m_bIsPlayingLiveTV(false),
     m_bIsPlayingRecording(false),
-    m_scanStart(0),
     m_bNoAddonWarningDisplayed(false),
     m_bRestartManagerOnAddonDisabled(false)
 {
@@ -72,7 +71,7 @@ bool CPVRClients::IsInUse(const std::string& strAddonId) const
   CSingleLock lock(m_critSection);
 
   for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
-    if (itr->second->Enabled() && itr->second->ID() == strAddonId)
+    if (!CAddonMgr::GetInstance().IsAddonDisabled(itr->second->ID()) && itr->second->ID() == strAddonId)
       return true;
   return false;
 }
@@ -252,12 +251,32 @@ bool CPVRClients::HasConnectedClients(void) const
   return false;
 }
 
-bool CPVRClients::GetClientName(int iClientId, std::string &strName) const
+bool CPVRClients::GetClientFriendlyName(int iClientId, std::string &strName) const
 {
   bool bReturn(false);
   PVR_CLIENT client;
   if ((bReturn = GetConnectedClient(iClientId, client)) == true)
     strName = client->GetFriendlyName();
+
+  return bReturn;
+}
+
+bool CPVRClients::GetClientAddonName(int iClientId, std::string &strName) const
+{
+  bool bReturn(false);
+  PVR_CLIENT client;
+  if ((bReturn = GetConnectedClient(iClientId, client)) == true)
+    strName = client->Name();
+
+  return bReturn;
+}
+
+bool CPVRClients::GetClientAddonIcon(int iClientId, std::string &strIcon) const
+{
+  bool bReturn(false);
+  PVR_CLIENT client;
+  if ((bReturn = GetConnectedClient(iClientId, client)) == true)
+    strIcon = client->Icon();
 
   return bReturn;
 }
@@ -649,7 +668,7 @@ PVR_ERROR CPVRClients::DeleteAllRecordingsFromTrash()
         pDialog->Add(itrClients->second->GetBackendName());
     }
     pDialog->Open();
-    selection = pDialog->GetSelectedLabel();
+    selection = pDialog->GetSelectedItem();
   }
 
   if (selection == 0)
@@ -776,6 +795,26 @@ PVR_ERROR CPVRClients::GetEPGForChannel(const CPVRChannelPtr &channel, CEpg *epg
   return error;
 }
 
+PVR_ERROR CPVRClients::SetEPGTimeFrame(int iDays)
+{
+  PVR_ERROR error(PVR_ERROR_NO_ERROR);
+  PVR_CLIENTMAP clients;
+  GetConnectedClients(clients);
+
+  for (const auto &client : clients)
+  {
+    PVR_ERROR currentError = client.second->SetEPGTimeFrame(iDays);
+    if (currentError != PVR_ERROR_NOT_IMPLEMENTED &&
+        currentError != PVR_ERROR_NO_ERROR)
+    {
+      error = currentError;
+      CLog::Log(LOGERROR, "PVR - %s - cannot set epg time frame for client '%d': %s",__FUNCTION__, client.first, CPVRClient::ToString(error));
+    }
+  }
+
+  return error;
+}
+
 PVR_ERROR CPVRClients::GetChannels(CPVRChannelGroupInternal *group)
 {
   PVR_ERROR error(PVR_ERROR_NO_ERROR);
@@ -891,7 +930,7 @@ void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CF
       }
       pDialog->Open();
 
-      int selection = pDialog->GetSelectedLabel();
+      int selection = pDialog->GetSelectedItem();
       if (selection >= 0)
       {
         itrClients = clients.begin();
@@ -918,13 +957,13 @@ void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CF
     for (unsigned int i = 0; i < hooks->size(); i++)
       if (hooks->at(i).category == cat || hooks->at(i).category == PVR_MENUHOOK_ALL)
       {
-        pDialog->Add(client->GetString(hooks->at(i).iLocalizedStringId));
+        pDialog->Add(g_localizeStrings.GetAddonString(client->ID(), hooks->at(i).iLocalizedStringId));
         hookIDs.push_back(i);
       }
     if (hookIDs.size() > 1)
     {
       pDialog->Open();
-      selection = pDialog->GetSelectedLabel();
+      selection = pDialog->GetSelectedItem();
     }
     if (selection >= 0)
       client->CallMenuHook(hooks->at(hookIDs.at(selection)), item);
@@ -972,7 +1011,7 @@ void CPVRClients::StartChannelScan(void)
 
     pDialog->Open();
 
-    int selection = pDialog->GetSelectedLabel();
+    int selection = pDialog->GetSelectedItem();
     if (selection >= 0)
       scanClient = possibleScanClients[selection];
   }
@@ -1108,7 +1147,7 @@ int CPVRClients::RegisterClient(AddonPtr client)
   CAddonDatabase database;
   PVR_CLIENT addon;
 
-  if (!client->Enabled() || !database.Open())
+  if (CAddonMgr::GetInstance().IsAddonDisabled(client->ID()) || !database.Open())
     return -1;
 
   CLog::Log(LOGDEBUG, "%s - registering add-on '%s'", __FUNCTION__, client->Name().c_str());
@@ -1160,8 +1199,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
 
   for (VECADDONS::iterator it = map.begin(); it != map.end(); ++it)
   {
-    bool bEnabled = (*it)->Enabled() &&
-        !CAddonMgr::GetInstance().IsAddonDisabled((*it)->ID());
+    bool bEnabled = !CAddonMgr::GetInstance().IsAddonDisabled((*it)->ID());
 
     if (!bEnabled && IsKnownClient(*it))
     {
@@ -1199,7 +1237,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
         }
 
         // throttle connection attempts, no more than 1 attempt per 5 seconds
-        if (!bDisabled && addon->Enabled())
+        if (!bDisabled && !CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()))
         {
           time_t now;
           CDateTime::GetCurrentDateTime().GetAsTime(now);
@@ -1210,7 +1248,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
         }
 
         // re-check the enabled status. newly installed clients get disabled when they're added to the db
-        if (!bDisabled && addon->Enabled() && (status = addon->Create(iClientId)) != ADDON_STATUS_OK)
+        if (!bDisabled && !CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && (status = addon->Create(iClientId)) != ADDON_STATUS_OK)
         {
           CLog::Log(LOGWARNING, "%s - failed to create add-on %s, status = %d", __FUNCTION__, (*it)->Name().c_str(), status);
           if (!addon.get() || !addon->DllLoaded() || status == ADDON_STATUS_PERMANENT_FAILURE)
@@ -1284,13 +1322,13 @@ bool CPVRClients::AutoconfigureClients(void)
   bool bReturn(false);
   std::vector<PVR_CLIENT> autoConfigAddons;
   PVR_CLIENT addon;
-  VECADDONS map;
-  CAddonMgr::GetInstance().GetAddons(ADDON_PVRDLL, map, false);
 
-  /** get the auto-configurable add-ons */
-  for (VECADDONS::iterator it = map.begin(); it != map.end(); ++it)
   {
-    if (CAddonMgr::GetInstance().IsAddonDisabled((*it)->ID()))
+    VECADDONS map;
+    CAddonMgr::GetInstance().GetDisabledAddons(map, ADDON_PVRDLL);
+
+    /** get the auto-configurable add-ons */
+    for (VECADDONS::iterator it = map.begin(); it != map.end(); ++it)
     {
       addon = std::dynamic_pointer_cast<CPVRClient>(*it);
       if (addon->CanAutoconfigure())
@@ -1299,7 +1337,7 @@ bool CPVRClients::AutoconfigureClients(void)
   }
 
   /** no configurable add-ons found */
-  if (autoConfigAddons.size() == 0)
+  if (autoConfigAddons.empty())
     return bReturn;
 
   /** display a progress bar while trying to auto-configure add-ons */
@@ -1368,7 +1406,7 @@ bool CPVRClients::UpdateAddons(void)
 {
   VECADDONS addons;
   PVR_CLIENT addon;
-  bool bReturn(CAddonMgr::GetInstance().GetAddons(ADDON_PVRDLL, addons, true));
+  bool bReturn(CAddonMgr::GetInstance().GetAddons(addons, ADDON_PVRDLL));
   size_t usableClients;
   bool bDisable(false);
 
@@ -1403,7 +1441,7 @@ bool CPVRClients::UpdateAddons(void)
   }
 
   if ((!bReturn || usableClients == 0) && !m_bNoAddonWarningDisplayed &&
-      !CAddonMgr::GetInstance().HasAddons(ADDON_PVRDLL, false) &&
+      !CAddonMgr::GetInstance().HasInstalledAddons(ADDON_PVRDLL) &&
       (g_PVRManager.IsStarted() || g_PVRManager.IsInitialising()))
   {
     // No PVR add-ons could be found
@@ -1435,6 +1473,19 @@ bool CPVRClients::GetClient(const std::string &strId, AddonPtr &addon) const
       addon = itr->second;
       return true;
     }
+  }
+  return false;
+}
+
+bool CPVRClients::SupportsTimers() const
+{
+  PVR_CLIENTMAP clients;
+  GetConnectedClients(clients);
+
+  for (const auto &entry : clients)
+  {
+    if (entry.second->SupportsTimers())
+      return true;
   }
   return false;
 }
@@ -1739,5 +1790,13 @@ time_t CPVRClients::GetBufferTimeEnd() const
   }
 
   return time;
+}
+
+bool CPVRClients::IsRealTimeStream(void) const
+{
+  PVR_CLIENT client;
+  if (GetPlayingClient(client))
+    return client->IsRealTimeStream();
+  return false;
 }
 

@@ -24,9 +24,9 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string>
-#include "../../../addons/library.xbmc.pvr/libXBMC_pvr.h"
-#include "addons/AddonCallbacks.h"
-#include "cores/dvdplayer/DVDDemuxers/DVDDemuxPacket.h"
+#include "addons/binary/interfaces/api1/PVR/AddonCallbacksPVR.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libXBMC_pvr.h"
+#include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -36,6 +36,7 @@
 #endif
 
 using namespace std;
+using namespace V1::KodiAPI::PVR;
 
 extern "C"
 {
@@ -47,7 +48,7 @@ DLLEXPORT void* PVR_register_me(void *hdl)
     fprintf(stderr, "libXBMC_pvr-ERROR: PVRLib_register_me is called with NULL handle !!!\n");
   else
   {
-    cb = ((AddonCB*)hdl)->PVRLib_RegisterMe(((AddonCB*)hdl)->addonData);
+    cb = (CB_PVRLib*)((AddonCB*)hdl)->PVRLib_RegisterMe(((AddonCB*)hdl)->addonData);
     if (!cb)
       fprintf(stderr, "libXBMC_pvr-ERROR: PVRLib_register_me can't get callback table from XBMC !!!\n");
   }
@@ -162,6 +163,22 @@ DLLEXPORT DemuxPacket* PVR_allocate_demux_packet(void *hdl, void* cb, int iDataS
     return NULL;
 
   return ((CB_PVRLib*)cb)->AllocateDemuxPacket(((AddonCB*)hdl)->addonData, iDataSize);
+}
+
+DLLEXPORT void PVR_connection_state_change(void *hdl, void* cb, const char *strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage)
+{
+  if (cb == NULL)
+    return;
+
+  ((CB_PVRLib*)cb)->ConnectionStateChange(((AddonCB*)hdl)->addonData, strConnectionString, newState, strMessage);
+}
+
+DLLEXPORT void PVR_epg_event_state_change(void *hdl, void* cb, EPG_TAG *tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState)
+{
+  if (cb == NULL)
+    return;
+
+  ((CB_PVRLib*)cb)->EpgEventStateChange(((AddonCB*)hdl)->addonData, tag, iUniqueChannelId, newState);
 }
 
 DLLEXPORT void PVR_transfer_channel_group(void *hdl, void* cb, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group)

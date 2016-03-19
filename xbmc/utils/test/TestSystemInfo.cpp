@@ -53,7 +53,6 @@ TEST_F(TestSystemInfo, Print_System_Info)
   std::cout << "'GetUsedCompilerNameAndVer()': \"" << g_sysinfo.GetUsedCompilerNameAndVer() << "\"\n";
   std::cout << "'GetManufacturerName()': \"" << g_sysinfo.GetManufacturerName() << "\"\n";
   std::cout << "'GetModelName()': \"" << g_sysinfo.GetModelName() << "\"\n";
-  std::cout << "'IsAppleTV2()': \"" << g_sysinfo.IsAppleTV2() << "\"\n";
   std::cout << "'GetUserAgent()': \"" << g_sysinfo.GetUserAgent() << "\"\n";
 }
 
@@ -228,11 +227,7 @@ TEST_F(TestSystemInfo, GetUserAgent)
   EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find("Windows")) << "'GetUserAgent()' must contain 'Windows'";
 #elif defined(TARGET_DARWIN_IOS)
   EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find("like Mac OS X")) << "'GetUserAgent()' must contain ' like Mac OS X'";
-#ifdef TARGET_DARWIN_IOS_ATV2
-  EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find("CPU OS ")) << "'GetUserAgent()' must contain 'CPU OS '";
-#else  // ! TARGET_DARWIN_IOS_ATV2
   EXPECT_TRUE(g_sysinfo.GetUserAgent().find("CPU OS ") != std::string::npos || g_sysinfo.GetUserAgent().find("CPU iPhone OS ") != std::string::npos) << "'GetUserAgent()' must contain 'CPU OS ' or 'CPU iPhone OS '";
-#endif // ! TARGET_DARWIN_IOS_ATV2
 #elif defined(TARGET_DARWIN_OSX)
   EXPECT_EQ(g_sysinfo.GetUserAgent().find('('), g_sysinfo.GetUserAgent().find("(Macintosh; ")) << "Second parameter in 'GetUserAgent()' string must start from 'Macintosh; '";
 #elif defined(TARGET_ANDROID)
@@ -254,16 +249,6 @@ TEST_F(TestSystemInfo, GetUserAgent)
   EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find(" Version/")) << "'GetUserAgent()' must contain ' Version/'";
 }
 
-TEST_F(TestSystemInfo, IsAppleTV2)
-{
-#ifdef TARGET_DARWIN_IOS_ATV2
-  EXPECT_TRUE(g_sysinfo.IsAppleTV2()) << "'IsAppleTV2()' must return 'true'";
-#else
-  EXPECT_FALSE(g_sysinfo.IsAppleTV2()) << "'IsAppleTV2()' must return 'false'";
-#endif
-}
-
-// FIXME: TARGET_DARWIN_IOS_ATV2?
 #ifndef TARGET_DARWIN
 TEST_F(TestSystemInfo, HasVideoToolBoxDecoder)
 {

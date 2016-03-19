@@ -121,7 +121,7 @@ bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
   SYSTEMTIME stLocalTime;
   GetLocalTime(&stLocalTime);
 
-  dumpFileName = StringUtils::Format("xbmc_crashlog-%s-%04d%02d%02d-%02d%02d%02d.dmp",
+  dumpFileName = StringUtils::Format("kodi_crashlog-%s-%04d%02d%02d-%02d%02d%02d.dmp",
                       mVersion.c_str(),
                       stLocalTime.wYear, stLocalTime.wMonth, stLocalTime.wDay,
                       stLocalTime.wHour, stLocalTime.wMinute, stLocalTime.wSecond);
@@ -224,7 +224,7 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
      pSFTA == NULL || pSGMB == NULL)
     goto cleanup;
 
-  dumpFileName = StringUtils::Format("xbmc_stacktrace-%s-%04d%02d%02d-%02d%02d%02d.txt",
+  dumpFileName = StringUtils::Format("kodi_stacktrace-%s-%04d%02d%02d-%02d%02d%02d.txt",
                                       mVersion.c_str(),
                                       stLocalTime.wYear, stLocalTime.wMonth, stLocalTime.wDay,
                                       stLocalTime.wHour, stLocalTime.wMinute, stLocalTime.wSecond);

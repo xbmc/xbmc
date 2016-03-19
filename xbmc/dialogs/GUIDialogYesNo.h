@@ -112,6 +112,7 @@ public:
   int ShowAndGetInput(const KODI::MESSAGING::HELPERS::DialogYesNoMessage& options);
 
 protected:
+  virtual void OnInitWindow();
   virtual int GetDefaultLabelID(int controlId) const;
 
   bool m_bCanceled;

@@ -40,6 +40,7 @@ CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
   m_enumRenderingSystem = RENDERING_SYSTEM_OPENGL;
   m_glslMajor = 0;
   m_glslMinor = 0;
+  m_latencyCounter = 0;
 }
 
 CRenderSystemGL::~CRenderSystemGL()
@@ -105,21 +106,15 @@ bool CRenderSystemGL::InitRenderSystem()
 {
   m_bVSync = false;
   m_iVSyncMode = 0;
-  m_iSwapStamp = 0;
-  m_iSwapTime = 0;
-  m_iSwapRate = 0;
   m_bVsyncInit = false;
   m_maxTextureSize = 2048;
   m_renderCaps = 0;
 
-  // init glew library
-  GLenum err = glewInit();
-  if (GLEW_OK != err)
-  {
-    // Problem: glewInit failed, something is seriously wrong
-    CLog::Log(LOGERROR, "InitRenderSystem() glewInit returned %i: %s", err, glewGetErrorString(err));
-    return false;
-  }
+  m_RenderExtensions  = " ";
+  m_RenderExtensions += (const char*) glGetString(GL_EXTENSIONS);
+  m_RenderExtensions += " ";
+
+  LogGraphicsInfo();
 
   // Get the GL version number
   m_RenderVersionMajor = 0;
@@ -132,7 +127,7 @@ bool CRenderSystemGL::InitRenderSystem()
     m_RenderVersion = ver;
   }
 
-  if (glewIsSupported("GL_ARB_shading_language_100"))
+  if (IsExtSupported("GL_ARB_shading_language_100"))
   {
     ver = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
     if (ver)
@@ -158,10 +153,10 @@ bool CRenderSystemGL::InitRenderSystem()
     m_RenderRenderer = tmpRenderer;
 
   // grab our capabilities
-  if (glewIsSupported("GL_EXT_texture_compression_s3tc"))
+  if (IsExtSupported("GL_EXT_texture_compression_s3tc"))
     m_renderCaps |= RENDER_CAPS_DXT;
 
-  if (glewIsSupported("GL_ARB_texture_non_power_of_two"))
+  if (IsExtSupported("GL_ARB_texture_non_power_of_two"))
   {
     m_renderCaps |= RENDER_CAPS_NPOT;
     if (m_renderCaps & RENDER_CAPS_DXT) 
@@ -170,16 +165,6 @@ bool CRenderSystemGL::InitRenderSystem()
   //Check OpenGL quirks and revert m_renderCaps as needed
   CheckOpenGLQuirks();
 	
-  m_RenderExtensions  = " ";
-
-  const char *tmpExtensions = (const char*) glGetString(GL_EXTENSIONS);
-  if (tmpExtensions != NULL)
-    m_RenderExtensions += tmpExtensions;
-
-  m_RenderExtensions += " ";
-
-  LogGraphicsInfo();
-
   m_bRenderCreated = true;
 
   return true;
@@ -213,7 +198,7 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height, bool fullScreen, 
   glMatrixTexture->LoadIdentity();
   glMatrixTexture.Load();
 
-  if (glewIsSupported("GL_ARB_multitexture"))
+  if (IsExtSupported("GL_ARB_multitexture"))
   {
     //clear error flags
     ResetGLErrors();
@@ -305,48 +290,13 @@ bool CRenderSystemGL::IsExtSupported(const char* extension)
   return m_RenderExtensions.find(name) != std::string::npos;
 }
 
-bool CRenderSystemGL::PresentRender(const CDirtyRegionList& dirty)
+void CRenderSystemGL::PresentRender(bool rendered)
 {
   if (!m_bRenderCreated)
-    return false;
+    return;
 
-  if (m_iVSyncMode != 0 && m_iSwapRate != 0)
-  {
-    int64_t curr, diff, freq;
-    curr = CurrentHostCounter();
-    freq = CurrentHostFrequency();
-
-    if(m_iSwapStamp == 0)
-      m_iSwapStamp = curr;
-
-    /* calculate our next swap timestamp */
-    diff = curr - m_iSwapStamp;
-    diff = m_iSwapRate - diff % m_iSwapRate;
-    m_iSwapStamp = curr + diff;
-
-    /* sleep as close as we can before, assume 1ms precision of sleep *
-     * this should always awake so that we are guaranteed the given   *
-     * m_iSwapTime to do our swap                                     */
-    diff = (diff - m_iSwapTime) * 1000 / freq;
-    if (diff > 0)
-      Sleep((DWORD)diff);
-  }
-
-  bool result = PresentRenderImpl(dirty);
-
-  if (m_iVSyncMode && m_iSwapRate != 0)
-  {
-    int64_t curr, diff;
-    curr = CurrentHostCounter();
-
-    diff = curr - m_iSwapStamp;
-    m_iSwapStamp = curr;
-
-    if (MathUtils::abs(diff - m_iSwapRate) < MathUtils::abs(diff))
-      CLog::Log(LOGDEBUG, "%s - missed requested swap",__FUNCTION__);
-  }
-
-  return result;
+  PresentRenderImpl(rendered);
+  m_latencyCounter++;
 }
 
 void CRenderSystemGL::SetVSync(bool enable)
@@ -364,7 +314,6 @@ void CRenderSystemGL::SetVSync(bool enable)
 
   m_iVSyncMode   = 0;
   m_iVSyncErrors = 0;
-  m_iSwapRate    = 0;
   m_bVSync       = enable;
   m_bVsyncInit   = true;
 
@@ -373,32 +322,20 @@ void CRenderSystemGL::SetVSync(bool enable)
   if (!enable)
     return;
 
-  if (g_advancedSettings.m_ForcedSwapTime != 0.0)
-  {
-    /* some hardware busy wait on swap/glfinish, so we must manually sleep to avoid 100% cpu */
-    double rate = g_graphicsContext.GetFPS();
-    if (rate <= 0.0 || rate > 1000.0)
-    {
-      CLog::Log(LOGWARNING, "Unable to determine a valid horizontal refresh rate, vsync workaround disabled %.2g", rate);
-      m_iSwapRate = 0;
-    }
-    else
-    {
-      int64_t freq;
-      freq = CurrentHostFrequency();
-      m_iSwapRate   = (int64_t)((double)freq / rate);
-      m_iSwapTime   = (int64_t)(0.001 * g_advancedSettings.m_ForcedSwapTime * freq);
-      m_iSwapStamp  = 0;
-      CLog::Log(LOGINFO, "GL: Using artificial vsync sleep with rate %f", rate);
-      if(!m_iVSyncMode)
-        m_iVSyncMode = 1;
-    }
-  }
-
   if (!m_iVSyncMode)
     CLog::Log(LOGERROR, "GL: Vertical Blank Syncing unsupported");
   else
     CLog::Log(LOGINFO, "GL: Selected vsync mode %d", m_iVSyncMode);
+}
+
+void CRenderSystemGL::FinishPipeline()
+{
+  // GL implementations are free to queue an undefined number of frames internally
+  // as a result video latency can be very high which is bad for a/v sync
+  // calling glFinish reduces latency to the number of back buffers
+  // in order to keep some elasticity, we call glFinish only every other cycle
+  if (m_latencyCounter & 0x01)
+    glFinish();
 }
 
 void CRenderSystemGL::CaptureStateBlock()
@@ -442,8 +379,6 @@ void CRenderSystemGL::SetCameraPosition(const CPoint &camera, int screenWidth, i
   if (!m_bRenderCreated)
     return;
 
-  g_graphicsContext.BeginPaint();
-
   CPoint offset = camera - CPoint(screenWidth*0.5f, screenHeight*0.5f);
 
 
@@ -458,8 +393,6 @@ void CRenderSystemGL::SetCameraPosition(const CPoint &camera, int screenWidth, i
   glMatrixProject->LoadIdentity();
   glMatrixProject->Frustum( (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
   glMatrixProject.Load();
-
-  g_graphicsContext.EndPaint();
 }
 
 void CRenderSystemGL::Project(float &x, float &y, float &z)

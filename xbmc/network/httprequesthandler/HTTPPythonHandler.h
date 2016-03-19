@@ -56,7 +56,6 @@ protected:
 private:
   std::string m_scriptPath;
   ADDON::AddonPtr m_addon;
-  ADDON::WebinterfaceType m_type;
   CDateTime m_lastModified;
 
   std::string m_requestData;

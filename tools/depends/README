@@ -1,35 +1,49 @@
-Temporary readme:
-
 Examples:
 
-OSX:
-  x64:
-    ./configure --host=x86_64-apple-darwin # (defaults chosen)
-  x86:
+#- Darwin
+#----------------------------------------------------------------------------
+
+OSX (i386):
     ./configure --host=i386-apple-darwin
 
-IOS:
-  ./configure --host=arm-apple-darwin # (defaults chosen)
-  ./configure --host=arm-apple-darwin --with-sdk=4.3 --prefix=home/foo/xbmc-deps
+OSX (x86_64):
+    ./configure --host=x86_64-apple-darwin
 
-Android (the pathes are examples and have to match those of docs/READM.android):
+IOS (armv7):
+    ./configure --host=arm-apple-darwin
+
+IOS (arm64):
+    ./configure --host=arm-apple-darwin --with-cpu=arm64
+
+TVOS:
+    ./configure --host=arm-apple-darwin --with-platform=tvos
+
+  You can target the same --prefix path, each setup will be done in an isolated directory. The
+  last configure/make you do is the one used for Kodi/Xcode.
+ 
+#- Android (the pathes are examples and have to match those of docs/READM.android)
+#----------------------------------------------------------------------------
+
   arm:
     ./configure --with-tarballs=/opt/xbmc-tarballs --host=arm-linux-androideabi --with-sdk-path=/opt/android-sdk-linux --with-ndk=/opt/android-ndk-r10d --with-toolchain=/opt/arm-linux-androideabi-4.8-vanilla/android-17 --prefix=/opt/xbmc-depends
+
   x86:
     ./configure --with-tarballs=/opt/xbmc-tarballs --host=i686-linux-android --with-sdk-path=/opt/android-sdk-linux --with-ndk=/opt/android-ndk-r10d --with-toolchain=/opt/x86-linux-4.8-vanilla/android-17 --prefix=/opt/xbmc-depends
 
-  
+#- Linux
+#----------------------------------------------------------------------------
 
-Linux:
   ARM toolchain (codesourcery/lenaro/etc)
     ./configure --with-toolchain=/opt/toolchains/my-example-toolchain/  --prefix=/opt/xbmc-deps --host=arm-linux-gnueabi
+
   RASPBERRY-PI:
     PATH="/opt/rbp-dev/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin:$PATH" ./configure --with-platform=raspberry-pi --host=arm-linux-gnueabihf --prefix=/opt/xbmc-deps --with-tarballs=/opt/xbmc-tarballs --with-toolchain=/opt/rbp-dev/tools/arm-bcm2708/arm-bcm2708hardfp-linux-gnueabi/arm-bcm2708hardfp-linux-gnueabi/sysroot --with-firmware=/opt/rbp-dev/firmware --build=i686-linux
 
   Native toolchain
     ./configure --with-toolchain=/usr --prefix=/opt/xbmc-deps --host=x86_64-linux-gnu
 
-
+#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
 Details:
   We build a native tools for platforms that do not have the native tools we need. OSX is
   the largest builder of native tools as there is not much present. No cmake, no autotools, etc.

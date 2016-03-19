@@ -29,8 +29,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include <X11/Xlib.h>
 #include <X11/extensions/Xrandr.h>
-#include "X11/WinSystemX11GL.h"
-#include "X11/WinSystemX11GLES.h"
+#include "WindowingFactory.h"
 #include "X11/keysymdef.h"
 #include "X11/XF86keysym.h"
 #include "utils/log.h"
@@ -38,10 +37,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/MouseStat.h"
 #include "input/InputManager.h"
-
-#ifdef HAS_SDL_JOYSTICK
-#include "input/SDLJoystick.h"
-#endif
 
 using namespace KODI::MESSAGING;
 
@@ -595,30 +590,6 @@ bool CWinEventsX11Imp::MessagePump()
     g_Windowing.NotifyXRREvent();
     WinEvents->m_xrrEventPending = false;
   }
-
-#ifdef HAS_SDL_JOYSTICK
-  SDL_Event event;
-  while (SDL_PollEvent(&event))
-  {
-    switch(event.type)
-    {
-      case SDL_JOYBUTTONUP:
-      case SDL_JOYBUTTONDOWN:
-      case SDL_JOYAXISMOTION:
-      case SDL_JOYBALLMOTION:
-      case SDL_JOYHATMOTION:
-      case SDL_JOYDEVICEADDED:
-      case SDL_JOYDEVICEREMOVED:
-        CInputManager::GetInstance().UpdateJoystick(event);
-        ret = true;
-        break;
-
-      default:
-        break;
-    }
-    memset(&event, 0, sizeof(SDL_Event));
-  }
-#endif
 
   return ret;
 }

@@ -22,6 +22,7 @@ texture2D g_Texture;
 texture2D g_KernelTexture;
 float2    g_StepXY;
 float2    g_viewPort;
+float2    g_colorRange;
 
 SamplerState RGBSampler : IMMUTABLE
 {
@@ -111,7 +112,7 @@ float4 CONVOLUTION4x4(float2 TextureUV : TEXCOORD0) : SV_TARGET
     getLine(ypos.z, xpos, linetaps) * columntaps.b +
     getLine(ypos.w, xpos, linetaps) * columntaps.a;
 
-  return float4(rgb, 1.0);
+  return float4(g_colorRange.x + g_colorRange.y * saturate(rgb), 1.0);
 }
 
 technique11 SCALER_T

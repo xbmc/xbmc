@@ -525,4 +525,49 @@ int CZipFile::UnpackFromMemory(std::string& strDest, const std::string& strInput
   return iResult;
 }
 
+bool CZipFile::DecompressGzip(const std::string& in, std::string& out)
+{
+  const int windowBits = MAX_WBITS + 16;
 
+  z_stream strm;
+  strm.zalloc = Z_NULL;
+  strm.zfree = Z_NULL;
+  strm.opaque = Z_NULL;
+
+  int err = inflateInit2(&strm, windowBits);
+  if (err != Z_OK)
+  {
+    CLog::Log(LOGERROR, "FileZip: zlib error %d", err);
+    return false;
+  }
+
+  const int bufferSize = 16384;
+  unsigned char buffer[bufferSize];
+
+  strm.avail_in = in.size();
+  strm.next_in = (unsigned char*)in.c_str();
+
+  do
+  {
+    strm.avail_out = bufferSize;
+    strm.next_out = buffer;
+    int err = inflate(&strm, Z_NO_FLUSH);
+    switch (err)
+    {
+      case Z_NEED_DICT:
+        err = Z_DATA_ERROR;
+      case Z_DATA_ERROR:
+      case Z_MEM_ERROR:
+      case Z_STREAM_ERROR:
+        CLog::Log(LOGERROR, "FileZip: failed to decompress. zlib error %d", err);
+        inflateEnd(&strm);
+        return false;
+    }
+    int read = bufferSize - strm.avail_out;
+    out.append((char*)buffer, read);
+  }
+  while (strm.avail_out == 0);
+
+  inflateEnd(&strm);
+  return true;
+}

@@ -45,13 +45,20 @@ class CGUIListItem
 public:
   typedef std::map<std::string, std::string> ArtMap;
 
-  enum GUIIconOverlay { ICON_OVERLAY_NONE = 0,
-                        ICON_OVERLAY_RAR,
-                        ICON_OVERLAY_ZIP,
-                        ICON_OVERLAY_LOCKED,
-                        ICON_OVERLAY_UNWATCHED,
-                        ICON_OVERLAY_WATCHED,
-                        ICON_OVERLAY_HD};
+  ///
+  /// @ingroup controls python_xbmcgui_listitem
+  /// @defgroup kodi_guilib_listitem_iconoverlay Overlay icon types
+  /// @brief Overlay icon types used on list item.
+  /// @{
+  enum GUIIconOverlay { ICON_OVERLAY_NONE = 0,   //!< Value **0** - No overlay icon
+                        ICON_OVERLAY_RAR,        //!< Value **1** - Compressed *.rar files
+                        ICON_OVERLAY_ZIP,        //!< Value **2** - Compressed *.zip files
+                        ICON_OVERLAY_LOCKED,     //!< Value **3** - Locked files
+                        ICON_OVERLAY_UNWATCHED,  //!< Value **4** - For not watched files
+                        ICON_OVERLAY_WATCHED,    //!< Value **5** - For seen files
+                        ICON_OVERLAY_HD          //!< Value **6** - Is on hard disk stored
+                      };
+  /// @}
 
   CGUIListItem(void);
   CGUIListItem(const CGUIListItem& item);

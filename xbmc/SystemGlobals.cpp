@@ -18,7 +18,7 @@
  *
  */
 #include "system.h"
-#include "cores/VideoRenderers/RenderManager.h"
+#include "SectionLoader.h"
 #include "cores/DataCacheCore.h"
 #include "GUILargeTextureManager.h"
 #include "guilib/TextureManager.h"
@@ -35,6 +35,10 @@
 #include "interfaces/python/XBPython.h"
 #endif
 
+// Guarantee that CSpecialProtocol is initialized before and uninitialized after RarManager
+#include "filesystem/SpecialProtocol.h"
+std::map<std::string, std::string> CSpecialProtocol::m_pathMap;
+
 #if defined(HAS_FILESYSTEM_RAR)
 #include "filesystem/RarManager.h"
 #endif
@@ -44,7 +48,6 @@
 #include "linux/RBP.h"
 #endif
 
-  CXBMCRenderManager g_renderManager;
   CLangCodeExpander  g_LangCodeExpander;
   CLocalizeStrings   g_localizeStrings;
   CLocalizeStrings   g_localizeStringsTemp;

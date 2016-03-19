@@ -66,6 +66,7 @@ public:
   static bool EqualsNoCase(const char *s1, const char *s2);
   static int  CompareNoCase(const std::string &str1, const std::string &str2);
   static int  CompareNoCase(const char *s1, const char *s2);
+  static int ReturnDigits(const std::string &str);
   static std::string Left(const std::string &str, size_t count);
   static std::string Mid(const std::string &str, size_t first, size_t count = std::string::npos);
   static std::string Right(const std::string &str, size_t count);
@@ -102,6 +103,7 @@ public:
    */
   static std::vector<std::string> Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings = 0);
   static std::vector<std::string> Split(const std::string& input, const char delimiter, size_t iMaxStrings = 0);
+  static std::vector<std::string> SplitMulti(const std::string& input, const char* delimiters, size_t iMaxStrings = 0);
   static int FindNumber(const std::string& strInput, const std::string &strFind);
   static int64_t AlphaNumericCompare(const wchar_t *left, const wchar_t *right);
   static long TimeStringToSeconds(const std::string &timeString);

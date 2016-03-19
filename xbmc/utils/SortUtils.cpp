@@ -396,6 +396,26 @@ std::string ByDateTaken(SortAttribute attributes, const SortItem &values)
   return values.at(FieldDateTaken).asString();
 }
 
+std::string ByRelevance(SortAttribute attributes, const SortItem &values)
+{
+  return StringUtils::Format("%i", (int)values.at(FieldRelevance).asInteger());
+}
+
+std::string ByInstallDate(SortAttribute attributes, const SortItem &values)
+{
+  return values.at(FieldInstallDate).asString();
+}
+
+std::string ByLastUpdated(SortAttribute attributes, const SortItem &values)
+{
+  return values.at(FieldLastUpdated).asString();
+}
+
+std::string ByLastUsed(SortAttribute attributes, const SortItem &values)
+{
+  return values.at(FieldLastUsed).asString();
+}
+
 bool preliminarySort(const SortItem &left, const SortItem &right, bool handleFolder, bool &result, std::wstring &labelLeft, std::wstring &labelRight)
 {
   // make sure both items have the necessary data to do the sorting
@@ -575,6 +595,10 @@ std::map<SortBy, SortUtils::SortPreparator> fillPreparators()
   preparators[SortByChannel]                  = ByChannel;
   preparators[SortByChannelNumber]            = ByChannelNumber;
   preparators[SortByDateTaken]                = ByDateTaken;
+  preparators[SortByRelevance]                = ByRelevance;
+  preparators[SortByInstallDate]              = ByInstallDate;
+  preparators[SortByLastUpdated]              = ByLastUpdated;
+  preparators[SortByLastUsed]                 = ByLastUsed;
 
   return preparators;
 }
@@ -653,6 +677,10 @@ std::map<SortBy, Fields> fillSortingFields()
   sortingFields[SortByChannel].insert(FieldChannelName);
   sortingFields[SortByChannelNumber].insert(FieldChannelNumber);
   sortingFields[SortByDateTaken].insert(FieldDateTaken);
+  sortingFields[SortByRelevance].insert(FieldRelevance);
+  sortingFields[SortByInstallDate].insert(FieldInstallDate);
+  sortingFields[SortByLastUpdated].insert(FieldLastUpdated);
+  sortingFields[SortByLastUsed].insert(FieldLastUsed);
   sortingFields.insert(std::pair<SortBy, Fields>(SortByRandom, Fields()));
 
   return sortingFields;
@@ -850,6 +878,7 @@ const sort_map table[] = {
   { SortByFile,                     SORT_METHOD_FILE,                         SortAttributeIgnoreFolders, 561 },
   { SortByRating,                   SORT_METHOD_SONG_RATING,                  SortAttributeNone,          563 },
   { SortByRating,                   SORT_METHOD_VIDEO_RATING,                 SortAttributeIgnoreFolders, 563 },
+  { SortByUserRating,               SORT_METHOD_SONG_USER_RATING,             SortAttributeIgnoreFolders, 38018 },
   { SortByUserRating,               SORT_METHOD_VIDEO_USER_RATING,            SortAttributeIgnoreFolders, 38018 },
   { SortBySortTitle,                SORT_METHOD_VIDEO_SORT_TITLE,             SortAttributeIgnoreFolders, 171 },
   { SortBySortTitle,                SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE,  (SortAttribute)(SortAttributeIgnoreFolders | SortAttributeIgnoreArticle), 171 },
@@ -957,6 +986,12 @@ const std::string& TypeToString(const std::map<std::string, T>& typeMap, const T
   return it->first;
 }
 
+/**
+ * @brief Sort methods to translate string values to enum values.
+ *
+ * @warning On string changes, edit __SortBy__ enumerator to have strings right
+ * for documentation!
+ */
 const std::map<std::string, SortBy> sortMethods = {
   { "label",            SortByLabel },
   { "date",             SortByDate },
@@ -1005,7 +1040,10 @@ const std::map<std::string, SortBy> sortMethods = {
   { "channel",          SortByChannel },
   { "channelnumber",    SortByChannelNumber },
   { "datetaken",        SortByDateTaken },
-  { "userrating",       SortByUserRating }
+  { "userrating",       SortByUserRating },
+  { "installdate",      SortByInstallDate },
+  { "lastupdated",      SortByLastUpdated },
+  { "lastused",         SortByLastUsed },
 };
 
 SortBy SortUtils::SortMethodFromString(const std::string& sortMethod)

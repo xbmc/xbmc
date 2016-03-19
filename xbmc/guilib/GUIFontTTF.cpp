@@ -458,7 +458,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
       characters.push(*ch);
 
       if (maxPixelWidth > 0 &&
-          cursorX + (alignment & XBFONT_TRUNCATED ? ch->advance + 3 * m_ellipsesWidth : 0) > maxPixelWidth)
+          cursorX + ((alignment & XBFONT_TRUNCATED) ? ch->advance + 3 * m_ellipsesWidth : 0) > maxPixelWidth)
         break;
       cursorX += ch->advance;
     }

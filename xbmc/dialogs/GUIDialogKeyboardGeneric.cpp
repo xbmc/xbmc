@@ -194,37 +194,32 @@ bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
     handled = false;
   else
   {
-    handled = false;
-    wchar_t unicode = action.GetUnicode();
-    if (unicode)
+    std::wstring wch = L"";
+    wch.insert(wch.begin(), action.GetUnicode());
+    std::string ch;
+    g_charsetConverter.wToUTF8(wch, ch);
+    handled = CodingCharacter(ch);
+    if (!handled)
     {
-      std::wstring wch = L"";
-      wch.insert(wch.begin(), unicode);
-      std::string ch;
-      g_charsetConverter.wToUTF8(wch, ch);
-      handled = CodingCharacter(ch);
-      if (!handled)
+      // send action to edit control
+      CGUIControl *edit = GetControl(CTL_EDIT);
+      if (edit)
+        handled = edit->OnAction(action);
+      if (!handled && action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
       {
-        // send action to edit control
-        CGUIControl *edit = GetControl(CTL_EDIT);
-        if (edit)
-          handled = edit->OnAction(action);
-        if (!handled && action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
+        BYTE b = action.GetID() & 0xFF;
+        if (b == XBMCVK_TAB)
         {
-          BYTE b = action.GetID() & 0xFF;
-          if (b == XBMCVK_TAB)
+          // Toggle left/right key mode
+          m_isKeyboardNavigationMode = !m_isKeyboardNavigationMode;
+          if (m_isKeyboardNavigationMode)
           {
-            // Toggle left/right key mode
-            m_isKeyboardNavigationMode = !m_isKeyboardNavigationMode;
-            if (m_isKeyboardNavigationMode)
-            {
-              m_previouslyFocusedButton = GetFocusedControlID();
-              SET_CONTROL_FOCUS(edit->GetID(), 0);
-            }
-            else
-              SET_CONTROL_FOCUS(m_previouslyFocusedButton, 0);
-            handled = true;
+            m_previouslyFocusedButton = GetFocusedControlID();
+            SET_CONTROL_FOCUS(edit->GetID(), 0);
           }
+          else
+            SET_CONTROL_FOCUS(m_previouslyFocusedButton, 0);
+          handled = true;
         }
       }
     }
@@ -717,9 +712,13 @@ bool CGUIDialogKeyboardGeneric::CodingCharacter(const std::string &ch)
   switch (m_codingtable->GetType())
   {
   case IInputCodingTable::TYPE_CONVERT_STRING:
-    m_hzcode += ch;
-    SetEditText(m_codingtable->ConvertString(m_hzcode));
-    return true;
+    if (!ch.empty() && ch[0] != 0)
+    {
+      m_hzcode += ch;
+      SetEditText(m_codingtable->ConvertString(m_hzcode));
+      return true;
+    }
+    break;
 
   case IInputCodingTable::TYPE_WORD_LIST:
     if (m_codingtable->GetCodeChars().find(ch) != std::string::npos)

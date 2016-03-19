@@ -1,0 +1,4 @@
+LIBNAME=libdvdcss
+BASE_URL=https://github.com/xbmc/libdvdcss
+VERSION=master
+

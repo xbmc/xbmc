@@ -119,6 +119,7 @@ void CPVRChannel::Serialize(CVariant& value) const
   value["locked"] = m_bIsLocked;
   value["icon"] = m_strIconPath;
   value["channel"]  = m_strChannelName;
+  value["uniqueid"]  = m_iUniqueId;
   CDateTime lastPlayed(m_iLastWatched);
   value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDate() : "";
   value["channelnumber"] = m_iCachedChannelNumber;
@@ -148,7 +149,7 @@ bool CPVRChannel::Delete(void)
     return bReturn;
 
   /* delete the EPG table */
-  CEpg *epg = GetEPG();
+  CEpgPtr epg = GetEPG();
   if (epg)
   {
     CPVRChannelPtr empty;
@@ -162,7 +163,7 @@ bool CPVRChannel::Delete(void)
   return bReturn;
 }
 
-CEpg *CPVRChannel::GetEPG(void) const
+CEpgPtr CPVRChannel::GetEPG(void) const
 {
   int iEpgId(-1);
   {
@@ -543,7 +544,7 @@ void CPVRChannel::UpdateEncryptionName(void)
 
 int CPVRChannel::GetEPG(CFileItemList &results) const
 {
-  CEpg *epg = GetEPG();
+  CEpgPtr epg = GetEPG();
   if (!epg)
   {
     CLog::Log(LOGDEBUG, "PVR - %s - cannot get EPG for channel '%s'",
@@ -556,7 +557,7 @@ int CPVRChannel::GetEPG(CFileItemList &results) const
 
 bool CPVRChannel::ClearEPG() const
 {
-  CEpg *epg = GetEPG();
+  CEpgPtr epg = GetEPG();
   if (epg)
     epg->Clear();
 
@@ -565,7 +566,7 @@ bool CPVRChannel::ClearEPG() const
 
 CEpgInfoTagPtr CPVRChannel::GetEPGNow() const
 {
-  CEpg *epg = GetEPG();
+  CEpgPtr epg = GetEPG();
   if (epg)
     return epg->GetTagNow();
 
@@ -575,7 +576,7 @@ CEpgInfoTagPtr CPVRChannel::GetEPGNow() const
 
 CEpgInfoTagPtr CPVRChannel::GetEPGNext() const
 {
-  CEpg *epg = GetEPG();
+  CEpgPtr epg = GetEPG();
   if (epg)
     return epg->GetTagNext();
 
@@ -646,6 +647,11 @@ void CPVRChannel::ToSortable(SortItem& sortable, Field field) const
     sortable[FieldChannelName] = m_strChannelName;
   else if (field == FieldChannelNumber)
     sortable[FieldChannelNumber] = m_iCachedChannelNumber;
+  else if (field == FieldLastPlayed)
+  {
+    const CDateTime lastWatched(m_iLastWatched);
+    sortable[FieldLastPlayed] = lastWatched.IsValid() ? lastWatched.GetAsDBDateTime() : StringUtils::Empty;
+  }
 }
 
 int CPVRChannel::ChannelID(void) const
@@ -729,6 +735,12 @@ bool CPVRChannel::IsChanged() const
 {
   CSingleLock lock(m_critSection);
   return m_bChanged;
+}
+
+void CPVRChannel::Persisted()
+{
+  CSingleLock lock(m_critSection);
+  m_bChanged = false;
 }
 
 int CPVRChannel::UniqueID(void) const

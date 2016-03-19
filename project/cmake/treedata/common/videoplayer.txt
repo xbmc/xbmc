@@ -1,0 +1,12 @@
+xbmc/cores/VideoPlayer                             cores/VideoPlayer
+xbmc/cores/VideoPlayer/DVDCodecs                   cores/VideoPlayer/codecs
+xbmc/cores/VideoPlayer/DVDCodecs/Audio             cores/VideoPlayer/codecs/audio
+xbmc/cores/VideoPlayer/DVDCodecs/Overlay           cores/VideoPlayer/codecs/overlay
+xbmc/cores/VideoPlayer/DVDCodecs/Video             cores/VideoPlayer/codecs/video
+xbmc/cores/VideoPlayer/DVDDemuxers                 cores/VideoPlayer/demuxers
+xbmc/cores/VideoPlayer/DVDInputStreams             cores/VideoPlayer/inputstreams
+xbmc/cores/VideoPlayer/DVDSubtitles                cores/VideoPlayer/subtitles
+xbmc/cores/VideoPlayer/Process                     cores/VideoPlayer/process
+xbmc/cores/VideoPlayer/VideoRenderers              cores/VideoPlayer/videorenderers
+xbmc/cores/VideoPlayer/VideoRenderers/VideoShaders cores/VideoPlayer/videorenderers/shaders
+xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender  cores/VideoPlayer/videorenderers/hwdec
