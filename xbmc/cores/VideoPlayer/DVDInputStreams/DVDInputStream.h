@@ -22,7 +22,9 @@
 
 #include <string>
 #include <vector>
+
 #include "utils/BitstreamStats.h"
+#include "utils/Proxy.h"
 #include "filesystem/IFileTypes.h"
 
 #include "FileItem.h"
@@ -157,6 +159,7 @@ public:
   virtual bool CanPause() { return true; }
 
   CURL GetURL() { return m_item.GetURL(); }
+  CProxy GetProxy() { return m_item.GetProxy(); }
 
   /*! \brief Indicate expected read rate in bytes per second.
    *  This could be used to throttle caching rate. Should
