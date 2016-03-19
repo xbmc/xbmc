@@ -26,7 +26,7 @@ class CProcessInfo
 public:
   static CProcessInfo* CreateInstance();
   virtual ~CProcessInfo();
-  virtual EINTERLACEMETHOD GetFallbackDeintMethod();
+  EINTERLACEMETHOD GetFallbackDeintMethod();
 
 protected:
   CProcessInfo();
