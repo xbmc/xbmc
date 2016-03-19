@@ -34,7 +34,7 @@ class CRenderSystemGL : public CRenderSystemBase
 public:
   CRenderSystemGL();
   virtual ~CRenderSystemGL();
-  virtual void CheckOpenGLQuirks();
+  void CheckOpenGLQuirks();
   bool InitRenderSystem() override;
   bool DestroyRenderSystem() override;
   bool ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate) override;
@@ -69,9 +69,9 @@ public:
 
   void Project(float &x, float &y, float &z) override;
 
-  virtual void GetGLSLVersion(int& major, int& minor);
+  void GetGLSLVersion(int& major, int& minor);
 
-  virtual void ResetGLErrors();
+  void ResetGLErrors();
 
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
