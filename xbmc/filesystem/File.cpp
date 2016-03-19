@@ -263,6 +263,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
     bool bPathInCache;
 
     CURL url(URIUtils::SubstitutePath(file)), url2(url);
+    url.SetProxy(file.GetProxy());
 
     if (url2.IsProtocol("apk") || url2.IsProtocol("zip") )
       url2.SetOptions("");

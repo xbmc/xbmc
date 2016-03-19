@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2016 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,24 +18,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "URL.h"
-#include "PlayList.h"
 
-namespace PLAYLIST
-{
-class CPlayListM3U :
-      public CPlayList
+class CProxy
 {
 public:
-  CPlayListM3U(void);
-  virtual ~CPlayListM3U(void);
-  virtual bool Load(const std::string& strFileName);
-  virtual void Save(const std::string& strFileName) const;
-
-  static CURL GetBestBandwidthStream(const CURL &url, size_t bandwidth);
-
-protected:
-
-  static std::map<std::string,std::string> ParseStreamLine(const std::string &streamLine);
+  typedef enum
+  {
+    ProxyHttp = 0,
+    ProxySocks4,
+    ProxySocks4A,
+    ProxySocks5,
+    ProxySocks5Remote,
+  } Type;
 };
-}
