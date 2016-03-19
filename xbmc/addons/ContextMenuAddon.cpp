@@ -52,7 +52,7 @@ void CContextMenuAddon::ParseMenu(
     menuId = ss.str();
   }
 
-  items.push_back(CContextMenuItem::CreateGroup(menuLabel, parent, menuId));
+  items.push_back(CContextMenuItem::CreateGroup(menuLabel, parent, menuId, props.id));
 
   ELEMENTS subMenus;
   if (CAddonMgr::GetInstance().GetExtElements(elem, "menu", subMenus))
@@ -73,7 +73,7 @@ void CContextMenuAddon::ParseMenu(
       if (!label.empty() && !library.empty() && !visCondition.empty())
       {
         auto menu = CContextMenuItem::CreateItem(label, menuId,
-            URIUtils::AddFileToFolder(props.path, library), g_infoManager.Register(visCondition, 0));
+            URIUtils::AddFileToFolder(props.path, library), g_infoManager.Register(visCondition, 0), props.id);
         items.push_back(menu);
       }
     }
@@ -111,7 +111,7 @@ std::unique_ptr<CContextMenuAddon> CContextMenuAddon::FromExtension(AddonProps p
 
       CContextMenuItem menuItem = CContextMenuItem::CreateItem(label, parent,
           URIUtils::AddFileToFolder(props.path, props.libname),
-          g_infoManager.Register(visCondition, 0));
+          g_infoManager.Register(visCondition, 0), props.id);
 
       items.push_back(menuItem);
     }
@@ -125,13 +125,9 @@ CContextMenuAddon::CContextMenuAddon(AddonProps props, std::vector<CContextMenuI
 {
 }
 
-std::vector<CContextMenuItem> CContextMenuAddon::GetItems()
+std::vector<CContextMenuItem> CContextMenuAddon::GetItems() const
 {
-  //Return a copy which owns `this`
-  std::vector<CContextMenuItem> ret = m_items;
-  for (CContextMenuItem& menuItem : ret)
-    menuItem.m_addon = this->shared_from_this();
-  return ret;
+  return m_items;
 }
 
 }
