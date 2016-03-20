@@ -27,6 +27,7 @@ public:
   static CProcessInfo* CreateInstance();
   virtual ~CProcessInfo();
   virtual EINTERLACEMETHOD GetFallbackDeintMethod();
+  virtual bool AllowDTSHDDecode();
 
 protected:
   CProcessInfo();
