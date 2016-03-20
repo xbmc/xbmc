@@ -8,7 +8,7 @@
 			<include>FullScreenDimensions</include>
 			<aspectratio>scale</aspectratio>
 			<fadetime>600</fadetime>
-			<animation effect="zoom" center="auto" end="102,102" time="0" condition="IntegerGreaterThan(System.StereoscopicMode,0)">conditional</animation>
+			<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
 			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 			<animation effect="fade" time="400">VisibleChange</animation>
@@ -36,12 +36,12 @@
 					<pagecontrol>70</pagecontrol>
 					<onup>700</onup>
 					<ondown>700</ondown>
-					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),video) + Control.IsVisible(500)">500</onright>
-					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),music) + Control.IsVisible(501)">501</onright>
-					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),addons) + Control.IsVisible(502)">502</onright>
-					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),pictures) + Control.IsVisible(503)">503</onright>
-					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),outdated) + Control.IsVisible(504)">504</onright>
-					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),android) + Control.IsVisible(506)">506</onright>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),video) + Control.IsVisible(500)">500</onright>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),music) + Control.IsVisible(501)">501</onright>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),addons) + Control.IsVisible(502)">502</onright>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),pictures) + Control.IsVisible(503)">503</onright>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),outdated) + Control.IsVisible(504)">504</onright>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),android) + Control.IsVisible(506)">506</onright>
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
 					<focusedlayout height="120">
 						<control type="image">
@@ -203,7 +203,7 @@
 					<radioposy>0</radioposy>
 					<radiowidth>40</radiowidth>
 					<radioheight>40</radioheight>
-					<enable>IntegerGreaterThan(Container(8000).NumItems,0)</enable>
+					<enable>Integer.IsGreater(Container(8000).NumItems,0)</enable>
 					<textureradioonfocus>icons/submenu/updatelibrary.png</textureradioonfocus>
 					<textureradioonnofocus>icons/submenu/updatelibrary.png</textureradioonnofocus>
 					<textureradioofffocus>icons/submenu/updatelibrary.png</textureradioofffocus>
@@ -303,42 +303,42 @@
 				<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
 			</control>
+			<include name="TopBar">
+				<param name="breadcrumbs_label" value="$LOCALIZE[24001]" />
+				<param name="breadcrumbs_icon" value="icons/settings/addons.png" />
+			</include>
+			<include>BottomBar</include>
+			<include name="UpDownArrows">
+				<param name="container_id" value="500" />
+				<param name="visible" value="!System.HasModalDialog" />
+			</include>
+			<include name="UpDownArrows">
+				<param name="container_id" value="501" />
+				<param name="visible" value="!System.HasModalDialog" />
+			</include>
+			<include name="UpDownArrows">
+				<param name="container_id" value="502" />
+				<param name="visible" value="!System.HasModalDialog" />
+			</include>
+			<include name="UpDownArrows">
+				<param name="container_id" value="503" />
+				<param name="visible" value="!System.HasModalDialog" />
+			</include>
+			<include name="UpDownArrows">
+				<param name="container_id" value="504" />
+				<param name="visible" value="!System.HasModalDialog" />
+			</include>
+			<include name="UpDownArrows">
+				<param name="container_id" value="505" />
+				<param name="visible" value="!System.HasModalDialog" />
+			</include>
+			<include name="InfoList">
+				<param name="path" value="addons://outdated/" />
+				<param name="height" value="1" />
+				<param name="width" value="1" />
+				<param name="list_id" value="8000" />
+				<param name="item_label" value="" />
+			</include>
 		</control>
-		<include name="UpDownArrows">
-			<param name="container_id" value="500" />
-			<param name="visible" value="!System.HasModalDialog" />
-		</include>
-		<include name="UpDownArrows">
-			<param name="container_id" value="501" />
-			<param name="visible" value="!System.HasModalDialog" />
-		</include>
-		<include name="UpDownArrows">
-			<param name="container_id" value="502" />
-			<param name="visible" value="!System.HasModalDialog" />
-		</include>
-		<include name="UpDownArrows">
-			<param name="container_id" value="503" />
-			<param name="visible" value="!System.HasModalDialog" />
-		</include>
-		<include name="UpDownArrows">
-			<param name="container_id" value="504" />
-			<param name="visible" value="!System.HasModalDialog" />
-		</include>
-		<include name="UpDownArrows">
-			<param name="container_id" value="505" />
-			<param name="visible" value="!System.HasModalDialog" />
-		</include>
-		<include name="TopBar">
-			<param name="breadcrumbs_label" value="$LOCALIZE[24001]" />
-			<param name="breadcrumbs_icon" value="icons/settings/addons.png" />
-		</include>
-		<include name="InfoList">
-			<param name="path" value="addons://outdated/" />
-			<param name="height" value="1" />
-			<param name="width" value="1" />
-			<param name="list_id" value="8000" />
-			<param name="item_label" value="" />
-		</include>
-		<include>BottomBar</include>
 	</controls>
 </window>

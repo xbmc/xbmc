@@ -190,7 +190,7 @@
 					</control>
 					<control type="group">
 						<visible>!IsEmpty(ListItem.label2)</visible>
-						<visible>!Stringcompare(Container.SortMethod,$LOCALIZE[38018]) + !Stringcompare(Container.SortMethod,$LOCALIZE[20359]) + !Stringcompare(Container.SortMethod,$LOCALIZE[551])</visible>
+						<visible>!String.IsEqual(Container.SortMethod,$LOCALIZE[38018]) + !String.IsEqual(Container.SortMethod,$LOCALIZE[20359]) + !String.IsEqual(Container.SortMethod,$LOCALIZE[551])</visible>
 						<control type="image">
 							<left>11</left>
 							<top>19</top>
@@ -259,7 +259,7 @@
 						</control>
 						<control type="group">
 							<visible>!IsEmpty(ListItem.label2)</visible>
-							<visible>!Stringcompare(Container.SortMethod,$LOCALIZE[38018]) + !Stringcompare(Container.SortMethod,$LOCALIZE[20359]) + !Stringcompare(Container.SortMethod,$LOCALIZE[551])</visible>
+							<visible>!String.IsEqual(Container.SortMethod,$LOCALIZE[38018]) + !String.IsEqual(Container.SortMethod,$LOCALIZE[20359]) + !String.IsEqual(Container.SortMethod,$LOCALIZE[551])</visible>
 							<control type="image">
 								<left>11</left>
 								<top>19</top>

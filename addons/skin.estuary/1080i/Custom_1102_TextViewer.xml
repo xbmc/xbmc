@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <window type="dialog" id="1102">
-	<defaultcontrol always="true">3000</defaultcontrol>
+	<defaultcontrol always="true">1000</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
 		<control type="group">
@@ -28,6 +28,12 @@
 				<onup>3000</onup>
 			</control>
 		</control>
+		<control type="button" id="1000">
+			<include>HiddenObject</include>
+			<onclick>Action(Close)</onclick>
+			<onup>PageUp(3000)</onup>
+			<ondown>PageDown(3000)</ondown>
+		</control>
 		<control type="button">
 			<left>936</left>
 			<top>113</top>
@@ -37,7 +43,7 @@
 			<onclick>Up</onclick>
 			<texturefocus colordiffuse="button_focus" flipy="true">overlays/arrowdown.png</texturefocus>
 			<texturenofocus colordiffuse="button_focus" flipy="true">overlays/arrowdown.png</texturenofocus>
-			<visible>Control.IsVisible(3000) + IntegerGreaterThan(Container(2000).CurrentPage,1)</visible>
+			<visible>Control.IsVisible(3000) + Integer.IsGreater(Container(2000).CurrentPage,1)</visible>
 			<animation delay="80" effect="fade" time="120">VisibleChange</animation>
 		</control>
 		<control type="button">
@@ -49,7 +55,7 @@
 			<onclick>Down</onclick>
 			<texturefocus colordiffuse="button_focus">overlays/arrowdown.png</texturefocus>
 			<texturenofocus colordiffuse="button_focus">overlays/arrowdown.png</texturenofocus>
-			<visible>Control.IsVisible(3000) + !StringCompare(Container(2000).CurrentPage,Container(2000).NumPages)</visible>
+			<visible>Control.IsVisible(3000) + !Integer.IsEqual(Container(2000).CurrentPage,Container(2000).NumPages)</visible>
 			<animation delay="80" effect="fade" time="120">VisibleChange</animation>
 		</control>
 	</controls>

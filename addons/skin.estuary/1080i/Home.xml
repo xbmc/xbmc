@@ -25,15 +25,17 @@
 			<include>FullScreenDimensions</include>
 			<aspectratio>scale</aspectratio>
 			<fadetime>600</fadetime>
-			<animation effect="zoom" center="auto" end="102,102" time="0" condition="IntegerGreaterThan(System.StereoscopicMode,0)">conditional</animation>
+			<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
 			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 			<animation effect="fade" time="400">VisibleChange</animation>
 			<imagepath background="true" colordiffuse="40FFFFFF">$VAR[HomeFanartVar]</imagepath>
 			<visible>!Player.HasMedia</visible>
 		</control>
+		<control type="group">
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+
 		<control type="group" id="2000">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(musicinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation)">Conditional</animation>
 			<animation type="Conditional" condition="Control.IsVisible(20000)" reversible="false">
 				<effect type="slide" end="0,20" time="60" tween="sine" />
 				<effect type="slide" end="0,-20" time="180" tween="sine" delay="80" />
@@ -46,15 +48,15 @@
 			<left>20</left>
 			<include>OpenClose_Right</include>
 			<control type="group" id="5000">
-				<visible>Stringcompare(Container(9000).ListItem.Property(id),movies)</visible>
+				<visible>String.IsEqual(Container(9000).ListItem.Property(id),movies)</visible>
 				<include>Visible_Right_Delayed</include>
 				<control type="button" id="5888">
 					<width>1</width>
 					<height>1</height>
 					<label>-</label>
 					<onfocus>SetFocus(5001)</onfocus>
-					<onfocus condition="IntegerGreaterThan(Container(5200).NumItems,0)">SetFocus(5200)</onfocus>
-					<onfocus condition="IntegerGreaterThan(Container(5100).NumItems,0)">SetFocus(5100)</onfocus>
+					<onfocus condition="Integer.IsGreater(Container(5200).NumItems,0)">SetFocus(5200)</onfocus>
+					<onfocus condition="Integer.IsGreater(Container(5100).NumItems,0)">SetFocus(5100)</onfocus>
 					<onclick>noop</onclick>
 					<texturefocus>-</texturefocus>
 					<texturenofocus>-</texturenofocus>
@@ -98,7 +100,6 @@
 						<param name="widget_header" value="$LOCALIZE[31010]"/>
 						<param name="widget_target" value="videos"/>
 						<param name="list_id" value="5100"/>
-						<param name="list_oninfo" value="RunScript(script.extendedinfo,info=extendedinfo,dbid=$INFO[Container(5100).ListItem.Dbid])"/>
 						<param name="onup_id" value="5900"/>
 						<param name="ondown_id" value="5200"/>
 					</include>
@@ -107,7 +108,6 @@
 						<param name="widget_header" value="$LOCALIZE[20386]"/>
 						<param name="widget_target" value="videos"/>
 						<param name="list_id" value="5200"/>
-						<param name="list_oninfo" value="RunScript(script.extendedinfo,info=extendedinfo,dbid=$INFO[Container(5200).ListItem.Dbid])"/>
 						<param name="onup_id" value="5100"/>
 						<param name="ondown_id" value="5300"/>
 					</include>
@@ -116,7 +116,6 @@
 						<param name="widget_header" value="$LOCALIZE[31007]"/>
 						<param name="widget_target" value="videos"/>
 						<param name="list_id" value="5300"/>
-						<param name="list_oninfo" value="RunScript(script.extendedinfo,info=extendedinfo,dbid=$INFO[Container(5300).ListItem.Dbid])"/>
 						<param name="onup_id" value="5200"/>
 						<param name="ondown_id" value="5400"/>
 					</include>
@@ -125,7 +124,6 @@
 						<param name="widget_header" value="$LOCALIZE[31006]"/>
 						<param name="widget_target" value="videos"/>
 						<param name="list_id" value="5400"/>
-						<param name="list_oninfo" value="RunScript(script.extendedinfo,info=extendedinfo,dbid=$INFO[Container(5400).ListItem.Dbid])"/>
 						<param name="onup_id" value="5300"/>
 						<param name="ondown_id" value="20001"/>
 					</include>
@@ -145,15 +143,15 @@
 				</control>
 			</control>
 			<control type="group" id="6000">
-				<visible>Stringcompare(Container(9000).ListItem.Property(id),tvshows)</visible>
+				<visible>String.IsEqual(Container(9000).ListItem.Property(id),tvshows)</visible>
 				<include>Visible_Right_Delayed</include>
 				<control type="button" id="6888">
 					<width>1</width>
 					<height>1</height>
 					<label>-</label>
 					<onfocus>SetFocus(6001)</onfocus>
-					<onfocus condition="IntegerGreaterThan(Container(6200).NumItems,0)">SetFocus(6200)</onfocus>
-					<onfocus condition="IntegerGreaterThan(Container(6100).NumItems,0)">SetFocus(6100)</onfocus>
+					<onfocus condition="Integer.IsGreater(Container(6200).NumItems,0)">SetFocus(6200)</onfocus>
+					<onfocus condition="Integer.IsGreater(Container(6100).NumItems,0)">SetFocus(6100)</onfocus>
 					<onclick>noop</onclick>
 					<texturefocus>-</texturefocus>
 					<texturenofocus>-</texturenofocus>
@@ -200,7 +198,6 @@
 						<param name="widget_target" value="videos"/>
 						<param name="second_label" value="$LOCALIZE[16102]: $INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ]" />
 						<param name="list_id" value="6100"/>
-						<param name="list_oninfo" value="RunScript(script.extendedinfo,info=extendedtvinfo,dbid=$INFO[Container(6100).ListItem.Dbid])"/>
 						<param name="onup_id" value="6900"/>
 						<param name="ondown_id" value="6200"/>
 					</include>
@@ -211,7 +208,6 @@
 						<param name="widget_target" value="videos"/>
 						<param name="second_label" value="[COLOR button_focus]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode][/COLOR] $INFO[ListItem.Title]" />
 						<param name="list_id" value="6200"/>
-						<param name="list_oninfo" value="RunScript(script.extendedinfo,info=extendedepisodeinfo,tvshow=$INFO[Container(6200).ListItem.TvShowTitle],season=$INFO[Container(6200).ListItem.season],episode=$INFO[Container(6200).ListItem.episode])"/>
 						<param name="onup_id" value="6100"/>
 						<param name="ondown_id" value="6300"/>
 					</include>
@@ -222,7 +218,6 @@
 						<param name="widget_target" value="videos"/>
 						<param name="second_label" value="$LOCALIZE[20360]: $INFO[ListItem.Property(TotalEpisodes)]" />
 						<param name="list_id" value="6300"/>
-						<param name="list_oninfo" value="RunScript(script.extendedinfo,info=extendedtvinfo,dbid=$INFO[Container(6300).ListItem.Dbid])"/>
 						<param name="onup_id" value="6200"/>
 						<param name="ondown_id" value="20001"/>
 					</include>
@@ -242,14 +237,14 @@
 				</control>
 			</control>
 			<control type="group" id="7000">
-				<visible>Stringcompare(Container(9000).ListItem.Property(id),music)</visible>
+				<visible>String.IsEqual(Container(9000).ListItem.Property(id),music)</visible>
 				<include>Visible_Right_Delayed</include>
 				<control type="button" id="7888">
 					<width>1</width>
 					<height>1</height>
 					<label>-</label>
 					<onfocus>SetFocus(7001)</onfocus>
-					<onfocus condition="IntegerGreaterThan(Container(7100).NumItems,0)">SetFocus(7100)</onfocus>
+					<onfocus condition="Integer.IsGreater(Container(7100).NumItems,0)">SetFocus(7100)</onfocus>
 					<onclick>noop</onclick>
 					<texturefocus>-</texturefocus>
 					<texturenofocus>-</texturenofocus>
@@ -341,6 +336,8 @@
 						<param name="list_id" value="7600"/>
 						<param name="onup_id" value="7500"/>
 						<param name="ondown_id" value="20001"/>
+						<param name="sortby" value="playcount"/>
+						<param name="sortorder" value="descending"/>
 					</include>
 					<include name="ImageWidget">
 						<param name="image_path" value="special://skin/extras/home-images/music.jpg"/>
@@ -355,14 +352,14 @@
 				</control>
 			</control>
 			<control type="group" id="8000">
-				<visible>Stringcompare(Container(9000).ListItem.Property(id),addons)</visible>
+				<visible>String.IsEqual(Container(9000).ListItem.Property(id),addons)</visible>
 				<include>Visible_Right_Delayed</include>
 				<control type="button" id="8888">
 					<width>1</width>
 					<height>1</height>
 					<label>-</label>
 					<onfocus>SetFocus(8001)</onfocus>
-					<onfocus condition="IntegerGreaterThan(Container(8100).NumItems,0)">SetFocus(8100)</onfocus>
+					<onfocus condition="Integer.IsGreater(Container(8100).NumItems,0)">SetFocus(8100)</onfocus>
 					<onclick>noop</onclick>
 					<texturefocus>-</texturefocus>
 					<texturenofocus>-</texturenofocus>
@@ -458,20 +455,20 @@
 						<param name="button_label" value="$LOCALIZE[31118]" />
 						<param name="button_onclick" value="ActivateWindow(addonbrowser)"/>
 						<param name="button_id" value="8600"/>
-						<param name="visible" value="!IntegerGreaterThan(Container(8100).NumItems,0) + !IntegerGreaterThan(Container(8200).NumItems,0) + !IntegerGreaterThan(Container(8300).NumItems,0) + !IntegerGreaterThan(Container(8400).NumItems,0) + !IntegerGreaterThan(Container(8500).NumItems,0)"/>
+						<param name="visible" value="!Integer.IsGreater(Container(8100).NumItems,0) + !Integer.IsGreater(Container(8200).NumItems,0) + !Integer.IsGreater(Container(8300).NumItems,0) + !Integer.IsGreater(Container(8400).NumItems,0) + !Integer.IsGreater(Container(8500).NumItems,0)"/>
 						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoProgramsButton)"/>
 					</include>
 				</control>
 			</control>
 			<control type="group" id="11000">
-				<visible>Stringcompare(Container(9000).ListItem.Property(id),video)</visible>
+				<visible>String.IsEqual(Container(9000).ListItem.Property(id),video)</visible>
 				<include>Visible_Right_Delayed</include>
 				<control type="button" id="11888">
 					<width>1</width>
 					<height>1</height>
 					<label>-</label>
 					<onfocus>SetFocus(11001)</onfocus>
-					<onfocus condition="IntegerGreaterThan(Container(11100).NumItems,0)">SetFocus(11100)</onfocus>
+					<onfocus condition="Integer.IsGreater(Container(11100).NumItems,0)">SetFocus(11100)</onfocus>
 					<onclick>noop</onclick>
 					<texturefocus>-</texturefocus>
 					<texturenofocus>-</texturenofocus>
@@ -525,20 +522,20 @@
 						<param name="button_onclick" value="ActivateWindow(videos,root)"/>
 						<param name="button_id" value="11300"/>
 						<param name="onup_id" value="11200"/>
-						<param name="visible" value="!IntegerGreaterThan(Container(11200).NumItems,0) + !IntegerGreaterThan(Container(11100).NumItems,0)"/>
+						<param name="visible" value="!Integer.IsGreater(Container(11200).NumItems,0) + !Integer.IsGreater(Container(11100).NumItems,0)"/>
 						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoVideosButton)"/>
 					</include>
 				</control>
 			</control>
 			<control type="group" id="12000">
-				<visible>Stringcompare(Container(9000).ListItem.Property(id),livetv)</visible>
+				<visible>String.IsEqual(Container(9000).ListItem.Property(id),livetv)</visible>
 				<include>Visible_Right_Delayed</include>
 				<control type="button" id="12888">
 					<width>1</width>
 					<height>1</height>
 					<label>-</label>
 					<onfocus>SetFocus(12001)</onfocus>
-					<onfocus condition="IntegerGreaterThan(Container(12100).NumItems,0)">SetFocus(12100)</onfocus>
+					<onfocus condition="Integer.IsGreater(Container(12100).NumItems,0)">SetFocus(12100)</onfocus>
 					<onclick>noop</onclick>
 					<texturefocus>-</texturefocus>
 					<texturenofocus>-</texturenofocus>
@@ -612,14 +609,14 @@
 				</control>
 			</control>
 			<control type="group" id="13000">
-				<visible>Stringcompare(Container(9000).ListItem.Property(id),radio)</visible>
+				<visible>String.IsEqual(Container(9000).ListItem.Property(id),radio)</visible>
 				<include>Visible_Right_Delayed</include>
 				<control type="button" id="13888">
 					<width>1</width>
 					<height>1</height>
 					<label>-</label>
 					<onfocus>SetFocus(13001)</onfocus>
-					<onfocus condition="IntegerGreaterThan(Container(13100).NumItems,0)">SetFocus(13100)</onfocus>
+					<onfocus condition="Integer.IsGreater(Container(13100).NumItems,0)">SetFocus(13100)</onfocus>
 					<onclick>noop</onclick>
 					<texturefocus>-</texturefocus>
 					<texturenofocus>-</texturenofocus>
@@ -663,14 +660,14 @@
 				</control>
 			</control>
 			<control type="group" id="15000">
-				<visible>Stringcompare(Container(9000).ListItem.Property(id),weather)</visible>
+				<visible>String.IsEqual(Container(9000).ListItem.Property(id),weather)</visible>
 				<include>Visible_Right_Delayed</include>
 				<control type="button" id="15888">
 					<width>1</width>
 					<height>1</height>
 					<label>-</label>
 					<onfocus>SetFocus(15001)</onfocus>
-					<onfocus condition="IntegerGreaterThan(Container(15100).NumItems,0)">SetFocus(15100)</onfocus>
+					<onfocus condition="Integer.IsGreater(Container(15100).NumItems,0)">SetFocus(15100)</onfocus>
 					<onfocus condition="IsEmpty(Weather.Plugin)">SetFocus(15300)</onfocus>
 					<onclick>noop</onclick>
 					<texturefocus>-</texturefocus>
@@ -804,7 +801,7 @@
 				</control>
 			</control>
 			<control type="group" id="4000">
-				<visible>Stringcompare(Container(9000).ListItem.Property(id),pictures)</visible>
+				<visible>String.IsEqual(Container(9000).ListItem.Property(id),pictures)</visible>
 				<scrolltime tween="cubic" easing="out">500</scrolltime>
 				<include>Visible_Right_Delayed</include>
 				<control type="grouplist" id="4001">
@@ -831,7 +828,6 @@
 			<param name="breadcrumbs_icon" value="" />
 		</include>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(musicinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation)">Conditional</animation>
 			<control type="image">
 				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
@@ -855,7 +851,6 @@
 		</control>
 		<include>BottomBar</include>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(musicinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation)">Conditional</animation>
 			<include>OpenClose_Left</include>
 			<control type="radiobutton" id="900">
 				<left>37</left>
@@ -869,7 +864,8 @@
 				<aligny>center</aligny>
 				<onclick>ActivateWindow(1107)</onclick>
 				<font>font14</font>
-				<label>-</label>
+				<label>$LOCALIZE[31001]...</label>
+				<textwidth>300</textwidth>
 				<radioposx>338</radioposx>
 				<textoffsetx>40</textoffsetx>
 				<radioposy>0</radioposy>
@@ -879,17 +875,6 @@
 				<textureradioonnofocus>icons/search.png</textureradioonnofocus>
 				<textureradioofffocus>icons/search.png</textureradioofffocus>
 				<textureradiooffnofocus>icons/search.png</textureradiooffnofocus>
-			</control>
-			<control type="label">
-				<left>77</left>
-				<top>91</top>
-				<width>520</width>
-				<height>110</height>
-				<aligny>center</aligny>
-				<font>font14</font>
-				<scrollout>false</scrollout>
-				<pauseatend>5000</pauseatend>
-				<label>$LOCALIZE[31001]...</label>
 			</control>
 			<control type="group">
 				<left>53</left>
@@ -907,14 +892,14 @@
 					<width>382</width>
 					<height>671</height>
 					<pagecontrol>70</pagecontrol>
-					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),movies) + Control.IsVisible(5000)">5000</onright>
-					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),tvshows) + Control.IsVisible(6000)">6000</onright>
-					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),music) + Control.IsVisible(7000)">7000</onright>
-					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),addons) + Control.IsVisible(8000)">8000</onright>
-					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),video) + Control.IsVisible(11000)">11000</onright>
-					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),livetv) + Control.IsVisible(12000)">12000</onright>
-					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),radio) + Control.IsVisible(13000)">13000</onright>
-					<onright condition="Stringcompare(Container(9000).ListItem.Property(id),weather) + Control.IsVisible(15000)">15000</onright>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),movies) + Control.IsVisible(5000)">5000</onright>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),tvshows) + Control.IsVisible(6000)">6000</onright>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),music) + Control.IsVisible(7000)">7000</onright>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),addons) + Control.IsVisible(8000)">8000</onright>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),video) + Control.IsVisible(11000)">11000</onright>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),livetv) + Control.IsVisible(12000)">12000</onright>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),radio) + Control.IsVisible(13000)">13000</onright>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),weather) + Control.IsVisible(15000)">15000</onright>
 					<onup>900</onup>
 					<ondown>700</ondown>
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
@@ -1140,7 +1125,6 @@
 			</control>
 		</control>
 		<control type="radiobutton" id="14200">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(musicinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation)">Conditional</animation>
 			<top>995</top>
 			<left>35</left>
 			<width>420</width>
@@ -1156,6 +1140,8 @@
 			<radioposy>0</radioposy>
 			<radiowidth>34</radiowidth>
 			<radioheight>34</radioheight>
+			<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+			<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
 			<textureradioonfocus>icons/now-playing/fullscreen.png</textureradioonfocus>
 			<textureradioonnofocus>icons/now-playing/fullscreen.png</textureradioonnofocus>
 			<textureradioofffocus>icons/now-playing/fullscreen.png</textureradioofffocus>
@@ -1166,7 +1152,6 @@
 			<visible>Player.hasMedia</visible>
 		</control>
 		<control type="rss">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(musicinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation)">Conditional</animation>
 			<left>0</left>
 			<top>1041</top>
 			<height>30</height>
@@ -1180,6 +1165,7 @@
 			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 			<visible>!Player.hasMedia</visible>
+		</control>
 		</control>
 	</controls>
 </window>

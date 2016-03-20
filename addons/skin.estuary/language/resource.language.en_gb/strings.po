@@ -56,11 +56,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr ""
 
-#: /1080i/Home.xml:138
-msgctxt "#31008"
-msgid "In-progress TV Shows"
-msgstr ""
-
 #: /1080i/MyVideoNav.xml:278
 msgctxt "#31009"
 msgid "Download icons"
@@ -101,7 +96,10 @@ msgctxt "#31016"
 msgid "Recently played channels"
 msgstr ""
 
-#empty string with id 31017
+#: /1080i/DialogVideoInfo.xml:265
+msgctxt "#31017"
+msgid "Rated"
+msgstr ""
 
 #: /1080i/Home.xml:443
 msgctxt "#31018"
@@ -118,8 +116,7 @@ msgctxt "#31020"
 msgid "Actions"
 msgstr ""
 
-#: /1080i/AddonBrowser.xml:35 /1080i/DialogPVRChannelManager.xml:203 /1080i/Includes_MediaMenu.xml:116
-#: /1080i/EventLog.xml:228
+#: /1080i/AddonBrowser.xml:35 /1080i/DialogPVRChannelManager.xml:203 /1080i/Includes_MediaMenu.xml:116 /1080i/EventLog.xml:228
 msgctxt "#31021"
 msgid "Misc options"
 msgstr ""
@@ -174,8 +171,7 @@ msgctxt "#31031"
 msgid "Version info"
 msgstr ""
 
-#: /1080i/EventLog.xml:25 /1080i/Includes_MediaMenu.xml:216 /1080i/SmartPlaylistEditor.xml:67 /1080i/EventLog.xml:220
-#: /1080i/Includes_MediaMenu.xml:139
+#: /1080i/EventLog.xml:25 /1080i/Includes_MediaMenu.xml:216 /1080i/SmartPlaylistEditor.xml:67 /1080i/EventLog.xml:220 /1080i/Includes_MediaMenu.xml:139
 msgctxt "#31032"
 msgid "Order"
 msgstr ""
@@ -190,8 +186,7 @@ msgctxt "#31034"
 msgid "Extended info"
 msgstr ""
 
-#: /1080i/DialogPVRChannelManager.xml:279 /1080i/DialogPVRChannelsOSD.xml:291 /1080i/DialogPVRGuideOSD.xml:171
-#: /1080i/Variables.xml:41 /1080i/FileBrowser.xml:238
+#: /1080i/DialogPVRChannelManager.xml:279 /1080i/DialogPVRChannelsOSD.xml:291 /1080i/DialogPVRGuideOSD.xml:171 /1080i/Variables.xml:41 /1080i/FileBrowser.xml:238
 msgctxt "#31035"
 msgid "Pages"
 msgstr ""
@@ -674,4 +669,9 @@ msgstr ""
 #: /1080i/SkinSettings.xml:117
 msgctxt "#31131"
 msgid "Choose home fanart pack"
+msgstr ""
+
+#: /1080i/MyVideoNav.xml:121 /1080i/View_502_FanArt.xml:213
+msgctxt "#31132"
+msgid "min"
 msgstr ""

@@ -170,7 +170,7 @@
 					<param name="texture" value="osd/fullscreen/buttons/next.png"/>
 				</include>
 				<onclick>PlayerControl(Next)</onclick>
-				<visible>!VideoPlayer.Content(livetv) + [IntegerGreaterThan(Playlist.Length(video),1) | IntegerGreaterThan(Playlist.Length(music),1)]</visible>
+				<visible>!VideoPlayer.Content(livetv) + [Integer.IsGreater(Playlist.Length(video),1) | Integer.IsGreater(Playlist.Length(music),1)]</visible>
 			</control>
 			<control type="group" id="699">
 				<width>125</width>

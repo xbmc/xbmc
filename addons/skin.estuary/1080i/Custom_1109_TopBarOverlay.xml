@@ -9,7 +9,7 @@
             <param name="time_sublabel" value="$INFO[Player.FinishTime,$LOCALIZE[31080]: ]" />
             <param name="breadcrumbs_icon" value="icons/settings/video.png" />
         </include>
-        <include name="InfoDialogTopBarInfo">
+        <include name="LeftAlignedInfo">
             <param name="main_label" value="$INFO[VideoPlayer.Title]$INFO[VideoPlayer.Year, ([COLOR button_focus],[/COLOR])]" />
             <param name="sub_label" value="$VAR[OSDSubLabelVar]" />
         </include>

@@ -31,7 +31,7 @@
 				<control type="group" id="4100">
 					<height>0</height>
 					<control type="image">
-						<posx>40</posx>
+						<left>40</left>
 						<top>-68</top>
 						<width>350</width>
 						<height>40</height>

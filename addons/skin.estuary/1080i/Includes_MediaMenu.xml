@@ -332,7 +332,7 @@
 				<include>MediaMenuItemsCommon</include>
 				<label>$LOCALIZE[31023]</label>
 				<label2>[B]$INFO[Container.Viewmode][/B]</label2>
-				<enable>IntegerGreaterThan(Container.ViewCount,1)</enable>
+				<enable>Integer.IsGreater(Container.ViewCount,1)</enable>
 				<onclick>Container.NextViewMode</onclick>
 			</control>
 			<control type="button" id="6053">

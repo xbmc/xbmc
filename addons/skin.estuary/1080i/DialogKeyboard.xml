@@ -30,7 +30,7 @@
 				<width>1610</width>
 				<height>800</height>
 				<texture border="2">dialogs/dialog-bg-solid.png</texture>
-				<visible>IntegerGreaterThan(Container(9010).NumItems,0) | Control.IsVisible(313)</visible>
+				<visible>Integer.IsGreater(Container(9010).NumItems,0) | Control.IsVisible(313)</visible>
 			</control>
 			<control type="image">
 				<description>background image</description>

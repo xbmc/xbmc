@@ -28,6 +28,7 @@
 	<constant name="DepthBars">0.12</constant>
 	<constant name="DepthBackground">-0.80</constant>
 	<constant name="DepthSideBlade">0.10</constant>
+	<expression name="infodialog_active">Window.IsActive(musicinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation) | Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo) | Window.IsActive(pictureinfo)</expression>
 	<include name="CommonScrollbars">
 		<control type="group">
 			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="System.HasModalDialog">Conditional</animation>
@@ -398,7 +399,7 @@
 	</include>
 	<include name="MediaFlags">
 		<top>898</top>
-		<visible>Skin.HasSetting(show_mediaflags) | Window.IsActive(movieinformation)</visible>
+		<visible>Skin.HasSetting(show_mediaflags)</visible>
 		<animation effect="fade" time="200">VisibleChange</animation>
 		<control type="grouplist">
 			<orientation>horizontal</orientation>
@@ -610,7 +611,7 @@
 			<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[container_target]">$PARAM[container_path]</content>
 		</control>
 	</include>
-	<include name="InfoDialogTopBarInfo">
+	<include name="LeftAlignedInfo">
 		<param name="id">33333</param>
 		<definition>
 			<control type="grouplist">
@@ -642,6 +643,42 @@
 			</control>
 		</definition>
 	</include>
+	<include name="InfoDialogTopBarInfo">
+		<param name="id">33333</param>
+		<param name="posy">20</param>
+		<definition>
+			<control type="grouplist">
+				<left>60</left>
+				<top>$PARAM[posy]</top>
+				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+				<width>1800</width>
+				<height>150</height>
+				<itemgap>0</itemgap>
+				<orientation>vertical</orientation>
+				<control type="label">
+					<width>1800</width>
+					<label>$PARAM[main_label]</label>
+					<font>font35_title</font>
+					<shadowcolor>text_shadow</shadowcolor>
+					<height>65</height>
+					<align>center</align>
+					<scroll>true</scroll>
+					<animation effect="slide" start="0,0" end="0,15" time="0" condition="IsEmpty(Control.GetLabel($PARAM[id]))">Conditional</animation>
+				</control>
+				<control type="label" id="$PARAM[id]">
+					<label>$PARAM[sub_label]</label>
+					<font>font13</font>
+					<left>85</left>
+					<shadowcolor>text_shadow</shadowcolor>
+					<align>center</align>
+					<height>100</height>
+					<width>1800</width>
+				</control>
+			</control>
+		</definition>
+	</include>
+
 	<include name="UpDownArrows">
 		<param name="up_posy">134</param>
 		<param name="down_posy">910</param>
@@ -839,6 +876,7 @@
 		<param name="time_sublabel">$INFO[System.Date]</param>
 		<definition>
 			<control type="group">
+				<animation effect="slide" end="0,-90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
 				<depth>DepthBars</depth>
 				<animation effect="fade" start="0" end="100" time="300" condition="[Window.Previous(fullscreenvideo) | Window.Previous(startup)] + !Window.IsVisible(1109)">WindowOpen</animation>
 				<control type="image">
@@ -873,18 +911,21 @@
 					<height>100</height>
 					<orientation>horizontal</orientation>
 					<usecontrolcoords>true</usecontrolcoords>
-					<visible>!Window.isActive(movieinformation) + !Window.isActive(addoninformation) + !Window.isActive(pictureinfo) + !Window.isActive(musicinformation) + !Window.isActive(songinformation) + !Window.IsActive(pvrguideinfo) + !Window.IsActive(pvrrecordinginfo)</visible>
 					<animation effect="fade" time="150">VisibleChange</animation>
 					<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
 					<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+						<animation effect="slide" end="0,12" time="200" reversible="true" condition="IsEmpty(Container.SortMethod)">Conditional</animation>
 					<control type="label">
 						<label>$PARAM[breadcrumbs_label]</label>
-						<animation effect="slide" end="0,12" time="200" reversible="true" condition="IsEmpty(Container.SortMethod)">Conditional</animation>
 						<include>BreadcrumbsLabel</include>
 					</control>
 					<control type="label">
+						<label>$INFO[Container.ShowTitle, / ]</label>
+						<include>BreadcrumbsLabel</include>
+						<visible>!IsEmpty(Container.ShowTitle) + !String.IsEqual(Container.ShowTitle,Container.FolderName)</visible>
+					</control>
+					<control type="label">
 						<label>$INFO[Container.FolderName, / ]</label>
-						<animation effect="slide" end="0,12" time="200" reversible="true" condition="IsEmpty(Container.SortMethod)">Conditional</animation>
 						<include>BreadcrumbsLabel</include>
 						<visible>![Container.Content() + Window.IsActive(videos)]</visible>
 						<visible>![Window.IsActive(PVR) | Window.IsActive(MyPVRTimers.xml)]</visible>
@@ -892,7 +933,7 @@
 					<control type="label">
 						<label>$INFO[Control.GetLabel(10),: ]</label>
 						<include>BreadcrumbsLabel</include>
-						<visible>!Stringcompare(Control.GetLabel(10),$LOCALIZE[16100]) + Window.IsActive(videos)</visible>
+						<visible>!String.IsEqual(Control.GetLabel(10),$LOCALIZE[16100]) + Window.IsActive(videos)</visible>
 					</control>
 					<control type="label">
 						<label> ($LOCALIZE[31052])</label>
@@ -909,7 +950,6 @@
 					<height>100</height>
 					<width>auto</width>
 					<visible>!IsEmpty(Container.SortMethod)</visible>
-					<visible>!Window.isActive(movieinformation) + !Window.isActive(addoninformation) + !Window.isActive(pictureinfo) + !Window.isActive(musicinformation) + !Window.isActive(songinformation) + !Window.IsActive(pvrguideinfo) + !Window.IsActive(pvrrecordinginfo)</visible>
 					<animation effect="fade" time="150">VisibleChange</animation>
 					<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
 					<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
@@ -969,7 +1009,7 @@
 			<textoffsetx>0</textoffsetx>
 			<onclick>ActivateWindow(weather)</onclick>
 			<label>$INFO[Window(Weather).Property(Current.Temperature)]$INFO[System.TemperatureUnits]</label>
-			<visible>Skin.HasSetting(show_weatherinfo) + Weather.IsFetched + ![stringcompare(Weather.FanartCode,na) + substring(Weather.Conditions,/)]</visible>
+			<visible>Skin.HasSetting(show_weatherinfo) + Weather.IsFetched + ![String.IsEqual(Weather.FanartCode,na) + substring(Weather.Conditions,/)]</visible>
 		</control>
 		<control type="image">
 			<top>4</top>
@@ -978,7 +1018,7 @@
 			<fadetime>300</fadetime>
 			<aspectratio align="left">keep</aspectratio>
 			<texture colordiffuse="button_focus">weather/small/$INFO[Weather.FanartCode].png</texture>
-			<visible>Skin.HasSetting(show_weatherinfo) + Weather.IsFetched + ![stringcompare(Weather.FanartCode,na) + substring(Weather.Conditions,/)]</visible>
+			<visible>Skin.HasSetting(show_weatherinfo) + Weather.IsFetched + ![String.IsEqual(Weather.FanartCode,na) + substring(Weather.Conditions,/)]</visible>
 		</control>
 	</include>
 	<include name="BreadcrumbsLabel">
@@ -1004,7 +1044,7 @@
 				<depth>DepthBackground</depth>
 				<include>FullScreenDimensions</include>
 				<aspectratio>scale</aspectratio>
-				<animation effect="zoom" center="auto" end="102,102" time="0" condition="IntegerGreaterThan(System.StereoscopicMode,0)">conditional</animation>
+				<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
 				<animation effect="fade" start="100" end="75" time="0" condition="Player.HasMedia + IsEmpty(Window(videolibrary).Property(PlayingBackgroundMedia))">Conditional</animation>
 				<animation effect="fade" start="0" end="100" time="300" condition="Window.Previous(fullscreenvideo) | Window.Previous(startup)">WindowOpen</animation>
 				<texture fallback="special://skin/extras/backgrounds/SKINDEFAULT.jpg">$VAR[GlobalFanartVar]</texture>
@@ -1014,7 +1054,7 @@
 				<include>FullScreenDimensions</include>
 				<aspectratio>scale</aspectratio>
 				<fadetime>400</fadetime>
-				<animation effect="zoom" center="auto" end="102,102" time="0" condition="IntegerGreaterThan(System.StereoscopicMode,0)">conditional</animation>
+				<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
 				<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 				<animation effect="fade" time="400">VisibleChange</animation>
@@ -1028,6 +1068,7 @@
 		<param name="info_visible">False</param>
 		<definition>
 			<control type="group">
+				<animation effect="slide" end="0,90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
 				<depth>DepthBars</depth>
 				<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(visualisation)">WindowClose</animation>
 				<animation effect="fade" start="0" end="100" time="300" condition="Window.Previous(fullscreenvideo) | Window.Previous(startup) | Window.Previous(visualisation)">WindowOpen</animation>
@@ -1142,7 +1183,7 @@
 					<visible>!System.HasModalDialog</visible>
 					<visible>Container.Scrolling</visible>
 					<visible>!Container.Content(seasons)</visible>
-					<visible>StringCompare(Container.SortMethod,$LOCALIZE[551]) | StringCompare(Container.SortMethod,$LOCALIZE[561]) | StringCompare(Container.SortMethod,$LOCALIZE[558]) | StringCompare(Container.SortMethod,$LOCALIZE[557]) | StringCompare(Container.SortMethod,$LOCALIZE[556]) | StringCompare(Container.SortMethod,$LOCALIZE[563])</visible>
+					<visible>String.IsEqual(Container.SortMethod,$LOCALIZE[551]) | String.IsEqual(Container.SortMethod,$LOCALIZE[561]) | String.IsEqual(Container.SortMethod,$LOCALIZE[558]) | String.IsEqual(Container.SortMethod,$LOCALIZE[557]) | String.IsEqual(Container.SortMethod,$LOCALIZE[556]) | String.IsEqual(Container.SortMethod,$LOCALIZE[563])</visible>
 					<animation effect="fade" start="0" end="100" time="200" reversible="true">VisibleChange</animation>
 					<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 				</control>

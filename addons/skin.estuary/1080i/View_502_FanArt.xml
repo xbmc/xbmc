@@ -21,7 +21,6 @@
 					<width>1754</width>
 					<height>758</height>
 					<texture border="22">dialogs/dialog-bg.png</texture>
-					<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(movieinformation) | Window.IsActive(addoninformation)">Conditional</animation>
 				</control>
 				<control type="fixedlist" id="502">
 					<left>11</left>
@@ -90,7 +89,7 @@
 							<width>32</width>
 							<height>32</height>
 							<texture>lists/played-total.png</texture>
-							<visible>Stringcompare(Listitem.dbtype,tvshow)</visible>
+							<visible>String.IsEqual(Listitem.dbtype,tvshow)</visible>
 						</control>
 						<control type="label">
 							<left>514</left>
@@ -100,7 +99,7 @@
 							<font>font24_title</font>
 							<align>right</align>
 							<aligny>center</aligny>
-							<visible>Stringcompare(Listitem.dbtype,movie)</visible>
+							<visible>String.IsEqual(Listitem.dbtype,movie)</visible>
 							<label>$INFO[ListItem.Year]</label>
 						</control>
 					</itemlayout>
@@ -122,11 +121,9 @@
 								<height>702</height>
 								<fadetime>200</fadetime>
 								<aspectratio>scale</aspectratio>
-								<animation effect="fade" start="100" end="35" time="200" condition="!Window.IsActive(movieinformation)">Conditional</animation>
 								<texture fallback="DefaultVideo.png" background="true">$VAR[PosterVar]</texture>
 							</control>
 							<control type="group">
-								<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(movieinformation) | Window.IsActive(addoninformation)">Conditional</animation>
 								<control type="image">
 									<left>475</left>
 									<top>12</top>
@@ -183,7 +180,7 @@
 									<font>font24_title</font>
 									<align>right</align>
 									<aligny>center</aligny>
-									<visible>Stringcompare(Listitem.dbtype,movie)</visible>
+									<visible>String.IsEqual(Listitem.dbtype,movie)</visible>
 									<label>$INFO[ListItem.Year]</label>
 								</control>
 							</control>
@@ -196,7 +193,6 @@
 				<left>100</left>
 				<top>167</top>
 				<visible>Control.IsVisible(502)</visible>
-				<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(movieinformation) | Window.IsActive(addoninformation)">Conditional</animation>
 				<animation type="Visible">
 					<effect type="fade" start="0" end="100" delay="400" time="300" />
 				</animation>
@@ -214,7 +210,7 @@
 					<include name="InfoFlag">
 						<param name="visible" value="!IsEmpty(ListItem.duration)" />
 						<param name="icon" value="frame/clock.png" />
-						<param name="label" value="$INFO[ListItem.Duration,, min]" />
+						<param name="label" value="$INFO[ListItem.Duration,, $LOCALIZE[31132]]" />
 					</include>
 					<include name="InfoFlag">
 						<param name="visible" value="!IsEmpty(ListItem.Property(TotalEpisodes))" />
