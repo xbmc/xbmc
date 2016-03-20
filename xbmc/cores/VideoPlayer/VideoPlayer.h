@@ -526,6 +526,7 @@ protected:
   CEvent m_ready;
 
   CEdl m_Edl;
+  bool m_SkipCommercials;
 
   struct SEdlAutoSkipMarkers {
 
