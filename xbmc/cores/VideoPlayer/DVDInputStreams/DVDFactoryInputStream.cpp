@@ -39,8 +39,9 @@
 #include "URL.h"
 #include "filesystem/File.h"
 #include "utils/URIUtils.h"
-#include "Application.h"
+#include "ServiceBroker.h"
 #include "addons/InputStream.h"
+#include "addons/BinaryAddonCache.h"
 #include "Util.h"
 
 
@@ -60,7 +61,8 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
   }
 
   ADDON::VECADDONS addons;
-  g_application.m_binaryAddonCache.GetAddons(addons, ADDON::ADDON_INPUTSTREAM);
+  ADDON::CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
+  addonCache.GetAddons(addons, ADDON::ADDON_INPUTSTREAM);
   for (size_t i=0; i<addons.size(); ++i)
   {
     std::shared_ptr<ADDON::CInputStream> input(std::static_pointer_cast<ADDON::CInputStream>(addons[i]));

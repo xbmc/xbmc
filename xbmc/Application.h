@@ -27,7 +27,7 @@
 #include "guilib/Resolution.h"
 #include "utils/GlobalsHandling.h"
 #include "messaging/IMessageTarget.h"
-#include "addons/BinaryAddonCache.h"
+#include "ServiceManager.h"
 
 #include <map>
 #include <memory>
@@ -390,7 +390,7 @@ public:
    */
   void UnregisterActionListener(IActionListener *listener);
 
-  ADDON::CBinaryAddonCache m_binaryAddonCache;
+  std::unique_ptr<CServiceManager> m_ServiceManager;
 
 protected:
   virtual bool OnSettingsSaving() const override;
