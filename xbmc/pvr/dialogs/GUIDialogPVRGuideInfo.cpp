@@ -203,6 +203,12 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
+bool CGUIDialogPVRGuideInfo::OnInfo(int actionID)
+{
+  Close();
+  return true;
+}
+
 void CGUIDialogPVRGuideInfo::SetProgInfo(const CFileItem *item)
 {
   *m_progItem = *item;
