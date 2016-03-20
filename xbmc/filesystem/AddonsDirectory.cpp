@@ -451,6 +451,7 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   CURL path(tmp);
   const std::string endpoint = path.GetHostName();
   items.ClearProperties();
+  items.SetCacheToDisc(CFileItemList::CACHE_NEVER);
   items.SetPath(path.Get());
 
   if (endpoint == "user")
