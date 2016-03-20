@@ -2974,9 +2974,6 @@ void CApplication::Stop(int exitCode)
     CLog::Log(LOGERROR, "Exception in CApplication::Stop()");
   }
 
-  // we may not get to finish the run cycle but exit immediately after a call to g_application.Stop()
-  // so we may never get to Destroy() in CXBApplicationEx::Run(), we call it here.
-  Destroy();
   cleanup_emu_environ();
 
   Sleep(200);
