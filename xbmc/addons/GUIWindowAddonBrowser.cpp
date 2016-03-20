@@ -77,12 +77,6 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
-      m_rootDir.AllowNonLocalSources(false);
-
-      // is this the first time the window is opened?
-      if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
-        m_vecItems->SetPath("");
-
       SetProperties();
     }
     break;
@@ -256,68 +250,35 @@ static bool IsForeign(const std::string& languages)
 
 bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFileItemList& items)
 {
-  bool result;
-  if (URIUtils::PathEquals(strDirectory, "addons://downloading/"))
+  bool result = CGUIMediaWindow::GetDirectory(strDirectory, items);
+
+  if (result && CAddonsDirectory::IsRepoDirectory(CURL(strDirectory)))
   {
-    VECADDONS addons;
-    CAddonInstaller::GetInstance().GetInstallList(addons);
-
-    CURL url(strDirectory);
-    CAddonsDirectory::GenerateAddonListing(url, addons, items, g_localizeStrings.Get(24067));
-    result = true;
-    items.SetPath(strDirectory);
-
-    if (m_guiState.get() && !m_guiState->HideParentDirItems())
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER))
     {
-      CFileItemPtr pItem(new CFileItem(".."));
-      pItem->SetPath(m_history.GetParentPath());
-      pItem->m_bIsFolder = true;
-      pItem->m_bIsShareOrDrive = false;
-      items.AddFront(pItem, 0);
-    }
-
-  }
-  else
-  {
-    result = CGUIMediaWindow::GetDirectory(strDirectory, items);
-
-    if (result && CAddonsDirectory::IsRepoDirectory(CURL(strDirectory)))
-    {
-      if (CSettings::GetInstance().GetBool(CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER))
+      int i = 0;
+      while (i < items.Size())
       {
-        int i = 0;
-        while (i < items.Size())
+        auto prop = items[i]->GetProperty("Addon.Language");
+        if (!prop.isNull() && IsForeign(prop.asString()))
+          items.Remove(i);
+        else
+          ++i;
+      }
+    }
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_GENERAL_ADDONBROKENFILTER))
+    {
+      for (int i = items.Size() - 1; i >= 0; i--)
+      {
+        if (items[i]->GetAddonInfo() && !items[i]->GetAddonInfo()->Broken().empty())
         {
-          auto prop = items[i]->GetProperty("Addon.Language");
-          if (!prop.isNull() && IsForeign(prop.asString()))
+          //check if it's installed
+          AddonPtr addon;
+          if (!CAddonMgr::GetInstance().GetAddon(items[i]->GetProperty("Addon.ID").asString(), addon))
             items.Remove(i);
-          else
-            ++i;
-        }
-      }
-      if (CSettings::GetInstance().GetBool(CSettings::SETTING_GENERAL_ADDONBROKENFILTER))
-      {
-        for (int i = items.Size() - 1; i >= 0; i--)
-        {
-          if (items[i]->GetAddonInfo() && !items[i]->GetAddonInfo()->Broken().empty())
-          {
-            //check if it's installed
-            AddonPtr addon;
-            if (!CAddonMgr::GetInstance().GetAddon(items[i]->GetProperty("Addon.ID").asString(), addon))
-              items.Remove(i);
-          }
         }
       }
     }
-  }
-
-  if (strDirectory.empty() && CAddonInstaller::GetInstance().IsDownloading())
-  {
-    CFileItemPtr item(new CFileItem("addons://downloading/", true));
-    item->SetLabel(g_localizeStrings.Get(24067));
-    item->SetLabelPreformated(true);
-    item->SetIconImage("DefaultNetwork.png");
-    items.Add(item);
   }
 
   for (int i = 0; i < items.Size(); ++i)

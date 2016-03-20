@@ -48,17 +48,6 @@ bool CGUIWindowEventLog::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
-  case GUI_MSG_WINDOW_INIT:
-  {
-    m_rootDir.AllowNonLocalSources(false);
-
-    // is this the first time the window is opened?
-    if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
-      m_vecItems->SetPath("");
-
-    break;
-  }
-
   case GUI_MSG_CLICKED:
   {
     int iControl = message.GetSenderId();
@@ -239,17 +228,6 @@ bool CGUIWindowEventLog::GetDirectory(const std::string &strDirectory, CFileItem
   items.Append(filteredItems);
 
   return result;
-}
-
-std::string CGUIWindowEventLog::GetStartFolder(const std::string &dir)
-{
-  if (dir.empty())
-    return "events://";
-
-  if (URIUtils::PathStarts(dir, "events://"))
-    return dir;
-
-  return CGUIMediaWindow::GetStartFolder(dir);
 }
 
 bool CGUIWindowEventLog::OnSelect(CFileItemPtr item)

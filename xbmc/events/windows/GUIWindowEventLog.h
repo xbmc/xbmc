@@ -37,7 +37,7 @@ protected:
   bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
   void UpdateButtons() override;
   bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
-  std::string GetStartFolder(const std::string &dir) override;
+  std::string GetRootPath() const override { return "events://"; }
 
   bool OnSelect(CFileItemPtr item);
   bool OnDelete(CFileItemPtr item);

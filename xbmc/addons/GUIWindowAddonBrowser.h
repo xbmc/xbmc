@@ -67,6 +67,8 @@ protected:
   virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
   virtual std::string GetStartFolder(const std::string &dir) override;
 
+  std::string GetRootPath() const override { return "addons://"; }
+
 private:
   void SetProperties();
   void UpdateStatus(const CFileItemPtr& item);
