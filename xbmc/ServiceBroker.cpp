@@ -30,3 +30,18 @@ ADDON::CBinaryAddonCache &CServiceBroker::GetBinaryAddonCache()
 {
   return g_application.m_ServiceManager->GetBinaryAddonCache();
 }
+
+ANNOUNCEMENT::CAnnouncementManager &CServiceBroker::GetAnnouncementManager()
+{
+  return g_application.m_ServiceManager->GetAnnouncementManager();
+}
+
+XBPython& CServiceBroker::GetXBPython()
+{
+  return g_application.m_ServiceManager->GetXBPython();
+}
+
+PVR::CPVRManager &CServiceBroker::GetPVRManager()
+{
+  return g_application.m_ServiceManager->GetPVRManager();
+}

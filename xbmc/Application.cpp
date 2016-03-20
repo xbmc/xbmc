@@ -594,6 +594,12 @@ bool CApplication::Create()
   // set avutil callback
   av_log_set_callback(ff_avutil_log);
 
+  m_ServiceManager.reset(new CServiceManager());
+  if (!m_ServiceManager->Init1())
+  {
+    return false;
+  }
+
   g_powerManager.Initialize();
 
   // Load the AudioEngine before settings as they need to query the engine
@@ -653,12 +659,7 @@ bool CApplication::Create()
   // initialize the addon database (must be before the addon manager is init'd)
   CDatabaseManager::GetInstance().Initialize(true);
 
-#ifdef HAS_PYTHON
-  CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(&g_pythonParser, ".py");
-#endif // HAS_PYTHON
-
-  m_ServiceManager.reset(new CServiceManager());
-  if (!m_ServiceManager->Init())
+  if (!m_ServiceManager->Init2())
   {
     return false;
   }
@@ -2905,8 +2906,6 @@ void CApplication::Stop(int exitCode)
 
     CLog::Log(LOGNOTICE, "stop player");
     m_pPlayer->ClosePlayer();
-
-    CAnnouncementManager::GetInstance().Deinitialize();
 
     StopPVRManager();
     StopServices();

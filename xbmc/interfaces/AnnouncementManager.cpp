@@ -30,13 +30,15 @@
 #include "video/VideoDatabase.h"
 #include "pvr/channels/PVRChannel.h"
 #include "PlayListPlayer.h"
+#include "ServiceBroker.h"
 
 #define LOOKUP_PROPERTY "database-lookup"
 
 using namespace ANNOUNCEMENT;
 
-CAnnouncementManager::CAnnouncementManager()
-{ }
+CAnnouncementManager::CAnnouncementManager() : CThread("Announce")
+{
+}
 
 CAnnouncementManager::~CAnnouncementManager()
 {
@@ -45,12 +47,19 @@ CAnnouncementManager::~CAnnouncementManager()
 
 CAnnouncementManager& CAnnouncementManager::GetInstance()
 {
-  static CAnnouncementManager s_instance;
-  return s_instance;
+  return CServiceBroker::GetAnnouncementManager();
+}
+
+void CAnnouncementManager::Start()
+{
+  Create();
 }
 
 void CAnnouncementManager::Deinitialize()
 {
+  m_bStop = true;
+  m_queueEvent.Set();
+  StopThread();
   CSingleLock lock (m_critSection);
   m_announcers.clear();
 }
@@ -83,19 +92,12 @@ void CAnnouncementManager::RemoveAnnouncer(IAnnouncer *listener)
 void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message)
 {
   CVariant data;
-  Announce(flag, sender, message, data);
+  Announce(flag, sender, message, nullptr, data);
 }
 
 void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, CVariant &data)
 {
-  CLog::Log(LOGDEBUG, "CAnnouncementManager - Announcement: %s from %s", message, sender);
-
-  CSingleLock lock (m_critSection);
-
-  // Make a copy of announers. They may be removed or even remove themselves during execution of IAnnouncer::Announce()!
-  std::vector<IAnnouncer *> announcers(m_announcers); 
-  for (unsigned int i = 0; i < announcers.size(); i++)
-    announcers[i]->Announce(flag, sender, message, data);
+  Announce(flag, sender, message, nullptr, data);
 }
 
 void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item)
@@ -106,9 +108,37 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
 
 void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant &data)
 {
+  CAnnounceData announcement;
+  announcement.flag = flag;
+  announcement.sender = sender;
+  announcement.message = message;
+  announcement.item = item;
+  announcement.data = data;
+
+  {
+    CSingleLock lock (m_critSection);
+    m_announcementQueue.push_back(announcement);
+  }
+  m_queueEvent.Set();
+}
+
+void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag, const char *sender, const char *message, CVariant &data)
+{
+  CLog::Log(LOGDEBUG, "CAnnouncementManager - Announcement: %s from %s", message, sender);
+
+  CSingleLock lock (m_critSection);
+
+  // Make a copy of announers. They may be removed or even remove themselves during execution of IAnnouncer::Announce()!
+  std::vector<IAnnouncer *> announcers(m_announcers);
+  for (unsigned int i = 0; i < announcers.size(); i++)
+    announcers[i]->Announce(flag, sender, message, data);
+}
+
+void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant &data)
+{
   if (!item.get())
   {
-    Announce(flag, sender, message, data);
+    DoAnnounce(flag, sender, message, data);
     return;
   }
 
@@ -248,5 +278,29 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
   if (id > 0)
     object["item"]["id"] = id;
 
-  Announce(flag, sender, message, object);
+  DoAnnounce(flag, sender, message, object);
+}
+
+void CAnnouncementManager::Process()
+{
+  SetPriority(GetMinPriority());
+
+  while (!m_bStop)
+  {
+    CSingleLock lock (m_critSection);
+    if (!m_announcementQueue.empty())
+    {
+      auto announcement = m_announcementQueue.front();
+      m_announcementQueue.pop_front();
+      {
+        CSingleExit ex(m_critSection);
+        DoAnnounce(announcement.flag, announcement.sender.c_str(), announcement.message.c_str(), announcement.item, announcement.data);
+      }
+    }
+    else
+    {
+      CSingleExit ex(m_critSection);
+      m_queueEvent.Wait();
+    }
+  }
 }

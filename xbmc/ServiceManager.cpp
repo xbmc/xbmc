@@ -20,8 +20,23 @@
 
 #include "ServiceManager.h"
 #include "utils/log.h"
+#include "interfaces/AnnouncementManager.h"
+#include "interfaces/generic/ScriptInvocationManager.h"
 
-bool CServiceManager::Init()
+bool CServiceManager::Init1()
+{
+  m_announcementManager.reset(new ANNOUNCEMENT::CAnnouncementManager());
+  m_announcementManager->Start();
+
+  m_XBPython.reset(new XBPython());
+  CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(m_XBPython.get(), ".py");
+
+  m_PVRManager.reset(new PVR::CPVRManager());
+
+  return true;
+}
+
+bool CServiceManager::Init2()
 {
   m_addonMgr.reset(new ADDON::CAddonMgr());
   if (!m_addonMgr->Init())
@@ -39,6 +54,9 @@ void CServiceManager::Deinit()
 {
   m_binaryAddonCache.reset();
   m_addonMgr.reset();
+  m_PVRManager.reset();
+  m_XBPython.reset();
+  m_announcementManager.reset();
 }
 
 ADDON::CAddonMgr &CServiceManager::GetAddonMgr()
@@ -49,4 +67,19 @@ ADDON::CAddonMgr &CServiceManager::GetAddonMgr()
 ADDON::CBinaryAddonCache &CServiceManager::GetBinaryAddonCache()
 {
   return *m_binaryAddonCache.get();
+}
+
+ANNOUNCEMENT::CAnnouncementManager& CServiceManager::GetAnnouncementManager()
+{
+  return *m_announcementManager;
+}
+
+XBPython& CServiceManager::GetXBPython()
+{
+  return *m_XBPython;
+}
+
+PVR::CPVRManager& CServiceManager::GetPVRManager()
+{
+  return *m_PVRManager;
 }

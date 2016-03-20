@@ -22,6 +22,8 @@
 
 #include "addons/AddonManager.h"
 #include "addons/BinaryAddonCache.h"
+#include "interfaces/python/XBPython.h"
+#include "pvr/PVRManager.h"
 #include <memory>
 
 namespace ADDON {
@@ -29,15 +31,32 @@ class CAddonMgr;
 class CBinaryAddonCache;
 }
 
+namespace ANNOUNCEMENT
+{
+class CAnnouncementManager;
+}
+
+namespace PVR
+{
+class CPVRManager;
+}
+
 class CServiceManager
 {
 public:
-  bool Init();
+  bool Init1();
+  bool Init2();
   void Deinit();
   ADDON::CAddonMgr& GetAddonMgr();
   ADDON::CBinaryAddonCache& GetBinaryAddonCache();
+  ANNOUNCEMENT::CAnnouncementManager& GetAnnouncementManager();
+  XBPython& GetXBPython();
+  PVR::CPVRManager& GetPVRManager();
 
 protected:
   std::unique_ptr<ADDON::CAddonMgr> m_addonMgr;
   std::unique_ptr<ADDON::CBinaryAddonCache> m_binaryAddonCache;
+  std::unique_ptr<ANNOUNCEMENT::CAnnouncementManager> m_announcementManager;
+  std::unique_ptr<XBPython> m_XBPython;
+  std::unique_ptr<PVR::CPVRManager> m_PVRManager;
 };

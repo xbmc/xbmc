@@ -26,9 +26,12 @@
 #include "threads/Thread.h"
 #include "interfaces/IAnnouncer.h"
 #include "interfaces/generic/ILanguageInvocationHandler.h"
+#include "ServiceBroker.h"
 
 #include <memory>
 #include <vector>
+
+#define g_pythonParser CServiceBroker::GetXBPython()
 
 class CPythonInvoker;
 class CVariant;
@@ -132,5 +135,3 @@ private:
   // loaded by it and unload them first (not done by finalize)
   PythonExtensionLibraries m_extensions;
 };
-
-extern XBPython g_pythonParser;
