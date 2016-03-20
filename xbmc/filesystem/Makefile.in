@@ -48,7 +48,6 @@ SRCS += PipesManager.cpp
 SRCS += PluginDirectory.cpp
 SRCS += posix/PosixDirectory.cpp
 SRCS += posix/PosixFile.cpp
-SRCS += PVRFile.cpp
 SRCS += PVRDirectory.cpp
 SRCS += ResourceDirectory.cpp
 SRCS += ResourceFile.cpp

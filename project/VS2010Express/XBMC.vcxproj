@@ -412,7 +412,6 @@
     <ClCompile Include="..\..\xbmc\filesystem\OverrideFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\PipeFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\PVRDirectory.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\PVRFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\PipesManager.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\PlaylistDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\PlaylistFileDirectory.cpp" />
@@ -1409,7 +1408,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\IDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\IFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\IFileDirectory.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\ILiveTV.h" />
     <ClInclude Include="..\..\xbmc\filesystem\iso9660.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ISO9660Directory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ISOFile.h" />
@@ -2023,7 +2021,6 @@
     <ClInclude Include="..\..\xbmc\epg\GUIEPGGridContainer.h" />
     <ClInclude Include="..\..\xbmc\FileItem.h" />
     <ClInclude Include="..\..\xbmc\filesystem\PVRDirectory.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\PVRFile.h" />
     <ClInclude Include="..\..\xbmc\GUIInfoManager.h" />
     <ClInclude Include="..\..\xbmc\GUILargeTextureManager.h" />
     <ClInclude Include="..\..\xbmc\guilib\D3DResource.h" />
