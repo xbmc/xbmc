@@ -22,7 +22,9 @@
 
 #include <string>
 #include <vector>
+
 #include "utils/BitstreamStats.h"
+#include "utils/Proxy.h"
 #include "filesystem/IFileTypes.h"
 
 #include "FileItem.h"
@@ -150,13 +152,15 @@ public:
   virtual int64_t GetLength() = 0;
   virtual std::string& GetContent() { return m_content; };
   virtual std::string GetFileName();
-  virtual CURL GetURL();
   virtual ENextStream NextStream() { return NEXTSTREAM_NONE; }
   virtual void Abort() {}
   virtual int GetBlockSize() { return 0; }
   virtual void ResetScanTimeout(unsigned int iTimeoutMs) { }
   virtual bool CanSeek() { return true; }
   virtual bool CanPause() { return true; }
+
+  CURL GetURL() { return m_item.GetURL(); }
+  CProxy GetProxy() { return m_item.GetProxy(); }
 
   /*! \brief Indicate expected read rate in bytes per second.
    *  This could be used to throttle caching rate. Should

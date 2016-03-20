@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2016 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,38 +18,27 @@
  *
  */
 
-#include "DVDInputStream.h"
-#include "URL.h"
+#include "Proxy.h"
 
-CDVDInputStream::CDVDInputStream(DVDStreamType streamType, CFileItem& fileitem)
+CProxy::CProxy()
+  : m_type(ProxyHttp)
+  , m_port(3128)
 {
-  m_streamType = streamType;
-  m_contentLookup = true;
-  m_realtime = false;
-  m_item = fileitem;
 }
 
-CDVDInputStream::~CDVDInputStream()
+CProxy::CProxy(Type type,
+  const std::string& host,
+  uint16_t port,
+  const std::string& user,
+  const std::string& password)
+  : m_type(type)
+  , m_host(host)
+  , m_port(port)
+  , m_user(user)
+  , m_password(password)
 {
-
 }
 
-bool CDVDInputStream::Open()
+CProxy::~CProxy()
 {
-  m_content = m_item.GetMimeType();
-  m_contentLookup = m_item.ContentLookup();
-  return true;
-}
-
-void CDVDInputStream::Close()
-{
-
-}
-
-std::string CDVDInputStream::GetFileName()
-{
-  CURL url(m_item.GetPath());
-
-  url.SetProtocolOptions("");
-  return url.Get();
 }

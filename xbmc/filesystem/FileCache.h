@@ -67,7 +67,6 @@ namespace XFILE
     bool      m_bDeleteCache;
     int        m_seekPossible;
     CFile      m_source;
-    std::string    m_sourcePath;
     CEvent      m_seekEvent;
     CEvent      m_seekEnded;
     int64_t      m_nSeekResult;

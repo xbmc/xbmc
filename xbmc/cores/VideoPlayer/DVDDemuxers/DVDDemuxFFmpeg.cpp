@@ -20,6 +20,7 @@
 
 #include "DVDDemuxFFmpeg.h"
 
+#include <sstream>
 #include <utility>
 
 #include "commons/Exception.h"
@@ -230,9 +231,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   {
     // special stream type that makes avformat handle file opening
     // allows internal ffmpeg protocols to be used
-    CURL url = m_pInput->GetURL();
+    AVDictionary *options = GetFFMpegOptionsFromInput();
 
-    AVDictionary *options = GetFFMpegOptionsFromURL(url);
+    CURL url = m_pInput->GetURL();
 
     int result=-1;
     if (url.IsProtocol("mms"))
@@ -605,9 +606,9 @@ void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
   }
 }
 
-AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromURL(const CURL &url)
+AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
 {
-
+  const CURL url = m_pInput->GetURL();
   AVDictionary *options = NULL;
 
   if (url.IsProtocol("http") || url.IsProtocol("https"))
@@ -644,6 +645,31 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromURL(const CURL &url)
       av_dict_set(&options, "cookies", cookies.c_str(), 0);
 
   }
+
+  const CProxy proxy = m_pInput->GetProxy();
+  if (proxy)
+  {
+    if (proxy.GetType() == CProxy::ProxyHttp)
+    {
+      std::ostringstream urlStream;
+
+      urlStream << "http://";
+
+      if (!proxy.GetUser().empty()) {
+        urlStream << proxy.GetUser();
+	if (!proxy.GetPassword().empty())
+          urlStream << ":" << proxy.GetPassword();
+        urlStream << "@";
+      }
+
+      urlStream << proxy.GetHost();
+      if (proxy.GetPort())
+        urlStream << ':' << proxy.GetPort();
+
+      av_dict_set(&options, "http_proxy", urlStream.str().c_str(), 0);
+    }
+  }
+
   return options;
 }
 

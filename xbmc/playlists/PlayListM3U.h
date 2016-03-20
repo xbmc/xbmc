@@ -18,7 +18,10 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include "URL.h"
 #include "PlayList.h"
+
+#include "utils/Proxy.h"
 
 namespace PLAYLIST
 {
@@ -31,7 +34,7 @@ public:
   virtual bool Load(const std::string& strFileName);
   virtual void Save(const std::string& strFileName) const;
 
-  static std::string GetBestBandwidthStream(const std::string &strFileName, size_t bandwidth);
+  static CURL GetBestBandwidthStream(const CURL &url, size_t bandwidth, const CProxy &proxy = CProxy());
 
 protected:
 

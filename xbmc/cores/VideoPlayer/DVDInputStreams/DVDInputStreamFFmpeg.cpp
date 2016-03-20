@@ -50,18 +50,19 @@ bool CDVDInputStreamFFmpeg::IsEOF()
 
 bool CDVDInputStreamFFmpeg::Open()
 {
-  std::string selected;
   if (m_item.IsInternetStream() && (m_item.IsType(".m3u8") || m_item.GetMimeType() == "application/vnd.apple.mpegurl"))
   {
     // get the available bandwidth and  determine the most appropriate stream
     int bandwidth = CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_BANDWIDTH);
     if(bandwidth <= 0)
       bandwidth = INT_MAX;
-    selected = PLAYLIST::CPlayListM3U::GetBestBandwidthStream(m_item.GetPath(), bandwidth);
-    if (selected.compare(m_item.GetPath()) != 0)
+    const CURL playlist_url = m_item.GetURL();
+    const CProxy proxy = m_item.GetProxy();
+    const CURL selected = PLAYLIST::CPlayListM3U::GetBestBandwidthStream(playlist_url, bandwidth, proxy);
+    if (selected.Get().compare(playlist_url.Get()) != 0)
     {
-      CLog::Log(LOGINFO, "CDVDInputStreamFFmpeg: Auto-selecting %s based on configured bandwidth.", selected.c_str());
-      m_item.SetPath(selected.c_str());
+      CLog::Log(LOGINFO, "CDVDInputStreamFFmpeg: Auto-selecting %s based on configured bandwidth.", selected.Get().c_str());
+      m_item.SetURL(selected);
     }
   }
 
