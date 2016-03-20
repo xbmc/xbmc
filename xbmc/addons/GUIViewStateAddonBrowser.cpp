@@ -38,6 +38,11 @@ CGUIViewStateAddonBrowser::CGUIViewStateAddonBrowser(const CFileItemList& items)
     AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "", "%L", ""));
     SetSortMethod(SortByNone);
   }
+  else if (URIUtils::PathEquals(items.GetPath(), "addons://recently_updated/", true))
+  {
+    AddSortMethod(SortByLastUpdated, 12014, LABEL_MASKS("%L", "%v", "%L", "%v"),
+        SortAttributeIgnoreFolders, SortOrderDescending);
+  }
   else
   {
     AddSortMethod(SortByLabel, SortAttributeIgnoreFolders, 551, LABEL_MASKS("%L", "%s", "%L", "%s"));
