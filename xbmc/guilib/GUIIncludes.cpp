@@ -103,6 +103,7 @@ void CGUIIncludes::ClearIncludes()
   m_constants.clear();
   m_skinvariables.clear();
   m_files.clear();
+  m_expressions.clear();
 }
 
 bool CGUIIncludes::LoadIncludes(const std::string &includeFile)
