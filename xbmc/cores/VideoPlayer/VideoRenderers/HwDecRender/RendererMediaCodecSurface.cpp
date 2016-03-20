@@ -158,16 +158,16 @@ bool CRendererMediaCodecSurface::RenderUpdateVideoHook(bool clear, DWORD flags, 
 
 bool CRendererMediaCodecSurface::CreateTexture(int index)
 {
-  return true; // nothing todo
+  return true;
 }
 
 void CRendererMediaCodecSurface::DeleteTexture(int index)
 {
-  return; // nothing todo
+  return;
 }
 
 bool CRendererMediaCodecSurface::UploadTexture(int index)
 {
-  return true; // nothing todo
+  return true;
 }
 #endif
