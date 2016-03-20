@@ -116,7 +116,7 @@
 			<align>center</align>
 			<label>$LOCALIZE[31025]</label>
 			<font>font30_title</font>
-			<visible>Stringcompare(Container(450).NumItems,0)</visible>
+			<visible>Integer.IsEqual(Container(450).NumItems,0)</visible>
 		</control>
 	</controls>
 </window>

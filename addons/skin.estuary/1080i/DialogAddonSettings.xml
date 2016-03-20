@@ -109,11 +109,9 @@
 			<aligny>bottom</aligny>
 		</control>
 		<control type="image" id="6">
-			<!-- todo -->
-			<description>Default Seperator</description>
-			<height>20</height>
-			<!-- 			<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
-			 -->
+			<description>separator image</description>
+			<height>3</height>
+			<texture colordiffuse="AAAAAAAA" border="3">dialogs/separator-grey.png</texture>
 		</control>
 		<control type="sliderex" id="8">
 			<description>Default Slider</description>

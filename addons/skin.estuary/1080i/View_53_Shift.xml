@@ -32,17 +32,13 @@
 					<visible>Control.HasFocus(53)</visible>
 					<animation effect="fade" time="200">VisibleChange</animation>
 					<texture colordiffuse="button_focus">colors/white.png</texture>
-					<animation effect="slide" start="0,0" end="-344,0" time="300" tween="sine" easing="inout" condition="Stringcompare(Container.Position,1) | Stringcompare(Container.Position,0)">Conditional</animation>
-					<animation effect="slide" start="0,0" end="-344,0" time="300" tween="sine" easing="inout" condition="Stringcompare(Container.Position,0)">Conditional</animation>
-					<animation effect="slide" start="0,0" end="344,0" time="300" tween="sine" easing="inout" condition="Stringcompare(Container.Position,3) | Stringcompare(Container.Position,4)">Conditional</animation>
-					<animation effect="slide" start="0,0" end="344,0" time="300" tween="sine" easing="inout" condition="Stringcompare(Container.Position,4)">Conditional</animation>
-<!-- 					<animation effect="slide" start="0,0" end="-344,0" time="300" tween="sine" easing="inout" condition="!IntegerGreaterThan(Container(53).NumItems,4)">Conditional</animation>
-					<animation effect="slide" start="0,0" end="-344,0" time="300" tween="sine" easing="inout" condition="!IntegerGreaterThan(Container(53).NumItems,2)">Conditional</animation>
- -->				</control>
+					<animation effect="slide" start="0,0" end="-344,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,1) | Integer.IsEqual(Container.Position,0)">Conditional</animation>
+					<animation effect="slide" start="0,0" end="-344,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,0)">Conditional</animation>
+					<animation effect="slide" start="0,0" end="344,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,3) | Integer.IsEqual(Container.Position,4)">Conditional</animation>
+					<animation effect="slide" start="0,0" end="344,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,4)">Conditional</animation>
+				</control>
 				<control type="fixedlist" id="53">
-<!-- 					<animation effect="slide" start="0,0" end="-340,0" time="0" condition="!IntegerGreaterThan(Container(53).NumItems,4)">Conditional</animation>
-					<animation effect="slide" start="0,0" end="-340,0" time="0" condition="!IntegerGreaterThan(Container(53).NumItems,2)">Conditional</animation>
- -->					<left>110</left>
+					<left>110</left>
 					<top>0</top>
 					<width>1700</width>
 					<height>600</height>

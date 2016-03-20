@@ -18,6 +18,20 @@
 		<radioposx>0</radioposx>
 		<radioposy>0</radioposy>
 	</include>
+	<include name="InfoDialogMetadata">
+		<control type="button" id="$PARAM[control_id]">
+			<width>505</width>
+			<height>45</height>
+			<textoffsetx>40</textoffsetx>
+			<aligny>center</aligny>
+			<font>font10</font>
+			<texturefocus>-</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<onclick>noop</onclick>
+			<label>$PARAM[label]</label>
+			<visible>$PARAM[visible]</visible>
+		</control>
+	</include>
 	<include name="DefaultSettingButton">
 		<param name="height">63</param>
 		<param name="textoffsetx">40</param>
@@ -123,7 +137,7 @@
 			<control type="group" id="$PARAM[control_id]100">
 				<height>0</height>
 				<control type="image">
-					<posx>40</posx>
+					<left>40</left>
 					<top>-70</top>
 					<width>$PARAM[width]</width>
 					<height>40</height>
@@ -251,6 +265,7 @@
 				<onclick>$PARAM[onclick_1]</onclick>
 				<onclick>$PARAM[onclick_2]</onclick>
 				<visible>$PARAM[visible]</visible>
+				<animation effect="fade" start="100" end="0" time="300" delay="300">Hidden</animation>
 			</control>
 		</definition>
 	</include>

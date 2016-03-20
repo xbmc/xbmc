@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<variable name="TVTimerRadioButtonTexture">
-		<value condition="!StringCompare(ListItem.Comment,$LOCALIZE[305])">buttons/radio-button-on.png</value>
+		<value condition="!String.IsEqual(ListItem.Comment,$LOCALIZE[305])">buttons/radio-button-on.png</value>
 		<value>buttons/radio-button-off.png</value>
 	</variable>
 	<variable name="PVRStatusImageVar">
@@ -27,16 +27,16 @@
 		<value>$INFO[ListItem.Duration,, $LOCALIZE[12391]]</value>
 	</variable>
 	<variable name="AddonCountLabel">
-		<value condition="IntegerGreaterThan(Container(8000).NumItems,10)">&gt;9</value>
-		<value condition="IntegerGreaterThan(Container(8000).NumItems,9)">9</value>
-		<value condition="IntegerGreaterThan(Container(8000).NumItems,8)">8</value>
-		<value condition="IntegerGreaterThan(Container(8000).NumItems,7)">7</value>
-		<value condition="IntegerGreaterThan(Container(8000).NumItems,6)">6</value>
-		<value condition="IntegerGreaterThan(Container(8000).NumItems,5)">5</value>
-		<value condition="IntegerGreaterThan(Container(8000).NumItems,4)">4</value>
-		<value condition="IntegerGreaterThan(Container(8000).NumItems,3)">3</value>
-		<value condition="IntegerGreaterThan(Container(8000).NumItems,2)">2</value>
-		<value condition="IntegerGreaterThan(Container(8000).NumItems,1)">1</value>
+		<value condition="Integer.IsGreater(Container(8000).NumItems,10)">&gt;9</value>
+		<value condition="Integer.IsGreater(Container(8000).NumItems,9)">9</value>
+		<value condition="Integer.IsGreater(Container(8000).NumItems,8)">8</value>
+		<value condition="Integer.IsGreater(Container(8000).NumItems,7)">7</value>
+		<value condition="Integer.IsGreater(Container(8000).NumItems,6)">6</value>
+		<value condition="Integer.IsGreater(Container(8000).NumItems,5)">5</value>
+		<value condition="Integer.IsGreater(Container(8000).NumItems,4)">4</value>
+		<value condition="Integer.IsGreater(Container(8000).NumItems,3)">3</value>
+		<value condition="Integer.IsGreater(Container(8000).NumItems,2)">2</value>
+		<value condition="Integer.IsGreater(Container(8000).NumItems,1)">1</value>
 		<value>[COLOR grey]0[/COLOR]</value>
 	</variable>
 	<variable name="MusicInfoTextboxVar">
@@ -78,18 +78,18 @@
 	</variable>
 	<variable name="IconWallThumbVar">
 		<value condition="Container.Content(studios)">$INFO[ListItem.Label,resource://resource.images.studios.white/,.png]</value>
-		<value condition="SubString(ListItem.Icon,Default,left)">$INFO[ListItem.Icon,icons/defaulticons/]</value>
+		<value condition="String.StartsWith(ListItem.Icon,Default)">$INFO[ListItem.Icon,icons/defaulticons/]</value>
 		<value>$INFO[ListItem.Thumb]</value>
 	</variable>
 	<variable name="ListLabel2Var">
-		<value condition="StringCompare(Container.SortMethod,$LOCALIZE[556])">$INFO[ListItem.Year]</value>
+		<value condition="String.IsEqual(Container.SortMethod,$LOCALIZE[556])">$INFO[ListItem.Year]</value>
 		<value>$INFO[ListItem.Label2]</value>
 	</variable>
 	<variable name="ShiftLeftTextBoxVar">
 		<value condition="Window.IsActive(pictures)">$INFO[ListItem.Property(description),,[CR]]$INFO[ListItem.PictureDatetime,[COLOR button_focus]$LOCALIZE[552]:  [/COLOR],[CR]]$INFO[ListItem.PictureResolution,[COLOR button_focus]$LOCALIZE[169]:  [/COLOR],[CR]]$INFO[ListItem.PictureCamMake,[COLOR button_focus]$LOCALIZE[31041]:  [/COLOR],[CR]]$INFO[ListItem.PictureCamModel,[COLOR button_focus]$LOCALIZE[21823]:  [/COLOR],[CR]]</value>
 		<value condition="Container.Content(artists)">$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]:  [/COLOR],[CR]]$INFO[ListItem.Property(Artist_YearsActive),[COLOR button_focus]$LOCALIZE[21898]:  [/COLOR],[CR]]$INFO[ListItem.Property(Artist_Style),[COLOR button_focus]$LOCALIZE[736]:  [/COLOR],[CR]]</value>
 		<value condition="Container.Content(albums)">$INFO[ListItem.Year,[COLOR button_focus]$LOCALIZE[345]:  [/COLOR],[CR]]$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]:  [/COLOR],[CR]]$INFO[ListItem.Property(album_label),[COLOR button_focus]$LOCALIZE[21899]:  [/COLOR],[CR]]$INFO[ListItem.Property(album_style),[COLOR button_focus]$LOCALIZE[736]:  [/COLOR],[CR]]</value>
-		<value condition="Stringcompare(Listitem.DBType,season) | Stringcompare(Listitem.DBType,tvshow)">$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]:  [/COLOR],[CR]]$INFO[ListItem.Property(NumEpisodes),[COLOR button_focus]$LOCALIZE[20360]:  [/COLOR]]$INFO[ListItem.Property(UnWatchedEpisodes), ($LOCALIZE[31064]: ,)]$INFO[ListItem.Premiered,[CR][COLOR button_focus]$LOCALIZE[20416]:  [/COLOR]]</value>
+		<value condition="String.IsEqual(Listitem.DBType,season) | String.IsEqual(Listitem.DBType,tvshow)">$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]:  [/COLOR],[CR]]$INFO[ListItem.Property(NumEpisodes),[COLOR button_focus]$LOCALIZE[20360]:  [/COLOR]]$INFO[ListItem.Property(UnWatchedEpisodes), ($LOCALIZE[31064]: ,)]$INFO[ListItem.Premiered,[CR][COLOR button_focus]$LOCALIZE[20416]:  [/COLOR]]</value>
 		<value>$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]:  [/COLOR],[CR]]$INFO[ListItem.Director,[COLOR button_focus]$LOCALIZE[20339]:  [/COLOR],[CR]]$INFO[ListItem.Writer,[COLOR button_focus]$LOCALIZE[20417]:  [/COLOR],[CR]]$INFO[ListItem.Duration,[COLOR button_focus]$LOCALIZE[180]:  [/COLOR], $LOCALIZE[31060][CR]]$INFO[ListItem.Premiered,[COLOR button_focus]$LOCALIZE[20416]:  [/COLOR]]</value>
 	</variable>
 	<variable name="ShiftRightTextBoxVar">
@@ -140,7 +140,7 @@
 	</variable>
 	<variable name="AddonsLabel2Var">
 		<value condition="ListItem.Property(addon.downloading)">$INFO[ListItem.Property(addon.status)]</value>
-		<value condition="!Stringcompare(Container.SortMethod,$LOCALIZE[551])">$INFO[ListItem.Label2]</value>
+		<value condition="!String.IsEqual(Container.SortMethod,$LOCALIZE[551])">$INFO[ListItem.Label2]</value>
 		<value>$INFO[ListItem.AddonCreator,, - ]$INFO[ListItem.AddonVersion]</value>
 	</variable>
 	<variable name="AddonsListIconVar">
@@ -160,7 +160,7 @@
 	</variable>
 	<variable name="ResolutionFlagVar">
 		<value condition="ListItem.IsStereoscopic">flags/videoresolution/3D.png</value>
-		<value condition="IntegerGreaterThan(ListItem.VideoResolution,1080)">flags/videoresolution/4K.png</value>
+		<value condition="Integer.IsGreater(ListItem.VideoResolution,1080)">flags/videoresolution/4K.png</value>
 		<value>$INFO[ListItem.VideoResolution,flags/videoresolution/,.png]</value>
 	</variable>
 	<variable name="BannerVar">
@@ -181,7 +181,7 @@
 		<value>$INFO[ListItem.Art(poster)]</value>
 	</variable>
 	<variable name="BannerLabel2Var">
-		<value condition="Stringcompare(Listitem.DBType,tvshow)">$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]</value>
+		<value condition="String.IsEqual(Listitem.DBType,tvshow)">$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]</value>
 		<!-- <value>$INFO[ListItem.Year]</value>
 		 -->
 	</variable>
@@ -235,8 +235,8 @@
 		<value>$INFO[Container(9000).ListItem.Label2]</value>
 	</variable>
 	<variable name="VolumeIconVar">
-		<value condition="IntegerGreaterThan(Control.GetLabel(20),66)">dialogs/volume/volume.png</value>
-		<value condition="IntegerGreaterThan(Control.GetLabel(20),33)">dialogs/volume/volume2.png</value>
+		<value condition="Integer.IsGreater(Control.GetLabel(20),66)">dialogs/volume/volume.png</value>
+		<value condition="Integer.IsGreater(Control.GetLabel(20),33)">dialogs/volume/volume2.png</value>
 		<value condition="player.passthrough">dialogs/volume/volume.png</value>
 		<value condition="Player.Muted">dialogs/volume/mute.png</value>
 		<value>dialogs/volume/volume1.png</value>
@@ -246,11 +246,12 @@
 		<value>$INFO[ListItem.Year]</value>
 	</variable>
 	<variable name="VideoInfoMainLabelVar">
-		<value condition="!IsEmpty(ListItem.Title)">$INFO[ListItem.Title]$INFO[ListItem.Year, ([COLOR button_focus],[/COLOR])]</value>
-		<value>$INFO[ListItem.Label]$INFO[ListItem.Year, ([COLOR button_focus],[/COLOR])]</value>
+		<value condition="!IsEmpty(ListItem.Title)">$INFO[ListItem.Title]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]</value>
+		<value>$INFO[ListItem.Label]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]</value>
 	</variable>
 	<variable name="VideoInfoSubLabelVar">
-		<value condition="Container.Content(episodes)">$INFO[ListItem.Season,[COLOR button_focus]S,[/COLOR]]$INFO[ListItem.Episode,[COLOR button_focus]E,: [/COLOR]]$INFO[ListItem.TVShowTitle]</value>
+		<value condition="Stringcompare(ListItem.DBType,episode)">$INFO[ListItem.Season]$INFO[ListItem.Episode,[COLOR grey]x[/COLOR],: ]$INFO[ListItem.TVShowTitle]</value>
+		<value condition="Stringcompare(ListItem.DBType,movie)">$INFO[ListItem.Tagline]</value>
 		<value>$INFO[ListItem.Genre]</value>
 	</variable>
 	<variable name="OSDSubLabelVar">
@@ -270,6 +271,7 @@
 	</variable>
 	<variable name="HomeFanartVar">
 		<value condition="Skin.HasSetting(no_fanart)">$VAR[GlobalFanartVar]</value>
+		<value condition="!IsEmpty(Window(home).Property(infobackground))">$INFO[Window(home).Property(infobackground)]</value>
 		<value condition="!IsEmpty(Container(5100).ListItem.Art(fanart)) + Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Art(fanart)]</value>
 		<value condition="!IsEmpty(Container(5200).ListItem.Art(fanart)) + Control.HasFocus(5200)">$INFO[Container(5200).ListItem.Art(fanart)]</value>
 		<value condition="!IsEmpty(Container(5300).ListItem.Art(fanart)) + Control.HasFocus(5300)">$INFO[Container(5300).ListItem.Art(fanart)]</value>
@@ -294,6 +296,7 @@
 	</variable>
 	<variable name="MediaFanartVar">
 		<value condition="Skin.HasSetting(no_fanart)">$VAR[GlobalFanartVar]</value>
+		<value condition="!IsEmpty(Window(home).Property(infobackground))">$INFO[Window(home).Property(infobackground)]</value>
 		<value condition="Window.IsActive(pictures) + IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.FolderPath]</value>
 		<value condition="!IsEmpty(Container.Art(tvshow.fanart))">$INFO[Container.Art(tvshow.fanart)]</value>
 		<value condition="!IsEmpty(Container.Art(artist.fanart))">$INFO[Container.Art(artist.fanart)]</value>
@@ -306,11 +309,10 @@
 	</variable>
 	<variable name="ListWatchedIconVar">
 		<value condition="ListItem.IsPlaying">overlays/watched/OverlayPlaying-List.png</value>
-<!-- 		<value condition="Container.Content(files) + SubString(ListItem.Icon,Default,left)">$INFO[ListItem.Icon,icons/defaulticons/]</value>
- -->		<value condition="ListItem.IsParentFolder">-</value>
+		<value condition="ListItem.IsParentFolder">-</value>
 			<value condition="ListItem.IsResumable">overlays/watched/resume.png</value>
 		<value condition="!IsEmpty(ListItem.Overlay)">$INFO[ListItem.Overlay]</value>
- -->		<value>OverlayUnwatched.png</value>
+		<value>OverlayUnwatched.png</value>
 	</variable>
 	<variable name="SettingsSectionIcon">
 		<value condition="Window.IsActive(picturessettings)">icons/settings/pictures.png</value>
@@ -325,9 +327,9 @@
 	</variable>
 	<!-- Breadcrumbs -->
 	<variable name="BreadcrumbsVideoVar">
-		<value condition="Container.Content(movies) | Substring(container.folderpath,library://video/movies/,left) | Substring(container.folderpath,videodb://movies,left)">$LOCALIZE[20342]</value>
-		<value condition="Container.Content(musicvideos) | Substring(container.folderpath,library://video/musicvideos/,left) | Substring(container.folderpath,videodb://musicvideos,left)">$LOCALIZE[20389]</value>
-		<value condition="Container.Content(tvshows) | Substring(container.folderpath,library://video/tvshows/,left) | Substring(container.folderpath,videodb://tvshows,left)">$LOCALIZE[20343]</value>
+		<value condition="Container.Content(movies) | String.StartsWith(container.folderpath,library://video/movies/) | String.StartsWith(container.folderpath,videodb://movies)">$LOCALIZE[20342]</value>
+		<value condition="Container.Content(musicvideos) | String.StartsWith(container.folderpath,library://video/musicvideos/) | String.StartsWith(container.folderpath,videodb://musicvideos)">$LOCALIZE[20389]</value>
+		<value condition="Container.Content(tvshows) | String.StartsWith(container.folderpath,library://video/tvshows/) | String.StartsWith(container.folderpath,videodb://tvshows)">$LOCALIZE[20343]</value>
 		<value condition="Container.Content(seasons)">$LOCALIZE[20343]</value>
 		<value condition="Container.Content(episodes)">$LOCALIZE[20343]</value>
 		<value>$LOCALIZE[3]</value>

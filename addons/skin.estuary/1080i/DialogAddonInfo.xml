@@ -1,31 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <window>
 	<defaultcontrol always="true">9000</defaultcontrol>
+	<onload condition="!ListItem.Property(addon.isinstalled) + Window.IsActive(addonbrowser)">SetFocus(6)</onload>
+	<onload>SetProperty(infobackground,$INFO[ListItem.Art(fanart)],home)</onload>
+	<onunload>ClearProperty(infobackground,home)</onunload>
 	<controls>
 		<control type="group">
 			<include>OpenClose_Right</include>
 			<control type="button">
-				<left>840</left>
+				<left>770</left>
 				<top>162</top>
-				<width>1000</width>
-				<height>509</height>
+				<width>1040</width>
+				<height>559</height>
 				<label>-</label>
 			</control>
 			<control type="label">
-				<left>890</left>
+				<left>840</left>
 				<top>200</top>
 				<width>900</width>
-				<height>396</height>
+				<height>446</height>
 				<wrapmultiline>true</wrapmultiline>
-				<font>font12</font>
+				<font>font_textbox</font>
 				<label>$INFO[ListItem.AddonSummary,[B],[/B][CR]][COLOR=white]$INFO[ListItem.AddonDescription][/COLOR][COLOR=white][CR]$INFO[ListItem.AddonDisclaimer,[CR][CR]$LOCALIZE[24052]: ][/COLOR]</label>
 				<textcolor>button_focus</textcolor>
 			</control>
 			<control type="grouplist" id="9000">
 				<left>90</left>
-				<top>770</top>
+				<top>820</top>
 				<width>1740</width>
-				<height>768</height>
+				<height>300</height>
 				<onleft>9000</onleft>
 				<onright>9000</onright>
 				<onup>9000</onup>
@@ -68,9 +71,9 @@
 				</include>
 				<include name="InfoDialogToggleButton">
 					<param name="id" value="7" />
-					<param name="icon_on" value="icons/infodialogs/enabled.png" />
-					<param name="icon_off" value="icons/infodialogs/disable.png" />
-					<param name="selected" value="ListItem.Property(addon.isenabled)" />
+					<param name="icon_on" value="icons/infodialogs/disable.png" />
+					<param name="icon_off" value="icons/infodialogs/enabled.png" />
+					<param name="selected" value="!String.StartsWith(Control.GetLabel(7),$LOCALIZE[24022]) | !Window.IsActive(addonbrowser)" />
 					<param name="label" value="" />
 				</include>
 				<include name="InfoDialogToggleButton">
@@ -84,13 +87,29 @@
 		</control>
 		<control type="group">
 			<include>OpenClose_Left</include>
-			<visible>Window.IsActive(eventlog) | Window.IsActive(home) | Window.IsActive(1100)</visible>
-			<include>Visible_Left</include>
-			<include>ListThumbInfoPanel</include>
+			<left>120</left>
+			<control type="image">
+				<top>162</top>
+				<width>559</width>
+				<height>559</height>
+				<aspectratio>scale</aspectratio>
+				<texture colordiffuse="border_alpha">colors/black.png</texture>
+				<bordertexture border="20">overlays/shadow.png</bordertexture>
+				<bordersize>20</bordersize>
+			</control>
+			<control type="image">
+				<left>24</left>
+				<top>186</top>
+				<width>511</width>
+				<height>511</height>
+				<aspectratio aligny="top">scale</aspectratio>
+				<fadetime>300</fadetime>
+				<texture background="true" fallback="DefaultFolderSquare.png">$INFO[ListItem.Art(thumb)]</texture>
+			</control>
 		</control>
 		<include name="InfoDialogTopBarInfo">
 			<param name="main_label" value="$INFO[ListItem.AddonName]" />
-			<param name="sub_label" value="$INFO[ListItem.AddonVersion,[COLOR button_focus],[/COLOR]]$INFO[ListItem.AddonCreator, $LOCALIZE[31071] ]" />
+			<param name="sub_label" value="$INFO[ListItem.AddonVersion,[COLOR grey],[/COLOR]]$INFO[ListItem.AddonCreator, $LOCALIZE[31071] ]" />
 		</include>
 		<control type="group">
 			<visible>!IsEmpty(ListItem.AddonBroken)</visible>

@@ -163,7 +163,7 @@
 						<aspectratio align="center" aligny="top">keep</aspectratio>
 						<fadetime>400</fadetime>
 						<texture>$INFO[ListItem.PlotOutline]</texture>
-						<visible>SubString(ListItem.PlotOutline,http://,Left) | SubString(ListItem.PlotOutline,https://,Left)</visible>
+						<visible>String.StartsWith(ListItem.PlotOutline,http://) | String.StartsWith(ListItem.PlotOutline,https://)</visible>
 					</control>
 					<control type="image">
 						<left>125</left>
@@ -329,20 +329,20 @@
 					<param name="bottom_label2" value="$INFO[ListItem.NextStartTime]" />
 				</include>
 			</control>
-		</control>
-		<control type="group">
-			<include>MediaMenuCommon</include>
-			<include name="PVRSideBar">
-				<param name="group_label2" value="$INFO[Control.GetLabel(30)]" />
+			<control type="group">
+				<include>MediaMenuCommon</include>
+				<include name="PVRSideBar">
+					<param name="group_label2" value="$INFO[Control.GetLabel(30)]" />
+				</include>
+			</control>
+			<include name="TopBar">
+				<param name="breadcrumbs_label" value="$INFO[Control.GetLabel(29)] - $INFO[Control.GetLabel(30)]" />
+				<param name="breadcrumbs_icon" value="icons/settings/tvguide.png" />
+			</include>
+			<include name="BottomBar">
+				<param name="PageLabel" value="$INFO[Container.NumItems,$LOCALIZE[19019]: ]" />
 			</include>
 		</control>
-		<include name="TopBar">
-			<param name="breadcrumbs_label" value="$INFO[Control.GetLabel(29)] - $INFO[Control.GetLabel(30)]" />
-			<param name="breadcrumbs_icon" value="icons/settings/tvguide.png" />
-		</include>
-		<include name="BottomBar">
-			<param name="PageLabel" value="$INFO[Container.NumItems,$LOCALIZE[19019]: ]" />
-		</include>
 		<control type="label" id="29">
 			<font>-</font>
 			<include>HiddenObject</include>

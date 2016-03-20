@@ -53,7 +53,7 @@
 							<height>50</height>
 							<aspectratio>keep</aspectratio>
 							<texture>$INFO[ListItem.Overlay]</texture>
-							<visible>!SubString(ListItem.Overlay,watched.png,right)</visible>
+							<visible>!String.EndsWith(ListItem.Overlay,watched.png)</visible>
 						</control>
 						<control type="textbox">
 							<left>25</left>
@@ -104,7 +104,7 @@
 							<height>50</height>
 							<aspectratio>keep</aspectratio>
 							<texture>$INFO[ListItem.Overlay]</texture>
-							<visible>!SubString(ListItem.Overlay,watched.png,right)</visible>
+							<visible>!String.EndsWith(ListItem.Overlay,watched.png)</visible>
 						</control>
 						<control type="image">
 							<left>19</left>

@@ -145,9 +145,9 @@
 			<control type="group">
 				<control type="label">
 					<description>number of files/pages in list text label</description>
-					<left>890</left>
+					<left>925</left>
 					<top>695</top>
-					<width>300</width>
+					<width>275</width>
 					<height>35</height>
 					<font>font12</font>
 					<align>right</align>

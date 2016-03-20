@@ -101,7 +101,7 @@
 							<param name="texture" value="osd/fullscreen/buttons/next.png"/>
 						</include>
 						<onclick>PlayerControl(Next)</onclick>
-						<visible>!VideoPlayer.Content(livetv) + IntegerGreaterThan(Playlist.Length(video),1)</visible>
+						<visible>!VideoPlayer.Content(livetv) + Integer.IsGreater(Playlist.Length(video),1)</visible>
 					</control>
 					<control type="radiobutton" id="804">
 						<include name="OSDButton">
@@ -411,7 +411,7 @@
 						<radioposx>350</radioposx>
 						<label>$LOCALIZE[24022]</label>
 						<onclick>ToggleStereoMode</onclick>
-						<selected>IntegerGreaterThan(System.StereoscopicMode,0)</selected>
+						<selected>Integer.IsGreater(System.StereoscopicMode,0)</selected>
 					</control>
 					<control type="button" id="13102">
 						<width>470</width>
@@ -426,7 +426,7 @@
 						<radioposx>350</radioposx>
 						<label>$LOCALIZE[31005]</label>
 						<onclick>StereoModeToMono</onclick>
-						<selected>StringCompare(System.StereoscopicMode,9)</selected>
+						<selected>Integer.IsEqual(System.StereoscopicMode,9)</selected>
 					</control>
 				</control>
 			</control>

@@ -7,53 +7,53 @@
 	<controls>
 		<include>DefaultBackground</include>
 		<include>CommonScrollbars</include>
-		<control type="group" id="100">
+		<control type="group">
 			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(addoninformation)">Conditional</animation>
 			<include>View_50_List</include>
 			<include>View_52_IconWall</include>
 			<include>View_55_WideList</include>
 			<include>View_500_SmallThumb</include>
-		</control>
-		<control type="group">
-			<include>OpenClose_Left</include>
-			<include>Visible_Left</include>
-			<visible>Control.IsVisible(55) | Window.IsActive(addoninformation)</visible>
-			<include>ListThumbInfoPanel</include>
-		</control>
-		<include>MediaMenuMouseOverlay</include>
-		<control type="group">
-			<include>MediaMenuCommon</include>
-			<control type="grouplist" id="9000">
-				<top>90</top>
-				<include>MediaMenuListCommon</include>
-				<control type="label" id="203">
-					<description>Actions</description>
-					<include>MediaMenuLabelCommon</include>
-					<label>$LOCALIZE[31020]</label>
-					<visible>Control.IsVisible(621)</visible>
-				</control>
-				<control type="button" id="624">
-					<include>MediaMenuItemsCommon</include>
-					<label>$LOCALIZE[10140]</label>
-					<onclick>Addon.OpenSettings($INFO[Container.PluginName])</onclick>
-					<visible>!IsEmpty(Container.PluginName)</visible>
-				</control>
-				<control type="button" id="621">
-					<description>Get more</description>
-					<include>MediaMenuItemsCommon</include>
-					<label>$LOCALIZE[21452]</label>
-					<onclick>ActivateWindow(addonbrowser,addons://more/executable/,return)</onclick>
-					<visible>Container.Content(addons)</visible>
-				</control>
+			<control type="group">
+				<include>OpenClose_Left</include>
+				<include>Visible_Left</include>
+				<visible>Control.IsVisible(55)</visible>
+				<include>ListThumbInfoPanel</include>
 			</control>
-			<include>MediaMenuNowPlaying</include>
+			<include>MediaMenuMouseOverlay</include>
+			<control type="group">
+				<include>MediaMenuCommon</include>
+				<control type="grouplist" id="9000">
+					<top>90</top>
+					<include>MediaMenuListCommon</include>
+					<control type="label" id="203">
+						<description>Actions</description>
+						<include>MediaMenuLabelCommon</include>
+						<label>$LOCALIZE[31020]</label>
+						<visible>Control.IsVisible(621)</visible>
+					</control>
+					<control type="button" id="624">
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[10140]</label>
+						<onclick>Addon.OpenSettings($INFO[Container.PluginName])</onclick>
+						<visible>!IsEmpty(Container.PluginName)</visible>
+					</control>
+					<control type="button" id="621">
+						<description>Get more</description>
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[21452]</label>
+						<onclick>ActivateWindow(addonbrowser,addons://more/executable/,return)</onclick>
+						<visible>Container.Content(addons)</visible>
+					</control>
+				</control>
+				<include>MediaMenuNowPlaying</include>
+			</control>
+			<include name="TopBar">
+				<param name="breadcrumbs_label" value="$LOCALIZE[10001]" />
+				<param name="breadcrumbs_icon" value="icons/settings/addons.png" />
+			</include>
+			<include name="BottomBar">
+				<param name="info_visible" value="true" />
+			</include>
 		</control>
-		<include name="TopBar">
-			<param name="breadcrumbs_label" value="$LOCALIZE[10001]" />
-			<param name="breadcrumbs_icon" value="icons/settings/addons.png" />
-		</include>
-		<include name="BottomBar">
-			<param name="info_visible" value="true" />
-		</include>
 	</controls>
 </window>

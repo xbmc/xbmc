@@ -312,7 +312,7 @@
 					<width>12</width>
 					<height>706</height>
 					<onleft>50</onleft>
-					<onright>4301</onright>
+					<onright>50</onright>
 					<orientation>vertical</orientation>
 				</control>
 			</control>
@@ -334,7 +334,6 @@
 				<param name="down_posy" value="912" />
 				<param name="visible" value="!System.HasModalDialog" />
 			</include>
-		</control>
 		<include>MediaMenuMouseOverlay</include>
 		<control type="group">
 			<include>MediaMenuCommon</include>
@@ -345,6 +344,7 @@
 			<param name="breadcrumbs_icon" value="icons/settings/tvremote.png" />
 		</include>
 		<include>BottomBar</include>
+		</control>
 		<control type="label" id="29">
 			<font>-</font>
 			<include>HiddenObject</include>
