@@ -181,42 +181,13 @@ void CWinSystemWin32DX::NotifyAppFocusChange(bool bGaining)
   {
     CRenderSystemDX::m_useWindowedDX = !bGaining;
     CRenderSystemDX::SetFullScreenInternal();
-    CRenderSystemDX::CreateWindowSizeDependentResources();
+    if (bGaining)
+      CRenderSystemDX::CreateWindowSizeDependentResources();
 
     // minimize window on lost focus
     if (!bGaining)
-      ShowWindow(m_hWnd, SW_SHOWMINIMIZED);
+      ShowWindow(m_hWnd, SW_FORCEMINIMIZE);
   }
-}
-
-void CWinSystemWin32DX::Register(ID3DResource *resource)
-{
-  CRenderSystemDX::Register(resource);
-}
-
-void CWinSystemWin32DX::Unregister(ID3DResource *resource)
-{
-  CRenderSystemDX::Unregister(resource);
-}
-
-void CWinSystemWin32DX::Register(IDispResource *resource)
-{
-  CWinSystemWin32::Register(resource);
-}
-
-void CWinSystemWin32DX::Unregister(IDispResource *resource)
-{
-  CWinSystemWin32::Unregister(resource);
-}
-
-void CWinSystemWin32DX::OnDisplayLost()
-{
-  CWinSystemWin32::OnDisplayLost();
-}
-
-void CWinSystemWin32DX::OnDisplayReset()
-{
-  CWinSystemWin32::OnDisplayReset();
 }
 
 #endif

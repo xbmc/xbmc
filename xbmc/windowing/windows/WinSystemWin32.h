@@ -184,7 +184,8 @@ protected:
   virtual void Unregister(IDispResource *resource);
   void OnDisplayLost();
   void OnDisplayReset();
-  virtual void ResolutionChanged();
+  void OnDisplayBack();
+  void ResolutionChanged();
 
   HWND m_hWnd;
   std::vector<HWND> m_hBlankWindows;

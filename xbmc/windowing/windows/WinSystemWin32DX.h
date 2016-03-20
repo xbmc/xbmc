@@ -54,24 +54,23 @@ public:
    where any resources dependent on the DirectX device should be destroyed and recreated.
    \sa Unregister, ID3DResource
   */
-  void Register(ID3DResource *resource);
-
+  void Register(ID3DResource *resource) override { CRenderSystemDX::Register(resource); };
   /*!
    \brief Unregister as a dependent of the DirectX Render System
    Resources should call this on destruction if they're a dependent on the Render System
    \sa Register, ID3DResource
   */
-  void Unregister(ID3DResource *resource);
+  void Unregister(ID3DResource *resource) override { CRenderSystemDX::Unregister(resource); };
 
-  virtual void Register(IDispResource *resource);
-  virtual void Unregister(IDispResource *resource);
+  void Register(IDispResource *resource) override { CWinSystemWin32::Register(resource); };
+  void Unregister(IDispResource *resource) override { CWinSystemWin32::Unregister(resource); };
 
 protected:
-  virtual void UpdateMonitor();
   bool UseWindowedDX(bool fullScreen);
-
-  void OnDisplayLost();
-  void OnDisplayReset();
+  void UpdateMonitor() override;
+  void OnDisplayLost() override { CWinSystemWin32::OnDisplayLost(); };
+  void OnDisplayReset() override { CWinSystemWin32::OnDisplayReset(); };
+  void OnDisplayBack() override { CWinSystemWin32::OnDisplayBack(); };
 };
 
 XBMC_GLOBAL_REF(CWinSystemWin32DX,g_Windowing);

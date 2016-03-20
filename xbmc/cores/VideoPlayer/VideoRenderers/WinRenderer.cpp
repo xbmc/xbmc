@@ -546,9 +546,9 @@ void CWinRenderer::SelectPSVideoFilter()
 
 void CWinRenderer::UpdatePSVideoFilter()
 {
-  RESOLUTION_INFO res = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
-  m_destWidth = res.iWidth;
-  m_destHeight = res.iHeight;
+  RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
+  m_destWidth = res.iScreenWidth;
+  m_destHeight = res.iScreenHeight;
 
   SAFE_DELETE(m_scalerShader);
 
