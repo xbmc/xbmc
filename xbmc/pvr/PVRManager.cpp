@@ -97,6 +97,7 @@ CPVRManager::CPVRManager(void) :
     m_timers(NULL),
     m_addons(NULL),
     m_guiInfo(NULL),
+    m_parentalTimer(nullptr),
     m_triggerEvent(true),
     m_currentFile(NULL),
     m_database(NULL),
