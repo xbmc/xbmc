@@ -21,6 +21,7 @@
 #include "AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_inputstream_types.h"
 #include "FileItem.h"
+#include "threads/CriticalSection.h"
 #include <vector>
 #include <map>
 
@@ -43,6 +44,8 @@ namespace ADDON
     {};
     CInputStream(AddonProps props, std::string name, std::string listitemprops, std::string extensions);
     virtual ~CInputStream() {}
+
+    virtual void SaveSettings() override;
 
     bool Supports(CFileItem &fileitem);
     bool Open(CFileItem &fileitem);
@@ -85,12 +88,16 @@ namespace ADDON
   protected:
     void UpdateStreams();
     void DisposeStreams();
+    void UpdateConfig();
 
     std::vector<std::string> m_fileItemProps;
-    std::vector<std::string> m_pathList;
     std::vector<std::string> m_extensionsList;
     INPUTSTREAM_CAPABILITIES m_caps;
     std::map<int, CDemuxStream*> m_streams;
+
+    static CCriticalSection m_parentSection;
+    static bool m_hasConfig;
+    static std::vector<std::string> m_pathList;
   };
 
 } /*namespace ADDON*/

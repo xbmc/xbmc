@@ -20,11 +20,16 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
+#include "threads/SingleLock.h"
 #include "utils/RegExp.h"
 #include "utils/URIUtils.h"
 
 namespace ADDON
 {
+
+bool CInputStream::m_hasConfig = false;
+std::vector<std::string> CInputStream::m_pathList;
+CCriticalSection CInputStream::m_parentSection;
 
 std::unique_ptr<CInputStream> CInputStream::FromExtension(AddonProps props, const cp_extension_t* ext)
 {
@@ -52,27 +57,22 @@ CInputStream::CInputStream(AddonProps props, std::string name, std::string listi
   {
     StringUtils::Trim(ext);
   }
+
+  if (!m_bIsChild && !m_hasConfig)
+    UpdateConfig();
 }
 
-bool CInputStream::Supports(CFileItem &fileitem)
+void CInputStream::SaveSettings()
 {
-  std::string extension = URIUtils::GetExtension(fileitem.GetPath());
-  bool match = false;
-  for (auto &ext : m_extensionsList)
-  {
-    if (ext == extension)
-    {
-      match = true;
-      break;
-    }
-  }
-  if (!match)
-    return false;
+  CAddon::SaveSettings();
+  if (!m_bIsChild)
+    UpdateConfig();
+}
 
-  if (!m_pStruct)
-    return true;
-
+void CInputStream::UpdateConfig()
+{
   std::string pathList;
+  Create();
   try
   {
     pathList = m_pStruct->GetPathList();
@@ -80,23 +80,39 @@ bool CInputStream::Supports(CFileItem &fileitem)
   catch (std::exception &e)
   {
     CLog::Log(LOGERROR, "CInputStream::Supports - could not get a list of paths. Reason: %s", e.what());
-    return false;
   }
+  Destroy();
 
+  CSingleLock lock(m_parentSection);
   m_pathList = StringUtils::Tokenize(pathList, "|");
   for (auto &path : m_pathList)
   {
     StringUtils::Trim(path);
   }
+  m_hasConfig = true;
+}
 
-  match = false;
+bool CInputStream::Supports(CFileItem &fileitem)
+{
+  // check if a specific inputstream addon is requested
+  CVariant addon = fileitem.GetProperty("inputstreamaddon");
+  if (!addon.isNull())
+  {
+    if (addon.asString() != Name())
+      return false;
+  }
+
+  // check paths
+  CSingleLock lock(m_parentSection);
+
+  bool match = false;
   for (auto &path : m_pathList)
   {
     if (path.empty())
       continue;
 
     CRegExp r(true, CRegExp::asciiOnly, path.c_str());
-    if (r.RegFind(path.c_str()) == 0 && r.GetFindLen() > 5)
+    if (r.RegFind(fileitem.GetPath().c_str()) == 0 && r.GetFindLen() > 5)
     {
       match = true;
       break;
