@@ -26,6 +26,7 @@
 #include "filesystem/IFileTypes.h"
 
 #include "FileItem.h"
+#include "Proxy.h"
 #include "URL.h"
 #include "guilib/Geometry.h"
 
@@ -157,6 +158,12 @@ public:
   virtual bool CanPause() { return true; }
 
   CURL GetURL() const { return m_item.GetURL(); }
+
+  ProxyType GetProxyType() const;
+  std::string GetProxyHost() const;
+  uint16_t GetProxyPort() const;
+  std::string GetProxyUser() const;
+  std::string GetProxyPassword() const;
 
   /*! \brief Indicate expected read rate in bytes per second.
    *  This could be used to throttle caching rate. Should
