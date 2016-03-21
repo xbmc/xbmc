@@ -132,7 +132,6 @@ void CEGLNativeTypeIMX::Initialize()
 
   close(fd);
 
-  m_sar = GetMonitorSAR();
   return;
 }
 
@@ -293,6 +292,8 @@ bool CEGLNativeTypeIMX::FindMatchingResolution(const RESOLUTION_INFO &res, const
 
 bool CEGLNativeTypeIMX::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 {
+  GetMonitorSAR();
+
   if (m_readonly)
     return false;
 
@@ -350,7 +351,24 @@ bool CEGLNativeTypeIMX::ShowWindow(bool show)
   return true;
 }
 
-float CEGLNativeTypeIMX::GetMonitorSAR()
+float CEGLNativeTypeIMX::ValidateSAR(struct dt_dim *dtm, bool mb)
+{
+  int Height = dtm->Height | (mb ? (dtm->msbits & 0x0f) << 8 : 0);
+  if (Height < 1)
+    return .0f;
+
+  int Width = dtm->Width | (mb ? (dtm->msbits & 0xf0) << 4 : 0);
+  float t_sar = (float) Width / Height;
+
+  if (t_sar < 0.33 || t_sar > 3.00)
+    t_sar = .0f;
+  else
+    CLog::Log(LOGDEBUG, "%s: Screen SAR: %.3f (from detailed: %s, %dx%d)",__FUNCTION__, t_sar, mb ? "yes" : "no", Width, Height);
+
+  return t_sar;
+}
+
+void CEGLNativeTypeIMX::GetMonitorSAR()
 {
   FILE *f_edid;
   char *str = NULL;
@@ -360,12 +378,13 @@ float CEGLNativeTypeIMX::GetMonitorSAR()
 
   // kernels <= 3.18 use ./soc0/soc.1 in official imx kernel
   // kernels  > 3.18 use ./soc0/soc
+  m_sar = 0;
   f_edid = fopen("/sys/devices/soc0/soc/20e0000.hdmi_video/edid", "r");
   if(!f_edid)
     f_edid = fopen("/sys/devices/soc0/soc.1/20e0000.hdmi_video/edid", "r");
 
   if(!f_edid)
-    return 0;
+    return;
 
   // we need to convert mxc_hdmi output format to binary array
   // mxc_hdmi provides the EDID as space delimited 1bytes blocks
@@ -396,20 +415,24 @@ float CEGLNativeTypeIMX::GetMonitorSAR()
   }
   fclose(f_edid);
 
-  // info related to 'Basic display parameters.' is at offset 0x14-0x18.
-  // where W is 2nd byte, H 3rd.
-  int cmWidth  = (int)*(m_edid +EDID_STRUCT_DISPLAY +1);
-  int cmHeight = (int)*(m_edid +EDID_STRUCT_DISPLAY +2);
-  if (cmHeight > 0)
-  {
-    float t_sar = (float) cmWidth / cmHeight;
-    if (t_sar >= 0.33 && t_sar <= 3.0)
-      return t_sar;
-  }
+  // enumerate through (max four) detailed timing info blocks
+  // specs and lookup WxH [mm / in]. W and H are in 3 bytes,
+  // where 1st = W, 2nd = H, 3rd byte is 4bit/4bit.
+  //
+  // if DTM block starts with 0 - it is not DTM, skip
+  for (int i = EDID_DTM_START; i < 126 && m_sar == 0 && *(m_edid +i); i += 18)
+    m_sar = ValidateSAR((struct dt_dim *)(m_edid +i +EDID_DTM_OFFSET_DIMENSION), true);
 
-  // if we end up here, H/W values or final SAR are useless
-  // return 0 and use 1.0f as PR for all resolutions
-  return 0;
+  // fallback - info related to 'Basic display parameters.' is at offset 0x14-0x18.
+  // where W is 2nd byte, H 3rd.
+  if (m_sar == 0)
+    m_sar = ValidateSAR((struct dt_dim *)(m_edid +EDID_STRUCT_DISPLAY +1));
+
+  // if m_sar != 0, final SAR is usefull
+  // if it is 0, EDID info was missing or calculated
+  // SAR value wasn't sane
+  if (m_sar == 0)
+    CLog::Log(LOGDEBUG, "%s: Screen SAR - not usable info",__FUNCTION__);
 }
 
 bool CEGLNativeTypeIMX::ModeToResolution(std::string mode, RESOLUTION_INFO *res) const
