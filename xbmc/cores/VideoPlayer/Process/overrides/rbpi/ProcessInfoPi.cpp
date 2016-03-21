@@ -19,6 +19,7 @@
  */
 
 #include "ProcessInfoPi.h"
+#include "linux/RBP.h"
 
 // Override for platform ports
 #if defined(TARGET_RASPBERRY_PI)
@@ -44,6 +45,14 @@ EINTERLACEMETHOD CProcessInfoPi::GetFallbackDeintMethod()
 {
   return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
 }
+
+bool CProcessInfoPi::AllowDTSHDDecode()
+{
+  if (g_RBP.RasberryPiVersion() == 1)
+    return false;
+  return true;
+}
+
 
 #endif
 

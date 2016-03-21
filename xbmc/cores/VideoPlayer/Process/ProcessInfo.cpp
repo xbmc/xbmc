@@ -46,3 +46,8 @@ EINTERLACEMETHOD CProcessInfo::GetFallbackDeintMethod()
 {
   return VS_INTERLACEMETHOD_DEINTERLACE;
 }
+
+bool CProcessInfo::AllowDTSHDDecode()
+{
+  return true;
+}

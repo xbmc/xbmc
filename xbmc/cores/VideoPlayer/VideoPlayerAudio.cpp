@@ -87,22 +87,13 @@ CVideoPlayerAudio::~CVideoPlayerAudio()
   // CloseStream(true);
 }
 
-bool CVideoPlayerAudio::AllowDTSHDDecode()
-{
-#ifdef TARGET_RASPBERRY_PI
-  if (g_RBP.RasberryPiVersion() == 1)
-    return false;
-#endif
-  return true;
-}
-
 bool CVideoPlayerAudio::OpenStream(CDVDStreamInfo &hints)
 {
   CLog::Log(LOGNOTICE, "Finding audio codec for: %i", hints.codec);
   bool allowpassthrough = !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK);
   if (hints.realtime)
     allowpassthrough = false;
-  CDVDAudioCodec* codec = CDVDFactoryCodec::CreateAudioCodec(hints, allowpassthrough, AllowDTSHDDecode());
+  CDVDAudioCodec* codec = CDVDFactoryCodec::CreateAudioCodec(hints, allowpassthrough, m_processInfo.AllowDTSHDDecode());
   if(!codec)
   {
     CLog::Log(LOGERROR, "Unsupported audio codec");
@@ -603,7 +594,7 @@ bool CVideoPlayerAudio::SwitchCodecIfNeeded()
   bool allowpassthrough = !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK);
   if (m_streaminfo.realtime)
     allowpassthrough = false;
-  CDVDAudioCodec *codec = CDVDFactoryCodec::CreateAudioCodec(m_streaminfo, allowpassthrough, AllowDTSHDDecode());
+  CDVDAudioCodec *codec = CDVDFactoryCodec::CreateAudioCodec(m_streaminfo, allowpassthrough, m_processInfo.AllowDTSHDDecode());
   if (!codec || codec->NeedPassthrough() == m_pAudioCodec->NeedPassthrough()) {
     // passthrough state has not changed
     delete codec;
