@@ -65,6 +65,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
+#include "ServiceBroker.h"
 
 using namespace MUSIC_INFO;
 using namespace PVR;
@@ -96,6 +97,7 @@ CPVRManager::CPVRManager(void) :
     m_timers(NULL),
     m_addons(NULL),
     m_guiInfo(NULL),
+    m_parentalTimer(nullptr),
     m_triggerEvent(true),
     m_currentFile(NULL),
     m_database(NULL),
@@ -139,8 +141,7 @@ void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char
 
 CPVRManager &CPVRManager::GetInstance()
 {
-  static CPVRManager pvrManagerInstance;
-  return pvrManagerInstance;
+  return CServiceBroker::GetPVRManager();
 }
 
 bool CPVRManager::RestartManagerOnAddonDisabled(void) const

@@ -429,6 +429,12 @@ bool CApplication::SetupNetwork()
 
 bool CApplication::Create()
 {
+  m_ServiceManager.reset(new CServiceManager());
+  if (!m_ServiceManager->Init1())
+  {
+    return false;
+  }
+
   SetupNetwork();
   Preflight();
 
@@ -653,12 +659,7 @@ bool CApplication::Create()
   // initialize the addon database (must be before the addon manager is init'd)
   CDatabaseManager::GetInstance().Initialize(true);
 
-#ifdef HAS_PYTHON
-  CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(&g_pythonParser, ".py");
-#endif // HAS_PYTHON
-
-  m_ServiceManager.reset(new CServiceManager());
-  if (!m_ServiceManager->Init())
+  if (!m_ServiceManager->Init2())
   {
     return false;
   }
@@ -2906,8 +2907,6 @@ void CApplication::Stop(int exitCode)
     CLog::Log(LOGNOTICE, "stop player");
     m_pPlayer->ClosePlayer();
 
-    CAnnouncementManager::GetInstance().Deinitialize();
-
     StopPVRManager();
     StopServices();
     //Sleep(5000);
@@ -2975,9 +2974,6 @@ void CApplication::Stop(int exitCode)
     CLog::Log(LOGERROR, "Exception in CApplication::Stop()");
   }
 
-  // we may not get to finish the run cycle but exit immediately after a call to g_application.Stop()
-  // so we may never get to Destroy() in CXBApplicationEx::Run(), we call it here.
-  Destroy();
   cleanup_emu_environ();
 
   Sleep(200);

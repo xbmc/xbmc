@@ -94,11 +94,13 @@ namespace PVR
   {
     friend class CPVRClients;
 
-  private:
+public:
     /*!
      * @brief Create a new CPVRManager instance, which handles all PVR related operations in XBMC.
      */
     CPVRManager(void);
+
+private:
 
     /*!
      * @brief Updates the last watched timestamps of the channel and group which are currently playing.

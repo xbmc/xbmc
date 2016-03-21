@@ -63,9 +63,6 @@ std::map<std::string, std::string> CSpecialProtocol::m_pathMap;
   XCURL::DllLibCurlGlobal g_curlInterface;
   CPartyModeManager     g_partyModeManager;
 
-#ifdef HAS_PYTHON
-  XBPython           g_pythonParser;
-#endif
   CAlarmClock        g_alarmClock;
   PLAYLIST::CPlayListPlayer g_playlistPlayer;
 

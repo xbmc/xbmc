@@ -25,9 +25,24 @@ class CAddonMgr;
 class CBinaryAddonCache;
 }
 
+namespace ANNOUNCEMENT
+{
+  class CAnnouncementManager;
+}
+
+namespace PVR
+{
+  class CPVRManager;
+}
+
+class XBPython;
+
 class CServiceBroker
 {
 public:
   static ADDON::CAddonMgr &GetAddonMgr();
   static ADDON::CBinaryAddonCache &GetBinaryAddonCache();
+  static ANNOUNCEMENT::CAnnouncementManager &GetAnnouncementManager();
+  static XBPython &GetXBPython();
+  static PVR::CPVRManager &GetPVRManager();
 };
