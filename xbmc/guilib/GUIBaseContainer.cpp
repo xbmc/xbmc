@@ -1094,17 +1094,15 @@ void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
   TiXmlElement *itemElement = layout->FirstChildElement("itemlayout");
   while (itemElement)
   { // we have a new item layout
-    CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, GetParentID(), false);
-    m_layouts.push_back(itemLayout);
+    m_layouts.emplace_back();
+    m_layouts.back().LoadLayout(itemElement, GetParentID(), false);
     itemElement = itemElement->NextSiblingElement("itemlayout");
   }
   itemElement = layout->FirstChildElement("focusedlayout");
   while (itemElement)
   { // we have a new item layout
-    CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, GetParentID(), true);
-    m_focusedLayouts.push_back(itemLayout);
+    m_focusedLayouts.emplace_back();
+    m_focusedLayouts.back().LoadLayout(itemElement, GetParentID(), true);
     itemElement = itemElement->NextSiblingElement("focusedlayout");
   }
 }
