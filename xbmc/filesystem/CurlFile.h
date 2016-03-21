@@ -36,7 +36,7 @@ namespace XFILE
 {
   class CCurlFile : public IFile
   {
-    public:
+    private:
       typedef enum
       {
         PROXY_HTTP = 0,
@@ -46,6 +46,7 @@ namespace XFILE
         PROXY_SOCKS5_REMOTE,
       } ProxyType;
     
+    public:
       CCurlFile();
       virtual ~CCurlFile();
       virtual bool Open(const CURL& url);
@@ -73,9 +74,8 @@ namespace XFILE
       void Cancel();
       void Reset();
       void SetUserAgent(const std::string& sUserAgent)           { m_userAgent = sUserAgent; }
-      void SetProxy(const std::string &proxy)                    { m_proxy = proxy; }
-      void SetProxyUserPass(const std::string &proxyuserpass)    { m_proxyuserpass = proxyuserpass; }
-      void SetProxyType(ProxyType proxytype)                     { m_proxytype = proxytype; }
+      void SetProxy(const std::string &type, const std::string &host, uint16_t port,
+                    const std::string &user, const std::string &password);
       void SetCustomRequest(const std::string &request)          { m_customrequest = request; }
       void UseOldHttpVersion(bool bUse)                          { m_useOldHttpVersion = bUse; }
       void SetAcceptEncoding(const std::string& encoding)        { m_acceptencoding = encoding; }
@@ -164,9 +164,11 @@ namespace XFILE
 
       std::string     m_url;
       std::string     m_userAgent;
-      std::string     m_proxy;
-      std::string     m_proxyuserpass;
       ProxyType       m_proxytype;
+      std::string     m_proxyhost;
+      uint16_t        m_proxyport;
+      std::string     m_proxyuser;
+      std::string     m_proxypassword;
       std::string     m_customrequest;
       std::string     m_acceptencoding;
       std::string     m_acceptCharset;
