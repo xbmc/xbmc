@@ -52,14 +52,6 @@ using namespace XCURL;
 #define XMIN(a,b) ((a)<(b)?(a):(b))
 #define FITS_INT(a) (((a) <= INT_MAX) && ((a) >= INT_MIN))
 
-curl_proxytype proxyType2CUrlProxyType[] = {
-  CURLPROXY_HTTP,
-  CURLPROXY_SOCKS4,
-  CURLPROXY_SOCKS4A,
-  CURLPROXY_SOCKS5,
-  CURLPROXY_SOCKS5_HOSTNAME,
-};
-
 // curl calls this routine to debug
 extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *output, size_t size, void *data)
 {
@@ -148,6 +140,24 @@ static inline void* realloc_simple(void *ptr, size_t size)
   }
   else
     return ptr2;
+}
+
+static curl_proxytype convert_proxy_type(ProxyType type)
+{
+    switch (type)
+    {
+    case PROXY_SOCKS4:
+      return CURLPROXY_SOCKS4;
+    case PROXY_SOCKS4A:
+      return CURLPROXY_SOCKS4A;
+    case PROXY_SOCKS5:
+      return CURLPROXY_SOCKS5;
+    case PROXY_SOCKS5_REMOTE:
+      return CURLPROXY_SOCKS5_HOSTNAME;
+    case PROXY_HTTP:
+    default:
+      return CURLPROXY_HTTP;
+    }
 }
 
 size_t CCurlFile::CReadState::HeaderCallback(void *ptr, size_t size, size_t nmemb)
@@ -610,7 +620,9 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   if (m_proxy.length() > 0)
   {
     g_curlInterface.easy_setopt(h, CURLOPT_PROXY, m_proxy.c_str());
-    g_curlInterface.easy_setopt(h, CURLOPT_PROXYTYPE, proxyType2CUrlProxyType[m_proxytype]);
+
+    g_curlInterface.easy_setopt(h, CURLOPT_PROXYTYPE, convert_proxy_type(m_proxytype));
+
     if (m_proxyuserpass.length() > 0)
       g_curlInterface.easy_setopt(h, CURLOPT_PROXYUSERPWD, m_proxyuserpass.c_str());
 
@@ -767,7 +779,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         m_proxyuserpass += ":" + CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD);
       }
       m_proxytype = (ProxyType)CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYTYPE);
-      CLog::Log(LOGDEBUG, "Using proxy %s, type %d", m_proxy.c_str(), proxyType2CUrlProxyType[m_proxytype]);
+      CLog::Log(LOGDEBUG, "Using proxy %s, type %d", m_proxy.c_str(), convert_proxy_type(m_proxytype));
     }
 
     // get username and password
