@@ -105,15 +105,15 @@ bool CGUIDialogPVRTimerSettings::CanBeActivated() const
   return true;
 }
 
-void CGUIDialogPVRTimerSettings::SetTimer(CFileItem *item)
+void CGUIDialogPVRTimerSettings::SetTimer(const CPVRTimerInfoTagPtr &timer)
 {
-  if (item == NULL)
+  if (!timer)
   {
-    CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::SetTimer - No item");
+    CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::SetTimer - no timer given");
     return;
   }
 
-  m_timerInfoTag = item->GetPVRTimerInfoTag();
+  m_timerInfoTag = timer;
 
   if (!m_timerInfoTag)
   {

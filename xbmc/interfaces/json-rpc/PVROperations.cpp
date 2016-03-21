@@ -424,8 +424,7 @@ JSONRPC_STATUS CPVROperations::ToggleTimer(const std::string &method, ITransport
   bool sentOkay = false;
   if (epgTag->HasTimer())
   {
-    CFileItemPtr timerTag = g_PVRTimers->GetTimerForEpgTag(broadcast.get());
-    sentOkay = g_PVRTimers->DeleteTimer( *timerTag , false, repeating);
+    sentOkay = g_PVRTimers->DeleteTimer(g_PVRTimers->GetTimerForEpgTag(epgTag), false, repeating);
   }
   else
   {

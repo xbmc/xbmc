@@ -237,6 +237,7 @@ static const ActionMapping actions[] =
     { "playpvrradio"             , ACTION_PVR_PLAY_RADIO },
     { "record"                   , ACTION_RECORD },
     { "togglecommskip"           , ACTION_TOGGLE_COMMSKIP },
+    { "showtimerrule"            , ACTION_PVR_SHOW_TIMER_RULE },
 
     // Mouse actions
     { "leftclick"                , ACTION_MOUSE_LEFT_CLICK },

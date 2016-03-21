@@ -92,7 +92,10 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
     if (timer)
     {
       if (timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT)
+      {
         buttons.Add(CONTEXT_BUTTON_EDIT_TIMER_RULE, 19243); /* Edit timer rule */
+        buttons.Add(CONTEXT_BUTTON_DELETE_TIMER_RULE, 19295); /* Delete timer rule */
+      }
 
       const CPVRTimerTypePtr timerType(timer->GetTimerType());
       if (timerType && !timerType->IsReadOnly())
@@ -302,6 +305,10 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
               ActionToggleTimer(pItem.get());
               bReturn = true;
               break;
+            case ACTION_PVR_SHOW_TIMER_RULE:
+              ActionShowTimerRule(pItem.get());
+              bReturn = true;
+              break;
             case ACTION_CONTEXT_MENU:
             case ACTION_MOUSE_RIGHT_CLICK:
               OnPopupMenu(iItem);
@@ -399,6 +406,7 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       OnContextButtonEditTimer(pItem.get(), button) ||
       OnContextButtonEditTimerRule(pItem.get(), button) ||
       OnContextButtonDeleteTimer(pItem.get(), button) ||
+      OnContextButtonDeleteTimerRule(pItem.get(), button) ||
       OnContextButtonBegin(pItem.get(), button) ||
       OnContextButtonEnd(pItem.get(), button) ||
       OnContextButtonNow(pItem.get(), button) ||
@@ -564,10 +572,14 @@ bool CGUIWindowPVRGuide::OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUT
 {
   bool bReturn = false;
 
-  if ((button == CONTEXT_BUTTON_START_RECORD) ||
-      (button == CONTEXT_BUTTON_ADD_TIMER))
+  if (button == CONTEXT_BUTTON_START_RECORD)
   {
-    AddTimer(item, button == CONTEXT_BUTTON_ADD_TIMER);
+    AddTimer(item);
+    bReturn = true;
+  }
+  else if (button == CONTEXT_BUTTON_ADD_TIMER)
+  {
+    AddTimerRule(item);
     bReturn = true;
   }
 

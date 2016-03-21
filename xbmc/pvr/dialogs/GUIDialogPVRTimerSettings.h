@@ -46,7 +46,7 @@ namespace PVR
 
     virtual bool CanBeActivated() const;
 
-    void SetTimer(CFileItem *item);
+    void SetTimer(const CPVRTimerInfoTagPtr &timer);
 
   protected:
     // implementation of ISettingCallback

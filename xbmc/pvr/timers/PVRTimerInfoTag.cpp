@@ -739,7 +739,63 @@ bool CPVRTimerInfoTag::SetDuration(int iDuration)
   return false;
 }
 
-CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTagPtr &tag, bool bRepeating /* = false */)
+CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr &channel)
+{
+  if (!channel)
+  {
+    CLog::Log(LOGERROR, "%s - no channel set", __FUNCTION__);
+    return CPVRTimerInfoTagPtr();
+  }
+
+  CEpgInfoTagPtr epgTag(channel->GetEPGNow());
+  CPVRTimerInfoTagPtr newTimer;
+  if (epgTag)
+    newTimer = CreateFromEpg(epgTag);
+
+  if (!newTimer)
+  {
+    newTimer.reset(new CPVRTimerInfoTag);
+
+    newTimer->m_iClientIndex       = PVR_TIMER_NO_CLIENT_INDEX;
+    newTimer->m_iParentClientIndex = PVR_TIMER_NO_PARENT;
+    newTimer->m_channel            = channel;
+    newTimer->m_strTitle           = channel->ChannelName();
+    newTimer->m_iChannelNumber     = channel->ChannelNumber();
+    newTimer->m_iClientChannelUid  = channel->UniqueID();
+    newTimer->m_iClientId          = channel->ClientID();
+    newTimer->m_bIsRadio           = channel->IsRadio();
+
+    // timertype: manual one-shot timer for given client
+    CPVRTimerTypePtr timerType(CPVRTimerType::CreateFromAttributes(
+      PVR_TIMER_TYPE_IS_MANUAL, PVR_TIMER_TYPE_IS_REPEATING | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES, channel->ClientID()));
+    if (!timerType)
+    {
+      CLog::Log(LOGERROR, "%s - unable to create one shot manual timer type", __FUNCTION__);
+      return CPVRTimerInfoTagPtr();
+    }
+
+    newTimer->SetTimerType(timerType);
+  }
+
+  // no matter the timer was created from an epg tag, set special instant timer start and end times.
+  CDateTime startTime(0);
+  newTimer->SetStartFromUTC(startTime);
+  newTimer->m_iMarginStart = 0; /* set the start margin to 0 for instant timers */
+
+  int iDuration = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
+  CDateTime endTime = CDateTime::GetUTCDateTime() + CDateTimeSpan(0, 0, iDuration ? iDuration : 120, 0);
+  newTimer->SetEndFromUTC(endTime);
+
+  /* update summary string according to changed start/end time */
+  newTimer->UpdateSummary();
+
+  /* unused only for reference */
+  newTimer->m_strFileNameAndPath = CPVRTimersPath::PATH_NEW;
+
+  return newTimer;
+}
+
+CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTagPtr &tag, bool bCreateRule /* = false */)
 {
   /* create a new timer */
   CPVRTimerInfoTagPtr newTag(new CPVRTimerInfoTag());
@@ -753,7 +809,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTagPtr &tag, b
   }
 
   /* check if the epg end date is in the future */
-  if (tag->EndAsLocalTime() < CDateTime::GetCurrentDateTime() && !bRepeating)
+  if (tag->EndAsLocalTime() < CDateTime::GetCurrentDateTime() && !bCreateRule)
   {
     CLog::Log(LOGERROR, "%s - end time is in the past", __FUNCTION__);
     return CPVRTimerInfoTagPtr();
@@ -775,7 +831,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTagPtr &tag, b
   newTag->SetEndFromUTC(newEnd);
 
   CPVRTimerTypePtr timerType;
-  if (bRepeating)
+  if (bCreateRule)
   {
     // create repeating epg-based timer
     timerType = CPVRTimerType::CreateFromAttributes(
