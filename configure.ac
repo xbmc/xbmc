@@ -1946,8 +1946,8 @@ else
   final_message="$final_message\n  MID Support:\tNo"
 fi
 
-ORIGCC=$CC
-ORIGCXX=$CXX
+ORIGCC="$CC"
+ORIGCXX="$CXX"
 if test "x$use_ccache" != "xno"; then
   AC_PATH_PROG(CCACHE,ccache,none)
   if test "$ac_cv_path_CCACHE" = "none"; then
