@@ -180,6 +180,7 @@ public:
   bool SetMatrix(LPCSTR handle, const XMFLOAT4X4* mat);
   bool SetTechnique(LPCSTR handle);
   bool SetTexture(LPCSTR handle, CD3DTexture &texture);
+  bool SetResources(LPCSTR handle, ID3D11ShaderResourceView** ppSRViews, size_t count);
   bool SetConstantBuffer(LPCSTR handle, ID3D11Buffer *buffer);
   bool SetScalar(LPCSTR handle, float value);
   bool Begin(UINT *passes, DWORD flags);

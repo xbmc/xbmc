@@ -168,11 +168,12 @@ void CWinSystemWin32DX::NotifyAppFocusChange(bool bGaining)
   {
     CRenderSystemDX::m_useWindowedDX = !bGaining;
     CRenderSystemDX::SetFullScreenInternal();
-    CRenderSystemDX::CreateWindowSizeDependentResources();
+    if (bGaining)
+      CRenderSystemDX::CreateWindowSizeDependentResources();
 
     // minimize window on lost focus
     if (!bGaining)
-      ShowWindow(m_hWnd, SW_SHOWMINIMIZED);
+      ShowWindow(m_hWnd, SW_FORCEMINIMIZE);
   }
 }
 
