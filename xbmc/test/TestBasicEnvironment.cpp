@@ -63,6 +63,10 @@ void TestBasicEnvironment::SetUp()
   g_powerManager.Initialize();
   CSettings::GetInstance().Initialize();
 
+  g_application.m_ServiceManager.reset(new CServiceManager());
+  if (!g_application.m_ServiceManager->Init())
+    exit(1);
+
   /* Create a temporary directory and set it to be used throughout the
    * test suite run.
    */
@@ -107,6 +111,7 @@ void TestBasicEnvironment::TearDown()
   std::string xbmcTempPath = CSpecialProtocol::TranslatePath("special://temp/");
   XFILE::CDirectory::Remove(xbmcTempPath);
   CSettings::GetInstance().Uninitialize();
+  g_application.m_ServiceManager->Deinit();
 }
 
 void TestBasicEnvironment::SetUpError()
