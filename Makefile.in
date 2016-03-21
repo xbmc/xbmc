@@ -566,6 +566,7 @@ endif
 	@for f in $(BINDINGS); do \
 	  install -m 0644 $$f $(DESTDIR)$(includedir)/@APP_NAME_LC@ ; \
 	done
+	@install -d $(DESTDIR)$(libdir)/@APP_NAME_LC@
 	@for f in project/cmake/*.cmake; do \
 	  install -m 0644 $$f $(DESTDIR)$(libdir)/@APP_NAME_LC@; \
 	done
