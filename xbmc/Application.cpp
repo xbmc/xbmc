@@ -429,6 +429,12 @@ bool CApplication::SetupNetwork()
 
 bool CApplication::Create()
 {
+  m_ServiceManager.reset(new CServiceManager());
+  if (!m_ServiceManager->Init1())
+  {
+    return false;
+  }
+
   SetupNetwork();
   Preflight();
 
@@ -593,12 +599,6 @@ bool CApplication::Create()
   avfilter_register_all();
   // set avutil callback
   av_log_set_callback(ff_avutil_log);
-
-  m_ServiceManager.reset(new CServiceManager());
-  if (!m_ServiceManager->Init1())
-  {
-    return false;
-  }
 
   g_powerManager.Initialize();
 
