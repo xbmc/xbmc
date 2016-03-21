@@ -1209,7 +1209,7 @@ void CGUIBaseContainer::GetCurrentLayouts()
     }
   }
   if (!m_layout && !m_layouts.empty())
-    m_layout = &m_layouts[0];  // failsafe
+    m_layout = &m_layouts.front(); // failsafe
 
   m_focusedLayout = NULL;
   for (unsigned int i = 0; i < m_focusedLayouts.size(); i++)
@@ -1221,7 +1221,7 @@ void CGUIBaseContainer::GetCurrentLayouts()
     }
   }
   if (!m_focusedLayout && !m_focusedLayouts.empty())
-    m_focusedLayout = &m_focusedLayouts[0];  // failsafe
+    m_focusedLayout = &m_focusedLayouts.front(); // failsafe
 }
 
 bool CGUIBaseContainer::HasNextPage() const
