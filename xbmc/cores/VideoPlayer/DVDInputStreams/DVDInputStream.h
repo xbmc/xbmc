@@ -26,6 +26,7 @@
 #include "filesystem/IFileTypes.h"
 
 #include "FileItem.h"
+#include "Proxy.h"
 #include "URL.h"
 #include "guilib/Geometry.h"
 
@@ -150,13 +151,20 @@ public:
   virtual int64_t GetLength() = 0;
   virtual std::string& GetContent() { return m_content; };
   virtual std::string GetFileName();
-  virtual CURL GetURL();
   virtual ENextStream NextStream() { return NEXTSTREAM_NONE; }
   virtual void Abort() {}
   virtual int GetBlockSize() { return 0; }
   virtual void ResetScanTimeout(unsigned int iTimeoutMs) { }
   virtual bool CanSeek() { return true; }
   virtual bool CanPause() { return true; }
+
+  CURL GetURL() const { return m_item.GetURL(); }
+
+  ProxyType GetProxyType() const;
+  std::string GetProxyHost() const;
+  uint16_t GetProxyPort() const;
+  std::string GetProxyUser() const;
+  std::string GetProxyPassword() const;
 
   /*! \brief Indicate expected read rate in bytes per second.
    *  This could be used to throttle caching rate. Should

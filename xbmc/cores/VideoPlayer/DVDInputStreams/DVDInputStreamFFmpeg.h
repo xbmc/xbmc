@@ -42,6 +42,9 @@ public:
   bool CanSeek() { return m_can_seek; }
   bool CanPause() { return m_can_pause; }
 
+private:
+  CURL GetM3UBestBandwidthStream(const CURL &url, size_t bandwidth);
+
 protected:
   bool m_can_pause;
   bool m_can_seek;

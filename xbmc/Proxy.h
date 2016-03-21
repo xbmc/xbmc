@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2016 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,29 +18,12 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "URL.h"
-#include "PlayList.h"
 
-namespace PLAYLIST
+typedef enum
 {
-class CPlayListM3U :
-      public CPlayList
-{
-public:
-  static const char *StartMarker;
-  static const char *InfoMarker;
-  static const char *ArtistMarker;
-  static const char *AlbumMarker;
-  static const char *StreamMarker;
-  static const char *BandwidthMarker;
-  static const char *OffsetMarker;
-
-public:
-  CPlayListM3U(void);
-  virtual ~CPlayListM3U(void);
-  virtual bool Load(const std::string& strFileName);
-  virtual void Save(const std::string& strFileName) const;
-
-  static std::map<std::string,std::string> ParseStreamLine(const std::string &streamLine);
-};
-}
+  PROXY_HTTP = 0,
+  PROXY_SOCKS4,
+  PROXY_SOCKS4A,
+  PROXY_SOCKS5,
+  PROXY_SOCKS5_REMOTE,
+} ProxyType;
