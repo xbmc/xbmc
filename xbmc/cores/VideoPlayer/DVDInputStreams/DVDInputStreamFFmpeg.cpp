@@ -20,7 +20,7 @@
 
 #include "DVDInputStreamFFmpeg.h"
 
-#include "filesystem/File.h"
+#include "filesystem/CurlFile.h"
 #include "playlists/PlayListM3U.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -125,8 +125,20 @@ CURL CDVDInputStreamFFmpeg::GetM3UBestBandwidthStream(const CURL &url, size_t ba
   string strLine;
   size_t maxBandwidth = 0;
 
+  CCurlFile file;
+
+  // set the proxy configuration
+  const string host = GetProxyHost();
+  if (!host.empty())
+  {
+    const ProxyType type = GetProxyType();
+    const uint16_t port = GetProxyPort();
+    const string user = GetProxyUser();
+    const string password = GetProxyPassword();
+    file.SetProxy(type, host, port, user, password);
+  }
+
   // open the file, and if it fails, return
-  CFile file;
   if (!file.Open(url))
   {
     file.Close();
