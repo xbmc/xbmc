@@ -42,6 +42,12 @@ public:
   bool CanSeek() { return m_can_seek; }
   bool CanPause() { return m_can_pause; }
 
+  std::string GetProxyType() const;
+  std::string GetProxyHost() const;
+  uint16_t GetProxyPort() const;
+  std::string GetProxyUser() const;
+  std::string GetProxyPassword() const;
+
 protected:
   bool m_can_pause;
   bool m_can_seek;
