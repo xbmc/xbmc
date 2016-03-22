@@ -1553,7 +1553,7 @@ std::string CGUIEPGGridContainer::GetLabel(int info) const
   return label;
 }
 
-GridItemsPtr *CGUIEPGGridContainer::GetClosestItem(const int &channel)
+GridItemsPtr *CGUIEPGGridContainer::GetClosestItem(int channel)
 {
   GridItemsPtr *closest = GetItem(channel);
 
@@ -1595,7 +1595,7 @@ int CGUIEPGGridContainer::GetItemSize(GridItemsPtr *item)
   return MathUtils::round_int(item->width / m_blockSize);
 }
 
-int CGUIEPGGridContainer::GetBlock(const CGUIListItemPtr &item, const int &channel)
+int CGUIEPGGridContainer::GetBlock(const CGUIListItemPtr &item, int channel)
 {
   if (!item)
     return 0;
@@ -1603,7 +1603,7 @@ int CGUIEPGGridContainer::GetBlock(const CGUIListItemPtr &item, const int &chann
   return GetRealBlock(item, channel) - m_blockOffset;
 }
 
-int CGUIEPGGridContainer::GetRealBlock(const CGUIListItemPtr &item, const int &channel)
+int CGUIEPGGridContainer::GetRealBlock(const CGUIListItemPtr &item, int channel)
 {
   int channelIndex = channel + m_channelOffset;
   int block = 0;
@@ -1614,7 +1614,7 @@ int CGUIEPGGridContainer::GetRealBlock(const CGUIListItemPtr &item, const int &c
   return block;
 }
 
-GridItemsPtr *CGUIEPGGridContainer::GetNextItem(const int &channel)
+GridItemsPtr *CGUIEPGGridContainer::GetNextItem(int channel)
 {
   int channelIndex = channel + m_channelOffset;
   int blockIndex = m_blockCursor + m_blockOffset;
@@ -1629,7 +1629,7 @@ GridItemsPtr *CGUIEPGGridContainer::GetNextItem(const int &channel)
   return &m_gridIndex[channelIndex][i + m_blockOffset];
 }
 
-GridItemsPtr *CGUIEPGGridContainer::GetPrevItem(const int &channel)
+GridItemsPtr *CGUIEPGGridContainer::GetPrevItem(int channel)
 {
   int channelIndex = channel + m_channelOffset;
   int blockIndex = m_blockCursor + m_blockOffset;
@@ -1644,7 +1644,7 @@ GridItemsPtr *CGUIEPGGridContainer::GetPrevItem(const int &channel)
   return &m_gridIndex[channelIndex][i + m_blockOffset];
 }
 
-GridItemsPtr *CGUIEPGGridContainer::GetItem(const int &channel)
+GridItemsPtr *CGUIEPGGridContainer::GetItem(int channel)
 {
   int channelIndex = channel + m_channelOffset;
   int blockIndex = m_blockCursor + m_blockOffset;
