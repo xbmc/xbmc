@@ -85,7 +85,6 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
 #include "epg/EpgContainer.h"
-#include "pvr/timers/PVRTimers.h"
 #include "pvr/recordings/PVRRecording.h"
 
 #include "addons/AddonManager.h"
@@ -6206,14 +6205,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       }
       else if (pItem->HasEPGInfoTag())
       {
-        CEpgInfoTagPtr epgTag = pItem->GetEPGInfoTag();
-
-        // Check if the tag has a currently recording timer associated
-        if (epgTag->HasTimer())
-          return epgTag->Timer()->IsRecording();
-
-        // Search all timers for something that matches the tag
-        CPVRTimerInfoTagPtr timer = g_PVRTimers->GetTimerForEpgTag(epgTag);
+        const CPVRTimerInfoTagPtr timer = pItem->GetEPGInfoTag()->Timer();
         if (timer)
           return timer->IsRecording();
       }
@@ -6229,13 +6221,13 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     else if (condition == LISTITEM_HASTIMER)
     {
       if (pItem->HasEPGInfoTag())
-        return g_PVRTimers->GetTimerForEpgTag(pItem->GetEPGInfoTag()).get() != nullptr;
+        return pItem->GetEPGInfoTag()->HasTimer();
     }
     else if (condition == LISTITEM_HASTIMERSCHEDULE)
     {
       if (pItem->HasEPGInfoTag())
       {
-        CPVRTimerInfoTagPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem->GetEPGInfoTag());
+        CPVRTimerInfoTagPtr timer = pItem->GetEPGInfoTag()->Timer();
         if (timer)
           return timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT;
       }
@@ -6244,7 +6236,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     {
       if (pItem->HasEPGInfoTag())
       {
-        CPVRTimerInfoTagPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem->GetEPGInfoTag());
+        CPVRTimerInfoTagPtr timer = pItem->GetEPGInfoTag()->Timer();
         if (timer)
           return timer->IsActive();
       }
@@ -6253,7 +6245,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     {
       if (pItem->HasEPGInfoTag())
       {
-        CPVRTimerInfoTagPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem->GetEPGInfoTag());
+        CPVRTimerInfoTagPtr timer = pItem->GetEPGInfoTag()->Timer();
         if (timer)
           return timer->HasConflict();
       }
@@ -6262,7 +6254,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     {
       if (pItem->HasEPGInfoTag())
       {
-        CPVRTimerInfoTagPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem->GetEPGInfoTag());
+        CPVRTimerInfoTagPtr timer = pItem->GetEPGInfoTag()->Timer();
         if (timer)
           return (timer->IsBroken() && !timer->HasConflict());
       }

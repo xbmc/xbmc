@@ -674,9 +674,9 @@ CPVRTimerInfoTagPtr CPVRTimers::GetTimerForEpgTag(const CEpgInfoTagPtr &epgTag) 
           if (!timer->IsRepeating() &&
               (timer->GetEpgInfoTag() == epgTag ||
                (timer->m_iClientChannelUid == channel->UniqueID() &&
-               timer->m_bIsRadio == channel->IsRadio() &&
-               timer->StartAsUTC() <= epgTag->StartAsUTC() &&
-               timer->EndAsUTC() >= epgTag->EndAsUTC())))
+                timer->m_bIsRadio == channel->IsRadio() &&
+                timer->StartAsUTC() <= epgTag->StartAsUTC() &&
+                timer->EndAsUTC() >= epgTag->EndAsUTC())))
           {
             return timer;
           }

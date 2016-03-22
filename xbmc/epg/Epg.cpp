@@ -28,6 +28,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/PVRManager.h"
+#include "pvr/timers/PVRTimers.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -320,6 +321,7 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
     newTag->Update(tag);
     newTag->SetPVRChannel(m_pvrChannel);
     newTag->SetEpg(this);
+    newTag->SetTimer(g_PVRTimers->GetTimerForEpgTag(newTag));
   }
 }
 
@@ -433,6 +435,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, EPG_EVENT_STATE newState, std:
   infoTag->Update(*tag, bNewTag);
   infoTag->SetEpg(this);
   infoTag->SetPVRChannel(m_pvrChannel);
+  infoTag->SetTimer(g_PVRTimers->GetTimerForEpgTag(infoTag));
 
   if (bUpdateDatabase)
     m_changedTags.insert(std::make_pair(infoTag->UniqueBroadcastID(), infoTag));
