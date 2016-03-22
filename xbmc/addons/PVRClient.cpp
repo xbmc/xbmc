@@ -94,16 +94,12 @@ CPVRClient::~CPVRClient(void)
 
 void CPVRClient::OnDisabled()
 {
-  // restart the PVR manager if we're disabling a client
-  if (CPVRManager::GetInstance().IsStarted() && CPVRManager::GetInstance().RestartManagerOnAddonDisabled())
-    CPVRManager::GetInstance().Start(true);
+  CPVRManager::GetInstance().Clients()->UpdateAddons();
 }
 
 void CPVRClient::OnEnabled()
 {
-  // restart the PVR manager if we're enabling a client
-  if (CPVRManager::GetInstance().RestartManagerOnAddonDisabled())
-    CPVRManager::GetInstance().Start(true);
+  CPVRManager::GetInstance().Clients()->UpdateAddons();
 }
 
 AddonPtr CPVRClient::GetRunningInstance() const
@@ -126,7 +122,7 @@ void CPVRClient::OnPreInstall()
 void CPVRClient::OnPostInstall(bool update, bool modal)
 {
   // (re)start the pvr manager
-  PVR::CPVRManager::GetInstance().Start(true);
+  CPVRManager::GetInstance().Clients()->UpdateAddons();
 }
 
 void CPVRClient::OnPreUnInstall()
@@ -137,8 +133,7 @@ void CPVRClient::OnPreUnInstall()
 
 void CPVRClient::OnPostUnInstall()
 {
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMANAGER_ENABLED))
-    PVR::CPVRManager::GetInstance().Start(true);
+  CPVRManager::GetInstance().Clients()->UpdateAddons();
 }
 
 bool CPVRClient::CanInstall()

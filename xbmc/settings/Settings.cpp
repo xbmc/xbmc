@@ -216,7 +216,6 @@ const std::string CSettings::SETTING_ACCESSIBILITY_SUBHEARING = "accessibility.s
 const std::string CSettings::SETTING_SCRAPERS_MOVIESDEFAULT = "scrapers.moviesdefault";
 const std::string CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT = "scrapers.tvshowsdefault";
 const std::string CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT = "scrapers.musicvideosdefault";
-const std::string CSettings::SETTING_PVRMANAGER_ENABLED = "pvrmanager.enabled";
 const std::string CSettings::SETTING_PVRMANAGER_HIDECONNECTIONLOSTWARNING = "pvrmanager.hideconnectionlostwarning";
 const std::string CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS = "pvrmanager.syncchannelgroups";
 const std::string CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER = "pvrmanager.backendchannelorder";
@@ -1146,7 +1145,6 @@ void CSettings::InitializeISettingCallbacks()
   m_settingsManager->RegisterCallback(&g_passwordManager, settingSet);
 
   settingSet.clear();
-  settingSet.insert(CSettings::SETTING_PVRMANAGER_ENABLED);
   settingSet.insert(CSettings::SETTING_PVRMANAGER_CHANNELMANAGER);
   settingSet.insert(CSettings::SETTING_PVRMANAGER_GROUPMANAGER);
   settingSet.insert(CSettings::SETTING_PVRMANAGER_CHANNELSCAN);

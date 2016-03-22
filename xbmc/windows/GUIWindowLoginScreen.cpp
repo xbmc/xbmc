@@ -324,9 +324,6 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   // start services which should run on login
   ADDON::CAddonMgr::GetInstance().StartServices(false);
 
-  // start PVR related services
-  g_application.StartPVRManager();
-
   int firstWindow = g_SkinInfo->GetFirstWindow();
   // the startup window is considered part of the initialization as it most likely switches to the final window
   bool uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;

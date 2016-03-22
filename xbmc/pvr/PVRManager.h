@@ -31,6 +31,7 @@
 #include "pvr/recordings/PVRRecording.h"
 
 #include <map>
+#include <memory>
 
 class CGUIDialogProgressBarHandle;
 class CStopWatch;
@@ -135,31 +136,30 @@ private:
      * @brief Get the channel groups container.
      * @return The groups container.
      */
-    CPVRChannelGroupsContainer *ChannelGroups(void) const { return m_channelGroups; }
+    CPVRChannelGroupsContainer *ChannelGroups(void) const { return m_channelGroups.get(); }
 
     /*!
      * @brief Get the recordings container.
      * @return The recordings container.
      */
-    CPVRRecordings *Recordings(void) const { return m_recordings; }
+    CPVRRecordings *Recordings(void) const { return m_recordings.get(); }
 
     /*!
      * @brief Get the timers container.
      * @return The timers container.
      */
-    CPVRTimers *Timers(void) const { return m_timers; }
+    CPVRTimers *Timers(void) const { return m_timers.get(); }
 
     /*!
      * @brief Get the timers container.
      * @return The timers container.
      */
-    CPVRClients *Clients(void) const { return m_addons; }
+    CPVRClients *Clients(void) const { return m_addons.get(); }
 
     /*!
-     * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
-     * @param bAsync True to (re)start the manager from another thread
+     * @brief Init PVRManager.
      */
-    void Start(bool bAsync = false);
+    void Init(void);
 
     /*!
      * @brief Stop the PVRManager and destroy all objects it created.
@@ -268,11 +268,6 @@ private:
       return GetState() == ManagerStateStarted;
     }
 
-    /**
-     * Called by OnEnable() and OnDisable() to check if the manager should be restarted
-     * @return True if it should be restarted, false otherwise
-     */
-    bool RestartManagerOnAddonDisabled(void) const;
 
     /*!
      * @brief Check whether the PVRManager is stopping
@@ -590,6 +585,11 @@ private:
 
   protected:
     /*!
+     * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
+     */
+    void Start();
+    
+    /*!
      * @brief PVR update and control thread.
      */
     virtual void Process(void) override;
@@ -666,11 +666,11 @@ private:
 
     /** @name containers */
     //@{
-    CPVRChannelGroupsContainer *    m_channelGroups;               /*!< pointer to the channel groups container */
-    CPVRRecordings *                m_recordings;                  /*!< pointer to the recordings container */
-    CPVRTimers *                    m_timers;                      /*!< pointer to the timers container */
-    CPVRClients *                   m_addons;                      /*!< pointer to the pvr addon container */
-    CPVRGUIInfo *                   m_guiInfo;                     /*!< pointer to the guiinfo data */
+    std::unique_ptr<CPVRChannelGroupsContainer>    m_channelGroups;               /*!< pointer to the channel groups container */
+    std::unique_ptr<CPVRRecordings>                m_recordings;                  /*!< pointer to the recordings container */
+    std::unique_ptr<CPVRTimers>                    m_timers;                      /*!< pointer to the timers container */
+    std::unique_ptr<CPVRClients>                   m_addons;                      /*!< pointer to the pvr addon container */
+    std::unique_ptr<CPVRGUIInfo>                   m_guiInfo;                     /*!< pointer to the guiinfo data */
     //@}
 
     CCriticalSection                m_critSectionTriggers;         /*!< critical section for triggered updates */
@@ -687,7 +687,7 @@ private:
 
     CCriticalSection                m_managerStateMutex;
     ManagerState                    m_managerState;
-    CStopWatch                     *m_parentalTimer;
+    std::unique_ptr<CStopWatch>     m_parentalTimer;
     std::vector<std::string>        m_outdatedAddons;
     static const int                m_pvrWindowIds[12];
   };

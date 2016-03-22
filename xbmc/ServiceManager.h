@@ -46,6 +46,7 @@ class CServiceManager
 public:
   bool Init1();
   bool Init2();
+  bool Init3();
   void Deinit();
   ADDON::CAddonMgr& GetAddonMgr();
   ADDON::CBinaryAddonCache& GetBinaryAddonCache();

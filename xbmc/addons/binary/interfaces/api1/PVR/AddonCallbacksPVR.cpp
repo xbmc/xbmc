@@ -28,7 +28,7 @@
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClient.h"
+#include "addons/PVRClient.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/recordings/PVRRecordings.h"

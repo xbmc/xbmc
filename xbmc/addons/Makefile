@@ -19,6 +19,7 @@ SRCS=Addon.cpp \
      InputStream.cpp \
      LanguageResource.cpp \
      PluginSource.cpp \
+     PVRClient.cpp \
      Repository.cpp \
      RepositoryUpdater.cpp \
      Scraper.cpp \

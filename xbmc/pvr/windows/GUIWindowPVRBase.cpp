@@ -137,7 +137,7 @@ bool CGUIWindowPVRBase::OnBack(int actionID)
 
 void CGUIWindowPVRBase::OnInitWindow(void)
 {
-  if (!g_PVRManager.IsStarted() || !g_PVRClients->HasConnectedClients())
+  if (!g_PVRManager.IsStarted() || !g_PVRClients->HasCreatedClients())
   {
     // wait until the PVR manager has been started
     CGUIDialogProgress* dialog = static_cast<CGUIDialogProgress*>(g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
@@ -154,7 +154,7 @@ void CGUIWindowPVRBase::OnInitWindow(void)
       CEvent event(true);
       while(!event.WaitMSec(1))
       {
-        if (g_PVRManager.IsStarted() && g_PVRClients->HasConnectedClients())
+        if (g_PVRManager.IsStarted() && g_PVRClients->HasCreatedClients())
           event.Set();
 
         if (dialog->IsCanceled())
@@ -359,7 +359,7 @@ void CGUIWindowPVRBase::SetInvalid()
 bool CGUIWindowPVRBase::CanBeActivated() const
 {
   // No activation if PVR is not enabled.
-  return CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMANAGER_ENABLED);
+  return g_PVRManager.IsStarted();
 }
 
 bool CGUIWindowPVRBase::OpenGroupSelectionDialog(void)

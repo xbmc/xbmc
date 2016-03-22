@@ -36,7 +36,7 @@
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSPAddon.h"
 #include "games/controllers/Controller.h"
 #include "peripherals/addons/PeripheralAddon.h"
-#include "pvr/addons/PVRClient.h"
+#include "addons/PVRClient.h"
 
 
 namespace ADDON

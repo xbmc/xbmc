@@ -1154,9 +1154,6 @@ bool CApplication::Initialize()
 #endif
       ADDON::CAddonMgr::GetInstance().StartServices(false);
 
-      // start the PVR manager
-      StartPVRManager();
-
       // activate the configured start window
       int firstWindow = g_SkinInfo->GetFirstWindow();
       g_windowManager.ActivateWindow(firstWindow);
@@ -1166,6 +1163,11 @@ bool CApplication::Initialize()
 
       CStereoscopicsManager::GetInstance().Initialize();
       CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON, ACTIVE_AE_DSP_SYNC_ACTIVATE); // send a blocking message to active AudioDSP engine
+
+      if (!m_ServiceManager->Init3())
+      {
+        CLog::Log(LOGERROR, "Application - Init3 failed");
+      }
     }
 
   }
@@ -1265,14 +1267,6 @@ bool CApplication::StartServer(enum ESERVERS eServer, bool bStart, bool bWait/* 
   CSettings::GetInstance().Save();
 
   return ret;
-}
-
-void CApplication::StartPVRManager()
-{
-  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMANAGER_ENABLED))
-    return;
-
-  g_PVRManager.Start(true);
 }
 
 void CApplication::StopPVRManager()
@@ -2495,13 +2489,6 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     SetRenderGUI(false);
     break;
 #endif
-
-  case TMSG_SETPVRMANAGERSTATE:
-    if (pMsg->param1 != 0)
-      StartPVRManager();
-    else
-      StopPVRManager();
-    break;
 
   case TMSG_SETAUDIODSPSTATE:
     if(pMsg->param1 == ACTIVE_AE_DSP_STATE_ON)

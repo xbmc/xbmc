@@ -9649,15 +9649,7 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr ""
 
-#: xbmc/pvr/addons/PVRClients.cpp
-msgctxt "#19240"
-msgid "No PVR add-on enabled"
-msgstr ""
-
-#: xbmc/pvr/addons/PVRClients.cpp
-msgctxt "#19241"
-msgid "The PVR manager has been enabled without any enabled PVR add-on. Enable at least one add-on in order to use the PVR functionality."
-msgstr ""
+#empty strings from id 19240 to 19241
 
 #. Label for context menu entry to open settings dialog for a timer
 #: xbmc/pvr/windows/GUIWindowPVRGuide.cpp

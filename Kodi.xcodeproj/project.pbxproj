@@ -353,6 +353,8 @@
 		7C1409AA184015C9009F9411 /* InfoExpression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1409A7184015C6009F9411 /* InfoExpression.cpp */; };
 		7C15DCBC1892481400FCE564 /* InfoBool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C15DCBB1892481300FCE564 /* InfoBool.cpp */; };
 		7C15DCBD1892481400FCE564 /* InfoBool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C15DCBB1892481300FCE564 /* InfoBool.cpp */; };
+		7C1870621CA1664D00114E45 /* PVRClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1870601CA1664D00114E45 /* PVRClient.cpp */; };
+		7C1870631CA1664D00114E45 /* PVRClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1870601CA1664D00114E45 /* PVRClient.cpp */; };
 		7C1A492315A962EE004AF4A4 /* SeekHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A492115A962EE004AF4A4 /* SeekHandler.cpp */; };
 		7C1A85661520522500C63311 /* TextureCacheJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A85631520522500C63311 /* TextureCacheJob.cpp */; };
 		7C1D682915A7D2FD00658B65 /* DatabaseManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1D682715A7D2FD00658B65 /* DatabaseManager.cpp */; };
@@ -744,7 +746,6 @@
 		B542632B197D353B00726998 /* PosixInterfaceForCLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5426329197D353B00726998 /* PosixInterfaceForCLog.cpp */; };
 		B542632C197D353B00726998 /* PosixInterfaceForCLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5426329197D353B00726998 /* PosixInterfaceForCLog.cpp */; };
 		C807114D135DB5CC002F601B /* InputOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C807114B135DB5CC002F601B /* InputOperations.cpp */; };
-		C84828C0156CFCD8005A996F /* PVRClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8482874156CFCD8005A996F /* PVRClient.cpp */; };
 		C84828C1156CFCD8005A996F /* PVRClients.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8482876156CFCD8005A996F /* PVRClients.cpp */; };
 		C84828C3156CFCD8005A996F /* PVRChannel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C848287A156CFCD8005A996F /* PVRChannel.cpp */; };
 		C84828C4156CFCD8005A996F /* PVRChannelGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C848287C156CFCD8005A996F /* PVRChannelGroup.cpp */; };
@@ -1929,7 +1930,6 @@
 		E49913EF174E5FB000741B6D /* ProfilesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28ED9C170E1A11005FA9D2 /* ProfilesManager.cpp */; };
 		E49913F0174E5FB000741B6D /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 886328190E07B37200BB3DAB /* GUIViewStatePrograms.cpp */; };
 		E49913F1174E5FB000741B6D /* GUIWindowPrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18230D25F9FA00618676 /* GUIWindowPrograms.cpp */; };
-		E49913F2174E5FB000741B6D /* PVRClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8482874156CFCD8005A996F /* PVRClient.cpp */; };
 		E49913F3174E5FB000741B6D /* PVRClients.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8482876156CFCD8005A996F /* PVRClients.cpp */; };
 		E49913F4174E5FB000741B6D /* PVRChannel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C848287A156CFCD8005A996F /* PVRChannel.cpp */; };
 		E49913F5174E5FB000741B6D /* PVRChannelGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C848287C156CFCD8005A996F /* PVRChannelGroup.cpp */; };
@@ -2860,6 +2860,8 @@
 		7C1409A7184015C6009F9411 /* InfoExpression.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfoExpression.cpp; sourceTree = "<group>"; };
 		7C1409A8184015C8009F9411 /* InfoExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoExpression.h; sourceTree = "<group>"; };
 		7C15DCBB1892481300FCE564 /* InfoBool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfoBool.cpp; sourceTree = "<group>"; };
+		7C1870601CA1664D00114E45 /* PVRClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRClient.cpp; sourceTree = "<group>"; };
+		7C1870611CA1664D00114E45 /* PVRClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRClient.h; sourceTree = "<group>"; };
 		7C1A492115A962EE004AF4A4 /* SeekHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SeekHandler.cpp; sourceTree = "<group>"; };
 		7C1A492215A962EE004AF4A4 /* SeekHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SeekHandler.h; sourceTree = "<group>"; };
 		7C1A495B15A96918004AF4A4 /* SaveFileStateJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SaveFileStateJob.h; sourceTree = "<group>"; };
@@ -3487,8 +3489,6 @@
 		B542632E19917D3500726998 /* params_check_macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = params_check_macros.h; sourceTree = "<group>"; };
 		C807114B135DB5CC002F601B /* InputOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputOperations.cpp; sourceTree = "<group>"; };
 		C807114C135DB5CC002F601B /* InputOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputOperations.h; sourceTree = "<group>"; };
-		C8482874156CFCD8005A996F /* PVRClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRClient.cpp; sourceTree = "<group>"; };
-		C8482875156CFCD8005A996F /* PVRClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRClient.h; sourceTree = "<group>"; };
 		C8482876156CFCD8005A996F /* PVRClients.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRClients.cpp; sourceTree = "<group>"; };
 		C8482877156CFCD8005A996F /* PVRClients.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRClients.h; sourceTree = "<group>"; };
 		C848287A156CFCD8005A996F /* PVRChannel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRChannel.cpp; sourceTree = "<group>"; };
@@ -5154,6 +5154,8 @@
 				395C2A081A9F06EB00EBC7AD /* LanguageResource.h */,
 				183FDF8811AF0B0500B81E9C /* PluginSource.cpp */,
 				183FDF8911AF0B0500B81E9C /* PluginSource.h */,
+				7C1870601CA1664D00114E45 /* PVRClient.cpp */,
+				7C1870611CA1664D00114E45 /* PVRClient.h */,
 				C85EB75A1174614E0008E5A5 /* Repository.cpp */,
 				C85EB75B1174614E0008E5A5 /* Repository.h */,
 				39B4F36E1B96F845009B2D88 /* RepositoryUpdater.cpp */,
@@ -6950,8 +6952,6 @@
 		C8482872156CFCD8005A996F /* addons */ = {
 			isa = PBXGroup;
 			children = (
-				C8482874156CFCD8005A996F /* PVRClient.cpp */,
-				C8482875156CFCD8005A996F /* PVRClient.h */,
 				C8482876156CFCD8005A996F /* PVRClients.cpp */,
 				C8482877156CFCD8005A996F /* PVRClients.h */,
 			);
@@ -10086,6 +10086,7 @@
 				F5F244651110DC6B009126C6 /* FileOperationJob.cpp in Sources */,
 				DF0E4AC51AD597ED00A75430 /* VideoPlayerRadioRDS.cpp in Sources */,
 				F5F245EE1112C9AB009126C6 /* FileUtils.cpp in Sources */,
+				7C1870621CA1664D00114E45 /* PVRClient.cpp in Sources */,
 				F5A7A702112893E50059D6AA /* AnnouncementManager.cpp in Sources */,
 				F5A7A85B112908F00059D6AA /* WebServer.cpp in Sources */,
 				7C7B2B301134F36400713D6D /* mysqldataset.cpp in Sources */,
@@ -10360,7 +10361,6 @@
 				76F4C37E1C8E92E000A1E64B /* AddonCallbacksInputStream.cpp in Sources */,
 				7C6EB330155BD1D40080368A /* ImageFile.cpp in Sources */,
 				7C6EB6FA155F32C30080368A /* HTTPImageHandler.cpp in Sources */,
-				C84828C0156CFCD8005A996F /* PVRClient.cpp in Sources */,
 				C84828C1156CFCD8005A996F /* PVRClients.cpp in Sources */,
 				C84828C3156CFCD8005A996F /* PVRChannel.cpp in Sources */,
 				C84828C4156CFCD8005A996F /* PVRChannelGroup.cpp in Sources */,
@@ -11391,7 +11391,6 @@
 				E49913F0174E5FB000741B6D /* GUIViewStatePrograms.cpp in Sources */,
 				7C8E023B1BA35D0B0072E8B2 /* PlayerBuiltins.cpp in Sources */,
 				E49913F1174E5FB000741B6D /* GUIWindowPrograms.cpp in Sources */,
-				E49913F2174E5FB000741B6D /* PVRClient.cpp in Sources */,
 				E49913F3174E5FB000741B6D /* PVRClients.cpp in Sources */,
 				E49913F4174E5FB000741B6D /* PVRChannel.cpp in Sources */,
 				E49913F5174E5FB000741B6D /* PVRChannelGroup.cpp in Sources */,
@@ -11543,6 +11542,7 @@
 				E499148D174E606500741B6D /* GUIWindowVideoBase.cpp in Sources */,
 				E499148E174E606500741B6D /* GUIWindowVideoNav.cpp in Sources */,
 				E499148F174E606600741B6D /* GUIWindowVideoPlaylist.cpp in Sources */,
+				7C1870631CA1664D00114E45 /* PVRClient.cpp in Sources */,
 				E4991490174E606600741B6D /* Bookmark.cpp in Sources */,
 				E4991491174E606600741B6D /* FFmpegVideoDecoder.cpp in Sources */,
 				E4991492174E606600741B6D /* GUIViewStateVideo.cpp in Sources */,

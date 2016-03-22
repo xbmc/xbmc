@@ -1722,9 +1722,6 @@
     <ClCompile Include="..\..\xbmc\pvr\channels\PVRRadioRDSInfoTag.cpp">
       <Filter>pvr\channels</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\addons\PVRClient.cpp">
-      <Filter>pvr\addons</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogExtendedProgressBar.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
@@ -3465,6 +3462,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\ServiceBroker.cpp" />
     <ClCompile Include="..\..\xbmc\ServiceManager.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\PVRClient.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4914,9 +4914,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\channels\PVRRadioRDSInfoTag.h">
       <Filter>pvr\channels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\addons\PVRClient.h">
-      <Filter>pvr\addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogExtendedProgressBar.h">
       <Filter>dialogs</Filter>
@@ -6732,6 +6729,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\ServiceBroker.h" />
     <ClInclude Include="..\..\xbmc\ServiceManager.h" />
+    <ClInclude Include="..\..\xbmc\addons\PVRClient.h">
+      <Filter>addons</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
