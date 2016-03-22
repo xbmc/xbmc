@@ -4718,14 +4718,16 @@ void CMusicDatabase::UpdateTables(int version)
     { 
       // When BLANKARTIST_ID (=1) is already in use, move the record
       try
-      { //Use temp table to move record
-        strSQL = PrepareSQL("CREATE TEMPORARY TABLE tmp_artist AS SELECT * FROM artist WHERE artist.idArtist = %i", BLANKARTIST_ID);
+      { //No mbid index yet, so can have record for artist twice even with mbid
+        strSQL = PrepareSQL("INSERT INTO artist SELECT null, "
+          "strArtist, strMusicBrainzArtistID, "
+          "strBorn, strFormed, strGenres, strMoods, "
+          "strStyles, strInstruments, strBiography, "
+          "strDied, strDisbanded, strYearsActive, "
+          "strImage, strFanart, lastScraped "
+          "FROM artist WHERE artist.idArtist = %i", BLANKARTIST_ID);
         m_pDS->exec(strSQL);
-        m_pDS->exec("UPDATE tmp_artist SET idArtist = NULL");
-        //No mbid index yet, so can have record for artist twice even with mbid
-        m_pDS->exec("INSERT INTO artist SELECT * FROM tmp_artist");
         int idArtist = (int)m_pDS->lastinsertid();
-        m_pDS->exec("DROP TABLE tmp_artist");
         //No triggers, so can delete artist without effecting other tables.
         strSQL = PrepareSQL("DELETE FROM artist WHERE artist.idArtist = %i", BLANKARTIST_ID);
         m_pDS->exec(strSQL);
