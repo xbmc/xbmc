@@ -100,6 +100,8 @@ bool CInputStream::Supports(CFileItem &fileitem)
   {
     if (addon.asString() != Name())
       return false;
+    else
+      return true;
   }
 
   // check paths
