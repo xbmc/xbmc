@@ -38,8 +38,8 @@ CDemuxMultiSource::~CDemuxMultiSource()
 
 void CDemuxMultiSource::Abort()
 {
-  for (auto iter : m_pDemuxers)
-    iter->Abort();
+  for (auto& iter : m_demuxerMap)
+    iter.second->Abort();
 }
 
 void CDemuxMultiSource::Dispose()
@@ -51,7 +51,6 @@ void CDemuxMultiSource::Dispose()
 
   m_demuxerMap.clear();
   m_DemuxerToInputStreamMap.clear();
-  m_pDemuxers.clear();
   m_pInput = NULL;
 
 }
@@ -86,15 +85,15 @@ void CDemuxMultiSource::EnableStreamAtPTS(int64_t demuxerId, int id, uint64_t pt
 
 void CDemuxMultiSource::Flush()
 {
-  for (auto iter : m_pDemuxers)
-    iter->Flush();
+  for (auto& iter : m_demuxerMap)
+    iter.second->Flush();
 }
 
 int CDemuxMultiSource::GetNrOfStreams() const
 {
   int streamsCount = 0;
-  for (auto iter : m_pDemuxers)
-    streamsCount += iter->GetNrOfStreams();
+  for (auto& iter : m_demuxerMap)
+    streamsCount += iter.second->GetNrOfStreams();
 
   return streamsCount;
 }
@@ -114,9 +113,9 @@ std::vector<CDemuxStream*> CDemuxMultiSource::GetStreams() const
 {
   std::vector<CDemuxStream*> streams;
 
-  for (auto& demuxer : m_pDemuxers)
+  for (auto& iter : m_demuxerMap)
   {
-    for (auto& stream : demuxer->GetStreams())
+    for (auto& stream : iter.second->GetStreams())
     {
       streams.push_back(stream);
     }
@@ -138,9 +137,9 @@ std::string CDemuxMultiSource::GetStreamCodecName(int64_t demuxerId, int iStream
 int CDemuxMultiSource::GetStreamLength()
 {
   int length = 0;
-  for (auto iter : m_pDemuxers)
+  for (auto& iter : m_demuxerMap)
   {
-    length = std::max(length, iter->GetStreamLength());
+    length = std::max(length, iter.second->GetStreamLength());
   }
 
   return length;
@@ -170,18 +169,17 @@ bool CDemuxMultiSource::Open(CDVDInputStream* pInput)
 
       m_demuxerMap[demuxer->GetDemuxerId()] = demuxer;
       m_DemuxerToInputStreamMap[demuxer] = *iter;
-      m_pDemuxers.push_back(demuxer);
       m_demuxerQueue.push(std::make_pair((double)DVD_NOPTS_VALUE, demuxer));
       ++iter;
     }
   }
-  return !m_pDemuxers.empty();
+  return !m_demuxerMap.empty();
 }
 
 void CDemuxMultiSource::Reset()
 {
-  for (auto iter : m_pDemuxers)
-    iter->Reset();
+  for (auto& iter : m_demuxerMap)
+    iter.second->Reset();
 }
 
 DemuxPacket* CDemuxMultiSource::Read()
@@ -227,11 +225,11 @@ bool CDemuxMultiSource::SeekTime(int time, bool backwords, double* startpts)
 {
   DemuxQueue demuxerQueue = DemuxQueue();
   bool ret = false;
-  for (auto iter : m_pDemuxers)
+  for (auto& iter : m_demuxerMap)
   {
-    if (iter->SeekTime(time, false, startpts))
+    if (iter.second->SeekTime(time, false, startpts))
     {
-      demuxerQueue.push(std::make_pair(*startpts, iter));
+      demuxerQueue.push(std::make_pair(*startpts, iter.second));
       CLog::Log(LOGDEBUG, "%s - starting demuxer from: %d", __FUNCTION__, time);
       ret = true;
     }

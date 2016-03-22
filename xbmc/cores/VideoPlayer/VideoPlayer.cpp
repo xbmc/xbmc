@@ -1644,8 +1644,6 @@ void CVideoPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
     ProcessRadioRDSData(pStream, pPacket);
   else
   {
-    if (m_pDemuxer)
-      m_pDemuxer->EnableStream(pStream->demuxerId, pStream->uniqueId, false);
     CDVDDemuxUtils::FreeDemuxPacket(pPacket); // free it since we won't do anything with it
   }
 }
@@ -3271,8 +3269,21 @@ void CVideoPlayer::UpdateStreamInfos()
     CDemuxStream* stream = m_pDemuxer->GetStream(m_CurrentVideo.demuxerId, m_CurrentVideo.id);
     if (stream && stream->type == STREAM_VIDEO)
     {
-      s.width = ((CDemuxStreamVideo*)stream)->iWidth;
-      s.height = ((CDemuxStreamVideo*)stream)->iHeight;
+      if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+      {
+        int cout = m_SelectionStreams.Count(STREAM_VIDEO);
+        for (int i = 0; i < cout; ++i)
+        {
+          SelectionStream& select = m_SelectionStreams.Get(STREAM_VIDEO, i);
+          select.width = static_cast<CDemuxStreamVideo*>(stream)->iWidth;
+          select.height = static_cast<CDemuxStreamVideo*>(stream)->iHeight;
+        }
+      }
+      else
+      {
+        s.width = static_cast<CDemuxStreamVideo*>(stream)->iWidth;
+        s.height = static_cast<CDemuxStreamVideo*>(stream)->iHeight;
+      }
       s.stereo_mode = m_VideoPlayerVideo->GetStereoMode();
       if (s.stereo_mode == "mono")
         s.stereo_mode = "";

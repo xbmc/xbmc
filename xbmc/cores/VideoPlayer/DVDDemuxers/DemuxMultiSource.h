@@ -69,7 +69,6 @@ private:
   void SetMissingStreamDetails(DemuxPtr demuxer);
 
   InputStreamMultiStreams* m_pInput = NULL;
-  std::vector<DemuxPtr> m_pDemuxers;
   std::map<DemuxPtr, InputStreamPtr> m_DemuxerToInputStreamMap;
   DemuxQueue m_demuxerQueue;
   std::map<int64_t, DemuxPtr> m_demuxerMap;
