@@ -65,7 +65,8 @@ void TestBasicEnvironment::SetUp()
   CSettings::GetInstance().Initialize();
 
   g_application.m_ServiceManager.reset(new CServiceManager());
-  if (!g_application.m_ServiceManager->Init())
+  if (!g_application.m_ServiceManager->Init1() ||
+      !g_application.m_ServiceManager->Init2())
     exit(1);
 
   /* Create a temporary directory and set it to be used throughout the
