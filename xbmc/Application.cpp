@@ -2789,10 +2789,18 @@ bool CApplication::Cleanup()
 {
   try
   {
-    g_windowManager.DestroyWindows();
+    CLog::Log(LOGNOTICE, "unload skin");
+    UnloadSkin();
 
-    CLog::Log(LOGNOTICE, "closing down remote control service");
-    CInputManager::GetInstance().DisableRemoteControl();
+    // stop all remaining scripts; must be done after skin has been unloaded,
+    // not before some windows still need it when deinitializing during skin
+    // unloading
+    CScriptInvocationManager::GetInstance().Uninitialize();
+
+    g_Windowing.DestroyRenderSystem();
+    g_Windowing.DestroyWindow();
+    g_Windowing.DestroyWindowSystem();
+    g_windowManager.DestroyWindows();
 
     CLog::Log(LOGNOTICE, "unload sections");
 
@@ -2909,7 +2917,6 @@ void CApplication::Stop(int exitCode)
 
     StopPVRManager();
     StopServices();
-    //Sleep(5000);
 
 #ifdef HAS_ZEROCONF
     if(CZeroconfBrowser::IsInstantiated())
@@ -2933,9 +2940,6 @@ void CApplication::Stop(int exitCode)
     smb.Deinit();
 #endif
 
-    CLog::Log(LOGNOTICE, "unload skin");
-    UnloadSkin();
-
 #if defined(TARGET_DARWIN_OSX)
     if (XBMCHelper::GetInstance().IsAlwaysOn() == false)
       XBMCHelper::GetInstance().Stop();
@@ -2950,19 +2954,13 @@ void CApplication::Stop(int exitCode)
     UnregisterActionListener(&CSeekHandler::GetInstance());
     UnregisterActionListener(&CPlayerController::GetInstance());
 
-    // stop all remaining scripts; must be done after skin has been unloaded,
-    // not before some windows still need it when deinitializing during skin
-    // unloading
-    CScriptInvocationManager::GetInstance().Uninitialize();
-
-    g_Windowing.DestroyRenderSystem();
-    g_Windowing.DestroyWindow();
-    g_Windowing.DestroyWindowSystem();
-
     g_audioManager.DeInitialize();
     // shutdown the AudioEngine
     CAEFactory::Shutdown();
     CAEFactory::UnLoadEngine();
+
+    CLog::Log(LOGNOTICE, "closing down remote control service");
+    CInputManager::GetInstance().DisableRemoteControl();
 
     // unregister ffmpeg lock manager call back
     av_lockmgr_register(NULL);
