@@ -28,6 +28,7 @@
 #include "settings/Settings.h"
 #include "Util.h"
 #include "Application.h"
+#include "interfaces/AnnouncementManager.h"
 
 #include <cstdio>
 #include <cstdlib>
