@@ -517,7 +517,8 @@ install-datas: install-scripts
 	@install -m 0644 docs/README.linux LICENSE.GPL *.txt $(DESTDIR)$(docdir)
 	@echo "Done!"
 	@echo "Copying system files to $(DESTDIR)$(datarootdir)/@APP_NAME_LC@"
-	@install -d $(DESTDIR)$(datarootdir)/@APP_NAME_LC@
+	@install -d $(DESTDIR)$(datarootdir)/@APP_NAME_LC@/certs
+	@install -m 0644 system/certs/* $(DESTDIR)$(datarootdir)/@APP_NAME_LC@/certs
 	@# Arch independent files
 ifeq ($(findstring bsd,@ARCH@), bsd)
 	@find -E addons media userdata system -type f \

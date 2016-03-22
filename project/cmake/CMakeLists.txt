@@ -207,6 +207,10 @@ if(CORE_SYSTEM_NAME STREQUAL android)
   core_optional_dep(Breakpad)
 endif()
 
+if(DEPENDS_BUILD STREQUAL Yes)
+  set(EXTRA_DEFINES -DDEPENDS_BUILD=1)
+endif()
+
 # Compile Info
 add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
                           ${CMAKE_BINARY_DIR}/addons/xbmc.addon/addon.xml
@@ -239,7 +243,7 @@ if(WIN32)
 endif()
 
 include_directories(${INCLUDES} ${SYSTEM_INCLUDES})
-add_compile_options(${ARCH_DEFINES} "${SYSTEM_DEFINES}" ${DEP_DEFINES} ${PATH_DEFINES})
+add_compile_options(${ARCH_DEFINES} "${SYSTEM_DEFINES}" ${DEP_DEFINES} ${PATH_DEFINES} ${EXTRA_DEFINES})
 
 set(core_DEPENDS "" CACHE STRING "" FORCE)
 set(test_archives "" CACHE STRING "" FORCE)
