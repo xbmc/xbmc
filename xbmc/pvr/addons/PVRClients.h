@@ -694,12 +694,6 @@ namespace PVR
     bool GetMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, PVR_MENUHOOKS *hooks);
 
     /*!
-     * @brief Updates the backend information
-     */
-    void Process(void);
-
-
-    /*!
      * @brief Get the instance of the client.
      * @param iClientId The id of the client to get.
      * @param addon The client.
@@ -729,21 +723,9 @@ namespace PVR
      */
     bool IsKnownClient(const ADDON::AddonPtr client) const;
 
-    /*!
-     * @brief Check whether there are any new pvr add-ons enabled or whether any of the known clients has been disabled.
-     * @param bInitialiseAllClients True to initialise all clients, false to only initialise new clients.
-     * @return void.
-     */
-    void UpdateAndInitialiseClients();
-
 
     int GetClientId(const ADDON::AddonPtr client) const;
 
-    /*!
-     * Try to automatically configure clients
-     * @return True when at least one was configured
-     */
-    bool AutoconfigureClients(void);
 
     bool                  m_bChannelScanRunning;      /*!< true when a channel scan is currently running, false otherwise */
     bool                  m_bIsSwitchingChannels;        /*!< true while switching channels */
@@ -751,9 +733,7 @@ namespace PVR
     bool                  m_bIsPlayingLiveTV;
     bool                  m_bIsPlayingRecording;
     std::string           m_strPlayingClientName;     /*!< the name client that is currenty playing a stream or an empty string if nothing is playing */
-    ADDON::VECADDONS      m_addons;
     PVR_CLIENTMAP         m_clientMap;                /*!< a map of all known clients */
-    bool                  m_bNoAddonWarningDisplayed; /*!< true when a warning was displayed that no add-ons were found, false otherwise */
     CCriticalSection      m_critSection;
     std::map<std::string, int> m_addonNameIds; /*!< map add-on names to IDs */
   };

@@ -55,8 +55,7 @@ CPVRClients::CPVRClients(void) :
     m_bIsSwitchingChannels(false),
     m_playingClientId(-EINVAL),
     m_bIsPlayingLiveTV(false),
-    m_bIsPlayingRecording(false),
-    m_bNoAddonWarningDisplayed(false)
+    m_bIsPlayingRecording(false)
 {
 }
 
@@ -1133,18 +1132,17 @@ bool CPVRClients::IsKnownClient(const AddonPtr client) const
   return GetClientId(client) > 0;
 }
 
-void CPVRClients::UpdateAndInitialiseClients()
+void CPVRClients::UpdateAddons(void)
 {
-  VECADDONS map;
-  {
-    CSingleLock lock(m_critSection);
-    map = m_addons;
-  }
+  VECADDONS addons;
+  PVR_CLIENT addon;
 
-  if (map.empty())
+  CAddonMgr::GetInstance().GetAddons(addons, ADDON_PVRDLL);
+
+  if (addons.empty())
     return;
 
-  for (auto &addon : map)
+  for (auto &addon : addons)
   {
     bool bEnabled = !CAddonMgr::GetInstance().IsAddonDisabled(addon->ID());
 
@@ -1182,98 +1180,6 @@ void CPVRClients::UpdateAndInitialiseClients()
     {
       StopClient(addon, false);
     }
-  }
-}
-
-bool CPVRClients::AutoconfigureClients(void)
-{
-  bool bReturn(false);
-  std::vector<PVR_CLIENT> autoConfigAddons;
-  PVR_CLIENT addon;
-
-  {
-    VECADDONS map;
-    CAddonMgr::GetInstance().GetDisabledAddons(map, ADDON_PVRDLL);
-
-    /** get the auto-configurable add-ons */
-    for (VECADDONS::iterator it = map.begin(); it != map.end(); ++it)
-    {
-      addon = std::dynamic_pointer_cast<CPVRClient>(*it);
-      if (addon->CanAutoconfigure())
-        autoConfigAddons.push_back(addon);
-    }
-  }
-
-  /** no configurable add-ons found */
-  if (autoConfigAddons.empty())
-    return bReturn;
-
-  /** display a progress bar while trying to auto-configure add-ons */
-  CGUIDialogExtendedProgressBar *loadingProgressDialog = (CGUIDialogExtendedProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
-  CGUIDialogProgressBarHandle* progressHandle = loadingProgressDialog->GetHandle(g_localizeStrings.Get(19688)); // Scanning for PVR services
-  progressHandle->SetPercentage(0);
-  progressHandle->SetText(g_localizeStrings.Get(19688)); //Scanning for PVR services
-
-  /** start zeroconf and wait a second to get some responses */
-  CZeroconfBrowser::GetInstance()->Start();
-  for (std::vector<PVR_CLIENT>::iterator it = autoConfigAddons.begin(); !bReturn && it != autoConfigAddons.end(); ++it)
-    (*it)->AutoconfigureRegisterType();
-
-  unsigned iIterations(0);
-  float percentage(0.0f);
-  float percentageStep(100.0f / PVR_CLIENT_AVAHI_SCAN_ITERATIONS);
-  progressHandle->SetPercentage(percentage);
-
-  /** while no add-ons were configured within 20 iterations */
-  while (!bReturn && iIterations++ < PVR_CLIENT_AVAHI_SCAN_ITERATIONS)
-  {
-    /** check each disabled add-on */
-    for (std::vector<PVR_CLIENT>::iterator it = autoConfigAddons.begin(); !bReturn && it != autoConfigAddons.end(); ++it)
-    {
-      if (addon->Autoconfigure())
-      {
-        progressHandle->SetPercentage(100.0f);
-        progressHandle->MarkFinished();
-
-        /** enable the add-on */
-        CAddonMgr::GetInstance().EnableAddon((*it)->ID());
-        CSingleLock lock(m_critSection);
-        m_addons.push_back(*it);
-        bReturn = true;
-      }
-    }
-
-    /** wait a while and try again */
-    if (!bReturn)
-    {
-      percentage += percentageStep;
-      progressHandle->SetPercentage(percentage);
-      Sleep(PVR_CLIENT_AVAHI_SLEEP_TIME_MS);
-    }
-  }
-
-  progressHandle->SetPercentage(100.0f);
-  progressHandle->MarkFinished();
-  return bReturn;
-}
-
-void CPVRClients::UpdateAddons(void)
-{
-  VECADDONS addons;
-  PVR_CLIENT addon;
-
-  if (CAddonMgr::GetInstance().GetAddons(addons, ADDON_PVRDLL))
-  {
-    CSingleLock lock(m_critSection);
-    m_addons = addons;
-  }
-
-  UpdateAndInitialiseClients();
-
-  if (!HasEnabledClients() && !m_bNoAddonWarningDisplayed)
-  {
-    if (AutoconfigureClients())
-      m_bNoAddonWarningDisplayed = true;
   }
 
   g_PVRManager.Start();
