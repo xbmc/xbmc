@@ -22,6 +22,7 @@
 #include "addons/AddonDatabase.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
+#include "threads/Event.h"
 #include "utils/Observer.h"
 
 #include "pvr/channels/PVRChannel.h"
@@ -689,6 +690,12 @@ namespace PVR
 
     bool IsRealTimeStream() const;
 
+    /**
+     * Blocks for PVR_CLIENT_LOAD_TIMEOUT_MS milliseconds while waiting for the addon
+     * load event to be triggered.
+     */
+    void WaitForInitialisation();
+
   private:
     /*!
      * @brief Update add-ons from the AddonManager
@@ -746,10 +753,9 @@ namespace PVR
 
     /*!
      * @brief Check whether there are any new pvr add-ons enabled or whether any of the known clients has been disabled.
-     * @param bInitialiseAllClients True to initialise all clients, false to only initialise new clients.
      * @return True if all clients were updated successfully, false otherwise.
      */
-    bool UpdateAndInitialiseClients(bool bInitialiseAllClients = false);
+    bool UpdateAndInitialiseClients();
 
     /*!
      * @brief Initialise and connect a client.
@@ -776,6 +782,7 @@ namespace PVR
     PVR_CLIENTMAP         m_clientMap;                /*!< a map of all known clients */
     bool                  m_bNoAddonWarningDisplayed; /*!< true when a warning was displayed that no add-ons were found, false otherwise */
     CCriticalSection      m_critSection;
+    CEvent                m_loadedEvent;
     std::map<int, time_t> m_connectionAttempts;       /*!< last connection attempt per add-on */
     bool                  m_bRestartManagerOnAddonDisabled; /*!< true to restart the manager when an add-on is enabled/disabled */
     std::map<std::string, int> m_addonNameIds; /*!< map add-on names to IDs */
