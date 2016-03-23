@@ -67,14 +67,13 @@ namespace PVR
 
     ~CPVRClient(void);
 
-    virtual void OnDisabled();
-    virtual void OnEnabled();
-    virtual ADDON::AddonPtr GetRunningInstance() const;
-    virtual void OnPreInstall();
-    virtual void OnPostInstall(bool update, bool modal);
-    virtual void OnPreUnInstall();
-    virtual void OnPostUnInstall();
-    virtual bool CanInstall();
+    virtual void OnDisabled() override;
+    virtual void OnEnabled() override;
+    virtual void SaveSettings() override;
+    virtual void OnPostInstall(bool update, bool modal) override;
+    virtual void OnPreUnInstall() override;
+    virtual void OnPostUnInstall() override;
+
     bool NeedsConfiguration(void) const { return m_bNeedsConfiguration; }
 
     /** @name PVR add-on methods */
@@ -639,7 +638,7 @@ namespace PVR
      * @brief Request the API version from the add-on, and check if it's compatible
      * @return True when compatible, false otherwise.
      */
-    bool CheckAPIVersion(void);
+    bool CheckAPIVersion(void) override;
 
     /*!
      * @brief Resets all class members to their defaults. Called by the constructors.

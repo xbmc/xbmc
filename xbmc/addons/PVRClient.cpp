@@ -94,34 +94,25 @@ CPVRClient::~CPVRClient(void)
 
 void CPVRClient::OnDisabled()
 {
+  CAddon::OnDisabled();
   CPVRManager::GetInstance().Clients()->UpdateAddons();
 }
 
 void CPVRClient::OnEnabled()
 {
+  CAddon::OnEnabled();
   CPVRManager::GetInstance().Clients()->UpdateAddons();
 }
 
-AddonPtr CPVRClient::GetRunningInstance() const
+void CPVRClient::SaveSettings()
 {
-  if (g_PVRManager.IsStarted())
-  {
-    AddonPtr pvrAddon;
-    if (g_PVRClients->GetClient(ID(), pvrAddon))
-      return pvrAddon;
-  }
-  return CAddon::GetRunningInstance();
-}
-
-void CPVRClient::OnPreInstall()
-{
-  // stop the pvr manager, so running pvr add-ons are stopped and closed
-  PVR::CPVRManager::GetInstance().Stop();
+  CAddon::SaveSettings();
+  CPVRManager::GetInstance().Clients()->UpdateAddons();
 }
 
 void CPVRClient::OnPostInstall(bool update, bool modal)
 {
-  // (re)start the pvr manager
+  CAddon::OnPostInstall(update, modal);
   CPVRManager::GetInstance().Clients()->UpdateAddons();
 }
 
@@ -129,21 +120,13 @@ void CPVRClient::OnPreUnInstall()
 {
   // stop the pvr manager, so running pvr add-ons are stopped and closed
   PVR::CPVRManager::GetInstance().Stop();
+  CAddon::OnPreUnInstall();
 }
 
 void CPVRClient::OnPostUnInstall()
 {
+  CAddon::OnPostUnInstall();
   CPVRManager::GetInstance().Clients()->UpdateAddons();
-}
-
-bool CPVRClient::CanInstall()
-{
-  if (!PVR::CPVRManager::GetInstance().InstallAddonAllowed(ID()))
-  {
-    PVR::CPVRManager::GetInstance().MarkAsOutdated(ID());
-    return false;
-  }
-  return CAddon::CanInstall();
 }
 
 void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
