@@ -107,6 +107,7 @@ void CPVRClient::OnEnabled()
 void CPVRClient::SaveSettings()
 {
   CAddon::SaveSettings();
+  ReCreate();
   CPVRManager::GetInstance().Clients()->UpdateAddons();
 }
 
