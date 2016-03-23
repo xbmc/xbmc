@@ -261,7 +261,7 @@ int CDVDVideoCodecAmlogic::Decode(uint8_t *pData, int iSize, double dts, double 
     if (m_bitparser)
       m_bitparser->FindIdrSlice(pData, iSize);
 
-    FrameRateTracking( pData, iSize, dts, pts);
+//    FrameRateTracking( pData, iSize, dts, pts);
   }
 
   if (!m_opened)
@@ -289,10 +289,10 @@ void CDVDVideoCodecAmlogic::Reset(void)
 bool CDVDVideoCodecAmlogic::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
   if (m_Codec)
-    m_Codec->GetPicture(&m_videobuffer);
-  *pDvdVideoPicture = m_videobuffer;
+    return m_Codec->GetPicture(pDvdVideoPicture);
+//  *pDvdVideoPicture = m_videobuffer;
 
-  CDVDAmlogicInfo* info = new CDVDAmlogicInfo(this, m_Codec);
+/*  CDVDAmlogicInfo* info = new CDVDAmlogicInfo(this, m_Codec);
 
   {
     CSingleLock lock(m_secure);
@@ -315,19 +315,21 @@ bool CDVDVideoCodecAmlogic::GetPicture(DVDVideoPicture* pDvdVideoPicture)
       pDvdVideoPicture->iDisplayWidth  = pDvdVideoPicture->iWidth;
       pDvdVideoPicture->iDisplayHeight = ((int)lrint(pDvdVideoPicture->iWidth / m_aspect_ratio)) & -3;
     }
-  }
+  }*/
 
-  return true;
+  return false;
 }
 
 bool CDVDVideoCodecAmlogic::ClearPicture(DVDVideoPicture *pDvdVideoPicture)
 {
-  SAFE_RELEASE(pDvdVideoPicture->amlcodec);
+//  SAFE_RELEASE(pDvdVideoPicture->amlcodec);
   return true;
 }
 
 void CDVDVideoCodecAmlogic::SetDropState(bool bDrop)
 {
+  if (m_Codec)
+    m_Codec->SetDropState(bDrop);
 }
 
 void CDVDVideoCodecAmlogic::SetSpeed(int iSpeed)

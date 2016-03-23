@@ -60,6 +60,243 @@ extern "C" {
 #include <amcodec/codec.h>
 }  // extern "C"
 
+class PosixFile
+{
+public:
+  PosixFile() :
+    m_fd(-1)
+  {
+  }
+
+  PosixFile(int fd) :
+    m_fd(fd)
+  {
+  }
+
+  ~PosixFile()
+  {
+    if (m_fd >= 0)
+     close(m_fd);
+  }
+
+  bool Open(const std::string &pathName, int flags)
+  {
+    m_fd = open(pathName.c_str(), flags);
+    return m_fd >= 0;
+  }
+
+  int GetDescriptor() const { return m_fd; }
+
+  int IOControl(unsigned long request, void *param)
+  {
+    return ioctl(m_fd, request, param);
+  }
+
+private:
+  int m_fd;
+};
+
+typedef int ion_handle;
+
+struct ion_allocation_data
+{
+  size_t len;
+  size_t align;
+  unsigned int heap_id_mask;
+  unsigned int flags;
+  ion_handle handle;
+};
+
+struct ion_fd_data
+{
+  ion_handle handle;
+  int fd;
+};
+
+struct ion_handle_data
+{
+  ion_handle handle;
+};
+
+#define ION_IOC_MAGIC 'I'
+
+#define ION_IOC_ALLOC _IOWR(ION_IOC_MAGIC, 0, struct ion_allocation_data)
+#define ION_IOC_FREE  _IOWR(ION_IOC_MAGIC, 1, struct ion_handle_data)
+#define ION_IOC_SHARE _IOWR(ION_IOC_MAGIC, 4, struct ion_fd_data)
+
+enum ion_heap_type
+{
+  ION_HEAP_TYPE_SYSTEM,
+  ION_HEAP_TYPE_SYSTEM_CONTIG,
+  ION_HEAP_TYPE_CARVEOUT,
+  ION_HEAP_TYPE_CHUNK,
+  ION_HEAP_TYPE_CUSTOM,
+  ION_NUM_HEAPS = 16
+};
+
+#define ION_HEAP_SYSTEM_MASK        (1 << ION_HEAP_TYPE_SYSTEM)
+#define ION_HEAP_SYSTEM_CONTIG_MASK (1 << ION_HEAP_TYPE_SYSTEM_CONTIG)
+#define ION_HEAP_CARVEOUT_MASK      (1 << ION_HEAP_TYPE_CARVEOUT)
+
+#undef ALIGN
+#define ALIGN(value, alignment) (((value)+(alignment-1))&~(alignment-1))
+
+class IonBuffer
+{
+public:
+  IonBuffer(PosixFilePtr ionFile) :
+    m_ionFile(ionFile),
+    m_handle(0),
+    m_data(nullptr),
+    m_length(0)
+  {
+  }
+
+  ~IonBuffer()
+  {
+    Free();
+  }
+
+  void *Allocate(size_t len)
+  {
+    if (m_data)
+      Free();
+
+    ion_handle handle = IOControlAlloc(len, 0, ION_HEAP_CARVEOUT_MASK, 0);
+    if (!handle)
+      return nullptr;
+
+    PosixFilePtr shareFile = IOControlShare(handle);
+    if (!shareFile)
+    {
+      IOControlFree(handle);
+      return nullptr;
+    }
+
+    void *data = mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_SHARED, shareFile->GetDescriptor(), 0);
+    if (data == MAP_FAILED)
+    {
+      CLog::Log(LOGERROR, "IonBuffer::Allocate - cannot map ION memory (len = %d): %s", len, strerror(errno));
+      IOControlFree(handle);
+      return nullptr;
+    }
+
+    m_handle = handle;
+    m_shareFile = shareFile;
+    m_data = data;
+    m_length = len;
+
+    return m_data;
+  }
+
+  void Free()
+  {
+    if (m_data)
+    {
+      munmap(m_data, m_length);
+      IOControlFree(m_handle);
+      m_shareFile.reset();
+      m_data = nullptr;
+      m_length = 0;
+    }
+  }
+
+  void *GetData() const          { return m_data; }
+  size_t GetLength() const       { return m_length; }
+  int GetShareDescriptor() const { return m_shareFile->GetDescriptor(); }
+
+private:
+  ion_handle IOControlAlloc(size_t len, size_t align, unsigned int heapMask, unsigned int flags)
+  {
+    ion_allocation_data data =
+    {
+      .len = len,
+      .align = align,
+      .heap_id_mask = heapMask,
+      .flags = flags
+    };
+
+    if (m_ionFile->IOControl(ION_IOC_ALLOC, &data) < 0)
+    {
+      CLog::Log(LOGERROR, "IonBuffer::IOControlAlloc - ION_IOC_ALLOC failed (len = %d): %s", len, strerror(errno));
+      return 0;
+    }
+
+    return data.handle;
+  }
+
+  int IOControlFree(ion_handle handle)
+  {
+    ion_handle_data data =
+    {
+      .handle = handle
+    };
+
+    return m_ionFile->IOControl(ION_IOC_FREE, &data);
+  }
+
+  PosixFilePtr IOControlShare(ion_handle handle)
+  {
+    ion_fd_data data =
+    {
+      .handle = handle
+    };
+
+    if (m_ionFile->IOControl(ION_IOC_SHARE, &data) < 0)
+    {
+      CLog::Log(LOGERROR, "IonBuffer::IOControlShare - ION_IOC_SHARE failed: %s", strerror(errno));
+      return nullptr;
+    }
+
+    return std::make_shared<PosixFile>(data.fd);
+  }
+
+  PosixFilePtr m_ionFile;
+  PosixFilePtr m_shareFile;
+  ion_handle   m_handle;
+  void         *m_data;
+  size_t       m_length;
+};
+
+class VideoFrame
+{
+public:
+  VideoFrame(PosixFilePtr ionFile, int index) :
+    m_ionBuffer(ionFile),
+    m_index(index),
+    m_width(0),
+    m_height(0),
+    m_stride(0),
+    m_pts(DVD_NOPTS_VALUE)
+  {
+  }
+
+  bool Create(int width, int height)
+  {
+    m_width = width;//ALIGN(width, 32);
+    m_height = height;//ALIGN(height, 16);
+    m_stride = ALIGN(width, 16);
+    size_t len = ALIGN(height, 16) * (ALIGN(width, 32) + ALIGN(m_stride / 2, 16));
+    return m_ionBuffer.Allocate(len);
+  }
+
+  const IonBuffer &GetBuffer() const { return m_ionBuffer; }
+  int GetIndex() const               { return m_index; }
+  int GetWidth() const               { return m_width; }
+  int GetHeight() const              { return m_height; }
+  int GetStride() const              { return m_stride; }
+  double GetPts() const              { return m_pts; }
+  void SetPts(double pts)            { m_pts = pts; }
+
+private:
+  IonBuffer m_ionBuffer;
+  int       m_index;
+  int       m_width;
+  int       m_height;
+  int       m_stride;
+  double    m_pts;
+};
+
 typedef struct {
   bool          noblock;
   int           video_pid;
@@ -1418,7 +1655,6 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_1st_pts = 0;
   m_cur_pts = 0;
-  m_player_pts = 0;
   m_cur_pictcnt = 0;
   m_old_pictcnt = 0;
   m_dst_rect.SetRect(0, 0, 0, 0);
@@ -1429,6 +1665,14 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   m_start_dts = 0;
   m_start_pts = 0;
   m_hints = hints;
+  m_lastFrame = nullptr;
+  m_dropState = false;
+
+  if (!OpenIonVideo(hints))
+  {
+    CLog::Log(LOGERROR, "CAMLCodec::OpenDecoder - cannot open ION video device");
+    return false;
+  }
 
   ShowMainVideo(false);
 
@@ -1611,6 +1855,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   if (ret != CODEC_ERROR_NONE)
   {
     CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder codec init failed, ret=0x%x", -ret);
+    CloseIonVideo();
     return false;
   }
 
@@ -1629,7 +1874,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   am_private->am_pkt.codec = &am_private->vcodec;
   pre_header_feeding(am_private, &am_private->am_pkt);
 
-  Create();
+  //Create();
 
   m_display_rect = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight);
 
@@ -1657,6 +1902,138 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   return true;
 }
 
+bool CAMLCodec::OpenIonVideo(const CDVDStreamInfo &hints)
+{
+  PosixFilePtr ionFile = std::make_shared<PosixFile>();
+  if (!ionFile->Open("/dev/ion", O_RDWR))
+  {
+    CLog::Log(LOGERROR, "CAMLCodec::OpenIonVideo - cannot open ION memory management device /dev/ion: %s", strerror(errno));
+    return false;
+  }
+
+  PosixFilePtr ionVideoFile = std::make_shared<PosixFile>();
+  if (!ionVideoFile->Open("/dev/video13", O_RDWR | O_NONBLOCK))
+  {
+    CLog::Log(LOGERROR, "CAMLCodec::OpenIonVideo - cannot open ION video device /dev/video13: %s", strerror(errno));
+    return false;
+  }
+
+  v4l2_format fmt = { 0 };
+  fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+  fmt.fmt.pix_mp.width = hints.width;
+  fmt.fmt.pix_mp.height = hints.height;
+  fmt.fmt.pix_mp.pixelformat = V4L2_PIX_FMT_NV12;
+  if (ionVideoFile->IOControl(VIDIOC_S_FMT, &fmt) < 0)
+  {
+    CLog::Log(LOGERROR, "CAMLCodec::OpenIonVideo - VIDIOC_S_FMT failed: %s", strerror(errno));
+    return false;
+  }
+
+  v4l2_requestbuffers req = { 0 };
+  req.count = 4;
+  req.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+  req.memory = V4L2_MEMORY_DMABUF;
+  if (ionVideoFile->IOControl(VIDIOC_REQBUFS, &req) < 0)
+  {
+    CLog::Log(LOGERROR, "CAMLCodec::OpenIonVideo - VIDIOC_REQBUFS failed: %s", strerror(errno));
+    return false;
+  }
+
+  int type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+  if (ionVideoFile->IOControl(VIDIOC_STREAMON, &type) < 0)
+  {
+      CLog::Log(LOGERROR, "CAMLCodec::OpenIonVideo - VIDIOC_STREAMON failed: %s", strerror(errno));
+      return false;
+  }
+
+  m_ionFile = ionFile;
+  m_ionVideoFile = ionVideoFile;
+
+  for (size_t i = 0; i < req.count; ++i)
+  {
+    CLog::Log(LOGNOTICE, "CAMLCodec::OpenIonVideo - creating a video frame (width = %d, height = %d)", hints.width, hints.height);
+    VideoFramePtr videoFrame = std::make_shared<VideoFrame>(ionFile, i);
+    if (!videoFrame->Create(hints.width, hints.height))
+    {
+      CLog::Log(LOGERROR, "CAMLCodec::OpenIonVideo - cannot create a video frame (width = %d, height = %d)", hints.width, hints.height);
+      CloseIonVideo();
+      return false;
+    }
+
+    m_videoFrames.push_back(videoFrame);
+
+    if (!QueueFrame(videoFrame))
+    {
+      CloseIonVideo();
+      return false;
+    }
+  }
+
+  SysfsUtils::SetString("/sys/class/vfm/map", "rm default");
+  SysfsUtils::SetString("/sys/class/vfm/map", "add default decoder ionvideo");
+
+  SysfsUtils::SetInt("/sys/class/ionvideo/scaling_rate", 100);
+
+  return true;
+}
+
+bool CAMLCodec::QueueFrame(VideoFramePtr frame)
+{
+  v4l2_buffer vbuf = { 0 };
+  vbuf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+  vbuf.memory = V4L2_MEMORY_DMABUF;
+  vbuf.index = frame->GetIndex();
+  vbuf.m.fd = frame->GetBuffer().GetShareDescriptor();
+  vbuf.length = frame->GetBuffer().GetLength();
+
+  if (m_ionVideoFile->IOControl(VIDIOC_QBUF, &vbuf) < 0)
+  {
+    CLog::Log(LOGERROR, "CAMLCodec::QueueFrame - VIDIOC_QBUF failed (index = %d, length = %d): %s", vbuf.index, vbuf.length, strerror(errno));
+    return false;
+  }
+
+  return true;
+}
+
+bool CAMLCodec::DequeueFrame(VideoFramePtr &frame)
+{
+  frame = nullptr;
+
+  v4l2_buffer vbuf = { 0 };
+  vbuf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+  vbuf.memory = V4L2_MEMORY_DMABUF;
+
+  if (m_ionVideoFile->IOControl(VIDIOC_DQBUF, &vbuf) < 0)
+  {
+    if (errno == EAGAIN)
+      return true;
+    else
+    {
+      CLog::Log(LOGERROR, "CAMLCodec::QueueFrame - VIDIOC_DQBUF failed: %s", strerror(errno));
+      return false;
+    }
+  }
+
+  frame = m_videoFrames[vbuf.index];
+  frame->SetPts((double)vbuf.timestamp.tv_usec/* / PTS_FREQ * DVD_TIME_BASE*/);
+
+  return true;
+}
+
+void CAMLCodec::CloseIonVideo()
+{
+  if (m_ionVideoFile)
+  {
+    int type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    if (m_ionVideoFile->IOControl(VIDIOC_STREAMOFF, &type) < 0)
+      CLog::Log(LOGERROR, "CAMLCodec::CloseIonVideo - VIDIOC_STREAMOFF failed: %s", strerror(errno));
+  }
+
+  m_videoFrames.clear();
+  m_ionFile.reset();
+  m_ionVideoFile.reset();
+}
+
 void CAMLCodec::CloseDecoder()
 {
   CLog::Log(LOGDEBUG, "CAMLCodec::CloseDecoder");
@@ -1679,6 +2056,8 @@ void CAMLCodec::CloseDecoder()
   SysfsUtils::SetInt("/sys/class/tsync/enable", 1);
 
   ShowMainVideo(false);
+
+  CloseIonVideo();
 }
 
 void CAMLCodec::Reset()
@@ -1726,9 +2105,16 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
   if (!m_opened)
     return VC_BUFFER;
 
+  if (m_lastFrame)
+  {
+    if (!QueueFrame(m_lastFrame))
+      return VC_ERROR;
+  }
+
+  m_lastFrame = nullptr;
+
   if (pData)
   {
-    m_player_pts = pts;
     am_private->am_pkt.data = pData;
     am_private->am_pkt.data_size = iSize;
 
@@ -1800,33 +2186,16 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
       m_1st_pts = am_private->am_pkt.lastpts;
   }
 
-  // if we have still frames, demux size will be small
-  // and we need to pre-buffer more.
-  double target_timesize = 1.0;
-  if (iSize < 20)
-    target_timesize = 2.0;
-
-  // keep hw buffered demux above 1 second
-  if (GetTimeSize() < target_timesize && m_speed == DVD_PLAYSPEED_NORMAL)
-    return VC_BUFFER;
-
-  // wait until we get a new frame or 25ms,
-  if (m_old_pictcnt == m_cur_pictcnt)
-    m_ready_event.WaitMSec(25);
+  if (!DequeueFrame(m_lastFrame))
+    return VC_ERROR;
 
   // we must return VC_BUFFER or VC_PICTURE,
   // default to VC_BUFFER.
   int rtn = VC_BUFFER;
-  m_player_pts = DVD_NOPTS_VALUE;
-  if (m_old_pictcnt != m_cur_pictcnt)
+  if (m_lastFrame)
   {
-    m_old_pictcnt++;
     rtn = VC_PICTURE;
-    m_player_pts = pts;
-    // we got a new pict, try and keep hw buffered demux above 2 seconds.
-    // this, combined with the above 1 second check, keeps hw buffered demux between 1 and 2 seconds.
-    // we also check to make sure we keep from filling hw buffer.
-    if (GetTimeSize() < 2.0 && GetDataSize() < m_vbufsize/3)
+    if (GetBufferLevel() < 5)
       rtn |= VC_BUFFER;
   }
 /*
@@ -1839,14 +2208,19 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
 
 bool CAMLCodec::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 {
-  if (!m_opened)
+  if (!m_opened || !m_lastFrame)
     return false;
 
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
-  pDvdVideoPicture->format = RENDER_FMT_AML;
+  if (m_dropState)
+    pDvdVideoPicture->iFlags |= DVP_FLAG_DROPPED;
+
+  pDvdVideoPicture->format = RENDER_FMT_NV12;
   pDvdVideoPicture->iDuration = (double)(am_private->video_rate * DVD_TIME_BASE) / UNIT_FREQ;
 
   pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
+  pDvdVideoPicture->pts = m_lastFrame->GetPts();
+/*
   if (m_speed == DVD_PLAYSPEED_NORMAL)
     pDvdVideoPicture->pts = m_player_pts;
   else
@@ -1855,6 +2229,27 @@ bool CAMLCodec::GetPicture(DVDVideoPicture *pDvdVideoPicture)
       pDvdVideoPicture->pts = (double)m_1st_pts / PTS_FREQ * DVD_TIME_BASE;
     else
       pDvdVideoPicture->pts = (double)m_cur_pts / PTS_FREQ * DVD_TIME_BASE;
+  }
+*/
+
+  pDvdVideoPicture->data[0] = (uint8_t *)m_lastFrame->GetBuffer().GetData();
+  pDvdVideoPicture->iLineSize[0] = ALIGN(m_lastFrame->GetWidth(), 32);
+  pDvdVideoPicture->data[1] = (uint8_t *)m_lastFrame->GetBuffer().GetData() + (ALIGN(m_lastFrame->GetWidth(), 32) * m_lastFrame->GetHeight());
+  pDvdVideoPicture->iLineSize[1] = ALIGN(m_lastFrame->GetWidth(), 32);
+
+  pDvdVideoPicture->iWidth = m_lastFrame->GetWidth();
+  pDvdVideoPicture->iHeight = m_lastFrame->GetHeight();
+
+  pDvdVideoPicture->iDisplayWidth  = pDvdVideoPicture->iWidth;
+  pDvdVideoPicture->iDisplayHeight = pDvdVideoPicture->iHeight;
+  if (m_hints.aspect > 1.0 && !m_hints.forced_aspect)
+  {
+    pDvdVideoPicture->iDisplayWidth  = ((int)lrint(pDvdVideoPicture->iHeight * m_hints.aspect)) & -3;
+    if (pDvdVideoPicture->iDisplayWidth > pDvdVideoPicture->iWidth)
+    {
+      pDvdVideoPicture->iDisplayWidth  = pDvdVideoPicture->iWidth;
+      pDvdVideoPicture->iDisplayHeight = ((int)lrint(pDvdVideoPicture->iWidth / m_hints.aspect)) & -3;
+    }
   }
 
   return true;
@@ -1901,6 +2296,15 @@ int CAMLCodec::GetDataSize()
     m_vbufsize = vbuf.size;
 
   return vbuf.data_len;
+}
+
+int CAMLCodec::GetBufferLevel()
+{
+  struct buf_status vbuf = { 0 };
+  if (m_dll->codec_get_vbuf_state(&am_private->vcodec, &vbuf) >= 0)
+    m_vbufsize = vbuf.size;
+
+  return vbuf.data_len / (vbuf.size / 100);
 }
 
 double CAMLCodec::GetTimeSize()
@@ -2047,6 +2451,8 @@ std::string CAMLCodec::GetStereoMode()
 
 void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
 {
+  return;
+
   // this routine gets called every video frame
   // and is in the context of the renderer thread so
   // do not do anything stupid here.
@@ -2229,4 +2635,9 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   // we only get called once gui has changed to something
   // that would show video playback, so show it.
   ShowMainVideo(true);
+}
+
+void CAMLCodec::SetDropState(bool bDrop)
+{
+  m_dropState = bDrop;
 }
