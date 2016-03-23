@@ -1162,11 +1162,6 @@
   <section id="pvr" label="19180" help="36201">
     <category id="pvrmanager" label="128" help="36202">
       <group id="1">
-        <setting id="pvrmanager.enabled" type="boolean" label="449" help="36203">
-          <level>0</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
         <setting id="pvrmanager.hideconnectionlostwarning" type="boolean" label="19269" help="36210">
           <level>2</level>
           <default>false</default>
@@ -1193,23 +1188,14 @@
       <group id="3">
         <setting id="pvrmanager.channelmanager" type="action" label="19199" help="36207">
           <level>1</level>
-          <dependencies>
-            <dependency type="enable" setting="pvrmanager.enabled">true</dependency>
-          </dependencies>
           <control type="button" format="action" />
         </setting>
         <setting id="pvrmanager.groupmanager" type="action" label="19048" help="36213">
           <level>1</level>
-          <dependencies>
-            <dependency type="enable" setting="pvrmanager.enabled">true</dependency>
-          </dependencies>
           <control type="button" format="action" />
         </setting>
         <setting id="pvrmanager.channelscan" type="action" label="19117" help="36208">
           <level>1</level>
-          <dependencies>
-            <dependency type="enable" setting="pvrmanager.enabled">true</dependency>
-          </dependencies>
           <control type="button" format="action" />
         </setting>
       </group>
@@ -1257,7 +1243,6 @@
           <dependencies>
             <dependency type="enable">
               <and>
-                <condition setting="pvrmanager.enabled" operator="is">true</condition>
                 <condition setting="pvrmenu.iconpath" operator="!is"></condition>
               </and>
             </dependency>

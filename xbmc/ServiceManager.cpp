@@ -31,8 +31,6 @@ bool CServiceManager::Init1()
   m_XBPython.reset(new XBPython());
   CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(m_XBPython.get(), ".py");
 
-  m_PVRManager.reset(new PVR::CPVRManager());
-
   return true;
 }
 
@@ -44,8 +42,18 @@ bool CServiceManager::Init2()
     CLog::Log(LOGFATAL, "CServiceManager::Init: Unable to start CAddonMgr");
     return false;
   }
+  
+  m_PVRManager.reset(new PVR::CPVRManager());
+
   m_binaryAddonCache.reset( new ADDON::CBinaryAddonCache());
   m_binaryAddonCache->Init();
+
+  return true;
+}
+
+bool CServiceManager::Init3()
+{
+  m_PVRManager->Init();
 
   return true;
 }
@@ -53,8 +61,8 @@ bool CServiceManager::Init2()
 void CServiceManager::Deinit()
 {
   m_binaryAddonCache.reset();
-  m_addonMgr.reset();
   m_PVRManager.reset();
+  m_addonMgr.reset();
   m_XBPython.reset();
   m_announcementManager.reset();
 }

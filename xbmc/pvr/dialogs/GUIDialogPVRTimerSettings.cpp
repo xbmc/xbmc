@@ -25,7 +25,7 @@
 #include "FileItem.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "pvr/addons/PVRClient.h"
+#include "addons/PVRClient.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRSettings.h"

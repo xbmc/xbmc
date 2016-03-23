@@ -151,7 +151,6 @@ public:
 
   bool StartServer(enum ESERVERS eServer, bool bStart, bool bWait = false);
 
-  void StartPVRManager();
   void StopPVRManager();
   bool IsCurrentThread() const;
   void Stop(int exitCode);

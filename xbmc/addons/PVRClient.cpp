@@ -94,61 +94,40 @@ CPVRClient::~CPVRClient(void)
 
 void CPVRClient::OnDisabled()
 {
-  // restart the PVR manager if we're disabling a client
-  if (CPVRManager::GetInstance().IsStarted() && CPVRManager::GetInstance().RestartManagerOnAddonDisabled())
-    CPVRManager::GetInstance().Start(true);
+  CAddon::OnDisabled();
+  CPVRManager::GetInstance().Clients()->UpdateAddons();
 }
 
 void CPVRClient::OnEnabled()
 {
-  // restart the PVR manager if we're enabling a client
-  if (CPVRManager::GetInstance().RestartManagerOnAddonDisabled())
-    CPVRManager::GetInstance().Start(true);
+  CAddon::OnEnabled();
+  CPVRManager::GetInstance().Clients()->UpdateAddons();
 }
 
-AddonPtr CPVRClient::GetRunningInstance() const
+void CPVRClient::SaveSettings()
 {
-  if (g_PVRManager.IsStarted())
-  {
-    AddonPtr pvrAddon;
-    if (g_PVRClients->GetClient(ID(), pvrAddon))
-      return pvrAddon;
-  }
-  return CAddon::GetRunningInstance();
-}
-
-void CPVRClient::OnPreInstall()
-{
-  // stop the pvr manager, so running pvr add-ons are stopped and closed
-  PVR::CPVRManager::GetInstance().Stop();
+  CAddon::SaveSettings();
+  ReCreate();
+  CPVRManager::GetInstance().Clients()->UpdateAddons();
 }
 
 void CPVRClient::OnPostInstall(bool update, bool modal)
 {
-  // (re)start the pvr manager
-  PVR::CPVRManager::GetInstance().Start(true);
+  CAddon::OnPostInstall(update, modal);
+  CPVRManager::GetInstance().Clients()->UpdateAddons();
 }
 
 void CPVRClient::OnPreUnInstall()
 {
   // stop the pvr manager, so running pvr add-ons are stopped and closed
   PVR::CPVRManager::GetInstance().Stop();
+  CAddon::OnPreUnInstall();
 }
 
 void CPVRClient::OnPostUnInstall()
 {
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMANAGER_ENABLED))
-    PVR::CPVRManager::GetInstance().Start(true);
-}
-
-bool CPVRClient::CanInstall()
-{
-  if (!PVR::CPVRManager::GetInstance().InstallAddonAllowed(ID()))
-  {
-    PVR::CPVRManager::GetInstance().MarkAsOutdated(ID());
-    return false;
-  }
-  return CAddon::CanInstall();
+  CAddon::OnPostUnInstall();
+  CPVRManager::GetInstance().Clients()->UpdateAddons();
 }
 
 void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)

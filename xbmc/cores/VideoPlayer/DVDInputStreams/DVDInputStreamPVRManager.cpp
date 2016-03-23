@@ -88,9 +88,6 @@ bool CDVDInputStreamPVRManager::Open()
 
   CURL url(m_item.GetPath());
 
-  if (!g_PVRManager.IsStarted())
-    return false;
-
   std::string strURL = url.Get();
 
   if (StringUtils::StartsWith(strURL, "pvr://channels/tv/") ||
@@ -193,9 +190,6 @@ bool CDVDInputStreamPVRManager::Open()
 
 std::string CDVDInputStreamPVRManager::ThisIsAHack(const std::string& pathFile)
 {
-  if (!g_PVRManager.IsStarted())
-    return "";
-
   std::string FileName = pathFile;
   if (FileName.substr(0, 14) == "pvr://channels")
   {
@@ -251,9 +245,6 @@ int CDVDInputStreamPVRManager::Read(uint8_t* buf, int buf_size)
   }
   else
   {
-    if (!g_PVRManager.IsStarted())
-      return -1;
-
     int ret = g_PVRClients->ReadStream((BYTE*)buf, buf_size);
     if (ret < 0)
       ret = -1;
@@ -276,15 +267,13 @@ int64_t CDVDInputStreamPVRManager::Seek(int64_t offset, int whence)
   {
     if (whence == SEEK_POSSIBLE)
     {
-      if (!g_PVRManager.IsStarted())
-        return 0;
-      else if (g_PVRClients->CanSeekStream())
+      if (g_PVRClients->CanSeekStream())
         return 1;
       else
         return 0;
     }
 
-    int64_t ret = g_PVRManager.IsStarted() ? g_PVRClients->SeekStream(offset, whence) : 0;
+    int64_t ret = g_PVRClients->SeekStream(offset, whence);
 
     // if we succeed, we are not eof anymore
     if( ret >= 0 )
@@ -299,7 +288,7 @@ int64_t CDVDInputStreamPVRManager::GetLength()
   if (m_pOtherStream)
     return m_pOtherStream->GetLength();
   else
-    return g_PVRManager.IsStarted() ? g_PVRClients->GetStreamLength() : 0;
+    return g_PVRClients->GetStreamLength();
 }
 
 int CDVDInputStreamPVRManager::GetTotalTime()
@@ -448,7 +437,7 @@ void CDVDInputStreamPVRManager::Pause(bool bPaused)
 
 std::string CDVDInputStreamPVRManager::GetInputFormat()
 {
-  if (!m_pOtherStream && g_PVRManager.IsStarted())
+  if (!m_pOtherStream)
     return g_PVRClients->GetCurrentInputFormat();
   return "";
 }

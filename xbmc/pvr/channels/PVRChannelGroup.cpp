@@ -458,7 +458,7 @@ CFileItemPtr CPVRChannelGroup::GetLastPlayedChannel(int iCurrentChannel /* = -1 
   {
     channel = it->second.channel;
     if (channel->ChannelID() != iCurrentChannel &&
-        g_PVRClients->IsConnectedClient(channel->ClientID()) &&
+        g_PVRClients->IsCreatedClient(channel->ClientID()) &&
         channel->LastWatched() > 0 &&
         (!returnChannel || channel->LastWatched() > returnChannel->LastWatched()))
     {

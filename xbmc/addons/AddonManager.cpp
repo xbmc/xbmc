@@ -61,9 +61,8 @@
 #ifdef HAS_SCREENSAVER
 #include "ScreenSaver.h"
 #endif
-#ifdef HAS_PVRCLIENTS
-#include "pvr/addons/PVRClient.h"
-#endif
+
+#include "addons/PVRClient.h"
 #include "games/controllers/Controller.h"
 #include "peripherals/addons/PeripheralAddon.h"
 

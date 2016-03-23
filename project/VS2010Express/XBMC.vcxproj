@@ -209,6 +209,7 @@
     <ClCompile Include="..\..\xbmc\addons\InputStream.cpp" />
     <ClCompile Include="..\..\xbmc\addons\LanguageResource.cpp" />
     <ClCompile Include="..\..\xbmc\addons\PluginSource.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\PVRClient.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Repository.cpp" />
     <ClCompile Include="..\..\xbmc\addons\RepositoryUpdater.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Service.cpp" />
@@ -843,7 +844,6 @@
     <ClCompile Include="..\..\xbmc\profiles\windows\GUIWindowSettingsProfile.cpp" />
     <ClCompile Include="..\..\xbmc\programs\GUIViewStatePrograms.cpp" />
     <ClCompile Include="..\..\xbmc\programs\GUIWindowPrograms.cpp" />
-    <ClCompile Include="..\..\xbmc\pvr\addons\PVRClient.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\addons\PVRClients.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\channels\PVRChannel.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\channels\PVRChannelGroup.cpp" />
@@ -1004,6 +1004,7 @@
     <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_vis_dll.h" />
     <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_vis_types.h" />
     <ClInclude Include="..\..\xbmc\addons\InputStream.h" />
+    <ClInclude Include="..\..\xbmc\addons\PVRClient.h" />
     <ClInclude Include="..\..\xbmc\addons\Webinterface.h" />
     <ClInclude Include="..\..\xbmc\addons\UISoundsResource.h" />
     <ClInclude Include="..\..\xbmc\addons\LanguageResource.h" />
@@ -2242,7 +2243,6 @@
     <ClInclude Include="..\..\xbmc\powermanagement\windows\Win32PowerSyscall.h" />
     <ClInclude Include="..\..\xbmc\programs\GUIViewStatePrograms.h" />
     <ClInclude Include="..\..\xbmc\programs\GUIWindowPrograms.h" />
-    <ClInclude Include="..\..\xbmc\pvr\addons\PVRClient.h" />
     <ClInclude Include="..\..\xbmc\pvr\addons\PVRClients.h" />
     <ClInclude Include="..\..\xbmc\pvr\channels\PVRChannel.h" />
     <ClInclude Include="..\..\xbmc\pvr\channels\PVRChannelGroup.h" />
