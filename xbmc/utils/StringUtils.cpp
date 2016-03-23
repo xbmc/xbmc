@@ -403,6 +403,10 @@ void StringUtils::ToCapitalize(std::wstring &str)
 
 bool StringUtils::EqualsNoCase(const std::string &str1, const std::string &str2)
 {
+  // before we do the char-by-char comparison, first compare sizes of both strings.
+  // This led to a 33% improvement in benchmarking on average. (size() just returns a member of std::string)
+  if (str1.size() != str2.size())
+    return false;
   return EqualsNoCase(str1.c_str(), str2.c_str());
 }
 
