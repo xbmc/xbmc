@@ -98,7 +98,7 @@ bool CInputStream::Supports(CFileItem &fileitem)
   CVariant addon = fileitem.GetProperty("inputstreamaddon");
   if (!addon.isNull())
   {
-    if (addon.asString() != Name())
+    if (addon.asString() != ID())
       return false;
     else
       return true;
