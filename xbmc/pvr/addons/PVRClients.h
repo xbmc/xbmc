@@ -19,7 +19,6 @@
  *
  */
 
-#include "addons/AddonDatabase.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"

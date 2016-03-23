@@ -22,6 +22,7 @@
 
 #include <cassert>
 #include <utility>
+#include <functional>
 
 #include "Application.h"
 #include "cores/IPlayer.h"
@@ -1143,17 +1144,17 @@ void CPVRClients::UpdateAndInitialiseClients()
   if (map.empty())
     return;
 
-  CAddonDatabase database;
-  if (!database.Open())
-    return;
-
   for (auto &addon : map)
   {
     bool bEnabled = !CAddonMgr::GetInstance().IsAddonDisabled(addon->ID());
 
     if (bEnabled && (!IsKnownClient(addon) || !IsCreatedClient(addon)))
     {
-      int iClientId = database.GetAddonId(addon);
+      std::hash<std::string> hasher;
+      int iClientId = static_cast<int>(hasher(addon->ID()));
+      if (iClientId < 0)
+        iClientId = -iClientId;
+
       if (IsKnownClient(addon))
       {
         PVR_CLIENT client;
@@ -1182,7 +1183,6 @@ void CPVRClients::UpdateAndInitialiseClients()
       StopClient(addon, false);
     }
   }
-  database.Close();
 }
 
 bool CPVRClients::AutoconfigureClients(void)
