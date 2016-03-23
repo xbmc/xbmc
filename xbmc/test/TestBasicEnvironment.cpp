@@ -28,6 +28,7 @@
 #include "settings/Settings.h"
 #include "Util.h"
 #include "Application.h"
+#include "interfaces/AnnouncementManager.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -61,11 +62,13 @@ void TestBasicEnvironment::SetUp()
    * that the initialization of these components won't be needed.
    */
   g_powerManager.Initialize();
-  CSettings::GetInstance().Initialize();
 
   g_application.m_ServiceManager.reset(new CServiceManager());
-  if (!g_application.m_ServiceManager->Init())
+  if (!g_application.m_ServiceManager->Init1() ||
+      !g_application.m_ServiceManager->Init2())
     exit(1);
+
+  CSettings::GetInstance().Initialize();
 
   /* Create a temporary directory and set it to be used throughout the
    * test suite run.
