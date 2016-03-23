@@ -124,6 +124,11 @@ struct DVDVideoPicture
   unsigned int iDisplayWidth;           //< width of the picture without black bars
   unsigned int iDisplayHeight;          //< height of the picture without black bars
 
+  unsigned int iCropBottom;
+  unsigned int iCropTop;
+  unsigned int iCropLeft;
+  unsigned int iCropRight;
+
   ERenderFormat format;
 };
 

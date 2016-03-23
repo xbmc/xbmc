@@ -58,6 +58,10 @@ void CDVDStreamInfo::Clear()
   rfpsrate = 0;
   height   = 0;
   width    = 0;
+  cropBottom = 0;
+  cropTop  = 0;
+  cropLeft = 0;
+  cropRight= 0;
   aspect   = 0.0;
   vfr      = false;
   stills   = false;
@@ -104,6 +108,10 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
   ||  rfpsrate != right.rfpsrate
   ||  height   != right.height
   ||  width    != right.width
+  ||  cropBottom != right.cropBottom
+  ||  cropTop  != right.cropTop
+  ||  cropLeft != right.cropLeft
+  ||  cropRight!= right.cropRight
   ||  stills   != right.stills
   ||  level    != right.level
   ||  profile  != right.profile
@@ -170,6 +178,10 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   rfpsrate = right.rfpsrate;
   height   = right.height;
   width    = right.width;
+  cropBottom = right.cropBottom;
+  cropTop  = right.cropTop;
+  cropLeft = right.cropLeft;
+  cropRight= right.cropRight;
   aspect   = right.aspect;
   stills   = right.stills;
   level    = right.level;
@@ -234,6 +246,10 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     rfpsrate  = stream->irFpsRate;
     height    = stream->iHeight;
     width     = stream->iWidth;
+    cropBottom= stream->iCropBottom;
+    cropTop   = stream->iCropTop;
+    cropLeft  = stream->iCropLeft;
+    cropRight = stream->iCropRight;
     aspect    = stream->fAspect;
     vfr       = stream->bVFR;
     ptsinvalid = stream->bPTSInvalid;

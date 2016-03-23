@@ -140,6 +140,7 @@ protected:
 
   std::string GetStereoModeFromMetadata(AVDictionary *pMetadata);
   std::string ConvertCodecToInternalStereoMode(const std::string &mode, const StereoModeConversionMap *conversionMap);
+  int GetCropValue(AVDictionary* metadata, char* key);
 
   void GetL16Parameters(int &channels, int &samplerate);
   double SelectAspect(AVStream* st, bool& forced);

@@ -236,6 +236,7 @@ protected:
 
   ERenderFormat m_format;
   unsigned int m_width, m_height, m_dwidth, m_dheight;
+  unsigned int m_cropBottom, m_cropTop, m_cropLeft, m_cropRight;
   unsigned int m_flags;
   float m_fps;
   unsigned int m_extended_format;

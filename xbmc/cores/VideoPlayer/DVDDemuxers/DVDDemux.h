@@ -152,6 +152,10 @@ public:
     irFpsRate = 0;
     iHeight = 0;
     iWidth = 0;
+    iCropBottom = 0;
+    iCropTop = 0;
+    iCropLeft = 0;
+    iCropRight = 0;
     fAspect = 0.0;
     bVFR = false;
     bPTSInvalid = false;
@@ -168,6 +172,10 @@ public:
   int irFpsRate;
   int iHeight; // height of the stream reported by the demuxer
   int iWidth; // width of the stream reported by the demuxer
+  int iCropBottom;
+  int iCropTop;
+  int iCropLeft;
+  int iCropRight;
   float fAspect; // display aspect of stream
   bool bVFR;  // variable framerate
   bool bPTSInvalid; // pts cannot be trusted (avi's).

@@ -65,6 +65,10 @@ public:
   int rfpsrate;
   int height; // height of the stream reported by the demuxer
   int width; // width of the stream reported by the demuxer
+  int cropBottom;
+  int cropTop;
+  int cropLeft;
+  int cropRight;
   float aspect; // display aspect as reported by demuxer
   bool vfr; // variable framerate
   bool stills; // there may be odd still frames in video

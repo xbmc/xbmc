@@ -41,6 +41,10 @@ CBaseRenderer::CBaseRenderer()
   m_sourceFrameRatio = 1.0f;
   m_sourceWidth = 720;
   m_sourceHeight = 480;
+  m_cropBottom = 0;
+  m_cropTop = 0;
+  m_cropLeft = 0;
+  m_cropRight = 0;
   m_fps = 0.0f;
   m_renderOrientation = 0;
   m_oldRenderOrientation = 0;
@@ -317,15 +321,20 @@ void CBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsign
 {
   m_sourceFrameRatio = (float)desired_width / desired_height;
 
+  // Figure out the height and width of the frame after the cropping requested by the stream
+  // is applied. These values will be used to determine the frame's aspect ratio
+  unsigned int croppedSourceHeight = m_sourceHeight - m_cropBottom - m_cropTop;
+  unsigned int croppedSourceWidth = m_sourceWidth - m_cropLeft - m_cropRight;
+
   // Check whether mplayer has decided that the size of the video file should be changed
   // This indicates either a scaling has taken place (which we didn't ask for) or it has
   // found an aspect ratio parameter from the file, and is changing the frame size based
   // on that.
-  if (m_sourceWidth == (unsigned int) desired_width && m_sourceHeight == (unsigned int) desired_height)
+  if (croppedSourceWidth == (unsigned int) desired_width && croppedSourceHeight == (unsigned int) desired_height)
     return ;
 
   // mplayer is scaling in one or both directions.  We must alter our Source Pixel Ratio
-  float imageFrameRatio = (float)m_sourceWidth / m_sourceHeight;
+  float imageFrameRatio = (float)croppedSourceWidth / croppedSourceHeight;
 
   // OK, most sources will be correct now, except those that are intended
   // to be displayed on non-square pixel based output devices (ie PAL or NTSC TVs)
@@ -370,14 +379,22 @@ void CBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsign
   }
 }
 
+void CBaseRenderer::ConfigureCropping(unsigned int cropBottom, unsigned int cropTop, unsigned int cropLeft, unsigned int cropRight)
+{
+  m_cropBottom = cropBottom;
+  m_cropTop = cropTop;
+  m_cropLeft = cropLeft;
+  m_cropRight = cropRight;
+}
+
 void CBaseRenderer::ManageDisplay()
 {
   m_viewRect = g_graphicsContext.GetViewWindow();
 
-  m_sourceRect.x1 = 0.0f;
-  m_sourceRect.y1 = 0.0f;
-  m_sourceRect.x2 = (float)m_sourceWidth;
-  m_sourceRect.y2 = (float)m_sourceHeight;
+  m_sourceRect.x1 = (float)m_cropLeft;
+  m_sourceRect.y1 = (float)m_cropTop;
+  m_sourceRect.x2 = (float)m_sourceWidth - (float)m_cropRight;
+  m_sourceRect.y2 = (float)m_sourceHeight - (float)m_cropBottom;
 
   unsigned int stereo_mode  = CONF_FLAGS_STEREO_MODE_MASK(m_iFlags);
   int          stereo_view  = g_graphicsContext.GetStereoView();

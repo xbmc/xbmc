@@ -300,6 +300,10 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
     m_height = picture.iHeight,
     m_dwidth = picture.iDisplayWidth;
     m_dheight = picture.iDisplayHeight;
+    m_cropBottom = picture.iCropBottom;
+    m_cropTop = picture.iCropTop;
+    m_cropLeft = picture.iCropLeft;
+    m_cropRight = picture.iCropRight;
     m_fps = fps;
     m_flags = flags;
     m_format = picture.format;
@@ -348,6 +352,9 @@ bool CRenderManager::Configure()
     if (!m_pRenderer)
       return false;
   }
+
+  // configure the renderer to crop if necessary
+  m_pRenderer->ConfigureCropping(m_cropBottom, m_cropTop, m_cropLeft, m_cropRight);
 
   bool result = m_pRenderer->Configure(m_width, m_height, m_dwidth, m_dheight, m_fps, m_flags, m_format, m_extended_format, m_orientation);
   if (result)
