@@ -62,7 +62,6 @@ CPVRClients::CPVRClients(void) :
 CPVRClients::~CPVRClients(void)
 {
   CAddonMgr::GetInstance().UnregisterAddonMgrCallback(ADDON_PVRDLL);
-  CAddonMgr::GetInstance().UnregisterObserver(this);
   Unload();
 }
 
@@ -79,7 +78,6 @@ bool CPVRClients::IsInUse(const std::string& strAddonId) const
 void CPVRClients::Start(void)
 {
   CAddonMgr::GetInstance().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
-  CAddonMgr::GetInstance().RegisterObserver(this);
 
   UpdateAddons();
 }
@@ -1183,12 +1181,6 @@ void CPVRClients::UpdateAddons(void)
   }
 
   g_PVRManager.Start();
-}
-
-void CPVRClients::Notify(const Observable &obs, const ObservableMessage msg)
-{
-  if (msg == ObservableMessageAddons)
-    UpdateAddons();
 }
 
 bool CPVRClients::GetClient(const std::string &strId, AddonPtr &addon) const

@@ -62,8 +62,7 @@ namespace PVR
     long long   diskTotal = 0;
   };
 
-  class CPVRClients : public ADDON::IAddonMgrCallback,
-                      public Observer
+  class CPVRClients : public ADDON::IAddonMgrCallback
   {
   friend class CPVRClient;
   public:
@@ -649,8 +648,6 @@ namespace PVR
     bool RenameChannel(const CPVRChannelPtr &channel);
 
     //@}
-
-    void Notify(const Observable &obs, const ObservableMessage msg);
 
     bool GetClient(const std::string &strId, ADDON::AddonPtr &addon) const;
 
