@@ -2842,6 +2842,11 @@
     <ClCompile Include="..\..\xbmc\cores\FFmpeg.cpp">
       <Filter>cores</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPRequestHandlerUtils.cpp">
+      <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="..\..\xbmc\media\MediaType.cpp">
       <Filter>media</Filter>
     </ClCompile>
@@ -6722,6 +6727,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKeyboardTouch.h">
       <Filter>dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPRequestHandlerUtils.h">
+      <Filter>network\httprequesthandler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

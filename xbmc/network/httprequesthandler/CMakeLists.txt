@@ -3,6 +3,7 @@ set(SOURCES HTTPFileHandler.cpp
             HTTPImageTransformationHandler.cpp
             HTTPJsonRpcHandler.cpp
             HTTPPythonHandler.cpp
+            HTTPRequestHandlerUtils.cpp
             HTTPVfsHandler.cpp
             HTTPWebinterfaceAddonsHandler.cpp
             HTTPWebinterfaceHandler.cpp
@@ -13,6 +14,7 @@ set(HEADERS HTTPFileHandler.h
             HTTPImageTransformationHandler.h
             HTTPJsonRpcHandler.h
             HTTPPythonHandler.h
+            HTTPRequestHandlerUtils.h
             HTTPVfsHandler.h
             HTTPWebinterfaceAddonsHandler.h
             HTTPWebinterfaceHandler.h

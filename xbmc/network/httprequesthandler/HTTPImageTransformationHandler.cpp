@@ -25,6 +25,7 @@
 #include "URL.h"
 #include "filesystem/ImageFile.h"
 #include "network/WebServer.h"
+#include "network/httprequesthandler/HTTPRequestHandlerUtils.h"
 #include "utils/Mime.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -109,7 +110,7 @@ bool CHTTPImageTransformationHandler::CanHandleRequest(const HTTPRequest &reques
 
   // get the transformation options
   std::map<std::string, std::string> options;
-  CWebServer::GetRequestHeaderValues(request.connection, MHD_GET_ARGUMENT_KIND, options);
+  HTTPRequestHandlerUtils::GetRequestHeaderValues(request.connection, MHD_GET_ARGUMENT_KIND, options);
 
   return (options.find(TRANSFORMATION_OPTION_WIDTH) != options.end() ||
           options.find(TRANSFORMATION_OPTION_HEIGHT) != options.end());
@@ -131,7 +132,7 @@ int CHTTPImageTransformationHandler::HandleRequest()
 
   // get the transformation options
   std::map<std::string, std::string> options;
-  CWebServer::GetRequestHeaderValues(m_request.connection, MHD_GET_ARGUMENT_KIND, options);
+  HTTPRequestHandlerUtils::GetRequestHeaderValues(m_request.connection, MHD_GET_ARGUMENT_KIND, options);
 
   std::vector<std::string> urlOptions;
   std::map<std::string, std::string>::const_iterator option = options.find(TRANSFORMATION_OPTION_WIDTH);

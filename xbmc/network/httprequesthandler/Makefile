@@ -3,6 +3,7 @@ SRCS=HTTPFileHandler.cpp \
      HTTPImageTransformationHandler.cpp \
      HTTPJsonRpcHandler.cpp \
      HTTPPythonHandler.cpp \
+     HTTPRequestHandlerUtils.cpp \
      HTTPVfsHandler.cpp \
      HTTPWebinterfaceAddonsHandler.cpp \
      HTTPWebinterfaceHandler.cpp \

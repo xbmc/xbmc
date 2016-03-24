@@ -35,6 +35,7 @@
 #endif
 
 #include "filesystem/File.h"
+#include "network/httprequesthandler/HTTPRequestHandlerUtils.h"
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -135,26 +136,6 @@ std::string CWebServer::GetMethod(HTTPMethod method)
   return "";
 }
 
-int CWebServer::FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value) 
-{
-  if (cls == nullptr || key == nullptr)
-    return MHD_NO;
-
-  std::map<std::string, std::string> *arguments = (std::map<std::string, std::string> *)cls;
-  arguments->insert(std::make_pair(key, value != nullptr ? value : ""));
-  return MHD_YES; 
-}
-
-int CWebServer::FillArgumentMultiMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value) 
-{
-  if (cls == nullptr || key == nullptr)
-    return MHD_NO;
-
-  std::multimap<std::string, std::string> *arguments = (std::multimap<std::string, std::string> *)cls;
-  arguments->insert(std::make_pair(key, value != nullptr ? value : ""));
-  return MHD_YES; 
-}
-
 int CWebServer::AskForAuthentication(struct MHD_Connection *connection)
 {
   struct MHD_Response *response = MHD_create_response_from_data(0, nullptr, MHD_NO, MHD_NO);
@@ -197,7 +178,7 @@ bool CWebServer::IsAuthenticated(CWebServer *server, struct MHD_Connection *conn
     return true;
 
   const char *base = "Basic ";
-  std::string authorization = GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_AUTHORIZATION);
+  std::string authorization = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_AUTHORIZATION);
   if (authorization.empty() || !StringUtils::StartsWith(authorization, base))
     return false;
 
@@ -282,7 +263,7 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
   {
     // parse the Range header and store it in the request object
     CHttpRanges ranges;
-    bool ranged = ranges.Parse(GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_RANGE));
+    bool ranged = ranges.Parse(HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_RANGE));
 
     // look for a IHTTPRequestHandler which can take care of the current request
     for (std::vector<IHTTPRequestHandler *>::const_iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); ++it)
@@ -301,7 +282,7 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
             bool cacheable = true;
 
             // handle Cache-Control
-            std::string cacheControl = GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CACHE_CONTROL);
+            std::string cacheControl = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CACHE_CONTROL);
             if (!cacheControl.empty())
             {
               std::vector<std::string> cacheControls = StringUtils::Split(cacheControl, ",");
@@ -319,7 +300,7 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
             if (cacheable)
             {
               // handle Pragma (but only if "Cache-Control: no-cache" hasn't been set)
-              std::string pragma = GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_PRAGMA);
+              std::string pragma = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_PRAGMA);
               if (pragma.compare(HEADER_VALUE_NO_CACHE) == 0)
                 cacheable = false;
             }
@@ -328,8 +309,8 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
             if (handler->GetLastModifiedDate(lastModified) && lastModified.IsValid())
             {
               // handle If-Modified-Since or If-Unmodified-Since
-              std::string ifModifiedSince = GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_IF_MODIFIED_SINCE);
-              std::string ifUnmodifiedSince = GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_IF_UNMODIFIED_SINCE);
+              std::string ifModifiedSince = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_IF_MODIFIED_SINCE);
+              std::string ifUnmodifiedSince = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_IF_UNMODIFIED_SINCE);
 
               CDateTime ifModifiedSinceDate;
               CDateTime ifUnmodifiedSinceDate;
@@ -356,7 +337,7 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
             // handle If-Range header but only if the Range header is present
             if (ranged && lastModified.IsValid())
             {
-              std::string ifRange = GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_IF_RANGE);
+              std::string ifRange = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_IF_RANGE);
               if (!ifRange.empty() && lastModified.IsValid())
               {
                 CDateTime ifRangeDate;
@@ -379,7 +360,7 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
           conHandler->requestHandler = handler;
 
           // get the content-type of the POST data
-          std::string contentType = GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
+          std::string contentType = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
           if (!contentType.empty())
           {
             // if the content-type is application/x-ww-form-urlencoded or multipart/form-data we can use MHD's POST processor
@@ -836,7 +817,7 @@ int CWebServer::CreateFileDownloadResponse(const std::shared_ptr<IHTTPRequestHan
       if (!request.ranges.IsEmpty())
         context->ranges = request.ranges;
       else
-        GetRequestedRanges(request.connection, fileLength, context->ranges);
+        HTTPRequestHandlerUtils::GetRequestedRanges(request.connection, fileLength, context->ranges);
     }
 
     uint64_t firstPosition = 0;
@@ -1273,56 +1254,6 @@ void CWebServer::UnregisterRequestHandler(IHTTPRequestHandler *handler)
     return;
 
   m_requestHandlers.erase(std::remove(m_requestHandlers.begin(), m_requestHandlers.end(), handler), m_requestHandlers.end());
-}
-
-std::string CWebServer::GetRequestHeaderValue(struct MHD_Connection *connection, enum MHD_ValueKind kind, const std::string &key)
-{
-  if (connection == nullptr)
-    return "";
-
-  const char* value = MHD_lookup_connection_value(connection, kind, key.c_str());
-  if (value == nullptr)
-    return "";
-
-  if (StringUtils::EqualsNoCase(key, MHD_HTTP_HEADER_CONTENT_TYPE))
-  {
-    // Work around a bug in firefox (see https://bugzilla.mozilla.org/show_bug.cgi?id=416178)
-    // by cutting of anything that follows a ";" in a "Content-Type" header field
-    std::string strValue(value);
-    size_t pos = strValue.find(';');
-    if (pos != std::string::npos)
-      strValue = strValue.substr(0, pos);
-
-    return strValue;
-  }
-
-  return value;
-}
-
-int CWebServer::GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::map<std::string, std::string> &headerValues)
-{
-  if (connection == nullptr)
-    return -1;
-
-  return MHD_get_connection_values(connection, kind, FillArgumentMap, &headerValues);
-}
-
-int CWebServer::GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::multimap<std::string, std::string> &headerValues)
-{
-  if (connection == nullptr)
-    return -1;
-
-  return MHD_get_connection_values(connection, kind, FillArgumentMultiMap, &headerValues);
-}
-
-bool CWebServer::GetRequestedRanges(struct MHD_Connection *connection, uint64_t totalLength, CHttpRanges &ranges)
-{
-  ranges.Clear();
-
-  if (connection == nullptr)
-    return false;
-
-  return ranges.Parse(GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_RANGE), totalLength);
 }
 
 std::string CWebServer::CreateMimeTypeFromExtension(const char *ext)

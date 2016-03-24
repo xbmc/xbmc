@@ -714,6 +714,7 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralJoystick.cpp" />
     <ClCompile Include="..\..\xbmc\peripherals\EventScanner.cpp" />
     <ClCompile Include="..\..\xbmc\peripherals\EventScanRate.cpp" />
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPRequestHandlerUtils.cpp" />
     <ClCompile Include="..\..\xbmc\platform\posix\main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -1267,6 +1268,7 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralJoystick.h" />
     <ClInclude Include="..\..\xbmc\peripherals\EventScanner.h" />
     <ClInclude Include="..\..\xbmc\peripherals\EventScanRate.h" />
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPRequestHandlerUtils.h" />
     <ClInclude Include="..\..\xbmc\platform\MessagePrinter.h" />
     <ClInclude Include="..\..\xbmc\media\MediaType.h" />
     <ClInclude Include="..\..\xbmc\messaging\ApplicationMessenger.h" />

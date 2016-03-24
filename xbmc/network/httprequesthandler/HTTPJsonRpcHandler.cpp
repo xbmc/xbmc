@@ -25,6 +25,7 @@
 #include "interfaces/json-rpc/JSONServiceDescription.h"
 #include "interfaces/json-rpc/JSONUtils.h"
 #include "network/WebServer.h"
+#include "network/httprequesthandler/HTTPRequestHandlerUtils.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
@@ -44,11 +45,11 @@ int CHTTPJsonRpcHandler::HandleRequest()
 
   // get all query arguments
   std::map<std::string, std::string> arguments;
-  CWebServer::GetRequestHeaderValues(m_request.connection, MHD_GET_ARGUMENT_KIND, arguments);
+  HTTPRequestHandlerUtils::GetRequestHeaderValues(m_request.connection, MHD_GET_ARGUMENT_KIND, arguments);
 
   if (m_request.method == POST)
   {
-    std::string contentType = CWebServer::GetRequestHeaderValue(m_request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
+    std::string contentType = HTTPRequestHandlerUtils::GetRequestHeaderValue(m_request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
     // If the content-type of the m_request was specified, it must be application/json-rpc, application/json, or application/jsonrequest
     // http://www.jsonrpc.org/historical/json-rpc-over-http.html
     if (!contentType.empty() && contentType.compare("application/json-rpc") != 0 &&
