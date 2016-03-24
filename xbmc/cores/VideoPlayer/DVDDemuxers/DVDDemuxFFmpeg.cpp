@@ -1257,10 +1257,10 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         if (rtag) 
           st->iOrientation = atoi(rtag->value);
 
-        st->iCropBottom = GetCropValue(pStream->metadata, "crop_bottom");
-        st->iCropTop = GetCropValue(pStream->metadata, "crop_top");
-        st->iCropLeft = GetCropValue(pStream->metadata, "crop_left");
-        st->iCropRight = GetCropValue(pStream->metadata, "crop_right");
+        st->cropValues.y2 = GetCropValue(pStream->metadata, "crop_bottom");
+        st->cropValues.y1 = GetCropValue(pStream->metadata, "crop_top");
+        st->cropValues.x1 = GetCropValue(pStream->metadata, "crop_left");
+        st->cropValues.x2 = GetCropValue(pStream->metadata, "crop_right");
 
         // detect stereoscopic mode
         std::string stereoMode = GetStereoModeFromMetadata(pStream->metadata);

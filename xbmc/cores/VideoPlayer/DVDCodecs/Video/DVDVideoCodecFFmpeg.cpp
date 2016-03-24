@@ -753,10 +753,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
   }
 
   // the crop values belong to the stream but we want to pass them along with every DVDVideoPicture
-  pDvdVideoPicture->iCropBottom = m_hints.cropBottom;
-  pDvdVideoPicture->iCropTop = m_hints.cropTop;
-  pDvdVideoPicture->iCropLeft = m_hints.cropLeft;
-  pDvdVideoPicture->iCropRight = m_hints.cropRight;
+  pDvdVideoPicture->cropValues = m_hints.cropValues;
 
   pDvdVideoPicture->iRepeatPicture = 0.5 * m_pFrame->repeat_pict;
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;

@@ -77,7 +77,7 @@ public:
   virtual ~CBaseRenderer();
 
   // Player functions
-  void ConfigureCropping(unsigned int cropBottom, unsigned int cropTop, unsigned int cropLeft, unsigned int cropRight);
+  void ConfigureCropping(CRect cropValues);
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_formatl, unsigned int orientation) = 0;
   virtual bool IsConfigured() = 0;
   virtual int GetImage(YV12Image *image, int source = -1, bool readonly = false) = 0;
@@ -132,9 +132,12 @@ protected:
 
   unsigned int m_sourceWidth;
   unsigned int m_sourceHeight;
-  unsigned int m_cropBottom, m_cropTop, m_cropLeft, m_cropRight;
   float m_sourceFrameRatio;
   float m_fps;
+
+  // the number of pixels to remove from the edge of the image
+  // x1 = left, y1 = top, x2 = right, y2 = bottom
+  CRect m_cropValues;
 
   unsigned int m_renderOrientation; // orientation of the video in degress counter clockwise
   unsigned int m_oldRenderOrientation; // orientation of the previous frame

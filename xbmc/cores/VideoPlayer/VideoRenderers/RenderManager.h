@@ -236,7 +236,11 @@ protected:
 
   ERenderFormat m_format;
   unsigned int m_width, m_height, m_dwidth, m_dheight;
-  unsigned int m_cropBottom, m_cropTop, m_cropLeft, m_cropRight;
+
+  // the number of pixels to remove from the edge of the image
+  // x1 = left, y1 = top, x2 = right, y2 = bottom
+  CRect m_cropValues;
+
   unsigned int m_flags;
   float m_fps;
   unsigned int m_extended_format;

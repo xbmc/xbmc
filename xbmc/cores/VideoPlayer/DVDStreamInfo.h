@@ -65,10 +65,6 @@ public:
   int rfpsrate;
   int height; // height of the stream reported by the demuxer
   int width; // width of the stream reported by the demuxer
-  int cropBottom;
-  int cropTop;
-  int cropLeft;
-  int cropRight;
   float aspect; // display aspect as reported by demuxer
   bool vfr; // variable framerate
   bool stills; // there may be odd still frames in video
@@ -79,6 +75,10 @@ public:
   int orientation; // orientation of the video in degress counter clockwise
   int bitsperpixel;
   std::string stereo_mode; // stereoscopic 3d mode
+
+  // the number of pixels to remove from the edge of the image
+  // x1 = left, y1 = top, x2 = right, y2 = bottom
+  CRect cropValues;
 
   // AUDIO
   int channels;

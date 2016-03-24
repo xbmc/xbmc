@@ -41,10 +41,7 @@ CBaseRenderer::CBaseRenderer()
   m_sourceFrameRatio = 1.0f;
   m_sourceWidth = 720;
   m_sourceHeight = 480;
-  m_cropBottom = 0;
-  m_cropTop = 0;
-  m_cropLeft = 0;
-  m_cropRight = 0;
+  m_cropValues = CRect(0, 0, 0, 0);
   m_fps = 0.0f;
   m_renderOrientation = 0;
   m_oldRenderOrientation = 0;
@@ -323,8 +320,8 @@ void CBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsign
 
   // Figure out the height and width of the frame after the cropping requested by the stream
   // is applied. These values will be used to determine the frame's aspect ratio
-  unsigned int croppedSourceHeight = m_sourceHeight - m_cropBottom - m_cropTop;
-  unsigned int croppedSourceWidth = m_sourceWidth - m_cropLeft - m_cropRight;
+  unsigned int croppedSourceHeight = m_sourceHeight - m_cropValues.y1 - m_cropValues.y2;
+  unsigned int croppedSourceWidth = m_sourceWidth - m_cropValues.x1 - m_cropValues.x2;
 
   // Check whether mplayer has decided that the size of the video file should be changed
   // This indicates either a scaling has taken place (which we didn't ask for) or it has
@@ -379,22 +376,19 @@ void CBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsign
   }
 }
 
-void CBaseRenderer::ConfigureCropping(unsigned int cropBottom, unsigned int cropTop, unsigned int cropLeft, unsigned int cropRight)
+void CBaseRenderer::ConfigureCropping(CRect cropValues)
 {
-  m_cropBottom = cropBottom;
-  m_cropTop = cropTop;
-  m_cropLeft = cropLeft;
-  m_cropRight = cropRight;
+  m_cropValues = cropValues;
 }
 
 void CBaseRenderer::ManageDisplay()
 {
   m_viewRect = g_graphicsContext.GetViewWindow();
 
-  m_sourceRect.x1 = (float)m_cropLeft;
-  m_sourceRect.y1 = (float)m_cropTop;
-  m_sourceRect.x2 = (float)m_sourceWidth - (float)m_cropRight;
-  m_sourceRect.y2 = (float)m_sourceHeight - (float)m_cropBottom;
+  m_sourceRect.x1 = (float)m_cropValues.x1;
+  m_sourceRect.y1 = (float)m_cropValues.y1;
+  m_sourceRect.x2 = (float)m_sourceWidth - (float)m_cropValues.x2;
+  m_sourceRect.y2 = (float)m_sourceHeight - (float)m_cropValues.y2;
 
   unsigned int stereo_mode  = CONF_FLAGS_STEREO_MODE_MASK(m_iFlags);
   int          stereo_view  = g_graphicsContext.GetStereoView();
