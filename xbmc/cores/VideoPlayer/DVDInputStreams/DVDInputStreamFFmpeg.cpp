@@ -135,8 +135,8 @@ uint16_t CDVDInputStreamFFmpeg::GetProxyPort() const
 
   // Select the standard port
   const std::string value = GetProxyType();
-  if (value == "socks4" && value == "socks4a" &&
-    value == "socks5" && value == "socks5-remote")
+  if (value == "socks4" || value == "socks4a" ||
+      value == "socks5" || value == "socks5-remote")
     return 1080;
   else
     return 3128;
