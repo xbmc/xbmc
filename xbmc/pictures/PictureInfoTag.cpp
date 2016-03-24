@@ -553,6 +553,407 @@ const std::string CPictureInfoTag::GetInfo(int info) const
   return value;
 }
 
+/// \page modules__General__List_of_gui_access
+/// @{
+/// \table_start
+///   \table_row3{   <b>`Slideshow.Altitude`</b>,
+///                  \anchor Slideshow_Altitude
+///                  _string_,
+///     Shows the altitude in meters where the current picture was taken. This
+///     is the value of the EXIF GPSInfo.GPSAltitude tag.
+///   }
+///   \table_row3{   <b>`Slideshow.Aperture`</b>,
+///                  \anchor Slideshow_Aperture
+///                  _string_,
+///     Shows the F-stop used to take the current picture. This is the value of
+///     the EXIF FNumber tag (hex code 0x829D).
+///   }
+///   \table_row3{   <b>`Slideshow.Author`</b>,
+///                  \anchor Slideshow_Author
+///                  _string_,
+///     Shows the name of the person involved in writing about the current
+///     picture. This is the value of the IPTC Writer tag (hex code 0x7A).
+///   }
+///   \table_row3{   <b>`Slideshow.Byline`</b>,
+///                  \anchor Slideshow_Byline
+///                  _string_,
+///     Shows the name of the person who created the current picture. This is
+///     the value of the IPTC Byline tag (hex code 0x50).
+///   }
+///   \table_row3{   <b>`Slideshow.BylineTitle`</b>,
+///                  \anchor Slideshow_BylineTitle
+///                  _string_,
+///     Shows the title of the person who created the current picture. This is
+///     the value of the IPTC BylineTitle tag (hex code 0x55).
+///   }
+///   \table_row3{   <b>`Slideshow.CameraMake`</b>,
+///                  \anchor Slideshow_CameraMake
+///                  _string_,
+///     Shows the manufacturer of the camera used to take the current picture.
+///     This is the value of the EXIF Make tag (hex code 0x010F).
+///   }
+///   \table_row3{   <b>`Slideshow.CameraModel`</b>,
+///                  \anchor Slideshow_CameraModel
+///                  _string_,
+///     Shows the manufacturer's model name or number of the camera used to take
+///     the current picture. This is the value of the EXIF Model tag (hex code
+///     0x0110).
+///   }
+///   \table_row3{   <b>`Slideshow.Caption`</b>,
+///                  \anchor Slideshow_Caption
+///                  _string_,
+///     Shows a description of the current picture. This is the value of the
+///     IPTC Caption tag (hex code 0x78).
+///   }
+///   \table_row3{   <b>`Slideshow.Category`</b>,
+///                  \anchor Slideshow_Category
+///                  _string_,
+///     Shows the subject of the current picture as a category code. This is the
+///     value of the IPTC Category tag (hex code 0x0F).
+///   }
+///   \table_row3{   <b>`Slideshow.CCDWidth`</b>,
+///                  \anchor Slideshow_CCDWidth
+///                  _string_,
+///     Shows the width of the CCD in the camera used to take the current
+///     picture. This is calculated from three EXIF tags (0xA002 * 0xA210 / 0xA20e).
+///   }
+///   \table_row3{   <b>`Slideshow.City`</b>,
+///                  \anchor Slideshow_City
+///                  _string_,
+///     Shows the city where the current picture was taken. This is the value of
+///     the IPTC City tag (hex code 0x5A).
+///   }
+///   \table_row3{   <b>`Slideshow.Colour`</b>,
+///                  \anchor Slideshow_Colour
+///                  _string_,
+///     Shows whether the current picture is "Colour" or "Black and White".
+///   }
+///   \table_row3{   <b>`Slideshow.CopyrightNotice`</b>,
+///                  \anchor Slideshow_CopyrightNotice
+///                  _string_,
+///     Shows the copyright notice of the current picture. This is the value of
+///     the IPTC Copyright tag (hex code 0x74).
+///   }
+///   \table_row3{   <b>`Slideshow.Country`</b>,
+///                  \anchor Slideshow_Country
+///                  _string_,
+///     Shows the full name of the country where the current picture was taken.
+///     This is the value of the IPTC CountryName tag (hex code 0x65).
+///   }
+///   \table_row3{   <b>`Slideshow.CountryCode`</b>,
+///                  \anchor Slideshow_CountryCode
+///                  _string_,
+///     Shows the country code of the country where the current picture was
+///     taken. This is the value of the IPTC CountryCode tag (hex code 0x64).
+///   }
+///   \table_row3{   <b>`Slideshow.Credit`</b>,
+///                  \anchor Slideshow_Credit
+///                  _string_,
+///     Shows who provided the current picture. This is the value of the IPTC
+///     Credit tag (hex code 0x6E).
+///   }
+///   \table_row3{   <b>`Slideshow.DigitalZoom`</b>,
+///                  \anchor Slideshow_DigitalZoom
+///                  _string_,
+///     Shows the digital zoom ratio when the current picture was taken. This is
+///     the value of the EXIF .DigitalZoomRatio tag (hex code 0xA404).
+///   }
+///   \table_row3{   <b>`Slideshow.EXIFComment`</b>,
+///                  \anchor Slideshow_EXIFComment
+///                  _string_,
+///     Shows a description of the current picture. This is the value of the
+///     EXIF User Comment tag (hex code 0x9286). This is the same value as
+///     Slideshow.SlideComment.
+///   }
+///   \table_row3{   <b>`Slideshow.EXIFDate`</b>,
+///                  \anchor Slideshow_EXIFDate
+///                  _string_,
+///     Shows the localized date of the current picture. The short form of the
+///     date is used. The value of the EXIF DateTimeOriginal tag (hex code
+///     0x9003) is preferred. If the DateTimeOriginal tag is not found\, the
+///     value of DateTimeDigitized (hex code 0x9004) or of DateTime (hex code
+///     0x0132) might be used.
+///   }
+///   \table_row3{   <b>`Slideshow.EXIFDescription`</b>,
+///                  \anchor Slideshow_EXIFDescription
+///                  _string_,
+///     Shows a short description of the current picture. The SlideComment\,
+///     EXIFComment or Caption values might contain a longer description. This
+///     is the value of the EXIF ImageDescription tag (hex code 0x010E).
+///   }
+///   \table_row3{   <b>`Slideshow.EXIFSoftware`</b>,
+///                  \anchor Slideshow_EXIFSoftware
+///                  _string_,
+///     Shows the name and version of the firmware used by the camera that took
+///     the current picture. This is the value of the EXIF Software tag (hex
+///     code 0x0131).
+///   }
+///   \table_row3{   <b>`Slideshow.EXIFTime`</b>,
+///                  \anchor Slideshow_EXIFTime
+///                  _string_,
+///     Shows the date/timestamp of the current picture. The localized short
+///     form of the date and time is used. The value of the EXIF
+///     DateTimeOriginal tag (hex code 0x9003) is preferred. If the
+///     DateTimeOriginal tag is not found\, the value of DateTimeDigitized (hex
+///     code 0x9004) or of DateTime (hex code 0x0132) might be used.
+///   }
+///   \table_row3{   <b>`Slideshow.Exposure`</b>,
+///                  \anchor Slideshow_Exposure
+///                  _string_,
+///     Shows the class of the program used by the camera to set exposure when
+///     the current picture was taken. Values include "Manual"\,
+///     "Program (Auto)"\, "Aperture priority (Semi-Auto)"\, "Shutter priority
+///     (semi-auto)"\, etc. This is the value of the EXIF ExposureProgram tag
+///     (hex code 0x8822).
+///   }
+///   \table_row3{   <b>`Slideshow.ExposureBias`</b>,
+///                  \anchor Slideshow_ExposureBias
+///                  _string_,
+///     Shows the exposure bias of the current picture. Typically this is a
+///     number between -99.99 and 99.99. This is the value of the EXIF
+///     ExposureBiasValue tag (hex code 0x9204).
+///   }
+///   \table_row3{   <b>`Slideshow.ExposureMode`</b>,
+///                  \anchor Slideshow_ExposureMode
+///                  _string_,
+///     Shows the exposure mode of the current picture. The possible values are
+///     "Automatic"\, "Manual"\, and "Auto bracketing". This is the value of the
+///     EXIF ExposureMode tag (hex code 0xA402).
+///   }
+///   \table_row3{   <b>`Slideshow.ExposureTime`</b>,
+///                  \anchor Slideshow_ExposureTime
+///                  _string_,
+///     Shows the exposure time of the current picture\, in seconds. This is the
+///     value of the EXIF ExposureTime tag (hex code 0x829A). If the
+///     ExposureTime tag is not found\, the ShutterSpeedValue tag (hex code
+///     0x9201) might be used.
+///   }
+///   \table_row3{   <b>`Slideshow.Filedate`</b>,
+///                  \anchor Slideshow_Filedate
+///                  _string_,
+///     Shows the file date of the current picture
+///   }
+///   \table_row3{   <b>`Slideshow.Filename`</b>,
+///                  \anchor Slideshow_Filename
+///                  _string_,
+///     Shows the file name of the current picture
+///   }
+///   \table_row3{   <b>`Slideshow.Filesize`</b>,
+///                  \anchor Slideshow_Filesize
+///                  _string_,
+///     Shows the file size of the current picture
+///   }
+///   \table_row3{   <b>`Slideshow.FlashUsed`</b>,
+///                  \anchor Slideshow_FlashUsed
+///                  _string_,
+///     Shows the status of flash when the current picture was taken. The value
+///     will be either "Yes" or "No"\, and might include additional information.
+///     This is the value of the EXIF Flash tag (hex code 0x9209).
+///   }
+///   \table_row3{   <b>`Slideshow.FocalLength`</b>,
+///                  \anchor Slideshow_FocalLength
+///                  _string_,
+///     Shows the focal length of the lens\, in mm. This is the value of the EXIF
+///     FocalLength tag (hex code 0x920A).
+///   }
+///   \table_row3{   <b>`Slideshow.FocusDistance`</b>,
+///                  \anchor Slideshow_FocusDistance
+///                  _string_,
+///     Shows the distance to the subject\, in meters. This is the value of the
+///     EXIF SubjectDistance tag (hex code 0x9206).
+///   }
+///   \table_row3{   <b>`Slideshow.Headline`</b>,
+///                  \anchor Slideshow_Headline
+///                  _string_,
+///     Shows a synopsis of the contents of the current picture. This is the
+///     value of the IPTC Headline tag (hex code 0x69).
+///   }
+///   \table_row3{   <b>`Slideshow.ImageType`</b>,
+///                  \anchor Slideshow_ImageType
+///                  _string_,
+///     Shows the color components of the current picture. This is the value of
+///     the IPTC ImageType tag (hex code 0x82).
+///   }
+///   \table_row3{   <b>`Slideshow.IPTCDate`</b>,
+///                  \anchor Slideshow_IPTCDate
+///                  _string_,
+///     Shows the date when the intellectual content of the current picture was
+///     created\, rather than when the picture was created. This is the value of
+///     the IPTC DateCreated tag (hex code 0x37).
+///   }
+///   \table_row3{   <b>`Slideshow.ISOEquivalence`</b>,
+///                  \anchor Slideshow_ISOEquivalence
+///                  _string_,
+///     Shows the ISO speed of the camera when the current picture was taken.
+///     This is the value of the EXIF ISOSpeedRatings tag (hex code 0x8827).
+///   }
+///   \table_row3{   <b>`Slideshow.Keywords`</b>,
+///                  \anchor Slideshow_Keywords
+///                  _string_,
+///     Shows keywords assigned to the current picture. This is the value of the
+///     IPTC Keywords tag (hex code 0x19).
+///   }
+///   \table_row3{   <b>`Slideshow.Latitude`</b>,
+///                  \anchor Slideshow_Latitude
+///                  _string_,
+///     Shows the latitude where the current picture was taken (degrees\,
+///     minutes\, seconds North or South). This is the value of the EXIF
+///     GPSInfo.GPSLatitude and GPSInfo.GPSLatitudeRef tags.
+///   }
+///   \table_row3{   <b>`Slideshow.LightSource`</b>,
+///                  \anchor Slideshow_LightSource
+///                  _string_,
+///     Shows the kind of light source when the picture was taken. Possible
+///     values include "Daylight"\, "Fluorescent"\, "Incandescent"\, etc. This is
+///     the value of the EXIF LightSource tag (hex code 0x9208).
+///   }
+///   \table_row3{   <b>`Slideshow.LongEXIFDate`</b>,
+///                  \anchor Slideshow_LongEXIFDate
+///                  _string_,
+///     Shows only the localized date of the current picture. The long form of
+///     the date is used. The value of the EXIF DateTimeOriginal tag (hex code
+///     0x9003) is preferred. If the DateTimeOriginal tag is not found\, the
+///     value of DateTimeDigitized (hex code 0x9004) or of DateTime (hex code
+///     0x0132) might be used.
+///   }
+///   \table_row3{   <b>`Slideshow.LongEXIFTime`</b>,
+///                  \anchor Slideshow_LongEXIFTime
+///                  _string_,
+///     Shows the date/timestamp of the current picture. The localized long form
+///     of the date and time is used. The value of the EXIF DateTimeOriginal tag
+///     (hex code 0x9003) is preferred. if the DateTimeOriginal tag is not found\,
+///     the value of DateTimeDigitized (hex code 0x9004) or of DateTime (hex
+///     code 0x0132) might be used.
+///   }
+///   \table_row3{   <b>`Slideshow.Longitude`</b>,
+///                  \anchor Slideshow_Longitude
+///                  _string_,
+///     Shows the longitude where the current picture was taken (degrees\,
+///     minutes\, seconds East or West). This is the value of the EXIF
+///     GPSInfo.GPSLongitude and GPSInfo.GPSLongitudeRef tags.
+///   }
+///   \table_row3{   <b>`Slideshow.MeteringMode`</b>,
+///                  \anchor Slideshow_MeteringMode
+///                  _string_,
+///     Shows the metering mode used when the current picture was taken. The
+///     possible values are "Center weight"\, "Spot"\, or "Matrix". This is the
+///     value of the EXIF MeteringMode tag (hex code 0x9207).
+///   }
+///   \table_row3{   <b>`Slideshow.ObjectName`</b>,
+///                  \anchor Slideshow_ObjectName
+///                  _string_,
+///     Shows a shorthand reference for the current picture. This is the value
+///     of the IPTC ObjectName tag (hex code 0x05).
+///   }
+///   \table_row3{   <b>`Slideshow.Orientation`</b>,
+///                  \anchor Slideshow_Orientation
+///                  _string_,
+///     Shows the orientation of the current picture. Possible values are "Top
+///     Left"\, "Top Right"\, "Left Top"\, "Right Bottom"\, etc. This is the value
+///     of the EXIF Orientation tag (hex code 0x0112).
+///   }
+///   \table_row3{   <b>`Slideshow.Path`</b>,
+///                  \anchor Slideshow_Path
+///                  _string_,
+///     Shows the file path of the current picture
+///   }
+///   \table_row3{   <b>`Slideshow.Process`</b>,
+///                  \anchor Slideshow_Process
+///                  _string_,
+///     Shows the process used to compress the current picture
+///   }
+///   \table_row3{   <b>`Slideshow.ReferenceService`</b>,
+///                  \anchor Slideshow_ReferenceService
+///                  _string_,
+///     Shows the Service Identifier of a prior envelope to which the current
+///     picture refers. This is the value of the IPTC ReferenceService tag (hex
+///     code 0x2D).
+///   }
+///   \table_row3{   <b>`Slideshow.Resolution`</b>,
+///                  \anchor Slideshow_Resolution
+///                  _string_,
+///     Shows the dimensions of the current picture (Width x Height)
+///   }
+///   \table_row3{   <b>`Slideshow.SlideComment`</b>,
+///                  \anchor Slideshow_SlideComment
+///                  _string_,
+///     Shows a description of the current picture. This is the value of the
+///     EXIF User Comment tag (hex code 0x9286). This is the same value as
+///     Slideshow.EXIFComment.
+///   }
+///   \table_row3{   <b>`Slideshow.SlideIndex`</b>,
+///                  \anchor Slideshow_SlideIndex
+///                  _string_,
+///     Shows the slide index of the current picture
+///   }
+///   \table_row3{   <b>`Slideshow.Source`</b>,
+///                  \anchor Slideshow_Source
+///                  _string_,
+///     Shows the original owner of the current picture. This is the value of
+///     the IPTC Source tag (hex code 0x73).
+///   }
+///   \table_row3{   <b>`Slideshow.SpecialInstructions`</b>,
+///                  \anchor Slideshow_SpecialInstructions
+///                  _string_,
+///     Shows other editorial instructions concerning the use of the current
+///     picture. This is the value of the IPTC SpecialInstructions tag (hex
+///     code 0x28).
+///   }
+///   \table_row3{   <b>`Slideshow.State`</b>,
+///                  \anchor Slideshow_State
+///                  _string_,
+///     Shows the State/Province where the current picture was taken. This is
+///     the value of the IPTC ProvinceState tag (hex code 0x5F).
+///   }
+///   \table_row3{   <b>`Slideshow.Sublocation`</b>,
+///                  \anchor Slideshow_Sublocation
+///                  _string_,
+///     Shows the location within a city where the current picture was taken -
+///     might indicate the nearest landmark. This is the value of the IPTC
+///     SubLocation tag (hex code 0x5C).
+///   }
+///   \table_row3{   <b>`Slideshow.SupplementalCategories`</b>,
+///                  \anchor Slideshow_SupplementalCategories
+///                  _string_,
+///     Shows supplemental category codes to further refine the subject of the
+///     current picture. This is the value of the IPTC SuppCategory tag (hex
+///     code 0x14).
+///   }
+///   \table_row3{   <b>`Slideshow.TimeCreated`</b>,
+///                  \anchor Slideshow_TimeCreated
+///                  _string_,
+///     Shows the time when the intellectual content of the current picture was
+///     created\, rather than when the picture was created. This is the value of
+///     the IPTC TimeCreated tag (hex code 0x3C).
+///   }
+///   \table_row3{   <b>`Slideshow.TransmissionReference`</b>,
+///                  \anchor Slideshow_TransmissionReference
+///                  _string_,
+///     Shows a code representing the location of original transmission of the
+///     current picture. This is the value of the IPTC TransmissionReference tag
+///     (hex code 0x67).
+///   }
+///   \table_row3{   <b>`Slideshow.Urgency`</b>,
+///                  \anchor Slideshow_Urgency
+///                  _string_,
+///     Shows the urgency of the current picture. Values are 1-9. The 1 is most
+///     urgent. Some image management programs use urgency to indicate picture
+///     rating\, where urgency 1 is 5 stars and urgency 5 is 1 star. Urgencies
+///     6-9 are not used for rating. This is the value of the IPTC Urgency tag
+///     (hex code 0x0A).
+///   }
+///   \table_row3{   <b>`Slideshow.WhiteBalance`</b>,
+///                  \anchor Slideshow_WhiteBalance
+///                  _string_,
+///     Shows the white balance mode set when the current picture was taken.
+///     The possible values are "Manual" and "Auto". This is the value of the
+///     EXIF WhiteBalance tag (hex code 0xA403).
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
+
 int CPictureInfoTag::TranslateString(const std::string &info)
 {
   if (StringUtils::EqualsNoCase(info, "filename")) return SLIDE_FILE_NAME;

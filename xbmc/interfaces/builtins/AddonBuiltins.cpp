@@ -309,7 +309,7 @@ static int UpdateLocals(const std::vector<std::string>& params)
 
 // Note: For new Texts with comma add a "\" before!!! Is used for table text.
 //
-/// \page page_List_of_built_in_functions
+/// \page page_List_of_built_in_functions List of build in functions
 /// \section built_in_functions_1 Add-on built-in's
 ///
 /// -----------------------------------------------------------------------------
