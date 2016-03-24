@@ -22,6 +22,7 @@
 #include <string>
 
 #include "interfaces/json-rpc/IClient.h"
+#include "interfaces/json-rpc/ITransportLayer.h"
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
 
 class CHTTPJsonRpcHandler : public IHTTPRequestHandler
@@ -30,6 +31,7 @@ public:
   CHTTPJsonRpcHandler() { }
   virtual ~CHTTPJsonRpcHandler() { }
   
+  // implementations of IHTTPRequestHandler
   virtual IHTTPRequestHandler* Create(const HTTPRequest &request) { return new CHTTPJsonRpcHandler(request); }
   virtual bool CanHandleRequest(const HTTPRequest &request);
 
@@ -54,6 +56,19 @@ private:
   std::string m_requestData;
   std::string m_responseData;
   CHttpResponseRange m_responseRange;
+
+  class CHTTPTransportLayer : public JSONRPC::ITransportLayer
+  {
+  public:
+    CHTTPTransportLayer() = default;
+    ~CHTTPTransportLayer() = default;
+
+    // implementations of JSONRPC::ITransportLayer
+    bool PrepareDownload(const char *path, CVariant &details, std::string &protocol) override;
+    bool Download(const char *path, CVariant &result) override;
+    int GetCapabilities() override;
+  };
+  CHTTPTransportLayer m_transportLayer;
 
   class CHTTPClient : public JSONRPC::IClient
   {

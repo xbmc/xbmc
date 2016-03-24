@@ -19,6 +19,8 @@
  */
 
 #include "HTTPJsonRpcHandler.h"
+#include "URL.h"
+#include "filesystem/File.h"
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "interfaces/json-rpc/JSONServiceDescription.h"
 #include "interfaces/json-rpc/JSONUtils.h"
@@ -81,7 +83,7 @@ int CHTTPJsonRpcHandler::HandleRequest()
 
   if (isRequest)
   {
-    m_responseData = JSONRPC::CJSONRPC::MethodCall(m_requestData, m_request.webserver, &client);
+    m_responseData = JSONRPC::CJSONRPC::MethodCall(m_requestData, &m_transportLayer, &client);
 
     if (!jsonpCallback.empty())
       m_responseData = jsonpCallback + "(" + m_responseData + ");";
@@ -90,7 +92,7 @@ int CHTTPJsonRpcHandler::HandleRequest()
   {
     // get the whole output of JSONRPC.Introspect
     CVariant result;
-    JSONRPC::CJSONServiceDescription::Print(result, m_request.webserver, &client);
+    JSONRPC::CJSONServiceDescription::Print(result, &m_transportLayer, &client);
     m_responseData = CJSONVariantWriter::Write(result, false);
   }
   else
@@ -136,6 +138,35 @@ bool CHTTPJsonRpcHandler::appendPostData(const char *data, unsigned int size)
   m_requestData.append(data, size);
 
   return true;
+}
+
+bool CHTTPJsonRpcHandler::CHTTPTransportLayer::PrepareDownload(const char *path, CVariant &details, std::string &protocol)
+{
+  if (!XFILE::CFile::Exists(path))
+    return false;
+
+  protocol = "http";
+  std::string url;
+  std::string strPath = path;
+  if (StringUtils::StartsWith(strPath, "image://") ||
+    (StringUtils::StartsWith(strPath, "special://") && StringUtils::EndsWith(strPath, ".tbn")))
+    url = "image/";
+  else
+    url = "vfs/";
+  url += CURL::Encode(strPath);
+  details["path"] = url;
+
+  return true;
+}
+
+bool CHTTPJsonRpcHandler::CHTTPTransportLayer::Download(const char *path, CVariant &result)
+{
+  return false;
+}
+
+int CHTTPJsonRpcHandler::CHTTPTransportLayer::GetCapabilities()
+{
+  return JSONRPC::Response | JSONRPC::FileDownloadRedirect;
 }
 
 int CHTTPJsonRpcHandler::CHTTPClient::GetPermissionFlags()

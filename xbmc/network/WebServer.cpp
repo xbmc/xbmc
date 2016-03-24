@@ -1220,35 +1220,6 @@ void CWebServer::SetCredentials(const std::string &username, const std::string &
   m_needcredentials = !password.empty();
 }
 
-bool CWebServer::PrepareDownload(const char *path, CVariant &details, std::string &protocol)
-{
-  if (!XFILE::CFile::Exists(path))
-    return false;
-
-  protocol = "http";
-  std::string url;
-  std::string strPath = path;
-  if (StringUtils::StartsWith(strPath, "image://") ||
-      (StringUtils::StartsWith(strPath, "special://") && StringUtils::EndsWith(strPath, ".tbn")))
-    url = "image/";
-  else
-    url = "vfs/";
-  url += CURL::Encode(strPath);
-  details["path"] = url;
-
-  return true;
-}
-
-bool CWebServer::Download(const char *path, CVariant &result)
-{
-  return false;
-}
-
-int CWebServer::GetCapabilities()
-{
-  return JSONRPC::Response | JSONRPC::FileDownloadRedirect;
-}
-
 void CWebServer::RegisterRequestHandler(IHTTPRequestHandler *handler)
 {
   if (handler == nullptr)

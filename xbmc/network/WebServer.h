@@ -25,7 +25,6 @@
 #include <memory>
 #include <vector>
 
-#include "interfaces/json-rpc/ITransportLayer.h"
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
 #include "threads/CriticalSection.h"
 
@@ -36,16 +35,11 @@ namespace XFILE
 class CDateTime;
 class CVariant;
 
-class CWebServer : public JSONRPC::ITransportLayer
+class CWebServer
 {
 public:
   CWebServer();
   virtual ~CWebServer() { }
-
-  // implementation of JSONRPC::ITransportLayer
-  virtual bool PrepareDownload(const char *path, CVariant &details, std::string &protocol);
-  virtual bool Download(const char *path, CVariant &result);
-  virtual int GetCapabilities();
 
   bool Start(int port, const std::string &username, const std::string &password);
   bool Stop();
