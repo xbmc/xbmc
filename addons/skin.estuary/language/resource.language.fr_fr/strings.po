@@ -48,10 +48,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Films non vus"
 
-msgctxt "#31008"
-msgid "In-progress TV Shows"
-msgstr "Séries TV en cours"
-
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Télécharger les icônes"
@@ -428,6 +424,10 @@ msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Saisir le texte ici…"
 
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "La bibliothèque est actuellement vide. Pour la peupler avec des médias, aller à la section « Fichiers », ajouter une source de médias puis la configurer. Après ajout et indexation, la bibliothèque pourra être parcourue."
+
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
 msgstr "Ajoute des sources vidéo et définit le type de contenu approprié pour peupler les vidéothèques."
@@ -527,3 +527,11 @@ msgstr "Contributeurs"
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
 msgstr "Paramètres généraux s'appliquants à l'ensemble de l'habillage."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Paramètres relatifs au menu principal : configurer l'écran d'accueil comme désiré."
+
+msgctxt "#31131"
+msgid "Choose home fanart pack"
+msgstr "Choisir le paquet de FanArt pour l'accueil"

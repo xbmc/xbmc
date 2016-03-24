@@ -48,10 +48,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Unwatched movies"
 
-msgctxt "#31008"
-msgid "In-progress TV Shows"
-msgstr "In-progress TV Shows"
-
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Download icons"

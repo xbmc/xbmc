@@ -36,10 +36,6 @@ msgctxt "#31006"
 msgid "Random movies"
 msgstr "τυχαίες ταινείες"
 
-msgctxt "#31008"
-msgid "In-progress TV Shows"
-msgstr "Τηλεοπτικές σειρές σε εξέλιξη"
-
 msgctxt "#31010"
 msgid "In progress movies"
 msgstr "Ταινίες σε εξέλιξη"

@@ -48,10 +48,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Негледани филми"
 
-msgctxt "#31008"
-msgid "In-progress TV Shows"
-msgstr "Следени сериали"
-
 msgctxt "#31010"
 msgid "In progress movies"
 msgstr "Следени филми"

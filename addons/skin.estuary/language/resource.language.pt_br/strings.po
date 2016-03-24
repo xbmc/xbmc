@@ -48,10 +48,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Filmes por assistir"
 
-msgctxt "#31008"
-msgid "In-progress TV Shows"
-msgstr "Seriados em progresso"
-
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Donwload ícones"
@@ -79,6 +75,10 @@ msgstr "Álbuns por ouvir"
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Gravações recentes"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Canais assistidos recentemente"
 
 msgctxt "#31018"
 msgid "Most played channels"
@@ -424,6 +424,10 @@ msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Entre com o texto aqui..."
 
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Sua coleção atualmente está vazia. Para ter seus itens pessoais em modo coleção, entre na seção \"Arquivos\", adicione uma fonte de vídeo e configure. Após a fonte ser adicionada e tiver sido indexada, você será capaz de navegar em sua coleção."
+
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
 msgstr "Adicione fontes de vídeo e configure o tipo de conteúdo apropriado para poder adicionar seus itens na coleção."
@@ -519,3 +523,15 @@ msgstr "Mostrar ícones"
 msgctxt "#31128"
 msgid "Contributors"
 msgstr "Contribuidores"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Ajustes gerais aplicam-se a todas as área da skin."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Ajustes relacionados ao menu principal: Configure a tela da home de acordo com seu gosto pessoal."
+
+msgctxt "#31131"
+msgid "Choose home fanart pack"
+msgstr "Escolha pacote fanarts para home"

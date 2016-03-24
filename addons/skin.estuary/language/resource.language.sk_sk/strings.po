@@ -48,10 +48,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Nepozreté filmy"
 
-msgctxt "#31008"
-msgid "In-progress TV Shows"
-msgstr "Rozpozerané TV seriály"
-
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Prevziať ikony"
@@ -79,6 +75,10 @@ msgstr "Neprehraté albumy"
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Nedávne nahrávky"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Nedávno prehrávané kanály"
 
 msgctxt "#31018"
 msgid "Most played channels"
@@ -110,7 +110,7 @@ msgstr "Nasledujúce skladby"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Nenašli sa žiadne obľúbené. Akúkoľvek položku z prehľadov médií môžete pridať do tohto zoznamu použitím kontextovej ponuky."
+msgstr "Nenašli sa žiadne obľúbené položky. Akúkoľvek položku z prehľadov médií môžete pridať do tohto zoznamu použitím kontextovej ponuky."
 
 msgctxt "#31026"
 msgid "Go to albums"
@@ -154,7 +154,7 @@ msgstr "Stránky"
 
 msgctxt "#31036"
 msgid "items"
-msgstr "Položky"
+msgstr "položky"
 
 msgctxt "#31037"
 msgid "Tracklist"
@@ -258,7 +258,7 @@ msgstr "Položky hlavnej ponuky"
 
 msgctxt "#31062"
 msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
-msgstr "Odkazy k sekcii \"Súbory\" každého typu média. Prejdite tam, ak chcete pridať ďalšie zdroje pre vaše databázy."
+msgstr "Odkazy k sekcii \"Súbory\" pre každý typ média. Prejdite tam, pokiaľ chcete pridať ďalšie zdroje pre vaše databázy."
 
 msgctxt "#31063"
 msgid "Sections"
@@ -270,7 +270,7 @@ msgstr "nepozreté"
 
 msgctxt "#31065"
 msgid "Video playlist"
-msgstr "Zoznam stôp videí"
+msgstr "Zoznam videí"
 
 msgctxt "#31066"
 msgid "Music playlist"
@@ -370,7 +370,7 @@ msgstr "Dostupné skupiny"
 
 msgctxt "#31090"
 msgid "Search trailer"
-msgstr "Vyhľadať upútavku"
+msgstr "Hľadať upútavku"
 
 msgctxt "#31091"
 msgid "Download subtitles"
@@ -423,6 +423,10 @@ msgstr "Nástenka"
 msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Sem zadajte text..."
+
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Vaša knižnica je v tejto chvíli prázdna. Aby ste ju zaplnili vašimi osobnými médiami, vstúpte to sekcie \"Súbory\", pridajte zdroj médií a nakonfigurujte ho. Po pridaní zdroja a jeho zindexovaní budete môcť prehľadávať vašu knižnicu."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
@@ -482,7 +486,7 @@ msgstr "Vstúpiť do prehliadača doplnkov"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "Zatiaľ nemáte nainštalované žiadne doplnky. Navštívte náš prehliadač doplnkov, preskúmajte našu kolekciu a vylepšite si váš Kodi zážitok."
+msgstr "Zatiaľ nemáte nainštalované žiadne doplnky. Navštívte náš prehliadač doplnkov, preskúmajte našu kolekciu a vylepšite si váš zážitok s Kodi."
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
@@ -519,3 +523,15 @@ msgstr "Zobraziť ikony"
 msgctxt "#31128"
 msgid "Contributors"
 msgstr "Prispievatelia"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Všeobecné nastavenia týkajúce sa všetkých oblastí vzhľadu."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Nastavenia týkajúce sa hlavnej ponuky: Nastavte si domovskú obrazovku podľa vašich predstáv."
+
+msgctxt "#31131"
+msgid "Choose home fanart pack"
+msgstr "Vybrať domovský fanart balík"

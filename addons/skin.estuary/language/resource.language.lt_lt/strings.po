@@ -48,10 +48,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Neperžiūrėti filmai"
 
-msgctxt "#31008"
-msgid "In-progress TV Shows"
-msgstr "Nebaigtos žiūrėti TV laidos"
-
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Atsisiųsti piktogramas"
@@ -79,6 +75,10 @@ msgstr "Neperklausyti albumai"
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Naujausi įrašai"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Neseniai žiūrėti kanalai"
 
 msgctxt "#31018"
 msgid "Most played channels"
@@ -150,11 +150,11 @@ msgstr "Išplėstinė informacija"
 
 msgctxt "#31035"
 msgid "Pages"
-msgstr "Puslapiai"
+msgstr "Pusl."
 
 msgctxt "#31036"
 msgid "items"
-msgstr "elementai"
+msgstr "elem."
 
 msgctxt "#31037"
 msgid "Tracklist"
@@ -306,7 +306,7 @@ msgstr "Pavadinimai"
 
 msgctxt "#31074"
 msgid "Library root"
-msgstr "Šakninis bibliotekos elementas"
+msgstr "Pradinis bibliotekos katalogas"
 
 msgctxt "#31075"
 msgid "Movie sets"
@@ -424,6 +424,10 @@ msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Įveskite tekstą čia..."
 
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Jūsų biblioteka šiuo metu tuščia. Norėdami užpildyti ją asmeniniais media įrašais, eikite į \"Failų\" skyrių, pridėkite media šaltinį ir sukonfigūruokite jį. Kai šaltinis bus pridėtas ir suindeksuotas, galėsite naršyti po savo biblioteką."
+
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
 msgstr "Pridėkite vaizdo įrašų šaltinius ir nustatykite atitinkamą turinio tipą, jei norite užpildyti savo vaizdo įrašų bibliotekas."
@@ -519,3 +523,15 @@ msgstr "Rodyti piktogramas"
 msgctxt "#31128"
 msgid "Contributors"
 msgstr "Bendraautoriai"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Pagrindiniai nustatymai pritaikomi visoms teminės išvaizdoms sritims"
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Su pagrindiniu meniu susiję nustatymai: susikonfigūruokite pradinį ekraną taip kaip patinka"
+
+msgctxt "#31131"
+msgid "Choose home fanart pack"
+msgstr "Pasirinkti pradinio ekrano Fanart paketą"

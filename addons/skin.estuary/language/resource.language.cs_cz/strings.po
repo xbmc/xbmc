@@ -48,10 +48,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Neshlédnuté filmy"
 
-msgctxt "#31008"
-msgid "In-progress TV Shows"
-msgstr "Rozkoukané TV seriály"
-
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Stáhnout ikony"

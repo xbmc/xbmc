@@ -40,10 +40,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Katsomattomat elokuvat"
 
-msgctxt "#31008"
-msgid "In-progress TV Shows"
-msgstr "Käynnissä olevat TV-ohjelmat"
-
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Ennuste"

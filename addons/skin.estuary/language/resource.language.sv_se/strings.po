@@ -44,10 +44,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Osedda filmer"
 
-msgctxt "#31008"
-msgid "In-progress TV Shows"
-msgstr "Pågående TV-program"
-
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Ladda ner ikoner"
