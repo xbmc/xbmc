@@ -258,20 +258,20 @@ public:
 
   bool operator !=(const this_type &rect) const
   {
-      if (x1 != rect.x1) return true;
-      if (x2 != rect.x2) return true;
-      if (y1 != rect.y1) return true;
-      if (y2 != rect.y2) return true;
-      return false;
+    if (x1 != rect.x1) return true;
+    if (x2 != rect.x2) return true;
+    if (y1 != rect.y1) return true;
+    if (y2 != rect.y2) return true;
+    return false;
   };
 
   bool operator ==(const this_type &rect) const
   {
-      if (x1 != rect.x1) return false;
-      if (x2 != rect.x2) return false;
-      if (y1 != rect.y1) return false;
-      if (y2 != rect.y2) return false;
-      return true;
+    if (x1 != rect.x1) return false;
+    if (x2 != rect.x2) return false;
+    if (y1 != rect.y1) return false;
+    if (y2 != rect.y2) return false;
+    return true;
   };
 
   T x1, y1, x2, y2;
