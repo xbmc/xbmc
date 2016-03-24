@@ -46,18 +46,6 @@ static int SearchMissingIcons(const std::vector<std::string>& params)
 ///     Function,
 ///     Description }
 ///   \table_row2_l{
-///     <b>`PVR.StartManager`</b>\n
-///     <b>`StartPVRManager`</b> (deprecated)
-///     ,
-///     (Re)Starts the PVR manager
-///   }
-///   \table_row2_l{
-///     <b>`PVR.StartManager`</b>\n
-///     <b>`StopPVRManager`</b> (deprecated)
-///     ,
-///     Stops the PVR manager
-///   }
-///   \table_row2_l{
 ///     <b>`PVR.SearchMissingChannelIcons`</b>
 ///     ,
 ///     Will start a search for missing channel icons
