@@ -76,9 +76,25 @@ protected:
 
 private:
   struct MHD_Daemon* StartMHD(unsigned int flags, int port);
-  static int AskForAuthentication (struct MHD_Connection *connection);
-  static bool IsAuthenticated (CWebServer *server, struct MHD_Connection *connection);
 
+  int AskForAuthentication(struct MHD_Connection *connection) const;
+  bool IsAuthenticated(struct MHD_Connection *connection) const;
+
+  int CreateMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response) const;
+  int CreateRangedMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response) const;
+
+  int CreateRedirect(struct MHD_Connection *connection, const std::string &strURL, struct MHD_Response *&response) const;
+  int CreateFileDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response) const;
+  int CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method, struct MHD_Response *&response) const;
+  int CreateMemoryDownloadResponse(struct MHD_Connection *connection, const void *data, size_t size, bool free, bool copy, struct MHD_Response *&response) const;
+
+  int SendErrorResponse(struct MHD_Connection *connection, int errorType, HTTPMethod method) const;
+
+  int AddHeader(struct MHD_Response *response, const std::string &name, const std::string &value) const;
+
+  static std::string CreateMimeTypeFromExtension(const char *ext);
+
+  // MHD callback implementations
   static void* UriRequestLogger(void *cls, const char *uri);
 
 #if (MHD_VERSION >= 0x00090200)
@@ -109,20 +125,6 @@ private:
                              const char *transfer_encoding, const char *data, uint64_t off,
                              unsigned int size);
 #endif
-
-  static int CreateMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response);
-  static int CreateRangedMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response);
-
-  static int CreateRedirect(struct MHD_Connection *connection, const std::string &strURL, struct MHD_Response *&response);
-  static int CreateFileDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response);
-  static int CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method, struct MHD_Response *&response);
-  static int CreateMemoryDownloadResponse(struct MHD_Connection *connection, const void *data, size_t size, bool free, bool copy, struct MHD_Response *&response);
-
-  static int SendErrorResponse(struct MHD_Connection *connection, int errorType, HTTPMethod method);
-
-  static std::string CreateMimeTypeFromExtension(const char *ext);
-
-  static int AddHeader(struct MHD_Response *response, const std::string &name, const std::string &value);
 
   uint16_t m_port;
   struct MHD_Daemon *m_daemon_ip6;
