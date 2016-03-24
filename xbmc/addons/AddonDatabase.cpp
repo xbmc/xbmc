@@ -185,6 +185,14 @@ void CAddonDatabase::UpdateTables(int version)
   {
     m_pDS->exec("DROP TABLE system");
   }
+  if (version < 23)
+  {
+    m_pDS->exec("DELETE FROM addon");
+    m_pDS->exec("DELETE FROM addonextra");
+    m_pDS->exec("DELETE FROM dependencies");
+    m_pDS->exec("DELETE FROM addonlinkrepo");
+    m_pDS->exec("DELETE FROM repo");
+  }
 }
 
 void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids)
@@ -296,14 +304,7 @@ bool CAddonDatabase::SetLastUsed(const std::string& addonId, const CDateTime& da
   return false;
 }
 
-int CAddonDatabase::GetAddonId(const ADDON::AddonPtr& item)
-{
-  std::string value = GetSingleValue("addon", "id", StringUtils::Format("name = '%s'", item->Name().c_str()), "id desc");
-  return value.empty() || !StringUtils::IsInteger(value) ? -1 : atoi(value.c_str());
-}
-
-int CAddonDatabase::AddAddon(const AddonPtr& addon,
-                             int idRepo)
+int CAddonDatabase::AddAddon(const AddonPtr& addon, int idRepo)
 {
   try
   {

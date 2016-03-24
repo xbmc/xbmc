@@ -34,8 +34,6 @@ public:
   virtual ~CAddonDatabase();
   virtual bool Open();
 
-  int GetAddonId(const ADDON::AddonPtr& item);
-  int AddAddon(const ADDON::AddonPtr& item, int idRepo);
   bool GetAddon(const std::string& addonID, ADDON::AddonPtr& addon);
 
   /*! \brief Get an addon with a specific version and repository. */
@@ -151,10 +149,11 @@ protected:
   virtual void CreateAnalytics();
   virtual void UpdateTables(int version);
   virtual int GetMinSchemaVersion() const { return 15; }
-  virtual int GetSchemaVersion() const { return 22; }
+  virtual int GetSchemaVersion() const { return 23; }
   const char *GetBaseDBName() const { return "Addons"; }
 
   bool GetAddon(int id, ADDON::AddonPtr& addon);
+  int AddAddon(const ADDON::AddonPtr& item, int idRepo);
 
   /* keep in sync with the addon table */
   enum AddonFields
