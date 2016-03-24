@@ -123,7 +123,6 @@ private:
   static std::string CreateMimeTypeFromExtension(const char *ext);
 
   static int AddHeader(struct MHD_Response *response, const std::string &name, const std::string &value);
-  static bool GetLastModifiedDateTime(XFILE::CFile *file, CDateTime &lastModified);
 
   uint16_t m_port;
   struct MHD_Daemon *m_daemon_ip6;

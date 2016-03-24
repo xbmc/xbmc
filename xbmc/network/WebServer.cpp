@@ -1243,27 +1243,4 @@ int CWebServer::AddHeader(struct MHD_Response *response, const std::string &name
 #endif
   return MHD_add_response_header(response, name.c_str(), value.c_str());
 }
-
-bool CWebServer::GetLastModifiedDateTime(XFILE::CFile *file, CDateTime &lastModified)
-{
-  if (file == nullptr)
-    return false;
-
-  struct __stat64 statBuffer;
-  if (file->Stat(&statBuffer) != 0)
-    return false;
-
-  struct tm *time;
-#ifdef HAVE_LOCALTIME_R
-  struct tm result = {};
-  time = localtime_r((time_t*)&statBuffer.st_mtime, &result);
-#else
-  time = localtime((time_t *)&statBuffer.st_mtime);
-#endif
-  if (time == nullptr)
-    return false;
-
-  lastModified = *time;
-  return true;
-}
 #endif
