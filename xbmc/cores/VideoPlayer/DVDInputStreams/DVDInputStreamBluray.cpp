@@ -400,17 +400,16 @@ bool CDVDInputStreamBluray::Open()
       m_title = GetTitleLongest();
   }
 
-  if(m_navmode)
+  SetupPlayerSettings();
+  m_dll->bd_get_event(m_bd, NULL);
+
+  if (m_navmode)
   {
-    SetupPlayerSettings();
 
     m_dll->bd_register_overlay_proc (m_bd, this, bluray_overlay_cb);
 #ifdef HAVE_LIBBLURAY_BDJ
     m_dll->bd_register_argb_overlay_proc (m_bd, this, bluray_overlay_argb_cb, NULL);
 #endif
-
-    m_dll->bd_get_event(m_bd, NULL);
-
 
     if(m_dll->bd_play(m_bd) <= 0)
     {
