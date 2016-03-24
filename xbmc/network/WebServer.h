@@ -41,19 +41,44 @@ public:
   CWebServer();
   virtual ~CWebServer() { }
 
-  bool Start(int port, const std::string &username, const std::string &password);
+  bool Start(uint16_t port, const std::string &username, const std::string &password);
   bool Stop();
   bool IsStarted();
   void SetCredentials(const std::string &username, const std::string &password);
 
-  static void RegisterRequestHandler(IHTTPRequestHandler *handler);
-  static void UnregisterRequestHandler(IHTTPRequestHandler *handler);
+  void RegisterRequestHandler(IHTTPRequestHandler *handler);
+  void UnregisterRequestHandler(IHTTPRequestHandler *handler);
 
   static std::string GetRequestHeaderValue(struct MHD_Connection *connection, enum MHD_ValueKind kind, const std::string &key);
   static int GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::map<std::string, std::string> &headerValues);
   static int GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::multimap<std::string, std::string> &headerValues);
 
   static bool GetRequestedRanges(struct MHD_Connection *connection, uint64_t totalLength, CHttpRanges &ranges);
+
+protected:
+  typedef struct ConnectionHandler
+  {
+    std::string fullUri;
+    bool isNew;
+    std::shared_ptr<IHTTPRequestHandler> requestHandler;
+    struct MHD_PostProcessor *postprocessor;
+    int errorStatus;
+
+    ConnectionHandler(const std::string& uri)
+      : fullUri(uri)
+      , isNew(true)
+      , requestHandler(nullptr)
+      , postprocessor(nullptr)
+      , errorStatus(MHD_HTTP_OK)
+    { }
+  } ConnectionHandler;
+
+  virtual void LogRequest(const char* uri) const;
+
+  virtual int HandlePartialRequest(struct MHD_Connection *connection, ConnectionHandler* connectionHandler, HTTPRequest request,
+                                   const char *upload_data, size_t *upload_data_size, void **con_cls);
+  virtual int HandleRequest(const std::shared_ptr<IHTTPRequestHandler>& handler);
+  virtual int FinalizeRequest(const std::shared_ptr<IHTTPRequestHandler>& handler, int responseStatus, struct MHD_Response *response);
 
 private:
   struct MHD_Daemon* StartMHD(unsigned int flags, int port);
@@ -90,8 +115,6 @@ private:
                              const char *transfer_encoding, const char *data, uint64_t off,
                              unsigned int size);
 #endif
-  static int HandleRequest(const std::shared_ptr<IHTTPRequestHandler>& handler);
-  static int FinalizeRequest(const std::shared_ptr<IHTTPRequestHandler>& handler, int responseStatus, struct MHD_Response *response);
 
   static int CreateMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response);
   static int CreateRangedMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response);
@@ -104,6 +127,8 @@ private:
   static int SendErrorResponse(struct MHD_Connection *connection, int errorType, HTTPMethod method);
   
   static HTTPMethod GetMethod(const char *method);
+  static std::string GetMethod(HTTPMethod method);
+
   static int FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
   static int FillArgumentMultiMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
 
@@ -112,6 +137,7 @@ private:
   static int AddHeader(struct MHD_Response *response, const std::string &name, const std::string &value);
   static bool GetLastModifiedDateTime(XFILE::CFile *file, CDateTime &lastModified);
 
+  uint16_t m_port;
   struct MHD_Daemon *m_daemon_ip6;
   struct MHD_Daemon *m_daemon_ip4;
   bool m_running;
@@ -119,6 +145,6 @@ private:
   size_t m_thread_stacksize;
   std::string m_Credentials64Encoded;
   CCriticalSection m_critSection;
-  static std::vector<IHTTPRequestHandler *> m_requestHandlers;
+  std::vector<IHTTPRequestHandler *> m_requestHandlers;
 };
 #endif
