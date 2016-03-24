@@ -49,6 +49,16 @@ bool CAddonDatabase::Open()
   return CDatabase::Open();
 }
 
+int CAddonDatabase::GetMinSchemaVersion() const
+{
+  return 15;
+}
+
+int CAddonDatabase::GetSchemaVersion() const
+{
+  return 23;
+}
+
 void CAddonDatabase::CreateTables()
 {
   CLog::Log(LOGINFO, "create addon table");
