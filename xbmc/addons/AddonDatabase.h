@@ -132,7 +132,7 @@ public:
   /*! Clear internal fields that shouldn't be kept around indefinitely */
   void OnPostUnInstall(const std::string& addonId);
 
-  void SyncInstalled(const std::set<std::string>& ids);
+  void SyncInstalled(const std::set<std::string>& ids, const std::set<std::string>& enabled);
 
   void GetInstalled(std::vector<ADDON::CAddonBuilder>& addons);
 

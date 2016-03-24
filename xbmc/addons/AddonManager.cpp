@@ -326,21 +326,18 @@ bool CAddonMgr::Init()
     return false;
   }
 
-  m_database.Open();
+ if (!m_database.Open())
+   CLog::Log(LOGFATAL, "ADDONS: Failed to open database");
+
   FindAddonsAndNotify();
 
-  //Ensure critical add-ons are installed and enabled
+  //Ensure required add-ons are installed and enabled
   for (const auto& id : m_systemAddons)
   {
     AddonPtr addon;
-    if (!GetAddon(id, addon, ADDON_UNKNOWN, false))
+    if (!GetAddon(id, addon, ADDON_UNKNOWN))
     {
-      CLog::Log(LOGFATAL, "addon '%s' is missing.", id.c_str());
-      return false;
-    }
-    if (!EnableAddon(id))
-    {
-      CLog::Log(LOGFATAL, "addon '%s' could not be enabled.", id.c_str());
+      CLog::Log(LOGFATAL, "addon '%s' not installed or not enabled.", id.c_str());
       return false;
     }
   }
@@ -361,7 +358,6 @@ void CAddonMgr::DeInit()
   m_cpluff->destroy_context(m_cp_context);
   m_cpluff.reset();
   m_database.Close();
-  m_disabled.clear();
 }
 
 bool CAddonMgr::HasAddons(const TYPE &type)
@@ -685,7 +681,7 @@ bool CAddonMgr::FindAddons()
       for (int i = 0; i < n; ++i)
         installed.insert(cp_addons[i]->identifier);
       m_cpluff->release_info(m_cp_context, cp_addons);
-      m_database.SyncInstalled(installed);
+      m_database.SyncInstalled(installed, m_systemAddons);
     }
 
     // Reload caches
@@ -757,11 +753,10 @@ bool CAddonMgr::IsBlacklisted(const std::string& id) const
 bool CAddonMgr::DisableAddon(const std::string& id)
 {
   CSingleLock lock(m_critSection);
-  if (m_disabled.find(id) != m_disabled.end())
-    return true; //already disabled
-
   if (!CanAddonBeDisabled(id))
     return false;
+  if (m_disabled.find(id) != m_disabled.end())
+    return true; //already disabled
   if (!m_database.DisableAddon(id))
     return false;
   if (!m_disabled.insert(id).second)
