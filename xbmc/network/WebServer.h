@@ -119,9 +119,6 @@ private:
   static int CreateMemoryDownloadResponse(struct MHD_Connection *connection, const void *data, size_t size, bool free, bool copy, struct MHD_Response *&response);
 
   static int SendErrorResponse(struct MHD_Connection *connection, int errorType, HTTPMethod method);
-  
-  static HTTPMethod GetMethod(const char *method);
-  static std::string GetMethod(HTTPMethod method);
 
   static std::string CreateMimeTypeFromExtension(const char *ext);
 

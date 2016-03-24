@@ -68,10 +68,6 @@
 
 #define HEADER_NEWLINE        "\r\n"
 
-static const std::string HTTPMethodHead = "HEAD";
-static const std::string HTTPMethodGet = "GET";
-static const std::string HTTPMethodPost = "POST";
-
 typedef struct {
   std::shared_ptr<XFILE::CFile> file;
   CHttpRanges ranges;
@@ -105,35 +101,6 @@ CWebServer::CWebServer()
   m_thread_stacksize *= 2;
   CLog::Log(LOGDEBUG, "CWebServer: increasing thread stack to %zu", m_thread_stacksize);
 #endif
-}
-
-HTTPMethod CWebServer::GetMethod(const char *method)
-{
-  if (HTTPMethodGet.compare(method) == 0)
-    return GET;
-  if (HTTPMethodPost.compare(method) == 0)
-    return POST;
-  if (HTTPMethodHead.compare(method) == 0)
-    return HEAD;
-
-  return UNKNOWN;
-}
-
-std::string CWebServer::GetMethod(HTTPMethod method)
-{
-  switch (method)
-  {
-  case HEAD:
-    return HTTPMethodHead;
-
-  case GET:
-    return HTTPMethodGet;
-
-  case POST:
-    return HTTPMethodPost;
-  }
-
-  return "";
 }
 
 int CWebServer::AskForAuthentication(struct MHD_Connection *connection)
@@ -211,7 +178,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   }
 
   ConnectionHandler* connectionHandler = reinterpret_cast<ConnectionHandler*>(*con_cls);
-  HTTPMethod methodType = GetMethod(method);
+  HTTPMethod methodType = GetHTTPMethod(method);
   HTTPRequest request = { webServer, connection, connectionHandler->fullUri, url, methodType, version };
 
 #if defined(WEBSERVER_DEBUG)
@@ -222,7 +189,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
     std::multimap<std::string, std::string> getValues;
     HTTPRequestHandlerUtils::GetRequestHeaderValues(connection, MHD_GET_ARGUMENT_KIND, getValues);
 
-    CLog::Log(LOGDEBUG, "webserver[%hu]  [IN] %s %s %s", webServer->m_port, version, GetMethod(request.method), request.pathUrlFull.c_str());
+    CLog::Log(LOGDEBUG, "webserver[%hu]  [IN] %s %s %s", webServer->m_port, version, GetHTTPMethod(request.method), request.pathUrlFull.c_str());
     if (!getValues.empty())
     {
       std::string tmp;

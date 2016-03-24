@@ -26,6 +26,39 @@
 #include "network/httprequesthandler/HTTPRequestHandlerUtils.h"
 #include "utils/StringUtils.h"
 
+static const std::string HTTPMethodHead = "HEAD";
+static const std::string HTTPMethodGet = "GET";
+static const std::string HTTPMethodPost = "POST";
+
+HTTPMethod GetHTTPMethod(const char *method)
+{
+  if (HTTPMethodGet.compare(method) == 0)
+    return GET;
+  if (HTTPMethodPost.compare(method) == 0)
+    return POST;
+  if (HTTPMethodHead.compare(method) == 0)
+    return HEAD;
+
+  return UNKNOWN;
+}
+
+std::string GetHTTPMethod(HTTPMethod method)
+{
+  switch (method)
+  {
+  case HEAD:
+    return HTTPMethodHead;
+
+  case GET:
+    return HTTPMethodGet;
+
+  case POST:
+    return HTTPMethodPost;
+  }
+
+  return "";
+}
+
 IHTTPRequestHandler::IHTTPRequestHandler()
   : m_request(),
     m_response(),
