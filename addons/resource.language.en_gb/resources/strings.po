@@ -8926,49 +8926,7 @@ msgctxt "#19085"
 msgid "Unknown channel %u"
 msgstr ""
 
-msgctxt "#19086"
-msgid "Mo-__-__-__-__-__-__"
-msgstr ""
-
-msgctxt "#19087"
-msgid "__-Tu-__-__-__-__-__"
-msgstr ""
-
-msgctxt "#19088"
-msgid "__-__-We-__-__-__-__"
-msgstr ""
-
-msgctxt "#19089"
-msgid "__-__-__-Th-__-__-__"
-msgstr ""
-
-msgctxt "#19090"
-msgid "__-__-__-__-Fr-__-__"
-msgstr ""
-
-msgctxt "#19091"
-msgid "__-__-__-__-__-Sa-__"
-msgstr ""
-
-msgctxt "#19092"
-msgid "__-__-__-__-__-__-Su"
-msgstr ""
-
-msgctxt "#19093"
-msgid "Mo-Tu-We-Th-Fr-__-__"
-msgstr ""
-
-msgctxt "#19094"
-msgid "Mo-Tu-We-Th-Fr-Sa-__"
-msgstr ""
-
-msgctxt "#19095"
-msgid "Mo-Tu-We-Th-Fr-Sa-Su"
-msgstr ""
-
-msgctxt "#19096"
-msgid "__-__-__-__-__-Sa-Su"
-msgstr ""
+#empty strings from id 19086 to 19096
 
 msgctxt "#19097"
 msgid "Enter the name for the recording"
