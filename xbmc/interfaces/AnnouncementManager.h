@@ -46,14 +46,14 @@ namespace ANNOUNCEMENT
     void RemoveAnnouncer(IAnnouncer *listener);
 
     void Announce(AnnouncementFlag flag, const char *sender, const char *message);
-    void Announce(AnnouncementFlag flag, const char *sender, const char *message, CVariant &data);
+    void Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
     void Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item);
-    void Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant &data);
+    void Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, const CVariant &data);
 
   protected:
     void Process();
-    void DoAnnounce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant &data);
-    void DoAnnounce(AnnouncementFlag flag, const char *sender, const char *message, CVariant &data);
+    void DoAnnounce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, const CVariant &data);
+    void DoAnnounce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
 
     struct CAnnounceData
     {

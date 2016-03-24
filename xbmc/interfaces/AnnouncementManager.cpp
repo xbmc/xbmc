@@ -92,12 +92,12 @@ void CAnnouncementManager::RemoveAnnouncer(IAnnouncer *listener)
 void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message)
 {
   CVariant data;
-  Announce(flag, sender, message, nullptr, data);
+  Announce(flag, sender, message, CFileItemPtr(), data);
 }
 
-void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, CVariant &data)
+void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  Announce(flag, sender, message, nullptr, data);
+  Announce(flag, sender, message, CFileItemPtr(), data);
 }
 
 void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item)
@@ -106,14 +106,16 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
   Announce(flag, sender, message, item, data);
 }
 
-void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant &data)
+void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, const CVariant &data)
 {
   CAnnounceData announcement;
   announcement.flag = flag;
   announcement.sender = sender;
   announcement.message = message;
-  announcement.item = item;
   announcement.data = data;
+
+  if (item != nullptr)
+    announcement.item = CFileItemPtr(new CFileItem(*item));
 
   {
     CSingleLock lock (m_critSection);
@@ -122,7 +124,7 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
   m_queueEvent.Set();
 }
 
-void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag, const char *sender, const char *message, CVariant &data)
+void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
   CLog::Log(LOGDEBUG, "CAnnouncementManager - Announcement: %s from %s", message, sender);
 
@@ -134,9 +136,9 @@ void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag, const char *sender,
     announcers[i]->Announce(flag, sender, message, data);
 }
 
-void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant &data)
+void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, const CVariant &data)
 {
-  if (!item.get())
+  if (item == nullptr)
   {
     DoAnnounce(flag, sender, message, data);
     return;
