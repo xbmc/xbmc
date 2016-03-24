@@ -124,6 +124,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Preuzmi titlove"
 
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teletekst"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Podrazumevana maska"
@@ -139,6 +143,10 @@ msgstr "Izaberite vaš Kodi korisnički[CR]profil za prijavu, a potom nastavite 
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "Телевизија уживо"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Dostupne grupe"
 
 msgctxt "#31561"
 msgid "Add Group"
