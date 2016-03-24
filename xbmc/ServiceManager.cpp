@@ -63,6 +63,7 @@ void CServiceManager::Deinit()
   m_binaryAddonCache.reset();
   m_PVRManager.reset();
   m_addonMgr.reset();
+  CScriptInvocationManager::GetInstance().UnregisterLanguageInvocationHandler(m_XBPython.get());
   m_XBPython.reset();
   m_announcementManager.reset();
 }
