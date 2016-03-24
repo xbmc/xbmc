@@ -434,6 +434,10 @@ bool CDVDInputStreamBluray::Open()
     m_clip = 0;
   }
 
+  // Process any events that occured during opening
+  while (m_dll->bd_get_event(m_bd, &m_event))
+    ProcessEvent();
+
   return true;
 }
 
@@ -611,10 +615,10 @@ void CDVDInputStreamBluray::ProcessEvent() {
 
 int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
 {
+  int result = 0;
   m_dispTimeBeforeRead = (int)(m_dll->bd_tell_time(m_bd) / 90);
   if(m_navmode)
   {
-    int result = 0;
     do {
 
       if(m_hold == HOLD_HELD)
@@ -664,10 +668,14 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
 
     } while(result == 0);
 
-    return result;
   }
   else
-    return m_dll->bd_read(m_bd, buf, buf_size);
+  {
+    result = m_dll->bd_read(m_bd, buf, buf_size);
+    while (m_dll->bd_get_event(m_bd, &m_event))
+      ProcessEvent();
+  }
+  return result;
 }
 
 static uint8_t  clamp(double v)
@@ -915,8 +923,11 @@ bool CDVDInputStreamBluray::PosTime(int ms)
 {
   if(m_dll->bd_seek_time(m_bd, ms * 90) < 0)
     return false;
-  else
-    return true;
+
+  while (m_dll->bd_get_event(m_bd, &m_event))
+    ProcessEvent();
+
+  return true;
 }
 
 int CDVDInputStreamBluray::GetChapterCount()
@@ -939,8 +950,11 @@ bool CDVDInputStreamBluray::SeekChapter(int ch)
 {
   if(m_title && m_dll->bd_seek_chapter(m_bd, ch-1) < 0)
     return false;
-  else
-    return true;
+
+  while (m_dll->bd_get_event(m_bd, &m_event))
+    ProcessEvent();
+
+  return true;
 }
 
 int64_t CDVDInputStreamBluray::GetChapterPos(int ch)
@@ -1057,7 +1071,18 @@ void CDVDInputStreamBluray::UserInput(bd_vk_key_e vk)
 {
   if(m_bd == NULL || !m_navmode)
     return;
-  m_dll->bd_user_input(m_bd, -1, vk);
+
+  int ret = m_dll->bd_user_input(m_bd, -1, vk);
+  if (ret < 0)
+  {
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::UserInput - user input failed");
+  }
+  else
+  {
+    /* process all queued up events */
+    while (m_dll->bd_get_event(m_bd, &m_event))
+      ProcessEvent();
+  }
 }
 
 bool CDVDInputStreamBluray::MouseMove(const CPoint &point)
@@ -1130,6 +1155,10 @@ void CDVDInputStreamBluray::SkipStill()
   {
     m_hold = HOLD_HELD;
     m_dll->bd_read_skip_still(m_bd);
+
+    /* process all queued up events */
+    while (m_dll->bd_get_event(m_bd, &m_event))
+      ProcessEvent();
   }
 }
 
