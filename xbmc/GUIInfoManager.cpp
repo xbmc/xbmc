@@ -188,6 +188,18 @@ typedef struct
   int  val;
 } infomap;
 
+/// \page modules__General__List_of_gui_access List of GUI access messages
+/// \tableofcontents
+///
+/// \section modules__General__List_of_gui_access_Description Description
+/// Skins can use boolean conditions with the <b><visible></b> tag or with condition
+/// attributes. Scripts can read boolean conditions with
+/// <b>xbmc.getCondVisibility(condition)</b>.
+///
+/// Skins can use infolabels with <b>$INFO[infolabel]</b> or the <b><info></b> tag. Scripts
+/// can read infolabels with <b>xbmc.getInfoLabel('infolabel')</b>.
+
+
 const infomap string_bools[] =   {{ "isempty",          STRING_IS_EMPTY },
                                   { "isequal",          STRING_IS_EQUAL },
                                   { "startswith",       STRING_STARTS_WITH },
@@ -200,6 +212,250 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
                                   { "isless",           INTEGER_LESS_THAN },
                                   { "islessorequal",    INTEGER_LESS_OR_EQUAL }};
 
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_Player Player
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`Player.HasAudio`</b>,
+///                  \anchor Player_HasAudio
+///                  _boolean_,
+///     Returns true if the player has an audio file.
+///   }
+///   \table_row3{   <b>`Player.HasMedia`</b>,
+///                  \anchor Player_HasMedia
+///                  _boolean_,
+///     Returns true if the player has an audio or video file.
+///   }
+///   \table_row3{   <b>`Player.HasVideo`</b>,
+///                  \anchor Player_HasVideo
+///                  _boolean_,
+///     Returns true if the player has a video file.
+///   }
+///   \table_row3{   <b>`Player.Paused`</b>,
+///                  \anchor Player_Paused
+///                  _boolean_,
+///     Returns true if the player is paused.
+///   }
+///   \table_row3{   <b>`Player.Playing`</b>,
+///                  \anchor Player_Playing
+///                  _boolean_,
+///     Returns true if the player is currently playing (ie not ffwding\,
+///     rewinding or paused.)
+///   }
+///   \table_row3{   <b>`Player.Rewinding`</b>,
+///                  \anchor Player_Rewinding
+///                  _boolean_,
+///     Returns true if the player is rewinding.
+///   }
+///   \table_row3{   <b>`Player.Rewinding2x`</b>,
+///                  \anchor Player_Rewinding2x
+///                  _boolean_,
+///     Returns true if the player is rewinding at 2x.
+///   }
+///   \table_row3{   <b>`Player.Rewinding4x`</b>,
+///                  \anchor Player_Rewinding4x
+///                  _boolean_,
+///     Returns true if the player is rewinding at 4x.
+///   }
+///   \table_row3{   <b>`Player.Rewinding8x`</b>,
+///                  \anchor Player_Rewinding8x
+///                  _boolean_,
+///     Returns true if the player is rewinding at 8x.
+///   }
+///   \table_row3{   <b>`Player.Rewinding16x`</b>,
+///                  \anchor Player_Rewinding16x
+///                  _boolean_,
+///     Returns true if the player is rewinding at 16x.
+///   }
+///   \table_row3{   <b>`Player.Rewinding32x`</b>,
+///                  \anchor Player_Rewinding32x
+///                  _boolean_,
+///     Returns true if the player is rewinding at 32x.
+///   }
+///   \table_row3{   <b>`Player.Forwarding`</b>,
+///                  \anchor Player_Forwarding
+///                  _boolean_,
+///     Returns true if the player is fast forwarding.
+///   }
+///   \table_row3{   <b>`Player.Forwarding2x`</b>,
+///                  \anchor Player_Forwarding2x
+///                  _boolean_,
+///     Returns true if the player is fast forwarding at 2x.
+///   }
+///   \table_row3{   <b>`Player.Forwarding4x`</b>,
+///                  \anchor Player_Forwarding4x
+///                  _boolean_,
+///     Returns true if the player is fast forwarding at 4x.
+///   }
+///   \table_row3{   <b>`Player.Forwarding8x`</b>,
+///                  \anchor Player_Forwarding8x
+///                  _boolean_,
+///     Returns true if the player is fast forwarding at 8x.
+///   }
+///   \table_row3{   <b>`Player.Forwarding16x`</b>,
+///                  \anchor Player_Forwarding16x
+///                  _boolean_,
+///     Returns true if the player is fast forwarding at 16x.
+///   }
+///   \table_row3{   <b>`Player.Forwarding32x`</b>,
+///                  \anchor Player_Forwarding32x
+///                  _boolean_,
+///     Returns true if the player is fast forwarding at 32x.
+///   }
+///   \table_row3{   <b>`Player.CanRecord`</b>,
+///                  \anchor Player_CanRecord
+///                  _boolean_,
+///     Returns true if the player can record the current internet stream.
+///   }
+///   \table_row3{   <b>`Player.Recording`</b>,
+///                  \anchor Player_Recording
+///                  _boolean_,
+///     Returns true if the player is recording the current internet stream.
+///   }
+///   \table_row3{   <b>`Player.Caching`</b>,
+///                  \anchor Player_Caching
+///                  _boolean_,
+///     Returns true if the player is current re-caching data (internet based
+///     video playback).
+///   }
+///   \table_row3{   <b>`Player.DisplayAfterSeek`</b>,
+///                  \anchor Player_DisplayAfterSeek
+///                  _boolean_,
+///     Returns true for the first 2.5 seconds after a seek.
+///   }
+///   \table_row3{   <b>`Player.Seekbar`</b>,
+///                  \anchor Player_Seekbar
+///                  _integer_,
+///     Returns amount of percent of one seek to other position
+///   }
+///   \table_row3{   <b>`Player.Seeking`</b>,
+///                  \anchor Player_Seeking
+///                  _boolean_,
+///     Returns true if a seek is in progress
+///   }
+///   \table_row3{   <b>`Player.ShowTime`</b>,
+///                  \anchor Player_ShowTime
+///                  _boolean_,
+///     Returns true if the user has requested the time to show (occurs in video
+///     fullscreen)
+///   }
+///   \table_row3{   <b>`Player.ShowInfo`</b>,
+///                  \anchor Player_ShowInfo
+///                  _boolean_,
+///     Returns true if the user has requested the song info to show (occurs in
+///     visualisation fullscreen and slideshow)
+///   }
+///   \table_row3{   <b>`Player.ShowCodec`</b>,
+///                  \anchor Player_ShowCodec
+///                  _boolean_,
+///     Returns true if the user has requested the codec to show (occurs in
+///     visualisation and video fullscreen)
+///   }
+///   \table_row3{   <b>`Player.Title`</b>,
+///                  \anchor Player_Title
+///                  _boolean_,
+///     Returns the musicplayer title for audio and the videoplayer title for
+///     videos.
+///   }
+///   \table_row3{   <b>`Player.Muted`</b>,
+///                  \anchor Player_Muted
+///                  _boolean_,
+///     Returns true if the volume is muted.
+///   }
+///   \table_row3{   <b>`Player.HasDuration`</b>,
+///                  \anchor Player_HasDuration
+///                  _boolean_,
+///     Returns true if Media isn't a true stream
+///   }
+///   \table_row3{   <b>`Player.Passthrough`</b>,
+///                  \anchor Player_Passthrough
+///                  _boolean_,
+///     Returns true if the player is using audio passthrough.
+///   }
+///   \table_row3{   <b>`Player.CacheLevel`</b>,
+///                  \anchor Player_CacheLevel
+///                  _string_,
+///     Get the used cache level as string with an integer number
+///   }
+///   \table_row3{   <b>`Player.Progress`</b>,
+///                  \anchor Player_Progress
+///                  _integer_,
+///     Returns the progress position as percent
+///   }
+///   \table_row3{   <b>`Player.ProgressCache`</b>,
+///                  \anchor Player_ProgressCache
+///                  _boolean_,
+///     Shows how much of the file is cached above current play percentage
+///   }
+///   \table_row3{   <b>`Player.Volume`</b>,
+///                  \anchor Player_Volume
+///                  _string_,
+///     Returns the current player volume with the format `%2.1f dB`
+///   }
+///   \table_row3{   <b>`Player.SubtitleDelay`</b>,
+///                  \anchor Player_SubtitleDelay
+///                  _string_,
+///     Return the used subtitle delay with the format `%2.3f s`
+///   }
+///   \table_row3{   <b>`Player.AudioDelay`</b>,
+///                  \anchor Player_AudioDelay
+///                  _string_,
+///     Return the used audio delay with the format `%2.3f s`
+///   }
+///   \table_row3{   <b>`Player.Chapter`</b>,
+///                  \anchor Player_Chapter
+///                  _integer_,
+///     Current chapter of current playing media
+///   }
+///   \table_row3{   <b>`Player.ChapterCount`</b>,
+///                  \anchor Player_ChapterCount
+///                  _integer_,
+///     Total number of chapters of current playing media
+///   }
+///   \table_row3{   <b>`Player.ChapterName`</b>,
+///                  \anchor Player_ChapterName
+///                  _string_,
+///     Return the name of currently used chapter if available
+///   }
+///   \table_row3{   <b>`Player.Folderpath`</b>,
+///                  \anchor Player_Folderpath
+///                  _path_,
+///     Shows the full path of the currently playing song or movie
+///   }
+///   \table_row3{   <b>`Player.FilenameAndPath`</b>,
+///                  \anchor FilenameAndPath
+///                  _boolean_,
+///     Shows the full path with filename of the currently playing song or movie
+///   }
+///   \table_row3{   <b>`Player.Filename`</b>,
+///                  \anchor Player_Filename
+///                  _path_,
+///     Returns the filename of the currently playing media.
+///   }
+///   \table_row3{   <b>`Player.IsInternetStream`</b>,
+///                  \anchor Player_IsInternetStream
+///                  _boolean_,
+///     Returns true if the player is playing an internet stream.
+///   }
+///   \table_row3{   <b>`Player.PauseEnabled`</b>,
+///                  \anchor Player_PauseEnabled
+///                  _boolean_,
+///     Returns true if played stream is paused
+///   }
+///   \table_row3{   <b>`Player.SeekEnabled`</b>,
+///                  \anchor Player_SeekEnabled
+///                  _boolean_,
+///     Returns true if seek on playing is enabled
+///   }
+///   \table_row3{   <b>`Player.ChannelPreviewActive`</b>,
+///                  \anchor Player_ChannelPreviewActive
+///                  _boolean_,
+///     Returns true if pvr channel preview is active (used channel tag different
+///     from played tag)
+///   }
+/// \table_end
+/// @}
 const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },           // bools from here
                                   { "hasaudio",         PLAYER_HAS_AUDIO },
                                   { "hasvideo",         PLAYER_HAS_VIDEO },
@@ -247,8 +503,120 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   { "seekenabled",      PLAYER_CAN_SEEK },
                                   { "channelpreviewactive", PLAYER_IS_CHANNEL_PREVIEW_ACTIVE}};
 
+/// \page modules__General__List_of_gui_access
+/// @{
+/// \table_start
+///   \table_row3{   <b>`Player.Art(fanart)`</b>,
+///                  \anchor Player_Art_fanart
+///                  _string_,
+///     Fanart Image of the currently playing episode's parent TV show
+///   }
+///   \table_row3{   <b>`Player.Art(thumb)`</b>,
+///                  \anchor Player_Art_thumb
+///                  _string_,
+///     Returns the thumbnail image of the currently playing item.
+///   }
+///   \table_row3{   <b>`Player.Art(poster)`</b>,
+///                  \anchor Player_Art_poster
+///                  _string_,
+///     Returns the poster of the currently playing movie.
+///   }
+///   \table_row3{   <b>`Player.Art(tvshow.poster)`</b>,
+///                  \anchor Player_Art_tvshowposter
+///                  _string_,
+///     Returns the tv show poster of the currently playing episode's parent TV show.
+///   }
+///   \table_row3{   <b>`Player.Art(tvshow.banner)`</b>,
+///                  \anchor Player_Art_tvshowbanner
+///                  _string_,
+///     Returns the tv show banner of the currently playing episode's parent TV show.
+///   }
+/// \table_end
+/// @}
 const infomap player_param[] =   {{ "art",              PLAYER_ITEM_ART }};
 
+/// \page modules__General__List_of_gui_access
+/// @{
+/// \table_start
+///   \table_row3{   <b>`Player.SeekTime`</b>,
+///                  \anchor Player_SeekTime
+///                  _string_,
+///     Time to which the user is seeking
+///   }
+///   \table_row3{   <b>`Player.SeekOffset`</b>,
+///                  \anchor Player_SeekOffset
+///                  _string_,
+///     Indicates the seek offset after a seek press (eg user presses
+///     BigStepForward\, player.seekoffset returns +10:00)
+///   }
+///   \table_row3{   <b>`Player.SeekOffset(format)`</b>,
+///                  \anchor Player_SeekOffset_format
+///                  _string_,
+///     Shows hours (hh)\, minutes (mm) or seconds (ss). Also supported: (hh:mm)\,
+///     (mm:ss)\, (hh:mm:ss)\, (hh:mm:ss).
+///   }
+///   \table_row3{   <b>`Player.SeekStepSize`</b>,
+///                  \anchor Player_SeekStepSize
+///                  _string_,
+///     Displays the seek step size. (v15 addition)
+///   }
+///   \table_row3{   <b>`Player.TimeRemaining`</b>,
+///                  \anchor Player_TimeRemaining
+///                  _string_,
+///     Remaining time of current playing media
+///   }
+///   \table_row3{   <b>`Player.TimeRemaining(format)`</b>,
+///                  \anchor Player_TimeRemaining_format
+///                  _string_,
+///     Shows hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is
+///     used (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\,
+///     (hh:mm:ss)\, (hh:mm:ss).
+///   }
+///   \table_row3{   <b>`Player.TimeSpeed`</b>,
+///                  \anchor Player_TimeSpeed
+///                  _string_,
+///     Both the time and the playspeed formatted up. eg 1:23 (2x)
+///   }
+///   \table_row3{   <b>`Player.Time`</b>,
+///                  \anchor Player_Time
+///                  _string_,
+///     Elapsed time of current playing media
+///   }
+///   \table_row3{   <b>`Player.Time(format)`</b>,
+///                  \anchor Player_Time_format
+///                  _string_,
+///     Shows hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is
+///     used (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\,
+///     (hh:mm:ss)\, (hh:mm:ss).
+///   }
+///   \table_row3{   <b>`Player.Duration`</b>,
+///                  \anchor Player_Duration
+///                  _string_,
+///     Total duration of the current playing media
+///   }
+///   \table_row3{   <b>`Player.Duration(format)`</b>,
+///                  \anchor Player_Duration_format
+///                  _string_,
+///     Shows hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
+///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\,
+///     (hh:mm:ss).
+///   }
+///   \table_row3{   <b>`Player.FinishTime`</b>,
+///                  \anchor Player_FinishTime
+///                  _string_,
+///     Time playing media will end
+///   }
+///   \table_row3{   <b>`Player.FinishTime(format)`</b>,
+///                  \anchor Player_FinishTime_format
+///                  _string_,
+///     Shows hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is
+///     used (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\,
+///     (hh:mm:ss)\, (hh:mm:ss).
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
 const infomap player_times[] =   {{ "seektime",         PLAYER_SEEKTIME },
                                   { "seekoffset",       PLAYER_SEEKOFFSET },
                                   { "seekstepsize",     PLAYER_SEEKSTEPSIZE },
@@ -259,6 +627,45 @@ const infomap player_times[] =   {{ "seektime",         PLAYER_SEEKTIME },
                                   { "finishtime",       PLAYER_FINISH_TIME },
                                   { "starttime",        PLAYER_START_TIME}};
 
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_Weather Weather
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`Weather.IsFetched`</b>,
+///                  \anchor Weather_IsFetched
+///                  _boolean_,
+///     Returns true if the weather data has been downloaded.
+///   }
+///   \table_row3{   <b>`Weather.Conditions`</b>,
+///                  \anchor Weather_Conditions
+///                  _string_,
+///     Current weather conditions – this is looked up in a background process.
+///   }
+///   \table_row3{   <b>`Weather.Temperature`</b>,
+///                  \anchor Weather_Temperature
+///                  _string_,
+///     Current weather temperature
+///   }
+///   \table_row3{   <b>`Weather.Location`</b>,
+///                  \anchor Weather_Location
+///                  _string_,
+///     City/town which the above two items are for
+///   }
+///   \table_row3{   <b>`Weather.fanartcode`</b>,
+///                  \anchor Weather_fanartcode
+///                  _string_,
+///     Current weather fanartcode.
+///   }
+///   \table_row3{   <b>`Weather.plugin`</b>,
+///                  \anchor Weather_plugin
+///                  _string_,
+///     Current weather plugin.
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
 const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
                                   { "conditions",       WEATHER_CONDITIONS },         // labels from here
                                   { "temperature",      WEATHER_TEMPERATURE },
@@ -266,6 +673,447 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
                                   { "fanartcode",       WEATHER_FANART_CODE },
                                   { "plugin",           WEATHER_PLUGIN }};
 
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_System System
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`System.AlarmLessOrEqual(alarmname\,seconds)`</b>,
+///                  \anchor System_AlarmLessOrEqual
+///                  _boolean_,
+///     Returns true if the alarm with `alarmname` has less or equal to `seconds`
+///     left. Standard use would be system.alarmlessorequal(shutdowntimer\,119)\,
+///     which would return true when the shutdowntimer has less then 2 minutes
+///     left.
+///   }
+///   \table_row3{   <b>`System.HasNetwork`</b>,
+///                  \anchor System_HasNetwork
+///                  _boolean_,
+///     Returns true if the ethernet cable is plugged in.
+///   }
+///   \table_row3{   <b>`System.HasMediadvd`</b>,
+///                  \anchor System_HasMediadvd
+///                  _boolean_,
+///     Returns true if there is a CD or DVD in the DVD-ROM drive.
+///   }
+///   \table_row3{   <b>`System.DVDReady`</b>,
+///                  \anchor System_DVDReady
+///                  _boolean_,
+///     Returns true if disc is ready to use.
+///   }
+///   \table_row3{   <b>`System.TrayOpen`</b>,
+///                  \anchor System_TrayOpen
+///                  _boolean_,
+///     Returns true if discs tray is open
+///   }
+///   \table_row3{   <b>`System.HasLocks`</b>,
+///                  \anchor System_HasLocks
+///                  _boolean_,
+///     Todo
+///   }
+///   \table_row3{   <b>`System.IsMaster`</b>,
+///                  \anchor System_IsMaster
+///                  _boolean_,
+///     Todo
+///   }
+///   \table_row3{   <b>`System.ShowExitButton`</b>,
+///                  \anchor System_ShowExitButton
+///                  _boolean_,
+///     Todo
+///   }
+///   \table_row3{   <b>`System.DPMSActive`</b>,
+///                  \anchor System_DPMSActive
+///                  _boolean_,
+///     Todo
+///   }
+///   \table_row3{   <b>`System.IdleTime(time)`</b>,
+///                  \anchor System_IdleTime
+///                  _boolean_,
+///     Returns true if Kodi has had no input for ?time? amount of seconds.
+///   }
+///   \table_row3{   <b>`System.IsStandalone`</b>,
+///                  \anchor System_IsStandalone
+///                  _boolean_,
+///     Returns true if Kodi is running in standalone mode.
+///   }
+///   \table_row3{   <b>`System.IsFullscreen`</b>,
+///                  \anchor System_IsFullscreen
+///                  _boolean_,
+///     Returns true if Kodi is running fullscreen.
+///   }
+///   \table_row3{   <b>`System.LoggedOn`</b>,
+///                  \anchor System_LoggedOn
+///                  _boolean_,
+///     Returns true if a user is currently logged on under a profile
+///   }
+///   \table_row3{   <b>`System.HasLoginScreen`</b>,
+///                  \anchor System_HasLoginScreen
+///                  _boolean_,
+///     Returns true if the profile login screen is enabled
+///   }
+///   \table_row3{   <b>`System.HasPVR`</b>,
+///                  \anchor System_HasPVR
+///                  _boolean_,
+///     Returns true if PVR is supported from Kodi
+///     \note normally always true
+///   }
+///   \table_row3{   <b>`System.HasADSP`</b>,
+///                  \anchor System_HasADSP
+///                  _boolean_,
+///     Returns true if ADSP is supported from Kodi
+///     \note normally always true
+///   }
+///   \table_row3{   <b>`System.HasModalDialog`</b>,
+///                  \anchor System_HasModalDialog
+///                  _boolean_,
+///     Returns true true if a modal dialog is visible
+///   }
+///   \table_row3{   <b>`System.Time(startTime\,endTime)`</b>,
+///                  \anchor System_Time
+///                  _boolean_,
+///     Returns true if the current system time is >= startTime and < endTime.
+///     endTime is optional. Time must be specified in the format HH:mm\, using
+///     a 24 hour clock.
+///   }
+///   \table_row3{   <b>`System.Date(startDate\,endDate)`</b>,
+///                  \anchor System_Date
+///                  _boolean_,
+///     Returns true if the current system date is >= startDate and < endDate.
+///     endDate is optional. Date must be specified in the format MM-DD.
+///   }
+///   \table_row3{   <b>`System.Platform.Linux`</b>,
+///                  \anchor System_PlatformLinux
+///                  _boolean_,
+///     Returns true if Kodi is running on a linux/unix based computer.
+///   }
+///   \table_row3{   <b>`System.Platform.Linux.RaspberryPi`</b>,
+///                  \anchor System_PlatformLinuxRaspberryPi
+///                  _boolean_,
+///     Returns true if Kodi is running on a Raspberry Pi.
+///   }
+///   \table_row3{   <b>`System.Platform.Windows`</b>,
+///                  \anchor System_PlatformWindows
+///                  _boolean_,
+///     Returns true if Kodi is running on a windows based computer.
+///   }
+///   \table_row3{   <b>`System.Platform.OSX`</b>,
+///                  \anchor System_PlatformOSX
+///                  _boolean_,
+///     Returns true if Kodi is running on an OSX based computer.
+///   }
+///   \table_row3{   <b>`System.Platform.IOS`</b>,
+///                  \anchor System_PlatformIOS
+///                  _boolean_,
+///     Returns true if Kodi is running on an IOS device.
+///   }
+///   \table_row3{   <b>`System.Platform.Darwin`</b>,
+///                  \anchor System_PlatformDarwin
+///                  _boolean_,
+///     Returns true if Kodi is running on an OSX or IOS system.
+///   }
+///   \table_row3{   <b>`System.Platform.ATV2`</b>,
+///                  \anchor System_PlatformATV2
+///                  _boolean_,
+///     Returns true if Kodi is running on an atv2.
+///   }
+///   \table_row3{   <b>`System.Platform.Android`</b>,
+///                  \anchor System_PlatformAndroid
+///                  _boolean_,
+///     Returns true if Kodi is running on an android device.
+///   }
+///   \table_row3{   <b>`System.CanPowerDown`</b>,
+///                  \anchor System_CanPowerDown
+///                  _boolean_,
+///     Returns true if Kodi can powerdown the system.
+///   }
+///   \table_row3{   <b>`System.CanSuspend`</b>,
+///                  \anchor System_CanSuspend
+///                  _boolean_,
+///     Returns true if Kodi can suspend the system.
+///   }
+///   \table_row3{   <b>`System.CanHibernate`</b>,
+///                  \anchor System_CanHibernate
+///                  _boolean_,
+///     Returns true if Kodi can hibernate the system.
+///   }
+///   \table_row3{   <b>`System.HasHiddenInput`</b>,
+///                  \anchor System_HasHiddenInput
+///                  _boolean_,
+///     Return true when to osd keyboard/numeric dialog requests a
+///     password/pincode.
+///   }
+///   \table_row3{   <b>`System.CanReboot`</b>,
+///                  \anchor System_CanReboot
+///                  _boolean_,
+///     Returns true if Kodi can reboot the system.
+///   }
+///   \table_row3{   <b>`System.ScreenSaverActive`</b>,
+///                  \anchor System_ScreenSaverActive
+///                  _boolean_,
+///     Returns true if ScreenSaver is active.
+///   }
+///   \table_row3{   <b>`System.IsInhibit`</b>,
+///                  \anchor System_IsInhibit
+///                  _boolean_,
+///     Returns true when shutdown on idle is disabled.
+///   }
+///   \table_row3{   <b>`System.HasShutdown`</b>,
+///                  \anchor System_HasShutdown
+///                  _boolean_,
+///     Returns true when shutdown on idle is enabled.
+///   }
+///   \table_row3{   <b>`System.Time`</b>,
+///                  \anchor System_Time
+///                  _string_,
+///     Current time
+///   }
+///   \table_row3{   <b>`System.Time(format)`</b>,
+///                  \anchor System_Time_format
+///                  _string_,
+///     Shows hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is
+///     used (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\,
+///     (hh:mm:ss)\, (hh:mm:ss). (xx) option added after dharma
+///   }
+///   \table_row3{   <b>`System.Date`</b>,
+///                  \anchor System_Date
+///                  _string_,
+///     Current date
+///   }
+///   \table_row3{   <b>`System.Date(format)`</b>,
+///                  \anchor System_Date_format
+///                  _string_,
+///     Show current date using format\, available markings: d (day of month
+///     1-31)\, dd (day of month 01-31)\, ddd (short day of the week Mon-Sun)\,
+///     DDD (long day of the week Monday-Sunday)\, m (month 1-12)\, mm (month
+///     01-12)\, mmm (short month name Jan-Dec)\, MMM (long month name January -
+///     December)\, yy (2-digit year)\, yyyy (4-digit year). Added after dharma.
+///   }
+///   \table_row3{   <b>`System.AlarmPos`</b>,
+///                  \anchor System_AlarmPos
+///                  _string_,
+///     Shutdown Timer position
+///   }
+///   \table_row3{   <b>`System.BatteryLevel`</b>,
+///                  \anchor System_BatteryLevel
+///                  _string_,
+///     Returns the remaining battery level in range 0-100
+///   }
+///   \table_row3{   <b>`System.FreeSpace`</b>,
+///                  \anchor System_FreeSpace
+///                  _string_,
+///     Total Freespace on the drive
+///   }
+///   \table_row3{   <b>`System.UsedSpace`</b>,
+///                  \anchor System_UsedSpace
+///                  _string_,
+///     Total Usedspace on the drive
+///   }
+///   \table_row3{   <b>`System.TotalSpace`</b>,
+///                  \anchor System_TotalSpace
+///                  _string_,
+///     Totalspace on the drive
+///   }
+///   \table_row3{   <b>`System.UsedSpacePercent`</b>,
+///                  \anchor System_UsedSpacePercent
+///                  _string_,
+///     Total Usedspace Percent on the drive
+///   }
+///   \table_row3{   <b>`System.FreeSpacePercent`</b>,
+///                  \anchor System_FreeSpacePercent
+///                  _string_,
+///     Total Freespace Percent on the drive
+///   }
+///   \table_row3{   <b>`System.CPUTemperature`</b>,
+///                  \anchor System_CPUTemperature
+///                  _string_,
+///     Current CPU temperature
+///   }
+///   \table_row3{   <b>`System.CpuUsage`</b>,
+///                  \anchor System_CpuUsage
+///                  _string_,
+///     Displays the cpu usage for each individual cpu core.
+///   }
+///   \table_row3{   <b>`System.GPUTemperature`</b>,
+///                  \anchor System_GPUTemperature
+///                  _string_,
+///     Current GPU temperature
+///   }
+///   \table_row3{   <b>`System.FanSpeed`</b>,
+///                  \anchor System_FanSpeed
+///                  _string_,
+///     Current fan speed
+///   }
+///   \table_row3{   <b>`System.BuildVersion`</b>,
+///                  \anchor System_BuildVersion
+///                  _string_,
+///     Version of build
+///   }
+///   \table_row3{   <b>`System.BuildVersionShort`</b>,
+///                  \anchor System_BuildVersionShort
+///                  _string_,
+///     Shorter string with version of build
+///   }
+///   \table_row3{   <b>`System.BuildDate`</b>,
+///                  \anchor System_BuildDate
+///                  _string_,
+///     Date of build
+///   }
+///   \table_row3{   <b>`System.FriendlyName`</b>,
+///                  \anchor System_FriendlyName
+///                  _string_,
+///     Returns the Kodi instance name. It will auto append (%hostname%) in case
+///     the device name was not changed. eg. "Kodi (htpc)"
+///   }
+///   \table_row3{   <b>`System.FPS`</b>,
+///                  \anchor System_FPS
+///                  _string_,
+///     Current rendering speed (frames per second)
+///   }
+///   \table_row3{   <b>`System.FreeMemory`</b>,
+///                  \anchor System_FreeMemory
+///                  _string_,
+///     Amount of free memory in Mb
+///   }
+///   \table_row3{   <b>`System.ScreenMode`</b>,
+///                  \anchor System_ScreenMode
+///                  _string_,
+///     Screenmode (eg windowed / fullscreen)
+///   }
+///   \table_row3{   <b>`System.ScreenWidth`</b>,
+///                  \anchor System_ScreenWidth
+///                  _string_,
+///     Width of screen in pixels
+///   }
+///   \table_row3{   <b>`System.ScreenHeight`</b>,
+///                  \anchor System_ScreenHeight
+///                  _string_,
+///     Height of screen in pixels
+///   }
+///   \table_row3{   <b>`System.StartupWindow`</b>,
+///                  \anchor System_StartupWindow
+///                  _string_,
+///     The Window Kodi will load on startup
+///   }
+///   \table_row3{   <b>`System.CurrentWindow`</b>,
+///                  \anchor System_CurrentWindow
+///                  _string_,
+///     Current Window we are in
+///   }
+///   \table_row3{   <b>`System.CurrentControl`</b>,
+///                  \anchor System_CurrentControl
+///                  _string_,
+///     Current focused control
+///   }
+///   \table_row3{   <b>`System.CurrentControlId`</b>,
+///                  \anchor System_CurrentControlId
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`System.DVDLabel`</b>,
+///                  \anchor System_DVDLabel
+///                  _string_,
+///     Label of the disk in the DVD-ROM drive
+///   }
+///   \table_row3{   <b>`System.KernelVersion`</b>,
+///                  \anchor System_KernelVersion
+///                  _string_,
+///     System kernel version
+///   }
+///   \table_row3{   <b>`System.OSVersionInfo`</b>,
+///                  \anchor System_OSVersionInfo
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`System.Uptime`</b>,
+///                  \anchor System_Uptime
+///                  _string_,
+///     System current uptime
+///   }
+///   \table_row3{   <b>`System.TotalUptime`</b>,
+///                  \anchor System_TotalUptime
+///                  _string_,
+///     System total uptime
+///   }
+///   \table_row3{   <b>`System.CpuFrequency`</b>,
+///                  \anchor System_CpuFrequency
+///                  _string_,
+///     System cpu frequency
+///   }
+///   \table_row3{   <b>`System.ScreenResolution`</b>,
+///                  \anchor System_ScreenResolution
+///                  _string_,
+///     Screen resolution
+///   }
+///   \table_row3{   <b>`System.VideoEncoderInfo`</b>,
+///                  \anchor System_VideoEncoderInfo
+///                  _string_,
+///     Video encoder info
+///   }
+///   \table_row3{   <b>`System.InternetState`</b>,
+///                  \anchor System_InternetState
+///                  _string_,
+///     Will return the internet state\, connected or not connected and for
+///     Conditional use: Connected->TRUE\, not Connected->FALSE\, do not use
+///     to check status in a pythonscript since it is threaded.
+///   }
+///   \table_row3{   <b>`System.Language`</b>,
+///                  \anchor System_Language
+///                  _string_,
+///     Shows the current language
+///   }
+///   \table_row3{   <b>`System.ProfileName`</b>,
+///                  \anchor System_ProfileName
+///                  _string_,
+///     Shows the User name of the currently logged in Kodi user
+///   }
+///   \table_row3{   <b>`System.ProfileThumb`</b>,
+///                  \anchor System_ProfileThumb
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`System.ProfileCount`</b>,
+///                  \anchor System_ProfileCount
+///                  _string_,
+///     Shows the number of defined profiles
+///   }
+///   \table_row3{   <b>`System.ProfileAutoLogin`</b>,
+///                  \anchor System_ProfileAutoLogin
+///                  _string_,
+///     The profile Kodi will auto login to
+///   }
+///   \table_row3{   <b>`System.StereoscopicMode`</b>,
+///                  \anchor System_StereoscopicMode
+///                  _string_,
+///     The prefered stereoscopic mode (settings > video > playback)
+///   }
+///   \table_row3{   <b>`System.TemperatureUnits`</b>,
+///                  \anchor System_TemperatureUnits
+///                  _string_,
+///     Shows Celsius or Fahrenheit symbol
+///   }
+///   \table_row3{   <b>`System.Progressbar`</b>,
+///                  \anchor System_Progressbar
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`System.GetBool(boolean)`</b>,
+///                  \anchor System_GetBool
+///                  _string_,
+///     Returns the value of any standard system boolean setting. Will not work
+///     with settings in advancedsettings.xml
+///   }
+///   \table_row3{   <b>`System.AddonTitle(id)`</b>,
+///                  \anchor System_AddonTitle
+///                  _string_,
+///     Returns the title of the addon with the given id
+///   }
+///   \table_row3{   <b>`System.AddonVersion(id)`</b>,
+///                  \anchor System_AddonVersion
+///                  _string_,
+///     Returns the version of the addon with the given id
+///   }
+/// \table_end
+/// @}
 const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACTIVE },
                                   { "hasmediadvd",      SYSTEM_MEDIA_DVD },
                                   { "dvdready",         SYSTEM_DVDREADY },
@@ -298,7 +1146,6 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "buildversionshort",SYSTEM_BUILD_VERSION_SHORT },
                                   { "builddate",        SYSTEM_BUILD_DATE },
                                   { "fps",              SYSTEM_FPS },
-                                  { "dvdtraystate",     SYSTEM_DVD_TRAY_STATE },
                                   { "freememory",       SYSTEM_FREE_MEMORY },
                                   { "language",         SYSTEM_LANGUAGE },
                                   { "temperatureunits", SYSTEM_TEMPERATURE_UNITS },
@@ -332,12 +1179,98 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "stereoscopicmode", SYSTEM_STEREOSCOPIC_MODE },
                                   { "hasadsp",          SYSTEM_HAS_ADSP }};
 
+/// \page modules__General__List_of_gui_access
+/// @{
+/// \table_start
+///   \table_row3{   <b>`System.HasAddon(id)`</b>,
+///                  \anchor System_HasAddon
+///                  _boolean_,
+///     Returns true if the specified addon is installed on the system.
+///   }
+///   \table_row3{   <b>`System.HasCoreId(id)`</b>,
+///                  \anchor System_HasCoreId
+///                  _boolean_,
+///     Todo
+///   }
+///   \table_row3{   <b>`System.HasAlarm(alarm)`</b>,
+///                  \anchor System_HasAlarm
+///                  _boolean_,
+///     Returns true if the system has the ?alarm? alarm set.
+///   }
+///   \table_row3{   <b>`System.CoreUsage(id)`</b>,
+///                  \anchor System_CoreUsage
+///                  _string_,
+///     Displays the usage of the cpu core with the given 'id'
+///   }
+///   \table_row3{   <b>`System.Setting(hidewatched)`</b>,
+///                  \anchor System_Setting
+///                  _boolean_,
+///     Returns true if 'hide watched items' is selected.
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
 const infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
                                   { "hascoreid",        SYSTEM_HAS_CORE_ID },
                                   { "setting",          SYSTEM_SETTING },
                                   { "hasaddon",         SYSTEM_HAS_ADDON },
                                   { "coreusage",        SYSTEM_GET_CORE_USAGE }};
 
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_Network Network
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`Network.IsDHCP`</b>,
+///                  \anchor Network_IsDHCP
+///                  _boolean_,
+///     Network type is DHCP or FIXED
+///   }
+///   \table_row3{   <b>`Network.IPAddress`</b>,
+///                  \anchor Network_IPAddress
+///                  _string_,
+///     The system's IP Address (formatted as IP: <ipaddress>)
+///   }
+///   \table_row3{   <b>`Network.LinkState`</b>,
+///                  \anchor Network_LinkState
+///                  _string_,
+///     Network linkstate e.g. 10mbit/100mbit etc.
+///   }
+///   \table_row3{   <b>`Network.MacAddress`</b>,
+///                  \anchor Network_MacAddress
+///                  _string_,
+///     The system's mac address
+///   }
+///   \table_row3{   <b>`Network.SubnetMask`</b>,
+///                  \anchor Network_SubnetMask
+///                  _string_,
+///     Network subnet mask
+///   }
+///   \table_row3{   <b>`Network.GatewayAddress`</b>,
+///                  \anchor Network_GatewayAddress
+///                  _string_,
+///     Network gateway address
+///   }
+///   \table_row3{   <b>`Network.DNS1Address`</b>,
+///                  \anchor Network_DNS1Address
+///                  _string_,
+///     Network dns 1 address
+///   }
+///   \table_row3{   <b>`Network.DNS2Address`</b>,
+///                  \anchor Network_DNS2Address
+///                  _string_,
+///     Network dns 2 address
+///   }
+///   \table_row3{   <b>`Network.DHCPAddress`</b>,
+///                  \anchor Network_DHCPAddress
+///                  _string_,
+///     DHCP ip address
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
 const infomap network_labels[] = {{ "isdhcp",            NETWORK_IS_DHCP },
                                   { "ipaddress",         NETWORK_IP_ADDRESS }, //labels from here
                                   { "linkstate",         NETWORK_LINK_STATE },
@@ -348,6 +1281,50 @@ const infomap network_labels[] = {{ "isdhcp",            NETWORK_IS_DHCP },
                                   { "dns2address",       NETWORK_DNS2_ADDRESS },
                                   { "dhcpaddress",       NETWORK_DHCP_ADDRESS }};
 
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_musicpartymode Music party mode
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`MusicPartyMode.Enabled`</b>,
+///                  \anchor MusicPartyMode_Enabled
+///                  _boolean_,
+///     Returns true if Party Mode is enabled
+///   }
+///   \table_row3{   <b>`MusicPartyMode.SongsPlayed`</b>,
+///                  \anchor MusicPartyMode_SongsPlayed
+///                  _string_,
+///     Number of songs played during Party Mode
+///   }
+///   \table_row3{   <b>`MusicPartyMode.MatchingSongs`</b>,
+///                  \anchor MusicPartyMode_MatchingSongs
+///                  _string_,
+///     Number of songs available to Party Mode
+///   }
+///   \table_row3{   <b>`MusicPartyMode.MatchingSongsPicked`</b>,
+///                  \anchor MusicPartyMode_MatchingSongsPicked
+///                  _string_,
+///     Number of songs picked already for Party Mode
+///   }
+///   \table_row3{   <b>`MusicPartyMode.MatchingSongsLeft`</b>,
+///                  \anchor MusicPartyMode_MatchingSongsLeft
+///                  _string_,
+///     Number of songs left to be picked from for Party Mode
+///   }
+///   \table_row3{   <b>`MusicPartyMode.RelaxedSongsPicked`</b>,
+///                  \anchor MusicPartyMode_RelaxedSongsPicked
+///                  _string_,
+///     Not currently used
+///   }
+///   \table_row3{   <b>`MusicPartyMode.RandomSongsPicked`</b>,
+///                  \anchor MusicPartyMode_RandomSongsPicked
+///                  _string_,
+///     Number of unique random songs picked during Party Mode
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
 const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
                                   { "songsplayed",       MUSICPM_SONGSPLAYED },
                                   { "matchingsongs",     MUSICPM_MATCHINGSONGS },
@@ -356,6 +1333,308 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
                                   { "relaxedsongspicked",MUSICPM_RELAXEDSONGSPICKED },
                                   { "randomsongspicked", MUSICPM_RANDOMSONGSPICKED }};
 
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_MusicPlayer Music player
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`MusicPlayer.Offset(number).Exists`</b>,
+///                  \anchor MusicPlayer_Offset
+///                  _boolean_,
+///     Returns true if the music players playlist has a song queued in
+///     position (number).
+///   }
+///   \table_row3{   <b>`MusicPlayer.Title`</b>,
+///                  \anchor MusicPlayer_Title
+///                  _string_,
+///     Title of the currently playing song\, also available are
+///     "MusicPlayer.offset(number).Title" offset is relative to the current
+///     playing item and "MusicPlayer.Position(number).Title" position is relative
+///     to the start of the playlist
+///   }
+///   \table_row3{   <b>`MusicPlayer.Album`</b>,
+///                  \anchor MusicPlayer_Album
+///                  _string_,
+///     Album from which the current song is from\, also available are
+///     "MusicPlayer.offset(number).Album" offset is relative to the current
+///     playing item and "MusicPlayer.Position(number).Album" position is relative
+///     to the start of the playlist
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Album_Mood)`</b>,
+///                  \anchor MusicPlayer_Property_Album_Mood
+///                  _string_,
+///     Shows the moods of the currently playing Album
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Album_Style)`</b>,
+///                  \anchor MusicPlayer_Property_Album_Style
+///                  _string_,
+///     Shows the styles of the currently playing Album
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Album_Theme)`</b>,
+///                  \anchor MusicPlayer_Property_Album_Theme
+///                  _string_,
+///     Shows the themes of the currently playing Album
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Album_Type)`</b>,
+///                  \anchor MusicPlayer_Property_Album_Type
+///                  _string_,
+///     Shows the Album Type (e.g. compilation\, enhanced\, explicit lyrics) of the
+///     currently playing Album
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Album_Label)`</b>,
+///                  \anchor MusicPlayer_Property_Album_Label
+///                  _string_,
+///     Shows the record label of the currently playing Album
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Album_Description)`</b>,
+///                  \anchor MusicPlayer_Property_Album_Description
+///                  _string_,
+///     Shows a review of the currently playing Album
+///   }
+///   \table_row3{   <b>`MusicPlayer.Artist`</b>,
+///                  \anchor MusicPlayer_Artist
+///                  _string_,
+///     Artist(s) of current song\, also available are
+///     "MusicPlayer.offset(number).Artist" offset is relative to the current
+///     playing item and "MusicPlayer.Position(number).Artist" position is
+///     relative to the start of the playlist
+///   }
+///   \table_row3{   <b>`MusicPlayer.AlbumArtist`</b>,
+///                  \anchor MusicPlayer_AlbumArtist
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`MusicPlayer.Cover`</b>,
+///                  \anchor MusicPlayer_Cover
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Artist_Born)`</b>,
+///                  \anchor MusicPlayer_Property_Artist_Born
+///                  _string_,
+///     Date of Birth of the currently playing Artist
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Artist_Died)`</b>,
+///                  \anchor MusicPlayer_Property_Artist_Died
+///                  _string_,
+///     Date of Death of the currently playing Artist
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Artist_Formed)`</b>,
+///                  \anchor MusicPlayer_Property_Artist_Formed
+///                  _string_,
+///     Formation date of the currently playing Artist/Band
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Artist_Disbanded)`</b>,
+///                  \anchor MusicPlayer_Property_Artist_Disbanded
+///                  _string_,
+///     Disbanding date of the currently playing Artist/Band
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Artist_YearsActive)`</b>,
+///                  \anchor MusicPlayer_Property_Artist_YearsActive
+///                  _string_,
+///     Years the currently Playing artist has been active
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Artist_Instrument)`</b>,
+///                  \anchor MusicPlayer_Property_Artist_Instrument
+///                  _string_,
+///     Instruments played by the currently playing artist
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Artist_Description)`</b>,
+///                  \anchor MusicPlayer_Property_Artist_Description
+///                  _string_,
+///     Shows a biography of the currently playing artist
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Artist_Mood)`</b>,
+///                  \anchor MusicPlayer_Property_Artist_Mood
+///                  _string_,
+///     Shows the moods of the currently playing artist
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Artist_Style)`</b>,
+///                  \anchor MusicPlayer_Property_Artist_Style
+///                  _string_,
+///     Shows the styles of the currently playing artist
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Artist_Genre)`</b>,
+///                  \anchor MusicPlayer_Property_Artist_Genre
+///                  _string_,
+///     Shows the genre of the currently playing artist
+///   }
+///   \table_row3{   <b>`MusicPlayer.Genre`</b>,
+///                  \anchor MusicPlayer_Genre
+///                  _string_,
+///     Genre(s) of current song\, also available are
+///     "MusicPlayer.offset(number).Genre" offset is relative to the current
+///     playing item and "MusicPlayer.Position(number).Genre" position is
+///     relative to the start of the playlist
+///   }
+///   \table_row3{   <b>`MusicPlayer.Lyrics`</b>,
+///                  \anchor MusicPlayer_Lyrics
+///                  _string_,
+///     Lyrics of current song stored in ID tag info
+///   }
+///   \table_row3{   <b>`MusicPlayer.Year`</b>,
+///                  \anchor MusicPlayer_Year
+///                  _string_,
+///     Year of release of current song\, also available are
+///     "MusicPlayer.offset(number).Year" offset is relative to the current
+///     playing item and "MusicPlayer.Position(number).Year" position is
+///     relative to the start of the playlist
+///   }
+///   \table_row3{   <b>`MusicPlayer.Rating`</b>,
+///                  \anchor MusicPlayer_Rating
+///                  _string_,
+///     Numeric Rating of current song\, also available are
+///     "MusicPlayer.offset(number).Rating" offset is relative to the current
+///     playing item and "MusicPlayer.Position(number).Rating" position is
+///     relative to the start of the playlist
+///   }
+///   \table_row3{   <b>`MusicPlayer.RatingAndVotes`</b>,
+///                  \anchor MusicPlayer_RatingAndVotes
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`MusicPlayer.UserRating`</b>,
+///                  \anchor MusicPlayer_UserRating
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`MusicPlayer.Votes`</b>,
+///                  \anchor MusicPlayer_Votes
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`MusicPlayer.DiscNumber`</b>,
+///                  \anchor MusicPlayer_DiscNumber
+///                  _string_,
+///     Disc Number of current song stored in ID tag info\, also available are
+///     "MusicPlayer.offset(number).DiscNumber" offset is relative to the
+///     current playing item and "MusicPlayer.Position(number).DiscNumber"
+///     position is relative to the start of the playlist
+///   }
+///   \table_row3{   <b>`MusicPlayer.Comment`</b>,
+///                  \anchor MusicPlayer_Comment
+///                  _string_,
+///     Comment of current song stored in ID tag info\, also available are
+///     "MusicPlayer.offset(number).Comment" offset is relative to the current
+///     playing item and "MusicPlayer.Position(number).Comment" position is
+///     relative to the start of the playlist
+///   }
+///   \table_row3{   <b>`MusicPlayer.Mood`</b>,
+///                  \anchor MusicPlayer_Mood
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`MusicPlayer.PlaylistPlaying`</b>,
+///                  \anchor MusicPlayer_PlaylistPlaying
+///                  _boolean_,
+///     Todo
+///   }
+///   \table_row3{   <b>`MusicPlayer.Exists`</b>,
+///                  \anchor MusicPlayer_Exists
+///                  _boolean_,
+///     Todo
+///   }
+///   \table_row3{   <b>`MusicPlayer.HasPrevious`</b>,
+///                  \anchor MusicPlayer_HasPrevious
+///                  _boolean_,
+///     Returns true if the music player has a a Previous Song in the Playlist .
+///   }
+///   \table_row3{   <b>`MusicPlayer.HasNext`</b>,
+///                  \anchor MusicPlayer_HasNext
+///                  _boolean_,
+///     Returns true if the music player has a next song queued in the Playlist.
+///   }
+///   \table_row3{   <b>`MusicPlayer.PlayCount`</b>,
+///                  \anchor MusicPlayer_PlayCount
+///                  _integer_,
+///     Todo
+///   }
+///   \table_row3{   <b>`MusicPlayer.LastPlayed`</b>,
+///                  \anchor MusicPlayer_LastPlayed
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`MusicPlayer.TrackNumber`</b>,
+///                  \anchor MusicPlayer_TrackNumber
+///                  _string_,
+///     Track number of current song\, also available are
+///     "MusicPlayer.offset(number).TrackNumber" offset is relative to the
+///     current playing item and "MusicPlayer.Position(number).TrackNumber"
+///     position is relative to the start of the playlist
+///   }
+///   \table_row3{   <b>`MusicPlayer.Duration`</b>,
+///                  \anchor MusicPlayer_Duration
+///                  _string_,
+///     Duration of current song\, also available are
+///     "MusicPlayer.offset(number).Duration" offset is relative to the
+///     current playing item and "MusicPlayer.Position(number).Duration"
+///     position is relative to the start of the playlist
+///   }
+///   \table_row3{   <b>`MusicPlayer.BitRate`</b>,
+///                  \anchor MusicPlayer_BitRate
+///                  _string_,
+///     Bitrate of current song
+///   }
+///   \table_row3{   <b>`MusicPlayer.Channels`</b>,
+///                  \anchor MusicPlayer_Channels
+///                  _string_,
+///     Number of channels of current song
+///   }
+///   \table_row3{   <b>`MusicPlayer.BitsPerSample`</b>,
+///                  \anchor MusicPlayer_BitsPerSample
+///                  _string_,
+///     Number of bits per sample of current song
+///   }
+///   \table_row3{   <b>`MusicPlayer.SampleRate`</b>,
+///                  \anchor MusicPlayer_SampleRate
+///                  _string_,
+///     Samplerate of current song
+///   }
+///   \table_row3{   <b>`MusicPlayer.Codec`</b>,
+///                  \anchor MusicPlayer_Codec
+///                  _string_,
+///     Codec of current song
+///   }
+///   \table_row3{   <b>`MusicPlayer.PlaylistPosition`</b>,
+///                  \anchor MusicPlayer_PlaylistPosition
+///                  _string_,
+///     Position of the current song in the current music playlist
+///   }
+///   \table_row3{   <b>`MusicPlayer.PlaylistLength`</b>,
+///                  \anchor MusicPlayer_PlaylistLength
+///                  _string_,
+///     Total size of the current music playlist
+///   }
+///   \table_row3{   <b>`MusicPlayer.ChannelName`</b>,g
+///                  \anchor MusicPlayer_ChannelName
+///                  _string_,
+///     Channel name of the radio programme that's currently playing (PVR).
+///   }
+///   \table_row3{   <b>`MusicPlayer.ChannelNumber`</b>,
+///                  \anchor MusicPlayer_ChannelNumber
+///                  _string_,
+///     Channel number of the radio programme that's currently playing (PVR).
+///   }
+///   \table_row3{   <b>`MusicPlayer.SubChannelNumber`</b>,
+///                  \anchor MusicPlayer_SubChannelNumber
+///                  _string_,
+///     Subchannel number of the radio channel that's currently playing (PVR).
+///   }
+///   \table_row3{   <b>`MusicPlayer.ChannelNumberLabel`</b>,
+///                  \anchor MusicPlayer_ChannelNumberLabel
+///                  _string_,
+///     Channel and subchannel number of the radio channel that's currently
+///     playing (PVR).
+///   }
+///   \table_row3{   <b>`MusicPlayer.ChannelGroup`</b>,
+///                  \anchor MusicPlayer_ChannelGroup
+///                  _string_,
+///     Channel group of of the radio programme that's currently playing (PVR).
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
 const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "album",            MUSICPLAYER_ALBUM },
                                   { "artist",           MUSICPLAYER_ARTIST },
@@ -393,6 +1672,370 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "channelgroup",     MUSICPLAYER_CHANNEL_GROUP }
 };
 
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_Videoplayer Video player
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`VideoPlayer.UsingOverlays`</b>,
+///                  \anchor VideoPlayer_UsingOverlays
+///                  _boolean_,
+///     Returns true if the video player is using the hardware overlays render
+///     method. Useful\, as with hardware overlays you have no alpha blending to
+///     the video image\, so shadows etc. need redoing\, or disabling.
+///   }
+///   \table_row3{   <b>`VideoPlayer.IsFullscreen`</b>,
+///                  \anchor VideoPlayer_IsFullscreen
+///                  _boolean_,
+///     Returns true if the video player is in fullscreen mode.
+///   }
+///   \table_row3{   <b>`VideoPlayer.HasMenu`</b>,
+///                  \anchor VideoPlayer_HasMenu
+///                  _boolean_,
+///     Returns true if the video player has a menu (ie is playing a DVD)
+///   }
+///   \table_row3{   <b>`VideoPlayer.HasInfo`</b>,
+///                  \anchor VideoPlayer_HasInfo
+///                  _boolean_,
+///     Returns true if the current playing video has information from the
+///     library or from a plugin (eg director/plot etc.)
+///   }
+///   \table_row3{   <b>`VideoPlayer.Content(parameter)`</b>,
+///                  \anchor VideoPlayer_Content
+///                  _boolean_,
+///     Returns true if the current Video you are playing is contained in
+///     corresponding Video Library sections.\n
+///     The following values are accepted :
+///     - files
+///     - movies
+///     - episodes
+///     - musicvideos
+///     - livetv
+///   }
+///   \table_row3{   <b>`VideoPlayer.HasSubtitles`</b>,
+///                  \anchor VideoPlayer_HasSubtitles
+///                  _boolean_,
+///     Returns true if there are subtitles available for video.
+///   }
+///   \table_row3{   <b>`VideoPlayer.HasTeletext`</b>,
+///                  \anchor VideoPlayer_HasTeletext
+///                  _boolean_,
+///     Returns true if teletext is usable on played TV channel
+///   }
+///   \table_row3{   <b>`VideoPlayer.IsStereoscopic`</b>,
+///                  \anchor VideoPlayer_IsStereoscopic
+///                  _boolean_,
+///     Returns true when the currently playing video is a 3D (stereoscopic)
+///     video
+///   }
+///   \table_row3{   <b>`VideoPlayer.SubtitlesEnabled`</b>,
+///                  \anchor VideoPlayer_SubtitlesEnabled
+///                  _boolean_,
+///     Returns true if subtitles are turned on for video.
+///   }
+///   \table_row3{   <b>`VideoPlayer.HasEpg`</b>,
+///                  \anchor VideoPlayer_HasEpg
+///                  _boolean_,
+///     Returns true when epg information is available for the currently playing
+///     programme (PVR).
+///   }
+///   \table_row3{   <b>`VideoPlayer.CanResumeLiveTV`</b>,
+///                  \anchor VideoPlayer_CanResumeLiveTV
+///                  _boolean_,
+///     Todo
+///   }
+///   \table_row3{   <b>`VideoPlayer.Title`</b>,
+///                  \anchor VideoPlayer_Title
+///                  _string_,
+///     Title of currently playing video. If it's in the database it will return
+///     the database title\, else the filename
+///   }
+///   \table_row3{   <b>`VideoPlayer.OriginalTitle`</b>,
+///                  \anchor VideoPlayer_OriginalTitle
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`VideoPlayer.TVShowTitle`</b>,
+///                  \anchor VideoPlayer_TVShowTitle
+///                  _string_,
+///     Title of currently playing episode's tvshow name
+///   }
+///   \table_row3{   <b>`VideoPlayer.Season`</b>,
+///                  \anchor VideoPlayer_Season
+///                  _string_,
+///     Season number of the currently playing episode\, if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.Episode`</b>,
+///                  \anchor VideoPlayer_Episode
+///                  _string_,
+///     Episode number of the currently playing episode
+///   }
+///   \table_row3{   <b>`VideoPlayer.Genre`</b>,
+///                  \anchor VideoPlayer_Genre
+///                  _string_,
+///     Genre(s) of current movie\, if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.Director`</b>,
+///                  \anchor VideoPlayer_Director
+///                  _string_,
+///     Director of current movie\, if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.Country`</b>,
+///                  \anchor VideoPlayer_Country
+///                  _string_,
+///     Production country of current movie\, if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.Year`</b>,
+///                  \anchor VideoPlayer_Year
+///                  _string_,
+///     Year of release of current movie\, if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.Cover`</b>,
+///                  \anchor VideoPlayer_Cover
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`VideoPlayer.Rating`</b>,
+///                  \anchor VideoPlayer_Rating
+///                  _string_,
+///     IMDb user rating of current movie\, if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.UserRating`</b>,
+///                  \anchor VideoPlayer_UserRating
+///                  _string_,
+///     Shows the user rating of the currently playing item
+///   }
+///   \table_row3{   <b>`VideoPlayer.Votes`</b>,
+///                  \anchor VideoPlayer_Votes
+///                  _string_,
+///     IMDb votes of current movie\, if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.RatingAndVotes`</b>,
+///                  \anchor VideoPlayer_RatingAndVotes
+///                  _string_,
+///     IMDb user rating and votes of current movie\, if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.mpaa`</b>,
+///                  \anchor VideoPlayer_mpaa
+///                  _string_,
+///     MPAA rating of current movie\, if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.IMDBNumber`</b>,
+///                  \anchor VideoPlayer_IMDBNumber
+///                  _string_,
+///     The IMDB iD of the current video\, if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.Top250`</b>,
+///                  \anchor VideoPlayer_Top250
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`VideoPlayer.EpisodeName`</b>,
+///                  \anchor VideoPlayer_EpisodeName
+///                  _string_,
+///     (PVR only) The name of the episode if the playing video is a TV Show\,
+///     if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.PlaylistPosition`</b>,
+///                  \anchor VideoPlayer_PlaylistPosition
+///                  _string_,
+///     Position of the current song in the current video playlist
+///   }
+///   \table_row3{   <b>`VideoPlayer.PlaylistLength`</b>,
+///                  \anchor VideoPlayer_PlaylistLength
+///                  _string_,
+///     Total size of the current video playlist
+///   }
+///   \table_row3{   <b>`VideoPlayer.Cast`</b>,
+///                  \anchor VideoPlayer_Cast
+///                  _string_,
+///     A concatenated string of cast members of the current movie\, if it's in
+///     the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.CastAndRole`</b>,
+///                  \anchor VideoPlayer_CastAndRole
+///                  _string_,
+///     A concatenated string of cast members and roles of the current movie\,
+///     if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.Album`</b>,
+///                  \anchor VideoPlayer_Album
+///                  _string_,
+///     Album from which the current Music Video is from\, if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.Artist`</b>,
+///                  \anchor VideoPlayer_Artist
+///                  _string_,
+///     Artist(s) of current Music Video\, if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.Studio`</b>,
+///                  \anchor VideoPlayer_Studio
+///                  _string_,
+///     Studio of current Music Video\, if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.Writer`</b>,
+///                  \anchor VideoPlayer_Writer
+///                  _string_,
+///     Name of Writer of current playing Video\, if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.Tagline`</b>,
+///                  \anchor VideoPlayer_Tagline
+///                  _string_,
+///     Small Summary of current playing Video\, if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.PlotOutline`</b>,
+///                  \anchor VideoPlayer_PlotOutline
+///                  _string_,
+///     Small Summary of current playing Video\, if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.Plot`</b>,
+///                  \anchor VideoPlayer_Plot
+///                  _string_,
+///     Complete Text Summary of current playing Video\, if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.Premiered`</b>,
+///                  \anchor VideoPlayer_Premiered
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`VideoPlayer.Trailer`</b>,
+///                  \anchor VideoPlayer_Trailer
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`VideoPlayer.LastPlayed`</b>,
+///                  \anchor VideoPlayer_LastPlayed
+///                  _string_,
+///     Last play date of current playing Video\, if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.PlayCount`</b>,
+///                  \anchor VideoPlayer_PlayCount
+///                  _string_,
+///     Playcount of current playing Video\, if it's in the database
+///   }
+///   \table_row3{   <b>`VideoPlayer.VideoCodec`</b>,
+///                  \anchor VideoPlayer_VideoCodec
+///                  _string_,
+///     Shows the video codec of the currently playing video (common values: see
+///     \ref ListItem_VideoCodec "ListItem.VideoCodec")
+///   }
+///   \table_row3{   <b>`VideoPlayer.VideoResolution`</b>,
+///                  \anchor VideoPlayer_VideoResolution
+///                  _string_,
+///     Shows the video resolution of the currently playing video (possible
+///     values: see \ref ListItem_VideoResolution "ListItem.VideoResolution")
+///   }
+///   \table_row3{   <b>`VideoPlayer.VideoAspect`</b>,
+///                  \anchor VideoPlayer_VideoAspect
+///                  _string_,
+///     Shows the aspect ratio of the currently playing video (possible values:
+///     see \ref ListItem_VideoAspect "ListItem.VideoAspect")
+///   }
+///   \table_row3{   <b>`VideoPlayer.AudioCodec`</b>,
+///                  \anchor VideoPlayer_AudioCodec
+///                  _string_,
+///     Shows the audio codec of the currently playing video\, optionally 'n'
+///     defines the number of the audiostream (common values: see
+///     \ref ListItem_AudioCodec "ListItem.AudioCodec")
+///   }
+///   \table_row3{   <b>`VideoPlayer.AudioChannels`</b>,
+///                  \anchor VideoPlayer_AudioChannels
+///                  _string_,
+///     Shows the number of audio channels of the currently playing video
+///     (possible values: see \ref ListItem_AudioChannels "ListItem.AudioChannels")
+///   }
+///   \table_row3{   <b>`VideoPlayer.AudioLanguage`</b>,
+///                  \anchor VideoPlayer_AudioLanguage
+///                  _string_,
+///     Shows the language of the audio of the currently playing video(possible
+///     values: see \ref ListItem_AudioLanguage "ListItem.AudioLanguage")
+///   }
+///   \table_row3{   <b>`VideoPlayer.SubtitlesLanguage`</b>,
+///                  \anchor VideoPlayer_SubtitlesLanguage
+///                  _string_,
+///     Shows the language of the subtitle of the currently playing video
+///     (possible values: see \ref ListItem_SubtitleLanguage "ListItem.SubtitleLanguage")
+///   }
+///   \table_row3{   <b>`VideoPlayer.StereoscopicMode`</b>,
+///                  \anchor VideoPlayer_StereoscopicMode
+///                  _string_,
+///     Shows the stereoscopic mode of the currently playing video (possible
+///     values: see \ref ListItem_StereoscopicMode "ListItem.StereoscopicMode")
+///   }
+///   \table_row3{   <b>`VideoPlayer.EndTime`</b>,
+///                  \anchor VideoPlayer_EndTime
+///                  _string_,
+///     End date of the currently playing programme (PVR).
+///   }
+///   \table_row3{   <b>`VideoPlayer.NextTitle`</b>,
+///                  \anchor VideoPlayer_NextTitle
+///                  _string_,
+///     Title of the programme that will be played next (PVR).
+///   }
+///   \table_row3{   <b>`VideoPlayer.NextGenre`</b>,
+///                  \anchor VideoPlayer_NextGenre
+///                  _string_,
+///     Genre of the programme that will be played next (PVR).
+///   }
+///   \table_row3{   <b>`VideoPlayer.NextPlot`</b>,
+///                  \anchor VideoPlayer_NextPlot
+///                  _string_,
+///     Plot of the programme that will be played next (PVR).
+///   }
+///   \table_row3{   <b>`VideoPlayer.NextPlotOutline`</b>,
+///                  \anchor VideoPlayer_NextPlotOutline
+///                  _string_,
+///     Plot outline of the programme that will be played next (PVR).
+///   }
+///   \table_row3{   <b>`VideoPlayer.NextStartTime`</b>,
+///                  \anchor VideoPlayer_NextStartTime
+///                  _string_,
+///     Start time of the programme that will be played next (PVR).
+///   }
+///   \table_row3{   <b>`VideoPlayer.NextEndTime`</b>,
+///                  \anchor VideoPlayer_NextEndTime
+///                  _string_,
+///     End time of the programme that will be played next (PVR).
+///   }
+///   \table_row3{   <b>`VideoPlayer.NextDuration`</b>,
+///                  \anchor VideoPlayer_NextDuration
+///                  _string_,
+///     Duration of the programme that will be played next (PVR).
+///   }
+///   \table_row3{   <b>`VideoPlayer.ChannelName`</b>,
+///                  \anchor VideoPlayer_ChannelName
+///                  _string_,
+///     Name of the curently tuned channel (PVR).
+///   }
+///   \table_row3{   <b>`VideoPlayer.ChannelNumber`</b>,
+///                  \anchor VideoPlayer_ChannelNumber
+///                  _string_,
+///     Number of the curently tuned channel (PVR).
+///   }
+///   \table_row3{   <b>`VideoPlayer.SubChannelNumber`</b>,
+///                  \anchor VideoPlayer_SubChannelNumber
+///                  _string_,
+///     Subchannel number of the tv channel that's currently playing (PVR).
+///   }
+///   \table_row3{   <b>`VideoPlayer.ChannelNumberLabel`</b>,
+///                  \anchor VideoPlayer_ChannelNumberLabel
+///                  _string_,
+///     Channel and subchannel number of the tv channel that's currently playing (PVR).
+///   }
+///   \table_row3{   <b>`VideoPlayer.ChannelGroup`</b>,
+///                  \anchor VideoPlayer_ChannelGroup
+///                  _string_,
+///     Group of the curently tuned channel (PVR).
+///   }
+///   \table_row3{   <b>`VideoPlayer.ParentalRating`</b>,
+///                  \anchor VideoPlayer_ParentalRating
+///                  _string_,
+///     Parental rating of the currently playing programme (PVR).
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
 const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "genre",            VIDEOPLAYER_GENRE },
                                   { "country",          VIDEOPLAYER_COUNTRY },
@@ -460,6 +2103,99 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "episodename",      VIDEOPLAYER_EPISODENAME }
 };
 
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_Container Container
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`Container(id).HasFiles`</b>,
+///                  \anchor Container_HasFiles
+///                  _boolean_,
+///     Returns true if the container contains files (or current container if
+///     id is omitted).
+///   }
+///   \table_row3{   <b>`Container(id).HasFolders`</b>,
+///                  \anchor Container_HasFolders
+///                  _boolean_,
+///     Returns true if the container contains folders (or current container if
+///     id is omitted).
+///   }
+///   \table_row3{   <b>`Container(id).IsStacked`</b>,
+///                  \anchor Container_IsStacked
+///                  _boolean_,
+///     Returns true if the container is currently in stacked mode (or current
+///     container if id is omitted).
+///   }
+///   \table_row3{   <b>`Container.FolderPath`</b>,
+///                  \anchor Container_FolderPath
+///                  _string_,
+///     Shows complete path of currently displayed folder
+///   }
+///   \table_row3{   <b>`Container.FolderName`</b>,
+///                  \anchor Container_FolderName
+///                  _string_,
+///     Shows top most folder in currently displayed folder
+///   }
+///   \table_row3{   <b>`Container.PluginName`</b>,
+///                  \anchor Container_PluginName
+///                  _string_,
+///     Returns the current plugins base folder name
+///   }
+///   \table_row3{   <b>`Container.Viewmode`</b>,
+///                  \anchor Container_Viewmode
+///                  _string_,
+///     Returns the current viewmode (list\, icons etc.)
+///   }
+///   \table_row3{   <b>`Container.ViewCount`</b>,
+///                  \anchor Container_ViewCount
+///                  _integer_,
+///     Todo
+///   }
+///   \table_row3{   <b>`Container(id).Totaltime`</b>,
+///                  \anchor Container_Totaltime
+///                  _string_,
+///     Returns the total time of all items in the current container
+///   }
+///   \table_row3{   <b>`Container(id).TotalWatched`</b>,
+///                  \anchor Container_TotalWatched
+///                  _string_,
+///     Returns the number of watched items in the current container
+///   }
+///   \table_row3{   <b>`Container(id).TotalUnWatched`</b>,
+///                  \anchor Container_TotalUnWatched
+///                  _string_,
+///     Returns the number of unwatched items in the current container
+///   }
+///   \table_row3{   <b>`Container.HasThumb`</b>,
+///                  \anchor Container_HasThumb
+///                  _string_,
+///     Returns true if the current container you are in has a thumb assigned
+///     to it
+///   }
+///   \table_row3{   <b>`Container.SortMethod`</b>,
+///                  \anchor Container_SortMethod
+///                  _string_,
+///     Returns the current sort method (name\, year\, rating\, etc.)
+///   }
+///   \table_row3{   <b>`Container.SortOrder`</b>,
+///                  \anchor Container_SortOrder
+///                  _string_,
+///     Returns the current sort order (Ascending/Descending)
+///   }
+///   \table_row3{   <b>`Container.ShowPlot`</b>,
+///                  \anchor Container_ShowPlot
+///                  _string_,
+///     Returns the TV Show plot of the current container and can be used at
+///     season and episode level
+///   }
+///   \table_row3{   <b>`Container.ShowTitle`</b>,
+///                  \anchor Container_ShowTitle
+///                  _string_,
+///     Returns the TV Show title of the current container and can be used at
+///     season and episode level
+///   }
+/// \table_end
+/// @}
 const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
                                   { "hasfolders",       CONTAINER_HASFOLDERS },
                                   { "isstacked",        CONTAINER_STACKED },
@@ -477,6 +2213,101 @@ const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
                                   { "showplot",         CONTAINER_SHOWPLOT },
                                   { "showtitle",        CONTAINER_SHOWTITLE }};
 
+/// \page modules__General__List_of_gui_access
+/// @{
+/// \table_start
+///   \table_row3{   <b>`Container(id).OnNext`</b>,
+///                  \anchor Container_OnNext
+///                  _boolean_,
+///     Returns true if the container with id (or current container if id is
+///     omitted) is moving to the next item. Allows views to be
+///     custom-designed (such as 3D coverviews etc.)
+///   }
+///   \table_row3{   <b>`Container(id).OnScrollNext`</b>,
+///                  \anchor Container_OnScrollNext
+///                  _boolean_,
+///     Returns true if the container with id (or current container if id is
+///     omitted) is scrolling to the next item. Differs from OnNext in that
+///     OnNext triggers on movement even if there is no scroll involved.
+///   }
+///   \table_row3{   <b>`Container(id).OnPrevious`</b>,
+///                  \anchor Container_OnPrevious
+///                  _boolean_,
+///     Returns true if the container with id (or current container if id is
+///     omitted) is moving to the previous item. Allows views to be
+///     custom-designed (such as 3D coverviews etc.)
+///   }
+///   \table_row3{   <b>`Container(id).OnScrollPrevious`</b>,
+///                  \anchor Container_OnScrollPrevious
+///                  _boolean_,
+///     Returns true if the container with id (or current container if id is
+///     omitted) is scrolling to the previous item. Differs from OnPrevious in
+///     that OnPrevious triggers on movement even if there is no scroll involved.
+///   }
+///   \table_row3{   <b>`Container(id).NumPages`</b>,
+///                  \anchor Container_NumPages
+///                  _boolean_,
+///     Number of pages in the container with given id. If no id is specified it
+///     grabs the current container.
+///   }
+///   \table_row3{   <b>`Container(id).NumItems`</b>,
+///                  \anchor Container_NumItems
+///                  _boolean_,
+///     Number of items in the container or grouplist with given id. If no id is
+///     specified it grabs the current container.
+///   }
+///   \table_row3{   <b>`Container(id).CurrentPage`</b>,
+///                  \anchor Container_CurrentPage
+///                  _boolean_,
+///     Current page in the container with given id. If no id is specified it
+///     grabs the current container.
+///   }
+///   \table_row3{   <b>`Container(id).Scrolling`</b>,
+///                  \anchor Container_Scrolling
+///                  _boolean_,
+///     Returns true if the user is currently scrolling through the container
+///     with id (or current container if id is omitted). Note that this is
+///     slightly delayed from the actual scroll start. Use
+///     Container(id).OnScrollNext/OnScrollPrevious to trigger animations
+///     immediately on scroll.
+///   }
+///   \table_row3{   <b>`Container(id).HasNext`</b>,
+///                  \anchor Container_HasNext
+///                  _boolean_,
+///     Returns true if the container or textbox with id (id) has a next page.
+///   }
+///   \table_row3{   <b>`Container.HasParent`</b>,
+///                  \anchor Container_HasParent
+///                  _boolean_,
+///     Return true when the container contains a parent ('..') item.
+///   }
+///   \table_row3{   <b>`Container(id).HasPrevious`</b>,
+///                  \anchor Container_HasPrevious
+///                  _boolean_,
+///     Returns true if the container or textbox with id (id) has a previous page.
+///   }
+///   \table_row3{   <b>`Container.CanFilter`</b>,
+///                  \anchor Container_CanFilter
+///                  _boolean_,
+///     Returns true when the current container can be filtered.
+///   }
+///   \table_row3{   <b>`Container.CanFilterAdvanced`</b>,
+///                  \anchor Container_CanFilterAdvanced
+///                  _boolean_,
+///     Returns true when advanced filtering can be applied to the current container.
+///   }
+///   \table_row3{   <b>`Container.Filtered`</b>,
+///                  \anchor Container_Filtered
+///                  _boolean_,
+///     Returns true when a mediafilter is applied to the current container.
+///   }
+///   \table_row3{   <b>`Container(id).IsUpdating`</b>,
+///                  \anchor Container_IsUpdating
+///                  _boolean_,
+///     Returns true if the container with dynamic list content is currently updating.
+///   }
+/// \table_end
+/// @}
 const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
                                   { "onprevious",       CONTAINER_MOVE_PREVIOUS },
                                   { "onscrollnext",     CONTAINER_SCROLL_NEXT },
@@ -493,6 +2324,45 @@ const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
                                   { "filtered",         CONTAINER_FILTERED },
                                   { "isupdating",       CONTAINER_ISUPDATING }};
 
+/// \page modules__General__List_of_gui_access
+/// @{
+/// \table_start
+///   \table_row3{   <b>`Container(id).Row`</b>,
+///                  \anchor Container_Row
+///                  _integer_,
+///     Returns the row number of the focused position in a panel container.
+///   }
+///   \table_row3{   <b>`Container(id).Column`</b>,
+///                  \anchor Container_Column
+///                  _integer_,
+///     Returns the column number of the focused position in a panel container.
+///   }
+///   \table_row3{   <b>`Container(id).Position`</b>,
+///                  \anchor Container_Position
+///                  _integer_,
+///     Returns the current focused position of container / grouplist (id) as a
+///     numeric label.
+///   }
+///   \table_row3{   <b>`Container(id).CurrentItem`</b>,
+///                  \anchor Container_CurrentItem
+///                  _integer_,
+///     Current item in the container or grouplist with given id. If no id is
+///     specified it grabs the current container.
+///   }
+///   \table_row3{   <b>`Container(id).SubItem`</b>,
+///                  \anchor Container_SubItem
+///                  _integer_,
+///     Todo
+///   }
+///   \table_row3{   <b>`Container(id).HasFocus(item_number)`</b>,
+///                  \anchor Container_HasFocus
+///                  _boolean_,
+///     Returns true if the container with id (or current container if id is
+///     omitted) has static content and is focused on the item with id
+///     item_number.
+///   }
+/// \table_end
+/// @}
 const infomap container_ints[] = {{ "row",              CONTAINER_ROW },
                                   { "column",           CONTAINER_COLUMN },
                                   { "position",         CONTAINER_POSITION },
@@ -500,10 +2370,1266 @@ const infomap container_ints[] = {{ "row",              CONTAINER_ROW },
                                   { "subitem",          CONTAINER_SUBITEM },
                                   { "hasfocus",         CONTAINER_HAS_FOCUS }};
 
+/// \page modules__General__List_of_gui_access
+/// @{
+/// \table_start
+///   \table_row3{   <b>`Container.Property(addoncategory)`</b>,
+///                  \anchor Container_Property_addoncategory
+///                  _string_,
+///     Returns the current add-on category
+///   }
+///   \table_row3{   <b>`Container.Property(reponame)`</b>,
+///                  \anchor Container_Property_reponame
+///                  _string_,
+///     Returns the current add-on repository name
+///   }
+///   \table_row3{   <b>`Container.Content(parameter)`</b>,
+///                  \anchor Container_Content
+///                  _string_,
+///     Returns true if the current container you are in contains the following:
+///     files\, songs\, artists\, albums\, movies\, tvshows\,
+///     seasons\, episodes\, musicvideos\, genres\, years\,
+///     actors\, playlists\, plugins\, studios\, directors\,
+///     sets\, tags (Note: these currently only work in the Video and Music
+///     Library or unless a Plugin has set the value) also available are
+///     Addons true when a list of add-ons is shown LiveTV true when a
+///     htsp (tvheadend) directory is shown
+///   }
+///   \table_row3{   <b>`Container.Art`</b>,
+///                  \anchor Container_Art
+///                  _string_,
+///     Todo
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
 const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
                                   { "content",          CONTAINER_CONTENT },
                                   { "art",              CONTAINER_ART }};
 
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_ListItem ListItem
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`ListItem.Thumb`</b>,
+///                  \anchor ListItem_Thumb
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.Icon`</b>,
+///                  \anchor ListItem_Icon
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.ActualIcon`</b>,
+///                  \anchor ListItem_ActualIcon
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.Overlay`</b>,
+///                  \anchor ListItem_Overlay
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.IsFolder`</b>,
+///                  \anchor ListItem_IsFolder
+///                  _boolean_,
+///     Returns whether the current ListItem is a folder
+///   }
+///   \table_row3{   <b>`ListItem.IsPlaying`</b>,
+///                  \anchor ListItem_IsPlaying
+///                  _boolean_,
+///     Returns whether the current ListItem.* info labels and images are
+///     currently Playing media
+///   }
+///   \table_row3{   <b>`ListItem.IsResumable`</b>,
+///                  \anchor ListItem_IsResumable
+///                  _boolean_,
+///     Returns true when the current ListItem has been partially played
+///   }
+///   \table_row3{   <b>`ListItem.IsCollection`</b>,
+///                  \anchor ListItem_IsCollection
+///                  _boolean_,
+///     Returns true when the current ListItem is a movie set
+///   }
+///   \table_row3{   <b>`ListItem.IsSelected`</b>,
+///                  \anchor ListItem_IsSelected
+///                  _boolean_,
+///     Returns whether the current ListItem is selected (f.e. currently playing
+///     in playlist window)
+///   }
+///   \table_row3{   <b>`ListItem.HasEpg`</b>,
+///                  \anchor ListItem_HasEpg
+///                  _boolean_,
+///     Returns true when the selected programme has epg info (PVR)
+///   }
+///   \table_row3{   <b>`ListItem.HasTimer`</b>,
+///                  \anchor ListItem_HasTimer
+///                  _boolean_,
+///     Returns true when a recording timer has been set for the selected
+///     programme (PVR)
+///   }
+///   \table_row3{   <b>`ListItem.IsRecording`</b>,
+///                  \anchor ListItem_IsRecording
+///                  _boolean_,
+///     Returns true when the selected programme is being recorded (PVR)
+///   }
+///   \table_row3{   <b>`ListItem.IsEncrypted`</b>,
+///                  \anchor ListItem_IsEncrypted
+///                  _boolean_,
+///     Returns true when the selected programme is encrypted (PVR)
+///   }
+///   \table_row3{   <b>`ListItem.IsStereoscopic`</b>,
+///                  \anchor ListItem_IsStereoscopic
+///                  _boolean_,
+///     Returns true when the selected video is a 3D (stereoscopic) video
+///   }
+///   \table_row3{   <b>`ListItem.Property(IsSpecial)`</b>,
+///                  \anchor ListItem_Property_IsSpecial
+///                  _boolean_,
+///     Returns whether the current Season/Episode is a Special
+///   }
+///   \table_row3{   <b>`ListItem.Property(DateLabel)`</b>,
+///                  \anchor ListItem_Property_DateLabel
+///                  _string_,
+///     Can be used in the rulerlayout of the epggrid control. Will return true
+///     if the item is a date label\, returns false if the item is a time label.
+///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.Enabled)`</b>,
+///                  \anchor ListItem_Property_AddonEnabled
+///                  _boolean_,
+///     Returns true when the selected addon is enabled (for use in the addon
+///     info dialog only).
+///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.Installed)`</b>,
+///                  \anchor ListItem_Property_AddonInstalled
+///                  _boolean_,
+///     Returns true when the selected addon is installed (for use in the addon
+///     info dialog only).
+///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.UpdateAvail)`</b>,
+///                  \anchor ListItem_Property_AddonUpdateAvail
+///                  _boolean_,
+///     Returns true when there's an update available for the selected addon.
+///   }
+///   \table_row3{   <b>`ListItem.Label`</b>,
+///                  \anchor ListItem_Label
+///                  _string_,
+///     Shows the left label of the currently selected item in a container
+///   }
+///   \table_row3{   <b>`ListItem.Label2`</b>,
+///                  \anchor ListItem_Label2
+///                  _string_,
+///     Shows the right label of the currently selected item in a container
+///   }
+///   \table_row3{   <b>`ListItem.Title`</b>,
+///                  \anchor ListItem_Title
+///                  _string_,
+///     Shows the title of the currently selected song or movie in a container
+///   }
+///   \table_row3{   <b>`ListItem.OriginalTitle`</b>,
+///                  \anchor ListItem_OriginalTitle
+///                  _string_,
+///     Shows the original title of the currently selected movie in a container
+///   }
+///   \table_row3{   <b>`ListItem.SortLetter`</b>,
+///                  \anchor ListItem_SortLetter
+///                  _string_,
+///     Shows the first letter of the current file in a container
+///   }
+///   \table_row3{   <b>`ListItem.TrackNumber`</b>,
+///                  \anchor ListItem_TrackNumber
+///                  _string_,
+///     Shows the track number of the currently selected song in a container
+///   }
+///   \table_row3{   <b>`ListItem.Artist`</b>,
+///                  \anchor ListItem_Artist
+///                  _string_,
+///     Shows the artist of the currently selected song in a container
+///   }
+///   \table_row3{   <b>`ListItem.AlbumArtist`</b>,
+///                  \anchor ListItem_AlbumArtist
+///                  _string_,
+///     Shows the artist of the currently selected album in a list
+///   }
+///   \table_row3{   <b>`ListItem.Property(Artist_Born)`</b>,
+///                  \anchor ListItem_Property_Artist_Born
+///                  _string_,
+///     Date of Birth of the currently selected Artist
+///   }
+///   \table_row3{   <b>`ListItem.Property(Artist_Died)`</b>,
+///                  \anchor ListItem_Property_Artist_Died
+///                  _string_,
+///     Date of Death of the currently selected Artist
+///   }
+///   \table_row3{   <b>`ListItem.Property(Artist_Formed)`</b>,
+///                  \anchor ListItem_Property_Artist_Formed
+///                  _string_,
+///     Formation date of the currently selected Band
+///   }
+///   \table_row3{   <b>`ListItem.Property(Artist_Disbanded)`</b>,
+///                  \anchor ListItem_Property_Artist_Disbanded
+///                  _string_,
+///     Disbanding date of the currently selected Band
+///   }
+///   \table_row3{   <b>`ListItem.Property(Artist_YearsActive)`</b>,
+///                  \anchor ListItem_Property_Artist_YearsActive
+///                  _string_,
+///     Years the currently selected artist has been active
+///   }
+///   \table_row3{   <b>`ListItem.Property(Artist_Instrument)`</b>,
+///                  \anchor ListItem_Property_Artist_Instrument
+///                  _string_,
+///     Instruments played by the currently selected artist
+///   }
+///   \table_row3{   <b>`ListItem.Property(Artist_Description)`</b>,
+///                  \anchor ListItem_Property_Artist_Description
+///                  _string_,
+///     Shows a biography of the currently selected artist
+///   }
+///   \table_row3{   <b>`ListItem.Property(Artist_Mood)`</b>,
+///                  \anchor ListItem_Property_Artist_Mood
+///                  _string_,
+///     Shows the moods of the currently selected artist
+///   }
+///   \table_row3{   <b>`ListItem.Property(Artist_Style)`</b>,
+///                  \anchor ListItem_Property_Artist_Style
+///                  _string_,
+///     Shows the styles of the currently selected artist
+///   }
+///   \table_row3{   <b>`ListItem.Property(Artist_Genre)`</b>,
+///                  \anchor ListItem_Property_Artist_Genre
+///                  _string_,
+///     Shows the genre of the currently selected artist
+///   }
+///   \table_row3{   <b>`ListItem.Album`</b>,
+///                  \anchor ListItem_Album
+///                  _string_,
+///     Shows the album of the currently selected song in a container
+///   }
+///   \table_row3{   <b>`ListItem.Property(Album_Mood)`</b>,
+///                  \anchor ListItem_Property_Album_Mood
+///                  _string_,
+///     Shows the moods of the currently selected Album
+///   }
+///   \table_row3{   <b>`ListItem.Property(Album_Style)`</b>,
+///                  \anchor ListItem_Property_Album_Style
+///                  _string_,
+///     Shows the styles of the currently selected Album
+///   }
+///   \table_row3{   <b>`ListItem.Property(Album_Theme)`</b>,
+///                  \anchor ListItem_Property_Album_Theme
+///                  _string_,
+///     Shows the themes of the currently selected Album
+///   }
+///   \table_row3{   <b>`ListItem.Property(Album_Type)`</b>,
+///                  \anchor ListItem_Property_Album_Type
+///                  _string_,
+///     Shows the Album Type (e.g. compilation\, enhanced\, explicit lyrics) of
+///     the currently selected Album
+///   }
+///   \table_row3{   <b>`ListItem.Property(Album_Label)`</b>,
+///                  \anchor ListItem_Property_Album_Label
+///                  _string_,
+///     Shows the record label of the currently selected Album
+///   }
+///   \table_row3{   <b>`ListItem.Property(Album_Description)`</b>,
+///                  \anchor ListItem_Property_Album_Description
+///                  _string_,
+///     Shows a review of the currently selected Album
+///   }
+///   \table_row3{   <b>`ListItem.DiscNumber`</b>,
+///                  \anchor ListItem_DiscNumber
+///                  _string_,
+///     Shows the disc number of the currently selected song in a container
+///   }
+///   \table_row3{   <b>`ListItem.Year`</b>,
+///                  \anchor ListItem_Year
+///                  _string_,
+///     Shows the year of the currently selected song\, album or movie in a
+///     container
+///   }
+///   \table_row3{   <b>`ListItem.Premiered`</b>,
+///                  \anchor ListItem_Premiered
+///                  _string_,
+///     Shows the release/aired date of the currently selected episode\, show\,
+///     movie or EPG item in a container
+///   }
+///   \table_row3{   <b>`ListItem.Genre`</b>,
+///                  \anchor ListItem_Genre
+///                  _string_,
+///     Shows the genre of the currently selected song\, album or movie in a
+///     container
+///   }
+///   \table_row3{   <b>`ListItem.Contributor`</b>,
+///                  \anchor ListItem_Contributor
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.ContributorAndRole`</b>,
+///                  \anchor ListItem_ContributorAndRole
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.Director`</b>,
+///                  \anchor ListItem_Director
+///                  _string_,
+///     Shows the director of the currently selected movie in a container
+///   }
+///   \table_row3{   <b>`ListItem.Country`</b>,
+///                  \anchor ListItem_Country
+///                  _string_,
+///     Shows the production country of the currently selected movie in a
+///     container
+///   }
+///   \table_row3{   <b>`ListItem.Episode`</b>,
+///                  \anchor ListItem_Episode
+///                  _string_,
+///     Shows the episode number value for the currently selected episode. It
+///     also shows the number of total\, watched or unwatched episodes for the
+///     currently selected tvshow or season\, based on the the current watched
+///     filter.
+///   }
+///   \table_row3{   <b>`ListItem.Season`</b>,
+///                  \anchor ListItem_Season
+///                  _string_,
+///     Shows the season value for the currently selected tvshow
+///   }
+///   \table_row3{   <b>`ListItem.TVShowTitle`</b>,
+///                  \anchor ListItem_TVShowTitle
+///                  _string_,
+///     Shows the name value for the currently selected tvshow in the season and
+///     episode depth of the video library
+///   }
+///   \table_row3{   <b>`ListItem.Property(TotalSeasons)`</b>,
+///                  \anchor ListItem_Property_TotalSeasons
+///                  _string_,
+///     Shows the total number of seasons for the currently selected tvshow
+///   }
+///   \table_row3{   <b>`ListItem.Property(TotalEpisodes)`</b>,
+///                  \anchor ListItem_Property_TotalEpisodes
+///                  _string_,
+///     Shows the total number of episodes for the currently selected tvshow or
+///     season
+///   }
+///   \table_row3{   <b>`ListItem.Property(WatchedEpisodes)`</b>,
+///                  \anchor ListItem_Property_WatchedEpisodes
+///                  _string_,
+///     Shows the number of watched episodes for the currently selected tvshow
+///     or season
+///   }
+///   \table_row3{   <b>`ListItem.Property(UnWatchedEpisodes)`</b>,
+///                  \anchor ListItem_Property_UnWatchedEpisodes
+///                  _string_,
+///     Shows the number of unwatched episodes for the currently selected tvshow
+///     or season
+///   }
+///   \table_row3{   <b>`ListItem.Property(NumEpisodes)`</b>,
+///                  \anchor ListItem_Property_NumEpisodes
+///                  _string_,
+///     Shows the number of total\, watched or unwatched episodes for the
+///     currently selected tvshow or season\, based on the the current watched filter.
+///   }
+///   \table_row3{   <b>`ListItem.PictureAperture`</b>,
+///                  \anchor ListItem_PictureAperture
+///                  _string_,
+///     Shows the F-stop used to take the selected picture. This is the value of the
+///     EXIF FNumber tag (hex code 0x829D).
+///   }
+///   \table_row3{   <b>`ListItem.PictureAuthor`</b>,
+///                  \anchor ListItem_PictureAuthor
+///                  _string_,
+///     Shows the name of the person involved in writing about the selected picture.
+///     This is the value of the IPTC Writer tag (hex code 0x7A).
+///   }
+///   \table_row3{   <b>`ListItem.PictureByline`</b>,
+///                  \anchor ListItem_PictureByline
+///                  _string_,
+///     Shows the name of the person who created the selected picture. This is
+///     the value of the IPTC Byline tag (hex code 0x50).
+///   }
+///   \table_row3{   <b>`ListItem.PictureBylineTitle`</b>,
+///                  \anchor ListItem_PictureBylineTitle
+///                  _string_,
+///     Shows the title of the person who created the selected picture. This is
+///     the value of the IPTC BylineTitle tag (hex code 0x55).
+///   }
+///   \table_row3{   <b>`ListItem.PictureCamMake`</b>,
+///                  \anchor ListItem_PictureCamMake
+///                  _string_,
+///     Shows the manufacturer of the camera used to take the selected picture.
+///     This is the value of the EXIF Make tag (hex code 0x010F).
+///   }
+///   \table_row3{   <b>`ListItem.PictureCamModel`</b>,
+///                  \anchor ListItem_PictureCamModel
+///                  _string_,
+///     Shows the manufacturer's model name or number of the camera used to take
+///     the selected picture. This is the value of the EXIF Model tag (hex code
+///     0x0110).
+///   }
+///   \table_row3{   <b>`ListItem.PictureCaption`</b>,
+///                  \anchor ListItem_PictureCaption
+///                  _string_,
+///     Shows a description of the selected picture. This is the value of the IPTC
+///     Caption tag (hex code 0x78).
+///   }
+///   \table_row3{   <b>`ListItem.PictureCategory`</b>,
+///                  \anchor ListItem_PictureCategory
+///                  _string_,
+///     Shows the subject of the selected picture as a category code. This is the
+///     value of the IPTC Category tag (hex code 0x0F).
+///   }
+///   \table_row3{   <b>`ListItem.PictureCCDWidth`</b>,
+///                  \anchor ListItem_PictureCCDWidth
+///                  _string_,
+///     Shows the width of the CCD in the camera used to take the selected
+///     picture. This is calculated from three EXIF tags (0xA002 * 0xA210
+///     / 0xA20e).
+///   }
+///   \table_row3{   <b>`ListItem.PictureCity`</b>,
+///                  \anchor ListItem_PictureCity
+///                  _string_,
+///     Shows the city where the selected picture was taken. This is the value of
+///     the IPTC City tag (hex code 0x5A).
+///   }
+///   \table_row3{   <b>`ListItem.PictureColour`</b>,
+///                  \anchor ListItem_PictureColour
+///                  _string_,
+///     Shows whether the selected picture is "Colour" or "Black and White".
+///   }
+///   \table_row3{   <b>`ListItem.PictureComment`</b>,
+///                  \anchor ListItem_PictureComment
+///                  _string_,
+///     Shows a description of the selected picture. This is the value of the
+///     EXIF User Comment tag (hex code 0x9286). This is the same value as
+///     \ref Slideshow_SlideComment "Slideshow.SlideComment".
+///   }
+///   \table_row3{   <b>`ListItem.PictureCopyrightNotice`</b>,
+///                  \anchor ListItem_PictureCopyrightNotice
+///                  _string_,
+///     Shows the copyright notice of the selected picture. This is the value of
+///     the IPTC Copyright tag (hex code 0x74).
+///   }
+///   \table_row3{   <b>`ListItem.PictureCountry`</b>,
+///                  \anchor ListItem_PictureCountry
+///                  _string_,
+///     Shows the full name of the country where the selected picture was taken.
+///     This is the value of the IPTC CountryName tag (hex code 0x65).
+///   }
+///   \table_row3{   <b>`ListItem.PictureCountryCode`</b>,
+///                  \anchor ListItem_PictureCountryCode
+///                  _string_,
+///     Shows the country code of the country where the selected picture was
+///     taken. This is the value of the IPTC CountryCode tag (hex code 0x64).
+///   }
+///   \table_row3{   <b>`ListItem.PictureCredit`</b>,
+///                  \anchor ListItem_PictureCredit
+///                  _string_,
+///     Shows who provided the selected picture. This is the value of the IPTC
+///     Credit tag (hex code 0x6E).
+///   }
+///   \table_row3{   <b>`ListItem.PictureDate`</b>,
+///                  \anchor ListItem_PictureDate
+///                  _string_,
+///     Shows the localized date of the selected picture. The short form of the
+///     date is used. The value of the EXIF DateTimeOriginal tag (hex code 0x9003)
+///     is preferred. If the DateTimeOriginal tag is not found\, the value of
+///     DateTimeDigitized (hex code 0x9004) or of DateTime (hex code 0x0132) might
+///     be used.
+///   }
+///   \table_row3{   <b>`ListItem.PictureDatetime`</b>,
+///                  \anchor ListItem_PictureDatetime
+///                  _string_,
+///     Shows the date/timestamp of the selected picture. The localized short form
+///     of the date and time is used. The value of the EXIF DateTimeOriginal tag
+///     (hex code 0x9003) is preferred. If the DateTimeOriginal tag is not found\,
+///     the value of DateTimeDigitized (hex code 0x9004) or of DateTime (hex code
+///     0x0132) might be used.
+///   }
+///   \table_row3{   <b>`ListItem.PictureDesc`</b>,
+///                  \anchor ListItem_PictureDesc
+///                  _string_,
+///     Shows a short description of the selected picture. The SlideComment\,
+///     EXIFComment\, or Caption values might contain a longer description. This
+///     is the value of the EXIF ImageDescription tag (hex code 0x010E).
+///   }
+///   \table_row3{   <b>`ListItem.PictureDigitalZoom`</b>,
+///                  \anchor ListItem_PictureDigitalZoom
+///                  _string_,
+///     Shows the digital zoom ratio when the selected picture was taken. This
+///     is the value of the EXIF DigitalZoomRatio tag (hex code 0xA404).
+///   }
+///   \table_row3{   <b>`ListItem.PictureExpMode`</b>,
+///                  \anchor ListItem_PictureExpMode
+///                  _string_,
+///     Shows the exposure mode of the selected picture. The possible values are
+///     "Automatic"\, "Manual"\, and "Auto bracketing". This is the value of the
+///     EXIF ExposureMode tag (hex code 0xA402).
+///   }
+///   \table_row3{   <b>`ListItem.PictureExposure`</b>,
+///                  \anchor ListItem_PictureExposure
+///                  _string_,
+///     Shows the class of the program used by the camera to set exposure when
+///     the selected picture was taken. Values include "Manual"\, "Program
+///     (Auto)"\, "Aperture priority (Semi-Auto)"\, "Shutter priority (semi-auto)"\,
+///     etc. This is the value of the EXIF ExposureProgram tag (hex code 0x8822).
+///   }
+///   \table_row3{   <b>`ListItem.PictureExposureBias`</b>,
+///                  \anchor ListItem_PictureExposureBias
+///                  _string_,
+///     Shows the exposure bias of the selected picture. Typically this is a
+///     number between -99.99 and 99.99. This is the value of the EXIF
+///     ExposureBiasValue tag (hex code 0x9204).
+///   }
+///   \table_row3{   <b>`ListItem.PictureExpTime`</b>,
+///                  \anchor ListItem_PictureExpTime
+///                  _string_,
+///     Shows the exposure time of the selected picture\, in seconds. This is the
+///     value of the EXIF ExposureTime tag (hex code 0x829A). If the ExposureTime
+///     tag is not found\, the ShutterSpeedValue tag (hex code 0x9201) might be
+///     used.
+///   }
+///   \table_row3{   <b>`ListItem.PictureFlashUsed`</b>,
+///                  \anchor ListItem_PictureFlashUsed
+///                  _string_,
+///     Shows the status of flash when the selected picture was taken. The value
+///     will be either "Yes" or "No"\, and might include additional information.
+///     This is the value of the EXIF Flash tag (hex code 0x9209).
+///   }
+///   \table_row3{   <b>`ListItem.PictureFocalLen`</b>,
+///                  \anchor ListItem_PictureFocalLen
+///                  _string_,
+///     Shows the lens focal length of the selected picture
+///   }
+///   \table_row3{   <b>`ListItem.PictureFocusDist`</b>,
+///                  \anchor ListItem_PictureFocusDist
+///                  _string_,
+///     Shows the focal length of the lens\, in mm. This is the value of the EXIF
+///     FocalLength tag (hex code 0x920A).
+///   }
+///   \table_row3{   <b>`ListItem.PictureGPSLat`</b>,
+///                  \anchor ListItem_PictureGPSLat
+///                  _string_,
+///     Shows the latitude where the selected picture was taken (degrees\,
+///     minutes\, seconds North or South). This is the value of the EXIF
+///     GPSInfo.GPSLatitude and GPSInfo.GPSLatitudeRef tags.
+///   }
+///   \table_row3{   <b>`ListItem.PictureGPSLon`</b>,
+///                  \anchor ListItem_PictureGPSLon
+///                  _string_,
+///     Shows the longitude where the selected picture was taken (degrees\,
+///     minutes\, seconds East or West). This is the value of the EXIF
+///     GPSInfo.GPSLongitude and GPSInfo.GPSLongitudeRef tags.
+///   }
+///   \table_row3{   <b>`ListItem.PictureGPSAlt`</b>,
+///                  \anchor ListItem_PictureGPSAlt
+///                  _string_,
+///     Shows the altitude in meters where the selected picture was taken. This
+///     is the value of the EXIF GPSInfo.GPSAltitude tag.
+///   }
+///   \table_row3{   <b>`ListItem.PictureHeadline`</b>,
+///                  \anchor ListItem_PictureHeadline
+///                  _string_,
+///     Shows a synopsis of the contents of the selected picture. This is the
+///     value of the IPTC Headline tag (hex code 0x69).
+///   }
+///   \table_row3{   <b>`ListItem.PictureImageType`</b>,
+///                  \anchor ListItem_PictureImageType
+///                  _string_,
+///     Shows the color components of the selected picture. This is the value of
+///     the IPTC ImageType tag (hex code 0x82).
+///   }
+///   \table_row3{   <b>`ListItem.PictureIPTCDate`</b>,
+///                  \anchor ListItem_PictureIPTCDate
+///                  _string_,
+///     Shows the date when the intellectual content of the selected picture was
+///     created\, rather than when the picture was created. This is the value of
+///     the IPTC DateCreated tag (hex code 0x37).
+///   }
+///   \table_row3{   <b>`ListItem.PictureIPTCTime`</b>,
+///                  \anchor ListItem_PictureIPTCTime
+///                  _string_,
+///     Shows the time when the intellectual content of the selected picture was
+///     created\, rather than when the picture was created. This is the value of
+///     the IPTC TimeCreated tag (hex code 0x3C).
+///   }
+///   \table_row3{   <b>`ListItem.PictureISO`</b>,
+///                  \anchor ListItem_PictureISO
+///                  _string_,
+///     Shows the ISO speed of the camera when the selected picture was taken.
+///     This is the value of the EXIF ISOSpeedRatings tag (hex code 0x8827).
+///   }
+///   \table_row3{   <b>`ListItem.PictureKeywords`</b>,
+///                  \anchor ListItem_PictureKeywords
+///                  _string_,
+///     Shows keywords assigned to the selected picture. This is the value of
+///     the IPTC Keywords tag (hex code 0x19).
+///   }
+///   \table_row3{   <b>`ListItem.PictureLightSource`</b>,
+///                  \anchor ListItem_PictureLightSource
+///                  _string_,
+///     Shows the kind of light source when the picture was taken. Possible
+///     values include "Daylight"\, "Fluorescent"\, "Incandescent"\, etc. This is
+///     the value of the EXIF LightSource tag (hex code 0x9208).
+///   }
+///   \table_row3{   <b>`ListItem.PictureLongDate`</b>,
+///                  \anchor ListItem_PictureLongDate
+///                  _string_,
+///     Shows only the localized date of the selected picture. The long form of
+///     the date is used. The value of the EXIF DateTimeOriginal tag (hex code
+///     0x9003) is preferred. If the DateTimeOriginal tag is not found\, the
+///     value of DateTimeDigitized (hex code 0x9004) or of DateTime (hex code
+///     0x0132) might be used.
+///   }
+///   \table_row3{   <b>`ListItem.PictureLongDatetime`</b>,
+///                  \anchor ListItem_PictureLongDatetime
+///                  _string_,
+///     Shows the date/timestamp of the selected picture. The localized long
+///     form of the date and time is used. The value of the EXIF DateTimeOriginal
+///     tag (hex code 0x9003) is preferred. if the DateTimeOriginal tag is not
+///     found\, the value of DateTimeDigitized (hex code 0x9004) or of DateTime
+///     (hex code 0x0132) might be used.
+///   }
+///   \table_row3{   <b>`ListItem.PictureMeteringMode`</b>,
+///                  \anchor ListItem_PictureMeteringMode
+///                  _string_,
+///     Shows the metering mode used when the selected picture was taken. The
+///     possible values are "Center weight"\, "Spot"\, or "Matrix". This is the
+///     value of the EXIF MeteringMode tag (hex code 0x9207).
+///   }
+///   \table_row3{   <b>`ListItem.PictureObjectName`</b>,
+///                  \anchor ListItem_PictureObjectName
+///                  _string_,
+///     Shows a shorthand reference for the selected picture. This is the value
+///     of the IPTC ObjectName tag (hex code 0x05).
+///   }
+///   \table_row3{   <b>`ListItem.PictureOrientation`</b>,
+///                  \anchor ListItem_PictureOrientation
+///                  _string_,
+///     Shows the orientation of the selected picture. Possible values are "Top
+///     Left"\, "Top Right"\, "Left Top"\, "Right Bottom"\, etc. This is the value
+///     of the EXIF Orientation tag (hex code 0x0112).
+///   }
+///   \table_row3{   <b>`ListItem.PicturePath`</b>,
+///                  \anchor ListItem_PicturePath
+///                  _string_,
+///     Shows the filename and path of the selected picture
+///   }
+///   \table_row3{   <b>`ListItem.PictureProcess`</b>,
+///                  \anchor ListItem_PictureProcess
+///                  _string_,
+///     Shows the process used to compress the selected picture
+///   }
+///   \table_row3{   <b>`ListItem.PictureReferenceService`</b>,
+///                  \anchor ListItem_PictureReferenceService
+///                  _string_,
+///     Shows the Service Identifier of a prior envelope to which the selected
+///     picture refers. This is the value of the IPTC ReferenceService tag
+///     (hex code 0x2D).
+///   }
+///   \table_row3{   <b>`ListItem.PictureResolution`</b>,
+///                  \anchor ListItem_PictureResolution
+///                  _string_,
+///     Shows the dimensions of the selected picture
+///   }
+///   \table_row3{   <b>`ListItem.PictureSource`</b>,
+///                  \anchor ListItem_PictureSource
+///                  _string_,
+///     Shows the original owner of the selected picture. This is the value of
+///     the IPTC Source tag (hex code 0x73).
+///   }
+///   \table_row3{   <b>`ListItem.PictureSpecialInstructions`</b>,
+///                  \anchor ListItem_PictureSpecialInstructions
+///                  _string_,
+///     Shows other editorial instructions concerning the use of the selected
+///     picture. This is the value of the IPTC SpecialInstructions tag (hex
+///     code 0x28).
+///   }
+///   \table_row3{   <b>`ListItem.PictureState`</b>,
+///                  \anchor ListItem_PictureState
+///                  _string_,
+///     Shows the State/Province where the selected picture was taken. This is
+///     the value of the IPTC ProvinceState tag (hex code 0x5F).
+///   }
+///   \table_row3{   <b>`ListItem.PictureSublocation`</b>,
+///                  \anchor ListItem_PictureSublocation
+///                  _string_,
+///     Shows the location within a city where the selected picture was taken -
+///     might indicate the nearest landmark. This is the value of the IPTC
+///     SubLocation tag (hex code 0x5C).
+///   }
+///   \table_row3{   <b>`ListItem.PictureSupplementalCategories`</b>,
+///                  \anchor ListItem_PictureSupplementalCategories
+///                  _string_,
+///     Shows supplemental category codes to further refine the subject of the
+///     selected picture. This is the value of the IPTC SuppCategory tag (hex
+///     code 0x14).
+///   }
+///   \table_row3{   <b>`ListItem.PictureTransmissionReference`</b>,
+///                  \anchor ListItem_PictureTransmissionReference
+///                  _string_,
+///     Shows a code representing the location of original transmission of the
+///     selected picture. This is the value of the IPTC TransmissionReference
+///     tag (hex code 0x67).
+///   }
+///   \table_row3{   <b>`ListItem.PictureUrgency`</b>,
+///                  \anchor ListItem_PictureUrgency
+///                  _string_,
+///     Shows the urgency of the selected picture. Values are 1-9. The "1" is
+///     most urgent. Some image management programs use urgency to indicate
+///     picture rating\, where urgency "1" is 5 stars and urgency "5" is 1 star.
+///     Urgencies 6-9 are not used for rating. This is the value of the IPTC
+///     Urgency tag (hex code 0x0A).
+///   }
+///   \table_row3{   <b>`ListItem.PictureWhiteBalance`</b>,
+///                  \anchor ListItem_PictureWhiteBalance
+///                  _string_,
+///     Shows the white balance mode set when the selected picture was taken.
+///     The possible values are "Manual" and "Auto". This is the value of the
+///     EXIF WhiteBalance tag (hex code 0xA403).
+///   }
+///   \table_row3{   <b>`ListItem.FileName`</b>,
+///                  \anchor ListItem_FileName
+///                  _string_,
+///     Shows the filename of the currently selected song or movie in a container
+///   }
+///   \table_row3{   <b>`ListItem.Path`</b>,
+///                  \anchor ListItem_Path
+///                  _string_,
+///     Shows the complete path of the currently selected song or movie in a
+///     container
+///   }
+///   \table_row3{   <b>`ListItem.FolderName`</b>,
+///                  \anchor ListItem_FolderName
+///                  _string_,
+///     Shows top most folder of the path of the currently selected song or
+///     movie in a container
+///   }
+///   \table_row3{   <b>`ListItem.FolderPath`</b>,
+///                  \anchor ListItem_FolderPath
+///                  _string_,
+///     Shows the complete path of the currently selected song or movie in a
+///     container (without user details).
+///   }
+///   \table_row3{   <b>`ListItem.FileNameAndPath`</b>,
+///                  \anchor ListItem_FileNameAndPath
+///                  _string_,
+///     Shows the full path with filename of the currently selected song or
+///     movie in a container
+///   }
+///   \table_row3{   <b>`ListItem.FileExtension`</b>,
+///                  \anchor ListItem_FileExtension
+///                  _string_,
+///     Shows the file extension (without leading dot) of the currently selected
+///     item in a container
+///   }
+///   \table_row3{   <b>`ListItem.Date`</b>,
+///                  \anchor ListItem_Date
+///                  _string_,
+///     Shows the file date of the currently selected song or movie in a
+///     container / Aired date of an episode / Day\, start time and end time of
+///     current selected TV programme (PVR)
+///   }
+///   \table_row3{   <b>`ListItem.DateAdded`</b>,
+///                  \anchor ListItem_DateAdded
+///                  _string_,
+///     Shows the date the currently selected item was added to the
+///     library / Date and time of an event in the EventLog window.
+///   }
+///   \table_row3{   <b>`ListItem.Size`</b>,
+///                  \anchor ListItem_Size
+///                  _string_,
+///     Shows the file size of the currently selected song or movie in a
+///     container
+///   }
+///   \table_row3{   <b>`ListItem.Rating`</b>,
+///                  \anchor ListItem_Rating
+///                  _string_,
+///     Shows the IMDB rating of the currently selected movie in a container
+///   }
+///   \table_row3{   <b>`ListItem.Set`</b>,
+///                  \anchor ListItem_Set
+///                  _string_,
+///     Shows the name of the set the movie is part of
+///   }
+///   \table_row3{   <b>`ListItem.SetId`</b>,
+///                  \anchor ListItem_SetId
+///                  _string_,
+///     Shows the id of the set the movie is part of
+///   }
+///   \table_row3{   <b>`ListItem.UserRating`</b>,
+///                  \anchor ListItem_UserRating
+///                  _string_,
+///     Shows the user rating of the currently selected item in a container
+///   }
+///   \table_row3{   <b>`ListItem.Votes`</b>,
+///                  \anchor ListItem_Votes
+///                  _string_,
+///     Shows the IMDB votes of the currently selected movie in a container
+///   }
+///   \table_row3{   <b>`ListItem.RatingAndVotes`</b>,
+///                  \anchor ListItem_RatingAndVotes
+///                  _string_,
+///     Shows the IMDB rating and votes of the currently selected movie in a
+///     container
+///   }
+///   \table_row3{   <b>`ListItem.Mood`</b>,
+///                  \anchor ListItem_Mood
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.Mpaa`</b>,
+///                  \anchor ListItem_Mpaa
+///                  _string_,
+///     Show the MPAA rating of the currently selected movie in a container
+///   }
+///   \table_row3{   <b>`ListItem.ProgramCount`</b>,
+///                  \anchor ListItem_ProgramCount
+///                  _string_,
+///     Shows the number of times an xbe has been run from "my programs"
+///   }
+///   \table_row3{   <b>`ListItem.Duration`</b>,
+///                  \anchor ListItem_Duration
+///                  _string_,
+///     Shows the song or movie duration of the currently selected movie in a
+///     container
+///   }
+///   \table_row3{   <b>`ListItem.DBTYPE`</b>,
+///                  \anchor ListItem_DBTYPE
+///                  _string_,
+///     Shows the database type of the ListItem.DBID for videos (movie\, set\,
+///     genre\, actor\, tvshow\, season\, episode). It does not return any value
+///     for the music library. Beware with season\, the "*all seasons" entry does
+///     give a DBTYPE "season" and a DBID\, but you can't get the details of that
+///     entry since it's a virtual entry in the Video Library.
+///   }
+///   \table_row3{   <b>`ListItem.DBID`</b>,
+///                  \anchor ListItem_DBID
+///                  _string_,
+///     Shows the database id of the currently selected listitem in a container
+///   }
+///   \table_row3{   <b>`ListItem.Cast`</b>,
+///                  \anchor ListItem_Cast
+///                  _string_,
+///     Shows a concatenated string of cast members of the currently selected
+///     movie\, for use in dialogvideoinfo.xml
+///   }
+///   \table_row3{   <b>`ListItem.CastAndRole`</b>,
+///                  \anchor ListItem_CastAndRole
+///                  _string_,
+///     Shows a concatenated string of cast members and roles of the currently
+///     selected movie\, for use in dialogvideoinfo.xml
+///   }
+///   \table_row3{   <b>`ListItem.Studio`</b>,
+///                  \anchor ListItem_Studio
+///                  _string_,
+///     Studio of current selected Music Video in a container
+///   }
+///   \table_row3{   <b>`ListItem.Top250`</b>,
+///                  \anchor ListItem_Top250
+///                  _string_,
+///     Shows the IMDb top250 position of the currently selected listitem in a
+///     container.
+///   }
+///   \table_row3{   <b>`ListItem.Trailer`</b>,
+///                  \anchor ListItem_Trailer
+///                  _string_,
+///     Shows the full trailer path with filename of the currently selected
+///     movie in a container
+///   }
+///   \table_row3{   <b>`ListItem.Writer`</b>,
+///                  \anchor ListItem_Writer
+///                  _string_,
+///     Name of Writer of current Video in a container
+///   }
+///   \table_row3{   <b>`ListItem.Tag`</b>,
+///                  \anchor ListItem_Tag
+///                  _string_,
+///     Summary of current Video in a container
+///   }
+///   \table_row3{   <b>`ListItem.Tagline`</b>,
+///                  \anchor ListItem_Tagline
+///                  _string_,
+///     Small Summary of current Video in a container
+///   }
+///   \table_row3{   <b>`ListItem.PlotOutline`</b>,
+///                  \anchor ListItem_PlotOutline
+///                  _string_,
+///     Small Summary of current Video in a container
+///   }
+///   \table_row3{   <b>`ListItem.Plot`</b>,
+///                  \anchor ListItem_Plot
+///                  _string_,
+///     Complete Text Summary of Video in a container
+///   }
+///   \table_row3{   <b>`ListItem.IMDBNumber`</b>,
+///                  \anchor ListItem_IMDBNumber
+///                  _string_,
+///     The IMDB iD of the selected Video in a container
+///   }
+///   \table_row3{   <b>`ListItem.EpisodeName`</b>,
+///                  \anchor ListItem_EpisodeName
+///                  _string_,
+///     (PVR only) The name of the episode if the selected EPG item is a TV Show
+///   }
+///   \table_row3{   <b>`ListItem.PercentPlayed`</b>,
+///                  \anchor ListItem_PercentPlayed
+///                  _string_,
+///     Returns percentage value [0-100] of how far the selected video has been
+///     played
+///   }
+///   \table_row3{   <b>`ListItem.LastPlayed`</b>,
+///                  \anchor ListItem_LastPlayed
+///                  _string_,
+///     Last play date of Video in a container
+///   }
+///   \table_row3{   <b>`ListItem.PlayCount`</b>,
+///                  \anchor ListItem_PlayCount
+///                  _string_,
+///     Playcount of Video in a container
+///   }
+///   \table_row3{   <b>`ListItem.ChannelNumber`</b>,
+///                  \anchor ListItem_ChannelNumber
+///                  _string_,
+///     Number of current selected TV channel in a container
+///   }
+///   \table_row3{   <b>`ListItem.ChannelName`</b>,
+///                  \anchor ListItem_ChannelName
+///                  _string_,
+///     Name of current selected TV channel in a container
+///   }
+///   \table_row3{   <b>`ListItem.VideoCodec`</b>,
+///                  \anchor ListItem_VideoCodec
+///                  _string_,
+///     Shows the video codec of the currently selected video (common values:
+///     3iv2\, avc1\, div2\, div3\, divx\, divx 4\, dx50\, flv\, h264\, microsoft\, mp42\,
+///     mp43\, mp4v\, mpeg1video\, mpeg2video\, mpg4\, rv40\, svq1\, svq3\,
+///     theora\, vp6f\, wmv2\, wmv3\, wvc1\, xvid)
+///   }
+///   \table_row3{   <b>`ListItem.VideoResolution`</b>,
+///                  \anchor ListItem_VideoResolution
+///                  _string_,
+///     Shows the resolution of the currently selected video (possible values:
+///     480\, 576\, 540\, 720\, 1080\, 4K). Note that 540 usually means a widescreen
+///     format (around 960x540) while 576 means PAL resolutions (normally
+///     720x576)\, therefore 540 is actually better resolution than 576.
+///   }
+///   \table_row3{   <b>`ListItem.VideoAspect`</b>,
+///                  \anchor ListItem_VideoAspect
+///                  _string_,
+///     Shows the aspect ratio of the currently selected video (possible values:
+///     1.33\, 1.37\, 1.66\, 1.78\, 1.85\, 2.20\, 2.35\, 2.40\, 2.55\, 2.76)
+///   }
+///   \table_row3{   <b>`ListItem.AudioCodec`</b>,
+///                  \anchor ListItem_AudioCodec
+///                  _string_,
+///     Shows the audio codec of the currently selected video (common values:
+///     aac\, ac3\, cook\, dca\, dtshd_hra\, dtshd_ma\, eac3\, mp1\, mp2\, mp3\, pcm_s16be\, pcm_s16le\, pcm_u8\, truehd\, vorbis\, wmapro\, wmav2)
+///   }
+///   \table_row3{   <b>`ListItem.AudioChannels`</b>,
+///                  \anchor ListItem_AudioChannels
+///                  _string_,
+///     Shows the number of audio channels of the currently selected video
+///     (possible values: 1\, 2\, 4\, 5\, 6\, 8\, 10)
+///   }
+///   \table_row3{   <b>`ListItem.AudioLanguage`</b>,
+///                  \anchor ListItem_AudioLanguage
+///                  _string_,
+///     Shows the audio language of the currently selected video (returns an
+///     ISO 639-2 three character code\, e.g. eng\, epo\, deu)
+///   }
+///   \table_row3{   <b>`ListItem.SubtitleLanguage`</b>,
+///                  \anchor ListItem_SubtitleLanguage
+///                  _string_,
+///     Shows the subtitle language of the currently selected video (returns an
+///     ISO 639-2 three character code\, e.g. eng\, epo\, deu)
+///   }
+///   \table_row3{   <b>`ListItem.Property(AudioCodec.[n])`</b>,
+///                  \anchor ListItem_Property_AudioCodec
+///                  _string_,
+///     Shows the audio codec of the currently selected video\, 'n' defines the
+///     number of the audiostream (values: see \ref ListItem_AudioCodec "ListItem.AudioCodec")
+///   }
+///   \table_row3{   <b>`ListItem.Property(AudioChannels.[n])`</b>,
+///                  \anchor ListItem_Property_AudioChannels
+///                  _string_,
+///     Shows the number of audio channels of the currently selected video\, 'n'
+///     defines the number of the audiostream (values: see
+///     \ref ListItem_AudioChannels "ListItem.AudioChannels")
+///   }
+///   \table_row3{   <b>`ListItem.Property(AudioLanguage.[n])`</b>,
+///                  \anchor ListItem_Property_AudioLanguage
+///                  _string_,
+///     Shows the audio language of the currently selected video\, 'n' defines
+///     the number of the audiostream (values: see \ref ListItem_AudioLanguage "ListItem.AudioLanguage")
+///   }
+///   \table_row3{   <b>`ListItem.Property(SubtitleLanguage.[n])`</b>,
+///                  \anchor ListItem_Property_SubtitleLanguage
+///                  _string_,
+///     Shows the subtitle language of the currently selected video\, 'n' defines
+///     the number of the subtitle (values: see \ref ListItem_SubtitleLanguage "ListItem.SubtitleLanguage")
+///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.Name)`</b>,
+///                  \anchor ListItem_Property_AddonName
+///                  _string_,
+///     Shows the name of the currently selected addon
+///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.Version)`</b>,
+///                  \anchor ListItem_Property_AddonVersion
+///                  _string_,
+///     Shows the version of the currently selected addon
+///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.Summary)`</b>,
+///                  \anchor ListItem_Property_AddonSummary
+///                  _string_,
+///     Shows a short description of the currently selected addon
+///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.Description)`</b>,
+///                  \anchor ListItem_Property_AddonDescription
+///                  _string_,
+///     Shows the full description of the currently selected addon
+///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.Type)`</b>,
+///                  \anchor ListItem_Property_AddonType
+///                  _string_,
+///     Shows the type (screensaver\, script\, skin\, etc...) of the currently
+///     selected addon
+///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.Creator)`</b>,
+///                  \anchor ListItem_Property_AddonCreator
+///                  _string_,
+///     Shows the name of the author the currently selected addon
+///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.Disclaimer)`</b>,
+///                  \anchor ListItem_Property_AddonDisclaimer
+///                  _string_,
+///     Shows the disclaimer of the currently selected addon
+///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.Changelog)`</b>,
+///                  \anchor ListItem_Property_AddonChangelog
+///                  _string_,
+///     Shows the changelog of the currently selected addon
+///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.ID)`</b>,
+///                  \anchor ListItem_Property_AddonID
+///                  _string_,
+///     Shows the identifier of the currently selected addon
+///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.Status)`</b>,
+///                  \anchor ListItem_Property_AddonStatus
+///                  _string_,
+///     Shows the status of the currently selected addon
+///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.Broken)`</b>,
+///                  \anchor ListItem_Property_AddonBroken
+///                  _string_,
+///     Shows a message when the addon is marked as broken in the repo
+///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.Path)`</b>,
+///                  \anchor ListItem_Property_AddonPath
+///                  _string_,
+///     Shows the path of the currently selected addon
+///   }
+///   \table_row3{   <b>`ListItem.StartTime`</b>,
+///                  \anchor ListItem_StartTime
+///                  _string_,
+///     Start time of current selected TV programme in a container
+///   }
+///   \table_row3{   <b>`ListItem.EndTime`</b>,
+///                  \anchor ListItem_EndTime
+///                  _string_,
+///     End time of current selected TV programme in a container
+///   }
+///   \table_row3{   <b>`ListItem.StartDate`</b>,
+///                  \anchor ListItem_StartDate
+///                  _string_,
+///     Start date of current selected TV programme in a container
+///   }
+///   \table_row3{   <b>`ListItem.EndDate`</b>,
+///                  \anchor ListItem_EndDate
+///                  _string_,
+///     End date of current selected TV programme in a container
+///   }
+///   \table_row3{   <b>`ListItem.NextTitle`</b>,
+///                  \anchor ListItem_NextTitle
+///                  _string_,
+///     Title of the next item (PVR).
+///   }
+///   \table_row3{   <b>`ListItem.NextGenre`</b>,
+///                  \anchor ListItem_NextGenre
+///                  _string_,
+///     Genre of the next item (PVR).
+///   }
+///   \table_row3{   <b>`ListItem.NextPlot`</b>,
+///                  \anchor ListItem_NextPlot
+///                  _string_,
+///     Plot of the next item (PVR).
+///   }
+///   \table_row3{   <b>`ListItem.NextPlotOutline`</b>,
+///                  \anchor ListItem_NextPlotOutline
+///                  _string_,
+///     Plot outline of the next item (PVR).
+///   }
+///   \table_row3{   <b>`ListItem.NextStartTime`</b>,
+///                  \anchor ListItem_NextStartTime
+///                  _string_,
+///     Start time of the next item (PVR).
+///   }
+///   \table_row3{   <b>`ListItem.NextEndTime`</b>,
+///                  \anchor ListItem_NextEndTime
+///                  _string_,
+///     End of the next item (PVR).
+///   }
+///   \table_row3{   <b>`ListItem.NextStartDate`</b>,
+///                  \anchor ListItem_NextStartDate
+///                  _string_,
+///     Start date of the next item (PVR).
+///   }
+///   \table_row3{   <b>`ListItem.NextEndDate`</b>,
+///                  \anchor ListItem_NextEndDate
+///                  _string_,
+///     End date of the next item (PVR).
+///   }
+///   \table_row3{   <b>`ListItem.ChannelGroup`</b>,
+///                  \anchor ListItem_ChannelGroup
+///                  _string_,
+///     Channel group of the selected item (PVR).
+///   }
+///   \table_row3{   <b>`ListItem.SubChannelNumber`</b>,
+///                  \anchor ListItem_SubChannelNumber
+///                  _string_,
+///     Subchannel number of the currently selected channel that's currently
+///     playing (PVR).
+///   }
+///   \table_row3{   <b>`ListItem.ChannelNumberLabel`</b>,
+///                  \anchor ListItem_ChannelNumberLabel
+///                  _string_,
+///     Channel and subchannel number of the currently selected channel that's
+///     currently playing (PVR).
+///   }
+///   \table_row3{   <b>`ListItem.Progress`</b>,
+///                  \anchor ListItem_Progress
+///                  _string_,
+///     Part of the programme that's been played (PVR).
+///   }
+///   \table_row3{   <b>`ListItem.StereoscopicMode`</b>,
+///                  \anchor ListItem_StereoscopicMode
+///                  _string_,
+///     Returns the stereomode of the selected video (i.e. mono\,
+///     split_vertical\, split_horizontal\, row_interleaved\,
+///     anaglyph_cyan_red\, anaglyph_green_magenta)
+///   }
+///   \table_row3{   <b>`ListItem.HasTimerSchedule`</b>,
+///                  \anchor ListItem_HasTimerSchedule
+///                  _boolean_,
+///     Whether the item is part of a repeating timer schedule (PVR). (v16 addition)
+///   }
+///   \table_row3{   <b>`ListItem.HasRecording`</b>,
+///                  \anchor ListItem_HasRecording
+///                  _boolean_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.TimerHasError`</b>,
+///                  \anchor ListItem_TimerHasError
+///                  _boolean_,
+///     Whether the item has a timer and it won't be recorded because of an error (PVR). (v17 addition)
+///   }
+///   \table_row3{   <b>`ListItem.TimerHasConflict`</b>,
+///                  \anchor ListItem_TimerHasConflict
+///                  _boolean_,
+///     Whether the item has a timer and it won't be recorded because of a conflict (PVR). (v17 addition)
+///   }
+///   \table_row3{   <b>`ListItem.TimerIsActive`</b>,
+///                  \anchor ListItem_TimerIsActive
+///                  _boolean_,
+///     Whether the item has a timer that will be recorded\, i.e. the timer is enabled (PVR). (v17 addition)
+///   }
+///   \table_row3{   <b>`ListItem.Comment`</b>,
+///                  \anchor ListItem_Comment
+///                  _string_,
+///     Comment assigned to the item (PVR/MUSIC).
+///   }
+///   \table_row3{   <b>`ListItem.TimerType`</b>,
+///                  \anchor ListItem_TimerType
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.EpgEventTitle`</b>,
+///                  \anchor ListItem_EpgEventTitle
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.InProgress`</b>,
+///                  \anchor ListItem_InProgress
+///                  _boolean_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.IsParentFolder`</b>,
+///                  \anchor ListItem_IsParentFolder
+///                  _boolean_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.AddonName`</b>,
+///                  \anchor ListItem_AddonName
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.AddonVersion`</b>,
+///                  \anchor ListItem_AddonVersion
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.AddonCreator`</b>,
+///                  \anchor ListItem_AddonCreator
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.AddonSummary`</b>,
+///                  \anchor ListItem_AddonSummary
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.AddonDescription`</b>,
+///                  \anchor ListItem_AddonDescription
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.AddonDisclaimer`</b>,
+///                  \anchor ListItem_AddonDisclaimer
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.AddonBroken`</b>,
+///                  \anchor ListItem_AddonBroken
+///                  _boolean_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.AddonType`</b>,
+///                  \anchor ListItem_AddonType
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.AddonInstallDate`</b>,
+///                  \anchor ListItem_AddonInstallDate
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.AddonLastUpdated`</b>,
+///                  \anchor ListItem_AddonLastUpdated
+///                  _string_,
+///     Todo
+///   }
+///   \table_row3{   <b>`ListItem.AddonLastUsed`</b>,
+///                  \anchor ListItem_AddonLastUsed
+///                  _string_,
+///     Todo
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
 const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "icon",             LISTITEM_ICON },
                                   { "actualicon",       LISTITEM_ACTUAL_ICON },
@@ -676,23 +3802,169 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "addoninstalldate", LISTITEM_ADDON_INSTALL_DATE },
                                   { "addonlastupdated", LISTITEM_ADDON_LAST_UPDATED },
                                   { "addonlastused",    LISTITEM_ADDON_LAST_USED },
+
 };
 
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_Visualisation Visualisation
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`Visualisation.Enabled`</b>,
+///                  \anchor Visualisation_Enabled
+///                  _boolean_,
+///     Returns true if any visualisation has been set in settings (so not None).
+///   }
+///   \table_row3{   <b>`Visualisation.HasPresets`</b>,
+///                  \anchor Visualisation_HasPresets
+///                  _boolean_,
+///     Returns true if the visualisation has built in presets.
+///   }
+///   \table_row3{   <b>`Visualisation.Locked`</b>,
+///                  \anchor Visualisation_Locked
+///                  _boolean_,
+///     Returns true if the current visualisation preset is locked (eg in Milkdrop.)
+///   }
+///   \table_row3{   <b>`Visualisation.Preset`</b>,
+///                  \anchor Visualisation_Preset
+///                  _string_,
+///     Shows the current preset of the visualisation.
+///   }
+///   \table_row3{   <b>`Visualisation.Name`</b>,
+///                  \anchor Visualisation_Name
+///                  _string_,
+///     Shows the name of the visualisation.
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
 const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
                                   { "preset",           VISUALISATION_PRESET },
                                   { "haspresets",       VISUALISATION_HAS_PRESETS },
                                   { "name",             VISUALISATION_NAME },
                                   { "enabled",          VISUALISATION_ENABLED }};
 
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_Fanart Fanart
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`Fanart.Color1`</b>,
+///                  \anchor Fanart_Color1
+///                  _string_,
+///     Returns the first of three colors included in the currently selected
+///     Fanart theme for the parent TV Show. Colors are arranged Lightest to
+///     Darkest.
+///   }
+///   \table_row3{   <b>`Fanart.Color2`</b>,
+///                  \anchor Fanart_Color2
+///                  _string_,
+///     Returns the second of three colors included in the currently selected
+///     Fanart theme for the parent TV Show. Colors are arranged Lightest to
+///     Darkest.
+///   }
+///   \table_row3{   <b>`Fanart.Color3`</b>,
+///                  \anchor Fanart_Color3
+///                  _string_,
+///     Returns the third of three colors included in the currently selected
+///     Fanart theme for the parent TV Show. Colors are arranged Lightest to
+///     Darkest.
+///   }
+///   \table_row3{   <b>`Fanart.Image`</b>,
+///                  \anchor Fanart_Image
+///                  _string_,
+///     todo
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
 const infomap fanart_labels[] =  {{ "color1",           FANART_COLOR1 },
                                   { "color2",           FANART_COLOR2 },
                                   { "color3",           FANART_COLOR3 },
                                   { "image",            FANART_IMAGE }};
 
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_Skin Skin
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`Skin.CurrentTheme`</b>,
+///                  \anchor Skin_CurrentTheme
+///                  _boolean_,
+///     todo
+///   }
+///   \table_row3{   <b>`Skin.CurrentColourTheme`</b>,
+///                  \anchor Skin_CurrentColourTheme
+///                  _boolean_,
+///     todo
+///   }
+///   \table_row3{   <b>`Skin.AspectRatio`</b>,
+///                  \anchor Skin_AspectRatio
+///                  _boolean_,
+///     todo
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
 const infomap skin_labels[] =    {{ "currenttheme",     SKIN_THEME },
                                   { "currentcolourtheme",SKIN_COLOUR_THEME },
                                   {"aspectratio",       SKIN_ASPECT_RATIO}};
 
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_Window Window
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`Window.IsMedia`</b>,
+///                  \anchor Window_IsMedia
+///                  _boolean_,
+///     Returns true if this window is a media window (programs\, music\, video\,
+///     scripts\, pictures)
+///   }
+///   \table_row3{   <b>`Window.Is(window)`</b>,
+///                  \anchor Window_Is
+///                  _boolean_,
+///     todo
+///   }
+///   \table_row3{   <b>`Window.IsActive(window)`</b>,
+///                  \anchor Window_IsActive
+///                  _boolean_,
+///     Returns true if the window with id or title _window_ is active (excludes
+///     fade out time on dialogs) \ref modules__General__Window_IDs "See here for a list of windows"
+///   }
+///   \table_row3{   <b>`Window.IsTopMost(window)`</b>,
+///                  \anchor Window_IsTopMost
+///                  _boolean_,
+///     Returns true if the window with id or title _window_ is on top of the
+///     window stack (excludes fade out time on dialogs)
+///     \ref modules__General__Window_IDs "See here for a list of windows"
+///   }
+///   \table_row3{   <b>`Window.IsVisible(window)`</b>,
+///                  \anchor Window_IsVisible
+///                  _boolean_,
+///     Returns true if the window is visible (includes fade out time on dialogs)
+///   }
+///   \table_row3{   <b>`Window.Previous(window)`</b>,
+///                  \anchor Window_Previous
+///                  _boolean_,
+///     Returns true if the window with id or title _window_ is being moved from.
+///     \ref modules__General__Window_IDs "See here for a list of windows". Only
+///     valid while windows are changing.
+///   }
+///   \table_row3{   <b>`Window.Next(window)`</b>,
+///                  \anchor Window_Next
+///                  _boolean_,
+///     Returns true if the window with id or title _window_ is being moved to.
+///     \ref modules__General__Window_IDs "See here for a list of windows". Only
+///     valid while windows are changing.
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
 const infomap window_bools[] =   {{ "ismedia",          WINDOW_IS_MEDIA },
                                   { "is",               WINDOW_IS },
                                   { "isactive",         WINDOW_IS_ACTIVE },
@@ -701,11 +3973,88 @@ const infomap window_bools[] =   {{ "ismedia",          WINDOW_IS_MEDIA },
                                   { "previous",         WINDOW_PREVIOUS },
                                   { "next",             WINDOW_NEXT }};
 
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_Control Control
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`Control.HasFocus(id)`</b>,
+///                  \anchor Control_HasFocus
+///                  _boolean_,
+///     Returns true if the currently focused control has id "id".
+///   }
+///   \table_row3{   <b>`Control.IsVisible(id)`</b>,
+///                  \anchor Control_IsVisible
+///                  _boolean_,
+///     Returns true if the control with id "id" is visible.
+///   }
+///   \table_row3{   <b>`Control.IsEnabled(id)`</b>,
+///                  \anchor Control_IsEnabled
+///                  _boolean_,
+///     Returns true if the control with id "id" is enabled.
+///   }
+///   \table_row3{   <b>`Control.GetLabel(id)[.index()]`</b>,
+///                  \anchor Control_GetLabel
+///                  _string_,
+///     Returns the label value or texture name of the control with the given id.
+///     Optionally you can specify index(1) to retrieve label2 from an Edit
+///     control.
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
 const infomap control_labels[] = {{ "hasfocus",         CONTROL_HAS_FOCUS },
                                   { "isvisible",        CONTROL_IS_VISIBLE },
                                   { "isenabled",        CONTROL_IS_ENABLED },
                                   { "getlabel",         CONTROL_GET_LABEL }};
 
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_Playlist Playlist
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`Playlist.Length(media)`</b>,
+///                  \anchor Playlist_Length
+///                  _integer_,
+///     Total size of the current playlist. optional parameter media is either
+///     video or music.
+///   }
+///   \table_row3{   <b>`Playlist.Position(media)`</b>,
+///                  \anchor Playlist_Position
+///                  _integer_,
+///     Position of the current item in the current playlist. optional parameter
+///     media is either video or music.
+///   }
+///   \table_row3{   <b>`Playlist.Random`</b>,
+///                  \anchor Playlist_Random
+///                  _integer_,
+///     Returns string ID's 590 (Randomize Play Enabled) or 591 (Disabled)
+///   }
+///   \table_row3{   <b>`Playlist.Repeat`</b>,
+///                  \anchor Playlist_Repeat
+///                  _integer_,
+///     Returns string ID's 592 (Repeat One)\, 593 (Repeat All)\, or 594 (Repeat Off)
+///   }
+///   \table_row3{   <b>`Playlist.IsRandom`</b>,
+///                  \anchor Playlist_IsRandom
+///                  _boolean_,
+///     Returns true if the player is in random mode.
+///   }
+///   \table_row3{   <b>`Playlist.IsRepeat`</b>,
+///                  \anchor Playlist_IsRepeat
+///                  _boolean_,
+///     Returns true if the player is in repeat all mode.
+///   }
+///   \table_row3{   <b>`Playlist.IsRepeatOne`</b>,
+///                  \anchor Playlist_IsRepeatOne
+///                  _boolean_,
+///     Returns true if the player is in repeat one mode.
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
 const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
                                   { "position",         PLAYLIST_POSITION },
                                   { "random",           PLAYLIST_RANDOM },
@@ -714,6 +4063,275 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
                                   { "isrepeat",         PLAYLIST_ISREPEAT },
                                   { "isrepeatone",      PLAYLIST_ISREPEATONE }};
 
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_Pvr Pvr
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`Pvr.IsRecording`</b>,
+///                  \anchor Pvr_IsRecording
+///                  _boolean_,
+///     Returns true when the system is recording a tv programme.
+///   }
+///   \table_row3{   <b>`Pvr.HasTimer`</b>,
+///                  \anchor Pvr_HasTimer
+///                  _boolean_,
+///     Returns true when a recording timer is active.
+///   }
+///   \table_row3{   <b>`Pvr.HasTVChannels`</b>,
+///                  \anchor Pvr_HasTVChannels
+///                  _boolean_,
+///     Returns true if there are TV channels available
+///   }
+///   \table_row3{   <b>`Pvr.HasRadioChannels`</b>,
+///                  \anchor Pvr_HasRadioChannels
+///                  _boolean_,
+///     Returns true if there are radio channels available
+///   }
+///   \table_row3{   <b>`Pvr.HasNonRecordingTimer`</b>,
+///                  \anchor Pvr_HasNonRecordingTimer
+///                  _boolean_,
+///     Returns true if there are timers present who currently not do recording
+///   }
+///   \table_row3{   <b>`Pvr.NowRecordingTitle`</b>,
+///                  \anchor Pvr_NowRecordingTitle
+///                  _string_,
+///     Title of the programme being recorded
+///   }
+///   \table_row3{   <b>`Pvr.NowRecordingDateTime`</b>,
+///                  \anchor Pvr_NowRecordingDateTime
+///                  _Date/Time string_,
+///     Start date and time of the current recording
+///   }
+///   \table_row3{   <b>`Pvr.NowRecordingChannel`</b>,
+///                  \anchor Pvr_NowRecordingChannel
+///                  _string_,
+///     Channel number that's being recorded
+///   }
+///   \table_row3{   <b>`Pvr.NowRecordingChannelIcon`</b>,
+///                  \anchor Pvr_NowRecordingChannelIcon
+///                  _path_,
+///     Icon of the current recording channel
+///   }
+///   \table_row3{   <b>`Pvr.NextRecordingTitle`</b>,
+///                  \anchor Pvr_NextRecordingTitle
+///                  _string_,
+///     Title of the next programme that will be recorded
+///   }
+///   \table_row3{   <b>`Pvr.NextRecordingDateTime`</b>,
+///                  \anchor Pvr_NextRecordingDateTime
+///                  _Date/Time string_,
+///     Start date and time of the next recording
+///   }
+///   \table_row3{   <b>`Pvr.NextRecordingChannel`</b>,
+///                  \anchor Pvr_NextRecordingChannel
+///                  _string_,
+///     Channel name of the next recording
+///   }
+///   \table_row3{   <b>`Pvr.NextRecordingChannelIcon`</b>,
+///                  \anchor Pvr_NextRecordingChannelIcon
+///                  _path_,
+///     Icon of the next recording channel
+///   }
+///   \table_row3{   <b>`Pvr.BackendName`</b>,
+///                  \anchor Pvr_BackendName
+///                  _string_,
+///     Name of the backend being used
+///   }
+///   \table_row3{   <b>`Pvr.BackendVersion`</b>,
+///                  \anchor Pvr_BackendVersion
+///                  _string_,
+///     Version of the backend that's being used
+///   }
+///   \table_row3{   <b>`Pvr.BackendHost`</b>,
+///                  \anchor Pvr_BackendHost
+///                  _string_,
+///     Backend hostname
+///   }
+///   \table_row3{   <b>`Pvr.BackendDiskSpace`</b>,
+///                  \anchor Pvr_BackendDiskSpace
+///                  _string_,
+///     Available diskspace on the backend as string with size
+///   }
+///   \table_row3{   <b>`Pvr.BackendDiskSpaceProgr`</b>,
+///                  \anchor Pvr_BackendDiskSpaceProgr
+///                  _integer_,
+///     Available diskspace on the backend as percent value
+///   }
+///   \table_row3{   <b>`Pvr.BackendChannels`</b>,
+///                  \anchor Pvr_BackendChannels
+///                  _string (integer)_,
+///     Number of available channels the backend provides
+///   }
+///   \table_row3{   <b>`Pvr.BackendTimers`</b>,
+///                  \anchor Pvr_BackendTimers
+///                  _string (integer)_,
+///     Number of timers set for the backend
+///   }
+///   \table_row3{   <b>`Pvr.BackendRecordings`</b>,
+///                  \anchor Pvr_BackendRecordings
+///                  _string (integer)_,
+///     Number of recording available on the backend
+///   }
+///   \table_row3{   <b>`Pvr.BackendDeletedRecordings`</b>,
+///                  \anchor Pvr_BackendDeletedRecordings
+///                  _string (integer)_,
+///     Number of deleted recording present on the backend
+///   }
+///   \table_row3{   <b>`Pvr.BackendNumber`</b>,
+///                  \anchor Pvr_BackendNumber
+///                  _string_,
+///     Backend number
+///   }
+///   \table_row3{   <b>`Pvr.HasEpg`</b>,
+///                  \anchor Pvr_HasEpg
+///                  _boolean_,
+///     Returns true when an epg is available.
+///   }
+///   \table_row3{   <b>`Pvr.HasTxt`</b>,
+///                  \anchor Pvr_HasTxt
+///                  _boolean_,
+///     Returns true when teletext is available.
+///   }
+///   \table_row3{   <b>`Pvr.TotalDiscSpace`</b>,
+///                  \anchor Pvr_TotalDiscSpace
+///                  _string_,
+///     Total diskspace available for recordings
+///   }
+///   \table_row3{   <b>`Pvr.NextTimer`</b>,
+///                  \anchor Pvr_NextTimer
+///                  _boolean_,
+///     Next timer date
+///   }
+///   \table_row3{   <b>`Pvr.IsPlayingTv`</b>,
+///                  \anchor Pvr_IsPlayingTv
+///                  _boolean_,
+///     Returns true when live tv is being watched.
+///   }
+///   \table_row3{   <b>`Pvr.IsPlayingRadio`</b>,
+///                  \anchor Pvr_IsPlayingRadio
+///                  _boolean_,
+///     Returns true when live radio is being listened to.
+///   }
+///   \table_row3{   <b>`Pvr.IsPlayingRecording`</b>,
+///                  \anchor Pvr_IsPlayingRecording
+///                  _boolean_,
+///     Returns true when a recording is being watched.
+///   }
+///   \table_row3{   <b>`Pvr.Duration`</b>,
+///                  \anchor Pvr_Duration
+///                  _time string_,
+///     Returns the duration of the currently played title on TV
+///   }
+///   \table_row3{   <b>`Pvr.Time`</b>,
+///                  \anchor Pvr_Time
+///                  _time string_,
+///     Returns the time position of the currently played title on TV
+///   }
+///   \table_row3{   <b>`Pvr.Progress`</b>,
+///                  \anchor Pvr_Progress
+///                  _integer_,
+///     Returns the position of currently played title on TV as integer
+///   }
+///   \table_row3{   <b>`Pvr.ActStreamClient`</b>,
+///                  \anchor Pvr_ActStreamClient
+///                  _string_,
+///     Stream client name
+///   }
+///   \table_row3{   <b>`Pvr.ActStreamDevice`</b>,
+///                  \anchor Pvr_ActStreamDevice
+///                  _string_,
+///     Stream device name
+///   }
+///   \table_row3{   <b>`Pvr.ActStreamStatus`</b>,
+///                  \anchor Pvr_ActStreamStatus
+///                  _string_,
+///     Status of the stream
+///   }
+///   \table_row3{   <b>`Pvr.ActStreamSignal`</b>,
+///                  \anchor Pvr_ActStreamSignal
+///                  _string_,
+///     Signal quality of the stream
+///   }
+///   \table_row3{   <b>`Pvr.ActStreamSnr`</b>,
+///                  \anchor Pvr_ActStreamSnr
+///                  _string_,
+///     Signal to noise ratio of the stream
+///   }
+///   \table_row3{   <b>`Pvr.ActStreamBer`</b>,
+///                  \anchor Pvr_ActStreamBer
+///                  _string_,
+///     Bit error rate of the stream
+///   }
+///   \table_row3{   <b>`Pvr.ActStreamUnc`</b>,
+///                  \anchor Pvr_ActStreamUnc
+///                  _string_,
+///     UNC value of the stream
+///   }
+///   \table_row3{   <b>`Pvr.ActStreamProgrSignal`</b>,
+///                  \anchor Pvr_ActStreamProgrSignal
+///                  _integer_,
+///     Signal quality of the programme
+///   }
+///   \table_row3{   <b>`Pvr.ActStreamProgrSnr`</b>,
+///                  \anchor Pvr_ActStreamProgrSnr
+///                  _integer_,
+///     Signal to noise ratio of the programme
+///   }
+///   \table_row3{   <b>`Pvr.ActStreamIsEncrypted`</b>,
+///                  \anchor Pvr_ActStreamIsEncrypted
+///                  _boolean_,
+///     Returns true when channel is encrypted on source
+///   }
+///   \table_row3{   <b>`Pvr.ActStreamEncryptionName`</b>,
+///                  \anchor Pvr_ActStreamEncryptionName
+///                  _string_,
+///     Encryption used on the stream
+///   }
+///   \table_row3{   <b>`Pvr.ActStreamServiceName`</b>,
+///                  \anchor Pvr_ActStreamServiceName
+///                  _string_,
+///     Returns the service name of played channel if available
+///   }
+///   \table_row3{   <b>`Pvr.ActStreamMux`</b>,
+///                  \anchor Pvr_ActStreamMux
+///                  _string_,
+///     Returns the multiplex type of played channel if available
+///   }
+///   \table_row3{   <b>`Pvr.ActStreamProviderName`</b>,
+///                  \anchor Pvr_ActStreamProviderName
+///                  _string_,
+///     Returns the provider name of the played channel if available
+///   }
+///   \table_row3{   <b>`Pvr.IsTimeShift`</b>,
+///                  \anchor Pvr_IsTimeShift
+///                  _boolean_,
+///     Returns true when for channel is timeshift available
+///   }
+///   \table_row3{   <b>`Pvr.TimeShiftStart`</b>,
+///                  \anchor Pvr_TimeShiftStart
+///                  _time string_,
+///     Start position of the timeshift
+///   }
+///   \table_row3{   <b>`Pvr.TimeShiftEnd`</b>,
+///                  \anchor Pvr_TimeShiftEnd
+///                  _time string_,
+///     End position of the timeshift
+///   }
+///   \table_row3{   <b>`Pvr.TimeShiftCur`</b>,
+///                  \anchor Pvr_TimeShiftCur
+///                  _time string_,
+///     Current position of the timeshift
+///   }
+///   \table_row3{   <b>`Pvr.TimeShiftProgress`</b>,
+///                  \anchor Pvr_TimeShiftProgress
+///                  _integer_,
+///     Returns the position of currently timeshifted title on TV as interger
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
 const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING },
                                   { "hastimer",                 PVR_HAS_TIMER },
                                   { "hastvchannels",            PVR_HAS_TV_CHANNELS },
@@ -767,6 +4385,81 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "timeshiftcur",             PVR_TIMESHIFT_PLAY_TIME },
                                   { "timeshiftprogress",        PVR_TIMESHIFT_PROGRESS }};
 
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_ADSP ADSP
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`ADSP.IsActive`</b>,
+///                  \anchor ADSP_IsActive
+///                  _boolean_,
+///     Returns true if dsp system is enabled
+///   }
+///   \table_row3{   <b>`ADSP.HasInputResample`</b>,
+///                  \anchor ADSP_HasInputResample
+///                  _boolean_,
+///     Returns true if on stream is a input resample is active
+///   }
+///   \table_row3{   <b>`ADSP.HasPreProcess`</b>,
+///                  \anchor ADSP_HasPreProcess
+///                  _boolean_,
+///     Returns true if on stream is a pre process mode active
+///   }
+///   \table_row3{   <b>`ADSP.HasMasterProcess`</b>,
+///                  \anchor ADSP_HasMasterProcess
+///                  _boolean_,
+///     Returns true if on stream is a master process mode available
+///   }
+///   \table_row3{   <b>`ADSP.HasPostProcess`</b>,
+///                  \anchor ADSP_HasPostProcess
+///                  _boolean_,
+///     Returns true if on stream is a post process
+///   }
+///   \table_row3{   <b>`ADSP.HasOutputResample`</b>,
+///                  \anchor ADSP_HasOutputResample
+///                  _boolean_,
+///     Returns true if on stream is a output resample
+///   }
+///   \table_row3{   <b>`ADSP.MasterActive`</b>,
+///                  \anchor ADSP_MasterActive
+///                  _boolean_,
+///     Returns true if on stream is a master mode selected and active
+///   }
+///   \table_row3{   <b>`ADSP.ActiveStreamType`</b>,
+///                  \anchor ADSP_ActiveStreamType
+///                  _string_,
+///     From user wanted and selected stream type\, e.g. music or video
+///   }
+///   \table_row3{   <b>`ADSP.DetectedStreamType`</b>,
+///                  \anchor ADSP_DetectedStreamType
+///                  _string_,
+///     From Kodi detected stream type
+///   }
+///   \table_row3{   <b>`ADSP.MasterName`</b>,
+///                  \anchor ADSP_MasterName
+///                  _string_,
+///     Name of the curently selected and used master dsp mode
+///   }
+///   \table_row3{   <b>`ADSP.MasterInfo`</b>,
+///                  \anchor ADSP_MasterInfo
+///                  _string_,
+///     Continues updated information label of master mode (if available)
+///   }
+///   \table_row3{   <b>`ADSP.MasterOwnIcon`</b>,
+///                  \anchor ADSP_MasterOwnIcon
+///                  _path_,
+///     Icon to use for selected master mode
+///   }
+///   \table_row3{   <b>`ADSP.MasterOverrideIcon`</b>,
+///                  \anchor ADSP_MasterOverrideIcon
+///                  _path_,
+///     Icon to overrite Kodi's codec icon with one of add-on\, e.g. Dolby
+///     Digital EX on Dolby Digital
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
 const infomap adsp[] =           {{ "isactive",                 ADSP_IS_ACTIVE },
                                   { "hasinputresample",         ADSP_HAS_INPUT_RESAMPLE },
                                   { "haspreprocess",            ADSP_HAS_PRE_PROCESS },
@@ -781,6 +4474,322 @@ const infomap adsp[] =           {{ "isactive",                 ADSP_IS_ACTIVE }
                                   { "masterownicon",            ADSP_MASTER_OWN_ICON },
                                   { "masteroverrideicon",       ADSP_MASTER_OVERRIDE_ICON }};
 
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_RDS Radio RDS
+/// \note Only be supported on PVR Radio where the related add-on client can
+/// bring it.
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`RDS.HasRds`</b>,
+///                  \anchor RDS_HasRds
+///                  _boolean_,
+///     Returns true if RDS is present
+///   }
+///   \table_row3{   <b>`RDS.HasRadioText`</b>,
+///                  \anchor RDS_HasRadioText
+///                  _boolean_,
+///     Returns true if RDS contains also Radiotext
+///   }
+///   \table_row3{   <b>`RDS.HasRadioTextPlus`</b>,
+///                  \anchor RDS_HasRadioTextPlus
+///                  _boolean_,
+///     Returns true if RDS with Radiotext contains also the plus information
+///   }
+///   \table_row3{   <b>`RDS.HasHotline`</b>,
+///                  \anchor RDS_HasHotline
+///                  _boolean_,
+///     Returns true if a hotline phone number is present\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.HasStudio`</b>,
+///                  \anchor RDS_HasStudio
+///                  _boolean_,
+///     Returns true if a studio name is present\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.AudioLanguage`</b>,
+///                  \anchor RDS_AudioLanguage
+///                  _string_,
+///     The from RDS reported audio language of channel
+///   }
+///   \table_row3{   <b>`RDS.ChannelCountry`</b>,
+///                  \anchor RDS_ChannelCountry
+///                  _string_,
+///     Country where the radio channel is sended
+///   }
+///   \table_row3{   <b>`RDS.GetLine(number)`</b>,
+///                  \anchor RDS_GetLine
+///                  _string_,
+///     Returns the last sended RDS text messages on givern number\, 0 is the
+///     last and 4 rows are supported (0-3)
+///   }
+///   \table_row3{   <b>`RDS.Title`</b>,
+///                  \anchor RDS_Title
+///                  _string_,
+///     Title of item; e.g. track title of an album\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.Artist`</b>,
+///                  \anchor RDS_Artist
+///                  _string_,
+///     A person or band/collective generally considered responsible for the work\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.Band`</b>,
+///                  \anchor RDS_Band
+///                  _string_,
+///     Band/orchestra/accompaniment/musician\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.Composer`</b>,
+///                  \anchor RDS_Composer
+///                  _string_,
+///     Name of the original composer/author\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.Conductor`</b>,
+///                  \anchor RDS_Conductor
+///                  _string_,
+///     The artist(s) who performed the work. In classical music this would be
+///     the conductor\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.Album`</b>,
+///                  \anchor RDS_Album
+///                  _string_,
+///     The collection name to which this track belongs\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.TrackNumber`</b>,
+///                  \anchor RDS_TrackNumber
+///                  _string_,
+///     The track number of the item on the album on which it was originally
+///     released.\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.RadioStyle`</b>,
+///                  \anchor RDS_RadioStyle
+///                  _string_,
+///     The from radio channel used style of currently played part\, is always
+///     updated on changed\, e.g "popmusic" to "news" or "weather"...
+///     | RDS                     | RBDS                    |
+///     |:------------------------|:------------------------|
+///     | none                    | none                    |
+///     | news                    | news                    |
+///     | currentaffairs          | information             |
+///     | information             | sport                   |
+///     | sport                   | talk                    |
+///     | education               | rockmusic               |
+///     | drama                   | classicrockmusic        |
+///     | cultures                | adulthits               |
+///     | science                 | softrock                |
+///     | variedspeech            | top40                   |
+///     | popmusic                | countrymusic            |
+///     | rockmusic               | oldiesmusic             |
+///     | easylistening           | softmusic               |
+///     | lightclassics           | nostalgia               |
+///     | seriousclassics         | jazzmusic               |
+///     | othermusic              | classical               |
+///     | weather                 | randb                   |
+///     | finance                 | softrandb               |
+///     | childrensprogs          | language                |
+///     | socialaffairs           | religiousmusic          |
+///     | religion                | religioustalk           |
+///     | phonein                 | personality             |
+///     | travelandtouring        | public                  |
+///     | leisureandhobby         | college                 |
+///     | jazzmusic               | spanishtalk             |
+///     | countrymusic            | spanishmusic            |
+///     | nationalmusic           | hiphop                  |
+///     | oldiesmusic             |                         |
+///     | folkmusic               |                         |
+///     | documentary             | weather                 |
+///     | alarmtest               | alarmtest               |
+///     | alarm-alarm             | alarm-alarm             |
+///     @note "alarm-alarm" is normally not used from radio stations\, is thought
+///     to inform about horrible messages who are needed asap to all people.
+///   }
+///   \table_row3{   <b>`RDS.Comment`</b>,
+///                  \anchor RDS_Comment
+///                  _string_,
+///     Radio station comment string if available\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.InfoNews`</b>,
+///                  \anchor RDS_InfoNews
+///                  _string_,
+///     Message / headline (if available)\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.InfoNewsLocal`</b>,
+///                  \anchor RDS_InfoNewsLocal
+///                  _string_,
+///     Local information news sended from radio channel (if available)\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.InfoStock`</b>,
+///                  \anchor RDS_InfoStock
+///                  _string_,
+///     Quote information; either as one part or as several distinct parts:
+///     "name 99latest value 99change 99high 99low 99volume" (if available)\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.InfoStockSize`</b>,
+///                  \anchor RDS_InfoStockSize
+///                  _string_,
+///     Number of rows present in stock information\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.InfoSport`</b>,
+///                  \anchor RDS_InfoSport
+///                  _string_,
+///     Result of a game; either as one part or as several distinct parts:
+///     "match 99result"\, e.g. "Bayern München : Borussia 995:5"  (if available)\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.InfoSportSize`</b>,
+///                  \anchor RDS_InfoSportSize
+///                  _string_,
+///     Number of rows present in sport information\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.InfoLottery`</b>,
+///                  \anchor RDS_InfoLottery
+///                  _string_,
+///     Raffle / lottery: "key word 99values" (if available)\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.InfoLotterySize`</b>,
+///                  \anchor RDS_InfoLotterySize
+///                  _string_,
+///     Number of rows present in lottery information\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.InfoWeather`</b>,
+///                  \anchor RDS_InfoWeather
+///                  _string_,
+///     Weather informations sended from radio channel (if available)\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.InfoWeatherSize`</b>,
+///                  \anchor RDS_InfoWeatherSize
+///                  _string_,
+///     Number of rows present in weather information\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.InfoCinema`</b>,
+///                  \anchor RDS_InfoCinema
+///                  _string_,
+///     Information about movies in cinema (if available)\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.InfoCinemaSize`</b>,
+///                  \anchor RDS_InfoCinemaSize
+///                  _string_,
+///     Number of rows present in cinema information\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.InfoHoroscope`</b>,
+///                  \anchor RDS_InfoHoroscope
+///                  _string_,
+///     Horoscope; either as one part or as two distinct parts:
+///     "key word 99text"\, e.g. "sign of the zodiac 99blablabla" (if available)\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.InfoHoroscopeSize`</b>,
+///                  \anchor RDS_InfoHoroscopeSize
+///                  _string_,
+///     Number of rows present in horoscope information\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.InfoOther`</b>,
+///                  \anchor RDS_InfoOther
+///                  _string_,
+///     Other information\, not especially specified: "key word 99info" (if available)\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.InfoOtherSize`</b>,
+///                  \anchor RDS_InfoOtherSize
+///                  _string_,
+///     Number of rows present with other informations\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.ProgStation`</b>,
+///                  \anchor RDS_ProgStation
+///                  _string_,
+///     Name of the radio channel
+///     @note becomes also be set from epg if from RDS not available
+///   }
+///   \table_row3{   <b>`RDS.ProgNow`</b>,
+///                  \anchor RDS_ProgNow
+///                  _string_,
+///     Now played program name
+///     @note becomes also be set from epg if from RDS not available
+///   }
+///   \table_row3{   <b>`RDS.ProgNext`</b>,
+///                  \anchor RDS_ProgNext
+///                  _string_,
+///     Next played program name (if available)
+///     @note becomes also be set from epg if from RDS not available
+///   }
+///   \table_row3{   <b>`RDS.ProgHost`</b>,
+///                  \anchor RDS_ProgHost
+///                  _string_,
+///     Name of the host of the radio show
+///   }
+///   \table_row3{   <b>`RDS.ProgEditStaff`</b>,
+///                  \anchor RDS_ProgEditStaff
+///                  _string_,
+///     Name of the editorial staff; e.g. name of editorial journalist\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.ProgHomepage`</b>,
+///                  \anchor RDS_ProgHomepage
+///                  _string_,
+///     Link to radio station homepage\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.ProgStyle`</b>,
+///                  \anchor RDS_ProgStyle
+///                  _string_,
+///     Human readable string about radiostyle defined from RDS or RBDS
+///   }
+///   \table_row3{   <b>`RDS.PhoneHotline`</b>,
+///                  \anchor RDS_PhoneHotline
+///                  _string_,
+///     The telephone number of the radio station's hotline\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.PhoneStudio`</b>,
+///                  \anchor RDS_PhoneStudio
+///                  _string_,
+///     The telephone number of the radio station's studio\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.SmsStudio`</b>,
+///                  \anchor RDS_SmsStudio
+///                  _string_,
+///     The sms number of the radio stations studio (to send directly a sms to
+///     the studio) (if available)\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.EmailHotline`</b>,
+///                  \anchor RDS_EmailHotline
+///                  _string_,
+///     The email adress of the radio stations hotline (if available)\n
+///     (Only be available on RadiotextPlus)
+///   }
+///   \table_row3{   <b>`RDS.EmailStudio`</b>,
+///                  \anchor RDS_EmailStudio
+///                  _string_,
+///     The email adress of the radio stations studio (if available)\n
+///     (Only be available on RadiotextPlus)
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
 const infomap rds[] =            {{ "hasrds",                   RDS_HAS_RDS },
                                   { "hasradiotext",             RDS_HAS_RADIOTEXT },
                                   { "hasradiotextplus",         RDS_HAS_RADIOTEXT_PLUS },
@@ -827,10 +4836,41 @@ const infomap rds[] =            {{ "hasrds",                   RDS_HAS_RDS },
                                   { "hashotline",               RDS_HAS_HOTLINE_DATA },
                                   { "hasstudio",                RDS_HAS_STUDIO_DATA }};
 
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_slideshow Slideshow
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`Slideshow.IsActive`</b>,
+///                  \anchor Slideshow_IsActive
+///                  _boolean_,
+///     Returns true if the picture slideshow is running
+///   }
+///   \table_row3{   <b>`Slideshow.IsPaused`</b>,
+///                  \anchor Slideshow_IsPaused
+///                  _boolean_,
+///     Returns true if the picture slideshow is paused
+///   }
+///   \table_row3{   <b>`Slideshow.IsRandom`</b>,
+///                  \anchor Slideshow_IsRandom
+///                  _boolean_,
+///     Returns true if the picture slideshow is in random mode
+///   }
+///   \table_row3{   <b>`Slideshow.IsVideo`</b>,
+///                  \anchor Slideshow_IsVideo
+///                  _boolean_,
+///     Returns true if the picture slideshow is playing a video
+///   }
+/// \table_end
+/// @}
 const infomap slideshow[] =      {{ "ispaused",         SLIDESHOW_ISPAUSED },
                                   { "isactive",         SLIDESHOW_ISACTIVE },
                                   { "isvideo",          SLIDESHOW_ISVIDEO },
                                   { "israndom",         SLIDESHOW_ISRANDOM }};
+
+// Crazy part, to use tableofcontents must it be on end
+/// \page modules__General__List_of_gui_access
+/// \tableofcontents
 
 const int picture_slide_map[]  = {/* LISTITEM_PICTURE_RESOLUTION => */ SLIDE_RESOLUTION,
                                   /* LISTITEM_PICTURE_LONGDATE   => */ SLIDE_EXIF_LONG_DATE,
