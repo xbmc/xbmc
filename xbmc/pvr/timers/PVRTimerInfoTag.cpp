@@ -968,7 +968,7 @@ std::string CPVRTimerInfoTag::GetDeletedNotificationText() const
   case PVR_TIMER_STATE_SCHEDULED:
   default:
     if (IsRepeating())
-      stringID = 828; // Repeating timer deleted
+      stringID = 828; // Timer rule deleted
     else
       stringID = 19228; // Timer deleted
   }
