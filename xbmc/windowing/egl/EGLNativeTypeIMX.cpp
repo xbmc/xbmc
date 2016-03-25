@@ -265,14 +265,6 @@ bool CEGLNativeTypeIMX::SetNativeResolution(const RESOLUTION_INFO &res)
 
   CLog::Log(LOGDEBUG, "%s: %s",__FUNCTION__, res.strId.c_str());
 
-/*** a hack around old broken kernel.
-     should be removed ***/
-
-  // Reset AE
-  CAEFactory::DeviceChange();
-
-/*************************/
-
   return true;
 }
 
@@ -335,17 +327,6 @@ bool CEGLNativeTypeIMX::ShowWindow(bool show)
   SysfsUtils::SetInt("/sys/class/graphics/fb0/blank", show ? 0 : 1 );
 
   m_show = show;
-
-/*** a hack around old broken kernel.
-     should be removed ***/
-
-  // Force vsync by default
-  eglSwapInterval(g_Windowing.GetEGLDisplay(), 1);
-  EGLint result = eglGetError();
-  if(result != EGL_SUCCESS)
-    CLog::Log(LOGERROR, "EGL error in %s: %x",__FUNCTION__, result);
-
-/*************************/
 
   return true;
 }
