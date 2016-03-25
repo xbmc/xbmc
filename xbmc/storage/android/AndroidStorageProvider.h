@@ -19,6 +19,7 @@
  *
  */
 
+#include <set>
 #include "storage/IStorageProvider.h"
 
 class CAndroidStorageProvider : public IStorageProvider
@@ -40,6 +41,7 @@ public:
   virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback);
 
 private:
+  static std::set<std::string> GetRemovableDrives();
   std::string unescape(const std::string& str);
-  unsigned int m_removableLength;
+  std::set<std::string> m_removableDrives;
 };

@@ -45,7 +45,8 @@ static const char * mountBL[] = {
   "/mnt/media_rw/extSdCard",
   "/mnt/media_rw/sdcard",
   "/mnt/media_rw/usbdisk",
-  "/storage/emulated"
+  "/storage/emulated",
+  "/mnt/runtime"
 };
 static const char * deviceWL[] = {
   "/dev/block/vold",
@@ -55,7 +56,6 @@ static const char * deviceWL[] = {
 
 CAndroidStorageProvider::CAndroidStorageProvider()
 {
-  m_removableLength = 0;
   PumpDriveChangeEvents(NULL);
 }
 
@@ -117,8 +117,10 @@ void CAndroidStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   localDrives.push_back(share);
 }
 
-void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
+std::set<std::string> CAndroidStorageProvider::GetRemovableDrives()
 {
+  std::set<std::string> result;
+
   // mounted usb disks
   char*                               buf     = NULL;
   FILE*                               pipe;
@@ -210,21 +212,30 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 
           if(devok && (fsok || mountok))
           {
-            // Reject unreadable
-            if (XFILE::CDirectory::Exists(mountStr))
-            {
-              CMediaSource share;
-              share.strPath = unescape(mountStr);
-              share.strName = URIUtils::GetFileName(mountStr);
-              share.m_ignore = true;
-              removableDrives.push_back(share);
-            }
+            result.insert(mountStr);
           }
         }
       }
       line = strtok_r(NULL, "\n", &saveptr);
     }
     free(buf);
+  }
+  return result;
+}
+
+void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
+{
+  for (const auto& mountStr : GetRemovableDrives())
+  {
+    // Reject unreadable
+    if (XFILE::CDirectory::Exists(mountStr))
+    {
+      CMediaSource share;
+      share.strPath = unescape(mountStr);
+      share.strName = URIUtils::GetFileName(mountStr);
+      share.m_ignore = true;
+      removableDrives.push_back(share);
+    }
   }
 }
 
@@ -269,9 +280,8 @@ bool CAndroidStorageProvider::Eject(const std::string& mountpath)
 
 bool CAndroidStorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 {
-  VECSOURCES drives;
-  GetRemovableDrives(drives);
-  bool changed = drives.size() != m_removableLength;
-  m_removableLength = drives.size();
+  auto drives = GetRemovableDrives();
+  bool changed = m_removableDrives != drives;
+  m_removableDrives = std::move(drives);
   return changed;
 }
