@@ -1545,6 +1545,9 @@ bool CGUIMediaWindow::OnPopupMenu(int itemIdx)
   for (const auto& menu : addonItems)
     buttons.emplace_back(-buttons.size(), menu->GetLabel(*item));
 
+  if (buttons.empty())
+    return true;
+
   int idx = CGUIDialogContextMenu::Show(buttons);
   if (idx < 0 || idx >= buttons.size())
     return false;
