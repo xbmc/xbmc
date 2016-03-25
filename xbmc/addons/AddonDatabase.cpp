@@ -902,26 +902,6 @@ bool CAddonDatabase::BreakAddon(const std::string &addonID, const std::string& r
                                    addonID.c_str(), reason.c_str()));
 }
 
-bool CAddonDatabase::IsAddonDisabled(const std::string &addonID)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    std::string sql = PrepareSQL("SELECT * FROM installed WHERE addonID='%s' AND enabled=0", addonID.c_str());
-    m_pDS->query(sql);
-    bool ret = !m_pDS->eof();
-    m_pDS->close();
-    return ret;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, addonID.c_str());
-  }
-  return false;
-}
-
 bool CAddonDatabase::GetDisabled(std::set<std::string>& addons)
 {
   try
