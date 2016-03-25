@@ -132,6 +132,7 @@ endif()
 get_filename_component(ADDONS_DEFINITION_DIR "${ADDONS_DEFINITION_DIR}" ABSOLUTE)
 
 if(ADDON_SRC_PREFIX)
+  get_filename_component(ADDON_SRC_PREFIX "${ADDON_SRC_PREFIX}" ABSOLUTE)
   message(STATUS "Overriding addon source directory prefix: ${ADDON_SRC_PREFIX}")
 endif()
 
