@@ -33,14 +33,7 @@ public:
   CGUIDialogDSFilters();
   virtual ~CGUIDialogDSFilters();
 
-  static CGUIDialogDSFilters* Get();
-  static void Destroy()
-  {
-    delete m_pSingleton;
-    m_pSingleton = NULL;
-  }
-
-  static int ShowDSFiltersList();
+  static void ShowDSFiltersList();
 
 protected:
 
@@ -61,7 +54,6 @@ protected:
   virtual void SetupView();
 
   static void TypeOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
-  static CGUIDialogDSFilters* m_pSingleton;
   CStdString GetFilterName(CStdString guid);
 
   bool isEdited;

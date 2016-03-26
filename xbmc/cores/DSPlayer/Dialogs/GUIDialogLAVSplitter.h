@@ -38,11 +38,10 @@ protected:
   virtual void OnSettingChanged(const CSetting *setting);
   virtual void OnSettingAction(const CSetting *setting);
   virtual void OnInitWindow();
-  virtual void OnDeinitWindow(int nextWindowID);
 
   // specialization of CGUIDialogSettingsBase
   virtual bool AllowResettingSettings() const { return false; }
-  virtual void Save();
+  virtual void Save() {};
 
   // specialization of CGUIDialogSettingsManualBase
   virtual void InitializeSettings();

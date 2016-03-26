@@ -47,7 +47,9 @@ enum xmlType {
   FILTERSCONFIG,
   HOMEFILTERSCONFIG,
   SHADERS,
-  PLAYERCOREFACTORY
+  PLAYERCOREFACTORY,
+  MADVRSETTINGS,
+  HOMEMADVRSETTINGS
 };
 
 class DSConfigList
@@ -72,6 +74,7 @@ class CGUIDialogDSManager
 {
 public:
   CGUIDialogDSManager();
+  virtual ~CGUIDialogDSManager();
 
   static CGUIDialogDSManager* Get();
   static void Destroy()
@@ -80,10 +83,8 @@ public:
     m_pSingleton = NULL;
   }
 
-  void SetisNew(bool b) { m_isNew = b; };
-  bool GetisNew() { return m_isNew; };
-  void SetConfigIndex(int index)  { m_configIndex = index; };
-  int GetConfigIndex() { return m_configIndex; };
+  bool GetNew() { return m_bNew; };  
+  void SetConfig(bool bNew, int iIndex)  { m_bNew = bNew;  m_iIndex = iIndex; };
 
   void InitConfig(std::vector<DSConfigList *> &configList, ConfigType type, CStdString strSetting, int label, CStdString strAttr = "", CStdString strNodeName = "", StringSettingOptionsFiller filler = NULL, int subNode = 0, CStdString strNodeList = "");
   void ResetValue(std::vector<DSConfigList *>& configList);
@@ -105,8 +106,8 @@ protected:
 
   static CGUIDialogDSManager* m_pSingleton;
 
-  bool m_isNew;
-  int m_configIndex;
+  bool m_bNew;
+  int m_iIndex;
   CXBMCTinyXML m_XML;
 
 };

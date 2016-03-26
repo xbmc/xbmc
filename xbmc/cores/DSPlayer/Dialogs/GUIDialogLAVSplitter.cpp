@@ -89,15 +89,6 @@ void CGUIDialogLAVSplitter::OnInitWindow()
   HideUnused();
 }
 
-void CGUIDialogLAVSplitter::OnDeinitWindow(int nextWindowID)
-{
-  CGUIDialogSettingsManualBase::OnDeinitWindow(nextWindowID);
-}
-
-void CGUIDialogLAVSplitter::Save()
-{
-}
-
 void CGUIDialogLAVSplitter::SetupView()
 {
   CGUIDialogSettingsManualBase::SetupView();

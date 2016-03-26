@@ -42,11 +42,11 @@ public:
   BOOL video_bPixFmts[LAVOutPixFmt_NB];
   DWORD video_dwRGBRange;
   DWORD video_dwHWAccel;
+  DWORD video_dwHWAccelDeviceIndex;
   BOOL video_bHWFormats[HWCodec_NB];
   DWORD video_dwHWAccelResFlags;
   DWORD video_dwHWDeintMode;
   DWORD video_dwHWDeintOutput;
-  BOOL video_bHWDeintHQ;
   DWORD video_dwDeintFieldOrder;
   LAVDeintMode video_deintMode;
   DWORD video_dwSWDeintMode;

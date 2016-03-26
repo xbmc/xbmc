@@ -22,26 +22,18 @@
  */
 #include "MadvrSharedRender.h"
 #include "mvrInterfaces.h"
-#include "Utils/Log.h"
 #include "guilib/GraphicContext.h"
 #include "windowing/WindowingFactory.h"
 
 CMadvrSharedRender::CMadvrSharedRender()
 {
+  CDSRendererCallback::Get()->Register(this);
+  m_bSkipRender = false;
 }
 
 CMadvrSharedRender::~CMadvrSharedRender()
 {
 }
-
-HRESULT CMadvrSharedRender::CreateTextures(ID3D11Device* pD3DDeviceKodi, IDirect3DDevice9Ex* pD3DDeviceDS, int width, int height)
-{
-  HRESULT hr = __super::CreateTextures(pD3DDeviceKodi, pD3DDeviceDS, width, height);
-  CDSRendererCallback::Get()->Register(this);
-
-  return hr;
-}
-
 
 HRESULT CMadvrSharedRender::Render(DS_RENDER_LAYER layer)
 {
@@ -64,6 +56,9 @@ HRESULT CMadvrSharedRender::Render(DS_RENDER_LAYER layer)
 
 void CMadvrSharedRender::RenderToUnderTexture()
 {
+  if (CheckSkipRender())
+    return;
+
   // Wait that madVR complete the rendering
   m_kodiWait.Wait(100);
 
@@ -87,6 +82,9 @@ void CMadvrSharedRender::RenderToUnderTexture()
 
 void CMadvrSharedRender::RenderToOverTexture()
 {
+  if (CheckSkipRender())
+    return;
+
   CDSRendererCallback::Get()->SetCurrentVideoLayer(RENDER_LAYER_OVER);
 
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
@@ -109,4 +107,15 @@ void CMadvrSharedRender::EndRender()
 
   // Unlock madVR rendering
   m_dsLock.Unlock();
+}
+
+bool CMadvrSharedRender::CheckSkipRender()
+{
+  if (m_bSkipRender)
+  {
+    if (g_graphicsContext.IsFullScreenVideo())
+      m_bSkipRender = false;
+  }
+  
+  return m_bSkipRender;
 }

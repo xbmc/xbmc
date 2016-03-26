@@ -38,6 +38,9 @@
 #include "settings/Settings.h"
 #include "guilib/GUIFontManager.h"
 #include "cores/DataCacheCore.h"
+#ifdef HAS_DS_PLAYER
+#include "GraphFilters.h"
+#endif
 
 #if defined(HAS_GL)
   #include "LinuxRendererGL.h"
@@ -961,6 +964,8 @@ void CXBMCRenderManager::UpdateDisplayLatencyForMadvr(float fps)
 {
   float refresh = fps;
   m_displayLatency = (double)g_advancedSettings.GetDisplayLatency(refresh);
+  if (CGraphFilters::Get()->GetAuxAudioDelay())    
+    m_displayLatency += (double)g_advancedSettings.GetDisplayAuxDelay(refresh);
   CLog::Log(LOGDEBUG, "CRenderManager::UpdateDisplayLatencyForMadvr - Latency set to %1.0f msec", m_displayLatency * 1000.0f);
   g_application.m_pPlayer->SetAVDelay(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay);
 }
@@ -972,11 +977,13 @@ void CXBMCRenderManager::UpdateDisplayLatency()
   if (g_graphicsContext.GetVideoResolution() == RES_WINDOW)
     refresh = 0; // No idea about refresh rate when windowed, just get the default latency
   m_displayLatency = (double) g_advancedSettings.GetDisplayLatency(refresh);
-  CLog::Log(LOGDEBUG, "CRenderManager::UpdateDisplayLatency - Latency set to %1.0f msec", m_displayLatency * 1000.0f);
 #ifdef HAS_DS_PLAYER
+  if (CGraphFilters::Get()->GetAuxAudioDelay())    
+    m_displayLatency += (double)g_advancedSettings.GetDisplayAuxDelay(refresh);
   if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
     g_application.m_pPlayer->SetAVDelay(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay);
 #endif
+  CLog::Log(LOGDEBUG, "CRenderManager::UpdateDisplayLatency - Latency set to %1.0f msec", m_displayLatency * 1000.0f);
 }
 
 void CXBMCRenderManager::UpdateResolution()

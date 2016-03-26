@@ -27,18 +27,6 @@
 #include "DSRendererCallback.h"
 #include "MadvrSettings.h"
 
-
-class CMadvrSettingsList
-{
-public:
-  CMadvrSettingsList(std::string name, int label, int id = -1):m_name(name), m_label(label), m_id(id) {};
-  virtual ~CMadvrSettingsList(){};
-
-  std::string m_name;
-  int m_label;
-  int m_id;
-};
-
 enum MADVR_SETTINGS_TYPE
 {
   MADVR_SETTINGS_PROFILES,
@@ -50,6 +38,14 @@ enum MADVR_SETTINGS_TYPE
   MADVR_SETTINGS_INT
 };
 
+class CMadvrEnum
+{
+public:
+  std::string id;
+  std::string name;
+  std::string type;
+};
+
 class CMadvrSettingsManager :public IMadvrSettingCallback
 {
 public:
@@ -58,87 +54,61 @@ public:
   virtual ~CMadvrSettingsManager();
 
   // IMadvrSettingCallback
-  virtual void LoadSettings(MADVR_LOAD_TYPE type);
+  virtual void LoadSettings(int iSectionId);
   virtual void RestoreSettings();
-  virtual void GetProfileActiveName(std::string path, std::string *profile);
-  virtual void SetStr(std::string path, std::string str);
-  virtual void SetBool(std::string path, bool bValue);
-  virtual void SetInt(std::string path, int iValue);
-  virtual void SetFloat(std::string path, float fValue, int iConv = 100);
-  virtual void SetDoubling(std::string path, int iValue);
-  virtual void SetDeintActive(std::string path, int iValue);
-  virtual void SetBoolValue(std::string path, std::string sValue, int iValue);
-  virtual void SetMultiBool(std::string path, std::string sValue, int iValue);
-  virtual void SetSmoothmotion(std::string path, int iValue);
-  virtual void SetDithering(std::string path, int iValue);
-  virtual void SetQuickArChange(std::string path, int iValue);
-  virtual void SetCleanBorders(std::string path, int iValue);
-  virtual std::string GetSettingsName(MADVR_SETTINGS_LIST type, int iValue);
-  virtual void AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry);
-  virtual void UpdateImageDouble();
+  virtual void GetProfileActiveName(const std::string &path, std::string *profile);
+  virtual void OnSettingChanged(int iSectionId, CSettingsManager* settingsManager, const CSetting *setting);
+  virtual void AddDependencies(const std::string &xml, CSettingsManager *settingsManager, CSetting *setting);
+  virtual void ListSettings(const std::string &path);
 
+  void SetBool(const std::string &path, bool bValue, bool bNegate = false, const std::string &type = "");
 private:
 
   BOOL GetSettings(MADVR_SETTINGS_TYPE type, LPCWSTR path, int enumIndex, LPCWSTR sValue, BOOL* bValue, int* iValue, int *bufSize);
   BOOL GetSettings2(MADVR_SETTINGS_TYPE mType, LPCWSTR path, int enumIndex, LPCWSTR id, LPCWSTR type, LPCWSTR name, int *idBufSize, int *nameBufSize, int *typeBufSize);
   BOOL SetSettings(MADVR_SETTINGS_TYPE type, LPCWSTR path, LPCWSTR sValue, BOOL bValue, int iValue);
-  void EnumProfilesGroups(MADVR_SETTINGS_TYPE type, std::string path, std::vector<std::string> *sVector);
-  void EnumFoldersValues(MADVR_SETTINGS_TYPE type, std::string path, std::vector<std::string> *sVectorId, std::vector<std::string> *sVectorName, std::vector<std::string> *sVectorType);
+  void EnumProfilesGroups(MADVR_SETTINGS_TYPE type, const std::string &path, std::vector<std::string> *sVector);
+  void EnumFoldersValues(MADVR_SETTINGS_TYPE type, const std::string &path, std::vector<CMadvrEnum> *vector);
   
-  void EnumGroups(std::string path, std::vector<std::string> *sVector);
-  void EnumProfiles(std::string path, std::vector<std::string> *sVector);
-  void EnumFolders(std::string path, std::vector<std::string> *sVectorId, std::vector<std::string> *sVectorName, std::vector<std::string> *sVectorType);
-  void EnumValues(std::string path, std::vector<std::string> *sVectorId, std::vector<std::string> *sVectorName, std::vector<std::string> *sVectorType);
-  void ListSettings(std::string path);
+  void EnumGroups(const std::string &path, std::vector<std::string> *sVector);
+  void EnumProfiles(const std::string &path, std::vector<std::string> *sVector);
+  void EnumFolders(const std::string &path, std::vector<CMadvrEnum> *vector);
+  void EnumValues(const std::string &path, std::vector<CMadvrEnum> *vector);
 
-  void GetStr(std::string path, std::string *sValue);
-  void GetStr(std::string path, int *iValue, MADVR_SETTINGS_LIST type);
-  void GetBool(std::string path, bool *bValue);
-  void GetInt(std::string path, int *iValue);
-  void GetFloat(std::string path, float* fValue, int iConv = 100);
-  void GetDoubling(std::string path, int* iValue);
-  void GetDeintActive(std::string path, int* iValue);
-  void GetBoolValue(std::string path, std::string sValue, int* iValue);
-  void GetMultiBool(std::string path, std::string sValue, int* iValue);
-  void GetSmoothmotion(std::string path, int* iValue);
-  void GetDithering(std::string path, int* iValue);
-  void GetQuickArChange(std::string path, int* iValue);
-  void GetCleanBorders(std::string path, int* iValue);
-  bool IsProfileActive(std::string path, std::string profile);
-  void CreateProfile(std::string path, std::string pageList, std::string profileGroup, std::string profile);
-  void ActivateProfile(std::string path, std::string profile);
+  std::string GetStr(const std::string &path, const std::string &type = "");
+  bool        GetBool(const std::string &path, bool bNegate = false, const std::string &type = "");
+  int         GetInt(const std::string &path, const std::string &type = "");
+  float       GetFloat(const std::string &path, const std::string &format = "%1.2F", const std::string &type = "");
+  int         GetBoolInt(const std::string &path, const std::string &path2, bool bNegate, const std::string &type);
+  int         GetBoolBool(const std::string &path, const std::string &path2, bool bNegate, const std::string &type);
+  std::string GetBoolStr(const std::string &path, const std::string &path2, bool bNegate, const std::string &type);
+  std::string GetCustom(const std::string &path, const std::string &type);
 
-  void AddSettingsListScaler(std::string name, int label, int id, bool chromaUp, bool lumaUp, bool lumaDown);
-  void AddSettingsList(MADVR_SETTINGS_LIST type, std::string name, int label, int id);
-  std::vector<CMadvrSettingsList*>* GetSettingsVector(MADVR_SETTINGS_LIST type);
-  int GetSettingsId(MADVR_SETTINGS_LIST type, std::string sValue);
-  void InitSettings();
+  void        SetStr(const std::string &path, const std::string &str, const std::string &type = "");
+  void        SetInt(const std::string &path, int iValue, const std::string &type = "");
+  void        SetFloat(const std::string &path, float fValue, const std::string &format = "%1.2F", const std::string &type = "");
+  void        SetBoolInt(const std::string &path, const std::string &path2, int iValue, bool bNegate, const std::string &type);
+  void        SetBoolBool(const std::string &path, const std::string &path2, int iValue, bool bNegate, const std::string &type);
+  void        SetBoolStr(const std::string &path, const std::string &path2, const std::string &sValue, bool bNegate, const std::string &type);
+  void        SetCustom(const std::string &path, const std::string &sValue, const std::string &type);
 
-  bool IsNNEDI3(int iValue) { return iValue < 5; }
-  bool IsEnabled(int iValue) { return iValue > -1; }
+  const std::string GetValueForDebug(const std::string &path, const std::string &type);
 
-  std::vector<CMadvrSettingsList* > m_settingsChromaUp;
-  std::vector<CMadvrSettingsList* > m_settingsLumaUp;
-  std::vector<CMadvrSettingsList* > m_settingsLumaDown;
-  std::vector<CMadvrSettingsList* > m_settingsDoubleQuality;
-  std::vector<CMadvrSettingsList* > m_settingsDoubleFactor;
-  std::vector<CMadvrSettingsList* > m_settingsQuadrupleFactor;
-  std::vector<CMadvrSettingsList* > m_settingsDeintForce;
-  std::vector<CMadvrSettingsList* > m_settingsDeintActive;
-  std::vector<CMadvrSettingsList* > m_settingsNoSmallScaling;
-  std::vector<CMadvrSettingsList* > m_settingsMoveSubs;
-  std::vector<CMadvrSettingsList* > m_settingsArChange;
-  std::vector<CMadvrSettingsList* > m_settingsQuickArChange;
-  std::vector<CMadvrSettingsList* > m_settingsShiftImage;
-  std::vector<CMadvrSettingsList* > m_settingsDontCropSubs;
-  std::vector<CMadvrSettingsList* > m_settingsCleanBorders;
-  std::vector<CMadvrSettingsList* > m_settingsReduceBigBars;
-  std::vector<CMadvrSettingsList* > m_settingsSmoothMotion;
-  std::vector<CMadvrSettingsList* > m_settingsDithering;
-  std::vector<CMadvrSettingsList* > m_settingsDeband;
+  bool IsProfileActive(const std::string &path, const std::string &profile);
+  void CreateProfile(const std::string &path, const std::string &pageList, const std::string &profileGroup, const std::string &profile);
+  void ActivateProfile(const std::string &path, const std::string &profile);
 
-  static const std::string DSPROFILE;
-  static const std::string DSGROUP;
+  void UpdateSettings(const std::string &settingId, CSettingsManager* settingsManager);
+  void UpdateImageDouble();
+
+  float IntToFloat(int iValue, const std::string &format);
+  int FloatToInt(float fValue, const std::string &format);
+
+  bool IsNNEDI3(const std::string &sValue) { return sValue.find("NNEDI3") != std::string::npos; }
+  bool IsEnabled(const std::string &sValue) { return sValue != "-1"; }
+  std::string FixedStr(const std::string &str);
 
   IUnknown* m_pDXR;
+  bool m_bAllowChanges;
+  bool m_bDebug;
 };

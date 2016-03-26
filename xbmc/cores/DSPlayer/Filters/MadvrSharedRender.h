@@ -34,6 +34,10 @@ public:
   virtual void RenderToOverTexture();
   virtual void EndRender();
 
-  HRESULT CreateTextures(ID3D11Device* pD3DDeviceKodi, IDirect3DDevice9Ex* pD3DDeviceDS, int width, int height);
-  HRESULT Render(DS_RENDER_LAYER layer);  
+  HRESULT Render(DS_RENDER_LAYER layer);
+  void SkipRender(bool bSkip){ m_bSkipRender = bSkip; };
+
+private:
+  bool CheckSkipRender();
+  bool m_bSkipRender;
 };

@@ -56,15 +56,8 @@ CGUIDialogDSFilters::CGUIDialogDSFilters()
   m_dsmanager = CGUIDialogDSManager::Get();
 }
 
-
 CGUIDialogDSFilters::~CGUIDialogDSFilters()
-{ }
-
-CGUIDialogDSFilters *CGUIDialogDSFilters::m_pSingleton = NULL;
-
-CGUIDialogDSFilters* CGUIDialogDSFilters::Get()
-{
-  return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CGUIDialogDSFilters());
+{ 
 }
 
 void CGUIDialogDSFilters::OnInitWindow()
@@ -86,7 +79,7 @@ bool CGUIDialogDSFilters::OnBack(int actionID)
     if (CGUIDialogYesNo::ShowAndGetInput(61001, 61002, 0, 0))
     {
       CSetting *setting;
-      if (!m_dsmanager->GetisNew())
+      if (!m_dsmanager->GetNew())
         setting = GetSetting(SETTING_FILTER_SAVE);
       else
         setting = GetSetting(SETTING_FILTER_ADD);
@@ -161,7 +154,7 @@ void CGUIDialogDSFilters::InitializeSettings()
   m_dsmanager->ResetValue(m_filterList);
 
   // Load userdata Filteseconfig.xml
-  if (!m_dsmanager->GetisNew())
+  if (!m_dsmanager->GetNew())
   {
     TiXmlElement *pFilters;
     m_dsmanager->LoadDsXML(FILTERSCONFIG, pFilters);
@@ -170,38 +163,35 @@ void CGUIDialogDSFilters::InitializeSettings()
     {
       TiXmlElement *pFilter = m_dsmanager->KeepSelectedNode(pFilters, "filter");
 
-      std::vector<DSConfigList *>::iterator it;
-      for (it = m_filterList.begin(); it != m_filterList.end(); ++it)
+      for (const auto &it : m_filterList)
       {
-        if ((*it)->m_configType == EDITATTR || (*it)->m_configType == FILTER)
-          (*it)->m_value = pFilter->Attribute((*it)->m_attr.c_str());
+        if (it->m_configType == EDITATTR || it->m_configType == FILTER)
+          it->m_value = pFilter->Attribute(it->m_attr.c_str());
 
-        if ((*it)->m_configType == OSDGUID) {
-          XMLUtils::GetString(pFilter, (*it)->m_nodeName.c_str(), strGuid);
-          (*it)->m_value = strGuid;
+        if (it->m_configType == OSDGUID) {
+          XMLUtils::GetString(pFilter, it->m_nodeName.c_str(), strGuid);
+          it->m_value = strGuid;
         }
-        if ((*it)->m_configType == FILTERSYSTEM)
-          (*it)->m_value = strGuid;
+        if (it->m_configType == FILTERSYSTEM)
+          it->m_value = strGuid;
       }
     }
   }
 
   // Stamp Button
-  std::vector<DSConfigList *>::iterator it;
-
-  for (it = m_filterList.begin(); it != m_filterList.end(); ++it)
+  for (const auto &it : m_filterList)
   {
-    if ((*it)->m_configType == EDITATTR || (*it)->m_configType == OSDGUID)
-      AddEdit(group, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value, true);
+    if (it->m_configType == EDITATTR || it->m_configType == OSDGUID)
+      AddEdit(group, it->m_setting, it->m_label, 0, it->m_value, true);
 
-    if ((*it)->m_configType == FILTER)
-      AddList(group, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value, (*it)->m_filler, (*it)->m_label);
+    if (it->m_configType == FILTER)
+      AddList(group, it->m_setting, it->m_label, 0, it->m_value, it->m_filler, it->m_label);
 
-    if ((*it)->m_configType == FILTERSYSTEM)
-      AddList(groupSystem, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value, (*it)->m_filler, (*it)->m_label);
+    if (it->m_configType == FILTERSYSTEM)
+      AddList(groupSystem, it->m_setting, it->m_label, 0, it->m_value, it->m_filler, it->m_label);
   }
 
-  if (m_dsmanager->GetisNew())
+  if (m_dsmanager->GetNew())
     AddButton(groupSave, SETTING_FILTER_ADD, 65007, 0);
   else
   {
@@ -220,32 +210,31 @@ void CGUIDialogDSFilters::OnSettingChanged(const CSetting *setting)
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
   const std::string &settingId = setting->GetId();
 
-  std::vector<DSConfigList *>::iterator it;
-  for (it = m_filterList.begin(); it != m_filterList.end(); ++it)
+  for (const auto &it : m_filterList)
   {
-    if ((*it)->m_configType == EDITATTR
-      || (*it)->m_configType == FILTER
-      || (*it)->m_configType == OSDGUID)
+    if (it->m_configType == EDITATTR
+      || it->m_configType == FILTER
+      || it->m_configType == OSDGUID)
     {
-      if (settingId == (*it)->m_setting)
+      if (settingId == it->m_setting)
       {
-        (*it)->m_value = static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue());
+        it->m_value = static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue());
       }
     }
-    if ((*it)->m_configType == FILTERSYSTEM)
+    if (it->m_configType == FILTERSYSTEM)
     {
       if (settingId == "dsfilters.systemfilter")
       {
-        (*it)->m_value = static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue());
+        it->m_value = static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue());
 
-        if ((*it)->m_value != "[null]")
+        if (it->m_value != "[null]")
         {
-          CStdString strOSDName = GetFilterName((*it)->m_value);
+          CStdString strOSDName = GetFilterName(it->m_value);
           CStdString strFilterName = strOSDName;
           strFilterName.ToLower();
           strFilterName.Replace(" ", "_");
 
-          m_settingsManager->SetString("dsfilters.guid", (*it)->m_value.c_str());
+          m_settingsManager->SetString("dsfilters.guid", it->m_value.c_str());
           m_settingsManager->SetString("dsfilters.osdname", strOSDName);
           m_settingsManager->SetString("dsfilters.name", strFilterName);
         }
@@ -287,23 +276,22 @@ void CGUIDialogDSFilters::OnSettingAction(const CSetting *setting)
   {
     TiXmlElement pFilter("filter");
 
-    std::vector<DSConfigList *>::iterator it;
-    for (it = m_filterList.begin(); it != m_filterList.end(); ++it)
+    for (const auto &it : m_filterList)
     {
-      if ((*it)->m_value == "" || (*it)->m_value == "[null]")
+      if (it->m_value == "" || it->m_value == "[null]")
       {
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(65001), g_localizeStrings.Get(65012), 2000, false, 300);
         return;
       }
 
-      if ((*it)->m_configType == EDITATTR || (*it)->m_configType == FILTER)
-        pFilter.SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
+      if (it->m_configType == EDITATTR || it->m_configType == FILTER)
+        pFilter.SetAttribute(it->m_attr.c_str(), it->m_value.c_str());
 
-      if ((*it)->m_configType == OSDGUID)
+      if (it->m_configType == OSDGUID)
       {
-        TiXmlElement newElement((*it)->m_nodeName.c_str());
+        TiXmlElement newElement(it->m_nodeName.c_str());
         TiXmlNode *pNewNode = pFilter.InsertEndChild(newElement);
-        TiXmlText value((*it)->m_value.c_str());
+        TiXmlText value(it->m_value.c_str());
         pNewNode->InsertEndChild(value);
       }
     }
@@ -324,20 +312,20 @@ void CGUIDialogDSFilters::OnSettingAction(const CSetting *setting)
   }
 }
 
-int CGUIDialogDSFilters::ShowDSFiltersList()
+void CGUIDialogDSFilters::ShowDSFiltersList()
 {
   // Load userdata Filterseconfig.xml
   TiXmlElement *pFilters;
-  Get()->m_dsmanager->LoadDsXML(FILTERSCONFIG, pFilters, true);
+  CGUIDialogDSManager::Get()->LoadDsXML(FILTERSCONFIG, pFilters, true);
   if (!pFilters)
-    return -1;
+    return;
 
   int selected;
   int count = 0;
 
   CGUIDialogSelect *pDlg = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   if (!pDlg)
-    return -1;
+    return;
 
   pDlg->SetHeading(65001);
 
@@ -367,13 +355,10 @@ int CGUIDialogDSFilters::ShowDSFiltersList()
   pDlg->Open();
   selected = pDlg->GetSelectedLabel();
 
-  Get()->m_dsmanager->SetisNew(selected == count);
+  CGUIDialogDSManager::Get()->SetConfig(selected == count, selected);
 
-  Get()->m_dsmanager->SetConfigIndex(selected);
-
-  if (selected > -1) g_windowManager.ActivateWindow(WINDOW_DIALOG_DSFILTERS);
-
-  return selected;
+  if (selected > -1) 
+    g_windowManager.ActivateWindow(WINDOW_DIALOG_DSFILTERS);
 }
 
 void CGUIDialogDSFilters::TypeOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
@@ -393,16 +378,10 @@ CStdString CGUIDialogDSFilters::GetFilterName(CStdString guid)
   std::vector<DSFiltersInfo> filterList;
   p_dfilter.GetDSFilters(filterList);
 
-  std::vector<DSFiltersInfo>::const_iterator iter = filterList.begin();
-
-  for (int i = 1; iter != filterList.end(); i++)
+  for (const auto &it : filterList)
   {
-    DSFiltersInfo filter = *iter;
-    if (guid == filter.lpstrGuid)
-    {
-      return filter.lpstrName;
-    }
-    ++iter;
+    if (guid == it.lpstrGuid)
+      return it.lpstrName;
   }
   return "";
 }

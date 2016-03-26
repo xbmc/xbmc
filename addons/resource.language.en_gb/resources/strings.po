@@ -18602,6 +18602,10 @@ msgctxt "#66011"
 msgid "- Mimetypes"
 msgstr ""
 
+msgctxt "#69999"
+msgid "Write all madVR settings in debug log"
+msgstr ""
+
 msgctxt "#70000"
 msgid "Scaling algorithms..."
 msgstr ""
@@ -18727,11 +18731,11 @@ msgid "Image downscaling"
 msgstr ""
 
 msgctxt "#70031"
-msgid "- anti-ringing filter"
+msgid "anti-ringing filter"
 msgstr ""
 
 msgctxt "#70032"
-msgid "- scale in linear light"
+msgid "scale in linear light"
 msgstr ""
 
 msgctxt "#70033"
@@ -18767,7 +18771,87 @@ msgid "Nedi"
 msgstr 
 
 msgctxt "#70041"
-msgid "- super-res filter"
+msgid "super-res filter"
+msgstr 
+
+msgctxt "#70042"
+msgid "Reconstruction (soft)"
+msgstr 
+
+msgctxt "#70043"
+msgid "Reconstruction (sharp)"
+msgstr 
+
+msgctxt "#70044"
+msgid "Reconstruction (placebo)"
+msgstr 
+
+msgctxt "#70045"
+msgid "Reconstruction (sharp AR)"
+msgstr 
+
+msgctxt "#70046"
+msgid "Reconstruction (placebo AR)"
+msgstr 
+
+msgctxt "#70047"
+msgid "Bicubic (sharpness 150)"
+msgstr ""
+
+msgctxt "#70048"
+msgid "SSIM 1D (strength 25)"
+msgstr ""
+
+msgctxt "#70049"
+msgid "scale in sigmoidal light"
+msgstr ""
+
+msgctxt "#70050"
+msgid "Bicubic (sharpness 125)"
+msgstr ""
+
+msgctxt "#70051"
+msgid "SSIM 1D (strength 50)"
+msgstr ""
+
+msgctxt "#70052"
+msgid "SSIM 1D (strength 75)"
+msgstr ""
+
+msgctxt "#70053"
+msgid "SSIM 1D (strength 100)"
+msgstr ""
+
+msgctxt "#70054"
+msgid "SSIM 2D (strength 25)"
+msgstr ""
+
+msgctxt "#70055"
+msgid "SSIM 2D (strength 50)"
+msgstr ""
+
+msgctxt "#70056"
+msgid "SSIM 2D (strength 75)"
+msgstr ""
+
+msgctxt "#70057"
+msgid "SSIM 2D (strength 100)"
+msgstr ""
+
+msgctxt "#70058"
+msgid "Super-Xbr (anti-bloating 25)"
+msgstr 
+
+msgctxt "#70059"
+msgid "Super-Xbr (anti-bloating 50)"
+msgstr 
+
+msgctxt "#70060"
+msgid "Super-Xbr (anti-bloating 75)"
+msgstr 
+
+msgctxt "#70061"
+msgid "Super-Xbr (anti-bloating 100)"
 msgstr 
 
 msgctxt "#70100"
@@ -18819,7 +18903,7 @@ msgid "only if scaling factor is 1.2x (or bigger)"
 msgstr ""
 
 msgctxt "#70112"
-msgid "always if upscaling needed"
+msgid "always - if upscaling is needed"
 msgstr ""
 
 msgctxt "#70113"
@@ -18835,7 +18919,7 @@ msgid "only if scaling factor is 2.4x (or bigger)"
 msgstr ""
 
 msgctxt "#70116"
-msgid "- scaling condition"
+msgid "scaling condition"
 msgstr ""
 
 msgctxt "#70117"
@@ -18859,7 +18943,7 @@ msgid "Super Resolution (up refinement)"
 msgstr ""
 
 msgctxt "#70122"
-msgid "- strength"
+msgid "strength"
 msgstr ""
 
 msgctxt "#70123"
@@ -18879,7 +18963,7 @@ msgid "Refine image (2x upscaling step)"
 msgstr ""
 
 msgctxt "#70127"
-msgid "- apply super-res first"
+msgid "apply super-res first"
 msgstr ""
 
 msgctxt "#70128"
@@ -18903,7 +18987,7 @@ msgid "- sharpness"
 msgstr ""
 
 msgctxt "#70133"
-msgid "- use linear light"
+msgid "use linear light"
 msgstr ""
 
 msgctxt "#70134"
@@ -18936,6 +19020,62 @@ msgstr ""
 
 msgctxt "#70141"
 msgid "Enhance Detail (up refinement)"
+msgstr ""
+
+msgctxt "#70142"
+msgid "Sharpen anti-ringing (up refinement)"
+msgstr ""
+
+msgctxt "#70143"
+msgid "Sharpen anti-ringing (image enhancement)"
+msgstr ""
+
+msgctxt "#70144"
+msgid "always - 2x supersampling"
+msgstr ""
+
+msgctxt "#70145"
+msgid "relaxed"
+msgstr ""
+
+msgctxt "#70146"
+msgid "strict (soft)"
+msgstr ""
+
+msgctxt "#70147"
+msgid "anti-bloating filter"
+msgstr ""
+
+msgctxt "#70148"
+msgid "25%"
+msgstr ""
+
+msgctxt "#70149"
+msgid "50%"
+msgstr ""
+
+msgctxt "#70150"
+msgid "75%"
+msgstr ""
+
+msgctxt "#70151"
+msgid "100%"
+msgstr ""
+
+msgctxt "#70152"
+msgid "125%"
+msgstr ""
+
+msgctxt "#70153"
+msgid "150%"
+msgstr ""
+
+msgctxt "#70154"
+msgid "Sharpen anti-bloating (up refinement)"
+msgstr ""
+
+msgctxt "#70155"
+msgid "Sharpen anti-bloating (image enhancement)"
 msgstr ""
 
 msgctxt "#70200"
@@ -19238,11 +19378,11 @@ msgid "error diffusion 2 (mild patterns) (dx11)"
 msgstr ""
 
 msgctxt "#70405"
-msgid "- use colored noise"
+msgid "use colored noise"
 msgstr ""
 
 msgctxt "#70406"
-msgid "- change dither for every frame"
+msgid "change dither for every frame"
 msgstr ""
 
 msgctxt "#70500"
@@ -19250,11 +19390,11 @@ msgid "Reduce banding artifacts"
 msgstr ""
 
 msgctxt "#70501"
-msgid "- default debanding strength"
+msgid "default debanding strength"
 msgstr ""
 
 msgctxt "#70502"
-msgid "- strength during fade in/out"
+msgid "strength during fade in/out"
 msgstr ""
 
 msgctxt "#70503"
@@ -19295,6 +19435,10 @@ msgstr ""
 
 msgctxt "#70606"
 msgid "Save for all videos"
+msgstr ""
+
+msgctxt "#70607"
+msgid "Reset to default for all videos"
 msgstr ""
 
 msgctxt "#80001"
@@ -19338,7 +19482,7 @@ msgid "Deinterlacing Mode"
 msgstr ""
 
 msgctxt "#80011"
-msgid "Software deinterlacing (YADIF)"
+msgid "Software deinterlacing"
 msgstr ""
 
 msgctxt "#80012"
@@ -19483,6 +19627,18 @@ msgstr ""
 
 msgctxt "#80216"
 msgid "Untouched (as input)"
+msgstr ""
+
+msgctxt "#80217"
+msgid "YADIF"
+msgstr ""
+
+msgctxt "#80218"
+msgid "Weston Three Field (simple)"
+msgstr ""
+
+msgctxt "#80219"
+msgid "Weston Three Field (complex)"
 msgstr ""
 
 msgctxt "#81001"

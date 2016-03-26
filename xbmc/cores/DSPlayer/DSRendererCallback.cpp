@@ -249,108 +249,33 @@ void CDSRendererCallback::RestoreSettings()
     m_pSettingCallback->RestoreSettings();
 }
 
-void CDSRendererCallback::LoadSettings(MADVR_LOAD_TYPE type)
+void CDSRendererCallback::LoadSettings(int iSectionId)
 {
   if (m_pSettingCallback)
-    m_pSettingCallback->LoadSettings(type);
+    m_pSettingCallback->LoadSettings(iSectionId);
 }
 
-void CDSRendererCallback::GetProfileActiveName(std::string path, std::string *profile)
+void CDSRendererCallback::GetProfileActiveName(const std::string &path, std::string *profile)
 {
   if (m_pSettingCallback)
     m_pSettingCallback->GetProfileActiveName(path, profile);
 }
-
-void CDSRendererCallback::SetStr(std::string path, std::string sValue) 
+void  CDSRendererCallback::OnSettingChanged(int iSectionId, CSettingsManager* settingsManager, const CSetting *setting)
 {
   if (m_pSettingCallback)
-    m_pSettingCallback->SetStr(path, sValue);
+    m_pSettingCallback->OnSettingChanged(iSectionId, settingsManager, setting);
 }
 
-void CDSRendererCallback::SetBool(std::string path, bool bValue) 
+void CDSRendererCallback::AddDependencies(const std::string &xml, CSettingsManager *settingsManager, CSetting *setting)
 {
   if (m_pSettingCallback)
-    m_pSettingCallback->SetBool(path, bValue);
-};
-void CDSRendererCallback::SetInt(std::string path, int iValue) 
-{
-  if (m_pSettingCallback)
-    m_pSettingCallback->SetInt(path, iValue);
+    m_pSettingCallback->AddDependencies(xml, settingsManager, setting);
 }
 
-void CDSRendererCallback::SetFloat(std::string path, float fValue, int iConv) 
+void CDSRendererCallback::ListSettings(const std::string &path)
 {
   if (m_pSettingCallback)
-    m_pSettingCallback->SetFloat(path, fValue, iConv);
-}
-
-void CDSRendererCallback::SetDoubling(std::string path, int iValue) 
-{
-  if (m_pSettingCallback)
-    m_pSettingCallback->SetDoubling(path, iValue);
-}
-
-void CDSRendererCallback::SetDeintActive(std::string path, int iValue) 
-{
-  if (m_pSettingCallback)
-    m_pSettingCallback->SetDeintActive(path, iValue);
-}
-
-void CDSRendererCallback::SetBoolValue(std::string path, std::string sValue, int iValue)
-{
-  if (m_pSettingCallback)
-    m_pSettingCallback->SetBoolValue(path, sValue, iValue);
-}
-
-void CDSRendererCallback::SetMultiBool(std::string path, std::string sValue, int iValue)
-{
-  if (m_pSettingCallback)
-    m_pSettingCallback->SetMultiBool(path, sValue, iValue);
-}
-
-void CDSRendererCallback::SetSmoothmotion(std::string path, int iValue) 
-{
-  if (m_pSettingCallback)
-    m_pSettingCallback->SetSmoothmotion(path, iValue);
-}
-
-void CDSRendererCallback::SetDithering(std::string path, int iValue) 
-{
-  if (m_pSettingCallback)
-    m_pSettingCallback->SetDithering(path, iValue);
-}
-
-void CDSRendererCallback::SetQuickArChange(std::string path, int iValue)
-{
-  if (m_pSettingCallback)
-    m_pSettingCallback->SetQuickArChange(path, iValue);
-}
-
-void CDSRendererCallback::SetCleanBorders(std::string path, int iValue)
-{
-  if (m_pSettingCallback)
-    m_pSettingCallback->SetCleanBorders(path, iValue);
-}
-
-
-std::string CDSRendererCallback::GetSettingsName(MADVR_SETTINGS_LIST type, int iValue)
-{
-  if (m_pSettingCallback)
-    return m_pSettingCallback->GetSettingsName(type, iValue);
-
-  return "";
-}
-
-void CDSRendererCallback::AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry)
-{
-  if (m_pSettingCallback)
-    m_pSettingCallback->AddEntry(type, entry);
-}
-
-void CDSRendererCallback::UpdateImageDouble()
-{
-  if (m_pSettingCallback)
-    m_pSettingCallback->UpdateImageDouble();
+    m_pSettingCallback->ListSettings(path);
 }
 
 #endif

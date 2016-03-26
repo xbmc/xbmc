@@ -24,33 +24,30 @@
  */
 
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
-#include "utils/StdString.h"
 
-class CGUIDialogMadvrScaling : public CGUIDialogSettingsManualBase
+class CGUIDialogMadvrSettingsBase : public CGUIDialogSettingsManualBase
 {
 public:
-  CGUIDialogMadvrScaling();
-  virtual ~CGUIDialogMadvrScaling();
-
+  CGUIDialogMadvrSettingsBase(int windowId, const std::string &xmlFile);
+  virtual ~CGUIDialogMadvrSettingsBase(); 
+  
 protected:
-
-  // implementations of ISettingCallback
+  virtual void InitializeSettings();
   virtual void OnSettingChanged(const CSetting *setting);
   virtual void OnSettingAction(const CSetting *setting);
-  virtual bool AllowResettingSettings() const { return false; }
-  virtual void OnInitWindow();
 
-  // specialization of CGUIDialogSettingsManualBase
-  virtual void InitializeSettings();
-  virtual void SetupView();
-  virtual void Save() {};
+  virtual void SaveControlStates();
+  virtual void RestoreControlStates();
 
-  bool IsNNEDI3(int iValue) { return iValue < 5; }
-  bool IsEnabled(int iValue) { return iValue > -1; }
-  void HideUnused();
-  void SetVisible(CStdString id, bool visible);
-  void SetVisibleFake(CStdString id, bool visible);
+  static void SetSection(int iSectionId, int label = -1 ) { m_iSectionId = iSectionId; m_label = label; }
+  static void MadvrSettingsOptionsString(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static int m_iSectionId;
+  static int m_label;
 
-  bool m_allowchange;
+  void SaveMadvrSettings();
 
+  CSettingCategory *m_category;
+  std::map<int, int> m_focusPositions;
+  bool m_bMadvr;
+  int m_iSectionIdInternal;
 };

@@ -22,10 +22,15 @@
 
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 #ifdef HAS_DS_PLAYER
+#include "cores/DSPlayer/Dialogs/GUIDialogMadvrSettingsBase.h"
 #include "DSPropertyPage.h"
 #endif
 
+#ifdef HAS_DS_PLAYER
+class CGUIDialogVideoSettings : public CGUIDialogMadvrSettingsBase
+#else
 class CGUIDialogVideoSettings : public CGUIDialogSettingsManualBase
+#endif
 {
 public:
   CGUIDialogVideoSettings();
@@ -47,16 +52,9 @@ protected:
 private:
   bool m_viewModeChanged;
 #ifdef HAS_DS_PLAYER
-  void SaveChoice();
-  void HideUnused();
-  void SetVisible(std::string id, bool visible);
-  virtual void OnInitWindow();
   CDSPropertyPage* m_pDSPropertyPage;
-  bool m_allowchange;
   int m_scalingMethod;
   int m_dsStats;
-  bool m_isMadvr;
 #endif
-
 
 };

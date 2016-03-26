@@ -3339,8 +3339,8 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #ifdef HAS_DS_PLAYER
     CMediaSettings::GetInstance().GetAtStartVideoSettings() = CMediaSettings::GetInstance().GetCurrentVideoSettings();
 
-    CMediaSettings::GetInstance().GetCurrentMadvrSettings() = CMediaSettings::GetInstance().GetDefaultMadvrSettings();
-    CMediaSettings::GetInstance().GetAtStartMadvrSettings() = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
+    CMediaSettings::GetInstance().GetCurrentMadvrSettings().RestoreDefaultSettings();
+    CMediaSettings::GetInstance().GetCurrentMadvrSettings().StoreSettingsAtStart();
 #endif
     // see if we have saved options in the database
 
@@ -3970,35 +3970,42 @@ void CApplication::LoadVideoSettings(const CFileItem& item)
   CMediaSettings::GetInstance().GetAtStartVideoSettings() = CMediaSettings::GetInstance().GetCurrentVideoSettings();
 
   CDSPlayerDatabase dsdbs;
-  if (dsdbs.Open())
+  if (!dsdbs.Open())
+    return;
+
+  CFileItem fileItem = item;
+
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS) 
+    && fileItem.HasVideoInfoTag() 
+    && !fileItem.GetVideoInfoTag()->HasStreamDetails())
   {
-    CFileItem item = CurrentFileItem();
-
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS) && item.HasVideoInfoTag() && !item.GetVideoInfoTag()->HasStreamDetails())
-    {
-      CLog::Log(LOGDEBUG, "%s - trying to extract filestream details from video file %s", __FUNCTION__, item.GetPath().c_str());
-      CDVDFileInfo::GetFileStreamDetails(&item);
-    }
-
-    CStreamDetails streamDetails = item.GetVideoInfoTag()->m_streamDetails;
-    int res = CDSRendererCallback::Get()->VideoDimsToResolution(streamDetails.GetVideoWidth(), streamDetails.GetVideoHeight());
-    std::string tvShowName = item.GetVideoInfoTag()->m_strShowTitle;
-
-    CLog::Log(LOGDEBUG, "Loading madvr settings for %s with resolution id: %i", item.GetPath().c_str(), res);
-
-    // Load stored files settings
-    if (!dsdbs.GetVideoSettings(item.GetPath().c_str(), CMediaSettings::GetInstance().GetCurrentMadvrSettings()))
-      // if not present Load stored TvShowName settings
-      if (!dsdbs.GetDefResMadvrSettings(-1, tvShowName, CMediaSettings::GetInstance().GetCurrentMadvrSettings()))
-        // if not present Load stored Resolution settings
-        if (!dsdbs.GetDefResMadvrSettings(res, "", CMediaSettings::GetInstance().GetCurrentMadvrSettings())) 
-          // if not present Load default setting
-          CMediaSettings::GetInstance().GetCurrentMadvrSettings() = CMediaSettings::GetInstance().GetDefaultMadvrSettings();
-
-    CMediaSettings::GetInstance().GetAtStartMadvrSettings() = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
-
-    dsdbs.Close();
+    CLog::Log(LOGDEBUG, "%s - trying to extract filestream details from video file %s", __FUNCTION__, fileItem.GetPath().c_str());
+    CDVDFileInfo::GetFileStreamDetails(&fileItem);
   }
+
+  CStreamDetails streamDetails = fileItem.GetVideoInfoTag()->m_streamDetails;
+  CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
+
+  madvrSettings.m_Resolution = CDSRendererCallback::Get()->VideoDimsToResolution(streamDetails.GetVideoWidth(), streamDetails.GetVideoHeight());
+  madvrSettings.m_TvShowName = fileItem.GetVideoInfoTag()->m_strShowTitle;
+
+  CLog::Log(LOGDEBUG, "Loading madvr settings for %s", fileItem.GetPath().c_str());
+
+  // Load stored files settings
+  if (!dsdbs.GetVideoSettings(fileItem.GetPath().c_str(), madvrSettings))
+    // if not present Load stored TvShowName settings
+    if (!dsdbs.GetTvShowSettings(madvrSettings.m_TvShowName, madvrSettings))
+      // if not present Load stored Resolution settings
+      if (!dsdbs.GetResSettings(madvrSettings.m_Resolution, madvrSettings))
+        // if not present Load stored for all setting
+        if (!dsdbs.GetResSettings(MADVR_RES_ALL, madvrSettings))
+          // restore default settings
+          madvrSettings.RestoreDefaultSettings();
+
+  madvrSettings.StoreSettingsAtStart();
+
+  dsdbs.Close();
+  
 #endif
 }
 

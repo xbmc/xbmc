@@ -75,6 +75,39 @@ HRESULT CAudioEnumerator::GetAudioRenderers(std::vector<DSFilterInfo>& pRenderer
   return S_OK;
 }
 
+bool CAudioEnumerator::IsDevice(CStdString strDevice)
+{
+  CSingleLock lock(m_critSection);
+  if (strDevice.empty())
+    return false;
+
+  Com::SmartPtr<IPropertyBag> propBag = NULL;
+  BeginEnumSysDev(CLSID_AudioRendererCategory, pMoniker)
+  {
+    if (SUCCEEDED(pMoniker->BindToStorage(NULL, NULL, IID_IPropertyBag, (void**)&propBag)))
+    {
+      _variant_t var;
+
+      CStdString filterName;
+
+      if (SUCCEEDED(propBag->Read(L"FriendlyName", &var, 0)))
+        filterName = CStdStringW(var.bstrVal);
+
+      std::size_t found = filterName.ToLower().find(strDevice.ToLower());
+      if (found != std::string::npos)
+        return true;
+
+      propBag = NULL;
+    }
+    else
+      return false;
+  }
+  EndEnumSysDev;
+
+  return false;
+}
+
+
 void CAudioEnumerator::AddFilter(std::vector<DSFilterInfo>& pRenderers, CStdStringW lpGuid, CStdStringW lpName, CStdString lpDisplayName)
 {
   DSFilterInfo filterInfo;

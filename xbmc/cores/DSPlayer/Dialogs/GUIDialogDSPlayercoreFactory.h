@@ -33,14 +33,7 @@ public:
   CGUIDialogDSPlayercoreFactory();
   virtual ~CGUIDialogDSPlayercoreFactory();
 
-  static CGUIDialogDSPlayercoreFactory* Get();
-  static void Destroy()
-  {
-    delete m_pSingleton;
-    m_pSingleton = NULL;
-  }
-
-  static int ShowDSPlayercoreFactory();
+  static void ShowDSPlayercoreFactory();
 
 protected:
 
@@ -59,9 +52,6 @@ protected:
   virtual void InitializeSettings();
 
   virtual void SetupView();
-
-  static CGUIDialogDSPlayercoreFactory* m_pSingleton;
-
 
   bool isEdited;
 

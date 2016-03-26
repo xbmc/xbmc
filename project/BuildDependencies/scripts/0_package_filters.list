@@ -1,4 +1,5 @@
-LAVFilters=https://github.com/aracnoz/LAVFilters/releases/download/0.67_dsplayer/LAVFilters_DSPlayer-0.67-x86.zip
+LAVFilters=https://github.com/aracnoz/LAVFilters/releases/download/0.68_dsplayer/LAVFilters_DSPlayer-0.68-x86.zip
+LAVFilters=http://files.1f0.de/lavf/plugins/libmfxsw32-v1.7z
 XySubFilter=https://github.com/aracnoz/xy-VSFilter/releases/download/3.1.0.746_dsplayer/XySubFilter_DSPlayer_3.1.0.746_x86.zip
 XyVSFilter=https://github.com/aracnoz/xy-VSFilter/releases/download/3.0.0.306_dsplayer/XyVSFilter_DSPlayer_3.0.0.306_x86.zip.zip
 TsReader=https://github.com/Romank1/MediaPortal-1/releases/download/v4.1.0.4_update1/TsReader_v4_1_0_4_update1_for_DSPlayer.zip

@@ -998,6 +998,19 @@ bool CSettingInt::fromString(const std::string &strValue, int &value)
   if (strValue.empty())
     return false;
 
+#ifdef HAS_DS_PLAYER
+  if (strValue == "true")
+  {
+    value = 1;
+    return true;
+  }
+  if (strValue == "false")
+  {
+    value = 0;
+    return true;
+  }
+#endif
+
   char *end = NULL;
   value = (int)strtol(strValue.c_str(), &end, 10);
   if (end != NULL && *end != '\0')

@@ -57,16 +57,8 @@ CGUIDialogDSPlayercoreFactory::CGUIDialogDSPlayercoreFactory()
   m_dsmanager = CGUIDialogDSManager::Get();
 }
 
-
 CGUIDialogDSPlayercoreFactory::~CGUIDialogDSPlayercoreFactory()
 { }
-
-CGUIDialogDSPlayercoreFactory *CGUIDialogDSPlayercoreFactory::m_pSingleton = NULL;
-
-CGUIDialogDSPlayercoreFactory* CGUIDialogDSPlayercoreFactory::Get()
-{
-  return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CGUIDialogDSPlayercoreFactory());
-}
 
 void CGUIDialogDSPlayercoreFactory::OnInitWindow()
 {
@@ -87,7 +79,7 @@ bool CGUIDialogDSPlayercoreFactory::OnBack(int actionID)
     if (CGUIDialogYesNo::ShowAndGetInput(61001, 61002, 0, 0))
     {
       CSetting *setting;
-      if (!m_dsmanager->GetisNew())
+      if (!m_dsmanager->GetNew())
         setting = GetSetting(SETTING_RULE_SAVE);
       else
         setting = GetSetting(SETTING_RULE_ADD);
@@ -162,7 +154,7 @@ void CGUIDialogDSPlayercoreFactory::InitializeSettings()
   m_dsmanager->ResetValue(m_ruleList);
 
   // Load userdata Playercorefactory.xml
-  if (!m_dsmanager->GetisNew())
+  if (!m_dsmanager->GetNew())
   {
     TiXmlElement *pRules;
     m_dsmanager->LoadDsXML(PLAYERCOREFACTORY, pRules);
@@ -171,35 +163,32 @@ void CGUIDialogDSPlayercoreFactory::InitializeSettings()
     {
       TiXmlElement *pRule = m_dsmanager->KeepSelectedNode(pRules, "rule");
 
-      std::vector<DSConfigList *>::iterator it;
-      for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
+      for (const auto &it : m_ruleList)
       {
-        if ((*it)->m_configType == EDITATTR)
-          (*it)->m_value = pRule->Attribute((*it)->m_attr.c_str());
+        if (it->m_configType == EDITATTR)
+          it->m_value = pRule->Attribute(it->m_attr.c_str());
 
-        if ((*it)->m_configType == BOOLATTR)
+        if (it->m_configType == BOOLATTR)
         {
-          (*it)->m_value = pRule->Attribute((*it)->m_attr.c_str());
-          if ((*it)->m_value == "")
-            (*it)->m_value = "false";
+          it->m_value = pRule->Attribute(it->m_attr.c_str());
+          if (it->m_value == "")
+            it->m_value = "false";
         }
       }
     }
   }
 
   // Stamp Button
-  std::vector<DSConfigList *>::iterator it;
-
-  for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
+  for (const auto &it : m_ruleList)
   {
-    if ((*it)->m_configType == EDITATTR)
-      AddEdit(group, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value, true);
+    if (it->m_configType == EDITATTR)
+      AddEdit(group, it->m_setting, it->m_label, 0, it->m_value, true);
 
-    if ((*it)->m_configType == BOOLATTR)
-      AddToggle(group, (*it)->m_setting, (*it)->m_label, 0, (*it)->GetBoolValue());
+    if (it->m_configType == BOOLATTR)
+      AddToggle(group, it->m_setting, it->m_label, 0, it->GetBoolValue());
   }
 
-  if (m_dsmanager->GetisNew())
+  if (m_dsmanager->GetNew())
     AddButton(groupSave, SETTING_RULE_ADD, 60015, 0);
   else
   {
@@ -218,15 +207,14 @@ void CGUIDialogDSPlayercoreFactory::OnSettingChanged(const CSetting *setting)
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
   const std::string &settingId = setting->GetId();
 
-  std::vector<DSConfigList *>::iterator it;
-  for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
+  for (const auto &it : m_ruleList)
   {
-    if (settingId == (*it)->m_setting)
+    if (settingId == it->m_setting)
     {
-      if ((*it)->m_configType != BOOLATTR)
-        (*it)->m_value = static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue());
+      if (it->m_configType != BOOLATTR)
+        it->m_value = static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue());
       else
-        (*it)->SetBoolValue(static_cast<bool>(static_cast<const CSettingBool*>(setting)->GetValue()));
+        it->SetBoolValue(static_cast<bool>(static_cast<const CSettingBool*>(setting)->GetValue()));
     }
   }
 }
@@ -267,14 +255,13 @@ void CGUIDialogDSPlayercoreFactory::OnSettingAction(const CSetting *setting)
   {
     TiXmlElement pRule("rule");
 
-    std::vector<DSConfigList *>::iterator it;
-    for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
+    for (const auto &it : m_ruleList)
     {
-      if ((*it)->m_configType == EDITATTR && (*it)->m_value != "")
-        pRule.SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
+      if (it->m_configType == EDITATTR && it->m_value != "")
+        pRule.SetAttribute(it->m_attr.c_str(), it->m_value.c_str());
 
-      if ((*it)->m_configType == BOOLATTR && (*it)->m_value != "false")
-        pRule.SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
+      if (it->m_configType == BOOLATTR && it->m_value != "false")
+        pRule.SetAttribute(it->m_attr.c_str(), it->m_value.c_str());
     }
 
     pRule.SetAttribute("player", "DVDPlayer");
@@ -298,20 +285,20 @@ void CGUIDialogDSPlayercoreFactory::OnSettingAction(const CSetting *setting)
   }
 }
 
-int CGUIDialogDSPlayercoreFactory::ShowDSPlayercoreFactory()
+void CGUIDialogDSPlayercoreFactory::ShowDSPlayercoreFactory()
 {
   // Load userdata PlayercoreFactory.xml
   TiXmlElement *pRules;
-  Get()->m_dsmanager->LoadDsXML(PLAYERCOREFACTORY, pRules, true);
+  CGUIDialogDSManager::Get()->LoadDsXML(PLAYERCOREFACTORY, pRules, true);
   if (!pRules)
-    return -1;
+    return;
 
   int selected;
   int count = 0;
 
   CGUIDialogSelect *pDlg = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   if (!pDlg)
-    return -1;
+    return ;
 
   pDlg->SetHeading(66001);
 
@@ -336,14 +323,13 @@ int CGUIDialogDSPlayercoreFactory::ShowDSPlayercoreFactory()
     else
     {
       int countAttr = 0;
-      std::vector<std::string>::iterator it;
-      for (it = vecAttr.begin(); it != vecAttr.end(); ++it)
+      for (const auto &it : vecAttr)
       {
 
-        value = pRule->Attribute((*it).c_str());
+        value = pRule->Attribute(it.c_str());
         if (value != "")
         {
-          strLabel.Format("%s %s=%s ", strLabel.c_str(), (*it).c_str(), value.c_str());
+          strLabel.Format("%s %s=%s ", strLabel.c_str(), it.c_str(), value.c_str());
           countAttr++;
         }
         if (countAttr > 1)
@@ -364,13 +350,10 @@ int CGUIDialogDSPlayercoreFactory::ShowDSPlayercoreFactory()
   pDlg->Open();
 
   selected = pDlg->GetSelectedLabel();
-  Get()->m_dsmanager->SetisNew(selected == count);
+  CGUIDialogDSManager::Get()->SetConfig(selected == count, selected);
 
-  Get()->m_dsmanager->SetConfigIndex(selected);
-
-  if (selected > -1) g_windowManager.ActivateWindow(WINDOW_DIALOG_DSPLAYERCORE);
-
-  return selected;
+  if (selected > -1) 
+    g_windowManager.ActivateWindow(WINDOW_DIALOG_DSPLAYERCORE);
 }
 
 

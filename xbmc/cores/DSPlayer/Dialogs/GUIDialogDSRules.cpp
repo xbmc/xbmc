@@ -60,13 +60,6 @@ CGUIDialogDSRules::CGUIDialogDSRules()
 CGUIDialogDSRules::~CGUIDialogDSRules()
 { }
 
-CGUIDialogDSRules *CGUIDialogDSRules::m_pSingleton = NULL;
-
-CGUIDialogDSRules* CGUIDialogDSRules::Get()
-{
-  return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CGUIDialogDSRules());
-}
-
 void CGUIDialogDSRules::OnInitWindow()
 {
   CGUIDialogSettingsManualBase::OnInitWindow();
@@ -87,7 +80,7 @@ bool CGUIDialogDSRules::OnBack(int actionID)
     if (CGUIDialogYesNo::ShowAndGetInput(61001, 61002, 0, 0))
     {
       CSetting *setting;
-      if (!m_dsmanager->GetisNew())
+      if (!m_dsmanager->GetNew())
         setting = GetSetting(SETTING_RULE_SAVE);
       else
         setting = GetSetting(SETTING_RULE_ADD);
@@ -150,27 +143,25 @@ void CGUIDialogDSRules::HideUnused(ConfigType type, ConfigType subType)
   bool show;
   bool isMadvr = (CSettings::GetInstance().GetString(CSettings::SETTING_DSPLAYER_VIDEORENDERER) == "madVR");
 
-  std::vector<DSConfigList *>::iterator it;
-  for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
+  for (const auto &it : m_ruleList)
   {
-    if ((*it)->m_configType == type)
+    if (it->m_configType == type)
     {
-      if ((*it)->m_value == "[null]")
+      if (it->m_value == "[null]")
         count++;
 
-      show = (count > 1 && (*it)->m_value == "[null]");
-      SetVisible((*it)->m_setting.c_str(), !show, subType);
+      show = (count > 1 && it->m_value == "[null]");
+      SetVisible(it->m_setting.c_str(), !show, subType);
 
-      show = (count > 0 && (*it)->m_value == "[null]");
-      std::vector<DSConfigList *>::iterator itchild;
-      for (itchild = m_ruleList.begin(); itchild != m_ruleList.end(); ++itchild)
+      show = (count > 0 && it->m_value == "[null]");
+      for (const auto &itchild : m_ruleList)
       {
-        if ((*itchild)->m_configType == subType && (*it)->m_subNode == (*itchild)->m_subNode)
+        if (itchild->m_configType == subType && it->m_subNode == itchild->m_subNode)
         {
           if (!isMadvr && subType == SPINNERATTRSHADER)
-            SetVisible((*itchild)->m_setting.c_str(), false, subType, true);
+            SetVisible(itchild->m_setting.c_str(), false, subType, true);
           else
-            SetVisible((*itchild)->m_setting.c_str(), !show, subType, true);
+            SetVisible(itchild->m_setting.c_str(), !show, subType, true);
         }
       }
     }
@@ -297,7 +288,7 @@ void CGUIDialogDSRules::InitializeSettings()
   m_dsmanager->ResetValue(m_ruleList);
 
   // Load userdata Mediaseconfig.xml
-  if (!(m_dsmanager->GetisNew()))
+  if (!(m_dsmanager->GetNew()))
   {
     TiXmlElement *pRules;
     m_dsmanager->LoadDsXML(MEDIASCONFIG, pRules);
@@ -306,55 +297,54 @@ void CGUIDialogDSRules::InitializeSettings()
     {
       TiXmlElement *pRule = m_dsmanager->KeepSelectedNode(pRules, "rule");
 
-      std::vector<DSConfigList *>::iterator it;
-      for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
+      for (const auto &it : m_ruleList)
       {
-        if ((*it)->m_configType == EDITATTR || (*it)->m_configType == SPINNERATTR)
-          (*it)->m_value = pRule->Attribute((*it)->m_attr.c_str());
+        if (it->m_configType == EDITATTR || it->m_configType == SPINNERATTR)
+          it->m_value = pRule->Attribute(it->m_attr.c_str());
 
-        if ((*it)->m_configType == BOOLATTR)
+        if (it->m_configType == BOOLATTR)
         {
-          (*it)->m_value = pRule->Attribute((*it)->m_attr.c_str());
-          if ((*it)->m_value == "")
-            (*it)->m_value = "false";
+          it->m_value = pRule->Attribute(it->m_attr.c_str());
+          if (it->m_value == "")
+            it->m_value = "false";
         }
 
-        if ((*it)->m_configType == FILTER)
+        if (it->m_configType == FILTER)
         {
-          TiXmlElement *pFilter = pRule->FirstChildElement((*it)->m_nodeName.c_str());
+          TiXmlElement *pFilter = pRule->FirstChildElement(it->m_nodeName.c_str());
           if (pFilter)
-            (*it)->m_value = pFilter->Attribute((*it)->m_attr.c_str());
+            it->m_value = pFilter->Attribute(it->m_attr.c_str());
         }
 
-        if ((*it)->m_configType == EXTRAFILTER
-          || (*it)->m_configType == SHADER
-          || (*it)->m_configType == EDITATTREXTRA
-          || (*it)->m_configType == SPINNERATTRSHADER
-          || (*it)->m_configType == EDITATTRSHADER)
+        if (it->m_configType == EXTRAFILTER
+          || it->m_configType == SHADER
+          || it->m_configType == EDITATTREXTRA
+          || it->m_configType == SPINNERATTRSHADER
+          || it->m_configType == EDITATTRSHADER)
         {
           TiXmlElement *pFilter;
 
-          pFilter = pRule->FirstChildElement((*it)->m_nodeName.c_str());
+          pFilter = pRule->FirstChildElement(it->m_nodeName.c_str());
 
-          if (pFilter && NodeHasAttr(pFilter, (*it)->m_attr))
+          if (pFilter && NodeHasAttr(pFilter, it->m_attr))
           {
-            if ((*it)->m_subNode == 0)
-              (*it)->m_value = pFilter->Attribute((*it)->m_attr.c_str());
+            if (it->m_subNode == 0)
+              it->m_value = pFilter->Attribute(it->m_attr.c_str());
 
             continue;
           }
 
-          pFilter = pRule->FirstChildElement((*it)->m_nodeList.c_str());
+          pFilter = pRule->FirstChildElement(it->m_nodeList.c_str());
           if (pFilter)
           {
             int countsize = 0;
-            TiXmlElement *pSubExtra = pFilter->FirstChildElement((*it)->m_nodeName.c_str());
+            TiXmlElement *pSubExtra = pFilter->FirstChildElement(it->m_nodeName.c_str());
             while (pSubExtra)
             {
-              if ((*it)->m_subNode == countsize)
-                (*it)->m_value = pSubExtra->Attribute((*it)->m_attr.c_str());
+              if (it->m_subNode == countsize)
+                it->m_value = pSubExtra->Attribute(it->m_attr.c_str());
 
-              pSubExtra = pSubExtra->NextSiblingElement((*it)->m_nodeName.c_str());
+              pSubExtra = pSubExtra->NextSiblingElement(it->m_nodeName.c_str());
               countsize++;
             }
           }
@@ -364,43 +354,42 @@ void CGUIDialogDSRules::InitializeSettings()
   }
 
   // Stamp Button
-  std::vector<DSConfigList *>::iterator it;
   CSettingGroup *groupTmp;
 
-  for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
+  for (const auto &it : m_ruleList)
   {
-    if ((*it)->m_configType == EDITATTR
-      || (*it)->m_configType == EDITATTREXTRA
-      || (*it)->m_configType == EDITATTRSHADER)
+    if (it->m_configType == EDITATTR
+      || it->m_configType == EDITATTREXTRA
+      || it->m_configType == EDITATTRSHADER)
     {
-      if ((*it)->m_attr == "name")
+      if (it->m_attr == "name")
         groupTmp = groupName;
       else
         groupTmp = groupRule;
 
-      if ((*it)->m_configType == EDITATTREXTRA || (*it)->m_configType == EDITATTRSHADER)
+      if (it->m_configType == EDITATTREXTRA || it->m_configType == EDITATTRSHADER)
         groupTmp = groupExtra;
 
-      AddEdit(groupTmp, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value.c_str(), true);
+      AddEdit(groupTmp, it->m_setting, it->m_label, 0, it->m_value.c_str(), true);
     }
-    if ((*it)->m_configType == SPINNERATTR)
-      AddList(groupName, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value, (*it)->m_filler, (*it)->m_label);
+    if (it->m_configType == SPINNERATTR)
+      AddList(groupName, it->m_setting, it->m_label, 0, it->m_value, it->m_filler, it->m_label);
 
-    if ((*it)->m_configType == SPINNERATTRSHADER)
-      AddSpinner(groupExtra, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value, (*it)->m_filler);
+    if (it->m_configType == SPINNERATTRSHADER)
+      AddSpinner(groupExtra, it->m_setting, it->m_label, 0, it->m_value, it->m_filler);
 
-    if ((*it)->m_configType == BOOLATTR)
-      AddToggle(groupRule, (*it)->m_setting, (*it)->m_label, 0, (*it)->GetBoolValue());
+    if (it->m_configType == BOOLATTR)
+      AddToggle(groupRule, it->m_setting, it->m_label, 0, it->GetBoolValue());
 
-    if ((*it)->m_configType == FILTER)
-      AddList(groupFilter, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value, (*it)->m_filler, (*it)->m_label);
+    if (it->m_configType == FILTER)
+      AddList(groupFilter, it->m_setting, it->m_label, 0, it->m_value, it->m_filler, it->m_label);
 
-    if ((*it)->m_configType == EXTRAFILTER || (*it)->m_configType == SHADER)
-      AddList(groupExtra, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value, (*it)->m_filler, (*it)->m_label);
+    if (it->m_configType == EXTRAFILTER || it->m_configType == SHADER)
+      AddList(groupExtra, it->m_setting, it->m_label, 0, it->m_value, it->m_filler, it->m_label);
   }
 
 
-  if (m_dsmanager->GetisNew())
+  if (m_dsmanager->GetNew())
     AddButton(groupSave, SETTING_RULE_ADD, 60015, 0);
   else
   {
@@ -420,15 +409,14 @@ void CGUIDialogDSRules::OnSettingChanged(const CSetting *setting)
 
   const std::string &settingId = setting->GetId();
 
-  std::vector<DSConfigList *>::iterator it;
-  for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
+  for (const auto &it : m_ruleList)
   {
-    if (settingId == (*it)->m_setting)
+    if (settingId == it->m_setting)
     {
-      if ((*it)->m_configType != BOOLATTR)
-        (*it)->m_value = static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue());
+      if (it->m_configType != BOOLATTR)
+        it->m_value = static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue());
       else
-        (*it)->SetBoolValue(static_cast<bool>(static_cast<const CSettingBool*>(setting)->GetValue()));
+        it->SetBoolValue(static_cast<bool>(static_cast<const CSettingBool*>(setting)->GetValue()));
     }
   }
   HideUnused();
@@ -470,58 +458,57 @@ void CGUIDialogDSRules::OnSettingAction(const CSetting *setting)
     bool isMadvr = (CSettings::GetInstance().GetString(CSettings::SETTING_DSPLAYER_VIDEORENDERER) == "madVR");
     TiXmlElement pRule("rule");
 
-    std::vector<DSConfigList *>::iterator it;
-    for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
+    for (const auto &it : m_ruleList)
     {
-      if ((*it)->m_configType == EDITATTR && (*it)->m_value != "")
-        pRule.SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
+      if (it->m_configType == EDITATTR && it->m_value != "")
+        pRule.SetAttribute(it->m_attr.c_str(), it->m_value.c_str());
 
-      if ((*it)->m_configType == SPINNERATTR && (*it)->m_value != "[null]")
-        pRule.SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
+      if (it->m_configType == SPINNERATTR && it->m_value != "[null]")
+        pRule.SetAttribute(it->m_attr.c_str(), it->m_value.c_str());
 
-      if ((*it)->m_configType == BOOLATTR && (*it)->m_value != "false")
-        pRule.SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
+      if (it->m_configType == BOOLATTR && it->m_value != "false")
+        pRule.SetAttribute(it->m_attr.c_str(), it->m_value.c_str());
 
-      if ((*it)->m_configType == FILTER && (*it)->m_value != "[null]")
+      if (it->m_configType == FILTER && it->m_value != "[null]")
       {
-        pRule.InsertEndChild(TiXmlElement((*it)->m_nodeName.c_str()));
-        TiXmlElement *pFilter = pRule.FirstChildElement((*it)->m_nodeName.c_str());
+        pRule.InsertEndChild(TiXmlElement(it->m_nodeName.c_str()));
+        TiXmlElement *pFilter = pRule.FirstChildElement(it->m_nodeName.c_str());
         if (pFilter)
-          pFilter->SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
+          pFilter->SetAttribute(it->m_attr.c_str(), it->m_value.c_str());
       }
 
-      if (((*it)->m_configType == EXTRAFILTER
-        || (*it)->m_configType == SHADER
-        || (*it)->m_configType == EDITATTREXTRA
-        || (*it)->m_configType == EDITATTRSHADER
-        || (*it)->m_configType == SPINNERATTRSHADER)
-        && (*it)->m_value != "[null]" && (*it)->m_value != "")
+      if ((it->m_configType == EXTRAFILTER
+        || it->m_configType == SHADER
+        || it->m_configType == EDITATTREXTRA
+        || it->m_configType == EDITATTRSHADER
+        || it->m_configType == SPINNERATTRSHADER)
+        && it->m_value != "[null]" && it->m_value != "")
       {
 
-        if (!isMadvr && (*it)->m_configType == SPINNERATTRSHADER)
+        if (!isMadvr && it->m_configType == SPINNERATTRSHADER)
           continue;
 
-        TiXmlElement *pExtra = pRule.FirstChildElement((*it)->m_nodeList.c_str());
-        if (!pExtra && (*it)->m_configType != EDITATTREXTRA && (*it)->m_configType != EDITATTRSHADER && (*it)->m_configType != SPINNERATTRSHADER)
+        TiXmlElement *pExtra = pRule.FirstChildElement(it->m_nodeList.c_str());
+        if (!pExtra && it->m_configType != EDITATTREXTRA && it->m_configType != EDITATTRSHADER && it->m_configType != SPINNERATTRSHADER)
         {
-          pRule.InsertEndChild(TiXmlElement((*it)->m_nodeList.c_str()));
-          pExtra = pRule.FirstChildElement((*it)->m_nodeList.c_str());
+          pRule.InsertEndChild(TiXmlElement(it->m_nodeList.c_str()));
+          pExtra = pRule.FirstChildElement(it->m_nodeList.c_str());
         }
-        if ((*it)->m_configType != EDITATTREXTRA && (*it)->m_configType != EDITATTRSHADER && (*it)->m_configType != SPINNERATTRSHADER)
-          pExtra->InsertEndChild(TiXmlElement((*it)->m_nodeName.c_str()));
+        if (it->m_configType != EDITATTREXTRA && it->m_configType != EDITATTRSHADER && it->m_configType != SPINNERATTRSHADER)
+          pExtra->InsertEndChild(TiXmlElement(it->m_nodeName.c_str()));
 
         if (!pExtra)
           continue;
 
-        TiXmlElement *pSubExtra = pExtra->FirstChildElement((*it)->m_nodeName.c_str());
+        TiXmlElement *pSubExtra = pExtra->FirstChildElement(it->m_nodeName.c_str());
 
         int countsize = 0;
         while (pSubExtra)
         {
-          if ((*it)->m_subNode == countsize)
-            pSubExtra->SetAttribute((*it)->m_attr.c_str(), (*it)->m_value.c_str());
+          if (it->m_subNode == countsize)
+            pSubExtra->SetAttribute(it->m_attr.c_str(), it->m_value.c_str());
 
-          pSubExtra = pSubExtra->NextSiblingElement((*it)->m_nodeName.c_str());
+          pSubExtra = pSubExtra->NextSiblingElement(it->m_nodeName.c_str());
           countsize++;
         }
       }
@@ -543,13 +530,13 @@ void CGUIDialogDSRules::OnSettingAction(const CSetting *setting)
   }
 }
 
-int CGUIDialogDSRules::ShowDSRulesList()
+void CGUIDialogDSRules::ShowDSRulesList()
 {
   // Load userdata Mediaseconfig.xml
   TiXmlElement *pRules;
-  Get()->m_dsmanager->LoadDsXML(MEDIASCONFIG, pRules, true);
+  CGUIDialogDSManager::Get()->LoadDsXML(MEDIASCONFIG, pRules, true);
   if (!pRules)
-    return -1;
+    return;
 
   CStdString strRule;
   int selectedId = -1;
@@ -559,7 +546,7 @@ int CGUIDialogDSRules::ShowDSRulesList()
 
   CGUIDialogSelect *pDlg = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   if (!pDlg)
-    return -1;
+    return;
 
   pDlg->SetHeading(60001);
 
@@ -623,13 +610,10 @@ int CGUIDialogDSRules::ShowDSRulesList()
   if (selected > -1 && selected < rules.size()) 
     selectedId = rules[selected]->id;
 
-  Get()->m_dsmanager->SetisNew(selected == count);
+  CGUIDialogDSManager::Get()->SetConfig(selected == count, selected);
 
-  Get()->m_dsmanager->SetConfigIndex(selectedId);
-
-  if (selected > -1) g_windowManager.ActivateWindow(WINDOW_DIALOG_DSRULES);
-
-  return selected;
+  if (selected > -1) 
+    g_windowManager.ActivateWindow(WINDOW_DIALOG_DSRULES);
 }
 
 

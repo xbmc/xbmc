@@ -28,75 +28,14 @@
 
 #include "DSUtil/DSUtil.h"
 #include "guilib/Geometry.h"
+#include "settings/lib/SettingsManager.h"
 #include "settings/lib/SettingDefinitions.h"
-
-// DEFAULT SETTINGS
-const int MADVR_DEFAULT_CHROMAUP = 7; // BICUBIC75
-const int MADVR_DEFAULT_CHROMAUP_SUPERRESPASSES = 2;
-const float MADVR_DEFAULT_CHROMAUP_SUPERRESSTRENGTH = 1.0f;
-const float MADVR_DEFAULT_CHROMAUP_SUPERRESSOFTNESS = 0.0f;
-const int MADVR_DEFAULT_LUMAUP = 14; // LANCZOS3
-const int MADVR_DEFAULT_LUMADOWN = 4; // CATMUL-ROM
-const int MADVR_DEFAULT_DOUBLEFACTOR = 1; // 1.5x
-const int MADVR_DEFAULT_QUADRUPLEFACTOR =  1; // 3.0x
-const int MADVR_DEFAULT_DEINTFORCE = 0; // AUTO
-const int MADVR_DEFAULT_DEINTACTIVE = 1; // DEACTIVE
-const int MADVR_DEFAULT_DITHERING = 1; // ORDERED
-const int MADVR_DEFAULT_DEBAND_LEVEL = 0; // LOW
-const int MADVR_DEFAULT_DEBAND_FADELEVEL = 2; // HIGH
-
-const float MADVR_DEFAULT_SHARPENEDGES = 1.0f;
-const float MADVR_DEFAULT_CRISPENEDGES = 1.0f;
-const float MADVR_DEFAULT_THINEDGES = 1.0f;
-const float MADVR_DEFAULT_ENHANCEDETAIL = 1.0f;
-const float MADVR_DEFAULT_LUMASHARPEN = 0.65f;
-const float MADVR_DEFAULT_ADAPTIVESHARPEN = 0.5f;
-
-const float MADVR_DEFAULT_UPSHARPENEDGES = 1.0f;
-const float MADVR_DEFAULT_UPCRISPENEDGES = 1.0f;
-const float MADVR_DEFAULT_UPTHINEDGES = 1.0f;
-const float MADVR_DEFAULT_UPENHANCEDETAIL = 1.0f;
-const float MADVR_DEFAULT_UPLUMASHARPEN = 0.65f;
-const float MADVR_DEFAULT_UPADAPTIVESHARPEN = 0.5f;
-const float MADVR_DEFAULT_SUPERRES = 1.0f;
 
 enum DS_RENDER_LAYER
 {
   RENDER_LAYER_ALL,
   RENDER_LAYER_UNDER,
   RENDER_LAYER_OVER
-};
-
-enum MADVR_SETTINGS_LIST
-{
-  MADVR_LIST_CHROMAUP,
-  MADVR_LIST_LUMAUP,
-  MADVR_LIST_LUMADOWN,
-  MADVR_LIST_DOUBLEQUALITY,
-  MADVR_LIST_DOUBLEFACTOR,
-  MADVR_LIST_QUADRUPLEFACTOR,
-  MADVR_LIST_DEINTFORCE,
-  MADVR_LIST_DEINTACTIVE,
-  MADVR_LIST_SMOOTHMOTION,
-  MADVR_LIST_NOSMALLSCALING,
-  MADVR_LIST_MOVESUBS,
-  MADVR_LIST_ARCHANGE,
-  MADVR_LIST_QUICKARCHANGE,
-  MADVR_LIST_SHIFTIMAGE,
-  MADVR_LIST_DONTCROPSUBS,
-  MADVR_LIST_CLEANBORDERS,
-  MADVR_LIST_REDUCEBIGBARS,
-  MADVR_LIST_DITHERING,
-  MADVR_LIST_DEBAND,
-  MADVR_LIST_DEBAND_LEVEL,
-  MADVR_LIST_DEBAND_FADELEVEL
-};
-
-enum MADVR_LOAD_TYPE
-{
-  MADVR_LOAD_PROCESSING,
-  MADVR_LOAD_SCALING,
-  MADVR_LOAD_ZOOM
 };
 
 enum MADVR_GUI_SETTINGS
@@ -108,12 +47,13 @@ enum MADVR_GUI_SETTINGS
 
 enum MADVR_RES_SETTINGS
 {
-  MADVR_RES_SD,
-  MADVR_RES_720,
-  MADVR_RES_1080,
-  MADVR_RES_2160,
-  MADVR_RES_ALL,
-  MADVR_RES_EPISODES
+  MADVR_RES_SD = 480,
+  MADVR_RES_720 = 720,
+  MADVR_RES_1080 = 1080,
+  MADVR_RES_2160 = 2160,
+  MADVR_RES_ALL = 0,
+  MADVR_RES_TVSHOW,
+  MADVR_RES_DEFAULT
 };
 
 enum DIRECTSHOW_RENDERER
@@ -154,24 +94,12 @@ class IMadvrSettingCallback
 public:
   virtual ~IMadvrSettingCallback() {};
 
-  virtual void LoadSettings(MADVR_LOAD_TYPE type){};
+  virtual void LoadSettings(int iSectionId){};
   virtual void RestoreSettings(){};
-  virtual void GetProfileActiveName(std::string path, std::string *profile){};
-  virtual void SetStr(std::string path, std::string str){};
-  virtual void SetBool(std::string path, bool bValue){};
-  virtual void SetInt(std::string path, int iValue){};
-  virtual void SetFloat(std::string path, float fValue, int iConv = 100){};
-  virtual void SetDoubling(std::string path, int iValue){};
-  virtual void SetDeintActive(std::string path, int iValue){};
-  virtual void SetBoolValue(std::string path, std::string sValue, int iValue){};
-  virtual void SetMultiBool(std::string path, std::string sValue, int iValue){};
-  virtual void SetSmoothmotion(std::string path, int iValue){};
-  virtual void SetDithering(std::string path, int iValue){};
-  virtual void SetQuickArChange(std::string path, int iValue){};
-  virtual void SetCleanBorders(std::string path, int iValue){};
-  virtual std::string GetSettingsName(MADVR_SETTINGS_LIST type, int iValue){ return ""; };
-  virtual void AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry){};
-  virtual void UpdateImageDouble(){};
+  virtual void GetProfileActiveName(const std::string &path, std::string *profile){};
+  virtual void OnSettingChanged(int iSectionId, CSettingsManager* settingsManager, const CSetting *setting){};
+  virtual void AddDependencies(const std::string &xml, CSettingsManager *settingsManager, CSetting *setting){}
+  virtual void ListSettings(const std::string &path){};
 };
 
 class CDSRendererCallback : public IDSRendererAllocatorCallback, public IDSRendererPaintCallback, public IMadvrSettingCallback
@@ -205,24 +133,12 @@ public:
   virtual void EndRender();
 
   // IMadvrSettingCallback
-  virtual void LoadSettings(MADVR_LOAD_TYPE type);
+  virtual void LoadSettings(int iSectionId);
   virtual void RestoreSettings();
-  virtual void GetProfileActiveName(std::string path, std::string *profile);
-  virtual void SetStr(std::string path, std::string str);
-  virtual void SetBool(std::string path, bool bValue);
-  virtual void SetInt(std::string path, int iValue);
-  virtual void SetFloat(std::string path, float fValue, int iConv = 100);
-  virtual void SetDoubling(std::string path, int iValue);
-  virtual void SetDeintActive(std::string path, int iValue);
-  virtual void SetBoolValue(std::string path, std::string sValue, int iValue);
-  virtual void SetMultiBool(std::string path, std::string sValue, int iValue);
-  virtual void SetSmoothmotion(std::string path, int iValue);
-  virtual void SetDithering(std::string path, int iValue);
-  virtual void SetQuickArChange(std::string path, int iValue);
-  virtual void SetCleanBorders(std::string path, int iValue);
-  virtual std::string GetSettingsName(MADVR_SETTINGS_LIST type, int iValue);
-  virtual void AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry);
-  virtual void UpdateImageDouble();
+  virtual void GetProfileActiveName(const std::string &path, std::string *profile);
+  virtual void OnSettingChanged(int iSectionId, CSettingsManager* settingsManager, const CSetting *setting);
+  virtual void AddDependencies(const std::string &xml, CSettingsManager *settingsManager, CSetting *setting);
+  virtual void ListSettings(const std::string &path);
 
   void Register(IDSRendererAllocatorCallback* pAllocatorCallback) { m_pAllocatorCallback = pAllocatorCallback; }
   void Register(IMadvrSettingCallback* pSettingCallback) { m_pSettingCallback = pSettingCallback; }

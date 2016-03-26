@@ -57,10 +57,16 @@ public:
 
   bool GetVideoSettings(const CStdString &strFilenameAndPath, CMadvrSettings &settings);
   void SetVideoSettings(const CStdString &strFilenameAndPath, const CMadvrSettings &settings);
-  void EraseVideoSettings(const std::string &path = "");
-  void EraseVideoSettings(int resolution, int resolutionInternal, std::string tvShowName);
-  bool GetDefResMadvrSettings(int resolution, std::string tvShowName, CMadvrSettings &settings);
-  void CreateVideoSettings(int resolution, int resolutionInternal, std::string tvShowName, const CMadvrSettings &setting);
+  void EraseVideoSettings();
+
+  bool GetTvShowSettings(const std::string &tvShowName, CMadvrSettings &settings);
+  void SetTvShowSettings(const std::string &tvShowName, const CMadvrSettings &settings);
+  void EraseTvShowSettings(const std::string &tvShowName);
+
+  bool GetResSettings(int resolution, CMadvrSettings &settings);
+  void SetResSettings(int resolution, const CMadvrSettings &settings);
+  void EraseResSettings(int resolution);
+  
   bool GetLAVVideoSettings(CLavSettings &settings);
   bool GetLAVAudioSettings(CLavSettings &settings);
   bool GetLAVSplitterSettings(CLavSettings &settings);
@@ -70,7 +76,8 @@ public:
   void EraseLAVVideo();
   void EraseLAVAudio();
   void EraseLAVSplitter();
-
+  int GetLastTvShowId(bool bLastWatched);
+  void SetLastTvShowId(bool bLastWatched, int id);
 
 protected:
   virtual void CreateTables();
@@ -82,4 +89,8 @@ protected:
   virtual int GetSchemaVersion() const;
   const char *GetBaseDBName() const { return "DSPlayer"; };
 
+private:
+  void JsonToVariant(const std::string &strJson, CMadvrSettings &settings);
+  void InitOldSettings();
+  std::map < std::string, std::map<int, std::string> > m_oldSettings;
 };

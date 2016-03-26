@@ -269,7 +269,7 @@ bool CDSInputStreamPVRManager::SelectChannel(const CPVRChannelPtr &channel)
   }
   else if (m_pLiveTV && PrepareForChannelSwitch(channel))
   {
-    bResult = m_pLiveTV->SelectChannel(channel->ChannelNumber());
+    bResult = m_pLiveTV->SelectChannelById(channel->ChannelID());
     if (bResult)
       bResult = PerformChannelSwitch();
   }
@@ -353,7 +353,7 @@ bool CDSInputStreamPVRManager::SelectChannelByNumber(unsigned int iChannelNumber
   }
   else if (m_pLiveTV && PrepareForChannelSwitch(item->GetPVRChannelInfoTag()))
   {
-    bResult = m_pLiveTV->SelectChannel(iChannelNumber);
+    bResult = m_pLiveTV->SelectChannelById(item->GetPVRChannelInfoTag()->ChannelID());
     if (bResult)
       bResult = PerformChannelSwitch();
   }

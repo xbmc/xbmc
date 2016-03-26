@@ -200,6 +200,8 @@ public:
   bool HasSubFilter() { return m_hsubfilter; }
   void SetHasSubFilter(bool b) { m_hsubfilter = b; }
   void SetKodiRealFS(bool b) { m_isKodiRealFS = b; }
+  void SetAuxAudioDelay();
+  bool GetAuxAudioDelay() { return m_auxAudioDelay; }
   bool UsingMediaPortalTsReader() 
   { 
     return ((Splitter.guid != GUID_NULL) && !(StringFromGUID(Splitter.guid).compare(L"{B9559486-E1BB-45D3-A2A2-9A7AFE49B23F}"))); 
@@ -217,6 +219,7 @@ private:
   bool m_hsubfilter;
   bool m_isDVD;
   bool m_UsingDXVADecoder;
+  bool m_auxAudioDelay;
   std::string m_defaultRulePriority;
   Com::SmartPtr<IBaseFilter> m_pBF;
   IDirect3DDevice9 * m_pD3DDevice;

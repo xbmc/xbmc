@@ -36,6 +36,8 @@
 #include "DSPlayerDatabase.h"
 #include "filtercorefactory/filtercorefactory.h"
 #include "Utils/DSFilterEnumerator.h"
+#include "Utils/AudioEnumerator.h"
+#include "settings/AdvancedSettings.h"
 
 CGraphFilters *CGraphFilters::m_pSingleton = NULL;
 
@@ -45,6 +47,7 @@ m_isDVD(false), m_UsingDXVADecoder(false), m_hsubfilter(false)
   m_isKodiRealFS = false;
   m_defaultRulePriority = "0";
   m_pD3DDevice = NULL;
+  m_auxAudioDelay = false;
 }
 
 CGraphFilters::~CGraphFilters()
@@ -244,13 +247,13 @@ bool CGraphFilters::GetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
       lavSettings.video_bPixFmts[i] = pLAVVideoSettings->GetPixelFormat((LAVOutPixFmts)i);
     }
     lavSettings.video_dwHWAccel = pLAVVideoSettings->GetHWAccel();
+    lavSettings.video_dwHWAccelDeviceIndex = pLAVVideoSettings->GetHWAccelDeviceIndex((LAVHWAccel)lavSettings.video_dwHWAccel, 0);
     for (int i = 0; i < HWCodec_NB; ++i) {
       lavSettings.video_bHWFormats[i] = pLAVVideoSettings->GetHWAccelCodec((LAVVideoHWCodec)i);
     }
     lavSettings.video_dwHWAccelResFlags = pLAVVideoSettings->GetHWAccelResolutionFlags();
     lavSettings.video_dwHWDeintMode = pLAVVideoSettings->GetHWAccelDeintMode();
     lavSettings.video_dwHWDeintOutput = pLAVVideoSettings->GetHWAccelDeintOutput();
-    lavSettings.video_bHWDeintHQ = pLAVVideoSettings->GetHWAccelDeintHQ();
   } 
   if (type == LAVAUDIO)
   {
@@ -359,13 +362,13 @@ bool CGraphFilters::SetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
       pLAVVideoSettings->SetPixelFormat((LAVOutPixFmts)i, lavSettings.video_bPixFmts[i]);
     }
     pLAVVideoSettings->SetHWAccel((LAVHWAccel)lavSettings.video_dwHWAccel);
+    pLAVVideoSettings->SetHWAccelDeviceIndex((LAVHWAccel)lavSettings.video_dwHWAccel,lavSettings.video_dwHWAccelDeviceIndex, 0);
     for (int i = 0; i < HWCodec_NB; ++i) {
       pLAVVideoSettings->SetHWAccelCodec((LAVVideoHWCodec)i, lavSettings.video_bHWFormats[i]);
     }
     pLAVVideoSettings->SetHWAccelResolutionFlags(lavSettings.video_dwHWAccelResFlags);
     pLAVVideoSettings->SetHWAccelDeintMode((LAVHWDeintModes)lavSettings.video_dwHWDeintMode);
     pLAVVideoSettings->SetHWAccelDeintOutput((LAVDeintOutput)lavSettings.video_dwHWDeintOutput);
-    pLAVVideoSettings->SetHWAccelDeintHQ(lavSettings.video_bHWDeintHQ);
 
     // Custom interface
     if (Com::SmartQIPtr<ILAVVideoSettingsDSPlayerCustom> pLAVFSettingsDSPlayerCustom = pLAVVideoSettings)
@@ -535,6 +538,12 @@ bool CGraphFilters::IsRegisteredFilter(const std::string filter)
     ++iter;
   }
   return false;
+}
+
+void CGraphFilters::SetAuxAudioDelay()
+{
+  CAudioEnumerator pSound;
+  m_auxAudioDelay = pSound.IsDevice(g_advancedSettings.GetAuxDeviceName());
 }
 
 #endif

@@ -355,10 +355,6 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
       m_HasVideo = true;
       m_HasAudio = true;
 
-      // Madvr Settings
-      if (CDSRendererCallback::Get()->UsingDS())
-        SetMadvrResolution();
-
       if (CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_SHOWBDTITLECHOICE))
         ShowEditionDlg(true);
 
@@ -400,6 +396,8 @@ bool CDSPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     CGraphFilters::Get()->SetKodiRealFS(true);
     CSettings::GetInstance().SetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN, true);
   }
+
+  CGraphFilters::Get()->SetAuxAudioDelay();
 
   CLog::Log(LOGNOTICE, "%s - DSPlayer: Opening: %s", __FUNCTION__, file.GetPath().c_str());
 
@@ -1091,19 +1089,6 @@ bool CDSPlayer::OnAction(const CAction &action)
 
   // return false to inform the caller we didn't handle the message
   return false;
-}
-
-void CDSPlayer::SetMadvrResolution()
-{
-  if (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) != KODIGUI_LOAD_DSPLAYER)
-    return;
-
-  CStreamDetails streamDetails;
-  int res = CDSRendererCallback::Get()->VideoDimsToResolution(GetPictureWidth(), GetPictureHeight());
-  std::string str = g_application.CurrentFileItem().GetVideoInfoTag()->m_strShowTitle;
-
-  CMediaSettings::GetInstance().GetCurrentMadvrSettings().m_Resolution = res;
-  CMediaSettings::GetInstance().GetCurrentMadvrSettings().m_TvShowName = str;
 }
 
 // Time is in millisecond

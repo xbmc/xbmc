@@ -23,31 +23,24 @@
  *
  */
 
-#include "settings/dialogs/GUIDialogSettingsManualBase.h"
-#include "utils/StdString.h"
+#include "GUIDialogMadvrSettingsBase.h"
 
-class CGUIDialogMadvrZoom: public CGUIDialogSettingsManualBase
+class CGUIDialogMadvrSettings : public CGUIDialogMadvrSettingsBase
 {
 public:
-  CGUIDialogMadvrZoom();
-  virtual ~CGUIDialogMadvrZoom();
+  CGUIDialogMadvrSettings();
+  virtual ~CGUIDialogMadvrSettings();
 
 protected:
 
   // implementations of ISettingCallback
-  virtual void OnSettingChanged(const CSetting *setting);
-  virtual void OnSettingAction(const CSetting *setting);
   virtual bool AllowResettingSettings() const { return false; }
-  virtual void OnInitWindow();
+  virtual bool OnBack(int actionID);
+  virtual void OnCancel();
 
   // specialization of CGUIDialogSettingsManualBase
-  virtual void InitializeSettings();
   virtual void SetupView();
   virtual void Save() {};
 
-  void HideUnused();
-  void SetEnabled(CStdString id, bool bEnabled, bool bReset = false);
-
-  bool m_allowchange;
-
+  void ReturnToSection();
 };

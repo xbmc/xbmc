@@ -29,6 +29,9 @@
 #include "filesystem/Directory.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
+#ifdef HAS_DS_PLAYER
+#include "profiles/ProfilesManager.h"
+#endif
 
 CLocalizeStrings::CLocalizeStrings(void)
 {
@@ -157,7 +160,12 @@ bool CLocalizeStrings::LoadPO(const std::string &filename, std::string &encoding
       // We can store the pluralforms for each language, in the langinfo.xml files.
     }
   }
-
+#ifdef HAS_DS_PLAYER
+  if (filename.find("resource.language.en_gb") != filename.npos)
+  {
+    LoadPO(CProfilesManager::GetInstance().GetUserDataItem("dsplayer/strings.po"), encoding, offset, bSourceLanguage);
+  }
+#endif
   CLog::Log(LOGDEBUG, "POParser: loaded %i strings from file %s", counter, filename.c_str());
   return true;
 }

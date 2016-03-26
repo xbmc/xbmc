@@ -41,6 +41,10 @@
 #include "utils/XBMCTinyXML.h"
 #include "XBIRRemote.h"
 
+#ifdef HAS_DS_PLAYER
+#include "settings/AdvancedSettings.h"
+#endif
+
 #if defined(TARGET_WINDOWS)
 #include "input/windows/WINJoystick.h"
 #elif defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
@@ -627,6 +631,16 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
 
 bool CButtonTranslator::LoadKeymap(const std::string &keymapPath)
 {
+#ifdef HAS_DS_PLAYER
+  if (g_advancedSettings.m_bIgnoreSystemAppcommand
+    && keymapPath.find("system") != keymapPath.npos
+    && (keymapPath.find("appcommand") != keymapPath.npos
+      || keymapPath.find("gamepad") != keymapPath.npos
+      || keymapPath.find("joystick") != keymapPath.npos)
+    )
+    return false;
+#endif
+
   CXBMCTinyXML xmlDoc;
 
   CLog::Log(LOGINFO, "Loading %s", keymapPath.c_str());

@@ -48,7 +48,6 @@ void CGUIDialogVideoOSD::FrameMove()
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD_SETTINGS)
 #ifdef HAS_DS_PLAYER
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_MADVR)
-                           || g_windowManager.IsWindowActive(WINDOW_DIALOG_MADVRZOOM)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_LAVVIDEO)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_LAVAUDIO)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_LAVSPLITTER)
@@ -112,9 +111,6 @@ bool CGUIDialogVideoOSD::OnMessage(CGUIMessage& message)
       if (pDialog && pDialog->IsDialogRunning()) 
         pDialog->Close(true);
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MADVR);
-      if (pDialog && pDialog->IsDialogRunning())
-        pDialog->Close(true);
-      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MADVRZOOM);
       if (pDialog && pDialog->IsDialogRunning())
         pDialog->Close(true);
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_LAVVIDEO);

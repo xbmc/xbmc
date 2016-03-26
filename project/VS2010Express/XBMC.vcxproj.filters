@@ -3081,7 +3081,10 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSettings.cpp">
       <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrScaling.cpp">
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrSettingsBase.cpp">
+      <Filter>cores\DSPlayer\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrSettings.cpp">
       <Filter>cores\DSPlayer\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSharedRender.cpp">
@@ -3441,9 +3444,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\VideoRenderers\WinDsRenderer.cpp">
       <Filter>cores\DSPlayer\VideoRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrZoom.cpp">
-      <Filter>cores\DSPlayer\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSRendererCallback.cpp">
       <Filter>cores\DSPlayer</Filter>
@@ -6330,7 +6330,10 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSettings.h">
       <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrScaling.h">
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrSettingsBase.h">
+      <Filter>cores\DSPlayer\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrSettings.h">
       <Filter>cores\DSPlayer\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSharedRender.h">
@@ -6722,9 +6725,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\VideoRenderers\WinDsRenderer.h">
       <Filter>cores\DSPlayer\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrZoom.h">
-      <Filter>cores\DSPlayer\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSRendererCallback.h">
       <Filter>cores\DSPlayer</Filter>

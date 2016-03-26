@@ -36,6 +36,7 @@ class CAudioEnumerator
 public:
   CAudioEnumerator(void);
   HRESULT GetAudioRenderers(std::vector<DSFilterInfo>& pRenderers);
+  bool IsDevice(CStdString strDevice);
 
 private:
   CCriticalSection m_critSection;

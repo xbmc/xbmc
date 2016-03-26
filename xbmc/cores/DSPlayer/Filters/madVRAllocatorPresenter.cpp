@@ -117,9 +117,6 @@ void CmadVRAllocatorPresenter::SetResolution()
   ULONGLONG frameRate;
   float fps;
 
-  // Set the context in FullScreenVideo
-  g_graphicsContext.SetFullScreenVideo(true);
-
   if (Com::SmartQIPtr<IMadVRInfo> pInfo = m_pDXR)
   {
     pInfo->GetUlonglong("frameRate", &frameRate);
@@ -132,6 +129,7 @@ void CmadVRAllocatorPresenter::SetResolution()
   {
     RESOLUTION bestRes = g_renderManager.m_pRenderer->ChooseBestMadvrResolution(fps);
     CDSPlayer::SetDsWndVisible(true);
+    m_pMadvrShared->SkipRender(true);
     g_graphicsContext.SetVideoResolution(bestRes);
   }
   else

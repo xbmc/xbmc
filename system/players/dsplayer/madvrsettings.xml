@@ -1,0 +1,646 @@
+<settings>
+  <dsprofile path="processing" folder="deinterlacing|artifactRemoval|enhancements|zoomControl" />
+  <dsprofile path="scalingParent" folder="chromaUp|lumaUp|lumaDown|imageDoubling|upRefine" />
+  <dsprofile path="rendering" folder="smoothMotion|dithering" />
+  <group>
+    <!-- <debug path="processing|scalingParent|rendering" label="69999" /> -->
+    <setting name="autoActivateDeinterlacing" value="ifInDoubtDeinterlace" type="list_boolbool" label=70200 default="false">
+      <option value="-1" label=70117 /> <!-- disabled -->
+      <option value="true" label=70205 />
+      <option value="false" label=70206 />
+    </setting>
+    <setting name="contentType" type="list_string" label=70201 default="auto">
+      <option value="auto" label=70202 />
+      <option value="film" label=70203 />
+      <option value="video" label=70204 />
+    </setting>
+    <setting name="scanPartialFrame" type="bool" label=70207 default="true" />
+    <setting name="debandActive" type="bool" label=70500 default="false" />
+    <setting name="debandLevel" type="list_int" label=70501 parent="debandActive" default=0>
+      <option value="0" label=70503 />
+      <option value="1" label=70504 />
+      <option value="2" label=70505 />
+      <dependencies>
+        <dependency type="visible" setting="debandActive" operator="is">true</dependency>
+      </dependencies>
+    </setting>
+    <setting name="debandFadeLevel" type="list_int" label=70502 parent="debandActive" default=2>
+      <option value="0" label=70503 />
+      <option value="1" label=70504 />
+      <option value="2" label=70505 />
+      <dependencies>
+        <dependency type="visible" setting="debandActive" operator="is">true</dependency>
+      </dependencies>
+    </setting>
+  </group>
+  <group>
+    <section label="70000"> 
+      <!-- scaling algorithms --> 
+      <group>
+        <setting name="chromaUp" type="list_string" label=70028 default="Bicubic75">
+          <option value="Nearest Neighbor" label=70001 />
+          <option value="Bilinear" label=70002 />
+          <option value="Mitchell-Netravali" label=70004 />
+          <option value="Catmull-Rom" label=70005 />
+          <option value="Bicubic50" label=70006 />
+          <option value="Bicubic60" label=70007 />
+          <option value="Bicubic75" label=70008 />
+          <option value="Bicubic100" label=70009 />
+          <option value="Bicubic125" label=70050 />
+          <option value="Bicubic150" label=70047 />
+          <option value="SoftCubic50" label=70010 />
+          <option value="SoftCubic60" label=70011 />
+          <option value="SoftCubic70" label=70012 />
+          <option value="SoftCubic80" label=70013 />
+          <option value="SoftCubic100" label=70014 />
+          <option value="Lanczos3" label=70015 />
+          <option value="Lanczos4" label=70016  />
+          <option value="Lanczos8" label=70017 />
+          <option value="Spline36" label=70018 />
+          <option value="Spline64" label=70019 />
+          <option value="Jinc3" label=70020 />
+          <option value="Bilateral" label=70033 />
+          <option value="ReconSoft" label=70042 />
+          <option value="ReconSharp" label=70043 />
+          <option value="ReconPlacebo" label=70044 />
+          <option value="ReconSharpDenoise" label=70045 />
+          <option value="ReconPlaceboDenoise" label=70046 />
+          <option value="SuperXbr25" label=70034 />
+          <option value="SuperXbr50" label=70035 />
+          <option value="SuperXbr75" label=70036 />
+          <option value="SuperXbr100" label=70037 />
+          <option value="SuperXbr125" label=70038 />
+          <option value="SuperXbr150" label=70039 />
+          <option value="Nnedi16" label=70023 />
+          <option value="Nnedi32" label=70024 />
+          <option value="Nnedi64" label=70025 />
+          <option value="Nnedi128" label=70026 />
+          <option value="Nnedi256" label=70027 />
+        </setting>
+        <setting name="chromaAntiRinging" type="bool" label=70031 parent="chromaUp" default="false" />
+        <setting name="superChromaRes" type="bool" label=70041 parent="chromaUp" default="false" />
+        <setting name="superChromaResStrength" type="float" label=70122 parentlabel=70041 parent="chromaUp" default="3.0" min=0 max=4 step=1 format="%1.0f">
+          <dependencies>
+            <dependency type="visible" setting="superChromaRes" operator="is">true</dependency>
+          </dependencies>
+        </setting>
+      </group>
+      <group>
+        <setting name="lumaUp" type="list_string" label=70029 default="Lanczos3">
+          <option value="Nearest Neighbor" label=70001 />
+          <option value="Bilinear" label=70002 />
+          <option value="Dxva" label=70003 />
+          <option value="Mitchell-Netravali" label=70004 />
+          <option value="Catmull-Rom" label=70005 />
+          <option value="Bicubic50" label=70006 />
+          <option value="Bicubic60" label=70007 />
+          <option value="Bicubic75" label=70008 />
+          <option value="Bicubic100" label=70009 />
+          <option value="Bicubic125" label=70050 />
+          <option value="Bicubic150" label=70047 />
+          <option value="SoftCubic50" label=70010 />
+          <option value="SoftCubic60" label=70011 />
+          <option value="SoftCubic70" label=70012 />
+          <option value="SoftCubic80" label=70013 />
+          <option value="SoftCubic100" label=70014 />
+          <option value="Lanczos3" label=70015 />
+          <option value="Lanczos4" label=70016 />
+          <option value="Lanczos8" label=70017 />
+          <option value="Spline36" label=70018 />
+          <option value="Spline64" label=70019 />
+          <option value="Jinc3" label=70020 />  
+        </setting>
+        <setting name="lumaUpAntiRinging" type="bool" label=70031 parent="lumaUp" default="false" />
+        <setting name="lumaUpSigmoidal" type="bool" label=70049 parent="lumaUp" default="false" />
+      </group>
+      <group>
+        <setting name="lumaDown" type="list_string" label=70030 default="Catmull-Rom">
+          <option value="Nearest Neighbor" label=70001 />
+          <option value="Bilinear" label=70002 />
+          <option value="Dxva" label=70003 />
+          <option value="Mitchell-Netravali" label=70004 />
+          <option value="Catmull-Rom" label=70005 />
+          <option value="Bicubic50" label=70006 />
+          <option value="Bicubic60" label=70007 />
+          <option value="Bicubic75" label=70008 />
+          <option value="Bicubic100" label=70009 />
+          <option value="Bicubic125" label=70050 />
+          <option value="Bicubic150" label=70047 />
+          <option value="SoftCubic50" label=70010 />
+          <option value="SoftCubic60" label=70011 />
+          <option value="SoftCubic70" label=70012 />
+          <option value="SoftCubic80" label=70013 />
+          <option value="SoftCubic100" label=70014 />
+          <option value="Lanczos3" label=70015 />
+          <option value="Lanczos4" label=70016 />
+          <option value="Lanczos8" label=70017 />
+          <option value="Spline36" label=70018 />
+          <option value="Spline64" label=70019 />
+          <option value="Jinc3" label=70020 />
+          <!-- <option value="SSIM1D25" label=70048 /> -->
+          <option value="SSIM1D50" label=70051 />
+          <option value="SSIM1D75" label=70052  />
+          <option value="SSIM1D100" label=70053 />
+          <option value="SSIM2D25" label=70054 />
+          <option value="SSIM2D50" label=70055 />
+          <option value="SSIM2D75" label=70056 />
+          <option value="SSIM2D100" label=70057 />
+        </setting>
+        <setting name="lumaDownAntiRinging" value="lumaDownAntiRingingSoft" type="list_boolbool" label=70031 parent="lumaDown" default="-1">
+          <option value="-1" label=70117 /> <!-- disabled -->
+          <option value="false" label="70145" />
+          <option value="true" label="70146" />
+        </setting>
+        <setting name="lumaDownLinear" type="bool" label=70032 parent="lumaDown" default="false" />
+        <setting name="ssimAB" value="ssimABStrength" type="list_boolint" label=70147 parent="lumaDown" default="-1">
+          <option value="-1" label=70117 /> <!-- disabled -->
+          <option value="25" label=70148 />
+          <option value="50" label=70149 />
+          <option value="75" label=70150  />
+          <option value="100" label=70151 />
+          <option value="125" label=70152 />
+          <option value="150" label=70153 />
+          <dependencies>
+            <dependency type="enable">
+              <or>
+                <condition setting="lumaDown" operator="is">SSIM1D25</condition>
+                <condition setting="lumaDown" operator="is">SSIM1D50</condition>
+                <condition setting="lumaDown" operator="is">SSIM1D75</condition>
+                <condition setting="lumaDown" operator="is">SSIM1D100</condition>
+                <condition setting="lumaDown" operator="is">SSIM2D25</condition>
+                <condition setting="lumaDown" operator="is">SSIM2D50</condition>
+                <condition setting="lumaDown" operator="is">SSIM2D75</condition>
+                <condition setting="lumaDown" operator="is">SSIM2D100</condition>
+              </or>
+            </dependency>
+          </dependencies>
+        </setting>
+      </group>
+      <group> 
+        <setting name="DL" type="list_imagedouble" label=70100 default=-1>
+          <option value="-1" label=70117 /> <!-- disabled -->
+          <option value="SuperXbr25" label=70034 />
+          <option value="SuperXbr50" label=70035 />
+          <option value="SuperXbr75" label=70036 />
+          <option value="SuperXbr100" label=70037 />
+          <option value="SuperXbr125" label=70038 />
+          <option value="SuperXbr150" label=70039 />
+          <option value="SuperXbrAb25" label=70058 />
+          <option value="SuperXbrAb50" label=70059 />
+          <option value="SuperXbrAb75" label=70060 />
+          <option value="SuperXbrAb100" label=70061 />
+          <option value="NEDI" label=70040 />
+          <option value="NNEDI316" label=70023 />
+          <option value="NNEDI332" label=70024 />
+          <option value="NNEDI364" label=70025 />
+          <option value="NNEDI3128" label=70026 />
+          <option value="NNEDI3256" label=70027 />
+        </setting>
+        <setting name="nnediDLScalingFactor" type="list_string" label=70116 parent="DL" default="1.5x">
+          <option value="2.0x" label=70109 />
+          <option value="1.5x" label=70110 />
+          <option value="1.2x" label=70111 />
+          <option value="always" label=70112 />
+          <option value="supersampling" label=70144 />
+          <dependencies>
+            <dependency type="visible" setting="DL" operator="!is">-1</dependency>
+          </dependencies>
+        </setting>
+        <setting name="DC" type="list_imagedouble" label=70101 default=-1>
+          <option value="-1" label=70117 /> <!-- disabled -->
+          <option value="SuperXbr25" label=70034 />
+          <option value="SuperXbr50" label=70035 />
+          <option value="SuperXbr75" label=70036 />
+          <option value="SuperXbr100" label=70037 />
+          <option value="SuperXbr125" label=70038 />
+          <option value="SuperXbr150" label=70039 />
+          <option value="SuperXbrAb25" label=70058 />
+          <option value="SuperXbrAb50" label=70059 />
+          <option value="SuperXbrAb75" label=70060 />
+          <option value="SuperXbrAb100" label=70061 />
+          <option value="NEDI" label=70040 />
+          <option value="NNEDI316" label=70023 />
+          <option value="NNEDI332" label=70024 />
+          <option value="NNEDI364" label=70025 />
+          <option value="NNEDI3128" label=70026 />
+          <option value="NNEDI3256" label=70027 />
+          <dependencies>
+            <dependency type="visible" setting="DL" operator="!is">-1</dependency>
+            <dependency type="enable" setting="DL" operator="contains">NNEDI3</dependency>
+          </dependencies>
+        </setting>
+        <setting name="nnediDCScalingFactor" type="list_string" label=70116 parent="DC" default="1.5x">
+          <option value="2.0x" label=70109 />
+          <option value="1.5x" label=70110 />
+          <option value="1.2x" label=70111 />
+          <option value="always" label=70112 />
+          <option value="supersampling" label=70144 />
+          <dependencies>
+            <dependency type="visible" setting="DC" operator="!is">-1</dependency>
+            <dependency type="enable" setting="DL" operator="contains">NNEDI3</dependency>
+          </dependencies>
+        </setting>
+        <setting name="QL" type="list_imagedouble" label=70102 default=-1>
+          <option value="-1" label=70117 /> <!-- disabled -->
+          <option value="SuperXbr25" label=70034 />
+          <option value="SuperXbr50" label=70035 />
+          <option value="SuperXbr75" label=70036 />
+          <option value="SuperXbr100" label=70037 />
+          <option value="SuperXbr125" label=70038 />
+          <option value="SuperXbr150" label=70039 />
+          <option value="SuperXbrAb25" label=70058 />
+          <option value="SuperXbrAb50" label=70059 />
+          <option value="SuperXbrAb75" label=70060 />
+          <option value="SuperXbrAb100" label=70061 />
+          <option value="NEDI" label=70040 />
+          <option value="NNEDI316" label=70023 />
+          <option value="NNEDI332" label=70024 />
+          <option value="NNEDI364" label=70025 />
+          <option value="NNEDI3128" label=70026 />
+          <option value="NNEDI3256" label=70027 />
+           <dependencies>
+            <dependency type="visible" setting="DL" operator="!is">-1</dependency>
+          </dependencies>
+        </setting>
+        <setting name="nnediQLScalingFactor" type="list_string" label=70116 parent="QL" default="3.0x">
+          <option value="4.0x" label=70103 />
+          <option value="3.0x" label=70114 />
+          <option value="2.4x" label=70115 />
+          <option value="always" label=70112 />
+          <option value="supersampling" label=70144 />
+          <dependencies>
+            <dependency type="visible" setting="QL" operator="!is">-1</dependency>
+          </dependencies>
+        </setting>
+        <setting name="QC" type="list_imagedouble" label=70103 default=-1>
+          <option value="-1" label=70117 /> <!-- disabled -->
+          <option value="SuperXbr25" label=70034 />
+          <option value="SuperXbr50" label=70035 />
+          <option value="SuperXbr75" label=70036 />
+          <option value="SuperXbr100" label=70037 />
+          <option value="SuperXbr125" label=70038 />
+          <option value="SuperXbr150" label=70039 />
+          <option value="SuperXbrAb25" label=70058 />
+          <option value="SuperXbrAb50" label=70059 />
+          <option value="SuperXbrAb75" label=70060 />
+          <option value="SuperXbrAb100" label=70061 />
+          <option value="NEDI" label=70040 />
+          <option value="NNEDI316" label=70023 />
+          <option value="NNEDI332" label=70024 />
+          <option value="NNEDI364" label=70025 />
+          <option value="NNEDI3128" label=70026 />
+          <option value="NNEDI3256" label=70027 />
+          <dependencies>
+            <dependency type="visible" setting="QL" operator="!is">-1</dependency>
+            <dependency type="enable" setting="QL" operator="contains">NNEDI3</dependency>
+          </dependencies>
+        </setting>
+        <setting name="nnediQCScalingFactor" type="list_string" label=70116 parent="QC" default="3.0x">
+          <option value="4.0x" label=70103 />
+          <option value="3.0x" label=70114 />
+          <option value="2.4x" label=70115 />
+          <option value="always" label=70112 />
+          <option value="supersampling" label=70144 />
+          <dependencies>
+            <dependency type="visible" setting="QC" operator="!is">-1</dependency>
+            <dependency type="enable" setting="QL" operator="contains">NNEDI3</dependency>
+          </dependencies>
+        </setting>
+      </group>
+      <group>
+        <setting name="upRefSharpenEdges" type="bool" label=70138 default="false" />
+        <setting name="upRefSharpenEdgesStrength" type="float" label=70122 parentlabel=70138 parent="upRefSharpenEdges" default="1.0" min=0 max=4 step=0.1 format="%1.1f">
+          <dependencies>
+            <dependency type="visible" setting="upRefSharpenEdges" operator="is">true</dependency>
+          </dependencies>
+        </setting>
+        <setting name="upRefCrispenEdges" type="bool" label=70139 default="false" />
+        <setting name="upRefCrispenEdgesStrength" type="float" label=70122 parentlabel=70139 parent="upRefCrispenEdges" default="1.0" min=0 max=4 step=0.1 format="%1.1f">
+          <dependencies>
+            <dependency type="visible" setting="upRefCrispenEdges" operator="is">true</dependency>
+          </dependencies>
+        </setting>
+        <setting name="upRefThinEdges" type="bool" label=70140 default="false" />
+        <setting name="upRefThinEdgesStrength" type="float" label=70122 parentlabel=70140 parent="upRefThinEdges" default="1.0" min=0 max=8 step=0.1 format="%1.1f">
+          <dependencies>
+            <dependency type="visible" setting="upRefThinEdges" operator="is">true</dependency>
+          </dependencies>
+        </setting>
+        <setting name="upRefEnhanceDetail" type="bool" label=70141 default="false" />
+        <setting name="upRefEnhanceDetailStrength" type="float" label=70122 parentlabel=70141 parent="upRefEnhanceDetail" default="1.0" min=0 max=4 step=0.1 format="%1.1f">
+          <dependencies>
+            <dependency type="visible" setting="upRefEnhanceDetail" operator="is">true</dependency>
+          </dependencies>
+        </setting>
+      </group>
+      <group>
+        <setting name="upRefLumaSharpen" type="bool" label=70124 default="false" />
+        <setting name="upRefLumaSharpenStrength" type="float" label=70122 parentlabel=70124 parent="upRefLumaSharpen" default="0.65" min=0 max=3 step=0.01 format="%1.2f">
+          <dependencies>
+            <dependency type="visible" setting="upRefLumaSharpen" operator="is">true</dependency>
+          </dependencies>
+        </setting>
+        <setting name="upRefAdaptiveSharpen" type="bool" label=70125 default="false" />
+        <setting name="upRefAdaptiveSharpenStrength" type="float" label=70122 parentlabel=70125 parent="upRefAdaptiveSharpen" default="0.5" min=0 max=3 step=0.1 format="%1.1f">
+          <dependencies>
+            <dependency type="visible" setting="upRefAdaptiveSharpen" operator="is">true</dependency>
+          </dependencies>
+        </setting>
+      </group>
+      <group>
+        <setting name="upRefSharpenAB" value="upRefSharpenABStrength" type="list_boolint" label=70154 default="-1">
+          <option value="-1" label=70117 /> <!-- disabled -->
+          <option value="25" label=70148 />
+          <option value="50" label=70149 />
+          <option value="75" label=70150 />
+          <option value="100" label=70151 />
+          <option value="125" label=70152 />
+          <option value="150" label=70153 />
+          <dependencies>
+            <dependency type="enable">
+              <or>
+                <condition setting="upRefSharpenEdges" operator="is">true</condition>
+                <condition setting="upRefAdaptiveSharpen" operator="is">true</condition>
+                <condition setting="upRefLumaSharpen" operator="is">true</condition>
+              </or>
+            </dependency>
+          </dependencies>
+        </setting>
+        <setting name="upRefSharpenAR" type="bool" label=70142 default="true">
+          <dependencies>
+            <dependency type="enable">
+              <or>
+                <condition setting="upRefSharpenEdges" operator="is">true</condition>
+                <condition setting="upRefCrispenEdges" operator="is">true</condition>
+                <condition setting="upRefAdaptiveSharpen" operator="is">true</condition>
+                <condition setting="upRefLumaSharpen" operator="is">true</condition>
+              </or>
+            </dependency>
+          </dependencies>
+        </setting>
+      </group>
+      <group>
+        <setting name="superRes" type="bool" label=70121 default="false" />
+        <setting name="superResStrength" type="float" label=70122 parentlabel=70121 parent="superRes" default="3.0" min=0 max=4 step=1 format="%1.0f">
+          <dependencies>
+            <dependency type="visible" setting="superRes" operator="is">true</dependency>
+          </dependencies>
+        </setting>
+        <setting name="superResLinear" type="bool" label=70133 parent="superRes" default="false">
+          <dependencies>
+            <dependency type="visible" setting="superRes" operator="is">true</dependency>
+          </dependencies>
+        </setting>
+        <setting name="superResAB" value="superResABStrength" type="list_boolint" label=70147 parent="superRes" default="-1">
+          <option value="-1" label=70117 /> <!-- disabled -->
+          <option value="25" label=70148 />
+          <option value="50" label=70149 />
+          <option value="75" label=70150 />
+          <option value="100" label=70151 />
+          <option value="125" label=70152 />
+          <option value="150" label=70153 />
+          <dependencies>
+            <dependency type="visible" setting="superRes" operator="is">true</dependency>
+          </dependencies>
+        </setting>
+        <setting name="superResAR" type="bool" label=70031 parent="superRes" default="false">
+          <dependencies>
+            <dependency type="visible" setting="superRes" operator="is">true</dependency>
+          </dependencies>
+        </setting>
+      </group>
+      <group>
+        <setting name="refineOnce" type="!bool" label=70126 default="false">
+          <dependencies>
+            <dependency type="enable">
+              <or>
+                <condition setting="upRefSharpenEdges" operator="is">true</condition>
+                <condition setting="upRefCrispenEdges" operator="is">true</condition>
+                <condition setting="upRefThinEdges" operator="is">true</condition>
+                <condition setting="upRefEnhanceDetail" operator="is">true</condition>
+                <condition setting="upRefLumaSharpen" operator="is">true</condition>
+                <condition setting="upRefAdaptiveSharpen" operator="is">true</condition>
+                <condition setting="superRes" operator="is">true</condition>
+              </or>
+            </dependency>
+          </dependencies>
+        </setting>
+      </group>   
+      <!-- end scaling algorithms -->
+    </section> 
+    <section label="70264">
+      <!-- zoom -->
+      <group>
+        <setting name="noSmallScaling" value="noSmallScalingValue" type="list_boolint" label=70208 default=-1>
+          <option value="-1" label=70117 /> <!-- disabled -->
+          <option value="1" label=70209 />
+          <option value="2" label=70210 />
+          <option value="3" label=70211 />
+          <option value="4" label=70212 />
+          <option value="5" label=70213 />
+          <option value="10" label=70214 />
+          <option value="15" label=70215 />
+          <option value="25" label=70216 />
+        </setting>
+        <setting name="moveSubs" value="moveSubsUp" type="list_boolbool" label=70217 default="false">
+          <option value="-1" label=70117 /> <!-- disabled -->
+          <option value="false" label=70218 />
+          <option value="true" label=70219 />
+        </setting>
+        <setting name="detectBars" type="bool" label=70220 default="false" />
+      </group>
+      <group>
+        <setting name="arChange" value="arChangeValue" type="list_boolint" label=70221 default=-1>
+          <option value="-1" label=70117 /> <!-- disabled -->
+          <option value="0" label=70222 />
+          <option value="25" label=70223 />
+          <option value="50" label=70224 />
+          <option value="75" label=70225 />
+          <option value="100" label=70226 />
+          <dependencies>
+            <dependency type="enable" setting="detectBars" operator="is">true</dependency>
+          </dependencies>
+        </setting>
+        <setting name="quickArChange" type="list_quickar" label=70227 default=-1>
+          <option value="-1" label=70117 /> <!-- disabled -->
+          <option value="2" label=70228 />
+          <option value="5" label=70229 />
+          <option value="15" label=70230 />
+          <option value="45" label=70231 />
+          <option value="0" label=70222 />
+          <option value="25" label=70223 />
+          <option value="50" label=70224 />
+          <option value="75" label=70225 />
+          <option value="100" label=70226 />
+          <dependencies>
+            <dependency type="enable">
+              <and>
+                <condition setting="detectBars" operator="is">true</condition>
+                <condition setting="arChange" operator="is">-1</condition>
+              </and>
+            </dependency>
+          </dependencies>
+        </setting>
+        <setting name="shiftImage" value="shiftImageUp" type="list_boolbool" label=70232 default=-1>
+          <option value="-1" label=70117 /> <!-- disabled -->
+          <option value="true" label=70233 />
+          <option value="false" label=70234 />
+          <dependencies>
+            <dependency type="enable" setting="detectBars" operator="is">true</dependency>
+          </dependencies>
+        </setting>
+        <setting name="dontCropSubs" value="dontCropSubsValue" type="list_boolint" label=70235 default=-1>
+          <option value="-1" label=70117 /> <!-- disabled -->
+          <option value="5" label=70236 />
+          <option value="15" label=70237 />
+          <option value="45" label=70238 />
+          <option value="180" label=70239 />
+          <option value="600" label=70240 />
+          <option value="1800" label=70241 />
+          <option value="5400" label=70242 />
+          <option value="0" label=70243/>
+          <dependencies>
+            <dependency type="enable" setting="detectBars" operator="is">true</dependency>
+          </dependencies>
+        </setting>
+        <setting name="cleanborders" type="list_cleanborders" label=70244 default=-1>
+          <option value="-1" label=70117 /> <!-- disabled -->
+          <option value="1" label=70245 />
+          <option value="2" label=70246 />
+          <option value="3" label=70247 />
+          <option value="4" label=70248 />
+          <option value="5" label=70249 />
+          <option value="7" label=70250 />
+          <option value="11" label=70251 />
+          <option value="12" label=70252 />
+          <option value="13" label=70253 />
+          <option value="14" label=70254 />
+          <option value="15" label=70255 />
+          <option value="17" label=70256 />
+          <dependencies>
+            <dependency type="enable" setting="detectBars" operator="is">true</dependency>
+          </dependencies>
+        </setting>
+        <setting name="reduceBigBars" value="reduceBigBarsValue" type="list_boolint" label=70257 default=-1>
+          <option value="-1" label=70117 /> <!-- disabled -->
+          <option value="25" label=70258 />
+          <option value="50" label=70259 />
+          <option value="75" label=70260 />
+          <option value="100" label=70261 />
+          <dependencies>
+            <dependency type="enable" setting="detectBars" operator="is">true</dependency>
+          </dependencies>
+        </setting>
+        <setting name="cropSmallBars" type="bool" label=70262 default="false"> 
+          <dependencies>
+            <dependency type="enable" setting="detectBars" operator="is">true</dependency>
+          </dependencies>
+        </setting>
+        <setting name="cropBars" type="bool" label=70263 default="false">
+          <dependencies>
+            <dependency type="enable" setting="detectBars" operator="is">true</dependency>
+          </dependencies>
+        </setting>
+      </group>
+      <!-- end zoom -->
+    </section>
+  </group>
+  <group>
+    <setting name="sharpenEdges" type="bool" label=70134 default="false" />
+    <setting name="sharpenEdgesStrength" type="float" label=70122 parentlabel=70134 parent="sharpenEdges" default="1.0" min=0 max=4 step=0.1 format="%1.1f">
+      <dependencies>
+        <dependency type="visible" setting="sharpenEdges" operator="is">true</dependency>
+      </dependencies>
+    </setting>
+    <setting name="crispenEdges" type="bool" label=70135 default="false" />
+    <setting name="crispenEdgesStrength" type="float" label=70122 parentlabel=70135 parent="crispenEdges" default="1.0" min=0 max=4 step=0.1 format="%1.1f">
+      <dependencies>
+        <dependency type="visible" setting="crispenEdges" operator="is">true</dependency>
+      </dependencies>
+    </setting>
+    <setting name="thinEdges" type="bool" label=70136 default="false" />
+    <setting name="thinEdgesStrength" type="float" label=70122 parentlabel=70136 parent="thinEdges" default="1.0" min=0 max=8 step=0.1 format="%1.1f" >
+      <dependencies>
+        <dependency type="visible" setting="thinEdges" operator="is">true</dependency>
+      </dependencies>
+    </setting>
+    <setting name="enhanceDetail" type="bool" label=70137 default="false" />
+    <setting name="enhanceDetailStrength" type="float" label=70122 parentlabel=70137 parent="enhanceDetail" default="1.0" min=0 max=4 step=0.1 format="%1.1f">
+      <dependencies>
+        <dependency type="visible" setting="enhanceDetail" operator="is">true</dependency>
+      </dependencies>
+    </setting>
+  </group>
+  <group>
+    <setting name="lumaSharpen" type="bool" label=70119 default="false" />
+    <setting name="lumaSharpenStrength" type="float" label=70122 parentlabel=70119 parent="lumaSharpen" default="0.65" min=0 max=3 step=0.01 format="%1.2f">
+      <dependencies>
+        <dependency type="visible" setting="lumaSharpen" operator="is">true</dependency>
+      </dependencies>
+    </setting>
+    <setting name="adaptiveSharpen" type="bool" label=70120 default="false" />
+    <setting name="adaptiveSharpenStrength" type="float" label=70122 parentlabel=70120 parent="adaptiveSharpen" default="0.5" min=0 max=3 step=0.1 format="%1.1f">
+      <dependencies>
+        <dependency type="visible" setting="adaptiveSharpen" operator="is">true</dependency>
+      </dependencies>
+    </setting>
+  </group>
+  <group>
+    <setting name="sharpenAB" value="sharpenABStrength" type="list_boolint" label=70155 default="-1">
+      <option value="-1" label=70117 /> <!-- disabled -->
+      <option value="25" label=70148 />
+      <option value="50" label=70149 />
+      <option value="75" label=70150 />
+      <option value="100" label=70151 />
+      <option value="125" label=70152 />
+      <option value="150" label=70153 />
+      <dependencies>
+        <dependency type="enable">
+          <or>
+            <condition setting="sharpenEdges" operator="is">true</condition>
+            <condition setting="adaptiveSharpen" operator="is">true</condition>
+            <condition setting="lumaSharpen" operator="is">true</condition>
+          </or>
+        </dependency>
+      </dependencies>
+    </setting>
+    <setting name="sharpenAR" type="bool" label=70143 default="true">
+      <dependencies>
+        <dependency type="enable">
+          <or>
+            <condition setting="sharpenEdges" operator="is">true</condition>
+            <condition setting="crispenEdges" operator="is">true</condition>
+            <condition setting="adaptiveSharpen" operator="is">true</condition>
+            <condition setting="lumaSharpen" operator="is">true</condition>
+          </or>
+        </dependency>
+      </dependencies>
+    </setting>
+  </group>
+  <group>
+    <setting name="dontDither" value="ditheringAlgo" type="!list_boolstring" label=70400 default="ordered">
+      <option value="-1" label=70117 /> <!-- disabled -->
+      <option value="random" label=70401 />
+      <option value="ordered" label=70402 />
+      <option value="errorDifMedNoise" label=70403 />
+      <option value="errorDifLowNoise" label=70404 />
+    </setting>
+    <setting name="coloredDither" type="bool" label=70405 parent="dontDither" default="true">
+      <dependencies>
+        <dependency type="visible" setting="dontDither" operator="!is">-1</dependency>
+      </dependencies>
+    </setting>
+    <setting name="dynamicDither" type="bool" label=70406 parent="dontDither" default="true">
+      <dependencies>
+        <dependency type="visible" setting="dontDither" operator="!is">-1</dependency>
+      </dependencies>
+    </setting>
+    <setting name="smoothMotionEnabled" value="smoothMotionMode" type="list_boolstring" label=70300 default=-1>
+      <option value="-1" label=70117 /> <!-- disabled -->
+      <option value="avoidJudder" label=70301 />
+      <option value="almostAlways" label=70302 />
+      <option value="always" label=70303 />
+    </setting>
+  </group>
+</settings>
+

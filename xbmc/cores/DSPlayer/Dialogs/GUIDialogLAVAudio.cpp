@@ -99,15 +99,6 @@ void CGUIDialogLAVAudio::OnInitWindow()
   HideUnused();
 }
 
-void CGUIDialogLAVAudio::OnDeinitWindow(int nextWindowID)
-{
-  CGUIDialogSettingsManualBase::OnDeinitWindow(nextWindowID);
-}
-
-void CGUIDialogLAVAudio::Save()
-{
-}
-
 void CGUIDialogLAVAudio::SetupView()
 {
   CGUIDialogSettingsManualBase::SetupView();

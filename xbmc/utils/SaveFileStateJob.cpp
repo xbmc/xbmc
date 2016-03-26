@@ -82,7 +82,7 @@ bool CSaveFileStateJob::DoWork()
 	  {
 		  dspdb.AddEdition(progressTrackingFile, m_bookmark.edition);
 	  }
-      if (m_madvrSettings != CMediaSettings::GetInstance().GetAtStartMadvrSettings() && CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) == KODIGUI_LOAD_DSPLAYER)
+      if (m_madvrSettings.SettingsChanged() && CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) == KODIGUI_LOAD_DSPLAYER)
       {
           dspdb.SetVideoSettings(progressTrackingFile, m_madvrSettings);
       }
@@ -112,9 +112,22 @@ bool CSaveFileStateJob::DoWork()
 
             m_item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
             updateListing = true;
+#ifdef HAS_DS_PLAYER
+            if (m_item.GetVideoInfoTag()->m_type == MediaTypeEpisode)
+              dspdb.SetLastTvShowId(true, m_item.GetVideoInfoTag()->m_iIdShow);
+#endif
           }
           else
+#ifdef HAS_DS_PLAYER
+          {
+            if (m_item.GetVideoInfoTag()->m_type == MediaTypeEpisode)
+              dspdb.SetLastTvShowId(false, m_item.GetVideoInfoTag()->m_iIdShow);
+
             videodatabase.UpdateLastPlayed(m_item);
+          }
+#else
+            videodatabase.UpdateLastPlayed(m_item);
+#endif
 
           if (!m_item.HasVideoInfoTag() || m_item.GetVideoInfoTag()->m_resumePoint.timeInSeconds != m_bookmark.timeInSeconds)
           {
@@ -185,6 +198,9 @@ bool CSaveFileStateJob::DoWork()
           g_windowManager.SendThreadMessage(message);
         }
       }
+#ifdef HAS_DS_PLAYER
+      dspdb.Close();
+#endif
     }
 
     if (m_item.IsAudio())

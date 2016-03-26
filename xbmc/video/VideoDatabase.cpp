@@ -1802,31 +1802,6 @@ bool CVideoDatabase::GetMovieInfo(const std::string& strFilenameAndPath, CVideoI
 }
 
 //********************************************************************************************************************************
-#ifdef HAS_DS_PLAYER
-int  CVideoDatabase::GetLastTvShowId(int lastType)
-{
-  try
-  {
-    std::string sql;
-    if (lastType == 1)
-      sql = PrepareSQL("SELECT * FROM tvshow_view ORDER BY lastPlayed desc LIMIT 1");
-    else
-      sql = PrepareSQL("SELECT * FROM tvshow_view WHERE watchedcount > 0 ORDER BY lastPlayed desc LIMIT 1");
-
-    if (!m_pDS->query(sql.c_str()))
-      return -1;
-
-    return m_pDS->fv("idShow").get_asInt();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
-  return -1;
-}
-#endif
-
-//********************************************************************************************************************************
 bool CVideoDatabase::GetTvShowInfo(const std::string& strPath, CVideoInfoTag& details, int idTvShow /* = -1 */, CFileItem *item /* = NULL */)
 {
   try

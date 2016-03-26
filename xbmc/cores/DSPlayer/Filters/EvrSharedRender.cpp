@@ -21,25 +21,17 @@
  *
  */
 #include "EvrSharedRender.h"
-#include "Utils/Log.h"
 #include "guilib/GraphicContext.h"
 #include "windowing/WindowingFactory.h"
 #include "cores/VideoRenderers/RenderManager.h"
 
 CEvrSharedRender::CEvrSharedRender()
 {
+  CDSRendererCallback::Get()->Register(this);
 }
 
 CEvrSharedRender::~CEvrSharedRender()
 {
-}
-
-HRESULT CEvrSharedRender::CreateTextures(ID3D11Device* pD3DDeviceKodi, IDirect3DDevice9Ex* pD3DDeviceDS, int width, int height)
-{
-  HRESULT hr = __super::CreateTextures(pD3DDeviceKodi, pD3DDeviceDS, width, height);
-  CDSRendererCallback::Get()->Register(this);
-
-  return hr;
 }
 
 HRESULT CEvrSharedRender::Render(DS_RENDER_LAYER layer)

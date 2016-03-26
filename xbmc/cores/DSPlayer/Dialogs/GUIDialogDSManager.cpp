@@ -44,7 +44,10 @@ m_configType(type)
 
 CGUIDialogDSManager::CGUIDialogDSManager()
 {
+}
 
+CGUIDialogDSManager::~CGUIDialogDSManager()
+{
 }
 
 CGUIDialogDSManager *CGUIDialogDSManager::m_pSingleton = NULL;
@@ -53,7 +56,6 @@ CGUIDialogDSManager* CGUIDialogDSManager::Get()
 {
   return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CGUIDialogDSManager());
 }
-
 
 void CGUIDialogDSManager::InitConfig(std::vector<DSConfigList *> &configList, ConfigType type, CStdString strSetting, int label, CStdString strAttr /* = "" */, CStdString strNodeName /*= "" */, StringSettingOptionsFiller filler /* = NULL */, int subNode /* = 0 */, CStdString strNodeList /* = "" */)
 {
@@ -71,27 +73,26 @@ void CGUIDialogDSManager::InitConfig(std::vector<DSConfigList *> &configList, Co
 
 void CGUIDialogDSManager::ResetValue(std::vector<DSConfigList *> &configList)
 {
-  std::vector<DSConfigList *>::iterator it;
-  for (it = configList.begin(); it != configList.end(); ++it)
+  for (const auto &it : configList)
   {
-    if ((*it)->m_configType == EDITATTR
-      || (*it)->m_configType == EDITATTREXTRA
-      || (*it)->m_configType == EDITATTRSHADER
-      || (*it)->m_configType == OSDGUID)
-      (*it)->m_value = "";
+    if (it->m_configType == EDITATTR
+      || it->m_configType == EDITATTREXTRA
+      || it->m_configType == EDITATTRSHADER
+      || it->m_configType == OSDGUID)
+      it->m_value = "";
 
-    if ((*it)->m_configType == SPINNERATTR
-      || (*it)->m_configType == FILTER
-      || (*it)->m_configType == EXTRAFILTER
-      || (*it)->m_configType == SHADER
-      || (*it)->m_configType == FILTERSYSTEM)
-      (*it)->m_value = "[null]";
+    if (it->m_configType == SPINNERATTR
+      || it->m_configType == FILTER
+      || it->m_configType == EXTRAFILTER
+      || it->m_configType == SHADER
+      || it->m_configType == FILTERSYSTEM)
+      it->m_value = "[null]";
 
-    if ((*it)->m_configType == SPINNERATTRSHADER)
-      (*it)->m_value = "preresize";
+    if (it->m_configType == SPINNERATTRSHADER)
+      it->m_value = "preresize";
 
-    if ((*it)->m_configType == BOOLATTR)
-      (*it)->m_value = "false";
+    if (it->m_configType == BOOLATTR)
+      it->m_value = "false";
   }
 }
 
@@ -129,6 +130,18 @@ void CGUIDialogDSManager::GetPath(xmlType type, CStdString &xmlFile, CStdString 
     xmlFile = CProfilesManager::GetInstance().GetUserDataItem("playercorefactory.xml");
     xmlRoot = "playercorefactory";
     xmlNode = "rules";
+  }
+
+  if (type == HOMEMADVRSETTINGS)
+  {
+    xmlFile = "special://xbmc/system/players/dsplayer/madvrsettings.xml";
+    xmlRoot = "settings";
+  }
+
+  if (type == MADVRSETTINGS)
+  {
+    xmlFile = CProfilesManager::GetInstance().GetUserDataItem("dsplayer/madvrsettings.xml");
+    xmlRoot = "settings";
   }
 }
 
@@ -191,7 +204,9 @@ void CGUIDialogDSManager::LoadDsXML(xmlType type, TiXmlElement* &pNode, bool for
     || type == HOMEFILTERSCONFIG)
     pNode = pConfig->FirstChildElement(xmlNode.c_str());
 
-  if (type == SHADERS)
+  if (type == SHADERS 
+    || type == MADVRSETTINGS 
+    || type == HOMEMADVRSETTINGS)
     pNode = pConfig;
 
   if (type == PLAYERCOREFACTORY) {
@@ -302,14 +317,8 @@ void CGUIDialogDSManager::DSFilterOptionFiller(const CSetting *setting, std::vec
 
   list.push_back(std::make_pair("", "[null]"));
 
-  std::vector<DSFiltersInfo>::const_iterator iter = filterList.begin();
-
-  for (int i = 1; iter != filterList.end(); i++)
-  {
-    DSFiltersInfo filter = *iter;
-    list.push_back(std::make_pair(filter.lpstrName, filter.lpstrGuid));
-    ++iter;
-  }
+  for (const auto &it : filterList)
+    list.push_back(std::make_pair(it.lpstrName, it.lpstrGuid));
 }
 
 void CGUIDialogDSManager::BoolOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
@@ -333,13 +342,12 @@ void CGUIDialogDSManager::PriorityOptionFiller(const CSetting *setting, std::vec
 
 TiXmlElement* CGUIDialogDSManager::KeepSelectedNode(TiXmlElement* pNode, CStdString subNodeName)
 {
-  int selected = GetConfigIndex();
   int count = 0;
 
   TiXmlElement *pRule = pNode->FirstChildElement(subNodeName.c_str());
   while (pRule)
   {
-    if (count == selected)
+    if (count == m_iIndex)
       break;
 
     pRule = pRule->NextSiblingElement(subNodeName.c_str());
@@ -356,4 +364,5 @@ bool CGUIDialogDSManager::compare_by_word(const DynamicStringSettingOption& lhs,
   StringUtils::ToLower(strLine2);
   return strcmp(strLine1.c_str(), strLine2.c_str()) < 0;
 }
+
 

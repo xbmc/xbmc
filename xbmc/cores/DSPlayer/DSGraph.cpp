@@ -122,6 +122,11 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   hr = m_pMediaSeeking->SetTimeFormat(&TIME_FORMAT_MEDIA_TIME);
   m_VideoInfo.time_format = TIME_FORMAT_MEDIA_TIME;
 
+  // if needed set resolution to match fps then set pixelshader & settings for madVR
+  CDSRendererCallback::Get()->SetResolution();
+  CDSRendererCallback::Get()->SetMadvrPixelShader();
+  CDSRendererCallback::Get()->RestoreSettings();
+
   if (m_pVideoWindow)
   {
     //HRESULT hr;
@@ -133,11 +138,6 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
     m_pVideoWindow->SetWindowForeground(OATRUE);
     m_pVideoWindow->put_MessageDrain((OAHWND)CDSPlayer::GetDShWnd());
   }
-
-  // if needed set resolution to match fps then set pixelshader & settings for madVR
-  CDSRendererCallback::Get()->SetResolution();
-  CDSRendererCallback::Get()->SetMadvrPixelShader();
-  CDSRendererCallback::Get()->RestoreSettings();
 
   //TODO Ti-Ben
   //with the vmr9 we need to add AM_DVD_SWDEC_PREFER  AM_DVD_VMR9_ONLY on the ivmr9config prefs
@@ -859,10 +859,16 @@ CStdString CDSGraph::GetAudioInfo()
   {
     CStdString strStreamName;
     c->GetAudioStreamName(g_application.m_pPlayer->GetAudioStream(),strStreamName);
-    audioInfo.Format("Audio: (%s ) | Renderer: %s",
+    audioInfo.Format("Audio: (%s) | Renderer: %s",
       strStreamName,
       CGraphFilters::Get()->AudioRenderer.osdname);
   }
+
+  int iAudioDelay = round(-CStreamsManager::Get()->GetAVDelay() * 1000.0f);
+  audioInfo.Format("%s | Delay: %ims",
+    audioInfo,
+    iAudioDelay);
+
   return audioInfo;
 }
 

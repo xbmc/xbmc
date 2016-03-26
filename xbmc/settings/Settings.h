@@ -377,7 +377,7 @@ public:
   static const std::string CSettings::SETTING_DSPLAYER_DEFAULTVIDEOPLAYER;
   static const std::string CSettings::SETTING_DSPLAYER_AUTOFILTERSETTINGS;
   static const std::string CSettings::SETTING_DSPLAYER_CHANGEREFRESHWITH;
-  static const std::string CSettings::SETTING_DSPLAYER_TVSHOWSELECTITEM;
+  static const std::string CSettings::SETTING_DSPLAYER_LASTTVSHOWSELECT;
   static const std::string CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI;
   static const std::string CSettings::SETTING_DSPLAYER_DELAYMADVRPLAYBACK;
   static const std::string CSettings::SETTING_DSPLAYER_EXCLUSIVEMODE;

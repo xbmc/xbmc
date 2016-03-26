@@ -82,6 +82,8 @@ protected:
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual void FormatItemLabels(CFileItemList &items, const LABEL_MASKS &labelMasks);
   virtual void UpdateButtons();
+  virtual void SaveControlStates() override;
+  virtual void RestoreControlStates() override;
 
   virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
   /*! \brief Retrieves the items from the given path and updates the list
@@ -147,6 +149,8 @@ protected:
   virtual bool HaveDiscOrConnection(const std::string& strPath, int iDriveType);
   void ShowShareErrorMessage(CFileItem* pItem);
 
+  void SaveSelectedItemInHistory();
+  void RestoreSelectedItemFromHistory();
   void GetDirectoryHistoryString(const CFileItem* pItem, std::string& strHistoryString);
   void SetHistoryForPath(const std::string& strDirectory);
   virtual void LoadPlayList(const std::string& strFileName) {}
@@ -181,7 +185,6 @@ protected:
 
   // save control state on window exit
   int m_iLastControl;
-  int m_iSelectedItem;
   std::string m_startDirectory;
 
   CSmartPlaylist m_filter;

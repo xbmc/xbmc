@@ -65,7 +65,6 @@
 #define LAVVIDEO_DITHERMODE        "lavvideo.dwdithermode"
 #define LAVVIDEO_HWDEINTMODE       "lavvideo.dwhwdeintmode"
 #define LAVVIDEO_HWDEINTOUT        "lavvideo.dwhwdeintoutput"
-#define LAVVIDEO_HWDEINTHQ         "lavvideo.bhwdeinthq"
 #define LAVVIDEO_SWDEINTMODE       "lavvideo.dwswdeintmode"
 #define LAVVIDEO_SWDEINTOUT        "lavvideo.dwswdeintoutput"
 #define LAVVIDEO_RESET             "lavvideo.reset"
@@ -87,15 +86,6 @@ void CGUIDialogLAVVideo::OnInitWindow()
   CGUIDialogSettingsManualBase::OnInitWindow();
 
   HideUnused();
-}
-
-void CGUIDialogLAVVideo::OnDeinitWindow(int nextWindowID)
-{
-  CGUIDialogSettingsManualBase::OnDeinitWindow(nextWindowID);
-}
-
-void CGUIDialogLAVVideo::Save()
-{
 }
 
 void CGUIDialogLAVVideo::SetupView()
@@ -230,9 +220,13 @@ void CGUIDialogLAVVideo::InitializeSettings()
   entries.push_back(make_pair(80210, 1));
   entries.push_back(make_pair(80211, 0));
   AddList(groupDeintHW, LAVVIDEO_HWDEINTOUT, 80007, 0, lavSettings.video_dwHWDeintOutput, entries, 80007);
-  AddToggle(groupDeintHW, LAVVIDEO_HWDEINTHQ, 80008, 0, lavSettings.video_bHWDeintHQ);
 
-  AddToggle(groupDeintSW, LAVVIDEO_SWDEINTMODE, 80011, 0, lavSettings.video_dwSWDeintMode);
+  entries.clear();
+  entries.push_back(make_pair(70117, 0));
+  entries.push_back(make_pair(80217, 1));
+  entries.push_back(make_pair(80218, 2));
+  entries.push_back(make_pair(80219, 3));
+  AddList(groupDeintSW, LAVVIDEO_SWDEINTMODE, 80011, 0, lavSettings.video_dwSWDeintMode, entries, 800011);
   entries.clear();
   entries.push_back(make_pair(80210, 1));
   entries.push_back(make_pair(80211, 0));
@@ -273,8 +267,6 @@ void CGUIDialogLAVVideo::OnSettingChanged(const CSetting *setting)
     lavSettings.video_dwHWDeintMode = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVVIDEO_HWDEINTOUT)
     lavSettings.video_dwHWDeintOutput = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-  if (settingId == LAVVIDEO_HWDEINTHQ)
-    lavSettings.video_bHWDeintHQ = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVVIDEO_SWDEINTMODE)
     lavSettings.video_dwSWDeintMode = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVVIDEO_SWDEINTOUT)
@@ -334,7 +326,6 @@ void CGUIDialogLAVVideo::HideUnused()
   setting = m_settingsManager->GetSetting(LAVVIDEO_HWDEINTMODE);
   bValue = static_cast<const CSettingBool*>(setting)->GetValue();
   SetVisible(LAVVIDEO_HWDEINTOUT, bValue);
-  SetVisible(LAVVIDEO_HWDEINTHQ, bValue);
 
   // SWDEINT
   setting = m_settingsManager->GetSetting(LAVVIDEO_SWDEINTMODE);
