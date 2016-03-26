@@ -2799,12 +2799,11 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
     return false;
   }
 
-  std::deque<CVaapiDecodedPicture>::iterator it;
-  for (it=m_decodedPics.begin(); it!=m_decodedPics.end(); ++it)
-  {
-    if (it->index == m_currentIdx)
-      break;
-  }
+  const auto currentIdx = m_currentIdx;
+  auto it = std::find_if(m_decodedPics.begin(), m_decodedPics.end(),
+                         [currentIdx](const CVaapiDecodedPicture &picture){
+                           return picture.index == currentIdx;
+                         });
   if (it==m_decodedPics.end())
   {
     return false;
