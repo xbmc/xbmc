@@ -75,6 +75,7 @@ public:
   virtual bool Open();
 
   bool GetCachedTexture(const std::string &originalURL, CTextureDetails &details);
+  std::vector<std::string> GetCachedTextureUrls();
   bool AddCachedTexture(const std::string &originalURL, const CTextureDetails &details);
   bool SetCachedTextureValid(const std::string &originalURL, bool updateable);
   bool ClearCachedTexture(const std::string &originalURL, std::string &cacheFile);
