@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Slėpti fono Fanart"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Slėpti EPG, jei kanalo lange yra RDS"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Rodyti \"Dabar atkuriamą\" vaizdo įrašą fone"
@@ -227,14 +231,6 @@ msgstr "Rodyti \"Dabar atkuriamą\" vaizdo įrašą fone"
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Rodyti \"Dabar atkuriamos\" muzikos vizualizaciją fone"
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Atkurti televizijos temų dainas vaizdo bibliotekoje (TvTunes priedas)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -352,10 +348,6 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Paskutinis prisijungimas"
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Karaoke dainos pasirinkimas"
-
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Transliuotas"
@@ -445,8 +437,8 @@ msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set v
 msgstr "[B]KONFIGŪRUOTI VAIZDO ĮRAŠŲ NUSTATYMUS[/B][CR][CR]Tvarkyti vaizdo biblioteką · Nustatyti vaizdo atkūrimo parinktis[CR]Keisti vaizdo įrašų sąrašo atvaizdavimo parinktis · Nustatyti subtitrų šriftus"
 
 msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]KONFIGŪRUOTI MUZIKOS NUSTATYMUS[/B][CR][CR]Tvarkyti muzikos biblioteką · Nustatyti dainų įkėlimą · Nustatyti karaoke parinktis[CR]Keisti muzikos sąrašo atvaizdavimo parinktis · Nustatyti muzikos atkūrimo parinktis"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]KONFIGŪRUOTI MUZIKOS NUSTATYMUS[/B][CR][CR]Tvarkyti muzikos biblioteką · Nustatyti dainų įkėlimą[CR]Keisti muzikos sąrašo atvaizdavimo parinktis · Nustatyti muzikos atkūrimo parinktis"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

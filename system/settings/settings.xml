@@ -1548,7 +1548,7 @@
         </setting>
         <setting id="scrapers.musicvideosdefault" type="addon" label="21415" help="36200">
           <level>4</level>
-          <default>metadata.musicvideos.theaudiodb.com</default>
+          <default>metadata.local</default>
           <constraints>
             <addontype>xbmc.metadata.scraper.musicvideos</addontype>
           </constraints>
@@ -2503,6 +2503,9 @@
             <step>1</step>
             <maximum>65535</maximum>
           </constraints>
+          <updates>
+            <update type="change" />
+          </updates>
           <control type="edit" format="integer" />
         </setting>
         <setting id="services.webserverusername" type="string" parent="services.webserver" label="1048" help="36330">
@@ -2984,7 +2987,7 @@
             </dependency>
           </dependencies>
         </setting>
-        <setting id="audiooutput.dspresetdb" type="action" label="334" help="36439">
+        <setting id="audiooutput.dspresetdb" type="action" label="14082" help="36439">
           <level>1</level>
           <control type="button" format="action" />
           <dependencies>

@@ -511,6 +511,11 @@ namespace VIDEO
 
   INFO_RET CVideoInfoScanner::RetrieveInfoForTvShow(CFileItem *pItem, bool bDirNames, ScraperPtr &info2, bool useLocal, CScraperUrl* pURL, bool fetchEpisodes, CGUIDialogProgress* pDlgProgress)
   {
+    if (pItem->m_bIsFolder && IsExcluded(pItem->GetPath()))
+    {
+      CLog::Log(LOGWARNING, "Skipping show '%s' with '.nomedia' file in its directory, it won't be added to the library.", CURL::GetRedacted(pItem->GetPath()).c_str());
+      return INFO_NOT_NEEDED;
+    }
     long idTvShow = -1;
     if (pItem->m_bIsFolder)
       idTvShow = m_database.GetTvShowId(pItem->GetPath());

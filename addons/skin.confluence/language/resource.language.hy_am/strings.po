@@ -128,14 +128,6 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "Տարբերակներ"
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Նվագարկել TV թեմայի երգերը տեսադարանում (TvTunes add-on)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TV-Որոնում"
-
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Երգի բառեր"

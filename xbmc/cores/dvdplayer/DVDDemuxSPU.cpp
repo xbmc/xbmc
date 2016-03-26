@@ -104,7 +104,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::AddData(uint8_t* data, int iSize, double pts)
     else pSPUData->iNeededSize = iSize;
 
     // set presentation time stamp
-    if (pts > 0) pSPUData->pts = pts;
+    pSPUData->pts = pts;
   }
 
   // allocate data if not already done ( done in blocks off 16384 bytes )

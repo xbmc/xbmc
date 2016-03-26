@@ -78,8 +78,6 @@ class CZeroconfBrowserAvahi : public CZeroconfBrowser
                          AvahiStringList *txt,
                          AvahiLookupResultFlags flags,
                          AVAHI_GCC_UNUSED void* userdata);
-    //helper to workaround avahi bug
-    static void shutdownCallback(AvahiTimeout *fp_e, void *fp_data);
     //helpers
     bool createClient();
     static AvahiServiceBrowser* createServiceBrowser(const std::string& fcr_service_type, AvahiClient* fp_client, void* fp_userdata);
@@ -106,10 +104,6 @@ class CZeroconfBrowserAvahi : public CZeroconfBrowser
     tDiscoveredServices m_discovered_services;
     CZeroconfBrowser::ZeroconfService m_resolving_service;
     CEvent m_resolved_event;
-
-    //2 variables below are needed for workaround of avahi bug (see destructor for details)
-    bool m_shutdown;
-    pthread_t m_thread_id;
 };
 
 #endif //HAS_AVAHI

@@ -1,3 +1,9 @@
+[B]2.6.0[/B]
+Added: Theme support from theaudiodb.com
+
+[B]2.5.1[/B]
+Update author name
+
 [B]2.5.0[/B]
 Removed: amazon.de review
 

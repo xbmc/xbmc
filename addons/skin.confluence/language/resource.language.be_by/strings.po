@@ -140,14 +140,6 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "Options"
 
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Play TV theme songs in video library (TvTunes add-on)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
-
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Lyrics"
@@ -227,10 +219,6 @@ msgstr "[B]ЗЬМЯНІЦЬ НАЛАДЫ ВОНКАВАГА ВЫГЛЯДУ[/B][C
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]ЗЬМЯНІЦЬ НАЛАДЫ ВІДЭА[/B][CR][CR]Кіраваць бібліятэкай відэа · Наставіць налады прайграваньня відэа · Зьмяніць налады сьпісу відэа[CR]Наставіць шрыфт субтытраў"
-
-msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]ЗЬМЯНІЦЬ НАЛАДЫ МУЗЫКІ[/B][CR][CR]Кіраваць бібліятэкай музыкі · Наставіць налады прайграваньня музыкі · Зьмяніць налады сьпісу музыкі[CR]Наладзіць перадачу музыкі · Наставіць налады караоке"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"

@@ -418,8 +418,8 @@ CDateTime CEpg::GetLastScanTime(void)
 
       if (!m_lastScanTime.IsValid())
       {
-        m_lastScanTime.SetDateTime(0, 0, 0, 0, 0, 0);
-        m_lastScanTime.SetValid(true);
+        m_lastScanTime.SetDateTime(1970, 1, 1, 0, 0, 0);
+        assert(m_lastScanTime.IsValid());
       }
     }
     lastScanTime = m_lastScanTime;

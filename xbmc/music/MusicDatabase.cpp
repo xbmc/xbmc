@@ -523,7 +523,7 @@ bool CMusicDatabase::AddAlbum(CAlbum& album)
   return true;
 }
 
-bool CMusicDatabase::UpdateAlbum(CAlbum& album)
+bool CMusicDatabase::UpdateAlbum(CAlbum& album, bool OverrideTagData /* = true*/)
 {
   BeginTransaction();
 
@@ -538,54 +538,58 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album)
               album.strLabel, album.strType,
               album.iRating, album.iYear, album.bCompilation, album.releaseType);
 
-  // Add the album artists
-  DeleteAlbumArtistsByAlbum(album.idAlbum);
-  for (VECARTISTCREDITS::iterator artistCredit = album.artistCredits.begin(); artistCredit != album.artistCredits.end(); ++artistCredit)
+  if (OverrideTagData)
   {
-    artistCredit->idArtist = AddArtist(artistCredit->GetArtist(),
-                                       artistCredit->GetMusicBrainzArtistID());
-    AddAlbumArtist(artistCredit->idArtist,
-                   album.idAlbum,
-                   artistCredit->GetArtist(),
-                   artistCredit->GetJoinPhrase(),
-                   artistCredit == album.artistCredits.begin() ? false : true,
-                   std::distance(album.artistCredits.begin(), artistCredit));
-  }
-
-  for (VECSONGS::iterator song = album.songs.begin(); song != album.songs.end(); ++song)
-  {
-    UpdateSong(song->idSong,
-               song->strTitle,
-               song->strMusicBrainzTrackID,
-               song->strFileName,
-               song->strComment,
-               song->strMood,
-               song->strThumb,
-               song->GetArtistString(),
-               song->genre,
-               song->iTrack,
-               song->iDuration,
-               song->iYear,
-               song->iTimesPlayed,
-               song->iStartOffset,
-               song->iEndOffset,
-               song->lastPlayed,
-               song->rating);
-    DeleteSongArtistsBySong(song->idSong);
-    for (VECARTISTCREDITS::iterator artistCredit = song->artistCredits.begin(); artistCredit != song->artistCredits.end(); ++artistCredit)
+    // Add the album artists
+    DeleteAlbumArtistsByAlbum(album.idAlbum);
+    for (VECARTISTCREDITS::iterator artistCredit = album.artistCredits.begin(); artistCredit != album.artistCredits.end(); ++artistCredit)
     {
       artistCredit->idArtist = AddArtist(artistCredit->GetArtist(),
-                                         artistCredit->GetMusicBrainzArtistID());
-      AddSongArtist(artistCredit->idArtist,
-                    song->idSong,
-                    artistCredit->GetArtist(),
-                    artistCredit->GetJoinPhrase(),
-                    artistCredit == song->artistCredits.begin() ? false : true,
-                    std::distance(song->artistCredits.begin(), artistCredit));
+        artistCredit->GetMusicBrainzArtistID());
+      AddAlbumArtist(artistCredit->idArtist,
+        album.idAlbum,
+        artistCredit->GetArtist(),
+        artistCredit->GetJoinPhrase(),
+        artistCredit == album.artistCredits.begin() ? false : true,
+        std::distance(album.artistCredits.begin(), artistCredit));
     }
 
-    SaveCuesheet(song->strFileName, song->strCueSheet);
+    for (VECSONGS::iterator song = album.songs.begin(); song != album.songs.end(); ++song)
+    {
+      UpdateSong(song->idSong,
+        song->strTitle,
+        song->strMusicBrainzTrackID,
+        song->strFileName,
+        song->strComment,
+        song->strMood,
+        song->strThumb,
+        song->GetArtistString(),
+        song->genre,
+        song->iTrack,
+        song->iDuration,
+        song->iYear,
+        song->iTimesPlayed,
+        song->iStartOffset,
+        song->iEndOffset,
+        song->lastPlayed,
+        song->rating);
+      DeleteSongArtistsBySong(song->idSong);
+      for (VECARTISTCREDITS::iterator artistCredit = song->artistCredits.begin(); artistCredit != song->artistCredits.end(); ++artistCredit)
+      {
+        artistCredit->idArtist = AddArtist(artistCredit->GetArtist(),
+          artistCredit->GetMusicBrainzArtistID());
+        AddSongArtist(artistCredit->idArtist,
+          song->idSong,
+          artistCredit->GetArtist(),
+          artistCredit->GetJoinPhrase(),
+          artistCredit == song->artistCredits.begin() ? false : true,
+          std::distance(song->artistCredits.begin(), artistCredit));
+      }
+
+      SaveCuesheet(song->strFileName, song->strCueSheet);
+    }
   }
+
   for (VECSONGS::const_iterator infoSong = album.infoSongs.begin(); infoSong != album.infoSongs.end(); ++infoSong)
     AddAlbumInfoSong(album.idAlbum, *infoSong);
 
@@ -3373,7 +3377,10 @@ bool CMusicDatabase::GetArtistsNav(const std::string& strBaseDir, CFileItemList&
     else if (idSong > 0)
       musicUrl.AddOption("songid", idSong);
 
-    musicUrl.AddOption("albumartistsonly", albumArtistsOnly);
+    // Override albumArtistsOnly parameter (usually externally set to SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS)
+    // when local option already present in muscic URL thus allowing it to be an option in custom nodes
+    if (!musicUrl.HasOption("albumartistsonly"))
+      musicUrl.AddOption("albumartistsonly", albumArtistsOnly);
 
     bool result = GetArtistsByWhere(musicUrl.ToString(), filter, items, sortDescription, countOnly);
     CLog::Log(LOGDEBUG,"Time to retrieve artists from dataset = %i", XbmcThreads::SystemClockMillis() - time);
@@ -3787,10 +3794,6 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     unsigned int time = XbmcThreads::SystemClockMillis();
     int total = -1;
 
-    std::string strSQL = "SELECT %s FROM songview ";
-    if (artistData) // Get data from song and song_artist tables to fully populate songs with artists
-      strSQL = "SELECT %s FROM songview JOIN songartistview on songartistview.idsong = songview.idsong ";
-
     Filter extFilter = filter;
     CMusicDbUrl musicUrl;
     SortDescription sorting = sortDescription;
@@ -3813,16 +3816,36 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     total = (int)strtol(GetSingleValue("SELECT COUNT(1) FROM songview " + strSQLExtra, m_pDS).c_str(), NULL, 10);
 
     // Apply the limiting directly here if there's no special sorting but limiting
-    if (extFilter.limit.empty() &&
-        sortDescription.sortBy == SortByNone &&
-        (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+    bool limited = extFilter.limit.empty() && sortDescription.sortBy == SortByNone &&
+      (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0);
+    if (limited)
       strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
 
+    std::string strSQL;
     if (artistData)
-      strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.*, songartistview.* ") + strSQLExtra;
+    { // Get data from song and song_artist tables to fully populate songs with artists
+      // Some songs may not have artists so Left join.
+      // Bug in SQLite optimiser for left join on views means have to use tables not songartistview
+      if (limited)
+        //Apply where clause and limits to songview, then join as mutiple records in result set per song
+        strSQL = "SELECT sv.*, "
+        "song_artist.idArtist AS idArtist, "
+        "artist.strArtist AS strArtist, "
+        "artist.strMusicBrainzArtistID AS strMusicBrainzArtistID "
+        "FROM (SELECT songview.* FROM songview " + strSQLExtra + ") AS sv "
+        "LEFT JOIN song_artist on song_artist.idsong = sv.idsong "
+        "LEFT JOIN artist ON song_artist.idArtist = artist.idArtist ";
+      else
+        strSQL = "SELECT songview.*, "
+        "song_artist.idArtist AS idArtist, "
+        "artist.strArtist AS strArtist, "
+        "artist.strMusicBrainzArtistID AS strMusicBrainzArtistID "
+        "FROM songview LEFT JOIN song_artist on song_artist.idsong = songview.idsong "
+        "LEFT JOIN artist ON song_artist.idArtist = artist.idArtist " + strSQLExtra;
+    }
     else
-      strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "songview.* ") + strSQLExtra;
-
+      strSQL = "SELECT songview.* FROM songview " + strSQLExtra;
+    
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
     // run query
     if (!m_pDS->query(strSQL))
@@ -3872,9 +3895,15 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
           item->m_iprogramCount = ++count;
           items.Add(item);
         }
-        // Get song artist credits
+        // Get song artist credits, API only exposes id, name and mbid fields
         if (artistData)
-          artistCredits.push_back(GetArtistCreditFromDataset(record, songArtistOffset));
+        {
+          CArtistCredit artistCredit;
+          artistCredit.idArtist = record->at(songArtistOffset).get_asInt();
+          artistCredit.m_strArtist = record->at(songArtistOffset + 1).get_asString();
+          artistCredit.m_strMusicBrainzArtistID = record->at(songArtistOffset + 2).get_asString();
+          artistCredits.push_back(artistCredit);
+        }
       }
       catch (...)
       {
@@ -3883,7 +3912,6 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
         return (items.Size() > 0);
       }
 
-   
     }
     if (!artistCredits.empty())
     {
@@ -3893,11 +3921,6 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     }
     // cleanup
     m_pDS->close();
-
-    // Load some info from embedded cuesheet if present (now only ReplayGain)
-    CueInfoLoader cueLoader;
-    for (int i = 0; i < items.Size(); ++i)
-      cueLoader.Load(LoadCuesheet(items[i]->GetMusicInfoTag()->GetURL()), items[i]);
 
     CLog::Log(LOGDEBUG, "%s(%s) - took %d ms", __FUNCTION__, filter.where.c_str(), XbmcThreads::SystemClockMillis() - time);
     return true;

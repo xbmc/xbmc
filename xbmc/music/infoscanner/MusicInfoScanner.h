@@ -59,7 +59,7 @@ public:
   void FetchAlbumInfo(const std::string& strDirectory, bool refresh = false);
   void FetchArtistInfo(const std::string& strDirectory, bool refresh = false);
   bool IsScanning();
-  void Stop();
+  void Stop(bool wait = false);
 
   void CleanDatabase(bool showProgress = true);
 

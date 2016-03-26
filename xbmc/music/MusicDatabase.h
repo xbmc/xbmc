@@ -196,9 +196,10 @@ public:
   bool AddAlbum(CAlbum& album);
   /*! \brief Update an album and all its nested entities (artists, songs, infoSongs, etc)
    \param album the album to update
+   \param OverrideTagData whether or not to replace the artist and song data, defaults to true.
    \return true or false
    */
-  bool UpdateAlbum(CAlbum& album);
+  bool UpdateAlbum(CAlbum& album, bool OverrideTagData = true);
 
   /*! \brief Add an album and all its songs to the database
    \param album the album to add
@@ -511,7 +512,7 @@ private:
 
   // Fields should be ordered as they
   // appear in the songview
-  enum _SongFields
+  static enum _SongFields
   {
     song_idSong=0,
     song_strArtists,
@@ -541,7 +542,7 @@ private:
 
   // Fields should be ordered as they
   // appear in the albumview
-  enum _AlbumFields
+  static enum _AlbumFields
   {
     album_idAlbum=0,
     album_strAlbum,
@@ -565,7 +566,7 @@ private:
     album_enumCount // end of the enum, do not add past here
   } AlbumFields;
 
-  enum _ArtistCreditFields
+  static enum _ArtistCreditFields
   {
     // used for GetAlbum to get the cascaded album/song artist credits
     artistCredit_idEntity = 0,  // can be idSong or idAlbum depending on context
@@ -578,7 +579,7 @@ private:
     artistCredit_enumCount
   } ArtistCreditFields;
 
-  enum _ArtistFields
+  static enum _ArtistFields
   {
     artist_idArtist=0,
     artist_strArtist,
@@ -599,7 +600,7 @@ private:
     artist_enumCount // end of the enum, do not add past here
   } ArtistFields;
 
-  enum _AlbumInfoSongFields
+  static enum _AlbumInfoSongFields
   {
     albumInfoSong_idAlbumInfoSong=0,
     albumInfoSong_idAlbumInfo,

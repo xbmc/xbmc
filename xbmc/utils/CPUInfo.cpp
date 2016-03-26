@@ -412,6 +412,14 @@ CCPUInfo::CCPUInfo(void)
       }
     }
     fclose(fCPUInfo);
+    //  /proc/cpuinfo is not reliable on some Android platforms
+    //  At least we should get the correct cpu count for multithreaded decoding
+#if defined(TARGET_ANDROID)
+    if (CAndroidFeatures::GetCPUCount() > m_cpuCount)
+    {
+      m_cpuCount = CAndroidFeatures::GetCPUCount();
+    }
+#endif
   }
   else
   {

@@ -32,14 +32,17 @@
 #include "events/AddonManagementEvent.h"
 #include "events/EventLog.h"
 #include "FileItem.h"
+#include "filesystem/CurlFile.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "filesystem/ZipFile.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
 #include "TextureDatabase.h"
 #include "URL.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
+#include "utils/Mime.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -162,24 +165,41 @@ std::string CRepository::GetAddonHash(const AddonPtr& addon) const
        x = y; \
   }
 
-bool CRepository::Parse(const DirInfo& dir, VECADDONS &result)
+
+bool CRepository::FetchIndex(const std::string& url, VECADDONS& addons)
 {
-  std::string file = dir.info;
-  if (dir.compressed)
+  XFILE::CCurlFile http;
+  http.SetContentEncoding("gzip");
+
+  std::string content;
+  if (!http.Get(url, content))
+    return false;
+
+  if (URIUtils::HasExtension(url, ".gz")
+      || CMime::GetFileTypeFromMime(http.GetMimeType()) == CMime::EFileType::FileTypeGZip)
   {
-    CURL url(dir.info);
-    std::string opts = url.GetProtocolOptions();
-    if (!opts.empty())
-      opts += "&";
-    url.SetProtocolOptions(opts+"Encoding=gzip");
-    file = url.Get();
+    CLog::Log(LOGDEBUG, "CRepository '%s' is gzip. decompressing", url.c_str());
+    std::string buffer;
+    if (!CZipFile::DecompressGzip(content, buffer))
+      return false;
+    content = std::move(buffer);
   }
 
-  VECADDONS addons;
   CXBMCTinyXML doc;
-  if (doc.LoadFile(file) && doc.RootElement() &&
-      CAddonMgr::GetInstance().AddonsFromRepoXML(doc.RootElement(), addons))
+  if (!doc.Parse(content) || !doc.RootElement()
+      || !CAddonMgr::GetInstance().AddonsFromRepoXML(doc.RootElement(), addons))
   {
+    CLog::Log(LOGERROR, "CRepository: Failed to parse addons.xml. Malformated.");
+    return false;
+  }
+  return true;
+}
+
+bool CRepository::Parse(const DirInfo& dir, VECADDONS& addons)
+{
+  if (!FetchIndex(dir.info, addons))
+    return false;
+
     for (IVECADDONS i = addons.begin(); i != addons.end(); ++i)
     {
       AddonPtr addon = *i;
@@ -199,11 +219,8 @@ bool CRepository::Parse(const DirInfo& dir, VECADDONS &result)
         SET_IF_NOT_EMPTY(addon->Props().changelog,URIUtils::AddFileToFolder(dir.datadir,addon->ID()+"/changelog.txt"))
         SET_IF_NOT_EMPTY(addon->Props().fanart,URIUtils::AddFileToFolder(dir.datadir,addon->ID()+"/fanart.jpg"))
       }
-      result.push_back(addon);
     }
-    return true;
-  }
-  return false;
+  return true;
 }
 
 
@@ -238,11 +255,7 @@ bool CRepositoryUpdateJob::DoWork()
     return true;
   }
 
-  database.AddRepository(m_repo->ID(), addons, newChecksum, m_repo->Version());
-
-  //Invalidate art. FIXME: this will cause a lot of unnecessary re-caching and
-  //unnecessary HEAD requests being sent to server. icons and fanart rarely
-  //change, and cannot change if there is no version bump.
+  //Invalidate art.
   {
     CTextureDatabase textureDB;
     textureDB.Open();
@@ -250,13 +263,21 @@ bool CRepositoryUpdateJob::DoWork()
 
     for (const auto& addon : addons)
     {
-      if (!addon->Props().fanart.empty())
-        textureDB.InvalidateCachedTexture(addon->Props().fanart);
-      if (!addon->Props().icon.empty())
-        textureDB.InvalidateCachedTexture(addon->Props().icon);
+      AddonPtr oldAddon;
+      if (database.GetAddon(addon->ID(), oldAddon) && addon->Version() > oldAddon->Version())
+      {
+        if (!addon->Props().icon.empty() || !addon->Props().fanart.empty())
+          CLog::Log(LOGDEBUG, "CRepository: invalidating cached art for '%s'", addon->ID().c_str());
+        if (!addon->Props().icon.empty())
+          textureDB.InvalidateCachedTexture(addon->Props().icon);
+        if (!addon->Props().fanart.empty())
+          textureDB.InvalidateCachedTexture(addon->Props().fanart);
+      }
     }
     textureDB.CommitMultipleExecute();
   }
+
+  database.AddRepository(m_repo->ID(), addons, newChecksum, m_repo->Version());
 
   //Update broken status
   database.BeginMultipleExecute();
@@ -269,8 +290,8 @@ bool CRepositoryUpdateJob::DoWork()
       //We have a newer verison locally
       continue;
 
-    if (database.GetAddonVersion(addon->ID()) > addon->Version())
-      //Newer verison in db (ie. in a different repo)
+    if (database.GetAddonVersion(addon->ID()).first > addon->Version())
+      //Newer version in db (ie. in a different repo)
       continue;
 
     bool depsMet = CAddonInstaller::GetInstance().CheckDependencies(addon);
@@ -345,12 +366,14 @@ CRepositoryUpdateJob::FetchStatus CRepositoryUpdateJob::FetchIfChanged(const std
     if (ShouldCancel(m_repo->m_dirs.size() + std::distance(m_repo->m_dirs.cbegin(), it), total))
       return STATUS_ERROR;
 
-    if (!CRepository::Parse(*it, addons))
+    VECADDONS tmp;
+    if (!CRepository::Parse(*it, tmp))
     {
       CLog::Log(LOGERROR, "CRepositoryUpdateJob[%s] failed to read or parse "
           "directory '%s'", m_repo->ID().c_str(), it->info.c_str());
       return STATUS_ERROR;
     }
+    addons.insert(addons.end(), tmp.begin(), tmp.end());
   }
 
   SetProgress(total, total);

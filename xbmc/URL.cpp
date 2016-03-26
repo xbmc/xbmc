@@ -153,7 +153,8 @@ void CURL::Parse(const std::string& strURL1)
     IsProtocol("virtualpath") ||
     IsProtocol("multipath") ||
     IsProtocol("filereader") ||
-    IsProtocol("special")
+    IsProtocol("special") ||
+    IsProtocol("resource")
     )
   {
     SetFileName(strURL.substr(iPos));
@@ -531,6 +532,9 @@ char CURL::GetDirectorySeparator() const
 
 std::string CURL::Get() const
 {
+  if (m_strProtocol.empty())
+    return m_strFileName;
+
   unsigned int sizeneed = m_strProtocol.length()
                         + m_strDomain.length()
                         + m_strUserName.length()
@@ -541,21 +545,26 @@ std::string CURL::Get() const
                         + m_strProtocolOptions.length()
                         + 10;
 
-  if (m_strProtocol.empty())
-    return m_strFileName;
-
   std::string strURL;
   strURL.reserve(sizeneed);
 
-  strURL = GetWithoutFilename();
-  strURL += m_strFileName;
+  strURL = GetWithoutOptions();
 
   if( !m_strOptions.empty() )
     strURL += m_strOptions;
+
   if (!m_strProtocolOptions.empty())
     strURL += "|"+m_strProtocolOptions;
 
   return strURL;
+}
+
+std::string CURL::GetWithoutOptions() const
+{
+  if (m_strProtocol.empty())
+    return m_strFileName;
+
+  return GetWithoutFilename() + m_strFileName;
 }
 
 std::string CURL::GetWithoutUserDetails(bool redact) const

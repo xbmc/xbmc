@@ -94,6 +94,7 @@ namespace EPG
     void SetStartEnd(CDateTime start, CDateTime end);
     void SetChannel(const PVR::CPVRChannelPtr &channel);
     void SetChannel(const std::string &channel);
+    void ResetCoordinates();
 
   protected:
     bool OnClick(int actionID);

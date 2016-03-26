@@ -16,30 +16,482 @@ msgstr ""
 "Language: mt_MT\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n==0 || ( n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20 ) ? 2 : 3);\n"
 
+msgctxt "#31000"
+msgid "Change your"
+msgstr "Ibdel il-"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Qed jaħdem..."
+
+msgctxt "#31005"
+msgid "Hide information"
+msgstr "Aħbi l-informazzjoni"
+
 msgctxt "#31006"
 msgid "View options"
-msgstr "View Options"
+msgstr "Ara l-għażliet"
 
 msgctxt "#31008"
 msgid "Full screen"
-msgstr "Daħħal u Ara Filmati"
+msgstr "Skrin sħiħ"
+
+msgctxt "#31009"
+msgid "Total duration"
+msgstr "Tul totali"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Mużika - Fajls"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Qed jindaqq"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Paġna"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Affarijiet"
+
+msgctxt "#31026"
+msgid "Misc options"
+msgstr "Għażliet mixxelanji"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Post"
+
+msgctxt "#31028"
+msgid "Poster wrap"
+msgstr "Tgeżwira tal-powster"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#31031"
+msgid "Pic thumbs"
+msgstr "Thumbs tal-istampi"
+
+msgctxt "#31032"
+msgid "Image wrap"
+msgstr "Tgeżwir tal-istampi"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Info"
+
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Azzjonijiet"
+
+msgctxt "#31040"
+msgid "Now playing"
+msgstr "Qed jindaqq bħalissa"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "IDOQQ"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "IPPAWŻAT"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "GĦAĠĠEL QUDDIEM"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "B'LURA"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "IFITTEX"
+
+msgctxt "#31048"
+msgid "Visualisation presets"
+msgstr "Viżwalizzazjoni ssetjata minn qabel"
+
+msgctxt "#31049"
+msgid "End time"
+msgstr "Ħin tat-tmiem"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Qassam: Jikbru"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Qassam: Jiċkienu"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Iftaħ il-playlist"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Żomm il-playlist"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Għalaq il-playlist"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Fajls tal-mużika tas-sistema"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Playlist kurrenti"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Dan il-fajl huwa stacked, għażel il-parti minn fejn trid tibda ddoqq."
+
+msgctxt "#31061"
+msgid "Current selected"
+msgstr "Magħżul bħalissa"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Sfond"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Għażliet varji"
 
 msgctxt "#31109"
 msgid "Enable custom background"
-msgstr "Attiva Bakgrawnd Preferut"
+msgstr "Attiva l-isfond preferut"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Path tal-isfond"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Aħbi"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Għażliet"
+
+msgctxt "#31116"
+msgid "Show recently added albums"
+msgstr "Uri l-albums li ġew miżjuda dan l-aħħar"
+
+msgctxt "#31117"
+msgid "Show recently added videos"
+msgstr "Uri vidjos li ġew miżjuda dan l-aħħar"
+
+msgctxt "#31119"
+msgid "Hide background fanart"
+msgstr "Aħbi l-fanart fl-isfond"
+
+msgctxt "#31124"
+msgid "Show background \"Now playing\" video"
+msgstr "Uri l-vidjo li qed jindaqq bħalissa fl-isfond"
+
+msgctxt "#31125"
+msgid "Show background \"Now playing\" visualisation"
+msgstr "Uri l-viżwalizzazjoni fl-isfond"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Liriċi"
+
+msgctxt "#31129"
+msgid "Hide fanart in full screen visualisation"
+msgstr "Aħbi l-fanart f'viżwalizzazjonijiet fuq l-iskrin kollu"
+
+msgctxt "#31132"
+msgid "Lyrics add-on"
+msgstr "Add-on tal-lirika"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "OSD tal-Mużika"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "OSD tal-Vidjo"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Livell ta' settings"
 
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Shortcuts"
 
+msgctxt "#31203"
+msgid "Choose your song"
+msgstr "AGħżel id-diska tiegħek"
+
+msgctxt "#31205"
+msgid "Lyrics source"
+msgstr "Sors ta' lirika"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Misjub"
+
+msgctxt "#31207"
+msgid "Find more items"
+msgstr "Sib aktar affarijiet"
+
+msgctxt "#31208"
+msgid "Upcoming episodes"
+msgstr "Episodji li jmiss"
+
+msgctxt "#31300"
+msgid "Current temperature"
+msgstr "Temperatura kurrenti"
+
+msgctxt "#31301"
+msgid "Last updated"
+msgstr "L-aħħar li ġġedded"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Fornitur ta' informazzjoni"
+
+msgctxt "#31307"
+msgid "Hide fanart"
+msgstr "Aħbi l-fanart"
+
+msgctxt "#31308"
+msgid "Movie details"
+msgstr "Dettalji tal-film"
+
+msgctxt "#31309"
+msgid "Memory used:"
+msgstr "Memorja użata:"
+
+msgctxt "#31310"
+msgid "Track number"
+msgstr "Numru tad-diska"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "Stampa tal-fanart[CR][CR]mhux disponibbli[CR][CR] Għafas il-buttuna biex tagħżel"
+
+msgctxt "#31312"
+msgid "Current scraper"
+msgstr "Scraper kurrenti"
+
+msgctxt "#31313"
+msgid "Choose a scraper"
+msgstr "Għażel scraper"
+
+msgctxt "#31314"
+msgid "Content scanning options"
+msgstr "Għażliet ta' kif jitfittex il-kontenut"
+
+msgctxt "#31317"
+msgid "Set fanart path"
+msgstr "Għażel il-path tal-fanart"
+
+msgctxt "#31319"
+msgid "Selected profile"
+msgstr "Profil magħżul"
+
+msgctxt "#31320"
+msgid "Last logged in"
+msgstr "L-aħħar login"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Intwera"
+
+msgctxt "#31325"
+msgid "Playlist options"
+msgstr "Għażliet tal-playlist"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "Maħluq"
+
 msgctxt "#31327"
 msgid "Resolution"
-msgstr "Resolution:"
+msgstr "Reżoluzzjoni"
+
+msgctxt "#31328"
+msgid "Recently added"
+msgstr "Miżjud dan l-aħħar"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]Arloġġ issetjat![/B] [COLOR=grey2] - Sistema se tintefa' waħedha f'[/COLOR]"
+
+msgctxt "#31330"
+msgid "Click button to play[CR][CR]movie trailer"
+msgstr "Għafas il-buttuna biex iddoqq it-trejler tal-film[CR][CR]"
+
+msgctxt "#31331"
+msgid "Album details"
+msgstr "Dettalji dwar l-album"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Ippawża"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Waqqaf"
+
+msgctxt "#31353"
+msgid "Fast forward"
+msgstr "Għaġġel quddiem"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Lura"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Menu tal-film"
+
+msgctxt "#31356"
+msgid "Download subtitles"
+msgstr "Niżżel is-sottotitoli"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Ara bħala 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Ibdel il-modalita'"
 
 msgctxt "#31362"
 msgid "Enabled"
-msgstr "Jintuża"
+msgstr "Attivat"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Qoxra Default"
+msgstr "Dehra normali"
+
+msgctxt "#31391"
+msgid "Skin default with no caps"
+msgstr "Id-derha normal mingħajr ittri kapitali"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Ibbażat fuq l-Arial"
+
+msgctxt "#31501"
+msgid "Scheduled time"
+msgstr "Ħin skedat"
+
+msgctxt "#31502"
+msgid "TV"
+msgstr "Televixin"
+
+msgctxt "#31503"
+msgid "Add group"
+msgstr "Żid grupp"
+
+msgctxt "#31504"
+msgid "Rename group"
+msgstr "Ibdel l-isem ta' grupp"
+
+msgctxt "#31505"
+msgid "Delete group"
+msgstr "Ħassar grupp"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Gruppi[CR]Disponibbli"
+
+msgctxt "#31509"
+msgid "Channel group"
+msgstr "Grupp ta' stazzjonijiet"
+
+msgctxt "#31510"
+msgid "Timer set"
+msgstr "Issettja l-arloġġ"
+
+msgctxt "#31511"
+msgid "Channel options"
+msgstr "Għażliet tal-istazzjon"
+
+msgctxt "#31901"
+msgid "36-hour forecast"
+msgstr "Tbassir ta' 36 siegħa"
+
+msgctxt "#31902"
+msgid "Hourly forecast"
+msgstr "Tbassir siegħa b'siegħa"
+
+msgctxt "#31903"
+msgid "Weekend forecast"
+msgstr "Tbassir għal tmiem il-ġimgħa"
+
+msgctxt "#31904"
+msgid "Daily forecast"
+msgstr "Tbassir ġurnata b'ġurnata"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "Tbassir tat-temp"
+
+msgctxt "#31908"
+msgid "Chance of precipitation"
+msgstr "Ċans ta' xita"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "Qed tinstab l-informazzjoni tat-tbassir..."
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "Mappep"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "TEMP"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "STAMPI"
+
+msgctxt "#31952"
+msgid "TV"
+msgstr "Televixin"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VIDJOS"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "FILMS"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "XOWS TELEVIŻIVI"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "MUŻIKA"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMMI"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "DOQQ CD"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SISTEMA"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "RADJU"

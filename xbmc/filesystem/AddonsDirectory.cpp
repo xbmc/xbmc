@@ -128,21 +128,16 @@ static bool IsOrphaned(const AddonPtr& addon, const VECADDONS& all)
 
 static void SetUpdateAvailProperties(CFileItemList &items)
 {
-  CAddonDatabase database;
-  database.Open();
+  std::set<std::string> outdated;
+  for (const auto& addon : CAddonMgr::GetInstance().GetOutdated())
+    outdated.insert(addon->ID());
+
   for (int i = 0; i < items.Size(); ++i)
   {
-    const std::string addonId = items[i]->GetProperty("Addon.ID").asString();
-    if (!CAddonMgr::GetInstance().IsAddonDisabled(addonId))
+    if (outdated.find(items[i]->GetProperty("Addon.ID").asString()) != outdated.end())
     {
-      const AddonVersion installedVersion = AddonVersion(items[i]->GetProperty("Addon.Version").asString());
-      AddonPtr repoAddon;
-      database.GetAddon(addonId, repoAddon);
-      if (repoAddon && repoAddon->Version() > installedVersion)
-      {
-        items[i]->SetProperty("Addon.Status", g_localizeStrings.Get(24068));
-        items[i]->SetProperty("Addon.UpdateAvail", true);
-      }
+      items[i]->SetProperty("Addon.Status", g_localizeStrings.Get(24068));
+      items[i]->SetProperty("Addon.UpdateAvail", true);
     }
   }
 }
@@ -402,7 +397,6 @@ static bool Browse(const CURL& path, CFileItemList &items)
 static bool Repos(const CURL& path, CFileItemList &items)
 {
   items.SetLabel(g_localizeStrings.Get(24033));
-  items.SetContent("addons");
 
   VECADDONS addons;
   CAddonMgr::GetInstance().GetAddons(ADDON_REPOSITORY, addons, true);
@@ -410,13 +404,10 @@ static bool Repos(const CURL& path, CFileItemList &items)
     return true;
   else if (addons.size() == 1)
     return Browse(CURL("addons://" + addons[0]->ID()), items);
-  else
-  {
-    CFileItemPtr item(new CFileItem("addons://all/", true));
-    item->SetLabel(g_localizeStrings.Get(24087));
-    item->SetSpecialSort(SortSpecialOnTop);
-    items.Add(item);
-  }
+  CFileItemPtr item(new CFileItem("addons://all/", true));
+  item->SetLabel(g_localizeStrings.Get(24087));
+  item->SetSpecialSort(SortSpecialOnTop);
+  items.Add(item);
 
   for (const auto& repo : addons)
   {
@@ -424,6 +415,7 @@ static bool Repos(const CURL& path, CFileItemList &items)
     CAddonDatabase::SetPropertiesFromAddon(repo, item);
     items.Add(item);
   }
+  items.SetContent("addons");
   return true;
 }
 
@@ -459,6 +451,7 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   CURL path(tmp);
   const std::string endpoint = path.GetHostName();
   items.ClearProperties();
+  items.SetCacheToDisc(CFileItemList::CACHE_NEVER);
   items.SetPath(path.Get());
 
   if (endpoint == "user")
@@ -660,6 +653,6 @@ CFileItemPtr CAddonsDirectory::GetMoreItem(const std::string &content)
   item->SetSpecialSort(SortSpecialOnBottom);
   return item;
 }
-  
+
 }
 

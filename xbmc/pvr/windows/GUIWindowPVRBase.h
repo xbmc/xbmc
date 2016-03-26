@@ -103,7 +103,8 @@ namespace PVR
     virtual bool IsValidMessage(CGUIMessage& message);
     void CheckResumeRecording(CFileItem *item);
 
-    static std::map<bool, std::string> m_selectedItemPaths;
+    static CCriticalSection m_selectedItemPathsLock;
+    static std::string m_selectedItemPaths[2];
 
     CCriticalSection m_critSection;
     bool m_bRadio;

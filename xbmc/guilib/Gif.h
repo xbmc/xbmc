@@ -24,6 +24,7 @@
 #include "DllLibGif.h"
 #include <memory>
 #include <vector>
+#include "URL.h"
 
 namespace XFILE
 {
@@ -104,16 +105,16 @@ private:
   bool Slurp(GifFileType* gif);
   static void ConvertColorTable(std::vector<GifColor> &dest, ColorMapObject* src, unsigned int size);
   bool GcbToFrame(GifFrame &frame, unsigned int imgIdx);
-  bool ExtractFrames(unsigned int count);
+  int ExtractFrames(unsigned int count);
   void ClearFrameAreaToTransparency(unsigned char* dest, const GifFrame &frame);
   void ConstructFrame(GifFrame &frame, const unsigned char* src) const;
-  bool PrepareTemplate(const GifFrame &frame);
+  bool PrepareTemplate(GifFrame &frame);
   void Release();
   void PrettyPrintError(std::string messageTemplate, int reason);
 
   inline std::string memOrFile()
   {
-    return m_filename.empty() ? std::string("memory file") : m_filename;
+    return m_filename.empty() ? std::string("memory file") : CURL::GetRedacted(m_filename);
   }
 
 };

@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Hintergrund-Fanart verstecken"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "EPG bei Anwesenheit vom RDS auf dem Kanal"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Das \"Es läuft\" Hintergrund-Video anzeigen"
@@ -227,14 +231,6 @@ msgstr "Das \"Es läuft\" Hintergrund-Video anzeigen"
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Die \"Es läuft\" Hintergrund-Visualisierung anzeigen"
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "TV-Titelmusikstücke beim Navigieren in der Video-Bibliothek abspielen (TvTunes Addon)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -352,10 +348,6 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Zuletzt angemeldet"
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Karaoke-Titelauswahl"
-
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Ausgestrahlt"
@@ -445,8 +437,8 @@ msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set v
 msgstr "[B]VIDEO-EINSTELLUNGEN KONFIGURIEREN[/B][CR][CR]Die Video-Bibliothek verwalten · Videoabspieleinstellungen vornehmen · Videoauflistungseinstellungen ändern[CR]Untertitel-Schriftarten einstellen"
 
 msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]MUSIK-EINSTELLUNGEN KONFIGURIEREN[/B][CR][CR]Die Musik-Bibliothek verwalten· Musikabspieleinstellungen · Musikauflistungseinstellungen ändern[CR]Musikübertragung einrichten · Karaoke-Einstellungen"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]MUSIKEINSTELLUNGEN ÄNDERN[/B][CR][CR]Bearbeiten Sie ihre Musikbibliothek · Musikwiedergabeoptionen ändern · Musikanzeige ändern[CR]Musikübertragung einrichten"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

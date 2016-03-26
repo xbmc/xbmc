@@ -309,6 +309,10 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
       }
     }
     break;
+  // prevent touch/gesture unfocussing ..
+  case GUI_MSG_GESTURE_NOTIFY:
+  case GUI_MSG_UNFOCUS_ALL:
+    return true;
   }
   return CGUIWindow::OnMessage(message);
 }

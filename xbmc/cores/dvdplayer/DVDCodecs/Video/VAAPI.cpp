@@ -738,12 +738,14 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
 
 void CDecoder::FFReleaseBuffer(uint8_t *data)
 {
-  VASurfaceID surf;
+  {
+    VASurfaceID surf;
 
-  CSingleLock lock(m_DecoderSection);
+    CSingleLock lock(m_DecoderSection);
 
-  surf = (VASurfaceID)(uintptr_t)data;
-  m_videoSurfaces.ClearReference(surf);
+    surf = (VASurfaceID)(uintptr_t)data;
+    m_videoSurfaces.ClearReference(surf);
+  }
 
   IHardwareDecoder::Release();
 }
@@ -1179,7 +1181,7 @@ long CVaapiRenderPicture::Release()
   vaapi->ReturnRenderPicture(this);
   vaapi->ReleasePicReference();
 
-  return refCount;
+  return 0;
 }
 
 void CVaapiRenderPicture::ReturnUnused()

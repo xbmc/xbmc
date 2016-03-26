@@ -34,6 +34,7 @@
 #include "utils/log.h"
 #include "utils/win32/gpu_memcpy_sse4.h"
 #include "VideoShaders/WinVideoFilter.h"
+#include "win32/WIN32Util.h"
 #include "windowing/WindowingFactory.h"
 
 typedef struct {
@@ -83,7 +84,6 @@ CWinRenderer::CWinRenderer()
   m_destWidth = 0;
   m_destHeight = 0;
   m_bConfigured = false;
-  m_clearColour = 0;
   m_format = RENDER_FMT_NONE;
   m_processor = nullptr;
   m_neededBuffers = 0;
@@ -236,6 +236,7 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   m_iFlags = flags;
   m_format = format;
   m_extended_format = extended_format;
+  m_renderOrientation = orientation;
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
@@ -355,12 +356,8 @@ void CWinRenderer::Update()
 void CWinRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
   if (clear)
-    g_graphicsContext.Clear(m_clearColour);
-
-  if (alpha < 255)
-    g_Windowing.SetAlphaBlendEnable(true);
-  else
-    g_Windowing.SetAlphaBlendEnable(false);
+    g_graphicsContext.Clear(g_Windowing.UseLimitedColor() ? 0x101010 : 0);
+  g_Windowing.SetAlphaBlendEnable(alpha < 255);
 
   if (!m_bConfigured) 
     return;
@@ -368,9 +365,7 @@ void CWinRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   ManageTextures();
 
   CSingleLock lock(g_graphicsContext);
-
   ManageDisplay();
-
   Render(flags);
 }
 
@@ -405,9 +400,6 @@ unsigned int CWinRenderer::PreInit()
   m_resolution = CDisplaySettings::GetInstance().GetCurrentResolution();
   if ( m_resolution == RES_WINDOW )
     m_resolution = RES_DESKTOP;
-
-  // setup the background colour
-  m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
 
   m_formats.clear();
   m_formats.push_back(RENDER_FMT_YUV420P);
@@ -589,6 +581,8 @@ void CWinRenderer::SelectPSVideoFilter()
       m_bUseHQScaler = true;
     }
   }
+  if (m_renderOrientation)
+    m_bUseHQScaler = false;
 }
 
 void CWinRenderer::UpdatePSVideoFilter()
@@ -787,12 +781,12 @@ void CWinRenderer::ScaleGUIShader()
   unsigned int contrast   = (unsigned int)(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast *.01f * 255.0f); // we have to divide by two here/multiply by two later
   unsigned int brightness = (unsigned int)(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness * .01f * 255.0f);
 
-  CRect tu = { m_sourceRect.x1 / srcWidth, m_sourceRect.y1 / srcHeight, m_sourceRect.x2 / srcWidth, m_sourceRect.y2 / srcHeight };
-
   g_Windowing.GetGUIShader()->SetSampler(m_TextureFilter);
+  CRect tu = { m_sourceRect.x1 / srcWidth, m_sourceRect.y1 / srcHeight, m_sourceRect.x2 / srcWidth, m_sourceRect.y2 / srcHeight };
+  CRect destRect = CRect(m_rotatedDestCoords[0], m_rotatedDestCoords[2]);
 
   // pass contrast and brightness as diffuse color elements (see shader code)
-  CD3DTexture::DrawQuad(m_destRect, D3DCOLOR_ARGB(255, contrast, brightness, 255), &m_SWTarget, &tu,
+  CD3DTexture::DrawQuad(m_rotatedDestCoords, D3DCOLOR_ARGB(255, contrast, brightness, 255), &m_SWTarget, &tu,
                        !cbcontrol ? SHADER_METHOD_RENDER_VIDEO : SHADER_METHOD_RENDER_VIDEO_CONTROL);
 }
 
@@ -817,82 +811,73 @@ void CWinRenderer::Stage1()
   CD3D11_VIEWPORT viewPort(0.0f, 0.0f, 0.0f, 0.0f);
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
 
-  // store current render target and depth view.
   ID3D11RenderTargetView *oldRTView = nullptr; ID3D11DepthStencilView* oldDSView = nullptr;
-  pContext->OMGetRenderTargets(1, &oldRTView, &oldDSView);
-  // select destination rectangle 
-  CRect destRect = m_bUseHQScaler ? m_sourceRect : g_graphicsContext.StereoCorrection(m_destRect);
-  // select target view 
-  ID3D11RenderTargetView* pRTView = m_bUseHQScaler ? m_IntermediateTarget.GetRenderTarget() : oldRTView;
-  // set destination render target
-  pContext->OMSetRenderTargets(1, &pRTView, nullptr);
-  // get rendertarget's dimension
-  if (pRTView)
-  {
-    ID3D11Resource* pResource = nullptr;
-    ID3D11Texture2D* pTexture = nullptr;
-
-    pRTView->GetResource(&pResource);
-    if (SUCCEEDED(pResource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&pTexture))))
-    {
-      D3D11_TEXTURE2D_DESC desc;
-      pTexture->GetDesc(&desc);
-      viewPort = CD3D11_VIEWPORT(0.0f, 0.0f, desc.Width, desc.Height);
-    }
-    SAFE_RELEASE(pResource);
-    SAFE_RELEASE(pTexture);
-  }
-  // reset scissors for HQ scaler
   if (m_bUseHQScaler)
+  {
+    // store current render target and depth view.
+    pContext->OMGetRenderTargets(1, &oldRTView, &oldDSView);
+    // change destination for HQ scallers
+    ID3D11RenderTargetView* pRTView = m_IntermediateTarget.GetRenderTarget();
+    pContext->OMSetRenderTargets(1, &pRTView, nullptr);
+    // viewport equals intermediate target size
+    viewPort = CD3D11_VIEWPORT(0.0f, 0.0f, 
+                               static_cast<float>(m_IntermediateTarget.GetWidth()), 
+                               static_cast<float>(m_IntermediateTarget.GetHeight()));
     g_Windowing.ResetScissors();
+  }
+  else
+  {
+    // viewport equals full backbuffer size
+    CRect bbSize = g_Windowing.GetBackBufferRect();
+    viewPort = CD3D11_VIEWPORT(0.f, 0.f, bbSize.Width(), bbSize.Height());
+  }
   // reset view port
   pContext->RSSetViewports(1, &viewPort);
+  // select destination rectangle 
+  CPoint destPoints[4];
+  if (m_renderOrientation)
+  {
+    for (size_t i = 0; i < 4; i++)
+      destPoints[i] = m_rotatedDestCoords[i];
+  }
+  else
+  {
+    CRect destRect = m_bUseHQScaler ? m_sourceRect : g_graphicsContext.StereoCorrection(m_destRect);
+    destPoints[0] = { destRect.x1, destRect.y1 };
+    destPoints[1] = { destRect.x2, destRect.y1 };
+    destPoints[2] = { destRect.x2, destRect.y2 };
+    destPoints[3] = { destRect.x1, destRect.y2 };
+  }
+
   // render video frame
-  m_colorShader->Render(m_sourceRect, destRect,
+  m_colorShader->Render(m_sourceRect, destPoints,
                         CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast,
                         CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness,
                         m_iFlags, (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
   // Restore our view port.
   g_Windowing.RestoreViewPort();
   // Restore the render target and depth view.
-  pContext->OMSetRenderTargets(1, &oldRTView, oldDSView);
-  SAFE_RELEASE(oldRTView);
-  SAFE_RELEASE(oldDSView);
+  if (m_bUseHQScaler)
+  {
+    pContext->OMSetRenderTargets(1, &oldRTView, oldDSView);
+    SAFE_RELEASE(oldRTView);
+    SAFE_RELEASE(oldDSView);
+  }
 }
 
 void CWinRenderer::Stage2()
 {
-  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight, m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect));
+  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight
+                       , m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect)
+                       , (m_renderMethod == RENDER_DXVA && g_Windowing.UseLimitedColor()));
 }
 
 void CWinRenderer::RenderProcessor(DWORD flags)
 {
   CSingleLock lock(g_graphicsContext);
-  CRect destRect = m_bUseHQScaler ? m_sourceRect : g_graphicsContext.StereoCorrection(m_destRect);
   DXVABuffer *image = (DXVABuffer*)m_VideoBuffers[m_iYV12RenderBuffer];
   if (!image->pic)
     return;
-
-  ID3D11Resource* target;
-  if ( m_bUseHQScaler 
-    || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN
-    || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA
-    || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE
-    || true /* workaround for some GPUs */)
-  {
-    target = m_IntermediateTarget.Get();
-    target->AddRef();
-  }
-  else // dead code.
-  {
-    ID3D11RenderTargetView* rtv = nullptr;
-    g_Windowing.Get3D11Context()->OMGetRenderTargets(1, &rtv, nullptr);
-    if (rtv)
-    {
-      rtv->GetResource(&target);
-      rtv->Release();
-    }
-  }
 
   int past = 0;
   int future = 0;
@@ -936,22 +921,75 @@ void CWinRenderer::RenderProcessor(DWORD flags)
       break;
   }
 
-  m_processor->Render(m_sourceRect, destRect, target, views, flags, image->frameIdx);
+  CRect destRect;
+  switch (m_renderOrientation)
+  {
+  case 90:
+    destRect = CRect(m_rotatedDestCoords[3], m_rotatedDestCoords[1]);
+    break;
+  case 180:
+    destRect = m_destRect;
+    break;
+  case 270:
+    destRect = CRect(m_rotatedDestCoords[1], m_rotatedDestCoords[3]);
+    break;
+  default:
+    destRect = m_bUseHQScaler ? m_sourceRect : g_graphicsContext.StereoCorrection(m_destRect);
+    break;
+  }
+
+  CRect src = m_sourceRect, dst = destRect;
+  CRect target = CRect(0.0f, 0.0f,
+                       static_cast<float>(m_IntermediateTarget.GetWidth()), 
+                       static_cast<float>(m_IntermediateTarget.GetHeight()));
+
+  ID3D11RenderTargetView* pView = nullptr;
+  ID3D11Resource* pResource = m_IntermediateTarget.Get();
+  if (m_capture)
+  {
+    target.x2 = m_capture->GetWidth();
+    target.y2 = m_capture->GetHeight();
+    g_Windowing.Get3D11Context()->OMGetRenderTargets(1, &pView, nullptr);
+    if (pView)
+      pView->GetResource(&pResource);
+  }
+
+  CWIN32Util::CropSource(src, dst, target, m_renderOrientation);
+
+  m_processor->Render(src, dst, pResource, views, flags, image->frameIdx, m_renderOrientation);
   
+  if (m_capture)
+  {
+    SAFE_RELEASE(pResource);
+    SAFE_RELEASE(pView);
+  }
+
   if (m_bUseHQScaler)
   {
     Stage2();
   }
-  // uncomment when workaround removed
-  else /*if ( g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN
-         || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA
-         || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)*/
+  else if (!m_capture)
   {
-    // texels
-    CRect tu = { destRect.x1 / m_destWidth, destRect.y1 / m_destHeight, destRect.x2 / m_destWidth, destRect.y2 / m_destHeight };
-    CD3DTexture::DrawQuad(m_destRect, 0, &m_IntermediateTarget, &tu, SHADER_METHOD_RENDER_TEXTURE_NOBLEND);
+    CRect oldViewPort;
+    bool stereoHack = g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL
+                   || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL;
+
+    if (stereoHack)
+    {
+      CRect bbSize = g_Windowing.GetBackBufferRect();
+
+      g_Windowing.GetViewPort(oldViewPort);
+      g_Windowing.SetViewPort(bbSize);
+      g_Windowing.SetCameraPosition(CPoint(bbSize.Width() / 2.f, bbSize.Height() / 2.f), bbSize.Width(), bbSize.Height(), 0.f);
+    }
+
+    // render frame
+    CRect tu = { dst.x1 / m_destWidth, dst.y1 / m_destHeight, dst.x2 / m_destWidth, dst.y2 / m_destHeight };
+    CD3DTexture::DrawQuad(dst, 0xFFFFFF, &m_IntermediateTarget, &tu, SHADER_METHOD_RENDER_TEXTURE_BLEND);
+
+    if (stereoHack)
+      g_Windowing.SetViewPort(oldViewPort);
   }
-  SAFE_RELEASE(target);
 }
 
 bool CWinRenderer::RenderCapture(CRenderCapture* capture)
@@ -976,7 +1014,9 @@ bool CWinRenderer::RenderCapture(CRenderCapture* capture)
   capture->BeginRender();
   if (capture->GetState() != CAPTURESTATE_FAILED)
   {
+    m_capture = capture;
     Render(0);
+    m_capture = nullptr;
     capture->EndRender();
     succeeded = true;
   }
@@ -1077,6 +1117,7 @@ bool CWinRenderer::Supports(ERENDERFEATURE feature)
       feature == RENDERFEATURE_ZOOM            ||
       feature == RENDERFEATURE_VERTICAL_SHIFT  ||
       feature == RENDERFEATURE_PIXEL_RATIO     ||
+      feature == RENDERFEATURE_ROTATION        ||
       feature == RENDERFEATURE_POSTPROCESS)
     return true;
 
@@ -1093,7 +1134,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
       if (method == VS_SCALINGMETHOD_DXVA_HARDWARE ||
           method == VS_SCALINGMETHOD_AUTO)
         return true;
-      else if (!g_advancedSettings.m_DXVAAllowHqScaling)
+      else if (!g_advancedSettings.m_DXVAAllowHqScaling || m_renderOrientation)
         return false;
     }
 
@@ -1101,7 +1142,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
       || (method == VS_SCALINGMETHOD_LINEAR && m_renderMethod == RENDER_PS)) 
         return true;
 
-    if (g_Windowing.GetFeatureLevel() >= D3D_FEATURE_LEVEL_9_3)
+    if (g_Windowing.GetFeatureLevel() >= D3D_FEATURE_LEVEL_9_3 && !m_renderOrientation)
     {
       if(method == VS_SCALINGMETHOD_CUBIC
       || method == VS_SCALINGMETHOD_LANCZOS2

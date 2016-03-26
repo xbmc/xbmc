@@ -337,12 +337,16 @@ bool CProcessorHD::OpenProcessor()
     return false;
   }
 
-  D3D11_VIDEO_PROCESSOR_COLOR_SPACE cs;
-  cs.Usage         = 0;                                          // 0 - Playback, 1 - Processing
-  cs.RGB_Range     = 0;                                          // 0 - Full (0-255), 1 - Limited (16-235)
-  cs.YCbCr_Matrix  = m_flags & CONF_FLAGS_YUVCOEF_BT709 ? 1 : 0; // 0 - BT.601, 1 - BT.709
-  cs.YCbCr_xvYCC   = 1;                                          // 0 - Conventional YCbCr, 1 - xvYCC
-  cs.Nominal_Range = m_flags & CONF_FLAGS_YUV_FULLRANGE ? 2 : 1; // 2 - Full luminance range [0-255], 1 - Studio luminance range [16-235], 0 - driver defaults
+  D3D11_VIDEO_PROCESSOR_COLOR_SPACE cs
+  {
+    0,                                          // 0 - Playback, 1 - Processing
+    0,                                          // 0 - Full (0-255), 1 - Limited (16-235)
+    m_flags & CONF_FLAGS_YUVCOEF_BT709 ? 1 : 0, // 0 - BT.601, 1 - BT.709
+    m_flags & CONF_FLAGS_YUV_FULLRANGE ? 1 : 0, // 0 - Conventional YCbCr, 1 - xvYCC
+    0,                                          // 2 - Full luminance range [0-255], 1 - Studio luminance range [16-235], 0 - driver defaults
+  };
+  if (m_vcaps.DeviceCaps & D3D11_VIDEO_PROCESSOR_DEVICE_CAPS_NOMINAL_RANGE)
+    cs.Nominal_Range = m_flags & CONF_FLAGS_YUV_FULLRANGE ? 2 : 1;
   m_pVideoContext->VideoProcessorSetStreamColorSpace(m_pVideoProcessor, DEFAULT_STREAM_INDEX, &cs);
 
   // Output background color (black)
@@ -565,7 +569,7 @@ ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(ID3D11View* view)
   return inputView;
 }
 
-bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11View** views, DWORD flags, UINT frameIdx)
+bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11View** views, DWORD flags, UINT frameIdx, UINT rotation)
 {
   HRESULT hr;
   CSingleLock lock(m_section);
@@ -582,24 +586,8 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11Vi
     deinterlace_mode = (flags & RENDER_FLAG_FIELD0 || flags & RENDER_FLAG_FIELD1) ? VS_DEINTERLACEMODE_FORCE : VS_DEINTERLACEMODE_OFF;
   EINTERLACEMETHOD interlace_method = g_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
 
-  bool progressive = deinterlace_mode == VS_DEINTERLACEMODE_OFF
-                  || (   interlace_method != VS_INTERLACEMETHOD_DXVA_BOB
-                      && interlace_method != VS_INTERLACEMETHOD_DXVA_BEST);
+  bool progressive = deinterlace_mode == VS_DEINTERLACEMODE_OFF;
 
-  ID3D11Texture2D* targetTex = nullptr;
-  hr = target->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&targetTex));
-  if (FAILED(hr))
-  {
-    CLog::Log(LOGERROR, __FUNCTION__" - failed getting target texture with error %x", hr);
-    return false;
-  }
-
-  D3D11_TEXTURE2D_DESC desc;
-  targetTex->GetDesc(&desc);
-  targetTex->Release();
-
-  CRect rectTarget(0, 0, float(desc.Width), float(desc.Height));
-  CWIN32Util::CropSource(src, dst, rectTarget);
   RECT sourceRECT = { src.x1, src.y1, src.x2, src.y2 };
   RECT dstRECT    = { dst.x1, dst.y1, dst.x2, dst.y2 };
 
@@ -696,19 +684,24 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11Vi
   // Output rect
   m_pVideoContext->VideoProcessorSetOutputTargetRect(m_pVideoProcessor, TRUE, &dstRECT);
   // Output color space
+  // don't apply any color range conversion, this will be fixed at later stage.
   D3D11_VIDEO_PROCESSOR_COLOR_SPACE colorSpace = {};
   colorSpace.Usage         = 0;  // 0 - playback, 1 - video processing
   colorSpace.RGB_Range     = 0;  // 0 - 0-255, 1 - 16-235
   colorSpace.YCbCr_Matrix  = 1;  // 0 - BT.601, 1 = BT.709
   colorSpace.YCbCr_xvYCC   = 1;  // 0 - Conventional YCbCr, 1 - xvYCC
-  colorSpace.Nominal_Range = g_Windowing.UseLimitedColor() ? 1 : 2;  // 2 - 0-255, 1 = 16-235, 0 - undefined
+  colorSpace.Nominal_Range = 2;  // 2 - 0-255, 1 = 16-235, 0 - undefined
 
   m_pVideoContext->VideoProcessorSetOutputColorSpace(m_pVideoProcessor, &colorSpace);
 
-  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness
-                                             , 0, 100, 50);
-  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast
-                                             , 0, 100, 50);
+  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS, 
+              CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness, 0, 100, 50);
+  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST, 
+              CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast, 0, 100, 50);
+  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_HUE, 50, 0, 100, 50);
+  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_SATURATION, 50, 0, 100, 50);
+  // Rotation
+  m_pVideoContext->VideoProcessorSetStreamRotation(m_pVideoProcessor, DEFAULT_STREAM_INDEX, (rotation != 0), (D3D11_VIDEO_PROCESSOR_ROTATION)(rotation / 90));
 
   //
   // Create Output View of Output Surfaces.

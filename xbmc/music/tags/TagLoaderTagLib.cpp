@@ -289,19 +289,9 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, MUSIC_INFO::EmbeddedArt *art,
         else if (desc == "ALBUMARTIST" || desc == "ALBUM ARTIST")
           SetAlbumArtist(tag, StringListToVectorString(stringList));
         else if (desc == "ARTISTS")
-        {
-          if (id3v2->header()->majorVersion() < 4)
-            tag.SetMusicBrainzArtistHints(StringListToVectorString(TagLib::StringList::split(stringList.front(), TagLib::String("/"))));
-          else
-            tag.SetMusicBrainzArtistHints(StringListToVectorString(stringList));
-        }
+          SetArtistHints(tag, StringListToVectorString(stringList));
         else if (desc == "ALBUMARTISTS" || desc == "ALBUM ARTISTS")
-        {
-          if (id3v2->header()->majorVersion() < 4)
-            tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(TagLib::StringList::split(stringList.front(), TagLib::String("/"))));
-          else
-            tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(stringList));
-        }
+          SetAlbumArtistHints(tag, StringListToVectorString(stringList));
         else if (desc == "MOOD")
           tag.SetMood(stringList.front().to8Bit(true));
         else if (g_advancedSettings.m_logLevel == LOG_LEVEL_MAX)
@@ -393,11 +383,11 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
     if (it->first == "ARTIST")
       SetArtist(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "ARTISTS")
-      tag.SetMusicBrainzArtistHints(StringListToVectorString(it->second.toStringList()));
+      SetArtistHints(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "ALBUMARTIST" || it->first == "ALBUM ARTIST")
       SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "ALBUMARTISTS" || it->first == "ALBUM ARTISTS")
-      tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(it->second.toStringList()));
+      SetAlbumArtistHints(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "ALBUM")
       tag.SetAlbum(it->second.toString().to8Bit(true));
     else if (it->first == "TITLE")
@@ -410,6 +400,8 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
       tag.SetYear(it->second.toString().toInt());
     else if (it->first == "GENRE")
       SetGenre(tag, StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "MOOD")
+      tag.SetMood(it->second.toString().to8Bit(true));
     else if (it->first == "COMMENT")
       tag.SetComment(it->second.toString().to8Bit(true));
     else if (it->first == "CUESHEET")
@@ -461,11 +453,11 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
     if (it->first == "ARTIST")
       SetArtist(tag, StringListToVectorString(it->second));
     else if (it->first == "ARTISTS")
-      tag.SetMusicBrainzArtistHints(StringListToVectorString(it->second));
+      SetArtistHints(tag, StringListToVectorString(it->second));
     else if (it->first == "ALBUMARTIST" || it->first == "ALBUM ARTIST")
       SetAlbumArtist(tag, StringListToVectorString(it->second));
     else if (it->first == "ALBUMARTISTS" || it->first == "ALBUM ARTISTS")
-      tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(it->second));
+      SetAlbumArtistHints(tag, StringListToVectorString(it->second));
     else if (it->first == "ALBUM")
       tag.SetAlbum(it->second.front().to8Bit(true));
     else if (it->first == "TITLE")
@@ -480,6 +472,8 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
       tag.SetYear(it->second.front().toInt());
     else if (it->first == "GENRE")
       SetGenre(tag, StringListToVectorString(it->second));
+    else if (it->first == "MOOD")
+      tag.SetMood(it->second.front().to8Bit(true));
     else if (it->first == "COMMENT")
       tag.SetComment(it->second.front().to8Bit(true));
     else if (it->first == "CUESHEET")
@@ -588,15 +582,17 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& 
     else if (it->first == "\251ART")
       SetArtist(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "----:com.apple.iTunes:ARTISTS")
-      tag.SetMusicBrainzArtistHints(StringListToVectorString(it->second.toStringList()));
+      SetArtistHints(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "\251alb")
       tag.SetAlbum(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "aART")
       SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "----:com.apple.iTunes:ALBUMARTISTS")
-      tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(it->second.toStringList()));
+      SetAlbumArtistHints(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "\251gen")
       SetGenre(tag, StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "----:com.apple.iTunes:MOOD")
+      tag.SetMood(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "\251cmt")
       tag.SetComment(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "cpil")
@@ -733,7 +729,17 @@ void CTagLoaderTagLib::SetArtist(CMusicInfoTag &tag, const std::vector<std::stri
   if (values.size() == 1)
     tag.SetArtist(values[0]);
   else
-    tag.SetArtist(values);
+    // Fill both artist vector and artist desc from tag value.
+    // Note desc may not be empty as it could have been set by previous parsing of ID3v2 before APE
+    tag.SetArtist(values, true); 
+}
+
+void CTagLoaderTagLib::SetArtistHints(CMusicInfoTag &tag, const std::vector<std::string> &values)
+{
+  if (values.size() == 1)
+    tag.SetMusicBrainzArtistHints(StringUtils::Split(values[0], g_advancedSettings.m_musicItemSeparator));
+  else
+    tag.SetMusicBrainzArtistHints(values);
 }
 
 const std::vector<std::string> CTagLoaderTagLib::SplitMBID(const std::vector<std::string> &values)
@@ -761,7 +767,17 @@ void CTagLoaderTagLib::SetAlbumArtist(CMusicInfoTag &tag, const std::vector<std:
   if (values.size() == 1)
     tag.SetAlbumArtist(values[0]);
   else
-    tag.SetAlbumArtist(values);
+    // Fill both artist vector and artist desc from tag value.
+    // Note desc may not be empty as it could have been set by previous parsing of ID3v2 before APE
+    tag.SetAlbumArtist(values, true);
+}
+
+void CTagLoaderTagLib::SetAlbumArtistHints(CMusicInfoTag &tag, const std::vector<std::string> &values)
+{
+  if (values.size() == 1)
+    tag.SetMusicBrainzAlbumArtistHints(StringUtils::Split(values[0], g_advancedSettings.m_musicItemSeparator));
+  else
+    tag.SetMusicBrainzAlbumArtistHints(values);
 }
 
 void CTagLoaderTagLib::SetGenre(CMusicInfoTag &tag, const std::vector<std::string> &values)
@@ -828,54 +844,61 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
   TagLib::RIFF::WAV::File *  wavFile = NULL;
   TagLib::RIFF::AIFF::File * aiffFile = NULL;
 
-  if (strExtension == "ape")
-    file = apeFile = new APE::File(stream);
-  else if (strExtension == "asf" || strExtension == "wmv" || strExtension == "wma")
-    file = asfFile = new ASF::File(stream);
-  else if (strExtension == "flac")
-    file = flacFile = new FLAC::File(stream, ID3v2::FrameFactory::instance());
-  else if (strExtension == "it")
-    file = itFile = new IT::File(stream);
-  else if (strExtension == "mod" || strExtension == "module" || strExtension == "nst" || strExtension == "wow")
-    file = modFile = new Mod::File(stream);
-  else if (strExtension == "mp4" || strExtension == "m4a" ||
-           strExtension == "m4r" || strExtension == "m4b" ||
-           strExtension == "m4p" || strExtension == "3g2")
-    file = mp4File = new MP4::File(stream);
-  else if (strExtension == "mpc")
-    file = mpcFile = new MPC::File(stream);
-  else if (strExtension == "mp3" || strExtension == "aac")
-    file = mpegFile = new MPEG::File(stream, ID3v2::FrameFactory::instance());
-  else if (strExtension == "s3m")
-    file = s3mFile = new S3M::File(stream);
-  else if (strExtension == "tta")
-    file = ttaFile = new TrueAudio::File(stream, ID3v2::FrameFactory::instance());
-  else if (strExtension == "wv")
-    file = wvFile = new WavPack::File(stream);
-  else if (strExtension == "aif" || strExtension == "aiff")
-    file = aiffFile = new RIFF::AIFF::File(stream);
-  else if (strExtension == "wav")
-    file = wavFile = new RIFF::WAV::File(stream);
-  else if (strExtension == "xm")
-    file = xmFile = new XM::File(stream);
-  else if (strExtension == "ogg")
-    file = oggVorbisFile = new Ogg::Vorbis::File(stream);
-  else if (strExtension == "oga") // Leave this madness until last - oga container can have Vorbis or FLAC
+  try
   {
-    file = oggFlacFile = new Ogg::FLAC::File(stream);
-    if (!file || !file->isValid())
-    {
-      delete file;
-      oggFlacFile = NULL;
+    if (strExtension == "ape")
+      file = apeFile = new APE::File(stream);
+    else if (strExtension == "asf" || strExtension == "wmv" || strExtension == "wma")
+      file = asfFile = new ASF::File(stream);
+    else if (strExtension == "flac")
+      file = flacFile = new FLAC::File(stream, ID3v2::FrameFactory::instance());
+    else if (strExtension == "it")
+      file = itFile = new IT::File(stream);
+    else if (strExtension == "mod" || strExtension == "module" || strExtension == "nst" || strExtension == "wow")
+      file = modFile = new Mod::File(stream);
+    else if (strExtension == "mp4" || strExtension == "m4a" ||
+             strExtension == "m4r" || strExtension == "m4b" ||
+             strExtension == "m4p" || strExtension == "3g2")
+      file = mp4File = new MP4::File(stream);
+    else if (strExtension == "mpc")
+      file = mpcFile = new MPC::File(stream);
+    else if (strExtension == "mp3" || strExtension == "aac")
+      file = mpegFile = new MPEG::File(stream, ID3v2::FrameFactory::instance());
+    else if (strExtension == "s3m")
+      file = s3mFile = new S3M::File(stream);
+    else if (strExtension == "tta")
+      file = ttaFile = new TrueAudio::File(stream, ID3v2::FrameFactory::instance());
+    else if (strExtension == "wv")
+      file = wvFile = new WavPack::File(stream);
+    else if (strExtension == "aif" || strExtension == "aiff")
+      file = aiffFile = new RIFF::AIFF::File(stream);
+    else if (strExtension == "wav")
+      file = wavFile = new RIFF::WAV::File(stream);
+    else if (strExtension == "xm")
+      file = xmFile = new XM::File(stream);
+    else if (strExtension == "ogg")
       file = oggVorbisFile = new Ogg::Vorbis::File(stream);
+    else if (strExtension == "oga") // Leave this madness until last - oga container can have Vorbis or FLAC
+    {
+      file = oggFlacFile = new Ogg::FLAC::File(stream);
+      if (!file || !file->isValid())
+      {
+        delete file;
+        oggFlacFile = NULL;
+        file = oggVorbisFile = new Ogg::Vorbis::File(stream);
+      }
     }
+  }
+  catch (const std::exception& ex)
+  {
+    CLog::Log(LOGERROR, "Taglib exception: %s", ex.what());
   }
 
   if (!file || !file->isOpen())
   {
     delete file;
     delete stream;
-    CLog::Log(LOGDEBUG, "file could not be opened for tag reading");
+    CLog::Log(LOGDEBUG, "file %s could not be opened for tag reading", strFileName.c_str());
     return false;
   }
 

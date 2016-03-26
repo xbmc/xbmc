@@ -71,7 +71,7 @@ using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
-int CPVRManager::m_pvrWindowIds[10] = {
+const int CPVRManager::m_pvrWindowIds[10] = {
     WINDOW_TV_CHANNELS,
     WINDOW_TV_GUIDE,
     WINDOW_TV_RECORDINGS,
@@ -305,7 +305,12 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
   auto outdatedAddons = m_outdatedAddons;
   // stop threads and unload
   SetState(ManagerStateInterrupted);
-  g_EpgContainer.Stop();
+
+  {
+    CSingleExit exit(m_critSection);
+    g_EpgContainer.Stop();
+  }
+
   m_guiInfo->Stop();
   m_addons->Stop();
   Cleanup();
@@ -334,7 +339,11 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
   if (IsInitialising())
   {
     SetState(ManagerStateStarted);
-    g_EpgContainer.Start(true);
+
+    {
+      CSingleExit exit(m_critSection);
+      g_EpgContainer.Start(true);
+    }
 
     CLog::Log(LOGDEBUG, "PVRManager - %s - restarted", __FUNCTION__);
     return true;
@@ -366,7 +375,10 @@ void CPVRManager::Cleanup(void)
   m_pendingUpdates.clear();
 
   /* unregister application action listener */
-  g_application.UnregisterActionListener(&CPVRActionListener::GetInstance());
+  {
+    CSingleExit exit(m_critSection);
+    g_application.UnregisterActionListener(&CPVRActionListener::GetInstance());
+  }
 
   HideProgressDialog();
 
@@ -429,7 +441,10 @@ void CPVRManager::Start(bool bAsync /* = false */)
   m_database->Open();
 
   /* register application action listener */
-  g_application.RegisterActionListener(&CPVRActionListener::GetInstance());
+  {
+    CSingleExit exit(m_critSection);
+    g_application.RegisterActionListener(&CPVRActionListener::GetInstance());
+  }
 
   /* create the supervisor thread to do all background activities */
   StartUpdateThreads();
@@ -625,6 +640,7 @@ bool CPVRManager::Load(void)
   /* reset observer for pvr windows */
   for (std::size_t i = 0; i != ARRAY_SIZE(m_pvrWindowIds); i++)
   {
+    CSingleExit exit(m_critSection);
     CGUIWindowPVRBase *pWindow = (CGUIWindowPVRBase *) g_windowManager.GetWindow(m_pvrWindowIds[i]);
     if (pWindow)
       pWindow->ResetObservers();
@@ -677,25 +693,19 @@ void CPVRManager::HideProgressDialog(void)
   }
 }
 
-bool CPVRManager::ChannelSwitch(unsigned int iChannelNumber)
+bool CPVRManager::ChannelSwitchById(unsigned int iChannelId)
 {
   CSingleLock lock(m_critSection);
 
-  CPVRChannelGroupPtr playingGroup = GetPlayingGroup(m_addons->IsPlayingRadio());
-  if (!playingGroup)
+  CPVRChannelPtr channel = m_channelGroups->GetChannelById(iChannelId);
+  if (channel)
   {
-    CLog::Log(LOGERROR, "PVRManager - %s - cannot get the selected group", __FUNCTION__);
-    return false;
+    SetPlayingGroup(channel);
+    return PerformChannelSwitch(channel, false);
   }
 
-  CFileItemPtr channel = playingGroup->GetByChannelNumber(iChannelNumber);
-  if (!channel || !channel->HasPVRChannelInfoTag())
-  {
-    CLog::Log(LOGERROR, "PVRManager - %s - cannot find channel %d", __FUNCTION__, iChannelNumber);
-    return false;
-  }
-
-  return PerformChannelSwitch(channel->GetPVRChannelInfoTag(), false);
+  CLog::Log(LOGERROR, "PVRManager - %s - cannot find channel with id %d", __FUNCTION__, iChannelId);
+  return false;
 }
 
 bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, bool bUp)
@@ -753,8 +763,9 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
   g_EpgContainer.Stop();
 
   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  pDlgProgress->SetLine(0, CVariant{""});
-  pDlgProgress->SetLine(1, CVariant{g_localizeStrings.Get(19186)}); // All data in the PVR database is being erased
+  pDlgProgress->SetHeading(CVariant{313});
+  pDlgProgress->SetLine(0, CVariant{g_localizeStrings.Get(19187)}); // All data in the PVR database is being erased
+  pDlgProgress->SetLine(1, CVariant{""});
   pDlgProgress->SetLine(2, CVariant{""});
   pDlgProgress->Open();
   pDlgProgress->Progress();
@@ -993,6 +1004,20 @@ void CPVRManager::SetPlayingGroup(CPVRChannelGroupPtr group)
     m_channelGroups->Get(group->IsRadio())->SetSelectedGroup(group);
 }
 
+void CPVRManager::SetPlayingGroup(const CPVRChannelPtr &channel)
+{
+  CPVRChannelGroupPtr group = m_channelGroups->GetSelectedGroup(channel->IsRadio());
+  if (!group || !group->IsGroupMember(channel))
+  {
+    // The channel we'll switch to is not part of the current selected group.
+    // Set the first group as the selected group where the channel is a member.
+    CPVRChannelGroups *channelGroups = m_channelGroups->Get(channel->IsRadio());
+    std::vector<CPVRChannelGroupPtr> groups = channelGroups->GetGroupsByChannel(channel, true);
+    if (!groups.empty())
+      channelGroups->SetSelectedGroup(groups.front());
+  }
+}
+
 CPVRChannelGroupPtr CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
 {
   if (m_channelGroups)
@@ -1027,33 +1052,34 @@ bool CPVRChannelGroupsUpdateJob::DoWork(void)
   return g_PVRChannelGroups->Update(false);
 }
 
-bool CPVRManager::OpenLiveStream(const CFileItem &channel)
+bool CPVRManager::OpenLiveStream(const CFileItem &fileItem)
 {
   bool bReturn(false);
-  if (!channel.HasPVRChannelInfoTag())
+  if (!fileItem.HasPVRChannelInfoTag())
     return bReturn;
 
   CLog::Log(LOGDEBUG,"PVRManager - %s - opening live stream on channel '%s'",
-      __FUNCTION__, channel.GetPVRChannelInfoTag()->ChannelName().c_str());
+      __FUNCTION__, fileItem.GetPVRChannelInfoTag()->ChannelName().c_str());
 
   // check if we're allowed to play this file
-  if (IsParentalLocked(channel.GetPVRChannelInfoTag()))
+  if (IsParentalLocked(fileItem.GetPVRChannelInfoTag()))
     return bReturn;
 
-  if ((bReturn = m_addons->OpenStream(channel.GetPVRChannelInfoTag(), false)) != false)
+  if ((bReturn = m_addons->OpenStream(fileItem.GetPVRChannelInfoTag(), false)) != false)
   {
     CSingleLock lock(m_critSection);
     if(m_currentFile)
       delete m_currentFile;
-    m_currentFile = new CFileItem(channel);
+    m_currentFile = new CFileItem(fileItem);
 
-    // set channel as selected item
-    if (channel.HasPVRChannelInfoTag())
-      CGUIWindowPVRBase::SetSelectedItemPath(channel.GetPVRChannelInfoTag()->IsRadio(), channel.GetPVRChannelInfoTag()->Path());
-
-    CPVRChannelPtr playingChannel(m_addons->GetPlayingChannel());
-    if (playingChannel)
-      UpdateLastWatched(playingChannel);
+    CPVRChannelPtr channel(m_addons->GetPlayingChannel());
+    if (channel)
+    {
+      SetPlayingGroup(channel);
+      UpdateLastWatched(channel);
+      // set channel as selected item
+      CGUIWindowPVRBase::SetSelectedItemPath(channel->IsRadio(), channel->Path());
+    }
   }
 
   return bReturn;

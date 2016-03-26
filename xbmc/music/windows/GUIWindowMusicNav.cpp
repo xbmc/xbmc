@@ -265,9 +265,6 @@ bool CGUIWindowMusicNav::Update(const std::string &strDirectory, bool updateFilt
 
   if (CGUIWindowMusicBase::Update(strDirectory, updateFilterPath))
   {
-    if (m_vecItems->GetContent().empty())
-      m_vecItems->SetContent("files");
-
     m_thumbLoader.Load(*m_unfilteredItems);
     return true;
   }
@@ -343,12 +340,17 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
     else
       items.SetContent("");
   }
-  else if (URIUtils::PathEquals(strDirectory, "special://musicplaylists/"))
+  else if (items.IsPlayList())
+    items.SetContent("songs");
+  else if (URIUtils::PathEquals(strDirectory, "special://musicplaylists/") || 
+           URIUtils::PathEquals(strDirectory, "library://music/playlists.xml/"))
     items.SetContent("playlists");
   else if (URIUtils::PathEquals(strDirectory, "plugin://music/"))
     items.SetContent("plugins");
-  else if (items.IsPlayList())
-    items.SetContent("songs");
+  else if (items.IsAddonsPath())
+    items.SetContent("addons");
+  else if (!items.IsSourcesPath() && !items.IsVirtualDirectoryRoot() && !items.IsLibraryFolder())
+    items.SetContent("files");
 
   return bResult;
 }
@@ -464,8 +466,11 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       // Add the scan button(s)
       if (g_application.IsMusicScanning())
         buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning
-      else if (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() ||
-               g_passwordManager.bMasterUser)
+      else if (!inPlaylists && !m_vecItems->IsInternetStream() &&
+        !item->IsPath("add") && !item->IsParentFolder() &&
+        !item->IsPlugin() &&
+        !StringUtils::StartsWithNoCase(item->GetPath(), "addons://") &&
+        (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
       }
@@ -516,9 +521,11 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         item->m_bIsFolder && !item->IsVideoDb())
       {
         ADDON::ScraperPtr info;
-        m_musicdatabase.GetScraperForPath(item->GetPath(), info, ADDON::ADDON_SCRAPER_ARTISTS);
-        if (info && info->Supports(CONTENT_ARTISTS))
-          buttons.Add(CONTEXT_BUTTON_INFO_ALL, 21884);
+        if(m_musicdatabase.GetScraperForPath(item->GetPath(), info, ADDON::ADDON_SCRAPER_ARTISTS))
+        {
+          if (info && info->Supports(CONTENT_ARTISTS))
+            buttons.Add(CONTEXT_BUTTON_INFO_ALL, 21884);
+        }
       }
 
       //Set default or clear default
@@ -753,8 +760,8 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         {
           OnItemInfoAll(itemNumber,true,true);
         }
-
       }
+
       return true;
     }
 

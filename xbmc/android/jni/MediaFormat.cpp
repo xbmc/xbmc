@@ -40,6 +40,7 @@ std::string CJNIMediaFormat::KEY_IS_ADTS;
 std::string CJNIMediaFormat::KEY_CHANNEL_MASK;
 std::string CJNIMediaFormat::KEY_AAC_PROFILE;
 std::string CJNIMediaFormat::KEY_FLAC_COMPRESSION_LEVEL;
+std::string CJNIMediaFormat::KEY_ROTATION;
 const char *CJNIMediaFormat::m_classname = "android/media/MediaFormat";
 
 void CJNIMediaFormat::PopulateStaticFields()
@@ -62,6 +63,11 @@ void CJNIMediaFormat::PopulateStaticFields()
     KEY_CHANNEL_MASK    = jcast<std::string>(get_static_field<jhstring>(clazz, "KEY_CHANNEL_MASK"));
     KEY_AAC_PROFILE     = jcast<std::string>(get_static_field<jhstring>(clazz, "KEY_AAC_PROFILE"));
     KEY_FLAC_COMPRESSION_LEVEL = jcast<std::string>(get_static_field<jhstring>(clazz, "KEY_FLAC_COMPRESSION_LEVEL"));
+
+    if(GetSDKVersion() >= 23)
+    {
+      KEY_ROTATION = jcast<std::string>(get_static_field<jhstring>(clazz, "KEY_ROTATION"));
+    }
   }
 }
 

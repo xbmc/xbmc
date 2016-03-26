@@ -114,11 +114,11 @@ msgstr "VISSZATEKERÉS"
 
 msgctxt "#31046"
 msgid "SEEKING"
-msgstr "KERESŐ"
+msgstr "KERESÉS"
 
 msgctxt "#31048"
 msgid "Visualisation presets"
-msgstr "Vizualizáció beállításai"
+msgstr "Vizualizáció előbeállítások"
 
 msgctxt "#31049"
 msgid "End time"
@@ -162,7 +162,7 @@ msgstr "Jelenleg kiválasztott"
 
 msgctxt "#31101"
 msgid "Home screen options"
-msgstr "Sajátképernyő lehetőségei"
+msgstr "Főképernyő lehetőségei"
 
 msgctxt "#31102"
 msgid "Background"
@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Fanart-háttér elrejtése"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Rejtse el az EPG-t, ha az RDS látható a csatorna ablakban"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "A háttérben az éppen játszott videó megjelenítése"
@@ -227,14 +231,6 @@ msgstr "A háttérben az éppen játszott videó megjelenítése"
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "A háttérben az éppen futó vizualizáció megjelenítése"
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "TV főtéma dalok játszása a videó médiatárban (TvTunes kiegészítő)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -352,10 +348,6 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Utoljára bejelentkezve"
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Karaoke dalválasztó"
-
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Játszva"
@@ -445,8 +437,8 @@ msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set v
 msgstr "[B]VIDEÓ BEÁLLÍTÁSOK[/B][CR][CR]Film médiatár kezelése · Videólejátszás beállítása · Videólistázás módjának beállítása[CR]Feliratok karaktertípusának váltása"
 
 msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]ZENE BEÁLLÍTÁSOK[/B][CR][CR]Zene médiatár kezelése · Zenelejátszás beállítása · Zenelistázás módjának beállítása[CR]Zene lejátszási szabályok felállítása · Karaoke lehetőségek"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]ZENE BEÁLLÍTÁSOK[/B][CR][CR]Zene médiatár kezelése · Zenelejátszás beállítása · Zenelistázás módjának beállítása[CR]Hang benyújtásának beállítása"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
@@ -474,7 +466,7 @@ msgstr "[B]SZOLGÁLTATÁSOK BEÁLLÍTÁSA[/B][CR][CR]Kodi UPNP-n és HTTP-n�
 
 msgctxt "#31411"
 msgid "First run help..."
-msgstr "Segítség első indításkor..."
+msgstr "Segítség első indításkor…"
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section. To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"OK\" to close this dialogue. It will not appear again."

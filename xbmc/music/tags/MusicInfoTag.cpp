@@ -18,6 +18,8 @@
  *
  */
 
+#include <algorithm>
+
 #include "MusicInfoTag.h"
 #include "music/Album.h"
 #include "music/Artist.h"
@@ -343,10 +345,10 @@ void CMusicInfoTag::SetArtist(const std::string& strArtist)
   }
 }
 
-void CMusicInfoTag::SetArtist(const std::vector<std::string>& artists)
+void CMusicInfoTag::SetArtist(const std::vector<std::string>& artists, bool FillDesc /* = false*/)
 {
   m_artist = artists;
-  if (m_strArtistDesc.empty()) 
+  if (m_strArtistDesc.empty() || FillDesc) 
   { 
     SetArtistDesc(StringUtils::Join(artists, g_advancedSettings.m_musicItemSeparator));
   }
@@ -381,10 +383,10 @@ void CMusicInfoTag::SetAlbumArtist(const std::string& strAlbumArtist)
   }
 }
 
-void CMusicInfoTag::SetAlbumArtist(const std::vector<std::string>& albumArtists)
+void CMusicInfoTag::SetAlbumArtist(const std::vector<std::string>& albumArtists, bool FillDesc /* = false*/)
 {
   m_albumArtist = albumArtists;
-  if (m_strAlbumArtistDesc.empty()) 
+  if (m_strAlbumArtistDesc.empty() || FillDesc) 
     SetAlbumArtistDesc(StringUtils::Join(albumArtists, g_advancedSettings.m_musicItemSeparator));
 }
 
@@ -470,7 +472,7 @@ void CMusicInfoTag::SetUserrating(char rating)
 
 void CMusicInfoTag::SetListeners(int listeners)
 {
- m_listeners = listeners;
+  m_listeners = std::max(listeners, 0);
 }
 
 void CMusicInfoTag::SetPlayCount(int playcount)
@@ -672,7 +674,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SYSTEMTIME stTime;
   stTime.wYear = song.iYear;
   SetReleaseDate(stTime);
-  SetTrackNumber(song.iTrack);
+  SetTrackAndDiscNumber(song.iTrack);
   SetDuration(song.iDuration);
   SetMood(song.strMood);
   SetCompilation(song.bCompilation);
@@ -695,6 +697,16 @@ void CMusicInfoTag::Serialize(CVariant& value) const
     value["artist"] = m_artist[0];
   else
     value["artist"] = m_artist;
+
+  // There are situations where the individual artist(s) are not queried from the song_artist and artist tables e.g. playlist,
+  // only artist description from song table. Since processing of the ARTISTS tag was added the individual artists may not always
+  // be accurately derrived by simply splitting the artist desc. Hence m_artist is only populated when the individual artists are
+  // queried, whereas GetArtistString() will always return the artist description.
+  // To avoid empty artist array in JSON, when m_artist is empty then an attempt is made to split the artist desc into artists.
+  // A longer term soltion would be to ensure that when individual artists are to be returned then the song_artist and artist tables
+  // are queried.
+  if (m_artist.empty())
+    value["artist"] = StringUtils::Split(GetArtistString(), g_advancedSettings.m_musicItemSeparator);
   value["displayartist"] = GetArtistString();
   value["displayalbumartist"] = GetAlbumArtistString();
   value["album"] = m_strAlbum;
@@ -764,8 +776,10 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_strURL;
     ar << m_strTitle;
     ar << m_artist;
+    ar << m_strArtistDesc;
     ar << m_strAlbum;
     ar << m_albumArtist;
+    ar << m_strAlbumArtistDesc;
     ar << m_genre;
     ar << m_iDuration;
     ar << m_iTrack;
@@ -797,8 +811,10 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_strURL;
     ar >> m_strTitle;
     ar >> m_artist;
+    ar >> m_strArtistDesc;
     ar >> m_strAlbum;
     ar >> m_albumArtist;
+    ar >> m_strAlbumArtistDesc;
     ar >> m_genre;
     ar >> m_iDuration;
     ar >> m_iTrack;
@@ -861,6 +877,7 @@ void CMusicInfoTag::Clear()
   m_coverArt.clear();
   m_replayGain = ReplayGain();
   m_albumReleaseType = CAlbum::Album;
+  m_listeners = 0;
 }
 
 void CMusicInfoTag::AppendArtist(const std::string &artist)

@@ -181,7 +181,7 @@ static void SinkInputInfoCallback(pa_context *c, const pa_sink_input_info *i, in
   if (!p || !p->IsInitialized())
     return;
 
-  if(i && i->has_volume)
+  if(i && i->has_volume && !i->corked)
     p->UpdateInternalVolume(&(i->volume));
 }
 

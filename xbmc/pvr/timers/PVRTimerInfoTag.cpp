@@ -420,7 +420,7 @@ std::string CPVRTimerInfoTag::GetStatus() const
   else if (m_state == PVR_TIMER_STATE_ERROR)
     strReturn = g_localizeStrings.Get(257);
   else if (m_state == PVR_TIMER_STATE_DISABLED)
-    strReturn = g_localizeStrings.Get(825);
+    strReturn = g_localizeStrings.Get(13106);
 
   return strReturn;
 }
@@ -808,7 +808,7 @@ void CPVRTimerInfoTag::GetNotificationText(std::string &strText) const
     break;
   case PVR_TIMER_STATE_SCHEDULED:
     if (IsRepeating())
-      stringID = 826; // Timer activated
+      stringID = 19058; // Timer enabled
     else
       stringID = 19225; // Recording scheduled
     break;
@@ -826,7 +826,7 @@ void CPVRTimerInfoTag::GetNotificationText(std::string &strText) const
     stringID = 19278; // Recording error
     break;
   case PVR_TIMER_STATE_DISABLED:
-    stringID = 827; // Timer deactivated
+    stringID = 19057; // Timer disabled
     break;
   default:
     break;

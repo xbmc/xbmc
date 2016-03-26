@@ -1341,9 +1341,11 @@ msgctxt "#304"
 msgid "Language"
 msgstr ""
 
+#. Label of active/inactive radiobutton in PVR timer settings dialog
 #: system/peripherals.xml
 #: xbmc/filesystem/AddonsDirectory.cpp
 #: system/settings/settings.xml
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#305"
 msgid "Enabled"
 msgstr ""
@@ -1381,6 +1383,7 @@ msgid "(0=auto)"
 msgstr ""
 
 #: xbmc/music/MusicDatabase.cpp
+#: xbmc/pvr/PVRManager.cpp
 msgctxt "#313"
 msgid "Cleaning database"
 msgstr ""
@@ -2821,8 +2824,6 @@ msgctxt "#644"
 msgid "Stretch 16:9 - Nonlinear"
 msgstr ""
 
-#empty string with id 644
-
 msgctxt "#645"
 msgid "Need to unpack a big file. Continue?"
 msgstr ""
@@ -3457,8 +3458,8 @@ msgid "Recording group"
 msgstr ""
 
 #. Label for setting TV->Recordings->Prevent duplicate episodes
-#: system/settings/settings.xml
 #. Label of prevent duplicate episodes list control (if user does not want to record the same episode multiple times) in PVR timer settings dialog
+#: system/settings/settings.xml
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#812"
 msgid "Prevent duplicate episodes"
@@ -3492,6 +3493,7 @@ msgstr ""
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#817"
 msgid "End any time"
+msgstr ""
 
 #. Label of "MaxRecordings" list in the PVR timer setting dialog
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
@@ -3499,7 +3501,7 @@ msgctxt "#818"
 msgid "Max recordings"
 msgstr ""
 
-#empty strings from id 819
+#empty string with id 819
 
 #. Representation of a one-time timer.
 #: xbmc/pvr/addons/PVRClient.cpp
@@ -3525,25 +3527,7 @@ msgctxt "#823"
 msgid "Repeating (guide-based)"
 msgstr ""
 
-#empty string with id 824
-
-#. Representation of PVR timer state "disabled"
-#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
-msgctxt "#825"
-msgid "Inactive"
-msgstr ""
-
-#. Notification text to announce that a timer was activated
-#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
-msgctxt "#826"
-msgid "Timer activated"
-msgstr ""
-
-#. Notification text to announce that a timer was deactivated
-#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
-msgctxt "#827"
-msgid "Timer deactivated"
-msgstr ""
+#empty strings from id 824 to 827
 
 #. Text for notification that a repeating timer has been deleted
 #: xbmc/pvr/timers/PVRTimers.cpp
@@ -3551,7 +3535,7 @@ msgctxt "#828"
 msgid "Repeating timer deleted"
 msgstr ""
 
-#empty string from id 829 to 830
+#empty strings from id 829 to 830
 
 #. Weekday representation
 #: xbmc/dialogs/GUIDialogPVRTimerWeekdaysSettings.cpp
@@ -4106,7 +4090,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#1268"
-msgid "Enable AirPlay Video and Picture support"
+msgid "Enable AirPlay \"Videos\" and \"Pictures\" support"
 msgstr ""
 
 msgctxt "#1269"
@@ -5630,6 +5614,7 @@ msgstr ""
 
 #: xbmc/peripherals/bus/PeripheralBus.cpp
 #: system/settings/settings.xml
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#13106"
 msgid "Disabled"
 msgstr ""
@@ -7135,7 +7120,11 @@ msgctxt "#14081"
 msgid "File lists"
 msgstr ""
 
-#empty string with id 14082
+#. Label of button in Settings -> Audio output to clear the audio DSP database.
+#: system/settings/settings.xml
+msgctxt "#14082"
+msgid "Reset the Audio DSP database..."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14083"
@@ -7485,7 +7474,7 @@ msgctxt "#15031"
 msgid "Audio DSP settings - Audio information"
 msgstr ""
 
-#empty string from id 15032
+#empty string with id 15032
 
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
 msgctxt "#15033"
@@ -7502,7 +7491,7 @@ msgctxt "#15035"
 msgid "Audio DSP settings - Resampler"
 msgstr ""
 
-#empty string from id 15036
+#empty string with id 15036
 
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
 msgctxt "#15037"
@@ -7621,7 +7610,7 @@ msgctxt "#15064"
 msgid "Apply changes directly"
 msgstr ""
 
-#empty string id 15065
+#empty string with id 15065
 
 #. Button to disable all enabled modes on current selected type
 #: addons/skin.confluence/720p/DialogAudioDSPManager.xml
@@ -7802,7 +7791,7 @@ msgstr ""
 
 #: addons/skin.confluence/720p/DialogAudioDSPManager.xml
 msgctxt "#15114"
-msgid "Here you can configure a input resampling process. Notice: Only one active mode is allowed!"
+msgid "Here you can configure an input resampling process. Notice: Only one active mode is allowed!"
 msgstr ""
 
 #: addons/skin.confluence/720p/DialogAudioDSPManager.xml
@@ -8589,8 +8578,11 @@ msgctxt "#19039"
 msgid "Are you sure you want to hide this channel?"
 msgstr ""
 
+#: addons/skin.confluence/720p/IncludesHomeMenuItems.xml
+#: addons/skin.confluence/720p/IncludesPVR.xml
+#: addons/skin.confluence/720p/MyPVRTimers.xml
 msgctxt "#19040"
-msgid "Timer"
+msgid "Timers"
 msgstr ""
 
 msgctxt "#19041"
@@ -8671,8 +8663,14 @@ msgctxt "#19056"
 msgid "New timer"
 msgstr ""
 
-# empty string with id 19057
+#. Notification text to announce that a timer was disabled
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#19057"
+msgid "Timer disabled"
+msgstr ""
 
+#. Notification text to announce that a timer was enabled
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19058"
 msgid "Timer enabled"
 msgstr ""
@@ -8753,8 +8751,7 @@ msgctxt "#19073"
 msgid "Delay channel switch"
 msgstr ""
 
-#. Label of active/inactive radiobutton in PVR timer settings dialog
-#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+#: addons/skin.confluence/720p/DialogPVRChannelManager.xml
 msgctxt "#19074"
 msgid "Active"
 msgstr ""
@@ -8780,8 +8777,8 @@ msgid "Channel"
 msgstr ""
 
 #. heading for PVR timer days of week settings dialog
-#: skin.confluence
 #. Label of days of week button in PVR timer settings dialog
+#: skin.confluence
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#19079"
 msgid "Days of week"
@@ -9270,12 +9267,17 @@ msgctxt "#19185"
 msgid "Clear data"
 msgstr ""
 
+#: xbmc/pvr/PVRManager.cpp
 msgctxt "#19186"
 msgid "All your TV related data (channels, groups, guide) will be cleared. Are you sure?"
 msgstr ""
 
-#empty string with id 19187
+#: xbmc/pvr/PVRManager.cpp
+msgctxt "#19187"
+msgid "Clearing all related data."
+msgstr ""
 
+#: xbmc/pvr/PVRManager.cpp
 msgctxt "#19188"
 msgid "All your guide data will be cleared. Are you sure?"
 msgstr ""
@@ -9647,7 +9649,7 @@ msgstr ""
 #. DialogOK for no installed ADSP add-on available
 #: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
 msgctxt "#19274"
-msgid "You need a add-on installed for the process of audio DSP signal. System becomes disabled."
+msgid "You need an add-on installed to be able to use audio digital signal processing (DSP)."
 msgstr ""
 
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
@@ -11852,7 +11854,10 @@ msgctxt "#20443"
 msgid "Do you want to refresh information for all items within this path?"
 msgstr ""
 
-#empty string with id 20444
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+msgctxt "#20444"
+msgid "Add to library"
+msgstr ""
 
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
 msgctxt "#20445"
@@ -11863,7 +11868,10 @@ msgctxt "#20446"
 msgid "Locally stored information found. Ignore and refresh from Internet?"
 msgstr ""
 
-#empty string with id 20447
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+msgctxt "#20447"
+msgid "Do you want to add the media from this source to your library?"
+msgstr ""
 
 #: xbmc/video/VideoInfoScanner.cpp
 msgctxt "#20448"
@@ -12037,7 +12045,17 @@ msgctxt "#21340"
 msgid "Auto-update"
 msgstr ""
 
-#empty strings from id 21341 to 21358
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#21341"
+msgid "No updates available"
+msgstr ""
+
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#21342"
+msgid "There are currently no updates available for this add-on."
+msgstr ""
+
+#empty strings from id 21343 to 21358
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
 msgctxt "#21359"
@@ -13058,6 +13076,8 @@ msgctxt "#22022"
 msgid "Show video files in listings"
 msgstr ""
 
+#empty string with id 22023
+
 #: xbmc/windows/GUIWindowSystemInfo.cpp
 msgctxt "#22024"
 msgid "Direct3D version:"
@@ -14055,7 +14075,7 @@ msgstr ""
 #. Header string on RDS Radiotext+ Info dialog
 #: addons/skin.confluence/720p/DialogPVRRadioRDSInfo.xml
 msgctxt "#29900"
-msgid "RadiotextPlus info"
+msgid "Radiotext Plus info"
 msgstr ""
 
 #. Music band name which make the song (if present)
@@ -14458,7 +14478,7 @@ msgstr ""
 
 #. Program style name
 #: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
-msgctxt "#29960"
+msgctxt "#29970"
 msgid "Alarm Test"
 msgstr ""
 
@@ -14467,6 +14487,8 @@ msgstr ""
 msgctxt "#29971"
 msgid "Alarm"
 msgstr ""
+
+#empty strings from id 29972 to 29976
 
 #. Program style name
 #: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
@@ -14531,10 +14553,10 @@ msgstr ""
 #. Help text of boolean on/off value
 #: system/settings/settings.xml
 msgctxt "#29987"
-msgid "Send present traffic messages around and can be handled from addons (nothing inisde KODI)"
+msgid "Send present traffic messages around and can be handled from add-ons (nothing inside Kodi)"
 msgstr ""
 
-#empty strings from id 29888 to 33000
+#empty strings from id 29988 to 33000
 #strings 30000 thru 30999 reserved for plug-ins and plug-in settings
 #strings 31000 thru 31999 reserved for skins
 #strings 32000 thru 32999 reserved for scripts
@@ -15471,7 +15493,7 @@ msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
 msgstr ""
 
-#empty strings from id 36043
+#empty string with id 36043
 
 #. Name of an action to perform on a specific event, like changing the CEC source away from Kodi
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
@@ -16891,7 +16913,7 @@ msgstr ""
 #. Description of setting "System -> Video output -> Vertical blank sync" with label #13105
 #: system/settings/settings.xml
 msgctxt "#36356"
-msgid "Eliminate vertical tearing."
+msgid "Eliminates tearing."
 msgstr ""
 
 #. Description of setting "System -> Video output -> Video calibration..." with label #214
@@ -17373,10 +17395,10 @@ msgctxt "#36438"
 msgid "Enables digital signal processing (DSP) of audio channels specified by the speaker configuration."
 msgstr ""
 
-#. Description of setting "System -> Audio output -> Reset the Audio DSP database..." with label 311
+#. Description of setting "System -> Audio output -> Reset the Audio DSP database..." with label 14082
 #: system/settings/settings.xml
 msgctxt "#36439"
-msgid "All data (add-on settings and audio DSP manager settings) in the audio DSP database is being erased."
+msgid "All data (add-on settings and audio DSP manager settings) in the audio DSP database will be erased."
 msgstr ""
 
 #. Used in confirm on dialog to erase database
@@ -17391,7 +17413,7 @@ msgctxt "#36441"
 msgid "Enable audio DSP processing"
 msgstr ""
 
-#empty strings from id 36459 to 36499
+#empty strings from id 36442 to 36459
 
 #. Description of settings "System -> Logging -> Enable event logging" with label #14112
 #: system/settings/settings.xml
@@ -17406,7 +17428,6 @@ msgid "Notification event describe regular processes and actions performed by th
 msgstr ""
 
 #empty strings from id 36462 to 36499
-
 #end reservation
 
 #. label of a setting for the stereoscopic 3D mode of the GUI that is/should be applied
@@ -17649,7 +17670,7 @@ msgstr ""
 #. Description of setting "Services -> AirPlay -> iOS 8 compatibility mode" with label #1268
 #: system/settings/settings.xml
 msgctxt "#36549"
-msgid "Enables support for receving videos and pictures via AirPlay. This needs to be disabled when using iOS 9 or later clients to restore music streaming via AirPlay. Videos and Pictures are only supported for iOS clients using iOS 8.x and older."
+msgid "Enables support for receiving \"Videos\" and \"Pictures\" via AirPlay. This needs to be disabled when using iOS 9 or later clients to restore music streaming via AirPlay. \"Videos\" and \"Pictures\" are only supported for iOS clients using iOS 8.x and older."
 msgstr ""
 
 #. Name of a setting
@@ -18076,6 +18097,8 @@ msgstr ""
 msgctxt "#38020"
 msgid "Enables decoding of high quality DTS-HD audio streams. Note: This increases CPU load and is only available when DTS and DTS-HD audio passthrough are disabled."
 msgstr ""
+
+#empty string with id 38021
 
 #. Used for the viewstate selection
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp

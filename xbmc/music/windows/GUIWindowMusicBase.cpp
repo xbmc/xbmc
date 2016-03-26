@@ -1459,3 +1459,13 @@ void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
   if (!items.IsMusicDb())
     RetrieveMusicInfo();
 }
+
+void CGUIWindowMusicBase::OnAssignContent(const std::string &path)
+{
+  // Add content selection logic here, if music is ready for that some day
+
+  // This won't ask you to clean/delete your content, when you change the scraper to none (if music gets this), might ne nice in the future
+  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{ 20444 }, CVariant{ 20447 }))
+    g_application.StartMusicScan(path, true);
+}
+

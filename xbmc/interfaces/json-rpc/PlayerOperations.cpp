@@ -193,7 +193,7 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
           if (currentMusicTag != NULL)
           {
             std::string originalLabel = fileItem->GetLabel();
-            fileItem = CFileItemPtr(new CFileItem(*currentMusicTag));
+            fileItem->SetFromMusicInfoTag(*currentMusicTag);
             if (fileItem->GetLabel().empty())
               fileItem->SetLabel(originalLabel);
           }

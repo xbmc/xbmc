@@ -24,7 +24,7 @@ import xbmcvfs
 import lib.common
 from lib.common import log
 
-__addonpath__    = lib.common.__addonpath__
+ADDONPATH    = lib.common.ADDONPATH
 
 import json as jsoninterface
 
@@ -40,7 +40,7 @@ def get_installedversion():
     
 def get_versionfilelist():
     # retrieve versionlists from supplied version file
-    version_file = os.path.join(__addonpath__, 'resources/versions.txt')
+    version_file = os.path.join(ADDONPATH, 'resources/versions.txt')
     # Eden didn't have xbmcvfs.File()
     if xbmcaddon.Addon('xbmc.addon').getAddonInfo('version') < "11.9.3":
         file = open(version_file, 'r')

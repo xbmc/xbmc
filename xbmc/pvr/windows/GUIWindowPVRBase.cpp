@@ -62,7 +62,8 @@ using namespace PVR;
 using namespace EPG;
 using namespace KODI::MESSAGING;
 
-std::map<bool, std::string> CGUIWindowPVRBase::m_selectedItemPaths;
+CCriticalSection CGUIWindowPVRBase::m_selectedItemPathsLock;
+std::string CGUIWindowPVRBase::m_selectedItemPaths[2];
 
 CGUIWindowPVRBase::CGUIWindowPVRBase(bool bRadio, int id, const std::string &xmlFile) :
   CGUIMediaWindow(id, xmlFile.c_str()),
@@ -78,22 +79,25 @@ CGUIWindowPVRBase::~CGUIWindowPVRBase(void)
 
 void CGUIWindowPVRBase::SetSelectedItemPath(bool bRadio, const std::string &path)
 {
-  m_selectedItemPaths.at(bRadio) = path;
+  CSingleLock lock(m_selectedItemPathsLock);
+  m_selectedItemPaths[bRadio] = path;
 }
 
 std::string CGUIWindowPVRBase::GetSelectedItemPath(bool bRadio)
 {
-  if (!m_selectedItemPaths.at(bRadio).empty())
-    return m_selectedItemPaths.at(bRadio);
-  else if (g_PVRManager.IsPlaying())
-    return g_application.CurrentFile();
-
-  return "";
+  CSingleLock lock(m_selectedItemPathsLock);
+  return m_selectedItemPaths[bRadio];
 }
 
 void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  UpdateSelectedItemPath();
+  if (IsActive())
+  {
+    // Only the active window must set the selected item path which is shared
+    // between all PVR windows, not the last notified window (observer).
+    UpdateSelectedItemPath();
+  }
+
   CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
   CApplicationMessenger::GetInstance().SendGUIMessage(m);
 }
@@ -564,14 +568,15 @@ bool CGUIWindowPVRBase::DeleteTimer(CFileItem *item, bool bIsRecording)
   if (!timer || !timer->HasPVRTimerInfoTag())
     return false;
 
-  if (timer->GetPVRTimerInfoTag()->HasTimerType() &&
-      timer->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
-    return false;
-
   if (bIsRecording)
   {
     if (ConfirmStopRecording(timer.get()))
       return CPVRTimers::DeleteTimer(*timer, true, false);
+  }
+  else if (timer->GetPVRTimerInfoTag()->HasTimerType() &&
+           timer->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
+  {
+    return false;
   }
   else
   {
@@ -853,7 +858,10 @@ void CGUIWindowPVRBase::UpdateButtons(void)
 
 void CGUIWindowPVRBase::UpdateSelectedItemPath()
 {
-  m_selectedItemPaths.at(m_bRadio) = m_viewControl.GetSelectedItemPath();
+  if (!m_viewControl.GetSelectedItemPath().empty()) {
+    CSingleLock lock(m_selectedItemPathsLock);
+    m_selectedItemPaths[m_bRadio] = m_viewControl.GetSelectedItemPath();
+  }
 }
 
 bool CGUIWindowPVRBase::ConfirmDeleteTimer(CFileItem *item, bool &bDeleteSchedule)

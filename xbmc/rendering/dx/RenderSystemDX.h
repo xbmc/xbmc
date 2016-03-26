@@ -83,6 +83,7 @@ public:
   IDXGIOutput* GetCurrentOutput(void) { return m_pOutput; }
 
   virtual void Project(float &x, float &y, float &z);
+  virtual CRect GetBackBufferRect() { return CRect(0.f, 0.f, static_cast<float>(m_nBackBufferWidth), static_cast<float>(m_nBackBufferHeight)); }
 
   void FinishCommandList(bool bExecute = true);
   void FlushGPU();
@@ -142,6 +143,7 @@ protected:
   void SetFullScreenInternal();
   void GetClosestDisplayModeToCurrent(IDXGIOutput* output, DXGI_MODE_DESC* outCurrentDisplayMode, bool useCached = false);
   void CheckInterlasedStereoView(void);
+  void SetMaximumFrameLatency(uint32_t latency);
 
   virtual void UpdateMonitor() {};
 
@@ -173,7 +175,6 @@ protected:
   IDXGIFactory1*              m_dxgiFactory;
   ID3D11Device*               m_pD3DDev;
   IDXGIAdapter1*              m_adapter;
-  int                         m_adapterIndex;
   IDXGIOutput*                m_pOutput;
   ID3D11DeviceContext*        m_pContext;
   ID3D11DeviceContext*        m_pImdContext;

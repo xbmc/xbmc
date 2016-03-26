@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Ocultar el Fanart del fondo"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Ocultar EPG si EDS está presente en la ventana del canal"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Mostrar de fondo \"Ahora reproduciendo\" vídeo"
@@ -227,14 +231,6 @@ msgstr "Mostrar de fondo \"Ahora reproduciendo\" vídeo"
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Mostrar de fondo la visualización \"Ahora reproduciendo\""
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Reproducir sintonías en la colección de vídeo (complemento TvTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -352,10 +348,6 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Última sesión el"
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Selector de canción de karaoke"
-
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Emitido"
@@ -445,8 +437,8 @@ msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set v
 msgstr "[B]Configura las opciones de VÍDEO[/B][CR][CR]Administra tu colección de vídeo - Ajusta reproducción de vídeo - Cambia opciones de listas de vídeo[CR]Configura fuentes de subtítulos"
 
 msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]Configura las opciones de MÚSICA[/B][CR][CR]Administra tu colección de música · Ajusta reproducción de música · Cambia opciones de listas de música[CR]Configura sumisión de canciones · Configura el karaoke"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]Configura las opciones de MÚSICA[/B][CR][CR]Administra tu colección de música · Ajusta reproducción de música · Cambia opciones de listas de música[CR]Configura sumisión de canciones"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

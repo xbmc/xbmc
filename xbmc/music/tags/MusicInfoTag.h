@@ -90,12 +90,12 @@ public:
   void SetURL(const std::string& strURL);
   void SetTitle(const std::string& strTitle);
   void SetArtist(const std::string& strArtist);
-  void SetArtist(const std::vector<std::string>& artists);
+  void SetArtist(const std::vector<std::string>& artists, bool FillDesc = false);
   void SetArtistDesc(const std::string& strArtistDesc);
   void SetAlbum(const std::string& strAlbum);
   void SetAlbumId(const int iAlbumId);
   void SetAlbumArtist(const std::string& strAlbumArtist);
-  void SetAlbumArtist(const std::vector<std::string>& albumArtists);
+  void SetAlbumArtist(const std::vector<std::string>& albumArtists, bool FillDesc = false);
   void SetAlbumArtistDesc(const std::string& strAlbumArtistDesc);
   void SetGenre(const std::string& strGenre);
   void SetGenre(const std::vector<std::string>& genres);

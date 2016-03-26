@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Change your"
-msgstr "Changer vos"
+msgstr "Changez vos"
 
 msgctxt "#31003"
 msgid "Power options"
@@ -220,6 +220,10 @@ msgctxt "#31119"
 msgid "Hide background fanart"
 msgstr "Masquer le fanart d’arrière-plan"
 
+msgctxt "#31122"
+msgid "Hide EPG if RDS is present on channel window"
+msgstr "Cacher le GÉP si RDS est présent sur la fenêtre de la chaîne"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Afficher la vidéo d'arrière-plan « Lecture en cours »"
@@ -227,14 +231,6 @@ msgstr "Afficher la vidéo d'arrière-plan « Lecture en cours »"
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
 msgstr "Afficher la visualisation d'arrière-plan « Lecture en cours »"
-
-msgctxt "#31126"
-msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Jouer les indicatifs musicaux de la télé dans la vidéothèque (addiciel TvTunes)"
-
-msgctxt "#31127"
-msgid "TvTunes"
-msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
@@ -352,10 +348,6 @@ msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Dernière connexion"
 
-msgctxt "#31321"
-msgid "Karaoke song selector"
-msgstr "Sélecteur de chanson karaoké"
-
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Diffusé"
@@ -445,8 +437,8 @@ msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set v
 msgstr "[B]CONFIGURER LES PARAMÈTRES DES VIDÉOS[/B][CR][CR]Gérer la vidéothèque · Définir les options de lecture · Changer les options de listage des vidéos[CR]Définir la police des sous-titres"
 
 msgctxt "#31402"
-msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]CONFIGURER LES  PARAMÈTRES DE LA MUSIQUE[/B][CR][CR]Gérer l'audiothèque · Définir les options de lecture · Changer les options de listage de la musique[CR]Paramétrer les envois de chansons · Définir les options de karaoké"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission"
+msgstr "[B]CONFIGURER LES PARAMÈTRES DE LA MUSIQUE[/B][CR][CR]Gérer l'audiothèque · Définir les options de lecture · Changer les options de listage de la musique[CR]Paramétrer les envois de chansons"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"

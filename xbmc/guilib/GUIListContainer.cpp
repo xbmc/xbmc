@@ -117,6 +117,7 @@ bool CGUIListContainer::OnMessage(CGUIMessage& message)
     {
       SetCursor(0);
       SetOffset(0);
+      m_scroller.SetValue(0);
     }
   }
   return CGUIBaseContainer::OnMessage(message);

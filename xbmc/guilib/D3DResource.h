@@ -124,6 +124,12 @@ public:
   DXGI_FORMAT GetFormat() const { return m_format; }
 
   // static methods
+  static void DrawQuad(const CPoint points[4], color_t color, CD3DTexture *texture, const CRect *texCoords,
+    SHADER_METHOD options = SHADER_METHOD_RENDER_TEXTURE_BLEND);
+
+  static void DrawQuad(const CPoint points[4], color_t color, unsigned numViews, ID3D11ShaderResourceView **view, const CRect *texCoords,
+    SHADER_METHOD options = SHADER_METHOD_RENDER_TEXTURE_BLEND);
+
   static void DrawQuad(const CRect &coords, color_t color, CD3DTexture *texture, const CRect *texCoords,
     SHADER_METHOD options = SHADER_METHOD_RENDER_TEXTURE_BLEND);
 
@@ -174,6 +180,7 @@ public:
   bool SetMatrix(LPCSTR handle, const XMFLOAT4X4* mat);
   bool SetTechnique(LPCSTR handle);
   bool SetTexture(LPCSTR handle, CD3DTexture &texture);
+  bool SetResources(LPCSTR handle, ID3D11ShaderResourceView** ppSRViews, size_t count);
   bool SetConstantBuffer(LPCSTR handle, ID3D11Buffer *buffer);
   bool SetScalar(LPCSTR handle, float value);
   bool Begin(UINT *passes, DWORD flags);

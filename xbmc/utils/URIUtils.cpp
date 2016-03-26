@@ -522,10 +522,20 @@ bool URIUtils::PathStarts(const std::string& url, const char *start)
   return StringUtils::StartsWith(url, start);
 }
 
-bool URIUtils::PathEquals(const std::string& url, const std::string &start, bool ignoreTrailingSlash /* = false */)
+bool URIUtils::PathEquals(const std::string& url, const std::string &start, bool ignoreTrailingSlash /* = false */, bool ignoreURLOptions /* = false */)
 {
-  std::string path1 = url;
-  std::string path2 = start;
+  std::string path1, path2;
+  if (ignoreURLOptions)
+  {
+    path1 = CURL(url).GetWithoutOptions();
+    path2 = CURL(start).GetWithoutOptions();
+  }
+  else
+  {
+    path1 = url;
+    path2 = start;
+  }
+
   if (ignoreTrailingSlash)
   {
     RemoveSlashAtEnd(path1);
@@ -896,6 +906,14 @@ bool URIUtils::IsPVRChannel(const std::string& strFile)
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
 
   return StringUtils::StartsWithNoCase(strFile2, "pvr://channels");
+}
+
+bool URIUtils::IsPVRGuideItem(const std::string& strFile)
+{
+  if (IsStack(strFile))
+    return IsPVRGuideItem(CStackDirectory::GetFirstStackedFile(strFile));
+  
+  return StringUtils::StartsWithNoCase(strFile, "pvr://guide");
 }
 
 bool URIUtils::IsDAV(const std::string& strFile)
