@@ -21,6 +21,9 @@
  */
 
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
+
+#include <stdint.h>
+
 struct AVPicture;
 
 typedef struct SPUData
