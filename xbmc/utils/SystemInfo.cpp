@@ -997,6 +997,8 @@ const std::string& CSysInfo::GetKernelCpuFamily(void)
         kernelCpuFamily = "MIPS";
       else if (machine.compare(0, 4, "i686", 4) == 0 || machine == "i386" || machine == "amd64" ||  machine.compare(0, 3, "x86", 3) == 0)
         kernelCpuFamily = "x86";
+      else if (machine.compare(0, 4, "s390", 4) == 0)
+        kernelCpuFamily = "s390";
       else if (machine.compare(0, 3, "ppc", 3) == 0 || machine.compare(0, 5, "power", 5) == 0)
         kernelCpuFamily = "PowerPC";
     }
@@ -1010,7 +1012,7 @@ const std::string& CSysInfo::GetKernelCpuFamily(void)
 int CSysInfo::GetXbmcBitness(void)
 {
 #if defined (__aarch64__) || defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || defined(_M_X64) || \
-  defined(_M_AMD64) || defined(__ppc64__) || defined(__mips64)
+  defined(_M_AMD64) || defined(__ppc64__) || defined(__mips64) || defined(__s390x__)
   return 64;
 #elif defined(__thumb__) || defined(_M_ARMT) || defined(__arm__) || defined(_M_ARM) || defined(__mips__) || defined(mips) || defined(__mips) || defined(i386) || \
   defined(__i386) || defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__) || defined(_M_IX86) || defined(_X86_) || defined(__powerpc) || \
@@ -1372,6 +1374,8 @@ std::string CSysInfo::GetBuildTargetCpuFamily(void)
 #elif defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64) || \
    defined(i386) || defined(__i386) || defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__) || defined(_M_IX86) || defined(_X86_)
   return "x86";
+#elif defined(__s390x__)
+  return "s390";
 #elif defined(__powerpc) || defined(__powerpc__) || defined(__powerpc64__) || defined(__ppc__) || defined(__ppc64__) || defined(_M_PPC)
   return "PowerPC";
 #else
