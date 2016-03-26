@@ -185,7 +185,7 @@ bool CGUIWindowMusicNav::OnAction(const CAction& action)
     int item = m_viewControl.GetSelectedItem();
     CMusicDatabaseDirectory dir;
     if (item > -1 && m_vecItems->Get(item)->m_bIsFolder
-                  && (dir.HasAlbumInfo(m_vecItems->Get(item)->GetPath())||
+                  && (m_vecItems->Get(item)->IsAlbum()||
                       dir.IsArtistDir(m_vecItems->Get(item)->GetPath())))
     {
       OnContextButton(item,CONTEXT_BUTTON_INFO);
@@ -482,14 +482,14 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       CMusicDatabaseDirectory dir;
 
       // enable query all albums button only in album view
-      if (dir.HasAlbumInfo(item->GetPath()) && !dir.IsAllItem(item->GetPath()) &&
+      if (item->IsAlbum() && !dir.IsAllItem(item->GetPath()) &&
           item->m_bIsFolder && !item->IsVideoDb() && !item->IsParentFolder()   &&
          !item->IsPlugin() && !StringUtils::StartsWithNoCase(item->GetPath(), "musicsearch://"))
       {
         buttons.Add(CONTEXT_BUTTON_INFO_ALL, 20059);
       }
 
-      // enable query all artist button only in album view
+      // enable query all artist button only in artist view
       if (dir.IsArtistDir(item->GetPath()) && !dir.IsAllItem(item->GetPath()) &&
         item->m_bIsFolder && !item->IsVideoDb())
       {

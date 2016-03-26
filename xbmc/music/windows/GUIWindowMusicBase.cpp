@@ -317,12 +317,10 @@ void CGUIWindowMusicBase::OnItemInfoAll(int iItem, bool bCurrent /* = false */, 
   std::string strPath = m_vecItems->GetPath();
   if (bCurrent)
     strPath = m_vecItems->Get(iItem)->GetPath();
-
-  if (dir.HasAlbumInfo(strPath) ||
-      CMusicDatabaseDirectory::GetDirectoryChildType(strPath) == 
-      MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM)
+  
+  if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "albums"))
     g_application.StartMusicAlbumScan(strPath,refresh);
-  else
+  else if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "artists"))
     g_application.StartMusicArtistScan(strPath,refresh);
 }
 
