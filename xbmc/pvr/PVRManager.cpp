@@ -406,19 +406,9 @@ void CPVRManager::Start()
   ResetProperties();
   SetState(ManagerStateStarting);
 
-  /* create and open database */
-  if (!m_database)
-    m_database = new CPVRDatabase;
-  m_database->Open();
-
-  /* register application action listener */
-  {
-    CSingleExit exit(m_critSection);
-    g_application.RegisterActionListener(&CPVRActionListener::GetInstance());
-  }
-
-  /* create the supervisor thread to do all background activities */
-  StartUpdateThreads();
+  /* create the pvrmanager thread, which will ensure that all data will be loaded */
+  Create();
+  SetPriority(-1);
 }
 
 void CPVRManager::Stop(void)
@@ -442,7 +432,11 @@ void CPVRManager::Stop(void)
   }
 
   /* stop all update threads */
-  StopUpdateThreads();
+  SetState(ManagerStateInterrupted);
+
+  StopThread();
+  if (m_guiInfo)
+    m_guiInfo->Stop();
 
   /* executes the set wakeup command */
   SetWakeupCommand();
@@ -474,6 +468,17 @@ void CPVRManager::SetState(ManagerState state)
 
 void CPVRManager::Process(void)
 {
+  /* create and open database */
+  if (!m_database)
+    m_database = new CPVRDatabase;
+  m_database->Open();
+
+  /* register application action listener */
+  {
+    CSingleExit exit(m_critSection);
+    g_application.RegisterActionListener(&CPVRActionListener::GetInstance());
+  }
+
   g_EpgContainer.Stop();
 
   /* load the pvr data from the db and clients if it's not already loaded */
@@ -565,28 +570,6 @@ bool CPVRManager::SetWakeupCommand(void)
   }
 
   return false;
-}
-
-bool CPVRManager::StartUpdateThreads(void)
-{
-  StopUpdateThreads();
-  CLog::Log(LOGNOTICE, "PVRManager - starting up");
-
-  /* create the pvrmanager thread, which will ensure that all data will be loaded */
-  SetState(ManagerStateStarting);
-  Create();
-  SetPriority(-1);
-
-  return true;
-}
-
-void CPVRManager::StopUpdateThreads(void)
-{
-  SetState(ManagerStateInterrupted);
-
-  StopThread();
-  if (m_guiInfo)
-    m_guiInfo->Stop();
 }
 
 bool CPVRManager::Load(bool bShowProgress)
