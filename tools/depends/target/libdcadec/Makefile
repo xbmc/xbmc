@@ -3,7 +3,7 @@ DEPS= Makefile
 
 # lib name, version
 LIBNAME=libdcadec
-VERSION=git-2a9186e3
+VERSION=0.2.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
