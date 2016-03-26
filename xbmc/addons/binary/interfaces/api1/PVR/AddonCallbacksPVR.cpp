@@ -341,53 +341,7 @@ void CAddonCallbacksPVR::PVRConnectionStateChange(void* addonData, const char* s
 
   client->SetConnectionState(newState);
 
-  int iMsg(-1);
-  bool bError(true);
-  bool bNotify(true);
-
-  switch (newState)
-  {
-    case PVR_CONNECTION_STATE_SERVER_UNREACHABLE:
-      iMsg = 35505; // Server is unreachable
-      break;
-    case PVR_CONNECTION_STATE_SERVER_MISMATCH:
-      iMsg = 35506; // Server does not respond properly
-      break;
-    case PVR_CONNECTION_STATE_VERSION_MISMATCH:
-      iMsg = 35507; // Server version is not compatible
-      break;
-    case PVR_CONNECTION_STATE_ACCESS_DENIED:
-      iMsg = 35508; // Access denied
-      break;
-    case PVR_CONNECTION_STATE_CONNECTED:
-      iMsg = 36034; // Connection established
-      bError = false;
-      // No notification for the first successful connect.
-      bNotify = (prevState != PVR_CONNECTION_STATE_UNKNOWN);
-      break;
-    case PVR_CONNECTION_STATE_DISCONNECTED:
-      iMsg = 36030; // Connection lost
-      break;
-    default:
-      CLog::Log(LOGERROR, "PVR - %s - unknown connection state", __FUNCTION__);
-      return;
-  }
-
-  // Use addon-supplied message, if present
-  std::string strMsg;
-  if (strMessage && strlen(strMessage) > 0)
-    strMsg = strMessage;
-  else
-    strMsg = g_localizeStrings.Get(iMsg);
-
-  // Notify user.
-  if (bNotify && !CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMANAGER_HIDECONNECTIONLOSTWARNING))
-    CGUIDialogKaiToast::QueueNotification(
-      bError ? CGUIDialogKaiToast::Error : CGUIDialogKaiToast::Info, client->Name().c_str(), strMsg, 5000, true);
-
-  // Write event log entry.
-  CEventLog::GetInstance().Add(EventPtr(new CNotificationEvent(
-    client->Name(), strMsg, client->Icon(), bError ? EventLevel::Error : EventLevel::Information)));
+  g_PVRManager.ConnectionStateChange(client->GetID(), std::string(strConnectionString), newState, std::string(strMessage));
 }
 
 typedef struct EpgEventStateChange
