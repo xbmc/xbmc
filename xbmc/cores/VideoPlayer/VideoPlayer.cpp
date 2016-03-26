@@ -905,17 +905,18 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
     CloseStream(m_CurrentVideo, true);
 
   // open audio stream
-  if(m_PlayerOptions.video_only)
-    streams.clear();
-  else
-    streams = m_SelectionStreams.Get(STREAM_AUDIO, PredicateAudioPriority);
   valid   = false;
-
-  for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
+  if(!m_PlayerOptions.video_only)
   {
-    if(OpenStream(m_CurrentAudio, it->demuxerId, it->id, it->source, reset))
-      valid = true;
+    streams = m_SelectionStreams.Get(STREAM_AUDIO, PredicateAudioPriority);
+
+    for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
+    {
+      if(OpenStream(m_CurrentAudio, it->demuxerId, it->id, it->source, reset))
+        valid = true;
+    }
   }
+
   if(!valid)
     CloseStream(m_CurrentAudio, true);
 
