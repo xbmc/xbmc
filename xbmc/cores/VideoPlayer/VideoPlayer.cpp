@@ -560,7 +560,6 @@ int CSelectionStreams::CountSource(StreamType type, StreamSource source) const
     if (source && m_Streams[i].source != source)
       continue;
     count++;
-    continue;
   }
   return count;
 }
