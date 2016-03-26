@@ -436,9 +436,9 @@ int CVideoSurfaces::NumFree()
 bool CVideoSurfaces::HasRefs()
 {
   CSingleLock lock(m_section);
-  for (std::map<VASurfaceID, int>::iterator it = m_state.begin(); it != m_state.end(); ++it)
+  for (const auto &i : m_state)
   {
-    if (it->second & SURFACE_USED_FOR_REFERENCE)
+    if (i.second & SURFACE_USED_FOR_REFERENCE)
     return true;
   }
   return false;
@@ -2916,26 +2916,26 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
   double pts = DVD_NOPTS_VALUE;
 
   pipelineParams->surface = VA_INVALID_SURFACE;
-  for (it=m_decodedPics.begin(); it!=m_decodedPics.end(); ++it)
+  for (const auto &picture : m_decodedPics)
   {
-    if (it->index >= minPic && it->index <= maxPic)
+    if (picture.index >= minPic && picture.index <= maxPic)
     {
-      if (it->index > curPic)
+      if (picture.index > curPic)
       {
-        backwardRefs[(it->index - curPic) - 1] = it->videoSurface;
+        backwardRefs[(picture.index - curPic) - 1] = picture.videoSurface;
         pipelineParams->num_backward_references++;
       }
-      else if (it->index == curPic)
+      else if (picture.index == curPic)
       {
-        pipelineParams->surface = it->videoSurface;
-        pts = it->DVDPic.pts;
+        pipelineParams->surface = picture.videoSurface;
+        pts = picture.DVDPic.pts;
       }
-      if (it->index < curPic)
+      if (picture.index < curPic)
       {
-        forwardRefs[(curPic - it->index) - 1] = it->videoSurface;
+        forwardRefs[(curPic - picture.index) - 1] = picture.videoSurface;
         pipelineParams->num_forward_references++;
-        if (it->index == curPic - 1)
-          ptsLast = it->DVDPic.pts;
+        if (picture.index == curPic - 1)
+          ptsLast = picture.DVDPic.pts;
       }
     }
   }
