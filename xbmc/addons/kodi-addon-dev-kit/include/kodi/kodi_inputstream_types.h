@@ -69,6 +69,7 @@ extern "C" {
     } m_ListItemProperties[MAX_INFO_COUNT];
 
     const char *m_libFolder;
+    const char *m_profileFolder;
   } INPUTSTREAM;
 
   /*!
