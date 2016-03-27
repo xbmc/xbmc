@@ -93,7 +93,7 @@ bool CGUIWindowVideoNav::OnAction(const CAction &action)
     if (pItem->IsParentFolder())
       return false;
 
-    if (pItem && pItem->HasAddonInfo())
+    if (pItem && pItem->HasVideoInfoTag())
     {
       CVideoLibraryQueue::GetInstance().MarkAsWatched(pItem, pItem->GetVideoInfoTag()->m_playCount == 0);
       return true;
