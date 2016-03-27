@@ -618,16 +618,6 @@ private:
     bool ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, bool bUp);
 
     /*!
-     * @brief Stop the EPG and PVR threads but do not remove their data.
-     */
-    void StopUpdateThreads(void);
-
-    /*!
-     * @brief Restart the EPG and PVR threads after they've been stopped by StopUpdateThreads()
-     */
-    bool StartUpdateThreads(void);
-
-    /*!
      * @brief Continue playback on the last channel if it was stored in the database.
      * @return True if playback was continued, false otherwise.
      */
