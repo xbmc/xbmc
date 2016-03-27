@@ -1,5 +1,5 @@
 -include ../../Makefile.include
-DEPS= Makefile
+DEPS= Makefile arm-saturation.patch libdcadec_android.patch
 
 # lib name, version
 LIBNAME=libdcadec
@@ -43,6 +43,7 @@ endif
 
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p0 < ../arm-saturation.patch
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p1 < ../libdcadec_android.patch
 endif
