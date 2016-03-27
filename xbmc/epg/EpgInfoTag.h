@@ -321,9 +321,9 @@ namespace EPG
 
     /*!
      * @brief Set a timer for this event.
-     * @param iTimerId The id of the new timer.
+     * @param timer The timer.
      */
-    void SetTimer(unsigned int iTimerId);
+    void SetTimer(const PVR::CPVRTimerInfoTagPtr &timer);
 
     /*!
      * @brief Clear the timer for this event.

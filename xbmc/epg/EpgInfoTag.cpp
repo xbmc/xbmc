@@ -713,9 +713,9 @@ const int CEpgInfoTag::EpgID(void) const
   return m_epg ? m_epg->EpgID() : -1;
 }
 
-void CEpgInfoTag::SetTimer(unsigned int iTimerId)
+void CEpgInfoTag::SetTimer(const CPVRTimerInfoTagPtr &timer)
 {
-  m_timer = g_PVRTimers->GetById(iTimerId);
+  m_timer = timer;
 }
 
 void CEpgInfoTag::ClearTimer(void)

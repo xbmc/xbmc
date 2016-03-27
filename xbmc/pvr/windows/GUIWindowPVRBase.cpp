@@ -552,7 +552,7 @@ bool CGUIWindowPVRBase::AddTimer(CFileItem *item, bool bCreateRule, bool bShowTi
     return false;
   }
 
-  CPVRTimerInfoTagPtr timer(bCreateRule || !epgTag ? nullptr : g_PVRTimers->GetTimerForEpgTag(epgTag));
+  CPVRTimerInfoTagPtr timer(bCreateRule || !epgTag ? nullptr : epgTag->Timer());
   CPVRTimerInfoTagPtr rule (bCreateRule ? g_PVRTimers->GetTimerRule(timer) : nullptr);
   if (timer || rule)
   {
@@ -587,8 +587,6 @@ bool CGUIWindowPVRBase::EditTimer(CFileItem *item)
   else if (item->IsEPG())
   {
     timer = item->GetEPGInfoTag()->Timer();
-    if (!timer)
-      timer = g_PVRTimers->GetTimerForEpgTag(item->GetEPGInfoTag());
   }
 
   if (!timer)
@@ -638,8 +636,6 @@ bool CGUIWindowPVRBase::DeleteTimer(CFileItem *item, bool bIsRecording, bool bDe
   else if (item->IsEPG())
   {
     timer = item->GetEPGInfoTag()->Timer();
-    if (!timer)
-      timer = g_PVRTimers->GetTimerForEpgTag(item->GetEPGInfoTag());
   }
 
   if (!timer)

@@ -298,7 +298,7 @@ namespace PVR
 
   private:
     std::string GetWeekdaysString() const;
-    EPG::CEpgInfoTagPtr GetEpgInfoTag(bool bSetTimer) const;
+    void UpdateEpgInfoTag(void);
 
     CCriticalSection      m_critSection;
     unsigned int          m_iEpgUid;   /*!< id of epg event associated with this timer, EPG_TAG_INVALID_UID if none. */

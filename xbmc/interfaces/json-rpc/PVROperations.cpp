@@ -422,14 +422,15 @@ JSONRPC_STATUS CPVROperations::ToggleTimer(const std::string &method, ITransport
 
   bool repeating = parameterObject["repeating"].asBoolean(false);
   bool sentOkay = false;
-  if (epgTag->HasTimer())
+  CPVRTimerInfoTagPtr timer(epgTag->Timer());
+  if (timer)
   {
-    sentOkay = g_PVRTimers->DeleteTimer(g_PVRTimers->GetTimerForEpgTag(epgTag), false, repeating);
+    sentOkay = g_PVRTimers->DeleteTimer(timer, false, repeating);
   }
   else
   {
-    CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTag::CreateFromEpg(epgTag, repeating);
-    sentOkay = g_PVRTimers->AddTimer(newTimer);
+    timer = CPVRTimerInfoTag::CreateFromEpg(epgTag, repeating);
+    sentOkay = g_PVRTimers->AddTimer(timer);
   }
 
   if (sentOkay)

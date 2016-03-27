@@ -30,7 +30,6 @@
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/windows/GUIWindowPVRBase.h"
 
@@ -114,7 +113,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage &message)
       return bReturn;
     }
 
-    CPVRTimerInfoTagPtr timerTag = g_PVRTimers->GetTimerForEpgTag(m_progItem);
+    CPVRTimerInfoTagPtr timerTag = m_progItem->Timer();
     if (timerTag)
       ActionCancelTimer(CFileItemPtr(new CFileItem(timerTag)));
     else
