@@ -29,6 +29,9 @@
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "events/EventLog.h"
+#include "events/NotificationEvent.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "messaging/ApplicationMessenger.h"
@@ -235,7 +238,11 @@ bool CPVRClients::HasCreatedClients(void) const
 
   for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
     if (itr->second->ReadyToUse())
-      return true;
+    {
+      PVR_CONNECTION_STATE state = itr->second->GetConnectionState();
+      if (state != PVR_CONNECTION_STATE_CONNECTING)
+        return true;
+    }
 
   return false;
 }
@@ -330,6 +337,10 @@ int CPVRClients::GetCreatedClients(PVR_CLIENTMAP &clients) const
   {
     if (itr->second->ReadyToUse())
     {
+      PVR_CONNECTION_STATE state = itr->second->GetConnectionState();
+      if (state == PVR_CONNECTION_STATE_CONNECTING)
+        continue;
+      
       clients.insert(std::make_pair(itr->second->GetID(), itr->second));
       ++iReturn;
     }
@@ -1514,3 +1525,80 @@ bool CPVRClients::IsRealTimeStream(void) const
   return false;
 }
 
+void CPVRClients::ConnectionStateChange(int clientId, std::string &strConnectionString, PVR_CONNECTION_STATE newState,
+                                        std::string &strMessage)
+{
+  PVR_CLIENT client;
+  if (!GetClient(clientId, client))
+  {
+    CLog::Log(LOGDEBUG, "PVR - %s - invalid client id", __FUNCTION__);
+    return;
+  }
+
+  if (strConnectionString.empty())
+  {
+    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    return;
+  }
+
+  int iMsg(-1);
+  bool bError(true);
+  bool bNotify(true);
+
+  switch (newState)
+  {
+    case PVR_CONNECTION_STATE_SERVER_UNREACHABLE:
+      iMsg = 35505; // Server is unreachable
+      break;
+    case PVR_CONNECTION_STATE_SERVER_MISMATCH:
+      iMsg = 35506; // Server does not respond properly
+      break;
+    case PVR_CONNECTION_STATE_VERSION_MISMATCH:
+      iMsg = 35507; // Server version is not compatible
+      break;
+    case PVR_CONNECTION_STATE_ACCESS_DENIED:
+      iMsg = 35508; // Access denied
+      break;
+    case PVR_CONNECTION_STATE_CONNECTED:
+      bError = false;
+      iMsg = 36034; // Connection established
+      break;
+    case PVR_CONNECTION_STATE_DISCONNECTED:
+      iMsg = 36030; // Connection lost
+      break;
+    case PVR_CONNECTION_STATE_CONNECTING:
+      bError = false;
+      iMsg = 35509; // Connecting
+      bNotify = false;
+      break;
+    default:
+      CLog::Log(LOGERROR, "PVR - %s - unknown connection state", __FUNCTION__);
+      return;
+  }
+
+  // Use addon-supplied message, if present
+  std::string strMsg;
+  if (!strMessage.empty())
+    strMsg = strMessage;
+  else
+    strMsg = g_localizeStrings.Get(iMsg);
+
+  // Notify user.
+  if (bNotify && !CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMANAGER_HIDECONNECTIONLOSTWARNING))
+    CGUIDialogKaiToast::QueueNotification(bError ? CGUIDialogKaiToast::Error : CGUIDialogKaiToast::Info, client->Name().c_str(),
+                                          strMsg, 5000, true);
+
+  // Write event log entry.
+  CEventLog::GetInstance().Add(EventPtr(new CNotificationEvent(client->Name(), strMsg, client->Icon(),
+                                                               bError ? EventLevel::Error : EventLevel::Information)));
+
+  if (newState == PVR_CONNECTION_STATE_CONNECTED)
+  {
+    // update properties on connect
+    if (!client->GetAddonProperties())
+    {
+      CLog::Log(LOGERROR, "PVR - %s - error reading properties", __FUNCTION__);
+    }
+    g_PVRManager.Start();
+  }
+}

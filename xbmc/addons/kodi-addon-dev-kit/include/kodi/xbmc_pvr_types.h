@@ -77,10 +77,10 @@ struct DemuxPacket;
 #define PVR_STREAM_MAX_STREAMS 20
 
 /* current PVR API version */
-#define XBMC_PVR_API_VERSION "5.1.0"
+#define XBMC_PVR_API_VERSION "5.1.1"
 
 /* min. PVR API version */
-#define XBMC_PVR_MIN_API_VERSION "5.1.0"
+#define XBMC_PVR_MIN_API_VERSION "5.1.1"
 
 #ifdef __cplusplus
 extern "C" {
@@ -228,6 +228,7 @@ extern "C" {
     PVR_CONNECTION_STATE_ACCESS_DENIED      = 4,  /*!< @brief backend server is reachable, but denies client access (e.g. due to wrong credentials) */
     PVR_CONNECTION_STATE_CONNECTED          = 5,  /*!< @brief connection to backend server is established */
     PVR_CONNECTION_STATE_DISCONNECTED       = 6,  /*!< @brief no connection to backend server (e.g. due to network errors or client initiated disconnect)*/
+    PVR_CONNECTION_STATE_CONNECTING         = 7,  /*!< @brief connecting to backend */
   } PVR_CONNECTION_STATE;
 
   /*!

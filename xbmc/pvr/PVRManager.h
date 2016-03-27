@@ -583,6 +583,11 @@ private:
     */
     std::string GetPlayingTVGroupName();
 
+    /*!
+     * @brief Signal a connection change of a client
+     */
+    void ConnectionStateChange(int clientId, std::string connectString, PVR_CONNECTION_STATE state, std::string message);
+
   protected:
     /*!
      * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
@@ -753,5 +758,21 @@ private:
     virtual const char *GetType() const { return "pvr-search-missing-channel-icons"; }
 
     bool DoWork();
+  };
+
+  class CPVRClientConnectionJob : public CJob
+  {
+  public:
+    CPVRClientConnectionJob(int clientId, std::string connectString, PVR_CONNECTION_STATE state, std::string message) :
+    m_clientId(clientId), m_connectString(connectString), m_state(state), m_message(message) {}
+    virtual ~CPVRClientConnectionJob() {}
+    virtual const char *GetType() const { return "pvr-client-connection"; }
+
+    virtual bool DoWork();
+  private:
+    int m_clientId;
+    std::string m_connectString;
+    PVR_CONNECTION_STATE m_state;
+    std::string m_message;
   };
 }

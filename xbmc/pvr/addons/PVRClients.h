@@ -676,6 +676,9 @@ namespace PVR
 
     bool IsRealTimeStream() const;
 
+    void ConnectionStateChange(int clientId, std::string &strConnectionString, PVR_CONNECTION_STATE newState,
+                               std::string &strMessage);
+
   private:
     /*!
      * @brief Update add-ons from the AddonManager

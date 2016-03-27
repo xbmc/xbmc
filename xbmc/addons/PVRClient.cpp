@@ -218,18 +218,16 @@ bool CPVRClient::ReadyToUse(void) const
   return m_bReadyToUse;
 }
 
+PVR_CONNECTION_STATE CPVRClient::GetConnectionState(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_connectionState;
+}
+
 void CPVRClient::SetConnectionState(PVR_CONNECTION_STATE state)
 {
-  if (m_connectionState != state)
-  {
-    m_connectionState = state;
-
-    if (state == PVR_CONNECTION_STATE_CONNECTED)
-    {
-      CLog::Log(LOGDEBUG, "PVRClient - %s - refetching addon properties", __FUNCTION__);
-      GetAddonProperties();
-    }
-  }
+  CSingleLock lock(m_critSection);
+  m_connectionState = state;
 }
 
 int CPVRClient::GetID(void) const

@@ -1673,6 +1673,11 @@ void CPVRManager::TriggerSearchMissingChannelIcons(void)
   CJobManager::GetInstance().AddJob(new CPVRSearchMissingChannelIconsJob(), NULL);
 }
 
+void CPVRManager::ConnectionStateChange(int clientId, std::string connectString, PVR_CONNECTION_STATE state, std::string message)
+{
+  CJobManager::GetInstance().AddJob(new CPVRClientConnectionJob(clientId, connectString, state, message), NULL);
+}
+
 void CPVRManager::ExecutePendingJobs(void)
 {
   CSingleLock lock(m_critSectionTriggers);
@@ -1717,6 +1722,12 @@ bool CPVRChannelSwitchJob::DoWork(void)
 bool CPVRSearchMissingChannelIconsJob::DoWork(void)
 {
   g_PVRManager.SearchMissingChannelIcons();
+  return true;
+}
+
+bool CPVRClientConnectionJob::DoWork(void)
+{
+  g_PVRClients->ConnectionStateChange(m_clientId, m_connectString, m_state, m_message);
   return true;
 }
 

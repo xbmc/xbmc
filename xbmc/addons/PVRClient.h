@@ -109,7 +109,7 @@ namespace PVR
      * @brief Gets the backend connection state.
      * @return the backend connection state.
      */
-    PVR_CONNECTION_STATE GetConnectionState(void) const { return m_connectionState; }
+    PVR_CONNECTION_STATE GetConnectionState(void) const;
 
     /*!
      * @brief Sets the backend connection state.
@@ -617,6 +617,11 @@ namespace PVR
      */
     bool IsRealTimeStream() const;
 
+    /*!
+     * @brief reads the client's properties
+     */
+    bool GetAddonProperties(void);
+
   private:
     /*!
      * @brief Checks whether the provided API version is compatible with XBMC
@@ -644,8 +649,6 @@ namespace PVR
      * @brief Resets all class members to their defaults. Called by the constructors.
      */
     void ResetProperties(int iClientId = PVR_INVALID_CLIENT_ID);
-
-    bool GetAddonProperties(void);
 
     /*!
      * @brief Copy over group info from xbmcGroup to addonGroup.
