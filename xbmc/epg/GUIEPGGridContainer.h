@@ -69,7 +69,6 @@ namespace EPG
     virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 
     virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-    virtual void DoRender();
     virtual void Render();
     void LoadLayout(TiXmlElement *layout);
     void LoadContent(TiXmlElement *content);
@@ -157,11 +156,6 @@ namespace EPG
     CGUIListItemLayout *m_programmeLayout;
     CGUIListItemLayout *m_focusedProgrammeLayout;
     CGUIListItemLayout *m_rulerLayout;
-
-    bool m_wasReset;  // true if we've received a Reset message until we've rendered once.  Allows
-                      // us to make sure we don't tell the infomanager that we've been moving when
-                      // the "movement" was simply due to the list being repopulated (thus cursor position
-                      // changing around)
 
     void FreeItemsMemory();
     void FreeChannelMemory(int keepStart, int keepEnd);

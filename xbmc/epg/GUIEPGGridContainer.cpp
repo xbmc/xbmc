@@ -98,7 +98,6 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID, int controlID, float po
   m_cacheChannelItems     = preloadItems;
   m_cacheRulerItems       = preloadItems;
   m_cacheProgrammeItems   = preloadItems;
-  m_wasReset              = false;
 }
 
 CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer &other)
@@ -120,7 +119,6 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer &other)
   m_programmeLayout         = other.m_programmeLayout;
   m_focusedProgrammeLayout  = other.m_focusedProgrammeLayout;
   m_rulerLayout             = other.m_rulerLayout;
-  m_wasReset                = other.m_wasReset;
   m_rulerUnit               = other.m_rulerUnit;
   m_channels                = other.m_channels;
   m_channelsPerPage         = other.m_channelsPerPage;
@@ -1661,12 +1659,6 @@ void CGUIEPGGridContainer::SetFocus(bool focus)
   CGUIControl::SetFocus(focus);
 }
 
-void CGUIEPGGridContainer::DoRender()
-{
-  CGUIControl::DoRender();
-  m_wasReset = false;
-}
-
 void CGUIEPGGridContainer::ScrollToChannelOffset(int offset)
 {
   CSingleLock lock(m_critSection);
@@ -1831,7 +1823,6 @@ void CGUIEPGGridContainer::Reset()
 {
   ClearGridIndex();
 
-  m_wasReset = true;
   m_channelItems.clear();
   m_programmeItems.clear();
   m_rulerItems.clear();
