@@ -27,6 +27,7 @@
 
 #include "Network.h"
 #include "ServiceBroker.h"
+#include "DNSNameCache.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/NetworkServices.h"
 #include "settings/Settings.h"
@@ -452,6 +453,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, int param)
       }
 
       CLog::Log(LOGDEBUG, "%s - Starting network services",__FUNCTION__);
+      CDNSNameCache::Flush();
       CNetworkServices::GetInstance().Start();
       break;
 
