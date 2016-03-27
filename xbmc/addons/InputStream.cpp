@@ -145,7 +145,9 @@ bool CInputStream::Open(CFileItem &fileitem)
   props.m_strURL = fileitem.GetPath().c_str();
   
   std::string libFolder = URIUtils::GetDirectory(m_parentLib);
+  std::string profileFolder = CSpecialProtocol::TranslatePath(Profile());
   props.m_libFolder = libFolder.c_str();
+  props.m_profileFolder = profileFolder.c_str();
 
   bool ret = false;
   try
