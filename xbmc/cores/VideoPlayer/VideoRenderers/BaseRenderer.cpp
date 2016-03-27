@@ -376,11 +376,6 @@ void CBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsign
   }
 }
 
-void CBaseRenderer::ConfigureCropping(CRect cropValues)
-{
-  m_cropValues = cropValues;
-}
-
 void CBaseRenderer::ManageDisplay()
 {
   m_viewRect = g_graphicsContext.GetViewWindow();

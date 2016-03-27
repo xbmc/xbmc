@@ -77,8 +77,7 @@ public:
   virtual ~CBaseRenderer();
 
   // Player functions
-  void ConfigureCropping(CRect cropValues);
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_formatl, unsigned int orientation) = 0;
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_formatl, unsigned int orientation, CRect crop_values) = 0;
   virtual bool IsConfigured() = 0;
   virtual int GetImage(YV12Image *image, int source = -1, bool readonly = false) = 0;
   virtual void ReleaseImage(int source, bool preserve = false) = 0;

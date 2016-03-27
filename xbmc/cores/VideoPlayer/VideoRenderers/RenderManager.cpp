@@ -351,10 +351,7 @@ bool CRenderManager::Configure()
       return false;
   }
 
-  // configure the renderer to crop if necessary
-  m_pRenderer->ConfigureCropping(m_cropValues);
-
-  bool result = m_pRenderer->Configure(m_width, m_height, m_dwidth, m_dheight, m_fps, m_flags, m_format, m_extended_format, m_orientation);
+  bool result = m_pRenderer->Configure(m_width, m_height, m_dwidth, m_dheight, m_fps, m_flags, m_format, m_extended_format, m_orientation, m_cropValues);
   if (result)
   {
     CRenderInfo info = m_pRenderer->GetRenderInfo();

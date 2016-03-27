@@ -201,11 +201,12 @@ void CMMALRenderer::AddVideoPictureHW(DVDVideoPicture& pic, int index)
   m_buffers[index] = buffer->Acquire();
 }
 
-bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation)
+bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation, CRect crop_values)
 {
   CSingleLock lock(m_sharedSection);
   ReleaseBuffers();
 
+  m_cropValues = crop_values;
   m_sourceWidth  = width;
   m_sourceHeight = height;
   m_renderOrientation = orientation;
