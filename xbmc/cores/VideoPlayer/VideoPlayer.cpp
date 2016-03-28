@@ -560,7 +560,6 @@ int CSelectionStreams::CountSource(StreamType type, StreamSource source) const
     if (source && m_Streams[i].source != source)
       continue;
     count++;
-    continue;
   }
   return count;
 }
@@ -890,32 +889,36 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
   || m_dvd.iSelectedSPUStream   >= 0)
     return;
 
-  SelectionStreams streams;
   bool valid;
 
   // open video stream
-  streams = m_SelectionStreams.Get(STREAM_VIDEO, PredicateVideoPriority);
   valid   = false;
-  for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
+
+  for (const auto &stream : m_SelectionStreams.Get(STREAM_VIDEO, PredicateVideoPriority))
   {
-    if(OpenStream(m_CurrentVideo, it->demuxerId, it->id, it->source, reset))
+    if(OpenStream(m_CurrentVideo, stream.demuxerId, stream.id, stream.source, reset))
+    {
       valid = true;
+      break;
+    }
   }
   if(!valid)
     CloseStream(m_CurrentVideo, true);
 
   // open audio stream
-  if(m_PlayerOptions.video_only)
-    streams.clear();
-  else
-    streams = m_SelectionStreams.Get(STREAM_AUDIO, PredicateAudioPriority);
   valid   = false;
-
-  for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
+  if(!m_PlayerOptions.video_only)
   {
-    if(OpenStream(m_CurrentAudio, it->demuxerId, it->id, it->source, reset))
-      valid = true;
+    for (const auto &stream : m_SelectionStreams.Get(STREAM_AUDIO, PredicateAudioPriority))
+    {
+      if(OpenStream(m_CurrentAudio, stream.demuxerId, stream.id, stream.source, reset))
+      {
+        valid = true;
+        break;
+      }
+    }
   }
+
   if(!valid)
     CloseStream(m_CurrentAudio, true);
 
@@ -925,18 +928,18 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
   // open subtitle stream
   SelectionStream as = m_SelectionStreams.Get(STREAM_AUDIO, GetAudioStream());
   PredicateSubtitlePriority psp(as.language);
-  streams = m_SelectionStreams.Get(STREAM_SUBTITLE, psp);
   valid   = false;
   CloseStream(m_CurrentSubtitle, false);
-  for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
+  for (const auto &stream : m_SelectionStreams.Get(STREAM_SUBTITLE, psp))
   {
-    if(OpenStream(m_CurrentSubtitle, it->demuxerId, it->id, it->source))
+    if(OpenStream(m_CurrentSubtitle, stream.demuxerId, stream.id, stream.source))
     {
       valid = true;
-      if(!psp.relevant(*it))
+      if(!psp.relevant(stream))
         visible = false;
-      else if(it->flags & CDemuxStream::FLAG_FORCED)
+      else if(stream.flags & CDemuxStream::FLAG_FORCED)
         visible = true;
+      break;
     }
   }
   if(!valid)
@@ -946,23 +949,27 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
     SetSubtitleVisibleInternal(visible); // only set subtitle visibility if state not stored by dvd navigator, because navigator will restore it (if visible)
 
   // open teletext stream
-  streams = m_SelectionStreams.Get(STREAM_TELETEXT);
   valid   = false;
-  for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
+  for (const auto &stream : m_SelectionStreams.Get(STREAM_TELETEXT))
   {
-    if(OpenStream(m_CurrentTeletext, it->demuxerId, it->id, it->source))
+    if(OpenStream(m_CurrentTeletext, stream.demuxerId, stream.id, stream.source))
+    {
       valid = true;
+      break;
+    }
   }
   if(!valid)
     CloseStream(m_CurrentTeletext, false);
 
   // open RDS stream
-  streams = m_SelectionStreams.Get(STREAM_RADIO_RDS);
   valid   = false;
-  for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
+  for (const auto &stream : m_SelectionStreams.Get(STREAM_RADIO_RDS))
   {
-    if(OpenStream(m_CurrentRadioRDS, it->demuxerId, it->id, it->source))
+    if(OpenStream(m_CurrentRadioRDS, stream.demuxerId, stream.id, stream.source))
+    {
       valid = true;
+      break;
+    }
   }
   if(!valid)
     CloseStream(m_CurrentRadioRDS, false);
@@ -3739,16 +3746,16 @@ bool CVideoPlayer::AdaptForcedSubtitles()
   if (ss.flags & CDemuxStream::FLAG_FORCED || !GetSubtitleVisible())
   {
     SelectionStream as = m_SelectionStreams.Get(STREAM_AUDIO, GetAudioStream());
-    SelectionStreams streams = m_SelectionStreams.Get(STREAM_SUBTITLE);
 
-    for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
+    for (const auto &stream : m_SelectionStreams.Get(STREAM_SUBTITLE))
     {
-      if (it->flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareISO639Codes(it->language, as.language))
+      if (stream.flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareISO639Codes(stream.language, as.language))
       {
-        if(OpenStream(m_CurrentSubtitle, it->demuxerId, it->id, it->source))
+        if(OpenStream(m_CurrentSubtitle, stream.demuxerId, stream.id, stream.source))
         {
           valid = true;
           SetSubtitleVisibleInternal(true);
+          break;
         }
       }
     }

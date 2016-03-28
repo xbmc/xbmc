@@ -92,7 +92,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::AddData(uint8_t* data, int iSize, double pts)
     pSPUData->iSize = 0;
 
     // check spu data lenght, only needed / possible in the first spu pakcet
-    unsigned __int16 length = data[0] << 8 | data[1];
+    uint16_t length = data[0] << 8 | data[1];
     if (length == 0)
     {
       DebugLog("corrupt spu data: zero packet");
@@ -174,7 +174,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
   uint8_t* p = pSPUData->data; // pointer to walk through all data
 
   // get data length
-  unsigned __int16 datalength = p[2] << 8 | p[3]; // datalength + 4 control bytes
+  uint16_t datalength = p[2] << 8 | p[3]; // datalength + 4 control bytes
 
   pUnparsedData = pSPUData->data + 4;
 
@@ -190,8 +190,8 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
   {
     DebugLog("  starting new SP_DCSQT");
     // p is beginning of first SP_DCSQT now
-    unsigned __int16 delay = p[0] << 8 | p[1];
-    unsigned __int16 next_DCSQ = p[2] << 8 | p[3];
+    uint16_t delay = p[0] << 8 | p[1];
+    uint16_t next_DCSQ = p[2] << 8 | p[3];
 
     //offset within the Sub-Picture Unit to the next SP_DCSQ. If this is the last SP_DCSQ, it points to itself.
     bHasNewDCSQ = ((pSPUData->data + next_DCSQ) != p);
@@ -295,8 +295,8 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       case SET_DSPXA:
         {
           p++;
-          unsigned __int16 tfaddr = (p[0] << 8 | p[1]); // offset in packet
-          unsigned __int16 bfaddr = (p[2] << 8 | p[3]); // offset in packet
+          uint16_t tfaddr = (p[0] << 8 | p[1]); // offset in packet
+          uint16_t bfaddr = (p[2] << 8 | p[3]); // offset in packet
           pSPUInfo->pTFData = (tfaddr - 4); //pSPUInfo->pData + (tfaddr - 4); // pSPUData->data = packet startaddr - 4
           pSPUInfo->pBFData = (bfaddr - 4); //pSPUInfo->pData + (bfaddr - 4); // pSPUData->data = packet startaddr - 4
           p += 4;
@@ -306,7 +306,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       case CHG_COLCON:
         {
           p++;
-          unsigned __int16 paramlength = p[0] << 8 | p[1];
+          uint16_t paramlength = p[0] << 8 | p[1];
           DebugLog("GetPacket, CHG_COLCON, skippin %i bytes", paramlength);
           p += paramlength;
         }
@@ -365,7 +365,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedD
   unsigned int i_x, i_y;
 
   // allocate a buffer for the result
-  unsigned __int16* p_dest = (unsigned __int16*)pSPU->result;
+  uint16_t* p_dest = (uint16_t*)pSPU->result;
 
   /* The subtitles are interlaced, we need two offsets */
   unsigned int i_id = 0;                   /* Start on the even SPU layer */
