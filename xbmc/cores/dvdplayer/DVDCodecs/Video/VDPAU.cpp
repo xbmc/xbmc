@@ -1458,7 +1458,20 @@ void CMixer::StateMachine(int signal, Protocol *port, Message *msg)
       break;
 
     case M_TOP_CONFIGURED:
-      if (port == &m_dataPort)
+      if (port == &m_controlPort)
+      {
+        switch (signal)
+        {
+          case CMixerControlProtocol::FLUSH:
+            Flush();
+            msg->Reply(CMixerControlProtocol::ACC);
+            m_state = M_TOP_CONFIGURED_WAIT1;
+            return;
+          default:
+            break;
+        }
+      }
+      else if (port == &m_dataPort)
       {
         switch (signal)
         {
