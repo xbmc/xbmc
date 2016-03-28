@@ -97,6 +97,9 @@ const char* CAEUtil::GetStdChLayoutName(const enum AEStdChLayout layout)
 
 const unsigned int CAEUtil::DataFormatToBits(const enum AEDataFormat dataFormat)
 {
+  if (AE_IS_RAW_RAW(dataFormat))
+    return 8;
+
   if (dataFormat < 0 || dataFormat >= AE_FMT_MAX)
     return 0;
 

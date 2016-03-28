@@ -19,6 +19,8 @@
  *
  */
 
+#include "jutils/jutils-details.hpp"
+
 namespace jni
 {
 
@@ -28,6 +30,12 @@ class CJNIAudioFormat
     static void PopulateStaticFields();
 
     static int ENCODING_PCM_16BIT;
+    static int ENCODING_PCM_FLOAT;
+    static int ENCODING_AC3;
+    static int ENCODING_E_AC3;
+    static int ENCODING_DTS;
+    static int ENCODING_DTS_HD;
+    static int ENCODING_DOLBY_TRUEHD;
 
     static int CHANNEL_OUT_STEREO;
     static int CHANNEL_OUT_5POINT1;
@@ -45,6 +53,9 @@ class CJNIAudioFormat
     static int CHANNEL_OUT_BACK_RIGHT;
 
     static int CHANNEL_INVALID;
+
+protected:
+    static void GetStaticValue(jhclass &c, int &field, char *value);
 };
 
 };

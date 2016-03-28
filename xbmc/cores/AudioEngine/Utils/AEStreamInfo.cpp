@@ -431,7 +431,7 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
       m_packFunc       = &CAEPackIEC61937::PackEAC3;
       m_fsizeMain      = 0;
 
-      CLog::Log(LOGINFO, "CAEStreamInfo::SyncAC3 - E-AC3 stream detected (%d channels, %dHz)", m_channels, m_sampleRate);
+      CLog::Log(LOGINFO, "CAEStreamInfo::SyncAC3 - E-AC3 stream detected (%d channels, %dHz, %d blocks)", m_channels, m_sampleRate, blocks);
       return skip;
     }
   }
