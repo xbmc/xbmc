@@ -19,6 +19,7 @@ rem clean to force a full rebuild
 rem noclean to force a build without clean
 rem noprompt to avoid all prompts
 rem nomingwlibs to skip building all libs built with mingw
+rem cmake to build with cmake instead of VS solution
 CLS
 COLOR 1B
 TITLE %APP_NAME% for Windows Build Script
@@ -35,14 +36,16 @@ SET buildmingwlibs=true
 SET buildbinaryaddons=true
 SET exitcode=0
 SET useshell=rxvt
+SET cmake=0
 SET BRANCH=na
-FOR %%b in (%1, %2, %3, %4, %5) DO (
+FOR %%b in (%1, %2, %3, %4, %5, %6) DO (
   IF %%b==clean SET buildmode=clean
   IF %%b==noclean SET buildmode=noclean
   IF %%b==noprompt SET promptlevel=noprompt
   IF %%b==nomingwlibs SET buildmingwlibs=false
   IF %%b==nobinaryaddons SET buildbinaryaddons=false
   IF %%b==sh SET useshell=sh
+  IF %%b==cmake SET cmake=1
 )
 
 SET buildconfig=Release
@@ -118,6 +121,7 @@ set WORKSPACE=%CD%\..\..
       goto DIE
     )
   )
+  IF %cmake%==1 goto COMPILE_CMAKE_EXE
   IF %buildmode%==clean goto COMPILE_EXE
   goto COMPILE_NO_CLEAN_EXE
   
@@ -156,6 +160,40 @@ set WORKSPACE=%CD%\..\..
   ECHO Done!
   ECHO ------------------------------------------------------------
   GOTO MAKE_BUILD_EXE
+
+
+:COMPILE_CMAKE_EXE
+  ECHO Wait while preparing the build.
+  ECHO ------------------------------------------------------------
+  ECHO Compiling %APP_NAME% branch %BRANCH%...
+
+  IF %buildmode%==clean (
+    RMDIR /S /Q %WORKSPACE%\kodi-build
+  )
+  MKDIR %WORKSPACE%\kodi-build
+  PUSHD %WORKSPACE%\kodi-build
+
+  cmake.exe -G "Visual Studio 14" %WORKSPACE%\project\cmake
+  IF %errorlevel%==1 (
+    set DIETEXT="%APP_NAME%.EXE failed to build!"
+    goto DIE
+  )
+
+  cmake.exe --build . --config "%buildconfig%"
+  IF %errorlevel%==1 (
+    set DIETEXT="%APP_NAME%.EXE failed to build!"
+    goto DIE
+  )
+
+  set EXE="%WORKSPACE%\kodi-build\%buildconfig%\%APP_NAME%.exe"
+  set PDB="%WORKSPACE%\kodi-build\%buildconfig%\%APP_NAME%.pdb"
+  set D3D="%WORKSPACE%\kodi-build\D3DCompile*.DLL"
+
+  POPD
+  ECHO Done!
+  ECHO ------------------------------------------------------------
+  GOTO MAKE_BUILD_EXE
+
 
 :MAKE_BUILD_EXE
   ECHO Copying files...
