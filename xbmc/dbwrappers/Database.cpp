@@ -186,6 +186,7 @@ bool CDatabase::DeleteValues(const std::string &strTable, const Filter &filter /
 bool CDatabase::BeginMultipleExecute()
 {
   m_multipleExecute = true;
+  m_multipleQueries.clear();
   return true;
 }
 
@@ -201,7 +202,7 @@ bool CDatabase::CommitMultipleExecute()
       return false;
     }
   }
-
+  m_multipleQueries.clear();
   return CommitTransaction();
 }
 
