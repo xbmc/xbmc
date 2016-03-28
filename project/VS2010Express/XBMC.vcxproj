@@ -358,6 +358,7 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClCompile Include="..\..\xbmc\epg\EpgInfoTag.cpp" />
     <ClCompile Include="..\..\xbmc\epg\EpgSearchFilter.cpp" />
     <ClCompile Include="..\..\xbmc\epg\GUIEPGGridContainer.cpp" />
+    <ClCompile Include="..\..\xbmc\epg\GUIEPGGridContainerModel.cpp" />
     <ClCompile Include="..\..\xbmc\events\AddonEvent.cpp" />
     <ClCompile Include="..\..\xbmc\events\AddonManagementEvent.cpp" />
     <ClCompile Include="..\..\xbmc\events\BaseEvent.cpp" />
@@ -1090,6 +1091,7 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\..\xbmc\DbUrl.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMediaFilter.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogSimpleMenu.h" />
+    <ClInclude Include="..\..\xbmc\epg\GUIEPGGridContainerModel.h" />
     <ClInclude Include="..\..\xbmc\events\AddonEvent.h" />
     <ClInclude Include="..\..\xbmc\events\AddonManagementEvent.h" />
     <ClInclude Include="..\..\xbmc\events\BaseEvent.h" />

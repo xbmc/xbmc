@@ -27,16 +27,8 @@
 
 namespace EPG
 {
-  #define MAXBLOCKS   (33 * 24 * 60 / 5) //! 33 days of 5 minute blocks (31 days for upcoming data + 1 day for past data + 1 day for fillers)
-
-  struct GridItemsPtr
-  {
-    CFileItemPtr item;
-    float originWidth;
-    float originHeight;
-    float width;
-    float height;
-  };
+  class GridItemsPtr;
+  class CGUIEPGGridContainerModel;
 
   class CGUIEPGGridContainer : public IGUIContainer
   {
@@ -46,7 +38,6 @@ namespace EPG
                          int rulerUnit, const CTextureInfo& progressIndicatorTexture);
     CGUIEPGGridContainer(const CGUIEPGGridContainer &other);
 
-    virtual ~CGUIEPGGridContainer(void);
     virtual CGUIEPGGridContainer *Clone() const { return new CGUIEPGGridContainer(*this); }
 
     virtual bool OnAction(const CAction &action);
@@ -62,7 +53,6 @@ namespace EPG
     virtual void SetFocus(bool focus);
 
     virtual std::string GetDescription() const;
-    const int GetNumChannels()   { return m_channels; };
     virtual int GetSelectedItem() const;
     CFileItemPtr GetSelectedChannelItem() const;
     PVR::CPVRChannelPtr GetSelectedChannel();
@@ -101,8 +91,6 @@ namespace EPG
     void ProgrammesScroll(int amount);
     void ValidateOffset();
     void UpdateLayout();
-    void Reset();
-    void ClearGridIndex(void);
 
     GridItemsPtr *GetItem(int channel);
     GridItemsPtr *GetNextItem(int channel);
@@ -136,15 +124,6 @@ namespace EPG
 
     CPoint m_renderOffset; ///< \brief render offset of the first item in the list \sa SetRenderOffset
 
-    struct ItemsPtr
-    {
-      long start;
-      long stop;
-    };
-    std::vector<ItemsPtr> m_epgItemsPtr;
-    std::vector<CFileItemPtr> m_channelItems;
-    std::vector<CFileItemPtr> m_rulerItems;
-    std::vector<CFileItemPtr> m_programmeItems;
     std::vector<CGUIListItemLayout> m_channelLayouts;
     std::vector<CGUIListItemLayout> m_focusedChannelLayouts;
     std::vector<CGUIListItemLayout> m_focusedProgrammeLayouts;
@@ -157,11 +136,6 @@ namespace EPG
     CGUIListItemLayout *m_focusedProgrammeLayout;
     CGUIListItemLayout *m_rulerLayout;
 
-    void FreeItemsMemory();
-    void FreeChannelMemory(int keepStart, int keepEnd);
-    void FreeProgrammeMemory(int channel, int keepStart, int keepEnd);
-    void FreeRulerMemory(int keepStart, int keepEnd);
-
     void GetChannelCacheOffsets(int &cacheBefore, int &cacheAfter);
     void GetProgrammeCacheOffsets(int &cacheBefore, int &cacheAfter);
 
@@ -171,12 +145,10 @@ namespace EPG
     EPG::CEpgInfoTagPtr GetSelectedEpgInfoTag() const;
 
     int m_rulerUnit; //! number of blocks that makes up one element of the ruler
-    int m_channels;
     int m_channelsPerPage;
     int m_programmesPerPage;
     int m_channelCursor;
     int m_channelOffset;
-    int m_blocks;
     int m_blocksPerPage;
     int m_blockCursor;
     int m_blockOffset;
@@ -199,12 +171,8 @@ namespace EPG
     float m_blockSize;      //! a block's width in pixels
     float m_analogScrollCount;
 
-    CDateTime m_gridStart;
-    CDateTime m_gridEnd;
-
     CGUITexture m_guiProgressIndicatorTexture;
 
-    std::vector<std::vector<GridItemsPtr> > m_gridIndex;
     GridItemsPtr *m_item;
     CGUIListItem *m_lastItem;
     CGUIListItem *m_lastChannel;
@@ -220,5 +188,6 @@ namespace EPG
     float m_channelScrollOffset;
 
     CCriticalSection m_critSection;
+    std::shared_ptr<CGUIEPGGridContainerModel> m_gridModel;
   };
 }

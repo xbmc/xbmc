@@ -146,6 +146,8 @@
 		2AC7EB5D1C2330BC00BDAA95 /* GUIWindowPVRTimersBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7EB581C21F6BA00BDAA95 /* GUIWindowPVRTimersBase.cpp */; };
 		2AC7EB601C34893700BDAA95 /* PVRRecordingsPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7EB5F1C34893700BDAA95 /* PVRRecordingsPath.cpp */; };
 		2AC7EB611C34893700BDAA95 /* PVRRecordingsPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7EB5F1C34893700BDAA95 /* PVRRecordingsPath.cpp */; };
+		2AFBB94C1CC608A200BAB340 /* GUIEPGGridContainerModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AFBB94B1CC608A200BAB340 /* GUIEPGGridContainerModel.cpp */; };
+		2AFBB94D1CC608A200BAB340 /* GUIEPGGridContainerModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AFBB94B1CC608A200BAB340 /* GUIEPGGridContainerModel.cpp */; };
 		2F4564D51970129A00396109 /* GUIFontCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F4564D31970129A00396109 /* GUIFontCache.cpp */; };
 		2F4564D61970129A00396109 /* GUIFontCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F4564D31970129A00396109 /* GUIFontCache.cpp */; };
 		36A9443D15821E2800727135 /* DatabaseUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9443B15821E2800727135 /* DatabaseUtils.cpp */; };
@@ -2585,6 +2587,8 @@
 		2AC7EB591C21F6BA00BDAA95 /* GUIWindowPVRTimersBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowPVRTimersBase.h; sourceTree = "<group>"; };
 		2AC7EB5E1C34892100BDAA95 /* PVRRecordingsPath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PVRRecordingsPath.h; sourceTree = "<group>"; };
 		2AC7EB5F1C34893700BDAA95 /* PVRRecordingsPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRRecordingsPath.cpp; sourceTree = "<group>"; };
+		2AFBB94A1CC6088000BAB340 /* GUIEPGGridContainerModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIEPGGridContainerModel.h; sourceTree = "<group>"; };
+		2AFBB94B1CC608A200BAB340 /* GUIEPGGridContainerModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIEPGGridContainerModel.cpp; sourceTree = "<group>"; };
 		2F4564D31970129A00396109 /* GUIFontCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIFontCache.cpp; sourceTree = "<group>"; };
 		2F4564D41970129A00396109 /* GUIFontCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIFontCache.h; sourceTree = "<group>"; };
 		36A9443B15821E2800727135 /* DatabaseUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DatabaseUtils.cpp; sourceTree = "<group>"; };
@@ -7057,6 +7061,8 @@
 				C84828F1156CFD5E005A996F /* EpgSearchFilter.h */,
 				C84828F2156CFD5E005A996F /* GUIEPGGridContainer.cpp */,
 				C84828F3156CFD5E005A996F /* GUIEPGGridContainer.h */,
+				2AFBB94B1CC608A200BAB340 /* GUIEPGGridContainerModel.cpp */,
+				2AFBB94A1CC6088000BAB340 /* GUIEPGGridContainerModel.h */,
 			);
 			path = epg;
 			sourceTree = "<group>";
@@ -9684,6 +9690,7 @@
 				E38E1FEC0D25F9FD00618676 /* RenderManager.cpp in Sources */,
 				E38E1FF00D25F9FD00618676 /* VideoFilterShader.cpp in Sources */,
 				E38E1FF10D25F9FD00618676 /* YUV2RGBShader.cpp in Sources */,
+				2AFBB94C1CC608A200BAB340 /* GUIEPGGridContainerModel.cpp in Sources */,
 				E38E1FF70D25F9FD00618676 /* CueDocument.cpp in Sources */,
 				E38E1FF80D25F9FD00618676 /* Database.cpp in Sources */,
 				68AE5C0B1C92437900C4D527 /* GUIControllerWindow.cpp in Sources */,
@@ -11174,6 +11181,7 @@
 				E4991318174E5DAD00741B6D /* GUITextureD3D.cpp in Sources */,
 				E4991319174E5DAD00741B6D /* GUITextureGL.cpp in Sources */,
 				E499131A174E5DAD00741B6D /* GUITextureGLES.cpp in Sources */,
+				2AFBB94D1CC608A200BAB340 /* GUIEPGGridContainerModel.cpp in Sources */,
 				E499131B174E5DAD00741B6D /* GUIToggleButtonControl.cpp in Sources */,
 				7C4B64A41C86F6D8000E1F74 /* InputStream.cpp in Sources */,
 				E499131C174E5DAD00741B6D /* GUIVideoControl.cpp in Sources */,

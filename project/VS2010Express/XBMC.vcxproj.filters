@@ -3459,6 +3459,9 @@
     <ClCompile Include="..\..\xbmc\addons\PVRClient.cpp">
       <Filter>addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\epg\GUIEPGGridContainerModel.cpp">
+      <Filter>epg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6716,6 +6719,9 @@
     <ClInclude Include="..\..\xbmc\ServiceManager.h" />
     <ClInclude Include="..\..\xbmc\addons\PVRClient.h">
       <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\epg\GUIEPGGridContainerModel.h">
+      <Filter>epg</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
