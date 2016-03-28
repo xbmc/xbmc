@@ -187,7 +187,7 @@ void CAddonDatabase::UpdateTables(int version)
   }
 }
 
-void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids)
+void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids, const std::set<std::string>& enabled)
 {
   try
   {
@@ -215,18 +215,20 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids)
       CLog::Log(LOGDEBUG, "CAddonDatabase: %s has been uninstalled.", id.c_str());
 
     std::string now = CDateTime::GetCurrentDateTime().GetAsDBDateTime();
-    BeginMultipleExecute();
+    BeginTransaction();
     for (const auto& id : added)
       m_pDS->exec(PrepareSQL("INSERT INTO installed(addonID, enabled, installDate) "
-          "VALUES('%s', 0, '%s')", id.c_str(), now.c_str()));
+          "VALUES('%s', '%d', '%s')", id.c_str(), enabled.find(id) != enabled.end() ? 1 : 0, now.c_str()));
 
     for (const auto& id : removed)
       m_pDS->exec(PrepareSQL("DELETE FROM installed WHERE addonID='%s'", id.c_str()));
-    CommitMultipleExecute();
+
+    CommitTransaction();
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    RollbackTransaction();
   }
 }
 
@@ -900,26 +902,6 @@ bool CAddonDatabase::BreakAddon(const std::string &addonID, const std::string& r
   else
     return ExecuteQuery(PrepareSQL("REPLACE INTO broken(addonID, reason) VALUES('%s', '%s')",
                                    addonID.c_str(), reason.c_str()));
-}
-
-bool CAddonDatabase::IsAddonDisabled(const std::string &addonID)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    std::string sql = PrepareSQL("SELECT * FROM installed WHERE addonID='%s' AND enabled=0", addonID.c_str());
-    m_pDS->query(sql);
-    bool ret = !m_pDS->eof();
-    m_pDS->close();
-    return ret;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, addonID.c_str());
-  }
-  return false;
 }
 
 bool CAddonDatabase::GetDisabled(std::set<std::string>& addons)

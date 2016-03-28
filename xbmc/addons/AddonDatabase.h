@@ -84,12 +84,6 @@ public:
    \sa IsAddonDisabled, HasDisabledAddons */
   bool DisableAddon(const std::string &addonID, bool disable = true);
 
-  /*! \brief Check whether an addon has been disabled via DisableAddon.
-   \param addonID id of the addon to check
-   \return true if the addon is disabled, false otherwise
-   \sa DisableAddon, HasDisabledAddons */
-  bool IsAddonDisabled(const std::string &addonID);
-
   /*! \brief Mark an addon as broken
    Sets a flag that this addon has been marked as broken in the repository.
    \param addonID id of the addon to mark as broken
@@ -138,7 +132,7 @@ public:
   /*! Clear internal fields that shouldn't be kept around indefinitely */
   void OnPostUnInstall(const std::string& addonId);
 
-  void SyncInstalled(const std::set<std::string>& ids);
+  void SyncInstalled(const std::set<std::string>& ids, const std::set<std::string>& enabled);
 
   void GetInstalled(std::vector<ADDON::CAddonBuilder>& addons);
 
