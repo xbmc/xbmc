@@ -750,6 +750,23 @@ bool CAddonMgr::IsBlacklisted(const std::string& id) const
   return m_updateBlacklist.find(id) != m_updateBlacklist.end();
 }
 
+static void ResolveDependencies(const std::string& addonId, std::vector<std::string>& needed, std::vector<std::string>& missing)
+{
+  if (std::find(needed.begin(), needed.end(), addonId) != needed.end())
+    return;
+
+  AddonPtr addon;
+  if (!CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON_UNKNOWN, false))
+    missing.push_back(addonId);
+  else
+  {
+    needed.push_back(addonId);
+    for (const auto& dep : addon->GetDeps())
+      if (!dep.second.second) // ignore 'optional'
+        ResolveDependencies(dep.first, needed, missing);
+  }
+}
+
 bool CAddonMgr::DisableAddon(const std::string& id)
 {
   CSingleLock lock(m_critSection);
@@ -771,23 +788,34 @@ bool CAddonMgr::DisableAddon(const std::string& id)
   return true;
 }
 
-bool CAddonMgr::EnableAddon(const std::string& id)
+bool CAddonMgr::EnableSingle(const std::string& id)
 {
   CSingleLock lock(m_critSection);
   if (m_disabled.find(id) == m_disabled.end())
     return true; //already enabled
-
   if (!m_database.DisableAddon(id, false))
     return false;
-  if (m_disabled.erase(id) == 0)
-    return false;
+  m_disabled.erase(id);
+  ADDON::OnEnabled(id);
 
   AddonPtr addon;
   if (GetAddon(id, addon, ADDON_UNKNOWN, false) && addon != NULL)
     CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24064)));
 
-  //success
-  ADDON::OnEnabled(id);
+  CLog::Log(LOGDEBUG, "CAddonMgr: enabled %s", addon->ID().c_str());
+  return true;
+}
+
+bool CAddonMgr::EnableAddon(const std::string& id)
+{
+  std::vector<std::string> needed;
+  std::vector<std::string> missing;
+  ResolveDependencies(id, needed, missing);
+  for (const auto& dep : missing)
+    CLog::Log(LOGWARNING, "CAddonMgr: '%s' required by '%s' is missing. Add-on may not function "
+        "correctly", dep.c_str(), id.c_str());
+  for (auto it = needed.rbegin(); it != needed.rend(); ++it)
+    EnableSingle(*it);
   return true;
 }
 
