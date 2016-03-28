@@ -217,8 +217,17 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids, const std::
     std::string now = CDateTime::GetCurrentDateTime().GetAsDBDateTime();
     BeginTransaction();
     for (const auto& id : added)
+    {
+      int enable = 1;
+      // HACK: pvrmanager doing stupid things. disable pvr client addons
+      if (!CAddonMgr::GetInstance().IsSystemAddon(id.c_str()) && StringUtils::StartsWith(id.c_str(), "pvr."))
+        enable = 0;
+      // HACK: audiodecoder addons should be disabled per default
+      if (!CAddonMgr::GetInstance().IsSystemAddon(id.c_str()) && StringUtils::StartsWith(id.c_str(), "audiodecoder."))
+        enable = 0;
       m_pDS->exec(PrepareSQL("INSERT INTO installed(addonID, enabled, installDate) "
-          "VALUES('%s', 1, '%s')", id.c_str(), now.c_str()));
+          "VALUES('%s', %d, '%s')", id.c_str(), enable, now.c_str()));
+    }
 
     for (const auto& id : removed)
       m_pDS->exec(PrepareSQL("DELETE FROM installed WHERE addonID='%s'", id.c_str()));
