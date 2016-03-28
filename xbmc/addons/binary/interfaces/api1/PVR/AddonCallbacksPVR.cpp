@@ -341,7 +341,11 @@ void CAddonCallbacksPVR::PVRConnectionStateChange(void* addonData, const char* s
 
   client->SetConnectionState(newState);
 
-  g_PVRManager.ConnectionStateChange(client->GetID(), std::string(strConnectionString), newState, std::string(strMessage));
+  std::string msg;
+  if (strMessage != nullptr)
+    msg = strMessage;
+
+  g_PVRManager.ConnectionStateChange(client->GetID(), std::string(strConnectionString), newState, msg);
 }
 
 typedef struct EpgEventStateChange
