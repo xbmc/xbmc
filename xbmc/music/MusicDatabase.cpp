@@ -176,8 +176,6 @@ void CMusicDatabase::CreateTables()
   CLog::Log(LOGINFO, "create role table");
   m_pDS->exec("CREATE TABLE role (idRole integer primary key, strRole text)");
   m_pDS->exec("INSERT INTO role(idRole, strRole) VALUES (1, 'Artist')");   //Default role
-  m_pDS->exec("INSERT INTO role(idRole, strRole) VALUES (2, 'Composer')");
-  m_pDS->exec("INSERT INTO role(idRole, strRole) VALUES (3, 'Conductor')");
 
   CLog::Log(LOGINFO, "create albuminfosong table");
   m_pDS->exec("CREATE TABLE albuminfosong (idAlbumInfoSong integer primary key, idAlbumInfo integer, iTrack integer, strTitle text, iDuration integer)");
@@ -1527,6 +1525,42 @@ int CMusicDatabase::GetRoleByName(const std::string& strRole)
 
 }
 
+bool CMusicDatabase::GetRolesByArtist(int idArtist, CFileItem* item)
+{
+  try
+  {
+    std::string strSQL = PrepareSQL("SELECT DISTINCT song_artist.idRole, Role.strRole FROM song_artist JOIN role ON "
+                                    " song_artist.idRole = Role.idRole WHERE idArtist = %i ORDER BY song_artist.idRole ASC", idArtist);
+    if (!m_pDS->query(strSQL))
+      return false;
+    if (m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
+      return true;
+    }
+    
+    CVariant artistRoles(CVariant::VariantTypeArray);
+    
+    while (!m_pDS->eof())
+    {
+      CVariant roleObj;
+      roleObj["role"] = m_pDS->fv("strRole").get_asString();
+      roleObj["roleid"] = m_pDS->fv("idrole").get_asInt();
+      artistRoles.push_back(roleObj);
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    item->SetProperty("roles", artistRoles);
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idArtist);
+  }
+  return false;
+}
+
 bool CMusicDatabase::DeleteSongArtistsBySong(int idSong)
 {
   return ExecuteQuery(PrepareSQL("DELETE FROM song_artist WHERE idSong = %i", idSong));
@@ -1716,6 +1750,45 @@ bool CMusicDatabase::GetArtistsBySong(int idSong, std::vector<int> &artists)
   return false;
 }
 
+bool CMusicDatabase::GetGenresByArtist(int idArtist, CFileItem* item)
+{
+  try
+  {
+    std::string strSQL = PrepareSQL("SELECT DISTINCT song_genre.idGenre, Genre.strGenre FROM "
+      "song_artist JOIN song ON song_artist.idSong = song.idSong JOIN "
+      "song_genre ON song.idSong = song_genre.idSong JOIN "
+      "genre ON song_genre.idGenre = genre.idGenre "
+      "WHERE song_artist.idArtist = %i ORDER BY song_genre.idGenre", idArtist);
+    if (!m_pDS->query(strSQL))
+      return false;
+    if (m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
+      return true;
+    }
+
+    CVariant artistSongGenres(CVariant::VariantTypeArray);
+
+    while (!m_pDS->eof())
+    {
+      CVariant genreObj;
+      genreObj["title"] = m_pDS->fv("strGenre").get_asString();
+      genreObj["genreid"] = m_pDS->fv("idGenre").get_asInt();
+      artistSongGenres.push_back(genreObj);
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    item->SetProperty("songgenres", artistSongGenres);
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idArtist);
+  }
+  return false;
+}
+
 bool CMusicDatabase::GetGenresByAlbum(int idAlbum, std::vector<int>& genres)
 {
   try
@@ -1773,6 +1846,24 @@ bool CMusicDatabase::GetGenresBySong(int idSong, std::vector<int>& genres)
   }
   return false;
 }
+
+bool CMusicDatabase::GetIsAlbumArtist(int idArtist, CFileItem* item)
+{
+  try
+  {    
+    int countalbum = strtol(GetSingleValue("album_artist", "count(idArtist)", PrepareSQL("idArtist=%i", idArtist)).c_str(), NULL, 10);
+    CVariant IsAlbumArtistObj(CVariant::VariantTypeBoolean);
+    IsAlbumArtistObj = (countalbum > 0);
+    item->SetProperty("isalbumartist", IsAlbumArtistObj);
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idArtist);
+  }
+  return false;
+}
+
 
 int CMusicDatabase::AddPath(const std::string& strPath1)
 {
@@ -6270,7 +6361,7 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
       if (!albumArtistsOnly || idRole > 1)  //Song and album artists or album artists with specific role, check song_artist
         strSQL += PrepareSQL("(SELECT song_artist.idArtist FROM song_artist WHERE song_artist.idRole = %i)", idRole);
 
-      if (idRole < -1) //All artists contributing to songs, all roles.
+      if (idRole < 0) //All artists contributing to songs, all roles.
         strSQL = "(artistview.idArtist IN (SELECT song_artist.idArtist FROM song_artist) OR"
                  " artistview.idArtist IN (SELECT album_artist.idArtist FROM album_artist )";
     }

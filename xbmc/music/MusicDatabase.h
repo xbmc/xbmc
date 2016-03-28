@@ -314,6 +314,7 @@ public:
   int  AddSongContributor(int idSong, const std::string& strRole, const std::string& strArtist);
   void AddSongContributors(int idSong, const VECMUSICROLES& contributors);
   int GetRoleByName(const std::string& strRole);
+  bool GetRolesByArtist(int idArtist, CFileItem* item);
   bool GetSongsByArtist(int idArtist, std::vector<int>& songs);
   bool GetArtistsBySong(int idSong, std::vector<int>& artists);
   bool DeleteSongArtistsBySong(int idSong);
@@ -325,6 +326,9 @@ public:
   bool AddAlbumGenre(int idGenre, int idAlbum, int iOrder);
   bool GetGenresByAlbum(int idAlbum, std::vector<int>& genres);
   bool DeleteAlbumGenresByAlbum(int idAlbum);
+
+  bool GetGenresByArtist(int idArtist, CFileItem* item);
+  bool GetIsAlbumArtist(int idArtist, CFileItem* item);
 
   /////////////////////////////////////////////////
   // Top 100

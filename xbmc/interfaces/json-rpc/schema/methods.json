@@ -651,26 +651,41 @@
   },
   "AudioLibrary.GetArtists": {
     "type": "method",
-    "description": "Retrieve all artists",
+    "description": "Retrieve all artists. For backward compatibility by default this implicity does not include those that only contribute other roles, however absolutely all artists can be returned using allroles=true",
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "albumartistsonly", "$ref": "Optional.Boolean", "description": "Whether or not to only include album artists rather than the artists of individual songs as well. If the parameter is not passed or is passed as null the GUI setting will be used" },
+      { "name": "albumartistsonly", "$ref": "Optional.Boolean", "description": "Whether or not to only include album artists rather than the artists of only individual songs as well. If the parameter is not passed or is passed as null the GUI setting will be used" },
       { "name": "properties", "$ref": "Audio.Fields.Artist" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" },
       { "name": "filter",
         "type": [
-          { "type": "object", "properties": { "genreid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "genreid": { "$ref": "Library.Id", "required": true, "description": "Deprecated, use songgenreid. Filter for existance of songs with this genre" } }, "additionalProperties": false },
+          { "type": "object", "properties": { "songgenreid": { "$ref": "Library.Id", "required": true, "description": "Song genreid. Filter for existance of songs with this genre" } }, "additionalProperties": false },
+          { "type": "object", "properties": { "songgenreid": { "$ref": "Library.Id", "required": true }, 
+                                              "roleid": { "$ref": "Library.Id", "required": true }}, "additionalProperties": false },
+          { "type": "object", "properties": { "songgenreid": { "$ref": "Library.Id", "required": true }, 
+                                              "role": { "type": "string", "minLength": 1, "required": true }}, "additionalProperties": false },
+          { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true, "description": "Deprecated, use songgenre. Filter for existance of songs with this genre" } }, "additionalProperties": false },
+          { "type": "object", "properties": { "songgenre": { "type": "string", "minLength": 1, "required": true, "description": "Song genre. Filter for existance of songs with this genre" } }, "additionalProperties": false },
+          { "type": "object", "properties": { "songgenre": { "type": "string", "minLength": 1, "required": true }, 
+                                              "roleid": { "$ref": "Library.Id", "required": true }}, "additionalProperties": false },
+          { "type": "object", "properties": { "songgenre": { "type": "string", "minLength": 1, "required": true }, 
+                                              "role": { "type": "string", "minLength": 1, "required": true }}, "additionalProperties": false },
           { "type": "object", "properties": { "albumid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "album": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "songid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "roleid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "role": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "songid": { "$ref": "Library.Id", "required": true }, 
+                                              "roleid": { "$ref": "Library.Id", "required": true }}, "additionalProperties": false },
+          { "type": "object", "properties": { "songid": { "$ref": "Library.Id", "required": true }, 
+                                              "role": { "type": "string", "minLength": 1, "required": true }}, "additionalProperties": false },
+          { "type": "object", "properties": { "roleid": { "$ref": "Library.Id", "required": true, "description": "Role contributed by artist. Overriden by allroles parameter" } }, "additionalProperties": false },
+          { "type": "object", "properties": { "role": { "type": "string", "minLength": 1, "required": true, "description": "Role contributed by artist. Overriden by allroles parameter" } }, "additionalProperties": false },
           { "$ref": "List.Filter.Artists" }
         ]
-      }
+      },
+      { "name": "allroles", "type": "boolean", "default":false, "description": "Whether or not to include all artists irrespective of the role they contributed. When true it overrides any role filter value." }
     ],
     "returns": {
       "type": "object",
@@ -699,7 +714,7 @@
   },
   "AudioLibrary.GetAlbums": {
     "type": "method",
-    "description": "Retrieve all albums from specified artist or genre",
+    "description": "Retrieve all albums from specified artist (and role) or that has songs of the specified genre",
     "transport": "Response",
     "permission": "ReadData",
     "params": [
@@ -708,14 +723,23 @@
       { "name": "sort", "$ref": "List.Sort" },
       { "name": "filter",
         "type": [
-          { "type": "object", "properties": { "genreid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "genreid": { "$ref": "Library.Id", "required": true, "description": "Song genre. Filter for existance of songs with this genre" } }, "additionalProperties": false },
+          { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true, "description": "Song genre. Filter for existance of songs with this genre" } }, "additionalProperties": false },
           { "type": "object", "properties": { "artistid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "artistid": { "$ref": "Library.Id", "required": true }, 
+                                              "roleid": { "$ref": "Library.Id", "required": true }}, "additionalProperties": false },
+          { "type": "object", "properties": { "artistid": { "$ref": "Library.Id", "required": true }, 
+                                              "role": { "type": "string", "minLength": 1, "required": true }}, "additionalProperties": false },
           { "type": "object", "properties": { "artist": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "artist": { "type": "string", "minLength": 1, "required": true }, 
+                                              "roleid": { "$ref": "Library.Id", "required": true }}, "additionalProperties": false },
+          { "type": "object", "properties": { "artist": { "type": "string", "minLength": 1, "required": true }, 
+                                              "role": { "type": "string", "minLength": 1, "required": true }}, "additionalProperties": false },
           { "$ref": "List.Filter.Albums" }
         ]
       },
-      { "name": "includesingles", "type": "boolean", "default": false }
+      { "name": "includesingles", "type": "boolean", "default": false },
+      { "name": "allroles", "type": "boolean", "default":false, "description": "Whether or not to include all roles when filtering by artist, rather than the default of excluding other contributions. When true it overrides any role filter value." }
     ],
     "returns": {
       "type": "object",
@@ -753,18 +777,25 @@
       { "name": "sort", "$ref": "List.Sort" },
       { "name": "filter",
         "type": [
-          { "type": "object", "properties": { "genreid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "genreid": { "$ref": "Library.Id", "required": true, "description": "Song genre. Filter for existance of songs with this genre" } }, "additionalProperties": false },
+          { "type": "object", "properties": { "genre": { "type": "string", "minLength": 1, "required": true, "description": "Song genre. Filter for existance of songs with this genre" } }, "additionalProperties": false },
           { "type": "object", "properties": { "artistid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "artistid": { "$ref": "Library.Id", "required": true }, 
+                                              "roleid": { "$ref": "Library.Id", "required": true }}, "additionalProperties": false },
+          { "type": "object", "properties": { "artistid": { "$ref": "Library.Id", "required": true }, 
+                                              "role": { "type": "string", "minLength": 1, "required": true }}, "additionalProperties": false },
           { "type": "object", "properties": { "artist": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
+          { "type": "object", "properties": { "artist": { "type": "string", "minLength": 1, "required": true }, 
+                                              "roleid": { "$ref": "Library.Id", "required": true }}, "additionalProperties": false },
+          { "type": "object", "properties": { "artist": { "type": "string", "minLength": 1, "required": true }, 
+                                              "role": { "type": "string", "minLength": 1, "required": true }}, "additionalProperties": false },
           { "type": "object", "properties": { "albumid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
           { "type": "object", "properties": { "album": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "roleid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-          { "type": "object", "properties": { "role": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
           { "$ref": "List.Filter.Songs" }
         ]
       },
-      { "name": "includesingles", "type": "boolean", "default": true }
+      { "name": "includesingles", "type": "boolean", "default": true },
+      { "name": "allroles", "type": "boolean", "default":false, "description": "Whether or not to include all roles when filtering by artist, rather than default of excluding other contributors. When true it overrides any role filter value." }
     ],
     "returns": {
       "type": "object",
@@ -892,13 +923,13 @@
       }
     }
   },
-  "AudioLibrary.GetContributorRoles": {
+  "AudioLibrary.GetRoles": {
     "type": "method",
     "description": "Retrieve all contributor roles",
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "properties", "$ref": "Library.Fields.Role" },
+      { "name": "properties", "$ref": "Audio.Fields.Role" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -907,7 +938,7 @@
       "properties": {
         "limits": { "$ref": "List.LimitsReturned", "required": true },
         "roles": { "type": "array", "required": true,
-          "items": { "$ref": "Library.Details.Role" }
+          "items": { "$ref": "Audio.Details.Role" }
         }
       }
     }
