@@ -187,7 +187,7 @@ void CAddonDatabase::UpdateTables(int version)
   }
 }
 
-void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids, const std::set<std::string>& enabled)
+void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids)
 {
   try
   {
