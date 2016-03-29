@@ -1,6 +1,5 @@
 set(SOURCES Bookmark.cpp
             ContextMenus.cpp
-            FFmpegVideoDecoder.cpp
             GUIViewStateVideo.cpp
             PlayerController.cpp
             Teletext.cpp
@@ -16,7 +15,6 @@ set(SOURCES Bookmark.cpp
 set(HEADERS Bookmark.h
             ContextMenus.h
             Episode.h
-            FFmpegVideoDecoder.h
             GUIViewStateVideo.h
             PlayerController.h
             Teletext.h

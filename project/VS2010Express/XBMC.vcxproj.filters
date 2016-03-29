@@ -2617,9 +2617,6 @@
     <ClCompile Include="..\..\xbmc\interfaces\python\PyContext.cpp">
       <Filter>interfaces\python</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\video\FFmpegVideoDecoder.cpp">
-      <Filter>video</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\view\GUIViewControl.cpp">
       <Filter>view</Filter>
     </ClCompile>
@@ -5717,9 +5714,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\imagefactory.h">
       <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\video\FFmpegVideoDecoder.h">
-      <Filter>video</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\view\GUIViewControl.h">
       <Filter>view</Filter>

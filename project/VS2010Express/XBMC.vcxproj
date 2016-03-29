@@ -1359,7 +1359,6 @@
     <ClInclude Include="..\..\xbmc\utils\win32\Win32InterfaceForCLog.h" />
     <ClInclude Include="..\..\xbmc\utils\win32\Win32Log.h" />
     <ClInclude Include="..\..\xbmc\utils\XSLTUtils.h" />
-    <ClInclude Include="..\..\xbmc\video\FFmpegVideoDecoder.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\swig.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\XBPython.h" />
     <ClInclude Include="..\..\xbmc\music\MusicDbUrl.h" />
@@ -1773,7 +1772,6 @@
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoInfo.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoOSD.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoSettings.cpp" />
-    <ClCompile Include="..\..\xbmc\video\FFmpegVideoDecoder.cpp" />
     <ClCompile Include="..\..\xbmc\video\GUIViewStateVideo.cpp" />
     <ClCompile Include="..\..\xbmc\video\Teletext.cpp" />
     <ClCompile Include="..\..\xbmc\video\VideoDatabase.cpp" />
