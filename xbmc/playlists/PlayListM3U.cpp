@@ -45,7 +45,7 @@ const char* CPlayListM3U::OffsetMarker = "#EXT-KX-OFFSET";
 //   #EXTM3U
 //   #EXTART:Demo Artist
 //   #EXTALB:Demo Album
-//   #EXTPROP:name,value
+//   #KODIPROP:name=value
 //   #EXTINF:5,demo
 //   E:\Program Files\Winamp3\demo.mp3
 
