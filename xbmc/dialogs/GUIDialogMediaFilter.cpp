@@ -420,7 +420,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
       if (filter.settingType == SettingTypeString)
         filter.setting = AddEdit(group, settingId, filter.label, 0, data.asString(), true, false, filter.label, true);
       else if (filter.settingType == SettingTypeInteger)
-        filter.setting = AddEdit(group, settingId, filter.label, 0, static_cast<int>(data.asInteger()), 0, 1, 0, false, filter.label, true);
+        filter.setting = AddEdit(group, settingId, filter.label, 0, static_cast<int>(data.asInteger()), 0, 1, 0, false,  static_cast<int>(filter.label), true);
       else if (filter.settingType == SettingTypeNumber)
         filter.setting = AddEdit(group, settingId, filter.label, 0, data.asFloat(), 0.0f, 1.0f, 0.0f, false, filter.label, true);
     }
