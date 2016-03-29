@@ -239,8 +239,7 @@ bool CPVRClients::HasCreatedClients(void) const
   for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
     if (itr->second->ReadyToUse())
     {
-      PVR_CONNECTION_STATE state = itr->second->GetConnectionState();
-      if (state != PVR_CONNECTION_STATE_CONNECTING)
+      if (itr->second->IgnoreClient())
         return true;
     }
 
@@ -337,8 +336,7 @@ int CPVRClients::GetCreatedClients(PVR_CLIENTMAP &clients) const
   {
     if (itr->second->ReadyToUse())
     {
-      PVR_CONNECTION_STATE state = itr->second->GetConnectionState();
-      if (state == PVR_CONNECTION_STATE_CONNECTING)
+      if (itr->second->IgnoreClient())
         continue;
       
       clients.insert(std::make_pair(itr->second->GetID(), itr->second));
@@ -1562,6 +1560,9 @@ void CPVRClients::ConnectionStateChange(int clientId, std::string &strConnection
     case PVR_CONNECTION_STATE_CONNECTED:
       bError = false;
       iMsg = 36034; // Connection established
+      if (client->GetPreviousConnectionState() == PVR_CONNECTION_STATE_UNKNOWN ||
+          client->GetPreviousConnectionState() == PVR_CONNECTION_STATE_CONNECTING)
+        bNotify = false;
       break;
     case PVR_CONNECTION_STATE_DISCONNECTED:
       iMsg = 36030; // Connection lost

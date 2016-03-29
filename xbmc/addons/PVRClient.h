@@ -118,6 +118,18 @@ namespace PVR
     void SetConnectionState(PVR_CONNECTION_STATE state);
 
     /*!
+     * @brief Gets the backend's previous connection state.
+     * @return the backend's previous  connection state.
+     */
+    PVR_CONNECTION_STATE GetPreviousConnectionState(void) const;
+
+    /*!
+     * @brief signal to PVRMananager this client should be ignored
+     * @return true if this client should be ignored
+     */
+    bool IgnoreClient(void) const;
+
+    /*!
      * @return The ID of this instance.
      */
     int GetID(void) const;
@@ -690,6 +702,8 @@ namespace PVR
 
     bool                   m_bReadyToUse;          /*!< true if this add-on is initialised (ADDON_Create returned true), false otherwise */
     PVR_CONNECTION_STATE   m_connectionState;      /*!< the backend connection state */
+    PVR_CONNECTION_STATE   m_prevConnectionState;  /*!< the previous backend connection state */
+    bool                   m_ignoreClient;         /*!< signals to PVRManager to ignore this client until it has been connected */
     PVR_MENUHOOKS          m_menuhooks;            /*!< the menu hooks for this add-on */
     CPVRTimerTypes         m_timertypes;           /*!< timer types supported by this backend */
     int                    m_iClientId;            /*!< database ID of the client */

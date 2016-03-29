@@ -144,6 +144,8 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_timertypes.clear();
   m_bReadyToUse           = false;
   m_connectionState       = PVR_CONNECTION_STATE_UNKNOWN;
+  m_prevConnectionState   = PVR_CONNECTION_STATE_UNKNOWN;
+  m_ignoreClient          = false;
   m_iClientId             = iClientId;
   m_strBackendVersion     = DEFAULT_INFO_STRING_VALUE;
   m_strConnectionString   = DEFAULT_INFO_STRING_VALUE;
@@ -227,7 +229,27 @@ PVR_CONNECTION_STATE CPVRClient::GetConnectionState(void) const
 void CPVRClient::SetConnectionState(PVR_CONNECTION_STATE state)
 {
   CSingleLock lock(m_critSection);
+
+  m_prevConnectionState = m_connectionState;
   m_connectionState = state;
+
+  if (m_connectionState == PVR_CONNECTION_STATE_CONNECTED)
+    m_ignoreClient = false;
+  else if (m_connectionState == PVR_CONNECTION_STATE_CONNECTING &&
+           m_prevConnectionState == PVR_CONNECTION_STATE_UNKNOWN)
+    m_ignoreClient = true;
+}
+
+PVR_CONNECTION_STATE CPVRClient::GetPreviousConnectionState(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_prevConnectionState;
+}
+
+bool CPVRClient::IgnoreClient(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_ignoreClient;
 }
 
 int CPVRClient::GetID(void) const
