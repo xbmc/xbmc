@@ -1767,11 +1767,9 @@ if test "$build_vendor" != "apple" ; then
   fi
 fi
 
-if test "$use_arch" != "arm" ; then
-  AC_CHECK_PROG(HAVE_CMAKE,cmake,"yes","no",)
-  if test "$HAVE_CMAKE" = "no" ; then
-    AC_MSG_ERROR($missing_program)
-  fi
+AC_CHECK_PROG(HAVE_CMAKE,cmake,"yes","no",)
+if test "$HAVE_CMAKE" = "no" ; then
+  AC_MSG_ERROR("cmake not found")
 fi
 
 AC_CHECK_PROG(HAVE_GPERF,gperf,"yes","no",)
