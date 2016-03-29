@@ -23,7 +23,7 @@
 				<include>FullScreenDimensions</include>
 				<aspectratio>scale</aspectratio>
 				<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
-				<animation effect="fade" start="100" end="75" time="0" condition="Player.HasMedia">Conditional</animation>
+				<animation effect="fade" start="100" end="bg_alpha" time="0" condition="Player.HasMedia">Conditional</animation>
 				<animation effect="fade" start="0" end="100" time="300" condition="Window.Previous(fullscreenvideo) | Window.Previous(startup)">WindowOpen</animation>
 				<texture fallback="special://skin/extras/backgrounds/SKINDEFAULT.jpg">$VAR[GlobalFanartVar]</texture>
 			</control>
@@ -36,7 +36,7 @@
 				<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 				<animation effect="fade" time="400">VisibleChange</animation>
-				<imagepath background="true" colordiffuse="40FFFFFF">$VAR[WeatherFanartVar]</imagepath>
+				<imagepath background="true" colordiffuse="35FFFFFF">$VAR[WeatherFanartVar]</imagepath>
 				<visible>!Player.HasMedia</visible>
 			</control>
 		<control type="group">
@@ -81,7 +81,7 @@
 					<item id="4">
 						<label>$LOCALIZE[33035]</label>
 						<onclick>noop</onclick>
-						<visible>!IsEmpty(Window(weather).Property(Map.IsFetched))</visible>
+						<visible>!String.IsEmpty(Window(weather).Property(Map.IsFetched))</visible>
 					</item>
 				</content>
 			</control>

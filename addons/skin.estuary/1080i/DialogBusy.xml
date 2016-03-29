@@ -10,7 +10,7 @@
 	</animation>
 	<controls>
 		<control type="group">
-			<visible>IsEmpty(Window(Home).Property(script.cinemavision.running))</visible>
+			<visible>String.IsEmpty(Window(Home).Property(script.cinemavision.running))</visible>
 			<animation type="Visible" reversible="false">
 				<effect type="zoom" start="80" end="100" center="960,540" tween="back" time="240" />
 				<effect type="fade" end="100" time="240" />

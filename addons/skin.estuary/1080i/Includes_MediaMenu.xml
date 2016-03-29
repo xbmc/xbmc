@@ -34,8 +34,8 @@
 				<textureradioofffocus>$PARAM[icon]</textureradioofffocus>
 				<textureradiooffnofocus>$PARAM[icon]</textureradiooffnofocus>
 				<textureradiooffdisabled colordiffuse="button_focus">$PARAM[icon]</textureradiooffdisabled>
-				<onclick condition="IsEmpty(Window.Property(IsRadio))">ActivateWindow(TV$PARAM[area])</onclick>
-				<onclick condition="!IsEmpty(Window.Property(IsRadio))">ActivateWindow(Radio$PARAM[area])</onclick>
+				<onclick condition="String.IsEmpty(Window.Property(IsRadio))">ActivateWindow(TV$PARAM[area])</onclick>
+				<onclick condition="!String.IsEmpty(Window.Property(IsRadio))">ActivateWindow(Radio$PARAM[area])</onclick>
 				<enable>!Window.IsActive(TV$PARAM[area]) + !Window.IsActive(Radio$PARAM[area])</enable>
 			</control>
 		</definition>
@@ -207,7 +207,7 @@
 						<onleft>14100</onleft>
 						<onup>8</onup>
 						<ondown>6056</ondown>
-						<visible>Player.HasMedia + [ControlGroup(9000).HasFocus | Control.HasFocus(6130)]</visible>
+						<visible>Player.HasMedia + [$EXP[sidebar_focused]]</visible>
 						<visible>!System.HasModalDialog</visible>
 						<include name="BottomMainMenuItem">
 							<param name="control_id" value="14101" />
@@ -252,11 +252,11 @@
 	<include name="MediaMenuCommon">
 		<include>OpenClose_Left</include>
 		<depth>DepthSideBlade</depth>
-		<animation type="Conditional" condition="ControlGroup(9000).HasFocus | Control.HasFocus(6130)">
+		<animation type="Conditional" condition="$EXP[sidebar_focused]">
 			<effect type="fade" start="0" end="100" time="300" tween="sine" easing="out" />
 			<effect type="slide" start="-320" end="0" time="400" tween="cubic" easing="out" />
 		</animation>
-		<animation type="Conditional" condition="!ControlGroup(9000).HasFocus + !Control.HasFocus(6130)">
+		<animation type="Conditional" condition="!$EXP[sidebar_focused]">
 			<effect type="fade" start="100" end="0" time="300" tween="sine" easing="in" />
 			<effect type="slide" start="0" end="-320" time="300" tween="cubic" easing="in" />
 		</animation>
@@ -285,7 +285,7 @@
 			<itemgap>-17</itemgap>
 			<left>5</left>
 			<onleft>14100</onleft>
-			<visible>Player.HasMedia + [ControlGroup(9000).HasFocus | Control.HasFocus(6130)]</visible>
+			<visible>Player.HasMedia + [$EXP[sidebar_focused]]</visible>
 			<visible>!System.HasModalDialog</visible>
 			<include name="BottomMainMenuItem">
 				<param name="control_id" value="14101" />

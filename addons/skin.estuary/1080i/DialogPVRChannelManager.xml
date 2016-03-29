@@ -51,7 +51,7 @@
 						<height>68</height>
 						<texture colordiffuse="selected">colors/white.png</texture>
 						<animation effect="fade" end="20" time="0" condition="true">Conditional</animation>
-						<visible>!IsEmpty(ListItem.Property(Changed))</visible>
+						<visible>!String.IsEmpty(ListItem.Property(Changed))</visible>
 					</control>
 					<control type="image">
 						<left>0</left>
@@ -88,7 +88,7 @@
 						<height>68</height>
 						<texture colordiffuse="selected">colors/white.png</texture>
 						<animation effect="fade" end="20" time="0" condition="true">Conditional</animation>
-						<visible>!IsEmpty(ListItem.Property(Changed))</visible>
+						<visible>!String.IsEmpty(ListItem.Property(Changed))</visible>
 					</control>
 					<control type="image">
 						<left>0</left>
@@ -239,7 +239,7 @@
 					<aligny>center</aligny>
 					<label>$LOCALIZE[19024]</label>
 					<altlabel>$LOCALIZE[19023]</altlabel>
-					<usealttexture>!IsEmpty(Window.Property(IsRadio))</usealttexture>
+					<usealttexture>!String.IsEmpty(Window.Property(IsRadio))</usealttexture>
 				</control>
 			</control>
 		</control>

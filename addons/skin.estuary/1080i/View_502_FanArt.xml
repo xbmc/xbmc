@@ -1,243 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<include name="View_502_FanArt">
-		<include name="LeftRightArrows">
-			<param name="list_id" value="502" />
-			<param name="left_posx" value="45" />
-			<param name="right_posx" value="1849" />
-			<param name="posy" value="513" />
+		<include name="UpDownArrows">
+			<param name="container_id" value="502" />
+			<param name="visible" value="!System.HasModalDialog" />
 		</include>
 		<control type="group">
 			<description>Fanart Viewtype</description>
+			<left>90</left>
+			<top>167</top>
 			<control type="group">
 				<include>OpenClose_Right</include>
-				<left>100</left>
-				<top>167</top>
 				<visible>Control.IsVisible(502)</visible>
 				<include>Visible_Right</include>
 				<control type="image">
-					<left>-16</left>
-					<top>-10</top>
-					<width>1754</width>
-					<height>758</height>
+					<left>720</left>
+					<top>-4</top>
+					<width>1046</width>
+					<height>750</height>
 					<texture border="22">dialogs/dialog-bg.png</texture>
 				</control>
-				<control type="fixedlist" id="502">
-					<left>11</left>
-					<top>5</top>
-					<width>1700</width>
-					<height>732</height>
-					<onleft>502</onleft>
-					<onright>502</onright>
-					<onup>9000</onup>
-					<ondown>9000</ondown>
-					<viewtype label="20445">bigicon</viewtype>
-					<preloaditems>2</preloaditems>
-					<pagecontrol>5199</pagecontrol>
-					<scrolltime tween="cubic">800</scrolltime>
-					<orientation>horizontal</orientation>
-					<visible>Container.Content(movies) | Container.Content(tvshows)</visible>
-					<itemlayout width="1700" height="690">
-						<control type="image">
-							<left>0</left>
-							<top>12</top>
-							<width>466</width>
-							<height>702</height>
-							<fadetime>200</fadetime>
-							<aspectratio>scale</aspectratio>
-							<texture fallback="DefaultVideo.png" colordiffuse="FF555555" background="true">$VAR[PosterVar]</texture>
-						</control>
-						<control type="image">
-							<left>475</left>
-							<top>12</top>
-							<width>1225</width>
-							<height>702</height>
-							<texture border="2" fallback="DefaultVideo.png" background="true">$VAR[FanartImageVar]</texture>
-							<aspectratio align="center">scale</aspectratio>
-						</control>
-						<control type="group">
-							<left>1650</left>
-							<top>20</top>
-							<include>UserRatingCircle</include>
-						</control>
-						<control type="image">
-							<left>475</left>
-							<top>634</top>
-							<width>1225</width>
-							<height>80</height>
-							<texture colordiffuse="button_focus">colors/white.png</texture>
-						</control>
-						<control type="image">
-							<left>501</left>
-							<top>650</top>
-							<width>48</width>
-							<height>48</height>
-							<texture>$VAR[ListWatchedIconVar]</texture>
-						</control>
-						<control type="label">
-							<left>565</left>
-							<top>662</top>
-							<width>1160</width>
-							<height>20</height>
-							<font>font24_title</font>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-						<control type="image">
-							<right>226</right>
-							<top>656</top>
-							<width>32</width>
-							<height>32</height>
-							<texture>lists/played-total.png</texture>
-							<visible>String.IsEqual(Listitem.dbtype,tvshow)</visible>
-						</control>
-						<control type="label">
-							<left>514</left>
-							<top>662</top>
-							<width>1160</width>
-							<height>20</height>
-							<font>font24_title</font>
-							<align>right</align>
-							<aligny>center</aligny>
-							<visible>String.IsEqual(Listitem.dbtype,movie)</visible>
-							<label>$INFO[ListItem.Year]</label>
-						</control>
-					</itemlayout>
-					<focusedlayout width="1700" height="690">
-						<control type="group">
-							<control type="image">
-								<left>0</left>
-								<top>12</top>
-								<width>466</width>
-								<height>702</height>
-								<fadetime>200</fadetime>
-								<aspectratio>scale</aspectratio>
-								<texture>colors/black.png</texture>
-							</control>
-							<control type="image">
-								<left>0</left>
-								<top>12</top>
-								<width>466</width>
-								<height>702</height>
-								<fadetime>200</fadetime>
-								<aspectratio>scale</aspectratio>
-								<texture fallback="DefaultVideo.png" background="true">$VAR[PosterVar]</texture>
-							</control>
-							<control type="group">
-								<control type="image">
-									<left>475</left>
-									<top>12</top>
-									<width>1225</width>
-									<height>702</height>
-									<texture border="2" fallback="DefaultVideo.png" background="true">$VAR[FanartImageVar]</texture>
-									<aspectratio align="center">scale</aspectratio>
-								</control>
-								<control type="group">
-									<left>1650</left>
-									<top>20</top>
-									<include>UserRatingCircle</include>
-								</control>
-								<control type="image">
-									<left>475</left>
-									<top>634</top>
-									<width>1225</width>
-									<height>80</height>
-									<visible>!Control.HasFocus(502)</visible>
-									<animation effect="fade" time="200">VisibleChange</animation>
-									<texture colordiffuse="A0000000">colors/black.png</texture>
-								</control>
-								<control type="image">
-									<left>475</left>
-									<top>634</top>
-									<width>1225</width>
-									<height>80</height>
-									<visible>Control.HasFocus(502)</visible>
-									<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
-									<texture colordiffuse="button_focus">colors/white.png</texture>
-									<animation effect="fade" start="0" end="100" time="300" reversible="false">Focus</animation>
-								</control>
-								<control type="image">
-									<left>501</left>
-									<top>650</top>
-									<width>48</width>
-									<height>48</height>
-									<texture>$VAR[ListWatchedIconVar]</texture>
-								</control>
-								<control type="label">
-									<left>565</left>
-									<top>662</top>
-									<width>1160</width>
-									<height>20</height>
-									<font>font24_title</font>
-									<aligny>center</aligny>
-									<label>$INFO[ListItem.Label]</label>
-								</control>
-								<control type="label">
-									<left>514</left>
-									<top>662</top>
-									<width>1160</width>
-									<height>20</height>
-									<font>font24_title</font>
-									<align>right</align>
-									<aligny>center</aligny>
-									<visible>String.IsEqual(Listitem.dbtype,movie)</visible>
-									<label>$INFO[ListItem.Year]</label>
-								</control>
-							</control>
-						</control>
-					</focusedlayout>
+				<control type="image">
+					<left>747</left>
+					<top>24</top>
+					<width>992</width>
+					<height>558</height>
+					<fadetime>300</fadetime>
+					<texture border="2" fallback="DefaultVideo.png" background="true">$VAR[FanartImageVar]</texture>
+					<aspectratio align="center" aligny="bottom">keep</aspectratio>
+				</control>
+				<control type="group">
+					<left>1650</left>
+					<top>20</top>
+					<include>UserRatingCircle</include>
+				</control>
+				<control type="image">
+					<left>747</left>
+					<top>582</top>
+					<width>992</width>
+					<height>136</height>
+					<texture colordiffuse="A0000000">colors/black.png</texture>
+				</control>
+				<control type="textbox">
+					<left>757</left>
+					<top>589</top>
+					<width>972</width>
+					<height>121</height>
+					<font>font12</font>
+					<label>$INFO[ListItem.Plot]</label>
 				</control>
 			</control>
 			<control type="group">
-				<include>OpenClose_Right</include>
-				<left>100</left>
-				<top>167</top>
+				<include>OpenClose_Left</include>
+				<top>18</top>
 				<visible>Control.IsVisible(502)</visible>
-				<animation type="Visible">
-					<effect type="fade" start="0" end="100" delay="400" time="300" />
-				</animation>
-				<control type="group">
-					<visible>!Container(502).OnNext + !Container(502).OnPrevious + !Container(502).Scrolling</visible>
-					<animation type="Visible">
-						<effect type="fade" start="0" end="100" delay="800" time="300" />
-					</animation>
-				<control type="grouplist">
-					<top>660</top>
-					<left>40</left>
-					<orientation>horizontal</orientation>
-					<width>380</width>
-					<align>center</align>
-					<include name="InfoFlag">
-						<param name="visible" value="!IsEmpty(ListItem.duration)" />
-						<param name="icon" value="frame/clock.png" />
-						<param name="label" value="$INFO[ListItem.Duration,, $LOCALIZE[31132]]" />
-					</include>
-					<include name="InfoFlag">
-						<param name="visible" value="!IsEmpty(ListItem.Property(TotalEpisodes))" />
-						<param name="icon" value="lists/played-total.png" />
-						<param name="label" value="$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]" />
-					</include>
-					<include name="InfoFlag">
-						<param name="visible" value="!IsEmpty(ListItem.Year) + IsEmpty(ListItem.Premiered)" />
-						<param name="icon" value="lists/year.png" />
-						<param name="label" value="$INFO[ListItem.Year]" />
-					</include>
-					<include name="InfoFlag">
-						<param name="visible" value="!IsEmpty(ListItem.Premiered)" />
-						<param name="icon" value="lists/year.png" />
-						<param name="label" value="$INFO[ListItem.Premiered]" />
-					</include>
-				</control>
-					<control type="textbox">
-						<left>30</left>
-						<top>35</top>
-						<width>420</width>
-						<height>598</height>
-						<font>font12</font>
-						<autoscroll time="3000" delay="7000" repeat="5000">true</autoscroll>
-						<label>$INFO[ListItem.Tagline,[COLOR button_focus][B],[/B][/COLOR][CR]]$INFO[ListItem.Plot]</label>
-					</control>
-				</control>
+				<include>Visible_Left</include>
+				<include name="ListContainer">
+					<param name="list_id" value="502" />
+					<param name="viewtype_label" value="$LOCALIZE[20445]" />
+				</include>
 			</control>
 		</control>
 	</include>

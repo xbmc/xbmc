@@ -8,7 +8,7 @@
 		<include>DefaultBackground</include>
 		<include>CommonScrollbars</include>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(movieinformation) | Window.IsActive(addoninformation)">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 			<include>View_50_List</include>
 			<include>View_51_Poster</include>
 			<include>View_52_IconWall</include>
@@ -32,7 +32,7 @@
 			</control>
 			<control type="group">
 				<include>OpenClose_Right</include>
-				<visible>[Control.IsVisible(50) | Control.Isvisible(54)] + !IsEmpty(ListItem.DBID)</visible>
+				<visible>[Control.IsVisible(50) | Control.Isvisible(54)] + !String.IsEmpty(ListItem.DBID)</visible>
 				<include>Visible_Right</include>
 				<visible>Container.Content(sets) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(musicvideos)</visible>
 				<control type="image">
@@ -77,7 +77,7 @@
 					<align>center</align>
 					<font>font24_title</font>
 					<label>$LOCALIZE[19055]</label>
-					<visible>IsEmpty(Listitem.Plot) + IsEmpty(Listitem.Tagline) + !ListItem.IsCollection + !ListItem.IsParentFolder</visible>
+					<visible>String.IsEmpty(Listitem.Plot) + String.IsEmpty(Listitem.Tagline) + !ListItem.IsCollection + !ListItem.IsParentFolder</visible>
 				</control>
 				<control type="group">
 					<left>1350</left>
@@ -116,22 +116,22 @@
 						<width>380</width>
 						<align>center</align>
 						<include name="InfoFlag">
-							<param name="visible" value="!IsEmpty(ListItem.duration)" />
+							<param name="visible" value="!String.IsEmpty(ListItem.duration)" />
 							<param name="icon" value="frame/clock.png" />
 							<param name="label" value="$INFO[ListItem.Duration,, $LOCALIZE[31132]]" />
 						</include>
 						<include name="InfoFlag">
-							<param name="visible" value="!IsEmpty(ListItem.Property(TotalEpisodes))" />
+							<param name="visible" value="!String.IsEmpty(ListItem.Property(TotalEpisodes))" />
 							<param name="icon" value="lists/played-total.png" />
 							<param name="label" value="$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]" />
 						</include>
 						<include name="InfoFlag">
-							<param name="visible" value="!IsEmpty(ListItem.Year) + IsEmpty(ListItem.Premiered)" />
+							<param name="visible" value="!String.IsEmpty(ListItem.Year) + String.IsEmpty(ListItem.Premiered)" />
 							<param name="icon" value="lists/year.png" />
 							<param name="label" value="$INFO[ListItem.Year]" />
 						</include>
 						<include name="InfoFlag">
-							<param name="visible" value="!IsEmpty(ListItem.Premiered) + IsEmpty(ListItem.Property(TotalEpisodes))" />
+							<param name="visible" value="!String.IsEmpty(ListItem.Premiered) + String.IsEmpty(ListItem.Property(TotalEpisodes))" />
 							<param name="icon" value="lists/year.png" />
 							<param name="label" value="$INFO[ListItem.Premiered]" />
 						</include>
@@ -242,7 +242,7 @@
 						<label>$LOCALIZE[31117]</label>
 						<onclick condition="System.HasAddon(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=video,return)</onclick>
 						<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
-						<visible>Container.Content() + IsEmpty(Container.PluginName)</visible>
+						<visible>Container.Content() + String.IsEmpty(Container.PluginName)</visible>
 					</control>
 					<control type="button" id="623">
 						<include>MediaMenuItemsCommon</include>
@@ -257,7 +257,9 @@
 				<param name="breadcrumbs_label" value="$VAR[BreadcrumbsVideoVar]" />
 				<param name="breadcrumbs_icon" value="icons/settings/video.png" />
 			</include>
-			<include>BottomBar</include>
+			<include name="BottomBar">
+				<param name="info_visible" value="true" />
+			</include>
 		</control>
 	</controls>
 </window>

@@ -189,7 +189,7 @@
 						<label>$VAR[SongTitleVar]</label>
 					</control>
 					<control type="group">
-						<visible>!IsEmpty(ListItem.label2)</visible>
+						<visible>!String.IsEmpty(ListItem.label2)</visible>
 						<visible>!String.IsEqual(Container.SortMethod,$LOCALIZE[38018]) + !String.IsEqual(Container.SortMethod,$LOCALIZE[20359]) + !String.IsEqual(Container.SortMethod,$LOCALIZE[551])</visible>
 						<control type="image">
 							<left>11</left>
@@ -258,7 +258,7 @@
 							<label>$VAR[SongTitleVar]</label>
 						</control>
 						<control type="group">
-							<visible>!IsEmpty(ListItem.label2)</visible>
+							<visible>!String.IsEmpty(ListItem.label2)</visible>
 							<visible>!String.IsEqual(Container.SortMethod,$LOCALIZE[38018]) + !String.IsEqual(Container.SortMethod,$LOCALIZE[20359]) + !String.IsEqual(Container.SortMethod,$LOCALIZE[551])</visible>
 							<control type="image">
 								<left>11</left>

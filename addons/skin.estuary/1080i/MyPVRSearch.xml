@@ -7,7 +7,7 @@
 	<controls>
 		<include>DefaultBackground</include>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo)">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 			<control type="group">
 				<description>TV Search group</description>
 				<visible>Control.IsVisible(50)</visible>
@@ -44,7 +44,7 @@
 								<texture border="90,3,90,3">lists/separator.png</texture>
 							</control>
 							<control type="label">
-								<visible>IsEmpty(ListItem.Date)</visible>
+								<visible>String.IsEmpty(ListItem.Date)</visible>
 								<left>120</left>
 								<top>0</top>
 								<width>650</width>
@@ -54,7 +54,7 @@
 								<label>$INFO[ListItem.Label]</label>
 							</control>
 							<control type="group">
-								<visible>!IsEmpty(ListItem.Date)</visible>
+								<visible>!String.IsEmpty(ListItem.Date)</visible>
 								<control type="image">
 									<left>25</left>
 									<top>10</top>
@@ -62,7 +62,7 @@
 									<height>80</height>
 									<texture fallback="DefaultTVShowsSquare.png">$INFO[Listitem.Art(thumb)]</texture>
 									<aspectratio>keep</aspectratio>
-									<visible>!IsEmpty(ListItem.Icon)</visible>
+									<visible>!String.IsEmpty(ListItem.Icon)</visible>
 								</control>
 								<control type="label">
 									<left>120</left>
@@ -108,7 +108,7 @@
 								<visible>Control.HasFocus(50)</visible>
 							</control>
 							<control type="label">
-								<visible>IsEmpty(ListItem.Date)</visible>
+								<visible>String.IsEmpty(ListItem.Date)</visible>
 								<left>120</left>
 								<top>0</top>
 								<width>650</width>
@@ -118,7 +118,7 @@
 								<label>$INFO[ListItem.Label]</label>
 							</control>
 							<control type="group">
-								<visible>!IsEmpty(ListItem.Date)</visible>
+								<visible>!String.IsEmpty(ListItem.Date)</visible>
 								<control type="image">
 									<left>25</left>
 									<top>10</top>
@@ -126,7 +126,7 @@
 									<height>80</height>
 									<texture fallback="DefaultTVShowsSquare.png">$INFO[Listitem.Art(thumb)]</texture>
 									<aspectratio>keep</aspectratio>
-									<visible>!IsEmpty(ListItem.Icon)</visible>
+									<visible>!String.IsEmpty(ListItem.Icon)</visible>
 								</control>
 								<control type="label">
 									<left>120</left>
@@ -169,7 +169,7 @@
 			<control type="group">
 				<left>1220</left>
 				<top>180</top>
-				<visible>!IsEmpty(ListItem.Date)</visible>
+				<visible>!String.IsEmpty(ListItem.Date)</visible>
 				<include>Visible_Right</include>
 				<include>OpenClose_Right</include>
 				<include name="PVRInfoPanel">

@@ -547,6 +547,7 @@
 		<param name="height">405</param>
 		<param name="sub_label">$INFO[ListItem.Label]</param>
 		<param name="sortby"></param>
+		<param name="visible">True</param>
 		<param name="sortorder">ascending</param>
 		<param name="main_label">$INFO[ListItem.Year,[COLOR button_focus], - [/COLOR]]$INFO[ListItem.Artist]</param>
 		<definition>
@@ -554,6 +555,7 @@
 				<description>Square Widget including header and arrows</description>
 				<height>$PARAM[height]</height>
 				<left>0</left>
+				<visible>$PARAM[visible]</visible>
 				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,0) | Container($PARAM[list_id]).IsUpdating</visible>
 				<include name="LeftRightArrows">
 					<param name="posy" value="200" />
@@ -1138,7 +1140,7 @@
 			<item>
 				<icon>resource://resource.images.weathericons.default/na.png</icon>
 				<onclick>noop</onclick>
-				<visible>IsEmpty(Window(weather).Property(Hourly.IsFetched))</visible>
+				<visible>String.IsEmpty(Window(weather).Property(Hourly.IsFetched))</visible>
 			</item>
 			<include name="WeatherHourlyItem">
 				<param name="item_index" value="1" />
@@ -1177,7 +1179,7 @@
 			<item>
 				<icon>resource://resource.images.weathericons.default/na.png</icon>
 				<onclick>noop</onclick>
-				<visible>IsEmpty(Window(weather).Property(Daily.IsFetched))</visible>
+				<visible>String.IsEmpty(Window(weather).Property(Daily.IsFetched))</visible>
 			</item>
 			<include name="WeatherDailyItem">
 				<param name="item_index" value="1" />
@@ -1255,7 +1257,7 @@
 			<property name="FanartCode">$INFO[Window(weather).Property(Hourly.$PARAM[item_index].FanartCode)]</property>
 			<thumb>resource://resource.images.weathericons.default/$INFO[Window(weather).Property(Hourly.$PARAM[item_index].OutlookIcon)]</thumb>
 			<onclick>noop</onclick>
-			<visible>!IsEmpty(Window(weather).Property(Hourly.$PARAM[item_index].Outlook))</visible>
+			<visible>!String.IsEmpty(Window(weather).Property(Hourly.$PARAM[item_index].Outlook))</visible>
 		</item>
 	</include>
 	<include name="WeatherDailyItem">
@@ -1270,7 +1272,7 @@
 			<property name="FanartCode">$INFO[Window(weather).Property(Daily.$PARAM[item_index].FanartCode)]</property>
 			<thumb>resource://resource.images.weathericons.default/$INFO[Window(weather).Property(Daily.$PARAM[item_index].OutlookIcon)]</thumb>
 			<onclick>noop</onclick>
-			<visible>!IsEmpty(Window(weather).Property(Daily.$PARAM[item_index].Outlook))</visible>
+			<visible>!String.IsEmpty(Window(weather).Property(Daily.$PARAM[item_index].Outlook))</visible>
 		</item>
 	</include>
 	<include name="WeatherMapItem">
@@ -1280,7 +1282,7 @@
 			<icon>$INFO[Window(weather).Property(Map.$PARAM[item_id].Area)]</icon>
 			<property name="Layer">$INFO[Window(weather).Property(Map.$PARAM[item_id].Layer)]</property>
 			<onclick>noop</onclick>
-			<visible>Weather.IsFetched + !IsEmpty(Window(weather).Property(Map.$PARAM[item_id].Area)) + !IsEmpty(Window(weather).Property(Map.IsFetched))</visible>
+			<visible>Weather.IsFetched + !String.IsEmpty(Window(weather).Property(Map.$PARAM[item_id].Area)) + !String.IsEmpty(Window(weather).Property(Map.IsFetched))</visible>
 		</item>
 	</include>
 </includes>

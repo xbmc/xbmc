@@ -46,11 +46,11 @@
 							<height>100</height>
 							<font>font24_title</font>
 							<aligny>center</aligny>
-							<visible>IsEmpty(ListItem.Date)</visible>
+							<visible>String.IsEmpty(ListItem.Date)</visible>
 							<label>$INFO[ListItem.Label]</label>
 						</control>
 						<control type="group">
-							<visible>!IsEmpty(ListItem.Date)</visible>
+							<visible>!String.IsEmpty(ListItem.Date)</visible>
 							<control type="label">
 								<left>30</left>
 								<top>10</top>
@@ -84,7 +84,7 @@
 								<width>120</width>
 								<height>75</height>
 								<texture>$VAR[TVTimerRadioButtonTexture]</texture>
-								<visible>!IsEmpty(ListItem.ChannelName)</visible>
+								<visible>!String.IsEmpty(ListItem.ChannelName)</visible>
 							</control>
 						</control>
 					</itemlayout>
@@ -113,10 +113,10 @@
 							<font>font24_title</font>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
-							<visible>IsEmpty(ListItem.Date)</visible>
+							<visible>String.IsEmpty(ListItem.Date)</visible>
 						</control>
 						<control type="group">
-							<visible>!IsEmpty(ListItem.Date)</visible>
+							<visible>!String.IsEmpty(ListItem.Date)</visible>
 							<control type="label">
 								<left>30</left>
 								<top>10</top>
@@ -150,7 +150,7 @@
 								<width>120</width>
 								<height>75</height>
 								<texture>$VAR[TVTimerRadioButtonTexture]</texture>
-								<visible>!IsEmpty(ListItem.ChannelName)</visible>
+								<visible>!String.IsEmpty(ListItem.ChannelName)</visible>
 							</control>
 						</control>
 					</focusedlayout>
@@ -168,7 +168,7 @@
 			<control type="group">
 				<left>1220</left>
 				<top>180</top>
-				<visible>!IsEmpty(ListItem.Date)</visible>
+				<visible>!String.IsEmpty(ListItem.Date)</visible>
 				<include>Visible_Right</include>
 				<include>OpenClose_Right</include>
 				<include name="PVRInfoPanel">

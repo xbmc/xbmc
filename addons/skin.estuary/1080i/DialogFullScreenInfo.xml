@@ -92,7 +92,7 @@
 					<textoffsetx>40</textoffsetx>
 					<onclick>Close</onclick>
 					<label>$LOCALIZE[206]</label>
-					<visible>!IsEmpty(VideoPlayer.CastAndRole)</visible>
+					<visible>!String.IsEmpty(VideoPlayer.CastAndRole)</visible>
 				</control>
 				<control type="button" id="5555">
 					<width>auto</width>
@@ -260,21 +260,21 @@
 						<width>150</width>
 						<height>56</height>
 						<aspectratio align="right">scale</aspectratio>
-						<visible>!IsEmpty(ADSP.MasterOwnIcon)</visible>
+						<visible>!String.IsEmpty(ADSP.MasterOwnIcon)</visible>
 						<texture>$INFO[ADSP.MasterOwnIcon]</texture>
 					</control>
 					<control type="image">
 						<width>150</width>
 						<height>56</height>
 						<aspectratio align="center">scale</aspectratio>
-						<visible>IsEmpty(ADSP.MasterOverrideIcon)</visible>
+						<visible>String.IsEmpty(ADSP.MasterOverrideIcon)</visible>
 						<texture>$INFO[VideoPlayer.AudioCodec,flags/audio/,.png]</texture>
 					</control>
 					<control type="image">
 						<width>150</width>
 						<height>56</height>
 						<aspectratio align="right">scale</aspectratio>
-						<visible>!IsEmpty(ADSP.MasterOverrideIcon)</visible>
+						<visible>!String.IsEmpty(ADSP.MasterOverrideIcon)</visible>
 						<texture>$INFO[ADSP.MasterOverrideIcon]</texture>
 					</control>
 					<control type="image">
