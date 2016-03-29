@@ -63,7 +63,6 @@
 #include "peripherals/Peripherals.h"
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfilesManager.h"
-#include "pvr/PVRManager.h"
 #include "pvr/PVRSettings.h"
 #include "pvr/windows/GUIWindowPVRGuide.h"
 #include "settings/AdvancedSettings.h"
@@ -607,7 +606,6 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterCallback(&CInputManager::GetInstance());
   m_settingsManager->UnregisterCallback(&CNetworkServices::GetInstance());
   m_settingsManager->UnregisterCallback(&g_passwordManager);
-  m_settingsManager->UnregisterCallback(&PVR::g_PVRManager);
   m_settingsManager->UnregisterCallback(&CRssManager::GetInstance());
   m_settingsManager->UnregisterCallback(&ADDON::CRepositoryUpdater::GetInstance());
 #if defined(TARGET_LINUX)
@@ -1143,18 +1141,6 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_MASTERLOCK_LOCKCODE);
   m_settingsManager->RegisterCallback(&g_passwordManager, settingSet);
-
-  settingSet.clear();
-  settingSet.insert(CSettings::SETTING_PVRMANAGER_CHANNELMANAGER);
-  settingSet.insert(CSettings::SETTING_PVRMANAGER_GROUPMANAGER);
-  settingSet.insert(CSettings::SETTING_PVRMANAGER_CHANNELSCAN);
-  settingSet.insert(CSettings::SETTING_PVRMANAGER_RESETDB);
-  settingSet.insert(CSettings::SETTING_PVRCLIENT_MENUHOOK);
-  settingSet.insert(CSettings::SETTING_PVRMENU_SEARCHICONS);
-  settingSet.insert(CSettings::SETTING_EPG_RESETEPG);
-  settingSet.insert(CSettings::SETTING_EPG_DAYSTODISPLAY);
-  settingSet.insert(CSettings::SETTING_PVRPARENTAL_ENABLED);
-  m_settingsManager->RegisterCallback(&PVR::g_PVRManager, settingSet);
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_RSSEDIT);

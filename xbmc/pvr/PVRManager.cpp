@@ -106,6 +106,7 @@ CPVRManager::CPVRManager(void) :
 
 CPVRManager::~CPVRManager(void)
 {
+  CSettings::GetInstance().UnregisterCallback(this);
   CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
   Stop();
   m_addons.reset();
@@ -391,6 +392,18 @@ void CPVRManager::ResetProperties(void)
 
 void CPVRManager::Init()
 {
+  std::set<std::string> settingSet;
+  settingSet.insert(CSettings::SETTING_PVRMANAGER_CHANNELMANAGER);
+  settingSet.insert(CSettings::SETTING_PVRMANAGER_GROUPMANAGER);
+  settingSet.insert(CSettings::SETTING_PVRMANAGER_CHANNELSCAN);
+  settingSet.insert(CSettings::SETTING_PVRMANAGER_RESETDB);
+  settingSet.insert(CSettings::SETTING_PVRCLIENT_MENUHOOK);
+  settingSet.insert(CSettings::SETTING_PVRMENU_SEARCHICONS);
+  settingSet.insert(CSettings::SETTING_EPG_RESETEPG);
+  settingSet.insert(CSettings::SETTING_EPG_DAYSTODISPLAY);
+  settingSet.insert(CSettings::SETTING_PVRPARENTAL_ENABLED);
+  CSettings::GetInstance().RegisterCallback(this, settingSet);
+
   m_addons->Start();
 }
 
