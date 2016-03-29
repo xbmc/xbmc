@@ -218,10 +218,13 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids, const std::
     BeginTransaction();
     for (const auto& id : added)
       m_pDS->exec(PrepareSQL("INSERT INTO installed(addonID, enabled, installDate) "
-          "VALUES('%s', '%d', '%s')", id.c_str(), enabled.find(id) != enabled.end() ? 1 : 0, now.c_str()));
+          "VALUES('%s', 0, '%s')", id.c_str(), now.c_str()));
 
     for (const auto& id : removed)
       m_pDS->exec(PrepareSQL("DELETE FROM installed WHERE addonID='%s'", id.c_str()));
+
+    for (const auto& id : enabled)
+      m_pDS->exec(PrepareSQL("UPDATE installed SET enabled=1 WHERE addonID='%s'", id.c_str()));
 
     CommitTransaction();
   }
