@@ -42,7 +42,8 @@ using namespace EPG;
 using namespace PVR;
 
 CEpgContainer::CEpgContainer(void) :
-    CThread("EPGUpdater")
+    CThread("EPGUpdater"),
+    m_bIsRestarting(false)
 {
   m_progressHandle = NULL;
   m_bStop = true;
@@ -146,7 +147,7 @@ public:
   }
 };
 
-void CEpgContainer::Start(bool bAsync)
+void CEpgContainer::Start(bool bAsync, bool bIsRestart /* = false */)
 {
   if (bAsync)
   {
@@ -164,6 +165,7 @@ void CEpgContainer::Start(bool bAsync)
       m_database.Open();
 
     m_bIsInitialising = true;
+    m_bIsRestarting = bIsRestart;
     m_bStop = false;
     LoadSettings();
 
@@ -181,6 +183,7 @@ void CEpgContainer::Start(bool bAsync)
     Create();
     SetPriority(-1);
 
+    m_bIsRestarting = false;
     m_bStarted = true;
 
     g_PVRManager.TriggerEpgsCreate();
@@ -601,7 +604,7 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(start);
   end = start + m_iDisplayTime;
   start -= g_advancedSettings.m_iEpgLingerTime * 60;
-  bShowProgress = g_advancedSettings.m_bEpgDisplayUpdatePopup && (m_bIsInitialising || g_advancedSettings.m_bEpgDisplayIncrementalUpdatePopup);
+  bShowProgress = g_advancedSettings.m_bEpgDisplayUpdatePopup && !m_bIsRestarting &&(m_bIsInitialising || g_advancedSettings.m_bEpgDisplayIncrementalUpdatePopup);
 
   {
     CSingleLock lock(m_critSection);

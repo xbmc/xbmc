@@ -75,8 +75,9 @@ namespace EPG
     /*!
      * @brief Start the EPG update thread.
      * @param bAsync Should the EPG container starts asynchronously
+     * @param bIsRestart Is first start or restart (after e.g. resume)
      */
-    virtual void Start(bool bAsync);
+    virtual void Start(bool bAsync, bool bIsRestart = false);
 
     /*!
      * @brief Stop the EPG update thread.
@@ -306,6 +307,7 @@ namespace EPG
     //@{
     bool         m_bIsUpdating;            /*!< true while an update is running */
     bool         m_bIsInitialising;        /*!< true while the epg manager hasn't loaded all tables */
+    bool         m_bIsRestarting;          /*!< true while the pvr manager is restarting (e.g when resuming after system suspend) */
     bool         m_bStarted;               /*!< true if EpgContainer has fully started */
     bool         m_bLoaded;                /*!< true after epg data is initially loaded from the database */
     bool         m_bPreventUpdates;        /*!< true to prevent EPG updates */

@@ -119,6 +119,13 @@ void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char
 
   if (strcmp(message, "OnWake") == 0)
   {
+    /* re-start update threads */
+    if (m_addons)
+      m_addons->Start();
+    if (m_guiInfo)
+      m_guiInfo->Start();
+    g_EpgContainer.Start(false, true);
+
     /* start job to search for missing channel icons */
     TriggerSearchMissingChannelIcons();
 
@@ -131,6 +138,19 @@ void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char
     TriggerRecordingsUpdate();
     TriggerEpgsCreate();
     TriggerTimersUpdate();
+  }
+  else if (strcmp(message, "OnSleep") == 0)
+  {
+    for (auto updateJob : m_pendingUpdates)
+      delete updateJob;
+    m_pendingUpdates.clear();
+
+    /* stop update threads */
+    g_EpgContainer.Stop();
+    if (m_guiInfo)
+      m_guiInfo->Stop();
+    if (m_addons)
+      m_addons->Stop();
   }
 }
 
