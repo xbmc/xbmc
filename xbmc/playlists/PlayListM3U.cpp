@@ -35,7 +35,8 @@ const char* CPlayListM3U::StartMarker = "#EXTCPlayListM3U::M3U";
 const char* CPlayListM3U::InfoMarker = "#EXTINF";
 const char* CPlayListM3U::ArtistMarker = "#EXTART";
 const char* CPlayListM3U::AlbumMarker = "#EXTALB";
-const char* CPlayListM3U::PropertyMarker = "#EXTPROP";
+const char* CPlayListM3U::PropertyMarker = "#KODIPROP";
+const char* CPlayListM3U::VLCOptMarker = "#EXTVLCOPT";
 const char* CPlayListM3U::StreamMarker = "#EXT-X-STREAM-INF";
 const char* CPlayListM3U::BandwidthMarker = "BANDWIDTH";
 const char* CPlayListM3U::OffsetMarker = "#EXT-KX-OFFSET";
@@ -128,17 +129,18 @@ bool CPlayListM3U::Load(const std::string& strFileName)
         iEndOffset = atoi(strLine.substr(iComma).c_str());
       }
     }
-    else if (StringUtils::StartsWith(strLine, PropertyMarker))
+    else if (StringUtils::StartsWith(strLine, PropertyMarker)
+    || StringUtils::StartsWith(strLine, VLCOptMarker))
     {
       size_t iColon = strLine.find(":");
-      size_t iComma = strLine.find(",");
+      size_t iEqualSign = strLine.find("=");
       if (iColon != std::string::npos &&
-        iComma != std::string::npos &&
-        iComma > iColon)
+        iEqualSign != std::string::npos &&
+        iEqualSign > iColon)
       {
         properties.push_back(std::make_pair(
-          StringUtils::Trim(strLine.substr(iColon, iComma - iColon)),
-          StringUtils::Trim(strLine.substr(iComma)))
+          StringUtils::Trim(strLine.substr(iColon, iEqualSign - iColon)),
+          StringUtils::Trim(strLine.substr(iEqualSign)))
           );
       }
     }
