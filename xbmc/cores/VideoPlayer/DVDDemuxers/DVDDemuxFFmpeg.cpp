@@ -438,7 +438,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
       AVStream *st = m_pFormatContext->streams[i];
       if (st->codec->codec_type == AVMEDIA_TYPE_AUDIO && st->codec->codec_id == AV_CODEC_ID_DTS)
       {
-        AVCodec* pCodec = avcodec_find_decoder_by_name("libdcadec");
+        AVCodec* pCodec = avcodec_find_decoder_by_name("dcadec");
         if (pCodec)
           st->codec->codec = pCodec;
       }
