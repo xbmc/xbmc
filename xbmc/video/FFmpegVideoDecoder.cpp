@@ -47,23 +47,23 @@ FFmpegVideoDecoder::~FFmpegVideoDecoder()
 void FFmpegVideoDecoder::close()
 {
   // Free the YUV frame
-  if ( m_pFrame )
-	av_free( m_pFrame );
+  if (m_pFrame)
+    av_free(m_pFrame);
 
   // Free the RGB frame
   if ( m_pFrameRGB )
   {
-	avpicture_free( m_pFrameRGB );
-	av_free( m_pFrameRGB );
+    av_frame_free(&m_pFrameRGB);
+    av_free(m_pFrameRGB);
   }
 
   // Close the codec
-  if ( m_pCodecCtx )
-	avcodec_close( m_pCodecCtx );
+  if (m_pCodecCtx)
+    avcodec_close(m_pCodecCtx);
 
   // Close the video file
   if ( m_pFormatCtx )
-	avformat_close_input( &m_pFormatCtx );
+    avformat_close_input( &m_pFormatCtx );
 
   m_pFormatCtx = 0;
   m_pCodecCtx = 0;
@@ -100,7 +100,7 @@ double FFmpegVideoDecoder::getFramesPerSecond() const
   
 unsigned int FFmpegVideoDecoder::getWidth() const
 {
-  if ( !m_pCodecCtx )
+  if (!m_pCodecCtx)
     return 0;
 
   return m_pCodecCtx->width;
@@ -146,15 +146,15 @@ bool FFmpegVideoDecoder::open( const std::string& filename )
   close();
   
   // Open the video file
-  if ( avformat_open_input( &m_pFormatCtx, filename.c_str(), NULL, NULL ) < 0 )
+  if (avformat_open_input(&m_pFormatCtx, filename.c_str(), NULL, NULL ) < 0)
   {
     m_errorMsg = "Could not open the video file";
-   close();
+    close();
     return false;
   }
 
   // Retrieve the stream information
-  if ( avformat_find_stream_info( m_pFormatCtx, 0 ) < 0 )
+  if (avformat_find_stream_info( m_pFormatCtx, 0 ) < 0)
   {
     m_errorMsg = "Could not find the stream information";
     close();
@@ -164,16 +164,16 @@ bool FFmpegVideoDecoder::open( const std::string& filename )
   // Find the first video stream
   m_videoStream = -1;
 
-  for ( unsigned i = 0; i < m_pFormatCtx->nb_streams; i++ )
+  for (unsigned i = 0; i < m_pFormatCtx->nb_streams; i++)
   {
-    if ( m_pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO )
+    if (m_pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO)
     {
       m_videoStream = i;
       break;
     }
   }
 
-  if ( m_videoStream == -1 )
+  if (m_videoStream == -1)
   {
     m_errorMsg = "Could not find a playable video stream";
     close();
@@ -186,7 +186,7 @@ bool FFmpegVideoDecoder::open( const std::string& filename )
   // Find the decoder for the video stream
   m_pCodec = avcodec_find_decoder( m_pCodecCtx->codec_id );
 
-  if ( m_pCodec == NULL )
+  if (m_pCodec == NULL)
   {
     m_errorMsg = "Could not find a video decoder";
     close();
@@ -194,7 +194,7 @@ bool FFmpegVideoDecoder::open( const std::string& filename )
   }
     
   // Open the codec
-  if ( avcodec_open2( m_pCodecCtx, m_pCodec, 0 ) < 0 )
+  if (avcodec_open2( m_pCodecCtx, m_pCodec, 0 ) < 0)
   {
     m_errorMsg = "Could not open the video decoder";
     close();
@@ -204,7 +204,7 @@ bool FFmpegVideoDecoder::open( const std::string& filename )
   // Allocate video frames
   m_pFrame = av_frame_alloc();
 
-  if ( !m_pFrame )
+  if (!m_pFrame)
   {
     m_errorMsg = "Could not allocate memory for a frame";
     close();
@@ -220,8 +220,8 @@ bool FFmpegVideoDecoder::seek( double time )
   // Convert the frame number into time stamp
   int64_t timestamp = (int64_t) (time * AV_TIME_BASE * av_q2d( m_pFormatCtx->streams[ m_videoStream ]->time_base ));
 
-  if ( av_seek_frame( m_pFormatCtx, m_videoStream, timestamp, AVSEEK_FLAG_ANY ) < 0 )
-	return false;
+  if (av_seek_frame( m_pFormatCtx, m_videoStream, timestamp, AVSEEK_FLAG_ANY ) < 0)
+    return false;
 
   avcodec_flush_buffers( m_pCodecCtx );
   return true;
@@ -230,51 +230,54 @@ bool FFmpegVideoDecoder::seek( double time )
 bool FFmpegVideoDecoder::nextFrame( CBaseTexture * texture )
 {
   // Just in case
-  if ( !m_pCodecCtx )
-	return false;
+  if (!m_pCodecCtx)
+    return false;
 
   // If we did not preallocate the picture or the texture size changed, (re)allocate it
-  if ( !m_pFrameRGB || texture->GetWidth() != m_frameRGBwidth || texture->GetHeight() != m_frameRGBheight )
+  if (!m_pFrameRGB || texture->GetWidth() != m_frameRGBwidth || texture->GetHeight() != m_frameRGBheight)
   {
-    if ( m_pFrameRGB )
+    if (m_pFrameRGB)
     {
-      avpicture_free( m_pFrameRGB );
-      av_free( m_pFrameRGB );
+      av_frame_free(&m_pFrameRGB);
+      av_free(m_pFrameRGB);
     }
 
     m_frameRGBwidth = texture->GetWidth();
     m_frameRGBheight = texture->GetHeight();
 
     // Allocate the conversion frame and relevant picture
-    m_pFrameRGB = (AVPicture*)av_mallocz(sizeof(AVPicture));
+    m_pFrameRGB = (AVFrame*)av_mallocz(sizeof(AVFrame));
 
-    if ( !m_pFrameRGB )
+    if (!m_pFrameRGB)
       return false;
 
     // Due to a bug in swsscale we need to allocate one extra line of data
-    if ( avpicture_alloc( m_pFrameRGB, AV_PIX_FMT_RGB32, m_frameRGBwidth, m_frameRGBheight + 1 ) < 0 )
+    m_pFrameRGB->format = AV_PIX_FMT_RGB32;
+    m_pFrameRGB->width = m_frameRGBwidth;
+    m_pFrameRGB->height = m_frameRGBheight + 1;
+    if (av_frame_get_buffer(m_pFrameRGB, 1) < 0)
       return false;
   }
 
   AVPacket packet;
   int frameFinished;
 
-  while ( true )
+  while (true)
   {
     // Read a frame
-    if ( av_read_frame( m_pFormatCtx, &packet ) < 0 )
+    if (av_read_frame( m_pFormatCtx, &packet ) < 0)
       return false;  // Frame read failed (e.g. end of stream)
 
-    if ( packet.stream_index == m_videoStream )
+    if (packet.stream_index == m_videoStream)
     {
       // Is this a packet from the video stream -> decode video frame
-      avcodec_decode_video2( m_pCodecCtx, m_pFrame, &frameFinished, &packet );
+      avcodec_decode_video2(m_pCodecCtx, m_pFrame, &frameFinished, &packet);
 
       // Did we get a video frame?
-      if ( frameFinished )
+      if (frameFinished)
       {
-        if ( packet.dts != (int64_t)AV_NOPTS_VALUE )
-	  m_lastFrameTime = packet.dts * av_q2d( m_pFormatCtx->streams[ m_videoStream ]->time_base );
+        if (packet.dts != (int64_t)AV_NOPTS_VALUE)
+	  m_lastFrameTime = packet.dts * av_q2d(m_pFormatCtx->streams[ m_videoStream ]->time_base);
         else
 	   m_lastFrameTime = 0.0;
 
@@ -282,20 +285,19 @@ bool FFmpegVideoDecoder::nextFrame( CBaseTexture * texture )
       }
     }
 
-    av_packet_unref( &packet );
+    av_packet_unref(&packet);
   }
 
   // We got the video frame, render it into the picture buffer
   struct SwsContext * context = sws_getContext( m_pCodecCtx->width, m_pCodecCtx->height, m_pCodecCtx->pix_fmt,
                            m_frameRGBwidth, m_frameRGBheight, AV_PIX_FMT_RGB32, SWS_FAST_BILINEAR, NULL, NULL, NULL );
 
-  sws_scale( context, m_pFrame->data, m_pFrame->linesize, 0, m_pCodecCtx->height,
-                                                                     m_pFrameRGB->data, m_pFrameRGB->linesize );
-  sws_freeContext( context );
-  av_packet_unref( &packet );
+  sws_scale(context, m_pFrame->data, m_pFrame->linesize, 0, m_pCodecCtx->height, m_pFrameRGB->data, m_pFrameRGB->linesize);
+  sws_freeContext(context);
+  av_packet_unref(&packet);
 
   // And into the texture
-  texture->Update( m_frameRGBwidth, m_frameRGBheight, m_frameRGBwidth * 4, XB_FMT_A8R8G8B8, m_pFrameRGB->data[0], false );
+  texture->Update(m_frameRGBwidth, m_frameRGBheight, m_frameRGBwidth * 4, XB_FMT_A8R8G8B8, m_pFrameRGB->data[0], false);
 
   return true;
 }

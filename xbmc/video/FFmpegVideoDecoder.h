@@ -30,7 +30,6 @@ struct AVFormatContext;
 struct AVCodecContext;
 struct AVCodec;
 struct AVFrame;
-struct AVPicture;
 }
 
 /**
@@ -144,7 +143,7 @@ private:
   AVCodecContext  *m_pCodecCtx;
   AVCodec         *m_pCodec;
   AVFrame         *m_pFrame;
-  AVPicture       *m_pFrameRGB;
+  AVFrame       *m_pFrameRGB;
   int              m_videoStream;
   double           m_lastFrameTime;
   

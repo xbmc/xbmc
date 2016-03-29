@@ -375,18 +375,18 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
 
 bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int height, unsigned int pitch, unsigned char * const pixels)
 {
-  AVPicture* pictureRGB = static_cast<AVPicture*>(av_mallocz(sizeof(AVPicture)));
+  AVFrame* pictureRGB = av_frame_alloc();
   if (!pictureRGB)
   {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "AVPicture could not be allocated");
+    CLog::LogFunction(LOGERROR, __FUNCTION__, "AVFrame could not be allocated");
     return false;
   }
 
-  int size = avpicture_fill(pictureRGB, NULL, AV_PIX_FMT_RGB32, width, height);
+  int size = av_image_fill_arrays(pictureRGB->data, pictureRGB->linesize, NULL, AV_PIX_FMT_RGB32, width, height, 1);
   if (size < 0)
   {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate AVPicture member with %i x %i pixes", width, height);
-    av_free(pictureRGB);
+    CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate AVFrame member with %i x %i pixes", width, height);
+    av_frame_free(&pictureRGB);
     return false;
   }
 
@@ -400,10 +400,13 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
   else
   {
     // We need an extra buffer and copy it manually afterwards
-    if (avpicture_alloc(pictureRGB, AV_PIX_FMT_RGB32, width, height) < 0)
+    pictureRGB->format = AV_PIX_FMT_RGB32;
+    pictureRGB->width = width;
+    pictureRGB->height = height;
+    if (av_frame_get_buffer(pictureRGB, 1) < 0)
     {
       CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate temp buffer of size %i bytes", size);
-      av_free(pictureRGB);
+      av_frame_free(&pictureRGB);
       return false;
     }
     needsCopy = true;
@@ -465,11 +468,10 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
       dst += pitch;
     }
 
-    avpicture_free(pictureRGB);
+    av_frame_free(&pictureRGB);
   }
   pictureRGB->data[0] = nullptr;
-  avpicture_free(pictureRGB);
-  av_free(pictureRGB);
+  av_frame_free(&pictureRGB);
 
   // update width and height original dimensions are kept
   m_height = nHeight;
@@ -531,7 +533,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
 
   unsigned int internalBufOutSize = 0;
 
-  int size = avpicture_get_size(tdm.avOutctx->pix_fmt, tdm.avOutctx->width, tdm.avOutctx->height);
+  int size = av_image_get_buffer_size(tdm.avOutctx->pix_fmt, tdm.avOutctx->width, tdm.avOutctx->height, 1);
   if (size < 0)
   {
     CLog::Log(LOGERROR, "Could not compute picture size for thumbnail: %s", destFile.c_str());
@@ -582,7 +584,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
     return false;
   }
 
-  if (avpicture_fill((AVPicture*)tdm.frame_temporary, tdm.intermediateBuffer, jpg_output ? AV_PIX_FMT_YUV420P : AV_PIX_FMT_RGBA, width, height) < 0)
+  if (av_image_fill_arrays(tdm.frame_temporary->data, tdm.frame_temporary->linesize, tdm.intermediateBuffer, jpg_output ? AV_PIX_FMT_YUV420P : AV_PIX_FMT_RGBA, width, height, 1) < 0)
   {
     CLog::Log(LOGERROR, "Could not fill picture for thumbnail: %s", destFile.c_str());
     CleanupLocalOutputBuffer();

@@ -101,7 +101,7 @@ void CDecoder::ReleaseBuffer(CGPUMEM *gmem)
 
 void CDecoder::AlignedSize(AVCodecContext *avctx, int &w, int &h)
 {
-  AVPicture picture;
+  AVFrame picture;
   int unaligned;
   int stride_align[AV_NUM_DATA_POINTERS];
 
