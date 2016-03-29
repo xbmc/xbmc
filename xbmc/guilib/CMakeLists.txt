@@ -241,4 +241,5 @@ if(CORE_SYSTEM_NAME STREQUAL windows)
                   ps_4_0_level_9_1
                   PS)
   endforeach()
+  add_dependencies(guilib d3dx11effects)
 endif()
