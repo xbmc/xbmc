@@ -843,7 +843,7 @@ bool CAddonMgr::CanAddonBeInstalled(const AddonPtr& addon)
 
 bool CAddonMgr::CanUninstall(const AddonPtr& addon)
 {
-  return addon && !IsSystemAddon(addon->ID()) &&
+  return addon && CanAddonBeDisabled(addon->ID()) &&
       !StringUtils::StartsWith(addon->Path(), CSpecialProtocol::TranslatePath("special://xbmc/addons"));
 }
 
