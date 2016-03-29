@@ -14800,7 +14800,49 @@ msgctxt "#29987"
 msgid "Send present traffic messages around and can be handled from add-ons (nothing inside Kodi)"
 msgstr ""
 
-#empty strings from id 29988 to 33000
+#. Music role category
+#: system/library/music/musicroles/Arrangers.xml
+msgctxt "#29988"
+msgid "Arrangers"
+msgstr ""
+
+#. Music role category
+#: system/library/music/musicroles/Composers.xml
+msgctxt "#29989"
+msgid "Composers"
+msgstr ""
+
+#. Music role category
+#: system/library/music/musicroles/Conductors.xml
+msgctxt "#29990"
+msgid "Conductors"
+msgstr ""
+
+#. Music role category
+#: system/library/music/musicroles/DJ.xml
+msgctxt "#29991"
+msgid "DJ Mixers"
+msgstr ""
+
+#. Music role category
+#: system/library/music/musicroles/Lyricists.xml
+msgctxt "#29992"
+msgid "Lyricists"
+msgstr ""
+
+#. Music role category
+#: system/library/music/musicroles/Orchestras.xml
+msgctxt "#29993"
+msgid "Orchestras"
+msgstr ""
+
+#. Roles from music contributor
+#: system/library/music/musicroles/index.xml
+msgctxt "#29994"
+msgid "Roles"
+msgstr ""
+
+#empty strings from id 29995 to 33000
 #strings 30000 thru 30999 reserved for plug-ins and plug-in settings
 #strings 31000 thru 31999 reserved for skins
 #strings 32000 thru 32999 reserved for scripts
@@ -18668,32 +18710,32 @@ msgstr ""
 #. Remixer of the song (if present)
 msgctxt "#38036"
 msgid "Remixer"
-msgstr "" 
+msgstr ""
 
 #. Arranger of the song (if present)
 msgctxt "#38037"
 msgid "Arranger"
-msgstr "" 
+msgstr ""
 
 #. Engineer of the song (if present)
 msgctxt "#38038"
 msgid "Engineer"
-msgstr "" 
+msgstr ""
 
 #. Producer of the song (if present)
 msgctxt "#38039"
 msgid "Producer"
-msgstr "" 
+msgstr ""
 
 #. DJMixer of the song (if present)
 msgctxt "#38040"
 msgid "DJMixer"
-msgstr "" 
+msgstr ""
 
 #. Mixer of the song (if present)
 msgctxt "#38041"
 msgid "Mixer"
-msgstr "" 
+msgstr ""
 
 #. Missing artist name
 #: music/MusicDatabase.cpp
