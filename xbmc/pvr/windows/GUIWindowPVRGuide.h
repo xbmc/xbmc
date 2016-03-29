@@ -19,6 +19,7 @@
  *
  */
 
+#include <atomic>
 #include <memory>
 #include "threads/Thread.h"
 #include "GUIWindowPVRBase.h"
@@ -75,10 +76,11 @@ namespace PVR
     void StopRefreshTimelineItemsThread();
 
     std::unique_ptr<CPVRRefreshTimelineItemsThread> m_refreshTimelineItemsThread;
-    bool m_bRefreshTimelineItems;
+    std::atomic_bool m_bRefreshTimelineItems;
 
-    CFileItemList      *m_cachedTimeline;
+    std::shared_ptr<CFileItemList> m_cachedTimeline;
     CPVRChannelGroupPtr m_cachedChannelGroup;
+    std::shared_ptr<CFileItemList> m_newTimeline;
   };
 
   class CPVRRefreshTimelineItemsThread : public CThread

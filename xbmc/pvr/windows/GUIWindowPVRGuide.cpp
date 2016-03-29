@@ -43,17 +43,16 @@ using namespace EPG;
 
 CGUIWindowPVRGuide::CGUIWindowPVRGuide(bool bRadio) :
   CGUIWindowPVRBase(bRadio, bRadio ? WINDOW_RADIO_GUIDE : WINDOW_TV_GUIDE, "MyPVRGuide.xml"),
-  m_refreshTimelineItemsThread(new CPVRRefreshTimelineItemsThread(this)),
-  m_bRefreshTimelineItems(false)
+  m_refreshTimelineItemsThread(new CPVRRefreshTimelineItemsThread(this))
 {
-  m_cachedTimeline = new CFileItemList;
+  m_cachedTimeline = std::make_shared<CFileItemList>();
   m_cachedChannelGroup = CPVRChannelGroupPtr(new CPVRChannelGroup);
+  m_bRefreshTimelineItems = false;
 }
 
 CGUIWindowPVRGuide::~CGUIWindowPVRGuide(void)
 {
   StopRefreshTimelineItemsThread();
-  delete m_cachedTimeline;
 }
 
 void CGUIWindowPVRGuide::OnInitWindow()
@@ -504,21 +503,18 @@ bool CGUIWindowPVRGuide::RefreshTimelineItems()
     m_bRefreshTimelineItems = false;
 
     CPVRChannelGroupPtr group = GetGroup();
-    CFileItemList *pCachedTimeline = new CFileItemList;
-    // can be very expensive. never call with lock aquired.
-    group->GetEPGAll(*pCachedTimeline, true);
 
-    CFileItemList *pOldCachedTimeline = nullptr;
+    std::shared_ptr<CFileItemList> timeline = std::make_shared<CFileItemList>();
+
+    // can be very expensive. never call with lock aquired.
+    group->GetEPGAll(*timeline, true);
+
     {
       CSingleLock lock(m_critSection);
 
-      pOldCachedTimeline = m_cachedTimeline;
-      m_cachedTimeline = pCachedTimeline;
+      m_newTimeline = timeline;
       m_cachedChannelGroup = group;
     }
-
-    pOldCachedTimeline->Clear(); // may acquire global graphics context!
-    delete pOldCachedTimeline;
 
     return true;
   }
@@ -541,6 +537,12 @@ void CGUIWindowPVRGuide::GetViewTimelineItems(CFileItemList &items)
       epgGridContainer->ResetCoordinates();
       m_bRefreshTimelineItems = true;
       RefreshTimelineItems();
+    }
+
+    if (m_newTimeline != nullptr)
+    {
+      m_cachedTimeline = m_newTimeline;
+      m_newTimeline.reset();
     }
 
     items.Clear();
