@@ -7633,15 +7633,7 @@ msgctxt "#15047"
 msgid "Audio DSP settings"
 msgstr ""
 
-#: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
-msgctxt "#15048"
-msgid "No audio DSP add-on enabled"
-msgstr ""
-
-#: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
-msgctxt "#15049"
-msgid "The audio DSP manager has been enabled without any enabled DSP add-on. Enable at least one add-on in order to use the DSP functionality."
-msgstr ""
+#empty strings from id 15048 to 15049
 
 #. Name of a list with amount of entries behind on GUI
 msgctxt "#15050"
@@ -9765,17 +9757,7 @@ msgctxt "#19272"
 msgid "You need a tuner, backend software, and an add-on for the backend to be able to use PVR. Please visit http://kodi.wiki/view/PVR to learn more."
 msgstr ""
 
-#. Header on DialogOK
-#: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
-msgctxt "#19273"
-msgid "No audio DSP add-ons could be found"
-msgstr ""
-
-#. DialogOK for no installed ADSP add-on available
-#: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
-msgctxt "#19274"
-msgid "You need an add-on installed to be able to use audio digital signal processing (DSP)."
-msgstr ""
+#empty strings from id 19273 to 19274
 
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19275"
