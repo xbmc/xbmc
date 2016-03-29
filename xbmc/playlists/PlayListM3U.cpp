@@ -35,6 +35,7 @@ const char* CPlayListM3U::StartMarker = "#EXTCPlayListM3U::M3U";
 const char* CPlayListM3U::InfoMarker = "#EXTINF";
 const char* CPlayListM3U::ArtistMarker = "#EXTART";
 const char* CPlayListM3U::AlbumMarker = "#EXTALB";
+const char* CPlayListM3U::PropertyMarker = "#EXTPROP";
 const char* CPlayListM3U::StreamMarker = "#EXT-X-STREAM-INF";
 const char* CPlayListM3U::BandwidthMarker = "BANDWIDTH";
 const char* CPlayListM3U::OffsetMarker = "#EXT-KX-OFFSET";
@@ -43,10 +44,10 @@ const char* CPlayListM3U::OffsetMarker = "#EXT-KX-OFFSET";
 //   #EXTM3U
 //   #EXTART:Demo Artist
 //   #EXTALB:Demo Album
+//   #EXTPROP:name,value
 //   #EXTINF:5,demo
 //   E:\Program Files\Winamp3\demo.mp3
-//   #EXTINF:5,demo
-//   E:\Program Files\Winamp3\demo.mp3
+
 
 
 // example m3u8 containing streams of different bitrates
@@ -71,6 +72,8 @@ bool CPlayListM3U::Load(const std::string& strFileName)
   char szLine[4096];
   std::string strLine;
   std::string strInfo;
+  std::vector<std::pair<std::string, std::string> > properties;
+
   long lDuration = 0;
   int iStartOffset = 0;
   int iEndOffset = 0;
@@ -125,6 +128,20 @@ bool CPlayListM3U::Load(const std::string& strFileName)
         iEndOffset = atoi(strLine.substr(iComma).c_str());
       }
     }
+    else if (StringUtils::StartsWith(strLine, PropertyMarker))
+    {
+      size_t iColon = strLine.find(":");
+      size_t iComma = strLine.find(",");
+      if (iColon != std::string::npos &&
+        iComma != std::string::npos &&
+        iComma > iColon)
+      {
+        properties.push_back(std::make_pair(
+          StringUtils::Trim(strLine.substr(iColon, iComma - iColon)),
+          StringUtils::Trim(strLine.substr(iComma)))
+          );
+      }
+    }
     else if (strLine != StartMarker &&
              !StringUtils::StartsWith(strLine, ArtistMarker) &&
              !StringUtils::StartsWith(strLine, AlbumMarker))
@@ -172,6 +189,10 @@ bool CPlayListM3U::Load(const std::string& strFileName)
           newItem->GetVideoInfoTag()->Reset(); // Force VideoInfoTag creation
         if (lDuration && newItem->IsAudio())
           newItem->GetMusicInfoTag()->SetDuration(lDuration);
+        for (auto &prop : properties)
+        {
+          newItem->SetProperty(prop.first, prop.second);
+        }
         Add(newItem);
 
         // Reset the values just in case there part of the file have the extended marker
@@ -180,6 +201,7 @@ bool CPlayListM3U::Load(const std::string& strFileName)
         lDuration = 0;
         iStartOffset = 0;
         iEndOffset = 0;
+        properties.clear();
       }
     }
   }

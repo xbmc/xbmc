@@ -31,6 +31,7 @@ public:
   static const char *InfoMarker;
   static const char *ArtistMarker;
   static const char *AlbumMarker;
+  static const char *PropertyMarker;
   static const char *StreamMarker;
   static const char *BandwidthMarker;
   static const char *OffsetMarker;
