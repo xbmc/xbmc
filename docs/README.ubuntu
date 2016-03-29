@@ -81,7 +81,7 @@ Tip: For those with multiple computers at home is to try out distcc
 -----------------------------------------------------------------------------
 
 For Ubuntu (all versions >= 7.04):
-    $ sudo apt-get install automake bison build-essential cmake curl cvs dcadec-dev \
+    $ sudo apt-get install automake bison build-essential cmake curl cvs \
       default-jre fp-compiler gawk gdc gettext git-core gperf libasound2-dev libass-dev \
       libbz2-dev libcap-dev libcdio-dev libcurl3 \
       libcurl4-openssl-dev libdbus-1-dev libfontconfig-dev libegl1-mesa-dev libfreetype6-dev \

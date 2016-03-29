@@ -80,7 +80,6 @@ externalproject_add(ffmpeg
                       --enable-encoder=aac
                       --enable-encoder=wmav2
                       --enable-protocol=http
-                      --enable-libdcadec
                       --enable-encoder=png
                       --enable-encoder=mjpeg
                       ${ffmpeg_conf}

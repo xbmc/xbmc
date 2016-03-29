@@ -20,4 +20,3 @@
 --enable-encoder=mjpeg
 --enable-protocol=http
 --enable-runtime-cpudetect
---enable-libdcadec

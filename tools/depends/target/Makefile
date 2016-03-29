@@ -16,11 +16,11 @@ DEPENDS = \
 	libplist libcec libbluray tinyxml dummy-libxbmc \
 	libamplayer libssh taglib libusb libnfs \
 	pythonmodule-pil pythonmodule-setuptools \
-	libxslt ffmpeg platform crossguid libdcadec \
+	libxslt ffmpeg platform crossguid \
         libdvdread libdvdnav libdvdcss
 
 
-FFMPEG_DEPENDS = gnutls libdcadec
+FFMPEG_DEPENDS = gnutls
 
 ifeq ($(ENABLE_GPLV3),yes)
   DEPENDS+=samba-gplv3 libcdio-gplv3
