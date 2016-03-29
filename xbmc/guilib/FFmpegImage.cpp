@@ -327,7 +327,7 @@ AVFrame* CFFmpegImage::ExtractFrame()
   }
 
   av_frame_free(&frame);
-  av_free_packet(&pkt);
+  av_packet_unref(&pkt);
 
   return clone;
 }

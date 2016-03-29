@@ -282,7 +282,7 @@ bool FFmpegVideoDecoder::nextFrame( CBaseTexture * texture )
       }
     }
 
-    av_free_packet( &packet );
+    av_packet_unref( &packet );
   }
 
   // We got the video frame, render it into the picture buffer
@@ -292,7 +292,7 @@ bool FFmpegVideoDecoder::nextFrame( CBaseTexture * texture )
   sws_scale( context, m_pFrame->data, m_pFrame->linesize, 0, m_pCodecCtx->height,
                                                                      m_pFrameRGB->data, m_pFrameRGB->linesize );
   sws_freeContext( context );
-  av_free_packet( &packet );
+  av_packet_unref( &packet );
 
   // And into the texture
   texture->Update( m_frameRGBwidth, m_frameRGBheight, m_frameRGBwidth * 4, XB_FMT_A8R8G8B8, m_pFrameRGB->data[0], false );

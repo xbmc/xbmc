@@ -508,7 +508,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
 void CDVDDemuxFFmpeg::Dispose()
 {
   m_pkt.result = -1;
-  av_free_packet(&m_pkt.pkt);
+  av_packet_unref(&m_pkt.pkt);
 
   if (m_pFormatContext)
   {
@@ -556,7 +556,7 @@ void CDVDDemuxFFmpeg::Flush()
   m_currentPts = DVD_NOPTS_VALUE;
 
   m_pkt.result = -1;
-  av_free_packet(&m_pkt.pkt);
+  av_packet_unref(&m_pkt.pkt);
 
   m_displayTime = 0;
   m_dtsAtDisplayTime = DVD_NOPTS_VALUE;
@@ -763,7 +763,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::Read() returned invalid packet and eof reached");
 
       m_pkt.result = -1;
-      av_free_packet(&m_pkt.pkt);
+      av_packet_unref(&m_pkt.pkt);
     }
     else
     {
@@ -887,7 +887,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         pPacket->iStreamId = m_pkt.pkt.stream_index;
       }
       m_pkt.result = -1;
-      av_free_packet(&m_pkt.pkt);
+      av_packet_unref(&m_pkt.pkt);
     }
   }
   } // end of lock scope
@@ -949,7 +949,7 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     time = 0;
 
   m_pkt.result = -1;
-  av_free_packet(&m_pkt.pkt);
+  av_packet_unref(&m_pkt.pkt);
 
   CDVDInputStream::IPosTime* ist = m_pInput->GetIPosTime();
   if (ist)
@@ -1016,7 +1016,7 @@ bool CDVDDemuxFFmpeg::SeekByte(int64_t pos)
     UpdateCurrentPTS();
 
   m_pkt.result = -1;
-  av_free_packet(&m_pkt.pkt);
+  av_packet_unref(&m_pkt.pkt);
 
   return (ret >= 0);
 }
