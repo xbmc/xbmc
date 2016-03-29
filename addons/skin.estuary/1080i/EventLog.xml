@@ -5,7 +5,7 @@
 	<controls>
 		<include>DefaultBackground</include>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(addoninformation)">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 			<control type="grouplist" id="9000">
 				<include>OpenClose_Left</include>
 				<orientation>vertical</orientation>

@@ -12,11 +12,11 @@
 			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 			<animation effect="fade" time="400">VisibleChange</animation>
-			<imagepath background="true" colordiffuse="40FFFFFF">$VAR[AddonsFanartVar]</imagepath>
+			<imagepath background="true" colordiffuse="35FFFFFF">$VAR[AddonsFanartVar]</imagepath>
 			<visible>!Player.HasMedia</visible>
 		</control>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(addoninformation)">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 			<control type="group">
 				<left>90</left>
 				<top>185</top>
@@ -264,7 +264,7 @@
 					<param name="container_path" value="addons://sources/executable/" />
 					<param name="container_target" value="programs" />
 				</include>
-				<include name="AddonLauncherPanel">
+				<include name="AddonLauncherPanel" condition="System.Platform.Android">
 					<param name="container_id" value="506" />
 					<param name="visible" value="Container(9000).HasFocus(4)" />
 					<param name="container_path" value="androidapps://" />

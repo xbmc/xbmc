@@ -7,7 +7,7 @@
 	<controls>
 		<include>DefaultBackground</include>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo)">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 			<control type="group">
 				<include>OpenClose_Left</include>
 				<left>110</left>
@@ -208,7 +208,7 @@
 							<height>77</height>
 							<width>750</width>
 							<aligny>top</aligny>
-							<animation effect="slide" start="0,0" end="0,18" time="0" condition="IsEmpty(ListItem.Title)">Conditional</animation>
+							<animation effect="slide" start="0,0" end="0,18" time="0" condition="String.IsEmpty(ListItem.Title)">Conditional</animation>
 							<label>$INFO[ListItem.Label]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
@@ -277,7 +277,7 @@
 							<width>750</width>
 							<aligny>top</aligny>
 							<label>$INFO[ListItem.Label]</label>
-							<animation effect="slide" start="0,0" end="0,18" time="0" condition="IsEmpty(ListItem.Title)">Conditional</animation>
+							<animation effect="slide" start="0,0" end="0,18" time="0" condition="String.IsEmpty(ListItem.Title)">Conditional</animation>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 						<control type="label">
@@ -334,16 +334,16 @@
 				<param name="down_posy" value="912" />
 				<param name="visible" value="!System.HasModalDialog" />
 			</include>
-		<include>MediaMenuMouseOverlay</include>
-		<control type="group">
-			<include>MediaMenuCommon</include>
-			<include>PVRSideBar</include>
-		</control>
-		<include name="TopBar">
-			<param name="breadcrumbs_label" value="TV$INFO[Control.GetLabel(29), / ]$INFO[Control.GetLabel(30), / ]" />
-			<param name="breadcrumbs_icon" value="icons/settings/tvremote.png" />
-		</include>
-		<include>BottomBar</include>
+			<include>MediaMenuMouseOverlay</include>
+			<control type="group">
+				<include>MediaMenuCommon</include>
+				<include>PVRSideBar</include>
+			</control>
+			<include name="TopBar">
+				<param name="breadcrumbs_label" value="TV$INFO[Control.GetLabel(29), / ]$INFO[Control.GetLabel(30), / ]" />
+				<param name="breadcrumbs_icon" value="icons/settings/tvremote.png" />
+			</include>
+			<include>BottomBar</include>
 		</control>
 		<control type="label" id="29">
 			<font>-</font>

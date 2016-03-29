@@ -8,7 +8,7 @@
 		<include>DefaultBackground</include>
 		<include>CommonScrollbars</include>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(addoninformation) | Window.IsActive(musicinformation) | Window.IsActive(songinformation)">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 			<include>View_50_List</include>
 			<include>View_52_IconWall</include>
 			<include>View_53_Shift</include>
@@ -24,7 +24,7 @@
 			</control>
 			<control type="group">
 				<include>OpenClose_Right</include>
-				<visible>[Control.IsVisible(50) | Control.Isvisible(54)] + !IsEmpty(ListItem.DBID)</visible>
+				<visible>[Control.IsVisible(50) | Control.Isvisible(54)] + !String.IsEmpty(ListItem.DBID)</visible>
 				<include>Visible_Right</include>
 				<visible>Container.Content(albums) | Container.Content(artists)</visible>
 				<control type="image">
@@ -50,7 +50,7 @@
 					<align>center</align>
 					<font>font24_title</font>
 					<label>$LOCALIZE[19055]</label>
-					<visible>IsEmpty(Listitem.Property(artist_description)) + IsEmpty(Listitem.Property(album_description)) + !ListItem.IsParentFolder</visible>
+					<visible>String.IsEmpty(Listitem.Property(artist_description)) + String.IsEmpty(Listitem.Property(album_description)) + !ListItem.IsParentFolder</visible>
 				</control>
 				<control type="image">
 					<right>113</right>
@@ -101,14 +101,14 @@
 						<include>MediaMenuItemsCommon</include>
 						<label>$LOCALIZE[10140]</label>
 						<onclick>Addon.OpenSettings($INFO[Container.PluginName])</onclick>
-						<visible>!IsEmpty(Container.PluginName)</visible>
+						<visible>!String.IsEmpty(Container.PluginName)</visible>
 					</control>
 					<control type="button" id="622">
 						<include>MediaMenuItemsCommon</include>
 						<label>$LOCALIZE[31117]</label>
 						<onclick condition="System.HasAddon(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=music,return)</onclick>
 						<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
-						<visible>Container.Content() + IsEmpty(Container.PluginName)</visible>
+						<visible>Container.Content() + String.IsEmpty(Container.PluginName)</visible>
 					</control>
 					<include>MediaMenuNowPlaying</include>
 				</control>

@@ -16,14 +16,14 @@
 			<fadetime>400</fadetime>
 			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-			<texture background="true" colordiffuse="40FFFFFF">$INFO[Player.Art(fanart)]</texture>
+			<texture background="true" colordiffuse="35FFFFFF">$INFO[Player.Art(fanart)]</texture>
 		</control>
 		<control type="image">
 			<texture fallback="special://skin/extras/backgrounds/SKINDEFAULT.jpg">$VAR[GlobalFanartVar]</texture>
 			<width>1920</width>
 			<height>1080</height>
 			<aspectratio align="center">scale</aspectratio>
-			<animation effect="fade" start="100" end="50" time="0" condition="!IsEmpty(Player.Art(fanart)) | !IsEmpty(Visualisation.Name)">Conditional</animation>
+			<animation effect="fade" start="100" end="50" time="0" condition="!String.IsEmpty(Player.Art(fanart)) | !String.IsEmpty(Visualisation.Name)">Conditional</animation>
 		</control>
 		<control type="image">
 			<left>33</left>
@@ -94,7 +94,7 @@
 				<texture background="true" border="2">$INFO[Player.Art(fanart)]</texture>
 				<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 				<bordersize>4</bordersize>
-				<visible>!IsEmpty(Player.Art(fanart))</visible>
+				<visible>!String.IsEmpty(Player.Art(fanart))</visible>
 				<visible>![Window.IsActive(VisualisationSettings) | Window.IsActive(VisualisationPresetList)]</visible>
 				<animation effect="fade" start="0" end="100" delay="400" time="200">Visible</animation>
 				<animation effect="fade" end="0" time="200">Hidden</animation>
@@ -115,7 +115,7 @@
 					<label>[B][UPPERCASE]$LOCALIZE[31024][/UPPERCASE][/B][CR]$INFO[MusicPlayer.Offset(1).Title][COLOR grey]$INFO[MusicPlayer.Offset(1).Artist, - ,][/COLOR][COLOR button_focus]$INFO[MusicPlayer.Offset(1).Duration, - ,][/COLOR][CR]$INFO[MusicPlayer.Offset(2).Title][COLOR grey]$INFO[MusicPlayer.Offset(2).Artist, - ,][/COLOR][COLOR button_focus]$INFO[MusicPlayer.Offset(2).Duration, - ,][/COLOR][CR]$INFO[MusicPlayer.Offset(3).Title][COLOR grey]$INFO[MusicPlayer.Offset(3).Artist, - ,][/COLOR][COLOR button_focus]$INFO[MusicPlayer.Offset(3).Duration, - ,][/COLOR]</label>
 					<textcolor>button_focus</textcolor>
 					<font>font12</font>
-					<visible>!IsEmpty(MusicPlayer.Offset(1).Title)</visible>
+					<visible>!String.IsEmpty(MusicPlayer.Offset(1).Title)</visible>
 				</control>
 				<control type="image">
 					<left>91</left>

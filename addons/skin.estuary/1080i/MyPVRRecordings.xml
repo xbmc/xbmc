@@ -7,7 +7,7 @@
 	<controls>
 		<include>DefaultBackground</include>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo)">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 			<control type="group">
 				<left>110</left>
 				<top>180</top>
@@ -239,7 +239,7 @@
 						<top>10</top>
 						<width>560</width>
 						<height>262</height>
-						<label>Folder ($INFO[Container(5000).NumItems,[B],[/B] items])</label>
+						<label>$LOCALIZE[19076] ($INFO[Container(5000).NumItems,[B],[/B] $LOCALIZE[31036]])</label>
 						<font>font16</font>
 						<visible>ListItem.IsFolder</visible>
 					</control>

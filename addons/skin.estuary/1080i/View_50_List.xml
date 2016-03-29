@@ -11,135 +11,141 @@
 			<top>182</top>
 			<visible>Control.IsVisible(50)</visible>
 			<include>Visible_Right</include>
-			<control type="image" id="5059">
-				<description>background image</description>
-				<left>-20</left>
-				<top>-20</top>
-				<width>754</width>
-				<height>746</height>
-				<texture border="22">dialogs/dialog-bg.png</texture>
-			</control>
-			<control type="list" id="50">
-				<left>2</left>
-				<top>3</top>
-				<width>710</width>
-				<height>700</height>
-				<scrolltime tween="cubic" easing="out">500</scrolltime>
-				<orientation>vertical</orientation>
-				<pagecontrol>60</pagecontrol>
-				<onleft>9000</onleft>
-				<onright>60</onright>
-				<onup>50</onup>
-				<ondown>50</ondown>
-				<viewtype label="535">list</viewtype>
-				<visible>Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes)</visible>
-				<focusedlayout height="63" condition="Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons)">
-					<control type="image">
-						<left>0</left>
-						<top>0</top>
-						<width>710</width>
-						<height>63</height>
-						<texture border="90,3,90,3">lists/separator.png</texture>
-						<visible>!Control.HasFocus(50)</visible>
-					</control>
-					<control type="image">
-						<left>0</left>
-						<top>0</top>
-						<width>710</width>
-						<height>69</height>
-						<texture>lists/focus.png</texture>
-						<visible>Control.HasFocus(50)</visible>
-					</control>
-					<control type="label">
-						<left>70</left>
-						<top>0</top>
-						<height>63</height>
-						<width>560</width>
-						<aligny>center</aligny>
-						<scroll>true</scroll>
-						<font>fontContextMenu</font>
-						<label>$INFO[ListItem.Label]</label>
-						<shadowcolor>text_shadow</shadowcolor>
-					</control>
-					<control type="label">
-						<left>135</left>
-						<top>0</top>
-						<height>63</height>
-						<width>555</width>
-						<align>right</align>
-						<aligny>center</aligny>
-						<font>font12</font>
-						<label>$VAR[ListLabel2Var]</label>
-						<animation effect="fade" start="70" end="100" time="300" reversible="false">Focus</animation>
-						<shadowcolor>text_shadow</shadowcolor>
-					</control>
-					<control type="image">
-						<left>21</left>
-						<top>20</top>
-						<width>32</width>
-						<height>32</height>
-						<texture>$VAR[ListWatchedIconVar]</texture>
-						<animation effect="fade" start="30" end="100" time="300" reversible="false">Focus</animation>
-					</control>
-					<control type="image">
-						<left>21</left>
-						<top>20</top>
-						<width>32</width>
-						<height>32</height>
-						<texture colordiffuse="button_focus">$VAR[ListWatchedIconVar]</texture>
-						<animation effect="fade" start="0" end="100" time="300" reversible="false">Focus</animation>
-						<animation effect="fade" time="150">VisibleChange</animation>
-						<visible>!Control.HasFocus(50)</visible>
-					</control>
-				</focusedlayout>
-				<itemlayout height="63" condition="Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons)">
-					<control type="image">
-						<left>0</left>
-						<top>0</top>
-						<width>710</width>
-						<height>63</height>
-						<texture border="90,3,90,3">lists/separator.png</texture>
-					</control>
-					<control type="label">
-						<left>70</left>
-						<top>0</top>
-						<height>63</height>
-						<width>560</width>
-						<aligny>center</aligny>
-						<font>fontContextMenu</font>
-						<label>$INFO[ListItem.Label]</label>
-						<shadowcolor>text_shadow</shadowcolor>
-					</control>
-					<control type="label">
-						<left>135</left>
-						<top>0</top>
-						<height>63</height>
-						<width>555</width>
-						<align>right</align>
-						<aligny>center</aligny>
-						<font>font12</font>
-						<label>$VAR[ListLabel2Var]</label>
-						<textcolor>grey</textcolor>
-						<shadowcolor>text_shadow</shadowcolor>
-					</control>
-					<control type="image">
-						<left>21</left>
-						<top>20</top>
-						<width>32</width>
-						<height>32</height>
-						<texture colordiffuse="grey">$VAR[ListWatchedIconVar]</texture>
-					</control>
-				</itemlayout>
-			</control>
-			<control type="scrollbar" id="60">
-				<left>720</left>
-				<top>0</top>
-				<width>12</width>
-				<height>706</height>
-				<onleft>50</onleft>
-				<onright>50</onright>
-				<orientation>vertical</orientation>
-			</control>
+			<include name="ListContainer">
+				<param name="list_id" value="50" />
+				<param name="viewtype_label" value="$LOCALIZE[535]" />
+			</include>
+		</control>
+	</include>
+	<include name="ListContainer">
+		<control type="image">
+			<description>background image</description>
+			<left>-20</left>
+			<top>-20</top>
+			<width>754</width>
+			<height>746</height>
+			<texture border="22">dialogs/dialog-bg.png</texture>
+		</control>
+		<control type="list" id="$PARAM[list_id]">
+			<left>2</left>
+			<top>3</top>
+			<width>710</width>
+			<height>700</height>
+			<scrolltime tween="cubic" easing="out">500</scrolltime>
+			<orientation>vertical</orientation>
+			<pagecontrol>$PARAM[list_id]600</pagecontrol>
+			<onleft>9000</onleft>
+			<onright>$PARAM[list_id]600</onright>
+			<onup>$PARAM[list_id]</onup>
+			<ondown>$PARAM[list_id]</ondown>
+			<viewtype label="$PARAM[viewtype_label]">list</viewtype>
+			<visible>Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes)</visible>
+			<focusedlayout height="63">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>710</width>
+					<height>63</height>
+					<texture border="90,3,90,3">lists/separator.png</texture>
+					<visible>!Control.HasFocus($PARAM[list_id])</visible>
+				</control>
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>710</width>
+					<height>69</height>
+					<texture>lists/focus.png</texture>
+					<visible>Control.HasFocus($PARAM[list_id])</visible>
+				</control>
+				<control type="label">
+					<left>70</left>
+					<top>0</top>
+					<height>63</height>
+					<width>560</width>
+					<aligny>center</aligny>
+					<scroll>true</scroll>
+					<font>fontContextMenu</font>
+					<label>$INFO[ListItem.Label]</label>
+					<shadowcolor>text_shadow</shadowcolor>
+				</control>
+				<control type="label">
+					<left>135</left>
+					<top>0</top>
+					<height>63</height>
+					<width>555</width>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<label>$VAR[ListLabel2Var]</label>
+					<animation effect="fade" start="70" end="100" time="300" reversible="false">Focus</animation>
+					<shadowcolor>text_shadow</shadowcolor>
+				</control>
+				<control type="image">
+					<left>21</left>
+					<top>20</top>
+					<width>32</width>
+					<height>32</height>
+					<texture>$VAR[ListWatchedIconVar]</texture>
+					<animation effect="fade" start="30" end="100" time="300" reversible="false">Focus</animation>
+				</control>
+				<control type="image">
+					<left>21</left>
+					<top>20</top>
+					<width>32</width>
+					<height>32</height>
+					<texture colordiffuse="button_focus">$VAR[ListWatchedIconVar]</texture>
+					<animation effect="fade" start="0" end="100" time="300" reversible="false">Focus</animation>
+					<animation effect="fade" time="150">VisibleChange</animation>
+					<visible>!Control.HasFocus($PARAM[list_id])</visible>
+				</control>
+			</focusedlayout>
+			<itemlayout height="63">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>710</width>
+					<height>63</height>
+					<texture border="90,3,90,3">lists/separator.png</texture>
+				</control>
+				<control type="label">
+					<left>70</left>
+					<top>0</top>
+					<height>63</height>
+					<width>560</width>
+					<aligny>center</aligny>
+					<font>fontContextMenu</font>
+					<label>$INFO[ListItem.Label]</label>
+					<shadowcolor>text_shadow</shadowcolor>
+				</control>
+				<control type="label">
+					<left>135</left>
+					<top>0</top>
+					<height>63</height>
+					<width>555</width>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<label>$VAR[ListLabel2Var]</label>
+					<textcolor>grey</textcolor>
+					<shadowcolor>text_shadow</shadowcolor>
+				</control>
+				<control type="image">
+					<left>21</left>
+					<top>20</top>
+					<width>32</width>
+					<height>32</height>
+					<texture colordiffuse="grey">$VAR[ListWatchedIconVar]</texture>
+				</control>
+			</itemlayout>
+		</control>
+		<control type="scrollbar" id="$PARAM[list_id]600">
+			<left>720</left>
+			<top>0</top>
+			<width>12</width>
+			<height>706</height>
+			<onleft>$PARAM[list_id]</onleft>
+			<onright>$PARAM[list_id]</onright>
+			<orientation>vertical</orientation>
 		</control>
 	</include>
 	<include name="ListThumbInfoPanel">

@@ -14,7 +14,6 @@
 			<param name="DialogHeaderId" value="1" />
 		</include>
 		<control type="textbox" id="9">
-			<description>text</description>
 			<left>30</left>
 			<top>82</top>
 			<width>855</width>
@@ -23,14 +22,13 @@
 			<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
 		</control>
 		<control type="progress" id="20">
-			<description>Progressbar</description>
 			<left>45</left>
 			<top>252</top>
 			<width>825</width>
 			<height>24</height>
 			<info>System.Progressbar</info>
 		</control>
-		<control type="grouplist">
+		<control type="grouplist" id="9000">
 			<orientation>horizontal</orientation>
 			<left>0</left>
 			<top>280</top>

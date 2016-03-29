@@ -141,7 +141,7 @@
 						<height>38</height>
 						<label>$INFO[ListItem.Duration,[COLOR button_focus]$LOCALIZE[180]: [/COLOR], $LOCALIZE[31060]]</label>
 						<shadowcolor>text_shadow</shadowcolor>
-						<visible>!IsEmpty(ListItem.Duration)</visible>
+						<visible>!String.IsEmpty(ListItem.Duration)</visible>
 					</control>
 					<control type="label">>
 						<font>font12</font>
@@ -149,7 +149,7 @@
 						<height>38</height>
 						<label>$INFO[ListItem.Director,[COLOR button_focus]$LOCALIZE[20339]: [/COLOR]]</label>
 						<shadowcolor>text_shadow</shadowcolor>
-						<visible>!IsEmpty(ListItem.Director)</visible>
+						<visible>!String.IsEmpty(ListItem.Director)</visible>
 					</control>
 					<control type="label">
 						<font>font12</font>
@@ -157,7 +157,7 @@
 						<height>38</height>
 						<label>$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]: [/COLOR]]</label>
 						<shadowcolor>text_shadow</shadowcolor>
-						<visible>[IsEmpty(ListItem.Director) | IsEmpty(ListItem.Duration)] + !IsEmpty(ListItem.Genre)</visible>
+						<visible>[String.IsEmpty(ListItem.Director) | String.IsEmpty(ListItem.Duration)] + !String.IsEmpty(ListItem.Genre)</visible>
 					</control>
 					<control type="label">>
 						<font>font12</font>
@@ -165,7 +165,7 @@
 						<height>38</height>
 						<label>$INFO[ListItem.Season,[COLOR button_focus]$LOCALIZE[33054]: [/COLOR],]$INFO[ListItem.Episode,  •  [COLOR button_focus] $LOCALIZE[20360]: [/COLOR],]</label>
 						<shadowcolor>text_shadow</shadowcolor>
-						<visible>!IsEmpty(ListItem.Season)</visible>
+						<visible>!String.IsEmpty(ListItem.Season)</visible>
 					</control>
 					<control type="textbox">
 						<width>1150</width>

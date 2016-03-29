@@ -8,7 +8,7 @@
 		<include>DefaultBackground</include>
 		<include>CommonScrollbars</include>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(addoninformation) | Window.IsActive(pictureinfo)">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 			<include>View_50_List</include>
 			<include>View_52_IconWall</include>
 			<include>View_53_Shift</include>
@@ -224,13 +224,13 @@
 						<label>$LOCALIZE[31124]</label>
 						<onclick condition="System.HasAddon(script.maps.browser)">RunScript(script.maps.browser,folder=$INFO[Container.FolderPath])</onclick>
 						<onclick condition="!System.HasAddon(script.maps.browser)">InstallAddon(script.maps.browser)</onclick>
-						<visible>Container.Content(images) + IsEmpty(Container.PluginName)</visible>
+						<visible>Container.Content(images) + String.IsEmpty(Container.PluginName)</visible>
 					</control>
 					<control type="button" id="624">
 						<include>MediaMenuItemsCommon</include>
 						<label>$LOCALIZE[10140]</label>
 						<onclick>Addon.OpenSettings($INFO[Container.PluginName])</onclick>
-						<visible>!IsEmpty(Container.PluginName)</visible>
+						<visible>!String.IsEmpty(Container.PluginName)</visible>
 					</control>
 					<control type="button" id="621">
 						<description>Get more</description>

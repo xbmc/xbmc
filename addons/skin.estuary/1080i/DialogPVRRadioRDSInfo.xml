@@ -17,7 +17,7 @@
 			<description>Normal song info group</description>
 			<left>0</left>
 			<top>70</top>
-			<visible>IsEmpty(RDS.IsClassical)</visible>
+			<visible>String.IsEmpty(RDS.IsClassical)</visible>
 			<control type="label">
 				<left>10</left>
 				<top>0</top>
@@ -27,7 +27,7 @@
 				<aligny>center</aligny>
 				<textcolor>button_focus</textcolor>
 				<label>$LOCALIZE[557]:</label>
-				<visible>IsEmpty(RDS.Band)</visible>
+				<visible>String.IsEmpty(RDS.Band)</visible>
 			</control>
 			<control type="fadelabel">
 				<left>160</left>
@@ -38,7 +38,7 @@
 				<label fallback="161">$INFO[RDS.Artist]</label>
 				<scrollout>false</scrollout>
 				<pauseatend>2000</pauseatend>
-				<visible>IsEmpty(RDS.Band)</visible>
+				<visible>String.IsEmpty(RDS.Band)</visible>
 			</control>
 			<control type="label">
 				<left>10</left>
@@ -49,7 +49,7 @@
 				<aligny>center</aligny>
 				<textcolor>button_focus</textcolor>
 				<label>$LOCALIZE[29901]:</label>
-				<visible>!IsEmpty(RDS.Band)</visible>
+				<visible>!String.IsEmpty(RDS.Band)</visible>
 			</control>
 			<control type="fadelabel">
 				<left>160</left>
@@ -60,7 +60,7 @@
 				<label>$INFO[RDS.Band]</label>
 				<scrollout>false</scrollout>
 				<pauseatend>2000</pauseatend>
-				<visible>!IsEmpty(RDS.Band)</visible>
+				<visible>!String.IsEmpty(RDS.Band)</visible>
 			</control>
 			<control type="label">
 				<left>385</left>
@@ -71,7 +71,7 @@
 				<aligny>center</aligny>
 				<textcolor>button_focus</textcolor>
 				<label>$LOCALIZE[557]:</label>
-				<visible>!IsEmpty(RDS.Artist) + !IsEmpty(RDS.Band)</visible>
+				<visible>!String.IsEmpty(RDS.Artist) + !String.IsEmpty(RDS.Band)</visible>
 			</control>
 			<control type="fadelabel">
 				<left>535</left>
@@ -80,7 +80,7 @@
 				<height>25</height>
 				<aligny>center</aligny>
 				<label>$INFO[RDS.Artist]</label>
-				<visible>!IsEmpty(RDS.Artist) + !IsEmpty(RDS.Band)</visible>
+				<visible>!String.IsEmpty(RDS.Artist) + !String.IsEmpty(RDS.Band)</visible>
 			</control>
 			<control type="label">
 				<left>10</left>
@@ -111,7 +111,7 @@
 				<aligny>center</aligny>
 				<textcolor>button_focus</textcolor>
 				<label>$LOCALIZE[29902]:</label>
-				<visible>!IsEmpty(RDS.ProgStyle)</visible>
+				<visible>!String.IsEmpty(RDS.ProgStyle)</visible>
 			</control>
 			<control type="fadelabel">
 				<left>160</left>
@@ -120,14 +120,14 @@
 				<height>25</height>
 				<aligny>center</aligny>
 				<label>$INFO[RDS.ProgStyle]</label>
-				<visible>!IsEmpty(RDS.ProgStyle)</visible>
+				<visible>!String.IsEmpty(RDS.ProgStyle)</visible>
 			</control>
 		</control>
 		<control type="group">
 			<description>Classic concert music group</description>
 			<left>0</left>
 			<top>70</top>
-			<visible>!IsEmpty(RDS.IsClassical)</visible>
+			<visible>!String.IsEmpty(RDS.IsClassical)</visible>
 			<control type="label">
 				<left>10</left>
 				<top>0</top>
@@ -177,7 +177,7 @@
 				<aligny>center</aligny>
 				<textcolor>button_focus</textcolor>
 				<label>$LOCALIZE[29904]:</label>
-				<visible>IsEmpty(RDS.Band) + !IsEmpty(RDS.Artist)</visible>
+				<visible>String.IsEmpty(RDS.Band) + !String.IsEmpty(RDS.Artist)</visible>
 			</control>
 			<control type="textbox">
 				<left>160</left>
@@ -187,7 +187,7 @@
 				<pagecontrol>-</pagecontrol>
 				<label fallback="161">$INFO[RDS.Artist]</label>
 				<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
-				<visible>IsEmpty(RDS.Band) + !IsEmpty(RDS.Artist)</visible>
+				<visible>String.IsEmpty(RDS.Band) + !String.IsEmpty(RDS.Artist)</visible>
 			</control>
 			<control type="label">
 				<left>10</left>
@@ -198,7 +198,7 @@
 				<aligny>center</aligny>
 				<textcolor>button_focus</textcolor>
 				<label>$LOCALIZE[29901]:</label>
-				<visible>!IsEmpty(RDS.Band)</visible>
+				<visible>!String.IsEmpty(RDS.Band)</visible>
 			</control>
 			<control type="fadelabel">
 				<left>160</left>
@@ -209,7 +209,7 @@
 				<label>$INFO[RDS.Band]</label>
 				<scrollout>false</scrollout>
 				<pauseatend>2000</pauseatend>
-				<visible>!IsEmpty(RDS.Band)</visible>
+				<visible>!String.IsEmpty(RDS.Band)</visible>
 			</control>
 			<control type="label">
 				<left>385</left>
@@ -220,7 +220,7 @@
 				<aligny>center</aligny>
 				<textcolor>button_focus</textcolor>
 				<label>$LOCALIZE[29904]:</label>
-				<visible>!IsEmpty(RDS.Artist) + !IsEmpty(RDS.Band)</visible>
+				<visible>!String.IsEmpty(RDS.Artist) + !String.IsEmpty(RDS.Band)</visible>
 			</control>
 			<control type="textbox">
 				<left>535</left>
@@ -230,7 +230,7 @@
 				<pagecontrol>-</pagecontrol>
 				<label>$INFO[RDS.Artist]</label>
 				<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
-				<visible>!IsEmpty(RDS.Artist) + !IsEmpty(RDS.Band)</visible>
+				<visible>!String.IsEmpty(RDS.Artist) + !String.IsEmpty(RDS.Band)</visible>
 			</control>
 			<control type="label">
 				<left>10</left>
@@ -241,7 +241,7 @@
 				<aligny>center</aligny>
 				<textcolor>button_focus</textcolor>
 				<label>$LOCALIZE[29905]:</label>
-				<visible>!IsEmpty(RDS.Conductor)</visible>
+				<visible>!String.IsEmpty(RDS.Conductor)</visible>
 			</control>
 			<control type="fadelabel">
 				<left>160</left>
@@ -252,7 +252,7 @@
 				<label fallback="161">$INFO[RDS.Conductor]</label>
 				<scrollout>false</scrollout>
 				<pauseatend>2000</pauseatend>
-				<visible>!IsEmpty(RDS.Conductor)</visible>
+				<visible>!String.IsEmpty(RDS.Conductor)</visible>
 			</control>
 			<control type="label">
 				<left>10</left>
@@ -263,7 +263,7 @@
 				<aligny>center</aligny>
 				<textcolor>button_focus</textcolor>
 				<label>$LOCALIZE[29902]:</label>
-				<visible>IsEmpty(RDS.Conductor) + !IsEmpty(RDS.ProgStyle)</visible>
+				<visible>String.IsEmpty(RDS.Conductor) + !String.IsEmpty(RDS.ProgStyle)</visible>
 			</control>
 			<control type="fadelabel">
 				<left>160</left>
@@ -272,7 +272,7 @@
 				<height>25</height>
 				<aligny>center</aligny>
 				<label>$INFO[RDS.ProgStyle]</label>
-				<visible>IsEmpty(RDS.Conductor) + !IsEmpty(RDS.ProgStyle)</visible>
+				<visible>String.IsEmpty(RDS.Conductor) + !String.IsEmpty(RDS.ProgStyle)</visible>
 			</control>
 			<control type="label">
 				<left>385</left>
@@ -283,7 +283,7 @@
 				<aligny>center</aligny>
 				<textcolor>button_focus</textcolor>
 				<label>$LOCALIZE[29902]:</label>
-				<visible>!IsEmpty(RDS.Conductor) + !IsEmpty(RDS.ProgStyle)</visible>
+				<visible>!String.IsEmpty(RDS.Conductor) + !String.IsEmpty(RDS.ProgStyle)</visible>
 			</control>
 			<control type="fadelabel">
 				<left>535</left>
@@ -292,7 +292,7 @@
 				<height>25</height>
 				<aligny>center</aligny>
 				<label>$INFO[RDS.ProgStyle]</label>
-				<visible>!IsEmpty(RDS.Conductor) + !IsEmpty(RDS.ProgStyle)</visible>
+				<visible>!String.IsEmpty(RDS.Conductor) + !String.IsEmpty(RDS.ProgStyle)</visible>
 			</control>
 		</control>
 		<control type="label">
@@ -304,7 +304,7 @@
 			<aligny>center</aligny>
 			<textcolor>button_focus</textcolor>
 			<label>$LOCALIZE[558]:</label>
-			<visible>!IsEmpty(RDS.Album)</visible>
+			<visible>!String.IsEmpty(RDS.Album)</visible>
 		</control>
 		<control type="fadelabel">
 			<left>535</left>
@@ -316,7 +316,7 @@
 			<label>$INFO[RDS.Album]</label>
 			<scrollout>false</scrollout>
 			<pauseatend>2000</pauseatend>
-			<visible>!IsEmpty(RDS.Album)</visible>
+			<visible>!String.IsEmpty(RDS.Album)</visible>
 		</control>
 		<control type="label">
 			<left>10</left>
@@ -327,7 +327,7 @@
 			<aligny>center</aligny>
 			<textcolor>button_focus</textcolor>
 			<label>$LOCALIZE[29906]:</label>
-			<visible>!IsEmpty(RDS.ProgHost)</visible>
+			<visible>!String.IsEmpty(RDS.ProgHost)</visible>
 		</control>
 		<control type="fadelabel">
 			<left>160</left>
@@ -337,7 +337,7 @@
 			<align>left</align>
 			<aligny>center</aligny>
 			<label>$INFO[RDS.ProgHost]</label>
-			<visible>!IsEmpty(RDS.ProgHost)</visible>
+			<visible>!String.IsEmpty(RDS.ProgHost)</visible>
 		</control>
 		<control type="label">
 			<left>385</left>
@@ -348,7 +348,7 @@
 			<aligny>center</aligny>
 			<textcolor>button_focus</textcolor>
 			<label>$LOCALIZE[569]:</label>
-			<visible>!IsEmpty(RDS.Comment)</visible>
+			<visible>!String.IsEmpty(RDS.Comment)</visible>
 		</control>
 		<control type="fadelabel">
 			<left>535</left>
@@ -360,7 +360,7 @@
 			<label>$INFO[RDS.Comment]</label>
 			<scrollout>false</scrollout>
 			<pauseatend>2000</pauseatend>
-			<visible>!IsEmpty(RDS.Comment)</visible>
+			<visible>!String.IsEmpty(RDS.Comment)</visible>
 		</control>
 		<control type="label">
 			<left>10</left>
@@ -390,7 +390,7 @@
 			<aligny>center</aligny>
 			<textcolor>button_focus</textcolor>
 			<label>$LOCALIZE[29907]:</label>
-			<visible>!IsEmpty(RDS.ProgEditStaff)</visible>
+			<visible>!String.IsEmpty(RDS.ProgEditStaff)</visible>
 		</control>
 		<control type="fadelabel">
 			<left>535</left>
@@ -400,7 +400,7 @@
 			<align>left</align>
 			<aligny>center</aligny>
 			<label>$INFO[RDS.ProgEditStaff]</label>
-			<visible>!IsEmpty(RDS.ProgEditStaff)</visible>
+			<visible>!String.IsEmpty(RDS.ProgEditStaff)</visible>
 		</control>
 		<control type="grouplist">
 			<left>10</left>
@@ -418,7 +418,7 @@
 				<aligny>center</aligny>
 				<textcolor>button_focus</textcolor>
 				<label>$LOCALIZE[29908]:</label>
-				<visible>!IsEmpty(RDS.ProgNow) | !IsEmpty(RDS.ProgNext)</visible>
+				<visible>!String.IsEmpty(RDS.ProgNow) | !String.IsEmpty(RDS.ProgNext)</visible>
 			</control>
 			<control type="label">
 				<description>Studio basename</description>
@@ -428,7 +428,7 @@
 				<aligny>center</aligny>
 				<textcolor>button_focus</textcolor>
 				<label>$LOCALIZE[29909]:</label>
-				<visible>!IsEmpty(RDS.PhoneStudio) | !IsEmpty(RDS.EmailStudio) | !IsEmpty(RDS.SMSStudio)</visible>
+				<visible>!String.IsEmpty(RDS.PhoneStudio) | !String.IsEmpty(RDS.EmailStudio) | !String.IsEmpty(RDS.SMSStudio)</visible>
 			</control>
 		</control>
 		<control type="grouplist">
@@ -442,35 +442,35 @@
 				<height>25</height>
 				<aligny>center</aligny>
 				<label>$LOCALIZE[19030]:</label>
-				<visible>!IsEmpty(RDS.ProgNow)</visible>
+				<visible>!String.IsEmpty(RDS.ProgNow)</visible>
 			</control>
 			<control type="label">
 				<width>160</width>
 				<height>25</height>
 				<aligny>center</aligny>
 				<label>$LOCALIZE[19031]:</label>
-				<visible>!IsEmpty(RDS.ProgNext)</visible>
+				<visible>!String.IsEmpty(RDS.ProgNext)</visible>
 			</control>
 			<control type="label">
 				<width>95</width>
 				<height>25</height>
 				<aligny>center</aligny>
 				<label>$LOCALIZE[29910]:</label>
-				<visible>!IsEmpty(RDS.PhoneStudio)</visible>
+				<visible>!String.IsEmpty(RDS.PhoneStudio)</visible>
 			</control>
 			<control type="label">
 				<width>95</width>
 				<height>25</height>
 				<aligny>center</aligny>
 				<label>$LOCALIZE[29911]:</label>
-				<visible>!IsEmpty(RDS.EmailStudio)</visible>
+				<visible>!String.IsEmpty(RDS.EmailStudio)</visible>
 			</control>
 			<control type="label">
 				<width>95</width>
 				<height>25</height>
 				<aligny>center</aligny>
 				<label>$LOCALIZE[29912]:</label>
-				<visible>!IsEmpty(RDS.SMSStudio)</visible>
+				<visible>!String.IsEmpty(RDS.SMSStudio)</visible>
 			</control>
 		</control>
 		<control type="grouplist">
@@ -485,7 +485,7 @@
 				<aligny>center</aligny>
 				<textcolor>grey</textcolor>
 				<label>$INFO[RDS.ProgNow]</label>
-				<visible>!IsEmpty(RDS.ProgNow)</visible>
+				<visible>!String.IsEmpty(RDS.ProgNow)</visible>
 			</control>
 			<control type="fadelabel">
 				<width>620</width>
@@ -493,7 +493,7 @@
 				<aligny>center</aligny>
 				<textcolor>grey</textcolor>
 				<label>$INFO[RDS.ProgNext]</label>
-				<visible>!IsEmpty(RDS.ProgNext)</visible>
+				<visible>!String.IsEmpty(RDS.ProgNext)</visible>
 			</control>
 			<control type="fadelabel">
 				<width>215</width>
@@ -501,7 +501,7 @@
 				<aligny>center</aligny>
 				<textcolor>grey</textcolor>
 				<label>$INFO[RDS.PhoneStudio]</label>
-				<visible>!IsEmpty(RDS.PhoneStudio)</visible>
+				<visible>!String.IsEmpty(RDS.PhoneStudio)</visible>
 			</control>
 			<control type="fadelabel">
 				<width>215</width>
@@ -509,7 +509,7 @@
 				<aligny>center</aligny>
 				<textcolor>grey</textcolor>
 				<label>$INFO[RDS.EmailStudio]</label>
-				<visible>!IsEmpty(RDS.EmailStudio)</visible>
+				<visible>!String.IsEmpty(RDS.EmailStudio)</visible>
 			</control>
 			<control type="fadelabel">
 				<width>215</width>
@@ -517,7 +517,7 @@
 				<aligny>center</aligny>
 				<textcolor>grey</textcolor>
 				<label>$INFO[RDS.SMSStudio]</label>
-				<visible>!IsEmpty(RDS.SMSStudio)</visible>
+				<visible>!String.IsEmpty(RDS.SMSStudio)</visible>
 			</control>
 		</control>
 		<control type="grouplist">
@@ -533,7 +533,7 @@
 				<aligny>center</aligny>
 				<textcolor>button_focus</textcolor>
 				<label>$LOCALIZE[29913]:</label>
-				<visible>!IsEmpty(RDS.PhoneHotline) | !IsEmpty(RDS.EmailHotline)</visible>
+				<visible>!String.IsEmpty(RDS.PhoneHotline) | !String.IsEmpty(RDS.EmailHotline)</visible>
 			</control>
 			<control type="label">
 				<left>385</left>
@@ -544,7 +544,7 @@
 				<aligny>center</aligny>
 				<textcolor>button_focus</textcolor>
 				<label>$LOCALIZE[29914]:</label>
-				<visible>!IsEmpty(RDS.ProgHomepage)</visible>
+				<visible>!String.IsEmpty(RDS.ProgHomepage)</visible>
 			</control>
 		</control>
 		<control type="grouplist">
@@ -558,21 +558,21 @@
 				<height>25</height>
 				<aligny>center</aligny>
 				<label>$LOCALIZE[29910]:</label>
-				<visible>!IsEmpty(RDS.PhoneHotline)</visible>
+				<visible>!String.IsEmpty(RDS.PhoneHotline)</visible>
 			</control>
 			<control type="label">
 				<width>160</width>
 				<height>25</height>
 				<aligny>center</aligny>
 				<label>$LOCALIZE[29911]:</label>
-				<visible>!IsEmpty(RDS.EmailHotline)</visible>
+				<visible>!String.IsEmpty(RDS.EmailHotline)</visible>
 			</control>
 			<control type="fadelabel">
 				<width>320</width>
 				<height>25</height>
 				<aligny>center</aligny>
 				<label>$INFO[RDS.ProgHomepage]</label>
-				<visible>!IsEmpty(RDS.ProgHomepage)</visible>
+				<visible>!String.IsEmpty(RDS.ProgHomepage)</visible>
 			</control>
 		</control>
 		<control type="grouplist">
@@ -587,7 +587,7 @@
 				<aligny>center</aligny>
 				<textcolor>grey</textcolor>
 				<label>$INFO[RDS.PhoneHotline]</label>
-				<visible>!IsEmpty(RDS.PhoneHotline)</visible>
+				<visible>!String.IsEmpty(RDS.PhoneHotline)</visible>
 			</control>
 			<control type="fadelabel">
 				<width>248</width>
@@ -595,7 +595,7 @@
 				<aligny>center</aligny>
 				<textcolor>grey</textcolor>
 				<label>$INFO[RDS.EmailHotline]</label>
-				<visible>!IsEmpty(RDS.EmailHotline)</visible>
+				<visible>!String.IsEmpty(RDS.EmailHotline)</visible>
 			</control>
 		</control>
 		<control type="group">

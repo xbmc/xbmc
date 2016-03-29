@@ -141,10 +141,10 @@
 						<param name="texture" value="osd/fullscreen/buttons/settings-subtitle.png"/>
 					</include>
 					<onclick>Close</onclick>
-					<onclick condition="!IsEmpty(Skin.String(LyricScript_Path))">RunScript($INFO[Skin.String(LyricScript_Path)])</onclick>
-					<onclick condition="IsEmpty(Skin.String(LyricScript_Path))">Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)</onclick>
-					<onclick condition="IsEmpty(Skin.String(LyricScript_Path))">Close</onclick>
-					<onclick condition="IsEmpty(Skin.String(LyricScript_Path))">RunScript($INFO[Skin.String(LyricScript_Path)])</onclick>
+					<onclick condition="!String.IsEmpty(Skin.String(LyricScript_Path))">RunScript($INFO[Skin.String(LyricScript_Path)])</onclick>
+					<onclick condition="String.IsEmpty(Skin.String(LyricScript_Path))">Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)</onclick>
+					<onclick condition="String.IsEmpty(Skin.String(LyricScript_Path))">Close</onclick>
+					<onclick condition="String.IsEmpty(Skin.String(LyricScript_Path))">RunScript($INFO[Skin.String(LyricScript_Path)])</onclick>
 				</control>
 				<control type="radiobutton" id="5000">
 					<include name="OSDButton">

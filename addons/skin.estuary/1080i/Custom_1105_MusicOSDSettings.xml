@@ -49,7 +49,7 @@
 				<item>
 					<label>$LOCALIZE[31083]</label>
 					<onclick>Addon.OpenSettings($INFO[Skin.String(LyricScript_Path)])</onclick>
-					<visible>!IsEmpty(Skin.String(LyricScript_Path))</visible>
+					<visible>!String.IsEmpty(Skin.String(LyricScript_Path))</visible>
 				</item>
 			</content>
 		</control>

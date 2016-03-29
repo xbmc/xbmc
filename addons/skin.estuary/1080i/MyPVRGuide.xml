@@ -7,7 +7,7 @@
 	<controls>
 		<include>DefaultBackground</include>
 		<control type="group" id="50">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo)">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 			<control type="group">
 				<description>Guide Timeline</description>
 				<visible>Control.IsVisible(10)</visible>
@@ -320,7 +320,7 @@
 			<control type="group">
 				<left>1220</left>
 				<top>150</top>
-				<visible>!IsEmpty(ListItem.ChannelName)</visible>
+				<visible>!String.IsEmpty(ListItem.ChannelName)</visible>
 				<visible>Control.IsVisible(13)</visible>
 				<include>Visible_Right</include>
 				<include>OpenClose_Right</include>
