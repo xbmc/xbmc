@@ -79,12 +79,6 @@ CActiveAEDSP::~CActiveAEDSP()
   Deactivate();
   CLog::Log(LOGDEBUG, "ActiveAE DSP - destroyed");
 }
-
-CActiveAEDSP &CActiveAEDSP::GetInstance()
-{
-  static CActiveAEDSP activeAEDSPManagerInstance;
-  return activeAEDSPManagerInstance;
-}
 //@}
 
 /*! @name initialization and configuration methods */
@@ -97,7 +91,7 @@ public:
 
   bool DoWork(void)
   {
-    CActiveAEDSP::GetInstance().Activate(false);
+    CServiceBroker::GetADSP().Activate(false);
     return true;
   }
 };
@@ -139,7 +133,7 @@ public:
 
   bool DoWork(void)
   {
-    CActiveAEDSP::GetInstance().TriggerModeUpdate(false);
+    CServiceBroker::GetADSP().TriggerModeUpdate(false);
     return true;
   }
 };
@@ -420,7 +414,7 @@ bool CActiveAEDSP::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
       int modeId = activeMaster->ModeID();
       if (modeId == AE_DSP_MASTER_MODE_ID_PASSOVER || modeId >= AE_DSP_MASTER_MODE_ID_INTERNAL_TYPES)
         strValue = g_localizeStrings.Get(activeMaster->ModeName());
-      else if (CActiveAEDSP::GetInstance().GetAudioDSPAddon(activeMaster->AddonID(), addon))
+      else if (CServiceBroker::GetADSP().GetAudioDSPAddon(activeMaster->AddonID(), addon))
         strValue = g_localizeStrings.GetAddonString(addon->ID(), activeMaster->ModeName());
     }
     break;

@@ -2492,9 +2492,9 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 
   case TMSG_SETAUDIODSPSTATE:
     if(pMsg->param1 == ACTIVE_AE_DSP_STATE_ON)
-      ActiveAE::CActiveAEDSP::GetInstance().Activate(pMsg->param2 == ACTIVE_AE_DSP_ASYNC_ACTIVATE);
+      CServiceBroker::GetADSP().Activate(pMsg->param2 == ACTIVE_AE_DSP_ASYNC_ACTIVATE);
     else if(pMsg->param1 == ACTIVE_AE_DSP_STATE_OFF)
-      ActiveAE::CActiveAEDSP::GetInstance().Deactivate();
+      CServiceBroker::GetADSP().Deactivate();
     break;
 
   case TMSG_START_ANDROID_ACTIVITY:

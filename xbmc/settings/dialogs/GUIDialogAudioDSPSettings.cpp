@@ -229,11 +229,11 @@ void CGUIDialogAudioDSPSettings::FrameMove()
       m_settingsManager->SetNumber(SETTING_AUDIO_POST_PROC_AUDIO_DELAY, videoSettings.m_AudioDelay);
 
     bool forceReload = false;
-    unsigned int  streamId = CActiveAEDSP::GetInstance().GetActiveStreamId();
+    unsigned int  streamId = CServiceBroker::GetADSP().GetActiveStreamId();
     if (m_ActiveStreamId != streamId)
     {
       m_ActiveStreamId      = streamId;
-      m_ActiveStreamProcess = CActiveAEDSP::GetInstance().GetDSPProcess(m_ActiveStreamId);
+      m_ActiveStreamProcess = CServiceBroker::GetADSP().GetDSPProcess(m_ActiveStreamId);
       if (m_ActiveStreamId == (unsigned int)-1 || !m_ActiveStreamProcess)
       {
         Close(true);
@@ -447,8 +447,8 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
   if (g_application.m_pPlayer->HasPlayer())
     g_application.m_pPlayer->GetAudioCapabilities(m_audioCaps);
 
-  m_ActiveStreamId      = CActiveAEDSP::GetInstance().GetActiveStreamId();
-  m_ActiveStreamProcess = CActiveAEDSP::GetInstance().GetDSPProcess(m_ActiveStreamId);
+  m_ActiveStreamId      = CServiceBroker::GetADSP().GetActiveStreamId();
+  m_ActiveStreamProcess = CServiceBroker::GetADSP().GetDSPProcess(m_ActiveStreamId);
   if (m_ActiveStreamId == (unsigned int)-1 || !m_ActiveStreamProcess)
   {
     m_iCategory = FindCategoryIndex(SETTING_AUDIO_CAT_MAIN);
@@ -472,21 +472,21 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
     /* about size() > 1, it is always the fallback (ignore of master processing) present. */
     StaticIntegerSettingOptions modeEntries;
     if (m_MasterModes[AE_DSP_ASTREAM_BASIC].size() > 1)
-      modeEntries.push_back(std::pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_BASIC),   AE_DSP_ASTREAM_BASIC));
+      modeEntries.push_back(std::pair<int, int>(CServiceBroker::GetADSP().GetStreamTypeName(AE_DSP_ASTREAM_BASIC),   AE_DSP_ASTREAM_BASIC));
     if (m_MasterModes[AE_DSP_ASTREAM_MUSIC].size() > 1)
-      modeEntries.push_back(std::pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_MUSIC),   AE_DSP_ASTREAM_MUSIC));
+      modeEntries.push_back(std::pair<int, int>(CServiceBroker::GetADSP().GetStreamTypeName(AE_DSP_ASTREAM_MUSIC),   AE_DSP_ASTREAM_MUSIC));
     if (m_MasterModes[AE_DSP_ASTREAM_MOVIE].size() > 1)
-      modeEntries.push_back(std::pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_MOVIE),   AE_DSP_ASTREAM_MOVIE));
+      modeEntries.push_back(std::pair<int, int>(CServiceBroker::GetADSP().GetStreamTypeName(AE_DSP_ASTREAM_MOVIE),   AE_DSP_ASTREAM_MOVIE));
     if (m_MasterModes[AE_DSP_ASTREAM_GAME].size() > 1)
-      modeEntries.push_back(std::pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_GAME),    AE_DSP_ASTREAM_GAME));
+      modeEntries.push_back(std::pair<int, int>(CServiceBroker::GetADSP().GetStreamTypeName(AE_DSP_ASTREAM_GAME),    AE_DSP_ASTREAM_GAME));
     if (m_MasterModes[AE_DSP_ASTREAM_APP].size() > 1)
-      modeEntries.push_back(std::pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_APP),     AE_DSP_ASTREAM_APP));
+      modeEntries.push_back(std::pair<int, int>(CServiceBroker::GetADSP().GetStreamTypeName(AE_DSP_ASTREAM_APP),     AE_DSP_ASTREAM_APP));
     if (m_MasterModes[AE_DSP_ASTREAM_MESSAGE].size() > 1)
-      modeEntries.push_back(std::pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_MESSAGE), AE_DSP_ASTREAM_MESSAGE));
+      modeEntries.push_back(std::pair<int, int>(CServiceBroker::GetADSP().GetStreamTypeName(AE_DSP_ASTREAM_MESSAGE), AE_DSP_ASTREAM_MESSAGE));
     if (m_MasterModes[AE_DSP_ASTREAM_PHONE].size() > 1)
-      modeEntries.push_back(std::pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_PHONE),   AE_DSP_ASTREAM_PHONE));
+      modeEntries.push_back(std::pair<int, int>(CServiceBroker::GetADSP().GetStreamTypeName(AE_DSP_ASTREAM_PHONE),   AE_DSP_ASTREAM_PHONE));
     if (modesAvailable > 1 && m_MasterModes[m_streamTypeUsed].size() > 1)
-      modeEntries.insert(modeEntries.begin(), std::pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_AUTO), AE_DSP_ASTREAM_AUTO));
+      modeEntries.insert(modeEntries.begin(), std::pair<int, int>(CServiceBroker::GetADSP().GetStreamTypeName(AE_DSP_ASTREAM_AUTO), AE_DSP_ASTREAM_AUTO));
 
     AddSpinner(groupAudioModeSel,
                 SETTING_AUDIO_MAIN_STREAMTYPE, 15021, 0,
@@ -506,7 +506,7 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
       {
         m_ModeList.push_back(make_pair(g_localizeStrings.Get(m_MasterModes[m_streamTypeUsed][i]->ModeName()), modeId));
       }
-      else if (CActiveAEDSP::GetInstance().GetAudioDSPAddon(m_MasterModes[m_streamTypeUsed][i]->AddonID(), addon))
+      else if (CServiceBroker::GetADSP().GetAudioDSPAddon(m_MasterModes[m_streamTypeUsed][i]->AddonID(), addon))
       {
         m_ModeList.push_back(make_pair(g_localizeStrings.GetAddonString(addon->ID(), m_MasterModes[m_streamTypeUsed][i]->ModeName()), modeId));
         if (!AddonMasterModeSetupPresent)
@@ -572,10 +572,10 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
       if (m_MasterModes[m_streamTypeUsed][i]->HasSettingsDialog())
       {
         AE_DSP_ADDON addon;
-        if (CActiveAEDSP::GetInstance().GetAudioDSPAddon(m_MasterModes[m_streamTypeUsed][i]->AddonID(), addon))
+        if (CServiceBroker::GetADSP().GetAudioDSPAddon(m_MasterModes[m_streamTypeUsed][i]->AddonID(), addon))
         {
           AE_DSP_MENUHOOKS hooks;
-          if (CActiveAEDSP::GetInstance().GetMenuHooks(m_MasterModes[m_streamTypeUsed][i]->AddonID(), AE_DSP_MENUHOOK_MASTER_PROCESS, hooks))
+          if (CServiceBroker::GetADSP().GetMenuHooks(m_MasterModes[m_streamTypeUsed][i]->AddonID(), AE_DSP_MENUHOOK_MASTER_PROCESS, hooks))
           {
             for (unsigned int j = 0; j < hooks.size(); j++)
             {
@@ -746,7 +746,7 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
     for (unsigned int i = 0; i < m_ActiveModes.size(); i++)
     {
       AE_DSP_ADDON addon;
-      if (CActiveAEDSP::GetInstance().GetAudioDSPAddon(m_ActiveModes[i]->AddonID(), addon))
+      if (CServiceBroker::GetADSP().GetAudioDSPAddon(m_ActiveModes[i]->AddonID(), addon))
       {
         std::string label;
         switch (m_ActiveModes[i]->ModeType())
@@ -793,7 +793,7 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
 
         AE_DSP_MENUHOOKS hooks;
         m_ActiveModesData[i].MenuListPtr = -1;
-        if (CActiveAEDSP::GetInstance().GetMenuHooks(m_ActiveModes[i]->AddonID(), AE_DSP_MENUHOOK_INFORMATION, hooks))
+        if (CServiceBroker::GetADSP().GetMenuHooks(m_ActiveModes[i]->AddonID(), AE_DSP_MENUHOOK_INFORMATION, hooks))
         {
           for (unsigned int j = 0; j < hooks.size(); j++)
           {
@@ -875,13 +875,13 @@ bool CGUIDialogAudioDSPSettings::HaveActiveMenuHooks(AE_DSP_MENUHOOK_CAT categor
 {
   /*!> Check menus are active on current stream */
   AE_DSP_ADDONMAP addonMap;
-  if (CActiveAEDSP::GetInstance().HaveMenuHooks(category) &&
-      CActiveAEDSP::GetInstance().GetEnabledAudioDSPAddons(addonMap) > 0)
+  if (CServiceBroker::GetADSP().HaveMenuHooks(category) &&
+      CServiceBroker::GetADSP().GetEnabledAudioDSPAddons(addonMap) > 0)
   {
     for (AE_DSP_ADDONMAP_ITR itr = addonMap.begin(); itr != addonMap.end(); itr++)
     {
       AE_DSP_MENUHOOKS hooks;
-      if (CActiveAEDSP::GetInstance().GetMenuHooks(itr->second->GetID(), category, hooks))
+      if (CServiceBroker::GetADSP().GetMenuHooks(itr->second->GetID(), category, hooks))
       {
         for (unsigned int i = 0; i < hooks.size(); i++)
         {
@@ -909,7 +909,7 @@ std::string CGUIDialogAudioDSPSettings::GetSettingsLabel(CSetting *pSetting)
     if (settingId.substr(0, 27) == SETTING_STREAM_INFO_MODE_CPU_USAGE)
     {
       ptr = strtol(settingId.substr(27).c_str(), NULL, 0);
-      if (ptr >= 0 && CActiveAEDSP::GetInstance().GetAudioDSPAddon(m_ActiveModes[ptr]->AddonID(), addon))
+      if (ptr >= 0 && CServiceBroker::GetADSP().GetAudioDSPAddon(m_ActiveModes[ptr]->AddonID(), addon))
         return m_ActiveModesData[ptr].MenuName;
     }
     else
@@ -919,7 +919,7 @@ std::string CGUIDialogAudioDSPSettings::GetSettingsLabel(CSetting *pSetting)
       else if (settingId.substr(0, 19) == SETTING_AUDIO_PROC_SETTINGS_MENUS)
         ptr = strtol(settingId.substr(19).c_str(), NULL, 0);
 
-      if (ptr >= 0 && CActiveAEDSP::GetInstance().GetAudioDSPAddon(m_Menus[ptr].addonId, addon))
+      if (ptr >= 0 && CServiceBroker::GetADSP().GetAudioDSPAddon(m_Menus[ptr].addonId, addon))
         return g_localizeStrings.GetAddonString(addon->ID(), m_Menus[ptr].hook.iLocalizedStringId);
     }
   }
@@ -930,12 +930,12 @@ std::string CGUIDialogAudioDSPSettings::GetSettingsLabel(CSetting *pSetting)
 void CGUIDialogAudioDSPSettings::GetAudioDSPMenus(CSettingGroup *group, AE_DSP_MENUHOOK_CAT category)
 {
   AE_DSP_ADDONMAP addonMap;
-  if (CActiveAEDSP::GetInstance().GetEnabledAudioDSPAddons(addonMap) > 0)
+  if (CServiceBroker::GetADSP().GetEnabledAudioDSPAddons(addonMap) > 0)
   {
     for (AE_DSP_ADDONMAP_ITR itr = addonMap.begin(); itr != addonMap.end(); itr++)
     {
       AE_DSP_MENUHOOKS hooks;
-      if (CActiveAEDSP::GetInstance().GetMenuHooks(itr->second->GetID(), category, hooks))
+      if (CServiceBroker::GetADSP().GetMenuHooks(itr->second->GetID(), category, hooks))
       {
         for (unsigned int i = 0; i < hooks.size(); i++)
         {
@@ -958,7 +958,7 @@ void CGUIDialogAudioDSPSettings::GetAudioDSPMenus(CSettingGroup *group, AE_DSP_M
   for (unsigned int i = 0; i < m_Menus.size(); i++)
   {
     AE_DSP_ADDON addon;
-    if (CActiveAEDSP::GetInstance().GetAudioDSPAddon(m_Menus[i].addonId, addon) && category == m_Menus[i].hook.category)
+    if (CServiceBroker::GetADSP().GetAudioDSPAddon(m_Menus[i].addonId, addon) && category == m_Menus[i].hook.category)
     {
       std::string modeName = g_localizeStrings.GetAddonString(addon->ID(), m_Menus[i].hook.iLocalizedStringId);
       if (modeName.empty())
@@ -976,7 +976,7 @@ bool CGUIDialogAudioDSPSettings::OpenAudioDSPMenu(unsigned int setupEntry)
     return false;
 
   AE_DSP_ADDON addon;
-  if (!CActiveAEDSP::GetInstance().GetAudioDSPAddon(m_Menus[setupEntry].addonId, addon))
+  if (!CServiceBroker::GetADSP().GetAudioDSPAddon(m_Menus[setupEntry].addonId, addon))
     return false;
 
   AE_DSP_MENUHOOK       hook;

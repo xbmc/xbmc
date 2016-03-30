@@ -19,6 +19,7 @@
  *
  */
 
+#include "ServiceBroker.h"
 #include "addons/AddonDatabase.h"
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
@@ -53,8 +54,6 @@ namespace ActiveAE
   typedef std::map< int, AE_DSP_ADDON >::iterator         AE_DSP_ADDONMAP_ITR;
   typedef std::map< int, AE_DSP_ADDON >::const_iterator   AE_DSP_ADDONMAP_CITR;
 
-  #define g_AEDSPManager       CActiveAEDSP::GetInstance()
-
   //@{
   /*!
    * Static dsp handling class
@@ -66,23 +65,16 @@ namespace ActiveAE
   {
   /*! @name Master audio dsp control class */
   //@{
-  private:
+  public:
     /*!
      * @brief Create a new CActiveAEDSP instance, which handles all audio DSP related operations in KODI.
      */
     CActiveAEDSP(void);
 
-  public:
     /*!
      * @brief Stop the ActiveAEDSP and destroy all objects it created.
      */
     virtual ~CActiveAEDSP();
-
-    /*!
-     * @brief Get the instance of the ActiveAEDSP.
-     * @return The ActiveAEDSP instance.
-     */
-    static CActiveAEDSP &GetInstance();
   //@}
 
   /*! @name initialization and configuration methods */

@@ -31,6 +31,10 @@ class CAddonMgr;
 class CBinaryAddonCache;
 }
 
+namespace ActiveAE {
+class CActiveAEDSP;
+}
+
 namespace ANNOUNCEMENT
 {
 class CAnnouncementManager;
@@ -53,6 +57,7 @@ public:
   ANNOUNCEMENT::CAnnouncementManager& GetAnnouncementManager();
   XBPython& GetXBPython();
   PVR::CPVRManager& GetPVRManager();
+  ActiveAE::CActiveAEDSP& GetADSPManager();
 
 protected:
   std::unique_ptr<ADDON::CAddonMgr> m_addonMgr;
@@ -60,4 +65,5 @@ protected:
   std::unique_ptr<ANNOUNCEMENT::CAnnouncementManager> m_announcementManager;
   std::unique_ptr<XBPython> m_XBPython;
   std::unique_ptr<PVR::CPVRManager> m_PVRManager;
+  std::unique_ptr<ActiveAE::CActiveAEDSP> m_ADSPManager;
 };

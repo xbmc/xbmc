@@ -203,7 +203,7 @@ bool CSaveFileStateJob::DoWork()
       }
     }
 
-    if (ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
+    if (CServiceBroker::GetADSP().IsProcessing())
     {
       std::string redactPath = CURL::GetRedacted(progressTrackingFile);
       CLog::Log(LOGDEBUG, "%s - Saving file state for dsp audio item %s", __FUNCTION__, redactPath.c_str());
