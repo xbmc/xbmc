@@ -95,6 +95,7 @@
       <sleep>ActivateWindow(shutdownmenu)</sleep>
       <!-- PVR windows -->
       <e>ActivateWindow(TVGuide)</e>
+      <epg>ActivateWindow(TVGuide)</epg>
       <h>ActivateWindow(TVChannels)</h>
       <j>ActivateWindow(RadioChannels)</j>
       <k>ActivateWindow(TVRecordings)</k>
@@ -221,6 +222,7 @@
     <keyboard>
       <e>PreviousMenu</e>
       <t>ShowTimerRule</t>
+      <epg>PreviousMenu</epg>
     </keyboard>
   </TVGuide>
   <MyRadioChannels>

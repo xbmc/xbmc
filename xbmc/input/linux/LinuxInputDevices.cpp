@@ -273,6 +273,7 @@ KeyMap keyMap[] = {
   { KEY_FILE          , XBMCK_LAUNCH_FILE_BROWSER},
   { KEY_SELECT        , XBMCK_RETURN      },
   { KEY_CONFIG        , XBMCK_CONFIG      },
+  { KEY_EPG           , XBMCK_EPG         },
   // The Little Black Box Remote Additions
   { 384               , XBMCK_LEFT        }, // Red
   { 378               , XBMCK_RIGHT       }, // Green
