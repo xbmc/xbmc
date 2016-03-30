@@ -681,7 +681,7 @@ bool CAddonMgr::FindAddons()
       for (int i = 0; i < n; ++i)
         installed.insert(cp_addons[i]->identifier);
       m_cpluff->release_info(m_cp_context, cp_addons);
-      m_database.SyncInstalled(installed, m_systemAddons);
+      m_database.SyncInstalled(installed);
     }
 
     // Reload caches
