@@ -392,7 +392,11 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
 
   bool needsCopy = false;
   int pixelsSize = pitch * height;
-  if (size == pixelsSize && (int)pitch == pictureRGB->linesize[0])
+  bool aligned = (((uintptr_t)(const void *)(pixels)) % (16) == 0);
+  if (!aligned)
+    CLog::Log(LOGDEBUG, "Alignment of external buffer is not suitable for ffmpeg intrinsics - please fix your malloc");
+
+  if (aligned && size == pixelsSize && (int)pitch == pictureRGB->linesize[0])
   {
     // We can use the pixels buffer directly
     pictureRGB->data[0] = pixels;
@@ -467,11 +471,14 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
       src += pictureRGB->linesize[0];
       dst += pitch;
     }
-
     av_frame_free(&pictureRGB);
   }
-  pictureRGB->data[0] = nullptr;
-  av_frame_free(&pictureRGB);
+  else
+  {
+    // we only lended the data so don't get it deleted
+    pictureRGB->data[0] = nullptr;
+    av_frame_free(&pictureRGB);
+  }
 
   // update width and height original dimensions are kept
   m_height = nHeight;
