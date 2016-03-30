@@ -236,12 +236,13 @@ bool CPVRClients::HasCreatedClients(void) const
 {
   CSingleLock lock(m_critSection);
 
-  for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
-    if (itr->second->ReadyToUse())
+  for (auto &client : m_clientMap)
+  {
+    if (client.second->ReadyToUse() && !client.second->IgnoreClient())
     {
-      if (itr->second->IgnoreClient())
-        return true;
+      return true;
     }
+  }
 
   return false;
 }
