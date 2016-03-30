@@ -1154,11 +1154,12 @@ void CPVRClients::UpdateAddons(void)
       if (iClientId < 0)
         iClientId = -iClientId;
 
+      ADDON_STATUS status;
       if (IsKnownClient(addon))
       {
         PVR_CLIENT client;
         GetClient(iClientId, client);
-        client->Create(iClientId);
+        status = client->Create(iClientId);
       }
       else
       {
@@ -1168,12 +1169,22 @@ void CPVRClients::UpdateAddons(void)
           CLog::Log(LOGERROR, "CPVRClients::UpdateAndInitialiseClients - severe error, incorrect add type");
           continue;
         }
-        pvrclient.get()->Create(iClientId);
+        status = pvrclient.get()->Create(iClientId);
         // register the add-on
         if (m_clientMap.find(iClientId) == m_clientMap.end())
         {
           m_clientMap.insert(std::make_pair(iClientId, pvrclient));
           m_addonNameIds.insert(make_pair(addon->ID(), iClientId));
+        }
+      }
+
+      if (status != ADDON_STATUS_OK)
+      {
+        CLog::Log(LOGERROR, "%s - failed to create add-on %s, status = %d", __FUNCTION__, addon->Name().c_str(), status);
+        if (status == ADDON_STATUS_PERMANENT_FAILURE)
+        {
+          CGUIDialogOK::ShowAndGetInput(CVariant{24070}, CVariant{16029});
+          CAddonMgr::GetInstance().DisableAddon(addon->ID());
         }
       }
     }
