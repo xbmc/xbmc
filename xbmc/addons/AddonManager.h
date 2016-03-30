@@ -264,6 +264,7 @@ namespace ADDON
     static bool PlatformSupportsAddon(const cp_plugin_info_t *info);
 
     bool GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enabledOnly);
+    bool EnableSingle(const std::string& id);
 
     std::set<std::string> m_disabled;
     std::set<std::string> m_updateBlacklist;
