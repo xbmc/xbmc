@@ -32,4 +32,7 @@ endif()
 
 if(SOURCES AND HEADERS)
   core_add_library(video_sync)
+  if(CORE_SYSTEM_NAME STREQUAL "windows")
+    add_dependencies(video_sync d3dx11effects)
+  endif()
 endif()
