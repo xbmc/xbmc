@@ -1788,18 +1788,18 @@ bool CVideoPlayer::GetCachingTimes(double& level, double& delay, double& offset)
   if (!m_pInputStream->GetCacheStatus(&status))
     return false;
 
-  int64_t cached   = status.forward;
-  unsigned currate = status.currate;
-  unsigned maxrate = status.maxrate;
-  bool full        = status.full;
+  uint64_t &cached = status.forward;
+  unsigned &currate = status.currate;
+  unsigned &maxrate = status.maxrate;
+  float &cache_level = status.level;
 
-  int64_t length  = m_pInputStream->GetLength();
-  int64_t remain  = length - m_pInputStream->Seek(0, SEEK_CUR);
+  int64_t length = m_pInputStream->GetLength();
+  int64_t remain = length - m_pInputStream->Seek(0, SEEK_CUR);
 
-  if(cached < 0 || length <= 0 || remain < 0)
+  if (length <= 0 || remain < 0)
     return false;
 
-  double play_sbp  = DVD_MSEC_TO_TIME(m_pDemuxer->GetStreamLength()) / length;
+  double play_sbp = DVD_MSEC_TO_TIME(m_pDemuxer->GetStreamLength()) / length;
   double queued = 1000.0 * GetQueueTime() / play_sbp;
 
   delay  = 0.0;
@@ -1809,14 +1809,20 @@ bool CVideoPlayer::GetCachingTimes(double& level, double& delay, double& offset)
   if (currate == 0)
     return true;
 
-  double cache_sbp   = 1.1 * (double)DVD_TIME_BASE / currate;         /* underestimate by 10 % */
-  double play_left   = play_sbp  * (remain + queued);                 /* time to play out all remaining bytes */
-  double cache_left  = cache_sbp * (remain - cached);                 /* time to cache the remaining bytes */
-  double cache_need  = std::max(0.0, remain - play_left / cache_sbp); /* bytes needed until play_left == cache_left */
+  double cache_sbp = 1.1 * (double)DVD_TIME_BASE / currate;          /* underestimate by 10 % */
+  double play_left = play_sbp  * (remain + queued);                  /* time to play out all remaining bytes */
+  double cache_left = cache_sbp * (remain - cached);                 /* time to cache the remaining bytes */
+  double cache_need = std::max(0.0, remain - play_left / cache_sbp); /* bytes needed until play_left == cache_left */
 
   delay = cache_left - play_left;
 
-  if (full && (currate < maxrate) )
+  /* NOTE: We can only reliably test for low readrate, when the cache is not
+   * already *near* full. This is because as soon as it's full the average-
+   * rate will become approximately the current-rate which can flag false
+   * low read-rate conditions. To work around this we don't check the currate at 100%
+   * but between 80% and 90%
+   */
+  if (cache_level > 0.8 && cache_level < 0.9 && currate < maxrate)
   {
     CLog::Log(LOGDEBUG, "Readrate %u is too low with %u required", currate, maxrate);
     level = -1.0;                          /* buffer is full & our read rate is too low  */
