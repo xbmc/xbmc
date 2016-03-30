@@ -382,7 +382,7 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
     return false;
   }
 
-  int size = av_image_fill_arrays(pictureRGB->data, pictureRGB->linesize, NULL, AV_PIX_FMT_RGB32, width, height, 1);
+  int size = av_image_fill_arrays(pictureRGB->data, pictureRGB->linesize, NULL, AV_PIX_FMT_RGB32, width, height, 16);
   if (size < 0)
   {
     CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate AVFrame member with %i x %i pixes", width, height);
@@ -403,7 +403,7 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
     pictureRGB->format = AV_PIX_FMT_RGB32;
     pictureRGB->width = width;
     pictureRGB->height = height;
-    if (av_frame_get_buffer(pictureRGB, 1) < 0)
+    if (av_frame_get_buffer(pictureRGB, 16) < 0)
     {
       CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate temp buffer of size %i bytes", size);
       av_frame_free(&pictureRGB);
@@ -533,7 +533,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
 
   unsigned int internalBufOutSize = 0;
 
-  int size = av_image_get_buffer_size(tdm.avOutctx->pix_fmt, tdm.avOutctx->width, tdm.avOutctx->height, 1);
+  int size = av_image_get_buffer_size(tdm.avOutctx->pix_fmt, tdm.avOutctx->width, tdm.avOutctx->height, 16);
   if (size < 0)
   {
     CLog::Log(LOGERROR, "Could not compute picture size for thumbnail: %s", destFile.c_str());
@@ -584,7 +584,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
     return false;
   }
 
-  if (av_image_fill_arrays(tdm.frame_temporary->data, tdm.frame_temporary->linesize, tdm.intermediateBuffer, jpg_output ? AV_PIX_FMT_YUV420P : AV_PIX_FMT_RGBA, width, height, 1) < 0)
+  if (av_image_fill_arrays(tdm.frame_temporary->data, tdm.frame_temporary->linesize, tdm.intermediateBuffer, jpg_output ? AV_PIX_FMT_YUV420P : AV_PIX_FMT_RGBA, width, height, 16) < 0)
   {
     CLog::Log(LOGERROR, "Could not fill picture for thumbnail: %s", destFile.c_str());
     CleanupLocalOutputBuffer();
