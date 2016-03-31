@@ -1004,7 +1004,7 @@
       "enum": [ "title", "plot", "plotoutline", "genre", "playcount",
                 "resume", "channel", "starttime","endtime", "runtime",
                 "lifetime", "icon", "art", "streamurl", "file",
-                "directory" ]
+                "directory", "radio" ]
     }
   },
   "PVR.Details.Recording": {
@@ -1026,7 +1026,8 @@
       "art": { "$ref": "Media.Artwork" },
       "streamurl": { "type": "string" },
       "file": { "type": "string" },
-      "directory": { "type": "string" }
+      "directory": { "type": "string" },
+      "radio": { "type": "boolean" }
     }
   },
   "Textures.Details.Size": {
