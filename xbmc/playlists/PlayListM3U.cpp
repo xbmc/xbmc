@@ -140,8 +140,8 @@ bool CPlayListM3U::Load(const std::string& strFileName)
       {
         std::string strFirst, strSecond;
         properties.push_back(std::make_pair(
-          StringUtils::Trim((strFirst = strLine.substr(iColon, iEqualSign - iColon))),
-          StringUtils::Trim((strSecond = strLine.substr(iEqualSign))))
+          StringUtils::Trim((strFirst = strLine.substr(iColon+1, iEqualSign - iColon -1))),
+          StringUtils::Trim((strSecond = strLine.substr(iEqualSign +1))))
           );
       }
     }

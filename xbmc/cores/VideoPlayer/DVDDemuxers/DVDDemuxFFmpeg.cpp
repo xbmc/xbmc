@@ -495,18 +495,21 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   // in case of mpegts and we have not seen pat/pmt, defer creation of streams
   if (!skipCreateStreams || m_pFormatContext->nb_programs > 0)
   {
-    // select the corrrect program if requested
-    CVariant programProp(pInput->GetProperty("program"));
-    if (!programProp.isNull())
+    if (m_pFormatContext->nb_programs > 0)
     {
-      int programNumber = programProp.asInteger();
-
-      for (unsigned int i = 0; i < m_pFormatContext->nb_programs; ++i)
+      // select the corrrect program if requested
+      CVariant programProp(pInput->GetProperty("program"));
+      if (!programProp.isNull())
       {
-        if (m_pFormatContext->programs[i]->program_num == programNumber)
+        int programNumber = programProp.asInteger();
+
+        for (unsigned int i = 0; i < m_pFormatContext->nb_programs; ++i)
         {
-          m_program = i;
-          break;
+          if (m_pFormatContext->programs[i]->program_num == programNumber)
+          {
+            m_program = i;
+            break;
+          }
         }
       }
     }
