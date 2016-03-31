@@ -2,7 +2,7 @@ diff --git a/libdcadec/dca_stream.c b/libdcadec/dca_stream.c
 index 156f874..acbd139 100644
 --- a/libdcadec/dca_stream.c
 +++ b/libdcadec/dca_stream.c
-@@ -37,7 +37,7 @@
+@@ -38,7 +38,7 @@
  #if (defined _WIN32)
  #define DCA_FGETC   _fgetc_nolock
  #elif (defined _BSD_SOURCE)
