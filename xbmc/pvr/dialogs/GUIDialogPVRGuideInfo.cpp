@@ -130,12 +130,11 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(CGUIMessage &message)
   if (message.GetSenderId() == CONTROL_BTN_SWITCH || message.GetSenderId() == CONTROL_BTN_PLAY_RECORDING)
   {
     Close();
-    PlayBackRet ret = PLAYBACK_CANCELED;
 
     if (m_progItem)
     {
       if (message.GetSenderId() == CONTROL_BTN_PLAY_RECORDING && m_progItem->HasRecording())
-        ret = g_application.PlayFile(CFileItem(m_progItem->Recording()), "videoplayer");
+        g_application.PlayFile(CFileItem(m_progItem->Recording()), "videoplayer");
       else if (m_progItem->HasPVRChannel())
       {
         CPVRChannelPtr channel = m_progItem->ChannelTag();

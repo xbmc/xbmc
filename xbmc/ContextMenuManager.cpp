@@ -174,11 +174,11 @@ bool CONTEXTMENU::ShowFor(const CFileItemPtr& fileItem, const CContextMenuItem& 
     return true;
 
   CContextButtons buttons;
-  for (int i = 0; i < menuItems.size(); ++i)
+  for (size_t i = 0; i < menuItems.size(); ++i)
     buttons.Add(i, menuItems[i]->GetLabel(*fileItem));
 
   int selected = CGUIDialogContextMenu::Show(buttons);
-  if (selected < 0 || selected >= menuItems.size())
+  if (selected < 0 || selected >= static_cast<int>(menuItems.size()))
     return false;
 
   return menuItems[selected]->IsGroup() ?
