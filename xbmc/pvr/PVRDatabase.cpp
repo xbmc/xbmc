@@ -139,42 +139,6 @@ void CPVRDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 28)
   {
-    VECADDONS addons;
-    CAddonDatabase database;
-    if (database.Open() && CAddonMgr::GetInstance().GetAddons(addons, ADDON_PVRDLL))
-    {
-      /** find all old client IDs */
-      std::string strQuery(PrepareSQL("SELECT idClient, sUid FROM clients"));
-      m_pDS->query(strQuery);
-      while (!m_pDS->eof() && !addons.empty())
-      {
-        /** try to find an add-on that matches the sUid */
-        for (VECADDONS::iterator it = addons.begin(); it != addons.end(); ++it)
-        {
-          if ((*it)->ID() == m_pDS->fv(1).get_asString())
-          {
-            /** try to get the current ID from the database */
-            int iAddonId = database.GetAddonId(*it);
-            /** register a new id if it didn't exist */
-            if (iAddonId <= 0)
-              iAddonId = database.AddAddon(*it, 0);
-            if (iAddonId > 0)
-            {
-              // this fails when an id becomes the id of one that's being replaced next iteration
-              // but since almost everyone only has 1 add-on enabled...
-              /** update the iClientId in the channels table */
-              strQuery = PrepareSQL("UPDATE channels SET iClientId = %u WHERE iClientId = %u", iAddonId, m_pDS->fv(0).get_asInt());
-              m_pDS->exec(strQuery);
-
-              /** no need to check this add-on again */
-              it = addons.erase(it);
-              break;
-            }
-          }
-        }
-        m_pDS->next();
-      }
-    }
     m_pDS->exec("DROP TABLE clients");
   }
 
