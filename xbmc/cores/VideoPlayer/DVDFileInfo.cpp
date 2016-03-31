@@ -102,25 +102,16 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
   std::string redactPath = CURL::GetRedacted(strPath);
   unsigned int nTime = XbmcThreads::SystemClockMillis();
   CFileItem item(strPath, false);
+
+  if (item.IsDiscImage() ||
+      item.IsPVR())
+    return false;
+
   item.SetMimeTypeForInternetFile();
   CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
   if (!pInputStream)
   {
     CLog::Log(LOGERROR, "InputStream: Error creating stream for %s", redactPath.c_str());
-    return false;
-  }
-
-  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)
-   || pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
-  {
-    CLog::Log(LOGDEBUG, "%s: disc streams not supported for thumb extraction, file: %s", __FUNCTION__, redactPath.c_str());
-    delete pInputStream;
-    return false;
-  }
-
-  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
-  {
-    delete pInputStream;
     return false;
   }
 
