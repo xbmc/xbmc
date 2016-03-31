@@ -172,7 +172,7 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(d_width, d_height);
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
-  ManageDisplay();
+  ManageRenderArea();
 
   m_bConfigured = true;
   m_bImageReady = false;
@@ -415,7 +415,7 @@ void CLinuxRendererGLES::Update()
 {
   if (!m_bConfigured)
     return;
-  ManageDisplay();
+  ManageRenderArea();
   ValidateRenderTarget();
 }
 
@@ -447,7 +447,7 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (buf.image.flags==0)
     return;
 
-  ManageDisplay();
+  ManageRenderArea();
 
   m_iLastRenderBuffer = index;
 
@@ -498,7 +498,7 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, DWORD flags, DWORD alpha)
 
   if (m_renderMethod & RENDER_BYPASS)
   {
-    ManageDisplay();
+    ManageRenderArea();
     return;
   }
 }

@@ -227,7 +227,7 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
-  ManageDisplay();
+  ManageRenderArea();
 
   SelectRenderMethod();
   m_bConfigured = true;
@@ -327,7 +327,7 @@ void CWinRenderer::Update()
 {
   if (!m_bConfigured) 
     return;
-  ManageDisplay();
+  ManageRenderArea();
   ManageTextures();
 }
 
@@ -341,7 +341,7 @@ void CWinRenderer::RenderUpdate(bool clear, unsigned int flags, unsigned int alp
 
   g_Windowing.SetAlphaBlendEnable(alpha < 255);
   ManageTextures();
-  ManageDisplay();
+  ManageRenderArea();
   Render(flags);
 }
 

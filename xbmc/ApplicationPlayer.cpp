@@ -827,15 +827,6 @@ float CApplicationPlayer::GetRenderAspectRatio()
     return 1.0;
 }
 
-RESOLUTION CApplicationPlayer::GetRenderResolution()
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    return player->GetRenderResolution();
-  else
-    return RES_INVALID;
-}
-
 void CApplicationPlayer::TriggerUpdateResolution()
 {
   std::shared_ptr<IPlayer> player = GetInternal();

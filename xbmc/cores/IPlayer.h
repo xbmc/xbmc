@@ -404,8 +404,6 @@ public:
 
   virtual float GetRenderAspectRatio() { return 1.0; };
 
-  virtual RESOLUTION GetRenderResolution() { return RES_INVALID; };
-
   virtual void TriggerUpdateResolution() {};
 
   virtual bool IsRenderingVideo() { return false; };

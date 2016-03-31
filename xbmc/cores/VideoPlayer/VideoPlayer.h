@@ -322,7 +322,6 @@ public:
   virtual void FlushRenderer();
   virtual void SetRenderViewMode(int mode);
   float GetRenderAspectRatio();
-  virtual RESOLUTION GetRenderResolution();
   virtual void TriggerUpdateResolution();
   virtual bool IsRenderingVideo();
   virtual bool IsRenderingGuiLayer();
