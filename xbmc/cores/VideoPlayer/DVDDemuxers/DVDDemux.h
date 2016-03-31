@@ -23,8 +23,8 @@
 #include <string>
 #include <vector>
 #include "system.h"
-#include "DVDDemuxPacket.h"
 
+struct DemuxPacket;
 class CDVDInputStream;
 
 #ifndef __GNUC__

@@ -18,13 +18,12 @@
  *
  */
 
+#include "DVDAudio.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "DVDAudio.h"
 #include "DVDClock.h"
 #include "DVDCodecs/Audio/DVDAudioCodec.h"
 #include "cores/AudioEngine/AEFactory.h"
-#include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "settings/MediaSettings.h"
 

@@ -25,6 +25,11 @@
 #include <string>
 #include <vector>
 
+/* make sure stdlib.h is included before including pcre.h inside the
+   namespace; this works around stdlib.h definitions also living in
+   the PCRE namespace */
+#include <stdlib.h>
+
 namespace PCRE {
 struct real_pcre_jit_stack; // forward declaration for PCRE without JIT
 typedef struct real_pcre_jit_stack pcre_jit_stack;

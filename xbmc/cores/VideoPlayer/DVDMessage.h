@@ -29,11 +29,11 @@
 #endif
 
 // include as less is possible to prevent dependencies
-#include "system.h"
-#include "DVDDemuxers/DVDDemux.h"
 #include "DVDResource.h"
+#include <string>
+#include <string.h>
 
-#include <assert.h>
+struct DemuxPacket;
 
 class CDVDMsg : public IDVDResourceCounted<CDVDMsg>
 {
@@ -269,7 +269,7 @@ public:
   CDVDMsgDemuxerPacket(DemuxPacket* packet, bool drop = false);
   virtual ~CDVDMsgDemuxerPacket();
   DemuxPacket* GetPacket()      { return m_packet; }
-  unsigned int GetPacketSize()  { if(m_packet) return m_packet->iSize; else return 0; }
+  unsigned int GetPacketSize();
   bool         GetPacketDrop()  { return m_drop; }
   DemuxPacket* m_packet;
   bool         m_drop;

@@ -22,6 +22,7 @@
 #include "VideoPlayerAudio.h"
 #include "DVDCodecs/Audio/DVDAudioCodec.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
+#include "DVDDemuxers/DVDDemuxPacket.h"
 #include "settings/Settings.h"
 #include "video/VideoReferenceClock.h"
 #include "utils/log.h"

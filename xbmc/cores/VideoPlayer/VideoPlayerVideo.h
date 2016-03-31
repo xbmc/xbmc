@@ -23,6 +23,7 @@
 #include "threads/Thread.h"
 #include "IVideoPlayer.h"
 #include "DVDMessageQueue.h"
+#include "DVDStreamInfo.h"
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDClock.h"
 #include "DVDOverlayContainer.h"

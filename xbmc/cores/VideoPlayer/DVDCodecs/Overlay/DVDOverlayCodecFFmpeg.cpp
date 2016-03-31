@@ -22,6 +22,7 @@
 #include "DVDOverlayImage.h"
 #include "DVDStreamInfo.h"
 #include "DVDClock.h"
+#include "DVDDemuxers/DVDDemuxPacket.h"
 #include "utils/log.h"
 #include "utils/EndianSwap.h"
 #include "guilib/GraphicContext.h"

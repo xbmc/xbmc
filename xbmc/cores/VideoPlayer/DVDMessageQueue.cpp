@@ -19,6 +19,7 @@
  */
 
 #include "DVDMessageQueue.h"
+#include "DVDDemuxers/DVDDemuxPacket.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "DVDClock.h"

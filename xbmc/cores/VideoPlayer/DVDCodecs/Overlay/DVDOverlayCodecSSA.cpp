@@ -25,6 +25,7 @@
 #include "DVDStreamInfo.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDClock.h"
+#include "DVDDemuxers/DVDDemuxPacket.h"
 #include "Util.h"
 #include "utils/StringUtils.h"
 
