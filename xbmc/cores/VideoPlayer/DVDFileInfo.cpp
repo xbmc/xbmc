@@ -18,11 +18,8 @@
  *
  */
 
-#include <string>
-#include <cstdlib>
-#include <memory>
-#include "threads/SystemClock.h"
 #include "DVDFileInfo.h"
+#include "threads/SystemClock.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 #include "pictures/Picture.h"
@@ -56,6 +53,8 @@
 #include "Util.h"
 #include "utils/LangCodeExpander.h"
 
+#include <cstdlib>
+#include <memory>
 
 bool CDVDFileInfo::GetFileDuration(const std::string &path, int& duration)
 {

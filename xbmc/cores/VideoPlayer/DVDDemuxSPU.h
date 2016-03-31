@@ -20,11 +20,10 @@
  *
  */
 
-#include "DVDCodecs/Overlay/DVDOverlaySpu.h"
-
 #include <stdint.h>
 
 struct AVFrame;
+class CDVDOverlaySpu;
 
 typedef struct SPUData
 {

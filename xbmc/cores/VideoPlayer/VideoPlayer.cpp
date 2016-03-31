@@ -18,9 +18,9 @@
  *
  */
 
-#include "system.h"
-#include "VideoPlayerRadioRDS.h"
 #include "VideoPlayer.h"
+#include "VideoPlayerRadioRDS.h"
+#include "system.h"
 
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"

@@ -20,6 +20,7 @@
 
 #include "DVDInputStream.h"
 #include "URL.h"
+#include "DVDStreamInfo.h"
 
 CDVDInputStream::CDVDInputStream(DVDStreamType streamType, CFileItem& fileitem)
 {

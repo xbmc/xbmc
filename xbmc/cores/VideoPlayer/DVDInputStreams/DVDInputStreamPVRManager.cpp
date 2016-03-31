@@ -20,6 +20,7 @@
 
 #include "DVDFactoryInputStream.h"
 #include "DVDInputStreamPVRManager.h"
+#include "DVDDemuxers/DVDDemuxPacket.h"
 #include "URL.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"

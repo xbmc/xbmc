@@ -20,10 +20,7 @@
  *
  */
 
-#include "DVDStreamInfo.h"
-#include "DVDMessageQueue.h"
 #include "DVDClock.h"
-#include "cores/VideoPlayer/Process/ProcessInfo.h"
 
 #define VideoPlayer_AUDIO    1
 #define VideoPlayer_VIDEO    2
@@ -36,6 +33,9 @@ template <typename T> class CRectGen;
 typedef CRectGen<float>  CRect;
 
 class DVDNavResult;
+class CDVDMsg;
+class CDVDStreamInfo;
+class CProcessInfo;
 
 struct SPlayerState
 {

@@ -20,8 +20,9 @@
  *
  */
 
-#include "system.h"
 #include "threads/CriticalSection.h"
+
+#include <stdint.h>
 
 #define DVD_TIME_BASE 1000000
 #define DVD_NOPTS_VALUE 0xFFF0000000000000

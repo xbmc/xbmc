@@ -122,3 +122,11 @@ CDVDMsgDemuxerPacket::~CDVDMsgDemuxerPacket()
   if (m_packet)
     CDVDDemuxUtils::FreeDemuxPacket(m_packet);
 }
+
+unsigned int CDVDMsgDemuxerPacket::GetPacketSize()
+{
+  if (m_packet)
+    return m_packet->iSize;
+  else
+    return 0;
+}

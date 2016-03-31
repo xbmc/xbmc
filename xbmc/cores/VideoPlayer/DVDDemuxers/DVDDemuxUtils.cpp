@@ -24,6 +24,7 @@
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h"
 #include "utils/log.h"
+#include "system.h"
 
 extern "C" {
 #include "libavcodec/avcodec.h"

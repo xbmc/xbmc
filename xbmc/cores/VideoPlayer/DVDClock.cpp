@@ -25,6 +25,8 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
+#include <inttypes.h>
+
 int64_t CDVDClock::m_systemOffset;
 int64_t CDVDClock::m_systemFrequency;
 CCriticalSection CDVDClock::m_systemsection;
