@@ -61,7 +61,7 @@ namespace ADDON
     // Things that MUST be supplied by the child classes
     bool Init(const std::string& strFile, unsigned int filecache);
     int ReadPCM(uint8_t* buffer, int size, int* actualsize);
-    int64_t Seek(int64_t time);
+    bool Seek(int64_t time);
     bool CanInit() { return true; }
     void DeInit();
     void Destroy();
