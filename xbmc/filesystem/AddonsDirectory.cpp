@@ -24,6 +24,7 @@
 #include <set>
 #include "AddonsDirectory.h"
 #include "addons/AddonDatabase.h"
+#include "addons/AddonSystemSettings.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "FileItem.h"
 #include "addons/AddonInstaller.h"
@@ -32,6 +33,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "guilib/TextureManager.h"
 #include "File.h"
+#include "settings/Settings.h"
 #include "SpecialProtocol.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
@@ -387,6 +389,22 @@ static bool Browse(const CURL& path, CFileItemList &items)
   return true;
 }
 
+static bool GetRecentlyUpdatedAddons(VECADDONS& addons)
+{
+  if (!CAddonMgr::GetInstance().GetInstalledAddons(addons))
+    return false;
+
+  auto limit = CDateTime::GetCurrentDateTime() - CDateTimeSpan(14, 0, 0, 0);
+  auto isOld = [limit](const AddonPtr& addon){ return addon->LastUpdated() < limit; };
+  addons.erase(std::remove_if(addons.begin(), addons.end(), isOld), addons.end());
+  return true;
+}
+
+static bool HasRecentlyUpdatedAddons()
+{
+  VECADDONS addons;
+  return GetRecentlyUpdatedAddons(addons) && !addons.empty();
+}
 
 static bool Repos(const CURL& path, CFileItemList &items)
 {
@@ -432,6 +450,14 @@ static void RootDirectory(CFileItemList& items)
     CFileItemPtr item(new CFileItem("addons://downloading/", true));
     item->SetLabel(g_localizeStrings.Get(24067));
     item->SetIconImage("DefaultNetwork.png");
+    items.Add(item);
+  }
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == ADDON::AUTO_UPDATES_ON
+      && HasRecentlyUpdatedAddons())
+  {
+    CFileItemPtr item(new CFileItem("addons://recently_updated/", true));
+    item->SetLabel(g_localizeStrings.Get(24004));
+    item->SetIconImage("DefaultAddonsRecentlyUpdated.png");
     items.Add(item);
   }
   if (CAddonMgr::GetInstance().HasAddons(ADDON_REPOSITORY))
@@ -522,6 +548,19 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   else if (endpoint == "search")
   {
     return GetSearchResults(path, items);
+  }
+  else if (endpoint == "recently_updated")
+  {
+    VECADDONS addons;
+    if (!GetRecentlyUpdatedAddons(addons))
+      return false;
+
+    std::sort(addons.begin(), addons.end(),
+        [](const AddonPtr& a, const AddonPtr& b){ return a->LastUpdated() > b->LastUpdated(); });
+
+    CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(24004));
+    return true;
+
   }
   else if (endpoint == "downloading")
   {

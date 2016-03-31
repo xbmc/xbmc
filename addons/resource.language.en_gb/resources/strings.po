@@ -5101,7 +5101,12 @@ msgctxt "#12013"
 msgid "Install date"
 msgstr ""
 
-#empty strings from id 12014 to 12020
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
+msgctxt "#12014"
+msgid "Last updated"
+msgstr ""
+
+#empty strings from id 12015 to 12020
 
 #. Label of various controls for starting playback from the beginning
 #: xbmc/Autorun.cpp
@@ -13428,7 +13433,11 @@ msgctxt "#24003"
 msgid "Add-on information"
 msgstr ""
 
-#empty string with id 24004
+#. Name of menu in the add-on browser
+#: xbmc/filesystem/AddonsDirectory.cpp
+msgctxt "#24004"
+msgid "Recently updated"
+msgstr ""
 
 #: xbmc/addons/Addon.cpp
 msgctxt "#24005"
