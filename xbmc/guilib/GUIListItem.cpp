@@ -406,11 +406,13 @@ void CGUIListItem::SetProperty(const std::string &strKey, const CVariant &value)
   }
 }
 
-CVariant CGUIListItem::GetProperty(const std::string &strKey) const
+const CVariant &CGUIListItem::GetProperty(const std::string &strKey) const
 {
   PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
+  static CVariant nullVariant = CVariant(CVariant::VariantTypeNull);
+  
   if (iter == m_mapProperties.end())
-    return CVariant(CVariant::VariantTypeNull);
+    return nullVariant;
 
   return iter->second;
 }
