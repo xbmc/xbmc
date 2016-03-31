@@ -40,6 +40,7 @@
   #include <sys/sockio.h>
   #include <net/if.h>
   #include <net/if_dl.h>
+  #include "network/osx/darwinICMPPing.h"
 #if defined(TARGET_DARWIN_OSX)
   #include <net/if_types.h>
   #include <net/route.h>
@@ -538,14 +539,15 @@ void CNetworkLinux::SetNameServers(const std::vector<std::string>& nameServers)
 
 bool CNetworkLinux::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
 {
+#if defined(TARGET_DARWIN)
+  return darwinICMPPing(remote_ip, timeout_ms) == 0;
+#else
   char cmd_line [64];
 
   struct in_addr host_ip; 
   host_ip.s_addr = remote_ip;
 
-#if defined (TARGET_DARWIN_IOS) // no timeout option available
-  sprintf(cmd_line, "ping -c 1 %s", inet_ntoa(host_ip));
-#elif defined (TARGET_DARWIN) || defined (TARGET_FREEBSD)
+#if defined (TARGET_FREEBSD)
   sprintf(cmd_line, "ping -c 1 -t %d %s", timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
 #else
   sprintf(cmd_line, "ping -c 1 -w %d %s", timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
@@ -564,6 +566,7 @@ bool CNetworkLinux::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
     CLog::Log(LOGERROR, "Ping fail : status = %d, errno = %d : '%s'", status, errno, cmd_line);
 
   return result == 0;
+#endif
 }
 
 #if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
