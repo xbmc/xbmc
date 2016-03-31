@@ -1150,6 +1150,15 @@ void CDVDDemuxFFmpeg::DisposeStreams()
   m_streams.clear();
 }
 
+int CDVDDemuxFFmpeg::GetCropValue(AVDictionary* metadata, char* key)
+{
+  AVDictionaryEntry *crop = av_dict_get(metadata, key, NULL, 0);
+  if (crop)
+    return atoi(crop->value);
+  else
+    return 0;
+}
+
 CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
 {
   AVStream* pStream = m_pFormatContext->streams[streamIdx];
@@ -1243,6 +1252,11 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         AVDictionaryEntry *rtag = av_dict_get(pStream->metadata, "rotate", NULL, 0);
         if (rtag) 
           st->iOrientation = atoi(rtag->value);
+
+        st->cropValues.y2 = GetCropValue(pStream->metadata, "crop_bottom");
+        st->cropValues.y1 = GetCropValue(pStream->metadata, "crop_top");
+        st->cropValues.x1 = GetCropValue(pStream->metadata, "crop_left");
+        st->cropValues.x2 = GetCropValue(pStream->metadata, "crop_right");
 
         // detect stereoscopic mode
         std::string stereoMode = GetStereoModeFromMetadata(pStream->metadata);

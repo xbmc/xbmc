@@ -265,6 +265,15 @@ public:
     return false;
   };
 
+  bool operator ==(const this_type &rect) const
+  {
+    if (x1 != rect.x1) return false;
+    if (x2 != rect.x2) return false;
+    if (y1 != rect.y1) return false;
+    if (y2 != rect.y2) return false;
+    return true;
+  };
+
   T x1, y1, x2, y2;
 private:
   inline static T clamp_range(T x, T l, T h) XBMC_FORCE_INLINE

@@ -76,6 +76,10 @@ public:
   int bitsperpixel;
   std::string stereo_mode; // stereoscopic 3d mode
 
+  // the number of pixels to remove from the edge of the image
+  // x1 = left, y1 = top, x2 = right, y2 = bottom
+  CRect cropValues;
+
   // AUDIO
   int channels;
   int samplerate;

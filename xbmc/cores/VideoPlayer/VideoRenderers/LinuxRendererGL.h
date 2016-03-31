@@ -117,7 +117,7 @@ public:
   virtual ~CLinuxRendererGL();
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_formatl, unsigned int orientation);
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_formatl, unsigned int orientation, CRect crop_values);
   virtual bool IsConfigured() { return m_bConfigured; }
   virtual int GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void ReleaseImage(int source, bool preserve = false);

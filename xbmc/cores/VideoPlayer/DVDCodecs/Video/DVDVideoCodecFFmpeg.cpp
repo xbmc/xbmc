@@ -752,6 +752,9 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->stereo_mode[sizeof(pDvdVideoPicture->stereo_mode)-1] = '\0';
   }
 
+  // the crop values belong to the stream but we want to pass them along with every DVDVideoPicture
+  pDvdVideoPicture->cropValues = m_hints.cropValues;
+
   pDvdVideoPicture->iRepeatPicture = 0.5 * m_pFrame->repeat_pict;
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;

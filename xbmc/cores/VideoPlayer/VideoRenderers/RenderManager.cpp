@@ -266,6 +266,7 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
         m_height == picture.iHeight &&
         m_dwidth == picture.iDisplayWidth &&
         m_dheight == picture.iDisplayHeight &&
+        m_cropValues == picture.cropValues &&
         !changerefresh &&
         (m_flags & ~CONF_FLAGS_FULLSCREEN) == (flags & ~CONF_FLAGS_FULLSCREEN) &&
         m_format == picture.format &&
@@ -300,6 +301,7 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
     m_height = picture.iHeight,
     m_dwidth = picture.iDisplayWidth;
     m_dheight = picture.iDisplayHeight;
+    m_cropValues = picture.cropValues;
     m_fps = fps;
     m_flags = flags;
     m_format = picture.format;
@@ -349,7 +351,7 @@ bool CRenderManager::Configure()
       return false;
   }
 
-  bool result = m_pRenderer->Configure(m_width, m_height, m_dwidth, m_dheight, m_fps, m_flags, m_format, m_extended_format, m_orientation);
+  bool result = m_pRenderer->Configure(m_width, m_height, m_dwidth, m_dheight, m_fps, m_flags, m_format, m_extended_format, m_orientation, m_cropValues);
   if (result)
   {
     CRenderInfo info = m_pRenderer->GetRenderInfo();

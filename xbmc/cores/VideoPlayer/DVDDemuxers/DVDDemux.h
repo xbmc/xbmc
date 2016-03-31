@@ -24,6 +24,7 @@
 #include <vector>
 #include "system.h"
 #include "DVDDemuxPacket.h"
+#include "guilib/Geometry.h"
 
 class CDVDInputStream;
 
@@ -152,6 +153,7 @@ public:
     irFpsRate = 0;
     iHeight = 0;
     iWidth = 0;
+    cropValues = CRect(0, 0, 0, 0);
     fAspect = 0.0;
     bVFR = false;
     bPTSInvalid = false;
@@ -175,6 +177,10 @@ public:
   int iOrientation; // orientation of the video in degress counter clockwise
   int iBitsPerPixel;
   std::string stereo_mode; // expected stereo mode
+
+  // the number of pixels to remove from the edge of the image
+  // x1 = left, y1 = top, x2 = right, y2 = bottom
+  CRect cropValues;
 };
 
 class CDemuxStreamAudio : public CDemuxStream
