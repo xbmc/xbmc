@@ -65,7 +65,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
       allowdtshddecode = atoi(it->m_value.c_str());
 
   if (hints.codec == AV_CODEC_ID_DTS && allowdtshddecode)
-    pCodec = avcodec_find_decoder_by_name("libdcadec");
+    pCodec = avcodec_find_decoder_by_name("dcadec");
 
   if (!pCodec)
     pCodec = avcodec_find_decoder(hints.codec);

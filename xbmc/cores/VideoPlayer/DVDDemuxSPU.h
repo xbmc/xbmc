@@ -24,7 +24,7 @@
 
 #include <stdint.h>
 
-struct AVPicture;
+struct AVFrame;
 
 typedef struct SPUData
 {

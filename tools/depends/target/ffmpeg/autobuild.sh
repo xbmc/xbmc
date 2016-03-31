@@ -160,10 +160,8 @@ CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" \
 	--enable-nonfree \
 	--enable-pthreads \
 	--enable-zlib \
-	--disable-mips32r2 \
-	--disable-mipsdspr1 \
+	--disable-mipsdsp \
 	--disable-mipsdspr2 \
-	--enable-libdcadec \
         ${FLAGS}
 
 make -j ${BUILDTHREADS} 

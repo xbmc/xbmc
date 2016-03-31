@@ -322,7 +322,7 @@ bool CEncoderFFmpeg::WriteFrame()
     }
   }
 
-  av_free_packet(&m_Pkt);
+  av_packet_unref(&m_Pkt);
 
   return true;
 }

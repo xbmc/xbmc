@@ -296,7 +296,7 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
   int size = m_Pkt.size;
 
   /* free the packet */
-  av_free_packet(&m_Pkt);
+  av_packet_unref(&m_Pkt);
 
   /* return the number of frames used */
   return size;

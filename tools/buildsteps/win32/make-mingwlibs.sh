@@ -81,7 +81,7 @@ echo " building FFmpeg $BITS"
 echo "-------------------------------------------------"
 runBackgroundProcess "./buildffmpeg.sh $MAKECLEAN"
 setfilepath /xbmc/system/players/VideoPlayer
-checkfiles avcodec-56.dll avformat-56.dll avutil-54.dll postproc-53.dll swscale-3.dll avfilter-5.dll swresample-1.dll
+checkfiles avcodec-57.dll avformat-57.dll avutil-55.dll postproc-54.dll swscale-4.dll avfilter-6.dll swresample-2.dll
 echo "-------------------------------------------------"
 echo " building of FFmpeg $BITS done..."
 echo "-------------------------------------------------"
