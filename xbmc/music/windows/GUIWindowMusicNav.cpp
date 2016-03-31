@@ -617,13 +617,8 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strTitle.empty())
       {
-        CGUIWindowVideoNav* pWindow = (CGUIWindowVideoNav*)g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
-        if (pWindow)
-        {
-          ADDON::ScraperPtr info;
-          pWindow->OnItemInfo(item.get(),info);
-          Refresh();
-        }
+        CGUIDialogVideoInfo::ShowFor(*item);
+        Refresh();
       }
       return true;
     }

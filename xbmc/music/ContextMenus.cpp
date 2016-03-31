@@ -20,7 +20,7 @@
 
 #include "ContextMenus.h"
 #include "guilib/GUIWindowManager.h"
-#include "music/windows/GUIWindowMusicNav.h"
+#include "music/dialogs/GUIDialogMusicInfo.h"
 #include "tags/MusicInfoTag.h"
 
 
@@ -37,13 +37,8 @@ bool CMusicInfo::IsVisible(const CFileItem& item) const
 
 bool CMusicInfo::Execute(const CFileItemPtr& item) const
 {
-  auto window = static_cast<CGUIWindowMusicNav*>(g_windowManager.GetWindow(WINDOW_MUSIC_NAV));
-  if (window)
-  {
-    window->OnItemInfo(item.get());
-    return true;
-  }
-  return false;
+  CGUIDialogMusicInfo::ShowFor(*item);
+  return true;
 }
 
 }

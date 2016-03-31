@@ -202,18 +202,13 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   return CGUIMediaWindow::OnMessage(message);
 }
 
-void CGUIWindowVideoBase::OnItemInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
+void CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPtr& scraper)
 {
-  if (!pItem)
+  if (fileItem.IsParentFolder() || fileItem.m_bIsShareOrDrive || fileItem.IsPath("add") ||
+     (fileItem.IsPlayList() && !URIUtils::HasExtension(fileItem.GetPath(), ".strm")))
     return;
 
-  if (pItem->IsParentFolder() || pItem->m_bIsShareOrDrive || pItem->IsPath("add") ||
-     (pItem->IsPlayList() && !URIUtils::HasExtension(pItem->GetPath(), ".strm")))
-    return;
-
-  // ShowIMDB can kill the item as this window can be closed while we do it,
-  // so take a copy of the item now
-  CFileItem item(*pItem);
+  CFileItem item(fileItem);
   bool fromDB = false;
   if ((item.IsVideoDb() && item.HasVideoInfoTag()) ||
       (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId != -1))
@@ -260,8 +255,8 @@ void CGUIWindowVideoBase::OnItemInfo(CFileItem* pItem, ADDON::ScraperPtr& scrape
   }
 
   // we need to also request any thumbs be applied to the folder item
-  if (pItem->m_bIsFolder)
-    item.SetProperty("set_folder_thumb", pItem->GetPath());
+  if (fileItem.m_bIsFolder)
+    item.SetProperty("set_folder_thumb", fileItem.GetPath());
 
   bool modified = ShowIMDB(CFileItemPtr(new CFileItem(item)), scraper, fromDB);
   if (modified &&
@@ -738,7 +733,7 @@ bool CGUIWindowVideoBase::OnItemInfo(int iItem)
       return true;
   }
 
-  OnItemInfo(item.get(), scraper);
+  OnItemInfo(*item, scraper);
 
   // Return whether or not we have information to display.
   // Note: This will cause the default select action to start
@@ -1050,7 +1045,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         OnScan(strPath, true);
       }
       else
-        OnItemInfo(item.get(),info);
+        OnItemInfo(*item, info);
 
       return true;
     }

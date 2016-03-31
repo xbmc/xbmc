@@ -23,12 +23,15 @@
 #include <memory>
 #include <utility>
 
+#include "addons/GUIDialogAddonInfo.h"
+#include "ContextMenuManager.h"
 #include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "filesystem/FavouritesDirectory.h"
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "music/dialogs/GUIDialogMusicInfo.h"
 #include "music/MusicThumbLoader.h"
 #include "pictures/PictureThumbLoader.h"
 #include "settings/Settings.h"
@@ -39,6 +42,9 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "video/VideoThumbLoader.h"
+#include "video/dialogs/GUIDialogVideoInfo.h"
+
+
 
 using namespace XFILE;
 using namespace ANNOUNCEMENT;
@@ -99,21 +105,21 @@ public:
   {
     if (item->IsVideo())
     {
-      initThumbLoader<CVideoThumbLoader>(VIDEO);
-      return m_thumbloaders[VIDEO];
+      initThumbLoader<CVideoThumbLoader>(InfoTagType::VIDEO);
+      return m_thumbloaders[InfoTagType::VIDEO];
     }
     if (item->IsAudio())
     {
-      initThumbLoader<CMusicThumbLoader>(AUDIO);
-      return m_thumbloaders[AUDIO];
+      initThumbLoader<CMusicThumbLoader>(InfoTagType::AUDIO);
+      return m_thumbloaders[InfoTagType::AUDIO];
     }
     if (item->IsPicture())
     {
-      initThumbLoader<CPictureThumbLoader>(PICTURE);
-      return m_thumbloaders[PICTURE];
+      initThumbLoader<CPictureThumbLoader>(InfoTagType::PICTURE);
+      return m_thumbloaders[InfoTagType::PICTURE];
     }
-    initThumbLoader<CProgramThumbLoader>(PROGRAM);
-    return m_thumbloaders[PROGRAM];
+    initThumbLoader<CProgramThumbLoader>(InfoTagType::PROGRAM);
+    return m_thumbloaders[InfoTagType::PROGRAM];
   }
 
   template<class CThumbLoaderClass>
@@ -219,9 +225,9 @@ void CDirectoryProvider::Announce(AnnouncementFlag flag, const char *sender, con
     // we don't need to refresh anything if there are no fitting
     // items in this list provider for the announcement flag
     if (((flag & VideoLibrary) &&
-         (std::find(m_itemTypes.begin(), m_itemTypes.end(), VIDEO) == m_itemTypes.end())) ||
+         (std::find(m_itemTypes.begin(), m_itemTypes.end(), InfoTagType::VIDEO) == m_itemTypes.end())) ||
         ((flag & AudioLibrary) &&
-         (std::find(m_itemTypes.begin(), m_itemTypes.end(), AUDIO) == m_itemTypes.end())))
+         (std::find(m_itemTypes.begin(), m_itemTypes.end(), InfoTagType::AUDIO) == m_itemTypes.end())))
       return;
 
     // if we're in a database transaction, don't bother doing anything just yet
@@ -304,6 +310,31 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
     return true;
   }
   return false;
+}
+
+bool CDirectoryProvider::OnInfo(const CGUIListItemPtr& item)
+{
+  auto fileItem = std::static_pointer_cast<CFileItem>(item);
+
+  if (fileItem->HasAddonInfo())
+    return CGUIDialogAddonInfo::ShowForItem(fileItem);
+  else if (fileItem->HasVideoInfoTag())
+  {
+    CGUIDialogVideoInfo::ShowFor(*fileItem.get());
+    return true;
+  }
+  else if (fileItem->HasMusicInfoTag())
+  {
+    CGUIDialogMusicInfo::ShowFor(*fileItem.get());
+    return true;
+  }
+  return false;
+}
+
+bool CDirectoryProvider::OnContextMenu(const CGUIListItemPtr& item)
+{
+  auto fileItem = std::static_pointer_cast<CFileItem>(item);
+  return CONTEXTMENU::ShowFor(fileItem);
 }
 
 bool CDirectoryProvider::IsUpdating() const
