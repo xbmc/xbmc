@@ -24,7 +24,7 @@
 #include "threads/CriticalSection.h"
 
 #define DVD_TIME_BASE 1000000
-#define DVD_NOPTS_VALUE 0xFFF0000000000000 // should be possible to represent in both double and int64_t
+#define DVD_NOPTS_VALUE (int64_t) 0xFFF0000000000000 // should be possible to represent in both double and int64_t
 
 #define DVD_TIME_TO_SEC(x)  ((int)((double)(x) / DVD_TIME_BASE))
 #define DVD_TIME_TO_MSEC(x) ((int)((double)(x) * 1000 / DVD_TIME_BASE))
