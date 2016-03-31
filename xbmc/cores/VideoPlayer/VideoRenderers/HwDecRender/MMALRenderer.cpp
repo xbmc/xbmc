@@ -227,7 +227,7 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
-  ManageDisplay();
+  ManageRenderArea();
 
   m_bMMALConfigured = init_vout(format, m_opaque);
   m_bConfigured = m_bMMALConfigured;
@@ -285,7 +285,7 @@ void CMMALRenderer::Update()
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
   if (!m_bConfigured) return;
-  ManageDisplay();
+  ManageRenderArea();
 }
 
 void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
@@ -300,7 +300,7 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     return;
   }
 
-  ManageDisplay();
+  ManageRenderArea();
 
   if (m_format != RENDER_FMT_MMAL)
   {

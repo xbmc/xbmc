@@ -263,7 +263,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(d_width, d_height);
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
-  ManageDisplay();
+  ManageRenderArea();
 
   m_bConfigured = true;
   m_bImageReady = false;
@@ -533,7 +533,7 @@ void CLinuxRendererGL::Update()
 {
   if (!m_bConfigured)
     return;
-  ManageDisplay();
+  ManageRenderArea();
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
 
   ValidateRenderTarget();
@@ -551,7 +551,7 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     return;
   }
 
-  ManageDisplay();
+  ManageRenderArea();
 
   if (clear)
   {

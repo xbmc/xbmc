@@ -152,7 +152,7 @@ bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
     if (stereo_mode)
       g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_LEFT);
 
-    ManageDisplay();
+    ManageRenderArea();
 
     if (stereo_mode)
       g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_OFF);
