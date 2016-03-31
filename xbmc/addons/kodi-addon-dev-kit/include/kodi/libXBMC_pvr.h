@@ -37,7 +37,7 @@
 #define DVD_TIME_BASE 1000000
 
 //TODO original definition is in DVDClock.h
-#define DVD_NOPTS_VALUE 0xFFF0000000000000
+#define DVD_NOPTS_VALUE (int64_t) 0xFFF0000000000000
 
 class CHelper_libXBMC_pvr
 {
