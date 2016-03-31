@@ -210,10 +210,11 @@ void CBaseRenderer::restoreRotatedCoords()
     m_rotatedDestCoords[i] = m_savedRotatedDestCoords[i];
 }
 
-void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount, float verticalShift)
+void CBaseRenderer::CalcNormalRenderRect(float offsetX, float offsetY, float width, float height,
+                                         float inputFrameRatio, float zoomAmount, float verticalShift)
 {
   // if view window is empty, set empty destination
-  if(screenHeight == 0 || screenWidth == 0)
+  if(height == 0 || width == 0)
   {
     m_destRect.SetRect(0.0f, 0.0f, 0.0f, 0.0f);
     return;
@@ -226,8 +227,8 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
 
   float outputFrameRatio = inputFrameRatio / g_graphicsContext.GetResInfo().fPixelRatio;
 
-  // allow a certain error to maximize screen size
-  float fCorrection = screenWidth / screenHeight / outputFrameRatio - 1.0f;
+  // allow a certain error to maximize size of render area
+  float fCorrection = width / height / outputFrameRatio - 1.0f;
   float fAllowed    = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ERRORINASPECT) * 0.01f;
   if(fCorrection >   fAllowed) fCorrection =   fAllowed;
   if(fCorrection < - fAllowed) fCorrection = - fAllowed;
@@ -235,12 +236,12 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
   outputFrameRatio *= 1.0f + fCorrection;
 
   // maximize the movie width
-  float newWidth = screenWidth;
+  float newWidth = width;
   float newHeight = newWidth / outputFrameRatio;
 
-  if (newHeight > screenHeight)
+  if (newHeight > height)
   {
-    newHeight = screenHeight;
+    newHeight = height;
     newWidth = newHeight * outputFrameRatio;
   }
 
@@ -249,24 +250,24 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
   newHeight *= zoomAmount;
 
   // if we are less than one pixel off use the complete screen instead
-  if (std::abs(newWidth - screenWidth) < 1.0f)
-    newWidth = screenWidth;
-  if (std::abs(newHeight - screenHeight) < 1.0f)
-    newHeight = screenHeight;
+  if (std::abs(newWidth - width) < 1.0f)
+    newWidth = width;
+  if (std::abs(newHeight - height) < 1.0f)
+    newHeight = height;
 
   // Centre the movie
-  float posY = (screenHeight - newHeight) / 2;
-  float posX = (screenWidth - newWidth) / 2;
+  float posY = (height - newHeight) / 2;
+  float posX = (width - newWidth) / 2;
 
   // vertical shift range -1 to 1 shifts within the top and bottom black bars
   // if there are no top and bottom black bars, this range does nothing
-  float blackBarSize = std::max((screenHeight - newHeight) / 2.0f, 0.0f);
+  float blackBarSize = std::max((height - newHeight) / 2.0f, 0.0f);
   posY += blackBarSize * std::max(std::min(verticalShift, 1.0f), -1.0f);
 
   // vertical shift ranges -2 to -1 and 1 to 2 will shift the image out of the screen
   // if vertical shift is -2 it will be completely shifted out the top,
   // if it's 2 it will be completely shifted out the bottom
-  float shiftRange = std::min(newHeight, newHeight - (newHeight - screenHeight) / 2.0f);
+  float shiftRange = std::min(newHeight, newHeight - (newHeight - height) / 2.0f);
   if (verticalShift > 1.0f)
     posY += shiftRange * (verticalShift - 1.0f);
   else if (verticalShift < -1.0f)
@@ -281,7 +282,7 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
   if (!(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating()))
   {
     CRect original(m_destRect);
-    m_destRect.Intersect(CRect(offsetX, offsetY, offsetX + screenWidth, offsetY + screenHeight));
+    m_destRect.Intersect(CRect(offsetX, offsetY, offsetX + width, offsetY + height));
     if (m_destRect != original)
     {
       float scaleX = m_sourceRect.Width() / original.Width();
@@ -370,7 +371,7 @@ void CBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsign
   }
 }
 
-void CBaseRenderer::ManageDisplay()
+void CBaseRenderer::ManageRenderArea()
 {
   m_viewRect = g_graphicsContext.GetViewWindow();
 
@@ -422,7 +423,7 @@ void CBaseRenderer::ManageDisplay()
     }
   }
 
-  CalcNormalDisplayRect(m_viewRect.x1, m_viewRect.y1, m_viewRect.Width(), m_viewRect.Height(), GetAspectRatio() * CDisplaySettings::GetInstance().GetPixelRatio(), CDisplaySettings::GetInstance().GetZoomAmount(), CDisplaySettings::GetInstance().GetVerticalShift());
+  CalcNormalRenderRect(m_viewRect.x1, m_viewRect.y1, m_viewRect.Width(), m_viewRect.Height(), GetAspectRatio() * CDisplaySettings::GetInstance().GetPixelRatio(), CDisplaySettings::GetInstance().GetZoomAmount(), CDisplaySettings::GetInstance().GetVerticalShift());
 }
 
 void CBaseRenderer::SetViewMode(int viewMode)

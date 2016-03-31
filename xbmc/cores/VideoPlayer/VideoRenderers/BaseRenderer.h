@@ -120,9 +120,10 @@ public:
   static void SettingOptionsRenderMethodsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
 protected:
-  void CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount, float verticalShift);
+  void CalcNormalRenderRect(float offsetX, float offsetY, float width, float height,
+                            float inputFrameRatio, float zoomAmount, float verticalShift);
   void CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height);
-  void ManageDisplay();
+  void ManageRenderArea();
   virtual void ReorderDrawPoints();//might be overwritten (by egl e.x.)
   void saveRotatedCoords();//saves the current state of m_rotatedDestCoords
   void syncDestRectToRotatedPoints();//sync any changes of m_destRect to m_rotatedDestCoords
