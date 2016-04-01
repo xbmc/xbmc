@@ -54,7 +54,7 @@ namespace PERIPHERALS
     /*!
      * @return True if this bus needs to be polled for changes, false if this bus performs updates via callbacks
      */
-    bool NeedsPolling(void) const { return m_bNeedsPolling; }
+    bool NeedsPolling(void) const { CSingleLock lock(m_critSection); return m_bNeedsPolling; }
 
     /*!
      * @brief Get the instance of the peripheral at the given location.
@@ -149,7 +149,7 @@ namespace PERIPHERALS
 
     virtual bool FindComPort(std::string &strLocation) { return false; }
 
-    virtual bool IsInitialised(void) const { return m_bInitialised; }
+    virtual bool IsInitialised(void) const { CSingleLock lock(m_critSection); return m_bInitialised; }
 
     /*!
      * \brief Poll for events

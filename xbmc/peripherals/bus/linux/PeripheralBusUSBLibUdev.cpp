@@ -209,6 +209,7 @@ void CPeripheralBusUSB::Process(void)
       ScanForDevices();
   }
 
+  CSingleLock lock(m_critSection);
   m_bIsStarted = false;
 }
 

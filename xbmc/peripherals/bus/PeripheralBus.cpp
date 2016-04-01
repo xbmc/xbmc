@@ -60,11 +60,15 @@ void CPeripheralBus::OnDeviceRemoved(const std::string &strLocation)
 
 void CPeripheralBus::Clear(void)
 {
-  if (m_bNeedsPolling)
   {
-    m_bStop = true;
-    m_triggerEvent.Set();
-    StopThread(true);
+    CSingleLock lock(m_critSection);
+    if (m_bNeedsPolling)
+    {
+      m_bStop = true;
+      lock.Leave();
+      m_triggerEvent.Set();
+      StopThread(true);
+    }
   }
 
   CSingleLock lock(m_critSection);
@@ -134,6 +138,7 @@ bool CPeripheralBus::ScanForDevices(void)
     bReturn = true;
   }
 
+  CSingleLock lock(m_critSection);
   m_bInitialised = true;
   return bReturn;
 }
@@ -218,6 +223,7 @@ void CPeripheralBus::Process(void)
       m_triggerEvent.WaitMSec(m_iRescanTime);
   }
 
+  CSingleLock lock(m_critSection);
   m_bIsStarted = false;
 }
 
@@ -322,5 +328,6 @@ CPeripheral *CPeripheralBus::GetByPath(const std::string &strPath) const
 
 size_t CPeripheralBus::GetNumberOfPeripherals() const
 {
+  CSingleLock lock(m_critSection);
   return m_peripherals.size();
 }
