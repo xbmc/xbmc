@@ -165,8 +165,13 @@ void CPeripherals::Clear()
 
 void CPeripherals::TriggerDeviceScan(const PeripheralBusType type /* = PERIPHERAL_BUS_UNKNOWN */)
 {
-  CSingleLock lock(m_critSectionBusses);
-  for (auto& bus : m_busses)
+  std::vector<PeripheralBusPtr> busses;
+  {
+    CSingleLock lock(m_critSectionBusses);
+    busses = m_busses;
+  }
+
+  for (auto& bus : busses)
   {
     bool bScan = false;
 
