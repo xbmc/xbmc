@@ -56,13 +56,9 @@ void CDVDMessageQueue::Flush(CDVDMsg::Message type)
 {
   CSingleLock lock(m_section);
 
-  for (SList::iterator it = m_list.begin(); it != m_list.end();)
-  {
-    if (it->message->IsType(type) ||  type == CDVDMsg::NONE)
-      it = m_list.erase(it);
-    else
-      ++it;
-  }
+  m_list.remove_if([type](const DVDMessageListItem &item){
+      return type == CDVDMsg::NONE || item.message->IsType(type);
+    });
 
   if (type == CDVDMsg::DEMUXER_PACKET ||  type == CDVDMsg::NONE)
   {
