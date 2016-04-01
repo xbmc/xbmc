@@ -1023,7 +1023,6 @@
 		DFD717601C0A031B0025D964 /* IOSScreenManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFD7174F1C0A031B0025D964 /* IOSScreenManager.mm */; };
 		DFD717611C0A031B0025D964 /* XBMCApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD717511C0A031B0025D964 /* XBMCApplication.m */; };
 		DFD717621C0A031B0025D964 /* XBMCController.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFD717531C0A031B0025D964 /* XBMCController.mm */; };
-		DFD717641C0A03540025D964 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DFD717631C0A03540025D964 /* Info.plist */; };
 		DFD882E817DD189E001516FE /* StringValidation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882E517DD189E001516FE /* StringValidation.cpp */; };
 		DFD882E917DD189E001516FE /* StringValidation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882E517DD189E001516FE /* StringValidation.cpp */; };
 		DFD882F717DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882F417DD1A5B001516FE /* AddonPythonInvoker.cpp */; };
@@ -9440,7 +9439,6 @@
 				DFD717561C0A031B0025D964 /* Default-568h@2x.png in Resources */,
 				7CCDA1E4192753E30074CF51 /* RdrConnectionManagerSCPD.xml in Resources */,
 				7CCDA1EF192753E30074CF51 /* RenderingControlSCPD.xml in Resources */,
-				DFD717641C0A03540025D964 /* Info.plist in Resources */,
 				7CCDA1F1192753E30074CF51 /* RenderingControlSCPD_Full.xml in Resources */,
 				DFD717581C0A031B0025D964 /* Default-736h@3x.png in Resources */,
 				391416BF1B4A3EFA00BBF0AA /* guiinfo in Resources */,
