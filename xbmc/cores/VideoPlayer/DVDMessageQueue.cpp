@@ -109,13 +109,10 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
     return MSGQ_INVALID_MSG;
   }
 
-  SList::iterator it = m_list.begin();
-  while(it != m_list.end())
-  {
-    if(priority <= it->priority)
-      break;
-    ++it;
-  }
+  auto it = std::find_if(m_list.begin(), m_list.end(),
+                         [priority](const DVDMessageListItem &item){
+                           return priority <= item.priority;
+                         });
   m_list.insert(it, DVDMessageListItem(pMsg, priority));
 
   if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET) && priority == 0)
