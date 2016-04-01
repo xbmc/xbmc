@@ -46,6 +46,8 @@ typedef struct stEmuFileObject
   XFILE::CFile*  file_xbmc;
   CCriticalSection *file_lock;
   int mode;
+  bool    m_feof;     // used for feof(), fread(), fgetc(), fgets() etc.
+  bool    m_ferror;   // used for ferror(), fread(), fwrite(), fgetc() etc.
 } EmuFileObject;
 
 class CEmuFileWrapper

@@ -700,10 +700,11 @@ extern "C"
 
   void dll_rewind(FILE* stream)
   {
-    int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
-    if (fd >= 0)
+    EmuFileObject* pEmFile = g_emuFileWrapper.GetFileObjectByStream(stream);
+    if (pEmFile != NULL && pEmFile->file_xbmc != NULL)
     {
-      dll_lseeki64(fd, 0, SEEK_SET);
+      pEmFile->m_feof   = false;
+      pEmFile->m_ferror = (pEmFile->file_xbmc->Seek(0, SEEK_SET) != 0);
     }
     else if (!IS_STD_STREAM(stream))
     {
@@ -1110,18 +1111,29 @@ extern "C"
 
   char* dll_fgets(char* pszString, int num ,FILE * stream)
   {
-    CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
-    if (pFile != NULL)
+    if (num < 1)
+      return NULL;
+
+    EmuFileObject* pEmFile = g_emuFileWrapper.GetFileObjectByStream(stream);
+    if (pEmFile != NULL && pEmFile->file_xbmc != NULL)
     {
-      if (pFile->GetPosition() < pFile->GetLength())
+      const bool res = pEmFile->file_xbmc->ReadString(pszString, num);
+      const int64_t fileLen = pEmFile->file_xbmc->GetLength();
+      const int64_t filePos = pEmFile->file_xbmc->GetPosition();
+      if (res)
       {
-        bool bRead = pFile->ReadString(pszString, num);
-        if (bRead)
-        {
-          return pszString;
-        }
+        if (filePos >= 0 && fileLen >= 0 && filePos >= fileLen)
+          pEmFile->m_feof = true;
+        return pszString;
       }
-      else return NULL; //eof
+      else
+      {
+        if (filePos >= 0 && fileLen >= 0 && filePos < fileLen)
+          pEmFile->m_ferror = true;
+        else
+          pEmFile->m_feof = true; // not possible to detect error, assuming EOF
+        return NULL;
+      }
     }
     else if (!IS_STD_STREAM(stream))
     {
@@ -1135,11 +1147,10 @@ extern "C"
 
   int dll_feof(FILE * stream)
   {
-    CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
-    if (pFile != NULL)
+    EmuFileObject* pEmFile = g_emuFileWrapper.GetFileObjectByStream(stream);
+    if (pEmFile != NULL && pEmFile->file_xbmc != NULL)
     {
-      if (pFile->GetPosition() < pFile->GetLength()) return 0;
-      else return 1;
+      return (int)pEmFile->m_feof;
     }
     else if (!IS_STD_STREAM(stream))
     {
@@ -1156,16 +1167,22 @@ extern "C"
     if (size == 0 || count == 0)
       return 0;
 
-    CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
-    if (pFile != NULL)
+    EmuFileObject* pEmFile = g_emuFileWrapper.GetFileObjectByStream(stream);
+    if (pEmFile != NULL && pEmFile->file_xbmc != NULL)
     {
       size_t read = 0;
       const size_t bufSize = size * count;
       do // fread() must read all data until buffer is filled or eof/error occurs
       {
-        const ssize_t r = pFile->Read(((int8_t*)buffer) + read, bufSize - read);
+        const ssize_t r = pEmFile->file_xbmc->Read(((int8_t*)buffer) + read, bufSize - read);
         if (r <= 0)
+        {
+          if (r == 0)
+            pEmFile->m_feof = true;
+          else
+            pEmFile->m_ferror = true;
           break;
+        }
         read += r;
       } while (bufSize > read);
       return read / size;
@@ -1181,15 +1198,21 @@ extern "C"
 
   int dll_fgetc(FILE* stream)
   {
-    if (g_emuFileWrapper.StreamIsEmulatedFile(stream))
+    EmuFileObject* pEmFile = g_emuFileWrapper.GetFileObjectByStream(stream);
+    if (pEmFile != NULL && pEmFile->file_xbmc != NULL)
     {
       // it is a emulated file
       unsigned char buf;
+      const ssize_t r = pEmFile->file_xbmc->Read(&buf, 1);
+      if (r == 1)
+        return (int)buf;
 
-      if (dll_fread(&buf, 1, 1, stream) <= 0)
-        return EOF;
+      if (r == 0)
+        pEmFile->m_feof = true;
+      else
+        pEmFile->m_ferror = true;
 
-      return (int)buf;
+      return EOF;
     }
     else if (!IS_STD_STREAM(stream))
     {
@@ -1278,16 +1301,16 @@ extern "C"
     }
     else
     {
-      if (g_emuFileWrapper.StreamIsEmulatedFile(stream))
+      EmuFileObject* pEmFile = g_emuFileWrapper.GetFileObjectByStream(stream);
+      if (pEmFile != NULL && pEmFile->file_xbmc != NULL)
       {
-        int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
-        if (fd >= 0)
-        {
-          unsigned char c = (unsigned char)character;
-          int iItemsWritten = dll_write(fd, &c, 1);
-          if (iItemsWritten == 1)
-            return character;
-        }
+        unsigned char c = (unsigned char)character;
+        const ssize_t w = pEmFile->file_xbmc->Write(&c, 1);
+        if (w == 1)
+          return character;
+
+        pEmFile->m_ferror = true;
+        return EOF;
       }
       else if (!IS_STD_STREAM(stream))
       {
@@ -1358,7 +1381,8 @@ extern "C"
 
   int dll_ungetc(int c, FILE* stream)
   {
-    if (g_emuFileWrapper.StreamIsEmulatedFile(stream))
+    EmuFileObject* pEmFile = g_emuFileWrapper.GetFileObjectByStream(stream);
+    if (pEmFile != NULL && pEmFile->file_xbmc != NULL)
     {
       // it is a emulated file
       int d;
@@ -1374,10 +1398,15 @@ extern "C"
         CLog::Log(LOGWARNING, "%s: c != d",  __FUNCTION__);
         d = fputc(c, stream);
         if (d != c)
+        {
           CLog::Log(LOGERROR, "%s: Write failed!",  __FUNCTION__);
+          pEmFile->m_ferror = true;
+          return EOF;
+        }
         else
           dll_fseek(stream, -1, SEEK_CUR);
       }
+      pEmFile->m_feof = false;
       return d;
     }
     else if (!IS_STD_STREAM(stream))
@@ -1483,16 +1512,19 @@ extern "C"
     }
     else
     {
-      CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
-      if (pFile != NULL)
+      EmuFileObject* pEmFile = g_emuFileWrapper.GetFileObjectByStream(stream);
+      if (pEmFile != NULL && pEmFile->file_xbmc != NULL)
       {
         size_t written = 0;
         const size_t bufSize = size * count;
         do // fwrite() must write all data until whole buffer is written or error occurs
         {
-          const ssize_t w = pFile->Write(((int8_t*)buffer) + written, bufSize - written);
+          const ssize_t w = pEmFile->file_xbmc->Write(((int8_t*)buffer) + written, bufSize - written);
           if (w <= 0)
+          {
+            pEmFile->m_ferror = true;
             break;
+          }
           written += w;
         } while (bufSize > written);
         return written / size;
@@ -1529,12 +1561,9 @@ extern "C"
 
   int dll_ferror(FILE* stream)
   {
-    CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
-    if (pFile != NULL)
-    {
-      // unimplemented
-      return 0;
-    }
+    EmuFileObject* pEmFile = g_emuFileWrapper.GetFileObjectByStream(stream);
+    if (pEmFile != NULL)
+      return (int)pEmFile->m_ferror;
     else if (IS_STD_STREAM(stream))
       return 0;
     else
@@ -1593,8 +1622,7 @@ extern "C"
         // terminate string
         tmp2[j] = 0;
         len = strlen(tmp2);
-        pFile->Write(tmp2, len);
-        return len;
+        return dll_fwrite(tmp2, 1, len, stream) == len ? len : -1;
       }
       else if (!IS_STD_STREAM(stream) && IS_VALID_STREAM(stream))
       {
@@ -1662,15 +1690,19 @@ extern "C"
 
   int dll_fsetpos64(FILE* stream, const fpos64_t* pos)
   {
-    int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
-    if (fd >= 0)
+    if (pos == NULL)
+      return 1;
+
+    EmuFileObject* pEmFile = g_emuFileWrapper.GetFileObjectByStream(stream);
+    if (pEmFile != NULL && pEmFile->file_xbmc != NULL)
     {
 #if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
-      if (dll_lseeki64(fd, *pos, SEEK_SET) >= 0)
+      if (pEmFile->file_xbmc->Seek(*pos, SEEK_SET) == *pos)
 #else
-      if (dll_lseeki64(fd, (__off64_t)pos->__pos, SEEK_SET) >= 0)
+      if (pEmFile->file_xbmc->Seek((__off64_t)pos->__pos, SEEK_SET) == (__off64_t)pos->__pos)
 #endif
       {
+        pEmFile->m_feof = false;
         return 0;
       }
       else
@@ -1744,9 +1776,11 @@ extern "C"
 
   void dll_clearerr(FILE* stream)
   {
-    if (g_emuFileWrapper.StreamIsEmulatedFile(stream))
+    EmuFileObject* pEmFile = g_emuFileWrapper.GetFileObjectByStream(stream);
+    if (pEmFile != NULL)
     {
-      // not implemented
+      pEmFile->m_feof   = false;
+      pEmFile->m_ferror = false;
     }
     else if (!IS_STD_STREAM(stream))
     {
