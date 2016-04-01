@@ -3731,6 +3731,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "castandrole",      LISTITEM_CAST_AND_ROLE },
                                   { "writer",           LISTITEM_WRITER },
                                   { "tagline",          LISTITEM_TAGLINE },
+                                  { "status",           LISTITEM_STATUS },
                                   { "top250",           LISTITEM_TOP250 },
                                   { "trailer",          LISTITEM_TRAILER },
                                   { "sortletter",       LISTITEM_SORT_LETTER },
@@ -7444,8 +7445,6 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             strContent = "episodes";
           if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_type == MediaTypeMusicVideo)
             strContent = "musicvideos";
-          if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_strStatus == "livetv")
-            strContent = "livetv";
           if (m_currentFile->HasPVRChannelInfoTag())
             strContent = "livetv";
           bReturn = StringUtils::EqualsNoCase(m_stringParameters[info.GetData1()], strContent);
@@ -9785,6 +9784,10 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_TAGLINE:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strTagLine;
+    break;
+  case LISTITEM_STATUS:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strStatus;
     break;
   case LISTITEM_TRAILER:
     if (item->HasVideoInfoTag())
