@@ -155,12 +155,14 @@ bool CJNIViewInputDevice::isVirtual() const
     "isVirtual", "()Z");
 }
 
+/* unavailable in API-19
 bool CJNIViewInputDevice::supportsSource(int source) const
 {
   return call_method<jboolean>(m_object,
     "supportsSource", "(I)Z",
     source);
 }
+*/
 
 const CJNIList<CJNIViewInputDeviceMotionRange> CJNIViewInputDevice::getMotionRanges() const
 {
