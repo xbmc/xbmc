@@ -17,8 +17,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
-#include <list>
 #include "VideoReferenceClock.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
@@ -48,6 +46,9 @@
 #if defined(TARGET_DARWIN_IOS)
 #include "video/videosync/VideoSyncIos.h"
 #endif
+#if defined(TARGET_ANDROID)
+#include "video/videosync/VideoSyncAndroid.h"
+#endif
 
 CVideoReferenceClock::CVideoReferenceClock() : CThread("RefClock")
 {
@@ -65,7 +66,7 @@ CVideoReferenceClock::CVideoReferenceClock() : CThread("RefClock")
   m_MissedVblanks = 0;
   m_VblankTime = 0;
 
-  m_pVideoSync = NULL;
+  m_pVideoSync = nullptr;
 }
 
 CVideoReferenceClock::~CVideoReferenceClock()
@@ -124,6 +125,8 @@ void CVideoReferenceClock::Process()
     m_pVideoSync = new CVideoSyncPi();
 #elif defined(HAS_IMXVPU)
     m_pVideoSync = new CVideoSyncIMX();
+#elif defined(TARGET_ANDROID)
+    m_pVideoSync = new CVideoSyncAndroid();
 #endif
 
     if (m_pVideoSync)
@@ -168,7 +171,7 @@ void CVideoReferenceClock::Process()
     {
       m_pVideoSync->Cleanup();
       delete m_pVideoSync;
-      m_pVideoSync = NULL;
+      m_pVideoSync = nullptr;
     }
 
     if (!SetupSuccess)
@@ -192,26 +195,26 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
   {
     m_MissedVblanks += NrVBlanks;      //tell the vblank clock how many vblanks it missed
     m_TotalMissedVblanks += NrVBlanks; //for the codec information screen
-    m_VblankTime += m_SystemFrequency * (int64_t)NrVBlanks / MathUtils::round_int(m_RefreshRate); //set the vblank time forward
+    m_VblankTime += m_SystemFrequency * static_cast<int64_t>(NrVBlanks) / MathUtils::round_int(m_RefreshRate); //set the vblank time forward
   }
 
   if (NrVBlanks > 0) //update the clock with the adjusted frequency if we have any vblanks
   {
     double increment = UpdateInterval() * NrVBlanks;
     double integer   = floor(increment);
-    m_CurrTime      += (int64_t)(integer + 0.5); //make sure it gets correctly converted to int
+    m_CurrTime      += static_cast<int64_t>(integer + 0.5); //make sure it gets correctly converted to int
 
     //accumulate what we lost due to rounding in m_CurrTimeFract, then add the integer part of that to m_CurrTime
     m_CurrTimeFract += increment - integer;
     integer          = floor(m_CurrTimeFract);
-    m_CurrTime      += (int64_t)(integer + 0.5);
+    m_CurrTime      += static_cast<int64_t>(integer + 0.5);
     m_CurrTimeFract -= integer;
   }
 }
 
-double CVideoReferenceClock::UpdateInterval()
+double CVideoReferenceClock::UpdateInterval() const
 {
-  return m_ClockSpeed * m_fineadjust / m_RefreshRate * (double)m_SystemFrequency;
+  return m_ClockSpeed * m_fineadjust / m_RefreshRate * static_cast<double>(m_SystemFrequency);
 }
 
 //called from dvdclock to get the time
@@ -237,12 +240,12 @@ int64_t CVideoReferenceClock::GetTime(bool interpolated /* = true*/)
     if (interpolated)
     {
       //interpolate from the last time the clock was updated
-      double elapsed = (double)(Now - m_VblankTime) * m_ClockSpeed * m_fineadjust;
+      double elapsed = static_cast<double>(Now - m_VblankTime) * m_ClockSpeed * m_fineadjust;
       //don't interpolate more than 2 vblank periods
       elapsed = std::min(elapsed, UpdateInterval() * 2.0);
 
       //make sure the clock doesn't go backwards
-      int64_t intTime = m_CurrTime + (int64_t)elapsed;
+      int64_t intTime = m_CurrTime + static_cast<int64_t>(elapsed);
       if (intTime > m_LastIntTime)
         m_LastIntTime = intTime;
 
@@ -260,7 +263,7 @@ int64_t CVideoReferenceClock::GetTime(bool interpolated /* = true*/)
 }
 
 //called from dvdclock to get the clock frequency
-int64_t CVideoReferenceClock::GetFrequency()
+int64_t CVideoReferenceClock::GetFrequency() const
 {
   return m_SystemFrequency;
 }
@@ -332,7 +335,7 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
       //calculate how long to sleep before we should have gotten a signal that a vblank happened
       Now = CurrentHostCounter();
       int64_t NextVblank = TimeOfNextVblank();
-      SleepTime = (int)((NextVblank - Now) * 1000 / m_SystemFrequency);
+      SleepTime = static_cast<int>((NextVblank - Now) * 1000 / m_SystemFrequency);
 
       int64_t CurrTime = m_CurrTime; //save current value of the clock
 
@@ -363,7 +366,7 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
     SingleLock.Leave();
     Now = CurrentHostCounter();
     //sleep until the timestamp has passed
-    SleepTime = (int)((Target - (Now + ClockOffset)) * 1000 / m_SystemFrequency);
+    SleepTime = static_cast<int>((Target - (Now + ClockOffset)) * 1000 / m_SystemFrequency);
     if (SleepTime > 0)
       Sleep(SleepTime);
 
@@ -382,13 +385,13 @@ void CVideoReferenceClock::SendVblankSignal()
 //guess when the next vblank should happen,
 //based on the refreshrate and when the previous one happened
 //increase that by 30% to allow for errors
-int64_t CVideoReferenceClock::TimeOfNextVblank()
+int64_t CVideoReferenceClock::TimeOfNextVblank() const
 {
   return m_VblankTime + (m_SystemFrequency / MathUtils::round_int(m_RefreshRate) * MAXVBLANKDELAY / 10LL);
 }
 
 //for the codec information screen
-bool CVideoReferenceClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed, double& RefreshRate)
+bool CVideoReferenceClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed, double& RefreshRate) const
 {
   if (m_UseVblank)
   {

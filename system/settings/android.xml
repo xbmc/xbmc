@@ -8,13 +8,6 @@
     </category>
   </section>
   <section id="videos">
-    <category id="videoplayer">
-      <group id="3">
-        <setting id="videoplayer.usedisplayasclock">
-          <visible>false</visible>
-        </setting>
-      </group>
-    </category>
     <category id="videoacceleration">
       <group id="3">
         <setting id="videoplayer.usemediacodecsurface" type="boolean" label="13440" help="36544">

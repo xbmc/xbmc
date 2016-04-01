@@ -7,6 +7,7 @@ import android.hardware.input.InputManager;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Choreographer;
 import android.view.View;
 import android.view.Surface;
 import android.widget.RelativeLayout;
@@ -15,7 +16,7 @@ import android.graphics.PixelFormat;
 import android.os.Handler;
 import org.xbmc.@APP_NAME_LC@.XBMCVideoView;
 
-public class Main extends NativeActivity
+public class Main extends NativeActivity implements Choreographer.FrameCallback
 {
   private static final String TAG = "@APP_NAME_LC@";
 
@@ -27,6 +28,7 @@ public class Main extends NativeActivity
   private Handler handler = new Handler();
 
   native void _onNewIntent(Intent intent);
+  native void _doFrame(long frameTimeNanos);
 
   public Main()
   {
@@ -164,6 +166,8 @@ public class Main extends NativeActivity
   {
     super.onResume();
 
+    Choreographer.getInstance().postFrameCallback(this);
+
     if (android.os.Build.VERSION.SDK_INT >= 19) {
       // Immersive mode
 
@@ -181,6 +185,13 @@ public class Main extends NativeActivity
   }
 
   @Override
+  public void onPause()
+  {
+    super.onPause();
+    
+    Choreographer.getInstance().removeFrameCallback(this);
+  }
+  
   public void onDestroy()
   {
     // unregister the InputDeviceListener implementation
@@ -189,6 +200,13 @@ public class Main extends NativeActivity
 
     getApplicationContext().getContentResolver().unregisterContentObserver(mSettingsContentObserver);
     super.onDestroy();
+  }
+  
+  @Override
+  public void doFrame(long frameTimeNanos)
+  {
+    Choreographer.getInstance().postFrameCallback(this);
+    _doFrame(frameTimeNanos);
   }
 
   private native void _callNative(long funcAddr, long variantAddr);

@@ -103,6 +103,14 @@ void CJNIMainActivity::_onInputDeviceRemoved(JNIEnv *env, jobject context, jint 
     m_appInstance->onInputDeviceRemoved(deviceId);
 }
 
+void CJNIMainActivity::_doFrame(JNIEnv *env, jobject context, jlong frameTimeNanos)
+{
+  (void)env;
+  (void)context;
+  if(m_appInstance)
+    m_appInstance->doFrame(frameTimeNanos);
+}
+
 CJNISurface CJNIMainActivity::getVideoViewSurface()
 {
   return call_method<jhobject>(m_context,

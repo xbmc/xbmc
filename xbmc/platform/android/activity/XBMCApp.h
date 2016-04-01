@@ -44,6 +44,7 @@ class CAESinkAUDIOTRACK;
 class CVariant;
 class IInputDeviceCallbacks;
 class IInputDeviceEventHandler;
+class CVideoSyncAndroid;
 typedef struct _JNIEnv JNIEnv;
 
 struct androidIcon
@@ -71,6 +72,7 @@ public:
   virtual void onNewIntent(CJNIIntent intent);
   virtual void onVolumeChanged(int volume);
   virtual void onAudioFocusChange(int focusChange);
+  virtual void doFrame(int64_t frameTimeNanos);
 
   // implementation of CJNIInputManagerInputDeviceListener
   void onInputDeviceAdded(int deviceId) override;
@@ -140,6 +142,9 @@ public:
   static void UnregisterInputDeviceEventHandler();
   static bool onInputDeviceEvent(const AInputEvent* event);
 
+  static void InitFrameCallback(CVideoSyncAndroid *syncImpl);
+  static void DeinitFrameCallback();
+
   static CXBMCApp* get() { return m_xbmcappinstance; }
 
 protected:
@@ -173,6 +178,8 @@ private:
 
   static ANativeWindow* m_window;
   static CEvent m_windowCreated;
+
+  static CVideoSyncAndroid* m_syncImpl;
 
   void XBMC_Pause(bool pause);
   void XBMC_Stop();
