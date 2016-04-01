@@ -27,6 +27,10 @@ template<typename T> struct IDVDResourceCounted
 {
   IDVDResourceCounted() : m_refs(1) {}
   virtual ~IDVDResourceCounted() {}
+
+  IDVDResourceCounted(const IDVDResourceCounted &) = delete;
+  IDVDResourceCounted &operator=(const IDVDResourceCounted &) = delete;
+
   virtual T*   Acquire()
   {
     AtomicIncrement(&m_refs);
