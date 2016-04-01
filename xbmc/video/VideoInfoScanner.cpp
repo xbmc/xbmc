@@ -1574,7 +1574,7 @@ namespace VIDEO
           std::string loweredTitle(file->strTitle);
           StringUtils::ToLower(loweredTitle);
           int index = StringUtils::FindBestMatch(loweredTitle, titles, matchscore);
-          if (matchscore >= minscore)
+          if (index >= 0 && matchscore >= minscore)
           {
             guide = candidates->begin() + index;
             bFound = true;
