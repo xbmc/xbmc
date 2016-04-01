@@ -252,7 +252,7 @@ int CPeripherals::GetPeripheralsWithFeature(std::vector<CPeripheral *> &results,
 size_t CPeripherals::GetNumberOfPeripherals() const
 {
   size_t iReturn(0);
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_critSectionBusses);
   for (const auto& bus : m_busses)
     iReturn += bus->GetNumberOfPeripherals();
 
