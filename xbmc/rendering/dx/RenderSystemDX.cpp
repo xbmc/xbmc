@@ -800,6 +800,12 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
 
   if (bNeedRecreate)
   {
+    if (!m_bResizeRequred)
+    {
+      OnDisplayLost();
+      m_bResizeRequred = true;
+    }
+
     BOOL fullScreen;
     m_pSwapChain1->GetFullscreenState(&fullScreen, NULL);
     if (fullScreen)
