@@ -1154,7 +1154,7 @@ void CDVDDemuxFFmpeg::DisposeStreams()
   m_streams.clear();
 }
 
-int CDVDDemuxFFmpeg::GetCropValue(AVDictionary* metadata, char* key)
+int CDVDDemuxFFmpeg::GetCropValue(AVDictionary* metadata, const char* key)
 {
   AVDictionaryEntry *crop = av_dict_get(metadata, key, NULL, 0);
   if (crop)
