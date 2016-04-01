@@ -32,7 +32,7 @@ class CInputStreamMultiSource : public InputStreamMultiStreams
 {
 
 public:
-  CInputStreamMultiSource(IVideoPlayer* pPlayer, CFileItem& fileitem, const std::vector<std::string>& filenames);
+  CInputStreamMultiSource(IVideoPlayer* pPlayer, const CFileItem& fileitem, const std::vector<std::string>& filenames);
   virtual ~CInputStreamMultiSource();
 
   virtual void Abort() override;

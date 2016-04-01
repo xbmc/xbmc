@@ -62,7 +62,7 @@ extern "C"
   }
 }
 
-CDVDInputStreamRTMP::CDVDInputStreamRTMP(CFileItem &fileitem)
+CDVDInputStreamRTMP::CDVDInputStreamRTMP(const CFileItem &fileitem)
   : CDVDInputStream(DVDSTREAM_TYPE_RTMP, fileitem)
   , m_canSeek(true)
   , m_canPause(true)

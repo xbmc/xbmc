@@ -32,7 +32,7 @@
 using namespace XFILE;
 using PLAYLIST::CPlayListM3U;
 
-CDVDInputStreamFFmpeg::CDVDInputStreamFFmpeg(CFileItem& fileitem)
+CDVDInputStreamFFmpeg::CDVDInputStreamFFmpeg(const CFileItem& fileitem)
   : CDVDInputStream(DVDSTREAM_TYPE_FFMPEG, fileitem)
   , m_can_pause(false)
   , m_can_seek(false)

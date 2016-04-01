@@ -143,19 +143,19 @@ public:
   virtual bool IsFileItem() const { return true; };
 
   bool Exists(bool bUseCache = true) const;
-  
+
   /*!
-   \brief Check whether an item is an optical media folder or its parent. 
+   \brief Check whether an item is an optical media folder or its parent.
     This will return the non-empty path to the playable entry point of the media
-    one or two levels down (VIDEO_TS.IFO for DVDs or index.bdmv for BDs). 
+    one or two levels down (VIDEO_TS.IFO for DVDs or index.bdmv for BDs).
     The returned path will be empty if folder does not meet this criterion.
-   \return non-empty string if item is optical media folder, empty otherwise. 
+   \return non-empty string if item is optical media folder, empty otherwise.
    */
   std::string GetOpticalMediaPath() const;
   /*!
    \brief Check whether an item is a video item. Note that this returns true for
     anything with a video info tag, so that may include eg. folders.
-   \return true if item is video, false otherwise. 
+   \return true if item is video, false otherwise.
    */
   bool IsVideo() const;
 
@@ -164,7 +164,7 @@ public:
   /*!
    \brief Check whether an item is a picture item. Note that this returns true for
     anything with a picture info tag, so that may include eg. folders.
-   \return true if item is picture, false otherwise. 
+   \return true if item is picture, false otherwise.
    */
   bool IsPicture() const;
   bool IsLyrics() const;
@@ -173,7 +173,7 @@ public:
   /*!
    \brief Check whether an item is an audio item. Note that this returns true for
     anything with a music info tag, so that may include eg. folders.
-   \return true if item is audio, false otherwise. 
+   \return true if item is audio, false otherwise.
    */
   bool IsAudio() const;
 
@@ -203,7 +203,7 @@ public:
   bool IsOnDVD() const;
   bool IsOnLAN() const;
   bool IsHD() const;
-  bool IsNfs() const;  
+  bool IsNfs() const;
   bool IsRemote() const;
   bool IsSmb() const;
   bool IsURL() const;
@@ -437,12 +437,18 @@ public:
   void FillInMimeType(bool lookup = true);
 
   /*!
-   \brief Some sources do not support HTTP HEAD request to determine i.e. mime type
-   \return false if HEAD requests have to be avoided
-   */
+  \brief Some sources do not support HTTP HEAD request to determine i.e. mime type
+  \return false if HEAD requests have to be avoided
+  */
   bool ContentLookup() { return m_doContentLookup; };
 
-  /*! 
+  /*!
+   \brief (Re)set the mime-type for internet files if allowed (m_doContentLookup)
+   Some sources do not support HTTP HEAD request to determine i.e. mime type
+   */
+  void SetMimeTypeForInternetFile();
+
+  /*!
    *\brief Lookup via HTTP HEAD request might not be needed, use this setter to
    * disable ContentLookup.
    */
@@ -650,7 +656,7 @@ public:
    The file list may be cached based on which window we're viewing in, as different
    windows will be listing different portions of the same URL (eg viewing music files
    versus viewing video files)
-   
+
    \param windowID id of the window that's loading this list (defaults to 0)
    \return true if we loaded from the cache, false otherwise.
    \sa Save,RemoveDiscCache
@@ -658,11 +664,11 @@ public:
   bool Load(int windowID = 0);
 
   /*! \brief save a CFileItemList to the cache
-   
+
    The file list may be cached based on which window we're viewing in, as different
    windows will be listing different portions of the same URL (eg viewing music files
    versus viewing video files)
-   
+
    \param windowID id of the window that's saving this list (defaults to 0)
    \return true if successful, false otherwise.
    \sa Load,RemoveDiscCache
@@ -672,11 +678,11 @@ public:
   bool CacheToDiscAlways() const { return m_cacheToDisc == CACHE_ALWAYS; }
   bool CacheToDiscIfSlow() const { return m_cacheToDisc == CACHE_IF_SLOW; }
   /*! \brief remove a previously cached CFileItemList from the cache
-   
+
    The file list may be cached based on which window we're viewing in, as different
    windows will be listing different portions of the same URL (eg viewing music files
    versus viewing video files)
-   
+
    \param windowID id of the window whose cache we which to remove (defaults to 0)
    \sa Save,Load
    */

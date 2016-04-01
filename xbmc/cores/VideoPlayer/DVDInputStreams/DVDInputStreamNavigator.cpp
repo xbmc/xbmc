@@ -38,7 +38,7 @@
 #define HOLDMODE_SKIP 2 /* set by inputstream user, when they wish to skip the held mode */
 #define HOLDMODE_DATA 3 /* set after hold mode has been exited, and action that inited it has been executed */
 
-CDVDInputStreamNavigator::CDVDInputStreamNavigator(IVideoPlayer* player, CFileItem& fileitem)
+CDVDInputStreamNavigator::CDVDInputStreamNavigator(IVideoPlayer* player, const CFileItem& fileitem)
   : CDVDInputStream(DVDSTREAM_TYPE_DVD, fileitem)
 {
   m_dvdnav = 0;

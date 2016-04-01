@@ -28,7 +28,7 @@
 
 using namespace XFILE;
 
-CDVDInputStreamStack::CDVDInputStreamStack(CFileItem& fileitem) : CDVDInputStream(DVDSTREAM_TYPE_FILE, fileitem)
+CDVDInputStreamStack::CDVDInputStreamStack(const CFileItem& fileitem) : CDVDInputStream(DVDSTREAM_TYPE_FILE, fileitem)
 {
   m_eof = true;
   m_pos = 0;

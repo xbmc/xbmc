@@ -47,7 +47,7 @@ namespace ADDON
 
     virtual void SaveSettings() override;
 
-    bool Supports(CFileItem &fileitem);
+    bool Supports(const CFileItem &fileitem);
     bool Open(CFileItem &fileitem);
     void Close();
 

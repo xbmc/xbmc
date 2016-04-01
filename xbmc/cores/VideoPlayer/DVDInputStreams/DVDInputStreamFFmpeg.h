@@ -26,7 +26,7 @@ class CDVDInputStreamFFmpeg
   : public CDVDInputStream
 {
 public:
-  CDVDInputStreamFFmpeg(CFileItem& fileitem);
+  CDVDInputStreamFFmpeg(const CFileItem& fileitem);
   virtual ~CDVDInputStreamFFmpeg();
   virtual bool Open();
   virtual void Close();
