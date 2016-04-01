@@ -166,7 +166,7 @@ public:
   pCloseGestureInfoHandle PtrCloseGestureInfoHandle;
 
 protected:
-  bool ChangeResolution(RESOLUTION_INFO res, bool forceChange = false);
+  bool ChangeResolution(const RESOLUTION_INFO& res, bool forceChange = false);
   virtual bool ResizeInternal(bool forceRefresh = false);
   virtual bool UpdateResolutionsInternal();
   virtual bool CreateBlankWindows();

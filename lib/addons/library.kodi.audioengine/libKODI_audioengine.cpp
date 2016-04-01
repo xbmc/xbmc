@@ -63,7 +63,7 @@ DLLEXPORT void AudioEngine_unregister_me(void *hdl, void* cb)
 // ---------------------------------------------
 // CAddonAEStream implementations
 // ---------------------------------------------
-DLLEXPORT CAddonAEStream* AudioEngine_make_stream(void *hdl, void *cb, AudioEngineFormat Format, unsigned int Options)
+DLLEXPORT CAddonAEStream* AudioEngine_make_stream(void *hdl, void *cb, AudioEngineFormat& Format, unsigned int Options)
 {
   if (!hdl || !cb)
   {
