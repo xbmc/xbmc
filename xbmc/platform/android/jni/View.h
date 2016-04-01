@@ -66,7 +66,7 @@ public:
   const CJNIOsVibrator getVibrator() const;
   bool         hasMicrophone() const;
   bool         isVirtual() const;
-  bool         supportsSource(int source) const;
+  //bool         supportsSource(int source) const; /* unavailable in API-19 */
 
   static void PopulateStaticFields();
   static int SOURCE_GAMEPAD;
