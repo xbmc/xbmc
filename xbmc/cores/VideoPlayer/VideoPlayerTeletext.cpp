@@ -668,7 +668,7 @@ void CDVDTeletextData::Flush()
 
 void CDVDTeletextData::Decode_p2829(unsigned char *vtxt_row, TextExtData_t **ptExtData)
 {
-  int bitsleft, colorindex;
+  unsigned int bitsleft, colorindex;
   unsigned char *p;
   int t1 = CDVDTeletextTools::deh24(&vtxt_row[7-4]);
   int t2 = CDVDTeletextTools::deh24(&vtxt_row[10-4]);
