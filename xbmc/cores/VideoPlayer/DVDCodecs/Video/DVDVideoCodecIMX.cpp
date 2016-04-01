@@ -508,20 +508,20 @@ bool CDVDVideoCodecIMX::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   m_convert_bitstream = false;
   switch(m_hints.codec)
   {
-  case CODEC_ID_MPEG1VIDEO:
+  case AV_CODEC_ID_MPEG1VIDEO:
     m_decOpenParam.CodecFormat = VPU_V_MPEG2;
     m_pFormatName = "iMX-mpeg1";
     break;
-  case CODEC_ID_MPEG2VIDEO:
-  case CODEC_ID_MPEG2VIDEO_XVMC:
+  case AV_CODEC_ID_MPEG2VIDEO:
+  case AV_CODEC_ID_MPEG2VIDEO_XVMC:
     m_decOpenParam.CodecFormat = VPU_V_MPEG2;
     m_pFormatName = "iMX-mpeg2";
     break;
-  case CODEC_ID_H263:
+  case AV_CODEC_ID_H263:
     m_decOpenParam.CodecFormat = VPU_V_H263;
     m_pFormatName = "iMX-h263";
     break;
-  case CODEC_ID_H264:
+  case AV_CODEC_ID_H264:
   {
     // Test for VPU unsupported profiles to revert to sw decoding
     if ((m_hints.profile == 110) || //hi10p
@@ -542,31 +542,31 @@ bool CDVDVideoCodecIMX::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     }
     break;
   }
-  case CODEC_ID_VC1:
+  case AV_CODEC_ID_VC1:
     m_decOpenParam.CodecFormat = VPU_V_VC1_AP;
     m_pFormatName = "iMX-vc1";
     break;
-  case CODEC_ID_CAVS:
-  case CODEC_ID_AVS:
+  case AV_CODEC_ID_CAVS:
+  case AV_CODEC_ID_AVS:
     m_decOpenParam.CodecFormat = VPU_V_AVS;
     m_pFormatName = "iMX-AVS";
     break;
-  case CODEC_ID_RV10:
-  case CODEC_ID_RV20:
-  case CODEC_ID_RV30:
-  case CODEC_ID_RV40:
+  case AV_CODEC_ID_RV10:
+  case AV_CODEC_ID_RV20:
+  case AV_CODEC_ID_RV30:
+  case AV_CODEC_ID_RV40:
     m_decOpenParam.CodecFormat = VPU_V_RV;
     m_pFormatName = "iMX-RV";
     break;
-  case CODEC_ID_KMVC:
+  case AV_CODEC_ID_KMVC:
     m_decOpenParam.CodecFormat = VPU_V_AVC_MVC;
     m_pFormatName = "iMX-MVC";
     break;
-  case CODEC_ID_VP8:
+  case AV_CODEC_ID_VP8:
     m_decOpenParam.CodecFormat = VPU_V_VP8;
     m_pFormatName = "iMX-vp8";
     break;
-  case CODEC_ID_MPEG4:
+  case AV_CODEC_ID_MPEG4:
     switch(m_hints.codec_tag)
     {
     case _4CC('D','I','V','X'):
