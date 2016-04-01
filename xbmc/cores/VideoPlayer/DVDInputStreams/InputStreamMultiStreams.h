@@ -33,7 +33,7 @@ class InputStreamMultiStreams : public CDVDInputStream
   friend class CDemuxMultiSource;
 
 public:
-  InputStreamMultiStreams(DVDStreamType type, CFileItem& fileitem)
+  InputStreamMultiStreams(DVDStreamType type, const CFileItem& fileitem)
     : CDVDInputStream(type, fileitem) {}
 
   virtual ~InputStreamMultiStreams() {};

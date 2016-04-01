@@ -44,7 +44,7 @@ class CDVDInputStreamPVRManager
   , public CDVDInputStream::IDemux
 {
 public:
-  CDVDInputStreamPVRManager(IVideoPlayer* pPlayer, CFileItem& fileitem);
+  CDVDInputStreamPVRManager(IVideoPlayer* pPlayer, const CFileItem& fileitem);
   virtual ~CDVDInputStreamPVRManager();
   virtual bool Open() override;
   virtual void Close() override;

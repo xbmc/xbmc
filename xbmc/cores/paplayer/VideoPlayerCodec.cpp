@@ -92,6 +92,7 @@ bool VideoPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
 
   CFileItem fileitem(urlFile, false);
   fileitem.SetMimeType(m_strContentType);
+  fileitem.SetMimeTypeForInternetFile();
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, fileitem);
   if (!m_pInputStream)
   {

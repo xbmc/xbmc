@@ -22,7 +22,7 @@
 #include "addons/InputStream.h"
 #include "cores/VideoPlayer/DVDClock.h"
 
-CInputStreamAddon::CInputStreamAddon(CFileItem& fileitem, ADDON::CInputStream *inputStream)
+CInputStreamAddon::CInputStreamAddon(const CFileItem& fileitem, ADDON::CInputStream *inputStream)
 : CDVDInputStream(DVDSTREAM_TYPE_ADDON, fileitem), m_addon(inputStream)
 {
   m_hasDemux = false;

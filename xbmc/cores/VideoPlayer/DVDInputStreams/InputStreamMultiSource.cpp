@@ -29,7 +29,7 @@
 
 using namespace XFILE;
 
-CInputStreamMultiSource::CInputStreamMultiSource(IVideoPlayer* pPlayer, CFileItem& fileitem, const std::vector<std::string>& filenames) : InputStreamMultiStreams(DVDSTREAM_TYPE_MULTIFILES, fileitem),
+CInputStreamMultiSource::CInputStreamMultiSource(IVideoPlayer* pPlayer, const CFileItem& fileitem, const std::vector<std::string>& filenames) : InputStreamMultiStreams(DVDSTREAM_TYPE_MULTIFILES, fileitem),
   m_pPlayer(pPlayer),
   m_filenames(filenames)
 {
@@ -118,6 +118,7 @@ bool CInputStreamMultiSource::Open()
   for (unsigned int i = 0; i < m_filenames.size(); i++)
   {
     CFileItem fileitem = CFileItem(m_filenames[i], false);
+    fileitem.SetMimeTypeForInternetFile();
     InputStreamPtr inputstream(CDVDFactoryInputStream::CreateInputStream(m_pPlayer, fileitem));
     if (!inputstream)
     {

@@ -92,7 +92,7 @@ void CInputStream::UpdateConfig()
   m_hasConfig = true;
 }
 
-bool CInputStream::Supports(CFileItem &fileitem)
+bool CInputStream::Supports(const CFileItem &fileitem)
 {
   // check if a specific inputstream addon is requested
   CVariant addon = fileitem.GetProperty("inputstreamaddon");

@@ -1354,6 +1354,15 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
     StringUtils::Replace(m_strPath, "http:", "mms:");
 }
 
+void CFileItem::SetMimeTypeForInternetFile()
+{
+  if (m_doContentLookup && IsInternetStream())
+  {
+    SetMimeType("");
+    FillInMimeType(true);
+  }
+}
+
 bool CFileItem::IsSamePath(const CFileItem *item) const
 {
   if (!item)

@@ -29,7 +29,7 @@ class CDVDInputStreamRTMP
   , public CDVDInputStream::IPosTime
 {
 public:
-  CDVDInputStreamRTMP(CFileItem &fileitem);
+  CDVDInputStreamRTMP(const CFileItem &fileitem);
   virtual ~CDVDInputStreamRTMP();
   virtual bool Open();
   virtual void Close();

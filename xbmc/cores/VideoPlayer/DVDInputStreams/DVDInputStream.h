@@ -140,7 +140,7 @@ public:
     NEXTSTREAM_RETRY,
   };
 
-  CDVDInputStream(DVDStreamType m_streamType, CFileItem& fileitem);
+  CDVDInputStream(DVDStreamType m_streamType, const CFileItem& fileitem);
   virtual ~CDVDInputStream();
   virtual bool Open();
   virtual void Close();

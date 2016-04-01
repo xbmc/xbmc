@@ -32,7 +32,7 @@ class CInputStreamAddon :
 {
 public:
   //! \brief constructor
-  CInputStreamAddon(CFileItem& fileitem, ADDON::CInputStream *inputStream);
+  CInputStreamAddon(const CFileItem& fileitem, ADDON::CInputStream *inputStream);
 
   //! \brief Destructor.
   virtual ~CInputStreamAddon();

@@ -45,7 +45,7 @@
 #include "Util.h"
 
 
-CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer, CFileItem fileitem, bool scanforextaudio)
+CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, bool scanforextaudio)
 {
   std::string file = fileitem.GetPath();
   if (scanforextaudio)
@@ -137,13 +137,6 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
     if (fileitem.IsType(".m3u8"))
       return new CDVDInputStreamFFmpeg(fileitem);
 
-    if (fileitem.ContentLookup())
-    {
-      // request header
-      fileitem.SetMimeType("");
-      fileitem.FillInMimeType();
-    }
-
     if (fileitem.GetMimeType() == "application/vnd.apple.mpegurl")
       return new CDVDInputStreamFFmpeg(fileitem);
   }
@@ -152,7 +145,7 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
   return (new CDVDInputStreamFile(fileitem));
 }
 
-CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer, CFileItem fileitem, const std::vector<std::string>& filenames)
+CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, const std::vector<std::string>& filenames)
 {
   return (new CInputStreamMultiSource(pPlayer, fileitem, filenames));
 }
