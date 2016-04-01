@@ -402,7 +402,7 @@ void CRenderSystemDX::SetFullScreenInternal()
   }
 end:
   // in windowed mode DWM uses triple buffering in any case. 
-  // for FSEM we use double buffering
+  // for FSEM we use double buffering to avoid possible shuttering/tearing
   SetMaximumFrameLatency(2 - m_useWindowedDX);
 }
 
@@ -756,7 +756,9 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   if (m_pSwapChain)
   {
     m_pSwapChain->GetDesc(&scDesc);
-    bNeedResize = m_bResizeRequred || m_nBackBufferWidth != scDesc.BufferDesc.Width || m_nBackBufferHeight != scDesc.BufferDesc.Height;
+    bNeedResize = m_bResizeRequred || 
+                  m_nBackBufferWidth != scDesc.BufferDesc.Width || 
+                  m_nBackBufferHeight != scDesc.BufferDesc.Height;
   }
   else
     bNeedResize = true;
@@ -765,7 +767,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   {
     DXGI_SWAP_CHAIN_DESC1 scDesc;
     m_pSwapChain1->GetDesc1(&scDesc);
-    bNeedRecreate = (scDesc.Stereo && !bHWStereoEnabled) || (!scDesc.Stereo && bHWStereoEnabled);
+    bNeedRecreate = scDesc.Stereo != bHWStereoEnabled;
   }
 
   if (!bNeedRecreate && !bNeedResize)
@@ -960,7 +962,6 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
     if (FAILED(hr))
     {
       CLog::Log(LOGERROR, "%s - Failed to create right eye buffer (%s).", __FUNCTION__, GetErrorDescription(hr).c_str());
-      pBackBuffer->Release();
       g_graphicsContext.SetStereoMode(RENDER_STEREO_MODE_OFF); // try fallback to mono
     }
   }
@@ -1258,6 +1259,8 @@ bool CRenderSystemDX::BeginRender()
     break;
   case DXGI_ERROR_INVALID_CALL: // application provided invalid parameter data. Try to return after resize buffers
     CLog::Log(LOGERROR, "DXGI_ERROR_INVALID_CALL");
+    // in most cases when DXGI_ERROR_INVALID_CALL occurs it means what DXGI silently leaves from FSE mode.
+    // if so, we should return for FSE mode and resize buffers
     SetFullScreenInternal();
     CreateWindowSizeDependentResources();
     m_nDeviceStatus = S_OK;
