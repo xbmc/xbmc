@@ -601,30 +601,50 @@ CAEChannelInfo CAEUtil::GetAEChannelLayout(uint64_t layout)
 
 AVSampleFormat CAEUtil::GetAVSampleFormat(AEDataFormat format)
 {
-  if      (format == AE_FMT_U8)     return AV_SAMPLE_FMT_U8;
-  else if (format == AE_FMT_S16NE)  return AV_SAMPLE_FMT_S16;
-  else if (format == AE_FMT_S32NE)  return AV_SAMPLE_FMT_S32;
-  else if (format == AE_FMT_S24NE4) return AV_SAMPLE_FMT_S32;
-  else if (format == AE_FMT_S24NE4MSB)return AV_SAMPLE_FMT_S32;
-  else if (format == AE_FMT_S24NE3) return AV_SAMPLE_FMT_S32;
-  else if (format == AE_FMT_FLOAT)  return AV_SAMPLE_FMT_FLT;
-  else if (format == AE_FMT_DOUBLE) return AV_SAMPLE_FMT_DBL;
-
-  else if (format == AE_FMT_U8P)     return AV_SAMPLE_FMT_U8P;
-  else if (format == AE_FMT_S16NEP)  return AV_SAMPLE_FMT_S16P;
-  else if (format == AE_FMT_S32NEP)  return AV_SAMPLE_FMT_S32P;
-  else if (format == AE_FMT_S24NE4P) return AV_SAMPLE_FMT_S32P;
-  else if (format == AE_FMT_S24NE4MSBP)return AV_SAMPLE_FMT_S32P;
-  else if (format == AE_FMT_S24NE3P) return AV_SAMPLE_FMT_S32P;
-  else if (format == AE_FMT_FLOATP)  return AV_SAMPLE_FMT_FLTP;
-  else if (format == AE_FMT_DOUBLEP) return AV_SAMPLE_FMT_DBLP;
-
-  else if (format == AE_FMT_RAW) return AV_SAMPLE_FMT_U8;
-
-  if (AE_IS_PLANAR(format))
-    return AV_SAMPLE_FMT_FLTP;
-  else
-    return AV_SAMPLE_FMT_FLT;
+  switch (format)
+  {
+    case AEDataFormat::AE_FMT_U8:
+      return AV_SAMPLE_FMT_U8;
+    case AEDataFormat::AE_FMT_S16NE:
+      return AV_SAMPLE_FMT_S16;
+    case AEDataFormat::AE_FMT_S32NE:
+      return AV_SAMPLE_FMT_S32;
+    case AEDataFormat::AE_FMT_S24NE4:
+      return AV_SAMPLE_FMT_S32;
+    case AEDataFormat::AE_FMT_S24NE4MSB:
+      return AV_SAMPLE_FMT_S32;
+    case AEDataFormat::AE_FMT_S24NE3:
+      return AV_SAMPLE_FMT_S32;
+    case AEDataFormat::AE_FMT_FLOAT:
+      return AV_SAMPLE_FMT_FLT;
+    case AEDataFormat::AE_FMT_DOUBLE:
+      return AV_SAMPLE_FMT_DBL;
+    case AEDataFormat::AE_FMT_U8P:
+      return AV_SAMPLE_FMT_U8P;
+    case AEDataFormat::AE_FMT_S16NEP:
+      return AV_SAMPLE_FMT_S16P;
+    case AEDataFormat::AE_FMT_S32NEP:
+      return AV_SAMPLE_FMT_S32P;
+    case AEDataFormat::AE_FMT_S24NE4P:
+      return AV_SAMPLE_FMT_S32P;
+    case AEDataFormat::AE_FMT_S24NE4MSBP:
+      return AV_SAMPLE_FMT_S32P;
+    case AEDataFormat::AE_FMT_S24NE3P:
+      return AV_SAMPLE_FMT_S32P;
+    case AEDataFormat::AE_FMT_FLOATP:
+      return AV_SAMPLE_FMT_FLTP;
+    case AEDataFormat::AE_FMT_DOUBLEP:
+      return AV_SAMPLE_FMT_DBLP;
+    case AEDataFormat::AE_FMT_RAW:
+      return AV_SAMPLE_FMT_U8;
+    default:
+    {
+      if (AE_IS_PLANAR(format))
+        return AV_SAMPLE_FMT_FLTP;
+      else
+        return AV_SAMPLE_FMT_FLT;
+    }
+  }
 }
 
 uint64_t CAEUtil::GetAVChannel(enum AEChannel aechannel)
