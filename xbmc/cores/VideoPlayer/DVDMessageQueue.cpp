@@ -113,7 +113,7 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
                          [priority](const DVDMessageListItem &item){
                            return priority <= item.priority;
                          });
-  m_list.insert(it, DVDMessageListItem(pMsg, priority));
+  m_list.emplace(it, pMsg, priority);
 
   if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET) && priority == 0)
   {
