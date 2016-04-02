@@ -421,8 +421,26 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
         m_ExifInfo->Description[length] = '\0';
         break;
       }
-      case TAG_MAKE:              strncpy(m_ExifInfo->CameraMake, (char *)ValuePtr, 32);    break;
-      case TAG_MODEL:             strncpy(m_ExifInfo->CameraModel, (char *)ValuePtr, 40);    break;
+      case TAG_MAKE:
+      {
+        int space = sizeof(m_ExifInfo->CameraMake);
+        if (space > 0)
+        {
+          strncpy(m_ExifInfo->CameraMake, (char *)ValuePtr, space - 1);
+          m_ExifInfo->CameraMake[space] = '\0';
+        }
+        break;
+      }
+      case TAG_MODEL:
+      {
+        int space = sizeof(m_ExifInfo->CameraModel);
+        if (space > 0)
+        {
+          strncpy(m_ExifInfo->CameraModel, (char *)ValuePtr, space - 1);
+          m_ExifInfo->CameraModel[space] = '\0';
+        }
+        break;
+      }
 //      case TAG_SOFTWARE:          strncpy(m_ExifInfo->Software, ValuePtr, 5);    break;
       case TAG_FOCALPLANEXRES:    m_FocalPlaneXRes  = ConvertAnyFormat(ValuePtr, Format);               break;
       case TAG_THUMBNAIL_OFFSET:  m_ExifInfo->ThumbnailOffset = (unsigned)ConvertAnyFormat(ValuePtr, Format);     break;
@@ -433,22 +451,34 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
       break;
 
       case TAG_DATETIME_ORIGINAL:
-        // If we get a DATETIME_ORIGINAL, we use that one.
-        strncpy(m_ExifInfo->DateTime, (char *)ValuePtr, 20);
-        m_DateFound = true;
-      break;
+      {
 
+        int space = sizeof(m_ExifInfo->DateTime);
+        if (space > 0)
+        {
+          strncpy(m_ExifInfo->DateTime, (char *)ValuePtr, space - 1);
+          m_ExifInfo->DateTime[space] = '\0';
+          // If we get a DATETIME_ORIGINAL, we use that one.
+          m_DateFound = true;
+        }
+        break;
+      }
       case TAG_DATETIME_DIGITIZED:
       case TAG_DATETIME:
+      {
         if (m_DateFound == false)
         {
           // If we don't already have a DATETIME_ORIGINAL, use whatever
           // time fields we may have.
-          strncpy(m_ExifInfo->DateTime, (char *)ValuePtr, 20);
-//          LocaliseDate();
+          int space = sizeof(m_ExifInfo->DateTime);
+          if (space > 0)
+          {
+            strncpy(m_ExifInfo->DateTime, (char *)ValuePtr, space - 1);
+            m_ExifInfo->DateTime[space] = '\0';
+          }
         }
-      break;
-
+        break;
+      }
       case TAG_USERCOMMENT:
       {
         // The UserComment allows comments without the charset limitations of ImageDescription.
