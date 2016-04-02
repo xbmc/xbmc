@@ -52,7 +52,7 @@
 	</variable>
 	<variable name="GlobalFanartVar">
 		<value condition="Skin.HasSetting(use_custom_bg) + !String.IsEmpty(Skin.String(custom_background))">$INFO[Skin.String(custom_background)]</value>
-		<value>special://skin/extras/backgrounds/$INFO[Skin.CurrentTheme].jpg</value>
+		<value>special://skin/extras/backgrounds/$INFO[Skin.CurrentColourTheme].jpg</value>
 	</variable>
 	<variable name="FullScreenInfoTextBoxVar">
 		<value condition="Control.HasFocus(5552)">$INFO[VideoPlayer.Duration,$LOCALIZE[180]: [B],[/B][CR]]</value>
@@ -313,6 +313,7 @@
 		<value condition="ListItem.IsParentFolder">-</value>
 			<value condition="ListItem.IsResumable">overlays/watched/resume.png</value>
 		<value condition="!String.IsEmpty(ListItem.Overlay)">$INFO[ListItem.Overlay]</value>
+		<value condition="ListItem.IsFolder + Container.Content(files)">overlays/folder.png</value>
 		<value>OverlayUnwatched.png</value>
 	</variable>
 	<variable name="SettingsSectionIcon">
@@ -350,12 +351,6 @@
 	<variable name="PVRChannelMgrHeader">
 		<value condition="!String.IsEmpty(Window.Property(IsRadio))">$LOCALIZE[19199] - $LOCALIZE[19024]</value>
 		<value>$LOCALIZE[19199] - $LOCALIZE[19023]</value>
-	</variable>
-	<variable name="FileManagerImageVar">
-<!-- 		<value condition="Control.HasFocus(20) + Container(20).ListItem.IsFolder">DefaultFolderSquare.png</value>
-		<value condition="Control.HasFocus(21) + Container(21).ListItem.IsFolder">DefaultFolderSquare.png</value> -->
-		<value condition="Control.HasFocus(21)">$INFO[Container(21).ListItem.FolderPath]</value>
-		<value condition="Control.HasFocus(20)">$INFO[Container(20).ListItem.FolderPath]</value>
 	</variable>
 	<variable name="PVRAreaVar">
 		<value condition="Control.HasFocus(100)">$LOCALIZE[19019]</value>

@@ -49,7 +49,7 @@
 							<top>0</top>
 							<width>1000</width>
 							<height>58</height>
-							<texture>lists/focus.png</texture>
+							<texture colordiffuse="button_focus">lists/focus.png</texture>
 							<visible>Control.hasFocus(50)</visible>
 						</control>
 						<control type="progress">
@@ -174,7 +174,7 @@
 							<top>0</top>
 							<width>1000</width>
 							<height>77</height>
-							<texture>lists/focus.png</texture>
+							<texture colordiffuse="button_focus">lists/focus.png</texture>
 							<visible>Control.hasFocus(50)</visible>
 						</control>
 						<control type="image">

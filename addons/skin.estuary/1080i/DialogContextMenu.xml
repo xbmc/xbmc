@@ -41,7 +41,7 @@
 			<height>60</height>
 			<font>fontContextMenu</font>
 			<align>center</align>
-			<texturefocus>lists/focus.png</texturefocus>
+			<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
 			<texturenofocus>lists/separator.png</texturenofocus>
 		</control>
 		<include name="UpDownArrows">

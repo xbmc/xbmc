@@ -12,7 +12,7 @@
                 <left>0</left>
                 <top>0</top>
                 <width>1920</width>
-                <height>80</height>
+                <height>83</height>
                 <texture>frame/InfoBar.png</texture>
             </control>
             <control type="image">

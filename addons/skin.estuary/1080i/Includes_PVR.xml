@@ -86,7 +86,7 @@
 					<top>0</top>
 					<width>470</width>
 					<height>70</height>
-					<texture>lists/focus.png</texture>
+					<texture colordiffuse="button_focus">lists/focus.png</texture>
 					<visible>Control.HasFocus($PARAM[list_id])</visible>
 				</control>
 				<control type="image">
@@ -223,7 +223,7 @@
 							<top>0</top>
 							<width>1050</width>
 							<height>58</height>
-							<texture>lists/focus.png</texture>
+							<texture colordiffuse="button_focus">lists/focus.png</texture>
 							<visible>Control.HasFocus($PARAM[container_id])</visible>
 						</control>
 						<control type="image">

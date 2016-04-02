@@ -6,7 +6,6 @@
 	<controls>
 		<include>DefaultBackground</include>
 		<control type="group">
-			<description>Timers group</description>
 			<visible>Control.IsVisible(50)</visible>
 			<control type="group">
 				<include>OpenClose_Left</include>
@@ -94,7 +93,7 @@
 							<top>0</top>
 							<width>1700</width>
 							<height>101</height>
-							<texture>lists/focus.png</texture>
+							<texture colordiffuse="button_focus">lists/focus.png</texture>
 							<visible>Control.HasFocus(50)</visible>
 						</control>
 						<control type="image">

@@ -47,11 +47,11 @@
 						<top>0</top>
 						<width>1396</width>
 						<height>63</height>
-						<texture>lists/focus.png</texture>
+						<texture colordiffuse="button_focus">lists/focus.png</texture>
 						<visible>Control.HasFocus(55)</visible>
 					</control>
 					<control type="label">
-						<left>13</left>
+						<left>18</left>
 						<top>2</top>
 						<height>63</height>
 						<width>70</width>
@@ -62,7 +62,7 @@
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="label">
-						<left>95</left>
+						<left>105</left>
 						<top>0</top>
 						<height>63</height>
 						<width>960</width>
@@ -85,7 +85,7 @@
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="image">
-						<left>21</left>
+						<left>26</left>
 						<top>20</top>
 						<width>32</width>
 						<height>32</height>
@@ -94,7 +94,7 @@
 						<animation effect="fade" start="30" end="100" time="300" reversible="false">Focus</animation>
 					</control>
 					<control type="image">
-						<left>21</left>
+						<left>26</left>
 						<top>20</top>
 						<width>32</width>
 						<visible>String.IsEmpty(ListItem.Year)</visible>
@@ -113,7 +113,7 @@
 						<texture border="90,3,90,3">lists/separator.png</texture>
 					</control>
 					<control type="label">
-						<left>13</left>
+						<left>18</left>
 						<top>2</top>
 						<height>63</height>
 						<width>70</width>
@@ -124,7 +124,7 @@
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="label">
-						<left>95</left>
+						<left>105</left>
 						<top>0</top>
 						<height>63</height>
 						<width>960</width>
@@ -146,7 +146,7 @@
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="image">
-						<left>21</left>
+						<left>26</left>
 						<top>20</top>
 						<visible>String.IsEmpty(ListItem.Year) + String.IsEmpty(ListItem.AddonVersion)</visible>
 						<width>32</width>
@@ -173,30 +173,18 @@
 				<top>0</top>
 				<width>1396</width>
 				<height>63</height>
-				<texture>lists/focus.png</texture>
+				<texture colordiffuse="button_focus">lists/focus.png</texture>
 				<visible>Control.hasFocus(55)</visible>
 			</control>
 			<control type="label">
-				<left>12</left>
-				<top>-2</top>
-				<height>63</height>
-				<width>70</width>
-				<align>center</align>
-				<aligny>center</aligny>
-				<font>font24_title</font>
-				<label>$INFO[ListItem.TrackNumber]</label>
-				<textcolor>button_focus</textcolor>
-				<shadowcolor>text_shadow</shadowcolor>
-			</control>
-			<control type="label">
-				<left>95</left>
+				<left>35</left>
 				<top>0</top>
 				<height>63</height>
-				<width>860</width>
+				<width>1030</width>
 				<aligny>center</aligny>
 				<scroll>true</scroll>
 				<font>fontContextMenu</font>
-				<label>$VAR[SongTitleVar]</label>
+				<label>$INFO[ListItem.Label]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 			</control>
 			<control type="label">
@@ -221,25 +209,13 @@
 				<texture border="90,3,90,3">lists/separator.png</texture>
 			</control>
 			<control type="label">
-				<left>12</left>
-				<top>-2</top>
-				<height>63</height>
-				<width>70</width>
-				<align>center</align>
-				<aligny>center</aligny>
-				<font>font24_title</font>
-				<label>$INFO[ListItem.TrackNumber]</label>
-				<textcolor>button_focus</textcolor>
-				<shadowcolor>text_shadow</shadowcolor>
-			</control>
-			<control type="label">
-				<left>95</left>
+				<left>35</left>
 				<top>0</top>
 				<height>63</height>
-				<width>960</width>
+				<width>1030</width>
 				<aligny>center</aligny>
 				<font>fontContextMenu</font>
-				<label>$VAR[SongTitleVar]</label>
+				<label>$INFO[ListItem.Label]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 			</control>
 			<control type="label">
@@ -270,7 +246,7 @@
 				<top>0</top>
 				<width>1396</width>
 				<height>63</height>
-				<texture>lists/focus.png</texture>
+				<texture colordiffuse="button_focus">lists/focus.png</texture>
 				<visible>Control.hasFocus(55)</visible>
 			</control>
 			<control type="image">

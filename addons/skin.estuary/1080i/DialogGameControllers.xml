@@ -50,7 +50,7 @@
                     <align>center</align>
                     <aligny>center</aligny>
                     <font>font12_title</font>
-                    <texturefocus>lists/focus.png</texturefocus>
+                    <texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
                     <texturenofocus>lists/separator.png</texturenofocus>
                 </control>
                 <control type="gamecontroller" id="31">
@@ -107,7 +107,7 @@
                     <align>center</align>
                     <aligny>center</aligny>
                     <font>font12_title</font>
-                    <texturefocus>lists/focus.png</texturefocus>
+                    <texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
                     <texturenofocus>lists/separator.png</texturenofocus>
                 </control>
             <control type="grouplist" id="9001">
