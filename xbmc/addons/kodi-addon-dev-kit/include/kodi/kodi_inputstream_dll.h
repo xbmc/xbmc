@@ -139,6 +139,11 @@ extern "C"
    */
   void DemuxSetSpeed(int speed);
 
+  /*!
+   * Sets desired width / height
+   * @param width / hight
+   */
+  void SetVideoResolution(int width, int height);
 
   /*!
    * Totel time in ms
@@ -238,6 +243,7 @@ extern "C"
     pClient->DemuxRead = DemuxRead;
     pClient->DemuxSeekTime = DemuxSeekTime;
     pClient->DemuxSetSpeed = DemuxSetSpeed;
+    pClient->SetVideoResolution = SetVideoResolution;
 
     pClient->GetTotalTime = GetTotalTime;
     pClient->GetTime = GetTime;

@@ -3721,6 +3721,10 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
     m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_VIDEOMUX);
   }
 
+  // TODO desired resolution needs to come from somewhere else
+  RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
+  m_pDemuxer->SetVideoResolution(res.iWidth, res.iHeight);
+
   return true;
 
 }
