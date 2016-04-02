@@ -9,6 +9,8 @@ environment:
     - ADDONS: adsp
     - ADDONS: audiodecoder
     - ADDONS: audioencoder
+    - ADDONS: inputstream
+    - ADDONS: peripheral
     - ADDONS: pvr
     - ADDONS: screensaver
     - ADDONS: visualization
