@@ -173,13 +173,6 @@ bool CJpegParse::ExtractInfo (FILE *infile)
       marker = 0;
     }
 
-    if (marker == 0xff)
-    {
-      // 0xff is legal padding, but if we get that many, something's wrong.
-      printf("JpgParse: too many padding bytes");
-      return false;
-    }
-
     // Read the length of the section.
     unsigned short itemlen = 0;
     bytesRead = fread(&itemlen, 1, sizeof(itemlen), infile);
